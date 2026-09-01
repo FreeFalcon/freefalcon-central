@@ -4,7 +4,7 @@
 #include "cpmanager.h"
 #include "dispopts.h"
 #include "playerop.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
 #include "otwdrive.h"
 
 #if CPLIFT_USE_STRING
@@ -14,7 +14,8 @@ using namespace std;
 #endif
 
 
-CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) : CPObject(pobjectInitStr)
+CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr)
+    : CPObject(pobjectInitStr)
 {
     int i;
     mlTrig trig;
@@ -46,7 +47,8 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
 
         mString1 = oss.str();
         oss.clear();
-        oss << "TILT: " << static_cast<int>(abs(liftInitStr->tiltLabel)) << " * up";
+        oss << "TILT: " << static_cast<int>(abs(liftInitStr->tiltLabel))
+            << " * up";
         mString2 = oss.str();
 #else
 
@@ -67,7 +69,8 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
 #endif
     }
 
-    if (PlayerOptions.SimVisualCueMode == VCLiftLine or PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCLiftLine or
+        PlayerOptions.SimVisualCueMode == VCBoth)
     {
 
         if (tilt == -30.0F)
@@ -112,7 +115,6 @@ CPLiftLine::CPLiftLine(ObjectInitStr* pobjectInitStr, LiftInitStr* liftInitStr) 
             mCheveron[6][1] = 0;
             mCheveron[7][0] = 0;
             mCheveron[7][1] = 0;
-
         }
         else if (tilt == -60.0F)
         {
@@ -273,21 +275,27 @@ void CPLiftLine::DisplayDraw(void)
     int oldFont = VirtualDisplay::CurFont();
 
     // OTWDriver.renderer->SetColor(0xFF0096FF);
-    OTWDriver.renderer->SetColor(OTWDriver.GetLiftLineColor()); // from 3D pit readin
+    OTWDriver.renderer->SetColor(
+        OTWDriver.GetLiftLineColor()); // from 3D pit readin
 
-    if (PlayerOptions.SimVisualCueMode == VCLiftLine or PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCLiftLine or
+        PlayerOptions.SimVisualCueMode == VCBoth)
     {
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
 
         for (i = 0; i < mCheverons * 4; i += 4)
         {
-            OTWDriver.renderer->Line(mCheveron[i][0], mCheveron[i][1], mCheveron[i + 1][0], mCheveron[i + 1][1]);
-            OTWDriver.renderer->Line(mCheveron[i + 2][0], mCheveron[i + 2][1], mCheveron[i + 3][0], mCheveron[i + 3][1]);
+            OTWDriver.renderer->Line(mCheveron[i][0], mCheveron[i][1],
+                                     mCheveron[i + 1][0], mCheveron[i + 1][1]);
+            OTWDriver.renderer->Line(mCheveron[i + 2][0], mCheveron[i + 2][1],
+                                     mCheveron[i + 3][0], mCheveron[i + 3][1]);
         }
 
         for (i = 0; i < mLineSegments * 2; i += 2)
         {
-            OTWDriver.renderer->Line(mLineSegment[i][0], mLineSegment[i][1], mLineSegment[i + 1][0], mLineSegment[i + 1][1]);
+            OTWDriver.renderer->Line(mLineSegment[i][0], mLineSegment[i][1],
+                                     mLineSegment[i + 1][0],
+                                     mLineSegment[i + 1][1]);
         }
     }
 

@@ -2,13 +2,13 @@
 #include <stdio.h>
 #include <string.h>
 #include "cmpglobl.h"
-#include "F4Vu.h"
-#include "CampList.h"
-#include "Squadron.h"
-#include "SquadUI.h"
-#include "Campaign.h"
-#include "Objectiv.h"
-#include "Find.h"
+#include "f4vu.h"
+#include "camplist.h"
+#include "squadron.h"
+#include "squadui.h"
+#include "campaign.h"
+#include "objectiv.h"
+#include "find.h"
 
 // =====================
 // Globals
@@ -35,4 +35,3 @@ SquadUIInfoClass::SquadUIInfoClass(void)
 // =====================
 // Other functions
 // =====================
-

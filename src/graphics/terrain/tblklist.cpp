@@ -9,10 +9,10 @@
 \***************************************************************************/
 #include <limits.h>
 #include <math.h>
-#include "Tmap.h"
-#include "TblkList.h"
-#include "Tlevel.h"
-#include "Tblock.h"
+#include "tmap.h"
+#include "tblklist.h"
+#include "tlevel.h"
+#include "tblock.h"
 
 
 #ifdef USE_SH_POOLS
@@ -22,7 +22,7 @@ MEM_POOL TBlockList::pool;
 
 
 // Construct an empty range sorted list manager for the specified map level
-void TBlockList::Setup(TLevel *MapLevel, float SwapInRange)
+void TBlockList::Setup(TLevel* MapLevel, float SwapInRange)
 {
     // Store our setup values we'll need later
     myLevelPtr = MapLevel;
@@ -32,8 +32,10 @@ void TBlockList::Setup(TLevel *MapLevel, float SwapInRange)
     // Retain a block of samples with a minimum radius of "SwapInRange"
     // This number is how many blocks ahead of the viewer to request blocks
     // (0 means only the block the viewer is over is requested)
-    interestRange   = FloatToInt32((float)ceil(SwapInRange / myLevelPtr->FTperPOST()));
-    inBlockDistance = FloatToInt32((float)ceil(SwapInRange / myLevelPtr->FTperBLOCK()));
+    interestRange =
+        FloatToInt32((float)ceil(SwapInRange / myLevelPtr->FTperPOST()));
+    inBlockDistance =
+        FloatToInt32((float)ceil(SwapInRange / myLevelPtr->FTperBLOCK()));
 
     // Store the distance (in blocks) at which we want to throw out blocks
     // (should be at least inBlockDistance + 1 to avoid thrashing)
@@ -117,10 +119,13 @@ void TBlockList::UpdateBlockList(int vx, int vy)
     // Request the loading of data coming into range ahead of us
     if (vy)
     {
-        if (vy > 0) same = ourBlockCol + inBlockDistance;
-        else same = ourBlockCol - inBlockDistance;
+        if (vy > 0)
+            same = ourBlockCol + inBlockDistance;
+        else
+            same = ourBlockCol - inBlockDistance;
 
-        for (r = ourBlockRow - inBlockDistance; r <= ourBlockRow + inBlockDistance; r++)
+        for (r = ourBlockRow - inBlockDistance;
+             r <= ourBlockRow + inBlockDistance; r++)
         {
             InsertBlock(r, same);
         }
@@ -128,8 +133,10 @@ void TBlockList::UpdateBlockList(int vx, int vy)
 
     if (vx)
     {
-        if (vx > 0) same = ourBlockRow + inBlockDistance;
-        else same = ourBlockRow - inBlockDistance;
+        if (vx > 0)
+            same = ourBlockRow + inBlockDistance;
+        else
+            same = ourBlockRow - inBlockDistance;
 
         // Special case for diagonal motion -- to avoid double loading the corner block
         start = ourBlockCol - inBlockDistance;
@@ -137,8 +144,10 @@ void TBlockList::UpdateBlockList(int vx, int vy)
 
         if (vy)
         {
-            if (vy > 0) stop--;
-            else start++;
+            if (vy > 0)
+                stop--;
+            else
+                start++;
         }
 
         for (c = start; c <= stop; c++)
@@ -216,14 +225,41 @@ int TBlockList::RangeFromCenter(int levelPostRow, int levelPostCol)
 // invalid after a call to "Update"
 Tpost* TBlockList::GetPost(int levelPostRow, int levelPostCol)
 {
-    ShiAssert(RangeFromCenter(levelPostRow, levelPostCol) <= GetAvailablePostRange());
+    ShiAssert(RangeFromCenter(levelPostRow, levelPostCol) <=
+              GetAvailablePostRange());
 
     int blockRow = LEVEL_POST_TO_LEVEL_BLOCK(levelPostRow);
     int blockCol = LEVEL_POST_TO_LEVEL_BLOCK(levelPostCol);
 
     TBlock* block = myLevelPtr->GetOwnedBlock(blockRow, blockCol);
 
-    ShiAssert(block->Posts());
+    // #CTD (ICP AG mode): a query OUTSIDE the resident block range (the GM/AG sensor pass re-centres the terrain
+    // view / the weather asks for a far position) returned a NULL block here, and block->Post() dereferenced it
+    // (the ShiAsserts are compiled out in Release -> 0xC0000005 at a small offset). Every caller up the chain
+    // (GetGroundLevel's JB CTD guards, DrawLodPatch's g.ok) already handles a NULL post -- honour that contract.
+    if (not block or not block->Posts())
+    {
+        // Diagnostic (rate-limited): is this a LEGIT far query (sensor ray / weather -- expected, the guards are the
+        // fix) or has the resident window collapsed abnormally (a real residency regression)? Logs the query vs the
+        // list's centre and available range.
+        static int s_diagN = 0;
+        if (s_diagN < 24)
+        {
+            s_diagN++;
+            char _d[200];
+            _snprintf(_d, sizeof(_d) - 1,
+                      "[TERR-NULLPOST] q=(%d,%d) center=(%d,%d) avail=%d "
+                      "lod-level=%d block=%p posts=%p\n",
+                      levelPostRow, levelPostCol, ourLevelPostRow,
+                      ourLevelPostCol, GetAvailablePostRange(),
+                      myLevelPtr ? myLevelPtr->LOD() : -1, (void*)block,
+                      (void*)(block ? block->Posts() : NULL));
+            _d[sizeof(_d) - 1] = 0;
+            OutputDebugStringA(
+                _d); // stderr is invisible in a windowed debug session -- ODS shows in VS Output
+        }
+        return NULL;
+    }
 
     return block->Post(LEVEL_POST_TO_BLOCK_POST(levelPostRow),
                        LEVEL_POST_TO_BLOCK_POST(levelPostCol));
@@ -235,15 +271,15 @@ Tpost* TBlockList::GetPost(int levelPostRow, int levelPostCol)
 void TBlockList::ComputeAvailableRange(void)
 {
     int row, col;
-    TBlock *block;
+    TBlock* block;
     int Hrange, Vrange;
 
 
     // Get the block rows and columns which bound our area of immediate interest
     int startRow = LEVEL_POST_TO_LEVEL_BLOCK(ourLevelPostRow - interestRange);
     int startCol = LEVEL_POST_TO_LEVEL_BLOCK(ourLevelPostCol - interestRange);
-    int stopRow  = LEVEL_POST_TO_LEVEL_BLOCK(ourLevelPostRow + interestRange);
-    int stopCol  = LEVEL_POST_TO_LEVEL_BLOCK(ourLevelPostCol + interestRange);
+    int stopRow = LEVEL_POST_TO_LEVEL_BLOCK(ourLevelPostRow + interestRange);
+    int stopCol = LEVEL_POST_TO_LEVEL_BLOCK(ourLevelPostCol + interestRange);
 
 
     // Start with the default range.  We'll reduce it as necessary
@@ -267,8 +303,6 @@ void TBlockList::ComputeAvailableRange(void)
                 // This block's data is loaded, so take its min and max elevations into account
                 minZ = min(minZ, block->GetMinZ());
                 maxZ = max(maxZ, block->GetMaxZ());
-
-
             }
             else
             {
@@ -285,7 +319,8 @@ void TBlockList::ComputeAvailableRange(void)
                 }
                 else
                 {
-                    Vrange = POSTS_ACROSS_BLOCK - 1 - LEVEL_POST_TO_BLOCK_POST(ourLevelPostRow) +
+                    Vrange = POSTS_ACROSS_BLOCK - 1 -
+                             LEVEL_POST_TO_BLOCK_POST(ourLevelPostRow) +
                              POSTS_ACROSS_BLOCK * (row - ourBlockRow - 1);
                 }
 
@@ -300,13 +335,13 @@ void TBlockList::ComputeAvailableRange(void)
                 }
                 else
                 {
-                    Hrange = POSTS_ACROSS_BLOCK - 1 - LEVEL_POST_TO_BLOCK_POST(ourLevelPostCol) +
+                    Hrange = POSTS_ACROSS_BLOCK - 1 -
+                             LEVEL_POST_TO_BLOCK_POST(ourLevelPostCol) +
                              POSTS_ACROSS_BLOCK * (col - ourBlockCol - 1);
                 }
 
                 availableRange = min(availableRange, max(Hrange, Vrange));
                 ShiAssert(availableRange >= 0);
-
             }
         }
     }
@@ -341,7 +376,6 @@ void TBlockList::ReleaseDistantBlocks()
 
             // This ones okay, so move on to the next entry in the list
             entry = entry->next;
-
         }
         else
         {
@@ -388,7 +422,7 @@ void TBlockList::InsertBlock(int row, int col)
     // Allocate memory for the new block list entry
     entry = new TListEntry;
 
-    if ( not entry)
+    if (not entry)
     {
         ShiError("Failed to allocate memory for terrain block list entry");
     }
@@ -399,7 +433,7 @@ void TBlockList::InsertBlock(int row, int col)
     entry->virtualCol = col;
     entry->block = myLevelPtr->RequestBlockOwnership(row, col);
 
-    if ( not entry->block)
+    if (not entry->block)
     {
         ShiError("I failed to find a terrain block");
     }
@@ -416,7 +450,7 @@ void TBlockList::InsertBlock(int row, int col)
 
     head = entry;
 
-    if ( not tail)
+    if (not tail)
     {
         tail = entry;
     }

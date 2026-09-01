@@ -1,4 +1,4 @@
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
 #include "sensors.h"
 #include "object.h"
@@ -16,11 +16,15 @@ void MissileClass::UpdateTargetData(void)
     ShiAssert(sensorArray[0]);
 
     // Don't run the seeker until we're established in flight
-    if (runTime > inputData->guidanceDelay) //ME123 ADDET targetPtr->BaseData() TO AWOID CRASHIGN HERE AFTER SYLVAINS STUFF
+    if (runTime >
+        inputData
+            ->guidanceDelay) //ME123 ADDET targetPtr->BaseData() TO AWOID CRASHIGN HERE AFTER SYLVAINS STUFF
     {
         if (targetPtr)
         {
-            ShiAssert(targetPtr->BaseData()); // We used to drop lock in this case, but it should never happen, right?
+            ShiAssert(
+                targetPtr
+                    ->BaseData()); // We used to drop lock in this case, but it should never happen, right?
 
             // This ensures that everybody agrees about where ground objects are even as they move
             // with terrain LOD changes.
@@ -54,8 +58,10 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
         return;
 
 
-    ShiAssert( not newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
-    ShiAssert( not targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(not newTarget or
+              newTarget->BaseData() not_eq (FalconEntity*) 0xDDDDDDDD);
+    ShiAssert(not targetPtr or
+              targetPtr->BaseData() not_eq (FalconEntity*) 0xDDDDDDDD);
 
 
     if (targetPtr)
@@ -65,8 +71,10 @@ void MissileClass::SetTarget(SimObjectType* newTarget)
     }
 
 
-    ShiAssert( not newTarget or newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
-    ShiAssert( not targetPtr or targetPtr->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+    ShiAssert(not newTarget or
+              newTarget->BaseData() not_eq (FalconEntity*) 0xDDDDDDDD);
+    ShiAssert(not targetPtr or
+              targetPtr->BaseData() not_eq (FalconEntity*) 0xDDDDDDDD);
 
 
     if (newTarget)

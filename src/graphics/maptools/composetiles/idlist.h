@@ -8,7 +8,7 @@
 #ifndef _IDLIST_H_
 #define _IDLIST_H_
 
-#include "TileList.h"
+#include "tilelist.h"
 
 
 const int maxCodes = 0xFFFF;

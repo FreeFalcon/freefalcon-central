@@ -5,7 +5,7 @@
 
  Stratus cloud class
 \***************************************************************************/
-#include "Real2DCloud.h"
+#include "real2dcloud.h"
 
 ObjectDisplayList *Real2DCloud::objMgr = NULL;
 
@@ -16,10 +16,11 @@ Real2DCloud::Real2DCloud()
 
 Real2DCloud::~Real2DCloud()
 {
-    if (drawable2DCloud) Cleanup();
+    if (drawable2DCloud)
+        Cleanup();
 }
 
-void Real2DCloud::Setup(ObjectDisplayList* objList)
+void Real2DCloud::Setup(ObjectDisplayList *objList)
 {
     objMgr = objList;
     drawable2DCloud = new Drawable2DCloud;

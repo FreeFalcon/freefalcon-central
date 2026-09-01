@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -34,8 +35,8 @@ private:
     TREELIST *Owner_;
 
     VU_ID vuID;
-public:
 
+public:
     C_Entity();
     C_Entity(char **stream);
     C_Entity(FILE *fp);
@@ -60,7 +61,7 @@ public:
     }
     TREELIST *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
 
     void SetIconBg(short x, short y, short w, short h)
@@ -117,7 +118,8 @@ public:
 
     void SetIcon(IMAGE_RSC *Image)
     {
-        if (Icon_) Icon_->SetImage(Image);
+        if (Icon_)
+            Icon_->SetImage(Image);
     }
     void SetName(_TCHAR *str)
     {
@@ -153,7 +155,7 @@ public:
     }
     short GetState()
     {
-        return(State_);
+        return (State_);
     }
 
     void SetOperational(uchar s)
@@ -162,35 +164,37 @@ public:
     }
     uchar GetOperational()
     {
-        return(Operational_);
+        return (Operational_);
     }
 
     _TCHAR *GetName()
     {
-        if (Name_) return(Name_->GetText());
+        if (Name_)
+            return (Name_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetStatus()
     {
-        if (Status_) return(Status_->GetText());
+        if (Status_)
+            return (Status_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
 
     void SetFont(long FontID);
 
     UI95_RECT GetIconBg()
     {
-        return(IconBg_);
+        return (IconBg_);
     }
     UI95_RECT GetInfoBg()
     {
-        return(InfoBg_);
+        return (InfoBg_);
     }
     O_Output *GetIcon()
     {
-        return(Icon_);
+        return (Icon_);
     }
     long CheckHotSpots(long relX, long relY);
     void SetDefaultFlags();
@@ -209,7 +213,7 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
 };
 

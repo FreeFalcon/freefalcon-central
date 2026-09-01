@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -42,19 +43,21 @@ public:
 
     long GetIconID()
     {
-        if (Last_) return(Last_->ID);
+        if (Last_)
+            return (Last_->ID);
 
-        return(0);
+        return (0);
     }
     long GetIconType()
     {
-        if (Last_) return(Last_->Type);
+        if (Last_)
+            return (Last_->Type);
 
-        return(0);
+        return (0);
     }
     MAPICONLIST *GetLastItem()
     {
-        return(Last_);
+        return (Last_);
     }
 
     long CheckHotSpots(long relX, long relY);
@@ -66,7 +69,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);

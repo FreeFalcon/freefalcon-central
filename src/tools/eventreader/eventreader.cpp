@@ -2,8 +2,8 @@
 //
 
 #include "stdafx.h"
-#include "EventReader.h"
-#include "EventReaderDlg.h"
+#include "eventreader.h"
+#include "eventreaderdlg.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -19,7 +19,7 @@ BEGIN_MESSAGE_MAP(CEventReaderApp, CWinApp)
     // NOTE - the ClassWizard will add and remove mapping macros here.
     //    DO NOT EDIT what you see in these blocks of generated code!
     //}}AFX_MSG
-    ON_COMMAND(ID_HELP, CWinApp::OnHelp)
+ON_COMMAND(ID_HELP, CWinApp::OnHelp)
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////

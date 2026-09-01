@@ -15,6 +15,7 @@ public:
         return 0;
     };
     ~ANode();
+
 private:
     friend class AList;
     class ANode *_Pred, *_Succ;
@@ -34,6 +35,7 @@ public:
     void *Find(int Offset, int Value);
     void *Find(int Offset, float Value);
     void AddSorted(ANode *n);
+
 private:
     ANode _Head, _Tail;
 };
@@ -45,11 +47,14 @@ public:
     ~ProtectedAList();
     void Lock(void);
     void Unlock(void);
+
 private:
-    struct F4CSECTIONHANDLE*  listLock;
+    struct F4CSECTIONHANDLE *listLock;
 };
 
-#define ITERATE_ALIST(List,NodePtr,Type) for((NodePtr)=(Type *)(List)->GetHead();(NodePtr);(NodePtr)=(Type *)(NodePtr)->GetSucc())
-#define FIND_ANODE(ListPtr,Variable,Value)
+#define ITERATE_ALIST(List, NodePtr, Type)                                     \
+    for ((NodePtr) = (Type *)(List)->GetHead(); (NodePtr);                     \
+         (NodePtr) = (Type *)(NodePtr)->GetSucc())
+#define FIND_ANODE(ListPtr, Variable, Value)
 
 #endif

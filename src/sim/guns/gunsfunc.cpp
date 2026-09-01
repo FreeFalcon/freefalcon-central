@@ -3,7 +3,7 @@
 #include "gunsfunc.h"
 #include "camp2sim.h"
 #include "initdata.h"
-#include "Entity.h"
+#include "entity.h"
 
 SimWeaponClass** InitGun(SimBaseClass* parent, ushort id, int num, int side)
 {

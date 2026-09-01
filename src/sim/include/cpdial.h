@@ -44,11 +44,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     virtual ~CPDial(void);
     float mDialValue;
     //====================================================//
@@ -79,7 +79,7 @@ public:
     // Pointers to Runtime Member Functions
     //====================================================//
 
-    void Exec(SimBaseClass*);
+    void Exec(SimBaseClass *);
     void DisplayDraw(void);
 
 
@@ -91,12 +91,11 @@ public:
     //Wombat778 End
 
 
-
     //====================================================//
     // Constructors and Destructors
     //====================================================//
 
-    CPDial(ObjectInitStr*, DialInitStr*);
+    CPDial(ObjectInitStr *, DialInitStr *);
 };
 
 #endif

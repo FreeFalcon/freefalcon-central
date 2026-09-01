@@ -1,4 +1,5 @@
 #include	"RedProfiler.h"
+#include <intrin.h>   // Artscout - 2026 (x64): __rdtsc
 #include	"string.h"
 #include	"stdio.h"
 #include	"timemgr.h"
@@ -43,10 +44,7 @@ void	StartProfile(char *name)
 {	__int64	x;
 	int	a;
 
-	_asm {	RDTSC
-		mov	DWORD PTR x,eax
-		mov	DWORD PTR x+4,edx
-	}
+	x = (__int64)__rdtsc();   // Artscout - 2026 (x64): RDTSC via intrinsic
 
 	a=SeekProfile(name);
 	if(!RedProfiles[a].Level){
@@ -62,10 +60,7 @@ void	StartMainProfile(char *name)
 {	__int64	x;
 	int	a;
 
-	_asm {	RDTSC
-		mov	DWORD PTR x,eax
-		mov	DWORD PTR x+4,edx
-	}
+	x = (__int64)__rdtsc();   // Artscout - 2026 (x64): RDTSC via intrinsic
 
 	a=SeekProfile(name);
 	if(!RedProfiles[a].Level){
@@ -97,10 +92,7 @@ void	StopProfile(char *name)
 {	__int64	x;
 
 	int	a;
-	_asm {	RDTSC
-		mov	DWORD PTR x,eax
-		mov	DWORD PTR x+4,edx
-	}
+	x = (__int64)__rdtsc();   // Artscout - 2026 (x64): RDTSC via intrinsic
 
 	a=SeekProfile(name);
 	if(RedProfiles[a].Level==1){									// Stackable Profile Item

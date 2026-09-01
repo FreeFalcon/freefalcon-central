@@ -34,7 +34,7 @@ C_Custom::~C_Custom()
 
 long C_Custom::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Custom::Setup(long ID, short Type, short NumCtrls)
@@ -55,7 +55,8 @@ void C_Custom::Setup(long ID, short Type, short NumCtrls)
         Count_ = NumCtrls;
         Items_ = new O_Output[Count_];
 #ifdef USE_SH_POOLS
-        ItemValues_ = (long*)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(long) * (Count_), FALSE);
+        ItemValues_ = (long *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL],
+                                          sizeof(long) * (Count_), FALSE);
 #else
         ItemValues_ = new long[Count_];
 #endif
@@ -74,7 +75,7 @@ void C_Custom::Cleanup(void)
 {
     short i;
 
-    if ( not Count_)
+    if (not Count_)
         return;
 
     for (i = 0; i < Count_; i++)
@@ -96,9 +97,9 @@ void C_Custom::Cleanup(void)
 O_Output *C_Custom::GetItem(long idx)
 {
     if (idx < Count_)
-        return(&Items_[idx]);
+        return (&Items_[idx]);
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_Custom::SetValue(long idx, long value)
@@ -110,18 +111,19 @@ void C_Custom::SetValue(long idx, long value)
 long C_Custom::GetValue(long idx)
 {
     if (idx < Count_)
-        return(ItemValues_[idx]);
+        return (ItemValues_[idx]);
 
-    return(0);
+    return (0);
 }
 
 long C_Custom::CheckHotSpots(long relX, long relY)
 {
     short i;
 
-    if (Ready() and not (GetFlags() bitand C_BIT_INVISIBLE) and Parent_)
+    if (Ready() and not(GetFlags() bitand C_BIT_INVISIBLE) and Parent_)
     {
-        if (relX >= GetX() and relY >= GetY() and relX < (GetX() + GetW()) and relY < (GetY() + GetH()))
+        if (relX >= GetX() and relY >= GetY() and relX < (GetX() + GetW()) and
+            relY < (GetY() + GetH()))
         {
             Section_ = 0;
 
@@ -130,16 +132,18 @@ long C_Custom::CheckHotSpots(long relX, long relY)
 
             for (i = 0; i < Count_; i++)
             {
-                if (relX >= Items_[i].GetX() and relX < (Items_[i].GetX() + Items_[i].GetW()) and 
-                    relY >= Items_[i].GetY() and relY < (Items_[i].GetY() + Items_[i].GetH()))
+                if (relX >= Items_[i].GetX() and
+                    relX < (Items_[i].GetX() + Items_[i].GetW()) and
+                    relY >= Items_[i].GetY() and
+                    relY < (Items_[i].GetY() + Items_[i].GetH()))
                     Section_ = i;
             }
 
-            return(GetID());
+            return (GetID());
         }
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Custom::Process(long ID, short HitType)
@@ -149,7 +153,7 @@ BOOL C_Custom::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_Custom::Refresh()

@@ -24,9 +24,9 @@ typedef struct
 
 typedef struct
 {
-    RECT* psrcRects;
+    RECT *psrcRects;
     int numDestDigits;
-    RECT* pdestRects;
+    RECT *pdestRects;
     SourceDigitType *sourcedigits; //Wombat778 3-22-04
 } DigitsInitStr;
 
@@ -45,11 +45,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     long mValue;
     int *mpValues;
     //====================================================//
@@ -66,7 +66,7 @@ public:
     //====================================================//
 
     void Exec(void) {};
-    void Exec(SimBaseClass*);
+    void Exec(SimBaseClass *);
     void DisplayBlit(void);
     void DisplayBlit3D(); //Wombat778 3-22-04
     void DisplayDraw(void) {};
@@ -84,7 +84,7 @@ public:
     // Constructors and Destructors
     //====================================================//
 
-    CPDigits(ObjectInitStr*, DigitsInitStr*);
+    CPDigits(ObjectInitStr *, DigitsInitStr *);
     virtual ~CPDigits();
 };
 

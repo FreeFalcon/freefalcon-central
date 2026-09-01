@@ -2,24 +2,24 @@
 #ifndef UNIT_H
 #define UNIT_H
 
-#include "CampBase.h"
+#include "campbase.h"
 
 #include "sim/include/initdata.h"
 #include "vehicle.h"
-#include "Loadout.h"
+#include "loadout.h"
 
 
-#include "Campaign.h"
-#include "ASearch.h"
+#include "campaign.h"
+#include "asearch.h"
 #include "vutypes.h"
-#include "Cmpglobl.h"
+#include "cmpglobl.h"
 #include "campwp.h"
 #include "falcmesg.h"
-#include "Tactics.h"
-#include "F4Vu.h"
-#include "MsgInc/UnitMsg.h"
-#include "MsgInc/UnitAssignmentMsg.h"
-#include "Cmpclass.h"
+#include "tactics.h"
+#include "f4vu.h"
+#include "msginc/unitmsg.h"
+#include "msginc/unitassignmentmsg.h"
+#include "cmpclass.h"
 
 
 enum MissionTypeEnum;
@@ -38,32 +38,40 @@ enum MissionTypeEnum;
 #define U_ENGAGED 0x40
 #define U_B1 0x80
 #define U_SCRIPTED 0x100 // Mission/Route scripted- Don't run planning AI
-#define U_COMMANDO 0x200 // Act like a commando (hit commando sites and kill ourselves after x time)
+#define U_COMMANDO                                                             \
+    0x200 // Act like a commando (hit commando sites and kill ourselves after x time)
 #define U_MOVING 0x400
 #define U_REFUSED 0x800 // A request for transport was refused
 #define U_HASECM 0x1000 // This unit has defensive electronic countermeasures
-#define U_CARGO 0x2000 // We're being carried by someone else (airborne/marine/carrier air)
+#define U_CARGO                                                                \
+    0x2000 // We're being carried by someone else (airborne/marine/carrier air)
 #define U_COMBAT 0x4000
 #define U_BROKEN 0x8000
 #define U_LOSSES 0x10000
-#define U_INACTIVE 0x20000 // Ignore this unit for all purposes (generally reinforcements)
-#define U_FRAGMENTED 0x40000 // This is a unit fragment (separated from it's origional unit)
+#define U_INACTIVE                                                             \
+    0x20000 // Ignore this unit for all purposes (generally reinforcements)
+#define U_FRAGMENTED                                                           \
+    0x40000 // This is a unit fragment (separated from it's origional unit)
 
 // Ground Unit Specific
 #define U_TARGETED 0x100000 // Unit's targeting is being done externally
 #define U_RETREATING 0x200000
 #define U_DETACHED 0x400000
 #define U_SUPPORTED 0x800000 // Support is coming to this unit's aide
-#define U_TEMP_DEST 0x1000000 // This unit's current destination is not it's final destination
+#define U_TEMP_DEST                                                            \
+    0x1000000 // This unit's current destination is not it's final destination
 
 // Air Unit Specific
-#define U_FINAL 0x100000 // Package elements finalized and sent, or flight contains actual a/c
+#define U_FINAL                                                                \
+    0x100000 // Package elements finalized and sent, or flight contains actual a/c
 #define U_HAS_PILOTS 0x200000 // Campaign has assigned this flight pilots
 #define U_DIVERTED 0x400000 // This flight is currently being diverted
 #define U_FIRED 0x800000 // This flight has taken a shot
 #define U_LOCKED 0x1000000 // Someone is locked on us
-#define U_IA_KILL 0x2000000 // Instant Action "Expects" this flight to be killed for the next level to start
-#define U_NO_ABORT 0x4000000 // Whatever happens - whatever the loadout - don't ABORT
+#define U_IA_KILL                                                              \
+    0x2000000 // Instant Action "Expects" this flight to be killed for the next level to start
+#define U_NO_ABORT                                                             \
+    0x4000000 // Whatever happens - whatever the loadout - don't ABORT
 
 // 2002-02-13 ADDED BY MN for S.G.'s Identify - S.G. Wrong place. Needs to be in Falcon4.UCD so defined in Vehicle.h which is used by UnitClassDataType and VehicleClassDataType
 //#define U_HAS_NCTR 0x10000000
@@ -112,7 +120,8 @@ class UnitClass : public CampBaseClass
 private:
     CampaignTime last_check; ///< Last time we checked this unit
 #if HOTSPOT_FIX
-    CampaignTime update_interval;   ///< last_check + update_interval for next update
+    CampaignTime
+        update_interval; ///< last_check + update_interval for next update
 #endif
 
     /** sfr: a unit is composed of at most VEHICLE_GROUPS_PER_UNIT (16 now)
@@ -128,7 +137,7 @@ private:
     GridIndex dest_y;
     VU_ID cargo_id; // id of our cargo, or our carrier unit
     VU_ID target_id; // Target we're engaged with (there can be only one (c))
-    uchar moved;        // Moves since check
+    uchar moved; // Moves since check
     uchar losses; // How many vehicles we've lost
     uchar tactic; // Current Unit tactic
     ushort current_wp; // Which WP we're heading to
@@ -138,8 +147,8 @@ private:
     int dirty_unit;
 
 public:
-    UnitClassDataType *class_data;
-    DrawablePoint *draw_pointer; // inserted into draw list when unit aggregated
+    UnitClassDataType* class_data;
+    DrawablePoint* draw_pointer; // inserted into draw list when unit aggregated
     WayPoint wp_list;
 
 public:
@@ -200,7 +209,7 @@ public:
     {
         return odds;
     }
-    UnitClassDataType *GetClassData(void)
+    UnitClassDataType* GetClassData(void)
     {
         return class_data;
     }
@@ -223,21 +232,21 @@ public:
 
     // Dirty Functions
     void MakeUnitDirty(Dirty_Unit bits, Dirtyness score);
-    void WriteDirty(unsigned char **stream);
-    void ReadDirty(VU_BYTE **strptr, long *rem);
+    void WriteDirty(unsigned char** stream);
+    void ReadDirty(VU_BYTE** strptr, long* rem);
 
     // constructors and serial functions
     UnitClass(ushort type, VU_ID_NUMBER id);
-    UnitClass(VU_BYTE **stream, long *rem);
+    UnitClass(VU_BYTE** stream, long* rem);
     virtual ~UnitClass();
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);
+    virtual int Save(VU_BYTE** stream);
 
     // event Handlers
-    virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
+    virtual VU_ERRCODE Handle(VuFullUpdateEvent* event);
 
     // Required pure virtuals handled by UnitClass
-    virtual void SendDeaggregateData(VuTargetEntity *);
+    virtual void SendDeaggregateData(VuTargetEntity*);
     virtual int RecordCurrentState(FalconSessionEntity*, int);
     virtual int Deaggregate(FalconSessionEntity* session);
     virtual int Reaggregate(FalconSessionEntity* session);
@@ -246,14 +255,16 @@ public:
     virtual int Sleep(void);
     virtual void InsertInSimLists(float cameraX, float cameraY);
     virtual void RemoveFromSimLists(void);
-    virtual void DeaggregateFromData(uchar* data,  long size);
+    virtual void DeaggregateFromData(uchar* data, long size);
     virtual void ReaggregateFromData(VU_BYTE* data, long size);
     virtual void TransferOwnershipFromData(VU_BYTE* data, long size);
     virtual int ResetPlayerStatus(void);
-    virtual int ApplyDamage(FalconCampWeaponsFire *cwfm, uchar);
-    virtual int ApplyDamage(DamType d, int *str, int where, short flags);
-    virtual int DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessage *dtm);
-    virtual int CollectWeapons(uchar* dam, MoveType m, short w[], uchar wc[], int dist);
+    virtual int ApplyDamage(FalconCampWeaponsFire* cwfm, uchar);
+    virtual int ApplyDamage(DamType d, int* str, int where, short flags);
+    virtual int DecodeDamageData(uchar* data, Unit shooter,
+                                 FalconDeathMessage* dtm);
+    virtual int CollectWeapons(uchar* dam, MoveType m, short w[], uchar wc[],
+                               int dist);
     virtual uchar* GetDamageModifiers(void);
     virtual _TCHAR* GetName(_TCHAR* buffer, int size, int object);
     virtual _TCHAR* GetFullName(_TCHAR* buffer, int size, int object);
@@ -263,12 +274,15 @@ public:
     virtual int GetCombatStrength(int mt, int range);
     virtual int GetAproxCombatStrength(int mt, int range);
     // 2002-03-08 MODIFIED BY S.G. Need to pass it a target sometime so default to NULL for most cases
-    virtual int GetWeaponRange(int mt, FalconEntity *target = NULL);
+    virtual int GetWeaponRange(int mt, FalconEntity* target = NULL);
     virtual int GetAproxWeaponRange(int mt);
     virtual int GetDetectionRange(int mt); // Takes into account emitter status
-    virtual int GetElectronicDetectionRange(int mt); // Max Electronic detection range, even if turned off
-    virtual int CanDetect(FalconEntity* ent); // Nonzero if this entity can see ent
-    virtual void GetComponentLocation(GridIndex* x, GridIndex* y, int component);
+    virtual int GetElectronicDetectionRange(
+        int mt); // Max Electronic detection range, even if turned off
+    virtual int
+    CanDetect(FalconEntity* ent); // Nonzero if this entity can see ent
+    virtual void GetComponentLocation(GridIndex* x, GridIndex* y,
+                                      int component);
     virtual int GetComponentAltitude(int component);
     virtual float GetRCSFactor(void);
     virtual float GetIRFactor(void);
@@ -277,7 +291,7 @@ public:
     virtual int GetNumberOfArcs(void);
     virtual float GetArcRatio(int anum);
     virtual float GetArcRange(int anum);
-    virtual void GetArcAngle(int anum, float* a1, float *a2);
+    virtual void GetArcAngle(int anum, float* a1, float* a2);
     virtual int GetRadarType(void);
 
     // Addition Virtual functions required by all derived classes
@@ -297,7 +311,9 @@ public:
     {
         return TRUE;
     }
-    virtual void ClearDeaggregationData(void) {}
+    virtual void ClearDeaggregationData(void)
+    {
+    }
     virtual int Reaction(CampEntity, int, float)
     {
         return 0;
@@ -365,7 +381,9 @@ public:
     {
         return 0;
     }
-    virtual void SupplyUnit(int, int) {}
+    virtual void SupplyUnit(int, int)
+    {
+    }
     virtual int GetVehicleDeagData(SimInitDataClass*, int)
     {
         return 0;
@@ -374,7 +392,8 @@ public:
     // Core functions
     void Setup(uchar stype, uchar sptype, Control who, Unit Parent);
     void SendUnitMessage(VU_ID id, short msg, short d1, short d2, short d3);
-    void BroadcastUnitMessage(VU_ID id, short msg, short d1, short d2, short d3);
+    void BroadcastUnitMessage(VU_ID id, short msg, short d1, short d2,
+                              short d3);
     int ChangeUnitLocation(CampaignHeading h);
     int MoraleCheck(int shot, int lost);
     virtual int IsUnit(void)
@@ -438,7 +457,7 @@ public:
     {
         return (int)unit_flags bitand U_ENGAGED;
     }
-    int Scripted()  const
+    int Scripted() const
     {
         return (int)unit_flags bitand U_SCRIPTED;
     }
@@ -551,12 +570,20 @@ public:
         MakeCampBaseDirty(DIRTY_ALTITUDE, DDP[183].priority);
     }
     //virtual void SimSetLocation (float x, float y, float z) { SetPosition(x,y,z); MakeCampBaseDirty (DIRTY_POSITION, SEND_SOON); MakeCampBaseDirty (DIRTY_ALTITUDE, SEND_SOON); }
-    virtual void SimSetOrientation(float, float, float) {}
-    virtual void GetRealPosition(float*, float*, float*) {}
+    virtual void SimSetOrientation(float, float, float)
+    {
+    }
+    virtual void GetRealPosition(float*, float*, float*)
+    {
+    }
     virtual int GetBestVehicleWeapon(int, uchar*, MoveType, int, int*);
-    virtual int GetVehicleHitChance(int slot, MoveType mt, int range, int hitflags);
+    virtual int GetVehicleHitChance(int slot, MoveType mt, int range,
+                                    int hitflags);
     virtual int GetVehicleCombatStrength(int slot, MoveType mt, int range);
-    virtual int GetVehicleRange(int slot, int mt, FalconEntity *target = NULL);  // 2002-03-08 MODIFIED BY S.G. Need to pass it a target sometime so default to NULL for most cases
+    virtual int GetVehicleRange(
+        int slot, int mt,
+        FalconEntity* target =
+            NULL); // 2002-03-08 MODIFIED BY S.G. Need to pass it a target sometime so default to NULL for most cases
     virtual int GetUnitWeaponId(int hp, int slot);
     virtual int GetUnitWeaponCount(int hp, int slot);
 
@@ -569,9 +596,10 @@ public:
     /** sets the number of vehicles in a given group of the unit. */
     void SetNumVehicles(int vg, int n)
     {
-        SetRoster((roster bitand compl (3 << (vg * 2))) bitor ((n bitand 0x03) << (vg * 2)));
+        SetRoster((roster bitand compl(3 << (vg * 2))) bitor
+                  ((n bitand 0x03) << (vg * 2)));
     }
-    void SetTarget(FalconEntity *e)
+    void SetTarget(FalconEntity* e)
     {
         target_id = (e) ? e->Id() : FalconNullId;
     }
@@ -595,7 +623,7 @@ public:
     }
     FalconEntity* GetTarget(void)
     {
-        return (FalconEntity*) vuDatabase->Find(target_id);
+        return (FalconEntity*)vuDatabase->Find(target_id);
     }
     VU_ID GetTargetID(void)
     {
@@ -654,7 +682,7 @@ public:
     void ResetFlags(void);
     void SortElementsByDistance(GridIndex x, GridIndex y);
     int FirstSP(void);
-    Unit FindPrevUnit(short *type);
+    Unit FindPrevUnit(short* type);
     void SaveUnits(int FHandle, int flags);
     void BuildElements(void);
     int ChangeVehicles(int a);
@@ -666,19 +694,23 @@ public:
     int GetUnitRoleScore(int role, int calcType, int use_to_calc);
     float GetUnitMovementCost(GridIndex x, GridIndex y, CampaignHeading h);
     int GetUnitObjectivePath(Path p, Objective o, Objective t);
-    int GetUnitGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy);
+    int GetUnitGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx,
+                        GridIndex yy);
     void LoadUnit(Unit cargo);
     void UnloadUnit(void);
     CampaignTime GetUnitSupplyTime(void);
 
     // Waypoint routines
-    WayPoint AddUnitWP(GridIndex x, GridIndex y, int alt, int speed, CampaignTime arr, int station, uchar mission);
-    WayPoint AddWPAfter(WayPoint pw, GridIndex x, GridIndex y, int alt, int speed, CampaignTime arr, int station, uchar mission);
+    WayPoint AddUnitWP(GridIndex x, GridIndex y, int alt, int speed,
+                       CampaignTime arr, int station, uchar mission);
+    WayPoint AddWPAfter(WayPoint pw, GridIndex x, GridIndex y, int alt,
+                        int speed, CampaignTime arr, int station,
+                        uchar mission);
     void DeleteUnitWP(WayPoint w);
-    int EncodeWaypoints(uchar **stream);
+    int EncodeWaypoints(uchar** stream);
     //sfr: changed prototype
     //void DecodeWaypoints (uchar **stream);
-    void DecodeWaypoints(VU_BYTE **stream, long *rem);
+    void DecodeWaypoints(VU_BYTE** stream, long* rem);
     WayPoint GetFirstUnitWP()
     {
         return wp_list;
@@ -696,17 +728,39 @@ public:
     // None
 
     // Flight virtuals
-    virtual void SetUnitLastMove(CampaignTime) {}
-    virtual void SetCombatTime(CampaignTime) {}
-    virtual void SetBurntFuel(long) {}
-    virtual void SetUnitMission(uchar) {}
-    virtual void SetUnitRole(uchar) {}
-    virtual void SetUnitPriority(int) {}
-    virtual void SetUnitMissionID(int) {}
-    virtual void SetUnitMissionTarget(int) {}
-    virtual void SetUnitTOT(CampaignTime) {}
-    virtual void SetUnitSquadron(VU_ID) {}
-    virtual void SetUnitAirbase(VU_ID) {}
+    virtual void SetUnitLastMove(CampaignTime)
+    {
+    }
+    virtual void SetCombatTime(CampaignTime)
+    {
+    }
+    virtual void SetBurntFuel(long)
+    {
+    }
+    virtual void SetUnitMission(uchar)
+    {
+    }
+    virtual void SetUnitRole(uchar)
+    {
+    }
+    virtual void SetUnitPriority(int)
+    {
+    }
+    virtual void SetUnitMissionID(int)
+    {
+    }
+    virtual void SetUnitMissionTarget(int)
+    {
+    }
+    virtual void SetUnitTOT(CampaignTime)
+    {
+    }
+    virtual void SetUnitSquadron(VU_ID)
+    {
+    }
+    virtual void SetUnitAirbase(VU_ID)
+    {
+    }
     virtual void SetLoadout(LoadoutStruct*, int)
     {
         ShiWarning("Shouldn't be here");
@@ -803,17 +857,35 @@ public:
     {
         return 0;
     }
-    virtual void IncrementTime(CampaignTime)  {}
-    virtual void UseFuel(long) {}
+    virtual void IncrementTime(CampaignTime)
+    {
+    }
+    virtual void UseFuel(long)
+    {
+    }
 
     // Squadron virtuals
-    virtual void SetUnitSpecialty(int) {}
-    virtual void SetUnitSupply(int) {}
-    virtual void SetUnitMorale(int) {}
-    virtual void SetSquadronFuel(long) {}
-    virtual void SetUnitStores(int, uchar) {}
-    virtual void SetLastResupply(int) {}
-    virtual void SetLastResupplyTime(CampaignTime) {}
+    virtual void SetUnitSpecialty(int)
+    {
+    }
+    virtual void SetUnitSupply(int)
+    {
+    }
+    virtual void SetUnitMorale(int)
+    {
+    }
+    virtual void SetSquadronFuel(long)
+    {
+    }
+    virtual void SetUnitStores(int, uchar)
+    {
+    }
+    virtual void SetLastResupply(int)
+    {
+    }
+    virtual void SetLastResupplyTime(CampaignTime)
+    {
+    }
     virtual int GetUnitSpecialty(void)
     {
         return 0;
@@ -848,22 +920,48 @@ public:
     {
         return 0;
     }
-    virtual void HandleRequestReceipt(int, int, VU_ID) {}
-    virtual void SetUnitAssemblyPoint(int, GridIndex, GridIndex) {}
-    virtual void GetUnitAssemblyPoint(int, GridIndex*, GridIndex*) {}
+    virtual void HandleRequestReceipt(int, int, VU_ID)
+    {
+    }
+    virtual void SetUnitAssemblyPoint(int, GridIndex, GridIndex)
+    {
+    }
+    virtual void GetUnitAssemblyPoint(int, GridIndex*, GridIndex*)
+    {
+    }
 
     // Ground Unit virtuals
-    virtual void SetUnitPrimaryObj(VU_ID) {}
-    virtual void SetUnitSecondaryObj(VU_ID) {}
-    virtual void SetUnitObjective(VU_ID) {}
-    virtual void SetUnitOrders(int) {}
-    virtual void SetUnitOrders(int, VU_ID) {}
-    virtual void SetUnitFatigue(int)  {}
+    virtual void SetUnitPrimaryObj(VU_ID)
+    {
+    }
+    virtual void SetUnitSecondaryObj(VU_ID)
+    {
+    }
+    virtual void SetUnitObjective(VU_ID)
+    {
+    }
+    virtual void SetUnitOrders(int)
+    {
+    }
+    virtual void SetUnitOrders(int, VU_ID)
+    {
+    }
+    virtual void SetUnitFatigue(int)
+    {
+    }
     // virtual void SetUnitElement (int e) {}
-    virtual void SetUnitMode(int) {}
-    virtual void SetUnitPosition(int) {}
-    virtual void SetUnitDivision(int) {}
-    virtual void SetUnitHeading(int) {}
+    virtual void SetUnitMode(int)
+    {
+    }
+    virtual void SetUnitPosition(int)
+    {
+    }
+    virtual void SetUnitDivision(int)
+    {
+    }
+    virtual void SetUnitHeading(int)
+    {
+    }
     virtual Objective GetUnitPrimaryObj(void)
     {
         return NULL;
@@ -916,14 +1014,22 @@ public:
     {
         return Here;
     }
-    virtual void SetUnitNextMove(void) {}
-    virtual void ClearUnitPath(void) {}
+    virtual void SetUnitNextMove(void)
+    {
+    }
+    virtual void ClearUnitPath(void)
+    {
+    }
     virtual int GetNextMoveDirection(void)
     {
         return Here;
     }
-    virtual void SetUnitCurrentDestination(GridIndex, GridIndex) {}
-    virtual void GetUnitCurrentDestination(GridIndex*, GridIndex*) {}
+    virtual void SetUnitCurrentDestination(GridIndex, GridIndex)
+    {
+    }
+    virtual void GetUnitCurrentDestination(GridIndex*, GridIndex*)
+    {
+    }
     virtual MoveType GetObjMovementType(Objective, int)
     {
         return CampBaseClass::GetMovementType();
@@ -950,13 +1056,15 @@ public:
     {
         return FalconNullId;
     }
-    virtual void SetUnitParent(Unit) {}
+    virtual void SetUnitParent(Unit)
+    {
+    }
 #ifdef USE_FLANKS
-    virtual void GetLeftFlank(GridIndex *x, GridIndex *y)
+    virtual void GetLeftFlank(GridIndex* x, GridIndex* y)
     {
         GetLocation(x, y);
     }
-    virtual void GetRightFlank(GridIndex *x, GridIndex *y)
+    virtual void GetRightFlank(GridIndex* x, GridIndex* y)
     {
         GetLocation(x, y);
     }
@@ -983,16 +1091,24 @@ public:
     {
         return NULL;
     }
-    virtual void AddUnitChild(Unit) {}
-    virtual void DisposeChildren(void) {}
-    virtual void RemoveChild(VU_ID) {}
-    virtual void ReorganizeUnit(void) {}
+    virtual void AddUnitChild(Unit)
+    {
+    }
+    virtual void DisposeChildren(void)
+    {
+    }
+    virtual void RemoveChild(VU_ID)
+    {
+    }
+    virtual void ReorganizeUnit(void)
+    {
+    }
     virtual int UpdateParentStatistics(void)
     {
         return 0;
     }
 
-    void CalculateSOJ(VuGridIterator &iter);
+    void CalculateSOJ(VuGridIterator& iter);
     // Naval Unit virtuals
     // None
 
@@ -1034,14 +1150,15 @@ class UnitDeaggregationData
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(UnitDeaggregationData));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -1085,9 +1202,9 @@ extern Unit ConvertUnit(Unit u, int domain, int type, int stype, int sptype);
 
 extern int GetUnitRole(Unit u);
 
-extern char* GetSizeName(int domain, int type, char *buffer);
+extern char* GetSizeName(int domain, int type, char* buffer);
 
-extern char* GetDivisionName(int div, char *buffer, int size, int object);
+extern char* GetDivisionName(int div, char* buffer, int size, int object);
 
 extern int FindUnitNameID(Unit u);
 
@@ -1095,15 +1212,16 @@ extern Unit NewUnit(int domain, int type, int stype, int sptype, Unit parent);
 
 //sfr: changed proto
 //extern Unit NewUnit (short tid, VU_BYTE **stream);
-extern Unit NewUnit(short tid, VU_BYTE **stream, long *rem);
+extern Unit NewUnit(short tid, VU_BYTE** stream, long* rem);
 
 extern float GetOdds(Unit us, CampEntity them, int range);
 
 extern float GetRange(Unit us, CampEntity them);
 
-extern int EncodeUnitData(VU_BYTE **stream, FalconSessionEntity *owner);
+extern int EncodeUnitData(VU_BYTE** stream, FalconSessionEntity* owner);
 
 //sfr: added rem
-extern int DecodeUnitData(VU_BYTE **stream, long *rem, FalconSessionEntity *owner);
+extern int DecodeUnitData(VU_BYTE** stream, long* rem,
+                          FalconSessionEntity* owner);
 
 #endif

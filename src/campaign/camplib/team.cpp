@@ -4,37 +4,37 @@
 // Team related variables and routines
 // ***************************************************************************
 
-#include <cISO646>
+#include <ciso646>
 #include <io.h>
 #include <stdio.h>
 #include <fcntl.h>
 #include "campmap.h"
 #include "cmpglobl.h"
-#include "CampList.h"
-#include "Manager.h"
-#include "ATM.h"
-#include "GTM.h"
-#include "NTM.h"
+#include "camplist.h"
+#include "manager.h"
+#include "atm.h"
+#include "gtm.h"
+#include "ntm.h"
 #include "team.h"
 #include "falcmesg.h"
-#include "CmpClass.h"
-#include "F4Find.h"
+#include "cmpclass.h"
+#include "f4find.h"
 #include "find.h"
 #include "mission.h"
-#include "Campaign.h"
-#include "CUIEvent.h"
+#include "campaign.h"
+#include "cuievent.h"
 #include "ui_ia.h"
-#include "History.h"
-#include "GndUnit.h"
-#include "CampStr.h"
-#include "FalcSess.h"
-#include "AIInput.h"
+#include "history.h"
+#include "gndunit.h"
+#include "campstr.h"
+#include "falcsess.h"
+#include "aiinput.h"
 #include "classtbl.h"
-#include "MissEval.h"
-#include "DispCfg.h"
-#include "Falcuser.h"
+#include "misseval.h"
+#include "dispcfg.h"
+#include "falcuser.h"
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 // =========================
 // Defines
 // =========================
@@ -43,8 +43,10 @@
 
 
 // A.S. begin, 2001-12-09 makes ACTION_RATE and ACTION_TIMEOUT configurable
-#define ACTION_RATE (ActionRate*CampaignHours) // How often we can start new actions
-#define ACTION_TIMEOUT (ActionTimeOut*CampaignHours) // Maximum time an offensive action can last
+#define ACTION_RATE                                                            \
+    (ActionRate * CampaignHours) // How often we can start new actions
+#define ACTION_TIMEOUT                                                         \
+    (ActionTimeOut * CampaignHours) // Maximum time an offensive action can last
 // end
 
 // old code
@@ -70,26 +72,20 @@ extern int gRenameIds;
 extern int gCampDataVersion;
 extern int g_nNoPlayerPlay; // JB 010926
 
-TeamClass* TeamInfo[NUM_TEAMS] = { 0 };
+TeamClass *TeamInfo[NUM_TEAMS] = {0};
 short teamManagerDIndex;
 
-char *CampGetNext(FILE* fptr);
+char *CampGetNext(FILE *fptr);
 void SwapCRLF(char *buf);
 int AdjustMissionForAction(MissionRequest mis);
 int GetTeamSituation(Team t);
 void RemoveTeam(int teamNum);
 void StartOffensive(int who, int initiative);
 
-_TCHAR DogfightTeamNames[NUM_TEAMS][20] = // this will get hammered by the UI later
-{
-    "UFO",
-    "Crimson",
-    "Shark",
-    "USA",
-    "Tiger",
-    "UFO",
-    "UFO",
-    "UFO",
+_TCHAR DogfightTeamNames[NUM_TEAMS]
+                        [20] = // this will get hammered by the UI later
+    {
+        "UFO", "Crimson", "Shark", "USA", "Tiger", "UFO", "UFO", "UFO",
 };
 
 #ifdef DEBUG
@@ -119,7 +115,7 @@ priority_structure Priorities[AMIS_OTHER] = {0};
 priority_structure *PriorityList;
 
 int MaxPakPriority = 0;
-int MinPakPriority  = 100;
+int MinPakPriority = 100;
 
 int gReinforcementsAdded[NUM_TEAMS] = {0};
 
@@ -142,23 +138,34 @@ int gMisfits = 0;
 // ROE Table
 // ============================
 
-uchar RoEData[ROE_NAVAL_BOMBARD + 1][War + 1] =
-{
+uchar RoEData[ROE_NAVAL_BOMBARD + 1][War + 1] = {
     // NoRelations // Allied // Friendly // Neutral // Hostile // War
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED }, // ROE_NOTHING
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED }, // ROE_GROUND_FIRE
-    { ROE_ALLOWED, ROE_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED , ROE_ALLOWED }, // ROE_GROUND_MOVE
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED }, // ROE_GROUND_CAPTURE
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED, ROE_ALLOWED }, // ROE_AIR_ENGAGE
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED }, // ROE_AIR_FIRE
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED }, // ROE_AIR_FIRE_BVR
-    { ROE_ALLOWED, ROE_ALLOWED, ROE_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED }, // ROE_AIR_OVERFLY
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED }, // ROE_AIR_ATTACK
-    { ROE_NOT_ALLOWED, ROE_ALLOWED, /*JB 010728 ROE_ALLOWED*/ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED }, // ROE_AIR_USE_BASES
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED, ROE_ALLOWED }, // ROE_NAVAL_FIRE
-    { ROE_ALLOWED, ROE_ALLOWED, ROE_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED }, // ROE_NAVAL_MOVE
-    { ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_ALLOWED, ROE_ALLOWED }
-}; // ROE_NAVAL_BOMBARD
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_NOT_ALLOWED}, // ROE_NOTHING
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_ALLOWED}, // ROE_GROUND_FIRE
+    {ROE_ALLOWED, ROE_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_ALLOWED}, // ROE_GROUND_MOVE
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_ALLOWED}, // ROE_GROUND_CAPTURE
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_ALLOWED, ROE_ALLOWED}, // ROE_AIR_ENGAGE
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_ALLOWED}, // ROE_AIR_FIRE
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_NOT_ALLOWED}, // ROE_AIR_FIRE_BVR
+    {ROE_ALLOWED, ROE_ALLOWED, ROE_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_ALLOWED}, // ROE_AIR_OVERFLY
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_ALLOWED}, // ROE_AIR_ATTACK
+    {ROE_NOT_ALLOWED, ROE_ALLOWED, /*JB 010728 ROE_ALLOWED*/ ROE_NOT_ALLOWED,
+     ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED}, // ROE_AIR_USE_BASES
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_ALLOWED, ROE_ALLOWED}, // ROE_NAVAL_FIRE
+    {ROE_ALLOWED, ROE_ALLOWED, ROE_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_ALLOWED}, // ROE_NAVAL_MOVE
+    {ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED, ROE_NOT_ALLOWED,
+     ROE_ALLOWED, ROE_ALLOWED}}; // ROE_NAVAL_BOMBARD
 
 // =======================================
 // Priority tables
@@ -202,11 +209,11 @@ TeamClass::TeamClass(VU_BYTE **stream, long *rem)
     memcpychk(&who, stream, sizeof(Team), rem);
     ShiAssert(TeamInfo[who] and TeamInfo[who]->share_.id_ == share_.id_)
 
-    memcpychk(&cteam, stream, sizeof(Team), rem);
+        memcpychk(&cteam, stream, sizeof(Team), rem);
     ShiAssert((cteam > 0 or who == 0) and cteam < NUM_TEAMS);
     memcpychk(&flags, stream, sizeof(short), rem);
-    memcpychk(member, stream, sizeof(uchar)*NUM_COUNS, rem);
-    memcpychk(stance, stream, sizeof(short)*NUM_TEAMS, rem);
+    memcpychk(member, stream, sizeof(uchar) * NUM_COUNS, rem);
+    memcpychk(stance, stream, sizeof(short) * NUM_TEAMS, rem);
     memcpychk(&firstColonel, stream, sizeof(short), rem);
     memcpychk(&firstCommander, stream, sizeof(short), rem);
     memcpychk(&firstWingman, stream, sizeof(short), rem);
@@ -225,17 +232,17 @@ TeamClass::TeamClass(VU_BYTE **stream, long *rem)
     memcpychk(&currentStats, stream, sizeof(TeamStatusType), rem);
     memcpychk(&startStats, stream, sizeof(TeamStatusType), rem);
     memcpychk(&reinforcement, stream, sizeof(short), rem);
-    memcpychk(bonusObjs, stream, sizeof(VU_ID)*MAX_BONUSES, rem);
-    memcpychk(bonusTime, stream, sizeof(CampaignTime)*MAX_BONUSES, rem);
-    memcpychk(objtype_priority, stream, sizeof(uchar)*MAX_TGTTYPE, rem);
-    memcpychk(unittype_priority, stream, sizeof(uchar)*MAX_UNITTYPE, rem);
-    memcpychk(mission_priority, stream, sizeof(uchar)*AMIS_OTHER, rem);
+    memcpychk(bonusObjs, stream, sizeof(VU_ID) * MAX_BONUSES, rem);
+    memcpychk(bonusTime, stream, sizeof(CampaignTime) * MAX_BONUSES, rem);
+    memcpychk(objtype_priority, stream, sizeof(uchar) * MAX_TGTTYPE, rem);
+    memcpychk(unittype_priority, stream, sizeof(uchar) * MAX_UNITTYPE, rem);
+    memcpychk(mission_priority, stream, sizeof(uchar) * AMIS_OTHER, rem);
     memcpychk(max_vehicle, stream, sizeof(uchar) * 4, rem);
     memcpychk(&teamFlag, stream, sizeof(uchar), rem);
     memcpychk(&teamColor, stream, sizeof(uchar), rem);
     memcpychk(&equipment, stream, sizeof(uchar), rem);
-    memcpychk(name, stream, sizeof(_TCHAR)*MAX_TEAM_NAME_SIZE, rem);
-    memcpychk(teamMotto, stream, sizeof(_TCHAR)*MAX_MOTTO_SIZE, rem);
+    memcpychk(name, stream, sizeof(_TCHAR) * MAX_TEAM_NAME_SIZE, rem);
+    memcpychk(teamMotto, stream, sizeof(_TCHAR) * MAX_MOTTO_SIZE, rem);
     memcpychk(&groundAction, stream, sizeof(TeamGndActionType), rem);
     memcpychk(&defensiveAirAction, stream, sizeof(TeamAirActionType), rem);
     memcpychk(&offensiveAirAction, stream, sizeof(TeamAirActionType), rem);
@@ -260,8 +267,8 @@ TeamClass::TeamClass(VU_BYTE **stream, long *rem)
     ReadDoctrineFile();
 }
 
-TeamClass::TeamClass(FILE *file) :
-    FalconEntity(VU_LAST_ENTITY_TYPE, GetIdFromNamespace(VolatileNS))
+TeamClass::TeamClass(FILE *file)
+    : FalconEntity(VU_LAST_ENTITY_TYPE, GetIdFromNamespace(VolatileNS))
 {
     // these are read from file by each side
     SetSendCreate(VuEntity::VU_SC_DONT_SEND);
@@ -359,8 +366,7 @@ TeamClass::TeamClass(FILE *file) :
 
     if (gCampDataVersion < 40)
     {
-        ushort
-        dummy;
+        ushort dummy;
 
         fread(&dummy, sizeof(ushort), 1, file);
         fread(&dummy, sizeof(ushort), 1, file);
@@ -381,9 +387,12 @@ TeamClass::TeamClass(FILE *file) :
 
     if (gCampDataVersion < 46)
     {
-        memcpy(objtype_priority, DefaultObjtypePriority[TAT_CAS - 1], sizeof(uchar)*MAX_TGTTYPE);
-        memcpy(unittype_priority, DefaultUnittypePriority[TAT_CAS - 1], sizeof(uchar)*MAX_UNITTYPE);
-        memcpy(mission_priority, DefaultMissionPriority[TAT_CAS - 1], sizeof(uchar)*AMIS_OTHER);
+        memcpy(objtype_priority, DefaultObjtypePriority[TAT_CAS - 1],
+               sizeof(uchar) * MAX_TGTTYPE);
+        memcpy(unittype_priority, DefaultUnittypePriority[TAT_CAS - 1],
+               sizeof(uchar) * MAX_UNITTYPE);
+        memcpy(mission_priority, DefaultMissionPriority[TAT_CAS - 1],
+               sizeof(uchar) * AMIS_OTHER);
     }
 
     if (gCampDataVersion < 34)
@@ -410,7 +419,7 @@ TeamClass::TeamClass(FILE *file) :
         }
 
         fread(&equipment, sizeof(uchar), 1, file);
-        fread(name, sizeof(_TCHAR)*MAX_TEAM_NAME_SIZE, 1, file);
+        fread(name, sizeof(_TCHAR) * MAX_TEAM_NAME_SIZE, 1, file);
     }
 
     if (gCampDataVersion < 41)
@@ -424,7 +433,8 @@ TeamClass::TeamClass(FILE *file) :
             teamColor = who;
             teamFlag = who;
         }
-        else if (FalconLocalGame and FalconLocalGame->GetGameType() == game_TacticalEngagement)
+        else if (FalconLocalGame and
+                 FalconLocalGame->GetGameType() == game_TacticalEngagement)
         {
             if (who == 1)
                 teamColor = 2;
@@ -439,14 +449,15 @@ TeamClass::TeamClass(FILE *file) :
 
             for (i = 0; i < NUM_TEAMS; i++)
             {
-                if ( not i or not who)
+                if (not i or not who)
                     stance[i] = NoRelations;
                 else if (i not_eq who)
                     stance[i] = War;
                 else
                     stance[i] = Allied;
 
-                max_vehicle[0] = max_vehicle[1] = max_vehicle[2] = max_vehicle[3] = 16;
+                max_vehicle[0] = max_vehicle[1] = max_vehicle[2] =
+                    max_vehicle[3] = 16;
             }
         }
     }
@@ -469,7 +480,8 @@ TeamClass::TeamClass(FILE *file) :
 
         SetName(DogfightTeamNames[who]);
     }
-    else if (FalconLocalGame and FalconLocalGame->GetGameType() == game_InstantAction)
+    else if (FalconLocalGame and
+             FalconLocalGame->GetGameType() == game_InstantAction)
     {
         if (who == 0)
             teamColor = 1;
@@ -489,9 +501,11 @@ TeamClass::TeamClass(FILE *file) :
     }
 
     // SCR HACK: Hand clobber instant action skill levels
-    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_InstantAction)
+    if (FalconLocalGame and
+        FalconLocalGame->GetGameType() == game_InstantAction)
     {
-        ShiAssert(InstantActionSettings.PilotLevel >= 0 and InstantActionSettings.PilotLevel <= 4);
+        ShiAssert(InstantActionSettings.PilotLevel >= 0 and
+                  InstantActionSettings.PilotLevel <= 4);
         airExperience = 60 + 10 * InstantActionSettings.PilotLevel;
         airDefenseExperience = 60 + 10 * InstantActionSettings.PilotLevel;
     }
@@ -502,11 +516,11 @@ TeamClass::TeamClass(FILE *file) :
 
     if (gCampDataVersion > 32)
     {
-        fread(teamMotto, sizeof(_TCHAR)*MAX_MOTTO_SIZE, 1, file);
+        fread(teamMotto, sizeof(_TCHAR) * MAX_MOTTO_SIZE, 1, file);
     }
     else
     {
-        memset(teamMotto, 0, sizeof(_TCHAR)*MAX_MOTTO_SIZE);
+        memset(teamMotto, 0, sizeof(_TCHAR) * MAX_MOTTO_SIZE);
     }
 
     if (gCampDataVersion > 33)
@@ -540,7 +554,8 @@ TeamClass::TeamClass(FILE *file) :
         supplyAvail = fuelAvail = 1000;
     }
 
-    if (gCampDataVersion < 60 and FalconLocalGame and FalconLocalGame->GetGameType() == game_Campaign)
+    if (gCampDataVersion < 60 and FalconLocalGame and
+        FalconLocalGame->GetGameType() == game_Campaign)
     {
         if (who == COUN_US)
             equipment = toe_us;
@@ -589,10 +604,11 @@ TeamClass::TeamClass(FILE *file) :
     }
 
     // Set the owner to the game master.
-    if ((FalconLocalGame) and ( not FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame) and (not FalconLocalGame->IsLocal()))
     {
         SetOwner(FalconLocalGame->OwnerId());
-        flags and_eq compl TEAM_UPDATED; // We're not updated until we get data from the master
+        flags and_eq
+            compl TEAM_UPDATED; // We're not updated until we get data from the master
     }
     else
         flags or_eq TEAM_UPDATED;
@@ -629,9 +645,10 @@ void TeamClass::InitLocalData(Control owner)
     cteam = owner;
     flags = 0;
     memset(member, 0, NUM_COUNS);
-    memset(stance, 0, sizeof(short)*NUM_TEAMS);
+    memset(stance, 0, sizeof(short) * NUM_TEAMS);
     // These members are for this COUNTRY
-    firstColonel = FIRST_COLONEL; // Pilot ID indexies for this country - init to US names
+    firstColonel =
+        FIRST_COLONEL; // Pilot ID indexies for this country - init to US names
     firstCommander = FIRST_COMMANDER;
     firstWingman = FIRST_WINGMAN;
     lastWingman = LAST_WINGMAN;
@@ -649,7 +666,7 @@ void TeamClass::InitLocalData(Control owner)
     _tcscpy(name, towner);
     teamColor = who;
     teamFlag = who;
-    memset(teamMotto, 0, sizeof(_TCHAR)*MAX_MOTTO_SIZE);
+    memset(teamMotto, 0, sizeof(_TCHAR) * MAX_MOTTO_SIZE);
     currentStats.airDefenseVehs = startStats.airDefenseVehs = 0;
     currentStats.aircraft = startStats.aircraft = 0;
     currentStats.groundVehs = startStats.groundVehs = 0;
@@ -659,11 +676,14 @@ void TeamClass::InitLocalData(Control owner)
     currentStats.airbases = startStats.airbases = 0;
     currentStats.supplyLevel = startStats.supplyLevel = 100;
     currentStats.fuelLevel = startStats.fuelLevel = 100;
-    memset(bonusObjs, 0, sizeof(VU_ID)*MAX_BONUSES);
-    memset(bonusTime, 0, sizeof(CampaignTime)*MAX_BONUSES);
-    memcpy(objtype_priority, DefaultObjtypePriority[TAT_CAS - 1], sizeof(uchar)*MAX_TGTTYPE);
-    memcpy(unittype_priority, DefaultUnittypePriority[TAT_CAS - 1], sizeof(uchar)*MAX_UNITTYPE);
-    memcpy(mission_priority, DefaultMissionPriority[TAT_CAS - 1], sizeof(uchar)*AMIS_OTHER);
+    memset(bonusObjs, 0, sizeof(VU_ID) * MAX_BONUSES);
+    memset(bonusTime, 0, sizeof(CampaignTime) * MAX_BONUSES);
+    memcpy(objtype_priority, DefaultObjtypePriority[TAT_CAS - 1],
+           sizeof(uchar) * MAX_TGTTYPE);
+    memcpy(unittype_priority, DefaultUnittypePriority[TAT_CAS - 1],
+           sizeof(uchar) * MAX_UNITTYPE);
+    memcpy(mission_priority, DefaultMissionPriority[TAT_CAS - 1],
+           sizeof(uchar) * AMIS_OTHER);
     memset(max_vehicle, 16, sizeof(uchar) * 4);
     memset(&groundAction, 0, sizeof(TeamGndActionType));
     memset(&defensiveAirAction, 0, sizeof(TeamAirActionType));
@@ -698,48 +718,21 @@ void TeamClass::InitLocalData(Control owner)
 // KCK NOTE: this save size is only valid for saving to a stream, not to a file
 int TeamClass::SaveSize()
 {
-    return sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(ushort)
-           + sizeof(Team)
-           + sizeof(Team)
-           + sizeof(short)
-           + sizeof(uchar) * NUM_COUNS
-           + sizeof(short) * NUM_TEAMS
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(uchar)
-           + sizeof(uchar)
-           + sizeof(uchar)
-           + sizeof(uchar)
-           + sizeof(short)
-           + sizeof(ushort)
-           + sizeof(ushort)
-           + sizeof(ushort)
-           + sizeof(float)
-           + sizeof(CampaignTime)
-           + sizeof(TeamStatusType)
-           + sizeof(TeamStatusType)
-           + sizeof(short)
-           + sizeof(VU_ID) * MAX_BONUSES
-           + sizeof(CampaignTime) * MAX_BONUSES
-           + sizeof(uchar) * MAX_TGTTYPE
-           + sizeof(uchar) * MAX_UNITTYPE
-           + sizeof(uchar) * AMIS_OTHER
-           + sizeof(uchar) * 4
-           + sizeof(uchar)
-           + sizeof(uchar)
-           + sizeof(uchar)
-           + sizeof(_TCHAR) * MAX_TEAM_NAME_SIZE
-           + sizeof(_TCHAR) * MAX_MOTTO_SIZE
-           + sizeof(TeamGndActionType)
-           + sizeof(TeamAirActionType)
-           + sizeof(TeamAirActionType)
-           + sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(VU_ID);
+    return sizeof(VU_ID) + sizeof(VU_ID) + sizeof(ushort) + sizeof(Team) +
+           sizeof(Team) + sizeof(short) + sizeof(uchar) * NUM_COUNS +
+           sizeof(short) * NUM_TEAMS + sizeof(short) + sizeof(short) +
+           sizeof(short) + sizeof(short) + sizeof(uchar) + sizeof(uchar) +
+           sizeof(uchar) + sizeof(uchar) + sizeof(short) + sizeof(ushort) +
+           sizeof(ushort) + sizeof(ushort) + sizeof(float) +
+           sizeof(CampaignTime) + sizeof(TeamStatusType) +
+           sizeof(TeamStatusType) + sizeof(short) +
+           sizeof(VU_ID) * MAX_BONUSES + sizeof(CampaignTime) * MAX_BONUSES +
+           sizeof(uchar) * MAX_TGTTYPE + sizeof(uchar) * MAX_UNITTYPE +
+           sizeof(uchar) * AMIS_OTHER + sizeof(uchar) * 4 + sizeof(uchar) +
+           sizeof(uchar) + sizeof(uchar) + sizeof(_TCHAR) * MAX_TEAM_NAME_SIZE +
+           sizeof(_TCHAR) * MAX_MOTTO_SIZE + sizeof(TeamGndActionType) +
+           sizeof(TeamAirActionType) + sizeof(TeamAirActionType) +
+           sizeof(VU_ID) + sizeof(VU_ID) + sizeof(VU_ID);
 }
 
 int TeamClass::Save(VU_BYTE **stream)
@@ -760,9 +753,9 @@ int TeamClass::Save(VU_BYTE **stream)
     *stream += sizeof(Team);
     memcpy(*stream, &flags, sizeof(short));
     *stream += sizeof(short);
-    memcpy(*stream, member, sizeof(uchar)*NUM_COUNS);
+    memcpy(*stream, member, sizeof(uchar) * NUM_COUNS);
     *stream += sizeof(uchar) * NUM_COUNS;
-    memcpy(*stream, stance, sizeof(short)*NUM_TEAMS);
+    memcpy(*stream, stance, sizeof(short) * NUM_TEAMS);
     *stream += sizeof(short) * NUM_TEAMS;
     memcpy(*stream, &firstColonel, sizeof(short));
     *stream += sizeof(short);
@@ -798,15 +791,15 @@ int TeamClass::Save(VU_BYTE **stream)
     *stream += sizeof(TeamStatusType);
     memcpy(*stream, &reinforcement, sizeof(short));
     *stream += sizeof(short);
-    memcpy(*stream, bonusObjs, sizeof(VU_ID)*MAX_BONUSES);
+    memcpy(*stream, bonusObjs, sizeof(VU_ID) * MAX_BONUSES);
     *stream += sizeof(VU_ID) * MAX_BONUSES;
-    memcpy(*stream, bonusTime, sizeof(CampaignTime)*MAX_BONUSES);
+    memcpy(*stream, bonusTime, sizeof(CampaignTime) * MAX_BONUSES);
     *stream += sizeof(CampaignTime) * MAX_BONUSES;
-    memcpy(*stream, objtype_priority, sizeof(uchar)*MAX_TGTTYPE);
+    memcpy(*stream, objtype_priority, sizeof(uchar) * MAX_TGTTYPE);
     *stream += sizeof(uchar) * MAX_TGTTYPE;
-    memcpy(*stream, unittype_priority, sizeof(uchar)*MAX_UNITTYPE);
+    memcpy(*stream, unittype_priority, sizeof(uchar) * MAX_UNITTYPE);
     *stream += sizeof(uchar) * MAX_UNITTYPE;
-    memcpy(*stream, mission_priority, sizeof(uchar)*AMIS_OTHER);
+    memcpy(*stream, mission_priority, sizeof(uchar) * AMIS_OTHER);
     *stream += sizeof(uchar) * AMIS_OTHER;
     memcpy(*stream, max_vehicle, sizeof(uchar) * 4);
     *stream += sizeof(uchar) * 4;
@@ -816,9 +809,9 @@ int TeamClass::Save(VU_BYTE **stream)
     *stream += sizeof(uchar);
     memcpy(*stream, &equipment, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(*stream, name, sizeof(_TCHAR)*MAX_TEAM_NAME_SIZE);
+    memcpy(*stream, name, sizeof(_TCHAR) * MAX_TEAM_NAME_SIZE);
     *stream += sizeof(_TCHAR) * MAX_TEAM_NAME_SIZE;
-    memcpy(*stream, teamMotto, sizeof(_TCHAR)*MAX_MOTTO_SIZE);
+    memcpy(*stream, teamMotto, sizeof(_TCHAR) * MAX_MOTTO_SIZE);
     *stream += sizeof(_TCHAR) * MAX_MOTTO_SIZE;
     memcpy(*stream, &groundAction, sizeof(TeamGndActionType));
     *stream += sizeof(TeamGndActionType);
@@ -920,8 +913,10 @@ int TeamClass::Save(FILE *file)
         retval += fwrite(name, sizeof(_TCHAR) * MAX_TEAM_NAME_SIZE, 1, file);
         retval += fwrite(teamMotto, sizeof(_TCHAR) * MAX_MOTTO_SIZE, 1, file);
         retval += fwrite(&groundAction, sizeof(TeamGndActionType), 1, file);
-        retval += fwrite(&defensiveAirAction, sizeof(TeamAirActionType), 1, file);
-        retval += fwrite(&offensiveAirAction, sizeof(TeamAirActionType), 1, file);
+        retval +=
+            fwrite(&defensiveAirAction, sizeof(TeamAirActionType), 1, file);
+        retval +=
+            fwrite(&offensiveAirAction, sizeof(TeamAirActionType), 1, file);
         retval += atm->Save(file);
         retval += gtm->Save(file);
         retval += ntm->Save(file);
@@ -940,7 +935,7 @@ void TeamClass::ReadDoctrineFile(void)
     fp = OpenCampFile(tmpStr, "txt", "r");
     doctrine.simFlags = atoi(CampGetNext(fp));
     doctrine.radarShootShootPct = (float)atof(CampGetNext(fp));
-    doctrine.heatShootShootPct  = (float)atof(CampGetNext(fp));
+    doctrine.heatShootShootPct = (float)atof(CampGetNext(fp));
     CloseCampFile(fp);
 }
 
@@ -998,13 +993,14 @@ void TeamClass::SetActive(int act)
 {
     flags or_eq TEAM_ACTIVE;
 
-    if ( not act)
+    if (not act)
         flags xor_eq TEAM_ACTIVE;
 }
 
 void TeamClass::DumpHeader(void)
 {
-    MonoPrint("Team CbtPow ADPow  AirPow GndPow NvlPow Sup  Fuel Sats  Tran Mrle Exp  Prod\n");
+    MonoPrint("Team CbtPow ADPow  AirPow GndPow NvlPow Sup  Fuel Sats  Tran "
+              "Mrle Exp  Prod\n");
 }
 
 void TeamClass::Dump(void)
@@ -1015,7 +1011,7 @@ void TeamClass::Dump(void)
 
 void TeamClass::DoFullUpdate(VuTargetEntity *target)
 {
-    if ( not target)
+    if (not target)
         target = FalconLocalGame;
 
     VuEvent *event = new VuFullUpdateEvent(this, target);
@@ -1053,7 +1049,7 @@ int TeamClass::Handle(VuEvent *event)
 
 int TeamClass::Handle(VuFullUpdateEvent *event)
 {
-    TeamClass* tmpTeam = (TeamClass*)(event->expandedData_.get());
+    TeamClass *tmpTeam = (TeamClass *)(event->expandedData_.get());
     int retval;
 
     // Copy in new data
@@ -1063,10 +1059,11 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     memcpy(&cteam, &tmpTeam->cteam, sizeof(Team));
     ShiAssert((cteam > 0 or cteam == 0) and cteam < NUM_TEAMS);
     memcpy(&flags, &tmpTeam->flags, sizeof(short));
-    memcpy(member, tmpTeam->member, sizeof(uchar)*NUM_COUNS);
-    memcpy(stance, tmpTeam->stance, sizeof(short)*NUM_TEAMS);
+    memcpy(member, tmpTeam->member, sizeof(uchar) * NUM_COUNS);
+    memcpy(stance, tmpTeam->stance, sizeof(short) * NUM_TEAMS);
     memcpy(&airExperience, &tmpTeam->airExperience, sizeof(uchar));
-    memcpy(&airDefenseExperience, &tmpTeam->airDefenseExperience, sizeof(uchar));
+    memcpy(&airDefenseExperience, &tmpTeam->airDefenseExperience,
+           sizeof(uchar));
     memcpy(&groundExperience, &tmpTeam->groundExperience, sizeof(uchar));
     memcpy(&navalExperience, &tmpTeam->navalExperience, sizeof(uchar));
     memcpy(&initiative, &tmpTeam->initiative, sizeof(short));
@@ -1075,15 +1072,20 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     memcpy(&currentStats, &tmpTeam->currentStats, sizeof(TeamStatusType));
     memcpy(&startStats, &tmpTeam->startStats, sizeof(TeamStatusType));
     memcpy(&reinforcement, &tmpTeam->reinforcement, sizeof(short));
-    memcpy(bonusObjs, tmpTeam->bonusObjs, sizeof(VU_ID)*MAX_BONUSES);
-    memcpy(bonusTime, tmpTeam->bonusTime, sizeof(CampaignTime)*MAX_BONUSES);
-    memcpy(objtype_priority, tmpTeam->objtype_priority, sizeof(uchar)*MAX_TGTTYPE);
-    memcpy(unittype_priority, tmpTeam->unittype_priority, sizeof(uchar)*MAX_UNITTYPE);
-    memcpy(mission_priority, tmpTeam->mission_priority, sizeof(uchar)*AMIS_OTHER);
+    memcpy(bonusObjs, tmpTeam->bonusObjs, sizeof(VU_ID) * MAX_BONUSES);
+    memcpy(bonusTime, tmpTeam->bonusTime, sizeof(CampaignTime) * MAX_BONUSES);
+    memcpy(objtype_priority, tmpTeam->objtype_priority,
+           sizeof(uchar) * MAX_TGTTYPE);
+    memcpy(unittype_priority, tmpTeam->unittype_priority,
+           sizeof(uchar) * MAX_UNITTYPE);
+    memcpy(mission_priority, tmpTeam->mission_priority,
+           sizeof(uchar) * AMIS_OTHER);
     memcpy(max_vehicle, tmpTeam->max_vehicle, sizeof(uchar) * 4);
     memcpy(&groundAction, &tmpTeam->groundAction, sizeof(TeamGndActionType));
-    memcpy(&defensiveAirAction, &tmpTeam->defensiveAirAction, sizeof(TeamAirActionType));
-    memcpy(&offensiveAirAction, &tmpTeam->offensiveAirAction, sizeof(TeamAirActionType));
+    memcpy(&defensiveAirAction, &tmpTeam->defensiveAirAction,
+           sizeof(TeamAirActionType));
+    memcpy(&offensiveAirAction, &tmpTeam->offensiveAirAction,
+           sizeof(TeamAirActionType));
 
     retval = VuEntity::Handle(event);
 
@@ -1094,7 +1096,7 @@ int TeamClass::Handle(VuFullUpdateEvent *event)
     // Mark team data as received if we have all the teams.
     for (int i = 0; i < NUM_TEAMS; i++)
     {
-        if ((TeamInfo[i]) and ( not (TeamInfo[i]->flags bitand TEAM_UPDATED)))
+        if ((TeamInfo[i]) and (not(TeamInfo[i]->flags bitand TEAM_UPDATED)))
             return retval;
     }
 
@@ -1155,7 +1157,7 @@ void TeamClass::SetName(_TCHAR *newname)
     strncpy(name, newname, MAX_TEAM_NAME_SIZE);
 }
 
-_TCHAR* TeamClass::GetName(void)
+_TCHAR *TeamClass::GetName(void)
 {
     return name;
 }
@@ -1165,7 +1167,7 @@ void TeamClass::SetMotto(_TCHAR *newmotto)
     strncpy(teamMotto, newmotto, MAX_MOTTO_SIZE);
 }
 
-_TCHAR* TeamClass::GetMotto(void)
+_TCHAR *TeamClass::GetMotto(void)
 {
     return teamMotto;
 }
@@ -1179,12 +1181,12 @@ void TeamClass::SelectGroundAction(void)
     Team t;
     TeamGndActionType enemyAction;
 
-    if ( not (flags bitand TEAM_ACTIVE) or not IsLocal())
+    if (not(flags bitand TEAM_ACTIVE) or not IsLocal())
         return;
 
     // A.S. begin, 2001-12-09
 
-    if (NewInitiativePoints)   // New trigers for new initiative point system
+    if (NewInitiativePoints) // New trigers for new initiative point system
     {
         MIN_COUNTER_ATTACK_INITIATIVE = 50;
         MIN_FULL_OFFENSIVE_INITIATIVE = 55;
@@ -1199,9 +1201,8 @@ void TeamClass::SelectGroundAction(void)
     }
 
     // If we're not currently in an action, see if we can start one
-    if (groundAction.actionType == GACTION_CONSOLIDATE and 
-        POList and 
-        initiative >= MIN_COUNTER_ATTACK_INITIATIVE and 
+    if (groundAction.actionType == GACTION_CONSOLIDATE and POList and
+        initiative >= MIN_COUNTER_ATTACK_INITIATIVE and
         TheCampaign.CurrentTime >= groundAction.actionTimeout + ACTION_RATE)
     {
         // Select our objective
@@ -1215,7 +1216,10 @@ void TeamClass::SelectGroundAction(void)
 
                 // KCK: I Hope Nearfront() is sufficient to allow the team to consolidate around this objective
                 // before going on to the next. Maybe I should use distance to front
-                if (pd->ground_priority[who] > best and (o->IsNearfront() or GetRoE(who, o->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED))
+                if (pd->ground_priority[who] > best and
+                    (o->IsNearfront() or
+                     GetRoE(who, o->GetTeam(), ROE_GROUND_CAPTURE) ==
+                         ROE_ALLOWED))
                 {
                     bo = o;
                     best = pd->ground_priority[who];
@@ -1233,13 +1237,18 @@ void TeamClass::SelectGroundAction(void)
             else
                 groundAction.actionType = GACTION_MINOROFFENSIVE;
 
-            groundAction.actionTime = TheCampaign.CurrentTime + ACTION_PREP_TIME;
-            groundAction.actionTime = (int)(groundAction.actionTime / CampaignHours) * CampaignHours;
-            groundAction.actionTimeout = TheCampaign.CurrentTime + ACTION_TIMEOUT;
+            groundAction.actionTime =
+                TheCampaign.CurrentTime + ACTION_PREP_TIME;
+            groundAction.actionTime =
+                (int)(groundAction.actionTime / CampaignHours) * CampaignHours;
+            groundAction.actionTimeout =
+                TheCampaign.CurrentTime + ACTION_TIMEOUT;
             groundAction.actionObjective = bo->Id();
             groundAction.actionTempo = best / 2;
-            groundAction.actionPoints = (uchar) initiative;
-            sup = ((currentStats.groundVehs + currentStats.aircraft) * initiative) / 1000;
+            groundAction.actionPoints = (uchar)initiative;
+            sup = ((currentStats.groundVehs + currentStats.aircraft) *
+                   initiative) /
+                  1000;
 
             if (supplyAvail < sup)
                 supplyAvail = sup;
@@ -1257,14 +1266,18 @@ void TeamClass::SelectGroundAction(void)
             enemyAction.actionObjective = bo->Id();
             enemyAction.actionTempo = groundAction.actionTempo;
             enemyAction.actionType = GACTION_DEFENSIVE;
-            enemyAction.actionTimeout = TheCampaign.CurrentTime + ACTION_TIMEOUT;
+            enemyAction.actionTimeout =
+                TheCampaign.CurrentTime + ACTION_TIMEOUT;
             enemyAction.actionPoints = 0;
 
             for (t = 0; t < NUM_TEAMS; t++)
             {
                 if (GetRoE(who, t, ROE_GROUND_CAPTURE) == ROE_ALLOWED)
                 {
-                    sup = ((TeamInfo[t]->GetCurrentStats()->groundVehs + TeamInfo[t]->GetCurrentStats()->aircraft) * TeamInfo[t]->GetInitiative()) / 1000;
+                    sup = ((TeamInfo[t]->GetCurrentStats()->groundVehs +
+                            TeamInfo[t]->GetCurrentStats()->aircraft) *
+                           TeamInfo[t]->GetInitiative()) /
+                          1000;
 
                     if (TeamInfo[t]->supplyAvail > sup)
                         TeamInfo[t]->supplyAvail = sup;
@@ -1284,7 +1297,7 @@ void TeamClass::SelectGroundAction(void)
     if (groundAction.actionType not_eq GACTION_CONSOLIDATE)
     {
         // Validate our current action
-        bo = (Objective) vuDatabase->Find(groundAction.actionObjective);
+        bo = (Objective)vuDatabase->Find(groundAction.actionObjective);
 
         // A.S. begin, 2001-12-09  if initiative < 40 then consolidate
         if (NewInitiativePoints)
@@ -1292,14 +1305,14 @@ void TeamClass::SelectGroundAction(void)
             if (groundAction.actionPoints and bo and initiative >= 40)
                 return; // We've still got umph, or havn't started yet, and havn't captured our objective
         }
-        else   // *** old code ***
+        else // *** old code ***
         {
-            if (groundAction.actionPoints and bo) // and GetRoE(who,bo->GetTeam(),ROE_GROUND_CAPTURE) == ROE_ALLOWED)
+            if (groundAction.actionPoints and
+                bo) // and GetRoE(who,bo->GetTeam(),ROE_GROUND_CAPTURE) == ROE_ALLOWED)
                 return; // We've still got umph, or havn't started yet, and havn't captured our objective
         }
 
         // end added section. This replaces( not ) the section marked with +++ old code +++
-
 
 
         if (groundAction.actionType == GACTION_DEFENSIVE)
@@ -1307,7 +1320,10 @@ void TeamClass::SelectGroundAction(void)
             // Validate enemy actions
             for (t = 0; t < NUM_TEAMS; t++)
             {
-                if (GetRoE(t, who, ROE_GROUND_CAPTURE) == ROE_ALLOWED and (TeamInfo[t]->GetGroundActionType() == GACTION_OFFENSIVE or TeamInfo[t]->GetGroundActionType() == GACTION_MINOROFFENSIVE))
+                if (GetRoE(t, who, ROE_GROUND_CAPTURE) == ROE_ALLOWED and
+                    (TeamInfo[t]->GetGroundActionType() == GACTION_OFFENSIVE or
+                     TeamInfo[t]->GetGroundActionType() ==
+                         GACTION_MINOROFFENSIVE))
                     return;
             }
         }
@@ -1341,7 +1357,7 @@ void TeamClass::SelectAirActions(void)
     MissionRequest mis;
     CampaignTime current_time;
 
-    if ( not (flags bitand TEAM_ACTIVE) or not IsLocal())
+    if (not(flags bitand TEAM_ACTIVE) or not IsLocal())
         return;
 
     if (TheCampaign.CurrentTime > defensiveAirAction.actionStopTime)
@@ -1362,9 +1378,10 @@ void TeamClass::SelectAirActions(void)
 
     while (lp)
     {
-        mis = (MissionRequest) lp->GetUserData();
+        mis = (MissionRequest)lp->GetUserData();
 
-        if ( not mis->action_type and not (MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
+        if (not mis->action_type and
+            not(MissionData[mis->mission].flags bitand AMIS_FLYALWAYS))
             missions_requested++;
 
         lp = lp->GetPrev();
@@ -1393,14 +1410,16 @@ void TeamClass::SelectAirActions(void)
     //action = AACTION_INTERDICT; // If we can afford it, do interdiction action
     // else if (airRatio > 60)
     if (airRatio > 60)
-        action = AACTION_OCA; // Otherwise try for air superiority with OCA action
+        action =
+            AACTION_OCA; // Otherwise try for air superiority with OCA action
     else
-        action = AACTION_DCA; // Otherwise, defense only (this will not create an action)
-
+        action =
+            AACTION_DCA; // Otherwise, defense only (this will not create an action)
 
 
     // Couple of special cases
-    if ((groundAction.actionType == GACTION_OFFENSIVE) and (action == AACTION_DCA) and (airRatio > 40))
+    if ((groundAction.actionType == GACTION_OFFENSIVE) and
+        (action == AACTION_DCA) and (airRatio > 40))
     {
         action = AACTION_OCA;
     }
@@ -1453,11 +1472,12 @@ void TeamClass::SelectAirActions(void)
             }
         }
 
-        if ( not bo)
+        if (not bo)
             return;
 
         // Set up our action
-        offensiveAirAction.actionStartTime = current_time = TheCampaign.CurrentTime + CampaignHours;
+        offensiveAirAction.actionStartTime = current_time =
+            TheCampaign.CurrentTime + CampaignHours;
         offensiveAirAction.actionType = action;
         offensiveAirAction.actionObjective = bo->Id();
         offensiveAirAction.lastActionObjective = bo->Id();
@@ -1484,7 +1504,9 @@ void TeamClass::SelectAirActions(void)
             {
                 o->GetLocation(&tx, &ty);
 
-                if (o not_eq bo and DistSqu(x, y, tx, ty) < SIDE_CHECK_DISTANCE * SIDE_CHECK_DISTANCE)
+                if (o not_eq bo and
+                    DistSqu(x, y, tx, ty) <
+                        SIDE_CHECK_DISTANCE * SIDE_CHECK_DISTANCE)
                 {
                     found = 0;
                     lp = objectiveList->GetFirstElement();
@@ -1497,9 +1519,10 @@ void TeamClass::SelectAirActions(void)
                         lp = lp->GetNext();
                     }
 
-                    if ( not found)
+                    if (not found)
                     {
-                        objectiveList->InsertNewElement(FloatToInt32(DistanceToFront(fx, fy)), o);
+                        objectiveList->InsertNewElement(
+                            FloatToInt32(DistanceToFront(fx, fy)), o);
                         paks++;
                     }
                 }
@@ -1513,7 +1536,7 @@ void TeamClass::SelectAirActions(void)
 
         while (lp)
         {
-            o = (Objective) lp->GetUserData();
+            o = (Objective)lp->GetUserData();
             TargetAllSites(o, AACTION_OCA, who, current_time);
             current_time += 20 * CampaignMinutes;
             lp = lp->GetNext();
@@ -1530,11 +1553,14 @@ void TeamClass::SelectAirActions(void)
 
         TeamInfo[bo->GetTeam()]->defensiveAirAction.actionType = AACTION_DCA;
         TeamInfo[bo->GetTeam()]->defensiveAirAction.actionObjective = bo->Id();
-        TeamInfo[bo->GetTeam()]->defensiveAirAction.actionStartTime = current_time;
-        TeamInfo[bo->GetTeam()]->defensiveAirAction.actionStopTime = offensiveAirAction.actionStopTime;
+        TeamInfo[bo->GetTeam()]->defensiveAirAction.actionStartTime =
+            current_time;
+        TeamInfo[bo->GetTeam()]->defensiveAirAction.actionStopTime =
+            offensiveAirAction.actionStopTime;
 
         //TeamInfo[bo->GetTeam()]->MakeTeamDirty (DIRTY_DEFAIR_ACTION, DDP[15].priority);
-        TeamInfo[bo->GetTeam()]->MakeTeamDirty(DIRTY_DEFAIR_ACTION, SEND_EVENTUALLY);
+        TeamInfo[bo->GetTeam()]->MakeTeamDirty(DIRTY_DEFAIR_ACTION,
+                                               SEND_EVENTUALLY);
     }
 }
 
@@ -1567,7 +1593,8 @@ void AddTeam(int teamNum, int defaultStance)
         RemoveTeam(teamNum);
     }
 
-    tid = GetClassID(DOMAIN_ABSTRACT, CLASS_MANAGER, TYPE_TEAM, 0, 0, 0, 0, 0) + VU_LAST_ENTITY_TYPE;
+    tid = GetClassID(DOMAIN_ABSTRACT, CLASS_MANAGER, TYPE_TEAM, 0, 0, 0, 0, 0) +
+          VU_LAST_ENTITY_TYPE;
     temp = new TeamClass(tid, teamNum);
 
     for (j = 0; j < NUM_TEAMS; j++)
@@ -1580,18 +1607,21 @@ void AddTeam(int teamNum, int defaultStance)
             temp->stance[j] = Allied;
     }
 
-    vuDatabase->/*Silent*/Insert(temp);
-    tid = GetClassID(DOMAIN_AIR, CLASS_MANAGER, TYPE_ATM, 0, 0, 0, 0, 0) + VU_LAST_ENTITY_TYPE;
+    vuDatabase->/*Silent*/ Insert(temp);
+    tid = GetClassID(DOMAIN_AIR, CLASS_MANAGER, TYPE_ATM, 0, 0, 0, 0, 0) +
+          VU_LAST_ENTITY_TYPE;
     atm = new AirTaskingManagerClass(tid, teamNum);
-    vuDatabase->/*Silent*/Insert(atm);
+    vuDatabase->/*Silent*/ Insert(atm);
     VuReferenceEntity(atm);
-    tid = GetClassID(DOMAIN_LAND, CLASS_MANAGER, TYPE_GTM, 0, 0, 0, 0, 0) + VU_LAST_ENTITY_TYPE;
+    tid = GetClassID(DOMAIN_LAND, CLASS_MANAGER, TYPE_GTM, 0, 0, 0, 0, 0) +
+          VU_LAST_ENTITY_TYPE;
     gtm = new GroundTaskingManagerClass(tid, teamNum);
-    vuDatabase->/*Silent*/Insert(gtm);
+    vuDatabase->/*Silent*/ Insert(gtm);
     VuReferenceEntity(gtm);
-    tid = GetClassID(DOMAIN_SEA, CLASS_MANAGER, TYPE_NTM, 0, 0, 0, 0, 0) + VU_LAST_ENTITY_TYPE;
+    tid = GetClassID(DOMAIN_SEA, CLASS_MANAGER, TYPE_NTM, 0, 0, 0, 0, 0) +
+          VU_LAST_ENTITY_TYPE;
     ntm = new NavalTaskingManagerClass(tid, teamNum);
-    vuDatabase->/*Silent*/Insert(ntm);
+    vuDatabase->/*Silent*/ Insert(ntm);
     VuReferenceEntity(ntm);
 }
 
@@ -1633,7 +1663,7 @@ void RemoveTeams()
 }
 
 // Loads team info from a file
-int LoadTeams(char* scenario)
+int LoadTeams(char *scenario)
 {
     int i;
     short teams;
@@ -1646,9 +1676,10 @@ int LoadTeams(char* scenario)
     RemoveTeams();
 
     // Set up the DIndex for our team manager class
-    teamManagerDIndex = GetClassID(DOMAIN_ABSTRACT, CLASS_MANAGER, TYPE_TEAM, 0, 0, 0, 0, 0);
+    teamManagerDIndex =
+        GetClassID(DOMAIN_ABSTRACT, CLASS_MANAGER, TYPE_TEAM, 0, 0, 0, 0, 0);
 
-    if ( not teamManagerDIndex)
+    if (not teamManagerDIndex)
         return 0;
 
     teamManagerDIndex += VU_LAST_ENTITY_TYPE;
@@ -1664,15 +1695,15 @@ int LoadTeams(char* scenario)
     for (i = 0; i < teams; i++)
     {
         temp = new TeamClass(fp);
-        vuDatabase->/*Silent*/Insert(temp);
+        vuDatabase->/*Silent*/ Insert(temp);
         atm = new AirTaskingManagerClass(fp);
-        vuDatabase->/*Silent*/Insert(atm);
+        vuDatabase->/*Silent*/ Insert(atm);
         VuReferenceEntity(atm);
         gtm = new GroundTaskingManagerClass(fp);
-        vuDatabase->/*Silent*/Insert(gtm);
+        vuDatabase->/*Silent*/ Insert(gtm);
         VuReferenceEntity(gtm);
         ntm = new NavalTaskingManagerClass(fp);
-        vuDatabase->/*Silent*/Insert(ntm);
+        vuDatabase->/*Silent*/ Insert(ntm);
         VuReferenceEntity(ntm);
     }
 
@@ -1686,7 +1717,7 @@ int LoadTeams(char* scenario)
     return 1;
 }
 
-int SaveTeams(char* scenario)
+int SaveTeams(char *scenario)
 {
     FILE *fp;
     int i;
@@ -1739,25 +1770,25 @@ void LoadPriorityTables(void)
     {
         switch (t + 1)
         {
-            case TAT_DEFENSIVE:
-                fp = OpenCampFile("defense", "pri", "r");
-                break;
+        case TAT_DEFENSIVE:
+            fp = OpenCampFile("defense", "pri", "r");
+            break;
 
-            case TAT_OFFENSIVE:
-                fp = OpenCampFile("offense", "pri", "r");
-                break;
+        case TAT_OFFENSIVE:
+            fp = OpenCampFile("offense", "pri", "r");
+            break;
 
-            case TAT_ATTRITION:
-                fp = OpenCampFile("attrit", "pri", "r");
-                break;
+        case TAT_ATTRITION:
+            fp = OpenCampFile("attrit", "pri", "r");
+            break;
 
-            case TAT_CAS:
-                fp = OpenCampFile("cas", "pri", "r");
-                break;
+        case TAT_CAS:
+            fp = OpenCampFile("cas", "pri", "r");
+            break;
 
-            default:
-                fp = OpenCampFile("intdict", "pri", "r");
-                break;
+        default:
+            fp = OpenCampFile("intdict", "pri", "r");
+            break;
         }
 
         ShiAssert(fp);
@@ -1822,9 +1853,11 @@ void TeamClass::AddInitiative(short i)
 {
     initiative += i;
 
-    if (initiative > 100) initiative = 100;
+    if (initiative > 100)
+        initiative = 100;
 
-    if (initiative < 0) initiative = 0;
+    if (initiative < 0)
+        initiative = 0;
 
     //MakeTeamDirty (DIRTY_TEAM_INITIATIVE, DDP[17].priority);
     MakeTeamDirty(DIRTY_TEAM_INITIATIVE, SEND_EVENTUALLY);
@@ -1928,7 +1961,8 @@ void ApplyBonus(Team who, VU_ID poid, int rating)
         if (TeamInfo[who]->bonusObjs[i] == FalconNullId)
         {
             TeamInfo[who]->bonusObjs[i] = poid;
-            TeamInfo[who]->bonusTime[i] = TheCampaign.CurrentTime + (rating * 4 * CampaignMinutes);
+            TeamInfo[who]->bonusTime[i] =
+                TheCampaign.CurrentTime + (rating * 4 * CampaignMinutes);
             applied = TRUE;
         }
     }
@@ -1939,7 +1973,7 @@ void ApplyPlayerInput(Team who, VU_ID poid, int rating)
 {
     ShiAssert(TeamInfo);
 
-    if ( not TeamInfo)
+    if (not TeamInfo)
         return;
 
     int i, os, ts, initiative, maxInitiative, initDelta, pts;
@@ -1949,7 +1983,8 @@ void ApplyPlayerInput(Team who, VU_ID poid, int rating)
         poid = TeamInfo[who]->GetGroundAction()->actionObjective;
 
     // Rolling average, weighted towards most recent
-    TeamInfo[who]->playerRating = (TeamInfo[who]->playerRating * 4.0F + rating * 4.0F) / 8.0F;
+    TeamInfo[who]->playerRating =
+        (TeamInfo[who]->playerRating * 4.0F + rating * 4.0F) / 8.0F;
     TeamInfo[who]->lastPlayerMission = TheCampaign.CurrentTime;
 
     // Shift initiative in our favor, if force ratios allow it.
@@ -1972,14 +2007,15 @@ void ApplyPlayerInput(Team who, VU_ID poid, int rating)
 
     if (os > ts)
         maxInitiative = 100;
-    else if ( not os)
+    else if (not os)
         maxInitiative = 0;
     else
         maxInitiative = (os * 100) / ts;
 
     // A.S. 2001-12-09 begin,
     if (NewInitiativePoints) // The above constraint, maxInitiative = (os*100)/ts, is no longer needed.
-        maxInitiative = 100; // The new procedure NewInitiativePointSetting does the job.
+        maxInitiative =
+            100; // The new procedure NewInitiativePointSetting does the job.
 
     // end added section
 
@@ -2009,7 +2045,7 @@ void ApplyPlayerInput(Team who, VU_ID poid, int rating)
 
     // A.S. debug
     //FILE *deb;
-    //deb = fopen("c:\\temp\\deb3.txt", "a");
+    //deb = fopen("c:/temp/deb3.txt", "a");
     //fprintf(deb, "Team %2d  Init = %3d  Rating = %3.2f  TIME = %d\n\n", who, TeamInfo[who]->GetInitiative(), TeamInfo[who]->playerRating, TheCampaign.CurrentTime/(3600*1000));
     //fclose(deb);
     // debug end
@@ -2042,11 +2078,15 @@ void NewInitiativePointSetting(Team who)
 
     int i, os, ts, initiative, initiative_old;
     int oa, ta, os_start, oa_start, ts_start, ta_start;
-    int longRunInitiative, longRunInitiative1, longRunInitiative2, longRunInitiative3;
+    int longRunInitiative, longRunInitiative1, longRunInitiative2,
+        longRunInitiative3;
     float oloss, tloss;
     Team et = NUM_TEAMS + 1;
 
-    os = TeamInfo[who]->GetCurrentStats()->groundVehs; // Calculating the strenght of the player's team relativ to the others
+    os =
+        TeamInfo[who]
+            ->GetCurrentStats()
+            ->groundVehs; // Calculating the strenght of the player's team relativ to the others
     oa = TeamInfo[who]->GetCurrentStats()->aircraft;
     os_start = TeamInfo[who]->startStats.groundVehs;
     oa_start = TeamInfo[who]->startStats.aircraft;
@@ -2076,22 +2116,34 @@ void NewInitiativePointSetting(Team who)
     if (tloss == 0)
         tloss = 1;
 
-    longRunInitiative1 = (int)(atan((os * 1.0) / ts) * 100 / (3.142 / 2) + 1); // We need a function, which maps [0, +inf] into [0, 100].
-    longRunInitiative2 = (int)(atan((oa * 1.0) / ta) * 100 / (3.142 / 2) + 1); // The ArcusTangens-function is used for this purpose. We have to divide by Pi/2.
-    longRunInitiative3 = (int)(atan(tloss / oloss) * 100 / (3.142 / 2) + 1); // e.g., if the relative strenght is 1, longRunInitiative = 50.
-    longRunInitiative = (5 * longRunInitiative1 + 4 * longRunInitiative2 + 1 * longRunInitiative3) / 10;
+    longRunInitiative1 =
+        (int)(atan((os * 1.0) / ts) * 100 / (3.142 / 2) +
+              1); // We need a function, which maps [0, +inf] into [0, 100].
+    longRunInitiative2 =
+        (int)(atan((oa * 1.0) / ta) * 100 / (3.142 / 2) +
+              1); // The ArcusTangens-function is used for this purpose. We have to divide by Pi/2.
+    longRunInitiative3 =
+        (int)(atan(tloss / oloss) * 100 / (3.142 / 2) +
+              1); // e.g., if the relative strenght is 1, longRunInitiative = 50.
+    longRunInitiative = (5 * longRunInitiative1 + 4 * longRunInitiative2 +
+                         1 * longRunInitiative3) /
+                        10;
 
 
     initiative = TeamInfo[who]->GetInitiative();
     initiative_old = initiative;
-    initiative = (int)(0.5F * initiative  +  0.5F * longRunInitiative);   // Adaptive mechanism to long run equilibrium.
+    initiative =
+        (int)(0.5F * initiative +
+              0.5F *
+                  longRunInitiative); // Adaptive mechanism to long run equilibrium.
 
     TeamInfo[who]->SetInitiative(initiative);
-    TeamInfo[et]->SetInitiative((100 - initiative)); // enemy team gets 100 minus our initiative points
+    TeamInfo[et]->SetInitiative(
+        (100 - initiative)); // enemy team gets 100 minus our initiative points
 
     //debug
     //FILE *deb;
-    //deb = fopen("c:\\temp\\deb2.txt", "a");
+    //deb = fopen("c:/temp/deb2.txt", "a");
     //fprintf(deb, "Team %2d  Init = %3d  Init_old %d  LRInit = %3d  osts = %f  adta = %f  TIME = %d\n", who, TeamInfo[who]->GetInitiative(), initiative_old, longRunInitiative, (os*1.0)/ts, (oa*1.0)/ta, TheCampaign.CurrentTime/(3600*1000));
     //fprintf(deb, "Aircraft_start =  %d %d TheirLoss = %5.1f GroungVehicle_start = %d %d %5.1f\n", oa_start, oa, tloss, os_start, os, oloss);
     //fprintf(deb, "Team %d  Rating = %3.2f    bitor    Team %d  Rating = %3.2f\n\n", who, TeamInfo[who]->playerRating, et, TeamInfo[et]->playerRating);
@@ -2099,20 +2151,25 @@ void NewInitiativePointSetting(Team who)
     // end debug
 
 
-    for (i = 0; i < NUM_TEAMS; i++) // old code for the other teams (replaces same code in UpdateTeamStatistics-procedure)
+    for (
+        i = 0; i < NUM_TEAMS;
+        i++) // old code for the other teams (replaces same code in UpdateTeamStatistics-procedure)
     {
-        if (i not_eq who and i not_eq et and TeamInfo[i]->flags bitand TEAM_ACTIVE)
+        if (i not_eq who and i not_eq et and
+            TeamInfo[i]->flags bitand TEAM_ACTIVE)
         {
             if (TeamInfo[i]->GetInitiative() < 40)
-                TeamInfo[i]->AddInitiative((INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
-            else if (TeamInfo[i]->GetInitiative() <= 100)  // 100 instead of 60
-                TeamInfo[i]->AddInitiative(-(INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
+                TeamInfo[i]->AddInitiative(
+                    (INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) /
+                    60);
+            else if (TeamInfo[i]->GetInitiative() <= 100) // 100 instead of 60
+                TeamInfo[i]->AddInitiative(
+                    -(INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) /
+                    60);
         }
     }
-
 }
 // end added section
-
 
 
 /*
@@ -2206,30 +2263,32 @@ Team GetEnemyTeam(Team who)
 int GetPriority(MissionRequest mis)
 {
     int priority, d, bonus;
-    int target_priority = 0, mission_priority, random_priority, pak_priority = 0, distance_priority = 0;
+    int target_priority = 0, mission_priority, random_priority,
+        pak_priority = 0, distance_priority = 0;
     Objective po = NULL;
     POData pd;
     CampEntity e;
 
     bonus = mis->priority;
     mis->priority = 0;
-    e = (CampEntity) vuDatabase->Find(mis->targetID);
+    e = (CampEntity)vuDatabase->Find(mis->targetID);
 
     if (e and e->IsPackage())
         e = ((Package)e)->GetFirstUnitElement();
 
     // KCK: Make sure we ignore any requests if the player has specified 0 priority
-    if ( not TeamInfo[mis->who]->GetMissionPriority(mis->mission))
+    if (not TeamInfo[mis->who]->GetMissionPriority(mis->mission))
         return -1;
 
     // Mission priority (0 - 100)
     if (mis->flags bitand REQF_PART_OF_ACTION)
-        mission_priority = DefaultMissionPriority[mis->action_type - 1][mis->mission];
+        mission_priority =
+            DefaultMissionPriority[mis->action_type - 1][mis->mission];
     else
         mission_priority = TeamInfo[mis->who]->GetMissionPriority(mis->mission);
 
     // Target Priority (0 - 100)
-    if ( not e)
+    if (not e)
     {
         // Take the mission priority if no target
         target_priority = mission_priority;
@@ -2238,49 +2297,58 @@ int GetPriority(MissionRequest mis)
     else if (e->IsObjective())
     {
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if ( not TeamInfo[mis->who]->GetObjTypePriority(e->GetType()))
+        if (not TeamInfo[mis->who]->GetObjTypePriority(e->GetType()))
             return -1;
 
         // o Objective Target Type component (0-50)
         if (mis->flags bitand REQF_PART_OF_ACTION)
-            target_priority = DefaultObjtypePriority[mis->action_type - 1][e->GetType()] / 2;
+            target_priority =
+                DefaultObjtypePriority[mis->action_type - 1][e->GetType()] / 2;
         else
-            target_priority = TeamInfo[mis->who]->GetObjTypePriority(e->GetType()) / 2;
+            target_priority =
+                TeamInfo[mis->who]->GetObjTypePriority(e->GetType()) / 2;
 
         // o Objective Priority component (0-50)
-        target_priority += (target_priority * ((Objective)e)->GetObjectivePriority()) / 100;
+        target_priority +=
+            (target_priority * ((Objective)e)->GetObjectivePriority()) / 100;
         po = ((Objective)e)->GetObjectivePrimary();
 
-        if ( not po)
+        if (not po)
             po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
     }
     else if (e->IsUnit() and e->GetDomain() == DOMAIN_LAND)
     {
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if ( not TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()))
+        if (not TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()))
             return -1;
 
         // o Unit Target Type component (0-50)
         if (mis->flags bitand REQF_PART_OF_ACTION)
-            target_priority = DefaultUnittypePriority[mis->action_type - 1][e->GetSType()] / 2;
+            target_priority =
+                DefaultUnittypePriority[mis->action_type - 1][e->GetSType()] /
+                2;
         else
-            target_priority = TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()) / 2;
+            target_priority =
+                TeamInfo[mis->who]->GetUnitTypePriority(e->GetSType()) / 2;
 
         // o Unit size/range component (0-50)
         if (e->GetSType() == STYPE_UNIT_AIR_DEFENSE)
-            target_priority = (target_priority + e->GetAproxWeaponRange(Air) * 2) / 2;
+            target_priority =
+                (target_priority + e->GetAproxWeaponRange(Air) * 2) / 2;
         else
-            target_priority = (target_priority * ((Unit)e)->GetTotalVehicles()) / 50;
+            target_priority =
+                (target_priority * ((Unit)e)->GetTotalVehicles()) / 50;
 
         po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
     }
     else if (e->IsTaskForce())
     {
         // o TaskForce component (0-100)
-        target_priority = TeamInfo[mis->who]->GetUnitTypePriority(MAX_UNITTYPE - 1);
+        target_priority =
+            TeamInfo[mis->who]->GetUnitTypePriority(MAX_UNITTYPE - 1);
 
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if ( not target_priority)
+        if (not target_priority)
             return -1;
 
         po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
@@ -2292,13 +2360,13 @@ int GetPriority(MissionRequest mis)
         po = FindNearestObjective(POList, mis->tx, mis->ty, NULL);
     }
 
-    if ( not po)
+    if (not po)
         return -1;
 
     // Pak priority (0 - 100)
     pd = GetPOData(po);
 
-    if ( not pd)
+    if (not pd)
         return -1;
 
     if (pd->player_priority[mis->who] >= 0)
@@ -2306,7 +2374,7 @@ int GetPriority(MissionRequest mis)
         pak_priority = pd->player_priority[mis->who];
 
         // KCK: Make sure we ignore any requests if the player has specified 0 priority
-        if ( not pak_priority)
+        if (not pak_priority)
             return -1;
     }
     else
@@ -2340,16 +2408,21 @@ int GetPriority(MissionRequest mis)
 
     // KCK HACK:
     // Special case adjustments (it'd be nice to do this to the priorities themselves)
-    if ((mis->mission == AMIS_CAS or mis->mission == AMIS_ONCALLCAS or mis->mission == AMIS_PRPLANCAS or mis->mission == AMIS_BAI) and mis->vs)
+    if ((mis->mission == AMIS_CAS or mis->mission == AMIS_ONCALLCAS or
+         mis->mission == AMIS_PRPLANCAS or mis->mission == AMIS_BAI) and
+        mis->vs)
     {
         // Bonus/penalty based on ground force ratios.
-        float ratio = (float)sqrt((float)TeamInfo[mis->who]->GetCurrentStats()->groundVehs / (float)TeamInfo[mis->vs]->GetCurrentStats()->groundVehs);
+        float ratio = (float)sqrt(
+            (float)TeamInfo[mis->who]->GetCurrentStats()->groundVehs /
+            (float)TeamInfo[mis->vs]->GetCurrentStats()->groundVehs);
         target_priority = FloatToInt32(ratio * target_priority);
         mission_priority = FloatToInt32(ratio * mission_priority);
     }
 
     // Total priority (0 - 550) + bonus
-    priority = bonus + target_priority + mission_priority + pak_priority + distance_priority + random_priority;
+    priority = bonus + target_priority + mission_priority + pak_priority +
+               distance_priority + random_priority;
 
     // Scaled roughly to 0-255
     priority = (priority * 300) / 500;
@@ -2372,14 +2445,29 @@ int GetPriority(MissionRequest mis)
     Priorities[mis->mission].total_mission += mission_priority;
     Priorities[mis->mission].total_random += random_priority;
     Priorities[mis->mission].total_pak += pak_priority;
-    Priorities[mis->mission].total_bonus += bonus;;
-    Priorities[mis->mission].average_score = Priorities[mis->mission].total_score / Priorities[mis->mission].number_queried;
-    Priorities[mis->mission].average_distance = Priorities[mis->mission].total_distance / Priorities[mis->mission].number_queried;
-    Priorities[mis->mission].average_target = Priorities[mis->mission].total_target / Priorities[mis->mission].number_queried;
-    Priorities[mis->mission].average_mission = Priorities[mis->mission].total_mission / Priorities[mis->mission].number_queried;
-    Priorities[mis->mission].average_random = Priorities[mis->mission].total_random / Priorities[mis->mission].number_queried;
-    Priorities[mis->mission].average_pak = Priorities[mis->mission].total_pak / Priorities[mis->mission].number_queried;
-    Priorities[mis->mission].average_bonus = Priorities[mis->mission].total_bonus / Priorities[mis->mission].number_queried;
+    Priorities[mis->mission].total_bonus += bonus;
+    ;
+    Priorities[mis->mission].average_score =
+        Priorities[mis->mission].total_score /
+        Priorities[mis->mission].number_queried;
+    Priorities[mis->mission].average_distance =
+        Priorities[mis->mission].total_distance /
+        Priorities[mis->mission].number_queried;
+    Priorities[mis->mission].average_target =
+        Priorities[mis->mission].total_target /
+        Priorities[mis->mission].number_queried;
+    Priorities[mis->mission].average_mission =
+        Priorities[mis->mission].total_mission /
+        Priorities[mis->mission].number_queried;
+    Priorities[mis->mission].average_random =
+        Priorities[mis->mission].total_random /
+        Priorities[mis->mission].number_queried;
+    Priorities[mis->mission].average_pak =
+        Priorities[mis->mission].total_pak /
+        Priorities[mis->mission].number_queried;
+    Priorities[mis->mission].average_bonus =
+        Priorities[mis->mission].total_bonus /
+        Priorities[mis->mission].number_queried;
     RemoveFromSortedList(&Priorities[mis->mission]);
     InsertIntoSortedList(&Priorities[mis->mission]);
 
@@ -2400,7 +2488,8 @@ void AddReinforcements(Team who, int inc)
     GridIndex x, y;
     int added;
 
-    if ((inc <= 0) or (TeamInfo[who] == NULL) or ( not (TeamInfo[who]->flags bitand TEAM_ACTIVE)))
+    if ((inc <= 0) or (TeamInfo[who] == NULL) or
+        (not(TeamInfo[who]->flags bitand TEAM_ACTIVE)))
         return;
 
     TeamInfo[who]->AddReinforcement(inc);
@@ -2411,7 +2500,10 @@ void AddReinforcements(Team who, int inc)
     while (u)
     {
         // Activate any waiting reinforcements (note: cargoed units are inactive too, so keep an eye out)
-        if (u->GetTeam() == who and not u->Cargo() and u->GetUnitReinforcementLevel() <= TeamInfo[who]->GetReinforcement() and u->Parent())
+        if (u->GetTeam() == who and not u->Cargo() and
+            u->GetUnitReinforcementLevel() <=
+                TeamInfo[who]->GetReinforcement() and
+            u->Parent())
         {
             added = 0;
 
@@ -2430,10 +2522,11 @@ void AddReinforcements(Team who, int inc)
                 // RV - Biker - 100km is too big perimeter (carrier near coast)
                 o = FindNearestObjective(x, y, NULL, 25);
 
-                if ( not o or o->GetTeam() == who)
+                if (not o or o->GetTeam() == who)
                 {
                     // Activate this unit and force list reinsertion
-                    e->BroadcastUnitMessage(e->Id(), FalconUnitMessage::unitActivate, 0, 0, 0);
+                    e->BroadcastUnitMessage(
+                        e->Id(), FalconUnitMessage::unitActivate, 0, 0, 0);
 #ifdef DEBUG
                     gReinforcementsAdded[who]++;
 #endif
@@ -2449,13 +2542,17 @@ void AddReinforcements(Team who, int inc)
             if (added)
             {
                 if (u->IsBrigade())
-                    u->BroadcastUnitMessage(u->Id(), FalconUnitMessage::unitActivate, 0, 0, 0);
+                    u->BroadcastUnitMessage(
+                        u->Id(), FalconUnitMessage::unitActivate, 0, 0, 0);
 
                 // Do a news event?
-                FalconCampEventMessage *newEvent = new FalconCampEventMessage(u->Id(), FalconLocalGame);
+                FalconCampEventMessage *newEvent =
+                    new FalconCampEventMessage(u->Id(), FalconLocalGame);
                 newEvent->dataBlock.team = who;
-                newEvent->dataBlock.eventType = FalconCampEventMessage::unitReinforcement;
-                u->GetLocation(&newEvent->dataBlock.data.xLoc, &newEvent->dataBlock.data.yLoc);
+                newEvent->dataBlock.eventType =
+                    FalconCampEventMessage::unitReinforcement;
+                u->GetLocation(&newEvent->dataBlock.data.xLoc,
+                               &newEvent->dataBlock.data.yLoc);
                 newEvent->dataBlock.data.formatId = 1850;
                 newEvent->dataBlock.data.owners[0] = u->GetOwner();
                 SendCampUIMessage(newEvent);
@@ -2475,7 +2572,7 @@ void UpdateTeamStatistics(void)
     // Clear vehicle counts
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        if ( not TeamInfo[i])
+        if (not TeamInfo[i])
             return;
 
         TeamInfo[i]->SetCurrentStats()->airDefenseVehs = 0;
@@ -2504,32 +2601,40 @@ void UpdateTeamStatistics(void)
             if (u->GetDomain() == DOMAIN_LAND)
             {
                 if (u->GetUnitNormalRole() == GRO_AIRDEFENSE)
-                    TeamInfo[u->GetTeam()]->SetCurrentStats()->airDefenseVehs += u->GetTotalVehicles();
+                    TeamInfo[u->GetTeam()]->SetCurrentStats()->airDefenseVehs +=
+                        u->GetTotalVehicles();
                 else
-                    TeamInfo[u->GetTeam()]->SetCurrentStats()->groundVehs += u->GetTotalVehicles();
+                    TeamInfo[u->GetTeam()]->SetCurrentStats()->groundVehs +=
+                        u->GetTotalVehicles();
             }
             else if (u->GetDomain() == DOMAIN_AIR)
             {
                 // RV - Biker - Only count attack AC for statistic
-                if (u->GetType() == TYPE_SQUADRON and 
+                if (u->GetType() == TYPE_SQUADRON and
                     (u->GetSType() == STYPE_UNIT_ATTACK or
                      u->GetSType() == STYPE_UNIT_ATTACK_HELO or
                      u->GetSType() == STYPE_UNIT_BOMBER or
                      u->GetSType() == STYPE_UNIT_FIGHTER or
                      u->GetSType() == STYPE_UNIT_FIGHTER_BOMBER))
                 {
-                    if (u->GetUnitAirbase() == NULL or u->GetSType() == STYPE_UNIT_ATTACK_HELO or not u->GetUnitAirbase()->IsObjective())
-                        TeamInfo[u->GetTeam()]->SetCurrentStats()->aircraft += u->GetTotalVehicles();
+                    if (u->GetUnitAirbase() == NULL or
+                        u->GetSType() == STYPE_UNIT_ATTACK_HELO or
+                        not u->GetUnitAirbase()->IsObjective())
+                        TeamInfo[u->GetTeam()]->SetCurrentStats()->aircraft +=
+                            u->GetTotalVehicles();
                     else
                     {
                         Objective o = (Objective)u->GetUnitAirbase();
-                        TeamInfo[u->GetTeam()]->SetCurrentStats()->aircraft += int(u->GetTotalVehicles() * o->GetObjectiveStatus() / 100);
+                        TeamInfo[u->GetTeam()]->SetCurrentStats()->aircraft +=
+                            int(u->GetTotalVehicles() *
+                                o->GetObjectiveStatus() / 100);
                     }
                 }
             }
             else if (u->GetDomain() == DOMAIN_SEA)
             {
-                TeamInfo[u->GetTeam()]->SetCurrentStats()->ships += u->GetTotalVehicles();
+                TeamInfo[u->GetTeam()]->SetCurrentStats()->ships +=
+                    u->GetTotalVehicles();
             }
 
             if (u->GetDomain() == DOMAIN_LAND or u->IsSquadron())
@@ -2553,38 +2658,57 @@ void UpdateTeamStatistics(void)
         if (TeamInfo[i]->flags bitand TEAM_ACTIVE)
         {
             // Do supply and fuel
-            TeamInfo[i]->SetCurrentStats()->supply = TeamInfo[i]->GetSupplyAvail();
+            TeamInfo[i]->SetCurrentStats()->supply =
+                TeamInfo[i]->GetSupplyAvail();
             TeamInfo[i]->SetCurrentStats()->fuel = TeamInfo[i]->GetFuelAvail();
 
-            if (TeamInfo[i]->startStats.airDefenseVehs < TeamInfo[i]->GetCurrentStats()->airDefenseVehs)
-                TeamInfo[i]->startStats.airDefenseVehs = TeamInfo[i]->GetCurrentStats()->airDefenseVehs;
+            if (TeamInfo[i]->startStats.airDefenseVehs <
+                TeamInfo[i]->GetCurrentStats()->airDefenseVehs)
+                TeamInfo[i]->startStats.airDefenseVehs =
+                    TeamInfo[i]->GetCurrentStats()->airDefenseVehs;
 
-            if (TeamInfo[i]->startStats.aircraft < TeamInfo[i]->GetCurrentStats()->aircraft)
-                TeamInfo[i]->startStats.aircraft = TeamInfo[i]->GetCurrentStats()->aircraft;
+            if (TeamInfo[i]->startStats.aircraft <
+                TeamInfo[i]->GetCurrentStats()->aircraft)
+                TeamInfo[i]->startStats.aircraft =
+                    TeamInfo[i]->GetCurrentStats()->aircraft;
 
-            if (TeamInfo[i]->startStats.groundVehs < TeamInfo[i]->GetCurrentStats()->groundVehs)
-                TeamInfo[i]->startStats.groundVehs = TeamInfo[i]->GetCurrentStats()->groundVehs;
+            if (TeamInfo[i]->startStats.groundVehs <
+                TeamInfo[i]->GetCurrentStats()->groundVehs)
+                TeamInfo[i]->startStats.groundVehs =
+                    TeamInfo[i]->GetCurrentStats()->groundVehs;
 
-            if (TeamInfo[i]->startStats.ships < TeamInfo[i]->GetCurrentStats()->ships)
-                TeamInfo[i]->startStats.ships = TeamInfo[i]->GetCurrentStats()->ships;
+            if (TeamInfo[i]->startStats.ships <
+                TeamInfo[i]->GetCurrentStats()->ships)
+                TeamInfo[i]->startStats.ships =
+                    TeamInfo[i]->GetCurrentStats()->ships;
 
-            if (TeamInfo[i]->startStats.supply < TeamInfo[i]->GetCurrentStats()->supply)
-                TeamInfo[i]->startStats.supply = TeamInfo[i]->GetCurrentStats()->supply;
+            if (TeamInfo[i]->startStats.supply <
+                TeamInfo[i]->GetCurrentStats()->supply)
+                TeamInfo[i]->startStats.supply =
+                    TeamInfo[i]->GetCurrentStats()->supply;
 
-            if (TeamInfo[i]->startStats.fuel < TeamInfo[i]->GetCurrentStats()->fuel)
-                TeamInfo[i]->startStats.fuel = TeamInfo[i]->GetCurrentStats()->fuel;
+            if (TeamInfo[i]->startStats.fuel <
+                TeamInfo[i]->GetCurrentStats()->fuel)
+                TeamInfo[i]->startStats.fuel =
+                    TeamInfo[i]->GetCurrentStats()->fuel;
 
-            if (TeamInfo[i]->startStats.airbases < TeamInfo[i]->GetCurrentStats()->airbases)
-                TeamInfo[i]->startStats.airbases = TeamInfo[i]->GetCurrentStats()->airbases;
+            if (TeamInfo[i]->startStats.airbases <
+                TeamInfo[i]->GetCurrentStats()->airbases)
+                TeamInfo[i]->startStats.airbases =
+                    TeamInfo[i]->GetCurrentStats()->airbases;
 
             // A.S. 2001-12-09
-            if ( not NewInitiativePoints) // The new procedure NewInitiativePointSetting does the job.
+            if (not NewInitiativePoints) // The new procedure NewInitiativePointSetting does the job.
             {
                 // same as old code
                 if (TeamInfo[i]->GetInitiative() < 40)
-                    TeamInfo[i]->AddInitiative((INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
+                    TeamInfo[i]->AddInitiative((INITIATIVE_LEAK_PER_HOUR *
+                                                MIN_RECALCULATE_STATISTICS) /
+                                               60);
                 else if (TeamInfo[i]->GetInitiative() < 60)
-                    TeamInfo[i]->AddInitiative(-(INITIATIVE_LEAK_PER_HOUR * MIN_RECALCULATE_STATISTICS) / 60);
+                    TeamInfo[i]->AddInitiative(-(INITIATIVE_LEAK_PER_HOUR *
+                                                 MIN_RECALCULATE_STATISTICS) /
+                                               60);
             }
 
             // end section
@@ -2601,14 +2725,16 @@ void UpdateTeamStatistics(void)
 
             // Calculate current supply percentages
             if (swant[i])
-                TeamInfo[i]->SetCurrentStats()->supplyLevel = shave[i] * 100 / swant[i];
+                TeamInfo[i]->SetCurrentStats()->supplyLevel =
+                    shave[i] * 100 / swant[i];
             else if (shave[i])
                 TeamInfo[i]->SetCurrentStats()->supplyLevel = 100;
             else
                 TeamInfo[i]->SetCurrentStats()->supplyLevel = 0;
 
             if (fwant[i])
-                TeamInfo[i]->SetCurrentStats()->fuelLevel = fhave[i] * 100 / fwant[i];
+                TeamInfo[i]->SetCurrentStats()->fuelLevel =
+                    fhave[i] * 100 / fwant[i];
             else if (fhave[i])
                 TeamInfo[i]->SetCurrentStats()->fuelLevel = 100;
             else
@@ -2658,7 +2784,8 @@ void UpdateTeamStatistics(void)
         fwrite(&d, sizeof(short), 1, fp);
 
         for (i = 0; i < NUM_TEAMS; i++)
-            fwrite(TeamInfo[i]->SetCurrentStats(), sizeof(TeamStatusType), 1, fp);
+            fwrite(TeamInfo[i]->SetCurrentStats(), sizeof(TeamStatusType), 1,
+                   fp);
 
         CloseCampFile(fp);
     }
@@ -2716,10 +2843,11 @@ void UpdateTeamStatistics(void)
 
     if (TheCampaign.CurrentTime < CampaignHours * 10)
         rating = 0;
-    else        // don't apply input at campaign start
+    else // don't apply input at campaign start
         rating = -10;
 
-    if (TheCampaign.CurrentTime - TeamInfo[FalconLocalSession->GetTeam()]->lastPlayerMission >
+    if (TheCampaign.CurrentTime -
+            TeamInfo[FalconLocalSession->GetTeam()]->lastPlayerMission >
         (unsigned int)g_nNoPlayerPlay * CampaignHours)
     {
         ApplyPlayerInput(FalconLocalSession->GetTeam(), FalconNullId, rating);
@@ -2779,7 +2907,7 @@ int AirSuperiority(Team who)
 }
 
 // File reader that allows for comments in a text file
-char *CampGetNext(FILE* fptr)
+char *CampGetNext(FILE *fptr)
 {
     static char aline[160];
     int is_comment;
@@ -2801,8 +2929,7 @@ char *CampGetNext(FILE* fptr)
         }
         else
             is_comment = FALSE;
-    }
-    while (is_comment);
+    } while (is_comment);
 
     return (aline);
 }
@@ -2816,7 +2943,7 @@ void InsertIntoSortedList(priority_structure *el)
 {
     priority_structure *tmp, *last = NULL;
 
-    if ( not PriorityList)
+    if (not PriorityList)
     {
         // Front of list
         PriorityList = el;
@@ -2831,7 +2958,7 @@ void InsertIntoSortedList(priority_structure *el)
         tmp = tmp->next;
     }
 
-    if ( not tmp)
+    if (not tmp)
     {
         // Back of list
         ShiAssert(last);
@@ -3058,7 +3185,7 @@ TeamGndActionType *TeamClass::SetGroundAction(void)
 
 void TeamClass::MakeTeamDirty(Dirty_Team bits, Dirtyness score)
 {
-    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if ((not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
@@ -3073,7 +3200,7 @@ void TeamClass::WriteDirty(unsigned char **stream)
 
     ptr = *stream;
     // Encode it up
-    *(ushort*)ptr = (ushort) dirty_team;
+    *(ushort *)ptr = (ushort)dirty_team;
     ptr += sizeof(ushort);
 
     if (dirty_team bitand DIRTY_MISSION_PRIORITY)
@@ -3096,25 +3223,25 @@ void TeamClass::WriteDirty(unsigned char **stream)
 
     if (dirty_team bitand DIRTY_SUPPLY_FUEL_AVAIL)
     {
-        *(ushort*)ptr = supplyAvail;
+        *(ushort *)ptr = supplyAvail;
         ptr += sizeof(ushort);
 
-        *(ushort*)ptr = fuelAvail;
+        *(ushort *)ptr = fuelAvail;
         ptr += sizeof(ushort);
 
-        *(ushort*)ptr = replacementsAvail;
+        *(ushort *)ptr = replacementsAvail;
         ptr += sizeof(ushort);
     }
 
     if (dirty_team bitand DIRTY_TEAM_INITIATIVE)
     {
-        *(short*)ptr = initiative;
+        *(short *)ptr = initiative;
         ptr += sizeof(short);
     }
 
     if (dirty_team bitand DIRTY_TEAM_REINFORCEMENT)
     {
-        *(short*)ptr = reinforcement;
+        *(short *)ptr = reinforcement;
         ptr += sizeof(short);
     }
 
@@ -3221,10 +3348,11 @@ void TeamClass::ReadDirty(unsigned char **stream, long *rem)
     {
         memcpychk(&cteam, stream, sizeof(uchar), rem);
 
-        if ( not ((cteam > 0) and (cteam < NUM_TEAMS)))
+        if (not((cteam > 0) and (cteam < NUM_TEAMS)))
         {
             char err[200];
-            sprintf(err, "%s %d: error reading dirty, invalid cteam", __FILE__, __LINE__);
+            sprintf(err, "%s %d: error reading dirty, invalid cteam", __FILE__,
+                    __LINE__);
             throw InvalidBufferException(err);
         }
 
@@ -3241,7 +3369,8 @@ int ConvertTeamToStringIndex(int team, int gender, int usage, int plural)
     int stridx = 3820 + 20;
 
     if (TeamInfo[team])
-        stridx = 3820 + 20 * TeamInfo[team]->GetFlag() + 6 * usage + 3 * plural + gender;
+        stridx = 3820 + 20 * TeamInfo[team]->GetFlag() + 6 * usage +
+                 3 * plural + gender;
 
     return stridx;
 }
@@ -3258,24 +3387,30 @@ void StartOffensive(int team, int bonus)
     // A.S. 2001-12-09. This makes the offensive bonuses configurable
 #ifdef DEBUG
     if (TeamInfo[team]->GetSupplyAvail() < StartOffBonusSup)
-        gSupplyFromOffensive[team] += StartOffBonusSup - TeamInfo[team]->GetSupplyAvail();
+        gSupplyFromOffensive[team] +=
+            StartOffBonusSup - TeamInfo[team]->GetSupplyAvail();
 
     if (TeamInfo[team]->GetFuelAvail() < StartOffBonusFuel)
-        gFuelFromOffensive[team] += StartOffBonusFuel - TeamInfo[team]->GetFuelAvail();
+        gFuelFromOffensive[team] +=
+            StartOffBonusFuel - TeamInfo[team]->GetFuelAvail();
 
     if (TeamInfo[team]->GetReplacementsAvail() < StartOffBonusRepl)
-        gReplacmentsFromOffensive[team] += StartOffBonusRepl - TeamInfo[team]->GetReplacementsAvail();
+        gReplacmentsFromOffensive[team] +=
+            StartOffBonusRepl - TeamInfo[team]->GetReplacementsAvail();
 
 #endif
 
     if (TeamInfo[team]->GetSupplyAvail() < StartOffBonusSup)
-        TeamInfo[team]->SetSupplyAvail(StartOffBonusSup);         //from 5000 to StartOffBonusSup
+        TeamInfo[team]->SetSupplyAvail(
+            StartOffBonusSup); //from 5000 to StartOffBonusSup
 
     if (TeamInfo[team]->GetFuelAvail() < StartOffBonusFuel)
-        TeamInfo[team]->SetFuelAvail(StartOffBonusFuel);          //from 5000 to StartOffBonusFuel
+        TeamInfo[team]->SetFuelAvail(
+            StartOffBonusFuel); //from 5000 to StartOffBonusFuel
 
     if (TeamInfo[team]->GetReplacementsAvail() < StartOffBonusRepl)
-        TeamInfo[team]->SetReplacementsAvail(StartOffBonusRepl);   //from 1000 to StartOffBonusRep
+        TeamInfo[team]->SetReplacementsAvail(
+            StartOffBonusRepl); //from 1000 to StartOffBonusRep
 
     // end added section
 
@@ -3296,4 +3431,3 @@ void StartOffensive(int team, int bonus)
     TeamInfo[team]->SetReplacementsAvail(1000);
      */
 }
-

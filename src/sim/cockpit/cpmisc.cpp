@@ -24,11 +24,13 @@ CPMisc::CPMisc()
     mEjectState = FALSE;
 
     mRefuelState = 0;
-    mRefuelTimer  = 0;
+    mRefuelTimer = 0;
 
     mUHFPosition = 0;
 
-    memset(MFDButtonArray, 0, sizeof(int) * MFD_BUTTONS * 4); //Wombat778 4-12-04 changed from 2 to 4
+    memset(MFDButtonArray, 0,
+           sizeof(int) * MFD_BUTTONS *
+               4); //Wombat778 4-12-04 changed from 2 to 4
 }
 
 
@@ -91,34 +93,31 @@ void CPMisc::StepMasterCautionLight(void)
 
     if (mMasterCautionLightState == 0 and masterCautionState == TRUE)
     {
-        mMasterCautionLightState  = 1;
+        mMasterCautionLightState = 1;
     }
     else if (mMasterCautionLightState == 1 and masterCautionState == TRUE)
     {
-        mMasterCautionLightState  = 1;
+        mMasterCautionLightState = 1;
     }
     else if (mMasterCautionLightState == 1 and masterCautionState == FALSE)
     {
-        mMasterCautionLightState  = 2;
+        mMasterCautionLightState = 2;
     }
     else if (mMasterCautionLightState == 2)
     {
-        mMasterCautionLightState  = 3;
+        mMasterCautionLightState = 3;
     }
-    else if (mMasterCautionLightState == 0 and masterCautionState == FALSE and mMasterCautionEvent)
+    else if (mMasterCautionLightState == 0 and masterCautionState == FALSE and
+             mMasterCautionEvent)
     {
-        mMasterCautionLightState  = 3;
+        mMasterCautionLightState = 3;
         mMasterCautionEvent = FALSE;
     }
     else
     {
-        mMasterCautionLightState  = 0;
+        mMasterCautionLightState = 0;
     }
 }
-
-
-
-
 
 
 int CPMisc::GetMFDButtonState(int side, int button)
@@ -131,19 +130,9 @@ int CPMisc::GetMFDButtonState(int side, int button)
 void CPMisc::SetMFDButtonState(int side, int button, int value)
 {
 
-    if (SimDriver.GetPlayerEntity() and SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
+    if (SimDriver.GetPlayerEntity() and
+        SimDriver.GetPlayerEntity()->IsSetFlag(MOTION_OWNSHIP))
     {
         MFDButtonArray[button - 1][side] = value;
     }
 }
-
-
-
-
-
-
-
-
-
-
-

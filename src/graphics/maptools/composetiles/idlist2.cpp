@@ -9,9 +9,9 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <shi/ShiError.h>
-#include "../../Terrain/Ttypes.h"
-#include "IDlist.h"
+#include <shi/shierror.h>
+#include "../../terrain/ttypes.h"
+#include "idlist.h"
 
 
 static const int TILE_SIZE = 16;
@@ -27,7 +27,8 @@ void IDListManager::Setup(char *path, TileListManager *tileListmgr)
     // Create a new composite tile output file
     strcpy(filename, path);
     strcat(filename, "FarTiles.raw");
-    tileFile = open(filename, _O_WRONLY | _O_APPEND | _O_BINARY, _S_IREAD | _S_IWRITE);
+    tileFile =
+        open(filename, _O_WRONLY | _O_APPEND | _O_BINARY, _S_IREAD | _S_IWRITE);
     ShiAssert(tileFile != -1);
 
     // Get the next available code from the tile manager
@@ -68,16 +69,18 @@ WORD IDListManager::GetIDforCode(__int64 code)
     WORD NWcode = (WORD)((code >> 48) & 0xFFFF);
     WORD NEcode = (WORD)((code >> 32) & 0xFFFF);
     WORD SWcode = (WORD)((code >> 16) & 0xFFFF);
-    WORD SEcode = (WORD)((code >> 0)  & 0xFFFF);
+    WORD SEcode = (WORD)((code >> 0) & 0xFFFF);
 
-    printf("Compositing image at offset %0d (code %4X %4X %4X %4X)\n", ID, NWcode, NEcode, SWcode, SEcode);
+    printf("Compositing image at offset %0d (code %4X %4X %4X %4X)\n", ID,
+           NWcode, NEcode, SWcode, SEcode);
     WriteCompositeTile(NWcode, NEcode, SWcode, SEcode);
 
     return ID;
 }
 
 
-void IDListManager::WriteCompositeTile(WORD NWcode, WORD NEcode, WORD SWcode, WORD SEcode)
+void IDListManager::WriteCompositeTile(WORD NWcode, WORD NEcode, WORD SWcode,
+                                       WORD SEcode)
 {
     BYTE outBuffer[32 * 32];
     BYTE *out = outBuffer;
@@ -124,4 +127,3 @@ void IDListManager::WriteCompositeTile(WORD NWcode, WORD NEcode, WORD SWcode, WO
     result = write(tileFile, outBuffer, sizeof(outBuffer));
     ShiAssert(result == sizeof(outBuffer));
 }
-

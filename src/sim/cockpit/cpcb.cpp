@@ -6,8 +6,7 @@
 
 //Exec, Event, Display
 // JPO let the array grow by itself
-CPCallbackStruct CPCallbackArray[] =
-{
+CPCallbackStruct CPCallbackArray[] = {
     {CBEECMPwrLight, NULL, NULL}, //0
     {CBEECMFailLight, NULL, NULL},
     {CBEAuxWarnSearchL, NULL, NULL},
@@ -43,7 +42,7 @@ CPCallbackStruct CPCallbackArray[] =
     {CBEAltInd, NULL, NULL},
     {CBEAltDial, NULL, NULL},
     {CBEMachAsi, NULL, NULL},
-    {CBEMach,      NULL, NULL}, //35
+    {CBEMach, NULL, NULL}, //35
     {CBEEpuPmg, NULL, NULL},
     {CBEToFlcs, NULL, NULL},
     {CBEFlcsRly, NULL, NULL},
@@ -69,7 +68,7 @@ CPCallbackStruct CPCallbackArray[] =
     {CBEThreatWarn7, NULL, NULL},
     {CBEThreatWarn8, NULL, NULL},
     {CBEThreatWarn9, NULL, NULL}, //60
-    {CBEThreatWarn10,    NULL, NULL},
+    {CBEThreatWarn10, NULL, NULL},
     {CBECaution1, NULL, NULL},
     {CBECaution2, NULL, NULL},
     {CBECaution3, NULL, NULL},
@@ -174,7 +173,7 @@ CPCallbackStruct CPCallbackArray[] =
     {CBEFTITLeftDial, NULL, NULL},//TJL 156
     {CBEFTITRightDial, NULL, NULL},//TJL 157
     {CBERoundsRemaining, NULL, NULL},//TJL 158
-    {CBERoundsRemainingDigits,  NULL, NULL},//TJL 159
+    {CBERoundsRemainingDigits, NULL, NULL},//TJL 159
     {CBEMarkerBeacon, NULL, NULL},  // MD -- 20041008: #160
     {NULL, NULL, NULL},
     {NULL, NULL, NULL},
@@ -185,14 +184,13 @@ CPCallbackStruct CPCallbackArray[] =
     {NULL, NULL, NULL},
     {NULL, NULL, NULL},
     {NULL, NULL, NULL},
-    {NULL, NULL, NULL}
-};
+    {NULL, NULL, NULL}};
 // JPO - count them up
-const int TOTAL_CPCALLBACK_SLOTS = sizeof(CPCallbackArray) / sizeof(CPCallbackArray[0]);
+const int TOTAL_CPCALLBACK_SLOTS =
+    sizeof(CPCallbackArray) / sizeof(CPCallbackArray[0]);
 
 //mTransAeroToState mTransStateToAero
-ButtonCallbackStruct ButtonCallbackArray[] =
-{
+ButtonCallbackStruct ButtonCallbackArray[] = {
     {CBExChaffDispense, CBEChaffDispense}, // 0
     {CBExCourseSelect, CBECourseSelect},
     {CBExHeadingSelect, CBEHeadingSelect},
@@ -302,12 +300,12 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {CBExAltLGear, CBEAltLGear}, //JPO 102
     {CBExJfs, CBEJfs}, //JPO, 103
     {CBExEpu, CBEEpu}, //JPO 104
-    {CBExMasterArm,         CBEMasterArm},    // 105
-    {CBExMFDButton,         CBERightGainUp},
-    {CBExMFDButton,         CBERightGainDown},
-    {CBExMFDButton,         CBELeftGainUp},
-    {CBExMFDButton,         CBELeftGainDown},
-    {CBExHUDColor,          CBEHUDColor},                 // 110 COBRA - RED - Now used for HUD contrast
+    {CBExMasterArm, CBEMasterArm},    // 105
+    {CBExMFDButton, CBERightGainUp},
+    {CBExMFDButton, CBERightGainDown},
+    {CBExMFDButton, CBELeftGainUp},
+    {CBExMFDButton, CBELeftGainDown},
+    {CBExHUDColor, CBEHUDColor}, // 110 COBRA - RED - Now used for HUD contrast
     {CBExICPSecondaryExclusive, CBEZEROButton}, //MI ICP Stuff 111
     {CBExICPTertiaryExclusive, CBEResetDEDPage}, //MI ICP Stuff 112
     {CBExICPTertiaryExclusive, CBEICPDEDUP}, //MI ICP Stuff 113
@@ -315,8 +313,8 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {CBExICPTertiaryExclusive, CBEICPCLEAR}, //MI ICP Stuff 115
     {CBExRALTSwitch, CBERALTSwitch}, //RALT - fwd/back RALT switch116
     {CBExRALTSwitch, CBERALTSTDBY}, //MI RALT Stuff 117
-    {CBExRALTSwitch, CBERALTON }, //MI RALT Stuff 118
-    {CBExRALTSwitch, CBERALTOFF }, //MI RALT Stuff 119
+    {CBExRALTSwitch, CBERALTON}, //MI RALT Stuff 118
+    {CBExRALTSwitch, CBERALTOFF}, //MI RALT Stuff 119
     {CBExICPTertiaryExclusive, CBEICPDEDSEQ}, //MI ICP Stuff 120
     {CBExSmsPower, CBESmsPower}, // 121 JPO Avionics SMS power
     {CBExFCCPower, CBEFCCPower}, // 122 JPO Avionics FCC power
@@ -330,15 +328,18 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {CBExRIGHTHPTPower, CBERIGHTHPTPower}, // 130 JPO Avionics Right Hpt power
     {CBExHUDPower, CBEHUDPower}, // 131 JPO Avionics HUD power
     {CBExFCRPower, CBEFCRPower}, // 132 JPO Avionics FCR power
-    {CBExICPSecondaryExclusive, CBENINEButton}, //MI ICP Stuff 133 - moved from drift c/o
+    {CBExICPSecondaryExclusive,
+     CBENINEButton}, //MI ICP Stuff 133 - moved from drift c/o
     {CBExFuelDisplay, CBEFuelSwitch}, // 134 Fuel Switch Step
     {CBExFuelPump, CBEFuelPump}, // 135 Fuel Pump step
     {CBExFuelCock, CBEFuelCock}, // 136 Maste fuel cock valve
-    {CBExFuelExtTrans, CBEFuelExtTrans},// 137 Fuel external transfer switch
+    {CBExFuelExtTrans, CBEFuelExtTrans}, // 137 Fuel external transfer switch
     {CBExAirSource, CBEAirSource}, // 138 Air Source Switch
-    {CBExAltLGear, CBEAltLGearReset},//JPO 139 Alternate Gear Reset
-    {CBExLandingLightToggle, CBELandingLightToggle}, //MI 140 LandingLight switch
-    {CBExParkingBrakeToggle, CBEParkingBrakeToggle}, //MI 141 Parkingbrake switch
+    {CBExAltLGear, CBEAltLGearReset}, //JPO 139 Alternate Gear Reset
+    {CBExLandingLightToggle,
+     CBELandingLightToggle}, //MI 140 LandingLight switch
+    {CBExParkingBrakeToggle,
+     CBEParkingBrakeToggle}, //MI 141 Parkingbrake switch
     {CBExLaserArmToggle, CBELaserArmToggle}, //MI 142 Laser arm switch
     {CBExFuelDoorToggle, CBEFuelDoorToggle}, //MI 143 FuelDoor
     {NULL, CBEKneeboardStpt}, // JPO 144 Kneeboard STPT switch
@@ -349,7 +350,8 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {NULL, CBEAPOverride}, //MI 149 AP override
     {CBExWarnReset, CBEWarnReset}, //MI 150 Warn reset switch
     {CBExReticleSwitch, CBEReticleSwitch}, //MI 151 MAN Reticle
-    {CBExInteriorLightSwitch, CBEInteriorLightSwitch}, // JPO 152 Interior Lights
+    {CBExInteriorLightSwitch,
+     CBEInteriorLightSwitch}, // JPO 152 Interior Lights
     {CBExSeatArmSwitch, CBESeatArmSwitch}, //MI 153 Seat arm switch
     {CBExEWSRWRPowerSwitch, CBEEWSRWRPower}, //MI 154 EWS RWR power
     {CBExEWSJammerPowerSwitch, CBEEWSJammerPower}, //MI 155 EWS Jammer Power
@@ -362,14 +364,16 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {CBExIdleDetent, CBEIdleDetent}, // JPO Idle Detent switch 162
     {CBExInhibitVMS, CBEInhibitVMS}, //MI 163 Inhibit VMS Switch
     {CBExRFSwitch, CBERFSwitch}, //MI 164 RF Switch
-    {CBExInstrumentLightSwitch, CBEInstrumentLightSwitch}, // JPO 165 Interior Lights
+    {CBExInstrumentLightSwitch,
+     CBEInstrumentLightSwitch}, // JPO 165 Interior Lights
     {CBExSpotLightSwitch, CBESpotLightSwitch}, // MI 166 Interior Lights
     {CBExEWSProgButton, CBEEWSProgButton}, //MI 167 EWS Program select
     {CBExGearHandle, CBEGearHandle}, //MI 168 Gear handle
     {NULL, CBEPinkySwitch}, //MI 169 Pinky button on Stick
     {CBExGndJettEnable, CBEGndJettEnable}, //MI 170 Ground Jett enable
     {CBExExtlPower, CBEExtlPower}, //MI 171 Exterior lighting power
-    {CBExExtlAntiColl, CBEExtlAntiColl}, //MI 172 Exterior lighting anti coll switch
+    {CBExExtlAntiColl,
+     CBEExtlAntiColl}, //MI 172 Exterior lighting anti coll switch
     {CBExExtlSteady, CBEExtlSteady}, //MI 173 Exterior lighting steady/flash
     {CBExExtlWing, CBEExtlWing}, //MI 174 Wing light (from inside the cockpit)
     {CBExAVTRSwitch, CBEAVTRSwitch}, //MI 175 AVTR Switch with 3 positions
@@ -382,7 +386,8 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {CBExFLCSReset, CBEFLCSReset}, //MI 182 FLCS Reset Switch
     {CBExFLTBIT, CBEFLTBIT}, //MI 183 BIT switch on FLCS panel
     {CBExOBOGSBit, CBEOBOGSBit}, //MI 184 OBOGS Bit Switch Testpanel
-    {CBExMalIndLights, CBEMalIndLights}, //MI 185 Mal + Ind lights Switch Testpanel
+    {CBExMalIndLights,
+     CBEMalIndLights}, //MI 185 Mal + Ind lights Switch Testpanel
     {CBExProbeHeat, CBEProbeHeat}, //MI 186 Probeheat Switch Testpanel
     {CBExEPUGEN, CBEEPUGEN}, //MI 187 EPU GEN Switch Testpanel
     {CBExTestSwitch, CBETestSwitch}, //MI 188 Test Switch Testpanel
@@ -400,14 +405,15 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {NULL, CBEFlap}, // JPO 200 Flap adjust
     {NULL, CBELef}, // JPO 201 LEF adjust
     {CBExDragChute, CBEDragChute}, // JPO 202 Drag chute
-    {CBExCanopy,    CBECanopy}, // JPO 203 Canopy state
+    {CBExCanopy, CBECanopy}, // JPO 203 Canopy state
     {CBExComm1Vol, CBEComm1Vol}, //MI 204 Comm1 volume
     {CBExComm2Vol, CBEComm2Vol}, //MI 205 Comm1 volume
     {CBExSymWheel, CBESymWheel}, //MI 206 Comm1 volume
     // sfr: commented out
     //{CBExSetNightPanel, CBESetNightPanel}, //MI 207 Nightlighting for Jags
     {NULL, NULL}, // sfr: placeholder to avoid callback number changes
-    {CBExMFDButton, CBEOSB_1T}, //Wombat778 4-12-04  Next 44 callbacks added for 3 and 4 mfds
+    {CBExMFDButton,
+     CBEOSB_1T}, //Wombat778 4-12-04  Next 44 callbacks added for 3 and 4 mfds
     {CBExMFDButton, CBEOSB_2T},
     {CBExMFDButton, CBEOSB_3T}, // 210
     {CBExMFDButton, CBEOSB_4T},
@@ -447,14 +453,15 @@ ButtonCallbackStruct ButtonCallbackArray[] =
     {CBExMFDButton, CBEOSB_18F},
     {CBExMFDButton, CBEOSB_19F},
     {CBExMFDButton, CBEOSB_20F},
-    {CBExMFDButton,         CBEThreeGainUp},
-    {CBExMFDButton,         CBEThreeGainDown}, // 249
-    {CBExMFDButton,         CBEFourGainUp},
-    {CBExMFDButton,         CBEFourGainDown},
+    {CBExMFDButton, CBEThreeGainUp},
+    {CBExMFDButton, CBEThreeGainDown}, // 249
+    {CBExMFDButton, CBEFourGainUp},
+    {CBExMFDButton, CBEFourGainDown},
     // sfr: dummy callbacks for paging
-    {NULL,                  CBEDummyCallback}, // 252
-    {NULL,                 CBEThrRevButton}, // 253
-    {NULL,                 NULL} //
+    {NULL, CBEDummyCallback}, // 252
+    {NULL, CBEThrRevButton}, // 253
+    {NULL, NULL} //
 };
 // JPO count them up
-const int TOTAL_BUTTONCALLBACK_SLOTS = sizeof(ButtonCallbackArray) / sizeof(ButtonCallbackArray[0]);
+const int TOTAL_BUTTONCALLBACK_SLOTS =
+    sizeof(ButtonCallbackArray) / sizeof(ButtonCallbackArray[0]);

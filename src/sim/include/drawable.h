@@ -25,7 +25,8 @@ enum MfdColor
     MFD_HOSTILE = MFD_RED,
     MFD_FRIENDLY = MFD_GREEN,
     MFD_TEAMDATA = MFD_CYAN,
-    MFD_UNKNOWN = MFD_WHITE,	// #3: radar targets (unidentified) yellow -> white (per request 2026-06-17)
+    MFD_UNKNOWN =
+        MFD_WHITE, // #3: radar targets (unidentified) yellow -> white (per request 2026-06-17)
     MFD_DATALINK = MFD_MAGENTA,
     MFD_SWITCHFLASH = MFD_GREY,
     MFD_SEADBOX = MFD_WHITE,
@@ -58,10 +59,12 @@ enum MfdColor
     MFD_ATTACK_STEERING_CUE = MFD_WHITE,
     MFD_STEER_ERROR_CUE = MFD_WHITE,
     MFD_AA_MODE_RANGE_MARK = MFD_GREEN,
-    MFD_FCR_UNK_TRACK = MFD_WHITE,	// #3: FCR track (unidentified) yellow -> white
+    MFD_FCR_UNK_TRACK =
+        MFD_WHITE, // #3: FCR track (unidentified) yellow -> white
     MFD_FCR_UNK_TRACK_TAIL = MFD_MAGENTA,
     MFD_FCR_UNK_TRACK_FLASH = MFD_RED,
-    MFD_FCR_BUGGED = MFD_WHITE,	// #3: the bugged FCR target ('box') yellow -> white
+    MFD_FCR_BUGGED =
+        MFD_WHITE, // #3: the bugged FCR target ('box') yellow -> white
     MFD_FCR_BUGGED_TAIL = MFD_MAGENTA,
     MFD_FCR_BUGGED_FLASH_TAIL = MFD_RED,
     MFD_KILL_X = MFD_RED,
@@ -118,12 +121,23 @@ enum MfdColor
 };
 
 // this needs to go somewhere FCC and MFD can share.
-enum MASTERMODES { MM_AG = 0, MM_AA = 1, MM_NAV = 2, MM_MSL = 3, MM_DGFT = 4, MM_MAXMM};
+enum MASTERMODES
+{
+    MM_AG = 0,
+    MM_AA = 1,
+    MM_NAV = 2,
+    MM_MSL = 3,
+    MM_DGFT = 4,
+    MM_MAXMM
+};
 
 class DrawableClass
 {
 protected:
-    enum DrawableFlags {SOI = 0x1};
+    enum DrawableFlags
+    {
+        SOI = 0x1
+    };
     DrawableClass(void)
     {
         privateDisplay = display = NULL;
@@ -137,15 +151,22 @@ protected:
 public:
     virtual ~DrawableClass(void) {};
 
-    enum DisplayTypes {ThreeDIR, ThreeDVis, ThreeDColor, MonoChrome, NumDisplayTypes};
+    enum DisplayTypes
+    {
+        ThreeDIR,
+        ThreeDVis,
+        ThreeDColor,
+        MonoChrome,
+        NumDisplayTypes
+    };
 
-    virtual void Display(VirtualDisplay*)
+    virtual void Display(VirtualDisplay *)
     {
         ShiWarning("No Display");
     };
-    virtual void DisplayInit(ImageBuffer*) {};
+    virtual void DisplayInit(ImageBuffer *) {};
     virtual void DisplayExit(void);
-    virtual VirtualDisplay* GetDisplay(void)
+    virtual VirtualDisplay *GetDisplay(void)
     {
         return privateDisplay;
     };
@@ -156,8 +177,10 @@ public:
     };
     void SetSOI(int newVal)
     {
-        if (newVal) drawFlags or_eq SOI;
-        else drawFlags and_eq compl SOI;
+        if (newVal)
+            drawFlags or_eq SOI;
+        else
+            drawFlags and_eq compl SOI;
     };
 
     void SetMFD(int newMFD)
@@ -169,7 +192,7 @@ public:
         return MFDOn;
     };
 
-    void  SetIntensity(unsigned int val)
+    void SetIntensity(unsigned int val)
     {
         intensity = val;
     };
@@ -177,10 +200,14 @@ public:
     {
         return intensity;
     };
-    void LabelButton(int idx, char* str1, char* str2 = NULL, int inverse = 0); // Last argument tells if its an INVERSE label or not...
+    void
+    LabelButton(int idx, const char *str1, const char *str2 = NULL,
+                int inverse =
+                    0); // Last argument tells if its an INVERSE label or not...
     void DrawBorder();
     void GetButtonPos(int bno, float *xposp, float *yposp);
-    virtual void PushButton(int, int) {}; // Override to get button messages in subclasses
+    virtual void PushButton(int, int) {
+    }; // Override to get button messages in subclasses
 
     RViewPoint *viewPoint;
     VirtualDisplay *display;
@@ -193,6 +220,5 @@ public:
     static void SetGreenMode(BOOL state);
     //static float lighting[3];
     static void SetLighting(float red, float green, float blue);
-
 };
 #endif

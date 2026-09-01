@@ -1,19 +1,19 @@
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawpuff.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawpuff.h"
 #include "stdhdr.h"
 #include "falcmesg.h"
 #include "helo.h"
 #include "fsound.h"
 #include "soundfx.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/DeathMessage.h"
+#include "msginc/damagemsg.h"
+#include "msginc/deathmessage.h"
 #include "campbase.h"
 #include "simdrive.h"
 #include "hardpnt.h"
 #include "camp2sim.h"
 #include "digi.h"
-#include "MsgInc/WingmanMsg.h"
+#include "msginc/wingmanmsg.h"
 #include "airframe.h"
 #include "otwdrive.h"
 #include "sms.h"
@@ -127,15 +127,15 @@ void HelicopterClass::CleanupDamageStation(void)
 void HelicopterClass::RunExplosion(void)
 {
     int i;
-    Tpoint    pos;
-    Falcon4EntityClassType *classPtr;
-    SimBaseClass *tmpSimBase;
+    Tpoint pos;
+    Falcon4EntityClassType* classPtr;
+    SimBaseClass* tmpSimBase;
     Tpoint tp = Origin;
     Trotation tr = IMatrix;
 
     // F4PlaySound (SFX_DEF[SFX_OWNSHIP_BOOM].handle);
     //F4SoundFXSetPos( SFX_BOOMA1 + PRANDInt5(), TRUE, XPos(), YPos(), ZPos(), 1.0f );
-    SoundPos.Sfx(SFX_BOOMA1 + PRANDInt5());   // MLR 5/16/2004 -
+    SoundPos.Sfx(SFX_BOOMA1 + PRANDInt5()); // MLR 5/16/2004 -
 
     // 1st do primary explosion
     pos.x = XPos();
@@ -146,11 +146,10 @@ void HelicopterClass::RunExplosion(void)
     {
         pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 4.0f;
         SetDelta(XDelta() * 0.1f, YDelta() * 0.1f, -50.0f);
-        OTWDriver.AddSfxRequest(
-            new SfxClass(SFX_GROUND_EXPLOSION, // type
-                         &pos, // world pos
-                         1.2f, // time to live
-                         100.0f)); // scale
+        OTWDriver.AddSfxRequest(new SfxClass(SFX_GROUND_EXPLOSION, // type
+                                             &pos, // world pos
+                                             1.2f, // time to live
+                                             100.0f)); // scale
     }
     else
     {
@@ -169,7 +168,8 @@ void HelicopterClass::RunExplosion(void)
     {
         tmpSimBase = new SimBaseClass(Type());
         CalcTransformMatrix(tmpSimBase);
-        OTWDriver.CreateVisualObject(tmpSimBase, classPtr->visType[i + 2], &tp, &tr, OTWDriver.Scale());
+        OTWDriver.CreateVisualObject(tmpSimBase, classPtr->visType[i + 2], &tp,
+                                     &tr, OTWDriver.Scale());
         tmpSimBase->SetPosition(pos.x, pos.y, pos.z);
 
         if (!i)
@@ -195,13 +195,14 @@ void HelicopterClass::RunExplosion(void)
         if (!i)
         {
             // First peice is more steady and is flaming
-            tmpSimBase->SetYPRDelta(0.0F, 0.0F, 10.0F + PRANDFloat() * 30.0F * DTR);
-            OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_FLAMING_PART, // type
-                             SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
-                             tmpSimBase, // sim base *
-                             3.0f + PRANDFloatPos() * 4.0F, // time to live
-                             1.0F)); // scale
+            tmpSimBase->SetYPRDelta(0.0F, 0.0F,
+                                    10.0F + PRANDFloat() * 30.0F * DTR);
+            OTWDriver.AddSfxRequest(new SfxClass(
+                SFX_FLAMING_PART, // type
+                SFX_MOVES | SFX_USES_GRAVITY | SFX_EXPLODE_WHEN_DONE,
+                tmpSimBase, // sim base *
+                3.0f + PRANDFloatPos() * 4.0F, // time to live
+                1.0F)); // scale
         }
         else
         {
@@ -211,9 +212,11 @@ void HelicopterClass::RunExplosion(void)
                                     PRANDFloat() * 30.0F * DTR);
             OTWDriver.AddSfxRequest(
                 new SfxClass(SFX_SMOKING_PART, // type
-                             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES | SFX_EXPLODE_WHEN_DONE,
+                             SFX_MOVES | SFX_USES_GRAVITY | SFX_BOUNCES |
+                                 SFX_EXPLODE_WHEN_DONE,
                              tmpSimBase, // sim base *
-                             4.0f * PRANDFloatPos() + (float)((i + 1) * (i + 1)), // time to live
+                             4.0f * PRANDFloatPos() +
+                                 (float)((i + 1) * (i + 1)), // time to live
                              1.0)); // scale
         }
     }

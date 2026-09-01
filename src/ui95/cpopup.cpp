@@ -1,4 +1,4 @@
-#include <cISO646>
+#include <ciso646>
 #include <windows.h>
 #include "chandler.h"
 
@@ -22,23 +22,12 @@ enum
     CPU_SETBORDERCOLOR,
 };
 
-char *C_Pu_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[ADDITEM]",
-    "[ITEMFLAGON]",
-    "[ITEMFLAGOFF]",
-    "[RADIOGROUP]",
-    "[STATE]",
-    "[NORMCOLOR]",
-    "[SELCOLOR]",
-    "[DISCOLOR]",
-    "[BARCOLOR]",
-    "[BGCOLOR]",
-    "[OPAQUE]",
-    "[BORDERCOLOR]",
-    0,
+char *C_Pu_Tokens[] = {
+    "[NOTHING]",    "[SETUP]",       "[ADDITEM]",
+    "[ITEMFLAGON]", "[ITEMFLAGOFF]", "[RADIOGROUP]",
+    "[STATE]",      "[NORMCOLOR]",   "[SELCOLOR]",
+    "[DISCOLOR]",   "[BARCOLOR]",    "[BGCOLOR]",
+    "[OPAQUE]",     "[BORDERCOLOR]", 0,
 };
 
 #endif
@@ -82,10 +71,11 @@ C_PopupList::~C_PopupList()
 
 long C_PopupList::Size()
 {
-    return(0);
+    return (0);
 }
 
-void C_PopupList::Setup(long ID, short, C_Handler *Handler, long MenuIconID, long CheckIconID)
+void C_PopupList::Setup(long ID, short, C_Handler *Handler, long MenuIconID,
+                        long CheckIconID)
 {
     SetID(ID);
     SetDefaultFlags();
@@ -153,10 +143,10 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
     POPUPLIST *newitem, *cur;
 
     if (FindID(ID) and Type not_eq C_TYPE_NOTHING)
-        return(FALSE);
+        return (FALSE);
 
-    if ( not Str and Type not_eq C_TYPE_NOTHING)
-        return(FALSE);
+    if (not Str and Type not_eq C_TYPE_NOTHING)
+        return (FALSE);
 
     if (ParentID)
     {
@@ -169,7 +159,8 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
                 if (cur->SubMenu_ == NULL)
                 {
                     cur->SubMenu_ = new C_PopupList;
-                    cur->SubMenu_->Setup(cur->ID_, C_TYPE_NORMAL, Handler_, MenuIconID_, CheckIconID_);
+                    cur->SubMenu_->Setup(cur->ID_, C_TYPE_NORMAL, Handler_,
+                                         MenuIconID_, CheckIconID_);
                     cur->SubMenu_->SetFlags(GetFlags());
                     cur->SubMenu_->SetFont(GetFont());
                     cur->SubMenu_->SetNormColor(NormalColor_);
@@ -181,7 +172,7 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
                     cur->SubMenu_->SetBorderColor(BorderColor_);
                 }
 
-                return(cur->SubMenu_->AddItem(ID, Type, Str, 0));
+                return (cur->SubMenu_->AddItem(ID, Type, Str, 0));
             }
         }
     }
@@ -211,7 +202,8 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
             newitem->MenuIcon_->SetFlags(GetFlags());
             newitem->MenuIcon_->SetImage(MenuIconID_);
         }
-        else if ((Type == C_TYPE_RADIO or Type == C_TYPE_TOGGLE) and CheckIconID_)
+        else if ((Type == C_TYPE_RADIO or Type == C_TYPE_TOGGLE) and
+                 CheckIconID_)
         {
             newitem->CheckIcon_ = new O_Output;
             newitem->CheckIcon_->SetOwner(this);
@@ -239,12 +231,12 @@ BOOL C_PopupList::AddItem(long ID, short Type, _TCHAR *Str, long ParentID)
         cur->Next = newitem;
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_PopupList::AddItem(long ID, short Type, long txtID, long ParentID)
 {
-    return(AddItem(ID, Type, gStringMgr->GetString(txtID), ParentID));
+    return (AddItem(ID, Type, gStringMgr->GetString(txtID), ParentID));
 }
 
 void C_PopupList::RemoveList(POPUPLIST *list)
@@ -304,19 +296,19 @@ POPUPLIST *C_PopupList::FindID(long pID)
     while (Pop)
     {
         if (Pop->ID_ == pID)
-            return(Pop);
+            return (Pop);
         else if (Pop->Type_ == C_TYPE_MENU and Pop->SubMenu_)
         {
             ret = Pop->SubMenu_->FindID(pID);
 
             if (ret)
-                return(ret);
+                return (ret);
         }
 
         Pop = Pop->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 _TCHAR *C_PopupList::GetItemLabel(long ID)
@@ -327,9 +319,9 @@ _TCHAR *C_PopupList::GetItemLabel(long ID)
 
     if (cur)
         if (cur->Label_)
-            return(cur->Label_->GetText());
+            return (cur->Label_->GetText());
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_PopupList::SetItemLabel(long ID, _TCHAR *txt)
@@ -381,11 +373,11 @@ void C_PopupList::SetItemState(long ID, short val)
     if (cur)
     {
         if (cur->Type_ == C_TYPE_TOGGLE)
-            cur->State_ = static_cast<short>(val bitand 1); 
+            cur->State_ = static_cast<short>(val bitand 1);
         else if (cur->Type_ == C_TYPE_RADIO and cur->Group_)
         {
             ClearRadioGroup(cur->Group_);
-            cur->State_ = static_cast<short>(val bitand 1); 
+            cur->State_ = static_cast<short>(val bitand 1);
         }
     }
 }
@@ -397,9 +389,9 @@ short C_PopupList::GetItemState(long ID)
     cur = FindID(ID);
 
     if (cur)
-        return(cur->State_);
+        return (cur->State_);
 
-    return(0);
+    return (0);
 }
 
 void C_PopupList::SetItemGroup(long ID, long Group)
@@ -419,9 +411,9 @@ long C_PopupList::GetItemGroup(long ID)
     cur = FindID(ID);
 
     if (cur)
-        return(cur->Group_);
+        return (cur->Group_);
 
-    return(0);
+    return (0);
 }
 
 void C_PopupList::ClearRadioGroup(long GroupID)
@@ -448,17 +440,18 @@ void C_PopupList::GetSize(short *width, short *height)
 
     w = 0;
 
-    *height = static_cast<short>(gFontList->GetHeight(Font_) * Count_); 
+    *height = static_cast<short>(gFontList->GetHeight(Font_) * Count_);
     cur = Root_;
 
     while (cur)
     {
-        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (not(cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ not_eq C_TYPE_NOTHING)
             {
                 if (cur->Label_)
-                    len = static_cast<short>(gFontList->StrWidth(Font_, cur->Label_->GetText())); 
+                    len = static_cast<short>(
+                        gFontList->StrWidth(Font_, cur->Label_->GetText()));
                 else
                     len = 0;
 
@@ -473,7 +466,8 @@ void C_PopupList::GetSize(short *width, short *height)
     *width = w;
 }
 
-void C_PopupList::SetCallback(long ID, void (*routine)(long ID, short ht, C_Base *))
+void C_PopupList::SetCallback(long ID,
+                              void (*routine)(long ID, short ht, C_Base *))
 {
     POPUPLIST *cur;
 
@@ -515,21 +509,25 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
     POPUPLIST *cur;
     short i;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED))
+        return (0);
 
-    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right or
-        relY < Parent_->ClientArea_[GetClient()].top or relY > Parent_->ClientArea_[GetClient()].bottom)
-        return(0);
+    if (relX < Parent_->ClientArea_[GetClient()].left or
+        relX > Parent_->ClientArea_[GetClient()].right or
+        relY < Parent_->ClientArea_[GetClient()].top or
+        relY > Parent_->ClientArea_[GetClient()].bottom)
+        return (0);
 
-    Selected_ = static_cast<short>((relY - 5) / gFontList->GetHeight(GetFont())); 
+    Selected_ =
+        static_cast<short>((relY - 5) / gFontList->GetHeight(GetFont()));
     cur = Root_;
 
     i = 0;
 
     while (cur and i < Selected_)
     {
-        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (not(cur->flags_ bitand C_BIT_INVISIBLE))
             i++;
 
         cur = cur->Next;
@@ -539,18 +537,18 @@ long C_PopupList::CheckHotSpots(long relX, long relY)
         cur = cur->Next;
 
     if (cur == NULL)
-        return(0);
+        return (0);
 
-    if ( not (cur->flags_ bitand C_BIT_ENABLED))
+    if (not(cur->flags_ bitand C_BIT_ENABLED))
         cur = NULL;
 
     if (cur and cur->Type_ not_eq C_TYPE_NOTHING)
     {
         SetRelXY(relX - GetX(), relY - GetY());
-        return(cur->ID_);
+        return (cur->ID_);
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_PopupList::Process(long ID, short HitType)
@@ -560,7 +558,7 @@ BOOL C_PopupList::Process(long ID, short HitType)
     gSoundMgr->PlaySound(GetSound(HitType));
 
     if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_RMOUSEUP)
-        return(FALSE);
+        return (FALSE);
 
     cur = FindID(ID);
 
@@ -568,28 +566,28 @@ BOOL C_PopupList::Process(long ID, short HitType)
     {
         switch (cur->Type_)
         {
-            case C_TYPE_RADIO:
-                ClearRadioGroup(cur->Group_);
-                cur->State_ = C_STATE_1;
-                Refresh();
-                break;
+        case C_TYPE_RADIO:
+            ClearRadioGroup(cur->Group_);
+            cur->State_ = C_STATE_1;
+            Refresh();
+            break;
 
-            case C_TYPE_TOGGLE:
-                cur->State_ xor_eq 1;
-                Refresh();
-                break;
+        case C_TYPE_TOGGLE:
+            cur->State_ xor_eq 1;
+            Refresh();
+            break;
 
-            case C_TYPE_ITEM:
-                break;
+        case C_TYPE_ITEM:
+            break;
         }
 
         if (cur->Callback_)
             (*cur->Callback_)(ID, HitType, this);
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 // MUST return TRUE
@@ -598,16 +596,18 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
     POPUPLIST *cur;
     short i, item, w, h;
 
-    if (relX < Parent_->ClientArea_[GetClient()].left or relX > Parent_->ClientArea_[GetClient()].right or
-        relY < Parent_->ClientArea_[GetClient()].top or relY > Parent_->ClientArea_[GetClient()].bottom)
+    if (relX < Parent_->ClientArea_[GetClient()].left or
+        relX > Parent_->ClientArea_[GetClient()].right or
+        relY < Parent_->ClientArea_[GetClient()].top or
+        relY > Parent_->ClientArea_[GetClient()].bottom)
     {
         /* CloseSubMenus();
          CloseWindow();
         */
-        return(TRUE);
+        return (TRUE);
     }
 
-    F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
+    F4CSECTIONHANDLE *Leave = UI_Enter(Parent_);
 
     item = static_cast<short>((relY - 5) / gFontList->GetHeight(GetFont()));
 
@@ -641,7 +641,7 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
         while (cur and i < item)
         {
-            if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
+            if (not(cur->flags_ bitand C_BIT_INVISIBLE))
                 i++;
 
             cur = cur->Next;
@@ -653,10 +653,11 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
         if (cur == NULL)
         {
             UI_Leave(Leave);
-            return(TRUE);
+            return (TRUE);
         }
 
-        if (cur->flags_ bitand C_BIT_ENABLED and not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (cur->flags_ bitand C_BIT_ENABLED and
+            not(cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_MENU)
             {
@@ -666,25 +667,46 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
 
                     if (Direction_ == C_TYPE_RIGHT)
                     {
-                        if ((Parent_->GetX() + Parent_->GetW() + w + 48 - 15) < Handler_->GetW())
-                            cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() + Parent_->GetW() - 15),
-                                                      static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_RIGHT); 
+                        if ((Parent_->GetX() + Parent_->GetW() + w + 48 - 15) <
+                            Handler_->GetW())
+                            cur->SubMenu_->OpenWindow(
+                                static_cast<short>(Parent_->GetX() +
+                                                   Parent_->GetW() - 15),
+                                static_cast<short>(
+                                    Selected_ *
+                                        gFontList->GetHeight(GetFont()) +
+                                    Parent_->GetY()),
+                                C_TYPE_RIGHT);
                         else
-                            cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() - w - 48 + 15),
-                                                      static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_LEFT); 
+                            cur->SubMenu_->OpenWindow(
+                                static_cast<short>(Parent_->GetX() - w - 48 +
+                                                   15),
+                                static_cast<short>(
+                                    Selected_ *
+                                        gFontList->GetHeight(GetFont()) +
+                                    Parent_->GetY()),
+                                C_TYPE_LEFT);
                     }
                     else
                     {
                         if ((Parent_->GetX() - w - 48 + 15) > Handler_->GetX())
-                            cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() - w - 48 + 15),
-                                                      static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_LEFT);  
+                            cur->SubMenu_->OpenWindow(
+                                static_cast<short>(Parent_->GetX() - w - 48 +
+                                                   15),
+                                static_cast<short>(
+                                    Selected_ *
+                                        gFontList->GetHeight(GetFont()) +
+                                    Parent_->GetY()),
+                                C_TYPE_LEFT);
                         else
-                            cur->SubMenu_->OpenWindow(static_cast<short>(Parent_->GetX() + Parent_->GetW() - 15),
-                                                      static_cast<short>(Selected_ * gFontList->GetHeight(GetFont()) + Parent_->GetY()),
-                                                      C_TYPE_RIGHT); 
+                            cur->SubMenu_->OpenWindow(
+                                static_cast<short>(Parent_->GetX() +
+                                                   Parent_->GetW() - 15),
+                                static_cast<short>(
+                                    Selected_ *
+                                        gFontList->GetHeight(GetFont()) +
+                                    Parent_->GetY()),
+                                C_TYPE_RIGHT);
                     }
                 }
             }
@@ -692,12 +714,12 @@ BOOL C_PopupList::MouseOver(long relX, long relY, C_Base *)
     }
 
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_PopupList::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     Parent_->update_ or_eq C_DRAW_REFRESHALL;
@@ -711,7 +733,7 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     short fh;
     UI95_RECT frect, drect;
 
-    if ( not Ready())
+    if (not Ready())
         return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
@@ -720,22 +742,28 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     // Draw border
     if (BorderColor_ not_eq BgColor_)
     {
-        Parent_->DrawHLine(surface, BorderColor_, 0, 0, Parent_->GetW(), C_BIT_ABSOLUTE, GetClient(), cliprect);
-        Parent_->DrawHLine(surface, BorderColor_, 0, Parent_->GetH() - 1, Parent_->GetW(), C_BIT_ABSOLUTE, GetClient(), cliprect);
-        Parent_->DrawVLine(surface, BorderColor_, 0, 0, Parent_->GetH(), C_BIT_ABSOLUTE, GetClient(), cliprect);
-        Parent_->DrawVLine(surface, BorderColor_, Parent_->GetW() - 1, 0, Parent_->GetH(), C_BIT_ABSOLUTE, GetClient(), cliprect);
+        Parent_->DrawHLine(surface, BorderColor_, 0, 0, Parent_->GetW(),
+                           C_BIT_ABSOLUTE, GetClient(), cliprect);
+        Parent_->DrawHLine(surface, BorderColor_, 0, Parent_->GetH() - 1,
+                           Parent_->GetW(), C_BIT_ABSOLUTE, GetClient(),
+                           cliprect);
+        Parent_->DrawVLine(surface, BorderColor_, 0, 0, Parent_->GetH(),
+                           C_BIT_ABSOLUTE, GetClient(), cliprect);
+        Parent_->DrawVLine(surface, BorderColor_, Parent_->GetW() - 1, 0,
+                           Parent_->GetH(), C_BIT_ABSOLUTE, GetClient(),
+                           cliprect);
     }
 
     drect = *cliprect;
 
-    fh = static_cast<short>(gFontList->GetHeight(GetFont())); 
+    fh = static_cast<short>(gFontList->GetHeight(GetFont()));
 
     cur = Root_;
     i = 0;
 
     while (cur and i < Selected_ and i < Count_)
     {
-        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (not(cur->flags_ bitand C_BIT_INVISIBLE))
             i++;
 
         cur = cur->Next;
@@ -746,7 +774,8 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (cur)
     {
-        if (cur->Type_ == C_TYPE_NOTHING or not (cur->flags_ bitand C_BIT_ENABLED))
+        if (cur->Type_ == C_TYPE_NOTHING or
+            not(cur->flags_ bitand C_BIT_ENABLED))
             cur = NULL;
     }
 
@@ -757,7 +786,9 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
         drect.right = drect.left + Parent_->GetW() - 2;
         drect.bottom = drect.top + fh;
 
-        if (Parent_->ClipToArea(&frect, &drect, cliprect)) // frect not used... don't care what's in it
+        if (Parent_->ClipToArea(
+                &frect, &drect,
+                cliprect)) // frect not used... don't care what's in it
             Parent_->BlitFill(surface, BarColor_, &drect, C_BIT_ABSOLUTE, 0);
     }
 
@@ -766,18 +797,22 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     while (cur)
     {
-        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (not(cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->Type_ == C_TYPE_NOTHING)
             {
-                Parent_->DrawHLine(surface, DisColor_, 5, 5 + (i * fh) + (fh >> 1) - 1, Parent_->GetW() - 10, GetFlags(), GetClient(), cliprect);
-                Parent_->DrawHLine(surface, SelColor_, 5, 5 + (i * fh) + (fh >> 1), Parent_->GetW() - 10, GetFlags(), GetClient(), cliprect);
+                Parent_->DrawHLine(
+                    surface, DisColor_, 5, 5 + (i * fh) + (fh >> 1) - 1,
+                    Parent_->GetW() - 10, GetFlags(), GetClient(), cliprect);
+                Parent_->DrawHLine(
+                    surface, SelColor_, 5, 5 + (i * fh) + (fh >> 1),
+                    Parent_->GetW() - 10, GetFlags(), GetClient(), cliprect);
             }
             else
             {
                 if (cur->Label_)
                 {
-                    if ( not (cur->flags_ bitand C_BIT_ENABLED))
+                    if (not(cur->flags_ bitand C_BIT_ENABLED))
                         cur->Label_->SetFgColor(DisColor_);
                     else if (Selected_ == i)
                         cur->Label_->SetFgColor(SelColor_);
@@ -787,11 +822,16 @@ void C_PopupList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     cur->Label_->Draw(surface, cliprect);
                 }
 
-                if (cur->flags_ bitand C_BIT_ENABLED and cur->Type_ == C_TYPE_MENU and cur->SubMenu_ and cur->MenuIcon_)
+                if (cur->flags_ bitand C_BIT_ENABLED and
+                    cur->Type_ == C_TYPE_MENU and cur->SubMenu_ and
+                    cur->MenuIcon_)
                 {
                     cur->MenuIcon_->Draw(surface, cliprect);
                 }
-                else if (cur->flags_ bitand C_BIT_ENABLED and (cur->Type_ == C_TYPE_TOGGLE or cur->Type_ == C_TYPE_RADIO) and cur->State_ and cur->CheckIcon_)
+                else if (cur->flags_ bitand C_BIT_ENABLED and
+                         (cur->Type_ == C_TYPE_TOGGLE or
+                          cur->Type_ == C_TYPE_RADIO) and
+                         cur->State_ and cur->CheckIcon_)
                 {
                     cur->CheckIcon_->Draw(surface, cliprect);
                 }
@@ -811,10 +851,10 @@ void C_PopupList::GetWindowSize(short *w, short *h)
     (*h) += 10;
 
     if ((*w) > Handler_->GetW())
-        (*w) = static_cast<short>(Handler_->GetW()); 
+        (*w) = static_cast<short>(Handler_->GetW());
 
     if ((*h) > Handler_->GetH())
-        (*h) = static_cast<short>(Handler_->GetH()); 
+        (*h) = static_cast<short>(Handler_->GetH());
 }
 
 BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
@@ -824,20 +864,21 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     short w, h, i, fh;
 
     if (Handler_ == NULL)
-        return(FALSE);
+        return (FALSE);
 
-    fh = static_cast<short>(gFontList->GetHeight(GetFont())); 
+    fh = static_cast<short>(gFontList->GetHeight(GetFont()));
 
     i = 0;
     cur = Root_;
 
     while (cur)
     {
-        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (not(cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->MenuIcon_)
             {
-                cur->MenuIcon_->SetY(fh / 2 - cur->MenuIcon_->GetH() / 2 + 5 + (i)*fh);
+                cur->MenuIcon_->SetY(fh / 2 - cur->MenuIcon_->GetH() / 2 + 5 +
+                                     (i)*fh);
                 cur->MenuIcon_->SetInfo();
             }
 
@@ -849,7 +890,8 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
 
             if (cur->CheckIcon_)
             {
-                cur->CheckIcon_->SetY(fh / 2 - cur->CheckIcon_->GetH() / 2 + 5 + (i)*fh);
+                cur->CheckIcon_->SetY(fh / 2 - cur->CheckIcon_->GetH() / 2 + 5 +
+                                      (i)*fh);
                 cur->CheckIcon_->SetInfo();
             }
 
@@ -873,22 +915,27 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     if (GetFlags() bitand C_BIT_TRANSLUCENT)
         Window_->SetFlagBitOn(C_BIT_TRANSLUCENT);
 
-    if ((x + w) > Handler_->GetW()) x = static_cast<short>(Handler_->GetW() - w - 1); 
+    if ((x + w) > Handler_->GetW())
+        x = static_cast<short>(Handler_->GetW() - w - 1);
 
-    if ((y + h) > Handler_->GetH()) y = static_cast<short>(Handler_->GetH() - h - 1); 
+    if ((y + h) > Handler_->GetH())
+        y = static_cast<short>(Handler_->GetH() - h - 1);
 
-    if (x < 0) x = 0;
+    if (x < 0)
+        x = 0;
 
-    if (y < 0) y = 0;
+    if (y < 0)
+        y = 0;
 
-    Window_->SetRanges(0, 0, static_cast<short>(Handler_->GetW()), static_cast<short>(Handler_->GetH()), w, h); 
+    Window_->SetRanges(0, 0, static_cast<short>(Handler_->GetW()),
+                       static_cast<short>(Handler_->GetH()), w, h);
     Window_->SetXY(x, y);
 
     cur = Root_;
 
     while (cur)
     {
-        if ( not (cur->flags_ bitand C_BIT_INVISIBLE))
+        if (not(cur->flags_ bitand C_BIT_INVISIBLE))
         {
             if (cur->MenuIcon_)
             {
@@ -926,7 +973,7 @@ BOOL C_PopupList::OpenWindow(short x, short y, short Dir)
     if (WinType_ == C_TYPE_EXCLUSIVE)
         MouseOver(x - Window_->GetX(), y - Window_->GetY(), this);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_PopupList::CloseWindow()
@@ -940,7 +987,7 @@ BOOL C_PopupList::CloseWindow()
     Window_ = NULL;
     this->SetParent(NULL);
     Handler_->LeaveCritical();
-    return(TRUE);
+    return (TRUE);
 }
 
 #ifdef _UI95_PARSER_
@@ -951,69 +998,70 @@ short C_PopupList::LocalFind(char *token)
     while (C_Pu_Tokens[i])
     {
         if (strnicmp(token, C_Pu_Tokens[i], strlen(C_Pu_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_PopupList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *Hndlr)
 {
     switch (ID)
     {
-        case CPU_SETUP:
-            Setup(P[0], (short)P[1], Hndlr, P[2], P[3]);
-            break;
+    case CPU_SETUP:
+        Setup(P[0], (short)P[1], Hndlr, P[2], P[3]);
+        break;
 
-        case CPU_ADDITEM:
-            AddItem(P[0], (short)P[1], P[2], P[3]);
-            break;
+    case CPU_ADDITEM:
+        AddItem(P[0], (short)P[1], P[2], P[3]);
+        break;
 
-        case CPU_SETITEMFLAGBITON:
-            SetItemFlagBitOn(P[0], P[1]);
-            break;
+    case CPU_SETITEMFLAGBITON:
+        SetItemFlagBitOn(P[0], P[1]);
+        break;
 
-        case CPU_SETITEMFLAGBITOFF:
-            SetItemFlagBitOff(P[0], P[1]);
-            break;
+    case CPU_SETITEMFLAGBITOFF:
+        SetItemFlagBitOff(P[0], P[1]);
+        break;
 
-        case CPU_SETGROUP:
-            SetItemGroup(P[0], P[1]);
-            break;
+    case CPU_SETGROUP:
+        SetItemGroup(P[0], P[1]);
+        break;
 
-        case CPU_SETSTATE:
-            SetItemState(P[0], (short)P[1]);
-            break;
+    case CPU_SETSTATE:
+        SetItemState(P[0], (short)P[1]);
+        break;
 
-        case CPU_SETNORMCOLOR:
-            SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CPU_SETNORMCOLOR:
+        SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CPU_SETSELCOLOR:
-            SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CPU_SETSELCOLOR:
+        SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CPU_SETDISCOLOR:
-            SetDisColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CPU_SETDISCOLOR:
+        SetDisColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CPU_SETBARCOLOR:
-            SetBarColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CPU_SETBARCOLOR:
+        SetBarColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CPU_SETBGCOLOR:
-            SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CPU_SETBGCOLOR:
+        SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CPU_SETOPAQUE:
-            SetOpaque(P[0]);
-            break;
+    case CPU_SETOPAQUE:
+        SetOpaque(P[0]);
+        break;
 
-        case CPU_SETBORDERCOLOR:
-            SetBorderColor(P[0] bitor ((P[1] bitand 0xff) << 8) bitor ((P[2] bitand 0xff) << 16));
-            break;
+    case CPU_SETBORDERCOLOR:
+        SetBorderColor(P[0] bitor ((P[1] bitand 0xff) << 8) bitor
+                       ((P[2] bitand 0xff) << 16));
+        break;
     }
 }
 

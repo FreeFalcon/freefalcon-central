@@ -9,9 +9,8 @@
 #ifndef _TMAP_H_
 #define _TMAP_H_
 
-#include "Ttypes.h"
-#include "Tlevel.h"
-
+#include "ttypes.h"
+#include "tlevel.h"
 
 
 // The global terrain database used by everyone
@@ -40,7 +39,7 @@ public:
     };
 
     // Provide access to the levels which make up this map
-    TLevel* Level(int level)
+    TLevel *Level(int level)
     {
         ShiAssert(level < nLevels);
         return (&Levels[level]);
@@ -98,10 +97,10 @@ public:
     float GetMEA(float FTnorth, float FTeast);
 
     // Probably should be protected, but things are easier (faster?) this way...
-    Tcolor ColorTable[ 256 ];
-    Tcolor DarkColorTable[ 256 ];
-    Tcolor GreenTable[ 256 ];
-    Tcolor DarkGreenTable[ 256 ];
+    Tcolor ColorTable[256];
+    Tcolor DarkColorTable[256];
+    Tcolor GreenTable[256];
+    Tcolor DarkGreenTable[256];
 
 protected:
     BOOL initialized;

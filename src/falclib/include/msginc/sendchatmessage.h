@@ -12,10 +12,10 @@
  * Required Include Files
  */
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "falcmesg.h"
 //#include "mission.h"
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Chat Message
@@ -23,12 +23,14 @@
 class UI_SendChatMessage : public FalconEvent
 {
 public:
-    UI_SendChatMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_SendChatMessage(VU_ID entityId, VuTargetEntity *target,
+                       VU_BOOL loopback = TRUE);
     UI_SendChatMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~UI_SendChatMessage(void);
     virtual int Size() const
     {
-        return sizeof(VU_ID) + sizeof(short) + dataBlock.size + FalconEvent::Size();
+        return sizeof(VU_ID) + sizeof(short) + dataBlock.size +
+               FalconEvent::Size();
     };
     //sfr: changed to long *
     int Decode(VU_BYTE **buf, long *rem);
@@ -37,15 +39,14 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         short size;
-        void* message;
+        void *message;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

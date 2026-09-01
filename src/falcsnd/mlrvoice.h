@@ -1,4 +1,4 @@
-#include <dsound.h>
+#include "platform/win32shim/dsound.h" // Artscout - 2026: OpenAL-backed DirectSound on BOTH platforms (see dsound_openal.cpp)
 #include "soundfx.h"
 #include "alist.h"
 
@@ -23,11 +23,13 @@ class mlrVoiceHandle;
 class mlrVoiceHandle : public ANode
 {
     friend mlrVoice;
+
 public:
     mlrVoiceHandle(class F4SoundPos *Owner, int SfxID, int UID);
     ~mlrVoiceHandle();
 
-    void Play(float Pscale, float Vol, float X, float Y, float Z, float VX, float VY, float VZ);
+    void Play(float Pscale, float Vol, float X, float Y, float Z, float VX,
+              float VY, float VZ);
     bool IsPlaying(void);
     void Stop(void);
 
@@ -35,16 +37,15 @@ public:
 
 private:
     mlrVoice *voice; // my baby
-    F4SoundPos  *SPos;   // my baby's daddy
+    F4SoundPos *SPos;   // my baby's daddy
 
-    int   sfxid;
-    int   userid;
+    int sfxid;
+    int userid;
     SFX_DEF_ENTRY *sfx;
+
 public:
-    int   lastPlayTime; // Delete Time
+    int lastPlayTime; // Delete Time
 };
-
-
 
 
 extern mlrVoiceManager gVoiceManager;
@@ -71,10 +72,9 @@ public:
     Tpoint listenerVelocity;
 
 private:
-    F4CSECTIONHANDLE*    mlrVoiceSection; // Thread critical section information
+    F4CSECTIONHANDLE *mlrVoiceSection; // Thread critical section information
     void MovePlay2Hold(void);
 };
-
 
 
 class mlrVoice : public ANode
@@ -82,14 +82,21 @@ class mlrVoice : public ANode
     friend class CSoundMgr;
     friend class mlrVoiceManager; // we're buddies
 public:
-
     mlrVoice(mlrVoiceHandle *owner);
     ~mlrVoice();
-    void Play(float PScale, float Vol, float X, float Y, float Z, float VX, float VY, float VZ);
+    void Play(float PScale, float Vol, float X, float Y, float Z, float VX,
+              float VY, float VZ);
     void Pause(void);
     bool IsPlaying(void);
     void Stop(void);
-    enum mlrVoiceStatus { VSHOLD, VSSTART, VSPLAYING, VSPAUSED, VSSTOP };
+    enum mlrVoiceStatus
+    {
+        VSHOLD,
+        VSSTART,
+        VSPLAYING,
+        VSPAUSED,
+        VSSTOP
+    };
 
     mlrVoiceStatus status;
     // ANode virtual, used to prioritize the queue list
@@ -101,7 +108,8 @@ private:
 
     float priority;
 
-    void PreExec(void); // used to initialize vol levels based on in/out of pit and set priority.
+    void PreExec(
+        void); // used to initialize vol levels based on in/out of pit and set priority.
     void Exec(void);
     bool AllocateBuffers(void);
     void ReleaseBuffers(void);
@@ -109,17 +117,16 @@ private:
     bool OK;
 
     // these should only be set in the constructor.
-    IDirectSoundBuffer   *DSoundBuffer;
-    LPDIRECTSOUND3DBUFFER  DSound3dBuffer;
+    IDirectSoundBuffer *DSoundBuffer;
+    LPDIRECTSOUND3DBUFFER DSound3dBuffer;
 
-    float x, y, z;  // the last emmitting position;
+    float x, y, z; // the last emmitting position;
     float vx, vy, vz; // velocities
     float pscale;
-    int   freq;
+    int freq;
     float initvol, vol;
     float distsq;
-    int   startTime;
+    int startTime;
     int autodelete;
     int is3d;
-
 };

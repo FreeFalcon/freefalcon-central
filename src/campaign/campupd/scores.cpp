@@ -1,6 +1,6 @@
 #include "stdhdr.h"
 #include "dogfight.h"
-#include "initData.h"
+#include "initdata.h"
 #include "simbase.h"
 #include "campwp.h"
 #include "camp2sim.h"
@@ -8,13 +8,13 @@
 #include "entity.h"
 #include "simveh.h"
 #include "sms.h"
-#include "SimDrive.h"
+#include "simdrive.h"
 #include "mission.h"
 #include "classtbl.h"
 #include "otwdrive.h"
-#include "MsgInc/SendDogfightInfo.h"
-#include "MsgInc/RequestDogfightInfo.h"
-#include "MsgInc/RegenerationMsg.h"
+#include "msginc/senddogfightinfo.h"
+#include "msginc/requestdogfightinfo.h"
+#include "msginc/regenerationmsg.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
 //Retro_dead 15Jan2004 #define DIRECTINPUT_VERSION 0x0700
@@ -23,21 +23,20 @@
 #include "falcsess.h"
 #include "uicomms.h"
 #include "aircrft.h"
-#include "CampList.h"
-#include "Flight.h"
-#include "Mission.h"
-#include "CampWP.h"
-#include "SimMover.h"
-#include "MissEval.h"
-#include "GameMgr.h"
-#include "TimerThread.h"
-#include "Team.h"
+#include "camplist.h"
+#include "flight.h"
+#include "mission.h"
+#include "campwp.h"
+#include "simmover.h"
+#include "misseval.h"
+#include "gamemgr.h"
+#include "timerthread.h"
+#include "team.h"
 #include "teamdata.h"
 #include "tac_class.h"
 
 
-extern tactical_mission
-*current_tactical_mission;
+extern tactical_mission *current_tactical_mission;
 
 // Scoring Variables
 // Instant action
@@ -113,7 +112,8 @@ void MakeDogfightTopTen(int mode)
                     {
                         score[numscores] = pilot_data->score;
                         active[numscores] = 1;
-                        strcpy(gScoreName[numscores], pilot_data->pilot_callsign);
+                        strcpy(gScoreName[numscores],
+                               pilot_data->pilot_callsign);
                     }
                     else
                     {
@@ -127,7 +127,8 @@ void MakeDogfightTopTen(int mode)
                         {
                             score[worst] = pilot_data->score;
                             active[worst] = 1;
-                            strcpy(gScoreName[worst], pilot_data->pilot_callsign);
+                            strcpy(gScoreName[worst],
+                                   pilot_data->pilot_callsign);
                         }
                     }
                 }
@@ -136,7 +137,8 @@ void MakeDogfightTopTen(int mode)
                     // Team mode, collect all 4 team scores (we'll sort later)
                     score[flight_ptr->flight_team] += pilot_data->score;
                     active[flight_ptr->flight_team]++;
-                    strcpy(gScoreName[flight_ptr->flight_team], TeamInfo[flight_ptr->flight_team]->GetName());
+                    strcpy(gScoreName[flight_ptr->flight_team],
+                           TeamInfo[flight_ptr->flight_team]->GetName());
                 }
 
                 numscores++;
@@ -177,7 +179,7 @@ void MakeDogfightTopTen(int mode)
     }
 
     for (i = 0; i < 10; i++)
-        _stprintf(gScorePoints[i], "%1ld", score[i]);
+        _stprintf(gScorePoints[i], "%1d", score[i]);
 }
 
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props" Condition="Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -332,12 +333,23 @@
     <ClInclude Include="..\Include\RADIX.H" />
     <ClInclude Include="costable.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
+    <Import Project="..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets" Condition="Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets')" />
   </ImportGroup>
   <ProjectExtensions>
     <VisualStudio>
       <UserProperties DevPartner_IsInstrumented="1" />
     </VisualStudio>
   </ProjectExtensions>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets'))" />
+  </Target>
 </Project>

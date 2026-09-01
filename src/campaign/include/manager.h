@@ -2,21 +2,22 @@
 #ifndef MANAGER_H
 #define MANAGER_H
 
-#include "Entity.h"
-#include "F4Vu.h"
+#include "entity.h"
+#include "f4vu.h"
 
 // ===================================
 // Manager flags
 // ===================================
 
-#define CTM_MUST_BE_OWNED 0x01 // Do this action only if tasker owner by this machine
+#define CTM_MUST_BE_OWNED                                                      \
+    0x01 // Do this action only if tasker owner by this machine
 
 // ===================================
 // Manager class
 // ===================================
 
 class CampManagerClass;
-typedef CampManagerClass* CampManager;
+typedef CampManagerClass *CampManager;
 
 class CampManagerClass : public FalconEntity
 {
@@ -32,8 +33,10 @@ public:
     CampManagerClass(FILE *file);
     ~CampManagerClass(void);
     virtual void InitData();
+
 private:
-    void InitLocalData(Team  t);
+    void InitLocalData(Team t);
+
 public:
     virtual int SaveSize(void);
     virtual int Save(VU_BYTE **stream);
@@ -72,7 +75,9 @@ public:
     {
         return 0;
     }
-    virtual void DoCalculations() {}
+    virtual void DoCalculations()
+    {
+    }
     virtual short GetCampID(void)
     {
         return 0;
@@ -98,14 +103,14 @@ public:
     void SendMessage(VU_ID id, short msg, short d1, short d2, short d3);
 };
 
-#include "ATM.h"
-#include "GTM.h"
-#include "NTM.h"
+#include "atm.h"
+#include "gtm.h"
+#include "ntm.h"
 
 // ===========================
 // Global functions
 // ===========================
 
-extern VuEntity* NewManager(short tid, VU_BYTE **stream, long *rem);
+extern VuEntity *NewManager(short tid, VU_BYTE **stream, long *rem);
 
 #endif

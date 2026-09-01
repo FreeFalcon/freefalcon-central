@@ -25,7 +25,7 @@ typedef struct
     float DeltaY;
     float DeltaZ;
     float MinDistance, MaxDistance;
-    BOOL  CheckPitch;
+    BOOL CheckPitch;
     float MinPitch, MaxPitch;
 } OBJECTINFO;
 
@@ -51,7 +51,9 @@ public:
         Root_ = NULL;
         LockCount_ = 0;
     }
-    ~C_BSPList() {}
+    ~C_BSPList()
+    {
+    }
     void Setup();
     void Cleanup();
     void Add(BSPLIST **list, BSPLIST *obj);
@@ -78,16 +80,23 @@ public:
     BSPLIST *LoadBSP(long ID, long objID);
     BSPLIST *LoadBridge(long ID, long objID);
     BSPLIST *LoadBuilding(long ID, long objID, Tpoint *pos, float heading);
-    BSPLIST *CreateContainer(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc);
-    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent);
-    BSPLIST *LoadDrawableUnit(long ID, long visType, Tpoint *objPos, float facing, uchar domain, uchar type, uchar stype);
+    BSPLIST *CreateContainer(long ID, Objective obj, short f, short fid,
+                             Falcon4EntityClassType *classPtr,
+                             FeatureClassDataType *fc);
+    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid,
+                                 Falcon4EntityClassType *classPtr,
+                                 FeatureClassDataType *fc, Tpoint *objPos,
+                                 BSPLIST *Parent);
+    BSPLIST *LoadDrawableUnit(long ID, long visType, Tpoint *objPos,
+                              float facing, uchar domain, uchar type,
+                              uchar stype);
     BSPLIST *Find(long ID)
     {
-        return(Find(ID, Root_));
+        return (Find(ID, Root_));
     }
     BSPLIST *GetFirst()
     {
-        return(Root_);
+        return (Root_);
     }
 };
 

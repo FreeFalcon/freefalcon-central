@@ -10,18 +10,18 @@
 // Class table entry structure
 // ==================================
 
-#pragma pack (1)
+#pragma pack(1)
 
 typedef struct
 {
     VuEntityType vuClassData;
-    short          visType[7];
-    short          vehicleDataIndex;
-    uchar          dataType;
-    void*          dataPtr;
+    short visType[7];
+    short vehicleDataIndex;
+    uchar dataType;
+    void *dataPtr;
 } Falcon4EntityClassType;
 
-#pragma pack ()
+#pragma pack()
 
 // ==================================
 // Private data data structures
@@ -32,13 +32,16 @@ struct UnitClassDataType
     short Index; // descriptionIndex pointing here
     int NumElements[VEHICLE_GROUPS_PER_UNIT];
     short VehicleType[VEHICLE_GROUPS_PER_UNIT]; // Class table description index
-    uchar VehicleClass[VEHICLE_GROUPS_PER_UNIT][8]; // 9 byte class description array
+    uchar VehicleClass[VEHICLE_GROUPS_PER_UNIT]
+                      [8]; // 9 byte class description array
     ushort Flags; // Unit capibility flags (see VEH_ flags in vehicle.h)
     _TCHAR Name[20]; // Unit name 'Infantry', 'Armor'
     MoveType MovementType;
     short MovementSpeed;
     short MaxRange; // Movement/flight range with full supply
-    long Fuel; // Fuel (internal)
+    int Fuel; // Fuel (internal). #104: int (not long) -- the .UCD file stores this 32-bit; on LP64 Linux a `long`
+    // would be 8 bytes, inflating sizeof(UnitClassDataType) so the file-size sanity check (LoadUnitData)
+    // rejects the file. int is 32-bit on both Windows (LLP64) and Linux (LP64), matching the on-disk layout.
     short Rate; // Fuel usage- in lbs per minute (cruise speed)
     short PtDataIndex; // Index into pt header data table
     uchar Scores[MAXIMUM_ROLES]; // Score for each type of mission or role
@@ -46,10 +49,14 @@ struct UnitClassDataType
     uchar HitChance[MOVEMENT_TYPES]; // Unit hit chances (best hitchance)
     uchar Strength[MOVEMENT_TYPES]; // Unit strengths (full strength only)
     uchar Range[MOVEMENT_TYPES]; // Firing ranges (maximum range)
-    uchar Detection[MOVEMENT_TYPES]; // Electronic detection ranges at full strength
-    uchar DamageMod[OtherDam + 1]; // How much each type will hurt me (% of strength applied)
+    uchar Detection
+        [MOVEMENT_TYPES]; // Electronic detection ranges at full strength
+    uchar
+        DamageMod[OtherDam +
+                  1]; // How much each type will hurt me (% of strength applied)
     uchar RadarVehicle; // ID of the radar vehicle for this unit
-    short SpecialIndex; // Index into yet another table (max stores for squadrons)
+    short
+        SpecialIndex; // Index into yet another table (max stores for squadrons)
     short IconIndex; // Index to this unit's icon type
 };
 
@@ -71,7 +78,9 @@ struct ObjClassDataType
     short DeagDistance; // Distance to deaggregate at.
     short PtDataIndex; // Index into pt header data table
     uchar Detection[MOVEMENT_TYPES]; // Detection ranges
-    uchar DamageMod[OtherDam + 1]; // How much each type will hurt me (% of strength applied)
+    uchar
+        DamageMod[OtherDam +
+                  1]; // How much each type will hurt me (% of strength applied)
     short IconIndex; // Index to this objective's icon type
     uchar Features; // Number of features in this objective
     uchar RadarFeature; // ID of the radar feature for this objective
@@ -131,7 +140,9 @@ struct FeatureClassDataType
     float Angle; // Angle of vehicle ramp, if any
     short RadarType; // Index into RadarDataTable
     uchar Detection[MOVEMENT_TYPES]; // Electronic detection ranges
-    uchar DamageMod[OtherDam + 1]; // How much each type will hurt me (% of strength applied)
+    uchar
+        DamageMod[OtherDam +
+                  1]; // How much each type will hurt me (% of strength applied)
 };
 
 struct VehicleClassDataType
@@ -142,9 +153,9 @@ struct VehicleClassDataType
     _TCHAR Name[15];
     _TCHAR NCTR[5];
     float RCSfactor; // log2( 1 + RCS relative to an F16 )
-    long MaxWt; // Max loaded weight in lbs.
-    long EmptyWt; // Empty weight in lbs.
-    long FuelWt; // Weight of max fuel in lbs.
+    int MaxWt; // Max loaded weight in lbs.  #104: int (not long) -- .VCD stores these 32-bit; LP64 `long` (8B)
+    int EmptyWt; // Empty weight in lbs.       would inflate sizeof(VehicleClassDataType) and fail the file-size
+    int FuelWt; // Weight of max fuel in lbs.  check in LoadVehicleData. int is 32-bit on Windows and Linux alike.
     short FuelEcon; // Fuel usage in lbs./min.
     short EngineSound; // SoundFX sample index of corresponding engine sound
     short HighAlt; // in hundreds of feet
@@ -154,24 +165,32 @@ struct VehicleClassDataType
     short RadarType; // Index into RadarDataTable
     short NumberOfPilots; // # of pilots (for eject)
     ushort RackFlags; //0x01 means hardpoint 0 needs a rack, 0x02 -> hdpt 1, etc
-    ushort VisibleFlags; //0x01 means hardpoint 0 is visible, 0x02 -> hdpt 1, etc
+    ushort
+        VisibleFlags; //0x01 means hardpoint 0 is visible, 0x02 -> hdpt 1, etc
     uchar CallsignIndex;
     uchar CallsignSlots;
-    uchar HitChance[MOVEMENT_TYPES]; // Vehicle hit chances (best hitchance bitand bonus)
-    uchar Strength[MOVEMENT_TYPES]; // Combat strengths (full strength only) (calculated)
-    uchar Range[MOVEMENT_TYPES]; // Firing ranges (full strength only) (calculated)
+    uchar HitChance
+        [MOVEMENT_TYPES]; // Vehicle hit chances (best hitchance bitand bonus)
+    uchar Strength
+        [MOVEMENT_TYPES]; // Combat strengths (full strength only) (calculated)
+    uchar Range
+        [MOVEMENT_TYPES]; // Firing ranges (full strength only) (calculated)
     uchar Detection[MOVEMENT_TYPES]; // Electronic detection ranges
     short Weapon[HARDPOINT_MAX]; // Weapon id of weapons (or weapon list)
     uchar Weapons[HARDPOINT_MAX]; // Number of shots each (fully supplied)
-    uchar DamageMod[OtherDam + 1]; // How much each type will hurt me (% of strength applied)
+    uchar
+        DamageMod[OtherDam +
+                  1]; // How much each type will hurt me (% of strength applied)
 };
 
 struct SquadronStoresDataType
 {
-    uchar Stores[MAXIMUM_WEAPTYPES]; // Weapon stores (only has meaning for squadrons)
+    uchar Stores
+        [MAXIMUM_WEAPTYPES]; // Weapon stores (only has meaning for squadrons)
     uchar infiniteAG; // One AG weapon we've chosen to always have available
     uchar infiniteAA; // One AA weapon we've chosen to always have available
-    uchar infiniteGun; // Our main gun weapon, which we will always have available
+    uchar
+        infiniteGun; // Our main gun weapon, which we will always have available
 };
 
 struct PtHeaderDataType
@@ -179,47 +198,50 @@ struct PtHeaderDataType
     short objID; // ID of the objective this belongs to
     uchar type; // The type of pt data this contains
     uchar count; // Number of points
-    uchar features[MAX_FEAT_DEPEND]; // Features this list depends on (# in objective's feature list)
+    uchar features
+        [MAX_FEAT_DEPEND]; // Features this list depends on (# in objective's feature list)
     short data; // Other data (runway heading, for example)
     float sinHeading;
     float cosHeading;
     short first; // Index of first point
     short texIdx; // texture to apply to this runway
-    char runwayNum; // -1 if not a runway, indicates which runway this list applies to
+    char
+        runwayNum; // -1 if not a runway, indicates which runway this list applies to
     char ltrt; // put base pt to rt or left
     short nextHeader; // Index of next header, if any
 };
 
 struct PtDataType
 {
-    float xOffset, yOffset; // X and Y offsets of this point (from center of objective tile)
+    float xOffset,
+        yOffset; // X and Y offsets of this point (from center of objective tile)
     uchar type; // The type of point this is
     uchar flags;
 };
 
 typedef struct SimWeaponDataType
 {
-    int  flags;                            // Flags for the SMS
-    float cd;                              // Drag coefficient
-    float weight;                          // Weight
-    float area;                            // sirface area for drag calc
-    float xEjection;                       // Body X axis ejection velocity
-    float yEjection;                       // Body Y axis ejection velocity
-    float zEjection;                       // Body Z axis ejection velocity
-    char  mnemonic[8];                     // SMS Mnemonic
-    int   weaponClass;                     // SMS Weapon Class
-    int   domain;                          // SMS Weapon Domain
-    int   weaponType;                      // SMS Weapon Type
-    int   dataIdx;                         // Aditional characteristics data file
+    int flags; // Flags for the SMS
+    float cd; // Drag coefficient
+    float weight; // Weight
+    float area; // sirface area for drag calc
+    float xEjection; // Body X axis ejection velocity
+    float yEjection; // Body Y axis ejection velocity
+    float zEjection; // Body Z axis ejection velocity
+    char mnemonic[8]; // SMS Mnemonic
+    int weaponClass; // SMS Weapon Class
+    int domain; // SMS Weapon Domain
+    int weaponType; // SMS Weapon Type
+    int dataIdx; // Aditional characteristics data file
 } SimWEaponDataType;
 
 typedef struct SimACDefType
 {
-    int  combatClass;                      // What type of combat does it do?
-    int  airframeIdx;                      // Index into airframe tables
-    int  signatureIdx;                     // Index into signature tables (IR only for now)
-    int  sensorType[5];                    // Sensor Types
-    int  sensorIdx[5];                     // Index into sensor data tables
+    int combatClass; // What type of combat does it do?
+    int airframeIdx; // Index into airframe tables
+    int signatureIdx; // Index into signature tables (IR only for now)
+    int sensorType[5]; // Sensor Types
+    int sensorIdx[5]; // Index into sensor data tables
 } SimACDefType;
 
 typedef struct RackGroup
@@ -237,21 +259,21 @@ typedef struct RackObject
 // Externals
 // ===============================================
 
-extern UnitClassDataType* UnitDataTable;
-extern ObjClassDataType* ObjDataTable;
-extern FeatureEntry* FeatureEntryDataTable;
-extern WeaponClassDataType* WeaponDataTable;
-extern FeatureClassDataType* FeatureDataTable;
-extern VehicleClassDataType* VehicleDataTable;
-extern SquadronStoresDataType* SquadronStoresDataTable;
-extern PtHeaderDataType* PtHeaderDataTable;
-extern PtDataType* PtDataTable;
-extern SimWeaponDataType* SimWeaponDataTable;
-extern SimACDefType*           SimACDefTable;
-extern RocketClassDataType* RocketDataTable; // Added by M.N.
-extern DirtyDataClassType* DDP;
+extern UnitClassDataType *UnitDataTable;
+extern ObjClassDataType *ObjDataTable;
+extern FeatureEntry *FeatureEntryDataTable;
+extern WeaponClassDataType *WeaponDataTable;
+extern FeatureClassDataType *FeatureDataTable;
+extern VehicleClassDataType *VehicleDataTable;
+extern SquadronStoresDataType *SquadronStoresDataTable;
+extern PtHeaderDataType *PtHeaderDataTable;
+extern PtDataType *PtDataTable;
+extern SimWeaponDataType *SimWeaponDataTable;
+extern SimACDefType *SimACDefTable;
+extern RocketClassDataType *RocketDataTable; // Added by M.N.
+extern DirtyDataClassType *DDP;
 
-extern Falcon4EntityClassType* Falcon4ClassTable;
+extern Falcon4EntityClassType *Falcon4ClassTable;
 
 extern short NumObjectiveTypes;
 extern int F4GenericTruckType;
@@ -301,7 +323,8 @@ extern int LoadSimWeaponData(char *filename);
 
 extern void InitEntityClasses(void);
 
-extern int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype, uchar sp, uchar owner, uchar c6, uchar c7);
+extern int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype,
+                      uchar sp, uchar owner, uchar c6, uchar c7);
 
 extern char *GetClassName(int ID);
 extern DWORD MapVisId(DWORD ID);
@@ -310,5 +333,3 @@ int FindBestRackID(int rackgroup, int count);
 int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count);
 
 #endif
-
-

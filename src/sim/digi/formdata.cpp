@@ -2,7 +2,7 @@
 #include "simfile.h"
 #include "digi.h"
 
-#define FORMATION_DATA_FILE   "formdat.fil"
+#define FORMATION_DATA_FILE "formdat.fil"
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gReadInMemPool;
@@ -10,7 +10,7 @@ extern MEM_POOL gReadInMemPool;
 
 ACFormationData::ACFormationData(void)
 {
-    SimlibFileClass* formFile;
+    SimlibFileClass *formFile;
     int i, j;
     int num4Slots;
     int num2Slots;
@@ -24,10 +24,12 @@ ACFormationData::ACFormationData(void)
     numFormations = atoi(formFile->GetNext());
 
 #ifdef USE_SH_POOLS
-    positionData = (PositionData **)MemAllocPtr(gReadInMemPool, sizeof(PositionData*)*numFormations, 0);
-    twoposData = (PositionData *)MemAllocPtr(gReadInMemPool, sizeof(PositionData) * numFormations, 0);
+    positionData = (PositionData **)MemAllocPtr(
+        gReadInMemPool, sizeof(PositionData *) * numFormations, 0);
+    twoposData = (PositionData *)MemAllocPtr(
+        gReadInMemPool, sizeof(PositionData) * numFormations, 0);
 #else
-    positionData = new PositionData*[numFormations];
+    positionData = new PositionData *[numFormations];
     twoposData = new PositionData[numFormations];
 #endif
 
@@ -41,7 +43,8 @@ ACFormationData::ACFormationData(void)
         formFile->GetNext(); // Skip the formation name
 
 #ifdef USE_SH_POOLS
-        positionData[i] = (PositionData *)MemAllocPtr(gReadInMemPool, sizeof(PositionData) * num4Slots, 0);
+        positionData[i] = (PositionData *)MemAllocPtr(
+            gReadInMemPool, sizeof(PositionData) * num4Slots, 0);
 #else
         positionData[i] = new PositionData[num4Slots];
 #endif
@@ -50,7 +53,8 @@ ACFormationData::ACFormationData(void)
         {
             positionData[i][j].relAz = (float)atof(formFile->GetNext()) * DTR;
             positionData[i][j].relEl = (float)atof(formFile->GetNext()) * DTR;
-            positionData[i][j].range = (float)atof(formFile->GetNext()) * NM_TO_FT;
+            positionData[i][j].range =
+                (float)atof(formFile->GetNext()) * NM_TO_FT;
             positionData[i][j].formNum = formNum;
         }
 
@@ -80,12 +84,12 @@ ACFormationData::~ACFormationData(void)
 
     for (i = 0; i < numFormations; i++)
     {
-        delete [] positionData[i];
+        delete[] positionData[i];
         positionData[i] = NULL;
     }
 
-    delete [] positionData;
-    delete [] twoposData; // JPO memory leak fix
+    delete[] positionData;
+    delete[] twoposData; // JPO memory leak fix
 }
 
 
@@ -94,7 +98,7 @@ int ACFormationData::FindFormation(int msgNum)
     int i = 0;
     BOOL done = FALSE;
 
-    while ( not done and i < numFormations)
+    while (not done and i < numFormations)
     {
         if (positionData[i][0].formNum == msgNum)
         {

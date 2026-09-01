@@ -44,7 +44,7 @@ enum
     FILE_NAME,
 };
 
-int ParseCommandLine(LPSTR  lpCmdLine)
+int ParseCommandLine(LPSTR lpCmdLine)
 {
     char *Token;
     long expect = 0;
@@ -57,7 +57,7 @@ int ParseCommandLine(LPSTR  lpCmdLine)
     if (Token == NULL)
     {
         printf("No List file specified\n");
-        return(0);
+        return (0);
     }
 
     sprintf(FileList, "%s", Token);
@@ -66,7 +66,7 @@ int ParseCommandLine(LPSTR  lpCmdLine)
     if (Token == NULL)
     {
         printf("No output file specified\n");
-        return(0);
+        return (0);
     }
 
     sprintf(OutputFile, "%s", Token);
@@ -93,33 +93,34 @@ int ParseCommandLine(LPSTR  lpCmdLine)
         {
             switch (expecttype)
             {
-                case CLR_KEY:
-                    expect = 0;
-                    COLORKEY = atol(Token);
-                    expecttype = 0;
-                    break;
+            case CLR_KEY:
+                expect = 0;
+                COLORKEY = atol(Token);
+                expecttype = 0;
+                break;
 
-                case FILE_NAME:
-                    UsePathList = 1;
-                    strcpy(PathFile, Token);
-                    expect = 0;
-                    expecttype = 0;
-                    break;
+            case FILE_NAME:
+                UsePathList = 1;
+                strcpy(PathFile, Token);
+                expect = 0;
+                expecttype = 0;
+                break;
 
-                default:
-                    expect = 0;
-                    expecttype = 0;
-                    break;
+            default:
+                expect = 0;
+                expecttype = 0;
+                break;
             }
         }
 
         Token = strtok(NULL, " \t\n\r,");
     }
 
-    return(1);
+    return (1);
 }
 
-long BuildColorTable(WORD *img, long x, long y, long w, long h, long width, long height)
+long BuildColorTable(WORD *img, long x, long y, long w, long h, long width,
+                     long height)
 {
     long i, j;
     long count;
@@ -127,8 +128,10 @@ long BuildColorTable(WORD *img, long x, long y, long w, long h, long width, long
 
     if (!w || !h || !width || !height)
     {
-        printf("Error invalid params to color table (%1ld,%1ld,%1ld,%1ld) imw=%1ld\n", x, y, w, h, width);
-        return(0);
+        printf("Error invalid params to color table (%1ld,%1ld,%1ld,%1ld) "
+               "imw=%1ld\n",
+               x, y, w, h, width);
+        return (0);
     }
 
     if (ColorOrder)
@@ -152,8 +155,8 @@ long BuildColorTable(WORD *img, long x, long y, long w, long h, long width, long
     if (UseColorKey)
     {
         color = COLORKEY;
-        ColorOrder->Add(color, (void*)1);
-        IDOrder->Add(0, (void*)COLORKEY);
+        ColorOrder->Add(color, (void *)1);
+        IDOrder->Add(0, (void *)COLORKEY);
         count = 1;
     }
     else
@@ -164,15 +167,15 @@ long BuildColorTable(WORD *img, long x, long y, long w, long h, long width, long
         {
             color = img[(height - i) * width + j];
 
-            if (!ColorOrder->Find(img[(height - i)*width + j]))
+            if (!ColorOrder->Find(img[(height - i) * width + j]))
             {
-                ColorOrder->Add(color, (void*)(count + 1));
-                IDOrder->Add(count, (void*)(img[(height - i)*width + j]));
+                ColorOrder->Add(color, (void *)(count + 1));
+                IDOrder->Add(count, (void *)(img[(height - i) * width + j]));
                 count++;
             }
         }
 
-    return(count);
+    return (count);
 }
 
 WORD *MakePalette(long entries)
@@ -185,17 +188,18 @@ WORD *MakePalette(long entries)
     for (i = 0; i < entries; i++)
         palette[i] = (WORD)(IDOrder->Find(i));
 
-    return(palette);
+    return (palette);
 }
 
-unsigned char *ConvertTo8Bit(WORD *img, long x, long y, long w, long h, long width, long height)
+unsigned char *ConvertTo8Bit(WORD *img, long x, long y, long w, long h,
+                             long width, long height)
 {
     unsigned char *newimage;
     long i, j, didx;
     short pal;
 
     if (!img || !width || !w || !h || !height)
-        return(NULL);
+        return (NULL);
 
     newimage = new unsigned char[w * h];
 
@@ -207,20 +211,23 @@ unsigned char *ConvertTo8Bit(WORD *img, long x, long y, long w, long h, long wid
             for (j = x; j < x + w; j++)
             {
                 pal = (short)(ColorOrder->Find(img[(height - i) * width + j]));
-                newimage[didx++] = (short)(ColorOrder->Find(img[(height - i) * width + j])) - 1;
+                newimage[didx++] =
+                    (short)(ColorOrder->Find(img[(height - i) * width + j])) -
+                    1;
             }
     }
 
-    return(newimage);
+    return (newimage);
 }
 
-WORD *CopySubArea(WORD *Image, long x, long y, long w, long h, long width, long height)
+WORD *CopySubArea(WORD *Image, long x, long y, long w, long h, long width,
+                  long height)
 {
     WORD *newimage;
     long i, j, didx;
 
     if (!Image || !w || !h || !width || !height)
-        return(NULL);
+        return (NULL);
 
     newimage = new WORD[w * h];
 
@@ -234,7 +241,7 @@ WORD *CopySubArea(WORD *Image, long x, long y, long w, long h, long width, long 
                 newimage[didx++] = Image[(height - i) * width + j];
     }
 
-    return(newimage);
+    return (newimage);
 }
 
 BOOL LoadTarga16File(char *filename, char **image, BITMAPINFO *bmi)
@@ -247,7 +254,8 @@ BOOL LoadTarga16File(char *filename, char **image, BITMAPINFO *bmi)
 
 
     hFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ,
-                       (LPSECURITY_ATTRIBUTES) NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, (HANDLE) NULL);
+                       (LPSECURITY_ATTRIBUTES)NULL, OPEN_EXISTING,
+                       FILE_ATTRIBUTE_NORMAL, (HANDLE)NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
         return FALSE;
@@ -271,7 +279,7 @@ BOOL LoadTarga16File(char *filename, char **image, BITMAPINFO *bmi)
         return NULL;
 
     // Read in image data
-    data = new char[ width * height * 2 ];
+    data = new char[width * height * 2];
 
     if (!ReadFile(hFile, data, width * height * 2, &dwBytesRead, NULL))
         return NULL;
@@ -333,7 +341,7 @@ void SaveResource(char *filename)
 
     curpos = 0;
 
-    rec = (ImageList*)ImageTable->GetFirst();
+    rec = (ImageList *)ImageTable->GetFirst();
 
     while (rec)
     {
@@ -349,7 +357,7 @@ void SaveResource(char *filename)
         }
 
         fwrite(&rec->Header, sizeof(ImageFmt), 1, header);
-        rec = (ImageList*)ImageTable->GetNext();
+        rec = (ImageList *)ImageTable->GetNext();
     }
 
     fclose(header);
@@ -357,8 +365,7 @@ void SaveResource(char *filename)
     OutputSize = HeaderSize + DataSize;
 }
 
-char *TODOList[] =
-{
+char *TODOList[] = {
     NULL,
     "[LOADIMAGE]",
     "[LOADTRANSIMAGE]",
@@ -390,12 +397,12 @@ long FindTODO(char *token)
     while (TODOList[i])
     {
         if (!stricmp(token, TODOList[i]))
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void ProcessImageLine(char buffer[])
@@ -470,7 +477,9 @@ void ProcessImageLine(char buffer[])
     if (!token)
         return;
 
-    if (whattodo == LOAD_IMAGE || whattodo == LOAD_DISCARD || whattodo == LOAD_TRANSPARENT || whattodo == LOAD_DISCARD_TRANSPARENT || whattodo == LOAD_PATH || whattodo == LOAD_PATH_TRANSPARENT)
+    if (whattodo == LOAD_IMAGE || whattodo == LOAD_DISCARD ||
+        whattodo == LOAD_TRANSPARENT || whattodo == LOAD_DISCARD_TRANSPARENT ||
+        whattodo == LOAD_PATH || whattodo == LOAD_PATH_TRANSPARENT)
     {
         if (token[0] != '"')
         {
@@ -489,7 +498,9 @@ void ProcessImageLine(char buffer[])
         token = strtok(NULL, " ,\t\n");
     }
 
-    if (whattodo == LOAD_IMAGE || whattodo == LOAD_TRANSPARENT || whattodo == LOAD_DISCARD || whattodo == LOAD_DISCARD_TRANSPARENT || whattodo == LOAD_PATH || whattodo == LOAD_PATH_TRANSPARENT)
+    if (whattodo == LOAD_IMAGE || whattodo == LOAD_TRANSPARENT ||
+        whattodo == LOAD_DISCARD || whattodo == LOAD_DISCARD_TRANSPARENT ||
+        whattodo == LOAD_PATH || whattodo == LOAD_PATH_TRANSPARENT)
     {
         if (OriginalImage)
             delete OriginalImage;
@@ -518,10 +529,12 @@ void ProcessImageLine(char buffer[])
     if (whattodo == LOAD_IMAGE || whattodo == LOAD_DISCARD)
         UseColorKey = 0;
 
-    if (whattodo == LOAD_TRANSPARENT || whattodo == LOAD_DISCARD_TRANSPARENT || whattodo == LOAD_PATH_TRANSPARENT)
+    if (whattodo == LOAD_TRANSPARENT || whattodo == LOAD_DISCARD_TRANSPARENT ||
+        whattodo == LOAD_PATH_TRANSPARENT)
         UseColorKey = _RSC_COLORKEY_;
 
-    if (whattodo == LOAD_IMAGE || whattodo == LOAD_TRANSPARENT || whattodo == LOAD_PATH || whattodo == LOAD_PATH_TRANSPARENT)
+    if (whattodo == LOAD_IMAGE || whattodo == LOAD_TRANSPARENT ||
+        whattodo == LOAD_PATH || whattodo == LOAD_PATH_TRANSPARENT)
     {
         if (token)
         {
@@ -541,29 +554,29 @@ void ProcessImageLine(char buffer[])
         {
             switch (i)
             {
-                case 0:
-                    x = atol(token);
-                    break;
+            case 0:
+                x = atol(token);
+                break;
 
-                case 1:
-                    y = atol(token);
-                    break;
+            case 1:
+                y = atol(token);
+                break;
 
-                case 2:
-                    w = atol(token);
-                    break;
+            case 2:
+                w = atol(token);
+                break;
 
-                case 3:
-                    h = atol(token);
-                    break;
+            case 3:
+                h = atol(token);
+                break;
 
-                case 4:
-                    cx = atol(token);
-                    break;
+            case 4:
+                cx = atol(token);
+                break;
 
-                case 5:
-                    cy = atol(token);
-                    break;
+            case 5:
+                cy = atol(token);
+                break;
             }
 
             i++;
@@ -577,7 +590,8 @@ void ProcessImageLine(char buffer[])
         }
     }
 
-    if (whattodo != LOAD_DISCARD && whattodo != LOAD_DISCARD_TRANSPARENT && whattodo != LOAD_PATH && whattodo != LOAD_PATH_TRANSPARENT)
+    if (whattodo != LOAD_DISCARD && whattodo != LOAD_DISCARD_TRANSPARENT &&
+        whattodo != LOAD_PATH && whattodo != LOAD_PATH_TRANSPARENT)
     {
         if (cx == -1)
             cx = w / 2;
@@ -588,13 +602,15 @@ void ProcessImageLine(char buffer[])
         ImageRecord = new ImageList;
         memset(ImageRecord, 0, sizeof(ImageList));
 
-        colors = BuildColorTable((WORD*)OriginalImage, x, y, w, h, ImageW, ImageH - 1);
+        colors = BuildColorTable((WORD *)OriginalImage, x, y, w, h, ImageW,
+                                 ImageH - 1);
 
         if (colors && colors <= 256)
         {
             size = w * h;
             Palette = MakePalette(colors);
-            Image8 = (char *)ConvertTo8Bit((WORD*)OriginalImage, x, y, w, h, ImageW, ImageH - 1);
+            Image8 = (char *)ConvertTo8Bit((WORD *)OriginalImage, x, y, w, h,
+                                           ImageW, ImageH - 1);
 
             ImageRecord->Header.Type = _RSC_IS_IMAGE_;
             strcpy(ImageRecord->Header.ID, Label);
@@ -619,7 +635,8 @@ void ProcessImageLine(char buffer[])
         {
             size = w * h * sizeof(WORD);
 
-            Image16 = CopySubArea((WORD*)OriginalImage, x, y, w, h, ImageW, ImageH - 1);
+            Image16 = CopySubArea((WORD *)OriginalImage, x, y, w, h, ImageW,
+                                  ImageH - 1);
 
             ImageRecord->Header.Type = _RSC_IS_IMAGE_;
             strcpy(ImageRecord->Header.ID, Label);
@@ -683,7 +700,8 @@ void ProcessPathList(char buffer[])
     }
 
     if (InputSize)
-        printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize, OutputSize, OutputSize * 100 / InputSize);
+        printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize, OutputSize,
+               OutputSize * 100 / InputSize);
 
     InputSize = 0;
     OutputSize = 0;
@@ -691,7 +709,8 @@ void ProcessPathList(char buffer[])
     DataSize = 0;
 }
 
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLine, int nCmdShow)
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine, int nCmdShow)
 {
     FILE *ifp;
     char buffer[220];
@@ -701,7 +720,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
         printf("Make Resource - Version 1.0 - by Peter Ward\n\n");
         printf("Usage: MAKERSC [path]<imagerc.irc> [path]<output>\n");
         printf("    Sorry... ALL input MUST be in 16bit targa format\n");
-        return(0);
+        return (0);
     }
 
     ifp = fopen(FileList, "r");
@@ -709,7 +728,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
     if (!ifp)
     {
         printf("Can't open imagerc.irc file (%s)\n", FileList);
-        return(0);
+        return (0);
     }
 
     TheTime = GetCurrentTime();
@@ -737,7 +756,8 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
             delete OriginalImage;
 
         if (InputSize)
-            printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize, OutputSize, OutputSize * 100 / InputSize);
+            printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize,
+                   OutputSize, OutputSize * 100 / InputSize);
     }
     else
     {
@@ -759,5 +779,5 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
         delete IDOrder;
     }
 
-    return(0);
+    return (0);
 }

@@ -2,20 +2,20 @@
 #include <stdio.h>
 #include <string.h>
 #include "cmpglobl.h"
-#include "F4Vu.h"
-#include "CampList.h"
-#include "Find.h"
-#include "PlayerOp.h"
-#include "Unit.h"
-#include "Team.h"
-#include "Options.h"
-#include "GndUnit.h"
-#include "CmpClass.h"
-#include "FalcSess.h"
+#include "f4vu.h"
+#include "camplist.h"
+#include "find.h"
+#include "playerop.h"
+#include "unit.h"
+#include "team.h"
+#include "options.h"
+#include "gndunit.h"
+#include "cmpclass.h"
+#include "falcsess.h"
 #include "classtbl.h"
-#include "Squadron.h"
-#include "Supply.h"
-#include "F4Find.h"
+#include "squadron.h"
+#include "supply.h"
+#include "f4find.h"
 
 void ClearMissionLists(void);
 void ClearEventList(void);
@@ -28,7 +28,7 @@ void ReadSpecialCampaignData(char* scenario);
 // Option Setting Functions
 // ========================
 
-uchar max_veh[5] = { 8, 12, 12, 16, 16 };
+uchar max_veh[5] = {8, 12, 12, 16, 16};
 
 void AdjustCampaignOptions(void)
 {
@@ -63,8 +63,10 @@ void AdjustExperienceLevels(void)
     {
         if (GetTTRelations(FalconLocalSession->GetTeam(), i) == War)
         {
-            TeamInfo[i]->airExperience = PlayerOptions.CampaignEnemyAirExperience() * 10 + 60;
-            TeamInfo[i]->airDefenseExperience = PlayerOptions.CampaignEnemyGroundExperience() * 10 + 60;
+            TeamInfo[i]->airExperience =
+                PlayerOptions.CampaignEnemyAirExperience() * 10 + 60;
+            TeamInfo[i]->airDefenseExperience =
+                PlayerOptions.CampaignEnemyGroundExperience() * 10 + 60;
         }
     }
 
@@ -79,7 +81,8 @@ void AdjustSquadronPilotSkills(Squadron u)
 
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
-        skill = ((TeamInfo[u->GetOwner()]->airExperience - 60) / 10) + rand() % 3 - 1;
+        skill = ((TeamInfo[u->GetOwner()]->airExperience - 60) / 10) +
+                rand() % 3 - 1;
 
         if (skill > 4)
             skill = 4;
@@ -130,14 +133,15 @@ void AdjustForceRatios(void)
         {
             TeamInfo[t]->max_vehicle[RCLASS_AIR] = VEHICLE_GROUPS_PER_UNIT;
             TeamInfo[t]->max_vehicle[RCLASS_GROUND] = VEHICLE_GROUPS_PER_UNIT;
-            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE] = VEHICLE_GROUPS_PER_UNIT;
+            TeamInfo[t]->max_vehicle[RCLASS_AIRDEFENSE] =
+                VEHICLE_GROUPS_PER_UNIT;
             TeamInfo[t]->max_vehicle[RCLASS_NAVAL] = VEHICLE_GROUPS_PER_UNIT;
         }
     }
 
     // Traverse all our real units, adjusting force strengths as necessary
     VuListIterator myit(AllUnitList);
-    u = (Unit) myit.GetFirst();
+    u = (Unit)myit.GetFirst();
 
     while (u)
     {
@@ -145,9 +149,9 @@ void AdjustForceRatios(void)
         // LoadCampaign, so these are fresh scenarios - Also, flights shouldn't be filled.
         u->SetLosses(0);
 
-        if ( not u->IsFlight())
+        if (not u->IsFlight())
         {
-            UnitClassDataType *uc = u->GetUnitClassData();
+            UnitClassDataType* uc = u->GetUnitClassData();
 
             for (int slot = 0; slot < VEHICLE_GROUPS_PER_UNIT; slot++)
                 u->SetNumVehicles(slot, uc->NumElements[slot]);
@@ -163,52 +167,53 @@ void AdjustForceRatios(void)
         // Now chop companies
         switch (u->GetRClass())
         {
-            case RCLASS_AIR:
-                if (u->GetTeam() == pteam)
-                    ChopCompany(u, prau);
-                else if (u->GetTeam() == eteam)
-                    ChopCompany(u, erau);
-                else
-                    ChopCompany(u, DEFAULT_COMPANY_RATIO);
+        case RCLASS_AIR:
+            if (u->GetTeam() == pteam)
+                ChopCompany(u, prau);
+            else if (u->GetTeam() == eteam)
+                ChopCompany(u, erau);
+            else
+                ChopCompany(u, DEFAULT_COMPANY_RATIO);
 
-                if (u->IsSquadron())
-                    AdjustSquadronPilotSkills((Squadron)u);
+            if (u->IsSquadron())
+                AdjustSquadronPilotSkills((Squadron)u);
 
-                break;
+            break;
 
-            case RCLASS_NAVAL:
-                if (u->GetTeam() == pteam)
-                    ChopCompany(u, prnu);
-                else if (u->GetTeam() == eteam)
-                    ChopCompany(u, ernu);
-                else
-                    ChopCompany(u, DEFAULT_COMPANY_RATIO);
+        case RCLASS_NAVAL:
+            if (u->GetTeam() == pteam)
+                ChopCompany(u, prnu);
+            else if (u->GetTeam() == eteam)
+                ChopCompany(u, ernu);
+            else
+                ChopCompany(u, DEFAULT_COMPANY_RATIO);
 
-                break;
+            break;
 
-            case RCLASS_AIRDEFENSE:
-                if (u->GetTeam() == pteam)
-                    ChopCompany(u, prad);
-                else if (u->GetTeam() == eteam)
-                    ChopCompany(u, erad);
-                else
-                    ChopCompany(u, DEFAULT_COMPANY_RATIO);
+        case RCLASS_AIRDEFENSE:
+            if (u->GetTeam() == pteam)
+                ChopCompany(u, prad);
+            else if (u->GetTeam() == eteam)
+                ChopCompany(u, erad);
+            else
+                ChopCompany(u, DEFAULT_COMPANY_RATIO);
 
-                break;
+            break;
 
-            default:
-                if (u->GetTeam() == pteam)
-                    ChopCompany(u, prgu);
-                else if (u->GetTeam() == eteam)
-                    ChopCompany(u, ergu);
-                else
-                    ChopCompany(u, DEFAULT_COMPANY_RATIO);
+        default:
+            if (u->GetTeam() == pteam)
+                ChopCompany(u, prgu);
+            else if (u->GetTeam() == eteam)
+                ChopCompany(u, ergu);
+            else
+                ChopCompany(u, DEFAULT_COMPANY_RATIO);
 
-                break;
+            break;
         }
 
         // Resupply to the team's supply level
-        if (u->Real() and (u->GetDomain() == DOMAIN_LAND or u->GetDomain() == DOMAIN_SEA))
+        if (u->Real() and
+            (u->GetDomain() == DOMAIN_LAND or u->GetDomain() == DOMAIN_SEA))
             u->SetUnitSupply(TeamInfo[u->GetTeam()]->startStats.supplyLevel);
         else if (u->IsSquadron())
         {
@@ -220,21 +225,28 @@ void AdjustForceRatios(void)
 
             // Squadrons want enough fuel to load each plane SQUADRON_MISSIONS_PER_HOUR times per hour for 2 supply periods
             // fuel = (((uc->Fuel * u->GetTotalVehicles() * SQUADRON_MISSIONS_PER_HOUR*2*MIN_RESUPPLY)/60) * TeamInfo[u->GetTeam()]->startStats.fuelLevel)/100;
-            fuel = ((u->GetUnitFuelNeed(FALSE) + u->GetUnitFuelNeed(TRUE)) * TeamInfo[u->GetTeam()]->startStats.fuelLevel) / 100;
+            fuel = ((u->GetUnitFuelNeed(FALSE) + u->GetUnitFuelNeed(TRUE)) *
+                    TeamInfo[u->GetTeam()]->startStats.fuelLevel) /
+                   100;
             u->SetSquadronFuel(fuel * SUPPLY_PT_FUEL);
 
             // Now let's add our munititions
-            ratio = (float)(TeamInfo[u->GetTeam()]->startStats.supplyLevel) / 100.0F;
+            ratio = (float)(TeamInfo[u->GetTeam()]->startStats.supplyLevel) /
+                    100.0F;
 
             for (int i = 0; i < MAXIMUM_WEAPTYPES; i++)
-                u->SetUnitStores(i, FloatToInt32(ratio * SquadronStoresDataTable[uc->SpecialIndex].Stores[i]));
+                u->SetUnitStores(
+                    i,
+                    FloatToInt32(
+                        ratio *
+                        SquadronStoresDataTable[uc->SpecialIndex].Stores[i]));
 
             // Reset our stats
             for (int j = 0; j < ARO_OTHER; j++)
                 ((Squadron)u)->SetRating(j, uc->Scores[j]);
         }
 
-        u = (Unit) myit.GetNext();
+        u = (Unit)myit.GetNext();
     }
 }
 
@@ -246,4 +258,3 @@ void ChopCompany(Unit u, int crating)
     for (slot = max_veh[crating]; slot < VEHICLE_GROUPS_PER_UNIT; slot++)
         u->SetNumVehicles(slot, 0);
 }
-

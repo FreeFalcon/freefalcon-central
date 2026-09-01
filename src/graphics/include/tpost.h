@@ -13,9 +13,9 @@
 #ifndef _TPOST_H_
 #define _TPOST_H_
 
-#include "TerrTex.h"
-#include "FarTex.h"
-#include "Ttypes.h"
+#include "terrtex.h"
+#include "fartex.h"
+#include "ttypes.h"
 
 
 typedef struct Tpost

@@ -5,20 +5,19 @@
 #include "airframe.h"
 #include "campbase.h"
 #include "radar.h"
-#include "Find.h" // 2002-03-11 MN
-#include "Falclib/include/MsgInc/RadioChatterMsg.h" // MN
-#include "Flight.h" // MN
+#include "find.h" // 2002-03-11 MN
+#include "falclib/include/msginc/radiochattermsg.h" // MN
+#include "flight.h" // MN
 
 #define SHOW_MANEUVERLABELS
 #ifdef SHOW_MANEUVERLABELS
-#include "Graphics/include/drawbsp.h"
-#include "SimDrive.h"
+#include "graphics/include/drawbsp.h"
+#include "simdrive.h"
 extern int g_nShowDebugLabels;
 extern int g_nAirbaseCheck;
 extern float g_fBingoReturnDistance;
 
-static const char *ATCModes[] =
-{
+static const char* ATCModes[] = {
     "noATC",
 
     "lReqClearance",
@@ -60,7 +59,7 @@ void DigitalBrain::Actions(void)
 {
     float cur;
 
-    RadarClass* theRadar = (RadarClass*) FindSensor(self, SensorClass::Radar);
+    RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
 #if 0 // test if each AGmission has a target waypoint
 
@@ -136,229 +135,234 @@ void DigitalBrain::Actions(void)
 
         switch (curMode)
         {
-            case FollowOrdersMode:
+        case FollowOrdersMode:
 
-                // edg double check groundAvoidNeeded if set -- could be stuck there
-                if (groundAvoidNeeded)
-                    GroundCheck();
+            // edg double check groundAvoidNeeded if set -- could be stuck there
+            if (groundAvoidNeeded)
+                GroundCheck();
 
-                AiPerformManeuver();
+            AiPerformManeuver();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "FollowOrdersMode");
+            sprintf(label, "FollowOrdersMode");
 #endif
 
-                break;
+            break;
 
-            case WingyMode:
+        case WingyMode:
 
-                // edg double check groundAvoidNeeded if set -- could be stuck there
-                if (groundAvoidNeeded)
-                    GroundCheck();
+            // edg double check groundAvoidNeeded if set -- could be stuck there
+            if (groundAvoidNeeded)
+                GroundCheck();
 
-                AiFollowLead();
+            AiFollowLead();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "WingmanMode");
+            sprintf(label, "WingmanMode");
 #endif
-                break;
+            break;
 
-            case RefuelingMode:
+        case RefuelingMode:
 
-                // edg double check groundAvoidNeeded if set -- could be stuck there
-                if (groundAvoidNeeded)
-                    GroundCheck();
+            // edg double check groundAvoidNeeded if set -- could be stuck there
+            if (groundAvoidNeeded)
+                GroundCheck();
 
-                AiRefuel();
+            AiRefuel();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "RefuelingMode");
+            sprintf(label, "RefuelingMode");
 #endif
-                break;
+            break;
 
-                /*------------------*/
-                /* follow waypoints */
-                /*------------------*/
-                // 2002-03-11 MN break up RTBMode and WaypointMode.
-                // RTBCheck: If we have said Fumes, check for closest airbase and head there instead towards home base...
-                // If not, continue to follow waypoints.
-            case RTBMode:
-                sprintf(label, "RTBMode");
-                FollowWaypoints();
-                break;
+            /*------------------*/
+            /* follow waypoints */
+            /*------------------*/
+            // 2002-03-11 MN break up RTBMode and WaypointMode.
+            // RTBCheck: If we have said Fumes, check for closest airbase and head there instead towards home base...
+            // If not, continue to follow waypoints.
+        case RTBMode:
+            sprintf(label, "RTBMode");
+            FollowWaypoints();
+            break;
 
-            case WaypointMode:
-                sprintf(label, "WaypointMode");
-                FollowWaypoints();
-                break;
+        case WaypointMode:
+            sprintf(label, "WaypointMode");
+            FollowWaypoints();
+            break;
 
-            case LandingMode:
-                Land();
+        case LandingMode:
+            Land();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "Landing %s",
-                        atcstatus >= 0 and atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
+            sprintf(label, "Landing %s",
+                    atcstatus >= 0 and atcstatus < MAXATCSTATUS ?
+                        ATCModes[atcstatus] :
+                        "");
 #endif
-                break;
+            break;
 
-            case TakeoffMode:
-                TakeOff();
+        case TakeoffMode:
+            TakeOff();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "TakeOff %s",
-                        atcstatus >= 0 and atcstatus < MAXATCSTATUS ? ATCModes[atcstatus] : "");
+            sprintf(label, "TakeOff %s",
+                    atcstatus >= 0 and atcstatus < MAXATCSTATUS ?
+                        ATCModes[atcstatus] :
+                        "");
 #endif
-                break;
+            break;
 
-                /*------------*/
-                /* BVR engage */
-                /*------------*/
-            case BVREngageMode:
-                BvrEngage();
+            /*------------*/
+            /* BVR engage */
+            /*------------*/
+        case BVREngageMode:
+            BvrEngage();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "BVREngagemode");
+            sprintf(label, "BVREngagemode");
 #endif
-                break;
+            break;
 
-                /*------------*/
-                /* WVR engage */
-                /*------------*/
-            case WVREngageMode:
-                WvrEngage();
+            /*------------*/
+            /* WVR engage */
+            /*------------*/
+        case WVREngageMode:
+            WvrEngage();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "WVREngagemode");
+            sprintf(label, "WVREngagemode");
 #endif
-                break;
+            break;
 
-            case GunsEngageMode:
-                GunsEngage();
+        case GunsEngageMode:
+            GunsEngage();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "GunsEngageMode");
+            sprintf(label, "GunsEngageMode");
 #endif
-                break;
+            break;
 
-            case MergeMode:
-                MergeManeuver();
+        case MergeMode:
+            MergeManeuver();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "MergeMode");
+            sprintf(label, "MergeMode");
 #endif
-                break;
+            break;
 
-                /*-----------------------------------------*/
-                /* Inside missile range, try to line it up */
-                /*-----------------------------------------*/
-            case MissileEngageMode:
-                MissileEngage();
+            /*-----------------------------------------*/
+            /* Inside missile range, try to line it up */
+            /*-----------------------------------------*/
+        case MissileEngageMode:
+            MissileEngage();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "MissileEngageMode");
+            sprintf(label, "MissileEngageMode");
 #endif
-                break;
+            break;
 
-                /*----------------*/
-                /* missile defeat */
-                /*----------------*/
-            case MissileDefeatMode:
-                MissileDefeat();
+            /*----------------*/
+            /* missile defeat */
+            /*----------------*/
+        case MissileDefeatMode:
+            MissileDefeat();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "MissileDefeatMode");
+            sprintf(label, "MissileDefeatMode");
 #endif
-                break;
+            break;
 
-                /*-----------*/
-                /* guns jink */
-                /*-----------*/
-            case GunsJinkMode:
-                GunsJink();
+            /*-----------*/
+            /* guns jink */
+            /*-----------*/
+        case GunsJinkMode:
+            GunsJink();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "GunsJinkMode");
+            sprintf(label, "GunsJinkMode");
 #endif
-                break;
+            break;
 
-                /*--------*/
-                /* loiter */
-                /*--------*/
-            case LoiterMode:
-                Loiter();
+            /*--------*/
+            /* loiter */
+            /*--------*/
+        case LoiterMode:
+            Loiter();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "LoiterMode");
+            sprintf(label, "LoiterMode");
 #endif
-                break;
+            break;
 
-                /*-----------------*/
-                /* collision avoid */
-                /*-----------------*/
-            case CollisionAvoidMode:
-                CollisionAvoid();
+            /*-----------------*/
+            /* collision avoid */
+            /*-----------------*/
+        case CollisionAvoidMode:
+            CollisionAvoid();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "CollisionAvoidMode");
+            sprintf(label, "CollisionAvoidMode");
 #endif
-                break;
+            break;
 
-                /*----------*/
-                /* Separate */
-                /*----------*/
-            case SeparateMode:
-            case BugoutMode:
-                if (lastMode not_eq BugoutMode and lastMode not_eq SeparateMode and targetPtr)
-                {
-                    // 2001-10-28 CHANGED BACK M.N. holdAlt is used in AltitudeHold, which needs a positive value
-                    // altitude error is calculated as holdAlt + self->ZPos() there 
-                    //    holdAlt = min (-5000.0F, self->ZPos());
-                    //TJL 11/08/03 Hold position altitude but bug out
-                    //holdAlt = min (5000.0F, -self->ZPos());
-                    holdAlt = -self->ZPos();
+            /*----------*/
+            /* Separate */
+            /*----------*/
+        case SeparateMode:
+        case BugoutMode:
+            if (lastMode not_eq BugoutMode and lastMode not_eq SeparateMode and
+                targetPtr)
+            {
+                // 2001-10-28 CHANGED BACK M.N. holdAlt is used in AltitudeHold, which needs a positive value
+                // altitude error is calculated as holdAlt + self->ZPos() there
+                //    holdAlt = min (-5000.0F, self->ZPos());
+                //TJL 11/08/03 Hold position altitude but bug out
+                //holdAlt = min (5000.0F, -self->ZPos());
+                holdAlt = -self->ZPos();
 
-                    // Find a heading directly away from the target
-                    cur = TargetAz(self, targetPtr);
+                // Find a heading directly away from the target
+                cur = TargetAz(self, targetPtr);
 
-                    if (cur > 0.0F)
-                        cur = self->Yaw() - (180.0F * DTR - cur);
-                    else
-                        cur = self->Yaw() - (-180.0F * DTR - cur);
+                if (cur > 0.0F)
+                    cur = self->Yaw() - (180.0F * DTR - cur);
+                else
+                    cur = self->Yaw() - (-180.0F * DTR - cur);
 
-                    // Normalize
-                    if (cur >  180.0F * DTR)
-                        cur -= 360.0F * DTR;
+                // Normalize
+                if (cur > 180.0F * DTR)
+                    cur -= 360.0F * DTR;
 
-                    holdPsi = cur;
-                }
+                holdPsi = cur;
+            }
 
-                WvrBugOut();
+            WvrBugOut();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "Separate/BugoutMode");
+            sprintf(label, "Separate/BugoutMode");
 #endif
-                break;
+            break;
 
-                /*-------------------*/
-                /* Roll Out of Plane */
-                /*-------------------*/
-            case RoopMode:
-                RollOutOfPlane();
+            /*-------------------*/
+            /* Roll Out of Plane */
+            /*-------------------*/
+        case RoopMode:
+            RollOutOfPlane();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "RollOutOfPlaneMode");
+            sprintf(label, "RollOutOfPlaneMode");
 #endif
-                break;
+            break;
 
-                /*-----------*/
-                /* Over Bank */
-                /*-----------*/
-            case OverBMode:
-                OverBank(30.0F * DTR);
+            /*-----------*/
+            /* Over Bank */
+            /*-----------*/
+        case OverBMode:
+            OverBank(30.0F * DTR);
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "OverBankMode");
+            sprintf(label, "OverBankMode");
 #endif
-                break;
+            break;
 
-            case AccelMode:
-                AccelManeuver();
+        case AccelMode:
+            AccelManeuver();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "AccelerateMode");
+            sprintf(label, "AccelerateMode");
 #endif
-                break;
+            break;
 
-            default:
-                SimLibPrintError("%s digi.w: Invalid digi mode %d\n",
-                                 self->Id().num_, curMode);
-                FollowWaypoints();
+        default:
+            SimLibPrintError("%s digi.w: Invalid digi mode %d\n",
+                             self->Id().num_, curMode);
+            FollowWaypoints();
 #ifdef SHOW_MANEUVERLABELS
-                sprintf(label, "InvalidDigiMode");
+            sprintf(label, "InvalidDigiMode");
 #endif
-                break;
+            break;
 
         } /*switch*/
     }
@@ -368,12 +372,14 @@ void DigitalBrain::Actions(void)
     if (g_nShowDebugLabels bitand 0x01)
     {
         char element[40];
-        sprintf(element, " %d%d W%d R%d V%d", isWing + 1, SkillLevel(), detRWR, detRAD, detVIS);
+        sprintf(element, " %d%d W%d R%d V%d", isWing + 1, SkillLevel(), detRWR,
+                detRAD, detVIS);
         strcat(label, element);
 
         if (g_nShowDebugLabels bitand 0x40)
         {
-            RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
+            RadarClass* theRadar =
+                (RadarClass*)FindSensor(self, SensorClass::Radar);
 
             if (theRadar)
             {
@@ -387,7 +393,8 @@ void DigitalBrain::Actions(void)
                     strcat(label, " RWS");
                 else if (theRadar->digiRadarMode = RadarClass::DigiOFF)
                     strcat(label, " OFF");
-                else strcat(label, " UNKNOWN");
+                else
+                    strcat(label, " UNKNOWN");
             }
         }
 
@@ -396,7 +403,7 @@ void DigitalBrain::Actions(void)
 
         if (g_nShowDebugLabels bitand 0x8000)
         {
-            if (((AircraftClass*) self)->af->GetSimpleMode())
+            if (((AircraftClass*)self)->af->GetSimpleMode())
                 strcat(label, " SIMP");
             else
                 strcat(label, " COMP");
@@ -404,14 +411,18 @@ void DigitalBrain::Actions(void)
 
         if (g_nShowDebugLabels bitand 0x1000)
         {
-            if (SimDriver.GetPlayerEntity() and self->GetCampaignObject() and self->GetCampaignObject()->GetIdentified(SimDriver.GetPlayerEntity()->GetTeam()))
+            if (SimDriver.GetPlayerEntity() and self->GetCampaignObject() and
+                self->GetCampaignObject()->GetIdentified(
+                    SimDriver.GetPlayerEntity()->GetTeam()))
                 strcat(label, "IDed");
             else
                 strcat(label, "Not IDed");
         }
 
         if (self->drawPointer)
-            ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
+            ((DrawableBSP*)self->drawPointer)
+                ->SetLabel(label,
+                           ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
     if (g_nShowDebugLabels bitand 0x200000)
@@ -419,7 +430,9 @@ void DigitalBrain::Actions(void)
         sprintf(label, "%.0f %.0f %.0f", trackX, trackY, trackZ);
 
         if (self->drawPointer)
-            ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
+            ((DrawableBSP*)self->drawPointer)
+                ->SetLabel(label,
+                           ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
     if (g_nShowDebugLabels bitand 0x100000)
@@ -430,10 +443,13 @@ void DigitalBrain::Actions(void)
             yaw += 360.0F * DTR;
 
         yaw *= RTD;
-        sprintf(label, "%4.0f %3.0f %6.2f %3.3f", self->af->vcas, yaw, -self->ZPos(), self->pctStrength * 100.0F);
+        sprintf(label, "%4.0f %3.0f %6.2f %3.3f", self->af->vcas, yaw,
+                -self->ZPos(), self->pctStrength * 100.0F);
 
         if (self->drawPointer)
-            ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
+            ((DrawableBSP*)self->drawPointer)
+                ->SetLabel(label,
+                           ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
     if (g_nShowDebugLabels bitand 0x800000)
@@ -441,13 +457,16 @@ void DigitalBrain::Actions(void)
         sprintf(label, "0x%x leader: 0x%x", self, flightLead);
 
         if (self->drawPointer)
-            ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
+            ((DrawableBSP*)self->drawPointer)
+                ->SetLabel(label,
+                           ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
 #endif
 
     // have we got a surprise for you
-    if ((targetPtr or threatPtr) and IsSetATC(HasTrainable) and self->HasPilot())
+    if ((targetPtr or threatPtr) and IsSetATC(HasTrainable) and
+        self->HasPilot())
     {
         TrainableGunsEngage();
     }
@@ -475,7 +494,7 @@ void DigitalBrain::Actions(void)
          }
          else { */
 
-        GroundCheck();  // Cobra - make sure max elev data is current
+        GroundCheck(); // Cobra - make sure max elev data is current
         PullUp(); // let's forget SimplePullUp(); They just set pstick of 0.1f, which is WAY
         // too little, the AI must fly into the hills. No more low-alt crashes with PullUp();
     }
@@ -491,7 +510,8 @@ void DigitalBrain::AirbaseCheck()
     bool nearestAirbase = false;
     bool returnHomebase = false;
 
-    if (self->af->Fuel() <= 0.0F) // just float down and try to land - gear is out in that case
+    if (self->af->Fuel() <=
+        0.0F) // just float down and try to land - gear is out in that case
         return;
 
     GridIndex x, y;
@@ -517,7 +537,8 @@ void DigitalBrain::AirbaseCheck()
 
     // when on Bingo, check distance to closest airbase when not having a target and not being threatened
     // return if distance is greater than g_fBingoReturnDistance
-    if (IsSetATC(SaidBingo) and not IsSetATC(SaidFumes) and not targetPtr and not threatPtr and not airbasediverted)
+    if (IsSetATC(SaidBingo) and not IsSetATC(SaidFumes) and not targetPtr and
+        not threatPtr and not airbasediverted)
     {
         pos.x = self->XPos();
         pos.y = self->YPos();
@@ -527,7 +548,8 @@ void DigitalBrain::AirbaseCheck()
 
         if (obj)
         {
-            dist = Distance(self->XPos(), self->YPos(), obj->XPos(), obj->YPos());
+            dist =
+                Distance(self->XPos(), self->YPos(), obj->XPos(), obj->YPos());
 
             if (dist > self->af->GetBingoReturnDistance() * NM_TO_FT)
             {
@@ -538,7 +560,9 @@ void DigitalBrain::AirbaseCheck()
     }
 
     // 2002-03-13 modified by MN works together with checks in Separate.cpp, if 49.9% damage, head to hearest airbase instead of home base
-    if (IsSetATC(SaidFumes) or self->pctStrength < 0.50f) // when on fumes, force RTB to closest airbase
+    if (IsSetATC(SaidFumes) or
+        self->pctStrength <
+            0.50f) // when on fumes, force RTB to closest airbase
     {
         nearestAirbase = true;
         airbasediverted = 2;
@@ -548,16 +572,20 @@ void DigitalBrain::AirbaseCheck()
 
     if (returnHomebase)
     {
-        if ( not (moreFlags bitand SaidImADot))
+        if (not(moreFlags bitand SaidImADot))
         {
             moreFlags or_eq SaidImADot;
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
-            FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
+            FalconRadioChatterMessage* radioMessage =
+                new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();
             radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
-            radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
+            radioMessage->dataBlock.voice_id =
+                ((Flight)(self->GetCampaignObject()))
+                    ->GetPilotVoiceID(self->vehicleInUnit);
             radioMessage->dataBlock.message = rcIMADOT;
-            radioMessage->dataBlock.edata[0] = (((FlightClass*)self->GetCampaignObject())->callsign_num);
+            radioMessage->dataBlock.edata[0] =
+                (((FlightClass*)self->GetCampaignObject())->callsign_num);
             radioMessage->dataBlock.time_to_play = 500; // 0.5 seconds
             FalconSendMessage(radioMessage, FALSE);
         }
@@ -569,9 +597,10 @@ void DigitalBrain::AirbaseCheck()
             sprintf(label, "RTB Homebase");
 
             if (self->drawPointer)
-                ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
+                ((DrawableBSP*)self->drawPointer)
+                    ->SetLabel(label,
+                               ((DrawableBSP*)self->drawPointer)->LabelColor());
         }
-
     }
 
     if (nearestAirbase)
@@ -581,7 +610,7 @@ void DigitalBrain::AirbaseCheck()
         ConvertSimToGrid(&pos, &x, &y);
 
         // 2002-04-02 ADDED BY S.G. Since it's not done above anymore, do it here only if not done within 'SaidBingo' if statement above
-        if ( not obj)
+        if (not obj)
             obj = FindNearestFriendlyAirbase(self->GetTeam(), x, y);
 
         // END OF ADDED SECTION 2002-04-02
@@ -590,15 +619,23 @@ void DigitalBrain::AirbaseCheck()
         if (obj and obj->Id() not_eq airbase)
         {
             airbase = obj->Id();
-            moreFlags or_eq NewHomebase; // set this so that ResetATC doesn't reset our new airbase
+            moreFlags or_eq
+                NewHomebase; // set this so that ResetATC doesn't reset our new airbase
             int flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
-            FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
+            FalconRadioChatterMessage* radioMessage =
+                new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = self->Id();
             radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
-            radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
+            radioMessage->dataBlock.voice_id =
+                ((Flight)(self->GetCampaignObject()))
+                    ->GetPilotVoiceID(self->vehicleInUnit);
             radioMessage->dataBlock.message = rcALTLANDING;
-            radioMessage->dataBlock.edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            radioMessage->dataBlock.edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
+            radioMessage->dataBlock.edata[0] =
+                ((FlightClass*)self->GetCampaignObject())->callsign_id;
+            radioMessage->dataBlock.edata[1] =
+                (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) *
+                    4 +
+                flightIdx + 1;
             radioMessage->dataBlock.time_to_play = 500; // 0.5 seconds
             FalconSendMessage(radioMessage, FALSE);
             mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
@@ -611,7 +648,9 @@ void DigitalBrain::AirbaseCheck()
             sprintf(label, "RTB near ab, pct-Strgth: %1.2f", self->pctStrength);
 
             if (self->drawPointer)
-                ((DrawableBSP*)self->drawPointer)->SetLabel(label, ((DrawableBSP*)self->drawPointer)->LabelColor());
+                ((DrawableBSP*)self->drawPointer)
+                    ->SetLabel(label,
+                               ((DrawableBSP*)self->drawPointer)->LabelColor());
         }
     }
 }

@@ -11,9 +11,9 @@
 #include <io.h>
 #include <stdlib.h>
 #include "omni.h"
-#include "MakeThr.h"
-#include "CampTerr.h"
-#include "CampCell.h"
+#include "makethr.h"
+#include "campterr.h"
+#include "campcell.h"
 
 
 int Max_Textures = 0;
@@ -21,7 +21,7 @@ char TheaterName[80];
 
 // TextureEntry *ConversionTable;
 
-extern CellDataType  *TheaterCells;
+extern CellDataType *TheaterCells;
 
 // Reg Road
 // 0 16 Water
@@ -38,12 +38,12 @@ extern CellDataType  *TheaterCells;
 // Campaign Terrain ADT - Private Implementation
 // =============================================
 
-CellDataType  *TheaterCells = NULL;
-boolean   EastLongitude;
-boolean   SouthLatitude;
-float     Latitude;
-float     Longitude;
-float     CellSizeInKilometers;
+CellDataType *TheaterCells = NULL;
+boolean EastLongitude;
+boolean SouthLatitude;
+float Latitude;
+float Longitude;
+float CellSizeInKilometers;
 
 short Map_Max_X;
 short Map_Max_Y;
@@ -66,11 +66,11 @@ short Map_Max_Y;
 // Function Stubs
 // ========================
 
-FILE* OpenCampFile(char* name, char* ext, char *mode)
+FILE *OpenCampFile(char *name, char *ext, char *mode)
 {
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\%s.%s", baseDirectory, name, ext);
+    sprintf(filename, "%s/%s.%s", baseDirectory, name, ext);
     return fopen(filename, mode);
 }
 
@@ -83,8 +83,9 @@ void InitTheaterTerrain(void)
     if (TheaterCells)
         FreeTheaterTerrain();
 
-    TheaterCells = (CellDataType*) F4AllocMemory(sizeof(CellDataType) * Map_Max_X * Map_Max_Y);
-    memset(TheaterCells, 0, sizeof(CellDataType)*Map_Max_X * Map_Max_Y);
+    TheaterCells = (CellDataType *)F4AllocMemory(sizeof(CellDataType) *
+                                                 Map_Max_X * Map_Max_Y);
+    memset(TheaterCells, 0, sizeof(CellDataType) * Map_Max_X * Map_Max_Y);
 }
 
 void FreeTheaterTerrain(void)
@@ -95,7 +96,7 @@ void FreeTheaterTerrain(void)
     TheaterCells = NULL;
 }
 
-int LoadTheaterTerrain(char* name)
+int LoadTheaterTerrain(char *name)
 {
     FILE *fp;
 
@@ -112,7 +113,7 @@ int LoadTheaterTerrain(char* name)
     return 1;
 }
 
-int LoadTheaterTerrainLight(char* name)
+int LoadTheaterTerrainLight(char *name)
 {
     FILE *fp;
 
@@ -127,7 +128,7 @@ int LoadTheaterTerrainLight(char* name)
     return 1;
 }
 
-int SaveTheaterTerrain(char* name)
+int SaveTheaterTerrain(char *name)
 {
     FILE *fp;
 
@@ -145,23 +146,25 @@ int SaveTheaterTerrain(char* name)
 }
 
 CellData GetCell(GridIndex x, GridIndex y)
-/*ÉÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ»
-  º Will return the CellData ADT element associated with the GridIndex  º
-  º coordinates specified. See the CellData ADT (CampCell.H) for a list º
-  º of the operations which can be performed on the returned CellData.  º
-  ÈÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÏÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍÍ¼*/
+/*ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í»
+  ï¿½ Will return the CellData ADT element associated with the GridIndex  ï¿½
+  ï¿½ coordinates specified. See the CellData ADT (CampCell.H) for a list ï¿½
+  ï¿½ of the operations which can be performed on the returned CellData.  ï¿½
+  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¼*/
 {
     return &TheaterCells[x * Map_Max_Y + y];
 }
 
 ReliefType GetRelief(GridIndex x, GridIndex y)
 {
-    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] & ReliefMask) >> ReliefShift);
+    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] & ReliefMask) >>
+                        ReliefShift);
 }
 
 CoverType GetCover(GridIndex x, GridIndex y)
 {
-    return (CoverType)((TheaterCells[x * Map_Max_Y + y] & GroundCoverMask) >> GroundCoverShift);
+    return (CoverType)((TheaterCells[x * Map_Max_Y + y] & GroundCoverMask) >>
+                       GroundCoverShift);
 }
 
 char GetRoad(GridIndex x, GridIndex y)
@@ -206,7 +209,7 @@ void SetRail(int i, int rail)
 // Support functions
 // ==========================
 
-void ReadComments(FILE* fh)
+void ReadComments(FILE *fh)
 {
     int c;
 
@@ -238,7 +241,7 @@ void ProcessTextureFile(void)
     char name[80];
 
     printf("\nProcessing Texture file...  ");
-    texture = (uchar*) malloc(Map_Max_X * Map_Max_Y * sizeof(short));
+    texture = (uchar *)malloc(Map_Max_X * Map_Max_Y * sizeof(short));
     sprintf(name, "%s-F", TheaterName);
 
     if ((fp = OpenCampFile(name, "COV", "rb")) == NULL)
@@ -289,7 +292,7 @@ void ProcessReliefFile(void)
     int x, y, ulx, uly, xx, yy, i, relief;
 
     printf("\nProcessing Relief file...");
-    normals = (uchar*) malloc(Map_Max_X * Map_Max_Y * 16 * sizeof(short));
+    normals = (uchar *)malloc(Map_Max_X * Map_Max_Y * 16 * sizeof(short));
     sprintf(name, "%s-N", TheaterName);
 
     if ((fp = OpenCampFile(name, "RAW", "rb")) == NULL)
@@ -315,7 +318,8 @@ void ProcessReliefFile(void)
             for (yy = uly; yy < uly + 4; yy++)
             {
                 for (xx = ulx; xx < ulx + 4; xx++)
-                    relief += ((normals[(yy * Map_Max_X * 4) + xx] & 0xE0) >> 5);
+                    relief +=
+                        ((normals[(yy * Map_Max_X * 4) + xx] & 0xE0) >> 5);
             }
 
             // relief is now the total relief of the km square region (0-7 * 16)
@@ -336,7 +340,8 @@ void ProcessReliefFile(void)
     free(normals);
 }
 
-void DoConnections(uchar *data, int i, int n, int s, int e, int w, int val, int nodia)
+void DoConnections(uchar *data, int i, int n, int s, int e, int w, int val,
+                   int nodia)
 {
     if (w == val)
     {
@@ -430,7 +435,7 @@ void DoConnections(uchar *data, int i, int n, int s, int e, int w, int val, int 
     }
 }
 
-void BuildMapData(char* name)
+void BuildMapData(char *name)
 {
     uchar *MapData;
     GridIndex x, y, rx, ry;
@@ -440,7 +445,8 @@ void BuildMapData(char* name)
     FILE *fp;
 
     printf("\nBuilding map data...");
-    MapData = (uchar*)malloc(Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
+    MapData =
+        (uchar *)malloc(Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
     memset(MapData, 0, Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
 
     for (x = 0; x < Map_Max_X; x++)
@@ -468,16 +474,20 @@ void BuildMapData(char* name)
             if (y > 0)
                 scov = GetCover(x, y - 1);
 
-            if ((wcov == Plain || wcov == Brush) && (ncov == Plain || ncov == Brush))
+            if ((wcov == Plain || wcov == Brush) &&
+                (ncov == Plain || ncov == Brush))
                 MapData[i] = wcov;
 
-            if ((ncov == Plain || ncov == Brush) && (ecov == Plain || ecov == Brush))
+            if ((ncov == Plain || ncov == Brush) &&
+                (ecov == Plain || ecov == Brush))
                 MapData[i + 1] = ncov;
 
-            if ((ecov == Plain || ecov == Brush) && (scov == Plain || scov == Brush))
+            if ((ecov == Plain || ecov == Brush) &&
+                (scov == Plain || scov == Brush))
                 MapData[i + 1 + (Map_Max_X * ROADMAP_SIZE)] = ecov;
 
-            if ((scov == Plain || scov == Brush) && (wcov == Plain || wcov == Brush))
+            if ((scov == Plain || scov == Brush) &&
+                (wcov == Plain || wcov == Brush))
                 MapData[i + (Map_Max_X * ROADMAP_SIZE)] = scov;
 
             if (cov == Water)
@@ -508,13 +518,17 @@ void BuildMapData(char* name)
 
                 int tot = 0;
 
-                if (ncov == Water) tot++;
+                if (ncov == Water)
+                    tot++;
 
-                if (scov == Water) tot++;
+                if (scov == Water)
+                    tot++;
 
-                if (wcov == Water) tot++;
+                if (wcov == Water)
+                    tot++;
 
-                if (ecov == Water) tot++;
+                if (ecov == Water)
+                    tot++;
 
                 if (tot < 3)
                     DoConnections(MapData, i, ncov, scov, ecov, wcov, Water, 1);
@@ -527,7 +541,8 @@ void BuildMapData(char* name)
     if ((fp = OpenCampFile(fname, "raw", "wb")) == NULL)
         return;
 
-    fwrite(MapData, sizeof(uchar), Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE, fp);
+    fwrite(MapData, sizeof(uchar),
+           Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE, fp);
     fclose(fp);
     printf("\n");
 }
@@ -543,7 +558,7 @@ typedef enum { Water,                           // Cover types
  Urban } CoverType;
 */
 
-int SaveRoadData(char* name)
+int SaveRoadData(char *name)
 {
     FILE *fp;
     uchar *RoadData;
@@ -552,7 +567,8 @@ int SaveRoadData(char* name)
     char fname[80];
 
     printf("\nBuilding road data...");
-    RoadData = (uchar*)malloc(Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
+    RoadData =
+        (uchar *)malloc(Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
     memset(RoadData, 0, Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE);
 
     for (x = 1; x < Map_Max_X - 1; x++)
@@ -675,7 +691,9 @@ int SaveRoadData(char* name)
                     }
                 }
                 else if (ROADMAP_SIZE == 2)
-                    DoConnections(RoadData, i, GetRoad(x, y + 1), GetRoad(x, y - 1), GetRoad(x + 1, y), GetRoad(x - 1, y), 1, 0);
+                    DoConnections(RoadData, i, GetRoad(x, y + 1),
+                                  GetRoad(x, y - 1), GetRoad(x + 1, y),
+                                  GetRoad(x - 1, y), 1, 0);
             }
         }
     }
@@ -685,7 +703,8 @@ int SaveRoadData(char* name)
     if ((fp = OpenCampFile(fname, "raw", "wb")) == NULL)
         return 0;
 
-    fwrite(RoadData, sizeof(uchar), Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE, fp);
+    fwrite(RoadData, sizeof(uchar),
+           Map_Max_X * Map_Max_Y * ROADMAP_SIZE * ROADMAP_SIZE, fp);
     fclose(fp);
     printf("\n");
     return 1;
@@ -697,7 +716,7 @@ int SaveRoadData(char* name)
 
 int main(int argc, char **argv)
 {
-    int     i, x, y;
+    int i, x, y;
     char *args;
     char *baseDirectory, *baseFileName;
 
@@ -709,28 +728,28 @@ int main(int argc, char **argv)
 
             switch (args[1])
             {
-                case 'n':
-                    sprintf(TheaterName, args + 2);
-                    break;
+            case 'n':
+                sprintf(TheaterName, args + 2);
+                break;
 
-                case 'w':
-                    Map_Max_X = atoi(args + 2);
-                    break;
+            case 'w':
+                Map_Max_X = atoi(args + 2);
+                break;
 
-                case 'h':
-                    Map_Max_Y = atoi(args + 2);
-                    break;
+            case 'h':
+                Map_Max_Y = atoi(args + 2);
+                break;
 
-                case 'd':
-                    baseDirectory = args + 2;
-                    break;
+            case 'd':
+                baseDirectory = args + 2;
+                break;
 
-                case 'f':
-                    baseFileName = args + 2;
-                    break;
+            case 'f':
+                baseFileName = args + 2;
+                break;
 
-                default:
-                    break;
+            default:
+                break;
             }
         }
     }
@@ -756,4 +775,3 @@ int main(int argc, char **argv)
     BuildMapData(TheaterName);
     return 0;
 }
-

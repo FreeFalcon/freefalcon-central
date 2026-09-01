@@ -11,15 +11,15 @@
 /*
  * Required Include Files
  */
-#include "FalcMesg.h"
+#include "falcmesg.h"
 #include "mission.h"
 
-#include "Falcmesg.h"
+#include "falcmesg.h"
 
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Camp Message
@@ -37,7 +37,8 @@ public:
         campDeaggregate
     };
 
-    FalconCampMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconCampMessage(VU_ID entityId, VuTargetEntity *target,
+                      VU_BOOL loopback = TRUE);
     FalconCampMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconCampMessage(void);
     virtual int Size() const
@@ -77,6 +78,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

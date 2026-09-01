@@ -5,30 +5,30 @@
  * Generated from file EVENTS.XLS by MicroProse
  */
 
-#include "MsgInc/RadioChatterMsg.h"
+#include "msginc/radiochattermsg.h"
 #include "mesg.h"
-#include "SimDrive.h"
-#include "F4Vu.h"
+#include "simdrive.h"
+#include "f4vu.h"
 #include "fsound.h"
-#include "FalcSnd/LHSP.h"
-#include "FalcSnd/FalcVoice.h"
-#include "FalcSnd/VoiceManager.h"
-#include "FalcSnd/VoiceMapper.h"
-#include "Sim/Include/Digi.h"
-#include "Find.h"
-#include "CmpClass.h"
+#include "falcsnd/lhsp.h"
+#include "falcsnd/falcvoice.h"
+#include "falcsnd/voicemanager.h"
+#include "falcsnd/voicemapper.h"
+#include "sim/include/digi.h"
+#include "find.h"
+#include "cmpclass.h"
 #include "tacan.h"
 #include "aircrft.h"
 #include "falcsess.h"
 #include "timerthread.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "flight.h"
 
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
 // ======================
@@ -55,7 +55,8 @@ extern VoiceFilter *voiceFilter;
 // Defines
 // ======================
 
-float MAX_RADIO_RANGE = 1822800.0F; // Radio range, in feet (300nm)(maximum range at which you hear any calls)
+float MAX_RADIO_RANGE =
+    1822800.0F; // Radio range, in feet (300nm)(maximum range at which you hear any calls)
 float RADIO_PROX_RANGE = 243050.0F; // Range of proximity filter (40nm)
 enum
 {
@@ -69,20 +70,27 @@ enum
 // Functions
 // ======================
 
-FalconRadioChatterMessage::FalconRadioChatterMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(RadioChatterMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconRadioChatterMessage::FalconRadioChatterMessage(VU_ID entityId,
+                                                     VuTargetEntity *target,
+                                                     VU_BOOL loopback)
+    : FalconEvent(RadioChatterMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     dataBlock.time_to_play = 0;
-    memset(dataBlock.edata, 0, sizeof(short)*MAX_EVALS_PER_RADIO_MESSAGE);
+    memset(dataBlock.edata, 0, sizeof(short) * MAX_EVALS_PER_RADIO_MESSAGE);
     dataBlock.voice_id = 0;
     dataBlock.to = MESSAGE_FOR_TEAM;
 
     // MonoPrint ("RadioChatter\n");
 }
 
-FalconRadioChatterMessage::FalconRadioChatterMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(RadioChatterMsg, FalconEvent::SimThread, senderid, target)
+FalconRadioChatterMessage::FalconRadioChatterMessage(VU_MSG_TYPE type,
+                                                     VU_ID senderid,
+                                                     VU_ID target)
+    : FalconEvent(RadioChatterMsg, FalconEvent::SimThread, senderid, target)
 {
     dataBlock.time_to_play = 0;
-    memset(dataBlock.edata, 0, sizeof(short)*MAX_EVALS_PER_RADIO_MESSAGE);
+    memset(dataBlock.edata, 0, sizeof(short) * MAX_EVALS_PER_RADIO_MESSAGE);
     dataBlock.voice_id = 0;
     type;
 }
@@ -125,7 +133,8 @@ int FalconRadioChatterMessage::Decode(VU_BYTE **buf, long *rem)
     FalconEvent::Decode(buf, rem);
 
     // Get the invariant data
-    memcpychk(&dataBlock, buf, sizeof(dataBlock) - sizeof(dataBlock.edata), rem);
+    memcpychk(&dataBlock, buf, sizeof(dataBlock) - sizeof(dataBlock.edata),
+              rem);
 
     // Get the number of evals actually sent
     memcpychk(&nEvals, buf, sizeof(VU_BYTE), rem);
@@ -163,7 +172,9 @@ int FalconRadioChatterMessage::Encode(VU_BYTE **buf)
      }*/
 
     //sfr: find number of eval elements
-    for (nEvals = MAX_EVALS_PER_RADIO_MESSAGE; (nEvals > 0) and (dataBlock.edata[nEvals - 1] == 0); nEvals--) ;
+    for (nEvals = MAX_EVALS_PER_RADIO_MESSAGE;
+         (nEvals > 0) and (dataBlock.edata[nEvals - 1] == 0); nEvals--)
+        ;
 
     // Send the number of evals actually sent
     **buf = nEvals;
@@ -173,7 +184,7 @@ int FalconRadioChatterMessage::Encode(VU_BYTE **buf)
     // Send the non-default evals
     for (int i = 0; i < nEvals; i++)
     {
-        *(short*)(*buf) = dataBlock.edata[i];
+        *(short *)(*buf) = dataBlock.edata[i];
         *buf += sizeof(dataBlock.edata[i]);
     }
 
@@ -196,21 +207,23 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
 
 #endif
 
-    FalconEntity *from = (FalconEntity*) vuDatabase->Find(dataBlock.from);
-    FalconEntity *to = (FalconEntity*) vuDatabase->Find(EntityId());
-    FalconEntity *us = (FalconEntity*) FalconLocalSession->GetPlayerEntity();
+    FalconEntity *from = (FalconEntity *)vuDatabase->Find(dataBlock.from);
+    FalconEntity *to = (FalconEntity *)vuDatabase->Find(EntityId());
+    FalconEntity *us = (FalconEntity *)FalconLocalSession->GetPlayerEntity();
     CampBaseClass *from_entity = NULL;
     CampBaseClass *from_package = NULL;
     CampBaseClass *to_package = NULL;
     CampBaseClass *to_entity = NULL;
-    FlightClass *player_flight = (FlightClass*) FalconLocalSession->GetPlayerFlight();
+    FlightClass *player_flight =
+        (FlightClass *)FalconLocalSession->GetPlayerFlight();
     PackageClass *player_package = NULL;
     int message = dataBlock.message;
     char channel = 0, playbits = 0;
     VU_ID fromID = dataBlock.from, toID = FalconNullId;
 
 
-    if (from and (from->IsDead() or (from->IsVehicle() and not ((SimVehicleClass*)from)->HasPilot())))
+    if (from and (from->IsDead() or (from->IsVehicle() and
+                                     not((SimVehicleClass *)from)->HasPilot())))
     {
         return 0;
     }
@@ -225,7 +238,7 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
     {
         FalconSessionEntity *session;
         VuSessionsIterator sit(FalconLocalGame);
-        session = (FalconSessionEntity*) sit.GetFirst();
+        session = (FalconSessionEntity *)sit.GetFirst();
 
         while (session)
         {
@@ -235,11 +248,12 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
                 break;
             }
 
-            session = (FalconSessionEntity*) sit.GetNext();
+            session = (FalconSessionEntity *)sit.GetNext();
         }
     }
 
-    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and SimDriver.RunningCampaign() and not noUIcomms)
+    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and
+        SimDriver.RunningCampaign() and not noUIcomms)
         us = FalconLocalSession->GetPlayerSquadron();
 
 #ifdef _DEBUG
@@ -251,73 +265,87 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
     //MonoPrint("Processing Chatter Message ID: %d  %d\n", message, us);
 
     if ((FalconLocalSession->GetFlyState() == FLYSTATE_FLYING) or
-        (SimDriver.RunningCampaign() and not noUIcomms) or
-        (to and to == us))
+        (SimDriver.RunningCampaign() and not noUIcomms) or (to and to == us))
     {
-        if ( not us)
+        if (not us)
             return -1;
 
         //if the sender is more than 300nm away we can't hear it
-        if (from and us and (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) > MAX_RADIO_RANGE * MAX_RADIO_RANGE))
+        if (from and us and
+            (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) >
+             MAX_RADIO_RANGE * MAX_RADIO_RANGE))
             return -1;
 
         if (player_flight)
-            player_package = static_cast<PackageClass*>(player_flight->GetUnitParent());
+            player_package =
+                static_cast<PackageClass *>(player_flight->GetUnitParent());
 
         //until data is correct this only screws things up
-        if (voiceFilter and not to and from and us->GetTeam() == from->GetTeam()) // KCK: Added and not to -> basically, if you want it to warp, don't specify a target
+        if (voiceFilter and not to and from and
+            us->GetTeam() ==
+                from->GetTeam()) // KCK: Added and not to -> basically, if you want it to warp, don't specify a target
         {
-            if (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) > RADIO_PROX_RANGE * RADIO_PROX_RANGE * 4.0F) //80nm
+            if (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) >
+                RADIO_PROX_RANGE * RADIO_PROX_RANGE * 4.0F) //80nm
                 return -1;
 
             switch (voiceFilter->GetWarp(message))
             {
-                case WARP_PACKAGE:
-                    if (player_package)
-                        to = player_package->GetFirstUnitElement();
+            case WARP_PACKAGE:
+                if (player_package)
+                    to = player_package->GetFirstUnitElement();
 
-                    if (to and to->IsFlight())
-                    {
-                        dataBlock.edata[0] = (static_cast<FlightClass*>(to))->callsign_id;
-                        dataBlock.edata[1] = ConvertFlightNumberToCallNumber(((Flight)to)->callsign_num);
-                    }
+                if (to and to->IsFlight())
+                {
+                    dataBlock.edata[0] =
+                        (static_cast<FlightClass *>(to))->callsign_id;
+                    dataBlock.edata[1] = ConvertFlightNumberToCallNumber(
+                        ((Flight)to)->callsign_num);
+                }
 
-                    break;
+                break;
 
-                case WARP_FLIGHT:
-                    to = (FalconEntity *)player_flight;
+            case WARP_FLIGHT:
+                to = (FalconEntity *)player_flight;
 
-                    if (player_flight)
-                    {
-                        dataBlock.edata[0] = player_flight->callsign_id;
-                        dataBlock.edata[1] = ConvertFlightNumberToCallNumber(player_flight->callsign_num);
-                    }
+                if (player_flight)
+                {
+                    dataBlock.edata[0] = player_flight->callsign_id;
+                    dataBlock.edata[1] = ConvertFlightNumberToCallNumber(
+                        player_flight->callsign_num);
+                }
 
-                    break;
+                break;
 
-                case WARP_PLANE:
-                    to = (FalconEntity *)us;
+            case WARP_PLANE:
+                to = (FalconEntity *)us;
 
-                    if (player_flight and us->IsSim())
-                    {
-                        dataBlock.edata[0] = (short)((SimVehicleClass*)us)->GetCallsignIdx();
-                        dataBlock.edata[1] = (short)player_flight->GetPilotCallNumber(((SimVehicleClass*)us)->pilotSlot);
-                    }
+                if (player_flight and us->IsSim())
+                {
+                    dataBlock.edata[0] =
+                        (short)((SimVehicleClass *)us)->GetCallsignIdx();
+                    dataBlock.edata[1] =
+                        (short)player_flight->GetPilotCallNumber(
+                            ((SimVehicleClass *)us)->pilotSlot);
+                }
             }
         }
 
         if (to and to->IsSim())
-            to_entity = (CampBaseClass*)((SimBaseClass*)to)->GetCampaignObject();
+            to_entity =
+                (CampBaseClass *)((SimBaseClass *)to)->GetCampaignObject();
         else if (to and to->IsCampaign())
-            to_entity = (CampBaseClass*)to;
+            to_entity = (CampBaseClass *)to;
 
 
         if (from and from->IsSim())
-            from_entity = (CampBaseClass*)((SimBaseClass*)from)->GetCampaignObject();
+            from_entity =
+                (CampBaseClass *)((SimBaseClass *)from)->GetCampaignObject();
         else if (from and from->IsCampaign())
-            from_entity = (CampBaseClass*)from;
+            from_entity = (CampBaseClass *)from;
 
-        if (FalconLocalGame and FalconLocalGame->GetGameType() not_eq game_InstantAction and 
+        if (FalconLocalGame and
+            FalconLocalGame->GetGameType() not_eq game_InstantAction and
             FalconLocalGame->GetGameType() not_eq game_Dogfight)
         {
             if (from_entity and from_entity->IsFlight())
@@ -336,25 +364,33 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
             channel = 1;
 
         //campaign/taceng
-        if ((to_entity and to_entity == player_flight) or (from_entity and from_entity == player_flight))
+        if ((to_entity and to_entity == player_flight) or
+            (from_entity and from_entity == player_flight))
             playbits or_eq TOFROM_FLIGHT;
 
         //the seemingly weird check for the team is because everyone in instant action is in the same package but on different teams
-        if (to and (to_package == player_package) and us and us->GetTeam() == to->GetTeam())
+        if (to and (to_package == player_package) and us and
+            us->GetTeam() == to->GetTeam())
             playbits or_eq TO_PACKAGE;
 
-        if ((to and to_package == player_package and us->GetTeam() == to->GetTeam()) or
-            (from and from_package == player_package and us and us->GetTeam() == from->GetTeam()))
+        if ((to and to_package == player_package and
+             us->GetTeam() == to->GetTeam()) or
+            (from and from_package == player_package and us and
+             us->GetTeam() == from->GetTeam()))
             playbits or_eq TOFROM_PACKAGE;
 
         //campaign/taceng
-        if (dataBlock.to == MESSAGE_FOR_TEAM and to and us and us->GetTeam() == to->GetTeam())
+        if (dataBlock.to == MESSAGE_FOR_TEAM and to and us and
+            us->GetTeam() == to->GetTeam())
             playbits or_eq TO_TEAM;
 
 
-        if (from and us and (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) < RADIO_PROX_RANGE * RADIO_PROX_RANGE)
-           and us and ((to and us->GetTeam() == to->GetTeam()) or
-                      (from and us->GetTeam() == from->GetTeam())))
+        if (from and us and
+            (DistSqu(from->XPos(), from->YPos(), us->XPos(), us->YPos()) <
+             RADIO_PROX_RANGE * RADIO_PROX_RANGE) and
+            us and
+            ((to and us->GetTeam() == to->GetTeam()) or
+             (from and us->GetTeam() == from->GetTeam())))
             playbits or_eq IN_PROXIMITY;
 
         if (dataBlock.to == MESSAGE_FOR_WORLD)
@@ -366,10 +402,14 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         int range, ttype;
         float ilsfreq;
 
-        if (from_entity and gTacanList->GetChannelFromVUID(from_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
+        if (from_entity and gTacanList->GetChannelFromVUID(
+                                from_entity->Id(), &tac_channel, &set, &domain,
+                                &range, &ttype, &ilsfreq))
             playbits or_eq TOFROM_TOWER;
 
-        if (to_entity and gTacanList->GetChannelFromVUID(to_entity->Id(), &tac_channel, &set, &domain, &range, &ttype, &ilsfreq))
+        if (to_entity and
+            gTacanList->GetChannelFromVUID(to_entity->Id(), &tac_channel, &set,
+                                           &domain, &range, &ttype, &ilsfreq))
             playbits or_eq TOFROM_TOWER;
     }
 
@@ -394,7 +434,10 @@ int FalconRadioChatterMessage::Process(uchar autodisp)
         // FRB - chatter control
         //dataBlock.time_to_play = g_nChatterInterval * CampaignSeconds;
         // Now play the message (You'll want to pass in the playbits)
-        voiceFilter->PlayRadioMessage(dataBlock.voice_id, (short)message, dataBlock.edata, vuxGameTime + dataBlock.time_to_play, playbits, channel, dataBlock.from, EVAL_BY_VALUE, toID);
+        voiceFilter->PlayRadioMessage(
+            dataBlock.voice_id, (short)message, dataBlock.edata,
+            vuxGameTime + dataBlock.time_to_play, playbits, channel,
+            dataBlock.from, EVAL_BY_VALUE, toID);
     }
 
     return 0;
@@ -430,7 +473,9 @@ short ConvertToCallNumber(int flight_num, int wing_num)
 // Support functions
 // ==============================
 
-FalconRadioChatterMessage* CreateCallFromATC(Objective airbase, AircraftClass* aircraft, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallFromATC(Objective airbase,
+                                             AircraftClass *aircraft,
+                                             short call, VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
 
@@ -443,7 +488,7 @@ FalconRadioChatterMessage* CreateCallFromATC(Objective airbase, AircraftClass* a
 
     ShiAssert(flight);
 
-    radioMessage = new FalconRadioChatterMessage(aircraft->Id() , target);
+    radioMessage = new FalconRadioChatterMessage(aircraft->Id(), target);
     radioMessage->dataBlock.message = call;
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
     radioMessage->dataBlock.from = airbase->Id();
@@ -452,240 +497,261 @@ FalconRadioChatterMessage* CreateCallFromATC(Objective airbase, AircraftClass* a
 
     switch (call)
     {
-        case rcCLEAREDLAND:
-        case rcATCLANDSEQUENCE:
-            time_in_minutes =  TheCampaign.GetMinutesSinceMidnight();
+    case rcCLEAREDLAND:
+    case rcATCLANDSEQUENCE:
+        time_in_minutes = TheCampaign.GetMinutesSinceMidnight();
 
-            if (time_in_minutes < 180)//3am
-                tod = 1;
-            else if (time_in_minutes < 720)//noon
-                tod = 0;
-            else if (time_in_minutes < 1020) //5pm
-                tod = 2;
-            else
-                tod = 1;
+        if (time_in_minutes < 180) //3am
+            tod = 1;
+        else if (time_in_minutes < 720) //noon
+            tod = 0;
+        else if (time_in_minutes < 1020) //5pm
+            tod = 2;
+        else
+            tod = 1;
 
-            //these calls all are preceeded by a greeting
-            radioMessage->dataBlock.edata[0] = tod;
-            radioMessage->dataBlock.edata[1] = flight->callsign_id;
-            radioMessage->dataBlock.edata[2] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        //these calls all are preceeded by a greeting
+        radioMessage->dataBlock.edata[0] = tod;
+        radioMessage->dataBlock.edata[1] = flight->callsign_id;
+        radioMessage->dataBlock.edata[2] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
 
-            if (airbase->brain->Approach() == 32766) // no ATC flag
-                radioMessage->dataBlock.edata[3] = 32766;
-            else
-                radioMessage->dataBlock.edata[3] = airbase->brain->Tower();
+        if (airbase->brain->Approach() == 32766) // no ATC flag
+            radioMessage->dataBlock.edata[3] = 32766;
+        else
+            radioMessage->dataBlock.edata[3] = airbase->brain->Tower();
 
-            break;
+        break;
 
-        case rcCONTINUEINBOUND1:
-        case rcCONTINUEINBOUND3:
-            time_in_minutes =  TheCampaign.GetMinutesSinceMidnight();
+    case rcCONTINUEINBOUND1:
+    case rcCONTINUEINBOUND3:
+        time_in_minutes = TheCampaign.GetMinutesSinceMidnight();
 
-            if (time_in_minutes < 180)//3am
-                tod = 1;
-            else if (time_in_minutes < 720)//noon
-                tod = 0;
-            else if (time_in_minutes < 1020) //5pm
-                tod = 2;
-            else
-                tod = 1;
+        if (time_in_minutes < 180) //3am
+            tod = 1;
+        else if (time_in_minutes < 720) //noon
+            tod = 0;
+        else if (time_in_minutes < 1020) //5pm
+            tod = 2;
+        else
+            tod = 1;
 
-            //these calls all are preceeded by a greeting
-            radioMessage->dataBlock.edata[0] = tod;
-            radioMessage->dataBlock.edata[1] = flight->callsign_id;
-            radioMessage->dataBlock.edata[2] = (short)ConvertFlightNumberToCallNumber(flight->callsign_num);
-            radioMessage->dataBlock.edata[3] = (short)airbase->brain->Approach();
-            break;
+        //these calls all are preceeded by a greeting
+        radioMessage->dataBlock.edata[0] = tod;
+        radioMessage->dataBlock.edata[1] = flight->callsign_id;
+        radioMessage->dataBlock.edata[2] =
+            (short)ConvertFlightNumberToCallNumber(flight->callsign_num);
+        radioMessage->dataBlock.edata[3] = (short)airbase->brain->Approach();
+        break;
 
-        case rcOUTSIDEAIRSPEED: //should be rcOUTSIDEAIRSPACE
-            //needs to be converted to use approach instead of a callsign
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(flight->callsign_num);
-            radioMessage->dataBlock.edata[2] = -1;
-            radioMessage->dataBlock.edata[3] = -1;
-            break;
+    case rcOUTSIDEAIRSPEED: //should be rcOUTSIDEAIRSPACE
+        //needs to be converted to use approach instead of a callsign
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertFlightNumberToCallNumber(flight->callsign_num);
+        radioMessage->dataBlock.edata[2] = -1;
+        radioMessage->dataBlock.edata[3] = -1;
+        break;
 
-        case rcUSEALTFIELD: //needs to be converted to use approach instead of a callsign
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            radioMessage->dataBlock.edata[2] = -1;
-            radioMessage->dataBlock.edata[3] = -1;
-            break;
+    case rcUSEALTFIELD: //needs to be converted to use approach instead of a callsign
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.edata[2] = -1;
+        radioMessage->dataBlock.edata[3] = -1;
+        break;
 
-        case rcCONTINUEINBOUND2:
-            //these calls use callsign, callnumber, approach
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(flight->callsign_num);
-            radioMessage->dataBlock.edata[2] = (short)airbase->brain->Approach();
-            break;
+    case rcCONTINUEINBOUND2:
+        //these calls use callsign, callnumber, approach
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertFlightNumberToCallNumber(flight->callsign_num);
+        radioMessage->dataBlock.edata[2] = (short)airbase->brain->Approach();
+        break;
 
-        case rcPOSITIONANDHOLD:
-        case rcCLEAREDONRUNWAY:
-            //these calls use callsign, callnumber, tower
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+    case rcPOSITIONANDHOLD:
+    case rcCLEAREDONRUNWAY:
+        //these calls use callsign, callnumber, tower
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
 
-            if (airbase->brain->Approach() == 32766) // no ATC flag
-                radioMessage->dataBlock.edata[2] = 32766;
-            else
-                radioMessage->dataBlock.edata[2] = airbase->brain->Tower();
-
-            // radioMessage->dataBlock.edata[2] = (short)airbase->brain->Tower();
-            break;
-
-        case rcHOLDPATTERN:
-        case rcATCALTITUDE:
-        case rcATCDIVERT:
-        case rcATCTRAFFICWARNING:
-        case rcATCTRAFFICWARNING2:
-        case rcATSCOLDVECTOR:
-        case rcCLEAREDEMERGLAND:
-        case rcATCSCOLDTRAFFIC:
-        case rcATCFOLLOWTRAFIC:
-            //these calls use callsign, callnumber, approach
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            radioMessage->dataBlock.edata[2] = (short)airbase->brain->Approach();
-            break;
-
-        case rcCLEAREDDEPARTURE:
-        case rcTAXICLEAR:
-        case rcEXPEDITEDEPARTURE:
-        case rcATCCANCELMISSION:
-        case rcTOWERSCOLD1:
-        case rcTAXISEQUENCE:
-        case rcTOWERSCOLD2:
-        case rcTOWERSCOLD3:
-            //these calls use callsign, callnumber, tower
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-
-            // M.N. ID 32766 turns off ATC name
-            if (airbase->brain->Approach() == 32766) // no ATC flag
-                radioMessage->dataBlock.edata[2] = 32766;
-            else
-                radioMessage->dataBlock.edata[2] = (short)airbase->brain->Tower();
-
-            // radioMessage->dataBlock.edata[2] = (short)airbase->brain->Tower();
-            break;
-
-        case rcDISRUPTINGTRAFFIC:
-        case rcGETOFFRUNWAYA:
-        case rcGETOFFRUNWAYB:
-        case rcHOLDSHORT:
-        case rcHURRYUP:
-        case rcCLEARTOTAXI:
-        case rcATCVECTORS:
-        case rcATCVECTORSRW: // JB 010527 (from MN) // new radio chatter
-        case rcATCORBIT1:
-        case rcATCORBIT2:
-        case rcTURNTOFINAL:
-        case rcATCSCOLD1:
-        case rcATCGOAROUND:
-        case rcATCGOAROUND2:
-            //these calls use just callsign, callnum
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            break;
-
-        case rcDEPARTHEADING://Cobra
-        case rcRESUMEOWNNAV://Cobra
-        case rcLANDINGCHECK://Cobra
-            radioMessage->dataBlock.edata[0] = flight->callsign_id;
-            radioMessage->dataBlock.edata[1] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        if (airbase->brain->Approach() == 32766) // no ATC flag
+            radioMessage->dataBlock.edata[2] = 32766;
+        else
             radioMessage->dataBlock.edata[2] = airbase->brain->Tower();
 
-            break;
+        // radioMessage->dataBlock.edata[2] = (short)airbase->brain->Tower();
+        break;
 
+    case rcHOLDPATTERN:
+    case rcATCALTITUDE:
+    case rcATCDIVERT:
+    case rcATCTRAFFICWARNING:
+    case rcATCTRAFFICWARNING2:
+    case rcATSCOLDVECTOR:
+    case rcCLEAREDEMERGLAND:
+    case rcATCSCOLDTRAFFIC:
+    case rcATCFOLLOWTRAFIC:
+        //these calls use callsign, callnumber, approach
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.edata[2] = (short)airbase->brain->Approach();
+        break;
+
+    case rcCLEAREDDEPARTURE:
+    case rcTAXICLEAR:
+    case rcEXPEDITEDEPARTURE:
+    case rcATCCANCELMISSION:
+    case rcTOWERSCOLD1:
+    case rcTAXISEQUENCE:
+    case rcTOWERSCOLD2:
+    case rcTOWERSCOLD3:
+        //these calls use callsign, callnumber, tower
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+
+        // M.N. ID 32766 turns off ATC name
+        if (airbase->brain->Approach() == 32766) // no ATC flag
+            radioMessage->dataBlock.edata[2] = 32766;
+        else
+            radioMessage->dataBlock.edata[2] = (short)airbase->brain->Tower();
+
+        // radioMessage->dataBlock.edata[2] = (short)airbase->brain->Tower();
+        break;
+
+    case rcDISRUPTINGTRAFFIC:
+    case rcGETOFFRUNWAYA:
+    case rcGETOFFRUNWAYB:
+    case rcHOLDSHORT:
+    case rcHURRYUP:
+    case rcCLEARTOTAXI:
+    case rcATCVECTORS:
+    case rcATCVECTORSRW: // JB 010527 (from MN) // new radio chatter
+    case rcATCORBIT1:
+    case rcATCORBIT2:
+    case rcTURNTOFINAL:
+    case rcATCSCOLD1:
+    case rcATCGOAROUND:
+    case rcATCGOAROUND2:
+        //these calls use just callsign, callnum
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        break;
+
+    case rcDEPARTHEADING: //Cobra
+    case rcRESUMEOWNNAV: //Cobra
+    case rcLANDINGCHECK: //Cobra
+        radioMessage->dataBlock.edata[0] = flight->callsign_id;
+        radioMessage->dataBlock.edata[1] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.edata[2] = airbase->brain->Tower();
+
+        break;
     }
 
     return radioMessage;
 }
 
-void SendCallFromATC(Objective airbase, AircraftClass* aircraft, short call, VuTargetEntity *target)
+void SendCallFromATC(Objective airbase, AircraftClass *aircraft, short call,
+                     VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallFromATC(airbase, aircraft, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallFromATC(airbase, aircraft, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
 
-FalconRadioChatterMessage* CreateCallToATC(AircraftClass* aircraft, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallToATC(AircraftClass *aircraft, short call,
+                                           VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
 
     ShiAssert(aircraft);
 
-    Objective airbase = (ObjectiveClass*)vuDatabase->Find(aircraft->DBrain()->Airbase());
+    Objective airbase =
+        (ObjectiveClass *)vuDatabase->Find(aircraft->DBrain()->Airbase());
     Flight flight = (Flight)aircraft->GetCampaignObject();
 
     ShiAssert(flight);
 
     if (airbase)
     {
-        radioMessage = new FalconRadioChatterMessage(airbase->Id() , target);
+        radioMessage = new FalconRadioChatterMessage(airbase->Id(), target);
     }
     else
     {
-        radioMessage = new FalconRadioChatterMessage(FalconNullId , target);
+        radioMessage = new FalconRadioChatterMessage(FalconNullId, target);
     }
 
     radioMessage->dataBlock.time_to_play = 0;
 
     switch (call)
     {
-        case rcAPPROACH:
-        case rcLANDCLEARANCE:
-        case rcTAKEOFFCLEARANCE:
-        case rcLANDCLEAREMERGENCY:
-        case rcONRUNWAY:
+    case rcAPPROACH:
+    case rcLANDCLEARANCE:
+    case rcTAKEOFFCLEARANCE:
+    case rcLANDCLEAREMERGENCY:
+    case rcONRUNWAY:
 
-        case rcREQUESTTAKEOFFCLEARANCE:
+    case rcREQUESTTAKEOFFCLEARANCE:
 
-            radioMessage->dataBlock.edata[0] = -1;
-            radioMessage->dataBlock.edata[1] = -1;
-            radioMessage->dataBlock.voice_id = flight->GetPilotVoiceID(aircraft->vehicleInUnit);
-            radioMessage->dataBlock.from = aircraft->Id();
-            radioMessage->dataBlock.edata[2] = flight->callsign_id;
-            radioMessage->dataBlock.edata[3] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
-            radioMessage->dataBlock.message = call;
-            break;
+        radioMessage->dataBlock.edata[0] = -1;
+        radioMessage->dataBlock.edata[1] = -1;
+        radioMessage->dataBlock.voice_id =
+            flight->GetPilotVoiceID(aircraft->vehicleInUnit);
+        radioMessage->dataBlock.from = aircraft->Id();
+        radioMessage->dataBlock.edata[2] = flight->callsign_id;
+        radioMessage->dataBlock.edata[3] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
+        radioMessage->dataBlock.message = call;
+        break;
 
-        case rcREADYFORDERARTURE:
+    case rcREADYFORDERARTURE:
 
-            radioMessage->dataBlock.edata[0] = -1;
-            radioMessage->dataBlock.voice_id = flight->GetPilotVoiceID(aircraft->vehicleInUnit);
-            radioMessage->dataBlock.from = aircraft->Id();
-            radioMessage->dataBlock.edata[1] = flight->callsign_id;
-            radioMessage->dataBlock.edata[2] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
-            radioMessage->dataBlock.message = call;
-            break;
+        radioMessage->dataBlock.edata[0] = -1;
+        radioMessage->dataBlock.voice_id =
+            flight->GetPilotVoiceID(aircraft->vehicleInUnit);
+        radioMessage->dataBlock.from = aircraft->Id();
+        radioMessage->dataBlock.edata[1] = flight->callsign_id;
+        radioMessage->dataBlock.edata[2] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
+        radioMessage->dataBlock.message = call;
+        break;
 
-        case rcCOPY:  //RAS-21Jan04-For Traffic Call Acknowledgement
+    case rcCOPY: //RAS-21Jan04-For Traffic Call Acknowledgement
 
-            radioMessage->dataBlock.edata[0] = -1;
-            radioMessage->dataBlock.voice_id = flight->GetPilotVoiceID(aircraft->vehicleInUnit);
-            radioMessage->dataBlock.from = aircraft->Id();
-            radioMessage->dataBlock.edata[1] = -1;
-            radioMessage->dataBlock.edata[2] = flight->callsign_id;
-            radioMessage->dataBlock.edata[3] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
-            radioMessage->dataBlock.message = call;
-            break;
-
+        radioMessage->dataBlock.edata[0] = -1;
+        radioMessage->dataBlock.voice_id =
+            flight->GetPilotVoiceID(aircraft->vehicleInUnit);
+        radioMessage->dataBlock.from = aircraft->Id();
+        radioMessage->dataBlock.edata[1] = -1;
+        radioMessage->dataBlock.edata[2] = flight->callsign_id;
+        radioMessage->dataBlock.edata[3] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
+        radioMessage->dataBlock.message = call;
+        break;
     }
 
     return radioMessage;
 }
 
-void SendCallToATC(AircraftClass* aircraft, short call, VuTargetEntity *target)
+void SendCallToATC(AircraftClass *aircraft, short call, VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallToATC(aircraft, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallToATC(aircraft, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
-FalconRadioChatterMessage* CreateCallToATC(AircraftClass* aircraft, VU_ID airbaseID, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallToATC(AircraftClass *aircraft,
+                                           VU_ID airbaseID, short call,
+                                           VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
 
@@ -695,53 +761,60 @@ FalconRadioChatterMessage* CreateCallToATC(AircraftClass* aircraft, VU_ID airbas
 
     ShiAssert(flight);
 
-    radioMessage = new FalconRadioChatterMessage(airbaseID , target);
+    radioMessage = new FalconRadioChatterMessage(airbaseID, target);
 
     radioMessage->dataBlock.time_to_play = 0;
 
     switch (call)
     {
-        case rcAPPROACH:
-        case rcLANDCLEARANCE:
-        case rcTAKEOFFCLEARANCE:
-        case rcLANDCLEAREMERGENCY:
-        case rcONRUNWAY:
-        case rcABORTAPPROACH: // M.N.
-        case rcREQUESTTAKEOFFCLEARANCE:
+    case rcAPPROACH:
+    case rcLANDCLEARANCE:
+    case rcTAKEOFFCLEARANCE:
+    case rcLANDCLEAREMERGENCY:
+    case rcONRUNWAY:
+    case rcABORTAPPROACH: // M.N.
+    case rcREQUESTTAKEOFFCLEARANCE:
 
-            radioMessage->dataBlock.edata[0] = -1;
-            radioMessage->dataBlock.edata[1] = -1;
-            radioMessage->dataBlock.voice_id = flight->GetPilotVoiceID(aircraft->vehicleInUnit);
-            radioMessage->dataBlock.from = aircraft->Id();
-            radioMessage->dataBlock.edata[2] = flight->callsign_id;
-            radioMessage->dataBlock.edata[3] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
-            radioMessage->dataBlock.message = call;
-            break;
+        radioMessage->dataBlock.edata[0] = -1;
+        radioMessage->dataBlock.edata[1] = -1;
+        radioMessage->dataBlock.voice_id =
+            flight->GetPilotVoiceID(aircraft->vehicleInUnit);
+        radioMessage->dataBlock.from = aircraft->Id();
+        radioMessage->dataBlock.edata[2] = flight->callsign_id;
+        radioMessage->dataBlock.edata[3] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
+        radioMessage->dataBlock.message = call;
+        break;
 
-        case rcREADYFORDERARTURE:
+    case rcREADYFORDERARTURE:
 
-            radioMessage->dataBlock.edata[0] = -1;
-            radioMessage->dataBlock.voice_id = flight->GetPilotVoiceID(aircraft->vehicleInUnit);
-            radioMessage->dataBlock.from = aircraft->Id();
-            radioMessage->dataBlock.edata[1] = flight->callsign_id;
-            radioMessage->dataBlock.edata[2] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
-            radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
-            radioMessage->dataBlock.message = call;
-            break;
+        radioMessage->dataBlock.edata[0] = -1;
+        radioMessage->dataBlock.voice_id =
+            flight->GetPilotVoiceID(aircraft->vehicleInUnit);
+        radioMessage->dataBlock.from = aircraft->Id();
+        radioMessage->dataBlock.edata[1] = flight->callsign_id;
+        radioMessage->dataBlock.edata[2] =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
+        radioMessage->dataBlock.message = call;
+        break;
     }
 
     return radioMessage;
 }
 
-void SendCallToATC(AircraftClass* aircraft, VU_ID airbaseID, short call, VuTargetEntity *target)
+void SendCallToATC(AircraftClass *aircraft, VU_ID airbaseID, short call,
+                   VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallToATC(aircraft, airbaseID, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallToATC(aircraft, airbaseID, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
 
-FalconRadioChatterMessage* CreateCallToAWACS(AircraftClass* aircraft, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallToAWACS(AircraftClass *aircraft,
+                                             short call, VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
     Flight awacs, flight;
@@ -754,22 +827,26 @@ FalconRadioChatterMessage* CreateCallToAWACS(AircraftClass* aircraft, short call
 
     if (awacs)
     {
-        radioMessage = new FalconRadioChatterMessage(awacs->Id() , target);
+        radioMessage = new FalconRadioChatterMessage(awacs->Id(), target);
         radioMessage->dataBlock.edata[0] = awacs->callsign_id;
-        radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(awacs->callsign_num);
+        radioMessage->dataBlock.edata[1] =
+            ConvertFlightNumberToCallNumber(awacs->callsign_num);
     }
     else
     {
-        radioMessage = new FalconRadioChatterMessage(FalconNullId , target);
+        radioMessage = new FalconRadioChatterMessage(FalconNullId, target);
         radioMessage->dataBlock.edata[0] = gDefaultAWACSCallSign;
-        radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
+        radioMessage->dataBlock.edata[1] =
+            ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
     }
 
     // Flight data
-    radioMessage->dataBlock.voice_id = flight->GetPilotVoiceID(aircraft->vehicleInUnit);
+    radioMessage->dataBlock.voice_id =
+        flight->GetPilotVoiceID(aircraft->vehicleInUnit);
     radioMessage->dataBlock.from = aircraft->Id();
     radioMessage->dataBlock.edata[2] = flight->callsign_id;
-    radioMessage->dataBlock.edata[3] = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+    radioMessage->dataBlock.edata[3] =
+        ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
     radioMessage->dataBlock.message = call;
     radioMessage->dataBlock.time_to_play = 0;
@@ -778,13 +855,16 @@ FalconRadioChatterMessage* CreateCallToAWACS(AircraftClass* aircraft, short call
     return radioMessage;
 }
 
-void SendCallToAWACS(AircraftClass* aircraft, short call, VuTargetEntity *target)
+void SendCallToAWACS(AircraftClass *aircraft, short call,
+                     VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallToAWACS(aircraft, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallToAWACS(aircraft, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
-FalconRadioChatterMessage* CreateCallToAWACS(Flight flight, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallToAWACS(Flight flight, short call,
+                                             VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
     Flight awacs;
@@ -796,22 +876,25 @@ FalconRadioChatterMessage* CreateCallToAWACS(Flight flight, short call, VuTarget
 
     if (awacs)
     {
-        radioMessage = new FalconRadioChatterMessage(awacs->Id() , target);
+        radioMessage = new FalconRadioChatterMessage(awacs->Id(), target);
         radioMessage->dataBlock.edata[0] = awacs->callsign_id;
-        radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(awacs->callsign_num);
+        radioMessage->dataBlock.edata[1] =
+            ConvertFlightNumberToCallNumber(awacs->callsign_num);
     }
     else
     {
-        radioMessage = new FalconRadioChatterMessage(FalconNullId , target);
+        radioMessage = new FalconRadioChatterMessage(FalconNullId, target);
         radioMessage->dataBlock.edata[0] = gDefaultAWACSCallSign;
-        radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
+        radioMessage->dataBlock.edata[1] =
+            ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
     }
 
     // Flight data
     radioMessage->dataBlock.voice_id = flight->GetFlightLeadVoiceID();
     radioMessage->dataBlock.from = flight->Id();
     radioMessage->dataBlock.edata[2] = flight->callsign_id;
-    radioMessage->dataBlock.edata[3] = ConvertFlightNumberToCallNumber(flight->callsign_num);
+    radioMessage->dataBlock.edata[3] =
+        ConvertFlightNumberToCallNumber(flight->callsign_num);
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
     radioMessage->dataBlock.message = call;
     radioMessage->dataBlock.time_to_play = 0;
@@ -821,12 +904,14 @@ FalconRadioChatterMessage* CreateCallToAWACS(Flight flight, short call, VuTarget
 
 void SendCallToAWACS(Flight flight, short call, VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallToAWACS(flight, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallToAWACS(flight, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
 
-FalconRadioChatterMessage* CreateCallFromAwacs(Flight flight, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallFromAwacs(Flight flight, short call,
+                                               VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
     Flight awacs;
@@ -837,9 +922,10 @@ FalconRadioChatterMessage* CreateCallFromAwacs(Flight flight, short call, VuTarg
     awacs = flight->GetFlightController();
 
     // Flight data
-    radioMessage = new FalconRadioChatterMessage(flight->Id() , target);
+    radioMessage = new FalconRadioChatterMessage(flight->Id(), target);
     radioMessage->dataBlock.edata[0] = flight->callsign_id;
-    radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(flight->callsign_num);
+    radioMessage->dataBlock.edata[1] =
+        ConvertFlightNumberToCallNumber(flight->callsign_num);
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
 
 
@@ -848,14 +934,17 @@ FalconRadioChatterMessage* CreateCallFromAwacs(Flight flight, short call, VuTarg
         radioMessage->dataBlock.from = awacs->Id();
         radioMessage->dataBlock.voice_id = awacs->GetFlightLeadVoiceID();
         radioMessage->dataBlock.edata[2] = awacs->callsign_id;
-        radioMessage->dataBlock.edata[3] = ConvertFlightNumberToCallNumber(awacs->callsign_num);
+        radioMessage->dataBlock.edata[3] =
+            ConvertFlightNumberToCallNumber(awacs->callsign_num);
     }
     else
     {
         radioMessage->dataBlock.from = FalconNullId;
-        radioMessage->dataBlock.voice_id = GetDefaultAwacsVoice(); // JPO VOICEFIX
+        radioMessage->dataBlock.voice_id =
+            GetDefaultAwacsVoice(); // JPO VOICEFIX
         radioMessage->dataBlock.edata[2] = gDefaultAWACSCallSign;
-        radioMessage->dataBlock.edata[3] = ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
+        radioMessage->dataBlock.edata[3] =
+            ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
     }
 
     radioMessage->dataBlock.message = call;
@@ -865,7 +954,9 @@ FalconRadioChatterMessage* CreateCallFromAwacs(Flight flight, short call, VuTarg
     return radioMessage;
 }
 
-FalconRadioChatterMessage* CreateCallFromAwacsPlane(AircraftClass* plane, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallFromAwacsPlane(AircraftClass *plane,
+                                                    short call,
+                                                    VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
     Flight awacs, flight;
@@ -877,26 +968,30 @@ FalconRadioChatterMessage* CreateCallFromAwacsPlane(AircraftClass* plane, short 
     awacs = flight->GetFlightController();
 
     // Flight data
-    radioMessage = new FalconRadioChatterMessage(flight->Id() , target);
+    radioMessage = new FalconRadioChatterMessage(flight->Id(), target);
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
 
     int flightIdx = flight->GetComponentIndex(plane);
     radioMessage->dataBlock.edata[0] = flight->callsign_id;
-    radioMessage->dataBlock.edata[1] = (flight->callsign_num - 1) * 4 + flightIdx + 1;
+    radioMessage->dataBlock.edata[1] =
+        (flight->callsign_num - 1) * 4 + flightIdx + 1;
 
     if (awacs)
     {
         radioMessage->dataBlock.from = awacs->Id();
         radioMessage->dataBlock.voice_id = awacs->GetFlightLeadVoiceID();
         radioMessage->dataBlock.edata[2] = awacs->callsign_id;
-        radioMessage->dataBlock.edata[3] = ConvertFlightNumberToCallNumber(awacs->callsign_num);
+        radioMessage->dataBlock.edata[3] =
+            ConvertFlightNumberToCallNumber(awacs->callsign_num);
     }
     else
     {
         radioMessage->dataBlock.from = FalconNullId;
-        radioMessage->dataBlock.voice_id = GetDefaultAwacsVoice(); // JPO VOICEFIX
+        radioMessage->dataBlock.voice_id =
+            GetDefaultAwacsVoice(); // JPO VOICEFIX
         radioMessage->dataBlock.edata[2] = gDefaultAWACSCallSign;
-        radioMessage->dataBlock.edata[3] = ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
+        radioMessage->dataBlock.edata[3] =
+            ConvertFlightNumberToCallNumber(gDefaultAWACSFlightNum);
     }
 
     radioMessage->dataBlock.message = call;
@@ -909,11 +1004,14 @@ FalconRadioChatterMessage* CreateCallFromAwacsPlane(AircraftClass* plane, short 
 // This will send a simple call FROM AWACS/FAC (ie: a call with only the callsigns as evals)
 void SendCallFromAwacs(Flight flight, short call, VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallFromAwacs(flight, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallFromAwacs(flight, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
-FalconRadioChatterMessage* CreateCallToFlight(Flight flight, FalconEntity *from, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallToFlight(Flight flight, FalconEntity *from,
+                                              short call,
+                                              VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
 
@@ -923,40 +1021,46 @@ FalconRadioChatterMessage* CreateCallToFlight(Flight flight, FalconEntity *from,
 
     ShiAssert(flight);
 
-    if ( not from)
+    if (not from)
     {
         fromID = FalconNullId;
-        fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
+        fromVoice = GetDefaultAwacsVoice(); // JPO VOICEFIX
         fromCallsign = -1;
         fromCallnum = -1;
     }
     else if (from->IsAirplane())
     {
-        Flight fromFlight = ((Flight)((AircraftClass*)from)->GetCampaignObject());
+        Flight fromFlight =
+            ((Flight)((AircraftClass *)from)->GetCampaignObject());
         fromID = from->Id();
-        fromVoice =  fromFlight->GetPilotVoiceID(((AircraftClass*)from)->pilotSlot);
-        fromCallsign = fromFlight->callsign_id;;
-        fromCallnum = ConvertToCallNumber(fromFlight->callsign_num, ((AircraftClass*)from)->vehicleInUnit);
+        fromVoice =
+            fromFlight->GetPilotVoiceID(((AircraftClass *)from)->pilotSlot);
+        fromCallsign = fromFlight->callsign_id;
+        ;
+        fromCallnum = ConvertToCallNumber(
+            fromFlight->callsign_num, ((AircraftClass *)from)->vehicleInUnit);
     }
     else if (from->IsFlight())
     {
         fromID = from->Id();
         fromVoice = ((Flight)from)->GetFlightLeadVoiceID();
         fromCallsign = ((Flight)from)->callsign_id;
-        fromCallnum = ConvertFlightNumberToCallNumber(((Flight)from)->callsign_num);
+        fromCallnum =
+            ConvertFlightNumberToCallNumber(((Flight)from)->callsign_num);
     }
     else
     {
         fromID = from->Id();
-        fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
+        fromVoice = GetDefaultAwacsVoice(); // JPO VOICEFIX
         fromCallsign = -1;
         fromCallnum = -1;
     }
 
     // Flight data
-    radioMessage = new FalconRadioChatterMessage(flight->Id() , target);
+    radioMessage = new FalconRadioChatterMessage(flight->Id(), target);
     radioMessage->dataBlock.edata[0] = flight->callsign_id;
-    radioMessage->dataBlock.edata[1] = ConvertFlightNumberToCallNumber(flight->callsign_num);
+    radioMessage->dataBlock.edata[1] =
+        ConvertFlightNumberToCallNumber(flight->callsign_num);
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
     radioMessage->dataBlock.from = fromID;
     radioMessage->dataBlock.voice_id = fromVoice;
@@ -970,13 +1074,17 @@ FalconRadioChatterMessage* CreateCallToFlight(Flight flight, FalconEntity *from,
 }
 
 // This will send a simple call FROM from (ie: a call with only the callsigns as evals)
-void SendCallToFlight(Flight flight, FalconEntity *from, short call, VuTargetEntity *target)
+void SendCallToFlight(Flight flight, FalconEntity *from, short call,
+                      VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallToFlight(flight, from, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallToFlight(flight, from, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
-FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEntity *from, short call, VuTargetEntity *target)
+FalconRadioChatterMessage *CreateCallToPlane(AircraftClass *aircraft,
+                                             FalconEntity *from, short call,
+                                             VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
     Flight flight;
@@ -985,37 +1093,43 @@ FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEnti
     short toCallsign, toCallnum;
     uchar fromVoice;
 
-    if ( not from)
+    if (not from)
     {
         fromID = FalconNullId;
-        fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
+        fromVoice = GetDefaultAwacsVoice(); // JPO VOICEFIX
         fromCallsign = -1;
         fromCallnum = -1;
     }
     else if (from->IsAirplane())
     {
-        Flight fromFlight = ((Flight)((AircraftClass*)from)->GetCampaignObject());
+        Flight fromFlight =
+            ((Flight)((AircraftClass *)from)->GetCampaignObject());
         fromID = from->Id();
-        fromVoice =  fromFlight->GetPilotVoiceID(((AircraftClass*)from)->pilotSlot);
-        fromCallsign = fromFlight->callsign_id;;
-        fromCallnum = ConvertToCallNumber(fromFlight->callsign_num, ((AircraftClass*)from)->vehicleInUnit);
+        fromVoice =
+            fromFlight->GetPilotVoiceID(((AircraftClass *)from)->pilotSlot);
+        fromCallsign = fromFlight->callsign_id;
+        ;
+        fromCallnum = ConvertToCallNumber(
+            fromFlight->callsign_num, ((AircraftClass *)from)->vehicleInUnit);
     }
     else if (from->IsFlight())
     {
         fromID = from->Id();
         fromVoice = ((Flight)from)->GetFlightLeadVoiceID();
-        fromCallsign = ((Flight)from)->callsign_id;;
-        fromCallnum = ConvertFlightNumberToCallNumber(((Flight)from)->callsign_num);
+        fromCallsign = ((Flight)from)->callsign_id;
+        ;
+        fromCallnum =
+            ConvertFlightNumberToCallNumber(((Flight)from)->callsign_num);
     }
     else
     {
         fromID = from->Id();
-        fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
+        fromVoice = GetDefaultAwacsVoice(); // JPO VOICEFIX
         fromCallsign = -1;
         fromCallnum = -1;
     }
 
-    if ( not aircraft)
+    if (not aircraft)
     {
         toID = FalconNullId;
         toCallsign = -1;
@@ -1027,11 +1141,12 @@ FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEnti
 
         toID = aircraft->Id();
         toCallsign = flight->callsign_id;
-        toCallnum = ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
+        toCallnum =
+            ConvertToCallNumber(flight->callsign_num, aircraft->vehicleInUnit);
     }
 
     // Flight data
-    radioMessage = new FalconRadioChatterMessage(toID , target);
+    radioMessage = new FalconRadioChatterMessage(toID, target);
     radioMessage->dataBlock.edata[0] = toCallsign;
     radioMessage->dataBlock.edata[1] = toCallnum;
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
@@ -1047,14 +1162,17 @@ FalconRadioChatterMessage* CreateCallToPlane(AircraftClass* aircraft, FalconEnti
 }
 
 // This will send a simple call FROM from (ie: a call with only the callsigns as evals)
-void SendCallToPlane(AircraftClass* aircraft, FalconEntity *from, short call, VuTargetEntity *target)
+void SendCallToPlane(AircraftClass *aircraft, FalconEntity *from, short call,
+                     VuTargetEntity *target)
 {
-    FalconRadioChatterMessage *radioMessage = CreateCallToPlane(aircraft, from, call, target);
+    FalconRadioChatterMessage *radioMessage =
+        CreateCallToPlane(aircraft, from, call, target);
     FalconSendMessage(radioMessage, FALSE);
 }
 
 // This will send a simple call FROM from (ie: a call with only the callsigns as evals)
-void SendRogerToPlane(AircraftClass* aircraft, FalconEntity *from, VuTargetEntity *target)
+void SendRogerToPlane(AircraftClass *aircraft, FalconEntity *from,
+                      VuTargetEntity *target)
 {
     FalconRadioChatterMessage *radioMessage;
     Flight flight;
@@ -1065,35 +1183,41 @@ void SendRogerToPlane(AircraftClass* aircraft, FalconEntity *from, VuTargetEntit
     ShiAssert(aircraft);
     flight = (Flight)aircraft->GetCampaignObject();
 
-    if ( not from)
+    if (not from)
     {
         return;
     }
     else if (from->IsAirplane())
     {
-        Flight fromFlight = ((Flight)((AircraftClass*)from)->GetCampaignObject());
+        Flight fromFlight =
+            ((Flight)((AircraftClass *)from)->GetCampaignObject());
         fromID = from->Id();
-        fromVoice =  fromFlight->GetPilotVoiceID(((AircraftClass*)from)->pilotSlot);
-        fromCallsign = fromFlight->callsign_id;;
-        fromCallnum = ConvertToCallNumber(fromFlight->callsign_num, ((AircraftClass*)from)->vehicleInUnit);
+        fromVoice =
+            fromFlight->GetPilotVoiceID(((AircraftClass *)from)->pilotSlot);
+        fromCallsign = fromFlight->callsign_id;
+        ;
+        fromCallnum = ConvertToCallNumber(
+            fromFlight->callsign_num, ((AircraftClass *)from)->vehicleInUnit);
     }
     else if (from->IsFlight())
     {
         fromID = from->Id();
         fromVoice = ((Flight)from)->GetFlightLeadVoiceID();
-        fromCallsign = ((Flight)from)->callsign_id;;
-        fromCallnum = ConvertFlightNumberToCallNumber(((Flight)from)->callsign_num);
+        fromCallsign = ((Flight)from)->callsign_id;
+        ;
+        fromCallnum =
+            ConvertFlightNumberToCallNumber(((Flight)from)->callsign_num);
     }
     else
     {
         fromID = from->Id();
-        fromVoice =  GetDefaultAwacsVoice(); // JPO VOICEFIX
+        fromVoice = GetDefaultAwacsVoice(); // JPO VOICEFIX
         fromCallsign = -1;
         fromCallnum = -1;
     }
 
     // Flight data
-    radioMessage = new FalconRadioChatterMessage(aircraft->Id() , target);
+    radioMessage = new FalconRadioChatterMessage(aircraft->Id(), target);
     radioMessage->dataBlock.to = MESSAGE_FOR_FLIGHT;
     radioMessage->dataBlock.from = fromID;
     radioMessage->dataBlock.voice_id = fromVoice;
@@ -1116,7 +1240,8 @@ uchar GetDefaultAwacsVoice()
 {
     if (gDefaultAWACSVoice == 255)
     {
-        gDefaultAWACSVoice = g_voicemap.PickVoice(VoiceMapper::VOICE_AWACS, VoiceMapper::VOICE_SIDE_UNK);
+        gDefaultAWACSVoice = g_voicemap.PickVoice(VoiceMapper::VOICE_AWACS,
+                                                  VoiceMapper::VOICE_SIDE_UNK);
     }
 
     return gDefaultAWACSVoice;
@@ -1124,5 +1249,6 @@ uchar GetDefaultAwacsVoice()
 
 void ResetDefaultAwacsVoice()
 {
-    gDefaultAWACSVoice = g_voicemap.PickVoice(VoiceMapper::VOICE_AWACS, VoiceMapper::VOICE_SIDE_UNK);
+    gDefaultAWACSVoice = g_voicemap.PickVoice(VoiceMapper::VOICE_AWACS,
+                                              VoiceMapper::VOICE_SIDE_UNK);
 }

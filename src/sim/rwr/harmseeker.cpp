@@ -1,11 +1,11 @@
 #include "stdhdr.h"
-#include "Object.h"
+#include "object.h"
 #include "simbase.h"
 #include "camp2sim.h"
 #include "simmover.h"
-#include "OTWdrive.h"
-#include "Missile.h"
-#include "HarmSeeker.h"
+#include "otwdrive.h"
+#include "missile.h"
+#include "harmseeker.h"
 #include "simveh.h"
 #include "fcc.h"
 
@@ -14,18 +14,21 @@
 static const float MAX_DRIFT_RATE = 20.0f;
 
 
-HarmSeekerClass::HarmSeekerClass(int type, SimMoverClass* parentPlatform) : RwrClass(type, parentPlatform)
+HarmSeekerClass::HarmSeekerClass(int type, SimMoverClass* parentPlatform)
+    : RwrClass(type, parentPlatform)
 {
     dataProvided = ExactPosition;
 
     couldGuide = TRUE;
 
     // Pick a random drift rate for this instance
-    driftRateX = MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
-    driftRateY = MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
+    driftRateX =
+        MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
+    driftRateY =
+        MAX_DRIFT_RATE * (float)((RAND_MAX >> 1) - rand()) / (RAND_MAX >> 1);
 
     launched = false;
-    launchedInPOS   = false;
+    launchedInPOS = false;
     handedoff = false;
 }
 
@@ -42,13 +45,16 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     theParent = (SimMoverClass*)(((MissileClass*)platform)->parent.get());
 
     // FRB - CTD fix?
-    if ( not theParent)
+    if (not theParent)
         return NULL;
 
     FCC = ((SimVehicleClass*)theParent)->GetFCC();
     HTS = (HarmTargetingPod*)FindSensor(theParent, SensorClass::HTS);
 
-    if (HTS and ((MissileClass*)platform)->launchState not_eq MissileClass::PreLaunch and not launched)
+    if (HTS and
+        ((MissileClass*)platform)->launchState not_eq
+            MissileClass::PreLaunch and
+        not launched)
     {
         launched = true;
         launchedInPOS = (HTS->GetPreHandoffMode() == HarmTargetingPod::Pos);
@@ -59,7 +65,9 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
     // Adopt the missile's target if it is providing one and it is not the missile itself
     if (missileTarget)
     {
-        if ( not platform->IsMissile() or ((MissileClass*)platform)->parent.get() not_eq missileTarget->BaseData())
+        if (not platform->IsMissile() or
+            ((MissileClass*)platform)->parent.get() not_eq
+                missileTarget->BaseData())
             SetDesiredTarget(missileTarget);
     }
 
@@ -81,9 +89,11 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
             if (CanSeeObject(lockedTarget))
             {
                 // Can't guide if the signal is too weak or in the air
-                if (CanDetectObject(lockedTarget) and lockedTarget->BaseData()->OnGround())
+                if (CanDetectObject(lockedTarget) and
+                    lockedTarget->BaseData()->OnGround())
                 {
-                    canGuide = handedoff; // make sure target was already handedoff
+                    canGuide =
+                        handedoff; // make sure target was already handedoff
                 }
             }
         }
@@ -122,16 +132,18 @@ SimObjectType* HarmSeekerClass::Exec(SimObjectType* missileTarget)
             }
             else
             {
-                z = OTWDriver.GetGroundLevel(lockedTarget->BaseData()->XPos(), lockedTarget->BaseData()->YPos());
+                z = OTWDriver.GetGroundLevel(lockedTarget->BaseData()->XPos(),
+                                             lockedTarget->BaseData()->YPos());
             }
 
             // Tell our parent missile where the target was when last seen
-            ((MissileClass*)platform)->SetTargetPosition(lockedTarget->BaseData()->XPos(),
-                    lockedTarget->BaseData()->YPos(),
-                    z);
+            ((MissileClass*)platform)
+                ->SetTargetPosition(lockedTarget->BaseData()->XPos(),
+                                    lockedTarget->BaseData()->YPos(), z);
 
             // Give it a bogus speed so the target location drifts while the signal is lost
-            ((MissileClass*)platform)->SetTargetVelocity(driftRateX, driftRateY, 0.0f);
+            ((MissileClass*)platform)
+                ->SetTargetVelocity(driftRateX, driftRateY, 0.0f);
         }
     }
 

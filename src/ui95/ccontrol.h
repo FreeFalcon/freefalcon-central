@@ -25,11 +25,11 @@ protected:
     short MouseOver_;
     short MouseOverPercent_;
     // sfr: added for mousewheel
-    int         Increment_;
+    int Increment_;
 
     // Don't save from here
     C_Hash *Sound_;
-    void (*Callback_)(long, short, C_Base*);
+    void (*Callback_)(long, short, C_Base *);
 
 public:
     C_Control();
@@ -85,7 +85,7 @@ public:
     {
         HotKey_ = key;
     }
-    void SetCallback(void (*cb)(long, short, C_Base*))
+    void SetCallback(void (*cb)(long, short, C_Base *))
     {
         Callback_ = cb;
     }
@@ -104,54 +104,54 @@ public:
     }
 
     // Querry Functions
-    BOOL  IsBase()
+    BOOL IsBase()
     {
-        return(FALSE);
+        return (FALSE);
     }
-    BOOL  IsControl()
+    BOOL IsControl()
     {
-        return(TRUE);
+        return (TRUE);
     }
     long GetRelX()
     {
-        return(RelX_);
+        return (RelX_);
     }
     long GetRelY()
     {
-        return(RelY_);
+        return (RelY_);
     }
-    int  GetIncrement()
+    int GetIncrement()
     {
-        return(Increment_);
+        return (Increment_);
     }
-    long  GetCursorID()
+    long GetCursorID()
     {
-        return(Cursor_);
+        return (Cursor_);
     }
-    long  GetDragCursorID()
+    long GetDragCursorID()
     {
-        return(DragCursor_);
+        return (DragCursor_);
     }
-    long  GetMenu()
+    long GetMenu()
     {
-        return(MenuID_);
+        return (MenuID_);
     }
-    long  GetHelpText()
+    long GetHelpText()
     {
-        return(HelpTextID_);
+        return (HelpTextID_);
     }
     short GetHotKey()
     {
-        return(HotKey_);
+        return (HotKey_);
     }
     short GetMouseOver()
     {
-        return(MouseOver_);
+        return (MouseOver_);
     }
     void HighLite(SCREEN *surface, UI95_RECT *cliprect);
-    void (*GetCallback())(long, short, C_Base*)
+    void (*GetCallback())(long, short, C_Base *)
     {
-        return(Callback_);
+        return (Callback_);
     }
     SOUND_RES *GetSound(short type);
 };

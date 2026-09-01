@@ -3,11 +3,14 @@
 
 static radix_sort_t *sortTable[512];
 
-__inline void RadixReset(void)
+// Artscout - 2026 (#104): was __inline, so as a lowercase C++-compiled TU it emitted no external symbol and
+// context.cpp's `extern void RadixReset(void)` (radix.h) went unresolved. Give it external linkage.
+void RadixReset(void)
 {
     int i;
 
-    for (i = 255; i >= 0; i--) sortTable[i] = 0UL;
+    for (i = 255; i >= 0; i--)
+        sortTable[i] = 0UL;
 }
 
 __inline radix_sort_t **RadixFindFirst(radix_sort_t **ptr)
@@ -16,10 +19,11 @@ __inline radix_sort_t **RadixFindFirst(radix_sort_t **ptr)
     {
         ptr++;
 
-        if ((unsigned int)ptr > (unsigned int)(sortTable + 255)) return 0UL;
+        if ((unsigned int)ptr > (unsigned int)(sortTable + 255))
+            return 0UL;
     }
 
-    return(ptr);
+    return (ptr);
 }
 
 __inline radix_sort_t **RadixRFindFirst(radix_sort_t **ptr)
@@ -28,10 +32,11 @@ __inline radix_sort_t **RadixRFindFirst(radix_sort_t **ptr)
     {
         ptr--;
 
-        if ((unsigned int)ptr < (unsigned int)sortTable) return 0UL;
+        if ((unsigned int)ptr < (unsigned int)sortTable)
+            return 0UL;
     }
 
-    return(ptr);
+    return (ptr);
 }
 
 __inline radix_sort_t **RadixFindNext(radix_sort_t **ptr)
@@ -40,11 +45,11 @@ __inline radix_sort_t **RadixFindNext(radix_sort_t **ptr)
     {
         ptr++;
 
-        if ((unsigned int)ptr > (unsigned int)(sortTable + 255)) return 0UL;
-    }
-    while (0UL == *ptr);
+        if ((unsigned int)ptr > (unsigned int)(sortTable + 255))
+            return 0UL;
+    } while (0UL == *ptr);
 
-    return(ptr);
+    return (ptr);
 }
 
 __inline radix_sort_t **RadixRFindNext(radix_sort_t **ptr)
@@ -53,11 +58,11 @@ __inline radix_sort_t **RadixRFindNext(radix_sort_t **ptr)
     {
         ptr--;
 
-        if ((unsigned int)ptr < (unsigned int)sortTable) return 0UL;
-    }
-    while (0UL == *ptr);
+        if ((unsigned int)ptr < (unsigned int)sortTable)
+            return 0UL;
+    } while (0UL == *ptr);
 
-    return(ptr);
+    return (ptr);
 }
 
 __inline radix_sort_t *RadixRelink(void)
@@ -80,7 +85,7 @@ __inline radix_sort_t *RadixRelink(void)
         scanh = RadixFindNext(scanh);
     }
 
-    return(head);
+    return (head);
 }
 
 __inline radix_sort_t *RadixRRelink(void)
@@ -103,7 +108,7 @@ __inline radix_sort_t *RadixRRelink(void)
         scanh = RadixRFindNext(scanh);
     }
 
-    return(head);
+    return (head);
 }
 
 radix_sort_t *RadixSortAscending(radix_sort_t *iptr, int offset)
@@ -114,7 +119,8 @@ radix_sort_t *RadixSortAscending(radix_sort_t *iptr, int offset)
 
     ptr = iptr;
 
-    if (ptr->pNext == 0UL) return ptr;
+    if (ptr->pNext == 0UL)
+        return ptr;
 
     while (ptr not_eq 0UL)
     {
@@ -154,7 +160,7 @@ radix_sort_t *RadixSortAscending(radix_sort_t *iptr, int offset)
 
     ptr = RadixRelink();
 
-    return(ptr);
+    return (ptr);
 }
 
 radix_sort_t *RadixSortDescending(radix_sort_t *iptr, int offset)
@@ -165,7 +171,8 @@ radix_sort_t *RadixSortDescending(radix_sort_t *iptr, int offset)
 
     ptr = iptr;
 
-    if (ptr->pNext == 0UL) return ptr;
+    if (ptr->pNext == 0UL)
+        return ptr;
 
     while (ptr not_eq 0UL)
     {
@@ -244,5 +251,5 @@ radix_sort_t *RadixSortDescending(radix_sort_t *iptr, int offset)
 
     ptr = RadixRRelink();
 
-    return(ptr);
+    return (ptr);
 }

@@ -1,32 +1,32 @@
 #include <windows.h>
 #include <process.h>
-#include "TimerThread.h"
-#include "FalcSess.h"
-#include "Cmpclass.h"
+#include "timerthread.h"
+#include "falcsess.h"
+#include "cmpclass.h"
 #include "ui/include/uicomms.h"
 #include "sim/include/simdrive.h"
 
 // Time compression globals
-unsigned long       lastStartTime;
-int                 gameCompressionRatio = 0;
-int                 targetGameCompressionRatio = 0;
-int                 targetCompressionRatio = 0;
+unsigned long lastStartTime;
+int gameCompressionRatio = 0;
+int targetGameCompressionRatio = 0;
+int targetCompressionRatio = 0;
 
 // Requests bit array
 int remoteCompressionRequests;
 
 #ifndef NO_TIMER_THREAD
 
-#define     RT_FUNCTION_INTERVAL    20
+#define RT_FUNCTION_INTERVAL 20
 
-static HANDLE       timerHandle;
-static BOOL         timerRunning = FALSE;
-static unsigned     timerThreadID;
+static HANDLE timerHandle;
+static BOOL timerRunning = FALSE;
+static unsigned timerThreadID;
 
 static unsigned __stdcall timerThread(void)
 {
-    DWORD   delta;
-    DWORD   timerRTFunction;
+    DWORD delta;
+    DWORD timerRTFunction;
 
     timerRTFunction = GetTickCount();
 
@@ -39,12 +39,14 @@ static unsigned __stdcall timerThread(void)
             delta = MAX_TIME_DELTA;
 
         //ShiAssert(vuxGameTime + SimLibMajorFrameTime >= SimLibElapsedTime);
-        if ( not gCompressTillTime or vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
+        if (not gCompressTillTime or
+            vuxGameTime + delta * gameCompressionRatio < gCompressTillTime)
         {
             vuxGameTime += delta * gameCompressionRatio; // Normal time advance
         }
         else if (vuxGameTime < gCompressTillTime)
-            vuxGameTime = gCompressTillTime; // We don't want to advance time past here
+            vuxGameTime =
+                gCompressTillTime; // We don't want to advance time past here
 
         //ShiAssert(vuxGameTime + SimLibMajorFrameTime >= SimLibElapsedTime);
         lastStartTime = vuxRealTime;
@@ -65,9 +67,9 @@ void beginTimer(void)
 {
     ShiAssert(timerRunning == FALSE);
     timerRunning = TRUE;
-    timerHandle = (HANDLE) _beginthreadex(
-                      NULL, 0, (unsigned int (__stdcall *)(void *)) timerThread, NULL, 0, &timerThreadID
-                  );
+    timerHandle = (HANDLE)_beginthreadex(
+        NULL, 0, (unsigned int(__stdcall *)(void *))timerThread, NULL, 0,
+        &timerThreadID);
     ShiAssert(timerHandle);
     SetThreadPriority(timerHandle, THREAD_PRIORITY_ABOVE_NORMAL);
 }
@@ -109,7 +111,7 @@ void SetTimeCompression(int newComp)
         // Otherwise, set our compression directly
         lastStartTime = vuxRealTime;
 
-        if ( not gameCompressionRatio and newComp)
+        if (not gameCompressionRatio and newComp)
             SimDriver.lastRealTime = vuxGameTime;
 
         gameCompressionRatio = newComp;
@@ -141,7 +143,7 @@ void SetOnlineTimeCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if ( not gameCompressionRatio and newComp)
+    if (not gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;
@@ -160,7 +162,7 @@ void SetTemporaryCompression(int newComp)
 
     lastStartTime = vuxRealTime;
 
-    if ( not gameCompressionRatio and newComp)
+    if (not gameCompressionRatio and newComp)
         SimDriver.lastRealTime = vuxGameTime;
 
     gameCompressionRatio = newComp;
@@ -188,4 +190,3 @@ void SetTime(unsigned long currentTime)
     // (TheCampaign.IsSuspended ())
     // );
 }
-

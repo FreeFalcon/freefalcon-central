@@ -1,14 +1,14 @@
 #include <windows.h>
 #include "chandler.h"
-#include "FalcSnd/psound.h"
+#include "falcsnd/psound.h"
 
 void *FLAT_RSC::GetData()
 {
-    if ( not Owner or not Header)
-        return(NULL);
+    if (not Owner or not Header)
+        return (NULL);
 
-    return(Owner->GetData() + Header->offset);
-    return(NULL);
+    return (Owner->GetData() + Header->offset);
+    return (NULL);
 }
 
 BOOL SOUND_RSC::Play(int StreamID)
@@ -17,11 +17,11 @@ BOOL SOUND_RSC::Play(int StreamID)
     char *snddata;
     RIFF_FILE RiffHeader;
 
-    if ( not Owner)
-        return(FALSE);
+    if (not Owner)
+        return (FALSE);
 
-    if ( not Owner->GetData())
-        return(FALSE);
+    if (not Owner->GetData())
+        return (FALSE);
 
     SndFlags = 0;
 
@@ -31,9 +31,10 @@ BOOL SOUND_RSC::Play(int StreamID)
     snddata = Owner->GetData() + Header->offset;
 
     if (gSoundDriver->FillRiffInfo(snddata, &RiffHeader))
-        return(gSoundDriver->StartMemoryStream(StreamID, &RiffHeader, SndFlags));
+        return (
+            gSoundDriver->StartMemoryStream(StreamID, &RiffHeader, SndFlags));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL SOUND_RSC::Loop(int StreamID)
@@ -42,20 +43,21 @@ BOOL SOUND_RSC::Loop(int StreamID)
     char *snddata;
     RIFF_FILE RiffHeader;
 
-    if ( not Owner)
-        return(FALSE);
+    if (not Owner)
+        return (FALSE);
 
-    if ( not Owner->GetData())
-        return(FALSE);
+    if (not Owner->GetData())
+        return (FALSE);
 
     SndFlags = SND_STREAM_LOOP;
 
     snddata = Owner->GetData() + Header->offset;
 
     if (gSoundDriver->FillRiffInfo(snddata, &RiffHeader))
-        return(gSoundDriver->StartMemoryStream(StreamID, &RiffHeader, SndFlags));
+        return (
+            gSoundDriver->StartMemoryStream(StreamID, &RiffHeader, SndFlags));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL SOUND_RSC::Stream(int StreamID)
@@ -63,8 +65,8 @@ BOOL SOUND_RSC::Stream(int StreamID)
     long SndFlags;
     char fname[MAX_PATH];
 
-    if ( not Owner)
-        return(FALSE);
+    if (not Owner)
+        return (FALSE);
 
     SndFlags = 0;
 
@@ -73,6 +75,6 @@ BOOL SOUND_RSC::Stream(int StreamID)
 
     strcpy(fname, Owner->ResName());
     strcat(fname, ".rsc");
-    return(gSoundDriver->StartFileStream(StreamID, fname, SndFlags, Header->offset));
+    return (gSoundDriver->StartFileStream(StreamID, fname, SndFlags,
+                                          Header->offset));
 }
-

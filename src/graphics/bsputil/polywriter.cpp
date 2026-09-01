@@ -6,79 +6,79 @@
     This handles writing the disk representation of the run time primitives.
 \***************************************************************************/
 #include <io.h>
-#include "BSPnodeWriter.h"
-#include "PolyWriter.h"
+#include "bspnodewriter.h"
+#include "polywriter.h"
 
 
-int StorePrimitive(Prim *prim)
+int StorePrimitive(Prim* prim)
 {
     int offset;
 
     // Do our type specific handling
     switch (prim->type)
     {
-        case PointF:
-            offset = StorePrimPointFC((PrimPointFC*)prim);
-            break;
+    case PointF:
+        offset = StorePrimPointFC((PrimPointFC*)prim);
+        break;
 
-        case LineF:
-            offset = StorePrimLineFC((PrimLineFC*)prim);
-            break;
+    case LineF:
+        offset = StorePrimLineFC((PrimLineFC*)prim);
+        break;
 
             //   case LtStr:
             // offset = StorePrimLtStr( (PrimLineFC*)prim );
-        case F:
-        case AF:
-            offset = StorePolyFC((PolyFC*)prim);
-            break;
+    case F:
+    case AF:
+        offset = StorePolyFC((PolyFC*)prim);
+        break;
 
-        case FL:
-        case AFL:
-            offset = StorePolyFCN((PolyFCN*)prim);
-            break;
+    case FL:
+    case AFL:
+        offset = StorePolyFCN((PolyFCN*)prim);
+        break;
 
-        case G:
-        case AG:
-            offset = StorePolyVC((PolyVC*)prim);
-            break;
+    case G:
+    case AG:
+        offset = StorePolyVC((PolyVC*)prim);
+        break;
 
-        case GL:
-        case AGL:
-            offset = StorePolyVCN((PolyVCN*)prim);
-            break;
+    case GL:
+    case AGL:
+        offset = StorePolyVCN((PolyVCN*)prim);
+        break;
 
-        case Tex:
-        case ATex:
-        case CTex:
-        case CATex:
-        case BAptTex:
-            offset = StorePolyTexFC((PolyTexFC*)prim);
-            break;
+    case Tex:
+    case ATex:
+    case CTex:
+    case CATex:
+    case BAptTex:
+        offset = StorePolyTexFC((PolyTexFC*)prim);
+        break;
 
-        case TexL:
-        case ATexL:
-        case CTexL:
-        case CATexL:
-            offset = StorePolyTexFCN((PolyTexFCN*)prim);
-            break;
+    case TexL:
+    case ATexL:
+    case CTexL:
+    case CATexL:
+        offset = StorePolyTexFCN((PolyTexFCN*)prim);
+        break;
 
-        case TexG:
-        case ATexG:
-        case CTexG:
-        case CATexG:
-            offset = StorePolyTexVC((PolyTexVC*)prim);
-            break;
+    case TexG:
+    case ATexG:
+    case CTexG:
+    case CATexG:
+        offset = StorePolyTexVC((PolyTexVC*)prim);
+        break;
 
-        case TexGL:
-        case ATexGL:
-        case CTexGL:
-        case CATexGL:
-            offset = StorePolyTexVCN((PolyTexVCN*)prim);
-            break;
+    case TexGL:
+    case ATexGL:
+    case CTexGL:
+    case CATexGL:
+        offset = StorePolyTexVCN((PolyTexVCN*)prim);
+        break;
 
-        default:
-            printf("ERROR:  Unrecognized primtive type.\n");
-            ShiError("Unrecognized primtive type.");
+    default:
+        printf("ERROR:  Unrecognized primtive type.\n");
+        ShiError("Unrecognized primtive type.");
     }
 
 
@@ -91,7 +91,7 @@ int StorePrimitive(Prim *prim)
 }
 
 
-int StorePrimPointFC(PrimPointFC *prim)
+int StorePrimPointFC(PrimPointFC* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -100,7 +100,7 @@ int StorePrimPointFC(PrimPointFC *prim)
 }
 
 
-int StorePrimLineFC(PrimLineFC *prim)
+int StorePrimLineFC(PrimLineFC* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -109,7 +109,7 @@ int StorePrimLineFC(PrimLineFC *prim)
 }
 
 
-int StorePrimLtStr(PrimLtStr *prim)
+int StorePrimLtStr(PrimLtStr* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -118,7 +118,7 @@ int StorePrimLtStr(PrimLtStr *prim)
 }
 
 
-int StorePolyFC(PolyFC *prim)
+int StorePolyFC(PolyFC* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -127,7 +127,7 @@ int StorePolyFC(PolyFC *prim)
 }
 
 
-int StorePolyVC(PolyVC *prim)
+int StorePolyVC(PolyVC* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -139,7 +139,7 @@ int StorePolyVC(PolyVC *prim)
 }
 
 
-int StorePolyFCN(PolyFCN *prim)
+int StorePolyFCN(PolyFCN* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -148,7 +148,7 @@ int StorePolyFCN(PolyFCN *prim)
 }
 
 
-int StorePolyVCN(PolyVCN *prim)
+int StorePolyVCN(PolyVCN* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -156,24 +156,24 @@ int StorePolyVCN(PolyVCN *prim)
 
     // Store our vertex color and normal index arrays
     prim->rgba = (int*)Store(prim->rgba, prim->nVerts * sizeof(*prim->rgba));
-    prim->I    = (int*)Store(prim->I   , prim->nVerts * sizeof(*prim->I));
+    prim->I = (int*)Store(prim->I, prim->nVerts * sizeof(*prim->I));
     return offset;
 }
 
 
-int StorePolyTexFC(PolyTexFC *prim)
+int StorePolyTexFC(PolyTexFC* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
     prim = (PolyTexFC*)PtrFromOffset(offset);
 
     // Store our texture coordinates
-    prim->uv   = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
+    prim->uv = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
     return offset;
 }
 
 
-int StorePolyTexVC(PolyTexVC *prim)
+int StorePolyTexVC(PolyTexVC* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -181,23 +181,23 @@ int StorePolyTexVC(PolyTexVC *prim)
 
     // Store our vertex color and our texture coordinates
     prim->rgba = (int*)Store(prim->rgba, prim->nVerts * sizeof(*prim->rgba));
-    prim->uv   = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
+    prim->uv = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
     return offset;
 }
 
 
-int StorePolyTexFCN(PolyTexFCN *prim)
+int StorePolyTexFCN(PolyTexFCN* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
     prim = (PolyTexFCN*)PtrFromOffset(offset);
 
     // Store our texture coordinates
-    prim->uv   = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
+    prim->uv = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
     return offset;
 }
 
-int StorePolyTexVCN(PolyTexVCN *prim)
+int StorePolyTexVCN(PolyTexVCN* prim)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(prim, sizeof(*prim));
@@ -205,7 +205,7 @@ int StorePolyTexVCN(PolyTexVCN *prim)
 
     // Store our vertex color and normal index arrays and our texture coordinates
     prim->rgba = (int*)Store(prim->rgba, prim->nVerts * sizeof(*prim->rgba));
-    prim->I    = (int*)Store(prim->I   , prim->nVerts * sizeof(*prim->I));
-    prim->uv   = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
+    prim->I = (int*)Store(prim->I, prim->nVerts * sizeof(*prim->I));
+    prim->uv = (Ptexcoord*)Store(prim->uv, prim->nVerts * sizeof(*prim->uv));
     return offset;
 }

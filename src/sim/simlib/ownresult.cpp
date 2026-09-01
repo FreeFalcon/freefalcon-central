@@ -1,5 +1,5 @@
 #include "stdhdr.h"
-#include "OwnResult.h"
+#include "ownresult.h"
 
 OwnshipResultsClass OwnResults;
 

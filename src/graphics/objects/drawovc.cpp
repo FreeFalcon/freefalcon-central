@@ -5,12 +5,12 @@
 
  - Drawable stratus
 \***************************************************************************/
-#include "RenderOW.h"
-#include "Matrix.h"
-#include "TOD.h"
-#include "Tex.h"
-#include "DrawOVC.h"
-#include "RealWeather.h"
+#include "renderow.h"
+#include "matrix.h"
+#include "tod.h"
+#include "tex.h"
+#include "drawovc.h"
+#include "realweather.h"
 
 extern int g_nGfxFix;
 
@@ -19,7 +19,7 @@ MEM_POOL Drawable2DCloud::pool;
 #endif
 
 BOOL Drawable2DCloud::greenMode = FALSE;
-Tcolor Drawable2DCloud::litCloudColor = { 0.f };
+Tcolor Drawable2DCloud::litCloudColor = {0.f};
 
 //static const float TEX_UV_LSB = 1.f/1024.f;
 //static const float TEX_UV_MIN = TEX_UV_LSB;
@@ -51,7 +51,8 @@ void Drawable2DCloud::Update(Tpoint *worldPos, int txtIndex)
 void Drawable2DCloud::Draw(class RenderOTW *renderer, int)
 {
     // if inside an overcast, no draw
-    if (realWeather->InsideOvercast())return;
+    if (realWeather->InsideOvercast())
+        return;
 
     Tpoint ws;
     float minFog, cloudColor;

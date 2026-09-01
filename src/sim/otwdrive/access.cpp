@@ -1,11 +1,11 @@
-#include "Graphics/Include/TOD.h"
-#include "Graphics/Include/RenderOW.h"
-#include "Graphics/Include/RenderNVG.h"
-#include "Graphics/DXEngine/common/IRenderer.h"   // Artscout - 2026: #97 g_pRenderer->SetNvgMode (green world passes)
-#include "Graphics/Include/Canvas3D.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/Drawbsp.h"
-#include "Graphics/Include/Drawpnt.h"
+#include "graphics/include/tod.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/rendernvg.h"
+#include "graphics/dxengine/common/irenderer.h" // Artscout - 2026: #97 g_pRenderer->SetNvgMode (green world passes)
+#include "graphics/include/canvas3d.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawpnt.h"
 #include "stdhdr.h"
 #include "otwdrive.h"
 #include "hud.h"
@@ -15,21 +15,21 @@
 #include "camplib.h"
 #include "resource.h"
 #include "simbase.h"
-#include "simWeapn.h"
+#include "simweapn.h"
 #include "sfx.h"
 #include "playerop.h"
-#include "FalcSess.h"
+#include "falcsess.h"
 #include "aircrft.h"
 #include "camp2sim.h"
 #include "fakerand.h"
 #include "object.h"
 #include "mesg.h"
-#include "playerOp.h"
+#include "playerop.h"
 #include "sinput.h"
 #include "campbase.h"
 // KCK: These are only for detail level shit.
-#include "SimFeat.h"
-#include "Feature.h"
+#include "simfeat.h"
+#include "feature.h"
 #include "fsound.h"
 #include "vdial.h"
 
@@ -55,10 +55,10 @@ extern float boomAzTest, boomElTest, boomExtTest;
 extern int MoveBoom;
 #endif
 
-#include "IVibeData.h"
+#include "ivibedata.h"
 extern IntellivibeData g_intellivibeData;
 
-#include "Graphics/DXEngine/DXEngine.h"
+#include "graphics/dxengine/dxengine.h"
 extern bool g_bUse_DX_Engine;
 
 void OTWDriverClass::ToggleSidebar(void)
@@ -73,7 +73,6 @@ void OTWDriverClass::ToggleSidebar(void)
 
         if (pPadlockCPManager)
             pPadlockCPManager->SetDefaultPanel(PADLOCK_DEFAULT_PANEL);
-
     }
 }
 
@@ -111,7 +110,7 @@ void OTWDriverClass::NVGToggle(void)
     // RenderOTW *newRenderer;
     ShiAssert(renderer);
 
-    TheTimeOfDay.SetNVGmode( not TheTimeOfDay.GetNVGmode());
+    TheTimeOfDay.SetNVGmode(not TheTimeOfDay.GetNVGmode());
 
     // Construct a new renderer of the appropriate type
 
@@ -123,7 +122,9 @@ void OTWDriverClass::NVGToggle(void)
         //TheDXEngine.SetState(DX_NVG);
         renderer->SetGreenMode(true); //sfr
         bNVGmode = true;
-        if (g_pRenderer) g_pRenderer->SetNvgMode(true);   // #97: green the DX world passes (cockpit/aircraft/terrain/sky)
+        if (g_pRenderer)
+            g_pRenderer->SetNvgMode(
+                true); // #97: green the DX world passes (cockpit/aircraft/terrain/sky)
     }
     else
     {
@@ -132,7 +133,8 @@ void OTWDriverClass::NVGToggle(void)
         //TheDXEngine.SetState(DX_OTW);
         renderer->SetGreenMode(false); //sfr
         bNVGmode = false;
-        if (g_pRenderer) g_pRenderer->SetNvgMode(false);
+        if (g_pRenderer)
+            g_pRenderer->SetNvgMode(false);
     }
 
     //JAM 12Oct03
@@ -208,12 +210,14 @@ void OTWDriverClass::SelectF3PadlockMode()
 ////////////////////////
 ////////////////////////
 ////////////////////////
-void OTWDriverClass::Select2DCockpitMode(bool viewreset) //Wombat778 11-18-04  added viewreset argument
+void OTWDriverClass::Select2DCockpitMode(
+    bool viewreset) //Wombat778 11-18-04  added viewreset argument
 {
     if (pCockpitManager)
     {
         //MI
-        if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->WideView)
+        if (SimDriver.GetPlayerAircraft() and
+            SimDriver.GetPlayerAircraft()->WideView)
             pCockpitManager->SetDefaultPanel(COCKPIT_DEFAULT_PANEL + 90000);
         else
             pCockpitManager->SetDefaultPanel(COCKPIT_DEFAULT_PANEL);
@@ -244,14 +248,14 @@ void OTWDriverClass::Cleanup2DCockpitMode()
 ////////////////////////
 void OTWDriverClass::Select3DCockpitMode()
 {
-    if ( not g_bSync2D3DPit)
+    if (not g_bSync2D3DPit)
     {
         ViewReset();
         eyePan = 0.0F;
         eyeTilt = g_f3DHeadTilt * DTR; // Cobra
     }
 
-    SetFOV(g_f3DPitFOV * DTR);   // Cobra
+    SetFOV(g_f3DPitFOV * DTR); // Cobra
 }
 
 
@@ -268,134 +272,141 @@ void OTWDriverClass::SelectExternal()
 
     switch (mOTWDisplayMode)
     {
-        case ModeFlyby:
-            // end in X seconds
-            //flybyTimer = SimLibElapsedTime + 3500;
-            flybyTimer = SimLibElapsedTime + 6000;  // MLR 12/3/2003 - Made fly by timer 6 seconds
+    case ModeFlyby:
+        // end in X seconds
+        //flybyTimer = SimLibElapsedTime + 3500;
+        flybyTimer = SimLibElapsedTime +
+                     6000; // MLR 12/3/2003 - Made fly by timer 6 seconds
 
-            if (otwPlatform)
+        if (otwPlatform)
+        {
+            if (otwPlatform->IsEject())
             {
-                if (otwPlatform->IsEject())
-                {
-                    flybyTimer = SimLibElapsedTime + 3000;
-                    dx = otwPlatform->XDelta() * 1.0f;
-                    dy = otwPlatform->YDelta() * 1.0f;
-                    dz = otwPlatform->ZDelta() * 1.0f;
-                }
-                else if (otwPlatform->OnGround())
-                {
-                    dx = otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f + PRANDFloat() * 100.0f;
-                    dy = otwPlatform->dmx[0][1] * 10.0f + otwPlatform->YDelta() * 2.0f + PRANDFloat() * 100.0f;
-                    dz = otwPlatform->dmx[0][2] * 10.0f + otwPlatform->ZDelta() * 2.0f - PRANDFloatPos() * 200.0f;
-                }
-                else
-                {
-                    dx = otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f + PRANDFloat() * 100.0f;
-                    dy = otwPlatform->dmx[0][1] * 10.0f + otwPlatform->YDelta() * 2.0f + PRANDFloat() * 100.0f;
-                    dz = otwPlatform->dmx[0][2] * 10.0f + otwPlatform->ZDelta() * 2.0f + PRANDFloat() * 100.0f;
-                }
-
-                // edg: I think this may be where we're getting bad values
-                // for camera position
-                if (fabs(dx) > 15000.0f or fabs(dy) > 15000.0f or fabs(dz) > 15000.0f)
-                {
-                    endFlightPoint.x = otwPlatform->XPos();
-                    endFlightPoint.y = otwPlatform->YPos();
-                    endFlightPoint.z = otwPlatform->ZPos();
-                }
-                else
-                {
-                    endFlightPoint.x = otwPlatform->XPos() + dx;
-                    endFlightPoint.y = otwPlatform->YPos() + dy;
-                    endFlightPoint.z = otwPlatform->ZPos() + dz;
-                }
-
-                if (rand() bitand 1)
-                {
-                    endFlightVec.x = PRANDFloat();
-                    endFlightVec.y = PRANDFloat();
-
-                    if (otwPlatform->OnGround())
-                        endFlightVec.z = PRANDFloat();
-                    else
-                        endFlightVec.z = -PRANDFloatPos();
-                }
-                else
-                {
-                    endFlightVec.x = 0.0f;
-                    endFlightVec.y = 0.0f;
-                    endFlightVec.z = 0.0f;
-                }
+                flybyTimer = SimLibElapsedTime + 3000;
+                dx = otwPlatform->XDelta() * 1.0f;
+                dy = otwPlatform->YDelta() * 1.0f;
+                dz = otwPlatform->ZDelta() * 1.0f;
+            }
+            else if (otwPlatform->OnGround())
+            {
+                dx = otwPlatform->dmx[0][0] * 10.0f +
+                     otwPlatform->XDelta() * 2.0f + PRANDFloat() * 100.0f;
+                dy = otwPlatform->dmx[0][1] * 10.0f +
+                     otwPlatform->YDelta() * 2.0f + PRANDFloat() * 100.0f;
+                dz = otwPlatform->dmx[0][2] * 10.0f +
+                     otwPlatform->ZDelta() * 2.0f - PRANDFloatPos() * 200.0f;
             }
             else
             {
-                endFlightPoint = focusPoint;
+                dx = otwPlatform->dmx[0][0] * 10.0f +
+                     otwPlatform->XDelta() * 2.0f + PRANDFloat() * 100.0f;
+                dy = otwPlatform->dmx[0][1] * 10.0f +
+                     otwPlatform->YDelta() * 2.0f + PRANDFloat() * 100.0f;
+                dz = otwPlatform->dmx[0][2] * 10.0f +
+                     otwPlatform->ZDelta() * 2.0f + PRANDFloat() * 100.0f;
+            }
+
+            // edg: I think this may be where we're getting bad values
+            // for camera position
+            if (fabs(dx) > 15000.0f or fabs(dy) > 15000.0f or
+                fabs(dz) > 15000.0f)
+            {
+                endFlightPoint.x = otwPlatform->XPos();
+                endFlightPoint.y = otwPlatform->YPos();
+                endFlightPoint.z = otwPlatform->ZPos();
+            }
+            else
+            {
+                endFlightPoint.x = otwPlatform->XPos() + dx;
+                endFlightPoint.y = otwPlatform->YPos() + dy;
+                endFlightPoint.z = otwPlatform->ZPos() + dz;
+            }
+
+            if (rand() bitand 1)
+            {
                 endFlightVec.x = PRANDFloat();
                 endFlightVec.y = PRANDFloat();
-                endFlightVec.z = -PRANDFloatPos();
-            }
 
-            mOTWDisplayMode = ModeChase;
-            break;
-
-        case ModeSatellite:
-            if (otwPlatform)
-            {
-                chaseCamPos.z = otwPlatform->ZPos() + chaseRange * 12.0f;
+                if (otwPlatform->OnGround())
+                    endFlightVec.z = PRANDFloat();
+                else
+                    endFlightVec.z = -PRANDFloatPos();
             }
             else
             {
-
-                chaseCamPos.z = chaseRange * 20.0f;
+                endFlightVec.x = 0.0f;
+                endFlightVec.y = 0.0f;
+                endFlightVec.z = 0.0f;
             }
+        }
+        else
+        {
+            endFlightPoint = focusPoint;
+            endFlightVec.x = PRANDFloat();
+            endFlightVec.y = PRANDFloat();
+            endFlightVec.z = -PRANDFloatPos();
+        }
 
+        mOTWDisplayMode = ModeChase;
+        break;
+
+    case ModeSatellite:
+        if (otwPlatform)
+        {
+            chaseCamPos.z = otwPlatform->ZPos() + chaseRange * 12.0f;
+        }
+        else
+        {
+
+            chaseCamPos.z = chaseRange * 20.0f;
+        }
+
+        chaseCamPos.x = 0.0f;
+        chaseCamPos.y = 0.0f;
+        chaseCamRoll = 0.0f;
+        break;
+
+    case ModeWeapon:
+
+        if (otwPlatform)
+        {
+
+            chaseCamRoll = 0.0f;
+            chaseCamPos.x = otwPlatform->dmx[0][0] * chaseRange * 0.5f;
+            chaseCamPos.y = otwPlatform->dmx[0][1] * chaseRange * 0.5f;
+            chaseCamPos.z = otwPlatform->dmx[0][2] * chaseRange * 0.5f - 5.0f;
+        }
+        else
+        {
+
+            chaseCamRoll = 0.0f;
             chaseCamPos.x = 0.0f;
             chaseCamPos.y = 0.0f;
+            chaseCamPos.z = -20.0f;
+        }
+
+        break;
+
+    default:
+
+        if (otwPlatform)
+        {
+
+            chaseCamRoll = otwPlatform->Roll();
+            chaseCamPos.x = otwPlatform->dmx[0][0] * chaseRange;
+            chaseCamPos.y = otwPlatform->dmx[0][1] * chaseRange;
+            chaseCamPos.z = otwPlatform->dmx[0][2] * chaseRange - 5.0f;
+        }
+        else
+        {
+
             chaseCamRoll = 0.0f;
-            break;
+            chaseCamPos.x = 0.0f;
+            chaseCamPos.y = 0.0f;
+            chaseCamPos.z = -500.0f;
+        }
 
-        case ModeWeapon:
-
-            if (otwPlatform)
-            {
-
-                chaseCamRoll = 0.0f;
-                chaseCamPos.x = otwPlatform->dmx[0][0] * chaseRange * 0.5f;
-                chaseCamPos.y = otwPlatform->dmx[0][1] * chaseRange * 0.5f;
-                chaseCamPos.z = otwPlatform->dmx[0][2] * chaseRange * 0.5f - 5.0f;
-            }
-            else
-            {
-
-                chaseCamRoll = 0.0f;
-                chaseCamPos.x = 0.0f;
-                chaseCamPos.y = 0.0f;
-                chaseCamPos.z = -20.0f;
-            }
-
-            break;
-
-        default:
-
-            if (otwPlatform)
-            {
-
-                chaseCamRoll = otwPlatform->Roll();
-                chaseCamPos.x = otwPlatform->dmx[0][0] * chaseRange;
-                chaseCamPos.y = otwPlatform->dmx[0][1] * chaseRange;
-                chaseCamPos.z = otwPlatform->dmx[0][2] * chaseRange - 5.0f;
-            }
-            else
-            {
-
-                chaseCamRoll = 0.0f;
-                chaseCamPos.x = 0.0f;
-                chaseCamPos.y = 0.0f;
-                chaseCamPos.z = -500.0f;
-            }
-
-            break;
-
+        break;
     }
 
     cameraPos = chaseCamPos;
@@ -423,7 +434,6 @@ void OTWDriverClass::SelectExternal()
 
         cameraPos.z += PRANDFloat() * 700.0f;
         chaseCamPos.z += PRANDFloat() * 700.0f;
-
     }
 }
 
@@ -462,10 +472,12 @@ void OTWDriverClass::ToggleActionCamera(void)
 void OTWDriverClass::ToggleHybridPitMode(void)
 {
 
-    if ( not HybridPitModeEnabled)
+    if (not HybridPitModeEnabled)
     {
         if (g_bSync2D3DPit)
-            if (g_bEnableTrackIR and PlayerOptions.Get3dTrackIR() == true) //added check for 3d TIR being enabled
+            if (g_bEnableTrackIR and
+                PlayerOptions.Get3dTrackIR() ==
+                    true) //added check for 3d TIR being enabled
                 HybridPitModeEnabled = 1;
             else
                 HybridPitModeEnabled = 2;
@@ -483,7 +495,7 @@ int OTWDriverClass::GetHybridPitMode()
 
 void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
 {
-    SimBaseClass *newObject;
+    SimBaseClass* newObject;
     //SimObjectType *targetPtr;
 
     // if in action camera mode shut it off
@@ -510,17 +522,17 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
      mpPadlockCandidate = NULL;
     }
     */
-    if ((mode not_eq ModePadlockF3) and 
-        (mode not_eq ModePadlockEFOV))
+    if ((mode not_eq ModePadlockF3) and (mode not_eq ModePadlockEFOV))
     {
         /* 2001-01-29 MODIFIED BY S.G. FOR THE NEW mpPadlockPrioritySimObject
          if(mpPadlockPriorityObject) {
          VuDeReferenceEntity(mpPadlockPriorityObject);
          mpPadlockPriorityObject = NULL;
-        */ SetmpPadlockPriorityObject(NULL);
+        */
+        SetmpPadlockPriorityObject(NULL);
         // }
         mpPadlockCandidate = NULL;
-        mPadlockCandidateID  = FalconNullId;
+        mPadlockCandidateID = FalconNullId;
     }
 
     if (mode == mOTWDisplayMode)
@@ -528,121 +540,133 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
         // we're in the same mode, some modes will require processing
         switch (mode)
         {
-            case ModeWeapon:
+        case ModeWeapon:
 
-                // try and find a flying weapon for the current otwPlatform's parent
-                // since we assume the current otwplatform is a weapon
-                ShiAssert(otwPlatform->IsWeapon());
-                newObject = FindNextViewObject(((SimWeaponClass*)otwPlatform.get())->Parent(), otwPlatform.get(), NEXT_WEAPON);
+            // try and find a flying weapon for the current otwPlatform's parent
+            // since we assume the current otwplatform is a weapon
+            ShiAssert(otwPlatform->IsWeapon());
+            newObject = FindNextViewObject(
+                ((SimWeaponClass*)otwPlatform.get())->Parent(),
+                otwPlatform.get(), NEXT_WEAPON);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the weapon
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the weapon
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-            case ModeTargetToWeapon:
+        case ModeTargetToWeapon:
 
-                // SCR 12/3/98  Hmm.  How did this happen?  Lets just get on with life (and hope we live)
-                if (otwTrackPlatform.get() == NULL)
-                {
-                    return;
-                }
+            // SCR 12/3/98  Hmm.  How did this happen?  Lets just get on with life (and hope we live)
+            if (otwTrackPlatform.get() == NULL)
+            {
+                return;
+            }
 
-                // try and find a flying weapon for the current otwTrackPlatform's parent
-                // since we assume the current otwTrackplatform is a weapon
-                ShiAssert(otwTrackPlatform->IsWeapon());
-                newObject = FindNextViewObject(
-                                ((SimWeaponClass*)otwTrackPlatform.get())->Parent(), otwTrackPlatform.get(), NEXT_WEAPON);
+            // try and find a flying weapon for the current otwTrackPlatform's parent
+            // since we assume the current otwTrackplatform is a weapon
+            ShiAssert(otwTrackPlatform->IsWeapon());
+            newObject = FindNextViewObject(
+                ((SimWeaponClass*)otwTrackPlatform.get())->Parent(),
+                otwTrackPlatform.get(), NEXT_WEAPON);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the target, tracking to the weapon
-                SetGraphicsOwnship(otwTrackPlatform.get());
-                SetTrackPlatform(newObject);
+            // set graphics focus to the target, tracking to the weapon
+            SetGraphicsOwnship(otwTrackPlatform.get());
+            SetTrackPlatform(newObject);
 
-                break;
+            break;
 
-            case ModeAirFriendly:
+        case ModeAirFriendly:
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), otwPlatform.get(), NEXT_AIR_FRIEND);
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(),
+                                           otwPlatform.get(), NEXT_AIR_FRIEND);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-            case ModeAirEnemy:
+        case ModeAirEnemy:
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), otwPlatform.get(), NEXT_AIR_ENEMY);
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(),
+                                           otwPlatform.get(), NEXT_AIR_ENEMY);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-            case ModeGroundFriendly:
+        case ModeGroundFriendly:
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), otwPlatform.get(), NEXT_GROUND_FRIEND);
+            // try and find a flying weapon for the current otwPlatform
+            newObject =
+                FindNextViewObject(SimDriver.GetPlayerAircraft(),
+                                   otwPlatform.get(), NEXT_GROUND_FRIEND);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-            case ModeGroundEnemy:
+        case ModeGroundEnemy:
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), otwPlatform.get(), NEXT_GROUND_ENEMY);
+            // try and find a flying weapon for the current otwPlatform
+            newObject =
+                FindNextViewObject(SimDriver.GetPlayerAircraft(),
+                                   otwPlatform.get(), NEXT_GROUND_ENEMY);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-                // edg note: this is now actually self to any enemny
-            case ModeTarget:
+            // edg note: this is now actually self to any enemny
+        case ModeTarget:
 
-                if ( not SimDriver.GetPlayerAircraft() or otwTrackPlatform.get() == NULL)
-                    return;
+            if (not SimDriver.GetPlayerAircraft() or
+                otwTrackPlatform.get() == NULL)
+                return;
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), otwTrackPlatform.get(), NEXT_ENEMY);    // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(
+                SimDriver.GetPlayerAircraft(), otwTrackPlatform.get(),
+                NEXT_ENEMY); // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
 
-                // At the moment, no bject, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no bject, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
-                SetTrackPlatform(newObject);
+            // set graphics focus to the object
+            SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
+            SetTrackPlatform(newObject);
 
-                // we simply swap track with otw platform
-                /*
+            // we simply swap track with otw platform
+            /*
 
                 // ownship is always the focus
                 SetGraphicsOwnship( SimDriver.GetPlayerAircraft() );
@@ -694,7 +718,7 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 */
 
 
-                /*
+            /*
                 // get the target (if any) of the current platform
                 targetPtr = (( SimMoverClass * )otwPlatform)->targetPtr;
 
@@ -706,25 +730,27 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 SetGraphicsOwnship( (SimBaseClass*)targetPtr->BaseData() );
                 */
 
-                break;
+            break;
 
-            case ModeTargetToSelf:
+        case ModeTargetToSelf:
 
-                if ( not SimDriver.GetPlayerAircraft())
-                    return;
+            if (not SimDriver.GetPlayerAircraft())
+                return;
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), otwPlatform.get(), NEXT_ENEMY);    // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(
+                SimDriver.GetPlayerAircraft(), otwPlatform.get(),
+                NEXT_ENEMY); // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
 
-                // At the moment, no bject, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no bject, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
-                SetTrackPlatform(SimDriver.GetPlayerAircraft());
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
+            SetTrackPlatform(SimDriver.GetPlayerAircraft());
 
-                /*
+            /*
                 ** old stuff based on padlock
 
                 // we need to have the player be otwPlatform for
@@ -760,27 +786,28 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 }
                 */
 
-                break;
+            break;
 
-            case ModeIncoming:
+        case ModeIncoming:
 
-                if ( not otwTrackPlatform)
-                    return;
+            if (not otwTrackPlatform)
+                return;
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(otwTrackPlatform.get(), otwPlatform.get(), NEXT_INCOMING);
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(otwTrackPlatform.get(),
+                                           otwPlatform.get(), NEXT_INCOMING);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         return;
@@ -790,146 +817,160 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
         // we've got a new mode, some must be checked prior to switching
         switch (mode)
         {
-            case ModeFlyby:
-                if (otwPlatform)
-                {
-                    endFlightPoint.x = otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f ;
-                    endFlightPoint.y = otwPlatform->YPos() + otwPlatform->dmx[0][1] * 10.0f + otwPlatform->YDelta() * 2.0f ;
-                    endFlightPoint.z = otwPlatform->ZPos() + otwPlatform->dmx[0][2] * 10.0f + otwPlatform->ZDelta() * 2.0f ;
-                    endFlightPoint.z -= 20.0f;
-                    endFlightVec.x = 0.0f;
-                    endFlightVec.y = 0.0f;
-                    endFlightVec.z = 0.0f;
-                }
-                else
-                {
-                    // not otwplatform, use last focus point with some randomness...
-                    float groundZ;
+        case ModeFlyby:
+            if (otwPlatform)
+            {
+                endFlightPoint.x = otwPlatform->XPos() +
+                                   otwPlatform->dmx[0][0] * 10.0f +
+                                   otwPlatform->XDelta() * 2.0f;
+                endFlightPoint.y = otwPlatform->YPos() +
+                                   otwPlatform->dmx[0][1] * 10.0f +
+                                   otwPlatform->YDelta() * 2.0f;
+                endFlightPoint.z = otwPlatform->ZPos() +
+                                   otwPlatform->dmx[0][2] * 10.0f +
+                                   otwPlatform->ZDelta() * 2.0f;
+                endFlightPoint.z -= 20.0f;
+                endFlightVec.x = 0.0f;
+                endFlightVec.y = 0.0f;
+                endFlightVec.z = 0.0f;
+            }
+            else
+            {
+                // not otwplatform, use last focus point with some randomness...
+                float groundZ;
 
-                    endFlightPoint = focusPoint;
-                    endFlightPoint.z += 400.0f * PRANDFloat();
-                    endFlightPoint.z += 400.0f * PRANDFloat();
-                    endFlightPoint.z -= 100.0f;
+                endFlightPoint = focusPoint;
+                endFlightPoint.z += 400.0f * PRANDFloat();
+                endFlightPoint.z += 400.0f * PRANDFloat();
+                endFlightPoint.z -= 100.0f;
 
-                    groundZ = GetGroundLevel(endFlightPoint.x, endFlightPoint.y);
+                groundZ = GetGroundLevel(endFlightPoint.x, endFlightPoint.y);
 
-                    if (endFlightPoint.z + 50.0f > groundZ)
-                        endFlightPoint.z = groundZ - 50.0f;
+                if (endFlightPoint.z + 50.0f > groundZ)
+                    endFlightPoint.z = groundZ - 50.0f;
 
-                    endFlightVec.x = 0.0f;
-                    endFlightVec.y = 0.0f;
-                    endFlightVec.z = -1.0f;
-                }
+                endFlightVec.x = 0.0f;
+                endFlightVec.y = 0.0f;
+                endFlightVec.z = -1.0f;
+            }
 
-                break;
+            break;
 
-            case ModeWeapon:
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(otwPlatform.get(), NULL, NEXT_WEAPON);
+        case ModeWeapon:
+            // try and find a flying weapon for the current otwPlatform
+            newObject =
+                FindNextViewObject(otwPlatform.get(), NULL, NEXT_WEAPON);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the weapon
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the weapon
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-            case ModeTargetToWeapon:
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(otwPlatform.get(), NULL, NEXT_WEAPON);
+        case ModeTargetToWeapon:
+            // try and find a flying weapon for the current otwPlatform
+            newObject =
+                FindNextViewObject(otwPlatform.get(), NULL, NEXT_WEAPON);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL or otwTrackPlatform.get() == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL or otwTrackPlatform.get() == NULL)
+                return;
 
-                // set graphics focus to the target, tracking to weapon
-                if (otwTrackPlatform->IsSim())
-                {
-                    SetGraphicsOwnship(otwTrackPlatform.get());
-                    SetTrackPlatform(newObject);
-                }
-                else
-                {
-                    SetGraphicsOwnship(newObject);
-                }
-
-                break;
-
-            case ModeAirFriendly:
-
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL, NEXT_AIR_FRIEND);
-
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
-
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
-
-                break;
-
-            case ModeAirEnemy:
-
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL, NEXT_AIR_ENEMY);
-
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
-
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
-
-                break;
-
-            case ModeGroundFriendly:
-
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL, NEXT_GROUND_FRIEND);
-
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
-
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
-
-                break;
-
-            case ModeGroundEnemy:
-
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL, NEXT_GROUND_ENEMY);
-
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
-
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
-
-                break;
-
-            case ModeTarget:
-
-                if ( not SimDriver.GetPlayerAircraft())
-                    return;
-
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL, NEXT_ENEMY);    // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
-
-                // At the moment, no bject, no mode change
-                if (newObject == NULL)
-                    return;
-
-                // set graphics focus to the object
-                SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
+            // set graphics focus to the target, tracking to weapon
+            if (otwTrackPlatform->IsSim())
+            {
+                SetGraphicsOwnship(otwTrackPlatform.get());
                 SetTrackPlatform(newObject);
+            }
+            else
+            {
+                SetGraphicsOwnship(newObject);
+            }
 
-                /*
+            break;
+
+        case ModeAirFriendly:
+
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL,
+                                           NEXT_AIR_FRIEND);
+
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
+
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
+
+            break;
+
+        case ModeAirEnemy:
+
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL,
+                                           NEXT_AIR_ENEMY);
+
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
+
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
+
+            break;
+
+        case ModeGroundFriendly:
+
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL,
+                                           NEXT_GROUND_FRIEND);
+
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
+
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
+
+            break;
+
+        case ModeGroundEnemy:
+
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL,
+                                           NEXT_GROUND_ENEMY);
+
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
+
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
+
+            break;
+
+        case ModeTarget:
+
+            if (not SimDriver.GetPlayerAircraft())
+                return;
+
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(
+                SimDriver.GetPlayerAircraft(), NULL,
+                NEXT_ENEMY); // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
+
+            // At the moment, no bject, no mode change
+            if (newObject == NULL)
+                return;
+
+            // set graphics focus to the object
+            SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
+            SetTrackPlatform(newObject);
+
+            /*
                 if ( not SimDriver.GetPlayerAircraft() )
                  return;
 
@@ -1024,25 +1065,27 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 }
                 */
 
-                break;
+            break;
 
-            case ModeTargetToSelf:
+        case ModeTargetToSelf:
 
-                if ( not SimDriver.GetPlayerAircraft())
-                    return;
+            if (not SimDriver.GetPlayerAircraft())
+                return;
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(SimDriver.GetPlayerAircraft(), NULL, NEXT_ENEMY);    // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
+            // try and find a flying weapon for the current otwPlatform
+            newObject = FindNextViewObject(
+                SimDriver.GetPlayerAircraft(), NULL,
+                NEXT_ENEMY); // 2002-02-16 MODIFIED BY S.G. Uses the new NEXT_ENEMY mode instead of NEXT_GROUND_ENEMY
 
-                // At the moment, no bject, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no bject, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
-                SetTrackPlatform(SimDriver.GetPlayerAircraft());
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
+            SetTrackPlatform(SimDriver.GetPlayerAircraft());
 
-                /*
+            /*
                 if ( not SimDriver.GetPlayerAircraft() )
                  return;
 
@@ -1114,62 +1157,61 @@ void OTWDriverClass::SetOTWDisplayMode(OTWDisplayMode mode)
                 */
 
 
-                break;
+            break;
 
-            case ModeIncoming:
+        case ModeIncoming:
 
-                // try and find a flying weapon for the current otwPlatform
-                newObject = FindNextViewObject(otwPlatform.get(), NULL, NEXT_INCOMING);
+            // try and find a flying weapon for the current otwPlatform
+            newObject =
+                FindNextViewObject(otwPlatform.get(), NULL, NEXT_INCOMING);
 
-                // At the moment, no weapons flying, no mode change
-                if (newObject == NULL)
-                    return;
+            // At the moment, no weapons flying, no mode change
+            if (newObject == NULL)
+                return;
 
-                // set the track platform to view platform
-                SetTrackPlatform(otwPlatform.get());
+            // set the track platform to view platform
+            SetTrackPlatform(otwPlatform.get());
 
-                // set graphics focus to the object
-                SetGraphicsOwnship(newObject);
+            // set graphics focus to the object
+            SetGraphicsOwnship(newObject);
 
-                break;
+            break;
 
-                // these modes require a SimDriver Player Entity
+            // these modes require a SimDriver Player Entity
+        case ModeHud:
+        case ModePadlockF3:
+        case ModePadlockEFOV:
+        case Mode2DCockpit:
+        case Mode3DCockpit:
+            if ((ejectCam) or (not SimDriver.GetPlayerAircraft())
+                //or  (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING)
+            )
+            {
+                return;
+            }
+
+            switch (mOTWDisplayMode)
+            {
             case ModeHud:
             case ModePadlockF3:
             case ModePadlockEFOV:
             case Mode2DCockpit:
             case Mode3DCockpit:
-                if (
-                    (ejectCam) or
-                    ( not SimDriver.GetPlayerAircraft())
-                    //or  (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING)
-                )
-                {
-                    return;
-                }
-
-                switch (mOTWDisplayMode)
-                {
-                    case ModeHud:
-                    case ModePadlockF3:
-                    case ModePadlockEFOV:
-                    case Mode2DCockpit:
-                    case Mode3DCockpit:
-                        break;
-
-                    default:
-                        // going from external to internal view
-                        //narrowFOV = FALSE;
-                        //Wombat778 9-29-2003 Removed to allow FOV to be persistent
-                        //SetFOV( 60.0F * DTR );
-                        //Wombat778 9-29-2003
-                        break;
-                }
-
                 break;
 
             default:
+                // going from external to internal view
+                //narrowFOV = FALSE;
+                //Wombat778 9-29-2003 Removed to allow FOV to be persistent
+                //SetFOV( 60.0F * DTR );
+                //Wombat778 9-29-2003
                 break;
+            }
+
+            break;
+
+        default:
+            break;
         }
 
         CleanupDisplayMode(mOTWDisplayMode);
@@ -1191,7 +1233,9 @@ void OTWDriverClass::CleanupDisplayMode(OTWDisplayMode mode)
 }
 
 
-void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastmode) //Wombat778 11-17-04 added lastmode
+void OTWDriverClass::SelectDisplayMode(
+    OTWDisplayMode mode,
+    OTWDisplayMode lastmode) //Wombat778 11-17-04 added lastmode
 {
 
     // since we're doing a new mode reset any view timers
@@ -1204,118 +1248,123 @@ void OTWDriverClass::SelectDisplayMode(OTWDisplayMode mode, OTWDisplayMode lastm
     switch (mode)
     {
 
-            //Wombat778 11-18-04 Move view resetting stuff here
+        //Wombat778 11-18-04 Move view resetting stuff here
 
-        case ModeNone:
-            ViewReset(); //Wombat778
-            break;
+    case ModeNone:
+        ViewReset(); //Wombat778
+        break;
 
-        case ModeHud:
-        case ModePadlockEFOV:
-            ViewReset(); //Wombat778
+    case ModeHud:
+    case ModePadlockEFOV:
+        ViewReset(); //Wombat778
 
-            if (PlayerOptions.GetPadlockMode() not_eq PDDisabled)
-            {
-                // this mode restores to player's f16
-                if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
-                    SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
-            }
-
-            break;
-
-        case ModeIncoming:
-        case ModeAirFriendly:
-        case ModeTarget:
-        case ModeTargetToSelf:
-        case ModeTargetToWeapon:
-        case ModeGroundFriendly:
-        case ModeAirEnemy:
-        case ModeGroundEnemy:
-        case ModeWeapon:
-            ViewReset(); //Wombat778
-            SelectExternal();
-            chaseRange *= 2.5;
-            break;
-
-        case ModePadlockF3:
-            if (PlayerOptions.GetPadlockMode() not_eq PDDisabled)
-            {
-                if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
-                    SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
-
-                SelectF3PadlockMode();
-            }
-
-            break;
-
-        case Mode2DCockpit:
-
+        if (PlayerOptions.GetPadlockMode() not_eq PDDisabled)
+        {
             // this mode restores to player's f16
+            if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
+                SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
+        }
 
-            //Wombat778 11-18-04 added view reset code.  Only reset the view when not moving from 2d to 3d cockpit.
+        break;
+
+    case ModeIncoming:
+    case ModeAirFriendly:
+    case ModeTarget:
+    case ModeTargetToSelf:
+    case ModeTargetToWeapon:
+    case ModeGroundFriendly:
+    case ModeAirEnemy:
+    case ModeGroundEnemy:
+    case ModeWeapon:
+        ViewReset(); //Wombat778
+        SelectExternal();
+        chaseRange *= 2.5;
+        break;
+
+    case ModePadlockF3:
+        if (PlayerOptions.GetPadlockMode() not_eq PDDisabled)
+        {
             if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
                 SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
 
-            if (g_bSync2D3DPit and lastmode == Mode3DCockpit) //consider adding padlock modes
-                Select2DCockpitMode(0);
-            else
+            SelectF3PadlockMode();
+        }
+
+        break;
+
+    case Mode2DCockpit:
+
+        // this mode restores to player's f16
+
+        //Wombat778 11-18-04 added view reset code.  Only reset the view when not moving from 2d to 3d cockpit.
+        if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
+            SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
+
+        if (g_bSync2D3DPit and
+            lastmode == Mode3DCockpit) //consider adding padlock modes
+            Select2DCockpitMode(0);
+        else
+        {
+            ViewReset();
+            Select2DCockpitMode(1);
+        }
+
+        break;
+
+    case Mode3DCockpit:
+
+        // this mode restores to player's f16
+
+        if (not g_bSync2D3DPit or
+            lastmode not_eq
+                Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
+        {
+            ViewReset();
+            eyePan = 0.0f;
+            eyeTilt = g_f3DHeadTilt * DTR; // Cobra
+            SetFOV(g_f3DPitFOV * DTR); // Cobra
+        }
+        else if (g_bSync2D3DPit and lastmode == Mode2DCockpit)
+        {
+            if (eyePan == 0.0f and
+                fabs(eyeTilt) <
+                    0.3f) // Cobra - Default 3D pit view when 2D pit view is straight forward view (panel 1100)
             {
-                ViewReset();
-                Select2DCockpitMode(1);
-            }
-
-            break;
-
-        case Mode3DCockpit:
-
-            // this mode restores to player's f16
-
-            if ( not g_bSync2D3DPit or lastmode not_eq Mode2DCockpit) //Wombat778 reset the view if not from 2d pit. COnsider adding padlock modes here
-            {
-                ViewReset();
                 eyePan = 0.0f;
                 eyeTilt = g_f3DHeadTilt * DTR; // Cobra
-                SetFOV(g_f3DPitFOV * DTR);   // Cobra
+                SetFOV(g_f3DPitFOV * DTR); // Cobra
             }
-            else if (g_bSync2D3DPit and lastmode == Mode2DCockpit)
-            {
-                if (eyePan == 0.0f and fabs(eyeTilt) < 0.3f)  // Cobra - Default 3D pit view when 2D pit view is straight forward view (panel 1100)
-                {
-                    eyePan = 0.0f;
-                    eyeTilt = g_f3DHeadTilt * DTR; // Cobra
-                    SetFOV(g_f3DPitFOV * DTR);   // Cobra
-                }
-            }
+        }
 
-            if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
-                SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
+        if (otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
+            SetGraphicsOwnship(SimDriver.GetPlayerAircraft());
 
-            Select3DCockpitMode();
-            break;
+        Select3DCockpitMode();
+        break;
 
-        case ModeChase:
-            ViewReset(); //Wombat778
-            SelectExternal();
-            break;
+    case ModeChase:
+        ViewReset(); //Wombat778
+        SelectExternal();
+        break;
 
-        case ModeOrbit:
-            ViewReset(); //Wombat778
-            SelectExternal();
-            break;
+    case ModeOrbit:
+        ViewReset(); //Wombat778
+        SelectExternal();
+        break;
 
-        case ModeSatellite:
-            ViewReset(); //Wombat778
-            SelectExternal();
-            break;
+    case ModeSatellite:
+        ViewReset(); //Wombat778
+        SelectExternal();
+        break;
 
-        case ModeFlyby:
-            ViewReset(); //Wombat778
-            SelectExternal();
-            break;
+    case ModeFlyby:
+        ViewReset(); //Wombat778
+        SelectExternal();
+        break;
 
-        default:
-            ViewReset(); //Wombat778
-            ShiWarning("Bad Viewing mode");
+    default:
+        ViewReset(); //Wombat778
+        ShiWarning("Bad Viewing mode");
     }
 }
 
@@ -1427,8 +1476,8 @@ void OTWDriverClass::ScaleUp(void)
 
 void OTWDriverClass::SetDetail(int newlevel)
 {
-    SimFeatureClass* theObject, *parentObject;
-    DrawableObject *parentDrawable;
+    SimFeatureClass *theObject, *parentObject;
+    DrawableObject* parentDrawable;
 
     int oldlevel = PlayerOptions.BuildingDeaggLevel();
 
@@ -1441,27 +1490,34 @@ void OTWDriverClass::SetDetail(int newlevel)
     while (theObject)
     {
         // Find any existing parent object
-        parentObject = (SimFeatureClass*) theObject->GetCampaignObject()->GetComponentLead();
+        parentObject = (SimFeatureClass*)theObject->GetCampaignObject()
+                           ->GetComponentLead();
 
         // Find any existing parent drawable
         parentDrawable = NULL;
 
-        if (parentObject and parentObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
+        if (parentObject and
+            parentObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
             parentDrawable = parentObject->baseObject;
-        else if (parentObject and parentObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
+        else if (parentObject and
+                 parentObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
             parentDrawable = parentObject->drawPointer;
 
         // KCK: For now, if we've got a parent drawable object, don't fuck with it.
-        if ( not parentDrawable)
+        if (not parentDrawable)
         {
-            if (theObject->drawPointer and theObject->displayPriority <= oldlevel and theObject->displayPriority > newlevel)
+            if (theObject->drawPointer and
+                theObject->displayPriority <= oldlevel and
+                theObject->displayPriority > newlevel)
             {
                 // We don't want to display this anymore
                 OTWDriver.RemoveObject(theObject->drawPointer);
                 SimDriver.featureList->Remove(theObject);
             }
 
-            if (theObject->drawPointer and theObject->displayPriority > oldlevel and theObject->displayPriority <= newlevel)
+            if (theObject->drawPointer and
+                theObject->displayPriority > oldlevel and
+                theObject->displayPriority <= newlevel)
             {
                 // We want to display this now
                 OTWDriver.InsertObject(theObject->drawPointer);
@@ -1525,7 +1581,7 @@ void OTWDriverClass::ToggleEyeFly(void)
 {
     mlTrig trigYaw, trigPitch, trigRoll;
 
-    if ( not eyeFlyEnabled)
+    if (not eyeFlyEnabled)
     {
         return;
     }
@@ -1566,9 +1622,9 @@ void OTWDriverClass::ToggleEyeFly(void)
 
         if (lastotwPlatform)
         {
-            mlSinCos(&trigYaw,   lastotwPlatform->Yaw() * 0.5F);
+            mlSinCos(&trigYaw, lastotwPlatform->Yaw() * 0.5F);
             mlSinCos(&trigPitch, lastotwPlatform->Pitch() * 0.5F);
-            mlSinCos(&trigRoll,  lastotwPlatform->Roll() * 0.5F);
+            mlSinCos(&trigRoll, lastotwPlatform->Roll() * 0.5F);
         }
         else
         {
@@ -1620,7 +1676,9 @@ void OTWDriverClass::EndFlight(void)
 
 void OTWDriverClass::ViewTiltUp(void)
 {
-    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_N);
     }
@@ -1641,13 +1699,14 @@ void OTWDriverClass::ViewTiltUp(void)
             theMouseView.BumpViewUp(-1.);
 
 #endif
-
     }
 }
 
 void OTWDriverClass::ViewTiltDown(void)
 {
-    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_S);
     }
@@ -1672,7 +1731,9 @@ void OTWDriverClass::ViewTiltDown(void)
 
 void OTWDriverClass::ViewTiltHold(void)
 {
-    if ( not (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
+    if (not(SimDriver.GetPlayerAircraft() and
+            SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+            mOTWDisplayMode == Mode2DCockpit))
     {
         {
             elDir = 0.0F;
@@ -1685,7 +1746,9 @@ void OTWDriverClass::ViewTiltHold(void)
 
 void OTWDriverClass::ViewSpinLeft(void)
 {
-    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_W);
     }
@@ -1710,7 +1773,9 @@ void OTWDriverClass::ViewSpinLeft(void)
 
 void OTWDriverClass::ViewSpinRight(void)
 {
-    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit)
+    if (SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        mOTWDisplayMode == Mode2DCockpit)
     {
         SimDriver.POVKludgeFunction(POV_E);
     }
@@ -1735,7 +1800,9 @@ void OTWDriverClass::ViewSpinRight(void)
 
 void OTWDriverClass::ViewSpinHold(void)
 {
-    if ( not (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode2DCockpit))
+    if (not(SimDriver.GetPlayerAircraft() and
+            SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+            mOTWDisplayMode == Mode2DCockpit))
     {
         {
             azDir = 0.0F;
@@ -1748,7 +1815,7 @@ void OTWDriverClass::ViewSpinHold(void)
 
 void OTWDriverClass::ViewReset(void)
 {
-    if ( not otwPlatform)
+    if (not otwPlatform)
         return;
 
     azDir = 0.0F;
@@ -1767,8 +1834,7 @@ void OTWDriverClass::ViewReset(void)
     eyeHeadRoll = 0.0F;
 
     if (GetOTWDisplayMode() == Mode3DCockpit or
-        GetOTWDisplayMode() == ModeHud or
-        GetOTWDisplayMode() == ModePadlockF3)
+        GetOTWDisplayMode() == ModeHud or GetOTWDisplayMode() == ModePadlockF3)
     {
         eyePan = 0.0F;
         eyeTilt = 0.35F;
@@ -1942,7 +2008,7 @@ void OTWDriverClass::EyeFlyStateStep(void)
     if (eyeFlyTgt)
     {
         curStatus = eyeFlyTgt->Status() bitand VIS_TYPE_MASK;
-        curStatus ++;
+        curStatus++;
         curStatus %= 4;
         eyeFlyTgt->ClearStatusBit(VIS_TYPE_MASK);
         eyeFlyTgt->SetStatusBit(curStatus);
@@ -1953,7 +2019,9 @@ void OTWDriverClass::EyeFlyStateStep(void)
 
 int OTWDriverClass::ViewRelativePanTilt(float Pan, float Tilt)
 {
-    if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and mOTWDisplayMode == Mode3DCockpit)
+    if (SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        mOTWDisplayMode == Mode3DCockpit)
     {
         eyePan += Pan * DTR;
         eyeTilt += Tilt * DTR;
@@ -1961,5 +2029,4 @@ int OTWDriverClass::ViewRelativePanTilt(float Pan, float Tilt)
     }
     else
         return 0;
-
 }

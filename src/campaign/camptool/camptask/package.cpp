@@ -4,28 +4,29 @@
 
 #include <stdio.h>
 #include <time.h>
-#include "CmpGlobl.h"
-#include "ListADT.h"
-#include "APITypes.h"
-#include "Objectiv.h"
-#include "Find.h"
-#include "Path.h"
-#include "ASearch.h"
-#include "Campaign.h"
-#include "CampList.h"
+#include "cmpglobl.h"
+#include "listadt.h"
+#include "apitypes.h"
+#include "objectiv.h"
+#include "find.h"
+#include "path.h"
+#include "asearch.h"
+#include "campaign.h"
+#include "camplist.h"
 #include "mission.h"
-#include "Package.h"
+#include "package.h"
 #include "update.h"
 #include "team.h"
 #include "atm.h"
-#include "AIInput.h"
-#include "MsgInc/AirTaskingMsg.h"
-#include "Feature.h"
+#include "aiinput.h"
+#include "msginc/airtaskingmsg.h"
+#include "feature.h"
 #include "classtbl.h"
 
-#include "Debuggr.h"
+#include "debuggr.h"
 
-#define AMIS_SUPPORT_MASK AMIS_ADDAWACS | AMIS_ADDJSTAR | AMIS_ADDECM | AMIS_ADDTANKER
+#define AMIS_SUPPORT_MASK                                                      \
+    AMIS_ADDAWACS | AMIS_ADDJSTAR | AMIS_ADDECM | AMIS_ADDTANKER
 
 #define MIN_FORCE_ESCORT 12
 
@@ -43,13 +44,9 @@ extern VU_ID_NUMBER RenameTable[65536];
 extern int gRenameIds;
 #endif
 
-extern FILE
-*save_log,
-*load_log;
+extern FILE *save_log, *load_log;
 
-extern int
-start_save_stream,
-start_load_stream;
+extern int start_save_stream, start_load_stream;
 
 #ifdef DEBUG
 int gSEADrequested = 0;
@@ -69,7 +66,7 @@ extern int gCheckConstructFunction;
 int PackInserted = 0;
 
 #define ATM_HIGH_PRIORITY 150
-#pragma warning (disable : 4786) // debug info truncation
+#pragma warning(disable : 4786) // debug info truncation
 
 extern int gCampDataVersion;
 extern bool g_bTankerWaypoints;
@@ -87,11 +84,13 @@ class PackageListCounter
     int maxoccupancy;
 
     ID2PACK packlist;
+
 public:
-    PackageListCounter() : maxoccupancy(0) { };
+    PackageListCounter() : maxoccupancy(0) {};
     void Report()
     {
-        MonoPrint("%d (%d) packages of %d left\n", gPackageCount, packlist.size(), maxoccupancy);
+        MonoPrint("%d (%d) packages of %d left\n", gPackageCount,
+                  packlist.size(), maxoccupancy);
         ID2PACK::iterator it;
 
         for (it = packlist.begin(); it != packlist.end(); it++)
@@ -145,7 +144,7 @@ MEM_POOL PackageClass::pool;
 // ============================================
 
 // KCK: ALL PACKAGE CONSTRUCTION SHOULD USE THIS FUNCTION!
-PackageClass* NewPackage(int type)
+PackageClass *NewPackage(int type)
 {
     PackageClass *new_package;
 #ifdef DEBUG
@@ -156,7 +155,8 @@ PackageClass* NewPackage(int type)
     vuAssignmentId = lastPackageId;
     // vuAssignmentId = lastLowVolitileId;
     vuLowWrapNumber = FIRST_LOW_VOLITILE_VU_ID_NUMBER;
-    vuHighWrapNumber = (FIRST_LOW_VOLITILE_VU_ID_NUMBER + LAST_LOW_VOLITILE_VU_ID_NUMBER) / 2;
+    vuHighWrapNumber =
+        (FIRST_LOW_VOLITILE_VU_ID_NUMBER + LAST_LOW_VOLITILE_VU_ID_NUMBER) / 2;
     new_package = new PackageClass(type);
     lastPackageId = vuAssignmentId;
     // lastLowVolitileId = vuAssignmentId;
@@ -178,7 +178,7 @@ PackageClass::PackageClass(ushort type) : AirUnitClass(type)
 
     elements = 0;
     c_element = 0;
-    memset(element, 0, sizeof(VU_ID)*MAX_UNIT_CHILDREN);
+    memset(element, 0, sizeof(VU_ID) * MAX_UNIT_CHILDREN);
     interceptor = FalconNullId;
     wait_cycles = 0;
     flights = 0;
@@ -212,13 +212,14 @@ PackageClass::PackageClass(VU_BYTE **stream) : AirUnitClass(stream)
         fflush(load_log);
     }
 
-    if (share_.id_.creator_ == vuLocalSession.creator_ && share_.id_.num_ > lastPackageId)
+    if (share_.id_.creator_ == vuLocalSession.creator_ &&
+        share_.id_.num_ > lastPackageId)
         lastPackageId = share_.id_.num_;
 
-    memset(element, 0, sizeof(VU_ID)*MAX_UNIT_CHILDREN);
+    memset(element, 0, sizeof(VU_ID) * MAX_UNIT_CHILDREN);
     memcpy(&elements, *stream, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(element, *stream, sizeof(VU_ID)*elements);
+    memcpy(element, *stream, sizeof(VU_ID) * elements);
     *stream += sizeof(VU_ID) * elements;
 #ifdef DEBUG
 
@@ -460,29 +461,18 @@ int PackageClass::SaveSize(void)
     WayPoint w;
     int iw = 0, ew = 0, size;
 
-    size = AirUnitClass::SaveSize()
-           + sizeof(uchar)
+    size = AirUnitClass::SaveSize() +
+           sizeof(uchar)
            // + sizeof(VU_ID)*MAX_UNIT_CHILDREN
-           + sizeof(VU_ID) * elements
-           + sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(uchar);
+           + sizeof(VU_ID) * elements + sizeof(VU_ID) + sizeof(VU_ID) +
+           sizeof(VU_ID) + sizeof(VU_ID) + sizeof(VU_ID) + sizeof(uchar);
 
     // If this package has already been planned, we can save some room
     if (Final() && !wait_cycles)
     {
-        size += sizeof(short)
-                + sizeof(short)
-                + sizeof(short)
-                + sizeof(short)
-                + sizeof(VU_ID)
-                + sizeof(VU_ID)
-                + sizeof(CampaignTime)
-                + sizeof(uchar)
-                + sizeof(short);
+        size += sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) +
+                sizeof(VU_ID) + sizeof(VU_ID) + sizeof(CampaignTime) +
+                sizeof(uchar) + sizeof(short);
     }
     else
     {
@@ -503,25 +493,13 @@ int PackageClass::SaveSize(void)
             w = w->GetNextWP();
         }
 
-        size += sizeof(uchar)
-                + sizeof(short)
-                + sizeof(GridIndex)
-                + sizeof(GridIndex)
-                + sizeof(GridIndex)
-                + sizeof(GridIndex)
-                + sizeof(GridIndex)
-                + sizeof(GridIndex)
-                + sizeof(GridIndex)
-                + sizeof(GridIndex)
-                + sizeof(CampaignTime)
-                + sizeof(CampaignTime)
-                + sizeof(ulong)
-                + sizeof(short)
-                + sizeof(short)
-                + sizeof(short)
-                + sizeof(uchar)
-                + sizeof(uchar)
-                + sizeof(MissionRequestClass);
+        size += sizeof(uchar) + sizeof(short) + sizeof(GridIndex) +
+                sizeof(GridIndex) + sizeof(GridIndex) + sizeof(GridIndex) +
+                sizeof(GridIndex) + sizeof(GridIndex) + sizeof(GridIndex) +
+                sizeof(GridIndex) + sizeof(CampaignTime) +
+                sizeof(CampaignTime) + sizeof(ulong) + sizeof(short) +
+                sizeof(short) + sizeof(short) + sizeof(uchar) + sizeof(uchar) +
+                sizeof(MissionRequestClass);
         w = ingress;
 
         while (w)
@@ -569,12 +547,13 @@ int PackageClass::Save(VU_BYTE **stream)
         jstar.num_ = RenameTable[jstar.num_];
         ecm.num_ = RenameTable[ecm.num_];
         tanker.num_ = RenameTable[tanker.num_];
-        mis_request.requesterID.num_ = RenameTable[mis_request.requesterID.num_];
+        mis_request.requesterID.num_ =
+            RenameTable[mis_request.requesterID.num_];
         mis_request.targetID.num_ = RenameTable[mis_request.targetID.num_];
     }
 
 #endif
-    memcpy(*stream, element, sizeof(VU_ID)*elements);
+    memcpy(*stream, element, sizeof(VU_ID) * elements);
     *stream += sizeof(VU_ID) * elements;
     memcpy(*stream, &interceptor, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
@@ -727,7 +706,9 @@ int PackageClass::CheckNeedRequests(void)
     if (wait_cycles)
         wait_cycles--;
 
-    if (!wait_cycles || Camp_GetCurrentTime() > takeoff + (AMIS_TAKEOFF_DELAY - 1) * CampaignMinutes)
+    if (!wait_cycles ||
+        Camp_GetCurrentTime() >
+            takeoff + (AMIS_TAKEOFF_DELAY - 1) * CampaignMinutes)
     {
         // 2001-09-16 REMOVED by M.N. We don't need this anymore - is done by AddTankerWaypoints result
         // -> If no tanker, packageelement->KillUnit();
@@ -745,7 +726,8 @@ int PackageClass::CheckNeedRequests(void)
             wait_for ^= AMIS_BARCAP | AMIS_SWEEP;
         }
 
-        if (package_flags & AMIS_ADDBDA && mis_request.priority > MINIMUM_BDA_PRIORITY)
+        if (package_flags & AMIS_ADDBDA &&
+            mis_request.priority > MINIMUM_BDA_PRIORITY)
         {
             MissionRequestClass mis;
             Objective target;
@@ -762,7 +744,9 @@ int PackageClass::CheckNeedRequests(void)
                 mis.targetID = target->Id();
                 mis.target_num = 255;
                 mis.aircraft = MissionData[mis.mission].str;
-                mis.tot = mis_request.tot + (CampaignTime)(MissionData[mis.mission].separation) * CampaignSeconds;
+                mis.tot = mis_request.tot +
+                          (CampaignTime)(MissionData[mis.mission].separation) *
+                              CampaignSeconds;
                 mis.tot_type = TYPE_EQ;
                 mis.roe_check = ROE_AIR_ENGAGE;
                 mis.caps = caps | MissionData[mis.mission].caps;
@@ -785,7 +769,8 @@ int PackageClass::CheckNeedRequests(void)
 
         if (g_bTankerWaypoints)
         {
-            if ((wait_for & AMIS_ADDTANKER) && (package_flags & AMIS_NEEDTANKER))
+            if ((wait_for & AMIS_ADDTANKER) &&
+                (package_flags & AMIS_NEEDTANKER))
             {
                 e = GetFirstUnitElement();
                 Flight f = (Flight)e;
@@ -855,7 +840,8 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
     SetFinal(0);
 
 #ifdef KEV_ADEBUG
-    MonoPrint("Trying to build team %d %s mission (%d) at %d,%d\n", mis->who, MissStr[mis->mission], mis->mission, mis->tx, mis->ty);
+    MonoPrint("Trying to build team %d %s mission (%d) at %d,%d\n", mis->who,
+              MissStr[mis->mission], mis->mission, mis->tx, mis->ty);
 #endif
 
     mis->min_to = 127;
@@ -888,7 +874,8 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
                 count++;
                 f = BestTargetFeature((Objective)target, targeted);
 
-                if (f >= FEATURES_PER_OBJ || !((Objective)target)->GetFeatureValue(f))
+                if (f >= FEATURES_PER_OBJ ||
+                    !((Objective)target)->GetFeatureValue(f))
                 {
                     count = 10;
                     continue;
@@ -902,7 +889,9 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
                     fid = ((Objective)target)->GetFeatureID(targetf[j]);
                     fid2 = ((Objective)target)->GetFeatureID(f);
 
-                    if (Falcon4ClassTable[fid].vuClassData.classInfo_[VU_TYPE] == Falcon4ClassTable[fid2].vuClassData.classInfo_[VU_TYPE])
+                    if (Falcon4ClassTable[fid]
+                            .vuClassData.classInfo_[VU_TYPE] ==
+                        Falcon4ClassTable[fid2].vuClassData.classInfo_[VU_TYPE])
                         j = 100;
                 }
 
@@ -963,7 +952,8 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         {
             UnitClassDataType *uc = ((Unit)target)->GetUnitClassData();
 
-            if (uc->RadarVehicle < 255 && ((Unit)target)->GetNumVehicles(uc->RadarVehicle))
+            if (uc->RadarVehicle < 255 &&
+                ((Unit)target)->GetNumVehicles(uc->RadarVehicle))
                 targetf[tar] = uc->RadarVehicle;
         }
 
@@ -980,8 +970,12 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
     }
 
     // Check target viability (SAM coverage at target)
-    ls = ScoreThreatFast(mis->tx, mis->ty, GetAltitudeLevel(MissionData[mis->mission].minalt * 100), mis->who);
-    hs = ScoreThreatFast(mis->tx, mis->ty, GetAltitudeLevel(MissionData[mis->mission].maxalt * 100), mis->who);
+    ls = ScoreThreatFast(
+        mis->tx, mis->ty,
+        GetAltitudeLevel(MissionData[mis->mission].minalt * 100), mis->who);
+    hs = ScoreThreatFast(
+        mis->tx, mis->ty,
+        GetAltitudeLevel(MissionData[mis->mission].maxalt * 100), mis->who);
 
     if (ls > MIN_SEADESCORT_THREAT || hs > MIN_SEADESCORT_THREAT)
         targetd |= NEED_SEAD;
@@ -1026,9 +1020,12 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
             mis->ty = mis_request.ty;
 
             if (MissionData[mis->mission].loitertime)
-                mis->tot = mis_request.tot + MissionData[mis->mission].loitertime * flights * CampaignMinutes;
+                mis->tot =
+                    mis_request.tot + MissionData[mis->mission].loitertime *
+                                          flights * CampaignMinutes;
             else
-                mis->tot = mis_request.tot + (CampaignTime)((flights) * 10 * CampaignSeconds);
+                mis->tot = mis_request.tot +
+                           (CampaignTime)((flights) * 10 * CampaignSeconds);
 
             result = flight->BuildMission(mis);
 
@@ -1091,12 +1088,14 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
                     add_at_end = NULL;
                 }
                 else
-                    RemoveChild(add_at_end->Id()); // Play games to get the ordering right
+                    RemoveChild(
+                        add_at_end
+                            ->Id()); // Play games to get the ordering right
             }
             else
             {
                 // No FAC available - we need to convert our ONCALLCAS to PREPLANCAS or cancel
-                flight = (Flight) GetFirstUnitElement();
+                flight = (Flight)GetFirstUnitElement();
                 mis->tx = mis_request.tx;
                 mis->ty = mis_request.ty;
                 mis_request.mission = mis->mission = AMIS_PRPLANCAS;
@@ -1134,7 +1133,9 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         return PRET_NO_ASSETS;
 
 #ifdef KEV_ADEBUG
-    MonoPrint("Building team #%d %s mission (%d) at %d,%d\n", mis->who, MissStr[mis_request.mission], mis_request.mission, mis->tx, mis->ty);
+    MonoPrint("Building team #%d %s mission (%d) at %d,%d\n", mis->who,
+              MissStr[mis_request.mission], mis_request.mission, mis->tx,
+              mis->ty);
 #endif
     //TJL 11/13/03 Scene of a repeated CTD
     /*
@@ -1171,7 +1172,10 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 
         if (flight)
         {
-            newmis.tot = mis_request.tot + (CampaignTime)(MissionData[newmis.mission].separation) * CampaignSeconds;
+            newmis.tot =
+                mis_request.tot +
+                (CampaignTime)(MissionData[newmis.mission].separation) *
+                    CampaignSeconds;
 
             if (flight->BuildMission(&newmis) == PRET_SUCCESS)
             {
@@ -1190,11 +1194,13 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
     }
 
     // Marco edit - We want Escort regardless of threat
-    if ((package_flags & AMIS_ADDESCORT))  // && mis->vs && TeamInfo[mis->vs]->atm->averageCAStrength > aa_strength)
+    if ((package_flags &
+         AMIS_ADDESCORT)) // && mis->vs && TeamInfo[mis->vs]->atm->averageCAStrength > aa_strength)
     {
         // Add ESCORT directly
         newmis = *mis;
-        newmis.mission = escort_type; // 2001-11-10 Modified by M.N. use requested escort type
+        newmis.mission =
+            escort_type; // 2001-11-10 Modified by M.N. use requested escort type
         newmis.targetID = element[0];
         newmis.target_num = 255;
         newmis.tot = mis_request.tot;
@@ -1206,7 +1212,10 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 
         if (flight)
         {
-            newmis.tot = mis_request.tot + (CampaignTime)(MissionData[newmis.mission].separation) * CampaignSeconds;
+            newmis.tot =
+                mis_request.tot +
+                (CampaignTime)(MissionData[newmis.mission].separation) *
+                    CampaignSeconds;
 
             if (flight->BuildMission(&newmis) == PRET_SUCCESS)
             {
@@ -1273,7 +1282,8 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
         newmis.priority = 0;
         newmis.roe_check = ROE_AIR_ENGAGE;
 
-        if (MissionData[mis_request.mission].skill == ARO_GA || MissionData[mis_request.mission].skill == ARO_REC)
+        if (MissionData[mis_request.mission].skill == ARO_GA ||
+            MissionData[mis_request.mission].skill == ARO_REC)
             newmis.context = enemyCASAircraftPresent;
         else if (MissionData[mis_request.mission].skill == ARO_ASW)
             newmis.context = enemyAircraftPresent;
@@ -1314,7 +1324,8 @@ int PackageClass::BuildPackage(MissionRequest mis, F4PFList assemblyList)
 }
 
 // This records important data from the flight passed into the package's structures
-int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int targetd)
+int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis,
+                                       int targetd)
 {
     flights++;
     aa_strength += GetUnitScore(flight, Air);
@@ -1349,12 +1360,16 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
                 if (w->GetWPFlags() & WPF_BREAKPOINT)
                     bw = w;
 
-                if (w->GetWPFlags() & WPF_TARGET || w->GetWPFlags() & WPF_IP || w->GetWPFlags() & WPF_CP || /* w->GetWPFlags() & WPF_TURNPOINT || */ w->GetWPFlags() & WPF_REPEAT)
+                if (w->GetWPFlags() & WPF_TARGET || w->GetWPFlags() & WPF_IP ||
+                    w->GetWPFlags() & WPF_CP ||
+                    /* w->GetWPFlags() & WPF_TURNPOINT || */ w->GetWPFlags() &
+                        WPF_REPEAT)
                 {
                     if (!bw)
                         bw = lw;
 
-                    if (lw->GetWPFlags() & WPF_TARGET || lw->GetWPFlags() & WPF_CP)
+                    if (lw->GetWPFlags() & WPF_TARGET ||
+                        lw->GetWPFlags() & WPF_CP)
                         tw = w; // Just passed the target waypoint
 
                     intarget = 1;
@@ -1378,11 +1393,11 @@ int PackageClass::RecordFlightAddition(Flight flight, MissionRequest mis, int ta
                 bw = tw;
 
             ShiAssert(bw && tw && aw && eaw)
-            // copy ingress and egress paths to package
-            w = bw->GetNextWP();
-            ingress =  CloneWPToList(aw, w);
+                // copy ingress and egress paths to package
+                w = bw->GetNextWP();
+            ingress = CloneWPToList(aw, w);
             w = eaw->GetNextWP();
-            egress =  CloneWPToList(tw, w);
+            egress = CloneWPToList(tw, w);
         }
     }
 
@@ -1396,7 +1411,8 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
     if (!(package_flags & AMIS_SUPPORT_MASK))
         return;
 
-    if (TeamInfo[GetTeam()] && TeamInfo[GetTeam()]->atm && TeamInfo[GetTeam()]->atm->packageList)
+    if (TeamInfo[GetTeam()] && TeamInfo[GetTeam()]->atm &&
+        TeamInfo[GetTeam()]->atm->packageList)
     {
         // Look for any existing missions which can help us out.
         VuListIterator packit(TeamInfo[GetTeam()]->atm->packageList);
@@ -1405,60 +1421,78 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
         MissionRequest pmis;
         GridIndex px, py;
         float dist;
-        float bestAWACSDist = (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
-        float bestJSTARDist = (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
-        float bestTANKDist = (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
-        float bestECMDist = (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
+        float bestAWACSDist =
+            (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
+        float bestJSTARDist =
+            (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
+        float bestTANKDist =
+            (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
+        float bestECMDist =
+            (float)Map_Max_X * Map_Max_Y; // Reasonable maximum distance squared
         CampaignTime startTime, endTime;
 
         startTime = mis->tot - 10 * CampaignMinutes;
-        endTime = mis->tot + (MissionData[mis->mission].loitertime + 10) * CampaignMinutes;
-        pack = (Package) GetFirstUnit(&packit);
+        endTime = mis->tot +
+                  (MissionData[mis->mission].loitertime + 10) * CampaignMinutes;
+        pack = (Package)GetFirstUnit(&packit);
 
         while (pack)
         {
             pmis = pack->GetMissionRequest();
-            flight = (FlightClass*) pack->GetFirstUnitElement();
+            flight = (FlightClass *)pack->GetFirstUnitElement();
 
             if (flight && !flight->Aborted() && pmis->tot < startTime)
             {
-                if ((package_flags & AMIS_ADDAWACS) && flight->GetUnitMission() == AMIS_AWACS)
+                if ((package_flags & AMIS_ADDAWACS) &&
+                    flight->GetUnitMission() == AMIS_AWACS)
                 {
                     pack->GetUnitDestination(&px, &py);
                     dist = (float)DistSqu(mis->tx, mis->ty, px, py);
 
-                    if (pmis->tot + MissionData[AMIS_AWACS].loitertime * CampaignMinutes > endTime && dist < bestAWACSDist)
+                    if (pmis->tot + MissionData[AMIS_AWACS].loitertime *
+                                        CampaignMinutes >
+                            endTime &&
+                        dist < bestAWACSDist)
                     {
                         awacs = flight->Id();
                         bestAWACSDist = dist;
                     }
                 }
 
-                if ((package_flags & AMIS_ADDJSTAR) && flight->GetUnitMission() == AMIS_JSTAR)
+                if ((package_flags & AMIS_ADDJSTAR) &&
+                    flight->GetUnitMission() == AMIS_JSTAR)
                 {
                     pack->GetUnitDestination(&px, &py);
                     dist = (float)DistSqu(mis->tx, mis->ty, px, py);
 
-                    if (pmis->tot + MissionData[AMIS_JSTAR].loitertime * CampaignMinutes > endTime && dist < bestJSTARDist)
+                    if (pmis->tot + MissionData[AMIS_JSTAR].loitertime *
+                                        CampaignMinutes >
+                            endTime &&
+                        dist < bestJSTARDist)
                     {
                         jstar = flight->Id();
                         bestJSTARDist = dist;
                     }
                 }
 
-                if ((package_flags & AMIS_ADDECM) && (targetd & NEED_ECM) && flight->GetUnitMission() == AMIS_ECM)
+                if ((package_flags & AMIS_ADDECM) && (targetd & NEED_ECM) &&
+                    flight->GetUnitMission() == AMIS_ECM)
                 {
                     pack->GetUnitDestination(&px, &py);
                     dist = (float)DistSqu(mis->tx, mis->ty, px, py);
 
-                    if (pmis->tot + MissionData[AMIS_ECM].loitertime * CampaignMinutes > endTime && dist < bestECMDist)
+                    if (pmis->tot + MissionData[AMIS_ECM].loitertime *
+                                        CampaignMinutes >
+                            endTime &&
+                        dist < bestECMDist)
                     {
                         ecm = flight->Id();
                         bestECMDist = dist;
                     }
                 }
 
-                if ((package_flags & AMIS_ADDTANKER) && flight->GetUnitMission() == AMIS_TANKER)
+                if ((package_flags & AMIS_ADDTANKER) &&
+                    flight->GetUnitMission() == AMIS_TANKER)
                 {
                     GridIndex x, y;
                     pack->GetUnitDestination(&px, &py);
@@ -1469,7 +1503,10 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
                     else
                         dist = (float)DistSqu(mis->tx, mis->ty, px, py);
 
-                    if (pmis->tot + MissionData[AMIS_TANKER].loitertime * CampaignMinutes > endTime && dist < bestTANKDist)
+                    if (pmis->tot + MissionData[AMIS_TANKER].loitertime *
+                                        CampaignMinutes >
+                            endTime &&
+                        dist < bestTANKDist)
                     {
                         tanker = flight->Id();
                         bestTANKDist = dist;
@@ -1477,7 +1514,7 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
                 }
             }
 
-            pack = (Package) GetNextUnit(&packit);
+            pack = (Package)GetNextUnit(&packit);
         }
     }
 
@@ -1521,7 +1558,8 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
     }
 
     // 4. Trigger conditional mission requests.
-    if ((package_flags & AMIS_ADDECM) && (targetd & NEED_ECM) && ecm == FalconNullId)
+    if ((package_flags & AMIS_ADDECM) && (targetd & NEED_ECM) &&
+        ecm == FalconNullId)
     {
         newmis.requesterID = Id();
         newmis.targetID = FalconNullId;
@@ -1573,7 +1611,8 @@ void PackageClass::FindSupportFlights(MissionRequest mis, int targetd)
     }
 }
 
-void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flight)
+void PackageClass::HandleRequestReceipt(int type, int them,
+                                        VU_ID triggered_flight)
 {
     MissionRequestClass mis;
     Unit flight, enemy;
@@ -1583,127 +1622,129 @@ void PackageClass::HandleRequestReceipt(int type, int them, VU_ID triggered_flig
 
     switch (type)
     {
-        case AMIS_BARCAP:
-        case AMIS_SWEEP:
-            wait_for |= AMIS_BARCAP | AMIS_SWEEP;
-            wait_for ^= AMIS_BARCAP | AMIS_SWEEP;
-            responses |= PRESPONSE_CA;
-            interceptor = triggered_flight;
-            enemy = FindUnit(triggered_flight);
+    case AMIS_BARCAP:
+    case AMIS_SWEEP:
+        wait_for |= AMIS_BARCAP | AMIS_SWEEP;
+        wait_for ^= AMIS_BARCAP | AMIS_SWEEP;
+        responses |= PRESPONSE_CA;
+        interceptor = triggered_flight;
+        enemy = FindUnit(triggered_flight);
 
-            if (!enemy)
-                return;
+        if (!enemy)
+            return;
 
-            mis.mission = MissionData[mis_request.mission].escorttype;
-            mis.who = GetTeam();
-            mis.vs = them;
-            mis.target_num = 255;
-            mis.aircraft = MissionData[mis.mission].str;
-            // skip this if our current package has enough air strength
-            mis.match_strength = GetUnitScore(enemy, Air);
+        mis.mission = MissionData[mis_request.mission].escorttype;
+        mis.who = GetTeam();
+        mis.vs = them;
+        mis.target_num = 255;
+        mis.aircraft = MissionData[mis.mission].str;
+        // skip this if our current package has enough air strength
+        mis.match_strength = GetUnitScore(enemy, Air);
 
-            // mis.match_strength = enemy->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP | USE_VEH_COUNT);
-            if (aa_strength > mis.match_strength)
-                return;
+        // mis.match_strength = enemy->GetUnitRoleScore(ARO_CA, CALC_TOTAL, USE_EXP | USE_VEH_COUNT);
+        if (aa_strength > mis.match_strength)
+            return;
 
-            mis.match_strength -= aa_strength; // we only want to match the excess
-            mis.tot = mis_request.tot + MissionData[mis.mission].separation * CampaignSeconds;
-            mis.tot_type = TYPE_EQ;
-            mis.roe_check = ROE_AIR_ENGAGE;
-            mis.priority = (mis.match_strength) / 2;
+        mis.match_strength -= aa_strength; // we only want to match the excess
+        mis.tot = mis_request.tot +
+                  MissionData[mis.mission].separation * CampaignSeconds;
+        mis.tot_type = TYPE_EQ;
+        mis.roe_check = ROE_AIR_ENGAGE;
+        mis.priority = (mis.match_strength) / 2;
 
-            if (mis_request.flags & REQF_PART_OF_ACTION)
+        if (mis_request.flags & REQF_PART_OF_ACTION)
+        {
+            mis.flags = REQF_PART_OF_ACTION;
+            mis.action_type = mis_request.action_type;
+        }
+
+        mis.targetID = triggered_flight;
+
+        // Mission location is assembly point initially (if we have one)
+        // So we find the closest squadron to the assembly point
+        if (iax > 0 && iay > 0)
+        {
+            mis.tx = iax;
+            mis.ty = iay;
+        }
+        else
+            GetUnitDestination(&mis.tx, &mis.ty);
+
+        if (mis.mission == AMIS_ESCORT || mis.mission == AMIS_HAVCAP)
+        {
+            // Add a new flight to this package
+            mis.caps = caps | MissionData[mis.mission].caps;
+            mis.speed = mis_request.speed;
+            mis.targetID = element[0];
+            mis.priority = GetPriority(&mis);
+            flight = AttachFlight(&mis, this);
+#ifdef DEBUG
+            gESCORTrequested++;
+
+            if (flight)
+                gESCORTgot++;
+
+#endif
+
+            if (flight)
             {
-                mis.flags = REQF_PART_OF_ACTION;
-                mis.action_type = mis_request.action_type;
-            }
-
-            mis.targetID = triggered_flight;
-
-            // Mission location is assembly point initially (if we have one)
-            // So we find the closest squadron to the assembly point
-            if (iax > 0 && iay > 0)
-            {
-                mis.tx = iax;
-                mis.ty = iay;
-            }
-            else
+                // Now set the mission destination correctly
                 GetUnitDestination(&mis.tx, &mis.ty);
 
-            if (mis.mission == AMIS_ESCORT || mis.mission == AMIS_HAVCAP)
-            {
-                // Add a new flight to this package
-                mis.caps = caps | MissionData[mis.mission].caps;
-                mis.speed = mis_request.speed;
-                mis.targetID = element[0];
-                mis.priority = GetPriority(&mis);
-                flight = AttachFlight(&mis, this);
-#ifdef DEBUG
-                gESCORTrequested++;
-
-                if (flight)
-                    gESCORTgot++;
-
-#endif
-
-                if (flight)
+                if (flight->BuildMission(&mis) == PRET_SUCCESS)
                 {
-                    // Now set the mission destination correctly
-                    GetUnitDestination(&mis.tx, &mis.ty);
-
-                    if (flight->BuildMission(&mis) == PRET_SUCCESS)
-                    {
-                        RecordFlightAddition((Flight)flight, &mis, 0);
-                        flight->SetUnitMissionTarget(GetMainFlightID());
-                    }
-                    else
-                        CancelFlight((Flight)flight);
+                    RecordFlightAddition((Flight)flight, &mis, 0);
+                    flight->SetUnitMissionTarget(GetMainFlightID());
                 }
+                else
+                    CancelFlight((Flight)flight);
+            }
 
 #ifdef KEV_ADEBUG
-                else
-                    MonoPrint("Failed to find CA Escort!\n");
+            else
+                MonoPrint("Failed to find CA Escort!\n");
 
 #endif
-            }
-            else if (mis.mission)
-            {
-                // Request a new package (Sweep or RESCAP mostly)
-                if (mis.mission == AMIS_SWEEP && mis_request.mission >= AMIS_FAC && mis_request.mission <= AMIS_CAS)
-                    mis.context = friendlyCASExpected;
-                else if (mis.mission == AMIS_RESCAP)
-                    mis.context = friendlyRescueExpected;
-                else
-                    mis.context = friendlyAssetsExpected;
+        }
+        else if (mis.mission)
+        {
+            // Request a new package (Sweep or RESCAP mostly)
+            if (mis.mission == AMIS_SWEEP && mis_request.mission >= AMIS_FAC &&
+                mis_request.mission <= AMIS_CAS)
+                mis.context = friendlyCASExpected;
+            else if (mis.mission == AMIS_RESCAP)
+                mis.context = friendlyRescueExpected;
+            else
+                mis.context = friendlyAssetsExpected;
 
-                mis.requesterID = Id();
-                mis.RequestMission();
-            }
+            mis.requesterID = Id();
+            mis.RequestMission();
+        }
 
-            break;
+        break;
 
-        case AMIS_TANKER:
-            responses |= PRESPONSE_TANKER;
-            tanker = triggered_flight;
-            break;
+    case AMIS_TANKER:
+        responses |= PRESPONSE_TANKER;
+        tanker = triggered_flight;
+        break;
 
-        case AMIS_AWACS:
-            responses |= PRESPONSE_AWACS;
-            awacs = triggered_flight;
-            break;
+    case AMIS_AWACS:
+        responses |= PRESPONSE_AWACS;
+        awacs = triggered_flight;
+        break;
 
-        case AMIS_JSTAR:
-            responses |= PRESPONSE_JSTAR;
-            jstar = triggered_flight;
-            break;
+    case AMIS_JSTAR:
+        responses |= PRESPONSE_JSTAR;
+        jstar = triggered_flight;
+        break;
 
-        case AMIS_ECM:
-            responses |= PRESPONSE_ECM;
-            ecm = triggered_flight;
-            break;
+    case AMIS_ECM:
+        responses |= PRESPONSE_ECM;
+        ecm = triggered_flight;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1711,25 +1752,25 @@ void PackageClass::SetUnitAssemblyPoint(int type, GridIndex x, GridIndex y)
 {
     switch (type)
     {
-        case 0:
-            iax = x;
-            iay = y;
-            break;
+    case 0:
+        iax = x;
+        iay = y;
+        break;
 
-        case 1:
-            eax = x;
-            eay = y;
-            break;
+    case 1:
+        eax = x;
+        eay = y;
+        break;
 
-        case 2:
-            bpx = x;
-            bpy = y;
-            break;
+    case 2:
+        bpx = x;
+        bpy = y;
+        break;
 
-        case 3:
-            tpx = x;
-            tpy = y;
-            break;
+    case 3:
+        tpx = x;
+        tpy = y;
+        break;
     }
 }
 
@@ -1737,25 +1778,25 @@ void PackageClass::GetUnitAssemblyPoint(int type, GridIndex *x, GridIndex *y)
 {
     switch (type)
     {
-        case 0:
-            *x = iax;
-            *y = iay;
-            break;
+    case 0:
+        *x = iax;
+        *y = iay;
+        break;
 
-        case 1:
-            *x = eay;
-            *y = eay;
-            break;
+    case 1:
+        *x = eay;
+        *y = eay;
+        break;
 
-        case 2:
-            *x = bpy;
-            *y = bpy;
-            break;
+    case 2:
+        *x = bpy;
+        *y = bpy;
+        break;
 
-        case 3:
-            *x = tpx;
-            *y = tpy;
-            break;
+    case 3:
+        *x = tpx;
+        *y = tpy;
+        break;
     }
 }
 
@@ -1956,7 +1997,8 @@ Flight AttachFlight(MissionRequest mis, Package pack)
 
     if (mis->flags & AMIS_IMMEDIATE)
     {
-        flight = TeamInfo[mis->who]->atm->FindBestAirFlight(mis); // We steal the aircraft from a current flight (all the aircraft)
+        flight = TeamInfo[mis->who]->atm->FindBestAirFlight(
+            mis); // We steal the aircraft from a current flight (all the aircraft)
 
         if (!flight)
             return NULL;
@@ -1993,7 +2035,8 @@ Flight AttachFlight(MissionRequest mis, Package pack)
             vuDatabase->SilentInsert(pack);
         }
 
-        tid = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT, squadron->GetSType(), squadron->GetSPType(), 0, 0, 0);
+        tid = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT,
+                         squadron->GetSType(), squadron->GetSPType(), 0, 0, 0);
 #ifdef DEBUG
         ShiAssert(tid);
 
@@ -2016,7 +2059,8 @@ Flight AttachFlight(MissionRequest mis, Package pack)
 
         // If we've got a bomber assigned to a lead strike role, switch the mission type to strat
         // bomb so that everything will be planned correctly
-        if (!pack->GetFlights() && MissionData[mis->mission].skill == ARO_S && squadron->GetRating(ARO_SB) > squadron->GetRating(ARO_S))
+        if (!pack->GetFlights() && MissionData[mis->mission].skill == ARO_S &&
+            squadron->GetRating(ARO_SB) > squadron->GetRating(ARO_S))
         {
             mis->mission = AMIS_STRATBOMB;
             pack->GetMissionRequest()->mission = AMIS_STRATBOMB;
@@ -2025,7 +2069,8 @@ Flight AttachFlight(MissionRequest mis, Package pack)
 
     flight->SetUnitMissionID(pack->GetFlights());
 #ifdef KEV_ADEBUG
-    MonoPrint("Attaching flight %d to package %d\n", flight->GetCampID(), pack->GetCampID());
+    MonoPrint("Attaching flight %d to package %d\n", flight->GetCampID(),
+              pack->GetCampID());
 #endif
     return flight;
 }
@@ -2039,7 +2084,8 @@ void FinalizeFlight(Unit flight, int flights)
 #ifdef KEV_ADEBUG
     Unit pack;
     pack = flight->GetUnitParent();
-    MonoPrint("Finalizing flight %d, package %d\n", flight->GetCampID(), pack->GetCampID());
+    MonoPrint("Finalizing flight %d, package %d\n", flight->GetCampID(),
+              pack->GetCampID());
 #endif
 
 #if 0
@@ -2063,7 +2109,9 @@ void FinalizeFlight(Unit flight, int flights)
 #endif
 #endif
 
-    if (flights > 1 && !(MissionData[flight->GetUnitMission()].flags & AMIS_DONT_COORD) && !(MissionData[flight->GetUnitMission()].flags & AMIS_TARGET_ONLY))
+    if (flights > 1 &&
+        !(MissionData[flight->GetUnitMission()].flags & AMIS_DONT_COORD) &&
+        !(MissionData[flight->GetUnitMission()].flags & AMIS_TARGET_ONLY))
         assem = 1;
     else
         assem = 0;
@@ -2148,13 +2196,19 @@ int CallInOCAStrikes(MissionRequest mis)
 #endif
     short ts = 0;
 
-    if (mis->mission == AMIS_SEADSTRIKE) // Don't generate recursive SEAD missions
+    if (mis->mission ==
+        AMIS_SEADSTRIKE) // Don't generate recursive SEAD missions
         return 0;
 
     // Trigger OCA missions
-    CollectThreatsFast(mis->tx, mis->ty, 1, mis->who, FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED | FIND_NODETECT, &list);
-    CollectThreatsFast(mis->tx, mis->ty, 99, mis->who, FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED | FIND_NODETECT, &list);
-    TargetThreats(mis->who, mis->priority, &list, LowAir, mis->tot, AMIS_ADDOCASTRIKE, &ts);
+    CollectThreatsFast(
+        mis->tx, mis->ty, 1, mis->who,
+        FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED | FIND_NODETECT, &list);
+    CollectThreatsFast(
+        mis->tx, mis->ty, 99, mis->who,
+        FIND_NOAIR | FIND_NOMOVERS | FIND_FINDUNSPOTTED | FIND_NODETECT, &list);
+    TargetThreats(mis->who, mis->priority, &list, LowAir, mis->tot,
+                  AMIS_ADDOCASTRIKE, &ts);
     return ts;
 }
 
@@ -2165,14 +2219,14 @@ Flight PackageClass::GetFACFlight(void)
     if (MissionData[mis_request.mission].skill != ARO_GA)
         return NULL;
 
-    fac = (Flight) GetFirstUnitElement();
+    fac = (Flight)GetFirstUnitElement();
 
     while (fac)
     {
         if (fac->GetUnitMission() == AMIS_FAC)
             return fac;
 
-        fac = (Flight) GetNextUnitElement();
+        fac = (Flight)GetNextUnitElement();
     }
 
     return NULL;
@@ -2240,7 +2294,7 @@ void PackageClass::MakePackageDirty(Dirty_Package bits, Dirtyness score)
 
     if (!IsAggregate())
     {
-        score = (Dirtyness)((int) score * 10);
+        score = (Dirtyness)((int)score * 10);
     }
 
     dirty_package |= bits;
@@ -2261,25 +2315,25 @@ void PackageClass::WriteDirty(unsigned char **stream)
 
     if (dirty_package & DIRTY_TANKER)
     {
-        *(VU_ID*)*stream = tanker;
+        *(VU_ID *)*stream = tanker;
         *stream += sizeof(VU_ID);
     }
 
     if (dirty_package & DIRTY_PACKAGE_FLAGS)
     {
-        *(ulong*)*stream = package_flags;
+        *(ulong *)*stream = package_flags;
         *stream += sizeof(ulong);
     }
 
     if (dirty_package & DIRTY_TAKEOFF)
     {
-        *(CampaignTime*)*stream = takeoff;
+        *(CampaignTime *)*stream = takeoff;
         *stream += sizeof(CampaignTime);
     }
 
     if (dirty_package & DIRTY_TP_TIME)
     {
-        *(CampaignTime*)*stream = tp_time;
+        *(CampaignTime *)*stream = tp_time;
         *stream += sizeof(CampaignTime);
     }
 
@@ -2292,8 +2346,7 @@ void PackageClass::WriteDirty(unsigned char **stream)
 
 void PackageClass::ReadDirty(unsigned char **stream)
 {
-    uchar
-    bits;
+    uchar bits;
 
     bits = *(uchar *)*stream;
     *stream += sizeof(uchar);
@@ -2302,25 +2355,25 @@ void PackageClass::ReadDirty(unsigned char **stream)
 
     if (bits & DIRTY_TANKER)
     {
-        tanker = *(VU_ID*)*stream;
+        tanker = *(VU_ID *)*stream;
         *stream += sizeof(VU_ID);
     }
 
     if (bits & DIRTY_PACKAGE_FLAGS)
     {
-        package_flags = *(ulong*)*stream;
+        package_flags = *(ulong *)*stream;
         *stream += sizeof(ulong);
     }
 
     if (bits & DIRTY_TAKEOFF)
     {
-        takeoff = *(CampaignTime*)*stream;
+        takeoff = *(CampaignTime *)*stream;
         *stream += sizeof(CampaignTime);
     }
 
     if (bits & DIRTY_TP_TIME)
     {
-        tp_time = *(CampaignTime*)*stream;
+        tp_time = *(CampaignTime *)*stream;
         *stream += sizeof(CampaignTime);
     }
 }
@@ -2328,5 +2381,3 @@ void PackageClass::ReadDirty(unsigned char **stream)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
-

@@ -60,10 +60,11 @@ enum Switches
 
     // MLR 2003-10-05
     COMP_PIT_AB = 25, // these are reserved for the 3d pits
-    COMP_PIT_NOS_GEAR_SW = 26, // since the 1st 4 switches bitand #7 are used by pit specific data,
+    COMP_PIT_NOS_GEAR_SW =
+        26, // since the 1st 4 switches bitand #7 are used by pit specific data,
     COMP_PIT_LT_GEAR_SW = 27, // these are set to be equal to dofs 0 - 3
     COMP_PIT_RT_GEAR_SW = 28, //
-    COMP_PIT_TAIL_STROBE    = 29,
+    COMP_PIT_TAIL_STROBE = 29,
     COMP_AB2 = 30,
     COMP_EXH_NOZZLE2 = 31,
 
@@ -128,7 +129,8 @@ enum Switches
 
 
     //ATARIBABY start new 3d cockpit switches
-    COMP_3DPIT_BACKUP_ADI_OFFMARK = 100, //Backup OFF flag - only visible on ramp-start with cold jet
+    COMP_3DPIT_BACKUP_ADI_OFFMARK =
+        100, //Backup OFF flag - only visible on ramp-start with cold jet
     COMP_3DPIT_ARNWS_LIGHT = 101, //AR/NWS console NWS light
     COMP_3DPIT_ARRDY_LIGHT = 102, //AR/NWS console RDY light
     COMP_3DPIT_ARDISC_LIGHT = 103, //AR/NWS console DISC light
@@ -142,7 +144,8 @@ enum Switches
     COMP_3DPIT_EYEBROW_HYDOIL = 111, //RIGHT EYEBROW caution light HYD/OIL PRESS
     COMP_3DPIT_EYEBROW_FLCS = 112, //RIGHT EYEBROW caution light FLCS/DBU ON
     COMP_3DPIT_EYEBROW_TOLDG = 113, //RIGHT EYEBROW caution light TO/LDG CONFIG
-    COMP_3DPIT_EYEBROW_CANOPY = 114, //RIGHT EYEBROW caution light CANOPY OXY LOW
+    COMP_3DPIT_EYEBROW_CANOPY =
+        114, //RIGHT EYEBROW caution light CANOPY OXY LOW
     COMP_3DPIT_EYEBROW_TFFAIL = 115, //LEFT EYEBROW caution light TR-FAIL
     COMP_3DPIT_ADI_LOC_FLAG = 116, //MAIN ADI LOC flag
     COMP_3DPIT_ADI_GS_FLAG = 117, //MAIN ADI GS flag
@@ -156,7 +159,8 @@ enum Switches
     COMP_3DPIT_AOA_OFF_FLAG = 125, //AOA OFF flag
     COMP_3DPIT_VVI_OFF_FLAG = 126, //VVI OFF flag
     COMP_3DPIT_INTERIOR_LIGHTS = 127, //Interior lights (general lighting)
-    COMP_3DPIT_INSTRUMENT_LIGHTS = 128, //Instrument lights (instrument back lighting)
+    COMP_3DPIT_INSTRUMENT_LIGHTS =
+        128, //Instrument lights (instrument back lighting)
     //ATARIBABY end
 
     // FRB - 3D cockpit toggle switches and knobs (animation)
@@ -176,8 +180,10 @@ enum Switches
     COMP_3DPIT_RF_QUIET = 142, // RF Quiet control switch - 3 states
     COMP_3DPIT_IFF_QUERY = 143, // IFF Ident query switch - 2 states
     COMP_3DPIT_LASER_ARM = 144, // Laser Arm switch - 2 states
-    COMP_3DPIT_ICP_SYM_WHEEL = 145, // ICP Sym wheel (color) switch - 10 states (?)
-    COMP_3DPIT_ICP_BRT_WHEEL = 146, // ICP Bright wheel (brightness/contrast) switch - 10 states (?)
+    COMP_3DPIT_ICP_SYM_WHEEL =
+        145, // ICP Sym wheel (color) switch - 10 states (?)
+    COMP_3DPIT_ICP_BRT_WHEEL =
+        146, // ICP Bright wheel (brightness/contrast) switch - 10 states (?)
     COMP_3DPIT_HUD_PWR = 147, // HUD power switch - 2 states
     COMP_3DPIT_RWR_PWR = 148, // RWR power switch - 2 states
     COMP_3DPIT_RWR_SEARCH = 149, // RWR Search switch - 2 states
@@ -236,8 +242,10 @@ enum Switches
     COMP_3DPIT_HUD_VELOCITY = 202, // CAS/TAS switch - 3 states
     COMP_3DPIT_HUD_RAL_BARO = 203, // RAlt/Baro Altitude switch - 3 states
     COMP_3DPIT_HUD_DAY_NITE = 204, // Day/Night switch - 3 states
-    COMP_3DPIT_INTERIOR_LITE = 205, // Cockpit interior lighting switch - 3 states
-    COMP_3DPIT_INSTR_LITE = 206, // Cockpit intruments lighting switch - 3 states
+    COMP_3DPIT_INTERIOR_LITE =
+        205, // Cockpit interior lighting switch - 3 states
+    COMP_3DPIT_INSTR_LITE =
+        206, // Cockpit intruments lighting switch - 3 states
     COMP_3DPIT_AIR_SOURCE = 207, // Air source switch - 4 states
     COMP_3DPIT_VMS_PWR = 208, // VMS power switch - 2 states
     COMP_3DPIT_FCC_PWR = 209, // FCC power switch - 2 states
@@ -316,7 +324,6 @@ enum Switches
     //COMP_3DPIT_AVTR_ON = 273, // Light - AVTR run light
 
 
-
     COMP_MAX_SWITCH = 255, // update
     //*************************************************
 
@@ -330,7 +337,7 @@ enum Switches
     SIMP_MAX_SWITCH = 8,
 
     HELI_ROTORS = 0,
-    HELI_MAX_SWITCH  = 2,
+    HELI_MAX_SWITCH = 2,
 
     AIRDEF_LIGHT_SWITCH = 2,
     AIRDEF_MAX_SWITCH = 3,
@@ -360,7 +367,7 @@ enum DOFS
     COMP_BROKEN_NOS_GEAR = 11,
     COMP_BROKEN_LT_GEAR = 12,
     COMP_BROKEN_RT_GEAR = 13,
-    COMP_NOTUSED_14 = 14,//available
+    COMP_NOTUSED_14 = 14, //available
     COMP_LT_AIR_BRAKE_TOP = 15,
     COMP_LT_AIR_BRAKE_BOT = 16,
     COMP_RT_AIR_BRAKE_TOP = 17,
@@ -399,40 +406,40 @@ enum DOFS
     COMP_CANOPY_DOF = 30, // opening canopy
     // 31-37 earmarked for prop animation DOFs, so next named one should be 37 please.
 
-    COMP_TAILHOOK =   37,
-    COMP_ABDOF =      38, // afterburner DOF, for scaling.
-    COMP_EXH_NOZ =    39, // exhuast nozzle
+    COMP_TAILHOOK = 37,
+    COMP_ABDOF = 38, // afterburner DOF, for scaling.
+    COMP_EXH_NOZ = 39, // exhuast nozzle
 
-    COMP_PROPELLOR  = 40,
-    COMP_REFUEL     = 41, // refuel probe
-    COMP_LT_SPOILER1  = 42,
-    COMP_RT_SPOILER1  = 43,
-    COMP_LT_SPOILER2  = 44,
-    COMP_RT_SPOILER2  = 45,
+    COMP_PROPELLOR = 40,
+    COMP_REFUEL = 41, // refuel probe
+    COMP_LT_SPOILER1 = 42,
+    COMP_RT_SPOILER1 = 43,
+    COMP_LT_SPOILER2 = 44,
+    COMP_RT_SPOILER2 = 45,
 
     COMP_SWING_WING = 46,
-    COMP_THROTTLE   = 47,
-    COMP_RPM        = 48,
+    COMP_THROTTLE = 47,
+    COMP_RPM = 48,
     //COMP_HEAD2_UD = 49, // see above
 
-    COMP_WHEEL_1   =   50, // MLR 2003-10-04 // 2003-10-14 renamed
-    COMP_WHEEL_2   =   51,
-    COMP_WHEEL_3   =   52,
-    COMP_WHEEL_4   =   53,
-    COMP_WHEEL_5   =   54,
-    COMP_WHEEL_6   =   55,
-    COMP_WHEEL_7   =   56,
-    COMP_WHEEL_8   =   57,
-    COMP_GEAREXTENSION_1   =   58, // MLR 2003-10-04
-    COMP_GEAREXTENSION_2   =   59,
-    COMP_GEAREXTENSION_3   =   60,
-    COMP_GEAREXTENSION_4   =   61,
-    COMP_GEAREXTENSION_5   =   62,
-    COMP_GEAREXTENSION_6   =   63,
-    COMP_GEAREXTENSION_7   =   64, // hmm >64 dofs?
-    COMP_GEAREXTENSION_8   =   65,
-    COMP_ABDOF2  =   66, // afterburner DOF, for scaling.
-    COMP_EXH_NOZ2          =   67, // exhuast nozzle
+    COMP_WHEEL_1 = 50, // MLR 2003-10-04 // 2003-10-14 renamed
+    COMP_WHEEL_2 = 51,
+    COMP_WHEEL_3 = 52,
+    COMP_WHEEL_4 = 53,
+    COMP_WHEEL_5 = 54,
+    COMP_WHEEL_6 = 55,
+    COMP_WHEEL_7 = 56,
+    COMP_WHEEL_8 = 57,
+    COMP_GEAREXTENSION_1 = 58, // MLR 2003-10-04
+    COMP_GEAREXTENSION_2 = 59,
+    COMP_GEAREXTENSION_3 = 60,
+    COMP_GEAREXTENSION_4 = 61,
+    COMP_GEAREXTENSION_5 = 62,
+    COMP_GEAREXTENSION_6 = 63,
+    COMP_GEAREXTENSION_7 = 64, // hmm >64 dofs?
+    COMP_GEAREXTENSION_8 = 65,
+    COMP_ABDOF2 = 66, // afterburner DOF, for scaling.
+    COMP_EXH_NOZ2 = 67, // exhuast nozzle
 
     /* Do not use these ID's in the code anymore, use the arrays at the bottom of this file */
     COMP_GEAR_4 = 68,
@@ -448,11 +455,11 @@ enum DOFS
     COMP_GEAR_DR_7 = 76,
     COMP_GEAR_DR_8 = 77,
 
-    COMP_WEAPON_BAY_0  = 78,
-    COMP_WEAPON_BAY_1  = 79,
-    COMP_WEAPON_BAY_2  = 80,
-    COMP_WEAPON_BAY_3  = 81,
-    COMP_WEAPON_BAY_4  = 82,
+    COMP_WEAPON_BAY_0 = 78,
+    COMP_WEAPON_BAY_1 = 79,
+    COMP_WEAPON_BAY_2 = 80,
+    COMP_WEAPON_BAY_3 = 81,
+    COMP_WEAPON_BAY_4 = 82,
     //Cobra 10/30/04 TJL
     COMP_INTAKE_1_RAMP_1 = 83,
     COMP_INTAKE_1_RAMP_2 = 84,
@@ -463,51 +470,51 @@ enum DOFS
     COMP_INTAKE_2_RAMP_3 = 88,
 
     //ATARIBABY start new 3d cokpit dofs, i made enought hole i hope
-    COMP_3DPIT_ADI_ROLL   = 100,  //main adi ball roll
-    COMP_3DPIT_ADI_PITCH  = 101, //main adi ball pitch
-    COMP_3DPIT_ASI_NEEDLE  = 102, //asi instrument needle
-    COMP_3DPIT_BACKUP_ADI_ROLL   = 103, //backup adi ball roll
-    COMP_3DPIT_BACKUP_ADI_PITCH  = 104, //backup adi ball pitch
-    COMP_3DPIT_ALT_NEEDLE  = 105, //alt instrument needle
-    COMP_3DPIT_ILSV_NEEDLE  = 106, //ILS vertical needle
-    COMP_3DPIT_ILSH_NEEDLE  = 107, //ILS horizontal needle
-    COMP_3DPIT_MAG_COMPASS  = 108, //backup magnetic compass
-    COMP_3DPIT_ASIMACH_DIGIT1  = 109, //ASI mach digital readout left digit
-    COMP_3DPIT_ASIMACH_DIGIT2  = 110, //ASI mach digital readout right digit
-    COMP_3DPIT_ALT_DIGIT1  = 111, //ALT digital readout digit 1
-    COMP_3DPIT_ALT_DIGIT2  = 112, //ALT digital readout digit 2
-    COMP_3DPIT_ALT_DIGIT3  = 113, //ALT digital readout digit 3
-    COMP_3DPIT_HSI_HDG  = 114, //HSI current heading
-    COMP_3DPIT_HSI_CRS  = 115, //HSI desired course
-    COMP_3DPIT_HSI_DHDG  = 116, //HSI desired heading
-    COMP_3DPIT_HSI_BCN  = 117, //HSI beacon course
-    COMP_3DPIT_HSI_CRSDEV  = 118, //HSI course deviation
-    COMP_3DPIT_HSI_DIST_DIGIT1  = 119, //HSI distance to beacon digit 1
-    COMP_3DPIT_HSI_DIST_DIGIT2  = 120, //HSI distance to beacon digit 2
-    COMP_3DPIT_HSI_DIST_DIGIT3  = 121, //HSI distance to beacon digit 3
-    COMP_3DPIT_HSI_CRS_DIGIT1  = 122, //HSI course beacon digit 1
-    COMP_3DPIT_HSI_CRS_DIGIT2  = 123, //HSI course to beacon digit 2
-    COMP_3DPIT_HSI_CRS_DIGIT3  = 124, //HSI course digit 3
-    COMP_3DPIT_FUELFLOW_DIGIT1  = 125, //FUEL FLOW digit 1
-    COMP_3DPIT_FUELFLOW_DIGIT2  = 126, //FUEL FLOW digit 2
-    COMP_3DPIT_FUELFLOW_DIGIT3  = 127, //FUEL FLOW digit 3
-    COMP_3DPIT_OIL_NEEDLE  = 128, //OIL needle
-    COMP_3DPIT_NOZ_NEEDLE  = 129, //NOZ needle
-    COMP_3DPIT_RPM_NEEDLE  = 130, //RPM needle
-    COMP_3DPIT_FTIT_NEEDLE  = 131, //FTIT needle
-    COMP_3DPIT_AOA  = 132, //AOA tape
-    COMP_3DPIT_VVI  = 133, //VVI tape
-    COMP_3DPIT_HYDA_NEEDLE  = 134, //HYD A PRESS needle
-    COMP_3DPIT_HYDB_NEEDLE  = 135, //HYD B PRESS needle
-    COMP_3DPIT_EPU_NEEDLE  = 136, //EPU needle
-    COMP_3DPIT_FUEL_DIGIT1  = 137, //FUEL digit 1
-    COMP_3DPIT_FUEL_DIGIT2  = 138, //FUEL digit 2
-    COMP_3DPIT_FUEL_DIGIT3  = 139, //FUEL digit 3
-    COMP_3DPIT_FUEL_DIGIT4  = 140, //FUEL digit 4
-    COMP_3DPIT_FUEL_DIGIT5  = 141, //FUEL digit 5
-    COMP_3DPIT_FUELAFT_NEEDLE  = 142, //FUEL AFT
-    COMP_3DPIT_FUELFWD_NEEDLE  = 143, //FUEL FWD
-    COMP_3DPIT_G_NEEDLE  = 144, //G-meter needle
+    COMP_3DPIT_ADI_ROLL = 100, //main adi ball roll
+    COMP_3DPIT_ADI_PITCH = 101, //main adi ball pitch
+    COMP_3DPIT_ASI_NEEDLE = 102, //asi instrument needle
+    COMP_3DPIT_BACKUP_ADI_ROLL = 103, //backup adi ball roll
+    COMP_3DPIT_BACKUP_ADI_PITCH = 104, //backup adi ball pitch
+    COMP_3DPIT_ALT_NEEDLE = 105, //alt instrument needle
+    COMP_3DPIT_ILSV_NEEDLE = 106, //ILS vertical needle
+    COMP_3DPIT_ILSH_NEEDLE = 107, //ILS horizontal needle
+    COMP_3DPIT_MAG_COMPASS = 108, //backup magnetic compass
+    COMP_3DPIT_ASIMACH_DIGIT1 = 109, //ASI mach digital readout left digit
+    COMP_3DPIT_ASIMACH_DIGIT2 = 110, //ASI mach digital readout right digit
+    COMP_3DPIT_ALT_DIGIT1 = 111, //ALT digital readout digit 1
+    COMP_3DPIT_ALT_DIGIT2 = 112, //ALT digital readout digit 2
+    COMP_3DPIT_ALT_DIGIT3 = 113, //ALT digital readout digit 3
+    COMP_3DPIT_HSI_HDG = 114, //HSI current heading
+    COMP_3DPIT_HSI_CRS = 115, //HSI desired course
+    COMP_3DPIT_HSI_DHDG = 116, //HSI desired heading
+    COMP_3DPIT_HSI_BCN = 117, //HSI beacon course
+    COMP_3DPIT_HSI_CRSDEV = 118, //HSI course deviation
+    COMP_3DPIT_HSI_DIST_DIGIT1 = 119, //HSI distance to beacon digit 1
+    COMP_3DPIT_HSI_DIST_DIGIT2 = 120, //HSI distance to beacon digit 2
+    COMP_3DPIT_HSI_DIST_DIGIT3 = 121, //HSI distance to beacon digit 3
+    COMP_3DPIT_HSI_CRS_DIGIT1 = 122, //HSI course beacon digit 1
+    COMP_3DPIT_HSI_CRS_DIGIT2 = 123, //HSI course to beacon digit 2
+    COMP_3DPIT_HSI_CRS_DIGIT3 = 124, //HSI course digit 3
+    COMP_3DPIT_FUELFLOW_DIGIT1 = 125, //FUEL FLOW digit 1
+    COMP_3DPIT_FUELFLOW_DIGIT2 = 126, //FUEL FLOW digit 2
+    COMP_3DPIT_FUELFLOW_DIGIT3 = 127, //FUEL FLOW digit 3
+    COMP_3DPIT_OIL_NEEDLE = 128, //OIL needle
+    COMP_3DPIT_NOZ_NEEDLE = 129, //NOZ needle
+    COMP_3DPIT_RPM_NEEDLE = 130, //RPM needle
+    COMP_3DPIT_FTIT_NEEDLE = 131, //FTIT needle
+    COMP_3DPIT_AOA = 132, //AOA tape
+    COMP_3DPIT_VVI = 133, //VVI tape
+    COMP_3DPIT_HYDA_NEEDLE = 134, //HYD A PRESS needle
+    COMP_3DPIT_HYDB_NEEDLE = 135, //HYD B PRESS needle
+    COMP_3DPIT_EPU_NEEDLE = 136, //EPU needle
+    COMP_3DPIT_FUEL_DIGIT1 = 137, //FUEL digit 1
+    COMP_3DPIT_FUEL_DIGIT2 = 138, //FUEL digit 2
+    COMP_3DPIT_FUEL_DIGIT3 = 139, //FUEL digit 3
+    COMP_3DPIT_FUEL_DIGIT4 = 140, //FUEL digit 4
+    COMP_3DPIT_FUEL_DIGIT5 = 141, //FUEL digit 5
+    COMP_3DPIT_FUELAFT_NEEDLE = 142, //FUEL AFT
+    COMP_3DPIT_FUELFWD_NEEDLE = 143, //FUEL FWD
+    COMP_3DPIT_G_NEEDLE = 144, //G-meter needle
     //ATARIBABY end
 
     // FRB - 3D cockpit knobs, lever, dial (animation)
@@ -521,14 +528,14 @@ enum DOFS
     COMP_3DPIT_CLOCK_MINS = 152, // Clock - minute hand
     COMP_3DPIT_CLOCK_SECS = 153, // Clock - second hand
     COMP_REVERSE_THRUSTER = 154, // Reverse thruster
-    COMP_3DPIT_CHAFF_DIGIT1  = 155, // Chaff remaining count digit 1
-    COMP_3DPIT_CHAFF_DIGIT2  = 156,  // Chaff remaining count digit 2
-    COMP_3DPIT_CHAFF_DIGIT3  = 157, // Chaff remaining count digit 3
-    COMP_3DPIT_FLARE_DIGIT1  = 158, // Flares remaining count digit 1
-    COMP_3DPIT_FLARE_DIGIT2  = 159,  // Flares remaining count digit 2
-    COMP_3DPIT_FLARE_DIGIT3  = 160, // Flares remaining count digit 3
-    COMP_3DPIT_AOA_DIAL  = 161, //AOA tape
-    COMP_3DPIT_VVI_DIAL  = 162, //VVI tape
+    COMP_3DPIT_CHAFF_DIGIT1 = 155, // Chaff remaining count digit 1
+    COMP_3DPIT_CHAFF_DIGIT2 = 156, // Chaff remaining count digit 2
+    COMP_3DPIT_CHAFF_DIGIT3 = 157, // Chaff remaining count digit 3
+    COMP_3DPIT_FLARE_DIGIT1 = 158, // Flares remaining count digit 1
+    COMP_3DPIT_FLARE_DIGIT2 = 159, // Flares remaining count digit 2
+    COMP_3DPIT_FLARE_DIGIT3 = 160, // Flares remaining count digit 3
+    COMP_3DPIT_AOA_DIAL = 161, //AOA tape
+    COMP_3DPIT_VVI_DIAL = 162, //VVI tape
 
     // end knobs, lever, dial (animation)
 
@@ -543,10 +550,10 @@ enum DOFS
     SIMP_RT_AILERON = 7,
     SIMP_RUDDER_1 = 8,
     SIMP_RUDDER_2 = 9,
-    SIMP_AIR_BRAKE = 10,// Jet Blast Deflector #1
-    SIMP_SWING_WING_1 = 11,// Jet Blast Deflector #2
-    SIMP_SWING_WING_2 = 12,// Jet Blast Deflector #3
-    SIMP_SWING_WING_3 = 13,// Jet Blast Deflector #4
+    SIMP_AIR_BRAKE = 10, // Jet Blast Deflector #1
+    SIMP_SWING_WING_1 = 11, // Jet Blast Deflector #2
+    SIMP_SWING_WING_2 = 12, // Jet Blast Deflector #3
+    SIMP_SWING_WING_3 = 13, // Jet Blast Deflector #4
     SIMP_SWING_WING_4 = 14,
     SIMP_SWING_WING_5 = 15,
     SIMP_SWING_WING_6 = 16,
@@ -558,17 +565,17 @@ enum DOFS
     SIMP_LT_LEF = 22,
     SIMP_CANOPY_DOF = 23, // opening canopy
 
-    SIMP_PROPELLOR  = 40,
-    SIMP_REFUEL     = 41, // refuel probe
+    SIMP_PROPELLOR = 40,
+    SIMP_REFUEL = 41, // refuel probe
 
 
-    SIMP_LT_SPOILER1  = 42,
-    SIMP_RT_SPOILER1  = 43,
-    SIMP_LT_SPOILER2  = 44,
-    SIMP_RT_SPOILER2  = 45,
+    SIMP_LT_SPOILER1 = 42,
+    SIMP_RT_SPOILER1 = 43,
+    SIMP_LT_SPOILER2 = 44,
+    SIMP_RT_SPOILER2 = 45,
 
-    SIMP_THROTTLE   = 47,
-    SIMP_RPM        = 48,
+    SIMP_THROTTLE = 47,
+    SIMP_RPM = 48,
 
     SIMP_MAX_DOF = 49, // MAKE SURE THIS IS UP TO DATE
 
@@ -592,7 +599,6 @@ extern int ComplexGearSwitch[]; // gear visible switch
 extern int ComplexGearDoorSwitch[]; // door visible switch
 extern int ComplexGearHoleSwitch[]; // gear bay switch
 extern int ComplexGearBrokenSwitch[];
-
 
 
 enum Vertices

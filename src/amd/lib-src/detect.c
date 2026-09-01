@@ -44,7 +44,7 @@ int has3DNow(void)
         CPUID
         cmp eax, 0x80000001 // Make sure function 0x80000001 supported.
         jb No3DNow
-        // Now we know extended functions are supported.
+         // Now we know extended functions are supported.
         mov eax, 0x80000001 // Get extended features.
         xor edx, edx // Clear edx - not really necessary.
         CPUID
@@ -54,7 +54,7 @@ int has3DNow(void)
 
     return 1;
 
-    No3DNow:
+No3DNow:
     return 0;
 }
 

@@ -11,7 +11,7 @@ extern bool g_bRealisticAvionics;
 void ICPClass::ExecDLINKMode(void)
 {
 
-    FalconDLinkMessage::DLinkPointType  type;
+    FalconDLinkMessage::DLinkPointType type;
     int pointNumber;
     char ptype[5];
     char ptarget[15];
@@ -19,7 +19,7 @@ void ICPClass::ExecDLINKMode(void)
     char pheading[4];
     char pdistance[5];
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         if (mUpdateFlags bitand DLINK_UPDATE)
         {
@@ -32,7 +32,8 @@ void ICPClass::ExecDLINKMode(void)
             sprintf(mpLine3, "");
 #endif
 
-            gNavigationSys->GetDataLink(&type, &pointNumber, ptype, ptarget, pthreat, pheading, pdistance);
+            gNavigationSys->GetDataLink(&type, &pointNumber, ptype, ptarget,
+                                        pthreat, pheading, pdistance);
 
             if (type == FalconDLinkMessage::NODLINK)
             {
@@ -40,7 +41,9 @@ void ICPClass::ExecDLINKMode(void)
                 sprintf(mpLine2, "NO DLINK DATA");
                 sprintf(mpLine3, "");
             }
-            else if ((type == FalconDLinkMessage::IP or type == FalconDLinkMessage::TGT) and *pheading and *pdistance)
+            else if ((type == FalconDLinkMessage::IP or
+                      type == FalconDLinkMessage::TGT) and
+                     *pheading and *pdistance)
             {
                 sprintf(mpLine1, "DLINK %2d  %-5s", pointNumber + 1, ptype);
                 sprintf(mpLine2, "PRI: %-8s  THRT: %-8s", ptarget, pthreat);
@@ -57,7 +60,8 @@ void ICPClass::ExecDLINKMode(void)
     else
     {
         if (gNavigationSys)
-            gNavigationSys->GetDataLink(&type, &pointNumber, ptype, ptarget, pthreat, pheading, pdistance);
+            gNavigationSys->GetDataLink(&type, &pointNumber, ptype, ptarget,
+                                        pthreat, pheading, pdistance);
 
         if (type == FalconDLinkMessage::NODLINK or type == NULL)
         {
@@ -65,7 +69,9 @@ void ICPClass::ExecDLINKMode(void)
             FillDEDMatrix(0, 10, tempstr);
             FillDEDMatrix(1, 5, "NO DLINK DATA");
         }
-        else if ((type == FalconDLinkMessage::IP or type == FalconDLinkMessage::TGT) and *pheading and *pdistance)
+        else if ((type == FalconDLinkMessage::IP or
+                  type == FalconDLinkMessage::TGT) and
+                 *pheading and *pdistance)
         {
             sprintf(tempstr, "DLINK %2d", pointNumber + 1, ptype);
             FillDEDMatrix(0, 10, tempstr);

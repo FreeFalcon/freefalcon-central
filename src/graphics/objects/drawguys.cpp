@@ -5,28 +5,21 @@
     Derived class to do special position processing for foot soldiers on the
  ground.
 \***************************************************************************/
-#include "TimeMgr.h"
-#include "Matrix.h"
-#include "RViewPnt.h"
-#include "RenderOW.h"
-#include "DrawGuys.h"
+#include "timemgr.h"
+#include "matrix.h"
+#include "rviewpnt.h"
+#include "renderow.h"
+#include "drawguys.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawableGuys::pool;
 #endif
 
 // table of offsets for squads
-static Tpoint sSquadOffsets[] =
-{
-    {  0.0f,  0.0f, 0.0f },
-    { -5.0f,    5.0f, 0.0f },
-    {  5.0f,   12.0f, 0.0f },
-    {  8.0f,   -5.0f, 0.0f },
-    { -6.0f,  -10.0f, 0.0f },
-    {  0.0f,   20.0f, 0.0f },
-    { 20.0f,    0.0f, 0.0f },
-    {  0.0f,  -20.0f, 0.0f },
-    { -20.0f,    0.0f, 0.0f },
+static Tpoint sSquadOffsets[] = {
+    {0.0f, 0.0f, 0.0f},  {-5.0f, 5.0f, 0.0f},   {5.0f, 12.0f, 0.0f},
+    {8.0f, -5.0f, 0.0f}, {-6.0f, -10.0f, 0.0f}, {0.0f, 20.0f, 0.0f},
+    {20.0f, 0.0f, 0.0f}, {0.0f, -20.0f, 0.0f},  {-20.0f, 0.0f, 0.0f},
 };
 /* KCK: Randomized more. Would be nice to specify this ourselves..
 static Tpoint sSquadOffsets[] =
@@ -42,11 +35,12 @@ static Tpoint sSquadOffsets[] =
  {-20.0f,    0.0f, 0.0f },
 };
 */
-
+
 /***************************************************************************\
     Initialize a container for a BSP object to be drawn
 \***************************************************************************/
-DrawableGuys::DrawableGuys(int ID, Tpoint *pos, float heading, int numGuys, float s)
+DrawableGuys::DrawableGuys(int ID, Tpoint *pos, float heading, int numGuys,
+                           float s)
     : DrawableGroundVehicle(ID, pos, heading, s)
 {
     drawClassID = Guys;
@@ -56,7 +50,6 @@ DrawableGuys::DrawableGuys(int ID, Tpoint *pos, float heading, int numGuys, floa
 }
 
 
-
 /***************************************************************************\
     Make sure the object is placed on the ground then draw it.
 \***************************************************************************/
@@ -84,12 +77,14 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
         if (drivingOn)
         {
             // Get the normal and update our height to conform to the platform we're driving on
-            position.z = drivingOn->GetGroundLevel(position.x, position.y, &normal);
+            position.z =
+                drivingOn->GetGroundLevel(position.x, position.y, &normal);
         }
         else
         {
             // Get the normal and update our height to reflect the terrain beneath us
-            position.z = renderer->viewpoint->GetGroundLevel(position.x, position.y, &normal);
+            position.z = renderer->viewpoint->GetGroundLevel(
+                position.x, position.y, &normal);
         }
 
         previousLOD = LOD;
@@ -99,25 +94,22 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
         // The "new" axes include the alignment of "up" with the terrain normal.
         // Store the matrix in transposed form to work with Erick's row vector based library
         // New Z axis (Inverted Terrain Normal)
-        Nx = -normal.x,
-        Ny = -normal.y,
-        Nz = -normal.z;
-        s =  1.0f / (float)sqrt(Nx * Nx + Ny * Ny + Nz * Nz);
-        orientation.M13 = Nx * s, orientation.M23 = Ny * s, orientation.M33 = Nz * s;
+        Nx = -normal.x, Ny = -normal.y, Nz = -normal.z;
+        s = 1.0f / (float)sqrt(Nx * Nx + Ny * Ny + Nz * Nz);
+        orientation.M13 = Nx * s, orientation.M23 = Ny * s,
+        orientation.M33 = Nz * s;
 
         // New X axis (New Z axis cross negative old Y axis)
-        x =  Nz * cosYaw,
-        y =  Nz * sinYaw,
-        z = -Nx * cosYaw - Ny * sinYaw;
-        s =  1.0f / (float)sqrt(x * x + y * y + z * z);
-        orientation.M11 = x * s, orientation.M21 = y * s, orientation.M31 = z * s;
+        x = Nz * cosYaw, y = Nz * sinYaw, z = -Nx * cosYaw - Ny * sinYaw;
+        s = 1.0f / (float)sqrt(x * x + y * y + z * z);
+        orientation.M11 = x * s, orientation.M21 = y * s,
+        orientation.M31 = z * s;
 
         // New Y axis (New Z axis cross old X axis)
-        x = -Nz * sinYaw,
-        y =  Nz * cosYaw,
-        z =  Nx * sinYaw - Ny * cosYaw;
-        s =  1.0f / (float)sqrt(x * x + y * y + z * z);
-        orientation.M12 = x * s, orientation.M22 = y * s, orientation.M32 = z * s;
+        x = -Nz * sinYaw, y = Nz * cosYaw, z = Nx * sinYaw - Ny * cosYaw;
+        s = 1.0f / (float)sqrt(x * x + y * y + z * z);
+        orientation.M12 = x * s, orientation.M22 = y * s,
+        orientation.M32 = z * s;
     }
 
 
@@ -176,14 +168,11 @@ void DrawableGuys::Draw(class RenderOTW *renderer, int LOD)
             // get pointer to offsets
             poff = &sSquadOffsets[i];
 
-            position.x = savePosition.x +
-                         poff->x * orientation.M11 +
+            position.x = savePosition.x + poff->x * orientation.M11 +
                          poff->y * orientation.M21;
-            position.y = savePosition.y +
-                         poff->x * orientation.M12 +
+            position.y = savePosition.y + poff->x * orientation.M12 +
                          poff->y * orientation.M22;
-            position.z = savePosition.z +
-                         poff->x * orientation.M13 +
+            position.z = savePosition.z + poff->x * orientation.M13 +
                          poff->y * orientation.M23;
             drawLabels = FALSE;
         }

@@ -25,7 +25,7 @@
 
 #ifdef _MSC_VER
 // We don't need EMMS instruction warnings
-#pragma warning(disable:4799)
+#pragma warning(disable : 4799)
 #endif
 
 #include <amath.h>
@@ -64,7 +64,6 @@ float _acos(float x)
     }
     return fval;
 }
-
 
 
 /*---------------------------------------------------------------*/
@@ -264,13 +263,13 @@ float _frexp(float x, int *y)
     float fval[2];
 
     __asm
-    {
+        {
         FEMMS
         movd mm0, x
         call a_frexp
         movq fval, mm0
         FEMMS
-    }
+        }
     *y = *(int *)&fval[1];
     return fval[0];
 }
@@ -300,7 +299,7 @@ float _modf(float x, float *iptr)
 {
     float res[2];
     __asm
-    {
+        {
         FEMMS
         movd mm0, x
         pf2id(mm1, mm0)
@@ -309,7 +308,7 @@ float _modf(float x, float *iptr)
         punpckldq mm0, mm1 // mm0 = res:iptr
         movd res, mm0
         FEMMS
-    }
+        }
     *iptr = res[1];
     return res[0];
 }

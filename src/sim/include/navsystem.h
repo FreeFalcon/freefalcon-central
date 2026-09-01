@@ -21,7 +21,7 @@ const int MAX_VRPOA = 2;
 extern float FALCON_ORIGIN_LAT, FALCON_ORIGIN_LONG;
 void SetLatLong(float latitude, float longitude);
 void ResetLatLong(void);
-void GetLatLong(float *latitude, float *longitude);
+void GetLatLong(float* latitude, float* longitude);
 
 class TacanList;
 class ObjectiveClass;
@@ -30,7 +30,6 @@ class AircraftClass;
 class NavigationSystem
 {
 public:
-
     typedef enum UHF_Mode_Type
     {
         UHF_NORM,
@@ -158,9 +157,9 @@ public:
 
     typedef struct Tacan_Data_LL_Str
     {
-        Tacan_Data_LL_Str *pNext;
-        Tacan_Data_LL_Str *pPrevious;
-        Tacan_Data_Str *pData;
+        Tacan_Data_LL_Str* pNext;
+        Tacan_Data_LL_Str* pPrevious;
+        Tacan_Data_Str* pData;
         Type type;
     } Tacan_Data_LL_Str;
 
@@ -199,8 +198,10 @@ private:
 
     Instrument_Mode mInstrumentMode; // (Instrument Mode Sel Switch)
     Tacan_Channel_Src mCurrentTCNSrc; // (AUXCOMM Master Switch)
-    Tacan_Data_Str mpCurrentTCN[TOTAL_SRC]; // Tacan station that the ICP and AUXCOMM currently point to
-    TacanList::Domain mpCurrentDomain[TOTAL_SRC]; // (AUXCOMM TR/AA_TR Switch and ICP Tacan Type)
+    Tacan_Data_Str mpCurrentTCN
+        [TOTAL_SRC]; // Tacan station that the ICP and AUXCOMM currently point to
+    TacanList::Domain mpCurrentDomain
+        [TOTAL_SRC]; // (AUXCOMM TR/AA_TR Switch and ICP Tacan Type)
 
     Ils_Data_Str mpCurrentIls;
 
@@ -208,21 +209,25 @@ private:
     // Station list held by the ICP
     //---------------------------------------------------------------
 
-    Tacan_Data_LL_Str* mpMissionTacans; // Stations that are preset at the start of mission, info found from waypoint list
+    Tacan_Data_LL_Str*
+        mpMissionTacans; // Stations that are preset at the start of mission, info found from waypoint list
     Tacan_Data_LL_Str* mpCurrentMissionTacan;
 
     //---------------------------------------------------------------
     // Utility Functions
     //---------------------------------------------------------------
 
-    void CopyMissionTCNData(Tacan_Data_Str*, Tacan_Data_LL_Str*); // Just a conveience function
-    void FindTacanStation(Tacan_Channel_Src tsource, int tacan_no, TacanList::StationSet xy,
-                          VU_ID* object, int *rangep, int *type, float *ilsfreq); // Nice wrapper interface for searching
+    void CopyMissionTCNData(Tacan_Data_Str*,
+                            Tacan_Data_LL_Str*); // Just a conveience function
+    void
+    FindTacanStation(Tacan_Channel_Src tsource, int tacan_no,
+                     TacanList::StationSet xy, VU_ID* object, int* rangep,
+                     int* type,
+                     float* ilsfreq); // Nice wrapper interface for searching
     // the TacanList, when TacanList
     // changes its search interface we
     // only have to change the guts of // this function
 public:
-
     //---------------------------------------------------------------
     // Constructors and Destructors
     //---------------------------------------------------------------
@@ -236,16 +241,17 @@ public:
     //---------------------------------------------------------------
     void ToggleUHFSrc(void);
     UHF_Mode_Type GetUHFSrc(void);
-    void                        SetUHFSrc(UHF_Mode_Type);
+    void SetUHFSrc(UHF_Mode_Type);
     //---------------------------------------------------------------
     // Get the values of the Tacan Station and ILS Data
     //---------------------------------------------------------------
 
     BOOL GetTCNAttribute(Attribute, float*);
-    BOOL GetTCNPosition(float*xpos, float *ypos, float *zpos);
+    BOOL GetTCNPosition(float* xpos, float* ypos, float* zpos);
     BOOL GetILSAttribute(Attribute, VU_ID*);
     BOOL GetILSAttribute(Attribute, float*);
-    BOOL GetILSAttribute(Attribute, char*); //Pass pointer to char[4], function will fill
+    BOOL GetILSAttribute(Attribute,
+                         char*); //Pass pointer to char[4], function will fill
 
     //---------------------------------------------------------------
     // Initialize the Mission Pre-set Tacan List
@@ -264,7 +270,7 @@ public:
     TacanList::Domain ToggleDomain(Tacan_Channel_Src); // Returns new state
     void ToggleControlSrc(void);
     Tacan_Channel_Src GetControlSrc(void);
-    void                        SetControlSrc(Tacan_Channel_Src);
+    void SetControlSrc(Tacan_Channel_Src);
 
     //---------------------------------------------------------------
     // Overall Instrument Mode
@@ -293,8 +299,10 @@ public:
     void GotoPrevMark(void);
     void GotoNextMark(void);
 
-    void GetDataLink(FalconDLinkMessage::DLinkPointType*, int*, char*, char*, char*, char*, char*);
-    void SetDataLinks(char, USHORT, USHORT, FalconDLinkMessage::DLinkPointType*, short*, short*, short*, long*);
+    void GetDataLink(FalconDLinkMessage::DLinkPointType*, int*, char*, char*,
+                     char*, char*, char*);
+    void SetDataLinks(char, USHORT, USHORT, FalconDLinkMessage::DLinkPointType*,
+                      short*, short*, short*, int32_t*);
     void GetDLinkWayPoint(WayPointClass**);
     void GetDLinkWayPoint(int, WayPointClass**);
     void GotoPrevDLink(void);
@@ -326,19 +334,26 @@ public:
     // Tacan Station Functions
     //---------------------------------------------------------------
 
-    void SetTacanChannel(Tacan_Channel_Src, int, int); // For setting a single digit
+    void SetTacanChannel(Tacan_Channel_Src, int,
+                         int); // For setting a single digit
     int GetTacanChannel(Tacan_Channel_Src, int); // For getting a single digit
 
-    void SetTacanChannel(Tacan_Channel_Src, int); // For setting the full channel
+    void SetTacanChannel(Tacan_Channel_Src,
+                         int); // For setting the full channel
     int GetTacanChannel(Tacan_Channel_Src); // For getting the full channel
 
-    void SetTacanChannel(Tacan_Channel_Src, int, TacanList::StationSet); // For setting everything
-    void GetTacanChannel(Tacan_Channel_Src, int*, TacanList::StationSet*); // For getting everything
+    void SetTacanChannel(Tacan_Channel_Src, int,
+                         TacanList::StationSet); // For setting everything
+    void GetTacanChannel(Tacan_Channel_Src, int*,
+                         TacanList::StationSet*); // For getting everything
 
-    void SetTacanBand(Tacan_Channel_Src, TacanList::StationSet); // For setting the band
-    TacanList::StationSet GetTacanBand(Tacan_Channel_Src); // For getting the band
+    void SetTacanBand(Tacan_Channel_Src,
+                      TacanList::StationSet); // For setting the band
+    TacanList::StationSet
+        GetTacanBand(Tacan_Channel_Src); // For getting the band
 
-    void GetTacanVUID(Tacan_Channel_Src, VU_ID*); // For getting the Id of the tacan object
+    void GetTacanVUID(Tacan_Channel_Src,
+                      VU_ID*); // For getting the Id of the tacan object
 
     void StepTacanChannelDigit(Tacan_Channel_Src, int, int dir = 1);
     void StepTacanBand(Tacan_Channel_Src);
@@ -349,7 +364,8 @@ public:
     void GetCurrentID(VU_ID*); // For ICP List only
     Type GetType(void); // For ICP List only
 
-    void SetIlsFromTacan(); // MD -- 20040605: for uncoupling ILS activation and ATC radio calls
+    void
+    SetIlsFromTacan(); // MD -- 20040605: for uncoupling ILS activation and ATC radio calls
     //---------------------------------------------------------------
     // Miscellaneous Functions
     //--------------------------------------------------------------
@@ -360,7 +376,8 @@ public:
     void GetAirbase(VU_ID*); // Simple call for Dave's ATC Brain
 
     //MI to get ILS stuff
-    void GetILSData(float *LocDev, float *finalHeading, float *finalGS, float *DistToSta);
+    void GetILSData(float* LocDev, float* finalHeading, float* finalGS,
+                    float* DistToSta);
     int GetCurTCNRange()
     {
         return mpCurrentTCN[mCurrentTCNSrc].range;

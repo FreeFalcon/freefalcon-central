@@ -9,14 +9,13 @@ class sphere
 {
 public:
     vector3 p;      // position
-    float   r;      // radius
+    float r;      // radius
 
     //--- constructors ----------------------------------------------
     sphere() : r(1.0f) {};
     sphere(const vector3& _p, float _r) : p(_p), r(_r) {};
     sphere(const sphere& s) : p(s.p), r(s.r) {};
-    sphere(float _x, float _y, float _z, float _r)
-        : r(_r)
+    sphere(float _x, float _y, float _z, float _r) : r(_r)
     {
         p.set(_x, _y, _z);
     };
@@ -39,8 +38,10 @@ public:
         vector3 d(s.p - p);
         float rsum = s.r + r;
 
-        if (d.lensquared() <= (rsum * rsum)) return true;
-        else                               return false;
+        if (d.lensquared() <= (rsum * rsum))
+            return true;
+        else
+            return false;
     };
 
     /**
@@ -93,11 +94,11 @@ public:
     //--- check if 2 moving spheres have contact --------------------
     //--- taken from "Simple Intersection Tests For Games" ----------
     //--- article in Gamasutra, Oct 18 1999 -------------------------
-    bool intersect_sweep(const vector3& va,     // in: distance travelled by 'this'
-                         const sphere&  sb,     // in: the other sphere
-                         const vector3& vb,     // in: distance travelled by 'sb'
-                         float& u0,             // out: normalized intro contact u0
-                         float& u1)             // out: normalized outro contact u1
+    bool intersect_sweep(const vector3& va, // in: distance travelled by 'this'
+                         const sphere& sb, // in: the other sphere
+                         const vector3& vb, // in: distance travelled by 'sb'
+                         float& u0, // out: normalized intro contact u0
+                         float& u1) // out: normalized outro contact u1
     {
         vector3 vab(vb - va);
         vector3 ab(sb.p - p);
@@ -125,8 +126,8 @@ public:
                 if (q >= 0.0f)
                 {
                     // 1 or 2 contacts
-                    float sq = (float) sqrt(q);
-                    float d  = 1.0f / (2.0f * a);
+                    float sq = (float)sqrt(q);
+                    float d = 1.0f / (2.0f * a);
                     float r1 = (-b + sq) * d;
                     float r2 = (-b - sq) * d;
 
@@ -143,9 +144,11 @@ public:
 
                     return true;
                 }
-                else return false;
+                else
+                    return false;
             }
-            else return false;
+            else
+                return false;
         }
     };
 };

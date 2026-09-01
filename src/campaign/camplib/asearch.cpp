@@ -2,7 +2,7 @@
 #include "cmpglobl.h"
 #include "asearch.h"
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 // A-Search is an A* Search algorythm which can be used to find the best-cost
 // path between two nodes in a directed graph or a grid map (specialized directed
@@ -21,7 +21,7 @@
 // ==========================================
 
 // Allocation moved to SystemLevelInit().
-ASData      ASD;
+ASData ASD;
 
 // ==========================================
 // Path class
@@ -37,7 +37,8 @@ PathClass::PathClass(void)
 
 int PathClass::SaveSize(void)
 {
-    return sizeof(uchar) + sizeof(uchar) + sizeof(uchar) + sizeof(uchar) * (length + 1) / PATH_DIV;
+    return sizeof(uchar) + sizeof(uchar) + sizeof(uchar) +
+           sizeof(uchar) * (length + 1) / PATH_DIV;
 }
 
 SmallPathClass::SmallPathClass(void)
@@ -48,7 +49,8 @@ SmallPathClass::SmallPathClass(void)
     cost = 0.0F;
 }
 //sfr: stream functions
-SmallPathClass::SmallPathClass(uchar **stream, long *rem) : BasePathClass(stream, rem)
+SmallPathClass::SmallPathClass(uchar **stream, long *rem)
+    : BasePathClass(stream, rem)
 {
     memcpychk(path_pool, stream, sizeof(path_pool), rem);
 }
@@ -103,7 +105,8 @@ int BasePathClass::Save(uchar **stream)
 
 int BasePathClass::SaveSize(void)
 {
-    return sizeof(uchar) + sizeof(uchar) + sizeof(uchar) + sizeof(uchar) * (length + 1) / PATH_DIV;
+    return sizeof(uchar) + sizeof(uchar) + sizeof(uchar) +
+           sizeof(uchar) * (length + 1) / PATH_DIV;
 }
 
 int BasePathClass::GetNextDirection(void)
@@ -194,7 +197,8 @@ int BasePathClass::CopyPath(BasePathClass *from_path)
     else
     {
         length = from_path->length;
-        memcpy(path, from_path->path, ((from_path->length * PATH_BITS) + 7) / 8);
+        memcpy(path, from_path->path,
+               ((from_path->length * PATH_BITS) + 7) / 8);
         return 1;
     }
 }
@@ -284,15 +288,17 @@ AS_DataClass::~AS_DataClass(void)
     ShiAssert(count == MAX_SEARCH);
 #endif
 
-    delete [] node_ptr;
+    delete[] node_ptr;
 }
 
 // This is the main search routine. It must be passed an extension funtion
 // return values: -1 on error, 0 if partial path found, 1 if full path found
-int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS_DataClass* asd, void* o, void* t), int flags, int maxSearch, costtype maxCost)
+int AS_DataClass::ASSearch(Path p, void *origin, void *target,
+                           void (*extend)(AS_DataClass *asd, void *o, void *t),
+                           int flags, int maxSearch, costtype maxCost)
 {
-    int       count = 0, retval = -1, max_length;
-    ASNode    T;
+    int count = 0, retval = -1, max_length;
+    ASNode T;
     float best;
 
     if (origin == target)
@@ -418,7 +424,8 @@ int AS_DataClass::ASSearch(Path p, void* origin, void* target, void (*extend)(AS
 // where:   pointer to the new neighbor (Coordinate or Objective)
 //
 //void AS_DataClass::ASFillNode (int node, costtype *cost, costtype *to_go, char dir, void* where)
-void AS_DataClass::ASFillNode(int node, costtype *cost, costtype *to_go, char, void* where)
+void AS_DataClass::ASFillNode(int node, costtype *cost, costtype *to_go, char,
+                              void *where)
 {
     neighbors[node].where = where;
 
@@ -431,7 +438,7 @@ void AS_DataClass::ASFillNode(int node, costtype *cost, costtype *to_go, char, v
 
 void AS_DataClass::AS_dispose_queue(ASNode N)
 {
-    ASNode   T;
+    ASNode T;
 
     while (N not_eq NULL)
     {
@@ -444,7 +451,7 @@ void AS_DataClass::AS_dispose_queue(ASNode N)
 // slops old queues onto the waste pile
 void AS_DataClass::AS_attach_queues(void)
 {
-    ASNode   N;
+    ASNode N;
 
     if (queue not_eq NULL)
     {
@@ -481,19 +488,20 @@ void AS_DataClass::AS_reattach(ASNode n)
 //void AS_DataClass::AS_merge (int count)
 void AS_DataClass::AS_merge(int)
 {
-    int      n;
-    ASNode   new_node = NULL, T, insert_after;
+    int n;
+    ASNode new_node = NULL, T, insert_after;
 
     for (n = 0; n < MAX_NEIGHBORS; n++)
     {
-        if ( not neighbors[n].where)
+        if (not neighbors[n].where)
             continue;
 
-        if (queue == NULL or neighbors[n].cost + neighbors[n].to_go < queue->cost + queue->to_go)
+        if (queue == NULL or
+            neighbors[n].cost + neighbors[n].to_go < queue->cost + queue->to_go)
         {
             new_node = AS_get_new_node(n);
 
-            if ( not new_node)
+            if (not new_node)
                 continue;
 
             new_node->next = queue;
@@ -519,7 +527,9 @@ void AS_DataClass::AS_merge(int)
                 // Either way, quit searching
                 break;
             }
-            else if ( not insert_after and neighbors[n].cost + neighbors[n].to_go < T->next->cost + T->next->to_go)
+            else if (not insert_after and
+                     neighbors[n].cost + neighbors[n].to_go <
+                         T->next->cost + T->next->to_go)
                 insert_after = T;
 
             T = T->next;
@@ -533,7 +543,7 @@ void AS_DataClass::AS_merge(int)
         {
             new_node = AS_get_new_node(n);
 
-            if ( not new_node)
+            if (not new_node)
                 continue;
 
             new_node->next = insert_after->next;
@@ -544,7 +554,7 @@ void AS_DataClass::AS_merge(int)
 
 ASNode AS_DataClass::AS_get_new_node(int n)
 {
-    ASNode   new_node, T;
+    ASNode new_node, T;
 
     // Ignore this neighbor if already tried
     T = tried;
@@ -582,8 +592,3 @@ ASNode AS_DataClass::AS_get_new_node(int n)
         return NULL;
     }
 }
-
-
-
-
-

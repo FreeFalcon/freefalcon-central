@@ -4,7 +4,7 @@
 #include "sms.h"
 #include "simdrive.h"
 #include "camp2sim.h"
-#include "Graphics/Include/render2d.h"
+#include "graphics/include/render2d.h"
 #include "otwdrive.h" //MI
 #include "cpmanager.h" //MI
 #include "icp.h" //MI
@@ -20,10 +20,11 @@ void DteMfdDrawable::Display(VirtualDisplay* newDisplay)
 {
     //MI
     float cX, cY = 0;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
+    RadarDopplerClass* theRadar =
+        (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if ( not theRadar)
+    if (not theRadar)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar");
         return;
@@ -52,7 +53,7 @@ void DteMfdDrawable::Display(VirtualDisplay* newDisplay)
     //MI changed
     if (g_bRealisticAvionics)
     {
-        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and
             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         {
             DrawBullseyeCircle(display, cX, cY);

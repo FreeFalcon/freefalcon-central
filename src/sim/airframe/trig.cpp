@@ -15,7 +15,7 @@
 #include "stdhdr.h"
 #include "airframe.h"
 #include "aircrft.h"
-#include "Graphics/Include/Matrix.h"
+#include "graphics/include/matrix.h"
 
 typedef double DTransformMatrix[3][3];
 
@@ -29,7 +29,8 @@ float mag(float x, float y, float z)
 
 double mag(double x, double y, double z)
 {
-    return (double) sqrt((float)x * (float)x + (float)y * (float)y + (float)z * (float)z);
+    return (double)sqrt((float)x * (float)x + (float)y * (float)y +
+                        (float)z * (float)z);
 }
 
 void DebugValidation(Trotation *M)
@@ -132,81 +133,87 @@ void AirframeClass::Trigenometry()
     mlTrig trigAlpha, trigBeta, trig;
     TransformMatrix vv;
     TransformMatrix R;
-    ObjectGeometry& pa = platform->platformAngles;
+    ObjectGeometry &pa = platform->platformAngles;
 
     // Do the trig for all the input angles
     mlSinCos(&trigAlpha, alpha * DTR);
     pa.cosalp = trigAlpha.cos;
     pa.sinalp = trigAlpha.sin;
 
-    ShiAssert( not _isnan(trigAlpha.cos));
+    ShiAssert(not _isnan(trigAlpha.cos));
 
     mlSinCos(&trigBeta, beta * DTR);
     pa.cosbet = trigBeta.cos;
     pa.sinbet = trigBeta.sin;
     pa.tanbet = (float)tan(beta * DTR);
 
-    ShiAssert( not _isnan(trigBeta.cos));
+    ShiAssert(not _isnan(trigBeta.cos));
 
     mlSinCos(&trig, sigma);
     pa.cossig = trig.cos;
     pa.sinsig = trig.sin;
 
-    ShiAssert( not _isnan(trig.cos));
+    ShiAssert(not _isnan(trig.cos));
 
     mlSinCos(&trig, mu);
-    pa.cosmu  = trig.cos;
-    pa.sinmu  = trig.sin;
+    pa.cosmu = trig.cos;
+    pa.sinmu = trig.sin;
 
-    ShiAssert( not _isnan(trig.cos));
+    ShiAssert(not _isnan(trig.cos));
 
     mlSinCos(&trig, gmma);
     pa.cosgam = trig.cos;
     pa.singam = trig.sin;
 
-    ShiAssert( not _isnan(trig.cos));
+    ShiAssert(not _isnan(trig.cos));
 
     // Construct the rotation matrix for the velocity vector
     // We do this to get its basis vectors
-    vv[0][0] =  pa.cossig * pa.cosgam;
-    vv[0][1] =  pa.sinsig * pa.cosgam;
+    vv[0][0] = pa.cossig * pa.cosgam;
+    vv[0][1] = pa.sinsig * pa.cosgam;
     vv[0][2] = -pa.singam;
 
-    vv[1][0] =  pa.cossig * pa.singam * pa.sinmu - pa.sinsig * pa.cosmu;
-    vv[1][1] =  pa.cossig * pa.cosmu + pa.sinsig * pa.singam * pa.sinmu;
-    vv[1][2] =  pa.cosgam * pa.sinmu;
+    vv[1][0] = pa.cossig * pa.singam * pa.sinmu - pa.sinsig * pa.cosmu;
+    vv[1][1] = pa.cossig * pa.cosmu + pa.sinsig * pa.singam * pa.sinmu;
+    vv[1][2] = pa.cosgam * pa.sinmu;
 
-    vv[2][0] =  pa.sinsig * pa.sinmu + pa.cossig * pa.singam * pa.cosmu;
+    vv[2][0] = pa.sinsig * pa.sinmu + pa.cossig * pa.singam * pa.cosmu;
     vv[2][1] = -pa.cossig * pa.sinmu + pa.sinsig * pa.singam * pa.cosmu;
-    vv[2][2] =  pa.cosgam * pa.cosmu;
+    vv[2][2] = pa.cosgam * pa.cosmu;
 
     DebugValidation(vv);
 
     // Construct the rotation matrix from velocity vector to nose using
     // alpha and beta
-    R[0][0] =  trigBeta.cos * trigAlpha.cos;
+    R[0][0] = trigBeta.cos * trigAlpha.cos;
     R[0][1] = -trigBeta.sin * trigAlpha.cos;
     R[0][2] = -trigAlpha.sin;
 
-    R[1][0] =  trigBeta.sin;
-    R[1][1] =  trigBeta.cos;
-    R[1][2] =  0.0f;
+    R[1][0] = trigBeta.sin;
+    R[1][1] = trigBeta.cos;
+    R[1][2] = 0.0f;
 
-    R[2][0] =  trigBeta.cos * trigAlpha.sin;
+    R[2][0] = trigBeta.cos * trigAlpha.sin;
     R[2][1] = -trigBeta.sin * trigAlpha.sin;
-    R[2][2] =  trigAlpha.cos;
+    R[2][2] = trigAlpha.cos;
 
     DebugValidation(R);
 
     // Construct the nose vector from the velocity vector using rotation built above,
     // by multiplying the velocity vector times the rotation vector
-    platform->dmx[0][0] = R[0][0] * vv[0][0] + R[0][1] * vv[1][0] + R[0][2] * vv[2][0];
-    platform->dmx[0][1] = R[0][0] * vv[0][1] + R[0][1] * vv[1][1] + R[0][2] * vv[2][1];
-    platform->dmx[0][2] = R[0][0] * vv[0][2] + R[0][1] * vv[1][2] + R[0][2] * vv[2][2];
+    platform->dmx[0][0] =
+        R[0][0] * vv[0][0] + R[0][1] * vv[1][0] + R[0][2] * vv[2][0];
+    platform->dmx[0][1] =
+        R[0][0] * vv[0][1] + R[0][1] * vv[1][1] + R[0][2] * vv[2][1];
+    platform->dmx[0][2] =
+        R[0][0] * vv[0][2] + R[0][1] * vv[1][2] + R[0][2] * vv[2][2];
 
-    platform->dmx[1][0] = R[1][0] * vv[0][0] + R[1][1] * vv[1][0] + R[1][2] * vv[2][0];
-    platform->dmx[1][1] = R[1][0] * vv[0][1] + R[1][1] * vv[1][1] + R[1][2] * vv[2][1];
-    platform->dmx[1][2] = R[1][0] * vv[0][2] + R[1][1] * vv[1][2] + R[1][2] * vv[2][2];
+    platform->dmx[1][0] =
+        R[1][0] * vv[0][0] + R[1][1] * vv[1][0] + R[1][2] * vv[2][0];
+    platform->dmx[1][1] =
+        R[1][0] * vv[0][1] + R[1][1] * vv[1][1] + R[1][2] * vv[2][1];
+    platform->dmx[1][2] =
+        R[1][0] * vv[0][2] + R[1][1] * vv[1][2] + R[1][2] * vv[2][2];
 
     // sfr: black triangle fix
     /* original
@@ -214,9 +221,12 @@ void AirframeClass::Trigenometry()
     platform->dmx[2][1] = R[2][0]*vv[0][1]   + R[2][2]*vv[2][1];
     platform->dmx[2][2] = R[2][0]*vv[0][2]   + R[2][2]*vv[2][2];
     */
-    platform->dmx[2][0] = R[2][0] * vv[0][0] + R[2][1] * vv[1][0] + R[2][2] * vv[2][0];
-    platform->dmx[2][1] = R[2][0] * vv[0][1] + R[2][1] * vv[1][1] + R[2][2] * vv[2][1];
-    platform->dmx[2][2] = R[2][0] * vv[0][2] + R[2][1] * vv[1][2] + R[2][2] * vv[2][2];
+    platform->dmx[2][0] =
+        R[2][0] * vv[0][0] + R[2][1] * vv[1][0] + R[2][2] * vv[2][0];
+    platform->dmx[2][1] =
+        R[2][0] * vv[0][1] + R[2][1] * vv[1][1] + R[2][2] * vv[2][1];
+    platform->dmx[2][2] =
+        R[2][0] * vv[0][2] + R[2][1] * vv[1][2] + R[2][2] * vv[2][2];
 
 
     DebugValidation(platform->dmx);
@@ -248,7 +258,7 @@ void AirframeClass::Trigenometry()
 
     // Derive the body direction angles from the orientation matrix
     psi = (float)atan2(platform->dmx[0][1], platform->dmx[0][0]); // yaw
-    theta = (float) - asin(platform->dmx[0][2]); // pitch
+    theta = (float)-asin(platform->dmx[0][2]); // pitch
     phi = (float)atan2(platform->dmx[1][2], platform->dmx[2][2]); // roll
 
     // Finally, store the cos and sin of the body angles
@@ -256,17 +266,17 @@ void AirframeClass::Trigenometry()
     pa.cospsi = trig.cos;
     pa.sinpsi = trig.sin;
 
-    ShiAssert( not _isnan(trig.cos));
+    ShiAssert(not _isnan(trig.cos));
 
     mlSinCos(&trig, theta);
     pa.costhe = trig.cos;
     pa.sinthe = trig.sin;
 
-    ShiAssert( not _isnan(trig.cos));
+    ShiAssert(not _isnan(trig.cos));
 
     mlSinCos(&trig, phi);
     pa.cosphi = trig.cos;
     pa.sinphi = trig.sin;
 
-    ShiAssert( not _isnan(trig.cos));
+    ShiAssert(not _isnan(trig.cos));
 }

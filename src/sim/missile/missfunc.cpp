@@ -1,10 +1,10 @@
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
 #include "missile.h"
 #include "misslist.h"
 #include "camp2sim.h"
 #include "initdata.h"
-#include "Entity.h"
+#include "entity.h"
 
 SimWeaponClass** InitMissile(FalconEntity* parent, ushort id, int num, int side)
 {
@@ -20,7 +20,7 @@ SimWeaponClass** InitMissile(FalconEntity* parent, ushort id, int num, int side)
             numSlots = 6;
         else if (num > 1)
             numSlots = 3;
-        else  if (num > 0)
+        else if (num > 0)
             numSlots = 1;
 
         missilePtr = new SimWeaponClass*[numSlots];
@@ -30,7 +30,8 @@ SimWeaponClass** InitMissile(FalconEntity* parent, ushort id, int num, int side)
             /*------------------------*/
             /* Add it to the database */
             /*------------------------*/
-            missilePtr[i] = new MissileClass(WeaponDataTable[id].Index + VU_LAST_ENTITY_TYPE);
+            missilePtr[i] = new MissileClass(WeaponDataTable[id].Index +
+                                             VU_LAST_ENTITY_TYPE);
             missilePtr[i]->SetCountry(side);
             missilePtr[i]->SetFlag(MOTION_MSL_AI);
             missilePtr[i]->SetParent(parent);
@@ -50,7 +51,8 @@ SimWeaponClass* InitAMissile(FalconEntity* parent, ushort type, int slot)
 {
     MissileClass* missilePtr;
 
-    missilePtr = new MissileClass(WeaponDataTable[type].Index + VU_LAST_ENTITY_TYPE);
+    missilePtr =
+        new MissileClass(WeaponDataTable[type].Index + VU_LAST_ENTITY_TYPE);
     missilePtr->SetCountry(parent->GetCountry());
     missilePtr->SetFlag(MOTION_MSL_AI);
     missilePtr->SetParent(parent);

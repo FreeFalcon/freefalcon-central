@@ -4,9 +4,9 @@
 #include "digi.h"
 #include "simveh.h"
 #include "airframe.h"
-#include "Aircrft.h"
+#include "aircrft.h"
 #include "otwdrive.h"
-#include "Graphics/Include/tmap.h"
+#include "graphics/include/tmap.h"
 #include "lantirn.h"
 #include "cpmanager.h"
 #include "cphsi.h"
@@ -32,23 +32,23 @@ void DigitalBrain::ThreeAxisAP(void)
     headingErr = holdPsi - af->sigma;
     AltitudeHold(holdAlt);
     SetYpedal(headingErr * 0.05F * RTD * self->GetVt() / cornerSpeed);
-    SetMaxRoll((float)fabs(self->Roll()*RTD));
+    SetMaxRoll((float)fabs(self->Roll() * RTD));
 
     if (self->Roll() > 5.0F * DTR)
     {
-        SetMaxRollDelta(-self->Roll()*RTD);
+        SetMaxRollDelta(-self->Roll() * RTD);
     }
     else if (self->Roll() >= 0.0F * DTR)
     {
-        SetMaxRollDelta(-self->Roll()*RTD - 1.0F * DTR);
+        SetMaxRollDelta(-self->Roll() * RTD - 1.0F * DTR);
     }
     else if (self->Roll() > -5.0F * DTR)
     {
-        SetMaxRollDelta(-self->Roll()*RTD + 1.0F * DTR);
+        SetMaxRollDelta(-self->Roll() * RTD + 1.0F * DTR);
     }
     else
     {
-        SetMaxRollDelta(-self->Roll()*RTD);
+        SetMaxRollDelta(-self->Roll() * RTD);
     }
 }
 
@@ -59,7 +59,7 @@ void DigitalBrain::WaypointAP(void)
 
     if (self->curWaypoint)
     {
-        if (((AircraftClass*) self)->af->GetSimpleMode())
+        if (((AircraftClass *)self)->af->GetSimpleMode())
         {
             SimpleGoToCurrentWaypoint();
         }
@@ -133,7 +133,7 @@ void DigitalBrain::LantirnAP(void)
             roll_multiply = 0.5F;
 
         if (fabs(self->Roll()) * RTD * roll_multiply > max_roll)
-            roll_multiply = max_roll / (float) fabs(self->Roll()) * RTD;
+            roll_multiply = max_roll / (float)fabs(self->Roll()) * RTD;
 
         if (fabs(self->Roll() * RTD) < 0.001)
             roll_multiply = 0.0F;
@@ -144,7 +144,8 @@ void DigitalBrain::LantirnAP(void)
 
 
         float alterr = theLantirn->GetHoldHeight() + self->ZPos();
-        float desGamma = alterr * af->GetTFR_Gain() * af->GetTFR_Corner() / self->GetKias();
+        float desGamma =
+            alterr * af->GetTFR_Gain() * af->GetTFR_Corner() / self->GetKias();
 
         //if (theLantirn->gammaCorr < 0.0F)
         desGamma += theLantirn->gammaCorr * af->GetTFR_GammaCorrMult();
@@ -153,24 +154,29 @@ void DigitalBrain::LantirnAP(void)
         //else
         // desGamma += theLantirn->gammaCorr;
 
-        desGamma = max(min(desGamma, theLantirn->GetGLimit() * 5.0F), -theLantirn->GetGLimit() * 4.0F);
+        desGamma = max(min(desGamma, theLantirn->GetGLimit() * 5.0F),
+                       -theLantirn->GetGLimit() * 4.0F);
 
         if (theLantirn->evasize > 0)
-            desGamma += af->GetEVA_Gain() * (theLantirn->evasize) * (theLantirn->evasize);
+            desGamma += af->GetEVA_Gain() * (theLantirn->evasize) *
+                        (theLantirn->evasize);
 
-        if ( not g_bCalibrateTFR_PitchCtrl)
+        if (not g_bCalibrateTFR_PitchCtrl)
             theLantirn->PID_error = desGamma - af->gmma * RTD;
         else
-            theLantirn->PID_error = (theLantirn->GetTFRAlt() - 300.0F) / 100 - af->gmma * RTD;
+            theLantirn->PID_error =
+                (theLantirn->GetTFRAlt() - 300.0F) / 100 - af->gmma * RTD;
 
         theLantirn->MinG = max(-(theLantirn->GetGLimit()) / 2.0F, -2.0F);
         theLantirn->MaxG = min(theLantirn->GetGLimit() - 1.0F, 6.5F - 1.0F);
 
-        theLantirn->PID_Output = PIDLoop(theLantirn->PID_error, af->GetPID_K(), af->GetPID_KD(),
-                                         af->GetPID_KI(), SimLibMajorFrameTime, &theLantirn->PID_lastErr, &theLantirn->PID_MX,
-                                         theLantirn->MaxG * af->GetTFR_Corner() / self->GetKias(),
-                                         theLantirn->MinG * af->GetTFR_Corner() / self->GetKias(),
-                                         af->GetTFR_LimitMX());
+        theLantirn->PID_Output =
+            PIDLoop(theLantirn->PID_error, af->GetPID_K(), af->GetPID_KD(),
+                    af->GetPID_KI(), SimLibMajorFrameTime,
+                    &theLantirn->PID_lastErr, &theLantirn->PID_MX,
+                    theLantirn->MaxG * af->GetTFR_Corner() / self->GetKias(),
+                    theLantirn->MinG * af->GetTFR_Corner() / self->GetKias(),
+                    af->GetTFR_LimitMX());
 
         float elevCmd = theLantirn->PID_Output;
         elevCmd *= self->GetKias() / af->GetTFR_Corner();
@@ -179,11 +185,17 @@ void DigitalBrain::LantirnAP(void)
         if (fabs(self->Roll()) < af->GetTFR_MaxRoll() * DTR)
         {
             if (theLantirn->evasize == 2)
-                SetPstick(theLantirn->GetGLimit(), af->MaxGs(), AirframeClass::GCommand);
+                SetPstick(theLantirn->GetGLimit(), af->MaxGs(),
+                          AirframeClass::GCommand);
             else if (theLantirn->evasize >= 3)
                 SetPstick(af->MaxGs(), af->MaxGs(), AirframeClass::GCommand);
             else
-                SetPstick(min(max(gammaCmd, max(1.0F - (theLantirn->GetGLimit() - 1) / 2.0F, -2.0F)), 6.5F), maxGs, AirframeClass::GCommand);
+                SetPstick(
+                    min(max(gammaCmd,
+                            max(1.0F - (theLantirn->GetGLimit() - 1) / 2.0F,
+                                -2.0F)),
+                        6.5F),
+                    maxGs, AirframeClass::GCommand);
         }
     }
     else
@@ -219,28 +231,35 @@ void DigitalBrain::LantirnAP(void)
             else if (gammaHoldIError < -1.0F)
                 gammaHoldIError = -1.0F;
 
-            float gammaCmd = gammaHoldIError + elevCmd + (1.0F / self->platformAngles.cosphi);
-            SetPstick(min(max(gammaCmd, max(1.0f - (theLantirn->GetGLimit() - 1) / 2.0f, -2.0F)), 6.5F), maxGs, AirframeClass::GCommand);
+            float gammaCmd = gammaHoldIError + elevCmd +
+                             (1.0F / self->platformAngles.cosphi);
+            SetPstick(min(max(gammaCmd,
+                              max(1.0f - (theLantirn->GetGLimit() - 1) / 2.0f,
+                                  -2.0F)),
+                          6.5F),
+                      maxGs, AirframeClass::GCommand);
         }
         else
-            SetPstick(theLantirn->GetGLimit(), af->MaxGs(), AirframeClass::GCommand);
+            SetPstick(theLantirn->GetGLimit(), af->MaxGs(),
+                      AirframeClass::GCommand);
 
 
         SetYpedal(headingErr * 0.05F * RTD * self->GetVt() / cornerSpeed);
-        SetMaxRoll((float)fabs(self->Roll()*RTD));
+        SetMaxRoll((float)fabs(self->Roll() * RTD));
 
         if (self->Roll() > 5.0F * DTR)
-            SetMaxRollDelta(-self->Roll()*RTD);
+            SetMaxRollDelta(-self->Roll() * RTD);
         else if (self->Roll() >= 0.0F * DTR)
-            SetMaxRollDelta(-self->Roll()*RTD - 1.0F * DTR);
+            SetMaxRollDelta(-self->Roll() * RTD - 1.0F * DTR);
         else if (self->Roll() > -5.0F * DTR)
-            SetMaxRollDelta(-self->Roll()*RTD + 1.0F * DTR);
+            SetMaxRollDelta(-self->Roll() * RTD + 1.0F * DTR);
         else
-            SetMaxRollDelta(-self->Roll()*RTD);
+            SetMaxRollDelta(-self->Roll() * RTD);
     }
 }
-float DigitalBrain::PIDLoop(float error, float K, float KD, float KI, float Ts, float *lastErr, float *MX,
-                            float Output_Top, float Output_Bottom, bool LimitMX)
+float DigitalBrain::PIDLoop(float error, float K, float KD, float KI, float Ts,
+                            float *lastErr, float *MX, float Output_Top,
+                            float Output_Bottom, bool LimitMX)
 {
     float MP = K * error;
     float MD = KD / Ts * (error - *lastErr);
@@ -266,7 +285,7 @@ void DigitalBrain::RealisticAP(void)
     if (self->OnGround())
         return;
 
-#if 0  // MD -- 20031108: see "else"
+#if 0 // MD -- 20031108: see "else"
 
     //Right switch
     if (self->IsOn(AircraftClass::AltHold)) //up
@@ -293,17 +312,18 @@ void DigitalBrain::RealisticAP(void)
     // want pitch hold and STRG SEL for example, you should be allowed to do that.  Old SP3
     // code would only allow fixed pitch and fixed roll hold mode.
 
-    if (self->IsOn(AircraftClass::AttHold) or self->IsOn(AircraftClass::AltHold))
+    if (self->IsOn(AircraftClass::AttHold) or
+        self->IsOn(AircraftClass::AltHold))
     {
 
         //Right switch
         if (self->IsOn(AircraftClass::AltHold))
             AltHold(); //up
         else if (self->IsOn(AircraftClass::AttHold))
-            PitchHold();  //down
+            PitchHold(); //down
         else
         {
-            AcceptManual();  // not really used unless something really wierd happens...
+            AcceptManual(); // not really used unless something really wierd happens...
             return;
         }
 
@@ -393,7 +413,8 @@ void DigitalBrain::PitchRollHold(void)
         CurrentPitch *= -1;
 
     //anything to do?
-    if (self->Pitch() * RTD > destPitch + 0.5F or  self->Pitch() * RTD < destPitch - 0.5F)
+    if (self->Pitch() * RTD > destPitch + 0.5F or
+        self->Pitch() * RTD < destPitch - 0.5F)
     {
         if (CurrentPitch > destPitch)
         {
@@ -402,10 +423,12 @@ void DigitalBrain::PitchRollHold(void)
             corrPitch = CurrentPitch - destPitch;
 
             if (self->Pitch() * RTD > destPitch)
-                pStick = ((0.5F * af->pstick) - (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
+                pStick = ((0.5F * af->pstick) -
+                          (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
             //turned too far? correct
             else if (self->Pitch() * RTD < destPitch)
-                pStick = ((0.5F * af->pstick) + (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
+                pStick = ((0.5F * af->pstick) +
+                          (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
             else
                 pStick = 0.0F;
         }
@@ -416,10 +439,12 @@ void DigitalBrain::PitchRollHold(void)
             corrPitch = destPitch - CurrentPitch;
 
             if (self->Pitch() * RTD < destPitch)
-                pStick = ((0.5F * af->pstick) + (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
+                pStick = ((0.5F * af->pstick) +
+                          (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
             //turned too far? correct
             else if (self->Pitch() * RTD > destPitch)
-                pStick = ((0.5F * af->pstick) - (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
+                pStick = ((0.5F * af->pstick) -
+                          (0.5F * max(corrPitch * 5.0F, 15.0F) * DTR));
             else
                 pStick = 0.0F;
         }
@@ -434,7 +459,8 @@ void DigitalBrain::PitchRollHold(void)
         CurrentRoll *= -1;
 
     //anything to do?
-    if (self->Roll() * RTD > destRoll + 1.0F or  self->Roll() * RTD < destRoll - 1.0F)
+    if (self->Roll() * RTD > destRoll + 1.0F or
+        self->Roll() * RTD < destRoll - 1.0F)
     {
         if (CurrentRoll > destRoll)
         {
@@ -443,10 +469,12 @@ void DigitalBrain::PitchRollHold(void)
             corrRoll = CurrentRoll - destRoll;
 
             if (self->Roll() * RTD > destRoll)
-                rStick = ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
             //turned too far? correct
             else if (self->Roll() * RTD < destRoll)
-                rStick = ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
             else
                 rStick = 0.0F;
         }
@@ -457,10 +485,12 @@ void DigitalBrain::PitchRollHold(void)
             corrRoll = destRoll - CurrentRoll;
 
             if (self->Roll() * RTD < destRoll)
-                rStick = ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
             //turned too far? correct
             else if (self->Roll() * RTD > destRoll)
-                rStick = ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
             else
                 rStick = 0.0F;
         }
@@ -480,8 +510,10 @@ void DigitalBrain::FollowWP(void)
     float wpX, wpY, wpZ;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (self == playerAC and playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint and 
-        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCMarkpoint and 
+    if (self == playerAC and
+        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint and
+        playerAC->FCC->GetStptMode() not_eq
+            FireControlComputer::FCCMarkpoint and
         playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCDLinkpoint)
     {
         AcceptManual();
@@ -509,7 +541,8 @@ void DigitalBrain::FollowWP(void)
     /*------------------------------------*/
     /* Heading error for current waypoint */
     /*------------------------------------*/
-    HeadingDifference = (float)atan2(wpY - self->YPos(), wpX - self->XPos()) - self->Yaw();
+    HeadingDifference =
+        (float)atan2(wpY - self->YPos(), wpX - self->XPos()) - self->Yaw();
 
     if (HeadingDifference >= 180.0F * DTR)
         HeadingDifference -= 360.0F * DTR;
@@ -529,7 +562,8 @@ void DigitalBrain::HDGSel(void)
         return;
     }
 
-    float FinalHeading = OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_HEADING);
+    float FinalHeading = OTWDriver.pCockpitManager->mpHsi->GetValue(
+        CPHsi::HSI_VAL_DESIRED_HEADING);
 
     if (FinalHeading == 0)
         FinalHeading = 360;
@@ -564,7 +598,8 @@ void DigitalBrain::RollHold(void)
         CurrentRoll *= -1;
 
     //anything to do?
-    if (self->Roll() * RTD > destRoll + 1.0F or  self->Roll() * RTD < destRoll - 1.0F)
+    if (self->Roll() * RTD > destRoll + 1.0F or
+        self->Roll() * RTD < destRoll - 1.0F)
     {
         if (CurrentRoll > destRoll)
         {
@@ -573,10 +608,12 @@ void DigitalBrain::RollHold(void)
             corrRoll = CurrentRoll - destRoll;
 
             if (self->Roll() * RTD > destRoll)
-                rStick = ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
             //turned too far? correct
             else if (self->Roll() * RTD < destRoll)
-                rStick = ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
             else
                 rStick = 0.0F;
         }
@@ -587,10 +624,12 @@ void DigitalBrain::RollHold(void)
             corrRoll = destRoll - CurrentRoll;
 
             if (self->Roll() * RTD < destRoll)
-                rStick = ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) + (0.5F * max(corrRoll, 6.5F) * DTR));
             //turned too far? correct
             else if (self->Roll() * RTD > destRoll)
-                rStick = ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) - (0.5F * max(corrRoll, 6.5F) * DTR));
             else
                 rStick = 0.0F;
         }
@@ -616,7 +655,7 @@ void DigitalBrain::PitchHold(void)
     // Use the Gamma (pitch angle) hold command here since it seems to work right
     // and the pitch/roll hold code above in earlier versions of this file don't seem to
     // hold pitch at all to speak of.
-    if ( not self->IsOn(AircraftClass::StickStrng))
+    if (not self->IsOn(AircraftClass::StickStrng))
         GammaHold(destPitch);
 
     // Now grab any user input to emulate stick steering during autopilot operation.
@@ -634,7 +673,6 @@ void DigitalBrain::PitchHold(void)
         if (self->IsOn(AircraftClass::StickStrng))
             self->ClearAPFlag(AircraftClass::StickStrng);
     }
-
 }
 
 #define AP_TURN 1 //faster and it oscillates
@@ -649,9 +687,23 @@ void DigitalBrain::CheckForTurn(void)
         {
             //turn left
             if (self->Roll() * RTD > -29.0F)
-                rStick = ((0.5F * af->rstick) - (AP_TURN * min(29 - (self->Roll() * RTD < 0 ? -self->Roll() * RTD : 0), 10) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) -
+                     (AP_TURN *
+                      min(29 - (self->Roll() * RTD < 0 ? -self->Roll() * RTD :
+                                                         0),
+                          10) *
+                      DTR));
             else if (self->Roll() * RTD < -30.5F)
-                rStick = ((0.5F * af->rstick) + (AP_TURN * min(29 - (self->Roll() * RTD < 0 ? (-self->Roll() * RTD > 29 ? (-self->Roll() * RTD - 29) : -self->Roll() * RTD) : 0), 10) * DTR));
+                rStick = ((0.5F * af->rstick) +
+                          (AP_TURN *
+                           min(29 - (self->Roll() * RTD < 0 ?
+                                         (-self->Roll() * RTD > 29 ?
+                                              (-self->Roll() * RTD - 29) :
+                                              -self->Roll() * RTD) :
+                                         0),
+                               10) *
+                           DTR));
             else
                 rStick = 0.0F;
         }
@@ -659,16 +711,30 @@ void DigitalBrain::CheckForTurn(void)
         {
             //turn right
             if (self->Roll() * RTD < 29.0F)
-                rStick = ((0.5F * af->rstick) + (AP_TURN * min(29 - (self->Roll() * RTD > 0 ? self->Roll() * RTD : 0), 10) * DTR));
+                rStick =
+                    ((0.5F * af->rstick) +
+                     (AP_TURN *
+                      min(29 -
+                              (self->Roll() * RTD > 0 ? self->Roll() * RTD : 0),
+                          10) *
+                      DTR));
             else if (self->Roll() * RTD > 30.5F)
-                rStick = ((0.5F * af->rstick) - (AP_TURN * min(29 - (self->Roll() * RTD > 0 ? (self->Roll() * RTD > 29 ? (self->Roll() * RTD - 29) : self->Roll() * RTD) : 0), 10) * DTR));
+                rStick = ((0.5F * af->rstick) -
+                          (AP_TURN *
+                           min(29 - (self->Roll() * RTD > 0 ?
+                                         (self->Roll() * RTD > 29 ?
+                                              (self->Roll() * RTD - 29) :
+                                              self->Roll() * RTD) :
+                                         0),
+                               10) *
+                           DTR));
             else
                 rStick = 0.0F;
         }
     }
     else
     {
-        if (self->Roll() * RTD > 0.5F or self->Roll() *RTD < -0.5F)
+        if (self->Roll() * RTD > 0.5F or self->Roll() * RTD < -0.5F)
         {
             if (self->Roll() * RTD > 0.5F)
                 bank = (self->Roll() * RTD) - 1;
@@ -703,7 +769,7 @@ bool DigitalBrain::APAutoDisconnect(void)
     if (af->IsEngineFlag(AirframeClass::FuelDoorOpen))
         return TRUE;
 
-    if ( not self->HasPower(AircraftClass::APPower))
+    if (not self->HasPower(AircraftClass::APPower))
         return TRUE;
 
     if (self->TrimAPDisc)

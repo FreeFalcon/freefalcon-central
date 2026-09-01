@@ -11,14 +11,14 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
 #include "sim/include/simmover.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Control Surface Msg
@@ -26,20 +26,19 @@
 class FalconControlSurfaceMsg : public FalconEvent
 {
 public:
-    FalconControlSurfaceMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconControlSurfaceMsg(VU_ID entityId, VuTargetEntity* target,
+                            VU_BOOL loopback = TRUE);
     FalconControlSurfaceMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconControlSurfaceMsg(void);
     virtual int Size() const
     {
-        return sizeof(dataBlock) +
-               sizeof(float) * dataBlock.numDofs +
+        return sizeof(dataBlock) + sizeof(float) * dataBlock.numDofs +
                sizeof(int) * dataBlock.numDofs +
                sizeof(int) * dataBlock.numSwitches +
-               sizeof(SimBaseSpecialData) +
-               FalconEvent::Size();
+               sizeof(SimBaseSpecialData) + FalconEvent::Size();
     };
     //sfr: changed to long *
-    int Decode(VU_BYTE **buf, long *rem)
+    int Decode(VU_BYTE** buf, long* rem)
     {
         long init = *rem;
 
@@ -61,7 +60,8 @@ public:
             theEntity->SetDOFs(dataBlock.DOFData);
             theEntity->SetSwitches(dataBlock.switchData);
             wasDead = theEntity->IsDead();
-            memcpy(theEntity->SpecialData(), dataBlock.specialData, sizeof(SimBaseSpecialData));
+            memcpy(theEntity->SpecialData(), dataBlock.specialData,
+                   sizeof(SimBaseSpecialData));
 
             if (theEntity->IsDead() and not wasDead)
                 theEntity->SetDead(TRUE);
@@ -69,7 +69,7 @@ public:
 
         return init - *rem;
     };
-    int Encode(VU_BYTE **buf)
+    int Encode(VU_BYTE** buf)
     {
         int size;
 
@@ -107,6 +107,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

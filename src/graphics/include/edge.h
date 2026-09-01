@@ -13,7 +13,6 @@
 #include "grtypes.h"
 
 
-
 class Edge
 {
 public:
@@ -104,15 +103,19 @@ public:
     // Returns the X for the given Y
     float X(float y)
     {
-        if (A == 0.0f) return 0.0f;
-        else return -(B * y + C) / A;
+        if (A == 0.0f)
+            return 0.0f;
+        else
+            return -(B * y + C) / A;
     };
 
     // Returns the Y for the given X
     float Y(float x)
     {
-        if (B == 0.0f) return 0.0f;
-        else return -(A * x + C) / B;
+        if (B == 0.0f)
+            return 0.0f;
+        else
+            return -(A * x + C) / B;
     };
 
 
@@ -137,5 +140,3 @@ public:
 };
 
 #endif /* _EDGE_H_ */
-
-

@@ -22,7 +22,7 @@
 #define KEYU 0x16
 #define KEYI 0x17
 #define KEYO 0x18
-#define KEYP         0x19
+#define KEYP 0x19
 #define KEYLEFTBRACKET 0x1a
 #define KEYRIGHTBRACKET 0x1b
 #define KEYENTER 0x1c
@@ -72,12 +72,12 @@
 #define KEYUP 0x48
 #define KEYPAGEUP 0x49
 #define KEYGREYMINUS 0x4a
-#define KEYLEFT  0x4b
+#define KEYLEFT 0x4b
 #define KEYCENTER 0x4c
 #define KEYRIGHT 0x4d
 #define KEYGREYPLUS 0x4e
 #define KEYEND 0x4f
-#define KEYDOWN   0x50
+#define KEYDOWN 0x50
 #define KEYPAGEDOWN 0x51
 #define KEYINSERT 0x52
 #define KEYDELETE 0x53
@@ -89,4 +89,3 @@
 #define STATUSKEY_NUMLOCK 0x20
 #define STATUSKEY_CAPSLOCK 0x40
 #define STATUSKEY_INSERT 0x80
-

@@ -4,13 +4,9 @@
 //
 // EP_MODEL_DATA inlines.
 
-inline EP_MODEL_DATA::EP_MODEL_DATA
-(
-    int bsp_,
-    int creationStage_,
-    int chaseMode_,
-    const EP_VECTOR &focusOffset_
-)
+inline EP_MODEL_DATA::EP_MODEL_DATA(int bsp_, int creationStage_,
+                                    int chaseMode_,
+                                    const EP_VECTOR &focusOffset_)
 {
     bsp = bsp_;
     creationStage = creationStage_;
@@ -38,12 +34,9 @@ inline SIM_FLOAT EjectedPilotClass::StageEndTime(int stage) const
     F4Assert(_pd != NULL);
 
     // Give us the data that we want.
-    return
-        (
-            stage <= PD_START ?
-            0.0F :
-            _pd->stageData[stage][SDPD_END_TIME_INDEX] + _endStageTimeAdjust
-        );
+    return (stage <= PD_START ? 0.0F :
+                                _pd->stageData[stage][SDPD_END_TIME_INDEX] +
+                                    _endStageTimeAdjust);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -169,12 +162,7 @@ inline EP_VECTOR EjectedPilotClass::SeatOffset() const
     F4Assert(_pd != NULL);
 
     // Give us the data that we want.
-    return EP_VECTOR
-           (
-               _pd->seatXOffset,
-               _pd->seatYOffset,
-               _pd->seatZOffset
-           );
+    return EP_VECTOR(_pd->seatXOffset, _pd->seatYOffset, _pd->seatZOffset);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -188,12 +176,9 @@ inline SIM_FLOAT EjectedPilotClass::ModelCreateTime(int model) const
     F4Assert(_md != NULL);
 
     creationStage = _md[model].creationStage;
-    return
-        (
-            creationStage == PD_FREE_FALL_WITH_COLLAPSED_CHUTE ?
-            _chuteCollapsedTime :
-            StageEndTime(creationStage - 1)
-        );
+    return (creationStage == PD_FREE_FALL_WITH_COLLAPSED_CHUTE ?
+                _chuteCollapsedTime :
+                StageEndTime(creationStage - 1));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -233,10 +218,7 @@ inline void EjectedPilotClass::ExecFromAircraft()
 
 inline BOOL EjectedPilotClass::IsPlayerPilot() const
 {
-    return
-        (
-            _isPlayer ? TRUE : FALSE
-        );
+    return (_isPlayer ? TRUE : FALSE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -245,10 +227,7 @@ inline BOOL EjectedPilotClass::IsPlayerPilot() const
 
 inline BOOL EjectedPilotClass::IsDigiPilot() const
 {
-    return
-        (
-            _isDigital ? TRUE : FALSE
-        );
+    return (_isDigital ? TRUE : FALSE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

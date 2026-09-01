@@ -14,24 +14,25 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-    SimWpnDefinition(char*);
+    SimWpnDefinition(char *);
     ~SimWpnDefinition(void);
-    int  flags;
+    int flags;
     float cd;
     float weight;
     float area;
     float xEjection;
     float yEjection;
     float zEjection;
-    char  mnemonic[8];
-    int   weaponClass;
-    int   domain;
-    int   weaponType;
-    int   dataIdx;
+    char mnemonic[8];
+    int weaponClass;
+    int domain;
+    int weaponType;
+    int dataIdx;
 };
 
 #endif

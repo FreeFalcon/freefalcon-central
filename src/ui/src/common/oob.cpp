@@ -53,33 +53,18 @@ VU_ID gSelectedAirbase = FalconNullId;
 extern GlobalPositioningSystem *gGps;
 extern C_Map *gMapMgr;
 
-static long TeamFlagBtnIDs[NUM_TEAMS] =
-{
-    GROUP1_FLAG,
-    GROUP2_FLAG,
-    GROUP3_FLAG,
-    GROUP4_FLAG,
-    GROUP5_FLAG,
-    GROUP6_FLAG,
-    GROUP7_FLAG,
-    GROUP8_FLAG,
+static long TeamFlagBtnIDs[NUM_TEAMS] = {
+    GROUP1_FLAG, GROUP2_FLAG, GROUP3_FLAG, GROUP4_FLAG,
+    GROUP5_FLAG, GROUP6_FLAG, GROUP7_FLAG, GROUP8_FLAG,
 };
 
-static long TeamColorCtrlIDs[NUM_TEAMS] =
-{
+static long TeamColorCtrlIDs[NUM_TEAMS] = {
     // C_Line
-    GROUP1_COLOR,
-    GROUP2_COLOR,
-    GROUP3_COLOR,
-    GROUP4_COLOR,
-    GROUP5_COLOR,
-    GROUP6_COLOR,
-    GROUP7_COLOR,
-    GROUP8_COLOR,
+    GROUP1_COLOR, GROUP2_COLOR, GROUP3_COLOR, GROUP4_COLOR,
+    GROUP5_COLOR, GROUP6_COLOR, GROUP7_COLOR, GROUP8_COLOR,
 };
 
-static long ObjectiveCategoryNames[] =
-{
+static long ObjectiveCategoryNames[] = {
     0,
     TXT_AIRDEFENSES,
     TXT_AIRFIELDS,
@@ -96,32 +81,23 @@ static long ObjectiveCategoryNames[] =
     0,
 };
 
-static long SectionFilterBtns[4] =
-{
+static long SectionFilterBtns[4] = {
     AF_FILTER,
     ARMY_FILTER,
     NAVY_FILTER,
     OBJECTIVE_FILTER,
 };
 
-static long OOBCategories[4] =
-{
+static long OOBCategories[4] = {
     OOB_AIRFORCE,
     OOB_ARMY,
     OOB_NAVY,
     OOB_OBJECTIVE,
 };
 
-long TeamNameIDs[NUM_TEAMS] =
-{
-    TXT_NEUTRAL,
-    TXT_COMBINEDFORCES,
-    TXT_COMBINEDFORCES,
-    TXT_JAPAN,
-    TXT_CIS,
-    TXT_CHINA,
-    TXT_DPRK,
-    TXT_NEUTRAL,
+long TeamNameIDs[NUM_TEAMS] = {
+    TXT_NEUTRAL, TXT_COMBINEDFORCES, TXT_COMBINEDFORCES, TXT_JAPAN,
+    TXT_CIS,     TXT_CHINA,          TXT_DPRK,           TXT_NEUTRAL,
 };
 
 char gOOB_Visible[NUM_TEAMS];
@@ -149,7 +125,7 @@ void SelectOOBSquadronCB(long, short hittype, C_Base *control)
         return;
 
     gOOBTree->SetAllControlStates(0, gOOBTree->GetRoot());
-    squad = (C_Squadron*)control;
+    squad = (C_Squadron *)control;
     squad->SetState(1);
     squad->Refresh();
 
@@ -165,7 +141,7 @@ void SelectOOBEntityCB(long, short hittype, C_Base *control)
         return;
 
     gOOBTree->SetAllControlStates(0, gOOBTree->GetRoot());
-    ent = (C_Entity*)control;
+    ent = (C_Entity *)control;
     ent->SetState(1);
     ent->Refresh();
 
@@ -186,7 +162,7 @@ void SetupOOBWindow()
     C_Window *win;
     long i, j, cat, TeamID;
     C_Button *btn;
-    C_Line   *line;
+    C_Line *line;
     C_Text *txt;
     TREELIST *team;
     C_Entity *category;
@@ -200,16 +176,22 @@ void SetupOOBWindow()
 
         for (i = 0; i < NUM_TEAMS; i++)
         {
-            if (TeamInfo[i] and ((TeamInfo[i]->flags bitand TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) not_eq i))
+            if (TeamInfo[i] and ((TeamInfo[i]->flags bitand TEAM_ACTIVE) or
+                                 GetTeam(static_cast<uchar>(i)) not_eq i))
             {
-                btn = (C_Button*)win->FindControl(TeamFlagBtnIDs[idx]);
+                btn = (C_Button *)win->FindControl(TeamFlagBtnIDs[idx]);
 
                 if (btn)
                 {
-                    btn->SetImage(C_STATE_0, FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT_DARK]);
-                    btn->SetImage(C_STATE_1, FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT]);
+                    btn->SetImage(
+                        C_STATE_0,
+                        FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT_DARK]);
+                    btn->SetImage(
+                        C_STATE_1,
+                        FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT]);
                     btn->SetFlagBitOff(C_BIT_INVISIBLE);
-                    btn->SetHelpText(gStringMgr->AddText(TeamInfo[i]->GetName()));
+                    btn->SetHelpText(
+                        gStringMgr->AddText(TeamInfo[i]->GetName()));
                     btn->SetUserNumber(0, i);
 
                     if (btn->GetState())
@@ -218,12 +200,17 @@ void SetupOOBWindow()
                         gOOB_Visible[i] = 0;
                 }
 
-                line = (C_Line*)win->FindControl(TeamColorCtrlIDs[idx]);
+                line = (C_Line *)win->FindControl(TeamColorCtrlIDs[idx]);
 
                 if (line)
                 {
-                    if (TeamInfo[GetTeam(static_cast<uchar>(i))] and TeamInfo[GetTeam(static_cast<uchar>(i))]->flags bitand TEAM_ACTIVE)
-                        line->SetColor(TeamColorList[TeamInfo[GetTeam(static_cast<uchar>(i))]->GetColor()]);
+                    if (TeamInfo[GetTeam(static_cast<uchar>(i))] and
+                        TeamInfo[GetTeam(static_cast<uchar>(i))]->flags bitand
+                            TEAM_ACTIVE)
+                        line->SetColor(
+                            TeamColorList[TeamInfo[GetTeam(
+                                                       static_cast<uchar>(i))]
+                                              ->GetColor()]);
                     else
                         line->SetColor(TeamColorList[TeamInfo[i]->GetColor()]);
 
@@ -238,12 +225,12 @@ void SetupOOBWindow()
 
         while (idx < NUM_TEAMS)
         {
-            btn = (C_Button*)win->FindControl(TeamFlagBtnIDs[idx]);
+            btn = (C_Button *)win->FindControl(TeamFlagBtnIDs[idx]);
 
             if (btn)
                 btn->SetFlagBitOn(C_BIT_INVISIBLE);
 
-            line = (C_Line*)win->FindControl(TeamColorCtrlIDs[idx]);
+            line = (C_Line *)win->FindControl(TeamColorCtrlIDs[idx]);
 
             if (line)
                 line->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -258,11 +245,13 @@ void SetupOOBWindow()
 
             for (i = 0; i < NUM_TEAMS; i++)
             {
-                if (TeamInfo[i] and ((TeamInfo[i]->flags bitand TEAM_ACTIVE) or GetTeam(static_cast<uchar>(i)) not_eq i))
+                if (TeamInfo[i] and ((TeamInfo[i]->flags bitand TEAM_ACTIVE) or
+                                     GetTeam(static_cast<uchar>(i)) not_eq i))
                 {
                     for (j = 0; j < 4; j++)
                     {
-                        btn = (C_Button*)win->FindControl(SectionFilterBtns[j]);
+                        btn =
+                            (C_Button *)win->FindControl(SectionFilterBtns[j]);
 
                         if (btn and btn->GetState())
                             cat = 1;
@@ -273,13 +262,16 @@ void SetupOOBWindow()
 
                         team = gOOBTree->Find(TeamID);
 
-                        if ( not team)
+                        if (not team)
                         {
                             category = BuildCategory(TeamID);
 
                             if (category)
                             {
-                                team = gOOBTree->CreateItem(TeamID,/* category->GetType() */ C_TYPE_MENU, category);
+                                team = gOOBTree->CreateItem(
+                                    TeamID,
+                                    /* category->GetType() */ C_TYPE_MENU,
+                                    category);
                                 category->SetOwner(team);
                                 category->SetFont(gOOBTree->GetParent()->Font_);
 
@@ -292,9 +284,11 @@ void SetupOOBWindow()
                             {
                                 txt = new C_Text;
                                 txt->Setup(TeamID, 0);
-                                txt->SetText(gStringMgr->GetText(gStringMgr->AddText("Bermuda Triangle")));
+                                txt->SetText(gStringMgr->GetText(
+                                    gStringMgr->AddText("Bermuda Triangle")));
                                 txt->SetFont(gOOBTree->GetParent()->Font_);
-                                team = gOOBTree->CreateItem(TeamID, C_TYPE_MENU, txt);
+                                team = gOOBTree->CreateItem(TeamID, C_TYPE_MENU,
+                                                            txt);
 
                                 if (gOOB_Visible[i] and cat)
                                     txt->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -305,7 +299,7 @@ void SetupOOBWindow()
                             gOOBTree->AddItem(gOOBTree->GetRoot(), team);
                         }
                         else
-                            UpdateCategory((C_Entity*)team->Item_);
+                            UpdateCategory((C_Entity *)team->Item_);
                     }
 
                     idx++;
@@ -321,51 +315,51 @@ BOOL FindChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if ( not list or not owner)
-        return(FALSE);
+    if (not list or not owner)
+        return (FALSE);
 
     item = list;
 
     while (item)
     {
         if (item->Item_->GetUserNumber(0) == owner)
-            return(TRUE);
+            return (TRUE);
 
         if (item->Child)
             if (FindChildren(item->Child, owner))
-                return(TRUE);
+                return (TRUE);
 
         item = item->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL FindOtherChildren(TREELIST *list, short owner)
 {
     TREELIST *item;
 
-    if ( not list or not owner)
-        return(FALSE);
+    if (not list or not owner)
+        return (FALSE);
 
     item = list;
 
     while (item)
     {
-        if ( not (item->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+        if (not(item->Item_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             if (item->Item_->GetUserNumber(0) not_eq owner)
-                return(TRUE);
+                return (TRUE);
 
             if (item->Child)
                 if (FindOtherChildren(item->Child, owner))
-                    return(TRUE);
+                    return (TRUE);
         }
 
         item = item->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void ToggleOOBTeamCB(long, short hittype, C_Base *control)
@@ -383,7 +377,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
 
     win = control->GetParent();
 
-    if ( not win)
+    if (not win)
         return;
 
     Leave = UI_Enter(control->Parent_);
@@ -406,7 +400,7 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
     {
         for (i = 0; i < 4; i++)
         {
-            btn = (C_Button*)win->FindControl(SectionFilterBtns[i]);
+            btn = (C_Button *)win->FindControl(SectionFilterBtns[i]);
 
             if (btn and btn->GetState())
             {
@@ -427,12 +421,14 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
 
             if (btn and i not_eq owner)
             {
-                if ((GetTeam(static_cast<uchar>(btn->GetUserNumber(0))) == TeamID) and btn->GetState())
+                if ((GetTeam(static_cast<uchar>(btn->GetUserNumber(0))) ==
+                     TeamID) and
+                    btn->GetState())
                     DontTurnOff = TRUE;
             }
         }
 
-        if ( not DontTurnOff)
+        if (not DontTurnOff)
             for (i = 0; i < 4; i++)
             {
                 root = gOOBTree->Find((TeamID << 24) bitor OOBCategories[i]);
@@ -456,7 +452,8 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
                 {
                     if (TurnOn)
                     {
-                        if (root->Item_->GetUserNumber(0) == owner or FindChildren(root->Child, owner))
+                        if (root->Item_->GetUserNumber(0) == owner or
+                            FindChildren(root->Child, owner))
                         {
                             root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
                             child = root->Child;
@@ -464,7 +461,8 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
                             while (child)
                             {
                                 if (child->Item_->GetUserNumber(0) == owner)
-                                    child->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
+                                    child->Item_->SetFlagBitOff(
+                                        C_BIT_INVISIBLE);
 
                                 child = child->Next;
                             }
@@ -472,7 +470,8 @@ void ToggleOOBTeamCB(long, short hittype, C_Base *control)
                     }
                     else
                     {
-                        if (root->Item_->GetUserNumber(0) == owner and not FindOtherChildren(root->Child, owner))
+                        if (root->Item_->GetUserNumber(0) == owner and
+                            not FindOtherChildren(root->Child, owner))
                             root->Item_->SetFlagBitOn(C_BIT_INVISIBLE);
                         else
                         {
@@ -529,13 +528,16 @@ void ToggleOOBFilterCB(long ID, short hittype, C_Base *control)
     {
         for (i = 0; i < 8; i++)
         {
-            btn = (C_Button*)control->GetParent()->FindControl(TeamFlagBtnIDs[i]);
+            btn = (C_Button *)control->GetParent()->FindControl(
+                TeamFlagBtnIDs[i]);
 
-            if (btn and not (btn->GetFlags() bitand C_BIT_INVISIBLE) and btn->GetState())
+            if (btn and not(btn->GetFlags() bitand C_BIT_INVISIBLE) and
+                btn->GetState())
             {
                 // 2002-01-04 MODIFIED BY S.G. GetTeam is 'based one' and not 'based zero' so I'll add '1' to i.
                 // root=gOOBTree->Find((GetTeam(static_cast<uchar>(i)) << 24) bitor Cat);
-                root = gOOBTree->Find((GetTeam(static_cast<uchar>(i + 1)) << 24) bitor Cat);
+                root = gOOBTree->Find(
+                    (GetTeam(static_cast<uchar>(i + 1)) << 24) bitor Cat);
 
                 if (root and root->Item_->GetFlags() bitand C_BIT_INVISIBLE)
                     root->Item_->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -623,10 +625,11 @@ C_Entity *BuildObjectiveInfo(Objective obj)
     ObjPtr = obj->GetObjectiveClassData();
 
     if (ObjPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     ObjType = GetObjectiveType(obj);
-    TypeID = static_cast<short>(FindTypeIndex(ObjType, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_));
+    TypeID = static_cast<short>(
+        FindTypeIndex(ObjType, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_));
 
     // Create new parent class
     newinfo = new C_Entity;
@@ -640,11 +643,12 @@ C_Entity *BuildObjectiveInfo(Objective obj)
     newinfo->SetOperational(obj->GetObjectiveStatus());
 
     if (gImageMgr and TeamInfo[obj->GetTeam()])
-        res = gImageMgr->GetImageRes(TeamColorIconIDs[TeamInfo[obj->GetTeam()]->GetColor()][0]);
+        res = gImageMgr->GetImageRes(
+            TeamColorIconIDs[TeamInfo[obj->GetTeam()]->GetColor()][0]);
 
     if (res)
     {
-        rsc = (IMAGE_RSC*)res->Find(ObjPtr->IconIndex);
+        rsc = (IMAGE_RSC *)res->Find(ObjPtr->IconIndex);
 
         if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
@@ -675,10 +679,12 @@ C_Entity *BuildObjectiveInfo(Objective obj)
     newinfo->SetName(35, 0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set # bitand Airplane type
-    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
-    newinfo->SetStatus(35, 15, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(),
+              gStringMgr->GetString(TXT_OPERATIONAL));
+    newinfo->SetStatus(35, 15,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 
 C_Entity *BuildDivisionInfo(Division div, Unit unit)
@@ -695,14 +701,15 @@ C_Entity *BuildDivisionInfo(Division div, Unit unit)
     UnitPtr = unit->GetUnitClassData();
 
     if (UnitPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     //if( not UnitPtr->IconIndex)
     // return(NULL);
 
     // Create new parent class
     newinfo = new C_Entity;
-    newinfo->Setup((unit->GetTeam() << 24) bitor div->nid bitor UR_DIVISION, C_TYPE_MENU);
+    newinfo->Setup((unit->GetTeam() << 24) bitor div->nid bitor UR_DIVISION,
+                   C_TYPE_MENU);
     newinfo->SetWH(286, 37);
     newinfo->InitEntity();
 
@@ -711,19 +718,22 @@ C_Entity *BuildDivisionInfo(Division div, Unit unit)
     curstr = unit->GetTotalVehicles();
     totalstr = unit->GetFullstrengthVehicles();
 
-    if (totalstr < 1) totalstr = 1;
+    if (totalstr < 1)
+        totalstr = 1;
 
     perc = (curstr * 100) / totalstr;
 
-    if (perc > 100) perc = 100;
+    if (perc > 100)
+        perc = 100;
 
     newinfo->SetOperational(static_cast<uchar>(perc));
 
-    res = gImageMgr->GetImageRes(TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
+    res = gImageMgr->GetImageRes(
+        TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
 
     if (res)
     {
-        rsc = (IMAGE_RSC*)res->Find(UnitPtr->IconIndex);
+        rsc = (IMAGE_RSC *)res->Find(UnitPtr->IconIndex);
 
         if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
@@ -755,10 +765,12 @@ C_Entity *BuildDivisionInfo(Division div, Unit unit)
 
     // Set # bitand Airplane type
     MonoPrint("[Wrong]\n");
-    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
-    newinfo->SetStatus(35, 15, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(),
+              gStringMgr->GetString(TXT_OPERATIONAL));
+    newinfo->SetStatus(35, 15,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 
 C_Entity *BuildUnitInfo(Unit unit)
@@ -775,7 +787,7 @@ C_Entity *BuildUnitInfo(Unit unit)
     UnitPtr = unit->GetUnitClassData();
 
     if (UnitPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     //if( not UnitPtr->IconIndex)
     // return(NULL);
@@ -792,11 +804,13 @@ C_Entity *BuildUnitInfo(Unit unit)
     curstr = unit->GetTotalVehicles();
     totalstr = unit->GetFullstrengthVehicles();
 
-    if (totalstr < 1) totalstr = 1;
+    if (totalstr < 1)
+        totalstr = 1;
 
     perc = (curstr * 100) / totalstr;
 
-    if (perc > 100) perc = 100;
+    if (perc > 100)
+        perc = 100;
 
     newinfo->SetOperational(static_cast<char>(perc));
 
@@ -807,11 +821,12 @@ C_Entity *BuildUnitInfo(Unit unit)
         res = 0;
     }
     else
-        res = gImageMgr->GetImageRes(TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
+        res = gImageMgr->GetImageRes(
+            TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
 
     if (res)
     {
-        rsc = (IMAGE_RSC*)res->Find(UnitPtr->IconIndex);
+        rsc = (IMAGE_RSC *)res->Find(UnitPtr->IconIndex);
 
         if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
@@ -839,17 +854,20 @@ C_Entity *BuildUnitInfo(Unit unit)
 
     // Set Name
     if (unit->IsFlight())
-        GetCallsign(((Flight)unit)->callsign_id, ((Flight)unit)->callsign_num, buffer);
+        GetCallsign(((Flight)unit)->callsign_id, ((Flight)unit)->callsign_num,
+                    buffer);
     else
         unit->GetName(buffer, 40, FALSE);
 
     newinfo->SetName(35, 0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set # bitand Airplane type
-    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
-    newinfo->SetStatus(35, 15, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(),
+              gStringMgr->GetString(TXT_OPERATIONAL));
+    newinfo->SetStatus(35, 15,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 
 C_Entity *BuildNavalUnitInfo(Unit unit)
@@ -866,7 +884,7 @@ C_Entity *BuildNavalUnitInfo(Unit unit)
     UnitPtr = unit->GetUnitClassData();
 
     if (UnitPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     // Create new parent class
     newinfo = new C_Entity;
@@ -880,11 +898,13 @@ C_Entity *BuildNavalUnitInfo(Unit unit)
     curstr = unit->GetTotalVehicles();
     totalstr = unit->GetFullstrengthVehicles();
 
-    if (totalstr < 1) totalstr = 1;
+    if (totalstr < 1)
+        totalstr = 1;
 
     perc = (curstr * 100) / totalstr;
 
-    if (perc > 100) perc = 100;
+    if (perc > 100)
+        perc = 100;
 
     newinfo->SetOperational(static_cast<uchar>(perc));
 
@@ -896,11 +916,12 @@ C_Entity *BuildNavalUnitInfo(Unit unit)
         res = 0;
     }
     else
-        res = gImageMgr->GetImageRes(TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
+        res = gImageMgr->GetImageRes(
+            TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
 
     if (res)
     {
-        rsc = (IMAGE_RSC*)res->Find(UnitPtr->IconIndex);
+        rsc = (IMAGE_RSC *)res->Find(UnitPtr->IconIndex);
 
         if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
@@ -931,10 +952,12 @@ C_Entity *BuildNavalUnitInfo(Unit unit)
     newinfo->SetName(84, 0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set # bitand Airplane type
-    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
-    newinfo->SetStatus(84, 15, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(),
+              gStringMgr->GetString(TXT_OPERATIONAL));
+    newinfo->SetStatus(84, 15,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 
 void TallyPlayerSquadrons()
@@ -957,7 +980,7 @@ void TallyPlayerSquadrons()
     if (gCommsMgr->GetGame())
     {
         VuSessionsIterator sessionWalker(gCommsMgr->GetGame());
-        session = (FalconSessionEntity*)sessionWalker.GetFirst();
+        session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
         while (session)
         {
@@ -975,14 +998,14 @@ void TallyPlayerSquadrons()
                     cur = cur->Next;
             }
 
-            if ( not cur)
+            if (not cur)
             {
                 prev = new SQUADRONPLAYER;
                 prev->SquadronID = session->GetPlayerSquadronID();
                 prev->PlayerCount = 1;
                 prev->Next = NULL;
 
-                if ( not gPlayerSquadrons)
+                if (not gPlayerSquadrons)
                     gPlayerSquadrons = prev;
                 else
                 {
@@ -995,7 +1018,7 @@ void TallyPlayerSquadrons()
                 }
             }
 
-            session = (FalconSessionEntity*)sessionWalker.GetNext();
+            session = (FalconSessionEntity *)sessionWalker.GetNext();
         }
     }
 }
@@ -1005,7 +1028,7 @@ void GetPlayerInfo(VU_ID ID)
     UI_RequestLogbook *rlb;
     FalconSessionEntity *session;
 
-    session = (FalconSessionEntity*)vuDatabase->Find(ID);
+    session = (FalconSessionEntity *)vuDatabase->Find(ID);
 
     if (session and session not_eq FalconLocalSession)
     {
@@ -1026,12 +1049,12 @@ short GetSquadronPlayerCount(VU_ID SquadID)
     while (cur)
     {
         if (cur->SquadronID == SquadID)
-            return(cur->PlayerCount);
+            return (cur->PlayerCount);
 
         cur = cur->Next;
     }
 
-    return(0);
+    return (0);
 }
 
 C_Squadron *BuildSquadronInfo(Squadron sqd)
@@ -1045,7 +1068,7 @@ C_Squadron *BuildSquadronInfo(Squadron sqd)
     UnitPtr = sqd->GetUnitClassData();
 
     if (UnitPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     // Create new parent class
     newinfo = new C_Squadron;
@@ -1088,17 +1111,24 @@ C_Squadron *BuildSquadronInfo(Squadron sqd)
     newinfo->SetName(54, 5, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set # bitand Airplane type
-    _stprintf(buffer, "%1d %s", newinfo->GetNumVehicles(), GetVehicleName(sqd->GetVehicleID(0)));
-    newinfo->SetPlanes(54, 20, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d %s", newinfo->GetNumVehicles(),
+              GetVehicleName(sqd->GetVehicleID(0)));
+    newinfo->SetPlanes(54, 20,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set Total # of Pilots
-    _stprintf(buffer, "%1d %s", newinfo->GetNumPilots() + newinfo->GetNumPlayers(), gStringMgr->GetString(TXT_PILOTS));
-    newinfo->SetPilots(160, 20, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d %s",
+              newinfo->GetNumPilots() + newinfo->GetNumPlayers(),
+              gStringMgr->GetString(TXT_PILOTS));
+    newinfo->SetPilots(160, 20,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set #  of Human Pilots
-    _stprintf(buffer, "%1d %s", newinfo->GetNumPlayers(), gStringMgr->GetString(TXT_PLAYERS));
-    newinfo->SetPlayers(54, 35, gStringMgr->GetText(gStringMgr->AddText(buffer)));
-    return(newinfo);
+    _stprintf(buffer, "%1d %s", newinfo->GetNumPlayers(),
+              gStringMgr->GetString(TXT_PLAYERS));
+    newinfo->SetPlayers(54, 35,
+                        gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    return (newinfo);
 }
 
 C_Base *BuildOOBItem(CampEntity entity)
@@ -1111,8 +1141,8 @@ C_Base *BuildOOBItem(CampEntity entity)
 
         if (builder)
         {
-            ((C_Squadron*)builder)->SetCallback(SelectOOBSquadronCB);
-            return(builder);
+            ((C_Squadron *)builder)->SetCallback(SelectOOBSquadronCB);
+            return (builder);
         }
     }
     else if (entity->IsBattalion() or entity->IsBrigade())
@@ -1121,8 +1151,8 @@ C_Base *BuildOOBItem(CampEntity entity)
 
         if (builder)
         {
-            ((C_Entity*)builder)->SetCallback(SelectOOBEntityCB);
-            return(builder);
+            ((C_Entity *)builder)->SetCallback(SelectOOBEntityCB);
+            return (builder);
         }
     }
     else if (entity->IsTaskForce())
@@ -1131,8 +1161,8 @@ C_Base *BuildOOBItem(CampEntity entity)
 
         if (builder)
         {
-            ((C_Entity*)builder)->SetCallback(SelectOOBEntityCB);
-            return(builder);
+            ((C_Entity *)builder)->SetCallback(SelectOOBEntityCB);
+            return (builder);
         }
     }
     else if (entity->IsObjective())
@@ -1141,12 +1171,12 @@ C_Base *BuildOOBItem(CampEntity entity)
 
         if (builder)
         {
-            ((C_Entity*)builder)->SetCallback(SelectOOBEntityCB);
-            return(builder);
+            ((C_Entity *)builder)->SetCallback(SelectOOBEntityCB);
+            return (builder);
         }
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_Entity *BuildCategory(long Type)
@@ -1179,9 +1209,12 @@ C_Entity *BuildCategory(long Type)
         newinfo->SetIcon(15, static_cast<short>(i / 2), SMALL_AF);
 
         if (TheCampaign.Flags bitand CAMP_TACTICAL)
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_AIRFORCES), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_AIRFORCES),
+                      TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
         else
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_AIRFORCES), gStringMgr->GetString(TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_AIRFORCES),
+                      gStringMgr->GetString(
+                          TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
     }
     else if (Type bitand OOB_ARMY)
     {
@@ -1198,9 +1231,12 @@ C_Entity *BuildCategory(long Type)
         newinfo->SetIcon(15, static_cast<short>(i / 2), SMALL_ARMY);
 
         if (TheCampaign.Flags bitand CAMP_TACTICAL)
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_ARMY), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_ARMY),
+                      TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
         else
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_ARMY), gStringMgr->GetString(TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_ARMY),
+                      gStringMgr->GetString(
+                          TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
     }
     else if (Type bitand OOB_NAVY)
     {
@@ -1217,9 +1253,12 @@ C_Entity *BuildCategory(long Type)
         newinfo->SetIcon(15, static_cast<short>(i / 2), SMALL_NAVY);
 
         if (TheCampaign.Flags bitand CAMP_TACTICAL)
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_NAVALFORCES), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_NAVALFORCES),
+                      TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
         else
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_NAVALFORCES), gStringMgr->GetString(TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_NAVALFORCES),
+                      gStringMgr->GetString(
+                          TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
     }
     else if (Type bitand OOB_OBJECTIVE)
     {
@@ -1236,15 +1275,18 @@ C_Entity *BuildCategory(long Type)
         newinfo->SetIcon(15, static_cast<short>(i / 2), SMALL_OBJ);
 
         if (TheCampaign.Flags bitand CAMP_TACTICAL)
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_OBJECTIVES), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_OBJECTIVES),
+                      TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
         else
-            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_OBJECTIVES), gStringMgr->GetString(TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
+            _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_OBJECTIVES),
+                      gStringMgr->GetString(
+                          TeamNameIDs[(Type bitand OOB_TEAM_MASK) >> 24]));
     }
 
     // Set Name
     newinfo->SetName(35, 0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 
 // This basically changes the team name
@@ -1253,26 +1295,30 @@ void UpdateCategory(C_Entity *category)
     long Type;
     _TCHAR buffer[200];
 
-    if ( not category)
+    if (not category)
         return;
 
     Type = category->GetID();
 
     if (Type bitand OOB_AIRFORCE)
     {
-        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_AIRFORCES), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_AIRFORCES),
+                  TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
     }
     else if (Type bitand OOB_ARMY)
     {
-        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_ARMY), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_ARMY),
+                  TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
     }
     else if (Type bitand OOB_NAVY)
     {
-        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_NAVALFORCES), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_NAVALFORCES),
+                  TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
     }
     else if (Type bitand OOB_OBJECTIVE)
     {
-        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_OBJECTIVES), TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
+        _stprintf(buffer, "%s : %s", gStringMgr->GetString(TXT_OBJECTIVES),
+                  TeamInfo[(Type bitand OOB_TEAM_MASK) >> 24]->GetName());
     }
 
     category->SetName(35, 0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
@@ -1285,49 +1331,51 @@ C_Entity *AddDivisionToOOB(Division div)
     C_Entity *oobitem = NULL;
     long TeamID, Cat;
 
-    if ( not div)
-        return(NULL);
+    if (not div)
+        return (NULL);
 
     un = div->GetFirstUnitElement();
 
-    if ( not un)
-        return(NULL);
+    if (not un)
+        return (NULL);
 
     while (un and un->GetSType() not_eq div->type)
         un = div->GetNextUnitElement();
 
-    if ( not un)
+    if (not un)
         un = div->GetFirstUnitElement();
 
     TeamID = (un->GetTeam() << 24);
     Cat = FindUnitCategory(un);
 
-    if ( not Cat)
-        return(NULL);
+    if (not Cat)
+        return (NULL);
 
     TeamID or_eq Cat;
     Team_Cat = gOOBTree->Find(TeamID);
 
     if (Team_Cat)
     {
-        item = gOOBTree->Find((un->GetTeam() << 24) bitor div->nid bitor UR_DIVISION);
+        item = gOOBTree->Find((un->GetTeam() << 24) bitor div->nid bitor
+                              UR_DIVISION);
 
         if (item)
-            return((C_Entity *)item->Item_);
+            return ((C_Entity *)item->Item_);
 
         oobitem = BuildDivisionInfo(div, un);
 
         if (oobitem)
         {
             oobitem->SetCallback(SelectOOBEntityCB);
-            item = gOOBTree->CreateItem(oobitem->GetID(),/* oobitem->GetType()*/ C_TYPE_ITEM, oobitem);
+            item = gOOBTree->CreateItem(
+                oobitem->GetID(), /* oobitem->GetType()*/ C_TYPE_ITEM, oobitem);
 
             if (item)
             {
                 if (oobitem->_GetCType_() == _CNTL_ENTITY_)
-                    ((C_Entity*)oobitem)->SetOwner(item);
+                    ((C_Entity *)oobitem)->SetOwner(item);
                 else if (oobitem->_GetCType_() == _CNTL_SQUAD_)
-                    ((C_Squadron*)oobitem)->SetOwner(item);
+                    ((C_Squadron *)oobitem)->SetOwner(item);
 
                 oobitem->SetFont(gOOBTree->GetFont());
                 gOOBTree->AddChildItem(Team_Cat, item);
@@ -1341,14 +1389,14 @@ C_Entity *AddDivisionToOOB(Division div)
         }
     }
 
-    return(oobitem);
+    return (oobitem);
 }
 
 C_Base *AddItemToOOB(CampEntity entity)
 {
     TREELIST *Team_Cat, *item, *subcat;
     CampEntity Base;
-    C_Entity  *BaseInfo;
+    C_Entity *BaseInfo;
     C_Base *oobitem = NULL;
     C_Text *txt;
     Unit upar;
@@ -1363,8 +1411,8 @@ C_Base *AddItemToOOB(CampEntity entity)
     else
         Cat = 0;
 
-    if ( not Cat)
-        return(NULL);
+    if (not Cat)
+        return (NULL);
 
     TeamID or_eq Cat;
     Team_Cat = gOOBTree->Find(TeamID);
@@ -1374,13 +1422,14 @@ C_Base *AddItemToOOB(CampEntity entity)
         item = gOOBTree->Find(entity->GetCampID());
 
         if (item)
-            return(item->Item_);
+            return (item->Item_);
 
         oobitem = BuildOOBItem(entity);
 
         if (oobitem)
         {
-            if (gOOB_Visible[entity->GetOwner()]) // MUST be GetOwner not GetTeam
+            if (gOOB_Visible[entity
+                                 ->GetOwner()]) // MUST be GetOwner not GetTeam
                 oobitem->SetFlagBitOff(C_BIT_INVISIBLE);
             else
                 oobitem->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -1396,9 +1445,9 @@ C_Base *AddItemToOOB(CampEntity entity)
                     {
                         subcat = gOOBTree->Find(Base->GetCampID());
 
-                        if ( not subcat)
+                        if (not subcat)
                         {
-                            BaseInfo = (C_Entity*)AddItemToOOB(Base);
+                            BaseInfo = (C_Entity *)AddItemToOOB(Base);
 
                             if (BaseInfo)
                                 subcat = BaseInfo->GetOwner();
@@ -1406,7 +1455,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                             {
                                 oobitem->Cleanup();
                                 delete oobitem;
-                                return(NULL);
+                                return (NULL);
                             }
                         }
                     }
@@ -1421,9 +1470,9 @@ C_Base *AddItemToOOB(CampEntity entity)
                     {
                         subcat = gOOBTree->Find(upar->GetCampID());
 
-                        if ( not subcat)
+                        if (not subcat)
                         {
-                            BaseInfo = (C_Entity*)AddItemToOOB(upar);
+                            BaseInfo = (C_Entity *)AddItemToOOB(upar);
 
                             if (BaseInfo)
                                 subcat = BaseInfo->GetOwner();
@@ -1431,7 +1480,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                             {
                                 oobitem->Cleanup();
                                 delete oobitem;
-                                return(NULL);
+                                return (NULL);
                             }
                         }
                     }
@@ -1441,11 +1490,14 @@ C_Base *AddItemToOOB(CampEntity entity)
 
                         if (DivID)
                         {
-                            subcat = gOOBTree->Find((entity->GetTeam() << 24) bitor DivID bitor UR_DIVISION);
+                            subcat =
+                                gOOBTree->Find((entity->GetTeam() << 24) bitor
+                                               DivID bitor UR_DIVISION);
 
-                            if ( not subcat)
+                            if (not subcat)
                             {
-                                BaseInfo = AddDivisionToOOB(GetDivisionByUnit((Unit)entity));
+                                BaseInfo = AddDivisionToOOB(
+                                    GetDivisionByUnit((Unit)entity));
 
                                 if (BaseInfo)
                                     subcat = BaseInfo->GetOwner();
@@ -1453,7 +1505,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                                 {
                                     oobitem->Cleanup();
                                     delete oobitem;
-                                    return(NULL);
+                                    return (NULL);
                                 }
                             }
                         }
@@ -1467,11 +1519,13 @@ C_Base *AddItemToOOB(CampEntity entity)
 
                     if (DivID)
                     {
-                        subcat = gOOBTree->Find((entity->GetTeam() << 24) bitor DivID bitor UR_DIVISION);
+                        subcat = gOOBTree->Find((entity->GetTeam() << 24) bitor
+                                                DivID bitor UR_DIVISION);
 
-                        if ( not subcat)
+                        if (not subcat)
                         {
-                            BaseInfo = AddDivisionToOOB(GetDivisionByUnit((Unit)entity));
+                            BaseInfo = AddDivisionToOOB(
+                                GetDivisionByUnit((Unit)entity));
 
                             if (BaseInfo)
                                 subcat = BaseInfo->GetOwner();
@@ -1479,7 +1533,7 @@ C_Base *AddItemToOOB(CampEntity entity)
                             {
                                 oobitem->Cleanup();
                                 delete oobitem;
-                                return(NULL);
+                                return (NULL);
                             }
                         }
                     }
@@ -1496,15 +1550,19 @@ C_Base *AddItemToOOB(CampEntity entity)
                 if (idx >= 0)
                 {
                     Type = ObjectiveFilters[idx].UIType;
-                    subcat = gOOBTree->Find((entity->GetTeam() << 24) bitor Type);
+                    subcat =
+                        gOOBTree->Find((entity->GetTeam() << 24) bitor Type);
 
-                    if ( not subcat)
+                    if (not subcat)
                     {
                         txt = new C_Text;
                         txt->Setup(Type, 0);
                         txt->SetFont(gOOBTree->GetFont());
-                        txt->SetText(ObjectiveCategoryNames[FindTypeIndex(Type, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_)]);
-                        subcat = gOOBTree->CreateItem((entity->GetTeam() << 24) bitor Type, C_TYPE_MENU, txt);
+                        txt->SetText(ObjectiveCategoryNames[FindTypeIndex(
+                            Type, OBJ_TypeList, _MAP_NUM_OBJ_TYPES_)]);
+                        subcat = gOOBTree->CreateItem(
+                            (entity->GetTeam() << 24) bitor Type, C_TYPE_MENU,
+                            txt);
                         gOOBTree->AddChildItem(Team_Cat, subcat);
                     }
                 }
@@ -1514,19 +1572,21 @@ C_Base *AddItemToOOB(CampEntity entity)
             else
                 subcat = Team_Cat;
 
-            item = gOOBTree->CreateItem(oobitem->GetID(),/* oobitem->GetType() */ C_TYPE_ITEM, oobitem);
+            item = gOOBTree->CreateItem(oobitem->GetID(),
+                                        /* oobitem->GetType() */ C_TYPE_ITEM,
+                                        oobitem);
 
             if (item)
             {
                 if (oobitem->_GetCType_() == _CNTL_ENTITY_)
                 {
-                    ((C_Entity*)oobitem)->SetOwner(item);
-                    ((C_Entity*)oobitem)->SetFont(gOOBTree->GetFont());
+                    ((C_Entity *)oobitem)->SetOwner(item);
+                    ((C_Entity *)oobitem)->SetFont(gOOBTree->GetFont());
                 }
                 else if (oobitem->_GetCType_() == _CNTL_SQUAD_)
                 {
-                    ((C_Squadron*)oobitem)->SetOwner(item);
-                    ((C_Squadron*)oobitem)->SetFont(gOOBTree->GetFont());
+                    ((C_Squadron *)oobitem)->SetOwner(item);
+                    ((C_Squadron *)oobitem)->SetFont(gOOBTree->GetFont());
                 }
 
                 gOOBTree->AddChildItem(subcat, item);
@@ -1540,7 +1600,7 @@ C_Base *AddItemToOOB(CampEntity entity)
         }
     }
 
-    return(oobitem);
+    return (oobitem);
 }
 
 void MoveOOBSquadron(Squadron sqd, C_Squadron *Squadron)
@@ -1554,7 +1614,7 @@ void MoveOOBSquadron(Squadron sqd, C_Squadron *Squadron)
 
     item = Squadron->GetOwner();
 
-    if ( not item)
+    if (not item)
         return;
 
     Leave = UI_Enter(gOOBTree->GetParent());
@@ -1565,14 +1625,15 @@ void MoveOOBSquadron(Squadron sqd, C_Squadron *Squadron)
     {
         newloc = gOOBTree->Find(Base->GetCampID());
 
-        if ( not newloc)
+        if (not newloc)
         {
-            BaseInfo = (C_Entity*)AddItemToOOB(Base);
+            BaseInfo = (C_Entity *)AddItemToOOB(Base);
 
             if (BaseInfo)
                 newloc = BaseInfo->GetOwner();
             else
-                newloc = gOOBTree->Find((sqd->GetTeam() << 24) bitor OOB_AIRFORCE);
+                newloc =
+                    gOOBTree->Find((sqd->GetTeam() << 24) bitor OOB_AIRFORCE);
         }
     }
     else
@@ -1644,10 +1705,13 @@ void OOBFindCB(long, short hittype, C_Base *)
     else if (gSelectedDivision)
     {
         UI_Refresher *urec;
-        urec = (UI_Refresher *)gGps->Find(gSelectedDivision bitand 0x00ffffff); // strip off team (incase it is a division)
+        urec = (UI_Refresher *)gGps->Find(
+            gSelectedDivision bitand
+            0x00ffffff); // strip off team (incase it is a division)
 
         if (urec and urec->GetType() == GPS_DIVISION)
-            FindIcon(urec); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
+            FindIcon(
+                urec); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
     }
 }
 
@@ -1685,9 +1749,13 @@ void OOBInfoCB(long, short hittype, C_Base *)
     else if (gSelectedDivision)
     {
         UI_Refresher *urec;
-        urec = (UI_Refresher *)gGps->Find(gSelectedDivision bitand 0x00ffffff); // strip off team (incase it is a division)
+        urec = (UI_Refresher *)gGps->Find(
+            gSelectedDivision bitand
+            0x00ffffff); // strip off team (incase it is a division)
 
         if (urec and urec->GetType() == GPS_DIVISION)
-            SetupDivisionInfoWindow(urec->GetDivID(), urec->GetSide()); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
+            SetupDivisionInfoWindow(
+                urec->GetDivID(),
+                urec->GetSide()); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
     }
 }

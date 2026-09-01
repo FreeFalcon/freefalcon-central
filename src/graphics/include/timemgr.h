@@ -18,7 +18,7 @@
 
 typedef struct TimeCallBack
 {
-    void(*fn)(void*);
+    void (*fn)(void *);
     void *self;
 } TimeCallBack;
 
@@ -37,7 +37,8 @@ public:
     };
     ~TimeManager()
     {
-        if (IsReady()) Cleanup();
+        if (IsReady())
+            Cleanup();
     };
 
     void Setup(int startYear, int startDayOfYear);
@@ -51,8 +52,8 @@ public:
     void SetTime(DWORD newTime);
     void Refresh(void);
 
-    void RegisterTimeUpdateCB(void(*fn)(void *self), void *self);
-    void ReleaseTimeUpdateCB(void(*fn)(void *self), void *self);
+    void RegisterTimeUpdateCB(void (*fn)(void *self), void *self);
+    void ReleaseTimeUpdateCB(void (*fn)(void *self), void *self);
 
     DWORD GetYearAD(void)
     {

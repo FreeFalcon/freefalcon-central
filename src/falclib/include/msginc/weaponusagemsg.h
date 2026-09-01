@@ -11,11 +11,11 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 
 /*
@@ -64,6 +64,6 @@ class FalconWeaponUsageMessage : public FalconEvent
 };
 */
 
-#pragma pack ()
+#pragma pack()
 
 #endif

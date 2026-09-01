@@ -24,14 +24,13 @@ private:
     void (*Callback_)(void *rec);
 
 public:
-
     UI_Hash();
     ~UI_Hash();
 
     void Setup(unsigned long Size);
     void Cleanup();
 
-    void SetCallback(void (*cb)(void*))
+    void SetCallback(void (*cb)(void *))
     {
         Callback_ = cb;
     }

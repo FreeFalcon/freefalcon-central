@@ -24,16 +24,16 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
     int mNumSounds;
     int mSoundTally;
-    CPSoundIndex* mpSoundArray;
+    CPSoundIndex *mpSoundArray;
 
 public:
-
     int GetSoundIndex(int);
     void AddSound(int, int);
 

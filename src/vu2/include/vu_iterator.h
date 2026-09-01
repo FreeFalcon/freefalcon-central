@@ -46,6 +46,7 @@ protected:
 class VuRBIterator : public VuIterator
 {
     friend class VuGridIterator;
+
 public:
     /** creates iterator, may lock the tree */
     VuRBIterator(VuRedBlackTree *coll);
@@ -70,7 +71,8 @@ protected:
 class VuGridIterator : public VuIterator
 {
 public:
-    VuGridIterator(VuGridTree *coll, BIG_SCALAR xPos, BIG_SCALAR yPos, BIG_SCALAR radius);
+    VuGridIterator(VuGridTree *coll, BIG_SCALAR xPos, BIG_SCALAR yPos,
+                   BIG_SCALAR radius);
     virtual ~VuGridIterator();
 
     // note: these implementations HIDE the RBIterator methods, which
@@ -83,7 +85,7 @@ public:
 
 protected:
     /** tree row interval, open at end. */
-    unsigned int  rowlow_, rowhi_, rowcur_;
+    unsigned int rowlow_, rowhi_, rowcur_;
     /** tree column intervals, open at end. */
     VU_KEY collow_, colhi_, colcur_;
     /** origin, radius and radius squared of search in real units. */
@@ -135,4 +137,3 @@ public:
 };
 
 #endif
-

@@ -27,7 +27,7 @@
 
 //___________________________________________________________________________
 
-#pragma pack (push, 1)
+#pragma pack(push, 1)
 
 // TGA
 struct TGA_HEADER
@@ -74,34 +74,34 @@ struct BMP_RGBQUAD
 // gif file typedefs
 struct GIFHEADER
 {
-    GLbyte   sig[6];
+    GLbyte sig[6];
     GLushort screenwidth, screenheight;
-    GLubyte  flags, background, aspect;
+    GLubyte flags, background, aspect;
 };
 
 struct IMAGEBLOCK
 {
     GLushort left, top, width, height;
-    GLubyte  flags;
+    GLubyte flags;
 };
 
 struct CONTROLBLOCK
 {
-    GLbyte   blocksize, flags;
+    GLbyte blocksize, flags;
     GLushort delay;
-    GLbyte   transparent_colour, terminator;
+    GLbyte transparent_colour, terminator;
 };
 
 struct PLAINTEXT
 {
-    GLbyte   blocksize;
+    GLbyte blocksize;
     GLushort left, top, gridwidth, gridheight;
-    GLbyte   cellwidth, cellheight, forecolour, backcolour;
+    GLbyte cellwidth, cellheight, forecolour, backcolour;
 };
 
 struct APPLICATION
 {
-    GLbyte   blocksize, applstring[8], authentication[3];
+    GLbyte blocksize, applstring[8], authentication[3];
 };
 
 // lbm file typedef
@@ -111,7 +111,7 @@ struct LBM_BMHD
     GLshort x, y;
     GLbyte nPlanes, masking, compression, pad1;
     GLushort transparentColor;
-    GLbyte  xAspect, yAspect;
+    GLbyte xAspect, yAspect;
     GLshort pageW, pageH;
 };
 
@@ -120,9 +120,9 @@ struct PCXHEAD
 {
     GLbyte manufacturer, version, encoding, bits_per_pixel;
     GLshort xmin, ymin, xmax, ymax, hres, vres;
-    GLbyte   palette[48], reserved, colour_planes;
-    GLshort  bytes_per_line, palette_type;
-    GLbyte   filler[58];
+    GLbyte palette[48], reserved, colour_planes;
+    GLshort bytes_per_line, palette_type;
+    GLbyte filler[58];
 };
 
 // apl file typedef
@@ -133,15 +133,15 @@ struct APL_HEADER
     GLushort height;
 };
 
-#pragma pack (pop)
+#pragma pack(pop)
 
 //___________________________________________________________________________
 // Exported function prototypes
 
 GLubyte *ConvertImage(GLImageInfo *fi, GLint mode, GLuint *chromakey = NULL);
-GLint  UnpackGIF(CImageFileMemory *fi);
-GLint  UnpackLBM(CImageFileMemory *fi);
-GLint  UnpackPCX(CImageFileMemory *fi);
+GLint UnpackGIF(CImageFileMemory *fi);
+GLint UnpackLBM(CImageFileMemory *fi);
+GLint UnpackPCX(CImageFileMemory *fi);
 GLint ReadBMP(CImageFileMemory *fi);
 GLint ReadAPL(CImageFileMemory *fi);
 GLint ReadTGA(CImageFileMemory *fi);
@@ -151,7 +151,7 @@ GLint ReadDDS(CImageFileMemory *fi); //JAM 22Sep03
 GLint WritePCX(int fileHandle, GLImageInfo *image);
 
 GLint GIF_UnpackImage(GLint bits, CImageFileMemory *fi, GLint currentFlag);
-void    GIF_SkipExtension(CImageFileMemory *fi);
+void GIF_SkipExtension(CImageFileMemory *fi);
 GLulong *ReadLBMColorMap(CImageFileMemory *fi);
 GLubyte *ReadLBMBody(CImageFileMemory *fi, LBM_BMHD *lpHeader, GLint doIFF);
 
@@ -164,21 +164,21 @@ inline GLint CheckImageType(const char *file)
 
     glGetFileExtension(file, ext);
 
-    if ( not _strnicmp(ext, "GIF", 3))
+    if (not _strnicmp(ext, "GIF", 3))
         i = IMAGE_TYPE_GIF;
-    else if ( not _strnicmp(ext, "LBM", 3))
+    else if (not _strnicmp(ext, "LBM", 3))
         i = IMAGE_TYPE_LBM;
-    else if ( not _strnicmp(ext, "PCX", 3))
+    else if (not _strnicmp(ext, "PCX", 3))
         i = IMAGE_TYPE_PCX;
-    else if ( not _strnicmp(ext, "BMP", 3))
+    else if (not _strnicmp(ext, "BMP", 3))
         i = IMAGE_TYPE_BMP;
-    else if ( not _strnicmp(ext, "APL", 3))
+    else if (not _strnicmp(ext, "APL", 3))
         i = IMAGE_TYPE_APL;
-    else if ( not _strnicmp(ext, "TGA", 3))
+    else if (not _strnicmp(ext, "TGA", 3))
         i = IMAGE_TYPE_TGA;
 
     //JAM 22Sep03
-    else if ( not _strnicmp(ext, "DDS", 3))
+    else if (not _strnicmp(ext, "DDS", 3))
         i = IMAGE_TYPE_DDS;
 
     //JAM
@@ -193,56 +193,56 @@ inline GLint ReadTextureImage(CImageFileMemory *fi)
 {
     GLint i;
 
-    switch (fi -> imageType)
+    switch (fi->imageType)
     {
-        case IMAGE_TYPE_GIF:
-            i = UnpackGIF(fi);
-            break;
+    case IMAGE_TYPE_GIF:
+        i = UnpackGIF(fi);
+        break;
 
-        case IMAGE_TYPE_LBM:
-            i = UnpackLBM(fi);
-            break;
+    case IMAGE_TYPE_LBM:
+        i = UnpackLBM(fi);
+        break;
 
-        case IMAGE_TYPE_PCX:
-            i = UnpackPCX(fi);
-            break;
+    case IMAGE_TYPE_PCX:
+        i = UnpackPCX(fi);
+        break;
 
-        case IMAGE_TYPE_BMP:
-            i = ReadBMP(fi);
-            break;
+    case IMAGE_TYPE_BMP:
+        i = ReadBMP(fi);
+        break;
 
-        case IMAGE_TYPE_APL:
-            i = ReadAPL(fi);
-            break;
+    case IMAGE_TYPE_APL:
+        i = ReadAPL(fi);
+        break;
 
-        case IMAGE_TYPE_TGA:
-            i = ReadTGA(fi);
-            break;
+    case IMAGE_TYPE_TGA:
+        i = ReadTGA(fi);
+        break;
 
             //JAM 22Sep03
-        case IMAGE_TYPE_DDS:
-            i = ReadDDS(fi);
-            break;
+    case IMAGE_TYPE_DDS:
+        i = ReadDDS(fi);
+        break;
             //JAM
 
-        default:
-            i = NO_CODE;
-            break;
+    default:
+        i = NO_CODE;
+        break;
     }
 
-    fi -> glCloseFileMem();
+    fi->glCloseFileMem();
     return i;
 };
 
-inline GLint   motr2intl(GLint l)
+inline GLint motr2intl(GLint l)
 {
-    return(((l bitand 0xff000000L) >> 24) + ((l bitand 0x00ff0000L) >> 8) +
-           ((l bitand 0x0000ff00L) << 8) + ((l bitand 0x000000ffL) << 24));
+    return (((l bitand 0xff000000L) >> 24) + ((l bitand 0x00ff0000L) >> 8) +
+            ((l bitand 0x0000ff00L) << 8) + ((l bitand 0x000000ffL) << 24));
 }
 
 inline GLint motr2inti(GLint n)
 {
-    return(((n bitand 0xff00) >> 8) bitor ((n bitand 0x00ff) << 8));
+    return (((n bitand 0xff00) >> 8) bitor ((n bitand 0x00ff) << 8));
 }
 
 //___________________________________________________________________________

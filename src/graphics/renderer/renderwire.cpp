@@ -5,10 +5,10 @@
 
     This sub class draws an out the window view in wire frame mode.
 \***************************************************************************/
-#include "TOD.h"
-#include "Tpost.h"
-#include "RViewPnt.h"
-#include "RenderWire.h"
+#include "tod.h"
+#include "tpost.h"
+#include "rviewpnt.h"
+#include "renderwire.h"
 
 
 /***************************************************************************\
@@ -45,7 +45,6 @@ void RenderWire::Setup(ImageBuffer *imageBuffer, RViewPoint *vp)
 }
 
 
-
 /***************************************************************************\
  Do end of frame housekeeping
 \***************************************************************************/
@@ -57,14 +56,14 @@ void RenderWire::StartFrame(void)
 }
 
 
-
 #define BLEND_MIN 0.25f
 #define BLEND_MAX 0.95f
 /***************************************************************************\
     Compute the color and texture blend value for a single terrain vertex.
 \***************************************************************************/
 //void RenderWire::ComputeVertexColor( TerrainVertex *vert, Tpost *post, float distance )
-void RenderWire::ComputeVertexColor(TerrainVertex *vert, Tpost *, float distance)
+void RenderWire::ComputeVertexColor(TerrainVertex *vert, Tpost *,
+                                    float distance)
 {
     // float alpha;
 

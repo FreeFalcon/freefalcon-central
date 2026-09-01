@@ -64,7 +64,8 @@ void *C_Hash::Find(long ID)
     long idx;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || ID < 0) return(NULL);
+    if (!TableSize_ || !Table_ || ID < 0)
+        return (NULL);
 
     idx = ID % TableSize_;
     cur = Table_[idx].Root_;
@@ -72,12 +73,12 @@ void *C_Hash::Find(long ID)
     while (cur)
     {
         if (cur->ID == ID)
-            return(cur->Record);
+            return (cur->Record);
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_Hash::Add(long ID, void *rec)
@@ -85,9 +86,11 @@ void C_Hash::Add(long ID, void *rec)
     long idx;
     C_HASHNODE *cur, *newhash;
 
-    if (!TableSize_ || !Table_ || !rec || ID < 0) return;
+    if (!TableSize_ || !Table_ || !rec || ID < 0)
+        return;
 
-    if (Find(ID)) return;
+    if (Find(ID))
+        return;
 
     newhash = new C_HASHNODE;
     newhash->ID = ID;
@@ -117,7 +120,8 @@ long C_Hash::AddText(char *string)
     C_HASHNODE *cur, *newhash;
     char *data;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if (!TableSize_ || !Table_ || !string)
+        return (-1);
 
     ID = 0;
     idx = strlen(string);
@@ -132,7 +136,7 @@ long C_Hash::AddText(char *string)
     while (cur)
     {
         if (strcmp(string, (char *)cur->Record) == 0)
-            return(cur->ID);
+            return (cur->ID);
 
         cur = cur->Next;
     }
@@ -167,7 +171,7 @@ long C_Hash::AddText(char *string)
         newhash->ID = ID;
     }
 
-    return(newhash->ID);
+    return (newhash->ID);
 }
 
 long C_Hash::AddTextID(long TextID, char *string)
@@ -176,7 +180,8 @@ long C_Hash::AddTextID(long TextID, char *string)
     C_HASHNODE *cur, *newhash;
     char *data;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if (!TableSize_ || !Table_ || !string)
+        return (-1);
 
     ID = 0;
     idx = strlen(string);
@@ -191,7 +196,7 @@ long C_Hash::AddTextID(long TextID, char *string)
     while (cur)
     {
         if (strcmp(string, (char *)cur->Record) == 0)
-            return(cur->ID);
+            return (cur->ID);
 
         cur = cur->Next;
     }
@@ -225,7 +230,7 @@ long C_Hash::AddTextID(long TextID, char *string)
         cur->Next = newhash;
     }
 
-    return(ID);
+    return (ID);
 }
 
 char *C_Hash::FindText(long ID)
@@ -233,7 +238,8 @@ char *C_Hash::FindText(long ID)
     long idx, i;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return(NULL);
+    if (!TableSize_ || !Table_ || (ID < 0))
+        return (NULL);
 
     idx = ID >> 16;
     i = ID & 0x0000ffff;
@@ -243,9 +249,9 @@ char *C_Hash::FindText(long ID)
         cur = cur->Next;
 
     if (cur)
-        return((char *)cur->Record);
+        return ((char *)cur->Record);
 
-    return(NULL);
+    return (NULL);
 }
 
 long C_Hash::FindTextID(char *string)
@@ -254,7 +260,8 @@ long C_Hash::FindTextID(char *string)
     long ID;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || !string) return(-1);
+    if (!TableSize_ || !Table_ || !string)
+        return (-1);
 
     ID = 0;
     idx = strlen(string);
@@ -269,12 +276,12 @@ long C_Hash::FindTextID(char *string)
     while (cur)
     {
         if (strcmp(string, (char *)cur->Record) == 0)
-            return(cur->ID);
+            return (cur->ID);
 
         cur = cur->Next;
     }
 
-    return(-1);
+    return (-1);
 }
 
 long C_Hash::FindTextID(long ID)
@@ -282,7 +289,8 @@ long C_Hash::FindTextID(long ID)
     long idx, i;
     C_HASHNODE *cur;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return(NULL);
+    if (!TableSize_ || !Table_ || (ID < 0))
+        return (NULL);
 
     idx = ID >> 16;
     i = ID & 0x0000ffff;
@@ -292,9 +300,9 @@ long C_Hash::FindTextID(long ID)
         cur = cur->Next;
 
     if (cur)
-        return(cur->ID);
+        return (cur->ID);
 
-    return(-1);
+    return (-1);
 }
 
 void C_Hash::Remove(long ID)
@@ -302,11 +310,13 @@ void C_Hash::Remove(long ID)
     long idx;
     C_HASHNODE *cur, *prev;
 
-    if (!TableSize_ || !Table_ || (ID < 0)) return;
+    if (!TableSize_ || !Table_ || (ID < 0))
+        return;
 
     idx = ID % TableSize_;
 
-    if (!Table_[idx].Root_) return;
+    if (!Table_[idx].Root_)
+        return;
 
     if (Table_[idx].Root_->ID == ID)
     {
@@ -358,9 +368,9 @@ void *C_Hash::GetFirst()
     Current_ = cur;
 
     if (cur)
-        return(cur->Record);
+        return (cur->Record);
 
-    return(NULL);
+    return (NULL);
 }
 
 void *C_Hash::GetNext()
@@ -368,7 +378,7 @@ void *C_Hash::GetNext()
     C_HASHNODE *cur;
 
     if (!Current_)
-        return(NULL);
+        return (NULL);
 
     cur = Current_->Next;
 
@@ -381,7 +391,7 @@ void *C_Hash::GetNext()
     Current_ = cur;
 
     if (cur)
-        return(cur->Record);
+        return (cur->Record);
 
-    return(NULL);
+    return (NULL);
 }

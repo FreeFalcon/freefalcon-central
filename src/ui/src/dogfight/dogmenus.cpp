@@ -14,12 +14,15 @@
 #include "userids.h"
 #include "textids.h"
 #include "dogfight.h"
-#include "Flight.h"
-#include "ClassTbl.h"
-#include "ACSelect.h"
+#include "flight.h"
+#include "classtbl.h"
+#include "acselect.h"
 
-void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void AreYouSure(long TitleID, long MessageID,
+                void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
 void CloseWindowCB(long ID, short hittype, C_Base *control);
 uchar GetPlaneListID(long ID);
 void MovePlayerAround(FalconSessionEntity *entity);
@@ -45,7 +48,8 @@ void HookupSelectACTypes(C_PopupList *menu, void (*cb)(long, short, C_Base *))
         while (DFAIPlanes[i].ID)
         {
             if (gUI_Tracking_Flag bitand _UI_TRACK_FLAG02)
-                menu->AddItem(DFAIPlanes[i].ID, C_TYPE_RADIO, DFAIPlanes[i].TextID, MID_DF_TYPE);
+                menu->AddItem(DFAIPlanes[i].ID, C_TYPE_RADIO,
+                              DFAIPlanes[i].TextID, MID_DF_TYPE);
 
             menu->SetCallback(DFAIPlanes[i].ID, cb);
             i++;
@@ -59,10 +63,10 @@ static void SetACTypeCB(long ID, short hittype, C_Base *)
     C_PopupList *mainmenu = NULL;
     uchar team = 0, skill = 0;
     int idx = 0, type = 0;
-    C_TreeList   *tree = NULL;
-    TREELIST     *item = NULL;
+    C_TreeList *tree = NULL;
+    TREELIST *item = NULL;
     C_Dog_Flight *dfflight = NULL;
-    Flight        flt = NULL;
+    Flight flt = NULL;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -71,7 +75,7 @@ static void SetACTypeCB(long ID, short hittype, C_Base *)
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
     {
-        tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+        tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
         if (tree)
         {
@@ -79,13 +83,17 @@ static void SetACTypeCB(long ID, short hittype, C_Base *)
 
             if (item)
             {
-                dfflight = (C_Dog_Flight*)item->Item_;
+                dfflight = (C_Dog_Flight *)item->Item_;
 
                 if (dfflight)
                 {
                     flt = (Flight)vuDatabase->Find(dfflight->GetVUID());
                     idx = GetPlaneListID(ID);
-                    type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT, DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;
+                    type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT,
+                                      DFAIPlanes[idx].UnitSType,
+                                      DFAIPlanes[idx].SPType, VU_ANY, VU_ANY,
+                                      VU_ANY) +
+                           VU_LAST_ENTITY_TYPE;
                     RequestTypeChange(flt, type);
                 }
             }
@@ -118,36 +126,40 @@ static void SetACTypeCB(long ID, short hittype, C_Base *)
                     team = 3;
                 else if (mainmenu->GetItemState(DF_MARK_TIGER))
                     team = 4;
-                else team = 1;
+                else
+                    team = 1;
             }
             else
             {
                 switch (gPopupMgr->GetCallingClient())
                 {
-                    case 0:
-                        team = 1;
-                        break;
+                case 0:
+                    team = 1;
+                    break;
 
-                    case 1:
-                        team = 2;
-                        break;
+                case 1:
+                    team = 2;
+                    break;
 
-                    case 2:
-                        team = 3;
-                        break;
+                case 2:
+                    team = 3;
+                    break;
 
-                    case 3:
-                        team = 4;
-                        break;
+                case 3:
+                    team = 4;
+                    break;
 
-                    default:
-                        team = 1;
-                        break;
+                default:
+                    team = 1;
+                    break;
                 }
             }
 
             idx = GetPlaneListID(ID);
-            type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT, DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;
+            type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT,
+                              DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType,
+                              VU_ANY, VU_ANY, VU_ANY) +
+                   VU_LAST_ENTITY_TYPE;
             RequestACSlot(NULL, team, 0, skill, type, 0);
         }
     }
@@ -157,11 +169,11 @@ static void SetACTypeCB(long ID, short hittype, C_Base *)
 
 static void TeamJoinCB(long, short hittype, C_Base *)
 {
-    C_TreeList   *tree;
-    TREELIST     *item;
+    C_TreeList *tree;
+    TREELIST *item;
     C_Dog_Flight *dfflight;
-    C_Pilot      *pilot;
-    Flight        flt;
+    C_Pilot *pilot;
+    Flight flt;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -170,7 +182,7 @@ static void TeamJoinCB(long, short hittype, C_Base *)
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
     {
-        tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+        tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
         if (tree)
         {
@@ -182,7 +194,7 @@ static void TeamJoinCB(long, short hittype, C_Base *)
                 {
                     if (item->Item_->_GetCType_() == _CNTL_DOG_FLIGHT_)
                     {
-                        dfflight = (C_Dog_Flight*)item->Item_;
+                        dfflight = (C_Dog_Flight *)item->Item_;
 
                         if (dfflight)
                         {
@@ -196,7 +208,7 @@ static void TeamJoinCB(long, short hittype, C_Base *)
                     }
                     else if (item->Item_->_GetCType_() == _CNTL_PILOT_)
                     {
-                        pilot = (C_Pilot*)item->Item_;
+                        pilot = (C_Pilot *)item->Item_;
 
                         if (pilot)
                         {
@@ -217,29 +229,32 @@ static void TeamJoinCB(long, short hittype, C_Base *)
         long idx, type;
 
         idx = GetPlaneListID(DF_AC_F16C);
-        type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT, DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;
+        type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT,
+                          DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType,
+                          VU_ANY, VU_ANY, VU_ANY) +
+               VU_LAST_ENTITY_TYPE;
 
         switch (gPopupMgr->GetCallingClient())
         {
-            case 0:
-                RequestACSlot(NULL, 1, 0, 0, type, 1);
-                break;
+        case 0:
+            RequestACSlot(NULL, 1, 0, 0, type, 1);
+            break;
 
-            case 1:
-                RequestACSlot(NULL, 2, 0, 0, type, 1);
-                break;
+        case 1:
+            RequestACSlot(NULL, 2, 0, 0, type, 1);
+            break;
 
-            case 2:
-                RequestACSlot(NULL, 3, 0, 0, type, 1);
-                break;
+        case 2:
+            RequestACSlot(NULL, 3, 0, 0, type, 1);
+            break;
 
-            case 3:
-                RequestACSlot(NULL, 4, 0, 0, type, 1);
-                break;
+        case 3:
+            RequestACSlot(NULL, 4, 0, 0, type, 1);
+            break;
 
-            case 4:
-                RequestACSlot(NULL, 1, 0, 0, type, 1);
-                break;
+        case 4:
+            RequestACSlot(NULL, 1, 0, 0, type, 1);
+            break;
         }
     }
 
@@ -248,15 +263,15 @@ static void TeamJoinCB(long, short hittype, C_Base *)
 
 static void DeleteFlightCB(long, short hittype, C_Base *)
 {
-    C_TreeList   *tree;
-    TREELIST     *item;
+    C_TreeList *tree;
+    TREELIST *item;
     C_Dog_Flight *dfflight;
-    Flight        flt;
+    Flight flt;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+    tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
     if (tree)
     {
@@ -264,13 +279,13 @@ static void DeleteFlightCB(long, short hittype, C_Base *)
 
         if (item)
         {
-            dfflight = (C_Dog_Flight*)item->Item_;
+            dfflight = (C_Dog_Flight *)item->Item_;
 
             if (dfflight)
             {
                 flt = (Flight)vuDatabase->Find(dfflight->GetVUID());
 
-                if ( not flt->IsPlayer())
+                if (not flt->IsPlayer())
                     RequestFlightDelete(flt);
             }
         }
@@ -282,14 +297,14 @@ static void DeleteFlightCB(long, short hittype, C_Base *)
 static void DeletePilotCB(long, short hittype, C_Base *)
 {
     C_TreeList *tree;
-    TREELIST   *item;
-    C_Pilot    *pilot;
-    Flight      flt;
+    TREELIST *item;
+    C_Pilot *pilot;
+    Flight flt;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+    tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
     if (tree)
     {
@@ -297,7 +312,7 @@ static void DeletePilotCB(long, short hittype, C_Base *)
 
         if (item)
         {
-            pilot = (C_Pilot*)item->Item_;
+            pilot = (C_Pilot *)item->Item_;
 
             if (pilot and not pilot->GetPlayer())
             {
@@ -316,10 +331,10 @@ static void DeletePilotCB(long, short hittype, C_Base *)
 
 static void AddAIToFlightCB(long ID, short hittype, C_Base *)
 {
-    C_TreeList   *tree;
-    TREELIST     *item;
+    C_TreeList *tree;
+    TREELIST *item;
     C_Dog_Flight *dfflight;
-    Flight        flt;
+    Flight flt;
     uchar SkillLevel;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -327,28 +342,28 @@ static void AddAIToFlightCB(long ID, short hittype, C_Base *)
 
     switch (ID)
     {
-        case DF_SKILL_CADET:
-            SkillLevel = 1;
-            break;
+    case DF_SKILL_CADET:
+        SkillLevel = 1;
+        break;
 
-        case DF_SKILL_ROOKIE:
-            SkillLevel = 2;
-            break;
+    case DF_SKILL_ROOKIE:
+        SkillLevel = 2;
+        break;
 
-        case DF_SKILL_VETERAN:
-            SkillLevel = 3;
-            break;
+    case DF_SKILL_VETERAN:
+        SkillLevel = 3;
+        break;
 
-        case DF_SKILL_ACE:
-            SkillLevel = 4;
-            break;
+    case DF_SKILL_ACE:
+        SkillLevel = 4;
+        break;
 
-        default:
-            SkillLevel = 0;
-            break;
+    default:
+        SkillLevel = 0;
+        break;
     }
 
-    tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+    tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
     if (tree)
     {
@@ -356,7 +371,7 @@ static void AddAIToFlightCB(long ID, short hittype, C_Base *)
 
         if (item)
         {
-            dfflight = (C_Dog_Flight*)item->Item_;
+            dfflight = (C_Dog_Flight *)item->Item_;
 
             if (dfflight)
             {
@@ -375,10 +390,10 @@ static void AddAIToFlightCB(long ID, short hittype, C_Base *)
 
 static void AddAIPilotCB(long ID, short hittype, C_Base *)
 {
-    C_TreeList   *tree;
-    TREELIST     *item, *child;
+    C_TreeList *tree;
+    TREELIST *item, *child;
     C_Dog_Flight *dfflight;
-    Flight        flt;
+    Flight flt;
     uchar SkillLevel;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -386,28 +401,28 @@ static void AddAIPilotCB(long ID, short hittype, C_Base *)
 
     switch (ID)
     {
-        case DF_SKILL_CADET:
-            SkillLevel = 1;
-            break;
+    case DF_SKILL_CADET:
+        SkillLevel = 1;
+        break;
 
-        case DF_SKILL_ROOKIE:
-            SkillLevel = 2;
-            break;
+    case DF_SKILL_ROOKIE:
+        SkillLevel = 2;
+        break;
 
-        case DF_SKILL_VETERAN:
-            SkillLevel = 3;
-            break;
+    case DF_SKILL_VETERAN:
+        SkillLevel = 3;
+        break;
 
-        case DF_SKILL_ACE:
-            SkillLevel = 4;
-            break;
+    case DF_SKILL_ACE:
+        SkillLevel = 4;
+        break;
 
-        default:
-            SkillLevel = 0;
-            break;
+    default:
+        SkillLevel = 0;
+        break;
     }
 
-    tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+    tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
     if (tree)
     {
@@ -419,7 +434,7 @@ static void AddAIPilotCB(long ID, short hittype, C_Base *)
 
             if (item)
             {
-                dfflight = (C_Dog_Flight*)item->Item_;
+                dfflight = (C_Dog_Flight *)item->Item_;
 
                 if (dfflight)
                 {
@@ -439,11 +454,11 @@ static void AddAIPilotCB(long ID, short hittype, C_Base *)
 
 static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
 {
-    C_TreeList   *tree;
-    TREELIST     *item, *child;
+    C_TreeList *tree;
+    TREELIST *item, *child;
     C_Dog_Flight *dfflight;
-    C_Pilot      *pilot;
-    Flight        flt;
+    C_Pilot *pilot;
+    Flight flt;
     short SkillLevel;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -451,28 +466,28 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
 
     switch (ID)
     {
-        case DF_SET_SKILL_CADET:
-            SkillLevel = 1;
-            break;
+    case DF_SET_SKILL_CADET:
+        SkillLevel = 1;
+        break;
 
-        case DF_SET_SKILL_ROOKIE:
-            SkillLevel = 2;
-            break;
+    case DF_SET_SKILL_ROOKIE:
+        SkillLevel = 2;
+        break;
 
-        case DF_SET_SKILL_VETERAN:
-            SkillLevel = 3;
-            break;
+    case DF_SET_SKILL_VETERAN:
+        SkillLevel = 3;
+        break;
 
-        case DF_SET_SKILL_ACE:
-            SkillLevel = 4;
-            break;
+    case DF_SET_SKILL_ACE:
+        SkillLevel = 4;
+        break;
 
-        default:
-            SkillLevel = 0;
-            break;
+    default:
+        SkillLevel = 0;
+        break;
     }
 
-    tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+    tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
     if (tree)
     {
@@ -480,13 +495,13 @@ static void SetAIPilotSkillCB(long ID, short hittype, C_Base *)
 
         if (child)
         {
-            pilot = (C_Pilot*)child->Item_;
+            pilot = (C_Pilot *)child->Item_;
 
             item = child->Parent;
 
             if (item and pilot)
             {
-                dfflight = (C_Dog_Flight*)item->Item_;
+                dfflight = (C_Dog_Flight *)item->Item_;
 
                 if (dfflight)
                 {
@@ -516,66 +531,66 @@ void DogfightMenuSetup()
 
     switch (SimDogfight.GetGameType())
     {
-        case dog_Furball:
-            menu = gPopupMgr->GetMenu(DF_FLIGHT_POPUP);
+    case dog_Furball:
+        menu = gPopupMgr->GetMenu(DF_FLIGHT_POPUP);
 
-            if (menu)
-            {
-                menu->SetItemFlagBitOff(MID_DF_ADD, C_BIT_ENABLED);
-                menu->SetItemFlagBitOff(MID_DF_JOIN, C_BIT_ENABLED);
-                menu->SetItemFlagBitOn(MID_DF_MARKINGS, C_BIT_ENABLED);
-            }
+        if (menu)
+        {
+            menu->SetItemFlagBitOff(MID_DF_ADD, C_BIT_ENABLED);
+            menu->SetItemFlagBitOff(MID_DF_JOIN, C_BIT_ENABLED);
+            menu->SetItemFlagBitOn(MID_DF_MARKINGS, C_BIT_ENABLED);
+        }
 
-            menu = gPopupMgr->GetMenu(DF_AI_PILOT_POPUP);
+        menu = gPopupMgr->GetMenu(DF_AI_PILOT_POPUP);
 
-            if (menu)
-            {
-                menu->SetItemFlagBitOff(MID_DF_TYPE, C_BIT_ENABLED);
-                menu->SetItemFlagBitOff(MID_DF_JOIN, C_BIT_ENABLED);
-                menu->SetItemFlagBitOff(MID_DF_LEAD, C_BIT_ENABLED);
-            }
+        if (menu)
+        {
+            menu->SetItemFlagBitOff(MID_DF_TYPE, C_BIT_ENABLED);
+            menu->SetItemFlagBitOff(MID_DF_JOIN, C_BIT_ENABLED);
+            menu->SetItemFlagBitOff(MID_DF_LEAD, C_BIT_ENABLED);
+        }
 
-            menu = gPopupMgr->GetMenu(DF_PLAYER_POPUP);
+        menu = gPopupMgr->GetMenu(DF_PLAYER_POPUP);
 
-            if (menu)
-            {
-                menu->SetItemFlagBitOff(MID_DF_TYPE, C_BIT_ENABLED);
-                menu->SetItemFlagBitOff(MID_DF_JOIN, C_BIT_ENABLED);
-                menu->SetItemFlagBitOff(MID_DF_LEAD, C_BIT_ENABLED);
-            }
+        if (menu)
+        {
+            menu->SetItemFlagBitOff(MID_DF_TYPE, C_BIT_ENABLED);
+            menu->SetItemFlagBitOff(MID_DF_JOIN, C_BIT_ENABLED);
+            menu->SetItemFlagBitOff(MID_DF_LEAD, C_BIT_ENABLED);
+        }
 
-            break;
+        break;
 
-        case dog_TeamFurball:
-        case dog_TeamMatchplay:
-            menu = gPopupMgr->GetMenu(DF_FLIGHT_POPUP);
+    case dog_TeamFurball:
+    case dog_TeamMatchplay:
+        menu = gPopupMgr->GetMenu(DF_FLIGHT_POPUP);
 
-            if (menu)
-            {
-                menu->SetItemFlagBitOn(MID_DF_ADD, C_BIT_ENABLED);
-                menu->SetItemFlagBitOn(MID_DF_JOIN, C_BIT_ENABLED);
-                menu->SetItemFlagBitOff(MID_DF_MARKINGS, C_BIT_ENABLED);
-            }
+        if (menu)
+        {
+            menu->SetItemFlagBitOn(MID_DF_ADD, C_BIT_ENABLED);
+            menu->SetItemFlagBitOn(MID_DF_JOIN, C_BIT_ENABLED);
+            menu->SetItemFlagBitOff(MID_DF_MARKINGS, C_BIT_ENABLED);
+        }
 
-            menu = gPopupMgr->GetMenu(DF_AI_PILOT_POPUP);
+        menu = gPopupMgr->GetMenu(DF_AI_PILOT_POPUP);
 
-            if (menu)
-            {
-                menu->SetItemFlagBitOn(MID_DF_TYPE, C_BIT_ENABLED);
-                menu->SetItemFlagBitOn(MID_DF_JOIN, C_BIT_ENABLED);
-                menu->SetItemFlagBitOn(MID_DF_LEAD, C_BIT_ENABLED);
-            }
+        if (menu)
+        {
+            menu->SetItemFlagBitOn(MID_DF_TYPE, C_BIT_ENABLED);
+            menu->SetItemFlagBitOn(MID_DF_JOIN, C_BIT_ENABLED);
+            menu->SetItemFlagBitOn(MID_DF_LEAD, C_BIT_ENABLED);
+        }
 
-            menu = gPopupMgr->GetMenu(DF_PLAYER_POPUP);
+        menu = gPopupMgr->GetMenu(DF_PLAYER_POPUP);
 
-            if (menu)
-            {
-                menu->SetItemFlagBitOn(MID_DF_TYPE, C_BIT_ENABLED);
-                menu->SetItemFlagBitOn(MID_DF_JOIN, C_BIT_ENABLED);
-                menu->SetItemFlagBitOn(MID_DF_LEAD, C_BIT_ENABLED);
-            }
+        if (menu)
+        {
+            menu->SetItemFlagBitOn(MID_DF_TYPE, C_BIT_ENABLED);
+            menu->SetItemFlagBitOn(MID_DF_JOIN, C_BIT_ENABLED);
+            menu->SetItemFlagBitOn(MID_DF_LEAD, C_BIT_ENABLED);
+        }
 
-            break;
+        break;
     }
 }
 
@@ -587,14 +602,14 @@ void CheckForPlayerCB(C_Base *themenu, C_Base *caller)
     Flight flt;
     C_PopupList *menu;
 
-    if ( not themenu or not caller)
+    if (not themenu or not caller)
         return;
 
-    menu = (C_PopupList*)themenu;
+    menu = (C_PopupList *)themenu;
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
     {
-        tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+        tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
         if (tree)
         {
@@ -602,7 +617,7 @@ void CheckForPlayerCB(C_Base *themenu, C_Base *caller)
 
             if (item)
             {
-                dfflight = (C_Dog_Flight*)item->Item_;
+                dfflight = (C_Dog_Flight *)item->Item_;
 
                 if (dfflight)
                 {
@@ -645,9 +660,12 @@ void HookupDogFightMenus()
     if (menu)
     {
         menu->SetOpenCallback(CheckForPlayerCB);
-        HookupSelectACTypes(menu, SetACTypeCB); // Change flight type (IF NO player is in it)
+        HookupSelectACTypes(
+            menu, SetACTypeCB); // Change flight type (IF NO player is in it)
 
-        menu->SetCallback(MID_DF_DELETE, DeleteFlightCB); // Remove flight or all AI pilots if human in flight
+        menu->SetCallback(
+            MID_DF_DELETE,
+            DeleteFlightCB); // Remove flight or all AI pilots if human in flight
         menu->SetCallback(DF_SKILL_NOVICE, AddAIToFlightCB); // add AI
         menu->SetCallback(DF_SKILL_CADET, AddAIToFlightCB); // add AI
         menu->SetCallback(DF_SKILL_ROOKIE, AddAIToFlightCB); // add AI

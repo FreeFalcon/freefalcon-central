@@ -1,6 +1,6 @@
-#include "MsgInc/PlayerStatusMsg.h"
-#include "MissEval.h"
-#include "GameMgr.h"
+#include "msginc/playerstatusmsg.h"
+#include "misseval.h"
+#include "gamemgr.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -8,21 +8,27 @@
 #include "falcsess.h"
 #include "simmover.h"
 #include "campbase.h"
-#include "Unit.h"
+#include "unit.h"
 #include "simdrive.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-FalconPlayerStatusMessage::FalconPlayerStatusMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(PlayerStatusMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconPlayerStatusMessage::FalconPlayerStatusMessage(VU_ID entityId,
+                                                     VuTargetEntity *target,
+                                                     VU_BOOL loopback)
+    : FalconEvent(PlayerStatusMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     RequestOutOfBandTransmit();
     RequestReliableTransmit();//me123
 }
 
-FalconPlayerStatusMessage::FalconPlayerStatusMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) :
-    FalconEvent(PlayerStatusMsg, FalconEvent::SimThread, senderid, target)
+FalconPlayerStatusMessage::FalconPlayerStatusMessage(VU_MSG_TYPE type,
+                                                     VU_ID senderid,
+                                                     VU_ID target)
+    : FalconEvent(PlayerStatusMsg, FalconEvent::SimThread, senderid, target)
 {
     RequestOutOfBandTransmit();
     RequestReliableTransmit();//me123
@@ -34,8 +40,9 @@ FalconPlayerStatusMessage::~FalconPlayerStatusMessage()
 
 int FalconPlayerStatusMessage::Process(uchar autodisp)
 {
-    FalconSessionEntity *session = (FalconSessionEntity*) Entity();
-    SimMoverClass *mover = (SimMoverClass*) vuDatabase->Find(dataBlock.playerID);
+    FalconSessionEntity *session = (FalconSessionEntity *)Entity();
+    SimMoverClass *mover =
+        (SimMoverClass *)vuDatabase->Find(dataBlock.playerID);
     SimBaseClass *theObject;
 
     if (autodisp)
@@ -43,23 +50,25 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         return 0;
     }
 
-    if ( not session)
+    if (not session)
     {
         return 0;
     }
 
-    if ( not mover)
+    if (not mover)
     {
-        FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(session->Id(), FalconLocalSession);
+        FalconPlayerStatusMessage *msg =
+            new FalconPlayerStatusMessage(session->Id(), FalconLocalSession);
         _tcscpy(msg->dataBlock.callsign, dataBlock.callsign);
-        msg->dataBlock.playerID         = dataBlock.playerID;
-        msg->dataBlock.campID           = dataBlock.campID;
-        msg->dataBlock.side             = dataBlock.side;
-        msg->dataBlock.pilotID          = dataBlock.pilotID;
+        msg->dataBlock.playerID = dataBlock.playerID;
+        msg->dataBlock.campID = dataBlock.campID;
+        msg->dataBlock.side = dataBlock.side;
+        msg->dataBlock.pilotID = dataBlock.pilotID;
         msg->dataBlock.vehicleID = dataBlock.vehicleID;
-        msg->dataBlock.state            = dataBlock.state;
+        msg->dataBlock.state = dataBlock.state;
 
-        VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, msg);
+        VuTimerEvent *timer =
+            new VuTimerEvent(0, vuxRealTime + 1000, VU_DELAY_TIMER, msg);
         VuMessageQueue::PostVuMessage(timer);
 
         return 0;
@@ -80,7 +89,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
             TheCampaign.MissionEvaluator->RegisterPlayerJoin(this);
         }
 
-        if ( not mover)
+        if (not mover)
         {
             return 0;
         }
@@ -89,20 +98,22 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         GameManager.AttachPlayerToVehicle(session, mover, dataBlock.pilotID);
 
         // Wake the vehicle's drawable, if it's a player only vehicle
-        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) and not mover->IsAwake() and mover->GetCampaignObject()->IsAwake())
+        if (mover->IsSetFalcFlag(FEC_PLAYERONLY) and not mover->IsAwake() and
+            mover->GetCampaignObject()->IsAwake())
         {
             VuListIterator flit(mover->GetCampaignObject()->GetComponents());
-            theObject = (SimBaseClass*) flit.GetFirst();
+            theObject = (SimBaseClass *)flit.GetFirst();
             mover->Wake();
 
             while (theObject)
             {
-                if (( not theObject->IsAwake()) and ( not theObject->IsSetFalcFlag(FEC_HASPLAYERS)))
+                if ((not theObject->IsAwake()) and
+                    (not theObject->IsSetFalcFlag(FEC_HASPLAYERS)))
                 {
                     theObject->Wake();
                 }
 
-                theObject = (SimBaseClass*)flit.GetNext();
+                theObject = (SimBaseClass *)flit.GetNext();
             }
         }
     }
@@ -116,7 +127,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
             TheCampaign.MissionEvaluator->ServerFileLog(this);
         }
 
-        if ( not mover)
+        if (not mover)
         {
             return 0;
         }
@@ -133,7 +144,7 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         // Sleep the flight if this is the only plane in the flight and it's player only
         if (mover->IsSetFalcFlag(FEC_PLAYERONLY))
         {
-            Unit campObject = (UnitClass*) mover->GetCampaignObject();
+            Unit campObject = (UnitClass *)mover->GetCampaignObject();
 
             if (campObject->NumberOfComponents() < 2)
             {
@@ -147,7 +158,8 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
         //MonoPrint ("  State Transfered\n");
         if (mover and session)
         {
-            SimMoverClass *oldMover = (SimMoverClass*) vuDatabase->Find(dataBlock.oldID);
+            SimMoverClass *oldMover =
+                (SimMoverClass *)vuDatabase->Find(dataBlock.oldID);
             uchar oldpslot = 255;
 
             //MonoPrint ("  old %08x\n", oldMover);
@@ -169,4 +181,3 @@ int FalconPlayerStatusMessage::Process(uchar autodisp)
 
     return 0;
 }
-

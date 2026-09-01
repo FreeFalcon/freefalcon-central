@@ -9,8 +9,8 @@
 
 extern int g_nMissileFix;
 
-#define VISUAL_DIR       "sim\\sensdata\\visual"
-#define VISUAL_DATASET   "visual.lst"
+#define VISUAL_DIR "sim/sensdata/visual"
+#define VISUAL_DATASET "visual.lst"
 
 VisualDataType* VisualDataTable = NULL;
 short NumVisualEntries = 0;
@@ -33,12 +33,13 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
     // 2002-04-17 MN "GPS type" weapons can see and detect always
 
     // RV - Biker - Add check for bomb or missile to avoid AI AC to always see target
-    if ((g_nMissileFix bitand 0x100) and (platform->IsBomb() or platform->IsMissile()))
+    if ((g_nMissileFix bitand 0x100) and
+        (platform->IsBomb() or platform->IsMissile()))
     {
 
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
-        WeaponClassDataType *wc = NULL;
+        WeaponClassDataType* wc = NULL;
 
         ShiAssert(classPtr);
 
@@ -54,9 +55,9 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
     SimObjectLocalData* objData = obj->localData;
 
     // This test seems a little weird.  Could it be optimized by moving the adds and using fabs()?
-    if (objData->az < (seekerAzCenter + typeData->right) and 
-        objData->az > (seekerAzCenter + typeData->left) and 
-        objData->el < (seekerElCenter + typeData->top) and 
+    if (objData->az < (seekerAzCenter + typeData->right) and
+        objData->az > (seekerAzCenter + typeData->left) and
+        objData->el < (seekerElCenter + typeData->top) and
         objData->el > (seekerElCenter + typeData->bottom))
         return TRUE;
     else
@@ -66,9 +67,9 @@ int VisualClass::CanSeeObject(SimObjectType* obj)
 inline int VisualClass::CanSeeObject(float az, float el)
 {
     // This test seems a little weird.  Could it be optimized by moving the adds and using fabs()?
-    if (az < (seekerAzCenter + typeData->right) and 
-        az > (seekerAzCenter + typeData->left) and 
-        el < (seekerElCenter + typeData->top) and 
+    if (az < (seekerAzCenter + typeData->right) and
+        az > (seekerAzCenter + typeData->left) and
+        el < (seekerElCenter + typeData->top) and
         el > (seekerElCenter + typeData->bottom))
         return TRUE;
     else
@@ -106,7 +107,7 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
-        WeaponClassDataType *wc = NULL;
+        WeaponClassDataType* wc = NULL;
 
         //Cobra added this check because aircraft got in here were detected incorrect due to flag confusion
         if (classPtr->vuClassData.classInfo_[VU_TYPE] == STYPE_BOMB_GPS)
@@ -114,7 +115,8 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
             ShiAssert(classPtr);
 
             if (classPtr)
-                wc = (WeaponClassDataType*)classPtr->dataPtr; // this is important
+                wc = (WeaponClassDataType*)
+                         classPtr->dataPtr; // this is important
 
             ShiAssert(wc);
 
@@ -129,7 +131,8 @@ int VisualClass::CanDetectObject(SimObjectType* obj)
     // object is a ground vehicle.  If so, see if it has its inView variable
     // set.  If not return FALSE immediately since that vehicle will be LOD'd
     // out
-    if (obj->BaseData()->IsSim() and ((SimBaseClass *)obj->BaseData())->IsSetLocalFlag(IS_HIDDEN))
+    if (obj->BaseData()->IsSim() and
+        ((SimBaseClass*)obj->BaseData())->IsSetLocalFlag(IS_HIDDEN))
     {
         return FALSE;
     }

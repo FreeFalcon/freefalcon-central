@@ -89,7 +89,7 @@ inline int ACMICamera::Tracking() const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline void ACMICamera::SetPosition(const Tpoint& pos)
+inline void ACMICamera::SetPosition(const Tpoint &pos)
 {
     _pos.x = pos.x;
     _pos.y = pos.y;
@@ -100,7 +100,7 @@ inline void ACMICamera::SetPosition(const Tpoint& pos)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline void ACMICamera::GetPosition(Tpoint& pos) const
+inline void ACMICamera::GetPosition(Tpoint &pos) const
 {
     pos.x = _pos.x;
     pos.y = _pos.y;
@@ -122,7 +122,8 @@ inline const Tpoint &ACMICamera::Position() const
 
 inline void ACMICamera::SetRotation(const Trotation &rot)
 {
-    memcpy(const_cast<Trotation *>(&_rot), const_cast<Trotation *>(&rot), sizeof(Trotation));
+    memcpy(const_cast<Trotation *>(&_rot), const_cast<Trotation *>(&rot),
+           sizeof(Trotation));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -131,7 +132,8 @@ inline void ACMICamera::SetRotation(const Trotation &rot)
 
 inline void ACMICamera::GetRotation(Trotation &rot) const
 {
-    memcpy(const_cast<Trotation *>(&rot), const_cast<Trotation *>(&_rot), sizeof(Trotation));
+    memcpy(const_cast<Trotation *>(&rot), const_cast<Trotation *>(&_rot),
+           sizeof(Trotation));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -158,7 +160,7 @@ inline void ACMICamera::SetWorldPosition(const Tpoint &pos)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline void ACMICamera::Translate(float x, float y, float z, Tpoint* camView)
+inline void ACMICamera::Translate(float x, float y, float z, Tpoint *camView)
 {
     camView->x = x;
     camView->y = y;
@@ -244,7 +246,7 @@ inline void ACMICamera::SetLocalAz(float diff)
 
 inline float ACMICamera::El() const
 {
-    return(_objectEl + _localEl);
+    return (_objectEl + _localEl);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -253,7 +255,7 @@ inline float ACMICamera::El() const
 
 inline float ACMICamera::Az() const
 {
-    return(_objectAz + _localAz);
+    return (_objectAz + _localAz);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -268,11 +270,3 @@ inline void ACMICamera::SetSlewRate(float diff)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
-

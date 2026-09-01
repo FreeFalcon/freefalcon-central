@@ -37,7 +37,8 @@ void MissileClass::ClosestApproach(void)
             // This will potentially introduce some error in the ultimate impact point, but should be acceptable.
             // We have to make this corection since all campaign entities store
             // their z position as "AGL" instead of world space height above sea level.
-            c.z += OTWDriver.GetApproxGroundLevel(targetPtr->BaseData()->XPos(), targetPtr->BaseData()->YPos());
+            c.z += OTWDriver.GetApproxGroundLevel(
+                targetPtr->BaseData()->XPos(), targetPtr->BaseData()->YPos());
 
             // Could probably also just use "groundZ" since we're close to the target at this point...
         }

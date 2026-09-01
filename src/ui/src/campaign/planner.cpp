@@ -5,11 +5,11 @@
 */
 
 #include <windows.h>
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/render3d.h"
-#include "Graphics/Include/drawBSP.h"
-#include "Graphics/Include/matrix.h"
-#include "Graphics/Include/loader.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/render3d.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/matrix.h"
+#include "graphics/include/loader.h"
 #include "entity.h"
 #include "squadron.h"
 #include "cmpclass.h"
@@ -23,7 +23,7 @@
 #include "c3dview.h"
 #include "userids.h"
 #include "textids.h"
-#include "MissEval.h"
+#include "misseval.h"
 #include "falcsess.h"
 #include "f4find.h"
 #include "playerop.h"
@@ -57,7 +57,7 @@ void SetHeading(C_Window *);
 extern RViewPoint *UIviewPoint;
 extern C_TreeList *gATOAll, *gATOPackage, *gOOBTree;
 void RedrawTreeWindowCB(long ID, short hittype, C_Base *control);
-void refresh_waypoint(WayPointClass * wp);
+void refresh_waypoint(WayPointClass *wp);
 BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem);
 void ReconArea(float x, float y, float range);
 void BuildTargetList(float x, float y, float range);
@@ -71,15 +71,19 @@ void LoadFlight(VU_ID flightID);
 void SetPlaneToArm(long Plane, BOOL ArmIt);
 void SetupLoadoutDisplay();
 //BOOL GetRackAndWeapon(VehicleClassDataType* vc,short VehID,short WeaponID,short count,short hardpoint,short center,RailInfo *rail);
-BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPtr,
-                       short WeaponIndex, short count, short hardpoint,
-                       RailInfo *rail);
+BOOL GetJRackAndWeapon(VehicleClassDataType *vc,
+                       Falcon4EntityClassType *classPtr, short WeaponIndex,
+                       short count, short hardpoint, RailInfo *rail);
 void LoadHardPoint(long plane, long hp, long center);
 void ClearHardPoint(long plane, long hardpoint, long center, RailInfo *rail);
 void LoadHardPoint(long plane, long hardpoint, long center, RailInfo *rail);
 void ApplyWaypointChangesCB(long ID, short hittype, C_Base *control);
-void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
-void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*), _TCHAR *filename);
+void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *));
+void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *), _TCHAR *filename);
 void ViewTimerCB(long ID, short hittype, C_Base *control);
 void ViewObjectCB(long ID, short hittype, C_Base *control);
 void MoveViewTimerCB(long ID, short hittype, C_Base *control);
@@ -107,7 +111,7 @@ void DelTacFileCB(long ID, short hittype, C_Base *control);
 void DelTGAFileCB(long ID, short hittype, C_Base *control);
 void DelVHSFileCB(long ID, short hittype, C_Base *control);
 void DelKeyFileCB(long ID, short hittype, C_Base *control);
-void SetDeleteCallback(void (*cb)(long, short, C_Base*));
+void SetDeleteCallback(void (*cb)(long, short, C_Base *));
 void GotoFlightCB(long ID, short hittype, C_Base *control);
 void GotoPrevWaypointCB(long ID, short hittype, C_Base *control);
 void GotoNextWaypointCB(long ID, short hittype, C_Base *control);
@@ -129,8 +133,11 @@ void ChangePatrolCB(long ID, short hittype, C_Base *control);
 void ToggleOOBTeamCB(long ID, short hittype, C_Base *control);
 void ToggleOOBFilterCB(long ID, short hittype, C_Base *control);
 void RemoveGPSItemCB(TREELIST *item);
-void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void AreYouSure(long TitleID, long MessageID,
+                void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
 void SquadronAirUnitCB(long ID, short hittype, C_Base *control);
 void PilotAirUnitCB(long ID, short hittype, C_Base *control);
 void OpenPriorityCB(long ID, short hittype, C_Base *control);
@@ -142,11 +149,12 @@ void CloseAllRenderers(long winID);
 void UpdateInventoryCount();
 //TJL 01/02/04 Change Skin function
 void ChangeSkin();
-extern int set3DTexture = -1;// this tells the skin change code nothing has been changed...yet.
+extern int set3DTexture =
+    -1; // this tells the skin change code nothing has been changed...yet.
 
 
 // This stuff used for targetting
-void (*OldReconCWCB)(long, short, C_Base*) = NULL;
+void (*OldReconCWCB)(long, short, C_Base *) = NULL;
 VU_ID FeatureID = FalconNullId;
 long FeatureNo = 0;
 extern C_TreeList *TargetTree;
@@ -157,15 +165,14 @@ extern bool g_bAllowOverload; // 2002-04-18 MN
 extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 
 
-
-
 void LoadPlannerWindows()
 {
     long ID;
     C_Window *win;
     C_TimerHook *tmr;
 
-    if (PlannerLoaded) return;
+    if (PlannerLoaded)
+        return;
 
     if (_LOAD_ART_RESOURCES_)
         gMainParser->LoadImageList("pln_res.lst");
@@ -173,7 +180,8 @@ void LoadPlannerWindows()
         gMainParser->LoadImageList("pln_art.lst");
 
     gMainParser->LoadSoundList("pln_snd.lst");
-    gMainParser->LoadWindowList("pln_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "pln_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -208,7 +216,6 @@ void LoadPlannerWindows()
         win->AddControl(tmr);
 
         // Add Drag CB
-
     }
 
     win = gMainHandler->FindWindow(MUNITIONS_WIN);
@@ -245,63 +252,65 @@ static void SpinViewCB(long ID, short hittype, C_Base *control)
 {
     C_Button *btn;
 
-    if (hittype not_eq C_TYPE_LMOUSEUP) return;
+    if (hittype not_eq C_TYPE_LMOUSEUP)
+        return;
 
     switch (ID)
     {
-        case LEFT_SPIN:
-            if ( not ((C_Button*)control)->GetState())
-            {
-                Recon.Direction = 2;
-                ((C_Button*)control)->SetState(1);
-                ((C_Button*)control)->Refresh();
-            }
-            else
-            {
-                Recon.Direction = 0;
-                ((C_Button*)control)->SetState(0);
-                ((C_Button*)control)->Refresh();
-            }
+    case LEFT_SPIN:
+        if (not((C_Button *)control)->GetState())
+        {
+            Recon.Direction = 2;
+            ((C_Button *)control)->SetState(1);
+            ((C_Button *)control)->Refresh();
+        }
+        else
+        {
+            Recon.Direction = 0;
+            ((C_Button *)control)->SetState(0);
+            ((C_Button *)control)->Refresh();
+        }
 
-            btn = (C_Button *)control->Parent_->FindControl(RIGHT_SPIN);
+        btn = (C_Button *)control->Parent_->FindControl(RIGHT_SPIN);
 
-            if (btn)
-            {
-                btn->SetState(0);
-                btn->Refresh();
-            }
+        if (btn)
+        {
+            btn->SetState(0);
+            btn->Refresh();
+        }
 
-            break;
+        break;
 
-        case RIGHT_SPIN:
-            if ( not ((C_Button*)control)->GetState())
-            {
-                Recon.Direction = -2;
-                ((C_Button*)control)->SetState(1);
-                ((C_Button*)control)->Refresh();
-            }
-            else
-            {
-                Recon.Direction = 0;
-                ((C_Button*)control)->SetState(0);
-                ((C_Button*)control)->Refresh();
-            }
+    case RIGHT_SPIN:
+        if (not((C_Button *)control)->GetState())
+        {
+            Recon.Direction = -2;
+            ((C_Button *)control)->SetState(1);
+            ((C_Button *)control)->Refresh();
+        }
+        else
+        {
+            Recon.Direction = 0;
+            ((C_Button *)control)->SetState(0);
+            ((C_Button *)control)->Refresh();
+        }
 
-            btn = (C_Button *)control->Parent_->FindControl(LEFT_SPIN);
+        btn = (C_Button *)control->Parent_->FindControl(LEFT_SPIN);
 
-            if (btn)
-            {
-                btn->SetState(0);
-                btn->Refresh();
-            }
+        if (btn)
+        {
+            btn->SetState(0);
+            btn->Refresh();
+        }
 
-            break;
+        break;
     }
 }
 
 static void OverHeadCB(long, short hittype, C_Base *control)
 {
-    if (hittype not_eq C_TYPE_LMOUSEUP) return;
+    if (hittype not_eq C_TYPE_LMOUSEUP)
+        return;
 
     Recon.Pitch = 90;
     PositionCamera(&Recon, control->Parent_, 0);
@@ -315,34 +324,42 @@ static void ViewPannerCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    pnr = (C_Panner*)control;
+    pnr = (C_Panner *)control;
     dx = static_cast<float>(pnr->GetHRange());
     dy = static_cast<float>(pnr->GetVRange());
 
-    if (dx < 0) dx = -2.5f;
+    if (dx < 0)
+        dx = -2.5f;
 
-    if (dx > 0) dx = 2.5f;
+    if (dx > 0)
+        dx = 2.5f;
 
-    if (dy < 0) dy = -2.5f;
+    if (dy < 0)
+        dy = -2.5f;
 
-    if (dy > 0) dy = 2.5f;
+    if (dy > 0)
+        dy = 2.5f;
 
     if (dx)
     {
         Recon.Heading -= dx;
 
-        if (Recon.Heading > 360.0f) Recon.Heading -= 360.0f;
+        if (Recon.Heading > 360.0f)
+            Recon.Heading -= 360.0f;
 
-        if (Recon.Heading < 0.0f) Recon.Heading += 360.0f;
+        if (Recon.Heading < 0.0f)
+            Recon.Heading += 360.0f;
     }
 
     if (dy)
     {
         Recon.Pitch -= dy;
 
-        if (Recon.Pitch > 90.0f) Recon.Pitch = 90.0f;
+        if (Recon.Pitch > 90.0f)
+            Recon.Pitch = 90.0f;
 
-        if (Recon.Pitch < 10.0f) Recon.Pitch = 10.0f;
+        if (Recon.Pitch < 10.0f)
+            Recon.Pitch = 10.0f;
     }
 
     PositionCamera(&Recon, control->Parent_, 0);
@@ -350,7 +367,7 @@ static void ViewPannerCB(long, short hittype, C_Base *control)
 
 static void ZoomPannerCB(long, short hittype, C_Base *control)
 {
-    C_Panner *pnr = (C_Panner*)control;
+    C_Panner *pnr = (C_Panner *)control;
     C_Text *txt;
     _TCHAR buffer[20];
     int dx;
@@ -368,12 +385,13 @@ static void ZoomPannerCB(long, short hittype, C_Base *control)
     if (Recon.Distance > Recon.MaxDistance)
         Recon.Distance = Recon.MaxDistance;
 
-    txt = (C_Text*)control->Parent_->FindControl(SLANT_RANGE);
+    txt = (C_Text *)control->Parent_->FindControl(SLANT_RANGE);
 
     if (txt)
     {
         txt->Refresh();
-        _stprintf(buffer, "%1ld %s", (long)Recon.Distance, gStringMgr->GetString(TXT_FT));
+        _stprintf(buffer, "%1ld %s", (long)Recon.Distance,
+                  gStringMgr->GetString(TXT_FT));
         txt->SetText(buffer);
         txt->Refresh();
     }
@@ -430,7 +448,7 @@ void CloseReconWindowCB(long, short hittype, C_Base *control)
     Flags1 = gMainHandler->GetWindowFlags(RECON_WIN);
     Flags2 = gMainHandler->GetWindowFlags(RECON_LIST_WIN);
 
-    if ( not (Flags1 bitand C_BIT_ENABLED) and not (Flags2 bitand C_BIT_ENABLED))
+    if (not(Flags1 bitand C_BIT_ENABLED) and not(Flags2 bitand C_BIT_ENABLED))
     {
         if (gUIViewer)
         {
@@ -487,7 +505,7 @@ static void OpenReconWindowCB(long, short hittype, C_Base *)
         if (TargetTree)
             TargetTree->DeleteBranch(TargetTree->GetRoot());
 
-        if ( not OldReconCWCB)
+        if (not OldReconCWCB)
         {
             btn = win->FindControl(CLOSE_WINDOW);
 
@@ -505,7 +523,8 @@ static void OpenReconWindowCB(long, short hittype, C_Base *)
 
         flight = (Flight)vuDatabase->Find(gActiveFlightID);
 
-        if (flight == NULL) return;
+        if (flight == NULL)
+            return;
 
         i = 1;
         wp = flight->GetFirstUnitWP();
@@ -543,7 +562,7 @@ void OpenReconForVCCB(long, short hittype, C_Base *)
         if (TargetTree)
             TargetTree->DeleteBranch(TargetTree->GetRoot());
 
-        if ( not OldReconCWCB)
+        if (not OldReconCWCB)
         {
             btn = win->FindControl(CLOSE_WINDOW);
 
@@ -581,28 +600,34 @@ static void ObjectPannerCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    pnr = (C_Panner*)control;
+    pnr = (C_Panner *)control;
     dx = static_cast<float>(pnr->GetHRange());
     dy = static_cast<float>(pnr->GetVRange());
 
     Object.Heading += dx;
     Object.Pitch += dy;
 
-    if (Object.Heading < 0) Object.Heading += 360;
+    if (Object.Heading < 0)
+        Object.Heading += 360;
 
-    if (Object.Heading > 360) Object.Heading -= 360;
+    if (Object.Heading > 360)
+        Object.Heading -= 360;
 
     if (Object.CheckPitch)
     {
-        if (Object.Pitch < Object.MinPitch) Object.Pitch = Object.MinPitch;
+        if (Object.Pitch < Object.MinPitch)
+            Object.Pitch = Object.MinPitch;
 
-        if (Object.Pitch < Object.MaxPitch) Object.Pitch = Object.MaxPitch;
+        if (Object.Pitch < Object.MaxPitch)
+            Object.Pitch = Object.MaxPitch;
     }
     else
     {
-        if (Object.Pitch < 0) Object.Pitch += 360;
+        if (Object.Pitch < 0)
+            Object.Pitch += 360;
 
-        if (Object.Pitch > 360) Object.Pitch -= 360;
+        if (Object.Pitch > 360)
+            Object.Pitch -= 360;
     }
 
     PositionCamera(&Object, control->Parent_, control->GetClient());
@@ -616,14 +641,16 @@ static void ObjectZoomCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    pnr = (C_Panner*)control;
+    pnr = (C_Panner *)control;
     dy = static_cast<float>(pnr->GetVRange());
 
     Object.Distance += dy;
 
-    if (Object.Distance < Object.MinDistance) Object.Distance = Object.MinDistance;
+    if (Object.Distance < Object.MinDistance)
+        Object.Distance = Object.MinDistance;
 
-    if (Object.Distance > Object.MaxDistance) Object.Distance = Object.MaxDistance;
+    if (Object.Distance > Object.MaxDistance)
+        Object.Distance = Object.MaxDistance;
 
     PositionCamera(&Object, control->Parent_, control->GetClient());
 }
@@ -646,9 +673,11 @@ void OpenMunitionsWindowCB(long, short hittype, C_Base *control)
     // if so... open Error window... and don't do anything
     flight = (Flight)vuDatabase->Find(gSelectedFlightID);
 
-    if ( not flight) return;
+    if (not flight)
+        return;
 
-    if ( not flight->IsFlight()) return;
+    if (not flight->IsFlight())
+        return;
 
     if (control->GetGroup())
     {
@@ -720,24 +749,24 @@ static void SelectPlaneToArmCB(long ID, short hittype, C_Base *control)
 
     switch (ID)
     {
-        case AIR_1:
-            idx = 0;
-            break;
+    case AIR_1:
+        idx = 0;
+        break;
 
-        case AIR_2:
-            idx = 1;
-            break;
+    case AIR_2:
+        idx = 1;
+        break;
 
-        case AIR_3:
-            idx = 2;
-            break;
+    case AIR_3:
+        idx = 2;
+        break;
 
-        case AIR_4:
-            idx = 3;
-            break;
+    case AIR_4:
+        idx = 3;
+        break;
 
-        default:
-            return;
+    default:
+        return;
     }
 
     count = 0;
@@ -800,11 +829,12 @@ static void LoadTheStoresCB(long, short hittype, C_Base *control)
 
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
-        _stprintf(fname, "%s\\%s.str", FalconCampUserSaveDirectory, ebox->GetText());
+        _stprintf(fname, "%s/%s.str", FalconCampUserSaveDirectory,
+                  ebox->GetText());
         ifp = fopen(fname, "rb");
 
         if (ifp == NULL)
@@ -825,11 +855,19 @@ static void LoadTheStoresCB(long, short hittype, C_Base *control)
                 if (PlaneEditList[i])
                     for (j = 1; j < HardPoints; j++)
                     {
-                        ClearHardPoint(i, j, static_cast<short>(HardPoints / 2), &gCurRails[i].rail[j]);
+                        ClearHardPoint(i, j, static_cast<short>(HardPoints / 2),
+                                       &gCurRails[i].rail[j]);
 
                         //if(GetRackAndWeapon(gVCPtr,static_cast<short>(gVehID),gCurStores[i].WeaponID[j],gCurStores[i].WeaponCount[j],static_cast<short>(j),static_cast<short>(HardPoints / 2),&gCurRails[i].rail[j]))
-                        if (GetJRackAndWeapon(gVCPtr, &Falcon4ClassTable[gVehID], gCurStores[i].WeaponID[j], gCurStores[i].WeaponCount[j], static_cast<short>(j), &gCurRails[i].rail[j])) // MLR 2/29/2004 -
-                            LoadHardPoint(i, j, static_cast<short>(HardPoints / 2), &gCurRails[i].rail[j]);
+                        if (GetJRackAndWeapon(
+                                gVCPtr, &Falcon4ClassTable[gVehID],
+                                gCurStores[i].WeaponID[j],
+                                gCurStores[i].WeaponCount[j],
+                                static_cast<short>(j),
+                                &gCurRails[i].rail[j])) // MLR 2/29/2004 -
+                            LoadHardPoint(i, j,
+                                          static_cast<short>(HardPoints / 2),
+                                          &gCurRails[i].rail[j]);
                     }
 
             MakeStoresList(win, 1);
@@ -847,7 +885,7 @@ static void LoadStoresCB(long, short hittype, C_Base *)
         return;
 
     SetDeleteCallback(DelSTRFileCB);
-    _stprintf(fname, "%s\\*.str", FalconCampUserSaveDirectory);
+    _stprintf(fname, "%s/*.str", FalconCampUserSaveDirectory);
     LoadAFile(TXT_LOAD_STORES, fname, NULL, LoadTheStoresCB, CloseWindowCB);
 }
 
@@ -863,17 +901,18 @@ static void SaveTheStoresCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     gMainHandler->HideWindow(win);
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)win->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)win->FindControl(FILE_NAME);
 
     if (ebox)
     {
-        _stprintf(fname, "%s\\%s.str", FalconCampUserSaveDirectory, ebox->GetText());
+        _stprintf(fname, "%s/%s.str", FalconCampUserSaveDirectory,
+                  ebox->GetText());
         ofp = fopen(fname, "wb");
 
         if (ofp == NULL)
@@ -893,7 +932,7 @@ static void VerifySaveTheStoresCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -902,19 +941,22 @@ static void VerifySaveTheStoresCB(long ID, short hittype, C_Base *control)
         {
             if (_tcslen(ebox->GetText()) == 0)
             {
-                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB, CloseWindowCB);
+                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB,
+                           CloseWindowCB);
                 return;
             }
         }
 
         //end EmptyFilenameSaveFix
-        _stprintf(fname, "%s\\%s.str", FalconCampUserSaveDirectory, ebox->GetText());
+        _stprintf(fname, "%s/%s.str", FalconCampUserSaveDirectory,
+                  ebox->GetText());
         ofp = fopen(fname, "r");
 
         if (ofp)
         {
             fclose(ofp);
-            AreYouSure(TXT_SAVE_STORES, TXT_FILE_EXISTS, SaveTheStoresCB, CloseWindowCB);
+            AreYouSure(TXT_SAVE_STORES, TXT_FILE_EXISTS, SaveTheStoresCB,
+                       CloseWindowCB);
         }
         else
             SaveTheStoresCB(ID, hittype, control);
@@ -932,12 +974,14 @@ static void SaveStoresCB(long, short hittype, C_Base *)
     if (g_bEmptyFilenameFix)
     {
         _TCHAR fname[MAX_PATH];
-        _stprintf(fname, "%s\\*.str", FalconCampUserSaveDirectory);
-        SaveAFile(TXT_SAVE_STORES, fname, NULL, VerifySaveTheStoresCB, CloseWindowCB, "");
+        _stprintf(fname, "%s/*.str", FalconCampUserSaveDirectory);
+        SaveAFile(TXT_SAVE_STORES, fname, NULL, VerifySaveTheStoresCB,
+                  CloseWindowCB, "");
     }
     else
         //end SaveStoresListFix
-        SaveAFile(TXT_SAVE_STORES, "*.str", NULL, VerifySaveTheStoresCB, CloseWindowCB, "");
+        SaveAFile(TXT_SAVE_STORES, "*.str", NULL, VerifySaveTheStoresCB,
+                  CloseWindowCB, "");
 }
 
 static void RestoreStoresCB(long, short hittype, C_Base *control)
@@ -970,7 +1014,6 @@ static void ChangeSkinCB(long, short hittype, C_Base *control)
 }
 
 
-
 static void UseStoresCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -980,7 +1023,8 @@ static void UseStoresCB(long, short hittype, C_Base *control)
     {
         if (g_bAllowOverload)
         {
-            AreYouSure(TXT_WARNING, TXT_OVERLOADED, CloseWindowCB, CloseWindowCB);
+            AreYouSure(TXT_WARNING, TXT_OVERLOADED, CloseWindowCB,
+                       CloseWindowCB);
         }
         else
         {
@@ -1005,14 +1049,15 @@ static void UseStoresCB(long, short hittype, C_Base *control)
     // KCK: We need to update the mission evaluation stuff if this is the selected flight
     if (gLoadoutFlightID == gPlayerFlightID)
     {
-        Flight flight = (Flight) vuDatabase->Find(gLoadoutFlightID);
+        Flight flight = (Flight)vuDatabase->Find(gLoadoutFlightID);
         int pilotSlot = 255;
 
-        if ( not flight)
+        if (not flight)
             return;
 
         pilotSlot = FalconLocalSession->GetPilotSlot();
-        TheCampaign.MissionEvaluator->PreMissionEval(flight, static_cast<uchar>(pilotSlot));
+        TheCampaign.MissionEvaluator->PreMissionEval(
+            flight, static_cast<uchar>(pilotSlot));
     }
 }
 
@@ -1084,29 +1129,32 @@ static void CampaignTaxiCB(long ID, short hittype, C_Base *)
 
     switch (ID)
     {
-        case WAIT_TAXI:
-            PlayerOptions.SetStartFlag(PlayerOptionsClass::START_TAXI);
+    case WAIT_TAXI:
+        PlayerOptions.SetStartFlag(PlayerOptionsClass::START_TAXI);
 
-            if (fl) fl->ClearEvalFlag(FEVAL_START_COLD);
+        if (fl)
+            fl->ClearEvalFlag(FEVAL_START_COLD);
 
-            break;
+        break;
 
-        case WAIT_TAKEOFF:
-            PlayerOptions.SetStartFlag(PlayerOptionsClass::START_RUNWAY);
+    case WAIT_TAKEOFF:
+        PlayerOptions.SetStartFlag(PlayerOptionsClass::START_RUNWAY);
 
-            if (fl) fl->ClearEvalFlag(FEVAL_START_COLD);
+        if (fl)
+            fl->ClearEvalFlag(FEVAL_START_COLD);
 
-            break;
+        break;
 
-        case WAIT_RAMP:
-            PlayerOptions.SetStartFlag(PlayerOptionsClass::START_RAMP);
+    case WAIT_RAMP:
+        PlayerOptions.SetStartFlag(PlayerOptionsClass::START_RAMP);
 
-            if (fl) fl->SetEvalFlag(FEVAL_START_COLD);
+        if (fl)
+            fl->SetEvalFlag(FEVAL_START_COLD);
 
-            break;
+        break;
 
-        default:
-            ShiWarning("Unexpected taxi ID");
+    default:
+        ShiWarning("Unexpected taxi ID");
     }
 }
 
@@ -1119,10 +1167,10 @@ static BOOL CampaignCountDownCB(C_Base *me)
     long time, hour, minute, second, day;
     int deltaTime = 0;
 
-    txt = (C_Text*)me;
+    txt = (C_Text *)me;
 
-    if ( not txt)
-        return(FALSE);
+    if (not txt)
+        return (FALSE);
 
     fl = FalconLocalSession->GetPlayerFlight();
 
@@ -1131,7 +1179,8 @@ static BOOL CampaignCountDownCB(C_Base *me)
         w = fl->GetCurrentUnitWP();
 
         if (w and w->GetWPAction() == WP_TAKEOFF)
-            deltaTime = (w->GetWPArrivalTime() - vuxGameTime) / VU_TICS_PER_SECOND;
+            deltaTime =
+                (w->GetWPArrivalTime() - vuxGameTime) / VU_TICS_PER_SECOND;
     }
 
     if (deltaTime < 0)
@@ -1158,10 +1207,10 @@ static BOOL CampaignCountDownCB(C_Base *me)
         _stprintf(buffer, "%02d:%02d:%02d", hour, minute, second);
         txt->SetText(buffer);
         txt->Refresh();
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void HookupPlannerControls(long ID)
@@ -1179,7 +1228,7 @@ void HookupPlannerControls(long ID)
 
     // Hook up IDs here
 
-    ctrl = (C_Button*)winme->FindControl(SET_PRIORITIES);
+    ctrl = (C_Button *)winme->FindControl(SET_PRIORITIES);
 
     if (ctrl)
         ctrl->SetCallback(OpenPriorityCB);
@@ -1222,22 +1271,22 @@ void HookupPlannerControls(long ID)
     if (lbox)
         lbox->SetCallback(GotoFlightCB);
 
-    ctrl = (C_Button*)winme->FindControl(WAIT_TAXI);
+    ctrl = (C_Button *)winme->FindControl(WAIT_TAXI);
 
     if (ctrl)
         ctrl->SetCallback(CampaignTaxiCB);
 
-    ctrl = (C_Button*)winme->FindControl(WAIT_TAKEOFF);
+    ctrl = (C_Button *)winme->FindControl(WAIT_TAKEOFF);
 
     if (ctrl)
         ctrl->SetCallback(CampaignTaxiCB);
 
-    ctrl = (C_Button*)winme->FindControl(WAIT_RAMP);
+    ctrl = (C_Button *)winme->FindControl(WAIT_RAMP);
 
     if (ctrl)
         ctrl->SetCallback(CampaignTaxiCB);
 
-    ctrl = (C_Button*)winme->FindControl(WAIT_BACK);
+    ctrl = (C_Button *)winme->FindControl(WAIT_BACK);
 
     if (ctrl)
         ctrl->SetCallback(CampaignAbortTakeoffCB);
@@ -1312,22 +1361,22 @@ void HookupPlannerControls(long ID)
     if (ctrl)
         ctrl->SetCallback(OverHeadCB);
 
-    pnr = (C_Panner*)winme->FindControl(RECON_PANNER);
+    pnr = (C_Panner *)winme->FindControl(RECON_PANNER);
 
     if (pnr)
         pnr->SetCallback(ViewPannerCB);
 
-    pnr = (C_Panner*)winme->FindControl(ZOOMER);
+    pnr = (C_Panner *)winme->FindControl(ZOOMER);
 
     if (pnr)
         pnr->SetCallback(ZoomPannerCB);
 
-    pnr = (C_Panner*)winme->FindControl(PLANE_PANNER);
+    pnr = (C_Panner *)winme->FindControl(PLANE_PANNER);
 
     if (pnr)
         pnr->SetCallback(ObjectPannerCB);
 
-    pnr = (C_Panner*)winme->FindControl(PLANE_ZOOMER);
+    pnr = (C_Panner *)winme->FindControl(PLANE_ZOOMER);
 
     if (pnr)
         pnr->SetCallback(ObjectZoomCB);
@@ -1575,9 +1624,8 @@ void HookupPlannerControls(long ID)
     }
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
-
 }

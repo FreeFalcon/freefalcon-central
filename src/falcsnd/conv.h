@@ -345,7 +345,8 @@ enum RadioComm
     rcFUELCRITICAL = 337,
     rcACCIDENT = 338,
     rcVECTORTOTANKERBULL = 339,
-    rcATCVECTORSRW = 340, // JB 010527 (from MN) // New "Vectors to final - Runway 16R" for example.
+    rcATCVECTORSRW =
+        340, // JB 010527 (from MN) // New "Vectors to final - Runway 16R" for example.
     rcBREAKRL = 341, // JB 010805
     rcINCREASEDECREASERELALT = 342, // JB 010805
     rcTOGGLESIDE = 343, // JB 010805
@@ -357,7 +358,7 @@ enum RadioComm
     rcREQHELPANSWER = 349, // M.N. 020107
     rcREQHELPANSWERBULL = 350, // M.N. 020107
     rcAWACSTARGETOCCUPIED = 351, // MN 020217
-    rcDECLAREIDENTIFIEDTARGET = 352,// MN 020217
+    rcDECLAREIDENTIFIEDTARGET = 352, // MN 020217
     rcORDERECM = 353,
     LastComm = 354
 }; // This mostly replaced now by dynamic calculation

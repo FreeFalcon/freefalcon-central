@@ -6,7 +6,8 @@
 #define _DIAGASSERT_H
 
 #ifndef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif  //__cplusplus
 
     /*//////////////////////////////////////////////////////////////////////
@@ -14,15 +15,15 @@ extern "C" {
     //////////////////////////////////////////////////////////////////////*/
     // Keep the core stuff availible in both release and debug builds.
     // Uses the global assert flags.
-#define DA_USEDEFAULTS      0x0000
+#define DA_USEDEFAULTS 0x0000
     // Turns on showing the assert in a messagebox.  This is the default.
-#define DA_SHOWMSGBOX       0x0001
+#define DA_SHOWMSGBOX 0x0001
     // Turns on showing the assert as through OutputDebugString.  This is
     //  the default.
-#define DA_SHOWODS          0x0002
+#define DA_SHOWODS 0x0002
     // Shows a stack trace in the assert.  This is off by default with the
     //  ASSERT macro, and on in the SUPERASSERT macro.
-#define DA_SHOWSTACKTRACE   0x0004
+#define DA_SHOWSTACKTRACE 0x0004
 
     /*----------------------------------------------------------------------
     FUNCTION        :   SetDiagAssertOptions
@@ -33,8 +34,7 @@ extern "C" {
     RETURNS         :
         The previous options.
     ----------------------------------------------------------------------*/
-    DWORD BUGSUTIL_DLLINTERFACE __stdcall
-    SetDiagAssertOptions(DWORD dwOpts) ;
+    DWORD BUGSUTIL_DLLINTERFACE __stdcall SetDiagAssertOptions(DWORD dwOpts);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   AddDiagAssertModule
@@ -47,8 +47,7 @@ extern "C" {
         TRUE  - The module was added.
         FALSE - The internal table is full.
     ----------------------------------------------------------------------*/
-    BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    AddDiagAssertModule(HMODULE hMod) ;
+    BOOL BUGSUTIL_DLLINTERFACE __stdcall AddDiagAssertModule(HMODULE hMod);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   DiagAssert
@@ -64,11 +63,10 @@ extern "C" {
         FALSE - Ignore the assert.
         TRUE  - Trigger the DebugBreak.
     ----------------------------------------------------------------------*/
-    BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    DiagAssert(DWORD     dwOverrideOpts  ,
-               LPCTSTR   szMsg           ,
-               LPCSTR    szFile          ,
-               DWORD     dwLine) ;
+    BOOL BUGSUTIL_DLLINTERFACE __stdcall DiagAssert(DWORD dwOverrideOpts,
+                                                    LPCTSTR szMsg,
+                                                    LPCSTR szFile,
+                                                    DWORD dwLine);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   DiagOutput
@@ -81,8 +79,7 @@ extern "C" {
     RETURNS         :
         None.
     ----------------------------------------------------------------------*/
-    void BUGSUTIL_DLLINTERFACE __stdcall
-    DiagOutput(LPCTSTR szFmt , ...) ;
+    void BUGSUTIL_DLLINTERFACE __stdcall DiagOutput(LPCTSTR szFmt, ...);
 
     /*//////////////////////////////////////////////////////////////////////
                                _DEBUG Is Defined
@@ -111,30 +108,27 @@ extern "C" {
 #endif
 
     // The assert macro used by ASSERT and SUPERASSERT
-#define ASSERTMACRO(a,x)                                            \
-    do                                                              \
-    {                                                               \
-        if ( not (x)                                              and \
-             DiagAssert ( a , _T ( #x ) , __FILE__  , __LINE__)    )\
-        {                                                           \
-                DebugBreak ( ) ;                                    \
-        }                                                           \
+#define ASSERTMACRO(a, x)                                                      \
+    do                                                                         \
+    {                                                                          \
+        if (not(x) and DiagAssert(a, _T(#x), __FILE__, __LINE__))              \
+        {                                                                      \
+            DebugBreak();                                                      \
+        }                                                                      \
     } while (0)
 
     // The normal assert.  It just uses whatever the module defaults.
-#define ASSERT(x) ASSERTMACRO(DA_USEDEFAULTS,x)
+#define ASSERT(x) ASSERTMACRO(DA_USEDEFAULTS, x)
 
     // Do the lowercase one.
 #define assert ASSERT
 
     // Trust, but verify.
-#define VERIFY(x)   ASSERT(x)
+#define VERIFY(x) ASSERT(x)
 
     // Full blow assert with all the trimmings.
-#define SUPERASSERT(x) ASSERTMACRO ( DA_SHOWSTACKTRACE bitor    \
-                                        DA_SHOWMSGBOX  bitor    \
-                                        DA_SHOWODS      ,   \
-                                     x                  , )
+#define SUPERASSERT(x)                                                         \
+    ASSERTMACRO(DA_SHOWSTACKTRACE bitor DA_SHOWMSGBOX bitor DA_SHOWODS, x, )
 
     // The options macro.
 #define SETDIAGASSERTOPTIONS(x) SetDiagAssertOptions(x)
@@ -161,43 +155,41 @@ extern "C" {
 
     // The TRACE macros.
 #ifdef __cplusplus
-#define TRACE   ::DiagOutput
+#define TRACE ::DiagOutput
 #endif
 
-#define TRACE0(sz)              ::DiagOutput(_T("%s"), _T(sz))
-#define TRACE1(sz, p1)          ::DiagOutput(_T(sz), p1)
-#define TRACE2(sz, p1, p2)      ::DiagOutput(_T(sz), p1, p2)
-#define TRACE3(sz, p1, p2, p3)  ::DiagOutput(_T(sz), p1, p2, p3)
+#define TRACE0(sz) ::DiagOutput(_T("%s"), _T(sz))
+#define TRACE1(sz, p1) ::DiagOutput(_T(sz), p1)
+#define TRACE2(sz, p1, p2) ::DiagOutput(_T(sz), p1, p2)
+#define TRACE3(sz, p1, p2, p3) ::DiagOutput(_T(sz), p1, p2, p3)
 
-#else   // not _DEBUG
+#else // not _DEBUG
     /*//////////////////////////////////////////////////////////////////////
                            _DEBUG Is NOT Defined
     //////////////////////////////////////////////////////////////////////*/
 
-#define ASSERTMACRO(a,x)
+#define ASSERTMACRO(a, x)
 #define ASSERT(x)
-#define VERIFY(x)   ((void)(x))
+#define VERIFY(x) ((void)(x))
 #define SUPERASSERT(x)
 #define SETDIAGASSERTOPTIONS(x)
 #define ADDDIAGASSERTMODULE(x)
 
 #ifdef __cplusplus
     //inline void TraceOutput(LPCTSTR, ...) { }
-#define TRACE   (void)0
+#define TRACE (void)0
 #endif
 
 #define TRACE0(fmt)
-#define TRACE1(fmt,arg1)
-#define TRACE2(fmt,arg1,arg2)
-#define TRACE3(fmt,arg1,arg2,arg3)
+#define TRACE1(fmt, arg1)
+#define TRACE2(fmt, arg1, arg2)
+#define TRACE3(fmt, arg1, arg2, arg3)
 
-#endif  // _DEBUG
+#endif // _DEBUG
 
 
 #ifndef __cplusplus
 }
-#endif  //__cplusplus
+#endif //__cplusplus
 
-#endif  // _DIAGASSERT_H
-
-
+#endif // _DIAGASSERT_H

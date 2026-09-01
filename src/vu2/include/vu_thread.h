@@ -21,6 +21,7 @@ protected:
     VuBaseThread(VuMessageQueue *messageQueue_);
     /** flushes and delete the queue. */
     virtual ~VuBaseThread();
+
 public:
     // sfr: removed not used
     //VuMessageQueue *Queue() const { return const_cast<VuBaseThread*>(this)->(messageQueue_); }
@@ -54,12 +55,9 @@ class VuMainThread : public VuBaseThread
 {
 public:
     /** initializes vu databases. */
-    VuMainThread(
-        int dbSize,
-        VuMessageFilter *filter = NULL,
-        int queueSize = VU_DEFAULT_QUEUE_SIZE,
-        VuSessionEntity * (*sessionCtorFunc)(void) = 0
-    );
+    VuMainThread(int dbSize, VuMessageFilter *filter = NULL,
+                 int queueSize = VU_DEFAULT_QUEUE_SIZE,
+                 VuSessionEntity *(*sessionCtorFunc)(void) = 0);
     /** finalizes vu database. */
     virtual ~VuMainThread();
 
@@ -79,11 +77,10 @@ public:
     VU_ERRCODE LeaveGame();
 
     /** initializes network comms. */
-    VU_ERRCODE InitComms(
-        com_API_handle handle, int bufSize = 0, int packSize = 0,
-        com_API_handle reliablehandle = NULL, int relBufSize = 0, int relPackSize = 0,
-        int resendQueueSize = VU_DEFAULT_QUEUE_SIZE
-    );
+    VU_ERRCODE InitComms(com_API_handle handle, int bufSize = 0,
+                         int packSize = 0, com_API_handle reliablehandle = NULL,
+                         int relBufSize = 0, int relPackSize = 0,
+                         int resendQueueSize = VU_DEFAULT_QUEUE_SIZE);
 
     /** finalizes network comms. */
     VU_ERRCODE DeinitComms();
@@ -94,12 +91,12 @@ public:
     /** returns the send message queue. */
     VuPendingSendQueue *SendQueue() const
     {
-        return const_cast<VuMainThread*>(this)->sendQueue_;
+        return const_cast<VuMainThread *>(this)->sendQueue_;
     }
 
 private:
     /** initialization function, called by constructors. */
-    void Init(int dbSize, VuSessionEntity * (*sessionCtorFunc)(void));
+    void Init(int dbSize, VuSessionEntity *(*sessionCtorFunc)(void));
 
     /** updates group data. */
     void UpdateGroupData(VuGroupEntity *group);
@@ -113,7 +110,6 @@ private:
     /** outgoing queue (for failed sent messages) */
     VuPendingSendQueue *sendQueue_;
 };
-
 
 
 #endif

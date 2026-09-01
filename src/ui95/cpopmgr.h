@@ -21,7 +21,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -39,7 +40,7 @@ private:
     C_Handler *Handler_;
     short Ready()
     {
-        return(ready_);
+        return (ready_);
     }
 
 public:
@@ -58,9 +59,10 @@ public:
     C_PopupList *GetMenu(long ID);
     C_PopupList *GetCurrent()
     {
-        if (Current_) return(Current_->Menu);
+        if (Current_)
+            return (Current_->Menu);
 
-        return(NULL);
+        return (NULL);
     }
     void GetCurrentXY(short *x, short *y)
     {
@@ -82,15 +84,15 @@ public:
     }
     short GetCallingType()
     {
-        return(CurrentType_);
+        return (CurrentType_);
     }
     short GetCallingClient()
     {
-        return(CurrentClient_);
+        return (CurrentClient_);
     }
     C_Base *GetCallingControl()
     {
-        return(Control_);
+        return (Control_);
     }
     BOOL OpenWindowMenu(C_Window *win, long x, long y);
     BOOL OpenMenu(long ID, long x, long y, C_Base *control);

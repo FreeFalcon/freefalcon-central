@@ -1,18 +1,23 @@
-#include "MsgInc/RequestObject.h"
+#include "msginc/requestobject.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-FalconRequestObject::FalconRequestObject(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(RequestObject, FalconEvent::SimThread, entityId, target, loopback)
+FalconRequestObject::FalconRequestObject(VU_ID entityId, VuTargetEntity *target,
+                                         VU_BOOL loopback)
+    : FalconEvent(RequestObject, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-FalconRequestObject::FalconRequestObject(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(RequestObject, FalconEvent::SimThread, senderid, target)
+FalconRequestObject::FalconRequestObject(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(RequestObject, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -28,7 +33,8 @@ int FalconRequestObject::Process(uchar autodisp)
     if (autodisp)
         return 0;
 
-    FalconSessionEntity* fromEnt = (FalconSessionEntity*)vuDatabase->Find(dataBlock.fromID);
+    FalconSessionEntity *fromEnt =
+        (FalconSessionEntity *)vuDatabase->Find(dataBlock.fromID);
 
     if (fromEnt and Entity() and Entity()->IsLocal())
     {
@@ -39,4 +45,3 @@ int FalconRequestObject::Process(uchar autodisp)
 
     return TRUE;
 }
-

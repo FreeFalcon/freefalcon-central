@@ -56,7 +56,8 @@ long ACMI_Hash::Find(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur;
 
-    if ( not TableSize_ or not Table_) return(NULL);
+    if (not TableSize_ or not Table_)
+        return (NULL);
 
     idx = (ID.creator_ bitor ID.num_) % TableSize_;
     cur = Table_[idx].Root_;
@@ -65,13 +66,13 @@ long ACMI_Hash::Find(VU_ID ID)
     {
         if (cur->ID == ID)
         {
-            return(cur->Index);
+            return (cur->Index);
         }
 
         cur = cur->Next;
     }
 
-    return(0);
+    return (0);
 }
 
 ACMI_HASHNODE *ACMI_Hash::Get(VU_ID ID)
@@ -79,7 +80,8 @@ ACMI_HASHNODE *ACMI_Hash::Get(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur;
 
-    if ( not TableSize_ or not Table_) return(NULL);
+    if (not TableSize_ or not Table_)
+        return (NULL);
 
     idx = (ID.creator_ bitor ID.num_) % TableSize_;
     cur = Table_[idx].Root_;
@@ -88,13 +90,13 @@ ACMI_HASHNODE *ACMI_Hash::Get(VU_ID ID)
     {
         if (cur->ID == ID)
         {
-            return(cur);
+            return (cur);
         }
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
@@ -102,7 +104,8 @@ long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
     unsigned long idx;
     ACMI_HASHNODE *cur, *newhash;
 
-    if ( not TableSize_ or not Table_) return(0);
+    if (not TableSize_ or not Table_)
+        return (0);
 
     cur = Get(ID);
 
@@ -115,7 +118,7 @@ long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
             cur->color = color;
         }
 
-        return(cur->Index);
+        return (cur->Index);
     }
 
     newhash = new ACMI_HASHNODE;
@@ -135,7 +138,7 @@ long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
 
     idx = (ID.creator_ bitor ID.num_) % TableSize_;
 
-    if ( not Table_[idx].Root_)
+    if (not Table_[idx].Root_)
     {
         Table_[idx].Root_ = newhash;
     }
@@ -149,7 +152,7 @@ long ACMI_Hash::Add(VU_ID ID, char *lbl, long color)
         cur->Next = newhash;
     }
 
-    return(newhash->Index);
+    return (newhash->Index);
 }
 
 void ACMI_Hash::Remove(VU_ID ID)
@@ -157,11 +160,13 @@ void ACMI_Hash::Remove(VU_ID ID)
     unsigned long idx;
     ACMI_HASHNODE *cur, *prev;
 
-    if ( not TableSize_ or not Table_) return;
+    if (not TableSize_ or not Table_)
+        return;
 
     idx = (ID.creator_ bitor ID.num_) % TableSize_;
 
-    if ( not Table_[idx].Root_) return;
+    if (not Table_[idx].Root_)
+        return;
 
     Table_[idx].Root_;
 
@@ -199,7 +204,7 @@ long ACMI_Hash::GetFirst(ACMI_HASHNODE **current, unsigned long *curidx)
 
     cur = Table_[*curidx].Root_;
 
-    while ( not cur and *curidx < (TableSize_ - 1))
+    while (not cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
@@ -210,23 +215,23 @@ long ACMI_Hash::GetFirst(ACMI_HASHNODE **current, unsigned long *curidx)
         *current = cur;
 
         if (cur)
-            return(cur->Index);
+            return (cur->Index);
     }
 
     *current = NULL;
-    return(-1);
+    return (-1);
 }
 
 long ACMI_Hash::GetNext(ACMI_HASHNODE **current, unsigned long *curidx)
 {
     ACMI_HASHNODE *cur;
 
-    if ( not *current)
-        return(-1);
+    if (not *current)
+        return (-1);
 
     cur = (*current)->Next;
 
-    while ( not cur and *curidx < (TableSize_ - 1))
+    while (not cur and *curidx < (TableSize_ - 1))
     {
         (*curidx)++;
         cur = Table_[*curidx].Root_;
@@ -235,7 +240,7 @@ long ACMI_Hash::GetNext(ACMI_HASHNODE **current, unsigned long *curidx)
     *current = cur;
 
     if (cur)
-        return(cur->Index);
+        return (cur->Index);
 
-    return(-1);
+    return (-1);
 }

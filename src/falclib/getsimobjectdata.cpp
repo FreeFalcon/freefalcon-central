@@ -1,15 +1,15 @@
 // Weapon Stuff
-#include "GetSimObjectData.h"
+#include "getsimobjectdata.h"
 
 SimWeaponDataType *GetSWD(int WeaponId)
 {
     if (WeaponId)
     {
-        WeaponClassDataType* wc;
-        Falcon4EntityClassType* classPtr;
+        WeaponClassDataType *wc;
+        Falcon4EntityClassType *classPtr;
 
-        wc            = &WeaponDataTable[WeaponId];
-        classPtr      = &(Falcon4ClassTable[wc->Index]);
+        wc = &WeaponDataTable[WeaponId];
+        classPtr = &(Falcon4ClassTable[wc->Index]);
         return &SimWeaponDataTable[classPtr->vehicleDataIndex];
     }
 
@@ -20,9 +20,9 @@ Falcon4EntityClassType *GetWeaponF4CT(int WeaponId)
 {
     if (WeaponId)
     {
-        WeaponClassDataType* wc;
+        WeaponClassDataType *wc;
 
-        wc            = &WeaponDataTable[WeaponId];
+        wc = &WeaponDataTable[WeaponId];
         return &(Falcon4ClassTable[wc->Index]);
     }
 
@@ -38,7 +38,3 @@ WeaponClassDataType *GetWCD(int WeaponId)
 
     return NULL;
 }
-
-
-
-

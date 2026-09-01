@@ -11,11 +11,11 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Objective Data
@@ -23,7 +23,8 @@
 class FalconSendObjData : public FalconEvent
 {
 public:
-    FalconSendObjData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconSendObjData(VU_ID entityId, VuTargetEntity *target,
+                      VU_BOOL loopback = TRUE);
     FalconSendObjData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconSendObjData(void);
     virtual int Size(void) const;
@@ -34,22 +35,22 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID owner;
         short set;
         short size;
         ulong totalSize;
         uchar block;
         uchar totalBlocks;
-        void* objData;
+        void *objData;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
 
-void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target, uchar *blocksNeeded);
+void SendObjectiveDeltas(FalconSessionEntity *session, VuTargetEntity *target,
+                         uchar *blocksNeeded);
 
-#pragma pack ()
+#pragma pack()
 
 #endif

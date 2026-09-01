@@ -19,7 +19,7 @@ void ICPClass::ExecMARKMode(void)
 
     NavigationSystem::Point_Type pointType;
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         if (mUpdateFlags bitand MARK_UPDATE)
         {
@@ -30,13 +30,16 @@ void ICPClass::ExecMARKMode(void)
 
             if (pointType == NavigationSystem::NODATA)
             {
-                sprintf(mpLine1, "MARK %2d", gNavigationSys->GetMarkIndex() + 1);
+                sprintf(mpLine1, "MARK %2d",
+                        gNavigationSys->GetMarkIndex() + 1);
                 sprintf(mpLine2, "NO MARK DATA");
                 sprintf(mpLine3, "ENTR TO SET");
             }
             else
             {
-                sprintf(mpLine1, "MARK %2d      %s", gNavigationSys->GetMarkIndex() + 1, mpPointTypeNames[pointType]);
+                sprintf(mpLine1, "MARK %2d      %s",
+                        gNavigationSys->GetMarkIndex() + 1,
+                        mpPointTypeNames[pointType]);
                 gNavigationSys->GetMarkPoint(&pointType, mpLine2, mpLine3);
             }
         }
@@ -57,7 +60,8 @@ void ICPClass::ExecMARKMode(void)
         else
         {
             gNavigationSys->GetMarkPoint(&pointType, latStr, longStr);
-            sprintf(tempstr, "MARK %2d  %s", gNavigationSys->GetMarkIndex() + 1, mpPointTypeNames[pointType]);
+            sprintf(tempstr, "MARK %2d  %s", gNavigationSys->GetMarkIndex() + 1,
+                    mpPointTypeNames[pointType]);
             //gNavigationSys->GetMarkPoint(&pointType, latStr, longStr);
             //Line1
             FillDEDMatrix(0, 10, tempstr);
@@ -76,53 +80,55 @@ void ICPClass::ENTRUpdateMARKMode(void)
     float xprime, yprime;
     float x, y, z;
     mlTrig trig;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC)
     {
 
-        if (MfdDisplay[0]->mode == MFDClass::FCRMode and MfdDisplay[0]->GetDrawable() and ((RadarClass*)MfdDisplay[0]->GetDrawable())->IsAG())
+        if (MfdDisplay[0]->mode == MFDClass::FCRMode and
+            MfdDisplay[0]->GetDrawable() and
+            ((RadarClass*)MfdDisplay[0]->GetDrawable())->IsAG())
         {
 
-            ((RadarClass*)MfdDisplay[0]->GetDrawable())->GetCursorPosition(&xprime, &yprime);
+            ((RadarClass*)MfdDisplay[0]->GetDrawable())
+                ->GetCursorPosition(&xprime, &yprime);
 
             xprime *= NM_TO_FT;
             yprime *= NM_TO_FT;
             mlSinCos(&trig, ((AircraftClass*)(playerAC))->Yaw());
-            x = xprime * trig.cos - yprime * trig.sin + ((AircraftClass*)(playerAC))->XPos();
-            y = xprime * trig.sin + yprime * trig.cos + ((AircraftClass*)(playerAC))->YPos();
+            x = xprime * trig.cos - yprime * trig.sin +
+                ((AircraftClass*)(playerAC))->XPos();
+            y = xprime * trig.sin + yprime * trig.cos +
+                ((AircraftClass*)(playerAC))->YPos();
             z = OTWDriver.GetGroundLevel(x, y);
-            gNavigationSys->SetMarkPoint(NavigationSystem::GMPOINT,
-                                         x,
-                                         y,
-                                         z,
+            gNavigationSys->SetMarkPoint(NavigationSystem::GMPOINT, x, y, z,
                                          SimLibElapsedTime);
         }
-        else if (MfdDisplay[1]->mode == MFDClass::FCRMode and MfdDisplay[1]->GetDrawable() and ((RadarClass*)MfdDisplay[1]->GetDrawable())->IsAG())
+        else if (MfdDisplay[1]->mode == MFDClass::FCRMode and
+                 MfdDisplay[1]->GetDrawable() and
+                 ((RadarClass*)MfdDisplay[1]->GetDrawable())->IsAG())
         {
 
-            ((RadarClass*)MfdDisplay[0]->GetDrawable())->GetCursorPosition(&xprime, &yprime);
+            ((RadarClass*)MfdDisplay[0]->GetDrawable())
+                ->GetCursorPosition(&xprime, &yprime);
 
             xprime *= NM_TO_FT;
             yprime *= NM_TO_FT;
             mlSinCos(&trig, ((AircraftClass*)(playerAC))->Yaw());
-            x = xprime * trig.cos - yprime * trig.sin + ((AircraftClass*)(playerAC))->XPos();
-            y = xprime * trig.sin + yprime * trig.cos + ((AircraftClass*)(playerAC))->YPos();
+            x = xprime * trig.cos - yprime * trig.sin +
+                ((AircraftClass*)(playerAC))->XPos();
+            y = xprime * trig.sin + yprime * trig.cos +
+                ((AircraftClass*)(playerAC))->YPos();
             z = OTWDriver.GetGroundLevel(x, y);
-            gNavigationSys->SetMarkPoint(NavigationSystem::GMPOINT,
-                                         x,
-                                         y,
-                                         z,
+            gNavigationSys->SetMarkPoint(NavigationSystem::GMPOINT, x, y, z,
                                          SimLibElapsedTime);
         }
         else
         {
-            gNavigationSys->SetMarkPoint(NavigationSystem::POS,
-                                         ((AircraftClass*)(playerAC))->XPos(),
-                                         ((AircraftClass*)(playerAC))->YPos(),
-                                         ((AircraftClass*)(playerAC))->ZPos(),
-                                         SimLibElapsedTime);
-
+            gNavigationSys->SetMarkPoint(
+                NavigationSystem::POS, ((AircraftClass*)(playerAC))->XPos(),
+                ((AircraftClass*)(playerAC))->YPos(),
+                ((AircraftClass*)(playerAC))->ZPos(), SimLibElapsedTime);
         }
 
         mUpdateFlags or_eq MARK_UPDATE;
@@ -132,7 +138,7 @@ void ICPClass::ENTRUpdateMARKMode(void)
 void ICPClass::PNUpdateMARKMode(int button, int)
 {
 
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (button == PREV_BUTTON)
     {

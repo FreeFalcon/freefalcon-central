@@ -19,7 +19,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -38,7 +39,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 protected:
@@ -52,7 +54,8 @@ protected:
     short ScrollCount_; // sfr: added for scrollbar control
     float Opaque_;
     UI95_RECT BgRect_;
-    COLORREF NormalColor_, SelColor_, DisColor_, BarColor_, BgColor_, LabelColor_;
+    COLORREF NormalColor_, SelColor_, DisColor_, BarColor_, BgColor_,
+        LabelColor_;
 
     // Don't save from here down
     LISTBOX *Root_;
@@ -134,16 +137,17 @@ public:
     void SetFont(long font);
     LISTBOX *GetRoot()
     {
-        return(Root_);
+        return (Root_);
     }
     LISTBOX *FindID(long ID);
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
     void SetDropDown(long ID);
     // sfr: added last parameter for scroll window number of items
-    void AddScrollBar(long MinusUp, long MinusDown, long PlusUp, long PlusDown, long Slider, long nItems = -1);
+    void AddScrollBar(long MinusUp, long MinusDown, long PlusUp, long PlusDown,
+                      long Slider, long nItems = -1);
     C_Button *GetItem(long ID);
     BOOL CloseWindow();
 
@@ -155,24 +159,25 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     // Query Functions
     _TCHAR *GetText()
     {
-        if (Label_ not_eq NULL) return(Label_->GetText());
+        if (Label_ not_eq NULL)
+            return (Label_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     long GetTextID()
     {
-        return(LabelVal_);
+        return (LabelVal_);
     }
     void SetValue(long ID);
     void SetValueText(long inText); // JB 011124
 
-    void SetOpenCallback(void (*cb)(C_Base*))
+    void SetOpenCallback(void (*cb)(C_Base *))
     {
         OpenCallback_ = cb;
     }
@@ -187,7 +192,7 @@ public:
 #ifdef _UI95_PARSER_
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *Hndlr);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

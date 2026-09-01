@@ -3,7 +3,7 @@
 #include "aircrft.h"
 #include "navsystem.h"
 #include "flightdata.h"
-#include "Phyconst.h"
+#include "phyconst.h"
 #include "fcc.h"
 #include "hud.h"
 #include "cpmanager.h"
@@ -16,11 +16,14 @@ void ICPClass::ICPEnter(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON and Manual_Input)
+    if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON and
+        Manual_Input)
         EnterTCN();
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == TWO_BUTTON and Manual_Input)
         EnterBingo();
-    else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_CNI) and
+             mICPSecondaryMode == TWO_BUTTON and Manual_Input)
         EnterALOW();
     else if (IsICPSet(ICPClass::EDIT_LAT) and Manual_Input)
         EnterLat();
@@ -35,12 +38,15 @@ void ICPClass::ICPEnter(void)
         playerAC->FCC->waypointStepCmd = 127;
         ExecDLINKMode();
     }
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == FIFE_BUTTON and Manual_Input)
         EnterWSpan();
     //VIP/VRP
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == THREE_BUTTON and Manual_Input)
         EnterVIP();
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == NINE_BUTTON and Manual_Input)
         EnterVRP();
     //EWS
     else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE)
@@ -68,11 +74,13 @@ void ICPClass::ICPEnter(void)
         EnterINTG();
 
     //INS
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == SIX_BUTTON and Manual_Input)
         EnterINSStuff();
 
     //Laser
-    else if (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == FIFE_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MISC_MODE) and
+             mICPSecondaryMode == FIFE_BUTTON and Manual_Input)
         EnterLaser();
 
     InputsMade = 0;
@@ -81,19 +89,22 @@ void ICPClass::EnterLat(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC)
+    if (not playerAC)
         return;
 
     CheckDigits();
     //We just edited our latitude
-    LATDegrees = static_cast<float>(((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3));
+    LATDegrees = static_cast<float>(
+        ((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3));
 
     //Wombat778 11-05-2003 Changed to a better formula that treats values as minutes with a decimal rather than seconds.
 
     // LATMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
     // LATSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);
 
-    LATMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; //Wombat778 11-5-2003
+    LATMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) +
+                  (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) *
+                 MIN_TO_DEG; //Wombat778 11-5-2003
     LATSeconds = 0; //Wombat778 11-5-2003
 
 
@@ -115,7 +126,8 @@ void ICPClass::EnterLat(void)
     playerAC->curWaypoint->SetLocation(SetLat, SetLong, WPAlt);
 
     // MD -- 20040314: whoops -- this should be updating the ground point immediately as well
-    RadarClass* theRadar = (RadarClass*)FindSensor(playerAC, SensorClass::Radar);
+    RadarClass *theRadar =
+        (RadarClass *)FindSensor(playerAC, SensorClass::Radar);
 
     if (theRadar)
         theRadar->SetGroundPoint(SetLat, SetLong, WPAlt);
@@ -127,7 +139,7 @@ void ICPClass::EnterLong(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC)
+    if (not playerAC)
         return;
 
     CheckDigits();
@@ -137,14 +149,17 @@ void ICPClass::EnterLong(void)
     cosLat = (float)cos(latitude);
 
     //Get our entered Longitude
-    LONGDegrees = static_cast<float>(((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3));
+    LONGDegrees = static_cast<float>(
+        ((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3));
 
     //Wombat778 11-05-2003 Changed to a better formula that treats values as minutes with a decimal rather than seconds.
 
     //LONGMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
     //LONGSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);
 
-    LONGMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; //Wombat778 11-5-2003
+    LONGMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) +
+                   (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) *
+                  MIN_TO_DEG; //Wombat778 11-5-2003
     LONGSeconds = 0; //Wombat778 11-5-2003
 
     Long = LONGDegrees + LONGMinutes + LONGSeconds;
@@ -157,7 +172,8 @@ void ICPClass::EnterLong(void)
 
     Long *= DTR;
 
-    SetLong = (Long * (EARTH_RADIUS_FT * cosLat)) - (FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLat);
+    SetLong = (Long * (EARTH_RADIUS_FT * cosLat)) -
+              (FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLat);
 
     WPAlt = zCurr;
     SetLat = xCurr;
@@ -165,7 +181,8 @@ void ICPClass::EnterLong(void)
     playerAC->curWaypoint->SetLocation(SetLat, SetLong, WPAlt);
 
     // MD -- 20040314: whoops -- this should be updating the ground point immediately as well
-    RadarClass* theRadar = (RadarClass*)FindSensor(playerAC, SensorClass::Radar);
+    RadarClass *theRadar =
+        (RadarClass *)FindSensor(playerAC, SensorClass::Radar);
 
     if (theRadar)
         theRadar->SetGroundPoint(SetLat, SetLong, WPAlt);
@@ -175,7 +192,7 @@ void ICPClass::EnterLong(void)
 }
 void ICPClass::EnterALOW(void)
 {
-    if ( not EDITMSLFLOOR and not TFADV)
+    if (not EDITMSLFLOOR and not TFADV)
     {
         //round to the next 10FT
         if (Input_Digit7 not_eq 0)
@@ -221,7 +238,7 @@ void ICPClass::EnterALOW(void)
 }
 void ICPClass::EnterTCN(void)
 {
-    if ( not gNavigationSys)
+    if (not gNavigationSys)
         return;
 
     if (Input_Digit7 == 0 and Input_Digit6 > 10)
@@ -240,10 +257,13 @@ void ICPClass::EnterTCN(void)
         else
         {
             //Set our new channel
-            if (gNavigationSys->GetTacanBand(NavigationSystem::ICP) == TacanList::X)
-                gNavigationSys->SetTacanChannel(NavigationSystem::ICP, CurrChannel, TacanList::X);
+            if (gNavigationSys->GetTacanBand(NavigationSystem::ICP) ==
+                TacanList::X)
+                gNavigationSys->SetTacanChannel(NavigationSystem::ICP,
+                                                CurrChannel, TacanList::X);
             else
-                gNavigationSys->SetTacanChannel(NavigationSystem::ICP, CurrChannel, TacanList::Y);
+                gNavigationSys->SetTacanChannel(NavigationSystem::ICP,
+                                                CurrChannel, TacanList::Y);
 
             //ClearDigits();
             ResetInput();
@@ -339,7 +359,9 @@ void ICPClass::EWSEnter(void)
     {
         tempvar = AddUp();
 
-        if (tempvar > static_cast<unsigned int>(playerAC->counterMeasureStation[CHAFF_STATION].weaponCount))
+        if (tempvar >
+            static_cast<unsigned int>(
+                playerAC->counterMeasureStation[CHAFF_STATION].weaponCount))
         {
             WrongInput();
         }
@@ -353,7 +375,9 @@ void ICPClass::EWSEnter(void)
     {
         tempvar = AddUp();
 
-        if (tempvar > static_cast<unsigned int>(playerAC->counterMeasureStation[FLARE_STATION].weaponCount))
+        if (tempvar >
+            static_cast<unsigned int>(
+                playerAC->counterMeasureStation[FLARE_STATION].weaponCount))
         {
             WrongInput();
         }
@@ -484,7 +508,7 @@ void ICPClass::SetOA(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC->curWaypoint)
+    if (not playerAC->curWaypoint)
         return;
 
     //which offset do we want to set?
@@ -494,7 +518,8 @@ void ICPClass::SetOA(void)
         if (iOA_RNG == 0 and iOA_ALT == 0)
         {
             playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
-            gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iOA_ALT, 1);
+            gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr,
+                                           (float)iOA_ALT, 1);
             return;
         }
 
@@ -504,11 +529,12 @@ void ICPClass::SetOA(void)
         float a = 0.0F, b = 0.0F;
         float tempAng = fOA_BRG;
         GetValues(tempAng, &a, &b, iOA_RNG);
-        xCurr += b;  //JPG 4 Jan 04 - Fixed crackhead code
+        xCurr += b; //JPG 4 Jan 04 - Fixed crackhead code
         yCurr += a;
         WPAlt = static_cast<float>(iOA_ALT);
         //set our new OffsetAimpoint
-        gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr, WPAlt, 1);
+        gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr,
+                                       WPAlt, 1);
     }
     else
     {
@@ -516,7 +542,8 @@ void ICPClass::SetOA(void)
         if (iOA_RNG2 == 0 and iOA_ALT2 == 0)
         {
             playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
-            gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iOA_ALT2, 2); //+200
+            gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr,
+                                           (float)iOA_ALT2, 2); //+200
             return;
         }
 
@@ -530,21 +557,23 @@ void ICPClass::SetOA(void)
         yCurr += a;
         WPAlt = static_cast<float>(iOA_ALT2);
         //set our new OffsetAimpoint
-        gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr, WPAlt, 2);
+        gNavigationSys->SetDESTOAPoint(NavigationSystem::POS, xCurr, yCurr,
+                                       WPAlt, 2);
     }
 }
 void ICPClass::SetVIP(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC->curWaypoint)
+    if (not playerAC->curWaypoint)
         return;
 
     //if we don't have a different altitude or a range, we just take the current waypoint
     if (iVIP_RNG == 0 and iVIP_ALT == 0)
     {
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
-        gNavigationSys->SetVIPOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iVIP_ALT, 1);// + 200,1);
+        gNavigationSys->SetVIPOAPoint(NavigationSystem::POS, xCurr, yCurr,
+                                      (float)iVIP_ALT, 1); // + 200,1);
         return;
     }
 
@@ -562,13 +591,14 @@ void ICPClass::SetVIP(void)
 
     WPAlt = static_cast<float>(iVIP_ALT);
     //set our new OffsetAimpoint
-    gNavigationSys->SetVIPOAPoint(NavigationSystem::POS, xCurr, yCurr, WPAlt, 0);
+    gNavigationSys->SetVIPOAPoint(NavigationSystem::POS, xCurr, yCurr, WPAlt,
+                                  0);
 }
 void ICPClass::SetVRP(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC->curWaypoint)
+    if (not playerAC->curWaypoint)
     {
         return;
     }
@@ -577,7 +607,8 @@ void ICPClass::SetVRP(void)
     if (iVRP_RNG == 0 and iVRP_ALT == 0)
     {
         playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
-        gNavigationSys->SetVRPOAPoint(NavigationSystem::POS, xCurr, yCurr, (float)iVRP_ALT, 1);// + 200,1);
+        gNavigationSys->SetVRPOAPoint(NavigationSystem::POS, xCurr, yCurr,
+                                      (float)iVRP_ALT, 1); // + 200,1);
         return;
     }
 
@@ -592,7 +623,8 @@ void ICPClass::SetVRP(void)
 
     WPAlt = static_cast<float>(iVRP_ALT);
     //set our new OffsetAimpoint
-    gNavigationSys->SetVRPOAPoint(NavigationSystem::POS, xCurr, yCurr, WPAlt, 0);
+    gNavigationSys->SetVRPOAPoint(NavigationSystem::POS, xCurr, yCurr, WPAlt,
+                                  0);
 }
 void ICPClass::GetValues(float Angle, float *a, float *b, int Range)
 {
@@ -664,9 +696,14 @@ void ICPClass::EnterINTG()
 }
 void ICPClass::EnterINSStuff(void)
 {
-    float Curlatitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+    float Curlatitude =
+        (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) /
+        EARTH_RADIUS_FT;
     float CurcosLatitude = (float)cos(Curlatitude);
-    float Curlongitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * CurcosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * CurcosLatitude);
+    float Curlongitude =
+        ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * CurcosLatitude) +
+         cockpitFlightData.y) /
+        (EARTH_RADIUS_FT * CurcosLatitude);
 
     Curlatitude *= RTD;
     Curlongitude *= RTD;
@@ -674,8 +711,12 @@ void ICPClass::EnterINSStuff(void)
     if (INSLine == 0)
     {
         CheckDigits();
-        float INSLATDegrees = static_cast<float>((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3);
-        float INSLATMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; // JPG 22 Dec 03 Deg, mins.decimal
+        float INSLATDegrees = static_cast<float>(
+            (Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3);
+        float INSLATMinutes =
+            ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) +
+             (Input_Digit7 / 100.0F)) *
+            MIN_TO_DEG; // JPG 22 Dec 03 Deg, mins.decimal
         float INSLATSeconds = 0;
         // float INSLATMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
         // float INSLATSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);  // JPG - old code, there are no seconds input
@@ -734,8 +775,12 @@ void ICPClass::EnterINSStuff(void)
     else if (INSLine == 1)
     {
         CheckDigits();
-        float INSLONGDegrees = static_cast<float>((Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3);
-        float INSLONGMinutes = ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) + (Input_Digit7 / 100.0F)) * MIN_TO_DEG; // JPG 22 Dec 03 Deg, mins.decimal
+        float INSLONGDegrees = static_cast<float>(
+            (Input_Digit1 * 100) + (Input_Digit2 * 10) + Input_Digit3);
+        float INSLONGMinutes =
+            ((Input_Digit4 * 10.0f) + (Input_Digit5) + (Input_Digit6 / 10.0f) +
+             (Input_Digit7 / 100.0F)) *
+            MIN_TO_DEG; // JPG 22 Dec 03 Deg, mins.decimal
         float INSLONGSeconds = 0;
         // float INSLONGMinutes = (((Input_Digit4*10 + Input_Digit5) * 1.66666666F) / 100);
         // float INSLONGSeconds = (((Input_Digit6*10 + Input_Digit7) * 0.02777777F) / 100);  // JPG - old code, there are no seconds input
@@ -828,7 +873,7 @@ void ICPClass::EnterINSStuff(void)
             altStr[0] = ' ';
 
         //calc the diff
-        INSALTDiff = static_cast<float>(AddUp() - (long) - cockpitFlightData.z);
+        INSALTDiff = static_cast<float>(AddUp() - (long)-cockpitFlightData.z);
         INSEnter = TRUE;
         ResetInput();
     }

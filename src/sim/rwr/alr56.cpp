@@ -1,16 +1,16 @@
 #include "stdhdr.h"
 #include "object.h"
 #include "simmover.h"
-#include "ClassTbl.h"
+#include "classtbl.h"
 #include "simdrive.h"
 #include "fsound.h"
 #include "mfd.h"
-#include "msginc/TrackMsg.h"
-#include "Graphics/Include/Display.h"
+#include "msginc/trackmsg.h"
+#include "graphics/include/display.h"
 #include "airunit.h"
 #include "aircrft.h"
 #include "alr56.h"
-#include "radarData.h"
+#include "radardata.h"
 
 ALR56Class::ALR56Class(int idx, SimMoverClass* self) : PlayerRwrClass(idx, self)
 {
@@ -35,7 +35,7 @@ float ALR56Class::GetLethality(FalconEntity* theObject)
     float dx = theObject->XPos() - platform->XPos();
     float dy = theObject->YPos() - platform->YPos();
     float nomRange = RadarDataTable[theObject->GetRadarType()].NominalRange;
-    float range  = (float)sqrt(dx * dx + dy * dy) / (2.0f * nomRange);
+    float range = (float)sqrt(dx * dx + dy * dy) / (2.0f * nomRange);
 
     // lethality = max (lethality, 0.1F); - Place into code if you want search radars to be shown from emiterList
     if (range < 0.8f)
@@ -55,13 +55,12 @@ void ALR56Class::PushButton(int whichButton, int whichMFD)
 {
     switch (whichButton)
     {
-        case 0:
-            MfdDisplay[whichMFD]->SetNewMode(MFDClass::MfdMenu);
-            break;
+    case 0:
+        MfdDisplay[whichMFD]->SetNewMode(MFDClass::MfdMenu);
+        break;
 
-        case 14:
-            MFDSwapDisplays();
-            break;
+    case 14:
+        MFDSwapDisplays();
+        break;
     }
 }
-

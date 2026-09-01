@@ -1,4 +1,4 @@
-#include "Graphics/Include/drawbldg.h"
+#include "graphics/include/drawbldg.h"
 #include "stdhdr.h"
 #include "simfeat.h"
 #include "initdata.h"
@@ -7,27 +7,27 @@
 #include "entity.h"
 #include "atcbrain.h"
 #include "simdrive.h"
-#include "Objectiv.h"
+#include "objectiv.h"
 #include "ptdata.h"
 #include "entity.h"
-#include "PlayerOp.h"
-#include "Feature.h"
+#include "playerop.h"
+#include "feature.h"
 #include "sfx.h"
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/rviewpnt.h"
 #include "atcbrain.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL SimFeatureClass::pool;
 #endif
 
-void CalcTransformMatrix(SimBaseClass* theObject);
+void CalcTransformMatrix(SimBaseClass *theObject);
 int GetTextureIdxFromHeading(int hdg);
 
 #ifdef DEBUG
 int SimFeatures = 0;
 #endif
 
-SimFeatureClass::SimFeatureClass(VU_BYTE** stream) : SimStaticClass(stream)
+SimFeatureClass::SimFeatureClass(VU_BYTE **stream) : SimStaticClass(stream)
 {
     InitData();
 #ifdef DEBUG
@@ -35,7 +35,7 @@ SimFeatureClass::SimFeatureClass(VU_BYTE** stream) : SimStaticClass(stream)
 #endif
 }
 
-SimFeatureClass::SimFeatureClass(FILE* filePtr) : SimStaticClass(filePtr)
+SimFeatureClass::SimFeatureClass(FILE *filePtr) : SimStaticClass(filePtr)
 {
     InitData();
 #ifdef DEBUG
@@ -53,11 +53,11 @@ SimFeatureClass::SimFeatureClass(int type) : SimStaticClass(type)
 
 void SimFeatureClass::InitData(void)
 {
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     FeatureClassDataType *fc;
 
     SimStaticClass::InitData();
-    classPtr = &Falcon4ClassTable[ Type() - VU_LAST_ENTITY_TYPE];
+    classPtr = &Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE];
     fc = (FeatureClassDataType *)classPtr->dataPtr;
 
     strength = maxStrength = (float)fc->HitPoints;
@@ -70,7 +70,8 @@ void SimFeatureClass::InitData(void)
 
 SimFeatureClass::~SimFeatureClass(void)
 {
-    ShiAssert(!baseObject); // This should be cleaned up in SimulationDriver::SleepCampaignFlight!
+    ShiAssert(
+        !baseObject); // This should be cleaned up in SimulationDriver::SleepCampaignFlight!
 
     if (baseObject)
     {
@@ -85,9 +86,9 @@ SimFeatureClass::~SimFeatureClass(void)
 #endif
 }
 
-void SimFeatureClass::Init(SimInitDataClass* initData)
+void SimFeatureClass::Init(SimInitDataClass *initData)
 {
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     FeatureClassDataType *fc;
 
     classPtr = (Falcon4EntityClassType *)EntityType();
@@ -172,17 +173,20 @@ int SimFeatureClass::Wake(void)
         }
 
         // Is This a runway number?
-        if (EntityType()->classInfo_[VU_TYPE] == TYPE_RUNWAY && EntityType()->classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
+        if (EntityType()->classInfo_[VU_TYPE] == TYPE_RUNWAY &&
+            EntityType()->classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
         {
             ShiAssert(GetCampaignObject());
             index = ((Objective)GetCampaignObject())->GetComponentIndex(this);
-            texIdx = ((Objective)GetCampaignObject())->brain->GetRunwayTexture(index);
-            ((DrawableBSP*)drawPointer)->SetTextureSet(texIdx);
+            texIdx = ((Objective)GetCampaignObject())
+                         ->brain->GetRunwayTexture(index);
+            ((DrawableBSP *)drawPointer)->SetTextureSet(texIdx);
         }
 
         // Is This a taxiway sign?
         if (EntityType()->classInfo_[VU_TYPE] == TYPE_TAXIWAY &&
-            (EntityType()->classInfo_[VU_STYPE] == STYPE_THP || EntityType()->classInfo_[VU_STYPE] == STYPE_THPX))
+            (EntityType()->classInfo_[VU_STYPE] == STYPE_THP ||
+             EntityType()->classInfo_[VU_STYPE] == STYPE_THPX))
         {
             // NOTE: Runway pieces are defined upside down. a heading of 0 means runway 18
             yaw = Yaw() * RTD + 180.0F;
@@ -194,7 +198,7 @@ int SimFeatureClass::Wake(void)
 
             texIdx = GetTextureIdxFromHeading(rwyHeading);
 
-            ((DrawableBSP*)drawPointer)->SetTextureSet(texIdx);
+            ((DrawableBSP *)drawPointer)->SetTextureSet(texIdx);
         }
     }
 
@@ -229,15 +233,16 @@ int SimFeatureClass::Sleep(void)
 int SimFeatureClass::GetRadarType(void)
 {
     FeatureClassDataType *fc;
-    fc = (FeatureClassDataType *)Falcon4ClassTable[ Type() - VU_LAST_ENTITY_TYPE ].dataPtr;
+    fc = (FeatureClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE]
+             .dataPtr;
 
     return fc->RadarType;
 }
 
 typedef struct TmpObject
 {
-    SimBaseClass* object;
-    struct TmpObject* next;
+    SimBaseClass *object;
+    struct TmpObject *next;
 } TmpObjectList;
 
 void SimFeatureClass::JoinFlight(void)
@@ -296,116 +301,116 @@ int GetTextureIdxFromHeading(int hdg)
 
     switch (hdg)
     {
-        case 0:
-            texIdx = 37;
-            break;
+    case 0:
+        texIdx = 37;
+        break;
 
-        case 1:
-            texIdx = 0;
-            break;
+    case 1:
+        texIdx = 0;
+        break;
 
-        case 2:
-            texIdx = 1;
-            break;
+    case 2:
+        texIdx = 1;
+        break;
 
-        case 3:
-        case 4:
-            texIdx = 4;
-            break;
+    case 3:
+    case 4:
+        texIdx = 4;
+        break;
 
-        case 5:
-        case 6:
-            texIdx = 5;
-            break;
+    case 5:
+    case 6:
+        texIdx = 5;
+        break;
 
-        case 7:
-        case 8:
-            texIdx = 6;
-            break;
+    case 7:
+    case 8:
+        texIdx = 6;
+        break;
 
-        case 9:
-            texIdx = 7;
-            break;
+    case 9:
+        texIdx = 7;
+        break;
 
-        case 10:
-        case 11:
-            texIdx = 8;
-            break;
+    case 10:
+    case 11:
+        texIdx = 8;
+        break;
 
-        case 12:
-            texIdx = 9;
-            break;
+    case 12:
+        texIdx = 9;
+        break;
 
-        case 13:
-        case 14:
-            texIdx = 10;
-            break;
+    case 13:
+    case 14:
+        texIdx = 10;
+        break;
 
-        case 16:
-            texIdx = 13;
-            break;
+    case 16:
+        texIdx = 13;
+        break;
 
-        case 15:
-        case 17:
-            texIdx = 16;
-            break;
+    case 15:
+    case 17:
+        texIdx = 16;
+        break;
 
-        case 18:
-            texIdx = 17;
-            break;
+    case 18:
+        texIdx = 17;
+        break;
 
-        case 19:
-            texIdx = 20;
-            break;
+    case 19:
+        texIdx = 20;
+        break;
 
-        case 20:
-            texIdx = 21;
-            break;
+    case 20:
+        texIdx = 21;
+        break;
 
-        case 22:
-        case 21:
-            texIdx = 24;
-            break;
+    case 22:
+    case 21:
+        texIdx = 24;
+        break;
 
-        case 23:
-        case 24:
-            texIdx = 25;
-            break;
+    case 23:
+    case 24:
+        texIdx = 25;
+        break;
 
-        case 25:
-        case 26:
-            texIdx = 26;
-            break;
+    case 25:
+    case 26:
+        texIdx = 26;
+        break;
 
-        case 27:
-            texIdx = 27;
-            break;
+    case 27:
+        texIdx = 27;
+        break;
 
-        case 28:
-        case 29:
-            texIdx = 28;
-            break;
+    case 28:
+    case 29:
+        texIdx = 28;
+        break;
 
-        case 30:
-            texIdx = 29;
-            break;
+    case 30:
+        texIdx = 29;
+        break;
 
-        case 32:
-            texIdx = 30;
-            break;
+    case 32:
+        texIdx = 30;
+        break;
 
-        case 34:
-            texIdx = 33;
-            break;
+    case 34:
+        texIdx = 33;
+        break;
 
-        case 33:
-        case 35:
-            texIdx = 36;
-            break;
+    case 33:
+    case 35:
+        texIdx = 36;
+        break;
 
-        case 36:
-            texIdx = 37;
-            break;
+    case 36:
+        texIdx = 37;
+        break;
     }
 
     return texIdx;

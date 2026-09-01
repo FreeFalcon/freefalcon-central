@@ -1,10 +1,10 @@
 #ifndef _UI_TACREF_H_
 #define _UI_TACREF_H_
 
-#pragma warning ( disable: 4200 ) // Prevent the zero length array warning
+#pragma warning(disable : 4200) // Prevent the zero length array warning
 #pragma pack(1)
 //TJL 12/27/03
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 
 enum
 {
@@ -27,7 +27,7 @@ struct Header
 {
     short type;
     short size;
-    char  Data[];
+    char Data[];
 };
 
 struct CatText
@@ -46,6 +46,7 @@ public:
     short size;
     _TCHAR Name[40];
     char Data[];
+
 public:
     CatText *GetFirst(long *offset);
     CatText *GetNext(long *offset);
@@ -114,8 +115,8 @@ public:
 
 
     _TCHAR Name[32];
-    char  PhotoFile[32];
-    char  Data[];
+    char PhotoFile[32];
+    char Data[];
 
 
 public:
@@ -125,12 +126,11 @@ public:
 };
 
 #pragma pack()
-#pragma warning ( default: 4200 ) // Restore normal warning behavior
+#pragma warning(default : 4200) // Restore normal warning behavior
 
 class TacticalReference
 {
 private:
-
     C_Hash *Index_; // Index based on EntityID
     long Size_;
     char *Data_;
@@ -149,7 +149,6 @@ public:
 
     Entity *GetFirst(long *offset);
     Entity *GetNext(long *offset);
-
 };
 
 #endif // _UI_TACREF_H_

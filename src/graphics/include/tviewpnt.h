@@ -11,9 +11,9 @@
 #define _TVIEWPNT_H_
 
 #include <iso646.h>
-#include "Matrix.h"
-#include "Ttypes.h"
-#include "TBlkList.h"
+#include "matrix.h"
+#include "ttypes.h"
+#include "tblklist.h"
 
 
 typedef struct TpathFeature
@@ -101,11 +101,13 @@ public:
     // data is owned by the specified LOD list in world space and in level posts
     float GetAvailableRange(void)
     {
-        return LEVEL_POST_TO_WORLD(blockLists[maxLOD].GetAvailablePostRange(), maxLOD);
+        return LEVEL_POST_TO_WORLD(blockLists[maxLOD].GetAvailablePostRange(),
+                                   maxLOD);
     };
     float GetAvailableRange(int LOD)
     {
-        return LEVEL_POST_TO_WORLD(blockLists[LOD].GetAvailablePostRange(), LOD);
+        return LEVEL_POST_TO_WORLD(blockLists[LOD].GetAvailablePostRange(),
+                                   LOD);
     };
     int GetAvailablePostRange(int LOD)
     {
@@ -117,14 +119,16 @@ public:
     //  the terrain engine leaves a safty margin of undrawn posts arround the viewpoint).
     float GetDrawingRange(void)
     {
-        return LEVEL_POST_TO_WORLD(blockLists[lowDetail].GetAvailablePostRange(), lowDetail) * 0.65f;
+        return LEVEL_POST_TO_WORLD(
+                   blockLists[lowDetail].GetAvailablePostRange(), lowDetail) *
+               0.65f;
     };
 
     // Return a pointer to the requested post in the given level.
     // The caller of this function must ensure that the post is within
     // the available range.  Also, the post pointer may become invalid
     // after a call to "Update"
-    Tpost* GetPost(int levelPostRow, int levelPostCol, int LOD)
+    Tpost *GetPost(int levelPostRow, int levelPostCol, int LOD)
     {
         return blockLists[LOD].GetPost(levelPostRow, levelPostCol);
     };
@@ -144,7 +148,8 @@ public:
     /** returns the ground level at the highest possible LOD for the given spot.
     * normal and the LOD level are also returned if not NULL.
     */
-    float GetGroundLevel(float x, float y, Tpoint *normal = NULL, int *lod = NULL);
+    float GetGroundLevel(float x, float y, Tpoint *normal = NULL,
+                         int *lod = NULL);
 #else
     float GetGroundLevel(float x, float y, Tpoint *normal = NULL);
 #endif
@@ -187,7 +192,8 @@ private:
 #endif
 
     // Line of Sight helpers
-    BOOL SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, float dz, int LOD);
+    BOOL SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, float dz,
+                              int LOD);
     BOOL TestVertex(int row, int col, float z, int LOD);
     BOOL TestEast(int row, int col, float z, int LOD);
     BOOL TestNorth(int row, int col, float z, int LOD);
@@ -195,9 +201,11 @@ private:
     BOOL TestSouth(int row, int col, float z, int LOD);
 
     // Ground Intersection helpers
-    BOOL horizontalEdgeTest(int row, int col, float x, float y, float z, int LOD);
+    BOOL horizontalEdgeTest(int row, int col, float x, float y, float z,
+                            int LOD);
     BOOL verticalEdgeTest(int row, int col, float x, float y, float z, int LOD);
-    void LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *intersection, int LOD);
+    void LineSquareIntersection(int row, int col, Tpoint *dir,
+                                Tpoint *intersection, int LOD);
 
 
 protected:

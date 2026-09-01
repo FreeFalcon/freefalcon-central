@@ -14,19 +14,19 @@
 /*
 ** DEFINES
 */
-#define  STD_DENSITY_0 .0023769 // air density at sea level (STD)
+#define STD_DENSITY_0 .0023769 // air density at sea level (STD)
 
 #ifndef PI
-#define  PI  3.14159265358979323846
+#define PI 3.14159265358979323846
 #endif
 
 // for SIMPLE model
-#define MAX_HELI_PITCH ( DTR * 15.0f )
-#define MAX_HELI_ROLL ( DTR * 80.0f )
-#define MAX_HELI_YAWRATE ( DTR * 120.0f )
-#define MAX_HELI_ROLLRATE ( DTR * 70.0f )
-#define MAX_HELI_CLIMBRATE ( 120.0f )
-#define MAX_HELI_FPS ( 180.0f * KNOTS_TO_FTPSEC )
+#define MAX_HELI_PITCH (DTR * 15.0f)
+#define MAX_HELI_ROLL (DTR * 80.0f)
+#define MAX_HELI_YAWRATE (DTR * 120.0f)
+#define MAX_HELI_ROLLRATE (DTR * 70.0f)
+#define MAX_HELI_CLIMBRATE (120.0f)
+#define MAX_HELI_FPS (180.0f * KNOTS_TO_FTPSEC)
 
 /*
 ** STRUCTURES
@@ -194,7 +194,15 @@ typedef struct _TRIM_DATA
 // This is the structure which holds a
 // helicopters input model data comprised of the
 // above structures
-enum HelicopterTypeEnum {A109 = 0, COBRA, MD500, STABLE, SIMPLE, NUM_MODELS};
+enum HelicopterTypeEnum
+{
+    A109 = 0,
+    COBRA,
+    MD500,
+    STABLE,
+    SIMPLE,
+    NUM_MODELS
+};
 typedef struct _HELI_MODEL_DATA
 {
     int type;
@@ -215,7 +223,6 @@ typedef struct _HELI_MODEL_DATA
 class HeliMMClass
 {
 public:
-
     // variables
     HELI_MODEL_DATA *md; // helicopter data for model basis
     float dT; // delta time
@@ -287,8 +294,8 @@ public:
     float p_mr; // main rotor power
     float p_tr; // tail rotor power
     float torque_mr; // main rotor torque
-    float vr_tr ; // air vel relative to tail rotor disk
-    float vb_tr ; // air vel relative to tail rotor blade
+    float vr_tr; // air vel relative to tail rotor disk
+    float vb_tr; // air vel relative to tail rotor blade
     float thrust_tr; // thrust tail rotor
     float vi_tr; // induced air tail rotor
     float dw_ht_pos; // downwash on horizontal tail pos
@@ -299,21 +306,21 @@ public:
     float vta_vt; // total airspeed at vt
     DVECT3D grav; // gravity forces on xyz copter axi
     float alpha; // aoa in degs
-    float  beta; // slip angle in degs
+    float beta; // slip angle in degs
     SimBaseClass *platform; // pointer to owning craft
     float GetKias; // knots, indicated air speed
     float gmma;
     float mu;
     float sigma;
-    SAVE_ARRAY  olde1, olde2, olde3, olde4;
-    SAVE_ARRAY  oldGRx, oldGRy, oldABax, oldABay, oldABaz;
-    float  e1, e2, e3, e4;
-    float  ctlroll;
-    float  ctlpitch;
-    float  ctlcpitch;
-    float  ctltpitch;
-    float  mr_tmp1;
-    float  mr_tmp2;
+    SAVE_ARRAY olde1, olde2, olde3, olde4;
+    SAVE_ARRAY oldGRx, oldGRy, oldABax, oldABay, oldABaz;
+    float e1, e2, e3, e4;
+    float ctlroll;
+    float ctlpitch;
+    float ctlcpitch;
+    float ctltpitch;
+    float mr_tmp1;
+    float mr_tmp2;
     BOOL isDigital;
 
     // member functions

@@ -1,9 +1,9 @@
 #include <windows.h>
 #include "sim/include/phyconst.h"
-#include "graphics/include/TimeMgr.h"
+#include "graphics/include/timemgr.h"
 #include "graphics/include/imagebuf.h"
 #include "graphics/include/renderow.h"
-#include "graphics/include/RViewPnt.h"
+#include "graphics/include/rviewpnt.h"
 #include "graphics/include/drawbsp.h"
 #include "objectiv.h"
 #include "dispcfg.h"
@@ -14,25 +14,25 @@
 #include "cbsplist.h"
 #include "c3dview.h"
 #include "playerop.h"
-#include "TexBank.h"
-#include "FalcLib/include/dispopts.h"
+#include "texbank.h"
+#include "falclib/include/dispopts.h"
 
-#include "Sim/Include/navsystem.h" //Wombat778 11-3-2003
+#include "sim/include/navsystem.h" //Wombat778 11-3-2003
 
 extern C_Handler *gMainHandler;
 
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "graphics/dxengine/dxvbmanager.h"
 extern bool g_bUse_DX_Engine;
 
 extern bool g_bReconLatLong; //Wombat778 11-3-2003
 extern OBJECTINFO Recon; //Wombat778 11-3-2003
 
 //JAM 21Nov03
-#include "RealWeather.h"
+#include "realweather.h"
 
 // From OTWDrive.cpp
-void PositandOrientSetData(float x, float y, float z, float pitch, float roll, float yaw,
-                           Tpoint* simView, Trotation* viewRotation);
+void PositandOrientSetData(float x, float y, float z, float pitch, float roll,
+                           float yaw, Tpoint *simView, Trotation *viewRotation);
 
 
 BOOL C_3dViewer::Setup()
@@ -40,7 +40,8 @@ BOOL C_3dViewer::Setup()
     BSPLIST *cur;
 
     // COBRA - DX - Switching btw Old and New Engine - Initialize DX Engine and VB Manager
-    if (g_bUse_DX_Engine) TheVbManager.Setup();   // #34 C1
+    if (g_bUse_DX_Engine)
+        TheVbManager.Setup(); // #34 C1
 
     if (objects_)
     {
@@ -50,7 +51,7 @@ BOOL C_3dViewer::Setup()
 
             while (cur)
             {
-                if (((DrawableBSP*)cur->object)->InDisplayList())
+                if (((DrawableBSP *)cur->object)->InDisplayList())
                     viewPoint_->RemoveObject(cur->object);
 
                 cur = cur->Next;
@@ -69,13 +70,13 @@ BOOL C_3dViewer::Setup()
     sw = (float)gMainHandler->GetFront()->targetXres();
     sh = (float)gMainHandler->GetFront()->targetYres();
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_3dViewer::Init3d(float ViewAngle)
 {
     if (rend3d_ or rendOTW_)
-        return(FALSE);
+        return (FALSE);
 
 
     rend3d_ = new Render3D;
@@ -85,15 +86,17 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
     // g_bGpuDraw and flips Present into chroma-composite mode, which blacks out the 2D menu.
     // We read the model back into the menu's 2D surface (see View3d) and keep a normal full blit.
     {
-        extern bool g_bUseD3D12;   // #DX12 A5: the off-screen viewer RTT exists on both GPU paths
+        extern bool
+            g_bUseGpu; // #DX12 A5/#104: the off-screen viewer RTT exists on any GPU backend
         ImageBuffer *target = gMainHandler->GetFront();
 
-        if (g_bUseD3D12)
+        if (g_bUseGpu)
         {
             int rw = gMainHandler->GetFront()->targetXres();
             int rh = gMainHandler->GetFront()->targetYres();
             m_pRTT = new ImageBuffer;
-            m_pRTT->Setup(gMainHandler->GetFront()->GetDisplayDevice(), rw, rh, SystemMem, None);
+            m_pRTT->Setup(gMainHandler->GetFront()->GetDisplayDevice(), rw, rh,
+                          SystemMem, None);
             target = m_pRTT;
         }
 
@@ -112,10 +115,10 @@ BOOL C_3dViewer::Init3d(float ViewAngle)
     // rend3d_->SetFilteringMode( PlayerOptions.FilteringOn() );
     rend3d_->SetObjectDetail(PlayerOptions.ObjectDetailLevel());
     // rend3d_->SetAlphaMode(PlayerOptions.AlphaOn());
-    rend3d_->SetObjectTextureState(TRUE);//PlayerOptions.ObjectTexturesOn());
+    rend3d_->SetObjectTextureState(TRUE); //PlayerOptions.ObjectTexturesOn());
 
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_3dViewer::InitOTW(float, BOOL Preload)
@@ -123,7 +126,7 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
     RViewPoint *tempVP = NULL;
 
     if (rend3d_ or rendOTW_)
-        return(FALSE);
+        return (FALSE);
 
     // This preloads a SMALL portion of the terrain for speedy viewing
     if (Preload)
@@ -138,7 +141,8 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
     viewPoint_ = new RViewPoint;
     rendOTW_ = new RenderOTW;
 
-    viewPoint_->Setup(ViewDistance_, MinTexture_, MaxTexture_, DisplayOptions.bZBuffering);
+    viewPoint_->Setup(ViewDistance_, MinTexture_, MaxTexture_,
+                      DisplayOptions.bZBuffering);
     rendOTW_->Setup(gMainHandler->GetFront(), viewPoint_);
 
     rendOTW_->SetViewport(l, t, r, b);
@@ -154,7 +158,7 @@ BOOL C_3dViewer::InitOTW(float, BOOL Preload)
         delete tempVP;
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_3dViewer::Cleanup()
@@ -169,7 +173,7 @@ BOOL C_3dViewer::Cleanup()
 
             while (cur)
             {
-                if (((DrawableBSP*)cur->object)->InDisplayList())
+                if (((DrawableBSP *)cur->object)->InDisplayList())
                     viewPoint_->RemoveObject(cur->object);
 
                 cur = cur->Next;
@@ -225,7 +229,7 @@ BOOL C_3dViewer::Cleanup()
     ObjectLOD::ReleaseLodList();
     TheVbManager.Release();
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_3dViewer::Viewport(C_Window *win, long client)
@@ -256,10 +260,10 @@ BSPLIST *C_3dViewer::Load(long ID, int objID)
     if (obj)
     {
         objects_->Add(obj);
-        return(obj);
+        return (obj);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 BSPLIST *C_3dViewer::LoadBSP(long ID, int objID, BOOL aircraft)
@@ -271,16 +275,17 @@ BSPLIST *C_3dViewer::LoadBSP(long ID, int objID, BOOL aircraft)
     if (obj)
     {
         if (aircraft) // turn on canopy
-            ((DrawableBSP*)obj->object)->SetSwitchMask(5, TRUE);
+            ((DrawableBSP *)obj->object)->SetSwitchMask(5, TRUE);
 
         objects_->Add(obj);
-        return(obj);
+        return (obj);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
-BSPLIST *C_3dViewer::LoadBuilding(long ID, int objID, Tpoint *pos, float heading)
+BSPLIST *C_3dViewer::LoadBuilding(long ID, int objID, Tpoint *pos,
+                                  float heading)
 {
     BSPLIST *obj;
 
@@ -289,10 +294,10 @@ BSPLIST *C_3dViewer::LoadBuilding(long ID, int objID, Tpoint *pos, float heading
     if (obj)
     {
         objects_->Add(obj);
-        return(obj);
+        return (obj);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 BSPLIST *C_3dViewer::LoadBridge(long ID, int objID)
@@ -304,17 +309,21 @@ BSPLIST *C_3dViewer::LoadBridge(long ID, int objID)
     if (obj)
     {
         objects_->Add(obj);
-        return(obj);
+        return (obj);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
-BSPLIST *C_3dViewer::LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent)
+BSPLIST *C_3dViewer::LoadDrawableFeature(long ID, Objective obj, short f,
+                                         short fid,
+                                         Falcon4EntityClassType *classPtr,
+                                         FeatureClassDataType *fc,
+                                         Tpoint *objPos, BSPLIST *Parent)
 {
     BSPLIST *bspobj;
 
-    if ( not Parent)
+    if (not Parent)
     {
         bspobj = objects_->CreateContainer(ID, obj, f, fid, classPtr, fc);
 
@@ -326,42 +335,46 @@ BSPLIST *C_3dViewer::LoadDrawableFeature(long ID, Objective obj, short f, short 
         Parent = bspobj;
     }
 
-    bspobj = objects_->LoadDrawableFeature(ID, obj, f, fid, classPtr, fc, objPos, Parent);
+    bspobj = objects_->LoadDrawableFeature(ID, obj, f, fid, classPtr, fc,
+                                           objPos, Parent);
 
     if (bspobj)
     {
         objects_->Add(bspobj);
-        return(bspobj);
+        return (bspobj);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
-BSPLIST *C_3dViewer::LoadDrawableUnit(long ID, long visType, Tpoint *objPos, float facing, uchar domain, uchar type, uchar stype)
+BSPLIST *C_3dViewer::LoadDrawableUnit(long ID, long visType, Tpoint *objPos,
+                                      float facing, uchar domain, uchar type,
+                                      uchar stype)
 {
     BSPLIST *bspobj;
 
-    bspobj = objects_->LoadDrawableUnit(ID, visType, objPos, facing, domain, type, stype);
+    bspobj = objects_->LoadDrawableUnit(ID, visType, objPos, facing, domain,
+                                        type, stype);
 
     if (bspobj)
     {
         objects_->Add(bspobj);
-        return(bspobj);
+        return (bspobj);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 BOOL C_3dViewer::Remove(long ID)
 {
     objects_->Remove(ID);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_3dViewer::RemoveAll()
 {
     objects_->RemoveAll();
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_3dViewer::SetPosition(float x, float y, float z)
@@ -375,7 +388,8 @@ void C_3dViewer::SetPosition(float x, float y, float z)
     currentPos_.z = viewPos_.z + CameraPos_.z;
 }
 
-void C_3dViewer::SetCamera(float x, float y, float z, float heading, float Pitch, float roll)
+void C_3dViewer::SetCamera(float x, float y, float z, float heading,
+                           float Pitch, float roll)
 {
     float tmpz;
     CameraPos_.x = x;
@@ -387,7 +401,8 @@ void C_3dViewer::SetCamera(float x, float y, float z, float heading, float Pitch
 
     if (rendOTW_) // Only care for Ground... not Models
     {
-        tmpz = rendOTW_->viewpoint->GetGroundLevel(viewPos_.x + x, viewPos_.y + y);
+        tmpz =
+            rendOTW_->viewpoint->GetGroundLevel(viewPos_.x + x, viewPos_.y + y);
 
         if ((viewPos_.z + z) > tmpz)
         {
@@ -395,7 +410,9 @@ void C_3dViewer::SetCamera(float x, float y, float z, float heading, float Pitch
         }
     }
 
-    PositandOrientSetData(viewPos_.x + x, viewPos_.y + y, viewPos_.z + z, Pitch * DTR, roll * DTR, heading * DTR, &currentPos_, &currentRot_);
+    PositandOrientSetData(viewPos_.x + x, viewPos_.y + y, viewPos_.z + z,
+                          Pitch * DTR, roll * DTR, heading * DTR, &currentPos_,
+                          &currentRot_);
 }
 
 
@@ -403,19 +420,19 @@ BOOL C_3dViewer::AddToView(BSPLIST *obj)
 {
     if (obj)
     {
-        if ( not ((DrawableBSP*)obj->object)->InDisplayList())
+        if (not((DrawableBSP *)obj->object)->InDisplayList())
         {
             viewPoint_->InsertObject(obj->object);
-            return(TRUE);
+            return (TRUE);
         }
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_3dViewer::AddToView(long ID)
 {
-    return(AddToView(objects_->Find(ID)));
+    return (AddToView(objects_->Find(ID)));
 }
 
 BOOL C_3dViewer::AddAllToView()
@@ -432,7 +449,7 @@ BOOL C_3dViewer::AddAllToView()
         cur = cur->Next;
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_3dViewer::View3d(long ID)
@@ -458,7 +475,7 @@ BOOL C_3dViewer::View3d(long ID)
             // and the 3D display
             rend3d_->StartDraw();
 
-            ((DrawableBSP*)obj->object)->Draw(rend3d_);
+            ((DrawableBSP *)obj->object)->Draw(rend3d_);
 
             // ok, now fill object and texture banks
             ObjectLOD::WaitUpdates();
@@ -475,20 +492,21 @@ BOOL C_3dViewer::View3d(long ID)
             // surface (the viewport rect), then clear g_bGpuDraw so Present does a normal full
             // 2D blit (menu + embedded model) instead of the chroma path that blacks out the menu.
             {
-                extern bool g_bUseD3D12;
+                extern bool g_bUseGpu;
                 extern bool g_bGpuDraw;
 
-                if ((g_bUseD3D12) && m_pRTT)
+                if ((g_bUseGpu) && m_pRTT)
                 {
                     ImageBuffer *front = gMainHandler->GetFront();
                     unsigned short *dst = (unsigned short *)front->Lock();
 
                     if (dst)
                     {
-                        m_pRTT->BlitRttTo565(dst, front->targetXres(), front->targetYres(),
-                                                  viewport.left, viewport.top,
-                                                  viewport.right - viewport.left,
-                                                  viewport.bottom - viewport.top);
+                        m_pRTT->BlitRttTo565(dst, front->targetXres(),
+                                             front->targetYres(), viewport.left,
+                                             viewport.top,
+                                             viewport.right - viewport.left,
+                                             viewport.bottom - viewport.top);
                         front->Unlock();
                     }
 
@@ -505,11 +523,11 @@ BOOL C_3dViewer::View3d(long ID)
             }
 
             gMainHandler->Lock();
-            return(TRUE);
+            return (TRUE);
         }
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_3dViewer::ViewOTW()
@@ -535,10 +553,10 @@ BOOL C_3dViewer::ViewOTW()
         //JAM
 
         gMainHandler->Lock();
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_3dViewer::ViewGreyOTW()
@@ -588,15 +606,17 @@ BOOL C_3dViewer::ViewGreyOTW()
 
             sprintf(tempstr, "%s        %s", latstr, longstr);
 
-            int TempFont = rendOTW_->CurFont(); //Added to be able to restore the font.
-            int TempColor = rendOTW_->Color(); //Added to be able to restore the color
+            int TempFont =
+                rendOTW_->CurFont(); //Added to be able to restore the font.
+            int TempColor =
+                rendOTW_->Color(); //Added to be able to restore the color
             rendOTW_->SetFont(2); //Set a bigger font
-            rendOTW_->SetColor(0xFF00FFFF); //Yellow.  Seemed to be the best color for visibility.
-            rendOTW_->ScreenText((float)viewport.left + 4, (float)viewport.top + 1, tempstr);
+            rendOTW_->SetColor(
+                0xFF00FFFF); //Yellow.  Seemed to be the best color for visibility.
+            rendOTW_->ScreenText((float)viewport.left + 4,
+                                 (float)viewport.top + 1, tempstr);
             rendOTW_->SetFont(TempFont); //Added to restore the font
             rendOTW_->SetColor(TempColor); //Added to restore the color
-
-
         }
 
         //Wombat778 11-3-2003 End of Added Lat/Long code
@@ -646,7 +666,7 @@ BOOL C_3dViewer::ViewGreyOTW()
 
         mem = (WORD*)gMainHandler->Lock();
 #else
-        mem = (WORD*)gMainHandler->Lock();
+        mem = (WORD *)gMainHandler->Lock();
 
         // OW FIXME: implement this by blitting to a temp sysmem surface, convert and blitting back
 #if 0
@@ -663,16 +683,16 @@ BOOL C_3dViewer::ViewGreyOTW()
 #endif
 #endif
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BSPLIST *C_3dViewer::Find(long ID)
 {
     if (objects_)
-        return(objects_->Find(ID));
+        return (objects_->Find(ID));
 
-    return(NULL);
+    return (NULL);
 }

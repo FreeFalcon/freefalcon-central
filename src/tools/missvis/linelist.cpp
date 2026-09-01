@@ -5,7 +5,7 @@
 
  Keep a list of colored line segments and draw them.
 \***************************************************************************/
-#include "LineList.h"
+#include "linelist.h"
 
 
 LineListClass TheLineList;

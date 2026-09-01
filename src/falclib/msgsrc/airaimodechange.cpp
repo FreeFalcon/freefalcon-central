@@ -5,21 +5,25 @@
  * Generated from file EVENTS.XLS by Leon Rosenshein
  */
 
-#include "MsgInc/AirAIModeChange.h"
+#include "msginc/airaimodechange.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-AirAIModeMsg::AirAIModeMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(AirAIModeChange, FalconEvent::SimThread, entityId, target, loopback)
+AirAIModeMsg::AirAIModeMsg(VU_ID entityId, VuTargetEntity *target,
+                           VU_BOOL loopback)
+    : FalconEvent(AirAIModeChange, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-AirAIModeMsg::AirAIModeMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(AirAIModeChange, FalconEvent::SimThread, senderid, target)
+AirAIModeMsg::AirAIModeMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
+    : FalconEvent(AirAIModeChange, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -36,4 +40,3 @@ int AirAIModeMsg::Process(uchar autodisp)
     return 0;
     autodisp;
 }
-

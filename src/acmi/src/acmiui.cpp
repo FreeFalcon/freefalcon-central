@@ -1,14 +1,14 @@
-#pragma optimize( "", off )
+#pragma optimize("", off)
 #include <windows.h>
 #include <io.h>
 
-#include "FalcLib.h"
-#include "F4thread.h"
+#include "falclib.h"
+#include "f4thread.h"
 #include "resource.h"
 #include "ui95/chandler.h"
 #include "ui95/cthook.h"
-#include "Graphics/Include/loader.h"
-#include "ACMIUI.h"
+#include "graphics/include/loader.h"
+#include "acmiui.h"
 #include "ui/include/userids.h"
 #include "ui/include/textids.h"
 #include "sim/include/misctemp.h"
@@ -17,20 +17,23 @@
 #include "graphics/include/drawbsp.h"
 #include "graphics/include/drawpole.h"
 #include "graphics/include/drawbsp.h"
-#include "Acmihash.h"
+#include "acmihash.h"
 
 
 #include "codelib/tools/lists/lists.h"
-#include "AcmiTape.h"
-#include "AcmiView.h"
+#include "acmitape.h"
+#include "acmiview.h"
 
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "graphics/dxengine/dxvbmanager.h"
 extern bool g_bUse_DX_Engine;
 
 void DelVHSFileCB(long ID, short hittype, C_Base *control);
-void SetDeleteCallback(void (*cb)(long, short, C_Base*));
-void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void SetDeleteCallback(void (*cb)(long, short, C_Base *));
+void AreYouSure(long TitleID, long MessageID,
+                void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
 void CloseAllRenderers(long openID);
 
 extern bool g_bHiResUI;
@@ -61,7 +64,7 @@ extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 int TESTBUTTONPUSH = 0;
 
 // we need synchronization between ui events and callbacks for exec processing
-F4CSECTIONHANDLE* gUICriticalSection = NULL;
+F4CSECTIONHANDLE *gUICriticalSection = NULL;
 
 
 typedef struct
@@ -70,26 +73,17 @@ typedef struct
 } fltFiles[MAX_FLT_FILES];
 
 
-extern int
-ACMILoaded;
+extern int ACMILoaded;
 
-BOOL
-acmiDraw = FALSE,
-renderACMI = FALSE;
+BOOL acmiDraw = FALSE, renderACMI = FALSE;
 
-C_Window
-*acmiRenderWin;
+C_Window *acmiRenderWin;
 
-ACMIView
-*acmiView = NULL;
+ACMIView *acmiView = NULL;
 
-float
-lastHorz = 0.0F,
-lastVert = 0.0F;
+float lastHorz = 0.0F, lastVert = 0.0F;
 
-C_TimerHook
-*drawTimer;
-
+C_TimerHook *drawTimer;
 
 
 C_Slider *gFrameMarker;
@@ -111,11 +105,9 @@ char gCountText[64];
 
 extern char FalconDataDirectory[_MAX_PATH];
 
-extern C_Handler
-*gMainHandler;
+extern C_Handler *gMainHandler;
 
-extern C_Parser
-*gMainParser;
+extern C_Parser *gMainParser;
 
 BOOL gAdjustingFrameMarker = FALSE;
 
@@ -193,8 +185,12 @@ void ACMIScreenCaptureCB(long ID, short hittype, C_Base *control);
 void ACMICutPOVCB(long ID, short hittype, C_Base *control);
 void ACMIUpdateModelMenu();
 // PJW void ACMITransportButton( int but );
-void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
-void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*), _TCHAR *filename);
+void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *));
+void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *), _TCHAR *filename);
 
 void InitACMIIDTable()
 {
@@ -237,7 +233,7 @@ void InitACMIMenus()
         menu->SetItemState(WING_TRAILS_LONG, 0);
         menu->SetItemState(WING_TRAILS_MAX, 0);
 
-        if ( not gDoWingTrails)
+        if (not gDoWingTrails)
             menu->SetItemState(WING_TRAILS_NONE, 1);
         else
         {
@@ -258,11 +254,13 @@ void InitACMIMenus()
         menu->SetItemState(LABEL_AIRSPEED, (short)DrawablePoled::drawSpeed);
         menu->SetItemState(LABEL_ALTITUDE, (short)DrawablePoled::drawAlt);
         menu->SetItemState(LABEL_HEADING, (short)DrawablePoled::drawHeading);
-        menu->SetItemState(LABEL_LOCK_RANGE, (short)DrawablePoled::drawlockrange);
+        menu->SetItemState(LABEL_LOCK_RANGE,
+                           (short)DrawablePoled::drawlockrange);
         // menu->SetItemState(LABEL_PITCH,0);
         // menu->SetItemState(LABEL_G,0);
         menu->SetItemState(LABEL_TURN_RATE, (short)DrawablePoled::drawTurnRate);
-        menu->SetItemState(LABEL_TURN_RADIUS, (short)DrawablePoled::drawTurnRadius);
+        menu->SetItemState(LABEL_TURN_RADIUS,
+                           (short)DrawablePoled::drawTurnRadius);
 
         menu->SetItemState(VEH_SIZE_1, 0);
         menu->SetItemState(VEH_SIZE_2, 0);
@@ -302,7 +300,7 @@ void CloseACMI()
 
         if (win)
         {
-            btn = (C_Button*)win->FindControl(ACMI_CLOSE);
+            btn = (C_Button *)win->FindControl(ACMI_CLOSE);
 
             if (btn)
                 ACMICloseCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
@@ -327,8 +325,8 @@ C_Base *FindUITextEvent(C_Window *win, long slot, long time)
     CONTROLLIST *cur;
     C_Base *found = NULL;
 
-    if ( not win or not time)
-        return(NULL);
+    if (not win or not time)
+        return (NULL);
 
     cur = win->GetControlList();
 
@@ -346,7 +344,7 @@ C_Base *FindUITextEvent(C_Window *win, long slot, long time)
         cur = cur->Next;
     }
 
-    return(found);
+    return (found);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -369,7 +367,6 @@ void TogglePoleCB(long ID, short hittype, C_Base *control)
     {
         acmiView->TogglePoles(temp);
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -390,7 +387,6 @@ void ToggleLockLineCB(long ID, short hittype, C_Base *control)
     {
         acmiView->ToggleLockLines(gDoLockLines);
     }
-
 }
 
 
@@ -440,7 +436,7 @@ void ToggleWireFrameCB(long ID, short, C_Base *control)
         acmiView->ToggleWireFrame(gDoWireFrame);
         acmiView->InitGraphics(win);
 
-        if ( not acmiView->LoadTape("", TRUE))
+        if (not acmiView->LoadTape("", TRUE))
         {
             // something's fucked
         }
@@ -455,7 +451,6 @@ void ToggleWireFrameCB(long ID, short, C_Base *control)
         // restore drawing
         acmiDraw = TRUE;
         UI_Leave(Leave);
-
     }
 
     control->Parent_->SetGroupState(200001, 0);
@@ -469,83 +464,77 @@ void ToggleWireFrameCB(long ID, short, C_Base *control)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ToggleWingTrailsCB(long ID, short, C_Base*)
+void ToggleWingTrailsCB(long ID, short, C_Base *)
 {
 
 
     switch (ID)
     {
-        case WING_TRAILS_NONE:
-        {
-            gDoWingTrails = 0;
-            acmiView->Tape()->SetWingTrails(gDoWingTrails);
-            break;
-
-        }
-
-        case WING_TRAILS_SHORT:
-        {
-            if ( not gDoWingTrails)
-            {
-                gDoWingTrails = TRUE;
-                acmiView->Tape()->SetWingTrails(gDoWingTrails);
-            }
-
-            gTrailLen = ACMI_TRAILS_SHORT;  // MLR 12/22/2003 - now in seconds
-            acmiView->Tape()->SetWingTrailLength(gTrailLen);
-            MonoPrint("WingTrails Short \n");
-            break;
-        }
-
-        case WING_TRAILS_MEDIUM:
-        {
-            if ( not gDoWingTrails)
-            {
-                gDoWingTrails = TRUE;
-                acmiView->Tape()->SetWingTrails(gDoWingTrails);
-            }
-
-            gTrailLen = ACMI_TRAILS_MEDIUM;  // MLR 12/22/2003 - now in seconds
-            acmiView->Tape()->SetWingTrailLength(gTrailLen);
-            MonoPrint("WingTrails Medium \n");
-            break;
-        }
-
-        case WING_TRAILS_LONG:
-        {
-            if ( not gDoWingTrails)
-            {
-                gDoWingTrails = TRUE;
-                acmiView->Tape()->SetWingTrails(gDoWingTrails);
-            }
-
-            gTrailLen = ACMI_TRAILS_LONG;  // MLR 12/22/2003 - now in seconds
-            acmiView->Tape()->SetWingTrailLength(gTrailLen);
-            MonoPrint("WingTrails Long \n");
-            break;
-        }
-
-        case WING_TRAILS_MAX:
-        {
-            if ( not gDoWingTrails)
-            {
-                gDoWingTrails = TRUE;
-                acmiView->Tape()->SetWingTrails(gDoWingTrails);
-            }
-
-            //gTrailLen = 2000; // MN I want to have them even a bit longer  ;-) (1000 before...)
-            gTrailLen = ACMI_TRAILS_MAX;  // MLR 12/22/2003 - now in seconds
-            acmiView->Tape()->SetWingTrailLength(gTrailLen);
-            MonoPrint("WingTrails Max \n");
-            break;
-        }
-
-
+    case WING_TRAILS_NONE:
+    {
+        gDoWingTrails = 0;
+        acmiView->Tape()->SetWingTrails(gDoWingTrails);
+        break;
     }
 
+    case WING_TRAILS_SHORT:
+    {
+        if (not gDoWingTrails)
+        {
+            gDoWingTrails = TRUE;
+            acmiView->Tape()->SetWingTrails(gDoWingTrails);
+        }
 
+        gTrailLen = ACMI_TRAILS_SHORT; // MLR 12/22/2003 - now in seconds
+        acmiView->Tape()->SetWingTrailLength(gTrailLen);
+        MonoPrint("WingTrails Short \n");
+        break;
+    }
+
+    case WING_TRAILS_MEDIUM:
+    {
+        if (not gDoWingTrails)
+        {
+            gDoWingTrails = TRUE;
+            acmiView->Tape()->SetWingTrails(gDoWingTrails);
+        }
+
+        gTrailLen = ACMI_TRAILS_MEDIUM; // MLR 12/22/2003 - now in seconds
+        acmiView->Tape()->SetWingTrailLength(gTrailLen);
+        MonoPrint("WingTrails Medium \n");
+        break;
+    }
+
+    case WING_TRAILS_LONG:
+    {
+        if (not gDoWingTrails)
+        {
+            gDoWingTrails = TRUE;
+            acmiView->Tape()->SetWingTrails(gDoWingTrails);
+        }
+
+        gTrailLen = ACMI_TRAILS_LONG; // MLR 12/22/2003 - now in seconds
+        acmiView->Tape()->SetWingTrailLength(gTrailLen);
+        MonoPrint("WingTrails Long \n");
+        break;
+    }
+
+    case WING_TRAILS_MAX:
+    {
+        if (not gDoWingTrails)
+        {
+            gDoWingTrails = TRUE;
+            acmiView->Tape()->SetWingTrails(gDoWingTrails);
+        }
+
+        //gTrailLen = 2000; // MN I want to have them even a bit longer  ;-) (1000 before...)
+        gTrailLen = ACMI_TRAILS_MAX; // MLR 12/22/2003 - now in seconds
+        acmiView->Tape()->SetWingTrailLength(gTrailLen);
+        MonoPrint("WingTrails Max \n");
+        break;
+    }
+    }
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -572,99 +561,98 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
 
     switch (ID)
     {
-        case LABEL_NAME:
+    case LABEL_NAME:
+    {
+        // TOGGLE NAME LABELS HERE
+        temp = ((C_PopupList *)control)->GetItemState(ID);
+
+        if (acmiView not_eq NULL)
         {
-            // TOGGLE NAME LABELS HERE
-            temp = ((C_PopupList *)control)->GetItemState(ID);
-
-            if (acmiView not_eq NULL)
-            {
-                acmiView->ToggleLabel(temp);
-            }
-
-            break;
+            acmiView->ToggleLabel(temp);
         }
 
-        case LABEL_AIRSPEED:
-        {
-            // TOGGLE AIRSPEED HERE
-            temp = ((C_PopupList *)control)->GetItemState(ID);
-
-            if (acmiView not_eq NULL)
-            {
-                acmiView->ToggleAirSpeed(temp);
-            }
-
-            break;
-        }
-
-        case LABEL_ALTITUDE:
-        {
-            // TOGGLE ALTITUDE HERE
-            temp = ((C_PopupList *)control)->GetItemState(ID);
-
-            if (acmiView not_eq NULL)
-            {
-                acmiView->ToggleAltitude(temp);
-            }
-
-            break;
-        }
-
-        case LABEL_HEADING:
-        {
-            // TOGGLE HEADING HERE
-            temp = ((C_PopupList *)control)->GetItemState(ID);
-
-            if (acmiView not_eq NULL)
-            {
-                acmiView->ToggleHeading(temp);
-            }
-
-            break;
-        }
-
-        case LABEL_TURN_RATE:
-        {
-            temp = ((C_PopupList *)control)->GetItemState(ID);
-
-            if (acmiView not_eq NULL)
-            {
-                acmiView->ToggleTurnRate(temp);
-            }
-
-
-            break;
-        }
-
-
-        case LABEL_TURN_RADIUS:
-        {
-            temp = ((C_PopupList *)control)->GetItemState(ID);
-
-            if (acmiView not_eq NULL)
-            {
-                acmiView->ToggleTurnRadius(temp);
-            }
-
-
-            break;
-        }
-
-        case LABEL_LOCK_RANGE:
-        {
-            // TOGGLE HEADING HERE
-            temp = ((C_PopupList *)control)->GetItemState(ID);
-
-            if (acmiView not_eq NULL)
-            {
-                acmiView->Togglelockrange(temp);
-            }
-
-            break;
-        }
+        break;
     }
 
+    case LABEL_AIRSPEED:
+    {
+        // TOGGLE AIRSPEED HERE
+        temp = ((C_PopupList *)control)->GetItemState(ID);
+
+        if (acmiView not_eq NULL)
+        {
+            acmiView->ToggleAirSpeed(temp);
+        }
+
+        break;
+    }
+
+    case LABEL_ALTITUDE:
+    {
+        // TOGGLE ALTITUDE HERE
+        temp = ((C_PopupList *)control)->GetItemState(ID);
+
+        if (acmiView not_eq NULL)
+        {
+            acmiView->ToggleAltitude(temp);
+        }
+
+        break;
+    }
+
+    case LABEL_HEADING:
+    {
+        // TOGGLE HEADING HERE
+        temp = ((C_PopupList *)control)->GetItemState(ID);
+
+        if (acmiView not_eq NULL)
+        {
+            acmiView->ToggleHeading(temp);
+        }
+
+        break;
+    }
+
+    case LABEL_TURN_RATE:
+    {
+        temp = ((C_PopupList *)control)->GetItemState(ID);
+
+        if (acmiView not_eq NULL)
+        {
+            acmiView->ToggleTurnRate(temp);
+        }
+
+
+        break;
+    }
+
+
+    case LABEL_TURN_RADIUS:
+    {
+        temp = ((C_PopupList *)control)->GetItemState(ID);
+
+        if (acmiView not_eq NULL)
+        {
+            acmiView->ToggleTurnRadius(temp);
+        }
+
+
+        break;
+    }
+
+    case LABEL_LOCK_RANGE:
+    {
+        // TOGGLE HEADING HERE
+        temp = ((C_PopupList *)control)->GetItemState(ID);
+
+        if (acmiView not_eq NULL)
+        {
+            acmiView->Togglelockrange(temp);
+        }
+
+        break;
+    }
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -675,43 +663,41 @@ void ToggleFirstSelectionOfOptionsCB(long ID, short hittype, C_Base *control)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void ToggleObjScaleCB(long ID, short hittype, C_Base*)
+void ToggleObjScaleCB(long ID, short hittype, C_Base *)
 {
 
-    if ( not acmiView or not acmiView->Tape() or hittype not_eq C_TYPE_LMOUSEUP)
+    if (not acmiView or not acmiView->Tape() or hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     switch (ID)
     {
-        case VEH_SIZE_2:
-            gObjScale = 2.0f;
-            acmiView->Tape()->SetObjScale(2.0f);
-            break;
+    case VEH_SIZE_2:
+        gObjScale = 2.0f;
+        acmiView->Tape()->SetObjScale(2.0f);
+        break;
 
-        case VEH_SIZE_3:
-            gObjScale = 4.0f;
-            acmiView->Tape()->SetObjScale(4.0f);
-            break;
+    case VEH_SIZE_3:
+        gObjScale = 4.0f;
+        acmiView->Tape()->SetObjScale(4.0f);
+        break;
 
-        case VEH_SIZE_4:
-            gObjScale = 8.0f;
-            acmiView->Tape()->SetObjScale(8.0f);
-            break;
+    case VEH_SIZE_4:
+        gObjScale = 8.0f;
+        acmiView->Tape()->SetObjScale(8.0f);
+        break;
 
-        case VEH_SIZE_5:
-            gObjScale = 16.0f;
-            acmiView->Tape()->SetObjScale(16.0f);
-            break;
+    case VEH_SIZE_5:
+        gObjScale = 16.0f;
+        acmiView->Tape()->SetObjScale(16.0f);
+        break;
 
-        default:
-        case VEH_SIZE_1:
-            gObjScale = 1.0f;
-            acmiView->Tape()->SetObjScale(1.0f);
-            break;
+    default:
+    case VEH_SIZE_1:
+        gObjScale = 1.0f;
+        acmiView->Tape()->SetObjScale(1.0f);
+        break;
     }
-
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -831,7 +817,7 @@ void ACMI_ImportFile(void)
     BOOL foundAFile = TRUE;
 
     // look for *.flt files to import
-    findHand = FindFirstFile("acmibin\\acmi*.flt", &fData);
+    findHand = FindFirstFile("acmibin/acmi*.flt", &fData);
 
     // find anything?
     if (findHand == INVALID_HANDLE_VALUE)
@@ -839,17 +825,17 @@ void ACMI_ImportFile(void)
 
     while (foundAFile)
     {
-        strcpy(fltname, "acmibin\\");
+        strcpy(fltname, "acmibin/");
         strcat(fltname, fData.cFileName);
 
         // find a suitable name to import to
         for (y = 1; y < 10000; y++)
         {
-            sprintf(fname, "acmibin\\TAPE%04d.vhs", y);
+            sprintf(fname, "acmibin/TAPE%04d.vhs", y);
 
             fp = fopen(fname, "r");
 
-            if ( not fp)
+            if (not fp)
             {
                 ACMITape::Import(fltname, fname);
                 break;
@@ -878,15 +864,15 @@ void ACMI_ImportFile(void)
 void ACMI_LoadACMICB(long, short hittype, C_Base *control)
 {
     C_Window *win;
-    C_Text   *text;
+    C_Text *text;
     C_ListBox *ACMIListBox, *camFilter;
     char *objectName;
     long objectNum, numEntities, listBoxIds = listBoxBaseID;
-    C_EditBox * ebox;
+    C_EditBox *ebox;
     _TCHAR fname[MAX_PATH];
     C_Window *renwin;
 
-    if ( not acmiView)
+    if (not acmiView)
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -900,7 +886,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
     acmiDraw = FALSE;
 
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -926,7 +912,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
         acmiView->UnloadTape(FALSE);
 
         // Load the tape.
-        if ( not acmiView->LoadTape(fname, FALSE))
+        if (not acmiView->LoadTape(fname, FALSE))
         {
             acmiView->UnloadTape(FALSE);
             return;
@@ -978,13 +964,14 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
             {
                 ACMIListBox->RemoveAllItems();
 
-                for (objectNum = 0; objectNum < numEntities; objectNum ++)
+                for (objectNum = 0; objectNum < numEntities; objectNum++)
                 {
                     objectName = acmiView->SetListBoxID(objectNum, listBoxIds);
 
                     if (*objectName)
                     {
-                        ACMIListBox = ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM , objectName);
+                        ACMIListBox = ACMIListBox->AddItem(
+                            listBoxIds, C_TYPE_ITEM, objectName);
                         listBoxIds++;
                     }
                     else
@@ -1002,20 +989,20 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
             {
                 ACMIListBox->RemoveAllItems();
 
-                for (objectNum = 0; objectNum < numEntities; objectNum ++)
+                for (objectNum = 0; objectNum < numEntities; objectNum++)
                 {
                     objectName = acmiView->SetListBoxID(objectNum, listBoxIds);
 
                     if (*objectName)
                     {
-                        ACMIListBox = ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM , objectName);
+                        ACMIListBox = ACMIListBox->AddItem(
+                            listBoxIds, C_TYPE_ITEM, objectName);
                         listBoxIds++;
                     }
                     else
                     {
                         acmiView->SetListBoxID(objectNum, -1);
                     }
-
                 }
             }
 
@@ -1027,7 +1014,7 @@ void ACMI_LoadACMICB(long, short hittype, C_Base *control)
             events = acmiView->Tape()->GetTextEvents(&count);
             ProcessEventArray(win, events, count);
 
-        }// if win not_eq null
+        } // if win not_eq null
     } // end listbox
 
     gMainHandler->HideWindow(control->Parent_);
@@ -1087,17 +1074,17 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     acmiDraw = FALSE;
 
-    sprintf(fnamedir, "acmibin\\");
+    sprintf(fnamedir, "acmibin/");
 
     gMainHandler->HideWindow(win);
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)win->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)win->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -1112,7 +1099,7 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
 
         _tcscat(fname, ".vhs");
 
-        strcpy(oldpath, "acmibin\\");
+        strcpy(oldpath, "acmibin/");
         strcat(oldpath, loadedfname);
         _tcscat(fnamedir, fname);
 
@@ -1130,7 +1117,7 @@ void ACMI_SaveItCB(long, short hittype, C_Base *control)
         CopyFile(oldpath, fnamedir, FALSE);
 
         // reload the tape
-        if ( not acmiView->LoadTape(fname , TRUE))
+        if (not acmiView->LoadTape(fname, TRUE))
         {
             // something's fucked
         }
@@ -1168,7 +1155,7 @@ void ACMI_VerifySaveItCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -1177,20 +1164,22 @@ void ACMI_VerifySaveItCB(long ID, short hittype, C_Base *control)
         {
             if (_tcslen(ebox->GetText()) == 0)
             {
-                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB, CloseWindowCB);
+                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB,
+                           CloseWindowCB);
                 return;
             }
         }
 
         //end EmptyFilenameSaveFix
 
-        _stprintf(fname, "acmibin\\%s.vhs", ebox->GetText());
+        _stprintf(fname, "acmibin/%s.vhs", ebox->GetText());
         fp = fopen(fname, "r");
 
         if (fp)
         {
             fclose(fp);
-            AreYouSure(TXT_WARNING, TXT_FILE_EXISTS, ACMI_SaveItCB, CloseWindowCB);
+            AreYouSure(TXT_WARNING, TXT_FILE_EXISTS, ACMI_SaveItCB,
+                       CloseWindowCB);
         }
         else
             ACMI_SaveItCB(ID, hittype, control);
@@ -1211,13 +1200,14 @@ void ACMI_VerifySaveItCB(long ID, short hittype, C_Base *control)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void LoadACMIFileCB(long, short hittype, C_Base*)
+static void LoadACMIFileCB(long, short hittype, C_Base *)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelVHSFileCB);
-    LoadAFile(TXT_LOAD_ACMI, "acmibin\\*.vhs", NULL, ACMI_LoadACMICB, CloseWindowCB);
+    LoadAFile(TXT_LOAD_ACMI, "acmibin/*.vhs", NULL, ACMI_LoadACMICB,
+              CloseWindowCB);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1227,13 +1217,14 @@ static void LoadACMIFileCB(long, short hittype, C_Base*)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-static void SaveACMIFileCB(long, short hittype, C_Base*)
+static void SaveACMIFileCB(long, short hittype, C_Base *)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     SetDeleteCallback(DelVHSFileCB);
-    SaveAFile(TXT_SAVE_ACMI, "acmibin\\*.vhs", NULL, ACMI_VerifySaveItCB, CloseWindowCB, "");
+    SaveAFile(TXT_SAVE_ACMI, "acmibin/*.vhs", NULL, ACMI_VerifySaveItCB,
+              CloseWindowCB, "");
 }
 
 
@@ -1246,17 +1237,10 @@ static void SaveACMIFileCB(long, short hittype, C_Base*)
 
 inline BOOL ACMIViewIsReady()
 {
-    return
-        (
-            (
-                acmiView not_eq NULL and 
-                acmiView->Tape() not_eq NULL and 
-                acmiView->Tape()->IsLoaded() and 
-                acmiView->TapeHasLoaded()
-            ) ?
-            TRUE :
-            FALSE
-        );
+    return ((acmiView not_eq NULL and acmiView->Tape() not_eq NULL and
+             acmiView->Tape()->IsLoaded() and acmiView->TapeHasLoaded()) ?
+                TRUE :
+                FALSE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1266,10 +1250,9 @@ inline BOOL ACMIViewIsReady()
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIButtonCB(long, short hittype, C_Base*)
+void ACMIButtonCB(long, short hittype, C_Base *)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1290,7 +1273,7 @@ void ACMIButtonCB(long, short hittype, C_Base*)
      gUICriticalSection = F4CreateCriticalSection();
     */
 
-    if ( not ACMILoaded)
+    if (not ACMILoaded)
     {
         LoadACMIWindows();
     }
@@ -1309,9 +1292,10 @@ void ACMIButtonCB(long, short hittype, C_Base*)
         acmiView->InitGraphics(win);
     }
 
-    // LoadAFile("acmibin\\*.vhs",NULL,ACMI_LoadACMICB,CloseWindowCB);
+    // LoadAFile("acmibin/*.vhs",NULL,ACMI_LoadACMICB,CloseWindowCB);
     SetDeleteCallback(DelVHSFileCB);
-    LoadAFile(TXT_LOAD_ACMI, "acmibin\\*.vhs", NULL, ACMI_LoadACMICB, ACMICloseCB);
+    LoadAFile(TXT_LOAD_ACMI, "acmibin/*.vhs", NULL, ACMI_LoadACMICB,
+              ACMICloseCB);
 }
 
 
@@ -1324,15 +1308,15 @@ void ACMIButtonCB(long, short hittype, C_Base*)
 
 void LoadACMIWindows()
 {
-    long
-    id;
+    long id;
 
-    if ( not ACMILoaded)
+    if (not ACMILoaded)
     {
         gMainParser->LoadImageList("ac_art.lst");
         // gImageMgr->SetAllKeys(UI95_RGB24Bit(0x00ff00ff));
         gMainParser->LoadSoundList("ac_snd.lst");
-        gMainParser->LoadWindowList("ac_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+        gMainParser->LoadWindowList(
+            "ac_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
         id = gMainParser->GetFirstWindowLoaded();
 
@@ -1355,27 +1339,19 @@ void LoadACMIWindows()
 
 void FindACMIFLTFiles()
 {
-    long
-    handle;
+    long handle;
 
-    int
-    retVal = 0;
+    int retVal = 0;
 
-    _finddata_t
-    *fileinfo;
+    _finddata_t *fileinfo;
 
-    C_Window
-    *win;
+    C_Window *win;
 
-    C_Button
-    *tbtn;
+    C_Button *tbtn;
 
-    int
-    y,
-    ui_id;
+    int y, ui_id;
 
-    C_ScrollBar
-    *scroll;
+    C_ScrollBar *scroll;
 
     // first check to see if we should import any files.
     // ACMI_ImportFile();
@@ -1387,9 +1363,9 @@ void FindACMIFLTFiles()
 
 
     fileinfo = new _finddata_t;
-    handle = _findfirst("acmibin\\*.vhs", fileinfo);
-    //handle = _findfirst("Campaign\\save\\fltfiles\\*.vhs", fileinfo );
-    // handle = _findfirst("acmibin\\*.vhs", fileinfo );
+    handle = _findfirst("acmibin/*.vhs", fileinfo);
+    //handle = _findfirst("Campaign/save/fltfiles/*.vhs", fileinfo );
+    // handle = _findfirst("acmibin/*.vhs", fileinfo );
 
     if (handle > 0)
     {
@@ -1453,20 +1429,15 @@ void FindACMIFLTFiles()
 
 void HookupACMIControls(long ID)
 {
-    C_Panner
-    *panner;
+    C_Panner *panner;
 
-    C_Window
-    *winme;
+    C_Window *winme;
 
-    C_Button
-    *ctrl;
+    C_Button *ctrl;
 
-    C_TimerHook
-    *tmr;
+    C_TimerHook *tmr;
 
-    C_ListBox
-    *ACMIListBox;
+    C_ListBox *ACMIListBox;
 
     C_Slider *sctrl;
     C_Text *tctrl;
@@ -1522,7 +1493,6 @@ void HookupACMIControls(long ID)
     {
         //ctrl->SetCallback(ACMILoadCB);
         ctrl->SetCallback(LoadACMIFileCB);
-
     }
 
     ctrl = (C_Button *)winme->FindControl(STOP);
@@ -1779,7 +1749,6 @@ void HookupACMIControls(long ID)
         tmr->SetFlagBitOn(C_BIT_ABSOLUTE);
         winme->AddControlTop(tmr);
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1829,7 +1798,8 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
             acmiView->Exec();
             TheLoader.WaitForLoader();
 
-            pct = acmiView->Tape()->SimTime() - acmiView->Tape()->GetTodOffset();
+            pct =
+                acmiView->Tape()->SimTime() - acmiView->Tape()->GetTodOffset();
             secs = (int)(pct);
             msecs = (int)(pct * 100) - secs * 100;
 
@@ -1849,11 +1819,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
 
             if (gAdjustingFrameMarker == FALSE)
             {
-                sprintf(gCountText,
-                        "%02d:%02d:%02d:%02d",
-                        hrs,
-                        mins,
-                        secs,
+                sprintf(gCountText, "%02d:%02d:%02d:%02d", hrs, mins, secs,
                         msecs);
 
                 gCounter->Refresh();
@@ -1872,15 +1838,17 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
                     win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
 
                     if (win)
-                        win->SetGroupState(200001, 0); // Turn off all VCR buttons
-
+                        win->SetGroupState(200001,
+                                           0); // Turn off all VCR buttons
                 }
             }
 
             // handle moving the events list when tape running
-            if ( not acmiView->Tape()->IsPaused())
+            if (not acmiView->Tape()->IsPaused())
             {
-                int intTime = (int)(acmiView->Tape()->SimTime() - acmiView->Tape()->GetTodOffset()) * 1000;
+                int intTime = (int)(acmiView->Tape()->SimTime() -
+                                    acmiView->Tape()->GetTodOffset()) *
+                              1000;
                 win = gMainHandler->FindWindow(ACMI_LEFT_WIN);
 
                 if (win)
@@ -1889,7 +1857,8 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
 
                     if (txt)
                     {
-                        win->SetVirtualY(txt->GetY() - win->ClientArea_[0].top, 0);
+                        win->SetVirtualY(txt->GetY() - win->ClientArea_[0].top,
+                                         0);
                         win->AdjustScrollbar(0);
                         win->RefreshClient(0);
                     }
@@ -1897,12 +1866,14 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
             }
         }
 
-        control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_DELAY_));
+        control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                               control->GetUserNumber(_UI95_TIMER_DELAY_));
         control->Parent_->update_ or_eq C_DRAW_REFRESHALL;
         control->Parent_->RefreshWindow();
     }
 
-    control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
+    control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                           control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
     // F4LeaveCriticalSection( gUICriticalSection );
 }
 
@@ -1913,7 +1884,7 @@ void MoveACMIViewTimerCB(long, short, C_Base *control)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIDrawCB(long, short, C_Base*)
+void ACMIDrawCB(long, short, C_Base *)
 {
     /*
     ** EDG NOTE: There's really no reason (that I could descern) to have
@@ -1937,8 +1908,7 @@ void ACMIDrawCB(long, short, C_Base*)
 
 void ACMILoadCB(long, short hittype, C_Base *control)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
     // F4EnterCriticalSection( gUICriticalSection );
     if (hittype == C_TYPE_LMOUSEUP)
@@ -2001,8 +1971,6 @@ void ACMICloseCB(long, short hittype, C_Base *control)
         acmiView->ExitGraphics();
         delete acmiView;
         acmiView = NULL;
-
-
     }
 
     if (control->GetGroup())
@@ -2015,7 +1983,6 @@ void ACMICloseCB(long, short hittype, C_Base *control)
     // RV - RED - We r leaving ACMI... why still true?
     // acmiDraw = TRUE;
     // renderACMI = TRUE;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2093,7 +2060,8 @@ void ACMIStepFowardCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) and
+        ACMIViewIsReady())
     {
         Leave = UI_Enter(control->Parent_);
         acmiView->Tape()->Pause();
@@ -2115,7 +2083,8 @@ void ACMIStepReverseCB(long, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEUP or hittype == C_TYPE_REPEAT) and
+        ACMIViewIsReady())
     {
         Leave = UI_Enter(control->Parent_);
         acmiView->Tape()->Pause();
@@ -2179,7 +2148,7 @@ void ACMIFastForwardCB(long, short hittype, C_Base *control)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIRotateCameraUpCB(long, short, C_Base*)
+void ACMIRotateCameraUpCB(long, short, C_Base *)
 {
 }
 
@@ -2190,7 +2159,7 @@ void ACMIRotateCameraUpCB(long, short, C_Base*)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIRotateCameraDownCB(long, short, C_Base*)
+void ACMIRotateCameraDownCB(long, short, C_Base *)
 {
 }
 
@@ -2201,7 +2170,7 @@ void ACMIRotateCameraDownCB(long, short, C_Base*)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIRotateCameraLeftCB(long, short, C_Base*)
+void ACMIRotateCameraLeftCB(long, short, C_Base *)
 {
 }
 
@@ -2212,7 +2181,7 @@ void ACMIRotateCameraLeftCB(long, short, C_Base*)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIRotateCameraRightCB(long, short, C_Base*)
+void ACMIRotateCameraRightCB(long, short, C_Base *)
 {
 }
 
@@ -2224,7 +2193,7 @@ void ACMIRotateCameraRightCB(long, short, C_Base*)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-void ACMIZoomInCameraCB(long, short, C_Base*)
+void ACMIZoomInCameraCB(long, short, C_Base *)
 {
 }
 
@@ -2235,7 +2204,7 @@ void ACMIZoomInCameraCB(long, short, C_Base*)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIZoomOutCameraCB(long, short, C_Base*)
+void ACMIZoomOutCameraCB(long, short, C_Base *)
 {
 }
 
@@ -2246,13 +2215,9 @@ void ACMIZoomOutCameraCB(long, short, C_Base*)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMITrackingCB(long, short hittype, C_Base*)
+void ACMITrackingCB(long, short hittype, C_Base *)
 {
-    if
-    (
-        hittype == C_TYPE_LMOUSEUP and 
-        ACMIViewIsReady()
-    )
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->ToggleTracking();
     }
@@ -2267,17 +2232,15 @@ void ACMITrackingCB(long, short hittype, C_Base*)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 void ACMIPannerCB(long, short hittype, C_Base *control)
 {
-    C_Panner
-    *panner;
+    C_Panner *panner;
 
-    float
-    horz = 0.0F,
-    vert = 0.0F;
+    float horz = 0.0F, vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and
+        ACMIViewIsReady())
     {
-        panner = (C_Panner *) control;
+        panner = (C_Panner *)control;
         horz = (float)panner->GetHRange();
         vert = (float)panner->GetVRange();
 
@@ -2295,17 +2258,15 @@ void ACMIPannerCB(long, short hittype, C_Base *control)
 
 void ACMIHArrowsCB(long, short hittype, C_Base *control)
 {
-    C_Panner
-    *panner;
+    C_Panner *panner;
 
-    float
-    horz = 0.0F,
-    vert = 0.0F;
+    float horz = 0.0F, vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and
+        ACMIViewIsReady())
     {
-        panner = (C_Panner *) control;
+        panner = (C_Panner *)control;
         horz = (float)panner->GetHRange();
         vert = (float)panner->GetVRange();
 
@@ -2323,17 +2284,15 @@ void ACMIHArrowsCB(long, short hittype, C_Base *control)
 
 void ACMIVArrowsCB(long, short hittype, C_Base *control)
 {
-    C_Panner
-    *panner;
+    C_Panner *panner;
 
-    float
-    horz = 0.0F,
-    vert = 0.0F;
+    float horz = 0.0F, vert = 0.0F;
 
 
-    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and ACMIViewIsReady())
+    if ((hittype == C_TYPE_LMOUSEDOWN or hittype == C_TYPE_REPEAT) and
+        ACMIViewIsReady())
     {
-        panner = (C_Panner *) control;
+        panner = (C_Panner *)control;
         horz = (float)panner->GetHRange();
         vert = (float)panner->GetVRange();
         acmiView->SetPannerXYZ(0.0F, 0.0f, vert);
@@ -2393,7 +2352,6 @@ void ACMICameraCB(long, short hittype, C_Base *control)
 
         // ACMIUpdateModelMenu();
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2405,20 +2363,14 @@ void ACMICameraCB(long, short hittype, C_Base *control)
 
 void ACMICamTrackingCB(long, int hittype, C_Control *control)
 {
-    C_ListBox
-    *ACMIListBox;
+    C_ListBox *ACMIListBox;
 
-    long
-    itemSel;
+    long itemSel;
 
     ACMIListBox = (C_ListBox *)control;
 
-    if
-    (
-        hittype == C_TYPE_SELECT and 
-        ACMIViewIsReady() and 
-        ACMIListBox not_eq NULL
-    )
+    if (hittype == C_TYPE_SELECT and ACMIViewIsReady() and
+        ACMIListBox not_eq NULL)
     {
         itemSel = ACMIListBox->GetTextID();
 
@@ -2436,20 +2388,14 @@ void ACMICamTrackingCB(long, int hittype, C_Control *control)
 
 void ACMICamTrackingCB(long, short hittype, C_Base *control)
 {
-    C_ListBox
-    *ACMIListBox;
+    C_ListBox *ACMIListBox;
 
-    long
-    itemSel;
+    long itemSel;
 
     ACMIListBox = (C_ListBox *)control;
 
-    if
-    (
-        hittype == C_TYPE_SELECT and 
-        ACMIViewIsReady() and 
-        ACMIListBox not_eq NULL
-    )
+    if (hittype == C_TYPE_SELECT and ACMIViewIsReady() and
+        ACMIListBox not_eq NULL)
     {
         itemSel = ACMIListBox->GetTextID();
 
@@ -2479,7 +2425,8 @@ void ACMICamTrackingPrevCB(long, short hittype, C_Base *control)
         if (lbox)
         {
             lbox->Refresh();
-            lbox->SetValue(acmiView->ListBoxID(acmiView->TrackingObject(), INTERNAL_CAM));
+            lbox->SetValue(
+                acmiView->ListBoxID(acmiView->TrackingObject(), INTERNAL_CAM));
             lbox->Refresh();
         }
     }
@@ -2506,7 +2453,8 @@ void ACMICamTrackingNextCB(long, short hittype, C_Base *control)
         if (lbox)
         {
             lbox->Refresh();
-            lbox->SetValue(acmiView->ListBoxID(acmiView->TrackingObject(), INTERNAL_CAM));
+            lbox->SetValue(
+                acmiView->ListBoxID(acmiView->TrackingObject(), INTERNAL_CAM));
             lbox->Refresh();
         }
     }
@@ -2521,20 +2469,14 @@ void ACMICamTrackingNextCB(long, short hittype, C_Base *control)
 
 void ACMISubCameraCB(long, short hittype, C_Base *control)
 {
-    C_ListBox
-    *ACMIListBox;
+    C_ListBox *ACMIListBox;
 
-    long
-    itemSel;
+    long itemSel;
 
     ACMIListBox = (C_ListBox *)control;
 
-    if
-    (
-        hittype == C_TYPE_SELECT and 
-        ACMIViewIsReady() and 
-        ACMIListBox not_eq NULL
-    )
+    if (hittype == C_TYPE_SELECT and ACMIViewIsReady() and
+        ACMIListBox not_eq NULL)
     {
         itemSel = ACMIListBox->GetTextID();
 
@@ -2564,7 +2506,8 @@ void ACMISubCameraPrevCB(long, short hittype, C_Base *control)
         if (lbox)
         {
             lbox->Refresh();
-            lbox->SetValue(acmiView->ListBoxID(acmiView->CameraObject(), INTERNAL_CAM));
+            lbox->SetValue(
+                acmiView->ListBoxID(acmiView->CameraObject(), INTERNAL_CAM));
             lbox->Refresh();
         }
     }
@@ -2591,7 +2534,8 @@ void ACMISubCameraNextCB(long, short hittype, C_Base *control)
         if (lbox)
         {
             lbox->Refresh();
-            lbox->SetValue(acmiView->ListBoxID(acmiView->CameraObject(), INTERNAL_CAM));
+            lbox->SetValue(
+                acmiView->ListBoxID(acmiView->CameraObject(), INTERNAL_CAM));
             lbox->Refresh();
         }
     }
@@ -2606,8 +2550,7 @@ void ACMISubCameraNextCB(long, short hittype, C_Base *control)
 
 void ACMIPickAFileCB(long, short hittype, C_Base *control)
 {
-    C_Button
-    *tbtn;
+    C_Button *tbtn;
 
     // edg: big hack to note: this function doesn't actually
     // seem to set fname to anything that's been loaded in
@@ -2617,27 +2560,19 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     _TCHAR
     *fname = "lastflt.vhs";
 
-    C_Window
-    *winme;
+    C_Window *winme;
 
-    C_ListBox
-    *ACMIListBox,
-    *camFilter;
+    C_ListBox *ACMIListBox, *camFilter;
 
 
     C_Text *text;
 
 
-    char
-    *objectName;
+    char *objectName;
 
-    int
-    objectNum,
-    numEntities,
-    listBoxIds = listBoxBaseID;
+    int objectNum, numEntities, listBoxIds = listBoxBaseID;
 
-    long
-    camSel;
+    long camSel;
 
     F4CSECTIONHANDLE *Leave;
     C_Window *renwin;
@@ -2656,7 +2591,6 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     acmiDraw = FALSE;
 
 
-
     tbtn = (C_Button *)control;
     tbtn->SetState(1);
     fname = tbtn->GetText(0);
@@ -2672,7 +2606,7 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     acmiView->UnloadTape(FALSE);
 
     // Load the tape.
-    if ( not acmiView->LoadTape(fname, FALSE))
+    if (not acmiView->LoadTape(fname, FALSE))
     {
         acmiView->UnloadTape(FALSE);
         //F4LeaveCriticalSection( gUICriticalSection );
@@ -2709,14 +2643,15 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
         {
             ACMIListBox->RemoveAllItems();
 
-            for (objectNum = 0; objectNum < numEntities; objectNum ++)
+            for (objectNum = 0; objectNum < numEntities; objectNum++)
             {
                 listBoxIds = acmiView->ListBoxID(objectNum, EXTERNAL_CAM);
 
                 if (listBoxIds > -1)
                 {
                     objectName = acmiView->SetListBoxID(objectNum, listBoxIds);
-                    ACMIListBox = ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM , objectName);
+                    ACMIListBox = ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM,
+                                                       objectName);
                 }
             }
         }
@@ -2729,11 +2664,12 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
         {
             ACMIListBox->RemoveAllItems();
 
-            for (objectNum = 0; objectNum < numEntities; objectNum ++)
+            for (objectNum = 0; objectNum < numEntities; objectNum++)
             {
                 objectName = acmiView->SetListBoxID(objectNum, listBoxIds);
 
-                ACMIListBox = ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM , objectName);
+                ACMIListBox =
+                    ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM, objectName);
                 listBoxIds++;
             }
         }
@@ -2754,7 +2690,6 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
     winme->UnHideCluster(200);
 
 
-
     // put the name of the vhs file into the window top.
     winme = gMainHandler->FindWindow(ACMI_RIGHT_WIN);
 
@@ -2768,16 +2703,13 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
             text->SetText(fname);
             text->Refresh();
         }
-
     }
-
 
 
     acmiDraw = TRUE;
     renderACMI = TRUE;
     UI_Leave(Leave);
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2789,23 +2721,15 @@ void ACMIPickAFileCB(long, short hittype, C_Base *control)
 
 void ACMIUpdateModelMenu()
 {
-    C_Window
-    *winme;
+    C_Window *winme;
 
-    C_ListBox
-    *ACMIListBox,
-    *camFilter;
+    C_ListBox *ACMIListBox, *camFilter;
 
-    char
-    *objectName;
+    char *objectName;
 
-    int
-    objectNum,
-    numEntities,
-    listBoxIds;
+    int objectNum, numEntities, listBoxIds;
 
-    long
-    camSel = EXTERNAL_CAM;
+    long camSel = EXTERNAL_CAM;
 
     winme = gMainHandler->FindWindow(ACMI_LEFT_WIN);
 
@@ -2828,14 +2752,16 @@ void ACMIUpdateModelMenu()
             {
                 numEntities = acmiView->Tape()->NumEntities();
 
-                for (objectNum = 0; objectNum < numEntities; objectNum ++)
+                for (objectNum = 0; objectNum < numEntities; objectNum++)
                 {
                     listBoxIds = acmiView->ListBoxID(objectNum, camSel);
 
                     if (listBoxIds > -1)
                     {
-                        objectName = acmiView->SetListBoxID(objectNum, listBoxIds);
-                        ACMIListBox = ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM , objectName);
+                        objectName =
+                            acmiView->SetListBoxID(objectNum, listBoxIds);
+                        ACMIListBox = ACMIListBox->AddItem(
+                            listBoxIds, C_TYPE_ITEM, objectName);
                     }
                 }
             }
@@ -2851,14 +2777,16 @@ void ACMIUpdateModelMenu()
             {
                 numEntities = acmiView->Tape()->NumEntities();
 
-                for (objectNum = 0; objectNum < numEntities; objectNum ++)
+                for (objectNum = 0; objectNum < numEntities; objectNum++)
                 {
                     listBoxIds = acmiView->ListBoxID(objectNum, camSel);
 
                     if (listBoxIds > -1)
                     {
-                        objectName = acmiView->SetListBoxID(objectNum, listBoxIds);
-                        ACMIListBox = ACMIListBox->AddItem(listBoxIds, C_TYPE_ITEM , objectName);
+                        objectName =
+                            acmiView->SetListBoxID(objectNum, listBoxIds);
+                        ACMIListBox = ACMIListBox->AddItem(
+                            listBoxIds, C_TYPE_ITEM, objectName);
                     }
                 }
             }
@@ -2900,13 +2828,9 @@ void ACMIUpdate(long, short, C_Base *control)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMIScreenCaptureCB(long, short hittype, C_Base*)
+void ACMIScreenCaptureCB(long, short hittype, C_Base *)
 {
-    if
-    (
-        hittype == C_TYPE_LMOUSEUP and 
-        ACMIViewIsReady()
-    )
+    if (hittype == C_TYPE_LMOUSEUP and ACMIViewIsReady())
     {
         acmiView->ToggleScreenShot();
     }
@@ -2919,7 +2843,7 @@ void ACMIScreenCaptureCB(long, short hittype, C_Base*)
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-void ACMICutPOVCB(long, short, C_Base*)
+void ACMICutPOVCB(long, short, C_Base *)
 {
 }
 
@@ -2946,8 +2870,7 @@ void ACMIFrameMarkerCB(long, short hittype, C_Base *control)
     F4CSECTIONHANDLE *Leave;
 
 
-
-    if ( not ACMIViewIsReady())
+    if (not ACMIViewIsReady())
         return;
 
     if (hittype == C_TYPE_MOUSEMOVE)
@@ -2962,7 +2885,8 @@ void ACMIFrameMarkerCB(long, short hittype, C_Base *control)
         t = (float)(currpos - gFrameMarkerMin) / (float)gFrameMarkerLen;
         // acmiView->Tape()->SetHeadPosition( pct );
 
-        pct = acmiView->Tape()->GetNewSimTime(t) - acmiView->Tape()->GetTodOffset();
+        pct = acmiView->Tape()->GetNewSimTime(t) -
+              acmiView->Tape()->GetTodOffset();
         secs = (int)(pct);
         msecs = (int)(pct * 100) - secs * 100;
 
@@ -2980,12 +2904,7 @@ void ACMIFrameMarkerCB(long, short hittype, C_Base *control)
 
         secs = (int)(fmod(pct, 60.0f));
 
-        sprintf(gCountText,
-                "%02d:%02d:%02d:%02d",
-                hrs,
-                mins,
-                secs,
-                msecs);
+        sprintf(gCountText, "%02d:%02d:%02d:%02d", hrs, mins, secs, msecs);
 
         gCounter->Refresh();
         gCounter->SetText(gCountText);

@@ -1,5 +1,5 @@
-#include "Graphics/Include/RenderOW.h"
-#include "Graphics/Include/constant.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/constant.h"
 #include "stdhdr.h"
 #include "otwdrive.h"
 
@@ -33,54 +33,54 @@ void OTWDriverClass::GetUserPosition(void)
 
     switch (state)
     {
-        case 0:
-            sprintf(chatterStr, "%.2f", flyingEye->XPos() / FEET_PER_KM);
-            state ++;
+    case 0:
+        sprintf(chatterStr, "%.2f", flyingEye->XPos() / FEET_PER_KM);
+        state++;
 
-        case 1:
-            renderer->TextCenter(0.0F, 0.8F, "Enter X Coord");
+    case 1:
+        renderer->TextCenter(0.0F, 0.8F, "Enter X Coord");
 
-            if (CommandsKeyCombo == 0)
-            {
-                xPos = (float)atof(chatterStr) * FEET_PER_KM;
-                sprintf(chatterStr, "%.2f", flyingEye->YPos() / FEET_PER_KM);
-                chatterCount = 0;
-                CommandsKeyCombo = -1;
-                CommandsKeyComboMod = -1;
-                state ++;
-            }
+        if (CommandsKeyCombo == 0)
+        {
+            xPos = (float)atof(chatterStr) * FEET_PER_KM;
+            sprintf(chatterStr, "%.2f", flyingEye->YPos() / FEET_PER_KM);
+            chatterCount = 0;
+            CommandsKeyCombo = -1;
+            CommandsKeyComboMod = -1;
+            state++;
+        }
 
-            break;
+        break;
 
-        case 2:
-            renderer->TextCenter(0.0F, 0.8F, "Enter Y Coord");
+    case 2:
+        renderer->TextCenter(0.0F, 0.8F, "Enter Y Coord");
 
-            if (CommandsKeyCombo == 0)
-            {
-                yPos = (float)atof(chatterStr) * FEET_PER_KM;
-                sprintf(chatterStr, "%.2f", flyingEye->ZPos());
-                chatterCount = 0;
-                CommandsKeyCombo = -1;
-                CommandsKeyComboMod = -1;
-                state ++;
-            }
+        if (CommandsKeyCombo == 0)
+        {
+            yPos = (float)atof(chatterStr) * FEET_PER_KM;
+            sprintf(chatterStr, "%.2f", flyingEye->ZPos());
+            chatterCount = 0;
+            CommandsKeyCombo = -1;
+            CommandsKeyComboMod = -1;
+            state++;
+        }
 
-            break;
+        break;
 
-        case 3:
-            renderer->TextCenter(0.0F, 0.8F, "Enter Z Coord");
+    case 3:
+        renderer->TextCenter(0.0F, 0.8F, "Enter Z Coord");
 
-            if (CommandsKeyCombo == 0)
-            {
-                zPos = (float)atof(chatterStr);
-                memset(chatterStr, 0, 256);
-                chatterCount = 0;
-                getNewCameraPos = FALSE;
-                state = 0;
-                flyingEye->SetPosition(xPos, yPos, zPos);
-            }
+        if (CommandsKeyCombo == 0)
+        {
+            zPos = (float)atof(chatterStr);
+            memset(chatterStr, 0, 256);
+            chatterCount = 0;
+            getNewCameraPos = FALSE;
+            state = 0;
+            flyingEye->SetPosition(xPos, yPos, zPos);
+        }
 
-            break;
+        break;
     }
 
     renderer->TextLeft(-0.5F, -0.5F, chatterStr);

@@ -14,13 +14,14 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-    SimHeloDefinition(char*);
+    SimHeloDefinition(char *);
     ~SimHeloDefinition(void);
-    int  airframeIndex;
+    int airframeIndex;
 };
 
 #endif

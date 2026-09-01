@@ -28,6 +28,7 @@ void SimulationDriver::UpdateATC(void)
 
         // RAS - 25Jan04 - Note in atcBrain.cpp said update should only run every 5 seconds, I found it
         // was running every 1/4 seconds so I changed it.  Testing now to see if there are any problems
-        nextATCTime = SimLibElapsedTime + CampaignSeconds * 5;  //(CampaignSeconds/4);
+        nextATCTime =
+            SimLibElapsedTime + CampaignSeconds * 5; //(CampaignSeconds/4);
     }
 }

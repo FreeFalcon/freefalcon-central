@@ -7,28 +7,28 @@
 #include <string.h>
 #include <stdlib.h>
 #include "campmap.h"
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Listadt.h"
-#include "Objectiv.h"
-#include "ASearch.h"
-#include "Unit.h"
-#include "Find.h"
-#include "Campaign.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "listadt.h"
+#include "objectiv.h"
+#include "asearch.h"
+#include "unit.h"
+#include "find.h"
+#include "campaign.h"
 #include "path.h"
 #include "team.h"
 #include "classtbl.h"
-#include "Debuggr.h"
+#include "debuggr.h"
 #include "uiwin.h"
-#include "GndUnit.h"
-#include "AIInput.h"
-#include "GTM.h"
-#include "MsgInc/GndTaskingMsg.h"
+#include "gndunit.h"
+#include "aiinput.h"
+#include "gtm.h"
+#include "msginc/gndtaskingmsg.h"
 
 void debugprintf(LPSTR dbgFormat, ...)
 {
-    char  dbgBuffer[256];
+    char dbgBuffer[256];
     va_list ap;
 
     va_start(ap, dbgFormat);
@@ -47,28 +47,27 @@ void debugprintf(LPSTR dbgFormat, ...)
 // Path.c Globals and defines
 // =====================================
 
-#define EUNIT_WEIGHT    2
-#define FUNIT_WEIGHT    5
-#define OBJ_WEIGHT      2
+#define EUNIT_WEIGHT 2
+#define FUNIT_WEIGHT 5
+#define OBJ_WEIGHT 2
 #define THREAT_STEP 8
 
 #define PATH_DIAGONAL 0x8000 // set if a diagonal move
 
 // Costs are: 99=No move, 1-x= Easy to hard
-float CostTable[COVER_TYPES][MOVEMENT_TYPES] =
-{
-    { 99.0F, 99.0F, 99.0F, 99.0F,  1.0F,  1.0F,   1.0F,  99.0F }, // Water
-    { 99.0F,  3.0F,  8.0F,  6.0F,  1.0F,  1.0F,  99.0F,  99.0F }, // Bog/Swamp
-    { 99.0F,  1.5F,  4.0F,  3.0F,  1.0F,  1.0F,  99.0F,  99.0F }, // Barren/Desert
-    { 99.0F,  1.0F,  3.0F,  2.0F,  1.0F,  1.0F,  99.0F,  99.0F }, // Plains/Farmland
-    { 99.0F,  1.0F,  3.0F,  2.0F,  1.0F,  1.0F,  99.0F,  99.0F }, // Grass/Brush
-    { 99.0F,  2.0F,  6.0F,  4.0F,  1.0F,  1.0F,  99.0F,  99.0F }, // LightForest
-    { 99.0F,  2.0F,  6.0F,  4.0F,  1.0F,  1.0F,  99.0F,  99.0F }, // HvyForest/Jungle
-    { 99.0F,  2.0F,  3.0F,  3.0F,  1.0F,  1.0F,  99.0F,  99.0F }
-};// Urban
+float CostTable[COVER_TYPES][MOVEMENT_TYPES] = {
+    {99.0F, 99.0F, 99.0F, 99.0F, 1.0F, 1.0F, 1.0F, 99.0F}, // Water
+    {99.0F, 3.0F, 8.0F, 6.0F, 1.0F, 1.0F, 99.0F, 99.0F}, // Bog/Swamp
+    {99.0F, 1.5F, 4.0F, 3.0F, 1.0F, 1.0F, 99.0F, 99.0F}, // Barren/Desert
+    {99.0F, 1.0F, 3.0F, 2.0F, 1.0F, 1.0F, 99.0F, 99.0F}, // Plains/Farmland
+    {99.0F, 1.0F, 3.0F, 2.0F, 1.0F, 1.0F, 99.0F, 99.0F}, // Grass/Brush
+    {99.0F, 2.0F, 6.0F, 4.0F, 1.0F, 1.0F, 99.0F, 99.0F}, // LightForest
+    {99.0F, 2.0F, 6.0F, 4.0F, 1.0F, 1.0F, 99.0F, 99.0F}, // HvyForest/Jungle
+    {99.0F, 2.0F, 3.0F, 3.0F, 1.0F, 1.0F, 99.0F, 99.0F}};// Urban
 
-float ReliefCost[RELIEF_TYPES] = { 1.0F, 1.41F, 1.73F, 2.0F };
-float CoverValues[COVER_TYPES] = { 0.0F, 2.0F, 1.0F, 1.5F, 2.0F, 3.0F, 4.0F, 4.0F };
+float ReliefCost[RELIEF_TYPES] = {1.0F, 1.41F, 1.73F, 2.0F};
+float CoverValues[COVER_TYPES] = {0.0F, 2.0F, 1.0F, 1.5F,
+                                  2.0F, 3.0F, 4.0F, 4.0F};
 
 int QuickSearch;
 int moveTeam, moveType, moveFlags, moveAlt, maxSearch = MAX_SEARCH;
@@ -100,9 +99,10 @@ int DColor;
 #endif CAMPTOOL
 
 
-int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags)
+int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy,
+                int type, int who, int flags)
 {
-    void*       o;
+    void* o;
     void* t;
     int retval;
 
@@ -119,7 +119,8 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
 #endif
 
     // Should be able to drop this. Assume not true in future.
-    if (x < 0 or y < 0 or xx < 0 or yy < 0 or x >= Map_Max_X or y >= Map_Max_Y or xx >= Map_Max_X or yy >= Map_Max_Y)
+    if (x < 0 or y < 0 or xx < 0 or yy < 0 or x >= Map_Max_X or
+        y >= Map_Max_Y or xx >= Map_Max_X or yy >= Map_Max_Y)
     {
         p->ClearPath();
         return -1;
@@ -136,7 +137,9 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
     // Debug stuff
     //ulong time,newtime;
     //time = GetTickCount();
-    retval = ASD->ASSearch(p, o, t, GetNeighborCoord, RETURN_PARTIAL_ON_FAIL bitor RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
+    retval = ASD->ASSearch(p, o, t, GetNeighborCoord,
+                           RETURN_PARTIAL_ON_FAIL bitor RETURN_PARTIAL_ON_MAX,
+                           maxSearch, maxCost);
     //newtime = GetTickCount();
     //MonoPrint("Finding Grid Path: %d,%d -> %d,%d   Time to find: %d (Result: %d)\n",x,y,xx,yy,newtime-time,retval);
 #ifdef CAMPTOOL
@@ -148,7 +151,8 @@ int GetGridPath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, in
     return retval;
 }
 
-costtype GetPathCost(GridIndex x, GridIndex y, Path path, MoveType mt, int flags)
+costtype GetPathCost(GridIndex x, GridIndex y, Path path, MoveType mt,
+                     int flags)
 {
     costtype cost = 0.0F;
     int d, i = 0;
@@ -169,7 +173,7 @@ costtype GetPathCost(GridIndex x, GridIndex y, Path path, MoveType mt, int flags
 
 costtype GetPathCost(Objective o, Path path, MoveType mt, int flags)
 {
-    costtype    cost = 0.0F;
+    costtype cost = 0.0F;
     int d, i = 0;
 
     d = path->GetDirection(i);
@@ -186,7 +190,8 @@ costtype GetPathCost(Objective o, Path path, MoveType mt, int flags)
     flags;
 }
 
-int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int flags)
+int GetObjectivePath(Path p, Objective o, Objective t, int type, int who,
+                     int flags)
 {
     int retval;
     moveTeam = who;
@@ -208,7 +213,9 @@ int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int fl
     //ulong time,newtime;
     //GridIndex x,y,xx,yy;
     //time = GetTickCount();
-    retval = ASD->ASSearch(p, o, t, GetNeighborObject, RETURN_PARTIAL_ON_FAIL bitor RETURN_PARTIAL_ON_MAX, maxSearch, maxCost);
+    retval = ASD->ASSearch(p, o, t, GetNeighborObject,
+                           RETURN_PARTIAL_ON_FAIL bitor RETURN_PARTIAL_ON_MAX,
+                           maxSearch, maxCost);
     //newtime = GetTickCount();
     //o->GetLocation(&x,&y);
     //t->GetLocation(&xx,&yy);
@@ -216,9 +223,10 @@ int GetObjectivePath(Path p, Objective o, Objective t, int type, int who, int fl
     return retval;
 }
 
-int GetObjectivePath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex yy, int type, int who, int flags)
+int GetObjectivePath(Path p, GridIndex x, GridIndex y, GridIndex xx,
+                     GridIndex yy, int type, int who, int flags)
 {
-    Objective   o, t;
+    Objective o, t;
 
     o = FindNearestObjective(x, y, NULL);
     t = FindNearestObjective(xx, yy, NULL);
@@ -228,9 +236,9 @@ int GetObjectivePath(Path p, GridIndex x, GridIndex y, GridIndex xx, GridIndex y
 // This should only be called for linking objectives
 int FindLinkPath(Path p, Objective O1, Objective O2, MoveType mt)
 {
-    void*       o;
+    void* o;
     void* t;
-    GridIndex   ox, oy, tx, ty;
+    GridIndex ox, oy, tx, ty;
 
     O1->GetLocation(&ox, &oy);
     O2->GetLocation(&tx, &ty);
@@ -250,7 +258,8 @@ int FindLinkPath(Path p, Objective O1, Objective O2, MoveType mt)
 
     moveTeam = 0;
 
-    if (GetMovementCost(ox, oy, (MoveType)moveType, moveFlags, Here) > MAX_COST or
+    if (GetMovementCost(ox, oy, (MoveType)moveType, moveFlags, Here) >
+            MAX_COST or
         GetMovementCost(tx, ty, (MoveType)moveType, moveFlags, Here) > MAX_COST)
     {
         p->ClearPath();
@@ -279,7 +288,7 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 
     o = FindNearestObjective(x, y, NULL);
 
-    if ( not o or not t or o == t)
+    if (not o or not t or o == t)
         return 0;
 
     moveTeam = u->GetTeam();
@@ -297,7 +306,9 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 
 #endif
 
-    if (ASD->ASSearch(&path, o, t, GetNeighborObject, RETURN_EMPTY_ON_FAIL, OBJ_GROUND_PATH_MAX_SEARCH, (costtype) OBJ_GROUND_PATH_MAX_COST) < 1)
+    if (ASD->ASSearch(&path, o, t, GetNeighborObject, RETURN_EMPTY_ON_FAIL,
+                      OBJ_GROUND_PATH_MAX_SEARCH,
+                      (costtype)OBJ_GROUND_PATH_MAX_COST) < 1)
         return OBJ_GROUND_PATH_MAX_COST;
 
     return path.GetCost() * 10.0f / u->GetMaxSpeed();
@@ -306,107 +317,125 @@ costtype CostToArrive(Unit u, int orders, GridIndex x, GridIndex y, Objective t)
 // Movement cost is the 'virtual cost'- How many times longer it'll take us to go one
 // map sector than if we went there directly via road. This should take into account
 // lower speeds through terrain, and path curvyness.
-float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags, CampaignHeading h)
+float GetMovementCost(GridIndex x, GridIndex y, MoveType move, int flags,
+                      CampaignHeading h)
 {
-    float          cost;
+    float cost;
     Objective o;
 
     cost = CostTable[GetCover(x, y)][move];
 
     switch (move)
     {
-        case Foot:
-        case Wheeled:
-        case Tracked:
-            if (GetRoad(x, y) and not (h bitand 0x01))
-            {
-                // It's a bridge or port, check if intact
-                if (cost > MAX_COST)
-                {
-                    o = FindNearestObjective(x, y, NULL);
-
-                    // RV - Biker - Loop through ground units to find engineer battalion assigned for repair
-                    VuListIterator uit(AllUnitList);
-                    Unit u = GetFirstUnit(&uit);
-                    GridIndex ux = 0, uy = 0;
-                    bool assignedEng = false;
-
-                    while (u)
-                    {
-                        if (u->IsBrigade() or u->GetDomain() not_eq DOMAIN_LAND or u->GetTeam() not_eq o->GetTeam())
-                        {
-                            u = GetNextUnit(&uit);
-                            continue;
-                        }
-
-                        u->GetLocation(&ux, &uy);
-                        float dx = float(ux - x);
-                        float dy = float(uy - y);
-
-                        float dist = sqrt(dx * dx + dy * dy);
-
-                        // RV - Biker - Check for engineer type maybe we need some more check
-                        if (u->GetSType() == STYPE_UNIT_ENGINEER or u->GetSType() == STYPE_WHEELED_ENGINEER)
-                        {
-                            if (dist <= 1.0f and u->GetTeam() == o->GetTeam())
-                            {
-                                assignedEng = true;
-                                break;
-                            }
-                        }
-
-                        u = GetNextUnit(&uit);
-                    }
-
-                    if (o and (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags bitand PATH_ENGINEER))))
-                        cost = 0.5F;
-
-                    if (o and o->GetType() == TYPE_BRIDGE and o->GetObjectiveStatus() < 30 and assignedEng)
-                        cost = 5.0F;
-                }
-                else if (flags bitand PATH_ROADOK and GetRoad((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))
-                    cost = 0.5F; // Use roads when we're allowed to
-                else
-                    cost *= 0.5F; // Otherwise, lesser bonus
-            }
-
-            cost *= ReliefCost[GetRelief(x, y)];
-            break;
-
-        case LowAir:
-            cost *= ReliefCost[GetRelief(x, y)]; // This only makes since for helecopters
-            break;
-
-        case Rail:
-            if (GetRail(x, y))
-            {
-                if (cost > MAX_COST) // It's a bridge, check if intact
-                {
-                    o = FindNearestObjective(x, y, NULL);
-
-                    if (o->GetType() == TYPE_PORT or (o->GetType() == TYPE_BRIDGE and (o->GetObjectiveStatus() > 0 or flags bitand PATH_ENGINEER)))
-                        cost = 0.5F;
-                }
-                else if (flags bitand PATH_RAILOK and GetRail((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h]))) // Use rails when we're allowed to
-                    cost = 0.5F;
-            }
-
-            break;
-
-        case Naval:
+    case Foot:
+    case Wheeled:
+    case Tracked:
+        if (GetRoad(x, y) and not(h bitand 0x01))
+        {
+            // It's a bridge or port, check if intact
             if (cost > MAX_COST)
             {
                 o = FindNearestObjective(x, y, NULL);
 
-                if (o and (o->GetType() == TYPE_PORT or o->GetType() == TYPE_BEACH) and o->GetObjectiveStatus() > 0)
-                    cost = 1.0F;
+                // RV - Biker - Loop through ground units to find engineer battalion assigned for repair
+                VuListIterator uit(AllUnitList);
+                Unit u = GetFirstUnit(&uit);
+                GridIndex ux = 0, uy = 0;
+                bool assignedEng = false;
+
+                while (u)
+                {
+                    if (u->IsBrigade() or u->GetDomain() not_eq DOMAIN_LAND or
+                        u->GetTeam() not_eq o->GetTeam())
+                    {
+                        u = GetNextUnit(&uit);
+                        continue;
+                    }
+
+                    u->GetLocation(&ux, &uy);
+                    float dx = float(ux - x);
+                    float dy = float(uy - y);
+
+                    float dist = sqrt(dx * dx + dy * dy);
+
+                    // RV - Biker - Check for engineer type maybe we need some more check
+                    if (u->GetSType() == STYPE_UNIT_ENGINEER or
+                        u->GetSType() == STYPE_WHEELED_ENGINEER)
+                    {
+                        if (dist <= 1.0f and u->GetTeam() == o->GetTeam())
+                        {
+                            assignedEng = true;
+                            break;
+                        }
+                    }
+
+                    u = GetNextUnit(&uit);
+                }
+
+                if (o and (o->GetType() == TYPE_PORT or
+                           (o->GetType() == TYPE_BRIDGE and
+                            (o->GetObjectiveStatus() > 0 or
+                             flags bitand PATH_ENGINEER))))
+                    cost = 0.5F;
+
+                if (o and o->GetType() == TYPE_BRIDGE and
+                    o->GetObjectiveStatus() < 30 and assignedEng)
+                    cost = 5.0F;
             }
+            else if (flags bitand PATH_ROADOK and
+                     GetRoad((GridIndex)(x - dx[h]), (GridIndex)(y - dy[h])))
+                cost = 0.5F; // Use roads when we're allowed to
+            else
+                cost *= 0.5F; // Otherwise, lesser bonus
+        }
 
-            break;
+        cost *= ReliefCost[GetRelief(x, y)];
+        break;
 
-        case Air:
-        default:
-            break;
+    case LowAir:
+        cost *= ReliefCost[GetRelief(
+            x, y)]; // This only makes since for helecopters
+        break;
+
+    case Rail:
+        if (GetRail(x, y))
+        {
+            if (cost > MAX_COST) // It's a bridge, check if intact
+            {
+                o = FindNearestObjective(x, y, NULL);
+
+                if (o->GetType() == TYPE_PORT or
+                    (o->GetType() == TYPE_BRIDGE and
+                     (o->GetObjectiveStatus() > 0 or
+                      flags bitand PATH_ENGINEER)))
+                    cost = 0.5F;
+            }
+            else if (flags bitand PATH_RAILOK and
+                     GetRail(
+                         (GridIndex)(x - dx[h]),
+                         (GridIndex)(y -
+                                     dy[h]))) // Use rails when we're allowed to
+                cost = 0.5F;
+        }
+
+        break;
+
+    case Naval:
+        if (cost > MAX_COST)
+        {
+            o = FindNearestObjective(x, y, NULL);
+
+            if (o and
+                (o->GetType() == TYPE_PORT or o->GetType() == TYPE_BEACH) and
+                o->GetObjectiveStatus() > 0)
+                cost = 1.0F;
+        }
+
+        break;
+
+    case Air:
+    default:
+        break;
     }
 
     if (h bitand 0x01)
@@ -475,14 +504,14 @@ int CheckPathThreats (WayPoint w, Team who, AltitudeType alt)
 // Private Functions
 // ==========================
 
-char  AvoidTable[] = {20, 5, 1};    // Minimum distance from engaged units
+char AvoidTable[] = {20, 5, 1}; // Minimum distance from engaged units
 
 void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
 {
-    int         d, step = 1;
-    GridIndex   ox, oy, tx, ty, x, y;
-    costtype    cost, left;
-    void*       n;
+    int d, step = 1;
+    GridIndex ox, oy, tx, ty, x, y;
+    costtype cost, left;
+    void* n;
     float leftmod = 1.0f;
 
     UnpackXY(o, &ox, &oy);
@@ -516,9 +545,10 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
             continue;
         }
 
-        cost = GetMovementCost(x, y, (MoveType)moveType, moveFlags, (CampaignHeading)d);
+        cost = GetMovementCost(x, y, (MoveType)moveType, moveFlags,
+                               (CampaignHeading)d);
 
-        if (MOVE_AIR(moveType) and not (moveFlags bitand PATH_BASIC))
+        if (MOVE_AIR(moveType) and not(moveFlags bitand PATH_BASIC))
         {
             // Add cost for air threats
             // Essentially, tcost is 0-100. This translates into # of km out of our
@@ -533,32 +563,40 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
             if (tcost > hcost)
                 hcost = tcost;
 
-            tcost = (float)ScoreThreatFast((GridIndex)(x - MAP_RATIO), y, moveAlt, (Team)moveTeam);
+            tcost = (float)ScoreThreatFast((GridIndex)(x - MAP_RATIO), y,
+                                           moveAlt, (Team)moveTeam);
 
             if (tcost > hcost)
                 hcost = tcost;
 
-            tcost = (float)ScoreThreatFast(x, (GridIndex)(y - MAP_RATIO), moveAlt, (Team)moveTeam);
+            tcost = (float)ScoreThreatFast(x, (GridIndex)(y - MAP_RATIO),
+                                           moveAlt, (Team)moveTeam);
 
             if (tcost > hcost)
                 hcost = tcost;
 
-            tcost = (float)ScoreThreatFast((GridIndex)(x + MAP_RATIO), y, moveAlt, (Team)moveTeam);
+            tcost = (float)ScoreThreatFast((GridIndex)(x + MAP_RATIO), y,
+                                           moveAlt, (Team)moveTeam);
 
             if (tcost > hcost)
                 hcost = tcost;
 
-            tcost = (float)ScoreThreatFast(x, (GridIndex)(y + MAP_RATIO), moveAlt, (Team)moveTeam);
+            tcost = (float)ScoreThreatFast(x, (GridIndex)(y + MAP_RATIO),
+                                           moveAlt, (Team)moveTeam);
 
             if (tcost > hcost)
                 hcost = tcost;
 
 #ifdef DEBUG
-            tcost = (float)ScoreThreatFast(x, y, moveAlt, moveTeam)
-                    + (float)ScoreThreatFast((GridIndex)(x - MAP_RATIO), y, moveAlt, (Team)moveTeam)
-                    + (float)ScoreThreatFast(x, (GridIndex)(y - MAP_RATIO), moveAlt, (Team)moveTeam)
-                    + (float)ScoreThreatFast((GridIndex)(x + MAP_RATIO), y, moveAlt, (Team)moveTeam)
-                    + (float)ScoreThreatFast(x, (GridIndex)(y + MAP_RATIO), moveAlt, (Team)moveTeam);
+            tcost = (float)ScoreThreatFast(x, y, moveAlt, moveTeam) +
+                    (float)ScoreThreatFast((GridIndex)(x - MAP_RATIO), y,
+                                           moveAlt, (Team)moveTeam) +
+                    (float)ScoreThreatFast(x, (GridIndex)(y - MAP_RATIO),
+                                           moveAlt, (Team)moveTeam) +
+                    (float)ScoreThreatFast((GridIndex)(x + MAP_RATIO), y,
+                                           moveAlt, (Team)moveTeam) +
+                    (float)ScoreThreatFast(x, (GridIndex)(y + MAP_RATIO),
+                                           moveAlt, (Team)moveTeam);
             tcost /= 5.0F;
 
             if (hcost - tcost > max_dif)
@@ -611,7 +649,8 @@ void GetNeighborCoord(AS_DataClass* asd, void* o, void* t)
     }
 }
 
-costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveType type, Team team, int flags)
+costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor,
+                                  MoveType type, Team team, int flags)
 {
     Objective n, p;
     costtype cost, opt, mult = 1.0F;
@@ -624,11 +663,12 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         owner = (Team)n->GetTeam();
 
         // Check for allowable movement
-        if ( not GetRoE(team, owner, ROE_GROUND_MOVE))
+        if (not GetRoE(team, owner, ROE_GROUND_MOVE))
             return 255.0F;
 
         // Check for enemy movement
-        if ( not (flags bitand PATH_BASIC) and GetRoE(team, owner, ROE_GROUND_FIRE))
+        if (not(flags bitand PATH_BASIC) and
+            GetRoE(team, owner, ROE_GROUND_FIRE))
         {
             if (flags bitand PATH_ENEMYOK)
             {
@@ -641,7 +681,7 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                 else if (n->IsSecondary())
                     // return 255.0F;
                     mult = 4.0F;
-                else if ( not t)
+                else if (not t)
                     return 255.0F;
                 else if (n->GetObjectiveParentID() not_eq t->Id())
                 {
@@ -658,7 +698,8 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
         // Check if road movement is allowed
         if (flags bitand PATH_ROADOK)
-            type = NoMove; // KCK: I'm using the no-move slot for road movement costs
+            type =
+                NoMove; // KCK: I'm using the no-move slot for road movement costs
 
         if (flags bitand PATH_RAILOK)
             type = Rail;
@@ -674,7 +715,9 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
         }
 
         // RV - Biker - Search for engineers then build pontoon bridge
-        if ((MOVE_GROUND(type) or type == NoMove) and n->GetType() == TYPE_BRIDGE and not n->GetObjectiveStatus() and not (flags bitand PATH_ENGINEER))
+        if ((MOVE_GROUND(type) or type == NoMove) and
+            n->GetType() == TYPE_BRIDGE and not n->GetObjectiveStatus() and
+            not(flags bitand PATH_ENGINEER))
         {
             // Bridge is broke, can't go here.
             // But let's send engineers, if we havn't already
@@ -692,7 +735,8 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
             while (u)
             {
-                if (u->IsBrigade() or u->GetDomain() not_eq DOMAIN_LAND or u->GetTeam() not_eq o->GetTeam())
+                if (u->IsBrigade() or u->GetDomain() not_eq DOMAIN_LAND or
+                    u->GetTeam() not_eq o->GetTeam())
                 {
                     u = GetNextUnit(&uit);
                     continue;
@@ -705,7 +749,8 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
                 float dist = sqrt(dx * dx + dy * dy);
 
                 // RV - Biker - Check for engineer type maybe we need some more check
-                if (u->GetSType() == STYPE_UNIT_ENGINEER or u->GetSType() == STYPE_WHEELED_ENGINEER)
+                if (u->GetSType() == STYPE_UNIT_ENGINEER or
+                    u->GetSType() == STYPE_WHEELED_ENGINEER)
                 {
                     if (dist <= 1.0f and u->GetTeam() == n->GetTeam())
                     {
@@ -725,7 +770,9 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
             else
             {
                 //TeamInfo[moveTeam]->gtm->SendGTMMessage(o->Id(),FalconGndTaskingMessage::gtmEngineerRequest,ox,oy,o->Id());
-                TeamInfo[moveTeam]->gtm->SendGTMMessage(n->Id(), FalconGndTaskingMessage::gtmEngineerRequest, nx, ny, n->Id());
+                TeamInfo[moveTeam]->gtm->SendGTMMessage(
+                    n->Id(), FalconGndTaskingMessage::gtmEngineerRequest, nx,
+                    ny, n->Id());
                 return 255.0F;
             }
         }
@@ -773,10 +820,10 @@ costtype GetObjectiveMovementCost(Objective o, Objective t, int neighbor, MoveTy
 
 void GetNeighborObject(AS_DataClass* asd, void* ov, void* tv)
 {
-    costtype    cost, left;
-    int         c = 0;
-    Objective   n, o, t;
-    GridIndex   nx, ny, tx, ty;
+    costtype cost, left;
+    int c = 0;
+    Objective n, o, t;
+    GridIndex nx, ny, tx, ty;
 
     o = (Objective)ov;
     t = (Objective)tv;
@@ -784,7 +831,8 @@ void GetNeighborObject(AS_DataClass* asd, void* ov, void* tv)
 
     while (c < o->static_data.links)
     {
-        cost = GetObjectiveMovementCost(o, t, c, (MoveType)moveType, (Team)moveTeam, moveFlags);
+        cost = GetObjectiveMovementCost(o, t, c, (MoveType)moveType,
+                                        (Team)moveTeam, moveFlags);
 
         if (cost < 255)
         {
@@ -813,5 +861,3 @@ void GetNeighborObject(AS_DataClass* asd, void* ov, void* tv)
         continue;
     }
 }
-
-

@@ -6,7 +6,7 @@ void MissileClass::Trigenometry(void)
     float t1, t2;
     mlTrig trig;
 
-    if ( not ifd)
+    if (not ifd)
         return; // JB 010803
 
     mlSinCos(&trig, psi);
@@ -34,43 +34,52 @@ void MissileClass::Trigenometry(void)
     /*-------*/
     /* gamma */
     /*-------*/
-    ifd->geomData.singam = (ifd->geomData.sinthe * ifd->geomData.cosalp - ifd->geomData.costhe *
-                            ifd->geomData.cosphi * ifd->geomData.sinalp) * ifd->geomData.cosbet -
-                           ifd->geomData.costhe * ifd->geomData.sinphi * ifd->geomData.sinbet;
-    ifd->geomData.cosgam = (float)sqrt(1.0f - (ifd->geomData.singam * ifd->geomData.singam));
+    ifd->geomData.singam =
+        (ifd->geomData.sinthe * ifd->geomData.cosalp -
+         ifd->geomData.costhe * ifd->geomData.cosphi * ifd->geomData.sinalp) *
+            ifd->geomData.cosbet -
+        ifd->geomData.costhe * ifd->geomData.sinphi * ifd->geomData.sinbet;
+    ifd->geomData.cosgam =
+        (float)sqrt(1.0f - (ifd->geomData.singam * ifd->geomData.singam));
 
-    ifd->gamma  = (float)atan2(ifd->geomData.singam, ifd->geomData.cosgam);
+    ifd->gamma = (float)atan2(ifd->geomData.singam, ifd->geomData.cosgam);
 
     /*----*/
     /* mu */
     /*----*/
     t1 = ifd->geomData.costhe * ifd->geomData.sinphi * ifd->geomData.cosbet +
-         (ifd->geomData.sinthe * ifd->geomData.cosalp - ifd->geomData.costhe * ifd->geomData.cosphi *
-          ifd->geomData.sinalp) * ifd->geomData.sinbet;
+         (ifd->geomData.sinthe * ifd->geomData.cosalp -
+          ifd->geomData.costhe * ifd->geomData.cosphi * ifd->geomData.sinalp) *
+             ifd->geomData.sinbet;
 
     t2 = ifd->geomData.costhe * ifd->geomData.cosphi * ifd->geomData.cosalp +
          ifd->geomData.sinthe * ifd->geomData.sinalp;
 
-    ifd->mu     = (float)atan2(t1, t2);
-    ifd->geomData.sinmu  = t1;
-    ifd->geomData.cosmu  = t2;
-
+    ifd->mu = (float)atan2(t1, t2);
+    ifd->geomData.sinmu = t1;
+    ifd->geomData.cosmu = t2;
 
 
     /*-------*/
     /* sigma */
     /*-------*/
     t1 = (-ifd->geomData.sinphi * ifd->geomData.sinalp * ifd->geomData.cosbet +
-          ifd->geomData.cosphi * ifd->geomData.sinbet) * ifd->geomData.cospsi +
+          ifd->geomData.cosphi * ifd->geomData.sinbet) *
+             ifd->geomData.cospsi +
          ((ifd->geomData.costhe * ifd->geomData.cosalp +
-           ifd->geomData.sinthe * ifd->geomData.cosphi * ifd->geomData.sinalp) * ifd->geomData.cosbet
-          +    ifd->geomData.sinthe * ifd->geomData.sinphi * ifd->geomData.sinbet) * ifd->geomData.sinpsi;
+           ifd->geomData.sinthe * ifd->geomData.cosphi * ifd->geomData.sinalp) *
+              ifd->geomData.cosbet +
+          ifd->geomData.sinthe * ifd->geomData.sinphi * ifd->geomData.sinbet) *
+             ifd->geomData.sinpsi;
 
-    t2 = ((ifd->geomData.costhe * ifd->geomData.cosalp + ifd->geomData.sinthe *
-           ifd->geomData.cosphi * ifd->geomData.sinalp) * ifd->geomData.cosbet
-          +    ifd->geomData.sinthe * ifd->geomData.sinphi * ifd->geomData.sinbet) * ifd->geomData.cospsi
-         + (ifd->geomData.sinphi * ifd->geomData.sinalp * ifd->geomData.cosbet - ifd->geomData.cosphi
-            *   ifd->geomData.sinbet) * ifd->geomData.sinpsi;
+    t2 = ((ifd->geomData.costhe * ifd->geomData.cosalp +
+           ifd->geomData.sinthe * ifd->geomData.cosphi * ifd->geomData.sinalp) *
+              ifd->geomData.cosbet +
+          ifd->geomData.sinthe * ifd->geomData.sinphi * ifd->geomData.sinbet) *
+             ifd->geomData.cospsi +
+         (ifd->geomData.sinphi * ifd->geomData.sinalp * ifd->geomData.cosbet -
+          ifd->geomData.cosphi * ifd->geomData.sinbet) *
+             ifd->geomData.sinpsi;
 
     ifd->sigma = (float)atan2(t1, t2);
     ifd->geomData.sinsig = t1;
@@ -88,5 +97,4 @@ void MissileClass::Trigenometry(void)
         alphat = RTD * (float)atan2(sqrt(1.0 - foo * foo), foo);
     }
 #endif
-
 }

@@ -20,9 +20,32 @@ public:
     virtual ~SensorClass(void);
 
 public:
-    enum SensorType {IRST, Radar, RWR, Visual, HTS, TargetingPod, RadarHoming, NumSensorTypes};
-    enum TrackTypes {NoTrack, Detection, UnreliableTrack, SensorTrack};
-    enum SensorData {NoInfo, LooseBearing, RangeAndBearing, ExactPosition, PositionAndOrientation};
+    enum SensorType
+    {
+        IRST,
+        Radar,
+        RWR,
+        Visual,
+        HTS,
+        TargetingPod,
+        RadarHoming,
+        NumSensorTypes
+    };
+    enum TrackTypes
+    {
+        NoTrack,
+        Detection,
+        UnreliableTrack,
+        SensorTrack
+    };
+    enum SensorData
+    {
+        NoInfo,
+        LooseBearing,
+        RangeAndBearing,
+        ExactPosition,
+        PositionAndOrientation
+    };
     typedef struct
     {
         float az, el, ata, droll;
@@ -48,7 +71,8 @@ public:
     {
         isOn = state;
 
-        if ( not isOn) ClearSensorTarget();
+        if (not isOn)
+            ClearSensorTarget();
     }
     virtual BOOL IsOn(void)
     {
@@ -65,8 +89,12 @@ public:
     };
 
     virtual SimObjectType* Exec(SimObjectType* curTargetList) = 0;
-    virtual void ExecModes(int, int) {}
-    virtual void UpdateState(int, int) {}
+    virtual void ExecModes(int, int)
+    {
+    }
+    virtual void UpdateState(int, int)
+    {
+    }
     virtual void SetSeekerPos(float newAz, float newEl)
     {
         seekerAzCenter = newAz;
@@ -92,7 +120,7 @@ public:
     }
 
 #if not NO_REMOTE_BUGGED_TARGET
-    FalconEntity *RemoteBuggedTarget;//me123
+    FalconEntity* RemoteBuggedTarget; //me123
 #endif
 
 protected:
@@ -103,8 +131,8 @@ protected:
     // Handle sim/camp handoff and target death
     virtual void CheckLockedTarget(void);
 
-    SimObjectType *FindNextDetected(SimObjectType*);
-    SimObjectType *FindPrevDetected(SimObjectType*);
+    SimObjectType* FindNextDetected(SimObjectType*);
+    SimObjectType* FindPrevDetected(SimObjectType*);
     // ID of the target under the player's cursors
     VU_ID targetUnderCursor;
     // target under the player's cursors last scan
@@ -112,7 +140,7 @@ protected:
 
     // Targeting
     // Current "primary" target -- who we're locked onto
-    SimObjectType *lockedTarget;
+    SimObjectType* lockedTarget;
     // Is this sensor turned on?
     int isOn;
     // Sensor state
@@ -123,4 +151,3 @@ protected:
 SensorClass* FindSensor(SimMoverClass* theObject, int sensorType);
 
 #endif
-

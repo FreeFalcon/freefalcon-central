@@ -11,7 +11,8 @@
 #include "capibwstate.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     /** starts bandwidth control */

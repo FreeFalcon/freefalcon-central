@@ -76,7 +76,9 @@ void AirframeClass::Pitch(void)
 
     alphaError = 0.0F;
     cosmu_lim = max(0.0F, platform->platformAngles.cosmu);
-    float maxgcmd = alpha + (maxGs - cl * qsom / GRAVITY - cosmu_lim * platform->platformAngles.cosgam) * (GRAVITY / (qsom * cnalpha));
+    float maxgcmd = alpha + (maxGs - cl * qsom / GRAVITY -
+                             cosmu_lim * platform->platformAngles.cosgam) *
+                                (GRAVITY / (qsom * cnalpha));
     //tempnzcgs = (oldnzcgs + nzcgs)*0.5F;
 
     /*--------------------------------*/
@@ -103,17 +105,29 @@ void AirframeClass::Pitch(void)
         {
             if (IsSet(CATLimiterIII))
             {
-                limiter = gLimiterMgr->GetLimiter(CatIIIAOALimiter, vehicleIndex);
+                limiter =
+                    gLimiterMgr->GetLimiter(CatIIIAOALimiter, vehicleIndex);
 
                 if (limiter)
                     maxCmd = limiter->Limit(alpha - alphaError);
 
                 // 2002-03-12 MN use 9.0f G's only for F-16 and player entity - AI planes can use this code, too
-                if (SimDriver.GetPlayerEntity() and platform == SimDriver.GetPlayerEntity() and platform->IsAirplane() and platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
-                    maxCmd = min(maxCmd + alphaError, alpha + (9.0f - cl * qsom / GRAVITY - cosmu_lim * platform->platformAngles.cosgam) * (GRAVITY / (qsom * cnalpha)));
+                if (SimDriver.GetPlayerEntity() and
+                    platform == SimDriver.GetPlayerEntity() and
+                    platform->IsAirplane() and
+                    platform
+                        ->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
+                    maxCmd = min(
+                        maxCmd + alphaError,
+                        alpha + (9.0f - cl * qsom / GRAVITY -
+                                 cosmu_lim * platform->platformAngles.cosgam) *
+                                    (GRAVITY / (qsom * cnalpha)));
                 else
-                    maxCmd = min(maxCmd + alphaError, alpha + (curMaxGs - cl * qsom / GRAVITY - cosmu_lim * platform->platformAngles.cosgam) * (GRAVITY / (qsom * cnalpha)));
-
+                    maxCmd = min(
+                        maxCmd + alphaError,
+                        alpha + (curMaxGs - cl * qsom / GRAVITY -
+                                 cosmu_lim * platform->platformAngles.cosgam) *
+                                    (GRAVITY / (qsom * cnalpha)));
             }
             else
             {
@@ -126,21 +140,29 @@ void AirframeClass::Pitch(void)
 
                 if (g_bNewFm)
                     //maxCmd = min(alpha + (maxGs - cl*qsom/GRAVITY - cosmu_lim* platform->platformAngles.cosgam) * (GRAVITY/(qsom*cnalpha)), aoamax);
-                    maxCmd = min(alpha + (tempMaxGs - cl * qsom / GRAVITY - cosmu_lim * platform->platformAngles.cosgam) * (GRAVITY / (qsom * cnalpha)), aoamax);
+                    maxCmd = min(
+                        alpha + (tempMaxGs - cl * qsom / GRAVITY -
+                                 cosmu_lim * platform->platformAngles.cosgam) *
+                                    (GRAVITY / (qsom * cnalpha)),
+                        aoamax);
                 else
                     //maxCmd = min(alpha + (maxGs - cl*qsom/GRAVITY - cosmu_lim* platform->platformAngles.cosgam) * (GRAVITY/(qsom*cnalpha)), aoamax + alphaError);
-                    maxCmd = min(alpha + (tempMaxGs - cl * qsom / GRAVITY - cosmu_lim * platform->platformAngles.cosgam) * (GRAVITY / (qsom * cnalpha)), aoamax + alphaError);
+                    maxCmd = min(
+                        alpha + (tempMaxGs - cl * qsom / GRAVITY -
+                                 cosmu_lim * platform->platformAngles.cosgam) *
+                                    (GRAVITY / (qsom * cnalpha)),
+                        aoamax + alphaError);
 
-                if (maxCmd < 0) maxCmd = 0;
+                if (maxCmd < 0)
+                    maxCmd = 0;
 
                 limiter = gLimiterMgr->GetLimiter(AOALimiter, vehicleIndex);
 
                 if (g_bNewFm and limiter)
-                    maxCmd =  min(limiter->Limit(alpha), maxCmd);
+                    maxCmd = min(limiter->Limit(alpha), maxCmd);
 
                 //maxCmd *= (GRAVITY/(qsom*cnalpha));
                 //maxCmd = min(maxCmd, aoamax);
-
 
 
                 //TJL 04/10/04 Adding limiter
@@ -152,13 +174,11 @@ void AirframeClass::Pitch(void)
                  if (limiter)
                  maxGs = limiter->Limit(alpha);
                 */
-
-
             }
 
             if (platform->IsF16())
             {
-                if ( not IsSet(MPOverride))
+                if (not IsSet(MPOverride))
                 {
                     //negative G limiter
                     if (gearPos)
@@ -168,7 +188,8 @@ void AirframeClass::Pitch(void)
                     else
                     {
                         maxNegGs = -3.0F;
-                        limiter = gLimiterMgr->GetLimiter(NegGLimiter, vehicleIndex);
+                        limiter =
+                            gLimiterMgr->GetLimiter(NegGLimiter, vehicleIndex);
 
                         if (limiter)
                             maxNegGs = limiter->Limit(vcas);
@@ -178,7 +199,8 @@ void AirframeClass::Pitch(void)
                 }
                 else
                 {
-                    minCmd = max(gsAvail * (-1) * GRAVITY / (qsom * cnalpha), -9.0F);
+                    minCmd =
+                        max(gsAvail * (-1) * GRAVITY / (qsom * cnalpha), -9.0F);
                 }
 
                 if (g_bNewFm)
@@ -191,7 +213,7 @@ void AirframeClass::Pitch(void)
                         alphaError = 0;
                         float alphadelta = maxCmd - 2.0f - alpha;
 
-                        if (alphadelta < 0)//aoa has overshot max
+                        if (alphadelta < 0) //aoa has overshot max
                         {
                             alphaError += alphadelta * 0.4f;
 
@@ -200,40 +222,47 @@ void AirframeClass::Pitch(void)
                                 float slowspeedfactor = 0.0f;
                                 float slowspeed = 200.0f;
 
-                                if (vcas < slowspeed) slowspeedfactor = ((slowspeed - vcas) / slowspeed);
+                                if (vcas < slowspeed)
+                                    slowspeedfactor =
+                                        ((slowspeed - vcas) / slowspeed);
 
                                 //vcas = 0 -> ssf = 1
                                 //vcas = 130 -> ssf = 0
-                                alphaError += min(10.0f, alpdot) * (0.2f + slowspeedfactor * 0.7f);
+                                alphaError += min(10.0f, alpdot) *
+                                              (0.2f + slowspeedfactor * 0.7f);
                             }
                             else // we are recovering
-                                alphaError -= alpdot * 0.9f; // slow down the return
+                                alphaError -=
+                                    alpdot * 0.9f; // slow down the return
                         }
-                        else if ( not IsSet(CATLimiterIII))
+                        else if (not IsSet(CATLimiterIII))
                         {
                             // aoa is below max
-                            alphaError += alphadelta * 0.1f; //aoa elastic  only cat I otw up
+                            alphaError += alphadelta *
+                                          0.1f; //aoa elastic  only cat I otw up
                         }
 
-                        if (vcas < minspeed)//simulate we loose authority
+                        if (vcas < minspeed) //simulate we loose authority
                         {
-                            alphaError += ((minspeed - vcas) / minspeed) * 10 * (float)fabs(alpdot);
+                            alphaError += ((minspeed - vcas) / minspeed) * 10 *
+                                          (float)fabs(alpdot);
                         }
                     }
 
-                    if (maxgcmd) maxCmd = min(maxCmd + alphaError, maxgcmd);
+                    if (maxgcmd)
+                        maxCmd = min(maxCmd + alphaError, maxgcmd);
 
                     maxCmd = max(minCmd, maxCmd);
                 }
 
                 if (alpha - alphaError > maxCmd)
                 {
-                    if ( not g_bNewFm)
-                        pshape = max(-1.0F, (maxCmd - alpha - alphaError) / 4.0F);
+                    if (not g_bNewFm)
+                        pshape =
+                            max(-1.0F, (maxCmd - alpha - alphaError) / 4.0F);
                     else if (stallMode == None)
-                        pshape = pshape * 1.0f - ((alpha - alphaError - maxCmd) / 3.0f);
-
-
+                        pshape = pshape * 1.0f -
+                                 ((alpha - alphaError - maxCmd) / 3.0f);
                 }
                 else if (alpha + alphaError < minCmd)
                 {
@@ -252,8 +281,8 @@ void AirframeClass::Pitch(void)
         /*---------------------------*/
         /* Forward path error signal */
         /*---------------------------*/
-        error  = (ptcmd - (alpha - aoabias)) * kp05;
-        eprop  = kp02 * error;
+        error = (ptcmd - (alpha - aoabias)) * kp05;
+        eprop = kp02 * error;
         eintg1 = kp03 * error;
     }
     //Go To G Command
@@ -270,14 +299,19 @@ void AirframeClass::Pitch(void)
 
         // 2003-03-12 MN changed to check for player and F-16
         // guys, this code is also used by ALL AI planes in complex mode (having a TU-16 with 9G limit )
-        if (SimDriver.GetPlayerEntity() and platform == SimDriver.GetPlayerEntity() and platform->IsAirplane() and platform->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
-            maxCmd = 9.0f ;
+        if (SimDriver.GetPlayerEntity() and
+            platform == SimDriver.GetPlayerEntity() and
+            platform->IsAirplane() and
+            platform
+                ->IsF16()) // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. Seems odd to happen here but it CTD after ejecting (BT 1071)
+            maxCmd = 9.0f;
         else
-            maxCmd = curMaxGs ;// me123 status ok. changed from = curMaxGs to 9.0f;
+            maxCmd =
+                curMaxGs; // me123 status ok. changed from = curMaxGs to 9.0f;
 
         if (platform->IsF16())
         {
-            if ( not IsSet(MPOverride))
+            if (not IsSet(MPOverride))
             {
                 limiter = gLimiterMgr->GetLimiter(NegGLimiter, vehicleIndex);
 
@@ -309,15 +343,20 @@ void AirframeClass::Pitch(void)
             if (playerAC and this == playerAC->af and platform->IsF16())
             {
                 // 2002-03-19 MODIFIED BY S.G. Lets make sure it's an airplane first. SimDriver.GetPlayerEntity()->af might be invalid if the player ejects
-                maxCmd = min(maxCmd, 9.0F) - platform->platformAngles.cosgam * cosmu_lim; //,me123 status ok. changed curMaxGs to 9.0
+                maxCmd =
+                    min(maxCmd, 9.0F) -
+                    platform->platformAngles.cosgam *
+                        cosmu_lim; //,me123 status ok. changed curMaxGs to 9.0
             }
             else
             {
-                maxCmd = min(maxCmd, curMaxGs) - platform->platformAngles.cosgam * cosmu_lim;
+                maxCmd = min(maxCmd, curMaxGs) -
+                         platform->platformAngles.cosgam * cosmu_lim;
             }
         }
 
-        ptcmd = min(max(ptcmd, max(maxNegGs, gsAvail * (-1))), min(gsAvail, maxCmd));
+        ptcmd = min(max(ptcmd, max(maxNegGs, gsAvail * (-1))),
+                    min(gsAvail, maxCmd));
 
         /*-----------------------------*/
         /* nz load factor loop closure */
@@ -326,12 +365,19 @@ void AirframeClass::Pitch(void)
         //put it back, just because no time to test what the issue here is with pitch errors
         if (IsSet(Simplified))
         {
-            error = (ptcmd - (nzcgs - platform->platformAngles.cosmu * platform->platformAngles.cosgam - 0.1F * gearPos * qsom / GRAVITY)) * kp05;
+            error = (ptcmd - (nzcgs -
+                              platform->platformAngles.cosmu *
+                                  platform->platformAngles.cosgam -
+                              0.1F * gearPos * qsom / GRAVITY)) *
+                    kp05;
             //error = (ptcmd - (nzcgs - platform->platformAngles.cosmu * platform->platformAngles.cosgam - 0.1F*0.0f*qsom/GRAVITY)) * kp05;
         }
         else
         {
-            error = (ptcmd - (nzcgs - cosmu_lim * platform->platformAngles.cosgam - 0.1F * gearPos * qsom / GRAVITY)) * kp05;
+            error =
+                (ptcmd - (nzcgs - cosmu_lim * platform->platformAngles.cosgam -
+                          0.1F * gearPos * qsom / GRAVITY)) *
+                kp05;
             //error = (ptcmd - (nzcgs - cosmu_lim* platform->platformAngles.cosgam - 0.1F*0.0f*qsom/GRAVITY)) * kp05;
         }
 
@@ -349,42 +395,42 @@ void AirframeClass::Pitch(void)
     {
         if (eintg > aoamax)
         {
-            eintg       = aoamax;
-            eprop       = 0.0F;
-            oldp02[0]   = aoamax;
-            oldp02[1]   = aoamax;
-            oldp02[2]   = 0.0;
-            oldp02[3]   = 0.0;
+            eintg = aoamax;
+            eprop = 0.0F;
+            oldp02[0] = aoamax;
+            oldp02[1] = aoamax;
+            oldp02[2] = 0.0;
+            oldp02[3] = 0.0;
         }
         else if (eintg < aoamin)
         {
-            eintg       = aoamin;
-            eprop       = 0.0F;
-            oldp02[0]   = aoamin;
-            oldp02[1]   = aoamin;
-            oldp02[2]   = 0.0;
-            oldp02[3]   = 0.0;
+            eintg = aoamin;
+            eprop = 0.0F;
+            oldp02[0] = aoamin;
+            oldp02[1] = aoamin;
+            oldp02[2] = 0.0;
+            oldp02[3] = 0.0;
         }
     }
     else
     {
         if (eintg > aoamax + alphaError)
         {
-            eintg       = aoamax + alphaError;
-            eprop       = 0.0f;
-            oldp02[0]   = eintg;
-            oldp02[1]   = eintg;
-            oldp02[2]   = eprop;
-            oldp02[3]   = eprop;
+            eintg = aoamax + alphaError;
+            eprop = 0.0f;
+            oldp02[0] = eintg;
+            oldp02[1] = eintg;
+            oldp02[2] = eprop;
+            oldp02[3] = eprop;
         }
         else if (eintg < aoamin - alphaError)
         {
-            eintg       = aoamin - alphaError;
-            eprop       = 0.0f;
-            oldp02[0]   = eintg;
-            oldp02[1]   = eintg;
-            oldp02[2]   = eprop;
-            oldp02[3]   = eprop;
+            eintg = aoamin - alphaError;
+            eprop = 0.0f;
+            oldp02[0] = eintg;
+            oldp02[1] = eintg;
+            oldp02[2] = eprop;
+            oldp02[3] = eprop;
         }
     }
 
@@ -398,72 +444,83 @@ void AirframeClass::Pitch(void)
 
     switch (stallMode)
     {
-        case EnteringDeepStall:
-            if (alpha > 0.0f)
-                aoacmd = 60.0f + 5.0F * pshape;
+    case EnteringDeepStall:
+        if (alpha > 0.0f)
+            aoacmd = 60.0f + 5.0F * pshape;
+        else
+            aoacmd = -40.0f + 5.0F * pshape;
+
+        break;
+
+    case DeepStall:
+        if (alpha > 35.0f and qbar * platform->platformAngles.cosalp < 135.0f)
+        {
+            pshape *= max(1.0F - (float)fabs(r) * RTD / 45.0F, 0.0F);
+
+            if (oscillationTimer * pshape > 0)
+                stallMagnitude += (float)fabs(pshape) * SimLibMinorFrameTime *
+                                  10.0F / (loadingFraction * loadingFraction);
+            else if (pshape)
+                stallMagnitude -= (float)fabs(pshape) * SimLibMinorFrameTime *
+                                  10.0F / (loadingFraction * loadingFraction);
             else
-                aoacmd = -40.0f + 5.0F * pshape;
+                stallMagnitude += (desiredMagnitude - stallMagnitude) /
+                                  desiredMagnitude * SimLibMinorFrameTime / 3;
 
-            break;
+            aoacmd = 60.0f + pshape * 5.0f +
+                     oscillationTimer * stallMagnitude *
+                         max(0.0F, (0.3F - (float)fabs(r)) * 3.3F);
+        }
+        else if (alpha < -20.0f and
+                 qbar * platform->platformAngles.cosalp < 135.0f)
+        {
+            pshape *= max(1.0F - (float)fabs(r) * RTD / 45.0F, 0.0F);
 
-        case DeepStall:
-            if (alpha > 35.0f and qbar * platform->platformAngles.cosalp < 135.0f)
-            {
-                pshape *= max(1.0F - (float)fabs(r) * RTD / 45.0F, 0.0F);
-
-                if (oscillationTimer * pshape > 0)
-                    stallMagnitude += (float)fabs(pshape) * SimLibMinorFrameTime * 10.0F / (loadingFraction * loadingFraction);
-                else if (pshape)
-                    stallMagnitude -= (float)fabs(pshape) * SimLibMinorFrameTime * 10.0F / (loadingFraction * loadingFraction);
-                else
-                    stallMagnitude += (desiredMagnitude - stallMagnitude) / desiredMagnitude * SimLibMinorFrameTime / 3;
-
-                aoacmd = 60.0f + pshape * 5.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - (float)fabs(r)) * 3.3F);
-            }
-            else if (alpha < -20.0f and qbar * platform->platformAngles.cosalp < 135.0f)
-            {
-                pshape *= max(1.0F - (float)fabs(r) * RTD / 45.0F, 0.0F);
-
-                if (oscillationTimer * pshape > 0)
-                    stallMagnitude += (float)fabs(pshape) * SimLibMinorFrameTime * 10.0F / (loadingFraction * loadingFraction);
-                else if (pshape)
-                    stallMagnitude -= (float)fabs(pshape) * SimLibMinorFrameTime * 10.0F / (loadingFraction * loadingFraction);
-                else
-                    stallMagnitude += (desiredMagnitude - stallMagnitude) / desiredMagnitude * SimLibMinorFrameTime / 3;
-
-                aoacmd = -40.0f + pshape * 5.0f + oscillationTimer * stallMagnitude * max(0.0F, (0.3F - (float)fabs(r)) * 3.3F);
-            }
+            if (oscillationTimer * pshape > 0)
+                stallMagnitude += (float)fabs(pshape) * SimLibMinorFrameTime *
+                                  10.0F / (loadingFraction * loadingFraction);
+            else if (pshape)
+                stallMagnitude -= (float)fabs(pshape) * SimLibMinorFrameTime *
+                                  10.0F / (loadingFraction * loadingFraction);
             else
-            {
-                pitch = q;
-                slice = r;
-                stallMode = Recovering;
-                stallMagnitude = 10.0f;
-                oldp02[5] = alpha;
-            }
+                stallMagnitude += (desiredMagnitude - stallMagnitude) /
+                                  desiredMagnitude * SimLibMinorFrameTime / 3;
 
-            break;
+            aoacmd = -40.0f + pshape * 5.0f +
+                     oscillationTimer * stallMagnitude *
+                         max(0.0F, (0.3F - (float)fabs(r)) * 3.3F);
+        }
+        else
+        {
+            pitch = q;
+            slice = r;
+            stallMode = Recovering;
+            stallMagnitude = 10.0f;
+            oldp02[5] = alpha;
+        }
 
-        case Recovering:
-            aoacmd = aoacmd + (oldp02[5] - aoacmd) * 0.8F;
-            oldp02[5] *= 0.9F;
-            break;
+        break;
 
-        case Spinning:
-            if (r)
-            {
-                if (platform->platformAngles.cosphi > 0.0F)
-                    aoacmd = 60.0F + oscillationTimer * 5.0F / (float)fabs(r);
-                else
-                    aoacmd = -40.0F - oscillationTimer * 5.0F / (float)fabs(r);
-            }
+    case Recovering:
+        aoacmd = aoacmd + (oldp02[5] - aoacmd) * 0.8F;
+        oldp02[5] *= 0.9F;
+        break;
+
+    case Spinning:
+        if (r)
+        {
+            if (platform->platformAngles.cosphi > 0.0F)
+                aoacmd = 60.0F + oscillationTimer * 5.0F / (float)fabs(r);
             else
-            {
-                if (platform->platformAngles.cosphi > 0.0F)
-                    aoacmd = 60.0F + oscillationTimer * 5.0F;
-                else
-                    aoacmd = -40.0F - oscillationTimer * 5.0F;
-            }
+                aoacmd = -40.0F - oscillationTimer * 5.0F / (float)fabs(r);
+        }
+        else
+        {
+            if (platform->platformAngles.cosphi > 0.0F)
+                aoacmd = 60.0F + oscillationTimer * 5.0F;
+            else
+                aoacmd = -40.0F - oscillationTimer * 5.0F;
+        }
     }
 
     //if( not IsSet(InAir) and aoacmd < 0.0F)
@@ -473,36 +530,35 @@ void AirframeClass::Pitch(void)
 
     switch (stallMode)
     {
-        case DeepStall:
-            oldp02[5] *= 0.97F;
-            alpha += oldp02[5];
-            break;
+    case DeepStall:
+        oldp02[5] *= 0.97F;
+        alpha += oldp02[5];
+        break;
 
-        case FlatSpin:
-            oldp02[5] -= (90.0F + oldp02[5]) * SimLibMinorFrameTime * 0.2F;
-            alpha = oldp02[5];
-            break;
+    case FlatSpin:
+        oldp02[5] -= (90.0F + oldp02[5]) * SimLibMinorFrameTime * 0.2F;
+        alpha = oldp02[5];
+        break;
 
-        case Spinning:
-            oldp02[5] -= (85.0F + oldp02[5]) * SimLibMinorFrameTime * 0.2F;
-            alpha = oldp02[5] + oscillationTimer * 5.0F;
-            break;
+    case Spinning:
+        oldp02[5] -= (85.0F + oldp02[5]) * SimLibMinorFrameTime * 0.2F;
+        alpha = oldp02[5] + oscillationTimer * 5.0F;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
-
 }
 
 void AirframeClass::PitchIt(float aoacmd, float dt)
 {
     // JB 010714 mult by the momentum
     float oldalpha = alpha;
-    alpha  = Math.F7Tust(aoacmd, tp01 * auxaeroData->pitchMomentum,
-                         tp02 * auxaeroData->pitchMomentum, tp03 * auxaeroData->pitchMomentum,
-                         dt, oldp03, &jp01);
+    alpha = Math.F7Tust(aoacmd, tp01 * auxaeroData->pitchMomentum,
+                        tp02 * auxaeroData->pitchMomentum,
+                        tp03 * auxaeroData->pitchMomentum, dt, oldp03, &jp01);
     alpdot = (alpha - oldalpha) / dt;
-    ShiAssert( not _isnan(alpha));
+    ShiAssert(not _isnan(alpha));
 
     if (alpha < -180.0F)
     {
@@ -518,5 +574,4 @@ void AirframeClass::PitchIt(float aoacmd, float dt)
         oldp03[2] -= 360.0F;
         oldp03[3] -= 360.0F;
     }
-
 }

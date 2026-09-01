@@ -1,25 +1,29 @@
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/CampWeaponFireMsg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/campweaponfiremsg.h"
 #include "mesg.h"
 #include "sim/include/simbase.h"
-#include "sim/include/SimDrive.h"
-#include "Find.h"
-#include "Flight.h"
-#include "MissEval.h"
+#include "sim/include/simdrive.h"
+#include "find.h"
+#include "flight.h"
+#include "misseval.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#include "IVibeData.h"
+#include "ivibedata.h"
 extern IntellivibeData g_intellivibeData;
 
-FalconDamageMessage::FalconDamageMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(DamageMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconDamageMessage::FalconDamageMessage(VU_ID entityId, VuTargetEntity* target,
+                                         VU_BOOL loopback)
+    : FalconEvent(DamageMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
 }
 
-FalconDamageMessage::FalconDamageMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(DamageMsg, FalconEvent::SimThread, senderid, target)
+FalconDamageMessage::FalconDamageMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(DamageMsg, FalconEvent::SimThread, senderid, target)
 {
 }
 
@@ -35,7 +39,7 @@ int FalconDamageMessage::Process(uchar autodisp)
     }
 
     FalconEntity *theEntity, *shooter;
-    theEntity = (FalconEntity*) vuDatabase->Find(dataBlock.dEntityID);
+    theEntity = (FalconEntity*)vuDatabase->Find(dataBlock.dEntityID);
 
     if (theEntity)
     {
@@ -44,7 +48,8 @@ int FalconDamageMessage::Process(uchar autodisp)
             ((SimBaseClass*)theEntity)->ApplyDamage(this);
 
             // Record any hits directly
-            if (TheCampaign.MissionEvaluator and not (theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
+            if (TheCampaign.MissionEvaluator and
+                not(theEntity->IsSetFalcFlag(FEC_INVULNERABLE)))
             {
                 TheCampaign.MissionEvaluator->RegisterHit(this);
             }
@@ -57,7 +62,7 @@ int FalconDamageMessage::Process(uchar autodisp)
             shooter = (FalconEntity*)vuDatabase->Find(dataBlock.fEntityID);
 
             // ShiAssert ( not "This is a bad thing I think");
-            if ( not shooter)
+            if (not shooter)
             {
                 return TRUE;
             }
@@ -71,7 +76,7 @@ int FalconDamageMessage::Process(uchar autodisp)
                 campShooter = (CampEntity)shooter;
             }
 
-            if ( not campTarget->IsAggregate())
+            if (not campTarget->IsAggregate())
             {
                 // This thing is actually deaggregated (probably happened while
                 // the missile was in flight). Chalk it up as a miss if it
@@ -86,11 +91,14 @@ int FalconDamageMessage::Process(uchar autodisp)
 
                 if (campTarget->IsLocal())
                 {
-                    FalconCampWeaponsFire *cwfm = new FalconCampWeaponsFire(campTarget->Id(), FalconLocalGame);
+                    FalconCampWeaponsFire* cwfm = new FalconCampWeaponsFire(
+                        campTarget->Id(), FalconLocalGame);
                     cwfm->dataBlock.shooterID = campShooter->Id();
                     cwfm->dataBlock.fPilotId = dataBlock.fPilotID;
                     cwfm->dataBlock.dPilotId = dataBlock.dPilotID;
-                    cwfm->dataBlock.weapon[0] = (short)GetWeaponIdFromDescriptionIndex(dataBlock.fWeaponID - VU_LAST_ENTITY_TYPE);
+                    cwfm->dataBlock.weapon[0] =
+                        (short)GetWeaponIdFromDescriptionIndex(
+                            dataBlock.fWeaponID - VU_LAST_ENTITY_TYPE);
                     cwfm->dataBlock.weapon[1] = 0;
                     cwfm->dataBlock.shots[0] = 1;
                     cwfm->dataBlock.fWeaponUID = dataBlock.fWeaponUID;
@@ -109,35 +117,42 @@ int FalconDamageMessage::Process(uchar autodisp)
     return TRUE;
 }
 
-FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int damage, VuTargetEntity *target)
+FalconDamageMessage* CreateGroundCollisionMessage(SimVehicleClass* vehicle,
+                                                  int damage,
+                                                  VuTargetEntity* target)
 {
     ShiAssert(vehicle);
 
     if (FalconLocalSession and vehicle == FalconLocalSession->GetPlayerEntity())
         g_intellivibeData.CollisionCounter++;
 
-    FalconEntity *lastToHit = (SimVehicleClass*)vuDatabase->Find(vehicle->LastShooter());
-    CampBaseClass *campUnit = NULL;
+    FalconEntity* lastToHit =
+        (SimVehicleClass*)vuDatabase->Find(vehicle->LastShooter());
+    CampBaseClass* campUnit = NULL;
 
     FalconDamageMessage* message;
     message = new FalconDamageMessage(vehicle->Id(), target);
 
     if (lastToHit and not lastToHit->IsEject())
     {
-        message->dataBlock.fEntityID  = lastToHit->Id();
-        message->dataBlock.fIndex     = lastToHit->Type();
+        message->dataBlock.fEntityID = lastToHit->Id();
+        message->dataBlock.fIndex = lastToHit->Type();
 
         if (lastToHit->IsSim())
         {
-            message->dataBlock.fPilotID = ((SimVehicleClass*)lastToHit)->pilotSlot;
-            message->dataBlock.fCampID = ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetCampID();
-            message->dataBlock.fSide = ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetOwner();
+            message->dataBlock.fPilotID =
+                ((SimVehicleClass*)lastToHit)->pilotSlot;
+            message->dataBlock.fCampID =
+                ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetCampID();
+            message->dataBlock.fSide =
+                ((SimVehicleClass*)lastToHit)->GetCampaignObject()->GetOwner();
             campUnit = ((SimBaseClass*)lastToHit)->GetCampaignObject();
         }
         else
         {
             message->dataBlock.fPilotID = 0;
-            message->dataBlock.fCampID = ((CampBaseClass*)lastToHit)->GetCampID();
+            message->dataBlock.fCampID =
+                ((CampBaseClass*)lastToHit)->GetCampID();
             message->dataBlock.fSide = ((CampBaseClass*)lastToHit)->GetOwner();
             campUnit = (CampBaseClass*)lastToHit;
         }
@@ -154,14 +169,14 @@ FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int 
         message->dataBlock.fIndex = vehicle->Type();
     }
 
-    message->dataBlock.fWeaponID  = vehicle->Type();
+    message->dataBlock.fWeaponID = vehicle->Type();
     message->dataBlock.fWeaponUID.num_ = 0;
     message->dataBlock.damageType = FalconDamageType::GroundCollisionDamage;
-    message->dataBlock.dEntityID  = vehicle->Id();
+    message->dataBlock.dEntityID = vehicle->Id();
     message->dataBlock.dCampID = vehicle->GetCampaignObject()->GetCampID();
-    message->dataBlock.dSide   = vehicle->GetCampaignObject()->GetOwner();
-    message->dataBlock.dPilotID   = vehicle->pilotSlot;
-    message->dataBlock.dIndex     = vehicle->Type();
+    message->dataBlock.dSide = vehicle->GetCampaignObject()->GetOwner();
+    message->dataBlock.dPilotID = vehicle->pilotSlot;
+    message->dataBlock.dIndex = vehicle->Type();
 
     message->dataBlock.damageStrength = (float)damage;
     message->dataBlock.damageRandomFact = 0.0F;

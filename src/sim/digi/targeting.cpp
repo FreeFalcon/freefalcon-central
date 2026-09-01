@@ -4,14 +4,14 @@
 #include "unit.h"
 #include "sensors.h"
 #include "object.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "simobj.h"
 #include "simdrive.h"
 #include "sms.h"
 /* S.G. */
 #include "vehrwr.h"
 /* S.G. */
-#include "RadarDigi.h"
+#include "radardigi.h"
 /* S.G. */
 #include "visual.h"
 /* S.G. */
@@ -21,15 +21,20 @@
 /* S.G. FOR UP TO TWO MISSILES ON ITS WAY TO A TARGET */
 #include "airframe.h"
 /* S.G. FOR UP TO TWO MISSILES ON ITS WAY TO A TARGET */
-#include "simWeapn.h"
+#include "simweapn.h"
 
 #include "wingorder.h"//Cobra
 
-extern int g_nLowestSkillForGCI; // 2002-03-12 S.G. Replaces the hardcoded '3' for skill test
-extern float g_fSearchSimTargetFromRangeSqr; // 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
+extern int
+    g_nLowestSkillForGCI; // 2002-03-12 S.G. Replaces the hardcoded '3' for skill test
+extern float
+    g_fSearchSimTargetFromRangeSqr; // 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
 
-SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetList, VuFilteredList* vuList);
-FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *data = NULL); // 2002-02-10 S.G.
+SimObjectType* MakeSimListFromVuList(AircraftClass* self,
+                                     SimObjectType* targetList,
+                                     VuFilteredList* vuList);
+FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity* byHim = NULL,
+                         int* data = NULL); // 2002-02-10 S.G.
 
 void DigitalBrain::DoTargeting(void)
 {
@@ -45,8 +50,8 @@ void DigitalBrain::DoTargeting(void)
     if (targetPtr)
     {
         targetData = targetPtr->localData;
-        ataDot  = (targetData->ata - lastAta) / SimLibMajorFrameTime;
-        lastAta   = targetData->ata;
+        ataDot = (targetData->ata - lastAta) / SimLibMajorFrameTime;
+        lastAta = targetData->ata;
     }
     else
     {
@@ -69,9 +74,11 @@ void DigitalBrain::DoTargeting(void)
     if (SimLibElapsedTime > self->nextTargetUpdate)
     {
         // If we are lead, or lead is player, look for a target
-        if ( not isWing or (mDesignatedObject == FalconNullId and flightLead and flightLead->IsSetFlag(MOTION_OWNSHIP)))
+        if (not isWing or (mDesignatedObject == FalconNullId and flightLead and
+                           flightLead->IsSetFlag(MOTION_OWNSHIP)))
         {
-            if (missionClass not_eq AAMission and not missionComplete and agDoctrine == AGD_NONE)
+            if (missionClass not_eq AAMission and not missionComplete and
+                agDoctrine == AGD_NONE)
                 SelectGroundWeapon();
 
             campTarget = CampTargetSelection();
@@ -79,22 +86,30 @@ void DigitalBrain::DoTargeting(void)
             if (campTarget)
             {
                 // Use campaign target
-                if (campTarget->IsCampaign() and ((CampBaseClass*)campTarget)->GetComponents())
+                if (campTarget->IsCampaign() and
+                    ((CampBaseClass*)campTarget)->GetComponents())
                 {
-                    self->targetList = MakeSimListFromVuList(self, self->targetList, ((CampBaseClass*)campTarget)->GetComponents());
+                    self->targetList = MakeSimListFromVuList(
+                        self, self->targetList,
+                        ((CampBaseClass*)campTarget)->GetComponents());
                 }
                 // 2002-02-25 MODIFIED BY S.G. NO NO NO, AGGREGATED Campaign object should make it here as well otherwise AI will not target them until they enter the 20 NM limit below.
                 // Campaign returned a sim entity, deal with it
                 //          else if (campTarget->IsSim())
-                else if (campTarget->IsSim() or (campTarget->IsCampaign() and ((CampBaseClass *)campTarget)->IsAggregate()))
+                else if (campTarget->IsSim() or
+                         (campTarget->IsCampaign() and
+                          ((CampBaseClass*)campTarget)->IsAggregate()))
                 {
                     // Put it directly into our target list
-                    SimObjectType *newTarg = new SimObjectType(campTarget);
-                    self->targetList = InsertIntoTargetList(self->targetList, newTarg);
+                    SimObjectType* newTarg = new SimObjectType(campTarget);
+                    self->targetList =
+                        InsertIntoTargetList(self->targetList, newTarg);
                 }
 
-                rngSqr = (campTarget->XPos() - self->XPos()) * (campTarget->XPos() - self->XPos()) +
-                         (campTarget->YPos() - self->YPos()) * (campTarget->YPos() - self->YPos());
+                rngSqr = (campTarget->XPos() - self->XPos()) *
+                             (campTarget->XPos() - self->XPos()) +
+                         (campTarget->YPos() - self->YPos()) *
+                             (campTarget->YPos() - self->YPos());
             }
 
             // If the campaign didn't give us a target or we're so close that campaign targeting isn't
@@ -109,47 +124,55 @@ void DigitalBrain::DoTargeting(void)
             // TJL 10/20/03 SearchSim is missing from F4config. Uncommented hard code and changed it to 8.0 miles.
             //if ( not campTarget or rngSqr < (20.0F * NM_TO_FT)*(20.0F * NM_TO_FT))
             //if ( not campTarget or rngSqr < (8.0F * NM_TO_FT)*(8.0F * NM_TO_FT))
-            if ( not campTarget or rngSqr < g_fSearchSimTargetFromRangeSqr)
+            if (not campTarget or rngSqr < g_fSearchSimTargetFromRangeSqr)
             {
                 // Need a target list for threat checking
-                self->targetList = UpdateTargetList(self->targetList, self, SimDriver.combinedList);
+                self->targetList = UpdateTargetList(self->targetList, self,
+                                                    SimDriver.combinedList);
             }
         }
         else //wingman
         {
             if (mDesignatedObject not_eq FalconNullId)
             {
-                campTarget = (FalconEntity*) vuDatabase->Find(mDesignatedObject); // Lookup target in database
+                campTarget = (FalconEntity*)vuDatabase->Find(
+                    mDesignatedObject); // Lookup target in database
 
-                if (campTarget and campTarget->IsCampaign() and ((CampBaseClass*)campTarget)->GetComponents())
+                if (campTarget and campTarget->IsCampaign() and
+                    ((CampBaseClass*)campTarget)->GetComponents())
                 {
-                    self->targetList = MakeSimListFromVuList(self, self->targetList, ((CampBaseClass*)campTarget)->GetComponents());
+                    self->targetList = MakeSimListFromVuList(
+                        self, self->targetList,
+                        ((CampBaseClass*)campTarget)->GetComponents());
                 }
                 else if (campTarget and campTarget->IsSim())
                 {
                     // Put it directly into our target list
-                    SimObjectType *newTarg = new SimObjectType(campTarget);
-                    self->targetList = InsertIntoTargetList(self->targetList, newTarg);
+                    SimObjectType* newTarg = new SimObjectType(campTarget);
+                    self->targetList =
+                        InsertIntoTargetList(self->targetList, newTarg);
                 }
             }
 
             // Check for nearby threats and kill them
             // TODO:  Should we do a range check here like we do for leads above, or just trust the campaign?
-            if ( not campTarget)
+            if (not campTarget)
             {
                 //me123 we need it for bvr reactions      if (missionClass == AAMission or missionComplete)
-                self->targetList = UpdateTargetList(self->targetList, self, SimDriver.combinedList);
+                self->targetList = UpdateTargetList(self->targetList, self,
+                                                    SimDriver.combinedList);
             }
 
             // edg: kruft check -- it has been observed that wingman's target
             // lists are holding refs to sim objects that are no longer awake.
             // This will remove them.
-            SimObjectType *simobj = self->targetList;
-            SimObjectType *tmpobj;
+            SimObjectType* simobj = self->targetList;
+            SimObjectType* tmpobj;
 
             while (simobj)
             {
-                if (simobj->BaseData()->IsSim() and not ((SimBaseClass*)simobj->BaseData())->IsAwake())
+                if (simobj->BaseData()->IsSim() and
+                    not((SimBaseClass*)simobj->BaseData())->IsAwake())
                 {
                     tmpobj = simobj->next;
 
@@ -166,7 +189,6 @@ void DigitalBrain::DoTargeting(void)
                     simobj->prev = NULL;
                     simobj->Release();
                     simobj = tmpobj;
-
                 }
                 else
                 {
@@ -178,18 +200,19 @@ void DigitalBrain::DoTargeting(void)
         //Don't go here if no Targetlist (nothing happens and it's a waste
         //Cobra
         if (self->targetList)
-            CalcRelGeom(self, self->targetList, ((AircraftClass*)self)->vmat, 1.0F / SimLibMajorFrameTime);
+            CalcRelGeom(self, self->targetList, ((AircraftClass*)self)->vmat,
+                        1.0F / SimLibMajorFrameTime);
 
         targetList = self->targetList;
         // Sensors
-        ((AircraftClass *)self)->RunSensors();
+        ((AircraftClass*)self)->RunSensors();
         self->nextTargetUpdate = SimLibElapsedTime + self->targetUpdateRate;
 
         // This is a timed event, so lets check gas here
         FuelCheck();
 
         // Check for reaching IP
-        if ( not IsSetATC(ReachedIP))
+        if (not IsSetATC(ReachedIP))
             IPCheck();
     }
 
@@ -211,16 +234,12 @@ void DigitalBrain::TargetSelection(void)
     RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
 
     // stay on current target
-    if (targetPtr and (
-            targetPtr->BaseData()->IsExploding() or targetPtr->BaseData()->IsDead() or
-            (
-                targetPtr->BaseData()->IsAirplane() and 
-                ((AircraftClass*)targetPtr->BaseData())->IsAcStatusBitsSet(
-                    AircraftClass::ACSTATUS_PILOT_EJECTED
-                )
-            )
-        )
-       )
+    if (targetPtr and
+        (targetPtr->BaseData()->IsExploding() or
+         targetPtr->BaseData()->IsDead() or
+         (targetPtr->BaseData()->IsAirplane() and
+          ((AircraftClass*)targetPtr->BaseData())
+              ->IsAcStatusBitsSet(AircraftClass::ACSTATUS_PILOT_EJECTED))))
     {
         ClearTarget();
     }
@@ -237,33 +256,28 @@ void DigitalBrain::TargetSelection(void)
     // and not F4IsBadReadPtr(objectPtr, sizeof(SimObjectType))) // JB 010224 CTD
     while (objectPtr)
     {
-        FalconEntity *baseData = objectPtr->BaseData();
+        FalconEntity* baseData = objectPtr->BaseData();
 
-        if (
-            (baseData == NULL) or (baseData->VuState() not_eq VU_MEM_ACTIVE) or
+        if ((baseData == NULL) or (baseData->VuState() not_eq VU_MEM_ACTIVE) or
             //F4IsBadCodePtr((FARPROC) objectPtr->BaseData()) or // JB 010224 CTD
-            baseData->IsSim() and (
-                baseData->IsWeapon() or baseData->IsEject() or (
-                    baseData->IsAirplane() and ((AircraftClass*)baseData)->IsAcStatusBitsSet(
-                        AircraftClass::ACSTATUS_PILOT_EJECTED
-                    )
-                )
-            ) or
-            (objectPtr->localData->range > maxEngageRange)
-        )
+            baseData->IsSim() and
+                (baseData->IsWeapon() or baseData->IsEject() or
+                 (baseData->IsAirplane() and
+                  ((AircraftClass*)baseData)
+                      ->IsAcStatusBitsSet(
+                          AircraftClass::ACSTATUS_PILOT_EJECTED))) or
+            (objectPtr->localData->range > maxEngageRange))
         {
             objectPtr = objectPtr->next;
             continue;
         }
 
         // Cobra add this to clear out dead missiles?
-        if (
-            baseData->IsSim() and 
-            ((SimBaseClass *)baseData)->incomingMissile[0] and 
-            ((SimBaseClass *)baseData)->incomingMissile[0]->IsDead()
-        )
+        if (baseData->IsSim() and
+            ((SimBaseClass*)baseData)->incomingMissile[0] and
+            ((SimBaseClass*)baseData)->incomingMissile[0]->IsDead())
         {
-            ((SimBaseClass *)baseData)->incomingMissile[0] = NULL;
+            ((SimBaseClass*)baseData)->incomingMissile[0] = NULL;
         }
 
         // S.G.ADDED SECTION. MAKE SUR OUR SENSOR IS SEEING HIM BEFORE WE DO ANYTHING WITH HIM...
@@ -274,7 +288,9 @@ void DigitalBrain::TargetSelection(void)
         {
             ShiAssert(self->sensorArray[i]);
 
-            if (objectPtr->localData->sensorState[self->sensorArray[i]->Type()] > SensorClass::NoTrack)
+            if (objectPtr->localData
+                    ->sensorState[self->sensorArray[i]->Type()] >
+                SensorClass::NoTrack)
             {
                 // CAN SEE AND DETECT IT
                 tmpLock = objectPtr;
@@ -282,24 +298,18 @@ void DigitalBrain::TargetSelection(void)
             }
         }
 
-        if ( not tmpLock)
+        if (not tmpLock)
         {
             // IF NO SENSOR IS SEEING THIS GUY, HOW CAN WE TRACK HIM?
             // 2001-03-16 ADDED BY S.G. THIS IS OUR GCI IMPLEMENTATION...
             // EVEN IF NO SENSORS ON HIM, ACE AND VETERAN GETS TO USE GCI
             if (/*SkillLevel() < g_nLowestSkillForGCI or*/
                 objectPtr->localData->range >= 60.0F * NM_TO_FT or
- not (
-                    (
-                        baseData->IsSim() and 
-                        ((SimBaseClass*)baseData)->GetCampaignObject()->GetSpotted(self->GetTeam())
-                    ) or
-                    (
-                        baseData->IsCampaign() and 
-                        ((CampBaseClass*)baseData)->GetSpotted(self->GetTeam())
-                    )
-                )
-            )
+                not((baseData->IsSim() and ((SimBaseClass*)baseData)
+                                               ->GetCampaignObject()
+                                               ->GetSpotted(self->GetTeam())) or
+                    (baseData->IsCampaign() and
+                     ((CampBaseClass*)baseData)->GetSpotted(self->GetTeam()))))
             {
                 objectPtr = objectPtr->next;
                 continue;
@@ -307,7 +317,8 @@ void DigitalBrain::TargetSelection(void)
         }
 
         // 2001-08-04 MODIFIED BY S.G. objectPtr CAN BE A CAMPAIGN OBJECT. NEED TO ACCOUNT FOR THIS
-        if (baseData->IsSim() and ((SimBaseClass *)objectPtr->BaseData())->pctStrength <= 0.0f)
+        if (baseData->IsSim() and
+            ((SimBaseClass*)objectPtr->BaseData())->pctStrength <= 0.0f)
         {
             // Dying target have a damage less than 0.0f
             objectPtr = objectPtr->next;
@@ -327,17 +338,20 @@ void DigitalBrain::TargetSelection(void)
         /*else if (objectPtr->BaseData()->IsSim() and ((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0] and ((SimWeaponClass *)((SimBaseClass *)objectPtr->BaseData())->incomingMissile[0])->parent not_eq self)
          //objectPtr->localData->targetTime *= 4.0f;
          //objectPtr->localData->threatScore -= 20;*/
-        else if (baseData->IsSim() and ((SimBaseClass *)baseData)->incomingMissile[0])
+        else if (baseData->IsSim() and
+                 ((SimBaseClass*)baseData)->incomingMissile[0])
         {
             if (theRadar->digiRadarMode == RadarClass::DigiSTT)
             {
-                int doNothing = 1; //Cobra just keep going since we are guiding a missile in this mode
+                int doNothing =
+                    1; //Cobra just keep going since we are guiding a missile in this mode
             }
             else
             {
                 //objectPtr = objectPtr->next;
                 //continue;
-                objectPtr->localData->threatScore = 1; //we give it one so if there is nothing else it will
+                objectPtr->localData->threatScore =
+                    1; //we give it one so if there is nothing else it will
                 //at least target this aircraft
             }
         }
@@ -363,7 +377,8 @@ void DigitalBrain::TargetSelection(void)
         }*/
         //Cobra test we want to force a retarget
         //TODO don't do this if you have to support a missile
-        if (objectPtr->localData->threatScore > 0 and objectPtr->localData->threatScore >= baseScore)
+        if (objectPtr->localData->threatScore > 0 and
+            objectPtr->localData->threatScore >= baseScore)
         {
             //if (objectPtr->BaseData()->IsSim())
             //{
@@ -400,12 +415,14 @@ void DigitalBrain::TargetSelection(void)
           SetTarget(maxThreatPtr);
         else if (targetTime < MAX_TARGET_TIME and maxTargetPtr and not maxTargetPtr->BaseData()->OnGround() )
           SetTarget(maxTargetPtr);*/
-        if (baseScore <= 5 and targetTimer < SimLibElapsedTime and maxTargetPtr[0] and not maxTargetPtr[0]->BaseData()->OnGround())
+        if (baseScore <= 5 and targetTimer < SimLibElapsedTime and
+            maxTargetPtr[0] and not maxTargetPtr[0]->BaseData()->OnGround())
         {
             SetTarget(maxTargetPtr[0]);
             targetTimer = 0;
         }
-        else if (baseScore > 5 and maxTargetPtr[0] and not maxTargetPtr[0]->BaseData()->OnGround())
+        else if (baseScore > 5 and maxTargetPtr[0] and
+                 not maxTargetPtr[0]->BaseData()->OnGround())
         {
             SetTarget(maxTargetPtr[0]);
         }
@@ -480,7 +497,8 @@ void DigitalBrain::TargetSelection(void)
     }
 
     // Turn on jamming if possible
-    if (curSpike and not jammertime or (flightLead and flightLead->IsSPJamming()))
+    if (curSpike and not jammertime or
+        (flightLead and flightLead->IsSPJamming()))
     {
         if (self->HasSPJamming())
         {
@@ -505,8 +523,8 @@ void DigitalBrain::TargetSelection(void)
 */
 FalconEntity* DigitalBrain::CampTargetSelection(void)
 {
-    UnitClass *campUnit = (UnitClass *)self->GetCampaignObject();
-    FalconEntity *target;
+    UnitClass* campUnit = (UnitClass*)self->GetCampaignObject();
+    FalconEntity* target;
 
     // at this point we have no target, we're going to ask the campaign
     // to find out what we're supposed to hit
@@ -514,14 +532,14 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     campUnit->UnsetChecked();
 
     // choose target.  I assume if this returns 0, no target....
-    if ( not campUnit->ChooseTarget())
+    if (not campUnit->ChooseTarget())
         return NULL;
 
     // get the target
     target = campUnit->GetTarget();
 
     // do we have a target?
-    if ( not target)
+    if (not target)
         return NULL;
 
 
@@ -533,9 +551,12 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     // never, ever set targetPtr to ground object
     // 2000-09-27 MODIFIED BY S.G. AI NEED TO SET ITS TARGET POINTER IF IT HAS REACHED ITS IP WAYPOINT AS WELL
     // if ( target->OnGround() and (missionClass == AAMission or missionComplete) and hasWeapons)
-    if (target->OnGround() and (missionClass == AAMission or missionComplete or IsSetATC(ReachedIP)) and hasWeapons)
+    if (target->OnGround() and
+        (missionClass == AAMission or missionComplete or
+         IsSetATC(ReachedIP)) and
+        hasWeapons)
     {
-        if ( not groundTargetPtr)
+        if (not groundTargetPtr)
         {
             SetGroundTarget(target);
             SetupAGMode(NULL, NULL);
@@ -548,10 +569,14 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
     {
         float rng;
 
-        rng = (float)sqrt((campBaseTarg->XPos() - self->XPos()) * (campBaseTarg->XPos() - self->XPos()) +
-                          (campBaseTarg->YPos() - self->YPos()) * (campBaseTarg->YPos() - self->YPos()));
-        MonoPrint("%s-%d set camp target %s : range = %.2f\n", ((DrawableBSP*)self->drawPointer)->Label(), isWing + 1,
-                  ((UnitClass*)targetPtr->BaseData())->GetUnitClassName(), rng * FT_TO_NM);
+        rng = (float)sqrt((campBaseTarg->XPos() - self->XPos()) *
+                              (campBaseTarg->XPos() - self->XPos()) +
+                          (campBaseTarg->YPos() - self->YPos()) *
+                              (campBaseTarg->YPos() - self->YPos()));
+        MonoPrint("%s-%d set camp target %s : range = %.2f\n",
+                  ((DrawableBSP*)self->drawPointer)->Label(), isWing + 1,
+                  ((UnitClass*)targetPtr->BaseData())->GetUnitClassName(),
+                  rng * FT_TO_NM);
     }
 #endif
 
@@ -560,10 +585,11 @@ FalconEntity* DigitalBrain::CampTargetSelection(void)
 }
 
 // Insert 1 target into a sorted target list. Maintain sort order
-SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObjectType* newObj)
+SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root,
+                                                  SimObjectType* newObj)
 {
-    SimObjectType *tmpPtr;
-    SimObjectType *last = NULL;
+    SimObjectType* tmpPtr;
+    SimObjectType* last = NULL;
 
     // This new object had better NOT be in someone elses list
     ShiAssert(newObj->next == NULL);
@@ -580,13 +606,14 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
     }
     else
     {
-        while (tmpPtr and SimCompare(tmpPtr->BaseData(), newObj->BaseData()) < 0)
+        while (tmpPtr and
+               SimCompare(tmpPtr->BaseData(), newObj->BaseData()) < 0)
         {
             last = tmpPtr;
             tmpPtr = tmpPtr->next;
         }
 
-        if ( not last and (tmpPtr->BaseData() not_eq newObj->BaseData()))
+        if (not last and (tmpPtr->BaseData() not_eq newObj->BaseData()))
         {
             F4Assert(tmpPtr not_eq newObj);
             // Goes at the front
@@ -617,13 +644,12 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
         {
             F4Assert(tmpPtr->BaseData() == newObj->BaseData());
 
-            if ( not tmpPtr->BaseData()->OnGround())
+            if (not tmpPtr->BaseData()->OnGround())
                 SetTarget(tmpPtr);
 
             // we don't need this any more -- and it shouldn't have any refs
             newObj->Reference();
             newObj->Release();
-
         }
         else
         {
@@ -637,7 +663,9 @@ SimObjectType* DigitalBrain::InsertIntoTargetList(SimObjectType* root, SimObject
     return root;
 }
 
-SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetList, VuFilteredList* vuList)
+SimObjectType* MakeSimListFromVuList(AircraftClass* self,
+                                     SimObjectType* targetList,
+                                     VuFilteredList* vuList)
 {
     SimObjectType* rootObject;
     SimObjectType* curObject;
@@ -693,15 +721,14 @@ SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetL
                     tmpObject = NULL;
                 }
             }
-            else   // FRB - ALERT
+            else // FRB - ALERT
             {
                 // sfr: no dead or sleeping entities
-                FalconEntity *feEntity = static_cast<FalconEntity*>(curEntity);
+                FalconEntity* feEntity = static_cast<FalconEntity*>(curEntity);
 
-                if (
-                    feEntity->IsDead() or
-                    (feEntity->IsSim() and not static_cast<SimBaseClass*>(feEntity)->IsAwake())
-                )
+                if (feEntity->IsDead() or
+                    (feEntity->IsSim() and
+                     not static_cast<SimBaseClass*>(feEntity)->IsAwake()))
                 {
                     curEntity = updateWalker.GetNext();
                     continue;
@@ -722,7 +749,7 @@ SimObjectType* MakeSimListFromVuList(AircraftClass *self, SimObjectType* targetL
                 lastObject = tmpObject;
 
                 // Set head if needed
-                if ( not rootObject)
+                if (not rootObject)
                     rootObject = tmpObject;
 
                 // Step vu list

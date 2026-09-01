@@ -9,8 +9,8 @@
 #ifndef _MONO2D_H_
 #define _MONO2D_H_
 
-#include "Ttypes.h"
-#include "Display.h"
+#include "ttypes.h"
+#include "display.h"
 
 
 class MonochromeDisplay : public VirtualDisplay

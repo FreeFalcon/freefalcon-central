@@ -8,7 +8,8 @@
 #include "terrain/tviewpnt.h"
 #include "mvrdef.h"
 #include "f4find.h"
-extern "C" {
+extern "C"
+{
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 #include "classtbl.h"
@@ -16,11 +17,11 @@ extern "C" {
 #include "object.h"
 #include "playerop.h"
 
-MissileClass *theMissile = NULL;
-FILE* OpenCampFile(char *filename, char *ext, char *mode);
+MissileClass* theMissile = NULL;
+FILE* OpenCampFile(char* filename, char* ext, char* mode);
 CalcPressureRatio(float alt, float* ttheta, float* rsigma);
 void CalcTransformMatrix(SimBaseClass* theObject);
-extern VuAntiDatabase *vuAntiDB;
+extern VuAntiDatabase* vuAntiDB;
 
 void RunMissile(void);
 void LaunchMissile(void);
@@ -32,43 +33,28 @@ float startRange;
 
 typedef struct
 {
-    char *filename;
+    char* filename;
     int missileType;
     BOOL fireFromSurface;
     BOOL targOnGround;
 } MISSILE_TYPE_FILE_MAP;
 
 // For missileType  See [Weapon Data].[Weapon Index] in the class table
-MISSILE_TYPE_FILE_MAP gMissFiles[] =
-{
-    "aim9l.dat",  2,  FALSE, FALSE,
-    "aim120.dat",  56,  FALSE, FALSE,
-    "agm65b.dat",  18,  FALSE, TRUE,
-    "agm65d.dat",  19,  FALSE, TRUE,
-    "agm45.dat",  17,  FALSE, TRUE,
-    "agm88.dat",  23,  FALSE, TRUE,
-    "sa6.dat",  39,  TRUE, FALSE,
-    "2_75In.dat",  71,  FALSE, TRUE,
-    "agmXXX.dat",  18,  FALSE, TRUE,
-    "aim9p.dat",  2,  FALSE, FALSE,
-    "aim54.dat",  9,   FALSE, FALSE,
-    "aa7.dat",  53,  FALSE, FALSE,
-    "aa7r.dat",  11,  FALSE, FALSE,
-    "aa9.dat",  55,  FALSE, FALSE,
-    "aa10.dat",  7,  FALSE, FALSE,
-    "aa10c.dat",  8,  FALSE, FALSE,
-    "aa11.dat",  10,  FALSE, FALSE,
-    "aim7.dat",  1,  FALSE, FALSE,
-    "sa7.dat",  40,  TRUE, FALSE,
-    "sa13.dat",  36,  TRUE, FALSE,
-    "sa9.dat",  122,  TRUE, FALSE,
-    "sa14.dat",  134,  TRUE, FALSE,
-    "sa2.dat",  37,  TRUE, FALSE,
-    "sa3.dat",  116,  TRUE, FALSE,
-    "sa4.dat",  38,  TRUE, FALSE,
-    "sa5.dat",  117,  TRUE, FALSE,
-    "sa8.dat",  41,  TRUE, FALSE,
-    "sa15.dat",  123,  TRUE, FALSE,
+MISSILE_TYPE_FILE_MAP gMissFiles[] = {
+    "aim9l.dat",  2,   FALSE, FALSE, "aim120.dat", 56,  FALSE, FALSE,
+    "agm65b.dat", 18,  FALSE, TRUE,  "agm65d.dat", 19,  FALSE, TRUE,
+    "agm45.dat",  17,  FALSE, TRUE,  "agm88.dat",  23,  FALSE, TRUE,
+    "sa6.dat",    39,  TRUE,  FALSE, "2_75In.dat", 71,  FALSE, TRUE,
+    "agmXXX.dat", 18,  FALSE, TRUE,  "aim9p.dat",  2,   FALSE, FALSE,
+    "aim54.dat",  9,   FALSE, FALSE, "aa7.dat",    53,  FALSE, FALSE,
+    "aa7r.dat",   11,  FALSE, FALSE, "aa9.dat",    55,  FALSE, FALSE,
+    "aa10.dat",   7,   FALSE, FALSE, "aa10c.dat",  8,   FALSE, FALSE,
+    "aa11.dat",   10,  FALSE, FALSE, "aim7.dat",   1,   FALSE, FALSE,
+    "sa7.dat",    40,  TRUE,  FALSE, "sa13.dat",   36,  TRUE,  FALSE,
+    "sa9.dat",    122, TRUE,  FALSE, "sa14.dat",   134, TRUE,  FALSE,
+    "sa2.dat",    37,  TRUE,  FALSE, "sa3.dat",    116, TRUE,  FALSE,
+    "sa4.dat",    38,  TRUE,  FALSE, "sa5.dat",    117, TRUE,  FALSE,
+    "sa8.dat",    41,  TRUE,  FALSE, "sa15.dat",   123, TRUE,  FALSE,
 };
 int gNumMissiles = sizeof(gMissFiles) / sizeof(MISSILE_TYPE_FILE_MAP);
 
@@ -81,11 +67,12 @@ int main(void)
     int i, j, k, m;
     float l;
     float pdelta, ttheta, sound, rsigma;
-    FILE *fp = NULL;
+    FILE* fp = NULL;
     int velMax, aspMax, aspStep, altStep;
 
     InitDebug(DEBUGGER_TEXT_MODE);
-    F4GetRegistryString("baseDir", FalconDataDirectory, sizeof(FalconDataDirectory));
+    F4GetRegistryString("baseDir", FalconDataDirectory,
+                        sizeof(FalconDataDirectory));
     SetCurrentDirectory(FalconDataDirectory);
     ResInit(NULL);
     ResCreatePath(FalconDataDirectory, FALSE);
@@ -97,10 +84,12 @@ int main(void)
     LoadWeaponData("Falcon4");
     LoadVehicleData("Falcon4");
 
-    if (!LoadRadarData("Falcon4")) ShiError("Failed to load radar data");
+    if (!LoadRadarData("Falcon4"))
+        ShiError("Failed to load radar data");
 
     // if (!LoadIRSTData("Falcon4")) ShiError( "Failed to load IRST data" );
-    if (!LoadSimWeaponData("Falcon4")) ShiError("Failed to load SimWeapon data");
+    if (!LoadSimWeaponData("Falcon4"))
+        ShiError("Failed to load SimWeapon data");
 
 
     // Data fixup
@@ -111,12 +100,14 @@ int main(void)
             if (Falcon4ClassTable[i].dataType == DTYPE_WEAPON)
             {
                 WeaponDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
-                Falcon4ClassTable[i].dataPtr = (void*) &WeaponDataTable[(int)Falcon4ClassTable[i].dataPtr];
+                Falcon4ClassTable[i].dataPtr =
+                    (void*)&WeaponDataTable[(int)Falcon4ClassTable[i].dataPtr];
             }
             else if (Falcon4ClassTable[i].dataType == DTYPE_VEHICLE)
             {
                 VehicleDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
-                Falcon4ClassTable[i].dataPtr = (void*) &VehicleDataTable[(int)Falcon4ClassTable[i].dataPtr];
+                Falcon4ClassTable[i].dataPtr =
+                    (void*)&VehicleDataTable[(int)Falcon4ClassTable[i].dataPtr];
             }
         }
     }
@@ -132,22 +123,25 @@ int main(void)
     if (!vuxDriverSettings)
     {
         vuxDriverSettings = new VuDriverSettings(
-            (SM_SCALAR)200.0, (SM_SCALAR)200.0, (SM_SCALAR)200.0, // gx, gy, gz tolerance
-            (SM_SCALAR)0.0, (SM_SCALAR)0.0, (SM_SCALAR)0.0,   // x, y, z tolerance
-            (SM_SCALAR)0.0, (SM_SCALAR)0.0, (SM_SCALAR)0.0,   // y, p, r tolerance
-            (SM_SCALAR)1.0, (SM_SCALAR)0.1,    // maxJumpDist, maxJumpAngle
+            (SM_SCALAR)200.0, (SM_SCALAR)200.0,
+            (SM_SCALAR)200.0, // gx, gy, gz tolerance
+            (SM_SCALAR)0.0, (SM_SCALAR)0.0, (SM_SCALAR)0.0, // x, y, z tolerance
+            (SM_SCALAR)0.0, (SM_SCALAR)0.0, (SM_SCALAR)0.0, // y, p, r tolerance
+            (SM_SCALAR)1.0, (SM_SCALAR)0.1, // maxJumpDist, maxJumpAngle
             2000);
         //          1000);         // lookahead time (ms)
     }
 
 
-
-    targetType = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_AIRPLANE, STYPE_AIR_FIGHTER_BOMBER,
-                            SPTYPE_F16C,   VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;
+    targetType = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_AIRPLANE,
+                            STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F16C, VU_ANY,
+                            VU_ANY, VU_ANY) +
+                 VU_LAST_ENTITY_TYPE;
 
     parent = new SimVehicleClass(targetType);
     VuReferenceEntity(parent);
-    targetPtr = new SimObjectType(OBJ_TAG, parent, new SimBaseClass(targetType));
+    targetPtr =
+        new SimObjectType(OBJ_TAG, parent, new SimBaseClass(targetType));
     targetPtr->Reference(SIM_OBJ_REF_ARGS);
 
     // Run a whole slew of cases. extend the range at each case until you miss
@@ -214,10 +208,12 @@ int main(void)
             fprintf(stdout, "\n");
 
             fprintf(fp, "# Altitude breakpoints:\n");
-            fprintf(fp, "0.0 5000.0 10000.0 15000.0 20000.0 25000.0 30000.0 35000.0 40000.0 45000.0 50000.0 \n");
+            fprintf(fp, "0.0 5000.0 10000.0 15000.0 20000.0 25000.0 30000.0 "
+                        "35000.0 40000.0 45000.0 50000.0 \n");
             fprintf(fp, "\n");
             fprintf(stdout, "# Altitude breakpoints:\n");
-            fprintf(stdout, "0.0 5000.0 10000.0 15000.0 20000.0 25000.0 30000.0 35000.0 40000.0 45000.0 50000.0 \n");
+            fprintf(stdout, "0.0 5000.0 10000.0 15000.0 20000.0 25000.0 "
+                            "30000.0 35000.0 40000.0 45000.0 50000.0 \n");
             fprintf(stdout, "\n");
 
             fprintf(fp, "# Number of Velocity breakpoints:\n");
@@ -297,7 +293,8 @@ int main(void)
             fprintf(fp, "%2.4f %2.4f %2.4f\n", 0.0f, 90.0f * DTR, 180.0f * DTR);
             fprintf(fp, "\n");
             fprintf(stdout, "# Aspect breakpoints:\n");
-            fprintf(stdout, "%2.4f %2.4f %2.4f\n", 0.0f, 90.0f * DTR, 180.0f * DTR);
+            fprintf(stdout, "%2.4f %2.4f %2.4f\n", 0.0f, 90.0f * DTR,
+                    180.0f * DTR);
             fprintf(stdout, "\n\n");
 
             velMax = 700;
@@ -342,8 +339,10 @@ int main(void)
                             if (gMissFiles[m].fireFromSurface)
                             {
                                 parent->SetPosition(0.0F, 0.0F, -100.0f);
-                                targetPtr->BaseData()->SetPosition(startRange, 0.0f , i - 100.0f);
-                                parent->SetYPR(0.0F, atan2(-(float)i, startRange) , 0.0F);
+                                targetPtr->BaseData()->SetPosition(
+                                    startRange, 0.0f, i - 100.0f);
+                                parent->SetYPR(
+                                    0.0F, atan2(-(float)i, startRange), 0.0F);
                             }
                             else
                             {
@@ -351,15 +350,20 @@ int main(void)
                                 parent->SetYPR(0.0F, 0.0F, 0.0F);
 
                                 if (gMissFiles[m].targOnGround)
-                                    targetPtr->BaseData()->SetPosition(startRange * cos(k * DTR), startRange * sin(k * DTR), -100.0f);
+                                    targetPtr->BaseData()->SetPosition(
+                                        startRange * cos(k * DTR),
+                                        startRange * sin(k * DTR), -100.0f);
                                 else
-                                    targetPtr->BaseData()->SetPosition(startRange * cos(k * DTR), startRange * sin(k * DTR), i - 100.0f);
+                                    targetPtr->BaseData()->SetPosition(
+                                        startRange * cos(k * DTR),
+                                        startRange * sin(k * DTR), i - 100.0f);
                             }
 
                             parent->SetDelta(l, 0.0F, 0.0f);
                             targetPtr->BaseData()->SetYPR(0.0F, 0.0F, 0.0F);
                             targetPtr->BaseData()->SetDelta(0.0f, 0.0f, 0.0f);
-                            targetPtr->BaseData()->SetYPRDelta(0.0F, 0.0F, 0.0F);
+                            targetPtr->BaseData()->SetYPRDelta(0.0F, 0.0F,
+                                                               0.0F);
 
                             if (theMissile)
                             {
@@ -368,21 +372,25 @@ int main(void)
                                 theMissile = NULL;
                             }
 
-                            theMissile = (MissileClass*)InitAMissile(parent, missileType, 0);
+                            theMissile = (MissileClass*)InitAMissile(
+                                parent, missileType, 0);
 
                             LaunchMissile();
 
-                            while (theMissile->done == FalconMissileEndMessage::NotDone)
+                            while (theMissile->done ==
+                                   FalconMissileEndMessage::NotDone)
                             {
                                 UpdateTarget();
                                 RunMissile();
                                 // printf( "Missile x,y,z:  %7.0f, %7.0f, %6.0f\n", theMissile->XPos(), theMissile->YPos(), theMissile->ZPos() );
-                                SimLibElapsedTime += 33; // 33 ms = 30 Htz frame rate
+                                SimLibElapsedTime +=
+                                    33; // 33 ms = 30 Htz frame rate
                             }
 
                             startRange -= 1.0F * NM_TO_FT;
-                        }
-                        while (!(theMissile->Flags() & MissileClass::EndGame) && startRange >= 0.0F);
+                        } while (
+                            !(theMissile->Flags() & MissileClass::EndGame) &&
+                            startRange >= 0.0F);
 
                         if (startRange < 0.0f)
                             startRange = 0.0f;
@@ -454,7 +462,7 @@ void UpdateTarget(void)
 }
 
 
-int LoadWeaponData(char *filename)
+int LoadWeaponData(char* filename)
 {
     FILE* fp;
     short entries;
@@ -470,7 +478,7 @@ int LoadWeaponData(char *filename)
     fclose(fp);
     return 1;
 }
-int LoadVehicleData(char *filename)
+int LoadVehicleData(char* filename)
 {
     FILE* fp;
     short entries;
@@ -488,7 +496,7 @@ int LoadVehicleData(char *filename)
     return 1;
 }
 
-int LoadRadarData(char *filename)
+int LoadRadarData(char* filename)
 {
     FILE* fp;
     short entries;
@@ -507,7 +515,7 @@ int LoadRadarData(char *filename)
 }
 
 
-int LoadSimWeaponData(char *filename)
+int LoadSimWeaponData(char* filename)
 {
     FILE* fp;
     short entries;

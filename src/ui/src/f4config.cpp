@@ -1,11 +1,11 @@
 ////////////////////////////////////////////////
 // Falcon4.cfg stuff
 
-#include <cISO646>
+#include <ciso646>
 
 #include <stdio.h>
 #include <windows.h>
-#include "../../SIM/INCLUDE/Phyconst.h" //JAM 19Sep03
+#include "../../sim/include/phyconst.h" //JAM 19Sep03
 
 // PHASE 1 D3D7->D3D11: when true DXContext::Init brings up D3D11Backend instead of DDraw7/D3D7.
 // Artscout - 2026 (D3D11 purge C0): default OFF -- D3D12 is now the sole GPU backend. Nothing sets this
@@ -42,7 +42,37 @@ bool g_bUseQuadViews = false;
 // (the #65 CPU bottleneck). The screen-space 2D symbology (HUD/RTT displays/menu/cursor) still renders per
 // eye in a thin tail. OFF by default so the proven per-eye loop stays the norm; any prerequisite failing
 // falls back to it automatically. Enable with FFViper.cfg "VrViewInstancing 1". Needs dxcompiler.dll shipped.
-bool g_bVrViewInstancing = true;   // Artscout - 2026: default ON (confirmed working; falls back if SM6.1/DXC unavailable)
+bool g_bVrViewInstancing =
+    true; // Artscout - 2026: default ON (confirmed working; falls back if SM6.1/DXC unavailable)
+// Artscout - 2026 (#107 GROUPED Vulkan multiview): default OFF -- opt-in validation. When ON (and on the Vulkan backend
+// in a stereo/quad XR frame) the VR frame renders as N/2 multiview passes (RenderVulkanVR) instead of the per-eye loop:
+// half the world geometry submission. STAGE 1a draws WORLD ONLY (no cockpit/HUD/menu tail yet). Enable: "VrVulkanMultiview 1".
+bool g_bVrVulkanMultiview = true; // default ON -- the user's canonical VR-Vulkan path
+extern bool
+    g_bVulkanProfile; // Artscout - 2026: #107 PERF profiler flag (defined in VulkanBackend.cpp), registered below
+// Artscout - 2026: also defined in VulkanBackend.cpp -- the validation layers
+// and the GPU-terrain gate, registered below so a .cfg can flip them.
+extern bool g_bVulkanValidation, g_bVulkanSyncValidation, g_bVulkanTerrain;
+// Artscout - 2026 (#107 D3D12 VI cockpit): default OFF -- opt-in validation. When ON (and D3D12 view instancing is
+// active) the 3D cockpit BSP is drawn INSIDE the view-instanced world pass (RenderWorldViewInstanced) so it rides
+// SV_ViewID per eye -- 2x->1x cockpit geometry, mirroring the Vulkan STAGE 1b. The per-eye tail then draws ONLY the
+// RTT displays + 2D overlays. Verify in the headset (per-eye correctness). Enable: FFViper.cfg "VrD3D12ViCockpit 1".
+bool g_bVrD3D12ViCockpit = true; // default ON
+// Artscout - 2026 (#107): OpenXR TURBO MODE -- absorb the xrWaitFrame pacing block (~2.2ms/frame measured) on a
+// background thread so the render thread never stalls on the compositor gate. Grows the per-frame work budget to
+// the full HMD interval -> steadier locked-rate fps. Off by default; enable: FFViper.cfg "set g_bXrTurboMode 1".
+bool g_bXrTurboMode = false;
+// #59 subtitle quad position (head-locked, metres at 1.4m plane). Defaults per Albert: from the original top spot
+// (y 0.64) moved DOWN ~a third of the view and RIGHT ~a sixth.
+// #107 PERF spike fix: terrain tile textures used to be created+uploaded SYNCHRONOUSLY on the render thread the
+// first frame a freshly-streamed tile became visible (GetTileSRV -> Activate) -- a streaming burst activated dozens
+// at once = the 17-67ms TerrAcc spikes ([VKPROF-WORST]) and the multi-second entry hang. Budget: at most N Activates
+// per terrain render; the rest fall back to an already-loaded res / the far texture / flat colour (all existing
+// fallbacks) and pop in over the next frames. <=0 = unlimited (old behaviour).
+int g_nTileActivatePerFrame = 16;
+int g_nTileActivateBudget = 0; // live countdown, reset by TerrainGpu_Render
+float g_fVrSubQuadX = 0.35f;
+float g_fVrSubQuadY = 0.25f;
 // IPD sign for the per-eye view matrices built for the VI pass (headset-tuned: flip to -1 if the eyes swap).
 float g_fVrViewInstIpdSign = 1.0f;
 // #DX12 п.5: intermediate VR sky fix under VI -- give the QUAD FOCUS group its off-axis for the 2D-screen sky so it
@@ -54,68 +84,9 @@ bool g_bVrPerEyeSky = true;
 // Artscout - 2026: D3D12 VALIDATION LAYER in any build (Release included). `set g_bD3D12Debug 1` + restart ->
 // the layer is armed and every ERROR/CORRUPTION/WARNING is drained into the D3D12 log once per Present (deduped).
 // Costs frame time -- diagnostics only, never for normal play. Needs the Windows "Graphics Tools" feature.
-bool  g_bD3D12Debug = false;
-bool  g_b3DSky = true;   // Artscout - 2026: #96 default ON (3D skydome + stars/moon; confirmed)
-// Artscout - 2026: #13 volumetric clouds. Default OFF until confirmed in-headset. Turning it ON also SUPPRESSES the
-// legacy DX2D cloud quads (otw.cpp gates realWeather->Draw), so the two never stack.
-bool  g_bVolumetricClouds = false;
-// #13 tuning. The layer itself comes from the sim (realWeather->stratusZ +/- stratusDepth/2); these shape it.
-//   Steps    = march samples along the ray. THE perf knob: cost is linear in it, and in VR at the quad-view
-//              focus resolution it is the only thing between "free" and "unflyable". Steps are GEOMETRIC (see
-//              CloudMarch), so this buys near-camera detail, not wasted samples 40 km out: at 32, a
-//              near-horizontal ray starts at a 525 ft step (Nyquist for the noise wants <= 1785) and coarsens
-//              to ~17 km at the far end, where the haze has dissolved the cloud anyway. The old UNIFORM 24
-//              gave that same ray a flat 6666 ft step -- 3.7x undersampled -- which is what put the march's
-//              sample planes on screen as stacked plates.
-//   Coverage = 0 clear .. 1 solid. -1 = derive from the weather condition (POOR/INCLEMENT get more).
-//   Density  = extinction per FOOT, and it is a real physical quantity, so it is set from physics rather
-//              than taste: a cumulus at LWC ~0.3 g/m^3 with 10 um droplets has beta = 3*LWC/(2*rho*r_eff)
-//              ~= 0.045 /m ~= 0.014 /ft. The old 0.0016 was ~9x too thin -- a cloud core came out at an
-//              optical depth of ~2 (85% opaque, i.e. visibly see-through grey) where a real one is ~30
-//              (utterly opaque). That is most of why the clouds read as thin gauze.
-//   Scale    = noise frequency (1/feet). Smaller = larger, lazier cloud masses.
-//   Ambient  = how much haze colour lights the deck's shadowed side (0..1).
-//   Powder   = silver-lining strength on sunward edges.
-float g_fCloudSteps    = 500.0f;
-float g_fCloudCoverage = -1.0f;
-float g_fCloudDensity  = 0.012f;
-float g_fCloudScale    = 0.0007f;
-float g_fCloudAmbient  = 0.55f;
-float g_fCloudPowder   = 1.0f;
-// #13 CUMULUS layer. The sim only fills cumulusZ meaningfully at FAIR (cumulusBase starts 0 and only the FAIR
-// branch sets it), so outside FAIR the base comes from this knob -- ~5.5k ft is a normal fair-weather cumulus
-// base. Thick: base-to-top extent; cumulus need real vertical extent or they read as lumpy stratus.
-// Coverage: -1 = derive from the weather condition (SUNNY scattered / FAIR the sim's cumulus day / else broken).
-float g_fCumulusBase     = 5500.0f;   // ft above sea level (POSITIVE; the code negates it into Falcon z)
-float g_fCumulusThick    = 2000.0f;   // ft -- fair-weather cumulus: base ~5500, tops ~7500. 6000 was thunderstorm scale.
-float g_fCumulusCoverage = 0.55f;   // #13 density INSIDE a weather patch (the map decides where; this, how much)
-// #13 erosion strength on cloud edges (0 = off). Constant by height on purpose: making it rise as the envelope
-// fell re-introduced a height-modulated threshold and laid down horizontal dead bands.
-float g_fCloudErode   = 1.0f;
-// #13 vertical noise scale. Added as a fix for horizontal layering -- that diagnosis was WRONG (the layering
-// came from the step formula: a constant growth factor made the first step collapse to 0 as step count rose).
-// Stretching z flattens the noise toward 2D and costs clouds their vertical structure. 1.0 = isotropic, as the
-// reference uses. Kept only as a tuning handle.
-float g_fCloudVertScale = 1.0f;
-// #13 diag view, drawn INSTEAD of lit cloud (no sun march, no fog), at the first sample along each ray that has
-// any density. 1 = ALL THREE fields at once in colour channels: R=density, G=envelope, B=noise -- one screenshot
-// then carries every field with identical geometry (switching modes needs a restart, and the exact view could
-// never be reproduced). 2/3/4 = single quantity in grey: envelope / noise / height fraction.
-float g_fCloudDebug = 0.0f;
-// #13 WEATHER MAP -- coverage was one number for the whole theatre, which sprinkles clouds evenly. These make
-// it vary across the map so the sky clusters: a clump here, a clear stretch there.
-//   PatchScale = the map's frequency relative to the cloud noise. 0.12 = patches ~8x wider than a cloud.
-//                Smaller = broader weather; larger = busier.
-//   Amount     = FRACTION OF SKY that carries weather (0..1). NOT a coverage multiplier: multiplying starved
-//                the threshold to nothing (0.26 * 0.45 * 0.35 = 0.041 -> demanded nb > 0.959 -> crumbs). It sets
-//                where the map opens up; inside a patch, coverage applies at FULL strength, which is what lets a
-//                patch hold real clouds. 0.30 = weather over ~30% of the sky, clear elsewhere.
-float g_fCloudPatchScale = 0.06f;   // patches ~2x broader than before -- clusters read at flight altitude
-float g_fCloudAmount     = 0.30f;
-// #13 how much cloud TOP HEIGHT varies between clouds. h is a fraction of the SLAB, so h=1 is one absolute
-// altitude across the whole sky -- without this every cloud dies at the same ceiling and the field gets a
-// flat lid, however smoothly the envelope tapers. 0 = all tops equal, 0.6 = squat ones next to towers.
-float g_fCloudTopVary    = 0.55f;
+bool g_bD3D12Debug = false;
+bool g_b3DSky =
+    true; // Artscout - 2026: #96 default ON (3D skydome + stars/moon; confirmed)
 // #21+: Instant Action starting/held fuel (lbs) for the OWNSHIP. Fuel is frozen (NoFuelBurn) in IA, so a lower value
 // = lighter jet = better maneuverability (fuel never runs out anyway). 0 = don't override (full internal ~7200).
 float g_fInstantActionFuel = 2000.0f;
@@ -123,8 +94,8 @@ float g_fInstantActionFuel = 2000.0f;
 // which is 8-bit (252,250,223) taken from the pre-skydome DrawSun -- a mild warm white, tuned against
 // SUN.DDS, which is already yellow. Atmospheric extinction multiplies on top at any setting and is 1,1,1
 // at high sun, so the default reproduces the legacy sun exactly and still reddens the disc at sunset.
-float g_fSunWarmth      = 1.0f;
-float g_fSkyDomeRadius  = 200000.0f;
+float g_fSunWarmth = 1.0f;
+float g_fSkyDomeRadius = 200000.0f; // Artscout - 2026: #96 skydome radius (ft)
 // #96: sun sprite HALF-size as a fraction of the dome radius. NOTE the sun is NOT like the moon: SUN.DDS has its
 // halo BAKED IN -- the full-luminance disc is only the central ~28% of the sprite (measured: core out to ~36px of
 // the 128px half-width, light gone by ~96px). So the sprite is NOT the disc. At the old 0.030 the sprite spanned
@@ -137,35 +108,47 @@ float g_fSkyDomeSunSize = 0.01644f;
 // size is the brain's main distance cue for a body whose real size it knows. (Stereo is not involved: the dome sits
 // at 200000ft, so the eye-to-eye parallax is ~1e-6 rad -- already at infinity.)
 float g_fSkyDomeMoonSize = 0.00455f;
-float g_fSkyDomeStarSize = 0.0011f;  // #96: star quad half-size (fraction of radius). Runtime knob `set g_fSkyDomeStarSize`.
-float g_fSkyMapRotate    = 0.0f;     // #96: equirect starmap azimuth rotation (0..1 = full turn). `set g_fSkyMapRotate`.
-float g_fSkyMapBright    = 0.85f;    // #96: starmap brightness multiplier. `set g_fSkyMapBright`.
-float g_fSkyMapTilt      = 0.0f;     // #96: starmap tilt OFFSET (turns) on top of the auto latitude tilt. `set g_fSkyMapTilt`.
+float g_fSkyDomeStarSize =
+    0.0011f; // #96: star quad half-size (fraction of radius). Runtime knob `set g_fSkyDomeStarSize`.
+float g_fSkyMapRotate =
+    0.0f; // #96: equirect starmap azimuth rotation (0..1 = full turn). `set g_fSkyMapRotate`.
+float g_fSkyMapBright =
+    0.85f; // #96: starmap brightness multiplier. `set g_fSkyMapBright`.
+float g_fSkyMapTilt =
+    0.0f; // #96: starmap tilt OFFSET (turns) on top of the auto latitude tilt. `set g_fSkyMapTilt`.
 
 // Artscout - 2026: graphics options driven by the Graphics/Advanced setup pages (persisted in
 // DisplayOptions XML, synced into these engine globals at startup in winmain after LoadOptions, and on
 // Apply). The engine reads these globals at the point of use; DisplayOptions is the UI source of truth.
-bool g_bMsaaEnable = true;         // 3D-scene + RTT multisample AA on/off
-int  g_nMsaaSamples = 4;           // requested MSAA sample count 1..8 (backend snaps to a supported level)
+bool g_bMsaaEnable = true; // 3D-scene + RTT multisample AA on/off
+int g_nMsaaSamples =
+    4; // requested MSAA sample count 1..8 (backend snaps to a supported level)
 // Artscout - 2026: anisotropic texture filtering (world/terrain WRAP samplers, both backends, flat + VR). Read
 // at sampler creation -> applied on entering 3D (like MSAA/resolution). OFF -> plain trilinear (linear mip).
-bool g_bAnisoEnable  = true;       // anisotropic filtering on/off
-int  g_nAnisoSamples = 16;         // max anisotropy 1..16 (1/off falls back to trilinear); clamped to a power of two
-int  g_nVrResolutionScale = 100;   // per-eye OpenXR swapchain resolution scale, percent 50..100
+bool g_bAnisoEnable = true; // anisotropic filtering on/off
+// Artscout - 2026: textures reached by index from one resident heap instead of a bind per draw. Needs SM 6.6
+// (D3D12) or descriptor indexing (Vulkan); falls back to the per-texture path when the device cannot do it.
+bool g_bEnableBindless = true;
+int g_nAnisoSamples =
+    16; // max anisotropy 1..16 (1/off falls back to trilinear); clamped to a power of two
+int g_nVrResolutionScale =
+    100; // per-eye OpenXR swapchain resolution scale, percent 50..100
 
 // Artscout - 2026 (#59 VR menu): head-locked in-3D comms/exit menu quad geometry (meters). The menu is drawn
 // into a backend RGBA8 texture and composited as an XrCompositionLayerQuad in VIEW space -> always in front of
 // the head, independent of quad-views/gaze (fixes "menu shows up in the periphery away from where you look").
 // Distance forward (-Z) and panel height; width = height * aspect. Tune in-headset via FFViper.cfg.
 float g_fVrMenuDist = 1.8f;
-float g_fVrMenuHeight = 1.4f;
+float g_fVrMenuHeight =
+    1.82f; // #59: was 1.4 -- user asked the AWACS/comms in-scene menu ~1.3x bigger
 
 // Artscout - 2026 (VR): per-eye IPD applied to the RTT display camera (HUD/MFD/DED/RWR panels) so they
 // CONVERGE at the panel depth instead of diverging per eye. The world camera gets IPD via headOrigin;
 // the displays use Pan = headPan*RTT_POSITION_SCALING (no IPD), so add it here. Units = display-space
 // per foot (RTT_POSITION_SCALING=10.35); sign/magnitude headset-tunable via FFViper.cfg "VrDisplayIpd".
-float g_fVrDisplayIpd = 10.65f;   // Artscout - 2026: RTT display IPD; headset-tuned (was 10.35 = RTT_POSITION_SCALING)
-                                  // (symbology sits ON the panel depth). Tune in-headset if needed (10.0-10.65).
+float g_fVrDisplayIpd =
+    10.65f; // Artscout - 2026: RTT display IPD; headset-tuned (was 10.35 = RTT_POSITION_SCALING)
+// (symbology sits ON the panel depth). Tune in-headset if needed (10.0-10.65).
 
 // Artscout - 2026 (VR #61): draw the RTT display quads in the REAL cockpit-world frame (same transform
 // as the BSP panels: world = ownshipRot * (canvas / RTT_POSITION_SCALING), camera = headOrigin) instead
@@ -178,13 +161,15 @@ bool g_bVrRttWorldCam = false;
 // Artscout - 2026 (horizon): how far DOWN to extend the sky filler band past the terrain end (multiple
 // of the filler height), to cover the near/far (fartiles) terrain seam with ground haze instead of a
 // black gap. Bigger = covers more of the distant terrain with haze. FFViper.cfg "HorizonFillerExtend".
-float g_fHorizonFillerExtend = 8.0f;   // Artscout - 2026: tuned (was 4.0); NOTE affects flat sky too (otwsky.cpp), not VR-only
+float g_fHorizonFillerExtend =
+    8.0f; // Artscout - 2026: tuned (was 4.0); NOTE affects flat sky too (otwsky.cpp), not VR-only
 
 // Artscout - 2026 (VR mouse): magnetic snap-radius multiplier for the 3D clickable cockpit in VR. The
 // stock per-button hit radius (~6-24 px in DispWidth space) is far too tight to aim by hand through the
 // headset, so the cursor never snaps/turns green and clicks miss. Multiplies td in the hover/anchor/
 // click hit-tests (VR only; flat path untouched). FFViper.cfg "VrCursorMagnet". Tune up if snap is weak.
-float g_fVrCursorMagnet = 1.0f;   // Artscout - 2026: headset-confirmed (was 6); stereo uses g_fVrCursorMagnetStereo
+float g_fVrCursorMagnet =
+    1.0f; // Artscout - 2026: headset-confirmed (was 6); stereo uses g_fVrCursorMagnetStereo
 
 // Artscout - 2026 (VR mouse): per-axis sign/scale for undoing the view's off-axis when un-projecting the
 // mouse ray (UnTransformPoint), so the focus cursor lines up with the periphery cursor. Separate X/Y
@@ -215,68 +200,89 @@ float g_fVrCursorIpd = 1.0f;
 // Artscout - 2026 (VR controllers): laser-pointer clickable cockpit. The active hand's aim ray picks the
 // nearest 3D button; trigger = click, thumbstick = 2-way switch/knob, A = zoom, B = recenter. Falls back to
 // the VR mouse when no controller is tracked. All tunable in FFViper.cfg (calibrate in-headset).
-bool  g_bVrControllers   = true;    // master on/off. FFViper.cfg "VrControllers".
-float g_fVrRayRadius     = 2.0f;    // hit radius = button.dist * this (button units). FFViper.cfg "VrRayRadius".
-float g_fVrRayReach      = 300.0f;  // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
+bool g_bVrControllers = true; // master on/off. FFViper.cfg "VrControllers".
+float g_fVrRayRadius =
+    2.0f; // hit radius = button.dist * this (button units). FFViper.cfg "VrRayRadius".
+float g_fVrRayReach =
+    300.0f; // free-cursor reach along the ray when nothing is hit (button units). "VrRayReach".
 // Artscout - 2026 (#58 true 3D mouse): sign/scale of the mouse ray's horizontal/vertical NDC->frustum-tangent
 // mapping. 1 = direct; -1 flips that axis if the cursor moves mirrored in-headset. Tune in FFViper.cfg then bake.
-float g_fVrMouseRayX     = 1.0f;
-float g_fVrMouseRayY     = 1.0f;
+float g_fVrMouseRayX = 1.0f;
+float g_fVrMouseRayY = 1.0f;
 // Artscout - 2026 (#58 true 3D mouse): hit radius = button.dist * this, for the MOUSE ray only (separate from the
 // controller's VrRayRadius -- the eye-origin mouse aims coarser than the near hand). Headset-tuned; FFViper.cfg.
 float g_fVrMouseRayRadius = 2.0f;
-float g_fVrThumbThresh   = 0.6f;    // thumbstick deflection that counts as a press. "VrThumbThresh".
-float g_fVrKnobRepeatMs  = 160.0f;  // held-thumbstick repeat interval for knobs/switches (ms). "VrKnobRepeat".
-float g_fVrRayOriginOfs  = 0.0f;    // calibration: shift the ray origin forward along its dir (button units). "VrRayOriginOfs".
+float g_fVrThumbThresh =
+    0.6f; // thumbstick deflection that counts as a press. "VrThumbThresh".
+float g_fVrKnobRepeatMs =
+    160.0f; // held-thumbstick repeat interval for knobs/switches (ms). "VrKnobRepeat".
+float g_fVrRayOriginOfs =
+    0.0f; // calibration: shift the ray origin forward along its dir (button units). "VrRayOriginOfs".
 // Artscout - 2026 (VR): fine-align the visible/pick ray. The ray now leaves the index FINGERTIP directly (same
 // transform as the drawn mesh -- VrIndexTip/Dir), so these are just fine-tune: pitch/yaw (deg) tilt the direction,
 // up/right/ofs (button units) nudge the ORIGIN. DEFAULT 0 (ray already on the finger). "VrRayPitch/Yaw/OriginUp/Right".
-float g_fVrRayPitch      = 0.0f;
-float g_fVrRayYaw        = 0.0f;
-float g_fVrRayOriginUp   = 0.0f;
+float g_fVrRayPitch = 0.0f;
+float g_fVrRayYaw = 0.0f;
+float g_fVrRayOriginUp = 0.0f;
 float g_fVrRayOriginRight = 0.0f;
-bool  g_bVrRayFlipH      = true;    // flip the ray's right axis (horizontal). The axis fix is a 180deg turn that
-                                    // inverts left/right; this un-inverts it. Toggle in-headset. "VrRayFlipH".
-bool  g_bVrRayFlipV      = false;   // flip the ray's vertical axis if up/down comes out inverted. "VrRayFlipV".
-float g_fVrRayIpd        = 1.0f;    // stereo disparity scale for the beam/cross (per-eye IPD shift). Negative
-                                    // flips the eye sign; 0 = flat/mono. Tune so the cross sits AT the switch. "VrRayIpd".
+bool g_bVrRayFlipH =
+    true; // flip the ray's right axis (horizontal). The axis fix is a 180deg turn that
+// inverts left/right; this un-inverts it. Toggle in-headset. "VrRayFlipH".
+bool g_bVrRayFlipV =
+    false; // flip the ray's vertical axis if up/down comes out inverted. "VrRayFlipV".
+float g_fVrRayIpd =
+    1.0f; // stereo disparity scale for the beam/cross (per-eye IPD shift). Negative
+// flips the eye sign; 0 = flat/mono. Tune so the cross sits AT the switch. "VrRayIpd".
 // Artscout - 2026 (VR controller model): draw the real controller mesh (Index/Oculus render model, OBJ under
 // art\ckptart\controllers\) instead of the wireframe when a controller is tracked. "VrControllerModel".
-bool  g_bVrControllerModel = true;
+bool g_bVrControllerModel = true;
 // Artscout - 2026 (VR): draw HAND meshes (art\ckptart\controllers\glove_left/right.obj) instead of the
 // controller model. Ready for when the trimmed/split glove OBJs are dropped in -- no rebuild to switch. "VrUseHands".
-bool  g_bVrUseHands        = true;
+bool g_bVrUseHands = true;
 // Artscout - 2026: collapse multi-position rotary switches (MasterArm, RF, MainPower, INS, HUD scales, ...) to
 // ONE hotspot at their centroid and cycle through positions (LMB/thumb-up = next, RMB/thumb-down = prev). Set 0
 // to keep each position as its own clickable spot (old behaviour). "VrSwitchGroups". Restart to apply, no rebuild.
-bool  g_bVrSwitchGroups    = true;
-float g_fVrModelScale      = 0.7f; // controller-mesh size multiplier (metres->cockpit). Default from glove-hand calibration. "VrModelScale".
+bool g_bVrSwitchGroups = true;
+float g_fVrModelScale =
+    0.7f; // controller-mesh size multiplier (metres->cockpit). Default from glove-hand calibration. "VrModelScale".
 // Artscout - 2026 (VR controller model): runtime orientation of the mesh in its own local frame (degrees), so
 // any model (controller/hands) can be aligned to the grip pose WITHOUT a rebuild. "VrModelYaw/Pitch/Roll".
-float g_fVrModelYaw        = 0.0f;
-float g_fVrModelPitch      = 0.0f;
-float g_fVrModelRoll       = 5.0f; // glove-hand calibration default; retune per controller in cfg.
+float g_fVrModelYaw = 0.0f;
+float g_fVrModelPitch = 0.0f;
+float g_fVrModelRoll =
+    5.0f; // glove-hand calibration default; retune per controller in cfg.
 // Artscout - 2026 (VR model look): draw the hand/controller mesh OPAQUE (solid) instead of alpha-blended
 // (see-through). "VrModelOpaque". Cull mode for the single-sided mesh: 0=none (may double), 1=back, 2=front
 // -- flip 1<->2 if the solid hand looks inside-out. "VrModelCull". Both apply live (no rebuild).
-bool  g_bVrModelOpaque     = true;
-float g_fVrModelCull       = 1.0f;
+bool g_bVrModelOpaque = true;
+float g_fVrModelCull = 1.0f;
+// Artscout - 2026 (#11): draw the 26-joint finger-tracking SKELETON overlay (XR_EXT_hand_tracking wireframe bones)
+// on top of the solid hand/controller mesh. OFF by default -- with controllers the solid textured hands are what you
+// want; the skeleton is redundant clutter ("finger tracking нафиг не сдался"). "VrHandSkeleton". Live, no rebuild.
+bool g_bVrHandSkeleton = false;
+// Artscout - 2026 (#11): ENABLE the runtime controller render-model OpenXR extensions (MSFT_controller_model /
+// EXT_render_model / EXT_interaction_render_model + their EXT_uuid dependency). OFF by default -- we draw our OWN
+// hand/controller OBJ meshes, so the runtime glTF models are unused and only risk xrCreateInstance dependency
+// failures on some runtimes. "VrControllerRenderModels". Restart to apply (instance-creation time).
+bool g_bVrControllerRenderModels = false;
 
 // Artscout - 2026 (VR hands): pointing gesture. Squeeze grip -> hand curls to a fist with the index extended
 // and the laser turns on (from the fingertip). g_nVrRayToggle: -1 auto (Touch=hold, Index/Knuckles=toggle
 // because the capacitive force grip is tiring to hold), 0 always hold, 1 always toggle. "VrRayToggle".
-int   g_nVrRayToggle       = -1;
-float g_fVrGripThresh      = 0.5f;   // squeeze value above which the grip counts as engaged. "VrGripThresh".
-float g_fVrClenchSpeed     = 6.0f;   // clench morph speed (units/sec; ~0.17s to full fist). "VrClenchSpeed".
+int g_nVrRayToggle = -1;
+float g_fVrGripThresh =
+    0.5f; // squeeze value above which the grip counts as engaged. "VrGripThresh".
+float g_fVrClenchSpeed =
+    6.0f; // clench morph speed (units/sec; ~0.17s to full fist). "VrClenchSpeed".
 // Index fingertip point + "continue-the-finger" direction in model-local metres (RIGHT hand; left mirrors X),
 // from the offline baker. The laser leaves this point along this direction. Retune only if the mesh changes.
 // "VrIndexTipX/Y/Z", "VrIndexDirX/Y/Z".
-float g_fVrIndexTipX       = 0.0226f;
-float g_fVrIndexTipY       = -0.2301f;
-float g_fVrIndexTipZ       = 0.0537f;
-float g_fVrIndexDirX       = 0.297f;
-float g_fVrIndexDirY       = -0.952f;
-float g_fVrIndexDirZ       = 0.078f;
+float g_fVrIndexTipX = 0.0226f;
+float g_fVrIndexTipY = -0.2301f;
+float g_fVrIndexTipZ = 0.0537f;
+float g_fVrIndexDirX = 0.297f;
+float g_fVrIndexDirY = -0.952f;
+float g_fVrIndexDirZ = 0.078f;
 
 // Artscout - 2026 (#58 VR mouse): SEPARATE clickable-cockpit calibration for PLAIN STEREO (no quad-views).
 // The quad-views constants above were tuned against the FOCUS view's narrow gaze FOV; plain stereo projects
@@ -284,11 +290,14 @@ float g_fVrIndexDirZ       = 0.078f;
 // cursor misses. These *Stereo variants are used only when g_bUseQuadViews is OFF (xrStereo). Defaults equal
 // the quad values -- dial them in plain stereo without disturbing the quad calibration. FFViper.cfg
 // "VrCursorMagnetStereo" / "VrDetectBiasXStereo" / "VrDetectBiasYStereo" / "VrCursorIpdStereo".
-float g_fVrCursorMagnetStereo = 1.0f;   // Artscout - 2026 (#58): stereo's full FOV packs buttons denser than quad's zoom focus -> ~1, not quad's 6
-float g_fVrDetectBiasXStereo  = -245.0f;   // Artscout - 2026 (#58): tuned in-headset for plain stereo (detect was ~2/3 MFD right of the button)
-float g_fVrDetectBiasXStereoDx12 = -180.0f; // Artscout - 2026 (VR DX12): D3D12 stereo cursor maps ~65px differently -> its own detect bias (tuned in-headset). Used on the D3D12 path; D3D11 uses g_fVrDetectBiasXStereo.
-float g_fVrDetectBiasYStereo  = 0.0f;
-float g_fVrCursorIpdStereo    = 1.0f;
+float g_fVrCursorMagnetStereo =
+    1.0f; // Artscout - 2026 (#58): stereo's full FOV packs buttons denser than quad's zoom focus -> ~1, not quad's 6
+float g_fVrDetectBiasXStereo =
+    -245.0f; // Artscout - 2026 (#58): tuned in-headset for plain stereo (detect was ~2/3 MFD right of the button)
+float g_fVrDetectBiasXStereoDx12 =
+    -180.0f; // Artscout - 2026 (VR DX12): D3D12 stereo cursor maps ~65px differently -> its own detect bias (tuned in-headset). Used on the D3D12 path; D3D11 uses g_fVrDetectBiasXStereo.
+float g_fVrDetectBiasYStereo = 0.0f;
+float g_fVrCursorIpdStereo = 1.0f;
 
 // Artscout - 2026 (HUD): display-scale for the bore/override 262mr ASEC circle. Our 3D HUD glass FOV
 // is small (~7.8deg half), so the true-angular 262mr ASEC (R~0.96 units) nearly fills the HUD and
@@ -297,7 +306,8 @@ float g_fVrCursorIpdStereo    = 1.0f;
 // 1.0 = TRUE 262mr angular size (R~0.9). The circle SITS OUTSIDE the airspeed/altitude tapes -- correct,
 // like the real F-16 / BMS ASEC bore reticle (the tapes are meant to be inside the circle). Live: set
 // AsecScale (only shrink if a specific HUD FOV needs it). The reference's fixed 0.6 reticle was too small.
-float g_fAsecScale = 0.85f;   // Artscout - 2026: headset-tuned (was 1.0); NOTE affects flat HUD too (mislhud.cpp), not VR-only
+float g_fAsecScale =
+    0.85f; // Artscout - 2026: headset-tuned (was 1.0); NOTE affects flat HUD too (mislhud.cpp), not VR-only
 
 // Artscout - 2026 (HUD): scale the 3D HUD glass canvas (combiner) around its center -> widens the HUD
 // FOV. Our glass is small (~7.8deg half) so true-angular symbology (262mr ASEC) overflows and the
@@ -305,9 +315,10 @@ float g_fAsecScale = 0.85f;   // Artscout - 2026: headset-tuned (was 1.0); NOTE 
 // FPM/pitch-ladder world-aligned (the HUD half-angle is derived from this canvas). 1.0 = stock glass.
 // Tune via FFViper.cfg "HudCanvasScale" using the desktop mirror; if symbology spills past the combiner
 // frame, the frame (cockpit model) is the limit. ~1.3-1.6 ≈ a 20-25deg F-16 HUD.
-float g_fHudCanvasScale = 0.9f;   // Artscout - 2026: headset-confirmed -- with the stencil aperture clip (Hud3DGlassClip)
-                                  // the HUD no longer needs shrinking to fit, so 0.9 (true-ish FOV) + AsecScale 1.0 are kept
-                                  // and the clip handles the frame. Tune live: set HudCanvasScale / set AsecScale.
+float g_fHudCanvasScale =
+    0.9f; // Artscout - 2026: headset-confirmed -- with the stencil aperture clip (Hud3DGlassClip)
+// the HUD no longer needs shrinking to fit, so 0.9 (true-ish FOV) + AsecScale 1.0 are kept
+// and the clip handles the frame. Tune live: set HudCanvasScale / set AsecScale.
 
 // Artscout - 2026 (VR mirror): copy the rendered eye(s) onto the desktop window so RenderDoc (which
 // hooks the desktop Present, not the OpenXR compositor) can capture what the headset shows. Periphery
@@ -320,8 +331,7 @@ bool g_bXrMirror = true;
 float g_fQuadOffAxisX = 1.0f;
 float g_fQuadOffAxisY = -1.0f;
 
-template<class T>
-class ConfigOption
+template <class T> class ConfigOption
 {
 public:
     char *Name;
@@ -341,7 +351,8 @@ extern "C" int g_nBWCheckDeltaTime;
 //bool g_bEnableCATIIIExtension = false; //MI replaced with g_bRealisticAvionics
 bool g_bWakeTurbulence = true;
 bool g_bDrawWakeTurbulence = false;
-bool g_bWeaponLaunchUsesDrawPointerPos = false; // MLR 2/19/2004 - when weapons are launched, they are launched for
+bool g_bWeaponLaunchUsesDrawPointerPos =
+    false; // MLR 2/19/2004 - when weapons are launched, they are launched for
 // where thier 3d graphics were positioned, this will allow the F-111's
 // weapons to be launched from the right spot ** DOESN'T WORK
 
@@ -370,49 +381,95 @@ bool g_bShowFlaps = false;
 bool g_bLowBwVoice = false;
 float clientbwforupdatesmodifyer = 0.7f;
 float hostbwforupdatesmodifyer = 0.7f;
-int g_nMaxUIRefresh = 16; // 2002-02-23 S.G. To limit the UI refresh rate to prevent from running out of resources because it can't keep up with the icons (ie planes) to display on the map.
-int g_nUnidentifiedInUI = 1; // 2002-02-24 S.G. To limit the UI refresh rate to prevent from running out of resources because it can't keep up with the icons (ie planes) to display on the map.
-float g_fIdentFactor = 0.75f; // 2002-03-07 S.G. So identification is not at full detect range but a factor of it
-bool g_bLimit2DRadarFight = true; // 2002-03-07 S.G. So 2D fights are limited in min altitude and range like their 3D counterpart
-bool g_bAdvancedGroundChooseWeapon = true; // 2002-03-08 S.G. So 3D ground vehicle choose the best weapon based target min/max altitude and min/max range while the original code was just range (max range, not min range)
-bool g_bUseNewCanEnage = true; // 2002-03-11 S.G. SensorFusion and CanEngage will use the 'GetIdentified' code instead of always knowing the combat type of the enemy
-int g_nLowestSkillForGCI = 3; // 2002-03-12 S.G. Externalized the lowest skill that can use GCI
-int g_nAIVisualRetentionTime  = 24 * 1000; // 2002-03-12 S.G. Time before AI looses sight of its target
-int g_nAIVisualRetentionSkill =  2 * 1000; // 2002-03-12 S.G. Time before AI looses sight of its target (skill related)
-float g_fBiasFactorForFlaks = 100000.0f; // 2002-03-12 S.G. Defaults bias for flaks. See guns.cpp
-bool g_bUseSkillForFlaks = true; // 2002-03-12 S.G. If flaks uses the skill of the ground troop or not
-float g_fTracerAccuracyFactor = 0.1f; // 2002-03-12 S.G. For tracers, multiply the dispersion (tracerError) by this value
-bool g_bToggleAAAGunFlag = false; // 2002-03-12 S.G. RP5 have set the AAA flag for NONE AAA guns and have reset it for AAA guns This flag toggle the AAA gun check in the code
-bool g_bUseComplexBVRForPlayerAI = false; // 2002-03-13 S.G. If false, Player's wingman will perform RP5 BVR code instead of the SP2 BVR code
-float g_fFuelBaseProp = 100.0f; // 2002-03-14 S.G. For better fuel consomption tweaking
-float g_fFuelMultProp = 0.008f; // 2002-03-14 S.G. For better fuel consomption tweaking
-float g_fFuelTimeStep = 0.001f; // 2002-03-14 S.G. For better fuel consomption tweaking
-bool g_bFuelUseVtDot = true; // 2002-03-14 S.G. For better fuel consomption tweaking
-float g_fFuelVtClip = 5.0f; // 2002-03-14 S.G. For better fuel consomption tweaking
-float g_fFuelVtDotMult = 5.0f; // 2002-03-14 S.G. For better fuel consomption tweaking
-bool g_bFuelLimitBecauseVtDot = true; // 2002-03-14 S.G. For better fuel consomption tweaking
-float g_fSearchSimTargetFromRangeSqr = (20.0F * NM_TO_FT) * (20.0F * NM_TO_FT); // 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
-bool g_bUseAggresiveIncompleteA2G = true; // 2002-03-22 S.G. If false, AI on incomplete A2G missions will be defensive
-float g_fHotNoseAngle = 50.0f;  // 2002-03-22 S.G. Default angle (in degrees) before considering the target pointing at us
-float g_fMaxMARNoIdA = 10.0f;  // 2002-03-22 ADDED BY S.G. Max Start MAR for this type of aicraft when target is NOT ID'ed, fast
-float g_fMinMARNoId5kA = 5.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 5K
-float g_fMinMARNoId18kA = 12.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 18K
-float g_fMinMARNoId28kA = 17.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 28K
-float g_fMaxMARNoIdB = 5.0f;  // 2002-03-22 ADDED BY S.G. Max Start MAR for this type of aicraft when target is NOT ID'ed, medium
-float g_fMinMARNoId5kB = 3.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 5K
-float g_fMinMARNoId18kB = 5.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 18K
-float g_fMinMARNoId28kB = 8.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 28K
-float g_fMinMARNoIdC = 5.0f;  // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed
-bool g_bOldStackDump = false;  // 2002-04-01 ADDED BY S.G. Also output the stack dump in the old format when generating a crashlog.
-float g_fSSoffsetManeuverPoints1a = 5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
-float g_fSSoffsetManeuverPoints1b = 5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
-float g_fSSoffsetManeuverPoints2a = 4.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
-float g_fSSoffsetManeuverPoints2b = 5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
-float g_fPinceManeuverPoints1a = 5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
-float g_fPinceManeuverPoints1b = 5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
-float g_fPinceManeuverPoints2a = 4.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
-float g_fPinceManeuverPoints2b = 5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
-bool g_bUseDefinedGunDomain = FALSE; // 2002-04-17 ADDED BY S.G. Instead of 'fudging' the weapon domain, if it's set to true, use the weapon domain set in the data file
+int g_nMaxUIRefresh =
+    16; // 2002-02-23 S.G. To limit the UI refresh rate to prevent from running out of resources because it can't keep up with the icons (ie planes) to display on the map.
+int g_nUnidentifiedInUI =
+    1; // 2002-02-24 S.G. To limit the UI refresh rate to prevent from running out of resources because it can't keep up with the icons (ie planes) to display on the map.
+float g_fIdentFactor =
+    0.75f; // 2002-03-07 S.G. So identification is not at full detect range but a factor of it
+bool g_bLimit2DRadarFight =
+    true; // 2002-03-07 S.G. So 2D fights are limited in min altitude and range like their 3D counterpart
+bool g_bAdvancedGroundChooseWeapon =
+    true; // 2002-03-08 S.G. So 3D ground vehicle choose the best weapon based target min/max altitude and min/max range while the original code was just range (max range, not min range)
+bool g_bUseNewCanEnage =
+    true; // 2002-03-11 S.G. SensorFusion and CanEngage will use the 'GetIdentified' code instead of always knowing the combat type of the enemy
+int g_nLowestSkillForGCI =
+    3; // 2002-03-12 S.G. Externalized the lowest skill that can use GCI
+int g_nAIVisualRetentionTime =
+    24 * 1000; // 2002-03-12 S.G. Time before AI looses sight of its target
+int g_nAIVisualRetentionSkill =
+    2 *
+    1000; // 2002-03-12 S.G. Time before AI looses sight of its target (skill related)
+float g_fBiasFactorForFlaks =
+    100000.0f; // 2002-03-12 S.G. Defaults bias for flaks. See guns.cpp
+bool g_bUseSkillForFlaks =
+    true; // 2002-03-12 S.G. If flaks uses the skill of the ground troop or not
+float g_fTracerAccuracyFactor =
+    0.1f; // 2002-03-12 S.G. For tracers, multiply the dispersion (tracerError) by this value
+bool g_bToggleAAAGunFlag =
+    false; // 2002-03-12 S.G. RP5 have set the AAA flag for NONE AAA guns and have reset it for AAA guns This flag toggle the AAA gun check in the code
+bool g_bUseComplexBVRForPlayerAI =
+    false; // 2002-03-13 S.G. If false, Player's wingman will perform RP5 BVR code instead of the SP2 BVR code
+float g_fFuelBaseProp =
+    100.0f; // 2002-03-14 S.G. For better fuel consomption tweaking
+float g_fFuelMultProp =
+    0.008f; // 2002-03-14 S.G. For better fuel consomption tweaking
+float g_fFuelTimeStep =
+    0.001f; // 2002-03-14 S.G. For better fuel consomption tweaking
+bool g_bFuelUseVtDot =
+    true; // 2002-03-14 S.G. For better fuel consomption tweaking
+float g_fFuelVtClip =
+    5.0f; // 2002-03-14 S.G. For better fuel consomption tweaking
+float g_fFuelVtDotMult =
+    5.0f; // 2002-03-14 S.G. For better fuel consomption tweaking
+bool g_bFuelLimitBecauseVtDot =
+    true; // 2002-03-14 S.G. For better fuel consomption tweaking
+float g_fSearchSimTargetFromRangeSqr =
+    (20.0F * NM_TO_FT) *
+    (20.0F *
+     NM_TO_FT); // 2002-03-15 S.G. Will lookup Sim target instead of using the campain target from this range
+bool g_bUseAggresiveIncompleteA2G =
+    true; // 2002-03-22 S.G. If false, AI on incomplete A2G missions will be defensive
+float g_fHotNoseAngle =
+    50.0f; // 2002-03-22 S.G. Default angle (in degrees) before considering the target pointing at us
+float g_fMaxMARNoIdA =
+    10.0f; // 2002-03-22 ADDED BY S.G. Max Start MAR for this type of aicraft when target is NOT ID'ed, fast
+float g_fMinMARNoId5kA =
+    5.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 5K
+float g_fMinMARNoId18kA =
+    12.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 18K
+float g_fMinMARNoId28kA =
+    17.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, fast and below 28K
+float g_fMaxMARNoIdB =
+    5.0f; // 2002-03-22 ADDED BY S.G. Max Start MAR for this type of aicraft when target is NOT ID'ed, medium
+float g_fMinMARNoId5kB =
+    3.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 5K
+float g_fMinMARNoId18kB =
+    5.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 18K
+float g_fMinMARNoId28kB =
+    8.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed, medium and below 28K
+float g_fMinMARNoIdC =
+    5.0f; // 2002-03-22 ADDED BY S.G. MinMAR for this type of aicraft when target is NOT ID'ed
+bool g_bOldStackDump =
+    false; // 2002-04-01 ADDED BY S.G. Also output the stack dump in the old format when generating a crashlog.
+float g_fSSoffsetManeuverPoints1a =
+    5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
+float g_fSSoffsetManeuverPoints1b =
+    5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
+float g_fSSoffsetManeuverPoints2a =
+    4.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
+float g_fSSoffsetManeuverPoints2b =
+    5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitSSOffset code
+float g_fPinceManeuverPoints1a =
+    5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
+float g_fPinceManeuverPoints1b =
+    5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
+float g_fPinceManeuverPoints2a =
+    4.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
+float g_fPinceManeuverPoints2b =
+    5.0f; // 2002-04-07 ADDED BY S.G. Externalize the offset used in the AiInitPince code
+bool g_bUseDefinedGunDomain =
+    FALSE; // 2002-04-17 ADDED BY S.G. Instead of 'fudging' the weapon domain, if it's set to true, use the weapon domain set in the data file
 
 // 2000-11-24 ADDED BY S.G. FOR THE 'new padlock' code
 #define PLockModeNormal 0
@@ -420,7 +477,8 @@ bool g_bUseDefinedGunDomain = FALSE; // 2002-04-17 ADDED BY S.G. Instead of 'fud
 #define PLockModeNoSnap 2
 #define PLockModeBreakLock 4
 #define PLockNoTrees 8
-int g_nPadlockMode = PLockModeNoSnap bitor PLockModeBreakLock bitor PLockNoTrees;
+int g_nPadlockMode =
+    PLockModeNoSnap bitor PLockModeBreakLock bitor PLockNoTrees;
 
 // 2001-08-31 ADDED BY S.G. FOR AIRBASE RELOCATION CHOICE
 #define AirBaseRelocTeamOnly 1
@@ -449,8 +507,9 @@ bool g_bShowMipUsage = false;
 bool g_bUse3dSound = false; // JPO
 //bool g_bUse3dSound = true; //       MLR 2003-11-17 Going to hardcode this on
 bool g_bOldSoundAlg = true; // JPO // MLR 12/7/2003 - renamebled
-int  g_nDynamicVoices = 16; // MLR 1/26/2004 - max # of dynamically allocated voices
-bool g_bSoundSonicBoom = 1;  // MLR 3/16/2004 - Do sonic boom effect
+int g_nDynamicVoices =
+    16; // MLR 1/26/2004 - max # of dynamically allocated voices
+bool g_bSoundSonicBoom = 1; // MLR 3/16/2004 - Do sonic boom effect
 bool g_bMultiEngineSound = 1; // MLR 5/18/2004 - play a sound for each engine?
 
 bool g_bMFDHighContrast = false; // JPO
@@ -461,7 +520,8 @@ bool g_bNewRackData = true; // JPO
 bool g_bBMSRackData = false; // MLR 2/13/2004 -
 bool g_bNewAcmiHud = true; // JPO
 int g_nLowDetailFactor = 0; // JPO - adjustment to the LOD show at low level
-float g_fHUDonlySize = 0.0f; // FRB - % Size increase of HUD-Only view (% = decimal)
+float g_fHUDonlySize =
+    0.0f; // FRB - % Size increase of HUD-Only view (% = decimal)
 
 // Artscout - 2026 (#78): D3D12 static-sampler mip LOD bias. Default 0 -- the terrain shimmer turned out to be
 // geometric (LOD-overlap z-fight), NOT texture minification (census proved tiles are fully mipped), so biasing
@@ -486,6 +546,28 @@ float g_fdwPorthost = 2936;
 
 bool g_bEnableUplink = false;
 char g_strMasterServerName[0x40];
+// Artscout - 2026 (OpenAL): case-insensitive SUBSTRING of the audio output device to open (e.g. "Pimax").
+// Empty = system default (OpenAL Soft follows default-device changes, incl. the headset waking up).
+char g_strSoundDevice[0x80] = "";
+// Artscout - 2026 (VR hands, skeletal): use the XR_EXT_hand_tracking 26-joint skeleton to drive the
+// skinned gloves when the runtime reports live hands (bare-hand tracking); the controller-driven
+// OPEN/POINT morph pair stays as the fallback. SwapHands flips which mesh each tracked hand wears.
+bool g_bVrHandTracking = false; // default OFF -- opt-in (needs a runtime that sends clean hand joints)
+bool g_bVrSkinSwapHands = false;
+// Artscout - 2026 (VR hands diag): dump raw XR joint geometry (finger extension + pinch distances) to
+// OutputDebugString, to tell a runtime-inferred clench pose from a skinning-math bug. "VrHandDump".
+bool g_bVrHandDump = false;
+// Artscout - 2026 (VR hands): wrist-orientation correction (deg) for the residual model<->XR frame twist.
+// yaw = about the palm normal (left/right), pitch = about the knuckle line, roll = about the finger axis.
+// 25 = the value tuned in-headset (right palm-up was ~15deg off; 25 lands the whole hand square).
+// "VrHandYaw/Pitch/Roll".
+float g_fVrHandYaw = 25.0f;
+float g_fVrHandPitch = 0.0f;
+float g_fVrHandRoll = 0.0f;
+// Artscout - 2026 (sensor video, Vulkan): render the TGP/MAV/FLIR sensor scene into the display RTT
+// (object pipelines have an RTT variant now). Default ON -- terrain + objects confirmed anchored in the
+// MFD zone in-headset; D3D12 keeps its own g_bSensorSceneD3D12 gate. Kill switch if a regression shows.
+bool g_bSensorSceneVulkan = true;
 int g_nMasterServerPort = 0;
 char g_strServerName[0x40];
 char g_strServerLocation[0x40];
@@ -494,7 +576,8 @@ char g_strServerAdminEmail[0x40];
 
 char g_strVoiceHostIP[0x40];
 char g_strWorldName[0x40] = {"FFVIPER"};
-char g_strScrollUpFunction[0x40] = "FOVDecrease"; //Wombat778 11-16-2003 swapped FOVIncrease and Decrese.  It was backwards 10-07-2003
+char g_strScrollUpFunction[0x40] =
+    "FOVDecrease"; //Wombat778 11-16-2003 swapped FOVIncrease and Decrese.  It was backwards 10-07-2003
 char g_strScrollDownFunction[0x40] = "FOVIncrease"; //Wombat778 10-07-2003
 char g_strMiddleButtonFunction[0x40] = "FOVDefault"; //Wombat778 10-07-2003
 
@@ -511,18 +594,25 @@ int g_nACMIOptionsPopupLowResX = 500;
 int g_nACMIOptionsPopupLowResY = 500;
 int g_nMaxSimTimeAcceleration = 64; // JB 020315
 bool g_bMPStartRestricted = false; // JB 0203111 Restrict takeoff/ramp options.
-int g_nMPStartTime = 5; // JB 0203111 MP takeoff time if g_bMPStartRestricted enabled.
-int g_nTaxiLaunchTime = 2; // Booster 2004/10/12 Taxi takeoff time option, default 2
-int g_nFFEffectAutoCenter = -1; // JB 020306 Don't stop the centering FF effect (-1 disabled)
-bool g_bMissionACIcons = true; // JB 020211 Load the correct mission icons for each type of aircraft
-float g_fRecoveryAOA = 35.0F; // JB 020125 Specify the max AOA at which you can recover from a deep stall.
-int g_nRNESpeed = 1; // JB 020123 More realistic No Escape DLZ.  Specify higher g_nRNESpeed to lower calculated RNE ranges.
+int g_nMPStartTime =
+    5; // JB 0203111 MP takeoff time if g_bMPStartRestricted enabled.
+int g_nTaxiLaunchTime =
+    2; // Booster 2004/10/12 Taxi takeoff time option, default 2
+int g_nFFEffectAutoCenter =
+    -1; // JB 020306 Don't stop the centering FF effect (-1 disabled)
+bool g_bMissionACIcons =
+    true; // JB 020211 Load the correct mission icons for each type of aircraft
+float g_fRecoveryAOA =
+    35.0F; // JB 020125 Specify the max AOA at which you can recover from a deep stall.
+int g_nRNESpeed =
+    1; // JB 020123 More realistic No Escape DLZ.  Specify higher g_nRNESpeed to lower calculated RNE ranges.
 bool g_bSlowButSafe = false; // JB 020115 Turn on extra ISBad CTD checks
-float g_fCarrierStartTolerance = 20.0f; // JB 020117 How high can an aircraft be off the water to be "on" the carrier.
+float g_fCarrierStartTolerance =
+    20.0f; // JB 020117 How high can an aircraft be off the water to be "on" the carrier.
 bool g_bNewDamageEffects = true;
 bool g_bDisableFunkyChicken = true;
 bool g_bSmartScaling = false; // JB 010112
-bool g_bFloatingBullseye = false;// JB/Codec 010115
+bool g_bFloatingBullseye = false; // JB/Codec 010115
 bool g_bDisableCrashEjectCourtMartials = true; // JB 010118
 bool g_bSmartCombatAP = true; // JB 010224
 //bool g_bVoodoo12Compatible = false; // JB 010330 Disables the cockpit kneemap to prevent CTDs on the Voodoo 1 and 2.
@@ -530,11 +620,13 @@ float g_fDragDilutionFactor = 1.0; // JB 010707
 bool g_bRealisticAttrition = false; // JB 010710
 bool g_bIFFRWR = false; // JB 010727
 int g_nRelocationWait = 3; // JB 010728
-int g_nLoadoutTimeLimit = 120; // JB 010729 Time limit in seconds before takeoff when you can change your loadout.
+int g_nLoadoutTimeLimit =
+    120; // JB 010729 Time limit in seconds before takeoff when you can change your loadout.
 float g_fLatitude = 38.0f; // JB 010804 now set up by the theater
 int g_nYear = 2004; // JB 010804;
 int g_nDay = 135; // JB 010804
-bool g_bSimpleFMUpdates = false; // JB 010805 // These update cause bad AI behaviour, see afsimple.cpp
+bool g_bSimpleFMUpdates =
+    false; // JB 010805 // These update cause bad AI behaviour, see afsimple.cpp
 bool g_b3dDynamicPilotHead = false; // JB 010804
 // JB 010802
 bool g_b3dCockpit = true;
@@ -581,7 +673,8 @@ int g_nMaxVertexSpace = -1; // JPO - graphics option
 int g_nMinTacanChannel = 70; // JPO - tacan variable for other theaters.
 int g_nFlightVisualBonus = 1; // JPO - flight visual detection bonus
 
-int g_nChatterInterval = 5; // FRB  - Interval between certain chatter messages (seconds).  Reduces chatter noise.
+int g_nChatterInterval =
+    5; // FRB  - Interval between certain chatter messages (seconds).  Reduces chatter noise.
 // Cobra - SFX display limits
 int g_nSfxLODCutoff = 800;
 int g_nSfxLODDistCutoff = 6000;
@@ -591,9 +684,12 @@ int g_nPSPurgeInterval = 60000;
 // Cobra - Use old dust trail SFX
 bool g_bOldDustTrail = false; // 1 = use old dust trail (from trail.txt)
 bool g_bHearThunder = true; // Cobra - 1 = Play thunder.wav 0 = no thunder sound
-int g_nPSKillFPS = 0;  // Cobra - Stop PS effects when FPS drops below g_nPSKillFPS
-bool g_bHighSFX = false; // Cobra - Switch between internal high-activity and low-activity PS effects
-bool g_bWaterShader = false; // #12: DEFERRED -- water shimmer in the screen path emphasized
+int g_nPSKillFPS =
+    0; // Cobra - Stop PS effects when FPS drops below g_nPSKillFPS
+bool g_bHighSFX =
+    false; // Cobra - Switch between internal high-activity and low-activity PS effects
+bool g_bWaterShader =
+    false; // #12: DEFERRED -- water shimmer in the screen path emphasized
 // the per-tile texture grid and the near/far LOD seam (see water-shader memory). Off by
 // default; the STATE_WATER/FF_WATER infrastructure is parked for a proper future pass
 // (continuous world coords + unified near/far). Enable with FFViper.cfg "WaterShader 1".
@@ -606,7 +702,7 @@ bool g_bCanopyReflect = true;
 // HUD symbology by the head position so it stays world-aligned (collimated) under 6DOF head movement
 // (TrackIR/VR/bobbing). g_bHudCollimate gates it; g_fHudCollimateScale tunes the strength (1.0 = the
 // original formula). Larger scale exaggerates the parallax shift -- useful to see/verify the effect.
-bool  g_bHudCollimate = true;
+bool g_bHudCollimate = true;
 float g_fHudCollimateScale = 1.0f;
 
 // Artscout - 2026 (VR HUD 3D glass): TRUE optical collimation of the HUD symbology. Instead of the flat
@@ -617,7 +713,8 @@ float g_fHudCollimateScale = 1.0f;
 // contained: enabling it implies the world-frame RTT camera (the #61 depth path), so g_bVrRttWorldCam is
 // NOT required. VR only (per-eye); flat path untouched. Default OFF. FFViper.cfg "Hud3DGlass". The fake
 // 2D collimation is auto-disabled for the HUD when this is on.
-bool g_bHud3DGlass = true;   // Artscout - 2026: headset-confirmed default ON (VR-only, flat path untouched)
+bool g_bHud3DGlass =
+    true; // Artscout - 2026: headset-confirmed default ON (VR-only, flat path untouched)
 // Artscout - 2026 (VR HUD 3D glass): tint of the physical combiner glass plate drawn over the HUD canvas
 // (a faint green semi-transparent quad, so the glass reads as glass). Alpha = visibility; 0 disables the
 // plate (symbology only). FFViper.cfg "Hud3DGlassTint" (alpha). Subtle by default. RGB fixed greenish.
@@ -630,9 +727,22 @@ float g_fHud3DGlassFresnel = 2.5f;
 // HUD canvas. 1.0 = exactly the symbology canvas; >1 grows it toward the real combiner edges. Both the
 // tint AND the clip aperture scale (so growing it never clips useful symbology). FFViper.cfg "Hud3DGlassSize".
 float g_fHud3DGlassSize = 1.15f;
-float g_fHud3DGlassTop = 0.85f;   // Artscout - 2026: #76 scale the glass-plate/aperture TOP half (0..1) so the tint doesn't poke above the HUD frame (bottom is depth-clipped by the ICP)
-bool g_bGpuTerrain = true;        // Artscout - 2026: #78 -- draw terrain as GPU world-space geometry (VS_Object, real depth) instead of the CPU screen-space path. Default ON (override via cfg "set g_bGpuTerrain 0").
-bool g_bSensorSceneD3D12 = true;  // Artscout - 2026: #DX12 A5 -- render the TGP/Maverick/LANTIRN sensor 3D scene (terrain+objects) into the RTT atlas under D3D12. ON: with the #91 terrain batch (per-SRV DrawTerrainMesh) + the sensor radius cap (32 posts) the sensor no longer floods the command list -> no DEVICE_HUNG (confirmed: Maverick picture renders, driver alive). Was OFF (symbology only) while the terrain path was per-chunk. Set 0 to fall back to symbology-only if a specific sensor view ever hangs.
+float g_fHud3DGlassTop =
+    0.85f; // Artscout - 2026: #76 scale the glass-plate/aperture TOP half (0..1) so the tint doesn't poke above the HUD frame (bottom is depth-clipped by the ICP)
+bool g_bGpuTerrain =
+    true; // Artscout - 2026: #78 -- draw terrain as GPU world-space geometry (VS_Object, real depth) instead of the CPU screen-space path. Default ON (override via cfg "set g_bGpuTerrain 0").
+bool g_bTerrainMeshShader =
+    true; // Artscout - 2026: #78 -- build the terrain grid in a mesh shader from the GPU clipmap instead of on the CPU. Needs SM6.5/MeshShaderTier1 (D3D12) or VK_EXT_mesh_shader (Vulkan); falls back to the CPU path when absent. Default ON (override via cfg "set g_bTerrainMeshShader 0").
+int g_nTileActivateMeshPerFrame =
+    24; // Artscout - 2026: #78 -- tile activations per frame for the MESH terrain path. Its own budget because the mesh path costs one DispatchMesh no matter how many tiles are live, so the per-tile draw calls that forced the legacy budget (3) are gone; too low and posts keep the "no tile" answer for whole re-scan cycles (brown underlay).
+bool g_bTerrainMeshDebugTint =
+    false; // Artscout - 2026: #78 -- flat per-LOD tint on the mesh terrain, bypassing tiles and lighting. Tells "no geometry" apart from "geometry drawn black": if the tint shows, the grid is there and the problem is the texture/light path.
+bool g_bVrWindowsCursor =
+    true; // Artscout - 2026: draw a copy of the LIVE Windows cursor (captured from the OS shape) instead of the theater's cursor bitmap. The OS never composites its cursor into the headset, so VR showed the crosshair; 0 = keep the old bitmap.
+bool g_bTerrainMeshCull =
+    false; // Artscout - 2026: #78 -- back-face cull the mesh-shader terrain. OFF until the winding is confirmed on a live scene (a wrong guess hides the ground entirely); the PSO reads this at creation, so restart after changing it.
+bool g_bSensorSceneD3D12 =
+    true; // Artscout - 2026: #DX12 A5 -- render the TGP/Maverick/LANTIRN sensor 3D scene (terrain+objects) into the RTT atlas under D3D12. ON: with the #91 terrain batch (per-SRV DrawTerrainMesh) + the sensor radius cap (32 posts) the sensor no longer floods the command list -> no DEVICE_HUNG (confirmed: Maverick picture renders, driver alive). Was OFF (symbology only) while the terrain path was per-chunk. Set 0 to fall back to symbology-only if a specific sensor view ever hangs.
 // Artscout - 2026: #78 -- GPU terrain LOD-seam mode. TRUE = single-layer "connector" tiling (the DX7 approach):
 // each LOD occupies an EXACT integer post ring, its outer edge decimated onto the coarse (LOD+1) posts via the
 // geomorph, so fine and coarse meet on ONE shared surface -> no LOD-overlap double-layer -> no z-fight -> no
@@ -645,8 +755,10 @@ bool g_bTerrainConnectors = true;
 // (exactly the "look up on the runway" case) and is ~0 head-on / on open terrain. Const is a flat add. Both are
 // ADDED on top of the per-LOD seam bias (finer LOD still wins the seam). Tune live, then bake. Too much ->
 // distant terrain can sink behind the horizon; too little -> runway still eaten. "GpuTerrainSlopeBias/DepthBias".
-float g_fGpuTerrainSlopeBias = 4.0f;    // Artscout - 2026: default 4 -- reversed-Z slope-scaled bias on the DX12 terrain PSO (bias==2) so grazing-angle terrain sinks below coplanar objects/runway and stops the see-through z-fight. Override via cfg.
-float g_fGpuTerrainDepthBias = 0.0f;    // reversed-Z: 0 base terrain bias (was 3000 for standard-Z D24). Object rasterizer (+bias toward camera) keeps ground objects above the terrain.
+float g_fGpuTerrainSlopeBias =
+    4.0f; // Artscout - 2026: default 4 -- reversed-Z slope-scaled bias on the DX12 terrain PSO (bias==2) so grazing-angle terrain sinks below coplanar objects/runway and stops the see-through z-fight. Override via cfg.
+float g_fGpuTerrainDepthBias =
+    0.0f; // reversed-Z: 0 base terrain bias (was 3000 for standard-Z D24). Object rasterizer (+bias toward camera) keeps ground objects above the terrain.
 // Artscout - 2026 (VR HUD 3D glass): clip the collimated HUD to the combiner aperture (depthTest -- the
 // cockpit structure nearer than the glass occludes the symbology, so it no longer shows "everywhere").
 // Default ON; set 0 if depth z-fighting looks worse than the bleed. FFViper.cfg "Hud3DGlassClip".
@@ -661,12 +773,14 @@ bool g_bClipCursorWindowed = true;
 // so it sits ON the physical RWR scope instead of floating in front of it. The 3Dckpit.dat RWR canvas
 // depth doesn't match the BSP scope; positive values move the symbology deeper (away from the eye). Tune
 // in the headset, then bake the right value here. FFViper.cfg "VrRwrFwd".
-float g_fVrRwrFwd = 1.4f; // Artscout - 2026 (VR): baked -- RWR symbology sits on the scope at 1.4
+float g_fVrRwrFwd =
+    1.4f; // Artscout - 2026 (VR): baked -- RWR symbology sits on the scope at 1.4
 // Artscout - 2026 (VR): cannon tracer streak-length multiplier (of velocity*frameTime). The flat path uses
 // the long #31 "DCS-style" streak (g_fTracerStreak 2.5); in VR's wide FOV + stereo depth that long streak
 // reads as a giant laser beam, so VR uses a much shorter streak. FFViper.cfg "TracerStreak" / "VrTracerStreak".
 float g_fTracerStreak = 2.5f;
-float g_fVrTracerStreak = 1.0f;   // Artscout - 2026 (VR): middle streak length (between the short 0.5 and the long flat 2.5)
+float g_fVrTracerStreak =
+    1.0f; // Artscout - 2026 (VR): middle streak length (between the short 0.5 and the long flat 2.5)
 // Artscout - 2026 (VR): cannon tracer brightness multiplier in the headset only (flat path untouched). Tracers
 // were either the bright glow-quad or, once foveation settled, a dim point/line; this holds them at a single
 // MIDDLE brightness. FFViper.cfg "VrTracerBright" (0..1).
@@ -677,29 +791,35 @@ float g_fVrTracerBright = 0.6f;
 float g_fVrMenuScale = 0.7f;
 bool g_bAllHaveIFF = false; // Cobra - Give all a/c IFF interrogator
 bool g_bAnimPilotHead = true; // Cobra - Animate the pilot's head
-float g_fPilotActInterval = 0.5f; // Cobra - Pilot animation act interval (minutes)
-float g_fPilotHeadMoveRate = 50.0f; // Cobra - Pilot animation head move rate (deg/sec)
-bool g_bUseRC135 = false; // Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
+float g_fPilotActInterval =
+    0.5f; // Cobra - Pilot animation act interval (minutes)
+float g_fPilotHeadMoveRate =
+    50.0f; // Cobra - Pilot animation head move rate (deg/sec)
+bool g_bUseRC135 =
+    false; // Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
 bool g_bFFDBC = false; // FF DB Control
 bool g_bCATIIIDefault = false;
-bool g_bRealisticAvionics = true; // M.N. now changed by UI, Avionics "Realistic" = true, "Enhanced" = false
+bool g_bRealisticAvionics =
+    true; // M.N. now changed by UI, Avionics "Realistic" = true, "Enhanced" = false
 bool g_bIFlyMirage = false; //MI support for a possible new mirage
 bool g_bNoMFDsIn1View = false;
 bool g_bGreyScaleMFD = false;
 bool g_bGreyMFD = true;
-bool g_bIFF = true;//Cobra 11/20/04
+bool g_bIFF = true; //Cobra 11/20/04
 bool g_bINS = true;
 bool g_bNoRPMOnHud = true;
-bool g_bNoPadlockBoxes = false; //MI 18/01/02 removes the box around padlocked objects
-bool g_bFallingHeadingTape = false; //28/02/02 let's the heading tape fall off of the hud, for those who want it.
+bool g_bNoPadlockBoxes =
+    false; //MI 18/01/02 removes the box around padlocked objects
+bool g_bFallingHeadingTape =
+    false; //28/02/02 let's the heading tape fall off of the hud, for those who want it.
 bool g_bTFRFixes = true;
 bool g_bCalibrateTFR_PitchCtrl = false;
 bool g_bLantDebug = false;
 bool g_bNewPitchLadder = true;
 float g_fGroundImpactMod = 0.0F; // Grndfcc groundZ modification from S.G. / RP5
-bool  g_bAGRadarFixes = true;
+bool g_bAGRadarFixes = true;
 float g_fGMTMinSpeed = 3.0F; // min Vt to be displayed on GMT radar
-float g_fGMTMaxSpeed = 100.0F;   // max Vt to be displayed on GMT radar
+float g_fGMTMaxSpeed = 100.0F; // max Vt to be displayed on GMT radar
 float g_fReconCameraHalfFOV = 8.4F;
 float g_fReconCameraOffset = -8.0F;
 float g_fBombTimeStep = 0.05F; //original 0.25F;
@@ -707,25 +827,32 @@ bool g_bBombNumLoopOnly = true;
 float g_fHighDragGravFactor = 0.65F;
 bool g_bTO_LDG_LightFix = true;
 //MI
-bool g_bNewFm = true;//me123 new flight model
-bool g_bAIRefuelInComplexAF = false; // 2002-02-20 ADDED BY S.G. Test to see if the AI can refuel in complex AF
+bool g_bNewFm = true; //me123 new flight model
+bool g_bAIRefuelInComplexAF =
+    false; // 2002-02-20 ADDED BY S.G. Test to see if the AI can refuel in complex AF
 
 //M.N.
-float g_fFormationBurnerDistance = 10.0F; // M.N. 2001-10-29 - allow burner distance to lead when not in formation
+float g_fFormationBurnerDistance =
+    10.0F; // M.N. 2001-10-29 - allow burner distance to lead when not in formation
 //float g_fHitChanceAir = 3.5F; // Only added to test out the best value. 6 seems to high (CampLIB/unit.cpp)
 //float g_fHitChanceGround = 2.0F; // moved into Falcon4.aii in campaign\save folder
 bool g_bHiResUI = true; // false = 800x600, true = 1024x768
-bool g_bAWACSFuel = false; // for debug, shows fuel of flight in UI when AWACSSupport = true
+bool g_bAWACSFuel =
+    false; // for debug, shows fuel of flight in UI when AWACSSupport = true
 //bool g_bShowManeuverLabels = true; // for debug, shows currently performed BVR/WVR maneuver in SIM
-bool g_bFullScreenNVG = true; // a NVG makes tunnel vision, but a pilot can turn around his head...
-bool g_bLogUiErrors = true; // debug UI (#18: temporarily on -- the .scf parser log to ui95err.log)
+bool g_bFullScreenNVG =
+    true; // a NVG makes tunnel vision, but a pilot can turn around his head...
+bool g_bLogUiErrors =
+    true; // debug UI (#18: temporarily on -- the .scf parser log to ui95err.log)
 bool g_bLoadoutSquadStoreResupply = true; // code checked bitand working
-bool g_bDisplayTrees = false; // if true, loads falcon4tree.fed/ocd instead of falcon4.fed/ocd. If tree version not available, loads falcon4.fed/ocd
+bool g_bDisplayTrees =
+    false; // if true, loads falcon4tree.fed/ocd instead of falcon4.fed/ocd. If tree version not available, loads falcon4.fed/ocd
 bool g_bRequestHelp = true; // enable RequestHelp in DLOGIC.cpp
 bool g_bLightsKC135 = true; // once we have the KC-135 with director lights...
 float g_fPadlockBreakDistance = 6.0F; // nm
 bool g_bOldSamActivity = false; // for switching 3D sams also by 2D code
-bool g_bFireOntheMove = false; // FR - SAMs can fire while moving (testing switch)
+bool g_bFireOntheMove =
+    false; // FR - SAMs can fire while moving (testing switch)
 // better keyboard  control support
 float g_fAFRudderRight = 1.5f;
 float g_fAFRudderLeft = 1.5f;
@@ -738,140 +865,237 @@ float g_fAFElevatorUp = 3.0f;
 float g_frollStickOffset = 0.0f;
 float g_fpitchStickOffset = 0.9f;
 float g_frudderOffset = 0.9f;
-bool g_bRollLinkedNWSRudder = true; // ASSOCIATOR 30/11/03: Controls whether the Rudder and NWS are linked to the roll input on the ground when you don't have a Rudder control device
-bool g_bEnableGRCursorBullseye = false; // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
+bool g_bRollLinkedNWSRudder =
+    true; // ASSOCIATOR 30/11/03: Controls whether the Rudder and NWS are linked to the roll input on the ground when you don't have a Rudder control device
+bool g_bEnableGRCursorBullseye =
+    false; // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
 // MD -- 20040808: disabling this one -- see comments on why in fccmain.cpp
-bool g_bEnableFCCSubNavCycle = false; // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
+bool g_bEnableFCCSubNavCycle =
+    false; // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
 bool g_bDisableCommsBorder = false; // ASSO: disable the radio comms menu border
 bool g_bEcmOnHud = false; // ASSO:
 bool g_bBrakeOnHud = false; // ASSO:
 bool g_bGearOnHud = false; // ASSO:
 
-bool g_bAddACSizeVisual = true; // adds drawpointer radius value to eyeball GetSignature()
+bool g_bAddACSizeVisual =
+    true; // adds drawpointer radius value to eyeball GetSignature()
 float g_fVisualNormalizeFactor = 40.0F; // 40.0F = F-16 drawpointer radius
 //bool g_bShowFuelLabel = false; // for debugging fuel consumption in 3D replaced by label debug stuff
 bool g_bHelosReloc = true; // A.S. relocate helo squadrons faster
 bool g_bNewPadlock = true;
 int g_nlookAroundWaterTiles = 2; // we've 2 tile bridges, so use "2" here
-float g_fPullupTime = 0.2f; // Cobra - pull up for 0.2 seconds before reevaluating
-float g_fGALookAheadTime = 10.f; // Cobra - Look ahead deltaX-deltaY times 10.f for higher ground to avoid
-int g_nCriticalPullup = 3; // Cobra - <= g_fGALookAheadTime tick full pStick pullup
-float g_fAIMinWPAlt = 200.0F; // Cobra - Minimum alt AI will fly at while flying WP Nav
+float g_fPullupTime =
+    0.2f; // Cobra - pull up for 0.2 seconds before reevaluating
+float g_fGALookAheadTime =
+    10.f; // Cobra - Look ahead deltaX-deltaY times 10.f for higher ground to avoid
+int g_nCriticalPullup =
+    3; // Cobra - <= g_fGALookAheadTime tick full pStick pullup
+float g_fAIMinWPAlt =
+    200.0F; // Cobra - Minimum alt AI will fly at while flying WP Nav
 float g_fAIMinAlt = 200.0F; // Cobra - Minimum alt AI will fly at
-float g_fGApStickFac = 0.25F; // Cobra - Smooth out Ground Avoidance pitch (pStick * g_fGApStickFac) g_fAIHarmMaxRange
+float g_fGApStickFac =
+    0.25F; // Cobra - Smooth out Ground Avoidance pitch (pStick * g_fGApStickFac) g_fAIHarmMaxRange
 float g_fAIHarmMaxRange = 50.0F; // Cobra - Limit AI Harm max firing range (NM).
 float g_fAIJSOWMaxRange = 30.0F; // Cobra - Limit AI Harm max firing range (NM).
-float g_fRocketPitchFactor = -0.5F; // Cobra - A/C fine pitch adjustment (deg) to correct rocket hit location
-float g_fRocketPitchCorr = 1.5F; // Cobra - A/C pitch correction (deg) to correct rocket hit location
+float g_fRocketPitchFactor =
+    -0.5F; // Cobra - A/C fine pitch adjustment (deg) to correct rocket hit location
+float g_fRocketPitchCorr =
+    1.5F; // Cobra - A/C pitch correction (deg) to correct rocket hit location
 float g_fAGFlyoutRange = 8.0F; // Cobra - Distance (NM) AI flyout after A2G pass
-float g_fAGSlowFlyoutRange = 4.0f; // Cobra - Distance (NM) slow-mover AI (e..g., A-10s) flyout after A2G pass
-float g_fAGSlowMoverSpeed = 270.0f; // Cobra - Max A2G attack speed (Knots) used to identify slow-movers (e..g., A-10s)
+float g_fAGSlowFlyoutRange =
+    4.0f; // Cobra - Distance (NM) slow-mover AI (e..g., A-10s) flyout after A2G pass
+float g_fAGSlowMoverSpeed =
+    270.0f; // Cobra - Max A2G attack speed (Knots) used to identify slow-movers (e..g., A-10s)
 float g_fAIRefuelRange = 10.0F; // range to the tanker at which AI asks for fuel
 bool g_bNewRefuelHelp = true; // 2002-02-28 more refuel help for the player
-bool g_bOtherGroundCheck = false; // try the old algorithm together with the new pullup timer
+bool g_bOtherGroundCheck =
+    false; // try the old algorithm together with the new pullup timer
 bool g_bAIGloc = false; // turns on/off AI GLoc prediction
-float g_fAIDropStoreLauncherRange = 10.0F; // if launcher is outside 10 nm, don't drop stores
-int g_nAirbaseCheck = 30; // each x seconds check distance to closest airbase at bingo states, RTB at fumes
+float g_fAIDropStoreLauncherRange =
+    10.0F; // if launcher is outside 10 nm, don't drop stores
+int g_nAirbaseCheck =
+    30; // each x seconds check distance to closest airbase at bingo states, RTB at fumes
 bool g_bUseTankerTrack = true; // tanker flies track box 60 * 25 nm
-float g_fTankerRStick = 0.2f; // RStick in wingmnvers.cpp in SimpleTrackTanker (to finetune turning rate)
-float g_fTankerPStick = 0.01f; // PStick in wingmnvers.cpp in SimpleTrackTanker (to finetune turning rate)
-float g_fTankerTrackFactor = 0.5f; // adds a distance in nm in front of the tanker track points if we need to start turn earlier
-float g_fTankerHeadsupDistance = 2.5f; // this is the distance to trackpoint when "Heads up, tanker is entering turn" is called out
-float g_fTankerBackupDistance = 3.0f; // this is the "backup turn distance" to keep the tanker from circling a trackpoint
-float g_fHeadingStabilizeFactor = 0.004f; // this is the heading difference to the trackpoint at which rStick is set to zero to stabalize the tanker in leveled flight
+float g_fTankerRStick =
+    0.2f; // RStick in wingmnvers.cpp in SimpleTrackTanker (to finetune turning rate)
+float g_fTankerPStick =
+    0.01f; // PStick in wingmnvers.cpp in SimpleTrackTanker (to finetune turning rate)
+float g_fTankerTrackFactor =
+    0.5f; // adds a distance in nm in front of the tanker track points if we need to start turn earlier
+float g_fTankerHeadsupDistance =
+    2.5f; // this is the distance to trackpoint when "Heads up, tanker is entering turn" is called out
+float g_fTankerBackupDistance =
+    3.0f; // this is the "backup turn distance" to keep the tanker from circling a trackpoint
+float g_fHeadingStabilizeFactor =
+    0.004f; // this is the heading difference to the trackpoint at which rStick is set to zero to stabalize the tanker in leveled flight
 float g_fAIRefuelSpeed = 1.0f; // If we want to speed up AI refueling later
-float g_fClimbRatio = 0.3f; // Used in Camptask\Mission.cpp for fixing too steep climbs
-float g_fNukeStrengthFactor = 0.2f; // modifier for proximity damage (Bombmain.cpp)
-float g_fNukeDamageMod = 10000.0f; // range damage modifier in Bombmain.cpp for nukes
-float g_fNukeDamageRadius = 10.0f; // radius of proximity damage for objectives in nm
-int g_nNoWPRefuelNeeded = 2000; // amount of needed fuel which doesn't trigger tanker WP creation
+float g_fClimbRatio =
+    0.3f; // Used in Camptask\Mission.cpp for fixing too steep climbs
+float g_fNukeStrengthFactor =
+    0.2f; // modifier for proximity damage (Bombmain.cpp)
+float g_fNukeDamageMod =
+    10000.0f; // range damage modifier in Bombmain.cpp for nukes
+float g_fNukeDamageRadius =
+    10.0f; // radius of proximity damage for objectives in nm
+int g_nNoWPRefuelNeeded =
+    2000; // amount of needed fuel which doesn't trigger tanker WP creation
 bool g_bAddIngressWP = true; // add ingress waypoint if needed
 bool g_bTankerWaypoints = true; // add tanker waypoints if needed
-bool g_bPutAIToBoom = true; // hack: put AI sticking to the boom when close to it
-float g_fWaypointBurnerDelta = 700.0f; // burnerdelta for WaypointMode and WingyMode
-int g_nSkipWaypointTime = 30000; // time in milliseconds added to waypoint departure time at which flight switches to next waypoint
+bool g_bPutAIToBoom =
+    true; // hack: put AI sticking to the boom when close to it
+float g_fWaypointBurnerDelta =
+    700.0f; // burnerdelta for WaypointMode and WingyMode
+int g_nSkipWaypointTime =
+    30000; // time in milliseconds added to waypoint departure time at which flight switches to next waypoint
 bool g_bLookCloserFix = true; // fixes look closer view through the cockpit
-float g_fMavEXPLevel = 3.0f; // Wombat778 9-28-03 Sets the Maverick EXP zoom level to 3 degrees
-float g_fMavFOVLevel = 6.0f; // Wombat778 9-28-03 Sets the Maverick FOV Zoom level to 6 degrees
-bool g_bAnyWaypointTask = true; // Wombat778 9-27-03 allows selection of any task to any waypoint
-bool g_bFFCenterFix = false; // Wombat778 9-29-03 causes FF sticks to retain standard constant centering force
-bool g_bCockpitAutoScale = true; // Wombat778 10-06-03 allows the cockpit to auto scale
-float g_fMouseLookSensitivity = 0.5f; // Wombat778 10-08-03 Sets the new Mouselook sensitivity to level to 0.5 ( 1 was too fast)
-bool g_b3DClickableCockpitDebug = false;// Wombat778 10-10-03 Sets debug mode to true for the clickable cockpit (shows button locations);
-bool g_b3DRTTCockpitDebug = false;// Wombat778 10-10-03 Sets debug mode to true for the clickable cockpit (shows button locations);
-bool g_b3DClickableCursorChange = true;// Wombat778 10-15-03 When enabled, causes the 3d cockpit mouse cursor to change color over a button. Perf impact.
-bool g_bDEDSpacingFix = true; // Wombat778 12-12-2003 changed to true 10-17-03 Enables Aeyes DED Spacing fix for high resolutions
-int g_nForceCockpitResolution = 0; // Wombat778 4-02-04 Simplified method of forcing the cockpit resolution.  Just put in 640, 800, 1024, 1280 or 1600. 0 Disables
-int g_n3DHeadPanRange = 0; // Wombat778 2-21-04 split expandedheadrange into two separate variables 10-23-03 Increases the range of tilt in the 3d cockpit, and takes FOV into account
-int g_n3DHeadTiltRange = 1; // Wombat778 2-21-04 split expandedheadrange into two separate variables 10-23-03 Increases the range of tilt in the 3d cockpit, and takes FOV into account
-bool g_bReconLatLong = true; // Wombat778 11-3-03 Displays the Latitude and Longitude in the recon view
-bool g_bRatioHack = true; // Wombat778 11-4-03 Enables the 1.25 ratio black box (should always be enabled but added option in case of a 1280x1024 native pit)
-bool g_bPrecisionWaypoints = false; // Wombat778 11-5-03 Allow waypoints to be placed with greater precision.  Needs testing, so disabled by default.
-bool g_bSmallerBullseye = false; // Wombat778 11-12-03 Enable a smaller, more realistic bullseye.  May be too small at 1024 resolution, so defaults to off
-bool g_bRealisticMavTime = false; // JPG 7 Dec 03 - Enables realistic Maverick missile gyro spool up time of 3 minutes instead of 5 seconds
-bool g_bnewAMRAAMdlz = false; // JPG 3 Apr 03 - Enables the new AMRAAM DLZ w/ Raero, Ropt, RPI, Fpole/Apole, etc
-bool g_bMLUM2TAinHUD = false; // JPG 4 Oct 04 - Enables the MLU M2 tape feature of showing the (valid Air-to-air) target's altitude in the HUD (in the previous ALOW field below the RALT box), moves the AL #### box up above the altitude scale
-float g_fHSDSymbolSize = 0.05f; // Wombat778 11-13-03 Allows manual setting of the HSD Symbol size. Default is 0.05f
-bool g_bAutoScaleFonts = true; // Wombat778 12-10-03 When set to true, cockpit fonts will be automatically increased one step at 1600.
-int g_n6DOFTIR = 0; // Cobra - 0 = TIR Yaw, Pitch and Roll  1 = TIR Yaw, Pitch, Roll, X, Y Z  2 = TIR Yaw, Pitch, Roll and FOV zoom
-float g_fTIRMinimumFOV = 5.0f; // Cobra - Sets the minimum allowed TIR FOV (forward) to 5 degrees
-float g_fTIRMaximumFOV = 100.0f; // Cobra - Sets the maximum allowed TIR FOV (back) to 100 degrees
-float g_fMinimumFOV = 5.0f; // Wombat778 1-15-04 Sets the minimum allowed FOV to 5 degrees
-float g_fMaximumFOV = 100.0f; // Wombat778 1-15-03 changed from 80.0 to 100.0 10-11-03 Sets the maximum allowed FOV to 80 degrees
-float g_fDefaultFOV = 65.0f; // Wombat778 10-31-03 Sets the default FOV to 60 degrees -- Cobra - Changed to 65 for 3D pit default
-float g_fFOVIncrement = 5.0f; // Wombat778 9-27-03 Sets FOV increment to 5 degrees
-float g_fNarrowFOV = 20.0f; // Wombat778 2-20-04 Sets the FOV of the "look closer" command
-float g_fWideviewFOV = 0.0f; // Wombat778 2-20-04 Sets the FOV of the wide view cockpit.  When 0, auto switching is disabled.
-float g_fMeanTimeBetweenFailures = 0.0f;// Wombat778 2-24-04 Sets the MTBF. If nonzero, this will override the setting in the aircraft dat file.
-bool g_bEnableRandomFailures = false; // Wombat778 2-24-04 Enables random failures.  If set to 1, the MeanTimeBetweenFailures value in either the ac.dat or g_fMeanTimeBetweenFailures will be used
-bool g_b2DPitWingFOVFix = true; // Wombat778 2-25-04 Makes the 3d wings/ordinance in the 2d pit exempt from FOV changes. This prevents the wings from becoming "disembodied" from the plane
-float g_fJDAMLift = 31.9f; // Wombat778 3-12-04 Sets the amount of "lift" that JSOW's have.  This will increase their range.
+float g_fMavEXPLevel =
+    3.0f; // Wombat778 9-28-03 Sets the Maverick EXP zoom level to 3 degrees
+float g_fMavFOVLevel =
+    6.0f; // Wombat778 9-28-03 Sets the Maverick FOV Zoom level to 6 degrees
+bool g_bAnyWaypointTask =
+    true; // Wombat778 9-27-03 allows selection of any task to any waypoint
+bool g_bFFCenterFix =
+    false; // Wombat778 9-29-03 causes FF sticks to retain standard constant centering force
+bool g_bCockpitAutoScale =
+    true; // Wombat778 10-06-03 allows the cockpit to auto scale
+float g_fMouseLookSensitivity =
+    0.5f; // Wombat778 10-08-03 Sets the new Mouselook sensitivity to level to 0.5 ( 1 was too fast)
+bool g_b3DClickableCockpitDebug =
+    false; // Wombat778 10-10-03 Sets debug mode to true for the clickable cockpit (shows button locations);
+bool g_b3DRTTCockpitDebug =
+    false; // Wombat778 10-10-03 Sets debug mode to true for the clickable cockpit (shows button locations);
+bool g_b3DClickableCursorChange =
+    true; // Wombat778 10-15-03 When enabled, causes the 3d cockpit mouse cursor to change color over a button. Perf impact.
+bool g_bDEDSpacingFix =
+    true; // Wombat778 12-12-2003 changed to true 10-17-03 Enables Aeyes DED Spacing fix for high resolutions
+int g_nForceCockpitResolution =
+    0; // Wombat778 4-02-04 Simplified method of forcing the cockpit resolution.  Just put in 640, 800, 1024, 1280 or 1600. 0 Disables
+int g_n3DHeadPanRange =
+    0; // Wombat778 2-21-04 split expandedheadrange into two separate variables 10-23-03 Increases the range of tilt in the 3d cockpit, and takes FOV into account
+int g_n3DHeadTiltRange =
+    1; // Wombat778 2-21-04 split expandedheadrange into two separate variables 10-23-03 Increases the range of tilt in the 3d cockpit, and takes FOV into account
+bool g_bReconLatLong =
+    true; // Wombat778 11-3-03 Displays the Latitude and Longitude in the recon view
+bool g_bRatioHack =
+    true; // Wombat778 11-4-03 Enables the 1.25 ratio black box (should always be enabled but added option in case of a 1280x1024 native pit)
+bool g_bPrecisionWaypoints =
+    false; // Wombat778 11-5-03 Allow waypoints to be placed with greater precision.  Needs testing, so disabled by default.
+bool g_bSmallerBullseye =
+    false; // Wombat778 11-12-03 Enable a smaller, more realistic bullseye.  May be too small at 1024 resolution, so defaults to off
+bool g_bRealisticMavTime =
+    false; // JPG 7 Dec 03 - Enables realistic Maverick missile gyro spool up time of 3 minutes instead of 5 seconds
+bool g_bnewAMRAAMdlz =
+    false; // JPG 3 Apr 03 - Enables the new AMRAAM DLZ w/ Raero, Ropt, RPI, Fpole/Apole, etc
+bool g_bMLUM2TAinHUD =
+    false; // JPG 4 Oct 04 - Enables the MLU M2 tape feature of showing the (valid Air-to-air) target's altitude in the HUD (in the previous ALOW field below the RALT box), moves the AL #### box up above the altitude scale
+float g_fHSDSymbolSize =
+    0.05f; // Wombat778 11-13-03 Allows manual setting of the HSD Symbol size. Default is 0.05f
+bool g_bAutoScaleFonts =
+    true; // Wombat778 12-10-03 When set to true, cockpit fonts will be automatically increased one step at 1600.
+int g_n6DOFTIR =
+    0; // Cobra - 0 = TIR Yaw, Pitch and Roll  1 = TIR Yaw, Pitch, Roll, X, Y Z  2 = TIR Yaw, Pitch, Roll and FOV zoom
+float g_fTIRMinimumFOV =
+    5.0f; // Cobra - Sets the minimum allowed TIR FOV (forward) to 5 degrees
+float g_fTIRMaximumFOV =
+    100.0f; // Cobra - Sets the maximum allowed TIR FOV (back) to 100 degrees
+float g_fMinimumFOV =
+    5.0f; // Wombat778 1-15-04 Sets the minimum allowed FOV to 5 degrees
+float g_fMaximumFOV =
+    100.0f; // Wombat778 1-15-03 changed from 80.0 to 100.0 10-11-03 Sets the maximum allowed FOV to 80 degrees
+float g_fDefaultFOV =
+    65.0f; // Wombat778 10-31-03 Sets the default FOV to 60 degrees -- Cobra - Changed to 65 for 3D pit default
+float g_fFOVIncrement =
+    5.0f; // Wombat778 9-27-03 Sets FOV increment to 5 degrees
+float g_fNarrowFOV =
+    20.0f; // Wombat778 2-20-04 Sets the FOV of the "look closer" command
+float g_fWideviewFOV =
+    0.0f; // Wombat778 2-20-04 Sets the FOV of the wide view cockpit.  When 0, auto switching is disabled.
+float g_fMeanTimeBetweenFailures =
+    0.0f; // Wombat778 2-24-04 Sets the MTBF. If nonzero, this will override the setting in the aircraft dat file.
+bool g_bEnableRandomFailures =
+    false; // Wombat778 2-24-04 Enables random failures.  If set to 1, the MeanTimeBetweenFailures value in either the ac.dat or g_fMeanTimeBetweenFailures will be used
+bool g_b2DPitWingFOVFix =
+    true; // Wombat778 2-25-04 Makes the 3d wings/ordinance in the 2d pit exempt from FOV changes. This prevents the wings from becoming "disembodied" from the plane
+float g_fJDAMLift =
+    31.9f; // Wombat778 3-12-04 Sets the amount of "lift" that JSOW's have.  This will increase their range.
 float g_fAIJSOWmaxRange = 40.0f; // Cobra - Sets the maximum JSOW range (NM).
-bool g_bOldFontTexelFix = false; // Wombat778 4-01-04 Adds the old texel alignment font fix for cards that dont work with the proper method
-int g_nShow2DPitErrors = 0; // Wombat778 3-23-04 When false, all error message boxes about 2d pit errors will be supressed.  When 1, only critical issues will be shown. When 2, all errors will be shown. Errors only show in windowed mode.
-bool g_bFilter2DPit = true; // Wombat778 3-30-04 Enable filtering in the 2D cockpit.  Improves smoothness
-int g_nNewFPSCounter = 1; // Wombat778 3-24-04 Use accurate FPS counter that counts number of frames per time unit. When 0, old FPS counter is used. Number is the number of updates per second. 1 is the most accurate
-bool g_bCrackFix = false; // Wombat778 4-02-04 Reenable the "old" crack fix, as it may be useful for some people with older card at high aa and pit filtering
-bool g_bResizeUsesResMgr = false; // Wombat778 4-14-04 Make the resizer ignore the resource manager (skip cpdata.zip) when looking for a pit to resize. This allows rescaling to 1024
-bool g_bPadlockHudColor = true; // Wombat778 4-28-04 Enables the new padlock box color that Unz implemented
-int g_nMiniDump = 0; // Wombat778 5-01-04 When greater than -1, minidumps called "dumplog.dmp" will be created on a crash. The number denotes the type of dump that will be created. If < 0, no dump will be made.
-bool g_bCheckFeatureIndex = false; // Wombat778 5-15-04 When enabled, there is a check to ensure that feature indexes in the PHD data are within range
-bool g_bMachAsiDial = false; // Wombat778 7-09-04 When enabled, the MachASI callback is treated as a dial instead of a MachASI object
-bool g_bNew2DTrackIR = true; // Wombat778 11-15-04 Enables the new 2D pit TrackIR code
-bool g_bSync2D3DPit = false; // Wombat778 11-17-04 Causes the view to remain rougly the same when switching between 2d and 3d pits.  A prerequisite for the hybrid pit mode
-float g_fHybridPitThreshold1 = 10.0f; // Wombat778 11-18-04 Sets the number of degrees of movement required before a pit mode switch (in hybrid pit mode) from 2D->3D pit
-float g_fHybridPitThreshold2 = 2.5f; // Wombat778 11-18-04 Sets the number of degrees of movement required before a pit mode switch (in hybrid pit mode) from 3D->2D pit
-int g_nHybridPitModeDelay = 1000; // Wombat778 11-18-04 Sets the number of milliseconds of movement below the threshold before a switch from 3d to 2d pit (in hybrid pit mode)
+bool g_bOldFontTexelFix =
+    false; // Wombat778 4-01-04 Adds the old texel alignment font fix for cards that dont work with the proper method
+int g_nShow2DPitErrors =
+    0; // Wombat778 3-23-04 When false, all error message boxes about 2d pit errors will be supressed.  When 1, only critical issues will be shown. When 2, all errors will be shown. Errors only show in windowed mode.
+bool g_bFilter2DPit =
+    true; // Wombat778 3-30-04 Enable filtering in the 2D cockpit.  Improves smoothness
+int g_nNewFPSCounter =
+    1; // Wombat778 3-24-04 Use accurate FPS counter that counts number of frames per time unit. When 0, old FPS counter is used. Number is the number of updates per second. 1 is the most accurate
+bool g_bCrackFix =
+    false; // Wombat778 4-02-04 Reenable the "old" crack fix, as it may be useful for some people with older card at high aa and pit filtering
+bool g_bResizeUsesResMgr =
+    false; // Wombat778 4-14-04 Make the resizer ignore the resource manager (skip cpdata.zip) when looking for a pit to resize. This allows rescaling to 1024
+bool g_bPadlockHudColor =
+    true; // Wombat778 4-28-04 Enables the new padlock box color that Unz implemented
+int g_nMiniDump =
+    0; // Wombat778 5-01-04 When greater than -1, minidumps called "dumplog.dmp" will be created on a crash. The number denotes the type of dump that will be created. If < 0, no dump will be made.
+bool g_bCheckFeatureIndex =
+    false; // Wombat778 5-15-04 When enabled, there is a check to ensure that feature indexes in the PHD data are within range
+bool g_bMachAsiDial =
+    false; // Wombat778 7-09-04 When enabled, the MachASI callback is treated as a dial instead of a MachASI object
+bool g_bNew2DTrackIR =
+    true; // Wombat778 11-15-04 Enables the new 2D pit TrackIR code
+bool g_bSync2D3DPit =
+    false; // Wombat778 11-17-04 Causes the view to remain rougly the same when switching between 2d and 3d pits.  A prerequisite for the hybrid pit mode
+float g_fHybridPitThreshold1 =
+    10.0f; // Wombat778 11-18-04 Sets the number of degrees of movement required before a pit mode switch (in hybrid pit mode) from 2D->3D pit
+float g_fHybridPitThreshold2 =
+    2.5f; // Wombat778 11-18-04 Sets the number of degrees of movement required before a pit mode switch (in hybrid pit mode) from 3D->2D pit
+int g_nHybridPitModeDelay =
+    1000; // Wombat778 11-18-04 Sets the number of milliseconds of movement below the threshold before a switch from 3d to 2d pit (in hybrid pit mode)
 float g_fEXPfactor = 0.5f; // 50% cursorspeed in EXP
 float g_fDBS1factor = 0.75f; // 35% cursorspeed in DBS1
 float g_fDBS2factor = 0.85f; // 20% cursorspeed in DBS2
-float g_fePropFactor = 40.0f; // Mnvers.cpp - to control restricted speed (curMaxStoreSpeed) for AI
-float g_fSunPadlockTimeout = 1.5f; // After how many seconds look on a padlocked object into the sun break lock
-int g_nGroundAttackTime = 6; // how many minutes after SetupAGMode the AI will continue to do a ground attack
-int g_nSeadAttackTime = 4; // how many minutes after SetupAGMode the AI will continue to do a Sead ground attack
-int g_nStrikeAttackTime = 6; // how many minutes after SetupAGMode the AI will continue to do a Strike ground attack
-int g_nCASAttackTime = 6; // how many minutes after SetupAGMode the AI will continue to do a CAS ground attack
-int g_nAIshootLookShootTime = 45; // Cobra - how many seconds between Wingman AG attack messages
-bool g_bAGTargetWPFix = false; // stop skipping of target WP because of departure time for AGMissions if several conditions are met
-bool g_bAlwaysAnisotropic = false; // if true, the "Anisotropic" button in gfx setup is always on (workaround for GF3)
-float g_fTgtDZFactor = 0.0F; // factor to reduce targetDZ when track has been lost - for fixing ballistic missiles
-bool g_bNoAAAEventRecords = false; // don't record AAA shots at the player to event list
-int g_nATCTaxiOrderFix = 0; // 1 = fixes player (09:36 takeoff) behind AI planes (09:37 takeoff)
-bool g_bEmergencyJettisonFix = true; // just check not to drop AA weapons and ECM for all
+float g_fePropFactor =
+    40.0f; // Mnvers.cpp - to control restricted speed (curMaxStoreSpeed) for AI
+float g_fSunPadlockTimeout =
+    1.5f; // After how many seconds look on a padlocked object into the sun break lock
+int g_nGroundAttackTime =
+    6; // how many minutes after SetupAGMode the AI will continue to do a ground attack
+int g_nSeadAttackTime =
+    4; // how many minutes after SetupAGMode the AI will continue to do a Sead ground attack
+int g_nStrikeAttackTime =
+    6; // how many minutes after SetupAGMode the AI will continue to do a Strike ground attack
+int g_nCASAttackTime =
+    6; // how many minutes after SetupAGMode the AI will continue to do a CAS ground attack
+int g_nAIshootLookShootTime =
+    45; // Cobra - how many seconds between Wingman AG attack messages
+bool g_bAGTargetWPFix =
+    false; // stop skipping of target WP because of departure time for AGMissions if several conditions are met
+bool g_bAlwaysAnisotropic =
+    false; // if true, the "Anisotropic" button in gfx setup is always on (workaround for GF3)
+float g_fTgtDZFactor =
+    0.0F; // factor to reduce targetDZ when track has been lost - for fixing ballistic missiles
+bool g_bNoAAAEventRecords =
+    false; // don't record AAA shots at the player to event list
+int g_nATCTaxiOrderFix =
+    0; // 1 = fixes player (09:36 takeoff) behind AI planes (09:37 takeoff)
+bool g_bEmergencyJettisonFix =
+    true; // just check not to drop AA weapons and ECM for all
 float g_fDBS1ScanRateFactor = 0.25f; //JAM 13Oct03
 float g_fDBS2ScanRateFactor = 0.05f; //JAM 13Oct03
-bool g_bACMIRecordMsgOff = true; // JPG 10 Jan 04 Turns off the "RECORDING: +++" stuff when ACMI is on
-bool g_bF4CommsMTU = false ;              // Unz MTU switch activation
+bool g_bACMIRecordMsgOff =
+    true; // JPG 10 Jan 04 Turns off the "RECORDING: +++" stuff when ACMI is on
+bool g_bF4CommsMTU = false; // Unz MTU switch activation
 //extern "C" bool g_bF4CommsKillPL = false ; // Booster and Unz switch to Kill packet loss routine
 /* Retro TrackIR stuff.. */
-int g_nTrackIRSampleFreq = 0x200; // Retro 02/10/03 - how fast a 2d screen can change using TIR
+int g_nTrackIRSampleFreq =
+    0x200; // Retro 02/10/03 - how fast a 2d screen can change using TIR
 float g_fTIR2DPitchPercentage = 0.7f; // Retro 02/10/03
 float g_fTIR2DYawPercentage = 0.7f; // Retro 02/10/03
 /* ..ends */
 
 /* Retro RadioSubTitle stuff */
-int g_nNumberOfSubTitles = 10; // Retro 20Dec2003 - max number of simultaneously drawn messages
-int g_nSubTitleTTL = 10000; // Retro 20Dec2003 - time a message will be displayed on the screen, in ms
+int g_nNumberOfSubTitles =
+    10; // Retro 20Dec2003 - max number of simultaneously drawn messages
+int g_nSubTitleTTL =
+    10000; // Retro 20Dec2003 - time a message will be displayed on the screen, in ms
 char g_strRadioflightCol[0x40] = ""; // Retro 27Dec2003
 char g_strRadiotoPackageCol[0x40] = ""; // Retro 27Dec2003
 char g_strRadioToFromPackageCol[0x40] = ""; // Retro 27Dec2003
@@ -903,35 +1127,47 @@ int g_nKeyPOVSensMax = 180; // 180 degrees per second
 int g_nKeyPOVSensMin = 30; // 30 degrees per second
 // Retro 17Feb2004 end
 
-bool g_bUseNewSmoothing = false; // Retro 20Feb2004 - if enabled uses a new smoothing algorithm that however does not work
+bool g_bUseNewSmoothing =
+    false; // Retro 20Feb2004 - if enabled uses a new smoothing algorithm that however does not work
 //  for bank/pitch/yaw/throttle(1+2) yet
-bool g_bDisplayAxisValues = false; // Retro 25Feb2004 - shows the values of all analogue axis, for debugging purposes only
+bool g_bDisplayAxisValues =
+    false; // Retro 25Feb2004 - shows the values of all analogue axis, for debugging purposes only
 
 bool g_bPilotEntertainment = false; // Retro 3Jan2004 - enable winamp interface
-int g_nWinAmpInitVolume = 204; // Retro 3Jan2004 - inital playback volume (valid between 0 and 255)
+int g_nWinAmpInitVolume =
+    204; // Retro 3Jan2004 - inital playback volume (valid between 0 and 255)
 
-int g_nBWMaxDeltaTime = 1; // true = use maximum value restriction, false = set 0 and return
+int g_nBWMaxDeltaTime =
+    1; // true = use maximum value restriction, false = set 0 and return
 int g_nBWCheckDeltaTime = 5000; // maximum value of delta_time in capi.c
 int g_nVUMaxDeltaTime = 5000; // maximum value of delta_time in vuevent.cpp
 bool g_bCampSavedMenuHack = true;
 #ifdef _DEBUG
 bool g_bActivateDebugStuff = false;
 #else
-bool g_bActivateDebugStuff = false; // to activate .label and .fuel chat line switch
+bool g_bActivateDebugStuff =
+    false; // to activate .label and .fuel chat line switch
 #endif
 bool g_bActivateMissileDebug = false; // FRB
-float g_fMoverVrValue = 450.0f; // bogus Vr value in Radar.cpp - seems a bit too high - must test how change effects the AI
+float g_fMoverVrValue =
+    450.0f; // bogus Vr value in Radar.cpp - seems a bit too high - must test how change effects the AI
 bool g_bEmptyFilenameFix = true; // fixes savings of "no name" files
-float g_fRAPDistance = 3.0F; // used in MissileEngage() function to decide at which distance we start to roll and pull
+float g_fRAPDistance =
+    3.0F; // used in MissileEngage() function to decide at which distance we start to roll and pull
 bool g_bLabelRadialFix = true; // Fix for label display at screen edges
-bool g_bLabelShowDistance = false; // If wanted, also show the distance to the target
-bool g_bCheckForMode = true; // saw lead at takeoff asking wingman to do bvrengagement
+bool g_bLabelShowDistance =
+    false; // If wanted, also show the distance to the target
+bool g_bCheckForMode =
+    true; // saw lead at takeoff asking wingman to do bvrengagement
 bool g_bRQDFix = true; // Fix RQD C/S readout in ICP CRUS page
-int g_nSessionTimeout = 30; // 30 seconds to timeout a disconnected session (might be a bit too high...)
+int g_nSessionTimeout =
+    30; // 30 seconds to timeout a disconnected session (might be a bit too high...)
 int g_nSessionUpdateRate = 15; // 15 seconds session update
-int g_nMaxInterceptDistance = 60; // only divert flights within 60 nm distance to the target
+int g_nMaxInterceptDistance =
+    60; // only divert flights within 60 nm distance to the target
 bool g_bNewSensorPrecision = true;
-bool g_bSAM2D3DHandover = false; // 2D-3D target handover to SAMs doesn't really work this way - turn off
+bool g_bSAM2D3DHandover =
+    false; // 2D-3D target handover to SAMs doesn't really work this way - turn off
 int g_nChooseBullseyeFix = 0; // theater fix for finding best bullseye position
 /* 0x01 = use bullseye central position from campaign trigger files
    0x02 = change bullseye at each new day (should be tested before activated - what happens in flight, Multiplayer ?)
@@ -944,9 +1180,12 @@ int g_nSoundSwitchFix = 0x03;
 int g_nDFRegenerateFix = 0x03; // fix for DF regenerations
 /* 0x01 = Fix in RegenerateMessage.cpp
  0x02 = Fix in CampUpd\Dogfight.cpp (not sure if this is really needed - but we let it in */
-bool g_bAllowOverload = true;   // Allow takeoff even when overloaded - the player may decide...
-bool g_bACPlayerCTDFix = true; // When a player CTD's, put aircraft back to host's AI control
-bool g_bSetWaypointNumFix = false; // Older fix from S.G. in Navfcc.cpp - must still be tested as AI uses this function, too
+bool g_bAllowOverload =
+    true; // Allow takeoff even when overloaded - the player may decide...
+bool g_bACPlayerCTDFix =
+    true; // When a player CTD's, put aircraft back to host's AI control
+bool g_bSetWaypointNumFix =
+    false; // Older fix from S.G. in Navfcc.cpp - must still be tested as AI uses this function, too
 float g_fLethalRadiusModifier = 1.5f; // used in 0x20 condition
 int g_nMissileFix = 0x7f; // several missile fixes:
 /*
@@ -968,10 +1207,13 @@ int g_nMissileFix = 0x7f; // several missile fixes:
  0x100   Fix for JDAM - have always cloud LOS if weapon flag 0x400 is set
 */
 
-bool g_bDarkHudFix = true; // fix for the host player getting a dark HUD in TAKEOFF/TAXI mode
+bool g_bDarkHudFix =
+    true; // fix for the host player getting a dark HUD in TAKEOFF/TAXI mode
 
-float g_fBombMissileAltitude = 13000.0f;// altitude at which "bomb-like" missiles are being released
-int g_nFogRenderState = 0x01; // 0x01 turn on the D3D call m_pD3DD->SetRenderState in context.cpp
+float g_fBombMissileAltitude =
+    13000.0f; // altitude at which "bomb-like" missiles are being released
+int g_nFogRenderState =
+    0x01; // 0x01 turn on the D3D call m_pD3DD->SetRenderState in context.cpp
 // 0x02 turns on StateStack::SetFog call to context->SetState
 // which seems, according to comment, to be only some test code...
 bool g_bTankerFMFix = true; // fix for tankers simple af flightmodel
@@ -994,12 +1236,14 @@ int g_nGfxFix = 0x00; // turn all fixes off by default
 bool g_bExitCampSelectFix = true;
 bool g_bAGNoBVRWVR = false; // stops AG missions from doing any BVR/WVR checks
 // Refuel debugging:
-unsigned long gFuelState = 0;   // to set SimDriver.GetPlayerEntity()'s fuel by ".fuel" chat command
+unsigned long gFuelState =
+    0; // to set SimDriver.GetPlayerEntity()'s fuel by ".fuel" chat command
 
 // DEBUG LABELING:
 
 int g_nShowDebugLabels = 0; // give each label type a bit
-int g_nMaxDebugLabel = 0x40000000; // 2002-04-01 MODIFIED BY S.G. Bumped up to highest without being negative
+int g_nMaxDebugLabel =
+    0x40000000; // 2002-04-01 MODIFIED BY S.G. Bumped up to highest without being negative
 
 /*
  DEBUG LABELS:
@@ -1039,22 +1283,29 @@ int g_nMaxDebugLabel = 0x40000000; // 2002-04-01 MODIFIED BY S.G. Bumped up to h
 
 // a.s. begin
 bool g_bEnableMfdColors = true; // enables transparent and colored Mfds
-float g_fMfdTransparency = 50; // set transparence of Mfds as a percentage value, e.g. 100 means no transparency (255), 80 means 20% transparency
-float g_fMfdRed = 0; // set brightness of red as a percentage value for Mfds, e.g. 100 means brightness of 255
-float g_fMfdGreen = 30; // set brightness of green as a percentage value for Mfds, e.g. 100 means brightness of 255
-float g_fMfdBlue = 0; // set brightness of blue as a percentage value for Mfds, e.g. 100 means brightness of 255
+float g_fMfdTransparency =
+    50; // set transparence of Mfds as a percentage value, e.g. 100 means no transparency (255), 80 means 20% transparency
+float g_fMfdRed =
+    0; // set brightness of red as a percentage value for Mfds, e.g. 100 means brightness of 255
+float g_fMfdGreen =
+    30; // set brightness of green as a percentage value for Mfds, e.g. 100 means brightness of 255
+float g_fMfdBlue =
+    0; // set brightness of blue as a percentage value for Mfds, e.g. 100 means brightness of 255
 bool g_bEnableMfdSize = true; // enables resizing of Mfds
-float g_fMfd_p_Size = 90; // set size of Mfds as a percentage value of normal size (154)
+float g_fMfd_p_Size =
+    90; // set size of Mfds as a percentage value of normal size (154)
 // a.s. end
-bool g_bMavFixes = true;  // a.s. New code for slewing MAVs.
-bool g_bMavFix2 = false;  // MN When designating inside the 40 nm distance in BORE, and slewing outside, the HUD designation box got stuck
-bool g_bLgbFixes = true;  // a.s. New code for slewing LGBs.
+bool g_bMavFixes = true; // a.s. New code for slewing MAVs.
+bool g_bMavFix2 =
+    false; // MN When designating inside the 40 nm distance in BORE, and slewing outside, the HUD designation box got stuck
+bool g_bLgbFixes = true; // a.s. New code for slewing LGBs.
 bool g_brebuildbobbleFix = true;
 bool g_bMPFix = true;
 bool g_bMPFix2 = true;
 bool g_bMPFix3 = true;
 bool g_bMPFix4 = true;
-int  g_nMPPowerXmitThreshold = 1; // MLR 3/22/2004 - This is the threshold for sending the RPM value to other players, lower values are more fluid, but eat more bandwidth
+int g_nMPPowerXmitThreshold =
+    1; // MLR 3/22/2004 - This is the threshold for sending the RPM value to other players, lower values are more fluid, but eat more bandwidth
 
 
 float MinBwForOtherData = 1000.0f;
@@ -1062,51 +1313,68 @@ float g_fclientbwforupdatesmodifyerMAX = 0.8f;
 float g_fclientbwforupdatesmodifyerMIN = 0.7f;
 float g_fReliablemsgwaitMAX = 60000;
 
-bool g_bDisableMissleEngGlow = true;  // MLR 2003-10-11 disable craptastic engine glow.
-bool g_bSMSPylonLoadingFix   = false; // MLR 2003-10-16 enable the code that load 2 slot pylons CORRECTLY.
+bool g_bDisableMissleEngGlow =
+    true; // MLR 2003-10-11 disable craptastic engine glow.
+bool g_bSMSPylonLoadingFix =
+    false; // MLR 2003-10-16 enable the code that load 2 slot pylons CORRECTLY.
 // disabled by default because it breaks existing models that work around the problem.
-bool g_bWeaponStepToGun      = false;  // MLR 3/13/2004 - allow the gun to be removed from the normal weapon step
-bool g_bEnableDopplerSound   = false; // MLR 2003-10-17
-float g_fSoundDopplerFactor  = 1.0;   // MLR 2003-10-17
-float g_fSoundRolloffFactor  = 1.0;   // MLR affects how sounds are attenuated.
+bool g_bWeaponStepToGun =
+    false; // MLR 3/13/2004 - allow the gun to be removed from the normal weapon step
+bool g_bEnableDopplerSound = false; // MLR 2003-10-17
+float g_fSoundDopplerFactor = 1.0; // MLR 2003-10-17
+float g_fSoundRolloffFactor = 1.0; // MLR affects how sounds are attenuated.
 //float g_fSoundDopplerBlend   = 30.0;  // MLR it's really dependent on framerate methinks // MLR 12/3/2003 - Obsolete
-bool  g_bSoundDistanceEffect = false; // MLR simulate the effect of distance on some sounds.
-int g_nSoundUpdateMS         = 50;    // MLR how many milliseconds must elapse before the sound code updates.
-bool g_bNewEngineSounds      = false; // MLR new style engine sounds
-bool g_bSoundHearVMSExternal = true;  // MLR enable/disable VMS sounds when in the external view.
+bool g_bSoundDistanceEffect =
+    false; // MLR simulate the effect of distance on some sounds.
+int g_nSoundUpdateMS =
+    50; // MLR how many milliseconds must elapse before the sound code updates.
+bool g_bNewEngineSounds = false; // MLR new style engine sounds
+bool g_bSoundHearVMSExternal =
+    true; // MLR enable/disable VMS sounds when in the external view.
 // bool g_bSoundDynamicAllocate = false;  // MLR 2003-11-30 enable allocating sound buffers on the fly  // MLR 12/3/2003 - Not implemented yet
 
-float g_fACMIAnimRecordTimer = .1f;  // MLR 3/2/2004 - seconds between recording a/c animation data
+float g_fACMIAnimRecordTimer =
+    .1f; // MLR 3/2/2004 - seconds between recording a/c animation data
 
-bool g_bHUDFix = true; //Smeghead 14-Oct-2003: HUD_Fixes.pdf changes on/off switch.
+bool g_bHUDFix =
+    true; //Smeghead 14-Oct-2003: HUD_Fixes.pdf changes on/off switch.
 
 
 // TJL 10/24/03
-bool g_bLargeStrike = false; // TJL 10/24/03 Allows for campaign to generate > 4 ship strike packages
-bool g_bTakeoffSound = false; // TJL 10/26/03 Allows for removal of annoying takeoff.wav
-bool g_bTurb = true;//TJL 03/14/04 Turbulence Code
+bool g_bLargeStrike =
+    false; // TJL 10/24/03 Allows for campaign to generate > 4 ship strike packages
+bool g_bTakeoffSound =
+    false; // TJL 10/26/03 Allows for removal of annoying takeoff.wav
+bool g_bTurb = true; //TJL 03/14/04 Turbulence Code
 
 // MLR 2/4/2004 - these are the defaults for when the ac.dat file does not contain the data
 float g_fA2GJDAMAlt = 20000.0f; //TJL 10/27/03 Sets AI JDAM attack altitude
 float g_fA2GJSOWAlt = 25000.0f; //TJL 10/27/03 Sets AI JSOW attack altitude
-float g_fA2GHarmAlt = 20000.0f; //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
+float g_fA2GHarmAlt =
+    20000.0f; //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
 float g_fA2GAGMAlt = 4000.0f; //TJL 10/27/03 Sets AI AGM attack altitude
 float g_fA2GGBUAlt = 13000.0f; //TJL 10/27/03 Sets AI GBU attack altitude
 float g_fA2GDumbHDAlt = 250.0f; //TJL 10/27/03 Sets AI Durandal attack altitude
-float g_fA2GClusterAlt = 5000.0f; //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
+float g_fA2GClusterAlt =
+    5000.0f; //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
 float g_fA2GDumbLDAlt = 25000.0f; //TJL 10/27/03 Sets AI Generic attack altitude
-float g_fA2GGenericBombAlt = 15000.0f; //TJL 10/27/03 Sets AI Generic Bomb attack altitude
-float g_fA2GGunRocketAlt = 1000.0f; //TJL 10/27/03 Sets AI Gun and Rocket altitude
+float g_fA2GGenericBombAlt =
+    15000.0f; //TJL 10/27/03 Sets AI Generic Bomb attack altitude
+float g_fA2GGunRocketAlt =
+    1000.0f; //TJL 10/27/03 Sets AI Gun and Rocket altitude
 float g_fA2GCameraAlt = 7000.0f; //TJL 10/27/03 Sets AI BDA/Recon altitude
 
 bool g_bScramble = true; // TJL 11/02/03 Enable Scramble missions
 bool g_bhudAOA = true; // TJL 11/09/03 Enable HUD AOA indicator
-bool g_bnoRadStutter = true; //TJL 11/25/03 Stops airplane 0.5 second stutter when in AG mode.
+bool g_bnoRadStutter =
+    true; //TJL 11/25/03 Stops airplane 0.5 second stutter when in AG mode.
 bool g_bRollInertia = true; //TJL 01/06/04 Do Roll Inertia code
 
 bool g_bLensFlare = true; // THW 2003-11-10 Disable Lens Flare
-bool g_bDisableHighFartiles = true; //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
-float g_fTexDetailFactor = 2.0f; //THW 2003-11-14 Use Higher-Res textures at higher altitudes (BMS default: 2 / Original MPS: 1)
+bool g_bDisableHighFartiles =
+    true; //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
+float g_fTexDetailFactor =
+    2.0f; //THW 2003-11-14 Use Higher-Res textures at higher altitudes (BMS default: 2 / Original MPS: 1)
 bool g_bBriefHTML = true; // THW 2003-12-07 Generate Briefing using HTML tags
 //int g_nSeason = 0; //THW 2004-01-02 Select Season (0=Summer/default, 1= Autumn, 2=Winter)
 
@@ -1122,9 +1390,11 @@ bool g_bWeaponPickleDelays = true;
 // MD -- 20040727: enable HSD to always draw steerpoint course line regardless of NAV mode/submode
 bool g_bHsdStptFix = true;
 
-bool g_bUnlimitedAmmo = false;//Cobra name says it all ;)
-bool g_bUseNew3dpit = false; //ATARIBABY Use new 3dpit code - needs new 3d pit model
-bool g_bStartIn3Dpit = true;  // Cobra - start in 3D cockpit. PHASE 5/VR: default TRUE -- the 2D cockpit is being removed, virtual 3D cockpit by default
+bool g_bUnlimitedAmmo = false; //Cobra name says it all ;)
+bool g_bUseNew3dpit =
+    false; //ATARIBABY Use new 3dpit code - needs new 3d pit model
+bool g_bStartIn3Dpit =
+    true; // Cobra - start in 3D cockpit. PHASE 5/VR: default TRUE -- the 2D cockpit is being removed, virtual 3D cockpit by default
 //bool g_bUse6DOFTir = false; // Retro 24Dez2004
 float g_f3DHeadTilt = 15.0f; //Cobra - Head tilt when entering the 3D cockpit
 float g_f3DPitFOV = 60.0f; //Cobra - FOV when entering the 3D cockpit
@@ -1133,71 +1403,85 @@ float g_fButtonScaler = 56.9f;
 float g_fButtonZScaler = 56.9f;
 
 //ATARIBABY Externalised parameters and multipliers for 3D pit dynamic head movement
-float g_fDyn_Head_TiltMul = 1.0f; //Controls how much pitch change influence head tilt
-float g_fDyn_Head_TiltRndGMul = 1.0f; //Controls random addition to tilt under G's
-float g_fDyn_Head_RollMul = 1.0f; //Controls how much roll change influence head roll
-float g_fDyn_Head_PanMul = 1.0f; //Controls how much yaw change influence head pan
-float g_fDyn_Head_TiltRateMul = 1.0f; //Controls speed of head tilt change to new pos
-float g_fDyn_Head_TiltGRateMul = 0.5; //Controls influence of Gs on speed of head tilt change to new pos
-float g_fDyn_Head_RollRate = 2.0f; //Controls speed of head roll change to new pos
+float g_fDyn_Head_TiltMul =
+    1.0f; //Controls how much pitch change influence head tilt
+float g_fDyn_Head_TiltRndGMul =
+    1.0f; //Controls random addition to tilt under G's
+float g_fDyn_Head_RollMul =
+    1.0f; //Controls how much roll change influence head roll
+float g_fDyn_Head_PanMul =
+    1.0f; //Controls how much yaw change influence head pan
+float g_fDyn_Head_TiltRateMul =
+    1.0f; //Controls speed of head tilt change to new pos
+float g_fDyn_Head_TiltGRateMul =
+    0.5; //Controls influence of Gs on speed of head tilt change to new pos
+float g_fDyn_Head_RollRate =
+    2.0f; //Controls speed of head roll change to new pos
 float g_fDyn_Head_PanRate = 1.0f; //Controls speed of head pan change to new pos
 
 float g_fdpitStart = 0600; //Cobra TJL 11/08/04
 float g_fdpitStop = 1800; //Cobra TJL 11/08/04
-float g_fTaxiEarly = 75.0f; // RAS - Early taxi time in seconds  - Cobra - changed from 100 to 75
+float g_fTaxiEarly =
+    75.0f; // RAS - Early taxi time in seconds  - Cobra - changed from 100 to 75
 
 
 // COBRA - Red - NEW DX ENGINE
 bool g_bUse_DX_Engine = true;
 
-static ConfigOption<bool> BoolOpts[] =
-{
+static ConfigOption<bool> BoolOpts[] = {
+    {"EnableBindless", &g_bEnableBindless}, // textures by index from one resident heap (both backends)
+    {"SensorSceneVulkan", &g_bSensorSceneVulkan}, // TGP/MAV/FLIR video in the MFD under Vulkan
+    {"VrHandTracking", &g_bVrHandTracking}, // skeletal gloves from XR hand tracking (fallback: controller morph)
+    {"VrSkinSwapHands", &g_bVrSkinSwapHands}, // swap which mesh each tracked hand wears
+    {"VrHandDump", &g_bVrHandDump}, // dump raw XR joint geometry (diag: inferred clench vs skinning bug)
     // { "EnableCATIIIExtension", &g_bEnableCATIIIExtension }, MI
-    { "UseDxEngine", &g_bUse_DX_Engine },
-    { "ForceDXMultiThreadedCoopLevel", &g_bForceDXMultiThreadedCoopLevel },
-    { "EnableABRelocation", &g_bEnableABRelocation },
-    { "EnableWeatherExtensions", &g_bEnableWeatherExtensions },
-    { "EnableWindsAloft", &g_bEnableWindsAloft },
-    { "EnableNonPersistentTextures", &g_bEnableNonPersistentTextures },
-    { "EnableStaticTerrainTextures", &g_bEnableStaticTerrainTextures },
+    {"UseDxEngine", &g_bUse_DX_Engine},
+    {"ForceDXMultiThreadedCoopLevel", &g_bForceDXMultiThreadedCoopLevel},
+    {"EnableABRelocation", &g_bEnableABRelocation},
+    {"EnableWeatherExtensions", &g_bEnableWeatherExtensions},
+    {"EnableWindsAloft", &g_bEnableWindsAloft},
+    {"EnableNonPersistentTextures", &g_bEnableNonPersistentTextures},
+    {"EnableStaticTerrainTextures", &g_bEnableStaticTerrainTextures},
     // { "EnableAircraftLimits", &g_bEnableAircraftLimits }, MI
     // { "EnableArmingDelay", &g_bArmingDelay }, MI
     // { "EnableHardCoreReal", &g_bHardCoreReal }, MI
-    { "CheckBltStatusBeforeFlip", &g_bCheckBltStatusBeforeFlip },
-    { "EnableUplink", &g_bEnableUplink },
-    { "EnableColorMfd", &g_bEnableColorMfd },
-    { "NewDamageEffects", &g_bNewDamageEffects },
-    { "DisableFunkyChicken", &g_bDisableFunkyChicken },
+    {"CheckBltStatusBeforeFlip", &g_bCheckBltStatusBeforeFlip},
+    {"EnableUplink", &g_bEnableUplink},
+    {"EnableColorMfd", &g_bEnableColorMfd},
+    {"NewDamageEffects", &g_bNewDamageEffects},
+    {"DisableFunkyChicken", &g_bDisableFunkyChicken},
     //JAM 01Dec03 { "ForceSoftwareGUI", &g_bForceSoftwareGUI },
-    { "SmartScaling", &g_bSmartScaling },
-    { "FloatingBullseye", &g_bFloatingBullseye },
-    { "DisableCrashEjectCourtMartials", &g_bDisableCrashEjectCourtMartials },
+    {"SmartScaling", &g_bSmartScaling},
+    {"FloatingBullseye", &g_bFloatingBullseye},
+    {"DisableCrashEjectCourtMartials", &g_bDisableCrashEjectCourtMartials},
     //JAM 20Sep03  { "UseMipMaps", &g_bUseMipMaps },
-    { "ShowMipUsage", &g_bShowMipUsage },
-    { "SmartCombatAP", &g_bSmartCombatAP },
-    { "NoRPMOnHUD", &g_bNoRPMOnHud },
-    { "CATIIIDefault", &g_bCATIIIDefault },
+    {"ShowMipUsage", &g_bShowMipUsage},
+    {"SmartCombatAP", &g_bSmartCombatAP},
+    {"NoRPMOnHUD", &g_bNoRPMOnHud},
+    {"CATIIIDefault", &g_bCATIIIDefault},
     // { "RealisticAvionics", &g_bRealisticAvionics },
-    { "EPAFRadarCues", &g_bEPAFRadarCues},
-    { "RadarJamChevrons", &g_bRadarJamChevrons},
-    { "AWACSSupport", &g_bAWACSSupport},
+    {"EPAFRadarCues", &g_bEPAFRadarCues},
+    {"RadarJamChevrons", &g_bRadarJamChevrons},
+    {"AWACSSupport", &g_bAWACSSupport},
     // { "Voodoo12Compatible", &g_bVoodoo12Compatible},
-    { "AWACSRequired", &g_bAWACSRequired},
-    { "Use3dSound", &g_bUse3dSound}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
-    { "OldSoundAlg", &g_bOldSoundAlg}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
-    { "MultiEngineSound", &g_bMultiEngineSound}, // MLR 5/18/2004 -
-    { "MFDHighContrast", &g_bMFDHighContrast},
-    { "IFlyMirage", &g_bIFlyMirage},
-    { "PowerGrid", &g_bPowerGrid},
-    { "UseMappedFiles", &g_bUseMappedFiles },
+    {"AWACSRequired", &g_bAWACSRequired},
+    {"Use3dSound",
+     &g_bUse3dSound}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
+    {"OldSoundAlg",
+     &g_bOldSoundAlg}, // MLR 2003-11-17 Going to hardcode this on // MLR 12/7/2003 - renabled
+    {"MultiEngineSound", &g_bMultiEngineSound}, // MLR 5/18/2004 -
+    {"MFDHighContrast", &g_bMFDHighContrast},
+    {"IFlyMirage", &g_bIFlyMirage},
+    {"PowerGrid", &g_bPowerGrid},
+    {"UseMappedFiles", &g_bUseMappedFiles},
     // { "UserRadioVoice", &g_bUserRadioVoice },
-    { "NewFm", &g_bNewFm },
-    { "RealisticAttrition", &g_bRealisticAttrition },
-    { "GreyScaleMFD", &g_bGreyScaleMFD },
-    { "IFFRWR", &g_bIFFRWR },
-    { "3dCockpit", &g_b3dCockpit },
-    { "RWR", &g_bRWR },
-    { "BrightHUD", &g_bBrightHUD },
+    {"NewFm", &g_bNewFm},
+    {"RealisticAttrition", &g_bRealisticAttrition},
+    {"GreyScaleMFD", &g_bGreyScaleMFD},
+    {"IFFRWR", &g_bIFFRWR},
+    {"3dCockpit", &g_b3dCockpit},
+    {"RWR", &g_bRWR},
+    {"BrightHUD", &g_bBrightHUD},
 
 #if 0 // JPO
     { "3dHUD", &g_b3dHUD },
@@ -1205,135 +1489,144 @@ static ConfigOption<bool> BoolOpts[] =
     { "3dICP", &g_b3dICP },
     { "3dDials", &g_b3dDials },
 #endif
-    { "3dMFDLeft", &g_b3dMFDLeft },
-    { "3dMFDRight", &g_b3dMFDRight },
-    { "3dDynamicPilotHead", &g_b3dDynamicPilotHead },
-    { "SimpleFMUpdates", &g_bSimpleFMUpdates },
-    { "NoMFDsIn1View", &g_bNoMFDsIn1View},
-    { "Server", &g_bServer},
-    { "ServerHostAll", &g_bServerHostAll},
-    { "LogEvents", &g_bLogEvents},
-    { "VoiceCom", &g_bVoiceCom},
+    {"3dMFDLeft", &g_b3dMFDLeft},
+    {"3dMFDRight", &g_b3dMFDRight},
+    {"3dDynamicPilotHead", &g_b3dDynamicPilotHead},
+    {"SimpleFMUpdates", &g_bSimpleFMUpdates},
+    {"NoMFDsIn1View", &g_bNoMFDsIn1View},
+    {"Server", &g_bServer},
+    {"ServerHostAll", &g_bServerHostAll},
+    {"LogEvents", &g_bLogEvents},
+    {"VoiceCom", &g_bVoiceCom},
     //#if 0
-    { "woeir", &g_bwoeir},
-    { "MLU", &g_bMLU},
-    { "IFF", &g_bIFF}, //MI disabled until further notice
+    {"woeir", &g_bwoeir},
+    {"MLU", &g_bMLU},
+    {"IFF", &g_bIFF}, //MI disabled until further notice
     //#endif
-    { "INS", &g_bINS},
-    { "RP5DataCompatiblity", &g_bRP5Comp },
-    { "ModuleList", &g_bModuleList },
-    { "HiResUI", &g_bHiResUI},
-    { "AWACSFuel", &g_bAWACSFuel},
+    {"INS", &g_bINS},
+    {"RP5DataCompatiblity", &g_bRP5Comp},
+    {"ModuleList", &g_bModuleList},
+    {"HiResUI", &g_bHiResUI},
+    {"AWACSFuel", &g_bAWACSFuel},
     // { "ShowManeuverLabels", &g_bShowManeuverLabels},
-    { "FullScreenNVG", &g_bFullScreenNVG},
-    { "LogUiErrors", &g_bLogUiErrors},
-    { "LoadoutSquadStoreResupply", &g_bLoadoutSquadStoreResupply},
-    { "DisplayTrees", &g_bDisplayTrees},
-    { "RequestHelp", &g_bRequestHelp},
-    { "LightsKC135", &g_bLightsKC135},
-    { "AddACSizeVisual", &g_bAddACSizeVisual},
+    {"FullScreenNVG", &g_bFullScreenNVG},
+    {"LogUiErrors", &g_bLogUiErrors},
+    {"LoadoutSquadStoreResupply", &g_bLoadoutSquadStoreResupply},
+    {"DisplayTrees", &g_bDisplayTrees},
+    {"RequestHelp", &g_bRequestHelp},
+    {"LightsKC135", &g_bLightsKC135},
+    {"AddACSizeVisual", &g_bAddACSizeVisual},
     // { "ShowFuelLabel", &g_bShowFuelLabel},
-    { "NewRackData", &g_bNewRackData},
-    { "BMSRackData", &g_bBMSRackData},
-    { "HelosReloc", &g_bHelosReloc},
-    { "ShowFlaps", &g_bShowFlaps},
-    { "SlowButSafe", &g_bSlowButSafe},
-    { "NewPadlock", &g_bNewPadlock},
-    { "NoPadlockBoxes", &g_bNoPadlockBoxes},
-    { "PitchLimiterForAI", &g_bPitchLimiterForAI},
-    { "MissionACIcons", &g_bMissionACIcons},
-    { "EnableMfdColors", &g_bEnableMfdColors}, // a.s.
-    { "EnableMfdSize", &g_bEnableMfdSize}, // a.s.
-    { "AIRefuelInComplexAF", &g_bAIRefuelInComplexAF}, // 2002-02-20 S.G.
-    { "NewAcmiHud", &g_bNewAcmiHud},
-    { "AWACSBackground", &g_bAWACSBackground},
-    { "MavFixes", &g_bMavFixes},  // a.s.
-    { "LgbFixes", &g_bLgbFixes},  // a.s.
-    { "FallingHeadingTape", &g_bFallingHeadingTape},
-    { "NewRefuelHelp", &g_bNewRefuelHelp}, // MN
-    { "OtherGroundCheck", &g_bOtherGroundCheck }, // MN
-    { "Limit2DRadarFight", &g_bLimit2DRadarFight}, // 2002-03-07 S.G.
-    { "AdvancedGroundChooseWeapon", &g_bAdvancedGroundChooseWeapon}, // 2002-03-09 S.G.
-    { "TFRFixes", &g_bTFRFixes}, //MI TFR Fixes
-    { "AIGloc", &g_bAIGloc }, // MN
-    { "CalibrateTFR_PitchCtrl", &g_bCalibrateTFR_PitchCtrl},
-    { "LantDebug", &g_bLantDebug},
-    { "UseNewCanEnage", &g_bUseNewCanEnage}, // 2002-03-11 S.G.
-    { "MPStartRestricted", &g_bMPStartRestricted},
-    { "UseSkillForFlaks", &g_bUseSkillForFlaks}, // 2002-03-12 S.G.
-    { "ToggleAAAGunFlag", &g_bToggleAAAGunFlag}, // 2002-03-12 S.G.
-    { "UseTankerTrack", &g_bUseTankerTrack},// 2002-03-13 MN
-    { "UseComplexBVRForPlayerAI", &g_bUseComplexBVRForPlayerAI}, // 2002-03-13 S.G.
-    { "FuelUseVtDot", &g_bFuelUseVtDot }, // 2002-03-14 S.G.
-    { "FuelLimitBecauseVtDot", &g_bFuelLimitBecauseVtDot }, // 2002-03-14 S.G.
-    { "UseAggresiveIncompleteA2G", &g_bUseAggresiveIncompleteA2G }, // 2002-03-22 S.G.
-    { "NewPitchLadder", &g_bNewPitchLadder},
-    { "AddIngressWP", &g_bAddIngressWP}, // 2002-03-25 MN
-    { "TankerWaypoints", &g_bTankerWaypoints}, // 2002-03-25 MN
-    { "PutAIToBoom", &g_bPutAIToBoom}, // 2002-03-28 MN
-    { "OldStackDump", &g_bOldStackDump}, // 2002-04-01 S.G.
-    { "TankerFMFix", &g_bTankerFMFix}, // 2002-04-02 MN
-    { "AGRadarFixes", &g_bAGRadarFixes}, //MI 2002-03-28
-    { "LookCloserFix", &g_bLookCloserFix}, // 2002-04-05 MN by dpc
-    { "AnyWaypointTask", &g_bAnyWaypointTask}, // Wombat778 09-27-2003
-    { "FFCenterFix", &g_bFFCenterFix}, // Wombat778 09-29-2003
-    { "CockpitAutoScale", &g_bCockpitAutoScale}, // Wombat778 10-06-2003
-    { "3DClickableCockpitDebug", &g_b3DClickableCockpitDebug}, // Wombat778 10-10-2003
-    { "3DRTTCockpitDebug", &g_b3DRTTCockpitDebug}, // Wombat778 10-10-2003
-    { "3DClickableCursorChange", &g_b3DClickableCursorChange}, // Wombat778 10-15-2003
-    { "DEDSpacingFix", &g_bDEDSpacingFix}, // Wombat778 10-17-2003
-    { "ReconLatLong", &g_bReconLatLong}, // Wombat778 11-3-2003
-    { "RatioHack", &g_bRatioHack}, // Wombat778 11-4-2003
-    { "PrecisionWaypoints", &g_bPrecisionWaypoints}, // Wombat778 11-5-2003
-    { "SmallerBullseye", &g_bSmallerBullseye}, // Wombat778 11-12-2003
-    { "AutoScaleFonts", &g_bAutoScaleFonts}, // Wombat778 12-11-2003
-    { "EnableRandomFailures", &g_bEnableRandomFailures}, // Wombat778 12-11-2003
-    { "2DPitWingFOVFix", &g_b2DPitWingFOVFix}, // Wombat778 2-25-2003
-    { "OldFontTexelFix", &g_bOldFontTexelFix}, // Wombat778 4-01-04
-    { "Filter2DPit", &g_bFilter2DPit}, // Wombat778 3-30-2004
-    { "CrackFix", &g_bCrackFix}, // Wombat778 4-02-2004
-    { "ResizeUsesResMgr", &g_bResizeUsesResMgr}, // Wombat778 4-14-2004
-    { "PadlockHudColor", &g_bPadlockHudColor}, // Wombat778 4-28-2004
-    { "CheckFeatureIndex", &g_bCheckFeatureIndex}, // Wombat778 5-15-2004
-    { "MachAsiDial", &g_bMachAsiDial}, // Wombat778 7-9-2004
-    { "New2DTrackIR", &g_bNew2DTrackIR}, // Wombat778 11-15-2004
-    { "Sync2D3DPit", &g_bSync2D3DPit}, // Wombat778 11-17-2004
-    { "LowBwVoice", &g_bLowBwVoice},
-    { "AGTargetWPFix", &g_bAGTargetWPFix}, // 2002-04-06 MN
-    { "BombNumLoopOnly", &g_bBombNumLoopOnly}, //MI 2002-07-04 fix for missing bombs in CCIP
-    { "AlwaysAnisotropic", &g_bAlwaysAnisotropic }, // 2002-04-07 MN
-    { "NoAAAEventRecords", &g_bNoAAAEventRecords }, // 2002-04-07 MN
-    { "ActivateDebugStuff", &g_bActivateDebugStuff }, // 2002-04-12 MN
-    { "ActivateMissileDebug", &g_bActivateMissileDebug }, // FRB
-    { "NewSensorPrecision", &g_bNewSensorPrecision },
-    { "AGNoBVRWVR", &g_bAGNoBVRWVR },
-    { "TO_LDG_LightFix", &g_bTO_LDG_LightFix}, //MI 2002-04-13
-    { "AppendToBriefingFile", &g_bAppendToBriefingFile},
-    { "DarkHudFix", &g_bDarkHudFix},
-    { "RQDFix", &g_bRQDFix}, // MN 2002-04-13
-    { "ACPlayerCTDFix", &g_bACPlayerCTDFix},
-    { "CheckForMode", &g_bCheckForMode}, // MN 2002-04-14
-    { "AllowOverload", &g_bAllowOverload},
-    { "UseDefinedGunDomain", &g_bUseDefinedGunDomain}, // 2002-04-17 S.G.
-    { "LabelRadialFix", &g_bLabelRadialFix},
-    { "LabelShowDistance", &g_bLabelShowDistance},
-    { "SetWaypointNumFix", &g_bSetWaypointNumFix}, // 2002-04-18 MN a fix from S.G. which he didn't put in because it was not really tested yet..
-    { "EmptyFilenameFix", &g_bEmptyFilenameFix},
-    { "RebuildbobbleFix", &g_brebuildbobbleFix},
-    { "MPFix", &g_bMPFix},
-    { "MPFix2", &g_bMPFix2},
-    { "MPFix3", &g_bMPFix3},
-    { "MPFix4", &g_bMPFix4},
-    { "ExitCampSelectFix", &g_bExitCampSelectFix},
-    { "CampSavedMenuHack", &g_bCampSavedMenuHack},
-    { "EmergencyJettisonFix", &g_bEmergencyJettisonFix},
-    { "OldSamActivity", &g_bOldSamActivity}, // no LOS check and stuff - just the old code
-    { "FireOntheMove", &g_bFireOntheMove},
-    { "SAM2D3DHandover", &g_bSAM2D3DHandover},
-    { "MavFix2", &g_bMavFix2},
-    { "DisableMissileEngGlow", &g_bDisableMissleEngGlow}, // MLR 2003/10/11 - get rid of that ugly star
-    { "HUDFix", &g_bHUDFix}, //Smeghead 14-Oct-2003
-    { "SMSPylonLoadingFix", &g_bSMSPylonLoadingFix}, // MLR 2003/10/16
+    {"NewRackData", &g_bNewRackData},
+    {"BMSRackData", &g_bBMSRackData},
+    {"HelosReloc", &g_bHelosReloc},
+    {"ShowFlaps", &g_bShowFlaps},
+    {"SlowButSafe", &g_bSlowButSafe},
+    {"NewPadlock", &g_bNewPadlock},
+    {"NoPadlockBoxes", &g_bNoPadlockBoxes},
+    {"PitchLimiterForAI", &g_bPitchLimiterForAI},
+    {"MissionACIcons", &g_bMissionACIcons},
+    {"EnableMfdColors", &g_bEnableMfdColors}, // a.s.
+    {"EnableMfdSize", &g_bEnableMfdSize}, // a.s.
+    {"AIRefuelInComplexAF", &g_bAIRefuelInComplexAF}, // 2002-02-20 S.G.
+    {"NewAcmiHud", &g_bNewAcmiHud},
+    {"AWACSBackground", &g_bAWACSBackground},
+    {"MavFixes", &g_bMavFixes}, // a.s.
+    {"LgbFixes", &g_bLgbFixes}, // a.s.
+    {"FallingHeadingTape", &g_bFallingHeadingTape},
+    {"NewRefuelHelp", &g_bNewRefuelHelp}, // MN
+    {"OtherGroundCheck", &g_bOtherGroundCheck}, // MN
+    {"Limit2DRadarFight", &g_bLimit2DRadarFight}, // 2002-03-07 S.G.
+    {"AdvancedGroundChooseWeapon",
+     &g_bAdvancedGroundChooseWeapon}, // 2002-03-09 S.G.
+    {"TFRFixes", &g_bTFRFixes}, //MI TFR Fixes
+    {"AIGloc", &g_bAIGloc}, // MN
+    {"CalibrateTFR_PitchCtrl", &g_bCalibrateTFR_PitchCtrl},
+    {"LantDebug", &g_bLantDebug},
+    {"UseNewCanEnage", &g_bUseNewCanEnage}, // 2002-03-11 S.G.
+    {"MPStartRestricted", &g_bMPStartRestricted},
+    {"UseSkillForFlaks", &g_bUseSkillForFlaks}, // 2002-03-12 S.G.
+    {"ToggleAAAGunFlag", &g_bToggleAAAGunFlag}, // 2002-03-12 S.G.
+    {"UseTankerTrack", &g_bUseTankerTrack}, // 2002-03-13 MN
+    {"UseComplexBVRForPlayerAI",
+     &g_bUseComplexBVRForPlayerAI}, // 2002-03-13 S.G.
+    {"FuelUseVtDot", &g_bFuelUseVtDot}, // 2002-03-14 S.G.
+    {"FuelLimitBecauseVtDot", &g_bFuelLimitBecauseVtDot}, // 2002-03-14 S.G.
+    {"UseAggresiveIncompleteA2G",
+     &g_bUseAggresiveIncompleteA2G}, // 2002-03-22 S.G.
+    {"NewPitchLadder", &g_bNewPitchLadder},
+    {"AddIngressWP", &g_bAddIngressWP}, // 2002-03-25 MN
+    {"TankerWaypoints", &g_bTankerWaypoints}, // 2002-03-25 MN
+    {"PutAIToBoom", &g_bPutAIToBoom}, // 2002-03-28 MN
+    {"OldStackDump", &g_bOldStackDump}, // 2002-04-01 S.G.
+    {"TankerFMFix", &g_bTankerFMFix}, // 2002-04-02 MN
+    {"AGRadarFixes", &g_bAGRadarFixes}, //MI 2002-03-28
+    {"LookCloserFix", &g_bLookCloserFix}, // 2002-04-05 MN by dpc
+    {"AnyWaypointTask", &g_bAnyWaypointTask}, // Wombat778 09-27-2003
+    {"FFCenterFix", &g_bFFCenterFix}, // Wombat778 09-29-2003
+    {"CockpitAutoScale", &g_bCockpitAutoScale}, // Wombat778 10-06-2003
+    {"3DClickableCockpitDebug",
+     &g_b3DClickableCockpitDebug}, // Wombat778 10-10-2003
+    {"3DRTTCockpitDebug", &g_b3DRTTCockpitDebug}, // Wombat778 10-10-2003
+    {"3DClickableCursorChange",
+     &g_b3DClickableCursorChange}, // Wombat778 10-15-2003
+    {"DEDSpacingFix", &g_bDEDSpacingFix}, // Wombat778 10-17-2003
+    {"ReconLatLong", &g_bReconLatLong}, // Wombat778 11-3-2003
+    {"RatioHack", &g_bRatioHack}, // Wombat778 11-4-2003
+    {"PrecisionWaypoints", &g_bPrecisionWaypoints}, // Wombat778 11-5-2003
+    {"SmallerBullseye", &g_bSmallerBullseye}, // Wombat778 11-12-2003
+    {"AutoScaleFonts", &g_bAutoScaleFonts}, // Wombat778 12-11-2003
+    {"EnableRandomFailures", &g_bEnableRandomFailures}, // Wombat778 12-11-2003
+    {"2DPitWingFOVFix", &g_b2DPitWingFOVFix}, // Wombat778 2-25-2003
+    {"OldFontTexelFix", &g_bOldFontTexelFix}, // Wombat778 4-01-04
+    {"Filter2DPit", &g_bFilter2DPit}, // Wombat778 3-30-2004
+    {"CrackFix", &g_bCrackFix}, // Wombat778 4-02-2004
+    {"ResizeUsesResMgr", &g_bResizeUsesResMgr}, // Wombat778 4-14-2004
+    {"PadlockHudColor", &g_bPadlockHudColor}, // Wombat778 4-28-2004
+    {"CheckFeatureIndex", &g_bCheckFeatureIndex}, // Wombat778 5-15-2004
+    {"MachAsiDial", &g_bMachAsiDial}, // Wombat778 7-9-2004
+    {"New2DTrackIR", &g_bNew2DTrackIR}, // Wombat778 11-15-2004
+    {"Sync2D3DPit", &g_bSync2D3DPit}, // Wombat778 11-17-2004
+    {"LowBwVoice", &g_bLowBwVoice},
+    {"AGTargetWPFix", &g_bAGTargetWPFix}, // 2002-04-06 MN
+    {"BombNumLoopOnly",
+     &g_bBombNumLoopOnly}, //MI 2002-07-04 fix for missing bombs in CCIP
+    {"AlwaysAnisotropic", &g_bAlwaysAnisotropic}, // 2002-04-07 MN
+    {"NoAAAEventRecords", &g_bNoAAAEventRecords}, // 2002-04-07 MN
+    {"ActivateDebugStuff", &g_bActivateDebugStuff}, // 2002-04-12 MN
+    {"ActivateMissileDebug", &g_bActivateMissileDebug}, // FRB
+    {"NewSensorPrecision", &g_bNewSensorPrecision},
+    {"AGNoBVRWVR", &g_bAGNoBVRWVR},
+    {"TO_LDG_LightFix", &g_bTO_LDG_LightFix}, //MI 2002-04-13
+    {"AppendToBriefingFile", &g_bAppendToBriefingFile},
+    {"DarkHudFix", &g_bDarkHudFix},
+    {"RQDFix", &g_bRQDFix}, // MN 2002-04-13
+    {"ACPlayerCTDFix", &g_bACPlayerCTDFix},
+    {"CheckForMode", &g_bCheckForMode}, // MN 2002-04-14
+    {"AllowOverload", &g_bAllowOverload},
+    {"UseDefinedGunDomain", &g_bUseDefinedGunDomain}, // 2002-04-17 S.G.
+    {"LabelRadialFix", &g_bLabelRadialFix},
+    {"LabelShowDistance", &g_bLabelShowDistance},
+    {"SetWaypointNumFix",
+     &g_bSetWaypointNumFix}, // 2002-04-18 MN a fix from S.G. which he didn't put in because it was not really tested yet..
+    {"EmptyFilenameFix", &g_bEmptyFilenameFix},
+    {"RebuildbobbleFix", &g_brebuildbobbleFix},
+    {"MPFix", &g_bMPFix},
+    {"MPFix2", &g_bMPFix2},
+    {"MPFix3", &g_bMPFix3},
+    {"MPFix4", &g_bMPFix4},
+    {"ExitCampSelectFix", &g_bExitCampSelectFix},
+    {"CampSavedMenuHack", &g_bCampSavedMenuHack},
+    {"EmergencyJettisonFix", &g_bEmergencyJettisonFix},
+    {"OldSamActivity",
+     &g_bOldSamActivity}, // no LOS check and stuff - just the old code
+    {"FireOntheMove", &g_bFireOntheMove},
+    {"SAM2D3DHandover", &g_bSAM2D3DHandover},
+    {"MavFix2", &g_bMavFix2},
+    {"DisableMissileEngGlow",
+     &g_bDisableMissleEngGlow}, // MLR 2003/10/11 - get rid of that ugly star
+    {"HUDFix", &g_bHUDFix}, //Smeghead 14-Oct-2003
+    {"SMSPylonLoadingFix", &g_bSMSPylonLoadingFix}, // MLR 2003/10/16
 
     // MLR 12/14/2003 -  All these are control in the UI setup now
     //{ "EnableDopplerSound", &g_bEnableDopplerSound}, // MLR 2003/10/17
@@ -1342,305 +1635,437 @@ static ConfigOption<bool> BoolOpts[] =
     //{ "SoundDistanceEffect", &g_bSoundDistanceEffect}, // MLR 2003/11/02
 
     // { "SoundDynamicAllocate", &g_bSoundDynamicAllocate}, // MLR 11/30/2003 - Allocate DSOund buffers on the fly // MLR 12/3/2003 - Not implemented yet
-    { "LargeStrike", &g_bLargeStrike}, //TJL 10/24/03 Enables Campaign to generate large strike packages >4 aircraft
-    { "TakeoffSound", &g_bTakeoffSound}, // TJL 10/26/03 Enables Takeoff.wav in Camp UI. Defaults to off.
-    { "Scramble", &g_bScramble}, //TJL 11/02/03 Enable Scramble missions
-    { "hudAOA" , &g_bhudAOA}, //TJL 11/09/03 Enable HUD AOA indicator
-    { "LensFlare", &g_bLensFlare}, //THW 2003-11-10 Toggle Lens Flare
-    { "DisableHighFartiles", &g_bDisableHighFartiles}, //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
-    { "noRadStutter", &g_bnoRadStutter}, //TJL 11/25/03 Stops 0.5 second stutter on aircraft when in A/G radar.
-    { "RollLinkedNWSRudder", &g_bRollLinkedNWSRudder }, // ASSOCIATOR 30/11/03 Controls whether the Rudder and NWS are linked to the roll input when on the ground
-    { "EnableGRCursorBullseye", &g_bEnableGRCursorBullseye }, // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
-    { "BriefHTML", &g_bBriefHTML }, // THW 2003-12-07 Generate Briefing using HTML tags
+    {"LargeStrike",
+     &g_bLargeStrike}, //TJL 10/24/03 Enables Campaign to generate large strike packages >4 aircraft
+    {"TakeoffSound",
+     &g_bTakeoffSound}, // TJL 10/26/03 Enables Takeoff.wav in Camp UI. Defaults to off.
+    {"Scramble", &g_bScramble}, //TJL 11/02/03 Enable Scramble missions
+    {"hudAOA", &g_bhudAOA}, //TJL 11/09/03 Enable HUD AOA indicator
+    {"LensFlare", &g_bLensFlare}, //THW 2003-11-10 Toggle Lens Flare
+    {"DisableHighFartiles",
+     &g_bDisableHighFartiles}, //THW 2003-11-14 Never let the fartiles kick in at high altitudes (default: 1)
+    {"noRadStutter",
+     &g_bnoRadStutter}, //TJL 11/25/03 Stops 0.5 second stutter on aircraft when in A/G radar.
+    {"RollLinkedNWSRudder",
+     &g_bRollLinkedNWSRudder}, // ASSOCIATOR 30/11/03 Controls whether the Rudder and NWS are linked to the roll input when on the ground
+    {"EnableGRCursorBullseye",
+     &g_bEnableGRCursorBullseye}, // ASSOCIATOR 03/12/03: Enables Bullseye cursor in Ground Radar modes
+    {"BriefHTML",
+     &g_bBriefHTML}, // THW 2003-12-07 Generate Briefing using HTML tags
     // { "EnableFCCSubNavCycle", &g_bEnableFCCSubNavCycle },  // ASSOCIATOR 04/12/03: Enables you to cycle the Nav steerpoint modes modes with the FCC submodes key
-    { "RealisticMavTime", &g_bRealisticMavTime }, // JPG 7 Dec 03 - Enables realistic Maverick missile gyro spool up time of 3 minutes instead of 5 seconds
-    { "newAMRAAMdlz", &g_bnewAMRAAMdlz }, // JPG 2 Apr 04 - Enables new AMRAAM DLZ - see above
-    { "EnableDisplacementCam", &g_bEnableDisplacementCam }, // Retro 25Dec2003
-    { "AntElevKnobFix", &g_bAntElevKnobFix }, // MD -- 20031231: see above
-    { "PilotEntertainment", &g_bPilotEntertainment },// Retro 3Jan2004
-    { "RollInertia", &g_bRollInertia }, //TJL 01/06/04 Roll Inertia
-    { "ACMIRecordMsgOff", &g_bACMIRecordMsgOff }, // JPG 10 Jan 04 Turns off the ACMI RECORDING msg
-    { "UseAnalogIdleCutoff", &g_bUseAnalogIdleCutoff }, // MD -- 20040209: see above
-    { "WeaponPickleDelays", &g_bWeaponPickleDelays}, // MD -- 20040613: see above
-    { "HsdStptFix", &g_bHsdStptFix}, // MD -- 20040727: see above
-    { "F4CommsMTU", &g_bF4CommsMTU },     //  Unz-- MTU swtich with Wombats help
+    {"RealisticMavTime",
+     &g_bRealisticMavTime}, // JPG 7 Dec 03 - Enables realistic Maverick missile gyro spool up time of 3 minutes instead of 5 seconds
+    {"newAMRAAMdlz",
+     &g_bnewAMRAAMdlz}, // JPG 2 Apr 04 - Enables new AMRAAM DLZ - see above
+    {"EnableDisplacementCam", &g_bEnableDisplacementCam}, // Retro 25Dec2003
+    {"AntElevKnobFix", &g_bAntElevKnobFix}, // MD -- 20031231: see above
+    {"PilotEntertainment", &g_bPilotEntertainment}, // Retro 3Jan2004
+    {"RollInertia", &g_bRollInertia}, //TJL 01/06/04 Roll Inertia
+    {"ACMIRecordMsgOff",
+     &g_bACMIRecordMsgOff}, // JPG 10 Jan 04 Turns off the ACMI RECORDING msg
+    {"UseAnalogIdleCutoff",
+     &g_bUseAnalogIdleCutoff}, // MD -- 20040209: see above
+    {"WeaponPickleDelays", &g_bWeaponPickleDelays}, // MD -- 20040613: see above
+    {"HsdStptFix", &g_bHsdStptFix}, // MD -- 20040727: see above
+    {"F4CommsMTU", &g_bF4CommsMTU}, //  Unz-- MTU swtich with Wombats help
     // { "F4CommsKillPL", &g_bF4CommsKillPL },     //  Booster and Unz to Kill packet loss
-    { "UseNew3dpit", &g_bUseNew3dpit}, //ATARIBABY Use new 3dpit code - needs new 3d pit model
-    { "StartIn3Dpit", &g_bStartIn3Dpit},  // Cobra - start in 3D cockpit
-    { "UseNewSmoothing", &g_bUseNewSmoothing}, // Retro 21Feb2004, look above for expl.
-    { "DisplayAxisValues", &g_bDisplayAxisValues}, // Retro 25Feb2004
-    { "WeaponLaunchUsesDrawPointerPos", &g_bWeaponLaunchUsesDrawPointerPos},  // MLR 2/19/2004 -
-    { "UseNewSmoothing", &g_bUseNewSmoothing}, // Retro 21Feb2004, look above for expl.
-    { "DisplayAxisValues", &g_bDisplayAxisValues}, // Retro 25Feb2004
-    { "WeaponStepToGun", &g_bWeaponStepToGun},  // MLR 3/13/2004 - See above
-    { "Turb", &g_bTurb}, //TJL 03/14/04 Turbulence Code
-    { "SoundSonicBoom", &g_bSoundSonicBoom},
-    { "DisableCommsBorder", &g_bDisableCommsBorder}, // ASSO: disable the radio comms menu border
-    { "EcmOnHud", &g_bEcmOnHud}, // ASSO:
-    { "BrakeOnHud", &g_bBrakeOnHud}, // ASSO:
-    { "GearOnHud", &g_bGearOnHud}, // ASSO:
-    { "WakeTurbulence", &g_bWakeTurbulence },
-    { "DrawWakeTurbulence", &g_bDrawWakeTurbulence },
-    { "OldDustTrail", &g_bOldDustTrail}, // Cobra - Use old dust trail sfx
-    { "HearThunder", &g_bHearThunder}, // Cobra - Play thunder.wav
-    { "HighSFX", &g_bHighSFX}, // Cobra - Switch internal PS effects levels
-    { "WaterShader", &g_bWaterShader}, // #12: animated water tiles (D3D11)
-    { "CanopyReflect", &g_bCanopyReflect}, // #44: view-dependent canopy glass reflection
-    { "HudCollimate", &g_bHudCollimate}, // HUD collimation (infinite-projection head offset)
-    { "Hud3DGlass", &g_bHud3DGlass}, // Artscout - 2026 (VR): true optical collimation of HUD symbology (sits at infinity)
-    { "GpuTerrain", &g_bGpuTerrain}, // Artscout - 2026: #78 Phase 1 -- GPU world-space terrain (real depth) vs CPU screen-space. OFF by default.
-    { "SensorSceneD3D12", &g_bSensorSceneD3D12}, // Artscout - 2026: #DX12 A5 -- render TGP/MAV/LANTIRN sensor 3D scene into the atlas under D3D12 (OFF: stable, symbology only; ON: needs #91 terrain batch).
-    { "TerrainConnectors", &g_bTerrainConnectors}, // Artscout - 2026: #78 -- single-layer connector LOD tiling (no overlap z-fight/shimmer) vs legacy overlap path. ON by default.
-    { "VrControllers", &g_bVrControllers}, // Artscout - 2026 (VR controllers): laser-pointer clickable cockpit (VR only). ON by default.
-    { "VrControllerModel", &g_bVrControllerModel}, // Artscout - 2026 (VR controller model): draw the real controller mesh vs wireframe
-    { "VrUseHands", &g_bVrUseHands}, // Artscout - 2026 (VR): draw hand/glove meshes instead of the controller model
-    { "VrSwitchGroups", &g_bVrSwitchGroups}, // Artscout - 2026: collapse multi-position rotaries to one hotspot + cycle
-    { "UseD3D12", &g_bUseD3D12}, // Artscout - 2026: #DX12 Phase 1 -- bring up D3D12 backend instead of D3D11 (device+present bring-up)
-    { "VrModelOpaque", &g_bVrModelOpaque}, // Artscout - 2026 (VR model): draw hand/controller mesh solid vs see-through
-    { "VrRayFlipH", &g_bVrRayFlipH}, // Artscout - 2026 (VR controllers): flip ray horizontal (right axis)
-    { "VrRayFlipV", &g_bVrRayFlipV}, // Artscout - 2026 (VR controllers): flip ray vertical (up/down axis)
-    { "Hud3DGlassClip", &g_bHud3DGlassClip}, // Artscout - 2026 (VR): clip collimated HUD to the combiner aperture (depth)
-    { "ClipCursorWindowed", &g_bClipCursorWindowed}, // Artscout - 2026: confine the cursor to the window in windowed mode
-    { "AllHaveIFF", &g_bAllHaveIFF}, // Cobra - Give all a/c IFF interrogator
-    { "UseRC135", &g_bUseRC135}, // Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
-    { "FFDBC", &g_bFFDBC},
-    { "ExtViewOnGround", &g_bExtViewOnGround },// RAS -5Dec04- allow ext view on ground
-    { "UnlimitedAmmo", &g_bUnlimitedAmmo }, //Cobra
-    { "AnimPilotHead", &g_bAnimPilotHead}, // Cobra - Animate the pilot's head
-    { "UseQuadViews", &g_bUseQuadViews}, // Artscout - 2026 (VR): 4-view quad (foveated) config -- experimental
-    { "VrViewInstancing", &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
-    { "VrPerEyeSky", &g_bVrPerEyeSky}, // Artscout - 2026: #DX12 п.5 quad focus-group off-axis sky (fixes focus contrast)
-    { "3DSky", &g_b3DSky}, // Artscout - 2026: #96 3D world-space skydome. set g_b3DSky 1 (parser strips g_b -> "3DSky")
-    { "VolumetricClouds", &g_bVolumetricClouds}, // Artscout - 2026: #13 raymarched cloud layer (also mutes the legacy DX2D clouds)
-    { "D3D12Debug", &g_bD3D12Debug}, // Artscout - 2026: arm the D3D12 validation layer in ANY build (diagnostics; costs perf)
-    { "XrMirror", &g_bXrMirror}, // Artscout - 2026 (VR): mirror rendered eye(s) to the desktop window (RenderDoc/screenshots)
-    { "VrRttWorldCam", &g_bVrRttWorldCam}, // Artscout - 2026 (VR #61): RTT display quads in real cockpit-world frame (depth)
-    { NULL, NULL }
-};
+    {"UseNew3dpit",
+     &g_bUseNew3dpit}, //ATARIBABY Use new 3dpit code - needs new 3d pit model
+    {"StartIn3Dpit", &g_bStartIn3Dpit}, // Cobra - start in 3D cockpit
+    {"UseNewSmoothing",
+     &g_bUseNewSmoothing}, // Retro 21Feb2004, look above for expl.
+    {"DisplayAxisValues", &g_bDisplayAxisValues}, // Retro 25Feb2004
+    {"WeaponLaunchUsesDrawPointerPos",
+     &g_bWeaponLaunchUsesDrawPointerPos}, // MLR 2/19/2004 -
+    {"UseNewSmoothing",
+     &g_bUseNewSmoothing}, // Retro 21Feb2004, look above for expl.
+    {"DisplayAxisValues", &g_bDisplayAxisValues}, // Retro 25Feb2004
+    {"WeaponStepToGun", &g_bWeaponStepToGun}, // MLR 3/13/2004 - See above
+    {"Turb", &g_bTurb}, //TJL 03/14/04 Turbulence Code
+    {"SoundSonicBoom", &g_bSoundSonicBoom},
+    {"DisableCommsBorder",
+     &g_bDisableCommsBorder}, // ASSO: disable the radio comms menu border
+    {"EcmOnHud", &g_bEcmOnHud}, // ASSO:
+    {"BrakeOnHud", &g_bBrakeOnHud}, // ASSO:
+    {"GearOnHud", &g_bGearOnHud}, // ASSO:
+    {"WakeTurbulence", &g_bWakeTurbulence},
+    {"DrawWakeTurbulence", &g_bDrawWakeTurbulence},
+    {"OldDustTrail", &g_bOldDustTrail}, // Cobra - Use old dust trail sfx
+    {"HearThunder", &g_bHearThunder}, // Cobra - Play thunder.wav
+    {"HighSFX", &g_bHighSFX}, // Cobra - Switch internal PS effects levels
+    {"WaterShader", &g_bWaterShader}, // #12: animated water tiles (D3D11)
+    {"CanopyReflect",
+     &g_bCanopyReflect}, // #44: view-dependent canopy glass reflection
+    {"HudCollimate",
+     &g_bHudCollimate}, // HUD collimation (infinite-projection head offset)
+    {"Hud3DGlass",
+     &g_bHud3DGlass}, // Artscout - 2026 (VR): true optical collimation of HUD symbology (sits at infinity)
+    {"GpuTerrain",
+     &g_bGpuTerrain}, // Artscout - 2026: #78 Phase 1 -- GPU world-space terrain (real depth) vs CPU screen-space. OFF by default.
+    {"TerrainMeshShader",
+     &g_bTerrainMeshShader}, // Artscout - 2026: #78 -- mesh-shader terrain off the GPU clipmap (needs SM6.5/MeshShaderTier1 or VK_EXT_mesh_shader). OFF by default.
+    {"TerrainMeshDebugTint",
+     &g_bTerrainMeshDebugTint}, // Artscout - 2026: #78 -- flat per-LOD tint (no tiles, no lighting) to prove the grid is drawn.
+    {"VrWindowsCursor",
+     &g_bVrWindowsCursor}, // Artscout - 2026: mirror the live desktop cursor into VR instead of the theater crosshair bitmap.
+    {"TerrainMeshCull",
+     &g_bTerrainMeshCull}, // Artscout - 2026: #78 -- back-face cull the mesh terrain (OFF until the winding is confirmed; restart to apply).
+    {"SensorSceneD3D12",
+     &g_bSensorSceneD3D12}, // Artscout - 2026: #DX12 A5 -- render TGP/MAV/LANTIRN sensor 3D scene into the atlas under D3D12 (OFF: stable, symbology only; ON: needs #91 terrain batch).
+    {"TerrainConnectors",
+     &g_bTerrainConnectors}, // Artscout - 2026: #78 -- single-layer connector LOD tiling (no overlap z-fight/shimmer) vs legacy overlap path. ON by default.
+    {"VrControllers",
+     &g_bVrControllers}, // Artscout - 2026 (VR controllers): laser-pointer clickable cockpit (VR only). ON by default.
+    {"VrControllerModel",
+     &g_bVrControllerModel}, // Artscout - 2026 (VR controller model): draw the real controller mesh vs wireframe
+    {"VrUseHands",
+     &g_bVrUseHands}, // Artscout - 2026 (VR): draw hand/glove meshes instead of the controller model
+    {"VrSwitchGroups",
+     &g_bVrSwitchGroups}, // Artscout - 2026: collapse multi-position rotaries to one hotspot + cycle
+    {"UseD3D12",
+     &g_bUseD3D12}, // Artscout - 2026: #DX12 Phase 1 -- bring up D3D12 backend instead of D3D11 (device+present bring-up)
+    {"VrModelOpaque",
+     &g_bVrModelOpaque}, // Artscout - 2026 (VR model): draw hand/controller mesh solid vs see-through
+    {"VrHandSkeleton",
+     &g_bVrHandSkeleton}, // Artscout - 2026 (#11): draw the 26-joint finger-tracking skeleton overlay (OFF: solid hands only)
+    {"VrControllerRenderModels",
+     &g_bVrControllerRenderModels}, // Artscout - 2026 (#11): enable runtime controller render-model XR extensions (OFF: we draw our own meshes)
+    {"VrRayFlipH",
+     &g_bVrRayFlipH}, // Artscout - 2026 (VR controllers): flip ray horizontal (right axis)
+    {"VrRayFlipV",
+     &g_bVrRayFlipV}, // Artscout - 2026 (VR controllers): flip ray vertical (up/down axis)
+    {"Hud3DGlassClip",
+     &g_bHud3DGlassClip}, // Artscout - 2026 (VR): clip collimated HUD to the combiner aperture (depth)
+    {"ClipCursorWindowed",
+     &g_bClipCursorWindowed}, // Artscout - 2026: confine the cursor to the window in windowed mode
+    {"AllHaveIFF", &g_bAllHaveIFF}, // Cobra - Give all a/c IFF interrogator
+    {"UseRC135",
+     &g_bUseRC135}, // Cobra = FRB - Use the RC-135 for ELINT (radar) ID'ing
+    {"FFDBC", &g_bFFDBC},
+    {"ExtViewOnGround",
+     &g_bExtViewOnGround}, // RAS -5Dec04- allow ext view on ground
+    {"UnlimitedAmmo", &g_bUnlimitedAmmo}, //Cobra
+    {"AnimPilotHead", &g_bAnimPilotHead}, // Cobra - Animate the pilot's head
+    {"UseQuadViews",
+     &g_bUseQuadViews}, // Artscout - 2026 (VR): 4-view quad (foveated) config -- experimental
+    {"VrViewInstancing",
+     &g_bVrViewInstancing}, // Artscout - 2026: #DX12 п.5 single-pass stereo via view instancing (SM6.1/DXC)
+    {"VrVulkanMultiview",
+     &g_bVrVulkanMultiview}, // Artscout - 2026: #107 grouped Vulkan multiview VR (opt-in)
+    {"VrD3D12ViCockpit",
+     &g_bVrD3D12ViCockpit}, // Artscout - 2026: #107 D3D12 view-instanced 3D cockpit (opt-in)
+    // Artscout - 2026: the Vulkan validation layers were only settable by
+    // rebuilding; they are the tool for hangs, so expose them to the cfg.
+    {"VulkanValidation",
+     &g_bVulkanValidation}, // KHRONOS layer: object lifetimes, descriptors, API misuse
+    {"VulkanSyncValidation",
+     &g_bVulkanSyncValidation}, // synchronization validation (slow; names the missing barrier)
+    {"VulkanTerrain",
+     &g_bVulkanTerrain}, // gate for the GPU terrain under Vulkan
+    {"VulkanProfile",
+     &g_bVulkanProfile}, // Artscout - 2026: #107 PERF -- cfg "set g_bVulkanProfile 1" (parser strips g_b)
+    {"XrTurboMode",
+     &g_bXrTurboMode}, // Artscout - 2026: #107 -- OpenXR turbo (background xrWaitFrame pacing)
+    {"VrPerEyeSky",
+     &g_bVrPerEyeSky}, // Artscout - 2026: #DX12 п.5 quad focus-group off-axis sky (fixes focus contrast)
+    {"3DSky",
+     &g_b3DSky}, // Artscout - 2026: #96 3D world-space skydome. set g_b3DSky 1 (parser strips g_b -> "3DSky")
+    {"D3D12Debug",
+     &g_bD3D12Debug}, // Artscout - 2026: arm the D3D12 validation layer in ANY build (diagnostics; costs perf)
+    {"XrMirror",
+     &g_bXrMirror}, // Artscout - 2026 (VR): mirror rendered eye(s) to the desktop window (RenderDoc/screenshots)
+    {"VrRttWorldCam",
+     &g_bVrRttWorldCam}, // Artscout - 2026 (VR #61): RTT display quads in real cockpit-world frame (depth)
+    {NULL, NULL}};
 
-static ConfigOption<int> IntOpts[] =
-{
-    { "ThrottleMode", &g_nThrottleMode },
-    { "VrRayToggle", &g_nVrRayToggle }, // Artscout - 2026 (VR hands): -1 auto(by profile) / 0 hold / 1 toggle grip activation
+static ConfigOption<int> IntOpts[] = {
+    {"ThrottleMode", &g_nThrottleMode},
+    {"TileActivatePerFrame",
+     &g_nTileActivatePerFrame}, // #107: terrain texture activations per render (spike budget)
+    {"TileActivateMeshPerFrame",
+     &g_nTileActivateMeshPerFrame}, // Artscout - 2026: #78 -- same budget for the mesh-shader terrain (no per-tile draws there, so it can afford more).
+    {"VrRayToggle",
+     &g_nVrRayToggle}, // Artscout - 2026 (VR hands): -1 auto(by profile) / 0 hold / 1 toggle grip activation
 
-    { "FarLodExtra", &g_nFarLodExtra }, // Artscout - 2026 (#79): extra coarse terrain LOD rings (geomorph target for far tiles)
-    { "PadlockBoxSize", &g_nPadlockBoxSize },
-    { "PadlockMode", &g_nPadlockMode },
-    { "NumDefaultHatSwitches", &NumHats },
-    { "NearLabelLimit", &g_nNearLabelLimit },
-    { "percentage_available_aircraft", &g_npercentage_available_aircraft },
-    { "minimum_available_aircraft", &g_nminimum_available_aircraft },
-    { "MasterServerPort", &g_nMasterServerPort },
-    { "MaxVertexSpace", &g_nMaxVertexSpace },
+    {"FarLodExtra",
+     &g_nFarLodExtra}, // Artscout - 2026 (#79): extra coarse terrain LOD rings (geomorph target for far tiles)
+    {"PadlockBoxSize", &g_nPadlockBoxSize},
+    {"PadlockMode", &g_nPadlockMode},
+    {"NumDefaultHatSwitches", &NumHats},
+    {"NearLabelLimit", &g_nNearLabelLimit},
+    {"percentage_available_aircraft", &g_npercentage_available_aircraft},
+    {"minimum_available_aircraft", &g_nminimum_available_aircraft},
+    {"MasterServerPort", &g_nMasterServerPort},
+    {"MaxVertexSpace", &g_nMaxVertexSpace},
     // { "MinTacanChannel", &g_nMinTacanChannel}, -> Theater definition file
-    { "FlightVisualBonus", &g_nFlightVisualBonus},
-    { "RelocationWait", &g_nRelocationWait},
-    { "LoadoutTimeLimit", &g_nLoadoutTimeLimit},
-    { "Year", &g_nYear},
-    { "Day", &g_nDay},
-    { "AirbaseReloc", &g_nAirbaseReloc},
-    { "NoPlayerPlay", &g_nNoPlayerPlay},
-    { "DeagTimer", &g_nDeagTimer},
-    { "ReagTimer", &g_nReagTimer},
-    { "RNESpeed", &g_nRNESpeed},
-    { "TargetSpotTimeout", &g_nTargetSpotTimeout},
-    { "MaxUIRefresh", &g_nMaxUIRefresh}, // 2002-02-23 S.G.
-    { "UnidentifiedInUI", &g_nUnidentifiedInUI}, // 2002-02-24 S.G.
-    { "lookAroundWaterTiles", &g_nlookAroundWaterTiles},
-    { "FFEffectAutoCenter", &g_nFFEffectAutoCenter},
-    { "MPStartTime", &g_nMPStartTime},
-    { "LowestSkillForGCI", &g_nLowestSkillForGCI}, // 2002-03-12 S.G.
-    { "AIVisualRetentionTime", &g_nAIVisualRetentionTime}, // 2002-03-12 S.G.
-    { "AIVisualRetentionSkill", &g_nAIVisualRetentionSkill}, // 2002-03-12 S.G.
-    { "MaxSimTimeAcceleration", &g_nMaxSimTimeAcceleration},
+    {"FlightVisualBonus", &g_nFlightVisualBonus},
+    {"RelocationWait", &g_nRelocationWait},
+    {"LoadoutTimeLimit", &g_nLoadoutTimeLimit},
+    {"Year", &g_nYear},
+    {"Day", &g_nDay},
+    {"AirbaseReloc", &g_nAirbaseReloc},
+    {"NoPlayerPlay", &g_nNoPlayerPlay},
+    {"DeagTimer", &g_nDeagTimer},
+    {"ReagTimer", &g_nReagTimer},
+    {"RNESpeed", &g_nRNESpeed},
+    {"TargetSpotTimeout", &g_nTargetSpotTimeout},
+    {"MaxUIRefresh", &g_nMaxUIRefresh}, // 2002-02-23 S.G.
+    {"UnidentifiedInUI", &g_nUnidentifiedInUI}, // 2002-02-24 S.G.
+    {"lookAroundWaterTiles", &g_nlookAroundWaterTiles},
+    {"FFEffectAutoCenter", &g_nFFEffectAutoCenter},
+    {"MPStartTime", &g_nMPStartTime},
+    {"LowestSkillForGCI", &g_nLowestSkillForGCI}, // 2002-03-12 S.G.
+    {"AIVisualRetentionTime", &g_nAIVisualRetentionTime}, // 2002-03-12 S.G.
+    {"AIVisualRetentionSkill", &g_nAIVisualRetentionSkill}, // 2002-03-12 S.G.
+    {"MaxSimTimeAcceleration", &g_nMaxSimTimeAcceleration},
     // { "ShowDebugLabels", &g_nShowDebugLabels},// only by .label chatline input
-    { "LowDetailFactor", &g_nLowDetailFactor},
-    { "NoWPRefuelNeeded", &g_nNoWPRefuelNeeded}, // 2002-03-25 MN
-    { "AirbaseCheck", &g_nAirbaseCheck}, // 2002-03-11 MN
-    { "FogRenderState", &g_nFogRenderState},
-    { "MissileFix", &g_nMissileFix}, // 2002-03-28 MN
-    { "SkipWaypointTime", &g_nSkipWaypointTime}, // 2002-04-05 MN
-    { "GroundAttackTime", &g_nGroundAttackTime}, // Cobra
-    { "SeadAttackTime", &g_nSeadAttackTime}, // Cobra
-    { "StrikeAttackTime", &g_nStrikeAttackTime}, // Cobra
-    { "CASAttackTime", &g_nCASAttackTime}, // Cobra
-    { "AIshootLookShootTime", &g_nAIshootLookShootTime}, // Cobra
-    { "GfxFix", &g_nGfxFix}, // 2002-04-06 MN
-    { "ATCTaxiOrderFix", &g_nATCTaxiOrderFix},// 2002-04-08 MN
-    { "DFRegenerateFix", &g_nDFRegenerateFix},// 2002-04-09 MN
-    { "BWMaxDeltaTime", &g_nBWMaxDeltaTime}, // 2002-04-12 MN
-    { "BWCheckDeltaTime", &g_nBWCheckDeltaTime}, // 2002-04-12 MN
-    { "VUMaxDeltaTime", &g_nVUMaxDeltaTime}, // 2002-04-12 MN
-    { "ACMIOptionsPopupHiResX", &g_nACMIOptionsPopupHiResX},
-    { "ACMIOptionsPopupHiResY", &g_nACMIOptionsPopupHiResY},
-    { "ACMIOptionsPopupLowResX", &g_nACMIOptionsPopupLowResX},
-    { "ACMIOptionsPopupLowResY", &g_nACMIOptionsPopupLowResY},
-    { "ChooseBullseyeFix", &g_nChooseBullseyeFix }, // 2002-04-12 MN
-    { "SoundSwitchFix", &g_nSoundSwitchFix},
-    { "PrintToFile", &g_nPrintToFile},
-    { "SessionTimeout", &g_nSessionTimeout},
-    { "SessionUpdateRate", &g_nSessionUpdateRate},
-    { "MaxInterceptDistance", &g_nMaxInterceptDistance}, // 2002-04-14 MN
-    { "TrackIRSampleFreq", &g_nTrackIRSampleFreq}, // Retro 02/10/03
-    { "SoundUpdatems", &g_nSoundUpdateMS }, // MLR 03/11/03
-    { "NumberOfSubTitles", &g_nNumberOfSubTitles }, // Retro 20Dec2003
-    { "SubTitleTTL", &g_nSubTitleTTL }, // Retro 20Dec2003
+    {"LowDetailFactor", &g_nLowDetailFactor},
+    {"NoWPRefuelNeeded", &g_nNoWPRefuelNeeded}, // 2002-03-25 MN
+    {"AirbaseCheck", &g_nAirbaseCheck}, // 2002-03-11 MN
+    {"FogRenderState", &g_nFogRenderState},
+    {"MissileFix", &g_nMissileFix}, // 2002-03-28 MN
+    {"SkipWaypointTime", &g_nSkipWaypointTime}, // 2002-04-05 MN
+    {"GroundAttackTime", &g_nGroundAttackTime}, // Cobra
+    {"SeadAttackTime", &g_nSeadAttackTime}, // Cobra
+    {"StrikeAttackTime", &g_nStrikeAttackTime}, // Cobra
+    {"CASAttackTime", &g_nCASAttackTime}, // Cobra
+    {"AIshootLookShootTime", &g_nAIshootLookShootTime}, // Cobra
+    {"GfxFix", &g_nGfxFix}, // 2002-04-06 MN
+    {"ATCTaxiOrderFix", &g_nATCTaxiOrderFix}, // 2002-04-08 MN
+    {"DFRegenerateFix", &g_nDFRegenerateFix}, // 2002-04-09 MN
+    {"BWMaxDeltaTime", &g_nBWMaxDeltaTime}, // 2002-04-12 MN
+    {"BWCheckDeltaTime", &g_nBWCheckDeltaTime}, // 2002-04-12 MN
+    {"VUMaxDeltaTime", &g_nVUMaxDeltaTime}, // 2002-04-12 MN
+    {"ACMIOptionsPopupHiResX", &g_nACMIOptionsPopupHiResX},
+    {"ACMIOptionsPopupHiResY", &g_nACMIOptionsPopupHiResY},
+    {"ACMIOptionsPopupLowResX", &g_nACMIOptionsPopupLowResX},
+    {"ACMIOptionsPopupLowResY", &g_nACMIOptionsPopupLowResY},
+    {"ChooseBullseyeFix", &g_nChooseBullseyeFix}, // 2002-04-12 MN
+    {"SoundSwitchFix", &g_nSoundSwitchFix},
+    {"PrintToFile", &g_nPrintToFile},
+    {"SessionTimeout", &g_nSessionTimeout},
+    {"SessionUpdateRate", &g_nSessionUpdateRate},
+    {"MaxInterceptDistance", &g_nMaxInterceptDistance}, // 2002-04-14 MN
+    {"TrackIRSampleFreq", &g_nTrackIRSampleFreq}, // Retro 02/10/03
+    {"SoundUpdatems", &g_nSoundUpdateMS}, // MLR 03/11/03
+    {"NumberOfSubTitles", &g_nNumberOfSubTitles}, // Retro 20Dec2003
+    {"SubTitleTTL", &g_nSubTitleTTL}, // Retro 20Dec2003
     // { "Season", &g_nSeason}, //THW 2004-01-02 Select Season (0=Summer/default, 1= Autumn, 2=Winter)
-    { "WinAmpInitVolume", &g_nWinAmpInitVolume }, // Retro 3Jan2004
-    { "DynamicVoices", &g_nDynamicVoices},
-    { "IdleCutoffPad", &g_nIdleCutoffPad }, // MD -- 20040209: see above
-    { "SaturationSmall", &g_nSaturationSmall}, // Retro 17Feb2004
-    { "SaturationMedium", &g_nSaturationMedium}, // Retro 17Feb2004
-    { "SaturationLarge", &g_nSaturationLarge}, // Retro 17Feb2004
-    { "DeadzoneSmall", &g_nDeadzoneSmall}, // Retro 17Feb2004
-    { "DeadzoneMedium", &g_nDeadzoneMedium}, // Retro 17Feb2004
-    { "DeadzoneLarge", &g_nDeadzoneLarge}, // Retro 17Feb2004
-    { "DeadzoneHuge", &g_nDeadzoneHuge}, // Retro 17Feb2004
-    { "MouseLookSensMax", &g_nMouseLookSensMax}, // Retro 17Feb2004
-    { "MouseLookSensMin", &g_nMouseLookSensMin}, // Retro 17Feb2004
-    { "MouseWheelSensMax", &g_nMouseWheelSensMax}, // Retro 17Feb2004
-    { "MouseWheelSensMin", &g_nMouseWheelSensMin}, // Retro 17Feb2004
-    { "KeyPOVSensMax", &g_nKeyPOVSensMax}, // Retro 17Feb2004
-    { "KeyPOVSensMin", &g_nKeyPOVSensMin}, // Retro 17Feb2004
-    { "3DHeadPanRange", &g_n3DHeadPanRange}, // Wombat778 10-23-2003 split expandedheadrange
-    { "3DHeadTiltRange", &g_n3DHeadTiltRange}, // Wombat778 10-23-2003 split expandedheadrange
-    { "6DOFTIR", &g_n6DOFTIR}, // Cobra - 0 = TIR Yaw, Pitch and Roll  1 = TIR Yaw, Pitch, Roll, X, Y Z  2 = TIR Yaw, Pitch, Roll and FOV zoom
-    { "NewFPSCounter", &g_nNewFPSCounter}, // Wombat778 3-24-2004
-    { "ForceCockpitResolution", &g_nForceCockpitResolution}, // Wombat778 4-02-04
-    { "Show2DPitErrors", &g_nShow2DPitErrors}, // Wombat778 3-22-2004
-    { "MiniDump", &g_nMiniDump}, // Wombat778 5-01-2004
-    { "HybridPitModeDelay", &g_nHybridPitModeDelay}, // Wombat778 5-01-2004
-    { "MPPowerXmitThreshold", &g_nMPPowerXmitThreshold},  // MLR 3/22/2004 - see declaration
-    { "TaxiLaunchTime", &g_nTaxiLaunchTime}, // Booster 2004/10/12 Taxi takeoff time option
-    { "ChatterInterval", &g_nChatterInterval}, // FRB - chatter noise control
-    { "SfxLODCutoff", &g_nSfxLODCutoff}, // Cobra - SFX display limits
-    { "SfxLODDistCutoff", &g_nSfxLODDistCutoff}, // Cobra - SFX display limits
-    { "SfxLODTotCutoff", &g_nSfxLODTotCutoff}, // Cobra - SFX display limits
-    { "PSPurgeInterval", &g_nPSPurgeInterval}, // Cobra - PS list purge interval
-    { "PSKillFPS", &g_nPSKillFPS}, //Cobra
-    { "CriticalPullup", &g_nCriticalPullup}, // Cobra - AI ground avoidance full pullup theshold
-    { NULL, NULL }
-};
+    {"WinAmpInitVolume", &g_nWinAmpInitVolume}, // Retro 3Jan2004
+    {"DynamicVoices", &g_nDynamicVoices},
+    {"IdleCutoffPad", &g_nIdleCutoffPad}, // MD -- 20040209: see above
+    {"SaturationSmall", &g_nSaturationSmall}, // Retro 17Feb2004
+    {"SaturationMedium", &g_nSaturationMedium}, // Retro 17Feb2004
+    {"SaturationLarge", &g_nSaturationLarge}, // Retro 17Feb2004
+    {"DeadzoneSmall", &g_nDeadzoneSmall}, // Retro 17Feb2004
+    {"DeadzoneMedium", &g_nDeadzoneMedium}, // Retro 17Feb2004
+    {"DeadzoneLarge", &g_nDeadzoneLarge}, // Retro 17Feb2004
+    {"DeadzoneHuge", &g_nDeadzoneHuge}, // Retro 17Feb2004
+    {"MouseLookSensMax", &g_nMouseLookSensMax}, // Retro 17Feb2004
+    {"MouseLookSensMin", &g_nMouseLookSensMin}, // Retro 17Feb2004
+    {"MouseWheelSensMax", &g_nMouseWheelSensMax}, // Retro 17Feb2004
+    {"MouseWheelSensMin", &g_nMouseWheelSensMin}, // Retro 17Feb2004
+    {"KeyPOVSensMax", &g_nKeyPOVSensMax}, // Retro 17Feb2004
+    {"KeyPOVSensMin", &g_nKeyPOVSensMin}, // Retro 17Feb2004
+    {"3DHeadPanRange",
+     &g_n3DHeadPanRange}, // Wombat778 10-23-2003 split expandedheadrange
+    {"3DHeadTiltRange",
+     &g_n3DHeadTiltRange}, // Wombat778 10-23-2003 split expandedheadrange
+    {"6DOFTIR",
+     &g_n6DOFTIR}, // Cobra - 0 = TIR Yaw, Pitch and Roll  1 = TIR Yaw, Pitch, Roll, X, Y Z  2 = TIR Yaw, Pitch, Roll and FOV zoom
+    {"NewFPSCounter", &g_nNewFPSCounter}, // Wombat778 3-24-2004
+    {"ForceCockpitResolution", &g_nForceCockpitResolution}, // Wombat778 4-02-04
+    {"Show2DPitErrors", &g_nShow2DPitErrors}, // Wombat778 3-22-2004
+    {"MiniDump", &g_nMiniDump}, // Wombat778 5-01-2004
+    {"HybridPitModeDelay", &g_nHybridPitModeDelay}, // Wombat778 5-01-2004
+    {"MPPowerXmitThreshold",
+     &g_nMPPowerXmitThreshold}, // MLR 3/22/2004 - see declaration
+    {"TaxiLaunchTime",
+     &g_nTaxiLaunchTime}, // Booster 2004/10/12 Taxi takeoff time option
+    {"ChatterInterval", &g_nChatterInterval}, // FRB - chatter noise control
+    {"SfxLODCutoff", &g_nSfxLODCutoff}, // Cobra - SFX display limits
+    {"SfxLODDistCutoff", &g_nSfxLODDistCutoff}, // Cobra - SFX display limits
+    {"SfxLODTotCutoff", &g_nSfxLODTotCutoff}, // Cobra - SFX display limits
+    {"PSPurgeInterval", &g_nPSPurgeInterval}, // Cobra - PS list purge interval
+    {"PSKillFPS", &g_nPSKillFPS}, //Cobra
+    {"CriticalPullup",
+     &g_nCriticalPullup}, // Cobra - AI ground avoidance full pullup theshold
+    {NULL, NULL}};
 
-static ConfigOption<char> StringOpts[] =
-{
-    { "MasterServerName", &g_strMasterServerName[0] },
-    { "ServerName", &g_strServerName[0] },
-    { "ServerLocation", &g_strServerLocation[0] },
-    { "ServerAdmin", &g_strServerAdmin[0] },
-    { "ServerAdminEmail", &g_strServerAdminEmail[0] },
-    { "VoiceHostIP", &g_strVoiceHostIP[0] },
-    { "WorldName", &g_strWorldName[0] },
-    { "ScrollUpFunction", &g_strScrollUpFunction[0] }, //Wombat778 10-07-2003
-    { "ScrollDownFunction", &g_strScrollDownFunction[0]}, //Wombat778 10-07-2003
-    { "MiddleButtonFunction", &g_strMiddleButtonFunction[0] }, //Wombat778 10-07-2003
-    { "RadioflightCol", &g_strRadioflightCol[0] }, // Retro 27Dec2003
-    { "RadiotoPackageCol", &g_strRadiotoPackageCol[0] }, // Retro 27Dec2003
-    { "RadioToFromPackageCol", &g_strRadioToFromPackageCol[0] }, // Retro 27Dec2003
-    { "RadioTeamCol", &g_strRadioTeamCol[0] }, // Retro 27Dec2003
-    { "RadioProximityCol", &g_strRadioProximityCol[0] }, // Retro 27Dec2003
-    { "RadioWorldCol", &g_strRadioWorldCol[0] }, // Retro 27Dec2003
-    { "RadioTowerCol", &g_strRadioTowerCol[0] }, // Retro 27Dec2003
-    { "RadioStandardCol", &g_strRadioStandardCol[0] }, // Retro 27Dec2003
-    { NULL, NULL }
-};
+static ConfigOption<char> StringOpts[] = {
+    {"MasterServerName", &g_strMasterServerName[0]},
+    {"SoundDevice", &g_strSoundDevice[0]}, // OpenAL output device substring ("" = default)
+    {"ServerName", &g_strServerName[0]},
+    {"ServerLocation", &g_strServerLocation[0]},
+    {"ServerAdmin", &g_strServerAdmin[0]},
+    {"ServerAdminEmail", &g_strServerAdminEmail[0]},
+    {"VoiceHostIP", &g_strVoiceHostIP[0]},
+    {"WorldName", &g_strWorldName[0]},
+    {"ScrollUpFunction", &g_strScrollUpFunction[0]}, //Wombat778 10-07-2003
+    {"ScrollDownFunction", &g_strScrollDownFunction[0]}, //Wombat778 10-07-2003
+    {"MiddleButtonFunction",
+     &g_strMiddleButtonFunction[0]}, //Wombat778 10-07-2003
+    {"RadioflightCol", &g_strRadioflightCol[0]}, // Retro 27Dec2003
+    {"RadiotoPackageCol", &g_strRadiotoPackageCol[0]}, // Retro 27Dec2003
+    {"RadioToFromPackageCol",
+     &g_strRadioToFromPackageCol[0]}, // Retro 27Dec2003
+    {"RadioTeamCol", &g_strRadioTeamCol[0]}, // Retro 27Dec2003
+    {"RadioProximityCol", &g_strRadioProximityCol[0]}, // Retro 27Dec2003
+    {"RadioWorldCol", &g_strRadioWorldCol[0]}, // Retro 27Dec2003
+    {"RadioTowerCol", &g_strRadioTowerCol[0]}, // Retro 27Dec2003
+    {"RadioStandardCol", &g_strRadioStandardCol[0]}, // Retro 27Dec2003
+    {NULL, NULL}};
 
-static ConfigOption<float> FloatOpts[] =
-{
-    { "MipLodBias", &g_fMipLodBias },
-    { "TerrainOverlapPosts", &g_fTerrainOverlapPosts }, // Artscout - 2026 (#78): 0=geomorph-only (no z-fight shimmer), 4=old overlap
-    { "CloudMinHeight", &g_fCloudMinHeight}, // JPO
-    { "RadarScale", &g_fRadarScale}, // JPO
-    { "CursorSpeed", &g_fCursorSpeed}, // JPO
-    { "HudCollimateScale", &g_fHudCollimateScale}, // Artscout - 2026: tune HUD collimation strength (1.0 = original)
-    { "Hud3DGlassTint", &g_fHud3DGlassTint}, // Artscout - 2026 (VR): combiner glass plate tint alpha (0 = none)
-    { "Hud3DGlassFresnel", &g_fHud3DGlassFresnel}, // Artscout - 2026 (VR): grazing-angle glass visibility boost
-    { "VrRwrFwd", &g_fVrRwrFwd}, // Artscout - 2026 (VR): forward push of the RWR symbology canvas onto the scope
-    { "TracerStreak", &g_fTracerStreak}, // Artscout - 2026: flat-path cannon tracer streak length (velocity*frameTime mult)
-    { "VrTracerStreak", &g_fVrTracerStreak}, // Artscout - 2026 (VR): shorter tracer streak in headset (avoids giant-laser look)
-    { "VrTracerBright", &g_fVrTracerBright}, // Artscout - 2026 (VR): tracer brightness multiplier in headset (0..1)
-    { "VrMenuScale", &g_fVrMenuScale}, // Artscout - 2026 (VR): center + scale the radio/comms/exit menu in the headset
-    { "VrMenuDist", &g_fVrMenuDist},   // Artscout - 2026 (#59 VR menu): head-locked menu quad distance forward (m)
-    { "VrMenuHeight", &g_fVrMenuHeight}, // Artscout - 2026 (#59 VR menu): head-locked menu quad panel height (m)
-    { "Hud3DGlassSize", &g_fHud3DGlassSize}, // Artscout - 2026 (VR): glass plate / aperture size vs the HUD canvas
-    { "Hud3DGlassTop", &g_fHud3DGlassTop}, // Artscout - 2026 (VR): #76 top-edge extent of the glass plate/aperture (pull the top down so the tint doesn't overshoot the frame)
-    { "QuadOffAxisX", &g_fQuadOffAxisX}, // Artscout - 2026 (VR quad-views): off-axis H sign/scale (1=on, -1=flip, 0=off)
-    { "VrViewInstIpdSign", &g_fVrViewInstIpdSign}, // Artscout - 2026: #DX12 п.5 per-eye view-matrix IPD sign (flip if eyes swap)
-    { "InstantActionFuel", &g_fInstantActionFuel}, // Artscout - 2026: IA ownship fuel lbs (lighter = more agile; 0 = full)
-    { "SunWarmth", &g_fSunWarmth},         // #96 sun disc: 1 = legacy tint (default), 0 = untouched SUN.DDS
-    { "SkyDomeRadius", &g_fSkyDomeRadius}, // Artscout - 2026: #96 skydome radius (ft)
-    // Artscout - 2026: #13 volumetric-cloud tuning. set g_fCloudSteps 16 etc. (parser strips g_f)
-    { "CloudSteps", &g_fCloudSteps},       // march samples through the slab -- THE perf knob (cost is linear)
-    { "CloudCoverage", &g_fCloudCoverage}, // 0 clear .. 1 solid; -1 = derive from the weather condition
-    { "CloudDensity", &g_fCloudDensity},   // extinction per foot
-    { "CloudScale", &g_fCloudScale},       // noise frequency (1/ft); smaller = bigger cloud masses
-    { "CloudAmbient", &g_fCloudAmbient},   // haze light on the shadowed side (0..1)
-    { "CloudPowder", &g_fCloudPowder},     // silver-lining strength
-    { "CumulusBase", &g_fCumulusBase},         // #13 cumulus base (ft ASL) when the sim's cumulusZ is unusable
-    { "CumulusThick", &g_fCumulusThick},       // #13 cumulus base-to-top extent (ft)
-    { "CumulusCoverage", &g_fCumulusCoverage}, // #13 0..1; -1 = derive from the weather condition
-    { "CloudErode", &g_fCloudErode},           // #13 diag: 0 = erosion noise off
-    { "CloudVertScale", &g_fCloudVertScale}, // #13 vertical noise scale (1.0 = isotropic)
-    { "CloudDebug", &g_fCloudDebug},           // #13 diag: 1=RGB(density,envelope,noise) 2=env 3=noise 4=height
-    { "CloudPatchScale", &g_fCloudPatchScale}, // #13 weather-map frequency (smaller = broader patches)
-    { "CloudAmount", &g_fCloudAmount},         // #13 fraction of sky carrying weather
-    { "CloudTopVary", &g_fCloudTopVary},       // #13 how much cloud tops differ (0 = flat lid)
-    { "SkyDomeSunSize", &g_fSkyDomeSunSize}, // Artscout - 2026: #96 sun disc size (fraction of radius)
-    { "SkyDomeMoonSize", &g_fSkyDomeMoonSize}, // Artscout - 2026: #96 moon disc size (fraction of radius)
-    { "SkyDomeStarSize", &g_fSkyDomeStarSize}, // Artscout - 2026: #96 star quad size (fraction of radius)
-    { "SkyMapRotate", &g_fSkyMapRotate},       // Artscout - 2026: #96 equirect starmap azimuth rotation (0..1)
-    { "SkyMapBright", &g_fSkyMapBright},        // Artscout - 2026: #96 starmap brightness multiplier
-    { "SkyMapTilt", &g_fSkyMapTilt},            // Artscout - 2026: #96 starmap tilt (lifts pole off zenith)
-    { "QuadOffAxisY", &g_fQuadOffAxisY}, // Artscout - 2026 (VR quad-views): off-axis V sign/scale
-    { "VrDisplayIpd", &g_fVrDisplayIpd}, // Artscout - 2026 (VR): IPD for RTT display convergence (tune sign/mag)
-    { "AsecScale", &g_fAsecScale}, // Artscout - 2026 (HUD): bore 262mr ASEC display scale (fit small HUD, no tape overlap)
-    { "HudCanvasScale", &g_fHudCanvasScale}, // Artscout - 2026 (HUD): widen HUD glass FOV (fixes layout properly)
-    { "HorizonFillerExtend", &g_fHorizonFillerExtend}, // Artscout - 2026 (horizon): extend sky filler down over fartiles seam
-    { "VrCursorMagnet", &g_fVrCursorMagnet}, // Artscout - 2026 (VR mouse): magnetic snap-radius multiplier for clickable cockpit
-    { "VrCursorOffAxisX", &g_fVrCursorOffAxisX}, // Artscout - 2026 (VR mouse): horizontal off-axis undo for focus cursor alignment
-    { "VrCursorOffAxisY", &g_fVrCursorOffAxisY}, // Artscout - 2026 (VR mouse): vertical off-axis undo for focus cursor alignment
-    { "VrDetectBiasX", &g_fVrDetectBiasX}, // Artscout - 2026 (VR mouse): horizontal display-pixel bias for clickable-cockpit detection
-    { "VrDetectBiasY", &g_fVrDetectBiasY}, // Artscout - 2026 (VR mouse): vertical display-pixel bias for clickable-cockpit detection
-    { "VrCursorIpd", &g_fVrCursorIpd}, // Artscout - 2026 (VR mouse): per-eye IPD parallax scale for depth-correct clickable detection
-    { "VrRayRadius", &g_fVrRayRadius}, // Artscout - 2026 (VR controllers): laser hit radius = button.dist * this
-    { "VrRayReach", &g_fVrRayReach}, // Artscout - 2026 (VR controllers): free-cursor reach along the ray (button units)
-    { "VrMouseRayX", &g_fVrMouseRayX}, // Artscout - 2026 (#58 true 3D mouse): horizontal ray sign/scale (-1 flips)
-    { "VrMouseRayY", &g_fVrMouseRayY}, // Artscout - 2026 (#58 true 3D mouse): vertical ray sign/scale (-1 flips)
-    { "VrMouseRayRadius", &g_fVrMouseRayRadius}, // Artscout - 2026 (#58 true 3D mouse): mouse-ray hit radius (button.dist * this)
-    { "VrThumbThresh", &g_fVrThumbThresh}, // Artscout - 2026 (VR controllers): thumbstick press threshold
-    { "VrKnobRepeat", &g_fVrKnobRepeatMs}, // Artscout - 2026 (VR controllers): held-thumbstick repeat interval (ms)
-    { "VrRayOriginOfs", &g_fVrRayOriginOfs}, // Artscout - 2026 (VR controllers): calibration shift of the ray origin along its dir
-    { "VrRayPitch", &g_fVrRayPitch}, // Artscout - 2026 (VR): tilt the ray direction up/down (deg) to match the finger
-    { "VrRayYaw", &g_fVrRayYaw}, // Artscout - 2026 (VR): tilt the ray direction left/right (deg)
-    { "VrRayOriginUp", &g_fVrRayOriginUp}, // Artscout - 2026 (VR): shift ray origin up (button units) to the fingertip
-    { "VrRayOriginRight", &g_fVrRayOriginRight}, // Artscout - 2026 (VR): shift ray origin right (button units)
-    { "VrRayIpd", &g_fVrRayIpd}, // Artscout - 2026 (VR controllers): stereo disparity scale for the beam/cross
-    { "VrModelScale", &g_fVrModelScale}, // Artscout - 2026 (VR controller model): controller mesh size multiplier
-    { "VrModelYaw", &g_fVrModelYaw}, // Artscout - 2026 (VR controller model): mesh local yaw (deg)
-    { "VrModelPitch", &g_fVrModelPitch}, // Artscout - 2026 (VR controller model): mesh local pitch (deg)
-    { "VrModelRoll", &g_fVrModelRoll}, // Artscout - 2026 (VR controller model): mesh local roll (deg)
-    { "VrModelCull", &g_fVrModelCull}, // Artscout - 2026 (VR model): 0=no cull, 1=back, 2=front (flip if inside-out)
-    { "VrGripThresh", &g_fVrGripThresh},   // Artscout - 2026 (VR hands): squeeze threshold for grip activation
-    { "VrClenchSpeed", &g_fVrClenchSpeed}, // Artscout - 2026 (VR hands): fist clench morph speed (units/sec)
-    { "VrIndexTipX", &g_fVrIndexTipX}, // Artscout - 2026 (VR hands): index fingertip local point (metres, right hand; left mirrors X)
-    { "VrIndexTipY", &g_fVrIndexTipY},
-    { "VrIndexTipZ", &g_fVrIndexTipZ},
-    { "VrIndexDirX", &g_fVrIndexDirX}, // Artscout - 2026 (VR hands): "continue the finger" ray direction (local, right hand)
-    { "VrIndexDirY", &g_fVrIndexDirY},
-    { "VrIndexDirZ", &g_fVrIndexDirZ},
-    { "GpuTerrainSlopeBias", &g_fGpuTerrainSlopeBias}, // Artscout - 2026: #78 terrain slope-scaled depth bias (grazing z-fight vs runway/objects)
-    { "GpuTerrainDepthBias", &g_fGpuTerrainDepthBias}, // Artscout - 2026: #78 terrain constant depth bias
-    { "VrCursorMagnetStereo", &g_fVrCursorMagnetStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) snap radius
-    { "VrDetectBiasXStereo", &g_fVrDetectBiasXStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) horizontal detect bias
-    { "VrDetectBiasXStereoDx12", &g_fVrDetectBiasXStereoDx12}, // Artscout - 2026 (VR DX12): stereo horizontal detect bias on the D3D12 path
-    { "VrDetectBiasYStereo", &g_fVrDetectBiasYStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) vertical detect bias
-    { "VrCursorIpdStereo", &g_fVrCursorIpdStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) IPD parallax scale
-    { "MinCloudWeather",  &g_fMinCloudWeather}, //JPO
-    { "CloudThicknessFactor", &g_fCloudThicknessFactor}, //JPO
-    { "DragDilutionFactor", &g_fDragDilutionFactor},
+static ConfigOption<float> FloatOpts[] = {
+    {"MipLodBias", &g_fMipLodBias},
+    {"VrSubQuadX",
+     &g_fVrSubQuadX}, // #59: subtitle quad horizontal offset (m, + = right)
+    {"VrSubQuadY",
+     &g_fVrSubQuadY}, // #59: subtitle quad vertical offset (m, + = up)
+    {"TerrainOverlapPosts",
+     &g_fTerrainOverlapPosts}, // Artscout - 2026 (#78): 0=geomorph-only (no z-fight shimmer), 4=old overlap
+    {"CloudMinHeight", &g_fCloudMinHeight}, // JPO
+    {"RadarScale", &g_fRadarScale}, // JPO
+    {"CursorSpeed", &g_fCursorSpeed}, // JPO
+    {"HudCollimateScale",
+     &g_fHudCollimateScale}, // Artscout - 2026: tune HUD collimation strength (1.0 = original)
+    {"Hud3DGlassTint",
+     &g_fHud3DGlassTint}, // Artscout - 2026 (VR): combiner glass plate tint alpha (0 = none)
+    {"Hud3DGlassFresnel",
+     &g_fHud3DGlassFresnel}, // Artscout - 2026 (VR): grazing-angle glass visibility boost
+    {"VrRwrFwd",
+     &g_fVrRwrFwd}, // Artscout - 2026 (VR): forward push of the RWR symbology canvas onto the scope
+    {"TracerStreak",
+     &g_fTracerStreak}, // Artscout - 2026: flat-path cannon tracer streak length (velocity*frameTime mult)
+    {"VrTracerStreak",
+     &g_fVrTracerStreak}, // Artscout - 2026 (VR): shorter tracer streak in headset (avoids giant-laser look)
+    {"VrTracerBright",
+     &g_fVrTracerBright}, // Artscout - 2026 (VR): tracer brightness multiplier in headset (0..1)
+    {"VrMenuScale",
+     &g_fVrMenuScale}, // Artscout - 2026 (VR): center + scale the radio/comms/exit menu in the headset
+    {"VrMenuDist",
+     &g_fVrMenuDist}, // Artscout - 2026 (#59 VR menu): head-locked menu quad distance forward (m)
+    {"VrMenuHeight",
+     &g_fVrMenuHeight}, // Artscout - 2026 (#59 VR menu): head-locked menu quad panel height (m)
+    {"Hud3DGlassSize",
+     &g_fHud3DGlassSize}, // Artscout - 2026 (VR): glass plate / aperture size vs the HUD canvas
+    {"Hud3DGlassTop",
+     &g_fHud3DGlassTop}, // Artscout - 2026 (VR): #76 top-edge extent of the glass plate/aperture (pull the top down so the tint doesn't overshoot the frame)
+    {"QuadOffAxisX",
+     &g_fQuadOffAxisX}, // Artscout - 2026 (VR quad-views): off-axis H sign/scale (1=on, -1=flip, 0=off)
+    {"VrViewInstIpdSign",
+     &g_fVrViewInstIpdSign}, // Artscout - 2026: #DX12 п.5 per-eye view-matrix IPD sign (flip if eyes swap)
+    {"InstantActionFuel",
+     &g_fInstantActionFuel}, // Artscout - 2026: IA ownship fuel lbs (lighter = more agile; 0 = full)
+    {"SunWarmth",
+     &g_fSunWarmth}, // #96 sun disc: 1 = legacy tint (default), 0 = untouched SUN.DDS
+    {"SkyDomeRadius",
+     &g_fSkyDomeRadius}, // Artscout - 2026: #96 skydome radius (ft)
+    {"SkyDomeSunSize",
+     &g_fSkyDomeSunSize}, // Artscout - 2026: #96 sun disc size (fraction of radius)
+    {"SkyDomeMoonSize",
+     &g_fSkyDomeMoonSize}, // Artscout - 2026: #96 moon disc size (fraction of radius)
+    {"SkyDomeStarSize",
+     &g_fSkyDomeStarSize}, // Artscout - 2026: #96 star quad size (fraction of radius)
+    {"SkyMapRotate",
+     &g_fSkyMapRotate}, // Artscout - 2026: #96 equirect starmap azimuth rotation (0..1)
+    {"SkyMapBright",
+     &g_fSkyMapBright}, // Artscout - 2026: #96 starmap brightness multiplier
+    {"SkyMapTilt",
+     &g_fSkyMapTilt}, // Artscout - 2026: #96 starmap tilt (lifts pole off zenith)
+    {"QuadOffAxisY",
+     &g_fQuadOffAxisY}, // Artscout - 2026 (VR quad-views): off-axis V sign/scale
+    {"VrDisplayIpd",
+     &g_fVrDisplayIpd}, // Artscout - 2026 (VR): IPD for RTT display convergence (tune sign/mag)
+    {"AsecScale",
+     &g_fAsecScale}, // Artscout - 2026 (HUD): bore 262mr ASEC display scale (fit small HUD, no tape overlap)
+    {"HudCanvasScale",
+     &g_fHudCanvasScale}, // Artscout - 2026 (HUD): widen HUD glass FOV (fixes layout properly)
+    {"HorizonFillerExtend",
+     &g_fHorizonFillerExtend}, // Artscout - 2026 (horizon): extend sky filler down over fartiles seam
+    {"VrCursorMagnet",
+     &g_fVrCursorMagnet}, // Artscout - 2026 (VR mouse): magnetic snap-radius multiplier for clickable cockpit
+    {"VrCursorOffAxisX",
+     &g_fVrCursorOffAxisX}, // Artscout - 2026 (VR mouse): horizontal off-axis undo for focus cursor alignment
+    {"VrCursorOffAxisY",
+     &g_fVrCursorOffAxisY}, // Artscout - 2026 (VR mouse): vertical off-axis undo for focus cursor alignment
+    {"VrDetectBiasX",
+     &g_fVrDetectBiasX}, // Artscout - 2026 (VR mouse): horizontal display-pixel bias for clickable-cockpit detection
+    {"VrDetectBiasY",
+     &g_fVrDetectBiasY}, // Artscout - 2026 (VR mouse): vertical display-pixel bias for clickable-cockpit detection
+    {"VrCursorIpd",
+     &g_fVrCursorIpd}, // Artscout - 2026 (VR mouse): per-eye IPD parallax scale for depth-correct clickable detection
+    {"VrRayRadius",
+     &g_fVrRayRadius}, // Artscout - 2026 (VR controllers): laser hit radius = button.dist * this
+    {"VrRayReach",
+     &g_fVrRayReach}, // Artscout - 2026 (VR controllers): free-cursor reach along the ray (button units)
+    {"VrMouseRayX",
+     &g_fVrMouseRayX}, // Artscout - 2026 (#58 true 3D mouse): horizontal ray sign/scale (-1 flips)
+    {"VrMouseRayY",
+     &g_fVrMouseRayY}, // Artscout - 2026 (#58 true 3D mouse): vertical ray sign/scale (-1 flips)
+    {"VrMouseRayRadius",
+     &g_fVrMouseRayRadius}, // Artscout - 2026 (#58 true 3D mouse): mouse-ray hit radius (button.dist * this)
+    {"VrThumbThresh",
+     &g_fVrThumbThresh}, // Artscout - 2026 (VR controllers): thumbstick press threshold
+    {"VrKnobRepeat",
+     &g_fVrKnobRepeatMs}, // Artscout - 2026 (VR controllers): held-thumbstick repeat interval (ms)
+    {"VrRayOriginOfs",
+     &g_fVrRayOriginOfs}, // Artscout - 2026 (VR controllers): calibration shift of the ray origin along its dir
+    {"VrRayPitch",
+     &g_fVrRayPitch}, // Artscout - 2026 (VR): tilt the ray direction up/down (deg) to match the finger
+    {"VrRayYaw",
+     &g_fVrRayYaw}, // Artscout - 2026 (VR): tilt the ray direction left/right (deg)
+    {"VrRayOriginUp",
+     &g_fVrRayOriginUp}, // Artscout - 2026 (VR): shift ray origin up (button units) to the fingertip
+    {"VrRayOriginRight",
+     &g_fVrRayOriginRight}, // Artscout - 2026 (VR): shift ray origin right (button units)
+    {"VrRayIpd",
+     &g_fVrRayIpd}, // Artscout - 2026 (VR controllers): stereo disparity scale for the beam/cross
+    {"VrHandYaw", &g_fVrHandYaw},     // Artscout - 2026 (VR hands): wrist twist correction (deg)
+    {"VrHandPitch", &g_fVrHandPitch}, // about knuckle line
+    {"VrHandRoll", &g_fVrHandRoll},   // about finger axis
+    {"VrModelScale",
+     &g_fVrModelScale}, // Artscout - 2026 (VR controller model): controller mesh size multiplier
+    {"VrModelYaw",
+     &g_fVrModelYaw}, // Artscout - 2026 (VR controller model): mesh local yaw (deg)
+    {"VrModelPitch",
+     &g_fVrModelPitch}, // Artscout - 2026 (VR controller model): mesh local pitch (deg)
+    {"VrModelRoll",
+     &g_fVrModelRoll}, // Artscout - 2026 (VR controller model): mesh local roll (deg)
+    {"VrModelCull",
+     &g_fVrModelCull}, // Artscout - 2026 (VR model): 0=no cull, 1=back, 2=front (flip if inside-out)
+    {"VrGripThresh",
+     &g_fVrGripThresh}, // Artscout - 2026 (VR hands): squeeze threshold for grip activation
+    {"VrClenchSpeed",
+     &g_fVrClenchSpeed}, // Artscout - 2026 (VR hands): fist clench morph speed (units/sec)
+    {"VrIndexTipX",
+     &g_fVrIndexTipX}, // Artscout - 2026 (VR hands): index fingertip local point (metres, right hand; left mirrors X)
+    {"VrIndexTipY", &g_fVrIndexTipY},
+    {"VrIndexTipZ", &g_fVrIndexTipZ},
+    {"VrIndexDirX",
+     &g_fVrIndexDirX}, // Artscout - 2026 (VR hands): "continue the finger" ray direction (local, right hand)
+    {"VrIndexDirY", &g_fVrIndexDirY},
+    {"VrIndexDirZ", &g_fVrIndexDirZ},
+    {"GpuTerrainSlopeBias",
+     &g_fGpuTerrainSlopeBias}, // Artscout - 2026: #78 terrain slope-scaled depth bias (grazing z-fight vs runway/objects)
+    {"GpuTerrainDepthBias",
+     &g_fGpuTerrainDepthBias}, // Artscout - 2026: #78 terrain constant depth bias
+    {"VrCursorMagnetStereo",
+     &g_fVrCursorMagnetStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) snap radius
+    {"VrDetectBiasXStereo",
+     &g_fVrDetectBiasXStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) horizontal detect bias
+    {"VrDetectBiasXStereoDx12",
+     &g_fVrDetectBiasXStereoDx12}, // Artscout - 2026 (VR DX12): stereo horizontal detect bias on the D3D12 path
+    {"VrDetectBiasYStereo",
+     &g_fVrDetectBiasYStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) vertical detect bias
+    {"VrCursorIpdStereo",
+     &g_fVrCursorIpdStereo}, // Artscout - 2026 (#58): plain-stereo (non-quad) IPD parallax scale
+    {"MinCloudWeather", &g_fMinCloudWeather}, //JPO
+    {"CloudThicknessFactor", &g_fCloudThicknessFactor}, //JPO
+    {"DragDilutionFactor", &g_fDragDilutionFactor},
     // { "Latitude", &g_fLatitude}, // is now set by the theater.map readout
-    { "dwPorthost", &g_fdwPorthost},
-    { "dwPortclient", &g_fdwPortclient},
+    {"dwPorthost", &g_fdwPorthost},
+    {"dwPortclient", &g_fdwPortclient},
 #if 0
     {"3dlMFDulx", &g_f3dlMFDulx},
     {"3dlMFDuly", &g_f3dlMFDuly},
@@ -1661,7 +2086,7 @@ static ConfigOption<float> FloatOpts[] =
     {"3drMFDlly", &g_f3drMFDlly},
     {"3drMFDllz", &g_f3drMFDllz},
 #endif
-    {"FormationBurnerDistance" , &g_fFormationBurnerDistance},
+    {"FormationBurnerDistance", &g_fFormationBurnerDistance},
     {"PadlockBreakDistance", &g_fPadlockBreakDistance},
     {"AFRudderRight", &g_fAFRudderRight},
     {"AFRudderLeft", &g_fAFRudderLeft},
@@ -1697,129 +2122,155 @@ static ConfigOption<float> FloatOpts[] =
     {"IdentFactor", &g_fIdentFactor}, // 2002-03-07 S.G.
     {"AIDropStoreLauncherRange", &g_fAIDropStoreLauncherRange}, // 2002-03-08 MN
     {"BiasFactorForFlaks", &g_fBiasFactorForFlaks}, // 2002-03-12 S.G.
-    { "TracerAccuracyFactor", &g_fTracerAccuracyFactor }, // 2002-03-12 S.G.
-    { "TankerRStick", &g_fTankerRStick }, // 2003-03-13 MN
-    { "TankerPStick", &g_fTankerPStick }, // 2003-03-13 MN
-    { "TankerTrackFactor", &g_fTankerTrackFactor }, // 2003-03-13 MN
-    { "TankerHeadsupDistance", &g_fTankerHeadsupDistance}, // 2003-04-07 MN
-    { "TankerBackupDistance", &g_fTankerBackupDistance}, // 2003-04-07 MN
-    { "HeadingStabilizeFactor", &g_fHeadingStabilizeFactor}, // 2003-04-07 MN
-    { "RocketPitchFactor", &g_fRocketPitchFactor}, // Cobra
-    { "RocketPitchCorr", &g_fRocketPitchCorr}, // Cobra
-    { "FuelBaseProp", &g_fFuelBaseProp }, // 2002-03-14 S.G.
-    { "FuelMultProp", &g_fFuelMultProp }, // 2002-03-14 S.G.
-    { "FuelTimeStep", &g_fFuelTimeStep }, // 2002-03-14 S.G.
-    { "FuelVtClip", &g_fFuelVtClip }, // 2002-03-14 S.G.
-    { "FuelVtDotMult", &g_fFuelVtDotMult }, // 2002-03-14 S.G.
-    { "AIRefuelSpeed", &g_fAIRefuelSpeed }, // 2002-03-15 MN
-    { "SearchSimTargetFromRangeSqr", &g_fSearchSimTargetFromRangeSqr}, // 2002-03-15 S.G.
-    { "NukeStrengthFactor", &g_fNukeStrengthFactor }, // 2002-03-22 MN
-    { "NukeDamageMod", &g_fNukeDamageMod }, // 2002-03-25 MN
-    { "NukeDamageRadius", &g_fNukeDamageRadius }, // 2002-03-25 MN
-    { "ClimbRatio", &g_fClimbRatio }, // 2002-03-25 MN
-    { "HotNoseAngle", &g_fHotNoseAngle }, // 2002-03-22 S.G.
-    { "MaxMARNoIdA", &g_fMaxMARNoIdA}, // 2002-03-22 S.G.
-    { "MinMARNoId5kA", &g_fMinMARNoId5kA }, // 2002-03-22 S.G.
-    { "MinMARNoId18kA", &g_fMinMARNoId18kA }, // 2002-03-22 S.G.
-    { "MinMARNoId28kA", &g_fMinMARNoId28kA }, // 2002-03-22 S.G.
-    { "MaxMARNoIdB", &g_fMaxMARNoIdB}, // 2002-03-22 S.G.
-    { "MinMARNoId5kB", &g_fMinMARNoId5kB }, // 2002-03-22 S.G.
-    { "MinMARNoId18kB", &g_fMinMARNoId18kB }, // 2002-03-22 S.G.
-    { "MinMARNoId28kB", &g_fMinMARNoId28kB }, // 2002-03-22 S.G.
-    { "MinMARNoIdC", &g_fMinMARNoIdC }, // 2002-03-22 S.G.
-    { "WaypointBurnerDelta", &g_fWaypointBurnerDelta }, // 2002-03-28 MN
-    { "GroundImpactMod", &g_fGroundImpactMod}, //MI 2002-03-28
-    { "BombMissileAltitude", &g_fBombMissileAltitude}, // 2002-03-28 MN
-    { "GMTMaxSpeed", &g_fGMTMaxSpeed}, // 2002-04-03 MN
-    { "GMTMinSpeed", &g_fGMTMinSpeed}, // 2002-04-03 MN
-    { "ReconCameraHalfFOV", &g_fReconCameraHalfFOV}, //MI 2002-04-03 Recon camera stuff
-    { "ReconCameraOffset", &g_fReconCameraOffset}, //MI 2002-04-03 Recon camera stuff
-    { "EXPfactor", &g_fEXPfactor}, // 2002-04-05 MN cursor speed reduction in EXP
-    { "DBS1factor", &g_fDBS1factor}, // 2002-04-05 MN cursor speed reduction in DBS1
-    { "DBS2factor", &g_fDBS2factor}, // 2002-04-05 MN cursor speed reduction in DBS2
-    { "HUDonlySize", &g_fHUDonlySize}, // FRB - % Size increase of HUD-Only view (% = decimal)
-    { "ePropFactor", &g_fePropFactor}, // 2002-04-05 MN
-    { "SunPadlockTimeout", &g_fSunPadlockTimeout}, // 2002-04-06 MN
-    { "CarrierStartTolerance", &g_fCarrierStartTolerance},
-    { "BombTimeStep", &g_fBombTimeStep}, //MI 2002-04-07 fix for missing bombs
-    { "HighDragGravFactor", &g_fHighDragGravFactor}, //MI 2002-04-07 externalised var to allow tweaking afterwards
-    { "TgtDZFactor", &g_fTgtDZFactor}, // MN 2002-04-07 fix for ballistic missiles
-    { "SSoffsetManeuverPoints1a", &g_fSSoffsetManeuverPoints1a}, // 2002-04-07 S.G.
-    { "SSoffsetManeuverPoints1b", &g_fSSoffsetManeuverPoints1b}, // 2002-04-07 S.G.
-    { "SSoffsetManeuverPoints2a", &g_fSSoffsetManeuverPoints2a}, // 2002-04-07 S.G.
-    { "SSoffsetManeuverPoints2b", &g_fSSoffsetManeuverPoints2b}, // 2002-04-07 S.G.
-    { "PinceManeuverPoints1a", &g_fPinceManeuverPoints1a}, // 2002-04-07 S.G.
-    { "PinceManeuverPoints1b", &g_fPinceManeuverPoints1b}, // 2002-04-07 S.G.
-    { "PinceManeuverPoints2a", &g_fPinceManeuverPoints2a}, // 2002-04-07 S.G.
-    { "PinceManeuverPoints2b", &g_fPinceManeuverPoints2b}, // 2002-04-07 S.G.
-    { "LethalRadiusModifier", &g_fLethalRadiusModifier}, // 2002-04-14 MN
-    { "RAPDistance", &g_fRAPDistance}, // 2002-04-18 MN RollAndPull triggering in MissileEngage
-    { "MoverVrValue", &g_fMoverVrValue},
-    { "MinBwForOtherData", &MinBwForOtherData},
-    { "clientbwforupdatesmodifyerMIN", &g_fclientbwforupdatesmodifyerMIN},
-    { "clientbwforupdatesmodifyerMAX", &g_fclientbwforupdatesmodifyerMAX},
-    { "ReliablemsgwaitMAX", &g_fReliablemsgwaitMAX},
-    { "FOVIncrement", &g_fFOVIncrement}, // Wombat778 09-27-2003
-    { "MavEXPLevel", &g_fMavEXPLevel}, // Wombat778 09-27-2003
-    { "MavFOVLevel", &g_fMavFOVLevel}, // Wombat778 09-27-2003
-    { "MouseLookSensitivity", &g_fMouseLookSensitivity}, // Wombat778 10-08-2003
-    { "DefaultFOV", &g_fDefaultFOV}, // Wombat778 10-31-2003
-    { "HSDSymbolSize", &g_fHSDSymbolSize}, // Wombat778 11-13-2003
-    { "TIRMinimumFOV", &g_fTIRMinimumFOV}, // Cobra
-    { "TIRMaximumFOV", &g_fTIRMaximumFOV}, // Cobra
-    { "MinimumFOV", &g_fMinimumFOV}, // Wombat778 1-15-2004
-    { "MaximumFOV", &g_fMaximumFOV}, // Wombat778 10-11-2003
-    { "NarrowFOV", &g_fNarrowFOV}, // Wombat778 2-21-2004
-    { "WideviewFOV", &g_fWideviewFOV}, // Wombat778 2-21-2004
-    { "MeanTimeBetweenFailures", &g_fMeanTimeBetweenFailures}, // Wombat778 2-21-2004
-    { "JDAMLift", &g_fJDAMLift}, // Wombat778 2-21-2004
-    { "AIJSOWmaxRange", &g_fAIJSOWmaxRange}, // Cobra
-    { "ButtonScaler", &g_fButtonScaler},
-    { "ButtonZScaler", &g_fButtonZScaler},
-    { "HybridPitThreshold1", &g_fHybridPitThreshold1}, // Wombat778 11-19-2004
-    { "HybridPitThreshold2", &g_fHybridPitThreshold2}, // Wombat778 11-19-2004
-    { "TIR2DYawPercentage", &g_fTIR2DYawPercentage}, // Retro 02/10/03
-    { "TIR2DPitchPercentage", &g_fTIR2DPitchPercentage}, // Retro 02/10/03
-    { "DBS1ScanRateFactor", &g_fDBS1ScanRateFactor}, //JAM 13Oct03
-    { "DBS2ScanRateFactor", &g_fDBS2ScanRateFactor}, //JAM 13Oct03
+    {"TracerAccuracyFactor", &g_fTracerAccuracyFactor}, // 2002-03-12 S.G.
+    {"TankerRStick", &g_fTankerRStick}, // 2003-03-13 MN
+    {"TankerPStick", &g_fTankerPStick}, // 2003-03-13 MN
+    {"TankerTrackFactor", &g_fTankerTrackFactor}, // 2003-03-13 MN
+    {"TankerHeadsupDistance", &g_fTankerHeadsupDistance}, // 2003-04-07 MN
+    {"TankerBackupDistance", &g_fTankerBackupDistance}, // 2003-04-07 MN
+    {"HeadingStabilizeFactor", &g_fHeadingStabilizeFactor}, // 2003-04-07 MN
+    {"RocketPitchFactor", &g_fRocketPitchFactor}, // Cobra
+    {"RocketPitchCorr", &g_fRocketPitchCorr}, // Cobra
+    {"FuelBaseProp", &g_fFuelBaseProp}, // 2002-03-14 S.G.
+    {"FuelMultProp", &g_fFuelMultProp}, // 2002-03-14 S.G.
+    {"FuelTimeStep", &g_fFuelTimeStep}, // 2002-03-14 S.G.
+    {"FuelVtClip", &g_fFuelVtClip}, // 2002-03-14 S.G.
+    {"FuelVtDotMult", &g_fFuelVtDotMult}, // 2002-03-14 S.G.
+    {"AIRefuelSpeed", &g_fAIRefuelSpeed}, // 2002-03-15 MN
+    {"SearchSimTargetFromRangeSqr",
+     &g_fSearchSimTargetFromRangeSqr}, // 2002-03-15 S.G.
+    {"NukeStrengthFactor", &g_fNukeStrengthFactor}, // 2002-03-22 MN
+    {"NukeDamageMod", &g_fNukeDamageMod}, // 2002-03-25 MN
+    {"NukeDamageRadius", &g_fNukeDamageRadius}, // 2002-03-25 MN
+    {"ClimbRatio", &g_fClimbRatio}, // 2002-03-25 MN
+    {"HotNoseAngle", &g_fHotNoseAngle}, // 2002-03-22 S.G.
+    {"MaxMARNoIdA", &g_fMaxMARNoIdA}, // 2002-03-22 S.G.
+    {"MinMARNoId5kA", &g_fMinMARNoId5kA}, // 2002-03-22 S.G.
+    {"MinMARNoId18kA", &g_fMinMARNoId18kA}, // 2002-03-22 S.G.
+    {"MinMARNoId28kA", &g_fMinMARNoId28kA}, // 2002-03-22 S.G.
+    {"MaxMARNoIdB", &g_fMaxMARNoIdB}, // 2002-03-22 S.G.
+    {"MinMARNoId5kB", &g_fMinMARNoId5kB}, // 2002-03-22 S.G.
+    {"MinMARNoId18kB", &g_fMinMARNoId18kB}, // 2002-03-22 S.G.
+    {"MinMARNoId28kB", &g_fMinMARNoId28kB}, // 2002-03-22 S.G.
+    {"MinMARNoIdC", &g_fMinMARNoIdC}, // 2002-03-22 S.G.
+    {"WaypointBurnerDelta", &g_fWaypointBurnerDelta}, // 2002-03-28 MN
+    {"GroundImpactMod", &g_fGroundImpactMod}, //MI 2002-03-28
+    {"BombMissileAltitude", &g_fBombMissileAltitude}, // 2002-03-28 MN
+    {"GMTMaxSpeed", &g_fGMTMaxSpeed}, // 2002-04-03 MN
+    {"GMTMinSpeed", &g_fGMTMinSpeed}, // 2002-04-03 MN
+    {"ReconCameraHalfFOV",
+     &g_fReconCameraHalfFOV}, //MI 2002-04-03 Recon camera stuff
+    {"ReconCameraOffset",
+     &g_fReconCameraOffset}, //MI 2002-04-03 Recon camera stuff
+    {"EXPfactor", &g_fEXPfactor}, // 2002-04-05 MN cursor speed reduction in EXP
+    {"DBS1factor",
+     &g_fDBS1factor}, // 2002-04-05 MN cursor speed reduction in DBS1
+    {"DBS2factor",
+     &g_fDBS2factor}, // 2002-04-05 MN cursor speed reduction in DBS2
+    {"HUDonlySize",
+     &g_fHUDonlySize}, // FRB - % Size increase of HUD-Only view (% = decimal)
+    {"ePropFactor", &g_fePropFactor}, // 2002-04-05 MN
+    {"SunPadlockTimeout", &g_fSunPadlockTimeout}, // 2002-04-06 MN
+    {"CarrierStartTolerance", &g_fCarrierStartTolerance},
+    {"BombTimeStep", &g_fBombTimeStep}, //MI 2002-04-07 fix for missing bombs
+    {"HighDragGravFactor",
+     &g_fHighDragGravFactor}, //MI 2002-04-07 externalised var to allow tweaking afterwards
+    {"TgtDZFactor",
+     &g_fTgtDZFactor}, // MN 2002-04-07 fix for ballistic missiles
+    {"SSoffsetManeuverPoints1a",
+     &g_fSSoffsetManeuverPoints1a}, // 2002-04-07 S.G.
+    {"SSoffsetManeuverPoints1b",
+     &g_fSSoffsetManeuverPoints1b}, // 2002-04-07 S.G.
+    {"SSoffsetManeuverPoints2a",
+     &g_fSSoffsetManeuverPoints2a}, // 2002-04-07 S.G.
+    {"SSoffsetManeuverPoints2b",
+     &g_fSSoffsetManeuverPoints2b}, // 2002-04-07 S.G.
+    {"PinceManeuverPoints1a", &g_fPinceManeuverPoints1a}, // 2002-04-07 S.G.
+    {"PinceManeuverPoints1b", &g_fPinceManeuverPoints1b}, // 2002-04-07 S.G.
+    {"PinceManeuverPoints2a", &g_fPinceManeuverPoints2a}, // 2002-04-07 S.G.
+    {"PinceManeuverPoints2b", &g_fPinceManeuverPoints2b}, // 2002-04-07 S.G.
+    {"LethalRadiusModifier", &g_fLethalRadiusModifier}, // 2002-04-14 MN
+    {"RAPDistance",
+     &g_fRAPDistance}, // 2002-04-18 MN RollAndPull triggering in MissileEngage
+    {"MoverVrValue", &g_fMoverVrValue},
+    {"MinBwForOtherData", &MinBwForOtherData},
+    {"clientbwforupdatesmodifyerMIN", &g_fclientbwforupdatesmodifyerMIN},
+    {"clientbwforupdatesmodifyerMAX", &g_fclientbwforupdatesmodifyerMAX},
+    {"ReliablemsgwaitMAX", &g_fReliablemsgwaitMAX},
+    {"FOVIncrement", &g_fFOVIncrement}, // Wombat778 09-27-2003
+    {"MavEXPLevel", &g_fMavEXPLevel}, // Wombat778 09-27-2003
+    {"MavFOVLevel", &g_fMavFOVLevel}, // Wombat778 09-27-2003
+    {"MouseLookSensitivity", &g_fMouseLookSensitivity}, // Wombat778 10-08-2003
+    {"DefaultFOV", &g_fDefaultFOV}, // Wombat778 10-31-2003
+    {"HSDSymbolSize", &g_fHSDSymbolSize}, // Wombat778 11-13-2003
+    {"TIRMinimumFOV", &g_fTIRMinimumFOV}, // Cobra
+    {"TIRMaximumFOV", &g_fTIRMaximumFOV}, // Cobra
+    {"MinimumFOV", &g_fMinimumFOV}, // Wombat778 1-15-2004
+    {"MaximumFOV", &g_fMaximumFOV}, // Wombat778 10-11-2003
+    {"NarrowFOV", &g_fNarrowFOV}, // Wombat778 2-21-2004
+    {"WideviewFOV", &g_fWideviewFOV}, // Wombat778 2-21-2004
+    {"MeanTimeBetweenFailures",
+     &g_fMeanTimeBetweenFailures}, // Wombat778 2-21-2004
+    {"JDAMLift", &g_fJDAMLift}, // Wombat778 2-21-2004
+    {"AIJSOWmaxRange", &g_fAIJSOWmaxRange}, // Cobra
+    {"ButtonScaler", &g_fButtonScaler},
+    {"ButtonZScaler", &g_fButtonZScaler},
+    {"HybridPitThreshold1", &g_fHybridPitThreshold1}, // Wombat778 11-19-2004
+    {"HybridPitThreshold2", &g_fHybridPitThreshold2}, // Wombat778 11-19-2004
+    {"TIR2DYawPercentage", &g_fTIR2DYawPercentage}, // Retro 02/10/03
+    {"TIR2DPitchPercentage", &g_fTIR2DPitchPercentage}, // Retro 02/10/03
+    {"DBS1ScanRateFactor", &g_fDBS1ScanRateFactor}, //JAM 13Oct03
+    {"DBS2ScanRateFactor", &g_fDBS2ScanRateFactor}, //JAM 13Oct03
     //{ "SoundDopplerFactor", &g_fSoundDopplerFactor }, // MLR 2003-10-17
     //{ "SoundRolloffFactor", &g_fSoundRolloffFactor }, // MLR 2003-10-18
     //    { "SoundDopplerBlend", &g_fSoundDopplerBlend}, // MLR 12/3/2003 - OBSOLETE
 
-    { "A2GJDAMAlt", &g_fA2GJDAMAlt}, //TJL 10/27/03 Sets AI JDAM attack altitude
-    { "A2GJSOWAlt", &g_fA2GJSOWAlt}, //TJL 10/27/03 Sets AI JSOW attack altitude
-    { "A2GHarmAlt", &g_fA2GHarmAlt}, //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
-    { "A2GAGMAlt", &g_fA2GAGMAlt}, //TJL 10/27/03 Sets AI AGM attack altitude
-    { "A2GGBUAlt", &g_fA2GGBUAlt}, //TJL 10/27/03 Sets AI GBU attack altitude
-    { "A2GDumbHDAlt", &g_fA2GDumbHDAlt}, //TJL 10/27/03 Sets AI Durandal attack altitude
-    { "A2GClusterAlt", &g_fA2GClusterAlt}, //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
-    { "A2GDumbLDAlt", &g_fA2GDumbLDAlt}, //TJL 10/27/03 Sets AI Generic attack altitude
-    { "A2GGenericBombAlt", &g_fA2GGenericBombAlt}, //TJL 10/27/03 Sets AI Generic Bomb attack altitude
-    { "A2GGunRocketAlt", &g_fA2GGunRocketAlt}, //TJL 10/27/03 Sets AI Gun and Rocket altitude
-    { "A2GCameraAlt", &g_fA2GCameraAlt}, //TJL 10/27/03 Sets AI BDA/Recon altitude
+    {"A2GJDAMAlt", &g_fA2GJDAMAlt}, //TJL 10/27/03 Sets AI JDAM attack altitude
+    {"A2GJSOWAlt", &g_fA2GJSOWAlt}, //TJL 10/27/03 Sets AI JSOW attack altitude
+    {"A2GHarmAlt",
+     &g_fA2GHarmAlt}, //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
+    {"A2GAGMAlt", &g_fA2GAGMAlt}, //TJL 10/27/03 Sets AI AGM attack altitude
+    {"A2GGBUAlt", &g_fA2GGBUAlt}, //TJL 10/27/03 Sets AI GBU attack altitude
+    {"A2GDumbHDAlt",
+     &g_fA2GDumbHDAlt}, //TJL 10/27/03 Sets AI Durandal attack altitude
+    {"A2GClusterAlt",
+     &g_fA2GClusterAlt}, //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
+    {"A2GDumbLDAlt",
+     &g_fA2GDumbLDAlt}, //TJL 10/27/03 Sets AI Generic attack altitude
+    {"A2GGenericBombAlt",
+     &g_fA2GGenericBombAlt}, //TJL 10/27/03 Sets AI Generic Bomb attack altitude
+    {"A2GGunRocketAlt",
+     &g_fA2GGunRocketAlt}, //TJL 10/27/03 Sets AI Gun and Rocket altitude
+    {"A2GCameraAlt",
+     &g_fA2GCameraAlt}, //TJL 10/27/03 Sets AI BDA/Recon altitude
 
-    { "TexDetailFactor", &g_fTexDetailFactor}, ////THW 2003-11-14 Use Higher-Res textures at higher altitudes
+    {"TexDetailFactor",
+     &g_fTexDetailFactor}, ////THW 2003-11-14 Use Higher-Res textures at higher altitudes
 
-    { "ACMIAnimRecordTimer", &g_fACMIAnimRecordTimer}, // MLR 3/2/2004 - seconds between recording a/c animation data
-    { "dpitStart", &g_fdpitStart}, //Cobra TJL 11/08/04 in 24 hr clock
-    { "dpitStop", &g_fdpitStop}, //Cobra TJL 11/08/04 in 24 hr clock
-    { "TaxiEarly", &g_fTaxiEarly}, //RAS Amount of seconds to taxi early
+    {"ACMIAnimRecordTimer",
+     &g_fACMIAnimRecordTimer}, // MLR 3/2/2004 - seconds between recording a/c animation data
+    {"dpitStart", &g_fdpitStart}, //Cobra TJL 11/08/04 in 24 hr clock
+    {"dpitStop", &g_fdpitStop}, //Cobra TJL 11/08/04 in 24 hr clock
+    {"TaxiEarly", &g_fTaxiEarly}, //RAS Amount of seconds to taxi early
 
-    { "Dyn_Head_TiltMul", &g_fDyn_Head_TiltMul}, //ATARIBABY externalised 3d pit dynamic head params
-    { "Dyn_Head_TiltRndGMul", &g_fDyn_Head_TiltRndGMul},
-    { "Dyn_Head_RollMul", &g_fDyn_Head_RollMul},
-    { "Dyn_Head_PanMul", &g_fDyn_Head_PanMul},
-    { "Dyn_Head_TiltRateMul", &g_fDyn_Head_TiltRateMul},
-    { "Dyn_Head_TiltGRateMul", &g_fDyn_Head_TiltGRateMul},
-    { "Dyn_Head_RollRate", &g_fDyn_Head_RollRate},
-    { "Dyn_Head_PanRate", &g_fDyn_Head_PanRate},
+    {"Dyn_Head_TiltMul",
+     &g_fDyn_Head_TiltMul}, //ATARIBABY externalised 3d pit dynamic head params
+    {"Dyn_Head_TiltRndGMul", &g_fDyn_Head_TiltRndGMul},
+    {"Dyn_Head_RollMul", &g_fDyn_Head_RollMul},
+    {"Dyn_Head_PanMul", &g_fDyn_Head_PanMul},
+    {"Dyn_Head_TiltRateMul", &g_fDyn_Head_TiltRateMul},
+    {"Dyn_Head_TiltGRateMul", &g_fDyn_Head_TiltGRateMul},
+    {"Dyn_Head_RollRate", &g_fDyn_Head_RollRate},
+    {"Dyn_Head_PanRate", &g_fDyn_Head_PanRate},
 
-    { "PilotActInterval", &g_fPilotActInterval}, //Cobra - Pilot animation act interval (minutes)
-    { "PilotHeadMoveRate", &g_fPilotHeadMoveRate}, //Cobra - Pilot animation move rate (deg/sec)
-    { "3DHeadTilt", &g_f3DHeadTilt}, //Cobra - Head tilt when entering the 3D cockpit
-    { "3DPitFOV", &g_f3DPitFOV}, //Cobra - FOV when entering the 3D cockpit
-    { NULL, NULL }
-};
+    {"PilotActInterval",
+     &g_fPilotActInterval}, //Cobra - Pilot animation act interval (minutes)
+    {"PilotHeadMoveRate",
+     &g_fPilotHeadMoveRate}, //Cobra - Pilot animation move rate (deg/sec)
+    {"3DHeadTilt",
+     &g_f3DHeadTilt}, //Cobra - Head tilt when entering the 3D cockpit
+    {"3DPitFOV", &g_f3DPitFOV}, //Cobra - FOV when entering the 3D cockpit
+    {NULL, NULL}};
 
 void ParseFalcon4Config(FILE *file)
 {
@@ -1926,18 +2377,20 @@ void ReadFalcon4Config()
     int nBufLen = 1024;
     char *strAppPath = new char[nBufLen];
 
-    if ( not strAppPath) return;
+    if (not strAppPath)
+        return;
 
     char *strDir = new char[nBufLen];
 
-    if ( not strDir) return;
+    if (not strDir)
+        return;
 
-    // sprintf(strDir, "%s\\FalconBMS.cfg", FalconDataDirectory);
-    // sprintf(strDir, "%s\\Cobra.cfg", FalconDataDirectory);
-    sprintf(strDir, "%s\\FFViper.cfg", FalconDataDirectory);
+    // sprintf(strDir, "%s/FalconBMS.cfg", FalconDataDirectory);
+    // sprintf(strDir, "%s/Cobra.cfg", FalconDataDirectory);
+    sprintf(strDir, "%s/FFViper.cfg", FalconDataDirectory);
     FILE *file = fopen(strDir, "r");
 
-    if ( not file)
+    if (not file)
     {
         // strcpy(strDir, "FalconBMS.cfg");
         // strcpy(strDir, "Cobra.cfg");
@@ -1945,22 +2398,26 @@ void ReadFalcon4Config()
         file = fopen(strDir, "r");
     }
 
-    if ( not file)
+    if (not file)
     {
         // Investigate program directory
         HMODULE Module = ::GetModuleHandle(NULL);
 
-        if ( not ::GetModuleFileName(Module, strAppPath, nBufLen)) return;
+        if (not ::GetModuleFileName(Module, strAppPath, nBufLen))
+            return;
 
         int nAppPathLen = strlen(strAppPath);
 
-        if (nAppPathLen < 2) return;
+        if (nAppPathLen < 2)
+            return;
 
         char *p = &strAppPath[nAppPathLen - 1];
 
-        while (p > strAppPath and *p not_eq '\\') p--;
+        while (p > strAppPath and *p not_eq '\\' and *p not_eq '/')
+            p--; // #104: accept either path separator
 
-        if (p == strAppPath) return;
+        if (p == strAppPath)
+            return;
 
         p++;
         int nDirLen = p - strAppPath;

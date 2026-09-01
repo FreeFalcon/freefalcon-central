@@ -16,48 +16,27 @@ enum
     CSND_LOADSTREAMRES,
 };
 
-char *C_Snd_Tokens[] =
-{
-    "[NOTHING]",
-    "[LOADSOUND]",
-    "[STREAMSOUND]",
-    "[LOOPBACK]",
-    "[LOOPCOUNT]",
-    "[LOADRESOURCE]",
-    "[LOADSTREAMRES]",
-    0,
+char *C_Snd_Tokens[] = {
+    "[NOTHING]",   "[LOADSOUND]",    "[STREAMSOUND]",   "[LOOPBACK]",
+    "[LOOPCOUNT]", "[LOADRESOURCE]", "[LOADSTREAMRES]", 0,
 };
 
 #endif // PARSER
 
 C_Sound *gSoundMgr = NULL;
 
-static WAVEFORMATEX MonoFormat =
-{
-    WAVE_FORMAT_PCM,
-    1,
-    22050,
-    44100,
-    2,
-    16,
-    0,
+static WAVEFORMATEX MonoFormat = {
+    WAVE_FORMAT_PCM, 1, 22050, 44100, 2, 16, 0,
 };
 
-static WAVEFORMATEX StereoFormat =
-{
-    WAVE_FORMAT_PCM,
-    2,
-    22050,
-    88200,
-    4,
-    16,
-    0,
+static WAVEFORMATEX StereoFormat = {
+    WAVE_FORMAT_PCM, 2, 22050, 88200, 4, 16, 0,
 };
 
 
 static void RemoveResCB(void *rec)
 {
-    C_Resmgr *res = (C_Resmgr*)rec;
+    C_Resmgr *res = (C_Resmgr *)rec;
 
     if (res)
     {
@@ -68,7 +47,7 @@ static void RemoveResCB(void *rec)
 
 static void CleanupSoundListCB(void *rec)
 {
-    SOUND_RES *record = (SOUND_RES*)rec;
+    SOUND_RES *record = (SOUND_RES *)rec;
 
     if (record)
     {
@@ -140,15 +119,15 @@ void C_Sound::AddResSound(C_Resmgr *res)
     long curidx;
     SOUND_RSC *snd;
 
-    if ( not res)
+    if (not res)
         return;
 
     Index = res->GetIDList();
 
-    if ( not Index)
+    if (not Index)
         return;
 
-    if ( not SoundList_)
+    if (not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -156,7 +135,7 @@ void C_Sound::AddResSound(C_Resmgr *res)
         SoundList_->SetCallback(CleanupSoundListCB);
     }
 
-    snd = (SOUND_RSC*)Index->GetFirst(&current, &curidx);
+    snd = (SOUND_RSC *)Index->GetFirst(&current, &curidx);
 
     while (snd)
     {
@@ -175,7 +154,7 @@ void C_Sound::AddResSound(C_Resmgr *res)
             SoundList_->Add(newentry->ID, newentry);
         }
 
-        snd = (SOUND_RSC*)Index->GetNext(&current, &curidx);
+        snd = (SOUND_RSC *)Index->GetNext(&current, &curidx);
     }
 }
 
@@ -187,15 +166,15 @@ void C_Sound::AddResStream(C_Resmgr *res)
     long curidx;
     SOUND_RSC *snd;
 
-    if ( not res)
+    if (not res)
         return;
 
     Index = res->GetIDList();
 
-    if ( not Index)
+    if (not Index)
         return;
 
-    if ( not SoundList_)
+    if (not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -203,7 +182,7 @@ void C_Sound::AddResStream(C_Resmgr *res)
         SoundList_->SetCallback(CleanupSoundListCB);
     }
 
-    snd = (SOUND_RSC*)Index->GetFirst(&current, &curidx);
+    snd = (SOUND_RSC *)Index->GetFirst(&current, &curidx);
 
     while (snd)
     {
@@ -213,7 +192,8 @@ void C_Sound::AddResStream(C_Resmgr *res)
             newentry = new SOUND_RES;
             newentry->ID = IDTable_->FindTextID(snd->Header->ID);
             newentry->SoundID = SND_NO_HANDLE;
-            newentry->flags = snd->Header->flags bitor SOUND_IN_RES bitor SOUND_RES_STREAM;
+            newentry->flags =
+                snd->Header->flags bitor SOUND_IN_RES bitor SOUND_RES_STREAM;
             newentry->Volume = 0;
             newentry->LoopPoint = 0;
             newentry->Count = 0;
@@ -223,7 +203,7 @@ void C_Sound::AddResStream(C_Resmgr *res)
             SoundList_->Add(newentry->ID, newentry);
         }
 
-        snd = (SOUND_RSC*)Index->GetNext(&current, &curidx);
+        snd = (SOUND_RSC *)Index->GetNext(&current, &curidx);
     }
 }
 
@@ -234,16 +214,16 @@ BOOL C_Sound::LoadResource(long ID, char *filename)
     res = new C_Resmgr;
     res->Setup(ID, filename, IDTable_);
 
-    if ( not res->Status())
+    if (not res->Status())
     {
         res->Cleanup();
         delete res;
-        return(FALSE);
+        return (FALSE);
     }
 
     res->LoadData();
 
-    if ( not ResList_)
+    if (not ResList_)
     {
         ResList_ = new C_Hash;
         ResList_->Setup(1);
@@ -254,7 +234,7 @@ BOOL C_Sound::LoadResource(long ID, char *filename)
     ResList_->Add(ID, res);
     // make references to all sounds in resource
     AddResSound(res);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Sound::LoadStreamResource(long ID, char *filename)
@@ -264,14 +244,14 @@ BOOL C_Sound::LoadStreamResource(long ID, char *filename)
     res = new C_Resmgr;
     res->Setup(ID, filename, IDTable_);
 
-    if ( not res->Status())
+    if (not res->Status())
     {
         res->Cleanup();
         delete res;
-        return(FALSE);
+        return (FALSE);
     }
 
-    if ( not ResList_)
+    if (not ResList_)
     {
         ResList_ = new C_Hash;
         ResList_->Setup(1);
@@ -282,7 +262,7 @@ BOOL C_Sound::LoadStreamResource(long ID, char *filename)
     ResList_->Add(ID, res);
     // make references to all sounds in resource
     AddResStream(res);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Sound::LoadSound(long ID, char *file, long flags)
@@ -291,12 +271,14 @@ BOOL C_Sound::LoadSound(long ID, char *file, long flags)
     SOUND_RES *newentry;
 
     if (GetSound(ID))
-        return(FALSE);
+        return (FALSE);
 
-    snd = F4LoadSound(file, flags/* bitand SND_EXCLUSIVE */); // MLR 12/6/2003 - SND_ flags are obsolete
+    snd = F4LoadSound(
+        file,
+        flags /* bitand SND_EXCLUSIVE */); // MLR 12/6/2003 - SND_ flags are obsolete
 
     if (snd == NULL)
-        return(FALSE);
+        return (FALSE);
 
     newentry = new SOUND_RES;
     newentry->ID = ID;
@@ -307,13 +289,14 @@ BOOL C_Sound::LoadSound(long ID, char *file, long flags)
     newentry->Count = 0;
     newentry->Sound = NULL;
 #ifdef USE_SH_POOLS
-    newentry->filename = (char*)MemAllocPtr(UI_Pools[UI_SOUND_POOL], sizeof(char) * (strlen(file) + 1), FALSE);
+    newentry->filename = (char *)MemAllocPtr(
+        UI_Pools[UI_SOUND_POOL], sizeof(char) * (strlen(file) + 1), FALSE);
 #else
-    newentry->filename = new char [strlen(file) + 1];
+    newentry->filename = new char[strlen(file) + 1];
 #endif
     strcpy(newentry->filename, file);
 
-    if ( not SoundList_)
+    if (not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -322,7 +305,7 @@ BOOL C_Sound::LoadSound(long ID, char *file, long flags)
     }
 
     SoundList_->Add(ID, newentry);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Sound::StreamSound(long ID, char *file, long flags)
@@ -330,7 +313,7 @@ BOOL C_Sound::StreamSound(long ID, char *file, long flags)
     SOUND_RES *newentry;
 
     if (GetSound(ID))
-        return(FALSE);
+        return (FALSE);
 
     newentry = new SOUND_RES;
     newentry->ID = ID;
@@ -340,13 +323,14 @@ BOOL C_Sound::StreamSound(long ID, char *file, long flags)
     newentry->LoopPoint = 0;
     newentry->Sound = NULL;
 #ifdef USE_SH_POOLS
-    newentry->filename = (char*)MemAllocPtr(UI_Pools[UI_SOUND_POOL], sizeof(char) * (strlen(file) + 1), FALSE);
+    newentry->filename = (char *)MemAllocPtr(
+        UI_Pools[UI_SOUND_POOL], sizeof(char) * (strlen(file) + 1), FALSE);
 #else
-    newentry->filename = new char [strlen(file) + 1];
+    newentry->filename = new char[strlen(file) + 1];
 #endif
     strcpy(newentry->filename, file);
 
-    if ( not SoundList_)
+    if (not SoundList_)
     {
         SoundList_ = new C_Hash;
         SoundList_->Setup(20);
@@ -355,18 +339,18 @@ BOOL C_Sound::StreamSound(long ID, char *file, long flags)
     }
 
     SoundList_->Add(ID, newentry);
-    return(TRUE);
+    return (TRUE);
 }
 
 SOUND_RES *C_Sound::GetSound(long ID)
 {
     SOUND_RES *cur;
 
-    if ( not SoundList_)
-        return(NULL);
+    if (not SoundList_)
+        return (NULL);
 
-    cur = (SOUND_RES*)SoundList_->Find(ID);
-    return(cur);
+    cur = (SOUND_RES *)SoundList_->Find(ID);
+    return (cur);
 }
 
 void C_Sound::SetFlags(long ID, long flags)
@@ -386,9 +370,9 @@ long C_Sound::GetFlags(long ID)
     snd = GetSound(ID);
 
     if (snd)
-        return(snd->flags);
+        return (snd->flags);
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Sound::PlaySound(SOUND_RES *Snd)
@@ -396,7 +380,7 @@ BOOL C_Sound::PlaySound(SOUND_RES *Snd)
     long SND_FLAGS;
 
     if (Snd == NULL)
-        return(FALSE);
+        return (FALSE);
 
     gSoundDriver->StopStream(Mono_);
     gSoundDriver->StopStream(Stereo_);
@@ -438,7 +422,7 @@ BOOL C_Sound::PlaySound(SOUND_RES *Snd)
         F4SetVolume(Snd->SoundID, Snd->Volume);
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Sound::LoopSound(SOUND_RES *Snd)
@@ -446,7 +430,7 @@ BOOL C_Sound::LoopSound(SOUND_RES *Snd)
     long SND_FLAGS;
 
     if (Snd == NULL)
-        return(FALSE);
+        return (FALSE);
 
     gSoundDriver->StopStream(Mono_);
     gSoundDriver->StopStream(Stereo_);
@@ -474,17 +458,17 @@ BOOL C_Sound::LoopSound(SOUND_RES *Snd)
         F4SetVolume(Snd->SoundID, Snd->Volume);
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Sound::StopSound(SOUND_RES *Snd)
 {
     if (Snd == NULL)
-        return(FALSE);
+        return (FALSE);
 
     gSoundDriver->StopStream(Mono_);
     gSoundDriver->StopStream(Stereo_);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Sound::RemoveSound(long ID)
@@ -493,19 +477,19 @@ BOOL C_Sound::RemoveSound(long ID)
         SoundList_->Remove(ID);
 
     // F4FreeSound(&cur->SoundID);
-    return(FALSE);
+    return (FALSE);
 }
 
 long C_Sound::SetVolume(SOUND_RES *, long Volume)
 {
     gSoundDriver->SetStreamVolume(Stereo_, Volume);
-    return(gSoundDriver->SetStreamVolume(Mono_, Volume));
+    return (gSoundDriver->SetStreamVolume(Mono_, Volume));
 }
 
 long C_Sound::SetVolume(long Volume)
 {
     gSoundDriver->SetStreamVolume(Stereo_, Volume);
-    return(gSoundDriver->SetStreamVolume(Mono_, Volume));
+    return (gSoundDriver->SetStreamVolume(Mono_, Volume));
 }
 
 void C_Sound::SetAllVolumes(long Volume)
@@ -532,12 +516,12 @@ short C_Sound::LocalFind(char *token)
     while (C_Snd_Tokens[i])
     {
         if (strnicmp(token, C_Snd_Tokens[i], strlen(C_Snd_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Sound::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
@@ -546,37 +530,40 @@ void C_Sound::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
 
     switch (ID)
     {
-        case CSND_LOADSOUND:
-            LoadSound(P[0], str, P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]);
-            break;
+    case CSND_LOADSOUND:
+        LoadSound(P[0], str,
+                  P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]);
+        break;
 
-        case CSND_STREAMSOUND:
-            StreamSound(P[0], str, P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]);
-            break;
+    case CSND_STREAMSOUND:
+        StreamSound(P[0], str,
+                    P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor
+                        P[6]);
+        break;
 
-        case CSND_SETLOOPBACK:
-            snd = GetSound(P[0]);
+    case CSND_SETLOOPBACK:
+        snd = GetSound(P[0]);
 
-            if (snd)
-                snd->LoopPoint = P[1];
+        if (snd)
+            snd->LoopPoint = P[1];
 
-            break;
+        break;
 
-        case CSND_SETLOOPCOUNT:
-            snd = GetSound(P[0]);
+    case CSND_SETLOOPCOUNT:
+        snd = GetSound(P[0]);
 
-            if (snd)
-                snd->Count = static_cast<short>(P[1]); 
+        if (snd)
+            snd->Count = static_cast<short>(P[1]);
 
-            break;
+        break;
 
-        case CSND_LOADRESOURCE:
-            LoadResource(P[0], str);
-            break;
+    case CSND_LOADRESOURCE:
+        LoadResource(P[0], str);
+        break;
 
-        case CSND_LOADSTREAMRES:
-            LoadStreamResource(P[0], str);
-            break;
+    case CSND_LOADSTREAMRES:
+        LoadStreamResource(P[0], str);
+        break;
     }
 }
 

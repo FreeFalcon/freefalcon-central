@@ -8,16 +8,16 @@
  distances and external references in its targets.
 \***************************************************************************/
 #include <stdlib.h>
-#include <MgAPIall.h>
-#include "shi/ShiError.h"
-#include "StateStack.h"
-#include "ObjectParent.h"
-#include "LODBuildList.h"
-#include "FLTreader.h"
-#include "FLTerror.h"
+#include <mgapiall.h>
+#include "shi/shierror.h"
+#include "statestack.h"
+#include "objectparent.h"
+#include "lodbuildlist.h"
+#include "fltreader.h"
+#include "flterror.h"
 
 
-typedef struct LODrecord2: public LODrecord
+typedef struct LODrecord2 : public LODrecord
 {
     BuildTimeLODEntry *buildTimeLOD;
 } LODrecord2;
@@ -57,8 +57,7 @@ BOOL ProcessLOD(mgrec *rec)
         }
 
         child = next;
-    }
-    while (next = mgGetChild(child));
+    } while (next = mgGetChild(child));
 
     // If we got to the bottom, and its an external refernce, use it
     if (child && mgIsCode(child, fltXref))
@@ -91,7 +90,8 @@ BOOL ProcessLOD(mgrec *rec)
         ShiAssert(strlen(filename) < sizeof(filename));
         mgFree(fullpath);
 
-        LODlist[LODlistLen].buildTimeLOD = TheLODBuildList.AddReference(filename);
+        LODlist[LODlistLen].buildTimeLOD =
+            TheLODBuildList.AddReference(filename);
         LODlist[LODlistLen].maxRange = (float)dist;
         LODlistLen++;
 
@@ -99,7 +99,8 @@ BOOL ProcessLOD(mgrec *rec)
     }
     else
     {
-        FLTwarning(rec, "LOD record didn't have an external reference as first child.  Skipping.");
+        FLTwarning(rec, "LOD record didn't have an external reference as first "
+                        "child.  Skipping.");
         return FALSE;
     }
 
@@ -114,7 +115,8 @@ BOOL ExtractControlInfo(mgrec *rec)
     BNode *node = NULL;
     BOOL result = FALSE;
 
-    if (!rec)  return FALSE;
+    if (!rec)
+        return FALSE;
 
     if (mgIsCode(rec, fltLod))
     {
@@ -142,7 +144,7 @@ BOOL ReadControlFlt(BuildTimeParentEntry *buildParent)
     // open the named database file
     if (!(db = mgOpenDb(buildParent->filename)))
     {
-        char msgbuf [1024];
+        char msgbuf[1024];
         mgGetLastError(msgbuf, 1024);
         printf("%s\n", msgbuf);
         mgExit();
@@ -161,7 +163,7 @@ BOOL ReadControlFlt(BuildTimeParentEntry *buildParent)
     // Now move the accumulated data into the parent object
     objParent->nLODs = LODlistLen;
     objParent->pLODs = new LODrecord[LODlistLen];
-    buildParent->pBuildLODs = new BuildTimeLODEntry*[LODlistLen];
+    buildParent->pBuildLODs = new BuildTimeLODEntry *[LODlistLen];
     buildParent->nBuildLODs = LODlistLen;
 
     for (i = 0; i < LODlistLen; i++)

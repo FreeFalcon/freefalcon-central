@@ -34,13 +34,21 @@ struct vector2
     float x, y;
 };
 
-__forceinline vector2::vector2() : x(0.0f), y(0.0f) {}
+__forceinline vector2::vector2() : x(0.0f), y(0.0f)
+{
+}
 
-__forceinline vector2::vector2(const float _x, const float _y) : x(_x), y(_y) {}
+__forceinline vector2::vector2(const float _x, const float _y) : x(_x), y(_y)
+{
+}
 
-__forceinline vector2::vector2(const vector2& vec) : x(vec.x), y(vec.y) {}
+__forceinline vector2::vector2(const vector2& vec) : x(vec.x), y(vec.y)
+{
+}
 
-__forceinline vector2::vector2(const float* p) : x(p[0]), y(p[1]) {}
+__forceinline vector2::vector2(const float* p) : x(p[0]), y(p[1])
+{
+}
 
 __forceinline void vector2::set(const float _x, const float _y)
 {
@@ -62,7 +70,7 @@ __forceinline void vector2::set(const float* p)
 
 __forceinline float vector2::len() const
 {
-    return (float) sqrt(x * x + y * y);
+    return (float)sqrt(x * x + y * y);
 }
 
 __forceinline void vector2::norm()
@@ -76,25 +84,25 @@ __forceinline void vector2::norm()
     }
 }
 
-__forceinline void vector2::operator +=(const vector2& v0)
+__forceinline void vector2::operator+=(const vector2& v0)
 {
     x += v0.x;
     y += v0.y;
 }
 
-__forceinline void vector2::operator -=(const vector2& v0)
+__forceinline void vector2::operator-=(const vector2& v0)
 {
     x -= v0.x;
     y -= v0.y;
 }
 
-__forceinline void vector2::operator *=(const float s)
+__forceinline void vector2::operator*=(const float s)
 {
     x *= s;
     y *= s;
 }
 
-__forceinline void vector2::operator /=(const float s)
+__forceinline void vector2::operator/=(const float s)
 {
     x /= s;
     y /= s;
@@ -102,38 +110,42 @@ __forceinline void vector2::operator /=(const float s)
 
 __forceinline bool vector2::isequal(const vector2& v, const float tol) const
 {
-    if (fabs(v.x - x) > tol)      return false;
-    else if (fabs(v.y - y) > tol) return false;
+    if (fabs(v.x - x) > tol)
+        return false;
+    else if (fabs(v.y - y) > tol)
+        return false;
 
     return true;
 }
 
 __forceinline int vector2::compare(const vector2& v, float tol) const
 {
-    if (fabs(v.x - x) > tol)      return (v.x > x) ? +1 : -1;
-    else if (fabs(v.y - y) > tol) return (v.y > y) ? +1 : -1;
-    else                          return 0;
+    if (fabs(v.x - x) > tol)
+        return (v.x > x) ? +1 : -1;
+    else if (fabs(v.y - y) > tol)
+        return (v.y > y) ? +1 : -1;
+    else
+        return 0;
 }
 
-static __forceinline vector2 operator +(const vector2& v0, const vector2& v1)
+static __forceinline vector2 operator+(const vector2& v0, const vector2& v1)
 {
     return vector2(v0.x + v1.x, v0.y + v1.y);
 }
 
-static __forceinline vector2 operator -(const vector2& v0, const vector2& v1)
+static __forceinline vector2 operator-(const vector2& v0, const vector2& v1)
 {
     return vector2(v0.x - v1.x, v0.y - v1.y);
 }
 
-static __forceinline vector2 operator *(const vector2& v0, const float s)
+static __forceinline vector2 operator*(const vector2& v0, const float s)
 {
     return vector2(v0.x * s, v0.y * s);
 }
 
-static __forceinline vector2 operator -(const vector2& v)
+static __forceinline vector2 operator-(const vector2& v)
 {
     return vector2(-v.x, -v.y);
 }
 
 #endif
-

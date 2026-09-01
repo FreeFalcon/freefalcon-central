@@ -6,7 +6,7 @@
     Provides build time services for sharing positions among all polygons
  in an object.
 \***************************************************************************/
-#include "PosBuildList.h"
+#include "posbuildlist.h"
 
 
 BuildTimePosList::BuildTimePosList()
@@ -27,7 +27,8 @@ BuildTimePosList::BuildTimePosList()
 }
 
 
-void BuildTimePosList::AddReference(int *target, float x, float y, float z, BuildTimePosType type)
+void BuildTimePosList::AddReference(int *target, float x, float y, float z,
+                                    BuildTimePosType type)
 {
     BuildTimePosEntry *entry;
     BuildTimePosReference *ref;
@@ -35,14 +36,13 @@ void BuildTimePosList::AddReference(int *target, float x, float y, float z, Buil
     // See if we've already got a matching color to share
     for (entry = head; entry; entry = entry->next)
     {
-        if ((entry->pos.x == x) &&
-            (entry->pos.y == y) &&
-            (entry->pos.z == z) &&
+        if ((entry->pos.x == x) && (entry->pos.y == y) && (entry->pos.z == z) &&
             (entry->type == type))
         {
 
             // Found a match, so add our reference to it and quit
-            for (ref = entry->refs; ref->next; ref = ref->next);
+            for (ref = entry->refs; ref->next; ref = ref->next)
+                ;
 
             ref->next = new BuildTimePosReference;
             ref = ref->next;
@@ -74,17 +74,17 @@ void BuildTimePosList::AddReference(int *target, float x, float y, float z, Buil
 
     switch (type)
     {
-        case Static:
-            numStatic++;
-            break;
+    case Static:
+        numStatic++;
+        break;
 
-        case Dynamic:
-            numDynamic++;
-            break;
+    case Dynamic:
+        numDynamic++;
+        break;
 
-        default:
-            printf("Illegal position type requested\n");
-            ShiAssert(!"Illegal position type requested");
+    default:
+        printf("Illegal position type requested\n");
+        ShiAssert(!"Illegal position type requested");
     }
 
     // Maintain statistics about all our positions
@@ -123,7 +123,8 @@ void BuildTimePosList::AddReference(int *target, int *source)
     if (entry)
     {
         // Found a match, so add our reference to it and quit
-        for (ref = entry->refs; ref->next; ref = ref->next);
+        for (ref = entry->refs; ref->next; ref = ref->next)
+            ;
 
         ref->next = new BuildTimePosReference;
         ref = ref->next;
@@ -139,7 +140,7 @@ void BuildTimePosList::AddReference(int *target, int *source)
 }
 
 
-Ppoint* BuildTimePosList::GetPosFromTarget(int *target)
+Ppoint *BuildTimePosList::GetPosFromTarget(int *target)
 {
     BuildTimePosEntry *entry;
     BuildTimePosReference *ref;
@@ -173,7 +174,7 @@ Ppoint* BuildTimePosList::GetPosFromTarget(int *target)
     }
 }
 
-Ppoint* BuildTimePosList::GetPool()
+Ppoint *BuildTimePosList::GetPool()
 {
     Ppoint *pool;
     Ppoint *staticPtr;
@@ -183,7 +184,7 @@ Ppoint* BuildTimePosList::GetPool()
 
 
     // Construct the position array and get pointers into it
-    pool = new Ppoint[ numStatic + numDynamic ];
+    pool = new Ppoint[numStatic + numDynamic];
     staticPtr = pool;
     dynamicPtr = pool + numStatic;
     ShiAssert(staticPtr);
@@ -195,19 +196,19 @@ Ppoint* BuildTimePosList::GetPool()
 
         switch (entry->type)
         {
-            case Static:
-                entry->index = staticPtr - pool;
-                *staticPtr++ = entry->pos;
-                break;
+        case Static:
+            entry->index = staticPtr - pool;
+            *staticPtr++ = entry->pos;
+            break;
 
-            case Dynamic:
-                entry->index = dynamicPtr - pool;
-                *dynamicPtr++ = entry->pos;
-                break;
+        case Dynamic:
+            entry->index = dynamicPtr - pool;
+            *dynamicPtr++ = entry->pos;
+            break;
 
-            default:
-                printf("Illegal position type encountered in list\n");
-                ShiAssert(!"Illegal position type encountered in list");
+        default:
+            printf("Illegal position type encountered in list\n");
+            ShiAssert(!"Illegal position type encountered in list");
         }
 
         // Resolve the dangling color references we've accumulated

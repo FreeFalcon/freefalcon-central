@@ -7,15 +7,15 @@
  objects.
 \***************************************************************************/
 #include <io.h>
-#include "FLTreader.h"
-#include "BSPnodeWriter.h"
-#include "LODBuildList.h"
+#include "fltreader.h"
+#include "bspnodewriter.h"
+#include "lodbuildlist.h"
 
 
 BuildTimeLODList TheLODBuildList;
 
 
-BuildTimeLODEntry* BuildTimeLODList::AddReference(char *filename)
+BuildTimeLODEntry *BuildTimeLODList::AddReference(char *filename)
 {
     BuildTimeLODEntry *entry;
     int index;
@@ -87,7 +87,7 @@ BOOL BuildTimeLODList::BuildLODTable()
         // Make sure we didn't get surprised by an out of order index
         ShiAssert(entry->index <= tail->index);
 
-        if (entry -> bflags == 0)
+        if (entry->bflags == 0)
         {
             // Read this LOD record's FLT file and process it
             printf("Child %s\n", entry->filename);
@@ -137,7 +137,8 @@ void BuildTimeLODList::WriteLODData(int file)
             WriteNodeStore(file);
 
             // Record the size of the chunck we wrote
-            TheObjectLODs[index].filesize = lseek(file, 0, SEEK_CUR) - TheObjectLODs[index].fileoffset;
+            TheObjectLODs[index].filesize =
+                lseek(file, 0, SEEK_CUR) - TheObjectLODs[index].fileoffset;
         }
 
         // Move to the next LOD record in the list
@@ -179,7 +180,8 @@ void BuildTimeLODList::WriteLODHeaders(int file)
 }
 
 
-BuildTimeLODEntry * BuildTimeLODList::AddExisiting(ObjectLOD *op, ObjectParent *parent)
+BuildTimeLODEntry *BuildTimeLODList::AddExisiting(ObjectLOD *op,
+                                                  ObjectParent *parent)
 {
     BuildTimeLODEntry *entry;
     int index;
@@ -209,7 +211,8 @@ BuildTimeLODEntry * BuildTimeLODList::AddExisiting(ObjectLOD *op, ObjectParent *
     entry->nDynamicCoords = parent->nDynamicCoords;
     entry->nTextureSets = parent->nTextureSets;
     entry->flags = 0;
-    entry->pSlotAndDynamicPositions = new Ppoint[entry->nDynamicCoords + entry->nSlots];
+    entry->pSlotAndDynamicPositions =
+        new Ppoint[entry->nDynamicCoords + entry->nSlots];
     memcpy(entry->pSlotAndDynamicPositions, parent->pSlotAndDynamicPositions,
            sizeof(Ppoint) * (entry->nDynamicCoords + entry->nSlots));
 
@@ -230,5 +233,4 @@ BuildTimeLODEntry * BuildTimeLODList::AddExisiting(ObjectLOD *op, ObjectParent *
     }
 
     return entry;
-
 }

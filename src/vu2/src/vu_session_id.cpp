@@ -2,7 +2,7 @@
 
 #include <stdlib.h>
 #include <time.h>
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
 /*VU_SESSION_ID::VU_SESSION_ID(unsigned long ip, unsigned long value) {
@@ -21,43 +21,43 @@ VU_SESSION_ID::VU_SESSION_ID() : value_(0)
 {
 }
 
-VU_SESSION_ID::VU_SESSION_ID(unsigned long value): value_((unsigned long)value)
+VU_SESSION_ID::VU_SESSION_ID(unsigned long value) : value_((unsigned long)value)
 {
 }
 
-int VU_SESSION_ID::operator == (VU_SESSION_ID rhs)
+int VU_SESSION_ID::operator==(VU_SESSION_ID rhs)
 {
     return (value_ == rhs.value_ ? TRUE : FALSE);
 }
 
-int VU_SESSION_ID::operator != (VU_SESSION_ID rhs)
+int VU_SESSION_ID::operator!=(VU_SESSION_ID rhs)
 {
     return (value_ != rhs.value_ ? TRUE : FALSE);
 }
 
-int VU_SESSION_ID::operator > (VU_SESSION_ID rhs)
+int VU_SESSION_ID::operator>(VU_SESSION_ID rhs)
 {
     return (value_ > rhs.value_ ? TRUE : FALSE);
 }
 
-int VU_SESSION_ID::operator >= (VU_SESSION_ID rhs)
+int VU_SESSION_ID::operator>=(VU_SESSION_ID rhs)
 {
     return (value_ >= rhs.value_ ? TRUE : FALSE);
 }
 
-int VU_SESSION_ID::operator < (VU_SESSION_ID rhs)
+int VU_SESSION_ID::operator<(VU_SESSION_ID rhs)
 {
     return (value_ < rhs.value_ ? TRUE : FALSE);
 }
 
-int VU_SESSION_ID::operator <= (VU_SESSION_ID rhs)
+int VU_SESSION_ID::operator<=(VU_SESSION_ID rhs)
 {
     return (value_ <= rhs.value_ ? TRUE : FALSE);
 }
 
 VU_SESSION_ID::operator unsigned long()
 {
-    return (unsigned long) value_;
+    return (unsigned long)value_;
 }
 
 /*
@@ -68,6 +68,3 @@ void VU_SESSION_ID::SetIP(unsigned long  ip){
 void VU_SESSION_ID::SetValue(unsigned long value){
  value_ = value;
 }*/
-
-
-

@@ -1,5 +1,5 @@
-#include <cISO646>
-#include "portio_compat.h"	// _outp/_outpw (removed from the CRT)
+#include <ciso646>
+#include "portio_compat.h" // _outp/_outpw (removed from the CRT)
 #include <windows.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -11,7 +11,7 @@
 #include "debuggr.h"
 
 
-#define DTR                     0.01745329F
+#define DTR 0.01745329F
 
 #ifdef NDEBUG
 //  #define DISABLE_MONO_DISPLAY
@@ -19,13 +19,17 @@
 //#define WRITE_FILE
 
 #ifdef WRITE_FILE
-static FILE* debugFile = NULL;
+static FILE *debugFile = NULL;
 #endif
 
 // OW - redirect text mode output to different targets
+#ifdef _WIN32
 #define _TEXT_TGT_CONSOLE
 //#define _TEXT_TGT_TRACE
 //#define _TEXT_TGT_FILE
+#else
+#define _TEXT_TGT_TRACE // Linux: MonoPrint -> OutputDebugString -> stderr (win32_ui.h); no Win32 text console
+#endif
 
 #if defined _TEXT_TGT_CONSOLE
 HANDLE hStdoutDbg = NULL;
@@ -34,17 +38,17 @@ CHAR_INFO charinfo[80 * 25 * 2];
 HANDLE hFileDbg = NULL;
 #endif
 
-#define MAX_STYLE    1
+#define MAX_STYLE 1
 #define CHAR_WIDTH 6
-#define CONTROL_REG   0x3B8
-#define CONFIG_REG    0x3BF
-#define STATUS_REG    0x3BA
-#define DATA_REG      0x3B5
-#define ADDRESS_REG   0x3B4
-#define MONO_TEXT     0xB0000
+#define CONTROL_REG 0x3B8
+#define CONFIG_REG 0x3BF
+#define STATUS_REG 0x3BA
+#define DATA_REG 0x3B5
+#define ADDRESS_REG 0x3B4
+#define MONO_TEXT 0xB0000
 
 #define OUT_BYTE(a, b) _outp((a), (b))
-#define OUT_WORD(a, b) _outpw ((a), (b))
+#define OUT_WORD(a, b) _outpw((a), (b))
 
 static float DebugScreenWidth = 719.0F;
 static float DebugScreenHeight = 347.0F;
@@ -58,213 +62,105 @@ static char mono_buffer[80 * 25 * 2];
 
 void WriteDebugPixel(int, int);
 
-static unsigned char Comma[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x20, 0x60, 0x40, 0x00
-};
-static unsigned char Minus[] =
-{
-    0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-static unsigned char Period[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x20, 0x00, 0x00, 0x00
-};
-static unsigned char Slash[] =
-{
-    0x08, 0x10, 0x20, 0x40, 0x80, 0x00, 0x00, 0x00
-};
-static unsigned char Number0[] =
-{
-    0xe0, 0xa0, 0xa0, 0xa0, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char Number1[] =
-{
-    0x40, 0x40, 0x40, 0x40, 0x40, 0x00, 0x00, 0x00
-};
-static unsigned char Number2[] =
-{
-    0xe0, 0x20, 0xe0, 0x80, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char Number3[] =
-{
-    0xe0, 0x20, 0x60, 0x20, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char Number4[] =
-{
-    0x80, 0xa0, 0xe0, 0x20, 0x20, 0x00, 0x00, 0x00
-};
-static unsigned char Number5[] =
-{
-    0xe0, 0x80, 0xe0, 0x20, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char Number6[] =
-{
-    0x80, 0x80, 0xe0, 0xa0, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char Number7[] =
-{
-    0xe0, 0x20, 0x20, 0x20, 0x20, 0x00, 0x00, 0x00
-};
-static unsigned char Number8[] =
-{
-    0xe0, 0xa0, 0xe0, 0xa0, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char Number9[] =
-{
-    0xe0, 0xa0, 0xe0, 0x20, 0x20, 0x00, 0x00, 0x00
-};
-static unsigned char Colon[] =
-{
-    0x00, 0x20, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00
-};
-static unsigned char SemiColon[] =
-{
-    0x00, 0x20, 0x00, 0x20, 0x60, 0x40, 0x00, 0x00
-};
-static unsigned char Less[] =
-{
-    0x20, 0x40, 0x80, 0x40, 0x20, 0x00, 0x00, 0x00
-};
-static unsigned char Equal[] =
-{
-    0x00, 0x70, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00
-};
-static unsigned char More[] =
-{
-    0x80, 0x40, 0x20, 0x40, 0x80, 0x00, 0x00, 0x00
-};
-static unsigned char Quest[] =
-{
-    0xc0, 0x20, 0x60, 0x40, 0x40, 0x00, 0x40, 0x00
-};
-static unsigned char Each[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
-static unsigned char LetterA[] =
-{
-    0x40, 0xa0, 0xa0, 0xe0, 0xa0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterB[] =
-{
-    0xe0, 0xa0, 0xe0, 0xa0, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterC[] =
-{
-    0xe0, 0x80, 0x80, 0x80, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterD[] =
-{
-    0xc0, 0xa0, 0xa0, 0xa0, 0xc0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterE[] =
-{
-    0xe0, 0x80, 0xc0, 0x80, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterF[] =
-{
-    0xe0, 0x80, 0xc0, 0x80, 0x80, 0x00, 0x00, 0x00
-};
-static unsigned char LetterG[] =
-{
-    0xf0, 0x80, 0xb0, 0x90, 0xf0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterH[] =
-{
-    0xa0, 0xa0, 0xe0, 0xa0, 0xa0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterI[] =
-{
-    0xe0, 0x40, 0x40, 0x40, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterJ[] =
-{
-    0x20, 0x20, 0x20, 0xa0, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterK[] =
-{
-    0xa0, 0xc0, 0xc0, 0xa0, 0x90, 0x00, 0x00, 0x00
-};
-static unsigned char LetterL[] =
-{
-    0x80, 0x80, 0x80, 0x80, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterM[] =
-{
-    0x88, 0xd8, 0xa8, 0x88, 0x88, 0x00, 0x00, 0x00
-};
-static unsigned char LetterN[] =
-{
-    0x88, 0xc8, 0xa8, 0x98, 0x88, 0x00, 0x00, 0x00
-};
-static unsigned char LetterO[] =
-{
-    0xf0, 0x90, 0x90, 0x90, 0xf0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterP[] =
-{
-    0xe0, 0xa0, 0xe0, 0x80, 0x80, 0x00, 0x00, 0x00
-};
-static unsigned char LetterQ[] =
-{
-    0xf0, 0x90, 0x90, 0xb0, 0xf0, 0x08, 0x00, 0x00
-};
-static unsigned char LetterR[] =
-{
-    0xe0, 0xa0, 0xe0, 0xa0, 0x90, 0x00, 0x00, 0x00
-};
-static unsigned char LetterS[] =
-{
-    0xe0, 0x80, 0xe0, 0x20, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterT[] =
-{
-    0xe0, 0x40, 0x40, 0x40, 0x40, 0x00, 0x00, 0x00
-};
-static unsigned char LetterU[] =
-{
-    0xa0, 0xa0, 0xa0, 0xa0, 0xe0, 0x00, 0x00, 0x00
-};
-static unsigned char LetterV[] =
-{
-    0xa0, 0xa0, 0xa0, 0xe0, 0x40, 0x00, 0x00, 0x00
-};
-static unsigned char LetterW[] =
-{
-    0x88, 0x88, 0xa8, 0xd8, 0x88, 0x00, 0x00, 0x00
-};
-static unsigned char LetterX[] =
-{
-    0x88, 0x50, 0x20, 0x50, 0x88, 0x00, 0x00, 0x00
-};
-static unsigned char LetterY[] =
-{
-    0xa0, 0xa0, 0xe0, 0x40, 0x40, 0x00, 0x00, 0x00
-};
-static unsigned char LetterZ[] =
-{
-    0xe0, 0x20, 0x40, 0x80, 0xe0, 0x00, 0x00, 0x00
-};
+static unsigned char Comma[] = {0x00, 0x00, 0x00, 0x00, 0x20, 0x60, 0x40, 0x00};
+static unsigned char Minus[] = {0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00, 0x00};
+static unsigned char Period[] = {0x00, 0x00, 0x00, 0x00,
+                                 0x20, 0x00, 0x00, 0x00};
+static unsigned char Slash[] = {0x08, 0x10, 0x20, 0x40, 0x80, 0x00, 0x00, 0x00};
+static unsigned char Number0[] = {0xe0, 0xa0, 0xa0, 0xa0,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char Number1[] = {0x40, 0x40, 0x40, 0x40,
+                                  0x40, 0x00, 0x00, 0x00};
+static unsigned char Number2[] = {0xe0, 0x20, 0xe0, 0x80,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char Number3[] = {0xe0, 0x20, 0x60, 0x20,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char Number4[] = {0x80, 0xa0, 0xe0, 0x20,
+                                  0x20, 0x00, 0x00, 0x00};
+static unsigned char Number5[] = {0xe0, 0x80, 0xe0, 0x20,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char Number6[] = {0x80, 0x80, 0xe0, 0xa0,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char Number7[] = {0xe0, 0x20, 0x20, 0x20,
+                                  0x20, 0x00, 0x00, 0x00};
+static unsigned char Number8[] = {0xe0, 0xa0, 0xe0, 0xa0,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char Number9[] = {0xe0, 0xa0, 0xe0, 0x20,
+                                  0x20, 0x00, 0x00, 0x00};
+static unsigned char Colon[] = {0x00, 0x20, 0x00, 0x20, 0x00, 0x00, 0x00, 0x00};
+static unsigned char SemiColon[] = {0x00, 0x20, 0x00, 0x20,
+                                    0x60, 0x40, 0x00, 0x00};
+static unsigned char Less[] = {0x20, 0x40, 0x80, 0x40, 0x20, 0x00, 0x00, 0x00};
+static unsigned char Equal[] = {0x00, 0x70, 0x00, 0x70, 0x00, 0x00, 0x00, 0x00};
+static unsigned char More[] = {0x80, 0x40, 0x20, 0x40, 0x80, 0x00, 0x00, 0x00};
+static unsigned char Quest[] = {0xc0, 0x20, 0x60, 0x40, 0x40, 0x00, 0x40, 0x00};
+static unsigned char Each[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
+static unsigned char LetterA[] = {0x40, 0xa0, 0xa0, 0xe0,
+                                  0xa0, 0x00, 0x00, 0x00};
+static unsigned char LetterB[] = {0xe0, 0xa0, 0xe0, 0xa0,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterC[] = {0xe0, 0x80, 0x80, 0x80,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterD[] = {0xc0, 0xa0, 0xa0, 0xa0,
+                                  0xc0, 0x00, 0x00, 0x00};
+static unsigned char LetterE[] = {0xe0, 0x80, 0xc0, 0x80,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterF[] = {0xe0, 0x80, 0xc0, 0x80,
+                                  0x80, 0x00, 0x00, 0x00};
+static unsigned char LetterG[] = {0xf0, 0x80, 0xb0, 0x90,
+                                  0xf0, 0x00, 0x00, 0x00};
+static unsigned char LetterH[] = {0xa0, 0xa0, 0xe0, 0xa0,
+                                  0xa0, 0x00, 0x00, 0x00};
+static unsigned char LetterI[] = {0xe0, 0x40, 0x40, 0x40,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterJ[] = {0x20, 0x20, 0x20, 0xa0,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterK[] = {0xa0, 0xc0, 0xc0, 0xa0,
+                                  0x90, 0x00, 0x00, 0x00};
+static unsigned char LetterL[] = {0x80, 0x80, 0x80, 0x80,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterM[] = {0x88, 0xd8, 0xa8, 0x88,
+                                  0x88, 0x00, 0x00, 0x00};
+static unsigned char LetterN[] = {0x88, 0xc8, 0xa8, 0x98,
+                                  0x88, 0x00, 0x00, 0x00};
+static unsigned char LetterO[] = {0xf0, 0x90, 0x90, 0x90,
+                                  0xf0, 0x00, 0x00, 0x00};
+static unsigned char LetterP[] = {0xe0, 0xa0, 0xe0, 0x80,
+                                  0x80, 0x00, 0x00, 0x00};
+static unsigned char LetterQ[] = {0xf0, 0x90, 0x90, 0xb0,
+                                  0xf0, 0x08, 0x00, 0x00};
+static unsigned char LetterR[] = {0xe0, 0xa0, 0xe0, 0xa0,
+                                  0x90, 0x00, 0x00, 0x00};
+static unsigned char LetterS[] = {0xe0, 0x80, 0xe0, 0x20,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterT[] = {0xe0, 0x40, 0x40, 0x40,
+                                  0x40, 0x00, 0x00, 0x00};
+static unsigned char LetterU[] = {0xa0, 0xa0, 0xa0, 0xa0,
+                                  0xe0, 0x00, 0x00, 0x00};
+static unsigned char LetterV[] = {0xa0, 0xa0, 0xa0, 0xe0,
+                                  0x40, 0x00, 0x00, 0x00};
+static unsigned char LetterW[] = {0x88, 0x88, 0xa8, 0xd8,
+                                  0x88, 0x00, 0x00, 0x00};
+static unsigned char LetterX[] = {0x88, 0x50, 0x20, 0x50,
+                                  0x88, 0x00, 0x00, 0x00};
+static unsigned char LetterY[] = {0xa0, 0xa0, 0xe0, 0x40,
+                                  0x40, 0x00, 0x00, 0x00};
+static unsigned char LetterZ[] = {0xe0, 0x20, 0x40, 0x80,
+                                  0xe0, 0x00, 0x00, 0x00};
 
-static unsigned char Space[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
-};
+static unsigned char Space[] = {0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00};
 
-#define MAX_CHAR_IDX      47
-#define ASPECT_RATIO      0.775F
+#define MAX_CHAR_IDX 47
+#define ASPECT_RATIO 0.775F
 
 static int graphicsMode = -1;
-static unsigned char *CharList[MAX_CHAR_IDX + 1] = {Comma, Minus, Period, Slash,
-        Number0, Number1, Number2, Number3, Number4,
-        Number5, Number6, Number7, Number8, Number9,
-        Colon, SemiColon, Less, Equal, More, Quest, Each,
-        LetterA, LetterB, LetterC, LetterD, LetterE, LetterF, LetterG,
-        LetterH, LetterI, LetterJ, LetterK, LetterL, LetterM, LetterN,
-        LetterO, LetterP, LetterQ, LetterR, LetterS, LetterT, LetterU,
-        LetterV, LetterW, LetterX, LetterY, LetterZ, Space
-                                                   };
+static unsigned char *CharList[MAX_CHAR_IDX + 1] = {
+    Comma,   Minus,   Period,  Slash,   Number0, Number1, Number2, Number3,
+    Number4, Number5, Number6, Number7, Number8, Number9, Colon,   SemiColon,
+    Less,    Equal,   More,    Quest,   Each,    LetterA, LetterB, LetterC,
+    LetterD, LetterE, LetterF, LetterG, LetterH, LetterI, LetterJ, LetterK,
+    LetterL, LetterM, LetterN, LetterO, LetterP, LetterQ, LetterR, LetterS,
+    LetterT, LetterU, LetterV, LetterW, LetterX, LetterY, LetterZ, Space};
 
 static int styles[MAX_STYLE + 1] = {0xFFFF, 0xC0C0};
 static int linestyle = 0;
@@ -453,19 +349,19 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
             if (d <= 0)
             {
                 d += ince;
-                x ++;
+                x++;
             }
             else
             {
                 d += incne;
-                x ++;
-                y ++;
+                x++;
+                y++;
             }
 
             if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
-            pixcount ++;
+            pixcount++;
         }
     }
     else if (dy < 0 and -dy < dx)
@@ -479,19 +375,19 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
             if (d <= 0)
             {
                 d += ince;
-                x ++;
+                x++;
             }
             else
             {
                 d += incne;
-                x ++;
-                y --;
+                x++;
+                y--;
             }
 
             if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
-            pixcount ++;
+            pixcount++;
         }
     }
     else if (dx >= 0 and dy >= 0)
@@ -506,19 +402,19 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
             if (d <= 0)
             {
                 d += ince;
-                y ++;
+                y++;
             }
             else
             {
-                x ++;
+                x++;
                 d += incne;
-                y ++;
+                y++;
             }
 
             if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
-            pixcount ++;
+            pixcount++;
         }
     }
     else
@@ -533,19 +429,19 @@ void DisplayDebugLine(int x0, int y0, int x1, int y1)
             if (d <= 0)
             {
                 d += ince;
-                y --;
+                y--;
             }
             else
             {
                 d += incne;
-                y --;
-                x ++;
+                y--;
+                x++;
             }
 
             if (styles[linestyle] bitand (1 << (pixcount % 16)))
                 WriteDebugPixel(x, y);
 
-            pixcount ++;
+            pixcount++;
         }
     }
 }
@@ -562,12 +458,13 @@ void DrawDebugCircle(float xin, float yin, float radius)
     x_center = (int)(DebugScreenWidth * 0.5F * (1.0F + x1in));
     y_center = (int)(DebugScreenHeight * 0.5F * (1.0F - y1in));
 
-    DisplayDebugCircle(x_center, y_center, (int)(DebugScreenHeight * 0.5F * radius));
+    DisplayDebugCircle(x_center, y_center,
+                       (int)(DebugScreenHeight * 0.5F * radius));
 }
 
 void DisplayDebugCircle(int x_center, int y_center, int radius)
 {
-    int x, y, d, de , dse;
+    int x, y, d, de, dse;
     int x2, y2;
 
     if (graphicsMode not_eq DEBUGGER_GRAPHICS_MODE)
@@ -596,7 +493,7 @@ void DisplayDebugCircle(int x_center, int y_center, int radius)
             d += de;
             de += 2;
             dse += 2;
-            x ++;
+            x++;
         }
         else
         {
@@ -607,12 +504,14 @@ void DisplayDebugCircle(int x_center, int y_center, int radius)
             y--;
         }
 
-        x2 = (int)((float)x * DebugScreenWidth / DebugScreenHeight * ASPECT_RATIO);
+        x2 = (int)((float)x * DebugScreenWidth / DebugScreenHeight *
+                   ASPECT_RATIO);
         WriteDebugPixel(x2 + x_center, y + y_center);
         WriteDebugPixel(-x2 + x_center, y + y_center);
         WriteDebugPixel(-x2 + x_center, -y + y_center);
         WriteDebugPixel(x2 + x_center, -y + y_center);
-        y2 = (int)((float)y * DebugScreenWidth / DebugScreenHeight * ASPECT_RATIO);
+        y2 = (int)((float)y * DebugScreenWidth / DebugScreenHeight *
+                   ASPECT_RATIO);
         WriteDebugPixel(y2 + x_center, x + y_center);
         WriteDebugPixel(-y2 + x_center, x + y_center);
         WriteDebugPixel(-y2 + x_center, -x + y_center);
@@ -674,19 +573,14 @@ void DisplayDebugCharacter(int num, int x, int y)
                 c = (char)(c << 1);
             }
 
-            data ++;
+            data++;
         }
     }
 }
 
-static int
-spinner = 0,
-spinner1 = 0,
-spinner2 = 0,
-spinner3 = 0;
+static int spinner = 0, spinner1 = 0, spinner2 = 0, spinner3 = 0;
 
-static char
-spin[] = "|/-\\";
+static char spin[] = "|/-/";
 
 void set_spinner1(int s)
 {
@@ -700,11 +594,11 @@ void set_spinner1(int s)
 #elif defined _TEXT_TGT_TRACE
 #elif defined _TEXT_TGT_FILE
 #else
-    char
-    *dst;
+    char *dst;
 
-    dst = (char *) MONO_TEXT;
-    dst[156] = spin[spinner1 bitand 3];;
+    dst = (char *)MONO_TEXT;
+    dst[156] = spin[spinner1 bitand 3];
+    ;
     dst[157] = 7;
 #endif
 #endif
@@ -721,11 +615,11 @@ void set_spinner2(int s)
 #elif defined _TEXT_TGT_TRACE
 #elif defined _TEXT_TGT_FILE
 #else
-    char
-    *dst;
+    char *dst;
 
-    dst = (char *) MONO_TEXT;
-    dst[154] = spin[spinner2 bitand 3];;
+    dst = (char *)MONO_TEXT;
+    dst[154] = spin[spinner2 bitand 3];
+    ;
     dst[155] = 7;
 #endif
 #endif
@@ -742,11 +636,11 @@ void set_spinner3(int s)
 #elif defined _TEXT_TGT_TRACE
 #elif defined _TEXT_TGT_FILE
 #else
-    char
-    *dst;
+    char *dst;
 
-    dst = (char *) MONO_TEXT;
-    dst[154] = spin[spinner3 bitand 3];;
+    dst = (char *)MONO_TEXT;
+    dst[154] = spin[spinner3 bitand 3];
+    ;
     dst[155] = 7;
 #endif
 #endif
@@ -756,29 +650,30 @@ unsigned long WINAPI update_mono(void *ptr)
 {
 #if defined _TEXT_TGT_CONSOLE
 #if 1
-    COORD dwBufferSize = { 80, 25 };
-    COORD dwBufferCoord = { 0, 0 };
+    COORD dwBufferSize = {80, 25};
+    COORD dwBufferCoord = {0, 0};
 
     char *src;
     CHAR_INFO *dst;
 
     while (ptr and hStdoutDbg)
     {
-        SMALL_RECT rc = { 0, 0, 80, 25 };
+        SMALL_RECT rc = {0, 0, 80, 25};
 
         src = mono_memory;
         dst = charinfo;
 
-        for (int loop = 0; loop < 80 * 25 * 2; loop ++)
+        for (int loop = 0; loop < 80 * 25 * 2; loop++)
         {
             dst->Char.AsciiChar = *src++;
             dst->Attributes = *src++ ? FOREGROUND_GREEN : FOREGROUND_BLUE;
 
-            dst ++;
+            dst++;
         }
 
 
-        BOOL b = WriteConsoleOutput(hStdoutDbg, charinfo, dwBufferSize, dwBufferCoord, &rc);
+        BOOL b = WriteConsoleOutput(hStdoutDbg, charinfo, dwBufferSize,
+                                    dwBufferCoord, &rc);
 
         Sleep(25);
     }
@@ -786,15 +681,15 @@ unsigned long WINAPI update_mono(void *ptr)
 #elif defined _TEXT_TGT_TRACE
 #elif defined _TEXT_TGT_FILE
 #else
-    COORD dwBufferCoord = { 0, 0 };
+    COORD dwBufferCoord = {0, 0};
     DWORD cb;
 
     while (ptr and hStdoutDbg)
     {
-        if ( not SetConsoleCursorPosition(hStdoutDbg, dwBufferCoord))
+        if (not SetConsoleCursorPosition(hStdoutDbg, dwBufferCoord))
             OutputDebugString("Warning: WriteConsoleOutputA failed\n");
 
-        if ( not WriteConsole(hStdoutDbg, mono_memory, 80 * 25 * 2, &cb, NULL))
+        if (not WriteConsole(hStdoutDbg, mono_memory, 80 * 25 * 2, &cb, NULL))
             OutputDebugString("Warning: WriteConsoleOutputA failed\n");
 
         Sleep(25);
@@ -802,22 +697,18 @@ unsigned long WINAPI update_mono(void *ptr)
 
 #endif
 #else
-    int
-    loop;
+    int loop;
 
-    char
-    *src,
-    *cmp,
-    *dst;
+    char *src, *cmp, *dst;
 
 
     while (ptr)
     {
         src = mono_memory;
         cmp = mono_buffer;
-        dst = (char *) MONO_TEXT;
+        dst = (char *)MONO_TEXT;
 
-        for (loop = 0; loop < 80 * 25 * 2; loop ++)
+        for (loop = 0; loop < 80 * 25 * 2; loop++)
         {
             if (*cmp not_eq *src)
             {
@@ -825,22 +716,26 @@ unsigned long WINAPI update_mono(void *ptr)
                 *cmp = *src;
             }
 
-            src ++;
-            dst ++;
-            cmp ++;
+            src++;
+            dst++;
+            cmp++;
         }
 
-        dst = (char *) MONO_TEXT;
-        dst[158] = spin[(spinner ++) bitand 3];;
+        dst = (char *)MONO_TEXT;
+        dst[158] = spin[(spinner++) bitand 3];
+        ;
         dst[159] = 7;
 
-        dst[156] = spin[spinner1 bitand 3];;
+        dst[156] = spin[spinner1 bitand 3];
+        ;
         dst[157] = 7;
 
-        dst[154] = spin[spinner2 bitand 3];;
+        dst[154] = spin[spinner2 bitand 3];
+        ;
         dst[155] = 7;
 
-        dst[152] = spin[spinner3 bitand 3];;
+        dst[152] = spin[spinner3 bitand 3];
+        ;
         dst[153] = 7;
 
         Sleep(25);
@@ -855,10 +750,9 @@ mono_critical;
 
 void InitDebug(int mode)
 {
-    int graph_mode[] =
-    {53, 45, 46, 7, 91, 2, 87, 87, 2, 3, 0, 0, 0, 0, 0, 0};
-    int text_mode[] =
-    {97, 80, 82, 15, 25, 6, 25, 25, 2, 13, 11, 12, 0, 0, 0, 0};
+    int graph_mode[] = {53, 45, 46, 7, 91, 2, 87, 87, 2, 3, 0, 0, 0, 0, 0, 0};
+    int text_mode[] = {97, 80, 82, 15, 25, 6, 25, 25,
+                       2,  13, 11, 12, 0,  0, 0,  0};
 
 #ifdef NDEBUG
     //   if (mode == DEBUGGER_TEXT_MODE)
@@ -867,8 +761,8 @@ void InitDebug(int mode)
 
 #ifdef WRITE_FILE
 
-    if ( not debugFile)
-        debugFile = fopen("c:\\temp\\debug.dat", "w");
+    if (not debugFile)
+        debugFile = fopen("c:/temp/debug.dat", "w");
 
 #endif
 
@@ -881,11 +775,12 @@ void WriteDebugPixel(int x, int y)
     int the_bit;
     char *cur_val;
 
-    if (x < 0 or y < 0 or x > (int)DebugScreenWidth or y > (int)DebugScreenHeight)
+    if (x < 0 or y < 0 or x > (int)DebugScreenWidth or
+        y > (int)DebugScreenHeight)
         return;
 
     the_byte = 0x2000 * (y % 4) + 90 * (y / 4) + x / 8;
-    the_bit  = 7 - x % 8;
+    the_bit = 7 - x % 8;
 
     cur_val = (char *)(screen_buffer[page] + the_byte);
 #ifndef DISABLE_MONO_DISPLAY
@@ -902,7 +797,7 @@ void DebugSwapbuffer()
 
     for (i = 0; i < 0x8000; i++)
     {
-        if (*((char *)(screen_buffer[page] + i)) not_eq 
+        if (*((char *)(screen_buffer[page] + i)) not_eq
             *((char *)(screen_buffer[1 - page] + i)))
         {
 #ifndef DISABLE_MONO_DISPLAY
@@ -934,7 +829,7 @@ void FileOutput(char *_mono_buffer)
     FILE
     *fp;
 
-    fp = fopen("d:\\debug.out", "a");
+    fp = fopen("d:/debug.out", "a");
 
     if (fp)
     {
@@ -951,17 +846,17 @@ void FileOutput(char *_mono_buffer)
 
 void MonoPrint(char *string, ...)
 {
-    va_list params;   /* watcom manual 'Library' p.470 */
+    va_list params; /* watcom manual 'Library' p.470 */
     int idx = 0;
-    int   check;
-    static char  _mono_buffer[1000];
+    int check;
+    static char _mono_buffer[1000];
 
     va_start(params, string);
 
     if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return;
 
-    if ( not string)
+    if (not string)
         return;
 
     EnterCriticalSection(&mono_critical);
@@ -973,7 +868,7 @@ void MonoPrint(char *string, ...)
     // FileOutput (_mono_buffer);
 
 #if defined _TEXT_TGT_CONSOLE
-    COORD dwCursorPosition = { monoPenX, monoPenY };
+    COORD dwCursorPosition = {monoPenX, monoPenY};
     BOOL b = SetConsoleCursorPosition(hStdoutDbg, dwCursorPosition);
 
     if (b)
@@ -988,8 +883,8 @@ void MonoPrint(char *string, ...)
 
             if (b)
             {
-                monoPenX = (unsigned char) csbi.dwCursorPosition.X;
-                monoPenY = (unsigned char) csbi.dwCursorPosition.Y;
+                monoPenX = (unsigned char)csbi.dwCursorPosition.X;
+                monoPenY = (unsigned char)csbi.dwCursorPosition.Y;
             }
         }
     }
@@ -1011,7 +906,7 @@ void MonoPrint(char *string, ...)
     DWORD cb;
     WriteFile(hFileDbg, _mono_buffer, check, &cb, NULL);
 #else
-    unsigned char  *mem_loc;
+    unsigned char *mem_loc;
     mem_loc = (unsigned char *)(monoPenY * 160 + monoPenX * 2 + mono_memory);
 
     while (_mono_buffer[idx])
@@ -1025,7 +920,7 @@ void MonoPrint(char *string, ...)
         {
 #ifndef DISABLE_MONO_DISPLAY
             *(mem_loc++) = _mono_buffer[idx];
-            *(mem_loc++) = (unsigned char) monoPenattribute;
+            *(mem_loc++) = (unsigned char)monoPenattribute;
 #endif
             idx++;
 
@@ -1041,10 +936,9 @@ void MonoPrint(char *string, ...)
     LeaveCriticalSection(&mono_critical);
 }
 
-static unsigned char * MonoNewline(void)
+static unsigned char *MonoNewline(void)
 {
-    unsigned char
-    *ptr;
+    unsigned char *ptr;
 
     if (graphicsMode not_eq DEBUGGER_TEXT_MODE)
         return (0);
@@ -1117,7 +1011,7 @@ void MonoLocate(unsigned char x, unsigned char y)
     LeaveCriticalSection(&mono_critical);
 }
 
-void MonoGetLoc(int* x, int* y)
+void MonoGetLoc(int *x, int *y)
 {
     *x = monoPenX;
     *y = monoPenY;
@@ -1145,17 +1039,17 @@ void MonoCls(void)
 
 #if defined _TEXT_TGT_CONSOLE
     COORD coord;
-    coord.X = 0;            // start at first cell
-    coord.Y = 0;            //   of first row
+    coord.X = 0; // start at first cell
+    coord.Y = 0; //   of first row
     char chFillChar = ' ';
     DWORD cWritten = 0;
 
-    BOOL fSuccess = FillConsoleOutputCharacter(
-                        hStdoutDbg,          // screen buffer handle
-                        chFillChar,       // fill with spaces
-                        80 * 25,          // number of cells to fill
-                        coord,            // first cell to write to
-                        &cWritten);       // actual number written
+    BOOL fSuccess =
+        FillConsoleOutputCharacter(hStdoutDbg, // screen buffer handle
+                                   chFillChar, // fill with spaces
+                                   80 * 25, // number of cells to fill
+                                   coord, // first cell to write to
+                                   &cWritten); // actual number written
 #elif defined _TEXT_TGT_TRACE
 #elif defined _TEXT_TGT_FILE
 #else

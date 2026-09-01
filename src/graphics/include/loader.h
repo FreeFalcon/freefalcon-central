@@ -12,7 +12,6 @@
 #include "grtypes.h"
 
 
-
 #define DEFAULT_LOADER_DELAY 100 // Default value of delay in mSeconds
 #define FAST_LOADER_DELAY 5 // Fast value of delay in mSeconds
 
@@ -21,21 +20,30 @@
 extern class Loader TheLoader;
 
 
-
 // The structure used to request a data transfer
 typedef struct LoaderQ
 {
-    char            *filename;
+    char *filename;
     DWORD fileoffset;
-    void (*callback)(LoaderQ*);
+    void (*callback)(LoaderQ *);
     void *parameter;
     LoaderQ *prev; // Modified by loader
     LoaderQ *next; // Modified by loader
 } LoaderQ;
 
 
-typedef enum { RUNNING = 0, PAUSING, PAUSED } LoaderPauseMode;
-typedef enum { QUEUE_FIFO, QUEUE_SORTING, QUEUE_STORING } QueueMode;
+typedef enum
+{
+    RUNNING = 0,
+    PAUSING,
+    PAUSED
+} LoaderPauseMode;
+typedef enum
+{
+    QUEUE_FIFO,
+    QUEUE_SORTING,
+    QUEUE_STORING
+} QueueMode;
 
 
 class Loader
@@ -56,7 +64,8 @@ public:
     }
 
     void EnqueueRequest(LoaderQ *New);
-    BOOL CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *filename, DWORD fileoffset);
+    BOOL CancelRequest(void (*callback)(LoaderQ *), void *parameter,
+                       char *filename, DWORD fileoffset);
 
     void SetPause(BOOL state);
 
@@ -93,24 +102,24 @@ private:
 
     CRITICAL_SECTION cs_loaderQ;
 
-    LoaderQ* head;
-    LoaderQ* tail;
+    LoaderQ *head;
+    LoaderQ *tail;
 
     volatile BOOL shutDown;
     volatile BOOL stopped;
     volatile LoaderPauseMode paused;
     volatile BOOL queueIsEmpty;
-    volatile QueueMode      queueStatus;
+    volatile QueueMode queueStatus;
     volatile DWORD TickDelay;
 
     DWORD static MainLoopWrapper(LPVOID myself);
     DWORD MainLoop(void);
     void SortLoaderQueue(void);
-    LoaderQ* GetNextRequest(void);
+    LoaderQ *GetNextRequest(void);
 
     void Enqueue(LoaderQ *New);
     void Dequeue(LoaderQ *Old);
-    void        ReplaceHeadEntry(LoaderQ *New);
+    void ReplaceHeadEntry(LoaderQ *New);
 };
 
 

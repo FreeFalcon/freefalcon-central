@@ -8,8 +8,8 @@
 \***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
-#include "shi/ShiError.h"
-#include "AlphaPatch.h"
+#include "shi/shierror.h"
+#include "alphapatch.h"
 
 
 AlphaPatchClass TheAlphaPatchList;
@@ -48,7 +48,8 @@ void AlphaPatchClass::Load(char *filename)
     while (fgets(line, sizeof(line), file))
     {
 
-        argCnt = sscanf(line, "%d %s %f %f %f %f", &vnum, name, &r, &g, &b, &alpha);
+        argCnt =
+            sscanf(line, "%d %s %f %f %f %f", &vnum, name, &r, &g, &b, &alpha);
 
         if (argCnt == 6)
         {
@@ -67,7 +68,6 @@ void AlphaPatchClass::Load(char *filename)
                 AddPatch(name, alpha);
             }
         }
-
     }
 
     // Close the patch file
@@ -88,7 +88,8 @@ void AlphaPatchClass::Cleanup(void)
 }
 
 
-void AlphaPatchClass::AddPatch(char *name, float alpha, float r, float g, float b)
+void AlphaPatchClass::AddPatch(char *name, float alpha, float r, float g,
+                               float b)
 {
     AlphaPatchRecord *record = new AlphaPatchRecord;
 
@@ -117,7 +118,7 @@ void AlphaPatchClass::AddPatch(char *name, float alpha)
 }
 
 
-AlphaPatchRecord* AlphaPatchClass::GetPatch(char *name)
+AlphaPatchRecord *AlphaPatchClass::GetPatch(char *name)
 {
     AlphaPatchRecord *record = PatchList;
 

@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -52,11 +53,12 @@ public:
     void InitOverlay();
     BYTE *GetOverlay()
     {
-        return(Overlay_);
+        return (Overlay_);
     }
     void UseOverlay()
     {
-        if (Overlay_) UseOverlay_ = TRUE;
+        if (Overlay_)
+            UseOverlay_ = TRUE;
     }
     void NoOverlay()
     {
@@ -68,34 +70,40 @@ public:
     void SetImage(IMAGE_RSC *image);
     void SetSrcRect(UI95_RECT *rect)
     {
-        if (Image_ not_eq NULL) Image_->SetSrcRect(rect);
+        if (Image_ not_eq NULL)
+            Image_->SetSrcRect(rect);
     }
     void SetDestRect(UI95_RECT *rect)
     {
-        if (Image_ not_eq NULL) Image_->SetDestRect(rect);
+        if (Image_ not_eq NULL)
+            Image_->SetDestRect(rect);
     }
     void SetScaleInfo(long scale)
     {
-        if (Image_ not_eq NULL) Image_->SetScaleInfo(scale);
+        if (Image_ not_eq NULL)
+            Image_->SetScaleInfo(scale);
     }
     UI95_RECT *GetSrcRect()
     {
-        if (Image_ not_eq NULL) return(Image_->GetSrcRect());
+        if (Image_ not_eq NULL)
+            return (Image_->GetSrcRect());
 
-        return(NULL);
+        return (NULL);
     }
     UI95_RECT *GetDestRect()
     {
-        if (Image_ not_eq NULL) return(Image_->GetDestRect());
+        if (Image_ not_eq NULL)
+            return (Image_->GetDestRect());
 
-        return(NULL);
+        return (NULL);
     }
 
     IMAGE_RSC *GetImage(void)
     {
-        if (Image_ not_eq NULL) return(Image_->GetImage());
+        if (Image_ not_eq NULL)
+            return (Image_->GetImage());
 
-        return(NULL);
+        return (NULL);
     }
     // Free Function
     void Cleanup(void);
@@ -105,7 +113,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void SetFlags(long flags);
 
@@ -116,7 +124,7 @@ public:
 
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

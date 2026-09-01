@@ -5,22 +5,25 @@
 
     This class provides basic 2D drawing functions in a device independent fashion.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include <math.h>
-#include "Display.h"
-#include "Render3D.h" // ASSO:
+#include "display.h"
+#include "render3d.h" // ASSO:
 
 // COBRA - DX - DX Engine includes
-#include "Graphics/DXEngine/DXVBManager.h"
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/common/IRenderer.h"	// PHASE 5 (RTT)
-#include "Graphics/DXEngine/D3D12Backend.h"	// #DX12 п.3 (RTT)
-#include "Graphics/DXEngine/d3d12/D3D12Renderer.h"	// Artscout - 2026 (panel-drift DIAG): D3D12 gScreenSize getter
-#include "Graphics/DXEngine/OpenXRBackend.h"	// Artscout - 2026 (VR panel-drift DIAG, temporary): head pose for RTTDIST log
+#include "graphics/dxengine/dxvbmanager.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/common/irenderer.h" // PHASE 5 (RTT)
+#include "graphics/dxengine/d3d12backend.h" // #DX12 п.3 (RTT)
+#include "graphics/vulkan/vulkanbackend.h" // Artscout - 2026 (#104): g_pVulkanBackend RTT peer
+#include "graphics/dxengine/d3d12/d3d12renderer.h" // Artscout - 2026 (panel-drift DIAG): D3D12 gScreenSize getter
+#include "graphics/dxengine/openxrbackend.h" // Artscout - 2026 (VR panel-drift DIAG, temporary): head pose for RTTDIST log
 extern bool g_bUseD3D12;
-extern bool g_bUseGpu;		// #DX12: D3D11 || D3D12 (GPU render mode) -- RTT composite is additive on both
+extern bool
+    g_bUseGpu; // #DX12: D3D11 || D3D12 (GPU render mode) -- RTT composite is additive on both
 extern bool g_bUse_DX_Engine;
-extern bool g_rttBatchActive;	// Artscout - 2026 (D3D11 purge): re-homed to D3D12Renderer.cpp; StartRtt/FinishRtt set it
+extern bool
+    g_rttBatchActive; // Artscout - 2026 (D3D11 purge): re-homed to D3D12Renderer.cpp; StartRtt/FinishRtt set it
 
 // ASSO: BEGIN
 extern int g_nGfxFix;
@@ -42,7 +45,8 @@ float CircleY[CircleSegments];
 
 // ASFO:
 FontSet VirtualDisplay::Font2D;
-FontSet VirtualDisplay::Font3D;;
+FontSet VirtualDisplay::Font3D;
+;
 FontSet* VirtualDisplay::pFontSet = NULL;
 /*
 FontDataType FontData[NUM_FONT_RESOLUTIONS][256] = {0};
@@ -73,25 +77,26 @@ BOOL VirtualDisplay::IsReady()
 
 void VirtualDisplay::Circle(float x, float y, float xRadius)
 {
-    Oval(x, y, xRadius, xRadius*scaleX/scaleY);
+    Oval(x, y, xRadius, xRadius * scaleX / scaleY);
 }
 
 
-void VirtualDisplay::Arc(float x, float y, float xRadius, float start, float stop)
+void VirtualDisplay::Arc(float x, float y, float xRadius, float start,
+                         float stop)
 {
-    OvalArc(x, y, xRadius, xRadius*scaleX/scaleY, start, stop);
+    OvalArc(x, y, xRadius, xRadius * scaleX / scaleY, start, stop);
 }
 
 
 float VirtualDisplay::TextWidth(char* string)
 {
-    return ScreenTextWidth(string)/scaleX;
+    return ScreenTextWidth(string) / scaleX;
 }
 
 
 float VirtualDisplay::TextHeight()
 {
-    return ScreenTextHeight()/scaleY;
+    return ScreenTextHeight() / scaleY;
 }
 
 
@@ -180,19 +185,20 @@ float VirtualDisplay::GetYOffset()
 
 float VirtualDisplay::viewportXtoPixel(float x)
 {
-    return (x*scaleX)+shiftX;
+    return (x * scaleX) + shiftX;
 }
 
 
 float VirtualDisplay::viewportYtoPixel(float y)
 {
-    return (y*scaleY)+shiftY;
+    return (y * scaleY) + shiftY;
 }
 
 
 int VirtualDisplay::HasRttTarget()
 {
-    return renderTexture != 0; // Artscout - 2026 (x64): bool test, not (int) pointer truncation
+    return renderTexture !=
+           0; // Artscout - 2026 (x64): bool test, not (int) pointer truncation
 }
 
 
@@ -209,7 +215,7 @@ void VirtualDisplay::GetRttCanvas(Tpoint* Canvas)
 \***************************************************************************/
 void VirtualDisplay::Setup(void)
 {
-    ShiAssert( not IsReady());
+    ShiAssert(not IsReady());
 
     // Setup the default viewport
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
@@ -252,7 +258,8 @@ void VirtualDisplay::Cleanup(void)
 \***************************************************************************/
 void VirtualDisplay::SetViewport(float l, float t, float r, float b)
 {
-    static const float E = 0.01f; // Eplsion value to ensure we stay within our pixel limits
+    static const float E =
+        0.01f; // Eplsion value to ensure we stay within our pixel limits
 
     //sfr: some cropping
     if (l < -1.0f)
@@ -275,19 +282,20 @@ void VirtualDisplay::SetViewport(float l, float t, float r, float b)
         b = -1.0f;
     }
 
-    left = l, top = t,
-    right = r, bottom = b;
+    left = l, top = t, right = r, bottom = b;
 
     scaleX = (r - l) * xRes * 0.25f - E;
 
-    if (scaleX < 0.0f) scaleX = 0.0f;
+    if (scaleX < 0.0f)
+        scaleX = 0.0f;
 
     shiftX = (l + 1.0f + (r - l) * 0.5f) * xRes * 0.5f;
     shiftX += tLeft; // ASSO: for adjusted RTT viewport
 
     scaleY = (t - b) * yRes * 0.25f - E;
 
-    if (scaleY < 0.0f) scaleY = 0.0f;
+    if (scaleY < 0.0f)
+        scaleY = 0.0f;
 
     shiftY = yRes - ((b + 1.0f + (t - b) * 0.5f) * yRes * 0.5f);
     shiftY += tTop; // ASSO: for adjusted RTT viewport
@@ -300,16 +308,17 @@ void VirtualDisplay::SetViewport(float l, float t, float r, float b)
     leftPixel = viewportXtoPixel(-1.0f);
     rightPixel = viewportXtoPixel(1.0f);
 
-    ShiAssert(floor(topPixel)   >= 0.0f);
+    ShiAssert(floor(topPixel) >= 0.0f);
     ShiAssert(ceil(bottomPixel) >= 0.0f);
-    ShiAssert(floor(leftPixel)  >= 0.0f);
-    ShiAssert(ceil(rightPixel)  >= 0.0f);
+    ShiAssert(floor(leftPixel) >= 0.0f);
+    ShiAssert(ceil(rightPixel) >= 0.0f);
     // ASSO: changed xRes to txRes and yRes to tyRes
-    ShiAssert(floor(topPixel)  <= tyRes);
+    ShiAssert(floor(topPixel) <= tyRes);
     ShiAssert(ceil(bottomPixel) <= tyRes);
-    ShiAssert(floor(leftPixel)  <= txRes);
-    ShiAssert(ceil(rightPixel)  <= txRes);
-    TheDXEngine.SetViewport((DWORD)leftPixel, (DWORD)topPixel, (DWORD)rightPixel, (DWORD)bottomPixel);
+    ShiAssert(floor(leftPixel) <= txRes);
+    ShiAssert(ceil(rightPixel) <= txRes);
+    TheDXEngine.SetViewport((DWORD)leftPixel, (DWORD)topPixel,
+                            (DWORD)rightPixel, (DWORD)bottomPixel);
 }
 
 
@@ -322,10 +331,10 @@ void VirtualDisplay::SetViewportRelative(float l, float t, float r, float b)
     float w = right - left;
     float h = top - bottom;
 
-    float topSide    = top    - (1.0f - t) / 2.0f * h;
+    float topSide = top - (1.0f - t) / 2.0f * h;
     float bottomSide = bottom + (1.0f + b) / 2.0f * h;
-    float leftSide   = left   + (1.0f + l) / 2.0f * w;
-    float rightSide  = right  - (1.0f - r) / 2.0f * w;
+    float leftSide = left + (1.0f + l) / 2.0f * w;
+    float rightSide = right - (1.0f - r) / 2.0f * w;
 
     SetViewport(leftSide, topSide, rightSide, bottomSide);
 }
@@ -335,7 +344,8 @@ void VirtualDisplay::SetViewportRelative(float l, float t, float r, float b)
  Return the current normalized screen space dimensions of the viewport
  on the drawing target buffer.
 \***************************************************************************/
-void VirtualDisplay::GetViewport(float *leftSide, float *topSide, float *rightSide, float *bottomSide)
+void VirtualDisplay::GetViewport(float* leftSide, float* topSide,
+                                 float* rightSide, float* bottomSide)
 {
     *leftSide = left;
     *topSide = top;
@@ -363,22 +373,24 @@ void VirtualDisplay::AdjustRotationAboutOrigin(float angle)
     float cosAng = (float)cos(angle);
     float sinAng = (float)sin(angle);
 
-    temp    = dmatrix.rotation00 * cosAng - dmatrix.rotation01 * sinAng;
-    dmatrix.rotation01 = dmatrix.rotation00 * sinAng + dmatrix.rotation01 * cosAng;
+    temp = dmatrix.rotation00 * cosAng - dmatrix.rotation01 * sinAng;
+    dmatrix.rotation01 =
+        dmatrix.rotation00 * sinAng + dmatrix.rotation01 * cosAng;
     dmatrix.rotation00 = temp;
 
-    temp       = dmatrix.rotation10 * cosAng - dmatrix.rotation11 * sinAng;
-    dmatrix.rotation11 = dmatrix.rotation10 * sinAng + dmatrix.rotation11 * cosAng;
+    temp = dmatrix.rotation10 * cosAng - dmatrix.rotation11 * sinAng;
+    dmatrix.rotation11 =
+        dmatrix.rotation10 * sinAng + dmatrix.rotation11 * cosAng;
     dmatrix.rotation10 = temp;
 }
 
 // save restore context
-void VirtualDisplay::SaveDisplayMatrix(DisplayMatrix *dm)
+void VirtualDisplay::SaveDisplayMatrix(DisplayMatrix* dm)
 {
     *dm = dmatrix;
 }
 
-void VirtualDisplay::RestoreDisplayMatrix(DisplayMatrix *dm)
+void VirtualDisplay::RestoreDisplayMatrix(DisplayMatrix* dm)
 {
     dmatrix = *dm;
 }
@@ -392,8 +404,10 @@ void VirtualDisplay::Point(float x1, float y1)
     float x, y;
 
     // Rotation and translate this point based on the current settings
-    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+        dmatrix.translationY;
 
     // Clipping
     if ((x >= -1.0f) and (x <= 1.0f) and (y <= 1.0f) and (y >= -1.0f))
@@ -401,7 +415,6 @@ void VirtualDisplay::Point(float x1, float y1)
 
         // Convert to pixel coordinates and draw the point on the display
         Render2DPoint(viewportXtoPixel(x), viewportYtoPixel(-y));
-
     }
 }
 
@@ -415,12 +428,16 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2)
     int clipFlag = ON_SCREEN;
 
     // Rotation and translate this point based on the current settings
-    x  = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x1 = x;
 
-    x  = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 + dmatrix.translationX;
-    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x2 = x;
 
     // Trivial reject (Cohen-Sutherland): both ends past one edge -> the whole line is
@@ -466,14 +483,16 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2)
         y2 = y1 + (y2 - y1) * ((x1 + 1.0f) / (x1 - x2));
         x2 = -1.0f;
 
-        if (clipFlag bitand CLIP_LEFT)  return;
+        if (clipFlag bitand CLIP_LEFT)
+            return;
     }
     else if (x2 > 1.0f)
     {
         y2 = y1 + (y2 - y1) * ((x1 - 1.0f) / (x1 - x2));
         x2 = 1.0f;
 
-        if (clipFlag bitand CLIP_RIGHT)  return;
+        if (clipFlag bitand CLIP_RIGHT)
+            return;
     }
 
     if (y2 < -1.0f)
@@ -481,20 +500,20 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2)
         x2 = x1 + (x2 - x1) * ((y1 + 1.0f) / (y1 - y2));
         y2 = -1.0f;
 
-        if (clipFlag bitand CLIP_BOTTOM)  return;
+        if (clipFlag bitand CLIP_BOTTOM)
+            return;
     }
     else if (y2 > 1.0f)
     {
         x2 = x1 + (x2 - x1) * ((y1 - 1.0f) / (y1 - y2));
         y2 = 1.0f;
 
-        if (clipFlag bitand CLIP_TOP)  return;
+        if (clipFlag bitand CLIP_TOP)
+            return;
     }
 
-    Render2DLine(viewportXtoPixel(x1),
-                 viewportYtoPixel(-y1),
-                 viewportXtoPixel(x2),
-                 viewportYtoPixel(-y2));
+    Render2DLine(viewportXtoPixel(x1), viewportYtoPixel(-y1),
+                 viewportXtoPixel(x2), viewportYtoPixel(-y2));
 }
 
 void VirtualDisplay::Line(float x1, float y1, float x2, float y2, float width)
@@ -515,7 +534,7 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2, float width)
     normal.y = e.y - s.y;
 
     // normal.norm();
-    float l = (float) sqrt(normal.x * normal.x + normal.y * normal.y);
+    float l = (float)sqrt(normal.x * normal.x + normal.y * normal.y);
 
     if (l > 0.0000001)
     {
@@ -552,36 +571,42 @@ void VirtualDisplay::Line(float x1, float y1, float x2, float y2, float width)
 
     Tri(a.x, a.y, b.x, b.y, c.x, c.y);
     Tri(c.x, c.y, d.x, d.y, b.x, b.y);
-
 }
 
 /***************************************************************************\
  Put a triangle on the display.  It is not filled (for now at least)
 \***************************************************************************/
-void VirtualDisplay::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
+void VirtualDisplay::Tri(float x1, float y1, float x2, float y2, float x3,
+                         float y3)
 {
     float x;
 
     // Rotation and translate this point based on the current settings
-    x  = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x1 = x;
 
-    x  = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 + dmatrix.translationX;
-    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x2 = x;
 
-    x  = x3 * dmatrix.rotation00 + y3 * dmatrix.rotation01 + dmatrix.translationX;
-    y3 = x3 * dmatrix.rotation10 + y3 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x3 * dmatrix.rotation00 + y3 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y3 = x3 * dmatrix.rotation10 + y3 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x3 = x;
 
-    Render2DTri(
-        viewportXtoPixel(x1), viewportYtoPixel(-y1),
-        viewportXtoPixel(x2), viewportYtoPixel(-y2),
-        viewportXtoPixel(x3), viewportYtoPixel(-y3));
+    Render2DTri(viewportXtoPixel(x1), viewportYtoPixel(-y1),
+                viewportXtoPixel(x2), viewportYtoPixel(-y2),
+                viewportXtoPixel(x3), viewportYtoPixel(-y3));
 }
 
-void VirtualDisplay::Render2DTri(float x1, float y1, float x2, float y2, float x3, float y3)
+void VirtualDisplay::Render2DTri(float x1, float y1, float x2, float y2,
+                                 float x3, float y3)
 {
     Render2DLine(x1, y1, x2, y2);
     Render2DLine(x2, y2, x3, y3);
@@ -627,13 +652,14 @@ void VirtualDisplay::Oval(float x, float y, float xRadius, float yRadius)
  aspect ratio of the display and viewport.  The start and stop angles
  will be adjusted lie between 0 and 2PI.
 \***************************************************************************/
-void VirtualDisplay::OvalArc(float x, float y, float xRadius, float yRadius, float start, float stop)
+void VirtualDisplay::OvalArc(float x, float y, float xRadius, float yRadius,
+                             float start, float stop)
 {
     int entry, startEntry, stopEntry;
 
     // Find the first and last segment end point of interest
     startEntry = (int)(fmod(start, 2.0f * PI) / PI * 180.0) / CircleStep;
-    stopEntry = (int)(fmod(stop,  2.0f * PI) / PI * 180.0) / CircleStep;
+    stopEntry = (int)(fmod(stop, 2.0f * PI) / PI * 180.0) / CircleStep;
 
     // Make sure we aren't overrunning the precomputed array
     ShiAssert(startEntry >= 0);
@@ -645,22 +671,25 @@ void VirtualDisplay::OvalArc(float x, float y, float xRadius, float yRadius, flo
     {
         for (entry = startEntry; entry < stopEntry; entry++)
         {
-            Line(x + xRadius * CircleX[entry],   y + yRadius * CircleY[entry],
-                 x + xRadius * CircleX[entry + 1], y + yRadius * CircleY[entry + 1]);
+            Line(x + xRadius * CircleX[entry], y + yRadius * CircleY[entry],
+                 x + xRadius * CircleX[entry + 1],
+                 y + yRadius * CircleY[entry + 1]);
         }
     }
     else
     {
         for (entry = startEntry; entry < CircleSegments - 1; entry++)
         {
-            Line(x + xRadius * CircleX[entry],   y + yRadius * CircleY[entry],
-                 x + xRadius * CircleX[entry + 1], y + yRadius * CircleY[entry + 1]);
+            Line(x + xRadius * CircleX[entry], y + yRadius * CircleY[entry],
+                 x + xRadius * CircleX[entry + 1],
+                 y + yRadius * CircleY[entry + 1]);
         }
 
         for (entry = 0; entry < stopEntry; entry++)
         {
-            Line(x + xRadius * CircleX[entry],   y + yRadius * CircleY[entry],
-                 x + xRadius * CircleX[entry + 1], y + yRadius * CircleY[entry + 1]);
+            Line(x + xRadius * CircleX[entry], y + yRadius * CircleY[entry],
+                 x + xRadius * CircleX[entry + 1],
+                 y + yRadius * CircleY[entry + 1]);
         }
     }
 }
@@ -670,25 +699,30 @@ void VirtualDisplay::OvalArc(float x, float y, float xRadius, float yRadius, flo
  Put a mono-colored string of text on the display.
  (The location given is used as the lower left corner of the text)
 \***************************************************************************/
-void VirtualDisplay::TextLeft(float x1, float y1, const char *string, int boxed)
+void VirtualDisplay::TextLeft(float x1, float y1, const char* string, int boxed)
 {
     float x, y;
 
     // Rotation and translate this point based on the current settings
-    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+        dmatrix.translationY;
 
     // Convert from viewport coordiants to screen space and draw the string
     ScreenText(viewportXtoPixel(x), viewportYtoPixel(-y), string, boxed);
 }
 
-void VirtualDisplay::TextLeftVertical(float x1, float y1, const char *string, int boxed)
+void VirtualDisplay::TextLeftVertical(float x1, float y1, const char* string,
+                                      int boxed)
 {
     float x, y;
 
     // Rotation and translate this point based on the current settings
-    x = viewportXtoPixel(x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX);
-    y = viewportYtoPixel(-x1 * dmatrix.rotation10 - y1 * dmatrix.rotation11 - dmatrix.translationY);
+    x = viewportXtoPixel(x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+                         dmatrix.translationX);
+    y = viewportYtoPixel(-x1 * dmatrix.rotation10 - y1 * dmatrix.rotation11 -
+                         dmatrix.translationY);
 
     y -= ScreenTextHeight() / 2;
 
@@ -701,14 +735,17 @@ void VirtualDisplay::TextLeftVertical(float x1, float y1, const char *string, in
  Put a mono-colored string of text on the display.
  (The location given is used as the lower right corner of the text)
 \***************************************************************************/
-void VirtualDisplay::TextRight(float x1, float y1, const char *string, int boxed)
+void VirtualDisplay::TextRight(float x1, float y1, const char* string,
+                               int boxed)
 {
     float xPixel, yPixel;
 
     // Rotation and translate this point based on the current settings
     // Convert from viewport coordiants to screen space
-    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX);
-    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 - y1 * dmatrix.rotation11 - dmatrix.translationY);
+    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 +
+                              y1 * dmatrix.rotation01 + dmatrix.translationX);
+    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 -
+                              y1 * dmatrix.rotation11 - dmatrix.translationY);
 
     // Adjust our starting point in screen space to get proper alignment
     xPixel -= ScreenTextWidth(string);
@@ -717,14 +754,17 @@ void VirtualDisplay::TextRight(float x1, float y1, const char *string, int boxed
     ScreenText(xPixel, yPixel, string, boxed);
 }
 
-void VirtualDisplay::TextRightVertical(float x1, float y1, const char *string, int boxed)
+void VirtualDisplay::TextRightVertical(float x1, float y1, const char* string,
+                                       int boxed)
 {
     float xPixel, yPixel;
 
     // Rotation and translate this point based on the current settings
     // Convert from viewport coordiants to screen space
-    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX);
-    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 - y1 * dmatrix.rotation11 - dmatrix.translationY);
+    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 +
+                              y1 * dmatrix.rotation01 + dmatrix.translationX);
+    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 -
+                              y1 * dmatrix.rotation11 - dmatrix.translationY);
 
     // Adjust our starting point in screen space to get proper alignment
     xPixel -= ScreenTextWidth(string);
@@ -740,14 +780,17 @@ void VirtualDisplay::TextRightVertical(float x1, float y1, const char *string, i
  (The location given is used as the horizontal center and vertical lower
   edge of the text)
 \***************************************************************************/
-void VirtualDisplay::TextCenter(float x1, float y1, const char *string, int boxed)
+void VirtualDisplay::TextCenter(float x1, float y1, const char* string,
+                                int boxed)
 {
     float xPixel, yPixel;
 
     // Rotation and translate this point based on the current settings
     // Convert from viewport coordiants to screen space
-    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX);
-    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 - y1 * dmatrix.rotation11 - dmatrix.translationY);
+    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 +
+                              y1 * dmatrix.rotation01 + dmatrix.translationX);
+    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 -
+                              y1 * dmatrix.rotation11 - dmatrix.translationY);
 
     // Adjust our starting point in screen space to get proper alignment
     xPixel -= ScreenTextWidth(string) / 2;
@@ -762,14 +805,17 @@ void VirtualDisplay::TextCenter(float x1, float y1, const char *string, int boxe
  (The location given is used as the horizontal center and vertical lower
   edge of the text)
 \***************************************************************************/
-void VirtualDisplay::TextCenterVertical(float x1, float y1, const char *string, int boxed)
+void VirtualDisplay::TextCenterVertical(float x1, float y1, const char* string,
+                                        int boxed)
 {
     float xPixel, yPixel;
 
     // Rotation and translate this point based on the current settings
     // Convert from viewport coordiants to screen space
-    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX);
-    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 - y1 * dmatrix.rotation11 - dmatrix.translationY);
+    xPixel = viewportXtoPixel(x1 * dmatrix.rotation00 +
+                              y1 * dmatrix.rotation01 + dmatrix.translationX);
+    yPixel = viewportYtoPixel(-x1 * dmatrix.rotation10 -
+                              y1 * dmatrix.rotation11 - dmatrix.translationY);
 
     // Adjust our starting point in screen space to get proper alignment
     xPixel -= ScreenTextWidth(string) / 2;
@@ -786,11 +832,12 @@ void VirtualDisplay::TextCenterVertical(float x1, float y1, const char *string, 
  THIS ASSUMES that no single word is longer than will fit in the
  specified width.
 \***************************************************************************/
-int VirtualDisplay::TextWrap(float h, float v, const char *s, float spacing, float width)
+int VirtualDisplay::TextWrap(float h, float v, const char* s, float spacing,
+                             float width)
 {
-    char *string = strdup(s);
+    char* string = strdup(s);
     int pixelsLeft;
-    char *lineBreak;
+    char* lineBreak;
     char prevChar;
     int line = 0;
 
@@ -816,15 +863,13 @@ int VirtualDisplay::TextWrap(float h, float v, const char *s, float spacing, flo
             {
                 lineBreak--;
                 ShiAssert(lineBreak >= string);
-            }
-            while (*lineBreak not_eq ' ');
+            } while (*lineBreak not_eq ' ');
 
             do
             {
                 lineBreak--;
                 ShiAssert(lineBreak >= string);
-            }
-            while (*lineBreak == ' ');
+            } while (*lineBreak == ' ');
 
             lineBreak++; // Step back to the first space after the word
 
@@ -860,7 +905,7 @@ int VirtualDisplay::TextWrap(float h, float v, const char *s, float spacing, flo
 /***************************************************************************\
  Get the width of a text string about to be placed onto the display
 \***************************************************************************/
-int VirtualDisplay::ScreenTextWidth(const char *string)
+int VirtualDisplay::ScreenTextWidth(const char* string)
 {
 #ifndef USE_TEXTURE_FONT
     unsigned num;
@@ -870,7 +915,7 @@ int VirtualDisplay::ScreenTextWidth(const char *string)
 
     while (*string)
     {
-        num = FontLUT[*(unsigned char *)string];
+        num = FontLUT[*(unsigned char*)string];
         ShiAssert(num < FontLength);
 
         width += Font[num][8] + 1;
@@ -884,13 +929,16 @@ int VirtualDisplay::ScreenTextWidth(const char *string)
 
     while (*string)
     {
-        width += FloatToInt32(pFontSet->fontData[pFontSet->fontNum][*string].pixelWidth);
+        width += FloatToInt32(
+            pFontSet->fontData[pFontSet->fontNum][*string].pixelWidth);
         string++;
     }
 
     // #7: during the RTT pass text is scaled for the enlarged atlas (see vcock g_rttFontScale)
-    extern bool g_rttBatchActive; extern float g_rttFontScale;
-    if (g_rttBatchActive) width = (int)(width * g_rttFontScale);
+    extern bool g_rttBatchActive;
+    extern float g_rttFontScale;
+    if (g_rttBatchActive)
+        width = (int)(width * g_rttFontScale);
 
     return width;
 #endif
@@ -909,9 +957,11 @@ int VirtualDisplay::ScreenTextHeight(void)
 #else
     {
         // #7: text height is also scaled during the RTT pass (see g_rttFontScale)
-        extern bool g_rttBatchActive; extern float g_rttFontScale;
+        extern bool g_rttBatchActive;
+        extern float g_rttFontScale;
         float h = pFontSet->fontData[pFontSet->fontNum][32].pixelHeight;
-        if (g_rttBatchActive) h *= g_rttFontScale;
+        if (g_rttBatchActive)
+            h *= g_rttFontScale;
         return FloatToInt32(h);
     }
 #endif
@@ -924,317 +974,220 @@ int VirtualDisplay::ScreenTextHeight(void)
  character for proportional spacing.
 \***************************************************************************/
 
-static unsigned char Space[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 3
-};
-static unsigned char OpenParen[] =
-{
-    0x00, 0x00, 0x40, 0x80, 0x80, 0x80, 0x40, 0x00, 2
-};
-static unsigned char CloseParen[] =
-{
-    0x00, 0x00, 0x80, 0x40, 0x40, 0x40, 0x80, 0x00, 2
-};
-static unsigned char Asterisk[] =
-{
-    0x00, 0x00, 0xe0, 0xa0, 0xe0, 0x00, 0x00, 0x00, 3
-}; // Note: This is the slot for the ascii asterisk, but I'm mapping a degree symbol to it.
-static unsigned char Plus[] =
-{
-    0x00, 0x00, 0x40, 0xe0, 0x00, 0xe0, 0x40, 0x00, 3
-}; // Note: This is the slot for the ascii plus symbol, but I'm mapping a 'roll' symbol to it.
-static unsigned char Comma[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x40, 0x80, 2
-};
-static unsigned char Minus[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0xe0, 0x00, 0x00, 0x00, 3
-};
-static unsigned char Period[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x80, 0x00, 2
-};
-static unsigned char Slash[] =
-{
-    0x00, 0x00, 0x20, 0x20, 0x40, 0x80, 0x80, 0x00, 3
-};
-static unsigned char Number0[] =
-{
-    0x00, 0x00, 0xe0, 0xa0, 0xa0, 0xa0, 0xe0, 0x00, 3
-};
-static unsigned char Number1[] =
-{
-    0x00, 0x00, 0x40, 0xc0, 0x40, 0x40, 0xe0, 0x00, 3
-};
-static unsigned char Number2[] =
-{
-    0x00, 0x00, 0xe0, 0x20, 0xe0, 0x80, 0xe0, 0x00, 3
-};
-static unsigned char Number3[] =
-{
-    0x00, 0x00, 0xe0, 0x20, 0x60, 0x20, 0xe0, 0x00, 3
-};
-static unsigned char Number4[] =
-{
-    0x00, 0x00, 0x80, 0xa0, 0xe0, 0x20, 0x20, 0x00, 3
-};
-static unsigned char Number5[] =
-{
-    0x00, 0x00, 0xe0, 0x80, 0xc0, 0x20, 0xc0, 0x00, 3
-};
-static unsigned char Number6[] =
-{
-    0x00, 0x00, 0x80, 0x80, 0xe0, 0xa0, 0xe0, 0x00, 3
-};
-static unsigned char Number7[] =
-{
-    0x00, 0x00, 0xe0, 0x20, 0x20, 0x20, 0x20, 0x00, 3
-};
-static unsigned char Number8[] =
-{
-    0x00, 0x00, 0xe0, 0xa0, 0xe0, 0xa0, 0xe0, 0x00, 3
-};
-static unsigned char Number9[] =
-{
-    0x00, 0x00, 0xe0, 0xa0, 0xe0, 0x20, 0x20, 0x00, 3
-};
-static unsigned char Colon[] =
-{
-    0x00, 0x00, 0x00, 0x80, 0x00, 0x80, 0x00, 0x00, 1
-};
-static unsigned char SemiColon[] =
-{
-    0x00, 0x00, 0x00, 0x40, 0x00, 0x40, 0x40, 0x80, 2
-};
-static unsigned char Less[] =
-{
-    0x00, 0x00, 0x20, 0x40, 0x80, 0x40, 0x20, 0x00, 3
-};
-static unsigned char Equal[] =
-{
-    0x00, 0x00, 0x00, 0xe0, 0x00, 0xe0, 0x00, 0x00, 3
-};
-static unsigned char More[] =
-{
-    0x00, 0x00, 0x80, 0x40, 0x20, 0x40, 0x80, 0x00, 3
-};
-static unsigned char Quest[] =
-{
-    0x40, 0x00, 0xc0, 0x20, 0x40, 0x00, 0x40, 0x00, 3
-};
-static unsigned char Each[] =
-{
-    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 3
-};
-static unsigned char LetterA[] =
-{
-    0x00, 0x00, 0x40, 0xa0, 0xa0, 0xe0, 0xa0, 0x00, 3
-};
-static unsigned char LetterB[] =
-{
-    0x00, 0x00, 0xc0, 0xa0, 0xc0, 0xa0, 0xc0, 0x00, 3
-};
-static unsigned char LetterC[] =
-{
-    0x00, 0x00, 0x40, 0xa0, 0x80, 0xa0, 0x40, 0x00, 3
-};
-static unsigned char LetterD[] =
-{
-    0x00, 0x00, 0xc0, 0xa0, 0xa0, 0xa0, 0xc0, 0x00, 3
-};
-static unsigned char LetterE[] =
-{
-    0x00, 0x00, 0xe0, 0x80, 0xc0, 0x80, 0xe0, 0x00, 3
-};
-static unsigned char LetterF[] =
-{
-    0x00, 0x00, 0xe0, 0x80, 0xc0, 0x80, 0x80, 0x00, 3
-};
-static unsigned char LetterG[] =
-{
-    0x00, 0x00, 0x60, 0x80, 0xa0, 0xa0, 0x60, 0x00, 3
-};
-static unsigned char LetterH[] =
-{
-    0x00, 0x00, 0xa0, 0xa0, 0xe0, 0xa0, 0xa0, 0x00, 3
-};
-static unsigned char LetterI[] =
-{
-    0x00, 0x00, 0xe0, 0x40, 0x40, 0x40, 0xe0, 0x00, 3
-};
-static unsigned char LetterJ[] =
-{
-    0x00, 0x00, 0x20, 0x20, 0x20, 0xa0, 0x40, 0x00, 3
-};
-static unsigned char LetterK[] =
-{
-    0x00, 0x00, 0xa0, 0xa0, 0xc0, 0xa0, 0xa0, 0x00, 3
-};
-static unsigned char LetterL[] =
-{
-    0x00, 0x00, 0x80, 0x80, 0x80, 0x80, 0xe0, 0x00, 3
-};
-static unsigned char LetterM[] =
-{
-    0x00, 0x00, 0x88, 0xd8, 0xa8, 0xa8, 0x88, 0x00, 5
-};
-static unsigned char LetterN[] =
-{
-    0x00, 0x00, 0x90, 0xd0, 0xb0, 0x90, 0x90, 0x00, 4
-};
-static unsigned char LetterO[] =
-{
-    0x00, 0x00, 0x60, 0x90, 0x90, 0x90, 0x60, 0x00, 4
-};
-static unsigned char LetterP[] =
-{
-    0x00, 0x00, 0xe0, 0xa0, 0xe0, 0x80, 0x80, 0x00, 3
-};
-static unsigned char LetterQ[] =
-{
-    0x00, 0x00, 0x60, 0x90, 0x90, 0xa0, 0xd0, 0x00, 4
-};
-static unsigned char LetterR[] =
-{
-    0x00, 0x00, 0xc0, 0xa0, 0xc0, 0xa0, 0xa0, 0x00, 3
-};
-static unsigned char LetterS[] =
-{
-    0x00, 0x00, 0x60, 0x80, 0x40, 0x20, 0xc0, 0x00, 3
-};
-static unsigned char LetterT[] =
-{
-    0x00, 0x00, 0xe0, 0x40, 0x40, 0x40, 0x40, 0x00, 3
-};
-static unsigned char LetterU[] =
-{
-    0x00, 0x00, 0xa0, 0xa0, 0xa0, 0xa0, 0xe0, 0x00, 3
-};
-static unsigned char LetterV[] =
-{
-    0x00, 0x00, 0xa0, 0xa0, 0xa0, 0xe0, 0x40, 0x00, 3
-};
-static unsigned char LetterW[] =
-{
-    0x00, 0x00, 0x88, 0x88, 0xa8, 0xa8, 0x50, 0x00, 5
-};
-static unsigned char LetterX[] =
-{
-    0x00, 0x00, 0xa0, 0xa0, 0x40, 0xa0, 0xa0, 0x00, 3
-};
-static unsigned char LetterY[] =
-{
-    0x00, 0x00, 0xa0, 0xa0, 0xe0, 0x40, 0x40, 0x00, 3
-};
-static unsigned char LetterZ[] =
-{
-    0x00, 0x00, 0xe0, 0x20, 0x40, 0x80, 0xe0, 0x00, 3
-};
-static unsigned char Apostrophe[] =
-{
-    0x00, 0x00, 0x40, 0x80, 0x00, 0x00, 0x00, 0x00, 2
-};
-static unsigned char LetterAumlaut[] =
-{
-    0x00, 0xa0, 0x40, 0xa0, 0xa0, 0xe0, 0xa0, 0x00, 3
-};
-static unsigned char LetterOumlaut[] =
-{
-    0x00, 0x90, 0x60, 0x90, 0x90, 0x90, 0x60, 0x00, 4
-};
-static unsigned char LetterUumlaut[] =
-{
-    0x00, 0xa0, 0x00, 0xa0, 0xa0, 0xa0, 0xe0, 0x00, 3
-};
-static unsigned char LetterBeta[] =
-{
-    0x00, 0x00, 0xf0, 0x90, 0xb8, 0x88, 0xf8, 0x00, 5
-};
-static unsigned char Degree[] =
-{
-    0x00, 0x00, 0xe0, 0xa0, 0xe0, 0x00, 0x00, 0x00, 3
-};
-static unsigned char Mu[] =
-{
-    0x00, 0x00, 0x50, 0x50, 0x50, 0x60, 0x80, 0x00, 4
-};
-static unsigned char Exclaim[] =
-{
-    0x00, 0x00, 0x80, 0x80, 0x80, 0x00, 0x80, 0x00, 1
-};
-static unsigned char Quote[] =
-{
-    0x00, 0x00, 0xa0, 0xa0, 0x00, 0x00, 0x00, 0x00, 3
-};
-static unsigned char And[] =
-{
-    0x00, 0x00, 0x40, 0xa0, 0x40, 0xa0, 0x50, 0x00, 4
-};
-static unsigned char LetterAaccent[] =
-{
-    0x10, 0x20, 0x40, 0x60, 0x90, 0xf0, 0x90, 0x00, 4
-};
-static unsigned char LetterAbackaccent[] =
-{
-    0x40, 0x20, 0x10, 0x60, 0x90, 0xf0, 0x90, 0x00, 4
-};
-static unsigned char LetterAsquiggle[] =
-{
-    0x50, 0xa0, 0x00, 0x60, 0x90, 0xf0, 0x90, 0x00, 4
-};
-static unsigned char LetterAhat[] =
-{
-    0x60, 0x90, 0x00, 0x60, 0x90, 0xf0, 0x90, 0x00, 4
-};
-static unsigned char LetterEaccent[] =
-{
-    0x20, 0x40, 0xe0, 0x80, 0xc0, 0x80, 0xe0, 0x00, 3
-};
-static unsigned char LetterEhat[] =
-{
-    0x40, 0xa0, 0xe0, 0x80, 0xc0, 0x80, 0xe0, 0x00, 3
-};
-static unsigned char LetterIaccent[] =
-{
-    0x20, 0x40, 0xe0, 0x40, 0x40, 0x40, 0xe0, 0x00, 3
-};
-static unsigned char LetterNsquiggle[] =
-{
-    0x50, 0xa0, 0x00, 0x90, 0xd0, 0xb0, 0x90, 0x00, 4
-};
-static unsigned char LetterOsquiggle[] =
-{
-    0x50, 0xa0, 0x00, 0xf0, 0x90, 0x90, 0xf0, 0x00, 4
-};
-static unsigned char LetterOaccent[] =
-{
-    0x10, 0x20, 0x40, 0xf0, 0x90, 0x90, 0xf0, 0x00, 4
-};
-static unsigned char LetterUaccent[] =
-{
-    0x10, 0x20, 0x40, 0x90, 0x90, 0x90, 0xf0, 0x00, 4
-};
-static unsigned char LetterCstem[] =
-{
-    0x00, 0x00, 0xe0, 0x80, 0x80, 0xe0, 0x40, 0xc0, 3
-};
+static unsigned char Space[] = {0x00, 0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x00, 0x00, 3};
+static unsigned char OpenParen[] = {0x00, 0x00, 0x40, 0x80, 0x80,
+                                    0x80, 0x40, 0x00, 2};
+static unsigned char CloseParen[] = {0x00, 0x00, 0x80, 0x40, 0x40,
+                                     0x40, 0x80, 0x00, 2};
+static unsigned char Asterisk[] = {
+    0x00, 0x00, 0xe0, 0xa0, 0xe0,
+    0x00, 0x00, 0x00, 3}; // Note: This is the slot for the ascii asterisk, but I'm mapping a degree symbol to it.
+static unsigned char Plus[] = {
+    0x00, 0x00, 0x40, 0xe0, 0x00,
+    0xe0, 0x40, 0x00, 3}; // Note: This is the slot for the ascii plus symbol, but I'm mapping a 'roll' symbol to it.
+static unsigned char Comma[] = {0x00, 0x00, 0x00, 0x00, 0x00,
+                                0x00, 0x40, 0x80, 2};
+static unsigned char Minus[] = {0x00, 0x00, 0x00, 0x00, 0xe0,
+                                0x00, 0x00, 0x00, 3};
+static unsigned char Period[] = {0x00, 0x00, 0x00, 0x00, 0x00,
+                                 0x00, 0x80, 0x00, 2};
+static unsigned char Slash[] = {0x00, 0x00, 0x20, 0x20, 0x40,
+                                0x80, 0x80, 0x00, 3};
+static unsigned char Number0[] = {0x00, 0x00, 0xe0, 0xa0, 0xa0,
+                                  0xa0, 0xe0, 0x00, 3};
+static unsigned char Number1[] = {0x00, 0x00, 0x40, 0xc0, 0x40,
+                                  0x40, 0xe0, 0x00, 3};
+static unsigned char Number2[] = {0x00, 0x00, 0xe0, 0x20, 0xe0,
+                                  0x80, 0xe0, 0x00, 3};
+static unsigned char Number3[] = {0x00, 0x00, 0xe0, 0x20, 0x60,
+                                  0x20, 0xe0, 0x00, 3};
+static unsigned char Number4[] = {0x00, 0x00, 0x80, 0xa0, 0xe0,
+                                  0x20, 0x20, 0x00, 3};
+static unsigned char Number5[] = {0x00, 0x00, 0xe0, 0x80, 0xc0,
+                                  0x20, 0xc0, 0x00, 3};
+static unsigned char Number6[] = {0x00, 0x00, 0x80, 0x80, 0xe0,
+                                  0xa0, 0xe0, 0x00, 3};
+static unsigned char Number7[] = {0x00, 0x00, 0xe0, 0x20, 0x20,
+                                  0x20, 0x20, 0x00, 3};
+static unsigned char Number8[] = {0x00, 0x00, 0xe0, 0xa0, 0xe0,
+                                  0xa0, 0xe0, 0x00, 3};
+static unsigned char Number9[] = {0x00, 0x00, 0xe0, 0xa0, 0xe0,
+                                  0x20, 0x20, 0x00, 3};
+static unsigned char Colon[] = {0x00, 0x00, 0x00, 0x80, 0x00,
+                                0x80, 0x00, 0x00, 1};
+static unsigned char SemiColon[] = {0x00, 0x00, 0x00, 0x40, 0x00,
+                                    0x40, 0x40, 0x80, 2};
+static unsigned char Less[] = {0x00, 0x00, 0x20, 0x40, 0x80,
+                               0x40, 0x20, 0x00, 3};
+static unsigned char Equal[] = {0x00, 0x00, 0x00, 0xe0, 0x00,
+                                0xe0, 0x00, 0x00, 3};
+static unsigned char More[] = {0x00, 0x00, 0x80, 0x40, 0x20,
+                               0x40, 0x80, 0x00, 3};
+static unsigned char Quest[] = {0x40, 0x00, 0xc0, 0x20, 0x40,
+                                0x00, 0x40, 0x00, 3};
+static unsigned char Each[] = {0x00, 0x00, 0x00, 0x00, 0x00,
+                               0x00, 0x00, 0x00, 3};
+static unsigned char LetterA[] = {0x00, 0x00, 0x40, 0xa0, 0xa0,
+                                  0xe0, 0xa0, 0x00, 3};
+static unsigned char LetterB[] = {0x00, 0x00, 0xc0, 0xa0, 0xc0,
+                                  0xa0, 0xc0, 0x00, 3};
+static unsigned char LetterC[] = {0x00, 0x00, 0x40, 0xa0, 0x80,
+                                  0xa0, 0x40, 0x00, 3};
+static unsigned char LetterD[] = {0x00, 0x00, 0xc0, 0xa0, 0xa0,
+                                  0xa0, 0xc0, 0x00, 3};
+static unsigned char LetterE[] = {0x00, 0x00, 0xe0, 0x80, 0xc0,
+                                  0x80, 0xe0, 0x00, 3};
+static unsigned char LetterF[] = {0x00, 0x00, 0xe0, 0x80, 0xc0,
+                                  0x80, 0x80, 0x00, 3};
+static unsigned char LetterG[] = {0x00, 0x00, 0x60, 0x80, 0xa0,
+                                  0xa0, 0x60, 0x00, 3};
+static unsigned char LetterH[] = {0x00, 0x00, 0xa0, 0xa0, 0xe0,
+                                  0xa0, 0xa0, 0x00, 3};
+static unsigned char LetterI[] = {0x00, 0x00, 0xe0, 0x40, 0x40,
+                                  0x40, 0xe0, 0x00, 3};
+static unsigned char LetterJ[] = {0x00, 0x00, 0x20, 0x20, 0x20,
+                                  0xa0, 0x40, 0x00, 3};
+static unsigned char LetterK[] = {0x00, 0x00, 0xa0, 0xa0, 0xc0,
+                                  0xa0, 0xa0, 0x00, 3};
+static unsigned char LetterL[] = {0x00, 0x00, 0x80, 0x80, 0x80,
+                                  0x80, 0xe0, 0x00, 3};
+static unsigned char LetterM[] = {0x00, 0x00, 0x88, 0xd8, 0xa8,
+                                  0xa8, 0x88, 0x00, 5};
+static unsigned char LetterN[] = {0x00, 0x00, 0x90, 0xd0, 0xb0,
+                                  0x90, 0x90, 0x00, 4};
+static unsigned char LetterO[] = {0x00, 0x00, 0x60, 0x90, 0x90,
+                                  0x90, 0x60, 0x00, 4};
+static unsigned char LetterP[] = {0x00, 0x00, 0xe0, 0xa0, 0xe0,
+                                  0x80, 0x80, 0x00, 3};
+static unsigned char LetterQ[] = {0x00, 0x00, 0x60, 0x90, 0x90,
+                                  0xa0, 0xd0, 0x00, 4};
+static unsigned char LetterR[] = {0x00, 0x00, 0xc0, 0xa0, 0xc0,
+                                  0xa0, 0xa0, 0x00, 3};
+static unsigned char LetterS[] = {0x00, 0x00, 0x60, 0x80, 0x40,
+                                  0x20, 0xc0, 0x00, 3};
+static unsigned char LetterT[] = {0x00, 0x00, 0xe0, 0x40, 0x40,
+                                  0x40, 0x40, 0x00, 3};
+static unsigned char LetterU[] = {0x00, 0x00, 0xa0, 0xa0, 0xa0,
+                                  0xa0, 0xe0, 0x00, 3};
+static unsigned char LetterV[] = {0x00, 0x00, 0xa0, 0xa0, 0xa0,
+                                  0xe0, 0x40, 0x00, 3};
+static unsigned char LetterW[] = {0x00, 0x00, 0x88, 0x88, 0xa8,
+                                  0xa8, 0x50, 0x00, 5};
+static unsigned char LetterX[] = {0x00, 0x00, 0xa0, 0xa0, 0x40,
+                                  0xa0, 0xa0, 0x00, 3};
+static unsigned char LetterY[] = {0x00, 0x00, 0xa0, 0xa0, 0xe0,
+                                  0x40, 0x40, 0x00, 3};
+static unsigned char LetterZ[] = {0x00, 0x00, 0xe0, 0x20, 0x40,
+                                  0x80, 0xe0, 0x00, 3};
+static unsigned char Apostrophe[] = {0x00, 0x00, 0x40, 0x80, 0x00,
+                                     0x00, 0x00, 0x00, 2};
+static unsigned char LetterAumlaut[] = {0x00, 0xa0, 0x40, 0xa0, 0xa0,
+                                        0xe0, 0xa0, 0x00, 3};
+static unsigned char LetterOumlaut[] = {0x00, 0x90, 0x60, 0x90, 0x90,
+                                        0x90, 0x60, 0x00, 4};
+static unsigned char LetterUumlaut[] = {0x00, 0xa0, 0x00, 0xa0, 0xa0,
+                                        0xa0, 0xe0, 0x00, 3};
+static unsigned char LetterBeta[] = {0x00, 0x00, 0xf0, 0x90, 0xb8,
+                                     0x88, 0xf8, 0x00, 5};
+static unsigned char Degree[] = {0x00, 0x00, 0xe0, 0xa0, 0xe0,
+                                 0x00, 0x00, 0x00, 3};
+static unsigned char Mu[] = {0x00, 0x00, 0x50, 0x50, 0x50, 0x60, 0x80, 0x00, 4};
+static unsigned char Exclaim[] = {0x00, 0x00, 0x80, 0x80, 0x80,
+                                  0x00, 0x80, 0x00, 1};
+static unsigned char Quote[] = {0x00, 0x00, 0xa0, 0xa0, 0x00,
+                                0x00, 0x00, 0x00, 3};
+static unsigned char And[] = {0x00, 0x00, 0x40, 0xa0, 0x40,
+                              0xa0, 0x50, 0x00, 4};
+static unsigned char LetterAaccent[] = {0x10, 0x20, 0x40, 0x60, 0x90,
+                                        0xf0, 0x90, 0x00, 4};
+static unsigned char LetterAbackaccent[] = {0x40, 0x20, 0x10, 0x60, 0x90,
+                                            0xf0, 0x90, 0x00, 4};
+static unsigned char LetterAsquiggle[] = {0x50, 0xa0, 0x00, 0x60, 0x90,
+                                          0xf0, 0x90, 0x00, 4};
+static unsigned char LetterAhat[] = {0x60, 0x90, 0x00, 0x60, 0x90,
+                                     0xf0, 0x90, 0x00, 4};
+static unsigned char LetterEaccent[] = {0x20, 0x40, 0xe0, 0x80, 0xc0,
+                                        0x80, 0xe0, 0x00, 3};
+static unsigned char LetterEhat[] = {0x40, 0xa0, 0xe0, 0x80, 0xc0,
+                                     0x80, 0xe0, 0x00, 3};
+static unsigned char LetterIaccent[] = {0x20, 0x40, 0xe0, 0x40, 0x40,
+                                        0x40, 0xe0, 0x00, 3};
+static unsigned char LetterNsquiggle[] = {0x50, 0xa0, 0x00, 0x90, 0xd0,
+                                          0xb0, 0x90, 0x00, 4};
+static unsigned char LetterOsquiggle[] = {0x50, 0xa0, 0x00, 0xf0, 0x90,
+                                          0x90, 0xf0, 0x00, 4};
+static unsigned char LetterOaccent[] = {0x10, 0x20, 0x40, 0xf0, 0x90,
+                                        0x90, 0xf0, 0x00, 4};
+static unsigned char LetterUaccent[] = {0x10, 0x20, 0x40, 0x90, 0x90,
+                                        0x90, 0xf0, 0x00, 4};
+static unsigned char LetterCstem[] = {0x00, 0x00, 0xe0, 0x80, 0x80,
+                                      0xe0, 0x40, 0xc0, 3};
 
 
-const unsigned char *VirtualDisplay::Font[] =
-{
-    Space, OpenParen, CloseParen, Asterisk, Plus, /* Index 0 through 4 */
-    Comma, Minus, Period, Slash, /* Index 5 through 8 */
-    Number0, Number1, Number2, Number3, Number4, /* Index 9 through 13 */
-    Number5, Number6, Number7, Number8, Number9, /* Index 14 through 18 */
-    Colon, SemiColon, Less, Equal, More, Quest, Each, /* Index 19 through 25 */
-    LetterA, LetterB, LetterC, LetterD, LetterE, LetterF, LetterG, /* Index 26 through 32 */
-    LetterH, LetterI, LetterJ, LetterK, LetterL, LetterM, LetterN, /* Index 33 through 39 */
-    LetterO, LetterP, LetterQ, LetterR, LetterS, LetterT, LetterU, /* Index 40 through 46 */
-    LetterV, LetterW, LetterX, LetterY, LetterZ, Apostrophe, /* Index 47 through 52 */
-    LetterAumlaut, LetterOumlaut, LetterUumlaut, LetterBeta, /* Index 53 through 56 */
-    Degree, Mu, Exclaim, Quote, And, /* Index 57 through 61 */
+const unsigned char* VirtualDisplay::Font[] = {
+    Space,
+    OpenParen,
+    CloseParen,
+    Asterisk,
+    Plus, /* Index 0 through 4 */
+    Comma,
+    Minus,
+    Period,
+    Slash, /* Index 5 through 8 */
+    Number0,
+    Number1,
+    Number2,
+    Number3,
+    Number4, /* Index 9 through 13 */
+    Number5,
+    Number6,
+    Number7,
+    Number8,
+    Number9, /* Index 14 through 18 */
+    Colon,
+    SemiColon,
+    Less,
+    Equal,
+    More,
+    Quest,
+    Each, /* Index 19 through 25 */
+    LetterA,
+    LetterB,
+    LetterC,
+    LetterD,
+    LetterE,
+    LetterF,
+    LetterG, /* Index 26 through 32 */
+    LetterH,
+    LetterI,
+    LetterJ,
+    LetterK,
+    LetterL,
+    LetterM,
+    LetterN, /* Index 33 through 39 */
+    LetterO,
+    LetterP,
+    LetterQ,
+    LetterR,
+    LetterS,
+    LetterT,
+    LetterU, /* Index 40 through 46 */
+    LetterV,
+    LetterW,
+    LetterX,
+    LetterY,
+    LetterZ,
+    Apostrophe, /* Index 47 through 52 */
+    LetterAumlaut,
+    LetterOumlaut,
+    LetterUumlaut,
+    LetterBeta, /* Index 53 through 56 */
+    Degree,
+    Mu,
+    Exclaim,
+    Quote,
+    And, /* Index 57 through 61 */
     LetterAaccent, // 62
     LetterAsquiggle, // 63
     LetterEaccent, // 64
@@ -1249,74 +1202,265 @@ const unsigned char *VirtualDisplay::Font[] =
     LetterAbackaccent, // 73
 };
 
-const unsigned int  VirtualDisplay::FontLength = sizeof(Font) / sizeof(Font[0]);
+const unsigned int VirtualDisplay::FontLength = sizeof(Font) / sizeof(Font[0]);
 
-const unsigned char VirtualDisplay::FontLUT[256] =
-{
-    0, /* ASCII   0 */   0, /* ASCII   1 */   0, /* ASCII   2 */      0,  /* ASCII   3 */
-    0, /* ASCII   4 */   0, /* ASCII   5 */   0, /* ASCII   6 */      0,  /* ASCII   7 */
-    0, /* ASCII   8 */   0, /* ASCII   9 */   0, /* ASCII  10 */      0,  /* ASCII  11 */
-    0, /* ASCII  12 */   0, /* ASCII  13 */   0, /* ASCII  14 */      0,  /* ASCII  15 */
-    0, /* ASCII  16 */   0, /* ASCII  17 */   0, /* ASCII  18 */      0,  /* ASCII  19 */
-    0, /* ASCII  20 */   0, /* ASCII  21 */   0, /* ASCII  22 */      0,  /* ASCII  23 */
-    0, /* ASCII  24 */   0, /* ASCII  25 */   0, /* ASCII  26 */      0,  /* ASCII  27 */
-    0, /* ASCII  28 */   0, /* ASCII  29 */   0, /* ASCII  30 */      0,  /* ASCII  31 */
-    0, /* ASCII  32 */  59, /* ASCII  33 */  60, /* ASCII  34 */      0,  /* ASCII  35 */
-    0, /* ASCII  36 */   0, /* ASCII  37 */  61, /* ASCII  38 */     52,  /* ASCII  39 */
-    1, /* ASCII  40 */   2, /* ASCII  41 */   3, /* ASCII  42 */      4,  /* ASCII  43 */
-    5, /* ASCII  44 */   6, /* ASCII  45 */   7, /* ASCII  46 */      8,  /* ASCII  47 */
-    9, /* ASCII  48 */  10, /* ASCII  49 */  11, /* ASCII  50 */     12,  /* ASCII  51 */
-    13, /* ASCII  52 */  14, /* ASCII  53 */  15, /* ASCII  54 */     16,  /* ASCII  55 */
-    17, /* ASCII  56 */  18, /* ASCII  57 */  19, /* ASCII  58 */     20,  /* ASCII  59 */
-    21, /* ASCII  60 */  22, /* ASCII  61 */  23, /* ASCII  62 */     24,  /* ASCII  63 */
-    25, /* ASCII  64 */  26, /* ASCII  65 */  27, /* ASCII  66 */     28,  /* ASCII  67 */
-    29, /* ASCII  68 */  30, /* ASCII  69 */  31, /* ASCII  70 */     32,  /* ASCII  71 */
-    33, /* ASCII  72 */  34, /* ASCII  73 */  35, /* ASCII  74 */     36,  /* ASCII  75 */
-    37, /* ASCII  76 */  38, /* ASCII  77 */  39, /* ASCII  78 */     40,  /* ASCII  79 */
-    41, /* ASCII  80 */  42, /* ASCII  81 */  43, /* ASCII  82 */     44,  /* ASCII  83 */
-    45, /* ASCII  84 */  46, /* ASCII  85 */  47, /* ASCII  86 */     48,  /* ASCII  87 */
-    49, /* ASCII  88 */  50, /* ASCII  89 */  51, /* ASCII  90 */     52,  /* ASCII  91 */
-    0, /* ASCII  92 */   0, /* ASCII  93 */   0, /* ASCII  94 */      0,  /* ASCII  95 */
-    0, /* ASCII  96 */  26, /* ASCII  97 */  27, /* ASCII  98 */     28,  /* ASCII  99 */
-    29, /* ASCII 100 */  30, /* ASCII 101 */  31, /* ASCII 102 */  32,  /* ASCII 103 */
-    33, /* ASCII 104 */  34, /* ASCII 105 */  35, /* ASCII 106 */  36,  /* ASCII 107 */
-    37, /* ASCII 108 */  38, /* ASCII 109 */  39, /* ASCII 110 */  40,  /* ASCII 111 */
-    41, /* ASCII 112 */  42, /* ASCII 113 */  43, /* ASCII 114 */  44,  /* ASCII 115 */
-    45, /* ASCII 116 */  46, /* ASCII 117 */  47, /* ASCII 118 */  48,  /* ASCII 119 */
-    49, /* ASCII 120 */  50, /* ASCII 121 */  51, /* ASCII 122 */   0,  /* ASCII 123 */
-    0, /* ASCII 124 */   0, /* ASCII 125 */   0, /* ASCII 126 */   0,  /* ASCII 127 */
-    28, /* ASCII 128 */  46, /* ASCII 129 */  30, /* ASCII 130 */  26,  /* ASCII 131 */
-    26, /* ASCII 132 */  26, /* ASCII 133 */  26, /* ASCII 134 */  28,  /* ASCII 135 */
-    30, /* ASCII 136 */  30, /* ASCII 137 */  30, /* ASCII 138 */  37,  /* ASCII 139 */
-    37, /* ASCII 140 */  37, /* ASCII 141 */  26, /* ASCII 142 */  26,  /* ASCII 143 */
-    30, /* ASCII 144 */  26, /* ASCII 145 */  26, /* ASCII 146 */  40,  /* ASCII 147 */
-    40, /* ASCII 148 */  40, /* ASCII 149 */  46, /* ASCII 150 */  46,  /* ASCII 151 */
-    50, /* ASCII 152 */  40, /* ASCII 153 */  46, /* ASCII 154 */   0,  /* ASCII 155 */
-    0, /* ASCII 156 */   0, /* ASCII 157 */   0, /* ASCII 158 */   0,  /* ASCII 159 */
-    26, /* ASCII 160 */  37, /* ASCII 161 */  40, /* ASCII 162 */  46,  /* ASCII 163 */
-    39, /* ASCII 164 */  39, /* ASCII 165 */   0, /* ASCII 166 */   0,  /* ASCII 167 */
-    0, /* ASCII 168 */   0, /* ASCII 169 */   0, /* ASCII 170 */   0,  /* ASCII 171 */
-    0, /* ASCII 172 */   0, /* ASCII 173 */   0, /* ASCII 174 */   0,  /* ASCII 175 */
-    57, /* ASCII 176 */   0, /* ASCII 177 */   0, /* ASCII 178 */   0,  /* ASCII 179 */
-    0, /* ASCII 180 */  58, /* ASCII 181 */   0, /* ASCII 182 */   0,  /* ASCII 183 */
-    0, /* ASCII 184 */   0, /* ASCII 185 */   0, /* ASCII 186 */   0,  /* ASCII 187 */
-    0, /* ASCII 188 */   0, /* ASCII 189 */   0, /* ASCII 190 */   0,  /* ASCII 191 */
-    73, /* ASCII 192 */  62, /* ASCII 193 */  72, /* ASCII 194 */  63,  /* ASCII 195 */
-    53, /* ASCII 196 */  26, /* ASCII 197 */  26, /* ASCII 198 */  71,  /* ASCII 199 */
-    30, /* ASCII 200 */  64, /* ASCII 201 */  65, /* ASCII 202 */  30,  /* ASCII 203 */
-    34, /* ASCII 204 */  66, /* ASCII 205 */  34, /* ASCII 206 */  34,  /* ASCII 207 */
-    29, /* ASCII 208 */  67, /* ASCII 209 */  40, /* ASCII 210 */  69,  /* ASCII 211 */
-    40, /* ASCII 212 */  68, /* ASCII 213 */  54, /* ASCII 214 */   0,  /* ASCII 215 */
-    40, /* ASCII 216 */  46, /* ASCII 217 */  70, /* ASCII 218 */  46,  /* ASCII 219 */
-    55, /* ASCII 220 */   0, /* ASCII 221 */   0, /* ASCII 222 */  56,  /* ASCII 223 */
-    73, /* ASCII 224 */  62, /* ASCII 225 */  72, /* ASCII 226 */  63,  /* ASCII 227 */
-    53, /* ASCII 228 */  26, /* ASCII 229 */  26, /* ASCII 230 */  71,  /* ASCII 231 */
-    30, /* ASCII 232 */  64, /* ASCII 233 */  65, /* ASCII 234 */  30,  /* ASCII 235 */
-    37, /* ASCII 236 */  66, /* ASCII 237 */  37, /* ASCII 238 */  37,  /* ASCII 239 */
-    0, /* ASCII 240 */  67, /* ASCII 241 */  40, /* ASCII 242 */  69,  /* ASCII 243 */
-    40, /* ASCII 244 */  68, /* ASCII 245 */  54, /* ASCII 246 */  40,  /* ASCII 247 */
-    0, /* ASCII 248 */  46, /* ASCII 249 */  70, /* ASCII 250 */  46,  /* ASCII 251 */
-    55, /* ASCII 252 */  50, /* ASCII 253 */   0, /* ASCII 254 */  50,  /* ASCII 255 */
+const unsigned char VirtualDisplay::FontLUT[256] = {
+    0,
+    /* ASCII   0 */ 0,
+    /* ASCII   1 */ 0,
+    /* ASCII   2 */ 0, /* ASCII   3 */
+    0,
+    /* ASCII   4 */ 0,
+    /* ASCII   5 */ 0,
+    /* ASCII   6 */ 0, /* ASCII   7 */
+    0,
+    /* ASCII   8 */ 0,
+    /* ASCII   9 */ 0,
+    /* ASCII  10 */ 0, /* ASCII  11 */
+    0,
+    /* ASCII  12 */ 0,
+    /* ASCII  13 */ 0,
+    /* ASCII  14 */ 0, /* ASCII  15 */
+    0,
+    /* ASCII  16 */ 0,
+    /* ASCII  17 */ 0,
+    /* ASCII  18 */ 0, /* ASCII  19 */
+    0,
+    /* ASCII  20 */ 0,
+    /* ASCII  21 */ 0,
+    /* ASCII  22 */ 0, /* ASCII  23 */
+    0,
+    /* ASCII  24 */ 0,
+    /* ASCII  25 */ 0,
+    /* ASCII  26 */ 0, /* ASCII  27 */
+    0,
+    /* ASCII  28 */ 0,
+    /* ASCII  29 */ 0,
+    /* ASCII  30 */ 0, /* ASCII  31 */
+    0,
+    /* ASCII  32 */ 59,
+    /* ASCII  33 */ 60,
+    /* ASCII  34 */ 0, /* ASCII  35 */
+    0,
+    /* ASCII  36 */ 0,
+    /* ASCII  37 */ 61,
+    /* ASCII  38 */ 52, /* ASCII  39 */
+    1,
+    /* ASCII  40 */ 2,
+    /* ASCII  41 */ 3,
+    /* ASCII  42 */ 4, /* ASCII  43 */
+    5,
+    /* ASCII  44 */ 6,
+    /* ASCII  45 */ 7,
+    /* ASCII  46 */ 8, /* ASCII  47 */
+    9,
+    /* ASCII  48 */ 10,
+    /* ASCII  49 */ 11,
+    /* ASCII  50 */ 12, /* ASCII  51 */
+    13,
+    /* ASCII  52 */ 14,
+    /* ASCII  53 */ 15,
+    /* ASCII  54 */ 16, /* ASCII  55 */
+    17,
+    /* ASCII  56 */ 18,
+    /* ASCII  57 */ 19,
+    /* ASCII  58 */ 20, /* ASCII  59 */
+    21,
+    /* ASCII  60 */ 22,
+    /* ASCII  61 */ 23,
+    /* ASCII  62 */ 24, /* ASCII  63 */
+    25,
+    /* ASCII  64 */ 26,
+    /* ASCII  65 */ 27,
+    /* ASCII  66 */ 28, /* ASCII  67 */
+    29,
+    /* ASCII  68 */ 30,
+    /* ASCII  69 */ 31,
+    /* ASCII  70 */ 32, /* ASCII  71 */
+    33,
+    /* ASCII  72 */ 34,
+    /* ASCII  73 */ 35,
+    /* ASCII  74 */ 36, /* ASCII  75 */
+    37,
+    /* ASCII  76 */ 38,
+    /* ASCII  77 */ 39,
+    /* ASCII  78 */ 40, /* ASCII  79 */
+    41,
+    /* ASCII  80 */ 42,
+    /* ASCII  81 */ 43,
+    /* ASCII  82 */ 44, /* ASCII  83 */
+    45,
+    /* ASCII  84 */ 46,
+    /* ASCII  85 */ 47,
+    /* ASCII  86 */ 48, /* ASCII  87 */
+    49,
+    /* ASCII  88 */ 50,
+    /* ASCII  89 */ 51,
+    /* ASCII  90 */ 52, /* ASCII  91 */
+    0,
+    /* ASCII  92 */ 0,
+    /* ASCII  93 */ 0,
+    /* ASCII  94 */ 0, /* ASCII  95 */
+    0,
+    /* ASCII  96 */ 26,
+    /* ASCII  97 */ 27,
+    /* ASCII  98 */ 28, /* ASCII  99 */
+    29,
+    /* ASCII 100 */ 30,
+    /* ASCII 101 */ 31,
+    /* ASCII 102 */ 32, /* ASCII 103 */
+    33,
+    /* ASCII 104 */ 34,
+    /* ASCII 105 */ 35,
+    /* ASCII 106 */ 36, /* ASCII 107 */
+    37,
+    /* ASCII 108 */ 38,
+    /* ASCII 109 */ 39,
+    /* ASCII 110 */ 40, /* ASCII 111 */
+    41,
+    /* ASCII 112 */ 42,
+    /* ASCII 113 */ 43,
+    /* ASCII 114 */ 44, /* ASCII 115 */
+    45,
+    /* ASCII 116 */ 46,
+    /* ASCII 117 */ 47,
+    /* ASCII 118 */ 48, /* ASCII 119 */
+    49,
+    /* ASCII 120 */ 50,
+    /* ASCII 121 */ 51,
+    /* ASCII 122 */ 0, /* ASCII 123 */
+    0,
+    /* ASCII 124 */ 0,
+    /* ASCII 125 */ 0,
+    /* ASCII 126 */ 0, /* ASCII 127 */
+    28,
+    /* ASCII 128 */ 46,
+    /* ASCII 129 */ 30,
+    /* ASCII 130 */ 26, /* ASCII 131 */
+    26,
+    /* ASCII 132 */ 26,
+    /* ASCII 133 */ 26,
+    /* ASCII 134 */ 28, /* ASCII 135 */
+    30,
+    /* ASCII 136 */ 30,
+    /* ASCII 137 */ 30,
+    /* ASCII 138 */ 37, /* ASCII 139 */
+    37,
+    /* ASCII 140 */ 37,
+    /* ASCII 141 */ 26,
+    /* ASCII 142 */ 26, /* ASCII 143 */
+    30,
+    /* ASCII 144 */ 26,
+    /* ASCII 145 */ 26,
+    /* ASCII 146 */ 40, /* ASCII 147 */
+    40,
+    /* ASCII 148 */ 40,
+    /* ASCII 149 */ 46,
+    /* ASCII 150 */ 46, /* ASCII 151 */
+    50,
+    /* ASCII 152 */ 40,
+    /* ASCII 153 */ 46,
+    /* ASCII 154 */ 0, /* ASCII 155 */
+    0,
+    /* ASCII 156 */ 0,
+    /* ASCII 157 */ 0,
+    /* ASCII 158 */ 0, /* ASCII 159 */
+    26,
+    /* ASCII 160 */ 37,
+    /* ASCII 161 */ 40,
+    /* ASCII 162 */ 46, /* ASCII 163 */
+    39,
+    /* ASCII 164 */ 39,
+    /* ASCII 165 */ 0,
+    /* ASCII 166 */ 0, /* ASCII 167 */
+    0,
+    /* ASCII 168 */ 0,
+    /* ASCII 169 */ 0,
+    /* ASCII 170 */ 0, /* ASCII 171 */
+    0,
+    /* ASCII 172 */ 0,
+    /* ASCII 173 */ 0,
+    /* ASCII 174 */ 0, /* ASCII 175 */
+    57,
+    /* ASCII 176 */ 0,
+    /* ASCII 177 */ 0,
+    /* ASCII 178 */ 0, /* ASCII 179 */
+    0,
+    /* ASCII 180 */ 58,
+    /* ASCII 181 */ 0,
+    /* ASCII 182 */ 0, /* ASCII 183 */
+    0,
+    /* ASCII 184 */ 0,
+    /* ASCII 185 */ 0,
+    /* ASCII 186 */ 0, /* ASCII 187 */
+    0,
+    /* ASCII 188 */ 0,
+    /* ASCII 189 */ 0,
+    /* ASCII 190 */ 0, /* ASCII 191 */
+    73,
+    /* ASCII 192 */ 62,
+    /* ASCII 193 */ 72,
+    /* ASCII 194 */ 63, /* ASCII 195 */
+    53,
+    /* ASCII 196 */ 26,
+    /* ASCII 197 */ 26,
+    /* ASCII 198 */ 71, /* ASCII 199 */
+    30,
+    /* ASCII 200 */ 64,
+    /* ASCII 201 */ 65,
+    /* ASCII 202 */ 30, /* ASCII 203 */
+    34,
+    /* ASCII 204 */ 66,
+    /* ASCII 205 */ 34,
+    /* ASCII 206 */ 34, /* ASCII 207 */
+    29,
+    /* ASCII 208 */ 67,
+    /* ASCII 209 */ 40,
+    /* ASCII 210 */ 69, /* ASCII 211 */
+    40,
+    /* ASCII 212 */ 68,
+    /* ASCII 213 */ 54,
+    /* ASCII 214 */ 0, /* ASCII 215 */
+    40,
+    /* ASCII 216 */ 46,
+    /* ASCII 217 */ 70,
+    /* ASCII 218 */ 46, /* ASCII 219 */
+    55,
+    /* ASCII 220 */ 0,
+    /* ASCII 221 */ 0,
+    /* ASCII 222 */ 56, /* ASCII 223 */
+    73,
+    /* ASCII 224 */ 62,
+    /* ASCII 225 */ 72,
+    /* ASCII 226 */ 63, /* ASCII 227 */
+    53,
+    /* ASCII 228 */ 26,
+    /* ASCII 229 */ 26,
+    /* ASCII 230 */ 71, /* ASCII 231 */
+    30,
+    /* ASCII 232 */ 64,
+    /* ASCII 233 */ 65,
+    /* ASCII 234 */ 30, /* ASCII 235 */
+    37,
+    /* ASCII 236 */ 66,
+    /* ASCII 237 */ 37,
+    /* ASCII 238 */ 37, /* ASCII 239 */
+    0,
+    /* ASCII 240 */ 67,
+    /* ASCII 241 */ 40,
+    /* ASCII 242 */ 69, /* ASCII 243 */
+    40,
+    /* ASCII 244 */ 68,
+    /* ASCII 245 */ 54,
+    /* ASCII 246 */ 40, /* ASCII 247 */
+    0,
+    /* ASCII 248 */ 46,
+    /* ASCII 249 */ 70,
+    /* ASCII 250 */ 46, /* ASCII 251 */
+    55,
+    /* ASCII 252 */ 50,
+    /* ASCII 253 */ 0,
+    /* ASCII 254 */ 50, /* ASCII 255 */
 };
 
 
@@ -1332,7 +1476,7 @@ void VirtualDisplay::InitializeFonts(void)
         // Shift each row right one to make room for the edging
         for (r = 0; r < 8; r++)
         {
-            InvFont[c][r] = (unsigned char)(compl (Font[c][r] >> 1));
+            InvFont[c][r] = (unsigned char)(compl(Font[c][r] >> 1));
         }
     }
 }
@@ -1343,37 +1487,39 @@ void VirtualDisplay::SetFont(int newfont)
 
     if (newfont >= pFontSet->totalFont)
         newfont = pFontSet->totalFont - 1;
-    else pFontSet->fontNum = newfont;
+    else
+        pFontSet->fontNum = newfont;
 }
 // ASSO: BEGIN ---------------------------------------------------------------------------------------------
 bool VirtualDisplay::SetupRttTarget(int tXres_, int tYres_, int tBpp_)
 {
     // Initialize the shared renderTexture only once
-    if ( not renderTexture)
+    if (not renderTexture)
     {
         int tBpp;
 
         switch (tBpp_)
         {
-            case 16:
-                tBpp = MPR_TI_RGB16;
-                break;
+        case 16:
+            tBpp = MPR_TI_RGB16;
+            break;
 
-            case 24:
-                tBpp = MPR_TI_RGB24;
-                break;
+        case 24:
+            tBpp = MPR_TI_RGB24;
+            break;
 
-            case 32:
-                tBpp = MPR_TI_ARGB32;
-                break;
+        case 32:
+            tBpp = MPR_TI_ARGB32;
+            break;
 
-            default:
-                tBpp = MPR_TI_ARGB32;
+        default:
+            tBpp = MPR_TI_ARGB32;
         }
 
         renderTexture = new TextureHandle;
         renderTexture->Create("RttTarget", tBpp, 0, tXres_, tYres_,
-                              TextureHandle::FLAG_RENDERTARGET bitor TextureHandle::FLAG_HINT_DYNAMIC);
+                              TextureHandle::FLAG_RENDERTARGET bitor
+                                  TextureHandle::FLAG_HINT_DYNAMIC);
 
         // #7 AA-RTT: create the MSAA atlas (displays render into it, resolve to renderTexture before
         // DrawRttQuad -> antialiased HUD/DED/MFD/RWR). best-effort. Re-ENABLED 2026-06-17 (empty
@@ -1402,7 +1548,8 @@ bool VirtualDisplay::CleanupRttTarget()
     return false;
 }
 
-void VirtualDisplay::SetRttCanvas(Tpoint* ul_, Tpoint* ur_, Tpoint* ll_, char blendMode_, float alpha_)
+void VirtualDisplay::SetRttCanvas(Tpoint* ul_, Tpoint* ur_, Tpoint* ll_,
+                                  char blendMode_, float alpha_)
 {
     canUL = *ul_;
     canUR = *ur_;
@@ -1410,30 +1557,31 @@ void VirtualDisplay::SetRttCanvas(Tpoint* ul_, Tpoint* ur_, Tpoint* ll_, char bl
 
     switch (blendMode_)
     {
-        case 'a':
-            rttBlendMode = STATE_ALPHA_TEXTURE_GOURAUD;
-            break;
+    case 'a':
+        rttBlendMode = STATE_ALPHA_TEXTURE_GOURAUD;
+        break;
 
-        case 'c':
-            rttBlendMode = STATE_CHROMA_TEXTURE_GOURAUD2;
-            break;
+    case 'c':
+        rttBlendMode = STATE_CHROMA_TEXTURE_GOURAUD2;
+        break;
 
-        case 'g':
-            rttBlendMode = STATE_TEXTURE_GOURAUD;
-            break;
+    case 'g':
+        rttBlendMode = STATE_TEXTURE_GOURAUD;
+        break;
 
-        case 't':
-            rttBlendMode = STATE_TEXTURE;
-            break;
+    case 't':
+        rttBlendMode = STATE_TEXTURE;
+        break;
 
-        default:
-            rttBlendMode = STATE_TEXTURE_GOURAUD;
+    default:
+        rttBlendMode = STATE_TEXTURE_GOURAUD;
     }
 
     rttAlpha = alpha_;
 }
 
-void VirtualDisplay::SetRttRect(int tLeft_, int tTop_, int tRight_, int tBottom_, bool rt_)
+void VirtualDisplay::SetRttRect(int tLeft_, int tTop_, int tRight_,
+                                int tBottom_, bool rt_)
 {
     //oldXRes = xRes;
     //oldYRes = yRes;
@@ -1470,54 +1618,102 @@ void VirtualDisplay::StartRtt(Render3D* r3d_)
     r3d = r3d_;
     //oldXRes = xRes;
     //oldYRes = yRes;
-    GetViewport(&oldLeft, &oldTop, &oldRight, &oldBottom);   // save the current viewport
+    GetViewport(&oldLeft, &oldTop, &oldRight,
+                &oldBottom); // save the current viewport
     oldTarget = context.m_pRenderTarget;
     context.m_pRenderTarget = renderTexture->m_pDDS;
     // #DX12 п.3 RTT: bind the render-texture as the target; displays draw their symbology into it.
     if (g_bUseD3D12)
     {
+#ifdef _WIN32 // D3D12 is Windows-only; Linux uses the Vulkan branch below
         extern IRenderer* g_pRenderer;
         if (g_pD3D12Backend && renderTexture && renderTexture->m_pDDS)
         {
-            g_pD3D12Backend->BindSceneRtt(renderTexture->m_pDDS, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false);
-            if (g_pRenderer) g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
+            g_pD3D12Backend->BindSceneRtt(
+                renderTexture->m_pDDS, renderTexture->m_nActualWidth,
+                renderTexture->m_nActualHeight, false);
+            if (g_pRenderer)
+                g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth,
+                                             renderTexture->m_nActualHeight);
             context.InvalidateState();
-            if (g_pRenderer) g_pRenderer->SetTexture(0, NULL);
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(0, NULL);
+        }
+#endif // _WIN32
+    }
+    else if (
+        g_bUseVulkan) // Artscout - 2026 (#104): Vulkan RTT (m_pDDS is a VulkanTexture*; g_pRenderer is neutral)
+    {
+        extern IRenderer* g_pRenderer;
+        if (g_pVulkanBackend && renderTexture && renderTexture->m_pDDS)
+        {
+            g_pVulkanBackend->BindSceneRtt(
+                renderTexture->m_pDDS, renderTexture->m_nActualWidth,
+                renderTexture->m_nActualHeight, false);
+            if (g_pRenderer)
+                g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth,
+                                             renderTexture->m_nActualHeight);
+            context.InvalidateState();
+            if (g_pRenderer)
+                g_pRenderer->SetTexture(0, NULL);
         }
     }
     else
-        context.m_pCtxDX->SetRenderTarget(context.m_pRenderTarget);   // legacy DDraw (dead; removed in DX7 purge)
-    SetRttRect(0, 0, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
+        context.m_pCtxDX->SetRenderTarget(
+            context
+                .m_pRenderTarget); // legacy DDraw (dead; removed in DX7 purge)
+    SetRttRect(0, 0, renderTexture->m_nActualWidth,
+               renderTexture->m_nActualHeight);
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
-    g_rttBatchActive = true;	// DIAG (RTT)
+    g_rttBatchActive = true; // DIAG (RTT)
 }
 
 void VirtualDisplay::FinishRtt()
 {
-    g_rttBatchActive = false;	// DIAG (RTT)
+    g_rttBatchActive = false; // DIAG (RTT)
     // PHASE 5/#DX12 (RTT): flush unfinished display content into renderTexture (still bound as RTV) BEFORE
     // switching to the backbuffer -- else the tail leaks into the backbuffer. ContextMPR draws via g_pRenderer.
-    if (g_bUseD3D12)
+    if (g_bUseGpu) // #104: any GPU backend flushes pending RTT content (neutral, via g_pRenderer)
         context.FlushPending();
 
     context.m_pRenderTarget = image->targetSurface();
     // #DX12 п.3 RTT: transition the RTT to PIXEL_SHADER_RESOURCE (sampled by DrawRttQuad) + rebind the backbuffer.
     if (g_bUseD3D12)
     {
+#ifdef _WIN32 // D3D12 is Windows-only; Linux uses the Vulkan branch below
         extern IRenderer* g_pRenderer;
         if (g_pD3D12Backend)
         {
-            g_pD3D12Backend->UnbindSceneRtt(renderTexture ? renderTexture->m_pDDS : NULL);
+            g_pD3D12Backend->UnbindSceneRtt(
+                renderTexture ? renderTexture->m_pDDS : NULL);
             // #DX12: restore gScreenSize to the BACK-BUFFER size (NOT the eye). The RTT composite that follows
             // (DrawRttQuad -> TransformPoint -> DrawSquare -> VS_Screen) maps its pixels by gScreenSize, and it
             // needs the back-buffer/DispWidth space (confirmed empirically: the debug overlay's SetViewportSize
             // (Width) made the panels composite). Setting SceneW (eye) here was my sky-fix regression that
             // mis-scaled the composite -> HUD/MFD/DED/RWR landed off/up. The sky's eye-size is set at StartFrame.
-            if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->Width(), g_pD3D12Backend->Height());
+            if (g_pRenderer)
+                g_pRenderer->SetViewportSize(g_pD3D12Backend->Width(),
+                                             g_pD3D12Backend->Height());
+        }
+#endif // _WIN32
+    }
+    else if (
+        g_bUseVulkan) // #104: Vulkan RTT unbind -> texture SHADER_READ; restore backbuffer-size viewport
+    {
+        extern IRenderer* g_pRenderer;
+        if (g_pVulkanBackend)
+        {
+            g_pVulkanBackend->UnbindSceneRtt(
+                renderTexture ? renderTexture->m_pDDS : NULL);
+            if (g_pRenderer)
+                g_pRenderer->SetViewportSize(g_pVulkanBackend->Width(),
+                                             g_pVulkanBackend->Height());
         }
     }
     else
-        context.m_pCtxDX->SetRenderTarget(context.m_pRenderTarget);   // legacy DDraw (dead; removed in DX7 purge)
+        context.m_pCtxDX->SetRenderTarget(
+            context
+                .m_pRenderTarget); // legacy DDraw (dead; removed in DX7 purge)
     SetRttRect(0, 0, 0, 0, false);
     //SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
     SetViewport(oldLeft, oldTop, oldRight, oldBottom); // restore viewport
@@ -1529,18 +1725,49 @@ void VirtualDisplay::ReBindRttTarget()
     // (GM radar beam) unbound it via EndDraw->BindBackBuffer. Mirrors StartRtt's bind, WITHOUT the
     // save/clear/rect bookkeeping (the outer StartRtt/FinishRtt batch still owns that). No clear:
     // the atlas already holds the other displays' content for this frame.
-    if (not renderTexture) return;
+    if (not renderTexture)
+        return;
 
     context.m_pRenderTarget = renderTexture->m_pDDS;
 
-    if (g_bUseD3D12 and g_pD3D12Backend and renderTexture->m_pDDS)   // #DX12 п.3 RTT
+    if (g_bUseD3D12 and g_pD3D12Backend and
+        renderTexture->m_pDDS) // #DX12 п.3 RTT
+    {
+#ifdef _WIN32 // D3D12 is Windows-only; Linux uses the Vulkan branch below
+        extern IRenderer* g_pRenderer;
+        g_pD3D12Backend->BindSceneRtt(renderTexture->m_pDDS,
+                                      renderTexture->m_nActualWidth,
+                                      renderTexture->m_nActualHeight, false);
+        if (g_pRenderer)
+            g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth,
+                                         renderTexture->m_nActualHeight);
+        context.InvalidateState();
+        if (g_pRenderer)
+            g_pRenderer->SetTexture(0, NULL);
+#endif // _WIN32
+    }
+    else if (g_bUseVulkan and g_pVulkanBackend and
+             renderTexture
+                 ->m_pDDS) // Artscout - 2026 (#104): Vulkan RTT re-bind
     {
         extern IRenderer* g_pRenderer;
-        g_pD3D12Backend->BindSceneRtt(renderTexture->m_pDDS, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false);
-        if (g_pRenderer) g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
+        g_pVulkanBackend->BindSceneRtt(renderTexture->m_pDDS,
+                                       renderTexture->m_nActualWidth,
+                                       renderTexture->m_nActualHeight, false);
+        if (g_pRenderer)
+            g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth,
+                                         renderTexture->m_nActualHeight);
         context.InvalidateState();
-        if (g_pRenderer) g_pRenderer->SetTexture(0, NULL);
+        if (g_pRenderer)
+            g_pRenderer->SetTexture(0, NULL);
     }
+}
+
+void VirtualDisplay::ConfineScreenMetricToZone()
+{
+    extern IRenderer* g_pRenderer;
+    if (g_pRenderer and renderTexture and tRight > tLeft and tBottom > tTop)
+        g_pRenderer->SetViewportSize(tRight - tLeft, tBottom - tTop);
 }
 
 void VirtualDisplay::ConfineObjectViewportToZone()
@@ -1551,10 +1778,13 @@ void VirtualDisplay::ConfineObjectViewportToZone()
     // VS_Object uses centred clip-NDC -> the viewport rect alone places it. The 2D screen-path terrain was
     // already drawn with the full viewport (full-atlas coords + tLeft offset) and is unaffected. In D3D7
     // the device viewport was the sub-zone, so objects went there; this restores that behaviour.
-    if (not renderTexture) return;   // #DX12: neutral backend viewport-rect (D3D11 or D3D12)
+    if (not renderTexture)
+        return; // #DX12: neutral backend viewport-rect (D3D11 or D3D12)
     extern IRenderBackend* g_pRenderBackend;
-    if ((g_bUseD3D12) and g_pRenderBackend)
-        g_pRenderBackend->SetViewportRect(tLeft, tTop, tRight - tLeft, tBottom - tTop);
+    if ((g_bUseGpu) and
+        g_pRenderBackend) // #104: neutral backend viewport-rect (D3D12 or Vulkan)
+        g_pRenderBackend->SetViewportRect(tLeft, tTop, tRight - tLeft,
+                                          tBottom - tTop);
 }
 
 void VirtualDisplay::AdjustRttViewport()
@@ -1562,11 +1792,29 @@ void VirtualDisplay::AdjustRttViewport()
     context.m_pRenderTarget = renderTexture->m_pDDS;
     // PHASE 5 (RTT): in D3D11 bind the render-texture RTV. Do NOT clear (renderTexture is shared
     // by all displays = atlas; cleared once in StartRtt). The sub-region is set by the scissor.
-    if (g_bUseD3D12 && g_pD3D12Backend && renderTexture && renderTexture->m_pDDS)   // #DX12 п.3 RTT
+    if (g_bUseD3D12 && g_pD3D12Backend && renderTexture &&
+        renderTexture->m_pDDS) // #DX12 п.3 RTT
+    {
+#ifdef _WIN32 // D3D12 is Windows-only; Linux uses the Vulkan branch below
+        extern IRenderer* g_pRenderer;
+        g_pD3D12Backend->BindSceneRtt(renderTexture->m_pDDS,
+                                      renderTexture->m_nActualWidth,
+                                      renderTexture->m_nActualHeight, false);
+        if (g_pRenderer)
+            g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth,
+                                         renderTexture->m_nActualHeight);
+#endif // _WIN32
+    }
+    else if (g_bUseVulkan && g_pVulkanBackend && renderTexture &&
+             renderTexture->m_pDDS) // Artscout - 2026 (#104): Vulkan RTT
     {
         extern IRenderer* g_pRenderer;
-        g_pD3D12Backend->BindSceneRtt(renderTexture->m_pDDS, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight, false);
-        if (g_pRenderer) g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth, renderTexture->m_nActualHeight);
+        g_pVulkanBackend->BindSceneRtt(renderTexture->m_pDDS,
+                                       renderTexture->m_nActualWidth,
+                                       renderTexture->m_nActualHeight, false);
+        if (g_pRenderer)
+            g_pRenderer->SetViewportSize(renderTexture->m_nActualWidth,
+                                         renderTexture->m_nActualHeight);
     }
     //context.SetViewportAbs( 0, 0, renderTexture->m_nActualWidth, renderTexture->m_nActualHeight );
     SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
@@ -1594,7 +1842,6 @@ void VirtualDisplay::ResetRttViewport()
 }
 
 
-
 // Artscout - 2026 (VR #61): RTT-quad world-frame transform. When g_bVrRttWorldCam is on, the RTT
 // display panel is drawn in the SAME 3D frame as the BSP cockpit (world = ownshipRot * (canvas /
 // RTT_POSITION_SCALING), camera = headOrigin) instead of the legacy Pan=headPan*10.35 trick space, so
@@ -1609,26 +1856,31 @@ void VirtualDisplay::ResetRttViewport()
 // the symbology sits at infinity (no per-eye convergence, no shift with head translation) and stays conformal
 // with the outside world (ownshipRot). STATE_RTT_SOFT has depthTest off, so it composites on top of terrain.
 Trotation g_rttWorldRot;
-float     g_rttWorldScale = 1.0f;
-Tpoint    g_rttWorldOfs = { 0.0f, 0.0f, 0.0f };
+float g_rttWorldScale = 1.0f;
+Tpoint g_rttWorldOfs = {0.0f, 0.0f, 0.0f};
 // Artscout - 2026 (VR #61 RWR): forward push of the RTT canvas (in canvas X = the panel depth) BEFORE the
 // world map, so a panel whose 3Dckpit.dat depth doesn't match its BSP can be nudged onto it. Set per-panel.
-float     g_rttCanvasFwd = 0.0f;
+float g_rttCanvasFwd = 0.0f;
 // Artscout - 2026 (VR HUD 3D glass): when set, DrawRttQuad composites with STATE_RTT_SOFT_DEPTH (Z-test on)
 // so the collimated HUD is clipped to the combiner aperture by the cockpit structure. Set by VCock_Exec
 // for the HUD only; cleared for the panels.
-bool      g_bRttHudClip = false;
+bool g_bRttHudClip = false;
 
 static void RttWorldXform(Tpoint* os)
 {
     extern bool g_bVrRttWorldCam, g_bHud3DGlass;
-    if (!g_bVrRttWorldCam && !g_bHud3DGlass) return;   // g_bHud3DGlass implies the world-frame RTT path
+    if (!g_bVrRttWorldCam && !g_bHud3DGlass)
+        return; // g_bHud3DGlass implies the world-frame RTT path
     // Artscout - 2026 (VR #61 RWR): push the canvas forward (X = panel depth) before the world map so a panel
     // can be nudged onto its BSP scope. g_rttCanvasFwd is 0 except around the RWR composite (set by VCock_Exec).
-    const float x = (os->x + g_rttCanvasFwd) * g_rttWorldScale, y = os->y * g_rttWorldScale, z = os->z * g_rttWorldScale;
-    os->x = g_rttWorldRot.M11 * x + g_rttWorldRot.M12 * y + g_rttWorldRot.M13 * z + g_rttWorldOfs.x;
-    os->y = g_rttWorldRot.M21 * x + g_rttWorldRot.M22 * y + g_rttWorldRot.M23 * z + g_rttWorldOfs.y;
-    os->z = g_rttWorldRot.M31 * x + g_rttWorldRot.M32 * y + g_rttWorldRot.M33 * z + g_rttWorldOfs.z;
+    const float x = (os->x + g_rttCanvasFwd) * g_rttWorldScale,
+                y = os->y * g_rttWorldScale, z = os->z * g_rttWorldScale;
+    os->x = g_rttWorldRot.M11 * x + g_rttWorldRot.M12 * y +
+            g_rttWorldRot.M13 * z + g_rttWorldOfs.x;
+    os->y = g_rttWorldRot.M21 * x + g_rttWorldRot.M22 * y +
+            g_rttWorldRot.M23 * z + g_rttWorldOfs.y;
+    os->z = g_rttWorldRot.M31 * x + g_rttWorldRot.M32 * y +
+            g_rttWorldRot.M33 * z + g_rttWorldOfs.z;
 }
 
 void VirtualDisplay::DrawRttQuad()
@@ -1643,15 +1895,19 @@ void VirtualDisplay::DrawRttQuad()
     if (g_bUseGpu && rttBlendMode == STATE_CHROMA_TEXTURE_GOURAUD2)
         compositeState = STATE_RTT_SOFT;
     r3d->context.RestoreState(compositeState);
-    r3d->context.SelectTexture1((DWORD_PTR)renderTexture); // Artscout - 2026 (x64): pointer-sized
+    r3d->context.SelectTexture1(
+        (DWORD_PTR)renderTexture); // Artscout - 2026 (x64): pointer-sized
 
     // Artscout - 2026 (VR HUD 3D glass): clip the collimated HUD to the combiner aperture via STENCIL --
     // the glass plate (drawn just before, DrawGlassPlate) wrote the aperture bit, so the symbology draws
     // only where that bit is set. Armed AFTER RestoreState so it isn't clobbered; cleared after the draw.
     extern bool g_bRttHudClip;
     extern IRenderer* g_pRenderer;
-    const bool hudClip = g_bUseGpu && g_bRttHudClip && g_pRenderer;   // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
-    if (hudClip) g_pRenderer->SetHudStencil(HUD_STENCIL_TEST);
+    const bool hudClip =
+        g_bUseGpu && g_bRttHudClip &&
+        g_pRenderer; // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
+    if (hudClip)
+        g_pRenderer->SetHudStencil(HUD_STENCIL_TEST);
 
     // #7 panel SSAA -- OFF (on request, checking if it's redundant). The MSAA atlas stays.
     // if (g_bUseD3D11 && g_pD3D11Renderer) g_pD3D11Renderer->SetForcePerSample(true);
@@ -1671,9 +1927,9 @@ void VirtualDisplay::DrawRttQuad()
     RttWorldXform(&os);
     r3d->TransformPoint(&os, &v1);
 
-    os.x =  canLL.x;
-    os.y =  canUR.y;
-    os.z =  canLL.z;
+    os.x = canLL.x;
+    os.y = canUR.y;
+    os.z = canLL.z;
     RttWorldXform(&os);
     r3d->TransformPoint(&os, &v2);
 
@@ -1715,8 +1971,10 @@ void VirtualDisplay::DrawRttQuad()
     // sat unflushed and never reached the eye (HUD/MFD/DED/RWR blank on the cockpit) UNTIL the debug overlay
     // happened to trigger a flush. Flush here so the panels composite without the overlay.
     if (g_bUseGpu)
-        r3d->context.FlushPending();	// the same context that draws the quad (else per-sample won't apply)
-    if (hudClip) g_pRenderer->SetHudStencil(HUD_STENCIL_OFF);   // done clipping the HUD
+        r3d->context
+            .FlushPending(); // the same context that draws the quad (else per-sample won't apply)
+    if (hudClip)
+        g_pRenderer->SetHudStencil(HUD_STENCIL_OFF); // done clipping the HUD
 }
 
 // Artscout - 2026 (VR HUD 3D glass): faint tinted glass plate over the combiner canvas. Drawn as an
@@ -1733,20 +1991,28 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
     // (invisible) and still mark -- the stencil op is independent of the alpha blend.
     extern bool g_bRttHudClip;
     extern IRenderer* g_pRenderer;
-    const bool hudMark = g_bUseGpu && g_bRttHudClip && g_pRenderer;   // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
-    if (hudMark) g_pRenderer->SetHudStencil(HUD_STENCIL_MARK);
+    const bool hudMark =
+        g_bUseGpu && g_bRttHudClip &&
+        g_pRenderer; // #DX12: HUD stencil clip on BOTH backends (D3D12 stencil implemented)
+    if (hudMark)
+        g_pRenderer->SetHudStencil(HUD_STENCIL_MARK);
 
     // Canvas is a rectangle in body frame: X = forward (const), Y = horizontal, Z = vertical.
-    extern float g_fHud3DGlassSize;                      // grow the plate/aperture toward the real glass edges
-    extern float g_fHud3DGlassTop;                       // #76 scale the TOP half only (pull the top edge down)
-    const float cX  = canUL.x;                          // forward depth of the glass
-    const float cY  = (canUL.y + canUR.y) * 0.5f;       // centre (horizontal)
-    const float cZ  = (canUL.z + canLL.z) * 0.5f;       // centre (vertical)
-    const float hY  = (canUR.y - canUL.y) * 0.5f * g_fHud3DGlassSize;   // half-width  (signed ok)
-    const float hZ  = (canLL.z - canUL.z) * 0.5f * g_fHud3DGlassSize;   // half-height
+    extern float
+        g_fHud3DGlassSize; // grow the plate/aperture toward the real glass edges
+    extern float
+        g_fHud3DGlassTop; // #76 scale the TOP half only (pull the top edge down)
+    const float cX = canUL.x; // forward depth of the glass
+    const float cY = (canUL.y + canUR.y) * 0.5f; // centre (horizontal)
+    const float cZ = (canUL.z + canLL.z) * 0.5f; // centre (vertical)
+    const float hY = (canUR.y - canUL.y) * 0.5f *
+                     g_fHud3DGlassSize; // half-width  (signed ok)
+    const float hZ =
+        (canLL.z - canUL.z) * 0.5f * g_fHud3DGlassSize; // half-height
 
-    const int   SEG = 32;
-    const float twoPi = 6.2831853f;   // NB: TWO_PI is a macro in the Falcon math headers -- don't shadow it
+    const int SEG = 32;
+    const float twoPi =
+        6.2831853f; // NB: TWO_PI is a macro in the Falcon math headers -- don't shadow it
 
     // Rim brighter than the centre: real combiner glass reads as a faint pane with a brighter EDGE
     // (internal edge reflection / the frame). centreA low, rim = full a -> a soft-edged glass with a
@@ -1754,11 +2020,17 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
     const float centreA = a * 0.20f;
     auto setVert = [&](ThreeDVertex* v, float yy, float zz, float aa)
     {
-        Tpoint os; os.x = cX; os.y = yy; os.z = zz;
+        Tpoint os;
+        os.x = cX;
+        os.y = yy;
+        os.z = zz;
         RttWorldXform(&os);
         r3d->TransformPoint(&os, v);
         v->q = v->csZ * Q_SCALE;
-        v->r = r; v->g = g; v->b = b; v->a = aa;
+        v->r = r;
+        v->g = g;
+        v->b = b;
+        v->a = aa;
     };
 
     // SQUIRCLE (rounded rectangle), not a pinched ellipse: fills the whole glass with rounded corners,
@@ -1773,11 +2045,14 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
     ThreeDVertex centre, prev, cur;
     float px, py;
     setVert(&centre, cY, cZ, centreA);
-    squircle(0.0f, px, py); setVert(&prev, cY + px * hY, cZ + (py < 0.0f ? py * g_fHud3DGlassTop : py) * hZ, a);   // rim
+    squircle(0.0f, px, py);
+    setVert(&prev, cY + px * hY,
+            cZ + (py < 0.0f ? py * g_fHud3DGlassTop : py) * hZ, a); // rim
     for (int i = 1; i <= SEG; ++i)
     {
         squircle(twoPi * (float)i / (float)SEG, px, py);
-        setVert(&cur, cY + px * hY, cZ + (py < 0.0f ? py * g_fHud3DGlassTop : py) * hZ, a);
+        setVert(&cur, cY + px * hY,
+                cZ + (py < 0.0f ? py * g_fHud3DGlassTop : py) * hZ, a);
         r3d->DrawTriangle(&centre, &prev, &cur, CULL_ALLOW_ALL, false);
         prev = cur;
     }
@@ -1790,7 +2065,8 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
         r3d->context.FlushPending();
     // Stencil bit is now in the buffer; switch back to OFF so anything between here and the symbology
     // (DrawRttQuad, which re-arms TEST) composites normally. The marked bit persists in the buffer.
-    if (hudMark) g_pRenderer->SetHudStencil(HUD_STENCIL_OFF);
+    if (hudMark)
+        g_pRenderer->SetHudStencil(HUD_STENCIL_OFF);
 }
 
 // DIAG (RTT): draw the WHOLE renderTexture into a fixed screen rectangle (no chroma/3D/
@@ -1799,29 +2075,57 @@ void VirtualDisplay::DrawGlassPlate(float r, float g, float b, float a)
 void VirtualDisplay::DrawRttDebugOverlay()
 {
     extern IRenderer* g_pRenderer;
-    if (not g_pRenderer or not renderTexture or not renderTexture->m_pDDS) return;
+    if (not g_pRenderer or not renderTexture or not renderTexture->m_pDDS)
+        return;
 
     // #DX12 DIAG: neutral path so this works under D3D12 too -- shows the RAW RTT atlas (opaque, top-left)
     // to isolate "atlas empty (render broken)" vs "atlas full but composite broken (DrawRttQuad)".
     g_pRenderer->BeginScreenPass();
-    if (g_bUseD3D12 && g_pD3D12Backend) g_pRenderer->SetViewportSize(g_pD3D12Backend->Width(), g_pD3D12Backend->Height());
-    g_pRenderer->SetState(STATE_TEXTURE);   // FF_TEXTURE0, opaque, no chroma/alpha-test
+    {
+        extern IRenderBackend*
+            g_pRenderBackend; // #104: neutral backbuffer size (Width/Height are in IRenderBackend)
+        if (g_bUseGpu && g_pRenderBackend)
+            g_pRenderer->SetViewportSize(g_pRenderBackend->Width(),
+                                         g_pRenderBackend->Height());
+    }
+    g_pRenderer->SetState(
+        STATE_TEXTURE); // FF_TEXTURE0, opaque, no chroma/alpha-test
     // m_pDDS is the repurposed opaque handle (D3D12Texture* under D3D12); the neutral SetTexture param keeps the
     // legacy ID3D11ShaderResourceView* type name, so cast (same as the D3D11 DrawRttQuad/overlay call).
-    g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView*)renderTexture->m_pDDS);
+    g_pRenderer->SetTexture(
+        0, (struct ID3D11ShaderResourceView*)renderTexture->m_pDDS);
 
     // DIAG-ZOOM: show the TOP-LEFT QUARTER of the atlas (UV 0..0.5) in a BIG quad -> ~3-4x
     // magnification, text shimmer visible. If the wanted display isn't here -- shift the UV window.
-    const float S = 900.0f;        // overlay screen size (px), top-left corner
-    const float UVMAX = 0.5f;      // fraction of the atlas shown (0.5 = quarter, zoom ~3.5x)
+    const float S = 900.0f; // overlay screen size (px), top-left corner
+    const float UVMAX =
+        0.5f; // fraction of the atlas shown (0.5 = quarter, zoom ~3.5x)
     ScreenVertex q[4];
     ZeroMemory(q, sizeof(q));
-    for (int i = 0; i < 4; ++i) { q[i].sz = 0.0f; q[i].rhw = 1.0f; q[i].color = 0xFFFFFFFF; q[i].specular = 0; }
-    q[0].sx = 0; q[0].sy = 0; q[0].tu0 = 0;     q[0].tv0 = 0;       // UL
-    q[1].sx = S; q[1].sy = 0; q[1].tu0 = UVMAX; q[1].tv0 = 0;       // UR
-    q[2].sx = S; q[2].sy = S; q[2].tu0 = UVMAX; q[2].tv0 = UVMAX;   // LR
-    q[3].sx = 0; q[3].sy = S; q[3].tu0 = 0;     q[3].tv0 = UVMAX;   // LL
-    g_pRenderer->DrawTL(6, q, 4);   // 6 = TRIANGLEFAN (emulated via indices)
+    for (int i = 0; i < 4; ++i)
+    {
+        q[i].sz = 0.0f;
+        q[i].rhw = 1.0f;
+        q[i].color = 0xFFFFFFFF;
+        q[i].specular = 0;
+    }
+    q[0].sx = 0;
+    q[0].sy = 0;
+    q[0].tu0 = 0;
+    q[0].tv0 = 0; // UL
+    q[1].sx = S;
+    q[1].sy = 0;
+    q[1].tu0 = UVMAX;
+    q[1].tv0 = 0; // UR
+    q[2].sx = S;
+    q[2].sy = S;
+    q[2].tu0 = UVMAX;
+    q[2].tv0 = UVMAX; // LR
+    q[3].sx = 0;
+    q[3].sy = S;
+    q[3].tu0 = 0;
+    q[3].tv0 = UVMAX; // LL
+    g_pRenderer->DrawTL(6, q, 4); // 6 = TRIANGLEFAN (emulated via indices)
 }
 
 // ASSO: END ---------------------------------------------------------------------------------------------

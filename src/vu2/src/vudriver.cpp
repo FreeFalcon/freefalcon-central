@@ -22,11 +22,11 @@
 /** if unit moves more than this qty in any axis, an update can be generated. Unit used: feet */
 #define MOVE_TOLERANCE (1.0f)
 /** if unit turns more than this qty in any axis, update can be generated. In radians */
-#define TURN_TOLERANCE (2*PI / 10.0f)
+#define TURN_TOLERANCE (2 * PI / 10.0f)
 
 
 // useful constants
-#define VU_TICS_PER_SEC_INV         (1.0f/VU_TICS_PER_SECOND)
+#define VU_TICS_PER_SEC_INV (1.0f / VU_TICS_PER_SECOND)
 
 // useful function
 /** returns time interval in seconds between the 2 timestamps. Returns negative if last_timestamp is bigger */
@@ -39,14 +39,15 @@ double GetDT(VU_TIME timestamp, VU_TIME last_timestamp)
     }
     else
     {
-        return -(((SM_SCALAR)(last_timestamp - timestamp)) * VU_TICS_PER_SEC_INV);
+        return -(((SM_SCALAR)(last_timestamp - timestamp)) *
+                 VU_TICS_PER_SEC_INV);
     }
 }
 
 //////////////
 // VUDRIVER //
 //////////////
-VuDriver::VuDriver(VuEntity* entity) : entity_(entity)
+VuDriver::VuDriver(VuEntity *entity) : entity_(entity)
 {
     //lastUpdateGameTime_ = 0;
     lastUpdateGameTime_ = entity->LastUpdateTime();
@@ -75,7 +76,7 @@ void VuDriver::ResetLastUpdateTime(VU_TIME time)
 //////////////////
 // VUDEADRECKON //
 //////////////////
-VuDeadReckon::VuDeadReckon(VuEntity* entity) : VuDriver(entity)
+VuDeadReckon::VuDeadReckon(VuEntity *entity) : VuDriver(entity)
 {
     VuDeadReckon::Reset();
     ResetLastUpdateTime(0);
@@ -88,15 +89,15 @@ VuDeadReckon::~VuDeadReckon()
 void VuDeadReckon::Reset()
 {
     // get unit position and heading
-    d_drx_     = entity_->XDelta();
-    d_dry_     = entity_->YDelta();
-    d_drz_     = entity_->ZDelta();
-    drx_       = entity_->XPos();
-    dry_       = entity_->YPos();
-    drz_       = entity_->ZPos();
-    dryaw_     = entity_->Yaw();
-    drpitch_   = entity_->Pitch();
-    drroll_    = entity_->Roll();
+    d_drx_ = entity_->XDelta();
+    d_dry_ = entity_->YDelta();
+    d_drz_ = entity_->ZDelta();
+    drx_ = entity_->XPos();
+    dry_ = entity_->YPos();
+    drz_ = entity_->ZPos();
+    dryaw_ = entity_->Yaw();
+    drpitch_ = entity_->Pitch();
+    drroll_ = entity_->Roll();
 }
 
 void VuDeadReckon::NoExec(VU_TIME time)
@@ -107,8 +108,9 @@ void VuDeadReckon::NoExec(VU_TIME time)
 void VuDeadReckon::ExecDR(VU_TIME timestamp)
 {
     BIG_SCALAR dt =
-        (lastUpdateGameTime_ == 0) ? 0 : static_cast<BIG_SCALAR>(GetDT(timestamp, lastUpdateGameTime_))
-        ;
+        (lastUpdateGameTime_ == 0) ?
+            0 :
+            static_cast<BIG_SCALAR>(GetDT(timestamp, lastUpdateGameTime_));
 
     // if update was not enough to change the value, we zero it...
     // this is a float precision problem
@@ -136,7 +138,8 @@ void VuDeadReckon::ExecDR(VU_TIME timestamp)
 
         if (bu == pval[i])
         {
-            dpval[i] = 0;    // if increment was not enough to update, set speed to 0
+            dpval[i] =
+                0; // if increment was not enough to update, set speed to 0
         }
 
         // turn
@@ -146,7 +149,8 @@ void VuDeadReckon::ExecDR(VU_TIME timestamp)
 
         if (bu == tval[i])
         {
-            dtval[i] = 0;    // if increment was not enough to update, set speed to 0
+            dtval[i] =
+                0; // if increment was not enough to update, set speed to 0
         }
 
         // keeps turn between -PI and +PI
@@ -221,7 +225,7 @@ VuDelaySlave::VuDelaySlave(VuEntity *entity) : VuDeadReckon(entity)
 void VuDelaySlave::Reset()
 {
     VuDeadReckon::Reset();
-    predictedTime_ = 0;//vuxGameTime;
+    predictedTime_ = 0; //vuxGameTime;
     lastRemoteUpdateTime_ = 0;
 }
 
@@ -246,7 +250,7 @@ void VuDelaySlave::Exec(VU_TIME timestamp)
     }
 }
 
-VU_ERRCODE VuDelaySlave::Handle(VuPositionUpdateEvent* event)
+VU_ERRCODE VuDelaySlave::Handle(VuPositionUpdateEvent *event)
 {
     // here we just set position
     // only accept events newer than last update
@@ -273,17 +277,17 @@ int VuMaster::toSend = 0;
 /** returns maximum number of sends for entity. */
 namespace
 {
-    unsigned int MaxSends()
+unsigned int MaxSends()
+{
+    if (vuLocalGame->OwnerId() == vuLocalSession)
     {
-        if (vuLocalGame->OwnerId() == vuLocalSession)
-        {
-            return MAX_SERVER_SENDS_PER_UPDATE * (vuLocalGame->SessionCount() - 1);
-        }
-        else
-        {
-            return MAX_CLIENT_SENDS_PER_UPDATE * (vuLocalGame->SessionCount() - 1);
-        }
+        return MAX_SERVER_SENDS_PER_UPDATE * (vuLocalGame->SessionCount() - 1);
     }
+    else
+    {
+        return MAX_CLIENT_SENDS_PER_UPDATE * (vuLocalGame->SessionCount() - 1);
+    }
+}
 }
 
 void VuMaster::ResetToSendIfTime()
@@ -303,10 +307,11 @@ unsigned int VuMaster::SendsPerPlayer()
 {
     int otherPlayers = vuLocalSessionEntity->Game()->SessionCount() - 1;
     // avoids division by zero
-    return ((otherPlayers > 0) and (toSend > 0)) ? (MaxSends() / otherPlayers) : 0;
+    return ((otherPlayers > 0) and (toSend > 0)) ? (MaxSends() / otherPlayers) :
+                                                   0;
 }
 
-VuMaster::VuMaster(VuEntity* entity) : VuDeadReckon(entity)
+VuMaster::VuMaster(VuEntity *entity) : VuDeadReckon(entity)
 {
     updateSentRealTime_ = 0;
     xsent_ = entity_->XPos();
@@ -324,7 +329,9 @@ VuMaster::~VuMaster()
 {
 }
 
-VU_ERRCODE VuMaster::GeneratePositionUpdate(bool reliable, bool oob, VU_TIME time, VuSessionEntity *target)
+VU_ERRCODE VuMaster::GeneratePositionUpdate(bool reliable, bool oob,
+                                            VU_TIME time,
+                                            VuSessionEntity *target)
 {
     // send message
     VuPositionUpdateEvent *event = new VuPositionUpdateEvent(entity_, target);
@@ -357,14 +364,12 @@ VU_ERRCODE VuMaster::GeneratePositionUpdate(bool reliable, bool oob, VU_TIME tim
 
 inline bool VuMaster::ToleranceReached()
 {
-    return
-        (abs(entity_->XPos() - xsent_) >= MOVE_TOLERANCE) or
-        (abs(entity_->YPos() - ysent_) >= MOVE_TOLERANCE) or
-        (abs(entity_->ZPos() - zsent_) >= MOVE_TOLERANCE) or
-        (abs(entity_->Yaw()   - yawsent_) >= TURN_TOLERANCE) or
-        (abs(entity_->Pitch() - pitchsent_) >= TURN_TOLERANCE) or
-        (abs(entity_->Roll()  - rollsent_) >= TURN_TOLERANCE)
-        ;
+    return (abs(entity_->XPos() - xsent_) >= MOVE_TOLERANCE) or
+           (abs(entity_->YPos() - ysent_) >= MOVE_TOLERANCE) or
+           (abs(entity_->ZPos() - zsent_) >= MOVE_TOLERANCE) or
+           (abs(entity_->Yaw() - yawsent_) >= TURN_TOLERANCE) or
+           (abs(entity_->Pitch() - pitchsent_) >= TURN_TOLERANCE) or
+           (abs(entity_->Roll() - rollsent_) >= TURN_TOLERANCE);
 }
 
 void VuMaster::Exec(VU_TIME timestamp)
@@ -372,7 +377,7 @@ void VuMaster::Exec(VU_TIME timestamp)
     ResetToSendIfTime();
 
     // exec model, if fails, exec DR
-    if ( not ExecModel(timestamp))
+    if (not ExecModel(timestamp))
     {
         ExecDR(timestamp);
     }
@@ -384,7 +389,8 @@ void VuMaster::Exec(VU_TIME timestamp)
     VU_TIME timeDelta = vuxRealTime - updateSentRealTime_;
     VuSessionsIterator iter(vuLocalGame);
 
-    for (VuSessionEntity *s = iter.GetFirst(); s not_eq NULL; s = iter.GetNext())
+    for (VuSessionEntity *s = iter.GetFirst(); s not_eq NULL;
+         s = iter.GetNext())
     {
         // dont send to ourselves
         if (s == vuLocalSessionEntity)
@@ -408,4 +414,3 @@ void VuMaster::Exec(VU_TIME timestamp)
         }
     }
 }
-

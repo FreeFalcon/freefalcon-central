@@ -1,27 +1,27 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "CmpGlobl.h"
-#include "ListADT.h"
-#include "F4Vu.h"
-#include "vutypes.h"
-#include "Objectiv.h"
-#include "Strategy.h"
-#include "Unit.h"
-#include "Find.h"
-#include "Path.h"
-#include "ASearch.h"
-#include "Campaign.h"
-#include "Update.h"
+#include "cmpglobl.h"
+#include "listadt.h"
 #include "f4vu.h"
-#include "CampList.h"
+#include "vutypes.h"
+#include "objectiv.h"
+#include "strategy.h"
+#include "unit.h"
+#include "find.h"
+#include "path.h"
+#include "asearch.h"
+#include "campaign.h"
+#include "update.h"
+#include "f4vu.h"
+#include "camplist.h"
 #include "gtm.h"
 #include "team.h"
 #include "gndunit.h"
 #include "gtmobj.h"
-#include "AIInput.h"
+#include "aiinput.h"
 #include "classtbl.h"
-#include "Debuggr.h"
+#include "debuggr.h"
 
 #define MAX_SUPPLIES 60000
 #define MAX_SUPPLY_RATIO 0.5F
@@ -52,8 +52,8 @@ extern bool g_bPowerGrid;
 // This should be called by the Campaign Master only
 int ProduceSupplies(CampaignTime deltaTime)
 {
-	Objective o;
-	Objective po = NULL;
+    Objective o;
+    Objective po = NULL;
     Team who;
     float rate;
     int type;
@@ -72,19 +72,23 @@ int ProduceSupplies(CampaignTime deltaTime)
             type = o->GetType();
 
             //Cobra Added Army, depot, and port per JimG
-            if ((type == TYPE_FACTORY or type == TYPE_ARMYBASE or type == TYPE_DEPOT or type == TYPE_PORT)
-               and o->GetObjectiveOldown() == o->GetOwner()) // Supply
+            if ((type == TYPE_FACTORY or type == TYPE_ARMYBASE or
+                 type == TYPE_DEPOT or type == TYPE_PORT) and
+                o->GetObjectiveOldown() == o->GetOwner()) // Supply
             {
                 if (g_bPowerGrid)
                 {
                     o->GetLocation(&x, &y);
-                    po = FindNearestFriendlyPowerStation(AllObjList, o->GetTeam(), x, y);
+                    po = FindNearestFriendlyPowerStation(AllObjList,
+                                                         o->GetTeam(), x, y);
 
                     if (po)
                         power = po->GetObjectiveStatus();
-                    else power = 0;
+                    else
+                        power = 0;
                 }
-                else power = 100;
+                else
+                    power = 100;
 
                 s = o->GetObjectiveDataRate() * power / 100;
 
@@ -92,8 +96,12 @@ int ProduceSupplies(CampaignTime deltaTime)
                 {
                     who = o->GetTeam();
 
-                    supply[who] += FloatToInt32((s * DataRateModSup));          // A.S.  2001-12-09 DataRateModification for supply and fuel only
-                    replacements[who] += FloatToInt32((s * DataRateModRepl));   // A.S.  2001-12-09 DataRateModification for replacements only
+                    supply[who] += FloatToInt32((
+                        s *
+                        DataRateModSup)); // A.S.  2001-12-09 DataRateModification for supply and fuel only
+                    replacements[who] += FloatToInt32((
+                        s *
+                        DataRateModRepl)); // A.S.  2001-12-09 DataRateModification for replacements only
 
                     // *** old code ***
                     // supply[who] += s;
@@ -105,7 +113,8 @@ int ProduceSupplies(CampaignTime deltaTime)
                     o->GetLocation(&mis.tx, &mis.ty);
                     mis.vs = who;
                     mis.who = GetEnemyTeam(mis.vs);
-                    mis.tot = Camp_GetCurrentTime() + rand() % deltaTime + 30 * CampaignMinutes;
+                    mis.tot = Camp_GetCurrentTime() + rand() % deltaTime +
+                              30 * CampaignMinutes;
                     mis.tot_type = TYPE_NE;
                     mis.targetID = o->Id();
                     mis.mission = AMIS_INTSTRIKE;
@@ -121,7 +130,8 @@ int ProduceSupplies(CampaignTime deltaTime)
                         po->GetLocation(&mis.tx, &mis.ty);
                         mis.vs = who;
                         mis.who = GetEnemyTeam(mis.vs);
-                        mis.tot = Camp_GetCurrentTime() + rand() % deltaTime + 30 * CampaignMinutes;
+                        mis.tot = Camp_GetCurrentTime() + rand() % deltaTime +
+                                  30 * CampaignMinutes;
                         mis.tot_type = TYPE_NE;
                         mis.targetID = po->Id();
                         mis.mission = AMIS_INTSTRIKE;
@@ -132,18 +142,22 @@ int ProduceSupplies(CampaignTime deltaTime)
                     }
                 }
             }
-            else if (type == TYPE_REFINERY and o->GetObjectiveOldown() == o->GetOwner()) // Fuel
+            else if (type == TYPE_REFINERY and
+                     o->GetObjectiveOldown() == o->GetOwner()) // Fuel
             {
                 if (g_bPowerGrid)
                 {
                     o->GetLocation(&x, &y);
-                    po = FindNearestFriendlyPowerStation(AllObjList, o->GetTeam(), x, y);
+                    po = FindNearestFriendlyPowerStation(AllObjList,
+                                                         o->GetTeam(), x, y);
 
                     if (po)
                         power = po->GetObjectiveStatus();
-                    else power = 0;
+                    else
+                        power = 0;
                 }
-                else power = 100;
+                else
+                    power = 100;
 
                 f = o->GetObjectiveDataRate() * power / 100;
 
@@ -156,7 +170,8 @@ int ProduceSupplies(CampaignTime deltaTime)
                     o->GetLocation(&mis.tx, &mis.ty);
                     mis.vs = who;
                     mis.who = GetEnemyTeam(mis.vs);
-                    mis.tot = Camp_GetCurrentTime() + rand() % deltaTime + 30 * CampaignMinutes;
+                    mis.tot = Camp_GetCurrentTime() + rand() % deltaTime +
+                              30 * CampaignMinutes;
                     mis.tot_type = TYPE_NE;
                     mis.targetID = o->Id();
                     mis.mission = AMIS_INTSTRIKE;
@@ -172,7 +187,8 @@ int ProduceSupplies(CampaignTime deltaTime)
                         po->GetLocation(&mis.tx, &mis.ty);
                         mis.vs = who;
                         mis.who = GetEnemyTeam(mis.vs);
-                        mis.tot = Camp_GetCurrentTime() + rand() % deltaTime + 30 * CampaignMinutes;
+                        mis.tot = Camp_GetCurrentTime() + rand() % deltaTime +
+                                  30 * CampaignMinutes;
                         mis.tot_type = TYPE_NE;
                         mis.targetID = po->Id();
                         mis.mission = AMIS_INTSTRIKE;
@@ -191,7 +207,6 @@ int ProduceSupplies(CampaignTime deltaTime)
 
             o = GetNextObjective(&myit);
         }
-
     }
     // rates are per day - convert to this interval
     rate = (float)deltaTime / (float)CampaignDay;
@@ -206,9 +221,13 @@ int ProduceSupplies(CampaignTime deltaTime)
 
         // end added section
 
-        supply[who] = AUTOMATIC_SUPPLY + FloatToInt32((supply[who] / 5) * rate * actionBonus);
-        fuel[who] = AUTOMATIC_SUPPLY + FloatToInt32(fuel[who] * rate * actionBonus);
-        replacements[who] = AUTOMATIC_REPLACEMENTS + FloatToInt32((replacements[who] / 40) * rate * actionBonus);
+        supply[who] = AUTOMATIC_SUPPLY +
+                      FloatToInt32((supply[who] / 5) * rate * actionBonus);
+        fuel[who] =
+            AUTOMATIC_SUPPLY + FloatToInt32(fuel[who] * rate * actionBonus);
+        replacements[who] =
+            AUTOMATIC_REPLACEMENTS +
+            FloatToInt32((replacements[who] / 40) * rate * actionBonus);
 
 #ifdef DEBUG
         gSupplyFromProduction[who] += supply[who];
@@ -219,7 +238,8 @@ int ProduceSupplies(CampaignTime deltaTime)
         // Deplete unused extra supplies and move supplies to team supply pools
         supply[who] = (TeamInfo[who]->GetSupplyAvail() / 2) + supply[who];
         fuel[who] = (TeamInfo[who]->GetFuelAvail() / 2) + fuel[who];
-        replacements[who] = TeamInfo[who]->GetReplacementsAvail() + replacements[who];
+        replacements[who] =
+            TeamInfo[who]->GetReplacementsAvail() + replacements[who];
 
         if (supply[who] > MAX_SUPPLIES)
             supply[who] = MAX_SUPPLIES;
@@ -240,7 +260,7 @@ int ProduceSupplies(CampaignTime deltaTime)
 // Supply functions
 // ==================
 
-void AddSupply(Objective  o, int supply, int fuel)
+void AddSupply(Objective o, int supply, int fuel)
 {
     int s, f;
     WORD sup = o->static_data.local_data;
@@ -266,7 +286,7 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
     PathClass path;
     int i, l, n, loss, type;
 
-    if ( not *supply and not *fuel)
+    if (not *supply and not *fuel)
         return 0;
 
     if (GetObjectivePath(&path, s, d, Foot, s->GetTeam(), PATH_MARINE) < 1)
@@ -282,15 +302,17 @@ int SendSupply(Objective s, Objective d, int *supply, int *fuel)
         c = c->GetNeighbor(n);
         type = c->GetType();
 
-        if (type == TYPE_ROAD or type == TYPE_INTERSECT or type == TYPE_RAILROAD or type == TYPE_BRIDGE)
+        if (type == TYPE_ROAD or type == TYPE_INTERSECT or
+            type == TYPE_RAILROAD or type == TYPE_BRIDGE)
         {
             AddSupply(c, *supply / 10, *fuel / 10);
-            l = c->GetObjectiveSupplyLosses() + 2; // Automatic loss rate of 2% per objective
+            l = c->GetObjectiveSupplyLosses() +
+                2; // Automatic loss rate of 2% per objective
             *supply = *supply * (100 - l) / 100;
             *fuel = *fuel * (100 - l) / 100;
         }
 
-        if ( not *supply and not *fuel)
+        if (not *supply and not *fuel)
             return 0;
     }
 
@@ -304,7 +326,7 @@ void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
 
     if (u->IsBattalion() or u->IsSquadron())
     {
-        if ( not supply and not fuel)
+        if (not supply and not fuel)
             return;
 
         // KCK: We can add supply and fuel directly now, since we're asserting all
@@ -331,7 +353,8 @@ void SupplyUnit(Unit u, int sneed, int supply, int fneed, int fuel)
         {
             sneed = e->GetUnitSupplyNeed(FALSE);
             fneed = e->GetUnitFuelNeed(FALSE);
-            SupplyUnit(e, sneed, FloatToInt32(sneed * sratio), fneed, FloatToInt32(fneed * fratio));
+            SupplyUnit(e, sneed, FloatToInt32(sneed * sratio), fneed,
+                       FloatToInt32(fneed * fratio));
             e = u->GetNextUnitElement();
         }
     }
@@ -350,19 +373,21 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     // A.S. begin additional variables 2001-12-09
     // A.S. We now distinguish between aircrafts and ground vehicles
     int rneeded_a = 0, rneeded_v = 0, repl_a = 0, repl_v = 0;
-    float rratio_a, rratio_v, a_v_nratio, repl;  // A.S.
+    float rratio_a, rratio_v, a_v_nratio, repl; // A.S.
     float sqnbonus, lambda; // A.S.
-    int repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0, prob = 0; // A.S. debug variables
+    int repl_a_s = 0, repl_v_s = 0, repl_s = 0, repl_sa = 0,
+        prob = 0; // A.S. debug variables
     // end added section
 
-    if ( not TeamInfo[who] or not (TeamInfo[who]->flags bitand TEAM_ACTIVE))
+    if (not TeamInfo[who] or not(TeamInfo[who]->flags bitand TEAM_ACTIVE))
         return 0;
 
     sratio = fratio = rratio = 0.0F;
 
     // A.S. begin, 2001-12-09.
     rratio_a = rratio_v = a_v_nratio = repl = lambda = 0.0F; // A.S.
-    sqnbonus = RelSquadBonus;     // A.S. gives Sqn relative ( not ) more repl. than Bde.
+    sqnbonus =
+        RelSquadBonus; // A.S. gives Sqn relative ( not ) more repl. than Bde.
     // end added section
 
     // zero supply values
@@ -386,16 +411,20 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
         while (unit)
         {
-            if (unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron()))
+            if (unit->GetTeam() == who and
+                (unit->IsBattalion() or unit->IsSquadron()))
             {
                 sneeded += unit->GetUnitSupplyNeed(FALSE);
                 fneeded += unit->GetUnitFuelNeed(FALSE);
-                rneeded += unit->GetFullstrengthVehicles() - unit->GetTotalVehicles();
+                rneeded +=
+                    unit->GetFullstrengthVehicles() - unit->GetTotalVehicles();
 
                 // A.S. begin
-                if (unit->IsSquadron() and NoTypeBonusRepl) // A.S. extra calculation for squadrons
+                if (unit->IsSquadron() and
+                    NoTypeBonusRepl) // A.S. extra calculation for squadrons
                 {
-                    rneeded_a += unit->GetFullstrengthVehicles() - unit->GetTotalVehicles();
+                    rneeded_a += unit->GetFullstrengthVehicles() -
+                                 unit->GetTotalVehicles();
                 }
 
                 // end added section
@@ -416,8 +445,9 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         else
             a_v_nratio = 1;
 
-        repl = (float)TeamInfo[who]->GetReplacementsAvail();    // aggregate replacements available
-        lambda =  a_v_nratio * sqnbonus;
+        repl = (float)TeamInfo[who]
+                   ->GetReplacementsAvail(); // aggregate replacements available
+        lambda = a_v_nratio * sqnbonus;
 
         if (lambda > 1)
             lambda = 1;
@@ -442,7 +472,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     if (rneeded > 0)
         rratio = (float)TeamInfo[who]->GetReplacementsAvail() / rneeded;
 
-    if ( not NoTypeBonusRepl) // A.S. added if-condiion 2001-12-09
+    if (not NoTypeBonusRepl) // A.S. added if-condiion 2001-12-09
     {
         if (rratio > 0.25F)
             rratio = 0.25F;
@@ -472,7 +502,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         if (rratio_v > MAX_SUPPLY_RATIO)
             rratio_v = MAX_SUPPLY_RATIO;
 
-        if (repl == 0)   // to handle situations like 0/0 
+        if (repl == 0) // to handle situations like 0/0
         {
             rratio_a = 0;
             rratio_v = 0;
@@ -490,10 +520,10 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
         while (unit)
         {
             // We only supply/repair Battalions and Squadrons
-            if (
-                unit->GetTeam() == who and (unit->IsBattalion() or unit->IsSquadron()) and 
-                TheCampaign.CurrentTime - unit->GetLastResupplyTime() > unit->GetUnitSupplyTime()
-            )
+            if (unit->GetTeam() == who and
+                (unit->IsBattalion() or unit->IsSquadron()) and
+                TheCampaign.CurrentTime - unit->GetLastResupplyTime() >
+                    unit->GetUnitSupplyTime())
             {
                 float typeBonus = 1.0F;
 
@@ -502,7 +532,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
                 if (unit->IsSquadron())
                 {
-                    ((SquadronClass*)unit)->ReinforcePilots(2);
+                    ((SquadronClass *)unit)->ReinforcePilots(2);
                     typeBonus = 2.0F;
                 }
 
@@ -512,8 +542,10 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                 if (typeBonus < 0.0F)
                     typeBonus = 0.0F;
 
-                supply = FloatToInt32(unit->GetUnitSupplyNeed(FALSE) * sratio * typeBonus);
-                fuel = FloatToInt32(unit->GetUnitFuelNeed(FALSE) * fratio * typeBonus);
+                supply = FloatToInt32(unit->GetUnitSupplyNeed(FALSE) * sratio *
+                                      typeBonus);
+                fuel = FloatToInt32(unit->GetUnitFuelNeed(FALSE) * fratio *
+                                    typeBonus);
 
                 // A.S.  2001-12-09. No Type Bonus for replacements. This helps fixing the bug that units can get more replacements than available.
                 if (NoTypeBonusRepl)
@@ -521,41 +553,69 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
                 // end added section
 
-                replacements = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * rratio * typeBonus);
+                replacements = FloatToInt32((unit->GetFullstrengthVehicles() -
+                                             unit->GetTotalVehicles()) *
+                                            rratio * typeBonus);
 
                 // A.S. begin, 2001-12-09
                 repl_s += replacements; // debug
 
-                if (NoTypeBonusRepl)  // New code for distinguishing between aircrafts and ground vehicles
+                if (NoTypeBonusRepl) // New code for distinguishing between aircrafts and ground vehicles
                 {
                     if (unit->IsSquadron()) // this algorithm guarantees that no team can get more repl than available
                     {
                         prob = rand() % 100;
-                        repl_a = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (lambda) * rratio_a);
+                        repl_a = FloatToInt32((unit->GetFullstrengthVehicles() -
+                                               unit->GetTotalVehicles()) *
+                                              (lambda)*rratio_a);
 
-                        if (TeamInfo[who]->GetReplacementsAvail() >= 1 and prob < 51 and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.8F))  // rounding up with probability 0.5
-                            repl_a = FloatToInt32((float) ceil((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (lambda) * rratio_a));
+                        if (TeamInfo[who]->GetReplacementsAvail() >= 1 and
+                            prob < 51 and
+                            (((float)unit->GetTotalVehicles()) /
+                                 unit->GetFullstrengthVehicles() <=
+                             0.8F)) // rounding up with probability 0.5
+                            repl_a = FloatToInt32(
+                                (float)ceil((unit->GetFullstrengthVehicles() -
+                                             unit->GetTotalVehicles()) *
+                                            (lambda)*rratio_a));
 
                         if (repl_a > 0)
                         {
-                            TeamInfo[who]->SetReplacementsAvail(TeamInfo[who]->GetReplacementsAvail() - repl_a);
-                            unit->ChangeVehicles(min(repl_a, TeamInfo[who]->GetReplacementsAvail()));
-                            repl_a_s += min(repl_a, TeamInfo[who]->GetReplacementsAvail()); // debug
+                            TeamInfo[who]->SetReplacementsAvail(
+                                TeamInfo[who]->GetReplacementsAvail() - repl_a);
+                            unit->ChangeVehicles(min(
+                                repl_a, TeamInfo[who]->GetReplacementsAvail()));
+                            repl_a_s += min(
+                                repl_a,
+                                TeamInfo[who]->GetReplacementsAvail()); // debug
                         }
                     }
                     else
                     {
                         prob = rand() % 100;
-                        repl_v = FloatToInt32((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (1 - lambda) * rratio_v);
+                        repl_v = FloatToInt32((unit->GetFullstrengthVehicles() -
+                                               unit->GetTotalVehicles()) *
+                                              (1 - lambda) * rratio_v);
 
-                        if (TeamInfo[who]->GetReplacementsAvail() > 12 and prob < 51 and (((float)unit->GetTotalVehicles()) / unit->GetFullstrengthVehicles() <= 0.85F))  // rounding up
-                            repl_v = FloatToInt32((float) ceil((unit->GetFullstrengthVehicles() - unit->GetTotalVehicles()) * (1 - lambda) * rratio_v));
+                        if (TeamInfo[who]->GetReplacementsAvail() > 12 and
+                            prob < 51 and
+                            (((float)unit->GetTotalVehicles()) /
+                                 unit->GetFullstrengthVehicles() <=
+                             0.85F)) // rounding up
+                            repl_v = FloatToInt32(
+                                (float)ceil((unit->GetFullstrengthVehicles() -
+                                             unit->GetTotalVehicles()) *
+                                            (1 - lambda) * rratio_v));
 
                         if (repl_v > 0)
                         {
-                            TeamInfo[who]->SetReplacementsAvail(TeamInfo[who]->GetReplacementsAvail() - repl_v);
-                            unit->ChangeVehicles(min(repl_v, TeamInfo[who]->GetReplacementsAvail()));
-                            repl_v_s += min(repl_v, TeamInfo[who]->GetReplacementsAvail()); // debug
+                            TeamInfo[who]->SetReplacementsAvail(
+                                TeamInfo[who]->GetReplacementsAvail() - repl_v);
+                            unit->ChangeVehicles(min(
+                                repl_v, TeamInfo[who]->GetReplacementsAvail()));
+                            repl_v_s += min(
+                                repl_v,
+                                TeamInfo[who]->GetReplacementsAvail()); // debug
                         }
                     }
 
@@ -565,12 +625,16 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                 {
                     if (replacements) // ++++++ old code begin ++++++
                     {
-                        TeamInfo[who]->SetReplacementsAvail(TeamInfo[who]->GetReplacementsAvail() - replacements);
+                        TeamInfo[who]->SetReplacementsAvail(
+                            TeamInfo[who]->GetReplacementsAvail() -
+                            replacements);
 
                         if (unit->IsSquadron())
                         {
                             repl_sa += replacements; // A.S. debug
-                            TeamInfo[who]->SetReplacementsAvail(TeamInfo[who]->GetReplacementsAvail() - replacements);
+                            TeamInfo[who]->SetReplacementsAvail(
+                                TeamInfo[who]->GetReplacementsAvail() -
+                                replacements);
                             unit->SetLastResupply(replacements);
                         }
 
@@ -589,8 +653,10 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
                         if (s)
                         {
-                            TeamInfo[who]->SetSupplyAvail(TeamInfo[who]->GetSupplyAvail() - supply);
-                            TeamInfo[who]->SetFuelAvail(TeamInfo[who]->GetFuelAvail() - fuel);
+                            TeamInfo[who]->SetSupplyAvail(
+                                TeamInfo[who]->GetSupplyAvail() - supply);
+                            TeamInfo[who]->SetFuelAvail(
+                                TeamInfo[who]->GetFuelAvail() - fuel);
                             gots = supply;
                             gotf = fuel;
 
@@ -611,7 +677,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     //if (NoTypeBonusRepl) {
     // if (who == 2 or who==6) {
     // FILE *deb;
-    // deb = fopen("c:\\temp\\deb1.txt", "a");
+    // deb = fopen("c:/temp/deb1.txt", "a");
     // fprintf(deb, "Team %2d  ReplaAvail = %3d  A_Needed = %3d  V_Needed %4d  Aircraft = %2d  Vehicle = %3d  TIME = %d\n", who, (int)repl, rneeded_a, rneeded_v, repl_a_s, repl_v_s, TheCampaign.CurrentTime );
     // fclose(deb);
     // }
@@ -619,7 +685,7 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
     //else {
     // if (who == 2 or who==6) { // A.S. debug
     // FILE *deb;
-    // deb = fopen("c:\\temp\\deb1.txt", "a");
+    // deb = fopen("c:/temp/deb1.txt", "a");
     // fprintf(deb, "Team %2d  ReplaAvail = %3d  Needed = %3d bitor Repl_a = %2d repl_v = %3d bitor TIME = %d\n", who, TeamInfo[who]->GetReplacementsAvail(), rneeded, repl_sa, (repl_s-repl_sa) , TheCampaign.CurrentTime % CampaignHours );
     // fclose(deb);
     // }
@@ -640,7 +706,9 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
 
                 if (supply > 5 or fuel > 5)
                 {
-                    o->SendObjMessage(o->Id(), FalconObjectiveMessage::objSetSupply, (short)(supply), (short)(fuel), 0);
+                    o->SendObjMessage(o->Id(),
+                                      FalconObjectiveMessage::objSetSupply,
+                                      (short)(supply), (short)(fuel), 0);
                     type = o->GetType();
 
                     if (type == TYPE_ROAD or type == TYPE_INTERSECT)
@@ -650,7 +718,8 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                         o->GetLocation(&mis.tx, &mis.ty);
                         mis.vs = o->GetTeam();
                         mis.who = GetEnemyTeam(mis.vs);
-                        mis.tot = Camp_GetCurrentTime() + (30 + rand() % 480) * CampaignMinutes;
+                        mis.tot = Camp_GetCurrentTime() +
+                                  (30 + rand() % 480) * CampaignMinutes;
                         mis.tot_type = TYPE_NE;
                         mis.targetID = FalconNullId;
                         mis.mission = AMIS_INT;
@@ -668,7 +737,8 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                         o->GetLocation(&mis.tx, &mis.ty);
                         mis.vs = o->GetTeam();
                         mis.who = GetEnemyTeam(mis.vs);
-                        mis.tot = Camp_GetCurrentTime() + (30 + rand() % 480) * CampaignMinutes;
+                        mis.tot = Camp_GetCurrentTime() +
+                                  (30 + rand() % 480) * CampaignMinutes;
                         mis.tot_type = TYPE_NE;
                         mis.targetID = o->Id();
                         mis.mission = AMIS_INTSTRIKE;
@@ -697,7 +767,8 @@ int SupplyUnits(Team who, CampaignTime deltaTime)
                             mis.ty = oy;
                             mis.vs = o->GetTeam();
                             mis.who = GetEnemyTeam(mis.vs);
-                            mis.tot = Camp_GetCurrentTime() + (30 + rand() % 480) * CampaignMinutes;
+                            mis.tot = Camp_GetCurrentTime() +
+                                      (30 + rand() % 480) * CampaignMinutes;
                             mis.tot_type = TYPE_NE;
                             mis.targetID = o->Id();
                             mis.mission = AMIS_INTSTRIKE;

@@ -1,20 +1,20 @@
 #include <string.h>
 #include "f4vu.h"
-#include "ClassTbl.h"
+#include "classtbl.h"
 #include "sim/include/simbase.h"
 #include "sim/include/aircrft.h"
 #include "campbase.h"
 #include "falcmesg.h"
-#include "FalcSess.h"
-#include "FalcEnt.h"
-#include "Find.h"
-#include "Campaign.h"
-#include "MsgInc/CampDirtyDataMsg.h"
-#include "MsgInc/SimDirtyDataMsg.h"
+#include "falcsess.h"
+#include "falcent.h"
+#include "find.h"
+#include "campaign.h"
+#include "msginc/campdirtydatamsg.h"
+#include "msginc/simdirtydatamsg.h"
 #include "package.h"
 #include "gndunit.h"
 #include "team.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 using namespace std;
 
@@ -27,7 +27,7 @@ FalconEntity::FalconEntity(ushort type, VU_ID_NUMBER eid) : VuEntity(type, eid)
     InitLocalData();
 }
 
-FalconEntity::FalconEntity(VU_BYTE** stream, long *rem) : VuEntity(stream, rem)
+FalconEntity::FalconEntity(VU_BYTE** stream, long* rem) : VuEntity(stream, rem)
 {
     InitLocalData();
     memcpychk(&falconType, stream, sizeof(falconType), rem);
@@ -112,7 +112,8 @@ int FalconEntity::SaveSize(void)
 
 uchar FalconEntity::GetDomain(void)
 {
-    return Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].vuClassData.classInfo_[VU_DOMAIN];
+    return Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE]
+        .vuClassData.classInfo_[VU_DOMAIN];
 }
 
 uchar* FalconEntity::GetDamageModifiers(void)
@@ -144,7 +145,7 @@ void FalconEntity::SetOwner(VU_ID sessionId)
 
 void FalconEntity::DoFullUpdate(void)
 {
-    VuEvent *event = new VuFullUpdateEvent(this, FalconLocalGame);
+    VuEvent* event = new VuFullUpdateEvent(this, FalconLocalGame);
     event->RequestReliableTransmit();
     VuMessageQueue::PostVuMessage(event);
 }
@@ -249,12 +250,8 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
     }
 
     // send only local units which are active (in DB) and if the unit is more dirty than currently is
-    if (
-        ( not IsLocal()) or
-        (VuState() not_eq VU_MEM_ACTIVE) or
-        (score <= dirty_score) or
- not (TheCampaign.Flags bitand CAMP_LOADED)
-    )
+    if ((not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE) or
+        (score <= dirty_score) or not(TheCampaign.Flags bitand CAMP_LOADED))
     {
         return;
     }
@@ -286,9 +283,9 @@ void FalconEntity::MakeDirty(Dirty_Class bits, Dirtyness score)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int FalconEntity::EncodeDirty(unsigned char **stream)
+int FalconEntity::EncodeDirty(unsigned char** stream)
 {
-    uchar *start;
+    uchar* start;
 
     start = *stream;
 
@@ -299,7 +296,7 @@ int FalconEntity::EncodeDirty(unsigned char **stream)
 
     if (dirty_classes bitand DIRTY_FALCON_ENTITY)
     {
-        *(uchar *)(*stream) = falconFlags;
+        *(uchar*)(*stream) = falconFlags;
         *stream += sizeof(uchar);
     }
 
@@ -366,7 +363,7 @@ int FalconEntity::EncodeDirty(unsigned char **stream)
 ///////////////////////////////////////////////////////////////////////////////
 //sfr: changed this function prototype, see falcent.h
 //changed body too
-void FalconEntity::DecodeDirty(unsigned char **stream, long *rem)
+void FalconEntity::DecodeDirty(unsigned char** stream, long* rem)
 {
 
     short bits;
@@ -441,7 +438,8 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 {
     static VU_TIME lastSent = 0;
 
-    if ( not (TheCampaign.Flags bitand CAMP_LOADED) or ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
+    if (not(TheCampaign.Flags bitand CAMP_LOADED) or
+        ((realTime - lastSent) < SIMDIRTYDATA_INTERVAL))
     {
         return;
     }
@@ -451,7 +449,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
     //a buffer for encoding decoding stuff, usually small, but theres a big one > 512
     unsigned char buffer[1024];
     //pointers to the buffer above
-    unsigned char *bufptr;
+    unsigned char* bufptr;
 
     // max number of sends to do on this run
     int toSend = 16;
@@ -463,11 +461,12 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
         bool sent = false;
         F4ScopeLock lock(campDirtyMutexes[bucket]);
 #if USE_VU_COLL_FOR_DIRTY
-        FalconEntity *current;
+        FalconEntity* current;
 
-        while ((current = static_cast<FalconEntity*>(campDirtyBuckets[bucket]->PopHead())) not_eq NULL)
+        while ((current = static_cast<FalconEntity*>(
+                    campDirtyBuckets[bucket]->PopHead())) not_eq NULL)
 #else
-        while ( not campDirtyBuckets[bucket]->empty())
+        while (not campDirtyBuckets[bucket]->empty())
 #endif
         {
             //bucket 7 and 8 are OOB(out of band), the others must respect bw
@@ -490,8 +489,9 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
             // encode and clear dirty to send message
             bufptr = buffer;
             long bufSize = static_cast<long>(current->EncodeDirty(&bufptr));
-            CampDirtyData *campDirtyMsg;
-            campDirtyMsg = new CampDirtyData(current->Id(), FalconLocalGame, FALSE);
+            CampDirtyData* campDirtyMsg;
+            campDirtyMsg =
+                new CampDirtyData(current->Id(), FalconLocalGame, FALSE);
             campDirtyMsg->dataBlock.size = static_cast<int>(bufSize);
             campDirtyMsg->dataBlock.data = new VU_BYTE[bufSize];
             memcpy(campDirtyMsg->dataBlock.data, buffer, bufSize);
@@ -516,7 +516,7 @@ void FalconEntity::DoCampaignDirtyData(VU_TIME realTime)
 void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 {
     // only do if initialized
-    if ( not (TheCampaign.Flags bitand CAMP_LOADED) or (simDirtyBuckets == NULL))
+    if (not(TheCampaign.Flags bitand CAMP_LOADED) or (simDirtyBuckets == NULL))
     {
         return;
     }
@@ -534,23 +534,24 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
     //a buffer for encoding decoding stuff (biggest I seen was around 32)
     unsigned char buffer[128];
     //pointer to the buffer above
-    unsigned char *bufptr;
+    unsigned char* bufptr;
 
     // max number of sends to do
     // but we send at least one on each bucket
     int toSend = 30;
 
     //now we go through all buckets while can send. Send at least one per bucket
-    for (int bucket = MAX_DIRTY_BUCKETS - 1; (bucket >= 0); bucket --)
+    for (int bucket = MAX_DIRTY_BUCKETS - 1; (bucket >= 0); bucket--)
     {
         bool sent = false;
         F4ScopeLock lock(simDirtyMutexes[bucket]);
 #if USE_VU_COLL_FOR_DIRTY
-        FalconEntity *current;
+        FalconEntity* current;
 
-        while ((current = static_cast<FalconEntity*>(simDirtyBuckets[bucket]->PopHead())) not_eq NULL)
+        while ((current = static_cast<FalconEntity*>(
+                    simDirtyBuckets[bucket]->PopHead())) not_eq NULL)
 #else
-        while ( not simDirtyBuckets[bucket]->empty())
+        while (not simDirtyBuckets[bucket]->empty())
 #endif
         {
             //bucket 7 and 8 are OOB (out of band), others must respect limit
@@ -576,8 +577,9 @@ void FalconEntity::DoSimDirtyData(VU_TIME realTime)
 
             // encode and clear dirtyness to send dirty message
             long bufSize = static_cast<long>(current->EncodeDirty(&bufptr));
-            SimDirtyData *simDirtyData;
-            simDirtyData = new SimDirtyData(current->Id(), FalconLocalGame, FALSE);
+            SimDirtyData* simDirtyData;
+            simDirtyData =
+                new SimDirtyData(current->Id(), FalconLocalGame, FALSE);
             simDirtyData->dataBlock.size = static_cast<int>(bufSize);
             simDirtyData->dataBlock.data = new VU_BYTE[bufSize];
             memcpy(simDirtyData->dataBlock.data, buffer, bufSize);
@@ -606,9 +608,10 @@ void FalconEntity::MakeFlagsDirty(void)
     MakeFalconEntityDirty(DIRTY_FALCON_FLAGS, SEND_RELIABLEANDOOB);
 }
 
-void FalconEntity::MakeFalconEntityDirty(Dirty_Falcon_Entity bits, Dirtyness score)
+void FalconEntity::MakeFalconEntityDirty(Dirty_Falcon_Entity bits,
+                                         Dirtyness score)
 {
-    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if ((not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
@@ -630,14 +633,15 @@ VU_ERRCODE FalconEntity::RemovalCallback()
 /////////////////
 // SPOT ENTITY //
 /////////////////
-SpotEntity::SpotEntity(ushort type) : FalconEntity(type, GetIdFromNamespace(VolatileNS))
+SpotEntity::SpotEntity(ushort type)
+    : FalconEntity(type, GetIdFromNamespace(VolatileNS))
 {
     // spotentities are sent oob
     SetSendCreate(VuEntity::VU_SC_SEND_OOB);
     SetYPRDelta(0, 0, 0);
 }
 
-SpotEntity::SpotEntity(VU_BYTE ** data, long *rem) : FalconEntity(data, rem)
+SpotEntity::SpotEntity(VU_BYTE** data, long* rem) : FalconEntity(data, rem)
 {
     SetYPRDelta(0, 0, 0);
 }

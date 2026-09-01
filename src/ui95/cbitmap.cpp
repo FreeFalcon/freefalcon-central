@@ -11,13 +11,8 @@ enum
     CBMP_SETPERCENT,
 };
 
-char *C_Bmp_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[STRETCHRECT]",
-    "[PERCENT]",
-    0,
+char *C_Bmp_Tokens[] = {
+    "[NOTHING]", "[SETUP]", "[STRETCHRECT]", "[PERCENT]", 0,
 };
 
 #endif
@@ -45,7 +40,7 @@ C_Bitmap::~C_Bitmap()
 
 long C_Bitmap::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Bitmap::Setup(long ID, short Type, long ImageID)
@@ -115,9 +110,9 @@ void C_Bitmap::SetFlags(long flags)
 BOOL C_Bitmap::TimerUpdate()
 {
     if (TimerCallback_)
-        return(TimerCallback_(this));
+        return (TimerCallback_(this));
 
-    return(FALSE);
+    return (FALSE);
 }
 void C_Bitmap::Refresh()
 {
@@ -145,30 +140,30 @@ short C_Bitmap::LocalFind(char *token)
     while (C_Bmp_Tokens[i])
     {
         if (strnicmp(token, C_Bmp_Tokens[i], strlen(C_Bmp_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Bitmap::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CBMP_SETUP:
-            Setup(P[0], (short)P[1], P[2]);
-            break;
+    case CBMP_SETUP:
+        Setup(P[0], (short)P[1], P[2]);
+        break;
 
-        case CBMP_SETPERCENT:
-            if (Image_)
-            {
-                Image_->SetFrontPerc((short)P[0]);
-                Image_->SetBackPerc((short)(100 - P[0]));
-            }
+    case CBMP_SETPERCENT:
+        if (Image_)
+        {
+            Image_->SetFrontPerc((short)P[0]);
+            Image_->SetBackPerc((short)(100 - P[0]));
+        }
 
-            break;
+        break;
     }
 }
 
@@ -176,4 +171,3 @@ extern char ParseSave[];
 extern char ParseCRLF[];
 
 #endif // PARSER
-

@@ -5,22 +5,24 @@
 
  - Begin Major Rewrite (Fat-free version)
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
-#include "StateStack.h"
-#include "ColorBank.h"
-#include "TexBank.h"
-#include "PolyLib.h"
+#include "statestack.h"
+#include "colorbank.h"
+#include "texbank.h"
+#include "polylib.h"
 #include "context.h"
-#include "TerrTex.h"
-#include "FalcLib/include/dispopts.h"
+#include "terrtex.h"
+#include "falclib/include/dispopts.h"
 
 extern int verts;
 
 
 static inline void SetSpecularFog()
 {
-    DWORD specular = (min(255, FloatToInt32(TheStateStack.fogValue * 255.f)) << 24) + 0xFFFFFF;
+    DWORD specular =
+        (min(255, FloatToInt32(TheStateStack.fogValue * 255.f)) << 24) +
+        0xFFFFFF;
     TheStateStack.context->UpdateSpecularFog(specular);
 }
 
@@ -56,18 +58,18 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
             ShiAssert(IIdx >= 0);
             I = TheStateStack.IntensityPool[IIdx];
 
-            color  = FloatToInt32(rgba->r * I * 255.9f);
+            color = FloatToInt32(rgba->r * I * 255.9f);
             color or_eq FloatToInt32(rgba->g * I * 255.9f) << 8;
             color or_eq FloatToInt32(rgba->b * I * 255.9f) << 16;
         }
         else
         {
-            color  = FloatToInt32(rgba->r * 255.9f);
+            color = FloatToInt32(rgba->r * 255.9f);
             color or_eq FloatToInt32(rgba->g * 255.9f) << 8;
             color or_eq FloatToInt32(rgba->b * 255.9f) << 16;
         }
 
-        if (ShadowBSPRendering)  // COBRA - RED - if rendering a shadow, alpha applied here
+        if (ShadowBSPRendering) // COBRA - RED - if rendering a shadow, alpha applied here
             color or_eq FloatToInt32(rgba->a * 255.9f * ShadowAlphaLevel) << 24;
         else
             color or_eq FloatToInt32(rgba->a * 255.9f) << 24;
@@ -76,7 +78,7 @@ static inline void SetForegroundColor(DWORD opFlag, int rgbaIdx, int IIdx)
     {
         ShiAssert(IIdx >= 0);
 
-        color  = FloatToInt32(TheStateStack.IntensityPool[IIdx] * 255.9f);
+        color = FloatToInt32(TheStateStack.IntensityPool[IIdx] * 255.9f);
         color or_eq color << 8;
         color or_eq color << 8;
     }
@@ -94,13 +96,16 @@ static inline void pvtDraw2DPrim(PpolyType type, int nVerts, int *xyzIdxPtr)
 static inline void pvtDraw2DLine(int *xyzIdxPtr)
 {
     TheStateStack.context->RestoreState(STATE_SOLID);
-    TheStateStack.context->Draw2DLine(&TheStateStack.XformedPosPool[xyzIdxPtr[0]], &TheStateStack.XformedPosPool[xyzIdxPtr[1]]);
+    TheStateStack.context->Draw2DLine(
+        &TheStateStack.XformedPosPool[xyzIdxPtr[0]],
+        &TheStateStack.XformedPosPool[xyzIdxPtr[1]]);
 }
 
 static inline void pvtDraw2DPoint(int *xyzIdxPtr)
 {
     TheStateStack.context->RestoreState(STATE_SOLID);
-    TheStateStack.context->Draw2DPoint(&TheStateStack.XformedPosPool[xyzIdxPtr[0]]);
+    TheStateStack.context->Draw2DPoint(
+        &TheStateStack.XformedPosPool[xyzIdxPtr[0]]);
 }
 
 void DrawPrimPoint(PrimPointFC *point)
@@ -209,7 +214,8 @@ void DrawPoly(PolyFC *poly)
     verts += poly->nVerts;
     SetForegroundColor(PRIM_COLOP_COLOR, poly->rgba, -1);
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL, NULL, NULL, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL,
+                                    NULL, NULL, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -219,16 +225,19 @@ void DrawPolyF(PolyFC *poly)
     SetSpecularFog();
     SetForegroundColor(PRIM_COLOP_COLOR, poly->rgba, -1);
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL, NULL, NULL, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL,
+                                    NULL, NULL, true);
     TheStateStack.context->SetPalID(0);
 }
 
 void DrawPolyL(PolyFCN *poly)
 {
     verts += poly->nVerts;
-    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba,
+                       poly->I);
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL, NULL, NULL, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL,
+                                    NULL, NULL, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -236,9 +245,11 @@ void DrawPolyFL(PolyFCN *poly)
 {
     verts += poly->nVerts;
     SetSpecularFog();
-    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba,
+                       poly->I);
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL, NULL, NULL, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_NONE, poly, poly->xyz, NULL,
+                                    NULL, NULL, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -246,7 +257,8 @@ void DrawPolyG(PolyVC *poly)
 {
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR, poly, poly->xyz, poly->rgba, NULL, NULL, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR, poly, poly->xyz,
+                                    poly->rgba, NULL, NULL, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -255,7 +267,8 @@ void DrawPolyFG(PolyVC *poly)
     verts += poly->nVerts;
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR, poly, poly->xyz, poly->rgba, NULL, NULL, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR, poly, poly->xyz,
+                                    poly->rgba, NULL, NULL, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -263,7 +276,9 @@ void DrawPolyGL(PolyVCN *poly)
 {
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly, poly->xyz, poly->rgba, poly->I, NULL, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY,
+                                    poly, poly->xyz, poly->rgba, poly->I, NULL,
+                                    false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -272,7 +287,9 @@ void DrawPolyFGL(PolyVCN *poly)
     verts += poly->nVerts;
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly, poly->xyz, poly->rgba, poly->I, NULL, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY,
+                                    poly, poly->xyz, poly->rgba, poly->I, NULL,
+                                    false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -281,7 +298,8 @@ void DrawPolyT(PolyTexFC *poly)
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -291,7 +309,8 @@ void DrawPolyFT(PolyTexFC *poly)
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -301,7 +320,8 @@ void DrawPolyGT(PolyTexFC *poly)
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -311,7 +331,8 @@ void DrawPolyAT(PolyTexFC *poly)
     SetForegroundColor(PRIM_COLOP_COLOR, poly->rgba, -1);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -322,7 +343,8 @@ void DrawPolyFAT(PolyTexFC *poly)
     SetForegroundColor(PRIM_COLOP_COLOR, poly->rgba, -1);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -332,7 +354,8 @@ void DrawPolyTL(PolyTexFCN *poly)
     SetForegroundColor(PRIM_COLOP_INTENSITY, -1, poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -343,17 +366,20 @@ void DrawPolyFTL(PolyTexFCN *poly)
     SetForegroundColor(PRIM_COLOP_INTENSITY, -1, poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, true);
     TheStateStack.context->SetPalID(0);
 }
 
 void DrawPolyATL(PolyTexFCN *poly)
 {
     verts += poly->nVerts;
-    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba,
+                       poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -361,10 +387,12 @@ void DrawPolyFATL(PolyTexFCN *poly)
 {
     verts += poly->nVerts;
     SetSpecularFog();
-    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba, poly->I);
+    SetForegroundColor(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY, poly->rgba,
+                       poly->I);
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, true);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, true);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -374,7 +402,8 @@ void DrawPolyTG(PolyTexVC *poly)
     SelectState(RenderStateTable[poly->type]);
     ShiAssert((poly->type == TexG) or (poly->type == CTexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -385,7 +414,8 @@ void DrawPolyFTG(PolyTexVC *poly)
     SelectState(RenderStateTable[poly->type]);
     ShiAssert((poly->type == TexG) or (poly->type == CTexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+                                    NULL, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -395,7 +425,9 @@ void DrawPolyATG(PolyTexVC *poly)
     SelectState(RenderStateTable[poly->type]);
     ShiAssert((poly->type == ATexG) or (poly->type == CATexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_TEXTURE,
+                                    poly, poly->xyz, poly->rgba, NULL, poly->uv,
+                                    false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -406,7 +438,9 @@ void DrawPolyFATG(PolyTexVC *poly)
     SelectState(RenderStateTable[poly->type]);
     ShiAssert((poly->type == ATexG) or (poly->type == CATexG));
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, NULL, poly->uv, false);
+    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_TEXTURE,
+                                    poly, poly->xyz, poly->rgba, NULL, poly->uv,
+                                    false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -415,7 +449,9 @@ void DrawPolyTGL(PolyTexVCN *poly)
     verts += poly->nVerts;
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(
+        PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+        poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -425,7 +461,9 @@ void DrawPolyFTGL(PolyTexVCN *poly)
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(
+        PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, NULL,
+        poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -435,7 +473,9 @@ void DrawPolyATGL(PolyTexVCN *poly)
 
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(
+        PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE,
+        poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }
 
@@ -445,6 +485,8 @@ void DrawPolyFATGL(PolyTexVCN *poly)
     SetSpecularFog();
     SelectState(RenderStateTable[poly->type]);
     TheTextureBank.Select(TheStateStack.CurrentTextureTable[poly->texIndex]);
-    TheStateStack.context->DrawPoly(PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE, poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
+    TheStateStack.context->DrawPoly(
+        PRIM_COLOP_COLOR bitor PRIM_COLOP_INTENSITY bitor PRIM_COLOP_TEXTURE,
+        poly, poly->xyz, poly->rgba, poly->I, poly->uv, false);
     TheStateStack.context->SetPalID(0);
 }

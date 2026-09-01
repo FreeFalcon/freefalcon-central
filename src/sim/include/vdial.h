@@ -45,24 +45,24 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
 public:
-
     float mRadius;
     long mColor;
     long mNVGColor;
     float mDialValue;
 
-    Canvas3D* mpCanvas;
-    RenderOTW* renderer;
+    Canvas3D *mpCanvas;
+    RenderOTW *renderer;
 
     int mCallback;
     CPCallback mExecCallback;
 
-    SimBaseClass* mpOwnship;
+    SimBaseClass *mpOwnship;
 
     //====================================================//
     // Dimensions and Locations
@@ -74,13 +74,13 @@ public:
     float *mpCosPoints;
     float *mpSinPoints;
 
-    void Exec(SimBaseClass*);
+    void Exec(SimBaseClass *);
 
     //====================================================//
     // Constructors and Destructors
     //====================================================//
 
-    VDial(VDialInitStr*);
+    VDial(VDialInitStr *);
     ~VDial(void);
 };
 

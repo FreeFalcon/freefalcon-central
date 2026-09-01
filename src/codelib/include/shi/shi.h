@@ -21,7 +21,8 @@
 #define _SHI__SHI_H_
 
 #if defined(_cplusplus)
-extern "C" {
+extern "C"
+{
 #endif
 
 
@@ -45,10 +46,10 @@ extern "C" {
 
     /* Temp hack to make Proton compile */
 
-#if defined (__ICL)
-#define CHIPSET_INCLUDE(CHIP,FILE)  <shi/chipsets/m_i586/ ## FILE ##>
+#if defined(__ICL)
+#define CHIPSET_INCLUDE(CHIP, FILE) <shi/chipsets/m_i586/ ## FILE ##>
 #else
-#define CHIPSET_INCLUDE(CHIP,FILE)  <shi/chipsets/ ## CHIP ##  / ## FILE ##>
+#define CHIPSET_INCLUDE(CHIP, FILE) <shi/chipsets/ ## CHIP ##  / ## FILE ##>
 #endif
 
     /****************************************************/
@@ -61,8 +62,7 @@ extern "C" {
     /*                                                  */
     /****************************************************/
 
-#define BUILDING_FOR_CHIP(CHIP)  (CHIPSET_ID == (SHI_CS_ ## THE_CHIP))
-
+#define BUILDING_FOR_CHIP(CHIP) (CHIPSET_ID == (SHI_CS_##THE_CHIP))
 
 
     /*  Load in the remainder of SHI header files.   */
@@ -80,4 +80,3 @@ extern "C" {
 
 
 #endif /* _SHI__SHI_H_ */
-

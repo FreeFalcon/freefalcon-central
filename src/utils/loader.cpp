@@ -9,7 +9,7 @@
 #include <io.h>
 #include <fcntl.h>
 #include <process.h>
-#include "Loader.h"
+#include "loader.h"
 
 #pragma warning(disable : 4127)
 #pragma warning(disable : 4706)
@@ -38,13 +38,13 @@ static int forceWakeEvent = 0;
 void Loader::Setup(void)
 {
     // Setup the starting state for the main loop
-    head       = NULL;
-    tail       = NULL;
-    shutDown       = FALSE;
-    stopped    = FALSE;
-    paused    = RUNNING;
-    queueIsEmpty    = TRUE;
-    queueStatus       = QUEUE_FIFO;
+    head = NULL;
+    tail = NULL;
+    shutDown = FALSE;
+    stopped = FALSE;
+    paused = RUNNING;
+    queueIsEmpty = TRUE;
+    queueStatus = QUEUE_FIFO;
 
 #ifdef LOADER_INSTRUMENT
     memset(&lastActive, 0, sizeof(lastActive));
@@ -70,7 +70,9 @@ void Loader::Setup(void)
 
 
     // Spawn the thread
-    threadHandle = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *)(void*))MainLoopWrapper, this, 0, (unsigned *) &threadID);
+    threadHandle = (HANDLE)_beginthreadex(
+        NULL, 0, (unsigned int(__stdcall *)(void *))MainLoopWrapper, this, 0,
+        (unsigned *)&threadID);
 
     if (!threadHandle)
     {
@@ -100,7 +102,8 @@ void Loader::Cleanup(void)
     CloseHandle(threadHandle);
 
     // Release any entries remaining in the request queue
-    while (GetNextRequest());
+    while (GetNextRequest())
+        ;
 
     // Release the sychronization objects we've been using
     CloseHandle(WakeEventHandle);
@@ -111,7 +114,7 @@ void Loader::Cleanup(void)
 // Dummy wrapper to get from C-Style Thread spawning back into C++ calling convention
 DWORD Loader::MainLoopWrapper(LPVOID myself)
 {
-    return (((Loader*)myself)->MainLoop());
+    return (((Loader *)myself)->MainLoop());
 }
 
 
@@ -159,7 +162,6 @@ DWORD Loader::MainLoop(void)
                     // NOTE:  The callback is responsible for deleting the queue entry!
                     ShiAssert((Active->callback != NULL));
                     Active->callback(Active);
-
                 }
                 else if (queueStatus == QUEUE_SORTING)
                 {
@@ -187,7 +189,6 @@ DWORD Loader::MainLoop(void)
             // Note that we're truely paused now
             paused = PAUSED;
         }
-
     }
 
 
@@ -248,8 +249,7 @@ void Loader::Enqueue(LoaderQ *New)
         // See if this is a duplicate
         if ((p->fileoffset == New->fileoffset) &&
             (p->filename == New->filename) &&
-            (p->parameter == New->parameter) &&
-            (p->callback == New->callback))
+            (p->parameter == New->parameter) && (p->callback == New->callback))
         {
 
             return;
@@ -319,7 +319,7 @@ void Loader::ReplaceHeadEntry(LoaderQ *New)
 }
 
 
-LoaderQ* Loader::GetNextRequest(void)
+LoaderQ *Loader::GetNextRequest(void)
 {
     LoaderQ *request;
 
@@ -343,7 +343,8 @@ LoaderQ* Loader::GetNextRequest(void)
 
 
 // Cancel (if possible) the request to load data into the specified target buffer
-BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *filename, DWORD fileoffset)
+BOOL Loader::CancelRequest(void (*callback)(LoaderQ *), void *parameter,
+                           char *filename, DWORD fileoffset)
 {
     LoaderQ *p;
 
@@ -355,10 +356,8 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
     {
 
         // See if this is the one we want to cancel
-        if ((p->filename == filename) &&
-            (p->fileoffset == fileoffset) &&
-            (p->parameter == parameter) &&
-            (p->callback == callback))
+        if ((p->filename == filename) && (p->fileoffset == fileoffset) &&
+            (p->parameter == parameter) && (p->callback == callback))
         {
 
             Dequeue(p);
@@ -435,4 +434,3 @@ void Loader::SetQueueStatusStoring(void)
 void Loader::SetQueueStatusSorting(void)
 {
 }
-

@@ -4,10 +4,10 @@
 
 #if VU_ALL_FILTERED
 
-VuGridTree::VuGridTree(VuBiKeyFilter* filter, unsigned int res) :
-    VuCollection(filter), res_(res), suspendUpdates_(FALSE), nextgrid_(0)
+VuGridTree::VuGridTree(VuBiKeyFilter *filter, unsigned int res)
+    : VuCollection(filter), res_(res), suspendUpdates_(FALSE), nextgrid_(0)
 {
-    table_        = new VuRedBlackTree*[res_];
+    table_ = new VuRedBlackTree *[res_];
 
     for (unsigned int i = 0; i < res_; ++i)
     {
@@ -20,11 +20,11 @@ VuGridTree::VuGridTree(VuBiKeyFilter* filter, unsigned int res) :
 VuGridTree::~VuGridTree()
 {
     Purge();
-    delete [] table_;
+    delete[] table_;
     vuCollectionManager->GridDeRegister(this);
 }
 
-VU_ERRCODE VuGridTree::PrivateInsert(VuEntity* entity)
+VU_ERRCODE VuGridTree::PrivateInsert(VuEntity *entity)
 {
     VuBiKeyFilter *bkf = GetBiKeyFilter();
     VuRedBlackTree *row = table_[bkf->Key1(entity)];
@@ -34,15 +34,15 @@ VU_ERRCODE VuGridTree::PrivateInsert(VuEntity* entity)
 VU_ERRCODE VuGridTree::PrivateRemove(VuEntity *entity)
 {
     VuBiKeyFilter *bkf = GetBiKeyFilter();
-    VuRedBlackTree* row = table_[bkf->Key1(entity)];
+    VuRedBlackTree *row = table_[bkf->Key1(entity)];
     VU_ERRCODE res = row->Remove(entity);
     return res;
 }
 
-bool VuGridTree::PrivateFind(VuEntity* entity) const
+bool VuGridTree::PrivateFind(VuEntity *entity) const
 {
     VuBiKeyFilter *bkf = GetBiKeyFilter();
-    const VuRedBlackTree* row = table_[bkf->Key1(entity)];
+    const VuRedBlackTree *row = table_[bkf->Key1(entity)];
     return row->Find(entity);
 }
 
@@ -51,7 +51,8 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
     VuScopeLock l(GetMutex());
     VuBiKeyFilter *bkf = GetBiKeyFilter();
 
-    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and bkf->RemoveTest(ent))
+    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and
+        bkf->RemoveTest(ent))
     {
         VuEntityBin safe(ent);
         VU_KEY ck1 = bkf->Key1(ent);
@@ -74,25 +75,24 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
 
 VuBiKeyFilter *VuGridTree::GetBiKeyFilter() const
 {
-    return static_cast<VuBiKeyFilter*>(GetFilter());
+    return static_cast<VuBiKeyFilter *>(GetFilter());
 }
 
 #else
 
-VuGridTree::VuGridTree(
-    VuBiKeyFilter* filter, unsigned int numrows, BIG_SCALAR center, BIG_SCALAR radius
-) :
-    VuCollection(), rowcount_(numrows), suspendUpdates_(FALSE), nextgrid_(0)
+VuGridTree::VuGridTree(VuBiKeyFilter *filter, unsigned int numrows,
+                       BIG_SCALAR center, BIG_SCALAR radius)
+    : VuCollection(), rowcount_(numrows), suspendUpdates_(FALSE), nextgrid_(0)
 {
-    filter_       = static_cast<VuBiKeyFilter*>(filter->Copy());
+    filter_ = static_cast<VuBiKeyFilter *>(filter->Copy());
     ulong icenter = filter->CoordToKey1(center);
     ulong iradius = filter->Distance1(radius);
-    bottom_       = icenter - iradius;
-    top_          = icenter + iradius;
-    rowheight_    = 1.0f;//(top_ - bottom_)/rowcount_;
+    bottom_ = icenter - iradius;
+    top_ = icenter + iradius;
+    rowheight_ = 1.0f;//(top_ - bottom_)/rowcount_;
     invrowheight_ = 1.0f;//1.0f/(float)((top_ - bottom_)/rowcount_);
 
-    table_        = new VuRedBlackTree*[numrows];
+    table_ = new VuRedBlackTree *[numrows];
 
     for (unsigned int i = 0; i < numrows; ++i)
     {
@@ -105,7 +105,7 @@ VuGridTree::VuGridTree(
 VuGridTree::~VuGridTree()
 {
     Purge();
-    delete [] table_;
+    delete[] table_;
     delete filter_;
     filter_ = 0;
     vuCollectionManager->GridDeRegister(this);
@@ -134,7 +134,7 @@ unsigned int VuGridTree::Row(VU_KEY key1) const
     return index;
 }
 
-VU_ERRCODE VuGridTree::ForcedInsert(VuEntity* entity)
+VU_ERRCODE VuGridTree::ForcedInsert(VuEntity *entity)
 {
     if (entity == NULL)
     {
@@ -143,7 +143,8 @@ VU_ERRCODE VuGridTree::ForcedInsert(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if ( not filter_->RemoveTest(entity)) return VU_NO_OP;
+    if (not filter_->RemoveTest(entity))
+        return VU_NO_OP;
 
     VuRedBlackTree *row = table_[Row(filter_->Key1(entity))];
     return row->ForcedInsert(entity);
@@ -158,7 +159,8 @@ VU_ERRCODE VuGridTree::Insert(VuEntity *entity)
 
     VuScopeLock l(GetMutex());
 
-    if ( not filter_->Test(entity)) return VU_NO_OP;
+    if (not filter_->Test(entity))
+        return VU_NO_OP;
 
     VuRedBlackTree *row = table_[Row(filter_->Key1(entity))];
     return row->Insert(entity);
@@ -170,7 +172,7 @@ VU_ERRCODE VuGridTree::Remove(VuEntity *entity)
 
     if (filter_->RemoveTest(entity))
     {
-        VuRedBlackTree* row = table_[Row(filter_->Key1(entity))];
+        VuRedBlackTree *row = table_[Row(filter_->Key1(entity))];
         VU_ERRCODE res = row->Remove(entity);
         return res;
     }
@@ -193,19 +195,19 @@ VU_ERRCODE VuGridTree::Remove(VU_ID entityId)
 
 VuEntity *VuGridTree::Find(VU_ID entityId) const
 {
-    VuEntity* ent = vuDatabase->Find(entityId);
+    VuEntity *ent = vuDatabase->Find(entityId);
     return Find(ent);
 }
 
-VuEntity *VuGridTree::Find(VuEntity* ent) const
+VuEntity *VuGridTree::Find(VuEntity *ent) const
 {
-    if ( not ent)
+    if (not ent)
     {
         return NULL;
     }
 
     VuScopeLock l(GetMutex());
-    const VuRedBlackTree* row = table_[Row(filter_->Key1(ent))];
+    const VuRedBlackTree *row = table_[Row(filter_->Key1(ent))];
     return row->Find(ent);
 }
 
@@ -213,7 +215,8 @@ VU_ERRCODE VuGridTree::Move(VuEntity *ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
 {
     VuScopeLock l(GetMutex());
 
-    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and filter_->RemoveTest(ent))
+    if ((ent not_eq NULL) and (ent->VuState() == VU_MEM_ACTIVE) and
+        filter_->RemoveTest(ent))
     {
         VuEntityBin safe(ent);
         VU_KEY ck1 = filter_->Key1(ent);

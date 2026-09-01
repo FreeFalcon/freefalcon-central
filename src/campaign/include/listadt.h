@@ -24,6 +24,7 @@ class ListClass;
 class ListElementClass
 {
     friend class ListClass;
+
 private:
     void *user_data;
     short key;
@@ -32,11 +33,12 @@ private:
     ListElementClass *next;
 
 private:
-    ListElementClass(short newKey = 0, void *newData = NULL, uchar newFlags = 0);
+    ListElementClass(short newKey = 0, void *newData = NULL,
+                     uchar newFlags = 0);
     ~ListElementClass(void);
 
 public:
-    void* GetUserData(void)
+    void *GetUserData(void)
     {
         return user_data;
     }
@@ -51,11 +53,11 @@ public:
         key = newKey;
     }
 
-    ListElementClass* GetNext(void)
+    ListElementClass *GetNext(void)
     {
         return next;
     }
-    ListElementClass* GetPrev(void)
+    ListElementClass *GetPrev(void)
     {
         return prev;
     }
@@ -69,7 +71,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -82,7 +85,7 @@ public:
     static MEM_POOL pool;
 #endif
 };
-typedef ListElementClass* ListNode;
+typedef ListElementClass *ListNode;
 
 class ListClass
 {
@@ -107,11 +110,11 @@ public:
 
     int SanityCheck(void);
 
-    ListElementClass* GetFirstElement(void)
+    ListElementClass *GetFirstElement(void)
     {
         return front;
     }
-    ListElementClass* GetLastElement(void)
+    ListElementClass *GetLastElement(void)
     {
         return end;
     }
@@ -125,7 +128,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -138,6 +142,6 @@ public:
     static MEM_POOL pool;
 #endif
 };
-typedef ListClass* List;
+typedef ListClass *List;
 
 #endif

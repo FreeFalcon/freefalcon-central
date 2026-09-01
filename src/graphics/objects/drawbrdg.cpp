@@ -6,11 +6,11 @@
  bridges (platforms upon which ground vehicles can drive).
 ***************************************************************************/
 
-#include "RViewPnt.h"
-#include "RenderOW.h"
-#include "DrawGrnd.h"
-#include "DrawBrdg.h"
-#include "FalcLib/include/IsBad.h"	// #41 F4IsBadReadPtr to guard a dangling neighbor
+#include "rviewpnt.h"
+#include "renderow.h"
+#include "drawgrnd.h"
+#include "drawbrdg.h"
+#include "falclib/include/isbad.h" // #41 F4IsBadReadPtr to guard a dangling neighbor
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawableBridge::pool;
@@ -20,8 +20,7 @@ MEM_POOL DrawableBridge::pool;
 /***************************************************************************
     Initialize a container for a BSP object to be drawn
 ***************************************************************************/
-DrawableBridge::DrawableBridge(float s)
-    : DrawableObject(s)
+DrawableBridge::DrawableBridge(float s) : DrawableObject(s)
 {
     drawClassID = Bridge;
 
@@ -33,7 +32,7 @@ DrawableBridge::DrawableBridge(float s)
     radius = 0.0f;
     InclusionRadiusSquared = 0.0f;
     maxX = maxY = -1e24f;
-    minX = minY =  1e24f;
+    minX = minY = 1e24f;
 
     // Fill in our callback request structures for when we get added to a parent list
     updateCBstruct.fn = UpdateMetrics;
@@ -49,7 +48,6 @@ DrawableBridge::DrawableBridge(float s)
     roadbedObjects.Setup();
     dynamicObjects.Setup();
 }
-
 
 
 /***************************************************************************
@@ -81,7 +79,6 @@ DrawableBridge::~DrawableBridge(void)
 }
 
 
-
 /***************************************************************************
     Add a segment (both under and over parts) to the bridge.
 ***************************************************************************/
@@ -103,7 +100,7 @@ void DrawableBridge::AddSegment(DrawableRoadbed *piece)
     position.y = (maxY + minY) * 0.5f;
 
     InclusionRadiusSquared = (maxX - position.x) * (maxX - position.x) +
-                                (maxY - position.y) * (maxY - position.y);
+                             (maxY - position.y) * (maxY - position.y);
     radius = (float)sqrt(InclusionRadiusSquared);
 
 
@@ -112,19 +109,19 @@ void DrawableBridge::AddSegment(DrawableRoadbed *piece)
 }
 
 
-
 /***************************************************************************
     Replace a piece of a bridge (used for damage, etc.)
  Note that this will, in fact, replace ANY drawable object in ANY list.
 ***************************************************************************/
-void DrawableBridge::ReplacePiece(DrawableRoadbed *oldPiece, DrawableRoadbed *newPiece)
+void DrawableBridge::ReplacePiece(DrawableRoadbed *oldPiece,
+                                  DrawableRoadbed *newPiece)
 {
     ShiAssert(oldPiece);
     ShiAssert(oldPiece->InDisplayList());
 
     if (newPiece)
     {
-        ShiAssert( not newPiece->InDisplayList());
+        ShiAssert(not newPiece->InDisplayList());
         oldPiece->parentList->InsertObject(newPiece);
     }
 
@@ -132,7 +129,6 @@ void DrawableBridge::ReplacePiece(DrawableRoadbed *oldPiece, DrawableRoadbed *ne
 }
 
 
-
 /***************************************************************************\
     Return the altitude of (and optionally, the normal to) the surface of
  the bridge at the provided location.
@@ -148,7 +144,7 @@ float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
     // Find the right segment to govern this point
     // (Note:  The cast below is safe because only roadbeds get added to this list)
     roadbedObjects.ResetTraversal();
-    roadbed = (DrawableRoadbed*)roadbedObjects.GetNextAndAdvance();
+    roadbed = (DrawableRoadbed *)roadbedObjects.GetNextAndAdvance();
 
     while (roadbed)
     {
@@ -159,7 +155,7 @@ float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
             return pos.z;
         }
 
-        roadbed = (DrawableRoadbed*)roadbedObjects.GetNextAndAdvance();
+        roadbed = (DrawableRoadbed *)roadbedObjects.GetNextAndAdvance();
     }
 
     // We didn't find a containing segment
@@ -167,8 +163,8 @@ float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
     // So, we use the position of the container object (presumably ground level)
     if (normal)
     {
-        normal->x =  0.0f;
-        normal->y =  0.0f;
+        normal->x = 0.0f;
+        normal->y = 0.0f;
         normal->z = -1.0f;
     }
 
@@ -176,7 +172,6 @@ float DrawableBridge::GetGroundLevel(float x, float y, Tpoint *normal)
 }
 
 
-
 /***************************************************************************\
     Make sure the object is placed on the ground then draw it.
 \***************************************************************************/
@@ -189,7 +184,8 @@ void DrawableBridge::Draw(class RenderOTW *renderer, int LOD)
     {
 
         // Update our position to reflect the terrain beneath us
-        position.z = renderer->viewpoint->GetGroundLevel(position.x, position.y);
+        position.z =
+            renderer->viewpoint->GetGroundLevel(position.x, position.y);
         previousLOD = LOD;
 
         // Stick all our children at the same height
@@ -199,7 +195,7 @@ void DrawableBridge::Draw(class RenderOTW *renderer, int LOD)
         while (obj)
         {
             ShiAssert(obj->GetClass() == Roadbed);
-            ((DrawableRoadbed*)obj)->ForceZ(position.z);
+            ((DrawableRoadbed *)obj)->ForceZ(position.z);
             obj = roadbedObjects.GetNextAndAdvance();
         }
     }
@@ -231,13 +227,12 @@ void DrawableBridge::Draw(class RenderOTW *renderer, int LOD)
     while (obj)
     {
         ShiAssert(obj->GetClass() == Roadbed);
-        ((DrawableRoadbed*)obj)->DrawSuperstructure(renderer, LOD);
+        ((DrawableRoadbed *)obj)->DrawSuperstructure(renderer, LOD);
         obj = roadbedObjects.GetNextAndAdvance();
     }
 }
 
 
-
 /***************************************************************************\
     Draw the children of this object (no ground leveling is done).
 \***************************************************************************/
@@ -272,7 +267,7 @@ void DrawableBridge::Draw(class Render3D *renderer)
     while (obj)
     {
         ShiAssert(obj->GetClass() == Roadbed);
-        ((DrawableRoadbed*)obj)->DrawSuperstructure(renderer);
+        ((DrawableRoadbed *)obj)->DrawSuperstructure(renderer);
         obj = roadbedObjects.GetNextAndAdvance();
     }
 }
@@ -281,16 +276,19 @@ void DrawableBridge::Draw(class Render3D *renderer)
 /***************************************************************************
     Handle the UpdateMetrics callback from the parent ObjectDisplayList
 ***************************************************************************/
-void DrawableBridge::UpdateMetrics(void *self, long listNo, const Tpoint *pos, TransportStr *transList)
+void DrawableBridge::UpdateMetrics(void *self, long listNo, const Tpoint *pos,
+                                   TransportStr *transList)
 {
-    ((DrawableBridge*)self)->UpdateMetrics(listNo, pos, transList);
+    ((DrawableBridge *)self)->UpdateMetrics(listNo, pos, transList);
 }
-void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList)
+void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos,
+                                   TransportStr *transList)
 {
     DrawableObject *obj;
     DrawableObject *objNext;
     float checkDistance;
-    long _g;	// #41 guard against a looped list (hang in DrawableBridge::UpdateMetrics)
+    long
+        _g; // #41 guard against a looped list (hang in DrawableBridge::UpdateMetrics)
 
 
     // Have the object lists update their sort metrics.
@@ -308,9 +306,10 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     _g = 0;
     while (obj)
     {
-        if (++_g > 100000) break;	// #41 guard: looped dynamicObjects -> break instead of hanging
+        if (++_g > 100000)
+            break; // #41 guard: looped dynamicObjects -> break instead of hanging
         // Push the object back up to our parent list if it has moved beyond our area
-        if ( not ObjectInside(obj))
+        if (not ObjectInside(obj))
         {
             ShiAssert(obj->GetClass() == GroundVehicle);
             dynamicObjects.RemoveObject(obj);
@@ -328,16 +327,18 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     _g = 0;
     while (obj)
     {
-        if (++_g > 100000) break;	// #41 guard: looped parent list (prev) -> break
+        if (++_g > 100000)
+            break; // #41 guard: looped parent list (prev) -> break
         // #41 UAF ROOT: the neighbor may have been freed CONCURRENTLY (campaign thread) via a path not
         // taking ObjListLock (TOCTOU, see objlist.cpp SafeCallUpdateCB). The freed one is filled
         // with 0xDD: memory is committed (F4IsBadReadPtr passes), BUT parentList != our list. The same
         // robust check as in RemoveObject (objlist.cpp:140). A dead neighbor -> the whole chain
         // (objNext = obj->prev) is garbage -> abort the traversal (previously it crashed reading obj->distance,
         // swallowed by __except -> first-chance every frame = HANG under a debugger).
-        if (F4IsBadReadPtr(obj, sizeof(DrawableObject)) or obj->parentList not_eq parentList)
+        if (F4IsBadReadPtr(obj, sizeof(DrawableObject)) or
+            obj->parentList not_eq parentList)
             break;
-        if ( not (obj->distance < checkDistance))
+        if (not(obj->distance < checkDistance))
             break;
         // Pull object down from our parent list if it's inside our area
         objNext = obj->prev;
@@ -346,7 +347,7 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
         {
             parentList->RemoveObject(obj);
             dynamicObjects.InsertObject(obj);
-            ((DrawableGroundVehicle*)obj)->SetUpon(this);
+            ((DrawableGroundVehicle *)obj)->SetUpon(this);
         }
 
         obj = objNext;
@@ -360,11 +361,13 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
     _g = 0;
     while (obj)
     {
-        if (++_g > 100000) break;	// #41 guard: looped parent list (next) -> break
+        if (++_g > 100000)
+            break; // #41 guard: looped parent list (next) -> break
         // #41 UAF: the same dangling-neighbor guard as for the prev traversal above.
-        if (F4IsBadReadPtr(obj, sizeof(DrawableObject)) or obj->parentList not_eq parentList)
+        if (F4IsBadReadPtr(obj, sizeof(DrawableObject)) or
+            obj->parentList not_eq parentList)
             break;
-        if ( not (obj->distance > checkDistance))
+        if (not(obj->distance > checkDistance))
             break;
         // Pull object down from our parent list if it's inside our area
         objNext = obj->next;
@@ -373,7 +376,7 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
         {
             parentList->RemoveObject(obj);
             dynamicObjects.InsertObject(obj);
-            ((DrawableGroundVehicle*)obj)->SetUpon(this);
+            ((DrawableGroundVehicle *)obj)->SetUpon(this);
         }
 
         obj = objNext;
@@ -381,13 +384,12 @@ void DrawableBridge::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr 
 }
 
 
-
 /***************************************************************************\
     Handle the SortForViewpoint callback from the parent ObjectDisplayList
 \***************************************************************************/
 void DrawableBridge::SortForViewpoint(void *self)
 {
-    ((DrawableBridge*)self)->SortForViewpoint();
+    ((DrawableBridge *)self)->SortForViewpoint();
 }
 void DrawableBridge::SortForViewpoint(void)
 {
@@ -399,7 +401,6 @@ void DrawableBridge::SortForViewpoint(void)
 }
 
 
-
 /***************************************************************************\
     See if an object is within our area, and if so, grab it from it's
  parent.
@@ -414,11 +415,11 @@ BOOL DrawableBridge::ObjectInside(DrawableObject *obj)
     obj->GetPosition(&objPos);
 
     // return our conclusion
-    return ((objPos.x >= minX) and (objPos.x <= maxX) and (objPos.y >= minY) and (objPos.y <= maxY));
+    return ((objPos.x >= minX) and (objPos.x <= maxX) and (objPos.y >= minY) and
+            (objPos.y <= maxY));
 }
 
 
-
 /***************************************************************************\
     Add ourselves to our parent list and request callbacks
 \***************************************************************************/

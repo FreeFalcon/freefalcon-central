@@ -1,15 +1,15 @@
 #include "stdhdr.h"
 #include "hud.h"
 #include "fcc.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "aircrft.h"
 #include "simmover.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "sms.h"// status ok.
 #include "laserpod.h" //MI
 #include "simdrive.h" //MI
 
-#include "simWeapn.h" //Wombat778 3-09-04
+#include "simweapn.h" //Wombat778 3-09-04
 #include "classtbl.h" //Wombat778 3-09-04
 
 #include "harmpod.h" // RV - I-Hawk
@@ -21,7 +21,8 @@ static const float PIPPER_SIZE = 0.05f;
 static const float OUTER_RETICLE_SIZE = 0.18F;
 static const float INNER_RETICLE_SIZE = 0.1F;
 static const float TICK_LEN = 0.04F;
-static const float RET_MIN = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+static const float RET_MIN = hudWinY[BORESIGHT_CROSS_WINDOW] +
+                             hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
 static const float RET_MAX = -0.55F;
 static const float MAX_STEPS = 12; //how many steps that we can move the reticle
 
@@ -49,34 +50,34 @@ void HudClass::DrawAirGroundGravity(void)
 {
     switch (FCC->GetSubMode())
     {
-        case FireControlComputer::CCIP:
-            DrawCCIP();
-            break;
+    case FireControlComputer::CCIP:
+        DrawCCIP();
+        break;
 
-            // MLR 6/5/2004 - Shouldn't get in here...
-        case FireControlComputer::OBSOLETERCKT: // MLR 4/3/2004 -
-            DrawRCKT();
-            break;
+        // MLR 6/5/2004 - Shouldn't get in here...
+    case FireControlComputer::OBSOLETERCKT: // MLR 4/3/2004 -
+        DrawRCKT();
+        break;
 
-        case FireControlComputer::CCRP:
-            DrawCCRP();
-            break;
+    case FireControlComputer::CCRP:
+        DrawCCRP();
+        break;
 
-        case FireControlComputer::DTOSS:
-            DrawDTOSS();
-            break;
+    case FireControlComputer::DTOSS:
+        DrawDTOSS();
+        break;
 
-        case FireControlComputer::LADD:
-            DrawLADD();
-            break;
+    case FireControlComputer::LADD:
+        DrawLADD();
+        break;
 
-        case FireControlComputer::STRAF:
-            DrawStrafe();
-            break;
+    case FireControlComputer::STRAF:
+        DrawStrafe();
+        break;
 
-        case FireControlComputer::MAN:
-            DrawMANReticle();
-            break;
+    case FireControlComputer::MAN:
+        DrawMANReticle();
+        break;
     }
 }
 
@@ -87,12 +88,14 @@ void HudClass::DrawCCIP(void)
     float pipperAz, pipperEl;
     float x, y;
     float len, droll;
-    float puacY;//me123 status ok. insert.
+    float puacY; //me123 status ok. insert.
     mlTrig azTrig, elTrig, drollTrig;
     //me123 tofextra is the extra tof for the last bomb(this is the bomb the puac symbolice) becourse it has to wait for the preciding bombs to drop
     //float  TofExtra = ( (FCC->Sms->RippleInterval())* ((FCC->Sms->RippleCount()+1))/ // MLR 4/3/2004 -
-    float  TofExtra = ((FCC->Sms->GetAGBRippleInterval()) * ((FCC->Sms->GetAGBRippleCount() + 1)) /
-                       ((float) sqrt(ownship->XDelta() * ownship->XDelta() + ownship->YDelta() * ownship->YDelta())));
+    float TofExtra = ((FCC->Sms->GetAGBRippleInterval()) *
+                      ((FCC->Sms->GetAGBRippleCount() + 1)) /
+                      ((float)sqrt(ownship->XDelta() * ownship->XDelta() +
+                                   ownship->YDelta() * ownship->YDelta())));
 
     //if (FCC->Sms->Pair() == TRUE) // MLR 4/3/2004 -
     if (FCC->Sms->GetAGBPair() == TRUE)
@@ -104,11 +107,12 @@ void HudClass::DrawCCIP(void)
     // NOTE:  In reality there would never be a locked target since the radar would be in AGR, but
     // if we allow a radar lock, we might as well allow a TD box...
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         DrawTDBox();
 
     // Compute and set the viewport offset to get 0,0 at the boresight cross
-    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
+              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
     display->AdjustOriginInViewport(0.0F, vOffset);
 
 
@@ -116,7 +120,8 @@ void HudClass::DrawCCIP(void)
     if (FCC->airGroundDelayTime > 0.0F)
     {
         // Draw the impact point marker
-        DrawDesignateMarker(Circle, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
+        DrawDesignateMarker(Circle, FCC->groundDesignateAz,
+                            FCC->groundDesignateEl, FCC->groundDesignateDroll);
 
         // Clear the viewport offset
         display->AdjustOriginInViewport(0.0F, -vOffset);
@@ -156,11 +161,14 @@ void HudClass::DrawCCIP(void)
 
 
     // See if the computed impact point is visible on the HUD
-    if ( not FCC->groundPipperOnHud)
+    if (not FCC->groundPipperOnHud)
     {
         // Draw the Delay Cue Tick half way along the fall line
         // me123 status ok. x and y definitions are inset in the formula below instead so the original x/y's can be used below
-        display->Line(((x + betaHudUnits)  / 2.0f - PIPPER_SIZE), (y - alphaHudUnits) / 2.0f, ((x + betaHudUnits)  / 2.0f) + PIPPER_SIZE, (y - alphaHudUnits) / 2.0f);
+        display->Line(((x + betaHudUnits) / 2.0f - PIPPER_SIZE),
+                      (y - alphaHudUnits) / 2.0f,
+                      ((x + betaHudUnits) / 2.0f) + PIPPER_SIZE,
+                      (y - alphaHudUnits) / 2.0f);
     }
 
     ///me123 status ok. insert PUAC in ccip
@@ -173,18 +181,21 @@ void HudClass::DrawCCIP(void)
     {
         if ((FCC->groundImpactTime - TofExtra) > (FCC->Sms->armingdelay / 100))
         {
-            puacY = ((FCC->groundImpactTime - TofExtra) / (FCC->Sms->armingdelay / 100)); // 1 at minimum release alt
+            puacY = ((FCC->groundImpactTime - TofExtra) /
+                     (FCC->Sms->armingdelay / 100)); // 1 at minimum release alt
 
 
             // draw the puac on the bomb fall line
             //MI vids show it stays below the FPM
-            if ( not g_bRealisticAvionics)
-                x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
+            if (not g_bRealisticAvionics)
+                x = ((puacY - 1) * drollTrig.sin + betaHudUnits);
             else
                 x = betaHudUnits;
 
             //draw the puac
-            puacY = - alphaHudUnits - ((puacY / 3) - (0.33F)) ; //this is fpm pos when at minimum release alt.
+            puacY = -alphaHudUnits -
+                    ((puacY / 3) -
+                     (0.33F)); //this is fpm pos when at minimum release alt.
 
             display->Line(x - 0.075F, puacY, x + 0.075F, puacY);
             display->Line(x - 0.075F, puacY, x - 0.075F, puacY + 0.025F);
@@ -196,18 +207,18 @@ void HudClass::DrawCCIP(void)
         else
         {
             // now we use the PUAC to "count down" to ground impact
-            puacY =  FCC->groundImpactTime / 4;
+            puacY = FCC->groundImpactTime / 4;
 
             // draw the puac on the bomb fall line
             //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
             //MI vids show it stays below the FPM
-            if ( not g_bRealisticAvionics)
-                x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
+            if (not g_bRealisticAvionics)
+                x = ((puacY - 1) * drollTrig.sin + betaHudUnits);
             else
                 x = betaHudUnits;
 
             // draw the Puac
-            puacY =  - alphaHudUnits - puacY  ; // fpm pos at ground impact
+            puacY = -alphaHudUnits - puacY; // fpm pos at ground impact
             display->Line(x - 0.075F, puacY, x + 0.075F, puacY);
             display->Line(x - 0.075F, puacY, x - 0.075F, puacY + 0.025F);
             display->Line(x + 0.075F, puacY, x + 0.075F, puacY + 0.025F);
@@ -244,15 +255,15 @@ void HudClass::DrawRCKT(void)
     char tmpStr[32];
 
     // Cobra test
-    static FILE *fp = NULL;
+    static FILE* fp = NULL;
     //if (fp == NULL)
-    //fp = fopen("G:\\RocketTest.txt", "w");
+    //fp = fopen("G:/RocketTest.txt", "w");
 
     // Draw a TD box if we have a locked target
     // NOTE:  In reality there would never be a locked target since the radar would be in AGR, but
     // if we allow a radar lock, we might as well allow a TD box...
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         DrawTDBox();
 
     // FRB - Try not compensating for screen aspect.
@@ -270,13 +281,16 @@ void HudClass::DrawRCKT(void)
     // 0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F
     //);
 
-    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
+              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
 
     if (fp)
     {
         float rng = FCC->airGroundRange;
-        fprintf(fp, "**--** Pip Az %f Pip El %f Gnd Az %f Gnd El %f Range %f \n",
-                pipperAz, pipperEl, FCC->groundPipperAz * RTD, FCC->groundPipperEl * RTD, rng);
+        fprintf(fp,
+                "**--** Pip Az %f Pip El %f Gnd Az %f Gnd El %f Range %f \n",
+                pipperAz, pipperEl, FCC->groundPipperAz * RTD,
+                FCC->groundPipperEl * RTD, rng);
         fflush(fp);
     }
 
@@ -297,45 +311,60 @@ void HudClass::DrawRCKT(void)
     float maxRng = 36500.0f;
     float minRng = 18500.0F;
 
-    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + vOffset) < 0.90F and FCC->airGroundRange < maxRng and not FCC->noSolution)
+    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + vOffset) < 0.90F and
+        FCC->airGroundRange < maxRng and not FCC->noSolution)
     {
         if (FCC->airGroundRange < minRng)
         {
-            display->Line(pipperAz - diam, pipperEl + diam - 0.01F, pipperAz, pipperEl + diam + 0.02F);
-            display->Line(pipperAz, pipperEl + diam + 0.02F, pipperAz + diam, pipperEl + diam - 0.01F);
+            display->Line(pipperAz - diam, pipperEl + diam - 0.01F, pipperAz,
+                          pipperEl + diam + 0.02F);
+            display->Line(pipperAz, pipperEl + diam + 0.02F, pipperAz + diam,
+                          pipperEl + diam - 0.01F);
         }
 
         display->Circle(pipperAz, pipperEl, diam);
-        display->Line(pipperAz, pipperEl + diam, pipperAz, pipperEl + diam + tic);
-        display->Line(pipperAz, pipperEl - diam, pipperAz, pipperEl - diam - tic);
-        display->Line(pipperAz + diam, pipperEl, pipperAz + diam + tic, pipperEl);
-        display->Line(pipperAz - diam, pipperEl, pipperAz - diam - tic, pipperEl);
+        display->Line(pipperAz, pipperEl + diam, pipperAz,
+                      pipperEl + diam + tic);
+        display->Line(pipperAz, pipperEl - diam, pipperAz,
+                      pipperEl - diam - tic);
+        display->Line(pipperAz + diam, pipperEl, pipperAz + diam + tic,
+                      pipperEl);
+        display->Line(pipperAz - diam, pipperEl, pipperAz - diam - tic,
+                      pipperEl);
 
         float sx = sin(45 * DTR) * diam;
         float sy = cos(45 * DTR) * diam;
         float sticx = sin(45 * DTR) * (diam + stic);
         float sticy = cos(45 * DTR) * (diam + stic);
-        display->Line(pipperAz + sx, pipperEl + sy, pipperAz + sticx, pipperEl + sticy);
-        display->Line(pipperAz + sx, pipperEl - sy, pipperAz + sticx, pipperEl - sticy);
-        display->Line(pipperAz - sx, pipperEl + sy, pipperAz - sticx, pipperEl + sticy);
-        display->Line(pipperAz - sx, pipperEl - sy, pipperAz - sticx, pipperEl - sticy);
+        display->Line(pipperAz + sx, pipperEl + sy, pipperAz + sticx,
+                      pipperEl + sticy);
+        display->Line(pipperAz + sx, pipperEl - sy, pipperAz + sticx,
+                      pipperEl - sticy);
+        display->Line(pipperAz - sx, pipperEl + sy, pipperAz - sticx,
+                      pipperEl + sticy);
+        display->Line(pipperAz - sx, pipperEl - sy, pipperAz - sticx,
+                      pipperEl - sticy);
 
         if (FCC->airGroundRange <= minRng)
             RngToGo = 270.0f;
         else if (FCC->airGroundRange >= maxRng)
             RngToGo = 270.9f;
         else
-            RngToGo = (((FCC->airGroundRange - minRng) / (maxRng - minRng)) * 360.0f) - 90.0f;
+            RngToGo = (((FCC->airGroundRange - minRng) / (maxRng - minRng)) *
+                       360.0f) -
+                      90.0f;
 
         if (RngToGo < 0.0f)
             RngToGo += 360.0f;
 
-        display->Arc(pipperAz, pipperEl, diam - 0.02f, 270.0f * DTR, (RngToGo)*DTR);
+        display->Arc(pipperAz, pipperEl, diam - 0.02f, 270.0f * DTR,
+                     (RngToGo)*DTR);
 
         //TJL 11/20/03
         x = pipperAz;
         y = pipperEl;
-        display->Point(x, y);//TJL 11/20/03 Hopefully this puts a point in the middle.
+        display->Point(
+            x, y); //TJL 11/20/03 Hopefully this puts a point in the middle.
         display->Line(x, y + diam, 0.0f, 0.0f);
         //display->Line (x, y, 0.0f, -0.25f);
     }
@@ -353,13 +382,14 @@ void HudClass::DrawRCKT(void)
         float sticx = sin(45 * DTR) * (diam + stic);
         float sticy = cos(45 * DTR) * (diam + stic) + yOffset;
         display->Line(sx, sy, sticx, sticy);
-        display->Line(sx, -sy,   sticx, -sticy);
-        display->Line(-sx,  sy, - sticx,  sticy);
-        display->Line(-sx, -sy, - sticx, -sticy);
+        display->Line(sx, -sy, sticx, -sticy);
+        display->Line(-sx, sy, -sticx, sticy);
+        display->Line(-sx, -sy, -sticx, -sticy);
     }
 
     display->AdjustOriginInViewport(-betaHudUnits, -dy);
-    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
+              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
     display->AdjustOriginInViewport(0.0F, vOffset);
 
 #if 0 // FRB - Removed PUAC for rockets.
@@ -391,9 +421,11 @@ void HudClass::DrawRCKT(void)
 
     // Add slant range
     if (FCC->airGroundRange > 1.0F * NM_TO_FT)
-        sprintf(tmpStr, "F %4.1f", max(min(100.0F, FCC->airGroundRange * FT_TO_NM), 0.0F));
+        sprintf(tmpStr, "F %4.1f",
+                max(min(100.0F, FCC->airGroundRange * FT_TO_NM), 0.0F));
     else
-        sprintf(tmpStr, "F %03.0f", max(min(10000.0F, FCC->airGroundRange * 0.01F), 0.0F));
+        sprintf(tmpStr, "F %03.0f",
+                max(min(10000.0F, FCC->airGroundRange * 0.01F), 0.0F));
 
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
     DrawWindowString(10, tmpStr);
@@ -426,71 +458,88 @@ void HudClass::DrawStrafe(void)
     mlSinCos(&drollTrig, droll);
 
 
-    display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
+    display->AdjustOriginInViewport(
+        0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
+                  hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
 
-    if (fabs(pipperEl) < 0.90F and fabs(pipperAz + hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F and not FCC->noSolution)
+    if (fabs(pipperEl) < 0.90F and
+        fabs(pipperAz + hudWinY[BORESIGHT_CROSS_WINDOW] +
+             hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F and
+        not FCC->noSolution)
     {
-        if (FCC->airGroundRange < 8000.0F)// me123 status ok. changed from 8000. TJL 11/20/03 Back to 8000 per MIRV
+        if (FCC->airGroundRange <
+            8000.0F) // me123 status ok. changed from 8000. TJL 11/20/03 Back to 8000 per MIRV
         {
-            display->Line(pipperAz - 0.05F, pipperEl + 0.05F, //me123 status test. changed the last number from 0.05 to 0.15 to make strafcircle bigger
-                          pipperAz + 0.05F, pipperEl + 0.05F);//me123 status test. changed the last number from 0.05 to 0.15 to make strafcircle bigger
+            display->Line(
+                pipperAz - 0.05F,
+                pipperEl +
+                    0.05F, //me123 status test. changed the last number from 0.05 to 0.15 to make strafcircle bigger
+                pipperAz + 0.05F,
+                pipperEl +
+                    0.05F); //me123 status test. changed the last number from 0.05 to 0.15 to make strafcircle bigger
         }
 
-        display->Circle(pipperAz, pipperEl, 0.05F); //me123 status test. changed the last number from 0.05 to 0.15 to make strafcircle bigger
+        display->Circle(
+            pipperAz, pipperEl,
+            0.05F); //me123 status test. changed the last number from 0.05 to 0.15 to make strafcircle bigger
         //TJL 11/20/03
         x = pipperAz;
         y = pipperEl;
-        display->Point(x, y);//TJL 11/20/03 Hopefully this puts a point in the middle.
+        display->Point(
+            x, y); //TJL 11/20/03 Hopefully this puts a point in the middle.
     }
     else
     {
-        display->Circle(0.0F, 0.0F, 0.05F); //me123 status test, changed the last number from 0.05 to 0.15 to make strafcircle bigger
+        display->Circle(
+            0.0F, 0.0F,
+            0.05F); //me123 status test, changed the last number from 0.05 to 0.15 to make strafcircle bigger
     }
 
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
 
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // Compute and set the viewport offset to get 0,0 at the boresight cross
-    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
+              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
     display->AdjustOriginInViewport(0.0F, vOffset);
 
     //PUAC for strafe
     if (FCC->groundImpactTime < 25)
     {
         // now we use the PUAC to "count down" to ground impact
-        puacY =  FCC->groundImpactTime / 4;
+        puacY = FCC->groundImpactTime / 4;
 
         // draw the puac on the bomb fall line
         //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
         //MI vids show it stays below the FPM
-        if ( not g_bRealisticAvionics)
-            x = ((puacY - 1) * drollTrig.sin  + betaHudUnits);
+        if (not g_bRealisticAvionics)
+            x = ((puacY - 1) * drollTrig.sin + betaHudUnits);
         else
             x = betaHudUnits;
 
         // draw the Puac
-        puacY =  - alphaHudUnits - puacY  ; // fpm pos at ground impact
+        puacY = -alphaHudUnits - puacY; // fpm pos at ground impact
         display->Line(x - 0.075F, puacY, x + 0.075F, puacY);
         display->Line(x - 0.075F, puacY, x - 0.075F, puacY + 0.025F);
         display->Line(x + 0.075F, puacY, x + 0.075F, puacY + 0.025F);
-
     }
 
     display->AdjustOriginInViewport(0.0F, -vOffset);
 
     // Add slant range
     if (FCC->airGroundRange > 1.0F * NM_TO_FT)
-        sprintf(tmpStr, "F %4.1f", max(min(100.0F, FCC->airGroundRange * FT_TO_NM), 0.0F));
+        sprintf(tmpStr, "F %4.1f",
+                max(min(100.0F, FCC->airGroundRange * FT_TO_NM), 0.0F));
     else
-        sprintf(tmpStr, "F %03.0f", max(min(10000.0F, FCC->airGroundRange * 0.01F), 0.0F));
+        sprintf(tmpStr, "F %03.0f",
+                max(min(10000.0F, FCC->airGroundRange * 0.01F), 0.0F));
 
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
     //MI
-    if ( not g_bRealisticAvionics) //done in the routines below
+    if (not g_bRealisticAvionics) //done in the routines below
         DrawWindowString(10, tmpStr);
 
     //else
@@ -508,11 +557,14 @@ void HudClass::DrawStrafe(void)
 void HudClass::DrawCCRP(void)
 {
     // Draw the TD box
-    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-    DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl,
+                        FCC->groundDesignateDroll);
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // Provide steering to the release point
     DrawSteeringToRelease();
@@ -526,22 +578,27 @@ void HudClass::DrawDTOSS(void)
     // if we allow a radar lock, we might as well allow a TD box...
 
     //MI changed
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         DrawTDBox();
     else
         DrawDTOSSBox();
 
     // Draw the impact point marker
-    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
-    if ( not g_bRealisticAvionics)
-        DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
+    if (not g_bRealisticAvionics)
+        DrawDesignateMarker(Square, FCC->groundDesignateAz,
+                            FCC->groundDesignateEl, FCC->groundDesignateDroll);
     else //JPG 13 Aug 04 - the "other" DTOS/TDMarker box doesn't yield the proper TLL (since it's method is really for AA, so let's use the DrawDesignateMarker
-        /*DrawTDMarker*/DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll /*0.03F*/);
+        /*DrawTDMarker*/ DrawDesignateMarker(
+            Square, FCC->groundDesignateAz, FCC->groundDesignateEl,
+            FCC->groundDesignateDroll /*0.03F*/);
 
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // If we have designated and are waiting for release, provide steering to the release point
     if (FCC->airGroundDelayTime > 0.0F)
@@ -572,11 +629,14 @@ void HudClass::DrawLADD(void)
     DrawTDBox();
 
     // Draw the impact point marker
-    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-    DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl,
+                        FCC->groundDesignateDroll);
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // If we have designated and are waiting for release, provide steering to the release point
     if (FCC->airGroundDelayTime > 0.0F)
@@ -586,14 +646,17 @@ void HudClass::DrawLADD(void)
 
 void HudClass::DrawTargetingPod(void)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     // Draw the TD box
-    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-    DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl,
+                        FCC->groundDesignateDroll);
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // Provide steering to the release point
     DrawSteeringToRelease();
@@ -633,8 +696,10 @@ void HudClass::DrawSteeringToRelease(void)
     float latRange = 0.0f;
     //me123 tofextra is the extra tof for the last bomb(this is the bomb the puac symbolice) becourse it has to wait for the preciding bombs to drop
     //float  TofExtra = ( (FCC->Sms->RippleInterval())* ((FCC->Sms->RippleCount()+1))/ // MLR 4/3/2004 -
-    float  TofExtra = ((FCC->Sms->GetAGBRippleInterval()) * ((FCC->Sms->GetAGBRippleCount() + 1)) /
-                       ((float) sqrt(ownship->XDelta() * ownship->XDelta() + ownship->YDelta() * ownship->YDelta())));
+    float TofExtra = ((FCC->Sms->GetAGBRippleInterval()) *
+                      ((FCC->Sms->GetAGBRippleCount() + 1)) /
+                      ((float)sqrt(ownship->XDelta() * ownship->XDelta() +
+                                   ownship->YDelta() * ownship->YDelta())));
 
     //if (FCC->Sms->Pair() == TRUE)
     if (FCC->Sms->GetAGBPair() == TRUE) // MLR 4/3/2004 -
@@ -647,9 +712,12 @@ void HudClass::DrawSteeringToRelease(void)
 
     if (FCC->Sms->CurHardpoint() > 0)
     {
-        BombClass* theBomb = (BombClass *)FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]->weaponPointer.get();
+        BombClass* theBomb =
+            (BombClass*)FCC->Sms->hardPoint[FCC->Sms->CurHardpoint()]
+                ->weaponPointer.get();
 
-        if (theBomb and theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
+        if (theBomb and
+            theBomb->EntityType()->classInfo_[VU_STYPE] == STYPE_BOMB_JSOW)
             isJSOW = true;
     }
 
@@ -658,24 +726,25 @@ void HudClass::DrawSteeringToRelease(void)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;
-        steeringLineX = min(max(steeringLineX , -1.0F), 1.0F);
+        steeringLineX = min(max(steeringLineX, -1.0F), 1.0F);
         display->Line(steeringLineX, 1.0F, steeringLineX, -1.0F);
 
         // Flight path marker position
-        fpmY = (hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-                alphaHudUnits);
+        fpmY = (hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits);
 
         // Solution Cue
         if (FCC->tossAnticipationCue not_eq FireControlComputer::NoCue)
         {
             if (FCC->tossAnticipationCue == FireControlComputer::PullUp or
-                FCC->tossAnticipationCue == FireControlComputer::AwaitingRelease)
+                FCC->tossAnticipationCue ==
+                    FireControlComputer::AwaitingRelease)
                 solutionCueY = min(FCC->airGroundDelayTime / 60.0F, 1.0F);
             else
                 solutionCueY = min(FCC->airGroundDelayTime / 10.0F, 1.0F);
 
             solutionCueY = fpmY + (1.0F - fpmY) * solutionCueY;
-            solutionCueY = min(max(solutionCueY , -1.0F), 1.0F);
+            solutionCueY = min(max(solutionCueY, -1.0F), 1.0F);
             display->Line(steeringLineX - 0.05F, solutionCueY,
                           steeringLineX + 0.05F, solutionCueY);
         }
@@ -684,21 +753,27 @@ void HudClass::DrawSteeringToRelease(void)
         if (FCC->tossAnticipationCue == FireControlComputer::PreToss or
             (FCC->tossAnticipationCue == FireControlComputer::PullUp and flash))
         {
-            display->Circle(0.0F, RadToHudUnits(-3.0F * DTR) +
-                            hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F,
+            display->Circle(0.0F,
+                            RadToHudUnits(-3.0F * DTR) +
+                                hudWinY[BORESIGHT_CROSS_WINDOW] +
+                                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F,
                             MRToHudUnits(60.0F));
         }
 
         // PUAC goes here
         // me123 status ok. lots of changes in this PUAC rutine.
-        vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+        vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
+                  hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
         display->AdjustOriginInViewport(0.0F, vOffset);
 
         if (FCC->groundImpactTime < 25)
         {
-            if ((FCC->groundImpactTime - TofExtra) > (FCC->Sms->armingdelay / 100))
+            if ((FCC->groundImpactTime - TofExtra) >
+                (FCC->Sms->armingdelay / 100))
             {
-                puacY = (FCC->groundImpactTime - TofExtra) / (FCC->Sms->armingdelay / 100); // 1 at minimum release alt
+                puacY =
+                    (FCC->groundImpactTime - TofExtra) /
+                    (FCC->Sms->armingdelay / 100); // 1 at minimum release alt
 
 
                 // draw the puac on the bomb fall line
@@ -709,7 +784,10 @@ void HudClass::DrawSteeringToRelease(void)
                 x = betaHudUnits;
 
                 //draw the puac
-                puacY = - alphaHudUnits - ((puacY / 3) - (0.33F)) ; //this is fpm pos when at minimum release alt.
+                puacY =
+                    -alphaHudUnits -
+                    ((puacY / 3) -
+                     (0.33F)); //this is fpm pos when at minimum release alt.
 
                 display->Line(x - 0.075F, puacY, x + 0.075F, puacY);
                 display->Line(x - 0.075F, puacY, x - 0.075F, puacY + 0.025F);
@@ -721,7 +799,7 @@ void HudClass::DrawSteeringToRelease(void)
             else
             {
                 // now we use the PUAC to "count down" to ground impact
-                puacY =  FCC->groundImpactTime / 4;
+                puacY = FCC->groundImpactTime / 4;
 
                 // draw the puac on the bomb fall line
                 //  x = (x  + betaHudUnits) * -((puacY-1)/y ) ;//me123 this might crash when the bombline length (y) is zero.
@@ -731,7 +809,7 @@ void HudClass::DrawSteeringToRelease(void)
                 else*/ //Cobra removed (droll not initialized and why do this for non-realistic?)
                 x = betaHudUnits;
                 // draw the Puac
-                puacY =  - alphaHudUnits - puacY  ; // fpm pos at ground impact
+                puacY = -alphaHudUnits - puacY; // fpm pos at ground impact
                 display->Line(x - 0.075F, puacY, x + 0.075F, puacY);
                 display->Line(x - 0.075F, puacY, x - 0.075F, puacY + 0.025F);
                 display->Line(x + 0.075F, puacY, x + 0.075F, puacY + 0.025F);
@@ -746,41 +824,49 @@ void HudClass::DrawSteeringToRelease(void)
         // Add Release Angle Scale if we need one
         if (FCC->airGroundMaxRange > 0.0F)
         {
-            float lateralRange = (float)sqrt(
-                                     (FCC->groundDesignateX - ownship->XPos()) * (FCC->groundDesignateX - ownship->XPos()) +
-                                     (FCC->groundDesignateY - ownship->YPos()) * (FCC->groundDesignateY - ownship->YPos()))
-                                 * FT_TO_NM;
+            float lateralRange =
+                (float)sqrt((FCC->groundDesignateX - ownship->XPos()) *
+                                (FCC->groundDesignateX - ownship->XPos()) +
+                            (FCC->groundDesignateY - ownship->YPos()) *
+                                (FCC->groundDesignateY - ownship->YPos())) *
+                FT_TO_NM;
 
             sprintf(tmpStr, "%.0f", lateralRange);
-            DrawDLZSymbol(lateralRange / (FCC->missileWEZDisplayRange * FT_TO_NM), tmpStr,
-                          FCC->airGroundMinRange / (FCC->missileWEZDisplayRange),
-                          FCC->airGroundMaxRange / (FCC->missileWEZDisplayRange),
-                          0.0f,
-                          0.0f, FALSE, "");
+            DrawDLZSymbol(
+                lateralRange / (FCC->missileWEZDisplayRange * FT_TO_NM), tmpStr,
+                FCC->airGroundMinRange / (FCC->missileWEZDisplayRange),
+                FCC->airGroundMaxRange / (FCC->missileWEZDisplayRange), 0.0f,
+                0.0f, FALSE, "");
         }
 
         //TJL 12/04/03 We need lateral range here as well. //JAM 07Dec03 - Tom, sqrtf is better
-        float latRange = sqrtf(
-                             (FCC->groundDesignateX - ownship->XPos()) * (FCC->groundDesignateX - ownship->XPos()) +
-                             (FCC->groundDesignateY - ownship->YPos()) * (FCC->groundDesignateY - ownship->YPos()))
-                         * FT_TO_NM;
+        float latRange = sqrtf((FCC->groundDesignateX - ownship->XPos()) *
+                                   (FCC->groundDesignateX - ownship->XPos()) +
+                               (FCC->groundDesignateY - ownship->YPos()) *
+                                   (FCC->groundDesignateY - ownship->YPos())) *
+                         FT_TO_NM;
 
         // Slant range;
-        slantRange = sqrtf(
-                         (FCC->groundDesignateX - ownship->XPos()) * (FCC->groundDesignateX - ownship->XPos()) +
-                         (FCC->groundDesignateY - ownship->YPos()) * (FCC->groundDesignateY - ownship->YPos()) +
-                         (FCC->groundDesignateZ - ownship->ZPos()) * (FCC->groundDesignateZ - ownship->ZPos()));
+        slantRange = sqrtf((FCC->groundDesignateX - ownship->XPos()) *
+                               (FCC->groundDesignateX - ownship->XPos()) +
+                           (FCC->groundDesignateY - ownship->YPos()) *
+                               (FCC->groundDesignateY - ownship->YPos()) +
+                           (FCC->groundDesignateZ - ownship->ZPos()) *
+                               (FCC->groundDesignateZ - ownship->ZPos()));
 
         // RV - I-Hawk - Do not display target range if in HARM HAS mode
         bool displayRange = true;
 
         if (FCC->GetSubMode() == FireControlComputer::HARM)
         {
-            HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
+            HarmTargetingPod* harmPod =
+                (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
             if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS or
-                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff or
-                harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
+                harmPod and
+                    harmPod->GetSubMode() == HarmTargetingPod::Handoff or
+                harmPod and
+                    harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
             {
                 displayRange = false;
             }
@@ -790,19 +876,21 @@ void HudClass::DrawSteeringToRelease(void)
         {
             if (slantRange > 1.0F * NM_TO_FT)
             {
-                sprintf(tmpStr, "F%4.1f", max(min(100.0F, slantRange * FT_TO_NM), 0.0F));
+                sprintf(tmpStr, "F%4.1f",
+                        max(min(100.0F, slantRange * FT_TO_NM), 0.0F));
             }
 
             else
             {
-                sprintf(tmpStr, "F%03.0f", max(min(10000.0F, slantRange * 0.01F), 0.0F));
+                sprintf(tmpStr, "F%03.0f",
+                        max(min(10000.0F, slantRange * 0.01F), 0.0F));
             }
         }
 
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             DrawWindowString(10, tmpStr);
         }
@@ -824,7 +912,7 @@ void HudClass::DrawSteeringToRelease(void)
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             DrawWindowString(13, tmpStr);
         }
@@ -850,7 +938,7 @@ void HudClass::DrawSteeringToRelease(void)
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
             DrawWindowString(14, tmpStr);
         else
             display->TextLeft(0.45F, -0.50F, tmpStr);
@@ -860,20 +948,22 @@ void HudClass::DrawSteeringToRelease(void)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;
-        steeringLineX = min(max(steeringLineX , -1.0F), 1.0F);
+        steeringLineX = min(max(steeringLineX, -1.0F), 1.0F);
         display->Line(steeringLineX, 1.0F, steeringLineX, -1.0F);
 
-        float lateralRange = (float)sqrt(
-                                 (FCC->groundDesignateX - ownship->XPos()) * (FCC->groundDesignateX - ownship->XPos()) +
-                                 (FCC->groundDesignateY - ownship->YPos()) * (FCC->groundDesignateY - ownship->YPos()))
-                             * FT_TO_NM;
+        float lateralRange =
+            (float)sqrt((FCC->groundDesignateX - ownship->XPos()) *
+                            (FCC->groundDesignateX - ownship->XPos()) +
+                        (FCC->groundDesignateY - ownship->YPos()) *
+                            (FCC->groundDesignateY - ownship->YPos())) *
+            FT_TO_NM;
 
         sprintf(tmpStr, "%.0f", lateralRange);
-        DrawDLZSymbol(lateralRange / (FCC->missileWEZDisplayRange * FT_TO_NM), tmpStr,
+        DrawDLZSymbol(lateralRange / (FCC->missileWEZDisplayRange * FT_TO_NM),
+                      tmpStr,
                       FCC->airGroundMinRange / (FCC->missileWEZDisplayRange),
                       FCC->airGroundMaxRange / (FCC->missileWEZDisplayRange),
-                      0.0f,
-                      0.0f, FALSE, "");
+                      0.0f, 0.0f, FALSE, "");
     }
 }
 
@@ -882,30 +972,34 @@ void HudClass::DrawRPod(void)
     float vOffset;
 
     // Compute and set the viewport offset to get 0,0 at the boresight cross
-    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+    vOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
+              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
     //MI
     //display->AdjustOriginInViewport (0.0F, vOffset - 8.0F * degreesForScreen);
-    display->AdjustOriginInViewport(0.0F, vOffset + g_fReconCameraOffset * degreesForScreen);
+    display->AdjustOriginInViewport(0.0F, vOffset + g_fReconCameraOffset *
+                                                        degreesForScreen);
 
 
     // Draw the pipper
     display->Circle(0.0F, 0.0F, 2.0F * PIPPER_SIZE);
     display->Point(0.0F, 0.0F);
-    display->Line(0.0F,  2.0F * PIPPER_SIZE, 0.0F,  3.0F * PIPPER_SIZE);
+    display->Line(0.0F, 2.0F * PIPPER_SIZE, 0.0F, 3.0F * PIPPER_SIZE);
     display->Line(0.0F, -2.0F * PIPPER_SIZE, 0.0F, -3.0F * PIPPER_SIZE);
-    display->Line(2.0F * PIPPER_SIZE, 0.0F,  3.0F * PIPPER_SIZE, 0.0F);
+    display->Line(2.0F * PIPPER_SIZE, 0.0F, 3.0F * PIPPER_SIZE, 0.0F);
     display->Line(-2.0F * PIPPER_SIZE, 0.0F, -3.0F * PIPPER_SIZE, 0.0F);
 
     //MI
     //display->AdjustOriginInViewport (0.0F, -(vOffset - 8.0F * degreesForScreen));
-    display->AdjustOriginInViewport(0.0F, -(vOffset + g_fReconCameraOffset * degreesForScreen));
+    display->AdjustOriginInViewport(
+        0.0F, -(vOffset + g_fReconCameraOffset * degreesForScreen));
 
     // Save the current location of the boresight cross (in pixels)
     pixelXCenter = display->viewportXtoPixel(0.0F);
     //MI
     //pixelYCenter = display->viewportYtoPixel (vOffset - 8.0F * degreesForScreen);
-    pixelYCenter = display->viewportYtoPixel(-(vOffset + g_fReconCameraOffset * degreesForScreen));
-    sightRadius  = display->viewportXtoPixel(2.0F * PIPPER_SIZE) - pixelXCenter;
+    pixelYCenter = display->viewportYtoPixel(
+        -(vOffset + g_fReconCameraOffset * degreesForScreen));
+    sightRadius = display->viewportXtoPixel(2.0F * PIPPER_SIZE) - pixelXCenter;
 
     //MI
     if (g_bRealisticAvionics)
@@ -919,7 +1013,7 @@ void HudClass::DrawRPod(void)
     }
 }
 
-#include "SimIO.h" // Retro 3Jan2004
+#include "simio.h" // Retro 3Jan2004
 
 void HudClass::DrawMANReticle(void)
 {
@@ -950,17 +1044,28 @@ void HudClass::DrawMANReticle(void)
 
         display->Circle(0.0F, RET_CENTER, 2.0F * OUTER_RETICLE_SIZE);
         //Draw the inner circle
-        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 330 * DTR, 30 * DTR);
-        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 60 * DTR, 120 * DTR);
-        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 150 * DTR, 210 * DTR);
-        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 240 * DTR, 300 * DTR);
+        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 330 * DTR,
+                     30 * DTR);
+        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 60 * DTR,
+                     120 * DTR);
+        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 150 * DTR,
+                     210 * DTR);
+        display->Arc(0.0F, RET_CENTER, 2.0F * INNER_RETICLE_SIZE, 240 * DTR,
+                     300 * DTR);
         //Draw the dot
         display->Point(0.0F, RET_CENTER);
     }
     else if (WhichMode == 2)
     {
-        static float angles[] = {1 * DTR, 5 * DTR, 10 * DTR, 15 * DTR, 20 * DTR, 25 * DTR, 30 * DTR, 35 * DTR, 40 * DTR, 45 * DTR, 50 * DTR, 55 * DTR, 60 * DTR, 65 * DTR, 70 * DTR, 75 * DTR, 80 * DTR, 85 * DTR, 90 * DTR};
-        static float angles1[] = { -30 * DTR, -25 * DTR, -20 * DTR, -15 * DTR, -10 * DTR, -5 * DTR, 1 * DTR, 5 * DTR, 10 * DTR, 15 * DTR, 20 * DTR, 25 * DTR, 30 * DTR};
+        static float angles[] = {1 * DTR,  5 * DTR,  10 * DTR, 15 * DTR,
+                                 20 * DTR, 25 * DTR, 30 * DTR, 35 * DTR,
+                                 40 * DTR, 45 * DTR, 50 * DTR, 55 * DTR,
+                                 60 * DTR, 65 * DTR, 70 * DTR, 75 * DTR,
+                                 80 * DTR, 85 * DTR, 90 * DTR};
+        static float angles1[] = {-30 * DTR, -25 * DTR, -20 * DTR, -15 * DTR,
+                                  -10 * DTR, -5 * DTR,  1 * DTR,   5 * DTR,
+                                  10 * DTR,  15 * DTR,  20 * DTR,  25 * DTR,
+                                  30 * DTR};
         static const int nangles = sizeof(angles) / sizeof(angles[0]);
         static const int mangles = sizeof(angles1) / sizeof(angles1[0]);
 
@@ -975,20 +1080,28 @@ void HudClass::DrawMANReticle(void)
         for (int i = 0; i <= nangles; i++)
         {
             mlSinCos(&trig, angles[i]);
-            display->Point(0.0F + (OUTER_RETICLE_SIZE * 2 * trig.cos), RET_CENTER + (OUTER_RETICLE_SIZE * 2 * trig.sin));
-            display->Point(0.0F - (OUTER_RETICLE_SIZE * 2 * trig.cos), RET_CENTER - (OUTER_RETICLE_SIZE * 2 * trig.sin));
-            display->Point(0.0F + (OUTER_RETICLE_SIZE * 2 * trig.cos), RET_CENTER - (OUTER_RETICLE_SIZE * 2 * trig.sin));
-            display->Point(0.0F - (OUTER_RETICLE_SIZE * 2 * trig.cos), RET_CENTER + (OUTER_RETICLE_SIZE * 2 * trig.sin));
+            display->Point(0.0F + (OUTER_RETICLE_SIZE * 2 * trig.cos),
+                           RET_CENTER + (OUTER_RETICLE_SIZE * 2 * trig.sin));
+            display->Point(0.0F - (OUTER_RETICLE_SIZE * 2 * trig.cos),
+                           RET_CENTER - (OUTER_RETICLE_SIZE * 2 * trig.sin));
+            display->Point(0.0F + (OUTER_RETICLE_SIZE * 2 * trig.cos),
+                           RET_CENTER - (OUTER_RETICLE_SIZE * 2 * trig.sin));
+            display->Point(0.0F - (OUTER_RETICLE_SIZE * 2 * trig.cos),
+                           RET_CENTER + (OUTER_RETICLE_SIZE * 2 * trig.sin));
         }
 
         //inner reticle
         for (int j = 0; j <= mangles; j++)
         {
             mlSinCos(&trig, angles1[j]);
-            display->Point(0.0F + (INNER_RETICLE_SIZE * 2 * trig.cos), RET_CENTER + (INNER_RETICLE_SIZE * 2 * trig.sin));
-            display->Point(0.0F - (INNER_RETICLE_SIZE * 2 * trig.cos), RET_CENTER - (INNER_RETICLE_SIZE * 2 * trig.sin));
-            display->Point(0.0F + (INNER_RETICLE_SIZE * 2 * trig.sin), RET_CENTER - (INNER_RETICLE_SIZE * 2 * trig.cos));
-            display->Point(0.0F - (INNER_RETICLE_SIZE * 2 * trig.sin), RET_CENTER + (INNER_RETICLE_SIZE * 2 * trig.cos));
+            display->Point(0.0F + (INNER_RETICLE_SIZE * 2 * trig.cos),
+                           RET_CENTER + (INNER_RETICLE_SIZE * 2 * trig.sin));
+            display->Point(0.0F - (INNER_RETICLE_SIZE * 2 * trig.cos),
+                           RET_CENTER - (INNER_RETICLE_SIZE * 2 * trig.sin));
+            display->Point(0.0F + (INNER_RETICLE_SIZE * 2 * trig.sin),
+                           RET_CENTER - (INNER_RETICLE_SIZE * 2 * trig.cos));
+            display->Point(0.0F - (INNER_RETICLE_SIZE * 2 * trig.sin),
+                           RET_CENTER + (INNER_RETICLE_SIZE * 2 * trig.cos));
         }
 
         //Draw the cross
@@ -996,10 +1109,14 @@ void HudClass::DrawMANReticle(void)
         display->Line(-0.02F, RET_CENTER, 0.02F, RET_CENTER);
         display->Line(0.0F, RET_CENTER + 0.02F, 0.0F, RET_CENTER - 0.02F);
         //draw the lines
-        display->Line(0.0F, RET_CENTER + OUTER_RETICLE_SIZE * 2, 0.0F, RET_CENTER + OUTER_RETICLE_SIZE * 2 + TICK_LEN);
-        display->Line(0.0F, RET_CENTER - OUTER_RETICLE_SIZE * 2, 0.0F, RET_CENTER - OUTER_RETICLE_SIZE * 2 - TICK_LEN);
-        display->Line(0.0F + OUTER_RETICLE_SIZE * 2, RET_CENTER , 0.0F + OUTER_RETICLE_SIZE * 2 + TICK_LEN, RET_CENTER);
-        display->Line(0.0F - OUTER_RETICLE_SIZE * 2, RET_CENTER , 0.0F - OUTER_RETICLE_SIZE * 2 - TICK_LEN, RET_CENTER);
+        display->Line(0.0F, RET_CENTER + OUTER_RETICLE_SIZE * 2, 0.0F,
+                      RET_CENTER + OUTER_RETICLE_SIZE * 2 + TICK_LEN);
+        display->Line(0.0F, RET_CENTER - OUTER_RETICLE_SIZE * 2, 0.0F,
+                      RET_CENTER - OUTER_RETICLE_SIZE * 2 - TICK_LEN);
+        display->Line(0.0F + OUTER_RETICLE_SIZE * 2, RET_CENTER,
+                      0.0F + OUTER_RETICLE_SIZE * 2 + TICK_LEN, RET_CENTER);
+        display->Line(0.0F - OUTER_RETICLE_SIZE * 2, RET_CENTER,
+                      0.0F - OUTER_RETICLE_SIZE * 2 - TICK_LEN, RET_CENTER);
     }
 
     CurPos *= -1;
@@ -1023,9 +1140,11 @@ void HudClass::DrawSteeringToReleaseLADD(void)
     float slantRange;
     //me123 tofextra is the extra tof for the last bomb(this is the bomb the puac symbolice) becourse it has to wait for the preciding bombs to drop
     //float  TofExtra = ( (FCC->Sms->RippleInterval())* ((FCC->Sms->RippleCount()+1))/
-    float  TofExtra = ((FCC->Sms->GetAGBRippleInterval()) * ((FCC->Sms->GetAGBRippleCount() + 1)) /
+    float TofExtra = ((FCC->Sms->GetAGBRippleInterval()) *
+                      ((FCC->Sms->GetAGBRippleCount() + 1)) /
 
-                       ((float) sqrt(ownship->XDelta() * ownship->XDelta() + ownship->YDelta() * ownship->YDelta())));
+                      ((float)sqrt(ownship->XDelta() * ownship->XDelta() +
+                                   ownship->YDelta() * ownship->YDelta())));
 
     //if (FCC->Sms->Pair() == TRUE) // MLR 4/3/2004 -
     if (FCC->Sms->GetAGBPair() == TRUE)
@@ -1038,24 +1157,25 @@ void HudClass::DrawSteeringToReleaseLADD(void)
     {
         steeringLineX = FCC->airGroundBearing / (20.0F * DTR);
         steeringLineX += betaHudUnits;
-        steeringLineX = min(max(steeringLineX , -1.0F), 1.0F);
+        steeringLineX = min(max(steeringLineX, -1.0F), 1.0F);
         display->Line(steeringLineX, 1.0F, steeringLineX, -1.0F);
 
         // Flight path marker position
-        fpmY = (hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-                alphaHudUnits);
+        fpmY = (hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits);
 
         // Solution Cue
         if (FCC->laddAnticipationCue not_eq FireControlComputer::NoLADDCue)
         {
             if (FCC->laddAnticipationCue == FireControlComputer::LADDPullUp or
-                FCC->laddAnticipationCue == FireControlComputer::LADDAwaitingRelease)
+                FCC->laddAnticipationCue ==
+                    FireControlComputer::LADDAwaitingRelease)
                 solutionCueY = min(FCC->airGroundDelayTime / 60.0F, 1.0F);
             else
                 solutionCueY = min(FCC->airGroundDelayTime / 10.0F, 1.0F);
 
             solutionCueY = fpmY + (1.0F - fpmY) * solutionCueY;
-            solutionCueY = min(max(solutionCueY , -1.0F), 1.0F);
+            solutionCueY = min(max(solutionCueY, -1.0F), 1.0F);
             display->Line(steeringLineX - 0.05F, solutionCueY,
                           steeringLineX + 0.05F, solutionCueY);
         }
@@ -1065,16 +1185,22 @@ void HudClass::DrawSteeringToReleaseLADD(void)
         // me123 status ok. lots of changes in this PUAC rutine.
         if (FCC->groundImpactTime < 25)
         {
-            if ((FCC->groundImpactTime - TofExtra) > (FCC->Sms->armingdelay / 100))
+            if ((FCC->groundImpactTime - TofExtra) >
+                (FCC->Sms->armingdelay / 100))
             {
-                puacY = (FCC->groundImpactTime - TofExtra) / (FCC->Sms->armingdelay / 100); // 1 at minimum release alt
+                puacY =
+                    (FCC->groundImpactTime - TofExtra) /
+                    (FCC->Sms->armingdelay / 100); // 1 at minimum release alt
 
                 // Position between the FPM and the bottom of the HUD
-                puacY = fpmY - puacY + 1; //this is fpm pos when at minimum release alt.
-                display->Line(steeringLineX - 0.075F, puacY, steeringLineX + 0.075F, puacY);
-                display->Line(steeringLineX - 0.075F, puacY, steeringLineX - 0.075F, puacY + 0.025F);
-                display->Line(steeringLineX + 0.075F, puacY, steeringLineX + 0.075F, puacY + 0.025F);
-
+                puacY = fpmY - puacY +
+                        1; //this is fpm pos when at minimum release alt.
+                display->Line(steeringLineX - 0.075F, puacY,
+                              steeringLineX + 0.075F, puacY);
+                display->Line(steeringLineX - 0.075F, puacY,
+                              steeringLineX - 0.075F, puacY + 0.025F);
+                display->Line(steeringLineX + 0.075F, puacY,
+                              steeringLineX + 0.075F, puacY + 0.025F);
             }
             else
             {
@@ -1082,27 +1208,34 @@ void HudClass::DrawSteeringToReleaseLADD(void)
                 // so it hit's the fmp when the ground is reached (when we crash)
 
                 // now we use the PUAC to "count down" to ground impact
-                puacY =  FCC->groundImpactTime / 3 ;
+                puacY = FCC->groundImpactTime / 3;
 
                 puacY = fpmY - puacY;
-                display->Line(steeringLineX - 0.075F, puacY, steeringLineX + 0.075F, puacY);
-                display->Line(steeringLineX - 0.075F, puacY, steeringLineX - 0.075F, puacY + 0.025F);
-                display->Line(steeringLineX + 0.075F, puacY, steeringLineX + 0.075F, puacY + 0.025F);
+                display->Line(steeringLineX - 0.075F, puacY,
+                              steeringLineX + 0.075F, puacY);
+                display->Line(steeringLineX - 0.075F, puacY,
+                              steeringLineX - 0.075F, puacY + 0.025F);
+                display->Line(steeringLineX + 0.075F, puacY,
+                              steeringLineX + 0.075F, puacY + 0.025F);
 
                 display->TextLeft(betaHudUnits + 0.1F, fpmY, "LOW");
             }
         }
 
         // Slant range;
-        slantRange = (float)sqrt(
-                         (FCC->groundDesignateX - ownship->XPos()) * (FCC->groundDesignateX - ownship->XPos()) +
-                         (FCC->groundDesignateY - ownship->YPos()) * (FCC->groundDesignateY - ownship->YPos()) +
-                         (FCC->groundDesignateZ - ownship->ZPos()) * (FCC->groundDesignateZ - ownship->ZPos()));
+        slantRange = (float)sqrt((FCC->groundDesignateX - ownship->XPos()) *
+                                     (FCC->groundDesignateX - ownship->XPos()) +
+                                 (FCC->groundDesignateY - ownship->YPos()) *
+                                     (FCC->groundDesignateY - ownship->YPos()) +
+                                 (FCC->groundDesignateZ - ownship->ZPos()) *
+                                     (FCC->groundDesignateZ - ownship->ZPos()));
 
         if (slantRange > 1.0F * NM_TO_FT)
-            sprintf(tmpStr, "F %4.1f", max(min(100.0F, slantRange * FT_TO_NM), 0.0F));
+            sprintf(tmpStr, "F %4.1f",
+                    max(min(100.0F, slantRange * FT_TO_NM), 0.0F));
         else
-            sprintf(tmpStr, "F %03.0f", max(min(10000.0F, slantRange * 0.01F), 0.0F));
+            sprintf(tmpStr, "F %03.0f",
+                    max(min(10000.0F, slantRange * 0.01F), 0.0F));
 
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
         DrawWindowString(10, tmpStr);
@@ -1130,7 +1263,8 @@ void HudClass::DrawSteeringToReleaseLADD(void)
 }
 void HudClass::MoveRetCenter(void)
 {
-    if (IO.AnalogIsUsed(AXIS_RET_DEPR) == true) // Retro 3Jan2004, doing this in another place (DrawMANReticle()) an analogue
+    if (IO.AnalogIsUsed(AXIS_RET_DEPR) ==
+        true) // Retro 3Jan2004, doing this in another place (DrawMANReticle()) an analogue
         return;
 
     RET_CENTER = RET_CENTER + (RetPos * 0.1F);

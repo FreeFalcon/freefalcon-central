@@ -21,11 +21,11 @@ class C_Handler;
 #include <dinput.h>
 #include "f4error.h"
 #include "f4thread.h"
-#include "Graphics/Include/imagebuf.h"
+#include "graphics/include/imagebuf.h"
 #include "fsound.h"
 #include "ui95_dd.h"
 #include "ui95defs.h" // BIG Enum for all internal IDs
-#include "IsBad.h"
+#include "isbad.h"
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL UI_Pools[UI_MAX_POOLS];
@@ -37,8 +37,8 @@ extern MEM_POOL UI_Pools[UI_MAX_POOLS];
 #include "debuggr.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/shmalloc.h"
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/shmalloc.h"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
 #define _SHIFT_DOWN_ (0x01)
@@ -61,7 +61,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -82,7 +83,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -101,7 +103,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -123,7 +126,7 @@ private:
     HANDLE ControlThread_;
     HANDLE WakeOutput_;
     HANDLE WakeControl_;
-    F4CSECTIONHANDLE* UI_Critical;
+    F4CSECTIONHANDLE *UI_Critical;
 
     BOOL (*MouseCallback_)(C_Base *, WORD, WORD, C_Window *, short);
     long TimerSleep_;
@@ -167,7 +170,8 @@ private:
     BOOL OldInputMessage();
     void HelpOff();
     void CheckHelpText(SCREEN *surface);
-    void Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2, long y2); 
+    void Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2,
+              long y2);
     void Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst);
 
 public:
@@ -181,8 +185,10 @@ public:
     // if you want to update immediately... set Work == Primary
     void EnterCritical();
     void LeaveCritical();
-    void Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary); // Initialize pointers
-    BOOL AddWindow(C_Window *thewin, long Flags);    // Add a window to the Handler's list
+    void Setup(HWND hwnd, ImageBuffer *,
+               ImageBuffer *Primary); // Initialize pointers
+    BOOL AddWindow(C_Window *thewin,
+                   long Flags); // Add a window to the Handler's list
     void StartOutputThread();
     void EndOutputThread();
     void SuspendOutput();
@@ -201,11 +207,11 @@ public:
     }
     long GetSection()
     {
-        return(CurrentSection_);
+        return (CurrentSection_);
     }
-    F4CSECTIONHANDLE* GetCritical()
+    F4CSECTIONHANDLE *GetCritical()
     {
-        return(UI_Critical);
+        return (UI_Critical);
     }
     BOOL AddUserCallback(void (*cb)());
     BOOL RemoveUserCallback(void (*cb)());
@@ -224,7 +230,7 @@ public:
     }
     BOOL KeyboardMode()
     {
-        return(KeyboardMode_);
+        return (KeyboardMode_);
     }
     void SetOutputDelay(long delay = 80)
     {
@@ -238,7 +244,8 @@ public:
     void Cleanup(void); // cleanup mess left when done
     void ReleaseControl(C_Base *control);
 
-    void DisableSection(long ID); // Used for closing windows opened in a "section of the game"
+    void DisableSection(
+        long ID); // Used for closing windows opened in a "section of the game"
 
     void EnableGroup(long ID);
     void DisableGroup(long ID);
@@ -250,24 +257,25 @@ public:
         EnabledTime_ = atime;
     }
 
-    BOOL CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
+    BOOL CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii,
+                      unsigned char ShiftStates, long RepeatCount);
 
     // Mostly Useless querry functions
     short GetX()
     {
-        return(0);
+        return (0);
     }
     short GetY()
     {
-        return(0);
+        return (0);
     }
-    long  GetW()
+    long GetW()
     {
-        return(FrontRect_.right - FrontRect_.left);
+        return (FrontRect_.right - FrontRect_.left);
     }
-    long  GetH()
+    long GetH()
     {
-        return(FrontRect_.bottom - FrontRect_.top);
+        return (FrontRect_.bottom - FrontRect_.top);
     }
 
     // long Busy() { return(HandlingMessage); }
@@ -278,28 +286,32 @@ public:
     }
     long GetDrawFlag()
     {
-        return(DrawFlags);
+        return (DrawFlags);
     }
 
-    void WindowToFront(C_Window *thewin); // move a window to end of handler's list
-    long EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam); // process events
+    void
+    WindowToFront(C_Window *thewin); // move a window to end of handler's list
+    long EventHandler(HWND hwnd, UINT message, WPARAM wParam,
+                      LPARAM lParam); // process events
     void SetUpdateRect(UI95_RECT *upd);
     void ClearHiddenRects(WHLIST *behind);
     void CheckDrawThrough();
     void ClearAllHiddenRects();
     BOOL ClipRect(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClientArea);
-    void RefreshAll(UI95_RECT *updaterect); // Tell ALL visible windows to redraw everything
-    void Update(); // BLIT drawn areas to background surface (OR primary if set that way)
+    void RefreshAll(
+        UI95_RECT *updaterect); // Tell ALL visible windows to redraw everything
+    void
+    Update(); // BLIT drawn areas to background surface (OR primary if set that way)
     void CopyToPrimary();
     void UpdateTimerControls(void);
     void CheckTranslucentWindows();
     C_Base *Over()
     {
-        return(MouseControl_);
+        return (MouseControl_);
     }
     long UpdateWaiting()
     {
-        return(UpdateFlag bitand C_DRAW_UPDATE);
+        return (UpdateFlag bitand C_DRAW_UPDATE);
     }
     void PostUpdate();
     void SendUpdate();
@@ -310,15 +322,15 @@ public:
     C_Window *_GetNextWindow(C_Window *win); // find the window following win
     ImageBuffer *GetFront()
     {
-        return(Front_);
+        return (Front_);
     }
     ImageBuffer *GetPrimary()
     {
-        return(Primary_);
+        return (Primary_);
     }
     HWND GetAppWnd()
     {
-        return(AppWindow_);
+        return (AppWindow_);
     }
     void BlitWindowNow(C_Window *win);
     void *Lock();
@@ -333,9 +345,10 @@ public:
     long GetDragY(WORD MouseY);
     BOOL Dragging(void)
     {
-        if (Drag_.Control_ not_eq NULL or Drag_.Window_ not_eq NULL) return(TRUE);
+        if (Drag_.Control_ not_eq NULL or Drag_.Window_ not_eq NULL)
+            return (TRUE);
 
-        return(FALSE);
+        return (FALSE);
     }
     BOOL GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabType);
     //BOOL GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType);

@@ -14,7 +14,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -25,7 +26,7 @@ private:
 
     short state_;
 
-    VU_ID  vuID;
+    VU_ID vuID;
 
     O_Output *Icon_;
     O_Output *Callsign_;
@@ -58,11 +59,11 @@ public:
     void SetState(short state);
     short GetState()
     {
-        return(state_);
+        return (state_);
     }
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
     void SetColor(short state, COLORREF color)
     {
@@ -75,20 +76,20 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     O_Output *GetIcon()
     {
-        return(Icon_);
+        return (Icon_);
     }
     O_Output *GetCallsign()
     {
-        return(Callsign_);
+        return (Callsign_);
     }
     O_Output *GetAircraft()
     {
-        return(Aircraft_);
+        return (Aircraft_);
     }
 
     long CheckHotSpots(long relx, long rely);
@@ -102,7 +103,7 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
 };
 

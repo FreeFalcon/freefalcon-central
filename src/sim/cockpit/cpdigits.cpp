@@ -1,14 +1,15 @@
 #include "stdafx.h"
 #include "cpdigits.h"
 
-#include "Graphics/Include/grinline.h" //Wombat778 3-22-04
+#include "graphics/include/grinline.h" //Wombat778 3-22-04
 
 //MI
 extern bool g_bRealisticAvionics;
 extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 
-CPDigits::CPDigits(ObjectInitStr *pobjectInitStr, DigitsInitStr* pdigitsInitStr) : CPObject(pobjectInitStr)
+CPDigits::CPDigits(ObjectInitStr *pobjectInitStr, DigitsInitStr *pdigitsInitStr)
+    : CPObject(pobjectInitStr)
 {
     int i;
 
@@ -27,8 +28,10 @@ CPDigits::CPDigits(ObjectInitStr *pobjectInitStr, DigitsInitStr* pdigitsInitStr)
     mValue = 0;
 
 #ifdef USE_SH_POOLS
-    mpValues = (int *)MemAllocPtr(gCockMemPool, sizeof(int) * mDestDigits, FALSE);
-    mpDestString = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * (mDestDigits + 1), FALSE);
+    mpValues =
+        (int *)MemAllocPtr(gCockMemPool, sizeof(int) * mDestDigits, FALSE);
+    mpDestString = (char *)MemAllocPtr(gCockMemPool,
+                                       sizeof(char) * (mDestDigits + 1), FALSE);
 #else
     mpValues = new int[mDestDigits];
     mpDestString = new char[mDestDigits + 1];
@@ -46,34 +49,36 @@ CPDigits::CPDigits(ObjectInitStr *pobjectInitStr, DigitsInitStr* pdigitsInitStr)
 
         for (i = 0; i < 10; i++)
         {
-            mpSourceBuffer[i].mWidth = pdigitsInitStr->psrcRects[i].right - pdigitsInitStr->psrcRects[i].left;
-            mpSourceBuffer[i].mHeight = pdigitsInitStr->psrcRects[i].bottom - pdigitsInitStr->psrcRects[i].top;
+            mpSourceBuffer[i].mWidth = pdigitsInitStr->psrcRects[i].right -
+                                       pdigitsInitStr->psrcRects[i].left;
+            mpSourceBuffer[i].mHeight = pdigitsInitStr->psrcRects[i].bottom -
+                                        pdigitsInitStr->psrcRects[i].top;
         }
     }
 
     //Wombat778 end
-
 }
 
 CPDigits::~CPDigits()
 {
-    delete [] mpSrcRects;
-    delete [] mpDestRects;
-    delete [] mpValues;
-    delete [] mpDestString;
+    delete[] mpSrcRects;
+    delete[] mpDestRects;
+    delete[] mpValues;
+    delete[] mpDestString;
 
     //Wombat778 3-22-04 clean up buffers
     if (DisplayOptions.bRender2DCockpit)
     {
-        for (int i = 0; i < 10; i++) //Assume 10 digits, which is how big the number of source rectangles is
-            glReleaseMemory((char*) mpSourceBuffer[i].digit);
+        for (
+            int i = 0; i < 10;
+            i++) //Assume 10 digits, which is how big the number of source rectangles is
+            glReleaseMemory((char *)mpSourceBuffer[i].digit);
 
-        delete [] mpSourceBuffer;
+        delete[] mpSourceBuffer;
     }
-
 }
 
-void CPDigits::Exec(SimBaseClass* pOwnship)
+void CPDigits::Exec(SimBaseClass *pOwnship)
 {
 
     mpOwnship = pOwnship;
@@ -92,24 +97,27 @@ void CPDigits::DisplayBlit()
     int i;
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag)
+    if (not mDirtyFlag)
         return;
 
-    if (DisplayOptions.bRender2DCockpit) //Wombat778 3-22-04 Handle drawing in DisplayBlit3D
+    if (DisplayOptions
+            .bRender2DCockpit) //Wombat778 3-22-04 Handle drawing in DisplayBlit3D
         return;
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         for (i = 0; i < mDestDigits; i++)
-            mpOTWImage->Compose(mpTemplate, &mpSrcRects[mpValues[i]], &mpDestRects[i]);
+            mpOTWImage->Compose(mpTemplate, &mpSrcRects[mpValues[i]],
+                                &mpDestRects[i]);
     }
     else
     {
         for (i = 0; i < mDestDigits; i++)
         {
             if (active)
-                mpOTWImage->Compose(mpTemplate, &mpSrcRects[mpValues[i]], &mpDestRects[i]);
+                mpOTWImage->Compose(mpTemplate, &mpSrcRects[mpValues[i]],
+                                    &mpDestRects[i]);
         }
     }
 
@@ -117,20 +125,20 @@ void CPDigits::DisplayBlit()
 }
 
 
-
-void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digits.  Much faster than blitting.
+void CPDigits::
+    DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digits.  Much faster than blitting.
 {
     int i;
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag)
+    if (not mDirtyFlag)
         return;
 
-    if ( not DisplayOptions.bRender2DCockpit) //Handle drawing in DisplayBlit
+    if (not DisplayOptions.bRender2DCockpit) //Handle drawing in DisplayBlit
         return;
 
     //Wombat778 new rendering code. Taken from cpsurface.cpp
-    if ( not g_bRealisticAvionics or (g_bRealisticAvionics and active))
+    if (not g_bRealisticAvionics or (g_bRealisticAvionics and active))
     {
         OTWDriver.renderer->CenterOriginInViewport();
         OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
@@ -142,10 +150,12 @@ void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digi
                 TextureHandle *pTex = mpSourceBuffer[mpValues[i]].m_arrTex[0];
                 // Setup vertices
                 float fStartU = 0;
-                float fMaxU = (float) pTex->m_nWidth / (float) pTex->m_nActualWidth;
+                float fMaxU =
+                    (float)pTex->m_nWidth / (float)pTex->m_nActualWidth;
                 fMaxU -= fStartU;
                 float fStartV = 0;
-                float fMaxV = (float) pTex->m_nHeight / (float) pTex->m_nActualHeight;
+                float fMaxV =
+                    (float)pTex->m_nHeight / (float)pTex->m_nActualHeight;
                 fMaxV -= fStartV;
 
                 TwoDVertex pVtx[4];
@@ -178,10 +188,13 @@ void CPDigits::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered digi
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Add option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE);
                 else
-                    OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
+                    OTWDriver.renderer->context.RestoreState(
+                        STATE_TEXTURE_NOFILTER);
 
-                OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
-                OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+                OTWDriver.renderer->context.SelectTexture1((DWORD_PTR)pTex);
+                OTWDriver.renderer->context.DrawPrimitive(
+                    MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx,
+                    sizeof(pVtx[0]));
             }
         }
     }
@@ -201,7 +214,7 @@ void CPDigits::SetDigitValues(long value)
         char tbuf[20]; // temporary copy - as it might be bigger
         fieldlen = sprintf(tbuf, "%ld", mValue);
 
-        if (fieldlen > mDestDigits)   // fix up oversized values
+        if (fieldlen > mDestDigits) // fix up oversized values
         {
             strncpy(mpDestString, &tbuf[fieldlen - mDestDigits], mDestDigits);
             fieldlen = mDestDigits;
@@ -232,39 +245,53 @@ void CPDigits::CreateLit(void)
 
         try
         {
-            const DWORD dwMaxTextureWidth = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
-            const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
-            m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
+            const DWORD dwMaxTextureWidth =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
+            const DWORD dwMaxTextureHeight =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
+            m_pPalette = new PaletteHandle(
+                mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if ( not m_pPalette)
+            if (not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             for (int i = 0; i < 10; i++)
             {
                 // Check if we can use a single texture
-                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
+                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and
+                    (int) dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if ( not pTex)
+                    if (not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if ( not pTex->Create("CPDigit", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
+                    if (not pTex->Create("CPDigit",
+                                         MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY,
+                                         8, mpSourceBuffer[i].mWidth,
+                                         mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].digit, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if (not pTex->Load(
+                            0, 0xFFFF0000, (BYTE *)mpSourceBuffer[i].digit,
+                            true,
+                            true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);
                 }
             }
-
         }
         catch (const _com_error &e)
         {
-            MonoPrint("CPDigits::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
+            MonoPrint("CPDigits::CreateLit - Error 0x%X (%s)\n", e.Error(),
+                      e.ErrorMessage());
             DiscardLit();
         }
     }
@@ -276,14 +303,16 @@ void CPDigits::DiscardLit(void)
     {
         for (int i2 = 0; i2 < 10; i2++)
         {
-            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size(); i++) //delete the textures for each digit
+            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size();
+                 i++) //delete the textures for each digit
                 delete mpSourceBuffer[i2].m_arrTex[i];
 
             mpSourceBuffer[i2].m_arrTex.clear();
         }
     }
 
-    for (int i = 0; i < (int)m_arrTex.size(); i++) delete m_arrTex[i]; //delete the local textures
+    for (int i = 0; i < (int)m_arrTex.size(); i++)
+        delete m_arrTex[i]; //delete the local textures
 
     m_arrTex.clear();
 

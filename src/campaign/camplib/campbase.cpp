@@ -1,30 +1,30 @@
-#include <cISO646>
+#include <ciso646>
 #include <stddef.h>
 #include <fcntl.h>
 #include <io.h>
-#include "CampBase.h"
+#include "campbase.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Listadt.h"
-#include "Weather.h"
-#include "CampList.h"
-#include "Campaign.h"
-#include "Tacan.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "listadt.h"
+#include "weather.h"
+#include "camplist.h"
+#include "campaign.h"
+#include "tacan.h"
 #include "classtbl.h"
-#include "Team.h"
-#include "MsgInc/CampDataMsg.h"
-#include "SimBase.h"
-#include "Aircrft.h"
+#include "team.h"
+#include "msginc/campdatamsg.h"
+#include "simbase.h"
+#include "aircrft.h"
 #include "dirtybits.h"
 #include "uicomms.h"
 #include "navsystem.h"
-#include "MissEval.h"
+#include "misseval.h"
 
 //sfr: buffer checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 // The value vu uses to assign VU_IDs
 //extern VU_ID_NUMBER vuAssignmentId;
@@ -42,7 +42,7 @@ enum
 uchar CampSearch[MAX_CAMP_ENTITIES]; // Search data
 
 #ifdef CAMPTOOL
-short CampIDRenameTable[MAX_CAMP_ENTITIES] = { 0 };
+short CampIDRenameTable[MAX_CAMP_ENTITIES] = {0};
 #endif
 
 //===================================
@@ -54,22 +54,28 @@ VU_ID_NUMBER lastFlightId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_1;
 VU_ID_NUMBER lastPackageId = FIRST_LOW_VOLATILE_VU_ID_NUMBER_2;
 VU_ID_NUMBER lastVolatileId = FIRST_VOLATILE_VU_ID_NUMBER;*/
 
-#define FIRST_OBJECTIVE_VU_ID_NUMBER   (VU_FIRST_ENTITY_ID)
-#define LAST_OBJECTIVE_VU_ID_NUMBER   (VU_FIRST_ENTITY_ID+MAX_NUMBER_OF_OBJECTIVES)
-#define FIRST_NON_VOLATILE_VU_ID_NUMBER   (LAST_OBJECTIVE_VU_ID_NUMBER+1)
-#define LAST_NON_VOLATILE_VU_ID_NUMBER   (FIRST_NON_VOLATILE_VU_ID_NUMBER+(MAX_NUMBER_OF_UNITS))
+#define FIRST_OBJECTIVE_VU_ID_NUMBER (VU_FIRST_ENTITY_ID)
+#define LAST_OBJECTIVE_VU_ID_NUMBER                                            \
+    (VU_FIRST_ENTITY_ID + MAX_NUMBER_OF_OBJECTIVES)
+#define FIRST_NON_VOLATILE_VU_ID_NUMBER (LAST_OBJECTIVE_VU_ID_NUMBER + 1)
+#define LAST_NON_VOLATILE_VU_ID_NUMBER                                         \
+    (FIRST_NON_VOLATILE_VU_ID_NUMBER + (MAX_NUMBER_OF_UNITS))
 // divided low volatilies in 2 halfs
 //#define FIRST_LOW_VOLATILE_VU_ID_NUMBER (LAST_NON_VOLATILE_VU_ID_NUMBER+1)
 //#define LAST_LOW_VOLATILE_VU_ID_NUMBER (FIRST_LOW_VOLATILE_VU_ID_NUMBER+(MAX_NUMBER_OF_VOLITILE_UNITS))
-#define FIRST_PACKAGE_ID_NUMBER           (LAST_NON_VOLATILE_VU_ID_NUMBER+1)
-#define LAST_PACKAGE_ID_NUMBER            (FIRST_PACKAGE_ID_NUMBER + (MAX_NUMBER_OF_VOLATILE_UNITS/2))
-#define FIRST_FLIGHT_ID_NUMBER            (LAST_PACKAGE_ID_NUMBER + 1)
-#define LAST_FLIGHT_ID_NUMBER             (FIRST_PACKAGE_ID_NUMBER + MAX_NUMBER_OF_VOLATILE_UNITS)
-#define FIRST_VOLATILE_VU_ID_NUMBER   (LAST_FLIGHT_ID_NUMBER+1)
-#define LAST_VOLATILE_VU_ID_NUMBER   (compl ((VU_ID_NUMBER)0))
+#define FIRST_PACKAGE_ID_NUMBER (LAST_NON_VOLATILE_VU_ID_NUMBER + 1)
+#define LAST_PACKAGE_ID_NUMBER                                                 \
+    (FIRST_PACKAGE_ID_NUMBER + (MAX_NUMBER_OF_VOLATILE_UNITS / 2))
+#define FIRST_FLIGHT_ID_NUMBER (LAST_PACKAGE_ID_NUMBER + 1)
+#define LAST_FLIGHT_ID_NUMBER                                                  \
+    (FIRST_PACKAGE_ID_NUMBER + MAX_NUMBER_OF_VOLATILE_UNITS)
+#define FIRST_VOLATILE_VU_ID_NUMBER (LAST_FLIGHT_ID_NUMBER + 1)
+#define LAST_VOLATILE_VU_ID_NUMBER (compl((VU_ID_NUMBER)0))
 
-IdNamespace ObjectiveNS(FIRST_OBJECTIVE_VU_ID_NUMBER, LAST_OBJECTIVE_VU_ID_NUMBER);
-IdNamespace NonVolatileNS(FIRST_NON_VOLATILE_VU_ID_NUMBER, LAST_NON_VOLATILE_VU_ID_NUMBER);
+IdNamespace ObjectiveNS(FIRST_OBJECTIVE_VU_ID_NUMBER,
+                        LAST_OBJECTIVE_VU_ID_NUMBER);
+IdNamespace NonVolatileNS(FIRST_NON_VOLATILE_VU_ID_NUMBER,
+                          LAST_NON_VOLATILE_VU_ID_NUMBER);
 IdNamespace PackageNS(FIRST_PACKAGE_ID_NUMBER, LAST_PACKAGE_ID_NUMBER);
 IdNamespace FlightNS(FIRST_FLIGHT_ID_NUMBER, LAST_FLIGHT_ID_NUMBER);
 IdNamespace VolatileNS(FIRST_VOLATILE_VU_ID_NUMBER, LAST_VOLATILE_VU_ID_NUMBER);
@@ -82,14 +88,16 @@ extern int start_save_stream, start_load_stream;
 // Camp base class functions
 // ===================================
 
-CampBaseClass::CampBaseClass(ushort typeindex, VU_ID_NUMBER id) : FalconEntity(typeindex, id)
+CampBaseClass::CampBaseClass(ushort typeindex, VU_ID_NUMBER id)
+    : FalconEntity(typeindex, id)
 {
     InitLocalData();
     camp_id = FindUniqueID();
 }
 
 // This call will create a full entity
-CampBaseClass::CampBaseClass(VU_BYTE **stream, long *rem) : FalconEntity(VU_LAST_ENTITY_TYPE, 0)
+CampBaseClass::CampBaseClass(VU_BYTE** stream, long* rem)
+    : FalconEntity(VU_LAST_ENTITY_TYPE, 0)
 {
     InitLocalData();
 
@@ -148,7 +156,7 @@ CampBaseClass::CampBaseClass(VU_BYTE **stream, long *rem) : FalconEntity(VU_LAST
 
         for (int i = 0; i < MAX_CAMP_ENTITIES; i++)
         {
-            if ( not CampIDRenameTable[i])
+            if (not CampIDRenameTable[i])
             {
                 CampIDRenameTable[i] = camp_id;
                 break;
@@ -206,7 +214,7 @@ void CampBaseClass::InitLocalData()
     components = NULL;
     deag_owner = FalconNullId;
     SetAggregate(true);
-    VuGameEntity *game = FalconLocalGame;
+    VuGameEntity* game = FalconLocalGame;
     SetAssociation(game->Id());
     dirty_camp_base = 0;
     spotTime = 0; // JB 010719
@@ -214,19 +222,12 @@ void CampBaseClass::InitLocalData()
 
 int CampBaseClass::SaveSize(void)
 {
-    return sizeof(VU_ID)
-           + sizeof(ushort)
-           + sizeof(GridIndex)
-           + sizeof(GridIndex)
-           + sizeof(float)
-           + sizeof(CampaignTime)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(Control)
-           + sizeof(short);
+    return sizeof(VU_ID) + sizeof(ushort) + sizeof(GridIndex) +
+           sizeof(GridIndex) + sizeof(float) + sizeof(CampaignTime) +
+           sizeof(short) + sizeof(short) + sizeof(Control) + sizeof(short);
 }
 
-int CampBaseClass::Save(VU_BYTE **stream)
+int CampBaseClass::Save(VU_BYTE** stream)
 {
     GridIndex x, y;
     short tmp;
@@ -235,7 +236,8 @@ int CampBaseClass::Save(VU_BYTE **stream)
 
     if (save_log)
     {
-        fprintf(save_log, "%08x CampBaseClass (%08x%08x %d) ", *stream - start_save_stream, share_.id_, share_.entityType_);
+        fprintf(save_log, "%08x CampBaseClass (%08x%08x %d) ",
+                *stream - start_save_stream, share_.id_, share_.entityType_);
         fflush(save_log);
     }
 
@@ -268,12 +270,12 @@ int CampBaseClass::Save(VU_BYTE **stream)
 }
 
 // event handlers
-int CampBaseClass::Handle(VuEvent *event)
+int CampBaseClass::Handle(VuEvent* event)
 {
     return (FalconEntity::Handle(event));
 }
 
-int CampBaseClass::Handle(VuFullUpdateEvent *event)
+int CampBaseClass::Handle(VuFullUpdateEvent* event)
 {
     GridIndex x, y;
 
@@ -301,29 +303,30 @@ int CampBaseClass::Handle(VuFullUpdateEvent *event)
     return (FalconEntity::Handle(event));
 }
 
-int CampBaseClass::Handle(VuPositionUpdateEvent *event)
+int CampBaseClass::Handle(VuPositionUpdateEvent* event)
 {
     return (FalconEntity::Handle(event));
 }
 
-int CampBaseClass::Handle(VuEntityCollisionEvent *event)
+int CampBaseClass::Handle(VuEntityCollisionEvent* event)
 {
     return (FalconEntity::Handle(event));
 }
 
-int CampBaseClass::Handle(VuTransferEvent *event)
+int CampBaseClass::Handle(VuTransferEvent* event)
 {
     return (FalconEntity::Handle(event));
 }
 
-int CampBaseClass::Handle(VuSessionEvent *event)
+int CampBaseClass::Handle(VuSessionEvent* event)
 {
     return (FalconEntity::Handle(event));
 }
 
-void CampBaseClass::SendMessage(VU_ID id, short msg, short d1, short d2, short d3, short d4)
+void CampBaseClass::SendMessage(VU_ID id, short msg, short d1, short d2,
+                                short d3, short d4)
 {
-    VuTargetEntity* target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
+    VuTargetEntity* target = (VuTargetEntity*)vuDatabase->Find(OwnerId());
     FalconCampMessage* cm = new FalconCampMessage(Id(), target);
 
     cm->dataBlock.from = id;
@@ -335,7 +338,8 @@ void CampBaseClass::SendMessage(VU_ID id, short msg, short d1, short d2, short d
     FalconSendMessage(cm, TRUE);
 }
 
-void CampBaseClass::BroadcastMessage(VU_ID id, short msg, short d1, short d2, short d3, short d4)
+void CampBaseClass::BroadcastMessage(VU_ID id, short msg, short d1, short d2,
+                                     short d3, short d4)
 {
     FalconCampMessage* cm = new FalconCampMessage(Id(), FalconLocalGame);
 
@@ -362,7 +366,7 @@ VU_ERRCODE CampBaseClass::Remove()
 // Getters
 int CampBaseClass::GetSpotted(Team t)
 {
-    if ( not this)
+    if (not this)
         return 1;
 
     // same team always spotted and identified
@@ -378,7 +382,7 @@ int CampBaseClass::GetSpotted(Team t)
 
     // sfr: bad usage here use sum instead, since in MP clients can receive future updates
     // also, in MP, messages take time to get, this is reseting spot, so added IsLocal()
-    if (IsLocal() and Camp_GetCurrentTime()  > ReconLossTime[mt] + spotTime)
+    if (IsLocal() and Camp_GetCurrentTime() > ReconLossTime[mt] + spotTime)
     {
         spotted = 0;
     }
@@ -390,55 +394,57 @@ int CampBaseClass::GetSpotted(Team t)
 
     switch (mt)
     {
-        case Air:
-        case LowAir:
-        case Foot:
-            return 0;
-            break;
+    case Air:
+    case LowAir:
+    case Foot:
+        return 0;
+        break;
 
-        case Tracked:
-        case Wheeled:
-        case Rail:
-            return 0;
-            break;
+    case Tracked:
+    case Wheeled:
+    case Rail:
+        return 0;
+        break;
 
-        case Naval:
-            if (TeamInfo[t] and TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
-            {
-                // Check for cloud cover
-                GridIndex x, y;
-                GetLocation(&x, &y);
+    case Naval:
+        if (TeamInfo[t] and
+            TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
+        {
+            // Check for cloud cover
+            GridIndex x, y;
+            GetLocation(&x, &y);
 
-                //JAM 20Nov03 - FIXME
-                // if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
-                // {
-                SetSpotted(t, Camp_GetCurrentTime());
-                return 1;
-                // }
-            }
+            //JAM 20Nov03 - FIXME
+            // if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
+            // {
+            SetSpotted(t, Camp_GetCurrentTime());
+            return 1;
+            // }
+        }
 
-            break;
+        break;
 
-        default:
+    default:
 
-            // KCK: Experimental - Autospotted during first 12 hours of combat
-            if (Camp_GetCurrentTime() < CampaignDay / 2)
-                return 1;
-            else if (TeamInfo[t] and TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
-            {
-                // Check for cloud cover
-                GridIndex x, y;
-                GetLocation(&x, &y);
+        // KCK: Experimental - Autospotted during first 12 hours of combat
+        if (Camp_GetCurrentTime() < CampaignDay / 2)
+            return 1;
+        else if (TeamInfo[t] and
+                 TeamInfo[t]->HasSatelites()) // 2002-03-06 MN CTD fix
+        {
+            // Check for cloud cover
+            GridIndex x, y;
+            GetLocation(&x, &y);
 
-                //JAM 20Nov03 - FIXME
-                // if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
-                // {
-                SetSpotted(t, Camp_GetCurrentTime());
-                return 1;
-                // }
-            }
+            //JAM 20Nov03 - FIXME
+            // if (((WeatherClass*)TheWeather)->GetCloudCover(x,y) < (MAX_CLOUD_TYPE-(MAX_CLOUD_TYPE/4)))
+            // {
+            SetSpotted(t, Camp_GetCurrentTime());
+            return 1;
+            // }
+        }
 
-            break;
+        break;
     }
 
     return 0;
@@ -502,12 +508,13 @@ void CampBaseClass::SetSpotted(Team t, CampaignTime time, int identified)
 {
     // Make this dirty if we wern't previously spotted or our time has expired
     // 2002-02-11 MODIFIED BY S.G. Or we were not identified and now we are
-    if (ReSpot() or not ((spotted >> t) bitand 0x01) or ( not ((spotted >> (t + 8)) bitand 0x01) and identified))
+    if (ReSpot() or not((spotted >> t) bitand 0x01) or
+        (not((spotted >> (t + 8)) bitand 0x01) and identified))
     {
         spotTime = time;
 
         // 2002-04-02 ADDED BY S.G. Need to send sooner if it gets identified.
-        if ( not ((spotted >> (t + 8)) bitand 0x01) and identified)
+        if (not((spotted >> (t + 8)) bitand 0x01) and identified)
         {
             //MakeCampBaseDirty (DIRTY_SPOTTED, DDP[2].priority);
             MakeCampBaseDirty(DIRTY_SPOTTED, SEND_RELIABLE);
@@ -539,7 +546,7 @@ void CampBaseClass::SetEmitting(int e)
     // }
     if (e)
     {
-        if ( not IsEmitting())
+        if (not IsEmitting())
         {
             base_flags or_eq CBC_EMITTING;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[4].priority);
@@ -548,9 +555,9 @@ void CampBaseClass::SetEmitting(int e)
 
         if (
 #if VU_ALL_FILTERED
- not EmitterList->Find(this)
+            not EmitterList->Find(this)
 #else
- not EmitterList->Find(Id())
+            not EmitterList->Find(Id())
 #endif
         )
         {
@@ -561,7 +568,7 @@ void CampBaseClass::SetEmitting(int e)
 
             if (GetRadarMode() == FEC_RADAR_OFF)
             {
-                SetRadarMode(FEC_RADAR_SEARCH_1);//me123 + rand()%3);
+                SetRadarMode(FEC_RADAR_SEARCH_1); //me123 + rand()%3);
                 // ReturnToSearch();
             }
         }
@@ -604,7 +611,7 @@ void CampBaseClass::SetJammed(int j)
 {
     if (j)
     {
-        if ( not (base_flags bitand CBC_JAMMED))
+        if (not(base_flags bitand CBC_JAMMED))
         {
             base_flags or_eq CBC_JAMMED;
             //MakeCampBaseDirty (DIRTY_BASE_FLAGS, DDP[6].priority);
@@ -625,29 +632,35 @@ void CampBaseClass::SetJammed(int j)
 void CampBaseClass::SetTacan(int t)
 {
 
-    if ( not t and IsTacan() and gTacanList)
+    if (not t and IsTacan() and gTacanList)
     {
         if (IsObjective() and GetType() == TYPE_AIRBASE)
         {
             gTacanList->RemoveTacan(Id(), NavigationSystem::AIRBASE);
         }
-        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT)
+        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and
+                 EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT)
         {
             gTacanList->RemoveTacan(Id(), NavigationSystem::TANKER);
         }
-        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE and EntityType()->classInfo_[VU_STYPE])
+        else if (EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and
+                 EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE and
+                 EntityType()->classInfo_[VU_STYPE])
         {
             gTacanList->RemoveTacan(Id(), NavigationSystem::CARRIER);
         }
     }
-    else if (t and ( not IsTacan() or (IsObjective() and GetType() == TYPE_AIRBASE)) and gTacanList)
+    else if (t and
+             (not IsTacan() or
+              (IsObjective() and GetType() == TYPE_AIRBASE)) and
+             gTacanList)
     {
         gTacanList->AddTacan(this);
     }
 
     local_flags or_eq CBC_HAS_TACAN;
 
-    if ( not t)
+    if (not t)
         local_flags xor_eq CBC_HAS_TACAN;
 }
 /*
@@ -662,7 +675,7 @@ void CampBaseClass::SetAwake(int d)
 {
     local_flags or_eq CBC_AWAKE;
 
-    if ( not d)
+    if (not d)
     {
         local_flags xor_eq CBC_AWAKE;
     }
@@ -672,7 +685,7 @@ void CampBaseClass::SetInPackage(int p)
 {
     local_flags or_eq CBC_IN_PACKAGE;
 
-    if ( not p)
+    if (not p)
     {
         local_flags xor_eq CBC_IN_PACKAGE;
     }
@@ -682,7 +695,7 @@ void CampBaseClass::SetDelta(int d)
 {
     local_flags or_eq CBC_HAS_DELTA;
 
-    if ( not d)
+    if (not d)
         local_flags xor_eq CBC_HAS_DELTA;
 }
 
@@ -690,7 +703,7 @@ void CampBaseClass::SetInSimLists(int l)
 {
     local_flags or_eq CBC_IN_SIM_LIST;
 
-    if ( not l)
+    if (not l)
         local_flags xor_eq CBC_IN_SIM_LIST;
 }
 
@@ -698,7 +711,7 @@ void CampBaseClass::SetReserved(int r)
 {
     local_flags or_eq CBC_RESERVED_ONLY;
 
-    if ( not r)
+    if (not r)
         local_flags xor_eq CBC_RESERVED_ONLY;
 }
 
@@ -716,19 +729,19 @@ int CampBaseClass::ReSpot()
 // Component accessers (Sim Flight emulators)
 int CampBaseClass::GetComponentIndex(VuEntity* me) // My call
 {
-    if ( not components)
+    if (not components)
         return 0;
     else
     {
         VuListIterator cit(components);
         int idx = 0;
-        VuEntity *cur;
+        VuEntity* cur;
 
         cur = cit.GetFirst();
 
         while (cur and cur not_eq me)
         {
-            idx ++;
+            idx++;
             cur = cit.GetNext();
         }
 
@@ -742,7 +755,7 @@ SimBaseClass* CampBaseClass::GetComponentEntity(int idx) // My call
     {
         VuListIterator cit(components);
         int count = 0;
-        VuEntity *cur;
+        VuEntity* cur;
 
         cur = cit.GetFirst();
 
@@ -764,7 +777,7 @@ SimBaseClass* CampBaseClass::GetComponentLead(void) // My call
     if (components)
     {
         VuListIterator cit(components);
-        return (SimBaseClass*) cit.GetFirst();
+        return (SimBaseClass*)cit.GetFirst();
     }
 
     return NULL;
@@ -776,9 +789,9 @@ SimBaseClass* CampBaseClass::GetComponentNumber(int component)
     if (components)
     {
         VuListIterator cit(components);
-        SimBaseClass *entity;
+        SimBaseClass* entity;
 
-        entity = (SimBaseClass *)cit.GetFirst();
+        entity = (SimBaseClass*)cit.GetFirst();
 
         while (entity)
         {
@@ -792,7 +805,7 @@ SimBaseClass* CampBaseClass::GetComponentNumber(int component)
             else if (entity->GetSlot() == component)
                 return entity;
 
-            entity = (SimBaseClass *)cit.GetNext();
+            entity = (SimBaseClass*)cit.GetNext();
         }
     }
 
@@ -824,7 +837,7 @@ int CampBaseClass::NumberOfComponents(void) // My call
 
 FalconSessionEntity* CampBaseClass::GetDeaggregateOwner(void)
 {
-    return (FalconSessionEntity*) vuDatabase->Find(deag_owner);
+    return (FalconSessionEntity*)vuDatabase->Find(deag_owner);
 }
 
 // ===========================
@@ -840,7 +853,8 @@ CampEntity GetFirstEntity(F4LIt l)
     while (e)
     {
         //if (e->VuState() not_eq VU_MEM_DELETED)
-        if (GetEntityClass(e) == CLASS_UNIT or GetEntityClass(e) == CLASS_OBJECTIVE)
+        if (GetEntityClass(e) == CLASS_UNIT or
+            GetEntityClass(e) == CLASS_OBJECTIVE)
         {
             return (CampEntity)e;
         }
@@ -860,7 +874,8 @@ CampEntity GetNextEntity(F4LIt l)
     while (e)
     {
         //if (e->VuState() not_eq VU_MEM_DELETED)
-        if (GetEntityClass(e) == CLASS_UNIT or GetEntityClass(e) == CLASS_OBJECTIVE)
+        if (GetEntityClass(e) == CLASS_UNIT or
+            GetEntityClass(e) == CLASS_OBJECTIVE)
         {
             return (CampEntity)e;
         }
@@ -881,7 +896,7 @@ int Real(int type)
 
 short GetEntityClass(VuEntity* e)
 {
-    if ( not e)
+    if (not e)
         return 0;
 
     return (e->EntityType())->classInfo_[VU_CLASS];
@@ -889,7 +904,7 @@ short GetEntityClass(VuEntity* e)
 
 short GetEntityDomain(VuEntity* e)
 {
-    if ( not e)
+    if (not e)
         return 0;
 
     return (e->EntityType())->classInfo_[VU_DOMAIN];
@@ -931,10 +946,10 @@ short FindUniqueID()
     {
         // more complex algorythm if we're out of space
         short highest = 0;
-        memset(CampSearch, 0, sizeof(uchar)*MAX_CAMP_ENTITIES);
+        memset(CampSearch, 0, sizeof(uchar) * MAX_CAMP_ENTITIES);
         {
             VuListIterator myit(AllCampList);
-            e = (CampEntity) myit.GetFirst();
+            e = (CampEntity)myit.GetFirst();
 
             while (e)
             {
@@ -948,13 +963,13 @@ short FindUniqueID()
                     highest = gLastId;
                 }
 
-                e = (CampEntity) myit.GetNext();
+                e = (CampEntity)myit.GetNext();
             }
         }
 
         for (id = 1; id < MAX_CAMP_ENTITIES; id++)
         {
-            if ( not CampSearch[id])
+            if (not CampSearch[id])
                 return id;
         }
 
@@ -980,15 +995,14 @@ void ResetNamespaces()
     VolatileNS.Reset();
 }
 
-VU_ID_NUMBER GetIdFromNamespace(IdNamespace &ns)
+VU_ID_NUMBER GetIdFromNamespace(IdNamespace& ns)
 {
     VU_ID tryId(vuLocalSession.creator_, 0);
 
     do
     {
         tryId.num_ = ns.GetId();
-    }
-    while (vuDatabase->Find(tryId) not_eq NULL);
+    } while (vuDatabase->Find(tryId) not_eq NULL);
 
     return tryId.num_;
 }
@@ -1007,7 +1021,7 @@ int GetVisualDetectionRange(int mt)
     if ((timer == 0) or (SimLibElapsedTime > timer))
     {
         tod = TimeOfDayGeneral();
-        timer = SimLibElapsedTime + 900000;//15 minutes
+        timer = SimLibElapsedTime + 900000; //15 minutes
     }
 
     if (tod == 1)
@@ -1038,14 +1052,13 @@ int GetVisualDetectionRange(int mt)
 }
 
 
-
 void CampBaseClass::SetOwner(Control new_owner)
 {
     owner = new_owner;
     //MakeCampBaseDirty (DIRTY_OWNER, 1);
 }
 
-void CampBaseClass::SetComponents(TailInsertList *new_list)
+void CampBaseClass::SetComponents(TailInsertList* new_list)
 {
     components = new_list;
     //MakeCampBaseDirty (DIRTY_COMPONENTS, 1);
@@ -1075,12 +1088,12 @@ void CampBaseClass::SetBaseFlags(short flags)
 
 void CampBaseClass::MakeCampBaseDirty(Dirty_Campaign_Base bits, Dirtyness score)
 {
-    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if ((not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
+    if (not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }
@@ -1089,14 +1102,14 @@ void CampBaseClass::MakeCampBaseDirty(Dirty_Campaign_Base bits, Dirtyness score)
     MakeDirty(DIRTY_CAMPAIGN_BASE, score);
 }
 
-void CampBaseClass::WriteDirty(unsigned char **stream)
+void CampBaseClass::WriteDirty(unsigned char** stream)
 {
     unsigned char *start, *ptr;
 
     start = *stream;
     ptr = start;
 
-    *ptr = (unsigned char) dirty_camp_base;
+    *ptr = (unsigned char)dirty_camp_base;
     ptr += sizeof(unsigned char);
 
     if (dirty_camp_base bitand DIRTY_POSITION)
@@ -1134,7 +1147,7 @@ void CampBaseClass::WriteDirty(unsigned char **stream)
     *stream = ptr;
 }
 
-void CampBaseClass::ReadDirty(VU_BYTE **stream, long *rem)
+void CampBaseClass::ReadDirty(VU_BYTE** stream, long* rem)
 {
 
     unsigned char bits;
@@ -1184,8 +1197,3 @@ void CampBaseClass::ReadDirty(VU_BYTE **stream, long *rem)
         memcpychk((void*)(&base_flags), stream, sizeof(short), rem);
     }
 }
-
-
-
-
-

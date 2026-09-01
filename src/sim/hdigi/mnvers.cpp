@@ -8,7 +8,7 @@
 
 float HeliBrain::VectorTrack(float, int)
 {
-    return(0.0f);
+    return (0.0f);
 }
 
 float HeliBrain::AutoTrack(float)
@@ -27,12 +27,14 @@ float HeliBrain::AutoTrack(float)
     /*---------------------------*/
     /* Range to current waypoint */
     /*---------------------------*/
-    rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) * (trackY - self->YPos());
+    rng = (trackX - self->XPos()) * (trackX - self->XPos()) +
+          (trackY - self->YPos()) * (trackY - self->YPos());
 
     /*------------------------------------*/
     /* Heading error for current waypoint */
     /*------------------------------------*/
-    desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) - self->Yaw();
+    desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) -
+                 self->Yaw();
 
     if (desHeading > 180.0F * DTR)
         desHeading -= 360.0F * DTR;
@@ -65,7 +67,7 @@ float HeliBrain::AutoTrack(float)
     AltitudeHold(trackZ);
     MachHold(desSpeed, 0.0F, FALSE);
 
-    return(0.0f);
+    return (0.0f);
 }
 
 int HeliBrain::MachHold(float m1, float, int)
@@ -82,7 +84,6 @@ int HeliBrain::MachHold(float m1, float, int)
 
 
     return TRUE;
-
 }
 
 void HeliBrain::Loiter(void)
@@ -104,7 +105,6 @@ void HeliBrain::LevelTurn(float load_factor, float turnDir, int)
         load_factor = -1.0f;
 
     rStick = load_factor;
-
 }
 
 int HeliBrain::AltitudeHold(float desAlt)
@@ -186,7 +186,7 @@ void HeliBrain::GammaHold(float desGamma)
     MonoLocate (35, 3);
     MonoPrint ("%.2f %.2f %.2f\n", af->x, af->y, af->z);
     MonoLocate (35, 4);
-    MonoPrint ("%.2f %.2f %.2f %8ld\n", af->nxcgb, af->nycgb, af->nzcgb, SimLibElapsedTime);
+    MonoPrint ("%.2f %.2f %.2f %8u\n", af->nxcgb, af->nycgb, af->nzcgb, SimLibElapsedTime);
     */
 }
 

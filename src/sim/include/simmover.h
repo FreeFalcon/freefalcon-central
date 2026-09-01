@@ -15,8 +15,12 @@ private:
     //float vt, kias;
 
 protected:
-
-    enum DOFTypes {AngleDof, TranslateDof, NoDof};
+    enum DOFTypes
+    {
+        AngleDof,
+        TranslateDof,
+        NoDof
+    };
     int numDofs;
     int numSwitches;
     int numVertices;
@@ -72,16 +76,17 @@ public:
     //virtual void SetDelta(SM_SCALAR dx, SM_SCALAR dy, SM_SCALAR dz);
 
     SimMoverClass(int type);
-    SimMoverClass(VU_BYTE** stream, long *rem);
+    SimMoverClass(VU_BYTE** stream, long* rem);
     SimMoverClass(FILE* filePtr);
     virtual ~SimMoverClass();
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
-public:
 
+public:
     virtual void Init(SimInitDataClass* initData);
     virtual int Exec();
     virtual void SetLead(int) {};
@@ -114,19 +119,19 @@ public:
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream); // returns bytes written
-    virtual int Save(FILE *file); // returns bytes written
+    virtual int Save(VU_BYTE** stream); // returns bytes written
+    virtual int Save(FILE* file); // returns bytes written
 
     // event handlers
-    virtual int Handle(VuFullUpdateEvent *event);
-    virtual int Handle(VuPositionUpdateEvent *event);
-    virtual int Handle(VuTransferEvent *event);
+    virtual int Handle(VuFullUpdateEvent* event);
+    virtual int Handle(VuPositionUpdateEvent* event);
+    virtual int Handle(VuTransferEvent* event);
 
     // collision with feature
-    virtual SimBaseClass *FeatureCollision(float groundZ);
-    virtual int CheckLOS(SimObjectType *obj);
-    virtual int CheckCompositeLOS(SimObjectType *obj);
-    void UpdateLOS(SimObjectType *obj);
+    virtual SimBaseClass* FeatureCollision(float groundZ);
+    virtual int CheckLOS(SimObjectType* obj);
+    virtual int CheckCompositeLOS(SimObjectType* obj);
+    void UpdateLOS(SimObjectType* obj);
 
     void SetDOFs(float*);
     void SetSwitches(int*);
@@ -189,7 +194,7 @@ public:
     {
         dataRequested = flag;
     }
-    void SetTarget(SimObjectType *newTarget);
+    void SetTarget(SimObjectType* newTarget);
     void ClearTarget(void);
     virtual VU_ERRCODE InsertionCallback(void);
     virtual VU_ERRCODE RemovalCallback(void);

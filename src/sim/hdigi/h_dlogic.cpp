@@ -6,7 +6,7 @@
 #include "fcc.h"
 #include "sms.h"
 #include "object.h"
-#include "MsgInc/airaimodechange.h"
+#include "msginc/airaimodechange.h"
 #include "campwp.h"
 #include "falcsess.h"
 #include "simdrive.h"
@@ -65,14 +65,14 @@ void HeliBrain::TargetSelection(void)
     int campTactic;
 
     // sanity check
-    if ( not campUnit)
+    if (not campUnit)
         return;
 
     // check to see if our current ground target is a sim and exploding or
     // dead, if so let's get a new target from the campaign
-    if (targetPtr and 
-        targetPtr->BaseData()->IsSim() and 
-        (targetPtr->BaseData()->IsExploding() or not ((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
+    if (targetPtr and targetPtr->BaseData()->IsSim() and
+        (targetPtr->BaseData()->IsExploding() or
+         not((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
     {
         ClearTarget();
     }
@@ -120,7 +120,7 @@ void HeliBrain::TargetSelection(void)
     campUnit->UnsetChecked();
 
     // choose target.  I assume if this returns 0, no target....
-    if ( not campUnit->ChooseTarget())
+    if (not campUnit->ChooseTarget())
     {
         ClearTarget();
         // alternately try and choose the waypoint's target
@@ -136,18 +136,15 @@ void HeliBrain::TargetSelection(void)
     campTactic = campUnit->GetUnitTactic();
 
     // sanity check and make sure its on ground, what to do if not?...
-    if ( not target or
-        campTactic == ATACTIC_RETROGRADE or
-        campTactic == ATACTIC_IGNORE or
-        campTactic == ATACTIC_AVOID or
-        campTactic == ATACTIC_ABORT or
-        campTactic == ATACTIC_REFUEL)
+    if (not target or campTactic == ATACTIC_RETROGRADE or
+        campTactic == ATACTIC_IGNORE or campTactic == ATACTIC_AVOID or
+        campTactic == ATACTIC_ABORT or campTactic == ATACTIC_REFUEL)
     {
         ClearTarget();
         return;
     }
 
-    if (((CampBaseClass*)target)->IsAggregate())
+    if (((CampBaseClass *)target)->IsAggregate())
     {
         // still aggregated, return
         SetTargetEntity(target);
@@ -159,30 +156,35 @@ void HeliBrain::TargetSelection(void)
     // M.N. use S.G.'s FindSimGroundTarget function to choose a sim entity
     if (target->IsSim() and target->OnGround())
     {
-        simTarg = FindSimGroundTarget((CampBaseClass*)target, ((CampBaseClass*)target)->NumberOfComponents(), 0);
+        simTarg = FindSimGroundTarget(
+            (CampBaseClass *)target,
+            ((CampBaseClass *)target)->NumberOfComponents(), 0);
 
-        if ( not simTarg) // another sanity check
+        if (not simTarg) // another sanity check
             return;
 
         // set it as our target
-        if ( not simTarg->IsExploding() and not simTarg->IsDead() and simTarg->pctStrength > 0.0f) // still alive?
+        if (not simTarg->IsExploding() and not simTarg->IsDead() and
+            simTarg->pctStrength > 0.0f) // still alive?
             SetTargetEntity(simTarg);
 
         return;
     }
 
     SetTargetEntity(target);
-
 }
 
 // 2001-11-29 ADDED BY S.G. HELP FUNCTION TO SEARCH FOR A GROUND TARGET Modified for helis by M.N.
-SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int targetNumComponents, int startPos)
+SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup,
+                                             int targetNumComponents,
+                                             int startPos)
 {
     int i;
     int usComponents = self->GetCampaignObject()->NumberOfComponents();
     SimBaseClass *simTarg = NULL;
     SimBaseClass *firstSimTarg = NULL;
-    HelicopterClass *flightMember[4] =  { 0 }; // Maximum of 4 planes per flight with no target as default
+    HelicopterClass *flightMember[4] = {
+        0}; // Maximum of 4 planes per flight with no target as default
 
     // Get the flight helis (once per call instead of once per target querried)
     for (i = 0; i < usComponents; i++)
@@ -190,12 +192,17 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         // I onced tried to get the player's current target so it could be skipped by the AI but
         // all the player's are not on the same PC as the AI so this is not valid.
         // Therefore, only get this from digital planes, or the player if he is local
-        if (((HeliMMClass *)self->GetCampaignObject()->GetComponentEntity(i))->isDigital or ((HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i))->IsLocal())
+        if (((HeliMMClass *)self->GetCampaignObject()->GetComponentEntity(i))
+                ->isDigital or
+            ((HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(
+                 i))
+                ->IsLocal())
         {
-            flightMember[i] = (HelicopterClass *)self->GetCampaignObject()->GetComponentEntity(i);
+            flightMember[i] = (HelicopterClass *)self->GetCampaignObject()
+                                  ->GetComponentEntity(i);
 
             // Sanity check
-            if ( not flightMember[i])
+            if (not flightMember[i])
                 continue;
         }
     }
@@ -203,36 +210,37 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
     // Check each sim entity in the campaign entity in succession, starting at startPos.
     // When incrementing i, use 0 if we had a 'startPos' but it wasn't valid
 
-    for (i = startPos; i < targetNumComponents; i = startPos ? 0 : i + 1, startPos = 0)
+    for (i = startPos; i < targetNumComponents;
+         i = startPos ? 0 : i + 1, startPos = 0)
     {
         // Get the sim object associated to this entity number
         simTarg = targetGroup->GetComponentEntity(i);
 
-        if ( not simTarg) //sanity check
+        if (not simTarg) //sanity check
             continue;
 
         // Is it alive?
-        if (simTarg->IsExploding() or simTarg->IsDead() or simTarg->pctStrength <= 0.0f)
+        if (simTarg->IsExploding() or simTarg->IsDead() or
+            simTarg->pctStrength <= 0.0f)
             continue; // Dead thing, ignore it.
 
         // Are flight members already using it (was using it) as a target?
         int j = 0;
 
         for (j = 0; j < usComponents; j++)
-            if (flightMember[j]
-               and flightMember[j]->hBrain
-               and ((flightMember[j]->hBrain->targetPtr
-                    and flightMember[j]->hBrain->targetPtr->BaseData() == simTarg)
-                    or flightMember[j]->hBrain->targetHistory[0] == simTarg
-                    or flightMember[j]->hBrain->targetHistory[1] == simTarg))
-                break;  // Yes, ignore it.
+            if (flightMember[j] and flightMember[j]->hBrain and
+                ((flightMember[j]->hBrain->targetPtr and
+                  flightMember[j]->hBrain->targetPtr->BaseData() == simTarg) or
+                 flightMember[j]->hBrain->targetHistory[0] == simTarg or
+                 flightMember[j]->hBrain->targetHistory[1] == simTarg))
+                break; // Yes, ignore it.
 
         // If we didn't reach the end, someone else is using it so skip it.
         if (j not_eq usComponents)
             continue;
 
         // Mark this sim entity as the first target with a match (in case no emitting targets are left standing, or it's a feature)
-        if ( not firstSimTarg)
+        if (not firstSimTarg)
             firstSimTarg = simTarg;
 
         // Is it an objective, break out
@@ -255,12 +263,13 @@ SimBaseClass *HeliBrain::FindSimGroundTarget(CampBaseClass *targetGroup, int tar
         firstSimTarg = 0;
 
     // JB 011017 from Schumi if targetNumComponents is less than usComponents, then of course there is no target anymore for the wingmen to bomb, and firstSimTarg is NULL.
-    if (firstSimTarg == NULL and targetNumComponents and targetNumComponents < usComponents)
-        firstSimTarg = targetGroup->GetComponentEntity(rand() % targetNumComponents);
+    if (firstSimTarg == NULL and targetNumComponents and
+        targetNumComponents < usComponents)
+        firstSimTarg =
+            targetGroup->GetComponentEntity(rand() % targetNumComponents);
 
     return firstSimTarg;
 }
-
 
 
 /*
@@ -455,83 +464,83 @@ void HeliBrain::RunDecisionRoutines(void)
 
 void HeliBrain::PrtMode(void)
 {
-    AirAIModeMsg* modeMsg;
+    AirAIModeMsg *modeMsg;
 
     if (curMode not_eq lastMode)
     {
         switch (curMode)
         {
-            case RTBMode:
-                PrintOnline("DIGI RTBMode");
-                break;
+        case RTBMode:
+            PrintOnline("DIGI RTBMode");
+            break;
 
-            case WingyMode:
-                PrintOnline("DIGI WINGMAN");
-                break;
+        case WingyMode:
+            PrintOnline("DIGI WINGMAN");
+            break;
 
-            case WaypointMode:
-                PrintOnline("DIGI WaypointMode");
-                break;
+        case WaypointMode:
+            PrintOnline("DIGI WaypointMode");
+            break;
 
-            case GunsEngageMode:
-                PrintOnline("DIGI GUNS ENGAGE");
-                break;
+        case GunsEngageMode:
+            PrintOnline("DIGI GUNS ENGAGE");
+            break;
 
-            case BVREngageMode:
-                PrintOnline("DIGI BVR ENGAGE");
-                break;
+        case BVREngageMode:
+            PrintOnline("DIGI BVR ENGAGE");
+            break;
 
-            case WVREngageMode:
-                PrintOnline("DIGI WVR ENGAGE");
-                break;
+        case WVREngageMode:
+            PrintOnline("DIGI WVR ENGAGE");
+            break;
 
-            case MissileDefeatMode:
-                PrintOnline("DIGI MISSILE DEFEAT");
-                break;
+        case MissileDefeatMode:
+            PrintOnline("DIGI MISSILE DEFEAT");
+            break;
 
-            case MissileEngageMode:
-                PrintOnline("DIGI MSSLE ENGAGE");
-                break;
+        case MissileEngageMode:
+            PrintOnline("DIGI MSSLE ENGAGE");
+            break;
 
-            case GunsJinkMode:
-                PrintOnline("DIGI GUNS JINK");
-                break;
+        case GunsJinkMode:
+            PrintOnline("DIGI GUNS JINK");
+            break;
 
-            case GroundAvoidMode:
-                PrintOnline("DIGI GROUND AVOID");
-                break;
+        case GroundAvoidMode:
+            PrintOnline("DIGI GROUND AVOID");
+            break;
 
-            case LoiterMode:
-                PrintOnline("DIGI LoiterMode");
-                break;
+        case LoiterMode:
+            PrintOnline("DIGI LoiterMode");
+            break;
 
-            case RunAwayMode:
-                PrintOnline("DIGI DISENGAGE");
-                break;
+        case RunAwayMode:
+            PrintOnline("DIGI DISENGAGE");
+            break;
 
-            case OvershootMode:
-                PrintOnline("DIGI OvershootMode");
-                break;
+        case OvershootMode:
+            PrintOnline("DIGI OvershootMode");
+            break;
 
-            case CollisionAvoidMode:
-                PrintOnline("DIGI COLLISION");
-                break;
+        case CollisionAvoidMode:
+            PrintOnline("DIGI COLLISION");
+            break;
 
-            case AccelerateMode:
-                PrintOnline("DIGI AccelerateMode");
-                break;
+        case AccelerateMode:
+            PrintOnline("DIGI AccelerateMode");
+            break;
 
-            case SeparateMode:
-                PrintOnline("DIGI SeparateMode");
-                break;
+        case SeparateMode:
+            PrintOnline("DIGI SeparateMode");
+            break;
 
-            case RoopMode:
-                PrintOnline("DIGI RoopMode");
-                break;
+        case RoopMode:
+            PrintOnline("DIGI RoopMode");
+            break;
 
-            case OverBMode:
-                PrintOnline("DIGI OVERBANK");
-                break;
+        case OverBMode:
+            PrintOnline("DIGI OVERBANK");
+            break;
         }
 
         modeMsg = new AirAIModeMsg(self->Id(), FalconLocalGame);
@@ -557,6 +566,6 @@ void HeliBrain::ResolveModeConflicts(void)
     /* What were we doing */
     /*--------------------*/
     lastMode = curMode;
-    curMode  = nextMode;
+    curMode = nextMode;
     nextMode = NoMode;
 }

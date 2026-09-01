@@ -5,7 +5,7 @@
 #include "otwdrive.h"
 #include "cpmanager.h"
 #include "phyconst.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "navsystem.h"
 
 void AircraftClass::RunINS(void)
@@ -17,8 +17,6 @@ void AircraftClass::RunINS(void)
             DoINSAlign();
         else
             INSAlign = FALSE;
-
-
     }
     else if (INSState(INS_AlignNorm) and not INS60kts)
     {
@@ -33,7 +31,7 @@ void AircraftClass::RunINS(void)
         INSOn(AircraftClass::INS_HSI_OFF_IN);
         INSOn(AircraftClass::INS_HSD_STUFF);
     }
-    else if ( not HasAligned)
+    else if (not HasAligned)
     {
         //ADI OFF Flag goes away
         INSOff(AircraftClass::INS_ADI_OFF_IN);
@@ -90,7 +88,7 @@ void AircraftClass::DoINSAlign(void)
     //if they enter the coords after 2 mins of alignment, we start from the beginning
     if (CheckUFC)
     {
-        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and
             OTWDriver.pCockpitManager->mpIcp->INSEnterPush())
         {
             CheckUFC = FALSE;
@@ -105,7 +103,7 @@ void AircraftClass::DoINSAlign(void)
         CheckUFC = TRUE;
 
     //Dont align if the UFC isn't powered
-    if ( not HasPower(UFCPower))
+    if (not HasPower(UFCPower))
         return;
 
     if (INSState(INS_AlignFlight))
@@ -178,7 +176,8 @@ void AircraftClass::SwitchINSToAlign(void)
         OTWDriver.pCockpitManager->mpIcp->ClearStrings();
         OTWDriver.pCockpitManager->mpIcp->LeaveCNI();
         OTWDriver.pCockpitManager->mpIcp->SetICPFlag(ICPClass::MODE_LIST);
-        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(23); //SIX Button, INS Page
+        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(
+            23); //SIX Button, INS Page
         OTWDriver.pCockpitManager->mpIcp->INSLine = 0;
     }
 }
@@ -220,7 +219,8 @@ void AircraftClass::SwitchINSToInFLT(void)
         OTWDriver.pCockpitManager->mpIcp->ClearStrings();
         OTWDriver.pCockpitManager->mpIcp->LeaveCNI();
         OTWDriver.pCockpitManager->mpIcp->SetICPFlag(ICPClass::MODE_LIST);
-        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(23); //SIX Button, INS Page
+        OTWDriver.pCockpitManager->mpIcp->SetICPSecondaryMode(
+            23); //SIX Button, INS Page
         OTWDriver.pCockpitManager->mpIcp->INSLine = 3;
     }
 }
@@ -243,8 +243,8 @@ void AircraftClass::CheckINSStatus(void)
         INSOn(AircraftClass::INS_HSD_STUFF);
     }
 
-    if (INSState(AircraftClass::INS_PowerOff) or INSState(AircraftClass::INS_AlignNorm) or
- not HasAligned)
+    if (INSState(AircraftClass::INS_PowerOff) or
+        INSState(AircraftClass::INS_AlignNorm) or not HasAligned)
         INSOff(AircraftClass::INS_HUD_FPM);
     else
         INSOn(AircraftClass::INS_HUD_FPM);
@@ -329,25 +329,35 @@ void AircraftClass::CalcINSOffset(void)
 {
     if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
     {
-        float Curlatitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+        float Curlatitude =
+            (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) /
+            EARTH_RADIUS_FT;
         float CosCurlat = (float)cos(Curlatitude);
-        float Curlongitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * CosCurlat) + cockpitFlightData.y) / (EARTH_RADIUS_FT * CosCurlat);
+        float Curlongitude =
+            ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * CosCurlat) +
+             cockpitFlightData.y) /
+            (EARTH_RADIUS_FT * CosCurlat);
 
         Curlatitude *= RTD;
         Curlongitude *= RTD;
 
         //from our initial alignment position, to where we are now
-        float DiffLat = fabs(OTWDriver.pCockpitManager->mpIcp->StartLat - Curlatitude);
-        float DiffLong = fabs(OTWDriver.pCockpitManager->mpIcp->StartLong - Curlongitude);
+        float DiffLat =
+            fabs(OTWDriver.pCockpitManager->mpIcp->StartLat - Curlatitude);
+        float DiffLong =
+            fabs(OTWDriver.pCockpitManager->mpIcp->StartLong - Curlongitude);
 
         OTWDriver.pCockpitManager->mpIcp->INSLATDiff += DiffLat;
         OTWDriver.pCockpitManager->mpIcp->INSLONGDiff += DiffLong;
 
-        Curlatitude = 90 - Curlatitude; //to be formula "compatible", we need the opposing value
+        Curlatitude =
+            90 -
+            Curlatitude; //to be formula "compatible", we need the opposing value
 
         //find how many feet our degree is at the current lat
         //Lat is N/S and one degree is about 60 NM
-        INSLatOffset = (OTWDriver.pCockpitManager->mpIcp->INSLATDiff * 60) * NM_TO_FT;
+        INSLatOffset =
+            (OTWDriver.pCockpitManager->mpIcp->INSLATDiff * 60) * NM_TO_FT;
 
         //find how many feet a degree is in longitude, at our current latitude
         float radius = Curlatitude * (const1 / 90);
@@ -355,7 +365,8 @@ void AircraftClass::CalcINSOffset(void)
         float feetperdeg = circumfence * 3.281f / 360.0f;
 
         //in Longitude
-        INSLongOffset = OTWDriver.pCockpitManager->mpIcp->INSLONGDiff * feetperdeg;
+        INSLongOffset =
+            OTWDriver.pCockpitManager->mpIcp->INSLONGDiff * feetperdeg;
 
         INSAltOffset = OTWDriver.pCockpitManager->mpIcp->INSALTDiff;
 

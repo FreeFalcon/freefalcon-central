@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <tchar.h>
 #include "mesg.h"
-#include "CmpGlobl.h"
-#include "EvtParse.h"
+#include "cmpglobl.h"
+#include "evtparse.h"
 
 // =================================
 // Class functions
@@ -94,4 +94,3 @@ void DisposeEventList(EventElement* rootEvent)
         delete tmpEvent;
     }
 }
-

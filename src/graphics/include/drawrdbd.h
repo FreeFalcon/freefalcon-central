@@ -8,19 +8,20 @@
 #ifndef _DRAWRDBD_H_
 #define _DRAWRDBD_H_
 
-#include "Edge.h"
-#include "DrawBldg.h"
+#include "edge.h"
+#include "drawbldg.h"
 
 
 class DrawableRoadbed : public DrawableBuilding
 {
 public:
-    DrawableRoadbed(int IDbase, int IDtop, Tpoint *pos, float heading, float height, float angle, float s = 1.0f);
+    DrawableRoadbed(int IDbase, int IDtop, Tpoint *pos, float heading,
+                    float height, float angle, float s = 1.0f);
     virtual ~DrawableRoadbed();
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
-    void         DrawSuperstructure(class RenderOTW *renderer, int LOD);
-    void         DrawSuperstructure(class Render3D *renderer);
+    void DrawSuperstructure(class RenderOTW *renderer, int LOD);
+    void DrawSuperstructure(class Render3D *renderer);
 
     BOOL OnRoadbed(Tpoint *pos, Tpoint *normal);
 
@@ -29,7 +30,8 @@ public:
     {
         position.z = z;
 
-        if (superStructure) superStructure->ForceZ(z);
+        if (superStructure)
+            superStructure->ForceZ(z);
     };
 
 protected:
@@ -54,7 +56,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

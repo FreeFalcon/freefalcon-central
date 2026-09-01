@@ -14,7 +14,7 @@
 #endif
 
 VRLIB_API bool InitRecoEngine();
-VRLIB_API int  GetRecoEvent(LPSTR apEventStr, int aMsecTimeout);
+VRLIB_API int GetRecoEvent(LPSTR apEventStr, int aMsecTimeout);
 
 VRLIB_API void StreamTopics();
 

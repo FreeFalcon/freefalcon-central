@@ -1,11 +1,11 @@
 #ifndef _NAVALTASKINGMSG_H
 #define _NAVALTASKINGMSG_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#pragma pack (1)
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#pragma pack(1)
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
 /*
  * Message Type Naval Tasking Message
@@ -18,7 +18,8 @@ public:
         ntmSupportRequest
     };
 
-    FalconNavalTaskingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconNavalTaskingMessage(VU_ID entityId, VuTargetEntity *target,
+                              VU_BOOL loopback = TRUE);
     FalconNavalTaskingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconNavalTaskingMessage(void);
     virtual int Size() const
@@ -58,6 +59,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

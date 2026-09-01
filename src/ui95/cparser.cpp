@@ -11,11 +11,11 @@ extern bool g_bLogUiErrors; // JPO
 #ifndef _USE_RES_MGR_ // DON'T USE RESMGR
 
 #define UI_HANDLE FILE *
-#define UI_OPEN   fopen
-#define UI_READ   fread
-#define UI_CLOSE  fclose
-#define UI_SEEK   fseek
-#define UI_TELL   ftell
+#define UI_OPEN fopen
+#define UI_READ fread
+#define UI_CLOSE fclose
+#define UI_SEEK fseek
+#define UI_TELL ftell
 
 #else // USE RESMGR
 
@@ -26,11 +26,11 @@ extern "C"
 }
 
 #define UI_HANDLE FILE *
-#define UI_OPEN   RES_FOPEN
-#define UI_READ   RES_FREAD
-#define UI_CLOSE  RES_FCLOSE
-#define UI_SEEK   RES_FSEEK
-#define UI_TELL   RES_FTELL
+#define UI_OPEN RES_FOPEN
+#define UI_READ RES_FREAD
+#define UI_CLOSE RES_FCLOSE
+#define UI_SEEK RES_FSEEK
+#define UI_TELL RES_FTELL
 
 #endif
 
@@ -38,15 +38,18 @@ long UI_FILESIZE(UI_HANDLE fp)
 {
     long size = 0;
 
+    if (not fp) // #104: central guard -- UI_SEEK/ResFSeek(NULL) -> fseek(NULL) segfaults
+        return (0);
+
     if (UI_SEEK(fp, 0l, SEEK_END))
-        return(0);
+        return (0);
 
     size = UI_TELL(fp);
 
     if (UI_SEEK(fp, 0l, SEEK_SET))
-        return(0);
+        return (0);
 
-    return(size);
+    return (size);
 }
 // ALL RESMGR CODE ADDITIONS AND END HERE
 
@@ -93,8 +96,7 @@ enum
     CPARSE_VERSIONTEXT
 };
 
-static char *C_All_Tokens[] =
-{
+static char *C_All_Tokens[] = {
     "[NOTHING]",
     "[WINDOW]",
     "[BUTTON]",
@@ -126,8 +128,7 @@ static char *C_All_Tokens[] =
     0,
 };
 
-static ID_TABLE UI95_Table[] =
-{
+static ID_TABLE UI95_Table[] = {
     {"NULL", NULL},
     {"NID", C_DONT_CARE},
     {"C_DONT_CARE", C_DONT_CARE},
@@ -205,8 +206,7 @@ static ID_TABLE UI95_Table[] =
     {NULL, -1},
 };
 
-static ID_TABLE UI95_BitTable[] =
-{
+static ID_TABLE UI95_BitTable[] = {
     {"NULL", NULL},
     {"C_BIT_NOTHING", C_BIT_NOTHING},
     {"C_BIT_FIXEDSIZE", C_BIT_FIXEDSIZE},
@@ -241,8 +241,7 @@ static ID_TABLE UI95_BitTable[] =
     {NULL, -1}, // LAST Record in this list
 };
 
-static ID_TABLE UI95_FontTable[] =
-{
+static ID_TABLE UI95_FontTable[] = {
     {"FALSE", FALSE},
     {"TRUE", TRUE},
     {"FW_DONTCARE", FW_DONTCARE},
@@ -306,7 +305,7 @@ static ID_TABLE UI95_FontTable[] =
     {"FF_ROMAN", FF_ROMAN},
     {"FF_SCRIPT", FF_SCRIPT},
     {"FF_SWISS", FF_SWISS},
-    { NULL, -1},
+    {NULL, -1},
 };
 
 #define _START_BASE_ID_ 3500000
@@ -340,7 +339,7 @@ C_Parser::C_Parser()
 
     TokenOrder_ = NULL;
 
-    memset(&P_[0], 0, sizeof(long)*PARSE_MAX_PARAMS);
+    memset(&P_[0], 0, sizeof(long) * PARSE_MAX_PARAMS);
 }
 
 C_Parser::~C_Parser()
@@ -349,7 +348,10 @@ C_Parser::~C_Parser()
         delete script_;
 }
 
-void C_Parser::Setup(C_Handler *handler, C_Image *ImgMgr, C_Font *FontList, C_Sound *SndMgr, C_PopupMgr *PopupMgr, C_Animation *AnimMgr, C_String *StringMgr, C_Movie *MovieMgr)
+void C_Parser::Setup(C_Handler *handler, C_Image *ImgMgr, C_Font *FontList,
+                     C_Sound *SndMgr, C_PopupMgr *PopupMgr,
+                     C_Animation *AnimMgr, C_String *StringMgr,
+                     C_Movie *MovieMgr)
 {
     Handler_ = handler;
     Image_ = ImgMgr;
@@ -454,7 +456,7 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
 
     while (idx <= size)
     {
-        if ( not idfile[idx])
+        if (not idfile[idx])
         {
             if (expecting == 1)
                 expecting = 2;
@@ -482,7 +484,7 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
             }
             else if (expecting == 3)
             {
-                if ( not isdigit(idfile[idx]))
+                if (not isdigit(idfile[idx]))
                 {
                     idfile[idx] = 0;
                     count++;
@@ -494,7 +496,7 @@ long C_Parser::TokenizeIDs(char *idfile, long size)
         idx++;
     }
 
-    return(count);
+    return (count);
 }
 
 void C_Parser::LoadIDTable(char *filename)
@@ -507,31 +509,38 @@ void C_Parser::LoadIDTable(char *filename)
     long ID;
 
     // ifp=UI_OPEN(filename,"rb");
-    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
+    ifp =
+        OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
     if (ifp == NULL)
     {
+        fprintf(stderr, "[FF] LoadIDTable: FILE NOT OPENED: %s\n",
+                filename); // #104: make skips visible, not silent
         if (g_bLogUiErrors)
         {
             if (Perror_)
                 fprintf(Perror_, "LoadIDTable load failed (%s)\n", filename);
         }
+
+        return; // #104: the file did not open -- must NOT fall through to UI_FILESIZE(NULL)/fseek(NULL) (crash)
     }
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadIDTable seek end failed (%s)\n", filename);
+                fprintf(Perror_, "LoadIDTable seek end failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
+        return; // #104: nothing to read -- don't new[0]/read from a closed handle
     }
 
-    idfile = new char [size + 5]; // just in case :)
+    idfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(idfile, size, 1, ifp) not_eq 1)
     {
@@ -559,7 +568,7 @@ void C_Parser::LoadIDTable(char *filename)
 
         while (i < count)
         {
-            while ( not idfile[idx] and idx < size)
+            while (not idfile[idx] and idx < size)
                 idx++;
 
             token = &idfile[idx];
@@ -567,7 +576,7 @@ void C_Parser::LoadIDTable(char *filename)
             while (idfile[idx] and idx < size)
                 idx++;
 
-            while ( not idfile[idx] and idx < size)
+            while (not idfile[idx] and idx < size)
                 idx++;
 
             ID = atol(&idfile[idx]);
@@ -590,7 +599,7 @@ void C_Parser::LoadIDList(char *filename)
     char *listfile, *lfp;
     long i;
 
-    memset(&WindowList_[0], 0, sizeof(long)*MAX_WINDOWS_IN_LIST);
+    memset(&WindowList_[0], 0, sizeof(long) * MAX_WINDOWS_IN_LIST);
     WinIndex_ = 0;
     WinLoaded_ = 0;
 
@@ -599,11 +608,11 @@ void C_Parser::LoadIDList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024"); // HiResUI
+        strcat(filebuf, "/art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art"); // LoResUI
+        strcat(filebuf, "/art"); // LoResUI
 
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
@@ -622,13 +631,13 @@ void C_Parser::LoadIDList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         UI_CLOSE(ifp);
         return;
     }
 
-    listfile = new char [size + 5]; // just in case :)
+    listfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
@@ -650,7 +659,7 @@ void C_Parser::LoadIDList(char *filename)
 
     while (i < size)
     {
-        while ( not (*lfp) and i < size)
+        while (not(*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -661,7 +670,7 @@ void C_Parser::LoadIDList(char *filename)
             if (*lfp not_eq '#')
             {
                 //strcpy(filebuf,FalconUIArtDirectory);
-                //strcat(filebuf,"\\");
+                //strcat(filebuf,"/");
                 //strcat(filebuf,lfp);
                 LoadIDTable(lfp);
             }
@@ -679,7 +688,7 @@ void C_Parser::LoadIDList(char *filename)
 
 long C_Parser::FindID(char *token)
 {
-    return(TokenOrder_->FindTextID(token));
+    return (TokenOrder_->FindTextID(token));
 }
 
 long C_Parser::FindToken(char *token)
@@ -690,13 +699,13 @@ long C_Parser::FindToken(char *token)
 
     while (C_All_Tokens[i])
     {
-        if ( not strnicmp(token, C_All_Tokens[i], strlen(C_All_Tokens[i])))
-            return(i);
+        if (not strnicmp(token, C_All_Tokens[i], strlen(C_All_Tokens[i])))
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Parser::LoadScript(char *filename)
@@ -704,7 +713,8 @@ BOOL C_Parser::LoadScript(char *filename)
     UI_HANDLE ifp;
     long size;
 
-    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
+    ifp =
+        OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
     // ifp=UI_OPEN(filename,"rb");
     if (ifp == NULL)
@@ -715,21 +725,22 @@ BOOL C_Parser::LoadScript(char *filename)
                 fprintf(Perror_, "LoadScript load failed (%s)\n", filename);
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadScript seek start failed (%s)\n", filename);
+                fprintf(Perror_, "LoadScript seek start failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     scriptlen_ = size;
@@ -737,9 +748,10 @@ BOOL C_Parser::LoadScript(char *filename)
     if (script_)
         delete script_;
 
-    script_ = new char [size + 5]; // just in case :)
+    script_ = new char[size + 5]; // just in case :)
 
-    if (script_) memset(script_, 0, size + 5); // OW
+    if (script_)
+        memset(script_, 0, size + 5); // OW
 
     if (UI_READ(script_, size, 1, ifp) not_eq 1)
     {
@@ -751,24 +763,42 @@ BOOL C_Parser::LoadScript(char *filename)
 
         delete script_;
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     script_[size] = 0;
 
     UI_CLOSE(ifp);
-    return(TRUE);
+    return (TRUE);
 }
 
-UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *maindir, int hirescapable)
+UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir,
+                                const char *maindir, int hirescapable)
 {
     UI_HANDLE ifp;
 
-    // absolute path
-    if (isalpha(filename[0]) and filename[1] == ':' and filename[2] == '\\')
+    // absolute path. #104: accept BOTH separators -- the registry data roots are normalised to '/' now, so absolute
+    // paths arrive as "G:/..." and the old '\'-only test fell through to the thrdir prepend below -> doubled base
+    // ("<thrdir>/art/G:/.../soundrc.irc" -> ENOENT) -> the sound .irc never registered -> SILENT MAIN MENU. The
+    // same doubling the Linux port hit with leading-'/' absolutes (see the #ifndef _WIN32 block below).
+    if (isalpha(filename[0]) and filename[1] == ':' and
+        (filename[2] == '\\' or filename[2] == '/'))
     {
         return UI_OPEN(filename, "rb");
     }
+
+#ifndef _WIN32
+    // #104: a leading '/' is ALREADY an absolute path -- prepending thrdir doubled the base
+    // ("<base>/<base>/art\...\soundrc.irc" -> ENOENT), which silently dropped the .irc sound-resource scripts, so
+    // menu music (SND_AMBIENT) and UI sounds never registered. Open it directly (FF_CIFopen folds '\'->'/' + case).
+    if (filename[0] == '/')
+    {
+        ifp = UI_OPEN(filename, "rb");
+        if (ifp == NULL)
+            ifp = FF_CIFopen(filename, "rb");
+        return ifp;
+    }
+#endif
 
     // try theater first
     strcpy(filebuf, thrdir); // FreeFalcon thr root dir
@@ -779,28 +809,28 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
 #define NIGHTFALCON_UI 1
 
 #if NIGHTFALCON_UI
-        strcat(filebuf, "\\art");
+        strcat(filebuf, "/art");
 #else
 
         if (g_bHiResUI)
         {
-            strcat(filebuf, "\\art1024"); // HiResUI
+            strcat(filebuf, "/art1024"); // HiResUI
         }
         else
         {
-            strcat(filebuf, "\\art"); // LoResUI
+            strcat(filebuf, "/art"); // LoResUI
         }
 
 #endif
     }
 
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 
     if (ifp not_eq NULL)
     {
-        return ifp;    // got the main one
+        return ifp; // got the main one
     }
 
     // try main dir
@@ -809,24 +839,44 @@ UI_HANDLE C_Parser::OpenArtFile(char *filename, const char *thrdir, const char *
     if (hirescapable)
     {
 #if NIGHTFALCON_UI
-        strcat(filebuf, "\\art");
+        strcat(filebuf, "/art");
 #else
 
         if (g_bHiResUI)
         {
-            strcat(filebuf, "\\art1024"); // HiResUI
+            strcat(filebuf, "/art1024"); // HiResUI
         }
         else
         {
-            strcat(filebuf, "\\art"); // LoResUI
+            strcat(filebuf, "/art"); // LoResUI
         }
 
 #endif
     }
 
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
-    return UI_OPEN(filebuf, "rb");
+    ifp = UI_OPEN(filebuf, "rb");
+
+#ifndef _WIN32
+    // #104: art file lists (.lst) spell paths in mixed case with '\' (e.g. "art\campaign\Intel\userids.id"), but the
+    // data tree is lowercase '/' on ext4. reslib's RES_FOPEN missed those, so the sub-panel .id tables silently went
+    // unloaded. Fall back to FF_CIFopen, which normalises '\'->'/' and case-folds each component against the on-disk
+    // tree (the same resolver _open/fopen use). Try the theater dir too, matching the RES_FOPEN attempts above.
+    if (ifp == NULL)
+    {
+        ifp = FF_CIFopen(filebuf,
+                         "rb"); // FF_CIFopen declared in the shim <windows.h>
+        if (ifp == NULL)
+        {
+            char cbuf[512];
+            snprintf(cbuf, sizeof(cbuf), "%s/%s", thrdir, filename);
+            ifp = FF_CIFopen(cbuf, "rb");
+        }
+    }
+#endif
+
+    return ifp;
 }
 
 BOOL C_Parser::LoadWindowList(char *filename)
@@ -837,7 +887,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
     long i;
     C_Window *win;
 
-    memset(&WindowList_[0], 0, sizeof(long)*MAX_WINDOWS_IN_LIST);
+    memset(&WindowList_[0], 0, sizeof(long) * MAX_WINDOWS_IN_LIST);
     WinIndex_ = 0;
     WinLoaded_ = 0;
 
@@ -857,7 +907,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
                 fprintf(Perror_, "LoadWindowList open failed (%s)\n", filename);
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
     if (g_bLogUiErrors)
@@ -869,19 +919,20 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadWindowList seek start failed (%s)\n", filename);
+                fprintf(Perror_, "LoadWindowList seek start failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
-    listfile = new char [size + 5]; // just in case :)
+    listfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
@@ -893,7 +944,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
         delete listfile;
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     listfile[size] = 0;
@@ -909,7 +960,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
     while (i < size)
     {
-        while ( not (*lfp) and i < size)
+        while (not(*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -920,19 +971,20 @@ BOOL C_Parser::LoadWindowList(char *filename)
             if (g_bLogUiErrors)
             {
                 if (Perror_)
-                    fprintf(Perror_, "LoadWindowList Parsing Window (%s)\n", lfp);
+                    fprintf(Perror_, "LoadWindowList Parsing Window (%s)\n",
+                            lfp);
             }
 
             if (*lfp not_eq '#')
             {
                 //strcpy(filebuf,FalconUIArtDirectory);
-                //strcat(filebuf,"\\");
+                //strcat(filebuf,"/");
                 //strcat(filebuf,lfp);
                 win = ParseWindow(lfp);
 
                 if (win)
                 {
-                    WindowList_[WinLoaded_ ++] = win->GetID();
+                    WindowList_[WinLoaded_++] = win->GetID();
                     Handler_->AddWindow(win, win->GetFlags());
                     win->ScanClientAreas();
                 }
@@ -944,7 +996,9 @@ BOOL C_Parser::LoadWindowList(char *filename)
 
                         if (Perror_)
                         {
-                            fprintf(Perror_, "LoadWindowList NO Window returned (%s)\n", lfp);
+                            fprintf(Perror_,
+                                    "LoadWindowList NO Window returned (%s)\n",
+                                    lfp);
                         }
                     }
                 }
@@ -959,7 +1013,7 @@ BOOL C_Parser::LoadWindowList(char *filename)
     }
 
     delete listfile;
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Parser::LoadPopupMenuList(char *filename)
@@ -978,50 +1032,54 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
 
 #if 0
     strcpy(filebuf, FalconUIArtDirectory);
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
-    ifp = OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
+    ifp =
+        OpenArtFile(filename, FalconUIArtThrDirectory, FalconUIArtDirectory, 0);
 
     if (ifp == NULL)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadPopupMenuList open failed (%s)\n", filename);
+                fprintf(Perror_, "LoadPopupMenuList open failed (%s)\n",
+                        filename);
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadPopupMenuList seek start failed (%s)\n", filename);
+                fprintf(Perror_, "LoadPopupMenuList seek start failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
-    listfile = new char [size + 5]; // just in case :)
+    listfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadPopupMenuList read failed (%s)\n", filename);
+                fprintf(Perror_, "LoadPopupMenuList read failed (%s)\n",
+                        filename);
         }
 
         delete listfile;
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     listfile[size] = 0;
@@ -1037,7 +1095,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
 
     while (i < size)
     {
-        while ( not (*lfp) and i < size)
+        while (not(*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1048,11 +1106,12 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
             if (g_bLogUiErrors)
             {
                 if (Perror_)
-                    fprintf(Perror_, "LoadPopupMenuList Parsing PopMenu (%s)\n", lfp);
+                    fprintf(Perror_, "LoadPopupMenuList Parsing PopMenu (%s)\n",
+                            lfp);
             }
 
             //strcpy(filebuf,FalconUIArtDirectory);
-            //strcat(filebuf,"\\");
+            //strcat(filebuf,"/");
             //strcat(filebuf,lfp);
             Menu = (C_PopupList *)ParsePopupMenu(lfp);
 
@@ -1064,7 +1123,10 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
                 if (g_bLogUiErrors)
                 {
                     if (Perror_)
-                        fprintf(Perror_, "LoadPopupMenuList NO Popup Menu returned (%s)\n", lfp);
+                        fprintf(
+                            Perror_,
+                            "LoadPopupMenuList NO Popup Menu returned (%s)\n",
+                            lfp);
                 }
             }
 
@@ -1077,7 +1139,7 @@ BOOL C_Parser::LoadPopupMenuList(char *filename)
     }
 
     delete listfile;
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Parser::LoadImageList(char *filename)
@@ -1091,11 +1153,11 @@ BOOL C_Parser::LoadImageList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024"); // HiResUI
+        strcat(filebuf, "/art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art"); // LoResUI
+        strcat(filebuf, "/art"); // LoResUI
 
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
@@ -1109,24 +1171,25 @@ BOOL C_Parser::LoadImageList(char *filename)
                 fprintf(Perror_, "LoadImageList open failed (%s)\n", filename);
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadImageList seek start failed (%s)\n", filename);
+                fprintf(Perror_, "LoadImageList seek start failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
-    listfile = new char [size + 5]; // just in case :)
+    listfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
@@ -1138,7 +1201,7 @@ BOOL C_Parser::LoadImageList(char *filename)
 
         delete listfile;
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     listfile[size] = 0;
@@ -1154,7 +1217,7 @@ BOOL C_Parser::LoadImageList(char *filename)
 
     while (i < size)
     {
-        while ( not (*lfp) and i < size)
+        while (not(*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1163,7 +1226,7 @@ BOOL C_Parser::LoadImageList(char *filename)
         if (*lfp)
         {
             //strcpy(filebuf,FalconUIArtDirectory);
-            //strcat(filebuf,"\\");
+            //strcat(filebuf,"/");
             //strcat(filebuf,lfp);
             ParseImage(lfp);
 
@@ -1176,7 +1239,7 @@ BOOL C_Parser::LoadImageList(char *filename)
     }
 
     delete listfile;
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Parser::LoadSoundList(char *filename)
@@ -1190,11 +1253,11 @@ BOOL C_Parser::LoadSoundList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024"); // HiResUI
+        strcat(filebuf, "/art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art"); // LoResUI
+        strcat(filebuf, "/art"); // LoResUI
 
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
@@ -1208,24 +1271,25 @@ BOOL C_Parser::LoadSoundList(char *filename)
                 fprintf(Perror_, "LoadSoundList open failed (%s)\n", filename);
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadSoundList seek start failed (%s)\n", filename);
+                fprintf(Perror_, "LoadSoundList seek start failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
-    listfile = new char [size + 5]; // just in case :)
+    listfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
@@ -1237,7 +1301,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
 
         delete listfile;
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     listfile[size] = 0;
@@ -1253,7 +1317,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
 
     while (i < size)
     {
-        while ( not (*lfp) and i < size)
+        while (not(*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1263,7 +1327,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
         {
             char filebuf[_MAX_PATH];
             strcpy(filebuf, FalconUISoundDirectory);
-            strcat(filebuf, "\\");
+            strcat(filebuf, "/");
             strcat(filebuf, lfp);
             ParseSound(filebuf);
 
@@ -1276,7 +1340,7 @@ BOOL C_Parser::LoadSoundList(char *filename)
     }
 
     delete listfile;
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Parser::LoadStringList(char *filename)
@@ -1290,11 +1354,11 @@ BOOL C_Parser::LoadStringList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024"); // HiResUI
+        strcat(filebuf, "/art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art"); // LoResUI
+        strcat(filebuf, "/art"); // LoResUI
 
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
@@ -1308,24 +1372,25 @@ BOOL C_Parser::LoadStringList(char *filename)
                 fprintf(Perror_, "LoadStringList open failed (%s)\n", filename);
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadStringList seek start failed (%s)\n", filename);
+                fprintf(Perror_, "LoadStringList seek start failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
-    listfile = new char [size + 5]; // just in case :)
+    listfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
@@ -1337,7 +1402,7 @@ BOOL C_Parser::LoadStringList(char *filename)
 
         delete listfile;
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     listfile[size] = 0;
@@ -1353,7 +1418,7 @@ BOOL C_Parser::LoadStringList(char *filename)
 
     while (i < size)
     {
-        while ( not (*lfp) and i < size)
+        while (not(*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1362,7 +1427,7 @@ BOOL C_Parser::LoadStringList(char *filename)
         if (*lfp)
         {
             //strcpy(filebuf,FalconUIArtDirectory);
-            //strcat(filebuf,"\\");
+            //strcat(filebuf,"/");
             //strcat(filebuf,lfp);
             ParseString(lfp);
 
@@ -1375,7 +1440,7 @@ BOOL C_Parser::LoadStringList(char *filename)
     }
 
     delete listfile;
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Parser::LoadMovieList(char *filename)
@@ -1389,11 +1454,11 @@ BOOL C_Parser::LoadMovieList(char *filename)
     strcpy(filebuf, FalconUIArtDirectory); // FreeFalcon root
 
     if (g_bHiResUI)
-        strcat(filebuf, "\\art1024"); // HiResUI
+        strcat(filebuf, "/art1024"); // HiResUI
     else
-        strcat(filebuf, "\\art"); // LoResUI
+        strcat(filebuf, "/art"); // LoResUI
 
-    strcat(filebuf, "\\");
+    strcat(filebuf, "/");
     strcat(filebuf, filename);
     ifp = UI_OPEN(filebuf, "rb");
 #endif
@@ -1407,24 +1472,25 @@ BOOL C_Parser::LoadMovieList(char *filename)
                 fprintf(Perror_, "LoadMovieList open failed (%s)\n", filename);
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         if (g_bLogUiErrors)
         {
             if (Perror_)
-                fprintf(Perror_, "LoadMovieList seek start failed (%s)\n", filename);
+                fprintf(Perror_, "LoadMovieList seek start failed (%s)\n",
+                        filename);
         }
 
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
-    listfile = new char [size + 5]; // just in case :)
+    listfile = new char[size + 5]; // just in case :)
 
     if (UI_READ(listfile, size, 1, ifp) not_eq 1)
     {
@@ -1436,7 +1502,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
 
         delete listfile;
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     listfile[size] = 0;
@@ -1452,7 +1518,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
 
     while (i < size)
     {
-        while ( not (*lfp) and i < size)
+        while (not(*lfp) and i < size)
         {
             lfp++;
             i++;
@@ -1463,7 +1529,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
             // RV - Biker - Theater switching stuff
             char filebuf[_MAX_PATH];
             strcpy(filebuf, FalconUISoundDirectory);
-            strcat(filebuf, "\\");
+            strcat(filebuf, "/");
             strcat(filebuf, lfp);
             ParseMovie(filebuf);
 
@@ -1477,7 +1543,7 @@ BOOL C_Parser::LoadMovieList(char *filename)
     }
 
     delete listfile;
-    return(TRUE);
+    return (TRUE);
 }
 
 enum
@@ -1508,7 +1574,7 @@ BOOL C_Parser::ParseScript(char *filename)
     int TokenID, Section, TokenType;
 
     if (LoadScript(filename) == FALSE)
-        return(FALSE);
+        return (FALSE);
 
     Idx_ = 0;
     P_Idx_ = 0;
@@ -1520,131 +1586,132 @@ BOOL C_Parser::ParseScript(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 1;
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 1;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
-                {
-                    Done = 1;
-                    break;
-                }
+            tokenlen_++;
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
                 break;
+            }
 
-            case SECTION_PROCESSTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
 
-                if (TokenID)
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDSUBTOKEN;
+
+                switch (TokenID)
                 {
-                    Section = SECTION_FINDSUBTOKEN;
+                case CPARSE_WINDOW:
+                    Handler_->AddWindow(WindowParser(), C_BIT_NOTHING);
+                    break;
 
-                    switch (TokenID)
-                    {
-                        case CPARSE_WINDOW:
-                            Handler_->AddWindow(WindowParser(), C_BIT_NOTHING);
-                            break;
+                case CPARSE_FONT:
+                    TokenType = TOKEN_FONT;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        case CPARSE_FONT:
-                            TokenType = TOKEN_FONT;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
+                case CPARSE_SOUND:
+                    TokenType = TOKEN_SOUND;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        case CPARSE_SOUND:
-                            TokenType = TOKEN_SOUND;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
+                case CPARSE_STRING:
+                    TokenType = TOKEN_STRING;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        case CPARSE_STRING:
-                            TokenType = TOKEN_STRING;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
-
-                        default:
-                            Section = SECTION_FINDTOKEN;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
-                    }
-                }
-                else
-                {
+                default:
                     Section = SECTION_FINDTOKEN;
                     Idx_ += tokenlen_;
                     tokenlen_ = 0;
+                    break;
                 }
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
-                break;
+            break;
         }
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 char *C_Parser::FindIDStr(long ID)
 {
     sprintf(ValueStr, "%1ld", ID);
-    return(&ValueStr[0]);
+    return (&ValueStr[0]);
 }
 
 long C_Parser::AddNewID(char *label, long)
 {
-    return(TokenOrder_->AddText(label));
+    return (TokenOrder_->AddText(label));
 }
 
 C_Base *C_Parser::ControlParser()
@@ -1659,557 +1726,584 @@ C_Base *C_Parser::ControlParser()
     Section = SECTION_PROCESSTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 0;
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 0;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDSUBTOKEN;
+
+                switch (TokenID)
                 {
+                case CPARSE_WINDOW:
                     Done = 1;
+                    break;
+
+                case CPARSE_BUTTON:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Button;
+                    break;
+
+                case CPARSE_TEXT:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Text;
+                    break;
+
+                case CPARSE_VERSIONTEXT:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_VersionText;
+                    break;
+                    break;
+
+                case CPARSE_EDITBOX:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_EditBox;
+                    break;
+
+                case CPARSE_LISTBOX:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_ListBox;
+                    break;
+
+                case CPARSE_SLIDER:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Slider;
+                    break;
+
+                    //case CPARSE_ACMI:
+                    // TokenType=TOKEN_COMMON;
+                    // Control_=new C_Acmi;
+                    // break;
+                case CPARSE_PANNER:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Panner;
+                    break;
+
+                case CPARSE_SCROLLBAR:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_ScrollBar;
+                    break;
+
+                case CPARSE_TREELIST:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_TreeList;
+                    break;
+
+                case CPARSE_BITMAP:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Bitmap;
+                    break;
+
+                case CPARSE_TILE:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Tile;
+                    break;
+
+                case CPARSE_ANIM:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Anim;
+                    break;
+
+                case CPARSE_CURSOR:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Cursor;
+                    break;
+
+                case CPARSE_MARQUE:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Marque;
+                    break;
+
+                case CPARSE_BOX:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Box;
+                    break;
+
+                case CPARSE_LINE:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Line;
+                    break;
+
+                case CPARSE_CLOCK:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Clock;
+                    break;
+
+                case CPARSE_FILL:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_Fill;
+                    break;
+
+                case CPARSE_TREE:
+                    TokenType = TOKEN_COMMON;
+
+                    if (Control_)
+                        delete Control_;
+
+                    Control_ = new C_TreeList;
+                    break;
+
+                case CPARSE_ANIMATION:
+                case CPARSE_FONT:
+                case CPARSE_SOUND:
+                case CPARSE_STRING:
+                    Done = 1;
+                    break;
+
+                default:
+                    MonoPrint("ControlParser: Token NOT FOUND [%s]\n",
+                              &script_[Idx_]);
+                    Section = SECTION_FINDTOKEN;
                     break;
                 }
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
+            break;
+
+        case SECTION_FINDSUBTOKEN:
+            // Look for token starting with '['
+            Found = 0;
+
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
+                {
+                case '[':
+                    if (not Comment and not InString)
+                    {
+                        Found = 1;
+                        break;
+                    }
+
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
+                }
+
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
+
+            tokenlen_ = 0;
+
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
+                tokenlen_++;
+
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
                 break;
+            }
 
-            case SECTION_PROCESSTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
+            if (Found == 1)
+                Section = SECTION_PROCESSSUBTOKEN;
+
+            break;
+
+        case SECTION_PROCESSSUBTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                // if found... this is a MAIN keyword NOT a Control/Window keyword
+                Done = 1;
+                break;
+            }
+
+            switch (TokenType)
+            {
+            case TOKEN_COMMON:
+            case TOKEN_LOCAL:
+                TokenID = Control_->BaseFind(&script_[Idx_]);
 
                 if (TokenID)
                 {
-                    Section = SECTION_FINDSUBTOKEN;
-
-                    switch (TokenID)
-                    {
-                        case CPARSE_WINDOW:
-                            Done = 1;
-                            break;
-
-                        case CPARSE_BUTTON:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Button;
-                            break;
-
-                        case CPARSE_TEXT:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Text;
-                            break;
-
-                        case CPARSE_VERSIONTEXT:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_VersionText;
-                            break;
-                            break;
-
-                        case CPARSE_EDITBOX:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_EditBox;
-                            break;
-
-                        case CPARSE_LISTBOX:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_ListBox;
-                            break;
-
-                        case CPARSE_SLIDER:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Slider;
-                            break;
-
-                            //case CPARSE_ACMI:
-                            // TokenType=TOKEN_COMMON;
-                            // Control_=new C_Acmi;
-                            // break;
-                        case CPARSE_PANNER:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Panner;
-                            break;
-
-                        case CPARSE_SCROLLBAR:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_ScrollBar;
-                            break;
-
-                        case CPARSE_TREELIST:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_TreeList;
-                            break;
-
-                        case CPARSE_BITMAP:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Bitmap;
-                            break;
-
-                        case CPARSE_TILE:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Tile;
-                            break;
-
-                        case CPARSE_ANIM:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Anim;
-                            break;
-
-                        case CPARSE_CURSOR:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Cursor;
-                            break;
-
-                        case CPARSE_MARQUE:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Marque;
-                            break;
-
-                        case CPARSE_BOX:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Box;
-                            break;
-
-                        case CPARSE_LINE:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Line;
-                            break;
-
-                        case CPARSE_CLOCK:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Clock;
-                            break;
-
-                        case CPARSE_FILL:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_Fill;
-                            break;
-
-                        case CPARSE_TREE:
-                            TokenType = TOKEN_COMMON;
-
-                            if (Control_) delete Control_;
-
-                            Control_ = new C_TreeList;
-                            break;
-
-                        case CPARSE_ANIMATION:
-                        case CPARSE_FONT:
-                        case CPARSE_SOUND:
-                        case CPARSE_STRING:
-                            Done = 1;
-                            break;
-
-                        default:
-                            MonoPrint("ControlParser: Token NOT FOUND [%s]\n", &script_[Idx_]);
-                            Section = SECTION_FINDTOKEN;
-                            break;
-                    }
-
+                    TokenType = TOKEN_COMMON;
+                    Section = SECTION_FINDPARAMS;
                     Idx_ += tokenlen_;
                     tokenlen_ = 0;
                 }
                 else
                 {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
+                    TokenID = Control_->LocalFind(&script_[Idx_]);
+
+                    if (TokenID)
+                    {
+                        Section = SECTION_FINDPARAMS;
+                        TokenType = TOKEN_LOCAL;
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        Section = SECTION_FINDSUBTOKEN;
+                        Idx_++;
+                    }
                 }
 
                 break;
+            }
 
-            case SECTION_FINDSUBTOKEN:
-                // Look for token starting with '['
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
                 Found = 0;
 
-                while ( not Found and not Done)
+                while (not Found and not Done and not Finished)
                 {
                     switch (script_[Idx_])
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
+                        break;
 
-                            Idx_++;
-                            break;
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
 
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                    default:
+                        Found = 1;
+                        break;
                     }
 
                     if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                tokenlen_ = 0;
-
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
-
-                tokenlen_++;
-
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+                if (Found)
                 {
-                    Done = 1;
-                    break;
-                }
-
-                if (Found == 1)
-                    Section = SECTION_PROCESSSUBTOKEN;
-
-                break;
-
-            case SECTION_PROCESSSUBTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    // if found... this is a MAIN keyword NOT a Control/Window keyword
-                    Done = 1;
-                    break;
-                }
-
-                switch (TokenType)
-                {
-                    case TOKEN_COMMON:
-                    case TOKEN_LOCAL:
-                        TokenID = Control_->BaseFind(&script_[Idx_]);
-
-                        if (TokenID)
-                        {
-                            TokenType = TOKEN_COMMON;
-                            Section = SECTION_FINDPARAMS;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                        }
-                        else
-                        {
-                            TokenID = Control_->LocalFind(&script_[Idx_]);
-
-                            if (TokenID)
-                            {
-                                Section = SECTION_FINDPARAMS;
-                                TokenType = TOKEN_LOCAL;
-                                Idx_ += tokenlen_;
-                                tokenlen_ = 0;
-                            }
-                            else
-                            {
-                                Section = SECTION_FINDSUBTOKEN;
-                                Idx_++;
-                            }
-                        }
-
-                        break;
-                }
-
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
-                {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
                         }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
+                            script_[Idx_ + tokenlen_] = 0;
+                            P_[P_Idx_++] = FindID(&script_[Idx_]);
 
-                            while ( not Found)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
+                            if (P_[P_Idx_ - 1] < 0 and
+                                strcmp(&script_[Idx_], "NID"))
+                                TokenErrorList->AddText(&script_[Idx_]);
                         }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
 
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                P_[P_Idx_++] = FindID(&script_[Idx_]);
-
-                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
-                                    TokenErrorList->AddText(&script_[Idx_]);
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
+            break;
+
+        case SECTION_PROCESSPARAMS:
+            switch (TokenType)
+            {
+            case TOKEN_COMMON:
+                Control_->BaseFunction(static_cast<short>(TokenID), P_, str_,
+                                       Handler_);
                 break;
 
-            case SECTION_PROCESSPARAMS:
-                switch (TokenType)
-                {
-                    case TOKEN_COMMON:
-                        Control_->BaseFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                        break;
-
-                    case TOKEN_LOCAL:
-                        Control_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                        break;
-                }
-
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDSUBTOKEN;
+            case TOKEN_LOCAL:
+                Control_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                        Handler_);
                 break;
+            }
+
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDSUBTOKEN;
+            break;
         }
     }
 
-    return(Control_);
+    return (Control_);
 }
 
 C_Window *C_Parser::WindowParser()
@@ -2223,446 +2317,453 @@ C_Window *C_Parser::WindowParser()
     Section = SECTION_PROCESSTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 0;
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 0;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
-                {
-                    Done = 1;
-                    break;
-                }
+            tokenlen_++;
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
                 break;
+            }
 
-            case SECTION_PROCESSTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
 
-                if (TokenID)
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                switch (TokenID)
                 {
-                    switch (TokenID)
-                    {
-                        case CPARSE_WINDOW:
-                            TokenType = TOKEN_WINDOW;
-                            Window_ = new C_Window;
-                            Section = SECTION_FINDSUBTOKEN;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
+                case CPARSE_WINDOW:
+                    TokenType = TOKEN_WINDOW;
+                    Window_ = new C_Window;
+                    Section = SECTION_FINDSUBTOKEN;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        case CPARSE_BUTTON:
-                        case CPARSE_TEXT:
-                        case CPARSE_BOX:
-                        case CPARSE_LINE:
-                        case CPARSE_CLOCK:
-                        case CPARSE_FILL:
-                        case CPARSE_TREE:
-                        case CPARSE_EDITBOX:
-                        case CPARSE_LISTBOX:
+                case CPARSE_BUTTON:
+                case CPARSE_TEXT:
+                case CPARSE_BOX:
+                case CPARSE_LINE:
+                case CPARSE_CLOCK:
+                case CPARSE_FILL:
+                case CPARSE_TREE:
+                case CPARSE_EDITBOX:
+                case CPARSE_LISTBOX:
 
-                            //case CPARSE_ACMI:
-                        case CPARSE_PANNER:
-                        case CPARSE_SLIDER:
-                        case CPARSE_TREELIST:
-                        case CPARSE_BITMAP:
-                        case CPARSE_TILE:
-                        case CPARSE_ANIM:
-                        case CPARSE_CURSOR:
-                        case CPARSE_MARQUE:
-                        case CPARSE_ANIMATION:
-                        case CPARSE_VERSIONTEXT:
-                            Window_->AddControl(ControlParser());
-                            Section = SECTION_FINDTOKEN;
-                            break;
+                    //case CPARSE_ACMI:
+                case CPARSE_PANNER:
+                case CPARSE_SLIDER:
+                case CPARSE_TREELIST:
+                case CPARSE_BITMAP:
+                case CPARSE_TILE:
+                case CPARSE_ANIM:
+                case CPARSE_CURSOR:
+                case CPARSE_MARQUE:
+                case CPARSE_ANIMATION:
+                case CPARSE_VERSIONTEXT:
+                    Window_->AddControl(ControlParser());
+                    Section = SECTION_FINDTOKEN;
+                    break;
 
-                        case CPARSE_SCROLLBAR:
-                            Window_->AddScrollBar((C_ScrollBar *)ControlParser());
-                            Section = SECTION_FINDTOKEN;
-                            break;
+                case CPARSE_SCROLLBAR:
+                    Window_->AddScrollBar((C_ScrollBar *)ControlParser());
+                    Section = SECTION_FINDTOKEN;
+                    break;
 
-                        case CPARSE_FONT:
-                            TokenType = TOKEN_FONT;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
+                case CPARSE_FONT:
+                    TokenType = TOKEN_FONT;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        case CPARSE_SOUND:
-                            TokenType = TOKEN_SOUND;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
+                case CPARSE_SOUND:
+                    TokenType = TOKEN_SOUND;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        case CPARSE_STRING:
-                            TokenType = TOKEN_STRING;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
+                case CPARSE_STRING:
+                    TokenType = TOKEN_STRING;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        case CPARSE_IMAGE:
-                            TokenType = TOKEN_IMAGE;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
+                case CPARSE_IMAGE:
+                    TokenType = TOKEN_IMAGE;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                    break;
 
-                        default:
-                            MonoPrint("ControlParser: Token NOT FOUND [%s]\n", &script_[Idx_]);
-                            Section = SECTION_FINDTOKEN;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            break;
-                    }
-                }
-                else
-                {
+                default:
+                    MonoPrint("ControlParser: Token NOT FOUND [%s]\n",
+                              &script_[Idx_]);
                     Section = SECTION_FINDTOKEN;
                     Idx_ += tokenlen_;
                     tokenlen_ = 0;
+                    break;
                 }
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
-                break;
+            break;
 
-            case SECTION_FINDSUBTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDSUBTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 0;
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 0;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSSUBTOKEN;
+
+            break;
+
+        case SECTION_PROCESSSUBTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                // if found... this is a MAIN keyword NOT a Control/Window keyword
+                Section = SECTION_PROCESSTOKEN;
+
+                switch (TokenID)
                 {
+                case CPARSE_WINDOW:
+                case CPARSE_FONT:
                     Done = 1;
+                    break;
+
+                default:
+                    Section = SECTION_FINDTOKEN;
                     break;
                 }
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSSUBTOKEN;
-
                 break;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
-            case SECTION_PROCESSSUBTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
+            switch (TokenType)
+            {
+            case TOKEN_WINDOW:
+                TokenID = Window_->LocalFind(&script_[Idx_]);
 
                 if (TokenID)
                 {
-                    // if found... this is a MAIN keyword NOT a Control/Window keyword
-                    Section = SECTION_PROCESSTOKEN;
-
-                    switch (TokenID)
-                    {
-                        case CPARSE_WINDOW:
-                        case CPARSE_FONT:
-                            Done = 1;
-                            break;
-
-                        default:
-                            Section = SECTION_FINDTOKEN;
-                            break;
-                    }
-
-                    break;
+                    Section = SECTION_FINDPARAMS;
+                    Idx_ += tokenlen_;
+                    tokenlen_ = 0;
+                }
+                else
+                {
+                    Section = SECTION_FINDSUBTOKEN;
                     Idx_ += tokenlen_;
                     tokenlen_ = 0;
                 }
 
-                switch (TokenType)
+                break;
+            }
+
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
+                Found = 0;
+
+                while (not Found and not Done and not Finished)
                 {
-                    case TOKEN_WINDOW:
-                        TokenID = Window_->LocalFind(&script_[Idx_]);
-
-                        if (TokenID)
-                        {
-                            Section = SECTION_FINDPARAMS;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                        }
-                        else
-                        {
-                            Section = SECTION_FINDSUBTOKEN;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                        }
-
+                    switch (script_[Idx_])
+                    {
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
                         break;
+
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
+
+                    default:
+                        Found = 1;
+                        break;
+                    }
+
+                    if (Idx_ >= scriptlen_)
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
+                if (Found)
                 {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
                         }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
+                            script_[Idx_ + tokenlen_] = 0;
+                            P_[P_Idx_++] = FindID(&script_[Idx_]);
 
-                            while ( not Found)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
+                            if (P_[P_Idx_ - 1] < 0 and
+                                strcmp(&script_[Idx_], "NID"))
+                                TokenErrorList->AddText(&script_[Idx_]);
                         }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
 
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                P_[P_Idx_++] = FindID(&script_[Idx_]);
-
-                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
-                                    TokenErrorList->AddText(&script_[Idx_]);
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
+            break;
+
+        case SECTION_PROCESSPARAMS:
+            switch (TokenType)
+            {
+            case TOKEN_WINDOW:
+                Window_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                       Handler_);
                 break;
+            }
 
-            case SECTION_PROCESSPARAMS:
-                switch (TokenType)
-                {
-                    case TOKEN_WINDOW:
-                        Window_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                        break;
-                }
-
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDSUBTOKEN;
-                break;
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDSUBTOKEN;
+            break;
         }
     }
 
-    return(Window_);
+    return (Window_);
 }
 
 C_Window *C_Parser::ParseWindow(char *filename)
@@ -2671,7 +2772,7 @@ C_Window *C_Parser::ParseWindow(char *filename)
     long TokenID = 0, Section = 0, TokenType = 0;
 
     if (LoadScript(filename) == FALSE)
-        return(FALSE);
+        return (FALSE);
 
     Idx_ = 0;
     P_Idx_ = 0;
@@ -2683,100 +2784,101 @@ C_Window *C_Parser::ParseWindow(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if ((Idx_) >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 0;
+                if ((Idx_) >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 0;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
-                {
-                    Done = 1;
-                    break;
-                }
+            tokenlen_++;
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
                 break;
+            }
 
-            case SECTION_PROCESSTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
 
-                if (TokenID)
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                switch (TokenID)
                 {
-                    switch (TokenID)
-                    {
-                        case CPARSE_WINDOW:
-                            return(WindowParser());
-                            break;
+                case CPARSE_WINDOW:
+                    return (WindowParser());
+                    break;
 
-                        default:
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                            Section = SECTION_FINDTOKEN;
-                            break;
-                    }
-                }
-                else
-                {
-                    Section = SECTION_FINDTOKEN;
+                default:
                     Idx_ += tokenlen_;
                     tokenlen_ = 0;
+                    Section = SECTION_FINDTOKEN;
+                    break;
                 }
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
-                break;
+            break;
         }
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_Base *C_Parser::ParseControl(char *filename)
@@ -2785,7 +2887,7 @@ C_Base *C_Parser::ParseControl(char *filename)
     long TokenID = 0, Section = 0, TokenType = 0;
 
     if (LoadScript(filename) == FALSE)
-        return(FALSE);
+        return (FALSE);
 
     Idx_ = 0;
     P_Idx_ = 0;
@@ -2797,123 +2899,125 @@ C_Base *C_Parser::ParseControl(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 0;
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 0;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                switch (TokenID)
                 {
-                    Done = 1;
+                case CPARSE_BUTTON:
+                case CPARSE_TEXT:
+                case CPARSE_BOX:
+                case CPARSE_LINE:
+                case CPARSE_CLOCK:
+                case CPARSE_FILL:
+                case CPARSE_TREE:
+                case CPARSE_EDITBOX:
+                case CPARSE_LISTBOX:
+
+                    //case CPARSE_ACMI:
+                case CPARSE_PANNER:
+                case CPARSE_SLIDER:
+                case CPARSE_SCROLLBAR:
+                case CPARSE_TREELIST:
+                case CPARSE_BITMAP:
+                case CPARSE_TILE:
+                case CPARSE_ANIM:
+                case CPARSE_CURSOR:
+                case CPARSE_MARQUE:
+                case CPARSE_ANIMATION:
+                    return (ControlParser());
                     break;
                 }
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+                Section = SECTION_FINDTOKEN;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
-                break;
-
-            case SECTION_PROCESSTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    switch (TokenID)
-                    {
-                        case CPARSE_BUTTON:
-                        case CPARSE_TEXT:
-                        case CPARSE_BOX:
-                        case CPARSE_LINE:
-                        case CPARSE_CLOCK:
-                        case CPARSE_FILL:
-                        case CPARSE_TREE:
-                        case CPARSE_EDITBOX:
-                        case CPARSE_LISTBOX:
-
-                            //case CPARSE_ACMI:
-                        case CPARSE_PANNER:
-                        case CPARSE_SLIDER:
-                        case CPARSE_SCROLLBAR:
-                        case CPARSE_TREELIST:
-                        case CPARSE_BITMAP:
-                        case CPARSE_TILE:
-                        case CPARSE_ANIM:
-                        case CPARSE_CURSOR:
-                        case CPARSE_MARQUE:
-                        case CPARSE_ANIMATION:
-                            return(ControlParser());
-                            break;
-                    }
-
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                    Section = SECTION_FINDTOKEN;
-                }
-                else
-                {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-
-                break;
+            break;
         }
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_Image *C_Parser::ParseImage(char *filename)
 {
-    long Done = 0, Comment = 0, Found = 0, InString = 0, Finished = 0;;
+    long Done = 0, Comment = 0, Found = 0, InString = 0, Finished = 0;
+    ;
     long TokenID = 0, Section = 0, TokenType = 0;
     long ImageID = 0;
 
@@ -2934,7 +3038,7 @@ C_Image *C_Parser::ParseImage(char *filename)
     }
 
     if (LoadScript(filename) == FALSE)
-        return(NULL);
+        return (NULL);
 
     Done = 0;
     Comment = 0;
@@ -2942,287 +3046,294 @@ C_Image *C_Parser::ParseImage(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
+
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
+                {
+                case '[':
+                    if (not Comment and not InString)
+                    {
+                        Found = 1;
+                        break;
+                    }
+
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
+                }
+
+                if ((Idx_) >= scriptlen_)
+                    Done = 1;
+            }
+
+            tokenlen_ = 0;
+
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
+                tokenlen_++;
+
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = Image_->LocalFind(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDPARAMS;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+                TokenType = 1;
+                break;
+            }
+
+            TokenID = Anim_->LocalFind(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDPARAMS;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+                TokenType = 2;
+                break;
+            }
+
+            TokenType = 0;
+            Section = SECTION_FINDTOKEN;
+            Idx_ += tokenlen_;
+            tokenlen_ = 0;
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
                 Found = 0;
 
-                while ( not Found and not Done)
+                while (not Found and not Done and not Finished)
                 {
                     switch (script_[Idx_])
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
+                        break;
 
-                            Idx_++;
-                            break;
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
 
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                    default:
+                        Found = 1;
+                        break;
                     }
 
-                    if ((Idx_) >= scriptlen_)
-                        Done = 1;
+                    if (Idx_ >= scriptlen_)
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                tokenlen_ = 0;
-
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
-
-                tokenlen_++;
-
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+                if (Found)
                 {
-                    Done = 1;
-                    break;
-                }
-
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
-                break;
-
-            case SECTION_PROCESSTOKEN:
-                TokenID = Image_->LocalFind(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    Section = SECTION_FINDPARAMS;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                    TokenType = 1;
-                    break;
-                }
-
-                TokenID = Anim_->LocalFind(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    Section = SECTION_FINDPARAMS;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                    TokenType = 2;
-                    break;
-                }
-
-                TokenType = 0;
-                Section = SECTION_FINDTOKEN;
-                Idx_ += tokenlen_;
-                tokenlen_ = 0;
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
-                {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
                         }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
+                            script_[Idx_ + tokenlen_] = 0;
+                            ImageID = FindID(&script_[Idx_]);
 
-                            while ( not Found)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
+                            if (ImageID == -1)
+                                ImageID =
+                                    AddNewID(&script_[Idx_], _START_BASE_ID_);
 
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
+                            P_[P_Idx_++] = ImageID;
                         }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
 
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                ImageID = FindID(&script_[Idx_]);
-
-                                if (ImageID == -1)
-                                    ImageID = AddNewID(&script_[Idx_], _START_BASE_ID_);
-
-                                P_[P_Idx_++] = ImageID;
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case SECTION_PROCESSPARAMS:
-                if (TokenType == 1)
-                    Image_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                else if (TokenType == 2)
-                    Anim_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
+        case SECTION_PROCESSPARAMS:
+            if (TokenType == 1)
+                Image_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                      Handler_);
+            else if (TokenType == 2)
+                Anim_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                     Handler_);
 
-                TokenType = 0;
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDTOKEN;
-                break;
+            TokenType = 0;
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDTOKEN;
+            break;
         }
     }
 
-    return(Image_);
+    return (Image_);
 }
 
 C_Font *C_Parser::ParseFont(char *filename)
 {
-    long Done = 0, Comment = 0, Found = 0, InString = 0, Finished = 0;;
+    long Done = 0, Comment = 0, Found = 0, InString = 0, Finished = 0;
+    ;
     long TokenID = 0, Section = 0, TokenType = 0;
     long FontID = 0, NewID = 0;
     LOGFONT logfont = {0};
@@ -3238,7 +3349,7 @@ C_Font *C_Parser::ParseFont(char *filename)
     }
 
     if (LoadScript(filename) == FALSE)
-        return(NULL);
+        return (NULL);
 
     Done = 0;
     Comment = 0;
@@ -3248,274 +3359,279 @@ C_Font *C_Parser::ParseFont(char *filename)
 
     memset(&logfont, 0, sizeof(LOGFONT));
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
+
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
+                {
+                case '[':
+                    if (not Comment and not InString)
+                    {
+                        Found = 1;
+                        break;
+                    }
+
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
+                }
+
+                if ((Idx_) >= scriptlen_)
+                    Done = 1;
+            }
+
+            tokenlen_ = 0;
+
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
+                tokenlen_++;
+
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = Font_->FontFind(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDPARAMS;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
                 Found = 0;
 
-                while ( not Found and not Done)
+                while (not Found and not Done and not Finished)
                 {
                     switch (script_[Idx_])
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
+                        break;
 
-                            Idx_++;
-                            break;
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
 
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                    default:
+                        Found = 1;
+                        break;
                     }
 
-                    if ((Idx_) >= scriptlen_)
-                        Done = 1;
+                    if (Idx_ >= scriptlen_)
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                tokenlen_ = 0;
-
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
-
-                tokenlen_++;
-
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+                if (Found)
                 {
-                    Done = 1;
-                    break;
-                }
-
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
-                break;
-
-            case SECTION_PROCESSTOKEN:
-                TokenID = Font_->FontFind(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    Section = SECTION_FINDPARAMS;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-                else
-                {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
-                {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
-                        {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
-
-                            while ( not Found)
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
                             {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
                             }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
                         }
-                        else
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
+                            script_[Idx_ + tokenlen_] = 0;
+                            FontID = FindID(&script_[Idx_]);
 
-                            while ( not Found and not Finished)
+                            if (FontID == -1)
                             {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                FontID = FindID(&script_[Idx_]);
-
                                 if (FontID == -1)
-                                {
-                                    if (FontID == -1)
-                                        FontID = AddNewID(&script_[Idx_], 1);
-                                }
-
-                                P_[P_Idx_++] = FontID;
+                                    FontID = AddNewID(&script_[Idx_], 1);
                             }
 
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            P_[P_Idx_++] = FontID;
                         }
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case SECTION_PROCESSPARAMS:
-                Font_->FontFunction(static_cast<short>(TokenID), P_, str_, &logfont, &NewID);
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDTOKEN;
-                break;
+        case SECTION_PROCESSPARAMS:
+            Font_->FontFunction(static_cast<short>(TokenID), P_, str_, &logfont,
+                                &NewID);
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDTOKEN;
+            break;
         }
     }
 
-    return(Font_);
+    return (Font_);
 }
 
 C_Sound *C_Parser::ParseSound(char *filename)
 {
-    long Done = 0, Comment = 0, Found = 0, InString = 0, Finished = 0;;
+    long Done = 0, Comment = 0, Found = 0, InString = 0, Finished = 0;
+    ;
     long TokenID = 0, Section = 0, TokenType = 0;
     long SoundID = 0;
 
@@ -3530,7 +3646,7 @@ C_Sound *C_Parser::ParseSound(char *filename)
     }
 
     if (LoadScript(filename) == FALSE)
-        return(NULL);
+        return (NULL);
 
     Done = 0;
     Comment = 0;
@@ -3538,266 +3654,270 @@ C_Sound *C_Parser::ParseSound(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
+
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
+                {
+                case '[':
+                    if (not Comment and not InString)
+                    {
+                        Found = 1;
+                        break;
+                    }
+
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
+                }
+
+                if ((Idx_) >= scriptlen_)
+                    Done = 1;
+            }
+
+            tokenlen_ = 0;
+
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
+                tokenlen_++;
+
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = Sound_->LocalFind(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDPARAMS;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
                 Found = 0;
 
-                while ( not Found and not Done)
+                while (not Found and not Done and not Finished)
                 {
                     switch (script_[Idx_])
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
+                        break;
 
-                            Idx_++;
-                            break;
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
 
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                    default:
+                        Found = 1;
+                        break;
                     }
 
-                    if ((Idx_) >= scriptlen_)
-                        Done = 1;
+                    if (Idx_ >= scriptlen_)
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                tokenlen_ = 0;
-
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
-
-                tokenlen_++;
-
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+                if (Found)
                 {
-                    Done = 1;
-                    break;
-                }
-
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
-                break;
-
-            case SECTION_PROCESSTOKEN:
-                TokenID = Sound_->LocalFind(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    Section = SECTION_FINDPARAMS;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-                else
-                {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
-                {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
                         }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
+                            script_[Idx_ + tokenlen_] = 0;
+                            SoundID = FindID(&script_[Idx_]);
 
-                            while ( not Found)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
+                            if (SoundID == -1)
+                                SoundID = AddNewID(&script_[Idx_], 1);
 
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
+                            P_[P_Idx_++] = SoundID;
                         }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
 
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                SoundID = FindID(&script_[Idx_]);
-
-                                if (SoundID == -1)
-                                    SoundID = AddNewID(&script_[Idx_], 1);
-
-                                P_[P_Idx_++] = SoundID;
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case SECTION_PROCESSPARAMS:
-                Sound_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDTOKEN;
-                break;
+        case SECTION_PROCESSPARAMS:
+            Sound_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                  Handler_);
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDTOKEN;
+            break;
         }
     }
 
-    return(Sound_);
+    return (Sound_);
 }
 
 C_String *C_Parser::ParseString(char *filename)
@@ -3820,7 +3940,7 @@ C_String *C_Parser::ParseString(char *filename)
     }
 
     if (LoadScript(filename) == FALSE)
-        return(NULL);
+        return (NULL);
 
     Done = 0;
     Comment = 0;
@@ -3828,284 +3948,289 @@ C_String *C_Parser::ParseString(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
+
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
+                {
+                case '[':
+                    if (not Comment and not InString)
+                    {
+                        Found = 1;
+                        break;
+                    }
+
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
+                }
+
+                if ((Idx_) >= scriptlen_)
+                    Done = 1;
+            }
+
+            tokenlen_ = 0;
+
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
+                tokenlen_++;
+
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = String_->LocalFind(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDPARAMS;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
                 Found = 0;
 
-                while ( not Found and not Done)
+                while (not Found and not Done and not Finished)
                 {
                     switch (script_[Idx_])
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
+                        break;
 
-                            Idx_++;
-                            break;
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
 
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                    default:
+                        Found = 1;
+                        break;
                     }
 
-                    if ((Idx_) >= scriptlen_)
-                        Done = 1;
+                    if (Idx_ >= scriptlen_)
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                tokenlen_ = 0;
-
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
-
-                tokenlen_++;
-
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+                if (Found)
                 {
-                    Done = 1;
-                    break;
-                }
-
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
-                break;
-
-            case SECTION_PROCESSTOKEN:
-                TokenID = String_->LocalFind(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    Section = SECTION_FINDPARAMS;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-                else
-                {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
-                {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
                         }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
+                            script_[Idx_ + tokenlen_] = 0;
+                            StringID = FindID(&script_[Idx_]);
 
-                            while ( not Found)
+                            if (StringID == -1)
                             {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
+                                _tcscpy(buffer, &script_[Idx_]);
+                                StringID = -2;
                             }
 
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
+                            P_[P_Idx_++] = StringID;
                         }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
 
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                StringID = FindID(&script_[Idx_]);
-
-                                if (StringID == -1)
-                                {
-                                    _tcscpy(buffer, &script_[Idx_]);
-                                    StringID = -2;
-                                }
-
-                                P_[P_Idx_++] = StringID;
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case SECTION_PROCESSPARAMS:
-                if (P_[0] == -2)
-                    AddFlag = TRUE;
-                else
-                    AddFlag = FALSE;
+        case SECTION_PROCESSPARAMS:
+            if (P_[0] == -2)
+                AddFlag = TRUE;
+            else
+                AddFlag = FALSE;
 
-                String_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
+            String_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                   Handler_);
 
-                if (AddFlag)
-                    TokenOrder_->AddTextID(String_->GetLastID(), buffer);
+            if (AddFlag)
+                TokenOrder_->AddTextID(String_->GetLastID(), buffer);
 
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDTOKEN;
-                break;
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDTOKEN;
+            break;
         }
     }
 
-    return(String_);
+    return (String_);
 }
 
 C_Movie *C_Parser::ParseMovie(char *filename)
 {
     int InString = 0;
-    short Done = 0, Comment = 0, Found = 0, Finished = 0;;
+    short Done = 0, Comment = 0, Found = 0, Finished = 0;
+    ;
     short TokenID = 0, Section = 0, TokenType = 0;
     long MovieID = 0;
 
@@ -4120,7 +4245,7 @@ C_Movie *C_Parser::ParseMovie(char *filename)
     }
 
     if (LoadScript(filename) == FALSE)
-        return(NULL);
+        return (NULL);
 
     Done = 0;
     Comment = 0;
@@ -4128,272 +4253,277 @@ C_Movie *C_Parser::ParseMovie(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
+
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
+                {
+                case '[':
+                    if (not Comment and not InString)
+                    {
+                        Found = 1;
+                        break;
+                    }
+
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
+                }
+
+                if ((Idx_) >= scriptlen_)
+                    Done = 1;
+            }
+
+            tokenlen_ = 0;
+
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
+                tokenlen_++;
+
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = Movie_->LocalFind(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDPARAMS;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
                 Found = 0;
 
-                while ( not Found and not Done)
+                while (not Found and not Done and not Finished)
                 {
                     switch (script_[Idx_])
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
+                        break;
 
-                            Idx_++;
-                            break;
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
 
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                    default:
+                        Found = 1;
+                        break;
                     }
 
-                    if ((Idx_) >= scriptlen_)
-                        Done = 1;
+                    if (Idx_ >= scriptlen_)
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                tokenlen_ = 0;
-
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
-
-                tokenlen_++;
-
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+                if (Found)
                 {
-                    Done = 1;
-                    break;
-                }
-
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
-
-                break;
-
-            case SECTION_PROCESSTOKEN:
-                TokenID = Movie_->LocalFind(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    Section = SECTION_FINDPARAMS;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-                else
-                {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
-                {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
                         }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
+                            script_[Idx_ + tokenlen_] = 0;
+                            MovieID = FindID(&script_[Idx_]);
 
-                            while ( not Found)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
+                            if (MovieID == -1)
+                                MovieID = AddNewID(&script_[Idx_], 1);
 
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
+                            P_[P_Idx_++] = MovieID;
                         }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
 
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                MovieID = FindID(&script_[Idx_]);
-
-                                if (MovieID == -1)
-                                    MovieID = AddNewID(&script_[Idx_], 1);
-
-                                P_[P_Idx_++] = MovieID;
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case SECTION_PROCESSPARAMS:
-                Movie_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDTOKEN;
-                break;
+        case SECTION_PROCESSPARAMS:
+            Movie_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                  Handler_);
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDTOKEN;
+            break;
         }
     }
 
-    return(Movie_);
+    return (Movie_);
 }
 
 C_Base *C_Parser::PopupParser()
 {
     int InString = 0;
-    short Done = 0, Comment = 0, Found = 0, Finished = 0;;
+    short Done = 0, Comment = 0, Found = 0, Finished = 0;
+    ;
     short Section = 0, TokenType = 0;
     long TokenID = 0;
 
@@ -4403,394 +4533,401 @@ C_Base *C_Parser::PopupParser()
     Section = SECTION_PROCESSTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 0;
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 0;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                Section = SECTION_FINDSUBTOKEN;
+
+                switch (TokenID)
                 {
-                    Done = 1;
+                case CPARSE_POPUP:
+                    TokenType = TOKEN_COMMON;
+                    Control_ = new C_PopupList;
+
+                    break;
+
+                default:
+                    Section = SECTION_FINDTOKEN;
                     break;
                 }
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
+            break;
+
+        case SECTION_FINDSUBTOKEN:
+            // Look for token starting with '['
+            Found = 0;
+
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
+                {
+                case '[':
+                    if (not Comment and not InString)
+                    {
+                        Found = 1;
+                        break;
+                    }
+
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
+                }
+
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
+
+            tokenlen_ = 0;
+
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
+                tokenlen_++;
+
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
                 break;
+            }
 
-            case SECTION_PROCESSTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
+            if (Found == 1)
+                Section = SECTION_PROCESSSUBTOKEN;
+
+            break;
+
+        case SECTION_PROCESSSUBTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                // if found... this is a MAIN keyword NOT a Control/Window keyword
+                Done = 1;
+                break;
+            }
+
+            switch (TokenType)
+            {
+            case TOKEN_COMMON:
+            case TOKEN_LOCAL:
+                TokenID = Control_->BaseFind(&script_[Idx_]);
 
                 if (TokenID)
                 {
-                    Section = SECTION_FINDSUBTOKEN;
-
-                    switch (TokenID)
-                    {
-                        case CPARSE_POPUP:
-                            TokenType = TOKEN_COMMON;
-                            Control_ = new C_PopupList;
-
-                            break;
-
-                        default:
-                            Section = SECTION_FINDTOKEN;
-                            break;
-                    }
-
+                    TokenType = TOKEN_COMMON;
+                    Section = SECTION_FINDPARAMS;
                     Idx_ += tokenlen_;
                     tokenlen_ = 0;
                 }
                 else
                 {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
+                    TokenID = Control_->LocalFind(&script_[Idx_]);
+
+                    if (TokenID)
+                    {
+                        Section = SECTION_FINDPARAMS;
+                        TokenType = TOKEN_LOCAL;
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        Section = SECTION_FINDSUBTOKEN;
+                        Idx_++;
+                    }
                 }
 
                 break;
+            }
 
-            case SECTION_FINDSUBTOKEN:
-                // Look for token starting with '['
+            break;
+
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
+
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
+
+            while (not Finished)
+            {
+                // Find NON white space
                 Found = 0;
 
-                while ( not Found and not Done)
+                while (not Found and not Done and not Finished)
                 {
                     switch (script_[Idx_])
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                    case 0x0a:
+                    case 0x0d:
+                        Idx_++;
+                        break;
 
-                            Idx_++;
-                            break;
+                    case '[':
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        break;
 
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                    default:
+                        Found = 1;
+                        break;
                     }
 
                     if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    {
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                    }
                 }
 
-                tokenlen_ = 0;
-
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
-
-                tokenlen_++;
-
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+                if (Found)
                 {
-                    Done = 1;
-                    break;
-                }
-
-                if (Found == 1)
-                    Section = SECTION_PROCESSSUBTOKEN;
-
-                break;
-
-            case SECTION_PROCESSSUBTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    // if found... this is a MAIN keyword NOT a Control/Window keyword
-                    Done = 1;
-                    break;
-                }
-
-                switch (TokenType)
-                {
-                    case TOKEN_COMMON:
-                    case TOKEN_LOCAL:
-                        TokenID = Control_->BaseFind(&script_[Idx_]);
-
-                        if (TokenID)
-                        {
-                            TokenType = TOKEN_COMMON;
-                            Section = SECTION_FINDPARAMS;
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                        }
-                        else
-                        {
-                            TokenID = Control_->LocalFind(&script_[Idx_]);
-
-                            if (TokenID)
-                            {
-                                Section = SECTION_FINDPARAMS;
-                                TokenType = TOKEN_LOCAL;
-                                Idx_ += tokenlen_;
-                                tokenlen_ = 0;
-                            }
-                            else
-                            {
-                                Section = SECTION_FINDSUBTOKEN;
-                                Idx_++;
-                            }
-                        }
-
-                        break;
-                }
-
-                break;
-
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
-
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
-
-                while ( not Finished)
-                {
-                    // Find NON white space
                     Found = 0;
 
-                    while ( not Found and not Done and not Finished)
+                    if (script_[Idx_] == '"') // string
                     {
-                        switch (script_[Idx_])
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
+
+                        // Find closing (")
+                        while (not Found and not Finished)
                         {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
+
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
                             case ' ':
                             case ',':
                             case 0x09:
                             case 0x0a:
                             case 0x0d:
-                                Idx_++;
-                                break;
-
-                            case '[':
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
+                                Found = 1;
                                 break;
 
                             default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
                                 Found = 1;
                                 break;
-                        }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
-                    }
-
-                    if (Found)
-                    {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
+                            default:
+                                tokenlen_++;
+                                break;
                             }
 
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
                         }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
                         {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
+                            script_[Idx_ + tokenlen_] = 0;
+                            P_[P_Idx_++] = FindID(&script_[Idx_]);
 
-                            while ( not Found)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
+                            if (P_[P_Idx_ - 1] < 0 and
+                                strcmp(&script_[Idx_], "NID"))
+                                TokenErrorList->AddText(&script_[Idx_]);
                         }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
 
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                P_[P_Idx_++] = FindID(&script_[Idx_]);
-
-                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
-                                    TokenErrorList->AddText(&script_[Idx_]);
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
                     }
                 }
+            }
 
+            break;
+
+        case SECTION_PROCESSPARAMS:
+            switch (TokenType)
+            {
+            case TOKEN_COMMON:
+                Control_->BaseFunction(static_cast<short>(TokenID), P_, str_,
+                                       Handler_);
                 break;
 
-            case SECTION_PROCESSPARAMS:
-                switch (TokenType)
-                {
-                    case TOKEN_COMMON:
-                        Control_->BaseFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                        break;
-
-                    case TOKEN_LOCAL:
-                        Control_->LocalFunction(static_cast<short>(TokenID), P_, str_, Handler_);
-                        break;
-                }
-
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
-                Section = SECTION_FINDSUBTOKEN;
+            case TOKEN_LOCAL:
+                Control_->LocalFunction(static_cast<short>(TokenID), P_, str_,
+                                        Handler_);
                 break;
+            }
+
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+            Section = SECTION_FINDSUBTOKEN;
+            break;
         }
     }
 
-    return(Control_);
+    return (Control_);
 }
 
 C_Base *C_Parser::ParsePopupMenu(char *filename)
@@ -4809,7 +4946,7 @@ C_Base *C_Parser::ParsePopupMenu(char *filename)
     }
 
     if (LoadScript(filename) == FALSE)
-        return(FALSE);
+        return (FALSE);
 
     Idx_ = 0;
     P_Idx_ = 0;
@@ -4821,98 +4958,99 @@ C_Base *C_Parser::ParsePopupMenu(char *filename)
     Section = SECTION_FINDTOKEN;
     TokenType = TOKEN_NOTHING;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDTOKEN:
-                // Look for token starting with '['
-                Found = 0;
+        case SECTION_FINDTOKEN:
+            // Look for token starting with '['
+            Found = 0;
 
-                while ( not Found and not Done)
+            while (not Found and not Done)
+            {
+                switch (script_[Idx_])
                 {
-                    switch (script_[Idx_])
+                case '[':
+                    if (not Comment and not InString)
                     {
-                        case '[':
-                            if ( not Comment and not InString)
-                            {
-                                Found = 1;
-                                break;
-                            }
-
-                            Idx_++;
-                            break;
-
-                        case '"':
-                            InString = 1 - InString;
-                            Idx_++;
-                            break;
-
-                        case '#':
-                            Comment = 1;
-                            Idx_++;
-                            break;
-
-                        case 0x0a:
-                        case 0x0d:
-                            Comment = 0;
-                            Idx_++;
-                            break;
-
-                        default:
-                            Idx_++;
+                        Found = 1;
+                        break;
                     }
 
-                    if (Idx_ >= scriptlen_)
-                        Done = 1;
+                    Idx_++;
+                    break;
+
+                case '"':
+                    InString = 1 - InString;
+                    Idx_++;
+                    break;
+
+                case '#':
+                    Comment = 1;
+                    Idx_++;
+                    break;
+
+                case 0x0a:
+                case 0x0d:
+                    Comment = 0;
+                    Idx_++;
+                    break;
+
+                default:
+                    Idx_++;
                 }
 
-                tokenlen_ = 0;
+                if (Idx_ >= scriptlen_)
+                    Done = 1;
+            }
 
-                while (script_[Idx_ + tokenlen_] not_eq ']' and (Idx_ + tokenlen_) < scriptlen_)
-                    tokenlen_++;
+            tokenlen_ = 0;
 
+            while (script_[Idx_ + tokenlen_] not_eq ']' and
+                   (Idx_ + tokenlen_) < scriptlen_)
                 tokenlen_++;
 
-                if ((Idx_ + tokenlen_) >= scriptlen_)
+            tokenlen_++;
+
+            if ((Idx_ + tokenlen_) >= scriptlen_)
+            {
+                Done = 1;
+                break;
+            }
+
+            if (Found == 1)
+                Section = SECTION_PROCESSTOKEN;
+
+            break;
+
+        case SECTION_PROCESSTOKEN:
+            TokenID = FindToken(&script_[Idx_]);
+
+            if (TokenID)
+            {
+                switch (TokenID)
                 {
-                    Done = 1;
+                case CPARSE_POPUP:
+                    return (PopupParser());
                     break;
                 }
 
-                if (Found == 1)
-                    Section = SECTION_PROCESSTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+                Section = SECTION_FINDTOKEN;
+            }
+            else
+            {
+                Section = SECTION_FINDTOKEN;
+                Idx_ += tokenlen_;
+                tokenlen_ = 0;
+            }
 
-                break;
-
-            case SECTION_PROCESSTOKEN:
-                TokenID = FindToken(&script_[Idx_]);
-
-                if (TokenID)
-                {
-                    switch (TokenID)
-                    {
-                        case CPARSE_POPUP:
-                            return(PopupParser());
-                            break;
-                    }
-
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                    Section = SECTION_FINDTOKEN;
-                }
-                else
-                {
-                    Section = SECTION_FINDTOKEN;
-                    Idx_ += tokenlen_;
-                    tokenlen_ = 0;
-                }
-
-                break;
+            break;
         }
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_SoundBite *C_Parser::ParseSoundBite(char *filename)
@@ -4922,12 +5060,12 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
     short Section = 0;
 
     if (LoadScript(filename) == FALSE)
-        return(NULL);
+        return (NULL);
 
     Bite = new C_SoundBite;
 
-    if ( not Bite)
-        return(NULL);
+    if (not Bite)
+        return (NULL);
 
     Bite->Setup();
 
@@ -4936,204 +5074,207 @@ C_SoundBite *C_Parser::ParseSoundBite(char *filename)
     InString = 0;
     Section = SECTION_FINDPARAMS;
 
-    while ( not Done)
+    while (not Done)
     {
         switch (Section)
         {
-            case SECTION_FINDPARAMS:
-                P_Idx_ = 0; // start with 0 parameters
+        case SECTION_FINDPARAMS:
+            P_Idx_ = 0; // start with 0 parameters
 
-                // Repeat until token char '[' found (or EOF)
-                Finished = 0;
+            // Repeat until token char '[' found (or EOF)
+            Finished = 0;
 
-                while ( not Finished)
+            while (not Finished)
+            {
+                // Find NON white space
+                Found = 0;
+
+                while (not Found and not Done and not Finished)
                 {
-                    // Find NON white space
-                    Found = 0;
-
-                    while ( not Found and not Done and not Finished)
+                    switch (script_[Idx_])
                     {
-                        switch (script_[Idx_])
+                    case ' ':
+                    case ',':
+                    case 0x09:
+                        Idx_++;
+                        break;
+
+                    case 0x0a:
+                    case 0x0d:
+                        Comment = 0;
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
+                        Idx_++;
+                        break;
+
+                    case '#': // Comment
+                        Comment = 1;
+                        Idx_++;
+                        break;
+
+                    default:
+                        if (not Comment)
                         {
-                            case ' ':
-                            case ',':
-                            case 0x09:
-                                Idx_++;
-                                break;
-
-                            case 0x0a:
-                            case 0x0d:
-                                Comment = 0;
-                                Finished = 1;
-                                Section = SECTION_PROCESSPARAMS;
-                                Idx_++;
-                                break;
-
-                            case '#': // Comment
-                                Comment = 1;
-                                Idx_++;
-                                break;
-
-                            default:
-                                if ( not Comment)
-                                {
-                                    Found = 1;
-                                    break;
-                                }
-
-                                Idx_++;
-                                break;
+                            Found = 1;
+                            break;
                         }
 
-                        if (Idx_ >= scriptlen_)
-                        {
-                            Finished = 1;
-                            Section = SECTION_PROCESSPARAMS;
-                        }
+                        Idx_++;
+                        break;
                     }
 
-                    if (Found)
+                    if (Idx_ >= scriptlen_)
                     {
-                        Found = 0;
-
-                        if (script_[Idx_] == '"') // string
-                        {
-                            tokenlen_ = 1;
-                            str_ = &script_[Idx_ + tokenlen_];
-
-                            // Find closing (")
-                            while ( not Found and not Finished)
-                            {
-                                if (script_[Idx_ + tokenlen_] == '"')
-                                    Found = 1;
-                                else
-                                {
-                                    if ((Idx_ + tokenlen_) >= scriptlen_)
-                                    {
-                                        Finished = 1;
-                                        Section = SECTION_PROCESSPARAMS;
-                                    }
-                                    else
-                                        tokenlen_++;
-                                }
-                            }
-
-                            if (Found)
-                                script_[Idx_ + tokenlen_] = 0; // make NULL terminated string
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
-                        else if (isdigit(script_[Idx_]) or script_[Idx_] == '-') // Number
-                        {
-                            // find white space
-                            Found = 0;
-                            tokenlen_ = 1;
-
-                            while ( not Found)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Found = 1;
-                                    Finished = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                                P_[P_Idx_++] = atol(&script_[Idx_]);
-
-                            Idx_ += tokenlen_;
-                            tokenlen_ = 0;
-                        }
-                        else
-                        {
-                            // Look for ID in tables
-                            // Look for white space
-                            Found = 0;
-                            tokenlen_ = 0;
-
-                            while ( not Found and not Finished)
-                            {
-                                switch (script_[Idx_ + tokenlen_])
-                                {
-                                    case ' ':
-                                    case ',':
-                                    case 0x09:
-                                    case 0x0a:
-                                    case 0x0d:
-                                        Found = 1;
-                                        break;
-
-                                    default:
-                                        tokenlen_++;
-                                        break;
-                                }
-
-                                if ((Idx_ + tokenlen_) >= scriptlen_)
-                                {
-                                    Finished = 1;
-                                    Found = 1;
-                                    Section = SECTION_PROCESSPARAMS;
-                                }
-                            }
-
-                            if (Found and P_Idx_ < PARSE_MAX_PARAMS)
-                            {
-                                script_[Idx_ + tokenlen_] = 0;
-                                P_[P_Idx_++] = FindID(&script_[Idx_]);
-
-                                if (P_[P_Idx_ - 1] < 0 and strcmp(&script_[Idx_], "NID"))
-                                    TokenErrorList->AddText(&script_[Idx_]);
-                            }
-
-                            Idx_ += tokenlen_ + 1;
-                            tokenlen_ = 0;
-                        }
+                        Finished = 1;
+                        Section = SECTION_PROCESSPARAMS;
                     }
                 }
 
-                break;
+                if (Found)
+                {
+                    Found = 0;
 
-            case SECTION_PROCESSPARAMS:
-                if (P_Idx_)
-                    Bite->Add(P_[0], P_[1]);
+                    if (script_[Idx_] == '"') // string
+                    {
+                        tokenlen_ = 1;
+                        str_ = &script_[Idx_ + tokenlen_];
 
-                P_Idx_ = 0;
-                P_[0] = 0;
-                P_[1] = 0;
-                P_[2] = 0;
-                P_[3] = 0;
-                P_[4] = 0;
-                P_[5] = 0;
-                P_[6] = 0;
-                P_[7] = 0;
-                str_ = NULL;
+                        // Find closing (")
+                        while (not Found and not Finished)
+                        {
+                            if (script_[Idx_ + tokenlen_] == '"')
+                                Found = 1;
+                            else
+                            {
+                                if ((Idx_ + tokenlen_) >= scriptlen_)
+                                {
+                                    Finished = 1;
+                                    Section = SECTION_PROCESSPARAMS;
+                                }
+                                else
+                                    tokenlen_++;
+                            }
+                        }
 
-                if (Idx_ >= scriptlen_)
-                    Done = 1;
+                        if (Found)
+                            script_[Idx_ + tokenlen_] =
+                                0; // make NULL terminated string
 
-                Section = SECTION_FINDPARAMS;
-                break;
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                    else if (isdigit(script_[Idx_]) or
+                             script_[Idx_] == '-') // Number
+                    {
+                        // find white space
+                        Found = 0;
+                        tokenlen_ = 1;
+
+                        while (not Found)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
+                                Found = 1;
+                                break;
+
+                            default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Found = 1;
+                                Finished = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                            P_[P_Idx_++] = atol(&script_[Idx_]);
+
+                        Idx_ += tokenlen_;
+                        tokenlen_ = 0;
+                    }
+                    else
+                    {
+                        // Look for ID in tables
+                        // Look for white space
+                        Found = 0;
+                        tokenlen_ = 0;
+
+                        while (not Found and not Finished)
+                        {
+                            switch (script_[Idx_ + tokenlen_])
+                            {
+                            case ' ':
+                            case ',':
+                            case 0x09:
+                            case 0x0a:
+                            case 0x0d:
+                                Found = 1;
+                                break;
+
+                            default:
+                                tokenlen_++;
+                                break;
+                            }
+
+                            if ((Idx_ + tokenlen_) >= scriptlen_)
+                            {
+                                Finished = 1;
+                                Found = 1;
+                                Section = SECTION_PROCESSPARAMS;
+                            }
+                        }
+
+                        if (Found and P_Idx_ < PARSE_MAX_PARAMS)
+                        {
+                            script_[Idx_ + tokenlen_] = 0;
+                            P_[P_Idx_++] = FindID(&script_[Idx_]);
+
+                            if (P_[P_Idx_ - 1] < 0 and
+                                strcmp(&script_[Idx_], "NID"))
+                                TokenErrorList->AddText(&script_[Idx_]);
+                        }
+
+                        Idx_ += tokenlen_ + 1;
+                        tokenlen_ = 0;
+                    }
+                }
+            }
+
+            break;
+
+        case SECTION_PROCESSPARAMS:
+            if (P_Idx_)
+                Bite->Add(P_[0], P_[1]);
+
+            P_Idx_ = 0;
+            P_[0] = 0;
+            P_[1] = 0;
+            P_[2] = 0;
+            P_[3] = 0;
+            P_[4] = 0;
+            P_[5] = 0;
+            P_[6] = 0;
+            P_[7] = 0;
+            str_ = NULL;
+
+            if (Idx_ >= scriptlen_)
+                Done = 1;
+
+            Section = SECTION_FINDPARAMS;
+            break;
         }
     }
 
-    return(Bite);
+    return (Bite);
 }
 
 void C_Parser::LogError(char *str)

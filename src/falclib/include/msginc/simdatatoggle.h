@@ -1,14 +1,14 @@
 #ifndef _SIMDATATOGGLE_H
 #define _SIMDATATOGGLE_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 //sfr: checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Sim Data Toggle
@@ -16,7 +16,8 @@
 class FalconSimDataToggle : public FalconEvent
 {
 public:
-    FalconSimDataToggle(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconSimDataToggle(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     FalconSimDataToggle(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconSimDataToggle(void);
     virtual int Size() const
@@ -44,14 +45,13 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID entityID;
-        int flag ;
+        int flag;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

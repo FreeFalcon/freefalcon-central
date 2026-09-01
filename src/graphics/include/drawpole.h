@@ -7,7 +7,7 @@
 #ifndef _DRAWPOLE_H_
 #define _DRAWPOLE_H_
 
-#include "DrawBSP.h"
+#include "drawbsp.h"
 
 
 class DrawablePoled : public DrawableBSP
@@ -22,7 +22,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -69,7 +70,6 @@ public:
     static BOOL drawlockrange; // Shared by ALL drawable BSPs
 
 protected:
-
     void DrawTargetBox(class RenderOTW *renderer, ThreeDVertex *spos);
 
     char heading[32];

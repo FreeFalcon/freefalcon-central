@@ -32,19 +32,9 @@ enum
     ATO_OTHER,
 };
 
-static long AtoMissStr[] =
-{
-    0,
-    TXT_OCA,
-    TXT_STRIKE,
-    TXT_INTERDICTION,
-    TXT_SEAD,
-    TXT_CAS,
-    TXT_DCA,
-    TXT_CCCI,
-    TXT_MARITIME,
-    TXT_SUPPORT,
-    TXT_OTHER,
+static long AtoMissStr[] = {
+    0,       TXT_OCA,  TXT_STRIKE,   TXT_INTERDICTION, TXT_SEAD,  TXT_CAS,
+    TXT_DCA, TXT_CCCI, TXT_MARITIME, TXT_SUPPORT,      TXT_OTHER,
 };
 
 enum
@@ -115,14 +105,14 @@ void UpdateTeamName(long team)
     TREELIST *item;
     C_Text *txt;
 
-    if ( not gATOAll or team >= NUM_TEAMS or not TeamInfo[team])
+    if (not gATOAll or team >= NUM_TEAMS or not TeamInfo[team])
         return;
 
     item = gATOAll->Find(team bitor 0x20000000);
 
     if (item)
     {
-        txt = (C_Text*)item->Item_;
+        txt = (C_Text *)item->Item_;
 
         if (txt)
         {
@@ -147,7 +137,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
     if (gATOAll)
         gATOAll->SetAllControlStates(0, gATOAll->GetRoot());
 
-    ato = (C_ATO_Flight*)control;
+    ato = (C_ATO_Flight *)control;
     ato->SetState(1);
     ato->Refresh();
 
@@ -157,7 +147,7 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
 
         if (item and item->Item_)
         {
-            pkg = (C_ATO_Package*)item->Item_;
+            pkg = (C_ATO_Package *)item->Item_;
             pkg->SetState(1);
             pkg->Refresh();
         }
@@ -173,7 +163,8 @@ void SelectATOItemCB(long, short hittype, C_Base *control)
         if (gMapMgr)
         {
             gMapMgr->SetCurrentWaypointList(gCurrentFlightID);
-            SetupFlightSpecificControls((Flight)vuDatabase->Find(gCurrentFlightID));
+            SetupFlightSpecificControls(
+                (Flight)vuDatabase->Find(gCurrentFlightID));
             gMapMgr->FitFlightPlan();
             gMapMgr->DrawMap();
         }
@@ -188,7 +179,7 @@ void SelectATOPackageCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    package = (C_ATO_Package*)control;
+    package = (C_ATO_Package *)control;
     package->SetState(1);
     package->Refresh();
 
@@ -198,7 +189,7 @@ void SelectATOPackageCB(long, short hittype, C_Base *control)
         gSelectedPackage = package->GetVUID();
     else
     {
-        tmpID = (VU_ID*)control->GetUserPtr(_UI95_VU_ID_SLOT_);
+        tmpID = (VU_ID *)control->GetUserPtr(_UI95_VU_ID_SLOT_);
 
         if (tmpID)
             gSelectedPackage = *tmpID;
@@ -232,80 +223,79 @@ int MissionToATOMiss(int mistype)
 {
     switch (mistype)
     {
-        case AMIS_OCASTRIKE:
-        case AMIS_SWEEP:
-        case AMIS_TARCAP:
-        case AMIS_ESCORT:
-            return ATO_OCA;
-            break;
+    case AMIS_OCASTRIKE:
+    case AMIS_SWEEP:
+    case AMIS_TARCAP:
+    case AMIS_ESCORT:
+        return ATO_OCA;
+        break;
 
-        case AMIS_STRIKE:
-        case AMIS_DEEPSTRIKE:
-        case AMIS_STSTRIKE:
-        case AMIS_STRATBOMB:
-            return ATO_STRIKE;
-            break;
+    case AMIS_STRIKE:
+    case AMIS_DEEPSTRIKE:
+    case AMIS_STSTRIKE:
+    case AMIS_STRATBOMB:
+        return ATO_STRIKE;
+        break;
 
-        case AMIS_INTSTRIKE:
-        case AMIS_INT:
-        case AMIS_SAD:
-        case AMIS_BAI:
-            return ATO_INTERDICTION;
-            break;
+    case AMIS_INTSTRIKE:
+    case AMIS_INT:
+    case AMIS_SAD:
+    case AMIS_BAI:
+        return ATO_INTERDICTION;
+        break;
 
-        case AMIS_SEADSTRIKE:
-        case AMIS_SEADESCORT:
-            return ATO_SEAD;
-            break;
+    case AMIS_SEADSTRIKE:
+    case AMIS_SEADESCORT:
+        return ATO_SEAD;
+        break;
 
-        case AMIS_PRPLANCAS:
-        case AMIS_CAS:
-        case AMIS_ONCALLCAS:
-        case AMIS_FAC:
-            return ATO_CAS;
-            break;
+    case AMIS_PRPLANCAS:
+    case AMIS_CAS:
+    case AMIS_ONCALLCAS:
+    case AMIS_FAC:
+        return ATO_CAS;
+        break;
 
-        case AMIS_BARCAP:
-        case AMIS_BARCAP2:
-        case AMIS_HAVCAP:
-        case AMIS_AMBUSHCAP:
-        case AMIS_INTERCEPT:
-        case AMIS_ALERT:
-            return ATO_DCA;
-            break;
+    case AMIS_BARCAP:
+    case AMIS_BARCAP2:
+    case AMIS_HAVCAP:
+    case AMIS_AMBUSHCAP:
+    case AMIS_INTERCEPT:
+    case AMIS_ALERT:
+        return ATO_DCA;
+        break;
 
-        case AMIS_AWACS:
-        case AMIS_JSTAR:
-        case AMIS_ECM:
-        case AMIS_RECON:
-        case AMIS_BDA:
-        case AMIS_RECONPATROL:
-        case AMIS_PATROL:
-            return ATO_CCCI;
-            break;
+    case AMIS_AWACS:
+    case AMIS_JSTAR:
+    case AMIS_ECM:
+    case AMIS_RECON:
+    case AMIS_BDA:
+    case AMIS_RECONPATROL:
+    case AMIS_PATROL:
+        return ATO_CCCI;
+        break;
 
-        case AMIS_ASW:
-        case AMIS_ASHIP:
-            return ATO_MARITIME;
-            break;
+    case AMIS_ASW:
+    case AMIS_ASHIP:
+        return ATO_MARITIME;
+        break;
 
-        case AMIS_TANKER:
-        case AMIS_AIRLIFT:
-        case AMIS_SAR:
-        case AMIS_RESCAP:
-            return ATO_SUPPORT;
-            break;
+    case AMIS_TANKER:
+    case AMIS_AIRLIFT:
+    case AMIS_SAR:
+    case AMIS_RESCAP:
+        return ATO_SUPPORT;
+        break;
 
-        default:
-            return ATO_OTHER;
-            break;
+    default:
+        return ATO_OTHER;
+        break;
     }
 }
 
 void ChangeFlightTypeCB(long, short hittype, C_Base *control)
 {
-    C_ListBox
-    *listbox;
+    C_ListBox *listbox;
 
     Flight flight;
     int camp_id;
@@ -316,13 +306,13 @@ void ChangeFlightTypeCB(long, short hittype, C_Base *control)
         return;
     }
 
-    listbox = (C_ListBox *) control;
+    listbox = (C_ListBox *)control;
 
     type = static_cast<uchar>(listbox->GetTextID());
 
     camp_id = listbox->GetID();
 
-    flight = (Flight) GetEntityByCampID(camp_id);
+    flight = (Flight)GetEntityByCampID(camp_id);
 
     if (flight and not F4IsBadReadPtr(flight, sizeof(Flight))) // JB 010326 CTD
         flight->SetUnitMission(type);
@@ -346,7 +336,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     UnitPtr = fl->GetUnitClassData();
 
     if (UnitPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     // Create new parent class
     newinfo = new C_ATO_Flight;
@@ -384,7 +374,7 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
             {
                 lbox->AddItem(i, C_TYPE_ITEM, MissStr[i]);
 
-                if ( not added or i == mission)
+                if (not added or i == mission)
                 {
                     lbox->SetValue(i);
                     added = 1;
@@ -406,7 +396,8 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
 
     // Set Callsign
     GetCallsign(fl, buffer);
-    newinfo->SetCallsign(190, 5, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    newinfo->SetCallsign(190, 5,
+                         gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set # bitand Airplane type, Squadron
     squadron = fl->GetUnitSquadron();
@@ -416,8 +407,10 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     else
         _tcscpy(cmpbuf, "Kevin, Which squadron is this?");
 
-    _stprintf(buffer, "%1d %s  \"%s\"", fl->GetTotalVehicles(), GetVehicleName(fl->GetVehicleID(0)), cmpbuf);
-    newinfo->SetPlanes(54, 20, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d %s  \"%s\"", fl->GetTotalVehicles(),
+              GetVehicleName(fl->GetVehicleID(0)), cmpbuf);
+    newinfo->SetPlanes(54, 20,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set Starting Airbase
     if (squadron)
@@ -430,9 +423,10 @@ C_ATO_Flight *BuildATOFlightInfo(Flight fl)
     else
         _tcscpy(buffer, "Kevin, what airbase am I at?");
 
-    newinfo->SetAirbase(54, 35, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    newinfo->SetAirbase(54, 35,
+                        gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 
 C_ATO_Package *BuildATOPackageInfo(Package pkg)
@@ -452,17 +446,20 @@ C_ATO_Package *BuildATOPackageInfo(Package pkg)
     if (pkg->GetFirstUnitElement())
     {
         mistype = pkg->GetFirstUnitElement()->GetUnitMission();
-        _stprintf(buffer, "%s %1d - %s", gStringMgr->GetString(TXT_PACKAGE), pkg->GetCampID(), MissStr[mistype]);
-        newinfo->SetTitle(0, 0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+        _stprintf(buffer, "%s %1d - %s", gStringMgr->GetString(TXT_PACKAGE),
+                  pkg->GetCampID(), MissStr[mistype]);
+        newinfo->SetTitle(0, 0,
+                          gStringMgr->GetText(gStringMgr->AddText(buffer)));
     }
     else
     {
         _tcscpy(buffer, "Error: Package doesn't have a flight");
-        newinfo->SetTitle(0, 0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+        newinfo->SetTitle(0, 0,
+                          gStringMgr->GetText(gStringMgr->AddText(buffer)));
     }
 
     newinfo->SetCheckBox(280, 0, BID_CHK1_OFF, BID_CHK1_ON);
-    return(newinfo);
+    return (newinfo);
 }
 
 void ToggleATOInfoCB(long, short hittype, C_Base *control)
@@ -510,7 +507,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     ShiAssert(gATOPackage);
 
-    if ( not gATOPackage)
+    if (not gATOPackage)
         return;
 
     Leave = UI_Enter(gATOPackage->GetParent());
@@ -518,7 +515,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     flt = (Flight)vuDatabase->Find(flightID);
 
-    if ( not flt)
+    if (not flt)
     {
         UI_Leave(Leave);
         return;
@@ -526,7 +523,7 @@ void MakeIndividualATO(VU_ID flightID)
 
     pkg = (Package)flt->GetUnitParent();
 
-    if ( not pkg)
+    if (not pkg)
     {
         UI_Leave(Leave);
         return;
@@ -548,7 +545,8 @@ void MakeIndividualATO(VU_ID flightID)
             atoitem->SetMenu(UNIT_POP);
             atoitem->SetCallback(SelectATOItemCB);
             atoitem->SetFont(gATOPackage->GetFont());
-            item = gATOPackage->CreateItem(atoitem->GetID(), C_TYPE_ITEM, atoitem);
+            item =
+                gATOPackage->CreateItem(atoitem->GetID(), C_TYPE_ITEM, atoitem);
             atoitem->SetOwner(item);
             gATOPackage->AddItem(gATOPackage->GetRoot(), item);
         }
@@ -565,37 +563,6 @@ void MakeIndividualATO(VU_ID flightID)
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 C_ATO_Package *AddPackagetoATO(Package FltPkg)
 {
     C_ATO_Package *atopkg;
@@ -607,41 +574,42 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
     short AtoMiss;
     C_Text *txt;
 
-    if ( not FltPkg)
-        return(NULL);
+    if (not FltPkg)
+        return (NULL);
 
     ShiAssert(gATOAll);
 
-    if ( not gATOAll)
+    if (not gATOAll)
         return NULL;
 
-    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
+    if (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
         if (FltPkg->GetTeam() not_eq FalconLocalSession->GetTeam())
-            return(NULL);
+            return (NULL);
     }
 
     MainFlt = (Flight)FltPkg->GetFirstUnitElement();
 
-    if ( not MainFlt)
-        return(NULL);
+    if (not MainFlt)
+        return (NULL);
 
     mistype = MainFlt->GetUnitMission();
 
     if (mistype == AMIS_ABORT or mistype == AMIS_ALERT)
-        return(NULL);
+        return (NULL);
 
     if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
     {
         team = gATOAll->Find(FltPkg->GetTeam() bitor 0x20000000);
 
-        if ( not team)
+        if (not team)
         {
             txt = new C_Text;
             txt->Setup(FltPkg->GetTeam() bitor 0x20000000, 0);
             txt->SetText(TeamInfo[FltPkg->GetTeam()]->GetName());
             txt->SetFont(gATOAll->GetParent()->Font_);
-            team = gATOAll->CreateItem(FltPkg->GetTeam() bitor 0x20000000, C_TYPE_ROOT, txt);
+            team = gATOAll->CreateItem(FltPkg->GetTeam() bitor 0x20000000,
+                                       C_TYPE_ROOT, txt);
             gATOAll->AddItem(gATOAll->GetRoot(), team);
         }
     }
@@ -656,15 +624,18 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
 
     AtoMiss = static_cast<short>(MissionToATOMiss(mistype));
 
-    missiontype = gATOAll->Find(AtoMiss bitor 0x40000000 bitor (FltPkg->GetTeam() << 16));
+    missiontype =
+        gATOAll->Find(AtoMiss bitor 0x40000000 bitor (FltPkg->GetTeam() << 16));
 
-    if ( not missiontype)
+    if (not missiontype)
     {
         txt = new C_Text;
         txt->Setup(mistype bitor 0x40000000, 0);
         txt->SetText(AtoMissStr[AtoMiss]);
         txt->SetFont(gATOAll->GetParent()->Font_);
-        missiontype = gATOAll->CreateItem(AtoMiss bitor 0x40000000 bitor (FltPkg->GetTeam() << 16), C_TYPE_MENU, txt);
+        missiontype = gATOAll->CreateItem(AtoMiss bitor 0x40000000 bitor
+                                              (FltPkg->GetTeam() << 16),
+                                          C_TYPE_MENU, txt);
 
         if (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)
             gATOAll->AddChildItem(team, missiontype);
@@ -686,10 +657,10 @@ C_ATO_Package *AddPackagetoATO(Package FltPkg)
             gATOAll->AddChildItem(missiontype, package);
         }
 
-        return(atopkg);
+        return (atopkg);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_ATO_Flight *AddFlighttoATO(Flight flt)
@@ -701,25 +672,26 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
 
     ShiAssert(gATOAll);
 
-    if ( not gATOAll)
+    if (not gATOAll)
         return NULL;
 
-    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
+    if (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
     {
         if (flt->GetTeam() not_eq FalconLocalSession->GetTeam())
-            return(NULL);
+            return (NULL);
     }
 
-    if (flt->GetUnitMission() == AMIS_ALERT or flt->GetUnitMission() == AMIS_ABORT)
-        return(NULL);
+    if (flt->GetUnitMission() == AMIS_ALERT or
+        flt->GetUnitMission() == AMIS_ABORT)
+        return (NULL);
 
-    if ( not flt->GetUnitParent())
-        return(NULL);
+    if (not flt->GetUnitParent())
+        return (NULL);
 
     FltPkg = (Package)flt->GetUnitParent();
 
-    if ( not FltPkg)
-        return(NULL);
+    if (not FltPkg)
+        return (NULL);
 
     package = gATOAll->Find(FltPkg->GetCampID());
 
@@ -735,15 +707,12 @@ C_ATO_Flight *AddFlighttoATO(Flight flt)
             item = gATOAll->CreateItem(atoitem->GetID(), C_TYPE_ITEM, atoitem);
             atoitem->SetOwner(item);
             gATOAll->AddChildItem(package, item);
-            return(atoitem);
+            return (atoitem);
         }
     }
 
-    return(NULL);
+    return (NULL);
 }
-
-
-
 
 
 #if 0

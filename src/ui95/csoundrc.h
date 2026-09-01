@@ -23,15 +23,16 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-    long  ID;
-    long  flags;
-    int   SoundID;
-    long  Volume;
-    long  LoopPoint;
+    long ID;
+    long flags;
+    int SoundID;
+    long Volume;
+    long LoopPoint;
     short Count;
     char *filename;
     SOUND_RSC *Sound;
@@ -56,7 +57,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -94,19 +96,19 @@ public:
     BOOL RemoveSound(long ID);
     BOOL PlaySound(long ID)
     {
-        return(PlaySound(GetSound(ID)));
+        return (PlaySound(GetSound(ID)));
     }
     BOOL LoopSound(long ID)
     {
-        return(LoopSound(GetSound(ID)));
+        return (LoopSound(GetSound(ID)));
     }
     BOOL StopSound(long ID)
     {
-        return(StopSound(GetSound(ID)));
+        return (StopSound(GetSound(ID)));
     }
     long SetVolume(long ID, long Volume)
     {
-        return(SetVolume(GetSound(ID), Volume));
+        return (SetVolume(GetSound(ID), Volume));
     }
     BOOL PlaySound(SOUND_RES *Snd);
     BOOL LoopSound(SOUND_RES *Snd);

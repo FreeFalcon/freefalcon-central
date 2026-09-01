@@ -15,9 +15,9 @@ This is only a summary of the requirements and assumes a knowledge of your
 way around installing libraries on your system. For more detail, see
 [our documentation](https://github.com/FreeFalcon/docs).
 
-FreeFalcon currently requires Visual Studio 2026 community edition. You will
-need Windows SDK and DirectX SDK installed with Visual Studio and Kronos
-OpenXR Headers and Loader packages installed via nuget package manager.
+FreeFalcon currently requires Visual Studio 2026 community edition. You will 
+need Windows SDK and DirectX installed with Visual Studio and Kronis OpenXR 
+Headers and Loader packages installed via nuget package manager.
 
 To load the Installer project, you'll need the latest version of the WiX
 Toolset, which can be found [here](http://wixtoolset.org/). Without this, you
@@ -63,18 +63,6 @@ You can contribute to the project in various ways.
    getting your code into the main source tree.
  * If you're not a programmer, not to worry! Just let us know if you find any
    bugs or have any suggestions in the issue tracker.
-
-## Credits for 3rd party models used for touch controllers visualization
-
-"Andrews Oculus Controller Left" (https://skfb.ly/6ACKG) by djvivid is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
-
-"Andrews Oculus Controller Right" (https://skfb.ly/6ACKI) by djvivid is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
-
-"Valve Index Controller Left" (https://skfb.ly/6SpQ7) by F53 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
-
-"Valve Index Controller Right" (https://skfb.ly/6QXCY) by F53 is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
-
-"Gloves for fps game" (https://skfb.ly/6TICP) by bobeer is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/)
 
 ## Legal
 

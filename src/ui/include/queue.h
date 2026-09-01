@@ -26,6 +26,7 @@ class CommsQueue
 {
 private:
     HWND appwin_;
+
 public:
     QUEUEITEM *Root_;
     BOOL PostPending;
@@ -45,6 +46,6 @@ public:
 };
 
 extern CommsQueue *gUICommsQ;
-extern F4CSECTIONHANDLE* QueueCritical;
+extern F4CSECTIONHANDLE *QueueCritical;
 
 #endif

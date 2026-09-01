@@ -23,27 +23,27 @@
 #include "object.h"
 #include "simobj.h"
 #include "simdrive.h"
-#include "Graphics/Include/drawsgmt.h"
+#include "graphics/include/drawsgmt.h"
 #include "entity.h"
 #include "classtbl.h"
 #include "sms.h"
 #include "fcc.h"
-#include "PilotInputs.h"
-#include "MsgInc/DamageMsg.h"
-#include "Graphics/Include/Rviewpnt.h"
+#include "pilotinputs.h"
+#include "msginc/damagemsg.h"
+#include "graphics/include/rviewpnt.h"
 #include "guns.h"
 #include "hardpnt.h"
 #include "sfx.h"
-#include "Unit.h"
+#include "unit.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "fakerand.h"
 #include "acmi/src/include/acmirec.h"
-#include "Battalion.h"
+#include "battalion.h"
 #include "camp2sim.h"
 #include "campbase.h"
 #include "ui/include/ui_ia.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "handoff.h"
 #include "gnddef.h"
 #include "ground.h"
@@ -54,13 +54,13 @@
 /* S.G. */
 #include "simbase.h"
 /* S.G. */
-#include "Object.h"
+#include "object.h"
 /* MN */
-#include "Find.h"
+#include "find.h"
 /* MN */
-#include "Classtbl.h"
+#include "classtbl.h"
 
-/* MN */extern int g_nlookAroundWaterTiles;
+/* MN */ extern int g_nlookAroundWaterTiles;
 
 #ifdef CHECK_PROC_TIMES
 ulong gCommChooseTarg = 0;
@@ -73,9 +73,9 @@ ulong gConfirmTarg = 0;
 MEM_POOL GNDAIClass::pool;
 #endif
 
-void SetLabel(SimBaseClass* theObject);
+void SetLabel(SimBaseClass *theObject);
 
-extern GridIndex   dx[17];
+extern GridIndex dx[17];
 extern GridIndex dy[17];
 
 #define GNDAI_SINF(a) sinf(a)
@@ -84,7 +84,8 @@ extern GridIndex dy[17];
 #define AI_SCALEFAC 50 // Used for debug code..
 #define AI_COORD_SCALE 2
 
-#define OPTIMAL_VEHICLE_ROTATION (90.0F * DTR) // Optimal rotation speed (radians/second)
+#define OPTIMAL_VEHICLE_ROTATION                                               \
+    (90.0F * DTR) // Optimal rotation speed (radians/second)
 
 // edg: this is an attempt to reduce vehicles from going thru each other --
 // just spread em out.  Scale existing table offsets by this amount
@@ -101,108 +102,103 @@ extern bool g_bRealisticAvionics;
 extern bool g_bAGRadarFixes;
 extern bool g_bFireOntheMove; // FRB - Test
 
-void AdjustOffset(float c, float s, float *x, float*y, float xo, float yo);
-void AdjustOffset(float heading, float *x, float*y, float xo, float yo);
-static int InPosition(GNDAIClass* us);
+void AdjustOffset(float c, float s, float *x, float *y, float xo, float yo);
+void AdjustOffset(float heading, float *x, float *y, float xo, float yo);
+static int InPosition(GNDAIClass *us);
 
 // KCK: These need to be relative offsets (rotated by battalion's heading) using
 // the above function
-AIOffsetType SquadFormations[ GNDAI_FORM_END ][NO_OF_SQUADS] =
-{
+AIOffsetType SquadFormations[GNDAI_FORM_END][NO_OF_SQUADS] = {
     // Scatter mode
-    { {0, 0 }, { -100, -100 }, {100, -100} },
+    {{0, 0}, {-100, -100}, {100, -100}},
 
     // COLUMN
-    { {0, 0 }, { 0, -50 }, { 0, -100} },
+    {{0, 0}, {0, -50}, {0, -100}},
 
     // Unused
-    { {0, 0 }, { -50, -50 }, {50, -50} },
+    {{0, 0}, {-50, -50}, {50, -50}},
 
     // OVERWATCH
-    { {0, 0 }, { -50, -50 }, {0, -100} },
+    {{0, 0}, {-50, -50}, {0, -100}},
 
     // Wedge
-    { {0, 0 }, { -50, -50 }, {50, -50} },
+    {{0, 0}, {-50, -50}, {50, -50}},
 
     // Echelon
-    { {0, 0 }, {50, -50 }, {100, -100} },
+    {{0, 0}, {50, -50}, {100, -100}},
 
     // LINE
-    { {0, 0 }, {50, 0 }, { -50, 0} }
-};
+    {{0, 0}, {50, 0}, {-50, 0}}};
 
-AIOffsetType PlatoonFormations[ GNDAI_FORM_END ][NO_OF_PLATOONS] =
-{
+AIOffsetType PlatoonFormations[GNDAI_FORM_END][NO_OF_PLATOONS] = {
     // Scatter mode
-    { {0, 0 }, { -300, -300 }, {300, -300}, {0, -600 } },
+    {{0, 0}, {-300, -300}, {300, -300}, {0, -600}},
 
     // COLUMN
-    { {0, 0 }, { 0, -250 }, { 0, -500}, { 0, -750 } },
+    {{0, 0}, {0, -250}, {0, -500}, {0, -750}},
 
     // Wedge
-    { {0, 0 }, { -250, -250 }, {250, -250}, { 500, -500} },
+    {{0, 0}, {-250, -250}, {250, -250}, {500, -500}},
 
     // OVERWATCH
-    { {0, 0 }, { -125, -250 }, { 125, -250}, { 0, -500} },
+    {{0, 0}, {-125, -250}, {125, -250}, {0, -500}},
 
     // Wedge
-    { {0, 0 }, { -250, -250 }, {250, -250}, { 500, -500} },
+    {{0, 0}, {-250, -250}, {250, -250}, {500, -500}},
 
     // Echelon
-    { {0, 0 }, { 250, -250 }, { 500, -500}, { 0, -500} },
+    {{0, 0}, {250, -250}, {500, -500}, {0, -500}},
 
     // LINE
-    { {0, 0 }, { -250, 0 }, { 250, 0}, { 500, 0} },
+    {{0, 0}, {-250, 0}, {250, 0}, {500, 0}},
 };
 
-AIOffsetType CompanyFormations[ GNDAI_FORM_END ][NO_OF_COMPANIES] =
-{
+AIOffsetType CompanyFormations[GNDAI_FORM_END][NO_OF_COMPANIES] = {
     // Scatter mode
-    { {0, 0 }, { -1000, -1000 }, {1000, -1000}, {0, -2000 }  },
+    {{0, 0}, {-1000, -1000}, {1000, -1000}, {0, -2000}},
 
     // COLUMN
-    { {0, 0 }, { 0, -1000 }, { 0, -2000}, { 0, -3000 } },
+    {{0, 0}, {0, -1000}, {0, -2000}, {0, -3000}},
 
     // Wedge
-    { {0, 0 }, { -1000, -1000 }, {1000, -1000}, { 2000, -2000} },
+    {{0, 0}, {-1000, -1000}, {1000, -1000}, {2000, -2000}},
 
     // OVERWATCH
-    { {0, 0 }, { -500, -1000 }, { 500, -1000}, { 0, -2000} },
+    {{0, 0}, {-500, -1000}, {500, -1000}, {0, -2000}},
 
     // Wedge
-    { {0, 0 }, { -1000, -1000 }, {1000, -1000}, { 2000, -2000} },
+    {{0, 0}, {-1000, -1000}, {1000, -1000}, {2000, -2000}},
 
     // Echelon
-    { {0, 0 }, { 1000, -1000 }, { 2000, -500}, { 0, -2000} },
+    {{0, 0}, {1000, -1000}, {2000, -500}, {0, -2000}},
 
     // LINE
-    { {0, 0 }, { -1000, 0 }, { 1000, 0}, { 2000, 0} },
+    {{0, 0}, {-1000, 0}, {1000, 0}, {2000, 0}},
 
 };
 
 // Amount of feet a vehicle can be randomized away from it's "perfect" location
-AIOffsetType FormationRandomness[ GNDAI_FORM_END ] =
-{
+AIOffsetType FormationRandomness[GNDAI_FORM_END] = {
     // Scatter mode
-    { 50.0F * RANDOM_OFFSET_SCALE, 50.0F * RANDOM_OFFSET_SCALE  },
+    {50.0F * RANDOM_OFFSET_SCALE, 50.0F * RANDOM_OFFSET_SCALE},
 
     // COLUMN
-    { 15.0F * RANDOM_OFFSET_SCALE, 10.0F * RANDOM_OFFSET_SCALE },
+    {15.0F * RANDOM_OFFSET_SCALE, 10.0F * RANDOM_OFFSET_SCALE},
 
     // Wedge
-    { 25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE },
+    {25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE},
 
     // OVERWATCH
-    { 25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE },
+    {25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE},
 
     // Wedge
-    { 25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE },
+    {25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE},
 
     // Echelon
-    { 25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE },
+    {25.0F * RANDOM_OFFSET_SCALE, 25.0F * RANDOM_OFFSET_SCALE},
 
     // LINE
-    { 10.0F * RANDOM_OFFSET_SCALE, 100.0F * RANDOM_OFFSET_SCALE },
+    {10.0F * RANDOM_OFFSET_SCALE, 100.0F * RANDOM_OFFSET_SCALE},
 };
 
 
@@ -214,71 +210,54 @@ typedef struct
     int uid;
 } BattalionInitType;
 
-BattalionInitType BattalionHeir[48] =
-{
-    { -1, GNDAI_BATTALION_COMMANDER, 0 },
-    {  0, GNDAI_SQUAD_LEADER, 1 },
-    {  0, GNDAI_SQUAD_LEADER, 2 },
+BattalionInitType BattalionHeir[48] = {
+    {-1, GNDAI_BATTALION_COMMANDER, 0}, {0, GNDAI_SQUAD_LEADER, 1},
+    {0, GNDAI_SQUAD_LEADER, 2},
 
-    {  0, GNDAI_PLATOON_COMMANDER, 1 },
-    {  3, GNDAI_SQUAD_LEADER, 1 },
-    {  3, GNDAI_SQUAD_LEADER, 2 },
+    {0, GNDAI_PLATOON_COMMANDER, 1},    {3, GNDAI_SQUAD_LEADER, 1},
+    {3, GNDAI_SQUAD_LEADER, 2},
 
-    {  0, GNDAI_PLATOON_COMMANDER, 2 },
-    {  6, GNDAI_SQUAD_LEADER, 1 },
-    {  6, GNDAI_SQUAD_LEADER, 2 },
+    {0, GNDAI_PLATOON_COMMANDER, 2},    {6, GNDAI_SQUAD_LEADER, 1},
+    {6, GNDAI_SQUAD_LEADER, 2},
 
-    {  0, GNDAI_PLATOON_COMMANDER, 3 },
-    {  9, GNDAI_SQUAD_LEADER, 1 },
-    {  9, GNDAI_SQUAD_LEADER, 2 },
+    {0, GNDAI_PLATOON_COMMANDER, 3},    {9, GNDAI_SQUAD_LEADER, 1},
+    {9, GNDAI_SQUAD_LEADER, 2},
 
-    {  0, GNDAI_COMPANY_COMMANDER, 1 },
-    { 12, GNDAI_SQUAD_LEADER, 1 },
-    { 12, GNDAI_SQUAD_LEADER, 2 },
+    {0, GNDAI_COMPANY_COMMANDER, 1},    {12, GNDAI_SQUAD_LEADER, 1},
+    {12, GNDAI_SQUAD_LEADER, 2},
 
-    { 12, GNDAI_PLATOON_COMMANDER, 1 },
-    { 15, GNDAI_SQUAD_LEADER, 1 },
-    { 15, GNDAI_SQUAD_LEADER, 2 },
+    {12, GNDAI_PLATOON_COMMANDER, 1},   {15, GNDAI_SQUAD_LEADER, 1},
+    {15, GNDAI_SQUAD_LEADER, 2},
 
-    { 12, GNDAI_PLATOON_COMMANDER, 2 },
-    { 18, GNDAI_SQUAD_LEADER, 1 },
-    { 18, GNDAI_SQUAD_LEADER, 2 },
+    {12, GNDAI_PLATOON_COMMANDER, 2},   {18, GNDAI_SQUAD_LEADER, 1},
+    {18, GNDAI_SQUAD_LEADER, 2},
 
-    { 12, GNDAI_PLATOON_COMMANDER, 3 },
-    { 21, GNDAI_SQUAD_LEADER, 1 },
-    { 21, GNDAI_SQUAD_LEADER, 2 },
+    {12, GNDAI_PLATOON_COMMANDER, 3},   {21, GNDAI_SQUAD_LEADER, 1},
+    {21, GNDAI_SQUAD_LEADER, 2},
 
-    {  0, GNDAI_COMPANY_COMMANDER, 2 },
-    { 24, GNDAI_SQUAD_LEADER, 1 },
-    { 24, GNDAI_SQUAD_LEADER, 2 },
+    {0, GNDAI_COMPANY_COMMANDER, 2},    {24, GNDAI_SQUAD_LEADER, 1},
+    {24, GNDAI_SQUAD_LEADER, 2},
 
-    { 24, GNDAI_PLATOON_COMMANDER, 1 },
-    { 27, GNDAI_SQUAD_LEADER, 1 },
-    { 27, GNDAI_SQUAD_LEADER, 2 },
+    {24, GNDAI_PLATOON_COMMANDER, 1},   {27, GNDAI_SQUAD_LEADER, 1},
+    {27, GNDAI_SQUAD_LEADER, 2},
 
-    { 24, GNDAI_PLATOON_COMMANDER, 2 },
-    { 30, GNDAI_SQUAD_LEADER, 1 },
-    { 30, GNDAI_SQUAD_LEADER, 2 },
+    {24, GNDAI_PLATOON_COMMANDER, 2},   {30, GNDAI_SQUAD_LEADER, 1},
+    {30, GNDAI_SQUAD_LEADER, 2},
 
-    { 24, GNDAI_PLATOON_COMMANDER, 3 },
-    { 33, GNDAI_SQUAD_LEADER, 1 },
-    { 33, GNDAI_SQUAD_LEADER, 2 },
+    {24, GNDAI_PLATOON_COMMANDER, 3},   {33, GNDAI_SQUAD_LEADER, 1},
+    {33, GNDAI_SQUAD_LEADER, 2},
 
-    {  0, GNDAI_COMPANY_COMMANDER, 3 },
-    { 36, GNDAI_SQUAD_LEADER, 1 },
-    { 36, GNDAI_SQUAD_LEADER, 2 },
+    {0, GNDAI_COMPANY_COMMANDER, 3},    {36, GNDAI_SQUAD_LEADER, 1},
+    {36, GNDAI_SQUAD_LEADER, 2},
 
-    { 36, GNDAI_PLATOON_COMMANDER, 1 },
-    { 39, GNDAI_SQUAD_LEADER, 1 },
-    { 39, GNDAI_SQUAD_LEADER, 2 },
+    {36, GNDAI_PLATOON_COMMANDER, 1},   {39, GNDAI_SQUAD_LEADER, 1},
+    {39, GNDAI_SQUAD_LEADER, 2},
 
-    { 36, GNDAI_PLATOON_COMMANDER, 2 },
-    { 42, GNDAI_SQUAD_LEADER, 1 },
-    { 42, GNDAI_SQUAD_LEADER, 2 },
+    {36, GNDAI_PLATOON_COMMANDER, 2},   {42, GNDAI_SQUAD_LEADER, 1},
+    {42, GNDAI_SQUAD_LEADER, 2},
 
-    { 36, GNDAI_PLATOON_COMMANDER, 3 },
-    { 45, GNDAI_SQUAD_LEADER, 1 },
-    { 45, GNDAI_SQUAD_LEADER, 2 },
+    {36, GNDAI_PLATOON_COMMANDER, 3},   {45, GNDAI_SQUAD_LEADER, 1},
+    {45, GNDAI_SQUAD_LEADER, 2},
 };
 
 // This is used as a temporary pointer haven for vehicles being added
@@ -294,23 +273,31 @@ GNDAIClass *NewGroundAI(GroundClass *us, int position, BOOL isFirst, int skill)
     if (isFirst)
     {
         // Reset our creation data
-        memset(simb, 0, sizeof(GNDAIClass*) * 48);
+        memset(simb, 0, sizeof(GNDAIClass *) * 48);
     }
 
     if (position)
     {
         // Check if our leader exists -
         //while (position and not simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
-        while (position and BattalionHeir[position].leader_idx >= 0 and not simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
+        while (position and BattalionHeir[position].leader_idx >= 0 and
+               not simb[BattalionHeir[position].leader_idx]) // JB 010220 CTD
             position = BattalionHeir[position].leader_idx;
 
         if (BattalionHeir[position].leader_idx >= 0) // JB 001203 //+
-            gai = simb[position] = new GNDAIClass(us, simb[BattalionHeir[position].leader_idx], (short)BattalionHeir[position].rank, BattalionHeir[position].uid, skill);
+            gai = simb[position] =
+                new GNDAIClass(us, simb[BattalionHeir[position].leader_idx],
+                               (short)BattalionHeir[position].rank,
+                               BattalionHeir[position].uid, skill);
         else // JB 001203 //+
-            gai = simb[position] = new GNDAIClass(us, NULL, BattalionHeir[position].rank, (short)BattalionHeir[position].uid, skill);   // JB 001203 //+
+            gai = simb[position] = new GNDAIClass(
+                us, NULL, BattalionHeir[position].rank,
+                (short)BattalionHeir[position].uid, skill); // JB 001203 //+
     }
     else
-        gai = simb[position] = new GNDAIClass(us, NULL, BattalionHeir[position].rank, (short)BattalionHeir[position].uid, skill);
+        gai = simb[position] =
+            new GNDAIClass(us, NULL, BattalionHeir[position].rank,
+                           (short)BattalionHeir[position].uid, skill);
 
     if (isFirst)
     {
@@ -323,11 +310,12 @@ GNDAIClass *NewGroundAI(GroundClass *us, int position, BOOL isFirst, int skill)
 }
 
 // Initialize the ground ai class
-GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int skill)
+GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id,
+                       int skill)
 {
     battalionCommand = NULL;
     mlTrig trig;
-    parent_unit = (UnitClass*) s->GetCampaignObject();
+    parent_unit = (UnitClass *)s->GetCampaignObject();
     gndTargetPtr = NULL;
     airTargetPtr = NULL;
     leader = NULL;
@@ -351,7 +339,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
     }
 
     // Update current trig values
-    if ( not l or this == l)
+    if (not l or this == l)
     {
         mlSinCos(&trig, ideal_h);
         isinh = trig.sin;
@@ -397,24 +385,29 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
         company_id = l->company_id;
     }
 
-    VehicleClassDataType *vc = (VehicleClassDataType*)Falcon4ClassTable[self->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    VehicleClassDataType *vc =
+        (VehicleClassDataType *)
+            Falcon4ClassTable[self->Type() - VU_LAST_ENTITY_TYPE]
+                .dataPtr;
     maxvel = vc->MaxSpeed * KPH_TO_FPS;
 
     if (parent_unit)
     {
-        formation = (GNDAIFormType) parent_unit->GetUnitFormation();
+        formation = (GNDAIFormType)parent_unit->GetUnitFormation();
         unitvel = (float)parent_unit->GetCruiseSpeed();
     }
     else
     {
-        formation = GNDAI_FORM_WEDGE; //(GNDAIFormType)(rand () % GNDAI_FORM_COLUMN);
+        formation =
+            GNDAI_FORM_WEDGE; //(GNDAIFormType)(rand () % GNDAI_FORM_COLUMN);
         unitvel = maxvel;
     }
 
     lastMoveTime = SimLibElapsedTime;
 
     // note: we can adjust this for AI levels / gun type
-    airFireRate = (10 - skillLevel + rand() % (3 * (5 - skillLevel))) * SEC_TO_MSEC;
+    airFireRate =
+        (10 - skillLevel + rand() % (3 * (5 - skillLevel))) * SEC_TO_MSEC;
     gndFireRate = (2 + rand() % 6) * SEC_TO_MSEC;
 
     nextTurretCalc = SimLibElapsedTime;
@@ -425,16 +418,21 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
     }
     else
     {
-        nextGroundFire = SimLibElapsedTime + ((int)(s->vehicleInUnit * SEC_TO_MSEC) % (int)gndFireRate);
-        nextAirFire = SimLibElapsedTime + ((int)(s->vehicleInUnit * 5 * SEC_TO_MSEC) % (int)airFireRate);
+        nextGroundFire =
+            SimLibElapsedTime +
+            ((int)(s->vehicleInUnit * SEC_TO_MSEC) % (int)gndFireRate);
+        nextAirFire =
+            SimLibElapsedTime +
+            ((int)(s->vehicleInUnit * 5 * SEC_TO_MSEC) % (int)airFireRate);
     }
 
-    if ( not maxvel)
+    if (not maxvel)
     {
         // If we can't move, set ourselves to halted
         moveState = GNDAI_MOVE_HALTED;
     }
-    else if (SimDriver.RunningCampaignOrTactical() and not parent_unit->IsTaskForce())
+    else if (SimDriver.RunningCampaignOrTactical() and
+             not parent_unit->IsTaskForce())
     {
         moveState = GNDAI_MOVE_GENERAL;
     }
@@ -449,7 +447,7 @@ GNDAIClass::GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int 
 
 
 // Pick a leader. Heil Hitler
-void GNDAIClass::SetLeader(GNDAIClass* newLeader)
+void GNDAIClass::SetLeader(GNDAIClass *newLeader)
 {
     leader = newLeader;
     /* GNDAIClass* oldLeader = leader;
@@ -495,9 +493,18 @@ void GNDAIClass::SetGroundTarget(SimObjectType *newTarget)
 
         // 2001-03-21 ADDED BY S.G. SINCE WE ARE A SIM THINGY, WE CAN'T RELY ON THE DetectVs CODE TO FLAG THE TARGET AS DETECTED. I NEED TO DO IT MYSELF HERE
         if (newTarget->BaseData()->IsSim())
-            ((SimBaseClass *)newTarget->BaseData())->GetCampaignObject()->SetSpotted(self->GetCampaignObject()->GetTeam(), TheCampaign.CurrentTime, 1); // 2002-02-11 MODIFIED BY S.G. Added '1' to flag it identified
+            ((SimBaseClass *)newTarget->BaseData())
+                ->GetCampaignObject()
+                ->SetSpotted(
+                    self->GetCampaignObject()->GetTeam(),
+                    TheCampaign.CurrentTime,
+                    1); // 2002-02-11 MODIFIED BY S.G. Added '1' to flag it identified
         else
-            ((CampBaseClass *)newTarget->BaseData())->SetSpotted(self->GetCampaignObject()->GetTeam(), TheCampaign.CurrentTime, 1); // 2002-02-11 MODIFIED BY S.G. Added '1' to flag it identified
+            ((CampBaseClass *)newTarget->BaseData())
+                ->SetSpotted(
+                    self->GetCampaignObject()->GetTeam(),
+                    TheCampaign.CurrentTime,
+                    1); // 2002-02-11 MODIFIED BY S.G. Added '1' to flag it identified
 
         // END OF ADDED SECTION
     }
@@ -564,7 +571,8 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if ( not gndTargetPtr or gndTargetPtr->BaseData() not_eq campTargetEntity)
+            if (not gndTargetPtr or
+                gndTargetPtr->BaseData() not_eq campTargetEntity)
             {
                 SetGroundTarget(new SimObjectType(campTargetEntity));
             }
@@ -584,7 +592,8 @@ void GNDAIClass::ProcessTargeting(void)
         if (campTargetEntity)
         {
             // Create our shared ground target object (campaign target)
-            if ( not airTargetPtr or airTargetPtr->BaseData() not_eq campTargetEntity)
+            if (not airTargetPtr or
+                airTargetPtr->BaseData() not_eq campTargetEntity)
             {
                 SetAirTarget(new SimObjectType(campTargetEntity));
             }
@@ -597,7 +606,8 @@ void GNDAIClass::ProcessTargeting(void)
                 // May be a new function just calculating that would be better...
                 SimObjectType *tmpTarget = airTargetPtr->next;
                 airTargetPtr->next = NULL;
-                CalcRelGeom(self, airTargetPtr, NULL, 1.0F / SimLibMajorFrameTime);
+                CalcRelGeom(self, airTargetPtr, NULL,
+                            1.0F / SimLibMajorFrameTime);
                 airTargetPtr->next = tmpTarget;
             }
 
@@ -614,13 +624,16 @@ void GNDAIClass::ProcessTargeting(void)
             int bestReact = 1;
             Team who = self->GetTeam();
             VuSessionsIterator sit(FalconLocalGame);
-            FalconSessionEntity* session = (FalconSessionEntity*) sit.GetFirst();
+            FalconSessionEntity *session =
+                (FalconSessionEntity *)sit.GetFirst();
 
             while (session)
             {
-                player = (AircraftClass*) session->GetPlayerEntity();
+                player = (AircraftClass *)session->GetPlayerEntity();
 
-                if (player and player->IsAirplane() and GetRoE(who, player->GetTeam(), ROE_GROUND_FIRE) == ROE_ALLOWED)
+                if (player and player->IsAirplane() and
+                    GetRoE(who, player->GetTeam(), ROE_GROUND_FIRE) ==
+                        ROE_ALLOWED)
                 {
                     int react, det;
                     float d;
@@ -632,7 +645,8 @@ void GNDAIClass::ProcessTargeting(void)
                     if (det bitand REACTION_MASK)
                     {
                         // END OF ADDED SECTION EXCEPT FOR INDENTATION
-                        react = parent_unit->Reaction(player->GetCampaignObject(), det, d);
+                        react = parent_unit->Reaction(
+                            player->GetCampaignObject(), det, d);
 
                         if (react > bestReact)
                         {
@@ -644,10 +658,10 @@ void GNDAIClass::ProcessTargeting(void)
                     }
                 }
 
-                session = (FalconSessionEntity*) sit.GetNext();
+                session = (FalconSessionEntity *)sit.GetNext();
             }
 
-            if ( not best)
+            if (not best)
             {
                 SetAirTarget(NULL);
             }
@@ -657,7 +671,6 @@ void GNDAIClass::ProcessTargeting(void)
                 CalcRelAzElRangeAta(self, airTargetPtr);
             }
         }
-
     }
 
     // SCR 10/19/98
@@ -667,7 +680,8 @@ void GNDAIClass::ProcessTargeting(void)
 
     // Decide if we want to shoot at the battalion's air or ground target
     // If we are an emitter, we always choose the airtarget
-    if (self->isGroundCapable and ( not self->isEmitter or self->isShip))   // JPO let ships decide.
+    if (self->isGroundCapable and
+        (not self->isEmitter or self->isShip)) // JPO let ships decide.
     {
         if (self->isAirCapable)
         {
@@ -695,7 +709,8 @@ void GNDAIClass::ProcessTargeting(void)
     if (newTarget)
     {
         if (newTarget->BaseData()->IsSim())
-            newUnit = ((SimBaseClass*)newTarget->BaseData())->GetCampaignObject();
+            newUnit =
+                ((SimBaseClass *)newTarget->BaseData())->GetCampaignObject();
         else
             newUnit = (CampEntity)newTarget->BaseData();
     }
@@ -703,7 +718,8 @@ void GNDAIClass::ProcessTargeting(void)
     if (self->targetPtr)
     {
         if (self->targetPtr->BaseData()->IsSim())
-            oldUnit = ((SimBaseClass*)self->targetPtr->BaseData())->GetCampaignObject();
+            oldUnit = ((SimBaseClass *)self->targetPtr->BaseData())
+                          ->GetCampaignObject();
         else
             oldUnit = (CampEntity)self->targetPtr->BaseData();
     }
@@ -715,24 +731,25 @@ void GNDAIClass::ProcessTargeting(void)
 
     // RV - Biker - Switch to next target if we did take a hit (pctStrength <= 0.0f)
     //if( not self->targetPtr or self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
-    if (
- not self->targetPtr or
+    if (not self->targetPtr or
         ((SimBaseClass *)self->targetPtr->BaseData())->pctStrength <= 0.0f or
-        self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit
-    )
+        self->targetPtr->BaseData()->IsDead() or newUnit not_eq oldUnit)
     {
-        self->SetTarget(SimCampHandoff(newTarget, self->targetList, HANDOFF_RANDOM));
+        self->SetTarget(
+            SimCampHandoff(newTarget, self->targetList, HANDOFF_RANDOM));
     }
     else if (self->targetPtr->BaseData()->IsCampaign())
     {
-        self->SetTarget(SimCampHandoff(self->targetPtr, self->targetList, HANDOFF_RANDOM));
+        self->SetTarget(
+            SimCampHandoff(self->targetPtr, self->targetList, HANDOFF_RANDOM));
     }
 
     if (self->targetPtr)
     {
         if (self->isEmitter and not self->targetPtr->BaseData()->OnGround())
         {
-            RadarClass* radar = (RadarClass*)FindSensor(self, SensorClass::Radar);
+            RadarClass *radar =
+                (RadarClass *)FindSensor(self, SensorClass::Radar);
             ShiAssert(radar);
             bool tracking = FALSE;
             bool detecting = FALSE;
@@ -754,13 +771,10 @@ void GNDAIClass::ProcessTargeting(void)
 
             // If handoff switched target, localData will have zeros only,
             // fix this by calling CalcRelAzElRangeAta and then run a sensor sweep
-            SimObjectLocalData* localData = self->targetPtr->localData;
+            SimObjectLocalData *localData = self->targetPtr->localData;
 
-            if (
-                localData->ataFrom == 0.0f and 
-                localData->az == 0.0f  and 
-                localData->el == 0.0f and localData->range == 0.0f
-            )
+            if (localData->ataFrom == 0.0f and localData->az == 0.0f and
+                localData->el == 0.0f and localData->range == 0.0f)
             {
                 CalcRelAzElRangeAta(self, self->targetPtr);
 
@@ -771,21 +785,21 @@ void GNDAIClass::ProcessTargeting(void)
             }
             // If our radar has no target or if it has the SAME base object
             // as us but different target pointers, switch our radar target pointer to our target pointer
-            else if (
- not radar->CurrentTarget() or (
-                    radar->CurrentTarget() not_eq self->targetPtr and 
-                    radar->CurrentTarget()->BaseData() == self->targetPtr->BaseData()
-                )
-            )
+            else if (not radar->CurrentTarget() or
+                     (radar->CurrentTarget() not_eq self->targetPtr and
+                      radar->CurrentTarget()->BaseData() ==
+                          self->targetPtr->BaseData()))
             {
                 radar->SetDesiredTarget(self->targetPtr);
-                radar->SetFlag(RadarClass::FirstSweep); // Flag it as a first sweep since change
+                radar->SetFlag(
+                    RadarClass::
+                        FirstSweep); // Flag it as a first sweep since change
                 radar->Exec(self->targetList);
             }
 
-            for (i = 0; i < ((SimMoverClass*)self)->numSensors; i++)
+            for (i = 0; i < ((SimMoverClass *)self)->numSensors; i++)
             {
-                SimObjectLocalData* localData = self->targetPtr->localData;
+                SimObjectLocalData *localData = self->targetPtr->localData;
 
                 if (localData->sensorState[i] > SensorClass::Detection)
                 {
@@ -799,7 +813,7 @@ void GNDAIClass::ProcessTargeting(void)
 
                 if (localData->range > range)
                 {
-                    range = localData->range ;
+                    range = localData->range;
                 }
             }
 
@@ -816,54 +830,55 @@ void GNDAIClass::ProcessTargeting(void)
                 sprintf(label, "Track");
 
             //me123 modifyed to take tracking/detection parameter))
-            switch (self->GetCampaignObject()->StepRadar(tracking, detecting, range))
+            switch (self->GetCampaignObject()->StepRadar(tracking, detecting,
+                                                         range))
             {
-                case FEC_RADAR_SEARCH_100:
-                    radar->SetEmitting(TRUE);
-                    radar->SetDesiredTarget(self->targetPtr);
-                    strcat(label, " S100");
-                    break;
+            case FEC_RADAR_SEARCH_100:
+                radar->SetEmitting(TRUE);
+                radar->SetDesiredTarget(self->targetPtr);
+                strcat(label, " S100");
+                break;
 
-                case FEC_RADAR_SEARCH_1:
-                    radar->SetEmitting(TRUE);
-                    radar->SetDesiredTarget(self->targetPtr);
-                    strcat(label, " S1");
-                    break;
+            case FEC_RADAR_SEARCH_1:
+                radar->SetEmitting(TRUE);
+                radar->SetDesiredTarget(self->targetPtr);
+                strcat(label, " S1");
+                break;
 
-                case FEC_RADAR_SEARCH_2:
-                    radar->SetEmitting(TRUE);
-                    radar->SetDesiredTarget(self->targetPtr);
-                    strcat(label, " S2");
-                    break;
+            case FEC_RADAR_SEARCH_2:
+                radar->SetEmitting(TRUE);
+                radar->SetDesiredTarget(self->targetPtr);
+                strcat(label, " S2");
+                break;
 
-                case FEC_RADAR_SEARCH_3:
-                    radar->SetEmitting(TRUE);
-                    radar->SetDesiredTarget(self->targetPtr);
-                    strcat(label, " S3");
-                    break;
+            case FEC_RADAR_SEARCH_3:
+                radar->SetEmitting(TRUE);
+                radar->SetDesiredTarget(self->targetPtr);
+                strcat(label, " S3");
+                break;
 
-                case FEC_RADAR_GUIDE:
-                    radar->SetEmitting(TRUE);
-                    radar->SetDesiredTarget(self->targetPtr);
-                    strcat(label, " Guide");
-                    break;
+            case FEC_RADAR_GUIDE:
+                radar->SetEmitting(TRUE);
+                radar->SetDesiredTarget(self->targetPtr);
+                strcat(label, " Guide");
+                break;
 
-                case FEC_RADAR_AQUIRE:
-                    radar->SetEmitting(TRUE);
-                    radar->SetDesiredTarget(self->targetPtr);
-                    strcat(label, " Acquire");
-                    break;
+            case FEC_RADAR_AQUIRE:
+                radar->SetEmitting(TRUE);
+                radar->SetDesiredTarget(self->targetPtr);
+                strcat(label, " Acquire");
+                break;
 
-                case FEC_RADAR_CHANGEMODE:// do nothing
-                    strcat(label, " Changemode");
-                    break;
+            case FEC_RADAR_CHANGEMODE: // do nothing
+                strcat(label, " Changemode");
+                break;
 
-                default:
-                    // No emissions this time
-                    strcat(label, " OFF");
-                    radar->SetEmitting(FALSE);
-                    radar->SetDesiredTarget(NULL);
-                    break;
+            default:
+                // No emissions this time
+                strcat(label, " OFF");
+                radar->SetEmitting(FALSE);
+                radar->SetDesiredTarget(NULL);
+                break;
             }
 
             char buf[40];
@@ -876,48 +891,51 @@ void GNDAIClass::ProcessTargeting(void)
             {
                 if (g_nShowDebugLabels bitand 0x04)
                 {
-                    ((DrawableBSP*)self->drawPointer)->SetLabel(
-                        label, ((DrawableBSP*)self->drawPointer)->LabelColor()
-                    );
+                    ((DrawableBSP *)self->drawPointer)
+                        ->SetLabel(
+                            label,
+                            ((DrawableBSP *)self->drawPointer)->LabelColor());
                 }
             }
 
 #else
 
             //me123 modifyed to take tracking/detection parameter))
-            switch (self->GetCampaignObject()->StepRadar(tracking, detecting, range))
+            switch (self->GetCampaignObject()->StepRadar(tracking, detecting,
+                                                         range))
             {
-                case FEC_RADAR_SEARCH_100:
-                case FEC_RADAR_SEARCH_1:
-                case FEC_RADAR_SEARCH_2:
-                case FEC_RADAR_SEARCH_3:
-                case FEC_RADAR_GUIDE:
-                case FEC_RADAR_AQUIRE:
-                    radar->SetEmitting(TRUE);
-                    radar->SetDesiredTarget(self->targetPtr);
-                    break;
+            case FEC_RADAR_SEARCH_100:
+            case FEC_RADAR_SEARCH_1:
+            case FEC_RADAR_SEARCH_2:
+            case FEC_RADAR_SEARCH_3:
+            case FEC_RADAR_GUIDE:
+            case FEC_RADAR_AQUIRE:
+                radar->SetEmitting(TRUE);
+                radar->SetDesiredTarget(self->targetPtr);
+                break;
 
-                case FEC_RADAR_CHANGEMODE:// do nothing
-                    break;
+            case FEC_RADAR_CHANGEMODE:// do nothing
+                break;
 
-                default:
+            default:
                     // No emissions this time
 
-                    radar->SetEmitting(FALSE);
-                    radar->SetDesiredTarget(NULL);
-                    break;
+                radar->SetEmitting(FALSE);
+                radar->SetDesiredTarget(NULL);
+                break;
             }
 
 #endif
         }
 
-        if (( not self->isEmitter or self->isAirCapable) and this not_eq battalionCommand)
+        if ((not self->isEmitter or self->isAirCapable) and
+            this not_eq battalionCommand)
         {
             self->SelectWeapon(FALSE);
             SimWeaponClass *theWeapon = self->Sms->GetCurrentWeapon();
 
             //if we can't shoot at the current target, don't shoot
-            if ( not theWeapon)
+            if (not theWeapon)
             {
                 self->SetTarget(NULL);
             }
@@ -952,50 +970,53 @@ void GNDAIClass::Process(void)
     // edg: I'm not entirely sure this is working correctly in IA.
     // additionally check for leader == NULL ( meaning I'm a batallion )
     // and follow waypoints....
-    if (leader == NULL and self->curWaypoint and rank not_eq GNDAI_BATTALION_COMMANDER)
+    if (leader == NULL and self->curWaypoint and
+        rank not_eq GNDAI_BATTALION_COMMANDER)
     {
         rank = GNDAI_BATTALION_COMMANDER;
     }
-    else switch (rank)
+    else
+        switch (rank)
         {
-            case GNDAI_BATTALION_COMMANDER:
-            default:
-                Order_Battalion();
-                break;
+        case GNDAI_BATTALION_COMMANDER:
+        default:
+            Order_Battalion();
+            break;
 
-            case GNDAI_COMPANY_COMMANDER:
-                Order_Company();
-                break;
+        case GNDAI_COMPANY_COMMANDER:
+            Order_Company();
+            break;
 
-            case GNDAI_PLATOON_COMMANDER:
-                Order_Platoon();
-                break;
+        case GNDAI_PLATOON_COMMANDER:
+            Order_Platoon();
+            break;
 
-            case GNDAI_SQUAD_LEADER:
-                Order_Squad();
-                break;
+        case GNDAI_SQUAD_LEADER:
+            Order_Squad();
+            break;
         }
 
-    if ((moveState == GNDAI_MOVE_WAYPOINT) and (ideal_x == self->XPos()) and (ideal_y == self->YPos()))
+    if ((moveState == GNDAI_MOVE_WAYPOINT) and (ideal_x == self->XPos()) and
+        (ideal_y == self->YPos()))
     {
         // if in waypoint mode choose another
         if (self->curWaypoint)
         {
             switch (rank)
             {
-                case GNDAI_COMPANY_COMMANDER:
-                case GNDAI_PLATOON_COMMANDER:
-                case GNDAI_SQUAD_LEADER:
-                case GNDAI_BATTALION_COMMANDER:
-                default:
-                    // get the next waypoint
-                    self->curWaypoint = self->curWaypoint->GetNextWP();
+            case GNDAI_COMPANY_COMMANDER:
+            case GNDAI_PLATOON_COMMANDER:
+            case GNDAI_SQUAD_LEADER:
+            case GNDAI_BATTALION_COMMANDER:
+            default:
+                // get the next waypoint
+                self->curWaypoint = self->curWaypoint->GetNextWP();
 
-                    // if none, loop back to 1st waypoint
-                    if (self->curWaypoint == NULL)
-                        self->curWaypoint = self->waypoint;
+                // if none, loop back to 1st waypoint
+                if (self->curWaypoint == NULL)
+                    self->curWaypoint = self->waypoint;
 
-                    break;
+                break;
             }
         }
     }
@@ -1033,8 +1054,8 @@ void GNDAIClass::Order_Battalion(void)
             // Move towards other ground targets (first priority)
             if (self->targetPtr and self->targetPtr->BaseData()->OnGround())
             {
-                deltaX = self->targetPtr->BaseData()->XPos()  - self->XPos() ;
-                deltaY = self->targetPtr->BaseData()->YPos()  - self->YPos() ;
+                deltaX = self->targetPtr->BaseData()->XPos() - self->XPos();
+                deltaY = self->targetPtr->BaseData()->YPos() - self->YPos();
                 ideal_h = (float)atan2(deltaY, deltaX);
 
                 // KCK: Stopping when in range wasn't really working (A unit with one artillery peice would
@@ -1046,7 +1067,11 @@ void GNDAIClass::Order_Battalion(void)
                 if (parent_unit->GetUnitCurrentRole() == GRO_ATTACK)
                     closeToRange = KM_TO_FT;
                 else
-                    closeToRange = parent_unit->GetWeaponRange(self->targetPtr->BaseData()->GetMovementType()) * KM_TO_FT - KM_TO_FT;
+                    closeToRange =
+                        parent_unit->GetWeaponRange(
+                            self->targetPtr->BaseData()->GetMovementType()) *
+                            KM_TO_FT -
+                        KM_TO_FT;
 
                 if (self->targetPtr->localData->range < closeToRange)
                 {
@@ -1070,22 +1095,22 @@ void GNDAIClass::Order_Battalion(void)
                 lastGridX = gridX;
                 lastGridY = gridY;
                 // Update the parent battalion's position
-                formation = (GNDAIFormType) parent_unit->GetUnitFormation();
+                formation = (GNDAIFormType)parent_unit->GetUnitFormation();
                 parent_unit->GetLocation(&gridX, &gridY);
                 moveDir = parent_unit->GetNextMoveDirection();
                 through_x = through_y = 0.0F;
 
                 if (moveDir < 8)
                 {
-                    // 2002-02-16 MN Aaaaaaaahh - WHO DID THIS BS - THEY MUST HAVE BEEN DRUNK 
+                    // 2002-02-16 MN Aaaaaaaahh - WHO DID THIS BS - THEY MUST HAVE BEEN DRUNK
                     // Look what they have done: since when are Sim coordinates SHORT ??? No wonder the ground units move strangely...
                     // GridToSim returns a float not And ideal_x/y are floats, too... Aaaaaaaaaaaaahhhhh....;-)
                     // ideal_y = (short)GridToSim(gridX + dx[moveDir]);
                     // ideal_x = (short)GridToSim(gridY + dy[moveDir]);
                     ideal_y = GridToSim(gridX + dx[moveDir]);
                     ideal_x = GridToSim(gridY + dy[moveDir]);
-                    deltaX = ideal_x - self->XPos() ;
-                    deltaY = ideal_y - self->YPos() ;
+                    deltaX = ideal_x - self->XPos();
+                    deltaY = ideal_y - self->YPos();
 
                     if (formation == GNDAI_FORM_COLUMN)
                     {
@@ -1109,8 +1134,8 @@ void GNDAIClass::Order_Battalion(void)
             {
                 // Follow waypoints
                 self->curWaypoint->GetLocation(&ideal_x, &ideal_y, &ideal_h);
-                deltaX = ideal_x - self->XPos() ;
-                deltaY = ideal_y - self->YPos() ;
+                deltaX = ideal_x - self->XPos();
+                deltaY = ideal_y - self->YPos();
                 ideal_h = (float)atan2(deltaY, deltaX);
             }
 
@@ -1134,7 +1159,7 @@ void GNDAIClass::Order_Battalion(void)
         o = GetObjectiveByXY(cx, cy);
 
         // we may have 3 tile bridges in the future, so use g_nlookAroundWaterTiles instead of hardcoding
-        if ( not o) // can be at 2 tile bridges -> scan around our parent units location for a bridge
+        if (not o) // can be at 2 tile bridges -> scan around our parent units location for a bridge
         {
             for (j = delta; j < g_nlookAroundWaterTiles; j++)
             {
@@ -1159,14 +1184,14 @@ void GNDAIClass::Order_Battalion(void)
 
         if (parent_unit->IsBattalion())
         {
-            if (GetCover(cx, cy) == Water and not (o and o->GetType() == TYPE_BRIDGE))
+            if (GetCover(cx, cy) == Water and
+                not(o and o->GetType() == TYPE_BRIDGE))
             {
                 // that's it, we don't move anymore
                 moveState = GNDAI_MOVE_HALTED;
                 ideal_x = self->XPos();
                 ideal_y = self->YPos();
             }
-
         }
         else // task force
         {
@@ -1187,14 +1212,13 @@ void GNDAIClass::Order_Battalion(void)
 
         NearCoast:
 
-            if ( not onWater)
+            if (not onWater)
             {
                 // that's it, we don't move anymore
                 moveState = GNDAI_MOVE_HALTED;
                 ideal_x = self->XPos();
                 ideal_y = self->YPos();
             }
-
         }
     }
 }
@@ -1220,11 +1244,14 @@ void GNDAIClass::Order_Company(void)
                 // Otherwise, move out.
                 ideal_x = leader->ideal_x;
                 ideal_y = leader->ideal_y;
-                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh, &ideal_x, &ideal_y, CompanyFormations[formation][company_id].x, CompanyFormations[formation][company_id].y);
+                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh,
+                             &ideal_x, &ideal_y,
+                             CompanyFormations[formation][company_id].x,
+                             CompanyFormations[formation][company_id].y);
             }
         }
     }
-    else if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
+    else if (not(moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1251,12 +1278,18 @@ void GNDAIClass::Order_Platoon(void)
                 // Otherwise, move out.
                 ideal_x = leader->ideal_x;
                 ideal_y = leader->ideal_y;
-                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh, &ideal_x, &ideal_y, CompanyFormations[formation][company_id].x, CompanyFormations[formation][company_id].y);
-                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh, &ideal_x, &ideal_y, PlatoonFormations[formation][platoon_id].x, PlatoonFormations[formation][platoon_id].y);
+                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh,
+                             &ideal_x, &ideal_y,
+                             CompanyFormations[formation][company_id].x,
+                             CompanyFormations[formation][company_id].y);
+                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh,
+                             &ideal_x, &ideal_y,
+                             PlatoonFormations[formation][platoon_id].x,
+                             PlatoonFormations[formation][platoon_id].y);
             }
         }
     }
-    else if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
+    else if (not(moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1289,13 +1322,22 @@ void GNDAIClass::Order_Squad(void)
                 randy = FloatToInt32(FormationRandomness[formation].x);
                 rx = (float)(rand() % randx) - (randx / 2);
                 ry = (float)(rand() % randy) - (randy / 2);
-                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh, &ideal_x, &ideal_y, CompanyFormations[formation][company_id].x + rx, CompanyFormations[formation][company_id].y + ry);
-                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh, &ideal_x, &ideal_y, PlatoonFormations[formation][platoon_id].x, PlatoonFormations[formation][platoon_id].y);
-                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh, &ideal_x, &ideal_y, SquadFormations[formation][squad_id].x, SquadFormations[formation][squad_id].y);
+                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh,
+                             &ideal_x, &ideal_y,
+                             CompanyFormations[formation][company_id].x + rx,
+                             CompanyFormations[formation][company_id].y + ry);
+                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh,
+                             &ideal_x, &ideal_y,
+                             PlatoonFormations[formation][platoon_id].x,
+                             PlatoonFormations[formation][platoon_id].y);
+                AdjustOffset(battalionCommand->icosh, battalionCommand->isinh,
+                             &ideal_x, &ideal_y,
+                             SquadFormations[formation][squad_id].x,
+                             SquadFormations[formation][squad_id].y);
             }
         }
     }
-    else if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
+    else if (not(moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS))
     {
         ideal_h = leader->ideal_h;
     }
@@ -1306,14 +1348,15 @@ int GNDAIClass::CheckThrough(void)
     ShiAssert(battalionCommand);
 
     // Check to see if we want to move through a turn point
-    if (battalionCommand->through_x not_eq through_x or battalionCommand->through_y not_eq through_y)
+    if (battalionCommand->through_x not_eq through_x or
+        battalionCommand->through_y not_eq through_y)
     {
         moveFlags and_eq compl GNDAI_WENT_THROUGH;
         through_x = battalionCommand->through_x;
         through_y = battalionCommand->through_y;
     }
 
-    if ( not (moveFlags bitand GNDAI_WENT_THROUGH) and through_x and through_y)
+    if (not(moveFlags bitand GNDAI_WENT_THROUGH) and through_x and through_y)
     {
         ideal_x = through_x;
         ideal_y = through_y;
@@ -1326,13 +1369,15 @@ int GNDAIClass::CheckThrough(void)
 // Move one frame's worth towards our destination
 void GNDAIClass::Move_Towards_Dest(void)
 {
-    float delx = 0.0F, dely = 0.0F, delh = 0.0F, rotvel = OPTIMAL_VEHICLE_ROTATION, speed = 0.0F, tx = 0.0F, ty = 0.0F;
+    float delx = 0.0F, dely = 0.0F, delh = 0.0F,
+          rotvel = OPTIMAL_VEHICLE_ROTATION, speed = 0.0F, tx = 0.0F, ty = 0.0F;
     mlTrig trig;
 
     ShiAssert(battalionCommand);
 
     // get delta to next x and y location
-    if ((moveState == GNDAI_MOVE_HALTED) or (battalionCommand->moveState == GNDAI_MOVE_HALTED))
+    if ((moveState == GNDAI_MOVE_HALTED) or
+        (battalionCommand->moveState == GNDAI_MOVE_HALTED))
     {
         delx = 0.0f;
         dely = 0.0f;
@@ -1379,7 +1424,7 @@ void GNDAIClass::Move_Towards_Dest(void)
     // Check if we need to turn
     delh = ideal_h - self->Yaw();
 
-    if ( not (moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS) and delh not_eq 0.0F)
+    if (not(moveFlags bitand GNDAI_MOVE_FIXED_POSITIONS) and delh not_eq 0.0F)
     {
         //if (delh >= PI or (delh < 0 and delh > -PI))
         // rotvel = -1.0F * OPTIMAL_VEHICLE_ROTATION;
@@ -1402,7 +1447,7 @@ void GNDAIClass::Move_Towards_Dest(void)
         else
         {
             // start rotating
-            float  newyaw = self->Yaw() + rotvel * SimLibMajorFrameTime;
+            float newyaw = self->Yaw() + rotvel * SimLibMajorFrameTime;
 
             if (newyaw > PI)
                 newyaw -= 2.0F * PI;
@@ -1427,7 +1472,8 @@ void GNDAIClass::Move_Towards_Dest(void)
             // cornering speed
             speed = min(20.0F, maxvel);
         }
-        else if (rank == GNDAI_BATTALION_COMMANDER or formation == GNDAI_FORM_COLUMN)
+        else if (rank == GNDAI_BATTALION_COMMANDER or
+                 formation == GNDAI_FORM_COLUMN)
         {
             // go at unit cruise speed
             speed = unitvel;
@@ -1435,7 +1481,8 @@ void GNDAIClass::Move_Towards_Dest(void)
         else
         {
             // adjust speed to catch up/wait up (max at maxvel)
-            speed = min(maxvel, (leftToGoSq / battalionCommand->leftToGoSq) * maxvel);
+            speed = min(maxvel,
+                        (leftToGoSq / battalionCommand->leftToGoSq) * maxvel);
         }
 
         if (move_backwards > 0.0F)
@@ -1483,9 +1530,12 @@ void GNDAIClass::Move_Towards_Dest(void)
     if (self->pctStrength > 0.75f)
         self->SetDelta(delx, dely, 0.0F);
     else if (self->pctStrength > 0.25f)
-        self->SetDelta(max(delx * (self->pctStrength), self->XDelta() - decSlow), max(dely * (self->pctStrength), self->YDelta() - decSlow), 0.0F);
+        self->SetDelta(
+            max(delx * (self->pctStrength), self->XDelta() - decSlow),
+            max(dely * (self->pctStrength), self->YDelta() - decSlow), 0.0F);
     else
-        self->SetDelta(max(0.0f, self->XDelta() - decFast), max(0.0f, self->YDelta() - decFast), 0.0F);
+        self->SetDelta(max(0.0f, self->XDelta() - decFast),
+                       max(0.0f, self->YDelta() - decFast), 0.0F);
 }
 
 
@@ -1508,7 +1558,7 @@ void FindVehiclePosition(SimInitDataClass *initData)
 {
     // Calculate battalion position (0-47) of this vehicle
     int position = initData->campSlot * 3 + initData->inSlot;
-    int formation = ((UnitClass*)(initData->campBase))->GetUnitFormation();
+    int formation = ((UnitClass *)(initData->campBase))->GetUnitFormation();
     int cur_leader_idx;
 
     // KCK: for now, place in formation (essentially, option 3 without checking for obsticals)
@@ -1527,7 +1577,10 @@ void FindVehiclePosition(SimInitDataClass *initData)
             rx = (float)(rand() % randx) - (randx / 2);
             ry = (float)(rand() % randy) - (randy / 2);
 
-            AdjustOffset(initData->heading, &initData->x, &initData->y, SquadFormations[formation][BattalionHeir[position].uid].x + rx, SquadFormations[formation][BattalionHeir[position].uid].y + ry);
+            AdjustOffset(
+                initData->heading, &initData->x, &initData->y,
+                SquadFormations[formation][BattalionHeir[position].uid].x + rx,
+                SquadFormations[formation][BattalionHeir[position].uid].y + ry);
 
             //AdjustOffset(initData->heading, &initData->x, &initData->y, SquadFormations[formation][BattalionHeir[position].uid].x, SquadFormations[formation][BattalionHeir[position].uid].y);
         }
@@ -1535,13 +1588,19 @@ void FindVehiclePosition(SimInitDataClass *initData)
         if (BattalionHeir[position].rank == GNDAI_PLATOON_COMMANDER)
         {
             // Offset from our company leader
-            AdjustOffset(initData->heading, &initData->x, &initData->y, PlatoonFormations[formation][BattalionHeir[position].uid].x, PlatoonFormations[formation][BattalionHeir[position].uid].y);
+            AdjustOffset(
+                initData->heading, &initData->x, &initData->y,
+                PlatoonFormations[formation][BattalionHeir[position].uid].x,
+                PlatoonFormations[formation][BattalionHeir[position].uid].y);
         }
 
         if (BattalionHeir[position].rank == GNDAI_COMPANY_COMMANDER)
         {
             // Offset from our battalion leader
-            AdjustOffset(initData->heading, &initData->x, &initData->y, CompanyFormations[formation][BattalionHeir[position].uid].x, CompanyFormations[formation][BattalionHeir[position].uid].y);
+            AdjustOffset(
+                initData->heading, &initData->x, &initData->y,
+                CompanyFormations[formation][BattalionHeir[position].uid].x,
+                CompanyFormations[formation][BattalionHeir[position].uid].y);
         }
 
         position = cur_leader_idx;
@@ -1552,7 +1611,7 @@ void FindVehiclePosition(SimInitDataClass *initData)
 }
 
 
-void AdjustOffset(float c, float s, float *x, float*y, float xo, float yo)
+void AdjustOffset(float c, float s, float *x, float *y, float xo, float yo)
 {
     xo *= OFFSET_SCALE;
     yo *= OFFSET_SCALE;
@@ -1561,7 +1620,7 @@ void AdjustOffset(float c, float s, float *x, float*y, float xo, float yo)
     *y -= xo * c - yo * s;
 }
 
-void AdjustOffset(float h, float *x, float*y, float xo, float yo)
+void AdjustOffset(float h, float *x, float *y, float xo, float yo)
 {
     mlTrig trig;
 
@@ -1586,7 +1645,8 @@ void GNDAIClass::PromoteSubordinates(void)
     GroundClass *newLead = NULL;
 
     // sfr: @todo remove these checks
-    if ( not self or F4IsBadWritePtr(self, sizeof(GroundClass)) or F4IsBadCodePtr((FARPROC) self->GetCampaignObject())) // JB 010318 CTD
+    if (not self or F4IsBadWritePtr(self, sizeof(GroundClass)) or
+        F4IsBadCodePtr((FARPROC)self->GetCampaignObject())) // JB 010318 CTD
     {
         if (F4IsBadWritePtr(this, sizeof(GNDAIClass)))
             return;
@@ -1600,7 +1660,7 @@ void GNDAIClass::PromoteSubordinates(void)
 
     // edg: changed from assert.  A unit may have been killed just after a
     // reagg and there may be no-one to promote
-    if ( not self->GetCampaignObject()->GetComponents())
+    if (not self->GetCampaignObject()->GetComponents())
     {
         // set our own leader (if any) to NULL to deref
         SetLeader(NULL);
@@ -1615,8 +1675,9 @@ void GNDAIClass::PromoteSubordinates(void)
     if (self->GetCampaignObject()->IsAggregate())
     {
         {
-            VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
-            theObj = (GroundClass*)vehicleWalker.GetFirst();
+            VuListIterator vehicleWalker(
+                self->GetCampaignObject()->GetComponents());
+            theObj = (GroundClass *)vehicleWalker.GetFirst();
 
             while (theObj)
             {
@@ -1626,7 +1687,7 @@ void GNDAIClass::PromoteSubordinates(void)
                 if (theObj->gai->leader == this)
                     theObj->gai->SetLeader(NULL);
 
-                theObj = (GroundClass*)vehicleWalker.GetNext();
+                theObj = (GroundClass *)vehicleWalker.GetNext();
             }
         }
         SetLeader(NULL);
@@ -1642,11 +1703,13 @@ void GNDAIClass::PromoteSubordinates(void)
         // here with one or more "expoding" objects in the list, so we have to find the
         // first NON-exploding object (if any) to be the new battalion commander.
         {
-            VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
-            theObj = (GroundClass*)vehicleWalker.GetFirst();
+            VuListIterator vehicleWalker(
+                self->GetCampaignObject()->GetComponents());
+            theObj = (GroundClass *)vehicleWalker.GetFirst();
 
-            while (theObj and theObj not_eq self and (theObj->IsExploding() or theObj->IsDead()))
-                theObj = (GroundClass*)vehicleWalker.GetNext();
+            while (theObj and theObj not_eq self and
+                   (theObj->IsExploding() or theObj->IsDead()))
+                theObj = (GroundClass *)vehicleWalker.GetNext();
         }
 
         if (theObj)
@@ -1665,8 +1728,9 @@ void GNDAIClass::PromoteSubordinates(void)
     if (rank)
     {
         // Get the first vehicle in our battalion (or task force)
-        VuListIterator vehicleWalker(self->GetCampaignObject()->GetComponents());
-        theObj = (GroundClass*)vehicleWalker.GetFirst();
+        VuListIterator vehicleWalker(
+            self->GetCampaignObject()->GetComponents());
+        theObj = (GroundClass *)vehicleWalker.GetFirst();
 
         // loop thru elements in flight
         while (theObj)
@@ -1694,7 +1758,7 @@ void GNDAIClass::PromoteSubordinates(void)
             // do we promote this guy?
             if (theObj->gai->leader == this)
             {
-                if ( not newLead)
+                if (not newLead)
                 {
                     // We're the new leader - set some stuff
                     newLead = theObj;
@@ -1716,7 +1780,7 @@ void GNDAIClass::PromoteSubordinates(void)
                 theObj->gai->battalionCommand = bc;
 
             // Get the next member of our group
-            theObj = (GroundClass*)vehicleWalker.GetNext();
+            theObj = (GroundClass *)vehicleWalker.GetNext();
         }
     }
 
@@ -1727,15 +1791,14 @@ void GNDAIClass::PromoteSubordinates(void)
 }
 
 #define LOD_MAX_DIST 20000.0f
-#define LOD_MAX_DIST_SQU (LOD_MAX_DIST*LOD_MAX_DIST)
+#define LOD_MAX_DIST_SQU (LOD_MAX_DIST * LOD_MAX_DIST)
 
 /*
  ** Name: GetApproxViewDist
  ** Description:
  ** Sets the distLOD var based on distance from camera
  */
-void
-GNDAIClass::SetDistLOD(void)
+void GNDAIClass::SetDistLOD(void)
 {
     Tpoint viewLoc;
     float xd, yd, zd, distsqu;
@@ -1753,7 +1816,8 @@ GNDAIClass::SetDistLOD(void)
         // Never label out beyond 10 NM
         if (distsqu < 100.0F)
         {
-            distLOD = max(0.0F, (LOD_MAX_DIST_SQU - distsqu) / LOD_MAX_DIST_SQU);
+            distLOD =
+                max(0.0F, (LOD_MAX_DIST_SQU - distsqu) / LOD_MAX_DIST_SQU);
             distLOD *= distLOD;
         }
         else
@@ -1770,7 +1834,7 @@ GNDAIClass::SetDistLOD(void)
 //
 // This just returns 0 or 1 depending on whether the LeadVeh and/or we are moving or not.
 //
-static int InPosition(GNDAIClass* us)
+static int InPosition(GNDAIClass *us)
 {
     // WARNING:  There is potential for silliness here due to floating point precision errors.
     // Particularly the fact that MSVC/Intel don't always ensure that compare arguments are rounded

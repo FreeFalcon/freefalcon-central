@@ -12,21 +12,9 @@ public:
     float x, y, z;
 
     //-- constructors -----------------------------------------------
-    nEulerAngles()
-        : x(0.0f),
-          y(0.0f),
-          z(0.0f)
-    {};
-    nEulerAngles(float _x, float _y, float _z)
-        : x(_x),
-          y(_y),
-          z(_z)
-    {};
-    nEulerAngles(const nEulerAngles& e)
-        : x(e.x),
-          y(e.y),
-          z(e.z)
-    {};
+    nEulerAngles() : x(0.0f), y(0.0f), z(0.0f) {};
+    nEulerAngles(float _x, float _y, float _z) : x(_x), y(_y), z(_z) {};
+    nEulerAngles(const nEulerAngles& e) : x(e.x), y(e.y), z(e.z) {};
     nEulerAngles(const matrix33& m)
     {
         Set(m);
@@ -52,18 +40,19 @@ public:
 
         if (s == EulRepYes)
         {
-            double sy = (float) sqrt(m.m[0][1] * m.m[0][1] + m.m[0][2] * m.m[0][2]);
+            double sy =
+                (float)sqrt(m.m[0][1] * m.m[0][1] + m.m[0][2] * m.m[0][2]);
 
             if (sy > 16 * FLT_EPSILON)
             {
-                this->x = (float) atan2(m.m[0][1], m.m[0][2]);
-                this->y = (float) atan2(sy, m.m[0][0]);
-                this->z = (float) atan2(m.m[1][0], -m.m[2][0]);
+                this->x = (float)atan2(m.m[0][1], m.m[0][2]);
+                this->y = (float)atan2(sy, m.m[0][0]);
+                this->z = (float)atan2(m.m[1][0], -m.m[2][0]);
             }
             else
             {
-                this->x = (float) atan2(-m.m[1][2], m.m[1][1]);
-                this->y = (float) atan2(sy, m.m[0][0]);
+                this->x = (float)atan2(-m.m[1][2], m.m[1][1]);
+                this->y = (float)atan2(sy, m.m[0][0]);
                 this->z = 0;
             }
         }
@@ -73,14 +62,14 @@ public:
 
             if (cy > 16 * FLT_EPSILON)
             {
-                this->x = (float) atan2(m.m[2][1], m.m[2][2]);
-                this->y = (float) atan2(-m.m[2][0], cy);
-                this->z = (float) atan2(m.m[1][0], m.m[0][0]);
+                this->x = (float)atan2(m.m[2][1], m.m[2][2]);
+                this->y = (float)atan2(-m.m[2][0], cy);
+                this->z = (float)atan2(m.m[1][0], m.m[0][0]);
             }
             else
             {
-                this->x = (float) atan2(-m.m[1][2], m.m[1][1]);
-                this->y = (float) atan2(-m.m[2][0], cy);
+                this->x = (float)atan2(-m.m[1][2], m.m[1][1]);
+                this->y = (float)atan2(-m.m[2][0], cy);
                 this->z = 0;
             }
         }
@@ -165,12 +154,12 @@ public:
     }
 
     //-- operators --------------------------------------------------
-    bool operator== (const nEulerAngles& e)
+    bool operator==(const nEulerAngles& e)
     {
         return ((x == e.x) && (y == e.y) && (z == e.z)) ? true : false;
     }
 
-    bool operator!= (const nEulerAngles& e)
+    bool operator!=(const nEulerAngles& e)
     {
         return ((x != e.x) || (y != e.y) || (z != e.z)) ? true : false;
     }

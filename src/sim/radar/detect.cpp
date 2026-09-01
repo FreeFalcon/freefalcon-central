@@ -6,17 +6,17 @@
 #include "object.h"
 #include "simbase.h"
 #include "otwdrive.h"
-#include "Entity.h"
+#include "entity.h"
 #include "campbase.h"
-#include "radarDoppler.h"
+#include "radardoppler.h"
 #include "simmover.h"//me123
 
 /* 2001-09-07 S.G. RP5 */ extern bool g_bRP5Comp;
 
 static const float APG68_PULSE_WIDTH = 2.0e-5f;
 
-int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
-                                 int *angCell, int *velCell)
+int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int* rngCell,
+                                 int* angCell, int* velCell)
 {
     float cellAngResolution, cellRngResolution, velResolution;
     int detflag, j, k, inRangeCell, inAzcell;
@@ -27,8 +27,8 @@ int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
     /* ang = 2*R*tan(beamWidth/2)   */
     /* rng = ct/2                    */
     /*-------------------------------*/
-    cellAngResolution = 2.0F * (float)tan(beamWidth) *
-                        max(10.0F, rdrObj->localData->range);
+    cellAngResolution =
+        2.0F * (float)tan(beamWidth) * max(10.0F, rdrObj->localData->range);
     cellRngResolution = LIGHTSPEED * 0.5F * APG68_PULSE_WIDTH;
     velResolution = 40.0f * FTPSEC_TO_KNOTS;
 
@@ -82,7 +82,9 @@ int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
         /*-------------------*/
         /* assign velosity cell */
         /*-------------------*/
-        j = (int)((float)(cos(rdrObj->localData->ataFrom) * rdrObj->BaseData()->GetVt()) / velResolution);
+        j = (int)((float)(cos(rdrObj->localData->ataFrom) *
+                          rdrObj->BaseData()->GetVt()) /
+                  velResolution);
 
         /*----------------------------------*/
         /* check others for same angle cell */
@@ -99,7 +101,7 @@ int RadarDopplerClass::InResCell(SimObjectType* rdrObj, int i, int *rngCell,
         angCell[i] = j;
     }
 
-    return ( not detflag);
+    return (not detflag);
     //   return FALSE;
 }
 
@@ -149,20 +151,27 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             rdrData = obj->localData;
 
             // if the expected possition is too far from the actual hammer signal to zero
-            if (rdrData->rdrSy[0] and rdrData->rdrSy[1]) // we have a track history
+            if (rdrData->rdrSy[0] and
+                rdrData->rdrSy[1]) // we have a track history
             {
-                float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
-                float expectedX = (rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw())) +
-                                  (
-                                      (rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw())) -
-                                      (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw()))
-                                  );
+                float expectedY =
+                    rdrData->rdrY[0] + (rdrData->rdrY[0] - rdrData->rdrY[1]);
+                float expectedX =
+                    (rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw())) +
+                    ((rdrData->rdrX[0] +
+                      (rdrData->rdrHd[0] - platform->Yaw())) -
+                     (rdrData->rdrX[1] +
+                      (rdrData->rdrHd[1] - platform->Yaw())));
 
-                float realaz = rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw());
+                float realaz =
+                    rdrData->rdrX[0] + (rdrData->rdrHd[0] - platform->Yaw());
                 realaz = RES180(realaz);
 
-                if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffSam * DTR or
-                                     (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffSam) / 100.0f))
+                if (radarDatFile and
+                    (fabs(realaz - expectedX) >
+                         radarDatFile->MaxAngleDiffSam * DTR or
+                     (fabs(obj->localData->range - expectedY)) >
+                         (expectedY * radarDatFile->MaxRangeDiffSam) / 100.0f))
                 {
                     S *= 0.0f; //hammer to zero
                     ExtrapolateHistory(obj);
@@ -170,7 +179,7 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             }
         }
     }
-    else if (mode == LRS)   // boost a bit
+    else if (mode == LRS) // boost a bit
     {
         if (obj == lockedTarget)
             S *= 1.2f;
@@ -189,59 +198,68 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
         // if the expected possition is too far from the actual hammer signal to zero
         if (rdrData->rdrSy[0] and rdrData->rdrSy[1]) // we have a track history
         {
-            float expectedY =  rdrData->rdrY[0]  + (rdrData->rdrY[0] - rdrData->rdrY[1]);
-            float expectedX = (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) +
-                              (
-                                  (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) -
-                                  (rdrData->rdrX[2] + (rdrData->rdrHd[2] - platform->Yaw()))
-                              );
+            float expectedY =
+                rdrData->rdrY[0] + (rdrData->rdrY[0] - rdrData->rdrY[1]);
+            float expectedX =
+                (rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) +
+                ((rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw())) -
+                 (rdrData->rdrX[2] + (rdrData->rdrHd[2] - platform->Yaw())));
 
-            float realaz = rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw());
+            float realaz =
+                rdrData->rdrX[1] + (rdrData->rdrHd[1] - platform->Yaw());
             realaz = RES180(realaz);
 
-            if (radarDatFile and (fabs(realaz - expectedX) > radarDatFile->MaxAngleDiffTws * DTR or
-                                 (fabs(obj->localData->range - expectedY)) > (expectedY * radarDatFile->MaxRangeDiffTws) / 100.0f))
+            if (radarDatFile and
+                (fabs(realaz - expectedX) >
+                     radarDatFile->MaxAngleDiffTws * DTR or
+                 (fabs(obj->localData->range - expectedY)) >
+                     (expectedY * radarDatFile->MaxRangeDiffTws) / 100.0f))
             {
                 S *= 0.0f; //hammer to zero
 
-                if (rdrData->rdrSy[1] == Track) rdrData->rdrSy[0] = FlashTrack;
+                if (rdrData->rdrSy[1] == Track)
+                    rdrData->rdrSy[0] = FlashTrack;
 
-                if (rdrData->rdrSy[1] == Bug)rdrData->rdrSy[0] = FlashBug;
+                if (rdrData->rdrSy[1] == Bug)
+                    rdrData->rdrSy[0] = FlashBug;
 
-                if (rdrData->rdrSy[1] == AimRel)rdrData->rdrSy[0] = AimFlash;
+                if (rdrData->rdrSy[1] == AimRel)
+                    rdrData->rdrSy[0] = AimFlash;
 
                 if (rdrData->rdrSy[1] == FlashTrack or
-                    rdrData->rdrSy[1] == FlashBug  or
+                    rdrData->rdrSy[1] == FlashBug or
                     rdrData->rdrSy[1] == AimFlash)
                     rdrData->rdrSy[0] = Det;
 
                 ExtrapolateHistory(obj);
             }
         }
-
-
     }
     else if (mode == VS)
         S *= 1.2f;
 
 
-    if (1)// me123 agreed with jjb to test this not g_bRP5Comp)
+    if (1) // me123 agreed with jjb to test this not g_bRP5Comp)
     {
         VU_ID lastChaffID = FalconNullId;
         VU_ID id;
-        FalconEntity *cm;
+        FalconEntity* cm;
         float chance;
         int dummy = 0;
-        SimObjectType *target = obj;
-        static const float cmRangeArray[] = {0.0F,  1500.0f,  3000.0f,  11250.0f,  18750.0f,  30000.0f};
-        static const float cmBiteChanceArray[] = {0.0F,     0.1F,     0.5F,      0.5F,      0.2F,      0.1F};
-        static const int cmArrayLength = sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
+        SimObjectType* target = obj;
+        static const float cmRangeArray[] = {0.0F,     1500.0f,  3000.0f,
+                                             11250.0f, 18750.0f, 30000.0f};
+        static const float cmBiteChanceArray[] = {0.0F, 0.1F, 0.5F,
+                                                  0.5F, 0.2F, 0.1F};
+        static const int cmArrayLength =
+            sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
 
         // No counter measures deployed by campaign things
         // countermeasures only work when tracking (for now)
         //MI possible CTD? added not target->BaseData() check
 
-        if ( not lockedTarget or not target or not target->BaseData() or not target->BaseData()->IsSim())
+        if (not lockedTarget or not target or not target->BaseData() or
+            not target->BaseData()->IsSim())
         {
             return (S >= 0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
         }
@@ -257,7 +275,8 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
             {
                 lastChaffID = id;
 
-                return (S >= 0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
+                return (S >=
+                        0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
             }
 
             // Try to find the counter measure entity in the database
@@ -265,19 +284,22 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
 
             // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
-            if ( not cm)
+            if (not cm)
             {
                 // We'll have to wait until next time
                 // (probably because the create event hasn't been processed locally yet)
-                return (S >= 0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
+                return (S >=
+                        0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
             }
 
             // Start with the suceptability of this seeker to counter measures
             chance = radarData->ChaffChance;
 
             // Adjust with a range to target based chance of an individual countermeasure working
-            chance *= Math.OnedInterp(target->localData->range, cmRangeArray, cmBiteChanceArray, cmArrayLength, &dummy);
-            float Vr = (float)cos(target->localData->ataFrom) * target->BaseData()->GetVt();
+            chance *= Math.OnedInterp(target->localData->range, cmRangeArray,
+                                      cmBiteChanceArray, cmArrayLength, &dummy);
+            float Vr = (float)cos(target->localData->ataFrom) *
+                       target->BaseData()->GetVt();
 
             if (fabs(Vr) > radarData->NotchSpeed)
                 chance = min(0.95f, chance * radarData->NotchPenalty);
@@ -293,7 +315,8 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
                 const float dy = cm->YPos() - platform->YPos();
                 const float dz = cm->ZPos() - platform->ZPos();
                 const float range = (float)sqrt(dx * dx + dy * dy);
-                const float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+                const float cosATA = (atx * dx + aty * dy + atz * dz) /
+                                     (float)sqrt(range * range + dz * dz);
 
                 // Only take the bait if we can see the thing
                 // TODO:  Should probably use beam width instead of scan angle...
@@ -315,8 +338,4 @@ int RadarDopplerClass::ObjectDetected(SimObjectType* obj)
     }
 
     return (S >= 0.8f + 0.4f * (float)rand() / BIGGEST_RANDOM_NUMBER);
-
-
-
-
 }

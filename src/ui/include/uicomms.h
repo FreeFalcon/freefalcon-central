@@ -95,7 +95,8 @@ private:
 
     UI_Hash *RemoteLogbooks_;
 
-    void (*Callback_[game_MaxGameTypes])(short uptype, VU_ID game, VU_ID session);
+    void (*Callback_[game_MaxGameTypes])(short uptype, VU_ID game,
+                                         VU_ID session);
 
 public:
     HWND AppWnd_;
@@ -110,20 +111,20 @@ public:
     void StopComms();
     void Cleanup();
     BOOL LookAtGame(VuGameEntity *game);
-    VuGameEntity* GetTargetGame();
+    VuGameEntity *GetTargetGame();
     VU_ID GetTargetGameID()
     {
-        return(TargetGame_);
+        return (TargetGame_);
     }
     void SetUserInfo();
     _TCHAR *GetUserInfo()
     {
-        return(&User_[0]);
+        return (&User_[0]);
     }
 
     BOOL Online()
     {
-        return(Online_);
+        return (Online_);
     }
 
     void SetStatus(char stat)
@@ -132,17 +133,17 @@ public:
     }
     char GetStatus()
     {
-        return(Status_);
+        return (Status_);
     }
     BOOL RemoteUpdate()
     {
-        return(Update_);
+        return (Update_);
     }
     void Updated()
     {
         Update_ = FALSE;
     }
-    VuGameEntity* GetGame()
+    VuGameEntity *GetGame()
     {
         return FalconLocalGame;
     }
@@ -151,7 +152,8 @@ public:
     void SendLogbook(VU_ID requester);
     void SendImage(uchar type, VU_ID requester);
     void ReceiveLogbook(VU_ID from, LB_PILOT *pilot);
-    void ReceiveImage(VU_ID from, uchar type, short sec, short blksize, long offset, long size, uchar *data);
+    void ReceiveImage(VU_ID from, uchar type, short sec, short blksize,
+                      long offset, long size, uchar *data);
 
     // Campaign Stuff
     void SetCampaignFlag(char gameType)
@@ -160,7 +162,7 @@ public:
     }
     char InCampaign()
     {
-        return(InCampaign_);
+        return (InCampaign_);
     }
     FalconSessionEntity *FindCampaignPlayer(VU_ID FlightID, uchar planeid);
     void SendGameStatus(uchar status);

@@ -8,15 +8,15 @@
  */
 
 /*
-#include "MsgInc/RequestStatusMsg.h"
-#include "MsgInc/SendStatusMsg.h"
+#include "msginc/requeststatusmsg.h"
+#include "msginc/sendstatusmsg.h"
 #include "mesg.h"
 #include "falcmesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 FalconRequestStatus::FalconRequestStatus(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (RequestStatusMsg, FalconEvent::SimThread, entityId, target, loopback)
 {

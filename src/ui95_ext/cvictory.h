@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -42,7 +43,6 @@ private:
     void *ptr_;
 
 public:
-
     C_Victory();
     C_Victory(char **stream);
     C_Victory(FILE *fp);
@@ -66,7 +66,7 @@ public:
     }
     TREELIST *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
 
     void SetX(long x);
@@ -77,37 +77,43 @@ public:
     {
         NumberX_ = x;
 
-        if (Number_) Number_->SetX(GetX() + x);
+        if (Number_)
+            Number_->SetX(GetX() + x);
     }
     void SetTeamX(short x)
     {
         TeamX_ = x;
 
-        if (Team_) Team_->SetX(GetX() + x);
+        if (Team_)
+            Team_->SetX(GetX() + x);
     }
     void SetActionX(short x)
     {
         ActionX_ = x;
 
-        if (Action_) Action_->SetX(GetX() + x);
+        if (Action_)
+            Action_->SetX(GetX() + x);
     }
     void SetTargetX(short x)
     {
         TargetX_ = x;
 
-        if (Target_) Target_->SetX(GetX() + x);
+        if (Target_)
+            Target_->SetX(GetX() + x);
     }
     void SetArgsX(short x)
     {
         ArgsX_ = x;
 
-        if (Args_) Args_->SetX(GetX() + x);
+        if (Args_)
+            Args_->SetX(GetX() + x);
     }
     void SetPointsX(short x)
     {
         PointsX_ = x;
 
-        if (Points_) Points_->SetX(GetX() + x);
+        if (Points_)
+            Points_->SetX(GetX() + x);
     }
 
     void SetNumber(C_Text *txt)
@@ -135,29 +141,29 @@ public:
         Points_ = ebox;
     }
 
-    C_Text    *GetNumber()
+    C_Text *GetNumber()
     {
-        return(Number_);
+        return (Number_);
     }
     C_ListBox *GetTeam()
     {
-        return(Team_);
+        return (Team_);
     }
     C_ListBox *GetAction()
     {
-        return(Action_);
+        return (Action_);
     }
-    C_Button  *GetTarget()
+    C_Button *GetTarget()
     {
-        return(Target_);
+        return (Target_);
     }
     C_ListBox *GetArgs()
     {
-        return(Args_);
+        return (Args_);
     }
     C_EditBox *GetPoints()
     {
-        return(Points_);
+        return (Points_);
     }
 
     void SetPtr(void *ptr)
@@ -166,7 +172,7 @@ public:
     }
     void *GetPtr()
     {
-        return(ptr_);
+        return (ptr_);
     }
 
     void SetState(short state);
@@ -180,7 +186,8 @@ public:
     void Activate();
     void Deactivate();
 
-    BOOL CheckKeyboard(uchar DKScanCode, uchar Ascii, uchar ShiftStates, long RepeatCount);
+    BOOL CheckKeyboard(uchar DKScanCode, uchar Ascii, uchar ShiftStates,
+                       long RepeatCount);
     long CheckHotSpots(long relX, long relY);
     void SetDefaultFlags();
     long GetDefaultFlags();

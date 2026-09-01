@@ -27,7 +27,8 @@
 #define _AMD_AMATRIX_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     void _add_m3x3(float *res, float *a, float *b);

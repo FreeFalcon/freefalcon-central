@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "Entity.h"
-#include "Vehicle.h"
-#include "Vu2.h"
+#include "entity.h"
+#include "vehicle.h"
+#include "vu2.h"
 
 int ShowTable(uchar domain, FILE* fp);
 
@@ -16,20 +16,20 @@ extern short NumWeaponTypes;
 static unsigned long gameStartTime;
 ulong vuxVersion = 1;
 SM_SCALAR vuxTicsPerSec = 1000.0F;
-VuSlaveSmootherSettings *vuxSlaveSettings = 0;
+VuSlaveSmootherSettings* vuxSlaveSettings = 0;
 VU_TIME vuxCurrentTime = 0;
 VU_TIME vuxTransmitTime = 0;
-VuSessionEntity *vuxLocalSessionEntity = 0;
+VuSessionEntity* vuxLocalSessionEntity = 0;
 ulong vuxLocalDomain = 1; // range = 1-31
 VU_BYTE vuxLocalSession = 1;
-char *vuxWorldName = "EBS";
+char* vuxWorldName = "EBS";
 VU_TIME vuxRealTime = 0;
 
 // =================================
 // VU related globals for Falcon 4.0
 // =================================
 
-VuMainThread *gMainThread = 0;
+VuMainThread* gMainThread = 0;
 Falcon4EntityClassType* Falcon4ClassTable;
 F4CSECTIONHANDLE* vuCritical = NULL;
 int NumEntities;
@@ -41,7 +41,7 @@ VU_ID FalconNullId;
 
 int main(void)
 {
-    FILE *fp;
+    FILE* fp;
 
     if (!LoadClassTable("D:/Falcon4/Campaign/Save/Falcon4"))
     {
@@ -57,15 +57,16 @@ int main(void)
     return 0;
 }
 
-char DamStr[11][4] = { "NOD", "Pen", "HEx", "Hea", "Inc", "Prx", "Kin", "Hyd", "Chm", "Nuc", "Oth" };
-uchar DamTypes[11] = { 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 };
+char DamStr[11][4] = {"NOD", "Pen", "HEx", "Hea", "Inc", "Prx",
+                      "Kin", "Hyd", "Chm", "Nuc", "Oth"};
+uchar DamTypes[11] = {100, 100, 100, 100, 100, 100, 100, 100, 100, 100};
 
 int BestVehicleWeapon(int id, uchar* dam, MoveType m, int range)
 {
     int i, j, str, bs, w, wl, ws, bw = -1, bhp = -1;
     VehicleClassDataType* vc;
 
-    vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
+    vc = (VehicleClassDataType*)Falcon4ClassTable[id].dataPtr;
 
     if (!vc)
         return 0;
@@ -123,19 +124,24 @@ int ShowTable(uchar domain, FILE* fp)
     {
         if (!(c % 60))
         {
-            fprintf(fp, "Name           HP  NoMove  Foot    Wheeled Tracked LowAir  Air     Naval   Rail    \n");
+            fprintf(fp, "Name           HP  NoMove  Foot    Wheeled Tracked "
+                        "LowAir  Air     Naval   Rail    \n");
             c++;
         }
 
-        if (Falcon4ClassTable[VehicleDataTable[i].Index].vuClassData.classInfo[VU_DOMAIN] == domain)
+        if (Falcon4ClassTable[VehicleDataTable[i].Index]
+                .vuClassData.classInfo[VU_DOMAIN] == domain)
         {
-            fprintf(fp, "%-14.14s %3d ", VehicleDataTable[i].Name, VehicleDataTable[i].HitPoints);
+            fprintf(fp, "%-14.14s %3d ", VehicleDataTable[i].Name,
+                    VehicleDataTable[i].HitPoints);
 
             for (j = 0; j <= Rail; j++)
             {
-                wid = BestVehicleWeapon(VehicleDataTable[i].Index, DamTypes, (MoveType)j, 0);
+                wid = BestVehicleWeapon(VehicleDataTable[i].Index, DamTypes,
+                                        (MoveType)j, 0);
                 str = GetWeaponScore(wid, j, 0);
-                fprintf(fp, "%3d/%s ", str, DamStr[WeaponDataTable[wid].DamageType]);
+                fprintf(fp, "%3d/%s ", str,
+                        DamStr[WeaponDataTable[wid].DamageType]);
             }
 
             fprintf(fp, "\n");
@@ -172,7 +178,7 @@ int ShowTable(uchar domain, FILE* fp)
 
 int vuxComHandle;
 
-char * ComAPIRecvBufferGet(int a)
+char* ComAPIRecvBufferGet(int a)
 {
     return NULL;
 }
@@ -201,12 +207,12 @@ VuMessage* VuxCreateMessage(unsigned short)
     return NULL;
 }
 
-VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE *data)
+VuEntity* VuxCreateEntity(ushort type, ushort size, VU_BYTE* data)
 {
     return NULL;
 }
 
-VuEntityType *VuxType(ushort id)
+VuEntityType* VuxType(ushort id)
 {
     return NULL;
 }

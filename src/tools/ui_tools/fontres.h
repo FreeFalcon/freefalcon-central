@@ -10,7 +10,7 @@ struct KerningStr
 {
     short first;
     short second;
-    char  add;
+    char add;
 };
 
 struct CharStr
@@ -44,7 +44,6 @@ private:
     KerningStr *kernList_;
 
 public:
-
     C_Fontmgr();
     ~C_Fontmgr();
 
@@ -53,19 +52,19 @@ public:
 
     short First()
     {
-        return(first_);
+        return (first_);
     }
     short Last()
     {
-        return(last_);
+        return (last_);
     }
     long ByteWidth()
     {
-        return(bytesperline_);
+        return (bytesperline_);
     }
     char *GetName()
     {
-        return(name_);
+        return (name_);
     }
 
     long Width(_TCHAR *str);
@@ -74,13 +73,14 @@ public:
     CharStr *GetChar(short ID);
     char *GetData()
     {
-        return(fontData_);
+        return (fontData_);
     }
 
     // no cliping version (except for screen)
     void Draw(_TCHAR *str, WORD color, long x, long y, long dwidth, WORD *dest);
     // clipping version (use cliprect)
-    void Draw(_TCHAR *str, WORD color, long x, long y, RECT *cliprect, long dwidth, WORD *dest);
+    void Draw(_TCHAR *str, WORD color, long x, long y, RECT *cliprect,
+              long dwidth, WORD *dest);
 };
 
 #endif

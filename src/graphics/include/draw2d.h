@@ -9,8 +9,8 @@
 #ifndef _DRAW2D_H_
 #define _DRAW2D_H_
 
-#include "DrawObj.h"
-#include "DrawBSP.h" // Included only until we can derive from DrawableObject
+#include "drawobj.h"
+#include "drawbsp.h" // Included only until we can derive from DrawableObject
 
 // types of 2d objects
 #define DRAW2D_AIR_EXPLOSION1 0
@@ -100,7 +100,8 @@ typedef struct _TYPES2D
 #define SMOKE_SCATTER_PLOT 0x00004000 // kind of a particle effect
 #define TEXTURED_CONE 0x00008000 // "shaped" effect
 #define EXPLODE_SCATTER_PLOT 0x00010000 // kind of a particle effect
-#define SEQ_SCATTER_ANIM 0x00020000 // sequence animation frames in scatter plots
+#define SEQ_SCATTER_ANIM                                                       \
+    0x00020000 // sequence animation frames in scatter plots
 #define ANIM_NO_CLAMP 0x00040000 // don't clamp maximum texid -- used in scatter
 #define GOURAUD_TRI 0x00080000 // just a solid color tri
 #define ALPHA_DAYLIGHT 0x00100000 // do alpha in daylight
@@ -138,7 +139,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -154,7 +156,8 @@ public:
 public:
     Drawable2D(int type, float scale, Tpoint *p);
     Drawable2D(int type, float scale, Tpoint *p, Trotation *rot);
-    Drawable2D(int type, float scale, Tpoint *p, int nVerts, Tpoint *verts, Tpoint *uvs);
+    Drawable2D(int type, float scale, Tpoint *p, int nVerts, Tpoint *verts,
+               Tpoint *uvs);
     virtual ~Drawable2D();
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
@@ -180,7 +183,8 @@ public:
     float GetAlphaTimeToLive(void);
     static void SetLOD(float LOD);
     static void SetGreenMode(BOOL mode);
-    static void DrawGlowSphere(class RenderOTW *renderer, Tpoint *pos, float radius, float alpha);
+    static void DrawGlowSphere(class RenderOTW *renderer, Tpoint *pos,
+                               float radius, float alpha);
 
 protected:
     int type; // type
@@ -230,6 +234,7 @@ public:
 
 // external proto for lens flare function
 void Draw2DLensFlare(class RenderOTW *renderer);
-void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist, float alpha);
+void Draw2DSunGlowEffect(class RenderOTW *renderer, Tpoint *cntr, float dist,
+                         float alpha);
 
 #endif // _DRAW2D_H_

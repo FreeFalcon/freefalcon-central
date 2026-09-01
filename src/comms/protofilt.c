@@ -1,7 +1,7 @@
 /* protofilt.c - Copyright (c) Fri Dec 06 23:34:35 1996,  Spectrum HoloByte, Inc.  All Rights Reserved */
 #include <winsock2.h>
 
-#pragma optimize( "", off ) // JB 010718
+#pragma optimize("", off) // JB 010718
 
 /*++
 
@@ -22,14 +22,12 @@ Return Value:
 --*/
 int UseProtocol(IN LPWSAPROTOCOL_INFO Proto)
 {
-    if (!
-        (Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) /*&&*/
+    if (!(Proto->dwServiceFlags1 & XP1_CONNECTIONLESS) /*&&*/
         /*(Proto->dwServiceFlags1 & XP1_MULTIPOINT_DATA_PLANE) &&*/
         /*(Proto->dwServiceFlags1 & XP1_SUPPORT_MULTIPOINT)*/
-       )
+    )
     {
         return 1;
-
     }
     else
     {

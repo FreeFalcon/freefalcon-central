@@ -4,8 +4,8 @@
 #include "otwdrive.h"
 #include "simbase.h"
 #include "airframe.h"
-#include "Aircrft.h"
-#include "Graphics/Include/tmap.h"
+#include "aircrft.h"
+#include "graphics/include/tmap.h"
 
 #include "limiters.h"
 
@@ -14,10 +14,13 @@
 extern float g_MaximumTheaterAltitude;
 extern float g_fPullupTime;
 extern bool g_bOtherGroundCheck; // = OldGroundCheck function
-extern float g_fGALookAheadTime; // Cobra - How far to look ahead (times deltaX bitand deltaY) for lower elevations
+extern float
+    g_fGALookAheadTime; // Cobra - How far to look ahead (times deltaX bitand deltaY) for lower elevations
 extern float g_fAIMinAlt; // Cobra - minimum alt AI will fly
-extern float g_fGApStickFac; // Cobra - Smooth out Ground Avoidance pitch (pStick * g_fGApStickFac)
-extern int g_nCriticalPullup; // Cobra - <= g_fGALookAheadTime tick full pStick pullup
+extern float
+    g_fGApStickFac; // Cobra - Smooth out Ground Avoidance pitch (pStick * g_fGApStickFac)
+extern int
+    g_nCriticalPullup; // Cobra - <= g_fGALookAheadTime tick full pStick pullup
 
 // JB 011023 Rewritten -- use complex ground checking for all AI
 // JB 020313 Rewritten again
@@ -33,8 +36,8 @@ void DigitalBrain::GroundCheck(void)
     if ( //( curMode == WaypointMode or // also perform GroundCheck for leaders
         //curMode == LandingMode or // airbases with hilly terrain around need GroundCheck
         /*(curMode == WaypointMode and agDoctrine not_eq AGD_NONE) or*/ // 2002-03-11 ADDED BY S.G. GroundAttackMode has its own ground avoidance code
-        curMode == TakeoffMode //)
-       and threatPtr == NULL)
+            curMode == TakeoffMode //)
+        and threatPtr == NULL)
     {
         // edg: do we really ever need to do ground avoidance if we're in
         // waypoint mode?  The waypoint code should be smart enough....
@@ -47,7 +50,9 @@ void DigitalBrain::GroundCheck(void)
 
     // 2002-03-11 ADDED BY S.G. If in WaypointMode or WingyMode, drop the min altitude before pullup to 500 feet AGL or -trackZ, whichever is smaller but never below 100.0f AGL
     if (curMode == WaypointMode or curMode == WingyMode)
-        minAlt = (trackZ > -g_fAIMinAlt ? (trackZ > -100.0f ? 100.0f : -trackZ) : g_fAIMinAlt); // Cobra - externalized AI min alt
+        minAlt = (trackZ > -g_fAIMinAlt ?
+                      (trackZ > -100.0f ? 100.0f : -trackZ) :
+                      g_fAIMinAlt); // Cobra - externalized AI min alt
     else
         // END OF ADDED SECTION 2002-03-11
         minAlt = MIN_ALTT;
@@ -60,7 +65,8 @@ void DigitalBrain::GroundCheck(void)
     /* If gamma is positive ground avoidance is not needed regardless */
     /* of altitude.                                                   */
     /*----------------------------------------------------------------*/
-    if (self->ZPos() < g_MaximumTheaterAltitude) // changed for theater compatibility
+    if (self->ZPos() <
+        g_MaximumTheaterAltitude) // changed for theater compatibility
     {
         groundAvoidNeeded = FALSE;
         return;
@@ -116,7 +122,8 @@ void DigitalBrain::GroundCheck(void)
     // Are we even close to hitting the ground?
     // Cobra - GetMEA() returns really gross elevations (8 km ground resolution)
     //   groundAlt = TheMap.GetMEA( self->XPos() + self->XDelta(), self->YPos() + self->YDelta());
-    maxElevation = groundAlt = -OTWDriver.GetGroundLevel(self->XPos() + self->XDelta(), self->YPos() + self->YDelta());
+    maxElevation = groundAlt = -OTWDriver.GetGroundLevel(
+        self->XPos() + self->XDelta(), self->YPos() + self->YDelta());
 
     if (-self->ZPos() < (groundAlt + max(turnRadius * 2, minAlt)))
     {
@@ -131,10 +138,14 @@ void DigitalBrain::GroundCheck(void)
             // Project a recovery path based on our pitch.
             pitchadjust = i / lookahead * pitchturnfactor;
 
-            float dx = i * self->XDelta() + xsign * pitchadjust * directionalfactor;
-            float dy = i * self->YDelta() + ysign * pitchadjust / directionalfactor;
+            float dx =
+                i * self->XDelta() + xsign * pitchadjust * directionalfactor;
+            float dy =
+                i * self->YDelta() + ysign * pitchadjust / directionalfactor;
 
-            groundAlt = max(groundAlt, -OTWDriver.GetGroundLevel(self->XPos() + dx, self->YPos() + dy));
+            groundAlt =
+                max(groundAlt, -OTWDriver.GetGroundLevel(self->XPos() + dx,
+                                                         self->YPos() + dy));
 
             // 2002-04-17 MN Start ground avoid check only if ground distances is below a threshold
             //if (-self->ZPos() - groundAlt < self->af->GetStartGroundAvoidCheck())
@@ -146,8 +157,10 @@ void DigitalBrain::GroundCheck(void)
 
                 // Check to be sure we're not going to hit the ground in the next time frame and double check that our worst case
                 // recovery path along the ground to recover from high pitch angles won't take us into the ground either.
-                if (-self->ZPos() - (i * self->ZDelta()) < maxElevation + 100.0F or
-                    -self->ZPos() - pitchturnfactor * 1.25 < maxElevation + 100.0F)
+                if (-self->ZPos() - (i * self->ZDelta()) <
+                        maxElevation + 100.0F or
+                    -self->ZPos() - pitchturnfactor * 1.25 <
+                        maxElevation + 100.0F)
                 {
                     //float z = self->ZPos();
                     //float dz = self->ZDelta();
@@ -156,7 +169,7 @@ void DigitalBrain::GroundCheck(void)
                     //float slope = atan2(height, (g_fPullupTime * self->GetVt()));
                     //groundAvoidPStick = slope * RTD / 90.0f;
                     //float Time2Pull = dist / (self->GetVt()+1);
-                    if ( not PullupNow)
+                    if (not PullupNow)
                     {
                         PullupNow = (int)i;
                     }
@@ -179,7 +192,8 @@ void DigitalBrain::GroundCheck(void)
     else
     {
         // Keep the turn radius above the hard deck
-        alt = (-self->ZPos()) - maxElevation - minAlt; // Cobra - using max elevation in path
+        alt = (-self->ZPos()) - maxElevation -
+              minAlt; // Cobra - using max elevation in path
         // Cobra - divide by zero check
         turnRadius = min(1.0f, turnRadius);
         num = alt / turnRadius;
@@ -201,7 +215,10 @@ void DigitalBrain::GroundCheck(void)
     // 2002-02-24 added by MN
     if (groundAvoidNeeded)
     {
-        pullupTimer = SimLibElapsedTime + ((unsigned long)(g_fPullupTime * CampaignSeconds)); // configureable for how long we pull at least once entered groundAvoidNeeded mode
+        pullupTimer =
+            SimLibElapsedTime +
+            ((unsigned long)(g_fPullupTime *
+                             CampaignSeconds)); // configureable for how long we pull at least once entered groundAvoidNeeded mode
     }
 }
 
@@ -298,7 +315,10 @@ void DigitalBrain::PullUp(void)
     // pullupTimer = 0; // This says us "stop pull up"
     // Cobra -
     if ((groundAvoidNeeded) and (pullupTimer <= SimLibElapsedTime))
-        pullupTimer = SimLibElapsedTime + ((unsigned long)(g_fPullupTime * CampaignSeconds)); // configureable for how long we pull at least once entered groundAvoidNeeded mode
+        pullupTimer =
+            SimLibElapsedTime +
+            ((unsigned long)(g_fPullupTime *
+                             CampaignSeconds)); // configureable for how long we pull at least once entered groundAvoidNeeded mode
     else
         pullupTimer = 0; // This says us "stop pull up"
 }

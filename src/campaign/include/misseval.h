@@ -9,10 +9,10 @@
 
 #include <tchar.h>
 #include "flight.h"
-#include "EvtParse.h"
-#include "Mesg.h"
-#include "Dogfight.h"
-#include "ui/include/CampMiss.h"
+#include "evtparse.h"
+#include "mesg.h"
+#include "dogfight.h"
+#include "ui/include/campmiss.h"
 #include "cmpclass.h"
 //#include "CampWeap.h" //sfr: this thing is giving tons of compile errors
 /*#include "Flight.h"
@@ -36,31 +36,44 @@
 #define MISEVAL_FLIGHT_GOT_GKILL 0x00000020 // Ground kill
 #define MISEVAL_FLIGHT_GOT_NKILL 0x00000040 // Naval kill
 #define MISEVAL_FLIGHT_GOT_SKILL 0x00000080 // Static kill
-#define MISEVAL_FLIGHT_HIT_HIGH_VAL 0x00000100 // Hit a high value target (Feature with value)
-#define MISEVAL_FLIGHT_HIT_BY_AIR 0x00001000 // Suffered loss to air (during ingress only)
-#define MISEVAL_FLIGHT_HIT_BY_GROUND 0x00002000 // Suffered loss to ground (during ingress only)
-#define MISEVAL_FLIGHT_HIT_BY_NAVAL 0x00004000 // Suffered loss to naval (during ingress only)
+#define MISEVAL_FLIGHT_HIT_HIGH_VAL                                            \
+    0x00000100 // Hit a high value target (Feature with value)
+#define MISEVAL_FLIGHT_HIT_BY_AIR                                              \
+    0x00001000 // Suffered loss to air (during ingress only)
+#define MISEVAL_FLIGHT_HIT_BY_GROUND                                           \
+    0x00002000 // Suffered loss to ground (during ingress only)
+#define MISEVAL_FLIGHT_HIT_BY_NAVAL                                            \
+    0x00004000 // Suffered loss to naval (during ingress only)
 #define MISEVAL_FLIGHT_TARGET_HIT 0x00010000 // We hit our target
 #define MISEVAL_FLIGHT_TARGET_KILLED 0x00020000 // We killed out target
-#define MISEVAL_FLIGHT_TARGET_ABORTED 0x00040000 // We forced our target to abort
+#define MISEVAL_FLIGHT_TARGET_ABORTED                                          \
+    0x00040000 // We forced our target to abort
 #define MISEVAL_FLIGHT_AREA_HIT 0x00080000 // We hit an enemy in our target area
-#define MISEVAL_FLIGHT_F_TARGET_HIT 0x00100000 // The friendly we were assigned to was hit
-#define MISEVAL_FLIGHT_F_TARGET_KILLED 0x00200000 // The friendly we were assigned to was killed
-#define MISEVAL_FLIGHT_F_TARGET_ABORTED 0x00400000 // The friendly we were assigned to aborted
-#define MISEVAL_FLIGHT_F_AREA_HIT 0x00800000 // Our friendly target region was hit
-#define MISEVAL_FLIGHT_STARTED_LATE 0x01000000 // This mission wasn't started in time to count full
+#define MISEVAL_FLIGHT_F_TARGET_HIT                                            \
+    0x00100000 // The friendly we were assigned to was hit
+#define MISEVAL_FLIGHT_F_TARGET_KILLED                                         \
+    0x00200000 // The friendly we were assigned to was killed
+#define MISEVAL_FLIGHT_F_TARGET_ABORTED                                        \
+    0x00400000 // The friendly we were assigned to aborted
+#define MISEVAL_FLIGHT_F_AREA_HIT                                              \
+    0x00800000 // Our friendly target region was hit
+#define MISEVAL_FLIGHT_STARTED_LATE                                            \
+    0x01000000 // This mission wasn't started in time to count full
 #define MISEVAL_FLIGHT_GOT_TO_TARGET 0x02000000 // Flight got to target area
 #define MISEVAL_FLIGHT_STATION_OVER 0x04000000 // Station/mission time is over
 #define MISEVAL_FLIGHT_GOT_HOME 0x08000000 // We returned to friendly territory
-#define MISEVAL_FLIGHT_RELIEVED 0x10000000 // Flight was allowed to leave by AWACS/FAC
+#define MISEVAL_FLIGHT_RELIEVED                                                \
+    0x10000000 // Flight was allowed to leave by AWACS/FAC
 #define MISEVAL_FLIGHT_OFF_STATION 0x20000000 // Flight left its station area
 
 // 2002-02-13 MN
-#define MISEVAL_FLIGHT_ABORT_BY_AWACS 0x40000000 // flight aborted by AWACS instruction - we occupied the target
+#define MISEVAL_FLIGHT_ABORT_BY_AWACS                                          \
+    0x40000000 // flight aborted by AWACS instruction - we occupied the target
 
 // Mission Evaluator status flags
 #define MISEVAL_MISSION_IN_PROGRESS 0x01 // We want to start evaluating stuff
-#define MISEVAL_EVALUATE_HITS_IN_AREA 0x02 // Check to see if someone has bombed our area
+#define MISEVAL_EVALUATE_HITS_IN_AREA                                          \
+    0x02 // Check to see if someone has bombed our area
 #define MISEVAL_GAME_COMPLETED 0x04 // We finished a dogfight game
 #define MISEVAL_ONLINE_GAME 0x08 // This was a multi-player game
 
@@ -144,14 +157,17 @@ public:
     uchar as_kills;
     uchar an_kills;
     uchar player_kills;
-    uchar shot_at; // Times this player was shot at (only tracks for local player)
+    uchar
+        shot_at; // Times this player was shot at (only tracks for local player)
     short deaths[VS_EITHER]; // Dogfight statistics [AI/PLAYER]
     short score;
     uchar rating;
     uchar weapon_types; // number of actually different weapons
     bool donefiledebrief; //me123 has a file debrief already been made
-    WeaponDataClass weapon_data[(HARDPOINT_MAX / 2) + 2]; // Weapon data for this pilot/aircraft
+    WeaponDataClass weapon_data[(HARDPOINT_MAX / 2) +
+                                2]; // Weapon data for this pilot/aircraft
     PilotDataClass *next_pilot;
+
 public:
     PilotDataClass(void);
     ~PilotDataClass();
@@ -271,7 +287,8 @@ public:
 
     // Event list builders
     void RegisterDivert(FalconDivertMessage *dm);
-    void RegisterShotAtPlayer(FalconWeaponsFire *wfm, unsigned short CampID, uchar fPilotID);
+    void RegisterShotAtPlayer(FalconWeaponsFire *wfm, unsigned short CampID,
+                              uchar fPilotID);
     void RegisterShot(FalconWeaponsFire *wfm);
     void RegisterHit(FalconDamageMessage *dmm);
     void RegisterKill(FalconDeathMessage *dtm, int type, int pilot_status);
@@ -279,41 +296,47 @@ public:
     void RegisterEjection(FalconEjectMessage *em, int pilot_status);
     void RegisterLanding(FalconLandingMessage *lm, int pilot_status);
     void RegisterContact(Unit contact);
-    void ParseTime(CampaignTime time, char* time_str);
-    void ParseTime(double time, char* time_str);
-    void AddEventToList(EventElement* theEvent, FlightDataClass *flight_ptr, PilotDataClass* pilot_data, int wn);
+    void ParseTime(CampaignTime time, char *time_str);
+    void ParseTime(double time, char *time_str);
+    void AddEventToList(EventElement *theEvent, FlightDataClass *flight_ptr,
+                        PilotDataClass *pilot_data, int wn);
 
     // Event trigger checks
-    void RegisterKill(FalconEntity *shooter, FalconEntity *target, int targetEl);
+    void RegisterKill(FalconEntity *shooter, FalconEntity *target,
+                      int targetEl);
     void RegisterMove(Flight flight);
     void RegisterAbort(Flight flight);
     void RegisterRelief(Flight flight);
     void RegisterDivert(Flight flight, MissionRequestClass *mis);
     void RegisterRoundWon(int team);
     void RegisterWin(int team);
-    void RegisterEvent(GridIndex x, GridIndex y, int team, int type, _TCHAR *event);
+    void RegisterEvent(GridIndex x, GridIndex y, int team, int type,
+                       _TCHAR *event);
 
     // Register 3D AWACS abort call
     void Register3DAWACSabort(Flight flight);
 
     void SetFinalAircraft(Flight flight);
 
-    int GetPilotName(int pilot_num, TCHAR* buffer);
-    int GetFlightName(TCHAR* buffer);
+    int GetPilotName(int pilot_num, TCHAR *buffer);
+    int GetFlightName(TCHAR *buffer);
 
-    PilotDataClass* AddNewPlayerPilot(FlightDataClass *flight_ptr, int pilot_num, Flight flight, FalconSessionEntity *player);
-    PilotDataClass* AddNewPilot(FlightDataClass *flight_ptr, int pilot_num, int ac_num, Flight flight);
-    PilotDataClass* FindPilotData(FlightDataClass *flight_ptr, int pilot_num);
-    PilotDataClass* FindPilotData(int flight_id, int pilot_num);
-    PilotDataClass* FindPilotDataFromAC(FlightDataClass *flight_ptr, int aircraft_slot);
+    PilotDataClass *AddNewPlayerPilot(FlightDataClass *flight_ptr,
+                                      int pilot_num, Flight flight,
+                                      FalconSessionEntity *player);
+    PilotDataClass *AddNewPilot(FlightDataClass *flight_ptr, int pilot_num,
+                                int ac_num, Flight flight);
+    PilotDataClass *FindPilotData(FlightDataClass *flight_ptr, int pilot_num);
+    PilotDataClass *FindPilotData(int flight_id, int pilot_num);
+    PilotDataClass *FindPilotDataFromAC(FlightDataClass *flight_ptr,
+                                        int aircraft_slot);
 
-    FlightDataClass* FindFlightData(Flight flight);
+    FlightDataClass *FindFlightData(Flight flight);
 
     void SetupPilots(FlightDataClass *flight_ptr, Flight flight);
     void SetPlayerPilot(Flight flight, uchar aircraft_slot);
 
     void RebuildEvaluationData(void);
-
 };
 
 // ===========================================================

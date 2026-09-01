@@ -9,7 +9,6 @@ extern short NumRocketTypes; // Added by M.N.
 extern short gRocketId;
 
 
-
 void BombClass::LauInit(void)
 {
     Falcon4EntityClassType* classPtr;
@@ -22,15 +21,17 @@ void BombClass::LauInit(void)
     classPtr = (Falcon4EntityClassType*)EntityType();
     wc = (WeaponClassDataType*)classPtr->dataPtr;
     wpnDefinition = &SimWeaponDataTable[classPtr->vehicleDataIndex];
-    lauId = (short)(((int)Falcon4ClassTable[wc->Index].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
+    lauId = (short)(((int)Falcon4ClassTable[wc->Index].dataPtr -
+                     (int)WeaponDataTable) /
+                    sizeof(WeaponClassDataType));
 
     if (wpnDefinition->weaponClass == wcRocketWpn)
     {
 
         if (auxData and auxData->lauWeaponId)
         {
-            lauRounds    = lauMaxRounds = auxData->lauRounds;
-            lauWeaponId  = auxData->lauWeaponId;
+            lauRounds = lauMaxRounds = auxData->lauRounds;
+            lauWeaponId = auxData->lauWeaponId;
             lauSalvoSize = auxData->lauSalvoSize;
         }
         else
@@ -43,11 +44,12 @@ void BombClass::LauInit(void)
             {
                 if (lauId == RocketDataTable[j].weaponId)
                 {
-                    if (RocketDataTable[j].nweaponId) // 0 = don't change weapon ID
-                        lauWeaponId  = RocketDataTable[j].nweaponId;
+                    if (RocketDataTable[j]
+                            .nweaponId) // 0 = don't change weapon ID
+                        lauWeaponId = RocketDataTable[j].nweaponId;
 
                     lauMaxRounds = RocketDataTable[j].weaponCount;
-                    lauRounds    = lauMaxRounds;
+                    lauRounds = lauMaxRounds;
                     lauSalvoSize = lauRounds;
 
 
@@ -96,7 +98,7 @@ int BombClass::IsLauncher(void)
 
 int BombClass::LauGetWeaponId(void)
 {
-    return(lauWeaponId);
+    return (lauWeaponId);
 }
 
 void BombClass::LauSetRoundsRemaining(int r)
@@ -119,8 +121,8 @@ void BombClass::LauAddRounds(int count)
 
 void BombClass::LauRemFiredRound(void)
 {
-    lauRounds --;
-    lauFireCount --;
+    lauRounds--;
+    lauFireCount--;
 
     if (lauRounds < 0)
         lauRounds = 0;
@@ -128,7 +130,6 @@ void BombClass::LauRemFiredRound(void)
     if (lauFireCount < 0)
         lauFireCount = 0;
 }
-
 
 
 int BombClass::LauGetRoundsRemaining(void)
@@ -151,17 +152,17 @@ int BombClass::LauGetSalvoSize(void)
     return -1;
 }
 
-void BombClass::LauGetAttitude(float &elevation, float &azimuth)
+void BombClass::LauGetAttitude(float& elevation, float& azimuth)
 {
     if (auxData)
     {
         elevation = auxData->lauElevation;
-        azimuth   = auxData->lauAzimuth;
+        azimuth = auxData->lauAzimuth;
     }
     else
     {
         elevation = 0;
-        azimuth   = 0;
+        azimuth = 0;
     }
 }
 
@@ -191,6 +192,5 @@ void BombClass::LauFireSalvo(void)
 
 int BombClass::LauIsFiring(void)
 {
-    return(lauRounds > 0 and lauFireCount > 0);
+    return (lauRounds > 0 and lauFireCount > 0);
 }
-

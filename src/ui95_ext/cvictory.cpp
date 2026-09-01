@@ -3,7 +3,8 @@
 C_Victory::C_Victory() : C_Control()
 {
     _SetCType_(_CNTL_VICTORY_);
-    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor C_BIT_USEBGFILL;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor
+                    C_BIT_USEBGFILL;
     Font_ = 1;
     Section_ = 0;
     State_ = 0;
@@ -39,7 +40,7 @@ C_Victory::~C_Victory()
 
 long C_Victory::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Victory::Setup(long ID, short Type)
@@ -153,7 +154,8 @@ void C_Victory::SetState(short state)
 
 long C_Victory::CheckHotSpots(long relx, long rely)
 {
-    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and
+        rely <= (GetY() + GetH()))
     {
         Section_ = 0;
 
@@ -173,10 +175,10 @@ long C_Victory::CheckHotSpots(long relx, long rely)
             Section_ = static_cast<short>(Points_->CheckHotSpots(relx, rely));
 
         SetRelXY(relx - GetX(), rely - GetY());
-        return(GetID());
+        return (GetID());
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Victory::SetDefaultFlags()
@@ -186,7 +188,7 @@ void C_Victory::SetDefaultFlags()
 
 long C_Victory::GetDefaultFlags()
 {
-    return(Defaultflags_);
+    return (Defaultflags_);
 }
 
 BOOL C_Victory::Process(long ID, short HitType)
@@ -194,43 +196,43 @@ BOOL C_Victory::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    if ( not State_)
+    if (not State_)
         SetState(1);
 
     switch (Section_)
     {
-        case 1:
-            if (Team_)
-                return(Team_->Process(ID, HitType));
+    case 1:
+        if (Team_)
+            return (Team_->Process(ID, HitType));
 
-            break;
+        break;
 
-        case 2:
-            if (Action_)
-                return(Action_->Process(ID, HitType));
+    case 2:
+        if (Action_)
+            return (Action_->Process(ID, HitType));
 
-            break;
+        break;
 
-        case 3:
-            if (Target_)
-                return(Target_->Process(ID, HitType));
+    case 3:
+        if (Target_)
+            return (Target_->Process(ID, HitType));
 
-            break;
+        break;
 
-        case 4:
-            if (Args_)
-                return(Args_->Process(ID, HitType));
+    case 4:
+        if (Args_)
+            return (Args_->Process(ID, HitType));
 
-            break;
+        break;
 
-        case 5:
-            if (Points_)
-                return(Points_->Process(ID, HitType));
+    case 5:
+        if (Points_)
+            return (Points_->Process(ID, HitType));
 
-            break;
+        break;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Victory::Activate()
@@ -319,15 +321,16 @@ void C_Victory::SetXYWH(long x, long y, long w, long h)
 
 void C_Victory::Refresh()
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           Flags_, GetClient());
 }
 
 void C_Victory::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Number_)
@@ -352,12 +355,14 @@ void C_Victory::Draw(SCREEN *surface, UI95_RECT *cliprect)
         HighLite(surface, cliprect);
 }
 
-BOOL C_Victory::CheckKeyboard(uchar DKScanCode, uchar Ascii, uchar ShiftStates, long RepeatCount)
+BOOL C_Victory::CheckKeyboard(uchar DKScanCode, uchar Ascii, uchar ShiftStates,
+                              long RepeatCount)
 {
     if (Section_ == 5)
-        return(Points_->CheckKeyboard(DKScanCode, Ascii, ShiftStates, RepeatCount));
+        return (Points_->CheckKeyboard(DKScanCode, Ascii, ShiftStates,
+                                       RepeatCount));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Victory::SetSubParents(C_Window *Parent)

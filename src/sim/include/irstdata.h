@@ -10,7 +10,7 @@ typedef struct IRSTDataType
     float FlareChance; // Base probability a flare will work
 } IRSTDataType;
 
-extern IRSTDataType*  IRSTDataTable;
+extern IRSTDataType* IRSTDataTable;
 extern short NumIRSTEntries;
 
 #endif

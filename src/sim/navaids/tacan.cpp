@@ -39,12 +39,11 @@ TACAN.CPP
 =================================================================*/
 
 
-
 #include <windows.h>
 #include <stdio.h>
 
 #include "vu2.h"
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "campbase.h"
 #include "f4error.h"
 #include "tacan.h"
@@ -56,14 +55,19 @@ TACAN.CPP
 #include "simdrive.h"
 #include "aircrft.h"
 #include "navsystem.h"
-#include "Navunit.h"
+#include "navunit.h"
 
 //---------------------------------------------------------------
 // External Constant Initialization
 //---------------------------------------------------------------
 
+// Artscout - 2026 (Linux port): SearchForChannel is used by bsearch calls below but defined at
+// the bottom of the file. MSVC found it via the friend declaration in tacan.h (lax name lookup);
+// clang needs a real file-scope declaration.
+int SearchForChannel(void* element1, void** element2);
+
 TacanList* gTacanList;
-const char* gpTacanFileName = "sim\\sigdata\\tacan\\stations.dat";
+const char* gpTacanFileName = "sim/sigdata/tacan/stations.dat";
 
 int CompareCampIDs(void**, void**);
 
@@ -91,8 +95,8 @@ MEM_POOL gTacanMemPool;
 TacanList::TacanList()
 {
 
-    LinkedCampStationStr *p_stations = NULL;
-    FILE *p_File = NULL;
+    LinkedCampStationStr* p_stations = NULL;
+    FILE* p_File = NULL;
     BOOL done = FALSE;
     StationSet band = X;
     char bandChar = 'x';
@@ -111,7 +115,8 @@ TacanList::TacanList()
     F4Assert(p_File);
 
     // Error: Couldn't open file
-    if (p_File == NULL) done = TRUE;
+    if (p_File == NULL)
+        done = TRUE;
 
     while (done == FALSE)
     {
@@ -125,28 +130,28 @@ TacanList::TacanList()
         if (buffer[0] == ';' or buffer[0] == '#' or buffer[0] == '\n')
             continue;
 
-        result = sscanf(buffer, "%d %d %c %d %d %d %f",
-                        &stationId, &channel, &bandChar, &callsign,
-                        &range, &tactype, &ilsfreq);
+        result = sscanf(buffer, "%d %d %c %d %d %d %f", &stationId, &channel,
+                        &bandChar, &callsign, &range, &tactype, &ilsfreq);
 
-        F4Assert(result >= NUM_TACAN_FIELDS); // Four Fields should be read in or EOF (-1)
+        F4Assert(result >=
+                 NUM_TACAN_FIELDS); // Four Fields should be read in or EOF (-1)
 
         if (result < NUM_TACAN_FIELDS)
             continue;
 
-        switch (result)  // fill in missing bits
+        switch (result) // fill in missing bits
         {
-            case NUM_TACAN_FIELDS:
-                range = 150;
+        case NUM_TACAN_FIELDS:
+            range = 150;
 
-                // fall
-            case NUM_TACAN_FIELDS+1:
-                tactype = 1;
+            // fall
+        case NUM_TACAN_FIELDS + 1:
+            tactype = 1;
 
-                // fall
-            case NUM_TACAN_FIELDS+2:
-                ilsfreq = 111.1f;
-                break;
+            // fall
+        case NUM_TACAN_FIELDS + 2:
+            ilsfreq = 111.1f;
+            break;
         }
 
         if (bandChar == 'x' or bandChar == 'X')
@@ -162,23 +167,26 @@ TacanList::TacanList()
             ShiWarning("Invalid Tacan band\n"); // Band can only be type X or Y
         }
 
-        F4Assert(channel > 0 and channel <= NUM_CHANNELS); // Channel must be between 1 - 126 inclusive
+        F4Assert(channel > 0 and
+                 channel <=
+                     NUM_CHANNELS); // Channel must be between 1 - 126 inclusive
 
         if (StoreStation(&p_stations, (short)stationId, channel, band, callsign,
-                         range, tactype, ilsfreq))   // Insert into ordered linked list
+                         range, tactype,
+                         ilsfreq)) // Insert into ordered linked list
         {
             mCampListTally++; // If there are no duplicates, increment Tally
         }
     }
 
-    ResolveStationList(&p_stations, &mpCampList, mCampListTally); // Copy linked list into array
+    ResolveStationList(&p_stations, &mpCampList,
+                       mCampListTally); // Copy linked list into array
     fclose(p_File);
 
     InitDynamicChans();
 }
 
 /////////////////////////////////////////////////////////////////
-
 
 
 //---------------------------------------------------------------
@@ -201,11 +209,11 @@ TacanList::~TacanList()
         delete mpCampList[i];
     }
 
-    delete [] mpCampList; // Blow away the CampID list
+    delete[] mpCampList; // Blow away the CampID list
 
     p_current = mpTList;
 
-    while (p_current)   // Walk the tacan list and delete all links
+    while (p_current) // Walk the tacan list and delete all links
     {
         p_link = p_current->p_next;
         // delete p_current->p_station;
@@ -219,12 +227,11 @@ TacanList::~TacanList()
 /////////////////////////////////////////////////////////////////
 
 
-
 //---------------------------------------------------------------
 // TacanList::AddTacan
 //---------------------------------------------------------------
 
-void TacanList::AddTacan(CampBaseClass *p_campEntity)
+void TacanList::AddTacan(CampBaseClass* p_campEntity)
 {
 
     int channel = 0;
@@ -234,49 +241,62 @@ void TacanList::AddTacan(CampBaseClass *p_campEntity)
     LinkedTacanVUStr** p_next = NULL;
     LinkedTacanVUStr* p_previous = NULL;
 
-    if (p_campEntity->IsObjective() and 
+    if (p_campEntity->IsObjective() and
         p_campEntity->GetType() == TYPE_AIRBASE) // If inserting an airbase
     {
         domain = AG;
 
-        if (GetChannelFromCampID(&channel, &set, p_campEntity->GetCampId())) // Get channel and band from mpCampList
+        if (GetChannelFromCampID(
+                &channel, &set,
+                p_campEntity
+                    ->GetCampId())) // Get channel and band from mpCampList
         {
-            if (mpTList == NULL)   // If the mpTList (tacan) list is empty ...
+            if (mpTList == NULL) // If the mpTList (tacan) list is empty ...
             {
                 p_next = &mpTList; // The next links are also empty
                 p_previous = NULL;
-                InsertIntoTacanList(&p_previous, p_next, p_campEntity->Id(), p_campEntity->GetCampID(), channel, set, domain);
+                InsertIntoTacanList(&p_previous, p_next, p_campEntity->Id(),
+                                    p_campEntity->GetCampID(), channel, set,
+                                    domain);
             }
-            else if ( not GetPointerFromVUID(mpTList, p_campEntity->Id(), &p_previous, &p_tacanVUStr))
+            else if (not GetPointerFromVUID(mpTList, p_campEntity->Id(),
+                                            &p_previous, &p_tacanVUStr))
             {
                 // Check the sorted mpTList (tacan) list for duplicate entries stop ...
                 // searching when we find a VU_ID greater than the one we are searching for.
                 // If the entity isn't already in the list then do the following.
-                p_next = &p_tacanVUStr; // The next link will be where the search ended.
-                InsertIntoTacanList(&p_previous, p_next, p_campEntity->Id(), p_campEntity->GetCampID(), channel, set, domain);
+                p_next =
+                    &p_tacanVUStr; // The next link will be where the search ended.
+                InsertIntoTacanList(&p_previous, p_next, p_campEntity->Id(),
+                                    p_campEntity->GetCampID(), channel, set,
+                                    domain);
             }
         }
     }
-    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and 
-             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT and 
-             ((Unit) p_campEntity)->GetUnitMission() == AMIS_TANKER)// If inserting a tanker
+    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and
+             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_FLIGHT and
+             ((Unit)p_campEntity)->GetUnitMission() ==
+                 AMIS_TANKER) // If inserting a tanker
     {
-        ((FlightClass*)p_campEntity)->tacan_channel = (uchar) AssignChannel(p_campEntity->Id(), AA, p_campEntity->GetCampID()); // assign a unique channel
+        ((FlightClass*)p_campEntity)->tacan_channel = (uchar)AssignChannel(
+            p_campEntity->Id(), AA,
+            p_campEntity->GetCampID()); // assign a unique channel
         ((FlightClass*)p_campEntity)->tacan_band = 'Y';
     }
-    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and 
-             p_campEntity->EntityType()->classInfo_[VU_TYPE] == TYPE_TASKFORCE and 
-             p_campEntity->GetSType() == STYPE_UNIT_CARRIER) // If inserting a carrier
+    else if (p_campEntity->EntityType()->classInfo_[VU_CLASS] == CLASS_UNIT and
+             p_campEntity->EntityType()->classInfo_[VU_TYPE] ==
+                 TYPE_TASKFORCE and
+             p_campEntity->GetSType() ==
+                 STYPE_UNIT_CARRIER) // If inserting a carrier
     {
-        ((TaskForceClass*)p_campEntity)->tacan_channel = (uchar) AssignChannel(p_campEntity->Id(), AG, p_campEntity->GetCampID()); // assign a unique channel
+        ((TaskForceClass*)p_campEntity)->tacan_channel = (uchar)AssignChannel(
+            p_campEntity->Id(), AG,
+            p_campEntity->GetCampID()); // assign a unique channel
         ((TaskForceClass*)p_campEntity)->tacan_band = 'Y';
     }
-
-
 }
 
 /////////////////////////////////////////////////////////////////
-
 
 
 //---------------------------------------------------------------
@@ -291,10 +311,11 @@ void TacanList::RemoveTacan(VU_ID id, int type)
 
     if (type == NavigationSystem::AIRBASE) // If removing an airbase
     {
-        if (GetPointerFromVUID(mpTList, id, &p_previous, &p_tacanVUStr))   // Find location in list
+        if (GetPointerFromVUID(mpTList, id, &p_previous,
+                               &p_tacanVUStr)) // Find location in list
         {
 
-            if (p_tacanVUStr->p_previous)   // Break the chain and relink
+            if (p_tacanVUStr->p_previous) // Break the chain and relink
             {
                 p_tacanVUStr->p_previous->p_next = p_tacanVUStr->p_next;
 
@@ -329,14 +350,13 @@ void TacanList::RemoveTacan(VU_ID id, int type)
 /////////////////////////////////////////////////////////////////
 
 
-
 //---------------------------------------------------------------
 // TacanList::GetChannelFromVUID
 //---------------------------------------------------------------
 
-BOOL TacanList::GetChannelFromVUID(VU_ID id,
-                                   int* p_channel, StationSet* p_set, Domain* p_domain,
-                                   int *rangep, int *ttype, float *ilsfreq)
+BOOL TacanList::GetChannelFromVUID(VU_ID id, int* p_channel, StationSet* p_set,
+                                   Domain* p_domain, int* rangep, int* ttype,
+                                   float* ilsfreq)
 {
 
     BOOL result;
@@ -350,7 +370,7 @@ BOOL TacanList::GetChannelFromVUID(VU_ID id,
         *p_channel = tacanVUStr->channel;
         *p_set = tacanVUStr->set;
         *p_domain = tacanVUStr->domain;
-        TacanCampStr *tinfo; /// XXXXX Bleah
+        TacanCampStr* tinfo; /// XXXXX Bleah
 
         if (GetCampTacanFromVUID(&tinfo, tacanVUStr->camp_id))
         {
@@ -364,7 +384,6 @@ BOOL TacanList::GetChannelFromVUID(VU_ID id,
             *ttype = 1;
             *ilsfreq = 0;
         }
-
     }
 
     return result;
@@ -373,13 +392,13 @@ BOOL TacanList::GetChannelFromVUID(VU_ID id,
 /////////////////////////////////////////////////////////////////
 
 
-
 //---------------------------------------------------------------
 // TacanList::GetVUIDFromChannel
 //---------------------------------------------------------------
 
 BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
-                                   VU_ID*vuid, int *rangep, int *ttype, float *ilsfreq)
+                                   VU_ID* vuid, int* rangep, int* ttype,
+                                   float* ilsfreq)
 {
 
     BOOL result = FALSE;
@@ -392,7 +411,9 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
     {
         p_current = mpTList;
 
-        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
+        while (p_current and
+               (p_current->channel not_eq channel or
+                p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -400,7 +421,7 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
         if (p_current)
         {
             *vuid = p_current->vuID;
-            TacanCampStr *tinfo; /// XXXXX Bleah
+            TacanCampStr* tinfo; /// XXXXX Bleah
 
             if (GetCampTacanFromVUID(&tinfo, p_current->camp_id))
             {
@@ -412,12 +433,15 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
             result = TRUE;
         }
     }
-    else if (set == Y and domain == AA)   // Note this only works for the host machine
+    else if (set == Y and
+             domain == AA) // Note this only works for the host machine
     {
 
         p_current = mpAssigned;
 
-        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
+        while (p_current and
+               (p_current->channel not_eq channel or
+                p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -430,12 +454,14 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
             result = TRUE;
         }
     }
-    else if (set == Y and domain == AG)   // M.N. for Carrier Tacans
+    else if (set == Y and domain == AG) // M.N. for Carrier Tacans
     {
 
         p_current = mpAssigned;
 
-        while (p_current and (p_current->channel not_eq channel or p_current->set not_eq set or p_current->domain not_eq domain))
+        while (p_current and
+               (p_current->channel not_eq channel or
+                p_current->set not_eq set or p_current->domain not_eq domain))
         {
             p_current = p_current->p_next;
         }
@@ -460,8 +486,8 @@ BOOL TacanList::GetVUIDFromChannel(int channel, StationSet set, Domain domain,
 // TacanList::GetVUIDFromLocation
 //---------------------------------------------------------------
 
-BOOL TacanList::GetVUIDFromLocation(float x, float y, Domain domain,
-                                    VU_ID* id, int *range, int *type, float *ilsfreq)
+BOOL TacanList::GetVUIDFromLocation(float x, float y, Domain domain, VU_ID* id,
+                                    int* range, int* type, float* ilsfreq)
 {
 
     VuEntity* p_entity;
@@ -505,7 +531,6 @@ BOOL TacanList::GetVUIDFromLocation(float x, float y, Domain domain,
 /////////////////////////////////////////////////////////////////
 
 
-
 //---------------------------------------------------------------
 // TacanList::GetPointerFromVUID
 //
@@ -516,7 +541,9 @@ BOOL TacanList::GetVUIDFromLocation(float x, float y, Domain domain,
 // p_before and p_after.
 //---------------------------------------------------------------
 
-BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id, LinkedTacanVUStr** p_before, LinkedTacanVUStr** p_after)
+BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id,
+                                   LinkedTacanVUStr** p_before,
+                                   LinkedTacanVUStr** p_after)
 {
 
     BOOL result = FALSE;
@@ -543,7 +570,6 @@ BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id, LinkedTac
 /////////////////////////////////////////////////////////////////
 
 
-
 //---------------------------------------------------------------
 // TacanList::GetCampTacanFromVUID
 //
@@ -553,7 +579,7 @@ BOOL TacanList::GetPointerFromVUID(LinkedTacanVUStr* p_list, VU_ID id, LinkedTac
 
 /////////////////////////////////////////////////////////////////
 
-BOOL TacanList::GetCampTacanFromVUID(TacanCampStr **tacaninfo, short campid)
+BOOL TacanList::GetCampTacanFromVUID(TacanCampStr** tacaninfo, short campid)
 {
     TacanCampStr key;
     TacanCampStr** p_occurrence;
@@ -561,9 +587,10 @@ BOOL TacanList::GetCampTacanFromVUID(TacanCampStr **tacaninfo, short campid)
 
     key.campaignID = campid;
 
-    p_occurrence = (TacanCampStr**) bsearch(&key, mpCampList, mCampListTally,
-                          sizeof(TacanCampStr*),
-                          (int (*)(const void*, const void*))SearchForChannel); // Do the binary search
+    p_occurrence = (TacanCampStr**)bsearch(
+        &key, mpCampList, mCampListTally, sizeof(TacanCampStr*),
+        (int (*)(const void*,
+                 const void*))SearchForChannel); // Do the binary search
 
     if (p_occurrence)
     {
@@ -580,18 +607,16 @@ BOOL TacanList::GetCampTacanFromVUID(TacanCampStr **tacaninfo, short campid)
 //---------------------------------------------------------------
 
 void TacanList::InsertIntoTacanList(LinkedTacanVUStr** p_previous,
-                                    LinkedTacanVUStr** p_next,
-                                    VU_ID vuId,
-                                    short camp_id,
-                                    int channel,
-                                    StationSet set,
+                                    LinkedTacanVUStr** p_next, VU_ID vuId,
+                                    short camp_id, int channel, StationSet set,
                                     Domain domain)
 {
 
     LinkedTacanVUStr* p_tacanVUStr;
 
 #ifdef USE_SH_POOLS
-    p_tacanVUStr = (LinkedTacanVUStr *)MemAllocPtr(gTacanMemPool, sizeof(LinkedTacanVUStr), 0); // Create a new link
+    p_tacanVUStr = (LinkedTacanVUStr*)MemAllocPtr(
+        gTacanMemPool, sizeof(LinkedTacanVUStr), 0); // Create a new link
 #else
     p_tacanVUStr = new LinkedTacanVUStr; // Create a new link
 #endif
@@ -603,10 +628,11 @@ void TacanList::InsertIntoTacanList(LinkedTacanVUStr** p_previous,
     p_tacanVUStr->p_previous = NULL;
     p_tacanVUStr->p_next = NULL;
 
-    if (*p_previous and *p_next)   // If there are links that follow this link
+    if (*p_previous and *p_next) // If there are links that follow this link
     {
         p_tacanVUStr->p_previous = *p_previous;
-        p_tacanVUStr->p_next = *p_next; // The link that follows is the next link
+        p_tacanVUStr->p_next =
+            *p_next; // The link that follows is the next link
         (*p_previous)->p_next = p_tacanVUStr;
         (*p_next)->p_previous = p_tacanVUStr; // New link is now the previous
     }
@@ -634,7 +660,6 @@ void TacanList::InsertIntoTacanList(LinkedTacanVUStr** p_previous,
 /////////////////////////////////////////////////////////////////
 
 
-
 //---------------------------------------------------------------
 // TacanList::ResolveStationList
 //
@@ -647,17 +672,18 @@ void TacanList::InsertIntoTacanList(LinkedTacanVUStr** p_previous,
 // we can perform binary searches.
 //---------------------------------------------------------------
 
-void TacanList::ResolveStationList(LinkedCampStationStr** p_list, TacanCampStr*** p_CampIdArray, int size)
+void TacanList::ResolveStationList(LinkedCampStationStr** p_list,
+                                   TacanCampStr*** p_CampIdArray, int size)
 {
 
-    if (size <= 0)   // Make sure we have work to do
+    if (size <= 0) // Make sure we have work to do
     {
         //F4Assert(FALSE);
         ShiWarning("No work to do\n");
         return;
     }
 
-    if (p_list == NULL)   // Check for a good pointer
+    if (p_list == NULL) // Check for a good pointer
     {
         //F4Assert(FALSE);
         ShiWarning("no pointer\n");
@@ -665,20 +691,23 @@ void TacanList::ResolveStationList(LinkedCampStationStr** p_list, TacanCampStr**
     }
 
     int i = 0;
-    LinkedCampStationStr *p_current;
-    LinkedCampStationStr *p_previous;
+    LinkedCampStationStr* p_current;
+    LinkedCampStationStr* p_previous;
 
 #ifdef USE_SH_POOLS
-    *p_CampIdArray = (TacanCampStr **)MemAllocPtr(gTacanMemPool, sizeof(TacanCampStr *) * size, 0); // Create a new link
+    *p_CampIdArray = (TacanCampStr**)MemAllocPtr(
+        gTacanMemPool, sizeof(TacanCampStr*) * size, 0); // Create a new link
 #else
     *p_CampIdArray = new TacanCampStr*[size]; // Create the array
 #endif
 
     p_current = *p_list;
 
-    while (p_current)   // While we are not at the end of the linked list
+    while (p_current) // While we are not at the end of the linked list
     {
-        (*p_CampIdArray)[i] = p_current->p_station; // Copy contents to the station struct into the array
+        (*p_CampIdArray)[i] =
+            p_current
+                ->p_station; // Copy contents to the station struct into the array
 
         p_previous = p_current; // Save location of the link
         p_current = p_current->p_next; // Goto the next link
@@ -694,7 +723,8 @@ void TacanList::ResolveStationList(LinkedCampStationStr** p_list, TacanCampStr**
 #endif
 
 
-    qsort(*p_CampIdArray, size, sizeof(TacanCampStr*), (int (*)(const void*, const void*))CompareCampIDs);
+    qsort(*p_CampIdArray, size, sizeof(TacanCampStr*),
+          (int (*)(const void*, const void*))CompareCampIDs);
 
 
     F4Assert(i == size); // Otherwise memory has been stomped
@@ -702,7 +732,6 @@ void TacanList::ResolveStationList(LinkedCampStationStr** p_list, TacanCampStr**
 }
 
 /////////////////////////////////////////////////////////////////
-
 
 
 //---------------------------------------------------------------
@@ -716,20 +745,19 @@ void TacanList::ResolveStationList(LinkedCampStationStr** p_list, TacanCampStr**
 // band are TacanList::X and TacanList::Y.
 //---------------------------------------------------------------
 
-BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
-                             short airbaseId, int channel,
-                             StationSet band, int callsign,
+BOOL TacanList::StoreStation(LinkedCampStationStr** p_list, short airbaseId,
+                             int channel, StationSet band, int callsign,
                              int range, int tactype, float ilsfreq)
 {
 
-    if (channel < 1 or channel > 126)   // Note: the value of channel should be
+    if (channel < 1 or channel > 126) // Note: the value of channel should be
     {
         //F4Assert(FALSE); // constrained to 1 - 126
         ShiWarning("invalid channel\n");
         return FALSE;
     }
 
-    if (band not_eq X and band not_eq Y)   // Channels are constrained to
+    if (band not_eq X and band not_eq Y) // Channels are constrained to
     {
         //F4Assert(FALSE); // X or Y band.
         ShiWarning("invalid band\n");
@@ -753,8 +781,10 @@ BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
 
 
 #ifdef USE_SH_POOLS
-    p_staStr = (TacanCampStr *)MemAllocPtr(gTacanMemPool, sizeof(TacanCampStr), 0); // Create a new link
-    p_linkStaStr = (LinkedCampStationStr *)MemAllocPtr(gTacanMemPool, sizeof(LinkedCampStationStr), 0); // Create a new link
+    p_staStr = (TacanCampStr*)MemAllocPtr(gTacanMemPool, sizeof(TacanCampStr),
+                                          0); // Create a new link
+    p_linkStaStr = (LinkedCampStationStr*)MemAllocPtr(
+        gTacanMemPool, sizeof(LinkedCampStationStr), 0); // Create a new link
 #else
     p_staStr = new TacanCampStr; // Create a new element
     p_linkStaStr = new LinkedCampStationStr; // Create a new link
@@ -848,7 +878,6 @@ BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
 /////////////////////////////////////////////////////////////////
 
 
-
 //---------------------------------------------------------------
 // TacanList::GetChannelFromCampID
 //
@@ -858,7 +887,8 @@ BOOL TacanList::StoreStation(LinkedCampStationStr** p_list,
 // if found, TRUE is returned
 //---------------------------------------------------------------
 
-BOOL TacanList::GetChannelFromCampID(int* channel, StationSet* band, short airbaseId)
+BOOL TacanList::GetChannelFromCampID(int* channel, StationSet* band,
+                                     short airbaseId)
 {
 
     if (airbaseId < 0)
@@ -874,9 +904,10 @@ BOOL TacanList::GetChannelFromCampID(int* channel, StationSet* band, short airba
 
     key.campaignID = airbaseId;
 
-    p_occurrence = (TacanCampStr**) bsearch(&key, mpCampList, mCampListTally,
-                          sizeof(TacanCampStr*),
-                          (int (*)(const void*, const void*))SearchForChannel); // Do the binary search
+    p_occurrence = (TacanCampStr**)bsearch(
+        &key, mpCampList, mCampListTally, sizeof(TacanCampStr*),
+        (int (*)(const void*,
+                 const void*))SearchForChannel); // Do the binary search
 
     if (p_occurrence)
     {
@@ -890,7 +921,7 @@ BOOL TacanList::GetChannelFromCampID(int* channel, StationSet* band, short airba
 
 /////////////////////////////////////////////////////////////////
 
-BOOL TacanList::GetCallsignFromCampID(short campId, int *callsign)
+BOOL TacanList::GetCallsignFromCampID(short campId, int* callsign)
 {
     if (campId < 0)
     {
@@ -905,9 +936,10 @@ BOOL TacanList::GetCallsignFromCampID(short campId, int *callsign)
 
     key.campaignID = campId;
 
-    p_occurrence = (TacanCampStr**) bsearch(&key, mpCampList, mCampListTally,
-                          sizeof(TacanCampStr*),
-                          (int (*)(const void*, const void*))SearchForChannel); // Do the binary search
+    p_occurrence = (TacanCampStr**)bsearch(
+        &key, mpCampList, mCampListTally, sizeof(TacanCampStr*),
+        (int (*)(const void*,
+                 const void*))SearchForChannel); // Do the binary search
 
     if (p_occurrence)
     {
@@ -990,26 +1022,32 @@ int TacanList::AssignChannel(VU_ID vuID, Domain domain, short camp_id)
 
         ShiAssert(mLastUnused >= g_nMinTacanChannel);
 
-        if (mLastUnused >= g_nMinTacanChannel)   // Note: we have a total of 56 channels to work with.
+        if (mLastUnused >=
+            g_nMinTacanChannel) // Note: we have a total of 56 channels to work with.
         {
             // If we need more than 56 at a time, then the campaign has gone wild.
             // Ignore anything over 56 requests.
             // MN this doesn't seem to be an issue anymore...(why 56 at all ??)
 
 #ifdef USE_SH_POOLS
-            pTacanStr = (LinkedTacanVUStr *)MemAllocPtr(gTacanMemPool, sizeof(LinkedTacanVUStr), 0); // Create a new link
+            pTacanStr = (LinkedTacanVUStr*)MemAllocPtr(gTacanMemPool,
+                                                       sizeof(LinkedTacanVUStr),
+                                                       0); // Create a new link
 #else
             pTacanStr = new LinkedTacanVUStr;
 #endif
 
             if (mpAssigned)
             {
-                mpAssigned->p_previous = pTacanStr; // Were going to add to the head of the list, so copy the new link into the current head
+                mpAssigned->p_previous =
+                    pTacanStr; // Were going to add to the head of the list, so copy the new link into the current head
             }
 
-            pTacanStr->p_next = mpAssigned; // The next link is the current head ... since we are adding to the head
+            pTacanStr->p_next =
+                mpAssigned; // The next link is the current head ... since we are adding to the head
             pTacanStr->p_previous = NULL;
-            pTacanStr->channel = mLastUnused--; // Be sure to decrement the last unused
+            pTacanStr->channel =
+                mLastUnused--; // Be sure to decrement the last unused
             pTacanStr->set = Y;
             pTacanStr->domain = domain;
             pTacanStr->vuID = vuID;
@@ -1026,10 +1064,12 @@ int TacanList::AssignChannel(VU_ID vuID, Domain domain, short camp_id)
 
         if (mpAssigned)
         {
-            mpAssigned->p_previous = pTacanStr; // Were going to add to the head of the list, so copy the new link into the current head
+            mpAssigned->p_previous =
+                pTacanStr; // Were going to add to the head of the list, so copy the new link into the current head
         }
 
-        pTacanStr->p_next = mpAssigned; // The next link is the current head ... since we are adding to the head
+        pTacanStr->p_next =
+            mpAssigned; // The next link is the current head ... since we are adding to the head
         pTacanStr->p_previous = NULL;
         pTacanStr->set = Y;
         pTacanStr->domain = domain;
@@ -1059,20 +1099,22 @@ void TacanList::RetireChannel(VU_ID vuID)
 
     pTacanStr = mpAssigned;
 
-    while ( not found and pTacanStr)
+    while (not found and pTacanStr)
     {
 
         if (pTacanStr->vuID == vuID)
         {
             found = TRUE;
 
-            if (pTacanStr->p_previous)   // If I'm not the first in the list
+            if (pTacanStr->p_previous) // If I'm not the first in the list
             {
-                pTacanStr->p_previous->p_next = pTacanStr->p_next; // Break the link
+                pTacanStr->p_previous->p_next =
+                    pTacanStr->p_next; // Break the link
             }
             else
             {
-                mpAssigned = pTacanStr->p_next; // Otherwise make my next link the first
+                mpAssigned =
+                    pTacanStr->p_next; // Otherwise make my next link the first
             }
 
             if (pTacanStr->p_next)
@@ -1080,7 +1122,7 @@ void TacanList::RetireChannel(VU_ID vuID)
                 pTacanStr->p_next->p_previous = pTacanStr->p_previous;
             }
 
-            if (mpRetired)   // If there is already a head on the retired list
+            if (mpRetired) // If there is already a head on the retired list
             {
                 mpRetired->p_previous = pTacanStr; // give the head my pointer
             }
@@ -1106,23 +1148,24 @@ int TacanList::ChannelToFrequency(StationSet set, int channel)
 {
     switch (set)
     {
-        case X:
-            if (channel < 64)
-                return 961 + channel;
-            else
-                return (channel = 126) + 1213;
+    case X:
+        if (channel < 64)
+            return 961 + channel;
+        else
+            return (channel = 126) + 1213;
 
-            break;
+        break;
 
-        case Y:
-            if (channel < 64)
-                return 1087 + channel;
-            else return (channel - 126) + 1087;
+    case Y:
+        if (channel < 64)
+            return 1087 + channel;
+        else
+            return (channel - 126) + 1087;
 
-            break;
+        break;
 
-        default:
-            return 0;
+    default:
+        return 0;
     }
 }
 
@@ -1132,8 +1175,8 @@ int CompareCampIDs(void** element1, void** element2)
 {
     int returnStatus;
 
-    TacanList::TacanCampStr** el1 = (TacanList::TacanCampStr**) element1;
-    TacanList::TacanCampStr** el2 = (TacanList::TacanCampStr**) element2;
+    TacanList::TacanCampStr** el1 = (TacanList::TacanCampStr**)element1;
+    TacanList::TacanCampStr** el2 = (TacanList::TacanCampStr**)element2;
 
     if ((*el1)->campaignID < (*el2)->campaignID)
     {
@@ -1163,8 +1206,8 @@ int SearchForChannel(void* element1, void** element2)
 {
 
     int returnStatus;
-    TacanList::TacanCampStr* el1 = (TacanList::TacanCampStr*) element1;
-    TacanList::TacanCampStr** el2 = (TacanList::TacanCampStr**) element2;
+    TacanList::TacanCampStr* el1 = (TacanList::TacanCampStr*)element1;
+    TacanList::TacanCampStr** el2 = (TacanList::TacanCampStr**)element2;
 
     if (el1->campaignID < (*el2)->campaignID)
     {

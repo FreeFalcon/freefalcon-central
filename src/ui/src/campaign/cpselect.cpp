@@ -8,7 +8,7 @@
 #include <windows.h>
 #include "falclib.h"
 #include "targa.h"
-#include "Graphics/Include/imagebuf.h"
+#include "graphics/include/imagebuf.h"
 #include "ui95_dd.h"
 #include "chandler.h"
 #include "ui95_ext.h"
@@ -17,17 +17,17 @@
 #include "feature.h"
 #include "vehicle.h"
 #include "evtparse.h"
-#include "Mesg.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/LandingMessage.h"
+#include "mesg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/landingmessage.h"
 #include "falcsess.h"
 #include "squadron.h"
 #include "cmpclass.h"
 #include "campmap.h"
-#include "CampJoin.h"
+#include "campjoin.h"
 #include "division.h"
 #include "campstr.h"
 #include "find.h"
@@ -43,11 +43,11 @@
 #include "userids.h"
 #include "textids.h"
 #include "teamdata.h"
-#include "UI.h"
+#include "ui.h"
 #include "comms/capi.h"
-#include "Dispcfg.h"
+#include "dispcfg.h"
 
-#pragma warning(disable: 4244)
+#pragma warning(disable : 4244)
 
 // This is a list for GetFileList... files which WON'T show up in the list window
 // MUST be NULL terminated
@@ -56,8 +56,9 @@ extern _TCHAR *CampExcludeList[];
 extern uchar max_veh[5];
 
 extern C_Handler *gMainHandler;
-extern C_Parser *gMainParser;;
-extern C_Music  *gMusic;
+extern C_Parser *gMainParser;
+;
+extern C_Music *gMusic;
 extern int CPSelectLoaded;
 extern int PlannerLoaded;
 extern int CampaignLastGroup;
@@ -85,7 +86,9 @@ extern short ConvertDFIDtoTeam(long ID);
 extern void EnableCampaignMenus(void);
 extern void create_tactical_scenario_info(void);
 
-void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void CommsErrorDialog(long TitleID, long MessageID,
+                      void (*OKCB)(long, short, C_Base *),
+                      void (*CancelCB)(long, short, C_Base *));
 void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)());
 void InfoButtonCB(long ID, short hittype, C_Base *control);
 void CancelJoinCB();
@@ -94,7 +97,8 @@ static void HookupCampaignSelectControls(long ID);
 void StartCampaignGame(int local, int game_type);
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 void CleanupView();
-void CreateGameList(long ID, uchar gamemask, void (*gcb)(long, short, C_Base *), void (*pcb)(long, short, C_Base *), long Client);
+void CreateGameList(long ID, uchar gamemask, void (*gcb)(long, short, C_Base *),
+                    void (*pcb)(long, short, C_Base *), long Client);
 void CloseWindowCB(long ID, short hittype, C_Base *control);
 void SetSingle_Comms_Ctrls();
 void CampaignListCB();
@@ -115,12 +119,15 @@ void DelTacFileCB(long ID, short hittype, C_Base *control);
 void DelTGAFileCB(long ID, short hittype, C_Base *control);
 void DelVHSFileCB(long ID, short hittype, C_Base *control);
 void DelKeyFileCB(long ID, short hittype, C_Base *control);
-void SetDeleteCallback(void (*cb)(long, short, C_Base*));
-void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[], long group, BOOL cutext, long UseMenu);
+void SetDeleteCallback(void (*cb)(long, short, C_Base *));
+void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[],
+                     long group, BOOL cutext, long UseMenu);
 _TCHAR *OrdinalString(long value);
 void PlayUIMovie(long ID);
-BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[], _TCHAR *extension);
-void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
+BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[],
+                  _TCHAR *extension);
+void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base *),
+                  void (*NoCB)(long, short, C_Base *));
 void EnableScenarioInfo(long ID);
 void DisableScenarioInfo();
 void SelectScenarioCB(long ID, short hittype, C_Base *control);
@@ -130,7 +137,10 @@ void DisplayJoinStatusWindow(int);
 void MinMaxWindowCB(long ID, short hittype, C_Base *control);
 void CopySettingsToTemp(void);
 BOOL FileNameSortCB(TREELIST *list, TREELIST *newitem);
-extern BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
+extern BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y,
+                                    short startcol, short endcol,
+                                    COLORREF color, _TCHAR *str,
+                                    long Client = 0);
 
 char gUI_CampaignFile[MAX_PATH];
 _TCHAR gUI_ScenarioName[64];
@@ -149,14 +159,14 @@ extern bool g_bHiResUI; // M.N.
 
 enum
 {
-    SND_SCREAM        = 500005,
-    SND_BAD1          = 500006,
-    SND_SECOND        = 500007,
-    SND_FIRST         = 500008,
-    SND_NICE          = 500009,
-    SND_BAD2          = 500010,
-    SND_YOUSUCK       = 500011,
-    SND_AMBIENT   = 500033,
+    SND_SCREAM = 500005,
+    SND_BAD1 = 500006,
+    SND_SECOND = 500007,
+    SND_FIRST = 500008,
+    SND_NICE = 500009,
+    SND_BAD2 = 500010,
+    SND_YOUSUCK = 500011,
+    SND_AMBIENT = 500033,
     SND_CAMPAIGNMUSIC = 500050,
 };
 
@@ -178,7 +188,7 @@ enum
     WHITE_TEAM_ICONS_W = 565120013,
     YELLOW_TEAM_ICONS = 565120014,
     YELLOW_TEAM_ICONS_W = 565120015,
-    CAMP_AIR_BASE_ICON          = 10003,
+    CAMP_AIR_BASE_ICON = 10003,
 };
 
 typedef struct
@@ -198,7 +208,8 @@ void LoadCampaignSelectWindows()
 {
     long ID;
 
-    if (CPSelectLoaded) return;
+    if (CPSelectLoaded)
+        return;
 
     if (_LOAD_ART_RESOURCES_)
         gMainParser->LoadImageList("cs_res.lst");
@@ -206,7 +217,8 @@ void LoadCampaignSelectWindows()
         gMainParser->LoadImageList("cs_art.lst");
 
     gMainParser->LoadSoundList("cs_snd.lst");
-    gMainParser->LoadWindowList("cs_scf.lst");  // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "cs_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -219,23 +231,17 @@ void LoadCampaignSelectWindows()
     CPSelectLoaded++;
     SetSingle_Comms_Ctrls();
 
-    if ( not PlannerLoaded)
+    if (not PlannerLoaded)
         LoadPlannerWindows();
 
     CampSelMode = 0;
 }
 
-long SituationStr[] =
-{
-    TXT_SIT_BAD,
-    TXT_SIT_POOR,
-    TXT_SIT_AVERAGE,
-    TXT_SIT_GOOD,
-    TXT_SIT_GREAT,
+long SituationStr[] = {
+    TXT_SIT_BAD, TXT_SIT_POOR, TXT_SIT_AVERAGE, TXT_SIT_GOOD, TXT_SIT_GREAT,
 };
 
-long SpecialtyStr[] =
-{
+long SpecialtyStr[] = {
     TXT_GENERAL,
     TXT_AIR_TO_AIR,
     TXT_AIR_TO_GROUND,
@@ -244,7 +250,7 @@ long SpecialtyStr[] =
 IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize)
 {
     IMAGE_RSC *rsc;
-    C_Resmgr  *res;
+    C_Resmgr *res;
     unsigned char *data8;
     long size;
     DWORD r_mask;
@@ -255,13 +261,13 @@ IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize)
     WORD b_shift;
 
     if (palsize > 256)
-        return(NULL);
+        return (NULL);
 
     size = w * h + palsize * 2;
     data8 = new unsigned char[size];
 
-    if ( not data8)
-        return(NULL);
+    if (not data8)
+        return (NULL);
 
     res = new C_Resmgr;
     res->Setup(ID);
@@ -286,9 +292,9 @@ IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize)
     rsc->Owner = res;
 
     res->AddIndex(ID, rsc);
-    res->SetData((char*)data8);
+    res->SetData((char *)data8);
     memset(data8, 0, size);
-    return(rsc);
+    return (rsc);
 }
 
 void SetupMapWindow()
@@ -304,8 +310,11 @@ void SetupMapWindow()
         DeleteGroupList(CS_MAP_WIN);
 
         // Create Occupation Map
-        if (gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
-            gOccupationMap = CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO, TheCampaign.TheaterSizeY / MAP_RATIO, 16);
+        if (gOccupationMap == NULL and
+            (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
+            gOccupationMap =
+                CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO,
+                                    TheCampaign.TheaterSizeY / MAP_RATIO, 16);
 
         if (gOccupationMap)
             MakeOccupationMap(gOccupationMap);
@@ -313,8 +322,11 @@ void SetupMapWindow()
         // MN big occupation map when HiResUI
         if (g_bHiResUI)
         {
-            if (gBigOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
-                gBigOccupationMap = CreateOccupationMap(2, TheCampaign.TheaterSizeX / (MAP_RATIO / 2), TheCampaign.TheaterSizeY / (MAP_RATIO / 2), 16);
+            if (gBigOccupationMap == NULL and
+                (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY))
+                gBigOccupationMap = CreateOccupationMap(
+                    2, TheCampaign.TheaterSizeX / (MAP_RATIO / 2),
+                    TheCampaign.TheaterSizeY / (MAP_RATIO / 2), 16);
 
             if (gBigOccupationMap)
                 MakeBigOccupationMap(gBigOccupationMap);
@@ -346,7 +358,7 @@ void AddSquadronsToMap()
     C_Button *btn;
     C_Resmgr *res, *res_w;
     IMAGE_RSC *rsc;
-    int i;//was uint
+    int i; //was uint
     long IconID;
     int savex = -1, savey = -1;
     float x, y;
@@ -367,55 +379,56 @@ void AddSquadronsToMap()
         {
             switch (TheCampaign.CampaignSquadronData[i].country)
             {
-                case 0:
-                    res = gImageMgr->GetImageRes(GREY_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(GREY_TEAM_ICONS_W);
-                    break;
+            case 0:
+                res = gImageMgr->GetImageRes(GREY_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(GREY_TEAM_ICONS_W);
+                break;
 
-                case 1:
-                    res = gImageMgr->GetImageRes(WHITE_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(WHITE_TEAM_ICONS_W);
-                    break;
+            case 1:
+                res = gImageMgr->GetImageRes(WHITE_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(WHITE_TEAM_ICONS_W);
+                break;
 
-                case 2:
-                    res = gImageMgr->GetImageRes(BLUE_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(BLUE_TEAM_ICONS_W);
-                    break;
+            case 2:
+                res = gImageMgr->GetImageRes(BLUE_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(BLUE_TEAM_ICONS_W);
+                break;
 
-                case 3:
-                    res = gImageMgr->GetImageRes(BROWN_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(BROWN_TEAM_ICONS_W);
-                    break;
+            case 3:
+                res = gImageMgr->GetImageRes(BROWN_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(BROWN_TEAM_ICONS_W);
+                break;
 
-                case 4:
-                    res = gImageMgr->GetImageRes(ORANGE_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(ORANGE_TEAM_ICONS_W);
-                    break;
+            case 4:
+                res = gImageMgr->GetImageRes(ORANGE_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(ORANGE_TEAM_ICONS_W);
+                break;
 
-                case 5:
-                    res = gImageMgr->GetImageRes(YELLOW_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(YELLOW_TEAM_ICONS_W);
-                    break;
+            case 5:
+                res = gImageMgr->GetImageRes(YELLOW_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(YELLOW_TEAM_ICONS_W);
+                break;
 
-                case 6:
-                    res = gImageMgr->GetImageRes(RED_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(RED_TEAM_ICONS_W);
-                    break;
+            case 6:
+                res = gImageMgr->GetImageRes(RED_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(RED_TEAM_ICONS_W);
+                break;
 
-                case 7:
-                    res = gImageMgr->GetImageRes(GREEN_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(GREEN_TEAM_ICONS_W);
-                    break;
+            case 7:
+                res = gImageMgr->GetImageRes(GREEN_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(GREEN_TEAM_ICONS_W);
+                break;
 
-                default:
-                    ShiWarning("Bad team found");
-                    res = gImageMgr->GetImageRes(BLUE_TEAM_ICONS);
-                    res_w = gImageMgr->GetImageRes(BLUE_TEAM_ICONS_W);
+            default:
+                ShiWarning("Bad team found");
+                res = gImageMgr->GetImageRes(BLUE_TEAM_ICONS);
+                res_w = gImageMgr->GetImageRes(BLUE_TEAM_ICONS_W);
             }
 
-            if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
+            if (TheCampaign.IsValidSquadron(i) or _IsF16_)
             {
-                x = TheCampaign.CampaignSquadronData[i].y; // real world x bitand y are y bitand x
+                x = TheCampaign.CampaignSquadronData[i]
+                        .y; // real world x bitand y are y bitand x
                 y = TheCampaign.CampaignSquadronData[i].x;
 
                 int mapratio = MAP_RATIO;
@@ -439,14 +452,15 @@ void AddSquadronsToMap()
                 }
 
                 btn = new C_Button;
-                btn->Setup(((long)x << 16) bitor (long)y, C_TYPE_RADIO, (int)x, (int)y);
+                btn->Setup(((long)x << 16) bitor (long) y, C_TYPE_RADIO, (int)x,
+                           (int)y);
                 btn->SetFlagBitOn(C_BIT_HCENTER bitor C_BIT_VCENTER);
                 btn->SetGroup(-100);
                 btn->SetCluster(i + 1);
 
                 if (res)
                 {
-                    rsc = (IMAGE_RSC*)res->Find(IconID);
+                    rsc = (IMAGE_RSC *)res->Find(IconID);
 
                     if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
                         btn->SetImage(C_STATE_0, rsc);
@@ -454,7 +468,7 @@ void AddSquadronsToMap()
 
                 if (res_w)
                 {
-                    rsc = (IMAGE_RSC*)res_w->Find(IconID);
+                    rsc = (IMAGE_RSC *)res_w->Find(IconID);
 
                     if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
                         btn->SetImage(C_STATE_1, rsc);
@@ -481,8 +495,8 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
 {
     C_Window *win;
     C_Button *btn;
-    C_Text   *txt;
-    int i;//was uint
+    C_Text *txt;
+    int i; //was uint
     int icony, mapratio;
     float x, y;
     float maxy;
@@ -513,9 +527,10 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.IsValidSquadron(i)  or _IsF16_)
+            if (TheCampaign.IsValidSquadron(i) or _IsF16_)
             {
-                x = TheCampaign.CampaignSquadronData[i].y; // real world x bitand y are y bitand x
+                x = TheCampaign.CampaignSquadronData[i]
+                        .y; // real world x bitand y are y bitand x
                 y = TheCampaign.CampaignSquadronData[i].x;
 
                 // 2001-12-12 M.N. adapted for 1024 UI
@@ -527,18 +542,19 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                 x = x / (FEET_PER_KM * mapratio);
                 y = (maxy - y) / (FEET_PER_KM * mapratio);
 
-                if ((int)x == airbasex and (int)y == airbasey)
+                if ((int)x == airbasex and (int) y == airbasey)
                 {
                     SquadPtr = &TheCampaign.CampaignSquadronData[i];
 
-                    if ( not NameShown and SquadPtr)
+                    if (not NameShown and SquadPtr)
                     {
                         // Airbase Name
                         txt = new C_Text;
                         txt->Setup(C_DONT_CARE, C_TYPE_LEFT);
                         txt->SetXY(10, icony);
                         txt->SetFont(win->Font_);
-                        txt->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
+                        txt->SetUserNumber(_UI95_DELGROUP_SLOT_,
+                                           _UI95_DELGROUP_ID_);
                         txt->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_WORDWRAP);
                         txt->SetW(123);
                         txt->SetFGColor(0x00e0e0e0);
@@ -548,7 +564,8 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                         NameShown = 1;
                     }
 
-                    _stprintf(buffer, "%s %s", OrdinalString(SquadPtr->nameId), gStringMgr->GetString(TXT_SQUADRON));
+                    _stprintf(buffer, "%s %s", OrdinalString(SquadPtr->nameId),
+                              gStringMgr->GetString(TXT_SQUADRON));
                     btn = new C_Button;
                     btn->Setup(i + 1, C_TYPE_RADIO, 20, icony);
                     btn->SetGroup(-200);
@@ -559,7 +576,9 @@ void SetupMapSquadronWindow(int airbasex, int airbasey)
                     btn->SetColor(C_STATE_1, 0x00ff00);
                     btn->SetFlagBitOn(C_BIT_LEFT bitor C_BIT_USELINE);
                     btn->SetCallback(PickSquadronCB);
-                    btn->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_); // used in DeleteGameList to find records to remove
+                    btn->SetUserNumber(
+                        _UI95_DELGROUP_SLOT_,
+                        _UI95_DELGROUP_ID_); // used in DeleteGameList to find records to remove
                     btn->SetHelpText(HELP_PICK_SQUADRON);
                     btn->SetCursorID(CRSR_F16_ON);
                     win->AddControl(btn);
@@ -594,14 +613,19 @@ void LoadSquadronInfo()
     {
         // Need squadron info now
 
-        if (gSelectedSquadronID < 0 or gSelectedSquadronID >= TheCampaign.NumAvailSquadrons)
+        if (gSelectedSquadronID < 0 or
+            gSelectedSquadronID >= TheCampaign.NumAvailSquadrons)
         {
             // KCK: Pick a valid squadron with the lowest id.
             gSelectedSquadronID = -1;
 
             for (int i = 0; i < TheCampaign.NumAvailSquadrons; i++)
             {
-                if ((TheCampaign.IsValidSquadron(i) or _IsF16_) and (gSelectedSquadronID < 0 or TheCampaign.CampaignSquadronData[i].id.num_ < TheCampaign.CampaignSquadronData[gSelectedSquadronID].id.num_))
+                if ((TheCampaign.IsValidSquadron(i) or _IsF16_) and
+                    (gSelectedSquadronID < 0 or
+                     TheCampaign.CampaignSquadronData[i].id.num_ <
+                         TheCampaign.CampaignSquadronData[gSelectedSquadronID]
+                             .id.num_))
                     gSelectedSquadronID = i;
             }
         }
@@ -613,12 +637,15 @@ void LoadSquadronInfo()
 
         if (SquadPtr)
         {
-            UnitClassDataType* uc = (UnitClassDataType*)(Falcon4ClassTable[SquadPtr->dIndex].dataPtr);
-            VehicleClassDataType* vc = NULL;
+            UnitClassDataType *uc =
+                (UnitClassDataType *)(Falcon4ClassTable[SquadPtr->dIndex]
+                                          .dataPtr);
+            VehicleClassDataType *vc = NULL;
             ShiAssert(uc);
 
             if (uc)
-                vc = (VehicleClassDataType*)(Falcon4ClassTable[uc->VehicleType[0]].dataPtr);
+                vc = (VehicleClassDataType
+                          *)(Falcon4ClassTable[uc->VehicleType[0]].dataPtr);
 
             // Specialty
             txt = (C_Text *)win->FindControl(SPEC_FIELD);
@@ -633,29 +660,33 @@ void LoadSquadronInfo()
 
             if (txt and vc)
             {
-                if (CampSelMode == 2 and gCommsMgr and gCommsMgr->GetTargetGame())
+                if (CampSelMode == 2 and gCommsMgr and
+                    gCommsMgr->GetTargetGame())
                 {
                     // Online game - Count # of players
                     int players = 0;
                     FalconSessionEntity *session;
                     VuSessionsIterator sit(gCommsMgr->GetTargetGame());
 
-                    session = (FalconSessionEntity*) sit.GetFirst();
+                    session = (FalconSessionEntity *)sit.GetFirst();
 
                     while (session)
                     {
                         // WM 09-28-03  Display the number of players actually in the selected
                         //  squadron.  Not just the number of total players in the game.
-                        if (session->GetPlayerSquadronID()  and 
-                            session->GetPlayerSquadronID().num_ == SquadPtr->id.num_)
+                        if (session->GetPlayerSquadronID() and
+                            session->GetPlayerSquadronID().num_ ==
+                                SquadPtr->id.num_)
                             players++;
 
-                        session = (FalconSessionEntity*) sit.GetNext();
+                        session = (FalconSessionEntity *)sit.GetNext();
                     }
 
-                    _stprintf(buffer, "%1d %s, %1d %s", players, gStringMgr->GetString(TXT_PLAYERS), SquadPtr->currentStrength, vc->Name);
+                    _stprintf(buffer, "%1d %s, %1d %s", players,
+                              gStringMgr->GetString(TXT_PLAYERS),
+                              SquadPtr->currentStrength, vc->Name);
                 }
-                else if ( not CampSelMode)
+                else if (not CampSelMode)
                 {
                     // # of aircraft based on ratio setting for new games
                     int aircraft = 0, mv, i;
@@ -667,7 +698,8 @@ void LoadSquadronInfo()
                     _stprintf(buffer, "%d %s", aircraft, vc->Name);
                 }
                 else
-                    _stprintf(buffer, "%d %s", SquadPtr->currentStrength, vc->Name);
+                    _stprintf(buffer, "%d %s", SquadPtr->currentStrength,
+                              vc->Name);
 
                 txt->SetText(buffer);
                 txt->Refresh();
@@ -677,7 +709,8 @@ void LoadSquadronInfo()
 
             if (txt)
             {
-                _stprintf(buffer, "%s %s", OrdinalString(SquadPtr->nameId), gStringMgr->GetString(TXT_FS));
+                _stprintf(buffer, "%s %s", OrdinalString(SquadPtr->nameId),
+                          gStringMgr->GetString(TXT_FS));
                 txt->SetText(buffer);
             }
 
@@ -693,9 +726,10 @@ void LoadSquadronInfo()
 
             if (bmp)
             {
-                if ( not SquadPtr->squadronPatch)
+                if (not SquadPtr->squadronPatch)
                 {
-                    SquadPtr->squadronPatch = AssignUISquadronID(SquadPtr->nameId);
+                    SquadPtr->squadronPatch =
+                        AssignUISquadronID(SquadPtr->nameId);
                 }
 
                 bmp->SetImage(SquadronMatchIDs[SquadPtr->squadronPatch][0]);
@@ -733,25 +767,25 @@ static void CalcChallengeLevel()
 
             switch (TEMP_Settings.Challenge)
             {
-                case 1:
-                    lb->SetValue(CADET_LEVEL);
-                    break;
+            case 1:
+                lb->SetValue(CADET_LEVEL);
+                break;
 
-                case 2:
-                    lb->SetValue(ROOKIE_LEVEL);
-                    break;
+            case 2:
+                lb->SetValue(ROOKIE_LEVEL);
+                break;
 
-                case 3:
-                    lb->SetValue(VETERAN_LEVEL);
-                    break;
+            case 3:
+                lb->SetValue(VETERAN_LEVEL);
+                break;
 
-                case 4:
-                    lb->SetValue(ACE_LEVEL);
-                    break;
+            case 4:
+                lb->SetValue(ACE_LEVEL);
+                break;
 
-                default:
-                    lb->SetValue(RECRUIT_LEVEL);
-                    break;
+            default:
+                lb->SetValue(RECRUIT_LEVEL);
+                break;
             }
 
             lb->Refresh();
@@ -813,7 +847,6 @@ void LoadScenarioInfo()
             clk->SetTime(TheCampaign.CurrentTime / VU_TICS_PER_SECOND);
             clk->Refresh();
         }
-
     }
 
     SetupMapWindow();
@@ -864,7 +897,7 @@ void SelectScenarioButtons(long ID)
     if (win)
     {
         Leave = UI_Enter(win);
-        btn = (C_Button*)win->FindControl(CS_LOAD_SCENARIO1);
+        btn = (C_Button *)win->FindControl(CS_LOAD_SCENARIO1);
 
         if (btn)
         {
@@ -876,7 +909,7 @@ void SelectScenarioButtons(long ID)
             btn->Refresh();
         }
 
-        btn = (C_Button*)win->FindControl(CS_LOAD_SCENARIO2);
+        btn = (C_Button *)win->FindControl(CS_LOAD_SCENARIO2);
 
         if (btn)
         {
@@ -888,7 +921,7 @@ void SelectScenarioButtons(long ID)
             btn->Refresh();
         }
 
-        btn = (C_Button*)win->FindControl(CS_LOAD_SCENARIO3);
+        btn = (C_Button *)win->FindControl(CS_LOAD_SCENARIO3);
 
         if (btn)
         {
@@ -917,23 +950,23 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
 
     switch (ID)
     {
-        case CS_LOAD_SCENARIO1:
-            strcpy(gUI_CampaignFile, "save0");
-            _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_1));
-            break;
+    case CS_LOAD_SCENARIO1:
+        strcpy(gUI_CampaignFile, "save0");
+        _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_1));
+        break;
 
-        case CS_LOAD_SCENARIO2:
-            strcpy(gUI_CampaignFile, "save1");
-            _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_2));
-            break;
+    case CS_LOAD_SCENARIO2:
+        strcpy(gUI_CampaignFile, "save1");
+        _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_2));
+        break;
 
-        case CS_LOAD_SCENARIO3:
-            strcpy(gUI_CampaignFile, "save2");
-            _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_3));
-            break;
+    case CS_LOAD_SCENARIO3:
+        strcpy(gUI_CampaignFile, "save2");
+        _tcscpy(gUI_ScenarioName, gStringMgr->GetString(TXT_SCENARIO_3));
+        break;
 
-        default:
-            return;
+    default:
+        return;
     }
 
     TheCampaign.LoadScenarioStats(game_Campaign, gUI_CampaignFile);
@@ -942,7 +975,9 @@ void SelectScenarioCB(long ID, short hittype, C_Base *control)
 
     for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
     {
-        if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
+        if (TheCampaign.CampaignSquadronData[i].id ==
+                TheCampaign.PlayerSquadronID and
+            (TheCampaign.IsValidSquadron(i) or _IsF16_))
             gSelectedSquadronID = i;
     }
 
@@ -978,7 +1013,7 @@ void RecieveScenarioInfo()
 {
     _TCHAR *name;
     int i;
-    VuGameEntity * game;
+    VuGameEntity *game;
 
     if (gMainHandler == NULL)
         return;
@@ -1003,7 +1038,9 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id ==
+                    TheCampaign.PlayerSquadronID and
+                (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 
@@ -1024,7 +1061,9 @@ void RecieveScenarioInfo()
 
         for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
         {
-            if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID and (TheCampaign.IsValidSquadron(i) or _IsF16_))
+            if (TheCampaign.CampaignSquadronData[i].id ==
+                    TheCampaign.PlayerSquadronID and
+                (TheCampaign.IsValidSquadron(i) or _IsF16_))
                 gSelectedSquadronID = i;
         }
 
@@ -1075,11 +1114,13 @@ static void CommitCB(long, short hittype, C_Base *)
     SetCursor(gCursors[CRSR_WAIT]);
     LoadCampaignWindows();
 
-    if ( not TheCampaign.CampaignSquadronData)
+    if (not TheCampaign.CampaignSquadronData)
         return;
 
-    FalconLocalSession->SetCountry(TheCampaign.CampaignSquadronData[gSelectedSquadronID].country);
-    gPlayerSquadronId = TheCampaign.CampaignSquadronData[gSelectedSquadronID].id;
+    FalconLocalSession->SetCountry(
+        TheCampaign.CampaignSquadronData[gSelectedSquadronID].country);
+    gPlayerSquadronId =
+        TheCampaign.CampaignSquadronData[gSelectedSquadronID].id;
 
     if (CampSelMode not_eq 2)
     {
@@ -1091,9 +1132,9 @@ static void CommitCB(long, short hittype, C_Base *)
     else
     {
         // Join a Campaign
-        game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+        game = (FalconGameEntity *)gCommsMgr->GetTargetGame();
 
-        if ( not game)
+        if (not game)
             return;
 
         if (game not_eq FalconLocalGame)
@@ -1102,7 +1143,7 @@ static void CommitCB(long, short hittype, C_Base *)
 
             if (win)
             {
-                ebox = (C_EditBox*)win->FindControl(INFO_PASSWORD);
+                ebox = (C_EditBox *)win->FindControl(INFO_PASSWORD);
 
                 if (ebox)
                 {
@@ -1128,7 +1169,7 @@ static void CommsCommitCB(long ID, short hittype, C_Base *control)
     if (TheCampaign.NumAvailSquadrons < 1)
         return;
 
-    if ( not gCommsMgr->Online())
+    if (not gCommsMgr->Online())
         return;
 
     CommitCB(ID, hittype, control); // Do rest of NORMAL Commit button
@@ -1156,14 +1197,14 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
 {
     C_TreeList *tree;
     TREELIST *item;
-    C_Button   *btn;
+    C_Button *btn;
 
     int i;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)control;
+    tree = (C_TreeList *)control;
 
     if (tree)
     {
@@ -1171,7 +1212,7 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
 
         if (item)
         {
-            btn = (C_Button*)item->Item_;
+            btn = (C_Button *)item->Item_;
 
             if (btn)
             {
@@ -1180,13 +1221,15 @@ static void LoadCampaignFileCB(long, short hittype, C_Base *control)
                 tree->Refresh();
                 _tcscpy(gUI_CampaignFile, btn->GetText(C_STATE_0));
                 // MN 2002-02-04 removed ".cam" to be able to also delete .his .frc-files
-                _stprintf(gLastCampFilename, "%s\\%s", FalconCampUserSaveDirectory, gUI_CampaignFile);
+                _stprintf(gLastCampFilename, "%s/%s",
+                          FalconCampUserSaveDirectory, gUI_CampaignFile);
                 TheCampaign.LoadScenarioStats(game_Campaign, gUI_CampaignFile);
 
                 // Pick the last selected squadron
                 for (i = 0; i < TheCampaign.NumAvailSquadrons; i++)
                 {
-                    if (TheCampaign.CampaignSquadronData[i].id == TheCampaign.PlayerSquadronID)
+                    if (TheCampaign.CampaignSquadronData[i].id ==
+                        TheCampaign.PlayerSquadronID)
                         gSelectedSquadronID = i;
                 }
 
@@ -1208,34 +1251,34 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
 
     switch (ID)
     {
-        case CS_NEW_CTRL:
-            if ( not CampSelMode)
+    case CS_NEW_CTRL:
+        if (not CampSelMode)
+            return;
+
+        break;
+
+    case CS_LOAD_CTRL:
+
+        //dpc CampSavedWindowRefreshHack
+        //Enable refresh of Campaign load menu if CAMP.SAVED TAB is clicked.
+        //This is a hack to enable user to refresh saved campaign list manually.
+        //Ideally after exiting Campaing to Main UI this list should be refreshed automatically
+        //and last played campaign selected. This is a compromise solution - last
+        //choosen campaign is selected but user has to refresh list manually.
+        if (not g_bCampSavedMenuHack)
+        {
+            if (CampSelMode == 1)
                 return;
+        }
 
-            break;
+        //end CampSavedWindowRefreshHack
+        break;
 
-        case CS_LOAD_CTRL:
+    case CS_JOIN_CTRL:
+        if (CampSelMode == 2)
+            return;
 
-            //dpc CampSavedWindowRefreshHack
-            //Enable refresh of Campaign load menu if CAMP.SAVED TAB is clicked.
-            //This is a hack to enable user to refresh saved campaign list manually.
-            //Ideally after exiting Campaing to Main UI this list should be refreshed automatically
-            //and last played campaign selected. This is a compromise solution - last
-            //choosen campaign is selected but user has to refresh list manually.
-            if ( not g_bCampSavedMenuHack)
-            {
-                if (CampSelMode == 1)
-                    return;
-            }
-
-            //end CampSavedWindowRefreshHack
-            break;
-
-        case CS_JOIN_CTRL:
-            if (CampSelMode == 2)
-                return;
-
-            break;
+        break;
     }
 
     SelectScenarioButtons(0); // Unselect any Scenario
@@ -1254,44 +1297,44 @@ void SetCampaignSelectCB(long ID, short hittype, C_Base *control)
 
     switch (ID)
     {
-        case CS_NEW_CTRL:
-            CampSelMode = 0;
-            break;
+    case CS_NEW_CTRL:
+        CampSelMode = 0;
+        break;
 
-        case CS_LOAD_CTRL:
-            CampSelMode = 1;
-            tree = (C_TreeList*)control->Parent_->FindControl(FILELIST_TREE);
+    case CS_LOAD_CTRL:
+        CampSelMode = 1;
+        tree = (C_TreeList *)control->Parent_->FindControl(FILELIST_TREE);
 
-            if (tree)
-            {
-                tree->DeleteBranch(tree->GetRoot());
-                tree->SetUserNumber(0, 1);
-                tree->SetSortType(TREE_SORT_CALLBACK);
-                tree->SetSortCallback(FileNameSortCB);
-                tree->SetCallback(LoadCampaignFileCB);
-                char path[_MAX_PATH];
-                sprintf(path, "%s\\*.cam", FalconCampaignSaveDirectory);
-                GetFileListTree(tree, path, CampExcludeList, C_TYPE_ITEM, TRUE, 0);
-                tree->RecalcSize();
+        if (tree)
+        {
+            tree->DeleteBranch(tree->GetRoot());
+            tree->SetUserNumber(0, 1);
+            tree->SetSortType(TREE_SORT_CALLBACK);
+            tree->SetSortCallback(FileNameSortCB);
+            tree->SetCallback(LoadCampaignFileCB);
+            char path[_MAX_PATH];
+            sprintf(path, "%s/*.cam", FalconCampaignSaveDirectory);
+            GetFileListTree(tree, path, CampExcludeList, C_TYPE_ITEM, TRUE, 0);
+            tree->RecalcSize();
 
-                if (tree->Parent_)
-                    tree->Parent_->RefreshClient(tree->GetClient());
-            }
+            if (tree->Parent_)
+                tree->Parent_->RefreshClient(tree->GetClient());
+        }
 
-            break;
+        break;
 
-        case CS_JOIN_CTRL:
-            CampSelMode = 2;
+    case CS_JOIN_CTRL:
+        CampSelMode = 2;
 
-            if ( not gCommsMgr->Online())
-            {
-                win = gMainHandler->FindWindow(PB_WIN);
+        if (not gCommsMgr->Online())
+        {
+            win = gMainHandler->FindWindow(PB_WIN);
 
-                if (win)
-                    gMainHandler->EnableWindowGroup(win->GetGroup());
-            }
+            if (win)
+                gMainHandler->EnableWindowGroup(win->GetGroup());
+        }
 
-            break;
+        break;
     }
 
     win = gMainHandler->FindWindow(CHALLENGE_WIN);
@@ -1359,13 +1402,15 @@ static void CampSelectGameCB(long, short hittype, C_Base *control)
     SetCursor(gCursors[CRSR_WAIT]);
     item = ((C_TreeList *)control)->GetLastItem();
 
-    if (item == NULL) return;
+    if (item == NULL)
+        return;
 
-    if (item->Item_ == NULL) return;
+    if (item->Item_ == NULL)
+        return;
 
     if (item->Type_ == C_TYPE_MENU)
     {
-        if ( not item->Item_->GetState())
+        if (not item->Item_->GetState())
         {
             item->Item_->SetState(1);
             item->Item_->Refresh();
@@ -1373,13 +1418,14 @@ static void CampSelectGameCB(long, short hittype, C_Base *control)
 
             if (tmpID)
             {
-                game = (FalconGameEntity*) vuDatabase->Find(*tmpID);
+                game = (FalconGameEntity *)vuDatabase->Find(*tmpID);
                 gCommsMgr->LookAtGame(game);
 
                 if (game)
                 {
                     if (game->GetGameType() == game_Campaign)
-                        SendMessage(gMainHandler->GetAppWnd(), FM_JOIN_CAMPAIGN, JOIN_PRELOAD_ONLY, game_Campaign);
+                        SendMessage(gMainHandler->GetAppWnd(), FM_JOIN_CAMPAIGN,
+                                    JOIN_PRELOAD_ONLY, game_Campaign);
                 }
             }
         }
@@ -1414,25 +1460,25 @@ static void SetCampaignLevels()
 
             switch (TEMP_Settings.Challenge)
             {
-                case 1:
-                    lb->SetValue(CADET_LEVEL);
-                    break;
+            case 1:
+                lb->SetValue(CADET_LEVEL);
+                break;
 
-                case 2:
-                    lb->SetValue(ROOKIE_LEVEL);
-                    break;
+            case 2:
+                lb->SetValue(ROOKIE_LEVEL);
+                break;
 
-                case 3:
-                    lb->SetValue(VETERAN_LEVEL);
-                    break;
+            case 3:
+                lb->SetValue(VETERAN_LEVEL);
+                break;
 
-                case 4:
-                    lb->SetValue(ACE_LEVEL);
-                    break;
+            case 4:
+                lb->SetValue(ACE_LEVEL);
+                break;
 
-                default:
-                    lb->SetValue(RECRUIT_LEVEL);
-                    break;
+            default:
+                lb->SetValue(RECRUIT_LEVEL);
+                break;
             }
 
             lb->Refresh();
@@ -1446,25 +1492,25 @@ static void SetCampaignLevels()
 
             switch (TEMP_Settings.PilotSkill)
             {
-                case 1:
-                    lb->SetValue(CADET_LEVEL);
-                    break;
+            case 1:
+                lb->SetValue(CADET_LEVEL);
+                break;
 
-                case 2:
-                    lb->SetValue(ROOKIE_LEVEL);
-                    break;
+            case 2:
+                lb->SetValue(ROOKIE_LEVEL);
+                break;
 
-                case 3:
-                    lb->SetValue(VETERAN_LEVEL);
-                    break;
+            case 3:
+                lb->SetValue(VETERAN_LEVEL);
+                break;
 
-                case 4:
-                    lb->SetValue(ACE_LEVEL);
-                    break;
+            case 4:
+                lb->SetValue(ACE_LEVEL);
+                break;
 
-                default:
-                    lb->SetValue(RECRUIT_LEVEL);
-                    break;
+            default:
+                lb->SetValue(RECRUIT_LEVEL);
+                break;
             }
 
             lb->Refresh();
@@ -1478,25 +1524,25 @@ static void SetCampaignLevels()
 
             switch (TEMP_Settings.SAMSkill)
             {
-                case 1:
-                    lb->SetValue(CADET_LEVEL);
-                    break;
+            case 1:
+                lb->SetValue(CADET_LEVEL);
+                break;
 
-                case 2:
-                    lb->SetValue(ROOKIE_LEVEL);
-                    break;
+            case 2:
+                lb->SetValue(ROOKIE_LEVEL);
+                break;
 
-                case 3:
-                    lb->SetValue(VETERAN_LEVEL);
-                    break;
+            case 3:
+                lb->SetValue(VETERAN_LEVEL);
+                break;
 
-                case 4:
-                    lb->SetValue(ACE_LEVEL);
-                    break;
+            case 4:
+                lb->SetValue(ACE_LEVEL);
+                break;
 
-                default:
-                    lb->SetValue(RECRUIT_LEVEL);
-                    break;
+            default:
+                lb->SetValue(RECRUIT_LEVEL);
+                break;
             }
 
             lb->Refresh();
@@ -1507,7 +1553,9 @@ static void SetCampaignLevels()
         if (sldr)
         {
             sldr->Refresh();
-            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) * TEMP_Settings.AirForces) / 4;
+            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) *
+                   TEMP_Settings.AirForces) /
+                  4;
             sldr->SetSliderPos(val + sldr->GetSliderMin());
             sldr->Refresh();
         }
@@ -1517,7 +1565,9 @@ static void SetCampaignLevels()
         if (sldr)
         {
             sldr->Refresh();
-            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) * TEMP_Settings.AirDefenses) / 4;
+            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) *
+                   TEMP_Settings.AirDefenses) /
+                  4;
             sldr->SetSliderPos(val + sldr->GetSliderMin());
             sldr->Refresh();
         }
@@ -1527,7 +1577,9 @@ static void SetCampaignLevels()
         if (sldr)
         {
             sldr->Refresh();
-            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) * TEMP_Settings.GroundForces) / 4;
+            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) *
+                   TEMP_Settings.GroundForces) /
+                  4;
             sldr->SetSliderPos(val + sldr->GetSliderMin());
             sldr->Refresh();
         }
@@ -1537,7 +1589,9 @@ static void SetCampaignLevels()
         if (sldr)
         {
             sldr->Refresh();
-            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) * TEMP_Settings.NavalForces) / 4;
+            val = ((sldr->GetSliderMax() - sldr->GetSliderMin()) *
+                   TEMP_Settings.NavalForces) /
+                  4;
             sldr->SetSliderPos(val + sldr->GetSliderMin());
             sldr->Refresh();
         }
@@ -1546,15 +1600,21 @@ static void SetCampaignLevels()
 
 void CopySettingsToTemp(void)
 {
-    if ( not CampSelMode)
+    if (not CampSelMode)
     {
-        TEMP_Settings.PilotSkill = static_cast<uchar>(PlayerOptions.CampaignEnemyAirExperience());
-        TEMP_Settings.SAMSkill = static_cast<uchar>(PlayerOptions.CampaignEnemyGroundExperience());
+        TEMP_Settings.PilotSkill =
+            static_cast<uchar>(PlayerOptions.CampaignEnemyAirExperience());
+        TEMP_Settings.SAMSkill =
+            static_cast<uchar>(PlayerOptions.CampaignEnemyGroundExperience());
 
-        TEMP_Settings.AirForces = static_cast<uchar>(PlayerOptions.CampaignAirRatio());
-        TEMP_Settings.AirDefenses = static_cast<uchar>(PlayerOptions.CampaignAirDefenseRatio());
-        TEMP_Settings.GroundForces = static_cast<uchar>(PlayerOptions.CampaignGroundRatio());
-        TEMP_Settings.NavalForces = static_cast<uchar>(PlayerOptions.CampaignNavalRatio());
+        TEMP_Settings.AirForces =
+            static_cast<uchar>(PlayerOptions.CampaignAirRatio());
+        TEMP_Settings.AirDefenses =
+            static_cast<uchar>(PlayerOptions.CampaignAirDefenseRatio());
+        TEMP_Settings.GroundForces =
+            static_cast<uchar>(PlayerOptions.CampaignGroundRatio());
+        TEMP_Settings.NavalForces =
+            static_cast<uchar>(PlayerOptions.CampaignNavalRatio());
     }
     else
     {
@@ -1562,8 +1622,10 @@ void CopySettingsToTemp(void)
         TEMP_Settings.SAMSkill = TheCampaign.EnemyADExp;
 
         TEMP_Settings.AirForces = static_cast<uchar>(TheCampaign.AirRatio);
-        TEMP_Settings.AirDefenses = static_cast<uchar>(TheCampaign.AirDefenseRatio);
-        TEMP_Settings.GroundForces = static_cast<uchar>(TheCampaign.GroundRatio);
+        TEMP_Settings.AirDefenses =
+            static_cast<uchar>(TheCampaign.AirDefenseRatio);
+        TEMP_Settings.GroundForces =
+            static_cast<uchar>(TheCampaign.GroundRatio);
         TEMP_Settings.NavalForces = static_cast<uchar>(TheCampaign.NavalRatio);
     }
 }
@@ -1575,80 +1637,80 @@ static void ChallengeLevelCB(long, short hittype, C_Base *control)
 
     switch (((C_ListBox *)control)->GetTextID())
     {
-        case ACE_LEVEL:
-            TEMP_Settings.Challenge = 4;
-            TEMP_Settings.PilotSkill = 4;
-            TEMP_Settings.SAMSkill = 4;
+    case ACE_LEVEL:
+        TEMP_Settings.Challenge = 4;
+        TEMP_Settings.PilotSkill = 4;
+        TEMP_Settings.SAMSkill = 4;
 
-            if ( not CampSelMode)
-            {
-                TEMP_Settings.AirForces = 0;
-                TEMP_Settings.AirDefenses = 0;
-                TEMP_Settings.GroundForces = 0;
-                TEMP_Settings.NavalForces = 0;
-            }
+        if (not CampSelMode)
+        {
+            TEMP_Settings.AirForces = 0;
+            TEMP_Settings.AirDefenses = 0;
+            TEMP_Settings.GroundForces = 0;
+            TEMP_Settings.NavalForces = 0;
+        }
 
-            break;
+        break;
 
-        case VETERAN_LEVEL:
-            TEMP_Settings.Challenge = 3;
-            TEMP_Settings.PilotSkill = 3;
-            TEMP_Settings.SAMSkill = 3;
+    case VETERAN_LEVEL:
+        TEMP_Settings.Challenge = 3;
+        TEMP_Settings.PilotSkill = 3;
+        TEMP_Settings.SAMSkill = 3;
 
-            if ( not CampSelMode)
-            {
-                TEMP_Settings.AirForces = 1;
-                TEMP_Settings.AirDefenses = 1;
-                TEMP_Settings.GroundForces = 1;
-                TEMP_Settings.NavalForces = 1;
-            }
+        if (not CampSelMode)
+        {
+            TEMP_Settings.AirForces = 1;
+            TEMP_Settings.AirDefenses = 1;
+            TEMP_Settings.GroundForces = 1;
+            TEMP_Settings.NavalForces = 1;
+        }
 
-            break;
+        break;
 
-        case ROOKIE_LEVEL:
-            TEMP_Settings.Challenge = 2;
-            TEMP_Settings.PilotSkill = 2;
-            TEMP_Settings.SAMSkill = 2;
+    case ROOKIE_LEVEL:
+        TEMP_Settings.Challenge = 2;
+        TEMP_Settings.PilotSkill = 2;
+        TEMP_Settings.SAMSkill = 2;
 
-            if ( not CampSelMode)
-            {
-                TEMP_Settings.AirForces = 2;
-                TEMP_Settings.AirDefenses = 2;
-                TEMP_Settings.GroundForces = 2;
-                TEMP_Settings.NavalForces = 2;
-            }
+        if (not CampSelMode)
+        {
+            TEMP_Settings.AirForces = 2;
+            TEMP_Settings.AirDefenses = 2;
+            TEMP_Settings.GroundForces = 2;
+            TEMP_Settings.NavalForces = 2;
+        }
 
-            break;
+        break;
 
-        case CADET_LEVEL:
-            TEMP_Settings.Challenge = 1;
-            TEMP_Settings.PilotSkill = 1;
-            TEMP_Settings.SAMSkill = 1;
+    case CADET_LEVEL:
+        TEMP_Settings.Challenge = 1;
+        TEMP_Settings.PilotSkill = 1;
+        TEMP_Settings.SAMSkill = 1;
 
-            if ( not CampSelMode)
-            {
-                TEMP_Settings.AirForces = 3;
-                TEMP_Settings.AirDefenses = 3;
-                TEMP_Settings.GroundForces = 3;
-                TEMP_Settings.NavalForces = 3;
-            }
+        if (not CampSelMode)
+        {
+            TEMP_Settings.AirForces = 3;
+            TEMP_Settings.AirDefenses = 3;
+            TEMP_Settings.GroundForces = 3;
+            TEMP_Settings.NavalForces = 3;
+        }
 
-            break;
+        break;
 
-        default:
-            TEMP_Settings.Challenge = 0;
-            TEMP_Settings.PilotSkill = 0;
-            TEMP_Settings.SAMSkill = 0;
+    default:
+        TEMP_Settings.Challenge = 0;
+        TEMP_Settings.PilotSkill = 0;
+        TEMP_Settings.SAMSkill = 0;
 
-            if ( not CampSelMode)
-            {
-                TEMP_Settings.AirForces = 4;
-                TEMP_Settings.AirDefenses = 4;
-                TEMP_Settings.GroundForces = 4;
-                TEMP_Settings.NavalForces = 4;
-            }
+        if (not CampSelMode)
+        {
+            TEMP_Settings.AirForces = 4;
+            TEMP_Settings.AirDefenses = 4;
+            TEMP_Settings.GroundForces = 4;
+            TEMP_Settings.NavalForces = 4;
+        }
 
-            break;
+        break;
     }
 
     SetCampaignLevels();
@@ -1684,7 +1746,7 @@ void CampDelFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(CS_SELECT_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
@@ -1693,7 +1755,8 @@ void CampDelFileCB(long, short hittype, C_Base *control)
     _TCHAR filename[MAX_PATH];
     _stprintf(filename, "%s.cam", gLastCampFilename);
 
-    if ( not CheckExclude(filename, FalconCampUserSaveDirectory, CampExcludeList, "cam"))
+    if (not CheckExclude(filename, FalconCampUserSaveDirectory, CampExcludeList,
+                         "cam"))
     {
         DeleteFile(filename); // .cam file
         _stprintf(filename, "%s.his", gLastCampFilename);
@@ -1703,12 +1766,12 @@ void CampDelFileCB(long, short hittype, C_Base *control)
         gLastCampFilename[0] = 0;
     }
 
-    tree = (C_TreeList*)win->FindControl(FILELIST_TREE);
+    tree = (C_TreeList *)win->FindControl(FILELIST_TREE);
 
     if (tree)
     {
         char path[_MAX_PATH];
-        sprintf(path, "%s\\*.cam", FalconCampaignSaveDirectory);
+        sprintf(path, "%s/*.cam", FalconCampaignSaveDirectory);
         tree->DeleteBranch(tree->GetRoot());
         GetFileListTree(tree, path, CampExcludeList, C_TYPE_ITEM, TRUE, 0);
         tree->RecalcSize();
@@ -1738,36 +1801,36 @@ static void SetSkillSettingsCB(long ID, short hittype, C_Base *control)
 
     switch (((C_ListBox *)control)->GetTextID())
     {
-        case CADET_LEVEL:
-            value = 1;
-            break;
+    case CADET_LEVEL:
+        value = 1;
+        break;
 
-        case ROOKIE_LEVEL:
-            value = 2;
-            break;
+    case ROOKIE_LEVEL:
+        value = 2;
+        break;
 
-        case VETERAN_LEVEL:
-            value = 3;
-            break;
+    case VETERAN_LEVEL:
+        value = 3;
+        break;
 
-        case ACE_LEVEL:
-            value = 4;
-            break;
+    case ACE_LEVEL:
+        value = 4;
+        break;
 
-        default:
-            value = 0;
-            break;
+    default:
+        value = 0;
+        break;
     }
 
     switch (ID)
     {
-        case PILOT_SKILL:
-            TEMP_Settings.PilotSkill = value;
-            break;
+    case PILOT_SKILL:
+        TEMP_Settings.PilotSkill = value;
+        break;
 
-        case SAM_SKILL:
-            TEMP_Settings.SAMSkill = value;
-            break;
+    case SAM_SKILL:
+        TEMP_Settings.SAMSkill = value;
+        break;
     }
 
     CalcChallengeLevel();
@@ -1783,35 +1846,35 @@ static void SetSliderSettingsCB(long ID, short hittype, C_Base *control)
 
     sldr = (C_Slider *)control;
 
-    val  = (sldr->GetSliderPos() - sldr->GetSliderMin()) * 4;
+    val = (sldr->GetSliderPos() - sldr->GetSliderMin()) * 4;
     val /= (sldr->GetSliderMax() - sldr->GetSliderMin());
 
     switch (ID)
     {
-        case BAR_1_SCROLL:
-            if (val not_eq TEMP_Settings.AirForces)
-            {
-                TEMP_Settings.AirForces = static_cast<uchar>(val);
-                // Force the aircraft field to update
-                LoadSquadronInfo();
-            }
+    case BAR_1_SCROLL:
+        if (val not_eq TEMP_Settings.AirForces)
+        {
+            TEMP_Settings.AirForces = static_cast<uchar>(val);
+            // Force the aircraft field to update
+            LoadSquadronInfo();
+        }
 
-            break;
+        break;
 
-        case BAR_2_SCROLL:
-            TEMP_Settings.AirDefenses = static_cast<uchar>(val);
-            break;
+    case BAR_2_SCROLL:
+        TEMP_Settings.AirDefenses = static_cast<uchar>(val);
+        break;
 
-        case BAR_3_SCROLL:
-            TEMP_Settings.GroundForces = static_cast<uchar>(val);
-            break;
+    case BAR_3_SCROLL:
+        TEMP_Settings.GroundForces = static_cast<uchar>(val);
+        break;
 
-        case BAR_4_SCROLL:
-            TEMP_Settings.NavalForces = static_cast<uchar>(val);
-            break;
+    case BAR_4_SCROLL:
+        TEMP_Settings.NavalForces = static_cast<uchar>(val);
+        break;
 
-        default:
-            return;
+    default:
+        return;
     }
 
     CalcChallengeLevel();
@@ -1831,7 +1894,7 @@ static void UseChallengeSettingsCB(long, short hittype, C_Base *control)
         PlayerOptions.SetCampEnemyGroundExperience(TEMP_Settings.SAMSkill);
     }
 
-    if ( not CampSelMode)
+    if (not CampSelMode)
     {
         PlayerOptions.SetCampAirRatio(TEMP_Settings.AirForces);
         PlayerOptions.SetCampAirDefenseRatio(TEMP_Settings.AirDefenses);
@@ -2011,7 +2074,7 @@ static void HookupCampaignSelectControls(long ID)
     }
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
@@ -2037,8 +2100,7 @@ static void JoinStatusCancelCB(long, short hittype, C_Base *control)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static int
-join_status_bits = 0;
+static int join_status_bits = 0;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -2076,16 +2138,13 @@ static void UpdateJoinStatusWindow (C_Window *win)
 
 void DisplayJoinStatusWindow(int bits)
 {
-    static long
-    last_id;
+    static long last_id;
 
-    long
-    id = 0;//uninitialized
+    long id = 0; //uninitialized
 
-    C_Window
-    *win;
+    C_Window *win;
 
-    if (( not gCommsMgr->Online()) or (FalconLocalGame->IsLocal()))
+    if ((not gCommsMgr->Online()) or (FalconLocalGame->IsLocal()))
     {
         return;
     }
@@ -2106,31 +2165,31 @@ void DisplayJoinStatusWindow(int bits)
 
     switch (bits)
     {
-        case CAMP_GAME_FULL:
-            id = TXT_GAME_IS_OVER;
-            break;
+    case CAMP_GAME_FULL:
+        id = TXT_GAME_IS_OVER;
+        break;
 
-        case 0:
-        case CAMP_NEED_PRELOAD:
-            id = TXT_JOIN_STARTING;
-            break;
+    case 0:
+    case CAMP_NEED_PRELOAD:
+        id = TXT_JOIN_STARTING;
+        break;
 
-        case CAMP_NEED_ENTITIES:
-        case CAMP_NEED_WEATHER:
-            id = TXT_JOIN_WEATHER;
-            break;
+    case CAMP_NEED_ENTITIES:
+    case CAMP_NEED_WEATHER:
+        id = TXT_JOIN_WEATHER;
+        break;
 
-        case CAMP_NEED_PERSIST:
-        case CAMP_NEED_OBJ_DELTAS:
-            id = TXT_JOIN_OBJECTS;
-            break;
+    case CAMP_NEED_PERSIST:
+    case CAMP_NEED_OBJ_DELTAS:
+        id = TXT_JOIN_OBJECTS;
+        break;
 
-        case CAMP_NEED_TEAM_DATA:
-        case CAMP_NEED_UNIT_DATA:
-        case CAMP_NEED_VC:
-        case CAMP_NEED_PRIORITIES:
-            id = TXT_JOIN_UNITS;
-            break;
+    case CAMP_NEED_TEAM_DATA:
+    case CAMP_NEED_UNIT_DATA:
+    case CAMP_NEED_VC:
+    case CAMP_NEED_PRIORITIES:
+        id = TXT_JOIN_UNITS;
+        break;
     }
 
     if (id not_eq last_id)

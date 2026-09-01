@@ -2,39 +2,40 @@
 #define _SIMBASE_H
 
 #include <iso646.h>
-#include "FalcLib/include/f4vu.h"
-#include "Falclib/include/FalcEnt.h"
+#include "falclib/include/f4vu.h"
+#include "falclib/include/falcent.h"
 #include "geometry.h"
-#include "Falclib/include/camp2sim.h"
-#include "Falclib/include/fsound.h"
+#include "falclib/include/camp2sim.h"
+#include "falclib/include/fsound.h"
 //#include "Simdrive.h"
 #include "initdata.h"
 
 // Flags used to convey special data
 //NOTE top 16 bits are used for motion type
-#define VIS_TYPE_MASK      0x7
-#define RADAR_ON           0x1
-#define ECM_ON             0x2
-#define AIR_BRAKES_OUT     0x4 // Should really be a position value, not a bit, but for now...
-#define CANOPY_OPEN        0x8
-#define OBJ_EXPLODING      0x10
-#define OBJ_DEAD           0x20
-#define OBJ_FIRING_GUN     0x40
-#define ON_GROUND          0x80
-#define SHOW_EXPLOSION     0x100
+#define VIS_TYPE_MASK 0x7
+#define RADAR_ON 0x1
+#define ECM_ON 0x2
+#define AIR_BRAKES_OUT                                                         \
+    0x4 // Should really be a position value, not a bit, but for now...
+#define CANOPY_OPEN 0x8
+#define OBJ_EXPLODING 0x10
+#define OBJ_DEAD 0x20
+#define OBJ_FIRING_GUN 0x40
+#define ON_GROUND 0x80
+#define SHOW_EXPLOSION 0x100
 #define IN_PERSISTANT_LIST 0x200
-#define OBJ_DYING          0x400
+#define OBJ_DYING 0x400
 //#define PILOT_EJECTED      0x800
-#define I_AM_A_TANKER      0x1000
-#define IS_LASED           0x2000
-#define HAS_MISSILES       0x4000
+#define I_AM_A_TANKER 0x1000
+#define IS_LASED 0x2000
+#define HAS_MISSILES 0x4000
 //#define AVAILABLE        0x8000
 
 // Local flags
-#define OBJ_AWAKE          0x01
-#define REMOVE_NEXT_FRAME  0x02
-#define NOT_LABELED        0x04
-#define IS_HIDDEN          0x08
+#define OBJ_AWAKE 0x01
+#define REMOVE_NEXT_FRAME 0x02
+#define NOT_LABELED 0x04
+#define IS_HIDDEN 0x08
 
 class SimBaseSpecialData
 {
@@ -103,6 +104,7 @@ private:
     // sfr: @todo protect this special data
 public:
     SimBaseSpecialData specialData;
+
 private:
     int dirty_simbase;
 
@@ -116,8 +118,10 @@ protected:
     float sfxTimer;
     long lastDamageTime;
     long explosionTimer;
-    VU_ID lastShooter; // KCK: replaces vu's lastShooter - Last person to hit this entity
-    VU_TIME lastChaff, lastFlare; // When will the most recently dropped counter-measures expire?
+    VU_ID
+    lastShooter; // KCK: replaces vu's lastShooter - Last person to hit this entity
+    VU_TIME lastChaff,
+        lastFlare; // When will the most recently dropped counter-measures expire?
     long campaignFlags;
     uchar localFlags; // Don't transmit these, or else..
 
@@ -125,7 +129,7 @@ public:
     long timeOfDeath;
     float pctStrength;
     TransformMatrix dmx;
-    DrawableObject* drawPointer;
+    DrawableObject *drawPointer;
     char displayPriority;
     ObjectGeometry platformAngles;
     SimBaseNonLocalData *nonLocalData;
@@ -146,14 +150,16 @@ public:
 
     //Functions
     SimBaseClass(ushort type);
-    SimBaseClass(VU_BYTE** stream,  long *rem);
-    SimBaseClass(FILE* filePtr);
+    SimBaseClass(VU_BYTE **stream, long *rem);
+    SimBaseClass(FILE *filePtr);
     virtual ~SimBaseClass();
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
+
 public:
     virtual bool IsSimBase()
     {
@@ -226,11 +232,11 @@ public:
     {
         return localFlags bitand OBJ_AWAKE;
     }
-    int  IsSetFlag(int flag) const
+    int IsSetFlag(int flag) const
     {
         return ((specialData.flags bitand flag) ? TRUE : FALSE);
     }
-    int  IsSetLocalFlag(int flag) const
+    int IsSetLocalFlag(int flag) const
     {
         return ((localFlags bitand flag) ? TRUE : FALSE);
     }
@@ -240,9 +246,9 @@ public:
     }
     void UnSetLocalFlag(int flag)
     {
-        localFlags and_eq compl (flag);
+        localFlags and_eq compl(flag);
     }
-    int  IsSetCampaignFlag(int flag) const
+    int IsSetCampaignFlag(int flag) const
     {
         return ((campaignFlags bitand flag) ? TRUE : FALSE);
     }
@@ -252,7 +258,7 @@ public:
     }
     void UnSetCampaignFlag(int flag)
     {
-        campaignFlags and_eq compl (flag);
+        campaignFlags and_eq compl(flag);
     }
     int IsSetRemoveFlag() const
     {
@@ -384,26 +390,37 @@ public:
     void SetRdrCycleTime(float cycle);
     void SetRdrRng(float rng);
     void SetAfterburnerStage(int s);
-    virtual void Init(SimInitDataClass* initData);
+    virtual void Init(SimInitDataClass *initData);
     virtual int Exec(void)
     {
         return TRUE;
     };
-    virtual void GetTransform(TransformMatrix) {};
+    virtual void GetTransform(TransformMatrix){};
     virtual void ApplyDamage(FalconDamageMessage *damageMessage);
     virtual void ApplyDeathMessage(FalconDeathMessage *deathMessage);
     virtual void SetDead(int);
-    virtual void MakePlayerVehicle() {}
-    virtual void MakeNonPlayerVehicle() {}
-    virtual void ConfigurePlayerAvionics() {}
-    virtual void SetVuPosition() {}
-    virtual void Regenerate(float, float, float, float) {}
+    virtual void MakePlayerVehicle()
+    {
+    }
+    virtual void MakeNonPlayerVehicle()
+    {
+    }
+    virtual void ConfigurePlayerAvionics()
+    {
+    }
+    virtual void SetVuPosition()
+    {
+    }
+    virtual void Regenerate(float, float, float, float)
+    {
+    }
     VU_ID LastShooter(void)
     {
         return lastShooter;
     };
-    void SetDying(int flag); // { if (flag) specialData.flags or_eq OBJ_DYING; else specialData.flags and_eq compl OBJ_DYING;};
-    SimBaseSpecialData* SpecialData(void)
+    void SetDying(
+        int flag); // { if (flag) specialData.flags or_eq OBJ_DYING; else specialData.flags and_eq compl OBJ_DYING;};
+    SimBaseSpecialData *SpecialData(void)
     {
         return &specialData;
     };

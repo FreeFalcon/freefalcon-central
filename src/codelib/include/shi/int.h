@@ -56,13 +56,14 @@
 
 /* Derived macros from mint.h */
 
-#define NUM_BYTES_INT         (0x01 << CHIPSET_INT_POW)
-#define NUM_BYTES_MAX_INT     (0x01 << CHIPSET_MAX_INT_POW)
+#define NUM_BYTES_INT (0x01 << CHIPSET_INT_POW)
+#define NUM_BYTES_MAX_INT (0x01 << CHIPSET_MAX_INT_POW)
 #define NUM_BTYES_MAX_DEF_INT (0x01 << CHIPSET_MAX_INT_DEF_POW)
 
-#define NUM_BITS_INT          (0x01 << (CHIPSET_BYTE_POW + CHIPSET_INT_POW))
-#define NUM_BITS_MAX_INT      (0x01 << (CHIPSET_BYTE_POW + CHIPSET_MAX_INT_POW))
-#define NUM_BITS_MAX_DEF_INT  (0x01 << (CHIPSET_BYTE_POW + CHIPSET_MAX_INT_DEF_POW ))
+#define NUM_BITS_INT (0x01 << (CHIPSET_BYTE_POW + CHIPSET_INT_POW))
+#define NUM_BITS_MAX_INT (0x01 << (CHIPSET_BYTE_POW + CHIPSET_MAX_INT_POW))
+#define NUM_BITS_MAX_DEF_INT                                                   \
+    (0x01 << (CHIPSET_BYTE_POW + CHIPSET_MAX_INT_DEF_POW))
 
 /********************************************************************/
 
@@ -78,11 +79,10 @@
 /*                                                  */
 /****************************************************/
 
-#define GET_UINT_MIN(BITS)  (0)
-#define GET_UINT_MAX(BITS)  ((1<<(BITS))-1)
-#define GET_INT_MIN(BITS)   (-(1<<((BITS)-1)))
-#define GET_INT_MAX(BITS)   ((1<<((BITS)-1))-1)
-
+#define GET_UINT_MIN(BITS) (0)
+#define GET_UINT_MAX(BITS) ((1 << (BITS)) - 1)
+#define GET_INT_MIN(BITS) (-(1 << ((BITS) - 1)))
+#define GET_INT_MAX(BITS) ((1 << ((BITS) - 1)) - 1)
 
 
 /****************************************************/
@@ -108,9 +108,9 @@
 //#define UINT32_MAX    4294967295U
 
 #if (NUM_BITS_MAX_DEF_INT >= 64)
-#define INT64_MIN     (-9223372036854775808LL)
-#define INT64_MAX     9223372036854775807LL
-#define UINT64_MAX    18446744073709551615LLU
+#define INT64_MIN (-9223372036854775808LL)
+#define INT64_MAX 9223372036854775807LL
+#define UINT64_MAX 18446744073709551615LLU
 #endif
 
 
@@ -132,8 +132,8 @@
 /*                                                  */
 /****************************************************/
 
-#define TYPEDEF_INT(NAME,BITS)   typedef SHI_XYZZY_CAT(Int,BITS)  NAME
-#define TYPEDEF_UINT(NAME,BITS)  typedef SHI_XYZZY_CAT(UInt,BITS) NAME
+#define TYPEDEF_INT(NAME, BITS) typedef SHI_XYZZY_CAT(Int, BITS) NAME
+#define TYPEDEF_UINT(NAME, BITS) typedef SHI_XYZZY_CAT(UInt, BITS) NAME
 
 
 /****************************************************/
@@ -149,8 +149,8 @@
 /*                                                  */
 /****************************************************/
 
-#define TYPEDEF_INT_PTR(NAME,BITS)   typedef SHI_XYZZY_CAT(Int,BITS) *NAME
-#define TYPEDEF_UINT_PTR(NAME,BITS)  typedef SHI_XYZZY_CAT(UInt,BITS)*NAME
+#define TYPEDEF_INT_PTR(NAME, BITS) typedef SHI_XYZZY_CAT(Int, BITS) * NAME
+#define TYPEDEF_UINT_PTR(NAME, BITS) typedef SHI_XYZZY_CAT(UInt, BITS) * NAME
 
 
 /****************************************************/
@@ -166,37 +166,31 @@
 /*                                                  */
 /****************************************************/
 
-#define TYPEDEF_INT_HND(NAME,BITS)   typedef SHI_XYZZY_CAT3(Int,BITS)  **NAME
-#define TYPEDEF_UINT_HND(NAME,BITS)  typedef SHI_XYZZY_CAT3(UInt,BITS) **NAME
+#define TYPEDEF_INT_HND(NAME, BITS) typedef SHI_XYZZY_CAT3(Int, BITS) * *NAME
+#define TYPEDEF_UINT_HND(NAME, BITS) typedef SHI_XYZZY_CAT3(UInt, BITS) * *NAME
 
 
-typedef int                   Int;
-typedef unsigned int          UInt;
+typedef int Int;
+typedef unsigned int UInt;
 
 #if (NUM_BITS_MAX_DEF_INT >= 64)
 
-typedef unsigned Int64   UInt64;
+typedef unsigned Int64 UInt64;
 
 #if (NUM_BITS_MAX_DEF_INT >= 128)
 
-typedef unsigned Int128  UInt128;
+typedef unsigned Int128 UInt128;
 
 #else
 
-#define Int128   SHI_TYPE_ERROR("No 128-bit integers", Int64)
-#define UInt128  SHI_TYPE_ERROR("No 128-bit integers", UInt64)
+#define Int128 SHI_TYPE_ERROR("No 128-bit integers", Int64)
+#define UInt128 SHI_TYPE_ERROR("No 128-bit integers", UInt64)
 
 #endif
 
-#define Int64   SHI_TYPE_ERROR("No 64-bit integers", Int32)
-#define UInt64  SHI_TYPE_ERROR("No 64-bit integers", UInt32)
+#define Int64 SHI_TYPE_ERROR("No 64-bit integers", Int32)
+#define UInt64 SHI_TYPE_ERROR("No 64-bit integers", UInt32)
 
 #endif
 
 #endif /* _SHI__INT_H_ */
-
-
-
-
-
-

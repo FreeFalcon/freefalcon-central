@@ -9,7 +9,7 @@
 #ifndef _DRAWBLDG_H_
 #define _DRAWBLDG_H_
 
-#include "DrawBSP.h"
+#include "drawbsp.h"
 
 
 class DrawableBuilding : public DrawableBSP
@@ -33,7 +33,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

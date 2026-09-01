@@ -1,29 +1,34 @@
-#include "MsgInc/SendAircraftSlot.h"
-#include "Flight.h"
+#include "msginc/sendaircraftslot.h"
+#include "flight.h"
 #include "mesg.h"
 #include "userids.h"
-#include "CmpClass.h"
-#include "Dispcfg.h"
+#include "cmpclass.h"
+#include "dispcfg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "MissEval.h"
-#include "InvalidBufferException.h"
+#include "misseval.h"
+#include "invalidbufferexception.h"
 
 
 extern void LeaveDogfight();
 extern void UI_Refresh(void);
 extern void CheckForNewPlayer(FalconSessionEntity *session);
 
-UI_SendAircraftSlot::UI_SendAircraftSlot(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendAircraftSlot, FalconEvent::SimThread, entityId, target, loopback)
+UI_SendAircraftSlot::UI_SendAircraftSlot(VU_ID entityId, VuTargetEntity *target,
+                                         VU_BOOL loopback)
+    : FalconEvent(SendAircraftSlot, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     RequestOutOfBandTransmit();
     RequestReliableTransmit();
     dataBlock.got_pilot_skill = 0;
 }
 
-UI_SendAircraftSlot::UI_SendAircraftSlot(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendAircraftSlot, FalconEvent::SimThread, senderid, target)
+UI_SendAircraftSlot::UI_SendAircraftSlot(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(SendAircraftSlot, FalconEvent::SimThread, senderid, target)
 {
     RequestOutOfBandTransmit();
     RequestReliableTransmit();
@@ -43,9 +48,10 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
         return 0;
     }
 
-    VuGameEntity *game = (VuGameEntity*) vuDatabase->Find(dataBlock.game_id);
-    FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.requesting_session);
-    Flight oldflight, flight = (Flight) Entity();
+    VuGameEntity *game = (VuGameEntity *)vuDatabase->Find(dataBlock.game_id);
+    FalconSessionEntity *session =
+        (FalconSessionEntity *)vuDatabase->Find(dataBlock.requesting_session);
+    Flight oldflight, flight = (Flight)Entity();
 
     if (flight == 0)
     {
@@ -69,14 +75,16 @@ int UI_SendAircraftSlot::Process(uchar autodisp)
     session->SetAircraftNum(dataBlock.got_slot);
     session->SetPilotSlot(dataBlock.got_pilot_slot);
 
-    if ( not flight)
+    if (not flight)
     {
         return FALSE;
     }
 
     // For Campaign and TE games, if the player switches flights, we need to redo PreMissionEval
-    if (session == FalconLocalSession and oldflight not_eq flight and FalconLocalGame->GetGameType() not_eq game_Dogfight)
-        TheCampaign.MissionEvaluator->PreMissionEval(flight, dataBlock.got_pilot_slot);
+    if (session == FalconLocalSession and oldflight not_eq flight and
+        FalconLocalGame->GetGameType() not_eq game_Dogfight)
+        TheCampaign.MissionEvaluator->PreMissionEval(flight,
+                                                     dataBlock.got_pilot_slot);
 
     CheckForNewPlayer(session);
 
@@ -114,12 +122,3 @@ int UI_SendAircraftSlot::Encode(VU_BYTE **buf)
     size += sizeof(dataBlock);
     return size;
 }
-
-
-
-
-
-
-
-
-

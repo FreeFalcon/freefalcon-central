@@ -9,16 +9,17 @@
 #ifndef _WEATHERMSG_H
 #define _WEATHERMSG_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "falcmesg.h"
 #include "mission.h"
-#include "RealWeather.h"
-#pragma pack (1)
+#include "realweather.h"
+#pragma pack(1)
 
 class FalconWeatherMessage : public FalconEvent
 {
 public:
-    FalconWeatherMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconWeatherMessage(VU_ID entityId, VuTargetEntity *target,
+                         VU_BOOL loopback = TRUE);
     FalconWeatherMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconWeatherMessage(void);
     virtual int Size() const;
@@ -46,6 +47,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

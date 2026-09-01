@@ -29,10 +29,11 @@
 #include "airframe.h"
 #include "simdrive.h"
 #include "ffeedbk.h"
-#include "Graphics/Include/drawsgmt.h"
+#include "graphics/include/drawsgmt.h"
 
 
-static float lastqBar = 0;  // Note: This limits us to 1 ownship/Force feedback stick per machine
+static float lastqBar =
+    0; // Note: This limits us to 1 ownship/Force feedback stick per machine
 static const float tropoAlt = 36089.0F, tropoAlt2 = 65617;
 extern bool g_bFFCenterFix;
 
@@ -65,7 +66,7 @@ void AirframeClass::Atmosphere(void)
 
     sound = (float)sqrt(ttheta) * AASL;
     rho = rsigma * RHOASL;
-    pa      = pdelta * PASL;
+    pa = pdelta * PASL;
 
     if (IsSet(Trimming))
     {
@@ -80,11 +81,12 @@ void AirframeClass::Atmosphere(void)
     /* calculate dynamic pressure */
     /*----------------------------*/
 
-    mach = vt / ((float)sqrt(ttheta) * AASL);//ME123 CALCULATE A TRUE MACH...NOT JUST VT/SPEEDOFSOUND
+    mach = vt / ((float)sqrt(ttheta) *
+                 AASL); //ME123 CALCULATE A TRUE MACH...NOT JUST VT/SPEEDOFSOUND
 
     if (fabs(vt) > 1.0F)
     {
-        qbar   = 0.5F * rho * vt * vt;
+        qbar = 0.5F * rho * vt * vt;
 
         /*-------------------------------*/
         /* calculate calibrated airspeed */
@@ -92,16 +94,21 @@ void AirframeClass::Atmosphere(void)
         if (mach <= 1.0F)
             qc = ((float)pow((1.0F + 0.2F * mach * mach), 3.5F) - 1.0F) * pa;
         else
-            qc = ((166.9F * mach * mach) / (float)(pow((7.0F - 1.0F / (mach * mach)), 2.5F)) - 1.0F) * pa;
+            qc = ((166.9F * mach * mach) /
+                      (float)(pow((7.0F - 1.0F / (mach * mach)), 2.5F)) -
+                  1.0F) *
+                 pa;
 
         qpasl1 = qc / PASL + 1.0F;
         vcas = 1479.12F * (float)sqrt(pow(qpasl1, 0.285714F) - 1.0F);
 
         if (qc > 1889.64F)
         {
-            oper = qpasl1 * (float)pow((7.0F - AASLK * AASLK / (vcas * vcas)), 2.5F);
+            oper = qpasl1 *
+                   (float)pow((7.0F - AASLK * AASLK / (vcas * vcas)), 2.5F);
 
-            if (oper < 0.0F) oper = 0.1F;
+            if (oper < 0.0F)
+                oper = 0.1F;
 
             vcas = 51.1987F * (float)sqrt(oper);
         }
@@ -109,8 +116,8 @@ void AirframeClass::Atmosphere(void)
         /*------------------------*/
         /* normalizing parameters */
         /*------------------------*/
-        qsom   = qbar * area / mass;
-        qovt   = qbar / vt;
+        qsom = qbar * area / mass;
+        qovt = qbar / vt;
     }
     else
     {
@@ -160,12 +167,13 @@ void AirframeClass::Atmosphere(void)
             }
             else
             {
-                JoystickPlayEffect(JoyAutoCenter, FloatToInt32((qbar / 250.0F * 0.5F + 0.5F) * 10000.0F));
+                JoystickPlayEffect(
+                    JoyAutoCenter,
+                    FloatToInt32((qbar / 250.0F * 0.5F + 0.5F) * 10000.0F));
             }
 
             lastqBar = qbar;
         }
-
     }
 }
 
@@ -191,10 +199,12 @@ float AirframeClass::CalcMach(float GetKias, float press_ratio)
     float u, fu, fpu;
 
     kiasa = GetKias / a0;
-    qcp0  = (float)pow((1.0 + 0.2 * kiasa * kiasa), 3.5) - 1.0F;
+    qcp0 = (float)pow((1.0 + 0.2 * kiasa * kiasa), 3.5) - 1.0F;
 
     if (kiasa >= 1.0)
-        qcp0 = 166.921F * (float)pow(kiasa, 7.0F) / (float)pow((7.0F * kiasa * kiasa - 1.0F), 2.5F) - 1.0F;
+        qcp0 = 166.921F * (float)pow(kiasa, 7.0F) /
+                   (float)pow((7.0F * kiasa * kiasa - 1.0F), 2.5F) -
+               1.0F;
 
     qcpa = qcp0 / press_ratio;
 
@@ -204,11 +214,14 @@ float AirframeClass::CalcMach(float GetKias, float press_ratio)
 
         do
         {
-            fu = 166.921F * (float)pow(u, 7.0F) / (float)pow((7.0F * u * u - 1.0F), 2.5F) - (1.0F + qcpa);
-            fpu = 7.0F * 166.921F * (float)pow(u, 6.0F) * (2.0F * u * u - 1.0F) / (float)pow((7.0F * u * u - 1.0F), 3.5F);
+            fu = 166.921F * (float)pow(u, 7.0F) /
+                     (float)pow((7.0F * u * u - 1.0F), 2.5F) -
+                 (1.0F + qcpa);
+            fpu = 7.0F * 166.921F * (float)pow(u, 6.0F) *
+                  (2.0F * u * u - 1.0F) /
+                  (float)pow((7.0F * u * u - 1.0F), 3.5F);
             u -= fu / fpu;
-        }
-        while (fabs(fu) > 0.001F);
+        } while (fabs(fu) > 0.001F);
 
         return (u);
     }
@@ -249,18 +262,18 @@ float AirframeClass::EngineSmokeFactor()
 {
     switch (auxaeroData->engineSmokes)
     {
-        default:
-            return 2;
+    default:
+        return 2;
 
-        case 1: // vortex
-        case 0: // nothing
-            return 1;
+    case 1: // vortex
+    case 0: // nothing
+        return 1;
 
-        case 2: // light smoke
-            return 2;
+    case 2: // light smoke
+        return 2;
 
-        case 3:
-            return 4;
+    case 3:
+        return 4;
     }
 }
 
@@ -268,25 +281,26 @@ int AirframeClass::EngineTrail()
 {
     switch (auxaeroData->engineSmokes)
     {
-        case 0: // nothing
-            return -1;
+    case 0: // nothing
+        return -1;
 
-        case 1: // vortex
-            return TRAIL_VORTEX;
+    case 1: // vortex
+        return TRAIL_VORTEX;
 
-        case 2: // light smoke
-            return TRAIL_SMOKE;
+    case 2: // light smoke
+        return TRAIL_SMOKE;
 
-        case 3:
-            return TRAIL_DARKSMOKE;
+    case 3:
+        return TRAIL_DARKSMOKE;
 
-        default:
+    default:
 
-            /*if (auxaeroData->engineSmokes > 3 and auxaeroData->engineSmokes - 3 < TRAIL_MAX)
+        /*if (auxaeroData->engineSmokes > 3 and auxaeroData->engineSmokes - 3 < TRAIL_MAX)
                 return auxaeroData->engineSmokes - 3;*/
-            if (auxaeroData->engineSmokes > 3)
-                return auxaeroData->engineSmokes;//Cobra Allow for more engine trails
-            else return -1;
+        if (auxaeroData->engineSmokes > 3)
+            return auxaeroData
+                ->engineSmokes; //Cobra Allow for more engine trails
+        else
+            return -1;
     }
 }
-

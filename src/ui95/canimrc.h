@@ -10,11 +10,11 @@
 #define RLE_KEYMASK 0xf000
 #define RLE_COUNTMASK 0x0fff
 
-#define COMP_NONE  0
-#define COMP_RLE   1
+#define COMP_NONE 0
+#define COMP_RLE 1
 #define COMP_DELTA 2
 
-#pragma warning ( disable: 4200 ) // Prevent the zero length array warning
+#pragma warning(disable : 4200) // Prevent the zero length array warning
 class ANIMATION
 {
 #ifdef USE_SH_POOLS
@@ -26,19 +26,20 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-    char  Header[4];
-    long  Version;
-    long  Width;
-    long  Height;
-    long  Frames;
+    char Header[4];
+    long Version;
+    long Width;
+    long Height;
+    long Frames;
     short Compression;
     short BytesPerPixel;
-    long  Background;
-    char  Start[];
+    long Background;
+    char Start[];
 };
 
 typedef struct
@@ -46,7 +47,7 @@ typedef struct
     long Size;
     char Data[];
 } ANIM_FRAME;
-#pragma warning ( default: 4200 ) // Restore normal warning behavior
+#pragma warning(default : 4200) // Restore normal warning behavior
 
 class ANIM_RES
 {
@@ -59,7 +60,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -80,7 +82,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:

@@ -8,14 +8,14 @@
  */
 
 /*
-#include "MsgInc/SimTimingMsg.h"
+#include "msginc/simtimingmsg.h"
 #include "mesg.h"
 #include "simdrive.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 void ToggleSimPause(int level = -1, int mode = SimulationDriver::DebugMode);
 

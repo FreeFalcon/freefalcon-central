@@ -1,31 +1,35 @@
 #include "stdhdr.h"
-#include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking + per-eye stereo
-#include "Graphics/DXEngine/D3D12Backend.h"    // #DX12 п.5: VR per-eye overlays under D3D12 (g_pD3D12Backend)
-#include "Graphics/DXEngine/d3d12/D3D12Renderer.h"  // #DX12 п.5: g_pD3D12Renderer (view-instanced stereo params)
-#include "Graphics/Include/TOD.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/canvas3d.h"
-#include "Graphics/Include/Drawbsp.h"
-#include "Graphics/Include/Drawgrnd.h"
-#include "Graphics/Include/draw2d.h"
-#include "Graphics/Include/TimeMgr.h"
+#include <chrono> // #107 PERF: profiler phase timing (DrawScene / group blit)
+#include "graphics/include/frameprof.h" // #107 PERF: FrameProf_*
+#include "graphics/dxengine/openxrbackend.h" // VR: HMD head-tracking + per-eye stereo
+#include "graphics/dxengine/d3d12backend.h" // #DX12 п.5: VR per-eye overlays under D3D12 (g_pD3D12Backend)
+#include "graphics/dxengine/d3d12/d3d12renderer.h" // #DX12 п.5: g_pD3D12Renderer (view-instanced stereo params)
+#include "graphics/vulkan/vulkanbackend.h" // #107 VR-Vulkan: g_pVulkanBackend (multiview scene array + XR blit)
+#include "graphics/vulkan/vulkanrenderer.h" // #107 VR-Vulkan: g_pVulkanRenderer (SetViewInstancingParams)
+#include "graphics/include/tod.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/canvas3d.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawgrnd.h"
+#include "graphics/include/draw2d.h"
+#include "graphics/include/timemgr.h"
 
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
 extern bool g_bUse_DX_Engine;
 
-#include "TimerThread.h"
+#include "timerthread.h"
 #include "hud.h"
 #include "object.h"
 #include "mfd.h"
 #include "playerrwr.h"
 #include "fsound.h"
-#include "soundFX.h"
+#include "soundfx.h"
 #include "cpmanager.h"
 //MI extracting Data
 #include "cphsi.h"
-#include "ThreadMgr.h"
+#include "threadmgr.h"
 #include "aircrft.h"
 #include "weather.h"
 #include "simeject.h"
@@ -36,14 +40,14 @@ extern bool g_bUse_DX_Engine;
 #include "sfx.h"
 #include "acmi/src/include/acmirec.h"
 #include "camp2sim.h"
-#include "SimLoop.h"
+#include "simloop.h"
 #include "simdrive.h"
 #include "sinput.h"
 #include "commands.h"
 #include "dogfight.h"
 #include "inpfunc.h"
 #include "otwdrive.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "airframe.h"
 #include "fack.h"
 #include "campwp.h"
@@ -55,14 +59,13 @@ extern bool g_bUse_DX_Engine;
 #include "dofsnswitches.h"
 #include "navsystem.h"
 #include "falclib/include/fakerand.h"
-#include "PilotInputs.h"
-#include "IvibeData.h"
+#include "pilotinputs.h"
+#include "ivibedata.h"
 
 // OW needed for restoring textures after task switch
 #include "graphics/include/texbank.h"
 #include "graphics/include/fartex.h"
 #include "graphics/include/terrtex.h"
-
 
 
 #include "radiosubtitle.h" // Retro 20Dec2003
@@ -93,9 +96,9 @@ int tactical_is_training(void);
 #define CHAT_STR_X (190.0f)
 #define CHAT_STR_Y (2.0f)
 
-#define SCORENAME_X  (0.6f)
+#define SCORENAME_X (0.6f)
 #define SCOREPOINT_X (0.9f)
-#define SCORE_Y      (0.8f)
+#define SCORE_Y (0.8f)
 
 extern int weatherCondition; //JAM 16Nov03
 extern long mHelmetIsUR; // hack for UR Helmet detected
@@ -175,7 +178,7 @@ extern int numObjsInDrawList;
 
 extern HWND mainMenuWnd;
 extern void* gSharedMemPtr;
-extern void *gSharedIntellivibe;
+extern void* gSharedIntellivibe;
 
 static char tmpStr[128];
 
@@ -195,20 +198,21 @@ extern int gGraphicsTimeLast;
 extern int gCampTime;
 extern int gAveCampTime;
 extern int gAveSimGraphicsTime;
-void DebugMemoryReport(RenderOTW *renderer, int frameTime);
+void DebugMemoryReport(RenderOTW* renderer, int frameTime);
 
-extern FalconEntity *gOtwCameraLocation;
+extern FalconEntity* gOtwCameraLocation;
 
 char gAcmiStr[11];
 
-LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK SimWndProc(HWND hwnd, UINT message, WPARAM wParam,
+                            LPARAM lParam);
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gFartexMemPool;
 #endif
 
 /* Retro TrackIR stuff.. */
-#include "TrackIR.h" // Retro 26/09/03
+#include "trackir.h" // Retro 26/09/03
 extern bool g_bEnableTrackIR; // Retro 26/09/03
 extern TrackIR theTrackIRObject; // Retro 27/09/03
 extern int g_nTrackIRSampleFreq; // Retro 02/10/03
@@ -256,11 +260,8 @@ void OTWDriverClass::Cycle(void)
 
         // Note:  We could do buildings too, but they generally deaggregate far enough away that it isn't a problem
         // Consider each element of the campaign object sim bubble
-        for (
-            campUnit = (FalconEntity*)vehicleWalker.GetFirst();
-            campUnit;
-            campUnit = (FalconEntity*)vehicleWalker.GetNext()
-        )
+        for (campUnit = (FalconEntity*)vehicleWalker.GetFirst(); campUnit;
+             campUnit = (FalconEntity*)vehicleWalker.GetNext())
         {
 
             // Only deal with battalions for now
@@ -268,14 +269,14 @@ void OTWDriverClass::Cycle(void)
             {
 
                 // Lets go with an approximation since the x,y position is an approximation anyway
-                float groundZ = GetApproxGroundLevel(campUnit->XPos(), campUnit->YPos());
+                float groundZ =
+                    GetApproxGroundLevel(campUnit->XPos(), campUnit->YPos());
 
                 // This is kinda annoying -- all we want to do is hammer the Z value, but this is going
                 // to do a bunch of grid tree maintenance (and other?) junk.
-                campUnit->SetPosition(campUnit->XPos(), campUnit->YPos(), groundZ);
-
+                campUnit->SetPosition(campUnit->XPos(), campUnit->YPos(),
+                                      groundZ);
             }
-
         }
 
         // FRB - Sure would like toput those buildings on the ground.
@@ -286,14 +287,17 @@ void OTWDriverClass::Cycle(void)
         while (theObject)
         {
             // Lets go with an approximation since the x,y position is an approximation anyway
-            float groundZ = GetApproxGroundLevel(theObject->XPos(), theObject->YPos());
-            theObject->SetPosition(theObject->XPos(), theObject->YPos(), groundZ);
+            float groundZ =
+                GetApproxGroundLevel(theObject->XPos(), theObject->YPos());
+            theObject->SetPosition(theObject->XPos(), theObject->YPos(),
+                                   groundZ);
 
             theObject = (FalconEntity*)featureWalker.GetNext();
         }
 
         // Set the time for the next refresh
-        nextCampObjectHeightRefresh = SimLibElapsedTime + 5000; // Do it every 5 seconds
+        nextCampObjectHeightRefresh =
+            SimLibElapsedTime + 5000; // Do it every 5 seconds
     }
 
 
@@ -304,12 +308,11 @@ void OTWDriverClass::Cycle(void)
     }
 
     //Wombat778 11-18-04 Run the Automatic hybrid mode (mode 1). Simouse handles non-trackir hybrid mode.
-    if (
-        GetHybridPitMode() == 1 and 
-        (GetOTWDisplayMode() == Mode2DCockpit or GetOTWDisplayMode() == Mode3DCockpit)
-    )
+    if (GetHybridPitMode() == 1 and (GetOTWDisplayMode() == Mode2DCockpit or
+                                     GetOTWDisplayMode() == Mode3DCockpit))
     {
-        RunHybridPitMode(cockpitFlightData.headYaw, cockpitFlightData.headPitch);
+        RunHybridPitMode(cockpitFlightData.headYaw,
+                         cockpitFlightData.headPitch);
     }
 
     // when end flight timer is set, we're ending the game when vuxGameTime
@@ -319,26 +322,31 @@ void OTWDriverClass::Cycle(void)
         // make sure stuff is set correctly here (ie no hud, etc...)
         SetOTWDisplayMode(ModeChase);
 
-        if (SimDriver.GetPlayerAircraft() and not SimDriver.GetPlayerAircraft()->IsEject())
+        if (SimDriver.GetPlayerAircraft() and
+            not SimDriver.GetPlayerAircraft()->IsEject())
         {
             // make sure autopilot is on
-            AircraftClass *playerAircraft = (AircraftClass *)SimDriver.GetPlayerAircraft();
+            AircraftClass* playerAircraft =
+                (AircraftClass*)SimDriver.GetPlayerAircraft();
 
             if (playerAircraft->OnGround())
             {
                 if (playerAircraft->DBrain()->ATCStatus() < tReqTaxi)
                 {
-                    if (playerAircraft->AutopilotType() not_eq AircraftClass::APOff)
+                    if (playerAircraft->AutopilotType() not_eq
+                        AircraftClass::APOff)
                     {
                         playerAircraft->SetAutopilot(AircraftClass::APOff);
                     }
                 }
-                else if (playerAircraft->AutopilotType() not_eq AircraftClass::CombatAP)
+                else if (playerAircraft->AutopilotType() not_eq
+                         AircraftClass::CombatAP)
                 {
                     playerAircraft->SetAutopilot(AircraftClass::CombatAP);
                 }
             }
-            else if (playerAircraft->AutopilotType() not_eq AircraftClass::ThreeAxisAP)
+            else if (playerAircraft->AutopilotType() not_eq
+                     AircraftClass::ThreeAxisAP)
             {
                 playerAircraft->SetAutopilot(AircraftClass::ThreeAxisAP);
             }
@@ -377,7 +385,7 @@ void OTWDriverClass::Cycle(void)
     }
 
     // Check for weather change
-    if ( not weatherCmd)
+    if (not weatherCmd)
     {
     }
     else
@@ -398,7 +406,7 @@ void OTWDriverClass::Cycle(void)
         weatherCmd = 0;
     }
 
-    DXContext *pCtx = OTWImage->GetDisplayDevice()->GetDefaultRC();
+    DXContext* pCtx = OTWImage->GetDisplayDevice()->GetDefaultRC();
     HRESULT hr = pCtx->TestCooperativeLevel();
 
     if (FAILED(hr))
@@ -435,11 +443,12 @@ void OTWDriverClass::Reset3DParameters(void)
 
 void OTWDriverClass::RenderFirstFrame(void)
 {
-    // WARNING  WARNING  WARNING  WARNING  WARNING 
+    // WARNING  WARNING  WARNING  WARNING  WARNING
     // RED - INIT time stuff here, then call all timed callbacks to have an update
     // situation on 3D entry
     // Start Up with appropriate Time
-    TheTimeManager.SetTime(vuxGameTime + (unsigned long)FloatToInt32(todOffset * 1000.0F));
+    TheTimeManager.SetTime(vuxGameTime +
+                           (unsigned long)FloatToInt32(todOffset * 1000.0F));
     // update callbacks
     TheTimeManager.Refresh();
     // Refresh weather stuff
@@ -465,7 +474,6 @@ void OTWDriverClass::RenderFirstFrame(void)
     SkipSwap = true;
     // The Big Load is not incoming
     BigLoadTimeOut = 0;
-
 }
 
 
@@ -479,22 +487,20 @@ void OTWDriverClass::DisplayChatBox(void)
     float halfHeight = OTWDriver.renderer->TextHeight() * 0.75F;
     float halfWidth = 0.75F;
 
-    OTWDriver.renderer->SetColor(0x997B5200);   // 60% alpha blue
+    OTWDriver.renderer->SetColor(0x997B5200); // 60% alpha blue
     OTWDriver.renderer->context.RestoreState(STATE_ALPHA_SOLID);
 
-    OTWDriver.renderer->Tri(-halfWidth, -halfHeight,
-                            halfWidth, -halfHeight,
-                            halfWidth,  halfHeight);
-    OTWDriver.renderer->Tri(-halfWidth, -halfHeight,
-                            -halfWidth,  halfHeight,
-                            halfWidth,  halfHeight);
+    OTWDriver.renderer->Tri(-halfWidth, -halfHeight, halfWidth, -halfHeight,
+                            halfWidth, halfHeight);
+    OTWDriver.renderer->Tri(-halfWidth, -halfHeight, -halfWidth, halfHeight,
+                            halfWidth, halfHeight);
 
     // Outline Translucent BLUE box
-    OTWDriver.renderer->SetColor(0xFF000000);   // black
+    OTWDriver.renderer->SetColor(0xFF000000); // black
     OTWDriver.renderer->Line(-halfWidth, -halfHeight, halfWidth, -halfHeight);
-    OTWDriver.renderer->Line(-halfWidth, -halfHeight, -halfWidth,  halfHeight);
-    OTWDriver.renderer->Line(halfWidth,  halfHeight, halfWidth, -halfHeight);
-    OTWDriver.renderer->Line(halfWidth,  halfHeight, -halfWidth,  halfHeight);
+    OTWDriver.renderer->Line(-halfWidth, -halfHeight, -halfWidth, halfHeight);
+    OTWDriver.renderer->Line(halfWidth, halfHeight, halfWidth, -halfHeight);
+    OTWDriver.renderer->Line(halfWidth, halfHeight, -halfWidth, halfHeight);
 
     if (vuxRealTime bitand 0x100)
     {
@@ -509,14 +515,19 @@ void OTWDriverClass::DisplayChatBox(void)
         else
             strw = 0.0f;
 
-        OTWDriver.renderer->SetColor(0xfffefefe); // Not perfect white so color won't change
-        OTWDriver.renderer->Line(strw - (halfWidth * 0.95F), -halfHeight * 0.75F, strw - (halfWidth * 0.95F), halfHeight * 0.75F);
+        OTWDriver.renderer->SetColor(
+            0xfffefefe); // Not perfect white so color won't change
+        OTWDriver.renderer->Line(
+            strw - (halfWidth * 0.95F), -halfHeight * 0.75F,
+            strw - (halfWidth * 0.95F), halfHeight * 0.75F);
     }
 
     if (chatterStr[0])
     {
-        OTWDriver.renderer->SetColor(0xff000000); // Not perfect white so color won't change
-        OTWDriver.renderer->TextLeftVertical(-halfWidth * 0.95F, 0.0F, chatterStr);
+        OTWDriver.renderer->SetColor(
+            0xff000000); // Not perfect white so color won't change
+        OTWDriver.renderer->TextLeftVertical(-halfWidth * 0.95F, 0.0F,
+                                             chatterStr);
     }
 }
 
@@ -539,8 +550,7 @@ struct Mode2Cam
     short theCamID;
 };
 
-const static Mode2Cam theModeTable[] =
-{
+const static Mode2Cam theModeTable[] = {
     {OTWDriverClass::ModeChase, FLY_BY_CAMERA},
     // {OTWDriverClass::ModeChase, CHASE_CAMERA}, // theCamID doesn�t matter here..
     {OTWDriverClass::ModeOrbit, ORBIT_CAMERA},
@@ -553,8 +563,7 @@ const static Mode2Cam theModeTable[] =
     {OTWDriverClass::ModeGroundFriendly, FRIENDLY_GROUND_UNIT_CAMERA},
     {OTWDriverClass::ModeIncoming, INCOMING_MISSILE_CAMERA},
     {OTWDriverClass::ModeTarget, TARGET_CAMERA},
-    {OTWDriverClass::ModeTargetToSelf, TARGET_TO_SELF_CAMERA}
-};
+    {OTWDriverClass::ModeTargetToSelf, TARGET_TO_SELF_CAMERA}};
 
 int ModeTableSize = sizeof(theModeTable) / sizeof(Mode2Cam);
 
@@ -567,20 +576,19 @@ void OTWDriverClass::DisplayInfoBar(void)
     float halfWidth = 1.F;
 
     OTWDriver.renderer->CenterOriginInViewport(); //Wombat778 4-10-04
-    OTWDriver.renderer->SetColor(0x997B5200);   // 60% alpha blue
+    OTWDriver.renderer->SetColor(0x997B5200); // 60% alpha blue
     OTWDriver.renderer->context.RestoreState(STATE_ALPHA_SOLID);
 
-    OTWDriver.renderer->Tri(-halfWidth, -1.F,
-                            halfWidth, -1.F,
-                            halfWidth,  -1.F + halfHeight);
-    OTWDriver.renderer->Tri(-halfWidth, -1.F,
-                            -halfWidth,  -1.F + halfHeight,
-                            halfWidth,  -1.F + halfHeight);
+    OTWDriver.renderer->Tri(-halfWidth, -1.F, halfWidth, -1.F, halfWidth,
+                            -1.F + halfHeight);
+    OTWDriver.renderer->Tri(-halfWidth, -1.F, -halfWidth, -1.F + halfHeight,
+                            halfWidth, -1.F + halfHeight);
 
     // Outline Translucent BLUE box
-    OTWDriver.renderer->SetColor(0xFF000000);   // black
+    OTWDriver.renderer->SetColor(0xFF000000); // black
 
-    OTWDriver.renderer->Line(halfWidth, -1.F + halfHeight, -halfWidth, -1.F + halfHeight);
+    OTWDriver.renderer->Line(halfWidth, -1.F + halfHeight, -halfWidth,
+                             -1.F + halfHeight);
 
     short cameraID = 0;
 
@@ -614,10 +622,8 @@ void OTWDriverClass::DisplayInfoBar(void)
     }
 
     // put a line telling what the camera focus is (label)
-    if ((otwPlatform.get() not_eq NULL) and 
-        otwPlatform->drawPointer and 
-        *((DrawableBSP *)otwPlatform->drawPointer)->Label()
-       )
+    if ((otwPlatform.get() not_eq NULL) and otwPlatform->drawPointer and
+        *((DrawableBSP*)otwPlatform->drawPointer)->Label())
     {
         // avg length of the below string is 120 chars.. so no sweat, cept maybe for null-pointers ?
 #define LOCAL_STRING_LENGTH 256
@@ -625,20 +631,22 @@ void OTWDriverClass::DisplayInfoBar(void)
         // callsign
         strcpy(tmpo, CameraLabel[cameraID]);
         strcat(tmpo, ": ");
-        strcat(tmpo, ((DrawableBSP *)otwPlatform->drawPointer)->Label());
+        strcat(tmpo, ((DrawableBSP*)otwPlatform->drawPointer)->Label());
 
         // 2 issues here:
         // a) string could be longer as the locally allocated one (bad thing (tm)) - however that�s unlikely, see above
         // b) string could be longer than physical screen size.. FreeFalcon then displays nothing.. also a bit suboptimal..
         // solution for b) need to get renderer->TextWidth() working, if it is >1 then we don�t add a chunk.. or so..
-        if (( not otwPlatform->IsGroundVehicle()) and ( not otwPlatform->IsBomb()))
+        if ((not otwPlatform->IsGroundVehicle()) and
+            (not otwPlatform->IsBomb()))
         {
             char tmp[30];
 
             strcat(tmpo, " - heading: ");
 
             // heading
-            SimMoverClass *mover = static_cast<SimMoverClass*>(otwPlatform.get());
+            SimMoverClass* mover =
+                static_cast<SimMoverClass*>(otwPlatform.get());
             float theYaw = mover->Yaw() * RTD;
 
             if (theYaw < 0)
@@ -660,7 +668,8 @@ void OTWDriverClass::DisplayInfoBar(void)
             // speed
             if (otwPlatform->IsMissile())
             {
-                MissileClass *mi = static_cast<MissileClass*>(otwPlatform.get());
+                MissileClass* mi =
+                    static_cast<MissileClass*>(otwPlatform.get());
                 fvalue = mi->GetVt() * FTPSEC_TO_KNOTS;
                 sprintf(tmp, "%4.f", fvalue);
                 strcat(tmpo, tmp);
@@ -687,7 +696,8 @@ void OTWDriverClass::DisplayInfoBar(void)
             // G forces, only for ac
             if (otwPlatform->IsAirplane())
             {
-                AircraftClass *ac = static_cast<AircraftClass*>(otwPlatform.get());
+                AircraftClass* ac =
+                    static_cast<AircraftClass*>(otwPlatform.get());
                 fvalue = ac->GetNz();
                 sprintf(tmp, ", %2.1f", fvalue);
                 strcat(tmpo, tmp);
@@ -698,7 +708,6 @@ void OTWDriverClass::DisplayInfoBar(void)
                 strcat(tmpo, tmp);
                 strcat(tmpo, " degrees");
             }
-
         }
 
 #if 0 // this would display the text/screenwidth ratio..
@@ -708,11 +717,14 @@ void OTWDriverClass::DisplayInfoBar(void)
         sprintf(tmp, "%f", blubb);
         renderer->TextCenter(0.0F, (-1.F + 2.F * OTWDriver.renderer->TextHeight()), tmp);
 #endif
-        renderer->TextCenter(0.0F, (-1.F + 1.2F * OTWDriver.renderer->TextHeight()), tmpo);
+        renderer->TextCenter(
+            0.0F, (-1.F + 1.2F * OTWDriver.renderer->TextHeight()), tmpo);
     }
     else
     {
-        renderer->TextCenter(0.0F, (-1.F + 1.2F * OTWDriver.renderer->TextHeight()), CameraLabel[cameraID]);
+        renderer->TextCenter(0.0F,
+                             (-1.F + 1.2F * OTWDriver.renderer->TextHeight()),
+                             CameraLabel[cameraID]);
     }
 }
 
@@ -722,13 +734,14 @@ void OTWDriverClass::ToggleSubTitles() // Retro 20Dec2003
 }
 
 /* RETRO RADIOMESS LABELS */
-void OTWDriverClass::DrawSubTitles(void)  // Retro 16Dec2003 (all)
+void OTWDriverClass::DrawSubTitles(void) // Retro 16Dec2003 (all)
 {
     Prof(DrawSubTitles);
 
     if (radioLabel)
     {
-        ColouredSubTitle** theLabels = radioLabel->GetTimeSortedMessages(vuxGameTime);
+        ColouredSubTitle** theLabels =
+            radioLabel->GetTimeSortedMessages(vuxGameTime);
 
         if (theLabels)
         {
@@ -741,7 +754,8 @@ void OTWDriverClass::DrawSubTitles(void)  // Retro 16Dec2003 (all)
                     renderer->SetColor(theLabels[i]->theColour);
                     // renderer->TextLeft(-0.95F,  (0.90F-i*0.03F), theLabels[i]->theString);
                     // Retro 10Jan2004 - lower so that they don�t collide with LEF/TEF display
-                    renderer->TextLeft(-0.95F, (0.84F - i * 0.03F), theLabels[i]->theString);
+                    renderer->TextLeft(-0.95F, (0.84F - i * 0.03F),
+                                       theLabels[i]->theString);
                 }
 
                 free(theLabels[i]);
@@ -777,7 +791,8 @@ void OTWDriverClass::DisplayFrontText(void)
     else if (takePrettyScreenShot == CLEANUP)
     {
         takePrettyScreenShot = OFF; // advance state..
-        DrawableBSP::drawLabels = LabelState; // reactivate labels again (if they were on)
+        DrawableBSP::drawLabels =
+            LabelState; // reactivate labels again (if they were on)
     }
 
     // Retro 7-8May2004 end
@@ -808,17 +823,24 @@ void OTWDriverClass::DisplayFrontText(void)
     if (vuxRealTime bitand 0x200) // Blink every half second
     {
         // Display the PAUSE/X2/X4 compression strings HERE
-        if ((vuxRealTime bitand 0x200) and (remoteCompressionRequests or targetCompressionRatio not_eq 1))
+        if ((vuxRealTime bitand 0x200) and
+            (remoteCompressionRequests or targetCompressionRatio not_eq 1))
         {
             float offset = 0.0f;
             long color;
             // THIS SHOULD BE TRANSLATABLE TEXT
             //
-            offset = -(OTWDriver.renderer->ScreenTextWidth(CompressionStr[0]) + COMPRESS_SPACING +
-                       OTWDriver.renderer->ScreenTextWidth(CompressionStr[2]) + COMPRESS_SPACING +
-                       OTWDriver.renderer->ScreenTextWidth(CompressionStr[3]) + COMPRESS_SPACING) * 0.5f;
+            offset = -(OTWDriver.renderer->ScreenTextWidth(CompressionStr[0]) +
+                       COMPRESS_SPACING +
+                       OTWDriver.renderer->ScreenTextWidth(CompressionStr[2]) +
+                       COMPRESS_SPACING +
+                       OTWDriver.renderer->ScreenTextWidth(CompressionStr[3]) +
+                       COMPRESS_SPACING) *
+                     0.5f;
 
-            if (( not targetCompressionRatio) or ( not FalconLocalSession->GetReqCompression()) or (remoteCompressionRequests bitand REMOTE_REQUEST_PAUSE))
+            if ((not targetCompressionRatio) or
+                (not FalconLocalSession->GetReqCompression()) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_PAUSE))
             {
                 // if ANY compression OR compression requests == 0... Draw PAUSE
                 // if compression == our compression == all requested compressions
@@ -828,20 +850,28 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if (( not targetCompressionRatio) and (( not FalconLocalSession->GetReqCompression()) and (remoteCompressionRequests bitand REMOTE_REQUEST_PAUSE) or not gCommsMgr->Online()))
+                if ((not targetCompressionRatio) and
+                    ((not FalconLocalSession->GetReqCompression()) and
+                         (remoteCompressionRequests bitand
+                          REMOTE_REQUEST_PAUSE) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
-                else if (( not FalconLocalSession->GetReqCompression()))
+                else if ((not FalconLocalSession->GetReqCompression()))
                     color = 0xff00ff00;
                 else
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, CompressionStr[0]);
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               CompressionStr[0]);
             }
 
-            offset += OTWDriver.renderer->ScreenTextWidth(CompressionStr[0]) + COMPRESS_SPACING;
+            offset += OTWDriver.renderer->ScreenTextWidth(CompressionStr[0]) +
+                      COMPRESS_SPACING;
 
-            if ((targetCompressionRatio == 2) or (FalconLocalSession->GetReqCompression() == 2) or (remoteCompressionRequests bitand REMOTE_REQUEST_2))
+            if ((targetCompressionRatio == 2) or
+                (FalconLocalSession->GetReqCompression() == 2) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_2))
             {
                 // if ANY compression OR compression requests == 2... Draw 2X
                 // if compression == our compression == all requested compressions
@@ -851,7 +881,10 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 2) and ((FalconLocalSession->GetReqCompression() == 2) and (remoteCompressionRequests bitand REMOTE_REQUEST_2) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 2) and
+                    ((FalconLocalSession->GetReqCompression() == 2) and
+                         (remoteCompressionRequests bitand REMOTE_REQUEST_2) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 2))
                     color = 0xff00ff00;
@@ -859,11 +892,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, CompressionStr[2]);
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               CompressionStr[2]);
             }
 
             // JB 010109 offset+=OTWDriver.renderer->ScreenTextWidth(CompressionStr[2]) + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 4) or (FalconLocalSession->GetReqCompression() == 4) or (remoteCompressionRequests bitand REMOTE_REQUEST_4))
+            if ((targetCompressionRatio == 4) or
+                (FalconLocalSession->GetReqCompression() == 4) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_4))
             {
                 // if ANY compression OR compression requests > 2... Draw 4X
                 // if compression == our compression == all requested compressions
@@ -873,7 +909,10 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 4) and ((FalconLocalSession->GetReqCompression() == 4) and (remoteCompressionRequests bitand REMOTE_REQUEST_4) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 4) and
+                    ((FalconLocalSession->GetReqCompression() == 4) and
+                         (remoteCompressionRequests bitand REMOTE_REQUEST_4) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 4))
                     color = 0xff00ff00;
@@ -881,12 +920,15 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, CompressionStr[3]);
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               CompressionStr[3]);
             }
 
             // JB 010109
             //offset+=OTWDriver.renderer->ScreenTextWidth(CompressionStr[3]) + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 8) or (FalconLocalSession->GetReqCompression() == 8) or (remoteCompressionRequests bitand REMOTE_REQUEST_8))
+            if ((targetCompressionRatio == 8) or
+                (FalconLocalSession->GetReqCompression() == 8) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_8))
             {
                 // if ANY compression OR compression requests > 2... Draw 8X
                 // if compression == our compression == all requested compressions
@@ -896,7 +938,10 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 8) and ((FalconLocalSession->GetReqCompression() == 8) and (remoteCompressionRequests bitand REMOTE_REQUEST_8) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 8) and
+                    ((FalconLocalSession->GetReqCompression() == 8) and
+                         (remoteCompressionRequests bitand REMOTE_REQUEST_8) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 8))
                     color = 0xff00ff00;
@@ -904,11 +949,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x8");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x8");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x8") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 16) or (FalconLocalSession->GetReqCompression() == 16) or (remoteCompressionRequests bitand REMOTE_REQUEST_16))
+            if ((targetCompressionRatio == 16) or
+                (FalconLocalSession->GetReqCompression() == 16) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_16))
             {
                 // if ANY compression OR compression requests > 2... Draw 16X
                 // if compression == our compression == all requested compressions
@@ -918,7 +966,10 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 16) and ((FalconLocalSession->GetReqCompression() == 16) and (remoteCompressionRequests bitand REMOTE_REQUEST_16) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 16) and
+                    ((FalconLocalSession->GetReqCompression() == 16) and
+                         (remoteCompressionRequests bitand REMOTE_REQUEST_16) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 16))
                     color = 0xff00ff00;
@@ -926,11 +977,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x16");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x16");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x16") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 32) or (FalconLocalSession->GetReqCompression() == 32) or (remoteCompressionRequests bitand REMOTE_REQUEST_32))
+            if ((targetCompressionRatio == 32) or
+                (FalconLocalSession->GetReqCompression() == 32) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_32))
             {
                 // if ANY compression OR compression requests > 2... Draw 32X
                 // if compression == our compression == all requested compressions
@@ -940,7 +994,10 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 32) and ((FalconLocalSession->GetReqCompression() == 32) and (remoteCompressionRequests bitand REMOTE_REQUEST_32) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 32) and
+                    ((FalconLocalSession->GetReqCompression() == 32) and
+                         (remoteCompressionRequests bitand REMOTE_REQUEST_32) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 32))
                     color = 0xff00ff00;
@@ -948,11 +1005,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x32");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x32");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x32") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 64) or (FalconLocalSession->GetReqCompression() == 64) or (remoteCompressionRequests bitand REMOTE_REQUEST_64))
+            if ((targetCompressionRatio == 64) or
+                (FalconLocalSession->GetReqCompression() == 64) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_64))
             {
                 // if ANY compression OR compression requests > 2... Draw 64X
                 // if compression == our compression == all requested compressions
@@ -962,7 +1022,10 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 64) and ((FalconLocalSession->GetReqCompression() == 64) and (remoteCompressionRequests bitand REMOTE_REQUEST_64) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 64) and
+                    ((FalconLocalSession->GetReqCompression() == 64) and
+                         (remoteCompressionRequests bitand REMOTE_REQUEST_64) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 64))
                     color = 0xff00ff00;
@@ -970,11 +1033,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x64");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x64");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x64") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 128) or (FalconLocalSession->GetReqCompression() == 128) or (remoteCompressionRequests bitand REMOTE_REQUEST_128))
+            if ((targetCompressionRatio == 128) or
+                (FalconLocalSession->GetReqCompression() == 128) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_128))
             {
                 // if ANY compression OR compression requests > 2... Draw 128X
                 // if compression == our compression == all requested compressions
@@ -984,7 +1050,11 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 128) and ((FalconLocalSession->GetReqCompression() == 128) and (remoteCompressionRequests bitand REMOTE_REQUEST_128) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 128) and
+                    ((FalconLocalSession->GetReqCompression() == 128) and
+                         (remoteCompressionRequests bitand
+                          REMOTE_REQUEST_128) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 128))
                     color = 0xff00ff00;
@@ -992,11 +1062,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x128");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x128");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x128") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 256) or (FalconLocalSession->GetReqCompression() == 256) or (remoteCompressionRequests bitand REMOTE_REQUEST_256))
+            if ((targetCompressionRatio == 256) or
+                (FalconLocalSession->GetReqCompression() == 256) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_256))
             {
                 // if ANY compression OR compression requests > 2... Draw 256X
                 // if compression == our compression == all requested compressions
@@ -1006,7 +1079,11 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 256) and ((FalconLocalSession->GetReqCompression() == 256) and (remoteCompressionRequests bitand REMOTE_REQUEST_256) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 256) and
+                    ((FalconLocalSession->GetReqCompression() == 256) and
+                         (remoteCompressionRequests bitand
+                          REMOTE_REQUEST_256) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 256))
                     color = 0xff00ff00;
@@ -1014,11 +1091,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x256");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x256");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x256") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 512) or (FalconLocalSession->GetReqCompression() == 512) or (remoteCompressionRequests bitand REMOTE_REQUEST_512))
+            if ((targetCompressionRatio == 512) or
+                (FalconLocalSession->GetReqCompression() == 512) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_512))
             {
                 // if ANY compression OR compression requests > 2... Draw 512X
                 // if compression == our compression == all requested compressions
@@ -1028,7 +1108,11 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 512) and ((FalconLocalSession->GetReqCompression() == 512) and (remoteCompressionRequests bitand REMOTE_REQUEST_512) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 512) and
+                    ((FalconLocalSession->GetReqCompression() == 512) and
+                         (remoteCompressionRequests bitand
+                          REMOTE_REQUEST_512) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 512))
                     color = 0xff00ff00;
@@ -1036,11 +1120,14 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x512");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x512");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x512") + COMPRESS_SPACING;
-            if ((targetCompressionRatio == 1024) or (FalconLocalSession->GetReqCompression() == 1024) or (remoteCompressionRequests bitand REMOTE_REQUEST_1024))
+            if ((targetCompressionRatio == 1024) or
+                (FalconLocalSession->GetReqCompression() == 1024) or
+                (remoteCompressionRequests bitand REMOTE_REQUEST_1024))
             {
                 // if ANY compression OR compression requests > 2... Draw 1024X
                 // if compression == our compression == all requested compressions
@@ -1050,7 +1137,11 @@ void OTWDriverClass::DisplayFrontText(void)
                 // if compression not_eq our compression
                 // Use GREEN
                 //
-                if ((targetCompressionRatio == 1024) and ((FalconLocalSession->GetReqCompression() == 1024) and (remoteCompressionRequests bitand REMOTE_REQUEST_1024) or not gCommsMgr->Online()))
+                if ((targetCompressionRatio == 1024) and
+                    ((FalconLocalSession->GetReqCompression() == 1024) and
+                         (remoteCompressionRequests bitand
+                          REMOTE_REQUEST_1024) or
+                     not gCommsMgr->Online()))
                     color = 0xff0000ff;
                 else if ((FalconLocalSession->GetReqCompression() == 1024))
                     color = 0xff00ff00;
@@ -1058,7 +1149,8 @@ void OTWDriverClass::DisplayFrontText(void)
                     color = 0xff00ffff;
 
                 OTWDriver.renderer->SetColor(color);
-                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y, "x1024");
+                OTWDriver.renderer->ScreenText(centerx + offset, COMPRESS_Y,
+                                               "x1024");
             }
 
             //offset+=OTWDriver.renderer->ScreenTextWidth("x1024") + COMPRESS_SPACING;
@@ -1068,11 +1160,14 @@ void OTWDriverClass::DisplayFrontText(void)
         if (gameCompressionRatio and not SimDriver.MotionOn())
         {
             renderer->SetColor(0xff0000ff);
-            renderer->ScreenText(centerx - OTWDriver.renderer->ScreenTextWidth(CompressionStr[4]) * 0.5f, COMPRESS_Y, CompressionStr[4]);
+            renderer->ScreenText(centerx - OTWDriver.renderer->ScreenTextWidth(
+                                               CompressionStr[4]) *
+                                               0.5f,
+                                 COMPRESS_Y, CompressionStr[4]);
         }
     }
 
-    if ( not g_bACMIRecordMsgOff and gACMIRec.IsRecording())
+    if (not g_bACMIRecordMsgOff and gACMIRec.IsRecording())
     {
         int pct;
         int j;
@@ -1105,14 +1200,14 @@ void OTWDriverClass::DisplayFrontText(void)
         w = centerX + (centerX * (SCOREPOINT_X + 0.02f)) - x;
         h = centerY * 12 * 0.05f;
 
-        OTWDriver.renderer->SetColor(0x997B5200);   // 60% alpha blue
+        OTWDriver.renderer->SetColor(0x997B5200); // 60% alpha blue
         OTWDriver.renderer->context.RestoreState(STATE_ALPHA_SOLID);
 
-        OTWDriver.renderer->Render2DTri(x, y,  x + w, y,  x + w, y + h);
-        OTWDriver.renderer->Render2DTri(x, y,  x, y + h,  x + w, y + h);
+        OTWDriver.renderer->Render2DTri(x, y, x + w, y, x + w, y + h);
+        OTWDriver.renderer->Render2DTri(x, y, x, y + h, x + w, y + h);
 
         // Outline Translucent BLUE box
-        OTWDriver.renderer->SetColor(0xFF000000);   // black
+        OTWDriver.renderer->SetColor(0xFF000000); // black
         OTWDriver.renderer->Render2DLine(x, y, x + w, y);
         OTWDriver.renderer->Render2DLine(x, y + h, x + w, y + h);
         OTWDriver.renderer->Render2DLine(x, y, x, y + h);
@@ -1120,8 +1215,11 @@ void OTWDriverClass::DisplayFrontText(void)
 
         if (showFrontText bitand SHOW_DOGFIGHT_SCORES)
         {
-            renderer->SetColor(0xfffefefe); // not quite white, so the color won't change
-            renderer->TextCenter(SCORENAME_X + (SCOREPOINT_X - SCORENAME_X) * 0.5f,  SCORE_Y - (float)(-1) * 0.05f, "Sierra Hotel");
+            renderer->SetColor(
+                0xfffefefe); // not quite white, so the color won't change
+            renderer->TextCenter(SCORENAME_X +
+                                     (SCOREPOINT_X - SCORENAME_X) * 0.5f,
+                                 SCORE_Y - (float)(-1) * 0.05f, "Sierra Hotel");
 
             if (gRefreshScoresList)
             {
@@ -1131,8 +1229,11 @@ void OTWDriverClass::DisplayFrontText(void)
         }
         else if (showFrontText bitand SHOW_TE_SCORES)
         {
-            renderer->SetColor(0xfffefefe); // not quite white, so the color won't change
-            renderer->TextCenter(SCORENAME_X + (SCOREPOINT_X - SCORENAME_X) * 0.5f,  SCORE_Y - (float)(-1) * 0.05f, "Game Over");
+            renderer->SetColor(
+                0xfffefefe); // not quite white, so the color won't change
+            renderer->TextCenter(SCORENAME_X +
+                                     (SCOREPOINT_X - SCORENAME_X) * 0.5f,
+                                 SCORE_Y - (float)(-1) * 0.05f, "Game Over");
 
             if (gRefreshScoresList)
             {
@@ -1144,18 +1245,22 @@ void OTWDriverClass::DisplayFrontText(void)
         for (i = 0; i < 10; i++)
         {
             // renderer->SetColor(gScoreColor[i]); // Not set yet
-            renderer->SetColor(0xfffefefe); // not quite white, so the color won't change
+            renderer->SetColor(
+                0xfffefefe); // not quite white, so the color won't change
 
             if (gScoreName[i][0])
             {
-                renderer->TextLeft(SCORENAME_X,  SCORE_Y - (float)i * 0.05f, gScoreName[i]);
-                renderer->TextRight(SCOREPOINT_X,  SCORE_Y - (float)i * 0.05f, gScorePoints[i]);
+                renderer->TextLeft(SCORENAME_X, SCORE_Y - (float)i * 0.05f,
+                                   gScoreName[i]);
+                renderer->TextRight(SCOREPOINT_X, SCORE_Y - (float)i * 0.05f,
+                                    gScorePoints[i]);
             }
         }
     }
 
     // Display any Text Messages sent TO me
-    if (showFrontText bitand (SHOW_MESSAGES) and textMessage[0][0]) // Check to see if there are any
+    if (showFrontText bitand (SHOW_MESSAGES) and
+        textMessage[0][0]) // Check to see if there are any
     {
         chat_cnt = 0;
 
@@ -1166,7 +1271,8 @@ void OTWDriverClass::DisplayFrontText(void)
             else
                 renderer->SetColor(0xff00ff00);
 
-            renderer->TextLeft(MESSAGE_X,  MESSAGE_Y - (float)chat_cnt * 0.05f, textMessage[chat_cnt]);
+            renderer->TextLeft(MESSAGE_X, MESSAGE_Y - (float)chat_cnt * 0.05f,
+                               textMessage[chat_cnt]);
             chat_cnt++;
         }
     }
@@ -1176,7 +1282,7 @@ void OTWDriverClass::DisplayFrontText(void)
     if (showFrontText bitand (SHOW_CHATBOX))
         DisplayChatBox();
 
-    if ((drawInfoBar) and ( not DisplayInCockpit())) // Retro 16Dec2003
+    if ((drawInfoBar) and (not DisplayInCockpit())) // Retro 16Dec2003
     {
         DisplayInfoBar(); // Retro 16Dec2003
     }
@@ -1184,7 +1290,7 @@ void OTWDriverClass::DisplayFrontText(void)
     {
         // display text for some camera settings
         // TODO:  This should be a string table, not a slew of "if"s
-        if ( not DisplayInCockpit())
+        if (not DisplayInCockpit())
         {
             short cameraID = 0;
 
@@ -1248,15 +1354,13 @@ void OTWDriverClass::DisplayFrontText(void)
             }
 
             // put a line telling what the camera focus is (label)
-            if (
-                (otwPlatform.get() not_eq NULL) and 
-                otwPlatform->drawPointer and 
-                *((DrawableBSP *)otwPlatform->drawPointer)->Label()
-            )
+            if ((otwPlatform.get() not_eq NULL) and otwPlatform->drawPointer and
+                *((DrawableBSP*)otwPlatform->drawPointer)->Label())
             {
                 strcpy(tmpStr, CameraLabel[cameraID]);
                 strcat(tmpStr, ": ");
-                strcat(tmpStr, ((DrawableBSP *)otwPlatform->drawPointer)->Label());
+                strcat(tmpStr,
+                       ((DrawableBSP*)otwPlatform->drawPointer)->Label());
                 renderer->TextCenter(0.0F, 0.89F, tmpStr);
             }
             else
@@ -1271,7 +1375,7 @@ void OTWDriverClass::DisplayFrontText(void)
         ShowAerodynamics();
 
     //if (g_bShowFlaps) TJL 11/09/03 Show Flaps
-    if ( not showFlaps)
+    if (not showFlaps)
         ShowFlaps();
 
     if (getNewCameraPos)
@@ -1283,11 +1387,11 @@ void OTWDriverClass::DisplayFrontText(void)
     // RV - Biker
     ShowCatMessage();
 
-    if (showThrustReverse)//Cobra
+    if (showThrustReverse) //Cobra
         ShowThrustReverse();
 
 
-    currentFPS = 1.0F / (float)(frameTime) * 1000.0F;//Cobra
+    currentFPS = 1.0F / (float)(frameTime) * 1000.0F; //Cobra
 
 #ifdef SHOW_FRAME_RATE
 
@@ -1303,31 +1407,22 @@ void OTWDriverClass::DisplayFrontText(void)
         if (gGraphicsTimeLast > gGraphicsTimeLastMax)
             gGraphicsTimeLastMax = gGraphicsTimeLast;
 
-        renderer->SetColor(0xfff0f0f0);  // Keeps this color from randomly changing
+        renderer->SetColor(
+            0xfff0f0f0); // Keeps this color from randomly changing
         extern int vuentitycount, vuentitypeak;
         extern int vumessagecount, vumessagepeakcount;
         VirtualDisplay::SetFont(2);
         sprintf(tmpStr,
-                "FPS %.2f GameTime=%.4f SFX=%3d PObjs=%3d DObjs=%3d Camp T=%2d AVE=%2d MAX=%4d; Sim T=%2d MAX=%4d;"
-                "Graphics T=%2d AVE=%2d MAX=%4d;TrailNodes=%d Voices=%d; Bandwidth=%f",
+                "FPS %.2f GameTime=%.4f SFX=%3d PObjs=%3d DObjs=%3d Camp T=%2d "
+                "AVE=%2d MAX=%4d; Sim T=%2d MAX=%4d;"
+                "Graphics T=%2d AVE=%2d MAX=%4d;TrailNodes=%d Voices=%d; "
+                "Bandwidth=%f",
                 1.0F / (float)(frameTime) * 1000.0F,
-                (float)(vuxGameTime / 1000.0),
-                gTotSfx,
-                numObjsProcessed,
-                numObjsInDrawList,
-                gCampTime,
-                gAveCampTime,
-                gCampTimeMax,
-                gSimTime,
-                gSimTimeMax,
-                gGraphicsTimeLast,
-                gAveSimGraphicsTime,
-                gGraphicsTimeLastMax,
-                gTrailNodeCount,
-                gVoiceCount,
-                0.0f
-               );
-        renderer->TextLeft(-0.95F,  0.95F, tmpStr);
+                (float)(vuxGameTime / 1000.0), gTotSfx, numObjsProcessed,
+                numObjsInDrawList, gCampTime, gAveCampTime, gCampTimeMax,
+                gSimTime, gSimTimeMax, gGraphicsTimeLast, gAveSimGraphicsTime,
+                gGraphicsTimeLastMax, gTrailNodeCount, gVoiceCount, 0.0f);
+        renderer->TextLeft(-0.95F, 0.95F, tmpStr);
         static int lastTime = 0;
 
         if (lastTime not_eq vuxGameTime)
@@ -1337,41 +1432,28 @@ void OTWDriverClass::DisplayFrontText(void)
             lastTime = vuxGameTime;
         }
 
-        renderer->TextLeft(-0.95F,  0.95F, tmpStr);
-        sprintf(tmpStr, "Textures Terr %4d, far %4d Lods %d LodTex %d, Entities cur %4d max %4d VuMessageCount %4d MAX=%4d",
+        renderer->TextLeft(-0.95F, 0.95F, tmpStr);
+        sprintf(tmpStr,
+                "Textures Terr %4d, far %4d Lods %d LodTex %d, Entities cur "
+                "%4d max %4d VuMessageCount %4d MAX=%4d",
                 TheTerrTextures.LoadedTextureCount,
-                TheFarTextures.LoadedTextureCount,
-                ObjectLOD::lodsLoaded, TextureBankClass::textureCount,
-                vuentitycount, vuentitypeak,
+                TheFarTextures.LoadedTextureCount, ObjectLOD::lodsLoaded,
+                TextureBankClass::textureCount, vuentitycount, vuentitypeak,
                 vumessagecount, vumessagepeakcount);
-        renderer->TextLeft(-0.95F,  0.90F, tmpStr);
-        extern int ObjsDeagg,
-               FeatsDeagg,
-               UnitsDeagg,
-               gObjectiveCount,
-               SimFeatures,
-               ObjectNodes,
-               ObjectReferences,
-               gUnitCount;
+        renderer->TextLeft(-0.95F, 0.90F, tmpStr);
+        extern int ObjsDeagg, FeatsDeagg, UnitsDeagg, gObjectiveCount,
+            SimFeatures, ObjectNodes, ObjectReferences, gUnitCount;
         sprintf(tmpStr, "Deagged: Objectives=%5d  Features=%5d - Units %5d",
-                ObjsDeagg,
-                FeatsDeagg,
-                UnitsDeagg
-               );
-        renderer->TextLeft(-0.95F,  0.85F, tmpStr);
+                ObjsDeagg, FeatsDeagg, UnitsDeagg);
+        renderer->TextLeft(-0.95F, 0.85F, tmpStr);
 
         sprintf(tmpStr, "Total:   Objectives=%5d  Features=%5d - Units %5d",
-                gObjectiveCount,
-                SimFeatures,
-                gUnitCount
-               );
-        renderer->TextLeft(-0.95F,  0.80F, tmpStr);
+                gObjectiveCount, SimFeatures, gUnitCount);
+        renderer->TextLeft(-0.95F, 0.80F, tmpStr);
 
-        sprintf(tmpStr, "SimObjectType: Nodes %5d  Referenced %5d",
-                ObjectNodes,
-                ObjectReferences
-               );
-        renderer->TextLeft(-0.95F,  0.75F, tmpStr);
+        sprintf(tmpStr, "SimObjectType: Nodes %5d  Referenced %5d", ObjectNodes,
+                ObjectReferences);
+        renderer->TextLeft(-0.95F, 0.75F, tmpStr);
     }
     else
     {
@@ -1393,37 +1475,43 @@ void OTWDriverClass::DisplayFrontText(void)
 
             numframes++;
 
-            if ((vuxRealTime > newsecond) or (newsecond > vuxRealTime + (2000.0f / (float) g_nNewFPSCounter)))
+            if ((vuxRealTime > newsecond) or
+                (newsecond > vuxRealTime + (2000.0f / (float)g_nNewFPSCounter)))
             {
-                newsecond = vuxRealTime + (1000.0f / (float) g_nNewFPSCounter);
+                newsecond = vuxRealTime + (1000.0f / (float)g_nNewFPSCounter);
                 lastfps = numframes;
                 numframes = 0;
-
             }
 
             int tmp = lTestFlag1;
 
-            renderer->SetColor(0xfff0f0f0);  // Keeps this color from randomly changing
+            renderer->SetColor(
+                0xfff0f0f0); // Keeps this color from randomly changing
 
             lTestFlag1 = 0;
             // FPS here
             sprintf(tmpStr, "FPS %5d", lastfps * g_nNewFPSCounter);
-            strncpy(g_fpsVrStr, tmpStr, sizeof(g_fpsVrStr) - 1);   // Artscout - 2026: cache for the VR eye
+            strncpy(g_fpsVrStr, tmpStr,
+                    sizeof(g_fpsVrStr) -
+                        1); // Artscout - 2026: cache for the VR eye
             VirtualDisplay::SetFont(2);
-            renderer->TextLeft(-0.95F,  0.95F, tmpStr, 2);
+            renderer->TextLeft(-0.95F, 0.95F, tmpStr, 2);
             lTestFlag1 = tmp;
         }
         else
         {
             int tmp = lTestFlag1;
 
-            renderer->SetColor(0xfff0f0f0);  // Keeps this color from randomly changing
+            renderer->SetColor(
+                0xfff0f0f0); // Keeps this color from randomly changing
 
             lTestFlag1 = 0;
             sprintf(tmpStr, "FPS %5.1f", 1.0F / (float)(frameTime) * 1000.0F);
-            strncpy(g_fpsVrStr, tmpStr, sizeof(g_fpsVrStr) - 1);   // Artscout - 2026: cache for the VR eye
+            strncpy(g_fpsVrStr, tmpStr,
+                    sizeof(g_fpsVrStr) -
+                        1); // Artscout - 2026: cache for the VR eye
             VirtualDisplay::SetFont(2);
-            renderer->TextLeft(-0.95F,  0.95F, tmpStr, 2);
+            renderer->TextLeft(-0.95F, 0.95F, tmpStr, 2);
             lTestFlag1 = tmp;
         }
 
@@ -1437,7 +1525,8 @@ void OTWDriverClass::DisplayFrontText(void)
         for (a = 0; a < MAX_PROFILES; a++)
         {
             if (REPORT_PROFILE_NR(a, tmpStr))
-                renderer->TextLeft(-0.95F,  0.90F - (float)y++ / 100 * 5, tmpStr, 2);
+                renderer->TextLeft(-0.95F, 0.90F - (float)y++ / 100 * 5, tmpStr,
+                                   2);
         }
 
         y = 0;
@@ -1446,7 +1535,9 @@ void OTWDriverClass::DisplayFrontText(void)
         {
             REPORT_MESSAGE(a, tmpStr);
 
-            if (tmpStr[0]) renderer->TextRight(0.80F,  0.90F - (float)y++ / 100 * 5, tmpStr, 2);
+            if (tmpStr[0])
+                renderer->TextRight(0.80F, 0.90F - (float)y++ / 100 * 5, tmpStr,
+                                    2);
         }
 
 #endif
@@ -1457,7 +1548,7 @@ void OTWDriverClass::DisplayFrontText(void)
     if (drawSubTitles)
     {
         // Retro 16Dec2003
-        DrawSubTitles();  // Retro 16Dec2003
+        DrawSubTitles(); // Retro 16Dec2003
     }
 
 #ifdef Prof_ENABLED
@@ -1523,7 +1614,7 @@ void OTWDriverClass::DisplayProfilerText(void)
         if (theReport)
         {
             int virtualCursor = Prof_get_cursor();
-            renderer->SetColor(0xffff0000);  // blue
+            renderer->SetColor(0xffff0000); // blue
 
 #define XPOS_NAME -0.95f
 #define XPOS_SELF -0.40f
@@ -1542,7 +1633,7 @@ void OTWDriverClass::DisplayProfilerText(void)
             {
                 if (theReport[titleIndex])
                 {
-                    renderer->TextLeft(xpos,  ypos, theReport[titleIndex]);
+                    renderer->TextLeft(xpos, ypos, theReport[titleIndex]);
                     ypos -= YPOS_DELTA;
                     free(theReport[titleIndex]);
                     theReport[titleIndex] = 0;
@@ -1559,28 +1650,29 @@ void OTWDriverClass::DisplayProfilerText(void)
 
                     switch (i % 4)
                     {
-                        case 1:
-                            xpos = XPOS_COUNT;
-                            break;
+                    case 1:
+                        xpos = XPOS_COUNT;
+                        break;
 
-                        case 2:
-                            xpos = XPOS_NAME;
-                            ypos -= YPOS_DELTA;
-                            break;
+                    case 2:
+                        xpos = XPOS_NAME;
+                        ypos -= YPOS_DELTA;
+                        break;
 
-                        case 3:
-                            xpos = XPOS_SELF;
-                            break;
+                    case 3:
+                        xpos = XPOS_SELF;
+                        break;
 
-                        case 0:
-                            xpos = XPOS_HIER;
-                            break;
+                    case 0:
+                        xpos = XPOS_HIER;
+                        break;
                     }
 
                     if (i == (virtualCursor * 4) + 6)
-                        renderer->SetColor(0xffff0000); // Retro, get back to blue
+                        renderer->SetColor(
+                            0xffff0000); // Retro, get back to blue
 
-                    renderer->TextLeft(xpos,  ypos, theReport[i]);
+                    renderer->TextLeft(xpos, ypos, theReport[i]);
                 }
 
                 free(theReport[i]);
@@ -1596,9 +1688,8 @@ void OTWDriverClass::DisplayProfilerText(void)
 }
 
 
-
-#include "simio.h"   // Retro 31Dec2003
-extern SIMLIB_IO_CLASS IO;   // Retro 31Dec2003
+#include "simio.h" // Retro 31Dec2003
+extern SIMLIB_IO_CLASS IO; // Retro 31Dec2003
 
 // Artscout - 2026: #DX12 п.5 -- the WORLD view-instanced pass for ONE view GROUP (a view pair). Draws
 // terrain/objects/sky ONCE into BOTH slices of that group's 2-slice array swapchain, then leaves the command list
@@ -1606,21 +1697,35 @@ extern SIMLIB_IO_CLASS IO;   // Retro 31Dec2003
 // quad calls it twice: group 0 (periphery 0,1) + group 1 (focus 2,3), each its own foveated resolution -> HALF the
 // geometry submission of the per-eye path (2 passes vs 4). Returns the group's 2 slice RTVs + the group render size.
 // Member of OTWDriverClass so it can call VCock_HeadCalc for the shared/per-eye camera.
-void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer, void* pHeadOrigin, void* pCameraRot,
-                                              int group, void** outSlices, int* outCount, int* outW, int* outH)
+void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer,
+                                              void* pHeadOrigin,
+                                              void* pCameraRot, int group,
+                                              void** outSlices, int* outCount,
+                                              int* outW, int* outH)
 {
-    for (int v = 0; v < 4; ++v) outSlices[v] = NULL;
-    *outCount = 0; *outW = *outH = 0;
+    for (int v = 0; v < 4; ++v)
+        outSlices[v] = NULL;
+    *outCount = 0;
+    *outW = *outH = 0;
     extern D3D12Renderer* g_pD3D12Renderer;
-    if (!g_pOpenXRBackend || !g_pD3D12Renderer) return;
+    if (!g_pOpenXRBackend || !g_pD3D12Renderer)
+        return;
 
-    void* slices[4] = { NULL, NULL, NULL, NULL }; int nV = 0, ew = 0, eh = 0;
-    if (!g_pOpenXRBackend->BeginStereoInstanced(group, slices, &nV, &ew, &eh)) return;   // acquires the group's array image + opens the list
-    nV = 2;   // every VI group is a 2-view pass
-    for (int v = 0; v < 4; ++v) outSlices[v] = slices[v];
-    *outCount = nV; *outW = ew; *outH = eh;
+    void* slices[4] = {NULL, NULL, NULL, NULL};
+    int nV = 0, ew = 0, eh = 0;
+    if (!g_pOpenXRBackend->BeginStereoInstanced(group, slices, &nV, &ew, &eh))
+        return; // acquires the group's array image + opens the list
+    nV = 2; // every VI group is a 2-view pass
+    for (int v = 0; v < 4; ++v)
+        outSlices[v] = slices[v];
+    *outCount = nV;
+    *outW = ew;
+    *outH = eh;
 
-    { extern bool g_bGpuDraw; g_bGpuDraw = false; }
+    {
+        extern bool g_bGpuDraw;
+        g_bGpuDraw = false;
+    }
 
     // Base engine setup (mirrors the per-eye body's StartFrame/StartDraw/ResetState/ClearStencil). Per pass -- each
     // group is its own command list (BeginStereoInstancedFrame reset it), so fresh engine state per group.
@@ -1639,7 +1744,8 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer, void* pHeadOr
     if (group == 0)
     {
         OTWDisplayMode dm = GetOTWDisplayMode();
-        if (dm == Mode3DCockpit || dm == ModePadlockF3) VCock_HeadCalc();
+        if (dm == Mode3DCockpit || dm == ModePadlockF3)
+            VCock_HeadCalc();
     }
 
     // Per-view deltas for the group's TWO views (global view index gv = 2*group + localV; shader SV_ViewID 0/1
@@ -1650,21 +1756,35 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer, void* pHeadOr
     const float sgn = g_fVrViewInstIpdSign;
     Trotation* camRot = (Trotation*)pCameraRot;
     const bool quad = (g_pOpenXRBackend->ViewInstancingGroupCount() > 1);
-    float worldOffs[4 * 3]; for (int i = 0; i < 4 * 3; ++i) worldOffs[i] = 0.0f;
-    float projs[4 * 16];    for (int i = 0; i < 4 * 16; ++i) projs[i] = (i % 17 == 0) ? 1.0f : 0.0f;
+    float worldOffs[4 * 3];
+    for (int i = 0; i < 4 * 3; ++i)
+        worldOffs[i] = 0.0f;
+    float projs[4 * 16];
+    for (int i = 0; i < 4 * 16; ++i)
+        projs[i] = (i % 17 == 0) ? 1.0f : 0.0f;
     for (int localV = 0; localV < 2; ++localV)
     {
         const int gv = 2 * group + localV;
-        Tpoint bv; bv.x = 0.0f; bv.y = sgn * g_pOpenXRBackend->GetEyeLateralOffsetFeet(gv); bv.z = 0.0f;
-        Tpoint wv; MatrixMult(camRot, &bv, &wv);
-        worldOffs[localV*3+0] = wv.x; worldOffs[localV*3+1] = wv.y; worldOffs[localV*3+2] = wv.z;
+        Tpoint bv;
+        bv.x = 0.0f;
+        bv.y = sgn * g_pOpenXRBackend->GetEyeLateralOffsetFeet(gv);
+        bv.z = 0.0f;
+        Tpoint wv;
+        MatrixMult(camRot, &bv, &wv);
+        worldOffs[localV * 3 + 0] = wv.x;
+        worldOffs[localV * 3 + 1] = wv.y;
+        worldOffs[localV * 3 + 2] = wv.z;
         if (quad)
         {
             float fl, fr, fu, fd;
             if (g_pOpenXRBackend->GetEyeFovAngles(gv, &fl, &fr, &fu, &fd))
             {
-                renderer->SetVRFrustum(fl, fr, fu, fd);   // off-axis matProj -> CDXEngine::Projection
-                memcpy(projs + localV*16, (const float*)&CDXEngine::GetObjProjection(), 16 * sizeof(float));
+                renderer->SetVRFrustum(
+                    fl, fr, fu,
+                    fd); // off-axis matProj -> CDXEngine::Projection
+                memcpy(projs + localV * 16,
+                       (const float*)&CDXEngine::GetObjProjection(),
+                       16 * sizeof(float));
             }
         }
     }
@@ -1672,9 +1792,17 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer, void* pHeadOr
     // Base projection for the 2D-screen / CPU-projected sky (VS_Screen; the GPU geometry reads the per-view b5).
     const int gv0 = 2 * group;
     float fl0, fr0, fu0, fd0, hf = renderer->GetFOV();
-    const bool haveF0 = g_pOpenXRBackend->GetEyeFovAngles(gv0, &fl0, &fr0, &fu0, &fd0);
-    if (haveF0) hf = fr0 - fl0;
-    { float vf = (ew > 0) ? 2.0f*(float)atan(tan(hf*0.5f)*(double)eh/(double)ew) : hf; g_pOpenXRBackend->SetSubmitFov(hf, vf); }
+    const bool haveF0 =
+        g_pOpenXRBackend->GetEyeFovAngles(gv0, &fl0, &fr0, &fu0, &fd0);
+    if (haveF0)
+        hf = fr0 - fl0;
+    {
+        float vf =
+            (ew > 0) ?
+                2.0f * (float)atan(tan(hf * 0.5f) * (double)eh / (double)ew) :
+                hf;
+        g_pOpenXRBackend->SetSubmitFov(hf, vf);
+    }
     // Intermediate VR sky fix (until the full 3D skydome): the FOCUS group (group 1, heavily gaze-canted) needs its
     // OFF-AXIS folded into the sky's CPU projection (SetVRFrustum -> the T-matrix fold in DrawScene's SetCamera), or
     // the focus sky doesn't match the periphery -> the "focus sky contrast / wander". The PERIPHERY group (0,
@@ -1686,8 +1814,11 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer, void* pHeadOr
         renderer->SetVRFrustum(fl0, fr0, fu0, fd0);
     else
         renderer->SetFOV(hf);
-    g_pD3D12Renderer->SetViewInstancingParams(nV, worldOffs, quad ? projs : NULL);
+#ifdef _WIN32 // D3D12 view-instancing renderer is Windows-only; Vulkan multiview is a separate path
+    g_pD3D12Renderer->SetViewInstancingParams(nV, worldOffs,
+                                              quad ? projs : NULL);
     g_pD3D12Renderer->SetViewInstancing(true);
+#endif // _WIN32
 
     // Draw the world into both slices (VU crit around the object-list traversal, as the per-eye body).
     // NOTE: the sun/moon are drawn here (in the VI pass) via the shared VS_Screen path -> ONE NDC to both slices, so
@@ -1699,18 +1830,465 @@ void OTWDriverClass::RenderWorldViewInstanced(RenderOTW* renderer, void* pHeadOr
 #else
     VuEnterCriticalSection();
 #endif
-    renderer->DrawScene((struct Tpoint*)pHeadOrigin, (struct Trotation*)pCameraRot);
-    if (DisplayOptions.bZBuffering) renderer->context.FlushPolyLists(false);
+    // #107 (D3D12 VI cockpit): draw the 3D cockpit BSP INTO the view-instanced pass so it rides SV_ViewID per eye
+    // (mirrors the Vulkan STAGE 1b in RenderVulkanVR). Head-centre camera (CurrentEye=-1 set above); the per-eye IPD
+    // comes from SetViewInstancingParams, NOT a per-eye VCock camera. Batched BEFORE DrawScene so its poly-list flushes
+    // with the world (same camera). Gated on g_bVrD3D12ViCockpit -- the per-eye tail keeps the cockpit when OFF (A/B).
+    {
+        extern bool g_bVrD3D12ViCockpit;
+        const OTWDisplayMode dmVI = GetOTWDisplayMode();
+        const bool okCockpitVI =
+            g_bVrD3D12ViCockpit and
+            (dmVI == Mode3DCockpit || dmVI == ModePadlockF3) and
+            DisplayInCockpit() and (otwPlatform.get() != NULL) and
+            not otwPlatform->IsExploding() and not otwPlatform->IsDead() and
+            otwPlatform->IsAwake() and (TheHud->Ownship() != NULL) and
+            not eyeFly;
+        if (okCockpitVI)
+        {
+            pCockpitManager->SetTurbulence();
+            CockAttachWeapons();
+            TheDXEngine.SetPitMode(true);
+            VCock_DrawThePit();
+            TheDXEngine.SetPitMode(false);
+        }
+    }
+    renderer->DrawScene((struct Tpoint*)pHeadOrigin,
+                        (struct Trotation*)pCameraRot);
+    if (DisplayOptions.bZBuffering)
+        renderer->context.FlushPolyLists(false);
 #if NO_VU_LOCK
 #else
     VuExitCriticalSection();
 #endif
 
+#ifdef _WIN32 // D3D12 view-instancing renderer is Windows-only
     g_pD3D12Renderer->SetViewInstancing(false);
+#endif // _WIN32
+}
+
+// Artscout - 2026 (#107 VR-Vulkan): the whole VR frame in ONE multiview pass. Peer of RenderWorldViewInstanced, but
+// the Vulkan copy model renders EVERYTHING once into the N-layer scene array (world + 3D cockpit ride gl_ViewIndex via
+// SetViewInstancingParams; the 2D HUD is collimated -> identical in both eyes, which is correct for VR), then blits
+// each layer into its per-view XR image + xrEndFrame. No per-slice tail (Vulkan multiview pipelines can't switch to a
+// single-layer pass mid-frame, and collimated 2D doesn't need per-eye parallax). Stereo (2) + quad (4) share this path.
+// Artscout - 2026 (#107 GROUPED multiview): render the VR frame as N/2 multiview passes -- stereo = 1 group of 2 views;
+// quad = 2 groups (periphery pair + focus pair), EACH its own foveated size. Mirrors the D3D12 grouped view-instancing
+// (RenderWorldViewInstanced) so foveation survives (a single 4-layer pass would force the focus views to the periphery
+// size = blurry). Each group: EnsureSceneTarget(gW,gH,2) -> per-view IPD/off-axis params -> BeginSceneMultiview ->
+// DrawScene (world into both layers via gl_ViewIndex) -> EndSceneMultiview -> blit the 2 layers into the group's 2 XR
+// swapchains. After the last group, SubmitMultiviewVulkan submits one projection layer + xrEndFrame.
+// STAGE 1a: WORLD ONLY (terrain/sky/objects). The 3D cockpit + RTT displays + 2D overlays (HUD/menu/cursor) are the
+// per-eye tail and are NOT drawn here yet -- gated behind g_bVrVulkanMultiview (default OFF) so the working per-eye
+// path stays the fallback while this is validated in the headset.
+// #107: refresh the cached VR FPS string for the multiview path. DisplayFrontText (which caches g_fpsVrStr) runs only
+// in the per-eye loop / flat mode -- BOTH skipped under multiview -- so without this the FPS quad stays empty (g_fpsVrStr
+// == ""). Simple 1-second frame-count window off vuxRealTime; independent of the flat counter (both just count frames).
+static void RefreshVrFpsStr()
+{
+    extern int ShowFrameRate;
+    if (!ShowFrameRate)
+        return;
+    static float nextSec = 0.0f;
+    static int frames = 0;
+    static int lastFps = 0;
+    frames++;
+    if (vuxRealTime >= nextSec || nextSec > vuxRealTime + 2000.0f)
+    {
+        lastFps = frames;
+        frames = 0;
+        nextSec = vuxRealTime + 1000.0f;
+    }
+    sprintf(g_fpsVrStr, "FPS %5d", lastFps);
+}
+
+void OTWDriverClass::RenderVulkanVR(RenderOTW* renderer, void* pHeadOrigin,
+                                    void* pCameraRot, int nTotalViews)
+{
+    if (!g_pVulkanBackend || !g_pVulkanRenderer || !g_pOpenXRBackend)
+        return;
+    // #107 PERF stage 2: time the WHOLE VR render body. CPU_FRAME minus RenderVR(CPU) = the rest of RenderFrame
+    // (camera/sim-side work shared with D3D12); inside it, TailEye/VCock below split out the per-eye tail cost.
+    extern bool g_bVulkanProfile;
+    struct VrProfGuard
+    {
+        bool on;
+        std::chrono::steady_clock::time_point t0;
+        VrProfGuard(bool en) : on(en)
+        {
+            if (on)
+                t0 = std::chrono::steady_clock::now();
+        }
+        ~VrProfGuard()
+        {
+            if (on)
+                FrameProf_RenderVR(std::chrono::duration<double, std::milli>(
+                                       std::chrono::steady_clock::now() - t0)
+                                       .count());
+        }
+    } _vrProf(g_bVulkanProfile);
+    RefreshVrFpsStr(); // keep the FPS quad's g_fpsVrStr populated (the per-eye DisplayFrontText is skipped here)
+    int nViews = nTotalViews;
+    if (nViews < 1)
+        nViews = 1;
+    if (nViews > 4)
+        nViews = 4;
+    const bool quad = (nViews > 2);
+    const int nGroups =
+        quad ? 2 : 1; // stereo = 1 group of 2; quad = 2 groups of 2
+
+    extern float g_fVrViewInstIpdSign;
+    extern bool g_bVrPerEyeSky;
+    const float sgn = g_fVrViewInstIpdSign;
+    Trotation* camRot = (Trotation*)pCameraRot;
+
+    // STAGE 1b: 3D cockpit. Batched with the HEAD-centre camera (CurrentEye = -1, set below) so its object geometry
+    // rides gl_ViewIndex per-view exactly like the world (the per-eye IPD comes from SetViewInstancingParams, not from
+    // a per-eye VCock camera). Validity mirrors the per-eye loop's cockpit gate (own aircraft, alive, awake, not fly-by).
+    const OTWDisplayMode dm0 = GetOTWDisplayMode();
+    const bool okCockpit =
+        (dm0 == Mode3DCockpit || dm0 == ModePadlockF3) and
+        DisplayInCockpit() and (otwPlatform.get() != NULL) and
+        not otwPlatform->IsExploding() and not otwPlatform->IsDead() and
+        otwPlatform->IsAwake() and (TheHud->Ownship() != NULL) and not eyeFly;
+
+    for (int g = 0; g < nGroups; ++g)
+    {
+        const int gv0 = g * 2; // this group's first (global) view index
+        int gW = 0, gH = 0;
+        if (!g_pOpenXRBackend->GetEyeRenderSize(gv0, &gW, &gH) || gW <= 0 ||
+            gH <= 0)
+            continue;
+        bool tgtOk = g_pVulkanBackend->EnsureSceneTarget(
+            gW, gH, 2); // 2-layer array at THIS group's size
+        {
+            static int s_n = 0;
+            if (s_n < 6)
+            {
+                s_n++;
+                char b[160];
+                _snprintf(
+                    b, sizeof(b) - 1,
+                    "[VR-VK] RenderVulkanVR grp=%d gW=%d gH=%d target=%d\n", g,
+                    gW, gH, (int)tgtOk);
+                b[159] = 0;
+                OutputDebugStringA(b);
+            }
+        }
+        if (!tgtOk)
+            continue;
+        g_pVulkanBackend->SetSceneRenderSize(
+            gW, gH); // the whole (group-sized) target
+
+        // #107 (quad multiview focus fix): rewind the per-frame draw ring for THIS group. The rings are sized per FRAME,
+        // but quad renders 2 groups per frame -- without a reset the 2nd (focus) group overflows the ring and its draws
+        // are dropped (terrain textures / RTT vanish in the focus). Peer of the per-eye ResetFrameRing (RenderFrame).
+        // Safe: the previous group's BlitMultiviewGroupVulkan + EndTailView already waited its GPU work (fences).
+        if (g_pVulkanRenderer)
+            g_pVulkanRenderer->ResetFrameRing();
+
+        // Base engine setup per group (fresh command state -- each group is its own scene submit).
+        renderer->context.StartFrame();
+        renderer->StartDraw();
+        TheDXEngine.ResetState();
+        TheDXEngine.ClearStencil();
+        renderer->VR_SetRes(gW, gH);
+        renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+
+        // Head-centre camera (CurrentEye=-1): ONE VCock_HeadCalc per FRAME (group 0 only -- repeated calls accumulate lean).
+        g_pOpenXRBackend->SetCurrentEye(-1);
+        if (g == 0)
+        {
+            OTWDisplayMode dm = GetOTWDisplayMode();
+            if (dm == Mode3DCockpit || dm == ModePadlockF3)
+                VCock_HeadCalc();
+        }
+
+        // Per-view IPD world offset (= cameraRot * (0, +/-eyeLatFeet, 0)) + per-view off-axis proj (quad) for the 2 views.
+        float worldOffs[2 * 3] = {0};
+        float projs[2 * 16];
+        for (int i = 0; i < 2 * 16; ++i)
+            projs[i] = (i % 17 == 0) ? 1.0f : 0.0f;
+        for (int localV = 0; localV < 2; ++localV)
+        {
+            const int gv = gv0 + localV;
+            // BODY-frame IPD (ownshipRot), NOT head-frame (cameraRot = ownshipRot*headMatrix). The RTT symbology is a
+            // FLAT-canvas approximation (world = ownshipRot*canvas, see vr-quad-mfd-drift) whose small position error is
+            // stable only if the eyepoint IPD is head-INDEPENDENT. A head-frame IPD (cameraRot) rotates the eye offset
+            // with head yaw/pitch -> the flat-canvas error rotates too -> the panels drift under head motion (absent in
+            // the per-eye path, which puts the IPD in headOrigin via ownshipRot*eyeLatFeet). Both the multiview world/
+            // cockpit AND this composite use worldOffs, so keeping them body-frame fixes the drift AND keeps them fused.
+            Tpoint bv;
+            bv.x = 0.0f;
+            bv.y = sgn * g_pOpenXRBackend->GetEyeLateralOffsetFeet(gv);
+            bv.z = 0.0f;
+            Tpoint wv;
+            MatrixMult(&ownshipRot, &bv, &wv);
+            worldOffs[localV * 3 + 0] = wv.x;
+            worldOffs[localV * 3 + 1] = wv.y;
+            worldOffs[localV * 3 + 2] = wv.z;
+            if (quad)
+            {
+                float fl, fr, fu, fd;
+                if (g_pOpenXRBackend->GetEyeFovAngles(gv, &fl, &fr, &fu, &fd))
+                {
+                    renderer->SetVRFrustum(fl, fr, fu, fd);
+                    memcpy(projs + localV * 16,
+                           (const float*)&CDXEngine::GetObjProjection(),
+                           16 * sizeof(float));
+                }
+            }
+        }
+        // Base projection/submit-fov (shared 2D-screen + sky path) from view gv0.
+        float fl0, fr0, fu0, fd0, hf = renderer->GetFOV();
+        const bool haveF0 =
+            g_pOpenXRBackend->GetEyeFovAngles(gv0, &fl0, &fr0, &fu0, &fd0);
+        if (haveF0)
+            hf = fr0 - fl0;
+        {
+            float vf = (gW > 0) ? 2.0f * (float)atan(tan(hf * 0.5f) *
+                                                     (double)gH / (double)gW) :
+                                  hf;
+            g_pOpenXRBackend->SetSubmitFov(hf, vf);
+        }
+        // Focus group (heavily gaze-canted) folds its off-axis into the CPU sky projection; periphery stays symmetric.
+        if (g_bVrPerEyeSky && quad && haveF0 && g == 1)
+            renderer->SetVRFrustum(fl0, fr0, fu0, fd0);
+        else
+            renderer->SetFOV(hf);
+
+        g_pVulkanRenderer->SetViewInstancingParams(2, worldOffs,
+                                                   quad ? projs : NULL);
+        g_pVulkanRenderer->SetViewInstancing(true);
+
+        // Open this group's 2-layer multiview pass and draw the world + 3D cockpit ONCE into both layers (gl_ViewIndex
+        // picks the eye). Cockpit batched head-centre (CurrentEye=-1); it rides gl_ViewIndex like the world. The RTT
+        // panel drift is NOT caused by the cockpit being here (it persists with the cockpit per-eye), so keep it here
+        // (view-instanced = the perf win) and fix the RTT composite drift at its own root.
+        g_pVulkanBackend->BeginSceneMultiview(0xFF203040);
+#if NO_VU_LOCK
+#else
+        VuEnterCriticalSection();
+#endif
+        if (okCockpit)
+        {
+            pCockpitManager->SetTurbulence();
+            CockAttachWeapons();
+            TheDXEngine.SetPitMode(true);
+            VCock_DrawThePit();
+            TheDXEngine.SetPitMode(false);
+        }
+        renderer->DrawScene(
+            (struct Tpoint*)pHeadOrigin,
+            (struct Trotation*)
+                pCameraRot); // #107 PERF: timed inside DrawScene (backend-neutral)
+        // #107 VR-Vulkan: the OWN aircraft. While airborne it is INHIBITED from the object display list
+        // (UpdateVehicleDrawables sets its inhibit flag -- stock Falcon), so in an EXTERNAL view it must be
+        // redrawn explicitly by DrawExternalViewTarget(). The flat / D3D12 per-eye tail does this at
+        // otwloop's external-view block, but the Vulkan grouped-multiview path skips that block entirely ->
+        // the ownship vanished (enemies, never inhibited, still showed). Draw it HERE, inside the multiview
+        // scene pass (view-instancing still on), so it rides gl_ViewIndex and is occluded by terrain like
+        // the rest of the world.
+        if (not okCockpit and otwPlatform.get() not_eq NULL and
+            otwPlatform->drawPointer and not otwPlatform->OnGround())
+            DrawExternalViewTarget();
+        if (DisplayOptions.bZBuffering)
+            renderer->context.FlushPolyLists(false);
+#if NO_VU_LOCK
+#else
+        VuExitCriticalSection();
+#endif
+        g_pVulkanRenderer->SetViewInstancing(false);
+        g_pVulkanBackend->EndSceneMultiview();
+
+        // STAGE 2: per-eye RTT displays (VCock_Exec -> DrawRttQuad) into each array layer via the single-view tail pass,
+        // with the SAME per-eye eyepoint (headCentre + worldOffs[v]) as the multiview world/cockpit. RTT uses the 2D
+        // screen path -> POSITIVE-height viewport (the negative-height BeginTailView default is for the 3D object path).
+        if (okCockpit)
+        {
+            const Tpoint headCentre = headOrigin;
+            for (int localV = 0; localV < 2; ++localV)
+            {
+                // #107 PERF stage 2: time this per-eye tail body (and VCock_Exec inside it separately) -- the prime
+                // suspect for the ~7-10ms of CPU_FRAME the profiler didn't cover (quad runs FOUR of these per frame).
+                std::chrono::steady_clock::time_point _te0;
+                if (g_bVulkanProfile)
+                    _te0 = std::chrono::steady_clock::now();
+                const int gv = gv0 + localV;
+                g_pVulkanBackend->BeginTailView(localV);
+                g_pOpenXRBackend->SetCurrentEye(gv);
+                headOrigin.x = headCentre.x + worldOffs[localV * 3 + 0];
+                headOrigin.y = headCentre.y + worldOffs[localV * 3 + 1];
+                headOrigin.z = headCentre.z + worldOffs[localV * 3 + 2];
+                renderer->VR_SetRes(gW, gH);
+                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                g_pVulkanBackend->SetGScreenSize(gW, gH);
+                float efl, efr, efu, efd;
+                if (quad and g_pOpenXRBackend->GetEyeFovAngles(gv, &efl, &efr,
+                                                               &efu, &efd))
+                    renderer->SetVRFrustum(efl, efr, efu, efd);
+                else
+                    renderer->SetFOV(hf);
+                renderer->StartDraw();
+                TheDXEngine.ResetState();
+                renderer->ClearZBuffer();
+                g_pVulkanBackend
+                    ->TailViewport2D(); // positive-height for the 2D RTT (right-side-up)
+                {
+                    std::chrono::steady_clock::time_point _vc0;
+                    if (g_bVulkanProfile)
+                        _vc0 = std::chrono::steady_clock::now();
+                    VCock_Exec();
+                    if (g_bVulkanProfile)
+                        FrameProf_VCock(
+                            std::chrono::duration<double, std::milli>(
+                                std::chrono::steady_clock::now() - _vc0)
+                                .count());
+                }
+                renderer->context.FlushPending();
+                renderer->EndDraw();
+                g_pVulkanBackend->EndTailView();
+                if (g_bVulkanProfile)
+                    FrameProf_TailEye(
+                        std::chrono::duration<double, std::milli>(
+                            std::chrono::steady_clock::now() - _te0)
+                            .count());
+            }
+            headOrigin = headCentre;
+            g_pOpenXRBackend->SetCurrentEye(-1);
+        }
+
+        // Blit this group's 2 layers into its 2 XR swapchains BEFORE the next group reuses the (single) scene target.
+        { // #107 PERF: time the per-group blit -- it contains xrWaitSwapchainImage (INFINITE), so a large value here
+            // means the frame is XR-pacing-bound (Pimax runtime), NOT CPU record -- bindless would not help.
+            auto _bl = std::chrono::steady_clock::now();
+            g_pOpenXRBackend->BlitMultiviewGroupVulkan(g);
+            FrameProf_BlitGroup(std::chrono::duration<double, std::milli>(
+                                    std::chrono::steady_clock::now() - _bl)
+                                    .count());
+        }
+    }
+
+    // #107 Option 2: head-locked overlay quads -- comms/exit menu + FPS. Rendered ONCE into their own RTTs and STAGED
+    // (SubmitInSceneMenuQuad/SubmitFpsQuad); we DON'T submit the frame here so EndStereoFrame (reached because
+    // inStereoFrame stays true) composites them OVER the projection layer. Without this the in-3D exit/comms menu was
+    // absent under multiview -> no way to leave VR without removing the headset. Mirrors the per-eye loop's xrEye==0 block.
+    {
+        extern bool MouseMenuActive;
+        const bool menuUp = (pMenuManager and pMenuManager->IsActive()) or
+                            InExitMenu() or MouseMenuActive;
+        if (menuUp)
+        {
+            // #107: fresh ring for the menu 2D draw -- after the group loop (esp. quad = 2 groups) the ring is full,
+            // so without this the menu quad's content is dropped (empty quad -> "no AWACS/exit menu in quad multiview").
+            if (g_pVulkanRenderer)
+                g_pVulkanRenderer->ResetFrameRing();
+            const int mw = DisplayOptions.DispWidth,
+                      mh = DisplayOptions.DispHeight;
+            g_pVulkanBackend->EnsureMenuRtt(mw, mh);
+            void* menuTex = g_pVulkanBackend->MenuRttTex();
+            if (menuTex)
+            {
+                g_pVulkanBackend->BindMenuRtt(
+                    true); // transparent + depth clear (exit menu is a 3D BSP -> needs Z)
+                renderer->VR_SetRes(mw, mh);
+                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                g_pVulkanBackend->SetGScreenSize(mw, mh);
+                if (pMenuManager)
+                    pMenuManager->DisplayDraw();
+                DrawExitMenu(); // advances the exit-menu state machine -> ESC works
+                renderer->context
+                    .FlushPending(); // flush the batched 2D/BSP into the menu RTT before the copy
+                g_pVulkanBackend->UnbindSceneRtt(menuTex);
+                g_pOpenXRBackend->SubmitInSceneMenuQuad(menuTex, mw, mh);
+            }
+        }
+    }
+    if (ShowFrameRate and g_fpsVrStr[0])
+    {
+        // #107: fresh ring for the FPS 2D text (the group loop + menu block filled it) -- else the FPS quad is empty.
+        if (g_pVulkanRenderer)
+            g_pVulkanRenderer->ResetFrameRing();
+        const int fw = 512, fh = 128;
+        g_pVulkanBackend->EnsureFpsRtt(fw, fh);
+        void* fpsTex = g_pVulkanBackend->FpsRttTex();
+        if (fpsTex)
+        {
+            g_pVulkanBackend->BindFpsRtt(true);
+            renderer->VR_SetRes(fw, fh);
+            renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+            g_pVulkanBackend->SetGScreenSize(fw, fh);
+            renderer->SetColor(0xff00ff00);
+            VirtualDisplay::SetFont(2);
+            renderer->TextLeft(-0.92F, 0.35F, g_fpsVrStr, 2);
+            renderer->context.FlushPending();
+            g_pVulkanBackend->UnbindSceneRtt(fpsTex);
+            g_pOpenXRBackend->SubmitFpsQuad(fpsTex, fw, fh);
+        }
+    }
+
+    // #59 (per Albert): SUBTITLES/chat as their OWN head-locked quad, positioned where the flat path draws them
+    // (upper view area). Rendered once per frame into a small transparent RTT and composited by the runtime --
+    // crisp at panel resolution and independent of the eye passes, which grouped multiview skips entirely (the
+    // per-eye DisplayFrontText path never runs here, which is why subtitles were missing in VR).
+    if (drawSubTitles and radioLabel)
+    {
+        ColouredSubTitle** theLabels =
+            radioLabel->GetTimeSortedMessages(vuxGameTime);
+        if (theLabels)
+        {
+            if (theLabels[0])
+            {
+                if (g_pVulkanRenderer)
+                    g_pVulkanRenderer
+                        ->ResetFrameRing(); // fresh ring for the 2D text
+                const int sw = 1024, sh = 320;
+                g_pVulkanBackend->EnsureSubRtt(sw, sh);
+                void* subTex = g_pVulkanBackend->SubRttTex();
+                if (subTex)
+                {
+                    g_pVulkanBackend->BindSubRtt(
+                        true); // transparent clear -- alpha keys the panel out
+                    renderer->VR_SetRes(sw, sh);
+                    renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                    g_pVulkanBackend->SetGScreenSize(sw, sh);
+                    VirtualDisplay::SetFont(2);
+                    for (int li = 0; theLabels[li]; ++li)
+                    {
+                        if (theLabels[li]->theString)
+                        {
+                            renderer->SetColor(theLabels[li]->theColour);
+                            renderer->TextLeft(-0.97F, 0.80F - li * 0.36F,
+                                               theLabels[li]->theString);
+                        }
+                    }
+                    renderer->context.FlushPending();
+                    g_pVulkanBackend->UnbindSceneRtt(subTex);
+                    g_pOpenXRBackend->SubmitSubtitleQuad(subTex, sw, sh);
+                }
+            }
+            for (int li = 0; theLabels[li]; ++li)
+            {
+                free(theLabels[li]);
+                theLabels[li] = 0;
+            }
+            free(theLabels);
+        }
+    }
+    // NO submit here -- EndStereoFrame submits the projection layer (projViews filled by BlitMultiviewGroupVulkan)
+    // plus the staged menu/FPS quads.
 }
 
 void OTWDriverClass::RenderFrame()
 {
+    FrameProf_FrameStart(); // #107 PERF: per-frame profiler start (backend-neutral: Vulkan + D3D12 VR)
+    // #107 PERF stage 2b: bisect RenderFrame around the VR body -- PreVR = FrameStart..RenderVulkanVR call,
+    // PostVR = after the call..EndFrame. Locates the ~4.5ms of CPU_FRAME that RenderVR(CPU) doesn't cover.
+    extern bool g_bVulkanProfile;
+    std::chrono::steady_clock::time_point _rfT0, _rfT2;
+    bool _rfHaveT2 = false;
+    if (g_bVulkanProfile)
+        _rfT0 = std::chrono::steady_clock::now();
     int i;
     float dT;
     static int count = 0;
@@ -1745,13 +2323,14 @@ void OTWDriverClass::RenderFrame()
     // Should be coordinated with wombat�s keypresses: if this active
     // is used, then the keypresses (and maybe the 'l' key) should
     // be deactivated
-    if (( not actionCameraMode) and ( not MouseMenuActive))
+    if ((not actionCameraMode) and (not MouseMenuActive))
     {
         // Retro 20Feb2004 - no FOV control in actioncam and when the 'Exit mission' menu is active
         if (IO.AnalogIsUsed(AXIS_FOV))
         {
             //Wombat778 1-15-03 rewrote slighty so that center of axis is the middle of the FOV range
-            float theFOV = (g_fMaximumFOV - g_fMinimumFOV) * IO.GetAxisValue(AXIS_FOV) / 15000.0f;
+            float theFOV = (g_fMaximumFOV - g_fMinimumFOV) *
+                           IO.GetAxisValue(AXIS_FOV) / 15000.0f;
             OTWDriver.SetFOV((g_fMinimumFOV + theFOV) * DTR);
         }
     }
@@ -1760,9 +2339,11 @@ void OTWDriverClass::RenderFrame()
 
     // JAM 17Dec03 - Tidied up a little
     // If we're sitting in our own aircraft...
-    if ((otwPlatform.get() not_eq NULL) and (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
+    if ((otwPlatform.get() not_eq NULL) and
+        (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
     {
-        if (GetOTWDisplayMode() == ModePadlockF3 or (GetOTWDisplayMode() == Mode3DCockpit and mDoSidebar == TRUE))
+        if (GetOTWDisplayMode() == ModePadlockF3 or
+            (GetOTWDisplayMode() == Mode3DCockpit and mDoSidebar == TRUE))
         {
             pPadlockCPManager->SetNextView();
         }
@@ -1787,23 +2368,25 @@ void OTWDriverClass::RenderFrame()
                 //float narrowHFOV = 20.0F * DTR;
                 //Wombat778 9-27-2003 Modified to allow fix to work with the current FOV (not 20 degrees)
                 float narrowHFOV = OTWDriver.GetFOV();
-                float normVFOV = 2 * (float)atan2(3.0f * tan(normHFOV / 2), 4.0f);
-                float narrowVFOV = 2 * (float)atan2(3.0f * tan(narrowHFOV / 2), 4.0f);
+                float normVFOV =
+                    2 * (float)atan2(3.0f * tan(normHFOV / 2), 4.0f);
+                float narrowVFOV =
+                    2 * (float)atan2(3.0f * tan(narrowHFOV / 2), 4.0f);
                 float ratioH = normHFOV / narrowHFOV;
                 float ratioV = normVFOV / narrowVFOV;
 
                 //Wombat778 10-31-2003 changed looking at narrowFOV to checking actual FOV
-                if (
-                    OTWDriver.GetFOV() not_eq 60.0f and pCockpitManager->ShowHud()
-                   and pCockpitManager->GetViewportBounds(&hudViewportBounds, BOUNDS_HUD)
-                )
+                if (OTWDriver.GetFOV() not_eq 60.0f and
+                    pCockpitManager->ShowHud() and
+                    pCockpitManager->GetViewportBounds(&hudViewportBounds,
+                                                       BOUNDS_HUD))
                 {
                     //make sure we don't div with 0
                     if (fabs(pan) > 0.5 * DTR)
                     {
-                        pan = pan / ratioH * (float)(tan(pan) * tan(narrowHFOV / 2) /
-                                                     (tan(pan / ratioH) * tan(normHFOV / 2)))
-                              ;
+                        pan = pan / ratioH *
+                              (float)(tan(pan) * tan(narrowHFOV / 2) /
+                                      (tan(pan / ratioH) * tan(normHFOV / 2)));
                     }
                     else
                     {
@@ -1812,9 +2395,10 @@ void OTWDriverClass::RenderFrame()
 
                     if (fabs(tilt) > 0.5 * DTR)
                     {
-                        tilt = tilt /
-                               ratioV * (float)(tan(tilt) * tan(narrowVFOV / 2) / (tan(tilt / ratioV) * tan(normVFOV / 2)))
-                               ;
+                        tilt =
+                            tilt / ratioV *
+                            (float)(tan(tilt) * tan(narrowVFOV / 2) /
+                                    (tan(tilt / ratioV) * tan(normVFOV / 2)));
                     }
                     else
                     {
@@ -1826,7 +2410,8 @@ void OTWDriverClass::RenderFrame()
             }
             else
             {
-                OTWDriver.SetCameraPanTilt(pCockpitManager->GetPan(), pCockpitManager->GetTilt());
+                OTWDriver.SetCameraPanTilt(pCockpitManager->GetPan(),
+                                           pCockpitManager->GetTilt());
             }
 
             //dpc LookCloserFix end
@@ -1848,19 +2433,25 @@ void OTWDriverClass::RenderFrame()
 
     // 2002-02-15 ADDED BY S.G.
     // If the otwPlatform is NOT us, don't do its cockpit stuff since I'll never get in his seat
-    if ( not otwPlatform or otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
+    if (not otwPlatform or
+        otwPlatform.get() not_eq SimDriver.GetPlayerAircraft())
     {
         okToDoCockpitStuff = FALSE;
     }
 
-    if ((GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit) and mDoSidebar)
+    if ((GetOTWDisplayMode() == ModePadlockF3 or
+         GetOTWDisplayMode() == Mode3DCockpit) and
+        mDoSidebar)
     {
         // Set viewport for Padlock
-        renderer->SetViewport(padlockWindow[0][0], padlockWindow[0][1], padlockWindow[0][2], padlockWindow[0][3]);
+        renderer->SetViewport(padlockWindow[0][0], padlockWindow[0][1],
+                              padlockWindow[0][2], padlockWindow[0][3]);
     }
-    else if (otwPlatform.get() == SimDriver.GetPlayerAircraft() and pCockpitManager)
+    else if (otwPlatform.get() == SimDriver.GetPlayerAircraft() and
+             pCockpitManager)
     {
-        renderer->SetViewport(-1.0F, 1.0F, 1.0F, pCockpitManager->GetCockpitMaskTop());
+        renderer->SetViewport(-1.0F, 1.0F, 1.0F,
+                              pCockpitManager->GetCockpitMaskTop());
     }
     else
     {
@@ -1871,7 +2462,8 @@ void OTWDriverClass::RenderFrame()
     UpdateVehicleDrawables();
 
     // Add the F3 Padlock if required
-    if ((GetOTWDisplayMode() == ModePadlockF3) and (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
+    if ((GetOTWDisplayMode() == ModePadlockF3) and
+        (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
     {
         if (tgtStep)
         {
@@ -1883,17 +2475,17 @@ void OTWDriverClass::RenderFrame()
     //START_PROFILE("RENDER 3DPIT");
     // Update flight instrument data used by HUD and cockpit
     // 2002-02-15 MODIFIED BY S.G. Added okToDoCockpitStuff so this is done only when the cockpit is from our plane
-    if ((otwPlatform.get() not_eq NULL) and (otwPlatform->IsAirplane()) and okToDoCockpitStuff)
+    if ((otwPlatform.get() not_eq NULL) and (otwPlatform->IsAirplane()) and
+        okToDoCockpitStuff)
     {
-        AircraftClass *ac = static_cast<AircraftClass*>(otwPlatform.get());
+        AircraftClass* ac = static_cast<AircraftClass*>(otwPlatform.get());
         FackClass* mFaults = ac->mFaults;
-        float tmpVal, tmpVal2;//TJL 01/14/04 multi-engine
+        float tmpVal, tmpVal2; //TJL 01/14/04 multi-engine
 
         // Check for massive hardware failure
-        if ( not (mFaults and 
-              mFaults->GetFault(FaultClass::cadc_fault) and 
-              mFaults->GetFault(FaultClass::ins_fault) and 
-              mFaults->GetFault(FaultClass::gps_fault)))
+        if (not(mFaults and mFaults->GetFault(FaultClass::cadc_fault) and
+                mFaults->GetFault(FaultClass::ins_fault) and
+                mFaults->GetFault(FaultClass::gps_fault)))
         {
             cockpitFlightData.x = ac->XPos();
             cockpitFlightData.y = ac->YPos();
@@ -1930,7 +2522,9 @@ void OTWDriverClass::RenderFrame()
 
             // Project wind speed
 
-            yaw = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&posit) * (float)sin(yaw);
+            yaw =
+                ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&posit) *
+                (float)sin(yaw);
 
             // Find angle
             yaw = (float)atan2(yaw, cockpitFlightData.vt);
@@ -1942,16 +2536,19 @@ void OTWDriverClass::RenderFrame()
         cockpitFlightData.gearPos = ac->af->gearPos;
         cockpitFlightData.speedBrake = ac->af->dbrake;
         cockpitFlightData.ftit = ac->af->rpm * 135.0F + 700.0F;
-        cockpitFlightData.ftit2 = ac->af->rpm2 * 135.0F + 700.0F;//TJL 01/14/04 multi-engine
+        cockpitFlightData.ftit2 =
+            ac->af->rpm2 * 135.0F + 700.0F; //TJL 01/14/04 multi-engine
         cockpitFlightData.rpm = 100.0F * ac->af->rpm;
-        cockpitFlightData.rpm2 = 100.0F * ac->af->rpm2;//TJL 01/14/04 Multi-engine
+        cockpitFlightData.rpm2 =
+            100.0F * ac->af->rpm2; //TJL 01/14/04 Multi-engine
         cockpitFlightData.internalFuel = ac->af->Fuel();
         cockpitFlightData.externalFuel = ac->af->ExternalFuel();
         // MD -- 20031011: make sure all fuel values needed are updated even if we aren't looking at the gauge
-        ac->af->GetFuel(&cockpitFlightData.fwd, &cockpitFlightData.aft, &cockpitFlightData.total);
+        ac->af->GetFuel(&cockpitFlightData.fwd, &cockpitFlightData.aft,
+                        &cockpitFlightData.total);
         cockpitFlightData.epuFuel = ac->af->EPUFuel();
         tmpVal = ac->af->rpm;
-        tmpVal2 = ac->af->rpm2;//TJL 01/14/04 multi-engine
+        tmpVal2 = ac->af->rpm2; //TJL 01/14/04 multi-engine
 
         // Nozzle Position
         if (tmpVal <= 0.0F)
@@ -2014,17 +2611,17 @@ void OTWDriverClass::RenderFrame()
             OTWDriver.pCockpitManager->mpIcp->Exec();
             OTWDriver.pCockpitManager->mpIcp->ExecPfl();
 
-            if (mFaults and 
-                ac->HasPower(AircraftClass::UFCPower) and 
- not mFaults->GetFault(FaultClass::ufc_fault)
-               )
+            if (mFaults and ac->HasPower(AircraftClass::UFCPower) and
+                not mFaults->GetFault(FaultClass::ufc_fault))
             {
                 for (int j = 0; j < 5; j++)
                 {
                     for (int i = 0; i < 26; i++)
                     {
-                        cockpitFlightData.DEDLines[j][i] = pCockpitManager->mpIcp->DEDLines[j][i];
-                        cockpitFlightData.Invert[j][i] = pCockpitManager->mpIcp->Invert[j][i];
+                        cockpitFlightData.DEDLines[j][i] =
+                            pCockpitManager->mpIcp->DEDLines[j][i];
+                        cockpitFlightData.Invert[j][i] =
+                            pCockpitManager->mpIcp->Invert[j][i];
                     }
                 }
 
@@ -2032,15 +2629,18 @@ void OTWDriverClass::RenderFrame()
                 {
                     for (int k = 0; k < 26; k++)
                     {
-                        cockpitFlightData.PFLLines[h][k] = pCockpitManager->mpIcp->PFLLines[h][k];
-                        cockpitFlightData.PFLInvert[h][k] = pCockpitManager->mpIcp->PFLInvert[h][k];
+                        cockpitFlightData.PFLLines[h][k] =
+                            pCockpitManager->mpIcp->PFLLines[h][k];
+                        cockpitFlightData.PFLInvert[h][k] =
+                            pCockpitManager->mpIcp->PFLInvert[h][k];
                     }
                 }
 
                 //and UFC Tacan channel
                 if (gNavigationSys)
                 {
-                    cockpitFlightData.UFCTChan = gNavigationSys->GetTacanChannel(NavigationSystem::ICP);
+                    cockpitFlightData.UFCTChan =
+                        gNavigationSys->GetTacanChannel(NavigationSystem::ICP);
                 }
             }
         }
@@ -2051,7 +2651,8 @@ void OTWDriverClass::RenderFrame()
         //AUX Tacan channel
         if (gNavigationSys)
         {
-            cockpitFlightData.AUXTChan = gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM);
+            cockpitFlightData.AUXTChan =
+                gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM);
         }
 
         // get the position of the three landing gears
@@ -2063,39 +2664,51 @@ void OTWDriverClass::RenderFrame()
         cockpitFlightData.AdiIlsHorPos = pCockpitManager->ADIGpDevReading;
         cockpitFlightData.AdiIlsVerPos = pCockpitManager->ADIGsDevReading;
 
-        if (
-            otwPlatform.get() == NULL or
-            otwPlatform->IsExploding() or
-            otwPlatform->IsDead() or
- not otwPlatform->IsAwake() or
-            TheHud->Ownship() == NULL
-        )
+        if (otwPlatform.get() == NULL or otwPlatform->IsExploding() or
+            otwPlatform->IsDead() or not otwPlatform->IsAwake() or
+            TheHud->Ownship() == NULL)
         {
             okToDoCockpitStuff = FALSE;
         }
 
         // HSI States
-        if (okToDoCockpitStuff and pCockpitManager->mpHsi and SimDriver.GetPlayerAircraft())
+        if (okToDoCockpitStuff and pCockpitManager->mpHsi and
+            SimDriver.GetPlayerAircraft())
         {
             pCockpitManager->mpHsi->Exec();
         }
 
-        cockpitFlightData.courseState = pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_CRS_STATE);
-        cockpitFlightData.headingState = pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_HDG_STATE);
-        cockpitFlightData.totalStates = pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_TOTAL_STATES);
+        cockpitFlightData.courseState =
+            pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_CRS_STATE);
+        cockpitFlightData.headingState =
+            pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_HDG_STATE);
+        cockpitFlightData.totalStates =
+            pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_TOTAL_STATES);
         // HSI Values
-        cockpitFlightData.courseDeviation = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_CRS_DEVIATION);
-        cockpitFlightData.desiredCourse = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS);
-        cockpitFlightData.distanceToBeacon = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DISTANCE_TO_BEACON);
-        cockpitFlightData.bearingToBeacon = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_BEARING_TO_BEACON);
-        cockpitFlightData.currentHeading = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
-        cockpitFlightData.desiredHeading = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_HEADING);
-        cockpitFlightData.deviationLimit = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DEV_LIMIT);
-        cockpitFlightData.halfDeviationLimit = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_HALF_DEV_LIMIT);
-        cockpitFlightData.localizerCourse = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_LOCALIZER_CRS);
-        cockpitFlightData.airbaseX = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_AIRBASE_X);
-        cockpitFlightData.airbaseY = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_AIRBASE_Y);
-        cockpitFlightData.totalValues = pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_TOTAL_VALUES);
+        cockpitFlightData.courseDeviation =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_CRS_DEVIATION);
+        cockpitFlightData.desiredCourse =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS);
+        cockpitFlightData.distanceToBeacon =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DISTANCE_TO_BEACON);
+        cockpitFlightData.bearingToBeacon =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_BEARING_TO_BEACON);
+        cockpitFlightData.currentHeading =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_CURRENT_HEADING);
+        cockpitFlightData.desiredHeading =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_HEADING);
+        cockpitFlightData.deviationLimit =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DEV_LIMIT);
+        cockpitFlightData.halfDeviationLimit =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_HALF_DEV_LIMIT);
+        cockpitFlightData.localizerCourse =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_LOCALIZER_CRS);
+        cockpitFlightData.airbaseX =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_AIRBASE_X);
+        cockpitFlightData.airbaseY =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_AIRBASE_Y);
+        cockpitFlightData.totalValues =
+            pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_TOTAL_VALUES);
 
         //ATARIBABY looks like FlightData::ToTrue is bad
         //cannot hold all needed states: false,true an 2
@@ -2130,22 +2743,26 @@ void OTWDriverClass::RenderFrame()
 
         // MD -- 20031011: Moved here to ensure the bits are set regardless of whether the player
         // is looking at the cockpit panels or not.
-        if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_ADI_OFF_IN))
+        if (SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::INS_ADI_OFF_IN))
             cockpitFlightData.ClearHsiBit(FlightData::ADI_OFF);
         else
             cockpitFlightData.SetHsiBit(FlightData::ADI_OFF);
 
-        if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_ADI_AUX_IN))
+        if (SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::INS_ADI_AUX_IN))
             cockpitFlightData.ClearHsiBit(FlightData::ADI_AUX);
         else
             cockpitFlightData.SetHsiBit(FlightData::ADI_AUX);
 
-        if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_HSI_OFF_IN))
+        if (SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::INS_HSI_OFF_IN))
             cockpitFlightData.ClearHsiBit(FlightData::HSI_OFF);
         else
             cockpitFlightData.SetHsiBit(FlightData::HSI_OFF);
 
-        if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::BUP_ADI_OFF_IN))
+        if (SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::BUP_ADI_OFF_IN))
             cockpitFlightData.ClearHsiBit(FlightData::BUP_ADI_OFF);
         else
             cockpitFlightData.SetHsiBit(FlightData::BUP_ADI_OFF);
@@ -2155,17 +2772,22 @@ void OTWDriverClass::RenderFrame()
         else
             cockpitFlightData.ClearHsiBit(FlightData::AVTR);
 
-        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE or
+            SimDriver.GetPlayerAircraft()->currentPower ==
+                AircraftClass::PowerNone)
             cockpitFlightData.SetHsiBit(FlightData::ADI_GS);
         else
             cockpitFlightData.ClearHsiBit(FlightData::ADI_GS);
 
-        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE or
+            SimDriver.GetPlayerAircraft()->currentPower ==
+                AircraftClass::PowerNone)
             cockpitFlightData.SetHsiBit(FlightData::ADI_LOC);
         else
             cockpitFlightData.ClearHsiBit(FlightData::ADI_LOC);
 
-        if (SimDriver.GetPlayerAircraft()->currentPower < AircraftClass::PowerEmergencyBus)
+        if (SimDriver.GetPlayerAircraft()->currentPower <
+            AircraftClass::PowerEmergencyBus)
         {
             cockpitFlightData.SetHsiBit(FlightData::VVI);
             cockpitFlightData.SetHsiBit(FlightData::AOA);
@@ -2180,7 +2802,7 @@ void OTWDriverClass::RenderFrame()
 
         // Oil Pressure
         tmpVal = ac->af->rpm;
-        tmpVal2 = ac->af->rpm2;//TJL 01/14/04 multi-engine
+        tmpVal2 = ac->af->rpm2; //TJL 01/14/04 multi-engine
 
         if (tmpVal < 0.7F)
         {
@@ -2190,7 +2812,8 @@ void OTWDriverClass::RenderFrame()
         }
         else if (tmpVal <= 0.85)
         {
-            tmpVal = 40.0F + (100.0F - 40.0F) / (0.85F - 0.7F) * (tmpVal - 0.7F);
+            tmpVal =
+                40.0F + (100.0F - 40.0F) / (0.85F - 0.7F) * (tmpVal - 0.7F);
         }
         else if (tmpVal <= 1.0)
         {
@@ -2198,7 +2821,8 @@ void OTWDriverClass::RenderFrame()
         }
         else if (tmpVal <= 1.03)
         {
-            tmpVal = 100.0F + (103.0F - 100.0F) / (1.03F - 1.0F) * (tmpVal - 1.00F);
+            tmpVal =
+                100.0F + (103.0F - 100.0F) / (1.03F - 1.0F) * (tmpVal - 1.00F);
         }
         else
         {
@@ -2214,7 +2838,8 @@ void OTWDriverClass::RenderFrame()
         }
         else if (tmpVal2 <= 0.85)
         {
-            tmpVal2 = 40.0F + (100.0F - 40.0F) / (0.85F - 0.7F) * (tmpVal2 - 0.7F);
+            tmpVal2 =
+                40.0F + (100.0F - 40.0F) / (0.85F - 0.7F) * (tmpVal2 - 0.7F);
         }
         else if (tmpVal2 <= 1.0)
         {
@@ -2222,7 +2847,8 @@ void OTWDriverClass::RenderFrame()
         }
         else if (tmpVal2 <= 1.03)
         {
-            tmpVal2 = 100.0F + (103.0F - 100.0F) / (1.03F - 1.0F) * (tmpVal2 - 1.00F);
+            tmpVal2 =
+                100.0F + (103.0F - 100.0F) / (1.03F - 1.0F) * (tmpVal2 - 1.00F);
         }
         else
         {
@@ -2242,11 +2868,14 @@ void OTWDriverClass::RenderFrame()
         {
             //if ( not mHelmetIsUR)
             // Retro 8Jan2004 - almost killed the shared mem for good, silly me :/
-            if (( not mHelmetIsUR) and ( not g_bEnableTrackIR))
+            if ((not mHelmetIsUR) and (not g_bEnableTrackIR))
             {
-                cockpitFlightData.headYaw = ((FlightData*)gSharedMemPtr)->headYaw;
-                cockpitFlightData.headPitch = ((FlightData*)gSharedMemPtr)->headPitch;
-                cockpitFlightData.headRoll = ((FlightData*)gSharedMemPtr)->headRoll;
+                cockpitFlightData.headYaw =
+                    ((FlightData*)gSharedMemPtr)->headYaw;
+                cockpitFlightData.headPitch =
+                    ((FlightData*)gSharedMemPtr)->headPitch;
+                cockpitFlightData.headRoll =
+                    ((FlightData*)gSharedMemPtr)->headRoll;
             }
 
             memcpy(gSharedMemPtr, &cockpitFlightData, sizeof(FlightData));
@@ -2291,7 +2920,6 @@ void OTWDriverClass::RenderFrame()
     }
 
 
-
     // Compute the new viewpoint position
     ObserverPosition.x = viewPos.x = focusPoint.x + cameraPos.x;
     ObserverPosition.y = viewPos.y = focusPoint.y + cameraPos.y;
@@ -2301,7 +2929,8 @@ void OTWDriverClass::RenderFrame()
     ObserverPitch = flyingEye->Pitch();
     ObserverRoll = flyingEye->Roll();
 
-    if ((otwPlatform.get() not_eq NULL) and /*otwPlatform->IsAirplane() and */ gSharedIntellivibe)
+    if ((otwPlatform.get() not_eq NULL) and
+        /*otwPlatform->IsAirplane() and */ gSharedIntellivibe)
     {
         g_intellivibeData.eyex = viewPos.x;
         g_intellivibeData.eyey = viewPos.y;
@@ -2314,11 +2943,15 @@ void OTWDriverClass::RenderFrame()
 
         if (otwPlatform->IsAirplane())
         {
-            AircraftClass *air = static_cast<AircraftClass*>(otwPlatform.get());
+            AircraftClass* air = static_cast<AircraftClass*>(otwPlatform.get());
             g_intellivibeData.Gforce = air->GetNz();
         }
 
-        memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
+        if (gSharedIntellivibe)
+            memcpy(
+                gSharedIntellivibe, &g_intellivibeData,
+                sizeof(
+                    g_intellivibeData)); // optional IntelliVibe export; NULL on Linux
     }
 
     // edg: this is a band aid solution for the action cam.  It seems that
@@ -2367,7 +3000,8 @@ void OTWDriverClass::RenderFrame()
         {
             for (i = 0; i < camCount; i++)
             {
-                if (FalconLocalSession->GetCameraEntity(i) == gOtwCameraLocation)
+                if (FalconLocalSession->GetCameraEntity(i) ==
+                    gOtwCameraLocation)
                 {
                     break;
                 }
@@ -2380,7 +3014,8 @@ void OTWDriverClass::RenderFrame()
                 //if ( not F4IsBadReadPtr(FalconLocalSession->GetCameraEntity(1), sizeof(VuEntity))) // JB 010318 CTD
                 if (FalconLocalSession->CameraCount() > 1)
                 {
-                    FalconLocalSession->RemoveCamera(FalconLocalSession->GetCameraEntity(1));
+                    FalconLocalSession->RemoveCamera(
+                        FalconLocalSession->GetCameraEntity(1));
                 }
 
                 FalconLocalSession->AttachCamera(gOtwCameraLocation);
@@ -2407,19 +3042,19 @@ void OTWDriverClass::RenderFrame()
     // MLR 2003-10-17  10-27 returned to normal
     F4SoundFXSetCamPosAndOrient(&viewPos, &cameraRot, &cameraVel);
 
-    TheTimeManager.SetTime(vuxGameTime + (unsigned long)FloatToInt32(todOffset * 1000.0F));
+    TheTimeManager.SetTime(vuxGameTime +
+                           (unsigned long)FloatToInt32(todOffset * 1000.0F));
     ((WeatherClass*)realWeather)->UpdateWeather();
 
     BuildExternalNearList();
 
 
     // Set up the black out effects
-    if (
-        DisplayInCockpit() and doGLOC and 
-        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and (otwPlatform.get() not_eq NULL)
-    )
+    if (DisplayInCockpit() and doGLOC and
+        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and
+        (otwPlatform.get() not_eq NULL))
     {
-        AircraftClass *ac = static_cast<AircraftClass*>(otwPlatform.get());
+        AircraftClass* ac = static_cast<AircraftClass*>(otwPlatform.get());
         float glocFactor = ac->glocFactor;
 
         if (glocFactor >= 0.0F)
@@ -2428,7 +3063,8 @@ void OTWDriverClass::RenderFrame()
         }
         else
         {
-            renderer->SetTunnelPercent(-glocFactor, FloatToInt32(-255.0F * glocFactor));
+            renderer->SetTunnelPercent(-glocFactor,
+                                       FloatToInt32(-255.0F * glocFactor));
         }
     }
     else if (endFlightTimer)
@@ -2485,30 +3121,42 @@ void OTWDriverClass::RenderFrame()
     if (xrN >= 1 and g_bXrDiagClearOnly)
     {
         g_pOpenXRBackend->DiagClearEyesAndEnd();
-        return;   // skip the engine render + normal EndStereoFrame this frame
+        return; // skip the engine render + normal EndStereoFrame this frame
     }
     // #DX12 п.5: single-pass view-instanced stereo. When active, the per-eye loop below is skipped and a
     // dedicated VI branch (after the loop) draws the WORLD once into both eye slices, then a per-slice tail
     // draws the cockpit + RTT displays + 2D overlays per eye. Any prerequisite missing -> per-eye loop.
-    const bool xrVI = (xrN >= 1) and g_pOpenXRBackend and g_pOpenXRBackend->ViewInstancingActive();
+    const bool xrVI = (xrN >= 1) and g_pOpenXRBackend and
+                      g_pOpenXRBackend->ViewInstancingActive();
     const int xrPasses = (xrN >= 1) ? xrN : 1;
     // Artscout - 2026: #DX12 п.5 -- ONE-SHOT unambiguous verdict in the log (OutputDebugString; all engine logs
     // go there). Prints exactly ON or OFF + the reason breakdown, so it's clear whether view instancing engaged.
     {
         static bool s_viDiagDone = false;
         extern bool g_bVrViewInstancing;
-        if (not s_viDiagDone and g_bVrViewInstancing and xrN >= 1 and g_pOpenXRBackend)
+        if (not s_viDiagDone and g_bVrViewInstancing and xrN >= 1 and
+            g_pOpenXRBackend)
         {
             s_viDiagDone = true;
-            bool act = false, flag = false, ster = false, tier = false, sh = false;
-            g_pOpenXRBackend->GetViewInstancingDiag(&act, &flag, &ster, &tier, &sh);
+            bool act = false, flag = false, ster = false, tier = false,
+                 sh = false;
+            g_pOpenXRBackend->GetViewInstancingDiag(&act, &flag, &ster, &tier,
+                                                    &sh);
             char b[256];
             int grp = xrVI ? g_pOpenXRBackend->ViewInstancingGroupCount() : 0;
-            if (xrVI) _snprintf(b, sizeof(b) - 1, "[VIEW-INSTANCING] ==> ON (%s, %d group(s), %d pass(es))\n",
-                                (grp > 1) ? "2-pass QUAD foveated" : "single-pass stereo", grp, grp);
-            else      _snprintf(b, sizeof(b) - 1, "[VIEW-INSTANCING] ==> OFF (per-eye). reason: flag=%d stereo=%d tier=%d shaders=%d active=%d\n",
-                                (int)flag, (int)ster, (int)tier, (int)sh, (int)act);
-            b[sizeof(b) - 1] = 0; OutputDebugStringA(b);
+            if (xrVI)
+                _snprintf(
+                    b, sizeof(b) - 1,
+                    "[VIEW-INSTANCING] ==> ON (%s, %d group(s), %d pass(es))\n",
+                    (grp > 1) ? "2-pass QUAD foveated" : "single-pass stereo",
+                    grp, grp);
+            else
+                _snprintf(b, sizeof(b) - 1,
+                          "[VIEW-INSTANCING] ==> OFF (per-eye). reason: "
+                          "flag=%d stereo=%d tier=%d shaders=%d active=%d\n",
+                          (int)flag, (int)ster, (int)tier, (int)sh, (int)act);
+            b[sizeof(b) - 1] = 0;
+            OutputDebugStringA(b);
         }
     }
     // Artscout - 2026: publish the per-frame "VR actually presenting stereo" flag. xrN >= 1 means
@@ -2516,9 +3164,11 @@ void OTWDriverClass::RenderFrame()
     // means we fall through to the FLAT desktop render. Per-frame VR rendering branches (popmenu reposition,
     // vcock mouse-pick projection) gate on this -- NOT on g_bUseOpenXR, which stays true with the headset off.
     extern bool g_bVrFrameActive;
-    extern bool g_bUseD3D12;   // #DX12 п.5: VR eye-target routing (D3D12 binds the eye in BeginEye, D3D11 here)
+    extern bool
+        g_bUseD3D12; // #DX12 п.5: VR eye-target routing (D3D12 binds the eye in BeginEye, D3D11 here)
     g_bVrFrameActive = (xrN >= 1);
-    const int xrSavedResX = (xrN >= 1) ? renderer->VR_GetResX() : 0;   // restore after the loop
+    const int xrSavedResX =
+        (xrN >= 1) ? renderer->VR_GetResX() : 0; // restore after the loop
     const int xrSavedResY = (xrN >= 1) ? renderer->VR_GetResY() : 0;
     // #DX12 п.5: world view-instanced pass. Draw the terrain/objects/sky ONCE per GROUP into that group's 2 eye
     // slices, then a per-slice tail draws the cockpit + RTT displays + 2D overlays. This is where the bulk of the
@@ -2527,9 +3177,24 @@ void OTWDriverClass::RenderFrame()
     // is issued at its FIRST view (even xrEye) and the group's list closed+submitted at its LAST view (odd xrEye),
     // folded into the existing per-eye loop (xrEye stays GLOBAL for the tail's cursor/overlay logic; slice = xrEye&1).
     // All heavily gated on xrVI -> the per-eye path is byte-for-byte unchanged when view instancing is off.
-    void* xrSlices[4] = { NULL, NULL, NULL, NULL }; int xrViCount = 0, xrViW = 0, xrViH = 0;
+    void* xrSlices[4] = {NULL, NULL, NULL, NULL};
+    int xrViCount = 0, xrViW = 0, xrViH = 0;
 
-    for (int xrEye = 0; xrEye < xrPasses; ++xrEye)
+    // #107 VR-Vulkan (full per-eye path, DX12 parity): the DEFAULT Vulkan VR path goes through the SAME per-eye loop
+    // as the D3D non-VI path (BeginEye/EndEye have Vulkan branches: render the full scene into the 1-view scene target,
+    // blit into each eye's XR image). This reuses the cockpit batch, DrawScene, the HUD/RTT/2D tail, and the per-eye
+    // offsets/fov (submitFov) -> correct IPD + cockpit + HUD for free. Stereo (2) + quad (4) = 2 or 4 loop passes.
+    //
+    // #107 GROUPED multiview (g_bVrVulkanMultiview, default OFF): when enabled, SKIP the per-eye loop and render the
+    // frame as N/2 multiview passes via RenderVulkanVR (after the loop) -- half the world geometry submission. STAGE 1a
+    // renders WORLD ONLY (no cockpit/HUD/menu tail yet), so this is opt-in for validation. Requires a real stereo/quad
+    // XR frame (xrN >= 2) on the Vulkan backend.
+    extern bool g_bUseVulkan;
+    extern bool g_bVrVulkanMultiview;
+    const bool vkMV = (xrN >= 2) and g_bUseVulkan and
+                      (g_pVulkanBackend != NULL) and g_bVrVulkanMultiview;
+
+    for (int xrEye = 0; xrEye < (vkMV ? 0 : xrPasses); ++xrEye)
     {
         bool xrEyeOk = false;
         // #DX12 п.5: hoisted to the loop body so the 2D-overlay block below can size to the eye without
@@ -2548,14 +3213,25 @@ void OTWDriverClass::RenderFrame()
                 // xrEye) draw that group's world into both slices + open its list; then bind this view's slice.
                 const int xrLocal = xrEye & 1;
                 if (xrLocal == 0)
-                    RenderWorldViewInstanced(renderer, &headOrigin, &cameraRot, xrEye / 2, xrSlices, &xrViCount, &xrViW, &xrViH);
-                void* sliceRtv = (xrLocal >= 0 && xrLocal < 4) ? xrSlices[xrLocal] : NULL;
-                eyeW = xrViW; eyeH = xrViH; eyeRtv = sliceRtv;
+                    RenderWorldViewInstanced(renderer, &headOrigin, &cameraRot,
+                                             xrEye / 2, xrSlices, &xrViCount,
+                                             &xrViW, &xrViH);
+                void* sliceRtv =
+                    (xrLocal >= 0 && xrLocal < 4) ? xrSlices[xrLocal] : NULL;
+                eyeW = xrViW;
+                eyeH = xrViH;
+                eyeRtv = sliceRtv;
                 eyeBound = (sliceRtv != NULL);
-                if (eyeBound) g_pD3D12Backend->BindEyeSlice(xrLocal, (unsigned __int64)(SIZE_T)sliceRtv, eyeW, eyeH);
+#ifdef _WIN32 // D3D12 eye-slice bind is Windows-only
+                if (eyeBound)
+                    g_pD3D12Backend->BindEyeSlice(
+                        xrLocal, (unsigned __int64)(SIZE_T)sliceRtv, eyeW,
+                        eyeH);
+#endif // _WIN32
             }
             else
-                eyeBound = g_pOpenXRBackend->BeginEye(xrEye, &eyeRtv, &eyeW, &eyeH);
+                eyeBound =
+                    g_pOpenXRBackend->BeginEye(xrEye, &eyeRtv, &eyeW, &eyeH);
             if (eyeBound)
             {
                 xrEyeOk = true;
@@ -2572,16 +3248,18 @@ void OTWDriverClass::RenderFrame()
                 // projection -> images fuse (no double vision) and the world fills the lenses.
                 float fl, fr, fu, fd;
                 float hf;
-                bool haveFov = g_pOpenXRBackend->GetEyeFovAngles(xrEye, &fl, &fr, &fu, &fd);
+                bool haveFov = g_pOpenXRBackend->GetEyeFovAngles(xrEye, &fl,
+                                                                 &fr, &fu, &fd);
                 if (haveFov)
-                    hf = fr - fl;                       // total horizontal fov from the runtime
+                    hf = fr - fl; // total horizontal fov from the runtime
                 else
                     hf = renderer->GetFOV();
                 // Artscout - 2026 (#58/#60): branch off the ACTUAL session view config, not the g_bUseQuadViews
                 // option. The session is created once; toggling the option in-game does NOT recreate it, so the
                 // flag can disagree with reality (4-view session but flag now false) -> the focus views would be
                 // projected with a symmetric FOV and the cockpit garbles. IsQuadViews() = what the session really is.
-                const bool sessionQuad = g_pOpenXRBackend && g_pOpenXRBackend->IsQuadViews();
+                const bool sessionQuad =
+                    g_pOpenXRBackend && g_pOpenXRBackend->IsQuadViews();
                 if (sessionQuad and haveFov)
                 {
                     // Quad-views: render each view with its TRUE off-axis (asymmetric) frustum matching
@@ -2593,153 +3271,261 @@ void OTWDriverClass::RenderFrame()
                 {
                     renderer->SetFOV(hf);
                     // vertical fov the engine actually renders = derived from hf + eye aspect; submit that.
-                    float vf = (eyeW > 0) ? 2.0f * (float)atan(tan(hf * 0.5f) * (double)eyeH / (double)eyeW) : hf;
+                    float vf = (eyeW > 0) ? 2.0f * (float)atan(tan(hf * 0.5f) *
+                                                               (double)eyeH /
+                                                               (double)eyeW) :
+                                            hf;
                     g_pOpenXRBackend->SetSubmitFov(hf, vf);
                 }
             }
-            { extern bool g_bGpuDraw; g_bGpuDraw = false; }   // reset per-eye GPU-draw flag
+            {
+                extern bool g_bGpuDraw;
+                g_bGpuDraw = false;
+            } // reset per-eye GPU-draw flag
         }
 
-    // Draw the scene for this eye (D3D12 clears the eye RTV in BeginEyeFrame). Scoped block so the
-    // per-eye render locals don't leak into the surrounding eye-loop iteration.
-    {
-    // Actually draw the scene
-    renderer->context.StartFrame();
-    renderer->StartDraw();
-    // Avoid any remaining from TV colors bitand Settings
-    TheDXEngine.ResetState();
-
-    // Select the right mode
-    if (renderer->context.NVGmode) TheDXEngine.SetState(DX_NVG);
-
-    if (renderer->context.TVmode) TheDXEngine.SetState(DX_TV);
-
-    if (renderer->context.IRmode) TheDXEngine.SetState(DX_NVG);
-
-    // * WARNING * PASSED IN THE DrawScene() function, more approriate for all calls
-    // Clear any light list to be rebuilt
-    //TheDXEngine.ClearLights();
-    // Clear the stencil Buffer used for the Pits
-    TheDXEngine.ClearStencil();
-    // reset 2D Engine
-
-    // * WARNING * PASSED IN THE DrawScene() function, more approriate for all calls
-    //TheDXEngine.DX2D_Reset();
-
-    // COBRA - RED - REDO FOR DX ENGINE //
-    // Get the Display mode here for following checks
-    OTWDisplayMode DisplayMode = GetOTWDisplayMode();
-
-    // Now check if in the Pit and the platform is still valid to eventually draw the Pit...
-    if (
- not DisplayInCockpit() or
-        otwPlatform.get() == NULL or
-        otwPlatform->IsExploding() or
-        otwPlatform->IsDead() or
- not otwPlatform->IsAwake() or
-        TheHud->Ownship() == NULL or
-        eyeFly
-    )
-    {
-        // If not valid, then signal it
-        okToDoCockpitStuff = FALSE;
-
-        // and switch to external view
-        switch (DisplayMode)
+        // Draw the scene for this eye (D3D12 clears the eye RTV in BeginEyeFrame). Scoped block so the
+        // per-eye render locals don't leak into the surrounding eye-loop iteration.
         {
-            case Mode2DCockpit:
-            case ModePadlockF3:
-            case Mode3DCockpit:
-            case ModePadlockEFOV:
-            case ModeHud:
-                SetOTWDisplayMode(ModeOrbit);
-                break;
+            // #107 VR-Vulkan: rewind the per-frame draw rings for THIS eye. VR renders up to 4 eyes per real frame while the
+            // rings are sized per frame -- without this the later (focus) eyes overflow and their draws are dropped (terrain
+            // textures / RTT / cockpit vanish in the focus views). Safe: the previous eye's EndEye waited its sceneFence.
+            {
+                extern bool g_bUseVulkan;
+                if (g_bUseVulkan and g_pVulkanRenderer)
+                    g_pVulkanRenderer->ResetFrameRing();
+            }
+            // Actually draw the scene
+            renderer->context.StartFrame();
+            renderer->StartDraw();
+            // Avoid any remaining from TV colors bitand Settings
+            TheDXEngine.ResetState();
 
-            default:
-                break;
-        }
-    }
+            // Select the right mode
+            if (renderer->context.NVGmode)
+                TheDXEngine.SetState(DX_NVG);
 
-    // START_PROFILE("RENDER 3DPIT");
-    // COBRA - RED - OK, here critical session starts, the Objects MUST NOT BE TOUCHED IN ANY WAY
-    // sfr: @todo taking crits out
+            if (renderer->context.TVmode)
+                TheDXEngine.SetState(DX_TV);
+
+            if (renderer->context.IRmode)
+                TheDXEngine.SetState(DX_NVG);
+
+            // * WARNING * PASSED IN THE DrawScene() function, more approriate for all calls
+            // Clear any light list to be rebuilt
+            //TheDXEngine.ClearLights();
+            // Clear the stencil Buffer used for the Pits
+            TheDXEngine.ClearStencil();
+            // reset 2D Engine
+
+            // * WARNING * PASSED IN THE DrawScene() function, more approriate for all calls
+            //TheDXEngine.DX2D_Reset();
+
+            // COBRA - RED - REDO FOR DX ENGINE //
+            // Get the Display mode here for following checks
+            OTWDisplayMode DisplayMode = GetOTWDisplayMode();
+
+            // Now check if in the Pit and the platform is still valid to eventually draw the Pit...
+            if (not DisplayInCockpit() or otwPlatform.get() == NULL or
+                otwPlatform->IsExploding() or otwPlatform->IsDead() or
+                not otwPlatform->IsAwake() or TheHud->Ownship() == NULL or
+                eyeFly)
+            {
+                // If not valid, then signal it
+                okToDoCockpitStuff = FALSE;
+
+                // and switch to external view
+                switch (DisplayMode)
+                {
+                case Mode2DCockpit:
+                case ModePadlockF3:
+                case Mode3DCockpit:
+                case ModePadlockEFOV:
+                case ModeHud:
+                    SetOTWDisplayMode(ModeOrbit);
+                    break;
+
+                default:
+                    break;
+                }
+            }
+
+            // START_PROFILE("RENDER 3DPIT");
+            // COBRA - RED - OK, here critical session starts, the Objects MUST NOT BE TOUCHED IN ANY WAY
+            // sfr: @todo taking crits out
 #if NO_VU_LOCK
 #else
-    VuEnterCriticalSection();
+            VuEnterCriticalSection();
 #endif
 
-    // If in 3D Pit, the pit has to be drawn as 1st item helping z-Buffering
-    if (okToDoCockpitStuff)
-    {
-        // Calc Turubulence for the 2D pit stuff
-        pCockpitManager->SetTurbulence();
+            // If in 3D Pit, the pit has to be drawn as 1st item helping z-Buffering
+            if (okToDoCockpitStuff)
+            {
+                // Calc Turubulence for the 2D pit stuff
+                pCockpitManager->SetTurbulence();
 
-        // only Hud Mode
-        if (DisplayMode == ModeHud)
-        {
-            // just orient head
-            VCock_HeadCalc();
-        }
+                // only Hud Mode
+                if (DisplayMode == ModeHud)
+                {
+                    // just orient head
+                    VCock_HeadCalc();
+                }
 
-        if (DisplayMode == Mode3DCockpit or DisplayMode == ModePadlockF3)
-        {
-            // DX - Attach Weapons HERE, BEFORE any rendering
-            CockAttachWeapons();
-            VCock_HeadCalc();
-            // RED - SIGNAL THIS IS PIT STUFF...
-            TheDXEngine.SetPitMode(true);
-            // Draw the Pit
-            VCock_DrawThePit();
+                // #107 (D3D12 VI cockpit): when the 3D cockpit is drawn in the view-instanced world pass
+                // (RenderWorldViewInstanced, g_bVrD3D12ViCockpit), skip the per-eye cockpit batch here so it is NOT drawn twice.
+                extern bool g_bVrD3D12ViCockpit;
+                const bool viCockpitActive = xrVI and g_bVrD3D12ViCockpit;
+                if ((DisplayMode == Mode3DCockpit or
+                     DisplayMode == ModePadlockF3) and
+                    not viCockpitActive)
+                {
+                    // DX - Attach Weapons HERE, BEFORE any rendering
+                    CockAttachWeapons();
+                    VCock_HeadCalc();
+                    // RED - SIGNAL THIS IS PIT STUFF...
+                    TheDXEngine.SetPitMode(true);
+                    // Draw the Pit
+                    VCock_DrawThePit();
 
-            //ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform); //588
-            //VCock_Exec(); //588
+                    //ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform); //588
+                    //VCock_Exec(); //588
 
-            // RED - END OF PIT STUFF....
-            TheDXEngine.SetPitMode(false);
-        }
+                    // RED - END OF PIT STUFF....
+                    TheDXEngine.SetPitMode(false);
+                }
 
-        if (DisplayMode == Mode2DCockpit)
-        {
-            ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
-            // DX - Attach Weapons HERE, BEFORE any rendering
-            pCockpitManager->CockAttachWeapons();
-            pCockpitManager->GeometryDraw();
-        }
-    }
+                if (DisplayMode == Mode2DCockpit)
+                {
+                    ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
+                    // DX - Attach Weapons HERE, BEFORE any rendering
+                    pCockpitManager->CockAttachWeapons();
+                    pCockpitManager->GeometryDraw();
+                }
+            }
 
-    // Set the font here for labels
-    oldFont = VirtualDisplay::CurFont();
-    VirtualDisplay::SetFont(pCockpitManager->LabelFont());
-    //STOP_PROFILE("RENDER 3DPIT");
+            // Set the font here for labels
+            oldFont = VirtualDisplay::CurFont();
+            VirtualDisplay::SetFont(pCockpitManager->LabelFont());
+            //STOP_PROFILE("RENDER 3DPIT");
 
-    //START_PROFILE("RENDER DRAWSCENE");
-    // #DX12 п.5: under view instancing the world (terrain/objects/sky) was already drawn ONCE into both eye
-    // slices by RenderWorldViewInstanced; this per-eye tail only adds the cockpit + RTT displays + 2D overlays.
-    if (not xrVI)
-        renderer->DrawScene((struct Tpoint *) &headOrigin, (struct Trotation *) &cameraRot);
-    else
-        // The cockpit (VCock_DrawThePit) batched with the head-relative camera, but its poly-list is FLUSHED
-        // later with whatever camera is current -- and DrawScene is what normally sets it to (headOrigin,
-        // cameraRot) before the flush. Skipping DrawScene left the stale head camera -> the cockpit rendered
-        // sideways (camera == headMatrix instead of cameraRot). Set the world camera here, exactly as DrawScene.
-        renderer->SetCamera((struct Tpoint *) &headOrigin, (struct Trotation *) &cameraRot);
-    //STOP_PROFILE("RENDER DRAWSCENE");
+            //START_PROFILE("RENDER DRAWSCENE");
+            // #DX12 п.5: under view instancing the world (terrain/objects/sky) was already drawn ONCE into both eye
+            // slices by RenderWorldViewInstanced; this per-eye tail only adds the cockpit + RTT displays + 2D overlays.
+            // #107 (D3D12 VI cockpit): when the 3D cockpit is drawn view-instanced (g_bVrD3D12ViCockpit), it rode this eye's
+            // IPD (worldOffs = cameraRot * eyeLatFeet, see RenderWorldViewInstanced). But the per-eye RTT/cursor tail below
+            // draws at the HEAD-CENTRE headOrigin (no per-eye parallax) -> the RTT panels + cursor ring drift/double against
+            // the cockpit. Fuse them: add the SAME per-eye IPD (identical frame/sign/index as RenderWorldViewInstanced) to
+            // headOrigin for the tail, then restore it (the 2D HUD overlays after are collimated -> head-centre).
+            Tpoint viTailHeadSave = headOrigin;
+            bool viTailAlign = false;
+            {
+                extern bool g_bVrD3D12ViCockpit;
+                extern float g_fVrViewInstIpdSign;
+                const OTWDisplayMode dmT = GetOTWDisplayMode();
+                if (xrVI and g_bVrD3D12ViCockpit and g_pOpenXRBackend and
+                    (dmT == Mode3DCockpit or dmT == ModePadlockF3))
+                {
+                    Tpoint bv;
+                    bv.x = 0.0f;
+                    bv.y = g_fVrViewInstIpdSign *
+                           g_pOpenXRBackend->GetEyeLateralOffsetFeet(xrEye);
+                    bv.z = 0.0f;
+                    Tpoint wv;
+                    MatrixMult(&cameraRot, &bv, &wv);
+                    headOrigin.x += wv.x;
+                    headOrigin.y += wv.y;
+                    headOrigin.z += wv.z;
+                    viTailAlign = true;
+                }
+            }
+            if (not xrVI)
+                renderer->DrawScene((struct Tpoint*)&headOrigin,
+                                    (struct Trotation*)&cameraRot);
+            else
+                // The cockpit (VCock_DrawThePit) batched with the head-relative camera, but its poly-list is FLUSHED
+                // later with whatever camera is current -- and DrawScene is what normally sets it to (headOrigin,
+                // cameraRot) before the flush. Skipping DrawScene left the stale head camera -> the cockpit rendered
+                // sideways (camera == headMatrix instead of cameraRot). Set the world camera here, exactly as DrawScene.
+                renderer->SetCamera((struct Tpoint*)&headOrigin,
+                                    (struct Trotation*)&cameraRot);
+            //STOP_PROFILE("RENDER DRAWSCENE");
 
-    // Artscout - 2026 (VR quad-views): do NOT clear off-axis here. The RTT display PANELS (HUD/MFD/DED/
-    // RWR) are placed via VirtualDisplay::DrawRttQuad -> r3d->TransformPoint, i.e. the CPU terrain path
-    // (T matrix), NOT matProj. They need the SAME off-axis fold as the terrain, or they project to the
-    // symmetric center while each eye's off-center fov expects them shifted -> the panels diverge per
-    // eye. Keep off-axis armed through the instrument pass; the post-loop SetFOV (and next eye's
-    // SetVRFrustum) reset it. (The RTT symbology itself draws in its own RTT viewport -- off-axis-safe.)
+            // Artscout - 2026 (VR quad-views): do NOT clear off-axis here. The RTT display PANELS (HUD/MFD/DED/
+            // RWR) are placed via VirtualDisplay::DrawRttQuad -> r3d->TransformPoint, i.e. the CPU terrain path
+            // (T matrix), NOT matProj. They need the SAME off-axis fold as the terrain, or they project to the
+            // symmetric center while each eye's off-center fov expects them shifted -> the panels diverge per
+            // eye. Keep off-axis armed through the instrument pass; the post-loop SetFOV (and next eye's
+            // SetVRFrustum) reset it. (The RTT symbology itself draws in its own RTT viewport -- off-axis-safe.)
 
-    VirtualDisplay::SetFont(oldFont);
+            VirtualDisplay::SetFont(oldFont);
 
-    //Now if in the pit the instumentation
-    if (okToDoCockpitStuff)
-    {
-        // Flush the polys before rendering instruments
-        if (DisplayOptions.bZBuffering)
-        {
+            //Now if in the pit the instumentation
+            if (okToDoCockpitStuff)
+            {
+                // Flush the polys before rendering instruments
+                if (DisplayOptions.bZBuffering)
+                {
+                    // If camera changed, wait for updates
+                    if (CameraChange)
+                    {
+                        // Ok, camera changed, a tme out to setup fast loading
+                        BigLoadTimeOut = GetTickCount() + BIG_LOAD_TIMEOUT;
+                        //ObjectLOD::WaitUpdates();
+                        //TheTextureBank.WaitUpdates();
+                        CameraChange = false;
+                    }
+
+                    // #48: do NOT clear depth between terrain and the object flush -- keep one
+                    // coherent depth buffer so world objects are occluded by the ground (and the
+                    // pit, drawn at near-Z, still beats the terrain). The sky background is pushed
+                    // to the far plane (RenderOTW::DrawSky, context.m_2DPrimZ) so it no longer
+                    // occludes the cockpit. ClearZBuffer() below is a no-op in D3D11.
+                    renderer->context.FlushPolyLists(false);
+                    renderer->ClearZBuffer();
+                }
+
+                if (DisplayMode == ModePadlockF3)
+                {
+                    ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
+                    Padlock_DrawSquares(TRUE);
+                    VCock_Exec();
+                }
+
+                if (DisplayMode == Mode3DCockpit) //588
+                {
+                    ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
+                    //START_PROFILE("VCOCK EXEC");
+                    VCock_Exec();
+                    //STOP_PROFILE("VCOCK EXEC");
+                } //588
+
+                if (DisplayMode == ModePadlockEFOV)
+                {
+                    ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
+                    Padlock_DrawSquares(TRUE);
+                }
+
+                // #107 (D3D12 VI cockpit): RTT/cursor tail done -- restore the head-centre eyepoint for the collimated 2D HUD.
+                if (viTailAlign)
+                {
+                    headOrigin = viTailHeadSave;
+                    renderer->SetCamera((struct Tpoint*)&headOrigin,
+                                        (struct Trotation*)&cameraRot);
+                }
+            }
+            else
+            {
+                if ((otwPlatform.get() not_eq NULL) and
+                    otwPlatform->drawPointer)
+                {
+                    if (not otwPlatform->OnGround())
+                        DrawExternalViewTarget();
+                }
+
+                if (g_bLensFlare)
+                    Draw2DLensFlare(renderer);
+            }
+
             // If camera changed, wait for updates
             if (CameraChange)
             {
@@ -2750,257 +3536,229 @@ void OTWDriverClass::RenderFrame()
                 CameraChange = false;
             }
 
-            // #48: do NOT clear depth between terrain and the object flush -- keep one
-            // coherent depth buffer so world objects are occluded by the ground (and the
-            // pit, drawn at near-Z, still beats the terrain). The sky background is pushed
-            // to the far plane (RenderOTW::DrawSky, context.m_2DPrimZ) so it no longer
-            // occludes the cockpit. ClearZBuffer() below is a no-op in D3D11.
-            renderer->context.FlushPolyLists(false);
-            renderer->ClearZBuffer();
-        }
 
-        if (DisplayMode  == ModePadlockF3)
-        {
-            ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
-            Padlock_DrawSquares(TRUE);
-            VCock_Exec();
-        }
+            if (BigLoadTimeOut > GetTickCount())
+            {
+                ObjectLOD::SetRatedLoad(false);
+                TheTextureBank.SetRatedLoad(false);
+            }
+            else
+            {
+                ObjectLOD::SetRatedLoad(true);
+                TheTextureBank.SetRatedLoad(true);
+            }
 
-        if (DisplayMode  == Mode3DCockpit) //588
-        {
-            ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
-            //START_PROFILE("VCOCK EXEC");
-            VCock_Exec();
-            //STOP_PROFILE("VCOCK EXEC");
-        } //588
+            // Now flush anything coming from the Pits... they use a own camera
+            if (DisplayOptions.bZBuffering)
+            {
+                renderer->context.FlushPolyLists();
+            }
 
-        if (DisplayMode  == ModePadlockEFOV)
-        {
-            ShiAssert(SimDriver.GetPlayerAircraft() == otwPlatform);
-            Padlock_DrawSquares(TRUE);
-        }
-    }
-    else
-    {
-        if ((otwPlatform.get() not_eq NULL) and otwPlatform->drawPointer)
-        {
-            if ( not otwPlatform->OnGround()) DrawExternalViewTarget();
-        }
+            // If in 3D Pit, the pit has to be drawn as 1st item helping z-Buffering
+            if (okToDoCockpitStuff)
+            {
+                // DX - Detach Weapons HERE, AFTER any rendering
+                if (DisplayMode == Mode3DCockpit or
+                    DisplayMode == ModePadlockF3)
+                    CockDetachWeapons();
 
-        if (g_bLensFlare) Draw2DLensFlare(renderer);
-    }
+                if (DisplayMode == Mode2DCockpit)
+                    pCockpitManager->CockDetachWeapons();
+            }
 
-    // If camera changed, wait for updates
-    if (CameraChange)
-    {
-        // Ok, camera changed, a tme out to setup fast loading
-        BigLoadTimeOut = GetTickCount() + BIG_LOAD_TIMEOUT;
-        //ObjectLOD::WaitUpdates();
-        //TheTextureBank.WaitUpdates();
-        CameraChange = false;
-    }
-
-
-    if (BigLoadTimeOut > GetTickCount())
-    {
-        ObjectLOD::SetRatedLoad(false);
-        TheTextureBank.SetRatedLoad(false);
-    }
-    else
-    {
-        ObjectLOD::SetRatedLoad(true);
-        TheTextureBank.SetRatedLoad(true);
-    }
-
-    // Now flush anything coming from the Pits... they use a own camera
-    if (DisplayOptions.bZBuffering)
-    {
-        renderer->context.FlushPolyLists();
-    }
-
-    // If in 3D Pit, the pit has to be drawn as 1st item helping z-Buffering
-    if (okToDoCockpitStuff)
-    {
-        // DX - Detach Weapons HERE, AFTER any rendering
-        if (DisplayMode == Mode3DCockpit or DisplayMode == ModePadlockF3) CockDetachWeapons();
-
-        if (DisplayMode == Mode2DCockpit) pCockpitManager->CockDetachWeapons();
-    }
-
-    // COBRA - RED - REDO FOR DX ENGINE - END
-    // sfr: @todo taking crits out
+            // COBRA - RED - REDO FOR DX ENGINE - END
+            // sfr: @todo taking crits out
 #if NO_VU_LOCK
 #else
-    VuExitCriticalSection();
+            VuExitCriticalSection();
 #endif
 
-    // Clear out the "near" list now that we're done drawing it
-    FlushNearList();
+            // Clear out the "near" list now that we're done drawing it
+            FlushNearList();
 
-    //START_PROFILE("RENDER 2DPIT");
-    // Do the first layer of drawn cockpit stuff (pre BLT)
-    if (okToDoCockpitStuff)
-    {
-        // Should we Draw the HUD?
-        //START_PROFILE("HUD");
-        if (pCockpitManager->ShowHud())
-        {
-            if (GetOTWDisplayMode() == ModePadlockEFOV or
-                GetOTWDisplayMode() == ModeHud or
-                GetOTWDisplayMode() == Mode2DCockpit
-               )
+            //START_PROFILE("RENDER 2DPIT");
+            // Do the first layer of drawn cockpit stuff (pre BLT)
+            if (okToDoCockpitStuff)
             {
-                Draw2DHud();
-            }
-        }
-
-        //STOP_PROFILE("HUD");
-        //START_PROFILE("PADLOCK");
-
-        // Should we draw the EFOV window?
-        SimMoverClass *mover = static_cast<SimMoverClass*>(otwPlatform.get());
-
-        if ((GetOTWDisplayMode() == ModePadlockEFOV) and (mover->targetList))
-        {
-            // SCR: Was a condition above, but in EFOV view it MUST be the player, right?
-            ShiAssert(otwPlatform->IsLocal());
-
-            Padlock_CheckPadlock(dT);
-            PadlockEFOV_Draw();
-        }
-
-        if (GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit)
-        {
-            if (mDoSidebar)
-            {
-                PadlockF3_Draw();
-            }
-        }
-
-        //STOP_PROFILE("PADLOCK");
-
-        // mfds and rwr
-        if (GetOTWDisplayMode() == Mode2DCockpit)
-        {
-            renderer->EndDraw();
-
-            //START_PROFILE("COCKPIT MANAGER EXEC");
-            pCockpitManager->Exec();
-            //STOP_PROFILE("COCKPIT MANAGER EXEC");
-
-            renderer->StartDraw();
-            float top, left, bottom, right;
-            renderer->GetViewport(&left, &top, &right, &bottom); // save the current viewport
-            renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F); // set fullscreen viewport
-            pCockpitManager->DisplayBlit3D(); // draw 3d stuff
-            renderer->EndDraw();
-            renderer->SetViewport(left, top, right, bottom); // restore viewport
-
-            // Draw in the 2D cockpit
-            // sfr: it seems we need this for the map only... the rest is all 3d
-            pCockpitManager->DisplayBlit();
-            pCockpitManager->DisplayDraw();
-
-            // mfds and RWR
-            PlayerRwrClass* theRwr;
-            AircraftClass *playerAircraft = (AircraftClass *)SimDriver.GetPlayerAircraft();
-
-            if (playerAircraft)
-            {
-                // rwr
-                //START_PROFILE("RWR");
-                theRwr = (PlayerRwrClass*)FindSensor(playerAircraft, SensorClass::RWR);
-
-                if (pCockpitManager->ShowRwr() and theRwr)
+                // Should we Draw the HUD?
+                //START_PROFILE("HUD");
+                if (pCockpitManager->ShowHud())
                 {
-                    if ( not gDoCockpitHack)
+                    if (GetOTWDisplayMode() == ModePadlockEFOV or
+                        GetOTWDisplayMode() == ModeHud or
+                        GetOTWDisplayMode() == Mode2DCockpit)
                     {
-                        renderer->StartDraw();
-                        pCockpitManager->GetViewportBounds(&viewportBounds, BOUNDS_RWR);
-                        // COBRA - RED- Pit Vibrations
-                        pCockpitManager->AddTurbulenceVp(&viewportBounds);
-                        renderer->SetColor(0xFF00FF00);
-                        renderer->SetViewport(
-                            viewportBounds.left, viewportBounds.top, viewportBounds.right, viewportBounds.bottom
-                        );
-                        theRwr->SetGridVisible(FALSE);
-                        theRwr->Display(renderer);
+                        Draw2DHud();
+                    }
+                }
+
+                //STOP_PROFILE("HUD");
+                //START_PROFILE("PADLOCK");
+
+                // Should we draw the EFOV window?
+                SimMoverClass* mover =
+                    static_cast<SimMoverClass*>(otwPlatform.get());
+
+                if ((GetOTWDisplayMode() == ModePadlockEFOV) and
+                    (mover->targetList))
+                {
+                    // SCR: Was a condition above, but in EFOV view it MUST be the player, right?
+                    ShiAssert(otwPlatform->IsLocal());
+
+                    Padlock_CheckPadlock(dT);
+                    PadlockEFOV_Draw();
+                }
+
+                if (GetOTWDisplayMode() == ModePadlockF3 or
+                    GetOTWDisplayMode() == Mode3DCockpit)
+                {
+                    if (mDoSidebar)
+                    {
+                        PadlockF3_Draw();
+                    }
+                }
+
+                //STOP_PROFILE("PADLOCK");
+
+                // mfds and rwr
+                if (GetOTWDisplayMode() == Mode2DCockpit)
+                {
+                    renderer->EndDraw();
+
+                    //START_PROFILE("COCKPIT MANAGER EXEC");
+                    pCockpitManager->Exec();
+                    //STOP_PROFILE("COCKPIT MANAGER EXEC");
+
+                    renderer->StartDraw();
+                    float top, left, bottom, right;
+                    renderer->GetViewport(&left, &top, &right,
+                                          &bottom); // save the current viewport
+                    renderer->SetViewport(-1.0F, 1.0F, 1.0F,
+                                          -1.0F); // set fullscreen viewport
+                    pCockpitManager->DisplayBlit3D(); // draw 3d stuff
+                    renderer->EndDraw();
+                    renderer->SetViewport(left, top, right,
+                                          bottom); // restore viewport
+
+                    // Draw in the 2D cockpit
+                    // sfr: it seems we need this for the map only... the rest is all 3d
+                    pCockpitManager->DisplayBlit();
+                    pCockpitManager->DisplayDraw();
+
+                    // mfds and RWR
+                    PlayerRwrClass* theRwr;
+                    AircraftClass* playerAircraft =
+                        (AircraftClass*)SimDriver.GetPlayerAircraft();
+
+                    if (playerAircraft)
+                    {
+                        // rwr
+                        //START_PROFILE("RWR");
+                        theRwr = (PlayerRwrClass*)FindSensor(playerAircraft,
+                                                             SensorClass::RWR);
+
+                        if (pCockpitManager->ShowRwr() and theRwr)
+                        {
+                            if (not gDoCockpitHack)
+                            {
+                                renderer->StartDraw();
+                                pCockpitManager->GetViewportBounds(
+                                    &viewportBounds, BOUNDS_RWR);
+                                // COBRA - RED- Pit Vibrations
+                                pCockpitManager->AddTurbulenceVp(
+                                    &viewportBounds);
+                                renderer->SetColor(0xFF00FF00);
+                                renderer->SetViewport(viewportBounds.left,
+                                                      viewportBounds.top,
+                                                      viewportBounds.right,
+                                                      viewportBounds.bottom);
+                                theRwr->SetGridVisible(FALSE);
+                                theRwr->Display(renderer);
+                                renderer->EndDraw();
+                            }
+                        }
+
+                        //STOP_PROFILE("RWR");
+
+                        // mfds
+                        //START_PROFILE("MFD");
+                        oldFont = VirtualDisplay::CurFont();
+                        VirtualDisplay::SetFont(pCockpitManager->MFDFont());
+
+                        for (unsigned int i = BOUNDS_MFDLEFT; i <= BOUNDS_MFD4;
+                             ++i)
+                        {
+                            if (pCockpitManager->GetViewportBounds(
+                                    &viewportBounds, i))
+                            {
+                                // COBRA - RED- Pit Vibrations
+                                unsigned int mfd = i - BOUNDS_MFDLEFT;
+                                pCockpitManager->AddTurbulenceVp(
+                                    &viewportBounds);
+                                MfdDisplay[mfd]->SetImageBuffer(
+                                    OTWImage, viewportBounds.left,
+                                    viewportBounds.top, viewportBounds.right,
+                                    viewportBounds.bottom);
+                                MfdDisplay[mfd]->Exec(FALSE, FALSE);
+                            }
+                        }
+
+                        VirtualDisplay::SetFont(oldFont);
+                        //STOP_PROFILE("MFD");
+                    }
+                }
+                else if (
+                    (GetOTWDisplayMode() == ModeHud or
+                     GetOTWDisplayMode() == ModePadlockEFOV) and
+                    not g_bNoMFDsIn1View) //MI added g_bNoMFDsIn1View check. Removes MFD's if TRUE
+                {
+                    // SetFont
+                    oldFont = VirtualDisplay::CurFont();
+                    VirtualDisplay::SetFont(pCockpitManager->MFDFont());
+                    renderer->EndDraw();
+
+                    for (i = 0; i < NUM_MFDS; i++)
+                    {
+                        MfdDisplay[i]->Exec(TRUE, FALSE);
+                    }
+
+                    VirtualDisplay::SetFont(oldFont);
+                }
+                else if (GetOTWDisplayMode() == ModePadlockF3 or
+                         GetOTWDisplayMode() == Mode3DCockpit)
+                {
+                    if (mDoSidebar and pPadlockCPManager)
+                    {
+                        // Draw in the 2D reference panels
+                        pPadlockCPManager->Exec();
+
+                        // OW
+                        float top, left, bottom, right;
+                        renderer->GetViewport(
+                            &left, &top, &right,
+                            &bottom); // save the current viewport
+                        renderer->SetViewport(-1.0F, 1.0F, 1.0F,
+                                              -1.0F); // set fullscreen viewport
+                        pPadlockCPManager->DisplayBlit3D(); // draw 3d stuff
+                        renderer->EndDraw();
+                        renderer->SetViewport(left, top, right,
+                                              bottom); // restore viewport
+
+                        // Draw in the 2D cockpit panels
+                        pPadlockCPManager->DisplayBlit();
+                        pPadlockCPManager->DisplayDraw();
+                    }
+                    else
+                    {
                         renderer->EndDraw();
                     }
                 }
-
-                //STOP_PROFILE("RWR");
-
-                // mfds
-                //START_PROFILE("MFD");
-                oldFont = VirtualDisplay::CurFont();
-                VirtualDisplay::SetFont(pCockpitManager->MFDFont());
-
-                for (unsigned int i = BOUNDS_MFDLEFT; i <= BOUNDS_MFD4; ++i)
-                {
-                    if (pCockpitManager->GetViewportBounds(&viewportBounds, i))
-                    {
-                        // COBRA - RED- Pit Vibrations
-                        unsigned int mfd = i - BOUNDS_MFDLEFT;
-                        pCockpitManager->AddTurbulenceVp(&viewportBounds);
-                        MfdDisplay[mfd]->SetImageBuffer(
-                            OTWImage, viewportBounds.left, viewportBounds.top,
-                            viewportBounds.right, viewportBounds.bottom
-                        );
-                        MfdDisplay[mfd]->Exec(FALSE, FALSE);
-                    }
-                }
-
-                VirtualDisplay::SetFont(oldFont);
-                //STOP_PROFILE("MFD");
-            }
-        }
-        else if (
-            (GetOTWDisplayMode() == ModeHud or GetOTWDisplayMode() == ModePadlockEFOV) and 
- not g_bNoMFDsIn1View) //MI added g_bNoMFDsIn1View check. Removes MFD's if TRUE
-        {
-            // SetFont
-            oldFont = VirtualDisplay::CurFont();
-            VirtualDisplay::SetFont(pCockpitManager->MFDFont());
-            renderer->EndDraw();
-
-            for (i = 0; i < NUM_MFDS; i++)
-            {
-                MfdDisplay[i]->Exec(TRUE, FALSE);
-            }
-
-            VirtualDisplay::SetFont(oldFont);
-        }
-        else if (GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == Mode3DCockpit)
-        {
-            if (mDoSidebar and pPadlockCPManager)
-            {
-                // Draw in the 2D reference panels
-                pPadlockCPManager->Exec();
-
-                // OW
-                float top, left, bottom, right;
-                renderer->GetViewport(&left, &top, &right, &bottom); // save the current viewport
-                renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F); // set fullscreen viewport
-                pPadlockCPManager->DisplayBlit3D(); // draw 3d stuff
-                renderer->EndDraw();
-                renderer->SetViewport(left, top, right, bottom); // restore viewport
-
-                // Draw in the 2D cockpit panels
-                pPadlockCPManager->DisplayBlit();
-                pPadlockCPManager->DisplayDraw();
             }
             else
             {
                 renderer->EndDraw();
             }
-        }
-    }
-    else
-    {
-        renderer->EndDraw();
-    }
-    } // end per-eye engine render scope
+        } // end per-eye engine render scope
 
         // ===== VR per-eye stereo: finish this eye / close the loop =====
         if (xrN >= 1)
@@ -3034,7 +3792,8 @@ void OTWDriverClass::RenderFrame()
             // near cockpit does not depth-occlude them. Duplicate flat-path draws are skipped in VR.
             {
                 extern int gSelectedCursor, gxPos, gyPos;
-                extern Tpoint g_vrCursorAnchor; extern bool g_vrCursorAnchorValid;
+                extern Tpoint g_vrCursorAnchor;
+                extern bool g_vrCursorAnchorValid;
                 // Artscout - 2026 (VR controllers): when the laser ray owns the frame, vcock draws its own
                 // per-eye 3D cross at the aim point -- suppress this mono mouse cursor so they don't double.
                 extern bool g_vrRayActive;
@@ -3043,15 +3802,50 @@ void OTWDriverClass::RenderFrame()
                 // overlay pixel-space size, on whichever backend is live. Under D3D12 the eye stays the
                 // open command list's scene target (BindBackBufferRTV re-selects it after any display RTT);
                 // g_pD3D11Backend is NULL so its methods must never be touched on the D3D12 path.
-                #define VR_BIND_EYE()      do { g_pD3D12Backend->BindBackBufferRTV(); } while(0)
-                #define VR_GSCREEN(w_,h_)  do { g_pD3D12Backend->SetGScreenSize((w_),(h_)); } while(0)
+                // #107 VR-Vulkan: backend-aware (g_pD3D12Backend is NULL under Vulkan and vice-versa). Under Vulkan
+                // BindBackBufferRTV reopens the eye's scene pass so the 2D overlay / RTT tail draws into THIS eye.
+#ifdef _WIN32 // D3D12 backend is Windows-only; on Linux only the Vulkan branch exists
+#define VR_BIND_EYE()                                                          \
+    do                                                                         \
+    {                                                                          \
+        if (g_pVulkanBackend)                                                  \
+            g_pVulkanBackend->BindBackBufferRTV();                             \
+        else if (g_pD3D12Backend)                                              \
+            g_pD3D12Backend->BindBackBufferRTV();                              \
+    } while (0)
+#define VR_GSCREEN(w_, h_)                                                     \
+    do                                                                         \
+    {                                                                          \
+        if (g_pVulkanBackend)                                                  \
+            g_pVulkanBackend->SetGScreenSize((w_), (h_));                      \
+        else if (g_pD3D12Backend)                                              \
+            g_pD3D12Backend->SetGScreenSize((w_), (h_));                       \
+    } while (0)
+#else
+#define VR_BIND_EYE()                                                          \
+    do                                                                         \
+    {                                                                          \
+        if (g_pVulkanBackend)                                                  \
+            g_pVulkanBackend->BindBackBufferRTV();                             \
+    } while (0)
+#define VR_GSCREEN(w_, h_)                                                     \
+    do                                                                         \
+    {                                                                          \
+        if (g_pVulkanBackend)                                                  \
+            g_pVulkanBackend->SetGScreenSize((w_), (h_));                      \
+    } while (0)
+#endif // _WIN32
                 const bool exitMenu = InExitMenu();
-                const bool showCur = exitMenu or
+                const bool showCur =
+                    exitMenu or
                     (gSimInputEnabled and SimDriver.GetPlayerAircraft() and
-                     (vuxRealTime - gTimeLastCursorUpdate < SI_MOUSE_TIME_DELTA) and
+                     (vuxRealTime - gTimeLastCursorUpdate <
+                      SI_MOUSE_TIME_DELTA) and
                      gSelectedCursor >= 0 and
-                     (GetOTWDisplayMode() == Mode2DCockpit or GetOTWDisplayMode() == Mode3DCockpit or
-                      GetOTWDisplayMode() == ModePadlockF3 or GetOTWDisplayMode() == ModePadlockEFOV) and
+                     (GetOTWDisplayMode() == Mode2DCockpit or
+                      GetOTWDisplayMode() == Mode3DCockpit or
+                      GetOTWDisplayMode() == ModePadlockF3 or
+                      GetOTWDisplayMode() == ModePadlockEFOV) and
                      otwPlatform.get() == SimDriver.GetPlayerAircraft());
 
                 if (ew > 0 and eh > 0 and DisplayOptions.DispWidth > 0)
@@ -3070,6 +3864,10 @@ void OTWDriverClass::RenderFrame()
                     // #DX12 п.5 A1: the comms/exit menu head-locked quad is now DUAL -- the menu RTT
                     // (EnsureMenuRtt/BindMenuRtt/MenuRttTex) exists on BOTH backends; SubmitInSceneMenuQuad
                     // has a D3D12 path (copies the D3D12 menu texture into the XR UI swapchain in EndStereoFrame).
+                    // #107 VR-Vulkan: and now a Vulkan path too -- EnsureMenuRtt/BindMenuRtt/MenuRttTex on VulkanBackend
+                    // (an owned color+depth RTT), SubmitInSceneMenuQuad copies it into the UI image EAGERLY (the Vulkan
+                    // RTT is synchronous). This is what re-enables the exit menu under Vulkan: DrawExitMenu below runs on
+                    // BOTH backends, so the exit-menu state machine advances -> ESC/keyboard is no longer dead in VR.
                     if (xrEye == 0 and g_pOpenXRBackend)
                     {
                         // Artscout - 2026 (#59): gate on MouseMenuActive too -- it is set TRUE immediately by
@@ -3078,17 +3876,40 @@ void OTWDriverClass::RenderFrame()
                         // skipped, so DrawExitMenu never ran, so exitMenuOn never became TRUE -> the exit dialog
                         // only appeared when a comms menu (IsActive) happened to open the block for it.
                         extern bool MouseMenuActive;
-                        const bool menuUp = (pMenuManager and pMenuManager->IsActive()) or exitMenu or MouseMenuActive;
-                        if (menuUp)
+                        extern bool
+                            g_bUseVulkan; // #107: scoped extern (the file-level one at ResetFrameRing is block-local)
+                        const bool menuUp =
+                            (pMenuManager and pMenuManager->IsActive()) or
+                            exitMenu or MouseMenuActive;
+                        // #107 VR-Vulkan: backend-aware. The in-scene menu RTT + quad exist on BOTH backends now
+                        // (was D3D12-only, which left DrawExitMenu unreachable under Vulkan -> exit-menu state machine
+                        // stuck -> ESC dead + clickableMouseMode/MouseMenuActive wedged, killing all keyboard input).
+                        const bool vkMenu =
+                            (g_bUseVulkan and g_pVulkanBackend != NULL);
+                        if (menuUp and (g_bUseD3D12 or vkMenu))
                         {
-                            const int mw = DisplayOptions.DispWidth, mh = DisplayOptions.DispHeight;
+                            const int mw = DisplayOptions.DispWidth,
+                                      mh = DisplayOptions.DispHeight;
                             // Bind the menu RTT WITH depth (transparent + depth clear): the comms menu is 2D but the
                             // exit menu (DrawExitMenu) renders endDialogObject -- a 3D BSP -- so it needs Z (else it
                             // never shows / draws scrambled). menuTex = copy source for SubmitInSceneMenuQuad.
                             void* menuTex = NULL;
-                            g_pD3D12Backend->EnsureMenuRtt(mw, mh);
-                            menuTex = g_pD3D12Backend->MenuRttTex();
-                            if (menuTex) g_pD3D12Backend->BindMenuRtt(true);
+                            if (vkMenu)
+                            {
+                                g_pVulkanBackend->EnsureMenuRtt(mw, mh);
+                                menuTex = g_pVulkanBackend->MenuRttTex();
+                                if (menuTex)
+                                    g_pVulkanBackend->BindMenuRtt(true);
+                            }
+#ifdef _WIN32 // D3D12 menu RTT is Windows-only; Linux uses the Vulkan branch above
+                            else if (g_pD3D12Backend)
+                            {
+                                g_pD3D12Backend->EnsureMenuRtt(mw, mh);
+                                menuTex = g_pD3D12Backend->MenuRttTex();
+                                if (menuTex)
+                                    g_pD3D12Backend->BindMenuRtt(true);
+                            }
+#endif // _WIN32
                             if (menuTex)
                             {
                                 // Artscout - 2026 (D3D12 VR menu fix): the comms-menu 2D text (TextCenter -> NDC ->
@@ -3100,8 +3921,9 @@ void OTWDriverClass::RenderFrame()
                                 renderer->VR_SetRes(mw, mh);
                                 renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
                                 VR_GSCREEN(mw, mh);
-                                if (pMenuManager) pMenuManager->DisplayDraw();
-                                DrawExitMenu();
+                                if (pMenuManager)
+                                    pMenuManager->DisplayDraw();
+                                DrawExitMenu(); // also advances the exit-menu state machine (ChangeExitMenu) -> ESC works
                                 // Artscout - 2026 (D3D12 VR menu): FLUSH the batched menu draws into the menu RTT
                                 // BEFORE the copy. Under D3D12 DisplayDraw/DrawExitMenu only batch into the context
                                 // VB (executed lazily on the next SelectTexture/RestoreState/EndDraw). Without this,
@@ -3109,47 +3931,91 @@ void OTWDriverClass::RenderFrame()
                                 // flushed LATER into the eye at eye-res gScreenSize (menu text scrunched into a small
                                 // square). Mirrors the display-RTT FinishRtt FlushPending fix.
                                 renderer->context.FlushPending();
-                                g_pOpenXRBackend->SubmitInSceneMenuQuad(menuTex, mw, mh);
-                                renderer->VR_SetRes(ew, eh);   // restore the eye render resolution
+                                // #107 VR-Vulkan: the Vulkan RTT is copied EAGERLY by SubmitInSceneMenuQuad, so finalize
+                                // it FIRST (UnbindSceneRtt = submit + vkQueueWaitIdle, leaves the tex in SHADER_READ).
+                                // D3D12 defers the copy to EndStereoFrame, so it keeps the RTT bound across the submit.
+                                if (vkMenu)
+                                    g_pVulkanBackend->UnbindSceneRtt(menuTex);
+                                g_pOpenXRBackend->SubmitInSceneMenuQuad(menuTex,
+                                                                        mw, mh);
+                                renderer->VR_SetRes(
+                                    ew,
+                                    eh); // restore the eye render resolution
                                 VR_GSCREEN(ew, eh);
                                 // #DX12 п.5 A1: the menu RTT was bound as the target -- return to the eye so the
                                 // subtitle/cursor overlays (and next frame) render into the eye, not the menu RTT.
-                                if (g_bUseD3D12) g_pD3D12Backend->BindBackBufferRTV();
+                                VR_BIND_EYE();
                             }
                         }
                     }
 
                     // ---- FPS: HEAD-LOCKED QUAD (once, at xrEye==0). Render "FPS N" into a small RTT (green text on a
                     // transparent canvas), submit as its OWN composition layer -- head-locked, so it stays put and is
-                    // always readable regardless of quad-views/gaze. Same pattern as the menu quad. D3D12 VR only.
-                    if (xrEye == 0 and ShowFrameRate and g_fpsVrStr[0] and g_bUseD3D12 and g_pOpenXRBackend and g_pD3D12Backend)
+                    // always readable regardless of quad-views/gaze. Same pattern as the menu quad.
+                    // #107 VR-Vulkan: backend-aware now (was D3D12-only). The Vulkan FPS RTT is scFormat (2D text only),
+                    // finalized eagerly via UnbindSceneRtt(fpsTex) before the copy; D3D12 defers the copy to EndStereoFrame.
                     {
-                        const int fw = 512, fh = 128;
-                        g_pD3D12Backend->EnsureFpsRtt(fw, fh);
-                        void* fpsTex = g_pD3D12Backend->FpsRttTex();
-                        if (fpsTex)
+                        extern bool
+                            g_bUseVulkan; // scoped (the file-level one is block-local at ResetFrameRing)
+                        const bool vkFps =
+                            (g_bUseVulkan and g_pVulkanBackend != NULL);
+                        if (xrEye == 0 and ShowFrameRate and g_fpsVrStr[0] and
+                            g_pOpenXRBackend and (g_bUseD3D12 or vkFps))
                         {
-                            g_pD3D12Backend->BindFpsRtt(true);   // transparent clear
-                            renderer->VR_SetRes(fw, fh);
-                            renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
-                            VR_GSCREEN(fw, fh);
-                            renderer->SetColor(0xff00ff00);      // bright green
-                            VirtualDisplay::SetFont(2);
-                            renderer->TextLeft(-0.92F, 0.35F, g_fpsVrStr, 2);
-                            renderer->context.FlushPending();    // flush the text into the RTT before the deferred copy
-                            g_pOpenXRBackend->SubmitFpsQuad(fpsTex, fw, fh);
-                            renderer->VR_SetRes(ew, eh);
-                            VR_GSCREEN(ew, eh);
-                            g_pD3D12Backend->BindBackBufferRTV(); // return to the eye (subtitle/cursor blocks re-bind too)
+                            const int fw = 512, fh = 128;
+                            void* fpsTex = NULL;
+                            if (vkFps)
+                            {
+                                g_pVulkanBackend->EnsureFpsRtt(fw, fh);
+                                fpsTex = g_pVulkanBackend->FpsRttTex();
+                                if (fpsTex)
+                                    g_pVulkanBackend->BindFpsRtt(
+                                        true); // transparent clear
+                            }
+#ifdef _WIN32 // D3D12 FPS RTT is Windows-only; Linux uses the Vulkan branch above
+                            else if (g_pD3D12Backend)
+                            {
+                                g_pD3D12Backend->EnsureFpsRtt(fw, fh);
+                                fpsTex = g_pD3D12Backend->FpsRttTex();
+                                if (fpsTex)
+                                    g_pD3D12Backend->BindFpsRtt(true);
+                            }
+#endif // _WIN32
+                            if (fpsTex)
+                            {
+                                renderer->VR_SetRes(fw, fh);
+                                renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
+                                VR_GSCREEN(fw, fh);
+                                renderer->SetColor(0xff00ff00); // bright green
+                                VirtualDisplay::SetFont(2);
+                                renderer->TextLeft(-0.92F, 0.35F, g_fpsVrStr,
+                                                   2);
+                                renderer->context
+                                    .FlushPending(); // flush the text into the RTT before the copy
+                                // Vulkan: end the RTT (submit + wait, color -> SHADER_READ) so SubmitFpsQuad can copy it now.
+                                if (vkFps)
+                                    g_pVulkanBackend->UnbindSceneRtt(fpsTex);
+                                g_pOpenXRBackend->SubmitFpsQuad(fpsTex, fw, fh);
+                                renderer->VR_SetRes(ew, eh);
+                                VR_GSCREEN(ew, eh);
+                                if (vkFps)
+                                    VR_BIND_EYE(); // return to the eye
+#ifdef _WIN32 // D3D12 backbuffer rebind is Windows-only
+                                else if (g_pD3D12Backend)
+                                    g_pD3D12Backend->BindBackBufferRTV();
+#endif // _WIN32
+                            }
                         }
                     }
 
                     // ---- SUBTITLES: per-eye periphery (these are NOT the comms/exit menu) ----
                     if (xrEye == 0 or xrEye == 1)
                     {
-                        VR_BIND_EYE();                                        // bind eye RTV (no clear of color)
-                        OTWDriver.renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
-                        VR_GSCREEN(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+                        VR_BIND_EYE(); // bind eye RTV (no clear of color)
+                        OTWDriver.renderer->context.ClearBuffers(
+                            MPR_CI_ZBUFFER);
+                        VR_GSCREEN(DisplayOptions.DispWidth,
+                                   DisplayOptions.DispHeight);
                         DisplayFrontText();
                         VR_GSCREEN(ew, eh);
                     }
@@ -3168,7 +4034,9 @@ void OTWDriverClass::RenderFrame()
                     // ---- MOUSE CURSOR ----
                     if (showCur)
                     {
-                        const bool cursor3D = (not exitMenu) and g_vrCursorAnchorValid and not g_vrRayActive;
+                        const bool cursor3D = (not exitMenu) and
+                                              g_vrCursorAnchorValid and
+                                              not g_vrRayActive;
                         // VR cursor -- LEFT EYE ONLY (view 0 periphery + view 2 focus); monocular, so no
                         // cross-eye disparity. ALWAYS the free cursor (follows the mouse); the green/red
                         // color (gSelectedCursor) signals the magnetic snap, and the CLICK fires the snapped
@@ -3178,14 +4046,20 @@ void OTWDriverClass::RenderFrame()
                         // cockpit. No renderer camera is used here (pixel + fov math only), so nothing to re-arm.
                         if (cursor3D and (xrEye == 0 or xrEye == 2))
                         {
-                            ThreeDVertex r; bool doDraw = false;
-                            if (xrEye == 0)   // left periphery: cursor sits exactly at the mouse pixel
+                            ThreeDVertex r;
+                            bool doDraw = false;
+                            if (xrEye ==
+                                0) // left periphery: cursor sits exactly at the mouse pixel
                             {
-                                r.x = (float)gxPos * (float)ew / (float)DisplayOptions.DispWidth;
-                                r.y = (float)gyPos * (float)eh / (float)DisplayOptions.DispHeight;
+                                r.x = (float)gxPos * (float)ew /
+                                      (float)DisplayOptions.DispWidth;
+                                r.y = (float)gyPos * (float)eh /
+                                      (float)DisplayOptions.DispHeight;
                                 doDraw = true;
                             }
-                            else if (xrEye == 2)   // left focus: map the periphery cursor pixel -> focus pixel
+                            else if (
+                                xrEye ==
+                                2) // left focus: map the periphery cursor pixel -> focus pixel
                             {
                                 // Direct 2D FOV mapping (no ray / depth / cameraRot): the periphery cursor is
                                 // at angle A; place the focus cursor at the SAME angle A within the focus
@@ -3194,21 +4068,40 @@ void OTWDriverClass::RenderFrame()
                                 // glued to the cockpit. pixel<->tan(angle) is linear per view.
                                 float pfl, pfr, pfu, pfd, ffl, ffr, ffu, ffd;
                                 if (g_pOpenXRBackend and
-                                    g_pOpenXRBackend->GetEyeFovAngles(0, &pfl, &pfr, &pfu, &pfd) and
-                                    g_pOpenXRBackend->GetEyeFovAngles(2, &ffl, &ffr, &ffu, &ffd))
+                                    g_pOpenXRBackend->GetEyeFovAngles(
+                                        0, &pfl, &pfr, &pfu, &pfd) and
+                                    g_pOpenXRBackend->GetEyeFovAngles(
+                                        2, &ffl, &ffr, &ffu, &ffd))
                                 {
-                                    const float periphPx = (float)gxPos * (float)ew / (float)DisplayOptions.DispWidth;
-                                    const float periphPy = (float)gyPos * (float)eh / (float)DisplayOptions.DispHeight;
-                                    const float tpl = tanf(pfl), tpr = tanf(pfr), tpu = tanf(pfu), tpd = tanf(pfd);
-                                    const float tfl = tanf(ffl), tfr = tanf(ffr), tfu = tanf(ffu), tfd = tanf(ffd);
+                                    const float periphPx =
+                                        (float)gxPos * (float)ew /
+                                        (float)DisplayOptions.DispWidth;
+                                    const float periphPy =
+                                        (float)gyPos * (float)eh /
+                                        (float)DisplayOptions.DispHeight;
+                                    const float tpl = tanf(pfl),
+                                                tpr = tanf(pfr),
+                                                tpu = tanf(pfu),
+                                                tpd = tanf(pfd);
+                                    const float tfl = tanf(ffl),
+                                                tfr = tanf(ffr),
+                                                tfu = tanf(ffu),
+                                                tfd = tanf(ffd);
                                     // periphery pixel -> tan(angle); pixel x:0..ew spans tpl..tpr, y:0..eh spans tpu..tpd
-                                    const float tax = tpl + (periphPx / (float)ew) * (tpr - tpl);
-                                    const float tay = tpu + (periphPy / (float)eh) * (tpd - tpu);
+                                    const float tax =
+                                        tpl +
+                                        (periphPx / (float)ew) * (tpr - tpl);
+                                    const float tay =
+                                        tpu +
+                                        (periphPy / (float)eh) * (tpd - tpu);
                                     // tan(angle) -> focus pixel
-                                    if (fabsf(tfr - tfl) > 1e-6f and fabsf(tfd - tfu) > 1e-6f)
+                                    if (fabsf(tfr - tfl) > 1e-6f and
+                                        fabsf(tfd - tfu) > 1e-6f)
                                     {
-                                        r.x = (float)ew * (tax - tfl) / (tfr - tfl);
-                                        r.y = (float)eh * (tay - tfu) / (tfd - tfu);
+                                        r.x = (float)ew * (tax - tfl) /
+                                              (tfr - tfl);
+                                        r.y = (float)eh * (tay - tfu) /
+                                              (tfd - tfu);
                                         doDraw = true;
                                     }
                                 }
@@ -3222,21 +4115,29 @@ void OTWDriverClass::RenderFrame()
                                 g_vrCursorDrawScale = 1.0f;
                                 if (xrEye == 2 and g_pOpenXRBackend)
                                 {
-                                    float pfl, pfr, pfu, pfd, ffl, ffr, ffu, ffd;
-                                    if (g_pOpenXRBackend->GetEyeFovAngles(0, &pfl, &pfr, &pfu, &pfd) and
-                                        g_pOpenXRBackend->GetEyeFovAngles(2, &ffl, &ffr, &ffu, &ffd))
+                                    float pfl, pfr, pfu, pfd, ffl, ffr, ffu,
+                                        ffd;
+                                    if (g_pOpenXRBackend->GetEyeFovAngles(
+                                            0, &pfl, &pfr, &pfu, &pfd) and
+                                        g_pOpenXRBackend->GetEyeFovAngles(
+                                            2, &ffl, &ffr, &ffu, &ffd))
                                     {
                                         float pf = pfr - pfl, ff = ffr - ffl;
-                                        if (ff > 0.001f) g_vrCursorDrawScale = pf / ff;
+                                        if (ff > 0.001f)
+                                            g_vrCursorDrawScale = pf / ff;
                                     }
                                 }
                                 VR_BIND_EYE();
-                                if (xrEye != 0) OTWDriver.renderer->context.ClearBuffers(MPR_CI_ZBUFFER);
+                                if (xrEye != 0)
+                                    OTWDriver.renderer->context.ClearBuffers(
+                                        MPR_CI_ZBUFFER);
                                 VR_GSCREEN(ew, eh);
                                 const int sx = gxPos, sy = gyPos;
-                                gxPos = (int)r.x; gyPos = (int)r.y;
+                                gxPos = (int)r.x;
+                                gyPos = (int)r.y;
                                 ClipAndDrawCursor(ew, eh);
-                                gxPos = sx; gyPos = sy;
+                                gxPos = sx;
+                                gyPos = sy;
                                 g_vrCursorDrawScale = 1.0f;
                             }
                         }
@@ -3254,10 +4155,13 @@ void OTWDriverClass::RenderFrame()
                             // region the cursor is shown via the 3D magnetic anchor path above (angularly
                             // correct), which is why aiming relies on hovering a clickable button.
                             VR_BIND_EYE();
-                            VR_GSCREEN(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+                            VR_GSCREEN(DisplayOptions.DispWidth,
+                                       DisplayOptions.DispHeight);
                             const int sc = gSelectedCursor;
-                            if (exitMenu) gSelectedCursor = 1;
-                            ClipAndDrawCursor(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+                            if (exitMenu)
+                                gSelectedCursor = 1;
+                            ClipAndDrawCursor(DisplayOptions.DispWidth,
+                                              DisplayOptions.DispHeight);
                             gSelectedCursor = sc;
                             VR_GSCREEN(ew, eh);
                         }
@@ -3290,11 +4194,29 @@ void OTWDriverClass::RenderFrame()
         // at the group's LAST view (odd slice, or the final view of the pass) -- NOT per eye (that would execute/
         // release mid-tail). Outside if(eyeBound) so a failed last-slice bind still submits+releases the group
         // (the backend's per-group viAcquired guard no-ops if the group was never acquired).
-        if (xrVI and g_pOpenXRBackend and ((xrEye & 1) == 1 or xrEye == xrPasses - 1))
+        if (xrVI and g_pOpenXRBackend and
+            ((xrEye & 1) == 1 or xrEye == xrPasses - 1))
             g_pOpenXRBackend->EndStereoInstanced(xrEye / 2);
-        #undef VR_BIND_EYE
-        #undef VR_GSCREEN
+#undef VR_BIND_EYE
+#undef VR_GSCREEN
     } // end per-eye render loop
+
+    // #107 GROUPED multiview: the per-eye loop was skipped -- render the whole VR frame as N/2 multiview passes here
+    // (does its own per-group blit + one projection-layer submit + xrEndFrame, so EndStereoFrame below is bypassed).
+    if (vkMV)
+    {
+        if (g_bVulkanProfile)
+            FrameProf_PreVR(std::chrono::duration<double, std::milli>(
+                                std::chrono::steady_clock::now() - _rfT0)
+                                .count());
+        RenderVulkanVR(renderer, &headOrigin, &cameraRot, xrN);
+        if (g_bVulkanProfile)
+        {
+            _rfT2 = std::chrono::steady_clock::now();
+            _rfHaveT2 = true;
+        }
+    }
+
     if (xrN >= 1)
     {
         // Restore the engine render res/aspect for the desktop / 2D path after the eye loop.
@@ -3308,7 +4230,8 @@ void OTWDriverClass::RenderFrame()
     {
         // Artscout - 2026: release both eye images now (deferred from EndEye) -- both eyes have
         // rendered, so the runtime composites both. Releasing per-eye made the 2nd eye black.
-        if (not xrVI) g_pOpenXRBackend->ReleaseEyes();
+        if (not xrVI)
+            g_pOpenXRBackend->ReleaseEyes();
         g_pOpenXRBackend->EndStereoFrame();
     }
 
@@ -3341,10 +4264,9 @@ void OTWDriverClass::RenderFrame()
     //START_PROFILE("OTWRENDER");
 
     // Draw GLOC effect
-    if (
-        doGLOC and (otwPlatform.get() not_eq NULL) and 
-        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and otwPlatform->IsLocal()
-    )
+    if (doGLOC and (otwPlatform.get() not_eq NULL) and
+        (otwPlatform.get() == SimDriver.GetPlayerAircraft()) and
+        otwPlatform->IsLocal())
     {
         renderer->DrawTunnelBorder();
     }
@@ -3374,10 +4296,14 @@ void OTWDriverClass::RenderFrame()
         // the dialog draws ON TOP while keeping its own internal z-test. VR is unaffected: there DrawExitMenu goes
         // into a fresh menu RTT (its own cleared depth). Gate on MouseMenuActive (set immediately by SetExitMenu,
         // unlike exitMenuOn which only flips inside DrawExitMenu) so we don't clear every frame. Clears to reversed-Z far.
-        extern bool MouseMenuActive, g_bUseD3D12;
+        // Artscout - 2026 (#104): the ACTIVE backend -- ClearDepth is already an IRenderBackend method, so naming
+        // D3D12 here just meant the depth was never cleared under Vulkan and the exit dialog stayed buried in the
+        // cockpit, which is the exact bug this block exists to fix.
+        extern bool MouseMenuActive, g_bUseGpu;
         if (MouseMenuActive)
         {
-            if (g_bUseD3D12 && g_pD3D12Backend)      g_pD3D12Backend->ClearDepth();
+            if (g_bUseGpu && g_pRenderBackend)
+                g_pRenderBackend->ClearDepth();
         }
         DrawExitMenu();
     }
@@ -3401,41 +4327,39 @@ void OTWDriverClass::RenderFrame()
     {
         int tmp = gSelectedCursor;
         gSelectedCursor = 1;
-        ClipAndDrawCursor(
-            OTWDriver.pCockpitManager->GetCockpitWidth(), OTWDriver.pCockpitManager->GetCockpitHeight()
-        );
+        ClipAndDrawCursor(OTWDriver.pCockpitManager->GetCockpitWidth(),
+                          OTWDriver.pCockpitManager->GetCockpitHeight());
         gSelectedCursor = tmp;
     }
     // Wombat778 1-23-04 Changed from gTimeLastMouseMove to gTimeLastCursorUpdate because
     // gTimeLastMouseMove reports ALL changes in mouse movement, not just cursor updates.
-    else if (
-        not xrStereoEyes and
-        gSimInputEnabled and
-        SimDriver.GetPlayerAircraft() and
-        vuxRealTime - /*gTimeLastMouseMove*/gTimeLastCursorUpdate < SI_MOUSE_TIME_DELTA
-    )
+    else if (not xrStereoEyes and gSimInputEnabled and
+             SimDriver.GetPlayerAircraft() and
+             vuxRealTime - /*gTimeLastMouseMove*/ gTimeLastCursorUpdate <
+                 SI_MOUSE_TIME_DELTA)
     {
         //Wombat778 Draw the cursor in the 3d pit as well
-        if (
-            (GetOTWDisplayMode() == Mode2DCockpit or
+        if ((GetOTWDisplayMode() == Mode2DCockpit or
              GetOTWDisplayMode() == Mode3DCockpit or
              GetOTWDisplayMode() == ModePadlockF3 or
-             GetOTWDisplayMode() == ModePadlockEFOV
-            ) and
-            (gSelectedCursor >= 0) and (otwPlatform.get() == SimDriver.GetPlayerAircraft())
-        )
+             GetOTWDisplayMode() == ModePadlockEFOV) and
+            (gSelectedCursor >= 0) and
+            (otwPlatform.get() == SimDriver.GetPlayerAircraft()))
         {
-            ClipAndDrawCursor(
-                OTWDriver.pCockpitManager->GetCockpitWidth(), OTWDriver.pCockpitManager->GetCockpitHeight()
-            );
+            ClipAndDrawCursor(OTWDriver.pCockpitManager->GetCockpitWidth(),
+                              OTWDriver.pCockpitManager->GetCockpitHeight());
         }
-
     }
 
     // DX - Finally finish the HW frame
     renderer->context.FinishFrame(NULL);
     count++;
     //STOP_PROFILE("OTWRENDER");
+    if (g_bVulkanProfile && _rfHaveT2)
+        FrameProf_PostVR(std::chrono::duration<double, std::milli>(
+                             std::chrono::steady_clock::now() - _rfT2)
+                             .count());
+    FrameProf_EndFrame(); // #107 PERF: per-frame profiler dump (backend-neutral: Vulkan + D3D12 VR)
 }
 
 //JAM 27Dec03 - Bookmark
@@ -3450,7 +4374,8 @@ void OTWDriverClass::RunNew2DTrackIR(float pan, float tilt)
 
     //the 10.0f values are arbitrary, but seems to produce the right amount of jitter reduction while still being sensitive
 
-    if (fabs(pan - lastpan) > 10.0f * DTR or fabs(tilt - lasttilt) > 10.0f * DTR)
+    if (fabs(pan - lastpan) > 10.0f * DTR or
+        fabs(tilt - lasttilt) > 10.0f * DTR)
     {
         lastpan = pan;
         lasttilt = tilt;
@@ -3473,7 +4398,7 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
     cameraVel.y = otwPlatform->YDelta();
     cameraVel.z = otwPlatform->ZDelta();
 
-#if 1  // MLR 12/1/2003 - Eye position is controlled by pilotEyePos, which is gotten from the players AC
+#if 1 // MLR 12/1/2003 - Eye position is controlled by pilotEyePos, which is gotten from the players AC
     MatrixMult(&ownshipRot, &pilotEyePos, &cameraPos);
 #else
     // OLD EYE PLACEMENT
@@ -3482,7 +4407,7 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
     // from a schematic of the F16.
     // TODO:  Get these from the object some how.
     static const float EyeFromCGfwd = 15.0f;
-    static const float EyeFromCGup =  3.0f;
+    static const float EyeFromCGup = 3.0f;
 
     // Move the camera position from the CG to the cockpit
     cameraPos.x = EyeFromCGfwd * ownshipRot.M11 - EyeFromCGup * ownshipRot.M13;
@@ -3493,7 +4418,8 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
     // Adjust for head angle (if enabled)
     if (GetOTWDisplayMode() == Mode2DCockpit)
     {
-        if ((g_bEnableTrackIR) and (PlayerOptions.Get2dTrackIR() == true) and not GetHybridPitMode()) // Retro 27/09/03  //Wombat778 11-18-04 Dont run the 2d trackir code in hybrid mode
+        if ((g_bEnableTrackIR) and (PlayerOptions.Get2dTrackIR() == true) and
+            not GetHybridPitMode()) // Retro 27/09/03  //Wombat778 11-18-04 Dont run the 2d trackir code in hybrid mode
         {
 #ifdef DEBUG_TRACKIR_STUFF
             FILE* fp = fopen("TIR_Debug_2.txt", "at");
@@ -3513,12 +4439,16 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
 
             /* sample time is user-configurable */
             if (g_bNew2DTrackIR) //Wombat778 11-15-04 New method of 2d Pit trackir movement
-                RunNew2DTrackIR(cockpitFlightData.headYaw, cockpitFlightData.headPitch);
+                RunNew2DTrackIR(cockpitFlightData.headYaw,
+                                cockpitFlightData.headPitch);
 
-            else if (vuxRealTime bitand g_nTrackIRSampleFreq) // Retro 26/09/03 - check every 512 ms (default value)
+            else if (
+                vuxRealTime bitand
+                g_nTrackIRSampleFreq) // Retro 26/09/03 - check every 512 ms (default value)
             {
                 if (theTrackIRObject.Get_Panning_Allowed())
-                    SimDriver.POVKludgeFunction(theTrackIRObject.TrackIR_2D_Map()); // Retro 26/09/03
+                    SimDriver.POVKludgeFunction(
+                        theTrackIRObject.TrackIR_2D_Map()); // Retro 26/09/03
             }
             else
             {
@@ -3530,7 +4460,6 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
         BuildHeadMatrix(FALSE, YAW_PITCH, eyePan, eyeTilt, 0.0F);
         // Combine the head and airplane matrices
         MatrixMult(&ownshipRot, &headMatrix, &cameraRot);
-
     }
     else if (GetOTWDisplayMode() == Mode3DCockpit)
     {
@@ -3550,16 +4479,20 @@ void OTWDriverClass::SetInternalCameraPosition(float dT)
             }
             else
             {
-                float oldAzDir = azDir, oldElDir = elDir; // 2002-03-12 ADDED BY S.G. Lets remember these so I can set them back after
-                float tmpEyePan  = eyePan;
+                float
+                    oldAzDir = azDir,
+                    oldElDir =
+                        elDir; // 2002-03-12 ADDED BY S.G. Lets remember these so I can set them back after
+                float tmpEyePan = eyePan;
                 float tmpEyeTilt = eyeTilt;
                 float tmpEyeHeadRoll = eyeHeadRoll;
                 mIsSlewInit = FALSE;
                 SetOTWDisplayMode(OTWDriverClass::Mode3DCockpit);
-                eyePan  = tmpEyePan;
+                eyePan = tmpEyePan;
                 eyeTilt = tmpEyeTilt;
                 eyeHeadRoll = tmpEyeHeadRoll;
-                azDir = oldAzDir; // 2002-03-12 ADDED BY S.G. Set them back to the saved value so head starts moving right away without requiring the key to let go and pushed again...
+                azDir =
+                    oldAzDir; // 2002-03-12 ADDED BY S.G. Set them back to the saved value so head starts moving right away without requiring the key to let go and pushed again...
                 elDir = oldElDir;
             }
         }
@@ -3640,37 +4573,28 @@ extern "C" MEM_POOL gResmgrMemPool;
 
 extern int ObjectNodes, ObjectReferences;
 
-void DebugMemoryReport(RenderOTW *renderer, int frameTime)
+void DebugMemoryReport(RenderOTW* renderer, int frameTime)
 {
     float row, col;
     int objCount = 0;
     int totCount = 0;
     int totSize = 0;
 
-    sprintf(tmpStr, "%.2f SFX=%d Proc Objs=%d Draw Objs=%d CT=%d MAX=%d ST=%d MAX=%d GT=%d MAX=%d AVESGT=%d AVECT=%d MemC=%d MemS=%d",
-            1.0F / (float)(frameTime) * 1000.0F,
-            gTotSfx,
-            numObjsProcessed,
-            numObjsInDrawList,
-            gCampTime,
-            gCampTimeMax,
-            gSimTime,
-            gSimTimeMax,
-            gGraphicsTimeLast,
-            gGraphicsTimeLastMax,
-            gAveSimGraphicsTime,
-            gAveCampTime,
-            dbgMemTotalCount(),
-            dbgMemTotalSize());
-    renderer->TextLeft(-0.95F,  0.95F, tmpStr);
+    sprintf(tmpStr,
+            "%.2f SFX=%d Proc Objs=%d Draw Objs=%d CT=%d MAX=%d ST=%d MAX=%d "
+            "GT=%d MAX=%d AVESGT=%d AVECT=%d MemC=%d MemS=%d",
+            1.0F / (float)(frameTime) * 1000.0F, gTotSfx, numObjsProcessed,
+            numObjsInDrawList, gCampTime, gCampTimeMax, gSimTime, gSimTimeMax,
+            gGraphicsTimeLast, gGraphicsTimeLastMax, gAveSimGraphicsTime,
+            gAveCampTime, dbgMemTotalCount(), dbgMemTotalSize());
+    renderer->TextLeft(-0.95F, 0.95F, tmpStr);
 
     col = -0.95f;
-    row =  0.90f;
+    row = 0.90f;
 
     // DEFAULT POOL
 
-    sprintf(tmpStr, "DEFAULT POOL C=%d S=%d",
-            MemPoolCount(MemDefaultPool),
+    sprintf(tmpStr, "DEFAULT POOL C=%d S=%d", MemPoolCount(MemDefaultPool),
             MemPoolSize(MemDefaultPool));
 
     renderer->TextLeft(col, row, tmpStr);
@@ -3679,54 +4603,46 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     // Campaign Stuff
 
-    sprintf(tmpStr, "C Obj C=%d S=%d",
-            MemPoolCount(ObjectiveClass::pool),
+    sprintf(tmpStr, "C Obj C=%d S=%d", MemPoolCount(ObjectiveClass::pool),
             MemPoolSize(ObjectiveClass::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "C Bat C=%d S=%d",
-            MemPoolCount(BattalionClass::pool),
+    sprintf(tmpStr, "C Bat C=%d S=%d", MemPoolCount(BattalionClass::pool),
             MemPoolSize(BattalionClass::pool));
 
     renderer->TextLeft(col + 0.6F, row, tmpStr);
 
-    sprintf(tmpStr, "C Bri C=%d S=%d",
-            MemPoolCount(BrigadeClass::pool),
+    sprintf(tmpStr, "C Bri C=%d S=%d", MemPoolCount(BrigadeClass::pool),
             MemPoolSize(BrigadeClass::pool));
 
     renderer->TextLeft(col + 1.2F, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "C Fli C=%d S=%d",
-            MemPoolCount(FlightClass::pool),
+    sprintf(tmpStr, "C Fli C=%d S=%d", MemPoolCount(FlightClass::pool),
             MemPoolSize(FlightClass::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "C Squ C=%d S=%d",
-            MemPoolCount(SquadronClass::pool),
+    sprintf(tmpStr, "C Squ C=%d S=%d", MemPoolCount(SquadronClass::pool),
             MemPoolSize(SquadronClass::pool));
 
     renderer->TextLeft(col + 0.6F, row, tmpStr);
 
-    sprintf(tmpStr, "C Pak C=%d S=%d",
-            MemPoolCount(PackageClass::pool),
+    sprintf(tmpStr, "C Pak C=%d S=%d", MemPoolCount(PackageClass::pool),
             MemPoolSize(PackageClass::pool));
 
     renderer->TextLeft(col + 1.2F, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "C Tsk C=%d S=%d",
-            MemPoolCount(TaskForceClass::pool),
+    sprintf(tmpStr, "C Tsk C=%d S=%d", MemPoolCount(TaskForceClass::pool),
             MemPoolSize(TaskForceClass::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "C Per C=%d S=%d",
-            MemPoolCount(SimPersistantClass::pool),
+    sprintf(tmpStr, "C Per C=%d S=%d", MemPoolCount(SimPersistantClass::pool),
             MemPoolSize(SimPersistantClass::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
@@ -3736,14 +4652,12 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     // Drawables
 
-    sprintf(tmpStr, "D 2D C=%d S=%d",
-            MemPoolCount(Drawable2D::pool),
+    sprintf(tmpStr, "D 2D C=%d S=%d", MemPoolCount(Drawable2D::pool),
             MemPoolSize(Drawable2D::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "D Tcr C=%d S=%d",
-            MemPoolCount(DrawableTracer::pool),
+    sprintf(tmpStr, "D Tcr C=%d S=%d", MemPoolCount(DrawableTracer::pool),
             MemPoolSize(DrawableTracer::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
@@ -3756,198 +4670,169 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "D bld C=%d S=%d",
-            MemPoolCount(DrawableBuilding::pool),
+    sprintf(tmpStr, "D bld C=%d S=%d", MemPoolCount(DrawableBuilding::pool),
             MemPoolSize(DrawableBuilding::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "D BSP C=%d S=%d",
-            MemPoolCount(DrawableBSP::pool),
+    sprintf(tmpStr, "D BSP C=%d S=%d", MemPoolCount(DrawableBSP::pool),
             MemPoolSize(DrawableBSP::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "D sha C=%d S=%d",
-            MemPoolCount(DrawableShadowed::pool),
+    sprintf(tmpStr, "D sha C=%d S=%d", MemPoolCount(DrawableShadowed::pool),
             MemPoolSize(DrawableShadowed::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "D brg C=%d S=%d",
-            MemPoolCount(DrawableBridge::pool),
+    sprintf(tmpStr, "D brg C=%d S=%d", MemPoolCount(DrawableBridge::pool),
             MemPoolSize(DrawableBridge::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "D ovc C=%d S=%d",
-            MemPoolCount(DrawableOvercast::pool),
+    sprintf(tmpStr, "D ovc C=%d S=%d", MemPoolCount(DrawableOvercast::pool),
             MemPoolSize(DrawableOvercast::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "D pla C=%d S=%d",
-            MemPoolCount(DrawablePlatform::pool),
+    sprintf(tmpStr, "D pla C=%d S=%d", MemPoolCount(DrawablePlatform::pool),
             MemPoolSize(DrawablePlatform::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "D rdb C=%d S=%d",
-            MemPoolCount(DrawableRoadbed::pool),
+    sprintf(tmpStr, "D rdb C=%d S=%d", MemPoolCount(DrawableRoadbed::pool),
             MemPoolSize(DrawableRoadbed::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "D seg C=%d S=%d",
-            MemPoolCount(DrawableTrail::pool),
+    sprintf(tmpStr, "D seg C=%d S=%d", MemPoolCount(DrawableTrail::pool),
             MemPoolSize(DrawableTrail::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "D TrE C=%d S=%d",
-            MemPoolCount(TrailElement::pool),
+    sprintf(tmpStr, "D TrE C=%d S=%d", MemPoolCount(TrailElement::pool),
             MemPoolSize(TrailElement::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "D puf C=%d S=%d",
-            MemPoolCount(DrawablePuff::pool),
+    sprintf(tmpStr, "D puf C=%d S=%d", MemPoolCount(DrawablePuff::pool),
             MemPoolSize(DrawablePuff::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "D pnt C=%d S=%d",
-            MemPoolCount(DrawablePoint::pool),
+    sprintf(tmpStr, "D pnt C=%d S=%d", MemPoolCount(DrawablePoint::pool),
             MemPoolSize(DrawablePoint::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "D guy C=%d S=%d",
-            MemPoolCount(DrawableGuys::pool),
+    sprintf(tmpStr, "D guy C=%d S=%d", MemPoolCount(DrawableGuys::pool),
             MemPoolSize(DrawableGuys::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "T blk C=%d S=%d",
-            MemPoolCount(TBlock::pool),
+    sprintf(tmpStr, "T blk C=%d S=%d", MemPoolCount(TBlock::pool),
             MemPoolSize(TBlock::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "T LstE C=%d S=%d",
-            MemPoolCount(TListEntry::pool),
+    sprintf(tmpStr, "T LstE C=%d S=%d", MemPoolCount(TListEntry::pool),
             MemPoolSize(TListEntry::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "T BlkL C=%d S=%d",
-            MemPoolCount(TBlockList::pool),
+    sprintf(tmpStr, "T BlkL C=%d S=%d", MemPoolCount(TBlockList::pool),
             MemPoolSize(TBlockList::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "G OLOD C=%d S=%d",
-            MemPoolCount(ObjectLOD::pool),
+    sprintf(tmpStr, "G OLOD C=%d S=%d", MemPoolCount(ObjectLOD::pool),
             MemPoolSize(ObjectLOD::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "G 3DLib C=%d S=%d",
-            MemPoolCount(glMemPool),
+    sprintf(tmpStr, "G 3DLib C=%d S=%d", MemPoolCount(glMemPool),
             MemPoolSize(glMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "S List C=%d S=%d",
-            MemPoolCount(displayList::pool),
+    sprintf(tmpStr, "S List C=%d S=%d", MemPoolCount(displayList::pool),
             MemPoolSize(displayList::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "S SfxR C=%d S=%d",
-            MemPoolCount(sfxRequest::pool),
+    sprintf(tmpStr, "S SfxR C=%d S=%d", MemPoolCount(sfxRequest::pool),
             MemPoolSize(sfxRequest::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "S AirF C=%d S=%d",
-            MemPoolCount(AirframeClass::pool),
+    sprintf(tmpStr, "S AirF C=%d S=%d", MemPoolCount(AirframeClass::pool),
             MemPoolSize(AirframeClass::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "S AirC C=%d S=%d",
-            MemPoolCount(AircraftClass::pool),
+    sprintf(tmpStr, "S AirC C=%d S=%d", MemPoolCount(AircraftClass::pool),
             MemPoolSize(AircraftClass::pool));
 
     objCount += MemPoolCount(AircraftClass::pool);
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "S Miss C=%d S=%d",
-            MemPoolCount(MissileClass::pool),
+    sprintf(tmpStr, "S Miss C=%d S=%d", MemPoolCount(MissileClass::pool),
             MemPoolSize(MissileClass::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "S Bomb C=%d S=%d",
-            MemPoolCount(BombClass::pool),
+    sprintf(tmpStr, "S Bomb C=%d S=%d", MemPoolCount(BombClass::pool),
             MemPoolSize(BombClass::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "S SObj C=%d S=%d",
-            MemPoolCount(SimObjectType::pool),
+    sprintf(tmpStr, "S SObj C=%d S=%d", MemPoolCount(SimObjectType::pool),
             MemPoolSize(SimObjectType::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "S Ldat C=%d S=%d",
-            MemPoolCount(SimObjectLocalData::pool),
+    sprintf(tmpStr, "S Ldat C=%d S=%d", MemPoolCount(SimObjectLocalData::pool),
             MemPoolSize(SimObjectLocalData::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "S Sfx C=%d S=%d",
-            MemPoolCount(SfxClass::pool),
+    sprintf(tmpStr, "S Sfx C=%d S=%d", MemPoolCount(SfxClass::pool),
             MemPoolSize(SfxClass::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "S Gun C=%d S=%d",
-            MemPoolCount(GunClass::pool),
+    sprintf(tmpStr, "S Gun C=%d S=%d", MemPoolCount(GunClass::pool),
             MemPoolSize(GunClass::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
     objCount += MemPoolCount(GroundClass::pool);
 
-    sprintf(tmpStr, "S Grnd C=%d S=%d",
-            MemPoolCount(GroundClass::pool),
+    sprintf(tmpStr, "S Grnd C=%d S=%d", MemPoolCount(GroundClass::pool),
             MemPoolSize(GroundClass::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "S GAI C=%d S=%d",
-            MemPoolCount(GNDAIClass::pool),
+    sprintf(tmpStr, "S GAI C=%d S=%d", MemPoolCount(GNDAIClass::pool),
             MemPoolSize(GNDAIClass::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
@@ -3956,48 +4841,41 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     objCount += MemPoolCount(SimFeatureClass::pool);
 
-    sprintf(tmpStr, "S Feat C=%d S=%d",
-            MemPoolCount(SimFeatureClass::pool),
+    sprintf(tmpStr, "S Feat C=%d S=%d", MemPoolCount(SimFeatureClass::pool),
             MemPoolSize(SimFeatureClass::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "S MIFD C=%d S=%d",
-            MemPoolCount(MissileInFlightData::pool),
+    sprintf(tmpStr, "S MIFD C=%d S=%d", MemPoolCount(MissileInFlightData::pool),
             MemPoolSize(MissileInFlightData::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "S Dlst C=%d S=%d",
-            MemPoolCount(drawPtrList::pool),
+    sprintf(tmpStr, "S Dlst C=%d S=%d", MemPoolCount(drawPtrList::pool),
             MemPoolSize(drawPtrList::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "Waypnt C=%d S=%d",
-            MemPoolCount(WayPointClass::pool),
+    sprintf(tmpStr, "Waypnt C=%d S=%d", MemPoolCount(WayPointClass::pool),
             MemPoolSize(WayPointClass::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "SMSBase C=%d S=%d",
-            MemPoolCount(SMSBaseClass::pool),
+    sprintf(tmpStr, "SMSBase C=%d S=%d", MemPoolCount(SMSBaseClass::pool),
             MemPoolSize(SMSBaseClass::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "SMS C=%d S=%d",
-            MemPoolCount(SMSClass::pool),
+    sprintf(tmpStr, "SMS C=%d S=%d", MemPoolCount(SMSClass::pool),
             MemPoolSize(SMSClass::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "BWeapn C=%d S=%d",
-            MemPoolCount(BasicWeaponStation::pool),
+    sprintf(tmpStr, "BWeapn C=%d S=%d", MemPoolCount(BasicWeaponStation::pool),
             MemPoolSize(BasicWeaponStation::pool));
 
     renderer->TextLeft(col, row, tmpStr);
@@ -4008,8 +4886,7 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "Helos C=%d S=%d",
-            MemPoolCount(HelicopterClass::pool),
+    sprintf(tmpStr, "Helos C=%d S=%d", MemPoolCount(HelicopterClass::pool),
             MemPoolSize(HelicopterClass::pool));
 
     objCount += MemPoolCount(HelicopterClass::pool);
@@ -4018,100 +4895,85 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "VM CONV C=%d S=%d",
-            MemPoolCount(CONVERSATION::pool),
+    sprintf(tmpStr, "VM CONV C=%d S=%d", MemPoolCount(CONVERSATION::pool),
             MemPoolSize(CONVERSATION::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "VM BUFF C=%d S=%d",
-            MemPoolCount(VM_BUFFLIST::pool),
+    sprintf(tmpStr, "VM BUFF C=%d S=%d", MemPoolCount(VM_BUFFLIST::pool),
             MemPoolSize(VM_BUFFLIST::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "VM CONV C=%d S=%d",
-            MemPoolCount(VM_CONVLIST::pool),
+    sprintf(tmpStr, "VM CONV C=%d S=%d", MemPoolCount(VM_CONVLIST::pool),
             MemPoolSize(VM_CONVLIST::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "RWY Que C=%d S=%d",
-            MemPoolCount(runwayQueueStruct::pool),
+    sprintf(tmpStr, "RWY Que C=%d S=%d", MemPoolCount(runwayQueueStruct::pool),
             MemPoolSize(runwayQueueStruct::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "H BRAIN C=%d S=%d",
-            MemPoolCount(HeliBrain::pool),
+    sprintf(tmpStr, "H BRAIN C=%d S=%d", MemPoolCount(HeliBrain::pool),
             MemPoolSize(HeliBrain::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "AF DATA C=%d S=%d",
-            MemPoolCount(AirframeDataPool),
+    sprintf(tmpStr, "AF DATA C=%d S=%d", MemPoolCount(AirframeDataPool),
             MemPoolSize(AirframeDataPool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "3P Lim C=%d S=%d",
-            MemPoolCount(ThreePointLimiter::pool),
+    sprintf(tmpStr, "3P Lim C=%d S=%d", MemPoolCount(ThreePointLimiter::pool),
             MemPoolSize(ThreePointLimiter::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "Val Lim C=%d S=%d",
-            MemPoolCount(ValueLimiter::pool),
+    sprintf(tmpStr, "Val Lim C=%d S=%d", MemPoolCount(ValueLimiter::pool),
             MemPoolSize(ValueLimiter::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "Pct Lim C=%d S=%d",
-            MemPoolCount(PercentLimiter::pool),
+    sprintf(tmpStr, "Pct Lim C=%d S=%d", MemPoolCount(PercentLimiter::pool),
             MemPoolSize(PercentLimiter::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "Line Lim C=%d S=%d",
-            MemPoolCount(LineLimiter::pool),
+    sprintf(tmpStr, "Line Lim C=%d S=%d", MemPoolCount(LineLimiter::pool),
             MemPoolSize(LineLimiter::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "Vu Drv C=%d S=%d",
-            MemPoolCount(SimVuDriver::pool),
+    sprintf(tmpStr, "Vu Drv C=%d S=%d", MemPoolCount(SimVuDriver::pool),
             MemPoolSize(SimVuDriver::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "Vu Slave C=%d S=%d",
-            MemPoolCount(SimVuSlave::pool),
+    sprintf(tmpStr, "Vu Slave C=%d S=%d", MemPoolCount(SimVuSlave::pool),
             MemPoolSize(SimVuSlave::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "Obj Geom C=%d S=%d",
-            MemPoolCount(ObjectGeometry::pool),
+    sprintf(tmpStr, "Obj Geom C=%d S=%d", MemPoolCount(ObjectGeometry::pool),
             MemPoolSize(ObjectGeometry::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "List Class C=%d S=%d",
-            MemPoolCount(ListClass::pool),
+    sprintf(tmpStr, "List Class C=%d S=%d", MemPoolCount(ListClass::pool),
             MemPoolSize(ListClass::pool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "List Elem C=%d S=%d",
-            MemPoolCount(ListElementClass::pool),
+    sprintf(tmpStr, "List Elem C=%d S=%d", MemPoolCount(ListElementClass::pool),
             MemPoolSize(ListElementClass::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
@@ -4119,20 +4981,17 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
     row -= 0.05f;
 
 
-    sprintf(tmpStr, "VuLinkNode C=%d S=%d",
-            MemPoolCount(VuLinkNode::pool),
+    sprintf(tmpStr, "VuLinkNode C=%d S=%d", MemPoolCount(VuLinkNode::pool),
             MemPoolSize(VuLinkNode::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "VuRBNode C=%d S=%d",
-            MemPoolCount(vuRBNodepool),
+    sprintf(tmpStr, "VuRBNode C=%d S=%d", MemPoolCount(vuRBNodepool),
             MemPoolSize(vuRBNodepool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "DOF Data C=%d S=%d",
-            MemPoolCount(graphicsDOFDataPool),
+    sprintf(tmpStr, "DOF Data C=%d S=%d", MemPoolCount(graphicsDOFDataPool),
             MemPoolSize(graphicsDOFDataPool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
@@ -4146,8 +5005,7 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "Vu Message C=%d S=%d",
-            MemPoolCount(gVuMsgMemPool),
+    sprintf(tmpStr, "Vu Message C=%d S=%d", MemPoolCount(gVuMsgMemPool),
             MemPoolSize(gVuMsgMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
@@ -4160,8 +5018,7 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "Division C=%d S=%d",
-            MemPoolCount(DivisionClass::pool),
+    sprintf(tmpStr, "Division C=%d S=%d", MemPoolCount(DivisionClass::pool),
             MemPoolSize(DivisionClass::pool));
 
     renderer->TextLeft(col, row, tmpStr);
@@ -4172,8 +5029,7 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "Event El C=%d S=%d",
-            MemPoolCount(EventElement::pool),
+    sprintf(tmpStr, "Event El C=%d S=%d", MemPoolCount(EventElement::pool),
             MemPoolSize(EventElement::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
@@ -4182,115 +5038,98 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
     if (gDivVUIDs)
     {
-        sprintf(tmpStr, "Div VUIDs C=%d S=%d",
-                MemPoolCount(gDivVUIDs),
+        sprintf(tmpStr, "Div VUIDs C=%d S=%d", MemPoolCount(gDivVUIDs),
                 MemPoolSize(gDivVUIDs));
 
         renderer->TextLeft(col, row, tmpStr);
     }
 
-    sprintf(tmpStr, "Faults C=%d S=%d",
-            MemPoolCount(gFaultMemPool),
+    sprintf(tmpStr, "Faults C=%d S=%d", MemPoolCount(gFaultMemPool),
             MemPoolSize(gFaultMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "Text C=%d S=%d",
-            MemPoolCount(gTextMemPool),
+    sprintf(tmpStr, "Text C=%d S=%d", MemPoolCount(gTextMemPool),
             MemPoolSize(gTextMemPool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "TPosts C=%d S=%d",
-            MemPoolCount(gTPostMemPool),
+    sprintf(tmpStr, "TPosts C=%d S=%d", MemPoolCount(gTPostMemPool),
             MemPoolSize(gTPostMemPool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "FarTex C=%d S=%d",
-            MemPoolCount(gFartexMemPool),
+    sprintf(tmpStr, "FarTex C=%d S=%d", MemPoolCount(gFartexMemPool),
             MemPoolSize(gFartexMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "Cock C=%d S=%d",
-            MemPoolCount(gCockMemPool),
+    sprintf(tmpStr, "Cock C=%d S=%d", MemPoolCount(gCockMemPool),
             MemPoolSize(gCockMemPool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "BSPLib C=%d S=%d",
-            MemPoolCount(gBSPLibMemPool),
+    sprintf(tmpStr, "BSPLib C=%d S=%d", MemPoolCount(gBSPLibMemPool),
             MemPoolSize(gBSPLibMemPool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "Obj Heap C=%d S=%d",
-            MemPoolCount(gObjMemPool),
+    sprintf(tmpStr, "Obj Heap C=%d S=%d", MemPoolCount(gObjMemPool),
             MemPoolSize(gObjMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "ReadIn C=%d S=%d",
-            MemPoolCount(gReadInMemPool),
+    sprintf(tmpStr, "ReadIn C=%d S=%d", MemPoolCount(gReadInMemPool),
             MemPoolSize(gReadInMemPool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "ResMgr C=%d S=%d",
-            MemPoolCount(gResmgrMemPool),
+    sprintf(tmpStr, "ResMgr C=%d S=%d", MemPoolCount(gResmgrMemPool),
             MemPoolSize(gResmgrMemPool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "TexDB C=%d S=%d",
-            MemPoolCount(gTexDBMemPool),
+    sprintf(tmpStr, "TexDB C=%d S=%d", MemPoolCount(gTexDBMemPool),
             MemPoolSize(gTexDBMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "ATC Brain C=%d S=%d",
-            MemPoolCount(ATCBrain::pool),
+    sprintf(tmpStr, "ATC Brain C=%d S=%d", MemPoolCount(ATCBrain::pool),
             MemPoolSize(ATCBrain::pool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "Palette C=%d S=%d",
-            MemPoolCount(Palette::pool),
+    sprintf(tmpStr, "Palette C=%d S=%d", MemPoolCount(Palette::pool),
             MemPoolSize(Palette::pool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "Sound C=%d S=%d",
-            MemPoolCount(gSoundMemPool),
+    sprintf(tmpStr, "Sound C=%d S=%d", MemPoolCount(gSoundMemPool),
             MemPoolSize(gSoundMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
 
-    sprintf(tmpStr, "Vu Filter C=%d S=%d",
-            MemPoolCount(gVuFilterMemPool),
+    sprintf(tmpStr, "Vu Filter C=%d S=%d", MemPoolCount(gVuFilterMemPool),
             MemPoolSize(gVuFilterMemPool));
 
     renderer->TextLeft(col + 1.2f, row, tmpStr);
 
     row -= 0.05f;
 
-    sprintf(tmpStr, "Input C=%d S=%d",
-            MemPoolCount(gInputMemPool),
+    sprintf(tmpStr, "Input C=%d S=%d", MemPoolCount(gInputMemPool),
             MemPoolSize(gInputMemPool));
 
     renderer->TextLeft(col, row, tmpStr);
 
-    sprintf(tmpStr, "Tacan C=%d S=%d",
-            MemPoolCount(gTacanMemPool),
+    sprintf(tmpStr, "Tacan C=%d S=%d", MemPoolCount(gTacanMemPool),
             MemPoolSize(gTacanMemPool));
 
     renderer->TextLeft(col + 0.6f, row, tmpStr);
@@ -4298,8 +5137,7 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
     row -= 0.05f;
 
 #ifdef DEBUG
-    sprintf(tmpStr, "SimObj Nodes=%d SimObj Refs=%d",
-            ObjectNodes,
+    sprintf(tmpStr, "SimObj Nodes=%d SimObj Refs=%d", ObjectNodes,
             ObjectReferences);
 #endif
     renderer->TextLeft(col, row, tmpStr);
@@ -4311,277 +5149,277 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
     renderer->TextLeft(col, row, tmpStr);
 
     totCount += MemPoolCount(ObjectiveClass::pool);
-    totSize += MemPoolSize(ObjectiveClass::pool) ;
+    totSize += MemPoolSize(ObjectiveClass::pool);
 
     totCount += MemPoolCount(BattalionClass::pool);
-    totSize += MemPoolSize(BattalionClass::pool) ;
+    totSize += MemPoolSize(BattalionClass::pool);
 
     totCount += MemPoolCount(BrigadeClass::pool);
-    totSize += MemPoolSize(BrigadeClass::pool) ;
+    totSize += MemPoolSize(BrigadeClass::pool);
 
     totCount += MemPoolCount(FlightClass::pool);
-    totSize += MemPoolSize(FlightClass::pool) ;
+    totSize += MemPoolSize(FlightClass::pool);
 
     totCount += MemPoolCount(SquadronClass::pool);
-    totSize += MemPoolSize(SquadronClass::pool) ;
+    totSize += MemPoolSize(SquadronClass::pool);
 
     totCount += MemPoolCount(PackageClass::pool);
-    totSize += MemPoolSize(PackageClass::pool) ;
+    totSize += MemPoolSize(PackageClass::pool);
 
     totCount += MemPoolCount(TaskForceClass::pool);
-    totSize += MemPoolSize(TaskForceClass::pool) ;
+    totSize += MemPoolSize(TaskForceClass::pool);
 
     totCount += MemPoolCount(SimPersistantClass::pool);
-    totSize += MemPoolSize(SimPersistantClass::pool) ;
+    totSize += MemPoolSize(SimPersistantClass::pool);
 
     totCount += MemPoolCount(Drawable2D::pool);
-    totSize += MemPoolSize(Drawable2D::pool) ;
+    totSize += MemPoolSize(Drawable2D::pool);
 
     totCount += MemPoolCount(DrawableTracer::pool);
-    totSize += MemPoolSize(DrawableTracer::pool) ;
+    totSize += MemPoolSize(DrawableTracer::pool);
 
     totCount += MemPoolCount(DrawableGroundVehicle::pool);
-    totSize += MemPoolSize(DrawableGroundVehicle::pool) ;
+    totSize += MemPoolSize(DrawableGroundVehicle::pool);
 
     totCount += MemPoolCount(DrawableBuilding::pool);
-    totSize += MemPoolSize(DrawableBuilding::pool) ;
+    totSize += MemPoolSize(DrawableBuilding::pool);
 
     totCount += MemPoolCount(DrawableBSP::pool);
-    totSize += MemPoolSize(DrawableBSP::pool) ;
+    totSize += MemPoolSize(DrawableBSP::pool);
 
     totCount += MemPoolCount(DrawableShadowed::pool);
-    totSize += MemPoolSize(DrawableShadowed::pool) ;
+    totSize += MemPoolSize(DrawableShadowed::pool);
 
     totCount += MemPoolCount(DrawableBridge::pool);
-    totSize += MemPoolSize(DrawableBridge::pool) ;
+    totSize += MemPoolSize(DrawableBridge::pool);
 
     totCount += MemPoolCount(DrawableOvercast::pool);
-    totSize += MemPoolSize(DrawableOvercast::pool) ;
+    totSize += MemPoolSize(DrawableOvercast::pool);
 
     totCount += MemPoolCount(DrawablePlatform::pool);
-    totSize += MemPoolSize(DrawablePlatform::pool) ;
+    totSize += MemPoolSize(DrawablePlatform::pool);
 
     totCount += MemPoolCount(DrawableRoadbed::pool);
-    totSize += MemPoolSize(DrawableRoadbed::pool) ;
+    totSize += MemPoolSize(DrawableRoadbed::pool);
 
     totCount += MemPoolCount(DrawableTrail::pool);
-    totSize += MemPoolSize(DrawableTrail::pool) ;
+    totSize += MemPoolSize(DrawableTrail::pool);
 
     totCount += MemPoolCount(TrailElement::pool);
-    totSize += MemPoolSize(TrailElement::pool) ;
+    totSize += MemPoolSize(TrailElement::pool);
 
     totCount += MemPoolCount(DrawablePuff::pool);
-    totSize += MemPoolSize(DrawablePuff::pool) ;
+    totSize += MemPoolSize(DrawablePuff::pool);
 
     totCount += MemPoolCount(DrawablePoint::pool);
-    totSize += MemPoolSize(DrawablePoint::pool) ;
+    totSize += MemPoolSize(DrawablePoint::pool);
 
     totCount += MemPoolCount(DrawableGuys::pool);
-    totSize += MemPoolSize(DrawableGuys::pool) ;
+    totSize += MemPoolSize(DrawableGuys::pool);
 
     totCount += MemPoolCount(TBlock::pool);
-    totSize += MemPoolSize(TBlock::pool) ;
+    totSize += MemPoolSize(TBlock::pool);
 
     totCount += MemPoolCount(TListEntry::pool);
-    totSize += MemPoolSize(TListEntry::pool) ;
+    totSize += MemPoolSize(TListEntry::pool);
 
     totCount += MemPoolCount(TBlockList::pool);
-    totSize += MemPoolSize(TBlockList::pool) ;
+    totSize += MemPoolSize(TBlockList::pool);
 
     totCount += MemPoolCount(ObjectLOD::pool);
-    totSize += MemPoolSize(ObjectLOD::pool) ;
+    totSize += MemPoolSize(ObjectLOD::pool);
 
     totCount += MemPoolCount(glMemPool);
-    totSize += MemPoolSize(glMemPool) ;
+    totSize += MemPoolSize(glMemPool);
 
     totCount += MemPoolCount(displayList::pool);
-    totSize += MemPoolSize(displayList::pool) ;
+    totSize += MemPoolSize(displayList::pool);
 
     totCount += MemPoolCount(sfxRequest::pool);
-    totSize += MemPoolSize(sfxRequest::pool) ;
+    totSize += MemPoolSize(sfxRequest::pool);
 
     totCount += MemPoolCount(AirframeClass::pool);
-    totSize += MemPoolSize(AirframeClass::pool) ;
+    totSize += MemPoolSize(AirframeClass::pool);
 
     totCount += MemPoolCount(AircraftClass::pool);
-    totSize += MemPoolSize(AircraftClass::pool) ;
+    totSize += MemPoolSize(AircraftClass::pool);
 
     totCount += MemPoolCount(MissileClass::pool);
-    totSize += MemPoolSize(MissileClass::pool) ;
+    totSize += MemPoolSize(MissileClass::pool);
 
     totCount += MemPoolCount(BombClass::pool);
-    totSize += MemPoolSize(BombClass::pool) ;
+    totSize += MemPoolSize(BombClass::pool);
 
     totCount += MemPoolCount(SimObjectType::pool);
-    totSize += MemPoolSize(SimObjectType::pool) ;
+    totSize += MemPoolSize(SimObjectType::pool);
 
     totCount += MemPoolCount(SimObjectLocalData::pool);
-    totSize += MemPoolSize(SimObjectLocalData::pool) ;
+    totSize += MemPoolSize(SimObjectLocalData::pool);
 
     totCount += MemPoolCount(SfxClass::pool);
-    totSize += MemPoolSize(SfxClass::pool) ;
+    totSize += MemPoolSize(SfxClass::pool);
 
     totCount += MemPoolCount(GunClass::pool);
-    totSize += MemPoolSize(GunClass::pool) ;
+    totSize += MemPoolSize(GunClass::pool);
 
     totCount += MemPoolCount(GroundClass::pool);
-    totSize += MemPoolSize(GroundClass::pool) ;
+    totSize += MemPoolSize(GroundClass::pool);
 
     totCount += MemPoolCount(GNDAIClass::pool);
-    totSize += MemPoolSize(GNDAIClass::pool) ;
+    totSize += MemPoolSize(GNDAIClass::pool);
 
     totCount += MemPoolCount(SimFeatureClass::pool);
-    totSize += MemPoolSize(SimFeatureClass::pool) ;
+    totSize += MemPoolSize(SimFeatureClass::pool);
 
     totCount += MemPoolCount(MissileInFlightData::pool);
-    totSize += MemPoolSize(MissileInFlightData::pool) ;
+    totSize += MemPoolSize(MissileInFlightData::pool);
 
     totCount += MemPoolCount(drawPtrList::pool);
-    totSize += MemPoolSize(drawPtrList::pool) ;
+    totSize += MemPoolSize(drawPtrList::pool);
 
     totCount += MemPoolCount(WayPointClass::pool);
-    totSize += MemPoolSize(WayPointClass::pool) ;
+    totSize += MemPoolSize(WayPointClass::pool);
 
     totCount += MemPoolCount(SMSBaseClass::pool);
-    totSize += MemPoolSize(SMSBaseClass::pool) ;
+    totSize += MemPoolSize(SMSBaseClass::pool);
 
     totCount += MemPoolCount(SMSClass::pool);
-    totSize += MemPoolSize(SMSClass::pool) ;
+    totSize += MemPoolSize(SMSClass::pool);
 
     totCount += MemPoolCount(BasicWeaponStation::pool);
-    totSize += MemPoolSize(BasicWeaponStation::pool) ;
+    totSize += MemPoolSize(BasicWeaponStation::pool);
 
     totCount += MemPoolCount(AdvancedWeaponStation::pool);
-    totSize += MemPoolSize(AdvancedWeaponStation::pool) ;
+    totSize += MemPoolSize(AdvancedWeaponStation::pool);
 
     totCount += MemPoolCount(HelicopterClass::pool);
-    totSize += MemPoolSize(HelicopterClass::pool) ;
+    totSize += MemPoolSize(HelicopterClass::pool);
 
     totCount += MemPoolCount(CONVERSATION::pool);
-    totSize += MemPoolSize(CONVERSATION::pool) ;
+    totSize += MemPoolSize(CONVERSATION::pool);
 
     totCount += MemPoolCount(VM_BUFFLIST::pool);
-    totSize += MemPoolSize(VM_BUFFLIST::pool) ;
+    totSize += MemPoolSize(VM_BUFFLIST::pool);
 
     totCount += MemPoolCount(VM_CONVLIST::pool);
-    totSize += MemPoolSize(VM_CONVLIST::pool) ;
+    totSize += MemPoolSize(VM_CONVLIST::pool);
 
     totCount += MemPoolCount(runwayQueueStruct::pool);
-    totSize += MemPoolSize(runwayQueueStruct::pool) ;
+    totSize += MemPoolSize(runwayQueueStruct::pool);
 
     totCount += MemPoolCount(HeliBrain::pool);
-    totSize += MemPoolSize(HeliBrain::pool) ;
+    totSize += MemPoolSize(HeliBrain::pool);
 
     totCount += MemPoolCount(AirframeDataPool);
-    totSize += MemPoolSize(AirframeDataPool) ;
+    totSize += MemPoolSize(AirframeDataPool);
 
     totCount += MemPoolCount(ThreePointLimiter::pool);
-    totSize += MemPoolSize(ThreePointLimiter::pool) ;
+    totSize += MemPoolSize(ThreePointLimiter::pool);
 
     totCount += MemPoolCount(ValueLimiter::pool);
-    totSize += MemPoolSize(ValueLimiter::pool) ;
+    totSize += MemPoolSize(ValueLimiter::pool);
 
     totCount += MemPoolCount(PercentLimiter::pool);
-    totSize += MemPoolSize(PercentLimiter::pool) ;
+    totSize += MemPoolSize(PercentLimiter::pool);
 
     totCount += MemPoolCount(LineLimiter::pool);
-    totSize += MemPoolSize(LineLimiter::pool) ;
+    totSize += MemPoolSize(LineLimiter::pool);
 
     totCount += MemPoolCount(SimVuDriver::pool);
-    totSize += MemPoolSize(SimVuDriver::pool) ;
+    totSize += MemPoolSize(SimVuDriver::pool);
 
     totCount += MemPoolCount(SimVuSlave::pool);
-    totSize += MemPoolSize(SimVuSlave::pool) ;
+    totSize += MemPoolSize(SimVuSlave::pool);
 
     totCount += MemPoolCount(ObjectGeometry::pool);
-    totSize += MemPoolSize(ObjectGeometry::pool) ;
+    totSize += MemPoolSize(ObjectGeometry::pool);
 
     totCount += MemPoolCount(ListClass::pool);
-    totSize += MemPoolSize(ListClass::pool) ;
+    totSize += MemPoolSize(ListClass::pool);
 
     totCount += MemPoolCount(ListElementClass::pool);
-    totSize += MemPoolSize(ListElementClass::pool) ;
+    totSize += MemPoolSize(ListElementClass::pool);
 
     totCount += MemPoolCount(VuLinkNode::pool);
-    totSize += MemPoolSize(VuLinkNode::pool) ;
+    totSize += MemPoolSize(VuLinkNode::pool);
 
     totCount += MemPoolCount(vuRBNodepool);
-    totSize += MemPoolSize(vuRBNodepool) ;
+    totSize += MemPoolSize(vuRBNodepool);
 
     totCount += MemPoolCount(graphicsDOFDataPool);
-    totSize += MemPoolSize(graphicsDOFDataPool) ;
+    totSize += MemPoolSize(graphicsDOFDataPool);
 
     //  totCount += MemPoolCount( LoadoutStruct::pool );
     //  totSize += MemPoolSize( LoadoutStruct::pool ) ;
 
     totCount += MemPoolCount(gVuMsgMemPool);
-    totSize += MemPoolSize(gVuMsgMemPool) ;
+    totSize += MemPoolSize(gVuMsgMemPool);
 
     totCount += MemPoolCount(UnitDeaggregationData::pool);
-    totSize += MemPoolSize(UnitDeaggregationData::pool) ;
+    totSize += MemPoolSize(UnitDeaggregationData::pool);
 
     totCount += MemPoolCount(DivisionClass::pool);
-    totSize += MemPoolSize(DivisionClass::pool) ;
+    totSize += MemPoolSize(DivisionClass::pool);
 
     totCount += MemPoolCount(MissionRequestClass::pool);
-    totSize += MemPoolSize(MissionRequestClass::pool) ;
+    totSize += MemPoolSize(MissionRequestClass::pool);
 
     totCount += MemPoolCount(EventElement::pool);
-    totSize += MemPoolSize(EventElement::pool) ;
+    totSize += MemPoolSize(EventElement::pool);
 
     if (gDivVUIDs)
     {
         totCount += MemPoolCount(gDivVUIDs);
-        totSize += MemPoolSize(gDivVUIDs) ;
+        totSize += MemPoolSize(gDivVUIDs);
     }
 
     totCount += MemPoolCount(gFaultMemPool);
-    totSize += MemPoolSize(gFaultMemPool) ;
+    totSize += MemPoolSize(gFaultMemPool);
 
     totCount += MemPoolCount(gTextMemPool);
-    totSize += MemPoolSize(gTextMemPool) ;
+    totSize += MemPoolSize(gTextMemPool);
 
     totCount += MemPoolCount(gTPostMemPool);
-    totSize += MemPoolSize(gTPostMemPool) ;
+    totSize += MemPoolSize(gTPostMemPool);
 
     totCount += MemPoolCount(gFartexMemPool);
-    totSize += MemPoolSize(gFartexMemPool) ;
+    totSize += MemPoolSize(gFartexMemPool);
 
     totCount += MemPoolCount(gCockMemPool);
-    totSize += MemPoolSize(gCockMemPool) ;
+    totSize += MemPoolSize(gCockMemPool);
 
     totCount += MemPoolCount(gBSPLibMemPool);
-    totSize += MemPoolSize(gBSPLibMemPool) ;
+    totSize += MemPoolSize(gBSPLibMemPool);
 
     totCount += MemPoolCount(gObjMemPool);
-    totSize += MemPoolSize(gObjMemPool) ;
+    totSize += MemPoolSize(gObjMemPool);
 
     totCount += MemPoolCount(gReadInMemPool);
-    totSize += MemPoolSize(gReadInMemPool) ;
+    totSize += MemPoolSize(gReadInMemPool);
 
     totCount += MemPoolCount(gResmgrMemPool);
-    totSize += MemPoolSize(gResmgrMemPool) ;
+    totSize += MemPoolSize(gResmgrMemPool);
 
     totCount += MemPoolCount(gTexDBMemPool);
-    totSize += MemPoolSize(gTexDBMemPool) ;
+    totSize += MemPoolSize(gTexDBMemPool);
 
     totCount += MemPoolCount(Palette::pool);
-    totSize += MemPoolSize(Palette::pool) ;
+    totSize += MemPoolSize(Palette::pool);
 
     totCount += MemPoolCount(ATCBrain::pool);
-    totSize += MemPoolSize(ATCBrain::pool) ;
+    totSize += MemPoolSize(ATCBrain::pool);
 
     totCount += MemPoolCount(gSoundMemPool);
-    totSize += MemPoolSize(gSoundMemPool) ;
+    totSize += MemPoolSize(gSoundMemPool);
 
     totCount += MemPoolCount(gInputMemPool);
-    totSize += MemPoolSize(gInputMemPool) ;
+    totSize += MemPoolSize(gInputMemPool);
 
     totCount += MemPoolCount(gTacanMemPool);
-    totSize += MemPoolSize(gTacanMemPool) ;
+    totSize += MemPoolSize(gTacanMemPool);
 
     totCount += MemPoolCount(gVuFilterMemPool);
-    totSize += MemPoolSize(gVuFilterMemPool) ;
+    totSize += MemPoolSize(gVuFilterMemPool);
 
     row -= 0.05f;
 
@@ -4597,6 +5435,5 @@ void DebugMemoryReport(RenderOTW *renderer, int frameTime)
 
 
     renderer->TextLeft(col, row, tmpStr);
-
 }
 #endif // MEM_DEBUG

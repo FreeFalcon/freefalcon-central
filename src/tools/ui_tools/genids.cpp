@@ -23,25 +23,25 @@ long FindString(char *IDStr)
     for (i = 0; i < IDCount; i++)
     {
         if (!stricmp(&UserIDs[i].Label[0], IDStr))
-            return(i);
+            return (i);
     }
 
-    return(-1);
+    return (-1);
 }
 
 long FindValue(long Value)
 {
     int i;
 
-    return(-1);
+    return (-1);
 
     for (i = 0; i < IDCount; i++)
     {
         if (UserIDs[i].Value == Value)
-            return(i);
+            return (i);
     }
 
-    return(-1);
+    return (-1);
 }
 
 void SortIDList()
@@ -68,13 +68,16 @@ void main(int argc, char **argv)
     char buffer[256];
     long ID, curfileno, Value, i;
 
-    printf("GENIDS Ver 1.0 - Create a header file from ALL the USERIDS.ID Files\n");
+    printf("GENIDS Ver 1.0 - Create a header file from ALL the USERIDS.ID "
+           "Files\n");
 
     if (argc != 3)
     {
         printf("Usage: GENIDS <input file> <output file>\n");
-        printf("where  <input file> contains a list if USERIDS.ID files you want to process\n");
-        printf(" and   <output file> is the '.h' file which will be included in falcon4\n");
+        printf("where  <input file> contains a list if USERIDS.ID files you "
+               "want to process\n");
+        printf(" and   <output file> is the '.h' file which will be included "
+               "in falcon4\n");
         printf("Note:  The program can handle a MAXIMUM of 10000 unique IDs\n");
         return;
     }
@@ -125,14 +128,22 @@ void main(int argc, char **argv)
                         ID = FindString(token);
 
                         if (ID >= 0)
-                            printf("Duplicate ID [%s] in file #%1d of <%s> (first found in file #%1d)\n", token, curfileno, argv[1], UserIDs[ID].fileno);
+                            printf("Duplicate ID [%s] in file #%1d of <%s> "
+                                   "(first found in file #%1d)\n",
+                                   token, curfileno, argv[1],
+                                   UserIDs[ID].fileno);
                         else
                         {
                             Value = atol(token2);
                             ID = FindValue(Value);
 
                             if (ID >= 0)
-                                printf("Duplicate Value [%s][%1ld] in file #%1d of <%s> (first found in file #%1d [%s][%1ld])\n", token, Value, curfileno, argv[1], UserIDs[ID].fileno, UserIDs[ID].Label, UserIDs[ID].Value);
+                                printf("Duplicate Value [%s][%1ld] in file "
+                                       "#%1d of <%s> (first found in file #%1d "
+                                       "[%s][%1ld])\n",
+                                       token, Value, curfileno, argv[1],
+                                       UserIDs[ID].fileno, UserIDs[ID].Label,
+                                       UserIDs[ID].Value);
                             else if (IDCount < MAX_IDS)
                             {
                                 // Add ID to List
@@ -142,7 +153,9 @@ void main(int argc, char **argv)
                                 IDCount++;
                             }
                             else
-                                printf("***ERROR*** MAX # of IDs Exceeded (%1ld)\n", MAX_IDS);
+                                printf("***ERROR*** MAX # of IDs Exceeded "
+                                       "(%1ld)\n",
+                                       MAX_IDS);
                         }
                     }
                 }

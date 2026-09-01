@@ -1,7 +1,7 @@
-#ifndef     _TIMER_THREAD_H_
-#define     _TIMER_THREAD_H_
+#ifndef _TIMER_THREAD_H_
+#define _TIMER_THREAD_H_
 
-#include    "Falclib.h"
+#include "falclib.h"
 
 #define NO_TIMER_THREAD 1
 
@@ -23,30 +23,31 @@
 #define REMOTE_REQUEST_1024 0x400
 
 // external functions and variables
-extern void             RealTimeFunction(unsigned long, void *);
+extern void RealTimeFunction(unsigned long, void *);
 extern void SetTimeCompressionFromRemote(int);
-extern void             SetTimeCompression(int);
-extern void             SetTemporaryCompression(int);
-extern void             SetTime(unsigned long);
+extern void SetTimeCompression(int);
+extern void SetTemporaryCompression(int);
+extern void SetTime(unsigned long);
 
-extern ulong            gCompressTillTime;
-extern unsigned long    vuxRealTime;
-extern unsigned long    vuxGameTime;
-extern unsigned long    vuxTargetGameTime;
-extern unsigned long    vuxLastTargetGameTime;
-extern unsigned long    vuxDeadReconTime;
-extern unsigned long lastTimingMessage;
-extern unsigned long    lastStartTime;
-extern int              gameCompressionRatio;
+extern unsigned int
+    gCompressTillTime; // CampaignTime (32-bit); camplib.h not included here
+extern unsigned int vuxRealTime;
+extern unsigned int vuxGameTime;
+extern unsigned int vuxTargetGameTime;
+extern unsigned int vuxLastTargetGameTime;
+extern unsigned int vuxDeadReconTime;
+extern unsigned int lastTimingMessage;
+extern unsigned long lastStartTime;
+extern int gameCompressionRatio;
 extern int targetGameCompressionRatio;
-extern int              targetCompressionRatio;
+extern int targetCompressionRatio;
 extern int remoteCompressionRequests;
 
 #ifndef NO_TIMER_THREAD
-#define                 THREAD_TIME_SLICE       20
+#define THREAD_TIME_SLICE 20
 
-extern void             beginTimer(void);
-extern void             endTimer(void);
+extern void beginTimer(void);
+extern void endTimer(void);
 #endif // NO_TIMER_THREAD
 
 extern void SetTimeCompression(int newComp);

@@ -1,4 +1,4 @@
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "sinput.h"
 #include "simio.h"
 
@@ -26,12 +26,14 @@ void AcquireDeviceInput(int DeviceIndex, BOOL Flag)
     {
         if (Flag)
         {
-            gpDeviceAcquired[DeviceIndex] = SUCCEEDED(gpDIDevice[DeviceIndex]->Acquire());
+            gpDeviceAcquired[DeviceIndex] =
+                SUCCEEDED(gpDIDevice[DeviceIndex]->Acquire());
             // MonoPrint("Device Acquired\n");
         }
         else
         {
-            gpDeviceAcquired[DeviceIndex] = SUCCEEDED(gpDIDevice[DeviceIndex]->Unacquire());
+            gpDeviceAcquired[DeviceIndex] =
+                SUCCEEDED(gpDIDevice[DeviceIndex]->Unacquire());
         }
     }
 }
@@ -82,7 +84,8 @@ BOOL CheckDeviceAcquisition(int DeviceIndex)
 
     if (gpDIDevice[DeviceIndex])
     {
-        hResult = gpDIDevice[DeviceIndex]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), NULL, &dwElements, DIGDD_PEEK);
+        hResult = gpDIDevice[DeviceIndex]->GetDeviceData(
+            sizeof(DIDEVICEOBJECTDATA), NULL, &dwElements, DIGDD_PEEK);
 
         if (hResult == DIERR_NOTACQUIRED)
         {
@@ -112,7 +115,8 @@ BOOL CleanupDIDevice(int DeviceIndex)
     {
 
         if (DeviceIndex < SIM_JOYSTICK1)
-            CleanupResult = VerifyResult(gpDIDevice[DeviceIndex]->SetEventNotification(NULL));
+            CleanupResult = VerifyResult(
+                gpDIDevice[DeviceIndex]->SetEventNotification(NULL));
 
         if (CleanupResult)
         {
@@ -143,8 +147,8 @@ BOOL CleanupDIDevice(int DeviceIndex)
 // BOOL SetupDIDevice()
 //***********************************
 
-BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
-                   REFGUID pGUID, LPCDIDATAFORMAT pFormat, DIPROPDWORD* pDIPDW)
+BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex, REFGUID pGUID,
+                   LPCDIDATAFORMAT pFormat, DIPROPDWORD* pDIPDW)
 {
 
     BOOL SetupResult = TRUE;
@@ -165,9 +169,12 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
     if (SetupResult)
     {
 #ifndef USE_DINPUT_8 // Retro 15Jan2004
-        SetupResult = VerifyResult(gpDIObject->CreateDeviceEx(pGUID, IID_IDirectInputDevice7, (void **) &gpDIDevice[DeviceIndex], NULL));
+        SetupResult = VerifyResult(
+            gpDIObject->CreateDeviceEx(pGUID, IID_IDirectInputDevice7,
+                                       (void**)&gpDIDevice[DeviceIndex], NULL));
 #else
-        HRESULT hr = gpDIObject->CreateDevice(pGUID, &gpDIDevice[DeviceIndex], NULL);
+        HRESULT hr =
+            gpDIObject->CreateDevice(pGUID, &gpDIDevice[DeviceIndex], NULL);
         SetupResult = (hr == DI_OK) ? TRUE : FALSE;
 #endif
     }
@@ -175,13 +182,15 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
     // Set the data format to "device format"
     if (SetupResult)
     {
-        SetupResult = VerifyResult(gpDIDevice[DeviceIndex]->SetDataFormat(pFormat));
+        SetupResult =
+            VerifyResult(gpDIDevice[DeviceIndex]->SetDataFormat(pFormat));
     }
 
     // Set the cooperativity level.
     if (SetupResult)
     {
-        SetupResult = VerifyResult(gpDIDevice[DeviceIndex]->SetCooperativeLevel(hWnd, CooperationFlags));
+        SetupResult = VerifyResult(gpDIDevice[DeviceIndex]->SetCooperativeLevel(
+            hWnd, CooperationFlags));
     }
 
     // Create the handle that tells us new data is available
@@ -194,14 +203,17 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
     // Associate the event with the device
     if (SetupResult)
     {
-        SetupResult = VerifyResult(gpDIDevice[DeviceIndex]->SetEventNotification(gphDeviceEvent[DeviceIndex]));
+        SetupResult =
+            VerifyResult(gpDIDevice[DeviceIndex]->SetEventNotification(
+                gphDeviceEvent[DeviceIndex]));
     }
 
     // Set the buffer size fo DINPUT_BUFFERSIZE elements.
     // The buffer size is a DWORD property associated wht the device.
     if (SetupResult)
     {
-        SetupResult = VerifyResult(gpDIDevice[DeviceIndex]->SetProperty(DIPROP_BUFFERSIZE, &pDIPDW->diph));
+        SetupResult = VerifyResult(gpDIDevice[DeviceIndex]->SetProperty(
+            DIPROP_BUFFERSIZE, &pDIPDW->diph));
     }
 
     if (SetupResult)
@@ -212,4 +224,3 @@ BOOL SetupDIDevice(HWND hWnd, BOOL Exclusive, int DeviceIndex,
 
     return (SetupResult);
 }
-

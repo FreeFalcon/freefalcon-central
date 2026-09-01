@@ -1,29 +1,25 @@
 #ifndef OMNI_HEADER
-#   define  OMNI_HEADER 1
+#define OMNI_HEADER 1
 
 #ifndef YES
-#  define YES   1
+#define YES 1
 #endif
 
 #ifndef NO
-#  define NO    0
+#define NO 0
 #endif
 
 #ifndef TRUE
-#  define TRUE  1
+#define TRUE 1
 #endif
 
 #ifndef FALSE
-#  define FALSE 0
+#define FALSE 0
 #endif
 
-#define   COMPILER_WATCOM   1
-#define   COMPILER_MSVC     2
-#define   COMPILER_GCC      3
-
-
-
-
+#define COMPILER_WATCOM 1
+#define COMPILER_MSVC 2
+#define COMPILER_GCC 3
 
 
 /* ---------------------------------------------------------------
@@ -36,38 +32,43 @@
 /* ----- FOR ALL LIBRARIES ----- */
 
 
-# define USE_THREAD_SAFE                YES
-# define USE_WINDOWS                    YES
-# define USE_WIN_DEBUG                  NO
-# define USE_CPLUSPLUS                  NO
+#define USE_THREAD_SAFE YES
+#define USE_WINDOWS YES
+#define USE_WIN_DEBUG NO
+#define USE_CPLUSPLUS NO
 
-# define LIB_COMPILER                   COMPILER_MSVC   /* Choose a compiler */
-
-
+#define LIB_COMPILER COMPILER_MSVC   /* Choose a compiler */
 
 
 /* ----- MEMORY MANAGER OPTIONS ----- */
 
-# define MEM_ENABLED                    NO          /* Use the memory management
+#define MEM_ENABLED                                                            \
+    NO          /* Use the memory management
 functions?         */
 
-# define MEM_DEBUG_VERSION              YES         /* Use debug code? 
+#define MEM_DEBUG_VERSION                                                      \
+    YES         /* Use debug code? 
 (maintains system metrics)   */
 
-# define MEM_ARRAY_EXTENSION            NO          /* new[] delete[] ... 
+#define MEM_ARRAY_EXTENSION                                                    \
+    NO          /* new[] delete[] ... 
 doesn't work for msvc, but
 does for watcom, etc.
 */
-# define MEM_ALIGN                      YES         /* ALIGN memory allocations 
+#define MEM_ALIGN                                                              \
+    YES         /* ALIGN memory allocations 
 */
 
-# define MEM_DEBUG_PRINTF               YES         /* console i/o to print 
+#define MEM_DEBUG_PRINTF                                                       \
+    YES         /* console i/o to print 
 debug information       */
 
-# define MEM_REPLACE_MALLOC             NO          /* redefine malloc & free as
+#define MEM_REPLACE_MALLOC                                                     \
+    NO          /* redefine malloc & free as
 MemMalloc, MemFree */
 
-# define MEM_TRAP_MALLOC                NO          /* redefine malloc & free as
+#define MEM_TRAP_MALLOC                                                        \
+    NO          /* redefine malloc & free as
 #error             */
 
 /* ----- RESOURCE MANAGER GUIDE ----- */
@@ -97,39 +98,45 @@ so insure MAX_DIRECTORIES is large enough in released versions.
 
 ***************************************/
 /* ----- RESOURCE MANAGER OPTIONS ----- */
-#define MAX_DIRECTORIES                 250         /* maximum number of directories in search path */
+#define MAX_DIRECTORIES 250 /* maximum number of directories in search path */
 
-#define RES_NO_REPEATED_ADDPATHS        YES         /* if YES then redundant calls to ResAddPath are ignored*/
+#define RES_NO_REPEATED_ADDPATHS                                               \
+    YES /* if YES then redundant calls to ResAddPath are ignored*/
 
-#define RES_USE_FLAT_MODEL              NO          /* flat (=YES) or hierarchical (=NO) database?  */
+#define RES_USE_FLAT_MODEL NO /* flat (=YES) or hierarchical (=NO) database?  */
 
-#define RES_REJECT_EMPTY_FILES          NO          /* reject any empty (size=0) files?             */
+#define RES_REJECT_EMPTY_FILES                                                 \
+    NO /* reject any empty (size=0) files?             */
 
-#define RES_STANDALONE                  NO          /* standalone test version?  */
+#define RES_STANDALONE NO /* standalone test version?  */
 
-#define RES_COERCE_FILENAMES            YES         /* perform filename coercion?                   */
+#define RES_COERCE_FILENAMES                                                   \
+    YES /* perform filename coercion?                   */
 
-#define RES_MULTITHREAD                 YES         /* use multithreaded version?                   */
+#define RES_MULTITHREAD YES /* use multithreaded version?                   */
 
-#define RES_PREDETERMINE_SIZE           NO          /* count all entries before performing alloc    */
+#define RES_PREDETERMINE_SIZE                                                  \
+    NO /* count all entries before performing alloc    */
 
-#define RES_STREAMING_IO                YES         /* allow the standard i/o streaming functions   */
+#define RES_STREAMING_IO YES /* allow the standard i/o streaming functions   */
 
-#define RES_REPLACE_STREAMING           NO          /* use ftell or ResFTell? (comment in RESMGR.C) */
+#define RES_REPLACE_STREAMING                                                  \
+    NO /* use ftell or ResFTell? (comment in RESMGR.C) */
 
-#define RES_WILDCARD_PATHS              YES         /* allow wildcard explansion of directory paths?*/
+#define RES_WILDCARD_PATHS                                                     \
+    YES /* allow wildcard explansion of directory paths?*/
 
-#define RES_ALLOW_ALIAS                 YES         /* can you attach an archive to a 'fake' path?  */
+#define RES_ALLOW_ALIAS YES /* can you attach an archive to a 'fake' path?  */
 
-#define RES_USE_FULLPATH                YES         /* use my _fullpath? (see comment in RESMGR.C)  */
+#define RES_USE_FULLPATH YES /* use my _fullpath? (see comment in RESMGR.C)  */
 
-#define RES_CPP_HYBRID                  YES         /* both c and cpp files in the project?         */
+#define RES_CPP_HYBRID YES /* both c and cpp files in the project?         */
 
-#define RES_DEBUG_VERSION               YES         /* include debug code? */
+#define RES_DEBUG_VERSION YES /* include debug code? */
 
-#define RES_DEBUG_PARAMS                YES         /* perform parameter checking?                  */
+#define RES_DEBUG_PARAMS YES /* perform parameter checking?                  */
 
-#define RES_DEBUG_LOG                   NO          /* perform event logging and error reporting?   */
+#define RES_DEBUG_LOG NO /* perform event logging and error reporting?   */
 
 /* NOTE: RES_DEBUG_PARAMS and RES_DEBUG_LOG both
 require RES_DEBUG_VERSION to be YES */
@@ -137,123 +144,113 @@ require RES_DEBUG_VERSION to be YES */
 
 /* ----- LIST LIBRARY OPTIONS ----- */
 
-#define   USE_LIST_ALLOCATIONS          YES
-
-
+#define USE_LIST_ALLOCATIONS YES
 
 
 /* ----- SOUND MANAGER OPTIONS ----- */
 
-#define SND_LINEAR_SCALE                YES         /* use linear volume scale? (opposed to db)
+#define SND_LINEAR_SCALE                                                       \
+    YES /* use linear volume scale? (opposed to db)
 */
 
-#define SND_STANDALONE                  NO          /* standalone test version? 
+#define SND_STANDALONE                                                         \
+    NO /* standalone test version? 
 */
 
-#define SND_DEBUG_VERSION               NO          /* include debug code?      
+#define SND_DEBUG_VERSION                                                      \
+    NO /* include debug code?      
 */
 
-#define SND_DEBUG_PARAMS                YES        /* perform parameter 
+#define SND_DEBUG_PARAMS                                                       \
+    YES /* perform parameter 
 checking?        */
 
-#define SND_DEBUG_WAVEIO                NO          /* extensive debug code in 
+#define SND_DEBUG_WAVEIO                                                       \
+    NO /* extensive debug code in 
 waveio.c   */
 
-#define SND_USE_RESMGR                  YES         /* use the resource manager?
+#define SND_USE_RESMGR                                                         \
+    YES /* use the resource manager?
 */
 /* make sure you're linking
 properly  */
 
-#define SND_CPP_HYBRID                  YES         /* some of your project 
+#define SND_CPP_HYBRID                                                         \
+    YES /* some of your project 
 files c++ ?   */
 
 /* make sure you're linking
 properly  */
 
 
-
-
-
-
-
-
-
-
-
-
-
 #ifndef DBG
-#   define DBG(a)           a
+#define DBG(a) a
 #endif
 
 #ifndef PF
-#   define PF               printf
+#define PF printf
 #endif
 
 #ifdef __cplusplus
 #if USE_CPLUSPLUS
-#   define CFUNC            extern
+#define CFUNC extern
 #else
-#   define CFUNC            extern "C"
+#define CFUNC extern "C"
 #endif
 #else
-#   define CFUNC            extern
+#define CFUNC extern
 #endif
 
 #ifndef KEVS_FATAL_ERROR
-#   define KEVS_FATAL_ERROR(a)   PF(a)
+#define KEVS_FATAL_ERROR(a) PF(a)
 #endif
 
 #if USE_WINDOWS
-#   include <windows.h>
-#   if USE_WIN_DEBUG
-#       include "codelib\tools\windebug\windebug.h"
-#   endif
+#include <windows.h>
+#if USE_WIN_DEBUG
+#include "codelib\tools\windebug\windebug.h"
+#endif
 #endif
 
 #if MEM_ENABLED
-#  include "memmgr.h"
+#include "memmgr.h"
 #else
-#  define MemFree(p)        free(p)
-#  define MemFreePtr        free
-#  define MemMalloc(n, s)   malloc(n)
-#  define MemStrDup(s)      strdup(s)
-#  define MemRealloc(p, s)  realloc(p,s)
+#define MemFree(p) free(p)
+#define MemFreePtr free
+#define MemMalloc(n, s) malloc(n)
+#define MemStrDup(s) strdup(s)
+#define MemRealloc(p, s) realloc(p, s)
 #endif /* MEM_ENABLED */
 
-#if( !SND_USE_RESMGR )
-#   define RES_FOPEN        fopen
-#   define RES_FCLOSE       fclose
-#   define RES_FTELL        ftell
-#   define RES_FSEEK        fseek
+#if (!SND_USE_RESMGR)
+#define RES_FOPEN fopen
+#define RES_FCLOSE fclose
+#define RES_FTELL ftell
+#define RES_FSEEK fseek
 #endif
 
 #ifndef _cplusplus
-#   ifndef PRIVATE
-#       define PRIVATE      static
-#       define PUBLIC       extern
-#   endif
+#ifndef PRIVATE
+#define PRIVATE static
+#define PUBLIC extern
+#endif
 #endif
 
 
+typedef char *STRING;
 
+/* MSVC treats a C++ empty parameter list "()" leniently (unspecified args, K&R-style), so the plain
+   `int(*)()` form below accepts the arg-passing callback calls there. Clang/gcc follow the C++ standard
+   where "()" means zero args, so they need the variadic "(...)" form to accept those same calls. */
+#if (USE_CPLUSPLUS) || (defined(__cplusplus) && !defined(_MSC_VER))
+typedef void (*PFV)(...); /* Ptr to func returning VOID */
 
-typedef
-char *                   STRING;
-
-#if( USE_CPLUSPLUS )
-typedef
-void (* PFV)(...);                   /* Ptr to func returning VOID */
-
-typedef
-int (* PFI)(...);                    /* Ptr to func returning int  */
+typedef int (*PFI)(...); /* Ptr to func returning int  */
 #else
-typedef
-void (* PFV)();                      /* Ptr to func returning VOID */
+typedef void (*PFV)();                      /* Ptr to func returning VOID */
 
-typedef
-int (* PFI)();                       /* Ptr to func returning int  */
+typedef int (*PFI)();                       /* Ptr to func returning int  */
 #endif
 
 
-#endif  /* OMNI_HEADER */
+#endif /* OMNI_HEADER */

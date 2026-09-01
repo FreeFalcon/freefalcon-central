@@ -5,17 +5,17 @@
 
     //JAM 08Jan04 - Begin Major Rewrite
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include <math.h>
 #include "falclib/include/debuggr.h"
-#include "StateStack.h"
-#include "ObjectInstance.h"
-#include "Matrix.h"
-#include "Render3D.h"
+#include "statestack.h"
+#include "objectinstance.h"
+#include "matrix.h"
+#include "render3d.h"
 
 extern float g_fDefaultFOV; //Wombat778 10-31-2003
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXTools.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxtools.h"
 extern bool g_bUse_DX_Engine;
 
 
@@ -114,7 +114,7 @@ float Render3D::Roll()
 
 
 // Maybe better access methods for a class variable?
-void Render3D::GetAt(Tpoint *v)
+void Render3D::GetAt(Tpoint* v)
 {
     v->x = cameraRot.M11;
     v->y = cameraRot.M12;
@@ -122,7 +122,7 @@ void Render3D::GetAt(Tpoint *v)
 }
 
 
-void Render3D::GetLeft(Tpoint *v)
+void Render3D::GetLeft(Tpoint* v)
 {
     v->x = cameraRot.M21;
     v->y = cameraRot.M22;
@@ -130,7 +130,7 @@ void Render3D::GetLeft(Tpoint *v)
 }
 
 
-void Render3D::GetUp(Tpoint *v)
+void Render3D::GetUp(Tpoint* v)
 {
     v->x = cameraRot.M31;
     v->y = cameraRot.M32;
@@ -141,7 +141,7 @@ void Render3D::GetUp(Tpoint *v)
 /***************************************************************************\
  Setup the rendering context for thiw view
 \***************************************************************************/
-void Render3D::Setup(ImageBuffer *imageBuffer)
+void Render3D::Setup(ImageBuffer* imageBuffer)
 {
     Tpoint pos;
 
@@ -166,12 +166,11 @@ void Render3D::Setup(ImageBuffer *imageBuffer)
     lightSpecular = 0.6f;
     //JAM
 
-    Tpoint dir = { 0.0f, 0.0f, -1.0f };
+    Tpoint dir = {0.0f, 0.0f, -1.0f};
     SetLightDirection(&dir);
 
     objTextureState = TRUE;
 }
-
 
 
 /***************************************************************************\
@@ -183,8 +182,10 @@ void Render3D::StartDraw(void)
     Render2D::StartDraw();
 
     TheStateStack.SetContext(&context);
-    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX, scaleY, shiftX, shiftY);
-    TheStateStack.SetLight(lightAmbient, lightDiffuse, lightSpecular, &lightVector); //JAM 08Jan04
+    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX,
+                                      scaleY, shiftX, shiftY);
+    TheStateStack.SetLight(lightAmbient, lightDiffuse, lightSpecular,
+                           &lightVector); //JAM 08Jan04
     TheStateStack.SetLODBias(resRelativeScaler);
     TheStateStack.SetTextureState(TRUE);  //objTextureState );
     TheColorBank.SetColorMode(ColorBankClass::NormalMode);
@@ -208,7 +209,7 @@ void Render3D::SetViewport(float l, float t, float r, float b)
 \***************************************************************************/
 void Render3D::SetFOV(float horizontal_fov, float NearZ)
 {
-    const float maxHalfFOV =  70 * PI / 180.0f;
+    const float maxHalfFOV = 70 * PI / 180.0f;
     // JB 010120 Allow narrower field of views for Mavs and GBUs
     //const float minHalfFOV =   2 * PI/180.0f;
     //const float minHalfFOV = PI/180.0f;
@@ -218,8 +219,11 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
 
     // Artscout - 2026 (VR): a normal SetFOV is symmetric -- clear any off-axis the VR quad-views path
     // armed, so the flat/stereo/RTT-display projection is never skewed.
-    m_vrOffAxisX = 0.0f; m_vrOffAxisY = 0.0f; m_vrOffAxisActive = false;
-    m_vrOffAxisPitch = 0.0f; m_vrOffAxisYaw = 0.0f;
+    m_vrOffAxisX = 0.0f;
+    m_vrOffAxisY = 0.0f;
+    m_vrOffAxisActive = false;
+    m_vrOffAxisPitch = 0.0f;
+    m_vrOffAxisYaw = 0.0f;
 
     // Set the field of view
     horizontal_half_angle = horizontal_fov / 2.0f;
@@ -238,13 +242,19 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
     // NOTE:  (Computation of vertical and diagonal ASSUMES SQUARE PIXELS)
     if (scaleX)
     {
-        vertical_half_angle = (float)atan2(scaleY * tan(horizontal_half_angle), scaleX);
-        diagonal_half_angle = (float)atan2(sqrt(scaleX * scaleX + scaleY * scaleY) * tan(horizontal_half_angle), scaleX);
+        vertical_half_angle =
+            (float)atan2(scaleY * tan(horizontal_half_angle), scaleX);
+        diagonal_half_angle =
+            (float)atan2(sqrt(scaleX * scaleX + scaleY * scaleY) *
+                             tan(horizontal_half_angle),
+                         scaleX);
     }
     else
     {
-        vertical_half_angle = (float)atan2(3.0f * tan(horizontal_half_angle), 4.0f);
-        diagonal_half_angle = (float)atan2(5.0f * tan(horizontal_half_angle), 4.0f);
+        vertical_half_angle =
+            (float)atan2(3.0f * tan(horizontal_half_angle), 4.0f);
+        diagonal_half_angle =
+            (float)atan2(5.0f * tan(horizontal_half_angle), 4.0f);
     }
 
     oneOVERtanHFOV = 1.0f / (float)tan(horizontal_half_angle);
@@ -253,7 +263,8 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
     SetObjectDetail(detailScaler);
 
     // Send relevant stuff to the BSP object library
-    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX, scaleY, shiftX, shiftY);
+    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX,
+                                      scaleY, shiftX, shiftY);
 
     // COBRA - DX - Setu up Projection here
     if (g_bUse_DX_Engine)
@@ -265,7 +276,17 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
         // applied BELOW via oneOVERtanHFOV/oneOVERtanVFOV (computed from scaleX/scaleY). Passing the
         // true float aspect double-corrects it -> the cockpit gets squished horizontally. Only the VR
         // SetVRFrustum path needs float division (its focus viewport can have xRes<=yRes -> int div 0).
-        D3DXMatrixPerspectiveFov(&matProj, PI / 2, (float)(xRes / yRes), context.ZFAR, NearZ);   // reversed-Z: swap near/far -> near maps to NDC 1, far to 0 (uniform float-depth precision)
+        // #104 (Linux): xRes/yRes is INTEGER division; a degenerate RTT viewport with yRes==0 (seen on a
+        // cockpit RTT display) is an integer divide-by-zero -> SIGFPE (not an INF like float). Guard it.
+        // #107 (Linux VR): a PORTRAIT eye target (e.g. 2528x2704, taller than wide) makes the integer xRes/yRes
+        // TRUNCATE TO 0 -> aspect 0 -> the whole projection is NaN -> the eye renders nothing (black VR scene while
+        // the flat 1920x1080 path, ratio 1, was fine). The aspect here is meant to be ~1.0 anyway (the real display
+        // aspect is carried by oneOVERtanHFOV/oneOVERtanVFOV from scaleX/scaleY, below), exactly as the SetVRFrustum
+        // peer already passes a fixed 1.0f. Use 1.0f -> no truncation, no NaN, and the flat path is unchanged (it was
+        // already getting 1 from 1920/1080).
+        D3DXMatrixPerspectiveFov(
+            &matProj, PI / 2, 1.0f, context.ZFAR,
+            NearZ); // reversed-Z: swap near/far -> near maps to NDC 1, far to 0 (uniform float-depth precision)
 
         // Original FreeFalcon FOV transformation
         matProj.m10 *= oneOVERtanVFOV;
@@ -296,7 +317,8 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
         // mirrored. m02=+1: clip_z=+vx (forward = forward), det=-1 (correct RH->LH).
         D3DXMATRIX Flip;
         ZeroMemory(&Flip, sizeof(Flip));
-        Flip.m02 = 1.0f;	// RH->LH for D3D11 (cockpit). Test m02=-1: objects do NOT appear that way (#16).
+        Flip.m02 =
+            1.0f; // RH->LH for D3D11 (cockpit). Test m02=-1: objects do NOT appear that way (#16).
         Flip.m21 = -1.0f;
         Flip.m10 = 1.0f;
         Flip.m33 = 1.0f;
@@ -314,18 +336,24 @@ void Render3D::SetFOV(float horizontal_fov, float NearZ)
 // (offX = (tanR+tanL)/(tanR-tanL)); the object matProj gets the m20/m21 shift here, and SetCamera
 // folds the same offset into T for the CPU-projected terrain/world points. The compositor must be
 // told the SAME raw per-view fov (OpenXRBackend submits views[eye].fov when not given a SetSubmitFov).
-void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD, float NearZ)
+void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD,
+                            float NearZ)
 {
-    extern float g_fQuadOffAxisX, g_fQuadOffAxisY;   // cfg sign/scale knobs (default 1.0)
+    extern float g_fQuadOffAxisX,
+        g_fQuadOffAxisY; // cfg sign/scale knobs (default 1.0)
 
     const float tanL = (float)tan(angL), tanR = (float)tan(angR);
     const float tanU = (float)tan(angU), tanD = (float)tan(angD);
     const float w = tanR - tanL, h = tanU - tanD;
-    if (w <= 1e-6f || h <= 1e-6f) { SetFOV(angR - angL, NearZ); return; }  // degenerate -> symmetric
+    if (w <= 1e-6f || h <= 1e-6f)
+    {
+        SetFOV(angR - angL, NearZ);
+        return;
+    } // degenerate -> symmetric
 
     // Half-angles (LOD/detail use these); proper-frustum inverse-tangents (width/height).
     horizontal_half_angle = (angR - angL) * 0.5f;
-    vertical_half_angle   = (angU - angD) * 0.5f;
+    vertical_half_angle = (angU - angD) * 0.5f;
     // diagonal_half_angle drives the TERRAIN sector cull (RenderOTW::ComputeBounds uses Pitch()/Yaw()
     // +/- diagonal_half_angle around the HEAD-forward direction). For an OFF-CENTER (gaze) focus view
     // the visible terrain is off to the side, so a head-centered cull of just the half-extents drops
@@ -333,10 +361,13 @@ void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD, floa
     // cull half-angle by the off-center magnitude so the cull cone reaches the gaze region. The per-poly
     // clip (oneOVERtanHFOV, below) stays narrow/off-center, so only the focus region is actually drawn
     // (the extra culled-in terrain is clipped out) -- correctness restored at a modest cull cost.
-    const float cTanX = (tanR + tanL) * 0.5f;   // off-center tangent (0 if symmetric)
+    const float cTanX =
+        (tanR + tanL) * 0.5f; // off-center tangent (0 if symmetric)
     const float cTanY = (tanU + tanD) * 0.5f;
     const float offCenterAng = (float)atan(sqrt(cTanX * cTanX + cTanY * cTanY));
-    diagonal_half_angle = (float)atan(sqrt((w * 0.5f) * (w * 0.5f) + (h * 0.5f) * (h * 0.5f))) + offCenterAng;
+    diagonal_half_angle =
+        (float)atan(sqrt((w * 0.5f) * (w * 0.5f) + (h * 0.5f) * (h * 0.5f))) +
+        offCenterAng;
     oneOVERtanHFOV = 2.0f / w;
     oneOVERtanVFOV = 2.0f / h;
 
@@ -347,10 +378,11 @@ void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD, floa
     // Off-axis gaze ANGLES (for the sky's effective Pitch/Yaw). Same sign as the off-axis offsets so
     // the sky bands shift with the focus consistently with the terrain.
     m_vrOffAxisPitch = (float)atan(cTanY) * g_fQuadOffAxisY;
-    m_vrOffAxisYaw   = (float)atan(cTanX) * g_fQuadOffAxisX;
+    m_vrOffAxisYaw = (float)atan(cTanX) * g_fQuadOffAxisX;
 
     SetObjectDetail(detailScaler);
-    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX, scaleY, shiftX, shiftY);
+    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX,
+                                      scaleY, shiftX, shiftY);
 
     if (g_bUse_DX_Engine)
     {
@@ -363,7 +395,9 @@ void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD, floa
         // carries the fov aspect via w vs h); aspect=1.0 removes the double-count. Also avoids the int-div-0
         // crash the old float-division guarded against.
         D3DXMATRIX matProj;
-        D3DXMatrixPerspectiveFov(&matProj, PI / 2, 1.0f, context.ZFAR, NearZ);   // reversed-Z: swap near/far -> near maps to NDC 1, far to 0 (uniform float-depth precision)
+        D3DXMatrixPerspectiveFov(
+            &matProj, PI / 2, 1.0f, context.ZFAR,
+            NearZ); // reversed-Z: swap near/far -> near maps to NDC 1, far to 0 (uniform float-depth precision)
 
         matProj.m10 *= oneOVERtanVFOV;
         matProj.m11 *= oneOVERtanVFOV;
@@ -397,7 +431,9 @@ void Render3D::SetVRFrustum(float angL, float angR, float angU, float angD, floa
 // instrument displays which must stay symmetric). Leaves matProj as-is; the next SetFOV rebuilds it.
 void Render3D::ClearVROffAxis(void)
 {
-    m_vrOffAxisX = 0.0f; m_vrOffAxisY = 0.0f; m_vrOffAxisActive = false;
+    m_vrOffAxisX = 0.0f;
+    m_vrOffAxisY = 0.0f;
+    m_vrOffAxisActive = false;
 }
 
 
@@ -407,7 +443,7 @@ void Render3D::ClearVROffAxis(void)
 \***************************************************************************/
 void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
 {
-    float sinRoll,  cosRoll;
+    float sinRoll, cosRoll;
     float sinPitch, cosPitch;
 
 
@@ -419,7 +455,7 @@ void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
     }
 
     // Back compute the roll, pitch, and yaw of the viewer
-    pitch = (float) - asin(cameraRot.M13);
+    pitch = (float)-asin(cameraRot.M13);
     roll = (float)atan2(cameraRot.M23, cameraRot.M33);
     yaw = (float)atan2(cameraRot.M12, cameraRot.M11);
 
@@ -455,35 +491,39 @@ void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
     // vertical (M3x). Same offset that went into matProj, so terrain and objects stay consistent.
     if (m_vrOffAxisActive)
     {
-        T.M21 -= m_vrOffAxisX * T.M11; T.M22 -= m_vrOffAxisX * T.M12; T.M23 -= m_vrOffAxisX * T.M13;
-        T.M31 -= m_vrOffAxisY * T.M11; T.M32 -= m_vrOffAxisY * T.M12; T.M33 -= m_vrOffAxisY * T.M13;
+        T.M21 -= m_vrOffAxisX * T.M11;
+        T.M22 -= m_vrOffAxisX * T.M12;
+        T.M23 -= m_vrOffAxisX * T.M13;
+        T.M31 -= m_vrOffAxisY * T.M11;
+        T.M32 -= m_vrOffAxisY * T.M12;
+        T.M33 -= m_vrOffAxisY * T.M13;
     }
 
     // Compute the vector from the camera to the origin rotated into camera space
-    move.x = - cameraPos.x * T.M11 - cameraPos.y * T.M12 - cameraPos.z * T.M13;
-    move.y = - cameraPos.x * T.M21 - cameraPos.y * T.M22 - cameraPos.z * T.M23;
-    move.z = - cameraPos.x * T.M31 - cameraPos.y * T.M32 - cameraPos.z * T.M33;
+    move.x = -cameraPos.x * T.M11 - cameraPos.y * T.M12 - cameraPos.z * T.M13;
+    move.y = -cameraPos.x * T.M21 - cameraPos.y * T.M22 - cameraPos.z * T.M23;
+    move.z = -cameraPos.x * T.M31 - cameraPos.y * T.M32 - cameraPos.z * T.M33;
 
     // Build the billboard matrix (appropriate for Erick's row vector object library)
     sinRoll = (float)sin(roll);
     cosRoll = (float)cos(roll);
     Tbb.M11 = 1.0f;
     Tbb.M21 = 0.0f;
-    Tbb.M31 =  0.0f;
+    Tbb.M31 = 0.0f;
     Tbb.M12 = 0.0f;
     Tbb.M22 = cosRoll * oneOVERtanHFOV;
     Tbb.M32 = -sinRoll * oneOVERtanVFOV;
     Tbb.M13 = 0.0f;
     Tbb.M23 = sinRoll * oneOVERtanHFOV;
-    Tbb.M33 =  cosRoll * oneOVERtanVFOV;
+    Tbb.M33 = cosRoll * oneOVERtanVFOV;
 
     // Build the tree matrix
     sinPitch = (float)sin(pitch);
     cosPitch = (float)cos(pitch);
-    Tt.M11 =  cosPitch;
+    Tt.M11 = cosPitch;
     Tt.M21 = sinPitch * Tbb.M23;
     Tt.M31 = sinPitch * Tbb.M33;
-    Tt.M12 =  0.0f;
+    Tt.M12 = 0.0f;
     Tt.M22 = Tbb.M22;
     Tt.M32 = Tbb.M32;
     Tt.M13 = -sinPitch;
@@ -510,7 +550,8 @@ void Render3D::SetCamera(const Tpoint* pos, const Trotation* rot)
     TheStateStack.SetView(pos, &cameraRot);
     // Artscout - 2026: keep integer xRes/yRes (~1.0) -- true aspect is carried by horizontal_half_angle
     // (via scaleX/scaleY). See the note in SetFOV; the float-division regressed the flat cockpit FOV.
-    TheStateStack.SetProjection(horizontal_half_angle * 2.f, (float)(xRes / yRes));
+    TheStateStack.SetProjection(horizontal_half_angle * 2.f,
+                                (float)(xRes / yRes));
 }
 
 
@@ -532,13 +573,13 @@ void Render3D::SetObjectDetail(float scaler)
     }
 
     detailScaler = scaler;
-    resRelativeScaler = detailScaler * RadiansPerPixel * scaleX * oneOVERtanHFOV;
+    resRelativeScaler =
+        detailScaler * RadiansPerPixel * scaleX * oneOVERtanHFOV;
 
     TheStateStack.SetLODBias(resRelativeScaler);
 }
 
 
-
 /***************************************************************************\
     Set the lighting direction
  (based on a FreeFalcon X north, Y east, Z down coordinate system)
@@ -546,11 +587,11 @@ void Render3D::SetObjectDetail(float scaler)
 void Render3D::SetLightDirection(const Tpoint* dir)
 {
     lightVector = *dir;
-    TheStateStack.SetLight(lightAmbient, lightDiffuse, lightSpecular, &lightVector); //JAM 08Jan04
+    TheStateStack.SetLight(lightAmbient, lightDiffuse, lightSpecular,
+                           &lightVector); //JAM 08Jan04
 }
 
 
-
 /***************************************************************************\
     Get the lighting direction
  (based on a FreeFalcon X north, Y east, Z down coordinate system)
@@ -561,7 +602,6 @@ void Render3D::GetLightDirection(Tpoint* dir)
 }
 
 
-
 /***************************************************************************\
  Select the amount of textureing employed
 \***************************************************************************/
@@ -579,7 +619,6 @@ void Render3D::SetObjectTextureState(BOOL state)
 }
 
 
-
 /***************************************************************************\
     Transform the given point (from World space to Screen space)
 \***************************************************************************/
@@ -600,7 +639,7 @@ void Render3D::TransformPoint(Tpoint* p, ThreeDVertex* result)
 
 
     // Now determine if the point is out behind us or to the sides
-    clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
+    clipFlag = GetRangeClipFlags(scratch_z, far_clip);
     clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
     clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
@@ -639,7 +678,7 @@ void Render3D::TransformCameraCentricPoint(Tpoint* p, ThreeDVertex* result)
 
 
     // Now determine if the point is out behind us or to the sides
-    clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
+    clipFlag = GetRangeClipFlags(scratch_z, far_clip);
     clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
     clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
@@ -654,11 +693,10 @@ void Render3D::TransformCameraCentricPoint(Tpoint* p, ThreeDVertex* result)
 }
 
 
-
 /***************************************************************************\
     Transform the given point (from World space to View space)
 \***************************************************************************/
-void Render3D::TransformPointToView(Tpoint * p, Tpoint * result)
+void Render3D::TransformPointToView(Tpoint* p, Tpoint* result)
 {
     // This part does rotation, translation, and scaling
     // no swapping...
@@ -668,7 +706,7 @@ void Render3D::TransformPointToView(Tpoint * p, Tpoint * result)
 }
 
 //JAM 03Dec03
-void Render3D::TransformPointToViewSwapped(Tpoint *p, Tpoint *result)
+void Render3D::TransformPointToViewSwapped(Tpoint* p, Tpoint* result)
 {
     result->z = T.M11 * p->x + T.M12 * p->y + T.M13 * p->z + move.x;
     result->x = T.M21 * p->x + T.M22 * p->y + T.M23 * p->z + move.y;
@@ -676,13 +714,13 @@ void Render3D::TransformPointToViewSwapped(Tpoint *p, Tpoint *result)
 }
 
 
-
 /***************************************************************************\
     Transform the given point (from World space to Screen space)
  Uses billboard matrix.  Most of this is just duplicatcion of
  TransformPoint and perhaps should be condensed into 1 function
 \***************************************************************************/
-void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* result)
+void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint* viewOffset,
+                                       ThreeDVertex* result)
 {
     register float scratch_x;
     register float scratch_y;
@@ -698,13 +736,13 @@ void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint *viewOffset, ThreeDVert
     //  scratch_y = T.M31 * p->x + T.M32 * p->y + T.M33 * p->z + move.z;
     // since we know where some 1's and 0's are
 
-    scratch_z =  p->x + viewOffset->x;
-    scratch_x =  Tbb.M22 * p->y + Tbb.M23 * p->z + viewOffset->y;
-    scratch_y =  Tbb.M32 * p->y + Tbb.M33 * p->z + viewOffset->z;
+    scratch_z = p->x + viewOffset->x;
+    scratch_x = Tbb.M22 * p->y + Tbb.M23 * p->z + viewOffset->y;
+    scratch_y = Tbb.M32 * p->y + Tbb.M33 * p->z + viewOffset->z;
 
 
     // Now determine if the point is out behind us or to the sides
-    clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
+    clipFlag = GetRangeClipFlags(scratch_z, far_clip);
     clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
     clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
@@ -718,13 +756,14 @@ void Render3D::TransformBillboardPoint(Tpoint* p, Tpoint *viewOffset, ThreeDVert
     result->clipFlag = clipFlag;
 }
 
-
+
 /***************************************************************************\
     Transform the given point (from World space to Screen space)
  Uses tree matrix.  Most of this is just duplicatcion of
  TransformPoint and perhaps should be condensed into 1 function
 \***************************************************************************/
-void Render3D::TransformTreePoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* result)
+void Render3D::TransformTreePoint(Tpoint* p, Tpoint* viewOffset,
+                                  ThreeDVertex* result)
 {
     register float scratch_x;
     register float scratch_y;
@@ -741,7 +780,7 @@ void Render3D::TransformTreePoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* r
 
 
     // Now determine if the point is out behind us or to the sides
-    clipFlag  = GetRangeClipFlags(scratch_z, far_clip);
+    clipFlag = GetRangeClipFlags(scratch_z, far_clip);
     clipFlag or_eq GetHorizontalClipFlags(scratch_x, scratch_z);
     clipFlag or_eq GetVerticalClipFlags(scratch_y, scratch_z);
 
@@ -756,7 +795,6 @@ void Render3D::TransformTreePoint(Tpoint* p, Tpoint *viewOffset, ThreeDVertex* r
 }
 
 
-
 /***************************************************************************\
     Reverse transform the given point (from screen space to world space vector)
 \***************************************************************************/
@@ -775,7 +813,9 @@ void Render3D::UnprojectNdc(float ndcx, float ndcy, Tpoint* result)
     float z = cameraRot.M13 * sz + cameraRot.M23 * sx + cameraRot.M33 * sy;
     float mag = x * x + y * y + z * z;
     mag = (mag > 1e-12f) ? 1.0f / (float)sqrt(mag) : 0.0f;
-    result->x = x * mag; result->y = y * mag; result->z = z * mag;
+    result->x = x * mag;
+    result->y = y * mag;
+    result->z = z * mag;
 }
 
 void Render3D::UnTransformPoint(Tpoint* p, Tpoint* result)
@@ -806,9 +846,12 @@ void Render3D::UnTransformPoint(Tpoint* p, Tpoint* result)
     scratch_y /= oneOVERtanVFOV;
 
     // Undo the camera rotation (apply the inverse rotation)
-    x = cameraRot.M11 * scratch_z + cameraRot.M21 * scratch_x + cameraRot.M31 * scratch_y;
-    y = cameraRot.M12 * scratch_z + cameraRot.M22 * scratch_x + cameraRot.M32 * scratch_y;
-    z = cameraRot.M13 * scratch_z + cameraRot.M23 * scratch_x + cameraRot.M33 * scratch_y;
+    x = cameraRot.M11 * scratch_z + cameraRot.M21 * scratch_x +
+        cameraRot.M31 * scratch_y;
+    y = cameraRot.M12 * scratch_z + cameraRot.M22 * scratch_x +
+        cameraRot.M32 * scratch_y;
+    z = cameraRot.M13 * scratch_z + cameraRot.M23 * scratch_x +
+        cameraRot.M33 * scratch_y;
 
     // Don't need to undo the camera translation, because we want a vector
     // Lets normalize just to be kind
@@ -820,7 +863,6 @@ void Render3D::UnTransformPoint(Tpoint* p, Tpoint* result)
 }
 
 
-
 /***************************************************************************\
     Return the distance of the world space point from the camera plane.
  A negative result indicates the point is behind the camera.
@@ -835,7 +877,6 @@ float Render3D::ZDistanceFromCamera(Tpoint* p)
 }
 
 
-
 /*******************************************************************************************\
  Immediatly draw the specified object.
  Warning:  Going this route causes the specfied object to be loaded/unloaded each
@@ -854,7 +895,6 @@ void Render3D::Render3DObject(int id, Tpoint* pos, const Trotation* orientation)
 }
 
 
-
 /***************************************************************************\
  Draw a colored pixel in worldspace using the current camera.
  For now, we don't try to draw primitives with any verticies off screen.
@@ -866,14 +906,14 @@ void Render3D::Render3DPoint(Tpoint* p1)
     // Transform the point from world space to window space
     TransformPoint(p1, &ps1);
 
-    if (ps1.clipFlag not_eq ON_SCREEN)  return;
+    if (ps1.clipFlag not_eq ON_SCREEN)
+        return;
 
     // Draw the point
     Render2DPoint((UInt16)ps1.x, (UInt16)ps1.y);
 }
 
 
-
 /***************************************************************************\
  Draw a colored one pixel line in worldspace using the current camera.
 \***************************************************************************/
@@ -886,7 +926,8 @@ void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
     TransformPoint(p2, &ps2);
 
     // Quit now if both ends are clipped by the same edge
-    if (ps1.clipFlag bitand ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)
+        return;
 
     // Clip the line as necessary
     if (ps1.clipFlag bitand CLIP_NEAR)
@@ -898,7 +939,8 @@ void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
         IntersectNear(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag bitand ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)
+        return;
 
     if (ps1.clipFlag bitand CLIP_BOTTOM)
     {
@@ -918,7 +960,8 @@ void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
         IntersectTop(&ps1, &ps2, &ps2);
     }
 
-    if (ps1.clipFlag bitand ps2.clipFlag)  return;
+    if (ps1.clipFlag bitand ps2.clipFlag)
+        return;
 
     if (ps1.clipFlag bitand CLIP_RIGHT)
     {
@@ -943,7 +986,6 @@ void Render3D::Render3DLine(Tpoint* p1, Tpoint* p2)
 }
 
 
-
 /***************************************************************************\
  Draw a flat shaded triangle in worldspace using the current camera.
  For now, we don't try to draw primitives with any verticies inside the
@@ -962,7 +1004,8 @@ void Render3D::Render3DFlatTri(Tpoint* p1, Tpoint* p2, Tpoint* p3)
     // I'm not sure this function is called anywhere anyway.  With the current
     // state of things, just checking near clip could cause bad problems since
     // MPR no longer does other edge clipping.  We'd have to do that here.
-    if (ps1.clipFlag or ps2.clipFlag or ps3.clipFlag)  return;
+    if (ps1.clipFlag or ps2.clipFlag or ps3.clipFlag)
+        return;
 
     // Don't draw the triangle if it is backfacing (counter-clockwise in screen space)
     // edg: always draw irregardless of backfacing
@@ -974,15 +1017,17 @@ void Render3D::Render3DFlatTri(Tpoint* p1, Tpoint* p2, Tpoint* p3)
     */
 
     // Draw the triangle
-    Render2DTri((UInt16)ps1.x, (UInt16)ps1.y, (UInt16)ps2.x, (UInt16)ps2.y, (UInt16)ps3.x, (UInt16)ps3.y);
+    Render2DTri((UInt16)ps1.x, (UInt16)ps1.y, (UInt16)ps2.x, (UInt16)ps2.y,
+                (UInt16)ps3.x, (UInt16)ps3.y);
 }
 
 
-
 /***************************************************************************\
     Draw a quad as a fan.  Uses current state.  Not required to be planar.
 \***************************************************************************/
-void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v3, int CullFlag, bool gifPicture, bool terrain) //JAM 14Sep03
+void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2,
+                          ThreeDVertex* v3, int CullFlag, bool gifPicture,
+                          bool terrain) //JAM 14Sep03
 {
     unsigned short count;
     BOOL useFirst = TRUE;
@@ -992,10 +1037,11 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
     if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
     {
         // If all verticies are clipped by the same edge, skip this square
-        if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag)
+        if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand
+            v3->clipFlag)
             return;
 
-        ThreeDVertex *vertPointers[4];
+        ThreeDVertex* vertPointers[4];
         vertPointers[2] = v2;
 
         // If any verteces are clipped, do separate triangles since the quad isn't necessarily planar
@@ -1003,7 +1049,8 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
         {
             vertPointers[0] = v0;
             vertPointers[1] = v1;
-            ClipAndDraw3DFan(&vertPointers[0], 3, CullFlag, gifPicture, terrain); //JAM 14Sep03
+            ClipAndDraw3DFan(&vertPointers[0], 3, CullFlag, gifPicture,
+                             terrain); //JAM 14Sep03
             useFirst = FALSE;
         }
 
@@ -1011,7 +1058,8 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
         {
             vertPointers[1] = v0;
             vertPointers[3] = v3;
-            ClipAndDraw3DFan(&vertPointers[1], 3, CullFlag, gifPicture, terrain); //JAM 14Sep03
+            ClipAndDraw3DFan(&vertPointers[1], 3, CullFlag, gifPicture,
+                             terrain); //JAM 14Sep03
 
             if (useFirst)
                 useLast = FALSE;
@@ -1027,13 +1075,15 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
             // Decide if either of the two triangles are back facing
             if (useFirst)
             {
-                if (((v2->y - v1->y)) * ((v0->x - v1->x)) > ((v2->x - v1->x)) * ((v0->y - v1->y)))
+                if (((v2->y - v1->y)) * ((v0->x - v1->x)) >
+                    ((v2->x - v1->x)) * ((v0->y - v1->y)))
                     useFirst = FALSE;
             }
 
             if (useLast)
             {
-                if (((v0->y - v3->y)) * ((v2->x - v3->x)) > ((v0->x - v3->x)) * ((v2->y - v3->y)))
+                if (((v0->y - v3->y)) * ((v2->x - v3->x)) >
+                    ((v0->x - v3->x)) * ((v2->y - v3->y)))
                     useLast = FALSE;
             }
         }
@@ -1043,13 +1093,15 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
             // Decide if either of the two triangles are back facing
             if (useFirst)
             {
-                if (((v2->y - v1->y)) * ((v0->x - v1->x)) < ((v2->x - v1->x)) * ((v0->y - v1->y)))
+                if (((v2->y - v1->y)) * ((v0->x - v1->x)) <
+                    ((v2->x - v1->x)) * ((v0->y - v1->y)))
                     useFirst = FALSE;
             }
 
             if (useLast)
             {
-                if (((v0->y - v3->y)) * ((v2->x - v3->x)) < ((v0->x - v3->x)) * ((v2->y - v3->y)))
+                if (((v0->y - v3->y)) * ((v2->x - v3->x)) <
+                    ((v0->x - v3->x)) * ((v2->y - v3->y)))
                     useLast = FALSE;
             }
         }
@@ -1068,21 +1120,24 @@ void Render3D::DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, 
 
     if (useFirst)
     {
-        MPRVtxTexClr_t *arr[] = { v0, v1, v2, v3 };
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
+        MPRVtxTexClr_t* arr[] = {v0, v1, v2, v3};
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE,
+                              count, arr, terrain); //JAM 14Sep03
     }
     else
     {
-        MPRVtxTexClr_t *arr[] = { v0, v2, v3 };
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, count, arr, terrain); //JAM 14Sep03
+        MPRVtxTexClr_t* arr[] = {v0, v2, v3};
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE,
+                              count, arr, terrain); //JAM 14Sep03
     }
-
 }
 
 /***************************************************************************\
     Draw a triangle using current state
 \***************************************************************************/
-void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture, bool terrain)  //JAM 14Sep03
+void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1,
+                            ThreeDVertex* v2, int CullFlag, bool gifPicture,
+                            bool terrain) //JAM 14Sep03
 {
     // Check the clipping flags on the verteces which bound this region
     if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag)
@@ -1092,11 +1147,12 @@ void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2
             return;
 
         // If any verteces are clipped, do them as a special case
-        ThreeDVertex *vertPointers[3];
+        ThreeDVertex* vertPointers[3];
         vertPointers[0] = v0;
         vertPointers[1] = v1;
         vertPointers[2] = v2;
-        ClipAndDraw3DFan(vertPointers, 3, CullFlag, gifPicture, terrain); //JAM 14Sep03
+        ClipAndDraw3DFan(vertPointers, 3, CullFlag, gifPicture,
+                         terrain); //JAM 14Sep03
         return;
     }
 
@@ -1105,21 +1161,22 @@ void Render3D::DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2
         if (CullFlag == CULL_ALLOW_CW)
         {
             // Decide if back facing CW
-            if (((v2->y - v1->y)) * ((v0->x - v1->x)) > ((v2->x - v1->x)) * ((v0->y - v1->y)))
+            if (((v2->y - v1->y)) * ((v0->x - v1->x)) >
+                ((v2->x - v1->x)) * ((v0->y - v1->y)))
                 return;
         }
 
         else
         {
             // Decide if back facing CCW
-            if (((v2->y - v1->y)) * ((v0->x - v1->x)) < ((v2->x - v1->x)) * ((v0->y - v1->y)))
+            if (((v2->y - v1->y)) * ((v0->x - v1->x)) <
+                ((v2->x - v1->x)) * ((v0->y - v1->y)))
                 return;
         }
     }
 
     // Draw the tri
-    MPRVtxTexClr_t *arr[] = { v0, v1, v2 };
-    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 3, arr, terrain); //JAM 14Sep03
+    MPRVtxTexClr_t* arr[] = {v0, v1, v2};
+    context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 3,
+                          arr, terrain); //JAM 14Sep03
 }
-
-

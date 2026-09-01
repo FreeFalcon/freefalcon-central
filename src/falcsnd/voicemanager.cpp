@@ -16,9 +16,9 @@
 #include "fsound.h"
 #include "f4thread.h"
 #include "debuggr.h"
-#include "VoiceManager.h"
+#include "voicemanager.h"
 #include "conv.h"
-#include "F4Find.h"
+#include "f4find.h"
 #include "soundgroups.h"
 #include "vutypes.h"
 #include "psound.h"
@@ -29,7 +29,7 @@
 #include "playerop.h"
 #include "flight.h"
 #include "sim/include/simdrive.h"
-#include "MsgInc/RadioChatterMsg.h"
+#include "msginc/radiochattermsg.h"
 
 void *map_file(char *filename, long bytestomap = 0);
 
@@ -39,7 +39,7 @@ extern VU_TIME vuxGameTime;
 extern void set_spinner3(int);
 VU_ID gVmPlayVU_ID;
 
-extern char FalconSoundThrDirectory [];
+extern char FalconSoundThrDirectory[];
 extern int g_nSoundSwitchFix;
 
 #ifdef USE_SH_POOLS
@@ -53,8 +53,8 @@ VM_CONVLIST *voiceChannelQueue[NUM_VOICE_CHANNELS] = {NULL};
 
 enum
 {
-    MSG_HOLD_TIME =  60000, //60 seconds
-    SILENCE_LEN   =  16000, //16 seconds
+    MSG_HOLD_TIME = 60000, //60 seconds
+    SILENCE_LEN = 16000, //16 seconds
 };
 
 
@@ -69,10 +69,9 @@ HANDLE hThread;
 //int MESGNUM = 0;
 
 extern VoiceManager *VM;
-//extern "C"
-//{
-// DWORD WINAPI VoiceManagementThread( LPVOID lpvThreadParm ) ;
-//}
+// Artscout - 2026 (Linux port): the thread proc is defined at the bottom of the file but used above
+// (~line 181). MSVC tolerated the missing forward decl; clang needs it declared before first use.
+DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm);
 
 VoiceManager::VoiceManager(void)
 {
@@ -137,19 +136,20 @@ BOOL VoiceManager::VMBegin(void)
 
     CallVoiceThread();
 
-    return(TRUE);
+    return (TRUE);
 }
 
 int VoiceManager::VoiceOpen(void)
 {
     char filename[MAX_PATH];
-    extern bool g_bVoicePcmMode; // Artscout - 2026: PCM voice bank in use (see lhsp.cpp)
+    extern bool
+        g_bVoicePcmMode; // Artscout - 2026: PCM voice bank in use (see lhsp.cpp)
 
     // Artscout - 2026: prefer the pre-transcoded PCM voice bank falcon_pcm.tlk (data = already
     // decoded PCM, no ST80). Works on BOTH x86 and x64. Fall back to the ST80 falcon.tlk only if
     // the PCM bank is absent (x86 decodes it; x64 stays silent -> subtitles). Generate the PCM
     // bank once with the standalone x86 tool src/tools/st80conv (falcon.tlk -> falcon_pcm.tlk).
-    sprintf(filename, "%s\\falcon_pcm.tlk", FalconSoundThrDirectory);
+    sprintf(filename, "%s/falcon_pcm.tlk", FalconSoundThrDirectory);
 
     if (voiceMap.Open(filename) == TRUE)
     {
@@ -158,7 +158,7 @@ int VoiceManager::VoiceOpen(void)
     }
 
     g_bVoicePcmMode = false;
-    sprintf(filename, "%s\\falcon.tlk", FalconSoundThrDirectory);
+    sprintf(filename, "%s/falcon.tlk", FalconSoundThrDirectory);
 
     if (voiceMap.Open(filename) not_eq TRUE)
         ShiError("Can't open falcon.tlk");
@@ -173,13 +173,14 @@ void VoiceManager::CallVoiceThread(void)
     strcpy(VMWakeEventName, "VoiceWakeupCall");
     VMWakeEventHandle = CreateEvent(NULL, FALSE, FALSE, VMWakeEventName);
 
-    if ( not VMWakeEventHandle)
+    if (not VMWakeEventHandle)
     {
         return;
     }
 
-    hThread = (HANDLE) _beginthreadex(NULL, 0, (unsigned int (__stdcall *)(void *)) VoiceManagementThread,
-                                      (LPVOID)falconVoices, 0, (unsigned *) &dwIDThread);
+    hThread = (HANDLE)_beginthreadex(
+        NULL, 0, (unsigned int(__stdcall *)(void *))VoiceManagementThread,
+        (LPVOID)falconVoices, 0, (unsigned *)&dwIDThread);
 
     if (hThread not_eq NULL)
     {
@@ -201,15 +202,17 @@ int FilterMessage(CONVERSATION *node)
     //VM->radiofilter = rcfProx;
 #endif
 
-    if ( not VM)
+    if (not VM)
         return FALSE;
 
-    if ( not node or node->message == -1)
+    if (not node or node->message == -1)
         return FALSE;
 
-    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and SimDriver.RunningCampaign())
+    if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and
+        SimDriver.RunningCampaign())
     {
-        if (noUIcomms or FalconLocalSession->GetFlyState() not_eq FLYSTATE_IN_UI)
+        if (noUIcomms or
+            FalconLocalSession->GetFlyState() not_eq FLYSTATE_IN_UI)
             return FALSE;
 
         //else
@@ -221,68 +224,78 @@ int FilterMessage(CONVERSATION *node)
     //{
     switch (VM->radiofilter[0])
     {
-        case rcfOff:
-            retval = FALSE;
-            break;
+    case rcfOff:
+        retval = FALSE;
+        break;
 
-        case rcfFlight5:
-        case rcfFlight1:
-        case rcfFlight2:
-        case rcfFlight3:
-        case rcfFlight4:
-            if (TOFROM_FLIGHT bitand node->filter)
+    case rcfFlight5:
+    case rcfFlight1:
+    case rcfFlight2:
+    case rcfFlight3:
+    case rcfFlight4:
+        if (TOFROM_FLIGHT bitand node->filter)
+            retval = TRUE;
+
+        break;
+
+    case rcfPackage5:
+    case rcfPackage1:
+    case rcfPackage2:
+    case rcfPackage3:
+    case rcfPackage4:
+        if ((TO_PACKAGE bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT))
+            retval = TRUE;
+
+        break;
+
+    case rcfFromPackage:
+        if ((TOFROM_PACKAGE bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT))
+            retval = TRUE;
+
+        break;
+
+    case rcfProx:
+        if ((node->filter bitand TOFROM_FLIGHT) or
+            ((IN_PROXIMITY bitand node->filter) and
+             ((node->filter bitand TO_TEAM) or
+              (TO_PACKAGE bitand node->filter))))
+            retval = TRUE;
+
+        break;
+
+    case rcfTeam:
+        if ((TO_TEAM bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT) or
+            (TOFROM_PACKAGE bitand node->filter))
+            retval = TRUE;
+
+        break;
+
+    case rcfAll:
+        if ((TO_WORLD bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT) or
+            (TOFROM_PACKAGE bitand node->filter) or
+            (TO_TEAM bitand node->filter))
+            retval = TRUE;
+
+        break;
+
+    case rcfTower:
+        if (node->filter bitand TOFROM_FLIGHT)
+            retval = TRUE;
+        else if ((TOFROM_TOWER bitand node->filter) and gNavigationSys)
+        {
+            VU_ID ATCId;
+            gNavigationSys->GetAirbase(&ATCId);
+
+            if (ATCId == node->from or ATCId == node->to)
+                //return TRUE;
                 retval = TRUE;
+        }
 
-            break;
-
-        case rcfPackage5:
-        case rcfPackage1:
-        case rcfPackage2:
-        case rcfPackage3:
-        case rcfPackage4:
-            if ((TO_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
-                retval = TRUE;
-
-            break;
-
-        case rcfFromPackage:
-            if ((TOFROM_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
-                retval = TRUE;
-
-            break;
-
-        case rcfProx:
-            if ((node->filter bitand TOFROM_FLIGHT) or ((IN_PROXIMITY bitand node->filter) and ((node->filter bitand TO_TEAM) or (TO_PACKAGE bitand node->filter))))
-                retval = TRUE;
-
-            break;
-
-        case rcfTeam:
-            if ((TO_TEAM bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter))
-                retval = TRUE;
-
-            break;
-
-        case rcfAll:
-            if ((TO_WORLD bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter) or (TO_TEAM bitand node->filter))
-                retval = TRUE;
-
-            break;
-
-        case rcfTower:
-            if (node->filter bitand TOFROM_FLIGHT)
-                retval = TRUE;
-            else if ((TOFROM_TOWER bitand node->filter) and gNavigationSys)
-            {
-                VU_ID ATCId;
-                gNavigationSys->GetAirbase(&ATCId);
-
-                if (ATCId == node->from or ATCId == node->to)
-                    //return TRUE;
-                    retval = TRUE;
-            }
-
-            break;
+        break;
     }
 
     //}
@@ -294,70 +307,81 @@ int FilterMessage(CONVERSATION *node)
     //{
     switch (VM->radiofilter[1])
     {
-        case rcfOff:
-            retval = FALSE;
-            break;
+    case rcfOff:
+        retval = FALSE;
+        break;
 
-        case rcfFlight5:
-        case rcfFlight1:
-        case rcfFlight2:
-        case rcfFlight3:
-        case rcfFlight4:
+    case rcfFlight5:
+    case rcfFlight1:
+    case rcfFlight2:
+    case rcfFlight3:
+    case rcfFlight4:
 
-            if (TOFROM_FLIGHT bitand node->filter)
+        if (TOFROM_FLIGHT bitand node->filter)
+            retval = TRUE;
+
+        break;
+
+    case rcfPackage5:
+    case rcfPackage1:
+    case rcfPackage2:
+    case rcfPackage3:
+    case rcfPackage4:
+
+        if ((TO_PACKAGE bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT))
+            retval = TRUE;
+
+        break;
+
+    case rcfFromPackage:
+        if ((TOFROM_PACKAGE bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT))
+            retval = TRUE;
+
+        break;
+
+    case rcfProx:
+        if ((node->filter bitand TOFROM_FLIGHT) or
+            ((IN_PROXIMITY bitand node->filter) and
+             ((node->filter bitand TO_TEAM) or
+              (TO_PACKAGE bitand node->filter))))
+            retval = TRUE;
+
+        break;
+
+    case rcfTeam:
+        if ((TO_TEAM bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT) or
+            (TOFROM_PACKAGE bitand node->filter))
+            retval = TRUE;
+
+        break;
+
+    case rcfAll:
+        if ((TO_WORLD bitand node->filter) or
+            (node->filter bitand TOFROM_FLIGHT) or
+            (TOFROM_PACKAGE bitand node->filter) or
+            (TO_TEAM bitand node->filter))
+            retval = TRUE;
+
+        break;
+
+    case rcfTower:
+        if (node->filter bitand TOFROM_FLIGHT)
+            retval = TRUE;
+        else if ((TOFROM_TOWER bitand node->filter) and gNavigationSys and
+                 gTacanList)
+        {
+            VU_ID ATCId;
+            gNavigationSys->GetAirbase(&ATCId);
+
+            if (ATCId == node->from or ATCId == node->to)
+                //return TRUE;
                 retval = TRUE;
+        }
 
-            break;
-
-        case rcfPackage5:
-        case rcfPackage1:
-        case rcfPackage2:
-        case rcfPackage3:
-        case rcfPackage4:
-
-            if ((TO_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
-                retval = TRUE;
-
-            break;
-
-        case rcfFromPackage:
-            if ((TOFROM_PACKAGE bitand node->filter) or (node->filter bitand TOFROM_FLIGHT))
-                retval = TRUE;
-
-            break;
-
-        case rcfProx:
-            if ((node->filter bitand TOFROM_FLIGHT) or ((IN_PROXIMITY bitand node->filter) and ((node->filter bitand TO_TEAM) or (TO_PACKAGE bitand node->filter))))
-                retval = TRUE;
-
-            break;
-
-        case rcfTeam:
-            if ((TO_TEAM bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter))
-                retval = TRUE;
-
-            break;
-
-        case rcfAll:
-            if ((TO_WORLD bitand node->filter) or (node->filter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand node->filter) or (TO_TEAM bitand node->filter))
-                retval = TRUE;
-
-            break;
-
-        case rcfTower:
-            if (node->filter bitand TOFROM_FLIGHT)
-                retval = TRUE;
-            else if ((TOFROM_TOWER bitand node->filter) and gNavigationSys and gTacanList)
-            {
-                VU_ID ATCId;
-                gNavigationSys->GetAirbase(&ATCId);
-
-                if (ATCId == node->from or ATCId == node->to)
-                    //return TRUE;
-                    retval = TRUE;
-            }
-
-            break;
+        break;
     }
 
     //}
@@ -376,7 +400,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
     VU_ID playerID; // sfr: player ID
     VM_CONVLIST *pVC, *best, *pVCnext;
 
-    while ( not killThread)
+    while (not killThread)
     {
 
         curChannel = 0;
@@ -385,10 +409,12 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
         set_spinner3(ticks++);
 
         F4EnterCriticalSection(VM->vmCriticalSection);
-        playerID = (FalconLocalSession == NULL) ? FalconNullId : FalconLocalSession->GetPlayerEntityID();
+        playerID = (FalconLocalSession == NULL) ?
+                       FalconNullId :
+                       FalconLocalSession->GetPlayerEntityID();
 
         // lower channels have higher priority to play
-        for (i = NUM_VOICE_CHANNELS - 1 ; i > -1 ; --i)
+        for (i = NUM_VOICE_CHANNELS - 1; i > -1; --i)
         {
             // best is the best conversation to be played
             best = NULL;
@@ -400,7 +426,8 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             // 1- from player
             // 2- to player
             // 3- priority field
-            for (pVC = voiceChannelQueue[i]; pVC and (pVC->node->playTime <= vuxGameTime); pVC = pVCnext)
+            for (pVC = voiceChannelQueue[i];
+                 pVC and (pVC->node->playTime <= vuxGameTime); pVC = pVCnext)
             {
                 // we need this to get next if current message gets removed
                 pVCnext = pVC->next;
@@ -424,7 +451,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 // filter message and check if its best
                 else if (FilterMessage(pVC->node))
                 {
-                    if ( not best)
+                    if (not best)
                     {
                         // no best yet, its the best
                         best = pVC;
@@ -433,10 +460,8 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     else if (best->node->from == playerID)
                     {
                         // best message is from player
-                        if (
-                            (pVC->node->from == playerID) and 
-                            (pVC->node->priority > best->node->priority)
-                        )
+                        if ((pVC->node->from == playerID) and
+                            (pVC->node->priority > best->node->priority))
                         {
                             // current is also and has higher priority, remove it and make new current one
                             VM->VMListRemoveVCQ(&voiceChannelQueue[i], best);
@@ -451,22 +476,18 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     else if (best->node->to == playerID)
                     {
                         // best is to player
-                        if (
-                            (pVC->node->to == playerID) and 
+                        if ((pVC->node->to == playerID) and
                             // sfr: was < here
-                            (pVC->node->priority > best->node->priority)
-                        )
+                            (pVC->node->priority > best->node->priority))
                         {
                             // current too, but has higher priority
                             // set as new best
                             best = pVC;
                         }
                     }
-                    else if (
-                        (pVC->node->from == playerID) or
-                        (pVC->node->to == playerID) or
-                        (pVC->node->priority > best->node->priority)
-                    )
+                    else if ((pVC->node->from == playerID) or
+                             (pVC->node->to == playerID) or
+                             (pVC->node->priority > best->node->priority))
                     {
                         // best is not from player nor to player and current is
                         // or has highter priority
@@ -482,21 +503,17 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
 
             if (SimDriver.GetPlayerAircraft() and (best not_eq NULL))
             {
-                if (
-                    (
+                if ((
                         // message from us
-                        (VM->decompQueue[i].from not_eq FalconLocalSession->GetPlayerEntityID()) and 
-                        (best->node->priority == rpLifeThreatening) and 
-                        (VM->decompQueue[i].priority not_eq rpLifeThreatening)
-                    ) or
-                    (
-                        best->node->from == FalconLocalSession->GetPlayerEntityID()
-                    ) or
-                    (
-                        (best and best->node->priority == rpLifeThreatening) and 
-                        (VM->decompQueue[i].priority not_eq rpLifeThreatening)
-                    )
-                )
+                        (VM->decompQueue[i].from not_eq
+                         FalconLocalSession->GetPlayerEntityID()) and
+                        (best->node->priority == rpLifeThreatening) and
+                        (VM->decompQueue[i].priority not_eq
+                         rpLifeThreatening)) or
+                    (best->node->from ==
+                     FalconLocalSession->GetPlayerEntityID()) or
+                    ((best and best->node->priority == rpLifeThreatening) and
+                     (VM->decompQueue[i].priority not_eq rpLifeThreatening)))
                 {
                     breakin = TRUE;
                 }
@@ -508,11 +525,10 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             if (i >= curChannel)
             {
                 //if there is a message queued from PlayRadioMessage and the appropriate decompQueue is available
-                if (
-                    best and 
-                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE  or breakin) and 
- not VM->falconVoices[curChannel].exitChannel
-                )
+                if (best and
+                    (VM->decompQueue[i].status == SLOT_IS_AVAILABLE or
+                     breakin) and
+                    not VM->falconVoices[curChannel].exitChannel)
                 {
                     // we have a message to be played with an available slot or
                     // we must break an ongoing conversation at the channel
@@ -520,7 +536,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     //if we're breaking in let's clean up first
                     if (VM->decompQueue[i].status not_eq SLOT_IS_AVAILABLE)
                     {
-                        delete [] VM->decompQueue[i].conversations;
+                        delete[] VM->decompQueue[i].conversations;
                         VM->decompQueue[i].conversations = NULL;
                         VM->decompQueue[i].from = FalconNullId;
                         VM->decompQueue[i].to = FalconNullId;
@@ -544,11 +560,15 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     VM->falconVoices[i].PopVCAddQueue();
 
                     //copy radio message info into decompQueue
-                    memcpy(&VM->decompQueue[i], best->node, sizeof(CONVERSATION));
-                    VM->decompQueue[i].conversations = new short[VM->decompQueue[i].sizeofConv];
+                    memcpy(&VM->decompQueue[i], best->node,
+                           sizeof(CONVERSATION));
+                    VM->decompQueue[i].conversations =
+                        new short[VM->decompQueue[i].sizeofConv];
 
                     //copy the actual fragFiles needed into decompQueue->conversations
-                    memcpy(VM->decompQueue[i].conversations, best->node->conversations, sizeof(short)*VM->decompQueue[i].sizeofConv);
+                    memcpy(VM->decompQueue[i].conversations,
+                           best->node->conversations,
+                           sizeof(short) * VM->decompQueue[i].sizeofConv);
 
                     //tell decompression routine that a message is available for this channel
                     VM->decompQueue[i].status = MESG_IS_AVAILABLE;
@@ -561,7 +581,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     // sfr: wtf is this for??????
                     for (int j = 0; j < i; ++j)
                     {
-                        delete [] VM->decompQueue[j].conversations;
+                        delete[] VM->decompQueue[j].conversations;
                         VM->decompQueue[j].from = FalconNullId;
                         VM->decompQueue[j].to = FalconNullId;
                         VM->decompQueue[j].message = -1;
@@ -578,7 +598,8 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                     curChannel = i;
                 }
             }
-            else if (voiceChannelQueue[i] and (waketime > voiceChannelQueue[i]->node->playTime))
+            else if (voiceChannelQueue[i] and
+                     (waketime > voiceChannelQueue[i]->node->playTime))
             {
                 // set wake time for this channel event
                 waketime = voiceChannelQueue[i]->node->playTime;
@@ -649,14 +670,14 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             //with the compressed data so DSOUND can get to it
             if (VM->decompQueue[curChannel].status == MESG_IS_PROCESSING)
             {
-                outputBuf = VM->falconVoices[curChannel].GetVoiceBuffer(curBuffer);
+                outputBuf =
+                    VM->falconVoices[curChannel].GetVoiceBuffer(curBuffer);
 
                 //this is where the current buffer is loaded with the uncompressed
                 //data so DSOUND can get it
                 outputBuf->waveBufferWrite = VM->lhspPtr->ReadLHSPFile(
-                                                 VM->falconVoices[curChannel].voiceCompInfo ,
-                                                 &outputBuf->waveBuffer
-                                             );
+                    VM->falconVoices[curChannel].voiceCompInfo,
+                    &outputBuf->waveBuffer);
 
                 //if something was written continue on with this conv index
                 //else mark buffer empty and if it was the last index in the
@@ -666,17 +687,19 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 outputBuf->dataInWaveBuffer = outputBuf->waveBufferWrite;
                 outputBuf->waveBufferLen = outputBuf->waveBufferWrite;
                 outputBuf->waveBufferRead = 0;
-
-                VM->AddNoise(outputBuf, VM->decompQueue[curChannel].from, curChannel);
+                VM->AddNoise(outputBuf, VM->decompQueue[curChannel].from,
+                             curChannel);
 
                 // check if we read everything
-                if (VM->falconVoices[curChannel].voiceCompInfo->bytesRead == VM->falconVoices[curChannel].voiceCompInfo->compFileLength)
+                if (VM->falconVoices[curChannel].voiceCompInfo->bytesRead ==
+                    VM->falconVoices[curChannel].voiceCompInfo->compFileLength)
                 {
-                    if (VM->decompQueue[curChannel].convIndex == VM->decompQueue[curChannel].sizeofConv)
+                    if (VM->decompQueue[curChannel].convIndex ==
+                        VM->decompQueue[curChannel].sizeofConv)
                     {
                         VM->decompQueue[curChannel].status = ADD_SILENCE;
                         // last part of conversation read, add silence
-                        delete [] VM->decompQueue[curChannel].conversations;
+                        delete[] VM->decompQueue[curChannel].conversations;
                         VM->decompQueue[curChannel].conversations = NULL;
                         VM->decompQueue[curChannel].from = FalconNullId;
                         VM->decompQueue[curChannel].to = FalconNullId;
@@ -705,11 +728,13 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
                 if (VM->BuffersEmpty(curChannel))
                 {
                     VM->decompQueue[curChannel].status = SILENCE_ADDED;
-                    outputBuf = VM->falconVoices[curChannel].GetVoiceBuffer(curBuffer);
+                    outputBuf =
+                        VM->falconVoices[curChannel].GetVoiceBuffer(curBuffer);
                     //try to add a little silence at end of message
                     memset(outputBuf->waveBuffer, SILENCE_KEY, SILENCE_LEN);
                     outputBuf->waveBufferRead = 0; // sfr: zero read
-                    outputBuf->dataInWaveBuffer = outputBuf->waveBufferWrite = outputBuf->waveBufferLen = SILENCE_LEN;
+                    outputBuf->dataInWaveBuffer = outputBuf->waveBufferWrite =
+                        outputBuf->waveBufferLen = SILENCE_LEN;
                     VM->falconVoices[curChannel].BufferManager(curBuffer);
                     // sfr: resume channel again... it may have gotten inactive
                     //VM->ResumeChannel(curChannel);
@@ -725,7 +750,9 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
             }
 
             // if the other buffer is not full, wake immediatly
-            if (VM->falconVoices[curChannel].voiceBuffers[1 - curBuffer].status not_eq BUFFER_FILLED)
+            if (VM->falconVoices[curChannel]
+                    .voiceBuffers[1 - curBuffer]
+                    .status not_eq BUFFER_FILLED)
             {
                 SetEvent(VMWakeEventHandle);
             }
@@ -747,9 +774,10 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
         }
 
         // sfr: organized logic here
-        if ( not sleep and waketime)
+        if (not sleep and waketime)
         {
-            sleeptime = waketime - vuxGameTime;//should be divided by time compression
+            sleeptime =
+                waketime - vuxGameTime; //should be divided by time compression
         }
         else
         {
@@ -760,7 +788,7 @@ DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm)
         WaitForSingleObject(VMWakeEventHandle, sleeptime);
     }
 
-    return(0);
+    return (0);
     lpvThreadParm;
 }
 
@@ -769,7 +797,8 @@ int VoiceManager::LoadCompressionData(int curChannel)
     int playConv;
 
     /* Get Conversations file no. and index to next file no. */
-    playConv = decompQueue[curChannel].conversations[decompQueue[curChannel].convIndex];
+    playConv = decompQueue[curChannel]
+                   .conversations[decompQueue[curChannel].convIndex];
     decompQueue[curChannel].convIndex++;
 
     falconVoices[curChannel].InitCompressionFile();
@@ -786,10 +815,13 @@ int VoiceManager::LoadCompressionData(int curChannel)
     falconVoices[curChannel].voiceCompInfo->dataPtr = (voiceMapPtr + tlkBlock + sizeof(unsigned long) * 2);
 #endif
 
-    falconVoices[curChannel].voiceCompInfo->fileLength = voiceMap.GetFileLength(playConv);
-    falconVoices[curChannel].voiceCompInfo->compFileLength = voiceMap.GetCompressedLength(playConv);
-    falconVoices[curChannel].voiceCompInfo->dataPtr = voiceMap.GetDataPtr(playConv);
-    return(playConv);
+    falconVoices[curChannel].voiceCompInfo->fileLength =
+        voiceMap.GetFileLength(playConv);
+    falconVoices[curChannel].voiceCompInfo->compFileLength =
+        voiceMap.GetCompressedLength(playConv);
+    falconVoices[curChannel].voiceCompInfo->dataPtr =
+        voiceMap.GetDataPtr(playConv);
+    return (playConv);
 }
 
 void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
@@ -800,7 +832,7 @@ void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
 
     if (newConv->channelIndex >= NUM_VOICE_CHANNELS)
     {
-        delete [] newConv->conversations;
+        delete[] newConv->conversations;
         return;
     }
 
@@ -827,7 +859,8 @@ void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
 
         if (voiceChannelQueue[newConv->channelIndex] not_eq NULL)
         {
-            voiceChannelQueue[newConv->channelIndex] = VMListDestroyVCQ(voiceChannelQueue[newConv->channelIndex]);
+            voiceChannelQueue[newConv->channelIndex] =
+                VMListDestroyVCQ(voiceChannelQueue[newConv->channelIndex]);
         }
 
         F4LeaveCriticalSection(VM->vmCriticalSection);
@@ -840,7 +873,8 @@ void VoiceManager::AddToConversationQueue(CONVERSATION *newConv)
 
 
     F4EnterCriticalSection(VM->vmCriticalSection);
-    voiceChannelQueue[newConv->channelIndex] = VMConvListInsert(voiceChannelQueue[newConv->channelIndex], newnode, SORT_TIME);
+    voiceChannelQueue[newConv->channelIndex] = VMConvListInsert(
+        voiceChannelQueue[newConv->channelIndex], newnode, SORT_TIME);
     F4LeaveCriticalSection(VM->vmCriticalSection);
 
     SetEvent(VMWakeEventHandle);
@@ -879,7 +913,7 @@ void VoiceManager::VMResetVoice(int channel)
 
     if (decompQueue[channel].conversations not_eq NULL)
     {
-        delete [] decompQueue[channel].conversations;
+        delete[] decompQueue[channel].conversations;
         decompQueue[channel].conversations = NULL;
         decompQueue[channel].from = FalconNullId;
         decompQueue[channel].message = -1;
@@ -888,7 +922,8 @@ void VoiceManager::VMResetVoice(int channel)
 
     if (voiceChannelQueue[channel] not_eq NULL)
     {
-        voiceChannelQueue[channel] = VMListDestroyVCQ(voiceChannelQueue[channel]);
+        voiceChannelQueue[channel] =
+            VMListDestroyVCQ(voiceChannelQueue[channel]);
         voiceChannelQueue[channel] = NULL;
     }
 
@@ -897,9 +932,12 @@ void VoiceManager::VMResetVoice(int channel)
 
     for (i = 0; i < MAX_VOICE_BUFFERS; i++)
     {
-        F4EnterCriticalSection(falconVoices[channel].voiceBuffers[i].criticalSection);
-        memset(falconVoices[channel].voiceBuffers[i].waveBuffer, SILENCE_KEY, 8000);
-        F4LeaveCriticalSection(falconVoices[channel].voiceBuffers[i].criticalSection);
+        F4EnterCriticalSection(
+            falconVoices[channel].voiceBuffers[i].criticalSection);
+        memset(falconVoices[channel].voiceBuffers[i].waveBuffer, SILENCE_KEY,
+               8000);
+        F4LeaveCriticalSection(
+            falconVoices[channel].voiceBuffers[i].criticalSection);
 
         falconVoices[channel].voiceBuffers[i].status = BUFFER_FILLED;
         falconVoices[channel].PopVCAddQueue();
@@ -934,7 +972,7 @@ void VoiceManager::VMResetVoices(void)
 
         if (decompQueue[i].conversations not_eq NULL)
         {
-            delete [] decompQueue[i].conversations;
+            delete[] decompQueue[i].conversations;
             decompQueue[i].conversations = NULL;
         }
 
@@ -952,16 +990,21 @@ void VoiceManager::VMResetVoices(void)
 
         for (int j = 0; j < MAX_VOICE_BUFFERS; j++)
         {
-            F4EnterCriticalSection(falconVoices[i].voiceBuffers[j].criticalSection);
-            memset(falconVoices[i].voiceBuffers[j].waveBuffer, SILENCE_KEY, 8000);
+            F4EnterCriticalSection(
+                falconVoices[i].voiceBuffers[j].criticalSection);
+            memset(falconVoices[i].voiceBuffers[j].waveBuffer, SILENCE_KEY,
+                   8000);
             falconVoices[i].voiceBuffers[j].status = BUFFER_FILLED;
-            F4LeaveCriticalSection(falconVoices[i].voiceBuffers[j].criticalSection);
+            F4LeaveCriticalSection(
+                falconVoices[i].voiceBuffers[j].criticalSection);
 
             falconVoices[i].PopVCAddQueue();
         }
 
-        if (g_nSoundSwitchFix bitand 0x02) // I assume that garbage in this after theater switch
-            falconVoices[i].exitChannel = FALSE; // can cause voices to fail to play...
+        if (g_nSoundSwitchFix bitand
+            0x02) // I assume that garbage in this after theater switch
+            falconVoices[i].exitChannel =
+                FALSE; // can cause voices to fail to play...
     }
 
     radiofilter[0] = rcfPackage1;
@@ -1035,13 +1078,13 @@ void VoiceManager::VMCleanup(void)
 
         if (VM->decompQueue[i].conversations not_eq NULL)
         {
-            delete [] VM->decompQueue[i].conversations;
+            delete[] VM->decompQueue[i].conversations;
             VM->decompQueue[i].conversations = NULL;
         }
     }
 
     if (falconVoices not_eq NULL)
-        delete [] falconVoices;
+        delete[] falconVoices;
 
     falconVoices = NULL;
     delete lhspPtr;
@@ -1075,90 +1118,91 @@ void VoiceManager::VMAddBuffToQueue(int channel, int buffer)
     }
 }
 
-VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newnode, int insType)
+VM_CONVLIST *VoiceManager::VMConvListInsert(VM_CONVLIST *list,
+                                            VM_CONVLIST *newnode, int insType)
 {
-    if ( not newnode)
+    if (not newnode)
         return list;
 
     VM_CONVLIST *prev = NULL;
     VM_CONVLIST *cur = list;
 
 
-
     switch (insType)
     {
-        case SORT_TIME:
-            while (cur and (newnode->node->playTime >= cur->node->playTime))
-            {
-                prev = cur;
-                cur = cur->next;
-            }
+    case SORT_TIME:
+        while (cur and (newnode->node->playTime >= cur->node->playTime))
+        {
+            prev = cur;
+            cur = cur->next;
+        }
 
-            if ( not prev)
-            {
-                newnode->next = list;
+        if (not prev)
+        {
+            newnode->next = list;
 
-                if (list)
-                    list->prev = newnode;
+            if (list)
+                list->prev = newnode;
 
-                return newnode;
-            }
+            return newnode;
+        }
 
-            newnode->next = cur;
-            newnode->prev = prev;
-            prev->next = newnode;
+        newnode->next = cur;
+        newnode->prev = prev;
+        prev->next = newnode;
 
-            if (cur)
-                cur->prev = newnode;
+        if (cur)
+            cur->prev = newnode;
 
-            return list;
+        return list;
 
-            break;
+        break;
 
-        case SORT_TIME_PRIORITY:
-            while (cur and (newnode->node->playTime >= cur->node->playTime))
-            {
-                prev = cur;
-                cur = cur->next;
-            }
+    case SORT_TIME_PRIORITY:
+        while (cur and (newnode->node->playTime >= cur->node->playTime))
+        {
+            prev = cur;
+            cur = cur->next;
+        }
 
-            while (cur and (newnode->node->priority <= cur->node->priority) and 
-                   (newnode->node->playTime == cur->node->playTime))
-            {
-                prev = cur;
-                cur = cur->next;
-            }
+        while (cur and (newnode->node->priority <= cur->node->priority) and
+               (newnode->node->playTime == cur->node->playTime))
+        {
+            prev = cur;
+            cur = cur->next;
+        }
 
-            if ( not prev)
-            {
-                newnode->next = list;
+        if (not prev)
+        {
+            newnode->next = list;
 
-                if (list)
-                    list->prev = newnode;
+            if (list)
+                list->prev = newnode;
 
-                return newnode;
-            }
+            return newnode;
+        }
 
-            newnode->next = cur;
-            newnode->prev = prev;
-            prev->next = newnode;
+        newnode->next = cur;
+        newnode->prev = prev;
+        prev->next = newnode;
 
-            if (cur)
-                cur->prev = newnode;
+        if (cur)
+            cur->prev = newnode;
 
-            return list;
-            break;
+        return list;
+        break;
 
-        default:
-            return list;
+    default:
+        return list;
     }
 }
 
-VM_BUFFLIST *VoiceManager::VMBuffListAppend(VM_BUFFLIST *list, VMBuffQueue *node)
+VM_BUFFLIST *VoiceManager::VMBuffListAppend(VM_BUFFLIST *list,
+                                            VMBuffQueue *node)
 {
-    VM_BUFFLIST * newnode;
-    VM_BUFFLIST * tmpPtr = list;
-    VM_BUFFLIST * newlist = list;
+    VM_BUFFLIST *newnode;
+    VM_BUFFLIST *tmpPtr = list;
+    VM_BUFFLIST *newlist = list;
 
     newnode = new VM_BUFFLIST;
 
@@ -1175,7 +1219,6 @@ VM_BUFFLIST *VoiceManager::VMBuffListAppend(VM_BUFFLIST *list, VMBuffQueue *node
 
         newnode->prev = tmpPtr;
         tmpPtr->next = newnode;
-
     }
     else
     {
@@ -1185,7 +1228,7 @@ VM_BUFFLIST *VoiceManager::VMBuffListAppend(VM_BUFFLIST *list, VMBuffQueue *node
 
     F4LeaveCriticalSection(vmCriticalSection);
 
-    return(newlist);
+    return (newlist);
 }
 
 void VoiceManager::RemoveDuplicateMessages(VU_ID from, VU_ID to, int msgid)
@@ -1194,7 +1237,7 @@ void VoiceManager::RemoveDuplicateMessages(VU_ID from, VU_ID to, int msgid)
 
     F4EnterCriticalSection(vmCriticalSection);
 
-    for (int i = 0 ; i < NUM_VOICE_CHANNELS ; i++)
+    for (int i = 0; i < NUM_VOICE_CHANNELS; i++)
     {
         pVCnext = NULL;
         pVC = voiceChannelQueue[i];
@@ -1204,7 +1247,10 @@ void VoiceManager::RemoveDuplicateMessages(VU_ID from, VU_ID to, int msgid)
             pVCnext = pVC->next;
 
             // Fix for Weapons Call
-            if (pVC->node->from == from and pVC->node->to == to and pVC->node->message == msgid and pVC->node->message not_eq rcDAMREPORT and pVC->node->message not_eq rcWEAPONSCHECKRSP)
+            if (pVC->node->from == from and pVC->node->to == to and
+                pVC->node->message == msgid and
+                pVC->node->message not_eq rcDAMREPORT and
+                pVC->node->message not_eq rcWEAPONSCHECKRSP)
                 VMListRemoveVCQ(&voiceChannelQueue[i], pVC);
 
             pVC = pVCnext;
@@ -1220,9 +1266,10 @@ int VoiceManager::IsMessagePlaying(VU_ID from, VU_ID to, int msgid)
 
     F4EnterCriticalSection(vmCriticalSection);
 
-    for (int i = 0 ; i < NUM_VOICE_CHANNELS ; i++)
+    for (int i = 0; i < NUM_VOICE_CHANNELS; i++)
     {
-        if (decompQueue[i].from == from and decompQueue[i].to == to and decompQueue[i].message == msgid)
+        if (decompQueue[i].from == from and decompQueue[i].to == to and
+            decompQueue[i].message == msgid)
         {
             retval = TRUE;
             break;
@@ -1241,7 +1288,7 @@ void VoiceManager::VMListRemoveVCQ(VM_CONVLIST **list, VM_CONVLIST *node)
 
     //F4EnterCriticalSection( vmCriticalSection );
 
-    if ( not *list)
+    if (not *list)
         return;
 
     if (*list == node)
@@ -1264,7 +1311,7 @@ void VoiceManager::VMListRemoveVCQ(VM_CONVLIST **list, VM_CONVLIST *node)
 
     if (curr->node)
     {
-        delete [] curr->node->conversations;
+        delete[] curr->node->conversations;
         curr->node->conversations = NULL;
         delete curr->node;
         curr->node = NULL;
@@ -1282,7 +1329,7 @@ VM_BUFFLIST *VoiceManager::VMListPopVMBQ(VM_BUFFLIST *list)
 {
     VM_BUFFLIST *next;
 
-    if ( not list)
+    if (not list)
         return NULL;
 
     next = list->next;
@@ -1296,7 +1343,7 @@ VM_BUFFLIST *VoiceManager::VMListPopVMBQ(VM_BUFFLIST *list)
     delete list;
     list = NULL;
 
-    return(next);
+    return (next);
 }
 
 //removes the seleted entry from the list and returns the next pointer
@@ -1306,7 +1353,7 @@ VM_BUFFLIST *VoiceManager::VMListRemoveVMBQ(VM_BUFFLIST *list)
     VMBuffQueue *vmbqNode;
     VM_BUFFLIST *curr, *next;
 
-    if ( not list)
+    if (not list)
         return NULL;
 
     curr = list;
@@ -1327,10 +1374,10 @@ VM_BUFFLIST *VoiceManager::VMListRemoveVMBQ(VM_BUFFLIST *list)
         curr = NULL;
     }
 
-    return(next);
+    return (next);
 }
 
-void VoiceManager::VMDeleteNode(VMBuffQueue* vmNode)
+void VoiceManager::VMDeleteNode(VMBuffQueue *vmNode)
 {
     delete vmNode;
 }
@@ -1345,41 +1392,42 @@ int i;
  return( i );
 }*/
 
-VM_BUFFLIST *VoiceManager::VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum, int searchType)
+VM_BUFFLIST *VoiceManager::VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum,
+                                            int searchType)
 {
     VM_BUFFLIST *l;
 
-    if ( not list)
+    if (not list)
         return NULL;
 
     for (l = list; list; list = list->next)
     {
         switch (searchType)
         {
-            case SEARCH_AND_DESTROY:
-                if ( not ListCheckChannelNum(list->node, channelNum))
-                {
-                    list = VMListRemoveVMBQ(list);
+        case SEARCH_AND_DESTROY:
+            if (not ListCheckChannelNum(list->node, channelNum))
+            {
+                list = VMListRemoveVMBQ(list);
 
-                    if ( not list)
-                        return NULL;
-                }
+                if (not list)
+                    return NULL;
+            }
 
-                break;
+            break;
         };
     }
 
-    return(list);
+    return (list);
 }
 
 int VoiceManager::ListCheckChannelNum(void *node_a, int channelNum)
 {
     VMBuffQueue *channel_a;
 
-    if ( not node_a)
+    if (not node_a)
         return NULL;
 
-    channel_a = (VMBuffQueue *) node_a;
+    channel_a = (VMBuffQueue *)node_a;
 
     if (channel_a->channel == channelNum)
         return 0;
@@ -1514,7 +1562,7 @@ VM_CONVLIST *VoiceManager::VMListDestroyVCQ(VM_CONVLIST *list)
     CONVERSATION *vmVCNode;
     VM_CONVLIST *curr, *next;
 
-    if ( not list)
+    if (not list)
         return NULL;
 
     // JPO - go FORWARDS through the list stupid
@@ -1522,18 +1570,18 @@ VM_CONVLIST *VoiceManager::VMListDestroyVCQ(VM_CONVLIST *list)
     {
         next = curr->next;
 
-        if ( not curr->node)
+        if (not curr->node)
             break;
 
         vmVCNode = curr->node;
 
-        delete [] vmVCNode->conversations;
+        delete[] vmVCNode->conversations;
         delete vmVCNode;
         delete curr;
     }
 
     list = curr;
-    return(list);
+    return (list);
 }
 
 VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
@@ -1541,7 +1589,7 @@ VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
     VMBuffQueue *vmbqNode;
     VM_BUFFLIST *curr, *next;
 
-    if ( not list)
+    if (not list)
         return NULL;
 
     // JPO - go FORWARDS through the list stupid
@@ -1549,7 +1597,7 @@ VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
     {
         next = curr->next;
 
-        if ( not curr->node)
+        if (not curr->node)
             break;
 
         vmbqNode = curr->node;
@@ -1558,7 +1606,7 @@ VM_BUFFLIST *VoiceManager::VMListDestroyVBQ(VM_BUFFLIST *list)
     }
 
     list = curr;
-    return(list);
+    return (list);
 }
 
 
@@ -1623,9 +1671,9 @@ void VoiceManager::ChangeRadioFreq(int filter, int radio)
 
     for (int i = 0; i < NUM_VOICE_CHANNELS; i++)
     {
-        if ( not FilterMessage(&VM->decompQueue[i]))
+        if (not FilterMessage(&VM->decompQueue[i]))
         {
-            delete [] VM->decompQueue[i].conversations;
+            delete[] VM->decompQueue[i].conversations;
             VM->decompQueue[i].conversations = NULL;
             VM->decompQueue[i].status = SLOT_IS_AVAILABLE;
             VM->falconVoices[i].BufferEmpty(0);
@@ -1641,7 +1689,8 @@ int VoiceManager::IsChannelDone(int channel)
 {
     if (gSoundDriver)
     {
-        return not gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle);
+        return not gSoundDriver->IsStreamPlaying(
+            VM->falconVoices[channel].FalcVoiceHandle);
     }
 
     return FALSE;
@@ -1651,9 +1700,11 @@ int VoiceManager::ResumeChannel(int channel)
 {
     if (gSoundDriver)
     {
-        if ( not gSoundDriver->IsStreamPlaying(VM->falconVoices[channel].FalcVoiceHandle))
+        if (not gSoundDriver->IsStreamPlaying(
+                VM->falconVoices[channel].FalcVoiceHandle))
         {
-            gSoundDriver->ResumeStream(VM->falconVoices[channel].FalcVoiceHandle);
+            gSoundDriver->ResumeStream(
+                VM->falconVoices[channel].FalcVoiceHandle);
         }
 
         return TRUE;
@@ -1676,21 +1727,23 @@ int VoiceManager::PauseChannel(int channel)
 
 int VoiceManager::BuffersEmpty(int channel)
 {
-    return (
-               VM->falconVoices[channel].voiceBuffers[0].status == BUFFER_NOT_IN_QUEUE and 
-               VM->falconVoices[channel].voiceBuffers[1].status == BUFFER_NOT_IN_QUEUE
-           );
+    return (VM->falconVoices[channel].voiceBuffers[0].status ==
+                BUFFER_NOT_IN_QUEUE and
+            VM->falconVoices[channel].voiceBuffers[1].status ==
+                BUFFER_NOT_IN_QUEUE);
 }
 
 void VoiceManager::SetChannelVolume(int channel, int volume)
 {
-    if (channel >= 0 and channel < NUM_VOICE_CHANNELS and not falconVoices[channel].exitChannel)
+    if (channel >= 0 and channel < NUM_VOICE_CHANNELS and
+        not falconVoices[channel].exitChannel)
     {
         F4SetStreamVolume(falconVoices[channel].FalcVoiceHandle, volume);
     }
 }
 
-void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int channel)
+void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from,
+                            int channel)
 {
     // #35: PREVIOUSLY there was an unconditional return here (chatter vanished!) -- it dropped not only
     // the noising but also the channel VOLUME setting by distance (SetChannelVolume below),
@@ -1699,7 +1752,7 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
     unsigned long i;
     int level = 255, minLevel = 253, volume, nonoise;
     VuEntity *fromEnt = NULL;
-    float dist, dx, dy , dz;
+    float dist, dx, dy, dz;
     SimBaseClass *ownship = OTWDriver.GraphicsOwnship();
 
     Flight awacs = NULL;
@@ -1717,13 +1770,13 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
 
             if (awacs and awacs->Id() == from)
                 nonoise = TRUE;
-
         }
     }
 
     fromEnt = vuDatabase->Find(from);
 
-    if (fromEnt and ownship and fromEnt not_eq SimDriver.GetPlayerEntity() and not nonoise and SimDriver.InSim())
+    if (fromEnt and ownship and fromEnt not_eq SimDriver.GetPlayerEntity() and
+        not nonoise and SimDriver.InSim())
     {
         dx = fromEnt->XPos() - ownship->XPos();
         dy = fromEnt->YPos() - ownship->YPos();
@@ -1734,7 +1787,9 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
 
         minLevel = FloatToInt32(253 - dist / MAX_RADIO_RANGE * 50.0F);
 
-        volume = FloatToInt32(max(-10000, PlayerOptions.GroupVol[COM1_SOUND_GROUP + channel] - dist / MAX_RADIO_RANGE * 2000));
+        volume = FloatToInt32(
+            max(-10000, PlayerOptions.GroupVol[COM1_SOUND_GROUP + channel] -
+                            dist / MAX_RADIO_RANGE * 2000));
         SetChannelVolume(channel, volume);
     }
 
@@ -1744,11 +1799,11 @@ void VoiceManager::AddNoise(VOICE_STREAM_BUFFER *streamBuffer, VU_ID from, int c
     // once we confirm streamBuffer validity (the static isn't critical).
     return;
 
-    unsigned char  *pos = streamBuffer->waveBuffer;
+    unsigned char *pos = streamBuffer->waveBuffer;
 
     for (i = 0; i < streamBuffer->dataInWaveBuffer; i++)
     {
-        if ( not (i % 50))
+        if (not(i % 50))
             level = minLevel - rand() % 4 - rand() % 4;
 
         if (*pos > level)
@@ -1768,7 +1823,7 @@ void VoiceManager::RemoveRadioCalls(VU_ID dead)
 
     F4EnterCriticalSection(VM->vmCriticalSection);
 
-    for (i = 0 ; i < NUM_VOICE_CHANNELS ; i++)
+    for (i = 0; i < NUM_VOICE_CHANNELS; i++)
     {
         pVC = voiceChannelQueue[i];
 
@@ -1787,7 +1842,7 @@ void VoiceManager::RemoveRadioCalls(VU_ID dead)
             decompQueue[i].status = SLOT_IS_AVAILABLE;
             decompQueue[i].from = FalconNullId;
             decompQueue[i].to = FalconNullId;
-            delete [] decompQueue[i].conversations;
+            delete[] decompQueue[i].conversations;
             decompQueue[i].conversations = NULL;
             falconVoices[i].BufferEmpty(0);
             falconVoices[i].BufferEmpty(1);
@@ -1795,7 +1850,6 @@ void VoiceManager::RemoveRadioCalls(VU_ID dead)
     }
 
     F4LeaveCriticalSection(VM->vmCriticalSection);
-
 }
 
 unsigned long TlkFile::GetFileLength(int tlkind)
@@ -1803,10 +1857,11 @@ unsigned long TlkFile::GetFileLength(int tlkind)
     long blockind = GetFragIndex(tlkind);
     ShiAssert(blockind > 0);
     struct TlkBlock *tblock;
-    tblock = (struct TlkBlock *) GetData(blockind, sizeof * tblock);
+    tblock = (struct TlkBlock *)GetData(blockind, sizeof *tblock);
     ShiAssert(tblock not_eq NULL);
 
-    if (tblock == NULL) return 0;
+    if (tblock == NULL)
+        return 0;
 
     return tblock->filelen;
 }
@@ -1816,10 +1871,11 @@ unsigned long TlkFile::GetCompressedLength(int tlkind)
     long blockind = GetFragIndex(tlkind);
     ShiAssert(blockind > 0);
     struct TlkBlock *tblock;
-    tblock = (struct TlkBlock *) GetData(blockind, sizeof * tblock);
+    tblock = (struct TlkBlock *)GetData(blockind, sizeof *tblock);
     ShiAssert(tblock not_eq NULL);
 
-    if (tblock == NULL) return 0;
+    if (tblock == NULL)
+        return 0;
 
     return tblock->compressedlen;
 }
@@ -1829,10 +1885,11 @@ char *TlkFile::GetDataPtr(int tlkind)
     long blockind = GetFragIndex(tlkind);
     ShiAssert(blockind > 0);
     struct TlkBlock *tblock;
-    tblock = (struct TlkBlock *) GetData(blockind, sizeof * tblock);
+    tblock = (struct TlkBlock *)GetData(blockind, sizeof *tblock);
     ShiAssert(tblock not_eq NULL);
 
-    if (tblock == NULL) return 0;
+    if (tblock == NULL)
+        return 0;
 
     return tblock->data;
 }

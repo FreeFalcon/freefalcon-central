@@ -8,24 +8,24 @@ Dave Power (x4373)
 #include "falclib.h"
 #include "chandler.h"
 #include "userids.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "sim/include/stdhdr.h"
 #include "uicomms.h"
-#include "Graphics/Include/render3d.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/drawBSP.h"
-#include "Graphics/Include/matrix.h"
-#include "Graphics/Include/TexBank.h"
-#include "Graphics/Include/TerrTex.h"
-#include "Graphics/Include/FarTex.h"
+#include "graphics/include/render3d.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/matrix.h"
+#include "graphics/include/texbank.h"
+#include "graphics/include/terrtex.h"
+#include "graphics/include/fartex.h"
 #include "objectiv.h"
 #include "cbsplist.h"
 #include "c3dview.h"
 #include "ui_setup.h"
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/rviewpnt.h"
 #include <tchar.h>
 #include "f4find.h"
-#include "sim/include/inpFunc.h"
+#include "sim/include/inpfunc.h"
 #include "dispopts.h"
 #include "logbook.h"
 #include "sim/include/sinput.h"
@@ -33,13 +33,13 @@ Dave Power (x4373)
 #include "sim/include/controlsxml.h"   // #53: axes from the profile XML
 #include "cmusic.h"
 #include "dispcfg.h"
-#include "Graphics/Include/draw2d.h"
+#include "graphics/include/draw2d.h"
 #include "falcsess.h"
-#include "Graphics/Include/tod.h"
+#include "graphics/include/tod.h"
 
 //JAM 21Nov03
-#include "Weather.h"
-#include "Campaign/include/Cmpclass.h"
+#include "weather.h"
+#include "campaign/include/cmpclass.h"
 //JAM
 
 extern int STPLoaded;
@@ -64,7 +64,7 @@ long Cluster = 8001;
 int ready = FALSE;
 //JOYCAPS S_joycaps;
 MMRESULT S_joyret;
-F4CSECTIONHANDLE* SetupCritSection = NULL;
+F4CSECTIONHANDLE *SetupCritSection = NULL;
 
 float JoyScale;
 float RudderScale;
@@ -85,7 +85,9 @@ void CloseWindowCB(long ID, short hittype, C_Base *control);
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 void GenericTimerCB(long ID, short hittype, C_Base *control);
 void OpenLogBookCB(long ID, short hittype, C_Base *control);
-BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
+BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol,
+                             short endcol, COLORREF color, _TCHAR *str,
+                             long Client = 0);
 void INFOSetupControls(void);
 void CheckFlyButton(void);
 
@@ -107,7 +109,8 @@ void RefreshJoystickCB(long ID, short hittype, C_Base *control);
 bool ControlTab_IsButtonAssignOpen(void);
 void ControlTab_ForceCloseButtonAssign(void);
 void ControlTab_KeepButtonAssignFront(void);
-BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
+BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char Ascii,
+                 unsigned char ShiftStates, long RepeatCount);
 void CalibrateCB(long ID, short hittype, C_Base *control);
 BOOL SaveKeyMapList(char *filename);
 int UpdateKeyMapList(char *fname, int flag);
@@ -122,13 +125,17 @@ void BuildControllerList(C_ListBox *lbox);
 void KeyListSearchCB(long ID, short hittype, C_Base *control);
 void KeyListDevFilterCB(long ID, short hittype, C_Base *control);
 extern char g_keyFilter[64];
-extern int  g_keyDevFilter;
+extern int g_keyDevFilter;
 void HideKeyStatusLines(C_Window *win);
 void RecenterJoystickCB(long ID, short hittype, C_Base *control);
-void AdvancedControlCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
-void AdvancedControlApplyCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
-void AdvancedControlOKCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
-void AdvancedControlCancelCB(long ID, short hittype, C_Base *control); // Retro 31Dec2003
+void AdvancedControlCB(long ID, short hittype,
+                       C_Base *control); // Retro 31Dec2003
+void AdvancedControlApplyCB(long ID, short hittype,
+                            C_Base *control); // Retro 31Dec2003
+void AdvancedControlOKCB(long ID, short hittype,
+                         C_Base *control); // Retro 31Dec2003
+void AdvancedControlCancelCB(long ID, short hittype,
+                             C_Base *control); // Retro 31Dec2003
 void SetJoystickAndPOVSymbols(const bool, C_Base *control);
 void SetThrottleAndRudderBars(C_Base *control);
 
@@ -144,15 +151,20 @@ void ChangeViewpointCB(long ID, short hittype, C_Base *control);
 //void GouraudCB(long ID,short hittype,C_Base *control);
 void HazingCB(long ID, short hittype, C_Base *control);
 //void AlphaBlendCB(long ID,short hittype,C_Base *control);
-void RealWeatherShadowsCB(long ID, short hittype, C_Base *control); //JAM 07Dec03
+void RealWeatherShadowsCB(long ID, short hittype,
+                          C_Base *control); //JAM 07Dec03
 void BilinearFilterCB(long ID, short hittype, C_Base *control);
 //void ObjectTextureCB(long ID,short hittype,C_Base *control);
 void BuildingDetailCB(long ID, short hittype, C_Base *control);
 void ObjectDetailCB(long ID, short hittype, C_Base *control);
 void VehicleSizeCB(long ID, short hittype, C_Base *control);
 void TerrainDetailCB(long ID, short hittype, C_Base *control);
-void MsaaSamplesCB(long ID, short hittype, C_Base *control);   // Artscout - 2026: MSAA samples live readout
-void VrResScaleSliderCB(long ID, short hittype, C_Base *control); // Artscout - 2026: OpenXR res-scale live readout
+void MsaaSamplesCB(
+    long ID, short hittype,
+    C_Base *control); // Artscout - 2026: MSAA samples live readout
+void VrResScaleSliderCB(
+    long ID, short hittype,
+    C_Base *control); // Artscout - 2026: OpenXR res-scale live readout
 //void TextureDistanceCB(long ID,short hittype,C_Base *control);
 void VideoCardCB(long ID, short hittype, C_Base *control);
 void VideoDriverCB(long ID, short hittype, C_Base *control);
@@ -191,7 +203,7 @@ void TestButtonCB(long ID, short hittype, C_Base *control);
 void SoundSliderCB(long ID, short hittype, C_Base *control);
 void PlayVoicesCB(long ID, short hittype, C_Base *control);
 
-RECT AxisValueBox = { 0 };
+RECT AxisValueBox = {0};
 float AxisValueBoxHScale;
 float AxisValueBoxWScale;
 
@@ -228,7 +240,8 @@ void LoadSetupWindows()
         gMainParser->LoadImageList("st_art.lst");
 
     gMainParser->LoadSoundList("st_snd.lst");
-    gMainParser->LoadWindowList("st_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "st_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -249,7 +262,9 @@ void LoadSetupWindows()
         tmr->Setup(C_DONT_CARE, C_TYPE_TIMER);
         tmr->SetUpdateCallback(GenericTimerCB);
         tmr->SetRefreshCallback(RefreshJoystickCB);
-        tmr->SetUserNumber(_UI95_TIMER_DELAY_, 1); // Timer activates every 80 mseconds (Only when this window is open)
+        tmr->SetUserNumber(
+            _UI95_TIMER_DELAY_,
+            1); // Timer activates every 80 mseconds (Only when this window is open)
         tmr->SetCluster(8004);
         win->AddControl(tmr);
 
@@ -258,7 +273,9 @@ void LoadSetupWindows()
         tmr->Setup(C_DONT_CARE, C_TYPE_TIMER);
         tmr->SetUpdateCallback(GenericTimerCB);
         tmr->SetRefreshCallback(ChangeViewpointCB);
-        tmr->SetUserNumber(_UI95_TIMER_DELAY_, 1); // Timer activates every 80 mseconds (Only when this window is open)
+        tmr->SetUserNumber(
+            _UI95_TIMER_DELAY_,
+            1); // Timer activates every 80 mseconds (Only when this window is open)
         tmr->SetCluster(8002);
         win->AddControl(tmr);
 
@@ -267,7 +284,9 @@ void LoadSetupWindows()
         tmr->Setup(C_DONT_CARE, C_TYPE_TIMER);
         tmr->SetUpdateCallback(GenericTimerCB);
         tmr->SetRefreshCallback(PlayVoicesCB);
-        tmr->SetUserNumber(_UI95_TIMER_DELAY_, 100); // Timer activates every 8 seconds (Only when this window is open)
+        tmr->SetUserNumber(
+            _UI95_TIMER_DELAY_,
+            100); // Timer activates every 8 seconds (Only when this window is open)
         tmr->SetCluster(8003);
         win->AddControl(tmr);
 
@@ -368,11 +387,12 @@ void LoadSetupWindows()
         // Retro 27Mar2004 - a bar to show the value of an analogue axis
         // ..actually there are about 20+ of these, but I use the coords of one, the
         // others are (or rather: should be) aligned to this one
-        C_Window* win2 = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+        C_Window *win2 = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-        if ( not win2) return;
+        if (not win2)
+            return;
 
-        C_Line* line = (C_Line *)win2->FindControl(SETUP_ADVANCED_THROTTLE_VAL);
+        C_Line *line = (C_Line *)win2->FindControl(SETUP_ADVANCED_THROTTLE_VAL);
 
         if (line not_eq NULL)
         {
@@ -389,7 +409,6 @@ void LoadSetupWindows()
         }
 
         // Retro end
-
     }
 
     InitKeyDescrips();
@@ -399,7 +418,7 @@ void LoadSetupWindows()
     CreateKeyMapList(PlayerOptions.keyfile);
 
     STPLoaded++;
-}//LoadSetupWindows
+} //LoadSetupWindows
 
 
 void SetupOpenLogBookCB(long ID, short hittype, C_Base *control)
@@ -446,22 +465,22 @@ void STPSetupControls(void)
     {
         switch (PlayerOptions.GetAvionicsType())
         {
-                // M.N. full realism mode added
-            case ATRealisticAV:
-                lbox->SetValue(SET_RADAR_0);
-                break;
+            // M.N. full realism mode added
+        case ATRealisticAV:
+            lbox->SetValue(SET_RADAR_0);
+            break;
 
-            case ATRealistic:
-                lbox->SetValue(SET_RADAR_1);
-                break;
+        case ATRealistic:
+            lbox->SetValue(SET_RADAR_1);
+            break;
 
-            case ATSimplified:
-                lbox->SetValue(SET_RADAR_2);
-                break;
+        case ATSimplified:
+            lbox->SetValue(SET_RADAR_2);
+            break;
 
-            case ATEasy:
-                lbox->SetValue(SET_RADAR_3);
-                break;
+        case ATEasy:
+            lbox->SetValue(SET_RADAR_3);
+            break;
         }
 
         lbox->Refresh();
@@ -473,17 +492,17 @@ void STPSetupControls(void)
     {
         switch (PlayerOptions.GetWeaponEffectiveness())
         {
-            case WEAccurate:
-                lbox->SetValue(SET_WEAPEFF_1);
-                break;
+        case WEAccurate:
+            lbox->SetValue(SET_WEAPEFF_1);
+            break;
 
-            case WEEnhanced:
-                lbox->SetValue(SET_WEAPEFF_2);
-                break;
+        case WEEnhanced:
+            lbox->SetValue(SET_WEAPEFF_2);
+            break;
 
-            case WEExaggerated:
-                lbox->SetValue(SET_WEAPEFF_3);
-                break;
+        case WEExaggerated:
+            lbox->SetValue(SET_WEAPEFF_3);
+            break;
         }
 
         lbox->Refresh();
@@ -495,17 +514,17 @@ void STPSetupControls(void)
     {
         switch (PlayerOptions.GetAutopilotMode())
         {
-            case APNormal:
-                lbox->SetValue(SET_AUTO_1);
-                break;
+        case APNormal:
+            lbox->SetValue(SET_AUTO_1);
+            break;
 
-            case APEnhanced:
-                lbox->SetValue(SET_AUTO_2);
-                break;
+        case APEnhanced:
+            lbox->SetValue(SET_AUTO_2);
+            break;
 
-            case APIntelligent:
-                lbox->SetValue(SET_AUTO_3);
-                break;
+        case APIntelligent:
+            lbox->SetValue(SET_AUTO_3);
+            break;
         }
 
         lbox->Refresh();
@@ -517,17 +536,17 @@ void STPSetupControls(void)
     {
         switch (PlayerOptions.GetRefuelingMode())
         {
-            case ARRealistic:
-                lbox->SetValue(SET_REFUEL_1);
-                break;
+        case ARRealistic:
+            lbox->SetValue(SET_REFUEL_1);
+            break;
 
-            case ARModerated:
-                lbox->SetValue(SET_REFUEL_2);
-                break;
+        case ARModerated:
+            lbox->SetValue(SET_REFUEL_2);
+            break;
 
-            case ARSimplistic:
-                lbox->SetValue(SET_REFUEL_3);
-                break;
+        case ARSimplistic:
+            lbox->SetValue(SET_REFUEL_3);
+            break;
         }
 
         lbox->Refresh();
@@ -539,20 +558,20 @@ void STPSetupControls(void)
     {
         switch (PlayerOptions.GetPadlockMode())
         {
-            case PDDisabled:
-                lbox->SetValue(SET_PADLOCK_4);
-                break;
+        case PDDisabled:
+            lbox->SetValue(SET_PADLOCK_4);
+            break;
 
-            case PDRealistic:
-                lbox->SetValue(SET_PADLOCK_1);
-                break;
+        case PDRealistic:
+            lbox->SetValue(SET_PADLOCK_1);
+            break;
 
-            case PDEnhanced:
-                lbox->SetValue(SET_PADLOCK_2);
-                break;
-                //case PDSuper:
-                // lbox->SetValue(SET_PADLOCK_3);
-                // break;
+        case PDEnhanced:
+            lbox->SetValue(SET_PADLOCK_2);
+            break;
+            //case PDSuper:
+            // lbox->SetValue(SET_PADLOCK_3);
+            // break;
         }
 
         lbox->Refresh();
@@ -564,21 +583,21 @@ void STPSetupControls(void)
     {
         switch (PlayerOptions.GetVisualCueMode())
         {
-            case VCNone:
-                lbox->SetValue(CUE_NONE);
-                break;
+        case VCNone:
+            lbox->SetValue(CUE_NONE);
+            break;
 
-            case VCLiftLine:
-                lbox->SetValue(CUE_LIFT_LINE);
-                break;
+        case VCLiftLine:
+            lbox->SetValue(CUE_LIFT_LINE);
+            break;
 
-            case VCReflection:
-                lbox->SetValue(CUE_REFLECTION_MAP);
-                break;
+        case VCReflection:
+            lbox->SetValue(CUE_REFLECTION_MAP);
+            break;
 
-            case VCBoth:
-                lbox->SetValue(CUE_BOTH);
-                break;
+        case VCBoth:
+            lbox->SetValue(CUE_BOTH);
+            break;
         }
 
         lbox->Refresh();
@@ -591,7 +610,13 @@ void STPSetupControls(void)
         BuildVideoDriverList(lbox);
 
         DisableEnableDrivers(lbox);
-        lbox->SetValue(DisplayOptions.DispVideoDriver + 1);
+        // Artscout - 2026 (#104): SET_VIDEO_DRIVER is the RENDER BACKEND selector now (id 1 = DX12, 2 = Vulkan), NOT the
+        // legacy adapter. Select by the LIVE backend (g_bUseVulkan) -- DispVideoDriver is forced 0, so the old
+        // SetValue(DispVideoDriver+1) pinned the row to DX12 on every open and "OK" then rewrote the renderer to DX12.
+        {
+            extern bool g_bUseVulkan;
+            lbox->SetValue((g_bUseVulkan ? 1 : 0) + 1);
+        }
         lbox->Refresh();
     }
 
@@ -614,18 +639,21 @@ void STPSetupControls(void)
 #if 1
         // OW
         // Handled in BuildResolutionList
-        // #39: in D3D11 the current mode is ALREADY selected in BuildResolutionList (isel by g_d3d11Modes index).
+        // #39: in D3D11 the current mode is ALREADY selected in BuildResolutionList (isel by g_DisplayModes index).
         // The old FindDisplayMode searches m_arrModes (EMPTY in D3D11) -> -1 -> SetValue(0) -> overwrote
         // the selection with index 0 (640/800). Because of that Apply from ANY tab (sound etc.) reset
         // the resolution to 800x600 (SaveValues reads SET_RESOLUTION regardless of the active tab).
         extern bool g_bUseD3D12;
-        if ( not (g_bUseD3D12))
+        if (not(g_bUseD3D12))
         {
-            DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
+            DeviceManager::DDDriverInfo *pDI =
+                FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
 
             if (pDI)
             {
-                int nIndex = pDI->FindDisplayMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth);
+                int nIndex = pDI->FindDisplayMode(DisplayOptions.DispWidth,
+                                                  DisplayOptions.DispHeight,
+                                                  DisplayOptions.DispDepth);
                 lbox->SetValue(nIndex not_eq -1 ? nIndex : 0);
             }
         }
@@ -714,7 +742,6 @@ void STPSetupControls(void)
             button->SetState(C_STATE_0);
 
         button->Refresh();
-
     }
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
@@ -766,7 +793,8 @@ void STPSetupControls(void)
         button->Refresh();
     }
 
-    button = (C_Button *)win->FindControl(SET_INVULNERABILITY); //should be SET_INVULNERABLITY
+    button = (C_Button *)win->FindControl(
+        SET_INVULNERABILITY); //should be SET_INVULNERABLITY
 
     if (button not_eq NULL)
     {
@@ -925,14 +953,19 @@ void STPSetupControls(void)
 
         if (ebox)
         {
-            PlayerOptions.ObjDetailLevel = min(PlayerOptions.ObjDetailLevel, 2.0F * GraphicSettingMult);
-            ebox->SetInteger(FloatToInt32((PlayerOptions.ObjDetailLevel - .5f) / .25f + 1.5f));
+            PlayerOptions.ObjDetailLevel =
+                min(PlayerOptions.ObjDetailLevel, 2.0F * GraphicSettingMult);
+            ebox->SetInteger(FloatToInt32(
+                (PlayerOptions.ObjDetailLevel - .5f) / .25f + 1.5f));
             ebox->Refresh();
             slider->SetSteps(static_cast<short>(6 * GraphicSettingMult));
             slider->SetUserNumber(0, OBJECT_DETAIL_READOUT);
         }
 
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjDetailLevel - 0.5f) / (1.5f * GraphicSettingMult)));
+        slider->SetSliderPos(
+            FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) *
+                         (PlayerOptions.ObjDetailLevel - 0.5f) /
+                         (1.5f * GraphicSettingMult)));
     }
 
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
@@ -948,7 +981,9 @@ void STPSetupControls(void)
             slider->SetUserNumber(0, SFX_LEVEL_READOUT);
         }
 
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.SfxLevel - 1.0F) / 4.0f));
+        slider->SetSliderPos(
+            FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) *
+                         (PlayerOptions.SfxLevel - 1.0F) / 4.0f));
     }
 
     slider = (C_Slider *)win->FindControl(DISAGG_LEVEL);
@@ -964,7 +999,8 @@ void STPSetupControls(void)
             slider->SetUserNumber(0, DISAGG_LEVEL_READOUT);
         }
 
-        slider->SetSliderPos((slider->GetSliderMax() - slider->GetSliderMin())*PlayerOptions.ObjDeaggLevel / 100);
+        slider->SetSliderPos((slider->GetSliderMax() - slider->GetSliderMin()) *
+                             PlayerOptions.ObjDeaggLevel / 100);
     }
 
 
@@ -972,7 +1008,9 @@ void STPSetupControls(void)
 
     if (slider not_eq NULL)
     {
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjMagnification - 1.0F) / 4.0F));
+        slider->SetSliderPos(
+            FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) *
+                         (PlayerOptions.ObjMagnification - 1.0F) / 4.0F));
         ebox = (C_EditBox *)win->FindControl(VEHICLE_SIZE_READOUT);
 
         if (ebox)
@@ -997,9 +1035,13 @@ void STPSetupControls(void)
     if (slider not_eq NULL)
     {
         int s = DisplayOptions.nMsaaSamples;
-        if (s < 1) s = 1;
-        if (s > 8) s = 8;
-        slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (s - 1) / 7.0F));
+        if (s < 1)
+            s = 1;
+        if (s > 8)
+            s = 8;
+        slider->SetSliderPos(FloatToInt32(
+            (float)(slider->GetSliderMax() - slider->GetSliderMin()) * (s - 1) /
+            7.0F));
         ebox = (C_EditBox *)win->FindControl(MSAA_SAMPLES_READOUT);
 
         if (ebox)
@@ -1031,14 +1073,18 @@ void STPSetupControls(void)
 
         if (ebox)
         {
-            PlayerOptions.PlayerBubble = min(PlayerOptions.PlayerBubble, 2.0F * GraphicSettingMult);
-            ebox->SetInteger(FloatToInt32((PlayerOptions.PlayerBubble - .5f) * 4.0F + 1.5F));
+            PlayerOptions.PlayerBubble =
+                min(PlayerOptions.PlayerBubble, 2.0F * GraphicSettingMult);
+            ebox->SetInteger(
+                FloatToInt32((PlayerOptions.PlayerBubble - .5f) * 4.0F + 1.5F));
             ebox->Refresh();
             slider->SetSteps(static_cast<short>(6 * GraphicSettingMult));
             slider->SetUserNumber(0, PLAYER_BUBBLE_READOUT);
         }
 
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.PlayerBubble - 0.5f) / (1.5f * GraphicSettingMult)));
+        slider->SetSliderPos(FloatToInt32(
+            (slider->GetSliderMax() - slider->GetSliderMin()) *
+            (PlayerOptions.PlayerBubble - 0.5f) / (1.5f * GraphicSettingMult)));
     }
 
     slider = (C_Slider *)win->FindControl(TERRAIN_DETAIL);
@@ -1046,20 +1092,27 @@ void STPSetupControls(void)
     if (slider not_eq NULL)
     {
         int step;
-        step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
+        step = (slider->GetSliderMax() - slider->GetSliderMin()) /
+               (6 * GraphicSettingMult);
 
         slider->SetSteps(static_cast<short>(6 * GraphicSettingMult));
 
         if (PlayerOptions.DispTerrainDist > 40)
-            slider->SetSliderPos(FloatToInt32(step * (2 + (PlayerOptions.DispTerrainDist - 40.0F) / 10.0F)));
+            slider->SetSliderPos(FloatToInt32(
+                step * (2 + (PlayerOptions.DispTerrainDist - 40.0F) / 10.0F)));
         else
-            slider->SetSliderPos((2 - PlayerOptions.DispMaxTerrainLevel)*step);
+            slider->SetSliderPos((2 - PlayerOptions.DispMaxTerrainLevel) *
+                                 step);
 
         ebox = (C_EditBox *)win->FindControl(TEX_DETAIL_READOUT);
 
         if (ebox)
         {
-            ebox->SetInteger(FloatToInt32(((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin())) * 6.0F * GraphicSettingMult + 1.5F));
+            ebox->SetInteger(FloatToInt32(
+                ((float)slider->GetSliderPos() /
+                 (slider->GetSliderMax() - slider->GetSliderMin())) *
+                    6.0F * GraphicSettingMult +
+                1.5F));
             ebox->Refresh();
             slider->SetUserNumber(0, TEX_DETAIL_READOUT);
         }
@@ -1078,10 +1131,11 @@ void STPSetupControls(void)
         // once devices are already enumerated (needed for the GUID remap).
         static bool s_uiAxisLoaded = false;
 
-        if ( not s_uiAxisLoaded and gTotalJoy > 0)
+        if (not s_uiAxisLoaded and gTotalJoy > 0)
         {
             extern AxisMapping AxisMap;
-            ControlsXml_ReadAxes(&AxisMap);   // #53: axes from the profile axismapping.xml (not binary)
+            ControlsXml_ReadAxes(
+                &AxisMap); // #53: axes from the profile axismapping.xml (not binary)
             IO.RemapAxisMappingByGUID();
             s_uiAxisLoaded = true;
         }
@@ -1104,8 +1158,8 @@ void STPSetupControls(void)
 
         if (devf)
         {
-            BuildControllerList(devf);            // Keyboard + all joysticks
-            devf->SetValue(SIM_KEYBOARD + 1);     // default — Keyboard (keys)
+            BuildControllerList(devf); // Keyboard + all joysticks
+            devf->SetValue(SIM_KEYBOARD + 1); // default — Keyboard (keys)
             devf->SetCallback(KeyListDevFilterCB);
             devf->Refresh();
         }
@@ -1177,12 +1231,12 @@ void STPSetupControls(void)
 
     // SetSkyColor();
 
-    if ( not SetupCritSection)
+    if (not SetupCritSection)
         SetupCritSection = F4CreateCriticalSection("SetupCrit");
 
     KeyVar.EditKey = FALSE;
 
-}//SetupControls
+} //SetupControls
 
 void SetupRadioCB(long, short hittype, C_Base *control)
 {
@@ -1249,11 +1303,17 @@ void SetupRadioCB(long, short hittype, C_Base *control)
             DIDEVCAPS devcaps;
             devcaps.dwSize = sizeof(DIDEVCAPS);
 
-            ShiAssert(FALSE == F4IsBadReadPtr(gpDIDevice[AxisMap.FlightControlDevice], sizeof * gpDIDevice[AxisMap.FlightControlDevice])); // JPO CTD
+            ShiAssert(
+                FALSE ==
+                F4IsBadReadPtr(
+                    gpDIDevice[AxisMap.FlightControlDevice],
+                    sizeof *gpDIDevice[AxisMap
+                                           .FlightControlDevice])); // JPO CTD
 
             if (gpDIDevice[AxisMap.FlightControlDevice])
             {
-                gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&devcaps);
+                gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(
+                    &devcaps);
 
                 if (devcaps.dwPOVs > 0)
                     hasPOV = TRUE;
@@ -1262,7 +1322,8 @@ void SetupRadioCB(long, short hittype, C_Base *control)
 
         HideKeyStatusLines(control->Parent_);
 
-        const int POVSymbols[] = { LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT, DOWN_HAT };
+        const int POVSymbols[] = {LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT,
+                                  DOWN_HAT};
         const int POVSymbolCount = sizeof(POVSymbols) / sizeof(int);
 
         for (int i = 0; i < POVSymbolCount; i++)
@@ -1271,7 +1332,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
 
             if (button not_eq NULL)
             {
-                if ( not hasPOV)
+                if (not hasPOV)
                     button->SetFlagBitOn(C_BIT_INVISIBLE);
                 else
                     button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -1280,7 +1341,7 @@ void SetupRadioCB(long, short hittype, C_Base *control)
             }
         }
     }
-}//SetupRadioCallback
+} //SetupRadioCallback
 
 //JAM 13Oct03
 void RestartCB(long, short hittype, C_Base *control)
@@ -1325,22 +1386,22 @@ static void SaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-                // M.N. full realism mode added
-            case SET_RADAR_0:
-                PlayerOptions.SimAvionicsType = ATRealisticAV;
-                break;
+            // M.N. full realism mode added
+        case SET_RADAR_0:
+            PlayerOptions.SimAvionicsType = ATRealisticAV;
+            break;
 
-            case SET_RADAR_1:
-                PlayerOptions.SimAvionicsType = ATRealistic;
-                break;
+        case SET_RADAR_1:
+            PlayerOptions.SimAvionicsType = ATRealistic;
+            break;
 
-            case SET_RADAR_2:
-                PlayerOptions.SimAvionicsType = ATSimplified;
-                break;
+        case SET_RADAR_2:
+            PlayerOptions.SimAvionicsType = ATSimplified;
+            break;
 
-            case SET_RADAR_3:
-                PlayerOptions.SimAvionicsType = ATEasy;
-                break;
+        case SET_RADAR_3:
+            PlayerOptions.SimAvionicsType = ATEasy;
+            break;
         }
 
         lbox->Refresh();
@@ -1352,17 +1413,17 @@ static void SaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case SET_WEAPEFF_1:
-                PlayerOptions.SimWeaponEffect = WEAccurate;
-                break;
+        case SET_WEAPEFF_1:
+            PlayerOptions.SimWeaponEffect = WEAccurate;
+            break;
 
-            case SET_WEAPEFF_2:
-                PlayerOptions.SimWeaponEffect = WEEnhanced;
-                break;
+        case SET_WEAPEFF_2:
+            PlayerOptions.SimWeaponEffect = WEEnhanced;
+            break;
 
-            case SET_WEAPEFF_3:
-                PlayerOptions.SimWeaponEffect = WEExaggerated;
-                break;
+        case SET_WEAPEFF_3:
+            PlayerOptions.SimWeaponEffect = WEExaggerated;
+            break;
         }
 
         lbox->Refresh();
@@ -1374,17 +1435,17 @@ static void SaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case SET_AUTO_1:
-                PlayerOptions.SimAutopilotType = APNormal;
-                break;
+        case SET_AUTO_1:
+            PlayerOptions.SimAutopilotType = APNormal;
+            break;
 
-            case SET_AUTO_2:
-                PlayerOptions.SimAutopilotType = APEnhanced;
-                break;
+        case SET_AUTO_2:
+            PlayerOptions.SimAutopilotType = APEnhanced;
+            break;
 
-            case SET_AUTO_3:
-                PlayerOptions.SimAutopilotType = APIntelligent;
-                break;
+        case SET_AUTO_3:
+            PlayerOptions.SimAutopilotType = APIntelligent;
+            break;
         }
 
         lbox->Refresh();
@@ -1396,20 +1457,20 @@ static void SaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case SET_PADLOCK_4:
-                PlayerOptions.SimPadlockMode = PDDisabled;
-                break;
+        case SET_PADLOCK_4:
+            PlayerOptions.SimPadlockMode = PDDisabled;
+            break;
 
-            case SET_PADLOCK_1:
-                PlayerOptions.SimPadlockMode = PDRealistic;
-                break;
+        case SET_PADLOCK_1:
+            PlayerOptions.SimPadlockMode = PDRealistic;
+            break;
 
-            case SET_PADLOCK_2:
-                PlayerOptions.SimPadlockMode = PDEnhanced;
-                break;
-                //case SET_PADLOCK_3:
-                // PlayerOptions.SimPadlockMode = PDSuper;
-                // break;
+        case SET_PADLOCK_2:
+            PlayerOptions.SimPadlockMode = PDEnhanced;
+            break;
+            //case SET_PADLOCK_3:
+            // PlayerOptions.SimPadlockMode = PDSuper;
+            // break;
         }
 
         lbox->Refresh();
@@ -1421,17 +1482,17 @@ static void SaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case SET_REFUEL_1:
-                PlayerOptions.SimAirRefuelingMode = ARRealistic;
-                break;
+        case SET_REFUEL_1:
+            PlayerOptions.SimAirRefuelingMode = ARRealistic;
+            break;
 
-            case SET_REFUEL_2:
-                PlayerOptions.SimAirRefuelingMode = ARModerated;
-                break;
+        case SET_REFUEL_2:
+            PlayerOptions.SimAirRefuelingMode = ARModerated;
+            break;
 
-            case SET_REFUEL_3:
-                PlayerOptions.SimAirRefuelingMode = ARSimplistic;
-                break;
+        case SET_REFUEL_3:
+            PlayerOptions.SimAirRefuelingMode = ARSimplistic;
+            break;
         }
 
         lbox->Refresh();
@@ -1443,21 +1504,21 @@ static void SaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case CUE_NONE:
-                PlayerOptions.SimVisualCueMode = VCNone;
-                break;
+        case CUE_NONE:
+            PlayerOptions.SimVisualCueMode = VCNone;
+            break;
 
-            case CUE_LIFT_LINE:
-                PlayerOptions.SimVisualCueMode = VCLiftLine;
-                break;
+        case CUE_LIFT_LINE:
+            PlayerOptions.SimVisualCueMode = VCLiftLine;
+            break;
 
-            case CUE_REFLECTION_MAP:
-                PlayerOptions.SimVisualCueMode = VCReflection;
-                break;
+        case CUE_REFLECTION_MAP:
+            PlayerOptions.SimVisualCueMode = VCReflection;
+            break;
 
-            case CUE_BOTH:
-                PlayerOptions.SimVisualCueMode = VCBoth;
-                break;
+        case CUE_BOTH:
+            PlayerOptions.SimVisualCueMode = VCBoth;
+            break;
         }
 
         lbox->Refresh();
@@ -1467,7 +1528,8 @@ static void SaveValues(void)
 
     if (lbox not_eq NULL)
     {
-        DisplayOptions.DispVideoCard = static_cast<uchar>(lbox->GetTextID() - 1);
+        DisplayOptions.DispVideoCard =
+            static_cast<uchar>(lbox->GetTextID() - 1);
         lbox->Refresh();
     }
 
@@ -1475,7 +1537,18 @@ static void SaveValues(void)
 
     if (lbox not_eq NULL)
     {
-        DisplayOptions.DispVideoDriver = static_cast<uchar>(lbox->GetTextID() - 1);
+        // Artscout - 2026 (#104): the "driver" list is the render-backend selector now (item 1 = DX12, 2 = Vulkan).
+#ifdef _WIN32
+        DisplayOptions.nRenderer =
+            lbox->GetTextID() -
+            1; // 0 = DX12, 1 = Vulkan -> g_bUseVulkan on apply
+#else
+        // Linux: DX12 does not exist here (Vulkan is the only backend). Never let the setup list demote to DX12,
+        // otherwise Apply below sets g_bUseVulkan=false and the Vulkan present goes dead -> frozen menu image.
+        DisplayOptions.nRenderer = 1;
+#endif
+        DisplayOptions.DispVideoDriver =
+            0; // single synthetic adapter under the modern engine
         lbox->Refresh();
     }
 
@@ -1486,8 +1559,9 @@ static void SaveValues(void)
         // OW
 #if 1
         UINT nWidth, nHeight, nDepth;
-        FalconDisplay.devmgr.GetMode(DisplayOptions.DispVideoDriver, DisplayOptions.DispVideoCard, lbox->GetTextID(),
-                                     &nWidth, &nHeight, &nDepth);
+        FalconDisplay.devmgr.GetMode(
+            DisplayOptions.DispVideoDriver, DisplayOptions.DispVideoCard,
+            lbox->GetTextID(), &nWidth, &nHeight, &nDepth);
 
         DisplayOptions.DispWidth = nWidth;
         DisplayOptions.DispHeight = nHeight;
@@ -1495,13 +1569,18 @@ static void SaveValues(void)
 
         // PHASE 5: widescreen (1920/2560/3840) — old 1600 cap removed
         ShiAssert(DisplayOptions.DispWidth <= 3840);
-        FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth); // OW
+        FalconDisplay.SetSimMode(DisplayOptions.DispWidth,
+                                 DisplayOptions.DispHeight,
+                                 DisplayOptions.DispDepth); // OW
 #else
         DisplayOptions.DispWidth = static_cast<short>(lbox->GetTextID());
-        DisplayOptions.DispHeight = static_cast<ushort>(FloatToInt32(lbox->GetTextID() * 0.75F));
+        DisplayOptions.DispHeight =
+            static_cast<ushort>(FloatToInt32(lbox->GetTextID() * 0.75F));
 
         ShiAssert(DisplayOptions.DispWidth <= 1600);
-        FalconDisplay.SetSimMode(DisplayOptions.DispWidth, DisplayOptions.DispHeight, DisplayOptions.DispDepth); // OW
+        FalconDisplay.SetSimMode(DisplayOptions.DispWidth,
+                                 DisplayOptions.DispHeight,
+                                 DisplayOptions.DispDepth); // OW
 #endif
 
         lbox->Refresh();
@@ -1515,7 +1594,8 @@ static void SaveValues(void)
         if (lbox not_eq NULL)
         {
             PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
-            ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
+            ((WeatherClass *)realWeather)
+                ->UpdateCondition(PlayerOptions.weatherCondition, true);
             ((WeatherClass *)realWeather)->Init(true);
         }
     }
@@ -1559,7 +1639,6 @@ static void SaveValues(void)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_CHAFF);
         else
             PlayerOptions.ClearSimFlag(SIM_UNLIMITED_CHAFF);
-
     }
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
@@ -1603,7 +1682,8 @@ static void SaveValues(void)
             PlayerOptions.ClearSimFlag(SIM_BULLSEYE_CALLS);
     }
 
-    button = (C_Button *)win->FindControl(SET_INVULNERABILITY); //should be SET_INVULNERABLITY
+    button = (C_Button *)win->FindControl(
+        SET_INVULNERABILITY); //should be SET_INVULNERABLITY
 
     if (button not_eq NULL)
     {
@@ -1706,21 +1786,32 @@ static void SaveValues(void)
 
     if (slider not_eq NULL)
     {
-        PlayerOptions.ObjDetailLevel = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult + 0.5f);
+        PlayerOptions.ObjDetailLevel =
+            ((float)slider->GetSliderPos() /
+                 (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f *
+                 GraphicSettingMult +
+             0.5f);
     }
 
     slider = (C_Slider *)win->FindControl(SFX_LEVEL);
 
     if (slider not_eq NULL)
     {
-        PlayerOptions.SfxLevel = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4.0f + 1.0F);
+        PlayerOptions.SfxLevel =
+            ((float)slider->GetSliderPos() /
+                 (slider->GetSliderMax() - slider->GetSliderMin()) * 4.0f +
+             1.0F);
     }
 
     slider = (C_Slider *)win->FindControl(PLAYER_BUBBLE_SLIDER);
 
     if (slider not_eq NULL)
     {
-        PlayerOptions.PlayerBubble = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult + 0.5f);
+        PlayerOptions.PlayerBubble =
+            ((float)slider->GetSliderPos() /
+                 (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f *
+                 GraphicSettingMult +
+             0.5f);
         FalconLocalSession->SetBubbleRatio(PlayerOptions.PlayerBubble);
     }
 
@@ -1728,21 +1819,32 @@ static void SaveValues(void)
 
     if (slider not_eq NULL)
     {
-        PlayerOptions.BldDeaggLevel = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 5 + 0.5F);
-        PlayerOptions.ObjDeaggLevel = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 100 + 0.5F);
+        PlayerOptions.BldDeaggLevel = FloatToInt32(
+            (float)slider->GetSliderPos() /
+                (slider->GetSliderMax() - slider->GetSliderMin()) * 5 +
+            0.5F);
+        PlayerOptions.ObjDeaggLevel = FloatToInt32(
+            (float)slider->GetSliderPos() /
+                (slider->GetSliderMax() - slider->GetSliderMin()) * 100 +
+            0.5F);
     }
 
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE);
 
     if (slider not_eq NULL)
     {
-        PlayerOptions.ObjMagnification = static_cast<float>(FloatToInt32((float)slider->GetSliderPos() / (float)(slider->GetSliderMax() - slider->GetSliderMin()) * 4.0F + 1.0F));
+        PlayerOptions.ObjMagnification = static_cast<float>(FloatToInt32(
+            (float)slider->GetSliderPos() /
+                (float)(slider->GetSliderMax() - slider->GetSliderMin()) *
+                4.0F +
+            1.0F));
     }
 
     // Artscout - 2026: MSAA (Graphics page) -> DisplayOptions. Checkbox = on/off; slider STEPS 7 spans 1..8 samples.
     button = (C_Button *)win->FindControl(MSAA_ENABLE);
 
-    if (button) DisplayOptions.bMsaaEnable = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bMsaaEnable = button->GetState() == C_STATE_1;
 
     slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);
 
@@ -1750,16 +1852,22 @@ static void SaveValues(void)
     {
         int span = slider->GetSliderMax() - slider->GetSliderMin();
 
-        if (span > 0)   // round to nearest step (0..7) -> samples 1..8 (truncation lost a step otherwise)
+        if (span >
+            0) // round to nearest step (0..7) -> samples 1..8 (truncation lost a step otherwise)
         {
-            int step = FloatToInt32((float)slider->GetSliderPos() / (float)span * 7.0F + 0.5F);
-            if (step < 0) step = 0;
-            if (step > 7) step = 7;
+            int step = FloatToInt32(
+                (float)slider->GetSliderPos() / (float)span * 7.0F + 0.5F);
+            if (step < 0)
+                step = 0;
+            if (step > 7)
+                step = 7;
             DisplayOptions.nMsaaSamples = 1 + step;
         }
 
-        if (DisplayOptions.nMsaaSamples < 1) DisplayOptions.nMsaaSamples = 1;
-        if (DisplayOptions.nMsaaSamples > 8) DisplayOptions.nMsaaSamples = 8;
+        if (DisplayOptions.nMsaaSamples < 1)
+            DisplayOptions.nMsaaSamples = 1;
+        if (DisplayOptions.nMsaaSamples > 8)
+            DisplayOptions.nMsaaSamples = 8;
     }
 
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
@@ -1773,17 +1881,20 @@ static void SaveValues(void)
     if (slider not_eq NULL)
     {
         int step;
-        step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
+        step = (slider->GetSliderMax() - slider->GetSliderMin()) /
+               (6 * GraphicSettingMult);
 
         if (slider->GetSliderPos() > 2 * step)
         {
-            PlayerOptions.DispTerrainDist = (40.0f + (((float)slider->GetSliderPos()) / step - 2) * 10.0f);
+            PlayerOptions.DispTerrainDist =
+                (40.0f + (((float)slider->GetSliderPos()) / step - 2) * 10.0f);
             PlayerOptions.DispMaxTerrainLevel = 0;
         }
         else
         {
             PlayerOptions.DispTerrainDist = 40.0f;
-            PlayerOptions.DispMaxTerrainLevel = FloatToInt32(max(0.0F, 2.0F - slider->GetSliderPos() / step) + 0.5F);
+            PlayerOptions.DispMaxTerrainLevel = FloatToInt32(
+                max(0.0F, 2.0F - slider->GetSliderPos() / step) + 0.5F);
         }
     }
 
@@ -1792,13 +1903,15 @@ static void SaveValues(void)
     if (text not_eq NULL)
         text->SetText("");
 
-    button = (C_Button *) win->FindControl(PLAYERVOICE);
+    button = (C_Button *)win->FindControl(PLAYERVOICE);
 
-    if (button) PlayerOptions.PlayerRadioVoice = (button->GetState() == C_STATE_1);
+    if (button)
+        PlayerOptions.PlayerRadioVoice = (button->GetState() == C_STATE_1);
 
-    button = (C_Button *) win->FindControl(UICOMMS);
+    button = (C_Button *)win->FindControl(UICOMMS);
 
-    if (button) PlayerOptions.UIComms = (button->GetState() == C_STATE_1);
+    if (button)
+        PlayerOptions.UIComms = (button->GetState() == C_STATE_1);
 
     double pos, range;
     int volume, i;
@@ -1824,12 +1937,14 @@ static void SaveValues(void)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     //JAM 28Oct03
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_ANISOTROPIC_FILTERING);
 
-    if (button) DisplayOptions.bAnisotropicFiltering = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bAnisotropicFiltering = button->GetState() == C_STATE_1;
 
     // Artscout - 2026: "Rendered 2D Cockpit" removed from the Advanced page (D3D11 always forces it TRUE in
     // dispopts.cpp). Its row now hosts the VR controls. bRender2DCockpit keeps its forced value, untouched here.
@@ -1837,11 +1952,13 @@ static void SaveValues(void)
     // Artscout - 2026: VR (Advanced page) -> DisplayOptions. OpenXR on/off + foveated QuadViews + per-eye res scale.
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_OPENXR);
 
-    if (button) DisplayOptions.bUseOpenXR = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bUseOpenXR = button->GetState() == C_STATE_1;
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_QUADVIEWS);
 
-    if (button) DisplayOptions.bUseQuadViews = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bUseQuadViews = button->GetState() == C_STATE_1;
 
     slider = (C_Slider *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
 
@@ -1849,41 +1966,54 @@ static void SaveValues(void)
     {
         int span = slider->GetSliderMax() - slider->GetSliderMin();
 
-        if (span > 0)   // round to nearest step (0..5) -> 50,60,70,80,90,100 (stops of 10)
+        if (span >
+            0) // round to nearest step (0..5) -> 50,60,70,80,90,100 (stops of 10)
         {
-            int step = FloatToInt32((float)slider->GetSliderPos() / (float)span * 5.0F + 0.5F);
-            if (step < 0) step = 0;
-            if (step > 5) step = 5;
+            int step = FloatToInt32(
+                (float)slider->GetSliderPos() / (float)span * 5.0F + 0.5F);
+            if (step < 0)
+                step = 0;
+            if (step > 5)
+                step = 5;
             DisplayOptions.nVrResolutionScale = 50 + step * 10;
         }
 
-        if (DisplayOptions.nVrResolutionScale < 50)  DisplayOptions.nVrResolutionScale = 50;
-        if (DisplayOptions.nVrResolutionScale > 100) DisplayOptions.nVrResolutionScale = 100;
+        if (DisplayOptions.nVrResolutionScale < 50)
+            DisplayOptions.nVrResolutionScale = 50;
+        if (DisplayOptions.nVrResolutionScale > 100)
+            DisplayOptions.nVrResolutionScale = 100;
     }
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
 
-    if (button) DisplayOptions.bScreenCoordinateBiasFix = button->GetState() == C_STATE_1; //Wombat778 4-01-04
+    if (button)
+        DisplayOptions.bScreenCoordinateBiasFix =
+            button->GetState() == C_STATE_1; //Wombat778 4-01-04
 
     // button = (C_Button *)win->FindControl(SETUP_ADVANCED_SPECULAR_LIGHTING);
     // if(button) DisplayOptions.bSpecularLighting = button->GetState() == C_STATE_1;
 
-    button = (C_Button *)win->FindControl(SETUP_ADVANCED_LINEAR_MIPMAP_FILTERING);
+    button =
+        (C_Button *)win->FindControl(SETUP_ADVANCED_LINEAR_MIPMAP_FILTERING);
 
-    if (button) DisplayOptions.bLinearMipFiltering = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bLinearMipFiltering = button->GetState() == C_STATE_1;
 
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_MIPMAPPING);
 
-    if (button) DisplayOptions.bMipmapping = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bMipmapping = button->GetState() == C_STATE_1;
 
     // #33: windowed/fullscreen toggle for the 3D session (applied on entering 3D)
     button = (C_Button *)win->FindControl(SETUP_ADVANCED_WINDOWED);
 
-    if (button) DisplayOptions.bWindowed = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bWindowed = button->GetState() == C_STATE_1;
 
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
 
-    if (button) DisplayOptions.bRender2Texture = button->GetState() == C_STATE_1;
+    if (button)
+        DisplayOptions.bRender2Texture = button->GetState() == C_STATE_1;
 
     //========================================
     // FRB - Force Z-Buffering
@@ -1897,15 +2027,25 @@ static void SaveValues(void)
     // Artscout - 2026: mirror the just-edited graphics options into the engine globals so Apply takes
     // effect on the NEXT 3D entry without a restart (backend MSAA / OpenXR read these at device/session init).
     {
-        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable, g_bAnisoEnable;
-        extern int  g_nMsaaSamples, g_nVrResolutionScale, g_nAnisoSamples;
-        g_bUseOpenXR         = DisplayOptions.bUseOpenXR;
-        g_bUseQuadViews      = DisplayOptions.bUseQuadViews;
-        g_bMsaaEnable        = DisplayOptions.bMsaaEnable;
-        g_nMsaaSamples       = DisplayOptions.nMsaaSamples;
+        extern bool g_bUseOpenXR, g_bUseQuadViews, g_bMsaaEnable,
+            g_bAnisoEnable;
+        extern int g_nMsaaSamples, g_nVrResolutionScale, g_nAnisoSamples;
+        extern bool g_bUseVulkan; // #104: render backend (0=DX12 / 1=Vulkan)
+#ifdef _WIN32
+        g_bUseVulkan = (DisplayOptions.nRenderer == 1);
+#else
+        g_bUseVulkan =
+            true; // Linux: Vulkan is the only backend -- Apply must never turn it off (frozen menu)
+#endif
+        g_bUseOpenXR = DisplayOptions.bUseOpenXR;
+        g_bUseQuadViews = DisplayOptions.bUseQuadViews;
+        g_bMsaaEnable = DisplayOptions.bMsaaEnable;
+        g_nMsaaSamples = DisplayOptions.nMsaaSamples;
         g_nVrResolutionScale = DisplayOptions.nVrResolutionScale;
-        g_bAnisoEnable       = DisplayOptions.bAnisotropicFiltering;   // Artscout - 2026: aniso on/off + level -> samplers
-        g_nAnisoSamples      = DisplayOptions.nAnisotropicSamples;
+        g_bAnisoEnable =
+            DisplayOptions
+                .bAnisotropicFiltering; // Artscout - 2026: aniso on/off + level -> samplers
+        g_nAnisoSamples = DisplayOptions.nAnisotropicSamples;
     }
 
     PlayerOptions.SaveOptions();
@@ -1920,7 +2060,7 @@ static void SaveValues(void)
         INFOSetupControls();
     }
 
-}//SaveValues
+} //SaveValues
 
 void ShutdownSetup()
 {
@@ -1929,13 +2069,13 @@ void ShutdownSetup()
 
     if (Objects)
     {
-        delete [] Objects;
+        delete[] Objects;
         Objects = NULL;
     }
 
     if (Features)
     {
-        delete [] Features;
+        delete[] Features;
         Features = NULL;
     }
 
@@ -2006,7 +2146,7 @@ void CloseSetupWindowCB(long ID, short hittype, C_Base *control)
     UpdateKeyMapList(PlayerOptions.keyfile, USE_FILENAME);
 
     CloseWindowCB(ID, hittype, control);
-}//CloseSetupWindowCB
+} //CloseSetupWindowCB
 
 
 //JAM 27Oct03
@@ -2077,7 +2217,7 @@ void SetupOkCB(long ID, short hittype, C_Base *control)
     }
 
     CloseWindowCB(ID, hittype, control);
-}//SetupOkCB
+} //SetupOkCB
 
 
 //JAM 28Oct03
@@ -2100,8 +2240,7 @@ void ApplySetupCB(long, short hittype, C_Base *)
     SaveValues();
     CheckFlyButton();
 
-}//ApplySetupCB
-
+} //ApplySetupCB
 
 
 void CancelSetupCB(long ID, short hittype, C_Base *control)
@@ -2153,7 +2292,7 @@ static void HookupSetupControls(long ID)
         return;
 
     // Help GUIDE thing
-    button = (C_Button*)win->FindControl(UI_HELP_GUIDE);
+    button = (C_Button *)win->FindControl(UI_HELP_GUIDE);
 
     if (button)
         button->SetCallback(UI_Help_Guide_CB);
@@ -2310,7 +2449,7 @@ static void HookupSetupControls(long ID)
 
     win->SetKBCallback(KeystrokeCB);
 
-    listbox = (C_ListBox *)win->FindControl(70137);//JOYSTICK_SELECT
+    listbox = (C_ListBox *)win->FindControl(70137); //JOYSTICK_SELECT
 
     if (listbox not_eq NULL)
         listbox->SetCallback(ControllerSelectCB);
@@ -2323,42 +2462,42 @@ static void HookupSetupControls(long ID)
 
     //Sound Tab
 
-    button = (C_Button*)win->FindControl(ENGINE_SND);
+    button = (C_Button *)win->FindControl(ENGINE_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
 
-    button = (C_Button*)win->FindControl(SIDEWINDER_SND);
+    button = (C_Button *)win->FindControl(SIDEWINDER_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
 
-    button = (C_Button*)win->FindControl(RWR_SND);
+    button = (C_Button *)win->FindControl(RWR_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
 
-    button = (C_Button*)win->FindControl(COCKPIT_SND);
+    button = (C_Button *)win->FindControl(COCKPIT_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
 
-    button = (C_Button*)win->FindControl(COM1_SND);
+    button = (C_Button *)win->FindControl(COM1_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
 
-    button = (C_Button*)win->FindControl(COM2_SND);
+    button = (C_Button *)win->FindControl(COM2_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
 
-    button = (C_Button*)win->FindControl(SOUNDFX_SND);
+    button = (C_Button *)win->FindControl(SOUNDFX_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
 
-    button = (C_Button*)win->FindControl(UISOUNDFX_SND);
+    button = (C_Button *)win->FindControl(UISOUNDFX_SND);
 
     if (button)
         button->SetCallback(TestButtonCB);
@@ -2374,52 +2513,52 @@ static void HookupSetupControls(long ID)
     if (button not_eq NULL)
         button->SetCallback(ToggleUICommsCB);
 
-    slider = (C_Slider*)win->FindControl(ENGINE_VOLUME);
+    slider = (C_Slider *)win->FindControl(ENGINE_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(SIDEWINDER_VOLUME);
+    slider = (C_Slider *)win->FindControl(SIDEWINDER_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(RWR_VOLUME);
+    slider = (C_Slider *)win->FindControl(RWR_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(COCKPIT_VOLUME);
+    slider = (C_Slider *)win->FindControl(COCKPIT_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(COM1_VOLUME);
+    slider = (C_Slider *)win->FindControl(COM1_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(COM2_VOLUME);
+    slider = (C_Slider *)win->FindControl(COM2_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(SOUNDFX_VOLUME);
+    slider = (C_Slider *)win->FindControl(SOUNDFX_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(UISOUNDFX_VOLUME);
+    slider = (C_Slider *)win->FindControl(UISOUNDFX_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(MUSIC_VOLUME);
+    slider = (C_Slider *)win->FindControl(MUSIC_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
 
-    slider = (C_Slider*)win->FindControl(MASTER_VOLUME);
+    slider = (C_Slider *)win->FindControl(MASTER_VOLUME);
 
     if (slider)
         slider->SetCallback(SoundSliderCB);
@@ -2520,7 +2659,7 @@ static void HookupSetupControls(long ID)
     }
 
     // Retro 25Dec2003
-    button = (C_Button*)win->FindControl(SETUP_SIM_SUBTITLES);
+    button = (C_Button *)win->FindControl(SETUP_SIM_SUBTITLES);
 
     if (button not_eq NULL)
     {
@@ -2590,7 +2729,8 @@ static void HookupSetupControls(long ID)
         slider->SetCallback(VehicleSizeCB);
     }
 
-    slider = (C_Slider *)win->FindControl(MSAA_SAMPLES);   // Artscout - 2026: MSAA samples live readout
+    slider = (C_Slider *)win->FindControl(
+        MSAA_SAMPLES); // Artscout - 2026: MSAA samples live readout
 
     if (slider not_eq NULL)
     {
@@ -2620,7 +2760,8 @@ static void HookupSetupControls(long ID)
     // OW new stuff
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     // Artscout - 2026: OpenXR Resolution Scale slider lives on the advanced window. Hook it HERE (reliable, runs
     // once at setup load) rather than in SetAdvanced(), which can bail early on the device-manager checks before
@@ -2630,13 +2771,18 @@ static void HookupSetupControls(long ID)
     if (slider not_eq NULL)
     {
         int scl = DisplayOptions.nVrResolutionScale;
-        if (scl < 50)  scl = 50;
-        if (scl > 100) scl = 100;
-        slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (scl - 50) / 50.0F));
+        if (scl < 50)
+            scl = 50;
+        if (scl > 100)
+            scl = 100;
+        slider->SetSliderPos(FloatToInt32(
+            (float)(slider->GetSliderMax() - slider->GetSliderMin()) *
+            (scl - 50) / 50.0F));
         slider->SetUserNumber(0, SETUP_ADVANCED_VR_RESSCALE_READOUT);
         slider->SetCallback(VrResScaleSliderCB);
 
-        C_EditBox *reb = (C_EditBox *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE_READOUT);
+        C_EditBox *reb =
+            (C_EditBox *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE_READOUT);
 
         if (reb)
         {
@@ -2648,11 +2794,13 @@ static void HookupSetupControls(long ID)
     // disable parent notification for close and cancel button
     button = (C_Button *)win->FindControl(AAPPLY);
 
-    if (button) button->SetCallback(AApplySetupCB);
+    if (button)
+        button->SetCallback(AApplySetupCB);
 
     button = (C_Button *)win->FindControl(CANCEL);
 
-    if (button) button->SetCallback(CloseWindowCB);
+    if (button)
+        button->SetCallback(CloseWindowCB);
 
     // OW end of new stuff
 
@@ -2685,8 +2833,7 @@ static void HookupSetupControls(long ID)
 
     button = (C_Button *)win->FindControl(CANCEL);
 
-    if (button) button->SetCallback(CloseWindowCB);
+    if (button)
+        button->SetCallback(CloseWindowCB);
 }
 //HookupSetupControls
-
-

@@ -7,17 +7,15 @@
 \***************************************************************************/
 #include <io.h>
 #include "utils/lzss.h"
-#include "PalBuildList.h"
-#include "TexBuildList.h"
-#include "GraphicsRes.h"
+#include "palbuildlist.h"
+#include "texbuildlist.h"
+#include "graphicsres.h"
 
 BuildTimeTextureList TheTextureBuildList;
 
 
-
 // To be conservative, we'll got twice the size of our biggest uncompressed texture
 static const int MAX_COMPRESSED_SIZE = 256 * 256 * 2;
-
 
 
 int BuildTimeTextureList::AddReference(char *filename)
@@ -105,7 +103,7 @@ void BuildTimeTextureList::BuildPool()
     int palID;
 
     ResInit(0);
-    ResCreatePath("d:\\source\\falcon4.orig\\graphics\\bspbuild", FALSE);
+    ResCreatePath("d:/source/falcon4.orig/graphics/bspbuild", FALSE);
     // Create the empty texture pool
     TheTextureBank.Setup(listLen);
 
@@ -119,17 +117,20 @@ void BuildTimeTextureList::BuildPool()
 
         // Load the texture (both to get its properties and because all the objects are also
         // loaded at this point).
-        if (TheTextureBank.TexturePool[entry->index].tex.LoadImage(entry->filename, MPR_TI_PALETTE | MPR_TI_CHROMAKEY))
+        if (TheTextureBank.TexturePool[entry->index].tex.LoadImage(
+                entry->filename, MPR_TI_PALETTE | MPR_TI_CHROMAKEY))
         {
             // Now put our palette into the PaletteBank to enable sharing palettes
-            palData = TheTextureBank.TexturePool[entry->index].tex.palette->paletteData;
+            palData = TheTextureBank.TexturePool[entry->index]
+                          .tex.palette->paletteData;
             palID = ThePaletteBuildList.AddReference(palData);
         }
         else
         {
             printf("WARNING!  Failed to read texture %s\n", entry->filename);
             fflush(NULL);
-            palID = 0; // Punt!  Might break somewhere else later (runtime?) but for now...
+            palID =
+                0; // Punt!  Might break somewhere else later (runtime?) but for now...
         }
 
         TheTextureBank.TexturePool[entry->index].palID = palID;
@@ -149,7 +150,8 @@ void BuildTimeTextureList::WritePool(int file)
     write(file, &maxCompressedTextureSize, sizeof(maxCompressedTextureSize));
 
     // Write our texture pool
-    write(file, TheTextureBank.TexturePool, sizeof(*TheTextureBank.TexturePool)*TheTextureBank.nTextures);
+    write(file, TheTextureBank.TexturePool,
+          sizeof(*TheTextureBank.TexturePool) * TheTextureBank.nTextures);
 }
 
 
@@ -168,7 +170,7 @@ void BuildTimeTextureList::WriteTextureData(int file)
     maxCompressedTextureSize = 0;
 
     // Allocate the compression buffer
-    compressedBuffer = new BYTE[ MAX_COMPRESSED_SIZE ];
+    compressedBuffer = new BYTE[MAX_COMPRESSED_SIZE];
 
     // Visit each texture in turn and write its data to disk
     for (i = 0; i < TheTextureBank.nTextures; i++)
@@ -177,10 +179,12 @@ void BuildTimeTextureList::WriteTextureData(int file)
         ShiAssert(TheTextureBank.TexturePool[i].tex.imageData);
 
         // Compress the texture data
-        uncompressedBuffer = (BYTE*)TheTextureBank.TexturePool[i].tex.imageData;
+        uncompressedBuffer =
+            (BYTE *)TheTextureBank.TexturePool[i].tex.imageData;
         size = TheTextureBank.TexturePool[i].tex.dimensions;
         size = size * size;
-        compressedSize = LZSS_Compress(uncompressedBuffer, compressedBuffer, size);
+        compressedSize =
+            LZSS_Compress(uncompressedBuffer, compressedBuffer, size);
         ShiAssert(compressedSize < MAX_COMPRESSED_SIZE);
 
         // Write the image data for this texture
@@ -190,7 +194,8 @@ void BuildTimeTextureList::WriteTextureData(int file)
         TheTextureBank.TexturePool[i].fileOffset = compressedOffset;
         TheTextureBank.TexturePool[i].fileSize = compressedSize;
 
-        maxCompressedTextureSize = max(maxCompressedTextureSize, compressedSize);
+        maxCompressedTextureSize =
+            max(maxCompressedTextureSize, compressedSize);
 
         compressedOffset += compressedSize;
     }
@@ -210,9 +215,7 @@ void BuildTimeTextureList::Report()
     // Walk through our list of textures and report which palette they used
     for (entry = head; entry; entry = entry->next)
     {
-        printf(" %4d  %20s  %2d\n",
-               entry->index,
-               entry->filename,
+        printf(" %4d  %20s  %2d\n", entry->index, entry->filename,
                TheTextureBank.TexturePool[entry->index].palID);
     }
 }

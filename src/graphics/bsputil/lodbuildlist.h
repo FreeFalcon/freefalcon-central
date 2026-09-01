@@ -9,7 +9,7 @@
 #ifndef _LODBUILDLIST_H_
 #define _LODBUILDLIST_H_
 
-#include "ObjectLOD.h"
+#include "objectlod.h"
 
 extern class BuildTimeLODList TheLODBuildList;
 
@@ -43,14 +43,14 @@ typedef struct BuildTimeLODEntry
 class BuildTimeLODList
 {
 public:
-    BuildTimeLODEntry * AddExisiting(ObjectLOD *op, ObjectParent *parent);
+    BuildTimeLODEntry *AddExisiting(ObjectLOD *op, ObjectParent *parent);
     BuildTimeLODList()
     {
         head = tail = NULL;
     };
     ~BuildTimeLODList() {};
 
-    BuildTimeLODEntry* AddReference(char *filename);
+    BuildTimeLODEntry *AddReference(char *filename);
     BOOL BuildLODTable();
     void WriteLODData(int file); // Must call before WriteLODHeaders
     void WriteLODHeaders(int file); // Must call after WriteLODData

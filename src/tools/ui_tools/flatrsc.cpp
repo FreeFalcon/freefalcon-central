@@ -27,7 +27,7 @@ char Line[300];
 long InputSize = 0;
 long OutputSize = 0;
 
-int ParseCommandLine(LPSTR  lpCmdLine)
+int ParseCommandLine(LPSTR lpCmdLine)
 {
     char *Token;
     long expect = 0;
@@ -40,7 +40,7 @@ int ParseCommandLine(LPSTR  lpCmdLine)
     if (Token == NULL)
     {
         printf("No List file specified\n");
-        return(0);
+        return (0);
     }
 
     sprintf(FileList, "%s", Token);
@@ -49,7 +49,7 @@ int ParseCommandLine(LPSTR  lpCmdLine)
     if (Token == NULL)
     {
         printf("No output file specified\n");
-        return(0);
+        return (0);
     }
 
     sprintf(OutputFile, "%s", Token);
@@ -65,18 +65,18 @@ int ParseCommandLine(LPSTR  lpCmdLine)
         {
             switch (expecttype)
             {
-                case 0: // No compile errors
-                default:
-                    expect = 0;
-                    expecttype = 0;
-                    break;
+            case 0: // No compile errors
+            default:
+                expect = 0;
+                expecttype = 0;
+                break;
             }
         }
 
         Token = strtok(NULL, " \t\n\r,");
     }
 
-    return(1);
+    return (1);
 }
 
 void SaveResource(char *filename)
@@ -117,7 +117,7 @@ void SaveResource(char *filename)
 
     curpos = 0;
 
-    rec = (FlatList*)FlatTable->GetFirst();
+    rec = (FlatList *)FlatTable->GetFirst();
 
     while (rec)
     {
@@ -125,7 +125,7 @@ void SaveResource(char *filename)
         fwrite(rec->Data, rec->Size, 1, data);
         curpos += rec->Size;
         fwrite(&rec->Header, sizeof(FlatFmt), 1, header);
-        rec = (FlatList*)FlatTable->GetNext();
+        rec = (FlatList *)FlatTable->GetNext();
     }
 
     fclose(header);
@@ -134,8 +134,7 @@ void SaveResource(char *filename)
     OutputSize = HeaderSize + DataSize;
 }
 
-char *TODOList[] =
-{
+char *TODOList[] = {
     NULL,
     "[LOADFLAT]",
     NULL,
@@ -155,12 +154,12 @@ long FindTODO(char *token)
     while (TODOList[i])
     {
         if (!stricmp(token, TODOList[i]))
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void ProcessLine(char buffer[])
@@ -177,7 +176,8 @@ void ProcessLine(char buffer[])
     eidx = 0;
 
     // Find Token
-    while (buffer[sidx + eidx] != ',' && buffer[sidx + eidx] > ' ' && buffer[sidx + eidx] != '#')
+    while (buffer[sidx + eidx] != ',' && buffer[sidx + eidx] > ' ' &&
+           buffer[sidx + eidx] != '#')
         eidx++;
 
     if (!eidx)
@@ -264,7 +264,8 @@ void ProcessLine(char buffer[])
     }
 }
 
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLine, int nCmdShow)
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine, int nCmdShow)
 {
     FILE *ifp;
     char buffer[220];
@@ -275,7 +276,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
         printf("Usage: FLATRSC [path]<soundrc.irc> [path]<output>\n");
         printf("    Sorry... ALL input MUST .WAV files (PCM or IMA ADPCM)\n");
         printf("    Only includes [LOADFLAT] Tokens\n");
-        return(0);
+        return (0);
     }
 
     ifp = fopen(FileList, "r");
@@ -283,7 +284,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
     if (!ifp)
     {
         printf("Can't open soundrc.irc file (%s)\n", FileList);
-        return(0);
+        return (0);
     }
 
     TheTime = GetCurrentTime();
@@ -298,6 +299,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
     fclose(ifp);
 
     SaveResource(OutputFile);
-    printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize, OutputSize, OutputSize * 100 / InputSize);
-    return(0);
+    printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize, OutputSize,
+           OutputSize * 100 / InputSize);
+    return (0);
 }

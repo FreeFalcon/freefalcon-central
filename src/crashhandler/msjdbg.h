@@ -17,5 +17,3 @@ HISTORY     :
 #include <crtdbg.h>
 
 #endif      // _MSJDBG_H
-
-

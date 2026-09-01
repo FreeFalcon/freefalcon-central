@@ -7,7 +7,7 @@
 \***************************************************************************/
 #include <stdio.h>
 #include <math.h>
-#include "JoyInput.h"
+#include "joyinput.h"
 
 
 #define SIM_SPEED 1000.0f // Feet per second
@@ -20,7 +20,6 @@
 JoyInputClass TheJoystick;
 
 
-
 /***************************************************************************\
  Detect the joystick and initialize our internal structures.
 \***************************************************************************/
@@ -63,7 +62,6 @@ void JoyInputClass::Setup(void)
 }
 
 
-
 /***************************************************************************\
  Clean up when the simulation loop is no longer needed.
 \***************************************************************************/
@@ -76,7 +74,6 @@ void JoyInputClass::Cleanup(void)
 }
 
 
-
 /***************************************************************************\
  Do the computations for one time step in the simulation.
 \***************************************************************************/
@@ -110,15 +107,18 @@ void JoyInputClass::Update(DWORD time)
 
     // Based on the joystick position, set the roll and pitch angles
     // Positive pitch is upward
-    pitchRate = ((int)joyInfoEx.dwYpos - 32768) / 32768.0f * SIM_ANG_RATE * deltaTime;
+    pitchRate =
+        ((int)joyInfoEx.dwYpos - 32768) / 32768.0f * SIM_ANG_RATE * deltaTime;
 
     // Positive roll is "right" roll (ie: clockwise)
-    rollRate  = ((int)joyInfoEx.dwXpos - 32768) / 32768.0f * SIM_ANG_RATE * deltaTime;
+    rollRate =
+        ((int)joyInfoEx.dwXpos - 32768) / 32768.0f * SIM_ANG_RATE * deltaTime;
 
     // Positive yaw is "right"
     if (joyCaps.wCaps & JOYCAPS_HASR)
     {
-        yawRate  = ((int)joyInfoEx.dwRpos - 32768) / 32768.0f * SIM_ANG_RATE * deltaTime;
+        yawRate = ((int)joyInfoEx.dwRpos - 32768) / 32768.0f * SIM_ANG_RATE *
+                  deltaTime;
     }
 
     // Positive Z is decrease in throttle
@@ -131,7 +131,9 @@ void JoyInputClass::Update(DWORD time)
         throttleIIR += IIR_RATE * (65535 - (int)joyInfoEx.dwZpos) / 65535.0f;
         throttle = throttleIIR;
 #endif
-        throttle  = throttle * throttle * throttle; // Use a polynomial curve to get better low end response
+        throttle =
+            throttle * throttle *
+            throttle; // Use a polynomial curve to get better low end response
     }
 
     // Update the viewing rotation
@@ -154,17 +156,18 @@ void JoyInputClass::Update(DWORD time)
             headYawRate = HEAD_ANG_RATE * sin(controlAngle) * deltaTime;
         }
 
-        ConstructDeltaMatrix(headPitchRate, 0.0f, headYawRate, &headDeltaMatrix);
+        ConstructDeltaMatrix(headPitchRate, 0.0f, headYawRate,
+                             &headDeltaMatrix);
     }
 }
 
 
-
 /***************************************************************************\
  Update the rotation matrix to account for the user's control inputs.
  NOTE:  This is an approximation and will gimbal lock as well...
 \***************************************************************************/
-void JoyInputClass::ConstructDeltaMatrix(float p, float r, float y, Trotation *T)
+void JoyInputClass::ConstructDeltaMatrix(float p, float r, float y,
+                                         Trotation *T)
 {
     Tpoint at, up, rt;
     float mag;

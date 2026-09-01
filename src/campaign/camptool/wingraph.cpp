@@ -20,28 +20,28 @@
 // Graphical User Interface Functions
 // ==============================================
 
-#define Black         0
-#define Blue          1
-#define Green         2
-#define Yellow        3
-#define Red           4
-#define Magenta       5
-#define Brown         6
-#define Gray          7
-#define Orange        8
-#define LightBlue     9
-#define LightGreen   10
-#define LightBrown   11
-#define LightRed     12
+#define Black 0
+#define Blue 1
+#define Green 2
+#define Yellow 3
+#define Red 4
+#define Magenta 5
+#define Brown 6
+#define Gray 7
+#define Orange 8
+#define LightBlue 9
+#define LightGreen 10
+#define LightBrown 11
+#define LightRed 12
 #define LightGray 13
-#define DarkGray     14
-#define White        15
+#define DarkGray 14
+#define White 15
 
-DWORD ColorTable16[16] = { RGB_BLACK, RGB_BLUE, RGB_GREEN, RGB_YELLOW,
-                            RGB_RED, RGB_MAGENTA, RGB_BROWN, RGB_GRAY,
-                            RGB_ORANGE, RGB_LIGHTBLUE, RGB_LIGHTGREEN, RGB_LIGHTBROWN,
-                            RGB_LIGHTRED, RGB_LIGHTGRAY, RGB_DARKGRAY, RGB_WHITE
-                         };
+DWORD ColorTable16[16] = {
+    RGB_BLACK,    RGB_BLUE,      RGB_GREEN,      RGB_YELLOW,
+    RGB_RED,      RGB_MAGENTA,   RGB_BROWN,      RGB_GRAY,
+    RGB_ORANGE,   RGB_LIGHTBLUE, RGB_LIGHTGREEN, RGB_LIGHTBROWN,
+    RGB_LIGHTRED, RGB_LIGHTGRAY, RGB_DARKGRAY,   RGB_WHITE};
 HPALETTE hPal;
 
 HBITMAP BMaps[16];
@@ -92,7 +92,8 @@ void _shutdowngraphics()
 
 void _drawbmap(HDC DC, int num, int ULX, int ULY, int size, int ofx, int ofy)
 {
-    BitBlt(DC, ULX, ULY, size, size, hMDC, 16 * (num % 8) + ofx, 16 * (num / 8) + ofy, SRCCOPY);
+    BitBlt(DC, ULX, ULY, size, size, hMDC, 16 * (num % 8) + ofx,
+           16 * (num / 8) + ofy, SRCCOPY);
 }
 
 /*
@@ -161,12 +162,13 @@ void _outgtext(HDC DC, char *str)
 void _wgprintf(HDC DC, int x, int y, char *string, ...)
 {
     va_list params;
-    int   check;
-    static char  _buffer[120];
+    int check;
+    static char _buffer[120];
 
     va_start(params, string);
 
-    if ( not string) return;
+    if (not string)
+        return;
 
     check = vsprintf(_buffer, string, params);
     va_end(params);
@@ -177,12 +179,13 @@ void _wgprintf(HDC DC, int x, int y, char *string, ...)
 void _wprintf(HDC DC, char *string, ...)
 {
     va_list params;
-    int   check;
-    static char  _buffer[120];
+    int check;
+    static char _buffer[120];
 
     va_start(params, string);
 
-    if ( not string) return;
+    if (not string)
+        return;
 
     check = vsprintf(_buffer, string, params);
     va_end(params);
@@ -190,4 +193,3 @@ void _wprintf(HDC DC, char *string, ...)
 }
 
 #endif CAMPTOOL
-

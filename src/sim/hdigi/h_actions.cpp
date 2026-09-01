@@ -11,10 +11,13 @@ void HeliBrain::Actions(void)
         onStation = NotThereYet;
 
     // RV - Biker - Switch to next WP if flight lead already did
-    if (self->flightLead->curWaypoint->GetWPArrivalTime() > self->curWaypoint->GetWPArrivalTime())
+    if (self->flightLead->curWaypoint->GetWPArrivalTime() >
+        self->curWaypoint->GetWPArrivalTime())
         SelectNextWaypoint();
 
-    if (self->flightLead not_eq self and (targetPtr == NULL or not anyWeapons or targetPtr->localData->range > 5.0f * NM_TO_FT))
+    if (self->flightLead not_eq self and
+        (targetPtr == NULL or not anyWeapons or
+         targetPtr->localData->range > 5.0f * NM_TO_FT))
     {
         // if ( modeStack.curMode == GunsEngageMode )
         // GunsEngage();
@@ -26,94 +29,94 @@ void HeliBrain::Actions(void)
         switch (curMode)
         {
 
-            case RTBMode:
+        case RTBMode:
                 // GoHome();
-                break;
+            break;
 
-            case FollowOrdersMode:
-                FollowOrders();
-                break;
+        case FollowOrdersMode:
+            FollowOrders();
+            break;
 
-            case WingyMode:
-                FollowLead();
-                break;
+        case WingyMode:
+            FollowLead();
+            break;
 
-            case WaypointMode:
-                FollowWaypoints();
-                break;
+        case WaypointMode:
+            FollowWaypoints();
+            break;
 
-            case BVREngageMode:
-                if (targetPtr == maxTargetPtr)
-                    RollAndPull();
+        case BVREngageMode:
+            if (targetPtr == maxTargetPtr)
+                RollAndPull();
 
-                break;
+            break;
 
-            case WVREngageMode:
-                if (targetPtr == maxTargetPtr)
-                    RollAndPull();
+        case WVREngageMode:
+            if (targetPtr == maxTargetPtr)
+                RollAndPull();
 
-                break;
+            break;
 
-            case GunsEngageMode:
-                if (targetPtr)
-                {
-                    GunsEngage();
-                }
-                else
-                {
-                    Loiter();
-                }
-
-                break;
-
-            case MissileEngageMode:
-                MissileEngage();
-                break;
-
-            case MissileDefeatMode:
-                MissileDefeat();
-                break;
-
-            case GunsJinkMode:
-                // GunsJink();
-                break;
-
-            case LoiterMode:
+        case GunsEngageMode:
+            if (targetPtr)
+            {
+                GunsEngage();
+            }
+            else
+            {
                 Loiter();
-                break;
+            }
 
-            case RunAwayMode:
+            break;
+
+        case MissileEngageMode:
+            MissileEngage();
+            break;
+
+        case MissileDefeatMode:
+            MissileDefeat();
+            break;
+
+        case GunsJinkMode:
+                // GunsJink();
+            break;
+
+        case LoiterMode:
+            Loiter();
+            break;
+
+        case RunAwayMode:
                 // GoHome();
-                break;
+            break;
 
-            case CollisionAvoidMode:
-                CollisionAvoid();
-                break;
+        case CollisionAvoidMode:
+            CollisionAvoid();
+            break;
 
-            case AccelerateMode:
+        case AccelerateMode:
                 // Accelerate();
-                break;
+            break;
 
-            case OvershootMode:
+        case OvershootMode:
                 // OverShoot();
-                break;
+            break;
 
-            case SeparateMode:
+        case SeparateMode:
                 // Separate();
-                break;
+            break;
 
-            case RoopMode:
-                RollOutOfPlane();
-                break;
+        case RoopMode:
+            RollOutOfPlane();
+            break;
 
-            case OverBMode:
-                OverBank(30.0F * DTR);
-                break;
+        case OverBMode:
+            OverBank(30.0F * DTR);
+            break;
 
-            default:
-                //SimLibPrintError("%s digi.w: Invalid digi mode %d\n", self->Id().num_, curMode);
-                FollowWaypoints();
-                break;
+        default:
+            //SimLibPrintError("%s digi.w: Invalid digi mode %d\n", self->Id().num_, curMode);
+            FollowWaypoints();
+            break;
         }
     }
 

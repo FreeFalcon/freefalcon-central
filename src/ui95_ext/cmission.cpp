@@ -43,7 +43,7 @@ C_Mission::~C_Mission()
 
 long C_Mission::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Mission::Setup(long ID, short Type)
@@ -204,13 +204,15 @@ void C_Mission::SetPriority(_TCHAR *txt)
 
 long C_Mission::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (0);
 
-    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
-        return(GetID());
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and
+        rely <= (GetY() + GetH()))
+        return (GetID());
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Mission::Process(long ID, short HitType)
@@ -226,7 +228,7 @@ BOOL C_Mission::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 
@@ -235,7 +237,8 @@ void C_Mission::Refresh()
     if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
 }
 
 void C_Mission::Draw(SCREEN *surface, UI95_RECT *cliprect)

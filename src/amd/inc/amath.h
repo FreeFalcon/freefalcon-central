@@ -27,31 +27,32 @@
 #define _AMD_AMATH_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     float _atan(float);
     float _acos(float);
     float _asin(float);
-    float   _log(float);
-    float   _log10(float);
-    void    _pow(float *, float *);
+    float _log(float);
+    float _log10(float);
+    void _pow(float *, float *);
     float _exp(float);
-    float   _cosh(float);
-    float  _tanh(float);
-    float   _sinh(float);
-    float   _sqrt(float);
-    float  _fabs(float);
-    float   _ceil(float);
-    float  _floor(float);
-    float  _frexp(float, int *);
+    float _cosh(float);
+    float _tanh(float);
+    float _sinh(float);
+    float _sqrt(float);
+    float _fabs(float);
+    float _ceil(float);
+    float _floor(float);
+    float _frexp(float, int *);
 //  float _ldexp(float, int);
-    float   _modf(float, float *);
+    float _modf(float, float *);
     float _fmod(float, float);
     void _sincos(float, float *);
     float _sin(float);
     float _cos(float);
-    float   _tan(float);
+    float _tan(float);
 
     // "fastcall" register called routines.
     void a_atan(); // mm0 -> mm0
@@ -61,13 +62,13 @@ extern "C" {
     void a_log10(); // mm0 -> mm0
     void a_exp(); // mm0 -> mm0
     void a_cosh(); // mm0 -> mm0
-    void  a_tanh(); // mm0 -> mm0
+    void a_tanh(); // mm0 -> mm0
     void a_sinh(); // mm0 -> mm0
     void a_sqrt(); // mm0 -> mm0
-    void  a_fabs(); // mm0 -> mm0
+    void a_fabs(); // mm0 -> mm0
     void a_ceil(); // mm0 -> mm0
-    void  a_floor(); // mm0 -> mm0
-    void  a_frexp(); // mm0 -> mm0 (mantissa|exponent)
+    void a_floor(); // mm0 -> mm0
+    void a_frexp(); // mm0 -> mm0 (mantissa|exponent)
     void a_ldexp(); // mm0 * mm1 -> mm0
     void a_modf(); // mm0 -> mm0 (mod|rem)
     void a_fmod(); // mm0 * mm1 -> mm0

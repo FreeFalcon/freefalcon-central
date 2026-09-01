@@ -2,7 +2,7 @@
 #include "falclib.h"
 #include "dispcfg.h"
 #include "cpmachasi.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
 #include "otwdrive.h"
 
 
@@ -10,7 +10,9 @@
 // CPMachAsi::CPMachAsi
 //-----------------------------------------------------------------------------
 
-CPMachAsi::CPMachAsi(ObjectInitStr *pobjectInitStr, MachAsiInitStr* pmachAsiInitStr) : CPObject(pobjectInitStr)
+CPMachAsi::CPMachAsi(ObjectInitStr* pobjectInitStr,
+                     MachAsiInitStr* pmachAsiInitStr)
+    : CPObject(pobjectInitStr)
 {
 
     mxCenter = mDestRect.left + (mDestRect.right - mDestRect.left) / 2;
@@ -21,16 +23,17 @@ CPMachAsi::CPMachAsi(ObjectInitStr *pobjectInitStr, MachAsiInitStr* pmachAsiInit
     mDialStartAngle = pmachAsiInitStr->dial_start_angle;
     mDialArcLength = pmachAsiInitStr->dial_arc_length;
     // sfr: use smaller scaling value here
-    mNeedleRadius = (int)(pmachAsiInitStr->needle_radius * (mHScale < mVScale) ? mHScale : mVScale);
+    mNeedleRadius =
+        (int)(pmachAsiInitStr->needle_radius * (mHScale < mVScale) ? mHScale :
+                                                                     mVScale);
     mEndLength = pmachAsiInitStr->end_radius;
-    mEndAngle                         = pmachAsiInitStr->end_angle;
+    mEndAngle = pmachAsiInitStr->end_angle;
 
     mColor[0][0] = pmachAsiInitStr->color0;
     mColor[1][0] = CalculateNVGColor(mColor[0][0]);
     mColor[0][1] = pmachAsiInitStr->color1;
     mColor[1][1] = CalculateNVGColor(mColor[0][1]);
 }
-
 
 
 //-----------------------------------------------------------------------------
@@ -40,7 +43,6 @@ CPMachAsi::CPMachAsi(ObjectInitStr *pobjectInitStr, MachAsiInitStr* pmachAsiInit
 CPMachAsi::~CPMachAsi()
 {
 }
-
 
 
 //-----------------------------------------------------------------------------
@@ -58,7 +60,6 @@ void CPMachAsi::Exec(SimBaseClass*)
     CalculateDeflection();
     CalculateNeedlePosition();
 }
-
 
 
 //-----------------------------------------------------------------------------
@@ -88,14 +89,13 @@ void CPMachAsi::CalculateDeflection(void)
 }
 
 
-
 //-----------------------------------------------------------------------------
 // CPMachAsi::CalculateNeedlePosition
 //-----------------------------------------------------------------------------
 
 void CPMachAsi::CalculateNeedlePosition(void)
 {
-    mlTrig  trig;
+    mlTrig trig;
 
     // Needle is drawn as two triangles rotated to the angle of deflection.
     // Calculate the verticies of the triangles.
@@ -104,18 +104,17 @@ void CPMachAsi::CalculateNeedlePosition(void)
     myNeedlePos1 = myCenter - FloatToInt32(mNeedleRadius * trig.sin);
 
     mlSinCos(&trig, mDeflection - 180.0F * DTR + mEndAngle);
-    mxNeedlePos2 = mxCenter + FloatToInt32(mNeedleRadius * mEndLength * trig.cos);
-    myNeedlePos2 = myCenter - FloatToInt32(mNeedleRadius * mEndLength * trig.sin);
+    mxNeedlePos2 =
+        mxCenter + FloatToInt32(mNeedleRadius * mEndLength * trig.cos);
+    myNeedlePos2 =
+        myCenter - FloatToInt32(mNeedleRadius * mEndLength * trig.sin);
 
     mlSinCos(&trig, mDeflection - 180.0F * DTR - mEndAngle);
-    mxNeedlePos3 = mxCenter + FloatToInt32(mNeedleRadius * mEndLength * trig.cos);
-    myNeedlePos3 = myCenter - FloatToInt32(mNeedleRadius * mEndLength * trig.sin);
+    mxNeedlePos3 =
+        mxCenter + FloatToInt32(mNeedleRadius * mEndLength * trig.cos);
+    myNeedlePos3 =
+        myCenter - FloatToInt32(mNeedleRadius * mEndLength * trig.sin);
 }
-
-
-
-
-
 
 
 //-----------------------------------------------------------------------------
@@ -127,7 +126,7 @@ void CPMachAsi::DisplayDraw()
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag)
+    if (not mDirtyFlag)
     {
         return;
     }
@@ -143,29 +142,14 @@ void CPMachAsi::DisplayDraw()
     // Draw the needle.  Needle is created by drawing two triangles back to back.
     OTWDriver.renderer->SetColor(color[0]);
 
-    OTWDriver.renderer->Render2DTri(
-        (float)mxCenter, (float)myCenter, (float)mxNeedlePos1,
-        (float)myNeedlePos1, (float)mxNeedlePos2, (float)myNeedlePos2
-    );
+    OTWDriver.renderer->Render2DTri((float)mxCenter, (float)myCenter,
+                                    (float)mxNeedlePos1, (float)myNeedlePos1,
+                                    (float)mxNeedlePos2, (float)myNeedlePos2);
     OTWDriver.renderer->SetColor(color[1]);
 
-    OTWDriver.renderer->Render2DTri(
-        (float)mxCenter, (float)myCenter, (float)mxNeedlePos1,
-        (float)myNeedlePos1, (float)mxNeedlePos3, (float)myNeedlePos3
-    );
+    OTWDriver.renderer->Render2DTri((float)mxCenter, (float)myCenter,
+                                    (float)mxNeedlePos1, (float)myNeedlePos1,
+                                    (float)mxNeedlePos3, (float)myNeedlePos3);
 
     mDirtyFlag = FALSE;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -5,25 +5,32 @@
  * Generated from file EVENTS.XLS by Kevin Klemmick
  */
 
-#include "MsgInc/AddSFXMessage.h"
+#include "msginc/addsfxmessage.h"
 #include "mesg.h"
-#include "Sim/Include/SFX.h"
+#include "sim/include/sfx.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-extern void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, float y);
+extern void NewTimedPersistantObject(int vistype, CampaignTime removalTime,
+                                     float x, float y);
 
-extern void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float x, float y);
+extern void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx,
+                                      float x, float y);
 
-FalconAddSFXMessage::FalconAddSFXMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(AddSFXMessage, FalconEvent::SimThread, entityId, target, loopback)
+FalconAddSFXMessage::FalconAddSFXMessage(VU_ID entityId, VuTargetEntity *target,
+                                         VU_BOOL loopback)
+    : FalconEvent(AddSFXMessage, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-FalconAddSFXMessage::FalconAddSFXMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(AddSFXMessage, FalconEvent::SimThread, senderid, target)
+FalconAddSFXMessage::FalconAddSFXMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(AddSFXMessage, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -41,18 +48,19 @@ int FalconAddSFXMessage::Process(uchar autodisp)
 
     switch (dataBlock.type)
     {
-        case SFX_TIMED_PERSISTANT:
-            NewTimedPersistantObject(dataBlock.visType, dataBlock.time, dataBlock.xLoc, dataBlock.yLoc);
-            break;
+    case SFX_TIMED_PERSISTANT:
+        NewTimedPersistantObject(dataBlock.visType, dataBlock.time,
+                                 dataBlock.xLoc, dataBlock.yLoc);
+        break;
 
-        case SFX_LINKED_PERSISTANT:
-            NewLinkedPersistantObject(dataBlock.visType, EntityId(), dataBlock.time, dataBlock.xLoc, dataBlock.yLoc);
-            break;
+    case SFX_LINKED_PERSISTANT:
+        NewLinkedPersistantObject(dataBlock.visType, EntityId(), dataBlock.time,
+                                  dataBlock.xLoc, dataBlock.yLoc);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return 0;
 }
-

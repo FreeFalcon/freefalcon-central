@@ -1,21 +1,21 @@
 #include <stddef.h>
 #include <fcntl.h>
 #include <io.h>
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Listadt.h"
-#include "CampBase.h"
-#include "Team.h"
-#include "Weather.h"
-#include "Manager.h"
-#include "MsgInc/CampTaskingMsg.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "listadt.h"
+#include "campbase.h"
+#include "team.h"
+#include "weather.h"
+#include "manager.h"
+#include "msginc/camptaskingmsg.h"
 #include "classtbl.h"
 #include "falcsess.h"
 #include "campaign.h"
 
 //sfr: included for buffer checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
 #ifdef CAMPTOOL
@@ -91,7 +91,7 @@ CampManagerClass::CampManagerClass(FILE *file)
     //#endif
 
     // Set the owner to the game master.
-    if ((FalconLocalGame) and ( not FalconLocalGame->IsLocal()))
+    if ((FalconLocalGame) and (not FalconLocalGame->IsLocal()))
         SetOwnerId(FalconLocalGame->OwnerId());
 
     fread(&managerFlags, sizeof(short), 1, file);
@@ -113,19 +113,19 @@ CampManagerClass::~CampManagerClass(void)
         {
             if (TeamInfo[t]->atm == this)
             {
-                ShiAssert( not "Manager reference problem");
+                ShiAssert(not "Manager reference problem");
                 TeamInfo[t]->atm = NULL;
             }
 
             if (TeamInfo[t]->gtm == this)
             {
-                ShiAssert( not "Manager reference problem");
+                ShiAssert(not "Manager reference problem");
                 TeamInfo[t]->gtm = NULL;
             }
 
             if (TeamInfo[t]->ntm == this)
             {
-                ShiAssert( not "Manager reference problem");
+                ShiAssert(not "Manager reference problem");
                 TeamInfo[t]->ntm = NULL;
             }
         }
@@ -151,11 +151,8 @@ void CampManagerClass::InitLocalData(Team t)
 
 int CampManagerClass::SaveSize(void)
 {
-    return sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(ushort)
-           + sizeof(short)
-           + sizeof(Team);
+    return sizeof(VU_ID) + sizeof(VU_ID) + sizeof(ushort) + sizeof(short) +
+           sizeof(Team);
 }
 
 int CampManagerClass::Save(VU_BYTE **stream)
@@ -179,7 +176,7 @@ int CampManagerClass::Save(FILE *file)
 {
     int retval = 0;
 
-    if ( not file)
+    if (not file)
         return 0;
 
     // Write vu stuff here
@@ -191,10 +188,12 @@ int CampManagerClass::Save(FILE *file)
     return retval;
 }
 
-void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2, short d3)
+void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2,
+                                   short d3)
 {
-    VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
-    FalconCampTaskingMessage *message = new FalconCampTaskingMessage(Id(), target);
+    VuTargetEntity *target = (VuTargetEntity *)vuDatabase->Find(OwnerId());
+    FalconCampTaskingMessage *message =
+        new FalconCampTaskingMessage(Id(), target);
 
     if (managerFlags bitand CTM_MUST_BE_OWNED and not IsLocal())
         return;
@@ -204,7 +203,7 @@ void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2, sh
     message->dataBlock.messageType = msg;
     message->dataBlock.data1 = d1;
     message->dataBlock.data2 = d2;
-    message->dataBlock.data3 = (void*)d3;
+    message->dataBlock.data3 = (void *)d3;
     FalconSendMessage(message, TRUE);
 }
 
@@ -250,30 +249,30 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
     {
         if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_AIR)
         {
-            ShiAssert( not TeamInfo[owner]->atm);
+            ShiAssert(not TeamInfo[owner]->atm);
 
             if (TeamInfo[owner]->atm)
                 VuDeReferenceEntity(TeamInfo[owner]->atm);
 
-            TeamInfo[owner]->atm = (AirTaskingManagerClass*) this;
+            TeamInfo[owner]->atm = (AirTaskingManagerClass *)this;
         }
         else if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_LAND)
         {
-            ShiAssert( not TeamInfo[owner]->gtm);
+            ShiAssert(not TeamInfo[owner]->gtm);
 
             if (TeamInfo[owner]->gtm)
                 VuDeReferenceEntity(TeamInfo[owner]->gtm);
 
-            TeamInfo[owner]->gtm = (GroundTaskingManagerClass*) this;
+            TeamInfo[owner]->gtm = (GroundTaskingManagerClass *)this;
         }
         else if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_SEA)
         {
-            ShiAssert( not TeamInfo[owner]->ntm);
+            ShiAssert(not TeamInfo[owner]->ntm);
 
             if (TeamInfo[owner]->ntm)
                 VuDeReferenceEntity(TeamInfo[owner]->ntm);
 
-            TeamInfo[owner]->ntm = (NavalTaskingManagerClass*) this;
+            TeamInfo[owner]->ntm = (NavalTaskingManagerClass *)this;
         }
     }
 
@@ -303,45 +302,45 @@ VU_ERRCODE CampManagerClass::RemovalCallback(void)
 // ===============================
 
 //Sfr: chg here too
-VuEntity* NewManager(short type, VU_BYTE **stream, long *rem)
+VuEntity *NewManager(short type, VU_BYTE **stream, long *rem)
 {
     VuEntity *retval = 0;
-    VuEntityType* classPtr = VuxType(type);
+    VuEntityType *classPtr = VuxType(type);
 
     CampEnterCriticalSection();
 
     switch (classPtr->classInfo_[VU_DOMAIN])
     {
-        case (DOMAIN_AIR):
-        {
-            retval = (VuEntity*) new AirTaskingManagerClass(stream, rem);
-            break;
-        }
+    case (DOMAIN_AIR):
+    {
+        retval = (VuEntity *)new AirTaskingManagerClass(stream, rem);
+        break;
+    }
 
-        case (DOMAIN_LAND):
-        {
-            retval = (VuEntity*) new GroundTaskingManagerClass(stream, rem);
-            break;
-        }
+    case (DOMAIN_LAND):
+    {
+        retval = (VuEntity *)new GroundTaskingManagerClass(stream, rem);
+        break;
+    }
 
-        case (DOMAIN_SEA):
-        {
-            retval = (VuEntity*) new NavalTaskingManagerClass(stream, rem);
-            break;
-        }
+    case (DOMAIN_SEA):
+    {
+        retval = (VuEntity *)new NavalTaskingManagerClass(stream, rem);
+        break;
+    }
 
-        case (DOMAIN_ABSTRACT):
-        {
-            retval = (VuEntity*) new TeamClass(stream, rem);
-            break;
-        }
+    case (DOMAIN_ABSTRACT):
+    {
+        retval = (VuEntity *)new TeamClass(stream, rem);
+        break;
+    }
 
-        default:
-        {
-            char err[50];
-            sprintf(err, "%s %d: invalid domain", __FILE__, __LINE__);
-            throw InvalidBufferException(err);
-        }
+    default:
+    {
+        char err[50];
+        sprintf(err, "%s %d: invalid domain", __FILE__, __LINE__);
+        throw InvalidBufferException(err);
+    }
     }
 
     CampLeaveCriticalSection();

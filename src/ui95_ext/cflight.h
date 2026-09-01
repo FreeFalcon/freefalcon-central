@@ -13,7 +13,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -39,8 +40,8 @@ private:
     O_Output *Status_;
 
     VU_ID vuID;
-public:
 
+public:
     enum
     {
         _NOTHING_ = 0,
@@ -73,7 +74,7 @@ public:
     }
     TREELIST *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
     void SetXY(long x, long y);
 
@@ -96,7 +97,8 @@ public:
         TaskX_ = x;
         TaskY_ = y;
 
-        if (Task_) Task_->SetRoot(tasklist);
+        if (Task_)
+            Task_->SetRoot(tasklist);
     }
 
     void SetIcon(short x, short y, long ImageID)
@@ -156,15 +158,18 @@ public:
 
     void SetIcon(long ImageID)
     {
-        if (Icon_) Icon_->SetImage(ImageID);
+        if (Icon_)
+            Icon_->SetImage(ImageID);
     }
     void SetIcon(IMAGE_RSC *Image)
     {
-        if (Icon_) Icon_->SetImage(Image);
+        if (Icon_)
+            Icon_->SetImage(Image);
     }
     void SetTask(LISTBOX *tasklist)
     {
-        if (Task_) Task_->SetRoot(tasklist);
+        if (Task_)
+            Task_->SetRoot(tasklist);
     }
     void SetCallsign(_TCHAR *str)
     {
@@ -200,7 +205,8 @@ public:
     }
     void SetCurrentTask(long ID)
     {
-        if (Task_) Task_->SetValue(ID);
+        if (Task_)
+            Task_->SetValue(ID);
     }
 
     void SetIconBgColor(COLORREF Off, COLORREF On)
@@ -222,77 +228,83 @@ public:
     }
     short GetState()
     {
-        return(State_);
+        return (State_);
     }
 
     UI95_RECT GetIconBg()
     {
-        return(IconBg_);
+        return (IconBg_);
     }
     UI95_RECT GetFlightBg()
     {
-        return(FlightBg_);
+        return (FlightBg_);
     }
     _TCHAR *GetCurrentTask()
     {
-        if (Task_) return(Task_->GetText());
+        if (Task_)
+            return (Task_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     long GetCurrentTaskID()
     {
-        if (Task_) return(Task_->GetTextID());
+        if (Task_)
+            return (Task_->GetTextID());
 
-        return(0);
+        return (0);
     }
     _TCHAR *GetCallsign()
     {
-        if (Callsign_) return(Callsign_->GetText());
+        if (Callsign_)
+            return (Callsign_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetAirbase()
     {
-        if (Airbase_) return(Airbase_->GetText());
+        if (Airbase_)
+            return (Airbase_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetPlanes()
     {
-        if (Planes_) return(Planes_->GetText());
+        if (Planes_)
+            return (Planes_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetStatus()
     {
-        if (Status_) return(Status_->GetText());
+        if (Status_)
+            return (Status_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
 
     C_ListBox *GetTaskCtrl()
     {
-        return(Task_);
+        return (Task_);
     }
     O_Output *GetIconCtrl()
     {
-        return(Icon_);
+        return (Icon_);
     }
     O_Output *GetCallsignCtrl()
     {
-        return(Callsign_);
+        return (Callsign_);
     }
     O_Output *GetAirbaseCtrl()
     {
-        return(Airbase_);
+        return (Airbase_);
     }
     O_Output *GetPlanesCtrl()
     {
-        return(Planes_);
+        return (Planes_);
     }
     O_Output *GetStatusCtrl()
     {
-        return(Status_);
+        return (Status_);
     }
 
     void SetSubParents(C_Window *);
@@ -313,7 +325,7 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
 };
 

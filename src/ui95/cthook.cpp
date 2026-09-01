@@ -36,7 +36,7 @@ C_TimerHook::~C_TimerHook()
 
 long C_TimerHook::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_TimerHook::Setup(long ID, short Type)
@@ -56,17 +56,18 @@ BOOL C_TimerHook::TimerUpdate()
         (*UpdateCallback_)(GetID(), C_TYPE_TIMER, this);
 
     if (Ready())
-        return(TRUE);
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_TimerHook::Refresh()
 {
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE))
+    if (not Ready() or (GetFlags() bitand C_BIT_INVISIBLE))
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
 
     if (RefreshCallback_)
         (*RefreshCallback_)(GetID(), C_TYPE_TIMER, this);
@@ -75,7 +76,7 @@ void C_TimerHook::Refresh()
 // This will ONLY Get Calle
 void C_TimerHook::Draw(SCREEN *, UI95_RECT *cliprect)
 {
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE))
+    if (not Ready() or (GetFlags() bitand C_BIT_INVISIBLE))
         return;
 
     if (GetFlags() bitand C_BIT_TIMER)
@@ -83,8 +84,9 @@ void C_TimerHook::Draw(SCREEN *, UI95_RECT *cliprect)
 
     if (DrawCallback_)
     {
-        if ( not (cliprect->left > (GetX() + GetW()) or cliprect->top > (GetY() + GetH()) or cliprect->right < GetX() or cliprect->bottom < GetY()))
+        if (not(cliprect->left > (GetX() + GetW()) or
+                cliprect->top > (GetY() + GetH()) or cliprect->right < GetX() or
+                cliprect->bottom < GetY()))
             (*DrawCallback_)(GetID(), C_TYPE_TIMER, this);
     }
 }
-

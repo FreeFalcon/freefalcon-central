@@ -8,8 +8,8 @@
 \***************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
-#include "shi/ShiError.h"
-#include "DynamicPatch.h"
+#include "shi/shierror.h"
+#include "dynamicpatch.h"
 
 
 DynamicPatchClass TheDynamicPatchList;
@@ -63,7 +63,6 @@ void DynamicPatchClass::Load(char *filename)
                 AddPatch(name);
             }
         }
-
     }
 
     // Close the patch file

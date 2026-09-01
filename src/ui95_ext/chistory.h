@@ -14,7 +14,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -43,7 +44,8 @@ public:
 
     void SetImage(long idx, long ID)
     {
-        if (idx < _HIST_MAX_TEAMS_) ImageID_[idx] = ID;
+        if (idx < _HIST_MAX_TEAMS_)
+            ImageID_[idx] = ID;
     }
 
     void AddIconSet(short idx, short team, short x, short y);
@@ -51,7 +53,6 @@ public:
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
 };
-
 
 
 #endif

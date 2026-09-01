@@ -35,7 +35,7 @@ static int init_cs = FALSE;
 static CRITICAL_SECTION cs;
 void enter_cs(void)
 {
-    if ( not init_cs)
+    if (not init_cs)
     {
         InitializeCriticalSection(&cs);
         init_cs = TRUE;
@@ -73,7 +73,8 @@ int ComAPISend(com_API_handle c, int msgsize, int type)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->send_func));
+    isBad = F4IsBadReadPtrC(c, sizeof(ComAPI)) or
+            F4IsBadCodePtrC((FARPROC)(*c->send_func));
 
     if (c and not isBad)
     {
@@ -110,7 +111,6 @@ int ComAPISendDummy(com_API_handle c, unsigned long ip, unsigned short port)
     leave_cs();
 
     return rc;
-
 }
 
 int ComAPISendOOB(com_API_handle c, int msgsize, int type)
@@ -163,7 +163,8 @@ int ComAPIGet(com_API_handle c)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_func)));
+    isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or
+                   F4IsBadCodePtrC((FARPROC)(*c->recv_func)));
 
     if (c and not isBad) // JB 010404 CTD
     {
@@ -244,7 +245,8 @@ char *ComAPIRecvBufferGet(com_API_handle c)
     enter_cs();
 
     // sfr: another hack by JB...
-    isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or F4IsBadCodePtrC((FARPROC)(*c->recv_buf_func)));
+    isBad = c and (F4IsBadReadPtrC(c, sizeof(ComAPI)) or
+                   F4IsBadCodePtrC((FARPROC)(*c->recv_buf_func)));
 
     if (c and not isBad)
     {
@@ -260,8 +262,7 @@ char *ComAPIRecvBufferGet(com_API_handle c)
 
 unsigned long ComAPIQuery(com_API_handle c, int querytype)
 {
-    unsigned long
-    ret_val = 0;
+    unsigned long ret_val = 0;
     enter_cs();
 
     if (c)
@@ -272,23 +273,23 @@ unsigned long ComAPIQuery(com_API_handle c, int querytype)
     {
         switch (querytype)
         {
-            case COMAPI_TCP_HEADER_OVERHEAD:
-            {
-                ret_val = sizeof(tcpHeader) + 40; // Size of underlying header.
-                break;
-            }
+        case COMAPI_TCP_HEADER_OVERHEAD:
+        {
+            ret_val = sizeof(tcpHeader) + 40; // Size of underlying header.
+            break;
+        }
 
-            case COMAPI_UDP_HEADER_OVERHEAD:
-            {
-                ret_val = sizeof(ComAPIHeader);
-                break;
-            }
+        case COMAPI_UDP_HEADER_OVERHEAD:
+        {
+            ret_val = sizeof(ComAPIHeader);
+            break;
+        }
 
-            case COMAPI_RUDP_HEADER_OVERHEAD:
-            {
-                ret_val = MAX_RUDP_HEADER_SIZE;
-                break;
-            }
+        case COMAPI_RUDP_HEADER_OVERHEAD:
+        {
+            ret_val = MAX_RUDP_HEADER_SIZE;
+            break;
+        }
         }
     }
 
@@ -363,7 +364,7 @@ char *ComAPIinet_ntoa(u_long ip)
 
 /* convert net ipaddress to string */
 
-unsigned long ComAPIinet_haddr(char * IPAddress)
+unsigned long ComAPIinet_haddr(char *IPAddress)
 {
     unsigned long ipaddress;
 
@@ -387,7 +388,7 @@ unsigned long ComAPIGetLastError(void)
     return ComAPILastError;
 }
 
-void ComAPISetTimeStampFunction(unsigned long(*TimeStamp)(void))
+void ComAPISetTimeStampFunction(unsigned long (*TimeStamp)(void))
 {
     CAPI_TimeStamp = TimeStamp;
     CAPI_TimeStamp();
@@ -395,8 +396,7 @@ void ComAPISetTimeStampFunction(unsigned long(*TimeStamp)(void))
 
 unsigned long ComAPIGetTimeStamp(com_API_handle c)
 {
-    unsigned long
-    ret_val = 0;
+    unsigned long ret_val = 0;
     enter_cs();
 
     if (c)
@@ -449,13 +449,13 @@ int com_API_initialize_communications(void)
     WSADATA wsaData;
     int ret = 1;
 
-    if ( not windows_sockets_connections)
+    if (not windows_sockets_connections)
     {
         ret = initialize_windows_sockets(&wsaData);
         windows_sockets_connections--;
 
         /* if No more connections then WSACleanup() */
-        if ( not windows_sockets_connections)
+        if (not windows_sockets_connections)
         {
             CAPI_WSACleanup();
         }
@@ -471,37 +471,37 @@ void com_API_set_name(com_API_handle c, char *name_in)
         free(c->name);
     }
 
-    c->name = (char*)malloc(strlen(name_in) + 1);
+    c->name = (char *)malloc(strlen(name_in) + 1);
     strcpy(c->name, name_in);
 }
 
 void com_API_set_local_ports(unsigned short b, unsigned short r)
 {
-    myRecvPort =  CAPI_htons(b);
+    myRecvPort = CAPI_htons(b);
     myReliableRecvPort = CAPI_htons(r);
 }
 
 unsigned short com_API_get_receive_port(com_API_handle c)
 {
     // this is the same for all coms of same type
-    return CAPI_ntohs(((ComIP*)c)->recAddress.sin_port);
+    return CAPI_ntohs(((ComIP *)c)->recAddress.sin_port);
 }
 
 unsigned short com_API_get_peer_receive_port(com_API_handle c)
 {
     // we send to this address, so its his receive port
-    return CAPI_ntohs(((ComIP*)c)->sendAddress.sin_port);
+    return CAPI_ntohs(((ComIP *)c)->sendAddress.sin_port);
 }
 
 unsigned long com_API_get_peer_IP(com_API_handle c)
 {
     // we send to this address, so this is his IP
-    return CAPI_ntohl(((ComIP*)c)->sendAddress.sin_addr.S_un.S_addr);
+    return CAPI_ntohl(((ComIP *)c)->sendAddress.sin_addr.s_addr);
 }
 
 unsigned long com_API_get_peer_ID(com_API_handle c)
 {
-    return CAPI_ntohl(((ComIP*)c)->id);
+    return CAPI_ntohl(((ComIP *)c)->id);
 }
 
 int com_API_get_protocol(com_API_handle c)
@@ -539,11 +539,11 @@ int com_API_private_IP(unsigned long ip)
     z = (ip bitand 0x0000FF00) >> 8;
     w = (ip bitand 0x000000FF);
 
-    if (
-        ((x == 127) and (y == 0) and (z == 0) and (w == 1)) or // localhost
+    if (((x == 127) and (y == 0) and (z == 0) and (w == 1)) or // localhost
         (x == 10) or // class A reserved
         ((x == 172) and ((y >= 16) and (y < 31))) or  // class B reserver
-        ((x == 192) and (y == 168) and ((z >= 0) and (z < 255))) // class C reserved
+        ((x == 192) and (y == 168) and
+         ((z >= 0) and (z < 255))) // class C reserved
     )
     {
         return 1;
@@ -564,8 +564,6 @@ long ComAPIGetIP(const char *address)
     }
     else
     {
-        return CAPI_ntohl(*((long*)h->h_addr_list[0]));
-
+        return CAPI_ntohl(*((long *)h->h_addr_list[0]));
     }
 }
-

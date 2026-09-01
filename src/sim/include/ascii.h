@@ -20,9 +20,13 @@ struct ASCII_TABLE
 extern struct ASCII_TABLE Key_Chart[256];
 
 // Macros to access functions
-#define AsciiChar(DIK_KEY,SHIFT_STATE)   (Key_Chart[(DIK_KEY) & 0xff].Ascii[(SHIFT_STATE)&7])
-#define DIK_IsAscii(DIK_KEY,SHIFT_STATE) (Key_Chart[(DIK_KEY) & 0xff].Flags[(SHIFT_STATE)&7]&_IS_ASCII_)
-#define DIK_IsAlpha(DIK_KEY,SHIFT_STATE) (Key_Chart[(DIK_KEY) & 0xff].Flags[(SHIFT_STATE)&7]&_IS_ALPHA_)
-#define DIK_IsDigit(DIK_KEY,SHIFT_STATE) (Key_Chart[(DIK_KEY) & 0xff].Flags[(SHIFT_STATE)&7]&_IS_DIGIT_)
+#define AsciiChar(DIK_KEY, SHIFT_STATE)                                        \
+    (Key_Chart[(DIK_KEY) & 0xff].Ascii[(SHIFT_STATE) & 7])
+#define DIK_IsAscii(DIK_KEY, SHIFT_STATE)                                      \
+    (Key_Chart[(DIK_KEY) & 0xff].Flags[(SHIFT_STATE) & 7] & _IS_ASCII_)
+#define DIK_IsAlpha(DIK_KEY, SHIFT_STATE)                                      \
+    (Key_Chart[(DIK_KEY) & 0xff].Flags[(SHIFT_STATE) & 7] & _IS_ALPHA_)
+#define DIK_IsDigit(DIK_KEY, SHIFT_STATE)                                      \
+    (Key_Chart[(DIK_KEY) & 0xff].Flags[(SHIFT_STATE) & 7] & _IS_DIGIT_)
 
 #endif

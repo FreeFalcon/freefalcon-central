@@ -5,9 +5,9 @@
 
 
 #include "stdhdr.h"
-#include "F4Vu.h"
+#include "f4vu.h"
 #include "missile.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "simveh.h"
 #include "airunit.h"
 #include "simdrive.h"
@@ -20,22 +20,23 @@
 #include "soundfx.h"
 #include "classtbl.h"
 #include "rwr.h"
-#include "AdvancedHTS.h"
+#include "advancedhts.h"
 #include "aircrft.h"
 
-const float CURSOR_SIZE =  0.065f;
+const float CURSOR_SIZE = 0.065f;
 
-AdvancedHarmTargetingPod::AdvancedHarmTargetingPod(int idx, SimMoverClass* self) : HarmTargetingPod(idx, self)
+AdvancedHarmTargetingPod::AdvancedHarmTargetingPod(int idx, SimMoverClass* self)
+    : HarmTargetingPod(idx, self)
 {
     curMissile = NULL;
-    curTarget =  NULL;
+    curTarget = NULL;
     curTargetWP = prevTargetWP = NULL;
     curTOF = 0.0f;
     timer = 0;
     prevTOF = -1.0f;
     prevTargteSymbol = prevWPNum = 0;
     missileLaunched = false;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     SMSClass* Sms;
 
     if (playerAC)
@@ -60,7 +61,7 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     float x2, y2;
     float wpX, wpY, wpZ;
     float cosAng, sinAng;
-    WayPointClass *curWaypoint;
+    WayPointClass* curWaypoint;
     GroundListElement* tmpElement;
     mlTrig trig;
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
@@ -74,7 +75,8 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     sinAng = trig.sin;
 
     // Draw all known emmitters
-    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement;
+         tmpElement = tmpElement->GetNext())
     {
         if (tmpElement->BaseObject() == NULL)
         {
@@ -82,14 +84,16 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Check if emitter is on priority list
-        if ( not IsInPriorityList(tmpElement->symbol))
+        if (not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
 
         // Compute the world space oriented, display space scaled, ownship relative postion of the emitter
-        y2 = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
-        x2 = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
+        y2 = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM /
+             displayRange * HTS_DISPLAY_RADIUS;
+        x2 = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM /
+             displayRange * HTS_DISPLAY_RADIUS;
 
         // Rotate it into heading up space and translate it down to deal with our vertical offset
         displayX = cosAng * x2 - sinAng * y2;
@@ -104,7 +108,8 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
         // JB 010726 Clear the designated target if behind the 3/9 line.
         if (displayY - HTS_Y_OFFSET < 0)
         {
-            if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (lockedTarget and
+                tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 FCC->dropTrackCmd = TRUE;
             }
@@ -114,13 +119,16 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
 
         // Mark the locked target
         // Mark the locked target
-        if (displayY - HTS_Y_OFFSET > 0 and lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+        if (displayY - HTS_Y_OFFSET > 0 and lockedTarget and
+            tmpElement->BaseObject() == lockedTarget->BaseData())
         {
             display->SetColor(GetMfdColor(MFD_WHITE));
-            display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE);
-            display->Line(CURSOR_SIZE, -CURSOR_SIZE,  CURSOR_SIZE, CURSOR_SIZE);
-            display->Line(-CURSOR_SIZE, CURSOR_SIZE,  CURSOR_SIZE, CURSOR_SIZE);
-            display->Line(-CURSOR_SIZE, -CURSOR_SIZE,  CURSOR_SIZE, -CURSOR_SIZE);
+            display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE,
+                          CURSOR_SIZE);
+            display->Line(CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE);
+            display->Line(-CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE);
+            display->Line(-CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE,
+                          -CURSOR_SIZE);
             handedoff = true; // Immediate hadnoff in HAD mode
         }
 
@@ -138,15 +146,19 @@ void AdvancedHarmTargetingPod::HADDisplay(VirtualDisplay* activeDisplay)
     if (curWaypoint)
     {
         curWaypoint->GetLocation(&wpX, &wpY, &wpZ);
-        y2 = (wpX - platform->XPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
-        x2 = (wpY - platform->YPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
+        y2 = (wpX - platform->XPos()) * FT_TO_NM / displayRange *
+             HTS_DISPLAY_RADIUS;
+        x2 = (wpY - platform->YPos()) * FT_TO_NM / displayRange *
+             HTS_DISPLAY_RADIUS;
         curWaypoint = curWaypoint->GetNextWP();
 
         while (curWaypoint)
         {
             curWaypoint->GetLocation(&wpX, &wpY, &wpZ);
-            displayY = (wpX - platform->XPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
-            displayX = (wpY - platform->YPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
+            displayY = (wpX - platform->XPos()) * FT_TO_NM / displayRange *
+                       HTS_DISPLAY_RADIUS;
+            displayX = (wpY - platform->YPos()) * FT_TO_NM / displayRange *
+                       HTS_DISPLAY_RADIUS;
             display->Line(x2, y2, displayX, displayY);
             x2 = displayX;
             y2 = displayY;
@@ -187,7 +199,8 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     origSinAng = trig2.sin;
 
     // Draw all known emmitters
-    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement;
+         tmpElement = tmpElement->GetNext())
     {
         if (tmpElement->BaseObject() == NULL)
         {
@@ -195,21 +208,25 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Check if emitter is on priority list
-        if ( not IsInPriorityList(tmpElement->symbol))
+        if (not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
 
         // Hold original positions to keep track if locked target hadn't past 3-9 o'clock line
-        y = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
-        x = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
+        y = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM /
+            displayRange * HTS_DISPLAY_RADIUS;
+        x = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM /
+            displayRange * HTS_DISPLAY_RADIUS;
 
         origDisplayX = origCosAng * x - origSinAng * y;
         origDisplayY = origSinAng * x + origCosAng * y + HTS_Y_OFFSET;
 
         // Compute the world space oriented, display space scaled, obacked up ownship relative position of the emitter
-        y = (tmpElement->BaseObject()->XPos() - XPosBackup) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
-        x = (tmpElement->BaseObject()->YPos() - YPosBackup) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
+        y = (tmpElement->BaseObject()->XPos() - XPosBackup) * FT_TO_NM /
+            displayRange * HTS_DISPLAY_RADIUS;
+        x = (tmpElement->BaseObject()->YPos() - YPosBackup) * FT_TO_NM /
+            displayRange * HTS_DISPLAY_RADIUS;
 
         // Rotate it into heading up space and translate it down to deal with our vertical offset
         displayX = cosAng * x - sinAng * y;
@@ -253,7 +270,8 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
         // JB 010726 Clear the designated target if behind the 3/9 line.
         if (origDisplayY - HTS_Y_OFFSET < 0)
         {
-            if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (lockedTarget and
+                tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 FCC->dropTrackCmd = TRUE;
             }
@@ -262,14 +280,17 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
         DrawEmitter(tmpElement, displayX, displayY, origDisplayY);
 
         // Mark the locked target
-        if (origDisplayY - HTS_Y_OFFSET > 0 and lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+        if (origDisplayY - HTS_Y_OFFSET > 0 and lockedTarget and
+            tmpElement->BaseObject() == lockedTarget->BaseData())
         {
             tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITE));
-            display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE);
-            display->Line(CURSOR_SIZE, -CURSOR_SIZE,  CURSOR_SIZE, CURSOR_SIZE);
-            display->Line(-CURSOR_SIZE, CURSOR_SIZE,  CURSOR_SIZE, CURSOR_SIZE);
-            display->Line(-CURSOR_SIZE, -CURSOR_SIZE,  CURSOR_SIZE, -CURSOR_SIZE);
+            display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE,
+                          CURSOR_SIZE);
+            display->Line(CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE);
+            display->Line(-CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE);
+            display->Line(-CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE,
+                          -CURSOR_SIZE);
             handedoff = true;
         }
 
@@ -278,8 +299,10 @@ void AdvancedHarmTargetingPod::HADExpDisplay(VirtualDisplay* activeDisplay)
     }
 
     // Now draw the ownship symbol in relation to the zoomed area
-    y = (platform->XPos() - XPosBackup) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
-    x = (platform->YPos() - YPosBackup) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
+    y = (platform->XPos() - XPosBackup) * FT_TO_NM / displayRange *
+        HTS_DISPLAY_RADIUS;
+    x = (platform->YPos() - YPosBackup) * FT_TO_NM / displayRange *
+        HTS_DISPLAY_RADIUS;
 
     // Rotate it into heading up space and translate it down to deal with our vertical offset
     displayX = cosAng * x - sinAng * y;
@@ -380,7 +403,8 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
     ClearDTSB(); // clear DTSB first
     numOfDrawnTargets = 0;
 
-    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement;
+         tmpElement = tmpElement->GetNext())
     {
         if (tmpElement->BaseObject() == NULL)
         {
@@ -388,14 +412,16 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Check if emitter is on priority list
-        if ( not IsInPriorityList(tmpElement->symbol))
+        if (not IsInPriorityList(tmpElement->symbol))
         {
             continue;
         }
 
         // Check if range is less than 60NM (no reason to get anything beyond...)
-        rangeY = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM;
-        rangeX = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM;
+        rangeY =
+            (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM;
+        rangeX =
+            (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM;
 
         rangeY *= rangeY;
         rangeX *= rangeX;
@@ -407,15 +433,18 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
         }
 
         // Compute the world space oriented, display space scaled, ownship relative postion of the emitter
-        y = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
-        x = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
-        float alt = (-platform->ZPos() - (-tmpElement->BaseObject()->ZPos())) * FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
+        y = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM /
+            displayRange * HAS_DISPLAY_RADIUS;
+        x = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM /
+            displayRange * HAS_DISPLAY_RADIUS;
+        float alt = (-platform->ZPos() - (-tmpElement->BaseObject()->ZPos())) *
+                    FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
 
         // Now calculate elevation (and not range)
         x2 = x * x;
         y2 = y * y;
-        range = sqrt(x2 + y2);   // Get range
-        alpha = atan(alt / range);    // Get the elevation angle
+        range = sqrt(x2 + y2); // Get range
+        alpha = atan(alt / range); // Get the elevation angle
         elevation = (1.0f - (alpha / HALF_PI)) * HAS_DISPLAY_RADIUS;
 
         NormDisplayX = cosAng * x - sinAng * y;
@@ -429,7 +458,7 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
         displayY = ey * zoomFactor + HTS_Y_OFFSET;
 
         // RV - I-Hawk - Diplay only what's inside the ALIC video
-        if ( not IsInsideALIC(displayX, displayY))
+        if (not IsInsideALIC(displayX, displayY))
         {
             continue;
         }
@@ -444,7 +473,8 @@ void AdvancedHarmTargetingPod::HASDisplay(VirtualDisplay* activeDisplay)
         // JB 010726 Clear the designated target if behind the 3/9 line.
         if (NormDisplayY - HTS_Y_OFFSET < 0.0f)
         {
-            if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (lockedTarget and
+                tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 FCC->dropTrackCmd = TRUE;
             }
@@ -507,9 +537,11 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
 
     if (preHandoffMode == Has)
     {
-        for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+        for (tmpElement = FCC->GetFirstGroundElement(); tmpElement;
+             tmpElement = tmpElement->GetNext())
         {
-            if ( not lockedTarget or not lockedTarget->BaseData() or preHandoffMode == Pos)
+            if (not lockedTarget or not lockedTarget->BaseData() or
+                preHandoffMode == Pos)
             {
                 break;
             }
@@ -520,9 +552,13 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             }
 
             // Compute the world space oriented, display space scaled, ownship relative postion of the emitter
-            y = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
-            x = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
-            float alt = (-platform->ZPos() - (-tmpElement->BaseObject()->ZPos())) * FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
+            y = (tmpElement->BaseObject()->XPos() - platform->XPos()) *
+                FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
+            x = (tmpElement->BaseObject()->YPos() - platform->YPos()) *
+                FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
+            float alt =
+                (-platform->ZPos() - (-tmpElement->BaseObject()->ZPos())) *
+                FT_TO_NM / displayRange * HAS_DISPLAY_RADIUS;
 
             // Displaying azimuth/elevation like HAS mode
             x2 = x * x;
@@ -545,7 +581,7 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             //if ((fabs(displayX) > 1.0f) or (fabs(displayY) > 1.0f))
 
             // RV - I-Hawk - Diplay only what's inside the ALIC video
-            if ( not IsInsideALIC(displayX, displayY))
+            if (not IsInsideALIC(displayX, displayY))
             {
                 continue;
             }
@@ -564,7 +600,8 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             // JB 010726 Clear the designated target if behind the 3/9 line.
             if (NormDisplayY - HTS_Y_OFFSET < 0.0f)
             {
-                if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+                if (lockedTarget and
+                    tmpElement->BaseObject() == lockedTarget->BaseData())
                 {
                     FCC->dropTrackCmd = TRUE;
                 }
@@ -574,20 +611,25 @@ void AdvancedHarmTargetingPod::HandoffDisplay(VirtualDisplay* activeDisplay)
             BoxTargetDTSB(tmpElement->symbol, displayX, displayY);
 
             // Mark the locked target
-            if (displayY - HTS_Y_OFFSET > 0 and lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+            if (displayY - HTS_Y_OFFSET > 0 and lockedTarget and
+                tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 display->SetColor(GetMfdColor(MFD_WHITE));
-                display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE);
-                display->Line(CURSOR_SIZE, -CURSOR_SIZE,  CURSOR_SIZE, CURSOR_SIZE);
-                display->Line(-CURSOR_SIZE, CURSOR_SIZE,  CURSOR_SIZE, CURSOR_SIZE);
-                display->Line(-CURSOR_SIZE, -CURSOR_SIZE,  CURSOR_SIZE, -CURSOR_SIZE);
+                display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE,
+                              CURSOR_SIZE);
+                display->Line(CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE,
+                              CURSOR_SIZE);
+                display->Line(-CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE,
+                              CURSOR_SIZE);
+                display->Line(-CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE,
+                              -CURSOR_SIZE);
             }
 
             display->AdjustOriginInViewport(-displayX, -displayY);
         }
     }
 
-    if ( not lockedTarget)   // Back to HAS mode
+    if (not lockedTarget) // Back to HAS mode
     {
         SetSubMode(HAS);
         ((SimVehicleClass*)platform)->SOIManager(SimVehicleClass::SOI_WEAPON);
@@ -631,8 +673,8 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     int theWPnum;
     char str[24];
     FireControlComputer* FCC = ((SimVehicleClass*)platform)->GetFCC();
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-	SMSClass* Sms = NULL;
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
+    SMSClass* Sms = NULL;
 
     if (playerAC)
     {
@@ -666,10 +708,10 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
             tempWP = POSTargetsWPs[i];
             GetOsbPos(OsbIndex, OsbPosX, OsbPosY);
             tempColor = display->Color();
-            display->SetColor(GetMfdColor(MFD_WHITY_GRAY));  // "whity" gray
+            display->SetColor(GetMfdColor(MFD_WHITY_GRAY)); // "whity" gray
 
             // This one is the current target
-            if (i == POSTargetIndex and tmpElement and lockedTarget and 
+            if (i == POSTargetIndex and tmpElement and lockedTarget and
                 tmpElement->BaseObject() == lockedTarget->BaseData())
             {
                 curTarget = POSTargets[i];
@@ -687,28 +729,35 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
                 }
 
                 float zero = 0.0f;
-                UpdateDTSB(curTarget->symbol, zero, zero);    // Get it into DTSB
-                display->AdjustOriginInViewport(-0.55f, LDLVerticalPos - 0.1f + HTS_Y_OFFSET);
+                UpdateDTSB(curTarget->symbol, zero, zero); // Get it into DTSB
+                display->AdjustOriginInViewport(-0.55f, LDLVerticalPos - 0.1f +
+                                                            HTS_Y_OFFSET);
                 DrawEmitterSymbol(curTarget->symbol, boxed);
-                display->AdjustOriginInViewport(0.55f, -(LDLVerticalPos - 0.1f + HTS_Y_OFFSET));
+                display->AdjustOriginInViewport(
+                    0.55f, -(LDLVerticalPos - 0.1f + HTS_Y_OFFSET));
 
                 // Get the waypoint number where this target is at, we need to display it
                 // under the LSDL line
                 theWPnum = FindWaypointNum(curTargetWP);
                 sprintf(str, "%02d", theWPnum);
-                display->TextCenter(-0.54f, LDLVerticalPos - 0.15f + HTS_Y_OFFSET, str);
+                display->TextCenter(-0.54f,
+                                    LDLVerticalPos - 0.15f + HTS_Y_OFFSET, str);
 
                 // Get missile TOF. Should also be with the under-LSDL pre-launch info
                 if (curMissile and curTarget and curTarget->BaseObject())
                 {
                     // Get the range to the tmpElement which is the current target "candidate"
-                    dx = fabs(playerAC->XPos() - curTarget->BaseObject()->XPos());
+                    dx = fabs(playerAC->XPos() -
+                              curTarget->BaseObject()->XPos());
                     dx *= dx;
-                    dy = fabs(playerAC->YPos() - curTarget->BaseObject()->YPos());
+                    dy = fabs(playerAC->YPos() -
+                              curTarget->BaseObject()->YPos());
                     dy *= dy;
                     theRange = sqrt(dx + dy);
 
-                    curTOF = curMissile->GetTOF(-playerAC->ZPos(), playerAC->GetVt(), 0.0f, 0.0f, theRange);
+                    curTOF =
+                        curMissile->GetTOF(-playerAC->ZPos(), playerAC->GetVt(),
+                                           0.0f, 0.0f, theRange);
                 }
 
                 if (curTOF > 0.0f)
@@ -718,8 +767,8 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
                     temp -= minutes * 60.0f;
                     seconds = FloatToInt32(temp);
                     sprintf(str, "%d:%02d", abs(minutes), abs(seconds));
-                    display->TextCenter(-0.55f, LDLVerticalPos - 0.28f + HTS_Y_OFFSET, str);
-
+                    display->TextCenter(
+                        -0.55f, LDLVerticalPos - 0.28f + HTS_Y_OFFSET, str);
                 }
 
                 // RV - I-Hawk - Get ETA - BTW I noticed the HUD ETA for waypoints is fucked up
@@ -728,21 +777,25 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
 
                 // Here calculating same way as the DED
                 curTargetWP->GetLocation(&wpX, &wpY, &wpZ);
-                ETA = (float)(SimLibElapsedTime / SEC_TO_MSEC) + FloatToInt32(Distance(
-                            playerAC->XPos(), playerAC->YPos(), wpX, wpY)
-                        / playerAC->GetVt());
+                ETA = (float)(SimLibElapsedTime / SEC_TO_MSEC) +
+                      FloatToInt32(Distance(playerAC->XPos(), playerAC->YPos(),
+                                            wpX, wpY) /
+                                   playerAC->GetVt());
 
                 // Calculate ETA
                 // Get rid of any days first
-                days = FloatToInt32(ETA / 86400.0f);     // 86400 seconds in 24 hours
+                days =
+                    FloatToInt32(ETA / 86400.0f); // 86400 seconds in 24 hours
                 ETA -= days * 86400.0f;
                 hours = FloatToInt32(ETA / 3600.0f);
                 ETA -= hours * 3600.0f;
                 minutes = FloatToInt32(ETA / 60.0f);
                 ETA -= minutes * 60.0f;
                 seconds = FloatToInt32(ETA);
-                sprintf(str, "%d:%02d:%02d", abs(hours), abs(minutes), abs(seconds));
-                display->TextCenter(-0.56f, LDLVerticalPos - 0.37f + HTS_Y_OFFSET, str);
+                sprintf(str, "%d:%02d:%02d", abs(hours), abs(minutes),
+                        abs(seconds));
+                display->TextCenter(-0.56f,
+                                    LDLVerticalPos - 0.37f + HTS_Y_OFFSET, str);
             }
 
             display->AdjustOriginInViewport(OsbPosX + 0.1f, OsbPosY);
@@ -760,7 +813,8 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     }
 
     // In case of a launch, save the target's symbol and WP
-    if (curMissile and curMissile->launchState not_eq MissileClass::PreLaunch and lockedTarget)
+    if (curMissile and
+        curMissile->launchState not_eq MissileClass::PreLaunch and lockedTarget)
     {
         // Stop tracking the missile
         curMissile = NULL;
@@ -776,14 +830,16 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
         }
     }
 
-    if (missileLaunched)   // Handle the last launched missile data
+    if (missileLaunched) // Handle the last launched missile data
     {
         tempColor = display->Color();
         display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
         // Draw the emitter simbol above the LSDL line at the post-launch info slot is
-        display->AdjustOriginInViewport(0.5f, LDLVerticalPos + 0.1f + HTS_Y_OFFSET);
+        display->AdjustOriginInViewport(0.5f,
+                                        LDLVerticalPos + 0.1f + HTS_Y_OFFSET);
         DrawEmitterSymbol(prevTargteSymbol, 0);
-        display->AdjustOriginInViewport(-0.5f, -(LDLVerticalPos + 0.1f + HTS_Y_OFFSET));
+        display->AdjustOriginInViewport(
+            -0.5f, -(LDLVerticalPos + 0.1f + HTS_Y_OFFSET));
 
         // Get the previous target waypoint number
         sprintf(str, "%02d", prevWPNum);
@@ -812,7 +868,8 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
             temp -= minutes * 60.0f;
             seconds = FloatToInt32(temp);
             sprintf(str, "%d:%02d", abs(minutes), abs(seconds));
-            display->TextCenter(0.48f, LDLVerticalPos + 0.38f + HTS_Y_OFFSET, str);
+            display->TextCenter(0.48f, LDLVerticalPos + 0.38f + HTS_Y_OFFSET,
+                                str);
         }
 
         display->SetColor(tempColor);
@@ -824,7 +881,7 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     {
         preHandoffMode = Pos;
 
-        if (handedoff == false)   // Tick the Handoff timer down
+        if (handedoff == false) // Tick the Handoff timer down
         {
             if (SimLibElapsedTime - handoffRefTime > 3 * SEC_TO_MSEC)
             {
@@ -843,54 +900,56 @@ void AdvancedHarmTargetingPod::POSDisplay(VirtualDisplay* activeDisplay)
     display->CenterOriginInViewport();
 }
 
-void AdvancedHarmTargetingPod::DrawEmitter(GroundListElement* tmpElement, float &displayX, float &displayY, float &origDisplayY)
+void AdvancedHarmTargetingPod::DrawEmitter(GroundListElement* tmpElement,
+                                           float& displayX, float& displayY,
+                                           float& origDisplayY)
 {
     DWORD color;
-    int   boxed;
+    int boxed;
 
     switch (submode)
     {
-        case HAS:
-            color = GetMfdColor(MFD_WHITY_GRAY);
+    case HAS:
+        color = GetMfdColor(MFD_WHITY_GRAY);
+        boxed = 0;
+        break;
+
+    case Handoff:
+        color = GetMfdColor(MFD_WHITY_GRAY);
+        boxed = 2;
+        break;
+
+    case HAD:
+    default:
+
+        // Set the symbols draw intensity based on its state
+        if (origDisplayY - HTS_Y_OFFSET < 0)
+        {
+            color = 0x00008000;
             boxed = 0;
-            break;
-
-        case Handoff:
-            color = GetMfdColor(MFD_WHITY_GRAY);
+        }
+        else if (tmpElement->IsSet(GroundListElement::Launch))
+        {
+            color = GetMfdColor(MFD_RED);
+            boxed = flash ? 2 : 0;
+        }
+        else if (tmpElement->IsSet(GroundListElement::Track))
+        {
+            color = GetMfdColor(MFD_RED);
             boxed = 2;
-            break;
+        }
+        else if (tmpElement->IsSet(GroundListElement::Radiate))
+        {
+            color = GetMfdColor(MFD_YELLOW);
+            boxed = 0;
+        }
+        else
+        {
+            color = 0x00008000;
+            boxed = 0;
+        }
 
-        case HAD:
-        default:
-
-            // Set the symbols draw intensity based on its state
-            if (origDisplayY - HTS_Y_OFFSET < 0)
-            {
-                color = 0x00008000;
-                boxed = 0;
-            }
-            else if (tmpElement->IsSet(GroundListElement::Launch))
-            {
-                color = GetMfdColor(MFD_RED);
-                boxed = flash ? 2 : 0;
-            }
-            else if (tmpElement->IsSet(GroundListElement::Track))
-            {
-                color = GetMfdColor(MFD_RED);
-                boxed = 2;
-            }
-            else if (tmpElement->IsSet(GroundListElement::Radiate))
-            {
-                color = GetMfdColor(MFD_YELLOW);
-                boxed = 0;
-            }
-            else
-            {
-                color = 0x00008000;
-                boxed = 0;
-            }
-
-            break;
+        break;
     }
 
     // Adjust our display location and draw the emitter symbol
@@ -902,25 +961,26 @@ void AdvancedHarmTargetingPod::DrawEmitter(GroundListElement* tmpElement, float 
 }
 
 
-void AdvancedHarmTargetingPod::GetOsbPos(int &OsbIndex, float &OsbPosX, float &OsbPosY)
+void AdvancedHarmTargetingPod::GetOsbPos(int& OsbIndex, float& OsbPosX,
+                                         float& OsbPosY)
 {
     switch (OsbIndex)
     {
-        case 0:
-            GetButtonPos(16, &OsbPosX, &OsbPosY);
-            break;
+    case 0:
+        GetButtonPos(16, &OsbPosX, &OsbPosY);
+        break;
 
-        case 1:
-            GetButtonPos(17, &OsbPosX, &OsbPosY);
-            break;
+    case 1:
+        GetButtonPos(17, &OsbPosX, &OsbPosY);
+        break;
 
-        case 2:
-            GetButtonPos(18, &OsbPosX, &OsbPosY);
-            break;
+    case 2:
+        GetButtonPos(18, &OsbPosX, &OsbPosY);
+        break;
 
-        case 3:
-        default:
-            GetButtonPos(19, &OsbPosX, &OsbPosY);
-            break;
+    case 3:
+    default:
+        GetButtonPos(19, &OsbPosX, &OsbPosY);
+        break;
     }
 }

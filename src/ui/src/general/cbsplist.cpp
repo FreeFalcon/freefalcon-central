@@ -16,7 +16,7 @@
 #include "graphics/include/drawplat.h"
 #include "graphics/include/drawguys.h"
 #include "vu2.h"
-#include "F4vu.h"
+#include "f4vu.h"
 #include "team.h"
 #include "sim/include/simbase.h"
 //#include "simlib.h"
@@ -32,16 +32,16 @@
 #include "cbsplist.h"
 #include "classtbl.h"
 
-void PositandOrientSetData(float x, float y, float z, float pitch, float roll, float yaw,
-                           Tpoint* simView, Trotation* viewRotation);
+void PositandOrientSetData(float x, float y, float z, float pitch, float roll,
+                           float yaw, Tpoint *simView, Trotation *viewRotation);
 
 long GetFeatureFlags(Objective obj, short featno)
 {
-    FeatureClassDataType* fc;
+    FeatureClassDataType *fc;
     long classID;
 
     if (featno < 0 or featno >= obj->GetObjectiveClassData()->Features)
-        return(0);
+        return (0);
 
     classID = obj->GetFeatureID(featno);
 
@@ -50,10 +50,10 @@ long GetFeatureFlags(Objective obj, short featno)
         fc = GetFeatureClassData(classID);
 
         if (fc)
-            return(fc->Flags);
+            return (fc->Flags);
     }
 
-    return(0);
+    return (0);
 }
 
 void C_BSPList::Setup()
@@ -73,7 +73,8 @@ void C_BSPList::Add(BSPLIST **list, BSPLIST *obj)
 {
     BSPLIST *cur;
 
-    if (obj == NULL) return;
+    if (obj == NULL)
+        return;
 
     if (*list == NULL)
         *list = obj;
@@ -137,7 +138,7 @@ void C_BSPList::Remove(long ID, BSPLIST **top)
 {
     BSPLIST *cur, *delme;
 
-    if (*top == NULL) 
+    if (*top == NULL)
         return;
 
     cur = *top;
@@ -172,9 +173,9 @@ BOOL C_BSPList::FindLock(long ID)
 
     for (i = 0; i < LockCount_; i++)
         if (LockList_[i] == ID)
-            return(TRUE);
+            return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_BSPList::Lock(long ID)
@@ -199,12 +200,12 @@ BSPLIST *C_BSPList::Find(long ID, BSPLIST *list)
     while (list not_eq NULL)
     {
         if (list->ID == ID)
-            return(list);
+            return (list);
 
         list = list->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 BSPLIST *C_BSPList::Load(long ID, long objID)
@@ -216,9 +217,9 @@ BSPLIST *C_BSPList::Load(long ID, long objID)
     obj = new BSPLIST;
 
     if (obj == NULL)
-        return(NULL);
+        return (NULL);
 
-    if ( not FindLock(objID))
+    if (not FindLock(objID))
         Lock(objID);
 
     objPos.x = 0;
@@ -233,11 +234,11 @@ BSPLIST *C_BSPList::Load(long ID, long objID)
     if (obj->object == NULL)
     {
         delete obj;
-        return(NULL);
+        return (NULL);
     }
 
     obj->Next = NULL;
-    return(obj);
+    return (obj);
 }
 
 BSPLIST *C_BSPList::LoadBSP(long ID, long objID)
@@ -249,9 +250,9 @@ BSPLIST *C_BSPList::LoadBSP(long ID, long objID)
     obj = new BSPLIST;
 
     if (obj == NULL)
-        return(NULL);
+        return (NULL);
 
-    if ( not FindLock(objID))
+    if (not FindLock(objID))
         Lock(objID);
 
     objPos.x = 0;
@@ -266,11 +267,11 @@ BSPLIST *C_BSPList::LoadBSP(long ID, long objID)
     if (obj->object == NULL)
     {
         delete obj;
-        return(NULL);
+        return (NULL);
     }
 
     obj->Next = NULL;
-    return(obj);
+    return (obj);
 }
 
 BSPLIST *C_BSPList::LoadBridge(long, long)
@@ -281,7 +282,7 @@ BSPLIST *C_BSPList::LoadBridge(long, long)
 
     // obj=new BSPLIST;
     // if(obj == NULL)
-    return(NULL);
+    return (NULL);
 
     // if( not FindLock(objID))
     // Lock(objID);
@@ -299,16 +300,17 @@ BSPLIST *C_BSPList::LoadBridge(long, long)
     // return(obj);
 }
 
-BSPLIST *C_BSPList::LoadBuilding(long ID, long objID, Tpoint *pos, float heading)
+BSPLIST *C_BSPList::LoadBuilding(long ID, long objID, Tpoint *pos,
+                                 float heading)
 {
     BSPLIST *obj;
 
     obj = new BSPLIST;
 
     if (obj == NULL)
-        return(NULL);
+        return (NULL);
 
-    if ( not FindLock(objID))
+    if (not FindLock(objID))
         Lock(objID);
 
     obj->ID = ID;
@@ -319,16 +321,18 @@ BSPLIST *C_BSPList::LoadBuilding(long ID, long objID, Tpoint *pos, float heading
     if (obj->object == NULL)
     {
         delete obj;
-        return(NULL);
+        return (NULL);
     }
 
     obj->Next = NULL;
-    return(obj);
+    return (obj);
 }
 
-BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc)
+BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid,
+                                    Falcon4EntityClassType *classPtr,
+                                    FeatureClassDataType *fc)
 {
-    short    visType = -1;
+    short visType = -1;
     long prevFlags, nextFlags;
     BSPLIST *bspobj = NULL;
 
@@ -337,19 +341,28 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM bitor FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq
+                VIS_DESTROYED and
+            (FeatureEntryDataTable[fid].Flags bitand
+             (FEAT_PREV_NORM bitor FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
 
-            if (prevFlags and (prevFlags bitand FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
+            if (prevFlags and (prevFlags bitand FEAT_PREV_NORM) and
+                (obj->GetFeatureStatus(f - 1) bitand VIS_TYPE_MASK) ==
+                    VIS_DESTROYED)
             {
-                if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
+                if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and
+                    (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) ==
+                        VIS_DESTROYED)
                     visType = classPtr->visType[VIS_BOTH_DEST];
                 else
                     visType = classPtr->visType[VIS_LEFT_DEST];
             }
-            else if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
+            else if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and
+                     (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) ==
+                         VIS_DESTROYED)
                 visType = classPtr->visType[VIS_RIGHT_DEST];
         }
 
@@ -362,8 +375,8 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
 
             bspobj = new BSPLIST;
 
-            if ( not bspobj)
-                return(NULL);
+            if (not bspobj)
+                return (NULL);
 
             bspobj->ID = ID bitor 0x8000;
 
@@ -380,8 +393,8 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
             // lead element.
             bspobj = new BSPLIST;
 
-            if ( not bspobj)
-                return(NULL);
+            if (not bspobj)
+                return (NULL);
 
             bspobj->ID = ID bitor 0x8000;
 
@@ -392,12 +405,16 @@ BSPLIST *C_BSPList::CreateContainer(long ID, Objective obj, short f, short fid, 
         }
     }
 
-    return(bspobj);
+    return (bspobj);
 }
 
-BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent)
+BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f,
+                                        short fid,
+                                        Falcon4EntityClassType *classPtr,
+                                        FeatureClassDataType *fc,
+                                        Tpoint *objPos, BSPLIST *Parent)
 {
-    short    visType = -1;
+    short visType = -1;
     long prevFlags, nextFlags;
     BSPLIST *bspobj = NULL;
     float Yaw;
@@ -409,19 +426,28 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
     if (visType >= 0)
     {
         // In many cases, our visType should be modified by our neighbors.
-        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and (FeatureEntryDataTable[fid].Flags bitand (FEAT_PREV_NORM bitor FEAT_NEXT_NORM)))
+        if ((obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq
+                VIS_DESTROYED and
+            (FeatureEntryDataTable[fid].Flags bitand
+             (FEAT_PREV_NORM bitor FEAT_NEXT_NORM)))
         {
             prevFlags = GetFeatureFlags(obj, static_cast<short>(f - 1));
             nextFlags = GetFeatureFlags(obj, static_cast<short>(f + 1));
 
-            if (prevFlags and (prevFlags bitand FEAT_PREV_NORM) and (obj->GetFeatureStatus(f - 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
+            if (prevFlags and (prevFlags bitand FEAT_PREV_NORM) and
+                (obj->GetFeatureStatus(f - 1) bitand VIS_TYPE_MASK) ==
+                    VIS_DESTROYED)
             {
-                if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
+                if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and
+                    (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) ==
+                        VIS_DESTROYED)
                     visType = classPtr->visType[VIS_BOTH_DEST];
                 else
                     visType = classPtr->visType[VIS_LEFT_DEST];
             }
-            else if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) == VIS_DESTROYED)
+            else if (nextFlags and (nextFlags bitand FEAT_NEXT_NORM) and
+                     (obj->GetFeatureStatus(f + 1) bitand VIS_TYPE_MASK) ==
+                         VIS_DESTROYED)
                 visType = classPtr->visType[VIS_RIGHT_DEST];
         }
 
@@ -435,10 +461,10 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             {
                 bspobj = new BSPLIST;
 
-                if ( not bspobj)
-                    return(NULL);
+                if (not bspobj)
+                    return (NULL);
 
-                if ( not FindLock(visType))
+                if (not FindLock(visType))
                     Lock(visType);
 
                 bspobj->ID = ID;
@@ -446,16 +472,24 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
                 bspobj->owner = Parent;
                 bspobj->Next = NULL;
 
-                if ((fc->Flags bitand FEAT_NEXT_IS_TOP) and (obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED)
-                    bspobj->object = new DrawableRoadbed(visType, visType + 1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));
+                if ((fc->Flags bitand FEAT_NEXT_IS_TOP) and
+                    (obj->GetFeatureStatus(f) bitand VIS_TYPE_MASK) not_eq
+                        VIS_DESTROYED)
+                    bspobj->object = new DrawableRoadbed(
+                        visType, visType + 1, objPos, Yaw, 10.0f,
+                        static_cast<float>(atan(20.0f / 280.0f)));
                 else
-                    bspobj->object = new DrawableRoadbed(visType, -1, objPos, Yaw, 10.0f, static_cast<float>(atan(20.0f / 280.0f)));
+                    bspobj->object = new DrawableRoadbed(
+                        visType, -1, objPos, Yaw, 10.0f,
+                        static_cast<float>(atan(20.0f / 280.0f)));
             }
 
             if (bspobj->object)
             {
-                ShiAssert(bspobj->object->GetClass() == DrawableObject::Roadbed);
-                ((DrawableBridge*)Parent->object)->AddSegment((DrawableRoadbed*)bspobj->object);
+                ShiAssert(bspobj->object->GetClass() ==
+                          DrawableObject::Roadbed);
+                ((DrawableBridge *)Parent->object)
+                    ->AddSegment((DrawableRoadbed *)bspobj->object);
             }
         }
         // Is the container a big flat thing (airbase)?
@@ -465,10 +499,10 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             // That means it sticks straight up the -Z axis
             bspobj = new BSPLIST;
 
-            if ( not bspobj)
-                return(NULL);
+            if (not bspobj)
+                return (NULL);
 
-            if ( not FindLock(visType))
+            if (not FindLock(visType))
                 Lock(visType);
 
             bspobj->ID = ID;
@@ -478,10 +512,13 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
             bspobj->object = new DrawableBuilding(visType, objPos, Yaw, 1.0F);
 
             // Am I Flat (can things drive across it)?
-            if (fc->Flags bitand (FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER))
-                ((DrawablePlatform*)Parent->object)->InsertStaticSurface((DrawableBuilding*)bspobj->object);
+            if (fc->Flags bitand
+                (FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER))
+                ((DrawablePlatform *)Parent->object)
+                    ->InsertStaticSurface((DrawableBuilding *)bspobj->object);
             else
-                ((DrawablePlatform*)Parent->object)->InsertStaticObject(bspobj->object);
+                ((DrawablePlatform *)Parent->object)
+                    ->InsertStaticObject(bspobj->object);
         }
         else
         {
@@ -490,10 +527,10 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
 
             bspobj = new BSPLIST;
 
-            if ( not bspobj)
-                return(NULL);
+            if (not bspobj)
+                return (NULL);
 
-            if ( not FindLock(visType))
+            if (not FindLock(visType))
                 Lock(visType);
 
             bspobj->ID = ID;
@@ -504,20 +541,22 @@ BSPLIST *C_BSPList::LoadDrawableFeature(long ID, Objective obj, short f, short f
         }
     }
 
-    return(bspobj);
+    return (bspobj);
 }
 
-BSPLIST *C_BSPList::LoadDrawableUnit(long ID, long visType, Tpoint *objPos, float facing, uchar domain, uchar type, uchar stype)
+BSPLIST *C_BSPList::LoadDrawableUnit(long ID, long visType, Tpoint *objPos,
+                                     float facing, uchar domain, uchar type,
+                                     uchar stype)
 {
     BSPLIST *bspobj;
     Trotation objRot;
 
     bspobj = new BSPLIST;
 
-    if ( not bspobj)
-        return(NULL);
+    if (not bspobj)
+        return (NULL);
 
-    if ( not FindLock(visType))
+    if (not FindLock(visType))
         Lock(visType);
 
     bspobj->ID = ID;
@@ -528,13 +567,15 @@ BSPLIST *C_BSPList::LoadDrawableUnit(long ID, long visType, Tpoint *objPos, floa
     if (domain == DOMAIN_AIR and objPos->z < -10.0f)
     {
         Tpoint tmpPos;
-        PositandOrientSetData(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, facing, &tmpPos, &objRot);
+        PositandOrientSetData(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, facing, &tmpPos,
+                              &objRot);
         // objRot->heading=facing;
         bspobj->object = new DrawableBSP(visType, objPos, &objRot, 1.0f);
-        ((DrawableBSP*)bspobj->object)->SetSwitchMask(5, TRUE);
+        ((DrawableBSP *)bspobj->object)->SetSwitchMask(5, TRUE);
 
         if (visType == MapVisId(VIS_F16C))
-            ((DrawableBSP*)bspobj->object)->SetSwitchMask(10, 1); // Afterburner
+            ((DrawableBSP *)bspobj->object)
+                ->SetSwitchMask(10, 1); // Afterburner
     }
     else
     {
@@ -546,9 +587,10 @@ BSPLIST *C_BSPList::LoadDrawableUnit(long ID, long visType, Tpoint *objPos, floa
         else
         {
             // Make the ground vehicle as desired
-            bspobj->object = new DrawableGroundVehicle(visType, objPos, facing, 1.0f);
+            bspobj->object =
+                new DrawableGroundVehicle(visType, objPos, facing, 1.0f);
         }
     }
 
-    return(bspobj);
+    return (bspobj);
 }

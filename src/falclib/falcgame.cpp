@@ -6,18 +6,18 @@
 #include "f4vu.h"
 #include "vusessn.h"
 #include "tchar.h"
-#include "FalcSess.h"
+#include "falcsess.h"
 #include "ui/include/uicomms.h"
 #include "classtbl.h"
-#include "CampBase.h"
-#include "F4Thread.h"
-#include "CmpClass.h"
-#include "sim/include/SimBase.h"
+#include "campbase.h"
+#include "f4thread.h"
+#include "cmpclass.h"
+#include "sim/include/simbase.h"
 #include "rules.h"
 #include "dispcfg.h"
 #include "ui95/chandler.h"
-#include "FalcGame.h"
-#include "InvalidBufferException.h"
+#include "falcgame.h"
+#include "invalidbufferexception.h"
 //#include "datadir.h"
 
 extern C_Handler *gMainHandler;
@@ -29,13 +29,14 @@ static char PasswordKey1[] = "Coming soon to Stores Everywhere... FreeFalcon";
 static char PasswordKey2[] = "This is another stupid advertisement... hehehe";
 
 // constructors bitand destructor
-FalconGameEntity::FalconGameEntity(ulong domainMask, char *gameName) : VuGameEntity(domainMask, gameName)
+FalconGameEntity::FalconGameEntity(ulong domainMask, char *gameName)
+    : VuGameEntity(domainMask, gameName)
 {
     gameType = game_PlayerPool;
 
     // KCK: To keep this from conflicting with entities we plan to load, force
     // the creater to something non-zero for single player games.
-    if ( not share_.id_.creator_)
+    if (not share_.id_.creator_)
     {
         share_.id_.creator_ = 1;
         // Make a new collection with a filter to match
@@ -49,7 +50,8 @@ FalconGameEntity::FalconGameEntity(ulong domainMask, char *gameName) : VuGameEnt
     SetEntityType((unsigned short)(F4GameType + VU_LAST_ENTITY_TYPE));
 }
 
-FalconGameEntity::FalconGameEntity(VU_BYTE** stream, long *rem) : VuGameEntity(0, "VuGame")
+FalconGameEntity::FalconGameEntity(VU_BYTE **stream, long *rem)
+    : VuGameEntity(0, "VuGame")
 {
     VU_ID sessionid(0, 0);
     VuSessionEntity *session;
@@ -68,9 +70,11 @@ FalconGameEntity::FalconGameEntity(VU_BYTE** stream, long *rem) : VuGameEntity(0
     sessionCollection_->Register();
 
     // VuTarget part
-    memcpychk(&share_.ownerId_.creator_, stream, sizeof(share_.ownerId_.creator_), rem);
+    memcpychk(&share_.ownerId_.creator_, stream,
+              sizeof(share_.ownerId_.creator_), rem);
     memcpychk(&share_.ownerId_.num_, stream, sizeof(share_.ownerId_.num_), rem);
-    memcpychk(&share_.assoc_.creator_, stream, sizeof(share_.assoc_.creator_), rem);
+    memcpychk(&share_.assoc_.creator_, stream, sizeof(share_.assoc_.creator_),
+              rem);
     memcpychk(&share_.assoc_.num_, stream, sizeof(share_.assoc_.num_), rem);
     memset(&bestEffortComms_, 0, sizeof(VuCommsContext));
     bestEffortComms_.status_ = VU_CONN_INACTIVE;
@@ -100,16 +104,16 @@ FalconGameEntity::FalconGameEntity(VU_BYTE** stream, long *rem) : VuGameEntity(0
         //     AddSession(sessionid);
     }
 
-    memcpychk(&domainMask_, stream, sizeof(ulong), rem);
+    memcpychk_u32(&domainMask_, stream, rem); // #104: on-wire 32-bit ulong
     memcpychk(&gameType, stream, sizeof(FalconGameType), rem);
     memcpychk(&rules, stream, sizeof(class RulesClass), rem);
     memcpychk(&size, stream, sizeof(uchar), rem);
     gameName_ = new char[size + 1];
-    memcpychk(gameName_, stream, sizeof(char)*size, rem);
+    memcpychk(gameName_, stream, sizeof(char) * size, rem);
     gameName_[size] = 0;
 }
 
-FalconGameEntity::FalconGameEntity(FILE* filePtr) : VuGameEntity(filePtr)
+FalconGameEntity::FalconGameEntity(FILE *filePtr) : VuGameEntity(filePtr)
 {
     fread(&gameType, sizeof(FalconGameType), 1, filePtr);
     fread(&rules, sizeof(class RulesClass), 1, filePtr);
@@ -119,13 +123,13 @@ FalconGameEntity::~FalconGameEntity(void)
 {
 }
 
-int FalconGameEntity::Save(VU_BYTE** stream)
+int FalconGameEntity::Save(VU_BYTE **stream)
 {
     int count = sessionCollection_->Count();
     VuSessionsIterator iter(this);
     VuSessionEntity *ent;
     VU_ID id;
-    int start = (int) * stream;
+    int start = (int)*stream;
     uchar size;
 
     // VuEntity part
@@ -139,7 +143,8 @@ int FalconGameEntity::Save(VU_BYTE** stream)
     *stream += sizeof(share_.id_.num_);
 
     // VuTarget part
-    memcpy(*stream, &share_.ownerId_.creator_, sizeof(share_.ownerId_.creator_));
+    memcpy(*stream, &share_.ownerId_.creator_,
+           sizeof(share_.ownerId_.creator_));
     *stream += sizeof(share_.ownerId_.creator_);
     memcpy(*stream, &share_.ownerId_.num_, sizeof(share_.ownerId_.num_));
     *stream += sizeof(share_.ownerId_.num_);
@@ -163,23 +168,22 @@ int FalconGameEntity::Save(VU_BYTE** stream)
         ent = iter.GetNext();
     }
 
-    memcpy(*stream, &domainMask_, sizeof(ulong));
-    *stream += sizeof(ulong);
+    memcpy_u32(stream, &domainMask_); // #104: on-wire 32-bit ulong
     memcpy(*stream, &gameType, sizeof(FalconGameType));
     *stream += sizeof(FalconGameType);
     memcpy(*stream, &rules, sizeof(class RulesClass));
     *stream += sizeof(class RulesClass);
 
-    size = (uchar) strlen(gameName_);
+    size = (uchar)strlen(gameName_);
     memcpy(*stream, &size, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(*stream, gameName_, sizeof(char)*size);
+    memcpy(*stream, gameName_, sizeof(char) * size);
     *stream += sizeof(char) * size;
 
-    return (int) * stream - start;
+    return (int)*stream - start;
 }
 
-int FalconGameEntity::Save(FILE* filePtr)
+int FalconGameEntity::Save(FILE *filePtr)
 {
     VuGameEntity::Save(filePtr);
     fwrite(&gameType, sizeof(FalconGameType), 1, filePtr);
@@ -190,26 +194,22 @@ int FalconGameEntity::Save(FILE* filePtr)
 int FalconGameEntity::SaveSize(void)
 {
     int count = sessionCollection_->Count();
-    int saveSize = sizeof(share_.entityType_) +
-                    sizeof(share_.flags_) +
-                    sizeof(share_.id_.creator_) +
-                    sizeof(share_.id_.num_) +
-                    sizeof(share_.ownerId_.creator_) +
-                    sizeof(share_.ownerId_.num_) +
-                    sizeof(share_.assoc_.creator_) +
-                    sizeof(share_.assoc_.num_) +
-                    sizeof(ushort) +
-                    sizeof(short) +
-                    sizeof(VU_ID) * count +
-                    sizeof(ulong) +
-                    LocalSize();
+    int saveSize = sizeof(share_.entityType_) + sizeof(share_.flags_) +
+                   sizeof(share_.id_.creator_) + sizeof(share_.id_.num_) +
+                   sizeof(share_.ownerId_.creator_) +
+                   sizeof(share_.ownerId_.num_) +
+                   sizeof(share_.assoc_.creator_) + sizeof(share_.assoc_.num_) +
+                   sizeof(ushort) + sizeof(short) + sizeof(VU_ID) * count +
+                   DISK_LONG + // #104: on-wire 32-bit ulong (domainMask_)
+                   LocalSize();
     return saveSize;
 }
 
 int FalconGameEntity::LocalSize() const
 {
-    uchar size = (uchar) strlen(gameName_);
-    return sizeof(uchar) + size + sizeof(FalconGameType) + sizeof(class RulesClass);
+    uchar size = (uchar)strlen(gameName_);
+    return sizeof(uchar) + size + sizeof(FalconGameType) +
+           sizeof(class RulesClass);
 }
 
 void FalconGameEntity::SetGameType(FalconGameType type)
@@ -229,20 +229,20 @@ void FalconGameEntity::EncipherPassword(char *data, long size)
 long FalconGameEntity::CheckPassword(_TCHAR *passwd)
 {
     _TCHAR buffer[RUL_PW_LEN];
-    memset(buffer, 0, sizeof(_TCHAR)*RUL_PW_LEN);
+    memset(buffer, 0, sizeof(_TCHAR) * RUL_PW_LEN);
     _tcscpy(buffer, passwd);
-    EncipherPassword((char*)buffer, sizeof(_TCHAR)*RUL_PW_LEN);
+    EncipherPassword((char *)buffer, sizeof(_TCHAR) * RUL_PW_LEN);
 
-    if (memcmp(buffer, rules.Password, sizeof(_TCHAR)*RUL_PW_LEN))
-        return(FALSE);
+    if (memcmp(buffer, rules.Password, sizeof(_TCHAR) * RUL_PW_LEN))
+        return (FALSE);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void FalconGameEntity::UpdateRules(RulesStruct *newrules)
 {
     rules.LoadRules(newrules);
-    EncipherPassword(rules.Password, sizeof(_TCHAR)*RUL_PW_LEN);
+    EncipherPassword(rules.Password, sizeof(_TCHAR) * RUL_PW_LEN);
 
     if (VuState() == VU_MEM_ACTIVE)
     {
@@ -259,7 +259,7 @@ void FalconGameEntity::DoFullUpdate(void)
 FalconGameType FalconGameEntity::GetGameType(void)
 {
     // KCK Hack to avoid having to type "if (FalconLocalGame and FalconLocalGame->GetGameType ...)"
-    if ( not this)
+    if (not this)
         return game_PlayerPool;
 
     return gameType;
@@ -267,7 +267,8 @@ FalconGameType FalconGameEntity::GetGameType(void)
 
 VU_ERRCODE FalconGameEntity::Handle(VuFullUpdateEvent *event)
 {
-    FalconGameEntity *tmpGame = (FalconGameEntity*)(event->expandedData_.get());
+    FalconGameEntity *tmpGame =
+        (FalconGameEntity *)(event->expandedData_.get());
     VuSessionsIterator iter(tmpGame);
     VuSessionEntity *ent;
 
@@ -291,14 +292,14 @@ VU_ERRCODE FalconGameEntity::Handle(VuFullUpdateEvent *event)
     {
 #if VU_ALL_FILTERED
 
-        if ( not sessionCollection_->Find(ent))
+        if (not sessionCollection_->Find(ent))
         {
             AddSession(ent);
         }
 
 #else
 
-        if ( not sessionCollection_->Find(ent->Id()))
+        if (not sessionCollection_->Find(ent->Id()))
         {
             AddSession(ent);
         }
@@ -323,17 +324,19 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
     MonoPrint("Calling Distribute() for %s", gameName_);
 
     if (sess)
-        MonoPrint("- player: %s.\n", ((FalconSessionEntity*)sess)->GetPlayerCallsign());
+        MonoPrint("- player: %s.\n",
+                  ((FalconSessionEntity *)sess)->GetPlayerCallsign());
     else
         MonoPrint("- distribute all.\n");
 
     // KCK: Try using association to let VU do the distribution for us
     VuGameEntity::Distribute(sess);
 
-    new_host = (FalconSessionEntity*)vuDatabase->Find(OwnerId());
+    new_host = (FalconSessionEntity *)vuDatabase->Find(OwnerId());
 
     if (new_host)
-        MonoPrint("New Host: %s\n", ((FalconSessionEntity*)new_host)->GetPlayerCallsign());
+        MonoPrint("New Host: %s\n",
+                  ((FalconSessionEntity *)new_host)->GetPlayerCallsign());
     else
         MonoPrint("No new host - shutting game down\n");
 
@@ -422,10 +425,9 @@ VU_ERRCODE FalconGameEntity::Distribute(VuSessionEntity *sess)
      VuExitCriticalSection();
      }
     */
-    if (FalconLocalGame and FalconLocalSession and \
-        FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and \
-        FalconLocalGame->OwnerId() == FalconLocalSession->Id() and \
-        gMainHandler)
+    if (FalconLocalGame and FalconLocalSession and
+        FalconLocalSession->GetFlyState() == FLYSTATE_IN_UI and
+        FalconLocalGame->OwnerId() == FalconLocalSession->Id() and gMainHandler)
     {
         INFOSetupRulesControls();
     }

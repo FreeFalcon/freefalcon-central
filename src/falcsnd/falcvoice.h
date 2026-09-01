@@ -17,22 +17,22 @@ enum
 
 typedef struct
 {
-    int                 mesgNum;
-    int                 status; // buffer filled VM sets to TRUE, VC sets to false in fillBuffer
-    unsigned char       *waveBuffer;        // audio buffer
-    DWORD               dataInWaveBuffer;   // audio data to process
-    DWORD               waveBufferLen;      // length of audio buffer
-    DWORD               waveBufferWrite;    // write offset
-    DWORD               waveBufferRead;     // read offset
-    F4CSECTIONHANDLE*    criticalSection; // Thread critical section information
+    int mesgNum;
+    int status; // buffer filled VM sets to TRUE, VC sets to false in fillBuffer
+    unsigned char *waveBuffer; // audio buffer
+    DWORD dataInWaveBuffer; // audio data to process
+    DWORD waveBufferLen; // length of audio buffer
+    DWORD waveBufferWrite; // write offset
+    DWORD waveBufferRead; // read offset
+    F4CSECTIONHANDLE *criticalSection; // Thread critical section information
 } VOICE_STREAM_BUFFER;
 
 typedef struct
 {
-    int                 status; // voice status
+    int status; // voice status
     int streamBuffer; // buffer to stream
-    WAVEFORMATEX        waveFormat; // Wave header information
-    int                 voiceHandle; // audio handle
+    WAVEFORMATEX waveFormat; // Wave header information
+    int voiceHandle; // audio handle
     // int currConv // current conv playing
     // int convQCount; // number of conversations pending
 } VOICE;
@@ -43,7 +43,7 @@ typedef struct
     long bytesDecoded; /* read from compressed file */
     long bytesRead; /* read from compressed file */
     long fileLength; /* uncompressed file size */
-    long compFileLength;     /* compressed file size */
+    long compFileLength; /* compressed file size */
     char *dataPtr; // memory location of compressed data
 } COMPRESSION_DATA;
 
@@ -87,7 +87,6 @@ public:
 // MLR 1/29/2004 - added protos
 void SetVoiceVolumes(void);
 void SetVoiceVolume(int channel);
-
 
 
 #endif

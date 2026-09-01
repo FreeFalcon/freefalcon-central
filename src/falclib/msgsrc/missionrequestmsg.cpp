@@ -5,25 +5,33 @@
  * Generated from file EVENTS.XLS by KEVINK
  */
 
-#include "MsgInc/MissionRequestMsg.h"
+#include "msginc/missionrequestmsg.h"
 #include "mesg.h"
-#include "ATM.h"
-#include "F4Thread.h"
+#include "atm.h"
+#include "f4thread.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-extern F4CSECTIONHANDLE* vuCritical;
+extern F4CSECTIONHANDLE *vuCritical;
 
-FalconMissionRequestMessage::FalconMissionRequestMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(MissionRequestMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconMissionRequestMessage::FalconMissionRequestMessage(VU_ID entityId,
+                                                         VuTargetEntity *target,
+                                                         VU_BOOL loopback)
+    : FalconEvent(MissionRequestMsg, FalconEvent::CampaignThread, entityId,
+                  target, loopback)
 {
     // Your Code Goes Here
 }
 
-FalconMissionRequestMessage::FalconMissionRequestMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(MissionRequestMsg, FalconEvent::CampaignThread, senderid, target)
+FalconMissionRequestMessage::FalconMissionRequestMessage(VU_MSG_TYPE type,
+                                                         VU_ID senderid,
+                                                         VU_ID target)
+    : FalconEvent(MissionRequestMsg, FalconEvent::CampaignThread, senderid,
+                  target)
 {
     // Your Code Goes Here
 }
@@ -40,9 +48,9 @@ int FalconMissionRequestMessage::Process(uchar autodisp)
     if (autodisp)
         return -1;
 
-    if (TeamInfo[dataBlock.team] and TeamInfo[dataBlock.team]->atm and TeamInfo[dataBlock.team]->atm->IsLocal())
+    if (TeamInfo[dataBlock.team] and TeamInfo[dataBlock.team]->atm and
+        TeamInfo[dataBlock.team]->atm->IsLocal())
         TeamInfo[dataBlock.team]->atm->ProcessRequest(&(dataBlock.request));
 
     return 0;
 }
-

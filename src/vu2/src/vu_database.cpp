@@ -30,14 +30,11 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
         VuListIterator li(&dbHash_->table_[i]);
         VuEntity *e;
 
-        for (
-            e = li.GetFirst();
-            e not_eq NULL;
-            e = li.GetNext()
-        )
+        for (e = li.GetFirst(); e not_eq NULL; e = li.GetNext())
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if (not(not all and
+                    ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 toBePurged.push_back(VuEntityBin(e));
             }
@@ -62,14 +59,11 @@ int VuDatabase::Suspend(VU_BOOL all)
         VuListIterator li(&dbHash_->table_[i]);
         VuEntity *e;
 
-        for (
-            e = li.GetFirst();
-            e not_eq NULL;
-            e = li.GetNext()
-        )
+        for (e = li.GetFirst(); e not_eq NULL; e = li.GetNext())
         {
             // run calling all callbacks and seting as removed... purge will do the actual removal
-            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if (not(not all and
+                    ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 toBeSuspended.push_back(VuEntityBin(e));
                 e->RemovalCallback();
@@ -106,7 +100,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
         return VU_NO_OP;
     }
 
-#if 0//BIRTH_LIST
+#if 0 //BIRTH_LIST
 
     // already in
     if ((entity->VuState() == VU_MEM_ACTIVE) or (entity->VuState() == VU_MEM_TO_BE_INSERTED))
@@ -146,7 +140,8 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #else
 
     // no duplicates allowed
-    if ((entity->VuState() == VU_MEM_ACTIVE) or (dbHash_->Find(entity->Id()) not_eq NULL))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or
+        (dbHash_->Find(entity->Id()) not_eq NULL))
     {
         return VU_ERROR;
     }
@@ -157,12 +152,13 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() and ( not entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and (not entity->IsPrivate()) and
+        (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
 
-        if ( not entity->IsGlobal())
+        if (not entity->IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -188,7 +184,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if ( not entity or entity->VuState() not_eq VU_MEM_ACTIVE)
+    if (not entity or entity->VuState() not_eq VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }
@@ -303,13 +299,10 @@ unsigned int VuDatabase::Purge(VU_BOOL all)
         VuListIterator li(&table_[i]);
         VuEntity *e;
 
-        for (
-            e = li.GetFirst();
-            e not_eq NULL;
-            e = li.GetNext()
-        )
+        for (e = li.GetFirst(); e not_eq NULL; e = li.GetNext())
         {
-            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if (not(not all and
+                    ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 e->SetVuState(VU_MEM_REMOVED);
             }
@@ -331,13 +324,10 @@ int VuDatabase::Suspend(VU_BOOL all)
         VuListIterator li(&table_[i]);
         VuEntity *e;
 
-        for (
-            e = li.GetFirst();
-            e not_eq NULL;
-            e = li.GetNext()
-        )
+        for (e = li.GetFirst(); e not_eq NULL; e = li.GetNext())
         {
-            if ( not ( not all and ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
+            if (not(not all and
+                    ((e->IsPrivate() and e->IsPersistent()) or e->IsGlobal())))
             {
                 e->RemovalCallback();
                 e->SetVuState(VU_MEM_REMOVED);
@@ -373,7 +363,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
         return VU_NO_OP;
     }
 
-#if 0//BIRTH_LIST
+#if 0 //BIRTH_LIST
 
     // already in
     if ((entity->VuState() == VU_MEM_ACTIVE) or (entity->VuState() == VU_MEM_TO_BE_INSERTED))
@@ -413,7 +403,8 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 #else
 
     // no duplicates allowed
-    if ((entity->VuState() == VU_MEM_ACTIVE) or (Find(entity->Id()) not_eq NULL))
+    if ((entity->VuState() == VU_MEM_ACTIVE) or
+        (Find(entity->Id()) not_eq NULL))
     {
         return VU_ERROR;
     }
@@ -426,12 +417,13 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
     VuEntity::VU_SEND_TYPE sendType = entity->SendCreate();
 
-    if (entity->IsLocal() and ( not entity->IsPrivate()) and (sendType not_eq VuEntity::VU_SC_DONT_SEND))
+    if (entity->IsLocal() and (not entity->IsPrivate()) and
+        (sendType not_eq VuEntity::VU_SC_DONT_SEND))
     {
         VuCreateEvent *event = 0;
         VuTargetEntity *target = vuGlobalGroup;
 
-        if ( not entity->IsGlobal())
+        if (not entity->IsGlobal())
         {
             target = vuLocalSessionEntity->Game();
         }
@@ -455,7 +447,7 @@ VU_ERRCODE VuDatabase::Insert(VuEntity *entity)
 
 VU_ERRCODE VuDatabase::CommonRemove(VuEntity *entity)
 {
-    if ( not entity or entity->VuState() not_eq VU_MEM_ACTIVE)
+    if (not entity or entity->VuState() not_eq VU_MEM_ACTIVE)
     {
         return VU_NO_OP;
     }

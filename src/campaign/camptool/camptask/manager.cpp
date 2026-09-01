@@ -1,15 +1,15 @@
 #include <stddef.h>
 #include <fcntl.h>
 #include <io.h>
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Listadt.h"
-#include "CampBase.h"
-#include "Team.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "listadt.h"
+#include "campbase.h"
+#include "team.h"
 #include "weather.h"
-#include "Manager.h"
-#include "MsgInc/CampTaskingMsg.h"
+#include "manager.h"
+#include "msginc/camptaskingmsg.h"
 #include "classtbl.h"
 #include "falcsess.h"
 #include "campaign.h"
@@ -33,7 +33,8 @@ CampManagerClass::CampManagerClass(ushort type, Team t) : FalconEntity(type)
         SetAssociation(FalconLocalGame->Id());
 }
 
-CampManagerClass::CampManagerClass(VU_BYTE **stream) : FalconEntity(VU_LAST_ENTITY_TYPE)
+CampManagerClass::CampManagerClass(VU_BYTE **stream)
+    : FalconEntity(VU_LAST_ENTITY_TYPE)
 {
     // Read vu stuff here
     memcpy(&share_.id_, *stream, sizeof(VU_ID));
@@ -53,7 +54,8 @@ CampManagerClass::CampManagerClass(VU_BYTE **stream) : FalconEntity(VU_LAST_ENTI
         SetAssociation(FalconLocalGame->Id());
 }
 
-CampManagerClass::CampManagerClass(FILE *file) : FalconEntity(VU_LAST_ENTITY_TYPE)
+CampManagerClass::CampManagerClass(FILE *file)
+    : FalconEntity(VU_LAST_ENTITY_TYPE)
 {
     // Read vu stuff here
     fread(&share_.id_, sizeof(VU_ID), 1, file);
@@ -71,7 +73,8 @@ CampManagerClass::CampManagerClass(FILE *file) : FalconEntity(VU_LAST_ENTITY_TYP
         VU_ID new_id = FalconNullId;
 
         // Rename this ID
-        for (new_id.num_ = FIRST_NON_VOLITILE_VU_ID_NUMBER; new_id.num_ < LAST_NON_VOLITILE_VU_ID_NUMBER; new_id.num_++)
+        for (new_id.num_ = FIRST_NON_VOLITILE_VU_ID_NUMBER;
+             new_id.num_ < LAST_NON_VOLITILE_VU_ID_NUMBER; new_id.num_++)
         {
             if (!vuDatabase->Find(new_id))
             {
@@ -128,11 +131,8 @@ CampManagerClass::~CampManagerClass(void)
 
 int CampManagerClass::SaveSize(void)
 {
-    return sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(ushort)
-           + sizeof(short)
-           + sizeof(Team);
+    return sizeof(VU_ID) + sizeof(VU_ID) + sizeof(ushort) + sizeof(short) +
+           sizeof(Team);
 }
 
 int CampManagerClass::Save(VU_BYTE **stream)
@@ -168,10 +168,12 @@ int CampManagerClass::Save(FILE *file)
     return retval;
 }
 
-void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2, short d3)
+void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2,
+                                   short d3)
 {
-    VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
-    FalconCampTaskingMessage *message = new FalconCampTaskingMessage(Id(), target);
+    VuTargetEntity *target = (VuTargetEntity *)vuDatabase->Find(OwnerId());
+    FalconCampTaskingMessage *message =
+        new FalconCampTaskingMessage(Id(), target);
 
     if (managerFlags & CTM_MUST_BE_OWNED && !IsLocal())
         return;
@@ -181,7 +183,7 @@ void CampManagerClass::SendMessage(VU_ID from, short msg, short d1, short d2, sh
     message->dataBlock.messageType = msg;
     message->dataBlock.data1 = d1;
     message->dataBlock.data2 = d2;
-    message->dataBlock.data3 = (void*)d3;
+    message->dataBlock.data3 = (void *)d3;
     FalconSendMessage(message, TRUE);
 }
 
@@ -231,7 +233,7 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
             if (TeamInfo[owner]->atm)
                 VuDeReferenceEntity(TeamInfo[owner]->atm);
 
-            TeamInfo[owner]->atm = (AirTaskingManagerClass*) this;
+            TeamInfo[owner]->atm = (AirTaskingManagerClass *)this;
         }
         else if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_LAND)
         {
@@ -240,7 +242,7 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
             if (TeamInfo[owner]->gtm)
                 VuDeReferenceEntity(TeamInfo[owner]->gtm);
 
-            TeamInfo[owner]->gtm = (GroundTaskingManagerClass*) this;
+            TeamInfo[owner]->gtm = (GroundTaskingManagerClass *)this;
         }
         else if (EntityType()->classInfo_[VU_DOMAIN] == DOMAIN_SEA)
         {
@@ -249,7 +251,7 @@ VU_ERRCODE CampManagerClass::InsertionCallback(void)
             if (TeamInfo[owner]->ntm)
                 VuDeReferenceEntity(TeamInfo[owner]->ntm);
 
-            TeamInfo[owner]->ntm = (NavalTaskingManagerClass*) this;
+            TeamInfo[owner]->ntm = (NavalTaskingManagerClass *)this;
         }
     }
 
@@ -277,10 +279,10 @@ VU_ERRCODE CampManagerClass::RemovalCallback(void)
 // Global functions
 // ===============================
 
-VuEntity* NewManager(short type, VU_BYTE *stream)
+VuEntity *NewManager(short type, VU_BYTE *stream)
 {
     VuEntity *retval = 0;
-    VuEntityType* classPtr = VuxType(type);
+    VuEntityType *classPtr = VuxType(type);
 
     //#ifndef NDEBUG
     // MonoPrint ("Got manager type %d.\n",classPtr->classInfo_[VU_DOMAIN]);
@@ -289,13 +291,13 @@ VuEntity* NewManager(short type, VU_BYTE *stream)
     CampEnterCriticalSection();
 
     if (classPtr->classInfo_[VU_DOMAIN] == DOMAIN_AIR)
-        retval = (VuEntity*) new AirTaskingManagerClass(&stream);
+        retval = (VuEntity *)new AirTaskingManagerClass(&stream);
     else if (classPtr->classInfo_[VU_DOMAIN] == DOMAIN_LAND)
-        retval = (VuEntity*) new GroundTaskingManagerClass(&stream);
+        retval = (VuEntity *)new GroundTaskingManagerClass(&stream);
     else if (classPtr->classInfo_[VU_DOMAIN] == DOMAIN_SEA)
-        retval = (VuEntity*) new NavalTaskingManagerClass(&stream);
+        retval = (VuEntity *)new NavalTaskingManagerClass(&stream);
     else if (classPtr->classInfo_[VU_DOMAIN] == DOMAIN_ABSTRACT)
-        retval = (VuEntity*) new TeamClass(&stream);
+        retval = (VuEntity *)new TeamClass(&stream);
 
     CampLeaveCriticalSection();
 

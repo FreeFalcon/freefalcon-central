@@ -8,7 +8,8 @@
 #include "terrain/tviewpnt.h"
 #include "mvrdef.h"
 #include "f4find.h"
-extern "C" {
+extern "C"
+{
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 #include "classtbl.h"
@@ -16,7 +17,8 @@ extern "C" {
 
 OTWDriverClass OTWDriver;
 SimulationDriver SimDriver;
-int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype, uchar sp, uchar owner, uchar c6, uchar c7);
+int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype, uchar sp,
+               uchar owner, uchar c6, uchar c7);
 
 SimulationDriver::SimulationDriver(void)
 {
@@ -192,7 +194,7 @@ unsigned char GetTeam(unsigned char a)
     return 0;
 }
 
-FILE* OpenCampFile(char *filename, char *ext, char *mode)
+FILE* OpenCampFile(char* filename, char* ext, char* mode)
 {
     char fullname[MAX_PATH], path[MAX_PATH];
 
@@ -252,7 +254,6 @@ FILE* OpenCampFile(char *filename, char *ext, char *mode)
     // Outdated by resmgr:
     // if (!ResExistFile(filename))
     // ResAddPath(path, FALSE);
-    sprintf(fullname, "%s\\%s.%s", path, filename, ext);
+    sprintf(fullname, "%s/%s.%s", path, filename, ext);
     return ResFOpen(fullname, mode);
 }
-

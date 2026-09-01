@@ -8,20 +8,20 @@
 #include <windows.h>
 #include "falclib.h"
 #include "targa.h"
-#include "Graphics/Include/imagebuf.h"
+#include "graphics/include/imagebuf.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "entity.h"
 #include "feature.h"
 #include "vehicle.h"
 #include "evtparse.h"
-#include "Mesg.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/LandingMessage.h"
-#include "MsgInc/EjectMsg.h"
+#include "mesg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/landingmessage.h"
+#include "msginc/ejectmsg.h"
 #include "falcuser.h"
 #include "falclib/include/f4find.h"
 #include "f4error.h"
@@ -29,12 +29,12 @@
 #include "ui_ia.h"
 #include "userids.h"
 #include "textids.h"
-#include "CmpClass.h"
-#include "ThreadMgr.h"
-#include "PlayerOp.h"
+#include "cmpclass.h"
+#include "threadmgr.h"
+#include "playerop.h"
 #include "classtbl.h"
 #include "iaction.h"
-#include "Graphics/Include/TMap.h" // JPO for map sizes
+#include "graphics/include/tmap.h" // JPO for map sizes
 #include "fakerand.h" //THW for random startup position
 
 //JAM 21Nov03
@@ -50,7 +50,8 @@ enum // Instant action scoring stuff
 };
 
 static IDirectDraw *DDraw;
-IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD, DWORD width, DWORD height);
+IDirectDrawSurface *UI95_CreateDDSurface(IDirectDraw *DD, DWORD width,
+                                         DWORD height);
 void ProcessEventList(C_Window *win, long client);
 void SetSingle_Comms_Ctrls();
 void RemoveWeaponUsageList();
@@ -66,8 +67,7 @@ C_SoundBite *gInstantBites = NULL;
 
 
 // Parameters for Instant Action
-UI_IA InstantActionSettings =
-{
+UI_IA InstantActionSettings = {
     _MISSION_AIR_TO_AIR_,
     _PILOT_LEVEL_NOVICE_,
     _NO_SAM_SITES_,
@@ -108,8 +108,8 @@ _TCHAR *AddCommas(_TCHAR *buf)
 
     comma = gStringMgr->GetString(TXT_COMMA_PLACE);
 
-    if ( not comma)
-        return(buf);
+    if (not comma)
+        return (buf);
 
     j = 0;
     k = 0;
@@ -134,7 +134,7 @@ _TCHAR *AddCommas(_TCHAR *buf)
 
     newbuf[j++] = 0;
     _tcscpy(buf, newbuf);
-    return(buf);
+    return (buf);
 }
 
 void GetHighScores()
@@ -150,8 +150,10 @@ void GetHighScores()
 
 #if _USE_REGISTRY_
     size = sizeof(HighScoreList);
-    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
-    retval = RegQueryValueEx(theKey, "initData", 0, &type, (LPBYTE)&Scores, &size);
+    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0,
+                          KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
+    retval =
+        RegQueryValueEx(theKey, "initData", 0, &type, (LPBYTE)&Scores, &size);
     RegCloseKey(theKey);
 
     if (retval not_eq ERROR_SUCCESS)
@@ -163,7 +165,8 @@ void GetHighScores()
 
 #else
 
-    fp = CreateFile("highscore.bin", GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    fp = CreateFile("highscore.bin", GENERIC_READ, FILE_SHARE_READ, NULL,
+                    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (fp == INVALID_HANDLE_VALUE)
         return;
@@ -172,7 +175,7 @@ void GetHighScores()
     CloseHandle(fp);
 
 #endif
-    DecryptBuffer(0x38, (uchar*)&Scores, sizeof(HighScoreList));
+    DecryptBuffer(0x38, (uchar *)&Scores, sizeof(HighScoreList));
 
     if (Scores.CheckSum) // Someone tampered with data... reset it
         memset(&Scores, 0, sizeof(HighScoreList));
@@ -189,19 +192,22 @@ void SaveHighScores()
     DWORD br;
 #endif
 
-    EncryptBuffer(0x38, (uchar*)&Scores, sizeof(HighScoreList));
+    EncryptBuffer(0x38, (uchar *)&Scores, sizeof(HighScoreList));
 
 #if _USE_REGISTRY_
     size = sizeof(HighScoreList);
-    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
+    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0,
+                          KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
 
     if (retval == ERROR_SUCCESS)
-        retval = RegSetValueEx(theKey, "initData", 0, REG_BINARY, (LPBYTE)&Scores, size);
+        retval = RegSetValueEx(theKey, "initData", 0, REG_BINARY,
+                               (LPBYTE)&Scores, size);
 
     RegCloseKey(theKey);
 #else
 
-    fp = CreateFile("highscore.bin", GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    fp = CreateFile("highscore.bin", GENERIC_WRITE, FILE_SHARE_WRITE, NULL,
+                    CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (fp == INVALID_HANDLE_VALUE)
         return;
@@ -209,39 +215,22 @@ void SaveHighScores()
     WriteFile(fp, &Scores, sizeof(HighScoreList), &br, NULL);
     CloseHandle(fp);
 #endif
-    DecryptBuffer(0x38, (uchar*)&Scores, sizeof(HighScoreList));
+    DecryptBuffer(0x38, (uchar *)&Scores, sizeof(HighScoreList));
 }
 
-int VisualIDCost[][2] =
-{
-    { VIS_AIM120, 1000 },
-    { VIS_AIM9M,   100 },
-    { VIS_AIM7,    200 },
+int VisualIDCost[][2] = {
+    {VIS_AIM120, 1000}, {VIS_AIM9M, 100},   {VIS_AIM7, 200},
 
-    { VIS_AGM65B,   50 },
-    { VIS_AGM65D,   50 },
-    { VIS_AGM65G,   50 },
-    { VIS_AGM88,    50 },
+    {VIS_AGM65B, 50},   {VIS_AGM65D, 50},   {VIS_AGM65G, 50},
+    {VIS_AGM88, 50},
 
-    { VIS_IL28,   1000 },
-    { VIS_TU16N,  2000 },
-    { VIS_SU25,   2500 },
-    { VIS_MIG19,  5000 },
-    { VIS_MIG21, 10000 },
-    { VIS_MIG23, 10000 },
-    { VIS_MIG25, 15000 },
-    { VIS_MIG29, 15000 },
-    { VIS_SU27,  20000 },
+    {VIS_IL28, 1000},   {VIS_TU16N, 2000},  {VIS_SU25, 2500},
+    {VIS_MIG19, 5000},  {VIS_MIG21, 10000}, {VIS_MIG23, 10000},
+    {VIS_MIG25, 15000}, {VIS_MIG29, 15000}, {VIS_SU27, 20000},
 
-    { VIS_F14,  -50000 },
-    { VIS_F15C,  -50000 },
-    { VIS_F16C,  -50000 },
-    { VIS_F18A,  -50000 },
-    { VIS_F18D,  -50000 },
-    { VIS_B52G,  -50000 },
-    { VIS_KC10, -50000 },
-    { VIS_A10,  -50000 },
-    { 0, 0 },
+    {VIS_F14, -50000},  {VIS_F15C, -50000}, {VIS_F16C, -50000},
+    {VIS_F18A, -50000}, {VIS_F18D, -50000}, {VIS_B52G, -50000},
+    {VIS_KC10, -50000}, {VIS_A10, -50000},  {0, 0},
 };
 
 int FindCost(int ID)
@@ -253,12 +242,12 @@ int FindCost(int ID)
     while (VisualIDCost[i][0] not_eq 0)
     {
         if (MapVisId(VisualIDCost[i][0]) == ID)
-            return(VisualIDCost[i][1]);
+            return (VisualIDCost[i][1]);
 
         i++;
     }
 
-    return(500);
+    return (500);
 }
 
 int AddWeaponToUsageList(int ID)
@@ -277,7 +266,7 @@ int AddWeaponToUsageList(int ID)
     {
         if (cur->id == ID)
         {
-            cur->num ++;
+            cur->num++;
             cur->points -= COST;
             return -COST;
         }
@@ -323,7 +312,7 @@ int AddAircraftToKillsList(int ID)
     {
         if (cur->id == ID)
         {
-            cur->num ++;
+            cur->num++;
             cur->points += COST;
             return COST;
         }
@@ -369,7 +358,7 @@ int AddObjectToKillsList(int ID)
     {
         if (cur->id == ID)
         {
-            cur->num ++;
+            cur->num++;
             cur->points += COST;
             return COST;
         }
@@ -521,7 +510,8 @@ void LoadInstantActionWindows()
     C_Window *win;
     C_Button *ctrl;
 
-    if (IALoaded) return;
+    if (IALoaded)
+        return;
 
     if (_LOAD_ART_RESOURCES_)
         gMainParser->LoadImageList("ia_res.lst");
@@ -530,10 +520,11 @@ void LoadInstantActionWindows()
 
     gMainParser->LoadSoundList("ia_snd.lst");
 
-    if ( not gInstantBites)
-        gInstantBites = gMainParser->ParseSoundBite("art\\instant\\uidia.scf");
+    if (not gInstantBites)
+        gInstantBites = gMainParser->ParseSoundBite("art/instant/uidia.scf");
 
-    gMainParser->LoadWindowList("ia_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "ia_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -587,7 +578,8 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
             }
         }
 
-        InstantActionSettings.PilotLevel = _PILOT_LEVEL_NOVICE_;;
+        InstantActionSettings.PilotLevel = _PILOT_LEVEL_NOVICE_;
+        ;
         btn = (C_Button *)win->FindControl(IA_LVL_CADET_CTRL);
 
         if (btn)
@@ -651,12 +643,16 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
             // 13119.9 is default ft/block
             XPos = (float)(crsr->GetX() + crsr->GetW() / 2 - crsr->MinX_) /
                    (float)(crsr->MaxX_ - crsr->MinX_);
-            XPos *= 4096.0f * TheMap.BlocksWide() * TheMap.FeetPerBlock() / 13119.9F;
-            YPos = (float)((crsr->MaxY_ - crsr->MinY_) - (crsr->GetY() + crsr->GetH() / 2 - crsr->MinY_)) /
+            XPos *= 4096.0f * TheMap.BlocksWide() * TheMap.FeetPerBlock() /
+                    13119.9F;
+            YPos = (float)((crsr->MaxY_ - crsr->MinY_) -
+                           (crsr->GetY() + crsr->GetH() / 2 - crsr->MinY_)) /
                    (float)(crsr->MaxY_ - crsr->MinY_);
-            YPos *=  4096.0f * TheMap.BlocksHigh() * TheMap.FeetPerBlock() / 13119.9F;
+            YPos *= 4096.0f * TheMap.BlocksHigh() * TheMap.FeetPerBlock() /
+                    13119.9F;
 
-            instant_action::set_start_position(YPos * FEET_PER_KM / 1000.0f, XPos * FEET_PER_KM / 1000.0f);
+            instant_action::set_start_position(YPos * FEET_PER_KM / 1000.0f,
+                                               XPos * FEET_PER_KM / 1000.0f);
         }
     }
 
@@ -664,15 +660,16 @@ static void InstantActionFlyCB(long, short hittype, C_Base *)
 
     if (win)
     {
-        clk = (C_Clock*)win->FindControl(TIME_ID);
+        clk = (C_Clock *)win->FindControl(TIME_ID);
 
         if (clk)
             instant_action::set_start_time(clk->GetTime());
         else
-            instant_action::set_start_time(static_cast<long>(12.0F * 60.0F * 60.0F));
+            instant_action::set_start_time(
+                static_cast<long>(12.0F * 60.0F * 60.0F));
     }
 
-    ShiAssert( not TheCampaign.IsLoaded());
+    ShiAssert(not TheCampaign.IsLoaded());
 
     // Load a campaign here
     strcpy(gUI_CampaignFile, "Instant");
@@ -702,7 +699,8 @@ static void InsertScoreCB(long, short hittype, C_Base *)
 
     i = 0;
 
-    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and Scores.Scores[i].Name[0] not_eq 0)
+    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and
+           Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     idx = MAX_SCORES;
@@ -711,13 +709,14 @@ static void InsertScoreCB(long, short hittype, C_Base *)
     {
         for (j = MAX_SCORES - 2; j >= i; j--)
         {
-            memset(Scores.Scores[j + 1].Name, 0, sizeof(_TCHAR)*MAX_NAME_LENGTH);
+            memset(Scores.Scores[j + 1].Name, 0,
+                   sizeof(_TCHAR) * MAX_NAME_LENGTH);
             _tcscpy(Scores.Scores[j + 1].Name, Scores.Scores[j].Name);
             Scores.Scores[j + 1].Score = Scores.Scores[j].Score;
         }
 
         idx = i;
-        memset(Scores.Scores[i].Name, 0, sizeof(_TCHAR)*MAX_NAME_LENGTH);
+        memset(Scores.Scores[i].Name, 0, sizeof(_TCHAR) * MAX_NAME_LENGTH);
         Scores.Scores[i].Name[0] = ' ';
         Scores.Scores[i].Score = TotalScore;
 
@@ -735,7 +734,7 @@ static void InsertScoreCB(long, short hittype, C_Base *)
         {
             _tcsncpy(Scores.Scores[i].Name, ebox->GetText(), MAX_NAME_LENGTH);
 
-            if ( not Scores.Scores[i].Name[0])
+            if (not Scores.Scores[i].Name[0])
             {
                 Scores.Scores[i].Name[0] = ' ';
                 Scores.Scores[i].Name[1] = 0;
@@ -812,7 +811,7 @@ void ChangeTimeCB(long, short hittype, C_Base *control)
 
     dir = static_cast<short>(control->GetUserNumber(1));
 
-    clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
+    clk = (C_Clock *)control->Parent_->FindControl(control->GetUserNumber(0));
 
     if (clk)
     {
@@ -914,7 +913,6 @@ void ChangeTimeCB(long, short hittype, C_Base *control)
                     clk->SetDay(value);
                 }
             }
-
         }
 
         clk->Refresh();
@@ -982,7 +980,7 @@ static void HookupIAControls(long ID)
     {
         ebox->SetCallback(HighScoreKeyboardCB);
 
-        if ( not *ebox->GetText())
+        if (not *ebox->GetText())
         {
             ebox->SetText(UI_logbk.Name());
         }
@@ -1005,7 +1003,7 @@ static void HookupIAControls(long ID)
         ctrl->SetCallback(ChangeTimeCB);
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
@@ -1304,7 +1302,8 @@ static void ProcessKills(C_Window *win)
 
     if (txt)
     {
-        sprintf(buffer, "%1ld%%", (long)(PlayerOptions.Realism * 100.00f + 0.5f));
+        sprintf(buffer, "%1ld%%",
+                (long)(PlayerOptions.Realism * 100.00f + 0.5f));
         txt->SetText(buffer);
     }
 
@@ -1645,7 +1644,8 @@ static void ProcessWeapons(C_Window *win)
 
     if (txt)
     {
-        sprintf(buffer, "%1ld%%", (long)(PlayerOptions.Realism * 100.00f + 0.5f));
+        sprintf(buffer, "%1ld%%",
+                (long)(PlayerOptions.Realism * 100.00f + 0.5f));
         txt->SetText(buffer);
     }
 
@@ -1662,7 +1662,8 @@ void CheckHighScore(long TotalScore)
 
     i = 0;
 
-    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and Scores.Scores[i].Name[0] not_eq 0)
+    while (i < MAX_SCORES and TotalScore <= Scores.Scores[i].Score and
+           Scores.Scores[i].Name[0] not_eq 0)
         i++;
 
     if (TotalScore < 0)
@@ -1686,7 +1687,7 @@ void CheckHighScore(long TotalScore)
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if ( not i)
+    else if (not i)
     {
         SoundID = gInstantBites->Pick(IA8);
 
@@ -1847,7 +1848,7 @@ void OpenIAMunitionsCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not TheCampaign.IsLoaded())
+    if (not TheCampaign.IsLoaded())
     {
         // Load a campaign here
         strcpy(gUI_CampaignFile, "Instant");

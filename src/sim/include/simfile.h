@@ -35,20 +35,20 @@
 #ifndef _SIMFILE_H
 #define _SIMFILE_H
 
-#define SIMLIB_MAX_FILE_NAME_LENGTH    _MAX_PATH
-#define SIMLIB_MAX_OPEN_FILES          20
-#define SIMLIB_UPDATE                  0x1
-#define SIMLIB_CREATE                  0x2
-#define SIMLIB_READ                    0x4
-#define SIMLIB_WRITE                   0x8
-#define SIMLIB_BINARY                  0x10
-#define SIMLIB_READWRITE               (SIMLIB_READ & SIMLIB_WRITE)
+#define SIMLIB_MAX_FILE_NAME_LENGTH _MAX_PATH
+#define SIMLIB_MAX_OPEN_FILES 20
+#define SIMLIB_UPDATE 0x1
+#define SIMLIB_CREATE 0x2
+#define SIMLIB_READ 0x4
+#define SIMLIB_WRITE 0x8
+#define SIMLIB_BINARY 0x10
+#define SIMLIB_READWRITE (SIMLIB_READ & SIMLIB_WRITE)
 
-#define SIMFILE_CUR                    SEEK_CUR
-#define SIMFILE_START                  SEEK_SET
-#define SIMFILE_END                    SEEK_END
+#define SIMFILE_CUR SEEK_CUR
+#define SIMFILE_START SEEK_SET
+#define SIMFILE_END SEEK_END
 
-typedef char   SimlibFileName[SIMLIB_MAX_FILE_NAME_LENGTH];
+typedef char SimlibFileName[SIMLIB_MAX_FILE_NAME_LENGTH];
 
 /*-----------------*/
 /* Library Classes */
@@ -56,14 +56,14 @@ typedef char   SimlibFileName[SIMLIB_MAX_FILE_NAME_LENGTH];
 class SimlibFileClass
 {
 private:
-    FILE           *fptr;
-    int            rights;
-    int            lastOp;
+    FILE *fptr;
+    int rights;
+    int lastOp;
     SimlibFileName fName;
 
 public:
     SimlibFileClass(void);
-    static SimlibFileClass* Open(char *fname, int flags);
+    static SimlibFileClass *Open(char *fname, int flags);
     int ReadLine(char *buf, int maxLen);
     int WriteLine(char *buf);
     int Read(void *buffer, unsigned int maxLen);

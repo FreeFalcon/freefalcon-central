@@ -8,8 +8,7 @@
 #ifndef _RENDERNVG_H_
 #define _RENDERNVG_H_
 
-#include "RenderTV.h"
-
+#include "rendertv.h"
 
 
 class RenderNVG : public RenderTV
@@ -29,7 +28,8 @@ protected:
     virtual void DrawSun(void);
     virtual void SetTimeOfDayColor(void);
     virtual void ProcessColor(Tcolor *color);
-    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x, float y);
+    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post,
+                                    float distance, float x, float y);
 };
 
 

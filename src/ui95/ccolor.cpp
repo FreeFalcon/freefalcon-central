@@ -2,8 +2,7 @@
 #include "chandler.h"
 #include "ccolor.h"
 
-static COLORSCHEME ColorScheme_0 =
-{
+static COLORSCHEME ColorScheme_0 = {
     RGB(0, 170, 0), // Title Text
     RGB(26, 65, 83), // Title background
     RGB(156, 209, 229), // Border Lite color
@@ -82,12 +81,12 @@ COLORSCHEME *C_ColorMgr::GetScheme(long ID)
     while (cur)
     {
         if (cur->ID == ID)
-            return(&cur->Color);
+            return (&cur->Color);
 
         cur = cur->Next;
     }
 
-    return(&Root_->Color);
+    return (&Root_->Color);
 }
 
 BOOL C_ColorMgr::FindScheme(long ID)
@@ -99,10 +98,10 @@ BOOL C_ColorMgr::FindScheme(long ID)
     while (cur)
     {
         if (cur->ID == ID)
-            return(TRUE);
+            return (TRUE);
 
         cur = cur->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }

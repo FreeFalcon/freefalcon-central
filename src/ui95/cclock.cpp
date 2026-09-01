@@ -17,18 +17,9 @@ enum
     CLK_USEDAY,
 };
 
-char *C_Clk_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[NORMCOLOR]",
-    "[SELCOLOR]",
-    "[CURSORCOLOR]",
-    "[SEP0]",
-    "[SEP1]",
-    "[SEP2]",
-    "[USEDAY]",
-    0,
+char *C_Clk_Tokens[] = {
+    "[NOTHING]", "[SETUP]", "[NORMCOLOR]", "[SELCOLOR]", "[CURSORCOLOR]",
+    "[SEP0]",    "[SEP1]",  "[SEP2]",      "[USEDAY]",   0,
 };
 
 #endif
@@ -36,7 +27,8 @@ char *C_Clk_Tokens[] =
 C_Clock::C_Clock() : C_Control()
 {
     _SetCType_(_CNTL_CLOCK_);
-    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor
+                    C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
     Font_ = 1;
     Day_ = NULL;
     Hour_ = NULL;
@@ -67,7 +59,7 @@ C_Clock::~C_Clock()
 
 long C_Clock::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Clock::Setup(long ID, short Type)
@@ -198,9 +190,9 @@ void C_Clock::SetSep2Str(long TextID)
 BOOL C_Clock::TimerUpdate()
 {
     if (TimerCallback_)
-        return(TimerCallback_(this));
+        return (TimerCallback_(this));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Clock::SetXY(long x, long y)
@@ -218,9 +210,9 @@ void C_Clock::SetFont(long ID)
 
 void C_Clock::SetSubParents(C_Window *Parent)
 {
-    long  x, w, h;
+    long x, w, h;
 
-    if ( not Parent)
+    if (not Parent)
         return;
 
     x = 0;
@@ -270,7 +262,8 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
     Minute_->SetFont(Font_);
     Minute_->SetClient(GetClient());
-    Minute_->SetFlags(Minute_->GetFlags() bitor (Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT));
+    Minute_->SetFlags(Minute_->GetFlags() bitor
+                      (Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT));
     Minute_->SetXYWH(GetX() + x, GetY(), w, h);
     Minute_->SetFgColor(NormColor_);
     Minute_->SetCursorColor(CursorColor_);
@@ -287,7 +280,8 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
     Second_->SetFont(Font_);
     Second_->SetClient(GetClient());
-    Second_->SetFlags(Second_->GetFlags() bitor (Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT));
+    Second_->SetFlags(Second_->GetFlags() bitor
+                      (Flags_ bitor C_BIT_LEADINGZEROS bitor C_BIT_RIGHT));
     Second_->SetXYWH(GetX() + x, GetY(), w, h);
     Second_->SetFgColor(NormColor_);
     Second_->SetCursorColor(CursorColor_);
@@ -304,29 +298,31 @@ void C_Clock::SetSubParents(C_Window *Parent)
 
 long C_Clock::CheckHotSpots(long relX, long relY)
 {
-    if (Flags_ bitand C_BIT_INVISIBLE or not (Flags_ bitand C_BIT_ENABLED) or not Ready())
-        return(0);
+    if (Flags_ bitand C_BIT_INVISIBLE or not(Flags_ bitand C_BIT_ENABLED) or
+        not Ready())
+        return (0);
 
-    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and
+        relY <= (GetY() + GetH()))
     {
         Section_ = 0;
 
         if (Day_)
             Section_ = Day_->CheckHotSpots(relX, relY);
 
-        if ( not Section_)
+        if (not Section_)
             Section_ = Hour_->CheckHotSpots(relX, relY);
 
-        if ( not Section_)
+        if (not Section_)
             Section_ = Minute_->CheckHotSpots(relX, relY);
 
-        if ( not Section_)
+        if (not Section_)
             Section_ = Second_->GetID();
 
-        return(GetID());
+        return (GetID());
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Clock::SetTime(long theTime)
@@ -351,7 +347,6 @@ void C_Clock::SetTime(long theTime)
         Second_->SetInteger(s);
 
     Refresh();
-
 }
 
 long C_Clock::GetTime()
@@ -372,7 +367,7 @@ long C_Clock::GetTime()
     if (Second_)
         theTime += Second_->GetInteger();
 
-    return(theTime);
+    return (theTime);
 }
 
 void C_Clock::SetDefaultFlags()
@@ -382,7 +377,7 @@ void C_Clock::SetDefaultFlags()
 
 long C_Clock::GetDefaultFlags()
 {
-    return(Defaultflags_);
+    return (Defaultflags_);
 }
 
 BOOL C_Clock::Process(long ID, short HitType)
@@ -420,23 +415,24 @@ BOOL C_Clock::Process(long ID, short HitType)
             UI_Leave(Leave);
         }
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Clock::Refresh()
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           Flags_, GetClient());
 }
 
 void C_Clock::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Sep0_)
@@ -473,49 +469,49 @@ short C_Clock::LocalFind(char *token)
     while (C_Clk_Tokens[i])
     {
         if (strnicmp(token, C_Clk_Tokens[i], strlen(C_Clk_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Clock::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CLK_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CLK_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CLK_SETNORMCOLOR:
-            SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLK_SETNORMCOLOR:
+        SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLK_SETSELCOLOR:
-            SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLK_SETSELCOLOR:
+        SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLK_SETCURSORCOLOR:
-            SetCursorColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLK_SETCURSORCOLOR:
+        SetCursorColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLK_SETSEP0:
-            SetSep0Str(P[0]);
-            break;
+    case CLK_SETSEP0:
+        SetSep0Str(P[0]);
+        break;
 
-        case CLK_SETSEP1:
-            SetSep1Str(P[0]);
-            break;
+    case CLK_SETSEP1:
+        SetSep1Str(P[0]);
+        break;
 
-        case CLK_SETSEP2:
-            SetSep2Str(P[0]);
-            break;
+    case CLK_SETSEP2:
+        SetSep2Str(P[0]);
+        break;
 
-        case CLK_USEDAY:
-            EnableDay();
-            break;
+    case CLK_USEDAY:
+        EnableDay();
+        break;
     }
 }
 

@@ -6,7 +6,7 @@
  -Script interpreter for training scripts
 \***************************************************************************/
 
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
 #include "stdhdr.h"
 #include "soundfx.h"
 #include "cpmanager.h"
@@ -27,7 +27,6 @@ bool doflash(int flashtime)
         return false;
 
     return true;
-
 }
 
 
@@ -37,33 +36,35 @@ void DoText(float x, float y, char *string, int boxed, int orientation)
 {
     switch (orientation)
     {
-        case 0:
-            OTWDriver.renderer->TextLeft(x, y, string, boxed);
-            break;
+    case 0:
+        OTWDriver.renderer->TextLeft(x, y, string, boxed);
+        break;
 
-        case 1:
-            OTWDriver.renderer->TextCenter(x, y, string, boxed);
-            break;
+    case 1:
+        OTWDriver.renderer->TextCenter(x, y, string, boxed);
+        break;
 
-        case 2:
-            OTWDriver.renderer->TextRight(x, y, string, boxed);
-            break;
+    case 2:
+        OTWDriver.renderer->TextRight(x, y, string, boxed);
+        break;
 
-        case 3:
-            OTWDriver.renderer->TextLeftVertical(x, y, string, boxed); //Not sure what the vertical ones do, but leave in there for now
-            break;
+    case 3:
+        OTWDriver.renderer->TextLeftVertical(
+            x, y, string,
+            boxed); //Not sure what the vertical ones do, but leave in there for now
+        break;
 
-        case 4:
-            OTWDriver.renderer->TextCenterVertical(x, y, string, boxed);
-            break;
+    case 4:
+        OTWDriver.renderer->TextCenterVertical(x, y, string, boxed);
+        break;
 
-        case 5:
-            OTWDriver.renderer->TextRightVertical(x, y, string, boxed);
-            break;
+    case 5:
+        OTWDriver.renderer->TextRightVertical(x, y, string, boxed);
+        break;
 
-        default:
-            OTWDriver.renderer->TextLeft(x, y, string, boxed);
-            break;
+    default:
+        OTWDriver.renderer->TextLeft(x, y, string, boxed);
+        break;
     }
 }
 
@@ -77,22 +78,21 @@ TrainingScriptClass::TrainingScriptClass()
     repeatlist = NULL;
     blockallowlist = NULL;
     numfunctions = 0;
-    functiontable = new FunctionTableType[MAX_SCRIPTFUNCS]; //Changed from malloc
+    functiontable =
+        new FunctionTableType[MAX_SCRIPTFUNCS]; //Changed from malloc
     RestartScript();
     InitFunctions();
-
 }
 
 TrainingScriptClass::~TrainingScriptClass()
 {
     RestartScript();
     ClearAllLines();
-    delete [] functiontable; //changed from free
+    delete[] functiontable; //changed from free
 }
 
 
-bool
-TrainingScriptClass::CmdPrint(LineType *line)
+bool TrainingScriptClass::CmdPrint(LineType *line)
 {
     float waittime = 0.0f;
 
@@ -128,7 +128,8 @@ TrainingScriptClass::CmdPrint(LineType *line)
         OTWDriver.renderer->SetFont(line->localfont);
         OTWDriver.renderer->SetColor(line->localcolor);
 
-        DoText(line->localcursorx, line->localcursory, line->GetArg(2), line->localtextboxed, line->localtextorientation);
+        DoText(line->localcursorx, line->localcursory, line->GetArg(2),
+               line->localtextboxed, line->localtextorientation);
 
         OTWDriver.renderer->SetFont(tempfont);
         OTWDriver.renderer->SetColor(tempcolor);
@@ -140,11 +141,9 @@ TrainingScriptClass::CmdPrint(LineType *line)
 
 
     return true;
-
 }
 
-bool
-TrainingScriptClass::CmdOval(LineType *line)
+bool TrainingScriptClass::CmdOval(LineType *line)
 {
     float waittime = 0.0f;
 
@@ -168,7 +167,7 @@ TrainingScriptClass::CmdOval(LineType *line)
         line->localflash = flash;
     }
 
-    if (inrepeatlist  && doflash(line->localflash))
+    if (inrepeatlist && doflash(line->localflash))
     {
         int tempcolor = 0;
         float xradius = 0;
@@ -182,10 +181,12 @@ TrainingScriptClass::CmdOval(LineType *line)
         if (line->numargs == 4)
         {
             sscanf(line->GetArg(3), "%f", &yradius); //This is an oval
-            OTWDriver.renderer->Oval(line->localcursorx, line->localcursory, xradius, yradius);
+            OTWDriver.renderer->Oval(line->localcursorx, line->localcursory,
+                                     xradius, yradius);
         }
         else
-            OTWDriver.renderer->Circle(line->localcursorx, line->localcursory, xradius);
+            OTWDriver.renderer->Circle(line->localcursorx, line->localcursory,
+                                       xradius);
 
         OTWDriver.renderer->SetColor(tempcolor);
     }
@@ -196,11 +197,9 @@ TrainingScriptClass::CmdOval(LineType *line)
 
 
     return true;
-
 }
 
-bool
-TrainingScriptClass::CmdLine(LineType *line)
+bool TrainingScriptClass::CmdLine(LineType *line)
 {
     float waittime = 0.0f;
 
@@ -225,7 +224,7 @@ TrainingScriptClass::CmdLine(LineType *line)
         line->localflash = flash;
     }
 
-    if (inrepeatlist  && doflash(line->localflash))
+    if (inrepeatlist && doflash(line->localflash))
     {
         int tempcolor = 0;
         float x1 = 0;
@@ -252,12 +251,10 @@ TrainingScriptClass::CmdLine(LineType *line)
 
 
     return true;
-
 }
 
 
-bool
-TrainingScriptClass::CmdWaitPrint(LineType *line)
+bool TrainingScriptClass::CmdWaitPrint(LineType *line)
 {
     float waittime = 0.0f;
 
@@ -287,22 +284,20 @@ TrainingScriptClass::CmdWaitPrint(LineType *line)
             OTWDriver.renderer->SetFont(font);
             OTWDriver.renderer->SetColor(color);
 
-            DoText(cursorx, cursory, line->GetArg(2), textboxed, textorientation);
+            DoText(cursorx, cursory, line->GetArg(2), textboxed,
+                   textorientation);
 
             OTWDriver.renderer->SetFont(tempfont);
             OTWDriver.renderer->SetColor(tempcolor);
         }
-
     }
 
 
     return true;
-
 }
 
 
-bool
-TrainingScriptClass::CmdWait(LineType *line)
+bool TrainingScriptClass::CmdWait(LineType *line)
 {
     float waittime = 0.0f;
 
@@ -335,8 +330,7 @@ bool iscallback(char *arg)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdWaitInput(LineType *line)
+bool TrainingScriptClass::CmdWaitInput(LineType *line)
 {
     float waittime = 0.0f;
 
@@ -354,7 +348,9 @@ TrainingScriptClass::CmdWaitInput(LineType *line)
         capturing = true;
     }
 
-    if (line->localtimer && (vuxRealTime > line->localtimer)) //if no, then if the timer has expired, move to the next line
+    if (line->localtimer &&
+        (vuxRealTime >
+         line->localtimer)) //if no, then if the timer has expired, move to the next line
     {
         nextline = nextline->next;
         capturing = false;
@@ -395,9 +391,7 @@ TrainingScriptClass::CmdWaitInput(LineType *line)
 }
 
 
-
-bool
-TrainingScriptClass::CmdWaitMouse(LineType *line)
+bool TrainingScriptClass::CmdWaitMouse(LineType *line)
 {
     float waittime = 0.0f;
     float mousex, mousey, targetdist, targetx, targety;
@@ -414,22 +408,24 @@ TrainingScriptClass::CmdWaitMouse(LineType *line)
         line->localtimer = (long)((float)waittime * 1000.0f) + vuxRealTime;
     }
 
-    if (line->localtimer && (vuxRealTime > line->localtimer)) //if no, then if the timer has expired, move to the next line
+    if (line->localtimer &&
+        (vuxRealTime >
+         line->localtimer)) //if no, then if the timer has expired, move to the next line
     {
         nextline = nextline->next;
         return false; //Timed out, so return false.
     }
 
 
-
     sscanf(line->GetArg(2), "%f", &targetx);
     sscanf(line->GetArg(3), "%f", &targety);
     sscanf(line->GetArg(4), "%f", &targetdist);
-    mousex  = -1.0f + ((2.0f * (float) gxPos) / (float) DisplayOptions.DispWidth);
-    mousey  = -1.0f + ((2.0f * (float) gyPos) / (float) DisplayOptions.DispHeight);
+    mousex = -1.0f + ((2.0f * (float)gxPos) / (float)DisplayOptions.DispWidth);
+    mousey = -1.0f + ((2.0f * (float)gyPos) / (float)DisplayOptions.DispHeight);
 
 
-    if (sqrt(((mousex - targetx) * (mousex - targetx)) + ((mousey - targety) * (mousey - targety)))  <  targetdist)
+    if (sqrt(((mousex - targetx) * (mousex - targetx)) +
+             ((mousey - targety) * (mousey - targety))) < targetdist)
     {
         nextline = nextline->next;
         return true;
@@ -439,8 +435,7 @@ TrainingScriptClass::CmdWaitMouse(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdIfTrue(LineType *line)
+bool TrainingScriptClass::CmdIfTrue(LineType *line)
 {
 
     if (!nextline->next)
@@ -458,8 +453,7 @@ TrainingScriptClass::CmdIfTrue(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::CmdIfNotTrue(LineType *line)
+bool TrainingScriptClass::CmdIfNotTrue(LineType *line)
 {
     if (!nextline->next)
     {
@@ -475,8 +469,7 @@ TrainingScriptClass::CmdIfNotTrue(LineType *line)
     return result;
 }
 
-bool
-TrainingScriptClass::CmdSound(LineType *line)
+bool TrainingScriptClass::CmdSound(LineType *line)
 {
     if (line->numargs = !2)
     {
@@ -493,8 +486,7 @@ TrainingScriptClass::CmdSound(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdWaitSound(LineType *line)
+bool TrainingScriptClass::CmdWaitSound(LineType *line)
 {
 
     if (line->numargs = !2)
@@ -515,8 +507,7 @@ TrainingScriptClass::CmdWaitSound(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdWaitSoundStop(LineType *line)
+bool TrainingScriptClass::CmdWaitSoundStop(LineType *line)
 {
     float waittime = 0.0f;
 
@@ -547,8 +538,7 @@ TrainingScriptClass::CmdWaitSoundStop(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdEndSection(LineType *line)
+bool TrainingScriptClass::CmdEndSection(LineType *line)
 {
 
     if (stacktop) //If there is a return stack, then use it
@@ -561,22 +551,17 @@ TrainingScriptClass::CmdEndSection(LineType *line)
         nextline = nextline->next;
         return false;
     }
-
-
 }
 
-bool
-TrainingScriptClass::CmdEndScript(LineType *line)
+bool TrainingScriptClass::CmdEndScript(LineType *line)
 {
 
     nextline = NULL; //End the script;
     return true;
-
 }
 
 
-bool
-TrainingScriptClass::CmdBlock(LineType *line)
+bool TrainingScriptClass::CmdBlock(LineType *line)
 {
 
     ClearBlockAllowList();
@@ -605,8 +590,7 @@ TrainingScriptClass::CmdBlock(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdAllow(LineType *line)
+bool TrainingScriptClass::CmdAllow(LineType *line)
 {
 
     ClearBlockAllowList();
@@ -636,8 +620,7 @@ TrainingScriptClass::CmdAllow(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::CmdJumpSection(LineType *line)
+bool TrainingScriptClass::CmdJumpSection(LineType *line)
 {
     LineType *linewalker;
 
@@ -651,7 +634,8 @@ TrainingScriptClass::CmdJumpSection(LineType *line)
 
     while (linewalker)
     {
-        if (linewalker->function == -1 && !strcmp(linewalker->GetArg(0), line->GetArg(1)))
+        if (linewalker->function == -1 &&
+            !strcmp(linewalker->GetArg(0), line->GetArg(1)))
         {
             nextline = linewalker;
             return true;
@@ -664,8 +648,7 @@ TrainingScriptClass::CmdJumpSection(LineType *line)
     return false; //Section not found
 }
 
-bool
-TrainingScriptClass::CmdCallSection(LineType *line)
+bool TrainingScriptClass::CmdCallSection(LineType *line)
 {
     LineType *linewalker;
 
@@ -679,7 +662,8 @@ TrainingScriptClass::CmdCallSection(LineType *line)
 
     while (linewalker)
     {
-        if (linewalker->function == -1 && !strcmp(linewalker->GetArg(0), line->GetArg(1)))
+        if (linewalker->function == -1 &&
+            !strcmp(linewalker->GetArg(0), line->GetArg(1)))
         {
             PushStack(line->next);
             nextline = linewalker;
@@ -693,8 +677,7 @@ TrainingScriptClass::CmdCallSection(LineType *line)
     return false; //Section not found
 }
 
-bool
-TrainingScriptClass::CmdSetCursor(LineType *line)
+bool TrainingScriptClass::CmdSetCursor(LineType *line)
 {
     if (line->numargs = !3)
     {
@@ -708,8 +691,7 @@ TrainingScriptClass::CmdSetCursor(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdSetColor(LineType *line)
+bool TrainingScriptClass::CmdSetColor(LineType *line)
 {
 
     if (line->numargs = !2)
@@ -723,8 +705,7 @@ TrainingScriptClass::CmdSetColor(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdSetFont(LineType *line)
+bool TrainingScriptClass::CmdSetFont(LineType *line)
 {
     if (line->numargs = !2)
     {
@@ -737,8 +718,7 @@ TrainingScriptClass::CmdSetFont(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdEnterCritical(LineType *line)
+bool TrainingScriptClass::CmdEnterCritical(LineType *line)
 {
     if (line->numargs = !1)
     {
@@ -751,8 +731,7 @@ TrainingScriptClass::CmdEnterCritical(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdEndCritical(LineType *line)
+bool TrainingScriptClass::CmdEndCritical(LineType *line)
 {
     if (line->numargs = !1)
     {
@@ -765,8 +744,7 @@ TrainingScriptClass::CmdEndCritical(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdSimCommand(LineType *line)
+bool TrainingScriptClass::CmdSimCommand(LineType *line)
 {
     InputFunctionType theFunc;
 
@@ -782,7 +760,8 @@ TrainingScriptClass::CmdSimCommand(LineType *line)
         if (buttonId < 0)
             theFunc(1, KEY_DOWN, NULL);
         else
-            theFunc(1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
+            theFunc(1, KEY_DOWN,
+                    OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
 
         nextline = nextline->next;
         return true;
@@ -793,8 +772,7 @@ TrainingScriptClass::CmdSimCommand(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::CmdWhile(LineType *line)
+bool TrainingScriptClass::CmdWhile(LineType *line)
 {
     LineType *linewalker;
 
@@ -827,8 +805,7 @@ TrainingScriptClass::CmdWhile(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdWhileNot(LineType *line)
+bool TrainingScriptClass::CmdWhileNot(LineType *line)
 {
     LineType *linewalker;
 
@@ -841,7 +818,9 @@ TrainingScriptClass::CmdWhileNot(LineType *line)
 
         while (linewalker)
         {
-            if (!strcmp(linewalker->GetArg(0), "EndSection")) //3-16-04 changed ENDSECTION to EndSection
+            if (!strcmp(
+                    linewalker->GetArg(0),
+                    "EndSection")) //3-16-04 changed ENDSECTION to EndSection
             {
                 nextline = linewalker->next;
                 return false;
@@ -862,8 +841,7 @@ TrainingScriptClass::CmdWhileNot(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::CmdCallIf(LineType *line)
+bool TrainingScriptClass::CmdCallIf(LineType *line)
 {
     LineType *linewalker;
 
@@ -877,7 +855,8 @@ TrainingScriptClass::CmdCallIf(LineType *line)
 
         while (linewalker)
         {
-            if (linewalker->function == -1 && !strcmp(linewalker->GetArg(0), line->GetArg(1)))
+            if (linewalker->function == -1 &&
+                !strcmp(linewalker->GetArg(0), line->GetArg(1)))
             {
                 PushStack(line->next);
                 nextline = linewalker;
@@ -896,7 +875,8 @@ TrainingScriptClass::CmdCallIf(LineType *line)
 
         while (linewalker)
         {
-            if (linewalker->function == -1 && !strcmp(linewalker->GetArg(0), line->GetArg(2)))
+            if (linewalker->function == -1 &&
+                !strcmp(linewalker->GetArg(0), line->GetArg(2)))
             {
                 PushStack(line->next);
                 nextline = linewalker;
@@ -915,8 +895,7 @@ TrainingScriptClass::CmdCallIf(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdCallIfNot(LineType *line)
+bool TrainingScriptClass::CmdCallIfNot(LineType *line)
 {
     LineType *linewalker;
 
@@ -930,7 +909,8 @@ TrainingScriptClass::CmdCallIfNot(LineType *line)
 
         while (linewalker)
         {
-            if (linewalker->function == -1 && !strcmp(linewalker->GetArg(0), line->GetArg(1)))
+            if (linewalker->function == -1 &&
+                !strcmp(linewalker->GetArg(0), line->GetArg(1)))
             {
                 PushStack(line->next);
                 nextline = linewalker;
@@ -949,7 +929,8 @@ TrainingScriptClass::CmdCallIfNot(LineType *line)
 
         while (linewalker)
         {
-            if (linewalker->function == -1 && !strcmp(linewalker->GetArg(0), line->GetArg(2)))
+            if (linewalker->function == -1 &&
+                !strcmp(linewalker->GetArg(0), line->GetArg(2)))
             {
                 PushStack(line->next);
                 nextline = linewalker;
@@ -967,16 +948,14 @@ TrainingScriptClass::CmdCallIfNot(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdClear(LineType *line)
+bool TrainingScriptClass::CmdClear(LineType *line)
 {
     DelAllRepeatList();
     nextline = nextline->next;
     return true;
 }
 
-bool
-TrainingScriptClass::CmdClearLast(LineType *line)
+bool TrainingScriptClass::CmdClearLast(LineType *line)
 {
     int clearline = 0;
     RepeatListType *walker = repeatlist;
@@ -1017,9 +996,7 @@ TrainingScriptClass::CmdClearLast(LineType *line)
 }
 
 
-
-bool
-TrainingScriptClass::CmdSetFlash(LineType *line)
+bool TrainingScriptClass::CmdSetFlash(LineType *line)
 {
     if (line->numargs = !2)
     {
@@ -1032,8 +1009,7 @@ TrainingScriptClass::CmdSetFlash(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdSetCursorCallback(LineType *line)
+bool TrainingScriptClass::CmdSetCursorCallback(LineType *line)
 {
     int i = 0;
     int callback = 0;
@@ -1049,11 +1025,17 @@ TrainingScriptClass::CmdSetCursorCallback(LineType *line)
     sscanf(line->GetArg(1), "%d", &callback);
 
     if (OTWDriver.pCockpitManager->GetActivePanel() && callback)
-        for (i = 0; i < OTWDriver.pCockpitManager->GetActivePanel()->mNumButtonViews; i++)
-            if (callback == OTWDriver.pCockpitManager->GetActivePanel()->mpButtonViews[i]->GetCallBackAndXY(&callbackx, &callbacky))
+        for (i = 0;
+             i < OTWDriver.pCockpitManager->GetActivePanel()->mNumButtonViews;
+             i++)
+            if (callback == OTWDriver.pCockpitManager->GetActivePanel()
+                                ->mpButtonViews[i]
+                                ->GetCallBackAndXY(&callbackx, &callbacky))
             {
-                cursorx = -1.0f + ((2.0f * (float) callbackx) / (float) DisplayOptions.DispWidth);
-                cursory = 1.0f - ((2.0f * (float) callbacky) / (float) DisplayOptions.DispHeight);
+                cursorx = -1.0f + ((2.0f * (float)callbackx) /
+                                   (float)DisplayOptions.DispWidth);
+                cursory = 1.0f - ((2.0f * (float)callbacky) /
+                                  (float)DisplayOptions.DispHeight);
 
                 nextline = nextline->next;
                 return true;
@@ -1064,8 +1046,7 @@ TrainingScriptClass::CmdSetCursorCallback(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::CmdSetCursorDial(LineType *line)
+bool TrainingScriptClass::CmdSetCursorDial(LineType *line)
 {
     int i = 0;
     int callback = 0;
@@ -1081,18 +1062,37 @@ TrainingScriptClass::CmdSetCursorDial(LineType *line)
     sscanf(line->GetArg(1), "%d", &callback);
 
     if (OTWDriver.pCockpitManager->GetActivePanel() && callback)
-        for (i = 0; i < OTWDriver.pCockpitManager->GetActivePanel()->mNumObjects; i++)
+        for (i = 0;
+             i < OTWDriver.pCockpitManager->GetActivePanel()->mNumObjects; i++)
         {
-            if (callback == OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mCallbackSlot)
+            if (callback == OTWDriver.pCockpitManager->GetActivePanel()
+                                ->mpObjects[i]
+                                ->mCallbackSlot)
             {
-                callbackx = OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mDestRect.left +
-                            ((OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mDestRect.right -
-                              OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mDestRect.left) / 2.0f);
-                callbacky = OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mDestRect.top +
-                            ((OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mDestRect.bottom -
-                              OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mDestRect.top) / 2.0f);
-                cursorx = -1.0f + ((2.0f * (float) callbackx) / (float) DisplayOptions.DispWidth);
-                cursory = 1.0f - ((2.0f * (float) callbacky) / (float) DisplayOptions.DispHeight);
+                callbackx = OTWDriver.pCockpitManager->GetActivePanel()
+                                ->mpObjects[i]
+                                ->mDestRect.left +
+                            ((OTWDriver.pCockpitManager->GetActivePanel()
+                                  ->mpObjects[i]
+                                  ->mDestRect.right -
+                              OTWDriver.pCockpitManager->GetActivePanel()
+                                  ->mpObjects[i]
+                                  ->mDestRect.left) /
+                             2.0f);
+                callbacky = OTWDriver.pCockpitManager->GetActivePanel()
+                                ->mpObjects[i]
+                                ->mDestRect.top +
+                            ((OTWDriver.pCockpitManager->GetActivePanel()
+                                  ->mpObjects[i]
+                                  ->mDestRect.bottom -
+                              OTWDriver.pCockpitManager->GetActivePanel()
+                                  ->mpObjects[i]
+                                  ->mDestRect.top) /
+                             2.0f);
+                cursorx = -1.0f + ((2.0f * (float)callbackx) /
+                                   (float)DisplayOptions.DispWidth);
+                cursory = 1.0f - ((2.0f * (float)callbacky) /
+                                  (float)DisplayOptions.DispHeight);
 
                 nextline = nextline->next;
                 return true;
@@ -1103,8 +1103,7 @@ TrainingScriptClass::CmdSetCursorDial(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdWaitCallbackVisible(LineType *line)
+bool TrainingScriptClass::CmdWaitCallbackVisible(LineType *line)
 {
     float waittime = 0.0f;
     int i = 0;
@@ -1132,8 +1131,13 @@ TrainingScriptClass::CmdWaitCallbackVisible(LineType *line)
         sscanf(line->GetArg(2), "%d", &callback);
 
         if (OTWDriver.pCockpitManager->GetActivePanel() && callback)
-            for (i = 0 ; i < OTWDriver.pCockpitManager->GetActivePanel()->mNumButtonViews; i++)
-                if (callback == OTWDriver.pCockpitManager->GetActivePanel()->mpButtonViews[i]->GetCallBackAndXY(&callbackx, &callbacky))
+            for (i = 0;
+                 i <
+                 OTWDriver.pCockpitManager->GetActivePanel()->mNumButtonViews;
+                 i++)
+                if (callback == OTWDriver.pCockpitManager->GetActivePanel()
+                                    ->mpButtonViews[i]
+                                    ->GetCallBackAndXY(&callbackx, &callbacky))
                 {
                     nextline = nextline->next;
                     return true;
@@ -1145,8 +1149,7 @@ TrainingScriptClass::CmdWaitCallbackVisible(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::CmdWaitDialVisible(LineType *line)
+bool TrainingScriptClass::CmdWaitDialVisible(LineType *line)
 {
     float waittime = 0.0f;
     int i = 0;
@@ -1174,24 +1177,23 @@ TrainingScriptClass::CmdWaitDialVisible(LineType *line)
         sscanf(line->GetArg(2), "%d", &callback);
 
         if (OTWDriver.pCockpitManager->GetActivePanel() && callback)
-            for (i = 0; i < OTWDriver.pCockpitManager->GetActivePanel()->mNumObjects; i++)
-                if (callback == OTWDriver.pCockpitManager->GetActivePanel()->mpObjects[i]->mCallbackSlot)
+            for (i = 0;
+                 i < OTWDriver.pCockpitManager->GetActivePanel()->mNumObjects;
+                 i++)
+                if (callback == OTWDriver.pCockpitManager->GetActivePanel()
+                                    ->mpObjects[i]
+                                    ->mCallbackSlot)
                 {
                     nextline = nextline->next;
                     return true;
                 }
-
     }
 
     return false;
 }
 
 
-
-
-
-bool
-TrainingScriptClass::CmdSetTextBoxed(LineType *line)
+bool TrainingScriptClass::CmdSetTextBoxed(LineType *line)
 {
     if (line->numargs = !2)
     {
@@ -1204,8 +1206,7 @@ TrainingScriptClass::CmdSetTextBoxed(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdMoveCursor(LineType *line)
+bool TrainingScriptClass::CmdMoveCursor(LineType *line)
 {
     float dx = 0;
     float dy = 0;
@@ -1224,8 +1225,7 @@ TrainingScriptClass::CmdMoveCursor(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdSetTextOrientation(LineType *line)
+bool TrainingScriptClass::CmdSetTextOrientation(LineType *line)
 {
     if (line->numargs = !2)
     {
@@ -1238,13 +1238,13 @@ TrainingScriptClass::CmdSetTextOrientation(LineType *line)
     return true;
 }
 
-bool
-TrainingScriptClass::CmdSetViewCallback(LineType *line)
+bool TrainingScriptClass::CmdSetViewCallback(LineType *line)
 {
     int i = 0;
     int callback = 0;
     int numpanels = 0;
-    int callbackx, callbacky; //these are only here because getcallbackandXY needs these.
+    int callbackx,
+        callbacky; //these are only here because getcallbackandXY needs these.
 
     if (line->numargs = !2)
     {
@@ -1258,11 +1258,18 @@ TrainingScriptClass::CmdSetViewCallback(LineType *line)
 
     if (callback)
         for (int panelcounter = 0; panelcounter < numpanels; panelcounter++)
-            for (i = 0; i < OTWDriver.pCockpitManager->GetPanel(panelcounter)->mNumButtonViews; i++)
-                if (callback == OTWDriver.pCockpitManager->GetPanel(panelcounter)->mpButtonViews[i]->GetCallBackAndXY(&callbackx, &callbacky))
+            for (i = 0; i < OTWDriver.pCockpitManager->GetPanel(panelcounter)
+                                ->mNumButtonViews;
+                 i++)
+                if (callback ==
+                    OTWDriver.pCockpitManager->GetPanel(panelcounter)
+                        ->mpButtonViews[i]
+                        ->GetCallBackAndXY(&callbackx, &callbacky))
                 {
                     nextline = nextline->next;
-                    OTWDriver.pCockpitManager->SetActivePanel(OTWDriver.pCockpitManager->GetPanel(panelcounter)->mIdNum);
+                    OTWDriver.pCockpitManager->SetActivePanel(
+                        OTWDriver.pCockpitManager->GetPanel(panelcounter)
+                            ->mIdNum);
                     return true;
                 }
 
@@ -1270,8 +1277,7 @@ TrainingScriptClass::CmdSetViewCallback(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdSetViewDial(LineType *line)
+bool TrainingScriptClass::CmdSetViewDial(LineType *line)
 {
     int i = 0;
     int callback = 0;
@@ -1289,11 +1295,19 @@ TrainingScriptClass::CmdSetViewDial(LineType *line)
 
     if (callback)
         for (int panelcounter = 0; panelcounter < numpanels; panelcounter++)
-            for (i = 0; i < OTWDriver.pCockpitManager->GetPanel(panelcounter)->mNumObjects; i++)
-                if (callback == OTWDriver.pCockpitManager->GetPanel(panelcounter)->mpObjects[i]->mCallbackSlot)
+            for (i = 0;
+                 i <
+                 OTWDriver.pCockpitManager->GetPanel(panelcounter)->mNumObjects;
+                 i++)
+                if (callback ==
+                    OTWDriver.pCockpitManager->GetPanel(panelcounter)
+                        ->mpObjects[i]
+                        ->mCallbackSlot)
                 {
                     nextline = nextline->next;
-                    OTWDriver.pCockpitManager->SetActivePanel(OTWDriver.pCockpitManager->GetPanel(panelcounter)->mIdNum);
+                    OTWDriver.pCockpitManager->SetActivePanel(
+                        OTWDriver.pCockpitManager->GetPanel(panelcounter)
+                            ->mIdNum);
                     return true;
                 }
 
@@ -1301,8 +1315,7 @@ TrainingScriptClass::CmdSetViewDial(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdSetPanTilt(LineType *line)
+bool TrainingScriptClass::CmdSetPanTilt(LineType *line)
 {
 
     float temppan, temptilt;
@@ -1320,8 +1333,7 @@ TrainingScriptClass::CmdSetPanTilt(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdMovePanTilt(LineType *line)
+bool TrainingScriptClass::CmdMovePanTilt(LineType *line)
 {
 
     float temppan, temptilt, movepan, movetilt;
@@ -1340,8 +1352,7 @@ TrainingScriptClass::CmdMovePanTilt(LineType *line)
     return false;
 }
 
-bool
-TrainingScriptClass::CmdSetCursor3D(LineType *line)
+bool TrainingScriptClass::CmdSetCursor3D(LineType *line)
 {
 
     Tpoint newpoint;
@@ -1361,8 +1372,10 @@ TrainingScriptClass::CmdSetCursor3D(LineType *line)
 
     if (screenpoint.csZ < 0)
     {
-        cursorx = (screenpoint.x - OTWDriver.renderer->shiftX) / OTWDriver.renderer->scaleX;
-        cursory = (screenpoint.y - OTWDriver.renderer->shiftY) / OTWDriver.renderer->scaleY;
+        cursorx = (screenpoint.x - OTWDriver.renderer->shiftX) /
+                  OTWDriver.renderer->scaleX;
+        cursory = (screenpoint.y - OTWDriver.renderer->shiftY) /
+                  OTWDriver.renderer->scaleY;
     }
 
     nextline = nextline->next;
@@ -1370,8 +1383,7 @@ TrainingScriptClass::CmdSetCursor3D(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::RunLine(LineType *line)
+bool TrainingScriptClass::RunLine(LineType *line)
 {
     if (line->function != -1)
         result = (this->*functiontable[line->function].function)(line);
@@ -1382,8 +1394,7 @@ TrainingScriptClass::RunLine(LineType *line)
 }
 
 
-bool
-TrainingScriptClass::RunScript()
+bool TrainingScriptClass::RunScript()
 {
 
     DisplayMatrix dm;
@@ -1410,8 +1421,7 @@ TrainingScriptClass::RunScript()
 
             RunLine(currentline);
             lastline = currentline;
-        }
-        while (incritical);
+        } while (incritical);
     }
     else
     {
@@ -1423,8 +1433,7 @@ TrainingScriptClass::RunScript()
     return true;
 }
 
-bool
-TrainingScriptClass::RestartScript()
+bool TrainingScriptClass::RestartScript()
 {
     ClearStack();
     ClearRepeatList();
@@ -1456,8 +1465,7 @@ TrainingScriptClass::RestartScript()
     return true;
 }
 
-void
-TrainingScriptClass::PushStack(LineType *returnline)
+void TrainingScriptClass::PushStack(LineType *returnline)
 {
     StackType *newstackitem;
 
@@ -1467,8 +1475,7 @@ TrainingScriptClass::PushStack(LineType *returnline)
     stacktop = newstackitem;
 }
 
-LineType *
-TrainingScriptClass::PopStack()
+LineType *TrainingScriptClass::PopStack()
 {
     StackType *oldstackitem;
     LineType *returnline;
@@ -1485,8 +1492,7 @@ TrainingScriptClass::PopStack()
     return NULL;
 }
 
-void
-TrainingScriptClass::ClearStack()
+void TrainingScriptClass::ClearStack()
 {
     StackType *walker;
     StackType *nextwalker;
@@ -1501,12 +1507,10 @@ TrainingScriptClass::ClearStack()
     }
 
     stacktop = NULL;
-
 }
 
 
-bool
-LineType::AddArg(char *argtext)
+bool LineType::AddArg(char *argtext)
 {
     ArgType *newarg;
 
@@ -1530,11 +1534,9 @@ LineType::AddArg(char *argtext)
 
     numargs++;
     return true;
-
 }
 
-char *
-LineType::GetArg(int argnum)
+char *LineType::GetArg(int argnum)
 {
     ArgType *argwalker;
 
@@ -1555,9 +1557,7 @@ LineType::GetArg(int argnum)
 }
 
 
-
-bool
-TrainingScriptClass::AddLine(char *linetext)
+bool TrainingScriptClass::AddLine(char *linetext)
 {
     LineType *newline;
     int charcounter = 0;
@@ -1591,13 +1591,25 @@ TrainingScriptClass::AddLine(char *linetext)
     {
         switch (linetext[i])
         {
-            case '"':
-            {
-                inquote = !inquote;
-                break;
-            }
+        case '"':
+        {
+            inquote = !inquote;
+            break;
+        }
 
-            case '\n':
+        case '\n':
+        {
+            templine[charcounter] = '\0';
+            charcounter = 0;
+            newline->AddArg(templine);
+            finished = true;
+            break;
+        }
+
+        case '/':
+        {
+            if (linetext[i + 1] ==
+                '/') //This should mean that only lines with // should be a comment, not just one slash
             {
                 templine[charcounter] = '\0';
                 charcounter = 0;
@@ -1605,56 +1617,45 @@ TrainingScriptClass::AddLine(char *linetext)
                 finished = true;
                 break;
             }
-
-            case '/':
+            else
             {
-                if (linetext[i + 1] == '/') //This should mean that only lines with // should be a comment, not just one slash
-                {
-                    templine[charcounter] = '\0';
-                    charcounter = 0;
-                    newline->AddArg(templine);
-                    finished = true;
-                    break;
-                }
-                else
-                {
-                    templine[charcounter] = linetext[i];
-                    charcounter++;
-                    break;
-                }
+                templine[charcounter] = linetext[i];
+                charcounter++;
+                break;
             }
+        }
 
-            case '\\':
+        case '/':
+        {
+            if (linetext[i + 1] == 'n')
             {
-                if (linetext[i + 1] == 'n')
-                {
-                    templine[charcounter] = '\n';
-                    charcounter++;
-                    i++; //Make sure we are skipping the 'n' character
-                    break;
-                }
-                else
-                {
-                    templine[charcounter] = linetext[i];
-                    charcounter++;
-                    break;
-                }
+                templine[charcounter] = '\n';
+                charcounter++;
+                i++; //Make sure we are skipping the 'n' character
+                break;
             }
+            else
+            {
+                templine[charcounter] = linetext[i];
+                charcounter++;
+                break;
+            }
+        }
 
-            default:
+        default:
+        {
+            if ((linetext[i] != ' ') || inquote)
             {
-                if ((linetext[i] != ' ') || inquote)
-                {
-                    templine[charcounter] = linetext[i];
-                    charcounter++;
-                }
-                else
-                {
-                    templine[charcounter] = '\0';
-                    charcounter = 0;
-                    newline->AddArg(templine);
-                }
+                templine[charcounter] = linetext[i];
+                charcounter++;
             }
+            else
+            {
+                templine[charcounter] = '\0';
+                charcounter = 0;
+                newline->AddArg(templine);
+            }
+        }
         }
     }
 
@@ -1662,14 +1663,15 @@ TrainingScriptClass::AddLine(char *linetext)
     newline->function = FindFunction(newline->GetArg(0));
 
     return true;
-
 }
 
-bool TrainingScriptClass::AddFunction(char *funcname, ScriptFunctionType function)
+bool TrainingScriptClass::AddFunction(char *funcname,
+                                      ScriptFunctionType function)
 {
     if (numfunctions < MAX_SCRIPTFUNCS)
     {
-        strncpy(functiontable[numfunctions].funcname, funcname, SCRIPTFUNC_SIZE);
+        strncpy(functiontable[numfunctions].funcname, funcname,
+                SCRIPTFUNC_SIZE);
         functiontable[numfunctions].function = function;
         numfunctions++;
         return true;
@@ -1726,8 +1728,7 @@ void TrainingScriptClass::InitFunctions()
     AddFunction("SetCursor3D", CmdSetCursor3D);
 }
 
-int
-TrainingScriptClass::FindFunction(char *funcname)
+int TrainingScriptClass::FindFunction(char *funcname)
 {
     for (int i = 0; i < numfunctions; i++)
         if (!strcmp(functiontable[i].funcname, funcname))
@@ -1737,8 +1738,7 @@ TrainingScriptClass::FindFunction(char *funcname)
 }
 
 
-void
-TrainingScriptClass::ClearAllLines()
+void TrainingScriptClass::ClearAllLines()
 {
     LineType *linewalker;
     LineType *nextlinewalker;
@@ -1776,7 +1776,6 @@ LineType::LineType()
     localflash = 0;
     localtextboxed = 0;
     localtextorientation = 0;
-
 }
 
 LineType::~LineType()
@@ -1806,13 +1805,11 @@ ArgType::ArgType()
 
 ArgType::~ArgType()
 {
-    delete [] arg; //changed from free
+    delete[] arg; //changed from free
 }
 
 
-
-void
-TrainingScriptClass::AddRepeatList(LineType *line)
+void TrainingScriptClass::AddRepeatList(LineType *line)
 {
     RepeatListType *temp;
 
@@ -1823,8 +1820,7 @@ TrainingScriptClass::AddRepeatList(LineType *line)
     temp->remove = false;
 }
 
-void
-TrainingScriptClass::ClearRepeatList()
+void TrainingScriptClass::ClearRepeatList()
 {
     RepeatListType *walker;
     RepeatListType *nextwalker;
@@ -1841,8 +1837,7 @@ TrainingScriptClass::ClearRepeatList()
     repeatlist = NULL;
 }
 
-bool
-TrainingScriptClass::DelRepeatList(LineType *line)
+bool TrainingScriptClass::DelRepeatList(LineType *line)
 {
     RepeatListType *walker = repeatlist;
 
@@ -1852,15 +1847,12 @@ TrainingScriptClass::DelRepeatList(LineType *line)
             walker->remove = true;
 
         walker = walker->next;
-
     }
 
     return true;
-
 }
 
-bool
-TrainingScriptClass::DelAllRepeatList()
+bool TrainingScriptClass::DelAllRepeatList()
 {
     RepeatListType *walker = repeatlist;
 
@@ -1868,18 +1860,15 @@ TrainingScriptClass::DelAllRepeatList()
     {
         walker->remove = true;
         walker = walker->next;
-
     }
 
     return true;
-
 }
 
-void
-TrainingScriptClass::CleanupRepeatList()
+void TrainingScriptClass::CleanupRepeatList()
 {
     RepeatListType *walker = repeatlist;
-    RepeatListType *prevwalker = NULL ;
+    RepeatListType *prevwalker = NULL;
 
     while (walker)
     {
@@ -1900,15 +1889,11 @@ TrainingScriptClass::CleanupRepeatList()
             prevwalker = walker;
             walker = walker->next;
         }
-
     }
-
-
 }
 
 
-void
-TrainingScriptClass::RunRepeatList()
+void TrainingScriptClass::RunRepeatList()
 {
     RepeatListType *walker = repeatlist;
 
@@ -1921,8 +1906,8 @@ TrainingScriptClass::RunRepeatList()
     }
 }
 
-bool
-TrainingScriptClass::CaptureCommand(InputFunctionType theFunc, int callback)
+bool TrainingScriptClass::CaptureCommand(InputFunctionType theFunc,
+                                         int callback)
 {
     CaptureListType *temp;
 
@@ -1940,8 +1925,7 @@ TrainingScriptClass::CaptureCommand(InputFunctionType theFunc, int callback)
     return false;
 }
 
-bool
-TrainingScriptClass::IsCaptured(InputFunctionType theFunc, int callback)
+bool TrainingScriptClass::IsCaptured(InputFunctionType theFunc, int callback)
 {
     CaptureListType *walker;
 
@@ -1957,14 +1941,12 @@ TrainingScriptClass::IsCaptured(InputFunctionType theFunc, int callback)
             return true;
 
         walker = walker->next;
-
     }
 
     return false;
 }
 
-void
-TrainingScriptClass::ClearCaptureList()
+void TrainingScriptClass::ClearCaptureList()
 {
     CaptureListType *walker = capturelist;
     CaptureListType *nextwalker = NULL;
@@ -1979,8 +1961,9 @@ TrainingScriptClass::ClearCaptureList()
     capturelist = NULL;
 }
 
-bool
-TrainingScriptClass::AddBlockAllowCommand(InputFunctionType theFunc, int callback) //Can be used to either allow or disallow a command based on the type of list it is
+bool TrainingScriptClass::AddBlockAllowCommand(
+    InputFunctionType theFunc,
+    int callback) //Can be used to either allow or disallow a command based on the type of list it is
 {
     CaptureListType *temp;
 
@@ -1998,8 +1981,7 @@ TrainingScriptClass::AddBlockAllowCommand(InputFunctionType theFunc, int callbac
 }
 
 //Check if the command is blocked or allowed
-bool
-TrainingScriptClass::IsBlocked(InputFunctionType theFunc, int callback)
+bool TrainingScriptClass::IsBlocked(InputFunctionType theFunc, int callback)
 {
     CaptureListType *walker;
 
@@ -2034,12 +2016,10 @@ TrainingScriptClass::IsBlocked(InputFunctionType theFunc, int callback)
         }
 
         return true;
-
     }
 }
 
-void
-TrainingScriptClass::ClearBlockAllowList()
+void TrainingScriptClass::ClearBlockAllowList()
 {
     CaptureListType *walker = blockallowlist;
     CaptureListType *nextwalker = NULL;
@@ -2062,10 +2042,9 @@ CaptureListType::CaptureListType()
 }
 
 
-bool
-TrainingScriptClass::LoadScript(char *name)
+bool TrainingScriptClass::LoadScript(char *name)
 {
-    FILE* ScriptFile;
+    FILE *ScriptFile;
     char templine[MAX_LINE_LENGTH];
     int i = 0;
 
@@ -2091,6 +2070,3 @@ TrainingScriptClass::LoadScript(char *name)
 
     return false;
 }
-
-
-

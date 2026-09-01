@@ -5,11 +5,11 @@
 #include "radar.h"
 #include "simveh.h"
 #include "fcc.h"
-#include "BeamRider.h"
+#include "beamrider.h"
 
 #define MANEUVER_DEBUG
 #ifdef MANEUVER_DEBUG
-#include "Graphics/include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 extern int g_nShowDebugLabels;
 #endif
 
@@ -27,7 +27,7 @@ void MissileClass::CheckGuidePhase(void)
 
     ShiAssert(inputData);
 
-    if ( not inputData)
+    if (not inputData)
         return;
 
     float dxi = 0.0F, dyi = 0.0F, dzi = 0.0F;
@@ -41,13 +41,15 @@ void MissileClass::CheckGuidePhase(void)
     {
 
         // only do this for the player
-        if (g_bRealisticAvionics and parent and ((SimVehicleClass *)parent.get())->IsPlayer())
+        if (g_bRealisticAvionics and parent and
+            ((SimVehicleClass*)parent.get())->IsPlayer())
         {
-            FireControlComputer* theFCC = ((SimVehicleClass*)parent.get())->GetFCC();
+            FireControlComputer* theFCC =
+                ((SimVehicleClass*)parent.get())->GetFCC();
 
             if (theFCC and theFCC->LaserArm and theFCC->LaserFire)
             {
-                SimObjectType *tgt;
+                SimObjectType* tgt;
 
                 tgt = theFCC->TargetPtr();
 
@@ -58,7 +60,7 @@ void MissileClass::CheckGuidePhase(void)
                     SetTarget(tgt);
 
                 // no FCC target, track laser point
-                if ( not tgt)
+                if (not tgt)
                 {
                     // need FOV code
                     targetX = theFCC->groundDesignateX;
@@ -101,7 +103,7 @@ void MissileClass::CheckGuidePhase(void)
     range = (float)sqrt(dxi * dxi + dyi * dyi + dzi * dzi);
 
     //boost
-    if ( not guidencephase)
+    if (not guidencephase)
     {
         if (runTime > inputData->boostguidesec)
             guidencephase = 1;
@@ -111,26 +113,29 @@ void MissileClass::CheckGuidePhase(void)
     {
         if (range < inputData->terminalguiderange)
             guidencephase = 2;
-        else if (inputData->terminalguiderange < 0 and inputData->mslActiveTtg > 0 and sensorArray[0]->Type() == SensorClass::Radar)
+        else if (inputData->terminalguiderange < 0 and
+                 inputData->mslActiveTtg > 0 and
+                 sensorArray[0]->Type() == SensorClass::Radar)
             guidencephase = 2;
     }
 }
 
 // RV - Biker - This is debug stuff
-extern float g_nboostguidesec;//me123 how many sec we are in boostguide mode
-extern float g_nterminalguiderange;//me123 what range we transfere to terminal guidence
-extern float g_nboostguideSensorPrecision;//me123
-extern float g_nsustainguideSensorPrecision ;//me123
-extern float g_nterminalguideSensorPrecision ; //me123
-extern float g_nboostguideLead ;//me123
-extern float g_nsustainguideLead ;//me123
-extern float g_nterminalguideLead ;//me123
-extern float g_nboostguideGnav ;//me123
-extern float g_nsustainguideGnav ;//me123
-extern float g_nterminalguideGnav ;//me123
-extern float g_nboostguideBwap;//me123
-extern float g_nsustainguideBwap;//me123
-extern float g_nterminalguideBwap ;//me123
+extern float g_nboostguidesec; //me123 how many sec we are in boostguide mode
+extern float
+    g_nterminalguiderange; //me123 what range we transfere to terminal guidence
+extern float g_nboostguideSensorPrecision; //me123
+extern float g_nsustainguideSensorPrecision; //me123
+extern float g_nterminalguideSensorPrecision; //me123
+extern float g_nboostguideLead; //me123
+extern float g_nsustainguideLead; //me123
+extern float g_nterminalguideLead; //me123
+extern float g_nboostguideGnav; //me123
+extern float g_nsustainguideGnav; //me123
+extern float g_nterminalguideGnav; //me123
+extern float g_nboostguideBwap; //me123
+extern float g_nsustainguideBwap; //me123
+extern float g_nterminalguideBwap; //me123
 
 void MissileClass::CommandGuide(void)
 {
@@ -147,7 +152,7 @@ void MissileClass::CommandGuide(void)
 
     ShiAssert(inputData);
 
-    if ( not inputData)
+    if (not inputData)
         return;
 
     CheckGuidePhase();
@@ -156,50 +161,55 @@ void MissileClass::CommandGuide(void)
     if (g_bActivateDebugStuff and g_bActivateMissileDebug)
     {
         if (g_nboostguidesec)
-            inputData->boostguidesec = g_nboostguidesec;//me123 how many sec we are in boostguide mode
+            inputData->boostguidesec =
+                g_nboostguidesec; //me123 how many sec we are in boostguide mode
 
         if (g_nterminalguiderange)
-            inputData->terminalguiderange = g_nterminalguiderange;//me123 what range we transfere to terminal guidence
+            inputData->terminalguiderange =
+                g_nterminalguiderange; //me123 what range we transfere to terminal guidence
 
         if (g_nboostguideSensorPrecision)
-            inputData->boostguideSensorPrecision = g_nboostguideSensorPrecision;//me123
+            inputData->boostguideSensorPrecision =
+                g_nboostguideSensorPrecision; //me123
 
         if (g_nsustainguideSensorPrecision)
-            inputData->sustainguideSensorPrecision = g_nsustainguideSensorPrecision ;//me123
+            inputData->sustainguideSensorPrecision =
+                g_nsustainguideSensorPrecision; //me123
 
         if (g_nterminalguideSensorPrecision)
-            inputData->terminalguideSensorPrecision = g_nterminalguideSensorPrecision ; //me123
+            inputData->terminalguideSensorPrecision =
+                g_nterminalguideSensorPrecision; //me123
 
         if (g_nboostguideLead)
-            inputData->boostguideLead = g_nboostguideLead ;//me123
+            inputData->boostguideLead = g_nboostguideLead; //me123
 
         if (g_nsustainguideLead)
-            inputData->sustainguideLead = g_nsustainguideLead ;//me123
+            inputData->sustainguideLead = g_nsustainguideLead; //me123
 
         if (g_nterminalguideLead)
-            inputData->terminalguideLead = g_nterminalguideLead ;//me123
+            inputData->terminalguideLead = g_nterminalguideLead; //me123
 
         if (g_nboostguideGnav)
-            inputData->boostguideGnav = g_nboostguideGnav ;//me123
+            inputData->boostguideGnav = g_nboostguideGnav; //me123
 
         if (g_nsustainguideGnav)
-            inputData->sustainguideGnav = g_nsustainguideGnav ;//me123
+            inputData->sustainguideGnav = g_nsustainguideGnav; //me123
 
         if (g_nterminalguideGnav)
-            inputData->terminalguideGnav = g_nterminalguideGnav ;//me123
+            inputData->terminalguideGnav = g_nterminalguideGnav; //me123
 
         if (g_nboostguideBwap)
-            inputData->boostguideBwap = g_nboostguideBwap;//me123
+            inputData->boostguideBwap = g_nboostguideBwap; //me123
 
         if (g_nsustainguideBwap)
             inputData->sustainguideBwap = g_nsustainguideBwap; //me123
 
         if (g_nterminalguideBwap)
-            inputData->terminalguideBwap = g_nterminalguideBwap ;//me123
+            inputData->terminalguideBwap = g_nterminalguideBwap; //me123
     }
 
     //boost
-    if ( not guidencephase)
+    if (not guidencephase)
     {
         SensorPrecision = inputData->boostguideSensorPrecision;
         LeadA = inputData->boostguideLead;
@@ -231,7 +241,9 @@ void MissileClass::CommandGuide(void)
     // No Target
     if (runTime > inputData->guidanceDelay)
     {
-        if (g_bNewSensorPrecision and flags bitand SensorLostLock and sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
+        if (g_bNewSensorPrecision and flags bitand SensorLostLock and
+            sensorArray and sensorArray[0] and
+            sensorArray[0]->Type() == SensorClass::RadarHoming)
         {
             ifd->augCommand.yaw = 0.0f;
             ifd->augCommand.pitch = 0.0f;
@@ -245,28 +257,37 @@ void MissileClass::CommandGuide(void)
             // Inertial Line of Sight Vector
             float rangeplatform = 0;
 
-            if (auxData and auxData->errorfromparrent and sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (auxData and auxData->errorfromparrent and sensorArray and
+                sensorArray[0] and
+                sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
-                FalconEntity* RadarPlt = ((BeamRiderClass*)this->sensorArray[0])->Getplatform();
-				RadarClass* theRadar = NULL;
+                FalconEntity* RadarPlt =
+                    ((BeamRiderClass*)this->sensorArray[0])->Getplatform();
+                RadarClass* theRadar = NULL;
 
                 if (RadarPlt)
-                    theRadar = (RadarClass*)FindSensor((SimMoverClass*)(RadarPlt), SensorClass::Radar);
+                    theRadar = (RadarClass*)FindSensor(
+                        (SimMoverClass*)(RadarPlt), SensorClass::Radar);
 
                 if (theRadar)
-                    rangeplatform = ((SensorClass*)theRadar)->CurrentTarget()->localData->range;
+                    rangeplatform = ((SensorClass*)theRadar)
+                                        ->CurrentTarget()
+                                        ->localData->range;
             }
 
             // the system get an update
             if (runTime > GuidenceTime)
             {
-                GuidenceTime =  runTime + Bwap;//me123
+                GuidenceTime = runTime + Bwap; //me123
                 dxi = targetPtr->BaseData()->XPos() - x;
                 dyi = targetPtr->BaseData()->YPos() - y;
                 dzi = targetPtr->BaseData()->ZPos() - z;
-                dxdoti = (targetPtr->BaseData()->XDelta() * LeadB) - (xdot * LeadA);
-                dydoti = (targetPtr->BaseData()->YDelta() * LeadB) - (ydot * LeadA);
-                dzdoti = (targetPtr->BaseData()->ZDelta() * LeadB) - (zdot * LeadA);
+                dxdoti =
+                    (targetPtr->BaseData()->XDelta() * LeadB) - (xdot * LeadA);
+                dydoti =
+                    (targetPtr->BaseData()->YDelta() * LeadB) - (ydot * LeadA);
+                dzdoti =
+                    (targetPtr->BaseData()->ZDelta() * LeadB) - (zdot * LeadA);
                 targetX = targetPtr->BaseData()->XPos();
                 targetY = targetPtr->BaseData()->YPos();
                 targetZ = targetPtr->BaseData()->ZPos();
@@ -277,25 +298,30 @@ void MissileClass::CommandGuide(void)
                 //me123 add some randomeness to the guidence
                 range = (float)sqrt(dxi * dxi + dyi * dyi + dzi * dzi);
 
-                if (rangeplatform) range = rangeplatform;
+                if (rangeplatform)
+                    range = rangeplatform;
 
                 float error = (float)sin(SensorPrecision * DTR) * range;
 
-                if ( not g_bNewSensorPrecision)
+                if (not g_bNewSensorPrecision)
                 {
-                    float var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
+                    float var = ((-error / 2) +
+                                 (error * ((float)rand() / (float)RAND_MAX)));
                     targetDX += var;
                     targetDY -= var;
                     targetDZ += var;
                 }
                 else
                 {
-                    float var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
+                    float var = ((-error / 2) +
+                                 (error * ((float)rand() / (float)RAND_MAX)));
                     targetX += var;
-                    var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
+                    var = ((-error / 2) +
+                           (error * ((float)rand() / (float)RAND_MAX)));
                     targetY += var;
-                    var = ((-error / 2) + (error * ((float)rand() / (float)RAND_MAX)));
-                    targetZ   += var;
+                    var = ((-error / 2) +
+                           (error * ((float)rand() / (float)RAND_MAX)));
+                    targetZ += var;
                 }
             }
             //"coast on the last info we
@@ -318,11 +344,15 @@ void MissileClass::CommandGuide(void)
                 // This will potentially introduce some error in the ultimate impact point, but should be acceptable.
                 // We had to make this corection since all campaign entities were storing
                 // their z position as "AGL" instead of world space height above sea level.
-                dzi += OTWDriver.GetApproxGroundLevel(targetPtr->BaseData()->XPos(), targetPtr->BaseData()->YPos());
+                dzi += OTWDriver.GetApproxGroundLevel(
+                    targetPtr->BaseData()->XPos(),
+                    targetPtr->BaseData()->YPos());
             }
 
             range = (float)sqrt(dxi * dxi + dyi * dyi + dzi * dzi);
-            timpct = range / (vt + targetPtr->BaseData()->GetVt() * (float)cos(targetPtr->localData->ataFrom));
+            timpct =
+                range / (vt + targetPtr->BaseData()->GetVt() *
+                                  (float)cos(targetPtr->localData->ataFrom));
 
             // The target is getting away
             if (timpct < 0.0f)
@@ -330,10 +360,11 @@ void MissileClass::CommandGuide(void)
                 timpct = 100.0f;
             }
 
-            invRngSq  = 1.0F / (range * range);
+            invRngSq = 1.0F / (range * range);
         }
         // we've lost our target, but want to continue our flight to the last known location
-        else if (targetX not_eq -1.0F and targetY not_eq -1.0F and targetZ not_eq -1.0F)
+        else if (targetX not_eq -1.0F and targetY not_eq -1.0F and
+                 targetZ not_eq -1.0F)
         {
             hasTarget = TRUE;
 
@@ -366,8 +397,9 @@ void MissileClass::CommandGuide(void)
             }
 
             range = (float)sqrt(dxi * dxi + dyi * dyi + dzi * dzi);
-            timpct = range / (float)sqrt(dxdoti * dxdoti + dydoti * dydoti + dzdoti * dzdoti);
-            invRngSq  = 1.0F / (range * range);
+            timpct = range / (float)sqrt(dxdoti * dxdoti + dydoti * dydoti +
+                                         dzdoti * dzdoti);
+            invRngSq = 1.0F / (range * range);
 
             // Accumulate the velocity into the target point -- a little sloppy to do it here
             // since it _should_ happen every frame once the data is set, but this will only happen
@@ -376,7 +408,6 @@ void MissileClass::CommandGuide(void)
             targetY += targetDY * SimLibMajorFrameTime;
             targetZ += targetDZ * SimLibMajorFrameTime;
         }
-
     }
 
     if (hasTarget)
@@ -386,7 +417,8 @@ void MissileClass::CommandGuide(void)
         wkc = (dxi * dydoti - dyi * dxdoti) * invRngSq;
 
         // Lofting Bias
-        if (runTime > inputData->guidanceDelay and runTime < inputData->guidanceDelay + inputData->mslLoftTime)
+        if (runTime > inputData->guidanceDelay and
+            runTime < inputData->guidanceDelay + inputData->mslLoftTime)
         {
             loftBias = -inputData->mslBiasn - 1.0F; // In units of G
         }
@@ -396,8 +428,10 @@ void MissileClass::CommandGuide(void)
         }
 
         // Desired wind axis rates
-        omegayReq = Gnav * (dmx[1][0] * wic + dmx[1][1] * wjc + dmx[1][2] * wkc);
-        omegazReq = Gnav * (dmx[2][0] * wic + dmx[2][1] * wjc + dmx[2][2] * wkc);
+        omegayReq =
+            Gnav * (dmx[1][0] * wic + dmx[1][1] * wjc + dmx[1][2] * wkc);
+        omegazReq =
+            Gnav * (dmx[2][0] * wic + dmx[2][1] * wjc + dmx[2][2] * wkc);
 
         // Inertial (body relative) load
         // factor commands in units of G
@@ -406,8 +440,12 @@ void MissileClass::CommandGuide(void)
 
         if (ifd)
         {
-            ifd->augCommand.yaw   = vt * omegazReq / GRAVITY + ifd->geomData.costhe * ifd->geomData.sinphi * (loftBias);
-            ifd->augCommand.pitch = -(vt * omegayReq / GRAVITY) + ifd->geomData.costhe * ifd->geomData.cosphi * (loftBias);
+            ifd->augCommand.yaw =
+                vt * omegazReq / GRAVITY +
+                ifd->geomData.costhe * ifd->geomData.sinphi * (loftBias);
+            ifd->augCommand.pitch =
+                -(vt * omegayReq / GRAVITY) +
+                ifd->geomData.costhe * ifd->geomData.cosphi * (loftBias);
         }
     }
     else
@@ -421,8 +459,10 @@ void MissileClass::CommandGuide(void)
 
         if (ifd)
         {
-            ifd->augCommand.yaw   = -2.0F * ifd->nycgb + ifd->geomData.costhe * ifd->geomData.sinphi;
-            ifd->augCommand.pitch =  2.0F * ifd->nzcgb - ifd->geomData.costhe * ifd->geomData.cosphi;
+            ifd->augCommand.yaw = -2.0F * ifd->nycgb +
+                                  ifd->geomData.costhe * ifd->geomData.sinphi;
+            ifd->augCommand.pitch =
+                2.0F * ifd->nzcgb - ifd->geomData.costhe * ifd->geomData.cosphi;
         }
     }
 
@@ -442,7 +482,7 @@ void MissileClass::CommandGuide(void)
             if (flags bitand SensorLostLock)
                 strcat(tmpStr, "OTgtL ");
 
-            if ( not guidencephase)
+            if (not guidencephase)
                 sprintf(label, "B %4.1f %5.0f", vcas, -z);
 
             if (guidencephase == 1)
@@ -456,7 +496,8 @@ void MissileClass::CommandGuide(void)
             if (wentActive)
                 strcat(tmpStr, " Activ");
 
-            ((DrawableBSP*)drawPointer)->SetLabel(tmpStr, ((DrawableBSP*)drawPointer)->LabelColor());
+            ((DrawableBSP*)drawPointer)
+                ->SetLabel(tmpStr, ((DrawableBSP*)drawPointer)->LabelColor());
         }
     }
 
@@ -465,24 +506,33 @@ void MissileClass::CommandGuide(void)
     //#define MISSILEDEBUG 1
 #ifdef MISSILEDEBUG
 
-    if (sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RWR and launchState == InFlight)
+    if (sensorArray and sensorArray[0] and
+        sensorArray[0]->Type() == SensorClass::RWR and launchState == InFlight)
     {
         static int file = -1;
         static int binfile = -1;
         static char buffer[256];
         static unsigned now;
-        static MissileClass *theOne = NULL;
+        static MissileClass* theOne = NULL;
 
         now = SimLibElapsedTime;
 
         if (file < 0)
         {
             theOne = this;
-            binfile = open("C:\\temp\\MissileTrack.bin", _O_CREAT bitor _O_TRUNC bitor _O_WRONLY bitor _O_BINARY, 0000666);
-            file = open("C:\\temp\\MissileTrack.txt", _O_CREAT bitor _O_TRUNC bitor _O_WRONLY, 0000666);
-            sprintf(buffer, "Missile Guidance Dump started %2d:%2d.%2d for (0x%X)\n", now / 60000, now % 60000 / 1000, now % 1000 / 10, this);
+            binfile =
+                open("C:\\temp\\MissileTrack.bin",
+                     _O_CREAT bitor _O_TRUNC bitor _O_WRONLY bitor _O_BINARY,
+                     0000666);
+            file = open("C:\\temp\\MissileTrack.txt",
+                        _O_CREAT bitor _O_TRUNC bitor _O_WRONLY, 0000666);
+            sprintf(buffer,
+                    "Missile Guidance Dump started %2d:%2d.%2d for (0x%X)\n",
+                    now / 60000, now % 60000 / 1000, now % 1000 / 10, this);
             write(file, buffer, strlen(buffer));
-            sprintf(buffer, "Time     Addr           T   rng   ttg   gndZ   xFromTgt yFromTgt zFromTgt xdot  ydot  zdot  yawCmd ptchCmd\n");
+            sprintf(buffer,
+                    "Time     Addr           T   rng   ttg   gndZ   xFromTgt "
+                    "yFromTgt zFromTgt xdot  ydot  zdot  yawCmd ptchCmd\n");
             write(file, buffer, strlen(buffer));
         }
         else
@@ -494,12 +544,12 @@ void MissileClass::CommandGuide(void)
             }
         }
 
-        sprintf(buffer, "%2d:%2d.%2d \t(0x%X)  %c \t%6.0f \t%3.2f \t%4.0f \t%6.0f \t%6.0f \t%6.0f \t%3.0f \t%3.0f \t%3.0f \t%1.1f \t%1.1f\n",
+        sprintf(buffer,
+                "%2d:%2d.%2d \t(0x%X)  %c \t%6.0f \t%3.2f \t%4.0f \t%6.0f "
+                "\t%6.0f \t%6.0f \t%3.0f \t%3.0f \t%3.0f \t%1.1f \t%1.1f\n",
                 now / 60000, now % 60000 / 1000, now % 1000 / 10, this,
-                hasTarget ? 'Y' : 'N', range, timpct, groundZ,
-                dxi, dyi, dzi,
-                xdot, ydot, zdot,
-                ifd->augCommand.yaw, ifd->augCommand.pitch);
+                hasTarget ? 'Y' : 'N', range, timpct, groundZ, dxi, dyi, dzi,
+                xdot, ydot, zdot, ifd->augCommand.yaw, ifd->augCommand.pitch);
         write(file, buffer, strlen(buffer));
         _commit(file);
 
@@ -558,7 +608,9 @@ void MissileClass::CommandGuide(void)
                 // This will potential introduce some error in the ultimate impact point, but should be acceptable.
                 // We have to make this corection since all campaign entities store
                 // their z position as "AGL" instead of world space height above sea level.
-                data.targetZ += OTWDriver.GetApproxGroundLevel(targetPtr->BaseData()->XPos(), targetPtr->BaseData()->YPos());
+                data.targetZ += OTWDriver.GetApproxGroundLevel(
+                    targetPtr->BaseData()->XPos(),
+                    targetPtr->BaseData()->YPos());
             }
         }
         else

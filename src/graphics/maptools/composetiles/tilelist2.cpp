@@ -9,10 +9,10 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "shi/ShiError.h"
-#include "../../Terrain/Ttypes.h"
-#include "../../3Dlib/Image.h"
-#include "TileList.h"
+#include "shi/shierror.h"
+#include "../../terrain/ttypes.h"
+#include "../../3dlib/image.h"
+#include "tilelist.h"
 
 // Read in all the previous LOD images and catalog them
 void TileListManager::Setup(char *path)
@@ -42,7 +42,8 @@ void TileListManager::Setup(char *path)
     newTile = new TileListEntry;
 
     // Loop until the input file is exhausted
-    while ((ret = read(listFile, imageData, sizeof(imageData))) == sizeof(imageData))
+    while ((ret = read(listFile, imageData, sizeof(imageData))) ==
+           sizeof(imageData))
     {
 
         // Store the tiles id
@@ -90,11 +91,12 @@ void TileListManager::Cleanup(void)
 }
 
 
-const char* TileListManager::GetFileName(WORD texCode)
+const char *TileListManager::GetFileName(WORD texCode)
 {
     TileListEntry *pTileRecord;
 
-    for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
+    for (pTileRecord = tileListHead; pTileRecord != NULL;
+         pTileRecord = pTileRecord->next)
     {
         if (pTileRecord->texCode == texCode)
         {
@@ -102,16 +104,18 @@ const char* TileListManager::GetFileName(WORD texCode)
         }
     }
 
-    printf("tile coded %0X was requested, but not found in TileList!\n", texCode);
+    printf("tile coded %0X was requested, but not found in TileList!\n",
+           texCode);
     return NULL;
 }
 
 
-const BYTE* TileListManager::GetImageData(WORD texCode)
+const BYTE *TileListManager::GetImageData(WORD texCode)
 {
     TileListEntry *pTileRecord;
 
-    for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
+    for (pTileRecord = tileListHead; pTileRecord != NULL;
+         pTileRecord = pTileRecord->next)
     {
         if (pTileRecord->texCode == texCode)
         {
@@ -119,7 +123,8 @@ const BYTE* TileListManager::GetImageData(WORD texCode)
         }
     }
 
-    printf("tile coded %0X was requested, but not found in TileList!\n", texCode);
+    printf("tile coded %0X was requested, but not found in TileList!\n",
+           texCode);
     return NULL;
 }
 
@@ -132,5 +137,6 @@ void TileListManager::ReadImageData(char *filename, BYTE *target, DWORD size)
 
 void TileListManager::WriteSharedPaletteData(int TargetFile)
 {
-    ShiAssert(!"Shouldn't do this for second and subsequent "far" tile sets.");
+    ShiAssert(!"Shouldn't do this for second and subsequent " far
+               " tile sets.");
 }

@@ -5,11 +5,11 @@
 
     //JAM 06Jan04 - Begin Major Rewrite
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
-#include "StateStack.h"
-#include "ClipFlags.h"
-#include "PolyLib.h"
+#include "statestack.h"
+#include "clipflags.h"
+#include "polylib.h"
 
 // The pointers to the active jump tables and rendering state tables.
 const DrawPrimFp *DrawPrimJumpTable = NULL;
@@ -24,8 +24,7 @@ const int *RenderStateTablePC = NULL;
 const int *RenderStateTableNPC = NULL;
 
 // Jump tables for polygon drawing
-const DrawPrimFp DrawPrimNoClipWithTexJumpTable[PpolyTypeNum] =
-{
+const DrawPrimFp DrawPrimNoClipWithTexJumpTable[PpolyTypeNum] = {
     (DrawPrimFp)DrawPrimPoint, // Point
     (DrawPrimFp)DrawPrimLine, // Line
 
@@ -59,8 +58,7 @@ const DrawPrimFp DrawPrimNoClipWithTexJumpTable[PpolyTypeNum] =
     (DrawPrimFp)DrawPolyT, // Bilinear Alpha per Texel Hack
 };
 
-const DrawPrimFp DrawPrimFogNoClipWithTexJumpTable[PpolyTypeNum] =
-{
+const DrawPrimFp DrawPrimFogNoClipWithTexJumpTable[PpolyTypeNum] = {
     (DrawPrimFp)DrawPrimFPoint, // Point
     (DrawPrimFp)DrawPrimFLine, // Line
 
@@ -94,8 +92,7 @@ const DrawPrimFp DrawPrimFogNoClipWithTexJumpTable[PpolyTypeNum] =
     (DrawPrimFp)DrawPolyFT, // Bilinear Alpha per Texel Hack
 };
 
-const DrawPrimFp DrawPrimNoClipNoTexJumpTable[PpolyTypeNum] =
-{
+const DrawPrimFp DrawPrimNoClipNoTexJumpTable[PpolyTypeNum] = {
     (DrawPrimFp)DrawPrimPoint, // Point
     (DrawPrimFp)DrawPrimLine, // Line
 
@@ -129,8 +126,7 @@ const DrawPrimFp DrawPrimNoClipNoTexJumpTable[PpolyTypeNum] =
     (DrawPrimFp)DrawPoly, // Bilinear Alpha per Texel Hack
 };
 
-const DrawPrimFp DrawPrimFogNoClipNoTexJumpTable[PpolyTypeNum] =
-{
+const DrawPrimFp DrawPrimFogNoClipNoTexJumpTable[PpolyTypeNum] = {
     (DrawPrimFp)DrawPrimFPoint, // Point
     (DrawPrimFp)DrawPrimFLine, // Line
 
@@ -164,8 +160,7 @@ const DrawPrimFp DrawPrimFogNoClipNoTexJumpTable[PpolyTypeNum] =
     (DrawPrimFp)DrawPolyF, // Bilinear Alpha per Texel Hack
 };
 
-const DrawPrimFp DrawPrimWithClipJumpTable[PpolyTypeNum] =
-{
+const DrawPrimFp DrawPrimWithClipJumpTable[PpolyTypeNum] = {
     (DrawPrimFp)DrawClippedPrim, // Point
     (DrawPrimFp)DrawClippedPrim, // Line
     (DrawPrimFp)DrawClippedPrim, // Flat
@@ -198,8 +193,7 @@ const DrawPrimFp DrawPrimWithClipJumpTable[PpolyTypeNum] =
     (DrawPrimFp)DrawClippedPrim, // Bilinear Alpha per Texel Hack
 };
 
-const ClipPrimFp ClipPrimWithTexJumpTable[PpolyTypeNum] =
-{
+const ClipPrimFp ClipPrimWithTexJumpTable[PpolyTypeNum] = {
     (ClipPrimFp)ClipPrimPoint, // Point
     (ClipPrimFp)ClipPrimLine, // Line
     (ClipPrimFp)ClipPoly, // Flat
@@ -232,8 +226,7 @@ const ClipPrimFp ClipPrimWithTexJumpTable[PpolyTypeNum] =
     (ClipPrimFp)ClipPolyT, // Bilinear Alpha per Texel Hack
 };
 
-const ClipPrimFp ClipPrimFogWithTexJumpTable[PpolyTypeNum] =
-{
+const ClipPrimFp ClipPrimFogWithTexJumpTable[PpolyTypeNum] = {
     (ClipPrimFp)ClipPrimFPoint, // Point
     (ClipPrimFp)ClipPrimFLine, // Line
     (ClipPrimFp)ClipPolyF, // Flat
@@ -266,8 +259,7 @@ const ClipPrimFp ClipPrimFogWithTexJumpTable[PpolyTypeNum] =
     (ClipPrimFp)ClipPolyFT, // Bilinear Alpha per Texel Hack
 };
 
-const ClipPrimFp ClipPrimNoTexJumpTable[PpolyTypeNum] =
-{
+const ClipPrimFp ClipPrimNoTexJumpTable[PpolyTypeNum] = {
     (ClipPrimFp)ClipPrimPoint, // Point
     (ClipPrimFp)ClipPrimLine, // Line
     (ClipPrimFp)ClipPoly, // Flat
@@ -300,8 +292,7 @@ const ClipPrimFp ClipPrimNoTexJumpTable[PpolyTypeNum] =
     (ClipPrimFp)ClipPoly, // Bilinear Alpha per Texel Hack
 };
 
-const ClipPrimFp ClipPrimFogNoTexJumpTable[PpolyTypeNum] =
-{
+const ClipPrimFp ClipPrimFogNoTexJumpTable[PpolyTypeNum] = {
     (ClipPrimFp)ClipPrimFPoint, // Point
     (ClipPrimFp)ClipPrimFLine, // Line
     (ClipPrimFp)ClipPolyF, // Flat
@@ -335,8 +326,7 @@ const ClipPrimFp ClipPrimFogNoTexJumpTable[PpolyTypeNum] =
 };
 
 // Draw state table which maps from polygon type to rendering state.
-const int RenderStateTableWithNPCTex[PpolyTypeNum] =
-{
+const int RenderStateTableWithNPCTex[PpolyTypeNum] = {
     STATE_LIT, // Point
     STATE_LIT, // Line
 
@@ -370,8 +360,7 @@ const int RenderStateTableWithNPCTex[PpolyTypeNum] =
     STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP, // Bilinear Alpha per Texel Hack
 };
 
-const int RenderStateTableWithPCTex[PpolyTypeNum] =
-{
+const int RenderStateTableWithPCTex[PpolyTypeNum] = {
     STATE_LIT, // Point
     STATE_LIT, // Line
 
@@ -405,8 +394,7 @@ const int RenderStateTableWithPCTex[PpolyTypeNum] =
     STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP, // Bilinear Alpha per Texel Hack
 };
 
-const int RenderStateTableNoTex[PpolyTypeNum] =
-{
+const int RenderStateTableNoTex[PpolyTypeNum] = {
     STATE_SOLID, // Point
     STATE_SOLID, // Line
 

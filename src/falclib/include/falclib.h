@@ -13,17 +13,17 @@
 #include "../../codelib/include/shi/shi.h"
 #include "../../codelib/include/shi/int.h"
 #include "../../codelib/include/shi/float.h"
-#include "../../codelib/include/shi/ConvFtoI.h"
-#include "../../codelib/include/shi/SHIerror.h"
+#include "../../codelib/include/shi/convftoi.h"
+#include "../../codelib/include/shi/shierror.h"
 #include "f4error.h"
-#include "IsBad.h" // JB 010515
+#include "isbad.h" // JB 010515
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/shmalloc.h"
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/shmalloc.h"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mltrig.h"
 
-#endif // _PROJECT_INCLUDE_H          
+#endif // _PROJECT_INCLUDE_H

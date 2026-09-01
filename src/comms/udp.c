@@ -12,7 +12,7 @@
 #include "wsprotos.h"
 //sfr: new includes
 #include "udp.h"
-#include "ComList.h"
+#include "comlist.h"
 #include "capibwcontrol.h"
 
 // sfr: for new isbad checks
@@ -33,16 +33,40 @@ int comms_decompress(char *in, char *out, int size);
 
 /* List head for connection list */
 //extern CAPIList *GlobalListHead;
-extern HANDLE    GlobalListLock;
+extern HANDLE GlobalListLock;
 
 
 /* Mutex macros */
 #define SAY_ON(a)
 #define SAY_OFF(a)
-#define CREATE_LOCK(a,b)                { a = CreateMutex( NULL, FALSE, b ); if( not a ) DebugBreak(); }
-#define REQUEST_LOCK(a)                 { int w = WaitForSingleObject(a, INFINITE); {SAY_ON(a);} if( w == WAIT_FAILED ) DebugBreak(); }
-#define RELEASE_LOCK(a)                 { {SAY_OFF(a);} if( not ReleaseMutex(a)) DebugBreak();   }
-#define DESTROY_LOCK(a)                 { if( not CloseHandle(a)) DebugBreak();   }
+#define CREATE_LOCK(a, b)                                                      \
+    {                                                                          \
+        a = CreateMutex(NULL, FALSE, b);                                       \
+        if (not a)                                                             \
+            DebugBreak();                                                      \
+    }
+#define REQUEST_LOCK(a)                                                        \
+    {                                                                          \
+        int w = WaitForSingleObject(a, INFINITE);                              \
+        {                                                                      \
+            SAY_ON(a);                                                         \
+        }                                                                      \
+        if (w == WAIT_FAILED)                                                  \
+            DebugBreak();                                                      \
+    }
+#define RELEASE_LOCK(a)                                                        \
+    {                                                                          \
+        {                                                                      \
+            SAY_OFF(a);                                                        \
+        }                                                                      \
+        if (not ReleaseMutex(a))                                               \
+            DebugBreak();                                                      \
+    }
+#define DESTROY_LOCK(a)                                                        \
+    {                                                                          \
+        if (not CloseHandle(a))                                                \
+            DebugBreak();                                                      \
+    }
 
 
 static struct sockaddr_in comBroadcastAddr, comRecvAddr;
@@ -51,7 +75,8 @@ static struct sockaddr_in comBroadcastAddr, comRecvAddr;
 void ComUDPClose(com_API_handle c);
 int ComUDPSend(com_API_handle c, int msgsize, int oob, int type);
 int ComUDPSendDummy(com_API_handle c, unsigned long ip, unsigned short port);
-int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom);
+int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type,
+                com_API_handle Xcom);
 int ComUDPGet(com_API_handle c);
 
 int ComIPHostIDGet(com_API_handle c, char *buf, int reset);
@@ -63,38 +88,29 @@ unsigned long ComUDPGetTimeStamp(com_API_handle c);
 extern void enter_cs(void);
 extern void leave_cs(void);
 
-static com_API_handle ComUDPOpenSendClone(
-    char *name,
-    ComIP *parentCom,
-    int buffersize,
-    char *gamename,
-    int udpPort,
-    unsigned long IPaddress,
-    unsigned long id
-);
+static com_API_handle ComUDPOpenSendClone(char *name, ComIP *parentCom,
+                                          int buffersize, char *gamename,
+                                          int udpPort, unsigned long IPaddress,
+                                          unsigned long id);
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-#define GETActiveCOMHandle(c)   (((ComIP *)c)->parent == NULL) ? ((ComIP *)c) : ((ComIP *)c)->parent
+#define GETActiveCOMHandle(c)                                                  \
+    (((ComIP *)c)->parent == NULL) ? ((ComIP *)c) : ((ComIP *)c)->parent
 
-CAPIList * CAPIListAppend(CAPIList * list);
-CAPIList * CAPIListRemove(CAPIList * list , com_API_handle c);
-CAPIList * CAPIListAppendTail(CAPIList * list);
+CAPIList *CAPIListAppend(CAPIList *list);
+CAPIList *CAPIListRemove(CAPIList *list, com_API_handle c);
+CAPIList *CAPIListAppendTail(CAPIList *list);
 
 /* begin a comms session */
 /* IPaddress == 0 -> Broadcast */
 /* IPaddress == -1 -> Recv socket only */
-com_API_handle ComUDPOpen(
-    char *name_in,
-    int buffersize,
-    char *gamename,
-    unsigned short localUdpPort,
-    unsigned short remoteUdpPort,
-    unsigned long IPaddress,
-    unsigned long id
-)
+com_API_handle ComUDPOpen(char *name_in, int buffersize, char *gamename,
+                          unsigned short localUdpPort,
+                          unsigned short remoteUdpPort, unsigned long IPaddress,
+                          unsigned long id)
 {
     ComIP *c;
     int err, size;
@@ -115,7 +131,8 @@ com_API_handle ComUDPOpen(
     if (c not_eq NULL)
     {
         com_API_handle ret_val;
-        ret_val = ComUDPOpenSendClone(name_in, c, buffersize, gamename,  remoteUdpPort, IPaddress, id);
+        ret_val = ComUDPOpenSendClone(name_in, c, buffersize, gamename,
+                                      remoteUdpPort, IPaddress, id);
         leave_cs();
 
         return ret_val;
@@ -123,7 +140,7 @@ com_API_handle ComUDPOpen(
 
     /* add new socket connection to list */
 
-    c = (ComIP*)malloc(sizeof(ComIP));
+    c = (ComIP *)malloc(sizeof(ComIP));
     memset(c, 0, sizeof(ComIP));
     ((com_API_handle)c)->name = strdup(name_in);
 
@@ -151,15 +168,15 @@ com_API_handle ComUDPOpen(
     c->recv_sock = CAPI_socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 
     size = CAPI_SENDBUFSIZE;
-    CAPI_setsockopt(c->recv_sock, SOL_SOCKET, SO_SNDBUF, (char*) &size, 4);
+    CAPI_setsockopt(c->recv_sock, SOL_SOCKET, SO_SNDBUF, (char *)&size, 4);
     size = CAPI_RECVBUFSIZE;
-    CAPI_setsockopt(c->recv_sock, SOL_SOCKET, SO_RCVBUF, (char*) &size, 4);
+    CAPI_setsockopt(c->recv_sock, SOL_SOCKET, SO_RCVBUF, (char *)&size, 4);
 
     CAPI_ioctlsocket(c->recv_sock, FIONBIO, &trueValue);
 
     c->buffer_size = sizeof(ComAPIHeader) + buffersize;
 
-    if ((c->max_buffer_size > 0) and (c->buffer_size  > c->max_buffer_size))
+    if ((c->max_buffer_size > 0) and (c->buffer_size > c->max_buffer_size))
     {
         c->buffer_size = c->max_buffer_size;
     }
@@ -178,12 +195,13 @@ com_API_handle ComUDPOpen(
 
     if (IPaddress == CAPI_DANGLING_IP)
     {
-        ComIPHostIDGet(&c->apiheader, (char*)&IPaddress, 0);
+        ComIPHostIDGet(&c->apiheader, (char *)&IPaddress, 0);
         IPaddress = CAPI_htonl(IPaddress);
         //IPaddress = CAPI_htonl (c->whoami);
     }
 
-    strncpy(((ComAPIHeader *)c->send_buffer.buf)->gamename, gamename, GAME_NAME_LENGTH);
+    strncpy(((ComAPIHeader *)c->send_buffer.buf)->gamename, gamename,
+            GAME_NAME_LENGTH);
     // sfr: send id in network order
     ((ComAPIHeader *)c->send_buffer.buf)->id = c->whoami;
 
@@ -197,14 +215,15 @@ com_API_handle ComUDPOpen(
     }
 
     /* Incoming... */
-    memset((char*)&comRecvAddr, 0, sizeof(comRecvAddr));
-    comRecvAddr.sin_family       = AF_INET;
-    comRecvAddr.sin_addr.s_addr  = CAPI_htonl(INADDR_ANY);
+    memset((char *)&comRecvAddr, 0, sizeof(comRecvAddr));
+    comRecvAddr.sin_family = AF_INET;
+    comRecvAddr.sin_addr.s_addr = CAPI_htonl(INADDR_ANY);
     // receive port
-    comRecvAddr.sin_port         = CAPI_htons(localUdpPort);
+    comRecvAddr.sin_port = CAPI_htons(localUdpPort);
     memcpy(&c->recAddress, &comRecvAddr, sizeof(struct sockaddr_in));
 
-    if (err = CAPI_bind(c->recv_sock, (struct sockaddr*)&comRecvAddr, sizeof(comRecvAddr)))
+    if (err = CAPI_bind(c->recv_sock, (struct sockaddr *)&comRecvAddr,
+                        sizeof(comRecvAddr)))
     {
         leave_cs();
         return 0;
@@ -220,34 +239,35 @@ com_API_handle ComUDPOpen(
     }
 
     size = CAPI_SENDBUFSIZE;
-    CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_SNDBUF, (char*) &size, 4);
+    CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_SNDBUF, (char *)&size, 4);
     size = CAPI_RECVBUFSIZE;
-    CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_RCVBUF, (char*) &size, 4);
+    CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_RCVBUF, (char *)&size, 4);
 
     /**  .. on ISPs modem maybe better to set to Non-Blocking on send **/
     CAPI_ioctlsocket(c->send_sock, FIONBIO, &trueValue);
 
     /* Outgoing... */
-    memset((char*)&c->sendAddress, 0, sizeof(c->sendAddress));
-    c->sendAddress.sin_family       = AF_INET;
+    memset((char *)&c->sendAddress, 0, sizeof(c->sendAddress));
+    c->sendAddress.sin_family = AF_INET;
 
     if (IPaddress == 0)
     {
-        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(INADDR_BROADCAST);
+        c->sendAddress.sin_addr.s_addr = CAPI_htonl(INADDR_BROADCAST);
     }
     else
     {
-        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(IPaddress);
+        c->sendAddress.sin_addr.s_addr = CAPI_htonl(IPaddress);
     }
 
     // send port
-    c->sendAddress.sin_port         = CAPI_htons((unsigned short)remoteUdpPort);
+    c->sendAddress.sin_port = CAPI_htons((unsigned short)remoteUdpPort);
 
     if (IPaddress == 0)
     {
         c->NeedBroadcastMode = 1;
         c->BroadcastModeOn = 1;
-        CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_BROADCAST, (char *)&trueValue, sizeof(int));
+        CAPI_setsockopt(c->send_sock, SOL_SOCKET, SO_BROADCAST,
+                        (char *)&trueValue, sizeof(int));
     }
 
     // sfr handle id
@@ -264,15 +284,9 @@ com_API_handle ComUDPOpen(
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 // JPO always called within CS
-com_API_handle ComUDPOpenSendClone(
-    char *name_in,
-    ComIP *parentCom,
-    int buffersize,
-    char *gamename,
-    int udpPort,
-    unsigned long IPaddress,
-    unsigned long id
-)
+com_API_handle ComUDPOpenSendClone(char *name_in, ComIP *parentCom,
+                                   int buffersize, char *gamename, int udpPort,
+                                   unsigned long IPaddress, unsigned long id)
 {
     ComIP *c;
     CAPIList *curr = 0;
@@ -280,12 +294,12 @@ com_API_handle ComUDPOpenSendClone(
 
     /* add new socket connection to list */
 
-    c = (ComIP*)malloc(sizeof(ComIP));
+    c = (ComIP *)malloc(sizeof(ComIP));
     memset(c, 0, sizeof(ComIP));
 
     memcpy(c, parentCom, sizeof(ComIP));
 
-    ((com_API_handle)c)->name = (char*)malloc(strlen(name_in) + 1);
+    ((com_API_handle)c)->name = (char *)malloc(strlen(name_in) + 1);
     strcpy(((com_API_handle)c)->name, name_in);
 
     /* initialize header data */
@@ -295,9 +309,10 @@ com_API_handle ComUDPOpenSendClone(
     c->referencecount = 1;
 
 
-    c->buffer_size =   max(parentCom->buffer_size, (int)(sizeof(ComAPIHeader) + buffersize));
+    c->buffer_size =
+        max(parentCom->buffer_size, (int)(sizeof(ComAPIHeader) + buffersize));
 
-    if ((c->max_buffer_size > 0) and (c->buffer_size  > c->max_buffer_size))
+    if ((c->max_buffer_size > 0) and (c->buffer_size > c->max_buffer_size))
     {
         c->buffer_size = c->max_buffer_size;
     }
@@ -306,29 +321,30 @@ com_API_handle ComUDPOpenSendClone(
 
     if (IPaddress == -1)
     {
-        ComIPHostIDGet(&c->apiheader, (char*)&IPaddress, 0);
+        ComIPHostIDGet(&c->apiheader, (char *)&IPaddress, 0);
         IPaddress = CAPI_htonl(IPaddress);
     }
 
     // header
-    strncpy(((ComAPIHeader *)c->send_buffer.buf)->gamename, gamename, GAME_NAME_LENGTH);
+    strncpy(((ComAPIHeader *)c->send_buffer.buf)->gamename, gamename,
+            GAME_NAME_LENGTH);
     // sfr: id in network order
     ((ComAPIHeader *)c->send_buffer.buf)->id = c->whoami;
 
     /* Outgoing... */
-    memset((char*)&c->sendAddress, 0, sizeof(c->sendAddress));
-    c->sendAddress.sin_family       = AF_INET;
+    memset((char *)&c->sendAddress, 0, sizeof(c->sendAddress));
+    c->sendAddress.sin_family = AF_INET;
 
     if (IPaddress == 0)
     {
-        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(INADDR_BROADCAST);
+        c->sendAddress.sin_addr.s_addr = CAPI_htonl(INADDR_BROADCAST);
     }
     else
     {
-        c->sendAddress.sin_addr.s_addr  = CAPI_htonl(IPaddress);
+        c->sendAddress.sin_addr.s_addr = CAPI_htonl(IPaddress);
     }
 
-    c->sendAddress.sin_port         = CAPI_htons((unsigned short)udpPort);
+    c->sendAddress.sin_port = CAPI_htons((unsigned short)udpPort);
 
 
     if (IPaddress == 0)
@@ -356,8 +372,7 @@ com_API_handle ComUDPOpenSendClone(
 void ComUDPClose(com_API_handle c)
 {
     int sockerror;
-    CAPIList
-    *curr = 0;
+    CAPIList *curr = 0;
 
     if (c)
     {
@@ -394,7 +409,8 @@ void ComUDPClose(com_API_handle c)
         }
 
 #ifdef _DEBUG
-        MonoPrint("ComUDPClose Parent CH:\"%s\"\n", ((com_API_handle)cudp)->name);
+        MonoPrint("ComUDPClose Parent CH:\"%s\"\n",
+                  ((com_API_handle)cudp)->name);
 #endif
 
         // GlobalListHead = CAPIListRemove(GlobalListHead,(com_API_handle)cudp);
@@ -406,26 +422,26 @@ void ComUDPClose(com_API_handle c)
 
             switch (sockerror)
             {
-                case WSANOTINITIALISED:
-                    break;
+            case WSANOTINITIALISED:
+                break;
 
-                case WSAENETDOWN:
-                    break;
+            case WSAENETDOWN:
+                break;
 
-                case WSAENOTSOCK:
-                    break;
+            case WSAENOTSOCK:
+                break;
 
-                case WSAEINPROGRESS:
-                    break;
+            case WSAEINPROGRESS:
+                break;
 
-                case WSAEINTR:
-                    break;
+            case WSAEINTR:
+                break;
 
-                case WSAEWOULDBLOCK:
-                    break;
+            case WSAEWOULDBLOCK:
+                break;
 
-                default :
-                    break;
+            default:
+                break;
             }
         }
 
@@ -436,33 +452,33 @@ void ComUDPClose(com_API_handle c)
 
             switch (sockerror)
             {
-                case WSANOTINITIALISED:
-                    break;
+            case WSANOTINITIALISED:
+                break;
 
-                case WSAENETDOWN:
-                    break;
+            case WSAENETDOWN:
+                break;
 
-                case WSAENOTSOCK:
-                    break;
+            case WSAENOTSOCK:
+                break;
 
-                case WSAEINPROGRESS:
-                    break;
+            case WSAEINPROGRESS:
+                break;
 
-                case WSAEINTR:
-                    break;
+            case WSAEINTR:
+                break;
 
-                case WSAEWOULDBLOCK:
-                    break;
+            case WSAEWOULDBLOCK:
+                break;
 
-                default :
-                    break;
+            default:
+                break;
             }
         }
 
         windows_sockets_connections--;
 
         /* if No more connections then WSACleanup() */
-        if ( not windows_sockets_connections)
+        if (not windows_sockets_connections)
         {
             if (sockerror = CAPI_WSACleanup())
             {
@@ -503,7 +519,8 @@ void ComUDPClose(com_API_handle c)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type, com_API_handle Xcom)
+int ComUDPSendX(com_API_handle c, int msgsize, int oob, int type,
+                com_API_handle Xcom)
 {
     if (c == Xcom)
     {
@@ -554,15 +571,17 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     if (cudp->parent not_eq NULL)
     {
         /* am I a SendClone ?? */
-        actual   = cudp->parent;
+        actual = cudp->parent;
     }
 
-    if (F4IsBadReadPtrC(cudp, sizeof(ComIP)) or F4IsBadReadPtrC(actual, sizeof(ComIP))) // JB 010220 CTD
+    if (F4IsBadReadPtrC(cudp, sizeof(ComIP)) or
+        F4IsBadReadPtrC(actual, sizeof(ComIP))) // JB 010220 CTD
         return COMAPI_OUT_OF_SYNC; // JB 010220 CTD
 
     if (actual->BroadcastModeOn not_eq cudp->NeedBroadcastMode)
     {
-        CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST, (char *) bitand (cudp->NeedBroadcastMode), sizeof(int));
+        CAPI_setsockopt(cudp->send_sock, SOL_SOCKET, SO_BROADCAST,
+                        (char *)bitand(cudp->NeedBroadcastMode), sizeof(int));
         actual->BroadcastModeOn = cudp->NeedBroadcastMode;
     }
 
@@ -576,13 +595,14 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     {
         memcpy(buffer, &size, sizeof(u_short));
         memset(cudp->send_buffer.buf + size, 0, cudp->buffer_size - size);
-        newsize = (unsigned short)(comms_compress(cudp->send_buffer.buf, buffer + sizeof(u_short), size));
+        newsize = (unsigned short)(comms_compress(
+            cudp->send_buffer.buf, buffer + sizeof(u_short), size));
     }
 
     //cudp->send_buffer.len = newsize+sizeof(u_short);
 
     // if not OOB, check if enough bw is available
-    if ( not oob)
+    if (not oob)
     {
         if (check_bandwidth(newsize + sizeof(u_short), 0, type) == 0)
         {
@@ -595,27 +615,15 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     //if (docomms){
     if ((int)(newsize + sizeof(u_short)) < (int)(size))
     {
-        bytesSent = CAPI_sendto
-                    (
-                        cudp->send_sock,
-                        buffer,
-                        newsize + sizeof(u_short),
-                        0,
-                        (struct sockaddr *)&cudp->sendAddress,
-                        sizeof(cudp->sendAddress)
-                    );
+        bytesSent = CAPI_sendto(
+            cudp->send_sock, buffer, newsize + sizeof(u_short), 0,
+            (struct sockaddr *)&cudp->sendAddress, sizeof(cudp->sendAddress));
     }
     else
     {
-        bytesSent = CAPI_sendto
-                    (
-                        cudp->send_sock,
-                        cudp->send_buffer.buf,
-                        cudp->send_buffer.len,
-                        0,
-                        (struct sockaddr *)&cudp->sendAddress,
-                        sizeof(cudp->sendAddress)
-                    );
+        bytesSent = CAPI_sendto(
+            cudp->send_sock, cudp->send_buffer.buf, cudp->send_buffer.len, 0,
+            (struct sockaddr *)&cudp->sendAddress, sizeof(cudp->sendAddress));
     }
 
     //}
@@ -628,23 +636,22 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
 
         switch (senderror)
         {
-            case WSAEWOULDBLOCK:
-            {
-                // MonoPrint ("WouldBlock %d %d\n", cudp->send_buffer.len, get_bandwidth_available ());
-                cudp->sendwouldblockcount++;
-                cut_bandwidth();
-                /* The socket is marked as non-blocking and the send
+        case WSAEWOULDBLOCK:
+        {
+            // MonoPrint ("WouldBlock %d %d\n", cudp->send_buffer.len, get_bandwidth_available ());
+            cudp->sendwouldblockcount++;
+            cut_bandwidth();
+            /* The socket is marked as non-blocking and the send
                  operation would block. */
-                return COMAPI_WOULDBLOCK;
-            }
+            return COMAPI_WOULDBLOCK;
+        }
 
-            default :
-            {
-                return 0;
-            }
+        default:
+        {
+            return 0;
+        }
         }
     }
-
 
 
 #ifdef checkbandwidth
@@ -652,14 +659,16 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
     if (test < 20 and oob == 2)
     {
         MonoPrint("posupd size %d", bytesSent);
-        test ++;
+        test++;
     }
 
     totalbwused += bytesSent;
 
-    if (oob) oobbwused += bytesSent;
+    if (oob)
+        oobbwused += bytesSent;
 
-    if (oob == 2) Posupdbwused += bytesSent;
+    if (oob == 2)
+        Posupdbwused += bytesSent;
 
     if (now > laststatcound + 1000)
     {
@@ -684,15 +693,14 @@ int ComUDPSend(com_API_handle c, int msgsize, int oob, int type)
 int ComUDPSendDummy(com_API_handle c, unsigned long ip, unsigned short port)
 {
     int dummyBlk = 0;
-    ComIP *com = (ComIP*)c;
+    ComIP *com = (ComIP *)c;
     struct sockaddr_in to;
     memset(&to, 0, sizeof(to));
     to.sin_family = AF_INET;
-    to.sin_addr.S_un.S_addr = CAPI_htonl(ip);
+    to.sin_addr.s_addr = CAPI_htonl(ip);
     to.sin_port = CAPI_htons(port);
-    return CAPI_sendto(
-               com->send_sock, (const void*)&dummyBlk, sizeof(int), 0, (struct sockaddr*)&to, sizeof(to)
-           );
+    return CAPI_sendto(com->send_sock, (const char *)&dummyBlk, sizeof(int), 0,
+                       (struct sockaddr *)&to, sizeof(to));
 }
 
 int ComUDPGet(com_API_handle c)
@@ -713,15 +721,9 @@ int ComUDPGet(com_API_handle c)
         cudp = GETActiveCOMHandle(c);
         cudp->recv_buffer.len = cudp->buffer_size;
 
-        size =  sizeof(in_addr);
-        bytesRecvd = CAPI_recvfrom(
-                         cudp->recv_sock,
-                         buffer,
-                         cudp->recv_buffer.len,
-                         0,
-                         &in_addr,
-                         &size
-                     );
+        size = sizeof(in_addr);
+        bytesRecvd = CAPI_recvfrom(cudp->recv_sock, buffer,
+                                   cudp->recv_buffer.len, 0, &in_addr, &size);
 
         if (bytesRecvd == SOCKET_ERROR)
         {
@@ -737,93 +739,94 @@ int ComUDPGet(com_API_handle c)
 
             switch (recverror)
             {
-                case WSANOTINITIALISED:
+            case WSANOTINITIALISED:
 
-                    /* A successful WSAStartup must occur before using this API.*/
-                case WSAENETDOWN:
+                /* A successful WSAStartup must occur before using this API.*/
+            case WSAENETDOWN:
 
-                    /* The network subsystem has failed. */
-                case WSAEFAULT:
+                /* The network subsystem has failed. */
+            case WSAEFAULT:
 
-                    /* The buf argument is not totally contained in a valid part
+                /* The buf argument is not totally contained in a valid part
                       of the user address space. */
-                case WSAENOTCONN:
+            case WSAENOTCONN:
 
-                    /* The socket is not connected. */
-                case WSAEINTR:
+                /* The socket is not connected. */
+            case WSAEINTR:
 
-                    /* The (blocking) call was canceled via WSACancelBlockingCall. */
-                case WSAEINPROGRESS:
+                /* The (blocking) call was canceled via WSACancelBlockingCall. */
+            case WSAEINPROGRESS:
 
-                    /* A blocking Windows Sockets 1.1 call is in progress, or
+                /* A blocking Windows Sockets 1.1 call is in progress, or
                       the service provider is still processing a callback
                       function. */
-                case WSAENETRESET:
+            case WSAENETRESET:
 
-                    /* The connection has been broken due to the remote host
+                /* The connection has been broken due to the remote host
                       resetting. */
-                case WSAENOTSOCK:
+            case WSAENOTSOCK:
 
-                    /* The descriptor is not a socket. */
-                case WSAEOPNOTSUPP:
+                /* The descriptor is not a socket. */
+            case WSAEOPNOTSUPP:
 
-                    /* MSG_OOB was specified, but the socket is not stream style
+                /* MSG_OOB was specified, but the socket is not stream style
                       such as type SOCK_STREAM, out-of-band data is not supported
                       in the communication domain associated with this socket,
                       or the socket is unidirectional and supports only send
                       operations. */
-                case WSAESHUTDOWN:
+            case WSAESHUTDOWN:
 
-                    /* The socket has been shutdown; it is not possible to recv
+                /* The socket has been shutdown; it is not possible to recv
                       on a socket after shutdown has been invoked with how set
                       to SD_RECEIVE or SD_BOTH. */
 
-                case WSAEWOULDBLOCK:
-                    /* The socket is marked as non-blocking and the receive
+            case WSAEWOULDBLOCK:
+                /* The socket is marked as non-blocking and the receive
                       operation would block. */
-                    cudp->recvwouldblockcount++;
-                    return 0;
+                cudp->recvwouldblockcount++;
+                return 0;
 
-                case WSAEMSGSIZE:
+            case WSAEMSGSIZE:
 
-                    /* The message was too large to fit into the specified buffer
+                /* The message was too large to fit into the specified buffer
                      and was truncated. */
-                case WSAEINVAL:
+            case WSAEINVAL:
 
-                    /* The socket has not been bound with bind, or an unknown flag
+                /* The socket has not been bound with bind, or an unknown flag
                       was specified, or MSG_OOB was specified for a socket with
                       SO_OOBINLINE enabled or (for byte stream sockets only) len
                       was 0 or negative. */
-                case WSAECONNABORTED:
+            case WSAECONNABORTED:
 
-                    /* The virtual circuit was aborted due to timeout or other
+                /* The virtual circuit was aborted due to timeout or other
                       failure. The application should close the socket as it
                       is no longer useable. */
-                case WSAETIMEDOUT:
+            case WSAETIMEDOUT:
 
-                    /* The connection has been dropped because of a network
+                /* The connection has been dropped because of a network
                       failure or because the peer system failed to respond. */
-                case WSAECONNRESET:
+            case WSAECONNRESET:
 
-                    /* The virtual circuit was reset by the remote side executing
+                /* The virtual circuit was reset by the remote side executing
                       a "hard" or "abortive" close. The application should close
                       the socket as it is no longer useable. On a UDP datagram
                       socket this error would indicate that a previous send
                       operation resulted in an ICMP "Port Unreachable" message. */
-                default :
-                    return 0;
+            default:
+                return 0;
             }
         }
 
         if (bytesRecvd > 0)
         {
 
-            if (*(u_short*)buffer <= 700)
+            if (*(u_short *)buffer <= 700)
             {
                 u_short decomp_size;
 
                 memcpy(&decomp_size, buffer, sizeof(u_short));
-                comms_decompress(buffer + sizeof(u_short), cudp->recv_buffer.buf, decomp_size);
+                comms_decompress(buffer + sizeof(u_short),
+                                 cudp->recv_buffer.buf, decomp_size);
                 cudp->recv_buffer.len = decomp_size;
                 bytesRecvd = decomp_size;
             }
@@ -842,13 +845,18 @@ int ComUDPGet(com_API_handle c)
             if (((ComAPIHeader *)cudp->recv_buffer.buf)->id not_eq cudp->whoami)
             {
                 // sets lastsender
-                cudp->lastsender = ((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr;
-                cudp->lastsenderport = ((struct sockaddr_in *)(&in_addr))->sin_port;
-                cudp->lastsenderid = ((ComAPIHeader *)cudp->recv_buffer.buf)->id;
+                cudp->lastsender =
+                    ((struct sockaddr_in *)(&in_addr))->sin_addr.s_addr;
+                cudp->lastsenderport =
+                    ((struct sockaddr_in *)(&in_addr))->sin_port;
+                cudp->lastsenderid =
+                    ((ComAPIHeader *)cudp->recv_buffer.buf)->id;
 
 
                 // check gamename
-                if (strncmp(((ComAPIHeader *)cudp->recv_buffer.buf)->gamename, ((ComAPIHeader *)cudp->send_buffer.buf)->gamename, GAME_NAME_LENGTH) == 0)
+                if (strncmp(((ComAPIHeader *)cudp->recv_buffer.buf)->gamename,
+                            ((ComAPIHeader *)cudp->send_buffer.buf)->gamename,
+                            GAME_NAME_LENGTH) == 0)
                 {
                     cudp->recvmessagecount++;
 
@@ -988,7 +996,7 @@ char *ComIPRecvBufferGet(com_API_handle c)
     ComIP *cudp = (ComIP *)c;
     // char *recvbuf=NULL;
 
-    cudp = GETActiveCOMHandle(c) ;
+    cudp = GETActiveCOMHandle(c);
     return cudp->recv_buffer.buf + sizeof(ComAPIHeader);
 }
 
@@ -1000,111 +1008,111 @@ unsigned long ComUDPQuery(com_API_handle c, int querytype)
 {
     if (c)
     {
-        ComIP * cudp;
+        ComIP *cudp;
 
         cudp = GETActiveCOMHandle(c);
 
         switch (querytype)
         {
-            case COMAPI_MESSAGECOUNT:
-            {
-                return cudp->sendmessagecount + ((ComIP *)c)->recvmessagecount;
-            }
+        case COMAPI_MESSAGECOUNT:
+        {
+            return cudp->sendmessagecount + ((ComIP *)c)->recvmessagecount;
+        }
 
-            case COMAPI_RECV_MESSAGECOUNT:
-            {
-                return ((ComIP *)c)->recvmessagecount;
-            }
+        case COMAPI_RECV_MESSAGECOUNT:
+        {
+            return ((ComIP *)c)->recvmessagecount;
+        }
 
-            case COMAPI_SEND_MESSAGECOUNT:
-            {
-                return cudp->sendmessagecount;
-            }
+        case COMAPI_SEND_MESSAGECOUNT:
+        {
+            return cudp->sendmessagecount;
+        }
 
-            case COMAPI_RECV_WOULDBLOCKCOUNT:
-            {
-                return ((ComIP *)c)->recvwouldblockcount;
-            }
+        case COMAPI_RECV_WOULDBLOCKCOUNT:
+        {
+            return ((ComIP *)c)->recvwouldblockcount;
+        }
 
-            case COMAPI_SEND_WOULDBLOCKCOUNT:
-            {
-                return cudp->sendwouldblockcount;
-            }
+        case COMAPI_SEND_WOULDBLOCKCOUNT:
+        {
+            return cudp->sendwouldblockcount;
+        }
 
-            case COMAPI_RECEIVE_SOCKET:
-            {
-                return ((ComIP *)c)->recv_sock;
-            }
+        case COMAPI_RECEIVE_SOCKET:
+        {
+            return ((ComIP *)c)->recv_sock;
+        }
 
-            case COMAPI_SEND_SOCKET:
-            {
-                return ((ComIP *)c)->send_sock;
-            }
+        case COMAPI_SEND_SOCKET:
+        {
+            return ((ComIP *)c)->send_sock;
+        }
 
-            case COMAPI_RELIABLE:
-            {
-                return 0;
-            }
+        case COMAPI_RELIABLE:
+        {
+            return 0;
+        }
 
-            case COMAPI_UDP_CACHE_SIZE:
-            {
-                return 0;
-            }
+        case COMAPI_UDP_CACHE_SIZE:
+        {
+            return 0;
+        }
 
-            case COMAPI_SENDER:
-            {
-                return CAPI_ntohl(cudp->lastsender);
-            }
+        case COMAPI_SENDER:
+        {
+            return CAPI_ntohl(cudp->lastsender);
+        }
 
-            // sfr: converts
-            // port info
-            case COMAPI_SENDER_PORT:
-            {
-                return (long)(CAPI_ntohs((short)cudp->lastsenderport));
-            }
+        // sfr: converts
+        // port info
+        case COMAPI_SENDER_PORT:
+        {
+            return (long)(CAPI_ntohs((short)cudp->lastsenderport));
+        }
 
-            //sfr: id
-            case COMAPI_ID:
-            {
-                return (CAPI_ntohl(cudp->lastsenderid));
-            }
-
-
-            case COMAPI_CONNECTION_ADDRESS:
-            {
-                return CAPI_ntohl(((ComIP *)c)->sendAddress.sin_addr.s_addr);
-            }
-
-            case COMAPI_MAX_BUFFER_SIZE:
-            {
-                return 0;
-            }
-
-            case COMAPI_ACTUAL_BUFFER_SIZE:
-            {
-                return ((ComIP *)c)->buffer_size - sizeof(ComAPIHeader);
-            }
+        //sfr: id
+        case COMAPI_ID:
+        {
+            return (CAPI_ntohl(cudp->lastsenderid));
+        }
 
 
-            case COMAPI_PROTOCOL:
-            {
-                return  c->protocol;
-            }
+        case COMAPI_CONNECTION_ADDRESS:
+        {
+            return CAPI_ntohl(((ComIP *)c)->sendAddress.sin_addr.s_addr);
+        }
 
-            case COMAPI_STATE:
-            {
-                return  COMAPI_STATE_CONNECTED;
-            }
+        case COMAPI_MAX_BUFFER_SIZE:
+        {
+            return 0;
+        }
 
-            case COMAPI_UDP_HEADER_OVERHEAD:
-            {
-                return sizeof(ComAPIHeader);
-            }
+        case COMAPI_ACTUAL_BUFFER_SIZE:
+        {
+            return ((ComIP *)c)->buffer_size - sizeof(ComAPIHeader);
+        }
 
-            default:
-            {
-                return 0;
-            }
+
+        case COMAPI_PROTOCOL:
+        {
+            return c->protocol;
+        }
+
+        case COMAPI_STATE:
+        {
+            return COMAPI_STATE_CONNECTED;
+        }
+
+        case COMAPI_UDP_HEADER_OVERHEAD:
+        {
+            return sizeof(ComAPIHeader);
+        }
+
+        default:
+        {
+            return 0;
+        }
         }
     }
 
@@ -1134,74 +1142,74 @@ unsigned long ComUDPGetTimeStamp(com_API_handle c)
 
 void ComAPISetReceiveThreadPriority(com_API_handle c, int priority)
 {
-    HANDLE  threadhandle = 0;
-    int     SetPriority  = 0xffffffff;
+    HANDLE threadhandle = 0;
+    int SetPriority = 0xffffffff;
 
     if (c)
     {
         switch (c->protocol)
         {
-            case CAPI_UDP_PROTOCOL:
-            {
-                ComIP *cudp = (ComIP *)c;
-                threadhandle = cudp->ThreadHandle;
-                break;
-            }
+        case CAPI_UDP_PROTOCOL:
+        {
+            ComIP *cudp = (ComIP *)c;
+            threadhandle = cudp->ThreadHandle;
+            break;
+        }
 
-            default:
-            {
-                break;
-            }
+        default:
+        {
+            break;
+        }
         }
 
         switch (priority)
         {
-            case CAPI_THREAD_PRIORITY_ABOVE_NORMAL:
-            {
-                SetPriority = THREAD_PRIORITY_ABOVE_NORMAL;
-                break;
-            }
+        case CAPI_THREAD_PRIORITY_ABOVE_NORMAL:
+        {
+            SetPriority = THREAD_PRIORITY_ABOVE_NORMAL;
+            break;
+        }
 
-            case CAPI_THREAD_PRIORITY_BELOW_NORMAL:
-            {
-                SetPriority = THREAD_PRIORITY_BELOW_NORMAL;
-                break;
-            }
+        case CAPI_THREAD_PRIORITY_BELOW_NORMAL:
+        {
+            SetPriority = THREAD_PRIORITY_BELOW_NORMAL;
+            break;
+        }
 
-            case CAPI_THREAD_PRIORITY_HIGHEST:
-            {
-                SetPriority = THREAD_PRIORITY_HIGHEST;
-                break;
-            }
+        case CAPI_THREAD_PRIORITY_HIGHEST:
+        {
+            SetPriority = THREAD_PRIORITY_HIGHEST;
+            break;
+        }
 
-            case CAPI_THREAD_PRIORITY_IDLE:
-            {
-                SetPriority = THREAD_PRIORITY_IDLE;
-                break;
-            }
+        case CAPI_THREAD_PRIORITY_IDLE:
+        {
+            SetPriority = THREAD_PRIORITY_IDLE;
+            break;
+        }
 
-            case CAPI_THREAD_PRIORITY_LOWEST:
-            {
-                SetPriority = THREAD_PRIORITY_LOWEST;
-                break;
-            }
+        case CAPI_THREAD_PRIORITY_LOWEST:
+        {
+            SetPriority = THREAD_PRIORITY_LOWEST;
+            break;
+        }
 
-            case CAPI_THREAD_PRIORITY_NORMAL:
-            {
-                SetPriority = THREAD_PRIORITY_NORMAL;
-                break;
-            }
+        case CAPI_THREAD_PRIORITY_NORMAL:
+        {
+            SetPriority = THREAD_PRIORITY_NORMAL;
+            break;
+        }
 
-            case CAPI_THREAD_PRIORITY_TIME_CRITICAL:
-            {
-                SetPriority = THREAD_PRIORITY_TIME_CRITICAL;
-                break;
-            }
+        case CAPI_THREAD_PRIORITY_TIME_CRITICAL:
+        {
+            SetPriority = THREAD_PRIORITY_TIME_CRITICAL;
+            break;
+        }
 
-            default:
-            {
-                break;
-            }
+        default:
+        {
+            break;
+        }
         }
 
         if (threadhandle and SetPriority not_eq 0xFFFFFFFF)

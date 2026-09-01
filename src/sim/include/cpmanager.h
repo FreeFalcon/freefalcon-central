@@ -4,9 +4,9 @@
 
 #include "stdhdr.h"
 #include "otwdrive.h"
-#include "Graphics/Include/imagebuf.h"
-#include "Graphics/Include/Device.h"
-#include "Render2d.h"
+#include "graphics/include/imagebuf.h"
+#include "graphics/include/device.h"
+#include "render2d.h"
 
 #include "cpsurface.h"
 #include "cppanel.h"
@@ -94,7 +94,7 @@ extern MEM_POOL gCockMemPool;
 #define PADLOCK_FILE_12x9 "12_plock.dat"
 #define PADLOCK_FILE_16x12 "16_plock.dat"
 
-#define COCKPIT_DIR "art\\ckptart\\"
+#define COCKPIT_DIR "art/ckptart/"
 
 //====================================================//
 // Miscellaneous Defines
@@ -209,7 +209,7 @@ extern MEM_POOL gCockMemPool;
 #define PROP_OSB4_STR "osb4" //Wombat778 4-12-04
 #define PROP_RWR_STR "rwr"
 #define PROP_NUMDIGITS_STR "numdigits"
-#define PROP_BUTTONVIEWS_STR  "buttonviews"
+#define PROP_BUTTONVIEWS_STR "buttonviews"
 #define PROP_DELAY_STR "delay"
 #define PROP_NUMSOUNDS_STR "numsounds"
 #define PROP_ENTRY_STR "entry"
@@ -225,31 +225,31 @@ extern MEM_POOL gCockMemPool;
 #define PROP_MAXMACHVALUE_STR "maxmachvalue"
 #define PROP_MINMACHVALUE_STR "minmachvalue"
 
-#define PROP_LIFTCENTERS_STR  "liftcenters"
-#define PROP_NUMSTRINGS_STR  "numstrings"
-#define PROP_PANTILTLABEL_STR  "pantiltlabel"
+#define PROP_LIFTCENTERS_STR "liftcenters"
+#define PROP_NUMSTRINGS_STR "numstrings"
+#define PROP_PANTILTLABEL_STR "pantiltlabel"
 #define PROP_BLITBACKGROUND_STR "blitbackground"
 #define PROP_BACKDEST_STR "backdest"
 #define PROP_BACKSRC_STR "backsrc"
 #define PROP_WARNFLAG_STR "warnflag"
-#define PROP_ENDLENGTH        "endlength"
-#define PROP_ENDANGLE        "endangle"
-#define PROP_HUDFONT        "hudfont"
-#define PROP_MFDFONT        "mfdfont"
-#define PROP_DEDFONT        "dedfont"
-#define PROP_GENFONT        "generalfont"
-#define PROP_POPFONT        "popupfont"
-#define PROP_KNEEFONT       "kneefont"
-#define PROP_SAFONT  "saboxfont"
-#define PROP_LABELFONT  "labelfont"
-#define END_MARKER  "#end"
-#define PROP_DED_TYPE     "dedtype"
-#define PROP_DED_DED     "ded"
-#define PROP_DED_PFL     "pfl"
-#define PROP_DO2DPIT_STR    "cockpit2d"
+#define PROP_ENDLENGTH "endlength"
+#define PROP_ENDANGLE "endangle"
+#define PROP_HUDFONT "hudfont"
+#define PROP_MFDFONT "mfdfont"
+#define PROP_DEDFONT "dedfont"
+#define PROP_GENFONT "generalfont"
+#define PROP_POPFONT "popupfont"
+#define PROP_KNEEFONT "kneefont"
+#define PROP_SAFONT "saboxfont"
+#define PROP_LABELFONT "labelfont"
+#define END_MARKER "#end"
+#define PROP_DED_TYPE "dedtype"
+#define PROP_DED_DED "ded"
+#define PROP_DED_PFL "pfl"
+#define PROP_DO2DPIT_STR "cockpit2d"
 #define PROP_LIFT_LINE_COLOR "liftlinecolor"
-#define PROP_RENDER_NEEDLE  "renderneedle" //Wombat778 3-24-04
-#define PROP_ALTPANEL  "altpanel" //Wombat778 4-12-04
+#define PROP_RENDER_NEEDLE "renderneedle" //Wombat778 3-24-04
+#define PROP_ALTPANEL "altpanel" //Wombat778 4-12-04
 #define PROP_FLOODLIGHT "floodlight" //sfr
 #define PROP_INSTLIGHT "instLight" //sfr
 
@@ -264,7 +264,7 @@ extern MEM_POOL gCockMemPool;
 #define PROP_3D_PADBOXTOP "padlockvptop"
 #define PROP_3D_PADTICK "padlocktick"
 #define PROP_3D_NEEDLE0 "needlecolor0"
-#define PROP_3D_NEEDLE1  "needlecolor1"
+#define PROP_3D_NEEDLE1 "needlecolor1"
 #define PROP_3D_DED "dedcolor"
 #define PROP_3D_RWR "rwrcolor" // Cobra
 #define PROP_3D_HILIGHT "highlight" // Cobra
@@ -283,15 +283,16 @@ extern OTWDriverClass OTWDriver;
 // Miscellaneous Utility Functions
 //====================================================//
 
-int Compare(const void *, const void *);
-char* FindToken(char**lineptr, const char*separators);
+int Compare(const void*, const void*);
+char* FindToken(char** lineptr, const char* separators);
 void CreateCockpitGeometry(DrawableBSP**, int, int);
 void ReadImage(char*, GLubyte**, GLulong**);
-void Translate8to16(WORD *, BYTE *, ImageBuffer *);
-void Translate8to32(DWORD *, BYTE *, ImageBuffer *);  // OW
+void Translate8to16(WORD*, BYTE*, ImageBuffer*);
+void Translate8to32(DWORD*, BYTE*, ImageBuffer*);  // OW
 /** sfr: added these 2 functions for night lighting */
 /** sfr: generates a new palette, given the light factors(RGB) */
-void ApplyLightingToPalette(DWORD *in, DWORD *out, float rf, float gf, float bf);
+void ApplyLightingToPalette(DWORD* in, DWORD* out, float rf, float gf,
+                            float bf);
 /** sfr: Calculates a color given the light factors */
 DWORD CalculateColor(DWORD inColor, float rf, float gf, float bf);
 /** sfr: calculates the NVG color of the color, mean of 3 colors shifted to green */
@@ -299,11 +300,16 @@ DWORD CalculateNVGColor(DWORD inColor);
 /** sfr: inverts RGB components in a color, used by kneemap */
 DWORD InvertRGBOrder(DWORD inColor);
 // RV - Biker - Define this function here
-int FileExists(char *file);
+int FileExists(char* file);
 // RV - Biker - Add variable to interface for activating fallback
 //int FindCockpit(const char *pCPFile, Vis_Types eCPVisType, const TCHAR* eCPName, const TCHAR* eCPNameNCTR, TCHAR *strCPFile);
-int FindCockpit(const char *pCPFile, Vis_Types eCPVisType, const TCHAR* eCPName, const TCHAR* eCPNameNCTR, TCHAR *strCPFile, int fallbackEnable);
-int FindCockpitResolution(const char *pCPFile, const char *pCPFile2, const char *pCPFile3, const char *pCPFile4, const char *pCPFile5, Vis_Types eCPVisType, const TCHAR* eCPName, const TCHAR* eCPNameNCTR); //Wombat778 10-12-2003 ;
+int FindCockpit(const char* pCPFile, Vis_Types eCPVisType, const TCHAR* eCPName,
+                const TCHAR* eCPNameNCTR, TCHAR* strCPFile, int fallbackEnable);
+int FindCockpitResolution(const char* pCPFile, const char* pCPFile2,
+                          const char* pCPFile3, const char* pCPFile4,
+                          const char* pCPFile5, Vis_Types eCPVisType,
+                          const TCHAR* eCPName,
+                          const TCHAR* eCPNameNCTR); //Wombat778 10-12-2003 ;
 
 
 //====================================================//
@@ -346,7 +352,7 @@ public:
     DWORD Pixel32toPixel32(UInt32 ABGR);
 };
 
-void Translate8to16(WORD *, BYTE *, ImageBuffer *);
+void Translate8to16(WORD*, BYTE*, ImageBuffer*);
 
 //====================================================//
 // CockpitManager Class Definition
@@ -359,17 +365,17 @@ class CockpitManager
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         return MemAllocPtr(gCockMemPool, size, FALSE);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
-
 #if CPMANAGER_VERSION
     struct VersionStruct
     {
@@ -410,23 +416,24 @@ private:
     int mAltPanel; //Wombat778 4-13-04
 
 
-    std::vector< CPSurface* > mpSurfaces;
-    std::vector< CPPanel* > mpPanels;
-    std::vector< CPObject* > mpObjects;
-    std::vector< CPCursor* > mpCursors;
-    std::vector< CPButtonObject* > mpButtonObjects;
-    std::vector< CPButtonView* > mpButtonViews;
+    std::vector<CPSurface*> mpSurfaces;
+    std::vector<CPPanel*> mpPanels;
+    std::vector<CPObject*> mpObjects;
+    std::vector<CPCursor*> mpCursors;
+    std::vector<CPButtonObject*> mpButtonObjects;
+    std::vector<CPButtonView*> mpButtonViews;
 
     //====================================================//
     // Internal Pointers, Used Mainly for Runtime
     //====================================================//
 
-    CPPanel *mpActivePanel;
-    CPPanel *mpNextActivePanel;
+    CPPanel* mpActivePanel;
+    CPPanel* mpNextActivePanel;
 
     Vis_Types m_eCPVisType; // OW
     _TCHAR m_eCPName[15]; // JB 010711 Name of aircraft for cockpit loading
-    _TCHAR m_eCPNameNCTR[5]; // JB 010808 Alternate name of aircraft for cockpit loading
+    _TCHAR m_eCPNameNCTR
+        [5]; // JB 010808 Alternate name of aircraft for cockpit loading
 
     //====================================================//
     // Control Variables
@@ -441,7 +448,7 @@ private:
     // Pointer to buffer for Texture Loading
     //====================================================//
 
-    GLubyte *mpLoadBuffer;
+    GLubyte* mpLoadBuffer;
 
     //====================================================//
     // Initialization Member Functions
@@ -472,7 +479,7 @@ private:
     void SetupControlTemplate(char*, int, int);
     void ParseManagerInfo(FILE*);
     void ResolveReferences(void);
-    static void TimeUpdateCallback(void *self);
+    static void TimeUpdateCallback(void* self);
 
 public:
     //====================================================//
@@ -484,8 +491,8 @@ public:
     int mMouseBorder;
     //float mScale; // for stretched cockpits //Wombat778 10-06-2003 Changes mScale from int to float
     // sfr separated scales
-    float           mHScale;
-    float           mVScale;
+    float mHScale;
+    float mVScale;
 
     //====================================================//
     // Lighting Stuff
@@ -501,7 +508,7 @@ public:
     // Miscellaneous State Information
     //====================================================//
     CPMisc mMiscStates;
-    CPSoundList *mpSoundList;
+    CPSoundList* mpSoundList;
     BOOL mViewChanging;
     F4CSECTIONHANDLE* mpCockpitCritSec;
 
@@ -509,17 +516,17 @@ public:
     // Pointer to Device Viewport Boundaries
     //====================================================//
 
-    ViewportBounds *mpViewBounds[BOUNDS_TOTAL];
+    ViewportBounds* mpViewBounds[BOUNDS_TOTAL];
 
 
     //====================================================//
     // Pointers to special avionics devices
     //====================================================//
 
-    ICPClass *mpIcp;
-    CPHsi *mpHsi;
-    DrawableBSP *mpGeometry; // Pointer to wings and reflections
-    KneeBoard *mpKneeBoard;
+    ICPClass* mpIcp;
+    CPHsi* mpHsi;
+    DrawableBSP* mpGeometry; // Pointer to wings and reflections
+    KneeBoard* mpKneeBoard;
 
     float ADIGpDevReading;
     float ADIGsDevReading;
@@ -529,10 +536,10 @@ public:
     // Pointers to the Outside World
     //====================================================//
 
-    ImageBuffer *mpOTWImage;
-    SimBaseClass *mpOwnship;
+    ImageBuffer* mpOTWImage;
+    SimBaseClass* mpOwnship;
 
-    ImageBuffer *RatioBuffer;  //Wombat778 10-18-2003 hack for 1.25 ratio screens
+    ImageBuffer* RatioBuffer; //Wombat778 10-18-2003 hack for 1.25 ratio screens
 
     //====================================================//
     // Public Constructors and Destructions
@@ -542,9 +549,15 @@ public:
 
     // sfr added 2 scaling factors here
 #if DO_HIRESCOCK_HACK
-    CockpitManager(ImageBuffer*, char*, BOOL, float, float, BOOL, Vis_Types eCPVisType = VIS_F16C, TCHAR* eCPName = NULL, TCHAR* eCPNameNCTR = NULL); //Wombat778 10-06-2003 changed scale from int to float
+    CockpitManager(
+        ImageBuffer*, char*, BOOL, float, float, BOOL,
+        Vis_Types eCPVisType = VIS_F16C, TCHAR* eCPName = NULL,
+        TCHAR* eCPNameNCTR =
+            NULL); //Wombat778 10-06-2003 changed scale from int to float
 #else
-    CockpitManager(ImageBuffer*, char*, BOOL, float, float); //Wombat778 10-06-2003 changed scale from int to float
+    CockpitManager(
+        ImageBuffer*, char*, BOOL, float,
+        float); //Wombat778 10-06-2003 changed scale from int to float
 #endif
 
     //====================================================//
@@ -554,14 +567,16 @@ public:
     void Exec(void); // Called by main sim thread
     void DisplayBlit(void); // Called by display thread
     void DisplayDraw(void); // Called by display thread
-    void GeometryDraw(void); // Called by display thread for drawing wings and reflections
+    void GeometryDraw(
+        void); // Called by display thread for drawing wings and reflections
     int Dispatch(int, int, int); // Called by input thread
     void Dispatch(int, int);
     int POVDispatch(int, int, int);
 
     // OW
     void DisplayBlit3D(void); // Called by display thread
-    void InitialiseInstruments(void); // JPO - set switches and lights up correctly
+    void
+    InitialiseInstruments(void); // JPO - set switches and lights up correctly
     //inline void SetNVGMode(bool state){ inNVGmode = state; };
     //inline boolean GetNVGMode(){ return inNVGmode; };
     //====================================================//
@@ -607,35 +622,36 @@ public:
     float GetPan(void);
     float GetTilt(void);
     void SetTOD(float);
-    void UpdatePalette(); //sfr: updates the 2d cockpit palette(due to inst and flood lights)
+    void
+    UpdatePalette(); //sfr: updates the 2d cockpit palette(due to inst and flood lights)
     void ImageCopy(GLubyte*, GLubyte*, int, RECT*);
     void SafeImageCopy(GLubyte*, GLubyte*, int, int, RECT*); //Wombat778 3-23-04
-    void     LoadCockpitDefaults(void);
-    void     SaveCockpitDefaults(void);
-    int      HudFont(void);
-    int      MFDFont(void);
-    int      DEDFont(void);
-    int      GeneralFont(void)
+    void LoadCockpitDefaults(void);
+    void SaveCockpitDefaults(void);
+    int HudFont(void);
+    int MFDFont(void);
+    int DEDFont(void);
+    int GeneralFont(void)
     {
         return mGeneralFont;
     };
-    int      PopUpFont(void)
+    int PopUpFont(void)
     {
         return mPopUpFont;
     };
-    int      KneeFont(void)
+    int KneeFont(void)
     {
         return mKneeFont;
     };
-    int      SABoxFont(void)
+    int SABoxFont(void)
     {
         return mSABoxFont;
     };
-    int      LabelFont(void)
+    int LabelFont(void)
     {
         return mLabelFont;
     };
-    int      AltPanel(void)
+    int AltPanel(void)
     {
         return mAltPanel;
     }; //Wombat778 4-13-04
@@ -651,14 +667,14 @@ public:
     * enviroment lighting, flood lighting and instrument lighting are considered
     * the parameters must have 3 positions each(RGB)
     */
-    void ComputeLightFactors(float *cockpit, float *instrument);
+    void ComputeLightFactors(float* cockpit, float* instrument);
 
     //Wombat778 3-12-04
     int GetNumPanels(void)
     {
         return mNumPanels;
     };
-    CPPanel*  GetPanel(int num)
+    CPPanel* GetPanel(int num)
     {
         return mpPanels[num];
     }
@@ -673,19 +689,18 @@ public:
     void CockDetachWeapons(void);
 
     Tpoint PitTurbulence;
-    void AddTurbulence(TwoDVertex *pVtx);
+    void AddTurbulence(TwoDVertex* pVtx);
     void SetTurbulence(void);
-    void AddTurbulenceVp(ViewportBounds *);
+    void AddTurbulenceVp(ViewportBounds*);
 };
 
 //====================================================//
 // Pointers to template and cockpit palette
 //====================================================//
 
-extern ImageBuffer *gpTemplateSurface;
-extern GLubyte *gpTemplateImage;
-extern GLulong *gpTemplatePalette;
-extern TemplateInfoClass *TemplateInfo; //Wombat778 3-30-04
+extern ImageBuffer* gpTemplateSurface;
+extern GLubyte* gpTemplateImage;
+extern GLulong* gpTemplatePalette;
+extern TemplateInfoClass* TemplateInfo; //Wombat778 3-30-04
 extern FlightData cockpitFlightData;
 #endif
-

@@ -5,17 +5,17 @@
 #include <io.h>
 #include <stdlib.h>
 #include <math.h>
-#include "CmpGlobl.h"
-#include "Campterr.h"
-#include "Campcell.h"
+#include "cmpglobl.h"
+#include "campterr.h"
+#include "campcell.h"
 #include "vutypes.h"
 #include "entity.h"
-#include "ASearch.h"
-#include "Campaign.h"
-#include "Campaign.h"
-#include "Unit.h"
+#include "asearch.h"
+#include "campaign.h"
+#include "campaign.h"
+#include "unit.h"
 #include "vehicle.h"
-#include "WeapList.h"
+#include "weaplist.h"
 
 // ======================================
 // Vehicle related stuff
@@ -25,9 +25,9 @@ char* GetVehicleName(VehicleID vid)
 {
     VehicleClassDataType* vc;
 
-    vc = (VehicleClassDataType*) Falcon4ClassTable[vid].dataPtr;
+    vc = (VehicleClassDataType*)Falcon4ClassTable[vid].dataPtr;
 
-    if ( not vc)
+    if (not vc)
         return "None";
 
     return vc->Name;
@@ -35,7 +35,7 @@ char* GetVehicleName(VehicleID vid)
 
 VehicleClassDataType* GetVehicleClassData(int index)
 {
-    return (VehicleClassDataType*) Falcon4ClassTable[index].dataPtr;
+    return (VehicleClassDataType*)Falcon4ClassTable[index].dataPtr;
 }
 
 // Calculates hit chance of built in weapons. Estimates for loadable weapons are maximum
@@ -46,7 +46,7 @@ int CalculateVehicleHitChance(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if ( not vc)
+    if (not vc)
         return 0;
 
     for (i = 0; i < HARDPOINT_MAX; i++)
@@ -107,7 +107,7 @@ int CalculateVehicleCombatStrength(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if ( not vc)
+    if (not vc)
         return 0;
 
     for (i = 0; i < HARDPOINT_MAX; i++)
@@ -152,7 +152,7 @@ int GetAproxVehicleRange(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if ( not vc)
+    if (not vc)
         return 0;
 
     return vc->Range[mt];
@@ -166,7 +166,7 @@ int CalculateVehicleRange(int id, int mt)
 
     vc = GetVehicleClassData(id);
 
-    if ( not vc)
+    if (not vc)
         return 0;
 
     for (i = 0; i < HARDPOINT_MAX; i++)
@@ -210,22 +210,23 @@ int GetVehicleDetectionRange(int id, int mt)
 {
     VehicleClassDataType* vc;
 
-    vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
+    vc = (VehicleClassDataType*)Falcon4ClassTable[id].dataPtr;
 
-    if ( not vc)
+    if (not vc)
         return 0;
 
     return vc->Detection[mt];
 }
 
-int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_point)
+int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range,
+                         int* hard_point)
 {
     int i, str, bs, w, ws, bw = -1, bhp = -1;
     VehicleClassDataType* vc;
 
-    vc = (VehicleClassDataType*) Falcon4ClassTable[id].dataPtr;
+    vc = (VehicleClassDataType*)Falcon4ClassTable[id].dataPtr;
 
-    if ( not vc)
+    if (not vc)
         return 0;
 
     bw = bs = 0;
@@ -236,7 +237,7 @@ int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_po
         ws = vc->Weapons[i];
         ShiAssert(ws < 255)
 
-        if (w and ws)
+            if (w and ws)
         {
             str = GetWeaponScore(w, dam, m, range);
 
@@ -257,7 +258,7 @@ int GetVehicleWeapon(int vid, int hp)
 {
     VehicleClassDataType* vc;
 
-    vc = (VehicleClassDataType*) Falcon4ClassTable[vid].dataPtr;
+    vc = (VehicleClassDataType*)Falcon4ClassTable[vid].dataPtr;
     ShiAssert(vc);
     return vc->Weapon[hp];
 }
@@ -266,7 +267,7 @@ int GetVehicleWeapons(int vid, int hp)
 {
     VehicleClassDataType* vc;
 
-    vc = (VehicleClassDataType*) Falcon4ClassTable[vid].dataPtr;
+    vc = (VehicleClassDataType*)Falcon4ClassTable[vid].dataPtr;
     ShiAssert(vc);
     return vc->Weapons[hp];
 }

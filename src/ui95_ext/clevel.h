@@ -14,7 +14,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -34,14 +35,15 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
-    UI95_RECT  DrawArea_;
-    long  MinValue_, MaxValue_;
+    UI95_RECT DrawArea_;
+    long MinValue_, MaxValue_;
     short Count_;
-    long  Start_, End_;
+    long Start_, End_;
 
     _TCHAR Y_Labels_[4][20];
 
@@ -84,11 +86,11 @@ public:
 
     long GetStart()
     {
-        return(Start_);
+        return (Start_);
     }
     long GetEnd()
     {
-        return(End_);
+        return (End_);
     }
 
     void SetDrawArea(UI95_RECT rect)
@@ -105,7 +107,8 @@ public:
 
     void SetTeamColor(short team, COLORREF color)
     {
-        if (team < _LEVEL_MAX_TEAMS_) Color_[team] = color;
+        if (team < _LEVEL_MAX_TEAMS_)
+            Color_[team] = color;
     }
 
     void AddPoint(short team, short value);
@@ -122,29 +125,30 @@ public:
 
     long GetMinValue()
     {
-        return(MinValue_);
+        return (MinValue_);
     }
     long GetMaxValue()
     {
-        return(MaxValue_);
+        return (MaxValue_);
     }
 
     void SetYLabel(short idx, _TCHAR *lbl)
     {
-        if (idx < 4) _tcscpy(Y_Labels_[idx], lbl);
+        if (idx < 4)
+            _tcscpy(Y_Labels_[idx], lbl);
     }
 
     _TCHAR *GetYLabel(short idx)
     {
-        if (idx < 4) return(Y_Labels_[idx]);
+        if (idx < 4)
+            return (Y_Labels_[idx]);
 
-        return(NULL);
+        return (NULL);
     }
 
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
 };
-
 
 
 #endif

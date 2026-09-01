@@ -1,7 +1,6 @@
-#define MAX_VERTEX_INDEXED (65536*(MAX_DYNAMIC_BUFFERS+1))
-#define MAX_DYNAMIC_ITEMS (MAX_VERTEX_INDEXED/4)
+#define MAX_VERTEX_INDEXED (65536 * (MAX_DYNAMIC_BUFFERS + 1))
+#define MAX_DYNAMIC_ITEMS (MAX_VERTEX_INDEXED / 4)
 #define MAX_DYNAMIC_VERTICES 65500 // Number of Vetrtices in a dynamic Buffer
-
 
 
 #define EMISSIVE true
@@ -17,7 +16,6 @@ public:
     DWORD Number; // The Number of vertices
     DWORD TexID; // Texture ID
 };
-
 
 
 // The Texture item, this class got a texture definition name and it's U/V tex Coords in the parent surface
@@ -53,7 +51,6 @@ public:
 };
 
 
-
 // ************************************ 2D STUFF *******************************************
 
 #define MAX_2D_BUFFERS 1 // Number of 2D Buffers
@@ -68,19 +65,19 @@ public:
 #define POLY_BB 0x00000001 // Billboard quad flag
 #define POLY_CREATE 0x00000002 // create vertices flag
 //***************************************************************************************************************************
-#define POLY_VISIBLE 0x00000004 // Force rendering ( used when Visibility check is already performed )
+#define POLY_VISIBLE                                                           \
+    0x00000004 // Force rendering ( used when Visibility check is already performed )
 // WARNING - GetDistance must be performed before to have the engine
 // to store the item Distance to be used, as it is not calculated
 // in the draw function
 //***************************************************************************************************************************
-#define CAMERA_VERTICES 0x00000008 // The verices passed to the Drawing function are CAMERA SPACE Coordinates
+#define CAMERA_VERTICES                                                        \
+    0x00000008 // The verices passed to the Drawing function are CAMERA SPACE Coordinates
 // so, not relative to object center
 //***************************************************************************************************************************
 #define CALC_DISTANCE 0x00000010 // Recalc the distance of the passed object
 //***************************************************************************************************************************
 #define TAPE_ENTRY 0x00000020 // This is a Tape Entry
-
-
 
 
 #define POLY_FAN 0x0100000 // FAN ITEM
@@ -112,12 +109,11 @@ typedef struct
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned Vb;
     DWORD Index, Index2; // The indexes in the VBuffer
     DWORD NrVertices; // vertices
-    DWORD_PTR TexHandle; // The Texture Handle // Artscout - 2026 (x64): pointer-sized
+    DWORD_PTR
+    TexHandle; // The Texture Handle // Artscout - 2026 (x64): pointer-sized
     DWORD Flags;
     float Height;
 } DrawItemType;
-
-
 
 
 // The structure of a layer manager
@@ -130,7 +126,6 @@ typedef struct
 } LayerItemType;
 
 
-
 // The structure of items  pointing a vertex buffer
 typedef struct
 {
@@ -141,11 +136,8 @@ typedef struct
 } Dyn2DBufferType;
 
 
-
 // Structure of a sorting item
 typedef struct
 {
     DWORD Index, Next;
 } SortItemType;
-
-

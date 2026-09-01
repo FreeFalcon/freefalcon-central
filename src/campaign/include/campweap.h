@@ -37,15 +37,19 @@
 #define WEAP_TRACER 0x20 // Use tracers when drawing weapon fire
 #define WEAP_ALWAYSRACK 0x40 // this weapon has no rack
 #define WEAP_LGB_3RD_GEN 0x80 // 3rd generation LGB's
-#define WEAP_BOMBWARHEAD 0x100 // this is for example a missile with a bomb war head. MissileEnd when ground impact, not when lethalradius reached
+#define WEAP_BOMBWARHEAD                                                       \
+    0x100 // this is for example a missile with a bomb war head. MissileEnd when ground impact, not when lethalradius reached
 #define WEAP_NO_TRAIL 0x200 // do not display any weapon trails or engine glow
-#define WEAP_BOMBDROPSOUND 0x400 // play the bomb drop sound instead of missile launch
-#define WEAP_BOMBGPS 0x800 // we use this for JDAM "missile" bombs to have them always CanDetectObject and CanSeeObject true
+#define WEAP_BOMBDROPSOUND                                                     \
+    0x400 // play the bomb drop sound instead of missile launch
+#define WEAP_BOMBGPS                                                           \
+    0x800 // we use this for JDAM "missile" bombs to have them always CanDetectObject and CanSeeObject true
 
 // RV - Biker - Make the rocket marker flag usable
 #define WEAP_ROCKET_MARKER 0x1000
 
-#define WEAP_FORCE_ON_ONE 0x2000 // Put all requested weapons on one/two hardpoints
+#define WEAP_FORCE_ON_ONE                                                      \
+    0x2000 // Put all requested weapons on one/two hardpoints
 #define WEAP_GUN 0x4000 // Used by LoadWeapons only - to specify guns only
 #define WEAP_ONETENTH 0x8000 // # listed is actually 1/10th the # of shots
 
@@ -69,18 +73,20 @@
 // Damage Types
 // ===================================
 
-typedef enum { NoDamage,
-                PenetrationDam, // Hardened structures, tanks, ships
-                HighExplosiveDam, // Soft targets, area targets
-                HeaveDam, // Runways
-                IncendairyDam, // Burn baby, burn
-                ProximityDam, // AA missiles, etc.
-                KineticDam, // Guns, small arms fire
-                HydrostaticDam, // Submarines
-                ChemicalDam,
-                NuclearDam,
-                OtherDam
-             } DamageDataType;
+typedef enum
+{
+    NoDamage,
+    PenetrationDam, // Hardened structures, tanks, ships
+    HighExplosiveDam, // Soft targets, area targets
+    HeaveDam, // Runways
+    IncendairyDam, // Burn baby, burn
+    ProximityDam, // AA missiles, etc.
+    KineticDam, // Guns, small arms fire
+    HydrostaticDam, // Submarines
+    ChemicalDam,
+    NuclearDam,
+    OtherDam
+} DamageDataType;
 
 typedef DamageDataType DamType;
 
@@ -88,7 +94,7 @@ typedef DamageDataType DamType;
 // Functions
 // ===================================
 
-extern int LoadWeaponTable(char *filename);
+extern int LoadWeaponTable(char* filename);
 
 extern int GetWeaponStrength(int w);
 

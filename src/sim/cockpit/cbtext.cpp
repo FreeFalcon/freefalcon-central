@@ -7,10 +7,10 @@
 #include "cpcb.h"
 #include "cptext.h"
 #include "hud.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "fack.h"
 
-void CBExSpeedAlt(void* ptext)
+void CBExSpeedAlt(void *ptext)
 {
     long altitude;
     int thousands;
@@ -19,12 +19,15 @@ void CBExSpeedAlt(void* ptext)
     float hat, theAlt;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    CPText *pCPText = (CPText*) ptext;
+    CPText *pCPText = (CPText *)ptext;
 
-    hat = cockpitFlightData.z - OTWDriver.GetGroundLevel(SimDriver.GetPlayerEntity()->XPos(), SimDriver.GetPlayerEntity()->YPos());
+    hat = cockpitFlightData.z -
+          OTWDriver.GetGroundLevel(SimDriver.GetPlayerEntity()->XPos(),
+                                   SimDriver.GetPlayerEntity()->YPos());
 
     // Max hat if no rad alt
-    if (playerAC->mFaults and playerAC->mFaults->GetFault(FaultClass::ralt_fault))
+    if (playerAC->mFaults and
+        playerAC->mFaults->GetFault(FaultClass::ralt_fault))
     {
         hat = -999999.9F;
     }
@@ -40,7 +43,8 @@ void CBExSpeedAlt(void* ptext)
     }
     else
     {
-        if (hat > -1200.0F or (cockpitFlightData.zDot < 0.0F and hat > -1500.0F))
+        if (hat > -1200.0F or
+            (cockpitFlightData.zDot < 0.0F and hat > -1500.0F))
         {
             theAlt = -hat;
         }
@@ -54,7 +58,7 @@ void CBExSpeedAlt(void* ptext)
     airspeed = FloatToInt32(SimDriver.GetPlayerEntity()->GetKias());
 
     thousands = altitude / 1000;
-    ones  = altitude % 1000;
+    ones = altitude % 1000;
 
     if (thousands)
     {
@@ -67,4 +71,3 @@ void CBExSpeedAlt(void* ptext)
 
     sprintf(pCPText->mpString[1], "AIRSPD: %3d kts", airspeed);
 }
-

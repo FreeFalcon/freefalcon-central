@@ -8,13 +8,13 @@
 #include "simdrive.h"
 #include "dofsnswitches.h"
 #include "simio.h"
-#include "Graphics/Include/drawgrnd.h"
+#include "graphics/include/drawgrnd.h"
 #include "soundfx.h"
 #include "fsound.h"
 #include "fakerand.h"
 #include "sms.h"
-#include "Graphics/Include/tod.h"
-#include "TrackIr.h"
+#include "graphics/include/tod.h"
+#include "trackir.h"
 
 extern ACMISwitchRecord acmiSwitch;
 extern ACMIDOFRecord DOFRec;
@@ -22,11 +22,13 @@ static int stallShake = FALSE;
 extern bool g_bRealisticAvionics;
 extern bool g_bNewFm;
 extern bool g_bNewDamageEffects;
-extern bool g_bRollLinkedNWSRudder;// ASSOCIATOR 30/11/03 Added for roll unlinked rudder on the ground
+extern bool
+    g_bRollLinkedNWSRudder; // ASSOCIATOR 30/11/03 Added for roll unlinked rudder on the ground
 extern float g_fACMIAnimRecordTimer;
 
 extern bool g_bAnimPilotHead; // Cobra - Animated Pilot's head
-extern float g_fPilotActInterval; // Cobra - Pilot animation act interval (minutes)
+extern float
+    g_fPilotActInterval; // Cobra - Pilot animation act interval (minutes)
 extern float g_fPilotHeadMoveRate; // Cobra - Pilot animation act move rate
 extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 extern float g_fTIR2DPitchPercentage, g_fTIR2DYawPercentage;
@@ -34,87 +36,37 @@ extern TrackIR theTrackIRObject; // Retro 27/09/03
 
 // MLR 2/22/2004 - these arrays make it easy to access the gear related DOFs bitand Switches
 //                 because the ID numbers are out of order.
-int ComplexGearDOF[] =
-{
-    COMP_GEAR_1,
-    COMP_GEAR_2,
-    COMP_GEAR_3,
-    COMP_GEAR_4,
-    COMP_GEAR_5,
-    COMP_GEAR_6,
-    COMP_GEAR_7,
-    COMP_GEAR_8
-};
+int ComplexGearDOF[] = {COMP_GEAR_1, COMP_GEAR_2, COMP_GEAR_3, COMP_GEAR_4,
+                        COMP_GEAR_5, COMP_GEAR_6, COMP_GEAR_7, COMP_GEAR_8};
 
-int ComplexGearDoorDOF[] =
-{
-    COMP_GEAR_DR_1,
-    COMP_GEAR_DR_2,
-    COMP_GEAR_DR_3,
-    COMP_GEAR_DR_4,
-    COMP_GEAR_DR_5,
-    COMP_GEAR_DR_6,
-    COMP_GEAR_DR_7,
-    COMP_GEAR_DR_8
-};
+int ComplexGearDoorDOF[] = {COMP_GEAR_DR_1, COMP_GEAR_DR_2, COMP_GEAR_DR_3,
+                            COMP_GEAR_DR_4, COMP_GEAR_DR_5, COMP_GEAR_DR_6,
+                            COMP_GEAR_DR_7, COMP_GEAR_DR_8};
 
-int ComplexGearSwitch[] =
-{
-    COMP_GEAR_SW_1,
-    COMP_GEAR_SW_2,
-    COMP_GEAR_SW_3,
-    COMP_GEAR_SW_4,
-    COMP_GEAR_SW_5,
-    COMP_GEAR_SW_6,
-    COMP_GEAR_SW_7,
-    COMP_GEAR_SW_8
-};
+int ComplexGearSwitch[] = {COMP_GEAR_SW_1, COMP_GEAR_SW_2, COMP_GEAR_SW_3,
+                           COMP_GEAR_SW_4, COMP_GEAR_SW_5, COMP_GEAR_SW_6,
+                           COMP_GEAR_SW_7, COMP_GEAR_SW_8};
 
-int ComplexGearDoorSwitch[] =
-{
-    COMP_GEAR_DR_SW_1,
-    COMP_GEAR_DR_SW_2,
-    COMP_GEAR_DR_SW_3,
-    COMP_GEAR_DR_SW_4,
-    COMP_GEAR_DR_SW_5,
-    COMP_GEAR_DR_SW_6,
-    COMP_GEAR_DR_SW_7,
-    COMP_GEAR_DR_SW_8
-};
+int ComplexGearDoorSwitch[] = {
+    COMP_GEAR_DR_SW_1, COMP_GEAR_DR_SW_2, COMP_GEAR_DR_SW_3, COMP_GEAR_DR_SW_4,
+    COMP_GEAR_DR_SW_5, COMP_GEAR_DR_SW_6, COMP_GEAR_DR_SW_7, COMP_GEAR_DR_SW_8};
 
-int ComplexGearHoleSwitch[] =
-{
-    COMP_GEAR_HOLE_1,
-    COMP_GEAR_HOLE_2,
-    COMP_GEAR_HOLE_3,
-    COMP_GEAR_HOLE_4,
-    COMP_GEAR_HOLE_5,
-    COMP_GEAR_HOLE_6,
-    COMP_GEAR_HOLE_7,
-    COMP_GEAR_HOLE_8
-};
+int ComplexGearHoleSwitch[] = {
+    COMP_GEAR_HOLE_1, COMP_GEAR_HOLE_2, COMP_GEAR_HOLE_3, COMP_GEAR_HOLE_4,
+    COMP_GEAR_HOLE_5, COMP_GEAR_HOLE_6, COMP_GEAR_HOLE_7, COMP_GEAR_HOLE_8};
 
-int ComplexGearBrokenSwitch[] =
-{
-    COMP_GEAR_BROKEN_SW_1,
-    COMP_GEAR_BROKEN_SW_2,
-    COMP_GEAR_BROKEN_SW_3,
-    COMP_GEAR_BROKEN_SW_4,
-    COMP_GEAR_BROKEN_SW_5,
-    COMP_GEAR_BROKEN_SW_6,
-    COMP_GEAR_BROKEN_SW_7,
-    COMP_GEAR_BROKEN_SW_8
-};
+int ComplexGearBrokenSwitch[] = {COMP_GEAR_BROKEN_SW_1, COMP_GEAR_BROKEN_SW_2,
+                                 COMP_GEAR_BROKEN_SW_3, COMP_GEAR_BROKEN_SW_4,
+                                 COMP_GEAR_BROKEN_SW_5, COMP_GEAR_BROKEN_SW_6,
+                                 COMP_GEAR_BROKEN_SW_7, COMP_GEAR_BROKEN_SW_8};
 
 //The ACMI is huge
 
 
-
-
-
 // JPO
 // works out flap and aileron angles. Sometimes these are linked as in F-16 flapperons.
-void AircraftClass::CalculateAileronAndFlap(float qfactor, float *al, float *ar, float *fl, float *fr)
+void AircraftClass::CalculateAileronAndFlap(float qfactor, float *al, float *ar,
+                                            float *fl, float *fr)
 {
     float stabAngle;
     float flapdelta = 0;
@@ -125,42 +77,44 @@ void AircraftClass::CalculateAileronAndFlap(float qfactor, float *al, float *ar,
 
     switch (af->auxaeroData->hasTef)
     {
-        case AUX_LEFTEF_MANUAL: // nothing special here, just set to what given
-            flapdelta = af->tefPos * DTR;
-            break;
+    case AUX_LEFTEF_MANUAL: // nothing special here, just set to what given
+        flapdelta = af->tefPos * DTR;
+        break;
 
-        case AUX_LEFTEF_AOA: // nothing uses this yet. So not sure what happens
-        case AUX_LEFTEF_MACH: // dependendant on vcas (not MACH despite the name)
-        {
-            float gdelta;
-            float speeddelta;
+    case AUX_LEFTEF_AOA: // nothing uses this yet. So not sure what happens
+    case AUX_LEFTEF_MACH: // dependendant on vcas (not MACH despite the name)
+    {
+        float gdelta;
+        float speeddelta;
 
-            if (TEFExtend) // forcibly extended
-                gdelta = 1;
-            else if (af->auxaeroData->flapGearRelative) // else dependent on gear deployment
-                gdelta = max(0, af->gearPos);
-            else gdelta = 1; // else always
+        if (TEFExtend) // forcibly extended
+            gdelta = 1;
+        else if (af->auxaeroData
+                     ->flapGearRelative) // else dependent on gear deployment
+            gdelta = max(0, af->gearPos);
+        else
+            gdelta = 1; // else always
 
-            // work out how much flap we would have at this vcas
-            speeddelta = (af->auxaeroData->maxFlapVcas - af->vcas) /
-                         af->auxaeroData->flapVcasRange;
-            speeddelta = max(0.0F, min(1.0F, speeddelta)); //limit to 0-1 range
+        // work out how much flap we would have at this vcas
+        speeddelta = (af->auxaeroData->maxFlapVcas - af->vcas) /
+                     af->auxaeroData->flapVcasRange;
+        speeddelta = max(0.0F, min(1.0F, speeddelta)); //limit to 0-1 range
 
-            // max flaps * speed dependent factor (0-1) * gear delta (0-1)
-            flapdelta = af->auxaeroData->tefMaxAngle  * DTR * speeddelta * gdelta;
-            break;
-        }
+        // max flaps * speed dependent factor (0-1) * gear delta (0-1)
+        flapdelta = af->auxaeroData->tefMaxAngle * DTR * speeddelta * gdelta;
+        break;
+    }
     }
 
     *al = stabAngle;
     *ar = -stabAngle;
     *fl = flapdelta;
     *fr = flapdelta;
-
 }
 
 // MLR - new function to implement spoilers and wing sweep
-void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr1 , float &sl2, float &sr2)
+void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1,
+                                             float &sr1, float &sl2, float &sr2)
 {
     float ailangle, brakeangle = 0, spmax, cursweep;
 
@@ -175,14 +129,16 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
         {
             int l;
 
-            if (af->auxaeroData->animSwingWingStages > 10 or af->auxaeroData->animSwingWingStages < 0)
+            if (af->auxaeroData->animSwingWingStages > 10 or
+                af->auxaeroData->animSwingWingStages < 0)
             {
-                MonoPrint("animSwingWingStages %d\n", af->auxaeroData->animSwingWingStages);
+                MonoPrint("animSwingWingStages %d\n",
+                          af->auxaeroData->animSwingWingStages);
             }
 
 
             // scan in reverse
-            for (l = (af->auxaeroData->animSwingWingStages - 1) ; l >= 0 ; l--)
+            for (l = (af->auxaeroData->animSwingWingStages - 1); l >= 0; l--)
             {
                 if (af->mach >= af->auxaeroData->animSwingWingMach[l])
                 {
@@ -195,7 +151,8 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
         sweep *= DTR;
 
         // need to retrieve current sweep position
-        cursweep = GetDOFValue((IsComplex() ? COMP_SWING_WING : SIMP_SWING_WING_1));
+        cursweep =
+            GetDOFValue((IsComplex() ? COMP_SWING_WING : SIMP_SWING_WING_1));
         swingWingAngle = cursweep; // MLR 3/5/2004 -
     }
 
@@ -214,13 +171,17 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
         sr1 = brakeangle + ailangle;
 
         // limit spoiler travel
-        if (sl1 > 1) sl1 = 1.0;
+        if (sl1 > 1)
+            sl1 = 1.0;
 
-        if (sr1 > 1) sr1 = 1.0;
+        if (sr1 > 1)
+            sr1 = 1.0;
 
-        if (sl1 < 0) sl1 = 0.0;
+        if (sl1 < 0)
+            sl1 = 0.0;
 
-        if (sr1 < 0) sr1 = 0.0;
+        if (sr1 < 0)
+            sr1 = 0.0;
 
         spmax = af->auxaeroData->animSpoiler1Max * DTR;
         sl1 *= spmax;
@@ -240,13 +201,17 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
         sr2 = brakeangle + ailangle;
 
         // limit spoiler travel
-        if (sl2 > 1) sl2 = 1.0;
+        if (sl2 > 1)
+            sl2 = 1.0;
 
-        if (sr2 > 1) sr2 = 1.0;
+        if (sr2 > 1)
+            sr2 = 1.0;
 
-        if (sl2 < 0) sl2 = 0.0;
+        if (sl2 < 0)
+            sl2 = 0.0;
 
-        if (sr2 < 0) sr2 = 0.0;
+        if (sr2 < 0)
+            sr2 = 0.0;
 
         spmax = af->auxaeroData->animSpoiler2Max * DTR;
         sl2 *= spmax;
@@ -256,9 +221,6 @@ void AircraftClass::CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr
     {
         sl2 = sr2 = 0;
     }
-
-
-
 }
 
 
@@ -271,28 +233,32 @@ void AircraftClass::CalculateLef(float qfactor)
         leftLEFAngle = af->lefPos * DTR;
         rightLEFAngle = af->lefPos * DTR;
     }
-    else if (af->auxaeroData->hasLef == AUX_LEFTEF_TEF)   // LEF controlled by TEF
+    else if (af->auxaeroData->hasLef == AUX_LEFTEF_TEF) // LEF controlled by TEF
     {
         if (af->tefPos > 0)
             af->LEFMax();
-        else af->LEFClose();
+        else
+            af->LEFClose();
 
         leftLEFAngle = af->lefPos * DTR;
         rightLEFAngle = af->lefPos * DTR;
     }
     else
     {
-        if ( not af->IsSet(AirframeClass::InAir))
+        if (not af->IsSet(AirframeClass::InAir))
         {
             leftLEFAngle = rightLEFAngle = af->auxaeroData->lefGround * DTR;
         }
-        else if ( not g_bNewFm and af->mach > af->auxaeroData->lefMaxMach)
+        else if (not g_bNewFm and af->mach > af->auxaeroData->lefMaxMach)
         {
-            leftLEFAngle = rightLEFAngle = 0;;
+            leftLEFAngle = rightLEFAngle = 0;
+            ;
         }
         else if (af->auxaeroData->hasLef == AUX_LEFTEF_AOA)
         {
-            leftLEFAngle = max(min(af->alpha, af->auxaeroData->lefMaxAngle) * DTR, 0.0f); //me123 lef is controled my aoa not mach
+            leftLEFAngle =
+                max(min(af->alpha, af->auxaeroData->lefMaxAngle) * DTR,
+                    0.0f); //me123 lef is controled my aoa not mach
             rightLEFAngle = leftLEFAngle;
 
             //MI additions
@@ -307,7 +273,9 @@ void AircraftClass::CalculateLef(float qfactor)
         }
         else
         {
-            leftLEFAngle = min((af->auxaeroData->lefMaxMach - af->mach) / 0.2F, 1.0F) * af->auxaeroData->lefMaxAngle * DTR;
+            leftLEFAngle =
+                min((af->auxaeroData->lefMaxMach - af->mach) / 0.2F, 1.0F) *
+                af->auxaeroData->lefMaxAngle * DTR;
             rightLEFAngle = leftLEFAngle;
         }
 
@@ -323,7 +291,6 @@ void AircraftClass::CalculateLef(float qfactor)
                 leftLEFAngle = GetDOFValue(SIMP_LT_LEF);
                 rightLEFAngle = GetDOFValue(SIMP_RT_LEF);
             }
-
         }
     }
 }
@@ -332,12 +299,15 @@ void AircraftClass::CalculateStab(float qfactor, float *sl, float *sr)
 {
     if (af->auxaeroData->elevatorRolls)
     {
-        *sl = max(min(af->pstick - af->rstick, 1.0F), -1.0F) * qfactor * af->auxaeroData->elevonMaxAngle * DTR;
-        *sr = max(min(af->pstick + af->rstick, 1.0F), -1.0F) * qfactor * af->auxaeroData->elevonMaxAngle * DTR;
+        *sl = max(min(af->pstick - af->rstick, 1.0F), -1.0F) * qfactor *
+              af->auxaeroData->elevonMaxAngle * DTR;
+        *sr = max(min(af->pstick + af->rstick, 1.0F), -1.0F) * qfactor *
+              af->auxaeroData->elevonMaxAngle * DTR;
     }
     else
     {
-        *sr = *sl = max(min(af->pstick, 1.0F), -1.0F) * qfactor * af->auxaeroData->elevonMaxAngle * DTR;
+        *sr = *sl = max(min(af->pstick, 1.0F), -1.0F) * qfactor *
+                    af->auxaeroData->elevonMaxAngle * DTR;
     }
 }
 
@@ -348,13 +318,15 @@ float AircraftClass::CalculateRudder(float qfactor)
 
 // JPO - routine to get the DOF to move to the desirted position
 // happens at a given rate though. Optionally play SFX during the time.
-void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsfx, int esfx)
+void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx,
+                            int lsfx, int esfx)
 {
     float changeval;
     float cdof = GetDOFValue(dof);
     bool doend = false;
 
-    if (cdof == newval) return; // all done
+    if (cdof == newval)
+        return; // all done
 
     changeval = rate * DTR * SimLibMajorFrameTime;
 
@@ -393,8 +365,9 @@ void AircraftClass::MoveDof(int dof, float newval, float rate, int ssfx, int lsf
         }
         else
         {
-            if ( not SoundPos.IsPlaying(ssfx) and // MLR 12/30/2003 - changed IsPlaying sound call
- not SoundPos.IsPlaying(lsfx))
+            if (not SoundPos.IsPlaying(
+                    ssfx) and // MLR 12/30/2003 - changed IsPlaying sound call
+                not SoundPos.IsPlaying(lsfx))
                 SoundPos.Sfx(ssfx);
             else
                 SoundPos.Sfx(lsfx);
@@ -407,10 +380,11 @@ void AircraftClass::DeployDragChute(int type)
     if (af->vcas < 20.0f and af->dragChute == AirframeClass::DRAGC_DEPLOYED)
         af->dragChute = AirframeClass::DRAGC_TRAILING;
 
-    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED and 
+    if (af->dragChute == AirframeClass::DRAGC_DEPLOYED and
         af->vcas > af->auxaeroData->dragChuteMaxSpeed)
     {
-        if ((af->vcas - af->auxaeroData->dragChuteMaxSpeed) / 100 > PRANDFloatPos())
+        if ((af->vcas - af->auxaeroData->dragChuteMaxSpeed) / 100 >
+            PRANDFloatPos())
             af->dragChute = AirframeClass::DRAGC_RIPPED;
     }
 
@@ -496,7 +470,11 @@ void AircraftClass::MoveSurfaces(void)
         SetDOF(COMP_RPM, rpm[0]);
 
         // MLR 2003-10-12 Animated refuel probe
-        MoveDof(COMP_REFUEL, (af->IsEngineFlag(AirframeClass::FuelDoorOpen) ? af->auxaeroData->animRefuelAngle * DTR : 0), af->auxaeroData->animRefuelRate);
+        MoveDof(COMP_REFUEL,
+                (af->IsEngineFlag(AirframeClass::FuelDoorOpen) ?
+                     af->auxaeroData->animRefuelAngle * DTR :
+                     0),
+                af->auxaeroData->animRefuelRate);
     }
 
     {
@@ -506,10 +484,11 @@ void AircraftClass::MoveSurfaces(void)
         int l;
         float curDOF;
         // MLR 1/22/2004 - I forgot to use the RPMMult
-        float deltaDOF = rpm[0] * af->auxaeroData->animEngineRPMMult * DTR; // replace the .01 with a global value
+        float deltaDOF = rpm[0] * af->auxaeroData->animEngineRPMMult *
+                         DTR; // replace the .01 with a global value
 
         curDOF = GetDOFValue(COMP_PROPELLOR);
-        curDOF = fmod((curDOF + deltaDOF) , 6.28318531f);  // 2 * PI
+        curDOF = fmod((curDOF + deltaDOF), 6.28318531f); // 2 * PI
         SetDOF(COMP_PROPELLOR, curDOF);
 
         if (IsComplex())
@@ -518,22 +497,23 @@ void AircraftClass::MoveSurfaces(void)
             {
                 l = 31;
                 curDOF = GetDOFValue(l);
-                curDOF = fmod((curDOF + deltaDOF) , 6.28318531f);  // 2 * PI
-                SetDOF(l , curDOF);
+                curDOF = fmod((curDOF + deltaDOF), 6.28318531f); // 2 * PI
+                SetDOF(l, curDOF);
 
                 l = 32;
-                deltaDOF = rpm[1] * af->auxaeroData->animEngineRPMMult * DTR; // replace the .01 with a global value
+                deltaDOF = rpm[1] * af->auxaeroData->animEngineRPMMult *
+                           DTR; // replace the .01 with a global value
                 curDOF = GetDOFValue(l);
-                curDOF = fmod((curDOF + deltaDOF) , 6.28318531f);  // 2 * PI
-                SetDOF(l , curDOF);
+                curDOF = fmod((curDOF + deltaDOF), 6.28318531f); // 2 * PI
+                SetDOF(l, curDOF);
             }
             else
             {
                 for (l = 31; l < 37; l++)
                 {
                     curDOF = GetDOFValue(l);
-                    curDOF = fmod((curDOF + deltaDOF) , 6.28318531f);  // 2 * PI
-                    SetDOF(l , curDOF);
+                    curDOF = fmod((curDOF + deltaDOF), 6.28318531f); // 2 * PI
+                    SetDOF(l, curDOF);
                 }
             }
         }
@@ -545,7 +525,7 @@ void AircraftClass::MoveSurfaces(void)
         // Tail Surface
         float leftStab, rightStab;
         CalculateStab(qFactor, &leftStab, &rightStab);
-        MoveDof(COMP_LT_STAB, -leftStab,  af->auxaeroData->elevRate);
+        MoveDof(COMP_LT_STAB, -leftStab, af->auxaeroData->elevRate);
         MoveDof(COMP_RT_STAB, -rightStab, af->auxaeroData->elevRate);
 
         float aileronleft, aileronrt;
@@ -558,17 +538,17 @@ void AircraftClass::MoveSurfaces(void)
         if (GunFire or fireGun)
             doorAngle = 90.0f * DTR;
         else
-            doorAngle =  0.0f * DTR;
+            doorAngle = 0.0f * DTR;
 
-        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0 and 
-            af->GetGunDofType() <= COMP_WEAPON_BAY_4 and 
+        if (af->GetGunDofType() >= COMP_WEAPON_BAY_0 and
+            af->GetGunDofType() <= COMP_WEAPON_BAY_4 and
             af->GetGunDofRate() > 0.0f)
         {
 
             MoveDof(af->GetGunDofType(), doorAngle, af->GetGunDofRate());
         }
 
-        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW and 
+        if (af->GetGunSwitchType() >= COMP_WEAPON_BAY_0_SW and
             af->GetGunSwitchType() <= COMP_WEAPON_BAY_4_SW)
         {
 
@@ -590,7 +570,6 @@ void AircraftClass::MoveSurfaces(void)
             {
                 if (af->GetHpDofType(l) not_eq curDOF)
                     MoveDof(af->GetHpDofType(l), 0 * DTR, af->GetHpDofRate(l));
-
             }
 
             /* if (af->GetHpSwitchType(l) >= COMP_WEAPON_BAY_0_SW and 
@@ -604,22 +583,35 @@ void AircraftClass::MoveSurfaces(void)
             }*/
         }
 
-        CalculateAileronAndFlap(qFactor, &aileronleft, &aileronrt, &flapleft, &flaprt);
+        CalculateAileronAndFlap(qFactor, &aileronleft, &aileronrt, &flapleft,
+                                &flaprt);
 
         if (af->auxaeroData->hasFlapperons)
         {
-            MoveDof(COMP_LT_FLAP, aileronleft + flapleft, af->auxaeroData->tefRate);
-            MoveDof(COMP_RT_FLAP, aileronrt + flaprt,  af->auxaeroData->tefRate);
+            MoveDof(COMP_LT_FLAP, aileronleft + flapleft,
+                    af->auxaeroData->tefRate);
+            MoveDof(COMP_RT_FLAP, aileronrt + flaprt, af->auxaeroData->tefRate);
         }
         else
         {
-            MoveDof(COMP_LT_FLAP, aileronleft, af->auxaeroData->animAileronRate); // MLR 2003-09-30 change because tefRate is to damn slow
-            MoveDof(COMP_RT_FLAP, aileronrt, af->auxaeroData->animAileronRate);   // MLR 2003-09-30 same as above
+            MoveDof(
+                COMP_LT_FLAP, aileronleft,
+                af->auxaeroData
+                    ->animAileronRate); // MLR 2003-09-30 change because tefRate is to damn slow
+            MoveDof(COMP_RT_FLAP, aileronrt,
+                    af->auxaeroData
+                        ->animAileronRate); // MLR 2003-09-30 same as above
 
             if (af->auxaeroData->hasTef == AUX_LEFTEF_MANUAL)
             {
-                MoveDof(COMP_LT_TEF, flapleft, af->auxaeroData->tefRate, af->auxaeroData->sndFlapStart, af->auxaeroData->sndFlapLoop, af->auxaeroData->sndFlapEnd);
-                MoveDof(COMP_RT_TEF, flaprt, af->auxaeroData->tefRate, af->auxaeroData->sndFlapStart, af->auxaeroData->sndFlapLoop, af->auxaeroData->sndFlapEnd);
+                MoveDof(COMP_LT_TEF, flapleft, af->auxaeroData->tefRate,
+                        af->auxaeroData->sndFlapStart,
+                        af->auxaeroData->sndFlapLoop,
+                        af->auxaeroData->sndFlapEnd);
+                MoveDof(COMP_RT_TEF, flaprt, af->auxaeroData->tefRate,
+                        af->auxaeroData->sndFlapStart,
+                        af->auxaeroData->sndFlapLoop,
+                        af->auxaeroData->sndFlapEnd);
             }
             else
             {
@@ -634,123 +626,156 @@ void AircraftClass::MoveSurfaces(void)
             if (OnGround() and af->thrustReverse == 2)
             {
                 float thrpos = af->auxaeroData->animThrRevAngle * DTR;
-                MoveDof(COMP_REVERSE_THRUSTER, thrpos, af->auxaeroData->animThrRevRate);
+                MoveDof(COMP_REVERSE_THRUSTER, thrpos,
+                        af->auxaeroData->animThrRevRate);
             }
             else // Close it
-                MoveDof(COMP_REVERSE_THRUSTER, 0.0f, af->auxaeroData->animThrRevRate);
+                MoveDof(COMP_REVERSE_THRUSTER, 0.0f,
+                        af->auxaeroData->animThrRevRate);
         }
 
         // Cobra - FRB animated pilot's head
-        if ((g_bAnimPilotHead) and (( not IsPlayer()) or ((IsPlayer()) and ( not g_bEnableTrackIR))
-                                   or ((IsPlayer()) and (g_bEnableTrackIR)
-                                      and ((PlayerOptions.Get3dTrackIR() == false)
-                                           or (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit
-                                              and OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit)))))
+        if ((g_bAnimPilotHead) and
+            ((not IsPlayer()) or ((IsPlayer()) and (not g_bEnableTrackIR)) or
+             ((IsPlayer()) and (g_bEnableTrackIR) and
+              ((PlayerOptions.Get3dTrackIR() == false) or
+               (OTWDriver.GetOTWDisplayMode() not_eq
+                    OTWDriverClass::Mode2DCockpit and
+                OTWDriver.GetOTWDisplayMode() not_eq
+                    OTWDriverClass::Mode3DCockpit)))))
         {
-            long  nHoldSec = 3;
+            long nHoldSec = 3;
 
             // Pilot animation timer
             if (SimLibElapsedTime > static_cast<SIM_ULONG>(af->AnimPilotTime))
             {
-                if ( not af->IsSet(AirframeClass::InAir))
+                if (not af->IsSet(AirframeClass::InAir))
                 {
                     af->AnimPilotScenario = 1;
                 }
 
-                af->AnimPilotAct ++;
+                af->AnimPilotAct++;
 
                 if (af->AnimPilotAct > af->maxAnimPilotActs)
                 {
                     af->AnimPilotAct = af->PA_End;
                 }
 
-                af->AnimPilotTime = SimLibElapsedTime + (CampaignSeconds * nHoldSec);
+                af->AnimPilotTime =
+                    SimLibElapsedTime + (CampaignSeconds * nHoldSec);
             }
 
             // WSO/RIO/Copilot animation timer
             if (SimLibElapsedTime > static_cast<SIM_ULONG>(af->AnimWSOTime))
             {
-                if ( not af->IsSet(AirframeClass::InAir))
+                if (not af->IsSet(AirframeClass::InAir))
                 {
                     af->AnimWSOScenario = 1;
                 }
 
-                af->AnimWSOAct ++;
+                af->AnimWSOAct++;
 
                 if (af->AnimWSOAct > af->maxAnimPilotActs)
                 {
                     af->AnimWSOAct = af->PA_End;
                 }
 
-                af->AnimWSOTime = SimLibElapsedTime + (CampaignSeconds * nHoldSec * 2);
+                af->AnimWSOTime =
+                    SimLibElapsedTime + (CampaignSeconds * nHoldSec * 2);
             }
 
             if (af->AnimPilotAct)
             {
                 switch (af->TheRoutine[af->AnimPilotScenario][af->AnimPilotAct])
                 {
-                    case af->PA_None:
-                    case af->PA_End:
-                        MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        af->AnimPilotTime = static_cast<int>(SimLibElapsedTime + (g_fPilotActInterval * CampaignMinutes * PRANDFloatPos()));
-                        af->AnimPilotAct = 0;
-                        af->AnimPilotScenario = rand() % (af->maxAnimPilotScenarios - 1);
+                case af->PA_None:
+                case af->PA_End:
+                    MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    af->AnimPilotTime =
+                        static_cast<int>(SimLibElapsedTime +
+                                         (g_fPilotActInterval *
+                                          CampaignMinutes * PRANDFloatPos()));
+                    af->AnimPilotAct = 0;
+                    af->AnimPilotScenario =
+                        rand() % (af->maxAnimPilotScenarios - 1);
 
-                        if (af->AnimPilotScenario >= af->maxAnimPilotScenarios)
-                            af->AnimPilotScenario = 0;
+                    if (af->AnimPilotScenario >= af->maxAnimPilotScenarios)
+                        af->AnimPilotScenario = 0;
 
-                        break;
+                    break;
 
-                    case af->PA_Forward:
-                        MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_Forward:
+                    MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_ForwardUp:
-                        MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (-40.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_ForwardUp:
+                    MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (-40.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_ForwardDown:
-                        MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (20.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_ForwardDown:
+                    MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (20.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_Left:
-                        MoveDof(COMP_HEAD_LR, (40.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_Left:
+                    MoveDof(COMP_HEAD_LR, (40.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_Right:
-                        MoveDof(COMP_HEAD_LR, (-40.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_Right:
+                    MoveDof(COMP_HEAD_LR, (-40.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_LeftBack:
-                        MoveDof(COMP_HEAD_LR, (70.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_LeftBack:
+                    MoveDof(COMP_HEAD_LR, (70.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_RightBack:
-                        MoveDof(COMP_HEAD_LR, (-70.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_RightBack:
+                    MoveDof(COMP_HEAD_LR, (-70.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_LeftBackUp:
-                        MoveDof(COMP_HEAD_LR, (80.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (-90.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_LeftBackUp:
+                    MoveDof(COMP_HEAD_LR, (80.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (-90.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_RightBackUp:
-                        MoveDof(COMP_HEAD_LR, (-80.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (-90.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_RightBackUp:
+                    MoveDof(COMP_HEAD_LR, (-80.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (-90.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_BackUp:
-                        MoveDof(COMP_HEAD_LR, (-90.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD_UD, (-45.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_BackUp:
+                    MoveDof(COMP_HEAD_LR, (-90.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD_UD, (-45.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
                 }
             } // end Pilot animation
 
@@ -758,68 +783,94 @@ void AircraftClass::MoveSurfaces(void)
             {
                 switch (af->TheRoutine[af->AnimWSOScenario][af->AnimWSOAct])
                 {
-                    case af->PA_None:
-                    case af->PA_End:
-                        MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        af->AnimWSOTime = static_cast<int>(SimLibElapsedTime + (g_fPilotActInterval * CampaignMinutes * PRANDFloatPos()));
-                        af->AnimWSOAct = 0;
-                        af->AnimWSOScenario = rand() % (af->maxAnimPilotScenarios - 1);
+                case af->PA_None:
+                case af->PA_End:
+                    MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    af->AnimWSOTime =
+                        static_cast<int>(SimLibElapsedTime +
+                                         (g_fPilotActInterval *
+                                          CampaignMinutes * PRANDFloatPos()));
+                    af->AnimWSOAct = 0;
+                    af->AnimWSOScenario =
+                        rand() % (af->maxAnimPilotScenarios - 1);
 
-                        if (af->AnimWSOScenario >= af->maxAnimPilotScenarios)
-                            af->AnimWSOScenario = 0;
+                    if (af->AnimWSOScenario >= af->maxAnimPilotScenarios)
+                        af->AnimWSOScenario = 0;
 
-                        break;
+                    break;
 
-                    case af->PA_Forward:
-                        MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_Forward:
+                    MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_ForwardUp:
-                        MoveDof(COMP_HEAD2_LR, (20.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_ForwardUp:
+                    MoveDof(COMP_HEAD2_LR, (20.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_ForwardDown:
-                        MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (-10.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_ForwardDown:
+                    MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (-10.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_Left:
-                        MoveDof(COMP_HEAD2_LR, (-20.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_Left:
+                    MoveDof(COMP_HEAD2_LR, (-20.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_Right:
-                        MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (-30.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_Right:
+                    MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (-30.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_LeftBack:
-                        MoveDof(COMP_HEAD2_LR, (40.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_LeftBack:
+                    MoveDof(COMP_HEAD2_LR, (40.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_RightBack:
-                        MoveDof(COMP_HEAD2_LR, (-40.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (-30.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_RightBack:
+                    MoveDof(COMP_HEAD2_LR, (-40.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (-30.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_LeftBackUp:
-                        MoveDof(COMP_HEAD2_LR, (40.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (-20.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_LeftBackUp:
+                    MoveDof(COMP_HEAD2_LR, (40.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (-20.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_RightBackUp:
-                        MoveDof(COMP_HEAD2_LR, (-20.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (-40.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_RightBackUp:
+                    MoveDof(COMP_HEAD2_LR, (-20.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (-40.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
 
-                    case af->PA_BackUp:
-                        MoveDof(COMP_HEAD2_LR, (80.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        MoveDof(COMP_HEAD2_UD, (-20.0f * DTR), g_fPilotHeadMoveRate, -1);
-                        break;
+                case af->PA_BackUp:
+                    MoveDof(COMP_HEAD2_LR, (80.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (-20.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    break;
                 }
             } // end WSO animation
         }
@@ -828,28 +879,37 @@ void AircraftClass::MoveSurfaces(void)
         if (g_bAnimPilotHead and af->AnimPilotAct == 0)
         {
 
-            if (( not g_bEnableTrackIR) or ( not IsPlayer()) or ((g_bEnableTrackIR) and ( not PlayerOptions.Get3dTrackIR())))
+            if ((not g_bEnableTrackIR) or (not IsPlayer()) or
+                ((g_bEnableTrackIR) and (not PlayerOptions.Get3dTrackIR())))
             {
                 if ((af->rstick > -0.1f) and (af->rstick < 0.1f))
                 {
-                    MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                    MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
+                    MoveDof(COMP_HEAD_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_LR, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
                 }
                 else
                 {
-                    MoveDof(COMP_HEAD_LR, (-af->rstick * 120.0f * DTR), g_fPilotHeadMoveRate, -1);
-                    MoveDof(COMP_HEAD2_LR, (-af->rstick * 120.0f * DTR), g_fPilotHeadMoveRate, -1);
+                    MoveDof(COMP_HEAD_LR, (-af->rstick * 120.0f * DTR),
+                            g_fPilotHeadMoveRate, -1);
+                    MoveDof(COMP_HEAD2_LR, (-af->rstick * 120.0f * DTR),
+                            g_fPilotHeadMoveRate, -1);
                 }
 
                 if ((af->pstick > -0.1f) and (af->pstick < 0.1f))
                 {
-                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
-                    MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate, -1);
+                    MoveDof(COMP_HEAD_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
+                    MoveDof(COMP_HEAD2_UD, (0.0f * DTR), g_fPilotHeadMoveRate,
+                            -1);
                 }
                 else
                 {
-                    MoveDof(COMP_HEAD_UD, (-af->pstick * 100.0f * DTR), g_fPilotHeadMoveRate, -1);
-                    MoveDof(COMP_HEAD2_UD, (-af->pstick * 100.0f * DTR), g_fPilotHeadMoveRate, -1);
+                    MoveDof(COMP_HEAD_UD, (-af->pstick * 100.0f * DTR),
+                            g_fPilotHeadMoveRate, -1);
+                    MoveDof(COMP_HEAD2_UD, (-af->pstick * 100.0f * DTR),
+                            g_fPilotHeadMoveRate, -1);
                 }
             }
             else
@@ -859,11 +919,14 @@ void AircraftClass::MoveSurfaces(void)
                 //SetDOF( COMP_HEAD2_LR, -theTrackIRObject.getYaw());
                 //SetDOF( COMP_HEAD_UD, theTrackIRObject.getPitch());
                 //SetDOF( COMP_HEAD2_UD, theTrackIRObject.getPitch());
-                MoveDof(COMP_HEAD_LR, theTrackIRObject.getYaw(), g_fPilotHeadMoveRate, -1);
-                MoveDof(COMP_HEAD2_LR, theTrackIRObject.getYaw(), g_fPilotHeadMoveRate, -1);
-                MoveDof(COMP_HEAD_UD, theTrackIRObject.getPitch(), g_fPilotHeadMoveRate, -1);
-                MoveDof(COMP_HEAD2_UD, theTrackIRObject.getPitch(), g_fPilotHeadMoveRate, -1);
-
+                MoveDof(COMP_HEAD_LR, theTrackIRObject.getYaw(),
+                        g_fPilotHeadMoveRate, -1);
+                MoveDof(COMP_HEAD2_LR, theTrackIRObject.getYaw(),
+                        g_fPilotHeadMoveRate, -1);
+                MoveDof(COMP_HEAD_UD, theTrackIRObject.getPitch(),
+                        g_fPilotHeadMoveRate, -1);
+                MoveDof(COMP_HEAD2_UD, theTrackIRObject.getPitch(),
+                        g_fPilotHeadMoveRate, -1);
             }
         }
 
@@ -889,12 +952,17 @@ void AircraftClass::MoveSurfaces(void)
             // MLR - 2003-09-30 Spoiler code
             //TJL 01/04/04 adding wingSweep; //Cobra 10/30/04 TJL
             float spoiler1l, spoiler1r, spoiler2l, spoiler2r, sweep;
-            CalculateSweepAndSpoiler(sweep, spoiler1l, spoiler1r, spoiler2l, spoiler2r);
-            MoveDof(COMP_LT_SPOILER1, spoiler1l, af->auxaeroData->animSpoiler1Rate);
-            MoveDof(COMP_RT_SPOILER1, spoiler1r, af->auxaeroData->animSpoiler1Rate);
-            MoveDof(COMP_LT_SPOILER2, spoiler2l, af->auxaeroData->animSpoiler2Rate);
-            MoveDof(COMP_RT_SPOILER2, spoiler2r, af->auxaeroData->animSpoiler2Rate);
-            MoveDof(COMP_SWING_WING,  sweep,     af->auxaeroData->animSwingWingRate);
+            CalculateSweepAndSpoiler(sweep, spoiler1l, spoiler1r, spoiler2l,
+                                     spoiler2r);
+            MoveDof(COMP_LT_SPOILER1, spoiler1l,
+                    af->auxaeroData->animSpoiler1Rate);
+            MoveDof(COMP_RT_SPOILER1, spoiler1r,
+                    af->auxaeroData->animSpoiler1Rate);
+            MoveDof(COMP_LT_SPOILER2, spoiler2l,
+                    af->auxaeroData->animSpoiler2Rate);
+            MoveDof(COMP_RT_SPOILER2, spoiler2r,
+                    af->auxaeroData->animSpoiler2Rate);
+            MoveDof(COMP_SWING_WING, sweep, af->auxaeroData->animSwingWingRate);
             wingSweep = sweep;
         }
         //Cobra 10/30/04 TJL
@@ -904,17 +972,22 @@ void AircraftClass::MoveSurfaces(void)
 
             for (l = 0; l < 3; l++)
             {
-                MoveDof(COMP_INTAKE_1_RAMP_1 + l, af->auxaeroData->animIntakeRamp[0].table.Lookup(af->alpha, af->mach), af->auxaeroData->animIntakeRamp[0].Rate * DTR);
+                MoveDof(COMP_INTAKE_1_RAMP_1 + l,
+                        af->auxaeroData->animIntakeRamp[0].table.Lookup(
+                            af->alpha, af->mach),
+                        af->auxaeroData->animIntakeRamp[0].Rate * DTR);
             }
 
             if (af->auxaeroData->nEngines == 2)
             {
                 for (l = 0; l < 3; l++)
                 {
-                    MoveDof(COMP_INTAKE_2_RAMP_1 + l, af->auxaeroData->animIntakeRamp[0].table.Lookup(af->alpha, af->mach), af->auxaeroData->animIntakeRamp[0].Rate * DTR);
+                    MoveDof(COMP_INTAKE_2_RAMP_1 + l,
+                            af->auxaeroData->animIntakeRamp[0].table.Lookup(
+                                af->alpha, af->mach),
+                            af->auxaeroData->animIntakeRamp[0].Rate * DTR);
                 }
             }
-
         }
 
 
@@ -951,8 +1024,10 @@ void AircraftClass::MoveSurfaces(void)
                     nozpos = 0;
 
                 // noz is 0 - 1.0
-                diff = af->auxaeroData->animExhNozMil - af->auxaeroData->animExhNozIdle;
-                nozpos = (af->auxaeroData->animExhNozIdle + diff * nozpos) * DTR;
+                diff = af->auxaeroData->animExhNozMil -
+                       af->auxaeroData->animExhNozIdle;
+                nozpos =
+                    (af->auxaeroData->animExhNozIdle + diff * nozpos) * DTR;
             }
             else
             {
@@ -963,7 +1038,8 @@ void AircraftClass::MoveSurfaces(void)
                     nozpos = 1.0;
 
                 // noz is 0 - 1.0
-                diff = af->auxaeroData->animExhNozAB - af->auxaeroData->animExhNozMil;
+                diff = af->auxaeroData->animExhNozAB -
+                       af->auxaeroData->animExhNozMil;
                 nozpos = (af->auxaeroData->animExhNozMil + diff * nozpos) * DTR;
             }
 
@@ -984,8 +1060,6 @@ void AircraftClass::MoveSurfaces(void)
 
             SetDOF(COMP_ABDOF, abscale); // only goes from 0 - 1.0
         }
-
-
 
 
         //need to reimplement using the GetAfterburnerStage()
@@ -1043,8 +1117,10 @@ void AircraftClass::MoveSurfaces(void)
                         nozpos = 0;
 
                     // noz is 0 - 1.0
-                    diff = af->auxaeroData->animExhNozMil - af->auxaeroData->animExhNozIdle;
-                    nozpos = (af->auxaeroData->animExhNozIdle + diff * nozpos) * DTR;
+                    diff = af->auxaeroData->animExhNozMil -
+                           af->auxaeroData->animExhNozIdle;
+                    nozpos =
+                        (af->auxaeroData->animExhNozIdle + diff * nozpos) * DTR;
                 }
                 else
                 {
@@ -1055,8 +1131,10 @@ void AircraftClass::MoveSurfaces(void)
                         nozpos = 1.0f;
 
                     // noz is 0 - 1.0
-                    diff = af->auxaeroData->animExhNozAB - af->auxaeroData->animExhNozMil;
-                    nozpos = (af->auxaeroData->animExhNozMil + diff * nozpos) * DTR;
+                    diff = af->auxaeroData->animExhNozAB -
+                           af->auxaeroData->animExhNozMil;
+                    nozpos =
+                        (af->auxaeroData->animExhNozMil + diff * nozpos) * DTR;
                 }
 
                 MoveDof(COMP_EXH_NOZ2, nozpos, af->auxaeroData->animExhNozRate);
@@ -1149,16 +1227,18 @@ void AircraftClass::MoveSurfaces(void)
 
             float vortexTrailsUsed = af->auxaeroData->vortex1Location.y;
 
-            if (( not vortexTrailsCondition) or ( not vortexTrailsUsed))
+            if ((not vortexTrailsCondition) or (not vortexTrailsUsed))
             {
                 SetSwitch(COMP_WING_VAPOR, gFact);
             }
         }
 
-        if (af->IsEngineFlag(AirframeClass::FuelDoorOpen) not_eq GetSwitch(COMP_REFUEL_DR))
+        if (af->IsEngineFlag(AirframeClass::FuelDoorOpen) not_eq
+            GetSwitch(COMP_REFUEL_DR))
         {
 
-            SetSwitch(COMP_REFUEL_DR, af->IsEngineFlag(AirframeClass::FuelDoorOpen));
+            SetSwitch(COMP_REFUEL_DR,
+                      af->IsEngineFlag(AirframeClass::FuelDoorOpen));
         }
 
         if (af->auxaeroData->dragChuteCd > 0)
@@ -1169,36 +1249,36 @@ void AircraftClass::MoveSurfaces(void)
             if (af->canopyState)
             {
                 // canopy open
-                MoveDof(COMP_CANOPY_DOF, af->auxaeroData->canopyMaxAngle * DTR, af->auxaeroData->canopyRate,
+                MoveDof(COMP_CANOPY_DOF, af->auxaeroData->canopyMaxAngle * DTR,
+                        af->auxaeroData->canopyRate,
                         af->auxaeroData->sndCanopyOpenStart,
-                        af->auxaeroData->sndCanopyLoop, af->auxaeroData->sndCanopyOpenEnd
-                       );
+                        af->auxaeroData->sndCanopyLoop,
+                        af->auxaeroData->sndCanopyOpenEnd);
                 SetAcStatusBits(ACSTATUS_CANOPY); //2004-03-23 Booster
             }
             else
             {
                 // canopy shut
-                MoveDof(
-                    COMP_CANOPY_DOF, 0, af->auxaeroData->canopyRate,
-                    af->auxaeroData->sndCanopyCloseStart,
-                    af->auxaeroData->sndCanopyLoop, af->auxaeroData->sndCanopyCloseEnd
-                );
-                ClearAcStatusBits(ACSTATUS_CANOPY);  //2004-03-23 Booster
+                MoveDof(COMP_CANOPY_DOF, 0, af->auxaeroData->canopyRate,
+                        af->auxaeroData->sndCanopyCloseStart,
+                        af->auxaeroData->sndCanopyLoop,
+                        af->auxaeroData->sndCanopyCloseEnd);
+                ClearAcStatusBits(ACSTATUS_CANOPY); //2004-03-23 Booster
             }
         }
         else
         {
-            if (IsAcStatusBitsSet(ACSTATUS_CANOPY))  // 2004-03-23 Booster - Canopy open/close
+            if (IsAcStatusBitsSet(
+                    ACSTATUS_CANOPY)) // 2004-03-23 Booster - Canopy open/close
             {
-                MoveDof(COMP_CANOPY_DOF, af->auxaeroData->canopyMaxAngle * DTR, af->auxaeroData->canopyRate);
+                MoveDof(COMP_CANOPY_DOF, af->auxaeroData->canopyMaxAngle * DTR,
+                        af->auxaeroData->canopyRate);
             }
             else
             {
                 MoveDof(COMP_CANOPY_DOF, 0, af->auxaeroData->canopyRate);
             }
         }
-
-
     }
     else // Simple Model
     {
@@ -1209,7 +1289,8 @@ void AircraftClass::MoveSurfaces(void)
 
         float aileronleft, aileronrt;
         float flapleft, flaprt;
-        CalculateAileronAndFlap(qFactor, &aileronleft, &aileronrt, &flapleft, &flaprt);
+        CalculateAileronAndFlap(qFactor, &aileronleft, &aileronrt, &flapleft,
+                                &flaprt);
 
         //      stabAngle = af->rstick * qFactor * af->auxaeroData->aileronMaxAngle * DTR;
         if (af->auxaeroData->hasFlapperons)
@@ -1224,8 +1305,14 @@ void AircraftClass::MoveSurfaces(void)
 
             if (af->auxaeroData->hasTef == AUX_LEFTEF_MANUAL)
             {
-                MoveDof(SIMP_LT_TEF, flapleft, af->auxaeroData->tefRate, af->auxaeroData->sndFlapStart, af->auxaeroData->sndFlapLoop, af->auxaeroData->sndFlapEnd);
-                MoveDof(SIMP_RT_TEF, flaprt, af->auxaeroData->tefRate, af->auxaeroData->sndFlapStart, af->auxaeroData->sndFlapLoop, af->auxaeroData->sndFlapEnd);
+                MoveDof(SIMP_LT_TEF, flapleft, af->auxaeroData->tefRate,
+                        af->auxaeroData->sndFlapStart,
+                        af->auxaeroData->sndFlapLoop,
+                        af->auxaeroData->sndFlapEnd);
+                MoveDof(SIMP_RT_TEF, flaprt, af->auxaeroData->tefRate,
+                        af->auxaeroData->sndFlapStart,
+                        af->auxaeroData->sndFlapLoop,
+                        af->auxaeroData->sndFlapEnd);
             }
             else
             {
@@ -1269,28 +1356,28 @@ void AircraftClass::MoveSurfaces(void)
         }
 
 
-
-
-
         {
             // MLR - 2003-09-30 Spoiler bitand Wing Sweep code
             //TJL 01/04/04 adding wingSweep;
             float spoiler1l, spoiler1r, spoiler2l, spoiler2r, sweep;
-            CalculateSweepAndSpoiler(sweep, spoiler1l, spoiler1r, spoiler2l, spoiler2r);
-            MoveDof(SIMP_LT_SPOILER1, spoiler1l, af->auxaeroData->animSpoiler1Rate);
-            MoveDof(SIMP_RT_SPOILER1, spoiler1r, af->auxaeroData->animSpoiler1Rate);
-            MoveDof(SIMP_LT_SPOILER2, spoiler2l, af->auxaeroData->animSpoiler2Rate);
-            MoveDof(SIMP_RT_SPOILER2, spoiler2r, af->auxaeroData->animSpoiler2Rate);
+            CalculateSweepAndSpoiler(sweep, spoiler1l, spoiler1r, spoiler2l,
+                                     spoiler2r);
+            MoveDof(SIMP_LT_SPOILER1, spoiler1l,
+                    af->auxaeroData->animSpoiler1Rate);
+            MoveDof(SIMP_RT_SPOILER1, spoiler1r,
+                    af->auxaeroData->animSpoiler1Rate);
+            MoveDof(SIMP_LT_SPOILER2, spoiler2l,
+                    af->auxaeroData->animSpoiler2Rate);
+            MoveDof(SIMP_RT_SPOILER2, spoiler2r,
+                    af->auxaeroData->animSpoiler2Rate);
             wingSweep = sweep;
 
             if (acFlags bitand hasSwing)
             {
-                static const int swdofs[] =
-                {
+                static const int swdofs[] = {
                     SIMP_SWING_WING_1, SIMP_SWING_WING_2, SIMP_SWING_WING_3,
                     SIMP_SWING_WING_4, SIMP_SWING_WING_5, SIMP_SWING_WING_6,
-                    SIMP_SWING_WING_7, SIMP_SWING_WING_8
-                };
+                    SIMP_SWING_WING_7, SIMP_SWING_WING_8};
 
                 MoveDof(SIMP_SWING_WING_1, sweep, 5.0f);
 
@@ -1300,11 +1387,8 @@ void AircraftClass::MoveSurfaces(void)
         }
 
 
-
-
         if (af->auxaeroData->dragChuteCd > 0)
             DeployDragChute(SIMP_DRAGCHUTE);
-
     }
 
     // Check for stick shake
@@ -1312,9 +1396,11 @@ void AircraftClass::MoveSurfaces(void)
     {
         if (GetAlpha() > 15.0F and GetAlpha() < 20.0F)
         {
-            if ( not stallShake)
+            if (not stallShake)
             {
-                if (this->AutopilotType() not_eq AircraftClass::CombatAP) // Retro 20Feb2004.. it can STOP regardless of AP status however..
+                if (this->AutopilotType() not_eq
+                    AircraftClass::
+                        CombatAP) // Retro 20Feb2004.. it can STOP regardless of AP status however..
                 {
                     stallShake = TRUE;
                     JoystickPlayEffect(JoyStall1, 0);
@@ -1350,11 +1436,13 @@ void AircraftClass::MoveSurfaces(void)
             if (switches >= COMP_MAX_SWITCH)
                 switches = COMP_MAX_SWITCH - 1;
 
-            acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            acmiSwitch.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             acmiSwitch.data.type = Type();
             acmiSwitch.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
 
-            DOFRec.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            DOFRec.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             DOFRec.data.type = Type();
             DOFRec.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
 
@@ -1382,8 +1470,8 @@ void AircraftClass::MoveSurfaces(void)
 
                 if (acmiSwitchValue[l] not_eq s)
                 {
-                    acmiSwitch.data.switchNum   = l;
-                    acmiSwitch.data.switchVal   = s;
+                    acmiSwitch.data.switchNum = l;
+                    acmiSwitch.data.switchVal = s;
                     acmiSwitch.data.prevSwitchVal = acmiSwitchValue[l];
                     acmiSwitchValue[l] = s;
                     gACMIRec.SwitchRecord(&acmiSwitch);
@@ -1391,8 +1479,6 @@ void AircraftClass::MoveSurfaces(void)
             }
         }
     }
-
-
 }
 
 void AircraftClass::RunLightSurfaces(void)
@@ -1402,7 +1488,7 @@ void AircraftClass::RunLightSurfaces(void)
     //SetSwitch(COMP_TAIL_STROBE, light == 3);
     //SetSwitch(COMP_LAND_LIGHTS, light == 4);
 
-    if ( not ExtlState(Extl_Main_Power))
+    if (not ExtlState(Extl_Main_Power))
     {
         // lights off
         SetSwitch(COMP_NAV_LIGHTS, FALSE);
@@ -1415,7 +1501,9 @@ void AircraftClass::RunLightSurfaces(void)
     {
         // check flags
         // gear: landing lights on and gear down
-        SetSwitch(COMP_LAND_LIGHTS, IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and (af->gearPos == 1.0F));
+        SetSwitch(COMP_LAND_LIGHTS,
+                  IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and
+                      (af->gearPos == 1.0F));
 
         //----------------------------
         // animWingFlashOnTime  0.4 * 1000.0f = 400
@@ -1432,7 +1520,8 @@ void AircraftClass::RunLightSurfaces(void)
 
         if (ExtlState(Extl_Wing_Tail))
         {
-            VU_TIME FlashOff = (VU_TIME)(af->auxaeroData->animWingFlashOffTime * 1000.0f);
+            VU_TIME FlashOff =
+                (VU_TIME)(af->auxaeroData->animWingFlashOffTime * 1000.0f);
 
             navState = TRUE;
 
@@ -1445,13 +1534,15 @@ void AircraftClass::RunLightSurfaces(void)
                 {
                     //if(SimLibElapsedTime - animWingFlashTimer > 3000) animWingFlashTimer = SimLibElapsedTime + (rand() % 3000);
                     if ((SimLibElapsedTime - animWingFlashTimer) > FlashOff)
-                        animWingFlashTimer = SimLibElapsedTime + (rand() % FlashOff);
+                        animWingFlashTimer =
+                            SimLibElapsedTime + (rand() % FlashOff);
                 }
                 else
                 {
                     //if(animWingFlashTimer - SimLibElapsedTime > 3000) animWingFlashTimer = SimLibElapsedTime + (rand() % 3000);
                     if ((animWingFlashTimer - SimLibElapsedTime) > FlashOff)
-                        animWingFlashTimer = SimLibElapsedTime + (rand() % FlashOff);
+                        animWingFlashTimer =
+                            SimLibElapsedTime + (rand() % FlashOff);
                 }
 
                 // make it blink
@@ -1463,7 +1554,9 @@ void AircraftClass::RunLightSurfaces(void)
                     if (navState)
                     {
                         //animWingFlashTimer += 75;
-                        animWingFlashTimer += (VU_TIME)(af->auxaeroData->animWingFlashOnTime * 1000.0f);
+                        animWingFlashTimer +=
+                            (VU_TIME)(af->auxaeroData->animWingFlashOnTime *
+                                      1000.0f);
                     }
                     else
                     {
@@ -1496,7 +1589,8 @@ void AircraftClass::RunLightSurfaces(void)
             if (af->auxaeroData->animStrobeOffTime == 0.0f)
                 af->auxaeroData->animStrobeOffTime = 2.0f;
 
-            VU_TIME FlashOff = (VU_TIME)(af->auxaeroData->animStrobeOffTime * 1000.0f);
+            VU_TIME FlashOff =
+                (VU_TIME)(af->auxaeroData->animStrobeOffTime * 1000.0f);
             int strobeState = FALSE;
             strobeState = GetSwitch(COMP_TAIL_STROBE);
 
@@ -1521,7 +1615,8 @@ void AircraftClass::RunLightSurfaces(void)
 
                 if (strobeState)
                 {
-                    animStrobeTimer += (VU_TIME)(af->auxaeroData->animStrobeOnTime * 1000.0f);
+                    animStrobeTimer +=
+                        (VU_TIME)(af->auxaeroData->animStrobeOnTime * 1000.0f);
                 }
                 else
                 {
@@ -1549,11 +1644,13 @@ void AircraftClass::RunGearSurfaces(void)
     // there are no DOFs for the rest
     numgear = af->NumGear();
 
-    if (numgear > 8) numgear = 8; // MLR 2/22/2004 - the limit is now 8
+    if (numgear > 8)
+        numgear = 8; // MLR 2/22/2004 - the limit is now 8
 
     if (IsLocal())
     {
-        if ((af->gearHandle > 0.0F or OnGround()) and not af->IsSet(AirframeClass::GearBroken))
+        if ((af->gearHandle > 0.0F or OnGround()) and
+            not af->IsSet(AirframeClass::GearBroken))
         {
             SetAcStatusBits(ACSTATUS_GEAR_DOWN);
         }
@@ -1569,7 +1666,8 @@ void AircraftClass::RunGearSurfaces(void)
         // FF only supports 3 gears currently (2003-10-04)
         int ng = af->NumGear();
 
-        if (ng > 8) ng = 8;
+        if (ng > 8)
+            ng = 8;
 
         for (i = 0; i < ng; i++)
         {
@@ -1585,7 +1683,8 @@ void AircraftClass::RunGearSurfaces(void)
     for (i = 0; i < numgear; i++)
     {
         //move the door
-        if ( not (af->gear[i].flags bitand GearData::DoorStuck) and not (af->gear[i].flags bitand GearData::DoorBroken))
+        if (not(af->gear[i].flags bitand GearData::DoorStuck) and
+            not(af->gear[i].flags bitand GearData::DoorBroken))
         {
             float pos = af->gearPos * 2;
 
@@ -1593,13 +1692,17 @@ void AircraftClass::RunGearSurfaces(void)
                 pos = 1.0;
 
             // MLR 2/22/2004 -
-            SetDOF(ComplexGearDoorDOF[i], pos * af->GetAeroData(AeroDataSet::NosGearRng + i * 4) * DTR);
+            SetDOF(ComplexGearDoorDOF[i],
+                   pos * af->GetAeroData(AeroDataSet::NosGearRng + i * 4) *
+                       DTR);
         }
         else
-            SetDOF(ComplexGearDoorDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * DTR);
+            SetDOF(ComplexGearDoorDOF[i],
+                   af->GetAeroData(AeroDataSet::NosGearRng) * DTR);
 
         //move the gear
-        if ( not (af->gear[i].flags bitand GearData::GearStuck) and not (af->gear[i].flags bitand GearData::GearBroken))
+        if (not(af->gear[i].flags bitand GearData::GearStuck) and
+            not(af->gear[i].flags bitand GearData::GearBroken))
         {
             float pos = (af->gearPos - .5f) * 2;
 
@@ -1607,23 +1710,30 @@ void AircraftClass::RunGearSurfaces(void)
                 pos = 0.0;
 
             // MLR 2/22/2004 -
-            SetDOF(ComplexGearDOF[i], pos * af->GetAeroData(AeroDataSet::NosGearRng + i * 4) * DTR);
+            SetDOF(ComplexGearDOF[i],
+                   pos * af->GetAeroData(AeroDataSet::NosGearRng + i * 4) *
+                       DTR);
         }
         else
-            SetDOF(ComplexGearDOF[i], af->GetAeroData(AeroDataSet::NosGearRng) * 0.6f * DTR);
+            SetDOF(ComplexGearDOF[i],
+                   af->GetAeroData(AeroDataSet::NosGearRng) * 0.6f * DTR);
 
-        if (af->gearPos >= 0.9F and ((af->gear[i].flags bitand GearData::DoorBroken)
-                                    or (af->gear[i].flags bitand GearData::DoorStuck)
-                                    or (af->gear[i].flags bitand GearData::GearStuck)
-                                    or (af->gear[i].flags bitand GearData::GearBroken)))
+        if (af->gearPos >= 0.9F and
+            ((af->gear[i].flags bitand GearData::DoorBroken) or
+             (af->gear[i].flags bitand GearData::DoorStuck) or
+             (af->gear[i].flags bitand GearData::GearStuck) or
+             (af->gear[i].flags bitand GearData::GearBroken)))
         {
-            if ((af->gear[i].flags bitand GearData::DoorBroken) or (af->gear[i].flags bitand GearData::DoorStuck))
+            if ((af->gear[i].flags bitand GearData::DoorBroken) or
+                (af->gear[i].flags bitand GearData::DoorStuck))
                 SetSwitch(ComplexGearDoorSwitch[i], TRUE);
 
-            if ((af->gear[i].flags bitand GearData::DoorBroken) or (af->gear[i].flags bitand GearData::DoorStuck))
+            if ((af->gear[i].flags bitand GearData::DoorBroken) or
+                (af->gear[i].flags bitand GearData::DoorStuck))
                 SetSwitch(ComplexGearHoleSwitch[i], TRUE);
 
-            if ((af->gear[i].flags bitand GearData::GearBroken) or (af->gear[i].flags bitand GearData::GearStuck))
+            if ((af->gear[i].flags bitand GearData::GearBroken) or
+                (af->gear[i].flags bitand GearData::GearStuck))
                 SetSwitch(ComplexGearSwitch[i], TRUE);
         }
         else
@@ -1647,26 +1757,39 @@ void AircraftClass::RunGearSurfaces(void)
 
     if (af->IsSet(AirframeClass::NoseSteerOn))
     {
-        if ( not (af->gear[0].flags bitand GearData::GearStuck))
+        if (not(af->gear[0].flags bitand GearData::GearStuck))
         {
             // ASSOCIATOR 30/11/03 Added g_bRollLinkedNWSRudder for roll unlinked rudder on the ground
             // RAS 05Apr04 chanded ypedal to lastYPedal and rstick to lastRStick so that nosewheel will track movement of plane
             // lastRStick and lastYPedal defined in EOM.cpp
             // RAS 06Apr04 changed 30.0F to 50.0F to make graphical nose wheel match rate of turn.  Acutal turn radius needs to be
             // looked at.  Real F-16 nose wheel turns 32.0 degrees
-            if (IO.AnalogIsUsed(AXIS_YAW) and not af->IsSet(AirframeClass::IsDigital) or not g_bRollLinkedNWSRudder)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_YAW) and
+                    not af->IsSet(AirframeClass::IsDigital) or
+                not g_bRollLinkedNWSRudder) // Retro 31Dec2003
             {
-                SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
+                SetDOF(COMP_NOS_GEAR_ROT,
+                       -af->lastYPedal * 50.0F * DTR *
+                           (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) /
+                                       (160.0F * KNOTS_TO_FTPSEC)));
             }
             else
             {
-                if (fabs(af->lastRStick) > fabs(af->lastYPedal))   // ASSOCIATOR: Added check so that we can use rudder keys and stick
+                if (fabs(af->lastRStick) >
+                    fabs(
+                        af->lastYPedal)) // ASSOCIATOR: Added check so that we can use rudder keys and stick
                 {
-                    SetDOF(COMP_NOS_GEAR_ROT, af->lastRStick * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
+                    SetDOF(COMP_NOS_GEAR_ROT,
+                           af->lastRStick * 50.0F * DTR *
+                               (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) /
+                                           (160.0F * KNOTS_TO_FTPSEC)));
                 }
                 else
                 {
-                    SetDOF(COMP_NOS_GEAR_ROT, -af->lastYPedal * 50.0F * DTR * (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) / (160.0F * KNOTS_TO_FTPSEC)));
+                    SetDOF(COMP_NOS_GEAR_ROT,
+                           -af->lastYPedal * 50.0F * DTR *
+                               (0.5F + (80.0F * KNOTS_TO_FTPSEC - af->vt) /
+                                           (160.0F * KNOTS_TO_FTPSEC)));
                 }
             }
         }
@@ -1674,7 +1797,9 @@ void AircraftClass::RunGearSurfaces(void)
     else
         SetDOF(COMP_NOS_GEAR_ROT, GetDOFValue(COMP_NOS_GEAR_ROT) * 0.9F);
 
-    if (GetDOFValue(ComplexGearDOF[0]) == af->GetAeroData(AeroDataSet::NosGearRng)*DTR and not (af->gear[0].flags bitand GearData::DoorBroken))
+    if (GetDOFValue(ComplexGearDOF[0]) ==
+            af->GetAeroData(AeroDataSet::NosGearRng) * DTR and
+        not(af->gear[0].flags bitand GearData::DoorBroken))
         SetSwitch(COMP_NOS_GEAR_ROD, TRUE);
     else
         SetSwitch(COMP_NOS_GEAR_ROD, FALSE);
@@ -1888,37 +2013,37 @@ float AircraftClass::CheckLEF(int side)
     //side 0 = left
     switch (side)
     {
-        case 0:
+    case 0:
 
-            //Left LEF
-            if (LEFState(LT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
-                leftLEFAngle = LTLEFAOA;
-            else //normal operation
-            {
-                if (LEFLocked)
-                    leftLEFAngle = lLEF;
-            }
+        //Left LEF
+        if (LEFState(LT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
+            leftLEFAngle = LTLEFAOA;
+        else //normal operation
+        {
+            if (LEFLocked)
+                leftLEFAngle = lLEF;
+        }
 
-            return leftLEFAngle;
-            break;
+        return leftLEFAngle;
+        break;
 
-        case 1:
+    case 1:
 
-            //Right LEF
-            if (LEFState(RT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
-                rightLEFAngle = RTLEFAOA; //got set when we took hit
-            else //normal operation
-            {
-                if (LEFLocked)
-                    rightLEFAngle = rLEF;
-            }
+        //Right LEF
+        if (LEFState(RT_LEF_OUT) or LEFState(LEFSASYNCH)) //can't work anymore
+            rightLEFAngle = RTLEFAOA; //got set when we took hit
+        else //normal operation
+        {
+            if (LEFLocked)
+                rightLEFAngle = rLEF;
+        }
 
-            return rightLEFAngle;
-            break;
+        return rightLEFAngle;
+        break;
 
-        default:
-            return 0.0F;
-            break;
+    default:
+        return 0.0F;
+        break;
     }
 
     return 0.0F;
@@ -1941,7 +2066,7 @@ void AircraftClass::CopyAnimationsToPit(DrawableBSP *PitBSP)
 
         // some of the switches had to be reordered because the pits have conflicting switches
         // copy 0 - 3
-        for (i =  0; i < 4; i++)
+        for (i = 0; i < 4; i++)
             PitBSP->SetSwitchMask(i + COMP_PIT_AB, GetSwitch(i));
 
         // copy 4 - 6
@@ -1949,7 +2074,8 @@ void AircraftClass::CopyAnimationsToPit(DrawableBSP *PitBSP)
             PitBSP->SetSwitchMask(i, GetSwitch(i));
 
         // copy 7
-        PitBSP->SetSwitchMask(COMP_PIT_TAIL_STROBE, GetSwitch(COMP_TAIL_STROBE));
+        PitBSP->SetSwitchMask(COMP_PIT_TAIL_STROBE,
+                              GetSwitch(COMP_TAIL_STROBE));
 
         // copy 8-24
         for (i = 8; i < COMP_PIT_AB; i++)
@@ -1965,36 +2091,26 @@ void AircraftClass::CopyAnimationsToPit(DrawableBSP *PitBSP)
         }
 
 #endif
-
-
     }
     else
     {
         // map Simple model DOFs to complex model DOFs;
-        static const int dmap[] =
-        {
+        static const int dmap[] = {
             // PIT DOF             SIMPLE
-            COMP_LT_STAB, SIMP_LT_STAB,
-            COMP_RT_STAB, SIMP_RT_STAB,
-            COMP_LT_FLAP, SIMP_LT_AILERON,
-            COMP_RT_FLAP, SIMP_RT_AILERON,
-            COMP_RUDDER, SIMP_RUDDER_1,
-            COMP_LT_AIR_BRAKE_TOP, SIMP_AIR_BRAKE,
-            COMP_LT_AIR_BRAKE_BOT, SIMP_AIR_BRAKE,
-            COMP_RT_AIR_BRAKE_TOP, SIMP_AIR_BRAKE,
-            COMP_RT_AIR_BRAKE_BOT, SIMP_AIR_BRAKE,
-            COMP_SWING_WING, SIMP_SWING_WING_1,
-            COMP_RT_TEF, SIMP_RT_TEF,
-            COMP_LT_TEF, SIMP_LT_TEF,
-            COMP_RT_LEF, SIMP_RT_LEF,
-            COMP_LT_LEF, SIMP_LT_LEF,
-            COMP_CANOPY_DOF, SIMP_CANOPY_DOF,
-            COMP_PROPELLOR, SIMP_PROPELLOR,
-            COMP_LT_SPOILER1, SIMP_LT_SPOILER1,
-            COMP_RT_SPOILER1, SIMP_RT_SPOILER1,
-            COMP_LT_SPOILER2, SIMP_LT_SPOILER2,
-            COMP_RT_SPOILER2, SIMP_RT_SPOILER2,
-            COMP_THROTTLE, SIMP_THROTTLE,
+            COMP_LT_STAB,          SIMP_LT_STAB,          COMP_RT_STAB,
+            SIMP_RT_STAB,          COMP_LT_FLAP,          SIMP_LT_AILERON,
+            COMP_RT_FLAP,          SIMP_RT_AILERON,       COMP_RUDDER,
+            SIMP_RUDDER_1,         COMP_LT_AIR_BRAKE_TOP, SIMP_AIR_BRAKE,
+            COMP_LT_AIR_BRAKE_BOT, SIMP_AIR_BRAKE,        COMP_RT_AIR_BRAKE_TOP,
+            SIMP_AIR_BRAKE,        COMP_RT_AIR_BRAKE_BOT, SIMP_AIR_BRAKE,
+            COMP_SWING_WING,       SIMP_SWING_WING_1,     COMP_RT_TEF,
+            SIMP_RT_TEF,           COMP_LT_TEF,           SIMP_LT_TEF,
+            COMP_RT_LEF,           SIMP_RT_LEF,           COMP_LT_LEF,
+            SIMP_LT_LEF,           COMP_CANOPY_DOF,       SIMP_CANOPY_DOF,
+            COMP_PROPELLOR,        SIMP_PROPELLOR,        COMP_LT_SPOILER1,
+            SIMP_LT_SPOILER1,      COMP_RT_SPOILER1,      SIMP_RT_SPOILER1,
+            COMP_LT_SPOILER2,      SIMP_LT_SPOILER2,      COMP_RT_SPOILER2,
+            SIMP_RT_SPOILER2,      COMP_THROTTLE,         SIMP_THROTTLE,
         };
 
         static const int dmap_size = sizeof(dmap) / sizeof(dmap[0]) / 2;
@@ -2006,18 +2122,23 @@ void AircraftClass::CopyAnimationsToPit(DrawableBSP *PitBSP)
 
 
         // map Simple model Switches to complex model Switches;
-        static const int smap[] =
-        {
-            // PIT SWITCH          SIMPLE
-            COMP_PIT_AB, SIMP_AB,
-            COMP_PIT_NOS_GEAR_SW, SIMP_GEAR,
-            COMP_PIT_LT_GEAR_SW, SIMP_GEAR,
-            COMP_PIT_RT_GEAR_SW, SIMP_GEAR,
-            COMP_WING_VAPOR, SIMP_WING_VAPOR,
-            COMP_CANOPY, SIMP_CANOPY,
-            COMP_DRAGCHUTE, SIMP_DRAGCHUTE,
-            COMP_HOOK, SIMP_HOOK
-        };
+        static const int smap[] = {// PIT SWITCH          SIMPLE
+                                   COMP_PIT_AB,
+                                   SIMP_AB,
+                                   COMP_PIT_NOS_GEAR_SW,
+                                   SIMP_GEAR,
+                                   COMP_PIT_LT_GEAR_SW,
+                                   SIMP_GEAR,
+                                   COMP_PIT_RT_GEAR_SW,
+                                   SIMP_GEAR,
+                                   COMP_WING_VAPOR,
+                                   SIMP_WING_VAPOR,
+                                   COMP_CANOPY,
+                                   SIMP_CANOPY,
+                                   COMP_DRAGCHUTE,
+                                   SIMP_DRAGCHUTE,
+                                   COMP_HOOK,
+                                   SIMP_HOOK};
         static const int smap_size = sizeof(smap) / sizeof(smap[0]) / 2;
 
         for (int i = 0; i < smap_size; i++)

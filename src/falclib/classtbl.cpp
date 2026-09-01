@@ -8,9 +8,9 @@
 
 #include <windows.h>
 #include <stdio.h>
-#include "F4vu.h"
-#include "ClassTbl.h"
-#include "F4Find.h"
+#include "f4vu.h"
+#include "classtbl.h"
+#include "f4find.h"
 #include "entity.h"
 
 extern bool g_bFFDBC;
@@ -24,8 +24,8 @@ int gLangIDNum = 1;
 
 void InitClassTableAndData(char *name, char *objset)
 {
-    FILE* filePtr;
-    char  fileName[MAX_PATH];
+    FILE *filePtr;
+    char fileName[MAX_PATH];
 
     if (stricmp(objset, "objects") not_eq 0)
     {
@@ -33,7 +33,7 @@ void InitClassTableAndData(char *name, char *objset)
         ShiAssert(stricmp("ObjectSet0708", objset) == 0);
     }
 
-    sprintf(fileName, "%s\\%s.ini", FalconObjectDataDir, name);
+    sprintf(fileName, "%s/%s.ini", FalconObjectDataDir, name);
 
     gLangIDNum = GetPrivateProfileInt("Lang", "Id", 0, fileName);
 
@@ -73,7 +73,8 @@ void InitClassTableAndData(char *name, char *objset)
 
         Falcon4ClassTable = new Falcon4EntityClassType[NumEntities];
 #if defined(_M_IX86)
-        fread(Falcon4ClassTable, sizeof(Falcon4EntityClassType), NumEntities, filePtr);
+        fread(Falcon4ClassTable, sizeof(Falcon4EntityClassType), NumEntities,
+              filePtr);
 #else
         // Artscout - 2026: x64 serialization fix. The .ct file stores
         // Falcon4EntityClassType in the 32-bit (x86) layout where the trailing
@@ -90,9 +91,9 @@ void InitClassTableAndData(char *name, char *objset)
             struct DiskEntityClass
             {
                 VuEntityType vuClassData;
-                short        visType[7];
-                short        vehicleDataIndex;
-                uchar        dataType;
+                short visType[7];
+                short vehicleDataIndex;
+                uchar dataType;
                 unsigned int dataPtr; // 32-bit (x86) pointer/index slot on disk
             };
 #pragma pack()

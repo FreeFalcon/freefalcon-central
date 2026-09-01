@@ -5,9 +5,9 @@ class ACMI_HASHNODE
 {
 public:
     VU_ID ID;
-    long  Index;
-    char  label[16];
-    long  color;
+    long Index;
+    char label[16];
+    long color;
     ACMI_HASHNODE *Next;
 };
 
@@ -25,7 +25,6 @@ private:
     ACMI_HASHROOT *Table_;
 
 public:
-
     ACMI_Hash();
     ~ACMI_Hash();
 
@@ -44,7 +43,7 @@ public:
 
     long GetLastID()
     {
-        return(ID_);
+        return (ID_);
     }
 };
 #endif

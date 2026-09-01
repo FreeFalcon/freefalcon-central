@@ -12,7 +12,7 @@ class C_Parser;
 #endif
 
 #define WIN_MAX_CLIENTS (8)
-#define WIN_MAX_RECTS   (200)
+#define WIN_MAX_RECTS (200)
 #define WIN_HASH_SIZE (50)
 
 #define MAX_CURSORS (30)
@@ -30,7 +30,7 @@ public:
 
     //XX
     BYTE bpp;
-    ImageBuffer* owner;
+    ImageBuffer *owner;
 };
 
 #include "chash.h"
@@ -47,8 +47,8 @@ public:
 // output classes
 #include "ooutput.h"
 
-F4CSECTIONHANDLE* UI_Enter(C_Window *win); // Must be defined prior to cwindow.h
-void UI_Leave(F4CSECTIONHANDLE* section);
+F4CSECTIONHANDLE *UI_Enter(C_Window *win); // Must be defined prior to cwindow.h
+void UI_Leave(F4CSECTIONHANDLE *section);
 
 typedef struct
 {
@@ -124,7 +124,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -168,7 +169,8 @@ public:
 
     // Client Areas (upto WIN_MAX_CLIENTS (8) supported)
     UI95_RECT ClientArea_[WIN_MAX_CLIENTS];
-    UI95_RECT FullClientArea_[WIN_MAX_CLIENTS]; // Used to restore client area when scrollbars are used
+    UI95_RECT FullClientArea_
+        [WIN_MAX_CLIENTS]; // Used to restore client area when scrollbars are used
 
 
 protected:
@@ -186,20 +188,24 @@ protected:
     //WORD b_mask_,b_shift_,b_max_;
 
     DWORD r_mask_;
-    WORD r_shift_, r_max_; // AND flag,shift values to convert 16bit RGB to usable value
+    WORD r_shift_,
+        r_max_; // AND flag,shift values to convert 16bit RGB to usable value
     DWORD g_mask_;
     WORD g_shift_, g_max_;
     DWORD b_mask_;
     WORD b_shift_, b_max_;
 
 public:
-    long VX_[WIN_MAX_CLIENTS], VY_[WIN_MAX_CLIENTS]; // x,y relative to scrollbar (Use for drawing EVERYTHING in client area)
-    long VW_[WIN_MAX_CLIENTS], VH_[WIN_MAX_CLIENTS]; // w,h relative to scrollbar
+    long VX_[WIN_MAX_CLIENTS],
+        VY_[WIN_MAX_CLIENTS]; // x,y relative to scrollbar (Use for drawing EVERYTHING in client area)
+    long VW_[WIN_MAX_CLIENTS],
+        VH_[WIN_MAX_CLIENTS]; // w,h relative to scrollbar
 
 private:
     short Width_, Height_; // DDraw surface w/h
     short FontHeight_;
     short ControlCount_;
+
 public:
     short rectflag_[WIN_MAX_RECTS];
     short rectcount_;
@@ -215,8 +221,9 @@ private:
     CONTROLLIST *Last_;
     C_Base *CurControl_;
     void (*DragCallback_)(C_Window *win);
-    F4CSECTIONHANDLE* Critical;
-    BOOL (*KBCallback_)(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
+    F4CSECTIONHANDLE *Critical;
+    BOOL (*KBCallback_)(unsigned char DKScanCode, unsigned char Ascii,
+                        unsigned char ShiftStates, long RepeatCount);
 
     CONTROLLIST *FindControlInList(C_Base *cntrl);
     void GetScreenFormat();
@@ -227,7 +234,10 @@ private:
 public:
     // #22: access to the active (focused) control -- needed so the window's KB callback
     // can yield input to the active editbox (search field) instead of grabbing the keys.
-    C_Base *GetCurControl() { return CurControl_; }
+    C_Base *GetCurControl()
+    {
+        return CurControl_;
+    }
 
     // #22: clear focus from the active control (ESC in the search field -> release input).
     // Body in .cpp -- C_Base is only forward-declared in this header.
@@ -265,13 +275,13 @@ public:
         ;
     }
 
-    void SetCritical(F4CSECTIONHANDLE* section)
+    void SetCritical(F4CSECTIONHANDLE *section)
     {
         Critical = section;
     }
-    F4CSECTIONHANDLE* GetCritical()
+    F4CSECTIONHANDLE *GetCritical()
     {
-        return(Critical);
+        return (Critical);
     }
 
     // Setup Functions
@@ -297,17 +307,18 @@ public:
     }
     short GetDepth()
     {
-        return(Depth_);
+        return (Depth_);
     }
     short GetDragH()
     {
-        return(DragH_);
+        return (DragH_);
     }
     void ScanClientArea(long client);
     void ScanClientAreas();
     void SetClientArea(UI95_RECT *rect, short ID)
     {
-        if (ID >= WIN_MAX_CLIENTS) return;
+        if (ID >= WIN_MAX_CLIENTS)
+            return;
 
         ClientArea_[ID] = *rect;
         VX_[ID] = ClientArea_[ID].left;
@@ -315,7 +326,8 @@ public:
     }
     void SetClientArea(long x, long y, long w, long h, short ID)
     {
-        if (ID >= WIN_MAX_CLIENTS) return;
+        if (ID >= WIN_MAX_CLIENTS)
+            return;
 
         ClientArea_[ID].left = x;
         ClientArea_[ID].top = y;
@@ -326,7 +338,8 @@ public:
     }
     void SetVirtual(long x, long y, long w, long h, short ID)
     {
-        if (ID >= WIN_MAX_CLIENTS) return;
+        if (ID >= WIN_MAX_CLIENTS)
+            return;
 
         VX_[ID] = -x;
         VY_[ID] = -y;
@@ -335,25 +348,29 @@ public:
     }
     void SetVirtualX(long x, long Client)
     {
-        if (Client >= WIN_MAX_CLIENTS) return;
+        if (Client >= WIN_MAX_CLIENTS)
+            return;
 
         VX_[Client] = -x;
     }
     void SetVirtualY(long y, long Client)
     {
-        if (Client >= WIN_MAX_CLIENTS) return;
+        if (Client >= WIN_MAX_CLIENTS)
+            return;
 
         VY_[Client] = -y;
     }
     void SetVirtualW(long w, long Client)
     {
-        if (Client >= WIN_MAX_CLIENTS) return;
+        if (Client >= WIN_MAX_CLIENTS)
+            return;
 
         VW_[Client] = w;
     }
     void SetVirtualH(long h, long Client)
     {
-        if (Client >= WIN_MAX_CLIENTS) return;
+        if (Client >= WIN_MAX_CLIENTS)
+            return;
 
         VH_[Client] = h;
     }
@@ -363,15 +380,16 @@ public:
     void Deactivate();
     void SetCursorID(long ID)
     {
-        if (ID < MAX_CURSORS) CursorID_ = ID;
+        if (ID < MAX_CURSORS)
+            CursorID_ = ID;
     }
     long GetCursorID()
     {
-        return(CursorID_);
+        return (CursorID_);
     }
     long GetFlags()
     {
-        return(Flags_);
+        return (Flags_);
     }
     void SetFlagBitOn(long flag);
     void SetFlagBitOff(long flag);
@@ -386,7 +404,8 @@ public:
     }
     void SetClientMenu(long Client, long ID)
     {
-        if (Client < WIN_MAX_CLIENTS) ClientMenuID_[Client] = ID;
+        if (Client < WIN_MAX_CLIENTS)
+            ClientMenuID_[Client] = ID;
     }
     void SetDragCallback(void (*cb)(C_Window *))
     {
@@ -394,23 +413,26 @@ public:
     }
     long GetMenu()
     {
-        return(MenuID_);
+        return (MenuID_);
     }
     long GetClientMenu(long Client)
     {
-        if (Client < WIN_MAX_CLIENTS) return(ClientMenuID_[Client]);
+        if (Client < WIN_MAX_CLIENTS)
+            return (ClientMenuID_[Client]);
 
-        return(0);
+        return (0);
     }
     void SetClientFlags(long Client, long flags)
     {
-        if (Client < WIN_MAX_CLIENTS) ClientFlags_[Client] = flags;
+        if (Client < WIN_MAX_CLIENTS)
+            ClientFlags_[Client] = flags;
     }
     long GetClientFlags(long Client)
     {
-        if (Client < WIN_MAX_CLIENTS) return(ClientFlags_[Client]);
+        if (Client < WIN_MAX_CLIENTS)
+            return (ClientFlags_[Client]);
 
-        return(0);
+        return (0);
     }
     void AdjustScrollbar(long client);
     void AddScrollBar(C_ScrollBar *scroll);
@@ -422,19 +444,20 @@ public:
     BOOL SetFont(long ID)
     {
         Font_ = ID;
-        return(TRUE);
+        return (TRUE);
     }
     void SetHandler(C_Handler *handler)
     {
         Handler_ = handler;
     }
-    void SetKBCallback(BOOL (*cb)(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount))
+    void SetKBCallback(BOOL (*cb)(unsigned char DKScanCode, unsigned char Ascii,
+                                  unsigned char ShiftStates, long RepeatCount))
     {
         KBCallback_ = cb;
     }
     CONTROLLIST *GetControlList()
     {
-        return(Controls_);
+        return (Controls_);
     }
     void SetOwner(C_Base *ctrl)
     {
@@ -442,12 +465,18 @@ public:
     }
     C_Base *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
 
     // Keyboard Support Routines
-    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount); // Called whenever a key is pressed
-    BOOL CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount); // Called whenever a key is pressed bitand CheckKeyboard returned FALSE
+    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii,
+                       unsigned char ShiftStates,
+                       long RepeatCount); // Called whenever a key is pressed
+    BOOL CheckHotKeys(
+        unsigned char DKScanCode, unsigned char Ascii,
+        unsigned char ShiftStates,
+        long
+            RepeatCount); // Called whenever a key is pressed bitand CheckKeyboard returned FALSE
     void SetControl(long ID); // Called when mouse is used over this control
     void SetPrevControl(); // Called when SHIFT bitand TAB are pressed
     void SetNextControl(); // Called when TAB is pressed
@@ -460,16 +489,17 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     // Query Functions
     long GetID()
     {
-        return(ID_);
+        return (ID_);
     }
     void AddUpdateRect(long x1, long y1, long x2, long y2);
-    void SetUpdateRect(long x1, long y1, long x2, long y2, long flags, long client);
+    void SetUpdateRect(long x1, long y1, long x2, long y2, long flags,
+                       long client);
     void ClearCheckedUpdateRect(long x1, long y1, long x2, long y2);
     void ClearUpdateRect(long x1, long y1, long x2, long y2);
     void SetSection(long sctn)
@@ -486,54 +516,56 @@ public:
     }
     short GetX()
     {
-        return(x_);
+        return (x_);
     }
     short GetY()
     {
-        return(y_);
+        return (y_);
     }
     short GetW()
     {
-        return(w_);
+        return (w_);
     }
     short GetH()
     {
-        return(h_);
+        return (h_);
     }
     short GetType()
     {
-        return(Type_);
+        return (Type_);
     }
     short GetPrimaryW();
     long GetSection(void)
     {
-        return(Section_);
+        return (Section_);
     }
     long GetGroup(void)
     {
-        return(Group_);
+        return (Group_);
     }
     long GetCluster(void)
     {
-        return(Cluster_);
+        return (Cluster_);
     }
     UI95_RECT GetClientArea(long ID)
     {
-        if (ID < WIN_MAX_CLIENTS) return ClientArea_[ID];
+        if (ID < WIN_MAX_CLIENTS)
+            return ClientArea_[ID];
 
-        return(ClientArea_[0]);
+        return (ClientArea_[0]);
     }
     BOOL Minimized()
     {
-        if (w_ == MinW_ and h_ == MinH_) return(TRUE);
+        if (w_ == MinW_ and h_ == MinH_)
+            return (TRUE);
 
-        return(FALSE);
+        return (FALSE);
     }
     void Minimize();
     void Maximize();
     C_Handler *GetHandler(void)
     {
-        return(Handler_);
+        return (Handler_);
     }
     BOOL ClipToArea(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClipArea);
     BOOL InsideClientWidth(long left, long right, long Client);
@@ -545,7 +577,7 @@ public:
     }
     long IsMenu()
     {
-        return(MenuFlags_);
+        return (MenuFlags_);
     }
 
     void EnableGroup(long ID);
@@ -558,7 +590,8 @@ public:
     void HideCluster(long ID);
     void SetGroupState(long GroupID, short state);
 
-    void GetRGBValues(DWORD &rm, WORD &rs, DWORD &gm, WORD &gs, DWORD &bm, WORD &bs)
+    void GetRGBValues(DWORD &rm, WORD &rs, DWORD &gm, WORD &gs, DWORD &bm,
+                      WORD &bs)
     {
         rm = r_mask_;
         rs = r_shift_;
@@ -582,28 +615,48 @@ public:
     {
         BgColor_ = color;
     }
-    void Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI95_RECT *brect, short bwidth, WORD *dest, UI95_RECT *drect, short dwidth, short fperc, short bperc);
-    void BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI95_RECT *brect, short bwidth, WORD *dest, UI95_RECT *drect, short dwidth, short fperc, short bperc);
-    void Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *dest, UI95_RECT *drect, short dwidth);
-    void BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_RECT *rect, long Flags, long client);
-    void CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_RECT *rect, long Flags, long Client);
-    void DitherFill(SCREEN *surface, COLORREF color, long perc, short size, char *pattern, UI95_RECT *rect, long Flags, long client);
-    void GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_RECT *dst, long Flags, long Client);
-    void BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst, long Flags, long Client);
-    void BlitFill(SCREEN *surface, COLORREF Color, long x, long y, long w, long h, long Flags, long Client, UI95_RECT *clip);
-    void DrawHLine(SCREEN *surface, COLORREF color, long x, long y, long w, long Flags, long Client, UI95_RECT *clip);
-    void DrawVLine(SCREEN *surface, COLORREF color, long x, long y, long h, long Flags, long Client, UI95_RECT *clip);
-    BOOL CheckLine(long x1, long y1, long x2, long y2, long minx, long miny, long maxx, long maxy);
-    void DrawLine(SCREEN *surface, COLORREF color, long x1, long y1, long x2, long y2, long Flags, long Client, UI95_RECT *clip);
+    void Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back,
+               UI95_RECT *brect, short bwidth, WORD *dest, UI95_RECT *drect,
+               short dwidth, short fperc, short bperc);
+    void BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect,
+                          short fwidth, WORD *back, UI95_RECT *brect,
+                          short bwidth, WORD *dest, UI95_RECT *drect,
+                          short dwidth, short fperc, short bperc);
+    void Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *dest,
+                      UI95_RECT *drect, short dwidth);
+    void BlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
+                         UI95_RECT *rect, long Flags, long client);
+    void CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
+                               UI95_RECT *rect, long Flags, long Client);
+    void DitherFill(SCREEN *surface, COLORREF color, long perc, short size,
+                    char *pattern, UI95_RECT *rect, long Flags, long client);
+    void GradientFill(SCREEN *surface, COLORREF Color, long Perc,
+                      UI95_RECT *dst, long Flags, long Client);
+    void BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst, long Flags,
+                  long Client);
+    void BlitFill(SCREEN *surface, COLORREF Color, long x, long y, long w,
+                  long h, long Flags, long Client, UI95_RECT *clip);
+    void DrawHLine(SCREEN *surface, COLORREF color, long x, long y, long w,
+                   long Flags, long Client, UI95_RECT *clip);
+    void DrawVLine(SCREEN *surface, COLORREF color, long x, long y, long h,
+                   long Flags, long Client, UI95_RECT *clip);
+    BOOL CheckLine(long x1, long y1, long x2, long y2, long minx, long miny,
+                   long maxx, long maxy);
+    void DrawLine(SCREEN *surface, COLORREF color, long x1, long y1, long x2,
+                  long y2, long Flags, long Client, UI95_RECT *clip);
     BOOL ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip);
-    void DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2, UI95_RECT *clip, WORD color);
-    void DrawCircle(SCREEN *surface, COLORREF color, long x, long y, float radius, long Flags, long Client, UI95_RECT *clip);
-    void DrawArc(SCREEN *surface, COLORREF color, long x, long y, float radius, short section, long Flags, long Client, UI95_RECT *clip);
+    void DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2,
+                      UI95_RECT *clip, WORD color);
+    void DrawCircle(SCREEN *surface, COLORREF color, long x, long y,
+                    float radius, long Flags, long Client, UI95_RECT *clip);
+    void DrawArc(SCREEN *surface, COLORREF color, long x, long y, float radius,
+                 short section, long Flags, long Client, UI95_RECT *clip);
     void ClearWindow(SCREEN *surface, long Client);
-    void ClearArea(SCREEN *surface, long x1, long y1, long w, long h, long flags, long Client);
+    void ClearArea(SCREEN *surface, long x1, long y1, long w, long h,
+                   long flags, long Client);
     ImageBuffer *GetSurface()
     {
-        return(imgBuf_);
+        return (imgBuf_);
     }
     void SetSurface(ImageBuffer *newsurface)
     {
@@ -626,7 +679,7 @@ public:
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
     void SaveTextControls(HANDLE ofp, C_Parser *Parser);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

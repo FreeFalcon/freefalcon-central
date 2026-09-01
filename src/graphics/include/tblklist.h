@@ -10,10 +10,10 @@
 #ifndef _TBLKLIST_H_
 #define _TBLKLIST_H_
 
-#include "Ttypes.h"
+#include "ttypes.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.h"
+#include "smartheap/include/smrtheap.h"
 #endif
 
 class TListEntry
@@ -35,7 +35,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -60,7 +61,7 @@ public:
     void Cleanup(void);
 
     // Return the square range to the given post location from the center of our data
-    int  RangeFromCenter(int levelPostRow, int levelPostCol);
+    int RangeFromCenter(int levelPostRow, int levelPostCol);
 
     // Incrementally move the viewer and swap blocks as needed
     void Update(float x, float y);
@@ -68,11 +69,11 @@ public:
     // Return the maximum distance from the current postion in level
     // post space at which all data is owned by this list or will ever be
     // available
-    int  GetAvailablePostRange(void)
+    int GetAvailablePostRange(void)
     {
         return availableRange;
     };
-    int  GetMaxPostRange(void)
+    int GetMaxPostRange(void)
     {
         return interestRange;
     };
@@ -92,10 +93,9 @@ public:
     // The caller of this function must ensure that the post is within
     // the available range.  Also, the post pointer may become invalid
     // after a call to "Update"
-    Tpost* GetPost(int levelPostRow, int levelPostCol);
+    Tpost *GetPost(int levelPostRow, int levelPostCol);
 
 private:
-
     // Incrementally move the viewpoint (less than on LOD block in any direction)
     void UpdateBlockList(int vx, int vy);
 
@@ -153,7 +153,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

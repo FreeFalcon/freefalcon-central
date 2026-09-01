@@ -6,7 +6,7 @@
 
 class HarmSeekerClass : public RwrClass
 {
-public :
+public:
     HarmSeekerClass(int type, SimMoverClass* parentPlatform);
     virtual ~HarmSeekerClass() {};
 

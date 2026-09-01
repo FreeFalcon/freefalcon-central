@@ -2,88 +2,79 @@
        John Robbins - Microsoft Systems Journal Bugslayer Column
 ----------------------------------------------------------------------*/
 
-#include <cISO646>
+#include <ciso646>
 #include "pch.h"
-#include "BugslayerUtil.h"
+#include "bugslayerutil.h"
 
 // The project internal header file.
-#include "Internal.h"
+#include "internal.h"
 
 HMODULE * /*BUGSUTIL_DLLINTERFACE*/ __stdcall
-AllocAndFillProcessModuleList(HANDLE hHeap    ,
-                              LPUINT puiCount)
+AllocAndFillProcessModuleList(HANDLE hHeap, LPUINT puiCount)
 
 {
-    ASSERT(FALSE == IsBadWritePtr(puiCount , sizeof(LPUINT))) ;
+    ASSERT(FALSE == IsBadWritePtr(puiCount, sizeof(LPUINT)));
 
-    if (TRUE == IsBadWritePtr(puiCount , sizeof(LPUINT)))
+    if (TRUE == IsBadWritePtr(puiCount, sizeof(LPUINT)))
     {
-        SetLastError(ERROR_INVALID_PARAMETER) ;
-        return (NULL) ;
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return (NULL);
     }
 
-    ASSERT(NULL not_eq hHeap) ;
+    ASSERT(NULL not_eq hHeap);
 
     if (NULL == hHeap)
     {
-        SetLastError(ERROR_INVALID_PARAMETER) ;
-        return (NULL) ;
+        SetLastError(ERROR_INVALID_PARAMETER);
+        return (NULL);
     }
 
     // First, ask how many modules are really loaded.
-    UINT uiQueryCount ;
+    UINT uiQueryCount;
 
-    BOOL bRet = GetLoadedModules(GetCurrentProcessId() ,
-                                 0                       ,
-                                 NULL                    ,
-                                 &uiQueryCount) ;
-    ASSERT(TRUE == bRet) ;
-    ASSERT(0 not_eq uiQueryCount) ;
+    BOOL bRet = GetLoadedModules(GetCurrentProcessId(), 0, NULL, &uiQueryCount);
+    ASSERT(TRUE == bRet);
+    ASSERT(0 not_eq uiQueryCount);
 
     if ((FALSE == bRet) or (0 == uiQueryCount))
     {
-        return (NULL) ;
+        return (NULL);
     }
 
     // The HMODULE array.
-    HMODULE * pModArray ;
+    HMODULE *pModArray;
 
     // Allocate the buffer to hold the returned array.
-    pModArray = (HMODULE*)HeapAlloc(hHeap             ,
-                                    HEAP_ZERO_MEMORY  ,
-                                    uiQueryCount *
-                                    sizeof(HMODULE));
+    pModArray = (HMODULE *)HeapAlloc(hHeap, HEAP_ZERO_MEMORY,
+                                     uiQueryCount * sizeof(HMODULE));
 
-    ASSERT(NULL not_eq pModArray) ;
+    ASSERT(NULL not_eq pModArray);
 
     if (NULL == pModArray)
     {
-        return (NULL) ;
+        return (NULL);
     }
 
     // bRet holds BOOLEAN return values.
-    bRet = GetLoadedModules(GetCurrentProcessId() ,
-                            uiQueryCount            ,
-                            pModArray               ,
-                            puiCount) ;
+    bRet = GetLoadedModules(GetCurrentProcessId(), uiQueryCount, pModArray,
+                            puiCount);
     // Save off the last error so that the assert can still fire and
     // not change the value.
-    DWORD dwLastError = GetLastError() ;
-    ASSERT(TRUE == bRet) ;
+    DWORD dwLastError = GetLastError();
+    ASSERT(TRUE == bRet);
 
     if (FALSE == bRet)
     {
         // Get rid of the last buffer.
-        free(pModArray) ;
-        pModArray = NULL ;
-        SetLastError(dwLastError) ;
+        free(pModArray);
+        pModArray = NULL;
+        SetLastError(dwLastError);
     }
     else
     {
-        SetLastError(ERROR_SUCCESS) ;
+        SetLastError(ERROR_SUCCESS);
     }
 
     // All OK, Jumpmaster
-    return (pModArray) ;
+    return (pModArray);
 }
-

@@ -5,12 +5,12 @@
 
  - Drawable cumulus
 ***************************************************************************/
-#include "RenderOW.h"
-#include "Matrix.h"
-#include "TOD.h"
-#include "Tex.h"
-#include "DrawCLD.h"
-#include "RealWeather.h"
+#include "renderow.h"
+#include "matrix.h"
+#include "tod.h"
+#include "tex.h"
+#include "drawcld.h"
+#include "realweather.h"
 
 extern int g_nGfxFix;
 
@@ -19,7 +19,7 @@ MEM_POOL Drawable3DCloud::pool;
 #endif
 
 BOOL Drawable3DCloud::greenMode = FALSE;
-Tcolor Drawable3DCloud::litCloudColor = { 0.f };
+Tcolor Drawable3DCloud::litCloudColor = {0.f};
 
 //static const float TEX_UV_LSB = 1.f/1024.f;
 //static const float TEX_UV_MIN = TEX_UV_LSB;
@@ -44,7 +44,8 @@ void Drawable3DCloud::Update(Tpoint *worldPos, int txtIndex)
 void Drawable3DCloud::Draw(class RenderOTW *renderer, int)
 {
     // RED - LINEAR FOG - Remove the Clouds under Overcast layer...
-    if ( not (realWeather->weatherCondition == FAIR))/* or (realWeather->weatherCondition > FAIR and 
+    if (not(realWeather->weatherCondition ==
+            FAIR))/* or (realWeather->weatherCondition > FAIR and 
  (-realWeather->viewerZ) > (-realWeather->stratusZ) and (-realWeather->viewerZ) < (-realWeather->stratusZ)+(realWeather->stratusDepth))))*/
     {
         return;
@@ -56,24 +57,24 @@ void Drawable3DCloud::Draw(class RenderOTW *renderer, int)
 
     renderer->TransformPointToView(&position, &pv);
 
-    os.x =  0.f;
+    os.x = 0.f;
     os.y = -radius * 2.f;
     os.z = -radius * 2.f;
     renderer->TransformBillboardPoint(&os, &pv, &v0);
 
-    os.x =  0.f;
-    os.y =  radius * 2.f;
+    os.x = 0.f;
+    os.y = radius * 2.f;
     os.z = -radius * 2.f;
     renderer->TransformBillboardPoint(&os, &pv, &v1);
 
-    os.x =  0.f;
-    os.y =  radius * 2.f;
-    os.z =  radius * 2.f;
+    os.x = 0.f;
+    os.y = radius * 2.f;
+    os.z = radius * 2.f;
     renderer->TransformBillboardPoint(&os, &pv, &v2);
 
-    os.x =  0.f;
+    os.x = 0.f;
     os.y = -radius * 2.f;
-    os.z =  radius * 2.f;
+    os.z = radius * 2.f;
     renderer->TransformBillboardPoint(&os, &pv, &v3);
 
     v0.u = TEX_UV_MIN, v0.v = TEX_UV_MIN, v0.q = v0.csZ * Q_SCALE;

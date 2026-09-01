@@ -10,8 +10,7 @@ enum
     CSMP_SETSTRETCHRECT,
 };
 
-char *C_Smp_Tokens[] =
-{
+char *C_Smp_Tokens[] = {
     "[NOTHING]",
     "[SETUP]",
     "[STRETCHRECT]",
@@ -57,7 +56,7 @@ C_ScaleBitmap::~C_ScaleBitmap()
 
 long C_ScaleBitmap::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_ScaleBitmap::Setup(long ID, short Type, long ImageID)
@@ -102,12 +101,12 @@ void C_ScaleBitmap::InitOverlay()
     IMAGE_RSC *img;
     DWORD tmp;
 
-    if ( not Image_ or not Parent_)
+    if (not Image_ or not Parent_)
         return;
 
     img = Image_->GetImage();
 
-    if ( not img)
+    if (not img)
         return;
 
     if (Overlay_)
@@ -119,7 +118,9 @@ void C_ScaleBitmap::InitOverlay()
 #endif
 
 #ifdef USE_SH_POOLS
-    Overlay_ = (BYTE*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(BYTE) * (img->Header->w * img->Header->h), FALSE);
+    Overlay_ = (BYTE *)MemAllocPtr(
+        UI_Pools[UI_ART_POOL], sizeof(BYTE) * (img->Header->w * img->Header->h),
+        FALSE);
 #else
     Overlay_ = new BYTE[img->Header->w * img->Header->h];
 #endif
@@ -136,7 +137,7 @@ void C_ScaleBitmap::InitOverlay()
 void C_ScaleBitmap::ClearOverlay()
 {
     if (Overlay_)
-        memset(Overlay_, 0, sizeof(BYTE)*GetW()*GetH());
+        memset(Overlay_, 0, sizeof(BYTE) * GetW() * GetH());
 }
 
 void C_ScaleBitmap::PreparePalette(COLORREF color)
@@ -146,12 +147,12 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
     WORD usecolor;
     long r, g, b;
 
-    if ( not Image_)
+    if (not Image_)
         return;
 
     img = Image_->GetImage();
 
-    if ( not img)
+    if (not img)
         return;
 
     for (i = 1; i < 16; i++)
@@ -166,7 +167,9 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
 
     for (i = 1; i < 16; i++)
 #ifdef USE_SH_POOLS
-        Palette_[i] = (WORD*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(WORD) * (img->Header->palettesize), FALSE);
+        Palette_[i] = (WORD *)MemAllocPtr(
+            UI_Pools[UI_ART_POOL], sizeof(WORD) * (img->Header->palettesize),
+            FALSE);
 
 #else
         Palette_[i] = new WORD[img->Header->palettesize];
@@ -181,12 +184,24 @@ void C_ScaleBitmap::PreparePalette(COLORREF color)
 
         for (j = 0; j < img->Header->palettesize; j++)
         {
-            r = rShift[UIColorTable[100][UIColorTable[perc][(usecolor >> r_shift_) bitand 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> r_shift_) bitand 0x1f]]];
-            g = gShift[UIColorTable[100][UIColorTable[perc][(usecolor >> g_shift_) bitand 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> g_shift_) bitand 0x1f]]];
-            b = bShift[UIColorTable[100][UIColorTable[perc][(usecolor >> b_shift_) bitand 0x1f] +
-                                         UIColorTable[bperc][(Palette_[0][j] >> b_shift_) bitand 0x1f]]];
+            r = rShift
+                [UIColorTable
+                     [100]
+                     [UIColorTable[perc][(usecolor >> r_shift_) bitand 0x1f] +
+                      UIColorTable[bperc]
+                                  [(Palette_[0][j] >> r_shift_) bitand 0x1f]]];
+            g = gShift
+                [UIColorTable
+                     [100]
+                     [UIColorTable[perc][(usecolor >> g_shift_) bitand 0x1f] +
+                      UIColorTable[bperc]
+                                  [(Palette_[0][j] >> g_shift_) bitand 0x1f]]];
+            b = bShift
+                [UIColorTable
+                     [100]
+                     [UIColorTable[perc][(usecolor >> b_shift_) bitand 0x1f] +
+                      UIColorTable[bperc]
+                                  [(Palette_[0][j] >> b_shift_) bitand 0x1f]]];
 
             Palette_[i][j] = static_cast<short>(r bitor b bitor b);
         }
@@ -267,21 +282,21 @@ short C_ScaleBitmap::LocalFind(char *token)
     while (C_Smp_Tokens[i])
     {
         if (strnicmp(token, C_Smp_Tokens[i], strlen(C_Smp_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_ScaleBitmap::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CSMP_SETUP:
-            Setup(P[0], (short)P[1], P[2]);
-            break;
+    case CSMP_SETUP:
+        Setup(P[0], (short)P[1], P[2]);
+        break;
     }
 }
 
@@ -290,4 +305,3 @@ extern char ParseCRLF[];
 
 
 #endif // PARSER
-

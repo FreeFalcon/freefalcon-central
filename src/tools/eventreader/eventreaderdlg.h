@@ -9,7 +9,7 @@ typedef struct eventlisttag
 {
     EventIdData idData;
     char* eventData;
-    eventlisttag *next;
+    eventlisttag* next;
 } EventElement;
 
 extern EventElement* RootEvent;
@@ -27,7 +27,10 @@ public:
 
     // Dialog Data
     //{{AFX_DATA(CEventReaderDlg)
-    enum { IDD = IDD_EVENTREADER_DIALOG };
+    enum
+    {
+        IDD = IDD_EVENTREADER_DIALOG
+    };
     // NOTE: the ClassWizard will add data members here
     //}}AFX_DATA
 

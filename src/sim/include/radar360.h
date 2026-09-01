@@ -6,7 +6,7 @@
 
 class Radar360Class : public RadarClass
 {
-public :
+public:
     Radar360Class(int index, SimMoverClass* parentPlatform);
     virtual ~Radar360Class() {};
 
@@ -103,12 +103,23 @@ protected:
 
     float prevRange; // Indicate where we were before AA override
 
-    typedef enum { NOCHANGE = 0, AUTO, CURSOR, BORE, NEXT, PREV } LockCommand;
+    typedef enum
+    {
+        NOCHANGE = 0,
+        AUTO,
+        CURSOR,
+        BORE,
+        NEXT,
+        PREV
+    } LockCommand;
     LockCommand lockCmd; // Current desired target lock operation
 
     float cursorX; // radar cursor location in normalized display space
     float cursorY; // (ie:  -1.0 to 1.0)
-    enum {CursorMoving = 0x1};
+    enum
+    {
+        CursorMoving = 0x1
+    };
     int flags;
 
 protected:
@@ -122,7 +133,7 @@ protected:
     void ExecAG(void);
 
     void NewRange(float rangeInNM);
-    BOOL InAALockZone(SimObjectType *object, float x, float y);
+    BOOL InAALockZone(SimObjectType* object, float x, float y);
     BOOL InAGLockZone(float cosATA, float x, float y);
     float CursorDelta(float x, float y);
 

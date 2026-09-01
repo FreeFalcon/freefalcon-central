@@ -14,9 +14,9 @@ class GroundListElement;
 #define HTS_Y_OFFSET -0.5F
 
 // RV - I-Hawk - added constants
-#define ALICSIDE  0.75f
-#define ALICTOP  1.05f
-#define ALICBOTTOM  0.0f
+#define ALICSIDE 0.75f
+#define ALICTOP 1.05f
+#define ALICBOTTOM 0.0f
 
 #define MAX_POS_TARGETS 4
 #define MAX_DTSB_TARGETS 5
@@ -27,7 +27,7 @@ public:
     void Display(VirtualDisplay* activeDisplay);
     HarmTargetingPod(int idx, SimMoverClass* newPlatform);
     virtual ~HarmTargetingPod(void);
-    virtual void  GetAGCenter(float* x, float* y); // Center of rwr ground search
+    virtual void GetAGCenter(float* x, float* y); // Center of rwr ground search
 
     // Stuff isn't used anyway
 
@@ -63,20 +63,49 @@ public:
     float HadOrigCursorX2, HadOrigCursorY2;
     float yawBackup, XPosBackup, YPosBackup;
 
-    enum HASZoomMode { Wide = 0, Center, Right, Left };
-    enum HADZoomMode { NORM = 0, EXP1, EXP2 };
-    enum PreHandoffMode { Has = 0, Pos = 1 };
-    enum Submode { HarmModeChooser = 0, HAS, Handoff, POS, FilterMode, HAD };
+    enum HASZoomMode
+    {
+        Wide = 0,
+        Center,
+        Right,
+        Left
+    };
+    enum HADZoomMode
+    {
+        NORM = 0,
+        EXP1,
+        EXP2
+    };
+    enum PreHandoffMode
+    {
+        Has = 0,
+        Pos = 1
+    };
+    enum Submode
+    {
+        HarmModeChooser = 0,
+        HAS,
+        Handoff,
+        POS,
+        FilterMode,
+        HAD
+    };
 
     // Threats filtering - All, High Priority threats, High Altitude threats, Low Altitude threats
-    enum HASFilterMode { ALL = 0, HP, HA, LA };
+    enum HASFilterMode
+    {
+        ALL = 0,
+        HP,
+        HA,
+        LA
+    };
 
     virtual SimObjectType* Exec(SimObjectType* targetList);
-    virtual void HADDisplay(VirtualDisplay *newDisplay);
-    virtual void HADExpDisplay(VirtualDisplay *newDisplay);
-    virtual void HASDisplay(VirtualDisplay *newDisplay);
-    virtual void POSDisplay(VirtualDisplay *newDisplay);
-    virtual void HandoffDisplay(VirtualDisplay *newDisplay);
+    virtual void HADDisplay(VirtualDisplay* newDisplay);
+    virtual void HADExpDisplay(VirtualDisplay* newDisplay);
+    virtual void HASDisplay(VirtualDisplay* newDisplay);
+    virtual void POSDisplay(VirtualDisplay* newDisplay);
+    virtual void HandoffDisplay(VirtualDisplay* newDisplay);
 
     virtual int ObjectDetected(FalconEntity*, int trackType, int dummy = 0);
 
@@ -106,12 +135,12 @@ public:
     };
     void IncreaseRange(void);
     void DecreaseRange(void);
-    HASZoomMode     GetZoomMode(void)
+    HASZoomMode GetZoomMode(void)
     {
         return zoomMode;
     }
     void ToggleZoomMode(void);
-    HADZoomMode     GetHADZoomMode(void)
+    HADZoomMode GetHADZoomMode(void)
     {
         return HadZoomMode;
     }
@@ -124,10 +153,10 @@ public:
     virtual void SetDesiredTarget(SimObjectType* newTarget);
     VU_ID FindIDUnderCursor(void);
     GroundListElement* FindTargetUnderCursor(void);
-    GroundListElement*  FindHASTargetUnderCursor(void);
-    GroundListElement*  FindPOSTarget(void);
+    GroundListElement* FindHASTargetUnderCursor(void);
+    GroundListElement* FindPOSTarget(void);
     void LockPOSTarget(void);
-    PreHandoffMode  GetPreHandoffMode(void)
+    PreHandoffMode GetPreHandoffMode(void)
     {
         return preHandoffMode;
     }
@@ -181,23 +210,24 @@ protected:
     GroundListElement* POSTargets[MAX_POS_TARGETS];
     WayPointClass* POSTargetsWPs[MAX_POS_TARGETS];
     GroundListElement* curTarget;
-    PreHandoffMode  preHandoffMode;
+    PreHandoffMode preHandoffMode;
 
     void BuildPreplannedTargetList(void);
-    GroundListElement* FindEmmitter(FalconEntity *entity);
+    GroundListElement* FindEmmitter(FalconEntity* entity);
     void LockListElement(GroundListElement*);
-    void DrawWEZ(class MissileClass *theMissile);
+    void DrawWEZ(class MissileClass* theMissile);
     void DrawDTSBBox(void);
-    void UpdateDTSB(int symbol, float &displayX, float &displayY);
+    void UpdateDTSB(int symbol, float& displayX, float& displayY);
     void ClearDTSB(void)
     {
-        for (int i = 0; i < MAX_DTSB_TARGETS; i++) DTSBList[i] = 0;
+        for (int i = 0; i < MAX_DTSB_TARGETS; i++)
+            DTSBList[i] = 0;
     };
-    void BoxTargetDTSB(int symbol, float &displayX, float &displayY);
+    void BoxTargetDTSB(int symbol, float& displayX, float& displayY);
     void ClearPOSTargets(void);
     void BuildPOSTargets(void);
-    int     FindWaypointNum(WayPointClass* theWP);
-    bool IsInsideALIC(float &displayX, float &displayY);
+    int FindWaypointNum(WayPointClass* theWP);
+    bool IsInsideALIC(float& displayX, float& displayY);
     bool IsInPriorityList(int symbol);
 };
 

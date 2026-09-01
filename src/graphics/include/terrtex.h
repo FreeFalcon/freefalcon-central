@@ -9,8 +9,8 @@
 #define _TERRTEX_H_
 
 #include "grtypes.h"
-#include "Context.h"
-#include "Image.h"
+#include "context.h"
+#include "image.h"
 
 // JPO - increased to 32 bits
 typedef DWORD TextureID;
@@ -35,7 +35,13 @@ const int COVERAGE_OBJECT = 15; // JB carrier
 
 extern class TextureDB TheTerrTextures;
 
-enum { H = 0, M, L, TEX_LEVELS };
+enum
+{
+    H = 0,
+    M,
+    L,
+    TEX_LEVELS
+};
 
 typedef struct TexArea
 {
@@ -55,7 +61,7 @@ typedef struct TexPath
 
 typedef struct TileEntry
 {
-    char  filename[20]; // Source filename of the bitmap (extension, but no path)
+    char filename[20]; // Source filename of the bitmap (extension, but no path)
 
     int nAreas;
     TexArea *Areas; // List of special areas (NULL if none)
@@ -65,11 +71,13 @@ typedef struct TileEntry
     int width[TEX_LEVELS]; // texture width in pixels
     int height[TEX_LEVELS]; // texture height in pixels
     BYTE *bits[TEX_LEVELS]; // Pixel data (NULL if not loaded)
-    DWORD_PTR handle[TEX_LEVELS]; // Texture handle (NULL if not available) // Artscout - 2026 (x64): pointer-sized
-    int widthN[TEX_LEVELS];     // sfr: night texture width in pixels
-    int heightN[TEX_LEVELS];    // sfr: night texture height in pixels
+    DWORD_PTR handle
+        [TEX_LEVELS]; // Texture handle (NULL if not available) // Artscout - 2026 (x64): pointer-sized
+    int widthN[TEX_LEVELS]; // sfr: night texture width in pixels
+    int heightN[TEX_LEVELS]; // sfr: night texture height in pixels
     BYTE *bitsN[TEX_LEVELS]; // Pixel data for Night tiles (NULL if not loaded)
-    DWORD_PTR handleN[TEX_LEVELS]; // Texture handle for Night tiles (NULL if not available) // Artscout - 2026 (x64): pointer-sized
+    DWORD_PTR handleN
+        [TEX_LEVELS]; // Texture handle for Night tiles (NULL if not available) // Artscout - 2026 (x64): pointer-sized
     int refCount[TEX_LEVELS]; // Reference count
 } TileEntry;
 
@@ -78,7 +86,8 @@ typedef struct SetEntry
     int refCount; // Reference count
 
     DWORD *palette; // 32 bit palette entries (NULL if not loaded)
-    UInt palHandle; // Rasterization engine palette handle (NULL if not available)
+    UInt
+        palHandle; // Rasterization engine palette handle (NULL if not available)
 
     BYTE terrainType; // Terrain coverage type represented by this texture set
     int numTiles; // How many tiles in this set?
@@ -91,10 +100,10 @@ struct F4CSECTIONHANDLE;
 class TextureDB
 {
 public:
-    TextureDB();// : cs_textureList(F4CreateCriticalSection("texturedb mutex")), TextureSets(NULL){}
-    ~TextureDB();//{ F4DestroyCriticalSection(cs_textureList); };
+    TextureDB(); // : cs_textureList(F4CreateCriticalSection("texturedb mutex")), TextureSets(NULL){}
+    ~TextureDB(); //{ F4DestroyCriticalSection(cs_textureList); };
 
-    BOOL Setup(DXContext *hrc, const char* texturePath);
+    BOOL Setup(DXContext *hrc, const char *texturePath);
     BOOL IsReady(void)
     {
         return (TextureSets not_eq NULL);
@@ -102,7 +111,8 @@ public:
     void Cleanup(void);
 
     // Function to force a single texture to override all others (for ACMI wireframe)
-    void SetOverrideTexture(DWORD_PTR texHandle) // Artscout - 2026 (x64): pointer-sized
+    void SetOverrideTexture(
+        DWORD_PTR texHandle) // Artscout - 2026 (x64): pointer-sized
     {
         overrideHandle = texHandle;
     };
@@ -127,8 +137,8 @@ public:
     {
         return texturePath;
     };
-    TexPath* GetPath(TextureID id, int type, int offset);
-    TexArea* GetArea(TextureID id, int type, int offset);
+    TexPath *GetPath(TextureID id, int type, int offset);
+    TexArea *GetArea(TextureID id, int type, int offset);
     BYTE GetTerrainType(TextureID id);
 
 protected:
@@ -139,7 +149,8 @@ protected:
     int numSets;
     SetEntry *TextureSets; // Array of texture set records
 
-    DWORD_PTR overrideHandle; // If nonNull, use this handle for ALL texture selects // Artscout - 2026 (x64): pointer-sized
+    DWORD_PTR
+    overrideHandle; // If nonNull, use this handle for ALL texture selects // Artscout - 2026 (x64): pointer-sized
 
     Tcolor lightColor; // Current light color
 
@@ -150,10 +161,11 @@ protected:
 
 protected:
     // These functions actually load and release the texture bitmap memory
-    void Load(SetEntry* pSet, TileEntry* pTile, int res, bool forceNoDDS = false);
-    void Activate(SetEntry* pSet, TileEntry* pTile, int res);
-    void Deactivate(SetEntry* pSet, TileEntry* pTile, int res);
-    void Free(SetEntry* pSet, TileEntry* pTile, int res);
+    void Load(SetEntry *pSet, TileEntry *pTile, int res,
+              bool forceNoDDS = false);
+    void Activate(SetEntry *pSet, TileEntry *pTile, int res);
+    void Deactivate(SetEntry *pSet, TileEntry *pTile, int res);
+    void Free(SetEntry *pSet, TileEntry *pTile, int res);
 
     // Extract set, tile, and resolution from a texID
     int ExtractSet(TextureID texID)
@@ -176,9 +188,10 @@ protected:
     // This function handles lighting and storing the MPR version of a specific palette
     void StoreMPRPalette(SetEntry *pSet);
 
-    bool DumpImageToFile(TileEntry* pTile, DWORD *palette, int res, bool bForce = false);
-    void ReadImageDDS(TileEntry* pTile, int res);
-    bool SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions);
+    bool DumpImageToFile(TileEntry *pTile, DWORD *palette, int res,
+                         bool bForce = false);
+    void ReadImageDDS(TileEntry *pTile, int res);
+    bool SaveDDS_DXTn(const char *szFileName, BYTE *pDst, int dimensions);
 
     //THW Some helpers for season adjustement
     void HSVtoRGB(float *r, float *g, float *b, float h, float s, float v);

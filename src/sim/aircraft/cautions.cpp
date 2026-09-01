@@ -8,17 +8,17 @@
 #include "radar.h"
 #include "falcmesg.h"
 #include "simdrive.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "otwdrive.h"
 #include "cpmanager.h"
 #include "sms.h"
 #include "playerop.h"
 #include "limiters.h"
-#include "IvibeData.h"
+#include "ivibedata.h"
 #include "falcsess.h"
 
 // MD -- 20031011: added to make the RWR related SetLightBits2() calls work
-#include "PlayerRWR.h"
+#include "playerrwr.h"
 
 // MD -- 20031207: adding for TFR STBY lamp check
 #include "lantirn.h"
@@ -33,10 +33,11 @@ bool Warned = FALSE;
 //extern bool g_bEnableCATIIIExtension; //MI replaced with g_bRealisticAvionics
 void AircraftClass::CautionCheck(void)
 {
-    if ( not isDigital)
+    if (not isDigital)
     {
         // Check fuel
-        if (af->Fuel() + af->ExternalFuel() < bingoFuel and not mFaults->GetFault(FaultClass::fms_fault))
+        if (af->Fuel() + af->ExternalFuel() < bingoFuel and
+            not mFaults->GetFault(FaultClass::fms_fault))
         {
             if (g_bRealisticAvionics)
             {
@@ -59,7 +60,7 @@ void AircraftClass::CautionCheck(void)
 #else
 
                 //Only warn us if we've not already been warned.
-                if ( not mFaults->GetFault(fuel_low_fault))
+                if (not mFaults->GetFault(fuel_low_fault))
                 {
                     cockpitFlightData.SetLightBit(FlightData::FuelLow);
                     //mFaults->SetFault(fuel_low_fault);
@@ -68,7 +69,8 @@ void AircraftClass::CautionCheck(void)
                     //Smeg 27-Oct-2003 - added not to play Bingo when not alrady being played. Probably a typo.
                     //if( not F4SoundFXPlaying( af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                     //   F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
-                    if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
+                    if (not SoundPos.IsPlaying(
+                            af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBBingo);
                 }
 
@@ -77,9 +79,9 @@ void AircraftClass::CautionCheck(void)
             else
             {
                 //me123 let's set a bingo manualy
-                bingoFuel =   100.0f;
+                bingoFuel = 100.0f;
 
-                if (af->Fuel() <=  100.0F)
+                if (af->Fuel() <= 100.0F)
                     bingoFuel = -10.0F;
 
                 cockpitFlightData.SetLightBit(FlightData::FuelLow);
@@ -88,11 +90,10 @@ void AircraftClass::CautionCheck(void)
 
                 //if( not F4SoundFXPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                 //   F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
-                if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
+                if (not SoundPos.IsPlaying(
+                        af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                     SoundPos.Sfx(af->auxaeroData->sndBBBingo);
-
             }
-
         }
         //MI reset our fuel low fault if we set a bingo value below our current level
         else if (g_bRealisticAvionics and mFaults->GetFault(fuel_low_fault))
@@ -108,14 +109,15 @@ void AircraftClass::CautionCheck(void)
         //MI
         //if(IsF16())
         //TJL 10/20/03 Allowing TO/LDG Config warning on all aircraft
-        if ( not isDigital)
+        if (not isDigital)
         {
             //RV - I-Hawk - changed altitude value from 10000 to 5000 according to Dannycoh
-            if (ZPos() > -5000.0F and GetKias() < 190.0F and ZDelta() * 60.0F >= 250.0F and af->gearPos not_eq 1.0F)
+            if (ZPos() > -5000.0F and GetKias() < 190.0F and
+                ZDelta() * 60.0F >= 250.0F and af->gearPos not_eq 1.0F)
             {
-                if ( not mFaults->GetFault(to_ldg_config))
+                if (not mFaults->GetFault(to_ldg_config))
                 {
-                    if ( not g_bRealisticAvionics)
+                    if (not g_bRealisticAvionics)
                         mFaults->SetFault(to_ldg_config);
                     else
                         mFaults->SetWarning(to_ldg_config);
@@ -125,11 +127,12 @@ void AircraftClass::CautionCheck(void)
                 mFaults->ClearFault(to_ldg_config);
 
             // JPO check for trapped fuel
-            if ( not mFaults->GetFault(FaultClass::fms_fault) and af->CheckTrapped())
+            if (not mFaults->GetFault(FaultClass::fms_fault) and
+                af->CheckTrapped())
             {
-                if ( not mFaults->GetFault(fuel_trapped))
+                if (not mFaults->GetFault(fuel_trapped))
                 {
-                    if ( not g_bRealisticAvionics)
+                    if (not g_bRealisticAvionics)
                         mFaults->SetFault(fuel_trapped);
                     else
                         mFaults->SetWarning(fuel_trapped);
@@ -139,11 +142,12 @@ void AircraftClass::CautionCheck(void)
                 mFaults->ClearFault(fuel_trapped);
 
             //MI Fuel HOME warning
-            if ( not mFaults->GetFault(FaultClass::fms_fault) and af->CheckHome())
+            if (not mFaults->GetFault(FaultClass::fms_fault) and
+                af->CheckHome())
             {
-                if ( not mFaults->GetFault(fuel_home))
+                if (not mFaults->GetFault(fuel_home))
                 {
-                    if ( not g_bRealisticAvionics)
+                    if (not g_bRealisticAvionics)
                         mFaults->SetFault(fuel_home);
                     else
                         mFaults->SetWarning(fuel_home);
@@ -151,9 +155,9 @@ void AircraftClass::CautionCheck(void)
                     //Make noise
                     //   if( not F4SoundFXPlaying(af->auxaeroData->sndBBBingo))
                     //   F4SoundFXSetDist( af->auxaeroData->sndBBBingo, TRUE, 0.0f, 1.0f );
-                    if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
+                    if (not SoundPos.IsPlaying(
+                            af->auxaeroData->sndBBBingo)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBBingo);
-
                 }
             }
             else
@@ -165,7 +169,7 @@ void AircraftClass::CautionCheck(void)
         //if (g_bEnableAircraftLimits) { MI
         if (g_bRealisticAvionics)
         {
-            // Marco Edit - OverG DOES NOT affect 
+            // Marco Edit - OverG DOES NOT affect
             // (at least not before the aircraft falls apart)
             //MI put back in after discussing with Marco
             CheckForOverG();
@@ -178,11 +182,12 @@ void AircraftClass::CautionCheck(void)
 
         //// JPO - check hydraulics too.
         ///////////
-        if ((af->rpm * 37.0F) < 15.0F or mFaults->GetFault(FaultClass::eng_fault))
+        if ((af->rpm * 37.0F) < 15.0F or
+            mFaults->GetFault(FaultClass::eng_fault))
         {
-            if ( not mFaults->GetFault(oil_press))
+            if (not mFaults->GetFault(oil_press))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     // less than 15 psi
                     mFaults->SetFault(oil_press);
                 else
@@ -192,11 +197,11 @@ void AircraftClass::CautionCheck(void)
         else
             mFaults->ClearFault(oil_press);
 
-        if ( not af->HydraulicOK())
+        if (not af->HydraulicOK())
         {
-            if ( not mFaults->GetFault(hyd))
+            if (not mFaults->GetFault(hyd))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(hyd);
                 else
                     mFaults->SetWarning(hyd);
@@ -208,9 +213,9 @@ void AircraftClass::CautionCheck(void)
         // JPO Sec is active below 20% rpm
         if (af->rpm < 0.20F)
         {
-            if ( not mFaults->GetFault(sec_fault))
+            if (not mFaults->GetFault(sec_fault))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(sec_fault);
                 else
                     mFaults->SetCaution(sec_fault);
@@ -225,9 +230,11 @@ void AircraftClass::CautionCheck(void)
         // so we clear the cautions if nothing else had them set.
         if (af->rpm < 1e-2 and OnGround())
         {
-            if (savewarn == 0) mFaults->ClearWarnReset();
+            if (savewarn == 0)
+                mFaults->ClearWarnReset();
 
-            if (savemc == 0) mFaults->ClearMasterCaution();
+            if (savemc == 0)
+                mFaults->ClearMasterCaution();
         }
 
 #if 0 // JPO: I don't think this makes any sense to me... me123????
@@ -247,11 +254,11 @@ void AircraftClass::CautionCheck(void)
         // 10000 is a guess - thats where you requirte oxygen
         // MD -- 20031105: the dash one says this caution kicks in at 27k MSL
         if (ZPos() < -27000 and (af->GetAirSource() == AirframeClass::AS_DUMP or
-                                af->GetAirSource() == AirframeClass::AS_OFF))
+                                 af->GetAirSource() == AirframeClass::AS_OFF))
         {
-            if ( not mFaults->GetFault(cabin_press_fault))
+            if (not mFaults->GetFault(cabin_press_fault))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(cabin_press_fault);
                 else
                     mFaults->SetCaution(cabin_press_fault);
@@ -260,11 +267,12 @@ void AircraftClass::CautionCheck(void)
         else
             mFaults->ClearFault(cabin_press_fault);
 
-        if (mFaults->GetFault(FaultClass::hud_fault) and mFaults->GetFault(FaultClass::fcc_fault))
+        if (mFaults->GetFault(FaultClass::hud_fault) and
+            mFaults->GetFault(FaultClass::fcc_fault))
         {
-            if ( not mFaults->GetFault(canopy))
+            if (not mFaults->GetFault(canopy))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(canopy);
                 else
                     mFaults->SetWarning(canopy);
@@ -276,9 +284,9 @@ void AircraftClass::CautionCheck(void)
         ///////////
         if (mFaults->GetFault(FaultClass::fcc_fault))
         {
-            if ( not mFaults->GetFault(dual_fc))
+            if (not mFaults->GetFault(dual_fc))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(dual_fc);
                 else
                     mFaults->SetWarning(dual_fc);
@@ -288,9 +296,10 @@ void AircraftClass::CautionCheck(void)
             mFaults->ClearFault(dual_fc);
 
         ///////////
-        if (mFaults->GetFault(FaultClass::amux_fault) or mFaults->GetFault(FaultClass::bmux_fault))
+        if (mFaults->GetFault(FaultClass::amux_fault) or
+            mFaults->GetFault(FaultClass::bmux_fault))
         {
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
                 mFaults->SetFault(avionics_fault);
             else
                 mFaults->SetCaution(avionics_fault);
@@ -303,9 +312,9 @@ void AircraftClass::CautionCheck(void)
         ////////////
         if (mFaults->GetFault(FaultClass::ralt_fault))
         {
-            if ( not mFaults->GetFault(radar_alt_fault))
+            if (not mFaults->GetFault(radar_alt_fault))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(radar_alt_fault);
                 else
                     mFaults->SetCaution(radar_alt_fault);
@@ -317,9 +326,9 @@ void AircraftClass::CautionCheck(void)
         ///////////////
         if (mFaults->GetFault(FaultClass::iff_fault))
         {
-            if ( not mFaults->GetFault(iff_fault))
+            if (not mFaults->GetFault(iff_fault))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(iff_fault);
                 else
                     mFaults->SetCaution(iff_fault);
@@ -331,9 +340,9 @@ void AircraftClass::CautionCheck(void)
         ///////////////
         if (mFaults->GetFault(FaultClass::rwr_fault))
         {
-            if ( not mFaults->GetFault(ecm_fault))
+            if (not mFaults->GetFault(ecm_fault))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(ecm_fault);
                 else
                     mFaults->SetCaution(ecm_fault);
@@ -345,9 +354,9 @@ void AircraftClass::CautionCheck(void)
         ///////////////
         if (mFaults->GetFault(FaultClass::rwr_fault))
         {
-            if ( not mFaults->GetFault(nws_fault))
+            if (not mFaults->GetFault(nws_fault))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(nws_fault);
                 else
                     mFaults->SetCaution(nws_fault);
@@ -361,9 +370,9 @@ void AircraftClass::CautionCheck(void)
         // Overheat Fault
         if (mFaults->GetFault(FaultClass::eng_fault) and af->rpm <= 0.75)
         {
-            if ( not mFaults->GetFault(overheat_fault))
+            if (not mFaults->GetFault(overheat_fault))
             {
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     mFaults->SetFault(overheat_fault);
                 else
                     mFaults->SetCaution(overheat_fault);
@@ -376,7 +385,7 @@ void AircraftClass::CautionCheck(void)
         // if lg up and aoa and speed
         // if airbrakes on
         //MI what kind of bullshit is this anyway?????
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             if (mFaults->GetFault(FaultClass::rwr_fault))
             {
@@ -394,7 +403,8 @@ void AircraftClass::CautionCheck(void)
             SetExternalData();
 
         // AMUX and BMUX combined failure forces FCC into NAV
-        if (mFaults->GetFault(FaultClass::amux_fault) and mFaults->GetFault(FaultClass::bmux_fault))
+        if (mFaults->GetFault(FaultClass::amux_fault) and
+            mFaults->GetFault(FaultClass::bmux_fault))
         {
             FCC->SetMasterMode(FireControlComputer::Nav);
         }
@@ -413,7 +423,8 @@ void AircraftClass::CautionCheck(void)
         // Shut down radar when broken
         if (mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::xmtr)
         {
-            RadarClass* theRadar = (RadarClass*)FindSensor(this, SensorClass::Radar);
+            RadarClass* theRadar =
+                (RadarClass*)FindSensor(this, SensorClass::Radar);
 
             if (theRadar)
                 theRadar->SetEmitting(FALSE);
@@ -421,7 +432,8 @@ void AircraftClass::CautionCheck(void)
 
         if (mFaults->GetFault(FaultClass::fcc_fault) == FaultClass::bus)
         {
-            RadarClass* theRadar = (RadarClass*)FindSensor(this, SensorClass::Radar);
+            RadarClass* theRadar =
+                (RadarClass*)FindSensor(this, SensorClass::Radar);
 
             if (theRadar)
                 theRadar->SetPower(FALSE);
@@ -452,7 +464,7 @@ void AircraftClass::CautionCheck(void)
     {
         float MaxG = af->curMaxGs;
         float limitGs = 6.5f;
-        Limiter *limiter = NULL; // JPO - use dynamic figure , not 6.5
+        Limiter* limiter = NULL; // JPO - use dynamic figure , not 6.5
 
 
         if (limiter = gLimiterMgr->GetLimiter(CatIIIMaxGs, af->VehicleIndex()))
@@ -461,7 +473,7 @@ void AircraftClass::CautionCheck(void)
         if (MaxG <= limitGs)
         {
             //we need CATIII
-            if ( not af->IsSet(AirframeClass::CATLimiterIII))
+            if (not af->IsSet(AirframeClass::CATLimiterIII))
                 WrongCAT();
             else
                 CorrectCAT();
@@ -477,14 +489,12 @@ void AircraftClass::CautionCheck(void)
     }
 
 
-
-
     //MI Seat Arm switch
     if (IsPlayer() and g_bRealisticAvionics)
     {
-        if ( not SeatArmed)
+        if (not SeatArmed)
         {
-            if ( not mFaults->GetFault(seat_notarmed_fault))
+            if (not mFaults->GetFault(seat_notarmed_fault))
                 mFaults->SetCaution(seat_notarmed_fault);
         }
         else
@@ -495,14 +505,16 @@ void AircraftClass::CautionCheck(void)
     {
         //MI WARN Reset stuff
         //me123 loopign warnign sound is just T_LCFG i think
-        if (cockpitFlightData.IsSet(FlightData::T_L_CFG)) //this one gives continous warning
+        if (cockpitFlightData.IsSet(
+                FlightData::T_L_CFG)) //this one gives continous warning
         {
             //sound
             if (mFaults->WarnReset())
             {
                 if (vuxGameTime >= WhenToPlayWarning)
                 {
-                    if ( not SoundPos.IsPlaying(SFX_BB_WARNING)) // MLR 5/16/2004 -
+                    if (not SoundPos.IsPlaying(
+                            SFX_BB_WARNING)) // MLR 5/16/2004 -
                         SoundPos.Sfx(SFX_BB_WARNING);
 
                     //    F4SoundFXSetDist(SFX_BB_WARNING, FALSE, 0.0f, 1.0f );
@@ -527,10 +539,9 @@ void AircraftClass::CautionCheck(void)
                 {
                     //    if( not F4SoundFXPlaying( af->auxaeroData->sndBBCaution))
                     //        F4SoundFXSetDist( af->auxaeroData->sndBBCaution, TRUE, 0.0f, 1.0f );
-                    if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBCaution)) // MLR 5/16/2004 -
+                    if (not SoundPos.IsPlaying(
+                            af->auxaeroData->sndBBCaution)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBCaution);
-
-
                 }
 
                 NeedsToPlayCaution = FALSE;
@@ -545,9 +556,9 @@ void AircraftClass::CautionCheck(void)
                 {
                     //    if( not F4SoundFXPlaying(af->auxaeroData->sndBBWarning))
                     //    F4SoundFXSetDist(af->auxaeroData->sndBBWarning, TRUE, 0.0f, 1.0f );
-                    if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBWarning)) // MLR 5/16/2004 -
+                    if (not SoundPos.IsPlaying(
+                            af->auxaeroData->sndBBWarning)) // MLR 5/16/2004 -
                         SoundPos.Sfx(af->auxaeroData->sndBBWarning);
-
                 }
 
                 NeedsToPlayWarning = FALSE;
@@ -557,7 +568,7 @@ void AircraftClass::CautionCheck(void)
         //MI RF In SILENT gives TF FAIL
         if (RFState == 2)
         {
-            if ( not mFaults->GetFault(tf_fail))
+            if (not mFaults->GetFault(tf_fail))
                 mFaults->SetWarning(tf_fail);
         }
         else
@@ -573,28 +584,28 @@ void AircraftClass::DamageSounds(void)
 
     switch (sound)
     {
-        case 1:
-            SoundPos.Sfx(SFX_HIT_5);
-            break;
+    case 1:
+        SoundPos.Sfx(SFX_HIT_5);
+        break;
 
-        case 2:
-            SoundPos.Sfx(SFX_HIT_4);
-            break;
+    case 2:
+        SoundPos.Sfx(SFX_HIT_4);
+        break;
 
-        case 3:
-            SoundPos.Sfx(SFX_HIT_3);
-            break;
+    case 3:
+        SoundPos.Sfx(SFX_HIT_3);
+        break;
 
-        case 4:
-            SoundPos.Sfx(SFX_HIT_2);
-            break;
+    case 4:
+        SoundPos.Sfx(SFX_HIT_2);
+        break;
 
-        case 5:
-            SoundPos.Sfx(SFX_HIT_1);
-            break;
+    case 5:
+        SoundPos.Sfx(SFX_HIT_1);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -613,7 +624,7 @@ void AircraftClass::WrongCAT(void)
 //MI we've switched to the correct CAT
 void AircraftClass::CorrectCAT(void)
 {
-    if ( not Warned)
+    if (not Warned)
         return;
 
     //clear our fault
@@ -646,7 +657,8 @@ void AircraftClass::CheckForOverG(void)
         }
 
         //Tanks have 7G
-        if ((af->curMaxGs == 7.0 or af->curMaxGs == 6.5) and GetNz() > af->curMaxGs + GToleranceTanks)
+        if ((af->curMaxGs == 7.0 or af->curMaxGs == 6.5) and
+            GetNz() > af->curMaxGs + GToleranceTanks)
             if (GetNz() > af->curMaxGs + GToleranceTanks)
                 StoreToDamage(wcTank);
     }
@@ -674,7 +686,8 @@ void AircraftClass::CheckForOverSpeed(void)
         }
     }
 
-    if ((af->curMaxGs == 7.0 or af->curMaxGs == 6.5) and GetKias() > af->curMaxStoreSpeed)
+    if ((af->curMaxGs == 7.0 or af->curMaxGs == 6.5) and
+        GetKias() > af->curMaxStoreSpeed)
     {
         GSounds();
 
@@ -692,9 +705,10 @@ void AircraftClass::CheckForOverSpeed(void)
             DamageSounds();
 
             //TJL 05/30/04 added more damage modeling
-            if ( not mFaults->GetFault(FaultClass::flcs_fault))
+            if (not mFaults->GetFault(FaultClass::flcs_fault))
             {
-                mFaults->SetFault(FaultClass::flcs_fault, FaultClass::dual, FaultClass::fail, FALSE);
+                mFaults->SetFault(FaultClass::flcs_fault, FaultClass::dual,
+                                  FaultClass::fail, FALSE);
             }
 
             if (pctStrength > 0.0f)
@@ -722,18 +736,15 @@ void AircraftClass::CheckForOverSpeed(void)
                     LEFOn(LEFSASYNCH);
                 }
             }
-
         }
     }
 
     //end VNE violation
-
-
 }
 
 void AircraftClass::DoOverGSpeedDamage(int station)
 {
-    if ( not mFaults)
+    if (not mFaults)
         return;
 
     int damage = rand() % 100;
@@ -741,177 +752,214 @@ void AircraftClass::DoOverGSpeedDamage(int station)
 
     switch (station)
     {
-        case 1:
-            if (damage < 95 and not GetStationFailed(Station1_Degr) and not GetStationFailed(Station1_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta1, FaultClass::degr, FALSE);
-                StationFailed(Station1_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station1_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta1, FaultClass::fail, FALSE);
+    case 1:
+        if (damage < 95 and not GetStationFailed(Station1_Degr) and
+            not GetStationFailed(Station1_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta1,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station1_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station1_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta1,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station1_Fail);
-            }
+            StationFailed(Station1_Fail);
+        }
 
-            break;
+        break;
 
-        case 2:
-            damage = rand() % 100;
+    case 2:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station2_Degr) and not GetStationFailed(Station2_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta2, FaultClass::degr, FALSE);
-                StationFailed(Station2_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station2_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta2, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station2_Degr) and
+            not GetStationFailed(Station2_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta2,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station2_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station2_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta2,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station2_Fail);
-            }
+            StationFailed(Station2_Fail);
+        }
 
-            break;
+        break;
 
-        case 3:
-            damage = rand() % 100;
+    case 3:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station3_Degr) and not GetStationFailed(Station3_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta3, FaultClass::degr, FALSE);
-                StationFailed(Station3_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station3_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta3, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station3_Degr) and
+            not GetStationFailed(Station3_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta3,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station3_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station3_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta3,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station3_Fail);
-            }
+            StationFailed(Station3_Fail);
+        }
 
-            break;
+        break;
 
-        case 4:
-            damage = rand() % 100;
+    case 4:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station4_Degr) and not GetStationFailed(Station4_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta4, FaultClass::degr, FALSE);
-                StationFailed(Station4_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station4_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta4, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station4_Degr) and
+            not GetStationFailed(Station4_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta4,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station4_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station4_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta4,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station4_Fail);
-            }
+            StationFailed(Station4_Fail);
+        }
 
-            break;
+        break;
 
-        case 5:
-            damage = rand() % 100;
+    case 5:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station5_Degr) and not GetStationFailed(Station5_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta5, FaultClass::degr, FALSE);
-                StationFailed(Station5_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station5_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta5, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station5_Degr) and
+            not GetStationFailed(Station5_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta5,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station5_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station5_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta5,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station5_Fail);
-            }
+            StationFailed(Station5_Fail);
+        }
 
-            break;
+        break;
 
-        case 6:
-            damage = rand() % 100;
+    case 6:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station6_Degr) and not GetStationFailed(Station6_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta6, FaultClass::degr, FALSE);
-                StationFailed(Station6_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station6_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta6, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station6_Degr) and
+            not GetStationFailed(Station6_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta6,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station6_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station6_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta6,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station6_Fail);
-            }
+            StationFailed(Station6_Fail);
+        }
 
-            break;
+        break;
 
-        case 7:
-            damage = rand() % 100;
+    case 7:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station7_Degr) and not GetStationFailed(Station7_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta7, FaultClass::degr, FALSE);
-                StationFailed(Station7_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station7_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta7, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station7_Degr) and
+            not GetStationFailed(Station7_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta7,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station7_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station7_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta7,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station7_Fail);
-            }
+            StationFailed(Station7_Fail);
+        }
 
-            break;
+        break;
 
-        case 8:
-            damage = rand() % 100;
+    case 8:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station8_Degr) and not GetStationFailed(Station8_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta8, FaultClass::degr, FALSE);
-                StationFailed(Station8_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station8_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta8, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station8_Degr) and
+            not GetStationFailed(Station8_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta8,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station8_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station8_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta8,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station8_Fail);
-            }
+            StationFailed(Station8_Fail);
+        }
 
-            break;
+        break;
 
-        case 9:
-            damage = rand() % 100;
+    case 9:
+        damage = rand() % 100;
 
-            if (damage < 95 and not GetStationFailed(Station9_Degr) and not GetStationFailed(Station9_Fail))
-            {
-                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta9, FaultClass::degr, FALSE);
-                StationFailed(Station9_Degr);
-            }
-            else
-            {
-                if ( not GetStationFailed(Station9_Fail) and (GSoundsNFuel == 2 or GSoundsWFuel == 3))
-                    mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta9, FaultClass::fail, FALSE);
+        if (damage < 95 and not GetStationFailed(Station9_Degr) and
+            not GetStationFailed(Station9_Fail))
+        {
+            mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta9,
+                              FaultClass::degr, FALSE);
+            StationFailed(Station9_Degr);
+        }
+        else
+        {
+            if (not GetStationFailed(Station9_Fail) and
+                (GSoundsNFuel == 2 or GSoundsWFuel == 3))
+                mFaults->SetFault(FaultClass::sms_fault, FaultClass::sta9,
+                                  FaultClass::fail, FALSE);
 
-                StationFailed(Station9_Fail);
-            }
+            StationFailed(Station9_Fail);
+        }
 
-            break;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
 void AircraftClass::StoreToDamage(WeaponClass thing)
 {
-    if ( not g_bRealisticAvionics or (PlayerOptions.Realism < 0.76 and not isDigital))
+    if (not g_bRealisticAvionics or
+        (PlayerOptions.Realism < 0.76 and not isDigital))
         return;
 
-    if ( not Sms or not mFaults or not af)
+    if (not Sms or not mFaults or not af)
         return;
 
     //Check which station to fail
@@ -920,8 +968,7 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
     for (int i = 0; i < Sms->NumHardpoints(); i++)
     {
         // if its a tank - try and guess which one.
-        if (Sms->hardPoint[i] and 
-            Sms->hardPoint[i]->GetWeaponClass() == thing)
+        if (Sms->hardPoint[i] and Sms->hardPoint[i]->GetWeaponClass() == thing)
         {
             //tanks cause our Fuel Management System to fail.
             if (thing == wcTank)
@@ -931,8 +978,10 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustTankG(1);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::fms_fault))
-                        mFaults->SetFault(FaultClass::fms_fault, FaultClass::bus, FaultClass::degr, FALSE);
+                    if (not mFaults->GetFault(FaultClass::fms_fault))
+                        mFaults->SetFault(FaultClass::fms_fault,
+                                          FaultClass::bus, FaultClass::degr,
+                                          FALSE);
 
                     if (GSoundsWFuel == 0)
                     {
@@ -946,8 +995,10 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustTankG(2);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::fms_fault))
-                        mFaults->SetFault(FaultClass::fms_fault, FaultClass::bus, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::fms_fault))
+                        mFaults->SetFault(FaultClass::fms_fault,
+                                          FaultClass::bus, FaultClass::fail,
+                                          FALSE);
 
                     if (GSoundsWFuel == 2)
                     {
@@ -961,8 +1012,10 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustTankG(3);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::flcs_fault))
-                        mFaults->SetFault(FaultClass::flcs_fault, FaultClass::sngl, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::flcs_fault))
+                        mFaults->SetFault(FaultClass::flcs_fault,
+                                          FaultClass::sngl, FaultClass::fail,
+                                          FALSE);
 
                     if (GSoundsWFuel == 3)
                     {
@@ -976,8 +1029,10 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustTankSpeed(1);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::fms_fault))
-                        mFaults->SetFault(FaultClass::fms_fault, FaultClass::bus, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::fms_fault))
+                        mFaults->SetFault(FaultClass::fms_fault,
+                                          FaultClass::bus, FaultClass::fail,
+                                          FALSE);
 
                     if (SpeedSoundsWFuel == 0)
                     {
@@ -991,8 +1046,10 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustTankSpeed(2);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::fms_fault))
-                        mFaults->SetFault(FaultClass::fms_fault, FaultClass::bus, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::fms_fault))
+                        mFaults->SetFault(FaultClass::fms_fault,
+                                          FaultClass::bus, FaultClass::fail,
+                                          FALSE);
 
                     if (SpeedSoundsWFuel == 1)
                     {
@@ -1001,16 +1058,21 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     }
                 }
 
-                if (af->mach >= 2.05f or GetKias() > af->curMaxStoreSpeed + SpeedToleranceTanks)
+                if (af->mach >= 2.05f or
+                    GetKias() > af->curMaxStoreSpeed + SpeedToleranceTanks)
                 {
                     AdjustTankSpeed(3);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::flcs_fault))
-                        mFaults->SetFault(FaultClass::flcs_fault, FaultClass::sngl, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::flcs_fault))
+                        mFaults->SetFault(FaultClass::flcs_fault,
+                                          FaultClass::sngl, FaultClass::fail,
+                                          FALSE);
 
-                    if ( not mFaults->GetFault(FaultClass::cadc_fault))
-                        mFaults->SetFault(FaultClass::cadc_fault, FaultClass::bus, FaultClass::degr, FALSE);
+                    if (not mFaults->GetFault(FaultClass::cadc_fault))
+                        mFaults->SetFault(FaultClass::cadc_fault,
+                                          FaultClass::bus, FaultClass::degr,
+                                          FALSE);
 
                     if (SpeedSoundsWFuel == 2)
                     {
@@ -1020,16 +1082,19 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                 }
             }
 
-            if (thing == wcBombWpn or thing == wcRocketWpn or thing == wcAgmWpn or
-                thing == wcHARMWpn or thing == wcSamWpn or thing == wcGbuWpn)
+            if (thing == wcBombWpn or thing == wcRocketWpn or
+                thing == wcAgmWpn or thing == wcHARMWpn or thing == wcSamWpn or
+                thing == wcGbuWpn)
             {
                 if (GetNz() > af->curMaxGs + GToleranceBombs)
                 {
                     AdjustBombG(1);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::isa_fault))
-                        mFaults->SetFault(FaultClass::isa_fault, FaultClass::sngl, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::isa_fault))
+                        mFaults->SetFault(FaultClass::isa_fault,
+                                          FaultClass::sngl, FaultClass::fail,
+                                          FALSE);
 
                     if (GSoundsNFuel == 0)
                     {
@@ -1043,8 +1108,10 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustBombG(2);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::sms_fault))
-                        mFaults->SetFault(FaultClass::sms_fault, FaultClass::bus, FaultClass::degr, FALSE);
+                    if (not mFaults->GetFault(FaultClass::sms_fault))
+                        mFaults->SetFault(FaultClass::sms_fault,
+                                          FaultClass::bus, FaultClass::degr,
+                                          FALSE);
 
                     if (GSoundsNFuel == 2)
                     {
@@ -1058,11 +1125,16 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustBombG(3);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::flcs_fault))
-                        mFaults->SetFault(FaultClass::flcs_fault, FaultClass::dual, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::flcs_fault))
+                        mFaults->SetFault(FaultClass::flcs_fault,
+                                          FaultClass::dual, FaultClass::fail,
+                                          FALSE);
 
-                    if ( not mFaults->GetFault(FaultClass::sms_fault) bitand FaultClass::bus bitand FaultClass::fail)
-                        mFaults->SetFault(FaultClass::sms_fault, FaultClass::bus, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::sms_fault) bitand
+                        FaultClass::bus bitand FaultClass::fail)
+                        mFaults->SetFault(FaultClass::sms_fault,
+                                          FaultClass::bus, FaultClass::fail,
+                                          FALSE);
 
                     if (GSoundsNFuel == 3)
                     {
@@ -1088,11 +1160,15 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     AdjustBombSpeed(2);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::fms_fault))
-                        mFaults->SetFault(FaultClass::fms_fault, FaultClass::bus, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::fms_fault))
+                        mFaults->SetFault(FaultClass::fms_fault,
+                                          FaultClass::bus, FaultClass::fail,
+                                          FALSE);
 
-                    if ( not mFaults->GetFault(FaultClass::isa_fault))
-                        mFaults->SetFault(FaultClass::isa_fault, FaultClass::sngl, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::isa_fault))
+                        mFaults->SetFault(FaultClass::isa_fault,
+                                          FaultClass::sngl, FaultClass::fail,
+                                          FALSE);
 
                     if (SpeedSoundsNFuel == 1)
                     {
@@ -1101,22 +1177,31 @@ void AircraftClass::StoreToDamage(WeaponClass thing)
                     }
                 }
 
-                if (af->mach >= 2.05f or GetKias() > af->curMaxStoreSpeed + SpeedToleranceBombs)
+                if (af->mach >= 2.05f or
+                    GetKias() > af->curMaxStoreSpeed + SpeedToleranceBombs)
                 {
                     AdjustBombSpeed(3);
                     DoOverGSpeedDamage(i);
 
-                    if ( not mFaults->GetFault(FaultClass::flcs_fault))
-                        mFaults->SetFault(FaultClass::flcs_fault, FaultClass::sngl, FaultClass::fail, FALSE);
+                    if (not mFaults->GetFault(FaultClass::flcs_fault))
+                        mFaults->SetFault(FaultClass::flcs_fault,
+                                          FaultClass::sngl, FaultClass::fail,
+                                          FALSE);
 
-                    if ( not mFaults->GetFault(FaultClass::cadc_fault))
-                        mFaults->SetFault(FaultClass::cadc_fault, FaultClass::bus, FaultClass::degr, FALSE);
+                    if (not mFaults->GetFault(FaultClass::cadc_fault))
+                        mFaults->SetFault(FaultClass::cadc_fault,
+                                          FaultClass::bus, FaultClass::degr,
+                                          FALSE);
 
-                    if ( not mFaults->GetFault(FaultClass::amux_fault))
-                        mFaults->SetFault(FaultClass::amux_fault, FaultClass::bus, FaultClass::degr, FALSE);
+                    if (not mFaults->GetFault(FaultClass::amux_fault))
+                        mFaults->SetFault(FaultClass::amux_fault,
+                                          FaultClass::bus, FaultClass::degr,
+                                          FALSE);
 
-                    if ( not mFaults->GetFault(FaultClass::fcc_fault))
-                        mFaults->SetFault(FaultClass::fcc_fault, FaultClass::bus, FaultClass::degr, FALSE);
+                    if (not mFaults->GetFault(FaultClass::fcc_fault))
+                        mFaults->SetFault(FaultClass::fcc_fault,
+                                          FaultClass::bus, FaultClass::degr,
+                                          FALSE);
 
                     if (SpeedSoundsNFuel == 2)
                     {
@@ -1137,7 +1222,7 @@ void AircraftClass::SetExternalData(void)
     // this should mean saying each of the words once each while the button is held in the test
     // position but this doesn't seem to be possible without new sounds for this purpose.
     // MD -- 20031216: oops forgot the AVTR lamp in HsiBits
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
     {
@@ -1147,10 +1232,14 @@ void AircraftClass::SetExternalData(void)
 
     if (playerAC->TestLights not_eq NULL)
     {
-        cockpitFlightData.lightBits  = FlightData::AllLampBitsOn;   // All current lamp related lightBits  to ON
-        cockpitFlightData.lightBits2 = FlightData::AllLampBits2On;  // All current lamp related lightBits2 to ON
-        cockpitFlightData.lightBits3 = FlightData::AllLampBits3On;  // All current lamp related lightBits3 to ON
-        cockpitFlightData.hsiBits = FlightData::AllLampHsiBitsOn;   // All current lamp related HsiBits to ON
+        cockpitFlightData.lightBits = FlightData::
+            AllLampBitsOn; // All current lamp related lightBits  to ON
+        cockpitFlightData.lightBits2 = FlightData::
+            AllLampBits2On; // All current lamp related lightBits2 to ON
+        cockpitFlightData.lightBits3 = FlightData::
+            AllLampBits3On; // All current lamp related lightBits3 to ON
+        cockpitFlightData.hsiBits = FlightData::
+            AllLampHsiBitsOn; // All current lamp related HsiBits to ON
         //if( not F4SoundFXPlaying(SFX_BB_ALLWORDS))
         // F4SoundFXSetDist(SFX_BB_ALLWORDS, TRUE, 0.0f, 1.0f );
         SoundPos.Sfx(SFX_BB_ALLWORDS); // MLR 5/16/2004 -
@@ -1184,7 +1273,9 @@ void AircraftClass::SetExternalData(void)
     else
         cockpitFlightData.ClearLightBit(FlightData::OIL);
 
-    if ( not af->HydraulicOK() and ( not (((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerOff)))
+    if (not af->HydraulicOK() and
+        (not(((AircraftClass*)(playerAC))->MainPower() ==
+             AircraftClass::MainPowerOff)))
         cockpitFlightData.SetLightBit(FlightData::HYD);
     else
         cockpitFlightData.ClearLightBit(FlightData::HYD);
@@ -1196,7 +1287,8 @@ void AircraftClass::SetExternalData(void)
         cockpitFlightData.ClearLightBit(FlightData::CabinPress);
 
     // Canopy Light
-    if (mFaults->GetFault(FaultClass::hud_fault) and mFaults->GetFault(FaultClass::fcc_fault))
+    if (mFaults->GetFault(FaultClass::hud_fault) and
+        mFaults->GetFault(FaultClass::fcc_fault))
         cockpitFlightData.SetLightBit(FlightData::CAN);
     else
         cockpitFlightData.ClearLightBit(FlightData::CAN);
@@ -1208,9 +1300,10 @@ void AircraftClass::SetExternalData(void)
         cockpitFlightData.ClearLightBit(FlightData::DUAL);
 
     // Avioncs Caution
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
-        if (mFaults->GetFault(FaultClass::amux_fault) or mFaults->GetFault(FaultClass::bmux_fault))
+        if (mFaults->GetFault(FaultClass::amux_fault) or
+            mFaults->GetFault(FaultClass::bmux_fault))
             cockpitFlightData.SetLightBit(FlightData::Avionics);
         else
             cockpitFlightData.ClearLightBit(FlightData::Avionics);
@@ -1242,7 +1335,8 @@ void AircraftClass::SetExternalData(void)
         cockpitFlightData.ClearLightBit(FlightData::AOAOn);
         cockpitFlightData.ClearLightBit(FlightData::AOABelow);
     }
-    else if ((cockpitFlightData.alpha < 14.0F) and (cockpitFlightData.alpha >= 11.5F))
+    else if ((cockpitFlightData.alpha < 14.0F) and
+             (cockpitFlightData.alpha >= 11.5F))
     {
         cockpitFlightData.ClearLightBit(FlightData::AOAAbove);
         cockpitFlightData.SetLightBit(FlightData::AOAOn);
@@ -1275,27 +1369,37 @@ void AircraftClass::SetExternalData(void)
     // least work properly.  Leaving this over in cblights would mean that
     // the timecheck would only be preformed if the lamp is on the screen.
 
-    if (OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3 and (vuxGameTime > (OTWDriver.pCockpitManager->mMiscStates.mRefuelTimer + 3000)))
+    // pCockpitManager can be NULL when no 3D cockpit is up (e.g. the VR path before the cockpit is built) --
+    // dereferencing it here crashed the sim (SetExternalData -> mMiscStates.mRefuelState). Guard the whole
+    // refuel-state block; with no cockpit these display lamp bits are moot anyway.
+    if (OTWDriver.pCockpitManager)
     {
-        OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(0);
+        if (OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3 and
+            (vuxGameTime >
+             (OTWDriver.pCockpitManager->mMiscStates.mRefuelTimer + 3000)))
+        {
+            OTWDriver.pCockpitManager->mMiscStates.SetRefuelState(0);
+        }
+
+        if (playerAC->af->IsSet(AirframeClass::NoseSteerOn) or
+            (OTWDriver.pCockpitManager->mMiscStates.mRefuelState ==
+             2)) // contact
+            cockpitFlightData.SetLightBit(FlightData::RefuelAR);
+        else
+            cockpitFlightData.ClearLightBit(FlightData::RefuelAR);
+
+        if (playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and
+            (OTWDriver.pCockpitManager->mMiscStates.mRefuelState <=
+             1)) // ready to refuel
+            cockpitFlightData.SetLightBit(FlightData::RefuelRDY);
+        else
+            cockpitFlightData.ClearLightBit(FlightData::RefuelRDY);
+
+        if (OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3)
+            cockpitFlightData.SetLightBit(FlightData::RefuelDSC);
+        else
+            cockpitFlightData.ClearLightBit(FlightData::RefuelDSC);
     }
-
-    if (playerAC->af->IsSet(AirframeClass::NoseSteerOn) or
-        (OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 2))  // contact
-        cockpitFlightData.SetLightBit(FlightData::RefuelAR);
-    else
-        cockpitFlightData.ClearLightBit(FlightData::RefuelAR);
-
-    if (playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen) and 
-        (OTWDriver.pCockpitManager->mMiscStates.mRefuelState <= 1))  // ready to refuel
-        cockpitFlightData.SetLightBit(FlightData::RefuelRDY);
-    else
-        cockpitFlightData.ClearLightBit(FlightData::RefuelRDY);
-
-    if (OTWDriver.pCockpitManager->mMiscStates.mRefuelState == 3)
-        cockpitFlightData.SetLightBit(FlightData::RefuelDSC);
-    else
-        cockpitFlightData.ClearLightBit(FlightData::RefuelDSC);
 
 
     // FLCS
@@ -1356,8 +1460,8 @@ void AircraftClass::SetExternalData(void)
     // and the gear is down and there are no gear faults WoW switch is "on"
     // this is not used elsewhere in the game but several places do use the OnGround() routine
     // to implement correct WoW behavior.
-    if (playerAC->OnGround() and (af->gearPos == 1.0F) and 
-        ( not playerAC->mFaults->GetFault(FaultClass::gear_fault)))
+    if (playerAC->OnGround() and (af->gearPos == 1.0F) and
+        (not playerAC->mFaults->GetFault(FaultClass::gear_fault)))
         cockpitFlightData.SetLightBit(FlightData::WOW);
     else
         cockpitFlightData.ClearLightBit(FlightData::WOW);
@@ -1368,7 +1472,8 @@ void AircraftClass::SetExternalData(void)
     // magnetically captured to hold the swithc out of the off position while the AP is functioning
     // within its operating limits.  Use this bit to turn on the solenoid if your switch has one
 
-    if ((playerAC->IsOn(AircraftClass::AttHold)) or (playerAC->IsOn(AircraftClass::AltHold)))
+    if ((playerAC->IsOn(AircraftClass::AttHold)) or
+        (playerAC->IsOn(AircraftClass::AltHold)))
         cockpitFlightData.SetLightBit(FlightData::AutoPilotOn);
     else
         cockpitFlightData.ClearLightBit(FlightData::AutoPilotOn);
@@ -1433,7 +1538,8 @@ void AircraftClass::SetExternalData(void)
     else
         cockpitFlightData.ClearLightBit2(FlightData::EcmFail);
 
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
 
     if (theRwr) // MLR Somewhere inside here crashed.
     {
@@ -1488,7 +1594,8 @@ void AircraftClass::SetExternalData(void)
             cockpitFlightData.ClearLightBit2(FlightData::AuxPwr);
     }
 
-    if (((AircraftClass*)(playerAC))->AutopilotType() == AircraftClass::LantirnAP)
+    if (((AircraftClass*)(playerAC))->AutopilotType() ==
+        AircraftClass::LantirnAP)
         cockpitFlightData.SetLightBit2(FlightData::TFR_ENGAGED);
     else
         cockpitFlightData.ClearLightBit2(FlightData::TFR_ENGAGED);
@@ -1499,7 +1606,8 @@ void AircraftClass::SetExternalData(void)
     // Lamp should be on if the TFR mode is standby or if the AP Override is being held during TFR operation.
 
     if ((theLantirn and (theLantirn->GetTFRMode() == LantirnClass::TFR_STBY)) or
-        ((playerAC->lastapType == AircraftClass::LantirnAP) and playerAC->IsOn(AircraftClass::Override)))
+        ((playerAC->lastapType == AircraftClass::LantirnAP) and
+         playerAC->IsOn(AircraftClass::Override)))
         cockpitFlightData.SetLightBit(FlightData::TFR_STBY);
     else
         cockpitFlightData.ClearLightBit(FlightData::TFR_STBY);
@@ -1507,8 +1615,10 @@ void AircraftClass::SetExternalData(void)
     // MD -- 20031011: this is a different logic flow that is used when looking at the cockpit
     // because here we only care about the lamp state not where the handle is (up/down)
     if (playerAC->mFaults->GetFault(FaultClass::gear_fault) or
-        (playerAC->mFaults->GetFault(to_ldg_config) and playerAC->af->gearPos == 0.0F) or
-        ((playerAC->af->gearPos not_eq 0.0F) and (playerAC->af->gearPos not_eq 1.0F)))
+        (playerAC->mFaults->GetFault(to_ldg_config) and
+         playerAC->af->gearPos == 0.0F) or
+        ((playerAC->af->gearPos not_eq 0.0F) and
+         (playerAC->af->gearPos not_eq 1.0F)))
         cockpitFlightData.SetLightBit2(FlightData::GEARHANDLE);
     else
         cockpitFlightData.ClearLightBit2(FlightData::GEARHANDLE);
@@ -1568,7 +1678,8 @@ void AircraftClass::SetExternalData(void)
 
     // MD -- 20031221: This one is for Mirv -- separate light for the lower half of the ENG FIRE/ENGINE split face
     // lamp on the right side of the glareshield.
-    if (((af->rpm <= 0.6F) and (((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerMain)) or
+    if (((af->rpm <= 0.6F) and (((AircraftClass*)(playerAC))->MainPower() ==
+                                AircraftClass::MainPowerMain)) or
         (cockpitFlightData.ftit > 1100.0F))
         cockpitFlightData.SetLightBit2(FlightData::ENGINE);
     else
@@ -1576,16 +1687,18 @@ void AircraftClass::SetExternalData(void)
 
     // MD -- 20031011: this lights come on if the generator is *not* running
     // but only set this to on if the main power switch is not in the off position
-    if ( not af->GeneratorRunning(AirframeClass::GenMain) and 
-        ( not (((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerOff)))
+    if (not af->GeneratorRunning(AirframeClass::GenMain) and
+        (not(((AircraftClass*)(playerAC))->MainPower() ==
+             AircraftClass::MainPowerOff)))
         cockpitFlightData.SetLightBit3(FlightData::MainGen);
     else
         cockpitFlightData.ClearLightBit3(FlightData::MainGen);
 
     // MD -- 20031011: this lights come on if the generator is *not* running
     // but only set this to on if the main power switch is not in the off position
-    if ( not af->GeneratorRunning(AirframeClass::GenStdby) and 
-        ( not (((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerOff)))
+    if (not af->GeneratorRunning(AirframeClass::GenStdby) and
+        (not(((AircraftClass*)(playerAC))->MainPower() ==
+             AircraftClass::MainPowerOff)))
         cockpitFlightData.SetLightBit3(FlightData::StbyGen);
     else
         cockpitFlightData.ClearLightBit3(FlightData::StbyGen);
@@ -1631,44 +1744,48 @@ void AircraftClass::SetExternalData(void)
 
     // MD -- 20031208: adding a bit for power off -- set if there is no electrical power
 
-    if (((AircraftClass*)(playerAC))->MainPower() == AircraftClass::MainPowerOff)
+    if (((AircraftClass*)(playerAC))->MainPower() ==
+        AircraftClass::MainPowerOff)
         cockpitFlightData.SetLightBit3(FlightData::Power_Off);
     else
         cockpitFlightData.ClearLightBit3(FlightData::Power_Off);
 
     // MD -- 20040301: adding bits for the gear down and locked so you can see for sure
     // what the individual strut state looks like.
-    if (GetDOFValue(ComplexGearDOF[0]) == (af->GetAeroData(AeroDataSet::NosGearRng) * DTR))
+    if (GetDOFValue(ComplexGearDOF[0]) ==
+        (af->GetAeroData(AeroDataSet::NosGearRng) * DTR))
         cockpitFlightData.SetLightBit3(FlightData::NoseGearDown);
     else
         cockpitFlightData.ClearLightBit3(FlightData::NoseGearDown);
 
-    if (GetDOFValue(ComplexGearDOF[1]) == (af->GetAeroData(AeroDataSet::NosGearRng + 4) * DTR))
+    if (GetDOFValue(ComplexGearDOF[1]) ==
+        (af->GetAeroData(AeroDataSet::NosGearRng + 4) * DTR))
         cockpitFlightData.SetLightBit3(FlightData::LeftGearDown);
     else
         cockpitFlightData.ClearLightBit3(FlightData::LeftGearDown);
 
-    if (GetDOFValue(ComplexGearDOF[2]) == (af->GetAeroData(AeroDataSet::NosGearRng + 8) * DTR))
+    if (GetDOFValue(ComplexGearDOF[2]) ==
+        (af->GetAeroData(AeroDataSet::NosGearRng + 8) * DTR))
         cockpitFlightData.SetLightBit3(FlightData::RightGearDown);
     else
         cockpitFlightData.ClearLightBit3(FlightData::RightGearDown);
-
 }
 
 void AircraftClass::GSounds(void)
 {
     //not if we're going down
-    if ( not IsExploding() and not IsDead())
+    if (not IsExploding() and not IsDead())
     {
         //F4SoundFXSetDist(af->auxaeroData->sndOverSpeed1, TRUE, 0.0f, 1.0f);
         //RV - I-Hawk - Added 0, 2, -1000 parameters to lower volume for such overG sound
-        SoundPos.Sfx(af->auxaeroData->sndOverSpeed1, 0, 2, -1000); // MLR 5/16/2004 -
+        SoundPos.Sfx(af->auxaeroData->sndOverSpeed1, 0, 2,
+                     -1000); // MLR 5/16/2004 -
     }
 }
 
 void AircraftClass::SSounds(void)
 {
-    if ( not IsExploding() and not IsDead())
+    if (not IsExploding() and not IsDead())
     {
         //F4SoundFXSetDist(af->auxaeroData->sndOverSpeed2, TRUE, 0.0f, (GetKias() - af->curMaxStoreSpeed) / 25);
         if (af->curMaxStoreSpeed)
@@ -1688,10 +1805,11 @@ void AircraftClass::SSounds(void)
             */
 
             v = -2000;
-            v += ((GetKias() - af->curMaxStoreSpeed) / 50) * 250 ;
+            v += ((GetKias() - af->curMaxStoreSpeed) / 50) * 250;
 
             //F4SoundFXSetDist(af->auxaeroData->sndOverSpeed2, TRUE, v, ( (GetKias() - af->curMaxStoreSpeed)) / 25);
-            SoundPos.Sfx(af->auxaeroData->sndOverSpeed2, 0, 2 , v); // MLR 5/16/2004 -
+            SoundPos.Sfx(af->auxaeroData->sndOverSpeed2, 0, 2,
+                         v); // MLR 5/16/2004 -
         }
     }
 }
@@ -1701,20 +1819,20 @@ void AircraftClass::AdjustTankSpeed(int level)
     //adjust for OverG/Speed
     switch (level)
     {
-        case 1:
-            SpeedToleranceTanks = OverSpeedToleranceTanks[1];
-            break;
+    case 1:
+        SpeedToleranceTanks = OverSpeedToleranceTanks[1];
+        break;
 
-        case 2:
-            SpeedToleranceTanks = OverSpeedToleranceTanks[2];
-            break;
+    case 2:
+        SpeedToleranceTanks = OverSpeedToleranceTanks[2];
+        break;
 
-        case 3:
-            SpeedToleranceTanks = 100; //No more damage
-            break;
+    case 3:
+        SpeedToleranceTanks = 100; //No more damage
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1723,20 +1841,20 @@ void AircraftClass::AdjustBombSpeed(int level)
     //adjust for OverG/Speed
     switch (level)
     {
-        case 1:
-            SpeedToleranceBombs = OverSpeedToleranceBombs[1];
-            break;
+    case 1:
+        SpeedToleranceBombs = OverSpeedToleranceBombs[1];
+        break;
 
-        case 2:
-            SpeedToleranceBombs = OverSpeedToleranceBombs[2];
-            break;
+    case 2:
+        SpeedToleranceBombs = OverSpeedToleranceBombs[2];
+        break;
 
-        case 3:
-            SpeedToleranceBombs = 100; //No more damage
-            break;
+    case 3:
+        SpeedToleranceBombs = 100; //No more damage
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1745,20 +1863,20 @@ void AircraftClass::AdjustTankG(int level)
     //adjust for OverG/Speed
     switch (level)
     {
-        case 1:
-            GToleranceTanks = float(OverGToleranceTanks[1]) / 10.0f;
-            break;
+    case 1:
+        GToleranceTanks = float(OverGToleranceTanks[1]) / 10.0f;
+        break;
 
-        case 2:
-            GToleranceTanks = float(OverGToleranceTanks[2]) / 10.0f;
-            break;
+    case 2:
+        GToleranceTanks = float(OverGToleranceTanks[2]) / 10.0f;
+        break;
 
-        case 3:
-            GToleranceTanks = 100; //No more damage
-            break;
+    case 3:
+        GToleranceTanks = 100; //No more damage
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -1767,19 +1885,19 @@ void AircraftClass::AdjustBombG(int level)
     //adjust for OverG/Speed
     switch (level)
     {
-        case 1:
-            GToleranceBombs = float(OverGToleranceBombs[1]) / 10.0f;
-            break;
+    case 1:
+        GToleranceBombs = float(OverGToleranceBombs[1]) / 10.0f;
+        break;
 
-        case 2:
-            GToleranceBombs = float(OverGToleranceBombs[2]) / 10.0f;
-            break;
+    case 2:
+        GToleranceBombs = float(OverGToleranceBombs[2]) / 10.0f;
+        break;
 
-        case 3:
-            GToleranceBombs = 100; //No more damage
-            break;
+    case 3:
+        GToleranceBombs = 100; //No more damage
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }

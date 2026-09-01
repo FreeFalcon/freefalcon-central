@@ -8,8 +8,8 @@
 #include "airframe.h"
 #include "otwdrive.h"
 #include "playerop.h"
-#include "Graphics/Include/Render2d.h"
-#include "Graphics/Include/Mono2d.h"
+#include "graphics/include/render2d.h"
+#include "graphics/include/mono2d.h"
 #include "simdrive.h"
 #include "atcbrain.h"
 #include "campbase.h"
@@ -24,17 +24,17 @@
 #include "soundfx.h"
 #include "classtbl.h"
 #include "navsystem.h"
-#include "flightData.h"
-#include "Icp.h"
+#include "flightdata.h"
+#include "icp.h"
 
-#include "RadarDoppler.h"  // MD -- 20040219: added for GM SP pseudo waypoint tracking
+#include "radardoppler.h" // MD -- 20040219: added for GM SP pseudo waypoint tracking
 
 #include "harmpod.h" // RV - I-Hawk
 
 //MI for RALT and MSLFloor stuff
 extern bool g_bRealisticAvionics;
 extern bool g_bFallingHeadingTape;
-#include "flightData.h"
+#include "flightdata.h"
 extern bool g_bINS;
 
 //HUD Fixes on/off switch. Smeghead, 16-Oct-2003.
@@ -49,25 +49,28 @@ void HudClass::DrawAirspeed(void)
     float smallTickLen = 0.0F;
     float tickInc = 0.0F, delta = 0.0F;
     float x1 = 0.0F, x2 = 0.0F, y1 = 0.0F;
-    float winCenter = hudWinY[AIRSPEED_WINDOW] + hudWinHeight[AIRSPEED_WINDOW] * 0.5F;
+    float winCenter =
+        hudWinY[AIRSPEED_WINDOW] + hudWinHeight[AIRSPEED_WINDOW] * 0.5F;
     float boxY = winCenter + display->TextHeight() * 0.5F;
     int i = 0, a = 0;
-    int origfont = 0;//TJL 03/07/04
+    int origfont = 0; //TJL 03/07/04
 
-    if ( not ownship)   // VWF added 10/20/98 to avoid crash
+    if (not ownship) // VWF added 10/20/98 to avoid crash
     {
         return;
     }
 
     //rightEdge = hudWinX[AIRSPEED_WINDOW] + hudWinWidth[AIRSPEED_WINDOW];
-    rightEdge = hudWinX[AIRSPEED_WINDOW] + (hudWinWidth[AIRSPEED_WINDOW] * 0.5f);
+    rightEdge =
+        hudWinX[AIRSPEED_WINDOW] + (hudWinWidth[AIRSPEED_WINDOW] * 0.5f);
 
     //MI
     //leftEdge = hudWinX[ALTITUDE_WINDOW] - (hudWinWidth[ALTITUDE_WINDOW] * 0.5F);
     leftEdge = hudWinX[AIRSPEED_WINDOW] - (hudWinWidth[AIRSPEED_WINDOW] * 0.5F);
 
     //MI
-    if (g_bRealisticAvionics and (((AircraftClass*)ownship)->af->gearPos > 0.5F))
+    if (g_bRealisticAvionics and
+        (((AircraftClass*)ownship)->af->gearPos > 0.5F))
     {
         a = FloatToInt32(cockpitFlightData.kias);
         DrawWindowString(2, "C");
@@ -76,21 +79,23 @@ void HudClass::DrawAirspeed(void)
     {
         switch (velocitySwitch)
         {
-            case CAS:
-                a = FloatToInt32(cockpitFlightData.kias);
-                DrawWindowString(2, "C");
-                break;
+        case CAS:
+            a = FloatToInt32(cockpitFlightData.kias);
+            DrawWindowString(2, "C");
+            break;
 
-            case TAS:
-                a = FloatToInt32(cockpitFlightData.vt * FTPSEC_TO_KNOTS);
-                DrawWindowString(2, "T");
-                break;
+        case TAS:
+            a = FloatToInt32(cockpitFlightData.vt * FTPSEC_TO_KNOTS);
+            DrawWindowString(2, "T");
+            break;
 
-            case GND_SPD:
-                a = FloatToInt32((float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
-                                             cockpitFlightData.yDot * cockpitFlightData.yDot) * FTPSEC_TO_KNOTS);
-                DrawWindowString(2, "G");
-                break;
+        case GND_SPD:
+            a = FloatToInt32(
+                (float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
+                            cockpitFlightData.yDot * cockpitFlightData.yDot) *
+                FTPSEC_TO_KNOTS);
+            DrawWindowString(2, "G");
+            break;
         }
     }
 
@@ -104,11 +109,12 @@ void HudClass::DrawAirspeed(void)
     }
 
     // M.N. added full realism mode
-    if ((PlayerOptions.GetAvionicsType() == ATRealistic) or (PlayerOptions.GetAvionicsType() == ATRealisticAV))
+    if ((PlayerOptions.GetAvionicsType() == ATRealistic) or
+        (PlayerOptions.GetAvionicsType() == ATRealisticAV))
     {
         if (temp < 60)
         {
-            aspeedHud = 0;//Cobra
+            aspeedHud = 0; //Cobra
             a = 0;
         }
         else
@@ -131,13 +137,13 @@ void HudClass::DrawAirspeed(void)
 
     //TJL 03/07/04 Removing ticks from everything but F-16 or default HUD
     //if ((scalesSwitch == VAH or scalesSwitch == VV_VAH) and (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight))//me123 status test.
-    if (
-        (ownship->IsF16() or (ownship->af->GetTypeAC() == 0)) and 
-        ((scalesSwitch == VAH) or (scalesSwitch == VV_VAH)) and 
-        (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight))//me123 status test.
+    if ((ownship->IsF16() or (ownship->af->GetTypeAC() == 0)) and
+        ((scalesSwitch == VAH) or (scalesSwitch == VV_VAH)) and
+        (FCC->GetMasterMode() not_eq
+         FireControlComputer::Dogfight)) //me123 status test.
     {
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             if (scalesSwitch == VAH)
             {
@@ -148,19 +154,27 @@ void HudClass::DrawAirspeed(void)
                 display->TextRight(rightEdge - 0.03F, boxY, tmpStr, 8);
             }
 
-            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] * 0.85F;	// #45 ticks were short (~6px) -> longer
+            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] *
+                         0.85F; // #45 ticks were short (~6px) -> longer
             smallTickLen = bigTickLen * 0.55F;
-            tickInc = hudWinHeight[AIRSPEED_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
-            display->Line(rightEdge * 0.95F, winCenter, rightEdge * 0.95F + bigTickLen, winCenter);
+            tickInc =
+                hudWinHeight[AIRSPEED_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
+            display->Line(rightEdge * 0.95F, winCenter,
+                          rightEdge * 0.95F + bigTickLen, winCenter);
         }
         else
         {
             // this is the line which draws the airspeed box
             display->TextRight(rightEdge - 0.06F, boxY, tmpStr, 8);
-            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] * 0.45F;	// #45 was *0.2 (ticks short) -> longer
+            bigTickLen = hudWinWidth[AIRSPEED_WINDOW] *
+                         0.45F; // #45 was *0.2 (ticks short) -> longer
             smallTickLen = bigTickLen * 0.6F;
-            tickInc = hudWinHeight[AIRSPEED_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
-            display->Line(rightEdge * 0.95F, winCenter, rightEdge * 0.95F + hudWinWidth[AIRSPEED_WINDOW] * 0.5F, winCenter);
+            tickInc =
+                hudWinHeight[AIRSPEED_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
+            display->Line(rightEdge * 0.95F, winCenter,
+                          rightEdge * 0.95F +
+                              hudWinWidth[AIRSPEED_WINDOW] * 0.5F,
+                          winCenter);
         }
 
         x1 = rightEdge;
@@ -173,9 +187,10 @@ void HudClass::DrawAirspeed(void)
             /*if (a >= 0 and 
               (y1 - boxY > display->TextHeight() * 1.1F or
               y1 - boxY < -tickInc))*/
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
             {
-                if ((a >= 0) and ((y1 - boxY > tickInc) or (y1 - boxY < (-tickInc * 3.0F))))
+                if ((a >= 0) and
+                    ((y1 - boxY > tickInc) or (y1 - boxY < (-tickInc * 3.0F))))
                 {
                     if (a % 5)
                     {
@@ -184,7 +199,9 @@ void HudClass::DrawAirspeed(void)
                     else
                     {
                         x2 = x1 - bigTickLen;
-                        display->TextRightVertical(x2 - smallTickLen * 0.5F, y1 + 0.01F, hudNumbers[min(a, 99)]);
+                        display->TextRightVertical(x2 - smallTickLen * 0.5F,
+                                                   y1 + 0.01F,
+                                                   hudNumbers[min(a, 99)]);
                     }
 
                     display->Line(x1, y1, x2, y1);
@@ -201,11 +218,14 @@ void HudClass::DrawAirspeed(void)
                     x2 = x1 - bigTickLen;
                 }
 
-                if ( not (a % 5))
+                if (not(a % 5))
                 {
-                    if (a >= 0 and (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
+                    if (a >= 0 and
+                        (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
                     {
-                        display->TextRightVertical(x2 - smallTickLen * 0.5F, y1 + 0.01F, hudNumbers[min(a, 99)]);
+                        display->TextRightVertical(x2 - smallTickLen * 0.5F,
+                                                   y1 + 0.01F,
+                                                   hudNumbers[min(a, 99)]);
                     }
                 }
 
@@ -219,18 +239,23 @@ void HudClass::DrawAirspeed(void)
         // Draw Desired speed caret
         {
             //MI we don't get this with gear down
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
             {
-                y1 = hudWinY[AIRSPEED_WINDOW] + hudWinHeight[AIRSPEED_WINDOW] * 0.5F;
+                y1 = hudWinY[AIRSPEED_WINDOW] +
+                     hudWinHeight[AIRSPEED_WINDOW] * 0.5F;
                 x1 = rightEdge;
 
                 delta = waypointSpeed - (cockpitFlightData.kias);
                 delta *= 0.1F;
                 y1 += delta * tickInc;
-                y1 = max(min(y1, hudWinY[AIRSPEED_WINDOW] + hudWinHeight[AIRSPEED_WINDOW] - smallTickLen),
+                y1 = max(min(y1, hudWinY[AIRSPEED_WINDOW] +
+                                     hudWinHeight[AIRSPEED_WINDOW] -
+                                     smallTickLen),
                          hudWinY[AIRSPEED_WINDOW]);
-                display->Line(x1, y1, x1 + bigTickLen, y1 + (smallTickLen * 0.5F));
-                display->Line(x1, y1, x1 + bigTickLen, y1 - (smallTickLen * 0.5F));
+                display->Line(x1, y1, x1 + bigTickLen,
+                              y1 + (smallTickLen * 0.5F));
+                display->Line(x1, y1, x1 + bigTickLen,
+                              y1 - (smallTickLen * 0.5F));
             }
             else
             {
@@ -238,10 +263,9 @@ void HudClass::DrawAirspeed(void)
                 {
                     // sfr: changed order here (no semantic change, was if else if)
                     //CruiseTOS in all modes, others only in NAV
-                    if (
-                        (FCC->GetMasterMode() == FireControlComputer::Nav) or
-                        (OTWDriver.pCockpitManager->mpIcp->GetCruiseIndex() == 0)
-                    )
+                    if ((FCC->GetMasterMode() == FireControlComputer::Nav) or
+                        (OTWDriver.pCockpitManager->mpIcp->GetCruiseIndex() ==
+                         0))
                     {
                         DrawCruiseIndexes();
                     }
@@ -252,7 +276,7 @@ void HudClass::DrawAirspeed(void)
     else
     {
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             display->TextRight(rightEdge - 0.03F, boxY, tmpStr, 8);
             //      if (FCC->GetMasterMode() == FireControlComputer::Nav)
@@ -283,7 +307,8 @@ void HudClass::DrawAirspeed(void)
                             DrawCruiseIndexes();
                         else
                         {
-                            if (OTWDriver.pCockpitManager->mpIcp->GetCruiseIndex() == 0)
+                            if (OTWDriver.pCockpitManager->mpIcp
+                                    ->GetCruiseIndex() == 0)
                                 DrawCruiseIndexes();
                         }
                     }
@@ -319,23 +344,25 @@ void HudClass::DrawAltitude(void)
     char lowFormat[] = "%d%02d";
 
 
-    if (ownship == NULL)   // vwf: to avoid crash after ownship gets destroyed.
+    if (ownship == NULL) // vwf: to avoid crash after ownship gets destroyed.
     {
         return;
     }
 
     // Height Above Terrain
-    hat = cockpitFlightData.z - OTWDriver.GetGroundLevel(ownship->XPos(), ownship->YPos());
+    hat = cockpitFlightData.z -
+          OTWDriver.GetGroundLevel(ownship->XPos(), ownship->YPos());
 
     // Max hat if no rad alt
     if (ownship->mFaults and ownship->mFaults->GetFault(FaultClass::ralt_fault))
         hat = -999999.9F;
 
     // Window 25 (ALOW warning)
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI original code
-        if (-hat < lowAltWarning and flash and ((AircraftClass*)ownship)->af->gearPos < 0.5F)
+        if (-hat < lowAltWarning and flash and
+            ((AircraftClass*)ownship)->af->gearPos < 0.5F)
         {
             sprintf(tmpStr, "AL %.0f", -hat);
             ShiAssert(strlen(tmpStr) < 40);
@@ -362,10 +389,12 @@ void HudClass::DrawAltitude(void)
                 }
                 else
                 {
-                    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat)) and 
+                    if (-hat < lowAltWarning and
+                        (FindRollAngle(-hat) and FindPitchAngle(-hat)) and
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
-                        if (Warnflash and not ((AircraftClass*)ownship)->OnGround())
+                        if (Warnflash and
+                            not((AircraftClass*)ownship)->OnGround())
                         {
                             DrawALString();
                         }
@@ -376,7 +405,8 @@ void HudClass::DrawAltitude(void)
 
                         if (((AircraftClass*)ownship)->af->gearPos < 0.8F)
                         {
-                            F4SoundFXSetDist(ownship->af->GetAltitudeSnd(), FALSE, 0.0f, 1.0f);
+                            F4SoundFXSetDist(ownship->af->GetAltitudeSnd(),
+                                             FALSE, 0.0f, 1.0f);
                         }
                     }
                     else
@@ -387,12 +417,17 @@ void HudClass::DrawAltitude(void)
             }
             else
             {
-                if (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and FCC->GetMasterMode() not_eq FireControlComputer::MissileOverride)
+                if (FCC->GetMasterMode() not_eq
+                        FireControlComputer::Dogfight and
+                    FCC->GetMasterMode() not_eq
+                        FireControlComputer::MissileOverride)
                 {
-                    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat)) and 
+                    if (-hat < lowAltWarning and
+                        (FindRollAngle(-hat) and FindPitchAngle(-hat)) and
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
-                        if (Warnflash and not ((AircraftClass*)ownship)->OnGround())
+                        if (Warnflash and
+                            not((AircraftClass*)ownship)->OnGround())
                         {
                             DrawALString();
                         }
@@ -403,7 +438,8 @@ void HudClass::DrawAltitude(void)
 
                         if (((AircraftClass*)ownship)->af->gearPos < 0.8F)
                         {
-                            F4SoundFXSetDist(ownship->af->GetAltitudeSnd(), FALSE, 0.0f, 1.0f);
+                            F4SoundFXSetDist(ownship->af->GetAltitudeSnd(),
+                                             FALSE, 0.0f, 1.0f);
                         }
                     }
                     else
@@ -416,37 +452,41 @@ void HudClass::DrawAltitude(void)
     }
 
 
-
     winCenter = hudWinY[ALTITUDE_WINDOW] + hudWinHeight[ALTITUDE_WINDOW] * 0.5F;
     boxY = winCenter + display->TextHeight() * 0.5F;
 
     //TJL 03/07/04 Only for F16 or default HUD
-    if ((ownship->IsF16() or ownship->af->GetTypeAC() == 0) and (scalesSwitch == VAH  or scalesSwitch == VV_VAH)
-       and (FCC->GetMasterMode() not_eq FireControlComputer::Dogfight)) //me123 status test.
+    if ((ownship->IsF16() or ownship->af->GetTypeAC() == 0) and
+        (scalesSwitch == VAH or scalesSwitch == VV_VAH) and
+        (FCC->GetMasterMode() not_eq
+         FireControlComputer::Dogfight)) //me123 status test.
     {
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             if (scalesSwitch == VAH)
                 boxY = 2.0F;
         }
 
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
-            bigTickLen = hudWinWidth[ALTITUDE_WINDOW] * 0.85F;	// #45 ticks were short (~6px) -> longer
+            bigTickLen = hudWinWidth[ALTITUDE_WINDOW] *
+                         0.85F; // #45 ticks were short (~6px) -> longer
             smallTickLen = bigTickLen * 0.55F;
         }
         else
         {
-            bigTickLen = hudWinWidth[ALTITUDE_WINDOW] * 0.45F;	// #45 was *0.2 -> longer
+            bigTickLen =
+                hudWinWidth[ALTITUDE_WINDOW] * 0.45F; // #45 was *0.2 -> longer
             smallTickLen = bigTickLen * 0.55F;
         }
 
         leftEdge = hudWinX[ALTITUDE_WINDOW];
         /*bigTickLen = hudWinWidth[ALTITUDE_WINDOW] * 0.5F;
           smallTickLen = bigTickLen * 0.5F;*/
-        tickInc = hudWinHeight[ALTITUDE_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
+        tickInc =
+            hudWinHeight[ALTITUDE_WINDOW] / (float)(NUM_VERTICAL_TICKS - 1);
 
         // Choose the right scale
         if (radarSwitch == BARO)
@@ -458,7 +498,7 @@ void HudClass::DrawAltitude(void)
             //MI for CARA switch
             if (g_bRealisticAvionics)
             {
-                if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
+                if (((AircraftClass*)ownship)->af->platform->IsPlayer() and
                     ((AircraftClass*)ownship)->af->platform->RaltReady())
                 {
                     if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -484,12 +524,13 @@ void HudClass::DrawAltitude(void)
         }
         else
         {
-            if (hat > -1200.0F or (cockpitFlightData.zDot < 0.0F and hat > -1500.0F))
+            if (hat > -1200.0F or
+                (cockpitFlightData.zDot < 0.0F and hat > -1500.0F))
             {
                 //MI for CARA switch
                 if (g_bRealisticAvionics)
                 {
-                    if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
+                    if (((AircraftClass*)ownship)->af->platform->IsPlayer() and
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
                         if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -554,23 +595,29 @@ void HudClass::DrawAltitude(void)
             y1 = winCenter - (-theAlt - a) / tickInterval * tickInc;
 
             x1 = leftEdge;
-            leftEdge *= 0.95F;   // JPG 0.95F
+            leftEdge *= 0.95F; // JPG 0.95F
 
             // Draw index tick
             //MI
             if (g_bRealisticAvionics)
             {
-                if ( not (FCC->GetMasterMode() == FireControlComputer::Missile) and 
- not (FCC->GetMasterMode() == FireControlComputer::Dogfight) and 
- not (FCC->GetMasterMode() == FireControlComputer::MissileOverride))
+                if (not(FCC->GetMasterMode() ==
+                        FireControlComputer::Missile) and
+                    not(FCC->GetMasterMode() ==
+                        FireControlComputer::Dogfight) and
+                    not(FCC->GetMasterMode() ==
+                        FireControlComputer::MissileOverride))
                 {
                     display->Line(leftEdge, winCenter,
-                                  leftEdge - hudWinWidth[ALTITUDE_WINDOW] * 0.5F, winCenter);
+                                  leftEdge -
+                                      hudWinWidth[ALTITUDE_WINDOW] * 0.5F,
+                                  winCenter);
                 }
             }
             else
             {
-                display->Line(leftEdge, winCenter, leftEdge - bigTickLen, winCenter);
+                display->Line(leftEdge, winCenter, leftEdge - bigTickLen,
+                              winCenter);
             }
 
             //Cobra Add in the delay
@@ -592,7 +639,8 @@ void HudClass::DrawAltitude(void)
                 }
 
                 sprintf(tmpStr, "%2d,%03d", -FloatToInt32(theAlt * 0.001F),
-                        FloatToInt32(theAlt - FloatToInt32(theAlt * 0.001F) * 1000.0F));
+                        FloatToInt32(theAlt -
+                                     FloatToInt32(theAlt * 0.001F) * 1000.0F));
             }
             else
             {
@@ -604,7 +652,8 @@ void HudClass::DrawAltitude(void)
                 }
 
                 sprintf(tmpStr, "%2d,%03d", -FloatToInt32(theAlt * 0.001F),
-                        -(FloatToInt32(theAlt - FloatToInt32(theAlt * 0.001F) * 1000.0F)));
+                        -(FloatToInt32(theAlt - FloatToInt32(theAlt * 0.001F) *
+                                                    1000.0F)));
             }
 
             //MI
@@ -627,7 +676,9 @@ void HudClass::DrawAltitude(void)
 #endif
 
             // sfr: above code was causing altitude hud missalignment and changed from .17 to .22
-            display->TextRight(hudWinX[ALTITUDE_WINDOW] + 0.22F + hudWinWidth[ALTITUDE_WINDOW], boxY, tmpStr, 4);
+            display->TextRight(hudWinX[ALTITUDE_WINDOW] + 0.22F +
+                                   hudWinWidth[ALTITUDE_WINDOW],
+                               boxY, tmpStr, 4);
 
             for (i = 0; i < NUM_VERTICAL_TICKS; i++)
             {
@@ -635,22 +686,26 @@ void HudClass::DrawAltitude(void)
                 /*if (a >= 0 and 
                   (y1 - boxY > display->TextHeight() * 1.1F or
                   y1 - boxY < -tickInc))*/
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                 {
-                    if (a >= 0 and (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
+                    if (a >= 0 and
+                        (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
                     {
                         if (a % labelInterval)
                             x2 = x1 + smallTickLen;
                         else
                         {
                             if (formatStr == lowFormat)
-                                sprintf(tmpStr, formatStr, a / labelMod, a % labelMod);
+                                sprintf(tmpStr, formatStr, a / labelMod,
+                                        a % labelMod);
                             else
-                                sprintf(tmpStr, formatStr, a / labelMod, (a % labelMod) / 100);
+                                sprintf(tmpStr, formatStr, a / labelMod,
+                                        (a % labelMod) / 100);
 
                             ShiAssert(strlen(tmpStr) < 12);
                             x2 = x1 + bigTickLen;
-                            display->TextLeftVertical(x2 + smallTickLen * 0.5F, y1 + 0.01F, tmpStr);
+                            display->TextLeftVertical(x2 + smallTickLen * 0.5F,
+                                                      y1 + 0.01F, tmpStr);
                         }
 
                         display->Line(x1, y1, x2, y1);
@@ -663,15 +718,19 @@ void HudClass::DrawAltitude(void)
                     else
                     {
                         if (formatStr == lowFormat)
-                            sprintf(tmpStr, formatStr, a / labelMod, a % labelMod);
+                            sprintf(tmpStr, formatStr, a / labelMod,
+                                    a % labelMod);
                         else
-                            sprintf(tmpStr, formatStr, a / labelMod, (a % labelMod) / 100);
+                            sprintf(tmpStr, formatStr, a / labelMod,
+                                    (a % labelMod) / 100);
 
                         ShiAssert(strlen(tmpStr) < 12);
                         x2 = x1 + bigTickLen;
 
-                        if (a >= 0 and (y1 - boxY > tickInc or y1 - boxY < (-tickInc * 3.0F)))
-                            display->TextLeftVertical(x2 + smallTickLen * 0.5F, y1 + 0.01F, tmpStr);
+                        if (a >= 0 and (y1 - boxY > tickInc or
+                                        y1 - boxY < (-tickInc * 3.0F)))
+                            display->TextLeftVertical(x2 + smallTickLen * 0.5F,
+                                                      y1 + 0.01F, tmpStr);
                     }
 
                     display->Line(x1, y1, x2, y1);
@@ -682,7 +741,7 @@ void HudClass::DrawAltitude(void)
             }
         }
         else
-            // Auto display in low altitude mode
+        // Auto display in low altitude mode
         {
             y1 = hudWinY[ALTITUDE_WINDOW];
 
@@ -706,7 +765,8 @@ void HudClass::DrawAltitude(void)
                     {
                         sprintf(tmpStr, "%d", i / 2);
                         ShiAssert(strlen(tmpStr) < 12);
-                        display->TextLeftVertical(x2 + smallTickLen * 0.5F, y1 + 0.01F, tmpStr);
+                        display->TextLeftVertical(x2 + smallTickLen * 0.5F,
+                                                  y1 + 0.01F, tmpStr);
                     }
                 }
 
@@ -729,7 +789,8 @@ void HudClass::DrawAltitude(void)
             }
             else
             {
-                y2 = (NUM_VERTICAL_TICKS * 2 - 2) * tickInc + (-theAlt - 1000.0F) / 500.0F * 2 * tickInc;
+                y2 = (NUM_VERTICAL_TICKS * 2 - 2) * tickInc +
+                     (-theAlt - 1000.0F) / 500.0F * 2 * tickInc;
             }
 
             display->Line(x1, y1, x1 - smallTickLen, y1);
@@ -739,19 +800,23 @@ void HudClass::DrawAltitude(void)
             // Add the current alow setting
             if (lowAltWarning < 1000.0F)
             {
-                y2 = lowAltWarning / 1000.0F * (NUM_VERTICAL_TICKS * 2 - 2) * tickInc;
+                y2 = lowAltWarning / 1000.0F * (NUM_VERTICAL_TICKS * 2 - 2) *
+                     tickInc;
             }
             else
             {
-                y2 = (NUM_VERTICAL_TICKS * 2 - 2) * tickInc + (lowAltWarning - 1000.0F) / 500.0F * 2 * tickInc;
+                y2 = (NUM_VERTICAL_TICKS * 2 - 2) * tickInc +
+                     (lowAltWarning - 1000.0F) / 500.0F * 2 * tickInc;
             }
 
             display->Line(x1 - bigTickLen, y1 + y2, x1 - smallTickLen, y1 + y2);
-            display->Line(x1 - bigTickLen, y1 + y2 - smallTickLen, x1 - bigTickLen, y1 + y2 + smallTickLen);
+            display->Line(x1 - bigTickLen, y1 + y2 - smallTickLen,
+                          x1 - bigTickLen, y1 + y2 + smallTickLen);
         }
 
         // Add Vertical Velocity if needed
-        if (FCC->GetMasterMode() == FireControlComputer::Nav and scalesSwitch == VV_VAH)
+        if (FCC->GetMasterMode() == FireControlComputer::Nav and
+            scalesSwitch == VV_VAH)
         {
             tickInc = hudWinHeight[ALTITUDE_WINDOW] / 9;
             leftEdge -= 2.0F * bigTickLen;
@@ -774,10 +839,12 @@ void HudClass::DrawAltitude(void)
             y1 = (-cockpitFlightData.zDot * MIN_TO_SEC) / 500.0F * tickInc;
             y1 = min(max(y1, -6.0F * tickInc), 6.0F * tickInc);
             y1 += winCenter;
-            display->Line(leftEdge, y1, leftEdge - smallTickLen, y1 + smallTickLen);
-            display->Line(leftEdge, y1, leftEdge - smallTickLen, y1 - smallTickLen);
-            display->Line(leftEdge - smallTickLen, y1 + smallTickLen, leftEdge - smallTickLen, y1 - smallTickLen);
-
+            display->Line(leftEdge, y1, leftEdge - smallTickLen,
+                          y1 + smallTickLen);
+            display->Line(leftEdge, y1, leftEdge - smallTickLen,
+                          y1 - smallTickLen);
+            display->Line(leftEdge - smallTickLen, y1 + smallTickLen,
+                          leftEdge - smallTickLen, y1 - smallTickLen);
         }
     }
     else //Scales OFF
@@ -793,7 +860,7 @@ void HudClass::DrawAltitude(void)
             //MI for CARA switch
             if (g_bRealisticAvionics)
             {
-                if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
+                if (((AircraftClass*)ownship)->af->platform->IsPlayer() and
                     ((AircraftClass*)ownship)->af->platform->RaltReady())
                 {
                     if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -819,12 +886,13 @@ void HudClass::DrawAltitude(void)
         }
         else
         {
-            if (hat > -1200.0F or (cockpitFlightData.zDot < 0.0F and hat > -1500.0F))
+            if (hat > -1200.0F or
+                (cockpitFlightData.zDot < 0.0F and hat > -1500.0F))
             {
                 //MI for CARA switch
                 if (g_bRealisticAvionics)
                 {
-                    if (((AircraftClass*)ownship)->af->platform->IsPlayer() and 
+                    if (((AircraftClass*)ownship)->af->platform->IsPlayer() and
                         ((AircraftClass*)ownship)->af->platform->RaltReady())
                     {
                         if (FindRollAngle(-hat) and FindPitchAngle(-hat))
@@ -841,7 +909,6 @@ void HudClass::DrawAltitude(void)
                         //CARA is not yet ready
                         theAlt = -cockpitFlightData.z;
                     }
-
                 }
                 else
                 {
@@ -859,7 +926,7 @@ void HudClass::DrawAltitude(void)
         if ((unsigned long)hudAltDelayTimer < SimLibElapsedTime)
         {
             altHudn = theAlt;
-            altHud = -theAlt;//seed the other while in this loop
+            altHud = -theAlt; //seed the other while in this loop
             hudAltDelayTimer = SimLibElapsedTime + 250;
         }
 
@@ -872,8 +939,9 @@ void HudClass::DrawAltitude(void)
                 theAlt = ((static_cast<int>(altHudn) + 5) / 10) * 10.0f;
             }
 
-            sprintf(tmpStr, "%2d,%03d", FloatToInt32(theAlt * 0.001F),
-                    FloatToInt32(theAlt - FloatToInt32(theAlt * 0.001F) * 1000.0F));
+            sprintf(
+                tmpStr, "%2d,%03d", FloatToInt32(theAlt * 0.001F),
+                FloatToInt32(theAlt - FloatToInt32(theAlt * 0.001F) * 1000.0F));
         }
         else
         {
@@ -885,7 +953,8 @@ void HudClass::DrawAltitude(void)
             }
 
             sprintf(tmpStr, "-%2d,%03d", abs(FloatToInt32(theAlt * 0.001F)),
-                    abs(FloatToInt32(theAlt - FloatToInt32(theAlt * 0.001F) * 1000.0F)));
+                    abs(FloatToInt32(theAlt -
+                                     FloatToInt32(theAlt * 0.001F) * 1000.0F)));
         }
 
         ShiAssert(strlen(tmpStr) < 12);
@@ -904,8 +973,9 @@ void HudClass::DrawAltitude(void)
 
 #endif
         // sfr: changed .17 to .20
-        display->TextRight(hudWinX[ALTITUDE_WINDOW] + hudWinWidth[ALTITUDE_WINDOW] + 0.22F, boxY, tmpStr, 4);
-
+        display->TextRight(hudWinX[ALTITUDE_WINDOW] +
+                               hudWinWidth[ALTITUDE_WINDOW] + 0.22F,
+                           boxY, tmpStr, 4);
     }
 
     //MI MSL Floor Check
@@ -918,7 +988,7 @@ void HudClass::DrawAltitude(void)
 static const float HeadingWidthDiff = 0.15F;
 void HudClass::DrawHeading(void)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     char tmpStr[12] = {0};
     float vert[2][2] = {0.0F};
     int i = 0, a = 0, val = 0;
@@ -934,29 +1004,35 @@ void HudClass::DrawHeading(void)
     else
         HEADING_BOTTOM = -0.82F;
 
-    if (headingPos == Off or (FCC->GetMasterMode() == FireControlComputer::Dogfight)) //me123 status test.)
+    if (headingPos == Off or
+        (FCC->GetMasterMode() ==
+         FireControlComputer::Dogfight)) //me123 status test.)
     {
         return;
     }
-    else if (headingPos == High or ((AircraftClass*)ownship)->af->gearPos > 0.5F)
+    else if (headingPos == High or
+             ((AircraftClass*)ownship)->af->gearPos > 0.5F)
     {
         //MI
-        if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() or
-            (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
- not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
+        if (not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() or
+            (g_bRealisticAvionics and g_bINS and ownship and
+                 ownship->INSState(AircraftClass::INS_PowerOff) or
+             not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
             headingTop = hudWinY[HEADING_WINDOW_HI] +
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
         }
         else
-            headingTop = (hudWinY[HEADING_WINDOW_LO] - 0.2F) + //use this to make it always follow FPM
+            headingTop = (hudWinY[HEADING_WINDOW_LO] -
+                          0.2F) + //use this to make it always follow FPM
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
 
         // MI
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
-            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and not ((AircraftClass*)ownship->OnGround()))
+            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and
+                not((AircraftClass*)ownship->OnGround()))
             {
                 dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
@@ -980,29 +1056,31 @@ void HudClass::DrawHeading(void)
     }
     else if (headingPos == Low)
     {
-        headingTop = hudWinY[HEADING_WINDOW_LO] +
-                     hudWinHeight[HEADING_WINDOW_LO] * 0.5F;
+        headingTop =
+            hudWinY[HEADING_WINDOW_LO] + hudWinHeight[HEADING_WINDOW_LO] * 0.5F;
 
         // Marco edit - Scroll heading tape downwards with FPM
         // if it's down the bottom
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
             dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
-                 hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-                 alphaHudUnits - 0.12f;
+                 hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits -
+                 0.12f;
 
-            if (dy < HEADING_BOTTOM) //don't fall off of the HUD. This can be seen in some of the vids
-                dy = HEADING_BOTTOM; //not sure if the position is right, but I think you should always see it
+            if (dy <
+                HEADING_BOTTOM) //don't fall off of the HUD. This can be seen in some of the vids
+                dy =
+                    HEADING_BOTTOM; //not sure if the position is right, but I think you should always see it
 
             //so let's keep it above the projector thingie
             if (dy < headingTop)
                 headingTop = dy;
-
         }
 
         //MI INS stuff
-        if (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
- not ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (g_bRealisticAvionics and g_bINS and ownship and
+                ownship->INSState(AircraftClass::INS_PowerOff) or
+            not ownship->INSState(AircraftClass::INS_HUD_STUFF))
         {
             headingTop = hudWinY[HEADING_WINDOW_LO] +
                          hudWinHeight[HEADING_WINDOW_LO] * 0.5F;
@@ -1024,11 +1102,11 @@ void HudClass::DrawHeading(void)
     bigTickLen = hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
     smallTickLen = hudWinHeight[HEADING_WINDOW_HI] * 0.25F;
 
-    display->Line(0.0F, headingTop + smallTickLen,
-                  0.0F, headingTop + bigTickLen + smallTickLen);
+    display->Line(0.0F, headingTop + smallTickLen, 0.0F,
+                  headingTop + bigTickLen + smallTickLen);
     a = FloatToInt32(cockpitFlightData.yaw * 10.0F * RTD);
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         vert[0][0] = -(a % 50) * tickInc * 0.02F - 4 * tickInc;
     else
         vert[0][0] = -(a % 50) * tickInc * 0.02F - 2 * tickInc;
@@ -1039,7 +1117,8 @@ void HudClass::DrawHeading(void)
 #if 1
 
     // ADDED BY S.G. SO 3 DIGIT ARE DISPLAYED FOR THE HEADING WHEN IN 'SS_OFF' MODE
-    if (scalesSwitch == SS_OFF or scalesSwitch == VAH)   //MI changed VV_VAH to VAH
+    if (scalesSwitch == SS_OFF or
+        scalesSwitch == VAH) //MI changed VV_VAH to VAH
     {
         // a is multiplied by ten above, we don't need that here
         //MI 16/2/02 give us a 180 heading
@@ -1119,7 +1198,7 @@ void HudClass::DrawHeading(void)
     //MI
     if (g_bINS and g_bRealisticAvionics)
     {
-        if ( not ownship->INSState(AircraftClass::INS_HUD_STUFF))
+        if (not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             sprintf(tmpStr, "   ");
 
         display->TextCenter(0.0F, vert[0][1] - 0.075F, tmpStr, 1);
@@ -1132,7 +1211,7 @@ void HudClass::DrawHeading(void)
     if (scalesSwitch == VAH or scalesSwitch == VV_VAH or scalesSwitch == H)
     {
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             for (i = 0; i < NUM_HORIZONTAL_TICKS; i++)
             {
@@ -1156,17 +1235,16 @@ void HudClass::DrawHeading(void)
                     {
                         if (display->type == VirtualDisplay::DISPLAY_GENERAL)
                         {
-                            display->TextCenter(vert[1][0], vert[0][1] - 0.075F, tmpStr);
+                            display->TextCenter(vert[1][0], vert[0][1] - 0.075F,
+                                                tmpStr);
                         }
                         else
                         {
-                            if
-                            (
-                                ((a < 0) and (((-a) % 6) < 2)) or
-                                ((a >= 0) and ((a % 6) < 2))
-                            )
+                            if (((a < 0) and (((-a) % 6) < 2)) or
+                                ((a >= 0) and ((a % 6) < 2)))
                             {
-                                display->TextCenter(vert[1][0], vert[0][1] - 0.075F, tmpStr);
+                                display->TextCenter(
+                                    vert[1][0], vert[0][1] - 0.075F, tmpStr);
                             }
                         }
                     }
@@ -1174,7 +1252,7 @@ void HudClass::DrawHeading(void)
 
                 display->Line(vert[0][0], vert[0][1], vert[1][0], vert[1][1]);
 
-                a ++ ;
+                a++;
                 vert[0][0] += tickInc;
             }
         }
@@ -1196,7 +1274,8 @@ void HudClass::DrawHeading(void)
                         {
                             sprintf(tmpStr, "%3d", ((a + 74) * 10) >> 1);
 
-                            if (atoi(tmpStr) == 370) //MI HACK to prevent "37" beeing written
+                            if (atoi(tmpStr) ==
+                                370) //MI HACK to prevent "37" beeing written
                                 sprintf(tmpStr, "010");
                         }
                         else
@@ -1208,7 +1287,8 @@ void HudClass::DrawHeading(void)
                         {
                             sprintf(tmpStr, "%02d", (a + 74) >> 1);
 
-                            if (atoi(tmpStr) == 37) //MI HACK to prevent "37" beeing written
+                            if (atoi(tmpStr) ==
+                                37) //MI HACK to prevent "37" beeing written
                                 sprintf(tmpStr, "01");
                         }
                         else
@@ -1224,31 +1304,37 @@ void HudClass::DrawHeading(void)
                         {
                             if (g_bINS)
                             {
-                                if (ownship->INSState(AircraftClass::INS_HUD_STUFF))
+                                if (ownship->INSState(
+                                        AircraftClass::INS_HUD_STUFF))
                                 {
-                                    display->TextCenter(vert[1][0], vert[0][1] - 0.075F, tmpStr);
+                                    display->TextCenter(vert[1][0],
+                                                        vert[0][1] - 0.075F,
+                                                        tmpStr);
                                 }
                             }
                             else
-                                display->TextCenter(vert[1][0], vert[0][1] - 0.075F, tmpStr);
+                                display->TextCenter(
+                                    vert[1][0], vert[0][1] - 0.075F, tmpStr);
                         }
                         else
                         {
-                            if
-                            (
-                                ((a < 0) and (((-a) % 6) < 2)) or
-                                ((a >= 0) and ((a % 6) < 2))
-                            )
+                            if (((a < 0) and (((-a) % 6) < 2)) or
+                                ((a >= 0) and ((a % 6) < 2)))
                             {
                                 if (g_bINS)
                                 {
-                                    if (ownship->INSState(AircraftClass::INS_HUD_STUFF))
+                                    if (ownship->INSState(
+                                            AircraftClass::INS_HUD_STUFF))
                                     {
-                                        display->TextCenter(vert[1][0], vert[0][1] - 0.075F, tmpStr);
+                                        display->TextCenter(vert[1][0],
+                                                            vert[0][1] - 0.075F,
+                                                            tmpStr);
                                     }
                                 }
                                 else
-                                    display->TextCenter(vert[1][0], vert[0][1] - 0.075F, tmpStr);
+                                    display->TextCenter(vert[1][0],
+                                                        vert[0][1] - 0.075F,
+                                                        tmpStr);
                             }
                         }
                     }
@@ -1256,7 +1342,7 @@ void HudClass::DrawHeading(void)
 
                 display->Line(vert[0][0], vert[0][1], vert[1][0], vert[1][1]);
 
-                a ++ ;
+                a++;
                 vert[0][0] += tickInc;
             }
         }
@@ -1265,19 +1351,20 @@ void HudClass::DrawHeading(void)
     DrawWaypoint();
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         DrawTadpole();
     else
     {
-        if (FCC and FCC->GetMasterMode() == FireControlComputer::ILS and 
-            OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp->GetCMDSTR())
+        if (FCC and FCC->GetMasterMode() == FireControlComputer::ILS and
+            OTWDriver.pCockpitManager and
+            OTWDriver.pCockpitManager->mpIcp->GetCMDSTR())
             DrawCMDSTRG();
         else
             DrawTadpole();
     }
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         DrawRollCue();
     else
     {
@@ -1290,13 +1377,15 @@ void HudClass::DrawHeading(void)
 
 #else
 
-        if (FCC and FCC->IsAGMasterMode() or (playerAC->af->gearPos > 0.5F and 
-                                             fpmSwitch not_eq FPM_OFF and scalesSwitch == VV_VAH))
+        if (FCC and FCC->IsAGMasterMode() or
+            (playerAC->af->gearPos > 0.5F and fpmSwitch not_eq FPM_OFF and
+             scalesSwitch == VV_VAH))
             DrawBankIndicator();
         //not there in Dogfight
         else
         {
-            if (FCC and FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and 
+            if (FCC and
+                FCC->GetMasterMode() not_eq FireControlComputer::Dogfight and
                 GetDEDSwitch() == DED_OFF)
                 DrawRollCue();
         }
@@ -1325,28 +1414,30 @@ void HudClass::DrawTadpole(void)
     if (g_bRealisticAvionics and g_bINS)
     {
         if (ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
- not ownship->INSState(AircraftClass::INS_HUD_STUFF))
+            not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             return;
     }
 
-    if ( not waypointValid or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.
+    if (not waypointValid or
+        (FCC->GetMasterMode() ==
+         FireControlComputer::Dogfight)) //me123 status test.
     {
         return;
     }
 
     dx = betaHudUnits;
     dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
-         hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-         alphaHudUnits;
+         hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits;
 
     display->AdjustOriginInViewport(dx, dy);
     display->AdjustRotationAboutOrigin(-cockpitFlightData.roll);
-    x1 = max(min(waypointBearing / (10.0F * DTR), 1.0F), -1.0F) * hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F;
+    x1 = max(min(waypointBearing / (10.0F * DTR), 1.0F), -1.0F) *
+         hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F;
 
     display->Circle(x1, 0.0F, RadToHudUnits(0.003F));
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         len = RadToHudUnits(0.012F);
     else
         len = RadToHudUnits(0.016F);
@@ -1355,7 +1446,7 @@ void HudClass::DrawTadpole(void)
     y = len * trig.cos;
     x = len * trig.sin;
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         display->Line(x1 + x, y, x1 + x * 0.25F, y * 0.25F);
     else
         display->Line(x1 + x, y, x1 + x * 0.1875F, y * 0.1875F);
@@ -1367,8 +1458,9 @@ void HudClass::DrawTadpole(void)
 
 void HudClass::DrawILS(void)
 {
-    float hDev = 0.0F;   // glide path deviation.  Positive is glide path on right side
-    float vDev = 0.0F;   // glide slope deviation.  Positive is glide slope above.
+    float hDev =
+        0.0F; // glide path deviation.  Positive is glide path on right side
+    float vDev = 0.0F; // glide slope deviation.  Positive is glide slope above.
     int hValid, vValid;
     float xOffset, yOffset;
 
@@ -1376,8 +1468,9 @@ void HudClass::DrawILS(void)
     // ILS needles on hud not get properly updated because it query pCockpitManager->mHiddenFlag
     // and this seems not get updated in 3d pit view
     // if (gNavigationSys and not OTWDriver.pCockpitManager->mHiddenFlag)
-    if (gNavigationSys and (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or
-                           gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) and 
+    if (gNavigationSys and
+        (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or
+         gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) and
         gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hDev))
     {
         gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hDev);
@@ -1399,9 +1492,8 @@ void HudClass::DrawILS(void)
     // Draw symbology centered about FPM
     xOffset = betaHudUnits;
     yOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
-              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-              alphaHudUnits;
-    display->AdjustOriginInViewport(xOffset,  yOffset);
+              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits;
+    display->AdjustOriginInViewport(xOffset, yOffset);
 
     // Horizontal Dev
     if (hValid)
@@ -1410,28 +1502,35 @@ void HudClass::DrawILS(void)
     }
     else
     {
-        display->Line(0.18F * hDev, 0.15F, 0.18F * hDev,  0.09F);
+        display->Line(0.18F * hDev, 0.15F, 0.18F * hDev, 0.09F);
         display->Line(0.18F * hDev, -0.15F, 0.18F * hDev, -0.09F);
     }
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         display->Line(0.18F * hDev - 0.03F, 0.18F, 0.18F * hDev + 0.03F, 0.18F);
         display->Line(0.18F * hDev - 0.03F, 0.12F, 0.18F * hDev + 0.03F, 0.12F);
         display->Line(0.18F * hDev - 0.03F, 0.06F, 0.18F * hDev + 0.03F, 0.06F);
         display->Line(0.18F * hDev - 0.03F, 0.00F, 0.18F * hDev + 0.03F, 0.00F);
-        display->Line(0.18F * hDev - 0.03F, -0.18F, 0.18F * hDev + 0.03F, -0.18F);
-        display->Line(0.18F * hDev - 0.03F, -0.12F, 0.18F * hDev + 0.03F, -0.12F);
-        display->Line(0.18F * hDev - 0.03F, -0.06F, 0.18F * hDev + 0.03F, -0.06F);
+        display->Line(0.18F * hDev - 0.03F, -0.18F, 0.18F * hDev + 0.03F,
+                      -0.18F);
+        display->Line(0.18F * hDev - 0.03F, -0.12F, 0.18F * hDev + 0.03F,
+                      -0.12F);
+        display->Line(0.18F * hDev - 0.03F, -0.06F, 0.18F * hDev + 0.03F,
+                      -0.06F);
     }
     else
     {
         //lines are 2� left and right, not like above
-        display->Line(0.18F * hDev - 0.018F, 0.18F, 0.18F * hDev + 0.018F, 0.18F);
-        display->Line(0.18F * hDev - 0.018F, 0.09F, 0.18F * hDev + 0.018F, 0.09F);
-        display->Line(0.18F * hDev - 0.018F, -0.18F, 0.18F * hDev + 0.018F, -0.18F);
-        display->Line(0.18F * hDev - 0.018F, -0.09F, 0.18F * hDev + 0.018F, -0.09F);
+        display->Line(0.18F * hDev - 0.018F, 0.18F, 0.18F * hDev + 0.018F,
+                      0.18F);
+        display->Line(0.18F * hDev - 0.018F, 0.09F, 0.18F * hDev + 0.018F,
+                      0.09F);
+        display->Line(0.18F * hDev - 0.018F, -0.18F, 0.18F * hDev + 0.018F,
+                      -0.18F);
+        display->Line(0.18F * hDev - 0.018F, -0.09F, 0.18F * hDev + 0.018F,
+                      -0.09F);
     }
 
     // Vertical Dev
@@ -1441,28 +1540,35 @@ void HudClass::DrawILS(void)
     }
     else
     {
-        display->Line(0.15F, 0.18F * vDev,  0.09F, 0.18F * vDev);
+        display->Line(0.15F, 0.18F * vDev, 0.09F, 0.18F * vDev);
         display->Line(-0.15F, 0.18F * vDev, -0.09F, 0.18F * vDev);
     }
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         display->Line(0.18F, 0.18F * vDev - 0.03F, 0.18F, 0.18F * vDev + 0.03F);
         display->Line(0.12F, 0.18F * vDev - 0.03F, 0.12F, 0.18F * vDev + 0.03F);
         display->Line(0.06F, 0.18F * vDev - 0.03F, 0.06F, 0.18F * vDev + 0.03F);
         display->Line(0.00F, 0.18F * vDev - 0.03F, 0.00F, 0.18F * vDev + 0.03F);
-        display->Line(-0.18F, 0.18F * vDev - 0.03F, -0.18F, 0.18F * vDev + 0.03F);
-        display->Line(-0.12F, 0.18F * vDev - 0.03F, -0.12F, 0.18F * vDev + 0.03F);
-        display->Line(-0.06F, 0.18F * vDev - 0.03F, -0.06F, 0.18F * vDev + 0.03F);
+        display->Line(-0.18F, 0.18F * vDev - 0.03F, -0.18F,
+                      0.18F * vDev + 0.03F);
+        display->Line(-0.12F, 0.18F * vDev - 0.03F, -0.12F,
+                      0.18F * vDev + 0.03F);
+        display->Line(-0.06F, 0.18F * vDev - 0.03F, -0.06F,
+                      0.18F * vDev + 0.03F);
     }
     else
     {
         //lines are 2� left and right, not like above
-        display->Line(0.18F, 0.18F * vDev - 0.018F, 0.18F, 0.18F * vDev + 0.018F);
-        display->Line(0.09F, 0.18F * vDev - 0.018F, 0.09F, 0.18F * vDev + 0.018F);
-        display->Line(-0.18F, 0.18F * vDev - 0.018F, -0.18F, 0.18F * vDev + 0.018F);
-        display->Line(-0.09F, 0.18F * vDev - 0.018F, -0.09F, 0.18F * vDev + 0.018F);
+        display->Line(0.18F, 0.18F * vDev - 0.018F, 0.18F,
+                      0.18F * vDev + 0.018F);
+        display->Line(0.09F, 0.18F * vDev - 0.018F, 0.09F,
+                      0.18F * vDev + 0.018F);
+        display->Line(-0.18F, 0.18F * vDev - 0.018F, -0.18F,
+                      0.18F * vDev + 0.018F);
+        display->Line(-0.09F, 0.18F * vDev - 0.018F, -0.09F,
+                      0.18F * vDev + 0.018F);
     }
 
     display->AdjustOriginInViewport(-xOffset, -yOffset);
@@ -1470,7 +1576,7 @@ void HudClass::DrawILS(void)
 const static float Lenght = 0.04F;
 void HudClass::DrawWaypoint(void)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     //MI INS stuff
     if (g_bRealisticAvionics and g_bINS)
@@ -1492,7 +1598,9 @@ void HudClass::DrawWaypoint(void)
     else
         HEADING_BOTTOM = -0.82F;
 
-    if ( not waypointValid or ownship == NULL or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if (not waypointValid or ownship == NULL or
+        (FCC->GetMasterMode() ==
+         FireControlComputer::Dogfight)) //me123 status test.)
     {
         return;
     }
@@ -1512,25 +1620,29 @@ void HudClass::DrawWaypoint(void)
     {
         return;
     }
-    else if (headingPos == High or ((AircraftClass*)ownship)->af->gearPos > 0.5F)
+    else if (headingPos == High or
+             ((AircraftClass*)ownship)->af->gearPos > 0.5F)
     {
         //MI
-        if ( not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() or
-            (g_bRealisticAvionics and g_bINS and ownship and ownship->INSState(AircraftClass::INS_PowerOff) or
- not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
+        if (not g_bRealisticAvionics or ((AircraftClass*)ownship)->OnGround() or
+            (g_bRealisticAvionics and g_bINS and ownship and
+                 ownship->INSState(AircraftClass::INS_PowerOff) or
+             not ownship->INSState(AircraftClass::INS_HUD_STUFF)))
         {
 
             headingTop = hudWinY[HEADING_WINDOW_HI] +
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
         }
         else
-            headingTop = (hudWinY[HEADING_WINDOW_LO] - 0.2F) + //use this to make it always follow FPM
+            headingTop = (hudWinY[HEADING_WINDOW_LO] -
+                          0.2F) + //use this to make it always follow FPM
                          hudWinHeight[HEADING_WINDOW_HI] * 0.5F;
 
         // MI
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
-            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and not ((AircraftClass*)ownship->OnGround()))
+            if (((AircraftClass*)ownship)->af->gearPos > 0.5F and
+                not((AircraftClass*)ownship->OnGround()))
             {
                 dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
@@ -1554,19 +1666,21 @@ void HudClass::DrawWaypoint(void)
     }
     else
     {
-        headingTop = hudWinY[HEADING_WINDOW_LO] +
-                     hudWinHeight[HEADING_WINDOW_LO] * 0.5F;
+        headingTop =
+            hudWinY[HEADING_WINDOW_LO] + hudWinHeight[HEADING_WINDOW_LO] * 0.5F;
 
         // Marco edit - Scroll heading tape downwards with FPM
         // if it's down the bottom
         if (g_bRealisticAvionics and GetDriftCOSwitch() == DRIFT_CO_OFF)
         {
             dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
-                 hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-                 alphaHudUnits - 0.12f;
+                 hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits -
+                 0.12f;
 
-            if (dy < HEADING_BOTTOM) //don't fall off of the HUD. This can be seen in some of the vids
-                dy = HEADING_BOTTOM; //not sure if the position is right, but I think you should always see it
+            if (dy <
+                HEADING_BOTTOM) //don't fall off of the HUD. This can be seen in some of the vids
+                dy =
+                    HEADING_BOTTOM; //not sure if the position is right, but I think you should always see it
 
             //so let's keep it above the projector thingie
 
@@ -1576,16 +1690,20 @@ void HudClass::DrawWaypoint(void)
     }
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         display->Line(headingError, headingTop + tickLen * 0.1F,
-                      headingError + 0.1F * tickLen, headingTop + tickLen * 0.65F);
+                      headingError + 0.1F * tickLen,
+                      headingTop + tickLen * 0.65F);
         display->Line(headingError, headingTop + tickLen * 0.1F,
-                      headingError - 0.1F * tickLen, headingTop + tickLen * 0.65F);
+                      headingError - 0.1F * tickLen,
+                      headingTop + tickLen * 0.65F);
         display->Line(headingError, headingTop + tickLen * 1.1F,
-                      headingError + 0.1F * tickLen, headingTop + tickLen * 0.65F);
+                      headingError + 0.1F * tickLen,
+                      headingTop + tickLen * 0.65F);
         display->Line(headingError, headingTop + tickLen * 1.1F,
-                      headingError - 0.1F * tickLen, headingTop + tickLen * 0.65F);
+                      headingError - 0.1F * tickLen,
+                      headingTop + tickLen * 0.65F);
     }
     else
     {
@@ -1593,9 +1711,11 @@ void HudClass::DrawWaypoint(void)
         if (FCC and FCC->GetMasterMode() == FireControlComputer::ILS)
         {
             display->Line(headingError, headingTop + tickLen * 0.1F,
-                          headingError + 0.3F * tickLen, headingTop + tickLen * 0.8F);
+                          headingError + 0.3F * tickLen,
+                          headingTop + tickLen * 0.8F);
             display->Line(headingError, headingTop + tickLen * 0.1F,
-                          headingError - 0.3F * tickLen, headingTop + tickLen * 0.8F);
+                          headingError - 0.3F * tickLen,
+                          headingTop + tickLen * 0.8F);
         }
         else
         {
@@ -1612,49 +1732,50 @@ void HudClass::DrawWaypoint(void)
     // Draw the waypoint on the ground
     switch (FCC->GetMasterMode())
     {
-        case FireControlComputer::Nav:
-        case FireControlComputer::AirGroundBomb:
-        case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
-        case FireControlComputer::AirGroundLaser:
-        case FireControlComputer::AirGroundMissile:
-        case FireControlComputer::AirGroundHARM:
-        case FireControlComputer::AirGroundCamera:
+    case FireControlComputer::Nav:
+    case FireControlComputer::AirGroundBomb:
+    case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
+    case FireControlComputer::AirGroundLaser:
+    case FireControlComputer::AirGroundMissile:
+    case FireControlComputer::AirGroundHARM:
+    case FireControlComputer::AirGroundCamera:
 
-            //Normally we only consider drawing the waypoint if it's less than 90deg
-            //in either direction off the nose. However, the HUD fix for constraining
-            //the waypoint to the HUD's edge requires us to always draw it. Smeghead, 16-Oct-2003
-            if ((g_bHUDFix == true) or (fabs(waypointAz) < (90.0F * DTR)))
+        //Normally we only consider drawing the waypoint if it's less than 90deg
+        //in either direction off the nose. However, the HUD fix for constraining
+        //the waypoint to the HUD's edge requires us to always draw it. Smeghead, 16-Oct-2003
+        if ((g_bHUDFix == true) or (fabs(waypointAz) < (90.0F * DTR)))
+        {
+            if ((g_bHUDFix == true) and (g_bRealisticAvionics))
             {
-                if ((g_bHUDFix == true) and (g_bRealisticAvionics))
+                //If the waypoint is behind us, then really bad things tend to happen when the
+                //waypoint is drawn. Stuff like the waypoint crawling up the HUD when we pitch up
+                //(think about it) and so forth. Clamp the position of the drawn waypoint to
+                //+/- 45 deg off the nose to keep things nice and smooth. Easier to do than
+                //pissing around with a bunch of trig to figure out what to do.
+                if (waypointAz > (45.0F * DTR))
                 {
-                    //If the waypoint is behind us, then really bad things tend to happen when the
-                    //waypoint is drawn. Stuff like the waypoint crawling up the HUD when we pitch up
-                    //(think about it) and so forth. Clamp the position of the drawn waypoint to
-                    //+/- 45 deg off the nose to keep things nice and smooth. Easier to do than
-                    //pissing around with a bunch of trig to figure out what to do.
-                    if (waypointAz > (45.0F * DTR))
-                    {
-                        yPos = RadToHudUnitsY(45.0F * DTR);
-                    }
-                    else if (waypointAz < (-45.0F * DTR))
-                    {
-                        yPos = RadToHudUnitsY(-45.0F * DTR);
-                    }
-                    else
-                    {
-                        yPos = RadToHudUnitsY(waypointEl);
-                    }
+                    yPos = RadToHudUnitsY(45.0F * DTR);
+                }
+                else if (waypointAz < (-45.0F * DTR))
+                {
+                    yPos = RadToHudUnitsY(-45.0F * DTR);
                 }
                 else
                 {
                     yPos = RadToHudUnitsY(waypointEl);
                 }
+            }
+            else
+            {
+                yPos = RadToHudUnitsY(waypointEl);
+            }
 
-                xPos = RadToHudUnitsX(waypointAz);
+            xPos = RadToHudUnitsX(waypointAz);
 
-                display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                //MI draw our WP symbol centered on the WP, not edge-on
+            display->AdjustOriginInViewport(
+                0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+                       hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+            //MI draw our WP symbol centered on the WP, not edge-on
 #if 0
                 display->Line(xPos, yPos + 0.04F, xPos + 0.04F, yPos);
                 display->Line(xPos, yPos - 0.04F, xPos + 0.04F, yPos);
@@ -1662,85 +1783,89 @@ void HudClass::DrawWaypoint(void)
                 display->Line(xPos, yPos - 0.04F, xPos - 0.04F, yPos);
 #else
 
-                if (g_bRealisticAvionics)
+            if (g_bRealisticAvionics)
+            {
+                //No symbology if in AA MasterMode
+                if (FCC->IsAAMasterMode())
                 {
-                    //No symbology if in AA MasterMode
-                    if (FCC->IsAAMasterMode())
+                    display->AdjustOriginInViewport(
+                        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+                    return;
+                }
+
+                //HUD_Fixes.pdf #4 - restrain Steerpoint/target box within bounds of
+                //HUD. Smeg, 16-Oct-2003.
+                if (g_bHUDFix == true)
+                {
+                    float boresightOffset =
+                        hudWinY[BORESIGHT_CROSS_WINDOW] +
+                        hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+                    float horizConstraint = 1.00F - Lenght;
+                    float vertConstraintBottom =
+                        -horizConstraint - boresightOffset;
+                    float vertConstraintTop =
+                        vertConstraintBottom +
+                        1.85F; //HUD is 2 units tall, minus slight fudge.
+                    bool stptConstrained = false;
+
+                    //NOTE: If Stpt is almost directly behind us, then it's constrained to the HUD,
+                    //but it seems to be drawn the wrong way up - as you raise the nose, the stpt on
+                    //the hud rises, which makes bugger all sense. This really needs to be looked at...
+                    if ((xPos <= -horizConstraint) or
+                        (waypointAz < (-90.0F * DTR))) //Left edge
                     {
-                        display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                        return;
+                        xPos = -horizConstraint;
+                        stptConstrained = true;
+                    }
+                    else if ((xPos > horizConstraint) or
+                             (waypointAz > (90.0F * DTR))) //Right
+                    {
+                        xPos = horizConstraint;
+                        stptConstrained = true;
                     }
 
-                    //HUD_Fixes.pdf #4 - restrain Steerpoint/target box within bounds of
-                    //HUD. Smeg, 16-Oct-2003.
-                    if (g_bHUDFix == true)
+                    if ((yPos <= vertConstraintBottom) or
+                        (waypointEl < (-90.0F * DTR))) //Bottom
                     {
-                        float boresightOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
-                        float horizConstraint = 1.00F - Lenght;
-                        float vertConstraintBottom = -horizConstraint - boresightOffset;
-                        float vertConstraintTop = vertConstraintBottom + 1.85F; //HUD is 2 units tall, minus slight fudge.
-                        bool  stptConstrained = false;
-
-                        //NOTE: If Stpt is almost directly behind us, then it's constrained to the HUD,
-                        //but it seems to be drawn the wrong way up - as you raise the nose, the stpt on
-                        //the hud rises, which makes bugger all sense. This really needs to be looked at...
-                        if ((xPos <= -horizConstraint) or (waypointAz < (-90.0F * DTR))) //Left edge
-                        {
-                            xPos = -horizConstraint;
-                            stptConstrained = true;
-                        }
-                        else if ((xPos > horizConstraint) or (waypointAz > (90.0F * DTR))) //Right
-                        {
-                            xPos = horizConstraint;
-                            stptConstrained = true;
-                        }
-
-                        if ((yPos <= vertConstraintBottom) or (waypointEl < (-90.0F * DTR))) //Bottom
-                        {
-                            yPos = vertConstraintBottom;
-                            stptConstrained = true;
-                        }
-                        else if ((yPos > vertConstraintTop) or (waypointEl > (90.0F * DTR))) //Top
-                        {
-                            yPos = vertConstraintTop;
-                            stptConstrained = true;
-                        }
-
-                        //If Stpt was constrained to HUD, then draw a cross on top of it
-                        //to warn that it's unreliable.
-                        if (stptConstrained == true)
-                        {
-                            float crossSize = Lenght;
-                            display->Line(-crossSize + xPos, -crossSize + yPos,
-                                          crossSize + xPos, crossSize + yPos);
-                            display->Line(-crossSize + xPos, crossSize + yPos,
-                                          crossSize + xPos, -crossSize + yPos);
-                        }
-                    } //End of HUD fix.
-
-                    if (playerAC and playerAC->curWaypoint and 
-                        playerAC->curWaypoint->GetWPFlags() bitand WPF_TARGET and 
-                        FCC and FCC->IsAGMasterMode() and 
-                        FCC->GetSubMode() not_eq FireControlComputer::CCIP)
-                    {
-                        //This is our target, so the WP is a square, but not in CCIP, and only in AG
-                        //mode.
-                        display->Line(xPos - Lenght, yPos - (Lenght), xPos - (Lenght), yPos + (Lenght));
-                        display->Line(xPos - Lenght, yPos + (Lenght), xPos + (Lenght), yPos + (Lenght));
-                        display->Line(xPos + Lenght, yPos + (Lenght), xPos + (Lenght), yPos - (Lenght));
-                        display->Line(xPos + Lenght, yPos - (Lenght), xPos - (Lenght), yPos - (Lenght));
-                        display->Point(xPos, yPos);
+                        yPos = vertConstraintBottom;
+                        stptConstrained = true;
                     }
-                    else
+                    else if ((yPos > vertConstraintTop) or
+                             (waypointEl > (90.0F * DTR))) //Top
                     {
-                        display->Line(xPos - Lenght, yPos, xPos, yPos + Lenght);
-                        display->Line(xPos, yPos + Lenght, xPos + Lenght, yPos);
-                        display->Line(xPos + Lenght, yPos, xPos, yPos - Lenght);
-                        display->Line(xPos, yPos - Lenght, xPos - Lenght, yPos);
+                        yPos = vertConstraintTop;
+                        stptConstrained = true;
                     }
 
+                    //If Stpt was constrained to HUD, then draw a cross on top of it
+                    //to warn that it's unreliable.
+                    if (stptConstrained == true)
+                    {
+                        float crossSize = Lenght;
+                        display->Line(-crossSize + xPos, -crossSize + yPos,
+                                      crossSize + xPos, crossSize + yPos);
+                        display->Line(-crossSize + xPos, crossSize + yPos,
+                                      crossSize + xPos, -crossSize + yPos);
+                    }
+                } //End of HUD fix.
+
+                if (playerAC and playerAC->curWaypoint and
+                    playerAC->curWaypoint->GetWPFlags() bitand WPF_TARGET and
+                    FCC and FCC->IsAGMasterMode() and
+                    FCC->GetSubMode() not_eq FireControlComputer::CCIP)
+                {
+                    //This is our target, so the WP is a square, but not in CCIP, and only in AG
+                    //mode.
+                    display->Line(xPos - Lenght, yPos - (Lenght),
+                                  xPos - (Lenght), yPos + (Lenght));
+                    display->Line(xPos - Lenght, yPos + (Lenght),
+                                  xPos + (Lenght), yPos + (Lenght));
+                    display->Line(xPos + Lenght, yPos + (Lenght),
+                                  xPos + (Lenght), yPos - (Lenght));
+                    display->Line(xPos + Lenght, yPos - (Lenght),
+                                  xPos - (Lenght), yPos - (Lenght));
+                    display->Point(xPos, yPos);
                 }
                 else
                 {
@@ -1749,16 +1874,25 @@ void HudClass::DrawWaypoint(void)
                     display->Line(xPos + Lenght, yPos, xPos, yPos - Lenght);
                     display->Line(xPos, yPos - Lenght, xPos - Lenght, yPos);
                 }
-
-#endif
-                display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                        hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+            }
+            else
+            {
+                display->Line(xPos - Lenght, yPos, xPos, yPos + Lenght);
+                display->Line(xPos, yPos + Lenght, xPos + Lenght, yPos);
+                display->Line(xPos + Lenght, yPos, xPos, yPos - Lenght);
+                display->Line(xPos, yPos - Lenght, xPos - Lenght, yPos);
             }
 
-            break;
+#endif
+            display->AdjustOriginInViewport(
+                0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                        hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+        }
 
-        default:
-            break;
+        break;
+
+    default:
+        break;
     }
 }
 
@@ -1806,8 +1940,8 @@ void HudClass::TimeToSteerpoint(void)
         // burn any days in the number
         hr = FloatToInt32(ttg / (3600.0F * 24.0F));
         ttg -= hr * 3600.0F * 24.0F;
-        hr  = FloatToInt32(ttg / 3600.0F);
-        hr  = max(hr, 0);
+        hr = FloatToInt32(ttg / 3600.0F);
+        hr = max(hr, 0);
         ttg -= hr * 3600.0F;
         ttg = max(ttg, 0.0F);
         minute = FloatToInt32(ttg / 60.0F);
@@ -1815,17 +1949,18 @@ void HudClass::TimeToSteerpoint(void)
         sec = FloatToInt32(ttg);
 
         if (hr not_eq 0)
-            sprintf(tmpStr, "%03d:%02d", abs(minute), sec);   //JPG 5 Feb 04
+            sprintf(tmpStr, "%03d:%02d", abs(minute), sec); //JPG 5 Feb 04
         else if (sec >= 0)
         {
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
                 sprintf(tmpStr, "   %02d:%02d", abs(minute), sec);
             else
-                sprintf(tmpStr, "%03d:%02d", abs(minute), sec);   //JPG "%02d:%02d"
+                sprintf(tmpStr, "%03d:%02d", abs(minute),
+                        sec); //JPG "%02d:%02d"
         }
         else
         {
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
                 sprintf(tmpStr, "  -%02d:%02d", abs(minute), abs(sec));
             else
                 sprintf(tmpStr, "-%02d:%02d", abs(minute), abs(sec));
@@ -1837,21 +1972,21 @@ void HudClass::TimeToSteerpoint(void)
     }
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         switch (FCC->GetSubMode())
         {
-            case FireControlComputer::TimeToGo:
-                sprintf(tmpStr1, ">%s<", tmpStr);
-                break;
+        case FireControlComputer::TimeToGo:
+            sprintf(tmpStr1, ">%s<", tmpStr);
+            break;
 
-            case FireControlComputer::ETA:
-                sprintf(tmpStr1, "<%s>", tmpStr);
-                break;
+        case FireControlComputer::ETA:
+            sprintf(tmpStr1, "<%s>", tmpStr);
+            break;
 
-            default:
-                strcpy(tmpStr1, tmpStr);
-                break;
+        default:
+            strcpy(tmpStr1, tmpStr);
+            break;
         }
     }
     else // JPG
@@ -1862,10 +1997,10 @@ void HudClass::TimeToSteerpoint(void)
 
     ShiAssert(strlen(tmpStr1) < sizeof(tmpStr1));
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         DrawWindowString(13, tmpStr1);
     else
-        display->TextLeft(0.45F, -0.43F, tmpStr1);   // JPG .40F bitand .44F
+        display->TextLeft(0.45F, -0.43F, tmpStr1); // JPG .40F bitand .44F
 }
 
 void HudClass::RangeToSteerpoint(void)
@@ -1879,12 +2014,14 @@ void HudClass::RangeToSteerpoint(void)
 
     char tmpStr[24];
     char str[24];
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     // MD -- 20040220: adding override for GM SP ground stabilization
-    if ((FCC->GetStptMode() == FireControlComputer::FCCGMPseudoPoint) and playerAC)
+    if ((FCC->GetStptMode() == FireControlComputer::FCCGMPseudoPoint) and
+        playerAC)
     {
-        float wpX = 0.0f, wpY = 0.0f, wpZ = 0.0f, dx = 0.0f, dy = 0.0f, dz = 0.0f;
+        float wpX = 0.0f, wpY = 0.0f, wpZ = 0.0f, dx = 0.0f, dy = 0.0f,
+              dz = 0.0f;
         FCC->SavedWaypoint()->GetLocation(&wpX, &wpY, &wpZ);
 
         // add in INS Drift
@@ -1908,7 +2045,8 @@ void HudClass::RangeToSteerpoint(void)
                 dz -= playerAC->GetINSAltOffset();
         }
 
-        sprintf(tmpStr, "%03.0f>%02d", ((float)sqrt(dx * dx + dy * dy)) * FT_TO_NM, waypointNum + 1);
+        sprintf(tmpStr, "%03.0f>%02d",
+                ((float)sqrt(dx * dx + dy * dy)) * FT_TO_NM, waypointNum + 1);
     }
     else
         // Range and Number
@@ -1916,17 +2054,18 @@ void HudClass::RangeToSteerpoint(void)
         // if( not g_bRealisticAvionics)
         // sprintf (tmpStr, "%03.0f > %02d", waypointRange * FT_TO_NM, waypointNum + 1);
         // else
-        sprintf(tmpStr, "%03.0f>%02d", waypointRange * FT_TO_NM, waypointNum + 1);
+        sprintf(tmpStr, "%03.0f>%02d", waypointRange * FT_TO_NM,
+                waypointNum + 1);
 
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         DrawWindowString(14, tmpStr);
     else
-        display->TextLeft(0.45F, -0.50F, tmpStr);  //JPG .52F
+        display->TextLeft(0.45F, -0.50F, tmpStr); //JPG .52F
 
     //MI Slant range
-    float xPos = 0.45F;   //JPG .40F
+    float xPos = 0.45F; //JPG .40F
     float yPos = -0.39F;
     float range = SlantRange * FT_TO_NM;
 
@@ -1935,7 +2074,8 @@ void HudClass::RangeToSteerpoint(void)
 
     if (FCC->GetSubMode() == FireControlComputer::HARM)
     {
-        HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
+        HarmTargetingPod* harmPod =
+            (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
         if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS or
             harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff or
@@ -1952,7 +2092,7 @@ void HudClass::RangeToSteerpoint(void)
     {
         if (range >= 100)
         {
-            if ( not targetPtr)
+            if (not targetPtr)
             {
                 sprintf(str, "B%3.1f", range);
             }
@@ -1961,7 +2101,7 @@ void HudClass::RangeToSteerpoint(void)
         }
         else if (range < 100 and range >= 10)
         {
-            if ( not targetPtr)
+            if (not targetPtr)
             {
                 sprintf(str, "B0%2.1f", range);
             }
@@ -1970,7 +2110,7 @@ void HudClass::RangeToSteerpoint(void)
         }
         else if (range < 10 and range >= 1)
         {
-            if ( not targetPtr)
+            if (not targetPtr)
             {
                 sprintf(str, "B00%1.1f", range);
             }
@@ -1982,7 +2122,7 @@ void HudClass::RangeToSteerpoint(void)
             range *= NM_TO_FT;
             range /= 100;
 
-            if ( not targetPtr)
+            if (not targetPtr)
                 sprintf(str, "B 0%2.0f", range);
             else
                 sprintf(str, "F 0%2.0f", range);
@@ -1991,14 +2131,18 @@ void HudClass::RangeToSteerpoint(void)
 
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         if (targetPtr)
         {
             if (targetPtr->localData->range > 1.0F * NM_TO_FT)
-                sprintf(tmpStr, "F %4.1f", max(min(100.0F, targetPtr->localData->range * FT_TO_NM), 0.0F));
+                sprintf(tmpStr, "F %4.1f",
+                        max(min(100.0F, targetPtr->localData->range * FT_TO_NM),
+                            0.0F));
             else
-                sprintf(tmpStr, "F %03.0f", max(min(10000.0F, targetPtr->localData->range * 0.01F), 0.0F));
+                sprintf(tmpStr, "F %03.0f",
+                        max(min(10000.0F, targetPtr->localData->range * 0.01F),
+                            0.0F));
 
             ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
             DrawWindowString(10, tmpStr);
@@ -2007,14 +2151,13 @@ void HudClass::RangeToSteerpoint(void)
     else if (displayRange)
     {
         display->TextLeft(xPos, yPos + 0.03F, str);
-
     }
 }
 
 //MI functions that find our angles
 int HudClass::FindRollAngle(float Alt)
 {
-    if ( not ownship)
+    if (not ownship)
     {
         // JB 010528
         return FALSE; // JB 010528
@@ -2027,7 +2170,8 @@ int HudClass::FindRollAngle(float Alt)
         //Below 3000ft we always have 60�
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            if ((cockpitFlightData.roll * RTD) <= 60 and cockpitFlightData.roll * RTD >= -60)
+            if ((cockpitFlightData.roll * RTD) <= 60 and
+                cockpitFlightData.roll * RTD >= -60)
             {
                 return TRUE;
             }
@@ -2045,7 +2189,8 @@ int HudClass::FindRollAngle(float Alt)
             float Roll = (Alt - 3000) / factor;
             float Angle = 60 - Roll;
 
-            if (cockpitFlightData.roll * RTD <= Angle and cockpitFlightData.roll * RTD >= -Angle)
+            if (cockpitFlightData.roll * RTD <= Angle and
+                cockpitFlightData.roll * RTD >= -Angle)
             {
                 return TRUE;
             }
@@ -2063,7 +2208,7 @@ int HudClass::FindRollAngle(float Alt)
             float Roll = (Alt - 5000) / factor;
             float Angle = 30 - Roll;
 
-            if (cockpitFlightData.roll * RTD <= Angle and 
+            if (cockpitFlightData.roll * RTD <= Angle and
                 cockpitFlightData.roll * RTD >= -Angle)
             {
                 return TRUE;
@@ -2080,7 +2225,7 @@ int HudClass::FindRollAngle(float Alt)
             float Roll = (Alt - 15000) / factor;
             float Angle = 25 - Roll;
 
-            if (cockpitFlightData.roll * RTD <= Angle and 
+            if (cockpitFlightData.roll * RTD <= Angle and
                 cockpitFlightData.roll * RTD >= -Angle)
             {
                 return TRUE;
@@ -2097,7 +2242,7 @@ int HudClass::FindRollAngle(float Alt)
             float Roll = (Alt - 25000) / factor;
             float Angle = 15 - Roll;
 
-            if (cockpitFlightData.roll * RTD <= Angle and 
+            if (cockpitFlightData.roll * RTD <= Angle and
                 cockpitFlightData.roll * RTD >= -Angle)
             {
                 return TRUE;
@@ -2114,7 +2259,7 @@ int HudClass::FindRollAngle(float Alt)
 
 int HudClass::FindPitchAngle(float Alt)
 {
-    if ( not ownship)
+    if (not ownship)
         return FALSE;
 
     if (Alt <= 5000)
@@ -2122,7 +2267,7 @@ int HudClass::FindPitchAngle(float Alt)
         //Below 5000ft we always have 30�
         if (((AircraftClass*)ownship)->af->platform->IsPlayer())
         {
-            if ((cockpitFlightData.pitch * RTD) <= 30 and 
+            if ((cockpitFlightData.pitch * RTD) <= 30 and
                 cockpitFlightData.pitch * RTD >= -30)
             {
                 return TRUE;
@@ -2139,7 +2284,7 @@ int HudClass::FindPitchAngle(float Alt)
             float Pitch = (Alt - 5000) / factor;
             float Angle = 30 - Pitch;
 
-            if (cockpitFlightData.pitch * RTD <= Angle and 
+            if (cockpitFlightData.pitch * RTD <= Angle and
                 cockpitFlightData.pitch * RTD >= -Angle)
             {
                 return TRUE;
@@ -2156,7 +2301,7 @@ int HudClass::FindPitchAngle(float Alt)
             float Pitch = (Alt - 15000) / factor;
             float Angle = 25 - Pitch;
 
-            if (cockpitFlightData.pitch * RTD <= Angle and 
+            if (cockpitFlightData.pitch * RTD <= Angle and
                 cockpitFlightData.pitch * RTD >= -Angle)
             {
                 return TRUE;
@@ -2173,7 +2318,7 @@ int HudClass::FindPitchAngle(float Alt)
             float Pitch = (Alt - 25000) / factor;
             float Angle = 15 - Pitch;
 
-            if (cockpitFlightData.pitch * RTD <= Angle and 
+            if (cockpitFlightData.pitch * RTD <= Angle and
                 cockpitFlightData.pitch * RTD >= -Angle)
             {
                 return TRUE;
@@ -2194,9 +2339,10 @@ void HudClass::DrawRollCue()
                                hudWinHeight[HEADING_WINDOW_LO] * 0.5F - 0.075f;
     //static bool initonce = false;
     static const float MAXROLL = 45 * DTR;
-    static const float angles[] = { MAXROLL, 30 * DTR, 20 * DTR, 10 * DTR};
+    static const float angles[] = {MAXROLL, 30 * DTR, 20 * DTR, 10 * DTR};
     static const int nangles = sizeof(angles) / sizeof(angles[0]);
-    static float x1points[nangles], x2points[nangles], y1points[nangles], y2points[nangles];
+    static float x1points[nangles], x2points[nangles], y1points[nangles],
+        y2points[nangles];
     static const float sdist = 0.35f, oedist = 0.40f;
 
     //if (initonce == false) { // JPO precalculate drawing points
@@ -2205,9 +2351,10 @@ void HudClass::DrawRollCue()
         float edist = oedist;
         mlTrig trig;
 
-        for (int i = 0; i  < nangles; i++)
+        for (int i = 0; i < nangles; i++)
         {
-            if (i > 1) edist = 0.38f;
+            if (i > 1)
+                edist = 0.38f;
 
             mlSinCos(&trig, angles[i]);
             x1points[i] = sdist * trig.sin;
@@ -2220,9 +2367,9 @@ void HudClass::DrawRollCue()
         CalcRoll = FALSE;
     }
 
-    display->AdjustOriginInViewport(0,  basey);
+    display->AdjustOriginInViewport(0, basey);
 
-    for (int i = 0; i  < nangles; i++)
+    for (int i = 0; i < nangles; i++)
     {
         display->Line(x1points[i], y1points[i], x2points[i], y2points[i]);
         display->Line(-x1points[i], y1points[i], -x2points[i], y2points[i]);
@@ -2251,7 +2398,7 @@ void HudClass::DrawRollCue()
             if (ownship and not ownship->INSState(AircraftClass::INS_HUD_STUFF))
             {
                 display->ZeroRotationAboutOrigin();
-                display->AdjustOriginInViewport(0,  -basey);
+                display->AdjustOriginInViewport(0, -basey);
                 return;
             }
         }
@@ -2262,7 +2409,7 @@ void HudClass::DrawRollCue()
         display->ZeroRotationAboutOrigin();
     }
 
-    display->AdjustOriginInViewport(0,  -basey);
+    display->AdjustOriginInViewport(0, -basey);
 }
 void HudClass::CheckMSLFloor(void)
 {
@@ -2271,13 +2418,14 @@ void HudClass::CheckMSLFloor(void)
         return;
 
     //Above our setting and descending
-    if (-cockpitFlightData.z <= MSLFloor + 20.0F and 
+    if (-cockpitFlightData.z <= MSLFloor + 20.0F and
         -cockpitFlightData.zDot < 0)
     {
         if (WasAboveMSLFloor)
         {
             for (int i = 0; i < 2; i++)
-                F4SoundFXSetDist(ownship->af->GetAltitudeSnd(), FALSE, 0.0f, 1.0f);
+                F4SoundFXSetDist(ownship->af->GetAltitudeSnd(), FALSE, 0.0f,
+                                 1.0f);
 
             WasAboveMSLFloor = FALSE;
         }
@@ -2299,72 +2447,85 @@ void HudClass::DrawOA(void)
 
     float xPos, yPos;
 
-    if (( not OA1Valid and not OA2Valid) or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if ((not OA1Valid and not OA2Valid) or
+        (FCC->GetMasterMode() ==
+         FireControlComputer::Dogfight)) //me123 status test.)
         return;
     else
     {
         // Draw the waypoint on the ground
         switch (FCC->GetMasterMode())
         {
-            case FireControlComputer::Nav:
-            case FireControlComputer::AirGroundBomb:
-            case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
-            case FireControlComputer::AirGroundLaser:
-            case FireControlComputer::AirGroundMissile:
-            case FireControlComputer::AirGroundHARM:
-            case FireControlComputer::AirGroundCamera:
-                if (fabs(OA1Az) < (90.0F * DTR))
-                {
-                    xPos = RadToHudUnitsX(OA1Az);
-                    yPos = RadToHudUnitsY(OA1Elev);
-                    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                    display->Line(xPos - TrigWidth / 2, yPos - TrigHeight / 2, xPos + TrigWidth / 2, yPos - TrigHeight / 2);
-                    display->Line(xPos + TrigWidth / 2, yPos - TrigHeight / 2, xPos, yPos + TrigHeight / 2);
-                    display->Line(xPos, yPos + TrigHeight / 2, xPos - TrigWidth / 2, yPos - TrigHeight / 2);
-                    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                }
+        case FireControlComputer::Nav:
+        case FireControlComputer::AirGroundBomb:
+        case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
+        case FireControlComputer::AirGroundLaser:
+        case FireControlComputer::AirGroundMissile:
+        case FireControlComputer::AirGroundHARM:
+        case FireControlComputer::AirGroundCamera:
+            if (fabs(OA1Az) < (90.0F * DTR))
+            {
+                xPos = RadToHudUnitsX(OA1Az);
+                yPos = RadToHudUnitsY(OA1Elev);
+                display->AdjustOriginInViewport(
+                    0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+                display->Line(xPos - TrigWidth / 2, yPos - TrigHeight / 2,
+                              xPos + TrigWidth / 2, yPos - TrigHeight / 2);
+                display->Line(xPos + TrigWidth / 2, yPos - TrigHeight / 2, xPos,
+                              yPos + TrigHeight / 2);
+                display->Line(xPos, yPos + TrigHeight / 2, xPos - TrigWidth / 2,
+                              yPos - TrigHeight / 2);
+                display->AdjustOriginInViewport(
+                    0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+            }
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
-    if ( not OA2Valid or (FCC->GetMasterMode() == FireControlComputer::Dogfight)) //me123 status test.)
+    if (not OA2Valid or (FCC->GetMasterMode() ==
+                         FireControlComputer::Dogfight)) //me123 status test.)
         return;
     else
     {
         // Draw the waypoint on the ground
         switch (FCC->GetMasterMode())
         {
-            case FireControlComputer::Nav:
-            case FireControlComputer::AirGroundBomb:
-            case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
-            case FireControlComputer::AirGroundLaser:
-            case FireControlComputer::AirGroundMissile:
-            case FireControlComputer::AirGroundHARM:
-            case FireControlComputer::AirGroundCamera:
-                if (fabs(OA2Az) < (90.0F * DTR))
-                {
-                    xPos = RadToHudUnitsX(OA2Az);
-                    yPos = RadToHudUnitsY(OA2Elev);
-                    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                    display->Line(xPos - TrigWidth / 2, yPos - TrigHeight / 2, xPos + TrigWidth / 2, yPos - TrigHeight / 2);
-                    display->Line(xPos + TrigWidth / 2, yPos - TrigHeight / 2, xPos, yPos + TrigHeight / 2);
-                    display->Line(xPos, yPos + TrigHeight / 2, xPos - TrigWidth / 2, yPos - TrigHeight / 2);
-                    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                }
+        case FireControlComputer::Nav:
+        case FireControlComputer::AirGroundBomb:
+        case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
+        case FireControlComputer::AirGroundLaser:
+        case FireControlComputer::AirGroundMissile:
+        case FireControlComputer::AirGroundHARM:
+        case FireControlComputer::AirGroundCamera:
+            if (fabs(OA2Az) < (90.0F * DTR))
+            {
+                xPos = RadToHudUnitsX(OA2Az);
+                yPos = RadToHudUnitsY(OA2Elev);
+                display->AdjustOriginInViewport(
+                    0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+                display->Line(xPos - TrigWidth / 2, yPos - TrigHeight / 2,
+                              xPos + TrigWidth / 2, yPos - TrigHeight / 2);
+                display->Line(xPos + TrigWidth / 2, yPos - TrigHeight / 2, xPos,
+                              yPos + TrigHeight / 2);
+                display->Line(xPos, yPos + TrigHeight / 2, xPos - TrigWidth / 2,
+                              yPos - TrigHeight / 2);
+                display->AdjustOriginInViewport(
+                    0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+            }
 
-                break;
-                break;
+            break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 }
@@ -2380,38 +2541,41 @@ void HudClass::DrawVIP(void)
 
     float xPos, yPos;
 
-    if ( not VIPValid or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if (not VIPValid or (FCC->GetMasterMode() ==
+                         FireControlComputer::Dogfight)) //me123 status test.)
         return;
     else
     {
         // Draw the waypoint on the ground
         switch (FCC->GetMasterMode())
         {
-            case FireControlComputer::Nav:
-            case FireControlComputer::AirGroundBomb:
-            case FireControlComputer::AirGroundLaser:
-            case FireControlComputer::AirGroundMissile:
-            case FireControlComputer::AirGroundHARM:
-            case FireControlComputer::AirGroundCamera:
-                if (fabs(VIPAz) < (90.0F * DTR))
-                {
-                    xPos = RadToHudUnitsX(VIPAz);
-                    yPos = RadToHudUnitsY(VIPElev);
-                    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                    display->Line(xPos - Lenght, yPos, xPos, yPos + Lenght);
-                    display->Line(xPos, yPos + Lenght, xPos + Lenght, yPos);
-                    display->Line(xPos + Lenght, yPos, xPos, yPos - Lenght);
-                    display->Line(xPos, yPos - Lenght, xPos - Lenght, yPos);
-                    // display->Circle(xPos - Diam/2, yPos, Diam);  // JPG 17 Dec 03 No no no, not a circle, draw a diamond
-                    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                }
+        case FireControlComputer::Nav:
+        case FireControlComputer::AirGroundBomb:
+        case FireControlComputer::AirGroundLaser:
+        case FireControlComputer::AirGroundMissile:
+        case FireControlComputer::AirGroundHARM:
+        case FireControlComputer::AirGroundCamera:
+            if (fabs(VIPAz) < (90.0F * DTR))
+            {
+                xPos = RadToHudUnitsX(VIPAz);
+                yPos = RadToHudUnitsY(VIPElev);
+                display->AdjustOriginInViewport(
+                    0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+                display->Line(xPos - Lenght, yPos, xPos, yPos + Lenght);
+                display->Line(xPos, yPos + Lenght, xPos + Lenght, yPos);
+                display->Line(xPos + Lenght, yPos, xPos, yPos - Lenght);
+                display->Line(xPos, yPos - Lenght, xPos - Lenght, yPos);
+                // display->Circle(xPos - Diam/2, yPos, Diam);  // JPG 17 Dec 03 No no no, not a circle, draw a diamond
+                display->AdjustOriginInViewport(
+                    0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+            }
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 }
@@ -2426,66 +2590,73 @@ void HudClass::DrawVRP(void)
 
     float xPos, yPos;
 
-    if ( not VRPValid or (FCC->GetMasterMode() == FireControlComputer::Dogfight))//me123 status test.)
+    if (not VRPValid or (FCC->GetMasterMode() ==
+                         FireControlComputer::Dogfight)) //me123 status test.)
         return;
     else
     {
         // Draw the waypoint on the ground
         switch (FCC->GetMasterMode())
         {
-            case FireControlComputer::Nav:
-            case FireControlComputer::AirGroundBomb:
-            case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
-            case FireControlComputer::AirGroundLaser:
-            case FireControlComputer::AirGroundMissile:
-            case FireControlComputer::AirGroundHARM:
-            case FireControlComputer::AirGroundCamera:
-                if (fabs(VRPAz) < (90.0F * DTR))
-                {
-                    xPos = RadToHudUnitsX(VRPAz);
-                    yPos = RadToHudUnitsY(VRPElev);
-                    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+        case FireControlComputer::Nav:
+        case FireControlComputer::AirGroundBomb:
+        case FireControlComputer::AirGroundRocket: // MLR 4/3/2004 -
+        case FireControlComputer::AirGroundLaser:
+        case FireControlComputer::AirGroundMissile:
+        case FireControlComputer::AirGroundHARM:
+        case FireControlComputer::AirGroundCamera:
+            if (fabs(VRPAz) < (90.0F * DTR))
+            {
+                xPos = RadToHudUnitsX(VRPAz);
+                yPos = RadToHudUnitsY(VRPElev);
+                display->AdjustOriginInViewport(
+                    0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
-                    display->Line(xPos - Lenght, yPos, xPos, yPos + Lenght);
-                    display->Line(xPos, yPos + Lenght, xPos + Lenght, yPos);
-                    display->Line(xPos + Lenght, yPos, xPos, yPos - Lenght);
-                    display->Line(xPos, yPos - Lenght, xPos - Lenght, yPos);
+                display->Line(xPos - Lenght, yPos, xPos, yPos + Lenght);
+                display->Line(xPos, yPos + Lenght, xPos + Lenght, yPos);
+                display->Line(xPos + Lenght, yPos, xPos, yPos - Lenght);
+                display->Line(xPos, yPos - Lenght, xPos - Lenght, yPos);
 
-                    // display->Circle(xPos - Diam/2, yPos, Diam);  // JPG 17 Dec 03 - A circle is for the PUP, not this crap
+                // display->Circle(xPos - Diam/2, yPos, Diam);  // JPG 17 Dec 03 - A circle is for the PUP, not this crap
 
-                    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
-                }
+                display->AdjustOriginInViewport(
+                    0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+            }
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 }
 void HudClass::DrawRALT(void)
 {
-    if ( not ownship)
+    if (not ownship)
         return;
 
-    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or FCC->GetMasterMode() == FireControlComputer::MissileOverride)
+    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or
+        FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         return;
 
     //NO RALT if RF Switch in SILENT
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC and playerAC->RFState == 2)
         return;
 
-    if (-hat < lowAltWarning and (FindRollAngle(-hat) and FindPitchAngle(-hat)) and 
+    if (-hat < lowAltWarning and
+        (FindRollAngle(-hat) and FindPitchAngle(-hat)) and
         ((AircraftClass*)ownship)->af->platform->RaltReady())
     {
-        if ( not ((AircraftClass*)ownship)->OnGround())
+        if (not((AircraftClass*)ownship)->OnGround())
         {
-            if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::ROFF or
-                ((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::RSTANDBY)
+            if (((AircraftClass*)ownship)->af->platform->RALTStatus ==
+                    AircraftClass::ROFF or
+                ((AircraftClass*)ownship)->af->platform->RALTStatus ==
+                    AircraftClass::RSTANDBY)
                 DrawALString();
             else if (Warnflash)
                 DrawALString();
@@ -2518,7 +2689,7 @@ void HudClass::DrawRALT(void)
 
             //only show 10's of feet
             hat = ((static_cast<int>(raltHud) + 5) / 10) * 10.0f;
-            sprintf(tmpStr, "%.0f", -hat);   //JPG "%.0f"
+            sprintf(tmpStr, "%.0f", -hat); //JPG "%.0f"
             display->TextRight(0.74F, YRALTText, tmpStr);
         }
     }
@@ -2526,13 +2697,15 @@ void HudClass::DrawRALT(void)
 
 void HudClass::DrawRALTBox(void)
 {
-    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or FCC->GetMasterMode() == FireControlComputer::MissileOverride)
+    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or
+        FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         return;
 
     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
     {
         //window flashes if RALT fault
-        if (ownship and ownship->mFaults and ownship->mFaults->GetFault(FaultClass::ralt_fault))
+        if (ownship and ownship->mFaults and
+            ownship->mFaults->GetFault(FaultClass::ralt_fault))
         {
             if (Warnflash)
             {
@@ -2560,7 +2733,8 @@ void HudClass::DrawRALTBox(void)
     }
     else
     {
-        if (ownship and ownship->mFaults and ownship->mFaults->GetFault(FaultClass::ralt_fault))
+        if (ownship and ownship->mFaults and
+            ownship->mFaults->GetFault(FaultClass::ralt_fault))
         {
             if (Warnflash)
             {
@@ -2589,7 +2763,8 @@ void HudClass::DrawRALTBox(void)
 }
 void HudClass::DrawALString(void)
 {
-    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or FCC->GetMasterMode() == FireControlComputer::MissileOverride)
+    if (FCC->GetMasterMode() == FireControlComputer::Dogfight or
+        FCC->GetMasterMode() == FireControlComputer::MissileOverride)
         return;
 
     //here in any case, according to the list member
@@ -2598,7 +2773,8 @@ void HudClass::DrawALString(void)
     else
         display->TextLeft(0.45F, YALText, "AL");
 
-    if (((AircraftClass*)ownship)->af->platform->RALTStatus == AircraftClass::ROFF)
+    if (((AircraftClass*)ownship)->af->platform->RALTStatus ==
+        AircraftClass::ROFF)
         return;
 
     if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModeHud)
@@ -2620,17 +2796,18 @@ void HudClass::DrawCMDSTRG(void)
     //get where our FPM is located
     float dx = betaHudUnits;
     float dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
-               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-               alphaHudUnits;
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits;
 
-    float LocalizerDev = 0.0F, RWYHeading = 0.0F, GlideSlopeDev = 0.0F, DistToSta = 0.0F;
+    float LocalizerDev = 0.0F, RWYHeading = 0.0F, GlideSlopeDev = 0.0F,
+          DistToSta = 0.0F;
     float x1 = 0.0F;
     float y1 = 0.0F;
     float Intercept = 0.0F, Slope = 0.0F, Descent = 0.0F;
     float Bearing = 0.0F, Bearing1 = 0.0F, Bearing2 = 0.0F;
 
     if (gNavigationSys)
-        gNavigationSys->GetILSData(&LocalizerDev, &RWYHeading, &GlideSlopeDev, &DistToSta);
+        gNavigationSys->GetILSData(&LocalizerDev, &RWYHeading, &GlideSlopeDev,
+                                   &DistToSta);
 
     // MD -- 20040605: no signals from the ILS system is you are beyond ~25nm.
     // or approximately (25 * 6000) feet
@@ -2644,16 +2821,20 @@ void HudClass::DrawCMDSTRG(void)
     float CorrectionLimit = 5.0F;
 
     //set correction sensitivity
-    float hDeviationGain = 45.0F / CorrectionLimit; // this way there is no jump  when switching from intercept
-    float vDeviationGain = 3.0F; // must be greater than 1, how soon you want to align with ILS
+    float hDeviationGain =
+        45.0F /
+        CorrectionLimit; // this way there is no jump  when switching from intercept
+    float vDeviationGain =
+        3.0F; // must be greater than 1, how soon you want to align with ILS
     float GlideSlopeAngle = -3.0F;
 
     mlTrig trig;
     mlSinCos(&trig, cockpitFlightData.roll);
 
     //Calculate our current heading from FPM position;
-    float hor_Offset = cockpitFlightData.beta * trig.cos + cockpitFlightData.alpha * trig.sin
-                       + RTD * cockpitFlightData.windOffset * trig.cos;
+    float hor_Offset = cockpitFlightData.beta * trig.cos +
+                       cockpitFlightData.alpha * trig.sin +
+                       RTD * cockpitFlightData.windOffset * trig.cos;
     float curHeading = cockpitFlightData.yaw * RTD + hor_Offset;
 
     //Calcualte correction phase Bearing1
@@ -2685,9 +2866,9 @@ void HudClass::DrawCMDSTRG(void)
 
     //left or right turn?
     if (LocalizerDev < 0)
-        Intercept = RWYHeading - 45;    //right of RWY
+        Intercept = RWYHeading - 45; //right of RWY
     else
-        Intercept = RWYHeading + 45;    //left or RWY
+        Intercept = RWYHeading + 45; //left or RWY
 
     Bearing2 = Intercept - curHeading;
 
@@ -2704,12 +2885,15 @@ void HudClass::DrawCMDSTRG(void)
         //Smooth slope movement
         float tmpSmooth = 0.9F;
 
-        if ((LocalizerDev > tmpSmooth * CorrectionLimit) or (LocalizerDev < -tmpSmooth * CorrectionLimit))
+        if ((LocalizerDev > tmpSmooth * CorrectionLimit) or
+            (LocalizerDev < -tmpSmooth * CorrectionLimit))
         {
             if (LocalizerDev > 0)
-                Slope = Slope * ((CorrectionLimit - LocalizerDev) / ((1 - tmpSmooth) * CorrectionLimit));
+                Slope = Slope * ((CorrectionLimit - LocalizerDev) /
+                                 ((1 - tmpSmooth) * CorrectionLimit));
             else
-                Slope = Slope * ((CorrectionLimit + LocalizerDev) / ((1 - tmpSmooth) * CorrectionLimit));
+                Slope = Slope * ((CorrectionLimit + LocalizerDev) /
+                                 ((1 - tmpSmooth) * CorrectionLimit));
         }
     }
     else
@@ -2723,8 +2907,10 @@ void HudClass::DrawCMDSTRG(void)
 
     display->AdjustOriginInViewport(dx, dy);
     display->AdjustRotationAboutOrigin(-cockpitFlightData.roll);
-    x1 = max(min(Bearing, hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F), -hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F);
-    y1 = max(min(Slope, hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F), -hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F);
+    x1 = max(min(Bearing, hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F),
+             -hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F);
+    y1 = max(min(Slope, hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F),
+             -hudWinWidth[PITCH_LADDER_WINDOW] * 0.75F);
 
     float circlesize = 0.003F;
     float linesize = 0.016F;
@@ -2746,12 +2932,14 @@ void HudClass::DrawBankIndicator(void)
     //get where our FPM is located
     float dx = betaHudUnits;
     float dy = hudWinY[BORESIGHT_CROSS_WINDOW] +
-               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F -
-               alphaHudUnits;
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F - alphaHudUnits;
 
-    static const float angles[] = { 60 * DTR, 30 * DTR, 20 * DTR, 10 * DTR, 0 * DTR, -10 * DTR, -20 * DTR, -30 * DTR, -60 * DTR };
+    static const float angles[] = {60 * DTR,  30 * DTR,  20 * DTR,
+                                   10 * DTR,  0 * DTR,   -10 * DTR,
+                                   -20 * DTR, -30 * DTR, -60 * DTR};
     static const int nangles = sizeof(angles) / sizeof(angles[0]);
-    static float x1points[nangles], x2points[nangles], y1points[nangles], y2points[nangles];
+    static float x1points[nangles], x2points[nangles], y1points[nangles],
+        y2points[nangles];
     static float sdist = 0.11f, oedist = 0.13f;
     mlTrig trig;
 
@@ -2759,7 +2947,7 @@ void HudClass::DrawBankIndicator(void)
 
     if (CalcBank)
     {
-        for (int i = 0; i  < nangles; i++)
+        for (int i = 0; i < nangles; i++)
         {
             if (i == 0 or i == 1 or i == 4 or i == 7 or i == 8)
                 oedist = 0.16f;
@@ -2796,8 +2984,9 @@ void HudClass::DrawAirSpeedCarret(float Speed)
 
     //TJL 07/31/04 F14 - F18 Airspeed Carret //Cobra 11/04/04 TJL
     //Cobra fixed non-F16, non-HUD specific airspeed carret issue
-    if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7 or ownship->af->GetTypeAC() == 8 or
-        ownship->af->GetTypeAC() == 9 or ownship->af->GetTypeAC() == 10)
+    if (ownship->af->GetTypeAC() == 6 or ownship->af->GetTypeAC() == 7 or
+        ownship->af->GetTypeAC() == 8 or ownship->af->GetTypeAC() == 9 or
+        ownship->af->GetTypeAC() == 10)
     {
         float delta = 0.0f;
         delta = Speed - (cockpitFlightData.kias);
@@ -2825,7 +3014,8 @@ void HudClass::DrawAirSpeedCarret(float Speed)
         return;
     }
     //F15s
-    else if (ownship->af->GetTypeAC() == 3 or ownship->af->GetTypeAC() == 4 or ownship->af->GetTypeAC() == 5)
+    else if (ownship->af->GetTypeAC() == 3 or ownship->af->GetTypeAC() == 4 or
+             ownship->af->GetTypeAC() == 5)
     {
         float delta = 0.0f;
         delta = Speed - (cockpitFlightData.kias);
@@ -2871,7 +3061,8 @@ void HudClass::DrawAirSpeedCarret(float Speed)
     delta = Speed - (cockpitFlightData.kias);
     delta *= 0.1F;
     y1 += delta * tickInc;
-    y1 = max(min(y1, hudWinY[AIRSPEED_WINDOW] + hudWinHeight[AIRSPEED_WINDOW] - smallTickLen),
+    y1 = max(min(y1, hudWinY[AIRSPEED_WINDOW] + hudWinHeight[AIRSPEED_WINDOW] -
+                         smallTickLen),
              hudWinY[AIRSPEED_WINDOW]);
 
     display->Line(x1, y1, x1 + bigTickLen, y1 + (smallTickLen * 0.5F));
@@ -2883,7 +3074,7 @@ void HudClass::DrawAltCarret(float Alt)
     if (FCC->GetMasterMode() == FireControlComputer::Dogfight)
         return;
 
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     float leftEdge = 0.0F;
     float bigTickLen = 0.0F;
     float smallTickLen = 0.0F;
@@ -2905,7 +3096,8 @@ void HudClass::DrawAltCarret(float Alt)
         delta = Alt - -ownship->ZPos();
         delta *= 0.01F;
         y1 += delta * tickInc;
-        y1 = max(min(y1, hudWinY[ALTITUDE_WINDOW] + hudWinHeight[ALTITUDE_WINDOW] - smallTickLen),
+        y1 = max(min(y1, hudWinY[ALTITUDE_WINDOW] +
+                             hudWinHeight[ALTITUDE_WINDOW] - smallTickLen),
                  hudWinY[ALTITUDE_WINDOW]);
         display->Line(x1 + bigTickLen, y1, x1, y1 + (smallTickLen * 0.5F));
         display->Line(x1 + bigTickLen, y1, x1, y1 - (smallTickLen * 0.5F));
@@ -2914,97 +3106,114 @@ void HudClass::DrawAltCarret(float Alt)
 //MI
 void HudClass::DrawCruiseIndexes(void)
 {
-    if ( not OTWDriver.pCockpitManager or not OTWDriver.pCockpitManager->mpIcp)
+    if (not OTWDriver.pCockpitManager or not OTWDriver.pCockpitManager->mpIcp)
     {
         return;
     }
 
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     switch (OTWDriver.pCockpitManager->mpIcp->GetCruiseIndex())
     {
-        case 0: //Cruise TOS
-            //Speed
-            DrawAirSpeedCarret(waypointSpeed);
-            sprintf(SpeedText, "%.0f", max(min(waypointSpeed, 9999.0F), 0.0F));
-            break;
+    case 0: //Cruise TOS
+        //Speed
+        DrawAirSpeedCarret(waypointSpeed);
+        sprintf(SpeedText, "%.0f", max(min(waypointSpeed, 9999.0F), 0.0F));
+        break;
 
-        case 1: //Cruise RNG
+    case 1: //Cruise RNG
 
-            //Speed
-            if (playerAC and playerAC->af)
+        //Speed
+        if (playerAC and playerAC->af)
+        {
+            DrawAirSpeedCarret(playerAC->af->GetOptKias(2));
+            sprintf(SpeedText, "%.0f",
+                    max(min(playerAC->af->GetOptKias(2), 9999.0F), 0.0F));
+        }
+
+        break;
+
+    case 2: //Cruise Home
+
+        //opt speed and alt with climb profile and such
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and
+            playerAC)
+        {
+            float xCurr, yCurr, zCurr = 0;
+            WayPointClass* wp = playerAC->GetWayPointNo(
+                OTWDriver.pCockpitManager->mpIcp->HomeWP);
+
+            if (wp)
             {
-                DrawAirSpeedCarret(playerAC->af->GetOptKias(2));
-                sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(2), 9999.0F), 0.0F));
-            }
+                wp->GetLocation(&xCurr, &yCurr, &zCurr);
+                float deltaX = xCurr - playerAC->XPos();
+                float deltaY = yCurr - playerAC->YPos();
+                float distanceToSta =
+                    (float)sqrt(deltaX * deltaX + deltaY * deltaY);
 
-            break;
-
-        case 2: //Cruise Home
-
-            //opt speed and alt with climb profile and such
-            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and playerAC)
-            {
-                float xCurr, yCurr, zCurr = 0;
-                WayPointClass *wp = playerAC->GetWayPointNo(
-                                        OTWDriver.pCockpitManager->mpIcp->HomeWP);
-
-                if (wp)
+                if (playerAC->af)
                 {
-                    wp->GetLocation(&xCurr, &yCurr, &zCurr);
-                    float deltaX = xCurr - playerAC->XPos();
-                    float deltaY = yCurr - playerAC->YPos();
-                    float distanceToSta = (float)sqrt(deltaX * deltaX + deltaY * deltaY);
+                    // we are within glide distance let's go max rng and decent
+                    float decentpoint =
+                        ((5000.0f - playerAC->ZPos() * 0.8f) / 1000.0f) /
+                        (max(100.0f, (float)playerAC->af->GetDragIndex()) /
+                         100.0f);
 
-                    if (playerAC->af)
+                    if (decentpoint > distanceToSta * FT_TO_NM)
                     {
-                        // we are within glide distance let's go max rng and decent
-                        float decentpoint = ((5000.0f - playerAC->ZPos() * 0.8f) / 1000.0f) /
-                                            (max(100.0f, (float)playerAC->af->GetDragIndex()) / 100.0f);
-
-                        if (decentpoint > distanceToSta * FT_TO_NM)
-                        {
-                            DrawAirSpeedCarret(playerAC->af->GetOptKias(2));
-                            sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(2), 9999.0F), 0.0F));
-                        }
-                        // we are at optimum cruice let's cruice range here
-                        else if (fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 200.0f  and 
+                        DrawAirSpeedCarret(playerAC->af->GetOptKias(2));
+                        sprintf(SpeedText, "%.0f",
+                                max(min(playerAC->af->GetOptKias(2), 9999.0F),
+                                    0.0F));
+                    }
+                    // we are at optimum cruice let's cruice range here
+                    else if (fabs(-playerAC->ZPos() -
+                                  playerAC->af->GetOptimumAltitude()) <
+                                     200.0f and
                                  fabs(playerAC->ZDelta()) < 50.0f or
-                                 fabs(-playerAC->ZPos() - playerAC->af->GetOptimumAltitude()) < 1000.0f  and 
+                             fabs(-playerAC->ZPos() -
+                                  playerAC->af->GetOptimumAltitude()) <
+                                     1000.0f and
                                  playerAC->ZDelta() > 0.0f or
-                                 -playerAC->ZPos() > playerAC->af->GetOptimumAltitude())
-                        {
-                            DrawAirSpeedCarret(playerAC->af->GetOptKias(2));
-                            DrawAltCarret(playerAC->af->GetOptimumAltitude());
-                            sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(2), 9999.0F), 0.0F));
-                        }
-                        // we are in the climp towards best cruice altitude
-                        else
-                        {
-                            DrawAirSpeedCarret(playerAC->af->GetOptKias(0));
-                            DrawAltCarret(playerAC->af->GetOptimumAltitude());
-                            sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(0), 9999.0F), 0.0F));
-                        }
+                             -playerAC->ZPos() >
+                                 playerAC->af->GetOptimumAltitude())
+                    {
+                        DrawAirSpeedCarret(playerAC->af->GetOptKias(2));
+                        DrawAltCarret(playerAC->af->GetOptimumAltitude());
+                        sprintf(SpeedText, "%.0f",
+                                max(min(playerAC->af->GetOptKias(2), 9999.0F),
+                                    0.0F));
+                    }
+                    // we are in the climp towards best cruice altitude
+                    else
+                    {
+                        DrawAirSpeedCarret(playerAC->af->GetOptKias(0));
+                        DrawAltCarret(playerAC->af->GetOptimumAltitude());
+                        sprintf(SpeedText, "%.0f",
+                                max(min(playerAC->af->GetOptKias(0), 9999.0F),
+                                    0.0F));
                     }
                 }
             }
+        }
 
-            //opt speed and alt with climb profile and such
-            break;
+        //opt speed and alt with climb profile and such
+        break;
 
-        case 3: //Cruise Edr
+    case 3: //Cruise Edr
 
-            //Speed
-            if (playerAC and playerAC->af)
-            {
-                DrawAirSpeedCarret(playerAC->af->GetOptKias(1));
-                sprintf(SpeedText, "%.0f", max(min(playerAC->af->GetOptKias(1), 9999.0F), 0.0F));
-            }
+        //Speed
+        if (playerAC and playerAC->af)
+        {
+            DrawAirSpeedCarret(playerAC->af->GetOptKias(1));
+            sprintf(SpeedText, "%.0f",
+                    max(min(playerAC->af->GetOptKias(1), 9999.0F), 0.0F));
+        }
 
-            break;
+        break;
 
-        default:
-            sprintf(SpeedText, "");
-            break;
+    default:
+        sprintf(SpeedText, "");
+        break;
     }
 }

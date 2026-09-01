@@ -6,7 +6,7 @@
  Manage the visual world's clock and provide periodic callbacks to
  this modules which need to adjust with time of day changes.
 \***************************************************************************/
-#include "TimeMgr.h"
+#include "timemgr.h"
 
 
 // The one and only time manager object
@@ -14,9 +14,9 @@ TimeManager TheTimeManager;
 
 
 static const int MAX_TOD_CALLBACKS = 64; // Max number of requestors
-static const long CALLBACK_CYCLE_TIME = 60000L; // Approx time to update all requestors
+static const long CALLBACK_CYCLE_TIME =
+    60000L; // Approx time to update all requestors
 static const long CALLBACK_TIME_STEP = CALLBACK_CYCLE_TIME / MAX_TOD_CALLBACKS;
-
 
 
 void TimeManager::Setup(int startYear, int startDayOfYear)
@@ -40,7 +40,8 @@ void TimeManager::Cleanup()
 
 #ifdef _DEBUG
 
-    for (nextCallToMake = 0; nextCallToMake < MAX_TOD_CALLBACKS; nextCallToMake++)
+    for (nextCallToMake = 0; nextCallToMake < MAX_TOD_CALLBACKS;
+         nextCallToMake++)
     {
         if (CBlist[nextCallToMake].fn != NULL)
         {
@@ -58,7 +59,7 @@ void TimeManager::Cleanup()
 
 // Add a callback function to the list of those to be periodically called
 // as time advances
-void TimeManager::RegisterTimeUpdateCB(void(*fn)(void*), void *self)
+void TimeManager::RegisterTimeUpdateCB(void (*fn)(void *), void *self)
 {
     ShiAssert(IsReady());
     ShiAssert(fn);
@@ -83,10 +84,15 @@ void TimeManager::RegisterTimeUpdateCB(void(*fn)(void*), void *self)
 
 // Remove a previously added callback from the list of those which are
 // periodically called
-void TimeManager::ReleaseTimeUpdateCB(void(*fn)(void*), void *self)
+void TimeManager::ReleaseTimeUpdateCB(void (*fn)(void *), void *self)
 {
-    ShiAssert(IsReady());
     ShiAssert(fn);
+
+    // The callback array can already be gone during shutdown teardown (Cleanup sets CBlist = NULL), and a
+    // late release (e.g. CTimeOfDay::Cleanup on exit) would then dereference NULL -> SIGSEGV. RegisterTimeUpdateCB
+    // guards the same way; mirror it here (ShiAssert(IsReady()) is a no-op in release, so it can't catch this).
+    if (!CBlist)
+        return;
 
     for (int i = 0; i < MAX_TOD_CALLBACKS; i++)
     {
@@ -186,4 +192,3 @@ void TimeManager::Refresh(void)
     nextCallToMake = 0;
     lastUpdateTime = currentTime;
 }
-

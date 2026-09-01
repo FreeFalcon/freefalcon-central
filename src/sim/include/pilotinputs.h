@@ -1,12 +1,22 @@
-#define PICKLE_RELEASE_TIME 1000 // Time in milliSeconds for Pickle to release 
-
+#define PICKLE_RELEASE_TIME 1000 // Time in milliSeconds for Pickle to release
 
 
 class PilotInputs
 {
 public:
-    enum TwoWaySwitch {Off, On};
-    enum FourWaySwitch {Center, Up, Down, Left, Right};
+    enum TwoWaySwitch
+    {
+        Off,
+        On
+    };
+    enum FourWaySwitch
+    {
+        Center,
+        Up,
+        Down,
+        Left,
+        Right
+    };
     TwoWaySwitch pickleButton;
     TwoWaySwitch pitchOverride;
     TwoWaySwitch missileStep;
@@ -25,7 +35,8 @@ public:
     float pstick;
     float rstick;
     float throttle;
-    float engineThrottle[2]; // Retro 12Jan2004 - I didn´t want to call it 'throttle' as we´d certainly get errors that way
+    float engineThrottle
+        [2]; // Retro 12Jan2004 - I didn´t want to call it 'throttle' as we´d certainly get errors that way
     float rudder;
     float ptrim;
     float rtrim;
@@ -67,4 +78,3 @@ public:
 };
 
 extern PilotInputs UserStickInputs;
-

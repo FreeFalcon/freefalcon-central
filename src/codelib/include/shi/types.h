@@ -38,11 +38,10 @@
 /****************************************************/
 
 #if defined(STRICT_TYPES)
-#define SHI_TYPE_ERROR(ERR_STR,ALT_TYPE) "Error: ERR_STR"
+#define SHI_TYPE_ERROR(ERR_STR, ALT_TYPE) "Error: ERR_STR"
 #else
-#define SHI_TYPE_ERROR(ERR_STR,ALT_TYPE) ALT_TYPE
+#define SHI_TYPE_ERROR(ERR_STR, ALT_TYPE) ALT_TYPE
 #endif
-
 
 
 /****************************************************/
@@ -56,19 +55,7 @@
 
 #define BITS_PER_BYTE 8 /* Currently true for all */
 
-#define GET_NUM_BITS(TYPE) (BITS_PER_BYTE*sizeof(TYPE))
+#define GET_NUM_BITS(TYPE) (BITS_PER_BYTE * sizeof(TYPE))
 
 
 #endif /* _SHI__TYPES_H_  */
-
-
-
-
-
-
-
-
-
-
-
-

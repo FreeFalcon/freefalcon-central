@@ -22,5 +22,4 @@ CPCursor::CPCursor(CursorInitStr* pcursorInitStr)
 
 void CPCursor::Display(void)
 {
-
 }

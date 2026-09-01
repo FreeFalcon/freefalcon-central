@@ -7,8 +7,8 @@
 #define MAX_OBJECTS 100
 #define NUM_RADAR_HISTORY 4
 
-#define OBJ_TAG_STR( f, l ) ( f " Line " #l )
-#define OBJ_TAG OBJ_TAG_STR( __FILE__, __LINE__ )
+#define OBJ_TAG_STR(f, l) (f " Line " #l)
+#define OBJ_TAG OBJ_TAG_STR(__FILE__, __LINE__)
 
 class SimBaseClass;
 class FalconEntity;
@@ -18,7 +18,8 @@ class SimObjectLocalData
 public:
     SimObjectLocalData(void)
     {
-        rdrDetect = painted = TWSTrackFileOpen = extrapolateStart = detFlags = nextLOSCheck = interrogated = 0;
+        rdrDetect = painted = TWSTrackFileOpen = extrapolateStart = detFlags =
+            nextLOSCheck = interrogated = 0;
         range = ata = az = el = droll = 0.0F;
     };//Cobra 11/21/04 Added Interrogated
 
@@ -32,7 +33,8 @@ public:
     Float32 azFromdot; // rate of change of azFrom (radians/sec)
     Float32 el; // body relative angle to target in "pitch" plane
     Float32 elFrom, elFromdot; // from target to use values for elevation
-    Float32 droll; // body relative roll to target (how far to roll to get lift vector on target)
+    Float32
+        droll; // body relative roll to target (how far to roll to get lift vector on target)
     Float32 range, rangedot; // range to target (feet bitand feet/sec)
 
     // Radar specific target data (move into Radar classes???)
@@ -41,12 +43,16 @@ public:
     unsigned int lockmsgsend; // 0=no, 1 = lock 2 = unlock
     int lastRadarMode; // 2002-02-10 ADDED BY S.G. Need to know the last mode the radar was in
     Float32 aspect; // Target aspect (= 180.0F*DTR - ataFrom)
-    Int32   rdrSy[NUM_RADAR_HISTORY]; // radar symbol (assigned by exec in RadarDoppler)
+    Int32 rdrSy
+        [NUM_RADAR_HISTORY]; // radar symbol (assigned by exec in RadarDoppler)
     Float32 rdrX[NUM_RADAR_HISTORY]; // azmuth in radians?
     Float32 rdrY[NUM_RADAR_HISTORY]; // range in feet (radial)
-    Float32 rdrHd[NUM_RADAR_HISTORY]; // our heading at target paint time (platform->Yaw())
-    VU_TIME rdrLastHit; // Last time this target was detected (SimLibElapsedTime)
-    UInt32 rdrDetect; // Bit field indicating when we did/didn't detect the target
+    Float32 rdrHd
+        [NUM_RADAR_HISTORY]; // our heading at target paint time (platform->Yaw())
+    VU_TIME
+    rdrLastHit; // Last time this target was detected (SimLibElapsedTime)
+    UInt32
+        rdrDetect; // Bit field indicating when we did/didn't detect the target
     VU_TIME extrapolateStart; // MD -- 20040121: start extrapolate timer.
 
     // Digi use only
@@ -57,8 +63,11 @@ public:
     // in Sensorfusion()
 
     // Per sensor data
-    Int32 sensorLoopCount[SensorClass::NumSensorTypes]; // Number of frames since the target was last seen
-    SensorClass::TrackTypes sensorState[SensorClass::NumSensorTypes]; // What kind of sensor lock do we have
+    Int32 sensorLoopCount
+        [SensorClass::
+             NumSensorTypes]; // Number of frames since the target was last seen
+    SensorClass::TrackTypes sensorState
+        [SensorClass::NumSensorTypes]; // What kind of sensor lock do we have
 
     Float32 irSignature; // Should go away - look it up when required
 
@@ -71,8 +80,10 @@ public:
     }
     void SetCloudLOS(int value)
     {
-        if (value)detFlags or_eq 0x01;
-        else detFlags and_eq compl 0x01;
+        if (value)
+            detFlags or_eq 0x01;
+        else
+            detFlags and_eq compl 0x01;
     }
     int TerrainLOS(void)
     {
@@ -80,8 +91,10 @@ public:
     }
     void SetTerrainLOS(int value)
     {
-        if (value)detFlags or_eq 0x02;
-        else detFlags and_eq compl 0x02;
+        if (value)
+            detFlags or_eq 0x02;
+        else
+            detFlags and_eq compl 0x02;
     }
 #ifdef USE_SH_POOLS
 public:
@@ -93,7 +106,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -111,13 +125,13 @@ public:
 class SimObjectType
 {
 public:
-    SimObjectType(FalconEntity* baseObj);
-    SimObjectType* Copy(void);
+    SimObjectType(FalconEntity *baseObj);
+    SimObjectType *Copy(void);
 
     void Reference(void);
     void Release(void);
 
-    FalconEntity* BaseData(void)
+    FalconEntity *BaseData(void)
     {
         return baseData.get();
     };
@@ -149,7 +163,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -163,6 +178,6 @@ public:
 #endif
 };
 
-typedef SimObjectType* SimObjectPtr;
+typedef SimObjectType *SimObjectPtr;
 
 #endif // _OBJECT_H

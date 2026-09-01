@@ -33,9 +33,10 @@ class TheaterList
 {
     TheaterDef *m_first;
     int m_count;
+
 public:
-    TheaterDef * FindTheaterByName(const char *name);
-    TheaterDef * GetCurrentTheater();
+    TheaterDef *FindTheaterByName(const char *name);
+    TheaterDef *GetCurrentTheater();
     void SetCurrentTheater(TheaterDef *td);
     bool SetNewTheater(TheaterDef *td);
     bool ChooseTheaterByName(const char *name);
@@ -49,6 +50,7 @@ public:
     {
         return m_count;
     };
+
 private:
     void SetPathName(char *dest, char *src, char *reldir);
 };

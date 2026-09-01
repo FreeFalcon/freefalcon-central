@@ -5,7 +5,7 @@
 
 class LaserPodClass : public VisualClass
 {
-public :
+public:
     LaserPodClass(int type, SimMoverClass* self);
     virtual ~LaserPodClass(void);
 
@@ -13,7 +13,7 @@ public :
     virtual void Display(VirtualDisplay*);
     virtual void DisplayInit(ImageBuffer*);
 
-    virtual void SetDesiredTarget(SimObjectType *curTarget);
+    virtual void SetDesiredTarget(SimObjectType* curTarget);
 
     int LockTarget(void);
     int IsLocked(void)
@@ -21,13 +21,13 @@ public :
         return (hasTarget == TargetLocked);
     }
 
-    void  ToggleFOV(void);
+    void ToggleFOV(void);
     float CurFOV(void)
     {
         return curFOV;
     };
 
-    int  SetDesiredSeekerPos(float* az, float* el);
+    int SetDesiredSeekerPos(float* az, float* el);
 
     void SetYPR(float a, float b, float c)
     {
@@ -64,15 +64,18 @@ public :
         BHOT = not BHOT;
     };
 
-protected :
+protected:
     void DrawTerrain(void);
 
     int hasTarget;
     float curFOV;
     float roll, pitch, yaw;
     float tgtX, tgtY, tgtZ;
-    enum {NoTarget, TargetLocked};
+    enum
+    {
+        NoTarget,
+        TargetLocked
+    };
 };
 
 #endif
-

@@ -5,8 +5,8 @@
 
  Volumetric cloud class
 \***************************************************************************/
-#include "Real3DCloud.h"
-#include "RealWeather.h"
+#include "real3dcloud.h"
+#include "realweather.h"
 
 ObjectDisplayList *Real3DCloud::objMgr = NULL;
 
@@ -23,14 +23,14 @@ Real3DCloud::~Real3DCloud()
     }
 }
 
-void Real3DCloud::Setup(ObjectDisplayList* objList)
+void Real3DCloud::Setup(ObjectDisplayList *objList)
 {
     int i;
     objMgr = objList;
 
     drawable3DClouds = new Drawable3DCloud[NUM_3DCLOUD_POLYS];
 
-    for (i = 0 ; i < NUM_3DCLOUD_POLYS; i++)
+    for (i = 0; i < NUM_3DCLOUD_POLYS; i++)
     {
         objList->InsertObject(&drawable3DClouds[i]);
     }

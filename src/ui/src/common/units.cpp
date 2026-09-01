@@ -29,25 +29,26 @@
 #include "gps.h"
 #include "tac_class.h"
 #include "te_defs.h"
-#include "F4version.h"
+#include "f4version.h"
 
-extern C_Map *gMapMgr;
-extern C_Handler *gMainHandler;
-extern GlobalPositioningSystem *gGps;
+extern C_Map* gMapMgr;
+extern C_Handler* gMainHandler;
+extern GlobalPositioningSystem* gGps;
 
 void DeleteGroupList(long ID);
-_TCHAR *AddCommas(_TCHAR *buf);
+_TCHAR* AddCommas(_TCHAR* buf);
 void SetupFlightSpecificControls(Flight flt);
-void recalculate_waypoints(WayPointClass *wp);
+void recalculate_waypoints(WayPointClass* wp);
 void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty);
 void FindMapIcon(long ID);
-extern void ForeignToUpper(_TCHAR *buffer);
+extern void ForeignToUpper(_TCHAR* buffer);
 
 static long VehList[256][2]; // Max 16, [0]=ID,[1]=Count
 static short Count;
 
 VU_ID gLastSquadron = FalconNullId;
-extern VU_ID gActiveFlightID, gLoadoutFlightID, gSelectedFlightID; // 2001-10-25 M.N. Added gSelectedFlightID
+extern VU_ID gActiveFlightID, gLoadoutFlightID,
+    gSelectedFlightID; // 2001-10-25 M.N. Added gSelectedFlightID
 
 int gDragWPNum = 0;
 
@@ -68,7 +69,7 @@ static void TallyUnitVehicles(Unit un)
 {
     int i, j, ID;
 
-    if ( not un)
+    if (not un)
         return;
 
     for (i = 0; i < 16; i++)
@@ -93,12 +94,12 @@ static void TallyUnitVehicles(Unit un)
     }
 }
 
-void AddVehiclesToWindow(C_Window *win, long client)
+void AddVehiclesToWindow(C_Window* win, long client)
 {
-    C_Text *txt;
+    C_Text* txt;
     int i, y = 4;
     _TCHAR buffer[50];
-    VehicleClassDataType *vc;
+    VehicleClassDataType* vc;
 
     for (i = 0; i < 16; i++)
     {
@@ -133,7 +134,7 @@ static long CVTRange(long Value, long MaxVal, long NumSteps)
     long step;
 
     if (NumSteps < 1)
-        return(1);
+        return (1);
 
     step = MaxVal / NumSteps;
 
@@ -143,18 +144,18 @@ static long CVTRange(long Value, long MaxVal, long NumSteps)
     if (Value > NumSteps)
         Value = NumSteps;
 
-    return(Value);
+    return (Value);
 }
 
 void SetupUnitInfoWindow(VU_ID unitID)
 {
-    C_Window *win;
-    C_ListBox *lbox;
-    C_EditBox *ebox;
-    C_Text *txt;
-    C_Line *line;
-    C_Bitmap *bmp;
-    UI_Refresher *urec;
+    C_Window* win;
+    C_ListBox* lbox;
+    C_EditBox* ebox;
+    C_Text* txt;
+    C_Line* line;
+    C_Bitmap* bmp;
+    UI_Refresher* urec;
     Objective obj;
     long Morale = 0;
     long Fatigue = 0;
@@ -168,24 +169,24 @@ void SetupUnitInfoWindow(VU_ID unitID)
     WayPoint wp;
     _TCHAR buffer[200];
     int i;
-    F4CSECTIONHANDLE *Leave;
+    F4CSECTIONHANDLE* Leave;
 
     win = gMainHandler->FindWindow(UNIT_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     un = (Unit)vuDatabase->Find(unitID);
 
-    if ( not un)
+    if (not un)
         return;
 
-    if ( not un->IsBattalion() and not un->IsBrigade())
+    if (not un->IsBattalion() and not un->IsBrigade())
         return;
 
     urec = (UI_Refresher*)gGps->Find(un->GetCampID());
 
-    if ( not urec)
+    if (not urec)
         return;
 
     Leave = UI_Enter(win);
@@ -202,7 +203,8 @@ void SetupUnitInfoWindow(VU_ID unitID)
             Morale += par->GetUnitMorale();
             Fatigue += par->GetUnitFatigue();
             Supply += par->GetUnitSupply();
-            Strength += (par->GetTotalVehicles() * 100) / par->GetFullstrengthVehicles();
+            Strength += (par->GetTotalVehicles() * 100) /
+                        par->GetFullstrengthVehicles();
             NumUnits++;
             TallyUnitVehicles(par);
             par = un->GetNextUnitElement();
@@ -221,7 +223,8 @@ void SetupUnitInfoWindow(VU_ID unitID)
         Morale = un->GetUnitMorale();
         Fatigue = un->GetUnitFatigue();
         Supply = un->GetUnitSupply();
-        Strength = (un->GetTotalVehicles() * 100) / un->GetFullstrengthVehicles();
+        Strength =
+            (un->GetTotalVehicles() * 100) / un->GetFullstrengthVehicles();
         TallyUnitVehicles(un);
     }
 
@@ -341,13 +344,17 @@ void SetupUnitInfoWindow(VU_ID unitID)
     if (lbox)
     {
         if (un->GetRClass() == RCLASS_AIR)
-            lbox->SetValue(CVTRange(TeamInfo[un->GetTeam()]->airExperience - 60, 40, 5));
+            lbox->SetValue(
+                CVTRange(TeamInfo[un->GetTeam()]->airExperience - 60, 40, 5));
         else if (un->GetRClass() == RCLASS_NAVAL)
-            lbox->SetValue(CVTRange(TeamInfo[un->GetTeam()]->navalExperience - 60, 40, 5));
+            lbox->SetValue(
+                CVTRange(TeamInfo[un->GetTeam()]->navalExperience - 60, 40, 5));
         else if (un->GetRClass() == RCLASS_AIRDEFENSE)
-            lbox->SetValue(CVTRange(TeamInfo[un->GetTeam()]->airDefenseExperience - 60, 40, 5));
+            lbox->SetValue(CVTRange(
+                TeamInfo[un->GetTeam()]->airDefenseExperience - 60, 40, 5));
         else
-            lbox->SetValue(CVTRange(TeamInfo[un->GetTeam()]->groundExperience - 60, 40, 5));
+            lbox->SetValue(CVTRange(
+                TeamInfo[un->GetTeam()]->groundExperience - 60, 40, 5));
 
         lbox->Refresh();
     }
@@ -468,13 +475,13 @@ void SetupUnitInfoWindow(VU_ID unitID)
 
 void SetupDivisionInfoWindow(long DivID, short owner)
 {
-    C_Window *win;
-    C_ListBox *lbox;
-    C_EditBox *ebox;
-    C_Text *txt;
-    C_Line *line;
-    C_Bitmap *bmp;
-    UI_Refresher *urec;
+    C_Window* win;
+    C_ListBox* lbox;
+    C_EditBox* ebox;
+    C_Text* txt;
+    C_Line* line;
+    C_Bitmap* bmp;
+    UI_Refresher* urec;
     long Morale = 0;
     long Fatigue = 0;
     long Supply = 0;
@@ -485,11 +492,11 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     Unit par;
     Division div;
     _TCHAR buffer[200];
-    F4CSECTIONHANDLE *Leave;
+    F4CSECTIONHANDLE* Leave;
 
     win = gMainHandler->FindWindow(UNIT_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     div = GetFirstDivisionByCountry(owner);
@@ -497,12 +504,12 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     while (div and div->nid not_eq (DivID))
         div = GetNextDivisionByCountry(div, owner);
 
-    if ( not div)
+    if (not div)
         return;
 
     urec = (UI_Refresher*)gGps->Find(div->nid bitor UR_DIVISION);
 
-    if ( not urec)
+    if (not urec)
         return;
 
     Leave = UI_Enter(win);
@@ -521,7 +528,8 @@ void SetupDivisionInfoWindow(long DivID, short owner)
             Morale += tmpun->GetUnitMorale();
             Fatigue += tmpun->GetUnitFatigue();
             Supply += tmpun->GetUnitSupply();
-            Strength += (tmpun->GetTotalVehicles() * 100) / tmpun->GetFullstrengthVehicles();
+            Strength += (tmpun->GetTotalVehicles() * 100) /
+                        tmpun->GetFullstrengthVehicles();
             NumUnits++;
             TallyUnitVehicles(tmpun);
             tmpun = par->GetNextUnitElement();
@@ -625,7 +633,8 @@ void SetupDivisionInfoWindow(long DivID, short owner)
 
     if (lbox)
     {
-        lbox->SetValue(CVTRange(TeamInfo[(DivID >> 24)]->groundExperience, 100, 5));
+        lbox->SetValue(
+            CVTRange(TeamInfo[(DivID >> 24)]->groundExperience, 100, 5));
         lbox->Refresh();
     }
 
@@ -749,23 +758,19 @@ void SetupDivisionInfoWindow(long DivID, short owner)
     UI_Leave(Leave);
 }
 
-static C_Base *priorpilot = NULL;
+static C_Base* priorpilot = NULL;
 
-long ratingstr[] =
-{
-    TXT_PILOT_RATE_0,
-    TXT_PILOT_RATE_1,
-    TXT_PILOT_RATE_2,
-    TXT_PILOT_RATE_3,
-    TXT_PILOT_RATE_4,
+long ratingstr[] = {
+    TXT_PILOT_RATE_0, TXT_PILOT_RATE_1, TXT_PILOT_RATE_2,
+    TXT_PILOT_RATE_3, TXT_PILOT_RATE_4,
 };
 
-void PickPilotCB(long, short hittype, C_Base *control)
+void PickPilotCB(long, short hittype, C_Base* control)
 {
-    C_Bitmap *bmp;
-    C_Text *txt;
+    C_Bitmap* bmp;
+    C_Text* txt;
     _TCHAR buffer[10];
-    F4CSECTIONHANDLE *Leave;
+    F4CSECTIONHANDLE* Leave;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -809,7 +814,11 @@ void PickPilotCB(long, short hittype, C_Base *control)
     if (txt)
     {
         if (control->GetUserNumber(C_STATE_3))
-            txt->SetText(ratingstr[(short)(((float)control->GetUserNumber(C_STATE_3) / 25.0f + 0.5f)) % 5]);
+            txt->SetText(
+                ratingstr[(short)(((float)control->GetUserNumber(C_STATE_3) /
+                                       25.0f +
+                                   0.5f)) %
+                          5]);
         else
             txt->SetText(TXT_NO_RATING);
 
@@ -861,9 +870,9 @@ void PickPilotCB(long, short hittype, C_Base *control)
 }
 
 extern long gRanksTxt[NUM_RANKS];
-long GetRank(_TCHAR *str)
+long GetRank(_TCHAR* str)
 {
-    _TCHAR *rnk;
+    _TCHAR* rnk;
     long i;
 
     i = 0;
@@ -874,30 +883,30 @@ long GetRank(_TCHAR *str)
 
         if (rnk)
         {
-            if ( not _tcsncicmp(rnk, str, _tcsclen(rnk)))
-                return(i);
+            if (not _tcsncicmp(rnk, str, _tcsclen(rnk)))
+                return (i);
         }
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
-void BuildPilotList(C_TreeList *tree, Squadron sqd)
+void BuildPilotList(C_TreeList* tree, Squadron sqd)
 {
-    C_Button *btn;
+    C_Button* btn;
     _TCHAR buffer[30];
     short i;
     long ID = 1;
-    TREELIST *item;
-    RemoteLB *lbptr;
+    TREELIST* item;
+    RemoteLB* lbptr;
 
     tree->DeleteBranch(tree->GetRoot());
     priorpilot = NULL;
 
     VuSessionsIterator sessionWalker(FalconLocalGame);
-    FalconSessionEntity *session;
+    FalconSessionEntity* session;
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -910,8 +919,10 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
             if (btn)
             {
                 btn->Setup(ID, C_TYPE_CUSTOM, 0, 0);
-                btn->SetText(C_STATE_0, gStringMgr->GetText(gStringMgr->AddText(session->GetPlayerName())));
-                btn->SetText(C_STATE_1, gStringMgr->GetText(gStringMgr->AddText(session->GetPlayerName())));
+                btn->SetText(C_STATE_0, gStringMgr->GetText(gStringMgr->AddText(
+                                            session->GetPlayerName())));
+                btn->SetText(C_STATE_1, gStringMgr->GetText(gStringMgr->AddText(
+                                            session->GetPlayerName())));
                 btn->SetColor(C_STATE_0, 0xeeeeee);
                 btn->SetColor(C_STATE_1, 0x00ff00);
                 btn->SetCallback(PickPilotCB);
@@ -919,31 +930,49 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
                 if (session == FalconLocalSession)
                 {
                     if (LogBook.GetPictureResource()) // Temporary
-                        btn->SetUserNumber(C_STATE_0, LogBook.GetPictureResource()); // Image ID goes here
+                        btn->SetUserNumber(
+                            C_STATE_0,
+                            LogBook.GetPictureResource()); // Image ID goes here
                     else
                     {
                         // Need to load a file
-                        btn->SetUserNumber(C_STATE_0, NOFACE); // Image ID goes here
+                        btn->SetUserNumber(C_STATE_0,
+                                           NOFACE); // Image ID goes here
                     }
                 }
                 else
                 {
-                    lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(session->Id().creator_);
+                    lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(
+                        session->Id().creator_);
 
                     if (lbptr and lbptr->Pilot_.PictureResource)
                     {
-                        btn->SetUserNumber(C_STATE_0, lbptr->Pilot_.PictureResource); // Image ID goes here
+                        btn->SetUserNumber(
+                            C_STATE_0,
+                            lbptr->Pilot_
+                                .PictureResource); // Image ID goes here
                     }
                     else
-                        btn->SetUserNumber(C_STATE_0, NOFACE); // Image ID goes here
+                        btn->SetUserNumber(C_STATE_0,
+                                           NOFACE); // Image ID goes here
                 }
 
-                btn->SetUserNumber(C_STATE_2, session->GetMissions()); // Num Missions
-                btn->SetUserNumber(C_STATE_3, session->GetRating()); // Mission Rating
-                btn->SetUserNumber(C_STATE_4, session->GetKill(FalconSessionEntity::_AIR_KILLS_));
-                btn->SetUserNumber(C_STATE_5, session->GetKill(FalconSessionEntity::_GROUND_KILLS_));
-                btn->SetUserNumber(C_STATE_6, session->GetKill(FalconSessionEntity::_NAVAL_KILLS_));
-                btn->SetUserNumber(C_STATE_7, session->GetKill(FalconSessionEntity::_STATIC_KILLS_));
+                btn->SetUserNumber(C_STATE_2,
+                                   session->GetMissions()); // Num Missions
+                btn->SetUserNumber(C_STATE_3,
+                                   session->GetRating()); // Mission Rating
+                btn->SetUserNumber(
+                    C_STATE_4,
+                    session->GetKill(FalconSessionEntity::_AIR_KILLS_));
+                btn->SetUserNumber(
+                    C_STATE_5,
+                    session->GetKill(FalconSessionEntity::_GROUND_KILLS_));
+                btn->SetUserNumber(
+                    C_STATE_6,
+                    session->GetKill(FalconSessionEntity::_NAVAL_KILLS_));
+                btn->SetUserNumber(
+                    C_STATE_7,
+                    session->GetKill(FalconSessionEntity::_STATIC_KILLS_));
                 btn->SetUserNumber(20, GetRank(session->GetPlayerName()));
                 item = tree->CreateItem(ID, C_TYPE_ITEM, btn);
 
@@ -969,19 +998,31 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
             {
                 btn->Setup(ID, C_TYPE_CUSTOM, 0, 0);
 
-                btn->SetText(C_STATE_0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
-                btn->SetText(C_STATE_1, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+                btn->SetText(C_STATE_0,
+                             gStringMgr->GetText(gStringMgr->AddText(buffer)));
+                btn->SetText(C_STATE_1,
+                             gStringMgr->GetText(gStringMgr->AddText(buffer)));
                 btn->SetColor(C_STATE_0, 0xeeeeee);
                 btn->SetColor(C_STATE_1, 0x00ff00);
                 btn->SetCallback(PickPilotCB);
 
                 if (sqd->GetOwner() == FalconLocalSession->GetCountry())
-                    btn->SetUserNumber(C_STATE_0, PilotImageIDs[PilotInfo[sqd->GetPilotData(i)->pilot_id].photo_id]); // Image ID goes here
+                    btn->SetUserNumber(
+                        C_STATE_0,
+                        PilotImageIDs[PilotInfo[sqd->GetPilotData(i)->pilot_id]
+                                          .photo_id]); // Image ID goes here
                 else
-                    btn->SetUserNumber(C_STATE_0, FlagImageID[TeamInfo[sqd->GetOwner()]->GetFlag()][BIG_HORIZ]); // Image ID goes here
+                    btn->SetUserNumber(
+                        C_STATE_0,
+                        FlagImageID[TeamInfo[sqd->GetOwner()]->GetFlag()]
+                                   [BIG_HORIZ]); // Image ID goes here
 
-                btn->SetUserNumber(C_STATE_2, sqd->GetPilotData(i)->missions_flown); // Num Missions
-                btn->SetUserNumber(C_STATE_3, sqd->GetPilotData(i)->GetPilotRating() * 25); // Mission Rating
+                btn->SetUserNumber(
+                    C_STATE_2,
+                    sqd->GetPilotData(i)->missions_flown); // Num Missions
+                btn->SetUserNumber(C_STATE_3,
+                                   sqd->GetPilotData(i)->GetPilotRating() *
+                                       25); // Mission Rating
                 btn->SetUserNumber(C_STATE_4, sqd->GetPilotData(i)->aa_kills);
                 btn->SetUserNumber(C_STATE_5, sqd->GetPilotData(i)->ag_kills);
                 btn->SetUserNumber(C_STATE_6, sqd->GetPilotData(i)->an_kills);
@@ -1006,13 +1047,13 @@ void BuildPilotList(C_TreeList *tree, Squadron sqd)
         tree->Parent_->RefreshClient(tree->GetClient());
 }
 
-void PickSquadronStatsCB(long, short hittype, C_Base *control)
+void PickSquadronStatsCB(long, short hittype, C_Base* control)
 {
-    C_Text *txt;
-    C_Bitmap *bmp;
+    C_Text* txt;
+    C_Bitmap* bmp;
     _TCHAR buffer[10];
 
-    F4CSECTIONHANDLE *Leave;
+    F4CSECTIONHANDLE* Leave;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1041,7 +1082,11 @@ void PickSquadronStatsCB(long, short hittype, C_Base *control)
     if (txt)
     {
         if (control->GetUserNumber(C_STATE_2))
-            txt->SetText(ratingstr[(short)(((float)control->GetUserNumber(C_STATE_3) / 25.0f + 0.5f)) % 5]);
+            txt->SetText(
+                ratingstr[(short)(((float)control->GetUserNumber(C_STATE_3) /
+                                       25.0f +
+                                   0.5f)) %
+                          5]);
         else
             txt->SetText(TXT_NO_RATING);
 
@@ -1087,7 +1132,7 @@ void PickSquadronStatsCB(long, short hittype, C_Base *control)
     UI_Leave(Leave);
 }
 
-void SquadronAirUnitCB(long ID, short hittype, C_Base *control)
+void SquadronAirUnitCB(long ID, short hittype, C_Base* control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1101,10 +1146,10 @@ void SquadronAirUnitCB(long ID, short hittype, C_Base *control)
     }
 }
 
-void PilotAirUnitCB(long, short hittype, C_Base *control)
+void PilotAirUnitCB(long, short hittype, C_Base* control)
 {
-    C_TreeList *tree = NULL;
-    C_Button *btn = NULL;
+    C_TreeList* tree = NULL;
+    C_Button* btn = NULL;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1133,7 +1178,7 @@ void PilotAirUnitCB(long, short hittype, C_Base *control)
     }
 }
 
-void SquadronFindCB(long, short hittype, C_Base *)
+void SquadronFindCB(long, short hittype, C_Base*)
 {
     Squadron sqd;
 
@@ -1148,39 +1193,39 @@ void SquadronFindCB(long, short hittype, C_Base *)
     }
 }
 
-BOOL SortPilotByNameCB(TREELIST *list, TREELIST *newitem)
+BOOL SortPilotByNameCB(TREELIST* list, TREELIST* newitem)
 {
     C_Button *btn1, *btn2;
 
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
-    if ( not list->Item_ or not newitem->Item_)
-        return(FALSE);
+    if (not list->Item_ or not newitem->Item_)
+        return (FALSE);
 
-    btn1 = (C_Button *)list->Item_;
-    btn2 = (C_Button *)newitem->Item_;
+    btn1 = (C_Button*)list->Item_;
+    btn2 = (C_Button*)newitem->Item_;
 
     if (btn2->GetUserNumber(20) > btn1->GetUserNumber(20))
-        return(TRUE);
+        return (TRUE);
     else if (btn2->GetUserNumber(20) == btn1->GetUserNumber(20))
     {
         if (_tcsicmp(btn2->GetText(0), btn1->GetText(0)) < 0)
-            return(TRUE);
+            return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void SetupSquadronInfoWindow(VU_ID TheID)
 {
-    C_Window *win;
-    C_Text *txt;
-    C_ListBox *lbox;
-    C_Button *btn;
-    C_TreeList *tree;
-    C_Bitmap *bmp;
-    UI_Refresher *urec;
+    C_Window* win;
+    C_Text* txt;
+    C_ListBox* lbox;
+    C_Button* btn;
+    C_TreeList* tree;
+    C_Bitmap* bmp;
+    UI_Refresher* urec;
     Squadron sqd;
     CampEntity ent;
     VU_ID sqdID;
@@ -1190,14 +1235,14 @@ void SetupSquadronInfoWindow(VU_ID TheID)
     short count, i;
     long total;
     int pilots;
-    F4CSECTIONHANDLE *Leave;
+    F4CSECTIONHANDLE* Leave;
 
     VuSessionsIterator sessionWalker(FalconLocalGame);
-    FalconSessionEntity *session;
+    FalconSessionEntity* session;
 
     ent = (CampEntity)vuDatabase->Find(TheID);
 
-    if ( not ent)
+    if (not ent)
         return;
 
     gLastSquadron = TheID;
@@ -1208,7 +1253,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
         sqdID = flt->GetUnitSquadronID();
         sqd = (Squadron)vuDatabase->Find(sqdID);
 
-        if ( not sqd)
+        if (not sqd)
             return;
 
         pilots = sqd->NumActivePilots();
@@ -1221,9 +1266,9 @@ void SetupSquadronInfoWindow(VU_ID TheID)
     else
         return;
 
-    urec = (UI_Refresher *)gGps->Find(sqd->GetCampID());
+    urec = (UI_Refresher*)gGps->Find(sqd->GetCampID());
 
-    if ( not urec)
+    if (not urec)
         return;
 
     win = gMainHandler->FindWindow(AIR_UNIT_WIN);
@@ -1318,17 +1363,17 @@ void SetupSquadronInfoWindow(VU_ID TheID)
         {
             switch (sqd->GetUnitSpecialty())
             {
-                case SQUADRON_SPECIALTY_AA:
-                    txt->SetText(TXT_AIR_TO_AIR);
-                    break;
+            case SQUADRON_SPECIALTY_AA:
+                txt->SetText(TXT_AIR_TO_AIR);
+                break;
 
-                case SQUADRON_SPECIALTY_AG:
-                    txt->SetText(TXT_AIR_TO_GROUND);
-                    break;
+            case SQUADRON_SPECIALTY_AG:
+                txt->SetText(TXT_AIR_TO_GROUND);
+                break;
 
-                default:
-                    txt->SetText(TXT_GENERAL);
-                    break;
+            default:
+                txt->SetText(TXT_GENERAL);
+                break;
             }
         }
 
@@ -1373,7 +1418,7 @@ void SetupSquadronInfoWindow(VU_ID TheID)
             if (gCommsMgr->Online())
             {
                 VuSessionsIterator sessionWalker(FalconLocalGame);
-                FalconSessionEntity *session;
+                FalconSessionEntity* session;
 
                 session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -1404,7 +1449,8 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
             for (i = 0; i < PILOTS_PER_SQUADRON; i++)
             {
-                if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+                if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or
+                    sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
                 {
                     total += sqd->GetPilotData(i)->GetPilotSkill();
                     count++;
@@ -1436,7 +1482,8 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 
         if (txt)
         {
-            CampaignTime time = (sqd->GetLastResupplyTime() + sqd->GetUnitSupplyTime());
+            CampaignTime time =
+                (sqd->GetLastResupplyTime() + sqd->GetUnitSupplyTime());
             // Round to nearest hour
             time = (time / CampaignHours) * CampaignHours;
             GetTimeString(time, buffer, FALSE);
@@ -1516,10 +1563,14 @@ void SetupSquadronInfoWindow(VU_ID TheID)
             {
                 if (session->GetPlayerSquadronID() == sqd->Id())
                 {
-                    kills[0] += session->GetKill(FalconSessionEntity::_AIR_KILLS_);
-                    kills[1] += session->GetKill(FalconSessionEntity::_GROUND_KILLS_);
-                    kills[2] += session->GetKill(FalconSessionEntity::_NAVAL_KILLS_);
-                    kills[3] += session->GetKill(FalconSessionEntity::_STATIC_KILLS_);
+                    kills[0] +=
+                        session->GetKill(FalconSessionEntity::_AIR_KILLS_);
+                    kills[1] +=
+                        session->GetKill(FalconSessionEntity::_GROUND_KILLS_);
+                    kills[2] +=
+                        session->GetKill(FalconSessionEntity::_NAVAL_KILLS_);
+                    kills[3] +=
+                        session->GetKill(FalconSessionEntity::_STATIC_KILLS_);
                 }
 
                 session = (FalconSessionEntity*)sessionWalker.GetNext();
@@ -1563,33 +1614,34 @@ void SetupSquadronInfoWindow(VU_ID TheID)
 }
 
 // Returns TRUE if I want to insert newitem before list item
-static BOOL CampHotelSortCB(TREELIST *list, TREELIST *newitem)
+static BOOL CampHotelSortCB(TREELIST* list, TREELIST* newitem)
 {
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
-    if (((C_Custom*)newitem->Item_)->GetValue(1) > ((C_Custom*)list->Item_)->GetValue(1))
-        return(TRUE);
+    if (((C_Custom*)newitem->Item_)->GetValue(1) >
+        ((C_Custom*)list->Item_)->GetValue(1))
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void UpdateSierraHotel()
 {
-    C_Window *win;
-    C_TreeList *tree;
-    C_Text *txt;
-    C_Bitmap *bmp;
+    C_Window* win;
+    C_TreeList* tree;
+    C_Text* txt;
+    C_Bitmap* bmp;
     _TCHAR buffer[30];
-    C_Custom *ctrl;
-    O_Output *output;
-    TREELIST *item;
+    C_Custom* ctrl;
+    O_Output* output;
+    TREELIST* item;
     Squadron sqd;
     short i;
     long ItemID = 1;
     long kills;
-    RemoteLB *lbptr;
-    F4CSECTIONHANDLE *Leave;
+    RemoteLB* lbptr;
+    F4CSECTIONHANDLE* Leave;
 
     win = gMainHandler->FindWindow(CAMP_SH);
 
@@ -1597,14 +1649,14 @@ void UpdateSierraHotel()
     {
         sqd = FalconLocalSession->GetPlayerSquadron();
 
-        if ( not sqd)
+        if (not sqd)
             return;
 
         Leave = UI_Enter(win);
 
         tree = (C_TreeList*)win->FindControl(SH_PILOT_LIST);
 
-        if ( not tree)
+        if (not tree)
             return;
 
         tree->SetSortCallback(CampHotelSortCB);
@@ -1614,7 +1666,7 @@ void UpdateSierraHotel()
         //if(gCommsMgr->Online())
         {
             VuSessionsIterator sessionWalker(FalconLocalGame);
-            FalconSessionEntity *session;
+            FalconSessionEntity* session;
 
             session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -1627,36 +1679,58 @@ void UpdateSierraHotel()
                     // if(kills or 1)
                     {
                         ctrl = new C_Custom;
-                        ctrl->Setup(C_DONT_CARE, FalconSessionEntity::_VS_HUMAN_, 2);
+                        ctrl->Setup(C_DONT_CARE,
+                                    FalconSessionEntity::_VS_HUMAN_, 2);
 
                         if (session == FalconLocalSession)
                         {
                             if (LogBook.GetPictureResource()) // Temporary
-                                ctrl->SetUserNumber(C_STATE_0, LogBook.GetPictureResource()); // Image ID goes here
+                                ctrl->SetUserNumber(
+                                    C_STATE_0,
+                                    LogBook
+                                        .GetPictureResource()); // Image ID goes here
                             else
                             {
                                 // Need to load a file
-                                ctrl->SetUserNumber(C_STATE_0, NOFACE); // Image ID goes here
+                                ctrl->SetUserNumber(
+                                    C_STATE_0, NOFACE); // Image ID goes here
                             }
                         }
                         else
                         {
-                            lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(session->Id().creator_);
+                            lbptr = (RemoteLB*)gCommsMgr->GetRemoteLB(
+                                session->Id().creator_);
 
                             if (lbptr and lbptr->Pilot_.PictureResource)
                             {
-                                ctrl->SetUserNumber(C_STATE_0, lbptr->Pilot_.PictureResource); // Image ID goes here
+                                ctrl->SetUserNumber(
+                                    C_STATE_0,
+                                    lbptr->Pilot_
+                                        .PictureResource); // Image ID goes here
                             }
                             else
-                                ctrl->SetUserNumber(C_STATE_0, NOFACE); // Image ID goes here
+                                ctrl->SetUserNumber(
+                                    C_STATE_0, NOFACE); // Image ID goes here
                         }
 
-                        ctrl->SetUserNumber(C_STATE_2, session->GetMissions()); // Num Missions
-                        ctrl->SetUserNumber(C_STATE_3, session->GetRating()); // Mission Rating
-                        ctrl->SetUserNumber(C_STATE_4, session->GetKill(FalconSessionEntity::_AIR_KILLS_));
-                        ctrl->SetUserNumber(C_STATE_5, session->GetKill(FalconSessionEntity::_GROUND_KILLS_));
-                        ctrl->SetUserNumber(C_STATE_6, session->GetKill(FalconSessionEntity::_NAVAL_KILLS_));
-                        ctrl->SetUserNumber(C_STATE_7, session->GetKill(FalconSessionEntity::_STATIC_KILLS_));
+                        ctrl->SetUserNumber(
+                            C_STATE_2, session->GetMissions()); // Num Missions
+                        ctrl->SetUserNumber(
+                            C_STATE_3, session->GetRating()); // Mission Rating
+                        ctrl->SetUserNumber(
+                            C_STATE_4,
+                            session->GetKill(FalconSessionEntity::_AIR_KILLS_));
+                        ctrl->SetUserNumber(
+                            C_STATE_5,
+                            session->GetKill(
+                                FalconSessionEntity::_GROUND_KILLS_));
+                        ctrl->SetUserNumber(
+                            C_STATE_6, session->GetKill(
+                                           FalconSessionEntity::_NAVAL_KILLS_));
+                        ctrl->SetUserNumber(
+                            C_STATE_7,
+                            session->GetKill(
+                                FalconSessionEntity::_STATIC_KILLS_));
 
                         // Set pilot name
                         output = ctrl->GetItem(0);
@@ -1696,7 +1770,8 @@ void UpdateSierraHotel()
 
         for (i = 0; i < PILOTS_PER_SQUADRON; i++)
         {
-            if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
+            if (sqd->GetPilotData(i)->pilot_status == PILOT_IN_USE or
+                sqd->GetPilotData(i)->pilot_status == PILOT_AVAILABLE)
             {
                 kills = sqd->GetPilotData(i)->aa_kills;
 
@@ -1707,16 +1782,31 @@ void UpdateSierraHotel()
                     ctrl->Setup(C_DONT_CARE, FalconSessionEntity::_VS_AI_, 2);
 
                     if (sqd->GetOwner() == FalconLocalSession->GetCountry())
-                        ctrl->SetUserNumber(C_STATE_0, PilotImageIDs[PilotInfo[sqd->GetPilotData(i)->pilot_id].photo_id]); // Image ID goes here
+                        ctrl->SetUserNumber(
+                            C_STATE_0,
+                            PilotImageIDs
+                                [PilotInfo[sqd->GetPilotData(i)->pilot_id]
+                                     .photo_id]); // Image ID goes here
                     else
-                        ctrl->SetUserNumber(C_STATE_0, FlagImageID[TeamInfo[sqd->GetOwner()]->GetFlag()][BIG_HORIZ]); // Image ID goes here
+                        ctrl->SetUserNumber(
+                            C_STATE_0,
+                            FlagImageID[TeamInfo[sqd->GetOwner()]->GetFlag()]
+                                       [BIG_HORIZ]); // Image ID goes here
 
-                    ctrl->SetUserNumber(C_STATE_2, sqd->GetPilotData(i)->missions_flown); // Num Missions
-                    ctrl->SetUserNumber(C_STATE_3, sqd->GetPilotData(i)->GetPilotRating() * 25); // Mission Rating
-                    ctrl->SetUserNumber(C_STATE_4, sqd->GetPilotData(i)->aa_kills);
-                    ctrl->SetUserNumber(C_STATE_5, sqd->GetPilotData(i)->ag_kills);
-                    ctrl->SetUserNumber(C_STATE_6, sqd->GetPilotData(i)->an_kills);
-                    ctrl->SetUserNumber(C_STATE_7, sqd->GetPilotData(i)->as_kills);
+                    ctrl->SetUserNumber(
+                        C_STATE_2,
+                        sqd->GetPilotData(i)->missions_flown); // Num Missions
+                    ctrl->SetUserNumber(C_STATE_3,
+                                        sqd->GetPilotData(i)->GetPilotRating() *
+                                            25); // Mission Rating
+                    ctrl->SetUserNumber(C_STATE_4,
+                                        sqd->GetPilotData(i)->aa_kills);
+                    ctrl->SetUserNumber(C_STATE_5,
+                                        sqd->GetPilotData(i)->ag_kills);
+                    ctrl->SetUserNumber(C_STATE_6,
+                                        sqd->GetPilotData(i)->an_kills);
+                    ctrl->SetUserNumber(C_STATE_7,
+                                        sqd->GetPilotData(i)->as_kills);
 
                     // Set pilot name
                     output = ctrl->GetItem(0);
@@ -1760,189 +1850,198 @@ void UpdateSierraHotel()
 
             switch (ctrl->GetType())
             {
-                case FalconSessionEntity::_VS_AI_:
-                    bmp = (C_Bitmap*)win->FindControl(PILOT_PIC);
+            case FalconSessionEntity::_VS_AI_:
+                bmp = (C_Bitmap*)win->FindControl(PILOT_PIC);
 
-                    if (bmp)
-                    {
-                        bmp->Refresh();
-                        bmp->SetImage(ctrl->GetUserNumber(C_STATE_0));
-                        bmp->Refresh();
-                    }
+                if (bmp)
+                {
+                    bmp->Refresh();
+                    bmp->SetImage(ctrl->GetUserNumber(C_STATE_0));
+                    bmp->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(AI_MISS_FIELD);
+                txt = (C_Text*)win->FindControl(AI_MISS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_2));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_2));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(AI_RATING_FIELD);
+                txt = (C_Text*)win->FindControl(AI_RATING_FIELD);
 
-                    if (txt)
-                    {
-                        //_stprintf(buffer,"%1ld",ctrl->GetUserNumber(C_STATE_3));
-                        txt->Refresh();
-                        txt->SetText(ratingstr[(short)(((float)ctrl->GetUserNumber(C_STATE_3) / 25.0f + 0.5f)) % 5]);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    //_stprintf(buffer,"%1ld",ctrl->GetUserNumber(C_STATE_3));
+                    txt->Refresh();
+                    txt->SetText(ratingstr[(short)(((float)ctrl->GetUserNumber(
+                                                        C_STATE_3) /
+                                                        25.0f +
+                                                    0.5f)) %
+                                           5]);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(AI_AA_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(AI_AA_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_4));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_4));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(AI_AG_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(AI_AG_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_5));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_5));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(AI_NAVAL_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(AI_NAVAL_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_6));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_6));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(AI_STATIC_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(AI_STATIC_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_7));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_7));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    win->HideCluster(1);
-                    win->UnHideCluster(2);
-                    break;
+                win->HideCluster(1);
+                win->UnHideCluster(2);
+                break;
 
-                case FalconSessionEntity::_VS_HUMAN_:
-                    bmp = (C_Bitmap*)win->FindControl(PILOT_PIC);
+            case FalconSessionEntity::_VS_HUMAN_:
+                bmp = (C_Bitmap*)win->FindControl(PILOT_PIC);
 
-                    if (bmp)
-                    {
-                        bmp->Refresh();
-                        bmp->SetImage(ctrl->GetUserNumber(C_STATE_0));
-                        bmp->Refresh();
-                    }
+                if (bmp)
+                {
+                    bmp->Refresh();
+                    bmp->SetImage(ctrl->GetUserNumber(C_STATE_0));
+                    bmp->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(COMMISSIONED_FIELD);
+                txt = (C_Text*)win->FindControl(COMMISSIONED_FIELD);
 
-                    if (txt)
-                    {
-                        txt->Refresh();
-                        txt->SetText(LogBook.Commissioned());
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    txt->Refresh();
+                    txt->SetText(LogBook.Commissioned());
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(CAMP_CAMPAIGNS_FIELD);
+                txt = (C_Text*)win->FindControl(CAMP_CAMPAIGNS_FIELD);
 
-                    if (txt)
-                    {
-                        kills = LogBook.GetCampaign()->GamesWon;
-                        kills += LogBook.GetCampaign()->GamesLost;
-                        kills += LogBook.GetCampaign()->GamesTied;
+                if (txt)
+                {
+                    kills = LogBook.GetCampaign()->GamesWon;
+                    kills += LogBook.GetCampaign()->GamesLost;
+                    kills += LogBook.GetCampaign()->GamesTied;
 
-                        _stprintf(buffer, "%1ld", kills);
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                    _stprintf(buffer, "%1ld", kills);
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(HOURS_FIELD);
+                txt = (C_Text*)win->FindControl(HOURS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%.1f", LogBook.FlightHours());
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%.1f", LogBook.FlightHours());
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(CAMP_MISS_FIELD);
+                txt = (C_Text*)win->FindControl(CAMP_MISS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_2));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_2));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(CAMP_RATING_FIELD);
+                txt = (C_Text*)win->FindControl(CAMP_RATING_FIELD);
 
-                    if (txt)
-                    {
-                        //_stprintf(buffer,"%1ld",ctrl->GetUserNumber(C_STATE_3));
-                        txt->Refresh();
-                        txt->SetText(ratingstr[(short)(((float)ctrl->GetUserNumber(C_STATE_3) / 25.0f + 0.5f)) % 5]);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    //_stprintf(buffer,"%1ld",ctrl->GetUserNumber(C_STATE_3));
+                    txt->Refresh();
+                    txt->SetText(ratingstr[(short)(((float)ctrl->GetUserNumber(
+                                                        C_STATE_3) /
+                                                        25.0f +
+                                                    0.5f)) %
+                                           5]);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(CAMP_AA_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(CAMP_AA_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_4));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_4));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(CAMP_AG_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(CAMP_AG_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_5));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_5));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(CAMP_NAVAL_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(CAMP_NAVAL_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_6));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_6));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    txt = (C_Text*)win->FindControl(CAMP_STATIC_KILLS_FIELD);
+                txt = (C_Text*)win->FindControl(CAMP_STATIC_KILLS_FIELD);
 
-                    if (txt)
-                    {
-                        _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_7));
-                        txt->Refresh();
-                        txt->SetText(buffer);
-                        txt->Refresh();
-                    }
+                if (txt)
+                {
+                    _stprintf(buffer, "%1ld", ctrl->GetUserNumber(C_STATE_7));
+                    txt->Refresh();
+                    txt->SetText(buffer);
+                    txt->Refresh();
+                }
 
-                    win->HideCluster(2);
-                    win->UnHideCluster(1);
-                    break;
+                win->HideCluster(2);
+                win->UnHideCluster(1);
+                break;
             }
 
-            item->Item_->SetFlagBitOn(C_BIT_INVISIBLE); // Hide ACE... since we show name at top
+            item->Item_->SetFlagBitOn(
+                C_BIT_INVISIBLE); // Hide ACE... since we show name at top
             txt = (C_Text*)win->FindControl(TOP_JOCK);
 
             if (txt)
@@ -1990,7 +2089,7 @@ WayPointClass* GetWayPointUnder(Unit unit)
     unit->GetLocation(&x, &y);
     gDragWPNum = 0;
 
-    if ( not w)
+    if (not w)
         return NULL;
 
     while (w)
@@ -2011,13 +2110,13 @@ WayPointClass* GetWayPointUnder(Unit unit)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void UnitCB(long ID, short hittype, C_Base *ctrl)
+void UnitCB(long ID, short hittype, C_Base* ctrl)
 {
     CampEntity entity;
     Unit unit;
     float wx, wy;
     short bx, by;
-    MAPICONLIST *item;
+    MAPICONLIST* item;
     WayPointClass *wp, *pw = NULL, *nw;
 
     if (hittype == C_TYPE_LDROP)
@@ -2026,7 +2125,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
 
         if (entity and entity->IsUnit())
         {
-            unit = (UnitClass *) entity;
+            unit = (UnitClass*)entity;
 
             item = ((C_MapIcon*)ctrl)->FindID(ID);
 
@@ -2044,7 +2143,8 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                 unit->SetLocation(bx, by);
 
                 if (unit->IsBattalion())
-                    tactical_set_orders((Battalion)unit, unit->GetUnitObjectiveID(), bx, by);
+                    tactical_set_orders((Battalion)unit,
+                                        unit->GetUnitObjectiveID(), bx, by);
                 else if (wp)
                 {
                     wp->SetWPLocation(bx, by);
@@ -2060,9 +2160,10 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
 
         if (entity and entity->IsUnit())
         {
-            unit = (UnitClass *) entity;
+            unit = (UnitClass*)entity;
 
-            if ((TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
+            if ((TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or
+                (GetTeam(unit->GetOwner()) == FalconLocalSession->GetTeam()))
             {
                 gMapMgr->SetCurrentWaypointList(unit->Id());
 
@@ -2084,7 +2185,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
 
         if (entity and entity->IsUnit())
         {
-            unit = (UnitClass *) entity;
+            unit = (UnitClass*)entity;
 
             if (entity->IsFlight())
             {
@@ -2110,7 +2211,7 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                 // Change our location
                 unit->SetLocation(bx, by);
 
-                if ( not unit->IsFlight())
+                if (not unit->IsFlight())
                     return;
 
                 // Add a new waypoint at current location or move the one we were sitting on
@@ -2131,7 +2232,10 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                     {
                         pw = wp->GetPrevWP();
                         ShiAssert(pw);
-                        nw = new WayPointClass(bx, by, wp->GetWPAltitude(), static_cast<int>(wp->GetWPSpeed()), TheCampaign.CurrentTime, 0, WP_NOTHING, 0);
+                        nw = new WayPointClass(
+                            bx, by, wp->GetWPAltitude(),
+                            static_cast<int>(wp->GetWPSpeed()),
+                            TheCampaign.CurrentTime, 0, WP_NOTHING, 0);
                         nw->SetWPSpeed(wp->GetWPSpeed());
                         // Lock time? basically we're saying we want the flight here at this time, so I'd guess yes
                         nw->SetWPFlags(WPF_TIME_LOCKED);
@@ -2144,7 +2248,9 @@ void UnitCB(long ID, short hittype, C_Base *ctrl)
                 }
 
                 recalculate_waypoints(wp);
-                gMapMgr->GetCurWP()->UpdateInfo((unit->GetCampID() * 256) + gDragWPNum, item->worldx, item->worldy);
+                gMapMgr->GetCurWP()->UpdateInfo((unit->GetCampID() * 256) +
+                                                    gDragWPNum,
+                                                item->worldx, item->worldy);
                 gMapMgr->GetCurWP()->Refresh();
             }
         }
@@ -2168,13 +2274,14 @@ void fixup_unit(Unit unit)
 
     wp = unit->GetFirstUnitWP();
 
-    while (wp and (wp->GetWPDepartureTime() < current_time) and wp->GetWPAction() not_eq WP_LAND)
+    while (wp and (wp->GetWPDepartureTime() < current_time) and
+           wp->GetWPAction() not_eq WP_LAND)
     {
         // Some special case stuff for air mobile
         if (wp->GetWPAction() == WP_PICKUP)
         {
             // Load the airborne battalion.
-            Unit cargo = (Unit) wp->GetWPTarget();
+            Unit cargo = (Unit)wp->GetWPTarget();
 
             if (cargo)
             {
@@ -2188,7 +2295,7 @@ void fixup_unit(Unit unit)
         else if (wp->GetWPAction() == WP_AIRDROP)
         {
             // Unload the airborne battalion.
-            Unit cargo = (Unit) wp->GetWPTarget();
+            Unit cargo = (Unit)wp->GetWPTarget();
             unit->UnloadUnit();
 
             if (cargo)
@@ -2229,8 +2336,10 @@ void fixup_unit(Unit unit)
             if (ndt > dt)
                 ndt = dt;
 
-            dx = static_cast<short>(FloatToInt32(dx * ((float)ndt / (float)dt)));
-            dy = static_cast<short>(FloatToInt32(dy * ((float)ndt / (float)dt)));
+            dx =
+                static_cast<short>(FloatToInt32(dx * ((float)ndt / (float)dt)));
+            dy =
+                static_cast<short>(FloatToInt32(dy * ((float)ndt / (float)dt)));
             heading = AngleTo(pwx, pwy, wx, wy);
             h = DirectionTo(pwx, pwy, wx, wy);
 
@@ -2240,7 +2349,8 @@ void fixup_unit(Unit unit)
                 ((Flight)unit)->SetLastDirection(h);
 
             unit->SetUnitLastMove(current_time);
-            unit->SetLocation(static_cast<short>(pwx + dx), static_cast<short>(pwy + dy));
+            unit->SetLocation(static_cast<short>(pwx + dx),
+                              static_cast<short>(pwy + dy));
             unit->SetUnitAltitude(z);
         }
         else
@@ -2267,7 +2377,7 @@ void fixup_unit(Unit unit)
         // Some special case stuff for air mobile
         if (wp->GetWPAction() == WP_PICKUP)
         {
-            Unit cargo = (Unit) wp->GetWPTarget();
+            Unit cargo = (Unit)wp->GetWPTarget();
 
             if (cargo)
             {
@@ -2287,8 +2397,8 @@ void fixup_unit(Unit unit)
 void fixup_unit_starting_positions(void)
 {
     VuListIterator iter(AllRealList);
-    UnitClass *unit;
-    victory_condition *vc;
+    UnitClass* unit;
+    victory_condition* vc;
 
     unit = GetFirstUnit(&iter);
 
@@ -2305,8 +2415,8 @@ void fixup_unit_starting_positions(void)
         while (vc)
         {
             gMapMgr->UpdateVC(vc);
-            vc = current_tactical_mission->get_next_unfiltered_victory_condition();
+            vc = current_tactical_mission
+                     ->get_next_unfiltered_victory_condition();
         }
     }
 }
-

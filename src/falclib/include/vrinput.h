@@ -11,4 +11,3 @@ extern void InitVoiceRecognitionTopicsFiles(char *path);
 extern void DoVoiceRecognitionInput(void);
 
 #endif
-

@@ -1,5 +1,5 @@
 #include "stdhdr.h"
-#include "radarData.h"
+#include "radardata.h"
 #include "simmath.h"
 #include "object.h"
 #include "simbase.h"
@@ -12,10 +12,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 int RwrClass::CanSeeObject(SimObjectType* rwrObj)
 {
-    if (
-        rwrObj->localData->az < typeData->right and 
-        rwrObj->localData->az > typeData->left and 
-        rwrObj->localData->el < typeData->top and 
+    if (rwrObj->localData->az < typeData->right and
+        rwrObj->localData->az > typeData->left and
+        rwrObj->localData->el < typeData->top and
         rwrObj->localData->el > typeData->bottom)
         return TRUE;
     else
@@ -41,22 +40,31 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
 
         // Since targetPtr belongs to movers only, make sure it is one. Not sure if required but just to be safe. I've been burned top many time :-(
         // Only use the true radar scan volume if the contact's target isn't us...
-        if (rwrObj->BaseData()->IsMover() and ((SimMoverClass *)rwrObj->BaseData())->targetPtr and ((SimMoverClass *)rwrObj->BaseData())->targetPtr->BaseData() not_eq platform)
+        if (rwrObj->BaseData()->IsMover() and
+            ((SimMoverClass*)rwrObj->BaseData())->targetPtr and
+            ((SimMoverClass*)rwrObj->BaseData())->targetPtr->BaseData() not_eq
+                platform)
         {
             scanAz = ((SimBaseClass*)rwrObj->BaseData())->RdrAz();
             scanEl = ((SimBaseClass*)rwrObj->BaseData())->RdrEl();
 
-            if ((scanAz > fabs(rwrObj->localData->azFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrAzCenter())) and 
-                (scanEl > fabs(rwrObj->localData->elFrom - ((SimBaseClass*)rwrObj->BaseData())->RdrElCenter())))
+            if ((scanAz >
+                 fabs(rwrObj->localData->azFrom -
+                      ((SimBaseClass*)rwrObj->BaseData())->RdrAzCenter())) and
+                (scanEl >
+                 fabs(rwrObj->localData->elFrom -
+                      ((SimBaseClass*)rwrObj->BaseData())->RdrElCenter())))
                 return TRUE;
             else
                 return FALSE;
         }
         else
         {
-            scanAz = scanEl = RadarDataTable[rwrObj->BaseData()->GetRadarType()].ScanHalfAngle;
+            scanAz = scanEl = RadarDataTable[rwrObj->BaseData()->GetRadarType()]
+                                  .ScanHalfAngle;
 
-            if ((scanAz > fabs(rwrObj->localData->azFrom)) and (scanEl > fabs(rwrObj->localData->elFrom)))
+            if ((scanAz > fabs(rwrObj->localData->azFrom)) and
+                (scanEl > fabs(rwrObj->localData->elFrom)))
                 return TRUE;
             else
                 return FALSE;
@@ -67,10 +75,11 @@ int RwrClass::BeingPainted(SimObjectType* rwrObj)
         // TODO:  Can we use localData here?  Not sure, so lets be safe in the short term
         float dx = rwrObj->BaseData()->XPos() - platform->XPos();
         float dy = rwrObj->BaseData()->YPos() - platform->YPos();
-        float brg = (float)atan2(dx, dy);  //me123 switched x and y
+        float brg = (float)atan2(dx, dy); //me123 switched x and y
         float angleOff = (float)fmod(fabs(brg - rwrObj->BaseData()->Yaw()), PI);
 
-        if (angleOff < RadarDataTable[rwrObj->BaseData()->GetRadarType()].ScanHalfAngle)
+        if (angleOff <
+            RadarDataTable[rwrObj->BaseData()->GetRadarType()].ScanHalfAngle)
             return TRUE;
         else
             return FALSE;
@@ -134,7 +143,8 @@ int RwrClass::CanDetectObject(SimObjectType* rwrObj)
     {
         if (rwrObj->BaseData()->IsEmitting())
         {
-            radarRange = RadarDataTable[rwrObj->BaseData()->GetRadarType()].NominalRange;
+            radarRange =
+                RadarDataTable[rwrObj->BaseData()->GetRadarType()].NominalRange;
         }
         else
         {
@@ -145,8 +155,7 @@ int RwrClass::CanDetectObject(SimObjectType* rwrObj)
     // If the signal is strong enough for detection, make sure we have line of sight
     // radarRange * nominalRange is the range that the object can be detected at
     //if (radarRange < typeData->nominalRange and CanDetectObject(rwrObj->BaseData()))
-    if (
-        (rwrObj->localData->range < radarRange * typeData->nominalRange) and 
+    if ((rwrObj->localData->range < radarRange * typeData->nominalRange) and
         platform->CheckLOS(rwrObj))
     {
         return TRUE;

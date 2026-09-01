@@ -1,6 +1,6 @@
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/draw2d.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/draw2d.h"
 #include "stdhdr.h"
 #include "otwdrive.h"
 #include "initdata.h"
@@ -11,7 +11,7 @@
 #include "flare.h"
 #include "terrtex.h"
 #include "sfx.h" //RV - I-Hawk - added to support New PS flare effect
-#include "Graphics/Include/drawparticlesys.h"
+#include "graphics/include/drawparticlesys.h"
 
 
 #ifdef USE_SH_POOLS
@@ -20,7 +20,7 @@ MEM_POOL FlareClass::pool;
 
 extern bool g_bDisableMissleEngGlow; // MLR 2003-11-15
 
-FlareClass::FlareClass(VU_BYTE** stream, long *rem) : BombClass(stream, rem)
+FlareClass::FlareClass(VU_BYTE** stream, long* rem) : BombClass(stream, rem)
 {
     InitLocalData();
 }
@@ -72,13 +72,13 @@ int FlareClass::SaveSize()
     return BombClass::SaveSize();
 }
 
-int FlareClass::Save(VU_BYTE **stream)
+int FlareClass::Save(VU_BYTE** stream)
 {
     int saveSize = BombClass::Save(stream);
     return saveSize;
 }
 
-int FlareClass::Save(FILE *file)
+int FlareClass::Save(FILE* file)
 {
     int saveSize = SimWeaponClass::Save(file);
     return saveSize;
@@ -170,8 +170,10 @@ void FlareClass::ExtraGraphics()
     OTWDriver.CreateVisualObject(this, classPtr->visType[0], OTWDriver.Scale());
 #endif
 
-    Tpoint newPoint = { XPos(), YPos(), ZPos() };
-    Tpoint vec = { XDelta(), YDelta(), ZDelta() }; //I-Hawk - Added vector to support new PS flare movement
+    Tpoint newPoint = {XPos(), YPos(), ZPos()};
+    Tpoint vec = {
+        XDelta(), YDelta(),
+        ZDelta()}; //I-Hawk - Added vector to support new PS flare movement
 
     //RV - I-Hawk - PS flare effect call, to replace the old Flare effect
     /*
@@ -183,9 +185,7 @@ void FlareClass::ExtraGraphics()
      1.0f, // time to live
      1.0f) ); // scale
      */
-    DrawableParticleSys::PS_AddParticleEx(
-        (SFX_FLARE_GFX + 1), &newPoint, &vec
-    );
+    DrawableParticleSys::PS_AddParticleEx((SFX_FLARE_GFX + 1), &newPoint, &vec);
 
     // I-Hawk - Removed, Not used anymore
     /*
@@ -236,18 +236,20 @@ int FlareClass::Exec()
 
             switch (gtype)
             {
-                case COVERAGE_WATER:
-                case COVERAGE_RIVER:
-                case COVERAGE_SWAMP:
-                    // flare went into water.
-                    SetDead(TRUE);
-                    break;
+            case COVERAGE_WATER:
+            case COVERAGE_RIVER:
+            case COVERAGE_SWAMP:
+                // flare went into water.
+                SetDead(TRUE);
+                break;
 
-                default:
-                    // give em a slight bounce.
-                    SetDelta((SM_SCALAR)(XDelta() * .25), (SM_SCALAR)(YDelta() * .25), (SM_SCALAR)(-ZDelta() * .25));
-                    SetPosition(XPos(), YPos(), z);
-                    break;
+            default:
+                // give em a slight bounce.
+                SetDelta((SM_SCALAR)(XDelta() * .25),
+                         (SM_SCALAR)(YDelta() * .25),
+                         (SM_SCALAR)(-ZDelta() * .25));
+                SetPosition(XPos(), YPos(), z);
+                break;
             }
         }
     }
@@ -273,10 +275,10 @@ void FlareClass::InitTrail(void)
     */
 
     flags or_eq IsFlare;
-    displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_FLARE,
-                              STYPE_FLARE1, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
+    displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_FLARE, STYPE_FLARE1,
+                              SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
 
-    if ( not drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
+    if (not drawPointer or drawPointer == (DrawableObject*)0xbaadf00d) // FRB
     {
         drawPointer = NULL;
     }
@@ -332,7 +334,6 @@ void FlareClass::UpdateTrail(void)
     }
 
     BombClass::UpdateTrail();
-
 }
 
 void FlareClass::RemoveTrail()
@@ -360,4 +361,3 @@ void FlareClass::RemoveTrail()
     }
     */
 }
-

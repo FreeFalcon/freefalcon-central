@@ -2,12 +2,12 @@
 #include "hdigi.h"
 #include "mesg.h"
 #include "simbase.h"
-#include "MsgInc/WingmanMsg.h"
+#include "msginc/wingmanmsg.h"
 #include "simveh.h"
-#include "campBase.h"
+#include "campbase.h"
 #include "otwdrive.h"
 
-void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
+void HeliBrain::ReceiveOrders(FalconEvent *theEvent)
 {
     //VUKLUDGE
     FalconWingmanMsg *wingCommand = (FalconWingmanMsg *)theEvent;
@@ -18,66 +18,67 @@ void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
 
     switch (wingCommand->dataBlock.command)
     {
-        case FalconWingmanMsg::WMSpread:
-        case FalconWingmanMsg::WMWedge:
-        case FalconWingmanMsg::WMTrail:
-        case FalconWingmanMsg::WMLadder:
-        case FalconWingmanMsg::WMStack:
-        case FalconWingmanMsg::WMResCell:
-        case FalconWingmanMsg::WMBox:
-        case FalconWingmanMsg::WMArrowHead:
-        case FalconWingmanMsg::WMFluidFour:
-            curFormation = wingCommand->dataBlock.command;
+    case FalconWingmanMsg::WMSpread:
+    case FalconWingmanMsg::WMWedge:
+    case FalconWingmanMsg::WMTrail:
+    case FalconWingmanMsg::WMLadder:
+    case FalconWingmanMsg::WMStack:
+    case FalconWingmanMsg::WMResCell:
+    case FalconWingmanMsg::WMBox:
+    case FalconWingmanMsg::WMArrowHead:
+    case FalconWingmanMsg::WMFluidFour:
+        curFormation = wingCommand->dataBlock.command;
 
-        case FalconWingmanMsg::WMRejoin:
-            underOrders = FALSE;
-            break;
+    case FalconWingmanMsg::WMRejoin:
+        underOrders = FALSE;
+        break;
 
-        case FalconWingmanMsg::WMBreakRight:
-            underOrders = TRUE;
-            headingOrdered = self->Yaw() + 90.0F * DTR;
-            altitudeOrdered = self->ZPos();
-            curOrder = wingCommand->dataBlock.command;
-            break;
+    case FalconWingmanMsg::WMBreakRight:
+        underOrders = TRUE;
+        headingOrdered = self->Yaw() + 90.0F * DTR;
+        altitudeOrdered = self->ZPos();
+        curOrder = wingCommand->dataBlock.command;
+        break;
 
-        case FalconWingmanMsg::WMBreakLeft:
-            underOrders = TRUE;
-            headingOrdered = self->Yaw() - 90.0F * DTR;
-            altitudeOrdered = self->ZPos();
-            curOrder = wingCommand->dataBlock.command;
-            break;
+    case FalconWingmanMsg::WMBreakLeft:
+        underOrders = TRUE;
+        headingOrdered = self->Yaw() - 90.0F * DTR;
+        altitudeOrdered = self->ZPos();
+        curOrder = wingCommand->dataBlock.command;
+        break;
 
-        case FalconWingmanMsg::WMAssignTarget:
-            break;
+    case FalconWingmanMsg::WMAssignTarget:
+        break;
 
-        case FalconWingmanMsg::WMPosthole:
-        case FalconWingmanMsg::WMPince:
-        case FalconWingmanMsg::WMChainsaw:
-            break;
+    case FalconWingmanMsg::WMPosthole:
+    case FalconWingmanMsg::WMPince:
+    case FalconWingmanMsg::WMChainsaw:
+        break;
 
-        case FalconWingmanMsg::WMFree:
-            goLead = TRUE;
-            underOrders = FALSE;
-            break;
+    case FalconWingmanMsg::WMFree:
+        goLead = TRUE;
+        underOrders = FALSE;
+        break;
 
-        case FalconWingmanMsg::WMPromote:
-            isWing --;
+    case FalconWingmanMsg::WMPromote:
+        isWing--;
 
-            if (!isWing)
-            {
-                SetLead(TRUE);
-                self->flightLead = self;
-            }
-            else
-                self->flightLead = (HelicopterClass *)self->GetCampaignObject()->GetComponentLead();
+        if (!isWing)
+        {
+            SetLead(TRUE);
+            self->flightLead = self;
+        }
+        else
+            self->flightLead = (HelicopterClass *)self->GetCampaignObject()
+                                   ->GetComponentLead();
 
-            break;
+        break;
 
-        default:
-            curFormation = FalconWingmanMsg::WMWedge;
-            MonoPrint("Digi %d received bad order %d at\n", self->Id().num_,
-                      wingCommand->dataBlock.command, SimLibElapsedTime);
-            break;
+    default:
+        curFormation = FalconWingmanMsg::WMWedge;
+        MonoPrint("Digi %d received bad order %d at\n", self->Id().num_,
+                  wingCommand->dataBlock.command, SimLibElapsedTime);
+        break;
     }
 
     if (goLead && isWing)
@@ -89,8 +90,8 @@ void HeliBrain::ReceiveOrders(FalconEvent* theEvent)
         SetLead(FALSE);
     }
 
-    MonoPrint("Message received %d at %.2f\n",
-              self->Id().num_, SimLibElapsedTime);
+    MonoPrint("Message received %d at %.2f\n", self->Id().num_,
+              SimLibElapsedTime);
 }
 
 void HeliBrain::CheckOrders(void)
@@ -114,27 +115,27 @@ void HeliBrain::FollowOrders(void)
 
     switch (curOrder)
     {
-        case FalconWingmanMsg::WMBreakRight:
-        case FalconWingmanMsg::WMBreakLeft:
-            trackX = self->XPos() + 5000.0F * (float)cos(headingOrdered);
-            trackY = self->YPos() + 5000.0F * (float)sin(headingOrdered);
-            desSpeed = CORNER_SPEED;
-            turnType = 1;
-            break;
+    case FalconWingmanMsg::WMBreakRight:
+    case FalconWingmanMsg::WMBreakLeft:
+        trackX = self->XPos() + 5000.0F * (float)cos(headingOrdered);
+        trackY = self->YPos() + 5000.0F * (float)sin(headingOrdered);
+        desSpeed = CORNER_SPEED;
+        turnType = 1;
+        break;
 
-        case FalconWingmanMsg::WMPosthole:
-            trackX = self->XPos();
-            trackY = self->YPos();
-            trackZ = 0.0F;
-            desSpeed = CORNER_SPEED;
-            turnType = 1;
-            break;
+    case FalconWingmanMsg::WMPosthole:
+        trackX = self->XPos();
+        trackY = self->YPos();
+        trackZ = 0.0F;
+        desSpeed = CORNER_SPEED;
+        turnType = 1;
+        break;
 
-        case FalconWingmanMsg::WMChainsaw:
-            break;
+    case FalconWingmanMsg::WMChainsaw:
+        break;
 
-        case FalconWingmanMsg::WMPince:
-            break;
+    case FalconWingmanMsg::WMPince:
+        break;
     }
 
     AutoTrack(100.0f);
@@ -143,7 +144,7 @@ void HeliBrain::FollowOrders(void)
 void HeliBrain::FollowLead(void)
 {
     Tpoint newpos = {0.0f};
-    float  groundZ = 0.0F, rng = 0.0F;
+    float groundZ = 0.0F, rng = 0.0F;
     HeliBrain *leadBrain = NULL;
     float dx = 0.0F, dy = 0.0F;
 
@@ -167,19 +168,18 @@ void HeliBrain::FollowLead(void)
         dy = newpos.y - self->YPos();
         rng = dx * dx + dy * dy;
 
-        if (self->flightLead &&
-            leadBrain &&
+        if (self->flightLead && leadBrain &&
             (leadBrain->onStation == Landing ||
              leadBrain->onStation == PickUp ||
-             leadBrain->onStation == DropOff ||
-             leadBrain->onStation == Landed))
+             leadBrain->onStation == DropOff || leadBrain->onStation == Landed))
         {
             if (rng < 300.0f * 300.0f)
             {
                 if (onStation != Landing)
                 {
                     onStation = Landing;
-                    groundZ = OTWDriver.GetGroundLevel(self->XPos(), self->YPos());
+                    groundZ =
+                        OTWDriver.GetGroundLevel(self->XPos(), self->YPos());
                 }
 
                 if (self->ZPos() >= groundZ - 5.0f)
@@ -194,7 +194,6 @@ void HeliBrain::FollowLead(void)
                     throtl = 0.00;
                     MachHold(0.0f, 0.0F, FALSE);
                 }
-
             }
             else
             {

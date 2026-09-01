@@ -4,10 +4,10 @@
 #include "cpsurface.h"
 #include "cpmanager.h"
 #include "dispcfg.h"
-#include "Graphics/Include/grinline.h"
-#include "FalcLib/include/playerop.h"
-#include "FalcLib/include/dispopts.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/grinline.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
+#include "graphics/include/renderow.h"
 
 extern bool g_bCrackFix; //Wombat778 3-22-04 REMOVED 4-01-04
 extern bool g_bFilter2DPit; //Wombat778 3-30-04
@@ -45,11 +45,13 @@ CPSurface::CPSurface(SurfaceInitStr *psurfaceInitStr)
 CPSurface::~CPSurface()
 {
     // OW
-    for (int i = 0; i < (int)m_arrTex.size(); i++) delete m_arrTex[i];
+    for (int i = 0; i < (int)m_arrTex.size(); i++)
+        delete m_arrTex[i];
 
     m_arrTex.clear();
 
-    if (m_pPalette) delete m_pPalette;
+    if (m_pPalette)
+        delete m_pPalette;
 
     // nota bene: the manager creates the buffer for us,
     // but we must clean it up
@@ -60,7 +62,7 @@ CPSurface::~CPSurface()
         delete mpSurfaceBuffer;
     }
 
-    glReleaseMemory((char*) mpSourceBuffer);
+    glReleaseMemory((char *)mpSourceBuffer);
 }
 
 //====================================================//
@@ -69,25 +71,34 @@ CPSurface::~CPSurface()
 
 void CPSurface::CreateLit(void)
 {
-    if ( not DisplayOptions.bRender2DCockpit)
+    if (not DisplayOptions.bRender2DCockpit)
     {
         mpSurfaceBuffer = new ImageBuffer;
 
         // OW
         // mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, SystemMem, None);
 
-        MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() and DisplayOptions.bRender2DCockpit) ? LocalVideoMem : SystemMem;
+        MPRSurfaceType front = (FalconDisplay.theDisplayDevice.IsHardware() and
+                                DisplayOptions.bRender2DCockpit) ?
+                                   LocalVideoMem :
+                                   SystemMem;
 
-        if ( not mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, front, None) and front == LocalVideoMem)
+        if (not mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth,
+                                       mHeight, front, None) and
+            front == LocalVideoMem)
         {
             // Retry with system memory if ouf video memory
 #ifdef _DEBUG
-            MonoPrint("CPSurface::CreateLit - Probably out of video memory. Retrying with system memory)\n");
+            MonoPrint("CPSurface::CreateLit - Probably out of video memory. "
+                      "Retrying with system memory)\n");
 #endif
 
-            BOOL bResult = mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth, mHeight, SystemMem, None);
+            BOOL bResult =
+                mpSurfaceBuffer->Setup(&FalconDisplay.theDisplayDevice, mWidth,
+                                       mHeight, SystemMem, None);
 
-            if ( not bResult) return;
+            if (not bResult)
+                return;
         }
 
         mpSurfaceBuffer->SetChromaKey(0xFFFF0000);
@@ -97,28 +108,40 @@ void CPSurface::CreateLit(void)
     {
         try
         {
-            const DWORD dwMaxTextureWidth = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
-            const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
+            const DWORD dwMaxTextureWidth =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
+            const DWORD dwMaxTextureHeight =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
 
-            m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
+            m_pPalette = new PaletteHandle(
+                mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if ( not m_pPalette)
+            if (not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             // Check if we can use a single texture
-            if ((int)dwMaxTextureWidth >= mWidth and (int)dwMaxTextureHeight >= mHeight)
+            if ((int)dwMaxTextureWidth >= mWidth and
+                (int) dwMaxTextureHeight >= mHeight)
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if ( not pTex)
+                if (not pTex)
                     throw _com_error(E_OUTOFMEMORY);
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if ( not pTex->Create("CPSurface", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mWidth, mHeight))
+                if (not pTex->Create("CPSurface",
+                                     MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
+                                     mWidth, mHeight))
                     throw _com_error(E_FAIL);
 
-                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                if (not pTex->Load(
+                        0, 0xFFFF0000, (BYTE *)mpSourceBuffer, true,
+                        true)) // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);
 
                 m_arrTex.push_back(pTex);
@@ -133,7 +156,8 @@ void CPSurface::CreateLit(void)
                 {
                     nRows = mHeight / dwMaxTextureHeight; // JB 010220 CTD
 
-                    if (mHeight % dwMaxTextureHeight) nRows++; // JB 010404 CTD enclosed in brackets
+                    if (mHeight % dwMaxTextureHeight)
+                        nRows++; // JB 010404 CTD enclosed in brackets
                 }
 
                 int nColumns = 0; // JB 010220 CTD
@@ -142,7 +166,8 @@ void CPSurface::CreateLit(void)
                 {
                     nColumns = mWidth / dwMaxTextureWidth;
 
-                    if (mWidth % dwMaxTextureWidth) nColumns++; // JB 010404 CTD enclosed in brackets
+                    if (mWidth % dwMaxTextureWidth)
+                        nColumns++; // JB 010404 CTD enclosed in brackets
                 }
 
                 DWORD dwHeightRemaining = mHeight;
@@ -155,19 +180,27 @@ void CPSurface::CreateLit(void)
                     {
                         TextureHandle *pTex = new TextureHandle;
 
-                        if ( not pTex)
+                        if (not pTex)
                             throw _com_error(E_OUTOFMEMORY);
 
                         m_pPalette->AttachToTexture(pTex);
 
-                        if ( not pTex->Create("CPSurface - Tile", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
-                                          (UInt16)min(dwMaxTextureWidth, dwWidthRemaining), (UInt16)min(dwMaxTextureHeight, dwHeightRemaining)))
+                        if (not pTex->Create(
+                                "CPSurface - Tile",
+                                MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
+                                (UInt16)min(dwMaxTextureWidth,
+                                            dwWidthRemaining),
+                                (UInt16)min(dwMaxTextureHeight,
+                                            dwHeightRemaining)))
                             throw _com_error(E_FAIL);
 
                         DWORD dwOffset = (y * dwMaxTextureHeight) * mWidth;
                         dwOffset += x * dwMaxTextureWidth;
 
-                        if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer + dwOffset, true, true, mWidth)) // soon to be re-loaded by CPSurface::Translate3D
+                        if (not pTex->Load(
+                                0, 0xFFFF0000,
+                                (BYTE *)mpSourceBuffer + dwOffset, true, true,
+                                mWidth)) // soon to be re-loaded by CPSurface::Translate3D
                             throw _com_error(E_FAIL);
 
                         m_arrTex.push_back(pTex);
@@ -181,7 +214,8 @@ void CPSurface::CreateLit(void)
 
         catch (const _com_error &e)
         {
-            MonoPrint("CPSurface::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
+            MonoPrint("CPSurface::CreateLit - Error 0x%X (%s)\n", e.Error(),
+                      e.ErrorMessage());
             DiscardLit();
         }
     }
@@ -199,7 +233,8 @@ void CPSurface::DiscardLit(void)
     delete mpSurfaceBuffer;
     mpSurfaceBuffer = NULL;
 
-    for (int i = 0; i < (int)m_arrTex.size(); i++) delete m_arrTex[i];
+    for (int i = 0; i < (int)m_arrTex.size(); i++)
+        delete m_arrTex[i];
 
     m_arrTex.clear();
 
@@ -211,12 +246,12 @@ void CPSurface::DiscardLit(void)
 }
 
 
-
 //====================================================//
 // CPSurface::Display
 //====================================================//
 
-void CPSurface::DisplayBlit(BYTE blitType, BOOL Persistance, RECT *pDestRect, int xPanelOffset, int yPanelOffset)
+void CPSurface::DisplayBlit(BYTE blitType, BOOL Persistance, RECT *pDestRect,
+                            int xPanelOffset, int yPanelOffset)
 {
     if (m_arrTex.size())
         return; // handled in DisplayBlit3D
@@ -234,15 +269,20 @@ void CPSurface::DisplayBlit(BYTE blitType, BOOL Persistance, RECT *pDestRect, in
     blitRect.bottom = mHeight;
     blitRect.right = mWidth;
 
-    destRect.top = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.top + yPanelOffset));
-    destRect.left = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.left + xPanelOffset));
-    destRect.bottom = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.bottom + yPanelOffset + 1));
-    destRect.right = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.right + xPanelOffset + 1));
+    destRect.top = (LONG)(OTWDriver.pCockpitManager->mVScale *
+                          (destRect.top + yPanelOffset));
+    destRect.left = (LONG)(OTWDriver.pCockpitManager->mHScale *
+                           (destRect.left + xPanelOffset));
+    destRect.bottom = (LONG)(OTWDriver.pCockpitManager->mVScale *
+                             (destRect.bottom + yPanelOffset + 1));
+    destRect.right = (LONG)(OTWDriver.pCockpitManager->mHScale *
+                            (destRect.right + xPanelOffset + 1));
 
     if (Persistance == NONPERSISTANT)
     {
         if (blitType == TRANSPARENT)
-            mpOTWImage->ComposeTransparent(mpSurfaceBuffer, &blitRect, &destRect);
+            mpOTWImage->ComposeTransparent(mpSurfaceBuffer, &blitRect,
+                                           &destRect);
 
         else
             mpOTWImage->Compose(mpSurfaceBuffer, &blitRect, &destRect);
@@ -254,9 +294,10 @@ void CPSurface::DisplayBlit(BYTE blitType, BOOL Persistance, RECT *pDestRect, in
     }
 }
 
-void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, int xPanelOffset, int yPanelOffset)
+void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect,
+                              int xPanelOffset, int yPanelOffset)
 {
-    if ( not m_arrTex.size())
+    if (not m_arrTex.size())
         return; // handled in DisplayBlit
 
     RECT destRect;
@@ -266,10 +307,14 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
     destRect.bottom = pDestRect->bottom;
     destRect.right = pDestRect->right;
 
-    destRect.top = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.top + yPanelOffset));
-    destRect.left = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.left + xPanelOffset));
-    destRect.bottom = (LONG)(OTWDriver.pCockpitManager->mVScale * (destRect.bottom + yPanelOffset + 1));
-    destRect.right = (LONG)(OTWDriver.pCockpitManager->mHScale * (destRect.right + xPanelOffset + 1));
+    destRect.top = (LONG)(OTWDriver.pCockpitManager->mVScale *
+                          (destRect.top + yPanelOffset));
+    destRect.left = (LONG)(OTWDriver.pCockpitManager->mHScale *
+                           (destRect.left + xPanelOffset));
+    destRect.bottom = (LONG)(OTWDriver.pCockpitManager->mVScale *
+                             (destRect.bottom + yPanelOffset + 1));
+    destRect.right = (LONG)(OTWDriver.pCockpitManager->mHScale *
+                            (destRect.right + xPanelOffset + 1));
 
     //Wombat778 3-22-04 Improves "cracked" cockpit. By expanding the target rectangles by 0.5 on each side, the directx texel alignment issue is reduced.
     // COBRA - RED - Wombat... Do u know what a Long Type is...?
@@ -291,11 +336,11 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
 
             // Setup vertices
             float fStartU = 0;
-            float fMaxU = (float) pTex->m_nWidth / (float) pTex->m_nActualWidth;
+            float fMaxU = (float)pTex->m_nWidth / (float)pTex->m_nActualWidth;
             fMaxU -= fStartU;
 
             float fStartV = 0;
-            float fMaxV = (float) pTex->m_nHeight / (float) pTex->m_nActualHeight;
+            float fMaxV = (float)pTex->m_nHeight / (float)pTex->m_nActualHeight;
             fMaxV -= fStartV;
 
             TwoDVertex pVtx[4];
@@ -328,9 +373,11 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
             if (blitType == TRANSPARENT)
             {
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                    OTWDriver.renderer->context.RestoreState(STATE_CHROMA_TEXTURE);
+                    OTWDriver.renderer->context.RestoreState(
+                        STATE_CHROMA_TEXTURE);
                 else
-                    OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
+                    OTWDriver.renderer->context.RestoreState(
+                        STATE_ALPHA_TEXTURE_NOFILTER);
             }
 
             else
@@ -338,13 +385,16 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE);
                 else
-                    OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
+                    OTWDriver.renderer->context.RestoreState(
+                        STATE_TEXTURE_NOFILTER);
             }
 
-            OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
+            OTWDriver.renderer->context.SelectTexture1((DWORD_PTR)pTex);
 
             // Render it (finally)
-            OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+            OTWDriver.renderer->context.DrawPrimitive(
+                MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx,
+                sizeof(pVtx[0]));
         }
 
         else
@@ -355,28 +405,39 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
             if (blitType == TRANSPARENT)
             {
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                    OTWDriver.renderer->context.RestoreState(STATE_CHROMA_TEXTURE);
+                    OTWDriver.renderer->context.RestoreState(
+                        STATE_CHROMA_TEXTURE);
                 else
-                    OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
+                    OTWDriver.renderer->context.RestoreState(
+                        STATE_ALPHA_TEXTURE_NOFILTER);
             }
             else
             {
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
                     OTWDriver.renderer->context.RestoreState(STATE_TEXTURE);
                 else
-                    OTWDriver.renderer->context.RestoreState(STATE_TEXTURE_NOFILTER);
+                    OTWDriver.renderer->context.RestoreState(
+                        STATE_TEXTURE_NOFILTER);
             }
 
-            const DWORD dwMaxTextureWidth = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
-            const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
+            const DWORD dwMaxTextureWidth =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
+            const DWORD dwMaxTextureHeight =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
 
             int nRows = mHeight / dwMaxTextureHeight;
 
-            if (mHeight % dwMaxTextureHeight) nRows++;
+            if (mHeight % dwMaxTextureHeight)
+                nRows++;
 
             int nColumns = mWidth / dwMaxTextureWidth;
 
-            if (mWidth % dwMaxTextureWidth) nColumns++;
+            if (mWidth % dwMaxTextureWidth)
+                nColumns++;
 
             TwoDVertex pVtx[4];
             ZeroMemory(pVtx, sizeof(pVtx));
@@ -399,11 +460,13 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
 
                     // Setup vertices
                     float fStartU = 0;
-                    float fMaxU = (float) pTex->m_nWidth / (float) pTex->m_nActualWidth;
+                    float fMaxU =
+                        (float)pTex->m_nWidth / (float)pTex->m_nActualWidth;
                     fMaxU -= fStartU;
 
                     float fStartV = 0;
-                    float fMaxV = (float) pTex->m_nHeight / (float) pTex->m_nActualHeight;
+                    float fMaxV =
+                        (float)pTex->m_nHeight / (float)pTex->m_nActualHeight;
                     fMaxV -= fStartV;
 
                     pVtx[0].x = (float)left;
@@ -430,10 +493,12 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
                     // COBRA - RED - Pit Vibrations
                     OTWDriver.pCockpitManager->AddTurbulence(pVtx);
 
-                    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
+                    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR)pTex);
 
                     // Render it (finally)
-                    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+                    OTWDriver.renderer->context.DrawPrimitive(
+                        MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4,
+                        pVtx, sizeof(pVtx[0]));
 
                     dwWidthRemaining -= dwMaxTextureWidth;
                     left += dwMaxTextureWidth;
@@ -452,21 +517,25 @@ void CPSurface::DisplayBlit3D(BYTE blitType, BOOL Persistance, RECT *pDestRect, 
 }
 
 
-void CPSurface::Translate(WORD* palette16)
+void CPSurface::Translate(WORD *palette16)
 {
     if (mpSurfaceBuffer)
-        Translate8to16(palette16, mpSourceBuffer, mpSurfaceBuffer); // 8 bit color indexes of individual surfaces
+        Translate8to16(
+            palette16, mpSourceBuffer,
+            mpSurfaceBuffer); // 8 bit color indexes of individual surfaces
 } // 16 bit ImageBuffers
 
 // OW
-void CPSurface::Translate(DWORD* palette32)
+void CPSurface::Translate(DWORD *palette32)
 {
     if (mpSurfaceBuffer)
-        Translate8to32(palette32, mpSourceBuffer, mpSurfaceBuffer); // 8 bit color indexes of individual surfaces
+        Translate8to32(
+            palette32, mpSourceBuffer,
+            mpSurfaceBuffer); // 8 bit color indexes of individual surfaces
 }
 
-void CPSurface::Translate3D(DWORD* palette32)
+void CPSurface::Translate3D(DWORD *palette32)
 {
     if (m_pPalette)
-        m_pPalette->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*) palette32);
+        m_pPalette->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE *)palette32);
 }

@@ -8,11 +8,11 @@
 #ifndef _DRAWBSP_H_
 #define _DRAWBSP_H_
 
-#include "ObjectInstance.h"
-#include "DrawObj.h"
+#include "objectinstance.h"
+#include "drawobj.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.h"
+#include "smartheap/include/smrtheap.h"
 #endif
 
 #include "context.h"
@@ -21,11 +21,13 @@
 class DrawableBSP : public DrawableObject
 {
 public:
-    DrawableBSP(int type, const Tpoint *pos, const Trotation *rot, float scale = 1.0f);
+    DrawableBSP(int type, const Tpoint *pos, const Trotation *rot,
+                float scale = 1.0f);
     virtual ~DrawableBSP();
+
 protected:
     // This constructor is used only by derived classes who do their own setup
-    DrawableBSP(float s, int ID): DrawableObject(s), instance(ID)
+    DrawableBSP(float s, int ID) : DrawableObject(s), instance(ID)
     {
         inhibitDraw = FALSE;
         labelLen = 0;
@@ -43,7 +45,9 @@ public:
 
     BOOL IsLegalEmptySlot(int slotNumber)
     {
-        return (slotNumber < instance.ParentObject->nSlots) and (instance.SlotChildren) and (instance.SlotChildren[slotNumber] == NULL);
+        return (slotNumber < instance.ParentObject->nSlots) and
+               (instance.SlotChildren) and
+               (instance.SlotChildren[slotNumber] == NULL);
     };
 
     int GetNumSlots(void)
@@ -108,12 +112,13 @@ public:
         inhibitDraw = state;
     };
 
-    virtual BOOL GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *collide, float boxScale = 1.0f);
+    virtual BOOL GetRayHit(const Tpoint *from, const Tpoint *vector,
+                           Tpoint *collide, float boxScale = 1.0f);
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
     virtual void Draw(class Render3D *renderer);
 
-    int  GetID(void)
+    int GetID(void)
     {
         return id;
     };
@@ -180,7 +185,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

@@ -3,7 +3,8 @@
 /* data structures for COMMS TCP interface */
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     typedef struct tcpheader

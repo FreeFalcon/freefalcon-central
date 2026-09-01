@@ -10,7 +10,7 @@
 // #define new DEBUG_NEW, which breaks tinyxml2's inline methods (XMLDocument becomes
 // "incomplete"); STL/tinyxml2 must precede that. Same rule as controlsxml.cpp. We qualify
 // types as tinyxml2:: (there is another global XMLDocument from MSXML/Falcon headers).
-#include "extlibs/tinyxml2/tinyxml2.h"   // include root ..\.. = src\
+#include "extlibs/tinyxml2/tinyxml2.h" // include root ..\.. = src\
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -18,11 +18,12 @@
 #include "f4find.h"
 #include "graphics/include/devmgr.h"
 #include "dispcfg.h"
-#include "Debuggr.h"
+#include "debuggr.h"
 
 DisplayOptionsClass DisplayOptions;
 
-unsigned int DisplayOptionsClass::iDeviceCaps = D3DDEVCAPS_HWTRANSFORMANDLIGHT; // sfr: default display caps
+unsigned int DisplayOptionsClass::iDeviceCaps =
+    D3DDEVCAPS_HWTRANSFORMANDLIGHT; // sfr: default display caps
 
 DisplayOptionsClass::DisplayOptionsClass(void)
 {
@@ -38,9 +39,9 @@ void DisplayOptionsClass::Initialize(void)
     // DisplayOptionsClass has no virtual methods (no vtable to clobber).
     memset(this, 0, sizeof(*this));
 
-    DispWidth = 1920;	// 3D default -- Full HD (was 1024x768)
+    DispWidth = 1920; // 3D default -- Full HD (was 1024x768)
     DispHeight = 1080;
-    DispDepth = 32;  //Cobra - always use 32-bit depth
+    DispDepth = 32; //Cobra - always use 32-bit depth
     DispVideoCard = 0;
     DispVideoDriver = 0;
     bRender2Texture = TRUE;
@@ -58,10 +59,17 @@ void DisplayOptionsClass::Initialize(void)
     // flat desktop path stays the norm -- the user opts into OpenXR via the Advanced checkbox. Res scale 100%.
     bMsaaEnable = true;
     nMsaaSamples = 4;
-    nAnisotropicSamples = 16;   // Artscout - 2026: default max anisotropy (on/off = bAnisotropicFiltering)
+    nAnisotropicSamples =
+        16; // Artscout - 2026: default max anisotropy (on/off = bAnisotropicFiltering)
     bUseOpenXR = false;
     bUseQuadViews = false;
     nVrResolutionScale = 100;
+#ifdef _WIN32
+    nRenderer = 0; // #104: 0 = DirectX 12 (default), 1 = Vulkan
+#else
+    nRenderer =
+        1; // #104: Linux has no D3D12 backend -- Vulkan is the only renderer
+#endif
 
     m_texMode = TEX_MODE_DDS;
 
@@ -80,7 +88,7 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     // keep their Initialize() default. Start from defaults, then overlay whatever the file provides.
     Initialize();
 
-    sprintf(path, "%s\\config\\%s.xml", FalconDataDirectory, filename);
+    sprintf(path, "%s/config/%s.xml", FalconDataDirectory, filename);
 
     tinyxml2::XMLDocument doc;
 
@@ -101,30 +109,39 @@ int DisplayOptionsClass::LoadOptions(char *filename)
 
         if ((e = root->FirstChildElement("resolution")))
         {
-            if (e->QueryIntAttribute("width",  &tmp) == tinyxml2::XML_SUCCESS) DispWidth  = (unsigned short)tmp;
-            if (e->QueryIntAttribute("height", &tmp) == tinyxml2::XML_SUCCESS) DispHeight = (unsigned short)tmp;
+            if (e->QueryIntAttribute("width", &tmp) == tinyxml2::XML_SUCCESS)
+                DispWidth = (unsigned short)tmp;
+            if (e->QueryIntAttribute("height", &tmp) == tinyxml2::XML_SUCCESS)
+                DispHeight = (unsigned short)tmp;
             e->QueryIntAttribute("depth", &DispDepth);
         }
 
         if ((e = root->FirstChildElement("video")))
         {
-            if (e->QueryIntAttribute("card",   &tmp) == tinyxml2::XML_SUCCESS) DispVideoCard   = (unsigned char)tmp;
-            if (e->QueryIntAttribute("driver", &tmp) == tinyxml2::XML_SUCCESS) DispVideoDriver = (unsigned char)tmp;
+            if (e->QueryIntAttribute("card", &tmp) == tinyxml2::XML_SUCCESS)
+                DispVideoCard = (unsigned char)tmp;
+            if (e->QueryIntAttribute("driver", &tmp) == tinyxml2::XML_SUCCESS)
+                DispVideoDriver = (unsigned char)tmp;
+            e->QueryIntAttribute(
+                "renderer", &nRenderer); // #104: 0 = DirectX 12, 1 = Vulkan
         }
 
         if ((e = root->FirstChildElement("render")))
         {
-            e->QueryBoolAttribute("render2texture",  &bRender2Texture);
+            e->QueryBoolAttribute("render2texture", &bRender2Texture);
             e->QueryBoolAttribute("render2Dcockpit", &bRender2DCockpit);
-            e->QueryBoolAttribute("anisotropic",     &bAnisotropicFiltering);
-            e->QueryIntAttribute ("anisoLevel",      &nAnisotropicSamples);   // Artscout - 2026: max anisotropy 1..16
-            e->QueryBoolAttribute("linearmip",       &bLinearMipFiltering);
-            e->QueryBoolAttribute("mipmapping",      &bMipmapping);
-            e->QueryBoolAttribute("zbuffer",         &bZBuffering);
-            e->QueryBoolAttribute("fontTexel",       &bFontTexelAlignment);
-            e->QueryBoolAttribute("specular",        &bSpecularLighting);
-            e->QueryBoolAttribute("screenBiasFix",   &bScreenCoordinateBiasFix);
-            if (e->QueryIntAttribute("texMode", &tmp) == tinyxml2::XML_SUCCESS) m_texMode = (TEXMODE)tmp;
+            e->QueryBoolAttribute("anisotropic", &bAnisotropicFiltering);
+            e->QueryIntAttribute(
+                "anisoLevel",
+                &nAnisotropicSamples); // Artscout - 2026: max anisotropy 1..16
+            e->QueryBoolAttribute("linearmip", &bLinearMipFiltering);
+            e->QueryBoolAttribute("mipmapping", &bMipmapping);
+            e->QueryBoolAttribute("zbuffer", &bZBuffering);
+            e->QueryBoolAttribute("fontTexel", &bFontTexelAlignment);
+            e->QueryBoolAttribute("specular", &bSpecularLighting);
+            e->QueryBoolAttribute("screenBiasFix", &bScreenCoordinateBiasFix);
+            if (e->QueryIntAttribute("texMode", &tmp) == tinyxml2::XML_SUCCESS)
+                m_texMode = (TEXMODE)tmp;
         }
 
         if ((e = root->FirstChildElement("window")))
@@ -132,15 +149,15 @@ int DisplayOptionsClass::LoadOptions(char *filename)
 
         if ((e = root->FirstChildElement("msaa")))
         {
-            e->QueryBoolAttribute("enable",  &bMsaaEnable);
-            e->QueryIntAttribute("samples",  &nMsaaSamples);
+            e->QueryBoolAttribute("enable", &bMsaaEnable);
+            e->QueryIntAttribute("samples", &nMsaaSamples);
         }
 
         if ((e = root->FirstChildElement("vr")))
         {
-            e->QueryBoolAttribute("openxr",    &bUseOpenXR);
+            e->QueryBoolAttribute("openxr", &bUseOpenXR);
             e->QueryBoolAttribute("quadviews", &bUseQuadViews);
-            e->QueryIntAttribute("resScale",   &nVrResolutionScale);
+            e->QueryIntAttribute("resScale", &nVrResolutionScale);
         }
     }
 
@@ -151,7 +168,7 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     //DisplayOptions.bSpecularLighting = TRUE;
     //DDS textures only
     DisplayOptions.m_texMode = TEX_MODE_DDS;
-    DisplayOptions.DispDepth = 32;  //Cobra - always use 32-bit depth
+    DisplayOptions.DispDepth = 32; //Cobra - always use 32-bit depth
     //========================================
 
     // Artscout - 2026: sanitize loaded values. A corrupt/old options file (written from a struct with
@@ -161,17 +178,29 @@ int DisplayOptionsClass::LoadOptions(char *filename)
     // DDraw path (NULL m_pBltTarget crash) AND skips the rendered-cursor texture bake (Translate3D),
     // so the cursor vanishes. Clamp the resolution and, under D3D11, force the rendered path (the only
     // working one there).
-    if (DispWidth  < 320 or DispWidth  > 16384) DispWidth  = 1920;
-    if (DispHeight < 240 or DispHeight > 16384) DispHeight = 1080;
+    if (DispWidth < 320 or DispWidth > 16384)
+        DispWidth = 1920;
+    if (DispHeight < 240 or DispHeight > 16384)
+        DispHeight = 1080;
 
     // Artscout - 2026: clamp the new option ranges (UI slider bounds; protects against a hand-edited XML).
-    if (nMsaaSamples       < 1  or nMsaaSamples       > 8)   nMsaaSamples       = 4;
-    if (nAnisotropicSamples < 1 or nAnisotropicSamples > 16) nAnisotropicSamples = 16;
-    if (nVrResolutionScale < 50 or nVrResolutionScale > 100) nVrResolutionScale = 100;
+    if (nMsaaSamples < 1 or nMsaaSamples > 8)
+        nMsaaSamples = 4;
+    if (nAnisotropicSamples < 1 or nAnisotropicSamples > 16)
+        nAnisotropicSamples = 16;
+    if (nVrResolutionScale < 50 or nVrResolutionScale > 100)
+        nVrResolutionScale = 100;
+#ifdef _WIN32
+    if (nRenderer < 0 or nRenderer > 1)
+        nRenderer = 0;
+#else
+    nRenderer =
+        1; // #104: Linux -- ignore any stored/UI value, the only backend is Vulkan
+#endif
 
     {
-        extern bool g_bUseD3D12;
-        if (g_bUseD3D12)   // #DX12: GPU mode has no DDraw -> force RTT/2D-cockpit like D3D11
+        extern bool g_bUseGpu;
+        if (g_bUseGpu) // #DX12/#104: any GPU backend (D3D12/Vulkan) has no DDraw -> force RTT/2D-cockpit
         {
             DisplayOptions.bRender2DCockpit = TRUE;
             // Artscout - 2026: force render-to-texture under D3D11. The bRender2Texture==FALSE path is a
@@ -225,15 +254,27 @@ int DisplayOptionsClass::SaveOptions(void)
 {
     char path[_MAX_PATH];
 
-    sprintf(path, "%s\\config\\display.xml", FalconDataDirectory);
+    sprintf(path, "%s/config/display.xml", FalconDataDirectory);
 
     // Artscout - 2026: never persist garbage dimensions -- a corrupt save poisons the next load
     // (DispWidth=52428 -> 52428x52428 device death on 3D entry). Clamp to sane bounds before writing.
-    if (DispWidth  < 320 or DispWidth  > 16384) DispWidth  = 1920;
-    if (DispHeight < 240 or DispHeight > 16384) DispHeight = 1080;
-    if (nMsaaSamples       < 1  or nMsaaSamples       > 8)   nMsaaSamples       = 4;
-    if (nAnisotropicSamples < 1 or nAnisotropicSamples > 16) nAnisotropicSamples = 16;
-    if (nVrResolutionScale < 50 or nVrResolutionScale > 100) nVrResolutionScale = 100;
+    if (DispWidth < 320 or DispWidth > 16384)
+        DispWidth = 1920;
+    if (DispHeight < 240 or DispHeight > 16384)
+        DispHeight = 1080;
+    if (nMsaaSamples < 1 or nMsaaSamples > 8)
+        nMsaaSamples = 4;
+    if (nAnisotropicSamples < 1 or nAnisotropicSamples > 16)
+        nAnisotropicSamples = 16;
+    if (nVrResolutionScale < 50 or nVrResolutionScale > 100)
+        nVrResolutionScale = 100;
+#ifdef _WIN32
+    if (nRenderer < 0 or nRenderer > 1)
+        nRenderer = 0;
+#else
+    nRenderer =
+        1; // #104: Linux -- always persist Vulkan; a UI-driven 0 (DX12) is meaningless here
+#endif
 
     tinyxml2::XMLDocument doc;
     doc.InsertEndChild(doc.NewDeclaration());
@@ -243,28 +284,31 @@ int DisplayOptionsClass::SaveOptions(void)
     tinyxml2::XMLElement *e;
 
     e = doc.NewElement("resolution");
-    e->SetAttribute("width",  (int)DispWidth);
+    e->SetAttribute("width", (int)DispWidth);
     e->SetAttribute("height", (int)DispHeight);
-    e->SetAttribute("depth",  DispDepth);
+    e->SetAttribute("depth", DispDepth);
     root->InsertEndChild(e);
 
     e = doc.NewElement("video");
-    e->SetAttribute("card",   (int)DispVideoCard);
+    e->SetAttribute("card", (int)DispVideoCard);
     e->SetAttribute("driver", (int)DispVideoDriver);
+    e->SetAttribute("renderer", nRenderer); // #104: 0 = DirectX 12, 1 = Vulkan
     root->InsertEndChild(e);
 
     e = doc.NewElement("render");
-    e->SetAttribute("render2texture",  bRender2Texture);
+    e->SetAttribute("render2texture", bRender2Texture);
     e->SetAttribute("render2Dcockpit", bRender2DCockpit);
-    e->SetAttribute("anisotropic",     bAnisotropicFiltering);
-    e->SetAttribute("anisoLevel",      nAnisotropicSamples);   // Artscout - 2026: max anisotropy 1..16
-    e->SetAttribute("linearmip",       bLinearMipFiltering);
-    e->SetAttribute("mipmapping",      bMipmapping);
-    e->SetAttribute("zbuffer",         bZBuffering);
-    e->SetAttribute("fontTexel",       bFontTexelAlignment);
-    e->SetAttribute("specular",        bSpecularLighting);
-    e->SetAttribute("screenBiasFix",   bScreenCoordinateBiasFix);
-    e->SetAttribute("texMode",         (int)m_texMode);
+    e->SetAttribute("anisotropic", bAnisotropicFiltering);
+    e->SetAttribute(
+        "anisoLevel",
+        nAnisotropicSamples); // Artscout - 2026: max anisotropy 1..16
+    e->SetAttribute("linearmip", bLinearMipFiltering);
+    e->SetAttribute("mipmapping", bMipmapping);
+    e->SetAttribute("zbuffer", bZBuffering);
+    e->SetAttribute("fontTexel", bFontTexelAlignment);
+    e->SetAttribute("specular", bSpecularLighting);
+    e->SetAttribute("screenBiasFix", bScreenCoordinateBiasFix);
+    e->SetAttribute("texMode", (int)m_texMode);
     root->InsertEndChild(e);
 
     e = doc.NewElement("window");
@@ -272,14 +316,14 @@ int DisplayOptionsClass::SaveOptions(void)
     root->InsertEndChild(e);
 
     e = doc.NewElement("msaa");
-    e->SetAttribute("enable",  bMsaaEnable);
+    e->SetAttribute("enable", bMsaaEnable);
     e->SetAttribute("samples", nMsaaSamples);
     root->InsertEndChild(e);
 
     e = doc.NewElement("vr");
-    e->SetAttribute("openxr",    bUseOpenXR);
+    e->SetAttribute("openxr", bUseOpenXR);
     e->SetAttribute("quadviews", bUseQuadViews);
-    e->SetAttribute("resScale",  nVrResolutionScale);
+    e->SetAttribute("resScale", nVrResolutionScale);
     root->InsertEndChild(e);
 
     if (doc.SaveFile(path) not_eq tinyxml2::XML_SUCCESS)

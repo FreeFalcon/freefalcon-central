@@ -10,7 +10,8 @@ VuTransmissionFilter::VuTransmissionFilter() : VuKeyFilter()
 {
 }
 
-VuTransmissionFilter::VuTransmissionFilter(VuTransmissionFilter* other) : VuKeyFilter(other)
+VuTransmissionFilter::VuTransmissionFilter(VuTransmissionFilter* other)
+    : VuKeyFilter(other)
 {
 }
 
@@ -32,7 +33,8 @@ VU_BOOL VuTransmissionFilter::Notice(VuMessage* event)
 
 VU_BOOL VuTransmissionFilter::Test(VuEntity* ent)
 {
-    return (VU_BOOL)(((ent->IsLocal() and (ent->UpdateRate() > (VU_TIME)0)) ? TRUE : FALSE));
+    return (VU_BOOL)((
+        (ent->IsLocal() and (ent->UpdateRate() > (VU_TIME)0)) ? TRUE : FALSE));
 }
 
 VU_KEY VuTransmissionFilter::Key(const VuEntity* ent) const
@@ -48,8 +50,7 @@ int VuTransmissionFilter::Compare(VuEntity* ent1, VuEntity* ent2)
     return (time1 > time2 ? (int)(time1 - time2) : -(int)(time2 - time1));
 }
 
-VuFilter *VuTransmissionFilter::Copy()
+VuFilter* VuTransmissionFilter::Copy()
 {
     return new VuTransmissionFilter(this);
 }
-

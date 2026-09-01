@@ -1,30 +1,34 @@
 #include <algorithm>
 
-#include "MsgInc/SimCampMsg.h"
+#include "msginc/simcampmsg.h"
 #include "mesg.h"
-#include "Campaign.h"
-#include "TimerThread.h"//me123
+#include "campaign.h"
+#include "timerthread.h"//me123
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "Campbase.h"
-#include "CampList.h"
+#include "campbase.h"
+#include "camplist.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using namespace std;
 
 
-FalconSimCampMessage::FalconSimCampMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback)
-    : FalconEvent(SimCampMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconSimCampMessage::FalconSimCampMessage(VU_ID entityId,
+                                           VuTargetEntity *target,
+                                           VU_BOOL loopback)
+    : FalconEvent(SimCampMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     dataBlock.size = 0;
     dataBlock.data = NULL;
     RequestReliableTransmit();
 }
 
-FalconSimCampMessage::FalconSimCampMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
+FalconSimCampMessage::FalconSimCampMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                           VU_ID target)
     : FalconEvent(SimCampMsg, FalconEvent::SimThread, senderid, target)
 {
     dataBlock.size = 0;
@@ -36,7 +40,7 @@ FalconSimCampMessage::~FalconSimCampMessage()
 {
     if (dataBlock.data)
     {
-        delete [] dataBlock.data;
+        delete[] dataBlock.data;
     }
 
     dataBlock.data = NULL;
@@ -46,7 +50,8 @@ FalconSimCampMessage::~FalconSimCampMessage()
 int FalconSimCampMessage::Size(void) const
 {
     ShiAssert(dataBlock.size >= 0);
-    int size = FalconEvent::Size() + sizeof(VU_ID) + sizeof(unsigned int) + sizeof(ushort) + dataBlock.size;
+    int size = FalconEvent::Size() + sizeof(VU_ID) + sizeof(unsigned int) +
+               sizeof(ushort) + dataBlock.size;
     return size;
 }
 
@@ -96,8 +101,9 @@ int FalconSimCampMessage::Process(uchar autodisp)
 
     VuBin<VuEntity> esafe(vuDatabase->Find(EntityId()));
     VuBin<VuEntity> ssafe(vuDatabase->Find(dataBlock.from));
-    CampBaseClass *ent = static_cast<CampBaseClass*>(esafe.get());
-    FalconSessionEntity *session = static_cast<FalconSessionEntity*>(ssafe.get());
+    CampBaseClass *ent = static_cast<CampBaseClass *>(esafe.get());
+    FalconSessionEntity *session =
+        static_cast<FalconSessionEntity *>(ssafe.get());
 
     if (autodisp or not ent or not session or not FalconLocalGame)
     {
@@ -108,65 +114,63 @@ int FalconSimCampMessage::Process(uchar autodisp)
 
     switch (dataBlock.message)
     {
-        case simcampReaggregate:
-            ent->Reaggregate(session);
-            break;
+    case simcampReaggregate:
+        ent->Reaggregate(session);
+        break;
 
-        case simcampDeaggregate:
-            ent->Deaggregate(session);
-            break;
+    case simcampDeaggregate:
+        ent->Deaggregate(session);
+        break;
 
-        case simcampChangeOwner:
-            ent->RecordCurrentState(session, FALSE);
-            ent->SetDeagOwner(session->Id());
-            break;
+    case simcampChangeOwner:
+        ent->RecordCurrentState(session, FALSE);
+        ent->SetDeagOwner(session->Id());
+        break;
 
-        case simcampRequestDeagData:
-            ent->SendDeaggregateData(FalconLocalGame);
-            break;
+    case simcampRequestDeagData:
+        ent->SendDeaggregateData(FalconLocalGame);
+        break;
 
-        case simcampReaggregateFromData:
-            ent->ReaggregateFromData(dataBlock.data, dataBlock.size);
-            break;
+    case simcampReaggregateFromData:
+        ent->ReaggregateFromData(dataBlock.data, dataBlock.size);
+        break;
 
-        case simcampDeaggregateFromData:
-            ent->DeaggregateFromData(dataBlock.data, dataBlock.size);
-            break;
+    case simcampDeaggregateFromData:
+        ent->DeaggregateFromData(dataBlock.data, dataBlock.size);
+        break;
 
-        case simcampChangeOwnerFromData:
-            break;
+    case simcampChangeOwnerFromData:
+        break;
 
-        case simcampRequestAllDeagData:
-        {
-            SetTimeCompression(1);
+    case simcampRequestAllDeagData:
+    {
+        SetTimeCompression(1);
             // me123 if a client is calling this he's in the pie
-            // let's set the compresion to 1 on the host so we don'e fuck up the realtime
-            // because the clients stops transmitting
-            // timecompresion and we go to 64 again for awhile.
-            {
+        // let's set the compresion to 1 on the host so we don'e fuck up the realtime
+        // because the clients stops transmitting
+        // timecompresion and we go to 64 again for awhile.
+        {
 #if USE_VU_COLL_FOR_CAMPAIGN
-                VuHashIterator deagIt(deaggregatedEntities);
+            VuHashIterator deagIt(deaggregatedEntities);
 
-                for (
-                    CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
-                    c not_eq NULL;
-                    c = static_cast<CampEntity>(deagIt.GetNext())
-                )
+            for (CampEntity c = static_cast<CampEntity>(deagIt.GetFirst());
+                 c not_eq NULL; c = static_cast<CampEntity>(deagIt.GetNext()))
+            {
+                if ((not c->IsAggregate()) and (c->IsLocal()))
                 {
-                    if (( not c->IsAggregate()) and (c->IsLocal()))
-                    {
-                        c->SendDeaggregateData(FalconLocalGame);
-                    }
+                    c->SendDeaggregateData(FalconLocalGame);
                 }
+            }
 
 #else
-                F4ScopeLock l(deaggregatedMap->getMutex());
-                CampBaseClass::SendDeagOp op(VuBin<VuTargetEntity>(FalconLocalGame));
-                for_each(deaggregatedMap->begin(), deaggregatedMap->end(), op);
+            F4ScopeLock l(deaggregatedMap->getMutex());
+            CampBaseClass::SendDeagOp op(
+                VuBin<VuTargetEntity>(FalconLocalGame));
+            for_each(deaggregatedMap->begin(), deaggregatedMap->end(), op);
 #endif
-            }
         }
-        break;
+    }
+    break;
     }
 
     CampLeaveCriticalSection();

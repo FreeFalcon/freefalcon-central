@@ -5,21 +5,27 @@
  * Generated from file EVENTS.XLS by Microprose
  */
 
-#include "MsgInc/LaserDesignateMsg.h"
+#include "msginc/laserdesignatemsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
 #include "simbase.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(LaserDesignateMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_ID entityId,
+                                                 VuTargetEntity *target,
+                                                 VU_BOOL loopback)
+    : FalconEvent(LaserDesignateMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(LaserDesignateMsg, FalconEvent::SimThread, senderid, target)
+FalconLaserDesignateMsg::FalconLaserDesignateMsg(VU_MSG_TYPE type,
+                                                 VU_ID senderid, VU_ID target)
+    : FalconEvent(LaserDesignateMsg, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -37,7 +43,7 @@ int FalconLaserDesignateMsg::Process(uchar autodisp)
     if (autodisp)
         return 0;
 
-    theEntity = (SimBaseClass*) vuDatabase->Find(dataBlock.target);
+    theEntity = (SimBaseClass *)vuDatabase->Find(dataBlock.target);
 
     if (theEntity)
     {
@@ -49,4 +55,3 @@ int FalconLaserDesignateMsg::Process(uchar autodisp)
 
     return TRUE;
 }
-

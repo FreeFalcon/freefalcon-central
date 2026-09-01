@@ -10,12 +10,11 @@
  This is version that is used to store the map in the disk file.
 \***************************************************************************/
 
-#include "Tpost.h"
-#include "TdskPost.h"
-#include "TMap.h"
+#include "tpost.h"
+#include "tdskpost.h"
+#include "tmap.h"
 
-void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost,
-                         int LOD, float,
+void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost, int LOD, float,
                          float *minZ, float *maxZ)
 {
     float minZvalue = 1e6f;
@@ -44,8 +43,10 @@ void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost,
         static const float minStep = (stop - start) * 0.25f;
 
         memPost->u = start + ((i << LOD) bitand 0x3) * minStep;
-        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) bitand 0x3) * minStep;
-        memPost->d = LOD < TheMap.LastNearTexLOD() ? (1 << LOD) * minStep : stop;
+        memPost->v =
+            stop - (((i >> POST_OFFSET_BITS) << LOD) bitand 0x3) * minStep;
+        memPost->d =
+            LOD < TheMap.LastNearTexLOD() ? (1 << LOD) * minStep : stop;
 
         // Copy the color index
         memPost->colorIndex = diskPost->color;
@@ -55,18 +56,22 @@ void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost,
         static const double thetaInStop = PI * 2.0;
         static const double thetaInRange = thetaInStop - thetaInStart;
         static const double thetaOutScale = 255.99;
-        memPost->theta = (float)((diskPost->theta * thetaInRange / thetaOutScale) + thetaInStart);
+        memPost->theta =
+            (float)((diskPost->theta * thetaInRange / thetaOutScale) +
+                    thetaInStart);
 
         static const double phiInStart = 0.0;
         static const double phiInStop = PI / 2.0;
         static const double phiInRange = phiInStop - phiInStart;
         static const double phiOutScale = 63.99;
-        memPost->phi = (float)((diskPost->phi * phiInRange / phiOutScale) + phiInStart);
+        memPost->phi =
+            (float)((diskPost->phi * phiInRange / phiOutScale) + phiInStart);
 
         // Request the texture used by this post (if any)
         if (LOD <= TheMap.LastNearTexLOD())
             TheTerrTextures.Request(memPost->texID);
-        else TheFarTextures.Request(memPost->texID);
+        else
+            TheFarTextures.Request(memPost->texID);
 
         // Accumulate the min and max Z values (These could be stored in the block on disk)
         minZvalue = min(minZvalue, memPost->z);
@@ -83,7 +88,8 @@ void DiskblockToMemblock(Tpost *memPost, TdiskPost *diskPost,
 
 // larger sized stuff. common parts should be extracted, but I don't
 // have time now to check it all out.
-void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, float, float *minZ, float *maxZ)
+void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD,
+                              float, float *minZ, float *maxZ)
 {
     float minZvalue = 1e6f;
     float maxZvalue = -1e6f;
@@ -100,7 +106,7 @@ void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, f
         // Scale from integer feet (Z up) to floating point feet (Z down)
         memPost->z = -(float)(diskPost->z);
 
-        memPost->texID = (DWORD) diskPost->texID;
+        memPost->texID = (DWORD)diskPost->texID;
 
         // Compute the texture coordinates for this post
         // The "& 0x3" and 0.25 terms are because we have 4 posts (0,1,2,3) accross each
@@ -111,8 +117,10 @@ void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, f
         static const float minStep = (stop - start) * 0.25f;
 
         memPost->u = start + ((i << LOD) bitand 0x3) * minStep;
-        memPost->v = stop - (((i >> POST_OFFSET_BITS) << LOD) bitand 0x3) * minStep;
-        memPost->d = LOD < TheMap.LastNearTexLOD() ? (1 << LOD) * minStep : stop;
+        memPost->v =
+            stop - (((i >> POST_OFFSET_BITS) << LOD) bitand 0x3) * minStep;
+        memPost->d =
+            LOD < TheMap.LastNearTexLOD() ? (1 << LOD) * minStep : stop;
 
         // Copy the color index
         memPost->colorIndex = diskPost->color;
@@ -122,18 +130,22 @@ void LargeDiskblockToMemblock(Tpost *memPost, TNewdiskPost *diskPost, int LOD, f
         static const double thetaInStop = PI * 2.0;
         static const double thetaInRange = thetaInStop - thetaInStart;
         static const double thetaOutScale = 255.99;
-        memPost->theta = (float)((diskPost->theta * thetaInRange / thetaOutScale) + thetaInStart);
+        memPost->theta =
+            (float)((diskPost->theta * thetaInRange / thetaOutScale) +
+                    thetaInStart);
 
         static const double phiInStart = 0.0;
         static const double phiInStop = PI / 2.0;
         static const double phiInRange = phiInStop - phiInStart;
         static const double phiOutScale = 63.99;
-        memPost->phi = (float)((diskPost->phi * phiInRange / phiOutScale) + phiInStart);
+        memPost->phi =
+            (float)((diskPost->phi * phiInRange / phiOutScale) + phiInStart);
 
         // Request the texture used by this post (if any)
         if (LOD <= TheMap.LastNearTexLOD())
             TheTerrTextures.Request(memPost->texID);
-        else TheFarTextures.Request(memPost->texID);
+        else
+            TheFarTextures.Request(memPost->texID);
 
         // Accumulate the min and max Z values (These could be stored in the block on disk)
         minZvalue = min(minZvalue, memPost->z);

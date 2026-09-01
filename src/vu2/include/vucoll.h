@@ -14,18 +14,18 @@
 /** database types */
 typedef enum
 {
-    VU_UNKNOWN_COLLECTION             = 0x000,
-    VU_HASH_TABLE_COLLECTION          = 0x101,
+    VU_UNKNOWN_COLLECTION = 0x000,
+    VU_HASH_TABLE_COLLECTION = 0x101,
     VU_FILTERED_HASH_TABLE_COLLECTION = 0x102,
-    VU_DATABASE_COLLECTION            = 0x103,
-    VU_ANTI_DATABASE_COLLECTION       = 0x104,
-    VU_LINKED_LIST_COLLECTION         = 0x201,
-    VU_FILTERED_LIST_COLLECTION       = 0x202,
-    VU_ORDERED_LIST_COLLECTION        = 0x203,
-    VU_LIFO_QUEUE_COLLECTION          = 0x204,
-    VU_FIFO_QUEUE_COLLECTION          = 0x205,
-    VU_RED_BLACK_TREE_COLLECTION      = 0x401,
-    VU_GRID_TREE_COLLECTION           = 0x801
+    VU_DATABASE_COLLECTION = 0x103,
+    VU_ANTI_DATABASE_COLLECTION = 0x104,
+    VU_LINKED_LIST_COLLECTION = 0x201,
+    VU_FILTERED_LIST_COLLECTION = 0x202,
+    VU_ORDERED_LIST_COLLECTION = 0x203,
+    VU_LIFO_QUEUE_COLLECTION = 0x204,
+    VU_FIFO_QUEUE_COLLECTION = 0x205,
+    VU_RED_BLACK_TREE_COLLECTION = 0x401,
+    VU_GRID_TREE_COLLECTION = 0x801
 } VU_COLL_TYPE;
 
 // fwd declarations
@@ -218,6 +218,7 @@ private:
 class VuLinkedList : public VuCollection
 {
     friend class VuListIterator;
+
 public:
     VuLinkedList(VuFilter *filter = NULL);
     virtual ~VuLinkedList();
@@ -235,16 +236,17 @@ public:
     virtual VU_COLL_TYPE Type() const;
 
 protected:
-    typedef std::list< VuEntityBin > VuEntityBinList;
+    typedef std::list<VuEntityBin> VuEntityBinList;
     typedef VuEntityBinList::iterator iterator;
     /** the real list. */
     VuEntityBinList l_;
 };
-typedef VuLinkedList VuFilteredList ;
+typedef VuLinkedList VuFilteredList;
 #else
 class VuLinkedList : public VuCollection
 {
     friend class VuListIterator;
+
 public:
     VuLinkedList();
     virtual ~VuLinkedList();
@@ -259,7 +261,7 @@ public:
     virtual VU_COLL_TYPE Type() const;
 
 protected:
-    typedef std::list< VuEntityBin > VuEntityBinList;
+    typedef std::list<VuEntityBin> VuEntityBinList;
     typedef VuEntityBinList::iterator iterator;
     /** the real list. */
     VuEntityBinList l_;
@@ -336,8 +338,10 @@ class VuHashTable : public VuCollection
 {
     friend class VuHashIterator;
     friend class VuDatabase;
+
 public:
-    VuHashTable(VuFilter *filter, unsigned int tableSize, unsigned int key = VU_DEFAULT_HASH_KEY);
+    VuHashTable(VuFilter *filter, unsigned int tableSize,
+                unsigned int key = VU_DEFAULT_HASH_KEY);
     virtual ~VuHashTable();
 
 protected:
@@ -373,6 +377,7 @@ protected:
 class VuHashTable : public VuCollection
 {
     friend class VuHashIterator;
+
 public:
     VuHashTable(unsigned int tableSize, unsigned int key = VU_DEFAULT_HASH_KEY);
     virtual ~VuHashTable();
@@ -408,7 +413,8 @@ protected:
 class VuFilteredHashTable : public VuHashTable
 {
 public:
-    VuFilteredHashTable(VuFilter *filter, uint tableSize, uint key = VU_DEFAULT_HASH_KEY);
+    VuFilteredHashTable(VuFilter *filter, uint tableSize,
+                        uint key = VU_DEFAULT_HASH_KEY);
     virtual ~VuFilteredHashTable();
     virtual VU_ERRCODE Handle(VuMessage *msg);
     virtual VU_ERRCODE ForcedInsert(VuEntity *entity);
@@ -474,7 +480,6 @@ public:
     unsigned int Purge(VU_BOOL all = TRUE);
 
 private:
-
 #define BIRTH_LIST 1
 #if BIRTH_LIST
     /** inserts entity into all registered collections which accept it (@see VuFilter::Test).
@@ -566,7 +571,6 @@ private:
 #endif
 
 
-
 /** a balanced map. Associates a key to an entity through a filter.
 * Since filter is responsible for keying the entity, all id functions call
 * database to get entity first and then call the function with same name using entity.
@@ -603,7 +607,6 @@ private:
 
     typedef std::multimap<VU_KEY, VuEntityBin> RBMap;
     RBMap map_;
-
 };
 #else
 class VuRedBlackTree : public VuCollection
@@ -721,14 +724,16 @@ class VuGridTree : public VuCollection
     friend class VuCollectionManager;
 
 public:
-    VuGridTree(VuBiKeyFilter *filter, uint numrows, BIG_SCALAR center, BIG_SCALAR radius);
+    VuGridTree(VuBiKeyFilter *filter, uint numrows, BIG_SCALAR center,
+               BIG_SCALAR radius);
     virtual ~VuGridTree();
 
     virtual VU_ERRCODE ForcedInsert(VuEntity *entity);
     virtual VU_ERRCODE Insert(VuEntity *entity);
     virtual VU_ERRCODE Remove(VuEntity *entity);
     virtual VU_ERRCODE Remove(VU_ID entityId);
-    virtual VU_ERRCODE Move(VuEntity *entity, BIG_SCALAR coord1, BIG_SCALAR coord2);
+    virtual VU_ERRCODE Move(VuEntity *entity, BIG_SCALAR coord1,
+                            BIG_SCALAR coord2);
     virtual unsigned int Purge(VU_BOOL all = TRUE);
     virtual unsigned int Count() const;
     virtual VuEntity *Find(VU_ID entityId) const;

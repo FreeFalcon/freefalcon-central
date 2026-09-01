@@ -13,11 +13,11 @@ class SimBaseClass;
 
 class PlayerRwrClass : public VehRwrClass
 {
-public :
-    PlayerRwrClass(int idx, SimMoverClass* self);
+public:
+    PlayerRwrClass(int idx, SimMoverClass *self);
     virtual ~PlayerRwrClass(void);
 
-    virtual SimObjectType* Exec(SimObjectType* targetList);
+    virtual SimObjectType *Exec(SimObjectType *targetList);
     virtual void Display(VirtualDisplay *activeDisplay);
     virtual BOOL IsOn();
 
@@ -124,4 +124,3 @@ protected:
 };
 
 #endif // _PLAYERRWR_H_
-

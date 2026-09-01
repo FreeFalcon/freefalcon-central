@@ -2,8 +2,8 @@
 #include "sms.h"
 #include "hardpnt.h"
 #include "guns.h"
-#include "Graphics/Include/display.h"
-#include "SmsDraw.h"
+#include "graphics/include/display.h"
+#include "smsdraw.h"
 #include "aircrft.h"
 #include "airframe.h"
 #include "fcc.h"
@@ -15,12 +15,16 @@
 // JPO - taken a hatchet to all this stuff... some bits kept.
 const static struct InvData
 {
-    enum { NORACK = 0x1, R2SLOT = 0x2, RJETT = 0x4,};
+    enum
+    {
+        NORACK = 0x1,
+        R2SLOT = 0x2,
+        RJETT = 0x4,
+    };
     float text_x, text_y;
     float boxx, boxy;
     int flags;
-} HpInvData[10] =
-{
+} HpInvData[10] = {
     /*{ 0 }, // HP 0 is empty
     {-0.90f, -0.62f, -0.95f, -0.60f, InvData::RJETT|InvData::NORACK|InvData::R2SLOT}, // HP 1
     {-0.90f, -0.40f, -0.95f, -0.38f, InvData::R2SLOT}, // HP 2
@@ -31,17 +35,19 @@ const static struct InvData
     { 0.25f, -0.00f,  0.23f,  0.02f, 0}, // HP 7
     { 0.40f, -0.40f,  0.35f, -0.38f, InvData::R2SLOT}, // HP 8
     { 0.40f, -0.62f,  0.35f, -0.60f, InvData::RJETT|InvData::NORACK|InvData::R2SLOT}, // HP 9*/
-    { 0 }, // HP 0 is empty
+    {0}, // HP 0 is empty
     //MI tweaked values
-    { -0.90f, -0.50f, -0.95f, -0.50f, InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 1
-    { -0.90f, -0.25f, -0.95f, -0.25f, InvData::R2SLOT}, // HP 2
-    { -0.75f,  0.10f, -0.77f,  0.10f, 0}, // HP 3
-    { -0.60f,  0.40f, -0.62f,  0.42f, 0}, // HP 4
-    { -0.15f,  0.82f, -0.15f,  0.84f, 0}, // HP 5
-    { 0.10f,  0.40f,  0.08f,  0.42f, 0}, // HP 6
-    { 0.25f,  0.10f,  0.25f,  0.10f, 0}, // HP 7
-    { 0.40f, -0.25f,  0.35f, -0.25f, InvData::R2SLOT}, // HP 8
-    { 0.40f, -0.50f,  0.35f, -0.50f, InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 9
+    {-0.90f, -0.50f, -0.95f, -0.50f,
+     InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 1
+    {-0.90f, -0.25f, -0.95f, -0.25f, InvData::R2SLOT}, // HP 2
+    {-0.75f, 0.10f, -0.77f, 0.10f, 0}, // HP 3
+    {-0.60f, 0.40f, -0.62f, 0.42f, 0}, // HP 4
+    {-0.15f, 0.82f, -0.15f, 0.84f, 0}, // HP 5
+    {0.10f, 0.40f, 0.08f, 0.42f, 0}, // HP 6
+    {0.25f, 0.10f, 0.25f, 0.10f, 0}, // HP 7
+    {0.40f, -0.25f, 0.35f, -0.25f, InvData::R2SLOT}, // HP 8
+    {0.40f, -0.50f, 0.35f, -0.50f,
+     InvData::RJETT bitor InvData::NORACK bitor InvData::R2SLOT}, // HP 9
 };
 
 void SmsDrawable::InventoryDisplay(int jettOnly)
@@ -53,21 +59,23 @@ void SmsDrawable::InventoryDisplay(int jettOnly)
     for (i = 1; i < 10; i++)
         InvDrawHp(i, jettOnly);
 
-    if ( not jettOnly)
+    if (not jettOnly)
     {
-        if (((AircraftClass*)Sms->ownship)->af->IsSet(AirframeClass::CATLimiterIII))
+        if (((AircraftClass*)Sms->ownship)
+                ->af->IsSet(AirframeClass::CATLimiterIII))
         {
             sprintf(tmpStr1, "CAT III");/*
        limitGs = ((AircraftClass*)Sms->ownship)->af->curMaxGs;
        if( limiter = gLimiterMgr->GetLimiter(CatIIIMaxGs, ((AircraftClass*)Sms->ownship)->af->VehicleIndex()) )
     limitGs = limiter->Limit(0);*/
-            sprintf(tmpStr2, "%2.1f G", ((AircraftClass*)Sms->ownship)->af->curMaxGs);
-
+            sprintf(tmpStr2, "%2.1f G",
+                    ((AircraftClass*)Sms->ownship)->af->curMaxGs);
         }
         else
         {
             sprintf(tmpStr1, "CAT I");
-            sprintf(tmpStr2, "%2.1f G", ((AircraftClass*)Sms->ownship)->af->curMaxGs);
+            sprintf(tmpStr2, "%2.1f G",
+                    ((AircraftClass*)Sms->ownship)->af->curMaxGs);
         }
 
         ShiAssert(strlen(tmpStr1) < sizeof(tmpStr1));
@@ -82,7 +90,7 @@ void SmsDrawable::InventoryDisplay(int jettOnly)
 
         for (i = 0; i < Sms->NumHardpoints(); i++)
         {
-            GunClass *gun = Sms->GetGun(i);
+            GunClass* gun = Sms->GetGun(i);
 
             if (gun)
                 numRounds += gun->numRoundsRemaining / 10;
@@ -121,42 +129,51 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         tmpStr[1][0] = 0;
         tmpStr[2][0] = 0;
 
-        if (jettOnly and not (Sms->hardPoint[hp]->GetRackDataFlags() bitand (RDF_SELECTIVE_JETT_WEAPON bitor RDF_SELECTIVE_JETT_RACK)))
+        if (jettOnly and
+            not(Sms->hardPoint[hp]->GetRackDataFlags() bitand
+                (RDF_SELECTIVE_JETT_WEAPON bitor RDF_SELECTIVE_JETT_RACK)))
         {
             // non jettisonable - show nothing
         }
         else
         {
-            if ( not jettOnly)
+            if (not jettOnly)
             {
-                if (Sms->hardPoint[hp]->GetPylonMnemonic() and Sms->hardPoint[hp]->GetPylonMnemonic()[0])
+                if (Sms->hardPoint[hp]->GetPylonMnemonic() and
+                    Sms->hardPoint[hp]->GetPylonMnemonic()[0])
                 {
-                    sprintf(tmpStr[curStr], "1 %s", Sms->hardPoint[hp]->GetPylonMnemonic());
+                    sprintf(tmpStr[curStr], "1 %s",
+                            Sms->hardPoint[hp]->GetPylonMnemonic());
                     curStr++;
                 }
             }
 
 
-            if (Sms->hardPoint[hp]->GetRackMnemonic() and Sms->hardPoint[hp]->GetRackMnemonic()[0])
+            if (Sms->hardPoint[hp]->GetRackMnemonic() and
+                Sms->hardPoint[hp]->GetRackMnemonic()[0])
             {
                 if (jettOnly and sjSelected[hp] == SelectiveRack)
                     rev[curStr] = 1;
 
                 int count = (Sms->hardPoint[hp]->GetRack() ? 1 : 0);
-                sprintf(tmpStr[curStr], "%d %s", count, Sms->hardPoint[hp]->GetRackMnemonic());
+                sprintf(tmpStr[curStr], "%d %s", count,
+                        Sms->hardPoint[hp]->GetRackMnemonic());
                 curStr++;
             }
 
             if (Sms->hardPoint[hp]->weaponId)
             {
-                if (jettOnly and (sjSelected[hp] == SelectiveWeapon or sjSelected[hp] == SelectiveRack))
+                if (jettOnly and (sjSelected[hp] == SelectiveWeapon or
+                                  sjSelected[hp] == SelectiveRack))
                     rev[curStr] = 1;
 
-                sprintf(tmpStr[curStr], "%d %s", Sms->hardPoint[hp]->weaponCount, Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
+                sprintf(tmpStr[curStr], "%d %s",
+                        Sms->hardPoint[hp]->weaponCount,
+                        Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
                 curStr++;
             }
 
-            if ( not jettOnly)
+            if (not jettOnly)
             {
                 for (; curStr < 3; curStr++) // fill remaining with "-------"
                 {
@@ -176,7 +193,7 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 
         int inverse = 0;
 
-        if ( not jettOnly and Sms->curHardpoint == hp)
+        if (not jettOnly and Sms->curHardpoint == hp)
         {
             inverse = 2;
         }
@@ -189,10 +206,14 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
                     inverse = 2;
 
                 if (inverse)
-                    display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - (.1f * l), "       ", inverse);
+                    display->TextLeft(HpInvData[hp].text_x,
+                                      HpInvData[hp].text_y - (.1f * l),
+                                      "       ", inverse);
 
                 tmpStr[l][7] = 0;
-                display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - (.1f * l),        tmpStr[l], inverse);
+                display->TextLeft(HpInvData[hp].text_x,
+                                  HpInvData[hp].text_y - (.1f * l), tmpStr[l],
+                                  inverse);
             }
         }
     }
@@ -270,11 +291,15 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         else*/
         {
 
-            if (Sms->NumHardpoints() > hp and ((HpInvData[hp].flags bitand InvData::RJETT) == 0 or not jettOnly))
+            if (Sms->NumHardpoints() > hp and
+                ((HpInvData[hp].flags bitand InvData::RJETT) == 0 or
+                 not jettOnly))
             {
                 int rack;
 
-                if (Sms->hardPoint[hp]->GetRackOrPylon() or (HpInvData[hp].flags bitand InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
+                if (Sms->hardPoint[hp]->GetRackOrPylon() or
+                    (HpInvData[hp].flags bitand
+                     InvData::NORACK)) // MLR 2/20/2004 - added OrPylon
                     rack = 1;
                 else
                     rack = 0;
@@ -282,13 +307,15 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
                 if (Sms->hardPoint[hp]->GetWeaponType() == wtAim9)
                 {
                     sprintf(tmpStr1, "%d LNCHW", rack);
-                    sprintf(tmpStr2, "%d %s", Sms->hardPoint[hp]->weaponCount, Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
+                    sprintf(tmpStr2, "%d %s", Sms->hardPoint[hp]->weaponCount,
+                            Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
                     sprintf(tmpStr3, "-------");
                 }
                 else if (Sms->hardPoint[hp]->GetWeaponType() == wtAim120)
                 {
                     sprintf(tmpStr1, "%d MLRW", rack);
-                    sprintf(tmpStr2, "%d %s", Sms->hardPoint[hp]->weaponCount, Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
+                    sprintf(tmpStr2, "%d %s", Sms->hardPoint[hp]->weaponCount,
+                            Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
                     sprintf(tmpStr3, "-------");
                 }
                 else if (Sms->hardPoint[hp]->GetWeaponType() == wtNone)
@@ -300,7 +327,8 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
                 // fuel tanks are directly on the HP.
                 else if (Sms->hardPoint[hp]->GetWeaponClass() == wcTank)
                 {
-                    sprintf(tmpStr1, "%d %s", Sms->hardPoint[hp]->weaponCount, Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
+                    sprintf(tmpStr1, "%d %s", Sms->hardPoint[hp]->weaponCount,
+                            Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
                     sprintf(tmpStr2, "-------");
                     sprintf(tmpStr3, "-------");
                 }
@@ -322,7 +350,8 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
                         sprintf(tmpStr3, "-------");
                     }
 
-                    sprintf(countStr, "%d %s", Sms->hardPoint[hp]->weaponCount, Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
+                    sprintf(countStr, "%d %s", Sms->hardPoint[hp]->weaponCount,
+                            Sms->hardPoint[hp]->GetWeaponData()->mnemonic);
                 }
             }
             else
@@ -338,38 +367,47 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
         ShiAssert(strlen(tmpStr3) < sizeof(tmpStr1));
         int reverse = 0;
 
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
-            if ((sjSelected[hp] == SelectiveRack and jettOnly) or (Sms->curHardpoint == hp and not jettOnly))
+            if ((sjSelected[hp] == SelectiveRack and jettOnly) or
+                (Sms->curHardpoint == hp and not jettOnly))
             {
                 reverse = 2;
             }
         }
         else
         {
-            if ((sjSelected[hp] == SelectiveRack and jettOnly) or (Sms->curHardpoint == hp and not jettOnly)
-               and Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
+            if ((sjSelected[hp] == SelectiveRack and jettOnly) or
+                (Sms->curHardpoint == hp and not jettOnly) and
+                    Sms->hardPoint[hp]->GetWeaponType() not_eq wtNone)
             {
                 reverse = 2;
             }
         }
 
         if (reverse)
-            display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y, "       ", reverse);
+            display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y,
+                              "       ", reverse);
 
-        display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y, tmpStr1, reverse);
+        display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y, tmpStr1,
+                          reverse);
 
         if (reverse)
-            display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.1f, "       ", reverse);
+            display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.1f,
+                              "       ", reverse);
 
-        display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.1f, tmpStr2, reverse);
+        display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.1f,
+                          tmpStr2, reverse);
 
         if ((HpInvData[hp].flags bitand InvData::R2SLOT) == 0)
         {
             if (reverse)
-                display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f, "       ", reverse);
+                display->TextLeft(HpInvData[hp].text_x,
+                                  HpInvData[hp].text_y - 0.2f, "       ",
+                                  reverse);
 
-            display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f, tmpStr3, reverse);
+            display->TextLeft(HpInvData[hp].text_x, HpInvData[hp].text_y - 0.2f,
+                              tmpStr3, reverse);
         }
 
         /*
@@ -601,7 +639,6 @@ void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 #endif
 
 
-
 #if 0
 void SmsDrawable::InvDrawHp(int hp, int jettOnly)
 {
@@ -729,57 +766,56 @@ void SmsDrawable::InvPushButton(int whichButton, int whichMFD)
 
     switch (whichButton)
     {
-        case 3:
-            if ( not pFCC->IsNavMasterMode())
-                SetDisplayMode(Wpn);
+    case 3:
+        if (not pFCC->IsNavMasterMode())
+            SetDisplayMode(Wpn);
 
-            break;
-
-        case 10:
-        {
-            SetDisplayMode(SelJet);
-        }
         break;
 
-        case 11:
-            if (g_bRealisticAvionics)
-            {
-                MfdDrawable::PushButton(whichButton, whichMFD);
-            }
+    case 10:
+    {
+        SetDisplayMode(SelJet);
+    }
+    break;
 
-            break;
-
-        case 12:
-            if (g_bRealisticAvionics)
-            {
-                MfdDrawable::PushButton(whichButton, whichMFD);
-            }
-
-            break;
-
-        case 13:
-            if (g_bRealisticAvionics)
-            {
-                MfdDrawable::PushButton(whichButton, whichMFD);
-            }
-            else if (pFCC->GetMasterMode() == FireControlComputer::ILS or
-                     pFCC->GetMasterMode() == FireControlComputer::Nav)
-            {
-                SetDisplayMode(Wpn);
-                pFCC->SetMasterMode(FireControlComputer::Nav);
-            }
-            else
-            {
-                SetDisplayMode(Wpn);
-                pFCC->SetMasterMode(FireControlComputer::Nav);
-            }
-
-            break;
-
-        case 14:
+    case 11:
+        if (g_bRealisticAvionics)
+        {
             MfdDrawable::PushButton(whichButton, whichMFD);
-            break;
+        }
 
+        break;
+
+    case 12:
+        if (g_bRealisticAvionics)
+        {
+            MfdDrawable::PushButton(whichButton, whichMFD);
+        }
+
+        break;
+
+    case 13:
+        if (g_bRealisticAvionics)
+        {
+            MfdDrawable::PushButton(whichButton, whichMFD);
+        }
+        else if (pFCC->GetMasterMode() == FireControlComputer::ILS or
+                 pFCC->GetMasterMode() == FireControlComputer::Nav)
+        {
+            SetDisplayMode(Wpn);
+            pFCC->SetMasterMode(FireControlComputer::Nav);
+        }
+        else
+        {
+            SetDisplayMode(Wpn);
+            pFCC->SetMasterMode(FireControlComputer::Nav);
+        }
+
+        break;
+
+    case 14:
+        MfdDrawable::PushButton(whichButton, whichMFD);
+        break;
     }
 
     // 2000-08-26 ADDED BY S.G. SO WE SAVE THE JETTISON SELECTION

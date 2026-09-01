@@ -8,8 +8,8 @@
 #ifndef _SIM_H_
 #define _SIM_H_
 
-#include "Utils/Types.h"
-#include "Utils/Matrix.h"
+#include "utils/types.h"
+#include "utils/matrix.h"
 
 
 class SimClass
@@ -21,7 +21,8 @@ public:
     };
     ~SimClass()
     {
-        if (ready)  Cleanup();
+        if (ready)
+            Cleanup();
     };
 
 protected:
@@ -54,12 +55,12 @@ public:
 
     DWORD buttons;
 
-    void  Setup(void);
-    void  Cleanup(void);
+    void Setup(void);
+    void Cleanup(void);
     DWORD Update(DWORD time);
 
-    void  Save(char *filename);
-    void  Restore(char *filename);
+    void Save(char *filename);
+    void Restore(char *filename);
 
     void Up(float distance)
     {

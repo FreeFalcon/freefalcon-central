@@ -1,13 +1,14 @@
 #ifndef _SENDUIMSG_H
 #define _SENDUIMSG_H
+#include <cstdint>
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send UI Message
@@ -15,7 +16,6 @@
 class UISendMsg : public FalconEvent
 {
 public:
-
     enum
     {
         UnknownType = 0,
@@ -38,7 +38,7 @@ public:
 
         FalconEvent::Decode(buf, rem);
         memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
-        return init  - *rem;
+        return init - *rem;
     };
     int Encode(VU_BYTE **buf)
     {
@@ -53,16 +53,15 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         uchar msgType;
-        long number;
-        long value;
+        int32_t number;
+        int32_t value;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

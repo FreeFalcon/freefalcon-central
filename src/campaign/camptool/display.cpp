@@ -6,86 +6,127 @@
 #include <stddef.h>
 #include <conio.h>
 #include <math.h>
-#include "CmpGlobl.h"
-#include "ErrorLog.h"
-#include "Entity.h"
-#include "Campdisp.h"
-#include "WinGraph.h"
-#include "CampMap.h"
-#include "CmpClass.h"
+#include "cmpglobl.h"
+#include "errorlog.h"
+#include "entity.h"
+#include "campdisp.h"
+#include "wingraph.h"
+#include "campmap.h"
+#include "cmpclass.h"
 #include "classtbl.h"
 
 // Campaign Specific Includes
-#include "Campaign.h"
-#include "Weather.h"
+#include "campaign.h"
+#include "weather.h"
 
-#define  Cyan  LightBrown
-#define  LightCyan  Orange
-#define  LightMagenta LightGray
+#define Cyan LightBrown
+#define LightCyan Orange
+#define LightMagenta LightGray
 
-WORD TerrainBMap[COVER_TYPES][RELIEF_TYPES] =
-{
-    { 0, 0,      0, 0, },       // Water
-    { 12, 13,     14,     15,},     // Bog/Swamp
-    { 32, 33,     34,     35,},  // Barren/Desert
-    { 8, 9, 10, 11,},  // Plain/Farmland
-    { 8, 9,      10,     11,},     // Grass/Brush
-    { 16,   17,     18,     19,}, // LightForest
-    { 20, 21,     22,     23,},     // HvyForest/Jungle
-    { 28, 29,     30,     31,}
-};  // Urban
+WORD TerrainBMap[COVER_TYPES][RELIEF_TYPES] = {{
+                                                   0,
+                                                   0,
+                                                   0,
+                                                   0,
+                                               },       // Water
+                                               {
+                                                   12,
+                                                   13,
+                                                   14,
+                                                   15,
+                                               },     // Bog/Swamp
+                                               {
+                                                   32,
+                                                   33,
+                                                   34,
+                                                   35,
+                                               },  // Barren/Desert
+                                               {
+                                                   8,
+                                                   9,
+                                                   10,
+                                                   11,
+                                               },  // Plain/Farmland
+                                               {
+                                                   8,
+                                                   9,
+                                                   10,
+                                                   11,
+                                               },     // Grass/Brush
+                                               {
+                                                   16,
+                                                   17,
+                                                   18,
+                                                   19,
+                                               }, // LightForest
+                                               {
+                                                   20,
+                                                   21,
+                                                   22,
+                                                   23,
+                                               },     // HvyForest/Jungle
+                                               {
+                                                   28,
+                                                   29,
+                                                   30,
+                                                   31,
+                                               }};  // Urban
 
-WORD ReliefBMap[RELIEF_TYPES] = { 7, 6, 5, 4 };
+WORD ReliefBMap[RELIEF_TYPES] = {7, 6, 5, 4};
 
-WORD CloudCoverBMap[8] = { 40, 41, 42, 43, 44, 45, 46, 47 };
+WORD CloudCoverBMap[8] = {40, 41, 42, 43, 44, 45, 46, 47};
 
-WORD CloudLevelBMap[8] = { 40, 48, 49, 50, 51, 52, 53, 54 };
+WORD CloudLevelBMap[8] = {40, 48, 49, 50, 51, 52, 53, 54};
 
-WORD SamCoverBMap[4] = { 55, 7, 31, 5 };
+WORD SamCoverBMap[4] = {55, 7, 31, 5};
 
-COLORREF SamCol[4] = { RGB_BLACK, RGB_GREEN, RGB_YELLOW, RGB_RED };
+COLORREF SamCol[4] = {RGB_BLACK, RGB_GREEN, RGB_YELLOW, RGB_RED};
 
-COLORREF CovCol[COVER_TYPES] = { RGB_BLUE, RGB_CYAN, RGB_LIGHTGRAY, RGB_BROWNGREEN, RGB_LIGHTGREEN, RGB_LIGHTGREEN, RGB_GREEN, RGB_YELLOW };
+COLORREF CovCol[COVER_TYPES] = {RGB_BLUE,       RGB_CYAN,       RGB_LIGHTGRAY,
+                                RGB_BROWNGREEN, RGB_LIGHTGREEN, RGB_LIGHTGREEN,
+                                RGB_GREEN,      RGB_YELLOW};
 
-COLORREF RelCol[RELIEF_TYPES] = { RGB_LIGHTGREEN, RGB_GREEN, RGB_BROWN, RGB_WHITE };
+COLORREF RelCol[RELIEF_TYPES] = {RGB_LIGHTGREEN, RGB_GREEN, RGB_BROWN,
+                                 RGB_WHITE};
 
-COLORREF SideColRGB[NUM_COUNS] = { RGB_WHITE, RGB_GREEN, RGB_BLUE, RGB_LIGHTGRAY, RGB_CYAN, RGB_YELLOW, RGB_RED };
+COLORREF SideColRGB[NUM_COUNS] = {RGB_WHITE,     RGB_GREEN, RGB_BLUE,
+                                  RGB_LIGHTGRAY, RGB_CYAN,  RGB_YELLOW,
+                                  RGB_RED};
 
-COLORREF GradCol[8][2] = { { RGB_BLUE, RGB_BLUE }, { RGB_WHITE, RGB_WHITE },
-    { RGB_WHITE, RGB_LIGHTGRAY }, { RGB_LIGHTGRAY, RGB_LIGHTGRAY },
-    { RGB_LIGHTGRAY, RGB_GRAY }, { RGB_GRAY, RGB_GRAY },
-    { RGB_GRAY, RGB_BLACK }, { RGB_BLACK, RGB_BLACK }
-};
+COLORREF GradCol[8][2] = {
+    {RGB_BLUE, RGB_BLUE},       {RGB_WHITE, RGB_WHITE},
+    {RGB_WHITE, RGB_LIGHTGRAY}, {RGB_LIGHTGRAY, RGB_LIGHTGRAY},
+    {RGB_LIGHTGRAY, RGB_GRAY},  {RGB_GRAY, RGB_GRAY},
+    {RGB_GRAY, RGB_BLACK},      {RGB_BLACK, RGB_BLACK}};
 
-COLORREF CloudCol[6][4] = { { RGB_BLUE, RGB_BLUE, RGB_BLUE, RGB_BLUE },
-    { RGB_BLUE, RGB_BLUE, RGB_BLUE, RGB_WHITE },
-    { RGB_BLUE, RGB_WHITE, RGB_WHITE, RGB_BLUE },
-    { RGB_LIGHTGRAY, RGB_LIGHTGRAY, RGB_LIGHTGRAY, RGB_LIGHTGRAY },
-    { RGB_GRAY, RGB_GRAY, RGB_GRAY, RGB_GRAY },
-    { RGB_BLACK, RGB_GRAY, RGB_GRAY, RGB_BLACK }
-};
+COLORREF CloudCol[6][4] = {
+    {RGB_BLUE, RGB_BLUE, RGB_BLUE, RGB_BLUE},
+    {RGB_BLUE, RGB_BLUE, RGB_BLUE, RGB_WHITE},
+    {RGB_BLUE, RGB_WHITE, RGB_WHITE, RGB_BLUE},
+    {RGB_LIGHTGRAY, RGB_LIGHTGRAY, RGB_LIGHTGRAY, RGB_LIGHTGRAY},
+    {RGB_GRAY, RGB_GRAY, RGB_GRAY, RGB_GRAY},
+    {RGB_BLACK, RGB_GRAY, RGB_GRAY, RGB_BLACK}};
 
 WORD AltitudeBMap[10] = {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // Set later
 
-int LightCover    [8] = {0x40, 0xE0, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00};
-int ModerateCover [8] = {0x40, 0xE0, 0x40, 0x00, 0x04, 0x0E, 0x04, 0x00};
-int HeavyCover    [8] = {0x55, 0xEE, 0x55, 0xBB, 0x55, 0xEE, 0x55, 0xBB};
+int LightCover[8] = {0x40, 0xE0, 0x40, 0x00, 0x00, 0x00, 0x00, 0x00};
+int ModerateCover[8] = {0x40, 0xE0, 0x40, 0x00, 0x04, 0x0E, 0x04, 0x00};
+int HeavyCover[8] = {0x55, 0xEE, 0x55, 0xBB, 0x55, 0xEE, 0x55, 0xBB};
 
-char SideColor[NUM_COUNS] = { White, Green, LightBlue, Magenta, Red, Red, Red };
-char TeamColor[NUM_TEAMS] = { White, Green, LightBlue, Magenta, Red, Red, Red };
-char TypeColor[35] = { White, Red, Red, Red, Magenta, Magenta, LightGray, Orange, Black, Red,
-                        Orange, Orange, Magenta, Red, Magenta, LightGray, LightGray, Orange, Magenta, Red,
-                        Orange, Red, LightGray, LightGray, LightGray, Orange, LightGray, Magenta, Black, Yellow,
-                        Red, Red, White, White
-                     };
+char SideColor[NUM_COUNS] = {White, Green, LightBlue, Magenta, Red, Red, Red};
+char TeamColor[NUM_TEAMS] = {White, Green, LightBlue, Magenta, Red, Red, Red};
+char TypeColor[35] = {
+    White,   Red,       Red,       Red,       Magenta, Magenta,   LightGray,
+    Orange,  Black,     Red,       Orange,    Orange,  Magenta,   Red,
+    Magenta, LightGray, LightGray, Orange,    Magenta, Red,       Orange,
+    Red,     LightGray, LightGray, LightGray, Orange,  LightGray, Magenta,
+    Black,   Yellow,    Red,       Red,       White,   White};
 
-char Relstr[6][5] =  { "None", "Ally", "Frnd", "Neut", "Host", "War" };
-char Stastr[4][5] =  { "None", "Oper", "Dam", "Dest" };
+char Relstr[6][5] = {"None", "Ally", "Frnd", "Neut", "Host", "War"};
+char Stastr[4][5] = {"None", "Oper", "Dam", "Dest"};
 
-char  Num[18][3] = {"0 ", "1 ", "2 ", "3 ", "4 ", "5 ",
-                    "6 ", "7 ", "8 ", "9 ", "10", "11",
-                    "12", "13", "14", "15", "16", "17"
-                   };
+char Num[18][3] = {"0 ", "1 ", "2 ", "3 ", "4 ", "5 ", "6 ", "7 ", "8 ",
+                   "9 ", "10", "11", "12", "13", "14", "15", "16", "17"};
 extern unsigned char Saved;
 extern unsigned char StateEdit;
 extern CampaignState StateToEdit;
@@ -108,81 +149,81 @@ void drawRoad(HDC DC, short ScreenX, short ScreenY, short Size, int i)
 
     switch (i)
     {
-        case 0:
-            sx = ScreenX + Size / 2;
-            sy = ScreenY + Size / 2;
-            tx = ScreenX + Size / 2;
-            ty = ScreenY - 1;
-            break;
+    case 0:
+        sx = ScreenX + Size / 2;
+        sy = ScreenY + Size / 2;
+        tx = ScreenX + Size / 2;
+        ty = ScreenY - 1;
+        break;
 
-        case 1:
-            sx = ScreenX + Size / 2;
-            sy = ScreenY - 1;
-            tx = ScreenX + Size;
-            ty = ScreenY + Size / 2;
+    case 1:
+        sx = ScreenX + Size / 2;
+        sy = ScreenY - 1;
+        tx = ScreenX + Size;
+        ty = ScreenY + Size / 2;
             // tx = ScreenX+Size+3;
             // ty = ScreenY-3;
-            break;
+        break;
 
-        case 2:
-            sx = ScreenX + Size / 2;
-            sy = ScreenY + Size / 2;
-            tx = ScreenX + Size;
-            ty = ScreenY + Size / 2;
-            break;
+    case 2:
+        sx = ScreenX + Size / 2;
+        sy = ScreenY + Size / 2;
+        tx = ScreenX + Size;
+        ty = ScreenY + Size / 2;
+        break;
 
-        case 3:
-            sx = ScreenX + Size / 2;
-            sy = ScreenY + Size;
-            tx = ScreenX + Size;
-            ty = ScreenY + Size / 2;
+    case 3:
+        sx = ScreenX + Size / 2;
+        sy = ScreenY + Size;
+        tx = ScreenX + Size;
+        ty = ScreenY + Size / 2;
             // tx = ScreenX+Size+1;
             // ty = ScreenY+Size+1;
-            break;
+        break;
 
-        case 4:
-            sx = ScreenX + Size / 2;
-            sy = ScreenY + Size / 2;
-            tx = ScreenX + Size / 2;
-            ty = ScreenY + Size;
-            break;
+    case 4:
+        sx = ScreenX + Size / 2;
+        sy = ScreenY + Size / 2;
+        tx = ScreenX + Size / 2;
+        ty = ScreenY + Size;
+        break;
 
-        case 5:
-            sx = ScreenX - 1;
-            sy = ScreenY + Size / 2;
-            tx = ScreenX + Size / 2;
-            ty = ScreenY + Size;
+    case 5:
+        sx = ScreenX - 1;
+        sy = ScreenY + Size / 2;
+        tx = ScreenX + Size / 2;
+        ty = ScreenY + Size;
             // tx = ScreenX-3;
             // ty = ScreenY+Size+3;
-            break;
+        break;
 
-        case 6:
-            sx = ScreenX + Size / 2;
-            sy = ScreenY + Size / 2;
-            tx = ScreenX - 1;
-            ty = ScreenY + Size / 2;
-            break;
+    case 6:
+        sx = ScreenX + Size / 2;
+        sy = ScreenY + Size / 2;
+        tx = ScreenX - 1;
+        ty = ScreenY + Size / 2;
+        break;
 
-        case 7:
-            sx = ScreenX - 1;
-            sy = ScreenY + Size / 2;
-            tx = ScreenX + Size / 2;
-            ty = ScreenY - 1;
+    case 7:
+        sx = ScreenX - 1;
+        sy = ScreenY + Size / 2;
+        tx = ScreenX + Size / 2;
+        ty = ScreenY - 1;
             // tx = ScreenX-2;
             // ty = ScreenY-2;
-            break;
+        break;
     }
 
     _moveto(DC, sx, sy);
     _lineto(DC, tx, ty);
 }
 
-void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
-                     short ScreenX, short ScreenY, short Size, char DataMode,
+void DisplayCellData(HDC DC, GridIndex x, GridIndex y, short ScreenX,
+                     short ScreenY, short Size, char DataMode,
                      unsigned char Roads, unsigned char Rails)
 {
-    ReliefType  r;
-    CoverType   c;
+    ReliefType r;
+    CoverType c;
     CellData TheCell;
     int w, sides;
     int i, ofx, ofy;
@@ -199,135 +240,137 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
 
     switch (Size)
     {
-        case 1:
+    case 1:
 
             // Special case for largest map
-            switch (DataMode)
-            {
-                case 2:
-                    if (c not_eq Water)
-                        SetPixel(DC, ScreenX, ScreenY, RelCol[r]);
-                    else
-                        SetPixel(DC, ScreenX, ScreenY, CovCol[c]);
+        switch (DataMode)
+        {
+        case 2:
+            if (c not_eq Water)
+                SetPixel(DC, ScreenX, ScreenY, RelCol[r]);
+            else
+                SetPixel(DC, ScreenX, ScreenY, CovCol[c]);
 
-                    break;
+            break;
 
-                case 5:
-                    w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
+        case 5:
+            w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
                     //JAM - FIXME
                     // if (w >= FIRST_OVC_TYPE)
                     // w = FIRST_OVC_TYPE;
-                    i = (x bitand 0x01) + 2 * (y bitand 0x01);
-                    SetPixel(DC, ScreenX, ScreenY, CloudCol[w][i]);
-                    break;
-
-                case 6:
-                    w = ((WeatherClass*)realWeather)->GetCloudLevel(x, y) / 32;
-                    i = (x bitand 0x01) bitand (y bitand 0x01);
-                    SetPixel(DC, ScreenX, ScreenY, GradCol[w][i]);
-                    break;
-
-                case 10:
-                case 11:
-                    mx = x / MAP_RATIO;
-                    my = y / MAP_RATIO;
-                    i = my * MRX + mx;
-                    w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) bitand 0x03;
-                    SetPixel(DC, ScreenX, ScreenY, SamCol[w]);
-                    break;
-
-                default:
-                    SetPixel(DC, ScreenX, ScreenY, CovCol[c]);
-                    break;
-            }
-
-            return;
-
-        case 8:
-            ofx = 8 * (x bitand 1);
-            ofy = 8 * (y bitand 1);
-            break;
-
-        default:
-            ofx = ofy = 0;
-            break;
-    }
-
-    switch (DataMode)
-    {
-        case 0:
-            _drawbmap(DC, TerrainBMap[c][r], ScreenX, ScreenY, Size, ofx, ofy);
-            break;
-
-        case 1:
-            _drawbmap(DC, TerrainBMap[c][0], ScreenX, ScreenY, Size, ofx, ofy);
-            break;
-
-        case 2:
-            _drawbmap(DC, ReliefBMap[r], ScreenX, ScreenY, Size, ofx, ofy);
-            break;
-
-            // case 3:
-            // _drawsbmap(AltitudeBMap[GetAltitudeCode(TheCell)],ScreenX,ScreenY,Size);
-            // break;
-        case 5:
-            w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
-            //JAM - FIXME
-            // if (w >= FIRST_OVC_TYPE)
-            // w = FIRST_OVC_TYPE;
-            _drawbmap(DC, CloudCoverBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
-            return;
+            i = (x bitand 0x01) + 2 * (y bitand 0x01);
+            SetPixel(DC, ScreenX, ScreenY, CloudCol[w][i]);
             break;
 
         case 6:
             w = ((WeatherClass*)realWeather)->GetCloudLevel(x, y) / 32;
-            _drawbmap(DC, CloudLevelBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
-            return;
-
-        case 9:
-        {
-            char *fn;
-
-            // Texture set
-            fn = GetFilename(x, y);
-
-            if (strncmp(fn, "HBCIT", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[0], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HCITY", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[1], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HFARM", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[2], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HFORR", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[3], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HFTOP", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[4], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HFLAT", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[5], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HCOST", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[6], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HBARE", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[7], ScreenX, ScreenY, Size, ofx, ofy);
-
-            if (strncmp(fn, "HBHIL", 5) == 0)
-                _drawbmap(DC, CloudLevelBMap[0], ScreenX, ScreenY, Size, ofx, ofy);
-        }
-        break;
+            i = (x bitand 0x01) bitand (y bitand 0x01);
+            SetPixel(DC, ScreenX, ScreenY, GradCol[w][i]);
+            break;
 
         case 10:
         case 11:
             mx = x / MAP_RATIO;
             my = y / MAP_RATIO;
             i = my * MRX + mx;
-            w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) bitand 0x03;
-            _drawbmap(DC, SamCoverBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
+            w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) bitand
+                0x03;
+            SetPixel(DC, ScreenX, ScreenY, SamCol[w]);
             break;
+
+        default:
+            SetPixel(DC, ScreenX, ScreenY, CovCol[c]);
+            break;
+        }
+
+        return;
+
+    case 8:
+        ofx = 8 * (x bitand 1);
+        ofy = 8 * (y bitand 1);
+        break;
+
+    default:
+        ofx = ofy = 0;
+        break;
+    }
+
+    switch (DataMode)
+    {
+    case 0:
+        _drawbmap(DC, TerrainBMap[c][r], ScreenX, ScreenY, Size, ofx, ofy);
+        break;
+
+    case 1:
+        _drawbmap(DC, TerrainBMap[c][0], ScreenX, ScreenY, Size, ofx, ofy);
+        break;
+
+    case 2:
+        _drawbmap(DC, ReliefBMap[r], ScreenX, ScreenY, Size, ofx, ofy);
+        break;
+
+            // case 3:
+        // _drawsbmap(AltitudeBMap[GetAltitudeCode(TheCell)],ScreenX,ScreenY,Size);
+        // break;
+    case 5:
+        w = ((WeatherClass*)realWeather)->GetCloudCover(x, y);
+        //JAM - FIXME
+        // if (w >= FIRST_OVC_TYPE)
+        // w = FIRST_OVC_TYPE;
+        _drawbmap(DC, CloudCoverBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
+        return;
+        break;
+
+    case 6:
+        w = ((WeatherClass*)realWeather)->GetCloudLevel(x, y) / 32;
+        _drawbmap(DC, CloudLevelBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
+        return;
+
+    case 9:
+    {
+        char* fn;
+
+        // Texture set
+        fn = GetFilename(x, y);
+
+        if (strncmp(fn, "HBCIT", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[0], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HCITY", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[1], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HFARM", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[2], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HFORR", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[3], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HFTOP", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[4], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HFLAT", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[5], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HCOST", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[6], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HBARE", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[7], ScreenX, ScreenY, Size, ofx, ofy);
+
+        if (strncmp(fn, "HBHIL", 5) == 0)
+            _drawbmap(DC, CloudLevelBMap[0], ScreenX, ScreenY, Size, ofx, ofy);
+    }
+    break;
+
+    case 10:
+    case 11:
+        mx = x / MAP_RATIO;
+        my = y / MAP_RATIO;
+        i = my * MRX + mx;
+        w = (TheCampaign.SamMapData[i] >> (4 + 2 * (DataMode - 10))) bitand
+            0x03;
+        _drawbmap(DC, SamCoverBMap[w], ScreenX, ScreenY, Size, ofx, ofy);
+        break;
     }
 
     if (Roads)
@@ -340,7 +383,8 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             // Find sides which have roads
             for (i = 0; i < 8; i += 2)
             {
-                if (GetRoadCell(GetCell((GridIndex)(x + dx[i]), (GridIndex)(y + dy[i]))))
+                if (GetRoadCell(GetCell((GridIndex)(x + dx[i]),
+                                        (GridIndex)(y + dy[i]))))
                 {
                     side[i] = 1;
                     sides++;
@@ -382,7 +426,8 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
             // Find sides which have roads
             for (i = 0; i < 8; i += 2)
             {
-                if (GetRoadCell(GetCell((GridIndex)(x + dx[i]), (GridIndex)(y + dy[i]))))
+                if (GetRoadCell(GetCell((GridIndex)(x + dx[i]),
+                                        (GridIndex)(y + dy[i]))))
                 {
                     side[i] = 1;
                     sides++;
@@ -421,14 +466,15 @@ void DisplayCellData(HDC DC, GridIndex x, GridIndex y,
 // Objective Display bitand Edit Functions
 // ----------------------------------
 
-void DisplayObjective(HDC DC, Objective O, short ScreenX, short ScreenY, short Size)
+void DisplayObjective(HDC DC, Objective O, short ScreenX, short ScreenY,
+                      short Size)
 {
-    short   ULX;
-    short   ULY;
-    short   LRX;
-    short   LRY;
+    short ULX;
+    short ULY;
+    short LRX;
+    short LRY;
     short off = 0;
-    char   C;
+    char C;
 
     if (Size > 7)
         off = 1;
@@ -444,43 +490,43 @@ void DisplayObjective(HDC DC, Objective O, short ScreenX, short ScreenY, short S
     {
         switch (0) // GetStateIDPriority(StateToEdit,O->GetObjectiveID()))
         {
-            case SPRI_NONE:
-                _setcolor(DC, White);
-                break;
+        case SPRI_NONE:
+            _setcolor(DC, White);
+            break;
 
-            case SPRI_NEEDED:
-                _setcolor(DC, LightGreen);
-                break;
+        case SPRI_NEEDED:
+            _setcolor(DC, LightGreen);
+            break;
 
-            case SPRI_SECONDARY:
-                _setcolor(DC, Yellow);
-                break;
+        case SPRI_SECONDARY:
+            _setcolor(DC, Yellow);
+            break;
 
-            case SPRI_PRIMARY:
-                _setcolor(DC, Red);
+        case SPRI_PRIMARY:
+            _setcolor(DC, Red);
         }
     }
     else
     {
         switch (ObjMode)
         {
-            case 1:
-                if (O->IsPrimary())
-                    _setcolor(DC, Red);
-                else if (O->IsSecondary())
-                    _setcolor(DC, LightBlue);
-                else
-                    _setcolor(DC, Black);
+        case 1:
+            if (O->IsPrimary())
+                _setcolor(DC, Red);
+            else if (O->IsSecondary())
+                _setcolor(DC, LightBlue);
+            else
+                _setcolor(DC, Black);
 
-                break;
+            break;
 
-            case 2:
-                _setcolor(DC, TypeColor[O->GetType()]);
-                break;
+        case 2:
+            _setcolor(DC, TypeColor[O->GetType()]);
+            break;
 
-            default:
-                _setcolor(DC, SideColor[C]);
-                break;
+        default:
+            _setcolor(DC, SideColor[C]);
+            break;
         }
     }
 
@@ -572,7 +618,7 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
         }
     }
 
-    ULX += Size / 5;     // Build the smaller box
+    ULX += Size / 5; // Build the smaller box
     ULY += Size / 4;
     LRX -= Size / 5;
     LRY -= Size / 8;
@@ -585,7 +631,8 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
     {
         _rectangle(DC, _GBORDER, ULX, ULY, LRX, LRY);
 
-        if (SType == STYPE_UNIT_INFANTRY or SType == STYPE_UNIT_MECHANIZED or SType == STYPE_UNIT_MARINE)
+        if (SType == STYPE_UNIT_INFANTRY or SType == STYPE_UNIT_MECHANIZED or
+            SType == STYPE_UNIT_MARINE)
         {
             _moveto(DC, ULX, ULY);
             _lineto(DC, LRX, LRY);
@@ -593,9 +640,11 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
             _lineto(DC, ULX, LRY);
         }
 
-        if (SType == STYPE_UNIT_ARMOR or SType == STYPE_UNIT_MECHANIZED or SType == STYPE_UNIT_ARMORED_CAV or SType == STYPE_UNIT_SP_ARTILLERY)
+        if (SType == STYPE_UNIT_ARMOR or SType == STYPE_UNIT_MECHANIZED or
+            SType == STYPE_UNIT_ARMORED_CAV or SType == STYPE_UNIT_SP_ARTILLERY)
         {
-            _ellipse(DC, _GBORDER, ULX + ssmall, ULY + ssmall, LRX - ssmall, LRY - ssmall);
+            _ellipse(DC, _GBORDER, ULX + ssmall, ULY + ssmall, LRX - ssmall,
+                     LRY - ssmall);
         }
 
         if (SType == STYPE_UNIT_ARMORED_CAV)
@@ -631,14 +680,18 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
 
         if (SType == STYPE_UNIT_AIR_DEFENSE)
         {
-            _ellipse(DC, _GBORDER, ULX + ssmall, ULY + ssmall, LRX - ssmall, LRY - 1);
+            _ellipse(DC, _GBORDER, ULX + ssmall, ULY + ssmall, LRX - ssmall,
+                     LRY - 1);
             _setcolor(DC, color);
-            _rectangle(DC, _GFILLINTERIOR, ULX + ssmall, (ULY + LRY) / 2 + 1, LRX - ssmall, LRY - 1);
+            _rectangle(DC, _GFILLINTERIOR, ULX + ssmall, (ULY + LRY) / 2 + 1,
+                       LRX - ssmall, LRY - 1);
         }
 
-        if (SType == STYPE_UNIT_SP_ARTILLERY  or SType == STYPE_UNIT_TOWED_ARTILLERY)
+        if (SType == STYPE_UNIT_SP_ARTILLERY or
+            SType == STYPE_UNIT_TOWED_ARTILLERY)
         {
-            _ellipse(DC, _GFILLINTERIOR, (ULX + LRX) / 2 - ssmall, ULY + ssmall, (ULX + LRX) / 2 + ssmall, LRY - ssmall);
+            _ellipse(DC, _GFILLINTERIOR, (ULX + LRX) / 2 - ssmall, ULY + ssmall,
+                     (ULX + LRX) / 2 + ssmall, LRY - ssmall);
         }
 
         if (SType == STYPE_UNIT_SS_MISSILE or SType == STYPE_UNIT_ROCKET)
@@ -668,17 +721,21 @@ void DisplayUnit(HDC DC, Unit U, short ScreenX, short ScreenY, short Size)
             _lineto(DC, centerx - xsmall, LRY - ssmall);
             _moveto(DC, ULX + ssmall, (LRY + ULY) / 2);
             _lineto(DC, centerx - xsmall, (LRY + ULY) / 2);
-            _rectangle(DC, _GBORDER, centerx + xsmall, ULY + ssmall, LRX - ssmall, LRY - ssmall);
+            _rectangle(DC, _GBORDER, centerx + xsmall, ULY + ssmall,
+                       LRX - ssmall, LRY - ssmall);
             _moveto(DC, LRX - ssmall, LRY - ssmall);
             _lineto(DC, LRX - ssmall - xsmall, LRY - ssmall - xsmall);
         }
     }
     else if (U->GetDomain() == DOMAIN_AIR)
     {
-        if (SType == STYPE_UNIT_ATTACK_HELO or SType == STYPE_UNIT_RECON_HELO or SType == STYPE_UNIT_TRANSPORT_HELO)
+        if (SType == STYPE_UNIT_ATTACK_HELO or SType == STYPE_UNIT_RECON_HELO or
+            SType == STYPE_UNIT_TRANSPORT_HELO)
         {
-            _ellipse(DC, _GFILLINTERIOR, ULX + ssmall, ULY + ssmall, centerx - 1, ULY + ssmall * 2);
-            _ellipse(DC, _GFILLINTERIOR, centerx + 1, ULY + ssmall, LRX - ssmall, ULY + ssmall * 2);
+            _ellipse(DC, _GFILLINTERIOR, ULX + ssmall, ULY + ssmall,
+                     centerx - 1, ULY + ssmall * 2);
+            _ellipse(DC, _GFILLINTERIOR, centerx + 1, ULY + ssmall,
+                     LRX - ssmall, ULY + ssmall * 2);
             _moveto(DC, centerx, ULY + ssmall);
             _lineto(DC, centerx, LRY - xsmall);
         }
@@ -831,31 +888,32 @@ char* UnitTypeStr(Unit u, int stype, char buffer[])
 void ShowWithTeam(HDC DC, Control who, Control with, short ULX, short ULY)
 {
     _setcolor(DC, White);
-    _rectangle(DC, _GFILLINTERIOR, ULX + 80 + 35 * with, ULY + 10 + 10 * who, ULX + 114 + 35 * with, ULY + 19 + 10 * who);
+    _rectangle(DC, _GFILLINTERIOR, ULX + 80 + 35 * with, ULY + 10 + 10 * who,
+               ULX + 114 + 35 * with, ULY + 19 + 10 * who);
     _setcolor(DC, Black);
     _moveto(DC, ULX + 80 + 35 * with, ULY + 10 + 10 * who);
 
     switch (GetCTRelations(who, with))
     {
-        case  Neutral:
-            _outgtext(DC, "Neut\0");
-            break;
+    case Neutral:
+        _outgtext(DC, "Neut\0");
+        break;
 
-        case  Hostile:
-            _outgtext(DC, "Host\0");
-            break;
+    case Hostile:
+        _outgtext(DC, "Host\0");
+        break;
 
-        case  War:
-            _outgtext(DC, "War\0");
-            break;
+    case War:
+        _outgtext(DC, "War\0");
+        break;
 
-        case  Friendly:
-            _outgtext(DC, "Frnd\0");
-            break;
+    case Friendly:
+        _outgtext(DC, "Frnd\0");
+        break;
 
-        case  Allied:
-            _outgtext(DC, "Ally\0");
-            break;
+    case Allied:
+        _outgtext(DC, "Ally\0");
+        break;
     }
 }
 

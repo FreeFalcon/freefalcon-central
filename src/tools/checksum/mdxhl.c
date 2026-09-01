@@ -53,7 +53,8 @@ char *MD5File(const char *filename, char *buf)
     MD5Init(&ctx);
     f = open(filename, O_RDONLY);
 
-    if (f < 0) return 0;
+    if (f < 0)
+        return 0;
 
     while ((i = read(f, buffer, sizeof buffer)) > 0)
     {
@@ -64,13 +65,13 @@ char *MD5File(const char *filename, char *buf)
     close(f);
     errno = j;
 
-    if (i < 0) return 0;
+    if (i < 0)
+        return 0;
 
     return MD5End(&ctx, buf);
 }
 
-char *
-MD5Data(const unsigned char *data, unsigned int len, char *buf)
+char *MD5Data(const unsigned char *data, unsigned int len, char *buf)
 {
     MD5_CTX ctx;
 

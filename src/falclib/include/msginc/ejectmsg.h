@@ -1,12 +1,12 @@
 #ifndef _EJECTMSG_H
 #define _EJECTMSG_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Eject Message
@@ -14,7 +14,8 @@
 class FalconEjectMessage : public FalconEvent
 {
 public:
-    FalconEjectMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconEjectMessage(VU_ID entityId, VuTargetEntity *target,
+                       VU_BOOL loopback = TRUE);
     FalconEjectMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconEjectMessage(void);
     virtual int Size() const
@@ -41,10 +42,9 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID ePlaneID;
         //  VU_ID eEjectID;
-        VU_ID   eFlightID;
+        VU_ID eFlightID;
         ushort eCampID;
         //          ushort eIndex;
         uchar ePilotID;
@@ -56,6 +56,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

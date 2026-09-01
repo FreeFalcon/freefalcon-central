@@ -1,11 +1,11 @@
 #include "stdhdr.h"
-#include "SmsDraw.h"
+#include "smsdraw.h"
 #include "fcc.h"
 #include "guns.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "hardpnt.h"
 #include "simveh.h"
-#include "Sms.h"
+#include "sms.h"
 #include "aircrft.h"
 #include "simdrive.h"
 
@@ -20,8 +20,8 @@ void SmsDrawable::GunDisplay(void)
     BottomRow();
 
     //MI
-    if (g_bRealisticAvionics and FCC and FCC->GetSubMode() ==
-        FireControlComputer::EEGS)
+    if (g_bRealisticAvionics and FCC and
+        FCC->GetSubMode() == FireControlComputer::EEGS)
     {
         char tempstr[4] = "";
         sprintf(tempstr, "%s", Sms->FEDS == TRUE ? "ON" : "OFF");
@@ -52,7 +52,7 @@ void SmsDrawable::GunDisplay(void)
     //MI I think this should only show RDY when we are in ARM, like all the other weapons
     if (numRounds)
     {
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
 
             sprintf(tmpStr, "%02dGUN", numRounds);

@@ -36,8 +36,7 @@ enum
     CNTL_SETDRAGCURSOR,
 };
 
-char *C_Cntl_Tokens[] =
-{
+char *C_Cntl_Tokens[] = {
     "[NOTHING]",
     "[ID]",
     "[TYPE]",
@@ -75,7 +74,7 @@ static void DelUserDataCB(void *rec)
 {
     USERDATA *data;
 
-    data = (USERDATA*)rec;
+    data = (USERDATA *)rec;
 
     if (data->type == C_Base::CSB_IS_CLEANUP_PTR)
         delete data->data.ptr;
@@ -86,11 +85,11 @@ static void DelUserDataCB(void *rec)
 C_Base::C_Base(char **stream)
 {
     short count, i;
-    long  idx, value;
+    long idx, value;
 
     memcpy(&ID_, *stream, sizeof(long));
     *stream += sizeof(long);
-    memcpy(Section_, *stream, sizeof(long)*NUM_SECTIONS);
+    memcpy(Section_, *stream, sizeof(long) * NUM_SECTIONS);
     *stream += sizeof(long) * NUM_SECTIONS;
     memcpy(&Flags_, *stream, sizeof(long));
     *stream += sizeof(long);
@@ -129,10 +128,10 @@ C_Base::C_Base(char **stream)
 C_Base::C_Base(FILE *fp)
 {
     short count, i;
-    long  idx, value;
+    long idx, value;
 
     fread(&ID_, sizeof(long), 1, fp);
-    fread(Section_, sizeof(long)*NUM_SECTIONS, 1, fp);
+    fread(Section_, sizeof(long) * NUM_SECTIONS, 1, fp);
     fread(&Flags_, sizeof(long), 1, fp);
     fread(&_CType_, sizeof(short), 1, fp);
     fread(&Type_, sizeof(short), 1, fp);
@@ -175,7 +174,7 @@ C_Control::C_Control() : C_Base()
 C_Control::C_Control(char **stream) : C_Base(stream)
 {
     short count, i;
-    long  idx, value;
+    long idx, value;
 
     memcpy(&Cursor_, *stream, sizeof(long));
     *stream += sizeof(long);
@@ -216,7 +215,7 @@ C_Control::C_Control(char **stream) : C_Base(stream)
 C_Control::C_Control(FILE *fp) : C_Base(fp)
 {
     short count, i;
-    long  idx, value;
+    long idx, value;
 
     fread(&Cursor_, sizeof(long), 1, fp);
     fread(&DragCursor_, sizeof(long), 1, fp);
@@ -247,34 +246,27 @@ long C_Base::Size()
     C_HASHNODE *cur;
     USERDATA *rec;
 
-    size = sizeof(long)
-           + sizeof(long) * NUM_SECTIONS
-           + sizeof(long)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(long)
-           + sizeof(long)
-           + sizeof(long)
-           + sizeof(long)
-           + sizeof(short)
-           + sizeof(short)
+    size = sizeof(long) + sizeof(long) * NUM_SECTIONS + sizeof(long) +
+           sizeof(short) + sizeof(short) + sizeof(long) + sizeof(long) +
+           sizeof(long) + sizeof(long) + sizeof(short) +
+           sizeof(short)
            // User Data...
            + sizeof(short); // # UserData elements
 
     if (User_)
     {
-        rec = (USERDATA*)User_->GetFirst(&cur, &curidx);
+        rec = (USERDATA *)User_->GetFirst(&cur, &curidx);
 
         while (rec)
         {
             if (rec->type == CSB_IS_VALUE)
                 size += sizeof(long) * 2;
 
-            rec = (USERDATA*)User_->GetNext(&cur, &curidx);
+            rec = (USERDATA *)User_->GetNext(&cur, &curidx);
         }
     }
 
-    return(size);
+    return (size);
 }
 
 void C_Base::Save(char **stream)
@@ -286,7 +278,7 @@ void C_Base::Save(char **stream)
 
     memcpy(*stream, &ID_, sizeof(long));
     *stream += sizeof(long);
-    memcpy(*stream, Section_, sizeof(long)*NUM_SECTIONS);
+    memcpy(*stream, Section_, sizeof(long) * NUM_SECTIONS);
     *stream += sizeof(long) * NUM_SECTIONS;
     memcpy(*stream, &Flags_, sizeof(long));
     *stream += sizeof(long);
@@ -312,21 +304,21 @@ void C_Base::Save(char **stream)
 
     if (User_)
     {
-        rec = (USERDATA*)User_->GetFirst(&cur, &curidx);
+        rec = (USERDATA *)User_->GetFirst(&cur, &curidx);
 
         while (rec)
         {
             if (rec->type == CSB_IS_VALUE)
                 count++;
 
-            rec = (USERDATA*)User_->GetNext(&cur, &curidx);
+            rec = (USERDATA *)User_->GetNext(&cur, &curidx);
         }
 
         if (count)
         {
             memcpy(*stream, &count, sizeof(short));
             *stream += sizeof(short);
-            rec = (USERDATA*)User_->GetFirst(&cur, &curidx);
+            rec = (USERDATA *)User_->GetFirst(&cur, &curidx);
 
             while (rec)
             {
@@ -338,7 +330,7 @@ void C_Base::Save(char **stream)
                     *stream += sizeof(long);
                 }
 
-                rec = (USERDATA*)User_->GetNext(&cur, &curidx);
+                rec = (USERDATA *)User_->GetNext(&cur, &curidx);
             }
         }
     }
@@ -356,7 +348,7 @@ void C_Base::Save(FILE *fp)
     USERDATA *rec;
 
     fwrite(&ID_, sizeof(long), 1, fp);
-    fwrite(Section_, sizeof(long)*NUM_SECTIONS, 1, fp);
+    fwrite(Section_, sizeof(long) * NUM_SECTIONS, 1, fp);
     fwrite(&Flags_, sizeof(long), 1, fp);
     fwrite(&_CType_, sizeof(short), 1, fp);
     fwrite(&Type_, sizeof(short), 1, fp);
@@ -372,20 +364,20 @@ void C_Base::Save(FILE *fp)
 
     if (User_)
     {
-        rec = (USERDATA*)User_->GetFirst(&cur, &curidx);
+        rec = (USERDATA *)User_->GetFirst(&cur, &curidx);
 
         while (rec)
         {
             if (rec->type == CSB_IS_VALUE)
                 count++;
 
-            rec = (USERDATA*)User_->GetNext(&cur, &curidx);
+            rec = (USERDATA *)User_->GetNext(&cur, &curidx);
         }
 
         if (count)
         {
             fwrite(&count, sizeof(short), 1, fp);
-            rec = (USERDATA*)User_->GetFirst(&cur, &curidx);
+            rec = (USERDATA *)User_->GetFirst(&cur, &curidx);
 
             while (rec)
             {
@@ -395,7 +387,7 @@ void C_Base::Save(FILE *fp)
                     fwrite(&rec->data.number, sizeof(long), 1, fp);
                 }
 
-                rec = (USERDATA*)User_->GetNext(&cur, &curidx);
+                rec = (USERDATA *)User_->GetNext(&cur, &curidx);
             }
         }
     }
@@ -412,16 +404,10 @@ long C_Control::Size()
 
     size = C_Base::Size();
 
-    size += sizeof(long)
-            + sizeof(long)
-            + sizeof(long)
-            + sizeof(long)
-            + sizeof(COLORREF)
-            + sizeof(long)
-            + sizeof(long)
-            + sizeof(short)
-            + sizeof(short)
-            + sizeof(short)
+    size += sizeof(long) + sizeof(long) + sizeof(long) + sizeof(long) +
+            sizeof(COLORREF) + sizeof(long) + sizeof(long) + sizeof(short) +
+            sizeof(short) +
+            sizeof(short)
             // Sound Data...
             + sizeof(short);
 
@@ -436,7 +422,7 @@ long C_Control::Size()
         }
     }
 
-    return(size);
+    return (size);
 }
 
 void C_Control::Save(char **stream)
@@ -562,7 +548,7 @@ void C_Control::SetSound(long ID, short Type)
 
     if (snd)
     {
-        if ( not Sound_)
+        if (not Sound_)
         {
             Sound_ = new C_Hash;
             Sound_->Setup(1);
@@ -578,16 +564,16 @@ SOUND_RES *C_Control::GetSound(short Type)
     SOUND_RES *snd = NULL;
 
     if (Sound_)
-        snd = (SOUND_RES*)Sound_->Find(Type);
+        snd = (SOUND_RES *)Sound_->Find(Type);
 
-    return(snd);
+    return (snd);
 }
 
 void C_Base::SetUserNumber(long idx, long value)
 {
     USERDATA *usr;
 
-    if ( not User_)
+    if (not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -597,7 +583,7 @@ void C_Base::SetUserNumber(long idx, long value)
 
     if (User_)
     {
-        usr = (USERDATA*)User_->Find(idx);
+        usr = (USERDATA *)User_->Find(idx);
 
         if (usr)
         {
@@ -607,7 +593,8 @@ void C_Base::SetUserNumber(long idx, long value)
         else
         {
 #ifdef USE_SH_POOLS
-            usr = (USERDATA *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(USERDATA), FALSE);
+            usr = (USERDATA *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL],
+                                          sizeof(USERDATA), FALSE);
 #else
             usr = new USERDATA;
 #endif
@@ -623,7 +610,7 @@ void C_Base::SetUserPtr(long idx, void *value)
 {
     USERDATA *usr;
 
-    if ( not User_)
+    if (not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -633,7 +620,7 @@ void C_Base::SetUserPtr(long idx, void *value)
 
     if (User_)
     {
-        usr = (USERDATA*)User_->Find(idx);
+        usr = (USERDATA *)User_->Find(idx);
 
         if (usr)
         {
@@ -643,7 +630,8 @@ void C_Base::SetUserPtr(long idx, void *value)
         else
         {
 #ifdef USE_SH_POOLS
-            usr = (USERDATA *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(USERDATA), FALSE);
+            usr = (USERDATA *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL],
+                                          sizeof(USERDATA), FALSE);
 #else
             usr = new USERDATA;
 #endif
@@ -659,7 +647,7 @@ void C_Base::SetUserCleanupPtr(long idx, void *value)
 {
     USERDATA *usr;
 
-    if ( not User_)
+    if (not User_)
     {
         User_ = new C_Hash;
         User_->Setup(1);
@@ -669,7 +657,7 @@ void C_Base::SetUserCleanupPtr(long idx, void *value)
 
     if (User_)
     {
-        usr = (USERDATA*)User_->Find(idx);
+        usr = (USERDATA *)User_->Find(idx);
 
         if (usr)
         {
@@ -679,7 +667,8 @@ void C_Base::SetUserCleanupPtr(long idx, void *value)
         else
         {
 #ifdef USE_SH_POOLS
-            usr = (USERDATA *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(USERDATA), FALSE);
+            usr = (USERDATA *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL],
+                                          sizeof(USERDATA), FALSE);
 #else
             usr = new USERDATA;
 #endif
@@ -697,13 +686,13 @@ long C_Base::GetUserNumber(long idx)
 
     if (User_)
     {
-        usr = (USERDATA*)User_->Find(idx);
+        usr = (USERDATA *)User_->Find(idx);
 
         if (usr and usr->type == CSB_IS_VALUE)
-            return(usr->data.number);
+            return (usr->data.number);
     }
 
-    return(0);
+    return (0);
 }
 
 void *C_Base::GetUserPtr(long idx)
@@ -712,29 +701,32 @@ void *C_Base::GetUserPtr(long idx)
 
     if (User_)
     {
-        usr = (USERDATA*)User_->Find(idx);
+        usr = (USERDATA *)User_->Find(idx);
 
-        if (usr and (usr->type == CSB_IS_PTR or usr->type == CSB_IS_CLEANUP_PTR))
-            return(usr->data.ptr);
+        if (usr and
+            (usr->type == CSB_IS_PTR or usr->type == CSB_IS_CLEANUP_PTR))
+            return (usr->data.ptr);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 BOOL C_Control::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (FALSE);
 
-    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= GetY() + GetH())
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and
+        rely <= GetY() + GetH())
     {
-        if ((C_Base*)this not_eq me)
+        if ((C_Base *)this not_eq me)
             gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
@@ -754,7 +746,7 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     else if (Flags_ bitand C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -764,14 +756,16 @@ void C_Control::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.bottom = clip.top + GetH();
     tmp = clip; // JPO fix so it has some valid data
 
-    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if (not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
-        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
+        if (not Parent_->ClipToArea(&tmp, &clip,
+                                    &Parent_->ClientArea_[Client_]))
             return;
 
-    Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
+    Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip,
+                             C_BIT_ABSOLUTE, 0);
 }
 
 #ifdef _UI95_PARSER_
@@ -786,121 +780,122 @@ short C_Base::BaseFind(char *token)
     while (C_Cntl_Tokens[i])
     {
         if (strnicmp(token, C_Cntl_Tokens[i], strlen(C_Cntl_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Base::BaseFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CNTL_SETID:
-            SetID(P[0]);
-            break;
+    case CNTL_SETID:
+        SetID(P[0]);
+        break;
 
-        case CNTL_SETTYPE:
-            SetType((short)P[0]);
-            break;
+    case CNTL_SETTYPE:
+        SetType((short)P[0]);
+        break;
 
-        case CNTL_SETCLIENT:
-            SetClient((short)P[0]);
-            break;
+    case CNTL_SETCLIENT:
+        SetClient((short)P[0]);
+        break;
 
-        case CNTL_SETX:
-            SetX(P[0]);
-            break;
+    case CNTL_SETX:
+        SetX(P[0]);
+        break;
 
-        case CNTL_SETY:
-            SetY(P[0]);
-            break;
+    case CNTL_SETY:
+        SetY(P[0]);
+        break;
 
-        case CNTL_SETW:
-            SetW(P[0]);
-            break;
+    case CNTL_SETW:
+        SetW(P[0]);
+        break;
 
-        case CNTL_SETH:
-            SetH(P[0]);
-            break;
+    case CNTL_SETH:
+        SetH(P[0]);
+        break;
 
-        case CNTL_SETXY:
-            SetXY(P[0], P[1]);
-            break;
+    case CNTL_SETXY:
+        SetXY(P[0], P[1]);
+        break;
 
-        case CNTL_SETWH:
-            SetWH(P[0], P[1]);
-            break;
+    case CNTL_SETWH:
+        SetWH(P[0], P[1]);
+        break;
 
-        case CNTL_SETXYWH:
-            SetXYWH(P[0], P[1], P[2], P[3]);
-            break;
+    case CNTL_SETXYWH:
+        SetXYWH(P[0], P[1], P[2], P[3]);
+        break;
 
-        case CNTL_SETGROUP:
-            SetGroup(P[0]);
-            break;
+    case CNTL_SETGROUP:
+        SetGroup(P[0]);
+        break;
 
-        case CNTL_SETCLUSTER:
-            SetCluster(P[0]);
-            break;
+    case CNTL_SETCLUSTER:
+        SetCluster(P[0]);
+        break;
 
-        case CNTL_SETFLAGS:
-            SetFlags(P[0]);
-            break;
+    case CNTL_SETFLAGS:
+        SetFlags(P[0]);
+        break;
 
-        case CNTL_SETFLAGBITON:
-            SetFlags(GetFlags() bitor P[0]);
-            break;
+    case CNTL_SETFLAGBITON:
+        SetFlags(GetFlags() bitor P[0]);
+        break;
 
-        case CNTL_SETFLAGBITOFF:
-            SetFlags(GetFlags() bitand compl P[0]);
-            break;
+    case CNTL_SETFLAGBITOFF:
+        SetFlags(GetFlags() bitand compl P[0]);
+        break;
 
-        case CNTL_SETFLAGTOGGLE:
-            SetFlags(GetFlags() xor P[0]);
-            break;
+    case CNTL_SETFLAGTOGGLE:
+        SetFlags(GetFlags() xor P[0]);
+        break;
 
-        case CNTL_SETFONT:
-            SetFont(P[0]);
-            break;
+    case CNTL_SETFONT:
+        SetFont(P[0]);
+        break;
 
-        case CNTL_SETSOUND:
-            SetSound(P[0], (short)P[1]);
-            break;
+    case CNTL_SETSOUND:
+        SetSound(P[0], (short)P[1]);
+        break;
 
-        case CNTL_SETMENU:
-            SetMenu(P[0]);
-            break;
+    case CNTL_SETMENU:
+        SetMenu(P[0]);
+        break;
 
-        case CNTL_USERDATA:
-            SetUserNumber(P[0], P[1]);
-            break;
+    case CNTL_USERDATA:
+        SetUserNumber(P[0], P[1]);
+        break;
 
-        case CNTL_SETHOTKEY:
-            SetHotKey((WORD)(P[0] bitor P[1] bitor P[2] bitor P[3] bitor P[4] bitor P[5] bitor P[6]));
-            break;
+    case CNTL_SETHOTKEY:
+        SetHotKey((WORD)(P[0] bitor P[1] bitor P[2] bitor P[3] bitor P[4] bitor
+                         P[5] bitor P[6]));
+        break;
 
-        case CNTL_CURSOR:
-            SetCursorID(P[0]);
-            break;
+    case CNTL_CURSOR:
+        SetCursorID(P[0]);
+        break;
 
-        case CNTL_SETHELP:
-            SetHelpText(P[0]);
-            break;
+    case CNTL_SETHELP:
+        SetHelpText(P[0]);
+        break;
 
-        case CNTL_SETMOUSECOLOR:
-            SetMouseOverColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CNTL_SETMOUSECOLOR:
+        SetMouseOverColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CNTL_SETMOUSEPERC:
-            SetMouseOverPerc((short)P[0]);
-            break;
+    case CNTL_SETMOUSEPERC:
+        SetMouseOverPerc((short)P[0]);
+        break;
 
-        case CNTL_SETDRAGCURSOR:
-            SetDragCursorID(P[0]);
-            break;
+    case CNTL_SETDRAGCURSOR:
+        SetDragCursorID(P[0]);
+        break;
     }
 }
 

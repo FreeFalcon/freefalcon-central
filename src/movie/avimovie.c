@@ -22,69 +22,68 @@
 #include "surface.h"
 #include <process.h>
 
-#define  HICOLOR        16
-#define  MAX_MOVIES     4
-#define  DSB_SIZE       16384
+#define HICOLOR 16
+#define MAX_MOVIES 4
+#define DSB_SIZE 16384
 
 /*
    Structure to support non-standard RGB mode.
 */
 typedef struct tagBITMAPINFOHEADEREX
 {
-    BITMAPINFOHEADER  bmiHeader;
-    DWORD             redMask;
-    DWORD             greenMask;
-    DWORD             blueMask;
+    BITMAPINFOHEADER bmiHeader;
+    DWORD redMask;
+    DWORD greenMask;
+    DWORD blueMask;
 } BITMAPINFOHEADEREX, *PBITMAPINFOHEADEREX;
 
 typedef struct tagMOVIE
 {
-    HIC                  hIC;              // ICM handle
-    LPVOID               ddSurface;        // surface
-    int                  startX;           // x-coordinate for upper left
-    int                  startY;           // y-coordinate for upper right
-    BITMAPINFOHEADEREX   bihOut;           // output bitmap format
-    LPVOID               surfaceBuffer;    // uncompressed data
-    int                  videoMode;        // mode to display video
-    int                  pixelSize;        // pixel size in bytes
-    long                 totalFrames;      // total frames processed
-    long                 dropFrames;       // total frames dropped
-    int                  handle;           // movie handle
-    int                  callBackID;       // ID to be used in callback
-    int                  status;           // movie status
-    int                  sbType;           // surface buffer type
-    unsigned long        startTime;        // movie start time
+    HIC hIC;              // ICM handle
+    LPVOID ddSurface;        // surface
+    int startX;           // x-coordinate for upper left
+    int startY;           // y-coordinate for upper right
+    BITMAPINFOHEADEREX bihOut;           // output bitmap format
+    LPVOID surfaceBuffer;    // uncompressed data
+    int videoMode;        // mode to display video
+    int pixelSize;        // pixel size in bytes
+    long totalFrames;      // total frames processed
+    long dropFrames;       // total frames dropped
+    int handle;           // movie handle
+    int callBackID;       // ID to be used in callback
+    int status;           // movie status
+    int sbType;           // surface buffer type
+    unsigned long startTime;        // movie start time
 
-    unsigned long        hMovieThread;     // handle to movie thread
-    DWORD                movieThreadID;    // movie thread ID
+    unsigned long hMovieThread;     // handle to movie thread
+    DWORD movieThreadID;    // movie thread ID
 
-    unsigned long        hFillerThread;    // handle to filler thread
-    DWORD                fillerThreadID;   // filler thread ID
+    unsigned long hFillerThread;    // handle to filler thread
+    DWORD fillerThreadID;   // filler thread ID
 
-    void (*callBack)(int, LPVOID, int, int,
-                     int);
+    void (*callBack)(int, LPVOID, int, int, int);
     // called issued every movie
     // frame
-    AVISTREAMS           aviStreams;       // video and audio streams
+    AVISTREAMS aviStreams;       // video and audio streams
     //   AUDIO_CHANNEL        *audioChannel;    // audio channel
-    int         audioChannel;    // Stream ID
-    int                  audioHandle;      // audio handle
-    int                  lastError;        // last error code
+    int audioChannel;    // Stream ID
+    int audioHandle;      // audio handle
+    int lastError;        // last error code
 } MOVIE, *PMOVIE;
 
-extern   unsigned int __stdcall movieThread(PMOVIE item);
-extern   unsigned int __stdcall fillerThread(PMOVIE item);
-extern   void doFrame(PMOVIE item);
+extern unsigned int __stdcall movieThread(PMOVIE item);
+extern unsigned int __stdcall fillerThread(PMOVIE item);
+extern void doFrame(PMOVIE item);
 //extern   int  fillSoundBuffer( int item_handle, void *soundBuffer,
 //                                int length );
 
 // make to work with psound
 static DWORD fillSoundBuffer(void *me, void *soundBuffer, DWORD length);
 
-static   LPVOID            ddPointer;
-static   PMOVIE            movie;
-static   DWORD             numOfMovies = 0, abortMovie = 1;
-static   CRITICAL_SECTION  movieCriticalSection;
+static LPVOID ddPointer;
+static PMOVIE movie;
+static DWORD numOfMovies = 0, abortMovie = 1;
+static CRITICAL_SECTION movieCriticalSection;
 
 /****************************************************************************
 
@@ -100,75 +99,75 @@ static   CRITICAL_SECTION  movieCriticalSection;
 
 static void doFrame(PMOVIE item)
 {
-    char           *tempPtr, *buffer;
-    int            padding, width, height;
-    int            i;
-    SURFACEACCESS  sa;
+    char *tempPtr, *buffer;
+    int padding, width, height;
+    int i;
+    SURFACEACCESS sa;
 
     if (item->sbType == SURFACE_TYPE_SYSTEM)
     {
-        width = item->aviStreams.bihIn.biWidth *
-                item->pixelSize;          // width in bytes
+        width =
+            item->aviStreams.bihIn.biWidth * item->pixelSize; // width in bytes
         height = item->aviStreams.bihIn.biHeight;
-        buffer = (char *) item->surfaceBuffer;       // bitmap to render
+        buffer = (char *)item->surfaceBuffer; // bitmap to render
 
         surfaceGetPointer(item->ddSurface, &sa);
 
-        tempPtr = (char *) sa.surfacePtr;            // get pointer to the surface
-        tempPtr += item->startY * sa.lPitch;         // get startY address
-        tempPtr += item->startX * item->pixelSize;   // get upper left address
-        padding = sa.lPitch -  width;                // offset to next scan line
+        tempPtr = (char *)sa.surfacePtr; // get pointer to the surface
+        tempPtr += item->startY * sa.lPitch; // get startY address
+        tempPtr += item->startX * item->pixelSize; // get upper left address
+        padding = sa.lPitch - width; // offset to next scan line
 
         switch (item->videoMode)
         {
-            case MOVIE_MODE_V_DOUBLE:
+        case MOVIE_MODE_V_DOUBLE:
+            for (i = 0; i < height; i++)
+            {
+                memcpy(tempPtr, buffer, width);
+                tempPtr += sa.lPitch;
+
+                memcpy(tempPtr, buffer, width);
+                tempPtr += sa.lPitch;
+                buffer += width;
+            }
+
+            break;
+
+
+        case MOVIE_MODE_INTERLACE:
+            for (i = 0; i < height; i++)
+            {
+                memcpy(tempPtr, buffer, width);
+                tempPtr += sa.lPitch + sa.lPitch;
+                buffer += width;
+            }
+
+            break;
+
+
+        default:
+            if (padding)
                 for (i = 0; i < height; i++)
                 {
                     memcpy(tempPtr, buffer, width);
                     tempPtr += sa.lPitch;
-
-                    memcpy(tempPtr, buffer, width);
-                    tempPtr += sa.lPitch;
                     buffer += width;
                 }
+            else
+                memcpy(tempPtr, buffer, width * height);
 
-                break;
-
-
-            case MOVIE_MODE_INTERLACE:
-                for (i = 0; i < height; i++)
-                {
-                    memcpy(tempPtr, buffer, width);
-                    tempPtr += sa.lPitch + sa.lPitch;
-                    buffer += width;
-                }
-
-                break;
-
-
-            default:
-                if (padding)
-                    for (i = 0; i < height; i++)
-                    {
-                        memcpy(tempPtr, buffer, width);
-                        tempPtr += sa.lPitch;
-                        buffer += width;
-                    }
-                else
-                    memcpy(tempPtr, buffer, width * height);
-
-                break;
+            break;
         }
 
         surfaceReleasePointer(item->ddSurface, &sa);
     }
     else
     {
-        surfaceBlit(item->ddSurface, item->startX, item->startY,
-                    item->surfaceBuffer, item->aviStreams.bihIn.biWidth,
-                    item->aviStreams.bihIn.biHeight,
-                    (item->videoMode == MOVIE_MODE_NORMAL) ?
-                    BLIT_MODE_NORMAL : BLIT_MODE_DOUBLE_V);
+        surfaceBlit(
+            item->ddSurface, item->startX, item->startY, item->surfaceBuffer,
+            item->aviStreams.bihIn.biWidth, item->aviStreams.bihIn.biHeight,
+            (item->videoMode == MOVIE_MODE_NORMAL) ? BLIT_MODE_NORMAL :
+                                                     BLIT_MODE_DOUBLE_V);
     }
 }
 
@@ -228,7 +227,7 @@ int movieInit(int numMovies, LPVOID lpDD)
 
 void movieUnInit(void)
 {
-    DWORD    i;
+    DWORD i;
 
     if (!numOfMovies)
         return;
@@ -267,21 +266,18 @@ void movieUnInit(void)
 
 ****************************************************************************/
 
-int movieOpen(char *aviFileName, char *audioFileName,
-              LPVOID ddSurface,
+int movieOpen(char *aviFileName, char *audioFileName, LPVOID ddSurface,
               int callBackID,
-              void (*callBack)(int handle,
-                               LPVOID ddSurface,
-                               int frameNumber, int callBackID,
-                               int dropFlag),
+              void (*callBack)(int handle, LPVOID ddSurface, int frameNumber,
+                               int callBackID, int dropFlag),
               int startX, int startY, int videoMode, int audioFlag)
 {
-    DWORD                handle;
-    int                  status;
-    PMOVIE               item;
-    SURFACEDESCRIPTION   sd;
-    int                  screenWidth, screenHeight;
-    int                  dibWidth, dibHeight;
+    DWORD handle;
+    int status;
+    PMOVIE item;
+    SURFACEDESCRIPTION sd;
+    int screenWidth, screenHeight;
+    int dibWidth, dibHeight;
 
     EnterCriticalSection(&movieCriticalSection);
 
@@ -339,8 +335,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
        Open file(s) and read headers.
     */
 
-    status = aviOpen(aviFileName, audioFileName,
-                     &(item->aviStreams));
+    status = aviOpen(aviFileName, audioFileName, &(item->aviStreams));
 
     if (status != RIFF_OK)
     {
@@ -387,36 +382,29 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
             item->bihOut.bmiHeader.biSize = sizeof(BITMAPINFOHEADEREX);
             item->bihOut.bmiHeader.biCompression = BI_BITFIELDS;
-            item->bihOut.redMask =
-                sd.redMask;
-            item->bihOut.greenMask =
-                sd.greenMask;
-            item->bihOut.blueMask =
-                sd.blueMask;
+            item->bihOut.redMask = sd.redMask;
+            item->bihOut.greenMask = sd.greenMask;
+            item->bihOut.blueMask = sd.blueMask;
         }
     }
 
     item->bihOut.bmiHeader.biPlanes = 1;
-    item->bihOut.bmiHeader.biBitCount =
-        (WORD) sd.bitCount;
-    item->bihOut.bmiHeader.biWidth =
-        item->aviStreams.bihIn.biWidth;
+    item->bihOut.bmiHeader.biBitCount = (WORD)sd.bitCount;
+    item->bihOut.bmiHeader.biWidth = item->aviStreams.bihIn.biWidth;
 
     /*
        Do inverted DIB.
     */
 
-    item->bihOut.bmiHeader.biHeight =
-        -item->aviStreams.bihIn.biHeight;
+    item->bihOut.bmiHeader.biHeight = -item->aviStreams.bihIn.biHeight;
 
     /*
        Locate the decompress.
     */
 
-    item->hIC = ICDecompressOpen(ICTYPE_VIDEO,
-                                 item->aviStreams.strh1.fccHandler,
-                                 &(item->aviStreams.bihIn),
-                                 (LPBITMAPINFOHEADER) & (item->bihOut));
+    item->hIC = ICDecompressOpen(
+        ICTYPE_VIDEO, item->aviStreams.strh1.fccHandler,
+        &(item->aviStreams.bihIn), (LPBITMAPINFOHEADER) & (item->bihOut));
 
     /*
        Exit if unable to find the decompressor.
@@ -434,8 +422,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     */
 
     if (ICDecompressQuery(item->hIC, &(item->aviStreams.bihIn),
-                          (LPBITMAPINFOHEADER)
-                          & (item->bihOut)) != ICERR_OK)
+                          (LPBITMAPINFOHEADER) & (item->bihOut)) != ICERR_OK)
     {
         aviClose(&(item->aviStreams));
         item->status = 0;
@@ -443,8 +430,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
     }
 
     if (ICDecompressBegin(item->hIC, &(item->aviStreams.bihIn),
-                          (LPBITMAPINFOHEADER)
-                          & (item->bihOut)) != ICERR_OK)
+                          (LPBITMAPINFOHEADER) & (item->bihOut)) != ICERR_OK)
     {
         aviClose(&(item->aviStreams));
         item->status = 0;
@@ -455,66 +441,66 @@ int movieOpen(char *aviFileName, char *audioFileName,
        Check if the movie is within a given surface.
     */
 
-    screenWidth = sd.dwWidth;                    // surface width
-    screenHeight = sd.dwHeight;                  // surface height
-    dibWidth = item->aviStreams.bihIn.biWidth;   // movie width
+    screenWidth = sd.dwWidth; // surface width
+    screenHeight = sd.dwHeight; // surface height
+    dibWidth = item->aviStreams.bihIn.biWidth; // movie width
     dibHeight = item->aviStreams.bihIn.biHeight; // movie height
 
     switch (videoMode)
     {
-        case MOVIE_MODE_V_DOUBLE:
-        case MOVIE_MODE_INTERLACE:
-            if ((startX + dibWidth) > screenWidth)
-            {
-                ICDecompressEnd(item->hIC);
-                aviClose(&(item->aviStreams));
-                item->status = 0;
-                return MOVIE_BAD_STARTING_COORDINATES;
-            }
+    case MOVIE_MODE_V_DOUBLE:
+    case MOVIE_MODE_INTERLACE:
+        if ((startX + dibWidth) > screenWidth)
+        {
+            ICDecompressEnd(item->hIC);
+            aviClose(&(item->aviStreams));
+            item->status = 0;
+            return MOVIE_BAD_STARTING_COORDINATES;
+        }
 
-            if ((startY + dibHeight * 2) > screenHeight)
-            {
-                ICDecompressEnd(item->hIC);
-                aviClose(&(item->aviStreams));
-                item->status = 0;
-                return MOVIE_BAD_STARTING_COORDINATES;
-            }
+        if ((startY + dibHeight * 2) > screenHeight)
+        {
+            ICDecompressEnd(item->hIC);
+            aviClose(&(item->aviStreams));
+            item->status = 0;
+            return MOVIE_BAD_STARTING_COORDINATES;
+        }
 
-            break;
+        break;
 
-        default:
-            if ((startX + dibWidth) > screenWidth)
-            {
-                ICDecompressEnd(item->hIC);
-                aviClose(&(item->aviStreams));
-                item->status = 0;
-                return MOVIE_BAD_STARTING_COORDINATES;
-            }
+    default:
+        if ((startX + dibWidth) > screenWidth)
+        {
+            ICDecompressEnd(item->hIC);
+            aviClose(&(item->aviStreams));
+            item->status = 0;
+            return MOVIE_BAD_STARTING_COORDINATES;
+        }
 
-            if ((startY + dibHeight) > screenHeight)
-            {
-                ICDecompressEnd(item->hIC);
-                aviClose(&(item->aviStreams));
-                item->status = 0;
-                return MOVIE_BAD_STARTING_COORDINATES;
-            }
+        if ((startY + dibHeight) > screenHeight)
+        {
+            ICDecompressEnd(item->hIC);
+            aviClose(&(item->aviStreams));
+            item->status = 0;
+            return MOVIE_BAD_STARTING_COORDINATES;
+        }
 
-            break;
+        break;
     }
 
     /*
        Initialized remaining movie variables.
     */
 
-    item->videoMode = videoMode;        // render mode
-    item->handle = handle;              // handle to be passed to callback
-    item->startX = startX;              // upper left x of movie
-    item->startY = startY;              // upper left y of movie
-    item->totalFrames = 0;              // frames that have been processed
-    item->dropFrames = 0;               // frames being dropped
-    item->callBack = callBack;          // callback function
-    item->callBackID = callBackID;      // ID to be passed to callback
-    item->ddSurface = ddSurface;        // destination surface
+    item->videoMode = videoMode; // render mode
+    item->handle = handle; // handle to be passed to callback
+    item->startX = startX; // upper left x of movie
+    item->startY = startY; // upper left y of movie
+    item->totalFrames = 0; // frames that have been processed
+    item->dropFrames = 0; // frames being dropped
+    item->callBack = callBack; // callback function
+    item->callBackID = callBackID; // ID to be passed to callback
+    item->ddSurface = ddSurface; // destination surface
     item->pixelSize = item->bihOut.bmiHeader.biBitCount / 8;
     // output pixel in bytes
     item->movieThreadID = 0;
@@ -532,9 +518,9 @@ int movieOpen(char *aviFileName, char *audioFileName,
     }
     else
     {
-        item->surfaceBuffer = AVI_MALLOC(item->pixelSize *
-                                         item->aviStreams.bihIn.biWidth *
-                                         item->aviStreams.bihIn.biHeight);
+        item->surfaceBuffer =
+            AVI_MALLOC(item->pixelSize * item->aviStreams.bihIn.biWidth *
+                       item->aviStreams.bihIn.biHeight);
         item->sbType = SURFACE_TYPE_SYSTEM;
     }
 
@@ -548,7 +534,7 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
     InitializeCriticalSection(&(item->aviStreams.criticalSection));
 
-    return (int) handle;
+    return (int)handle;
 }
 
 /****************************************************************************
@@ -565,11 +551,11 @@ int movieOpen(char *aviFileName, char *audioFileName,
 
 int movieStart(int handle)
 {
-    int            i, status;
-    PMOVIE         item;
-    PAVISTREAMS    streams;
+    int i, status;
+    PMOVIE item;
+    PAVISTREAMS streams;
 
-    if ((DWORD) handle >= numOfMovies)
+    if ((DWORD)handle >= numOfMovies)
         return MOVIE_INVALID_HANDLE;
 
     item = &(movie[handle]);
@@ -649,16 +635,16 @@ int movieStart(int handle)
 
     // Launch filler thread.
 
-    item->hFillerThread = _beginthreadex(NULL, 0, fillerThread, item,
-                                         0, &(item->fillerThreadID));
+    item->hFillerThread =
+        _beginthreadex(NULL, 0, fillerThread, item, 0, &(item->fillerThreadID));
 
     if (!item->hFillerThread)
         return MOVIE_UNABLE_TO_LAUNCH_THREAD;
 
     // Launch movie thread.
 
-    item->hMovieThread = _beginthreadex(NULL, 0, movieThread, item,
-                                        0, &(item->movieThreadID));
+    item->hMovieThread =
+        _beginthreadex(NULL, 0, movieThread, item, 0, &(item->movieThreadID));
 
     if (!item->hMovieThread)
     {
@@ -666,18 +652,18 @@ int movieStart(int handle)
            Stop filler thread.
         */
         item->status |= MOVIE_STATUS_STOP_THREAD;
-        WaitForSingleObject((HANDLE) item->hFillerThread, INFINITE);
-        CloseHandle((HANDLE) item->hFillerThread);
+        WaitForSingleObject((HANDLE)item->hFillerThread, INFINITE);
+        CloseHandle((HANDLE)item->hFillerThread);
 
         /*
            Reset movie thread ID.
         */
-        item->movieThreadID = 0;            // reset thread ID
+        item->movieThreadID = 0; // reset thread ID
         return MOVIE_UNABLE_TO_LAUNCH_THREAD;
     }
 
     item->status |= MOVIE_STATUS_PLAYING;
-    Sleep(0);                               // give up time slice
+    Sleep(0); // give up time slice
 
     return MOVIE_OK;
 }
@@ -696,9 +682,9 @@ int movieStart(int handle)
 
 int movieClose(int handle)
 {
-    PMOVIE         item;
+    PMOVIE item;
 
-    if ((DWORD) handle >= numOfMovies)
+    if ((DWORD)handle >= numOfMovies)
         return MOVIE_INVALID_HANDLE;
 
     item = &(movie[handle]);
@@ -721,9 +707,9 @@ int movieClose(int handle)
         (item->status & MOVIE_STATUS_THREAD_RUNNING))
     {
         item->status |= MOVIE_STATUS_QUIT;
-        WaitForSingleObject((HANDLE) item->hMovieThread, INFINITE);
-        CloseHandle((HANDLE) item->hMovieThread);
-        CloseHandle((HANDLE) item->hFillerThread);
+        WaitForSingleObject((HANDLE)item->hMovieThread, INFINITE);
+        CloseHandle((HANDLE)item->hMovieThread);
+        CloseHandle((HANDLE)item->hFillerThread);
     }
 
     ICDecompressEnd(item->hIC);
@@ -760,9 +746,9 @@ int movieClose(int handle)
 
 int movieStop(int handle)
 {
-    PMOVIE         item;
+    PMOVIE item;
 
-    if ((DWORD) handle >= numOfMovies)
+    if ((DWORD)handle >= numOfMovies)
         return MOVIE_INVALID_HANDLE;
 
     item = &(movie[handle]);
@@ -789,11 +775,10 @@ int movieStop(int handle)
 
 int movieIsPlaying(int handle)
 {
-    if ((DWORD) handle >= numOfMovies)
+    if ((DWORD)handle >= numOfMovies)
         return FALSE;
 
-    return ((movie[handle].status &
-             MOVIE_STATUS_PLAYING) ? TRUE : FALSE);
+    return ((movie[handle].status & MOVIE_STATUS_PLAYING) ? TRUE : FALSE);
 }
 
 /****************************************************************************
@@ -840,9 +825,9 @@ int movieCount(void)
 
 static unsigned int __stdcall fillerThread(PMOVIE item)
 {
-    int            status;
-    int            exitCode;
-    PAVISTREAMS    streams;
+    int status;
+    int exitCode;
+    PAVISTREAMS streams;
 
     exitCode = MOVIE_OK;
     streams = &(item->aviStreams);
@@ -896,7 +881,7 @@ static unsigned int __stdcall fillerThread(PMOVIE item)
             Sleep(0);
     }
 
-    return (unsigned int) exitCode;
+    return (unsigned int)exitCode;
 }
 
 /****************************************************************************
@@ -913,12 +898,12 @@ static unsigned int __stdcall fillerThread(PMOVIE item)
 
 static unsigned int __stdcall movieThread(PMOVIE item)
 {
-    int            timeFrames, dropFlag;
-    int            exitCode;
-    unsigned long  timeElapsed, firstTime;
-    DWORD          errorCode;
-    SURFACEACCESS  sa;
-    PAVISTREAMS    streams;
+    int timeFrames, dropFlag;
+    int exitCode;
+    unsigned long timeElapsed, firstTime;
+    DWORD errorCode;
+    SURFACEACCESS sa;
+    PAVISTREAMS streams;
 
     firstTime = TRUE;
     exitCode = MOVIE_OK;
@@ -939,7 +924,7 @@ static unsigned int __stdcall movieThread(PMOVIE item)
             {
                 if (streams->audioFlag & STREAM_AUDIO_ON)
                 {
-#if   AUDIO_ON
+#if AUDIO_ON
                     /*
                        Use audio to synch up if it's on.
                     */
@@ -977,20 +962,19 @@ static unsigned int __stdcall movieThread(PMOVIE item)
 
                 if (item->sbType == SURFACE_TYPE_SYSTEM)
                 {
-                    errorCode = ICDecompress(item->hIC, 0, &(streams->bihIn),
-                                             streams->currentBlock->buffer,
-                                             (LPBITMAPINFOHEADER)
-                                             & (item->bihOut),
-                                             item->surfaceBuffer);
+                    errorCode =
+                        ICDecompress(item->hIC, 0, &(streams->bihIn),
+                                     streams->currentBlock->buffer,
+                                     (LPBITMAPINFOHEADER) & (item->bihOut),
+                                     item->surfaceBuffer);
                 }
                 else
                 {
                     surfaceGetPointer(item->surfaceBuffer, &sa);
-                    errorCode = ICDecompress(item->hIC, 0, &(streams->bihIn),
-                                             streams->currentBlock->buffer,
-                                             (LPBITMAPINFOHEADER)
-                                             & (item->bihOut),
-                                             sa.surfacePtr);
+                    errorCode = ICDecompress(
+                        item->hIC, 0, &(streams->bihIn),
+                        streams->currentBlock->buffer,
+                        (LPBITMAPINFOHEADER) & (item->bihOut), sa.surfacePtr);
                     surfaceReleasePointer(item->surfaceBuffer, &sa);
                 }
 
@@ -1030,22 +1014,24 @@ static unsigned int __stdcall movieThread(PMOVIE item)
                                    item->totalFrames, item->callBackID,
                                    dropFlag);
 
-                item->totalFrames++;          // increment frame number
+                item->totalFrames++; // increment frame number
 
                 if (firstTime)
                 {
                     firstTime = FALSE;
-#if   AUDIO_ON
+#if AUDIO_ON
 
                     if (streams->audioFlag & STREAM_AUDIO_ON)
                     {
-                        item->audioChannel = (int)F4CreateStream(&streams->waveFormat, 1.0f);
+                        item->audioChannel =
+                            (int)F4CreateStream(&streams->waveFormat, 1.0f);
 
                         if (item->audioChannel != 0)
                         {
                             void *test;
                             test = &item->handle;
-                            F4StartCallbackStream(item->audioChannel, test, fillSoundBuffer);
+                            F4StartCallbackStream(item->audioChannel, test,
+                                                  fillSoundBuffer);
                         }
                     }
 
@@ -1066,7 +1052,7 @@ static unsigned int __stdcall movieThread(PMOVIE item)
                     //                  }
                     //               }
 #endif
-                    item->startTime = timeGetTime();             // record start time
+                    item->startTime = timeGetTime(); // record start time
                 }
             }
             else
@@ -1077,9 +1063,9 @@ static unsigned int __stdcall movieThread(PMOVIE item)
             break;
     }
 
-    WaitForSingleObject((HANDLE) item->hFillerThread, INFINITE);
+    WaitForSingleObject((HANDLE)item->hFillerThread, INFINITE);
 
-#if   AUDIO_ON
+#if AUDIO_ON
     F4RemoveStream(item->audioChannel);
     //
     //   if ( item->audioChannel )
@@ -1088,7 +1074,7 @@ static unsigned int __stdcall movieThread(PMOVIE item)
 #endif
 
     item->status &= ~MOVIE_STATUS_PLAYING;
-    return (unsigned int) exitCode;
+    return (unsigned int)exitCode;
 }
 
 /****************************************************************************
@@ -1109,11 +1095,11 @@ static unsigned int __stdcall movieThread(PMOVIE item)
 static DWORD fillSoundBuffer(int *me, void *soundBuffer, DWORD length)
 {
     //   AUDIO_ITEM  *audio;
-    int         movieHandle, fillerSize, dataToCopy, filler;
-    int         size;
-    PMOVIE      item;
+    int movieHandle, fillerSize, dataToCopy, filler;
+    int size;
+    PMOVIE item;
     PAVISTREAMS streams;
-    char        *ptr, *dsb;
+    char *ptr, *dsb;
 
     //   audio = AudioGetItem( item_handle );
     //   movieHandle = audio->user_data[0];
@@ -1127,11 +1113,11 @@ static DWORD fillSoundBuffer(int *me, void *soundBuffer, DWORD length)
     streams = &(item->aviStreams);
 
     ptr = streams->waveBuffer + streams->waveBufferRead;
-    dsb = (char *) soundBuffer;
+    dsb = (char *)soundBuffer;
 
     EnterCriticalSection(&(streams->criticalSection));
 
-    if (streams->dataInWaveBuffer > (DWORD) length)
+    if (streams->dataInWaveBuffer > (DWORD)length)
     {
         fillerSize = 0;
         dataToCopy = length;
@@ -1163,8 +1149,7 @@ static DWORD fillSoundBuffer(int *me, void *soundBuffer, DWORD length)
         }
         else
         {
-            dataToCopy = streams->waveBufferLen -
-                         streams->waveBufferRead;
+            dataToCopy = streams->waveBufferLen - streams->waveBufferRead;
             memcpy(dsb, ptr, dataToCopy);
             ptr = streams->waveBuffer;
             dsb += dataToCopy;
@@ -1201,7 +1186,7 @@ static DWORD fillSoundBuffer(int *me, void *soundBuffer, DWORD length)
 
 int movieGetLastError(int handle)
 {
-    if ((DWORD) handle >= numOfMovies)
+    if ((DWORD)handle >= numOfMovies)
         return MOVIE_INVALID_HANDLE;
 
     return movie[handle].lastError;

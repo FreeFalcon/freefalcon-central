@@ -15,11 +15,11 @@
 #include <stdio.h>
 #include "f4thread.h"
 #include "fsound.h"
-#include "FalcVoice.h"
-#include "LHSP.h"
-#include "VoiceManager.h"
+#include "falcvoice.h"
+#include "lhsp.h"
+#include "voicemanager.h"
 #include "conv.h"
-#include "F4Find.h"
+#include "f4find.h"
 #include "psound.h"
 #include "playerop.h"
 #include "soundgroups.h"
@@ -97,7 +97,8 @@ void SetVoiceVolumes(void)
 
 void SetVoiceVolume(int channel)
 {
-    if (VM and channel >= 0 and channel < NUM_VOICE_CHANNELS and not VM->falconVoices[channel].exitChannel)
+    if (VM and channel >= 0 and channel < NUM_VOICE_CHANNELS and
+        not VM->falconVoices[channel].exitChannel)
     {
         F4SetStreamVolume(VM->falconVoices[channel].FalcVoiceHandle,
                           PlayerOptions.GroupVol[COM1_SOUND_GROUP + channel]);
@@ -118,7 +119,7 @@ void FalcVoice::UnsilenceVoices(int SoundGroup)
 
 void FalcVoice::FVResumeVoiceStreams(void)
 {
-    if ( not F4IsSoundPlaying(FalcVoiceHandle))
+    if (not F4IsSoundPlaying(FalcVoiceHandle))
     {
         F4StartCallbackStream(FalcVoiceHandle, (void *)this, fillVoiceBuffer);
         exitChannel = FALSE;
@@ -144,7 +145,8 @@ void FalcVoice::InitializeVoiceBuffers(void)
         voiceBuffers[i].mesgNum = 0;
 
 
-        voiceBuffers[i].criticalSection = F4CreateCriticalSection("VoiceBuffer");
+        voiceBuffers[i].criticalSection =
+            F4CreateCriticalSection("VoiceBuffer");
         voiceBuffers[i].status = BUFFER_NOT_IN_QUEUE;
     }
 
@@ -187,7 +189,7 @@ void FalcVoice::CleanupVoice(void)
     {
         F4DestroyCriticalSection(voiceBuffers[i].criticalSection);
         voiceBuffers[i].criticalSection = NULL;
-        delete [] voiceBuffers[i].waveBuffer;
+        delete[] voiceBuffers[i].waveBuffer;
     }
 
     delete voiceStruct;
@@ -197,7 +199,7 @@ void FalcVoice::CleanupVoice(void)
 
 VOICE_STREAM_BUFFER *FalcVoice::GetVoiceBuffer(int bufferNum)
 {
-    return(&(voiceBuffers[bufferNum]));
+    return (&(voiceBuffers[bufferNum]));
 }
 
 void FalcVoice::SetVoiceChannel(int channelNo)
@@ -215,14 +217,21 @@ void FalcVoice::PopVCAddQueue()
     if (voiceBuffers[voiceStruct->streamBuffer].status == BUFFER_NOT_IN_QUEUE)
     {
         InitializeVoiceStruct(voiceStruct->streamBuffer);
-        VM->VMAddBuffToQueue(channel, voiceStruct->streamBuffer);  //note: each falcvoice knows what channel it is
+        VM->VMAddBuffToQueue(
+            channel,
+            voiceStruct
+                ->streamBuffer); //note: each falcvoice knows what channel it is
         voiceBuffers[voiceStruct->streamBuffer].status = BUFFER_IN_QUEUE;
     }
 
-    if (voiceBuffers[1 - voiceStruct->streamBuffer].status == BUFFER_NOT_IN_QUEUE)
+    if (voiceBuffers[1 - voiceStruct->streamBuffer].status ==
+        BUFFER_NOT_IN_QUEUE)
     {
         InitializeVoiceStruct(1 - voiceStruct->streamBuffer);
-        VM->VMAddBuffToQueue(channel, 1 - voiceStruct->streamBuffer);  //note: each falcvoice knows what channel it is
+        VM->VMAddBuffToQueue(
+            channel,
+            1 - voiceStruct
+                    ->streamBuffer); //note: each falcvoice knows what channel it is
         voiceBuffers[1 - voiceStruct->streamBuffer].status = BUFFER_IN_QUEUE;
     }
 
@@ -255,7 +264,7 @@ void FalcVoice::InitCompressionFile(void)
 
 void FalcVoice::CleanupCompressionBuffer(void)
 {
-    delete  voiceCompInfo;
+    delete voiceCompInfo;
 }
 
 void FalcVoice::BufferManager(int buffer)
@@ -291,11 +300,13 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
         return length;
     }
 
-    if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status not_eq BUFFER_FILLED)
+    if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status not_eq
+        BUFFER_FILLED)
     {
         //don't want to change buffer pointed to unless there is data in the other buffer but not
         //this one. (This way I can make sure I grab the right buffer first)
-        if (thisFV->voiceBuffers[1 - thisFV->voiceStruct->streamBuffer].status not_eq BUFFER_FILLED)
+        if (thisFV->voiceBuffers[1 - thisFV->voiceStruct->streamBuffer]
+                .status not_eq BUFFER_FILLED)
         {
             // sfr: i think this is causing the buffer to stop being consumed
             /*if(gSoundDriver and (thisFV->silenceWritten > 16000) )
@@ -309,18 +320,19 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
         }
         else
         {
-            thisFV->voiceStruct->streamBuffer = 1 - thisFV->voiceStruct->streamBuffer;
+            thisFV->voiceStruct->streamBuffer =
+                1 - thisFV->voiceStruct->streamBuffer;
         }
     }
 
     streams = &(thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer]);
 
     ptr = streams->waveBuffer + streams->waveBufferRead;
-    dsb = (unsigned char *) soundBuffer;
+    dsb = (unsigned char *)soundBuffer;
 
     F4EnterCriticalSection(streams->criticalSection);
 
-    if (streams->dataInWaveBuffer > (DWORD) length)
+    if (streams->dataInWaveBuffer > (DWORD)length)
     {
         fillerSize = 0;
         dataToCopy = length;
@@ -340,12 +352,12 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
         dsb += dataToCopy;
         streams->waveBufferRead += dataToCopy;
     }
-
-    if ( not streams->dataInWaveBuffer)
+    if (not streams->dataInWaveBuffer)
     {
         thisFV->BufferEmpty(thisFV->voiceStruct->streamBuffer);
         thisFV->PopVCAddQueue();
-        thisFV->voiceStruct->streamBuffer = 1 - thisFV->voiceStruct->streamBuffer;
+        thisFV->voiceStruct->streamBuffer =
+            1 - thisFV->voiceStruct->streamBuffer;
         SetEvent(VMWakeEventHandle);
     }
 
@@ -353,14 +365,16 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
 
     if (fillerSize)
     {
-        if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status == BUFFER_FILLED)
+        if (thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer].status ==
+            BUFFER_FILLED)
         {
-            streams = &(thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer]);
+            streams =
+                &(thisFV->voiceBuffers[thisFV->voiceStruct->streamBuffer]);
             ptr = streams->waveBuffer + streams->waveBufferRead;
 
             F4EnterCriticalSection(streams->criticalSection);
 
-            if (streams->dataInWaveBuffer > (DWORD) fillerSize)
+            if (streams->dataInWaveBuffer > (DWORD)fillerSize)
             {
                 dataToCopy = fillerSize;
                 fillerSize = 0;
@@ -380,11 +394,12 @@ DWORD fillVoiceBuffer(void *me, char *soundBuffer, DWORD length)
                 streams->waveBufferRead += dataToCopy;
             }
 
-            if ( not streams->dataInWaveBuffer)
+            if (not streams->dataInWaveBuffer)
             {
                 thisFV->BufferEmpty(thisFV->voiceStruct->streamBuffer);
                 thisFV->PopVCAddQueue();
-                thisFV->voiceStruct->streamBuffer = 1 - thisFV->voiceStruct->streamBuffer;
+                thisFV->voiceStruct->streamBuffer =
+                    1 - thisFV->voiceStruct->streamBuffer;
                 SetEvent(VMWakeEventHandle);
             }
 

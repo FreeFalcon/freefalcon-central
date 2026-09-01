@@ -5,7 +5,8 @@
 
 #if VU_ALL_FILTERED
 VuLinkedList::VuLinkedList(VuFilter *filter) : VuCollection(filter)
-{}
+{
+}
 
 VuLinkedList::~VuLinkedList()
 {
@@ -13,14 +14,14 @@ VuLinkedList::~VuLinkedList()
     Purge();
 }
 
-VU_ERRCODE VuLinkedList::PrivateInsert(VuEntity* entity)
+VU_ERRCODE VuLinkedList::PrivateInsert(VuEntity *entity)
 {
     VuScopeLock l(GetMutex());
     l_.push_front(VuEntityBin(entity));
     return VU_SUCCESS;
 }
 
-VU_ERRCODE VuLinkedList::PrivateRemove(VuEntity* entity)
+VU_ERRCODE VuLinkedList::PrivateRemove(VuEntity *entity)
 {
     VuScopeLock lk(GetMutex());
 
@@ -38,11 +39,12 @@ VU_ERRCODE VuLinkedList::PrivateRemove(VuEntity* entity)
     return VU_NO_OP;
 }
 
-bool VuLinkedList::PrivateFind(VuEntity* entity) const
+bool VuLinkedList::PrivateFind(VuEntity *entity) const
 {
     VuScopeLock l(GetMutex());
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end();
+         ++it)
     {
         VuEntity *e = it->get();
 
@@ -65,7 +67,7 @@ VuLinkedList::~VuLinkedList()
     Purge(TRUE);
 }
 
-VU_ERRCODE VuLinkedList::Insert(VuEntity* entity)
+VU_ERRCODE VuLinkedList::Insert(VuEntity *entity)
 {
     if (entity == NULL)
     {
@@ -78,7 +80,7 @@ VU_ERRCODE VuLinkedList::Insert(VuEntity* entity)
 }
 
 
-VU_ERRCODE VuLinkedList::Remove(VuEntity* entity)
+VU_ERRCODE VuLinkedList::Remove(VuEntity *entity)
 {
     if (entity == NULL)
     {
@@ -124,10 +126,9 @@ VU_ERRCODE VuLinkedList::Remove(VU_ID eid)
     }
 
     return ret;
-
 }
 
-VuEntity* VuLinkedList::Find(VuEntity* entity) const
+VuEntity *VuLinkedList::Find(VuEntity *entity) const
 {
     if (entity == NULL)
     {
@@ -136,7 +137,8 @@ VuEntity* VuLinkedList::Find(VuEntity* entity) const
 
     VuScopeLock l(GetMutex());
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end();
+         ++it)
     {
         VuEntity *e = it->get();
 
@@ -149,11 +151,12 @@ VuEntity* VuLinkedList::Find(VuEntity* entity) const
     return NULL;
 }
 
-VuEntity* VuLinkedList::Find(VU_ID eid) const
+VuEntity *VuLinkedList::Find(VU_ID eid) const
 {
     VuScopeLock l(GetMutex());
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end();
+         ++it)
     {
         VuEntity *e = it->get();
 
@@ -181,7 +184,8 @@ unsigned int VuLinkedList::Purge(VU_BOOL all)
     {
         VuEntityBin &ent = *it;
 
-        if ( not all and (ent->IsGlobal() or (ent->IsPrivate() and ent->IsPersistent())))
+        if (not all and
+            (ent->IsGlobal() or (ent->IsPrivate() and ent->IsPersistent())))
         {
             // dont remove global or private pesistant
             ++it;
@@ -203,7 +207,8 @@ unsigned int VuLinkedList::Count() const
     VuScopeLock l(GetMutex());
     unsigned int count = 0;
 
-    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end(); ++it)
+    for (VuEntityBinList::const_iterator it = l_.begin(); it not_eq l_.end();
+         ++it)
     {
         VuEntity *e = it->get();
 

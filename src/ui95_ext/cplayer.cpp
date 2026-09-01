@@ -13,7 +13,8 @@ C_Player::C_Player() : C_Control()
     Color_[0] = 0;
     Color_[1] = 0;
     Color_[2] = 0;
-    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor C_BIT_USEBGFILL;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor
+                    C_BIT_USEBGFILL;
 }
 
 C_Player::C_Player(char **stream) : C_Control(stream)
@@ -30,7 +31,7 @@ C_Player::~C_Player()
 
 long C_Player::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Player::Setup(long ID, short Type)
@@ -91,10 +92,11 @@ void C_Player::SetFont(long ID)
 
 long C_Player::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
-        return(GetID());
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and
+        relY <= (GetY() + GetH()))
+        return (GetID());
 
-    return(0);
+    return (0);
 }
 
 void C_Player::SetDefaultFlags()
@@ -104,7 +106,7 @@ void C_Player::SetDefaultFlags()
 
 long C_Player::GetDefaultFlags()
 {
-    return(Defaultflags_);
+    return (Defaultflags_);
 }
 
 BOOL C_Player::Process(long ID, short HitType)
@@ -114,20 +116,21 @@ BOOL C_Player::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Player::Refresh()
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           Flags_, GetClient());
 }
 
 void C_Player::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Icon_)
@@ -214,4 +217,3 @@ void C_Player::SetSubParents(C_Window *)
 
     SetWH(w, h);
 }
-

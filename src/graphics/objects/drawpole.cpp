@@ -4,11 +4,11 @@
  Based on DrawableShadowed, this class is used in ACMI to put altitude
  poles and extra labels on an object.
 \***************************************************************************/
-#include <cISO646>
-#include "Matrix.h"
-#include "RViewPnt.h"
-#include "RenderOW.h"
-#include "Drawpole.h"
+#include <ciso646>
+#include "matrix.h"
+#include "rviewpnt.h"
+#include "renderow.h"
+#include "drawpole.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawablePoled::pool;
@@ -22,11 +22,12 @@ BOOL DrawablePoled::drawTurnRate = FALSE; // Shared by ALL drawable BSPs
 BOOL DrawablePoled::drawPole = TRUE; // Shared by ALL drawable BSPs
 BOOL DrawablePoled::drawlockrange = TRUE; // Shared by ALL drawable BSPs
 
-
+
 /***************************************************************************\
     Initialize a container for a BSP object to be drawn
 \***************************************************************************/
-DrawablePoled::DrawablePoled(int ID, const Tpoint *pos, const Trotation *rot, float s)
+DrawablePoled::DrawablePoled(int ID, const Tpoint *pos, const Trotation *rot,
+                             float s)
     : DrawableBSP(ID, pos, rot, s)
 {
     // init our label stuff
@@ -41,7 +42,6 @@ DrawablePoled::DrawablePoled(int ID, const Tpoint *pos, const Trotation *rot, fl
 }
 
 
-
 /***************************************************************************\
     Make sure the object is placed on the ground then draw it.
 \***************************************************************************/
@@ -124,7 +124,7 @@ void DrawablePoled::Draw(class RenderOTW *renderer, int LOD)
     }
 }
 
-
+
 /***************************************************************************\
     Store the labeling information for this object instance.
 \***************************************************************************/
@@ -134,74 +134,74 @@ void DrawablePoled::SetDataLabel(DWORD type, char *labelString)
 
     switch (type)
     {
-        case DP_LABEL_HEADING:
-            strcpy(heading, labelString);
-            headingLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
-            break;
+    case DP_LABEL_HEADING:
+        strcpy(heading, labelString);
+        headingLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
+        break;
 
-        case DP_LABEL_ALT:
-            strcpy(alt, labelString);
-            altLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
-            break;
+    case DP_LABEL_ALT:
+        strcpy(alt, labelString);
+        altLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
+        break;
 
-        case DP_LABEL_SPEED:
-            strcpy(speed, labelString);
-            speedLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
-            break;
+    case DP_LABEL_SPEED:
+        strcpy(speed, labelString);
+        speedLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
+        break;
 
-        case DP_LABEL_TURNRADIUS:
-            strcpy(turnRadius, labelString);
-            turnRadiusLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
-            break;
+    case DP_LABEL_TURNRADIUS:
+        strcpy(turnRadius, labelString);
+        turnRadiusLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
+        break;
 
-        case DP_LABEL_TURNRATE:
-            strcpy(turnRate, labelString);
-            turnRateLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
-            break;
+    case DP_LABEL_TURNRATE:
+        strcpy(turnRate, labelString);
+        turnRateLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
+        break;
 
-        case DP_LABEL_LOCK_RANGE:
-            strcpy(lockrange, labelString);
-            lockrangeLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
+    case DP_LABEL_LOCK_RANGE:
+        strcpy(lockrange, labelString);
+        lockrangeLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
-
+
 /***************************************************************************\
  Return the specified data label
 \***************************************************************************/
-char * DrawablePoled::DataLabel(DWORD type)
+char *DrawablePoled::DataLabel(DWORD type)
 {
     switch (type)
     {
-        case DP_LABEL_HEADING:
-            return heading;
-            break;
+    case DP_LABEL_HEADING:
+        return heading;
+        break;
 
-        case DP_LABEL_ALT:
-            return alt;
-            break;
+    case DP_LABEL_ALT:
+        return alt;
+        break;
 
-        case DP_LABEL_SPEED:
-            return speed;
-            break;
+    case DP_LABEL_SPEED:
+        return speed;
+        break;
 
-        case DP_LABEL_TURNRADIUS:
-            return turnRadius;
-            break;
+    case DP_LABEL_TURNRADIUS:
+        return turnRadius;
+        break;
 
-        case DP_LABEL_TURNRATE:
-            return turnRate;
-            break;
+    case DP_LABEL_TURNRATE:
+        return turnRate;
+        break;
 
-        case DP_LABEL_LOCK_RANGE://me123
-            return lockrange;
-            break;
+    case DP_LABEL_LOCK_RANGE://me123
+        return lockrange;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return NULL;
@@ -252,22 +252,22 @@ void DrawablePoled::DrawTargetBox(class RenderOTW *renderer, ThreeDVertex *spos)
     renderer->SetColor(boxColor);
 
     // draw box
-    if ( not (clip bitand CLIP_LEFT))
+    if (not(clip bitand CLIP_LEFT))
     {
         renderer->Render2DLine(x1, y1, x1, y2);
     }
 
-    if ( not (clip bitand CLIP_TOP))
+    if (not(clip bitand CLIP_TOP))
     {
         renderer->Render2DLine(x1, y1, x2, y1);
     }
 
-    if ( not (clip bitand CLIP_RIGHT))
+    if (not(clip bitand CLIP_RIGHT))
     {
         renderer->Render2DLine(x2, y1, x2, y2);
     }
 
-    if ( not (clip bitand CLIP_BOTTOM))
+    if (not(clip bitand CLIP_BOTTOM))
     {
         renderer->Render2DLine(x2, y2, x1, y2);
     }

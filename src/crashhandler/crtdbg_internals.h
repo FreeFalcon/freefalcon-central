@@ -10,24 +10,21 @@ Microsoft Systems Journal, October 1997 - Bugslayer
 
 typedef struct _CrtMemBlockHeader
 {
-    struct _CrtMemBlockHeader * pBlockHeaderNext        ;
-    struct _CrtMemBlockHeader * pBlockHeaderPrev        ;
-    char *                      szFileName              ;
-    int                         nLine                   ;
-    size_t                      nDataSize               ;
-    int                         nBlockUse               ;
-    long                        lRequest                ;
-    unsigned char               gap[nNoMansLandSize]    ;
+    struct _CrtMemBlockHeader *pBlockHeaderNext;
+    struct _CrtMemBlockHeader *pBlockHeaderPrev;
+    char *szFileName;
+    int nLine;
+    size_t nDataSize;
+    int nBlockUse;
+    long lRequest;
+    unsigned char gap[nNoMansLandSize];
     /* followed by:
      *  unsigned char           data[nDataSize];
      *  unsigned char           anotherGap[nNoMansLandSize];
      */
 } _CrtMemBlockHeader;
 
-#define pbData(pblock) ((unsigned char *) \
-                                     ((_CrtMemBlockHeader *)pblock + 1))
-#define pHdr(pbData) (((_CrtMemBlockHeader *)pbData)-1)
+#define pbData(pblock) ((unsigned char *)((_CrtMemBlockHeader *)pblock + 1))
+#define pHdr(pbData) (((_CrtMemBlockHeader *)pbData) - 1)
 
 #endif      // _CRTDBG_INTERNALS_H
-
-

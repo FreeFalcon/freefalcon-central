@@ -1,10 +1,12 @@
 #include "stdafx.h"
 #include "cpindicator.h"
 
-#include "Graphics/Include/grinline.h" //Wombat778 3-22-04
+#include "graphics/include/grinline.h" //Wombat778 3-22-04
 extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
-CPIndicator::CPIndicator(ObjectInitStr *pobjectInitStr, IndicatorInitStr* pindicatorInitStr) : CPObject(pobjectInitStr)
+CPIndicator::CPIndicator(ObjectInitStr *pobjectInitStr,
+                         IndicatorInitStr *pindicatorInitStr)
+    : CPObject(pobjectInitStr)
 {
     int i;
 
@@ -15,25 +17,34 @@ CPIndicator::CPIndicator(ObjectInitStr *pobjectInitStr, IndicatorInitStr* pindic
     mCalibrationVal = pindicatorInitStr->calibrationVal;
 
 #ifdef USE_SH_POOLS
-    mpSrcLocs = (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
-    mpDestLocs = (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
-    mpDestRects = (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
-    mpSrcRects = (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
-    mpTapeValues = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mNumTapes, FALSE);
-    mPixelSlope = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mNumTapes, FALSE);
-    mPixelIntercept = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mNumTapes, FALSE);
-    mHeightTapeRect = (int *)MemAllocPtr(gCockMemPool, sizeof(int) * mNumTapes, FALSE);
-    mWidthTapeRect = (int *)MemAllocPtr(gCockMemPool, sizeof(int) * mNumTapes, FALSE);
+    mpSrcLocs =
+        (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
+    mpDestLocs =
+        (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
+    mpDestRects =
+        (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
+    mpSrcRects =
+        (RECT *)MemAllocPtr(gCockMemPool, sizeof(RECT) * mNumTapes, FALSE);
+    mpTapeValues =
+        (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mNumTapes, FALSE);
+    mPixelSlope =
+        (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mNumTapes, FALSE);
+    mPixelIntercept =
+        (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mNumTapes, FALSE);
+    mHeightTapeRect =
+        (int *)MemAllocPtr(gCockMemPool, sizeof(int) * mNumTapes, FALSE);
+    mWidthTapeRect =
+        (int *)MemAllocPtr(gCockMemPool, sizeof(int) * mNumTapes, FALSE);
 #else
     mpSrcLocs = new RECT[mNumTapes];
     mpDestLocs = new RECT[mNumTapes];
     mpDestRects = new RECT[mNumTapes];
     mpSrcRects = new RECT[mNumTapes];
     mpTapeValues = new float[mNumTapes];
-    mPixelSlope       = new float[mNumTapes];
-    mPixelIntercept   = new float[mNumTapes];
-    mHeightTapeRect   = new int[mNumTapes];
-    mWidthTapeRect    = new int[mNumTapes];
+    mPixelSlope = new float[mNumTapes];
+    mPixelIntercept = new float[mNumTapes];
+    mHeightTapeRect = new int[mNumTapes];
+    mWidthTapeRect = new int[mNumTapes];
 #endif
 
     for (i = 0; i < mNumTapes; i++)
@@ -43,8 +54,11 @@ CPIndicator::CPIndicator(ObjectInitStr *pobjectInitStr, IndicatorInitStr* pindic
         mpDestRects[i] = pindicatorInitStr->pdestRect[i];
 
         // Determine how many pixels represent a unit, (units/pixel)
-        mPixelSlope[i] = (float)(pindicatorInitStr->maxPos[i] - pindicatorInitStr->minPos[i]) / (float)(mMaxVal - mMinVal);
-        mPixelIntercept[i] = pindicatorInitStr->maxPos[i] - (mPixelSlope[i] * mMaxVal);
+        mPixelSlope[i] = (float)(pindicatorInitStr->maxPos[i] -
+                                 pindicatorInitStr->minPos[i]) /
+                         (float)(mMaxVal - mMinVal);
+        mPixelIntercept[i] =
+            pindicatorInitStr->maxPos[i] - (mPixelSlope[i] * mMaxVal);
 
         if (mOrientation == IND_VERTICAL)
         {
@@ -64,7 +78,8 @@ CPIndicator::CPIndicator(ObjectInitStr *pobjectInitStr, IndicatorInitStr* pindic
         for (i = 0; i < mNumTapes; i++)
         {
             mpSourceBuffer[i].mWidth = mpSrcRects[i].right - mpSrcRects[i].left;
-            mpSourceBuffer[i].mHeight = mpSrcRects[i].bottom - mpSrcRects[i].top;
+            mpSourceBuffer[i].mHeight =
+                mpSrcRects[i].bottom - mpSrcRects[i].top;
         }
     }
 
@@ -74,27 +89,27 @@ CPIndicator::CPIndicator(ObjectInitStr *pobjectInitStr, IndicatorInitStr* pindic
 CPIndicator::~CPIndicator()
 {
 
-    delete [] mpTapeValues;
-    delete [] mpSrcLocs;
-    delete [] mpSrcRects;
-    delete [] mpDestLocs;
-    delete [] mpDestRects;
-    delete [] mPixelSlope;
-    delete [] mPixelIntercept;
-    delete [] mHeightTapeRect;
-    delete [] mWidthTapeRect;
+    delete[] mpTapeValues;
+    delete[] mpSrcLocs;
+    delete[] mpSrcRects;
+    delete[] mpDestLocs;
+    delete[] mpDestRects;
+    delete[] mPixelSlope;
+    delete[] mPixelIntercept;
+    delete[] mHeightTapeRect;
+    delete[] mWidthTapeRect;
 
     //Wombat778 3-22-04 clean up buffers
     if (DisplayOptions.bRender2DCockpit)
     {
         for (int i = 0; i < mNumTapes; i++)
-            glReleaseMemory((char*) mpSourceBuffer[i].indicator);
+            glReleaseMemory((char *)mpSourceBuffer[i].indicator);
 
-        delete [] mpSourceBuffer;
+        delete[] mpSourceBuffer;
     }
 }
 
-void CPIndicator::Exec(SimBaseClass* pOwnship)
+void CPIndicator::Exec(SimBaseClass *pOwnship)
 {
 
     float tapePosition;
@@ -122,13 +137,14 @@ void CPIndicator::Exec(SimBaseClass* pOwnship)
         }
 
         // Find the tape position
-        tapePosition = (mPixelSlope[i] *  mpTapeValues[i]) + mPixelIntercept[i] + mCalibrationVal;
+        tapePosition = (mPixelSlope[i] * mpTapeValues[i]) + mPixelIntercept[i] +
+                       mCalibrationVal;
 
         if (mOrientation == IND_HORIZONTAL)
         {
 
-            mpSrcLocs[i].left = (int) tapePosition - (mWidthTapeRect[i] / 2);
-            mpSrcLocs[i].right = (int) tapePosition + (mWidthTapeRect[i] / 2);
+            mpSrcLocs[i].left = (int)tapePosition - (mWidthTapeRect[i] / 2);
+            mpSrcLocs[i].right = (int)tapePosition + (mWidthTapeRect[i] / 2);
 
             mpDestLocs[i] = mpDestRects[i];
 
@@ -136,33 +152,39 @@ void CPIndicator::Exec(SimBaseClass* pOwnship)
             {
 
                 mpSrcLocs[i].left = mpSrcRects[i].left;
-                mpDestLocs[i].left = mpDestRects[i].left + (mpSrcRects[i].left - mpSrcLocs[i].left);
+                mpDestLocs[i].left = mpDestRects[i].left +
+                                     (mpSrcRects[i].left - mpSrcLocs[i].left);
             }
             else if (mpSrcLocs[i].right > mpSrcRects[i].right)
             {
 
                 mpSrcLocs[i].right = mpSrcRects[i].right;
-                mpDestLocs[i].right = mpDestRects[i].right - (mpSrcLocs[i].right - mpSrcRects[i].right);
+                mpDestLocs[i].right =
+                    mpDestRects[i].right -
+                    (mpSrcLocs[i].right - mpSrcRects[i].right);
             }
         }
         else
         {
 
-            mpSrcLocs[i].top = (int) tapePosition - (mHeightTapeRect[i] / 2);
-            mpSrcLocs[i].bottom = (int) tapePosition + (mHeightTapeRect[i] / 2);
+            mpSrcLocs[i].top = (int)tapePosition - (mHeightTapeRect[i] / 2);
+            mpSrcLocs[i].bottom = (int)tapePosition + (mHeightTapeRect[i] / 2);
             mpDestLocs[i] = mpDestRects[i];
 
             if (mpSrcLocs[i].top < mpSrcRects[i].top)
             {
 
                 mpSrcLocs[i].top = mpSrcRects[i].top;
-                mpDestLocs[i].top = mpDestRects[i].top + (mpSrcRects[i].top - mpSrcLocs[i].top);
+                mpDestLocs[i].top =
+                    mpDestRects[i].top + (mpSrcRects[i].top - mpSrcLocs[i].top);
             }
             else if (mpSrcLocs[i].bottom > mpSrcRects[i].bottom)
             {
 
                 mpSrcLocs[i].bottom = mpSrcRects[i].bottom;
-                mpDestLocs[i].bottom = mpDestRects[i].bottom - (mpSrcLocs[i].bottom - mpSrcRects[i].bottom);
+                mpDestLocs[i].bottom =
+                    mpDestRects[i].bottom -
+                    (mpSrcLocs[i].bottom - mpSrcRects[i].bottom);
             }
         }
     }
@@ -171,7 +193,11 @@ void CPIndicator::Exec(SimBaseClass* pOwnship)
 }
 
 
-void RenderIndicatorPoly(SourceIndicatorType *sb, tagRECT *srcrect, tagRECT *srcloc, tagRECT *destrect, GLint alpha) //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
+void RenderIndicatorPoly(
+    SourceIndicatorType *sb, tagRECT *srcrect, tagRECT *srcloc,
+    tagRECT *destrect,
+    GLint
+        alpha) //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
 {
 
     OTWDriver.renderer->CenterOriginInViewport();
@@ -179,19 +205,27 @@ void RenderIndicatorPoly(SourceIndicatorType *sb, tagRECT *srcrect, tagRECT *src
     TextureHandle *pTex = sb->m_arrTex[0];
     // Setup vertices
     float fStartU = 0;
-    float fMaxU = (float) pTex->m_nWidth / (float) pTex->m_nActualWidth;
+    float fMaxU = (float)pTex->m_nWidth / (float)pTex->m_nActualWidth;
     fMaxU -= fStartU;
     float fStartV = 0;
-    float fMaxV = (float) pTex->m_nHeight / (float) pTex->m_nActualHeight;
+    float fMaxV = (float)pTex->m_nHeight / (float)pTex->m_nActualHeight;
     fMaxV -= fStartV;
 
     //select just a piece of the tapes by scaling the UV coordinates.
 
-    fStartU = ((float)(srcloc->left - srcrect->left) / (float)(srcrect->right - srcrect->left)) * fMaxU;
-    fMaxU = ((float)(srcloc->right - srcrect->left) / (float)(srcrect->right - srcrect->left)) * fMaxU;
+    fStartU = ((float)(srcloc->left - srcrect->left) /
+               (float)(srcrect->right - srcrect->left)) *
+              fMaxU;
+    fMaxU = ((float)(srcloc->right - srcrect->left) /
+             (float)(srcrect->right - srcrect->left)) *
+            fMaxU;
 
-    fStartV = ((float)(srcloc->top - srcrect->top) / (float)(srcrect->bottom - srcrect->top)) * fMaxV;
-    fMaxV = ((float)(srcloc->bottom - srcrect->top) / (float)(srcrect->bottom - srcrect->top)) * fMaxV;
+    fStartV = ((float)(srcloc->top - srcrect->top) /
+               (float)(srcrect->bottom - srcrect->top)) *
+              fMaxV;
+    fMaxV = ((float)(srcloc->bottom - srcrect->top) /
+             (float)(srcrect->bottom - srcrect->top)) *
+            fMaxV;
 
 
     TwoDVertex pVtx[4];
@@ -222,9 +256,10 @@ void RenderIndicatorPoly(SourceIndicatorType *sb, tagRECT *srcrect, tagRECT *src
     OTWDriver.pCockpitManager->AddTurbulence(pVtx);
 
     OTWDriver.renderer->context.RestoreState(alpha);
-    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
-
+    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR)pTex);
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN,
+                                              MPR_VI_COLOR bitor MPR_VI_TEXTURE,
+                                              4, pVtx, sizeof(pVtx[0]));
 }
 
 
@@ -235,7 +270,7 @@ void CPIndicator::DisplayBlit(void)
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag)
+    if (not mDirtyFlag)
     {
         return;
     }
@@ -249,8 +284,10 @@ void CPIndicator::DisplayBlit(void)
 
         temp.top = (LONG)(temp.top * mVScale);
         temp.left = (LONG)(temp.left * mHScale);
-        temp.bottom = (LONG)(temp.top + mVScale * (mpSrcLocs[i].bottom - mpSrcLocs[i].top));
-        temp.right = (LONG)(temp.left + mHScale * (mpSrcLocs[i].right - mpSrcLocs[i].left));
+        temp.bottom = (LONG)(temp.top + mVScale * (mpSrcLocs[i].bottom -
+                                                   mpSrcLocs[i].top));
+        temp.right = (LONG)(temp.left +
+                            mHScale * (mpSrcLocs[i].right - mpSrcLocs[i].left));
         mpOTWImage->Compose(mpTemplate, &mpSrcLocs[i], &temp);
     }
 
@@ -265,12 +302,12 @@ void CPIndicator::DisplayBlit3D(void)
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag)
+    if (not mDirtyFlag)
     {
         return;
     }
 
-    if ( not DisplayOptions.bRender2DCockpit) //Handle these in displayblit
+    if (not DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
 
@@ -280,17 +317,21 @@ void CPIndicator::DisplayBlit3D(void)
 
         temp.top = FloatToInt32(temp.top * mVScale);
         temp.left = FloatToInt32(temp.left * mHScale);
-        temp.bottom = FloatToInt32(temp.top + mVScale * (mpSrcLocs[i].bottom - mpSrcLocs[i].top));
-        temp.right = FloatToInt32(temp.left + mHScale * (mpSrcLocs[i].right - mpSrcLocs[i].left));
+        temp.bottom = FloatToInt32(
+            temp.top + mVScale * (mpSrcLocs[i].bottom - mpSrcLocs[i].top));
+        temp.right = FloatToInt32(
+            temp.left + mHScale * (mpSrcLocs[i].right - mpSrcLocs[i].left));
 
         if (g_bFilter2DPit)
         {
             //Wombat778 3-30-04 Added option to filter
-            RenderIndicatorPoly(&mpSourceBuffer[i], &mpSrcRects[i], &mpSrcLocs[i], &temp, STATE_TEXTURE);
+            RenderIndicatorPoly(&mpSourceBuffer[i], &mpSrcRects[i],
+                                &mpSrcLocs[i], &temp, STATE_TEXTURE);
         }
         else
         {
-            RenderIndicatorPoly(&mpSourceBuffer[i], &mpSrcRects[i], &mpSrcLocs[i], &temp, STATE_TEXTURE_NOFILTER);
+            RenderIndicatorPoly(&mpSourceBuffer[i], &mpSrcRects[i],
+                                &mpSrcLocs[i], &temp, STATE_TEXTURE_NOFILTER);
         }
     }
 
@@ -306,39 +347,53 @@ void CPIndicator::CreateLit(void)
 
         try
         {
-            const DWORD dwMaxTextureWidth = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
-            const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
-            m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
+            const DWORD dwMaxTextureWidth =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
+            const DWORD dwMaxTextureHeight =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
+            m_pPalette = new PaletteHandle(
+                mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if ( not m_pPalette)
+            if (not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             for (int i = 0; i < mNumTapes; i++)
             {
                 // Check if we can use a single texture
-                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and (int)dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
+                if ((int)dwMaxTextureWidth >= mpSourceBuffer[i].mWidth and
+                    (int) dwMaxTextureHeight >= mpSourceBuffer[i].mHeight)
                 {
                     TextureHandle *pTex = new TextureHandle;
 
-                    if ( not pTex)
+                    if (not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if ( not pTex->Create("CPIndicator", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
+                    if (not pTex->Create("CPIndicator",
+                                         MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY,
+                                         8, mpSourceBuffer[i].mWidth,
+                                         mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].indicator, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if (not pTex->Load(
+                            0, 0xFFFF0000, (BYTE *)mpSourceBuffer[i].indicator,
+                            true,
+                            true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);
                 }
             }
-
         }
         catch (const _com_error &e)
         {
-            MonoPrint("CPIndicator::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
+            MonoPrint("CPIndicator::CreateLit - Error 0x%X (%s)\n", e.Error(),
+                      e.ErrorMessage());
             DiscardLit();
         }
     }
@@ -350,14 +405,16 @@ void CPIndicator::DiscardLit(void)
     {
         for (int i2 = 0; i2 < mNumTapes; i2++)
         {
-            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size(); i++) //delete the textures for each tape
+            for (int i = 0; i < (int)mpSourceBuffer[i2].m_arrTex.size();
+                 i++) //delete the textures for each tape
                 delete mpSourceBuffer[i2].m_arrTex[i];
 
             mpSourceBuffer[i2].m_arrTex.clear();
         }
     }
 
-    for (int i = 0; i < (int)m_arrTex.size(); i++) delete m_arrTex[i]; //delete the local textures
+    for (int i = 0; i < (int)m_arrTex.size(); i++)
+        delete m_arrTex[i]; //delete the local textures
 
     m_arrTex.clear();
 

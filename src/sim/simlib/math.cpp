@@ -70,8 +70,8 @@ SIMLIB_MATH_CLASS Math;
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_SHORT  SIMLIB_MATH_CLASS::Limit(SIM_SHORT input, SIM_SHORT min_val,
-                                    SIM_SHORT max_val)
+SIM_SHORT SIMLIB_MATH_CLASS::Limit(SIM_SHORT input, SIM_SHORT min_val,
+                                   SIM_SHORT max_val)
 {
     return (min(max(input, min_val), max_val));
 }
@@ -126,8 +126,8 @@ SIM_INT SIMLIB_MATH_CLASS::Limit(SIM_INT input, SIM_INT min_val,
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_LONG   SIMLIB_MATH_CLASS::Limit(SIM_LONG input, SIM_LONG min_val,
-                                    SIM_LONG max_val)
+SIM_LONG SIMLIB_MATH_CLASS::Limit(SIM_LONG input, SIM_LONG min_val,
+                                  SIM_LONG max_val)
 {
     return (min(max(input, min_val), max_val));
 }
@@ -154,8 +154,8 @@ SIM_LONG   SIMLIB_MATH_CLASS::Limit(SIM_LONG input, SIM_LONG min_val,
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT  SIMLIB_MATH_CLASS::Limit(SIM_FLOAT input, SIM_FLOAT min_val,
-                                    SIM_FLOAT max_val)
+SIM_FLOAT SIMLIB_MATH_CLASS::Limit(SIM_FLOAT input, SIM_FLOAT min_val,
+                                   SIM_FLOAT max_val)
 {
     return (min(max(input, min_val), max_val));
 }
@@ -212,8 +212,9 @@ SIM_DOUBLE SIMLIB_MATH_CLASS::Limit(SIM_DOUBLE input, SIM_DOUBLE min_val,
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT  SIMLIB_MATH_CLASS::RateLimit(SIM_FLOAT input, SIM_FLOAT cur,
-                                        SIM_FLOAT max_rate, SIM_FLOAT *rate, SIM_FLOAT delt)
+SIM_FLOAT SIMLIB_MATH_CLASS::RateLimit(SIM_FLOAT input, SIM_FLOAT cur,
+                                       SIM_FLOAT max_rate, SIM_FLOAT *rate,
+                                       SIM_FLOAT delt)
 {
     *rate = (input - cur) / delt;
     *rate = Limit(*rate, -max_rate, max_rate);
@@ -245,7 +246,8 @@ SIM_FLOAT  SIMLIB_MATH_CLASS::RateLimit(SIM_FLOAT input, SIM_FLOAT cur,
 /*                                                                  */
 /********************************************************************/
 SIM_DOUBLE SIMLIB_MATH_CLASS::RateLimit(SIM_DOUBLE input, SIM_DOUBLE cur,
-                                        SIM_DOUBLE max_rate, SIM_DOUBLE *rate, SIM_DOUBLE delt)
+                                        SIM_DOUBLE max_rate, SIM_DOUBLE *rate,
+                                        SIM_DOUBLE delt)
 {
     *rate = (input - cur) / delt;
     *rate = Limit(*rate, -max_rate, max_rate);
@@ -309,7 +311,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::DeadBand(SIM_FLOAT input, SIM_FLOAT min_breakout,
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_DOUBLE SIMLIB_MATH_CLASS::DeadBand(SIM_DOUBLE input, SIM_DOUBLE min_breakout,
+SIM_DOUBLE SIMLIB_MATH_CLASS::DeadBand(SIM_DOUBLE input,
+                                       SIM_DOUBLE min_breakout,
                                        SIM_DOUBLE max_breakout)
 {
     if (input > max_breakout)
@@ -344,7 +347,7 @@ SIM_DOUBLE SIMLIB_MATH_CLASS::DeadBand(SIM_DOUBLE input, SIM_DOUBLE min_breakout
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT  SIMLIB_MATH_CLASS::Resolve(SIM_FLOAT input, SIM_FLOAT max_angle)
+SIM_FLOAT SIMLIB_MATH_CLASS::Resolve(SIM_FLOAT input, SIM_FLOAT max_angle)
 {
     register SIM_FLOAT delta;
 
@@ -418,7 +421,7 @@ SIM_DOUBLE SIMLIB_MATH_CLASS::Resolve(SIM_DOUBLE input, SIM_DOUBLE max_angle)
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT  SIMLIB_MATH_CLASS::Resolve0(SIM_FLOAT input, SIM_FLOAT max_angle)
+SIM_FLOAT SIMLIB_MATH_CLASS::Resolve0(SIM_FLOAT input, SIM_FLOAT max_angle)
 {
     while (input >= max_angle)
         input -= max_angle;
@@ -520,7 +523,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ResolveWrap(SIM_FLOAT input, SIM_FLOAT max_angle)
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_DOUBLE SIMLIB_MATH_CLASS::ResolveWrap(SIM_DOUBLE input, SIM_DOUBLE max_angle)
+SIM_DOUBLE SIMLIB_MATH_CLASS::ResolveWrap(SIM_DOUBLE input,
+                                          SIM_DOUBLE max_angle)
 {
     input = Resolve(input, 2.0 * max_angle);
 
@@ -563,8 +567,10 @@ SIM_DOUBLE SIMLIB_MATH_CLASS::ResolveWrap(SIM_DOUBLE input, SIM_DOUBLE max_angle
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::F1Tust(SIM_FLOAT in, SIM_FLOAT zeta1, SIM_FLOAT omega1,
-                                    SIM_FLOAT zeta2, SIM_FLOAT omega2, SIM_FLOAT delt, SAVE_ARRAY save, SIM_INT *jstart)
+SIM_FLOAT SIMLIB_MATH_CLASS::F1Tust(SIM_FLOAT in, SIM_FLOAT zeta1,
+                                    SIM_FLOAT omega1, SIM_FLOAT zeta2,
+                                    SIM_FLOAT omega2, SIM_FLOAT delt,
+                                    SAVE_ARRAY save, SIM_INT *jstart)
 {
     SIM_FLOAT x1, x2, y1, y2, a1, a2, b1, b2, k;
 
@@ -580,13 +586,14 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F1Tust(SIM_FLOAT in, SIM_FLOAT zeta1, SIM_FLOAT ome
     a2 = 2 * (SIM_FLOAT)exp(-x2 * delt) * (SIM_FLOAT)cos(y2 * delt);
     b1 = (SIM_FLOAT)exp(-2 * x1 * delt);
     b2 = (SIM_FLOAT)exp(-2 * x2 * delt);
-    k  = (1 - a2 + b2) / (1 - a1 + b1) * (omega1 / omega2) * (omega1 / omega2);
+    k = (1 - a2 + b2) / (1 - a1 + b1) * (omega1 / omega2) * (omega1 / omega2);
 
     /*----------------*/
     /* compute output */
     /*----------------*/
     save[5] = in;
-    save[4] = k * (save[5] - a1 * save[4] + b1 * save[3]) + a2 * save[1] - b2 * save[0];
+    save[4] = k * (save[5] - a1 * save[4] + b1 * save[3]) + a2 * save[1] -
+              b2 * save[0];
 
     /*----------------------------------*/
     /* save values from past two frames */
@@ -608,7 +615,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F1Tust(SIM_FLOAT in, SIM_FLOAT zeta1, SIM_FLOAT ome
 
     *jstart = *jstart + 1;
 
-    return((SIM_FLOAT)save[2]);
+    return ((SIM_FLOAT)save[2]);
 }
 
 /********************************************************************/
@@ -639,8 +646,9 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F1Tust(SIM_FLOAT in, SIM_FLOAT zeta1, SIM_FLOAT ome
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::F2Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2,
-                                    SIM_FLOAT delt, SAVE_ARRAY save)
+SIM_FLOAT SIMLIB_MATH_CLASS::F2Tust(SIM_FLOAT in, SIM_FLOAT tau1,
+                                    SIM_FLOAT tau2, SIM_FLOAT delt,
+                                    SAVE_ARRAY save)
 {
     SIM_FLOAT k1, k2, k;
 
@@ -649,7 +657,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F2Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
     /*-----------------------*/
     k1 = (SIM_FLOAT)exp(-delt / tau1);
     k2 = (SIM_FLOAT)exp(-delt / tau2);
-    k  = (1 - k2) / (1 - k1);
+    k = (1 - k2) / (1 - k1);
 
     /*----------------*/
     /* compute output */
@@ -663,7 +671,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F2Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
     save[0] = save[1];
     save[2] = save[3];
 
-    return((SIM_FLOAT)save[1]);
+    return ((SIM_FLOAT)save[1]);
 }
 
 /********************************************************************/
@@ -694,8 +702,9 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F2Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::F3Tust(SIM_FLOAT in, SIM_FLOAT zeta, SIM_FLOAT omega,
-                                    SIM_FLOAT delt, SAVE_ARRAY save)
+SIM_FLOAT SIMLIB_MATH_CLASS::F3Tust(SIM_FLOAT in, SIM_FLOAT zeta,
+                                    SIM_FLOAT omega, SIM_FLOAT delt,
+                                    SAVE_ARRAY save)
 {
     SIM_FLOAT a, b, c, d, k;
 
@@ -706,13 +715,14 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F3Tust(SIM_FLOAT in, SIM_FLOAT zeta, SIM_FLOAT omeg
     b = omega * (SIM_FLOAT)sqrt(1 - zeta * zeta);
     c = 2 * (SIM_FLOAT)exp(-a * delt) * (SIM_FLOAT)cos(b * delt);
     d = (SIM_FLOAT)exp(-2 * a * delt);
-    k  = (1 - c + d) / 4.0F;
+    k = (1 - c + d) / 4.0F;
 
     /*----------------*/
     /* compute output */
     /*----------------*/
     save[5] = in;
-    save[2] = k * (save[5] + 2.0F * save[4] + save[3]) + c * save[1] - d * save[0];
+    save[2] =
+        k * (save[5] + 2.0F * save[4] + save[3]) + c * save[1] - d * save[0];
 
     /*----------------------------------*/
     /* save values from past two frames */
@@ -726,7 +736,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F3Tust(SIM_FLOAT in, SIM_FLOAT zeta, SIM_FLOAT omeg
     save[1] = save[2];
     save[4] = save[5];
 
-    return((SIM_FLOAT)save[2]);
+    return ((SIM_FLOAT)save[2]);
 }
 
 /********************************************************************/
@@ -761,7 +771,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F3Tust(SIM_FLOAT in, SIM_FLOAT zeta, SIM_FLOAT omeg
 /*                                                                  */
 /********************************************************************/
 SIM_FLOAT SIMLIB_MATH_CLASS::F4Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
-                                    SIM_FLOAT omega, SIM_FLOAT delt, SAVE_ARRAY save, SIM_INT *jstart)
+                                    SIM_FLOAT omega, SIM_FLOAT delt,
+                                    SAVE_ARRAY save, SIM_INT *jstart)
 {
     SIM_FLOAT a, b, c, d, e, k;
 
@@ -773,13 +784,14 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F4Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
     c = 2 * (SIM_FLOAT)exp(-a * delt) * (SIM_FLOAT)cos(b * delt);
     d = (SIM_FLOAT)exp(-2 * a * delt);
     e = (SIM_FLOAT)exp(-delt / tau);
-    k  = (1 - c + d) / (2.0F * (1 - e));
+    k = (1 - c + d) / (2.0F * (1 - e));
 
     /*----------------*/
     /* compute output */
     /*----------------*/
     save[5] = in;
-    save[2] = k * (save[5] + (1 - e) * save[4] - e * save[3]) + c * save[1] - d * save[0];
+    save[2] = k * (save[5] + (1 - e) * save[4] - e * save[3]) + c * save[1] -
+              d * save[0];
 
     /*----------------------------------*/
     /* save values from past two frames */
@@ -800,7 +812,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F4Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
     }
 
     *jstart = *jstart + 1;
-    return((SIM_FLOAT)save[2]);
+    return ((SIM_FLOAT)save[2]);
 }
 
 /********************************************************************/
@@ -835,7 +847,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F4Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
 /*                                                                  */
 /********************************************************************/
 SIM_FLOAT SIMLIB_MATH_CLASS::F5Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
-                                    SIM_FLOAT omega, SIM_FLOAT delt, SAVE_ARRAY save, SIM_INT *jstart)
+                                    SIM_FLOAT omega, SIM_FLOAT delt,
+                                    SAVE_ARRAY save, SIM_INT *jstart)
 {
     SIM_FLOAT a, b, c, d, e, k;
 
@@ -847,13 +860,14 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F5Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
     c = 2 * (SIM_FLOAT)exp(-a * delt) * (SIM_FLOAT)cos(b * delt);
     d = (SIM_FLOAT)exp(-2 * a * delt);
     e = (SIM_FLOAT)exp(-delt / tau);
-    k  = (1 + c + d) / (2.0F * (1 + e));
+    k = (1 + c + d) / (2.0F * (1 + e));
 
     /*----------------*/
     /* compute output */
     /*----------------*/
     save[5] = in;
-    save[2] = k * (save[5] - (1 + e) * save[4] + e * save[1]) + c * save[1] - d * save[0];
+    save[2] = k * (save[5] - (1 + e) * save[4] + e * save[1]) + c * save[1] -
+              d * save[0];
 
     /*----------------------------------*/
     /* save values from past two frames */
@@ -874,7 +888,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F5Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
     }
 
     *jstart = *jstart + 1;
-    return((SIM_FLOAT)save[2]);
+    return ((SIM_FLOAT)save[2]);
 }
 
 /********************************************************************/
@@ -907,23 +921,24 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F5Tust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT zeta,
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::F6Tust(SIM_FLOAT in, SIM_FLOAT zeta, SIM_FLOAT omega,
-                                    SIM_FLOAT delt, SAVE_ARRAY save, SIM_INT *jstart)
+SIM_FLOAT SIMLIB_MATH_CLASS::F6Tust(SIM_FLOAT in, SIM_FLOAT zeta,
+                                    SIM_FLOAT omega, SIM_FLOAT delt,
+                                    SAVE_ARRAY save, SIM_INT *jstart)
 {
     SIM_FLOAT a1, b1, c1, d1, e1, a, b, c, d;
 
     /*----------------------------------*/
     /* compute z-transform coefficients */
     /*----------------------------------*/
-    a1 =  1.0F + delt * zeta * omega + 0.25F * (omega * delt) * (omega * delt);
+    a1 = 1.0F + delt * zeta * omega + 0.25F * (omega * delt) * (omega * delt);
     b1 = -2.0F + 0.5F * (omega * delt) * (omega * delt);
-    c1 =  1.0F - delt * zeta * omega + 0.25F * (omega * delt) * (omega * delt);
-    d1 =  0.5F * delt * omega * omega;
+    c1 = 1.0F - delt * zeta * omega + 0.25F * (omega * delt) * (omega * delt);
+    d1 = 0.5F * delt * omega * omega;
     e1 = -0.5F * delt * omega * omega;
-    a  = b1 / a1;
-    b  = c1 / a1;
-    c  = d1 / a1;
-    d  = e1 / a1;
+    a = b1 / a1;
+    b = c1 / a1;
+    c = d1 / a1;
+    d = e1 / a1;
 
     /*----------------*/
     /* compute output */
@@ -950,7 +965,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F6Tust(SIM_FLOAT in, SIM_FLOAT zeta, SIM_FLOAT omeg
     }
 
     *jstart = *jstart + 1;
-    return((SIM_FLOAT)save[2]);
+    return ((SIM_FLOAT)save[2]);
 }
 
 /********************************************************************/
@@ -983,8 +998,10 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F6Tust(SIM_FLOAT in, SIM_FLOAT zeta, SIM_FLOAT omeg
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::F7Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2,
-                                    SIM_FLOAT tau3, SIM_FLOAT delt, SAVE_ARRAY save, SIM_INT *jstart)
+SIM_FLOAT SIMLIB_MATH_CLASS::F7Tust(SIM_FLOAT in, SIM_FLOAT tau1,
+                                    SIM_FLOAT tau2, SIM_FLOAT tau3,
+                                    SIM_FLOAT delt, SAVE_ARRAY save,
+                                    SIM_INT *jstart)
 {
     SIM_FLOAT a, b, c, d, k;
 
@@ -993,8 +1010,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F7Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
     /*----------------------------------*/
     a = -((SIM_FLOAT)exp(-delt / tau2) + (SIM_FLOAT)exp(-delt / tau3));
     b = (SIM_FLOAT)exp(-delt * (1 / tau2 + 1 / tau3));
-    c =   1.0F - (SIM_FLOAT)exp(-delt / tau1);
-    d =  -(SIM_FLOAT)exp(-delt / tau1);
+    c = 1.0F - (SIM_FLOAT)exp(-delt / tau1);
+    d = -(SIM_FLOAT)exp(-delt / tau1);
 
     if (1.0F + c + d == 0.0F)
         k = 0.0F;
@@ -1006,7 +1023,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F7Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
     /* compute output */
     /*----------------*/
     save[5] = in;
-    save[2] = k * (save[5] + c * save[4] + d * save[3]) -  a * save[1] - b * save[0];
+    save[2] =
+        k * (save[5] + c * save[4] + d * save[3]) - a * save[1] - b * save[0];
 
     /*----------------------------------*/
     /* save values from past two frames */
@@ -1027,7 +1045,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F7Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
     }
 
     *jstart = *jstart + 1;
-    return((SIM_FLOAT)save[2]);
+    return ((SIM_FLOAT)save[2]);
 }
 
 /********************************************************************/
@@ -1060,8 +1078,10 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F7Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::F8Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2,
-                                    SIM_FLOAT tau3, SIM_FLOAT delt, SAVE_ARRAY save, SIM_INT *jstart)
+SIM_FLOAT SIMLIB_MATH_CLASS::F8Tust(SIM_FLOAT in, SIM_FLOAT tau1,
+                                    SIM_FLOAT tau2, SIM_FLOAT tau3,
+                                    SIM_FLOAT delt, SAVE_ARRAY save,
+                                    SIM_INT *jstart)
 {
     SIM_FLOAT a, b, c, d, k;
 
@@ -1078,7 +1098,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F8Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
     /* compute output */
     /*----------------*/
     save[5] = in;
-    save[2] = k * (save[5] + c * save[4] + d * save[3]) -  a * save[1] - b * save[0];
+    save[2] =
+        k * (save[5] + c * save[4] + d * save[3]) - a * save[1] - b * save[0];
 
     /*----------------------------------*/
     /* save values from past two frames */
@@ -1099,7 +1120,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::F8Tust(SIM_FLOAT in, SIM_FLOAT tau1, SIM_FLOAT tau2
     }
 
     *jstart = *jstart + 1;
-    return((SIM_FLOAT)save[2]);
+    return ((SIM_FLOAT)save[2]);
 }
 
 /********************************************************************/
@@ -1152,7 +1173,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FLTust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT delt,
     save[0] = save[1];
     save[2] = save[3];
 
-    return((SIM_FLOAT)save[1]);
+    return ((SIM_FLOAT)save[1]);
 }
 
 /********************************************************************/
@@ -1182,8 +1203,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FLTust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT delt,
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::FLeadTust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT delt,
-                                       SAVE_ARRAY save)
+SIM_FLOAT SIMLIB_MATH_CLASS::FLeadTust(SIM_FLOAT in, SIM_FLOAT tau,
+                                       SIM_FLOAT delt, SAVE_ARRAY save)
 {
     SIM_FLOAT k1, k2;
 
@@ -1205,7 +1226,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FLeadTust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT de
     save[0] = save[1];
     save[2] = save[3];
 
-    return((SIM_FLOAT)save[1]);
+    return ((SIM_FLOAT)save[1]);
 }
 
 /********************************************************************/
@@ -1234,7 +1255,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FLeadTust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT de
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::FITust(SIM_FLOAT in, SIM_FLOAT delt, SAVE_ARRAY save)
+SIM_FLOAT SIMLIB_MATH_CLASS::FITust(SIM_FLOAT in, SIM_FLOAT delt,
+                                    SAVE_ARRAY save)
 {
     /*----------------*/
     /* compute output */
@@ -1248,7 +1270,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FITust(SIM_FLOAT in, SIM_FLOAT delt, SAVE_ARRAY sav
     save[0] = save[1];
     save[2] = save[3];
 
-    return((SIM_FLOAT)save[1]);
+    return ((SIM_FLOAT)save[1]);
 }
 
 /********************************************************************/
@@ -1277,7 +1299,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FITust(SIM_FLOAT in, SIM_FLOAT delt, SAVE_ARRAY sav
 /*  29-Oct-98 DP                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::FIAdamsBash(SIM_FLOAT in, SIM_FLOAT delt, SAVE_ARRAY save)
+SIM_FLOAT SIMLIB_MATH_CLASS::FIAdamsBash(SIM_FLOAT in, SIM_FLOAT delt,
+                                         SAVE_ARRAY save)
 {
     /*----------------*/
     /* compute output */
@@ -1291,7 +1314,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FIAdamsBash(SIM_FLOAT in, SIM_FLOAT delt, SAVE_ARRA
     save[0] = save[1];
     save[2] = save[3];
 
-    return((SIM_FLOAT)save[1]);
+    return ((SIM_FLOAT)save[1]);
 }
 
 /********************************************************************/
@@ -1344,7 +1367,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FWTust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT delt,
     save[0] = save[1];
     save[2] = save[3];
 
-    return((SIM_FLOAT)save[1]);
+    return ((SIM_FLOAT)save[1]);
 }
 /*****************************************************************************/
 /* ONED_INTERP                                                               */
@@ -1371,7 +1394,8 @@ SIM_FLOAT SIMLIB_MATH_CLASS::FWTust(SIM_FLOAT in, SIM_FLOAT tau, SIM_FLOAT delt,
 /*                                                                           */
 /*****************************************************************************/
 SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
-                                        const SIM_FLOAT *data, SIM_INT numx, SIM_INT *lastx)
+                                        const SIM_FLOAT *data, SIM_INT numx,
+                                        SIM_INT *lastx)
 {
     int i = 0;
     float x0 = 0.0F, dx = 0.0F, ddata = 0.0F;
@@ -1395,7 +1419,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
             x0 = xarray[*lastx];
             dx = xarray[*lastx + 1] - x0;
             ddata = data[*lastx + 1] - data[*lastx];
-            final_val =  data[*lastx] + (xinpt - x0) * ddata / dx;
+            final_val = data[*lastx] + (xinpt - x0) * ddata / dx;
         }
         else if (xinpt <= xarray[*lastx])
         {
@@ -1410,7 +1434,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
                     x0 = xarray[i - 1];
                     dx = xarray[i] - x0;
                     ddata = data[i] - data[i - 1];
-                    final_val =  data[i - 1] + (xinpt - x0) * ddata / dx;
+                    final_val = data[i - 1] + (xinpt - x0) * ddata / dx;
                     break;
                 }
             }
@@ -1444,7 +1468,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
                 x0 = xarray[i];
                 dx = xarray[i + 1] - x0;
                 ddata = data[i + 1] - data[i];
-                final_val =  data[i] + (xinpt - x0) * ddata / dx;
+                final_val = data[i] + (xinpt - x0) * ddata / dx;
                 break;
             }
         }
@@ -1483,29 +1507,32 @@ SIM_FLOAT SIMLIB_MATH_CLASS::OnedInterp(SIM_FLOAT x, const SIM_FLOAT *xarray,
 /*                                                                           */
 /*****************************************************************************/
 SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
-                                        const SIM_FLOAT *xarray, const SIM_FLOAT *yarray, const SIM_FLOAT *data, SIM_INT numx, SIM_INT numy,
-                                        SIM_INT *lastx,  SIM_INT *lasty)
+                                        const SIM_FLOAT *xarray,
+                                        const SIM_FLOAT *yarray,
+                                        const SIM_FLOAT *data, SIM_INT numx,
+                                        SIM_INT numy, SIM_INT *lastx,
+                                        SIM_INT *lasty)
 {
     float xinpt, yinpt;
     float x1, x2, dx;
     float y1, y2, dy;
     float ddata, ddata1, ddata2, data1, data2;
     float interp;
-    int   ix, iy;
+    int ix, iy;
 
-    ShiAssert(FALSE == F4IsBadReadPtr(xarray, sizeof * xarray * numx));
-    ShiAssert(FALSE == F4IsBadReadPtr(yarray, sizeof * yarray * numy))
-    /*-------------------------------------------------*/
-    /* limit independent variables to table boundaries */
-    /*-------------------------------------------------*/
-    numx --;
-    numy --;
+    ShiAssert(FALSE == F4IsBadReadPtr(xarray, sizeof *xarray * numx));
+    ShiAssert(FALSE == F4IsBadReadPtr(yarray, sizeof *yarray * numy))
+        /*-------------------------------------------------*/
+        /* limit independent variables to table boundaries */
+        /*-------------------------------------------------*/
+        numx--;
+    numy--;
 
     //if (numx >= 0 and numy >= 0) // JB 010220 CTD
-    if (numx >= 0 and numy >= 0 and 
+    if (numx >= 0 and numy >= 0 and
         xarray and // not F4IsBadReadPtr(xarray, sizeof(SIM_FLOAT)) and // (too much CPU)
         yarray // not F4IsBadReadPtr(yarray, sizeof(SIM_FLOAT)) // JB 010318 CTD (too much CPU)
-       )
+    )
     {
         xinpt = min(max(x, xarray[0]), xarray[numx]);
         yinpt = min(max(y, yarray[0]), yarray[numy]);
@@ -1525,7 +1552,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
             /* Look down in the data */
             /*-----------------------*/
             while ((ix > 0) and (xinpt < xarray[ix]))
-                ix --;
+                ix--;
         }
         else if (xinpt > xarray[ix + 1])
         {
@@ -1533,7 +1560,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
             /* Look up in the data */
             /*---------------------*/
             while ((ix < numx) and (xinpt > xarray[ix + 1]))
-                ix ++;
+                ix++;
         }
     }
     else
@@ -1542,7 +1569,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
         /* No Previous value so start at the begining */
         /*--------------------------------------------*/
         while ((ix < numx) and (xinpt > xarray[ix + 1]))
-            ix ++;
+            ix++;
     }
 
     ShiAssert(ix >= 0 and ix < numx); // JPO CTD  check again
@@ -1569,7 +1596,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
             /* Look down in the data */
             /*-----------------------*/
             while ((iy > 0) and (yinpt < yarray[iy]))
-                iy --;
+                iy--;
         }
         else if (yinpt > yarray[iy + 1])
         {
@@ -1577,7 +1604,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
             /* Look up in the data */
             /*---------------------*/
             while ((iy < numy) and (yinpt > yarray[iy + 1]))
-                iy ++;
+                iy++;
         }
     }
     else
@@ -1586,7 +1613,7 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
         /* No Previous value so start at the begining */
         /*--------------------------------------------*/
         while ((iy < numy) and (yinpt > yarray[iy + 1]))
-            iy ++;
+            iy++;
     }
 
     ShiAssert(iy >= 0 and iy < numy); // JPO CTD  check again
@@ -1598,17 +1625,17 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
     /*----------------------*/
     /* xarray interpolation */
     /*----------------------*/
-    numy ++;
-    ddata1 = data[(ix + 1) * numy + iy]     - data[ix * numy + iy];
+    numy++;
+    ddata1 = data[(ix + 1) * numy + iy] - data[ix * numy + iy];
     ddata2 = data[(ix + 1) * numy + iy + 1] - data[ix * numy + iy + 1];
 
-    data1  = data[ix * numy + iy]     + (xinpt - x1) * ddata1 * dx;
-    data2  = data[ix * numy + iy + 1] + (xinpt - x1) * ddata2 * dx;
+    data1 = data[ix * numy + iy] + (xinpt - x1) * ddata1 * dx;
+    data2 = data[ix * numy + iy + 1] + (xinpt - x1) * ddata2 * dx;
 
     /*----------------------*/
     /* yarray interpolation */
     /*----------------------*/
-    ddata    = data2 - data1;
+    ddata = data2 - data1;
 
     interp = data1 + (yinpt - y1) * ddata * dy;
 
@@ -1649,29 +1676,33 @@ SIM_FLOAT SIMLIB_MATH_CLASS::TwodInterp(SIM_FLOAT x, SIM_FLOAT y,
 /*     JC           1/2/92        initial write                              */
 /*                                                                           */
 /*****************************************************************************/
-SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
-        const SIM_FLOAT *xarray, const SIM_FLOAT *yarray, const SIM_FLOAT *zarray, const
-        SIM_FLOAT *data, SIM_INT numx, SIM_INT numy, SIM_INT numz, SIM_INT *lastx,
-        SIM_INT *lasty, SIM_INT *lastz)
+SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(
+    SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z, const SIM_FLOAT *xarray,
+    const SIM_FLOAT *yarray, const SIM_FLOAT *zarray, const SIM_FLOAT *data,
+    SIM_INT numx, SIM_INT numy, SIM_INT numz, SIM_INT *lastx, SIM_INT *lasty,
+    SIM_INT *lastz)
 {
     float xmin, xmax, ymin, ymax, zmin, zmax;
     float xinpt = 0.0F, yinpt = 0.0F, zinpt = 0.0F;
     float d1 = 0.0F, d2 = 0.0F, dd1 = 0.0F, dd2 = 0.0F, dd = 0.0F, de = 0.0F;
     float e1 = 0.0F, e2 = 0.0F;
-    float x1 = static_cast<float>(*lastx), x2 = static_cast<float>(*lastx), dx = 0.0F;
-    float y1 = static_cast<float>(*lasty), y2 = static_cast<float>(*lasty), dy = 0.0F;
-    float z1 = static_cast<float>(*lastz), z2 = static_cast<float>(*lastz), dz = 0.0F;
+    float x1 = static_cast<float>(*lastx), x2 = static_cast<float>(*lastx),
+          dx = 0.0F;
+    float y1 = static_cast<float>(*lasty), y2 = static_cast<float>(*lasty),
+          dy = 0.0F;
+    float z1 = static_cast<float>(*lastz), z2 = static_cast<float>(*lastz),
+          dz = 0.0F;
     float interp = 0.0F;
     int i = 0, ix = 0, iy = 0, iz = 0;
     int index1 = 0, index2 = 0;
     int index3 = 0, index4 = 0;
 
     xmax = xarray[numx - 1];
-    xmin = xarray[   0];
+    xmin = xarray[0];
     ymax = yarray[numy - 1];
-    ymin = yarray[   0];
+    ymin = yarray[0];
     zmax = zarray[numz - 1];
-    zmin = zarray[   0];
+    zmin = zarray[0];
 
     /*-------------------------------------------------*/
     /* LIMIT INDEPENDENT VARIABLES TO TABLE BOUNDARIES */
@@ -1739,12 +1770,12 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
                 break;
             }
         }
-
     }
 
     dx = x2 - x1;
 
-    if ( not dx) dx = 1; //me123 incase theres only one number in the dat file
+    if (not dx)
+        dx = 1; //me123 incase theres only one number in the dat file
 
     /*-------------------------------------------------*/
     /* If there is a last y use it as a starting point */
@@ -1805,12 +1836,12 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
                 break;
             }
         }
-
     }
 
     dy = y2 - y1;
 
-    if ( not dy) dy = 1; //me123 incase theres only one number in the dat file
+    if (not dy)
+        dy = 1; //me123 incase theres only one number in the dat file
 
     /*-------------------------------------------------*/
     /* If there is a last z use it as a starting point */
@@ -1871,12 +1902,12 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
                 break;
             }
         }
-
     }
 
     dz = z2 - z1;
 
-    if ( not dz) dz = 1; //me123 incase theres only one number in the dat file
+    if (not dz)
+        dz = 1; //me123 incase theres only one number in the dat file
 
     /*----------------------------------*/
     /* x INTERPOLATION AT z BREAKPOINT  */
@@ -1890,15 +1921,15 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dd2 = data[index3] - data[index4];
 
-    d1  = data[index2] + (xinpt - x1) * dd1 / dx;
+    d1 = data[index2] + (xinpt - x1) * dd1 / dx;
 
-    d2  = data[index4] + (xinpt - x1) * dd2 / dx;
+    d2 = data[index4] + (xinpt - x1) * dd2 / dx;
 
     /*---------------------------------*/
     /* y INTERPOLATION AT z BREAKPOINT */
     /*---------------------------------*/
-    dd  = d2 - d1;
-    e1  = d1 + (yinpt - y1) * dd / dy;
+    dd = d2 - d1;
+    e1 = d1 + (yinpt - y1) * dd / dy;
 
     /*-----------------------------------*/
     /* x INTERPOLATION AT z+1 BREAKPOINT */
@@ -1912,20 +1943,20 @@ SIM_FLOAT SIMLIB_MATH_CLASS::ThreedInterp(SIM_FLOAT x, SIM_FLOAT y, SIM_FLOAT z,
 
     dd2 = data[index3] - data[index4];
 
-    d1  = data[index2] + (xinpt - x1) * dd1 / dx;
+    d1 = data[index2] + (xinpt - x1) * dd1 / dx;
 
-    d2  = data[index4] + (xinpt - x1) * dd2 / dx;
+    d2 = data[index4] + (xinpt - x1) * dd2 / dx;
 
     /*-----------------------------------*/
     /* y INTERPOLATION AT z+1 BREAKPOINT */
     /*-----------------------------------*/
-    dd  = d2 - d1;
-    e2  = d1 + (yinpt - y1) * dd / dy;
+    dd = d2 - d1;
+    e2 = d1 + (yinpt - y1) * dd / dy;
 
     /*-----------------*/
     /* z INTERPOLATION */
     /*-----------------*/
-    de    = e2 - e1;
+    de = e2 - e1;
     interp = e1 + (zinpt - z1) * de / dz;
     return (interp);
 }

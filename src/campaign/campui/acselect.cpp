@@ -1,14 +1,14 @@
 #include <windows.h>
-#include "Mesg.h"
+#include "mesg.h"
 #include "find.h"
 #include "cmpclass.h"
-#include "MsgInc/RequestAircraftSlot.h"
+#include "msginc/requestaircraftslot.h"
 #include "uicomms.h"
 #include "ui_cmpgn.h"
-#include "FalcSess.h"
-#include "DispCfg.h"
-#include "Flight.h"
-#include "ACSelect.h"
+#include "falcsess.h"
+#include "dispcfg.h"
+#include "flight.h"
+#include "acselect.h"
 
 
 // ======================================================================
@@ -19,12 +19,13 @@
 //
 // ======================================================================
 
-BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill, int ac_type, int player)
+BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill,
+                   int ac_type, int player)
 {
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+    target = (VuTargetEntity *)vuDatabase->Find(FalconLocalGame->OwnerId());
 
     if (flight)
     {
@@ -47,8 +48,10 @@ BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill, int
     {
         msg->dataBlock.request_type = REQUEST_SLOT_JOIN_PLAYER;
 
-        if (FalconLocalSession->GetPlayerFlight() == flight and FalconLocalSession->GetPilotSlot() < 255)
-            msg->dataBlock.current_pilot_slot = FalconLocalSession->GetPilotSlot();
+        if (FalconLocalSession->GetPlayerFlight() == flight and
+            FalconLocalSession->GetPilotSlot() < 255)
+            msg->dataBlock.current_pilot_slot =
+                FalconLocalSession->GetPilotSlot();
         else
             msg->dataBlock.current_pilot_slot = 255;
 
@@ -61,7 +64,7 @@ BOOL RequestACSlot(Flight flight, uchar team, uchar plane_slot, uchar skill, int
     }
 
     FalconSendMessage(msg, TRUE);
-    return(TRUE);
+    return (TRUE);
 }
 
 void LeaveACSlot(Flight flight, uchar plane_slot)
@@ -69,10 +72,10 @@ void LeaveACSlot(Flight flight, uchar plane_slot)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if ( not flight)
+    if (not flight)
         return;
 
-    target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+    target = (VuTargetEntity *)vuDatabase->Find(FalconLocalGame->OwnerId());
     msg = new UI_RequestAircraftSlot(flight->Id(), target);
     msg->dataBlock.requesting_session = FalconLocalSessionId;
     msg->dataBlock.game_type = FalconLocalGame->GetGameType();
@@ -86,10 +89,10 @@ void RequestFlightDelete(Flight flight)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if ( not flight)
+    if (not flight)
         return;
 
-    target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+    target = (VuTargetEntity *)vuDatabase->Find(FalconLocalGame->OwnerId());
     msg = new UI_RequestAircraftSlot(flight->Id(), target);
     msg->dataBlock.game_type = FalconLocalGame->GetGameType();
     msg->dataBlock.request_type = REQUEST_FLIGHT_DELETE;
@@ -102,10 +105,10 @@ void RequestTeamChange(Flight flight, int newteam)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if ( not flight)
+    if (not flight)
         return;
 
-    target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+    target = (VuTargetEntity *)vuDatabase->Find(FalconLocalGame->OwnerId());
     msg = new UI_RequestAircraftSlot(flight->Id(), target);
     msg->dataBlock.game_type = FalconLocalGame->GetGameType();
     msg->dataBlock.team = newteam;
@@ -119,10 +122,10 @@ void RequestTypeChange(Flight flight, int newtype)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if ( not flight)
+    if (not flight)
         return;
 
-    target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+    target = (VuTargetEntity *)vuDatabase->Find(FalconLocalGame->OwnerId());
     msg = new UI_RequestAircraftSlot(flight->Id(), target);
     msg->dataBlock.game_type = FalconLocalGame->GetGameType();
     msg->dataBlock.request_type = REQUEST_TYPE_CHANGE;
@@ -136,10 +139,10 @@ void RequestCallsignChange(Flight flight, int newcallsign)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if ( not flight)
+    if (not flight)
         return;
 
-    target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+    target = (VuTargetEntity *)vuDatabase->Find(FalconLocalGame->OwnerId());
     msg = new UI_RequestAircraftSlot(flight->Id(), target);
     msg->dataBlock.game_type = FalconLocalGame->GetGameType();
     msg->dataBlock.team = flight->GetTeam();
@@ -154,10 +157,10 @@ void RequestSkillChange(Flight flight, int plane_slot, int newskill)
     UI_RequestAircraftSlot *msg;
     VuTargetEntity *target;
 
-    if ( not flight)
+    if (not flight)
         return;
 
-    target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+    target = (VuTargetEntity *)vuDatabase->Find(FalconLocalGame->OwnerId());
     msg = new UI_RequestAircraftSlot(flight->Id(), target);
     msg->dataBlock.game_type = FalconLocalGame->GetGameType();
     msg->dataBlock.team = flight->GetTeam();

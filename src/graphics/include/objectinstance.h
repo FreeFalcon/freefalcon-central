@@ -8,7 +8,7 @@
 #ifndef _OBJECTINSTANCE_H_
 #define _OBJECTINSTANCE_H_
 
-#include "ObjectParent.h"
+#include "objectparent.h"
 
 
 typedef struct DOFvalue
@@ -63,25 +63,29 @@ public:
 
         // Artscout - 2026: NULL-guard the switch array (nSwitches can be > 0 while SwitchValues is
         // NULL -- object built without its switch array). See DrawableBSP::SetSwitchMask.
-        if (SwitchValues != NULL && id < ParentObject->nSwitches) SwitchValues[id] = value;
+        if (SwitchValues != NULL && id < ParentObject->nSwitches)
+            SwitchValues[id] = value;
     };
     void SetDOFrotation(int id, float r)
     {
         ShiAssert(id < ParentObject->nDOFs);
 
-        if (id < ParentObject->nDOFs) DOFValues[id].rotation = r;
+        if (id < ParentObject->nDOFs)
+            DOFValues[id].rotation = r;
     };
     void SetDOFxlation(int id, float x)
     {
         ShiAssert(id < ParentObject->nDOFs);
 
-        if (id < ParentObject->nDOFs) DOFValues[id].translation = x;
+        if (id < ParentObject->nDOFs)
+            DOFValues[id].translation = x;
     };
     void SetSlotChild(int id, ObjectInstance *o)
     {
         ShiAssert(id < ParentObject->nSlots);
 
-        if (id < ParentObject->nSlots)SlotChildren[id] = o;
+        if (id < ParentObject->nSlots)
+            SlotChildren[id] = o;
     };
     void SetTextureSet(int id);
     int GetNTextureSet()

@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -33,7 +34,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -51,7 +53,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -63,7 +66,6 @@ private:
     void (*Callback_)(void *rec);
 
 public:
-
     C_Hash();
     ~C_Hash();
 
@@ -76,10 +78,10 @@ public:
     }
     long GetFlags()
     {
-        return(flags_);
+        return (flags_);
     }
 
-    void SetCallback(void (*cb)(void*))
+    void SetCallback(void (*cb)(void *))
     {
         Callback_ = cb;
     }
@@ -90,7 +92,7 @@ public:
     }
     long GetCheck()
     {
-        return(Check_);
+        return (Check_);
     }
 
     void *Find(long ID);

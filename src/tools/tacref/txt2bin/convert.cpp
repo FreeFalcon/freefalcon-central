@@ -13,42 +13,42 @@
 //#include "/falcon4/ui/include/tacref.h"
 
 // Prototypes
-char  *SkipJunk(char *lnptr);
-char  *GetALine(char *lnptr, char *seps);
-long  Text2Long(char *txt);
+char *SkipJunk(char *lnptr);
+char *GetALine(char *lnptr, char *seps);
+long Text2Long(char *txt);
 short Text2Short(char *txt);
 short CheckToken(char *line);
-void  WriteLong(long lnum);
-void  WriteShort(short snum);
-void  WriteText(char *txt);
-void  DoBegEntity();
-void  DoBegStat();
-void  DoBegCat();
-void  DoBegText();
-void  DoBegRwr();
-void  DoEndEntity();
-void  DoEndStat();
-void  DoEndCat();
-void  DoEndText();
-void  DoEndRwr();
-void  DoDescript();
-void  InitVar();
-void  InitRwrKeep();
-void  InitDescKeep();
-void  InitCatKeep();
-void  InitCatInTxtKeep();
-void  DoParse();
-void  CreateBin();
+void WriteLong(long lnum);
+void WriteShort(short snum);
+void WriteText(char *txt);
+void DoBegEntity();
+void DoBegStat();
+void DoBegCat();
+void DoBegText();
+void DoBegRwr();
+void DoEndEntity();
+void DoEndStat();
+void DoEndCat();
+void DoEndText();
+void DoEndRwr();
+void DoDescript();
+void InitVar();
+void InitRwrKeep();
+void InitDescKeep();
+void InitCatKeep();
+void InitCatInTxtKeep();
+void DoParse();
+void CreateBin();
 //void  Conv2Bin     ();
-void  Conv2Bin(char *ifname, char *ofname);
+void Conv2Bin(char *ifname, char *ofname);
 
-const MAXTOKEN      = 10;
-const MAXFUNC       = 10;
+const MAXTOKEN = 10;
+const MAXFUNC = 10;
 const MAXCATKEEPTXT = 1000;
-const MAXCATKEEP    = 150;
-const MAXRWRKEEP    = 150;
-const MAXDESCKEEP   = 150;
-const MAXINTXTKEEP  = 150;
+const MAXCATKEEP = 150;
+const MAXRWRKEEP = 150;
+const MAXDESCKEEP = 150;
+const MAXINTXTKEEP = 150;
 
 enum
 {
@@ -60,92 +60,65 @@ enum
 };
 
 // Globals
-HDC   gblhdc;
-HWND  gblhwnd;
-RECT  gblrect;
+HDC gblhdc;
+HWND gblhwnd;
+RECT gblrect;
 
-int   ifh, ofh;
-long  flen;
+int ifh, ofh;
+long flen;
 short toktype;
 short where; // current chunk
 short txthd; // 1 means text collection header created, else 0
 short ttlentity, ttlstat, ttlcat, ttltxt, ttlrwr;
 short ttlcatstrhead;
-char  *trdata; // points 2 current token
-char  *startentity, *startstat, *startcat, *starttxt, *startrwr;
-char  *startdata, *endingdata; // start and end of database
-char  *nextdata;
-char  *tokens[ MAXTOKEN ] =
-{
-    "BEGIN_ENTITY",
-    "BEGIN_STAT",
-    "BEGIN_CAT",
-    "BEGIN_TEXT",
-    "END_TEXT",
-    "END_CAT",
-    "END_STAT",
-    "END_ENTITY",
-    "BEGIN_RWR",
-    "END_RWR"
-};
+char *trdata; // points 2 current token
+char *startentity, *startstat, *startcat, *starttxt, *startrwr;
+char *startdata, *endingdata; // start and end of database
+char *nextdata;
+char *tokens[MAXTOKEN] = {
+    "BEGIN_ENTITY", "BEGIN_STAT", "BEGIN_CAT",  "BEGIN_TEXT", "END_TEXT",
+    "END_CAT",      "END_STAT",   "END_ENTITY", "BEGIN_RWR",  "END_RWR"};
 
-short tokmap[MAXTOKEN] =
-{
-    _ENTITY_,
-    _STATS_,
-    _CATEGORY_,
-    _TEXT_,
-    0,
-    0,
-    0,
-    0,
-    _RWR_DATA_,
-    0
-};
+short tokmap[MAXTOKEN] = {_ENTITY_, _STATS_, _CATEGORY_, _TEXT_,     0,
+                          0,        0,       0,          _RWR_DATA_, 0};
 char *backn = "\n";
 
-void (*tokfunc[MAXFUNC])() =
-{
-    DoBegEntity,
-    DoBegStat,
-    DoBegCat,
-    DoBegText,
-    DoEndText,
-    DoEndCat,
-    DoEndStat,
-    DoEndEntity,
-    DoBegRwr,
-    DoEndRwr
-};
-struct Header         *Enthead, *Stathead, *Cathead, *Stringhead;
-struct Header         *Rwrhead, *Deschead;
-struct Entity         *Entityptr;
-struct Category       *Catptr;
-struct TextString     *Txtptr, *DescTxtptr;
+void (*tokfunc[MAXFUNC])() = {DoBegEntity, DoBegStat, DoBegCat,  DoBegText,
+                              DoEndText,   DoEndCat,  DoEndStat, DoEndEntity,
+                              DoBegRwr,    DoEndRwr};
+struct Header *Enthead, *Stathead, *Cathead, *Stringhead;
+struct Header *Rwrhead, *Deschead;
+struct Entity *Entityptr;
+struct Category *Catptr;
+struct TextString *Txtptr, *DescTxtptr;
 struct Text4CatString *CatInTxtptr;
-struct RWR_Data       *Rwrptr;
+struct RWR_Data *Rwrptr;
 
-char   *CatKeepptr;
-char   *CatKeeptxt[MAXCATKEEPTXT]; // for keeping Cat text pointers
-char   *CatHeadKeep[MAXCATKEEP]; // for keeping Cat header pointers
-char   *CatPtrKeep[MAXCATKEEP]; // for keeping Cat chunk pointers
-char   *CatStrKeep[MAXCATKEEP]; // for keeping Cat String header pointers
-char   *CatInTxtKeep[MAXCATKEEP][MAXINTXTKEEP]; // 4 keeping Cat Inside Text Str struc ptrs in 1 string header
-char   *CatInChildKeep[MAXCATKEEP][MAXINTXTKEEP]; // 4 keeping Cat string data pointers in 1 string header
-char   *CatInChildTxt;
+char *CatKeepptr;
+char *CatKeeptxt[MAXCATKEEPTXT]; // for keeping Cat text pointers
+char *CatHeadKeep[MAXCATKEEP]; // for keeping Cat header pointers
+char *CatPtrKeep[MAXCATKEEP]; // for keeping Cat chunk pointers
+char *CatStrKeep[MAXCATKEEP]; // for keeping Cat String header pointers
+char *CatInTxtKeep
+    [MAXCATKEEP]
+    [MAXINTXTKEEP]; // 4 keeping Cat Inside Text Str struc ptrs in 1 string header
+char *CatInChildKeep
+    [MAXCATKEEP]
+    [MAXINTXTKEEP]; // 4 keeping Cat string data pointers in 1 string header
+char *CatInChildTxt;
 
-char   *RwrHeadKeep[MAXRWRKEEP]; // ptrs 2 RWR heads in 1 entity
-char   *RwrPtrKeep [MAXRWRKEEP]; // ptrs 2 RWR data ptrs in 1 entity
-char   *DescHeadKeep; // ptr 2 Description header in 1 ent
-char   *DescPtrKeep [MAXDESCKEEP]; // ptrs 2 Description data ptrs in 1 ent
-char   *DescChildKeep[MAXDESCKEEP]; // ptrs 2 Desc child texts in 1 entity
-char   *DescChildTxt;
-long   curtxtidx;
-long   currwridx;
-long   curdesidx;
-long   curcatidx;
-long   curintxtidx;
-long   catintxtidxkeep[MAXCATKEEP];
+char *RwrHeadKeep[MAXRWRKEEP]; // ptrs 2 RWR heads in 1 entity
+char *RwrPtrKeep[MAXRWRKEEP]; // ptrs 2 RWR data ptrs in 1 entity
+char *DescHeadKeep; // ptr 2 Description header in 1 ent
+char *DescPtrKeep[MAXDESCKEEP]; // ptrs 2 Description data ptrs in 1 ent
+char *DescChildKeep[MAXDESCKEEP]; // ptrs 2 Desc child texts in 1 entity
+char *DescChildTxt;
+long curtxtidx;
+long currwridx;
+long curdesidx;
+long curcatidx;
+long curintxtidx;
+long catintxtidxkeep[MAXCATKEEP];
 
 LRESULT CALLBACK WinProc(HWND, UINT, WPARAM, LPARAM);
 
@@ -155,7 +128,7 @@ char *SkipJunk(char *lnptr)
     char *dblslh = "//";
     char *newlnptr, *token;
 
-    token    = strtok(lnptr, backn); // get 1st token
+    token = strtok(lnptr, backn); // get 1st token
     newlnptr = token;
 
     /* While there are tokens in "string" */
@@ -164,13 +137,14 @@ char *SkipJunk(char *lnptr)
         /* Get next token: */
         token = strtok(NULL, backn);
 
-        if (token) newlnptr = token;
+        if (token)
+            newlnptr = token;
     }
 
     // put back linefeed since it's replaced
     //len = strlen( token );
     //token[len] = 0x0A;
-    return(newlnptr);
+    return (newlnptr);
 }
 
 // Write a long number
@@ -194,7 +168,7 @@ void WriteText(char *txt)
 {
     long numwr, len;
 
-    len   = strlen(txt);
+    len = strlen(txt);
     numwr = _write(ofh, txt, len);
 }
 
@@ -204,7 +178,7 @@ long Text2Long(char *txt)
     long lnum;
 
     lnum = atol(txt);
-    return(lnum);
+    return (lnum);
 }
 
 // Text 2 Short
@@ -213,7 +187,7 @@ short Text2Short(char *txt)
     short snum;
 
     snum = atoi(txt);
-    return(snum);
+    return (snum);
 }
 
 // Get a line to check
@@ -224,7 +198,7 @@ char *GetALine(char *lnptr, char *seps)
 
     newlnptr = strtok(lnptr, seps);
     nextdata = newlnptr + strlen(newlnptr) + 1;
-    return(newlnptr);
+    return (newlnptr);
 }
 
 // Check tokens
@@ -232,15 +206,15 @@ char *GetALine(char *lnptr, char *seps)
 short CheckToken(char *line)
 {
     short i, tokentype;
-    long  len;
+    long len;
 
-    tokentype   = -1;
-    len         = strlen(line);
+    tokentype = -1;
+    len = strlen(line);
     line[len - 1] = '\0'; // replace a 0xD
 
     for (i = 0; i < MAXTOKEN; i++)
     {
-        if (!strcmp(tokens[i], line))   // got it
+        if (!strcmp(tokens[i], line)) // got it
         {
             tokentype = i;
             break;
@@ -249,42 +223,44 @@ short CheckToken(char *line)
 
     line[len - 1] = 0xD; // put it back
 
-    return(tokentype);
+    return (tokentype);
 }
 
 // Process Begin Entity token
 void DoBegEntity()
 {
-    long  lGroupID, lSubGroupID, lEntityID;
+    long lGroupID, lSubGroupID, lEntityID;
     short lModelID, len, i;
-    char  *tptr;
+    char *tptr;
 
     where = _ENTITY_;
 
-    if (!Enthead)   Enthead   = new Header;
+    if (!Enthead)
+        Enthead = new Header;
 
-    if (!Entityptr) Entityptr = new Entity;
+    if (!Entityptr)
+        Entityptr = new Entity;
 
     Enthead->type = tokmap[toktype];
-    trdata   = nextdata;
-    trdata   = GetALine(trdata, backn); // GroupID
+    trdata = nextdata;
+    trdata = GetALine(trdata, backn); // GroupID
     lGroupID = Text2Long(trdata);
     Entityptr->GroupID = lGroupID;
 
-    trdata      = nextdata;
-    trdata      = GetALine(trdata, backn); // SubGroupID
+    trdata = nextdata;
+    trdata = GetALine(trdata, backn); // SubGroupID
     lSubGroupID = Text2Long(trdata);
     Entityptr->SubGroupID = lSubGroupID;
 
-    trdata    = nextdata;
-    trdata    = GetALine(trdata, backn); // EntityID
+    trdata = nextdata;
+    trdata = GetALine(trdata, backn); // EntityID
     lEntityID = Text2Long(trdata);
     Entityptr->EntityID = lEntityID;
 
     ttlentity += (3 * sizeof(long));
 
-    trdata   = nextdata;
-    trdata   = GetALine(trdata, backn); // ModelID
+    trdata = nextdata;
+    trdata = GetALine(trdata, backn); // ModelID
     lModelID = Text2Short(trdata);
     Entityptr->ModelID = lModelID;
 
@@ -292,8 +268,8 @@ void DoBegEntity()
 
     trdata = nextdata;
     trdata = GetALine(trdata, backn); // EntityName
-    len    = strlen(trdata);
-    tptr   = (char *)&Entityptr->Name[0];
+    len = strlen(trdata);
+    tptr = (char *)&Entityptr->Name[0];
 
     for (i = 0; i < len - 1; i++)
     {
@@ -310,21 +286,24 @@ void DoEndEntity()
 {
     short i, j;
 
-    where         = _ENDENTITY_;
-    ttlentity     += (2 * sizeof(short));
+    where = _ENDENTITY_;
+    ttlentity += (2 * sizeof(short));
     Enthead->size = ttlentity;
     // Write it here
     CreateBin();
 
-    if (Enthead)   delete Enthead;
+    if (Enthead)
+        delete Enthead;
 
     Enthead = NULL;
 
-    if (Entityptr) delete Entityptr;
+    if (Entityptr)
+        delete Entityptr;
 
     Entityptr = NULL;
 
-    if (Stathead)   delete Stathead;
+    if (Stathead)
+        delete Stathead;
 
     Stathead = NULL;
 
@@ -366,7 +345,7 @@ void DoEndEntity()
     InitDescKeep();
     curcatidx = 0;
     ttlcatstrhead = 0;
-    curintxtidx   = 0;
+    curintxtidx = 0;
     InitCatKeep();
     InitCatInTxtKeep();
 }
@@ -374,8 +353,8 @@ void DoEndEntity()
 // Process Begin Stat token
 void DoBegStat()
 {
-    where     = _STATS_;
-    Stathead  = new Header;
+    where = _STATS_;
+    Stathead = new Header;
     ttlentity += (2 * sizeof(short)); // for the header
     Stathead->type = tokmap[toktype];
 }
@@ -383,7 +362,7 @@ void DoBegStat()
 // Process End Stat token
 void DoEndStat()
 {
-    where          = _ENDSTAT_;
+    where = _ENDSTAT_;
     Stathead->size = ttlstat;
     ttlstat = 0;
 }
@@ -392,21 +371,21 @@ void DoEndStat()
 void DoBegCat()
 {
     short len, i;
-    char  *tptr;
+    char *tptr;
 
-    where   = _CATEGORY_;
+    where = _CATEGORY_;
     Cathead = new Header;
     CatHeadKeep[curcatidx] = (char *)Cathead;
-    Catptr  = new Category;
-    CatPtrKeep[curcatidx]  = (char *)Catptr;
+    Catptr = new Category;
+    CatPtrKeep[curcatidx] = (char *)Catptr;
     ttlentity += (2 * sizeof(short)); // for the header
-    ttlstat   += (2 * sizeof(short)); // for the header
+    ttlstat += (2 * sizeof(short)); // for the header
     Cathead->type = tokmap[toktype];
 
     trdata = nextdata;
     trdata = GetALine(trdata, backn); // CatText
-    len    = strlen(trdata);
-    tptr   = (char *)&Catptr->Name[0];
+    len = strlen(trdata);
+    tptr = (char *)&Catptr->Name[0];
 
     for (i = 0; i < len - 1; i++)
     {
@@ -425,17 +404,19 @@ void DoEndCat()
 {
     long i;
 
-    where  = _ENDCAT_;
+    where = _ENDCAT_;
     Cathead->size = ttlcat;
     ttlcat = 0;
 
-    if (Cathead) delete Cathead;
+    if (Cathead)
+        delete Cathead;
 
     Cathead = NULL;
 
-    if (Catptr)  delete Catptr;
+    if (Catptr)
+        delete Catptr;
 
-    Catptr  = NULL;
+    Catptr = NULL;
 
     for (i = 0; i < curtxtidx; i++)
     {
@@ -449,25 +430,25 @@ void DoBegText()
 {
     short len, lcount;
     short i;
-    char  *tptr;
-    char  *endmark = "END_TEXT";
-    char  *newlnptr;
-    char  *token;
-    long  lXrefGroup, lXrefSubGroup, lEntityID;
+    char *tptr;
+    char *endmark = "END_TEXT";
+    char *newlnptr;
+    char *token;
+    long lXrefGroup, lXrefSubGroup, lEntityID;
 
-    curtxtidx  = 0; // currently Not Used
+    curtxtidx = 0; // currently Not Used
 
-    if (where == _CATEGORY_)   //
+    if (where == _CATEGORY_) //
     {
         Stringhead = new Header;
         CatStrKeep[curcatidx] = (char *)Stringhead;
-        Stringhead->type      = tokmap[toktype];
-        ttlentity  += (2 * sizeof(short));
-        ttlstat    += (2 * sizeof(short));
-        ttlcat     += (2 * sizeof(short));
+        Stringhead->type = tokmap[toktype];
+        ttlentity += (2 * sizeof(short));
+        ttlstat += (2 * sizeof(short));
+        ttlcat += (2 * sizeof(short));
 
         trdata = nextdata;
-        token  = strtok(trdata, backn); // get 1st token
+        token = strtok(trdata, backn); // get 1st token
         lcount = 0;
 
         /* While there are tokens in "string" */
@@ -483,12 +464,13 @@ void DoBegText()
                 CatInTxtptr = new Text4CatString;
                 CatInTxtKeep[curcatidx][curintxtidx] = (char *)CatInTxtptr;
 
-                len  = strlen(token);
+                len = strlen(token);
 
-                if (len == 1) len++;
+                if (len == 1)
+                    len++;
 
                 CatInTxtptr->length = len;
-                CatInChildTxt       = new char[len];
+                CatInChildTxt = new char[len];
                 CatInChildKeep[curcatidx][curintxtidx] = CatInChildTxt;
                 tptr = CatInChildTxt;
 
@@ -498,15 +480,16 @@ void DoBegText()
                     tptr++;
                 }
 
-                *tptr         = '\0';
-                ttlentity     += len;
-                ttlstat       += len;
-                ttlcat        += len;
+                *tptr = '\0';
+                ttlentity += len;
+                ttlstat += len;
+                ttlcat += len;
                 ttlcatstrhead += len;
                 //
                 token = strtok(NULL, backn);
 
-                if (token) newlnptr = token;
+                if (token)
+                    newlnptr = token;
 
                 if ((strncmp(token, "END_TEXT", 8)))
                 {
@@ -514,33 +497,36 @@ void DoBegText()
                     curintxtidx++;
                 }
             }
-            else   // End mark found, look ahead
+            else // End mark found, look ahead
             {
                 // get the 3 xrefs
-                trdata     = token + strlen(token) + 1;
-                trdata     = GetALine(trdata, backn); // XrefGroup
+                trdata = token + strlen(token) + 1;
+                trdata = GetALine(trdata, backn); // XrefGroup
                 lXrefGroup = Text2Long(trdata);
                 CatInTxtptr->GroupID = lXrefGroup;
 
-                trdata        = nextdata;
-                trdata        = GetALine(trdata, backn); // XrefSubGroup
+                trdata = nextdata;
+                trdata = GetALine(trdata, backn); // XrefSubGroup
                 lXrefSubGroup = Text2Long(trdata);
                 CatInTxtptr->SubGroupID = lXrefSubGroup;
 
-                trdata    = nextdata;
-                trdata    = GetALine(trdata, backn); // XrefVehicle or EntityID
+                trdata = nextdata;
+                trdata = GetALine(trdata, backn); // XrefVehicle or EntityID
                 lEntityID = Text2Long(trdata);
                 CatInTxtptr->EntityID = lEntityID;
 
-                ttlentity     += (lcount * (sizeof(short) + (3 * sizeof(long)))); // 11/23/98
-                ttlstat       += (lcount * (sizeof(short) + (3 * sizeof(long))));
-                ttlcat        += (lcount * (sizeof(short) + (3 * sizeof(long))));
-                ttlcatstrhead += (lcount * (sizeof(short) + (3 * sizeof(long))));
-                lcount        = 0; // reset
+                ttlentity +=
+                    (lcount * (sizeof(short) + (3 * sizeof(long)))); // 11/23/98
+                ttlstat += (lcount * (sizeof(short) + (3 * sizeof(long))));
+                ttlcat += (lcount * (sizeof(short) + (3 * sizeof(long))));
+                ttlcatstrhead +=
+                    (lcount * (sizeof(short) + (3 * sizeof(long))));
+                lcount = 0; // reset
 
                 tptr = nextdata;
 
-                if (!(strncmp(tptr, "END_CAT", 7)))   // no more text block, the end of a Cat
+                if (!(strncmp(tptr, "END_CAT",
+                              7))) // no more text block, the end of a Cat
                 {
                     trdata = tptr;
                     curintxtidx++;
@@ -563,14 +549,14 @@ void DoBegText()
 
         if (!(strncmp(token, "BEGIN_CAT", 9)))
         {
-            trdata           = token; // more Cat
-            nextdata         = token;
-            Cathead->size    = ttlcat; // save previous Cat chunk size
-            ttlcat           = 0; // reset 4 next cat
+            trdata = token; // more Cat
+            nextdata = token;
+            Cathead->size = ttlcat; // save previous Cat chunk size
+            ttlcat = 0; // reset 4 next cat
             Stringhead->size = ttlcatstrhead;
-            ttlcatstrhead    = 0;
+            ttlcatstrhead = 0;
             catintxtidxkeep[curcatidx] = curintxtidx;
-            curintxtidx      = 0; // NEED 2 save this first
+            curintxtidx = 0; // NEED 2 save this first
             curcatidx++;
             return;
         }
@@ -578,10 +564,10 @@ void DoBegText()
         // Advance to Description text
         /* While there are tokens in "string" */
         catintxtidxkeep[curcatidx] = curintxtidx; // 4 the last Cat
-        Cathead->size    = ttlcat; // save previous Cat chunk size
-        ttlcat           = 0;
+        Cathead->size = ttlcat; // save previous Cat chunk size
+        ttlcat = 0;
         Stringhead->size = ttlcatstrhead;
-        ttlcatstrhead    = 0;
+        ttlcatstrhead = 0;
         curcatidx++; // 4 loop sake
 
         while (token)
@@ -591,14 +577,15 @@ void DoBegText()
                 /* Not Description Text yet, Get next token */
                 token = strtok(NULL, backn);
 
-                if (token) newlnptr = token;
+                if (token)
+                    newlnptr = token;
             }
-            else   // Beginning of Description text found
+            else // Beginning of Description text found
             {
                 Stathead->size = ttlstat;
-                trdata         = token;
-                nextdata       = token;
-                where          = _ENDSTAT_;
+                trdata = token;
+                nextdata = token;
+                where = _ENDSTAT_;
                 // Do the description here
                 DoDescript();
                 break;
@@ -618,15 +605,15 @@ void DoDescript()
 {
     short lZoomAdjust, lVertical, lHoriz, lMissile;
     short len, i;
-    char  *newlnptr;
-    char  *token, *tptr;
+    char *newlnptr;
+    char *token, *tptr;
     short ttldesctxt;
 
-    Deschead       = new Header;
+    Deschead = new Header;
     Deschead->type = _DESCRIPTION_;
-    DescHeadKeep   = (char *)Deschead;
-    ttlentity      += (2 * sizeof(short));
-    ttldesctxt     = 0;
+    DescHeadKeep = (char *)Deschead;
+    ttlentity += (2 * sizeof(short));
+    ttldesctxt = 0;
 
     token = trdata;
     token = strtok(NULL, backn);
@@ -639,14 +626,15 @@ void DoDescript()
             /* Not End Text yet, Copy token & Get next token */
             DescTxtptr = new TextString;
             DescPtrKeep[curdesidx] = (char *)DescTxtptr;
-            ttlentity  += (sizeof(short));
+            ttlentity += (sizeof(short));
 
             len = strlen(token);
 
-            if (len == 1) len++;
+            if (len == 1)
+                len++;
 
             DescTxtptr->length = len;
-            DescChildTxt       = new char[len];
+            DescChildTxt = new char[len];
             DescChildKeep[curdesidx] = DescChildTxt;
             tptr = DescChildTxt;
 
@@ -656,25 +644,26 @@ void DoDescript()
                 tptr++;
             }
 
-            *tptr      = '\0';
-            ttlentity  += len;
+            *tptr = '\0';
+            ttlentity += len;
             ttldesctxt += len + sizeof(short);
             curdesidx++;
 
             token = strtok(NULL, backn);
 
-            if (token) newlnptr = token;
+            if (token)
+                newlnptr = token;
         }
-        else   // End of Text block found
+        else // End of Text block found
         {
             // Get some values here
-            trdata      = token + strlen(token) + 1;
-            trdata      = GetALine(trdata, backn); // ZoomAdjust
+            trdata = token + strlen(token) + 1;
+            trdata = GetALine(trdata, backn); // ZoomAdjust
             lZoomAdjust = Text2Short(trdata);
             Entityptr->ZoomAdjust = lZoomAdjust;
 
-            trdata    = nextdata;
-            trdata    = GetALine(trdata, backn); // Vert Offset
+            trdata = nextdata;
+            trdata = GetALine(trdata, backn); // Vert Offset
             lVertical = Text2Short(trdata);
             Entityptr->VerticalOffset = lVertical;
 
@@ -683,16 +672,16 @@ void DoDescript()
             lHoriz = Text2Short(trdata);
             Entityptr->HorizontalOffset = lHoriz;
 
-            trdata   = nextdata;
-            trdata   = GetALine(trdata, backn); // MissileFlag
+            trdata = nextdata;
+            trdata = GetALine(trdata, backn); // MissileFlag
             lMissile = Text2Short(trdata);
             Entityptr->MissileFlag = lMissile;
 
             ttlentity += (4 * sizeof(short));
-            trdata    = nextdata;
-            trdata    = GetALine(trdata, backn); // Photo fname
-            len       = strlen(trdata);
-            tptr      = (char *)&Entityptr->PhotoFile[0];
+            trdata = nextdata;
+            trdata = GetALine(trdata, backn); // Photo fname
+            len = strlen(trdata);
+            tptr = (char *)&Entityptr->PhotoFile[0];
 
             for (i = 0; i < len - 1; i++)
             {
@@ -700,8 +689,8 @@ void DoDescript()
                 tptr++;
             }
 
-            *tptr          = '\0';
-            ttlentity      += 32; // fix length
+            *tptr = '\0';
+            ttlentity += 32; // fix length
             Deschead->size = ttldesctxt;
             break;
         }
@@ -714,11 +703,13 @@ void DoEndText()
     where = _ENDTEXT_;
     Stringhead->size = ttltxt;
 
-    if (Stringhead) delete Stringhead;
+    if (Stringhead)
+        delete Stringhead;
 
     Stringhead = NULL;
 
-    if (Txtptr)     delete Txtptr;
+    if (Txtptr)
+        delete Txtptr;
 
     Txtptr = NULL;
 }
@@ -728,20 +719,20 @@ void DoBegRwr()
 {
     short lSearchSymbol, lLockSymbol;
     short len, i;
-    long  lSearchTone, lLockTone;
-    char  *tptr;
+    long lSearchTone, lLockTone;
+    char *tptr;
 
-    where   = _RWR_DATA_;
+    where = _RWR_DATA_;
     Rwrhead = new Header;
     RwrHeadKeep[currwridx] = (char *)Rwrhead;
-    Rwrptr  = new RWR_Data;
-    RwrPtrKeep[currwridx]  = (char *)Rwrptr;
+    Rwrptr = new RWR_Data;
+    RwrPtrKeep[currwridx] = (char *)Rwrptr;
 
     Rwrhead->type = tokmap[toktype];
     trdata = nextdata;
     trdata = GetALine(trdata, backn); // RWRNAME
-    len    = strlen(trdata);
-    tptr   = (char *)&Rwrptr->Name[0];
+    len = strlen(trdata);
+    tptr = (char *)&Rwrptr->Name[0];
 
     for (i = 0; i < len - 1; i++)
     {
@@ -749,43 +740,43 @@ void DoBegRwr()
         tptr++;
     }
 
-    *tptr     = '\0';
+    *tptr = '\0';
     ttlentity += 32; // fix length
-    ttlrwr    += 32;
+    ttlrwr += 32;
 
     trdata = nextdata;
     trdata = GetALine(trdata, backn); // SearchSymbol
-    lSearchSymbol       = Text2Short(trdata);
+    lSearchSymbol = Text2Short(trdata);
     Rwrptr->SearchState = lSearchSymbol;
     ttlentity += (sizeof(short));
-    ttlrwr    += (sizeof(short));
+    ttlrwr += (sizeof(short));
 
     trdata = nextdata;
     trdata = GetALine(trdata, backn); // SearchTone
-    lSearchTone        = Text2Long(trdata);
+    lSearchTone = Text2Long(trdata);
     Rwrptr->SearchTone = lSearchTone;
     ttlentity += (sizeof(long));
-    ttlrwr    += (sizeof(long));
+    ttlrwr += (sizeof(long));
 
     trdata = nextdata;
     trdata = GetALine(trdata, backn); // LockSymbol
-    lLockSymbol       = Text2Short(trdata);
+    lLockSymbol = Text2Short(trdata);
     Rwrptr->LockState = lLockSymbol;
     ttlentity += (sizeof(short));
-    ttlrwr    += (sizeof(short));
+    ttlrwr += (sizeof(short));
 
     trdata = nextdata;
     trdata = GetALine(trdata, backn); // LockTone
-    lLockTone        = Text2Long(trdata);
+    lLockTone = Text2Long(trdata);
     Rwrptr->LockTone = lLockTone;
     ttlentity += (sizeof(long));
-    ttlrwr    += (sizeof(long));
+    ttlrwr += (sizeof(long));
 }
 
 // Process End Rwr token
 void DoEndRwr()
 {
-    where  = _ENDRWR_;
+    where = _ENDRWR_;
     Rwrhead->size = ttlrwr;
     currwridx++; // ready 4 next memory
     ttlrwr = 0; // current RWR total size
@@ -800,7 +791,7 @@ void DoParse()
 
     while (!Prsdone)
     {
-        trdata  = GetALine(trdata, backn);
+        trdata = GetALine(trdata, backn);
         toktype = CheckToken(trdata);
 
         if (toktype != -1)
@@ -821,25 +812,25 @@ void InitVar()
 {
     long i;
 
-    ttlentity  = ttlstat = ttlcat = ttltxt = ttlrwr = 0;
-    Enthead    = NULL;
-    Entityptr  = NULL;
-    Stathead   = NULL;
-    Cathead    = NULL;
-    Catptr     = NULL;
+    ttlentity = ttlstat = ttlcat = ttltxt = ttlrwr = 0;
+    Enthead = NULL;
+    Entityptr = NULL;
+    Stathead = NULL;
+    Cathead = NULL;
+    Catptr = NULL;
     Stringhead = NULL;
-    Txtptr     = NULL;
-    Rwrhead    = NULL;
-    Rwrptr     = NULL;
+    Txtptr = NULL;
+    Rwrhead = NULL;
+    Rwrptr = NULL;
 
-    currwridx     = 0;
+    currwridx = 0;
     InitRwrKeep();
-    curdesidx     = 0;
-    DescHeadKeep  = NULL;
+    curdesidx = 0;
+    DescHeadKeep = NULL;
     InitDescKeep();
-    curcatidx     = 0;
+    curcatidx = 0;
     ttlcatstrhead = 0;
-    curintxtidx   = 0;
+    curintxtidx = 0;
     InitCatKeep();
     InitCatInTxtKeep();
 
@@ -856,7 +847,7 @@ void InitRwrKeep()
     for (i = 0; i < MAXRWRKEEP; i++)
     {
         RwrHeadKeep[i] = NULL;
-        RwrPtrKeep[i]  = NULL;
+        RwrPtrKeep[i] = NULL;
     }
 }
 
@@ -866,7 +857,7 @@ void InitDescKeep()
 
     for (i = 0; i < MAXDESCKEEP; i++)
     {
-        DescPtrKeep[i]   = NULL;
+        DescPtrKeep[i] = NULL;
         DescChildKeep[i] = NULL;
     }
 }
@@ -877,9 +868,9 @@ void InitCatKeep()
 
     for (i = 0; i < MAXCATKEEP; i++)
     {
-        CatHeadKeep[i]     = NULL;
-        CatPtrKeep[i]      = NULL;
-        CatStrKeep[i]      = NULL;
+        CatHeadKeep[i] = NULL;
+        CatPtrKeep[i] = NULL;
+        CatStrKeep[i] = NULL;
         catintxtidxkeep[i] = 0;
     }
 }
@@ -892,7 +883,7 @@ void InitCatInTxtKeep()
     {
         for (i = 0; i < MAXINTXTKEEP; i++)
         {
-            CatInTxtKeep[j][i]   = NULL;
+            CatInTxtKeep[j][i] = NULL;
             CatInChildKeep[j][i] = NULL;
         }
     }
@@ -901,37 +892,38 @@ void InitCatInTxtKeep()
 // Write out An Entity chunk
 void CreateBin()
 {
-    long  numwr;
-    long  lnum;
+    long numwr;
+    long lnum;
     short snum, i, j, qty, k;
-    char  *tcptr;
-    char  tbuff[80];
+    char *tcptr;
+    char tbuff[80];
 
     // Entity Record
     numwr = 0;
-    snum  = Enthead->type;
+    snum = Enthead->type;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = Enthead->size;
+    snum = Enthead->size;
     numwr += _write(ofh, &snum, sizeof(short));
-    lnum  = Entityptr->GroupID;
+    lnum = Entityptr->GroupID;
     numwr += _write(ofh, &lnum, sizeof(long));
-    lnum  = Entityptr->SubGroupID;
+    lnum = Entityptr->SubGroupID;
     numwr += _write(ofh, &lnum, sizeof(long));
-    lnum  = Entityptr->EntityID;
+    lnum = Entityptr->EntityID;
     numwr += _write(ofh, &lnum, sizeof(long));
-    snum  = Entityptr->ModelID;
+    snum = Entityptr->ModelID;
     numwr += _write(ofh, &snum, sizeof(short));
 
-    snum  = Entityptr->ZoomAdjust;
+    snum = Entityptr->ZoomAdjust;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = Entityptr->VerticalOffset;
+    snum = Entityptr->VerticalOffset;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = Entityptr->HorizontalOffset;
+    snum = Entityptr->HorizontalOffset;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = Entityptr->MissileFlag;
+    snum = Entityptr->MissileFlag;
     numwr += _write(ofh, &snum, sizeof(short));
 
-    for (k = 0; k < 80; k++) tbuff[k] = '\0';
+    for (k = 0; k < 80; k++)
+        tbuff[k] = '\0';
 
     tcptr = Entityptr->Name;
     strcpy(tbuff, tcptr);
@@ -939,66 +931,67 @@ void CreateBin()
     numwr += _write(ofh, tcptr, 32); // fix length
     tcptr = Entityptr->PhotoFile;
 
-    for (k = 0; k < 80; k++) tbuff[k] = '\0';
+    for (k = 0; k < 80; k++)
+        tbuff[k] = '\0';
 
     strcpy(tbuff, tcptr);
     tcptr = tbuff;
     numwr += _write(ofh, tcptr, 32); // fix length
 
     // Statistics Record (only a header)
-    snum  = ((struct Header *)Stathead)->type;
+    snum = ((struct Header *)Stathead)->type;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = ((struct Header *)Stathead)->size;
+    snum = ((struct Header *)Stathead)->size;
     numwr += _write(ofh, &snum, sizeof(short));
 
     //
     // Category Record
     for (i = 0; i < curcatidx; i++)
     {
-        snum  = ((struct Header *)CatHeadKeep[i])->type;
+        snum = ((struct Header *)CatHeadKeep[i])->type;
         numwr += _write(ofh, &snum, sizeof(short));
-        snum  = ((struct Header *)CatHeadKeep[i])->size;
+        snum = ((struct Header *)CatHeadKeep[i])->size;
         numwr += _write(ofh, &snum, sizeof(short));
         numwr = 0;
         tcptr = ((struct Category *)CatPtrKeep[i])->Name;
 
-        for (k = 0; k < 80; k++) tbuff[k] = '\0';
+        for (k = 0; k < 80; k++)
+            tbuff[k] = '\0';
 
         strcpy(tbuff, tcptr);
         tcptr = tbuff;
         numwr += _write(ofh, tcptr, 40); // fix length
 
         // Category text
-        snum  = ((struct Header *)CatStrKeep[i])->type;
+        snum = ((struct Header *)CatStrKeep[i])->type;
         numwr += _write(ofh, &snum, sizeof(short));
-        snum  = ((struct Header *)CatStrKeep[i])->size;
+        snum = ((struct Header *)CatStrKeep[i])->size;
         numwr += _write(ofh, &snum, sizeof(short));
-        qty   = (short) catintxtidxkeep[i];
+        qty = (short)catintxtidxkeep[i];
 
-        for (j = 0; j < qty ; j++)
+        for (j = 0; j < qty; j++)
         {
-            lnum  = ((struct Text4CatString *)CatInTxtKeep[i][j])->GroupID;
+            lnum = ((struct Text4CatString *)CatInTxtKeep[i][j])->GroupID;
             numwr += _write(ofh, &lnum, sizeof(long));
-            lnum  = ((struct Text4CatString *)CatInTxtKeep[i][j])->SubGroupID;
+            lnum = ((struct Text4CatString *)CatInTxtKeep[i][j])->SubGroupID;
             numwr += _write(ofh, &lnum, sizeof(long));
-            lnum  = ((struct Text4CatString *)CatInTxtKeep[i][j])->EntityID;
+            lnum = ((struct Text4CatString *)CatInTxtKeep[i][j])->EntityID;
             numwr += _write(ofh, &lnum, sizeof(long));
 
 
-            snum  = ((struct Text4CatString *)CatInTxtKeep[i][j])->length;
+            snum = ((struct Text4CatString *)CatInTxtKeep[i][j])->length;
             numwr += _write(ofh, &snum, sizeof(short));
             tcptr = CatInChildKeep[i][j];
 
             if (*tcptr == 0x0d)
             {
                 *tcptr = 0x0;
-                numwr  += _write(ofh, tcptr, 2);
+                numwr += _write(ofh, tcptr, 2);
             }
             else
             {
-                numwr  += _write(ofh, tcptr, strlen(tcptr) + 1);
+                numwr += _write(ofh, tcptr, strlen(tcptr) + 1);
             }
-
         }
 
         if (numwr != ((struct Header *)CatHeadKeep[i])->size)
@@ -1010,51 +1003,52 @@ void CreateBin()
     }
 
     // Description Record (header... no data)
-    snum  = ((struct Header *)DescHeadKeep)->type;
+    snum = ((struct Header *)DescHeadKeep)->type;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = ((struct Header *)DescHeadKeep)->size;
+    snum = ((struct Header *)DescHeadKeep)->size;
     numwr += _write(ofh, &snum, sizeof(short));
 
     // Description text
     for (i = 0; i < curdesidx; i++)
     {
         // Description text
-        snum  = ((struct TextString *)DescPtrKeep[i])->length;
+        snum = ((struct TextString *)DescPtrKeep[i])->length;
         numwr += _write(ofh, &snum, sizeof(short));
         tcptr = DescChildKeep[i];
 
         if (*tcptr == 0x0d)
         {
-            *tcptr  = 0x0;
-            numwr   += _write(ofh, tcptr, 2);
+            *tcptr = 0x0;
+            numwr += _write(ofh, tcptr, 2);
         }
         else
         {
-            numwr   += _write(ofh, tcptr, strlen(tcptr) + 1);
+            numwr += _write(ofh, tcptr, strlen(tcptr) + 1);
         }
     }
 
     //
-    snum  = _RWR_DATA_;
+    snum = _RWR_DATA_;
     numwr += _write(ofh, &snum, sizeof(short));
-    snum  = currwridx * sizeof(struct RWR_Data); // can be 0 if no RWR data
+    snum = currwridx * sizeof(struct RWR_Data); // can be 0 if no RWR data
     numwr += _write(ofh, &snum, sizeof(short));
 
     // RWR Record
     for (i = 0; i < currwridx; i++)
     {
-        snum  = ((struct RWR_Data *)RwrPtrKeep[i])->SearchState;
+        snum = ((struct RWR_Data *)RwrPtrKeep[i])->SearchState;
         numwr += _write(ofh, &snum, sizeof(short));
-        snum  = ((struct RWR_Data *)RwrPtrKeep[i])->LockState;
+        snum = ((struct RWR_Data *)RwrPtrKeep[i])->LockState;
         numwr += _write(ofh, &snum, sizeof(short));
-        lnum  = ((struct RWR_Data *)RwrPtrKeep[i])->SearchTone;
+        lnum = ((struct RWR_Data *)RwrPtrKeep[i])->SearchTone;
         numwr += _write(ofh, &lnum, sizeof(long));
-        lnum  = ((struct RWR_Data *)RwrPtrKeep[i])->LockTone;
+        lnum = ((struct RWR_Data *)RwrPtrKeep[i])->LockTone;
         numwr += _write(ofh, &lnum, sizeof(long));
 
         tcptr = ((struct RWR_Data *)RwrPtrKeep[i])->Name;
 
-        for (k = 0; k < 80; k++) tbuff[k] = '\0';
+        for (k = 0; k < 80; k++)
+            tbuff[k] = '\0';
 
         strcpy(tbuff, tcptr);
         tcptr = tbuff;
@@ -1067,8 +1061,8 @@ void CreateBin()
 //void Conv2Bin()
 void Conv2Bin(char *ifname, char *ofname)
 {
-    // char *ifname = "D:\\falcon4\\TOOLS\\tacref\\tacrefdb.txt";
-    // char *ofname = "D:\\falcon4\\TOOLS\\tacref\\tacrefdb.bin";
+    // char *ifname = "D:/falcon4/TOOLS/tacref/tacrefdb.txt";
+    // char *ofname = "D:/falcon4/TOOLS/tacref/tacrefdb.bin";
     long bytesread;
 
     ifh = _open(ifname, _O_BINARY | _O_RDONLY);
@@ -1081,11 +1075,13 @@ void Conv2Bin(char *ifname, char *ofname)
 
     //DrawText( gblhdc, "File Opened for Reading!", -1, &gblrect, DT_SINGLELINE);
 
-    ofh = _open(ofname, _O_TRUNC | _O_CREAT | _O_BINARY | _O_WRONLY, _S_IREAD | _S_IWRITE);
+    ofh = _open(ofname, _O_TRUNC | _O_CREAT | _O_BINARY | _O_WRONLY,
+                _S_IREAD | _S_IWRITE);
 
     if (ofh == -1)
     {
-        if (ifh) _close(ifh);
+        if (ifh)
+            _close(ifh);
 
         printf("Can't create output file (%s)\n", ofname);
         return;
@@ -1095,25 +1091,29 @@ void Conv2Bin(char *ifname, char *ofname)
     flen = _filelength(ifh);
     /* Allocate space for dumping database file  */
     trdata = NULL;
-    trdata = (char *) malloc(flen);
+    trdata = (char *)malloc(flen);
 
     if (!trdata)
     {
         // Error, printf( "Insufficient memory !\n" );
-        if (ifh) _close(ifh);
+        if (ifh)
+            _close(ifh);
 
-        if (ofh) _close(ofh);
+        if (ofh)
+            _close(ofh);
 
         return;
     }
 
     // reads in the database file
-    if ((bytesread = (long) _read(ifh, trdata, flen)) <= 0)
+    if ((bytesread = (long)_read(ifh, trdata, flen)) <= 0)
     {
         // Error, perror( "Problem reading file" );
-        if (ifh)    _close(ifh);
+        if (ifh)
+            _close(ifh);
 
-        if (ofh)    _close(ofh);
+        if (ofh)
+            _close(ofh);
 
         if (trdata)
         {
@@ -1124,10 +1124,10 @@ void Conv2Bin(char *ifname, char *ofname)
         return;
     }
 
-    startdata   = trdata;
-    endingdata  = startdata + flen;
+    startdata = trdata;
+    endingdata = startdata + flen;
 
-    trdata      = SkipJunk(trdata);
+    trdata = SkipJunk(trdata);
     startentity = trdata;
     InitVar();
     // Conversion
@@ -1135,12 +1135,14 @@ void Conv2Bin(char *ifname, char *ofname)
 
     _close(ifh);
     _close(ofh);
-    DrawText(gblhdc, "Both files are Closed !            ", -1, &gblrect, DT_SINGLELINE);
+    DrawText(gblhdc, "Both files are Closed !            ", -1, &gblrect,
+             DT_SINGLELINE);
 
     free(startdata);
 }
 
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdShow)
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine,
+                   int iCmdShow)
 {
     /*
      static     char szAppName[] = "convert";
@@ -1217,7 +1219,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdSho
      }
      return(msg.lParam);
     */
-    return(0);
+    return (0);
 }
 /*
 LRESULT CALLBACK WinProc (HWND hwnd, UINT message,WPARAM wParam,LPARAM lParam)

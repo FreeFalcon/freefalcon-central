@@ -1,11 +1,12 @@
 #ifndef _ATCCMDMSG_H
 #define _ATCCMDMSG_H
+#include <cstdint>
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#pragma pack (1)
-#include "InvalidBufferException.h"
+#pragma pack(1)
+#include "invalidbufferexception.h"
 
 /*
  * Message Type ATC Command
@@ -42,7 +43,8 @@ public:
         ExitSim
     };
 
-    FalconATCCmdMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconATCCmdMessage(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     FalconATCCmdMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconATCCmdMessage(void);
     virtual int Size() const
@@ -70,10 +72,9 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         unsigned int type;
-        long rwtime;
+        int32_t rwtime;
         short rwindex;
         VU_ID follow;
     } dataBlock;
@@ -81,6 +82,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

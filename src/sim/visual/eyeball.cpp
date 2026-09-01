@@ -2,8 +2,8 @@
 #include "simfile.h"
 #include "object.h"
 #include "eyeball.h"
-#include "Graphics/Include/display.h"
-#include "Graphics/Include/tod.h"
+#include "graphics/include/display.h"
+#include "graphics/include/tod.h"
 #include "simbase.h"
 #include "entity.h"
 #include "simmath.h"
@@ -13,29 +13,32 @@
 /* S.G. FOR AIRCRAFT DAMAGE */ #include "aircrft.h"
 /* S.G. FOR AIRCRAFT DUST/WATER TRAIL */ #include "airframe.h"
 /* S.G. FOR SKILL LEVEL */ #include "digi.h"
-/* S.G. FOR SKILL LEVEL */ #include "Classtbl.h"
+/* S.G. FOR SKILL LEVEL */ #include "classtbl.h"
 
-/* M.N. for draw radius */ #include "Graphics/Include/Drawobj.h"
+/* M.N. for draw radius */ #include "graphics/include/drawobj.h"
 
 extern bool g_bEnableWeatherExtensions;
 extern bool g_bAddACSizeVisual;
 extern float g_fVisualNormalizeFactor;
 
-extern int g_nAIVisualRetentionTime; // 2002-03-12 S.G. How long before AI looses the lock.
-extern int g_nAIVisualRetentionSkill; // 2002-03-12 S.G. How long before AI looses the lock (skill base)
+extern int
+    g_nAIVisualRetentionTime; // 2002-03-12 S.G. How long before AI looses the lock.
+extern int
+    g_nAIVisualRetentionSkill; // 2002-03-12 S.G. How long before AI looses the lock (skill base)
 
-EyeballClass::EyeballClass(int idx, SimMoverClass* self) : VisualClass(idx, self)
+EyeballClass::EyeballClass(int idx, SimMoverClass* self)
+    : VisualClass(idx, self)
 {
     visualType = EYEBALL;
 }
 
 SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
 {
-    SimObjectType *newLock;
+    SimObjectType* newLock;
     SimObjectType* tmpPtr = newTargetList;
 
 
-    if ( not lockedTarget)
+    if (not lockedTarget)
         return lockedTarget;
 
     // Validate our locked target
@@ -47,13 +50,13 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     {
 
         // Can't hold a lock if its outside our sensor cone
-        if ( not CanSeeObject(lockedTarget))
+        if (not CanSeeObject(lockedTarget))
         {
             newLock = NULL;
         }
 
         // Can't hold lock if the object is too far away or is occluded
-        if ( not CanDetectObject(lockedTarget))
+        if (not CanDetectObject(lockedTarget))
         {
             newLock = NULL;
         }
@@ -64,11 +67,15 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
     int retentionTime = 32 * SEC_TO_MSEC;
 
     // Now look if we (ourself) are a vehicle. Only vehicle have a brain.
-    Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)platform->EntityType();
+    Falcon4EntityClassType* classPtr =
+        (Falcon4EntityClassType*)platform->EntityType();
 
     // If we are, get our skill and from it, calculate the 'retention time'
-    if (classPtr->dataType == DTYPE_VEHICLE and ((SimVehicleClass *)platform) and ((SimVehicleClass *)platform)->Brain())
-        retentionTime = ((SimVehicleClass *)platform)->Brain()->SkillLevel() * g_nAIVisualRetentionSkill + g_nAIVisualRetentionTime;
+    if (classPtr->dataType == DTYPE_VEHICLE and ((SimVehicleClass*)platform) and
+        ((SimVehicleClass*)platform)->Brain())
+        retentionTime = ((SimVehicleClass*)platform)->Brain()->SkillLevel() *
+                            g_nAIVisualRetentionSkill +
+                        g_nAIVisualRetentionTime;
 
     // END OF ADDED SECTION
 
@@ -83,13 +90,16 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
 
             if (newLock == NULL and lockedTarget == NULL)
             {
-                newLock = tmpPtr;//Cobra added this because new detects are being passedto newLock
+                newLock =
+                    tmpPtr; //Cobra added this because new detects are being passedto newLock
             }
         }
         else
         {
             // ADDED BY S.G. SO AI WILL 'LOOSE' SIGHT OF ITS TARGET IF IT 'DISAPPEARED' LONG ENOUGH
-            if ((unsigned int)tmpPtr->localData->sensorLoopCount[Type()] + retentionTime < SimLibElapsedTime)
+            if ((unsigned int)tmpPtr->localData->sensorLoopCount[Type()] +
+                    retentionTime <
+                SimLibElapsedTime)
                 // END OF ADDED SECTION
                 tmpPtr->localData->sensorState[Type()] = NoTrack;
         }
@@ -99,7 +109,10 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
 
     // Update our lock
     // ADDED BY S.G. THIS CODE WILL SET THE LOCK IF newLock IS NON NULL OR IF IT IS NULL AND THE TARGET WAS LOST LONG ENOUGH
-    if (newLock == NULL and lockedTarget and (unsigned int)lockedTarget->localData->sensorLoopCount[Visual] + retentionTime >= SimLibElapsedTime)
+    if (newLock == NULL and lockedTarget and
+        (unsigned int) lockedTarget->localData->sensorLoopCount[Visual] +
+                retentionTime >=
+            SimLibElapsedTime)
         SetSensorTarget(lockedTarget);
     else
         // END OF ADDED SECTION
@@ -119,7 +132,8 @@ SimObjectType* EyeballClass::Exec(SimObjectType* newTargetList)
         // ADDED BY S.G. ONLY UPDATE THE LOCK TIME IF WE HAVE A VISUAL LOCK ON HIM
         if (lockedTarget == newLock)
             // END OF ADDED SECTION
-            lockedTarget->localData->sensorLoopCount[Visual] = SimLibElapsedTime;
+            lockedTarget->localData->sensorLoopCount[Visual] =
+                SimLibElapsedTime;
     }
 
     return lockedTarget;
@@ -136,8 +150,8 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     float bonus = 1.25F;
     float objAlt = -obj->BaseData()->ZPos() * 0.001F;
 
-    FalconEntity *object = obj->BaseData();
-    SimBaseClass *theObject = NULL;
+    FalconEntity* object = obj->BaseData();
+    SimBaseClass* theObject = NULL;
     SimObjectLocalData* localData = NULL;
     localData = obj->localData;
 
@@ -163,26 +177,30 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     {
         if (object->IsAirplane())
         {
-            AircraftClass *aircraft = (AircraftClass *)object;
-            Falcon4EntityClassType* classPtr = (Falcon4EntityClassType*)aircraft->EntityType();
+            AircraftClass* aircraft = (AircraftClass*)object;
+            Falcon4EntityClassType* classPtr =
+                (Falcon4EntityClassType*)aircraft->EntityType();
 
             //aircraft->dropFlareCmd == TRUE;
             //Night
             if (light < 0.3)
             {
                 // Are the exterior lights turned on?
-                if (
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LIGHTS) or
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_NAVLIGHTS) or
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_TAILSTROBE) or
-                    aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LANDINGLIGHT)
-                )
+                if (aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_LIGHTS) or
+                    aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_NAVLIGHTS) or
+                    aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_TAILSTROBE) or
+                    aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_LANDINGLIGHT))
                 {
                     visDetMod = max(visDetMod, 30);
                 }
 
                 //Are we in Afterburner?
-                if (aircraft->af->GetHasAB() and aircraft->PowerOutput() > 1.0f and bogeyAngle > 20.0f)
+                if (aircraft->af->GetHasAB() and
+                    aircraft->PowerOutput() > 1.0f and bogeyAngle > 20.0f)
                 {
                     visDetMod = max(visDetMod, 30);
                 }
@@ -211,13 +229,12 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 {
                     return (0.0f);
                 }
-
             }
             //DAY
             else
             {
                 // Contrails
-                if (objAlt > ((WeatherClass*)realWeather)->contrailLow and 
+                if (objAlt > ((WeatherClass*)realWeather)->contrailLow and
                     objAlt < ((WeatherClass*)realWeather)->contrailHigh)
                 {
                     visDetMod = 10.0f;
@@ -236,8 +253,9 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 }
 
                 // MIL smoking aircraft
-                if ( not aircraft->OnGround() and 
-                    aircraft->PowerOutput() <= 1.0f and aircraft->PowerOutput() > 0.90f)
+                if (not aircraft->OnGround() and
+                    aircraft->PowerOutput() <= 1.0f and
+                    aircraft->PowerOutput() > 0.90f)
                 {
                     float smoke = aircraft->af->EngineSmokeFactor();
 
@@ -258,22 +276,26 @@ float EyeballClass::GetSignature(SimObjectType* obj)
                 // END OF ADDED SECTION (WITHIN CODE I ADDED)
 
                 // Are the exterior lights turned on?
-                if (aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LIGHTS))
+                if (aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_LIGHTS))
                 {
                     visDetMod = max(visDetMod, 10);
                 }
 
-                if (aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_NAVLIGHTS))
+                if (aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_NAVLIGHTS))
                 {
                     visDetMod = max(visDetMod, 10);
                 }
 
-                if (aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_TAILSTROBE))
+                if (aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_TAILSTROBE))
                 {
                     visDetMod = max(visDetMod, 10);
                 }
 
-                if (aircraft->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LANDINGLIGHT))
+                if (aircraft->IsAcStatusBitsSet(
+                        AircraftClass::ACSTATUS_EXT_LANDINGLIGHT))
                 {
                     visDetMod = max(visDetMod, 10);
                 }
@@ -375,4 +397,3 @@ float EyeballClass::GetSignature(SimObjectType* obj)
     // Visual acuity is proportional to light level
     return (lightBonus + TheTimeOfDay.GetLightLevel() * bonus) * visualSignature;*/
 }
-

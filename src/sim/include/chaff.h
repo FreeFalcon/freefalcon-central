@@ -8,14 +8,15 @@ class ChaffClass : public BombClass
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(ChaffClass));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -37,20 +38,21 @@ private:
     virtual void SpecialGraphics();
 
 public:
-    ChaffClass(VU_BYTE** stream, long *rem);
+    ChaffClass(VU_BYTE** stream, long* rem);
     ChaffClass(FILE* filePtr);
     ChaffClass(int type);
     virtual ~ChaffClass();
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
-public:
 
+public:
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream); // returns bytes written
-    virtual int Save(FILE *file); // returns bytes written
+    virtual int Save(VU_BYTE** stream); // returns bytes written
+    virtual int Save(FILE* file); // returns bytes written
 
     virtual int Wake(void);
     virtual int Sleep(void);

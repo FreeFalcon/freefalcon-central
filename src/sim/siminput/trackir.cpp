@@ -14,8 +14,8 @@
 //*********************************************************************/
 #include "stdhdr.h"
 
-#include "TrackIR.h"
-#include "OTWDrive.h"
+#include "trackir.h"
+#include "otwdrive.h"
 #include "sinput.h"
 
 //#define DEBUG_TRACKIR_STUFF 0
@@ -63,16 +63,16 @@ extern float g_fTIR2DPitchPercentage;
 //////////////////
 /// Defines //////////////////////////////////////////////////////////////////////
 /////////////////
-#define         VERSION_MAJOR           1
-#define         VERSION_MINOR           0
-#define         VERSION_BUILD           1
+#define VERSION_MAJOR 1
+#define VERSION_MINOR 0
+#define VERSION_BUILD 1
 
 // magic to get the preprocessor to do what we want
 #define lita(arg) #arg
 #define xlita(arg) lita(arg)
-#define cat3(w,x,z) w##.##x##.##z##\000
-#define xcat3(w,x,z) cat3(w,x,z)
-#define VERSION_STRING xlita(xcat3(VERSION_MAJOR,VERSION_MINOR,VERSION_BUILD))
+#define cat3(w, x, z) w##.##x##.##z##\000
+#define xcat3(w, x, z) cat3(w, x, z)
+#define VERSION_STRING xlita(xcat3(VERSION_MAJOR, VERSION_MINOR, VERSION_BUILD))
 
 //
 // Versioning hasn't been worked out yet...
@@ -106,19 +106,28 @@ extern float g_fTIR2DPitchPercentage;
 #define NPZ 64 // +/- 16383 [data = input - 16383]
 
 // raw object position from imager
-#define NPRawX 128 // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
-#define NPRawY 256  // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
-#define NPRawZ 512  // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
+#define NPRawX                                                                 \
+    128 // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
+#define NPRawY                                                                 \
+    256 // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
+#define NPRawZ                                                                 \
+    512 // 0..25600 (actual value is multiplied x 100 to pass two decimal places of precision)  [data = input / 100]
 
 // x, y, z deltas from raw imager position
-#define NPDeltaX 1024 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
-#define NPDeltaY 2048 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
-#define NPDeltaZ 4096 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
+#define NPDeltaX                                                               \
+    1024 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
+#define NPDeltaY                                                               \
+    2048 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
+#define NPDeltaZ                                                               \
+    4096 // +/- 2560 (actual value is multiplied x 10 to pass two decimal places of precision)  [data = (input / 10) - 256]
 
 // raw object position from imager
-#define NPSmoothX 8192   // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
-#define NPSmoothY 16384  // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
-#define NPSmoothZ 32768  // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
+#define NPSmoothX                                                              \
+    8192 // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
+#define NPSmoothY                                                              \
+    16384 // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
+#define NPSmoothZ                                                              \
+    32768 // 0..32766 (actual value is multiplied x 10 to pass one decimal place of precision) [data = input / 10]
 
 
 //////////////////
@@ -142,7 +151,7 @@ typedef struct tagTrackIRData
 {
     unsigned short wNPStatus;
     unsigned short wPFrameSignature;
-    unsigned long  dwNPIOData;
+    unsigned long dwNPIOData;
 
     float fNPRoll;
     float fNPPitch;
@@ -174,7 +183,7 @@ typedef NPRESULT(__stdcall *PF_NOTIFYCALLBACK)(unsigned short, unsigned short);
 typedef NPRESULT(__stdcall *PF_NP_REGISTERWINDOWHANDLE)(HWND);
 typedef NPRESULT(__stdcall *PF_NP_UNREGISTERWINDOWHANDLE)(void);
 typedef NPRESULT(__stdcall *PF_NP_REGISTERPROGRAMPROFILEID)(unsigned short);
-typedef NPRESULT(__stdcall *PF_NP_QUERYVERSION)(unsigned short*);
+typedef NPRESULT(__stdcall *PF_NP_QUERYVERSION)(unsigned short *);
 typedef NPRESULT(__stdcall *PF_NP_REQUESTDATA)(unsigned short);
 typedef NPRESULT(__stdcall *PF_NP_GETDATA)(LPTRACKIRDATA);
 typedef NPRESULT(__stdcall *PF_NP_REGISTERNOTIFY)(PF_NOTIFYCALLBACK);
@@ -194,7 +203,7 @@ typedef NPRESULT(__stdcall *PF_NP_STOPDATATRANSMISSION)(void);
 NPRESULT __stdcall NP_RegisterWindowHandle(HWND);
 NPRESULT __stdcall NP_UnregisterWindowHandle(void);
 NPRESULT __stdcall NP_RegisterProgramProfileID(unsigned short wPPID);
-NPRESULT __stdcall NP_QueryVersion(unsigned short* pwVersion);
+NPRESULT __stdcall NP_QueryVersion(unsigned short *pwVersion);
 NPRESULT __stdcall NP_RequestData(unsigned short wDataReq);
 NPRESULT __stdcall NP_GetData(LPTRACKIRDATA pTID);
 NPRESULT __stdcall NP_RegisterNotify(PF_NOTIFYCALLBACK pfNotify);
@@ -213,16 +222,16 @@ NPRESULT __stdcall NP_StopDataTransmission(void);
 // Global Data ///////////////////////////////////////////////////////////////////
 /////////////////
 //
-PF_NP_REGISTERWINDOWHANDLE       gpfNP_RegisterWindowHandle = NULL;
-PF_NP_UNREGISTERWINDOWHANDLE     gpfNP_UnregisterWindowHandle = NULL;
-PF_NP_REGISTERPROGRAMPROFILEID   gpfNP_RegisterProgramProfileID = NULL;
-PF_NP_QUERYVERSION               gpfNP_QueryVersion = NULL;
-PF_NP_REQUESTDATA                gpfNP_RequestData = NULL;
-PF_NP_GETDATA                    gpfNP_GetData = NULL;
-PF_NP_STARTCURSOR                gpfNP_StartCursor = NULL;
-PF_NP_STOPCURSOR                 gpfNP_StopCursor = NULL;
-PF_NP_STARTDATATRANSMISSION      gpfNP_StartDataTransmission = NULL;
-PF_NP_STOPDATATRANSMISSION       gpfNP_StopDataTransmission = NULL;
+PF_NP_REGISTERWINDOWHANDLE gpfNP_RegisterWindowHandle = NULL;
+PF_NP_UNREGISTERWINDOWHANDLE gpfNP_UnregisterWindowHandle = NULL;
+PF_NP_REGISTERPROGRAMPROFILEID gpfNP_RegisterProgramProfileID = NULL;
+PF_NP_QUERYVERSION gpfNP_QueryVersion = NULL;
+PF_NP_REQUESTDATA gpfNP_RequestData = NULL;
+PF_NP_GETDATA gpfNP_GetData = NULL;
+PF_NP_STARTCURSOR gpfNP_StartCursor = NULL;
+PF_NP_STOPCURSOR gpfNP_StopCursor = NULL;
+PF_NP_STARTDATATRANSMISSION gpfNP_StartDataTransmission = NULL;
+PF_NP_STOPDATATRANSMISSION gpfNP_StopDataTransmission = NULL;
 
 HMODULE ghNPClientDLL = (HMODULE)NULL;
 
@@ -263,7 +272,7 @@ NPRESULT __stdcall NP_RegisterProgramProfileID(unsigned short wPPID)
 } // NP_RegisterProgramProfileID()
 
 
-NPRESULT __stdcall NP_QueryVersion(unsigned short* pwVersion)
+NPRESULT __stdcall NP_QueryVersion(unsigned short *pwVersion)
 {
     NPRESULT result = NP_ERR_DLL_NOT_FOUND;
 
@@ -353,7 +362,7 @@ NPRESULT __stdcall NP_StopDataTransmission()
 // There´s a 200byte mem-leak here too...
 //
 //*********************************************************************/
-NPRESULT NPClient_Init(char* csDLLPath)
+NPRESULT NPClient_Init(char *csDLLPath)
 {
 
     NPRESULT result = NP_OK;
@@ -368,17 +377,29 @@ NPRESULT NPClient_Init(char* csDLLPath)
     if (NULL not_eq ghNPClientDLL)
     {
         // Get addresses of all exported functions
-        gpfNP_RegisterWindowHandle     = (PF_NP_REGISTERWINDOWHANDLE)GetProcAddress(ghNPClientDLL, "NP_RegisterWindowHandle");
-        gpfNP_UnregisterWindowHandle   = (PF_NP_UNREGISTERWINDOWHANDLE)GetProcAddress(ghNPClientDLL, "NP_UnregisterWindowHandle");
-        gpfNP_RegisterProgramProfileID = (PF_NP_REGISTERPROGRAMPROFILEID)GetProcAddress(ghNPClientDLL, "NP_RegisterProgramProfileID");
-        gpfNP_QueryVersion             = (PF_NP_QUERYVERSION)GetProcAddress(ghNPClientDLL, "NP_QueryVersion");
-        gpfNP_RequestData              = (PF_NP_REQUESTDATA)GetProcAddress(ghNPClientDLL, "NP_RequestData");
-        gpfNP_GetData                  = (PF_NP_GETDATA)GetProcAddress(ghNPClientDLL, "NP_GetData");
-        gpfNP_StartCursor              = (PF_NP_STARTCURSOR)GetProcAddress(ghNPClientDLL, "NP_StartCursor");
-        gpfNP_StopCursor               = (PF_NP_STOPCURSOR)GetProcAddress(ghNPClientDLL, "NP_StopCursor");
-        gpfNP_StartDataTransmission    = (PF_NP_STARTDATATRANSMISSION)GetProcAddress(ghNPClientDLL, "NP_StartDataTransmission");
-        gpfNP_StopDataTransmission     = (PF_NP_STOPDATATRANSMISSION)GetProcAddress(ghNPClientDLL, "NP_StopDataTransmission");
-
+        gpfNP_RegisterWindowHandle = (PF_NP_REGISTERWINDOWHANDLE)GetProcAddress(
+            ghNPClientDLL, "NP_RegisterWindowHandle");
+        gpfNP_UnregisterWindowHandle =
+            (PF_NP_UNREGISTERWINDOWHANDLE)GetProcAddress(
+                ghNPClientDLL, "NP_UnregisterWindowHandle");
+        gpfNP_RegisterProgramProfileID =
+            (PF_NP_REGISTERPROGRAMPROFILEID)GetProcAddress(
+                ghNPClientDLL, "NP_RegisterProgramProfileID");
+        gpfNP_QueryVersion = (PF_NP_QUERYVERSION)GetProcAddress(
+            ghNPClientDLL, "NP_QueryVersion");
+        gpfNP_RequestData =
+            (PF_NP_REQUESTDATA)GetProcAddress(ghNPClientDLL, "NP_RequestData");
+        gpfNP_GetData =
+            (PF_NP_GETDATA)GetProcAddress(ghNPClientDLL, "NP_GetData");
+        gpfNP_StartCursor =
+            (PF_NP_STARTCURSOR)GetProcAddress(ghNPClientDLL, "NP_StartCursor");
+        gpfNP_StopCursor =
+            (PF_NP_STOPCURSOR)GetProcAddress(ghNPClientDLL, "NP_StopCursor");
+        gpfNP_StartDataTransmission =
+            (PF_NP_STARTDATATRANSMISSION)GetProcAddress(
+                ghNPClientDLL, "NP_StartDataTransmission");
+        gpfNP_StopDataTransmission = (PF_NP_STOPDATATRANSMISSION)GetProcAddress(
+            ghNPClientDLL, "NP_StopDataTransmission");
     }
     else
         result = NP_ERR_DLL_NOT_FOUND;
@@ -389,7 +410,7 @@ NPRESULT NPClient_Init(char* csDLLPath)
 
 //////////////////////////////////////////////////////////////////////////////
 
-char* gcsDLLPath;
+char *gcsDLLPath;
 
 //**********************************************************************
 // Function:    TrackIR_2D_Map
@@ -401,7 +422,7 @@ char* gcsDLLPath;
 int TrackIR::TrackIR_2D_Map()
 {
 
-    if ( not panningAllowed)
+    if (not panningAllowed)
         return -1;
 
     TRACKIRDATA tid;
@@ -435,8 +456,9 @@ int TrackIR::TrackIR_2D_Map()
         panningAllowed = false;
 
 #ifdef DEBUG_TRACKIR_STUFF
-        FILE* fp = fopen("TIR_Debug.txt", "at");
-        fprintf(fp, "Yaw %f\t Pitch %f\t retval %i\n", tid.fNPYaw, tid.fNPPitch, retval);
+        FILE *fp = fopen("TIR_Debug.txt", "at");
+        fprintf(fp, "Yaw %f\t Pitch %f\t retval %i\n", tid.fNPYaw, tid.fNPPitch,
+                retval);
         fclose(fp);
 #endif
         return retval;
@@ -466,9 +488,9 @@ void TrackIR::Poll()
             {
                 pitch = PI / 4;
             }
-            else if (pitch <= - 0.75f * PI) // limit to 135deg
+            else if (pitch <= -0.75f * PI) // limit to 135deg
             {
-                pitch = - 0.75f * PI;
+                pitch = -0.75f * PI;
             }
 
             missedFrameCount = 0;
@@ -499,7 +521,7 @@ void TrackIR::Poll()
 // Date: 26.9.2003
 // Author: Retro
 //*********************************************************************/
-void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
+void TrackIR::GetTrackIR_ViewValues(float *yaw, float *pitch)
 {
     TRACKIRDATA tid;
 
@@ -507,9 +529,10 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
     {
         if (FrameSignature not_eq tid.wPFrameSignature)
         {
-            *yaw =  -tid.fNPYaw / 16383.f * PI; // yaw is +-180 (PI) degrees
+            *yaw = -tid.fNPYaw / 16383.f * PI; // yaw is +-180 (PI) degrees
 
-            *pitch = tid.fNPPitch / 16383.f * PI; // we limit pitch to +90 (PI/2) and -45 (PI/4) degrees
+            *pitch = tid.fNPPitch / 16383.f *
+                     PI; // we limit pitch to +90 (PI/2) and -45 (PI/4) degrees
 
             if (*pitch >= PI / 4) // limit to -45 deg
             {
@@ -519,9 +542,10 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
              {
              *pitch = -PI/2;
              }
-            */ else if (*pitch <= - 0.75f * PI) // limit to 135deg
+            */
+            else if (*pitch <= -0.75f * PI) // limit to 135deg
             {
-                *pitch = - 0.75f * PI;
+                *pitch = -0.75f * PI;
             }
 
             missedFrameCount = 0;
@@ -535,7 +559,7 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
             FrameSignature = tid.wPFrameSignature;
 
 #ifdef DEBUG_TRACKIR_STUFF
-            FILE* fp = fopen("TIR_Debug.txt", "at");
+            FILE *fp = fopen("TIR_Debug.txt", "at");
             fprintf(fp, "Yaw %f\t Pitch %f\n", tid.fNPYaw, tid.fNPPitch);
             fprintf(fp, "Yaw %f\t Pitch %f\n", *yaw, *pitch);
             fclose(fp);
@@ -552,8 +576,9 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
             }
 
 #ifdef DEBUG_TRACKIR_STUFF
-            FILE* fp = fopen("TIR_Debug.txt", "at");
-            fprintf(fp, "Missed frame # %i, FrameSig %i, NPFrameSig %i\n", missedFrameCount, FrameSignature, tid.wPFrameSignature);
+            FILE *fp = fopen("TIR_Debug.txt", "at");
+            fprintf(fp, "Missed frame # %i, FrameSig %i, NPFrameSig %i\n",
+                    missedFrameCount, FrameSignature, tid.wPFrameSignature);
             fclose(fp);
 #endif
             // yaw and pitch values stay unchanged so that looking via POV hat works
@@ -570,10 +595,10 @@ void TrackIR::GetTrackIR_ViewValues(float* yaw, float* pitch)
 // Description:Look in the registry for the path to the NPClient.dll..
 // Taken form the NaturalPoint sample code
 //*********************************************************************/
-char* GetDllLocation(char* loc)
+char *GetDllLocation(char *loc)
 {
     unsigned char *szValue;
-    char* retval = NULL;
+    char *retval = NULL;
     DWORD dwSize;
     HKEY pKey = NULL;
 
@@ -582,9 +607,7 @@ char* GetDllLocation(char* loc)
     //*********************************************************************/
     if (RegOpenKeyEx(HKEY_CURRENT_USER,
                      "Software\\NaturalPoint\\NATURALPOINT\\NPClient Location",
-                     0,
-                     KEY_READ,
-                     &pKey) not_eq ERROR_SUCCESS)
+                     0, KEY_READ, &pKey) not_eq ERROR_SUCCESS)
     {
         //error condition
 
@@ -594,13 +617,14 @@ char* GetDllLocation(char* loc)
     //**********************************************************************
     //get the value from the key
     //*********************************************************************/
-    if ( not pKey)
+    if (not pKey)
         return NULL;
 
     //**********************************************************************
     //first discover the size of the value
     //*********************************************************************/
-    if (RegQueryValueEx(pKey, "Path", NULL, NULL, NULL, &dwSize) == ERROR_SUCCESS)
+    if (RegQueryValueEx(pKey, "Path", NULL, NULL, NULL, &dwSize) ==
+        ERROR_SUCCESS)
     {
         //allocate memory for the buffer for the value
         szValue = (unsigned char *)malloc(dwSize);
@@ -610,12 +634,13 @@ char* GetDllLocation(char* loc)
             //**********************************************************************
             //now get the value
             //*********************************************************************/
-            if (RegQueryValueEx(pKey, "Path", NULL, NULL, szValue, &dwSize) == ERROR_SUCCESS)
+            if (RegQueryValueEx(pKey, "Path", NULL, NULL, szValue, &dwSize) ==
+                ERROR_SUCCESS)
             {
                 //everything worked
                 // RegCloseKey(pKey);
 
-                retval = (char*)szValue;
+                retval = (char *)szValue;
             }
         }
     }
@@ -628,12 +653,13 @@ char* GetDllLocation(char* loc)
 //**********************************************************************
 // Spiffy Macro by wk that retro crippled in order to work in C
 //*********************************************************************/
-#define TEST_RESULT(a, b)       \
-{ if(NP_OK not_eq b)                \
- { /*::MessageBox(0, a, "", 0);*/\
- return;                     \
- }                             \
-}
+#define TEST_RESULT(a, b)                                                      \
+    {                                                                          \
+        if (NP_OK not_eq b)                                                    \
+        { /*::MessageBox(0, a, "", 0);*/                                       \
+            return;                                                            \
+        }                                                                      \
+    }
 
 //**********************************************************************
 // Name: InitTrackIR
@@ -651,7 +677,7 @@ void TrackIR::InitTrackIR(HWND application_window)
     NPRESULT result;
 
 #ifdef DEBUG_TRACKIR_STUFF
-    FILE* fp = fopen("TIR_Debug.txt", "at");
+    FILE *fp = fopen("TIR_Debug.txt", "at");
     fprintf(fp, "Initializing at startup...\n");
 
     if (g_bEnableTrackIR)
@@ -673,7 +699,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     gcsDLLPath = GetDllLocation(gcsDLLPath);
 
-    if ( not gcsDLLPath)
+    if (not gcsDLLPath)
         return;
 
     //**********************************************************************
@@ -681,14 +707,15 @@ void TrackIR::InitTrackIR(HWND application_window)
     //*********************************************************************/
     TEST_RESULT("NPClient_Init", NPClient_Init(gcsDLLPath))
 
-    free(gcsDLLPath);    // uuurgh.. does this work ?
+    free(gcsDLLPath); // uuurgh.. does this work ?
 
     //**********************************************************************
     // Register the app's window handle
     //*********************************************************************/
     result = NP_RegisterWindowHandle(HandleGame);
 
-    if (result not_eq NP_OK) // this happens if the user forgot to start the TrackIR GUI
+    if (result not_eq
+        NP_OK) // this happens if the user forgot to start the TrackIR GUI
     {
         // do any other error output?
         // ::MessageBeep(-1);
@@ -696,7 +723,8 @@ void TrackIR::InitTrackIR(HWND application_window)
     }
 
     // 2do: NPRESULT __stdcall
-    result = NP_RegisterProgramProfileID(1901); // FreeFalcon ID, issued by Halstead York (NP PR Guru)
+    result = NP_RegisterProgramProfileID(
+        1901); // FreeFalcon ID, issued by Halstead York (NP PR Guru)
 
     //**********************************************************************
     // Query the NaturalPoint software version
@@ -723,7 +751,7 @@ void TrackIR::InitTrackIR(HWND application_window)
 
     TEST_RESULT("NP_StartDataTransmission", NP_StartDataTransmission())
 
-    g_bEnableTrackIR = true; // Retro 26/09/03 - init successful 
+    g_bEnableTrackIR = true; // Retro 26/09/03 - init successful
     g_bTrackIRon = true;
     OTWDriver.SetHeadTracking(TRUE); // Retro 26/09/03
 

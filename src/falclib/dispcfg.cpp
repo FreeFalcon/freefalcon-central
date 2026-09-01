@@ -1,16 +1,24 @@
 #include "dispcfg.h"
 #include "fsound.h"
 #include "f4find.h"
-#include "Graphics/Include/setup.h"
+#include "graphics/include/setup.h"
 #include "falcuser.h"
-#include "FalcLib/include/playerop.h"
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
 #include <commctrl.h>
+#ifndef _WIN32
+#include "ff_window.h" // #104: ffplatform::Window (SDL3) -- the native render window on Linux
+#include "ff_events.h" // #104: ffevents::RegisterWindow/SetMainWindow/PostWindowMessage -- the message bus
+#endif
 
 extern bool g_bForceSoftwareGUI;
+// #104 (Linux): set around EndUI() in the menu->sim FM_START handlers so _LeaveMode() skips tearing
+// down the shared theDisplayDevice while the sim thread is re-initing it (see _LeaveMode comment).
+bool g_bSkipDisplayHandoffCleanup = false;
 void TheaterReload(char *theater, char *loddata);
 
-LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam,
+                                      LPARAM lParam);
 
 FalconDisplayConfiguration FalconDisplay;
 
@@ -19,13 +27,16 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
     xOffset = 40;
     yOffset = 40;
 
-    width[Movie] = 640;
-    height[Movie] = 480;
+    // Artscout - 2026 (#104): default the small 2D modes to 1024x768 (was 640x480 Movie / 800x600 UI). The Movie
+    // mode was the source of the 640x480 startup window; 1024x768 is a supported UI resolution (== UILarge) so the
+    // menu layout is unaffected, and the GPU-backend swapchain comes up at a sane size instead of tiny 640x480.
+    width[Movie] = 1024;
+    height[Movie] = 768;
     depth[Movie] = 16;
     doubleBuffer[Movie] = FALSE;
 
-    width[UI] = 800;
-    height[UI] = 600;
+    width[UI] = 1024;
+    height[UI] = 768;
     depth[UI] = 16;
     doubleBuffer[UI] = FALSE;
 
@@ -45,7 +56,8 @@ FalconDisplayConfiguration::FalconDisplayConfiguration(void)
     doubleBuffer[Layout] = FALSE;
 
     //default values
-    width[Sim] = 1920;	// 3D default -- Full HD (was 640x480; overridden by SetSimMode from DispWidth)
+    width[Sim] =
+        1920; // 3D default -- Full HD (was 640x480; overridden by SetSimMode from DispWidth)
     height[Sim] = 1080;
     depth[Sim] = 16;
     doubleBuffer[Sim] = TRUE;
@@ -64,12 +76,13 @@ FalconDisplayConfiguration::~FalconDisplayConfiguration(void)
 
 void FalconDisplayConfiguration::Setup(int languageNum)
 {
-    WNDCLASS wc;
-
     // Setup the graphics databases - M.N. changed to Falcon3DDataDir for theater switching
-    DeviceIndependentGraphicsSetup(FalconTerrainDataDir, Falcon3DDataDir, FalconMiscTexDataDir);
+    DeviceIndependentGraphicsSetup(FalconTerrainDataDir, Falcon3DDataDir,
+                                   FalconMiscTexDataDir);
 
-    // set up and register window class
+#ifdef _WIN32
+    // set up and register window class (Linux: the window is created by ffplatform/SDL3 in MakeWindow)
+    WNDCLASS wc;
     wc.style = CS_HREDRAW bitor CS_VREDRAW bitor CS_OWNDC bitor CS_NOCLOSE;
     wc.lpfnWndProc = FalconMessageHandler;
     wc.cbClsExtra = 0;
@@ -84,6 +97,7 @@ void FalconDisplayConfiguration::Setup(int languageNum)
 
     // Register this class.
     RegisterClass(&wc);
+#endif // _WIN32 (window class registration)
 #if 0
 
     // Choose an appropriate window style
@@ -140,6 +154,7 @@ void FalconDisplayConfiguration::Cleanup(void)
 
 void FalconDisplayConfiguration::MakeWindow(void)
 {
+#ifdef _WIN32
     RECT rect;
 
     // Choose an appropriate window style
@@ -161,22 +176,21 @@ void FalconDisplayConfiguration::MakeWindow(void)
     rect.right = width[Movie];
     rect.bottom = height[Movie];
     AdjustWindowRect(&rect, windowStyle, FALSE);
-	extern const char* FREE_FALCON_BRAND;
-    appWin = CreateWindow(
-                 "FalconDisplay", /* class */
-				 FREE_FALCON_BRAND, /* caption */
-                 windowStyle, /* style */
-                 xOffset, /* init. x pos */
-                 yOffset, /* init. y pos */
-                 rect.right - rect.left, /* init. x size */
-                 rect.bottom - rect.top, /* init. y size */
-                 NULL, /* parent window */
-                 NULL, /* menu handle */
-                 NULL, /* program handle */
-                 NULL /* create parms */
-             );
+    extern const char *FREE_FALCON_BRAND;
+    appWin = CreateWindow("FalconDisplay", /* class */
+                          FREE_FALCON_BRAND, /* caption */
+                          windowStyle, /* style */
+                          xOffset, /* init. x pos */
+                          yOffset, /* init. y pos */
+                          rect.right - rect.left, /* init. x size */
+                          rect.bottom - rect.top, /* init. y size */
+                          NULL, /* parent window */
+                          NULL, /* menu handle */
+                          NULL, /* program handle */
+                          NULL /* create parms */
+    );
 
-    if ( not appWin)
+    if (not appWin)
     {
         ShiError("Failed to construct main window");
     }
@@ -196,43 +210,85 @@ void FalconDisplayConfiguration::MakeWindow(void)
 
     // Display the new rendering window
     ShowWindow(appWin, SW_SHOW);
+#else
+    // Linux (#104, subsystem 1 part 3): create the native SDL3 window (the Win32 CreateWindow path above is
+    // #ifdef'd out). appWin carries the ffplatform::Window* as its HWND token -- the SAME token that flows
+    // EnterMode -> DeviceManager::CreateContext -> DXContext::Init -> VulkanBackend::Init, which pulls the
+    // SDL_Window* back out (via Window::GetSdlWindow) to build the Vulkan surface. The window is created
+    // Vulkan-capable (ff_window.cpp adds SDL_WINDOW_VULKAN on Linux).
+    extern const char *FREE_FALCON_BRAND;
+
+    ffplatform::WindowDesc desc;
+    desc.title = FREE_FALCON_BRAND;
+    desc.width = width[UI] > 0 ? width[UI] : 1024;
+    desc.height = height[UI] > 0 ? height[UI] : 768;
+    desc.fullscreen = false;
+    desc.resizable = false;
+
+    ffplatform::Window *win = ffplatform::Window::Create(desc);
+
+    if (not win)
+        ShiError("Failed to construct main window (SDL3)");
+
+    appWin = reinterpret_cast<HWND>(win);
+    win->CenterOnDisplay();
+    win->Show();
+
+    // Wire the window into the SDL event bus: translated OS events and the internal FM_* command bus (routed here
+    // by the win32shim PostMessage/SendMessage bridge) now reach FalconMessageHandler -- the same proc the Win32
+    // "FalconDisplay" class used. Then kick the boot chain: Win32 delivers WM_CREATE synchronously from
+    // CreateWindow (-> FM_START_GAME -> SystemLevelInit -> FM_START_UI -> EnterMode); SDL does not, so enqueue it.
+    ffevents::RegisterWindow(win->GetSdlWindow(), appWin, FalconMessageHandler);
+    ffevents::SetMainWindow(appWin);
+    ffevents::PostWindowMessage(appWin, WM_CREATE, 0, 0);
+#endif
 }
 
 // OW
 #define _FORCE_MAIN_THREAD
 
 #ifdef _FORCE_MAIN_THREAD
-void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, int Driver)
+void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice,
+                                           int Driver)
 {
     // Force exectution in the main thread to avoid problems with worker threads setting directx cooperative levels (which is illegal)
-    LRESULT result = SendMessage(appWin, FM_DISP_ENTER_MODE, newMode, theDevice bitor (Driver << 16));
+    LRESULT result = SendMessage(appWin, FM_DISP_ENTER_MODE, newMode,
+                                 theDevice bitor (Driver << 16));
 }
 
-void FalconDisplayConfiguration::_EnterMode(DisplayMode newMode, int theDevice, int Driver)
+void FalconDisplayConfiguration::_EnterMode(DisplayMode newMode, int theDevice,
+                                            int Driver)
 #else
-void FalconDisplayConfiguration::_EnterMode(DisplayMode newMode, int theDevice, int Driver)
+void FalconDisplayConfiguration::_EnterMode(DisplayMode newMode, int theDevice,
+                                            int Driver)
 {
 }
 
-void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, int Driver)
+void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice,
+                                           int Driver)
 #endif
 {
     RECT rect;
 
 #ifdef _FORCE_MAIN_THREAD
-    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
+    ShiAssert(::GetCurrentThreadId() ==
+              GetWindowThreadProcessId(
+                  appWin, NULL)); // Make sure this is called by the main thread
 #endif
 
     // sfr: only after we are finished
     //currentMode = newMode;
 
+#ifdef _WIN32
     rect.top = rect.left = 0;
     rect.right = width[newMode];
     rect.bottom = height[newMode];
     AdjustWindowRect(&rect, windowStyle, FALSE);
+#endif
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
+#ifdef _WIN32
     // RV - RED - Sim window in windowed mode, always centered
     if (newMode == Sim and not displayFullScreen)
     {
@@ -257,14 +313,15 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
         }
 
         SetWindowPos(appWin, NULL, NewXOffset, NewYOffset,
-                     rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER);
-
+                     rect.right - rect.left, rect.bottom - rect.top,
+                     SWP_NOZORDER);
     }
     else
     {
-        SetWindowPos(appWin, NULL, xOffset, yOffset,
-                     rect.right - rect.left, rect.bottom - rect.top, SWP_NOZORDER);
+        SetWindowPos(appWin, NULL, xOffset, yOffset, rect.right - rect.left,
+                     rect.bottom - rect.top, SWP_NOZORDER);
     }
+#endif // _WIN32 (window sizing/positioning; SDL manages the window on Linux)
 
     if (pDI)
     {
@@ -288,15 +345,13 @@ void FalconDisplayConfiguration::EnterMode(DisplayMode newMode, int theDevice, i
          }
          }*/
 
-        if ( not pDI->SupportsSRT() and DisplayOptions.bRender2Texture)
+        if (not pDI->SupportsSRT() and DisplayOptions.bRender2Texture)
             DisplayOptions.bRender2Texture = false;
     }
 
-    theDisplayDevice.Setup(
-        Driver, theDevice,
-        width[newMode], height[newMode], depth[newMode],
-        displayFullScreen, doubleBuffer[newMode], appWin, newMode == Sim
-    );
+    theDisplayDevice.Setup(Driver, theDevice, width[newMode], height[newMode],
+                           depth[newMode], displayFullScreen,
+                           doubleBuffer[newMode], appWin, newMode == Sim);
 
     SetForegroundWindow(appWin);
     // sfr: here
@@ -322,13 +377,26 @@ void FalconDisplayConfiguration::LeaveMode(void)
 #endif
 {
 #ifdef _FORCE_MAIN_THREAD
-    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
+    ShiAssert(::GetCurrentThreadId() ==
+              GetWindowThreadProcessId(
+                  appWin, NULL)); // Make sure this is called by the main thread
 #endif
+
+    // #104 (Linux): during a menu->sim handoff the sim's graphics thread has already (or is about to)
+    // EnterMode(Sim) and re-init the SHARED theDisplayDevice. On Windows the sim's FM_DISP_ENTER_MODE
+    // marshals to the main thread and queues behind this LeaveMode, so the order is Cleanup-then-Setup.
+    // On Linux FF_SendWindowMessage runs inline on the caller thread, so this menu Cleanup would race
+    // the sim thread and NULL the freshly-created m_DXCtx mid-VCock_Init ("Failed to setup rendering
+    // context"). Skip the teardown during the handoff -- the sim owns/re-inits the device.
+    extern bool g_bSkipDisplayHandoffCleanup;
+    if (g_bSkipDisplayHandoffCleanup)
+        return;
 
     theDisplayDevice.Cleanup();
 }
 
-void FalconDisplayConfiguration::SetSimMode(int newwidth, int newheight, int newdepth)
+void FalconDisplayConfiguration::SetSimMode(int newwidth, int newheight,
+                                            int newdepth)
 {
     // Artscout - 2026: guard against uninitialized/garbage dimensions. DispWidth/DispHeight can be
     // unset (e.g. an old/short options.pop leaves the field uninitialized -> 0xCCCC = 52428 in debug);
@@ -359,13 +427,18 @@ void FalconDisplayConfiguration::_ToggleFullScreen(void)
 void FalconDisplayConfiguration::ToggleFullScreen(void)
 #endif
 {
-#ifdef _FORCE_MAIN_THREAD
-    ShiAssert(::GetCurrentThreadId() == GetWindowThreadProcessId(appWin, NULL)); // Make sure this is called by the main thread
+#if defined(_FORCE_MAIN_THREAD) && defined(_WIN32)
+    ShiAssert(::GetCurrentThreadId() ==
+              GetWindowThreadProcessId(
+                  appWin, NULL)); // Make sure this is called by the main thread
 #endif
 
     LeaveMode();
-    DestroyWindow(appWin);
-	displayFullScreen ? displayFullScreen = false : displayFullScreen = true;
+#ifdef _WIN32
+    DestroyWindow(
+        appWin); // Linux: the window is owned by ffplatform/SDL, not recreated here
+#endif
+    displayFullScreen ? displayFullScreen = false : displayFullScreen = true;
     MakeWindow();
     EnterMode(currentMode);
 }
@@ -382,18 +455,21 @@ void FalconDisplayConfiguration::EnterSimWindowMode(bool windowed)
 
 void FalconDisplayConfiguration::_EnterSimWindowMode(bool windowed)
 #else
-void FalconDisplayConfiguration::_EnterSimWindowMode(bool) {}
+void FalconDisplayConfiguration::_EnterSimWindowMode(bool)
+{
+}
 
 void FalconDisplayConfiguration::EnterSimWindowMode(bool windowed)
 #endif
 {
-    if (mInSimWinMode or not appWin) return;
-
+    if (mInSimWinMode or not appWin)
+        return;
+#ifdef _WIN32
     // Save the current (menu) window state for restoration on 3D exit.
-    mSavedWinStyle   = (long)GetWindowLong(appWin, GWL_STYLE);
+    mSavedWinStyle = (long)GetWindowLong(appWin, GWL_STYLE);
     GetWindowRect(appWin, &mSavedWinRect);
     mSavedFullScreen = displayFullScreen;
-    mInSimWinMode    = true;
+    mInSimWinMode = true;
 
     const int sw = GetSystemMetrics(SM_CXSCREEN);
     const int sh = GetSystemMetrics(SM_CYSCREEN);
@@ -401,28 +477,37 @@ void FalconDisplayConfiguration::EnterSimWindowMode(bool windowed)
     if (windowed)
     {
         // Windowed: client = chosen 3D resolution, centered and clamped to the desktop.
-        RECT rect = { 0, 0, width[Sim], height[Sim] };
+        RECT rect = {0, 0, width[Sim], height[Sim]};
         AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
         int ww = rect.right - rect.left;
         int wh = rect.bottom - rect.top;
-        if (ww > sw) ww = sw;
-        if (wh > sh) wh = sh;
-        int x = (sw - ww) / 2; if (x < 0) x = 0;
-        int y = (sh - wh) / 2; if (y < 0) y = 0;
+        if (ww > sw)
+            ww = sw;
+        if (wh > sh)
+            wh = sh;
+        int x = (sw - ww) / 2;
+        if (x < 0)
+            x = 0;
+        int y = (sh - wh) / 2;
+        if (y < 0)
+            y = 0;
         SetWindowLong(appWin, GWL_STYLE, WS_OVERLAPPEDWINDOW);
-        SetWindowPos(appWin, HWND_TOP, x, y, ww, wh, SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
+        SetWindowPos(appWin, HWND_TOP, x, y, ww, wh,
+                     SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
         displayFullScreen = false;
     }
     else
     {
         // Borderless fullscreen: cover the whole monitor; the back buffer is stretched to fit.
         SetWindowLong(appWin, GWL_STYLE, WS_POPUP);
-        SetWindowPos(appWin, HWND_TOP, 0, 0, sw, sh, SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
+        SetWindowPos(appWin, HWND_TOP, 0, 0, sw, sh,
+                     SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
         displayFullScreen = true;
     }
 
     SetForegroundWindow(appWin);
     SetFocus(appWin);
+#endif // _WIN32 (windowed-mode toggle; SDL handles window mode on Linux)
 }
 
 #ifdef _FORCE_MAIN_THREAD
@@ -433,22 +518,26 @@ void FalconDisplayConfiguration::LeaveSimWindowMode()
 
 void FalconDisplayConfiguration::_LeaveSimWindowMode()
 #else
-void FalconDisplayConfiguration::_LeaveSimWindowMode() {}
+void FalconDisplayConfiguration::_LeaveSimWindowMode()
+{
+}
 
 void FalconDisplayConfiguration::LeaveSimWindowMode()
 #endif
 {
-    if (not mInSimWinMode) return;
+    if (not mInSimWinMode)
+        return;
 
+#ifdef _WIN32
     if (appWin)
     {
         SetWindowLong(appWin, GWL_STYLE, mSavedWinStyle);
-        SetWindowPos(appWin, HWND_TOP,
-                     mSavedWinRect.left, mSavedWinRect.top,
+        SetWindowPos(appWin, HWND_TOP, mSavedWinRect.left, mSavedWinRect.top,
                      mSavedWinRect.right - mSavedWinRect.left,
                      mSavedWinRect.bottom - mSavedWinRect.top,
                      SWP_FRAMECHANGED bitor SWP_SHOWWINDOW);
     }
+#endif
 
     displayFullScreen = mSavedFullScreen;
     mInSimWinMode = false;

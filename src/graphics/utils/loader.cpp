@@ -6,13 +6,13 @@
     Asynchronus loader module.  This class is designed to be run on its
     own thread and respond to requests for data off the disk.
 ***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include <io.h>
 #include <fcntl.h>
 #include <process.h>
-#include "Loader.h"
-#include "ObjectLOD.h"
-#include "TexBank.h"
+#include "loader.h"
+#include "objectlod.h"
+#include "texbank.h"
 #pragma warning(disable : 4127)
 #pragma warning(disable : 4706)
 
@@ -43,14 +43,14 @@ extern bool g_bUse_DX_Engine;
 void Loader::Setup()
 {
     // Setup the starting state for the main loop
-    head       = NULL;
-    tail       = NULL;
-    shutDown       = FALSE;
-    stopped    = FALSE;
-    paused    = RUNNING;
-    queueIsEmpty    = TRUE;
-    queueStatus       = QUEUE_FIFO;
-    TickDelay  = DEFAULT_LOADER_DELAY;
+    head = NULL;
+    tail = NULL;
+    shutDown = FALSE;
+    stopped = FALSE;
+    paused = RUNNING;
+    queueIsEmpty = TRUE;
+    queueStatus = QUEUE_FIFO;
+    TickDelay = DEFAULT_LOADER_DELAY;
     actionDone = false;
 
 #ifdef LOADER_INSTRUMENT
@@ -68,7 +68,7 @@ void Loader::Setup()
     strcpy(WakeEventName, "LoaderWakeupCall");
     WakeEventHandle = CreateEvent(NULL, FALSE, FALSE, WakeEventName);
 
-    if ( not WakeEventHandle)
+    if (not WakeEventHandle)
     {
         ShiError("Failed to create the loader wake up event");
     }
@@ -77,11 +77,11 @@ void Loader::Setup()
 
 
     // Spawn the thread
-    threadHandle = (HANDLE) _beginthreadex(
-                       NULL, 0, (unsigned int (__stdcall *)(void*))MainLoopWrapper, this, 0, (unsigned *) &threadID
-                   );
+    threadHandle = (HANDLE)_beginthreadex(
+        NULL, 0, (unsigned int(__stdcall *)(void *))MainLoopWrapper, this, 0,
+        (unsigned *)&threadID);
 
-    if ( not threadHandle)
+    if (not threadHandle)
     {
         ShiError("Failed to spawn loader");
     }
@@ -100,14 +100,15 @@ void Loader::Cleanup()
 
     //WakeUp();
     // RED - Need to wait it is off
-    while ( not stopped);
+    while (not stopped)
+        ;
 
     LeaveCriticalSection(&cs_loaderQ);
     SetEvent(WakeEventHandle);
 
     // Wait for it to happen (5000 ms maximum)
     // sfr: changed to infite. If we dont wait, CTD can happen
-    retval = WaitForSingleObject(threadHandle, INFINITE/*5000*/);
+    retval = WaitForSingleObject(threadHandle, INFINITE /*5000*/);
 
     // While debugging, die if we failed to kill the thread.  Later, ignore it.
     ShiAssert(retval == WAIT_OBJECT_0);
@@ -116,7 +117,8 @@ void Loader::Cleanup()
     CloseHandle(threadHandle);
 
     // Release any entries remaining in the request queue
-    while (GetNextRequest());
+    while (GetNextRequest())
+        ;
 
     // Release the sychronization objects we've been using
     CloseHandle(WakeEventHandle);
@@ -127,7 +129,7 @@ void Loader::Cleanup()
 // Dummy wrapper to get from C-Style Thread spawning back into C++ calling convention
 DWORD Loader::MainLoopWrapper(LPVOID myself)
 {
-    return (((Loader*)myself)->MainLoop());
+    return (((Loader *)myself)->MainLoop());
 }
 
 
@@ -137,7 +139,7 @@ DWORD Loader::MainLoop()
     LoaderQ *Active;
     actionDone = false;
 
-    while ( not shutDown)
+    while (not shutDown)
     {
         // Process everything in our queue
         if (paused == RUNNING)
@@ -147,7 +149,7 @@ DWORD Loader::MainLoop()
             actionDone or_eq ObjectLOD::UpdateLods();
             actionDone or_eq TheTextureBank.UpdateBank();
 
-            while ((Active = GetNextRequest()) and ( not shutDown))
+            while ((Active = GetNextRequest()) and (not shutDown))
             {
                 // Check queue status
                 if (queueStatus == QUEUE_FIFO)
@@ -171,7 +173,7 @@ DWORD Loader::MainLoop()
             // the queue is empty
             EnterCriticalSection(&cs_loaderQ);
 
-            if ( not head)
+            if (not head)
             {
                 queueIsEmpty = TRUE;
             }
@@ -193,7 +195,6 @@ DWORD Loader::MainLoop()
         }
 
         //WaitForSingleObject( WakeEventHandle, 10000 ); //INFINITE
-
     }
 
     // We've been asked to quit, so off we go
@@ -232,7 +233,7 @@ void Loader::Dequeue(LoaderQ *Old)
     lastDequeueAt = GetTickCount();
 #endif
 
-    if ( not head)
+    if (not head)
     {
         // Wake the main loop to ensure it sets the queueIsEmpty flag as appropriate
         SetEvent(WakeEventHandle);
@@ -251,14 +252,13 @@ void Loader::Enqueue(LoaderQ *New)
     {
 
         // See if this is a duplicate
-        if ((p->fileoffset == New->fileoffset) and 
-            (p->filename == New->filename) and 
-            (p->parameter == New->parameter) and 
-            (p->callback == New->callback))
+        if ((p->fileoffset == New->fileoffset) and
+            (p->filename == New->filename) and
+            (p->parameter == New->parameter) and (p->callback == New->callback))
         {
 
             return;
-            ShiAssert( not "Caught trying to add duplicate request");
+            ShiAssert(not "Caught trying to add duplicate request");
         }
 
         p = p->next;
@@ -270,7 +270,7 @@ void Loader::Enqueue(LoaderQ *New)
     New->next = NULL;
     New->prev = tail;
 
-    if ( not tail)
+    if (not tail)
     {
         head = New;
         queueIsEmpty = FALSE;
@@ -297,7 +297,7 @@ void Loader::EnqueueRequest(LoaderQ *New)
     EnterCriticalSection(&cs_loaderQ);
 
     // Link the new queue entry to the end of the Q
-    if ( not shutDown)
+    if (not shutDown)
     {
         Enqueue(New);
     }
@@ -317,14 +317,14 @@ void Loader::ReplaceHeadEntry(LoaderQ *New)
     if (head)
         head->prev = New;
 
-    if ( not tail)
+    if (not tail)
         tail = New;
 
     LeaveCriticalSection(&cs_loaderQ);
 }
 
 
-LoaderQ* Loader::GetNextRequest(void)
+LoaderQ *Loader::GetNextRequest(void)
 {
     LoaderQ *request;
 
@@ -348,7 +348,8 @@ LoaderQ* Loader::GetNextRequest(void)
 
 
 // Cancel (if possible) the request to load data into the specified target buffer
-BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *filename, DWORD fileoffset)
+BOOL Loader::CancelRequest(void (*callback)(LoaderQ *), void *parameter,
+                           char *filename, DWORD fileoffset)
 {
     LoaderQ *p;
 
@@ -360,10 +361,8 @@ BOOL Loader::CancelRequest(void(*callback)(LoaderQ*), void *parameter, char *fil
     {
 
         // See if this is the one we want to cancel
-        if ((p->filename == filename) and 
-            (p->fileoffset == fileoffset) and 
-            (p->parameter == parameter) and 
-            (p->callback == callback))
+        if ((p->filename == filename) and (p->fileoffset == fileoffset) and
+            (p->parameter == parameter) and (p->callback == callback))
         {
 
             Dequeue(p);
@@ -402,7 +401,6 @@ void Loader::SetPause(BOOL state)
 }
 
 
-
 // **** COBRA - RED - THIS FUNCTION IS NO MORE USED, SUBSTITUTED FROM FOLOWING ONE
 //                    JUST KEPT TO LEAVE CALLS STILL THERE, FUNCTION NEEDING SUCH FEATURE MUST CALL
 //                    THE FOLLOWING FUNCTION ...
@@ -434,7 +432,7 @@ void Loader::WaitForLoader(void)
 void Loader::WaitLoader(void)
 {
 
-    while ( not queueIsEmpty)
+    while (not queueIsEmpty)
     {
 
 #ifdef LOADER_INSTRUMENT
@@ -449,7 +447,6 @@ void Loader::WaitLoader(void)
         Sleep(100);
     }
 }
-
 
 
 // Sort the queue by file. This should help on CD/HD access times
@@ -469,4 +466,3 @@ void Loader::SetQueueStatusStoring(void)
 void Loader::SetQueueStatusSorting(void)
 {
 }
-

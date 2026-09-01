@@ -9,13 +9,14 @@
 */
 #ifndef _ACMIREC_H_
 #define _ACMIREC_H_
+#include <cstdint>
 
 #include "f4thread.h"
 #include "tchar.h"
 #include "acmi/src/include/acmihash.h"
 
-#define RECORD_DIR "acmibin\\"
-//#define RECORD_DIR "campaign\\save\\fltfiles\\"
+#define RECORD_DIR "acmibin/"
+//#define RECORD_DIR "campaign/save/fltfiles/"
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -54,113 +55,113 @@ enum
 // ACMIRecHeader
 // this struct is common thru all record types as a record header
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     BYTE type; // one of the ennumerated types
     float time; // time stamp
 } ACMIRecHeader;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMIGenPositionData
 // General position data
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     int type; // base type for creating simbase object
-    long uniqueID; // identifier of instance
+    int32_t uniqueID; // identifier of instance
     float x;
     float y;
     float z;
     float yaw;
     float pitch;
-    float  roll;
+    float roll;
 } ACMIGenPositionData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMIFeaturePositionData
 // General position data
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     int type; // base type for creating simbase object
-    long uniqueID; // identifier of instance
-    long leadUniqueID; // id of lead component (for bridges. bases etc)
+    int32_t uniqueID; // identifier of instance
+    int32_t leadUniqueID; // id of lead component (for bridges. bases etc)
     int slot; // slot number in component list
-    int specialFlags;   // campaign feature flag
+    int specialFlags; // campaign feature flag
     float x;
     float y;
     float z;
     float yaw;
     float pitch;
-    float  roll;
+    float roll;
 } ACMIFeaturePositionData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 /*
 ** ACMI Text event (strings parsed from event file)
 */
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
-    long    intTime;
+    int32_t intTime;
     _TCHAR timeStr[20];
     _TCHAR msgStr[100];
 } ACMITextEvent;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMISwitchData
 // General position data
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     int type; // base type for creating simbase object
-    long uniqueID; // identifier of instance
+    int32_t uniqueID; // identifier of instance
     int switchNum;
     int switchVal;
     int prevSwitchVal;
 } ACMISwitchData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMIFeatureStatusData
 // Feature status change data
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
-    long uniqueID; // identifier of instance
+    int32_t uniqueID; // identifier of instance
     int newStatus;
     int prevStatus;
 } ACMIFeatureStatusData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMIDOFData
 // General position data
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     int type; // base type for creating simbase object
-    long uniqueID; // identifier of instance
+    int32_t uniqueID; // identifier of instance
     int DOFNum;
     float DOFVal;
     float prevDOFVal;
 } ACMIDOFData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMITracerStartData
 // Starting pos and velocity of tracer rounds
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     // initial values
@@ -169,15 +170,15 @@ typedef struct
     float z;
     float dx;
     float dy;
-    float  dz;
+    float dz;
 } ACMITracerStartData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMIStationarySfxData
 // Starting pos of a staionay special sfx
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     int type; // sfx type
@@ -187,13 +188,13 @@ typedef struct
     float timeToLive;
     float scale;
 } ACMIStationarySfxData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // ACMIMovingSfxData
 // Starting pos of a staionay special sfx
 //
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     int type; // sfx type
@@ -208,10 +209,10 @@ typedef struct
     float timeToLive;
     float scale;
 } ACMIMovingSfxData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 // these are the actual I/O records
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 
 typedef struct
 {
@@ -258,7 +259,7 @@ typedef struct
 {
     ACMIRecHeader hdr;
     ACMIGenPositionData data;
-    long RadarTarget;
+    int32_t RadarTarget;
 
 } ACMIAircraftPositionRecord;
 
@@ -291,10 +292,7 @@ typedef struct
     ACMIRecHeader hdr;
     ACMIDOFData data;
 } ACMIDOFRecord;
-#pragma pack (pop, pack1)
-
-
-
+#pragma pack(pop, pack1)
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -304,7 +302,6 @@ typedef struct
 class ACMIRecorder
 {
 public:
-
     // Constructors.
     ACMIRecorder(void);
 
@@ -334,34 +331,32 @@ public:
     void TodOffsetRecord(ACMITodOffsetRecord *recp);
     void FeatureStatusRecord(ACMIFeatureStatusRecord *recp);
 
-    int  PercentTapeFull(void);
+    int PercentTapeFull(void);
 
 
 private:
-    FILE  *_fd;
+    FILE *_fd;
 
     // we need synchronization for writes
-    F4CSECTIONHANDLE* _csect;
+    F4CSECTIONHANDLE *_csect;
 
     BOOL _recording;
 
     float _bytesWritten;
     float _maxBytesToWrite;
-
 };
 
-#pragma pack (1)
+#pragma pack(1)
 struct ACMI_CallRec
 {
     char label[16];
-    long teamColor;
+    int32_t teamColor;
 };
 
 #pragma pack()
 
 extern ACMI_CallRec *ACMI_Callsigns;
 extern ACMIRecorder gACMIRec;
-extern ACMI_Hash    *ACMIIDTable;
+extern ACMI_Hash *ACMIIDTable;
 
-#endif  // _ACMIREC_H_
-
+#endif // _ACMIREC_H_

@@ -1,4 +1,4 @@
-#include <cISO646>
+#include <ciso646>
 #include <windows.h>
 #include <process.h>
 #include "dispcfg.h"
@@ -11,7 +11,7 @@
 #include "graphics/include/fartex.h"
 #include "graphics/include/terrtex.h"
 
-#define UI_ABS(x) (((x) < 0)? -(x):(x))
+#define UI_ABS(x) (((x) < 0) ? -(x) : (x))
 
 long _LOAD_ART_RESOURCES_ = 1;
 
@@ -35,7 +35,6 @@ extern int g_nMaxUIRefresh; // 2002-02-23 S.G.
 
 extern WORD RGB8toRGB565(DWORD);//XX
 extern DWORD RGB565toRGB8(WORD sc);
-
 
 
 extern C_Handler *gMainHandler;
@@ -140,9 +139,11 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
         BOOL bResult;
 
         if (FalconDisplay.theDisplayDevice.IsHardware())
-            bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres, dispYres, VideoMem, None, FALSE);
+            bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres,
+                                    dispYres, VideoMem, None, FALSE);
         else
-            bResult  = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres, dispYres, SystemMem, None, FALSE);
+            bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres,
+                                    dispYres, SystemMem, None, FALSE);
 
 #endif
 
@@ -212,11 +213,13 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
         BOOL bResult;
 
         if (FalconDisplay.theDisplayDevice.IsHardware())
-            bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres, dispYres, VideoMem, None, FALSE);
+            bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres,
+                                    dispYres, VideoMem, None, FALSE);
         else
-            bResult  = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres, dispYres, SystemMem, None, FALSE);
+            bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, dispXres,
+                                    dispYres, SystemMem, None, FALSE);
 
-        if ( not bResult)
+        if (not bResult)
         {
             MonoPrint("Can't create back surface for UI\n");
             Front_ = Primary_;
@@ -229,11 +232,13 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
     BOOL bResult;
 
     if (FalconDisplay.theDisplayDevice.IsHardware())
-        bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, 800, 600, VideoMem, None, FALSE);
+        bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, 800, 600,
+                                VideoMem, None, FALSE);
     else
-        bResult  = Front_->Setup(&FalconDisplay.theDisplayDevice, 800, 600, SystemMem, None, FALSE);
+        bResult = Front_->Setup(&FalconDisplay.theDisplayDevice, 800, 600,
+                                SystemMem, None, FALSE);
 
-    if ( not bResult)
+    if (not bResult)
     {
         MonoPrint("Can't create back surface for UI\n");
         Front_ = Primary_;
@@ -242,7 +247,7 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
 #endif
 
     // OW - WM_MOVE does not get sent to the app in response to SetWindowPos
-    if ( not FalconDisplay.displayFullScreen)
+    if (not FalconDisplay.displayFullScreen)
     {
         RECT dest;
         GetClientRect(hwnd, &dest);
@@ -260,8 +265,10 @@ void C_Handler::Setup(HWND hwnd, ImageBuffer *, ImageBuffer *Primary)
     // This will be correct UNLESS the work surface is a FLIPPING backbuffer of the primary
     // AND the application is running in a window.  Not likly...
     // By the way, this means this rect could really go away entirely...
-    FrontRect_.top = 0;;
-    FrontRect_.left = 0;;
+    FrontRect_.top = 0;
+    ;
+    FrontRect_.left = 0;
+    ;
     FrontRect_.bottom = Front_->targetYres();
     FrontRect_.right = Front_->targetXres();
 
@@ -351,15 +358,16 @@ void *C_Handler::Lock()
         surface_.mem = (WORD *)Front_->Lock();
 
         // surface_.width = (short)Front_->targetXres(); //
-        surface_.width = (short)Front_->targetStride() / Front_->PixelSize(); // OW
+        surface_.width =
+            (short)Front_->targetStride() / Front_->PixelSize(); // OW
 
         surface_.height = (short)Front_->targetYres(); //
         //XX
-        surface_.bpp = Front_->PixelSize() << 3;//bytes->bits
+        surface_.bpp = Front_->PixelSize() << 3; //bytes->bits
         surface_.owner = Front_;
     }
 
-    return(surface_.mem);
+    return (surface_.mem);
 }
 
 void C_Handler::Unlock()
@@ -384,7 +392,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     while (cur)
     {
         if (cur->win == thewin)
-            return(FALSE);
+            return (FALSE);
 
         cur = cur->Next;
     }
@@ -392,7 +400,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     newwin = new WHLIST;
 
     if (newwin == NULL)
-        return(FALSE);
+        return (FALSE);
 
     newwin->win = thewin;
     newwin->Flags = Flags;
@@ -405,7 +413,10 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     {
         Root_ = newwin;
     }
-    else if (thewin->GetDepth() < Root_->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and not (Root_->win->GetFlags() bitand C_BIT_CANTMOVE)))
+    else if (thewin->GetDepth() < Root_->win->GetDepth() and
+                 thewin->GetDepth() or
+             (thewin->GetFlags() bitand C_BIT_CANTMOVE and
+              not(Root_->win->GetFlags() bitand C_BIT_CANTMOVE)))
     {
         newwin->Next = Root_;
         Root_->Prev = newwin;
@@ -417,7 +428,10 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
 
         while (cur and newwin)
         {
-            if (thewin->GetDepth() < cur->win->GetDepth() and thewin->GetDepth() or (thewin->GetFlags() bitand C_BIT_CANTMOVE and not (cur->win->GetFlags() bitand C_BIT_CANTMOVE)))
+            if (thewin->GetDepth() < cur->win->GetDepth() and
+                    thewin->GetDepth() or
+                (thewin->GetFlags() bitand C_BIT_CANTMOVE and
+                 not(cur->win->GetFlags() bitand C_BIT_CANTMOVE)))
             {
                 newwin->Next = cur;
                 newwin->Prev = cur->Prev;
@@ -447,7 +461,7 @@ BOOL C_Handler::AddWindow(C_Window *thewin, long Flags)
     thewin->ConstraintsCorrection(GetW(), GetH());
 
     LeaveCritical();
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Handler::ShowWindow(C_Window *thewin)
@@ -458,20 +472,20 @@ BOOL C_Handler::ShowWindow(C_Window *thewin)
 
     while (cur)
     {
-        if (cur->win == thewin and not (cur->Flags bitand C_BIT_ENABLED))
+        if (cur->win == thewin and not(cur->Flags bitand C_BIT_ENABLED))
         {
             cur->win->SetCritical(UI_Critical);
             cur->Flags or_eq C_BIT_ENABLED;
             cur->win->update_ = C_DRAW_REFRESHALL;
             cur->win->RefreshWindow();
             cur->win->SetSection(CurrentSection_);
-            return(TRUE);
+            return (TRUE);
         }
 
         cur = cur->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Handler::HideWindow(C_Window *thewin)
@@ -492,13 +506,13 @@ BOOL C_Handler::HideWindow(C_Window *thewin)
             if (CurWindow_ == thewin)
                 CurWindow_ = NULL;
 
-            return(TRUE);
+            return (TRUE);
         }
 
         cur = cur->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 C_Window *C_Handler::FindWindow(long ID)
@@ -513,12 +527,12 @@ C_Window *C_Handler::FindWindow(long ID)
     while (cur)
     {
         if (cur->win->GetID() == ID)
-            return(cur->win);
+            return (cur->win);
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 long C_Handler::GetWindowFlags(long ID)
@@ -530,12 +544,12 @@ long C_Handler::GetWindowFlags(long ID)
     while (cur)
     {
         if (cur->win->GetID() == ID)
-            return(cur->Flags);
+            return (cur->Flags);
 
         cur = cur->Next;
     }
 
-    return(0);
+    return (0);
 }
 
 C_Window *C_Handler::_GetFirstWindow()
@@ -544,9 +558,9 @@ C_Window *C_Handler::_GetFirstWindow()
     LeaveCritical();
 
     if (Root_)
-        return(Root_->win);
+        return (Root_->win);
 
-    return(NULL);
+    return (NULL);
 }
 
 C_Window *C_Handler::_GetNextWindow(C_Window *win)
@@ -563,16 +577,16 @@ C_Window *C_Handler::_GetNextWindow(C_Window *win)
             LeaveCritical();
 
             if (cur->Next == NULL)
-                return(NULL);
+                return (NULL);
 
-            return(cur->Next->win);
+            return (cur->Next->win);
         }
 
         cur = cur->Next;
     }
 
     LeaveCritical();
-    return(NULL);
+    return (NULL);
 }
 
 BOOL C_Handler::RemoveWindow(C_Window *thewin)
@@ -642,7 +656,7 @@ BOOL C_Handler::RemoveWindow(C_Window *thewin)
     }
 
     LeaveCritical();
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
@@ -659,7 +673,8 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
 
     if (Root_->win == thewin)
     {
-        if (Root_->Flags bitand C_BIT_CANTMOVE or not (Root_->Flags bitand C_BIT_ENABLED))
+        if (Root_->Flags bitand C_BIT_CANTMOVE or
+            not(Root_->Flags bitand C_BIT_ENABLED))
             return;
 
         found = Root_;
@@ -685,7 +700,8 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
         {
             if (cur->Next->win == thewin and found == NULL)
             {
-                if (cur->Next->Flags bitand C_BIT_CANTMOVE or not (cur->Next->Flags bitand C_BIT_ENABLED))
+                if (cur->Next->Flags bitand C_BIT_CANTMOVE or
+                    not(cur->Next->Flags bitand C_BIT_ENABLED))
                     return;
 
                 found = cur->Next;
@@ -714,7 +730,8 @@ void C_Handler::WindowToFront(C_Window *thewin) // move to end of list
         LeaveCritical();
     }
 
-    thewin->SetUpdateRect(0, 0, thewin->GetW(), thewin->GetH(), C_BIT_ABSOLUTE, 0);
+    thewin->SetUpdateRect(0, 0, thewin->GetW(), thewin->GetH(), C_BIT_ABSOLUTE,
+                          0);
 }
 
 void C_Handler::HelpOff()
@@ -736,15 +753,18 @@ void C_Handler::CheckHelpText(SCREEN *surface)
 {
     C_Fontmgr *font;
 
-    if (OverLast_.Control_ and OverLast_.Tip_ and GetCurrentTime() > (DWORD)(OverLast_.Time_ + 250))   // #53 tooltip delay 1000 -> 250 ms
+    if (OverLast_.Control_ and OverLast_.Tip_ and
+        GetCurrentTime() >
+            (DWORD)(OverLast_.Time_ + 250)) // #53 tooltip delay 1000 -> 250 ms
     {
         font = gFontList->Find(OverLast_.HelpFont_);
 
-        if ( not OverLast_.HelpOn_ and font)
+        if (not OverLast_.HelpOn_ and font)
         {
             OverLast_.HelpOn_ = 1;
 
-            OverLast_.Area_.left = OverLast_.MouseX_ - font->Width(OverLast_.Tip_) / 2;
+            OverLast_.Area_.left =
+                OverLast_.MouseX_ - font->Width(OverLast_.Tip_) / 2;
             OverLast_.Area_.top = OverLast_.MouseY_ - font->Height() - 4;
 
             if (OverLast_.Area_.left < 0)
@@ -753,7 +773,8 @@ void C_Handler::CheckHelpText(SCREEN *surface)
             if (OverLast_.Area_.top < 0)
                 OverLast_.Area_.top = 0;
 
-            OverLast_.Area_.right = OverLast_.Area_.left + font->Width(OverLast_.Tip_) + 4;
+            OverLast_.Area_.right =
+                OverLast_.Area_.left + font->Width(OverLast_.Tip_) + 4;
             OverLast_.Area_.bottom = OverLast_.Area_.top + font->Height() + 4;
 
             if (OverLast_.Area_.right > GetW())
@@ -772,12 +793,17 @@ void C_Handler::CheckHelpText(SCREEN *surface)
         if (font)
         {
             Fill(surface, 0xffffff, &OverLast_.Area_);
-            Fill(surface, 0, OverLast_.Area_.left, OverLast_.Area_.top, OverLast_.Area_.right, OverLast_.Area_.top + 1);
-            Fill(surface, 0, OverLast_.Area_.left, OverLast_.Area_.bottom - 1, OverLast_.Area_.right, OverLast_.Area_.bottom);
-            Fill(surface, 0, OverLast_.Area_.left, OverLast_.Area_.top, OverLast_.Area_.left + 1, OverLast_.Area_.bottom);
-            Fill(surface, 0, OverLast_.Area_.right - 1, OverLast_.Area_.top, OverLast_.Area_.right, OverLast_.Area_.bottom);
+            Fill(surface, 0, OverLast_.Area_.left, OverLast_.Area_.top,
+                 OverLast_.Area_.right, OverLast_.Area_.top + 1);
+            Fill(surface, 0, OverLast_.Area_.left, OverLast_.Area_.bottom - 1,
+                 OverLast_.Area_.right, OverLast_.Area_.bottom);
+            Fill(surface, 0, OverLast_.Area_.left, OverLast_.Area_.top,
+                 OverLast_.Area_.left + 1, OverLast_.Area_.bottom);
+            Fill(surface, 0, OverLast_.Area_.right - 1, OverLast_.Area_.top,
+                 OverLast_.Area_.right, OverLast_.Area_.bottom);
 
-            font->Draw(surface, OverLast_.Tip_, 0, OverLast_.Area_.left + 2, OverLast_.Area_.top + 2);
+            font->Draw(surface, OverLast_.Tip_, 0, OverLast_.Area_.left + 2,
+                       OverLast_.Area_.top + 2);
 
             SetUpdateRect(&OverLast_.Area_);
         }
@@ -800,9 +826,11 @@ void C_Handler::CheckTranslucentWindows()
         if (cur->Flags bitand C_BIT_ENABLED)
             while (infront)
             {
-                if ((infront->win->GetFlags() bitand C_BIT_TRANSLUCENT)
-                   and (infront->win->update_ bitand (C_DRAW_COPYWINDOW bitor C_DRAW_REFRESH bitor C_DRAW_REFRESHALL))
-                   and (infront->Flags bitand C_BIT_ENABLED))
+                if ((infront->win->GetFlags() bitand C_BIT_TRANSLUCENT) and
+                    (infront->win->update_ bitand
+                     (C_DRAW_COPYWINDOW bitor C_DRAW_REFRESH bitor
+                      C_DRAW_REFRESHALL)) and
+                    (infront->Flags bitand C_BIT_ENABLED))
                 {
                     for (i = 0; i < infront->win->rectcount_; i++)
                     {
@@ -810,12 +838,16 @@ void C_Handler::CheckTranslucentWindows()
                         {
                             src = infront->win->rectlist_[i];
 
-                            src.left  += infront->win->GetX() - cur->win->GetX();
-                            src.top   += infront->win->GetY() - cur->win->GetY();
-                            src.right += infront->win->GetX() - cur->win->GetX();
-                            src.bottom += infront->win->GetY() - cur->win->GetY();
+                            src.left += infront->win->GetX() - cur->win->GetX();
+                            src.top += infront->win->GetY() - cur->win->GetY();
+                            src.right +=
+                                infront->win->GetX() - cur->win->GetX();
+                            src.bottom +=
+                                infront->win->GetY() - cur->win->GetY();
 
-                            cur->win->SetUpdateRect(src.left, src.top, src.right, src.bottom, C_BIT_ABSOLUTE, 0);
+                            cur->win->SetUpdateRect(src.left, src.top,
+                                                    src.right, src.bottom,
+                                                    C_BIT_ABSOLUTE, 0);
                         }
                     }
                 }
@@ -835,7 +867,8 @@ enum
     _CHR_ClipTop = 0x02,
     _CHR_ClipRight = 0x04,
     _CHR_ClipBottom = 0x08,
-    _CHR_RemoveAll = _CHR_ClipLeft bitor _CHR_ClipTop bitor _CHR_ClipRight bitor _CHR_ClipBottom,
+    _CHR_RemoveAll = _CHR_ClipLeft bitor _CHR_ClipTop bitor _CHR_ClipRight bitor
+                     _CHR_ClipBottom,
 };
 
 BOOL C_Handler::ClipRect(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClientArea)
@@ -871,9 +904,9 @@ BOOL C_Handler::ClipRect(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClientArea)
     }
 
     if (dst->left < dst->right and dst->top < dst->bottom)
-        return(TRUE); // Draw it
+        return (TRUE); // Draw it
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Handler::SetUpdateRect(UI95_RECT *upd)
@@ -890,7 +923,10 @@ void C_Handler::SetUpdateRect(UI95_RECT *upd)
     {
         for (i = 0; i < rectcount_; i++)
         {
-            if (rectlist_[i].left <= upd->left and rectlist_[i].top <= upd->top and rectlist_[i].right > upd->right and rectlist_[i].bottom >= upd->bottom)
+            if (rectlist_[i].left <= upd->left and
+                rectlist_[i].top <= upd->top and
+                rectlist_[i].right > upd->right and
+                rectlist_[i].bottom >= upd->bottom)
                 return;
         }
 
@@ -929,12 +965,15 @@ void C_Handler::RefreshAll(UI95_RECT *updaterect)
             rect.top -= cur->win->GetY();
             rect.bottom -= cur->win->GetY();
 
-            if (rect.left < 0) rect.left = 0;
+            if (rect.left < 0)
+                rect.left = 0;
 
-            if (rect.top < 0) rect.top = 0;
+            if (rect.top < 0)
+                rect.top = 0;
 
             if (rect.right > 0 and rect.bottom > 0)
-                cur->win->SetUpdateRect(rect.left, rect.top, rect.right, rect.bottom, C_BIT_ABSOLUTE, 0);
+                cur->win->SetUpdateRect(rect.left, rect.top, rect.right,
+                                        rect.bottom, C_BIT_ABSOLUTE, 0);
         }
 
         cur = cur->Next;
@@ -951,12 +990,14 @@ void C_Handler::ClearHiddenRects(WHLIST *me)
 
         while (cur)
         {
-            if ((cur->Flags bitand C_BIT_ENABLED) and not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
+            if ((cur->Flags bitand C_BIT_ENABLED) and
+                not(cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
             {
-                me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
-                                         cur->win->GetY() - me->win->GetY(),
-                                         cur->win->GetX() + cur->win->GetW() - me->win->GetX(),
-                                         cur->win->GetY() + cur->win->GetH() - me->win->GetY());
+                me->win->ClearUpdateRect(
+                    cur->win->GetX() - me->win->GetX(),
+                    cur->win->GetY() - me->win->GetY(),
+                    cur->win->GetX() + cur->win->GetW() - me->win->GetX(),
+                    cur->win->GetY() + cur->win->GetH() - me->win->GetY());
             }
 
             cur = cur->Next;
@@ -978,12 +1019,14 @@ void C_Handler::ClearAllHiddenRects()
 
             while (cur)
             {
-                if ((cur->Flags bitand C_BIT_ENABLED) and not (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
+                if ((cur->Flags bitand C_BIT_ENABLED) and
+                    not(cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
                 {
-                    me->win->ClearUpdateRect(cur->win->GetX() - me->win->GetX(),
-                                             cur->win->GetY() - me->win->GetY(),
-                                             cur->win->GetX() + cur->win->GetW() - me->win->GetX(),
-                                             cur->win->GetY() + cur->win->GetH() - me->win->GetY());
+                    me->win->ClearUpdateRect(
+                        cur->win->GetX() - me->win->GetX(),
+                        cur->win->GetY() - me->win->GetY(),
+                        cur->win->GetX() + cur->win->GetW() - me->win->GetX(),
+                        cur->win->GetY() + cur->win->GetH() - me->win->GetY());
                 }
 
                 cur = cur->Next;
@@ -994,7 +1037,8 @@ void C_Handler::ClearAllHiddenRects()
     }
 }
 
-void C_Handler::Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2, long y2)
+void C_Handler::Fill(SCREEN *surface, COLORREF Color, long x1, long y1, long x2,
+                     long y2)
 //void C_Handler::Fill(SCREEN *surface,COLORREF Color,short x1,short y1,short x2,short y2)
 {
     UI95_RECT dst;
@@ -1015,7 +1059,7 @@ void C_Handler::Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst)
         DWORD color;
         DWORD *dest;
 
-        dest = (DWORD*) surface->mem;
+        dest = (DWORD *)surface->mem;
         color = RGB565toRGB8(UI95_RGB24Bit(Color));
         i = dst->top;
         len = dst->right - dst->left;
@@ -1027,13 +1071,13 @@ void C_Handler::Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst)
             {
                 // Artscout - 2026 (x64): rep stosd -> fill 'len' DWORDs with color (builds on x86+x64).
                 DWORD *d = (DWORD *)((BYTE *)dest + start);
-                for (long k = 0; k < len; k++) d[k] = color;
+                for (long k = 0; k < len; k++)
+                    d[k] = color;
             }
 
             i++;
             start += surface->width * sizeof(DWORD);
         }
-
     }
     else
     {
@@ -1053,7 +1097,8 @@ void C_Handler::Fill(SCREEN *surface, COLORREF Color, UI95_RECT *dst)
             {
                 // Artscout - 2026 (x64): rep stosw -> fill 'len' WORDs with color (builds on x86+x64).
                 WORD *d = (WORD *)((BYTE *)dest + start);
-                for (long k = 0; k < len; k++) d[k] = color;
+                for (long k = 0; k < len; k++)
+                    d[k] = color;
             }
 
             i++;
@@ -1072,13 +1117,15 @@ void C_Handler::CheckDrawThrough()
 
     while (me)
     {
-        if ((me->Flags bitand C_BIT_ENABLED) and (me->win->update_ bitand C_DRAW_REFRESH))
+        if ((me->Flags bitand C_BIT_ENABLED) and
+            (me->win->update_ bitand C_DRAW_REFRESH))
         {
             cur = me->Next;
 
             while (cur)
             {
-                if ((cur->Flags bitand C_BIT_ENABLED) and (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
+                if ((cur->Flags bitand C_BIT_ENABLED) and
+                    (cur->win->GetFlags() bitand C_BIT_TRANSLUCENT))
                 {
                     for (i = 0; i < me->win->rectcount_; i++)
                     {
@@ -1090,7 +1137,9 @@ void C_Handler::CheckDrawThrough()
                             src.top += (me->win->GetY() - cur->win->GetY());
                             src.bottom += (me->win->GetY() - cur->win->GetY());
 
-                            cur->win->SetUpdateRect(src.left, src.top, src.right, src.bottom, C_BIT_ABSOLUTE, 0);
+                            cur->win->SetUpdateRect(src.left, src.top,
+                                                    src.right, src.bottom,
+                                                    C_BIT_ABSOLUTE, 0);
                         }
                     }
                 }
@@ -1112,12 +1161,12 @@ void C_Handler::Update()
     UI95_RECT src, dst;
     short i;
 
-    if ( not (UpdateFlag bitand C_DRAW_REFRESH) or not DrawFlags)
+    if (not(UpdateFlag bitand C_DRAW_REFRESH) or not DrawFlags)
         return;
 
     Lock();
 
-    if ( not surface_.mem)
+    if (not surface_.mem)
         return;
 
     // CheckDrawThrough();
@@ -1128,7 +1177,8 @@ void C_Handler::Update()
 
     while (cur)
     {
-        if ((cur->Flags bitand C_BIT_ENABLED) and (cur->win->update_ bitand C_DRAW_REFRESH))
+        if ((cur->Flags bitand C_BIT_ENABLED) and
+            (cur->win->update_ bitand C_DRAW_REFRESH))
         {
             if (cur->win->update_ bitand C_DRAW_REFRESH)
             {
@@ -1158,8 +1208,15 @@ void C_Handler::Update()
 
                         while (infront)
                         {
-                            if (infront->Flags bitand C_BIT_ENABLED and (infront->win->GetFlags() bitand C_BIT_TRANSLUCENT))
-                                infront->win->SetUpdateRect(dst.left - infront->win->GetX(), dst.top - infront->win->GetY(), dst.right - infront->win->GetX(), dst.bottom - infront->win->GetY(), C_BIT_ABSOLUTE, 0);
+                            if (infront->Flags bitand C_BIT_ENABLED and
+                                (infront->win->GetFlags() bitand
+                                 C_BIT_TRANSLUCENT))
+                                infront->win->SetUpdateRect(
+                                    dst.left - infront->win->GetX(),
+                                    dst.top - infront->win->GetY(),
+                                    dst.right - infront->win->GetX(),
+                                    dst.bottom - infront->win->GetY(),
+                                    C_BIT_ABSOLUTE, 0);
 
                             infront = infront->Next;
                         }
@@ -1190,13 +1247,14 @@ void C_Handler::Update()
         //memcpy(gScreenShotBuffer,surface_.mem,surface_.width * surface_.height * sizeof(WORD));
         // MN somehow this D3D stuff for surface_.width creates a width of 1024 for an 800x600 UI...
 
-        if (surface_.bpp == 32)//XX
+        if (surface_.bpp == 32) //XX
         {
             for (int i = 0; i < xsize * surface_.height; i++)
-                gScreenShotBuffer[i] = RGB8toRGB565(((DWORD*)surface_.mem)[ i ]);
+                gScreenShotBuffer[i] = RGB8toRGB565(((DWORD *)surface_.mem)[i]);
         }
         else
-            memcpy(gScreenShotBuffer, surface_.mem, xsize * surface_.height * sizeof(WORD));
+            memcpy(gScreenShotBuffer, surface_.mem,
+                   xsize * surface_.height * sizeof(WORD));
 
         gUI_TakeScreenShot = 2;
     }
@@ -1209,18 +1267,20 @@ void C_Handler::CopyToPrimary()
     short i;
     RECT src, dest;
 
-    if ( not DrawFlags)
+    if (not DrawFlags)
         return;
 
     // PHASE 1/2 (D3D7->D3D11): UI95 draws into Front_ (CPU). Compose doesn't work under D3D11 (DDraw),
     // blit the composited Front_ directly to the backbuffer + Present.
-    // #DX12: GPU mode (D3D11 OR D3D12) presents the composited Front_ through PresentGpu (which routes to the
-    // active backend). Legacy DDraw compose path below is skipped.
-    extern bool g_bUseD3D12;
-    if (g_bUseD3D12)
+    // #DX12/#104: any GPU backend (D3D12/Vulkan) presents the composited Front_ through PresentGpu (which routes
+    // to the active backend). Legacy DDraw compose path below is skipped.
+    extern bool g_bUseGpu;
+    if (g_bUseGpu)
     {
-        if (Front_) Front_->PresentGpu();
-        else if (Primary_) Primary_->PresentGpu();
+        if (Front_)
+            Front_->PresentGpu();
+        else if (Primary_)
+            Primary_->PresentGpu();
         UpdateFlag = 0;
         rectcount_ = 0;
         return;
@@ -1367,15 +1427,16 @@ void C_Handler::EnableWindowGroup(long ID)
 
     while (cur)
     {
-        if (cur->win->GetGroup() == ID and not (cur->Flags bitand C_BIT_ENABLED))
+        if (cur->win->GetGroup() == ID and not(cur->Flags bitand C_BIT_ENABLED))
         {
             ShowWindow(cur->win);
 
-            if ( not (cur->win->GetFlags() bitand C_BIT_CANTMOVE))
+            if (not(cur->win->GetFlags() bitand C_BIT_CANTMOVE))
             {
                 next = cur->Next;
                 WindowToFront(cur->win);
-                cur->win->SetUpdateRect(0, 0, cur->win->GetW(), cur->win->GetH(), C_BIT_ABSOLUTE, 0);
+                cur->win->SetUpdateRect(0, 0, cur->win->GetW(),
+                                        cur->win->GetH(), C_BIT_ABSOLUTE, 0);
                 cur = next;
                 continue;
             }
@@ -1427,14 +1488,15 @@ BOOL C_Handler::AddUserCallback(void (*cb)())
 {
     CBLIST *cur, *newcb;
 
-    if (cb == NULL) return(FALSE);
+    if (cb == NULL)
+        return (FALSE);
 
     cur = UserRoot_;
 
     while (cur)
     {
         if (cur->Callback == cb)
-            return(FALSE);
+            return (FALSE);
 
         cur = cur->Next;
     }
@@ -1460,7 +1522,7 @@ BOOL C_Handler::AddUserCallback(void (*cb)())
     }
 
     LeaveCritical();
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Handler::RemoveUserCallback(void (*cb)())
@@ -1468,7 +1530,8 @@ BOOL C_Handler::RemoveUserCallback(void (*cb)())
     CBLIST *cur, *last;
     BOOL retval = FALSE;
 
-    if (cb == NULL or UserRoot_ == NULL) return(FALSE);
+    if (cb == NULL or UserRoot_ == NULL)
+        return (FALSE);
 
     EnterCritical();
 
@@ -1486,7 +1549,7 @@ BOOL C_Handler::RemoveUserCallback(void (*cb)())
         cur = UserRoot_;
         last = UserRoot_;
 
-        while ((cur) and (cur->Next) and ( not retval))
+        while ((cur) and (cur->Next) and (not retval))
         {
             if (cur->Next->Callback == cb)
             {
@@ -1503,7 +1566,7 @@ BOOL C_Handler::RemoveUserCallback(void (*cb)())
     }
 
     LeaveCritical();
-    return(retval);
+    return (retval);
 }
 C_Window *C_Handler::GetWindow(short x, short y)
 {
@@ -1518,8 +1581,8 @@ C_Window *C_Handler::GetWindow(short x, short y)
     {
         if (cur->Flags bitand C_BIT_ENABLED)
         {
-            if (x >= cur->win->GetX() and y >= cur->win->GetY() and 
-                x <= (cur->win->GetX() + cur->win->GetW()) and 
+            if (x >= cur->win->GetX() and y >= cur->win->GetY() and
+                x <= (cur->win->GetX() + cur->win->GetW()) and
                 y <= (cur->win->GetY() + cur->win->GetH()))
                 overme = cur->win;
 
@@ -1530,7 +1593,7 @@ C_Window *C_Handler::GetWindow(short x, short y)
         cur = cur->Next;
     }
 
-    return(overme);
+    return (overme);
 }
 
 void C_Handler::SetBehindWindow(C_Window *thewin)
@@ -1553,7 +1616,10 @@ void C_Handler::SetBehindWindow(C_Window *thewin)
         if (cur->win not_eq thewin)
         {
             if (cur->Flags bitand C_BIT_ENABLED)
-                cur->win->SetUpdateRect(x - cur->win->GetX(), y - cur->win->GetY(), w - cur->win->GetX(), h - cur->win->GetY(), C_BIT_ABSOLUTE, 0);
+                cur->win->SetUpdateRect(
+                    x - cur->win->GetX(), y - cur->win->GetY(),
+                    w - cur->win->GetX(), h - cur->win->GetY(), C_BIT_ABSOLUTE,
+                    0);
 
             cur = cur->Next;
         }
@@ -1568,7 +1634,10 @@ void C_Handler::PostTimerMessage()
     {
         PostMessage(AppWindow_, FM_TIMER_UPDATE, 0, 0);
         // JB 020217 Speed up UI refresh when using a higher time acceleration
-        Sleep(TimerSleep_ / min(max(gameCompressionRatio, 1), g_nMaxUIRefresh)); // 2002-02-23 MODIFIED BY S.G. Added the min(... g_nMaxUIRefresh) to prevent the UI to refresh too much and end up running out of resources because it can't keep up
+        Sleep(
+            TimerSleep_ /
+            min(max(gameCompressionRatio, 1),
+                g_nMaxUIRefresh)); // 2002-02-23 MODIFIED BY S.G. Added the min(... g_nMaxUIRefresh) to prevent the UI to refresh too much and end up running out of resources because it can't keep up
     }
 
     TimerLoop_ = -1;
@@ -1600,7 +1669,9 @@ unsigned int __stdcall C_Handler::ControlLoop(void *myself)
 
     // Set the FPU to 24bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
 #endif
     ((C_Handler *)myself)->DoControlLoop();
@@ -1616,7 +1687,9 @@ unsigned int __stdcall C_Handler::TimerLoop(void *myself)
 
     // Set the FPU to 24bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
 #endif
     ((C_Handler *)myself)->PostTimerMessage();
@@ -1632,7 +1705,9 @@ unsigned int __stdcall C_Handler::OutputLoop(void *myself)
 
     // Set the FPU to 24bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
 #endif
     ((C_Handler *)myself)->DoOutputLoop();
@@ -1644,7 +1719,7 @@ void C_Handler::DoOutputLoop()
 {
     while (OutputLoop_ > 0)
     {
-        WaitForSingleObject(WakeOutput_, 40/*OutputWait_*/);
+        WaitForSingleObject(WakeOutput_, 40 /*OutputWait_*/);
 
         if (OutputLoop_ > 0)
         {
@@ -1713,14 +1788,15 @@ void C_Handler::StartOutputThread()
 
     WakeOutput_ = CreateEvent(NULL, FALSE, FALSE, "Awaken Output Thread");
 
-    if ( not WakeOutput_)
+    if (not WakeOutput_)
         return;
 
     OutputLoop_ = 1;
-    OutputThread_ = (HANDLE)_beginthreadex(NULL, 0, OutputLoop, this, 0, &OutputID_);
+    OutputThread_ =
+        (HANDLE)_beginthreadex(NULL, 0, OutputLoop, this, 0, &OutputID_);
 }
 
-#pragma auto_inline (off)
+#pragma auto_inline(off)
 void C_Handler::EndOutputThread()
 {
     if (OutputThread_)
@@ -1744,7 +1820,7 @@ void C_Handler::EndOutputThread()
         WakeOutput_ = NULL;
     }
 }
-#pragma auto_inline (on)
+#pragma auto_inline(on)
 
 void C_Handler::SuspendOutput()
 {
@@ -1777,17 +1853,18 @@ void C_Handler::StartControlThread(long sleeptime)
 
     WakeControl_ = CreateEvent(NULL, FALSE, FALSE, "Awaken Control Thread");
 
-    if ( not WakeControl_)
+    if (not WakeControl_)
     {
         return;
     }
 
     ControlLoop_ = 1;
     ControlSleep_ = sleeptime;
-    ControlThread_ = (HANDLE)_beginthreadex(NULL, 0, ControlLoop, this, 0, &ControlID_);
+    ControlThread_ =
+        (HANDLE)_beginthreadex(NULL, 0, ControlLoop, this, 0, &ControlID_);
 }
 
-#pragma auto_inline (off)
+#pragma auto_inline(off)
 void C_Handler::EndControlThread()
 {
     if (ControlThread_)
@@ -1809,7 +1886,7 @@ void C_Handler::EndControlThread()
         WakeControl_ = NULL;
     }
 }
-#pragma auto_inline (on)
+#pragma auto_inline(on)
 
 void C_Handler::SuspendControl()
 {
@@ -1838,10 +1915,11 @@ void C_Handler::StartTimerThread(long interval)
 
     TimerLoop_ = 1;
     TimerSleep_ = interval;
-    TimerThread_ = (HANDLE)_beginthreadex(NULL, 0, TimerLoop, this, 0, &TimerID_);
+    TimerThread_ =
+        (HANDLE)_beginthreadex(NULL, 0, TimerLoop, this, 0, &TimerID_);
 }
 
-#pragma auto_inline (off)
+#pragma auto_inline(off)
 
 void C_Handler::EndTimerThread()
 {
@@ -1857,7 +1935,7 @@ void C_Handler::EndTimerThread()
         TimerThread_ = 0;
     }
 }
-#pragma auto_inline (on)
+#pragma auto_inline(on)
 
 void C_Handler::SuspendTimer()
 {
@@ -1871,14 +1949,15 @@ void C_Handler::ResumeTimer()
         ResumeThread(TimerThread_);
 }
 
-BOOL C_Handler::CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount)
+BOOL C_Handler::CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii,
+                             unsigned char ShiftStates, long RepeatCount)
 {
     WHLIST *cur;
 
     cur = Root_;
 
     if (cur == NULL)
-        return(FALSE);
+        return (FALSE);
 
     while (cur->Next)
         cur = cur->Next;
@@ -1886,8 +1965,9 @@ BOOL C_Handler::CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsi
     while (cur)
     {
         if (cur->Flags bitand C_BIT_ENABLED)
-            if (cur->win->CheckHotKeys(DKScanCode, Ascii, ShiftStates, RepeatCount))
-                return(TRUE);
+            if (cur->win->CheckHotKeys(DKScanCode, Ascii, ShiftStates,
+                                       RepeatCount))
+                return (TRUE);
 
         if (cur->win->GetType() == C_TYPE_EXCLUSIVE)
             cur = NULL;
@@ -1895,28 +1975,30 @@ BOOL C_Handler::CheckHotKeys(unsigned char DKScanCode, unsigned char Ascii, unsi
             cur = cur->Prev;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 long C_Handler::GetDragX(WORD MouseX) //
 {
     long retval = Drag_.ItemX_ + MouseX - Drag_.StartX_;
 
-    return(retval);
+    return (retval);
 }
 
 long C_Handler::GetDragY(WORD MouseY) //
 {
     long retval = Drag_.ItemY_ + MouseY - Drag_.StartY_;
 
-    return(retval);
+    return (retval);
 }
 
 // returns FALSE if NOT grabbing a control
-BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabType)
+BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme,
+                         long GrabType)
 //not BOOL C_Handler::GrabItem(WORD MouseX,WORD MouseY,C_Window *overme,short GrabType)
 {
-    Grab_.Control_ = overme->GetControl(&Grab_.ID_, MouseX - overme->GetX(), MouseY - overme->GetY());
+    Grab_.Control_ = overme->GetControl(&Grab_.ID_, MouseX - overme->GetX(),
+                                        MouseY - overme->GetY());
     Grab_.StartX_ = MouseX;
     Grab_.StartY_ = MouseY;
     Grab_.GrabType_ = GrabType;
@@ -1930,10 +2012,12 @@ BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabTy
     {
         if (overme->GetFlags() bitand C_BIT_DRAGABLE)
         {
-            if (MouseX < overme->GetX() or MouseY < overme->GetY() or MouseX > (overme->GetX() + overme->GetW()) or MouseY > (overme->GetY() + overme->GetDragH()))
+            if (MouseX < overme->GetX() or MouseY < overme->GetY() or
+                MouseX > (overme->GetX() + overme->GetW()) or
+                MouseY > (overme->GetY() + overme->GetDragH()))
             {
                 Grab_.Window_ = NULL;
-                return(FALSE);
+                return (FALSE);
             }
 
             Grab_.Window_ = overme;
@@ -1941,10 +2025,10 @@ BOOL C_Handler::GrabItem(WORD MouseX, WORD MouseY, C_Window *overme, long GrabTy
             Grab_.ItemY_ = overme->GetY();
         }
 
-        return(FALSE);
+        return (FALSE);
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_Handler::ReleaseControl(C_Base *control)
@@ -1988,14 +2072,14 @@ void C_Handler::StartDrag()
 BOOL C_Handler::DragItem(WORD MouseX, WORD MouseY, C_Window *overme)
 {
     if (Drag_.GrabType_ not_eq C_TYPE_LMOUSEDOWN)
-        return(FALSE);
+        return (FALSE);
 
     if (Drag_.Control_)
-        return(Drag_.Control_->Drag(&Drag_, MouseX, MouseY, overme));
+        return (Drag_.Control_->Drag(&Drag_, MouseX, MouseY, overme));
     else if (Drag_.Window_)
-        return(Drag_.Window_->Drag(&Drag_, MouseX, MouseY, overme));
+        return (Drag_.Window_->Drag(&Drag_, MouseX, MouseY, overme));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Handler::DropItem(WORD MouseX, WORD MouseY, C_Window *overme)
@@ -2020,7 +2104,7 @@ BOOL C_Handler::DropItem(WORD MouseX, WORD MouseY, C_Window *overme)
     Drag_.Control_ = NULL;
     Drag_.Window_ = NULL;
     Drag_.GrabType_ = 0;
-    return(retval);
+    return (retval);
 }
 
 void C_Handler::BlitWindowNow(C_Window *win)
@@ -2065,9 +2149,9 @@ void C_Handler::SendUpdate()
 BOOL C_Handler::OldInputMessage()
 {
     if (GetMessageTime() < EnabledTime_)
-        return(TRUE);
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Handler::DropControl()
@@ -2102,15 +2186,17 @@ void C_Handler::RemovingControl(C_Base *control)
 
     if (gPopupMgr->AMenuOpened())
     {
-        if (gPopupMgr->GetCallingControl() and gPopupMgr->GetCallingControl() ==  control)
+        if (gPopupMgr->GetCallingControl() and
+            gPopupMgr->GetCallingControl() == control)
             gPopupMgr->CloseMenu();
     }
 }
 
-long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam,
+                             LPARAM lParam)
 {
     C_Window *overme;
-    C_Base   *OldMouseControl_;
+    C_Base *OldMouseControl_;
     WORD MouseX, MouseY;
     RECT dest;
     long retval = 1;
@@ -2126,426 +2212,274 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
 
     switch (message)
     {
-            // sfr: added mouse wheel
-        case WM_MOUSEWHEEL:
-            {
-                WORD MouseZ;
-                HelpOff();
+        // sfr: added mouse wheel
+    case WM_MOUSEWHEEL:
+    {
+        WORD MouseZ;
+        HelpOff();
 
-                if (OldInputMessage())
+        if (OldInputMessage())
         {
             retval = 0;
             break;
         }
 
-    MessageType = C_TYPE_MOUSEWHEEL;
+        MessageType = C_TYPE_MOUSEWHEEL;
 
-    // we have to correct mouse position, since this is relative to screen
-    // lparam is cursor x/y (low hi)
-    POINT p;
-    p.x = LOWORD(lParam);
-    p.y = HIWORD(lParam);
-    ScreenToClient(hwnd, &p);
-    MouseX = (WORD)p.x;
-    MouseY = (WORD)p.y;
-    overme = GetWindow(MouseX, MouseY);
+        // we have to correct mouse position, since this is relative to screen
+        // lparam is cursor x/y (low hi)
+        POINT p;
+        p.x = LOWORD(lParam);
+        p.y = HIWORD(lParam);
+        ScreenToClient(hwnd, &p);
+        MouseX = (WORD)p.x;
+        MouseY = (WORD)p.y;
+        overme = GetWindow(MouseX, MouseY);
 
-    if (overme == NULL)
-    {
-        break;
+        if (overme == NULL)
+        {
+            break;
+        }
+
+        // so we are rolling wheel inside an active window
+
+        // grab component we are over
+        if (not GrabItem(MouseX, MouseY, overme, MessageType))
+        {
+            break;
+        }
+
+        // wparam is distance rolled/ key modifiers (low hi)
+        // here we found a component. process event
+        // check hi bit of MouseZ, since word is unsigned
+        MouseZ = 1 << ((sizeof(WORD) * 8) - 1);
+        MouseZ and_eq HIWORD(wParam);
+        // here we invert, since positive in mouse wheel
+        // is forward, and forward is up in screen coordinates (neg values)
+        // #22: if the control under the cursor didn't handle the wheel (list rows = buttons), scroll
+        // the vertical scrollbar of that control's CLIENT -- gives wheel scrolling over the list.
+        if (not Grab_.Control_->Wheel(MouseZ ? 1 : -1, MouseX, MouseY))
+            overme->WheelClient(Grab_.Control_->GetClient(), MouseZ ? 1 : -1,
+                                MouseX, MouseY);
+
+        ret = TRUE;
     }
-
-    // so we are rolling wheel inside an active window
-
-    // grab component we are over
-    if ( not GrabItem(MouseX, MouseY, overme, MessageType))
-    {
-        break;
-    }
-
-    // wparam is distance rolled/ key modifiers (low hi)
-    // here we found a component. process event
-    // check hi bit of MouseZ, since word is unsigned
-    MouseZ = 1 << ((sizeof(WORD) * 8) - 1);
-    MouseZ and_eq HIWORD(wParam);
-    // here we invert, since positive in mouse wheel
-    // is forward, and forward is up in screen coordinates (neg values)
-    // #22: if the control under the cursor didn't handle the wheel (list rows = buttons), scroll
-    // the vertical scrollbar of that control's CLIENT -- gives wheel scrolling over the list.
-    if ( not Grab_.Control_->Wheel(MouseZ ? 1 : -1, MouseX, MouseY))
-        overme->WheelClient(Grab_.Control_->GetClient(), MouseZ ? 1 : -1, MouseX, MouseY);
-
-    ret = TRUE;
-}
     break;
 
     case WM_LBUTTONDOWN:
-            HelpOff();
+        HelpOff();
 
-            if (OldInputMessage())
-            {
-                retval = 0;
-                break;
-            }
-
-            MessageType = C_TYPE_LMOUSEDOWN;
-
-            MouseDown_ = C_TYPE_LMOUSEDOWN;
-            MouseDownTime_ = GetCurrentTime();
-            MouseX = LOWORD(lParam);
-            MouseY = HIWORD(lParam);
-            overme = GetWindow(MouseX, MouseY);
-
-            if (overme == NULL)
-            {
-                retval = 0;
-                break;
-            }
-
-            if (CurWindow_ and CurWindow_ not_eq overme)
-            {
-                CurWindow_->Deactivate();
-                overme->Activate();
-            }
-
-            CurWindow_ = overme;
-
-            if (gPopupMgr->AMenuOpened() and not overme->IsMenu())
-                gPopupMgr->CloseMenu();
-
-            if (Dragging())
-            {
-                DropItem(MouseX, MouseY, overme);
-            }
-
-            if (GrabItem(MouseX, MouseY, overme, MessageType))
-            {
-                if (MouseCallback_)
-                {
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
-                }
-                else
-                {
-                    ret = TRUE;
-                }
-
-                if (ret)
-                {
-                    overme->SetControl(Grab_.ID_);
-                    WindowToFront(overme);
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
-                }
-            }
-            else
-            {
-                overme->DeactivateControl();
-
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
-
-                if (ret)
-                    WindowToFront(overme);
-            }
-
+        if (OldInputMessage())
+        {
             retval = 0;
             break;
+        }
 
-        case WM_LBUTTONUP:
-                if (OldInputMessage())
-                {
-                    retval = 0;
-                    break;
-                }
+        MessageType = C_TYPE_LMOUSEDOWN;
 
-            MouseDown_ = 0;
-            MouseX = LOWORD(lParam);
-            MouseY = HIWORD(lParam);
-            overme = GetWindow(MouseX, MouseY);
+        MouseDown_ = C_TYPE_LMOUSEDOWN;
+        MouseDownTime_ = GetCurrentTime();
+        MouseX = LOWORD(lParam);
+        MouseY = HIWORD(lParam);
+        overme = GetWindow(MouseX, MouseY);
 
-            if (overme == NULL)
+        if (overme == NULL)
+        {
+            retval = 0;
+            break;
+        }
+
+        if (CurWindow_ and CurWindow_ not_eq overme)
+        {
+            CurWindow_->Deactivate();
+            overme->Activate();
+        }
+
+        CurWindow_ = overme;
+
+        if (gPopupMgr->AMenuOpened() and not overme->IsMenu())
+            gPopupMgr->CloseMenu();
+
+        if (Dragging())
+        {
+            DropItem(MouseX, MouseY, overme);
+        }
+
+        {
+            BOOL _g = GrabItem(MouseX, MouseY, overme, MessageType);
+            if (!_g)
             {
                 retval = 0;
                 break;
             }
-
-            if (LastUp_ == C_TYPE_LMOUSEUP and (GetMessageTime() - LastUpTime_) < DoubleClickTime_)
-                DblClk = C_TYPE_LMOUSEDBLCLK;
-            else
-                DblClk = 0;
-
-            MessageType = C_TYPE_LMOUSEUP;
-            LastUp_ = MessageType;
-            LastUpTime_ = GetMessageTime();
-
-            if (Dragging())
+        }
+        if (true)
+        {
+            if (MouseCallback_)
             {
-                DropItem(MouseX, MouseY, overme);
-                MessageType = C_TYPE_LDROP;
+                ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+            }
+            else
+            {
+                ret = TRUE;
             }
 
-            if (Grab_.Control_)
+            if (ret)
             {
-                if (this not_eq gMainHandler)
-                {
-                    ret = TRUE;
-                }
+                overme->SetControl(Grab_.ID_);
+                WindowToFront(overme);
+                Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
+            }
+        }
+        else
+        {
+            overme->DeactivateControl();
 
-                if (MouseCallback_ and Grab_.Control_)
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+
+            if (ret)
+                WindowToFront(overme);
+        }
+
+        retval = 0;
+        break;
+
+    case WM_LBUTTONUP:
+        if (OldInputMessage())
+        {
+            retval = 0;
+            break;
+        }
+
+        MouseDown_ = 0;
+        MouseX = LOWORD(lParam);
+        MouseY = HIWORD(lParam);
+        overme = GetWindow(MouseX, MouseY);
+
+        if (overme == NULL)
+        {
+            retval = 0;
+            break;
+        }
+
+        if (LastUp_ == C_TYPE_LMOUSEUP and
+            (GetMessageTime() - LastUpTime_) < DoubleClickTime_)
+            DblClk = C_TYPE_LMOUSEDBLCLK;
+        else
+            DblClk = 0;
+
+        MessageType = C_TYPE_LMOUSEUP;
+        LastUp_ = MessageType;
+        LastUpTime_ = GetMessageTime();
+
+        if (Dragging())
+        {
+            DropItem(MouseX, MouseY, overme);
+            MessageType = C_TYPE_LDROP;
+        }
+
+        if (Grab_.Control_)
+        {
+            if (this not_eq gMainHandler)
+            {
+                ret = TRUE;
+            }
+
+            if (MouseCallback_ and Grab_.Control_)
+            {
+                ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+            }
+            else
+            {
+                ret = TRUE;
+            }
+
+            if (this not_eq gMainHandler)
+            {
+                ret = TRUE;
+            }
+
+            if (ret and Grab_.Control_)
+            {
+                if (Grab_.Control_->GetFlags() bitand C_BIT_ABSOLUTE)
                 {
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
+                    Grab_.Control_->SetRelXY(MouseX - Grab_.Window_->GetX() -
+                                                 Grab_.Control_->GetX(),
+                                             MouseY - Grab_.Window_->GetY() -
+                                                 Grab_.Control_->GetY());
                 }
                 else
                 {
-                    ret = TRUE;
-                }
-
-                if (this not_eq gMainHandler)
-                {
-                    ret = TRUE;
-                }
-
-                if (ret and Grab_.Control_)
-                {
-                    if (Grab_.Control_->GetFlags() bitand C_BIT_ABSOLUTE)
-                    {
-                        Grab_.Control_->SetRelXY(
-                            MouseX - Grab_.Window_->GetX() - Grab_.Control_->GetX(),
-                            MouseY - Grab_.Window_->GetY() - Grab_.Control_->GetY()
-                        );
-                    }
-                    else
-                    {
-                        Grab_.Control_->SetRelXY(
-                            MouseX - Grab_.Window_->GetX() -
-                            Grab_.Window_->ClientArea_[Grab_.Control_->GetClient()].left -
+                    Grab_.Control_->SetRelXY(
+                        MouseX - Grab_.Window_->GetX() -
+                            Grab_.Window_
+                                ->ClientArea_[Grab_.Control_->GetClient()]
+                                .left -
                             Grab_.Control_->GetX(),
-                            MouseY - Grab_.Window_->GetY() -
-                            Grab_.Window_->ClientArea_[Grab_.Control_->GetClient()].top -
-                            Grab_.Control_->GetY()
-                        );
-                    }
+                        MouseY - Grab_.Window_->GetY() -
+                            Grab_.Window_
+                                ->ClientArea_[Grab_.Control_->GetClient()]
+                                .top -
+                            Grab_.Control_->GetY());
+                }
 
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
+                Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
 
-                    if (DblClk and Grab_.Control_)
+                if (DblClk and Grab_.Control_)
+                {
+                    Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //
+                }
+            }
+
+            if (this not_eq gMainHandler)
+            {
+                ret = TRUE;
+            }
+
+            Grab_.Control_ = NULL;
+            Grab_.Window_ = NULL;
+        }
+        else
+        {
+            overme->DeactivateControl();
+
+            if (MouseCallback_)
+            {
+                ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+            }
+
+            if (ret)
+            {
+                WindowToFront(overme);
+            }
+
+            if (MouseX < overme->GetX() or MouseY < overme->GetY() or
+                MouseX > (overme->GetX() + overme->GetW()) or
+                MouseY > (overme->GetY() + overme->GetH()))
+            {
+                if (overme->GetOwner())
+                {
+                    if (overme->GetOwner()->CloseWindow())
                     {
-                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //
-                    }
-                }
-
-                if (this not_eq gMainHandler)
-                {
-                    ret = TRUE;
-                }
-
-                Grab_.Control_ = NULL;
-                Grab_.Window_ = NULL;
-            }
-            else
-            {
-                overme->DeactivateControl();
-
-                if (MouseCallback_)
-                {
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
-                }
-
-                if (ret)
-                {
-                    WindowToFront(overme);
-                }
-
-                if (MouseX < overme->GetX() or MouseY < overme->GetY() or MouseX > (overme->GetX() + overme->GetW()) or MouseY > (overme->GetY() + overme->GetH()))
-                {
-                    if (overme->GetOwner())
-                    {
-                        if (overme->GetOwner()->CloseWindow())
-                        {
-                            overme = NULL;
-                        }
-                    }
-                }
-
-                Grab_.Window_ = NULL;
-            }
-
-            overme = GetWindow(MouseX, MouseY);
-
-            if (overme)
-            {
-                OverControl_ = overme->MouseOver(MouseX - overme->GetX(), MouseY - overme->GetY(), OverControl_);
-
-                if (OverLast_.Control_ not_eq OverControl_)
-                {
-                    HelpOff();
-                    OverLast_.Control_ = OverControl_;
-
-                    if (OverControl_)
-                    {
-                        OverLast_.Time_ = GetCurrentTime();
-                        OverLast_.Tip_ = gStringMgr->GetString(OverControl_->GetHelpText());
-                        OverLast_.MouseX_ = MouseX;
-                        OverLast_.MouseY_ = MouseY;
+                        overme = NULL;
                     }
                 }
             }
 
-            retval = 0;
-            break;
+            Grab_.Window_ = NULL;
+        }
 
-        case WM_LBUTTONDBLCLK:
-                break;
-            HelpOff();
+        overme = GetWindow(MouseX, MouseY);
 
-            if (OldInputMessage())
-            {
-                retval = 0;
-                break;
-            }
-
-            MouseX = LOWORD(lParam);
-            MouseY = HIWORD(lParam);
-            overme = GetWindow(MouseX, MouseY);
-
-            if (overme == NULL)
-            {
-                retval = 0;
-                break;
-            }
-
-            CurWindow_ = overme;
-
-            if (Dragging())
-                DropItem(MouseX, MouseY, overme);
-
-            if (GrabItem(MouseX, MouseY, overme, C_TYPE_LMOUSEDBLCLK))
-            {
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, C_TYPE_LMOUSEDBLCLK);
-                else
-                    ret = TRUE;
-
-                if (ret)
-                {
-                    overme->SetControl(Grab_.ID_);
-                    WindowToFront(overme);
-                    Grab_.Control_->Process(Grab_.ID_, C_TYPE_LMOUSEDBLCLK);
-                }
-            }
-            else
-            {
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, C_TYPE_LMOUSEDBLCLK);
-                else
-                    ret = TRUE;
-
-                if (ret)
-                    WindowToFront(overme);
-
-                Grab_.Window_ = NULL;
-            }
-
-            retval = 0;
-            break;
-
-        case WM_MOUSEMOVE:
-                HelpOff();
-
-            if (OldInputMessage())
-            {
-                retval = 0;
-                break;
-            }
-
-            MessageType = C_TYPE_MOUSEMOVE;
-            LastUp_ = 0;
-            LastUpTime_ = 0;
-            OldMouseControl_ = MouseControl_;
-            MouseX = LOWORD(lParam);
-            MouseY = HIWORD(lParam);
-            overme = GetWindow(MouseX, MouseY);
-
-            if (overme == NULL)
-            {
-                if (OldMouseControl_ and OldMouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
-                {
-                    OldMouseControl_->SetMouseOver(0);
-                    OldMouseControl_->Refresh();
-                }
-
-                retval = 0;
-                break;
-            }
-
-            if ( not Dragging() and (Grab_.Control_ or Grab_.Window_) and Grab_.GrabType_ == C_TYPE_LMOUSEDOWN)
-                StartDrag();
-
-            if (Dragging())
-            {
-                if (DragItem(MouseX, MouseY, overme) and Drag_.Control_)
-                    Drag_.Window_->RefreshWindow();
-
-                OverControl_ = NULL;
-
-                if (Drag_.Control_)
-                {
-                    if (Drag_.Control_->GetDragCursorID())
-                        SetCursor(gCursors[Drag_.Control_->GetDragCursorID()]);
-                    else if (Drag_.Control_->GetCursorID())
-                        SetCursor(gCursors[Drag_.Control_->GetCursorID()]);
-                    else
-                        SetCursor(gCursors[overme->GetCursorID()]);
-                }
-                else
-                    SetCursor(gCursors[overme->GetCursorID()]);
-            }
-            else if (MouseDown_)
-            {
-                if (Grab_.Control_ and Grab_.Window_)
-                {
-                    if (Grab_.Control_->GetFlags() bitand C_BIT_ABSOLUTE)
-                        Grab_.Control_->SetRelXY(MouseX - Grab_.Window_->GetX() - Grab_.Control_->GetX(), MouseY - Grab_.Window_->GetY() - Grab_.Control_->GetY());
-                    else
-                        Grab_.Control_->SetRelXY(MouseX - Grab_.Window_->GetX()
-                                                 - Grab_.Window_->ClientArea_[Grab_.Control_->GetClient()].left
-                                                 - Grab_.Control_->GetX(),
-                                                 MouseY - Grab_.Window_->GetY()
-                                                 - Grab_.Window_->ClientArea_[Grab_.Control_->GetClient()].top
-                                                 - Grab_.Control_->GetY());
-                }
-
-                OverControl_ = NULL;
-            }
-            else
-            {
-                MouseControl_ = overme->MouseOver(MouseX - overme->GetX(), MouseY - overme->GetY(), OldMouseControl_);
-
-                if (OldMouseControl_ and MouseControl_ not_eq OldMouseControl_ and OldMouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
-                {
-                    OldMouseControl_->SetMouseOver(0);
-                    OldMouseControl_->Refresh();
-                }
-
-                if (MouseControl_ and MouseControl_ not_eq OldMouseControl_ and MouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
-                {
-                    MouseControl_->SetMouseOver(1);
-                    MouseControl_->Refresh();
-                }
-
-                OverControl_ = MouseControl_;
-
-                if (OverControl_)
-                {
-                    if (OverControl_->GetCursorID())
-                        SetCursor(gCursors[OverControl_->GetCursorID()]);
-                    else
-                        SetCursor(gCursors[overme->GetCursorID()]);
-                }
-                else
-                {
-                    SetCursor(gCursors[overme->GetCursorID()]);
-                }
-            }
+        if (overme)
+        {
+            OverControl_ = overme->MouseOver(
+                MouseX - overme->GetX(), MouseY - overme->GetY(), OverControl_);
 
             if (OverLast_.Control_ not_eq OverControl_)
             {
@@ -2555,330 +2489,541 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
                 if (OverControl_)
                 {
                     OverLast_.Time_ = GetCurrentTime();
-                    OverLast_.Tip_ = gStringMgr->GetString(OverControl_->GetHelpText());
+                    OverLast_.Tip_ =
+                        gStringMgr->GetString(OverControl_->GetHelpText());
                     OverLast_.MouseX_ = MouseX;
                     OverLast_.MouseY_ = MouseY;
                 }
             }
+        }
+
+        retval = 0;
+        break;
+
+    case WM_LBUTTONDBLCLK:
+        break;
+        HelpOff();
+
+        if (OldInputMessage())
+        {
+            retval = 0;
+            break;
+        }
+
+        MouseX = LOWORD(lParam);
+        MouseY = HIWORD(lParam);
+        overme = GetWindow(MouseX, MouseY);
+
+        if (overme == NULL)
+        {
+            retval = 0;
+            break;
+        }
+
+        CurWindow_ = overme;
+
+        if (Dragging())
+            DropItem(MouseX, MouseY, overme);
+
+        if (GrabItem(MouseX, MouseY, overme, C_TYPE_LMOUSEDBLCLK))
+        {
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme,
+                                        C_TYPE_LMOUSEDBLCLK);
+            else
+                ret = TRUE;
+
+            if (ret)
+            {
+                overme->SetControl(Grab_.ID_);
+                WindowToFront(overme);
+                Grab_.Control_->Process(Grab_.ID_, C_TYPE_LMOUSEDBLCLK);
+            }
+        }
+        else
+        {
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme,
+                                        C_TYPE_LMOUSEDBLCLK);
+            else
+                ret = TRUE;
+
+            if (ret)
+                WindowToFront(overme);
+
+            Grab_.Window_ = NULL;
+        }
+
+        retval = 0;
+        break;
+
+    case WM_MOUSEMOVE:
+        HelpOff();
+
+        if (OldInputMessage())
+        {
+            retval = 0;
+            break;
+        }
+
+        MessageType = C_TYPE_MOUSEMOVE;
+        LastUp_ = 0;
+        LastUpTime_ = 0;
+        OldMouseControl_ = MouseControl_;
+        MouseX = LOWORD(lParam);
+        MouseY = HIWORD(lParam);
+        overme = GetWindow(MouseX, MouseY);
+
+        if (overme == NULL)
+        {
+            if (OldMouseControl_ and
+                OldMouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
+            {
+                OldMouseControl_->SetMouseOver(0);
+                OldMouseControl_->Refresh();
+            }
+
+            retval = 0;
+            break;
+        }
+
+        if (not Dragging() and (Grab_.Control_ or Grab_.Window_) and
+            Grab_.GrabType_ == C_TYPE_LMOUSEDOWN)
+            StartDrag();
+
+        if (Dragging())
+        {
+            if (DragItem(MouseX, MouseY, overme) and Drag_.Control_)
+                Drag_.Window_->RefreshWindow();
+
+            OverControl_ = NULL;
+
+            if (Drag_.Control_)
+            {
+                if (Drag_.Control_->GetDragCursorID())
+                    SetCursor(gCursors[Drag_.Control_->GetDragCursorID()]);
+                else if (Drag_.Control_->GetCursorID())
+                    SetCursor(gCursors[Drag_.Control_->GetCursorID()]);
+                else
+                    SetCursor(gCursors[overme->GetCursorID()]);
+            }
+            else
+                SetCursor(gCursors[overme->GetCursorID()]);
+        }
+        else if (MouseDown_)
+        {
+            if (Grab_.Control_ and Grab_.Window_)
+            {
+                if (Grab_.Control_->GetFlags() bitand C_BIT_ABSOLUTE)
+                    Grab_.Control_->SetRelXY(MouseX - Grab_.Window_->GetX() -
+                                                 Grab_.Control_->GetX(),
+                                             MouseY - Grab_.Window_->GetY() -
+                                                 Grab_.Control_->GetY());
+                else
+                    Grab_.Control_->SetRelXY(
+                        MouseX - Grab_.Window_->GetX() -
+                            Grab_.Window_
+                                ->ClientArea_[Grab_.Control_->GetClient()]
+                                .left -
+                            Grab_.Control_->GetX(),
+                        MouseY - Grab_.Window_->GetY() -
+                            Grab_.Window_
+                                ->ClientArea_[Grab_.Control_->GetClient()]
+                                .top -
+                            Grab_.Control_->GetY());
+            }
+
+            OverControl_ = NULL;
+        }
+        else
+        {
+            MouseControl_ =
+                overme->MouseOver(MouseX - overme->GetX(),
+                                  MouseY - overme->GetY(), OldMouseControl_);
+
+            if (OldMouseControl_ and MouseControl_ not_eq OldMouseControl_ and
+                OldMouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
+            {
+                OldMouseControl_->SetMouseOver(0);
+                OldMouseControl_->Refresh();
+            }
+
+            if (MouseControl_ and MouseControl_ not_eq OldMouseControl_ and
+                MouseControl_->GetFlags() bitand C_BIT_MOUSEOVER)
+            {
+                MouseControl_->SetMouseOver(1);
+                MouseControl_->Refresh();
+            }
+
+            OverControl_ = MouseControl_;
+
+            if (OverControl_)
+            {
+                if (OverControl_->GetCursorID())
+                    SetCursor(gCursors[OverControl_->GetCursorID()]);
+                else
+                    SetCursor(gCursors[overme->GetCursorID()]);
+            }
+            else
+            {
+                SetCursor(gCursors[overme->GetCursorID()]);
+            }
+        }
+
+        if (OverLast_.Control_ not_eq OverControl_)
+        {
+            HelpOff();
+            OverLast_.Control_ = OverControl_;
+
+            if (OverControl_)
+            {
+                OverLast_.Time_ = GetCurrentTime();
+                OverLast_.Tip_ =
+                    gStringMgr->GetString(OverControl_->GetHelpText());
+                OverLast_.MouseX_ = MouseX;
+                OverLast_.MouseY_ = MouseY;
+            }
+        }
+
+        if (MouseCallback_)
+            (*MouseCallback_)(NULL, MouseX, MouseY, overme,
+                              (short)MessageType); //
+
+        retval = 0;
+        break;
+
+    case WM_RBUTTONDOWN:
+        HelpOff();
+
+        if (OldInputMessage())
+        {
+            retval = 0;
+            break;
+        }
+
+        MessageType = C_TYPE_RMOUSEDOWN;
+
+        MouseX = LOWORD(lParam);
+        MouseY = HIWORD(lParam);
+        overme = GetWindow(MouseX, MouseY);
+
+        if (overme == NULL)
+        {
+            retval = 0;
+            break;
+        }
+
+        if (CurWindow_ and CurWindow_ not_eq overme)
+        {
+            CurWindow_->Deactivate();
+            overme->Activate();
+        }
+
+        CurWindow_ = overme;
+
+        if (Dragging())
+            DropItem(MouseX, MouseY, overme);
+
+        if (GrabItem(MouseX, MouseY, overme, MessageType))
+        {
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+            else
+                ret = TRUE;
+
+            if (ret)
+            {
+                overme->SetControl(Grab_.ID_);
+                WindowToFront(overme);
+                Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
+            }
+        }
+        else
+        {
+            overme->DeactivateControl();
 
             if (MouseCallback_)
-                (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
+                ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+            else
+                ret = TRUE;
 
+            // if(ret)
+            // WindowToFront(overme);
+            Grab_.Window_ = NULL;
+        }
+
+        retval = 0;
+        break;
+
+    case WM_RBUTTONUP:
+        if (OldInputMessage())
+        {
             retval = 0;
             break;
+        }
 
-        case WM_RBUTTONDOWN:
+        if (LastUp_ == C_TYPE_RMOUSEUP and
+            (GetMessageTime() - LastUpTime_) < DoubleClickTime_)
+            DblClk = C_TYPE_RMOUSEDBLCLK;
+        else
+            DblClk = 0;
+
+        MessageType = C_TYPE_RMOUSEUP;
+        LastUp_ = MessageType;
+        LastUpTime_ = GetMessageTime();
+
+        MouseDown_ = 0;
+        MouseX = LOWORD(lParam);
+        MouseY = HIWORD(lParam);
+        overme = GetWindow(MouseX, MouseY);
+
+        if (overme == NULL)
+        {
+            retval = 0;
+            break;
+        }
+
+        if (Dragging())
+        {
+            DropItem(MouseX, MouseY, overme);
+        }
+        else if (Grab_.Control_)
+        {
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+            else
+                ret = TRUE;
+
+            if (ret and overme->IsMenu())
+            {
+                Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
+
+                if (DblClk and Grab_.Control_)
+                    Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //
+
+                Grab_.Control_ = NULL;
+            }
+            else if (UI_ABS(MouseX - Grab_.StartX_) < 3 and
+                     UI_ABS(MouseY - Grab_.StartY_) < 3)
+                gPopupMgr->OpenMenu(Grab_.Control_->GetMenu(), MouseX, MouseY,
+                                    Grab_.Control_);
+        }
+        else
+        {
+            overme->DeactivateControl();
+
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme,
+                                        (short)MessageType); //
+
+            gPopupMgr->OpenWindowMenu(overme, MouseX, MouseY);
+        }
+
+        overme = GetWindow(MouseX, MouseY);
+
+        if (overme)
+        {
+            OverControl_ = overme->MouseOver(
+                MouseX - overme->GetX(), MouseY - overme->GetY(), OverControl_);
+
+            if (OverLast_.Control_ not_eq OverControl_)
+            {
                 HelpOff();
+                OverLast_.Control_ = OverControl_;
 
-            if (OldInputMessage())
-            {
-                retval = 0;
-                break;
-            }
-
-            MessageType = C_TYPE_RMOUSEDOWN;
-
-            MouseX = LOWORD(lParam);
-            MouseY = HIWORD(lParam);
-            overme = GetWindow(MouseX, MouseY);
-
-            if (overme == NULL)
-            {
-                retval = 0;
-                break;
-            }
-
-            if (CurWindow_ and CurWindow_ not_eq overme)
-            {
-                CurWindow_->Deactivate();
-                overme->Activate();
-            }
-
-            CurWindow_ = overme;
-
-            if (Dragging())
-                DropItem(MouseX, MouseY, overme);
-
-            if (GrabItem(MouseX, MouseY, overme, MessageType))
-            {
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
-                else
-                    ret = TRUE;
-
-                if (ret)
+                if (OverControl_)
                 {
-                    overme->SetControl(Grab_.ID_);
-                    WindowToFront(overme);
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
+                    OverLast_.Time_ = GetCurrentTime();
+                    OverLast_.Tip_ =
+                        gStringMgr->GetString(OverControl_->GetHelpText());
+                    OverLast_.MouseX_ = MouseX;
+                    OverLast_.MouseY_ = MouseY;
                 }
             }
-            else
-            {
-                overme->DeactivateControl();
+        }
 
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
-                else
-                    ret = TRUE;
+        retval = 0;
+        break;
 
-                // if(ret)
-                // WindowToFront(overme);
-                Grab_.Window_ = NULL;
-            }
+    case WM_RBUTTONDBLCLK:
+        break;
+        HelpOff();
 
+        if (OldInputMessage())
+        {
             retval = 0;
             break;
+        }
 
-        case WM_RBUTTONUP:
-                if (OldInputMessage())
-                {
-                    retval = 0;
-                    break;
-                }
+        MouseX = LOWORD(lParam);
+        MouseY = HIWORD(lParam);
+        overme = GetWindow(MouseX, MouseY);
 
-            if (LastUp_ == C_TYPE_RMOUSEUP and (GetMessageTime() - LastUpTime_) < DoubleClickTime_)
-                DblClk = C_TYPE_RMOUSEDBLCLK;
+        if (overme == NULL)
+        {
+            retval = 0;
+            break;
+        }
+
+        CurWindow_ = overme;
+
+        if (Dragging())
+            DropItem(MouseX, MouseY, overme);
+
+        if (GrabItem(MouseX, MouseY, overme, C_TYPE_RMOUSEDBLCLK))
+        {
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme,
+                                        C_TYPE_RMOUSEDBLCLK);
             else
-                DblClk = 0;
+                ret = TRUE;
 
-            MessageType = C_TYPE_RMOUSEUP;
-            LastUp_ = MessageType;
-            LastUpTime_ = GetMessageTime();
-
-            MouseDown_ = 0;
-            MouseX = LOWORD(lParam);
-            MouseY = HIWORD(lParam);
-            overme = GetWindow(MouseX, MouseY);
-
-            if (overme == NULL)
+            if (ret)
             {
-                retval = 0;
-                break;
+                overme->SetControl(Grab_.ID_);
+                WindowToFront(overme);
+                Grab_.Control_->Process(Grab_.ID_, C_TYPE_RMOUSEDBLCLK);
             }
+        }
+        else
+        {
+            if (MouseCallback_)
+                ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme,
+                                        C_TYPE_RMOUSEDBLCLK);
 
-            if (Dragging())
-            {
-                DropItem(MouseX, MouseY, overme);
-            }
-            else if (Grab_.Control_)
-            {
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, (short)MessageType); //
-                else
-                    ret = TRUE;
+            if (ret)
+                WindowToFront(overme);
 
-                if (ret and overme->IsMenu())
+            Grab_.Window_ = NULL;
+        }
+
+        retval = 0;
+        break;
+
+    case C_WM_TIMER:
+        if (MouseDown_ and (GetCurrentTime() - MouseDownTime_) > 250)
+        {
+
+            if (Grab_.Control_ and not InTimer)
+            {
+                if (GetAsyncKeyState(VK_LBUTTON))
                 {
-                    Grab_.Control_->Process(Grab_.ID_, (short)MessageType); //
+                    InTimer = 1;
+                    Grab_.Control_->Process(Grab_.ID_, C_TYPE_REPEAT);
+                    InTimer = 0;
+                }
+                else
+                {
+                    InTimer = 1;
+                    MouseDown_ = 0;
 
-                    if (DblClk and Grab_.Control_)
-                        Grab_.Control_->Process(Grab_.ID_, (short)DblClk); //
+                    if (Drag_.Window_ not_eq NULL and
+                        Drag_.Control_ not_eq NULL)
+                    {
+                        DropItem((WORD)(Drag_.Window_->GetX() +
+                                        Drag_.Control_->GetX()), //
+                                 (WORD)(Drag_.Window_->GetY() +
+                                        Drag_.Control_->GetY()), //
+                                 Drag_.Window_);
+                        Grab_.Control_->Process(Grab_.ID_, C_TYPE_LDROP);
+                    }
+                    else
+                    {
+                        Grab_.Control_->Process(Grab_.ID_, C_TYPE_LMOUSEUP);
+                    }
 
                     Grab_.Control_ = NULL;
-                }
-                else if (UI_ABS(MouseX - Grab_.StartX_) < 3 and UI_ABS(MouseY - Grab_.StartY_) < 3)
-                    gPopupMgr->OpenMenu(Grab_.Control_->GetMenu(), MouseX, MouseY, Grab_.Control_);
-            }
-            else
-            {
-                overme->DeactivateControl();
-
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, (short)MessageType); //
-
-                gPopupMgr->OpenWindowMenu(overme, MouseX, MouseY);
-            }
-
-            overme = GetWindow(MouseX, MouseY);
-
-            if (overme)
-            {
-                OverControl_ = overme->MouseOver(MouseX - overme->GetX(), MouseY - overme->GetY(), OverControl_);
-
-                if (OverLast_.Control_ not_eq OverControl_)
-                {
-                    HelpOff();
-                    OverLast_.Control_ = OverControl_;
-
-                    if (OverControl_)
-                    {
-                        OverLast_.Time_ = GetCurrentTime();
-                        OverLast_.Tip_ = gStringMgr->GetString(OverControl_->GetHelpText());
-                        OverLast_.MouseX_ = MouseX;
-                        OverLast_.MouseY_ = MouseY;
-                    }
+                    InTimer = 0;
                 }
             }
+        }
 
+        if (gScreenShotEnabled and gUI_TakeScreenShot == 2)
+        {
+            SaveScreenShot();
+            gUI_TakeScreenShot = 0;
+        }
+
+        break;
+
+    case WM_SYSKEYUP:
+    case WM_KEYUP:
+        Transmit(0); // voice stuff me123
+
+        if (wParam == VK_SNAPSHOT) // fall through to KEYDOWN also
+        {
+            if (gScreenShotEnabled)
+                gUI_TakeScreenShot =
+                    1; // Set to take screen shot after screen is refreshed (2=Save to file)...
+
+            lParam = (lParam bitand 0xff00ffff) bitor DIK_SYSRQ;
+        }
+        else
+
+            break;
+
+    case WM_SYSKEYDOWN:
+    case WM_KEYDOWN:
+        ShiftStates = 0;
+
+        if (OldInputMessage())
+        {
             retval = 0;
             break;
+        }
 
-        case WM_RBUTTONDBLCLK:
-                break;
-            HelpOff();
+        Repeat = lParam bitand 0xffff;
 
-            if (OldInputMessage())
-            {
-                retval = 0;
-                break;
-            }
+        Key = (uchar)(((lParam >> 16) bitand 0xff) bitor
+                      ((lParam >> 17) bitand 0x80)); //
 
-            MouseX = LOWORD(lParam);
-            MouseY = HIWORD(lParam);
-            overme = GetWindow(MouseX, MouseY);
+        if (GetKeyState(VK_SHIFT) bitand 0x80)
+            ShiftStates or_eq _SHIFT_DOWN_;
 
-            if (overme == NULL)
-            {
-                retval = 0;
-                break;
-            }
+        if (GetKeyState(VK_MENU) bitand 0x80)
+            ShiftStates or_eq _ALT_DOWN_;
 
-            CurWindow_ = overme;
+        if (GetKeyState(VK_CONTROL) bitand 0x80)
+            ShiftStates or_eq _CTRL_DOWN_;
 
-            if (Dragging())
-                DropItem(MouseX, MouseY, overme);
+        if (GetKeyState(VK_CAPITAL) bitand 0x01)
+            if ((Key >= DIK_Q and Key <= DIK_P) or
+                (Key >= DIK_A and Key <= DIK_L) or
+                (Key >= DIK_Z and Key <= DIK_M))
+                ShiftStates xor_eq _SHIFT_DOWN_;
 
-            if (GrabItem(MouseX, MouseY, overme, C_TYPE_RMOUSEDBLCLK))
-            {
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(Grab_.Control_, MouseX, MouseY, overme, C_TYPE_RMOUSEDBLCLK);
-                else
-                    ret = TRUE;
-
-                if (ret)
-                {
-                    overme->SetControl(Grab_.ID_);
-                    WindowToFront(overme);
-                    Grab_.Control_->Process(Grab_.ID_, C_TYPE_RMOUSEDBLCLK);
-                }
-            }
-            else
-            {
-                if (MouseCallback_)
-                    ret = (*MouseCallback_)(NULL, MouseX, MouseY, overme, C_TYPE_RMOUSEDBLCLK);
-
-                if (ret)
-                    WindowToFront(overme);
-
-                Grab_.Window_ = NULL;
-            }
-
-            retval = 0;
-            break;
-
-        case C_WM_TIMER:
-                if (MouseDown_ and (GetCurrentTime() - MouseDownTime_) > 250)
-                {
-
-                    if (Grab_.Control_ and not InTimer)
-                    {
-                        if (GetAsyncKeyState(VK_LBUTTON))
-                        {
-                            InTimer = 1;
-                            Grab_.Control_->Process(Grab_.ID_, C_TYPE_REPEAT);
-                            InTimer = 0;
-                        }
-                        else
-                        {
-                            InTimer = 1;
-                            MouseDown_ = 0;
-
-                            if (Drag_.Window_ not_eq NULL and Drag_.Control_ not_eq NULL)
-                            {
-                                DropItem((WORD)(Drag_.Window_->GetX() + Drag_.Control_->GetX()), //
-                                         (WORD)(Drag_.Window_->GetY() + Drag_.Control_->GetY()), //
-                                         Drag_.Window_);
-                                Grab_.Control_->Process(Grab_.ID_, C_TYPE_LDROP);
-                            }
-                            else
-                            {
-                                Grab_.Control_->Process(Grab_.ID_, C_TYPE_LMOUSEUP);
-                            }
-
-                            Grab_.Control_ = NULL;
-                            InTimer = 0;
-                        }
-                    }
-                }
-
-            if (gScreenShotEnabled and gUI_TakeScreenShot == 2)
-            {
-                SaveScreenShot();
-                gUI_TakeScreenShot = 0;
-            }
-
-            break;
-
-        case WM_SYSKEYUP:
-            case WM_KEYUP:
-                    Transmit(0);// voice stuff me123
-
-            if (wParam == VK_SNAPSHOT) // fall through to KEYDOWN also
-            {
-                if (gScreenShotEnabled)
-                    gUI_TakeScreenShot = 1; // Set to take screen shot after screen is refreshed (2=Save to file)...
-
-                lParam = (lParam bitand 0xff00ffff) bitor DIK_SYSRQ;
-            }
-            else
-
-                break;
-
-        case WM_SYSKEYDOWN:
-            case WM_KEYDOWN:
-                    ShiftStates = 0;
-
-            if (OldInputMessage())
-            {
-                retval = 0;
-                break;
-            }
-
-            Repeat = lParam bitand 0xffff;
-
-            Key = (uchar)(((lParam >> 16) bitand 0xff) bitor ((lParam >> 17) bitand 0x80)); //
-
-            if (GetKeyState(VK_SHIFT) bitand 0x80)
+        if (GetKeyState(VK_NUMLOCK) bitand 0x01)
+            if ((Key >= DIK_NUMPAD7 and Key <= DIK_NUMPAD9) or
+                (Key >= DIK_NUMPAD4 and Key <= DIK_NUMPAD6) or
+                (Key >= DIK_NUMPAD1 and Key <= DIK_DECIMAL))
                 ShiftStates or_eq _SHIFT_DOWN_;
 
-            if (GetKeyState(VK_MENU) bitand 0x80)
-                ShiftStates or_eq _ALT_DOWN_;
+        Ascii = AsciiChar(Key, ShiftStates);
 
-            if (GetKeyState(VK_CONTROL) bitand 0x80)
-                ShiftStates or_eq _CTRL_DOWN_;
-
-            if (GetKeyState(VK_CAPITAL) bitand 0x01)
-                if ((Key >= DIK_Q and Key <= DIK_P) or (Key >= DIK_A and Key <= DIK_L) or (Key >= DIK_Z and Key <= DIK_M))
-                    ShiftStates xor_eq _SHIFT_DOWN_;
-
-            if (GetKeyState(VK_NUMLOCK) bitand 0x01)
-                if ((Key >= DIK_NUMPAD7 and Key <= DIK_NUMPAD9) or (Key >= DIK_NUMPAD4 and Key <= DIK_NUMPAD6) or (Key >= DIK_NUMPAD1 and Key <= DIK_DECIMAL))
-                    ShiftStates or_eq _SHIFT_DOWN_;
-
-            Ascii = AsciiChar(Key, ShiftStates);
-
-            // Handle Hot Keys bitand Keyboard input
-            if (CurWindow_)
-            {
-                if ( not CurWindow_->CheckKeyboard(Key, Ascii, ShiftStates, Repeat))
-                    CheckHotKeys(Key, Ascii, ShiftStates, Repeat);
-            }
-            else
+        // Handle Hot Keys bitand Keyboard input
+        if (CurWindow_)
+        {
+            if (not CurWindow_->CheckKeyboard(Key, Ascii, ShiftStates, Repeat))
                 CheckHotKeys(Key, Ascii, ShiftStates, Repeat);
+        }
+        else
+            CheckHotKeys(Key, Ascii, ShiftStates, Repeat);
 
-            retval = 0;
+        retval = 0;
 
-            ////// me123 voice stuff added
-            if (Key == DIK_F1)
-                Transmit(1);
-            else if (Key == DIK_F2)
-                Transmit(2);
+        ////// me123 voice stuff added
+        if (Key == DIK_F1)
+            Transmit(1);
+        else if (Key == DIK_F2)
+            Transmit(2);
 
-            /////////////////
-            break;
+        /////////////////
+        break;
 
-            /* case WM_CHAR: // NOLONGER USED
+        /* case WM_CHAR: // NOLONGER USED
              retval=0;
              if(OldInputMessage())
              break;
@@ -2891,68 +3036,69 @@ long C_Handler::EventHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lPar
              retval=0;
              break;
             */
-        case C_WM_UPDATE:
-                //if(UpdateFlag bitand C_DRAW_REFRESH)
-                // SetEvent(WakeOutput_);
-                retval = 0;
-            break;
+    case C_WM_UPDATE:
+        //if(UpdateFlag bitand C_DRAW_REFRESH)
+        // SetEvent(WakeOutput_);
+        retval = 0;
+        break;
 
-        case WM_MOVE:
+    case WM_MOVE:
 
-                // get the client rectangle
-                if (FalconDisplay.displayFullScreen)
-                {
-                    SetRect(&dest, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
-                }
-                else
-                {
-                    GetClientRect(hwnd, &dest);
-                    ClientToScreen(hwnd, (LPPOINT)&dest);
-                    ClientToScreen(hwnd, (LPPOINT)&dest + 1);
+        // get the client rectangle
+        if (FalconDisplay.displayFullScreen)
+        {
+            SetRect(&dest, 0, 0, GetSystemMetrics(SM_CXSCREEN),
+                    GetSystemMetrics(SM_CYSCREEN));
+        }
+        else
+        {
+            GetClientRect(hwnd, &dest);
+            ClientToScreen(hwnd, (LPPOINT)&dest);
+            ClientToScreen(hwnd, (LPPOINT)&dest + 1);
 
-                    if (Primary_ and Primary_->frontSurface())
-                    {
-                        Primary_->UpdateFrontWindowRect(&dest);
+            if (Primary_ and Primary_->frontSurface())
+            {
+                Primary_->UpdateFrontWindowRect(&dest);
 #if 0 // Don't know how to get rc
 
                         if (rc)
                             MPRSwapBuffers(rc, fronthandle);
 
 #endif
-                    }
+            }
 
-                    InvalidateRect(hwnd, &dest, FALSE);
-                }
+            InvalidateRect(hwnd, &dest, FALSE);
+        }
 
-            break;
+        break;
 
-        case WM_PAINT:
-                if (GetUpdateRect(hwnd, &dest, FALSE))
-                {
-                    ValidateRect(hwnd, NULL);
+    case WM_PAINT:
+        if (GetUpdateRect(hwnd, &dest, FALSE))
+        {
+            ValidateRect(hwnd, NULL);
 
-                    if (Primary_ not_eq Front_)
-                    {
-                        UI95_RECT upme;
+            if (Primary_ not_eq Front_)
+            {
+                UI95_RECT upme;
 
-                        upme.left = FrontRect_.left;
-                        upme.top = FrontRect_.top;
-                        upme.right = FrontRect_.right;
-                        upme.bottom = FrontRect_.bottom;
+                upme.left = FrontRect_.left;
+                upme.top = FrontRect_.top;
+                upme.right = FrontRect_.right;
+                upme.bottom = FrontRect_.bottom;
 
-                        EnterCritical();
-                        rectcount_ = 0;
-                        RefreshAll(&upme);
-                        LeaveCritical();
-                        //if(UpdateFlag bitand C_DRAW_REFRESH)
-                        // SetEvent(WakeOutput_);
-                    }
-                }
+                EnterCritical();
+                rectcount_ = 0;
+                RefreshAll(&upme);
+                LeaveCritical();
+                //if(UpdateFlag bitand C_DRAW_REFRESH)
+                // SetEvent(WakeOutput_);
+            }
+        }
 
-            retval = 0;
-            break;
+        retval = 0;
+        break;
     }
 
     HandlingMessage = 0;
-    return(retval);
+    return (retval);
 }

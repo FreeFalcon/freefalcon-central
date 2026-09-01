@@ -1,20 +1,28 @@
-#include "MsgInc/UnitAssignmentMsg.h"
+#include "msginc/unitassignmentmsg.h"
 #include "mesg.h"
-#include "Unit.h"
-#include "Find.h"
+#include "unit.h"
+#include "find.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-FalconUnitAssignmentMessage::FalconUnitAssignmentMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(UnitAssignmentMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconUnitAssignmentMessage::FalconUnitAssignmentMessage(VU_ID entityId,
+                                                         VuTargetEntity *target,
+                                                         VU_BOOL loopback)
+    : FalconEvent(UnitAssignmentMsg, FalconEvent::CampaignThread, entityId,
+                  target, loopback)
 {
     // Your Code Goes Here
 }
 
-FalconUnitAssignmentMessage::FalconUnitAssignmentMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(UnitAssignmentMsg, FalconEvent::CampaignThread, senderid, target)
+FalconUnitAssignmentMessage::FalconUnitAssignmentMessage(VU_MSG_TYPE type,
+                                                         VU_ID senderid,
+                                                         VU_ID target)
+    : FalconEvent(UnitAssignmentMsg, FalconEvent::CampaignThread, senderid,
+                  target)
 {
     // Your Code Goes Here
     type;
@@ -57,7 +65,8 @@ int FalconUnitAssignmentMessage::Process(uchar autodisp)
         sprintf(name3, "<none>");
 
     if (so and po)
-        MonoPrint("Assigning Unit %d to %s, %s, objective: %s\n", u->GetCampID(), name2, name1, name3);
+        MonoPrint("Assigning Unit %d to %s, %s, objective: %s\n",
+                  u->GetCampID(), name2, name1, name3);
 
 #endif
 
@@ -95,4 +104,3 @@ int FalconUnitAssignmentMessage::Process(uchar autodisp)
 
     return 0;
 }
-

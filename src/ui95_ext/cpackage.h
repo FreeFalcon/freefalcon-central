@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -31,7 +32,6 @@ private:
     VU_ID vuID;
 
 public:
-
     C_ATO_Package();
     C_ATO_Package(char **stream);
     C_ATO_Package(FILE *fp);
@@ -56,7 +56,7 @@ public:
     }
     TREELIST *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
 
     void SetTitle(short x, short y, _TCHAR *txt)
@@ -71,7 +71,8 @@ public:
     void SetCheckBox(short x, short y, long off, long on);
     void SetTitle(_TCHAR *txt)
     {
-        if (Title_) Title_->SetText(txt);
+        if (Title_)
+            Title_->SetText(txt);
     }
     void SetFont(long FontID);
 
@@ -84,13 +85,13 @@ public:
     void SetState(short newstate);
     short GetState()
     {
-        return(State_);
+        return (State_);
     }
 
     void SetWPState(short newstate);
     short GetWPState()
     {
-        return(WPState_);
+        return (WPState_);
     }
 
     long CheckHotSpots(long relX, long relY);
@@ -110,7 +111,7 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
 };
 

@@ -12,7 +12,7 @@ __forceinline
 #else
 static
 #endif
-void Prof_get_timestamp(Prof_Int64 *result)
+    void Prof_get_timestamp(Prof_Int64 *result)
 {
 #if defined(_M_IX86)
     __asm

@@ -14,7 +14,15 @@ class MissileClass; // 2002-01-28 S,G,
 class SmsDrawable : public MfdDrawable
 {
 public:
-    enum SmsDisplayMode {Off, Inv, Wpn, SelJet, EmergJet, InputMode};
+    enum SmsDisplayMode
+    {
+        Off,
+        Inv,
+        Wpn,
+        SelJet,
+        EmergJet,
+        InputMode
+    };
     SmsDrawable(SMSClass* self);
     ~SmsDrawable(void);
     virtual void DisplayInit(ImageBuffer*);
@@ -34,7 +42,10 @@ public:
     //int sjHardPointSelected;
     JettisonMode sjSelected[32]; // MLR 3/9/2004 - Selective Jett data
     unsigned int flags;
-    enum SmsDrawFlags { MENUMODE = 0x1, };
+    enum SmsDrawFlags
+    {
+        MENUMODE = 0x1,
+    };
     int IsSet(SmsDrawFlags fl)
     {
         return (flags bitand fl) ? TRUE : FALSE;
@@ -67,9 +78,21 @@ public:
     void EmergJetDisplay(void);
 
     //MI new input stuff
-    enum InputModes {NONE, RELEASE_PULSE, RELEASE_SPACE, CONTROL_PAGE, ARMING_DELAY, BURST_ALT,
-                     REL_ANG, C1, C2, C3, C4, LADD_MODE
-                    };
+    enum InputModes
+    {
+        NONE,
+        RELEASE_PULSE,
+        RELEASE_SPACE,
+        CONTROL_PAGE,
+        ARMING_DELAY,
+        BURST_ALT,
+        REL_ANG,
+        C1,
+        C2,
+        C3,
+        C4,
+        LADD_MODE
+    };
     SmsDisplayMode DataInputMode;
     SmsDisplayMode lastInputMode;
     void InputDisplay(void);

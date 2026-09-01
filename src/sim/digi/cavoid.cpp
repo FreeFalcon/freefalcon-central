@@ -4,24 +4,25 @@
 #include "digi.h"
 #include "simveh.h"
 #include "object.h"
-#include "Entity.h"
-#include "Aircrft.h"
+#include "entity.h"
+#include "aircrft.h"
 
 #define GS_LIMIT 9.0F
 
 void DigitalBrain::CollisionCheck(void)
 {
     float relAz, relEl, range, reactTime;
-    float hRange    = 200.0F; /* range to miss a hostile tgt / fireball */
+    float hRange = 200.0F; /* range to miss a hostile tgt / fireball */
     float hRangeSq = 40000.0F; /* square of hRange */
-    float reactFact = 0.55F; /* fudge factor for reaction time *///me123 from .75
+    float reactFact = 0.55F;
+    /* fudge factor for reaction time *///me123 from .75
     float timeToImpact, rngSq, dt, pastRngSq;
     float ox, oy, oz, tx, ty, tz;
-    int    collision;
+    int collision;
     Falcon4EntityClassType* classPtr;
     SimObjectLocalData* localData;
 
-    if ( not targetPtr)
+    if (not targetPtr)
     {
         return;
     }
@@ -38,7 +39,7 @@ void DigitalBrain::CollisionCheck(void)
     /*---------------*/
     /* check objects */
     /*---------------*/
-    if ( not targetPtr->BaseData()->IsSim())
+    if (not targetPtr->BaseData()->IsSim())
     {
         return;
     }
@@ -60,8 +61,7 @@ void DigitalBrain::CollisionCheck(void)
         /*---------------*/
         /* not a problem */
         /*---------------*/
-        if (timeToImpact > reactTime and 
-            localData->range > hRange)
+        if (timeToImpact > reactTime and localData->range > hRange)
         {
             return;
         }
@@ -79,11 +79,15 @@ void DigitalBrain::CollisionCheck(void)
             oy = self->YPos() + self->YDelta() * dt;
             oz = self->ZPos() + self->ZDelta() * dt;
 
-            tx = targetPtr->BaseData()->XPos() + targetPtr->BaseData()->XDelta() * dt;
-            ty = targetPtr->BaseData()->YPos() + targetPtr->BaseData()->YDelta() * dt;
-            tz = targetPtr->BaseData()->ZPos() + targetPtr->BaseData()->ZDelta() * dt;
+            tx = targetPtr->BaseData()->XPos() +
+                 targetPtr->BaseData()->XDelta() * dt;
+            ty = targetPtr->BaseData()->YPos() +
+                 targetPtr->BaseData()->YDelta() * dt;
+            tz = targetPtr->BaseData()->ZPos() +
+                 targetPtr->BaseData()->ZDelta() * dt;
 
-            rngSq = (ox - tx) * (ox - tx) + (oy - ty) * (oy - ty) + (oz - tz) * (oz - tz);
+            rngSq = (ox - tx) * (ox - tx) + (oy - ty) * (oy - ty) +
+                    (oz - tz) * (oz - tz);
 
             /*------------------------------------------------*/
             /* collision possible if within hRange of target */
@@ -97,7 +101,8 @@ void DigitalBrain::CollisionCheck(void)
             /*----------------------------------------------*/
             /* break out of loop if range begins to diverge */
             /*----------------------------------------------*/
-            if (rngSq > pastRngSq) break;
+            if (rngSq > pastRngSq)
+                break;
 
             pastRngSq = rngSq;
 
@@ -121,7 +126,7 @@ void DigitalBrain::CollisionCheck(void)
                 else
                     relAz = 45.0F * DTR;
 
-                range  = 10000.0F;
+                range = 10000.0F;
 
                 float tx, ty, tz;
                 GetXYZ(self, relAz, relEl, range, &tx, &ty, &tz);
@@ -135,5 +140,7 @@ void DigitalBrain::CollisionCheck(void)
 
 void DigitalBrain::CollisionAvoid(void)
 {
-    TrackPoint(maxGs, cornerSpeed /* KNOTS_TO_FTPSEC*/);  // Cobra - aerial TrackPoint speed is in knots
+    TrackPoint(
+        maxGs,
+        cornerSpeed /* KNOTS_TO_FTPSEC*/); // Cobra - aerial TrackPoint speed is in knots
 }

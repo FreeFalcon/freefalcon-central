@@ -1,13 +1,13 @@
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "sinput.h"
 #include "simio.h"
 #include "simdrive.h"
-#include "OTWDrive.h"
-#include "inpFunc.h"
+#include "otwdrive.h"
+#include "inpfunc.h"
 #include "cpmanager.h"
 #include "ffeedbk.h"
 #include "datadir.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "ui/include/logbook.h"
 #include "aircrft.h"
 #include "weather.h"
@@ -15,7 +15,7 @@
 #include "profiler.h" // Retro 26Dec2003
 #include "mouselook.h" // Retro 18Jan2004
 
-#pragma warning(push,4)
+#pragma warning(push, 4)
 
 BOOL CALLBACK JoystickEnumEffectTypeProc(LPCDIEFFECTINFO pei, LPVOID pv);
 BOOL JoystickCreateEffect(DWORD dwEffectFlags);
@@ -24,7 +24,7 @@ BOOL JoystickCreateEffect(DWORD dwEffectFlags);
 #define KEY_DOWN 0x8
 #define REPEAT_DELAY 200
 
-static DWORD LastPressed[SIMLIB_MAX_DIGITAL*SIM_NUMDEVICES] = {0};
+static DWORD LastPressed[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {0};
 
 static DWORD LastPressedPOV[SIMLIB_MAX_POV] = {0};
 static int LastDirPOV[SIMLIB_MAX_POV] = {0};
@@ -37,7 +37,7 @@ float UR_HEAD_VIEW = 160.0f;
 float UR_PREV_X = 0.0f;
 float UR_PREV_Y = 0.0f;
 
-#include "TrackIR.h" // Retro 26/09/03
+#include "trackir.h" // Retro 26/09/03
 extern bool g_bEnableTrackIR; // Retro 26/09/03
 extern TrackIR theTrackIRObject; // Retro 27/09/03
 
@@ -51,7 +51,8 @@ extern int UseKeyboardThrottle;
 
 int hasForceFeedback = FALSE;
 
-extern int g_nFFEffectAutoCenter; // JB 020306 Don't stop the centering FF effect
+extern int
+    g_nFFEffectAutoCenter; // JB 020306 Don't stop the centering FF effect
 
 enum
 {
@@ -60,13 +61,17 @@ enum
     MAX_DIFF = 10000,
 };
 
-unsigned int NumberOfPOVs = 0; // Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumHats
+unsigned int NumberOfPOVs =
+    0; // Retro 26Dec2003, want to get rid of 1) gCurJoyCaps and 2) NumHats
 
-void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton); //Wombat778 03-06-04
+void CallFunc(InputFunctionType theFunc, unsigned long val, int state,
+              void* pButton); //Wombat778 03-06-04
 
 
 extern AxisMapping AxisMap;
-bool ControlsXml_WriteAxes(const AxisMapping *in);   // #57 persist axes + soft props to axismapping.xml (replaces joystick.cal)
+bool ControlsXml_WriteAxes(
+    const AxisMapping*
+        in); // #57 persist axes + soft props to axismapping.xml (replaces joystick.cal)
 
 LPDIRECTINPUTEFFECT* gForceFeedbackEffect;
 int* gForceEffectIsRepeating = NULL;
@@ -79,7 +84,7 @@ int g_nThrottleID = DIJOFS_Z; // OW
 #define AUTOCENTERFUN // this should bring back autocentering with the FFB-button in the advanced controls tab disabled
 #define NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004 - what�s the point ? Doesn�t work too good anyways BTW (has offset)
 #define USE_IDLE_CUTOFF // Retro 2Feb2004 - with this enable we use analog[].cutoff as well as the ABDetent
-#define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle 
+#define SYMMETRIC_THROTTLEDETENTS // Retro 2Feb2004 - ABDetent and cuttof var are set for BOTH throttles by the LEFT throttle
 
 /*****************************************************************************/
 //
@@ -129,23 +134,26 @@ void resetStaticPOVButtonStates() // Retro 24Aug2004
 /*****************************************************************************/
 //
 /*****************************************************************************/
-inline void ProcessJoystickInput(GameAxis_t axis, long *value)
+inline void ProcessJoystickInput(GameAxis_t axis, long* value)
 {
-    if (g_bUseNewSmoothing == false) // Retro 19Feb2004 - this old 'smoothing code' does exactly NADA for me..
+    if (g_bUseNewSmoothing ==
+        false) // Retro 19Feb2004 - this old 'smoothing code' does exactly NADA for me..
     {
         JoyOutput[axis][OldInput] = JoyOutput[axis][NewInput];
         JoyOutput[axis][NewInput] = *value;
 
-        if ( not DisableSmoothing)
+        if (not DisableSmoothing)
         {
-            int diff = abs(JoyOutput[axis][NewInput] - JoyOutput[axis][OldInput]) * FloatToInt32((SimLibMajorFrameTime / 0.1F));
+            int diff =
+                abs(JoyOutput[axis][NewInput] - JoyOutput[axis][OldInput]) *
+                FloatToInt32((SimLibMajorFrameTime / 0.1F));
 
             if (diff > MAX_DIFF)
             {
                 *value = JoyOutput[axis][OldInput];
-                JoyOutput[axis][NewInput] = JoyOutput[axis][OldInput] +
-                                            (JoyOutput[axis][NewInput] -
-                                             JoyOutput[axis][OldInput]) / 2;
+                JoyOutput[axis][NewInput] =
+                    JoyOutput[axis][OldInput] +
+                    (JoyOutput[axis][NewInput] - JoyOutput[axis][OldInput]) / 2;
             }
         }
 
@@ -155,9 +163,10 @@ inline void ProcessJoystickInput(GameAxis_t axis, long *value)
     {
         if (IO.analog[axis].smoothingFactor)
         {
-            IO.analog[axis].ioVal = IO.analog[axis].ioVal -
-                                    IO.analog[axis].ioVal / IO.analog[axis].smoothingFactor +
-                                    *value / IO.analog[axis].smoothingFactor;
+            IO.analog[axis].ioVal =
+                IO.analog[axis].ioVal -
+                IO.analog[axis].ioVal / IO.analog[axis].smoothingFactor +
+                *value / IO.analog[axis].smoothingFactor;
         }
         else
         {
@@ -176,40 +185,44 @@ void GetURHelmetInput()
     float headx, heady, vx, vy;
     static long PrevButtonStates;
 
-    hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[SIM_JOYSTICK1 + mHelmetID])->Poll();
+    hRes =
+        ((LPDIRECTINPUTDEVICE2)gpDIDevice[SIM_JOYSTICK1 + mHelmetID])->Poll();
 
-    hRes = gpDIDevice[SIM_JOYSTICK1 + mHelmetID]->GetDeviceState(sizeof(DIJOYSTATE2), &joyState);
+    hRes = gpDIDevice[SIM_JOYSTICK1 + mHelmetID]->GetDeviceState(
+        sizeof(DIJOYSTATE2), &joyState);
 
     switch (hRes)
     {
-        case DI_OK:
-            headx = (float)(joyState.lX);
-            heady = -(float)(joyState.lY);
+    case DI_OK:
+        headx = (float)(joyState.lX);
+        heady = -(float)(joyState.lY);
 
-            headx = headx * UR_HEAD_VIEW;
-            heady = heady * UR_HEAD_VIEW;
+        headx = headx * UR_HEAD_VIEW;
+        heady = heady * UR_HEAD_VIEW;
 
-            headx = headx / 10000.0f;
-            heady = heady / 10000.0f;
+        headx = headx / 10000.0f;
+        heady = heady / 10000.0f;
 
-            vx = (headx * 0.8f + UR_PREV_X * 0.2f);
-            vy = (heady * 0.8f + UR_PREV_Y * 0.2f);
+        vx = (headx * 0.8f + UR_PREV_X * 0.2f);
+        vy = (heady * 0.8f + UR_PREV_Y * 0.2f);
 
-            if (vy > 25.0f) vy = 25.0f; // peg
+        if (vy > 25.0f)
+            vy = 25.0f; // peg
 
-            if (vy < -85.0f) vy = -85.0f; // peg
+        if (vy < -85.0f)
+            vy = -85.0f; // peg
 
-            cockpitFlightData.headYaw   = vx * DTR;
-            cockpitFlightData.headPitch = vy * DTR;
+        cockpitFlightData.headYaw = vx * DTR;
+        cockpitFlightData.headPitch = vy * DTR;
 
-            UR_PREV_X = vx;
-            UR_PREV_Y = vy;
+        UR_PREV_X = vx;
+        UR_PREV_Y = vy;
 
-            break;
+        break;
 
-        default:
-            AcquireDeviceInput(SIM_JOYSTICK1 + mHelmetID, TRUE);
-            break;
+    default:
+        AcquireDeviceInput(SIM_JOYSTICK1 + mHelmetID, TRUE);
+        break;
     }
 }
 #include "fmath.h"
@@ -239,10 +252,12 @@ void GetJoystickInput()
     HRESULT hRes;
     DIJOYSTATE2 joyState;
 
-    if ( not gTotalJoy)
+    if (not gTotalJoy)
         return; // returning if we don�t have a stick
 
-    long device_axis_values[SIM_NUMDEVICES][8]; // 8 axis in a DIJOYSTATE structure.. don�t think we�ll switch to DIJOYSTATE2
+    long device_axis_values
+        [SIM_NUMDEVICES]
+        [8]; // 8 axis in a DIJOYSTATE structure.. don�t think we�ll switch to DIJOYSTATE2
 
     /*******************************************************************************/
     // Polling all devices..
@@ -259,9 +274,22 @@ void GetJoystickInput()
 
             if (hRes not_eq DI_OK)
             {
-#pragma warning(disable:4127)
+                // Artscout - 2026: say it ONCE per device -- a silent skip here
+                // is exactly what "the stick did not come up" looks like.
+                static bool s_told[SIM_NUMDEVICES] = {};
+                if (i < SIM_NUMDEVICES && !s_told[i])
+                {
+                    s_told[i] = true;
+                    char buf[128];
+                    _snprintf(buf, sizeof(buf) - 1,
+                              "[input] joy%d re-acquire FAILED hr=0x%08X\n",
+                              i - SIM_JOYSTICK1, (unsigned)hRes);
+                    buf[sizeof(buf) - 1] = 0;
+                    OutputDebugStringA(buf);
+                }
+#pragma warning(disable : 4127)
                 ShiAssert(false);
-#pragma warning(default:4127)
+#pragma warning(default : 4127)
                 continue;
             }
         }
@@ -272,27 +300,27 @@ void GetJoystickInput()
 
         switch (hRes)
         {
-            case DI_OK:
-            {
-                /*******************************************************************************/
-                // note the values of ALL axis
-                /*******************************************************************************/
-                device_axis_values[i][DX_XAXIS] = joyState.lX;
-                device_axis_values[i][DX_YAXIS] = joyState.lY;
-                device_axis_values[i][DX_ZAXIS] = joyState.lZ;
-                device_axis_values[i][DX_RXAXIS] = joyState.lRx;
-                device_axis_values[i][DX_RYAXIS] = joyState.lRy;
-                device_axis_values[i][DX_RZAXIS] = joyState.lRz;
-                device_axis_values[i][DX_SLIDER0] = joyState.rglSlider[0];
-                device_axis_values[i][DX_SLIDER1] = joyState.rglSlider[1];
-                break;
-            }
+        case DI_OK:
+        {
+            /*******************************************************************************/
+            // note the values of ALL axis
+            /*******************************************************************************/
+            device_axis_values[i][DX_XAXIS] = joyState.lX;
+            device_axis_values[i][DX_YAXIS] = joyState.lY;
+            device_axis_values[i][DX_ZAXIS] = joyState.lZ;
+            device_axis_values[i][DX_RXAXIS] = joyState.lRx;
+            device_axis_values[i][DX_RYAXIS] = joyState.lRy;
+            device_axis_values[i][DX_RZAXIS] = joyState.lRz;
+            device_axis_values[i][DX_SLIDER0] = joyState.rglSlider[0];
+            device_axis_values[i][DX_SLIDER1] = joyState.rglSlider[1];
+            break;
+        }
 
-            default:
-            {
-                AcquireDeviceInput(i, TRUE);
-                break;
-            }
+        default:
+        {
+            AcquireDeviceInput(i, TRUE);
+            break;
+        }
         }
 
         /*******************************************************************************/
@@ -304,7 +332,8 @@ void GetJoystickInput()
         /*******************************************************************************/
         for (int j = 0; j < SIMLIB_MAX_DIGITAL; j++)
         {
-            IO.digital[j + (SIMLIB_MAX_DIGITAL * (i - SIM_JOYSTICK1))] = (short)(joyState.rgbButtons[j] bitand BUTTON_PRESSED);
+            IO.digital[j + (SIMLIB_MAX_DIGITAL * (i - SIM_JOYSTICK1))] =
+                (short)(joyState.rgbButtons[j] bitand BUTTON_PRESSED);
         }
 
         /*******************************************************************************/
@@ -320,7 +349,7 @@ void GetJoystickInput()
                 POVCentered = (LOWORD(joyState.rgdwPOV[j]) == 0xFFFF);
 
                 if (POVCentered)
-                    IO.povHatAngle[j] = (unsigned long) - 1;
+                    IO.povHatAngle[j] = (unsigned long)-1;
                 else
                     IO.povHatAngle[j] = joyState.rgdwPOV[j];
             }
@@ -328,7 +357,8 @@ void GetJoystickInput()
     }
 
     if (IO.MouseWheelExists() == true) // Retro 17Jan2004
-        device_axis_values[SIM_MOUSE][DX_MOUSEWHEEL] = theMouseWheelAxis.GetAxisValue();
+        device_axis_values[SIM_MOUSE][DX_MOUSEWHEEL] =
+            theMouseWheelAxis.GetAxisValue();
 
     /*******************************************************************************/
     // Copy and process flight control (roll and pitch) info
@@ -339,72 +369,105 @@ void GetJoystickInput()
     /*******************************************************************************/
     if ((IO.AnalogIsUsed(AXIS_PITCH)) and (IO.AnalogIsUsed(AXIS_ROLL)))
     {
-        ProcessJoystickInput(AXIS_PITCH, &device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis]);
-        ProcessJoystickInput(AXIS_ROLL, &device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis]);
+        ProcessJoystickInput(
+            AXIS_PITCH,
+            &device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis]);
+        ProcessJoystickInput(
+            AXIS_ROLL,
+            &device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis]);
 
 #ifdef THE_MPS_WAY_OF_LIFE
         //IO.analog[0].engrValue = min(max((joyState.lX + IO.analog[0].center)/1000.0f, -1.0F),1.0F);
-        IO.analog[AXIS_PITCH].engrValue = (float)device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] + IO.analog[AXIS_PITCH].center;
+        IO.analog[AXIS_PITCH].engrValue =
+            (float)
+                device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] +
+            IO.analog[AXIS_PITCH].center;
 
         if (IO.analog[AXIS_PITCH].engrValue * IO.analog[AXIS_PITCH].center > 0)
-            IO.analog[AXIS_PITCH].engrValue /= (9400.0F + (float)abs(IO.analog[AXIS_PITCH].center));
+            IO.analog[AXIS_PITCH].engrValue /=
+                (9400.0F + (float)abs(IO.analog[AXIS_PITCH].center));
         else
-            IO.analog[AXIS_PITCH].engrValue /= (9400.0F - (float)abs(IO.analog[AXIS_PITCH].center));
+            IO.analog[AXIS_PITCH].engrValue /=
+                (9400.0F - (float)abs(IO.analog[AXIS_PITCH].center));
 
         //IO.analog[1].engrValue = min(max((joyState.lY + IO.analog[1].center)/1000.0f, -1.0F),1.0F);
-        IO.analog[AXIS_ROLL].engrValue = (float)device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] + IO.analog[AXIS_ROLL].center;
+        IO.analog[AXIS_ROLL].engrValue =
+            (float)device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] +
+            IO.analog[AXIS_ROLL].center;
 
         if (IO.analog[AXIS_ROLL].engrValue * IO.analog[AXIS_ROLL].center > 0)
-            IO.analog[AXIS_ROLL].engrValue /= (10000.0F + (float)abs(IO.analog[AXIS_ROLL].center));
+            IO.analog[AXIS_ROLL].engrValue /=
+                (10000.0F + (float)abs(IO.analog[AXIS_ROLL].center));
         else
-            IO.analog[AXIS_ROLL].engrValue /= (10000.0F - (float)abs(IO.analog[AXIS_ROLL].center));
+            IO.analog[AXIS_ROLL].engrValue /=
+                (10000.0F - (float)abs(IO.analog[AXIS_ROLL].center));
 
 #else // Retro 2Jan2003
 
         if (g_bUseNewSmoothing == false)
         {
-            IO.analog[AXIS_PITCH].engrValue = (float)device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] + IO.analog[AXIS_PITCH].center;
+            IO.analog[AXIS_PITCH].engrValue =
+                (float)device_axis_values[AxisMap.Pitch.Device]
+                                         [AxisMap.Pitch.Axis] +
+                IO.analog[AXIS_PITCH].center;
 
             if (IO.analog[AXIS_PITCH].engrValue > 0)
-                IO.analog[AXIS_PITCH].engrValue /= Abs(10000.0F + IO.analog[AXIS_PITCH].center);
+                IO.analog[AXIS_PITCH].engrValue /=
+                    Abs(10000.0F + IO.analog[AXIS_PITCH].center);
             else
-                IO.analog[AXIS_PITCH].engrValue /= Abs(-10000.0F + IO.analog[AXIS_PITCH].center);
+                IO.analog[AXIS_PITCH].engrValue /=
+                    Abs(-10000.0F + IO.analog[AXIS_PITCH].center);
         }
         else
         {
-            IO.analog[AXIS_PITCH].engrValue = (float)IO.analog[AXIS_PITCH].ioVal + IO.analog[AXIS_PITCH].center;
+            IO.analog[AXIS_PITCH].engrValue =
+                (float)IO.analog[AXIS_PITCH].ioVal +
+                IO.analog[AXIS_PITCH].center;
 
             if (IO.analog[AXIS_PITCH].engrValue > 0)
-                IO.analog[AXIS_PITCH].engrValue /= Abs(10000.0F + IO.analog[AXIS_PITCH].center);
+                IO.analog[AXIS_PITCH].engrValue /=
+                    Abs(10000.0F + IO.analog[AXIS_PITCH].center);
             else
-                IO.analog[AXIS_PITCH].engrValue /= Abs(-10000.0F + IO.analog[AXIS_PITCH].center);
+                IO.analog[AXIS_PITCH].engrValue /=
+                    Abs(-10000.0F + IO.analog[AXIS_PITCH].center);
         }
 
         if (g_bUseNewSmoothing == false)
         {
-            IO.analog[AXIS_ROLL].engrValue = (float)device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] + IO.analog[AXIS_ROLL].center;
+            IO.analog[AXIS_ROLL].engrValue =
+                (float)
+                    device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] +
+                IO.analog[AXIS_ROLL].center;
 
             if (IO.analog[AXIS_ROLL].engrValue > 0)
-                IO.analog[AXIS_ROLL].engrValue /= Abs(10000.0F + IO.analog[AXIS_ROLL].center);
+                IO.analog[AXIS_ROLL].engrValue /=
+                    Abs(10000.0F + IO.analog[AXIS_ROLL].center);
             else
-                IO.analog[AXIS_ROLL].engrValue /= Abs(-10000.0F + IO.analog[AXIS_ROLL].center);
+                IO.analog[AXIS_ROLL].engrValue /=
+                    Abs(-10000.0F + IO.analog[AXIS_ROLL].center);
         }
         else
         {
-            IO.analog[AXIS_ROLL].engrValue = (float)IO.analog[AXIS_ROLL].ioVal + IO.analog[AXIS_ROLL].center;
+            IO.analog[AXIS_ROLL].engrValue =
+                (float)IO.analog[AXIS_ROLL].ioVal + IO.analog[AXIS_ROLL].center;
 
             if (IO.analog[AXIS_ROLL].engrValue > 0)
-                IO.analog[AXIS_ROLL].engrValue /= Abs(10000.0F + IO.analog[AXIS_ROLL].center);
+                IO.analog[AXIS_ROLL].engrValue /=
+                    Abs(10000.0F + IO.analog[AXIS_ROLL].center);
             else
-                IO.analog[AXIS_ROLL].engrValue /= Abs(-10000.0F + IO.analog[AXIS_ROLL].center);
+                IO.analog[AXIS_ROLL].engrValue /=
+                    Abs(-10000.0F + IO.analog[AXIS_ROLL].center);
         }
 
 #endif
 
         if (center)
         {
-            IO.analog[AXIS_PITCH].center = device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] * -1;
-            IO.analog[AXIS_ROLL].center = device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] * -1;
+            IO.analog[AXIS_PITCH].center =
+                device_axis_values[AxisMap.Pitch.Device][AxisMap.Pitch.Axis] *
+                -1;
+            IO.analog[AXIS_ROLL].center =
+                device_axis_values[AxisMap.Bank.Device][AxisMap.Bank.Axis] * -1;
         }
     }
 
@@ -414,10 +477,14 @@ void GetJoystickInput()
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE))
     {
-        ProcessJoystickInput(AXIS_THROTTLE, &device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]);
+        ProcessJoystickInput(AXIS_THROTTLE,
+                             &device_axis_values[AxisMap.Throttle.Device]
+                                                [AxisMap.Throttle.Axis]);
 
-        if (( not UseKeyboardThrottle) or
-            (abs(JoyOutput[AXIS_THROTTLE][OldInput] - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) > 500.0F))
+        if ((not UseKeyboardThrottle) or
+            (abs(JoyOutput[AXIS_THROTTLE][OldInput] -
+                 device_axis_values[AxisMap.Throttle.Device]
+                                   [AxisMap.Throttle.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
 #ifdef USE_IDLE_CUTOFF
@@ -425,28 +492,49 @@ void GetJoystickInput()
 #endif
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
-            if ((IO.analog[AXIS_THROTTLE].center) and 
-                (device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis] > IO.analog[AXIS_THROTTLE].center))
+            if ((IO.analog[AXIS_THROTTLE].center) and
+                (device_axis_values[AxisMap.Throttle.Device]
+                                   [AxisMap.Throttle.Axis] >
+                 IO.analog[AXIS_THROTTLE].center))
             {
 #ifndef USE_IDLE_CUTOFF
-                IO.analog[AXIS_THROTTLE].engrValue = (15000.0F - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) / (15000.0F - IO.analog[AXIS_THROTTLE].center);
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    (15000.0F - device_axis_values[AxisMap.Throttle.Device]
+                                                  [AxisMap.Throttle.Axis]) /
+                    (15000.0F - IO.analog[AXIS_THROTTLE].center);
 #else
-                IO.analog[AXIS_THROTTLE].engrValue = ((float)maxThrottleVal - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) / ((float)maxThrottleVal - IO.analog[AXIS_THROTTLE].center);
-                IO.analog[AXIS_THROTTLE].engrValue = max(IO.analog[AXIS_THROTTLE].engrValue, 0.0F);
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    ((float)maxThrottleVal -
+                     device_axis_values[AxisMap.Throttle.Device]
+                                       [AxisMap.Throttle.Axis]) /
+                    ((float)maxThrottleVal - IO.analog[AXIS_THROTTLE].center);
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    max(IO.analog[AXIS_THROTTLE].engrValue, 0.0F);
 #endif
             }
             // in afterburner - full throttle give 1.5F, exactly ABDetent throttle gives 1.0F - OK
             else if (IO.analog[AXIS_THROTTLE].center)
             {
-                IO.analog[AXIS_THROTTLE].engrValue = 1.0F + (IO.analog[AXIS_THROTTLE].center - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) / (IO.analog[AXIS_THROTTLE].center * 2.0F);
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    1.0F + (IO.analog[AXIS_THROTTLE].center -
+                            device_axis_values[AxisMap.Throttle.Device]
+                                              [AxisMap.Throttle.Axis]) /
+                               (IO.analog[AXIS_THROTTLE].center * 2.0F);
             }
             // no abdetent set ?? throttle scales linearly between 0.0F and 1.5F - OK
             else
             {
 #ifndef USE_IDLE_CUTOFF
-                IO.analog[AXIS_THROTTLE].engrValue = (15000.0F - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) / 10000.0F;
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    (15000.0F - device_axis_values[AxisMap.Throttle.Device]
+                                                  [AxisMap.Throttle.Axis]) /
+                    10000.0F;
 #else
-                IO.analog[AXIS_THROTTLE].engrValue = ((float)maxThrottleVal - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) / (float)maxThrottleVal * 1.5F;
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    ((float)maxThrottleVal -
+                     device_axis_values[AxisMap.Throttle.Device]
+                                       [AxisMap.Throttle.Axis]) /
+                    (float)maxThrottleVal * 1.5F;
 #endif
             }
 
@@ -454,8 +542,11 @@ void GetJoystickInput()
             // see SetThrottleInActive() for explanation
             if (throttleInactive == true)
             {
-                if (abs(throttleInactiveValue - device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis]) < 5000)
-                    IO.analog[AXIS_THROTTLE].engrValue = 0.0F; // no throttle ouput before the user moves the stick..
+                if (abs(throttleInactiveValue -
+                        device_axis_values[AxisMap.Throttle.Device]
+                                          [AxisMap.Throttle.Axis]) < 5000)
+                    IO.analog[AXIS_THROTTLE].engrValue =
+                        0.0F; // no throttle ouput before the user moves the stick..
                 else
                 {
                     throttleInactive = false;
@@ -466,12 +557,16 @@ void GetJoystickInput()
 
         if (setABdetent)
         {
-            IO.analog[AXIS_THROTTLE].center = device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis];
+            IO.analog[AXIS_THROTTLE].center =
+                device_axis_values[AxisMap.Throttle.Device]
+                                  [AxisMap.Throttle.Axis];
         }
 
         if (setIdleCutoff)
         {
-            IO.analog[AXIS_THROTTLE].cutoff  = device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis];
+            IO.analog[AXIS_THROTTLE].cutoff =
+                device_axis_values[AxisMap.Throttle.Device]
+                                  [AxisMap.Throttle.Axis];
         }
     }
 
@@ -481,10 +576,14 @@ void GetJoystickInput()
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_THROTTLE2))
     {
-        ProcessJoystickInput(AXIS_THROTTLE2, &device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]);
+        ProcessJoystickInput(AXIS_THROTTLE2,
+                             &device_axis_values[AxisMap.Throttle2.Device]
+                                                [AxisMap.Throttle2.Axis]);
 
-        if (( not UseKeyboardThrottle) or
-            (abs(JoyOutput[AXIS_THROTTLE2][OldInput] - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) > 500.0F))
+        if ((not UseKeyboardThrottle) or
+            (abs(JoyOutput[AXIS_THROTTLE2][OldInput] -
+                 device_axis_values[AxisMap.Throttle2.Device]
+                                   [AxisMap.Throttle2.Axis]) > 500.0F))
         {
             UseKeyboardThrottle = FALSE;
 #ifdef USE_IDLE_CUTOFF
@@ -492,28 +591,49 @@ void GetJoystickInput()
 #endif
 
             // not in afterburner.. throttle 0 result in 0.0F, throttle in ABDetent results in 1.0F - OK
-            if ((IO.analog[AXIS_THROTTLE2].center) and 
-                (device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis] > IO.analog[AXIS_THROTTLE2].center))
+            if ((IO.analog[AXIS_THROTTLE2].center) and
+                (device_axis_values[AxisMap.Throttle2.Device]
+                                   [AxisMap.Throttle2.Axis] >
+                 IO.analog[AXIS_THROTTLE2].center))
             {
 #ifndef USE_IDLE_CUTOFF
-                IO.analog[AXIS_THROTTLE2].engrValue = (15000.0F - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) / (15000.0F - IO.analog[AXIS_THROTTLE2].center);
+                IO.analog[AXIS_THROTTLE2].engrValue =
+                    (15000.0F - device_axis_values[AxisMap.Throttle2.Device]
+                                                  [AxisMap.Throttle2.Axis]) /
+                    (15000.0F - IO.analog[AXIS_THROTTLE2].center);
 #else
-                IO.analog[AXIS_THROTTLE2].engrValue = ((float)maxThrottleVal - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) / ((float)maxThrottleVal - IO.analog[AXIS_THROTTLE2].center);
-                IO.analog[AXIS_THROTTLE2].engrValue = max(IO.analog[AXIS_THROTTLE2].engrValue, 0.0F);
+                IO.analog[AXIS_THROTTLE2].engrValue =
+                    ((float)maxThrottleVal -
+                     device_axis_values[AxisMap.Throttle2.Device]
+                                       [AxisMap.Throttle2.Axis]) /
+                    ((float)maxThrottleVal - IO.analog[AXIS_THROTTLE2].center);
+                IO.analog[AXIS_THROTTLE2].engrValue =
+                    max(IO.analog[AXIS_THROTTLE2].engrValue, 0.0F);
 #endif
             }
             // in afterburner - full throttle gives 1.5F, exactly ABDetent throttle gives 1.0F - OK
             else if (IO.analog[AXIS_THROTTLE2].center)
             {
-                IO.analog[AXIS_THROTTLE2].engrValue = 1.0F + (IO.analog[AXIS_THROTTLE2].center - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) / (IO.analog[AXIS_THROTTLE2].center * 2.0F);
+                IO.analog[AXIS_THROTTLE2].engrValue =
+                    1.0F + (IO.analog[AXIS_THROTTLE2].center -
+                            device_axis_values[AxisMap.Throttle2.Device]
+                                              [AxisMap.Throttle2.Axis]) /
+                               (IO.analog[AXIS_THROTTLE2].center * 2.0F);
             }
             // no abdetent set ?? throttle scales linearly between 0.0F and 1.5F - OK
             else
             {
 #ifndef USE_IDLE_CUTOFF
-                IO.analog[AXIS_THROTTLE2].engrValue = (15000.0F - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) / 10000.0F;
+                IO.analog[AXIS_THROTTLE2].engrValue =
+                    (15000.0F - device_axis_values[AxisMap.Throttle2.Device]
+                                                  [AxisMap.Throttle2.Axis]) /
+                    10000.0F;
 #else
-                IO.analog[AXIS_THROTTLE2].engrValue = ((float)maxThrottleVal - device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis]) / (float)maxThrottleVal * 1.5F;
+                IO.analog[AXIS_THROTTLE2].engrValue =
+                    ((float)maxThrottleVal -
+                     device_axis_values[AxisMap.Throttle2.Device]
+                                       [AxisMap.Throttle2.Axis]) /
+                    (float)maxThrottleVal * 1.5F;
 #endif
             }
         }
@@ -521,18 +641,26 @@ void GetJoystickInput()
         if (setABdetent)
         {
 #ifndef SYMMETRIC_THROTTLEDETENTS
-            IO.analog[AXIS_THROTTLE2].center = device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis];
+            IO.analog[AXIS_THROTTLE2].center =
+                device_axis_values[AxisMap.Throttle2.Device]
+                                  [AxisMap.Throttle2.Axis];
 #else
-            IO.analog[AXIS_THROTTLE2].center = device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis];
+            IO.analog[AXIS_THROTTLE2].center =
+                device_axis_values[AxisMap.Throttle.Device]
+                                  [AxisMap.Throttle.Axis];
 #endif
         }
 
         if (setIdleCutoff)
         {
 #ifndef SYMMETRIC_THROTTLEDETENTS
-            IO.analog[AXIS_THROTTLE2].cutoff  = device_axis_values[AxisMap.Throttle2.Device][AxisMap.Throttle2.Axis];
+            IO.analog[AXIS_THROTTLE2].cutoff =
+                device_axis_values[AxisMap.Throttle2.Device]
+                                  [AxisMap.Throttle2.Axis];
 #else
-            IO.analog[AXIS_THROTTLE2].cutoff  = device_axis_values[AxisMap.Throttle.Device][AxisMap.Throttle.Axis];
+            IO.analog[AXIS_THROTTLE2].cutoff =
+                device_axis_values[AxisMap.Throttle.Device]
+                                  [AxisMap.Throttle.Axis];
 #endif
         }
     }
@@ -542,42 +670,57 @@ void GetJoystickInput()
     /*******************************************************************************/
     if (IO.AnalogIsUsed(AXIS_YAW))
     {
-        ProcessJoystickInput(AXIS_YAW, &device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis]);
+        ProcessJoystickInput(
+            AXIS_YAW,
+            &device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis]);
 #ifdef THE_MPS_WAY_OF_LIFE
         //IO.analog[3].engrValue = min(max((joyState.lRz + IO.analog[3].center)/1000.0f, -1.0F),1.0F);
-        IO.analog[AXIS_YAW].engrValue = (float)device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis] + IO.analog[AXIS_YAW].center;
+        IO.analog[AXIS_YAW].engrValue =
+            (float)device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis] +
+            IO.analog[AXIS_YAW].center;
 
         if (IO.analog[AXIS_YAW].engrValue * IO.analog[AXIS_YAW].center > 0)
-            IO.analog[AXIS_YAW].engrValue /= (10000.0F + (float)abs(IO.analog[AXIS_YAW].center));
+            IO.analog[AXIS_YAW].engrValue /=
+                (10000.0F + (float)abs(IO.analog[AXIS_YAW].center));
         else
-            IO.analog[AXIS_YAW].engrValue /= (10000.0F - (float)abs(IO.analog[AXIS_YAW].center));
+            IO.analog[AXIS_YAW].engrValue /=
+                (10000.0F - (float)abs(IO.analog[AXIS_YAW].center));
 
 #else // Retro 2Jan2003
 
         if (g_bUseNewSmoothing == false)
         {
-            IO.analog[AXIS_YAW].engrValue = (float)device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis] + IO.analog[AXIS_YAW].center;
+            IO.analog[AXIS_YAW].engrValue =
+                (float)
+                    device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis] +
+                IO.analog[AXIS_YAW].center;
 
             if (IO.analog[AXIS_YAW].engrValue > 0)
-                IO.analog[AXIS_YAW].engrValue /= Abs(10000.0F + IO.analog[AXIS_YAW].center);
+                IO.analog[AXIS_YAW].engrValue /=
+                    Abs(10000.0F + IO.analog[AXIS_YAW].center);
             else
-                IO.analog[AXIS_YAW].engrValue /= Abs(-10000.0F + IO.analog[AXIS_YAW].center);
+                IO.analog[AXIS_YAW].engrValue /=
+                    Abs(-10000.0F + IO.analog[AXIS_YAW].center);
         }
         else
         {
-            IO.analog[AXIS_YAW].engrValue = (float)IO.analog[AXIS_YAW].ioVal + IO.analog[AXIS_YAW].center;
+            IO.analog[AXIS_YAW].engrValue =
+                (float)IO.analog[AXIS_YAW].ioVal + IO.analog[AXIS_YAW].center;
 
             if (IO.analog[AXIS_YAW].engrValue > 0)
-                IO.analog[AXIS_YAW].engrValue /= Abs(10000.0F + IO.analog[AXIS_YAW].center);
+                IO.analog[AXIS_YAW].engrValue /=
+                    Abs(10000.0F + IO.analog[AXIS_YAW].center);
             else
-                IO.analog[AXIS_YAW].engrValue /= Abs(-10000.0F + IO.analog[AXIS_YAW].center);
+                IO.analog[AXIS_YAW].engrValue /=
+                    Abs(-10000.0F + IO.analog[AXIS_YAW].center);
         }
 
 #endif
 
         if (center)
         {
-            IO.analog[AXIS_YAW].center = device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis] * -1;
+            IO.analog[AXIS_YAW].center =
+                device_axis_values[AxisMap.Yaw.Device][AxisMap.Yaw.Axis] * -1;
         }
 
         if (IO.analog[AXIS_YAW].isReversed == true) // Retro 13Jan2004
@@ -604,11 +747,15 @@ void GetJoystickInput()
             {
                 if (IO.analog[(GameAxis_t)a].isReversed == false)
                 {
-                    ProcessJoystickInput((GameAxis_t)a, &device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis]);
+                    ProcessJoystickInput(
+                        (GameAxis_t)a, &device_axis_values[*AxisSetup[a].device]
+                                                          [*AxisSetup[a].axis]);
                 }
                 else
                 {
-                    long reversedValue = 15000 - device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis];
+                    long reversedValue =
+                        15000 - device_axis_values[*AxisSetup[a].device]
+                                                  [*AxisSetup[a].axis];
                     ProcessJoystickInput((GameAxis_t)a, &reversedValue);
                 }
             }
@@ -616,9 +763,12 @@ void GetJoystickInput()
             else
             {
 #ifndef NO_CENTER_FOR_MY_AXIS_PLEASE // Retro 9Jan2004
-                long correctedVal = device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis] + IO.analog[(GameAxis_t)a].center;
+                long correctedVal = device_axis_values[*AxisSetup[a].device]
+                                                      [*AxisSetup[a].axis] +
+                                    IO.analog[(GameAxis_t)a].center;
 #else
-                long correctedVal = device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis];
+                long correctedVal = device_axis_values[*AxisSetup[a].device]
+                                                      [*AxisSetup[a].axis];
 #endif // NO_CENTER_FOR_MY_AXIS_PLEASE
 
                 if (IO.analog[(GameAxis_t)a].isReversed)
@@ -630,7 +780,10 @@ void GetJoystickInput()
 
                 if (center)
                 {
-                    IO.analog[(GameAxis_t)a].center = device_axis_values[*AxisSetup[a].device][*AxisSetup[a].axis] * -1;
+                    IO.analog[(GameAxis_t)a].center =
+                        device_axis_values[*AxisSetup[a].device]
+                                          [*AxisSetup[a].axis] *
+                        -1;
                 }
 
 #endif // NO_CENTER_FOR_MY_AXIS_PLEASE
@@ -665,7 +818,8 @@ void GetJoystickInput()
     {
         GetURHelmetInput();
     }
-    else if ((g_bEnableTrackIR) and (PlayerOptions.Get3dTrackIR() == true)) // Retro 26/09/03
+    else if ((g_bEnableTrackIR) and
+             (PlayerOptions.Get3dTrackIR() == true)) // Retro 26/09/03
     {
         GetTrackIRInput();
     }
@@ -755,14 +909,21 @@ void ProcessJoyButtonAndPOVHat(void)
 
                 if (theFunc)
                 {
-                    if (ID  < 0)
+                    if (ID < 0)
                     {
-                        CallFunc(theFunc, 1, KEY_DOWN, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        CallFunc(
+                            theFunc, 1, KEY_DOWN,
+                            NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                     }
                     else
                     {
-                        CallFunc(theFunc, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID)); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
-                        OTWDriver.pCockpitManager->Dispatch(ID, 0);//the 0 should be mousside but I don't have anywhere
+                        CallFunc(
+                            theFunc, 1, KEY_DOWN,
+                            OTWDriver.pCockpitManager->GetButtonPointer(
+                                ID)); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        OTWDriver.pCockpitManager->Dispatch(
+                            ID,
+                            0); //the 0 should be mousside but I don't have anywhere
                     } //to store it and all functions currently use 0. ;)
                 }
                 // #53 REMOVED the hardcoded default 'button0=trigger, button1=pickle': trigger/pickle is now
@@ -780,13 +941,14 @@ void ProcessJoyButtonAndPOVHat(void)
 
             if (theFunc)
             {
-                CallFunc(theFunc, 1, 0, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                CallFunc(
+                    theFunc, 1, 0,
+                    NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
             }
             // #53 TriggerOverride/PickleOverride default removed (see above)
         }
 
 #endif // Retro 24Aug2004
-
     }
 
     for (i = 0; i < NumberOfPOVs; i++) // Retro 26Dec2003
@@ -797,7 +959,8 @@ void ProcessJoyButtonAndPOVHat(void)
             InputFunctionType theFunc;
             int Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and IO.povHatAngle[i] not_eq -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and
+                IO.povHatAngle[i] not_eq -1)
                 Direction = 0;
             else if (IO.povHatAngle[i] < 6750)
                 Direction = 1;
@@ -816,11 +979,14 @@ void ProcessJoyButtonAndPOVHat(void)
 
             if (LastDirPOV[i] not_eq Direction)
             {
-                theFunc = UserFunctionTable.GetPOVFunction(i, LastDirPOV[i], &ID);
+                theFunc =
+                    UserFunctionTable.GetPOVFunction(i, LastDirPOV[i], &ID);
 
                 if (theFunc)
                     //theFunc(1, 0, NULL);
-                    CallFunc(theFunc, 1, 0, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                    CallFunc(
+                        theFunc, 1, 0,
+                        NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
 
                 LastDirPOV[i] = Direction;
             }
@@ -833,16 +999,23 @@ void ProcessJoyButtonAndPOVHat(void)
 
                 if (theFunc)
                 {
-                    if (ID  < 0)
+                    if (ID < 0)
                     {
                         //theFunc(1, KEY_DOWN, NULL);
-                        CallFunc(theFunc, 1, KEY_DOWN, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        CallFunc(
+                            theFunc, 1, KEY_DOWN,
+                            NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
                     }
                     else
                     {
                         //theFunc(1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID));
-                        CallFunc(theFunc, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(ID)); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
-                        OTWDriver.pCockpitManager->Dispatch(ID, 0);//the 0 should be mousside but I don't have anywhere
+                        CallFunc(
+                            theFunc, 1, KEY_DOWN,
+                            OTWDriver.pCockpitManager->GetButtonPointer(
+                                ID)); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                        OTWDriver.pCockpitManager->Dispatch(
+                            ID,
+                            0); //the 0 should be mousside but I don't have anywhere
                     } //to store it and all functions currently use 0. ;)
                 }
                 else
@@ -859,15 +1032,15 @@ void ProcessJoyButtonAndPOVHat(void)
 
             if (theFunc)
                 //theFunc(1, 0, NULL);
-                CallFunc(theFunc, 1, 0, NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
+                CallFunc(
+                    theFunc, 1, 0,
+                    NULL); //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
             else
                 SimDriver.POVKludgeFunction(IO.povHatAngle[i]);
         }
-
     }
 
     //SimDriver.POVKludgeFunction(IO.povHatAngle[0]);
-
 }
 
 /*****************************************************************************/
@@ -879,10 +1052,12 @@ float ReadThrottle(void)
     HRESULT hRes;
     DIJOYSTATE2 joyState;
 
-    if ((gTotalJoy) and (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
+    if ((gTotalJoy) and
+        (IO.AnalogIsUsed(AXIS_THROTTLE) == true)) // Retro 4Jan2004
     {
 
-        hRes = ((LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.Throttle.Device])->Poll();
+        hRes =
+            ((LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.Throttle.Device])->Poll();
 
         // Retro 21Jan2004
         if ((hRes == DIERR_INPUTLOST) or (hRes == DIERR_NOTACQUIRED))
@@ -891,16 +1066,17 @@ float ReadThrottle(void)
 
             if (hRes not_eq DI_OK)
             {
-#pragma warning(disable:4127)
+#pragma warning(disable : 4127)
                 ShiAssert(false);
-#pragma warning(default:4127)
+#pragma warning(default : 4127)
                 return 0.;
             }
         }
 
         // Retro 21Jan2004 end
 
-        hRes = gpDIDevice[AxisMap.Throttle.Device]->GetDeviceState(sizeof(DIJOYSTATE2), &joyState);
+        hRes = gpDIDevice[AxisMap.Throttle.Device]->GetDeviceState(
+            sizeof(DIJOYSTATE2), &joyState);
 
         //ShiAssert(hRes == DI_OK); // Retro 4Jan2004  // MLR 5/2/2004 - driving me nuts
 
@@ -908,68 +1084,77 @@ float ReadThrottle(void)
 
         switch (hRes)
         {
-            case DI_OK:
-                switch (AxisMap.Throttle.Axis)
-                {
-                    case DX_XAXIS:
-                        theDeviceValue = joyState.lX;
-                        break;
-
-                    case DX_YAXIS:
-                        theDeviceValue = joyState.lY;
-                        break;
-
-                    case DX_ZAXIS:
-                        theDeviceValue = joyState.lZ;
-                        break;
-
-                    case DX_RXAXIS:
-                        theDeviceValue = joyState.lRx;
-                        break;
-
-                    case DX_RYAXIS:
-                        theDeviceValue = joyState.lRy;
-                        break;
-
-                    case DX_RZAXIS:
-                        theDeviceValue = joyState.lRz;
-                        break;
-
-                    case DX_SLIDER0:
-                        theDeviceValue = joyState.rglSlider[0];
-                        break;
-
-                    case DX_SLIDER1:
-                        theDeviceValue = joyState.rglSlider[1];
-                        break;
-                }
-
-                JoyOutput[AXIS_THROTTLE][OldInput] = JoyOutput[AXIS_THROTTLE][NewInput];
-                JoyOutput[AXIS_THROTTLE][NewInput] = theDeviceValue;
-
-                IO.analog[AXIS_THROTTLE].ioVal = theDeviceValue; // Retro 11Jan2004
-
-                if (IO.analog[AXIS_THROTTLE].center and theDeviceValue > IO.analog[AXIS_THROTTLE].center)
-                    IO.analog[AXIS_THROTTLE].engrValue = (15000.0F - theDeviceValue) / (15000.0F - IO.analog[AXIS_THROTTLE].center);
-                else if (IO.analog[AXIS_THROTTLE].center)
-                    IO.analog[AXIS_THROTTLE].engrValue = 1.0F + (IO.analog[AXIS_THROTTLE].center - theDeviceValue) / (IO.analog[AXIS_THROTTLE].center * 2.0F);
-                else
-                    IO.analog[AXIS_THROTTLE].engrValue = (15000.0F - theDeviceValue) / 10000.0F;
-
+        case DI_OK:
+            switch (AxisMap.Throttle.Axis)
+            {
+            case DX_XAXIS:
+                theDeviceValue = joyState.lX;
                 break;
 
-            default:
-                AcquireDeviceInput(AxisMap.Throttle.Device, TRUE);
+            case DX_YAXIS:
+                theDeviceValue = joyState.lY;
+                break;
 
-                if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->OnGround())
-                    IO.analog[AXIS_THROTTLE].engrValue = 0.0f;
-                else
-                    IO.analog[AXIS_THROTTLE].engrValue = 1.0f;
+            case DX_ZAXIS:
+                theDeviceValue = joyState.lZ;
+                break;
+
+            case DX_RXAXIS:
+                theDeviceValue = joyState.lRx;
+                break;
+
+            case DX_RYAXIS:
+                theDeviceValue = joyState.lRy;
+                break;
+
+            case DX_RZAXIS:
+                theDeviceValue = joyState.lRz;
+                break;
+
+            case DX_SLIDER0:
+                theDeviceValue = joyState.rglSlider[0];
+                break;
+
+            case DX_SLIDER1:
+                theDeviceValue = joyState.rglSlider[1];
+                break;
+            }
+
+            JoyOutput[AXIS_THROTTLE][OldInput] =
+                JoyOutput[AXIS_THROTTLE][NewInput];
+            JoyOutput[AXIS_THROTTLE][NewInput] = theDeviceValue;
+
+            IO.analog[AXIS_THROTTLE].ioVal = theDeviceValue; // Retro 11Jan2004
+
+            if (IO.analog[AXIS_THROTTLE].center and
+                theDeviceValue > IO.analog[AXIS_THROTTLE].center)
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    (15000.0F - theDeviceValue) /
+                    (15000.0F - IO.analog[AXIS_THROTTLE].center);
+            else if (IO.analog[AXIS_THROTTLE].center)
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    1.0F + (IO.analog[AXIS_THROTTLE].center - theDeviceValue) /
+                               (IO.analog[AXIS_THROTTLE].center * 2.0F);
+            else
+                IO.analog[AXIS_THROTTLE].engrValue =
+                    (15000.0F - theDeviceValue) / 10000.0F;
+
+            break;
+
+        default:
+            AcquireDeviceInput(AxisMap.Throttle.Device, TRUE);
+
+            if (SimDriver.GetPlayerAircraft() and
+                SimDriver.GetPlayerAircraft()->OnGround())
+                IO.analog[AXIS_THROTTLE].engrValue = 0.0f;
+            else
+                IO.analog[AXIS_THROTTLE].engrValue = 1.0f;
         }
     }
     else
     {
-        if (SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->OnGround())
+        if (SimDriver.GetPlayerAircraft() and
+            SimDriver.GetPlayerAircraft()->OnGround())
             IO.analog[AXIS_THROTTLE].engrValue = 0.0f;
         else
             IO.analog[AXIS_THROTTLE].engrValue = 1.0f;
@@ -979,8 +1164,9 @@ float ReadThrottle(void)
 }
 
 static int AxisCount = 0; // Retro
-#define NUM_OF_STICK_AXIS 8 /* '8' is defined by dinput: 8 axis maximum per device */
-AxisIDStuff DIAxisNames[SIM_NUMDEVICES*NUM_OF_STICK_AXIS];
+#define NUM_OF_STICK_AXIS                                                      \
+    8 /* '8' is defined by dinput: 8 axis maximum per device */
+AxisIDStuff DIAxisNames[SIM_NUMDEVICES * NUM_OF_STICK_AXIS];
 
 #ifndef USE_DINPUT_8
 /*****************************************************************************/
@@ -990,11 +1176,12 @@ AxisIDStuff DIAxisNames[SIM_NUMDEVICES*NUM_OF_STICK_AXIS];
 // - just note its name (copy it into that globat array above) and be done
 // with it
 /*****************************************************************************/
-BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef)
+BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi,
+                                  LPVOID pvRef)
 {
     char* DevName = (char*)pvRef;
 
-    if ( not pvRef)
+    if (not pvRef)
         return FALSE;
 
     ShiAssert(lpddoi->tszName);
@@ -1003,7 +1190,9 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
     sprintf(DevNum, " (%i)", gTotalJoy);
 
     // these strings are deleted on shutdown, in cleanupdiall()
-    DIAxisNames[AxisCount].DXAxisName = (char*)malloc(strlen(lpddoi->tszName) + strlen(" - ") + strlen(DevName) + strlen(DevNum) + 1);
+    DIAxisNames[AxisCount].DXAxisName =
+        (char*)malloc(strlen(lpddoi->tszName) + strlen(" - ") +
+                      strlen(DevName) + strlen(DevNum) + 1);
     strcpy(DIAxisNames[AxisCount].DXAxisName, lpddoi->tszName);
     strcat(DIAxisNames[AxisCount].DXAxisName, " - ");
     strcat(DIAxisNames[AxisCount].DXAxisName, DevName);
@@ -1011,37 +1200,37 @@ BOOL FAR PASCAL EnumDeviceObjects(LPCDIDEVICEOBJECTINSTANCE lpddoi, LPVOID pvRef
 
     switch (lpddoi->dwOfs)
     {
-        case DIJOFS_X:
-            DIAxisNames[AxisCount].DXAxisID = DX_XAXIS;
-            break;
+    case DIJOFS_X:
+        DIAxisNames[AxisCount].DXAxisID = DX_XAXIS;
+        break;
 
-        case DIJOFS_Y:
-            DIAxisNames[AxisCount].DXAxisID = DX_YAXIS;
-            break;
+    case DIJOFS_Y:
+        DIAxisNames[AxisCount].DXAxisID = DX_YAXIS;
+        break;
 
-        case DIJOFS_Z:
-            DIAxisNames[AxisCount].DXAxisID = DX_ZAXIS;
-            break;
+    case DIJOFS_Z:
+        DIAxisNames[AxisCount].DXAxisID = DX_ZAXIS;
+        break;
 
-        case DIJOFS_RX:
-            DIAxisNames[AxisCount].DXAxisID = DX_RXAXIS;
-            break;
+    case DIJOFS_RX:
+        DIAxisNames[AxisCount].DXAxisID = DX_RXAXIS;
+        break;
 
-        case DIJOFS_RY:
-            DIAxisNames[AxisCount].DXAxisID = DX_RYAXIS;
-            break;
+    case DIJOFS_RY:
+        DIAxisNames[AxisCount].DXAxisID = DX_RYAXIS;
+        break;
 
-        case DIJOFS_RZ:
-            DIAxisNames[AxisCount].DXAxisID = DX_RZAXIS;
-            break;
+    case DIJOFS_RZ:
+        DIAxisNames[AxisCount].DXAxisID = DX_RZAXIS;
+        break;
 
-        case DIJOFS_SLIDER(0):
-            DIAxisNames[AxisCount].DXAxisID = DX_SLIDER0;
-            break;
+    case DIJOFS_SLIDER(0):
+        DIAxisNames[AxisCount].DXAxisID = DX_SLIDER0;
+        break;
 
-        case DIJOFS_SLIDER(1):
-            DIAxisNames[AxisCount].DXAxisID = DX_SLIDER1;
-            break;
+    case DIJOFS_SLIDER(1):
+        DIAxisNames[AxisCount].DXAxisID = DX_SLIDER1;
+        break;
     }
 
     DIAxisNames[AxisCount].DXDeviceID = gTotalJoy + SIM_JOYSTICK1;
@@ -1079,26 +1268,23 @@ void CheckAxisOnDevice(LPDIRECTINPUTDEVICE8 pdev, const char* DevName)
         int theAx;
     } AxisOffsets_t;
 
-    AxisOffsets_t AxisOffsets[NUM_OF_STICK_AXIS] =
-    {
-        { DIJOFS_X, DX_XAXIS },
-        { DIJOFS_Y, DX_YAXIS },
-        { DIJOFS_Z, DX_ZAXIS },
-        { DIJOFS_RX, DX_RXAXIS },
-        { DIJOFS_RY, DX_RYAXIS },
-        { DIJOFS_RZ, DX_RZAXIS },
-        { DIJOFS_SLIDER(0), DX_SLIDER0 },
-        { DIJOFS_SLIDER(1), DX_SLIDER1 }
-    };
+    AxisOffsets_t AxisOffsets[NUM_OF_STICK_AXIS] = {
+        {DIJOFS_X, DX_XAXIS},           {DIJOFS_Y, DX_YAXIS},
+        {DIJOFS_Z, DX_ZAXIS},           {DIJOFS_RX, DX_RXAXIS},
+        {DIJOFS_RY, DX_RYAXIS},         {DIJOFS_RZ, DX_RZAXIS},
+        {DIJOFS_SLIDER(0), DX_SLIDER0}, {DIJOFS_SLIDER(1), DX_SLIDER1}};
 
     for (int i = 0; i < NUM_OF_STICK_AXIS; i++)
     {
-        hres = pdev->GetObjectInfo(&devobj, AxisOffsets[i].Offset, DIPH_BYOFFSET);
+        hres =
+            pdev->GetObjectInfo(&devobj, AxisOffsets[i].Offset, DIPH_BYOFFSET);
 
         if (hres == DI_OK)
         {
             // these strings are deleted on shutdown, in cleanupdiall()
-            DIAxisNames[AxisCount].DXAxisName = (char*)malloc(strlen(devobj.tszName) + strlen(" - ") + strlen(DevName) + strlen(DevNum) + 1);
+            DIAxisNames[AxisCount].DXAxisName =
+                (char*)malloc(strlen(devobj.tszName) + strlen(" - ") +
+                              strlen(DevName) + strlen(DevNum) + 1);
             strcpy(DIAxisNames[AxisCount].DXAxisName, devobj.tszName);
             strcat(DIAxisNames[AxisCount].DXAxisName, " - ");
             strcat(DIAxisNames[AxisCount].DXAxisName, DevName);
@@ -1151,12 +1337,13 @@ void CheckForMouseAxis(void)
         DIDEVICEOBJECTINSTANCE devobj;
         devobj.dwSize = sizeof(DIDEVICEOBJECTINSTANCE);
 
-        hr = mouse->GetObjectInfo(&devobj, DIMOFS_Z,  DIPH_BYOFFSET);
+        hr = mouse->GetObjectInfo(&devobj, DIMOFS_Z, DIPH_BYOFFSET);
 
         if (hr == DI_OK)
         {
             // found a mouse with a wheel
-            DIAxisNames[AxisCount].DXAxisName = (char*)malloc(strlen(devobj.tszName) + strlen(" - ") + strlen(DevName) + 1);
+            DIAxisNames[AxisCount].DXAxisName = (char*)malloc(
+                strlen(devobj.tszName) + strlen(" - ") + strlen(DevName) + 1);
             strcpy(DIAxisNames[AxisCount].DXAxisName, devobj.tszName);
             strcat(DIAxisNames[AxisCount].DXAxisName, " - ");
             strcat(DIAxisNames[AxisCount].DXAxisName, DevName);
@@ -1173,7 +1360,7 @@ void CheckForMouseAxis(void)
     mouse->Release();
     mouse = 0;
 #else
-    // no mousewheel axis 
+    // no mousewheel axis
 #endif
 }
 #endif // USE_DINPUT_8
@@ -1186,14 +1373,14 @@ void CheckForMouseAxis(void)
 // that at least centering spring forces are there, else it feels like ass.
 //
 // I�m ASSuming that this IS a FFB stick  You can�t check this with
-// HasForceFeedback however (at least not here) 
+// HasForceFeedback however (at least not here)
 /*****************************************************************************/
 int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 {
     ShiAssert(theJoyIndex >= 0);
     HRESULT hres;
 
-    // have to unacquire in order to set new properties 
+    // have to unacquire in order to set new properties
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Unacquire();
 
     DIPROPDWORD DIPropAutoCenter;
@@ -1210,7 +1397,8 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
         DIPropAutoCenter.dwData = DIPROPAUTOCENTER_ON;
 
     //Wombat778 Put back to original code because fix for FF Centering is now it atmos.cpp.  This should be cleaner and better.
-    if ( not VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
+    if (not VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(
+            DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
     {
         if (OnOff == false)
             OutputDebugString("Failed to turn auto-center off.\n");
@@ -1234,7 +1422,7 @@ int ActivateAutoCenter(const bool OnOff, const int theJoyIndex)
 // FFB is only supported for the primary flight device (the one with the PITCH
 // and BANK axis)
 //
-// theJoyIndex is the index, with SIM_JOYSTICK1 deducted  
+// theJoyIndex is the index, with SIM_JOYSTICK1 deducted
 /*****************************************************************************/
 int CheckForForceFeedback(const int theJoyIndex)
 {
@@ -1242,7 +1430,7 @@ int CheckForForceFeedback(const int theJoyIndex)
     HRESULT hres;
 
 #ifndef AUTOCENTERFUN
-    // have to unacquire in order to set new properties 
+    // have to unacquire in order to set new properties
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Unacquire();
 #endif
 
@@ -1250,7 +1438,8 @@ int CheckForForceFeedback(const int theJoyIndex)
     devcaps.dwSize = sizeof(DIDEVCAPS);
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->GetCapabilities(&devcaps);
 
-    if (theJoyIndex == AxisMap.FlightControlDevice - SIM_JOYSTICK1)  // Retro 31Dec2003
+    if (theJoyIndex ==
+        AxisMap.FlightControlDevice - SIM_JOYSTICK1) // Retro 31Dec2003
     {
         // a total shit sandwich here.. FFB only for the primary device  if nothing is yet mapped
         // then it will have to wait till the user selects it in the appropriate screen
@@ -1260,10 +1449,11 @@ int CheckForForceFeedback(const int theJoyIndex)
             OutputDebugString("ForceFeedback device found.\n");
 
             // we're supporting ForceFeedback
-            if ( not JoystickCreateEffect(0xffffffff))
+            if (not JoystickCreateEffect(0xffffffff))
             {
-                OutputDebugString("JoystickCreateEffects() failed - ForceFeedback disabled\n");
-                hasForceFeedback =  FALSE;
+                OutputDebugString("JoystickCreateEffects() failed - "
+                                  "ForceFeedback disabled\n");
+                hasForceFeedback = FALSE;
 #ifndef AUTOCENTERFUN
                 hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
@@ -1282,39 +1472,42 @@ int CheckForForceFeedback(const int theJoyIndex)
                 DIPropAutoCenter.dwData = DIPROPAUTOCENTER_OFF;
 
                 //Wombat778 Put back to original code because fix for FF Centering is now it atmos.cpp.  This should be cleaner and better.
-                if ( not VerifyResult(gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
+                if (not VerifyResult(
+                        gpDIDevice[SIM_JOYSTICK1 + theJoyIndex]->SetProperty(
+                            DIPROP_AUTOCENTER, &DIPropAutoCenter.diph)))
                 {
                     OutputDebugString("Failed to turn auto-center off.\n");
-                    hasForceFeedback =  FALSE;
+                    hasForceFeedback = FALSE;
                     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
                     return FALSE;
                 }
                 else
                 {
-                    hasForceFeedback =  TRUE;
+                    hasForceFeedback = TRUE;
                     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
                     return TRUE;
                 }
 
 #else
-                // autocenter will get turned OFF if FFB is ENABLED 
-                hasForceFeedback =  ActivateAutoCenter( not PlayerOptions.GetFFB(), theJoyIndex);
+                // autocenter will get turned OFF if FFB is ENABLED
+                hasForceFeedback =
+                    ActivateAutoCenter(not PlayerOptions.GetFFB(), theJoyIndex);
                 return hasForceFeedback;
 #endif
             }
         }
 
-        hasForceFeedback =  FALSE;
+        hasForceFeedback = FALSE;
 #ifndef AUTOCENTERFUN
         hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-        return FALSE; // no ffb stick 
+        return FALSE; // no ffb stick
     }
 
 #ifndef AUTOCENTERFUN
     hres = gpDIDevice[theJoyIndex + SIM_JOYSTICK1]->Acquire();
 #endif
-    return FALSE; // device checked is not the primary flight stick (the only one that has FFB effects) 
+    return FALSE; // device checked is not the primary flight stick (the only one that has FFB effects)
 }
 
 /*****************************************************************************/
@@ -1331,7 +1524,7 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
 #endif
 
     // LPDIRECTINPUTDEVICE pdev; // Retro 15Jan2004
-    HWND hWndMain = *((HWND *)pvRef);
+    HWND hWndMain = *((HWND*)pvRef);
     DIDEVCAPS devcaps;
     DIDEVICEOBJECTINSTANCE devobj;
 
@@ -1343,13 +1536,14 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     // Create the device
     /*****************************************************************************/
 #ifndef USE_DINPUT_8 // Retro 15Jan2004
-    SetupResult = VerifyResult(gpDIObject->CreateDeviceEx(pdinst->guidInstance, IID_IDirectInputDevice7, (void **) &pdev, NULL));
+    SetupResult = VerifyResult(gpDIObject->CreateDeviceEx(
+        pdinst->guidInstance, IID_IDirectInputDevice7, (void**)&pdev, NULL));
 #else
     HRESULT hr = gpDIObject->CreateDevice(pdinst->guidInstance, &pdev, NULL);
     SetupResult = (hr == DI_OK) ? TRUE : FALSE;
 #endif
 
-    if ( not SetupResult)
+    if (not SetupResult)
     {
         return DIENUM_CONTINUE;
     }
@@ -1369,18 +1563,26 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
     /*****************************************************************************/
     if (SetupResult)
     {
+        // Artscout - 2026: in VR the picture is in the headset and the window is
+        // routinely NOT foreground, so a FOREGROUND device never acquires and
+        // the stick stays dead until some WM_ACTIVATE happens to arrive.
+        extern bool g_bUseOpenXR;
 #ifdef NDEBUG
-        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE bitor DISCL_FOREGROUND));
+        const DWORD coop =
+            DISCL_EXCLUSIVE bitor
+            (g_bUseOpenXR ? DISCL_BACKGROUND : DISCL_FOREGROUND);
 #else // bye bye FFB :/
-        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, DISCL_EXCLUSIVE bitor DISCL_BACKGROUND));
+        const DWORD coop = DISCL_EXCLUSIVE bitor DISCL_BACKGROUND;
 #endif
+        SetupResult = VerifyResult(pdev->SetCooperativeLevel(hWndMain, coop));
     }
 
 #ifndef USE_DINPUT_8 // Retro 16Jan2004
     /*****************************************************************************/
     // Enumerate all axis on the device
     /*****************************************************************************/
-    pdev->EnumObjects(EnumDeviceObjects, (void*)&pdinst->tszProductName, DIDFT_AXIS);
+    pdev->EnumObjects(EnumDeviceObjects, (void*)&pdinst->tszProductName,
+                      DIDFT_AXIS);
 #else
     CheckAxisOnDevice(pdev, pdinst->tszProductName);
 #endif
@@ -1392,7 +1594,9 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
         //  (Will also increment reference count if it succeeds)
         /***************************************************/
 #ifndef USE_DINPUT_8 // Retro 15Jan2004
-        SetupResult = VerifyResult(pdev->QueryInterface(IID_IDirectInputDevice2, (LPVOID *)&gpDIDevice[SIM_JOYSTICK1 + gTotalJoy]));
+        SetupResult = VerifyResult(pdev->QueryInterface(
+            IID_IDirectInputDevice2,
+            (LPVOID*)&gpDIDevice[SIM_JOYSTICK1 + gTotalJoy]));
 #else
         gpDIDevice[SIM_JOYSTICK1 + gTotalJoy] = pdev;
 #endif
@@ -1415,16 +1619,17 @@ BOOL FAR PASCAL InitJoystick(LPCDIDEVICEINSTANCE pdinst, LPVOID pvRef)
         gDIDevNames[SIM_JOYSTICK1 + gTotalJoy] = new _TCHAR[len + 1];
 
         if (gDIDevNames[SIM_JOYSTICK1 + gTotalJoy])
-            _tcscpy(gDIDevNames[SIM_JOYSTICK1 + gTotalJoy], pdinst->tszProductName);
+            _tcscpy(gDIDevNames[SIM_JOYSTICK1 + gTotalJoy],
+                    pdinst->tszProductName);
 
         // remember the device's button count for the assignment UI (#18); clamp to the digital buffer
         gDIDevButtons[SIM_JOYSTICK1 + gTotalJoy] =
-            (devcaps.dwButtons > SIMLIB_MAX_DIGITAL) ? SIMLIB_MAX_DIGITAL : (int)devcaps.dwButtons;
+            (devcaps.dwButtons > SIMLIB_MAX_DIGITAL) ? SIMLIB_MAX_DIGITAL :
+                                                       (int)devcaps.dwButtons;
 
         // remember the device's stable GUID for robust axis/button binding (#19)
         gDIDevGUIDs[SIM_JOYSTICK1 + gTotalJoy] = pdinst->guidInstance;
-
-        if ( not strcmp(pdinst->tszProductName, "Union Reality Gear"))
+        if (not strcmp(pdinst->tszProductName, "Union Reality Gear"))
         {
             OutputDebugString("UR Helmet found\n");
             OTWDriver.SetHeadTracking(TRUE);
@@ -1484,16 +1689,17 @@ BOOL JoystickCreateEffect(DWORD)
     if (AxisMap.FlightControlDevice < SIM_JOYSTICK1)
         return FALSE;
 
-    LPDIRECTINPUTDEVICE2 joystickDevice = (LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.FlightControlDevice];
+    LPDIRECTINPUTDEVICE2 joystickDevice =
+        (LPDIRECTINPUTDEVICE2)gpDIDevice[AxisMap.FlightControlDevice];
 
     int guidType = 0;
 
-    sprintf(dataFileName, "%s\\config\\feedback.ini", FalconDataDirectory);
+    sprintf(dataFileName, "%s/config/feedback.ini", FalconDataDirectory);
 
     fPtr = fopen(dataFileName, "r");
 
     // Find the file
-    if ( not fPtr)
+    if (not fPtr)
     {
         OutputDebugString("Unable to open force feedback data file");
         return FALSE;
@@ -1504,7 +1710,8 @@ BOOL JoystickCreateEffect(DWORD)
     JoystickReleaseEffects();
 
     // Start parsing
-    numEffects = GetPrivateProfileInt("EffectData", "numEffects", 0, dataFileName);
+    numEffects =
+        GetPrivateProfileInt("EffectData", "numEffects", 0, dataFileName);
     gNumEffectsLoaded = numEffects;
     gForceFeedbackEffect = new LPDIRECTINPUTEFFECT[numEffects];
     gForceEffectIsRepeating = new int[numEffects];
@@ -1524,14 +1731,22 @@ BOOL JoystickCreateEffect(DWORD)
         gForceEffectHasDirection[i] = FALSE;
 
         // Read all the common data for this effect
-        effectHolder.dwFlags = GetPrivateProfileInt(effectName, "flags", 0, dataFileName);
-        effectHolder.dwDuration = GetPrivateProfileInt(effectName, "duration", 0, dataFileName);
-        effectHolder.dwSamplePeriod = GetPrivateProfileInt(effectName, "SamplePeriod", 0, dataFileName);
-        effectHolder.dwGain = GetPrivateProfileInt(effectName, "gain", 0, dataFileName);
-        effectHolder.dwTriggerButton = GetPrivateProfileInt(effectName, "triggerButton", 0, dataFileName);
-        effectHolder.dwTriggerRepeatInterval = GetPrivateProfileInt(effectName, "triggerRepeatInterval", 0, dataFileName);
-        effectHolder.cAxes = GetPrivateProfileInt(effectName, "numAxes", 0, dataFileName);
-        gForceEffectHasDirection[i] = GetPrivateProfileInt(effectName, "hasDirection", 0, dataFileName);
+        effectHolder.dwFlags =
+            GetPrivateProfileInt(effectName, "flags", 0, dataFileName);
+        effectHolder.dwDuration =
+            GetPrivateProfileInt(effectName, "duration", 0, dataFileName);
+        effectHolder.dwSamplePeriod =
+            GetPrivateProfileInt(effectName, "SamplePeriod", 0, dataFileName);
+        effectHolder.dwGain =
+            GetPrivateProfileInt(effectName, "gain", 0, dataFileName);
+        effectHolder.dwTriggerButton =
+            GetPrivateProfileInt(effectName, "triggerButton", 0, dataFileName);
+        effectHolder.dwTriggerRepeatInterval = GetPrivateProfileInt(
+            effectName, "triggerRepeatInterval", 0, dataFileName);
+        effectHolder.cAxes =
+            GetPrivateProfileInt(effectName, "numAxes", 0, dataFileName);
+        gForceEffectHasDirection[i] =
+            GetPrivateProfileInt(effectName, "hasDirection", 0, dataFileName);
 
         if (axesArray)
         {
@@ -1547,10 +1762,10 @@ BOOL JoystickCreateEffect(DWORD)
 
         if (effectHolder.cAxes)
         {
-            axesArray = new DWORD [effectHolder.cAxes];
+            axesArray = new DWORD[effectHolder.cAxes];
             effectHolder.rgdwAxes = axesArray;
 
-            dirArray = new long [effectHolder.cAxes];
+            dirArray = new long[effectHolder.cAxes];
             effectHolder.rglDirection = dirArray;
 
             for (j = 0; j < effectHolder.cAxes; j++)
@@ -1561,32 +1776,33 @@ BOOL JoystickCreateEffect(DWORD)
 
                 switch (k)
                 {
-                    case 0:
-                        effectHolder.rgdwAxes[j] = DIJOFS_X;
-                        break;
+                case 0:
+                    effectHolder.rgdwAxes[j] = DIJOFS_X;
+                    break;
 
-                    case 1:
-                        effectHolder.rgdwAxes[j] = DIJOFS_Y;
-                        break;
+                case 1:
+                    effectHolder.rgdwAxes[j] = DIJOFS_Y;
+                    break;
 
-                    case 2:
-                        effectHolder.rgdwAxes[j] = g_nThrottleID;
-                        break;
+                case 2:
+                    effectHolder.rgdwAxes[j] = g_nThrottleID;
+                    break;
 
-                    case 4:
-                        effectHolder.rgdwAxes[j] = DIJOFS_RX;
-                        break;
+                case 4:
+                    effectHolder.rgdwAxes[j] = DIJOFS_RX;
+                    break;
 
-                    case 5:
-                        effectHolder.rgdwAxes[j] = DIJOFS_RY;
-                        break;
+                case 5:
+                    effectHolder.rgdwAxes[j] = DIJOFS_RY;
+                    break;
 
-                    case 6:
-                        effectHolder.rgdwAxes[j] = DIJOFS_RZ;
-                        break;
+                case 6:
+                    effectHolder.rgdwAxes[j] = DIJOFS_RZ;
+                    break;
                 }
 
-                effectHolder.rglDirection[j] = GetPrivateProfileInt(effectName, str2, 0, dataFileName);
+                effectHolder.rglDirection[j] =
+                    GetPrivateProfileInt(effectName, str2, 0, dataFileName);
             }
         }
         else
@@ -1596,15 +1812,19 @@ BOOL JoystickCreateEffect(DWORD)
         }
 
         // Check for envelope
-        j = GetPrivateProfileInt(effectName, "envelopeAttackLevel", -1, dataFileName);
+        j = GetPrivateProfileInt(effectName, "envelopeAttackLevel", -1,
+                                 dataFileName);
 
         if (j not_eq 0xffffffff)
         {
             envelopeHolder.dwSize = sizeof(DIENVELOPE);
             envelopeHolder.dwAttackLevel = j;
-            envelopeHolder.dwAttackTime = GetPrivateProfileInt(effectName, "envelopeAttackTime", 0, dataFileName);
-            envelopeHolder.dwFadeLevel = GetPrivateProfileInt(effectName, "envelopeFadeLevel", 0, dataFileName);
-            envelopeHolder.dwFadeTime = GetPrivateProfileInt(effectName, "envelopeFadeTime", 0, dataFileName);
+            envelopeHolder.dwAttackTime = GetPrivateProfileInt(
+                effectName, "envelopeAttackTime", 0, dataFileName);
+            envelopeHolder.dwFadeLevel = GetPrivateProfileInt(
+                effectName, "envelopeFadeLevel", 0, dataFileName);
+            envelopeHolder.dwFadeTime = GetPrivateProfileInt(
+                effectName, "envelopeFadeTime", 0, dataFileName);
             effectHolder.lpEnvelope = &envelopeHolder;
         }
         else
@@ -1612,177 +1832,207 @@ BOOL JoystickCreateEffect(DWORD)
             effectHolder.lpEnvelope = NULL;
         }
 
-        effectType = GetPrivateProfileInt(effectName, "effectType", 0, dataFileName);
+        effectType =
+            GetPrivateProfileInt(effectName, "effectType", 0, dataFileName);
 
         switch (effectType)
         {
-            case DIEFT_CUSTOMFORCE:
-                customHolder.cChannels = GetPrivateProfileInt(effectName, "customForceChannels", 0, dataFileName);
-                customHolder.dwSamplePeriod = GetPrivateProfileInt(effectName, "customForceSamplePeriod", 0, dataFileName);
-                customHolder.cSamples = GetPrivateProfileInt(effectName, "customForceSamples", 0, dataFileName);
+        case DIEFT_CUSTOMFORCE:
+            customHolder.cChannels = GetPrivateProfileInt(
+                effectName, "customForceChannels", 0, dataFileName);
+            customHolder.dwSamplePeriod = GetPrivateProfileInt(
+                effectName, "customForceSamplePeriod", 0, dataFileName);
+            customHolder.cSamples = GetPrivateProfileInt(
+                effectName, "customForceSamples", 0, dataFileName);
 
-                if (forceData)
+            if (forceData)
+            {
+                delete forceData;
+                forceData = NULL;
+            }
+
+            forceData =
+                new long[customHolder.cChannels * customHolder.cSamples];
+            customHolder.rglForceData = forceData;
+
+            for (j = 0; j < customHolder.cChannels; j++)
+            {
+                for (k = 0; k < customHolder.cSamples; k++)
                 {
-                    delete forceData;
-                    forceData = NULL;
+                    sprintf(str1, "customForceForceChannel%dSample%d", j, k);
+                    customHolder.rglForceData[j * k + j] =
+                        GetPrivateProfileInt(effectName, str1, 0, dataFileName);
                 }
+            }
 
-                forceData = new long[customHolder.cChannels * customHolder.cSamples];
-                customHolder.rglForceData = forceData;
+            // Add the sizes
+            effectHolder.cbTypeSpecificParams =
+                3 * sizeof(DWORD) +
+                sizeof(long) * customHolder.cChannels * customHolder.cSamples;
+            effectHolder.lpvTypeSpecificParams = &customHolder;
 
-                for (j = 0; j < customHolder.cChannels; j++)
-                {
-                    for (k = 0; k < customHolder.cSamples; k++)
-                    {
-                        sprintf(str1, "customForceForceChannel%dSample%d", j, k);
-                        customHolder.rglForceData[j * k + j] = GetPrivateProfileInt(effectName, str1, 0, dataFileName);
-                    }
-                }
+            // enumerate for a custom force effect
+            SetupResult = VerifyResult(joystickDevice->EnumEffects(
+                (LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
+                &guidEffect, DIEFT_CUSTOMFORCE));
 
-                // Add the sizes
-                effectHolder.cbTypeSpecificParams = 3 * sizeof(DWORD) + sizeof(long) * customHolder.cChannels * customHolder.cSamples;
-                effectHolder.lpvTypeSpecificParams = &customHolder;
+            guidEffect = GUID_Square;
 
-                // enumerate for a custom force effect
-                SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
-                                           &guidEffect, DIEFT_CUSTOMFORCE));
+            if (not SetupResult)
+            {
+                OutputDebugString("EnumEffects(Costum Force) failed\n");
+                continue;
+            }
 
+            break;
+
+        case DIEFT_PERIODIC:
+            periodicHolder.dwMagnitude = GetPrivateProfileInt(
+                effectName, "periodicForceMagnitude", 0, dataFileName);
+            periodicHolder.lOffset = GetPrivateProfileInt(
+                effectName, "periodicForceOffset", 0, dataFileName);
+            periodicHolder.dwPhase = GetPrivateProfileInt(
+                effectName, "periodicForcePhase", 0, dataFileName);
+            periodicHolder.dwPeriod = GetPrivateProfileInt(
+                effectName, "periodicForcePeriod", 0, dataFileName);
+            gForceEffectIsRepeating[i] = TRUE;
+
+            // Add the sizes
+            effectHolder.cbTypeSpecificParams =
+                3 * sizeof(DWORD) + sizeof(long);
+            effectHolder.lpvTypeSpecificParams = &periodicHolder;
+
+            // enumerate for a periodic force effect
+
+            // enumerate for a periodic force effect
+            guidType = GetPrivateProfileInt(effectName, "periodicType", -1,
+                                            dataFileName);
+
+            switch (guidType)
+            {
+            case 0:
+                guidEffect = GUID_Sine;
+                break;
+
+            case 1:
                 guidEffect = GUID_Square;
-
-                if ( not SetupResult)
-                {
-                    OutputDebugString("EnumEffects(Costum Force) failed\n");
-                    continue;
-                }
-
                 break;
 
-            case DIEFT_PERIODIC:
-                periodicHolder.dwMagnitude = GetPrivateProfileInt(effectName, "periodicForceMagnitude", 0, dataFileName);
-                periodicHolder.lOffset = GetPrivateProfileInt(effectName, "periodicForceOffset", 0, dataFileName);
-                periodicHolder.dwPhase = GetPrivateProfileInt(effectName, "periodicForcePhase", 0, dataFileName);
-                periodicHolder.dwPeriod = GetPrivateProfileInt(effectName, "periodicForcePeriod", 0, dataFileName);
-                gForceEffectIsRepeating[i] = TRUE;
-
-                // Add the sizes
-                effectHolder.cbTypeSpecificParams = 3 * sizeof(DWORD) + sizeof(long);
-                effectHolder.lpvTypeSpecificParams = &periodicHolder;
-
-                // enumerate for a periodic force effect
-
-                // enumerate for a periodic force effect
-                guidType = GetPrivateProfileInt(effectName, "periodicType", -1, dataFileName);
-
-                switch (guidType)
-                {
-                    case 0:
-                        guidEffect = GUID_Sine;
-                        break;
-
-                    case 1:
-                        guidEffect = GUID_Square;
-                        break;
-
-                    case 2:
-                        guidEffect = GUID_Triangle;
-                        break;
-
-                    case 3:
-                        guidEffect = GUID_SawtoothUp;
-                        break;
-
-                    case 4:
-                        guidEffect = GUID_SawtoothDown;
-                        break;
-
-                    default:
-                        SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
-                                                   &guidEffect, DIEFT_PERIODIC));
-                        break;
-                }
-
-                if ( not SetupResult)
-                {
-                    OutputDebugString("EnumEffects(Periodic Force) failed\n");
-                    continue;
-                }
-
+            case 2:
+                guidEffect = GUID_Triangle;
                 break;
 
-            case DIEFT_CONSTANTFORCE:
-                constantHolder.lMagnitude = GetPrivateProfileInt(effectName, "constantForceMagnitude", 0, dataFileName);
-
-                // Add the sizes
-                effectHolder.cbTypeSpecificParams = sizeof(long);
-                effectHolder.lpvTypeSpecificParams = &constantHolder;
-
-                // enumerate for a constant force effect
-                SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
-                                           &guidEffect, DIEFT_CONSTANTFORCE));
-
-                if ( not SetupResult)
-                {
-                    OutputDebugString("EnumEffects(Constant Force) failed\n");
-                    continue;
-                }
-
+            case 3:
+                guidEffect = GUID_SawtoothUp;
                 break;
 
-            case DIEFT_RAMPFORCE:
-                rampHolder.lStart = GetPrivateProfileInt(effectName, "rampForceStart", 0, dataFileName);
-                rampHolder.lEnd = GetPrivateProfileInt(effectName, "rampForceEnd", 0, dataFileName);
-
-                // Add the sizes
-                effectHolder.cbTypeSpecificParams = 2 * sizeof(long);
-                effectHolder.lpvTypeSpecificParams = &rampHolder;
-
-                // enumerate for a ramp force effect
-                SetupResult = VerifyResult(joystickDevice->EnumEffects((LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
-                                           &guidEffect, DIEFT_RAMPFORCE));
-
-                if ( not SetupResult)
-                {
-                    OutputDebugString("EnumEffects(Ramp Force) failed\n");
-                    continue;
-                }
-
-                break;
-
-            case DIEFT_CONDITION:
-                if (conditionHolder)
-                {
-                    delete conditionHolder;
-                    conditionHolder = NULL;
-                }
-
-                conditionHolder = new DICONDITION[effectHolder.cAxes];
-
-                for (j = 0; j < effectHolder.cAxes; j++)
-                {
-                    conditionHolder[j].lOffset = GetPrivateProfileInt(effectName, "conditionOffset", 0, dataFileName);
-                    conditionHolder[j].lPositiveCoefficient = GetPrivateProfileInt(effectName, "conditionPositiveCoefficient", 0, dataFileName);
-                    conditionHolder[j].lNegativeCoefficient = GetPrivateProfileInt(effectName, "conditionNegativeCoefficient", 0, dataFileName);
-                    conditionHolder[j].dwPositiveSaturation = GetPrivateProfileInt(effectName, "conditionPositiveSaturation", 0, dataFileName);
-                    conditionHolder[j].dwNegativeSaturation = GetPrivateProfileInt(effectName, "conditionNegativeSaturation", 0, dataFileName);
-                    conditionHolder[j].lDeadBand = GetPrivateProfileInt(effectName, "conditionDeadband", 0, dataFileName);
-                }
-
-                // Add the size
-                effectHolder.cbTypeSpecificParams = sizeof(DICONDITION) * effectHolder.cAxes;
-                effectHolder.lpvTypeSpecificParams = conditionHolder;
-
-                guidEffect = GUID_Spring;
+            case 4:
+                guidEffect = GUID_SawtoothDown;
                 break;
 
             default:
-                effectHolder.cbTypeSpecificParams = 0;
-                effectHolder.lpvTypeSpecificParams = NULL;
+                SetupResult = VerifyResult(joystickDevice->EnumEffects(
+                    (LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
+                    &guidEffect, DIEFT_PERIODIC));
                 break;
+            }
+
+            if (not SetupResult)
+            {
+                OutputDebugString("EnumEffects(Periodic Force) failed\n");
+                continue;
+            }
+
+            break;
+
+        case DIEFT_CONSTANTFORCE:
+            constantHolder.lMagnitude = GetPrivateProfileInt(
+                effectName, "constantForceMagnitude", 0, dataFileName);
+
+            // Add the sizes
+            effectHolder.cbTypeSpecificParams = sizeof(long);
+            effectHolder.lpvTypeSpecificParams = &constantHolder;
+
+            // enumerate for a constant force effect
+            SetupResult = VerifyResult(joystickDevice->EnumEffects(
+                (LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
+                &guidEffect, DIEFT_CONSTANTFORCE));
+
+            if (not SetupResult)
+            {
+                OutputDebugString("EnumEffects(Constant Force) failed\n");
+                continue;
+            }
+
+            break;
+
+        case DIEFT_RAMPFORCE:
+            rampHolder.lStart = GetPrivateProfileInt(
+                effectName, "rampForceStart", 0, dataFileName);
+            rampHolder.lEnd = GetPrivateProfileInt(effectName, "rampForceEnd",
+                                                   0, dataFileName);
+
+            // Add the sizes
+            effectHolder.cbTypeSpecificParams = 2 * sizeof(long);
+            effectHolder.lpvTypeSpecificParams = &rampHolder;
+
+            // enumerate for a ramp force effect
+            SetupResult = VerifyResult(joystickDevice->EnumEffects(
+                (LPDIENUMEFFECTSCALLBACK)JoystickEnumEffectTypeProc,
+                &guidEffect, DIEFT_RAMPFORCE));
+
+            if (not SetupResult)
+            {
+                OutputDebugString("EnumEffects(Ramp Force) failed\n");
+                continue;
+            }
+
+            break;
+
+        case DIEFT_CONDITION:
+            if (conditionHolder)
+            {
+                delete conditionHolder;
+                conditionHolder = NULL;
+            }
+
+            conditionHolder = new DICONDITION[effectHolder.cAxes];
+
+            for (j = 0; j < effectHolder.cAxes; j++)
+            {
+                conditionHolder[j].lOffset = GetPrivateProfileInt(
+                    effectName, "conditionOffset", 0, dataFileName);
+                conditionHolder[j].lPositiveCoefficient = GetPrivateProfileInt(
+                    effectName, "conditionPositiveCoefficient", 0,
+                    dataFileName);
+                conditionHolder[j].lNegativeCoefficient = GetPrivateProfileInt(
+                    effectName, "conditionNegativeCoefficient", 0,
+                    dataFileName);
+                conditionHolder[j].dwPositiveSaturation = GetPrivateProfileInt(
+                    effectName, "conditionPositiveSaturation", 0, dataFileName);
+                conditionHolder[j].dwNegativeSaturation = GetPrivateProfileInt(
+                    effectName, "conditionNegativeSaturation", 0, dataFileName);
+                conditionHolder[j].lDeadBand = GetPrivateProfileInt(
+                    effectName, "conditionDeadband", 0, dataFileName);
+            }
+
+            // Add the size
+            effectHolder.cbTypeSpecificParams =
+                sizeof(DICONDITION) * effectHolder.cAxes;
+            effectHolder.lpvTypeSpecificParams = conditionHolder;
+
+            guidEffect = GUID_Spring;
+            break;
+
+        default:
+            effectHolder.cbTypeSpecificParams = 0;
+            effectHolder.lpvTypeSpecificParams = NULL;
+            break;
         }
 
         // call CreateEffect()
-        SetupResult = VerifyResult(joystickDevice->CreateEffect(guidEffect, &effectHolder,
-                                   &gForceFeedbackEffect[i], NULL));
+        SetupResult = VerifyResult(joystickDevice->CreateEffect(
+            guidEffect, &effectHolder, &gForceFeedbackEffect[i], NULL));
     }
 
     if (axesArray)
@@ -1817,11 +2067,12 @@ BOOL JoystickCreateEffect(DWORD)
 /*****************************************************************************/
 void JoystickReleaseEffects(void)
 {
-    if ( not hasForceFeedback)
+    if (not hasForceFeedback)
         return;
 
     // Get rid of any old effects
-    ShiAssert(gNumEffectsLoaded > 0 and gNumEffectsLoaded < 20); // arbitrary for now JPO
+    ShiAssert(gNumEffectsLoaded > 0 and
+              gNumEffectsLoaded < 20); // arbitrary for now JPO
 
     if (gNumEffectsLoaded > 20)
         return; // arbitray sanity
@@ -1829,9 +2080,11 @@ void JoystickReleaseEffects(void)
     for (int i = 0; i < gNumEffectsLoaded; i++)
     {
         // gForceFeedbackEffect[i]->Unload();
-        ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[i], sizeof(*gForceFeedbackEffect[i])));
+        ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[i],
+                                          sizeof(*gForceFeedbackEffect[i])));
 
-        if (F4IsBadReadPtr(gForceFeedbackEffect[i], sizeof(*gForceFeedbackEffect[i])))
+        if (F4IsBadReadPtr(gForceFeedbackEffect[i],
+                           sizeof(*gForceFeedbackEffect[i])))
             continue;
 
         gForceFeedbackEffect[i]->Release();
@@ -1854,7 +2107,7 @@ void JoystickStopAllEffects(void)
 {
     int i;
 
-    if ( not hasForceFeedback)
+    if (not hasForceFeedback)
         return;
 
     for (i = 0; i < gNumEffectsLoaded; i++)
@@ -1875,10 +2128,12 @@ int lastStoppedEffect = -1;
 /*****************************************************************************/
 void JoystickStopEffect(int effectNum)
 {
-    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
+    if (not hasForceFeedback or effectNum >= gNumEffectsLoaded or
+        not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
         return;
 
-    ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum], sizeof * gForceFeedbackEffect[effectNum]));
+    ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum],
+                                      sizeof *gForceFeedbackEffect[effectNum]));
     VerifyResult(gForceFeedbackEffect[effectNum]->Stop());
 
 #ifndef NDEBUG
@@ -1898,18 +2153,23 @@ void JoystickStopEffect(int effectNum)
 /*****************************************************************************/
 int JoystickPlayEffect(int effectNum, int data)
 {
-    DWORD           SetupResult;
-    DIEFFECT        diEffect;
-    LONG            rglDirections[2] = { 0, 0 };
+    DWORD SetupResult;
+    DIEFFECT diEffect;
+    LONG rglDirections[2] = {0, 0};
 
-    if ( not hasForceFeedback or effectNum >= gNumEffectsLoaded or not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
+    if (not hasForceFeedback or effectNum >= gNumEffectsLoaded or
+        not gForceFeedbackEffect or not gForceFeedbackEffect[effectNum])
         return FALSE;
 
-    if (PlayerOptions.GetFFB() == false) // Retro 27Dec2003 - returning false here.. dunno if this is too clever though
+    if (PlayerOptions.GetFFB() ==
+        false) // Retro 27Dec2003 - returning false here.. dunno if this is too clever though
         return FALSE;
 
-    ShiAssert(FALSE == F4IsBadReadPtr(&gForceEffectHasDirection[effectNum], sizeof gForceEffectHasDirection[effectNum]));
-    ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum], sizeof * gForceFeedbackEffect[effectNum]));
+    ShiAssert(FALSE ==
+              F4IsBadReadPtr(&gForceEffectHasDirection[effectNum],
+                             sizeof gForceEffectHasDirection[effectNum]));
+    ShiAssert(FALSE == F4IsBadReadPtr(gForceFeedbackEffect[effectNum],
+                                      sizeof *gForceFeedbackEffect[effectNum]));
 
     // initialize DIEFFECT structure
     memset(&diEffect, 0, sizeof(DIEFFECT));
@@ -1924,13 +2184,15 @@ int JoystickPlayEffect(int effectNum, int data)
 
         // Direction is passed in in degrees, we convert to 100ths
         // of a degree to make it easier for the caller.
-        rglDirections[0]        = data * 100;
-        diEffect.dwFlags        = DIEFF_OBJECTOFFSETS bitor DIEFF_POLAR;
-        diEffect.cAxes          = 2;
-        diEffect.rglDirection   = rglDirections;
-        SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_DIRECTION));
+        rglDirections[0] = data * 100;
+        diEffect.dwFlags = DIEFF_OBJECTOFFSETS bitor DIEFF_POLAR;
+        diEffect.cAxes = 2;
+        diEffect.rglDirection = rglDirections;
+        SetupResult =
+            VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(
+                &diEffect, DIEP_DIRECTION));
 
-        if ( not SetupResult)
+        if (not SetupResult)
         {
             OutputDebugString("SetParameters(Bounce effect) failed\n");
             return FALSE;
@@ -1947,9 +2209,11 @@ int JoystickPlayEffect(int effectNum, int data)
         periodicHolder.dwPeriod = data;
         diEffect.cbTypeSpecificParams = sizeof(DIPERIODIC);
         diEffect.lpvTypeSpecificParams = &periodicHolder;
-        SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_TYPESPECIFICPARAMS));
+        SetupResult =
+            VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(
+                &diEffect, DIEP_TYPESPECIFICPARAMS));
 
-        if ( not SetupResult)
+        if (not SetupResult)
         {
             OutputDebugString("SetParameters(Runway Rumble) failed\n");
             return FALSE;
@@ -1975,9 +2239,11 @@ int JoystickPlayEffect(int effectNum, int data)
         diEffect.cbTypeSpecificParams = sizeof(DICONDITION) * 2;
         diEffect.lpvTypeSpecificParams = conditionHolder;
 
-        SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(&diEffect, DIEP_TYPESPECIFICPARAMS));
+        SetupResult =
+            VerifyResult(gForceFeedbackEffect[effectNum]->SetParameters(
+                &diEffect, DIEP_TYPESPECIFICPARAMS));
 
-        if ( not SetupResult)
+        if (not SetupResult)
         {
             OutputDebugString("SetParameters(Auto Center) failed\n");
             return FALSE;
@@ -1987,7 +2253,7 @@ int JoystickPlayEffect(int effectNum, int data)
     // play the effect
     SetupResult = VerifyResult(gForceFeedbackEffect[effectNum]->Start(1, 0));
 
-    if ( not SetupResult)
+    if (not SetupResult)
     {
         //JoystickCreateEffect(1);
         MonoPrint("Start Effect %d Failed\n", effectNum);
@@ -2012,7 +2278,7 @@ int JoystickPlayEffect(int effectNum, int data)
 /*****************************************************************************/
 BOOL CALLBACK JoystickEnumEffectTypeProc(LPCDIEFFECTINFO pei, LPVOID pv)
 {
-    GUID *pguidEffect = NULL;
+    GUID* pguidEffect = NULL;
 
     // validate pv
     // BUGBUG
@@ -2021,14 +2287,12 @@ BOOL CALLBACK JoystickEnumEffectTypeProc(LPCDIEFFECTINFO pei, LPVOID pv)
     if (pv)
     {
 
-        pguidEffect = (GUID *)pv;
+        pguidEffect = (GUID*)pv;
 
         *pguidEffect = pei->guid;
-
     }
 
     // BUGBUG - look at this some more....
     return DIENUM_STOP;
-
 }
 #pragma warning(pop)

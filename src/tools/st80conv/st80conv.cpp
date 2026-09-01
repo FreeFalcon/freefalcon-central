@@ -37,24 +37,38 @@
 
 // Mirror the engine's LHSP sizing (lhsp.h).
 #define MAX_OUTDECODE_SIZE 80960
-#define TLK_HEADER_INFO    12
+#define TLK_HEADER_INFO 12
 
 // Read the whole file into a malloc'd buffer. Returns NULL on failure; *outLen set.
 static unsigned char *ReadWholeFile(const char *path, long *outLen)
 {
     FILE *fp = fopen(path, "rb");
-    if (!fp) return NULL;
+    if (!fp)
+        return NULL;
 
     fseek(fp, 0, SEEK_END);
     long len = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (len <= 0) { fclose(fp); return NULL; }
+    if (len <= 0)
+    {
+        fclose(fp);
+        return NULL;
+    }
 
     unsigned char *buf = (unsigned char *)malloc(len);
-    if (!buf) { fclose(fp); return NULL; }
+    if (!buf)
+    {
+        fclose(fp);
+        return NULL;
+    }
 
-    if (fread(buf, 1, len, fp) != (size_t)len) { free(buf); fclose(fp); return NULL; }
+    if (fread(buf, 1, len, fp) != (size_t)len)
+    {
+        free(buf);
+        fclose(fp);
+        return NULL;
+    }
     fclose(fp);
 
     *outLen = len;
@@ -64,7 +78,8 @@ static unsigned char *ReadWholeFile(const char *path, long *outLen)
 // Safe little-endian int32 read from the in-memory .tlk at byte offset 'off'.
 static long ReadI32(const unsigned char *buf, long bufLen, long off)
 {
-    if (off < 0 || off + 4 > bufLen) return 0;
+    if (off < 0 || off + 4 > bufLen)
+        return 0;
     long v;
     memcpy(&v, buf + off, sizeof(v));
     return v;
@@ -72,7 +87,7 @@ static long ReadI32(const unsigned char *buf, long bufLen, long off)
 
 int main(int argc, char **argv)
 {
-    const char *inPath  = (argc > 1) ? argv[1] : "falcon.tlk";
+    const char *inPath = (argc > 1) ? argv[1] : "falcon.tlk";
     const char *outPath = (argc > 2) ? argv[2] : "falcon_pcm.tlk";
 
     printf("st80conv: %s -> %s\n", inPath, outPath);
@@ -89,19 +104,23 @@ int main(int argc, char **argv)
     // The index is int32[] starting at TLK_HEADER_INFO; its lowest positive entry
     // points at the first block, which sits right after the index.
     long firstOff = 0x7fffffff;
-    int  count = 0;
-    for (int i = 0; (long)(TLK_HEADER_INFO + (long)sizeof(long) * i) < firstOff; i++)
+    int count = 0;
+    for (int i = 0; (long)(TLK_HEADER_INFO + (long)sizeof(long) * i) < firstOff;
+         i++)
     {
         long pos = TLK_HEADER_INFO + (long)sizeof(long) * i;
-        if (pos + 4 > srcLen) break;
+        if (pos + 4 > srcLen)
+            break;
         long off = ReadI32(src, srcLen, pos);
-        if (off > 0 && off < firstOff) firstOff = off;
+        if (off > 0 && off < firstOff)
+            firstOff = off;
         count = i + 1;
     }
 
     if (count <= 0)
     {
-        fprintf(stderr, "ERROR: '%s' has no fragments (not a valid .tlk?)\n", inPath);
+        fprintf(stderr, "ERROR: '%s' has no fragments (not a valid .tlk?)\n",
+                inPath);
         free(src);
         return 1;
     }
@@ -110,13 +129,14 @@ int main(int argc, char **argv)
     // ---- Open the ST80 decoder (same flags as LHSP::InitializeLHSP).
     CODECINFOEX info;
     ST80_GetCodecInfoEx(&info, sizeof(CODECINFOEX));
-    const long PMSIZE   = info.wInputBufferSize;   // PCM bytes per decode call
-    const long CODESIZE = info.wCodedBufferSize;   // coded bytes per decode call
+    const long PMSIZE = info.wInputBufferSize; // PCM bytes per decode call
+    const long CODESIZE = info.wCodedBufferSize; // coded bytes per decode call
 
     HANDLE hDec = ST80_Open_Decoder(LINEAR_PCM_16_BIT);
     if (hDec == NULL)
     {
-        fprintf(stderr, "ERROR: ST80_Open_Decoder failed (is ST80W.dll next to the exe?)\n");
+        fprintf(stderr, "ERROR: ST80_Open_Decoder failed (is ST80W.dll next to "
+                        "the exe?)\n");
         free(src);
         return 1;
     }
@@ -126,37 +146,41 @@ int main(int argc, char **argv)
     if (!index || !fp)
     {
         fprintf(stderr, "ERROR: cannot create '%s'\n", outPath);
-        if (fp) fclose(fp);
-        free(index); free(src);
+        if (fp)
+            fclose(fp);
+        free(index);
+        free(src);
         ST80_Close_Decoder(hDec);
         return 1;
     }
 
     // 12-byte header (runtime only reads the index from offset 12).
-    long header[3] = { (long)count, 0, 0 };
+    long header[3] = {(long)count, 0, 0};
     fwrite(header, sizeof(header), 1, fp);
 
-    long indexPos = ftell(fp);                 // == TLK_HEADER_INFO (12)
-    fwrite(index, sizeof(long), count, fp);    // placeholder; rewritten at the end
+    long indexPos = ftell(fp); // == TLK_HEADER_INFO (12)
+    fwrite(index, sizeof(long), count, fp); // placeholder; rewritten at the end
 
-    unsigned char *outBuf = (unsigned char *)malloc(PMSIZE + 16); // one decode call
-    long  pcmCap = MAX_OUTDECODE_SIZE * 4;
-    unsigned char *pcm = (unsigned char *)malloc(pcmCap);         // whole fragment
+    unsigned char *outBuf =
+        (unsigned char *)malloc(PMSIZE + 16); // one decode call
+    long pcmCap = MAX_OUTDECODE_SIZE * 4;
+    unsigned char *pcm = (unsigned char *)malloc(pcmCap); // whole fragment
 
     int decoded = 0, empty = 0, failed = 0;
 
     for (int i = 0; i < count; i++)
     {
-        long blockOff = ReadI32(src, srcLen, TLK_HEADER_INFO + (long)sizeof(long) * i);
+        long blockOff =
+            ReadI32(src, srcLen, TLK_HEADER_INFO + (long)sizeof(long) * i);
         if (blockOff <= 0 || blockOff + 8 > srcLen)
         {
-            index[i] = 0;   // empty slot
+            index[i] = 0; // empty slot
             empty++;
             continue;
         }
 
         // long filelen      = ReadI32(src, srcLen, blockOff);          // uncompressed (unused)
-        long compressedlen   = ReadI32(src, srcLen, blockOff + 4);
+        long compressedlen = ReadI32(src, srcLen, blockOff + 4);
         const unsigned char *dataPtr = src + blockOff + 8;
 
         if (compressedlen <= 0 || blockOff + 8 + compressedlen > srcLen)
@@ -174,22 +198,29 @@ int main(int argc, char **argv)
         {
             // ST80_Decode takes LPWORD (16-bit) for in/out lengths -- use WORD locals,
             // long casts clobber the high word with garbage (FreeFalcon issue #35).
-            WORD inLen  = (WORD)((compressedlen - bytesRead > CODESIZE) ? CODESIZE : (compressedlen - bytesRead));
+            WORD inLen = (WORD)((compressedlen - bytesRead > CODESIZE) ?
+                                    CODESIZE :
+                                    (compressedlen - bytesRead));
             WORD outLen = (WORD)PMSIZE;
 
-            LH_ERRCODE err = ST80_Decode(hDec,
-                                         (LPBYTE)(dataPtr + bytesRead), &inLen,
-                                         outBuf, &outLen);
-            if (err != LH_SUCCESS) { ok = false; break; }
-            if (inLen == 0) break;
+            LH_ERRCODE err = ST80_Decode(hDec, (LPBYTE)(dataPtr + bytesRead),
+                                         &inLen, outBuf, &outLen);
+            if (err != LH_SUCCESS)
+            {
+                ok = false;
+                break;
+            }
+            if (inLen == 0)
+                break;
 
             if (pcmLen + outLen > pcmCap)
             {
-                while (pcmLen + outLen > pcmCap) pcmCap *= 2;
+                while (pcmLen + outLen > pcmCap)
+                    pcmCap *= 2;
                 pcm = (unsigned char *)realloc(pcm, pcmCap);
             }
             memcpy(pcm + pcmLen, outBuf, outLen);
-            pcmLen    += outLen;
+            pcmLen += outLen;
             bytesRead += inLen;
         }
 
@@ -202,8 +233,9 @@ int main(int argc, char **argv)
 
         index[i] = ftell(fp);
         unsigned long len = (unsigned long)pcmLen;
-        fwrite(&len, sizeof(len), 1, fp);   // filelen      (== PCM length)
-        fwrite(&len, sizeof(len), 1, fp);   // compressedlen(== PCM length in the PCM bank)
+        fwrite(&len, sizeof(len), 1, fp); // filelen      (== PCM length)
+        fwrite(&len, sizeof(len), 1,
+               fp); // compressedlen(== PCM length in the PCM bank)
         fwrite(pcm, 1, pcmLen, fp);
         decoded++;
     }
@@ -214,8 +246,12 @@ int main(int argc, char **argv)
     fclose(fp);
 
     ST80_Close_Decoder(hDec);
-    free(pcm); free(outBuf); free(index); free(src);
+    free(pcm);
+    free(outBuf);
+    free(index);
+    free(src);
 
-    printf("st80conv: done -- %d decoded, %d empty, %d failed\n", decoded, empty, failed);
+    printf("st80conv: done -- %d decoded, %d empty, %d failed\n", decoded,
+           empty, failed);
     return (decoded > 0) ? 0 : 2;
 }

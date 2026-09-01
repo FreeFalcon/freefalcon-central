@@ -1,4 +1,4 @@
-#include "MsgInc/SendVCMsg.h"
+#include "msginc/sendvcmsg.h"
 #include "mesg.h"
 #include "tac_class.h"
 #include "te_defs.h"
@@ -7,8 +7,8 @@
 #include "falcgame.h"
 #include "falcsess.h"
 #include "ui95/chandler.h"
-#include "Cmpclass.h"
-#include "InvalidBufferException.h"
+#include "cmpclass.h"
+#include "invalidbufferexception.h"
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,10 @@ struct sent_vc
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-FalconSendVC::FalconSendVC(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendVCMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconSendVC::FalconSendVC(VU_ID entityId, VuTargetEntity* target,
+                           VU_BOOL loopback)
+    : FalconEvent(SendVCMsg, FalconEvent::CampaignThread, entityId, target,
+                  loopback)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -40,7 +43,8 @@ FalconSendVC::FalconSendVC(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopb
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-FalconSendVC::FalconSendVC(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendVCMsg, FalconEvent::CampaignThread, senderid, target)
+FalconSendVC::FalconSendVC(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
+    : FalconEvent(SendVCMsg, FalconEvent::CampaignThread, senderid, target)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -76,9 +80,9 @@ int FalconSendVC::Size(void) const
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int FalconSendVC::Decode(VU_BYTE **buf, long *rem)
+int FalconSendVC::Decode(VU_BYTE** buf, long* rem)
 {
-    long int init  = *rem;
+    long int init = *rem;
 
     FalconEvent::Decode(buf, rem);
     memcpychk(&dataBlock.size, buf, sizeof(ushort), rem);
@@ -99,10 +103,9 @@ int FalconSendVC::Decode(VU_BYTE **buf, long *rem)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int FalconSendVC::Encode(VU_BYTE **buf)
+int FalconSendVC::Encode(VU_BYTE** buf)
 {
-    int
-    size;
+    int size;
 
     ShiAssert(dataBlock.size >= 0);
     size = FalconEvent::Encode(buf);
@@ -128,14 +131,11 @@ int FalconSendVC::Encode(VU_BYTE **buf)
 
 int FalconSendVC::Process(uchar autodisp)
 {
-    char
-    *ptr;
+    char* ptr;
 
-    int
-    count;
+    int count;
 
-    victory_condition
-    *vc;
+    victory_condition* vc;
 
     MonoPrint("Got the VC Message %d\n", dataBlock.size);
 
@@ -145,15 +145,17 @@ int FalconSendVC::Process(uchar autodisp)
 
         if (current_tactical_mission)
         {
-            vc = current_tactical_mission->get_first_unfiltered_victory_condition();
+            vc = current_tactical_mission
+                     ->get_first_unfiltered_victory_condition();
 
             while (vc)
             {
                 delete vc;
-                vc = current_tactical_mission->get_first_unfiltered_victory_condition();
+                vc = current_tactical_mission
+                         ->get_first_unfiltered_victory_condition();
             }
 
-            ptr = (char *) dataBlock.data;
+            ptr = (char*)dataBlock.data;
 
             while (count)
             {
@@ -180,7 +182,7 @@ int FalconSendVC::Process(uchar autodisp)
                 vc->set_number(*(int*)ptr);
                 ptr += 4;
 
-                count --;
+                count--;
             }
         }
 
@@ -188,7 +190,8 @@ int FalconSendVC::Process(uchar autodisp)
 
         // Let the UI know we've received some data
         if (gMainHandler)
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_VC, 0);
+            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA,
+                        CAMP_NEED_VC, 0);
     }
 
     return 0;
@@ -199,19 +202,15 @@ int FalconSendVC::Process(uchar autodisp)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void SendVCData(FalconSessionEntity *requester)
+void SendVCData(FalconSessionEntity* requester)
 {
-    victory_condition
-    *vc;
+    victory_condition* vc;
 
-    char
-    *ptr;
+    char* ptr;
 
-    int
-    count;
+    int count;
 
-    FalconSendVC
-    *msg;
+    FalconSendVC* msg;
 
     if (current_tactical_mission)
     {
@@ -221,9 +220,10 @@ void SendVCData(FalconSessionEntity *requester)
 
         while (vc)
         {
-            count ++;
+            count++;
 
-            vc = current_tactical_mission->get_next_unfiltered_victory_condition();
+            vc = current_tactical_mission
+                     ->get_next_unfiltered_victory_condition();
         }
 
         msg = new FalconSendVC(requester->Id(), requester);
@@ -233,17 +233,17 @@ void SendVCData(FalconSessionEntity *requester)
 
         vc = current_tactical_mission->get_first_unfiltered_victory_condition();
 
-        ptr = (char *) msg->dataBlock.data;
+        ptr = (char*)msg->dataBlock.data;
 
         while ((count) and (vc))
         {
             *(int*)ptr = vc->get_team();
             ptr += 4;
 
-            *(int*)ptr = (int) vc->get_type();
+            *(int*)ptr = (int)vc->get_type();
             ptr += 4;
 
-            *(VU_ID*)ptr = (VU_ID) vc->get_vu_id();
+            *(VU_ID*)ptr = (VU_ID)vc->get_vu_id();
             ptr += 8;
 
             *(int*)ptr = vc->get_sub_objective();
@@ -258,7 +258,8 @@ void SendVCData(FalconSessionEntity *requester)
             *(int*)ptr = vc->get_number();
             ptr += 4;
 
-            vc = current_tactical_mission->get_next_unfiltered_victory_condition();
+            vc = current_tactical_mission
+                     ->get_next_unfiltered_victory_condition();
         }
     }
     else

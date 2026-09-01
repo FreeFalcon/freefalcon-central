@@ -28,7 +28,7 @@ short FirstGroundTactic = 0;
 short FirstNavalTactic = 0;
 short TotalTactics = 0;
 
-TacticData *TacticsTable = NULL;
+TacticData* TacticsTable = NULL;
 //ReactData ReactionTable[WP_LAST]; // List of reaction priorities
 
 // ===============================
@@ -157,7 +157,8 @@ int LoadTacticsTableText(char* filename)
         TacticsTable[id].maxRangeToDest = l;
         TacticsTable[id].distToFront = r;
         ReadComments(fh);
-        fc = fscanf(fh, "%d %d %d %d %d %d %d %d", &i, &j, &n, &l, &r, &k, &a, &m);
+        fc = fscanf(fh, "%d %d %d %d %d %d %d %d", &i, &j, &n, &l, &r, &k, &a,
+                    &m);
         TacticsTable[id].broken = i;
         TacticsTable[id].engaged = j;
         TacticsTable[id].combat = n;
@@ -213,4 +214,3 @@ int main()
     SaveTactics(extname);
     return 0;
 }
-

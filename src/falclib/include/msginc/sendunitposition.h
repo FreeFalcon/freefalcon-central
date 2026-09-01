@@ -7,8 +7,8 @@
 * before client owns it.
 */
 
-#include "Falcmesg.h"
-#include "Sim/Include/simmover.h"
+#include "falcmesg.h"
+#include "sim/include/simmover.h"
 
 
 class SendUnitPosition : public FalconEvent
@@ -34,7 +34,6 @@ protected:
     SM_SCALAR dyaw_, dpitch_, droll_;
     BIG_SCALAR x_, y_, z_;
     SM_SCALAR dx_, dy_, dz_;
-
 };
 
 #endif

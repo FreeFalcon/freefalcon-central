@@ -1,34 +1,35 @@
 
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
-#include "shi/ConvFtoI.h"
+#include "shi/convftoi.h"
 #include "grmath.h"
 #include "rotate.h"
-#include "Falclib/Include/IsBad.h"
+#include "falclib/include/isbad.h"
 
 
 // Rotation with fixed point
-void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT *srect, RECT *drect, int *startstop)
+void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle,
+                      RECT *srect, RECT *drect, int *startstop)
 {
     ShiAssert(srect);
     ShiAssert(drect);
 
-    if ( not startstop)
+    if (not startstop)
     {
         RotateBitmap(srcbuf, destbuf, angle, srect, drect);
         return;
     }
 
-    char *source = (char *) srcbuf ->Lock();
+    char *source = (char *)srcbuf->Lock();
     ShiAssert(source);
 
-    if ( not source) // JB 011125 CTD fix when ALT Tab
+    if (not source) // JB 011125 CTD fix when ALT Tab
         return;
 
-    char *dest = (char *) destbuf ->Lock();
+    char *dest = (char *)destbuf->Lock();
     ShiAssert(dest);
 
-    if ( not dest) // JB 011125 CTD fix when ALT Tab
+    if (not dest) // JB 011125 CTD fix when ALT Tab
     {
         srcbuf->Unlock();
         return;
@@ -36,23 +37,23 @@ void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT
 
     if (destbuf->PixelSize() == 2)
     {
-        int dStride = destbuf -> targetStride();
-        int sStride = srcbuf -> targetStride();
-        int destx = drect -> left;
-        int desty = drect -> top;
-        int width = drect -> right - destx;
-        int height = drect -> bottom - desty;
-        int sx = (srect -> right + srect -> left) >> 1;
-        int sy = (srect -> bottom + srect -> top) >> 1;
+        int dStride = destbuf->targetStride();
+        int sStride = srcbuf->targetStride();
+        int destx = drect->left;
+        int desty = drect->top;
+        int width = drect->right - destx;
+        int height = drect->bottom - desty;
+        int sx = (srect->right + srect->left) >> 1;
+        int sy = (srect->bottom + srect->top) >> 1;
 
         float sine, cosine;
         glGetSinCos(&sine, &cosine, angle);
         float x = (float)(width >> 1);
         float y = (float)(height >> 1);
-        float xc =  x * cosine;
+        float xc = x * cosine;
         float xs = -x * sine;
-        float ys =  y * sine;
-        float yc =  y * cosine;
+        float ys = y * sine;
+        float yc = y * cosine;
         x = 1.0f / x;
         y = 1.0f / y;
 
@@ -90,7 +91,7 @@ void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT
                 int k = ((ixx >> 10) << 1) + (ixy >> 10) * sStride;
                 ixx += isdHx;
                 ixy += isdHy;
-                short *dptr = (short *) dptr1;
+                short *dptr = (short *)dptr1;
                 short *sptr = (short *)(sptr1 + k);
                 *dptr = *sptr;
                 dptr1 += 2;
@@ -104,23 +105,23 @@ void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT
 
     else if (destbuf->PixelSize() == 4)
     {
-        int dStride = destbuf -> targetStride();
-        int sStride = srcbuf -> targetStride();
-        int destx = drect -> left;
-        int desty = drect -> top;
-        int width = drect -> right - destx;
-        int height = drect -> bottom - desty;
-        int sx = (srect -> right + srect -> left) >> 1;
-        int sy = (srect -> bottom + srect -> top) >> 1;
+        int dStride = destbuf->targetStride();
+        int sStride = srcbuf->targetStride();
+        int destx = drect->left;
+        int desty = drect->top;
+        int width = drect->right - destx;
+        int height = drect->bottom - desty;
+        int sx = (srect->right + srect->left) >> 1;
+        int sy = (srect->bottom + srect->top) >> 1;
 
         float sine, cosine;
         glGetSinCos(&sine, &cosine, angle);
         float x = (float)(width >> 1);
         float y = (float)(height >> 1);
-        float xc =  x * cosine;
+        float xc = x * cosine;
         float xs = -x * sine;
-        float ys =  y * sine;
-        float yc =  y * cosine;
+        float ys = y * sine;
+        float yc = y * cosine;
         x = 1.0f / x;
         y = 1.0f / y;
 
@@ -158,7 +159,7 @@ void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT
                 int k = ((ixx >> 10) << 2) + (ixy >> 10) * sStride;
                 ixx += isdHx;
                 ixy += isdHy;
-                DWORD *dptr = (DWORD *) dptr1;
+                DWORD *dptr = (DWORD *)dptr1;
                 DWORD *sptr = (DWORD *)(sptr1 + k);
                 *dptr = *sptr;
                 dptr1 += 4;
@@ -170,44 +171,46 @@ void RotateBitmapMask(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT
         }
     }
 
-    else ShiAssert(false); // unsupported
+    else
+        ShiAssert(false); // unsupported
 
-    destbuf -> Unlock();
+    destbuf->Unlock();
 
     ShiAssert(srcbuf not_eq NULL);
 
     if (srcbuf) // JB 010318 CTD
-        srcbuf -> Unlock();
+        srcbuf->Unlock();
 }
 
-void RotateBitmap(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT *srect, RECT *drect)
+void RotateBitmap(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle,
+                  RECT *srect, RECT *drect)
 {
     ShiAssert(srect);
     ShiAssert(drect);
 
-    char *source = (char *) srcbuf ->Lock();
+    char *source = (char *)srcbuf->Lock();
     ShiAssert(source);
-    char *dest = (char *) destbuf ->Lock();
+    char *dest = (char *)destbuf->Lock();
     ShiAssert(dest);
 
-    int dStride = destbuf -> targetStride();
-    int sStride = srcbuf -> targetStride();
-    int destx = drect -> left;
-    int desty = drect -> top;
-    int width = drect -> right - destx;
-    int height = drect -> bottom - desty;
-    int sx = (srect -> right + srect -> left) >> 1;
-    int sy = (srect -> bottom + srect -> top) >> 1;
+    int dStride = destbuf->targetStride();
+    int sStride = srcbuf->targetStride();
+    int destx = drect->left;
+    int desty = drect->top;
+    int width = drect->right - destx;
+    int height = drect->bottom - desty;
+    int sx = (srect->right + srect->left) >> 1;
+    int sy = (srect->bottom + srect->top) >> 1;
 
     float sine, cosine;
 
     glGetSinCos(&sine, &cosine, angle);
     float x = (float)(width >> 1);
     float y = (float)(height >> 1);
-    float xc =  x * cosine;
+    float xc = x * cosine;
     float xs = -x * sine;
-    float ys =  y * sine;
-    float yc =  y * cosine;
+    float ys = y * sine;
+    float yc = y * cosine;
     x = 1.0f / x;
     y = 1.0f / y;
 
@@ -242,7 +245,7 @@ void RotateBitmap(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT *sr
             int k = ((ixx >> 10) << 1) + (ixy >> 10) * sStride;
             ixx += isdHx;
             ixy += isdHy;
-            short *dptr = (short *) dptr1;
+            short *dptr = (short *)dptr1;
             short *sptr = (short *)(sptr1 + k);
             *dptr = *sptr;
             dptr1 += 2;
@@ -253,25 +256,26 @@ void RotateBitmap(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT *sr
         iyy += isdVy;
     }
 
-    destbuf -> Unlock();
-    srcbuf -> Unlock();
+    destbuf->Unlock();
+    srcbuf->Unlock();
 }
 
 
-void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT *srect, RECT *drect, int *startstop)
+void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf,
+                            int angle, RECT *srect, RECT *drect, int *startstop)
 {
     ShiAssert(srect);
     ShiAssert(drect);
 
-    if ( not startstop)
+    if (not startstop)
     {
         RotateBitmapDouble(srcbuf, destbuf, angle, srect, drect);
         return;
     }
 
-    char *source = (char *) srcbuf ->Lock();
+    char *source = (char *)srcbuf->Lock();
     ShiAssert(source);
-    char *dest = (char *) destbuf ->Lock();
+    char *dest = (char *)destbuf->Lock();
     ShiAssert(dest);
 
     if (destbuf->PixelSize() == 2)
@@ -289,10 +293,10 @@ void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle
         glGetSinCos(&sine, &cosine, angle);
         float x = (float)(width >> 1);
         float y = (float)(height >> 1);
-        float xc =  x * cosine;
+        float xc = x * cosine;
         float xs = -x * sine;
-        float ys =  y * sine;
-        float yc =  y * cosine;
+        float ys = y * sine;
+        float yc = y * cosine;
         x = 1.0f / x;
         y = 1.0f / y;
 
@@ -330,7 +334,7 @@ void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle
                 int k = ((ixx >> 10) << 1) + (ixy >> 10) * sStride;
                 ixx += isdHx;
                 ixy += isdHy;
-                short *dptr = (short *) dptr1;
+                short *dptr = (short *)dptr1;
                 short *sptr = (short *)(sptr1 + k);
 
                 // Write the pixels (TODO:  If we got it aligned first, we could write DWORDs at a time)
@@ -339,10 +343,12 @@ void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle
                 *(dptr + dStride / 2) = *sptr;
                 *(dptr + dStride / 2 + 1) = *sptr;
 
-                dptr1 += 4; // Skip four byte (since we write two pixels each time)
+                dptr1 +=
+                    4; // Skip four byte (since we write two pixels each time)
             }
 
-            dptr += dStride * 2; // Skip two lines (since we write two each time)
+            dptr +=
+                dStride * 2; // Skip two lines (since we write two each time)
             iyx += isdVx;
             iyy += isdVy;
         }
@@ -363,10 +369,10 @@ void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle
         glGetSinCos(&sine, &cosine, angle);
         float x = (float)(width >> 1);
         float y = (float)(height >> 1);
-        float xc =  x * cosine;
+        float xc = x * cosine;
         float xs = -x * sine;
-        float ys =  y * sine;
-        float yc =  y * cosine;
+        float ys = y * sine;
+        float yc = y * cosine;
         x = 1.0f / x;
         y = 1.0f / y;
 
@@ -404,7 +410,7 @@ void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle
                 int k = ((ixx >> 10) << 2) + (ixy >> 10) * sStride;
                 ixx += isdHx;
                 ixy += isdHy;
-                DWORD *dptr = (DWORD *) dptr1;
+                DWORD *dptr = (DWORD *)dptr1;
                 DWORD *sptr = (DWORD *)(sptr1 + k);
 
                 // Write the pixels (TODO:  If we got it aligned first, we could write DWORDs at a time)
@@ -413,29 +419,33 @@ void RotateBitmapMaskDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle
                 *(dptr + (dStride / 4)) = *sptr;
                 *(dptr + (dStride / 4) + 1) = *sptr;
 
-                dptr1 += 8; // Skip four byte (since we write two pixels each time)
+                dptr1 +=
+                    8; // Skip four byte (since we write two pixels each time)
             }
 
-            dptr += dStride * 2; // Skip two lines (since we write two each time)
+            dptr +=
+                dStride * 2; // Skip two lines (since we write two each time)
             iyx += isdVx;
             iyy += isdVy;
         }
     }
 
-    else ShiAssert(false); // unsupported
+    else
+        ShiAssert(false); // unsupported
 
-    destbuf -> Unlock();
-    srcbuf -> Unlock();
+    destbuf->Unlock();
+    srcbuf->Unlock();
 }
 
-void RotateBitmapDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RECT *srect, RECT *drect)
+void RotateBitmapDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle,
+                        RECT *srect, RECT *drect)
 {
     ShiAssert(srect);
     ShiAssert(drect);
 
-    char *source = (char *) srcbuf->Lock();
+    char *source = (char *)srcbuf->Lock();
     ShiAssert(source);
-    char *dest = (char *) destbuf->Lock();
+    char *dest = (char *)destbuf->Lock();
     ShiAssert(dest);
 
     int dStride = destbuf->targetStride();
@@ -452,10 +462,10 @@ void RotateBitmapDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RE
     glGetSinCos(&sine, &cosine, angle);
     float x = (float)(width >> 1);
     float y = (float)(height >> 1);
-    float xc =  x * cosine;
+    float xc = x * cosine;
     float xs = -x * sine;
-    float ys =  y * sine;
-    float yc =  y * cosine;
+    float ys = y * sine;
+    float yc = y * cosine;
     x = 1.0f / x;
     y = 1.0f / y;
 
@@ -490,7 +500,7 @@ void RotateBitmapDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RE
             int k = ((ixx >> 10) << 1) + (ixy >> 10) * sStride;
             ixx += isdHx;
             ixy += isdHy;
-            short *dptr = (short *) dptr1;
+            short *dptr = (short *)dptr1;
             short *sptr = (short *)(sptr1 + k);
 
             // Write the pixels (TODO:  If we got it aligned first, we could write DWORDs at a time)
@@ -507,7 +517,6 @@ void RotateBitmapDouble(ImageBuffer *srcbuf, ImageBuffer *destbuf, int angle, RE
         iyy += isdVy;
     }
 
-    destbuf -> Unlock();
-    srcbuf -> Unlock();
+    destbuf->Unlock();
+    srcbuf->Unlock();
 }
-

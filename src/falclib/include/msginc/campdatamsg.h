@@ -11,11 +11,11 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Camp Data Message
@@ -30,7 +30,8 @@ public:
         campOrdersData,
     };
 
-    FalconCampDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconCampDataMessage(VU_ID entityId, VuTargetEntity *target,
+                          VU_BOOL loopback = TRUE);
     FalconCampDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconCampDataMessage(void);
     virtual int Size(void) const;
@@ -43,13 +44,13 @@ public:
     public:
         unsigned int type;
         ushort size;
-        uchar* data;
+        uchar *data;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

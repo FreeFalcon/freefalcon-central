@@ -1,7 +1,7 @@
 /* fndproto.c - Copyright (c) Fri Dec 06 22:51:24 1996,  Spectrum HoloByte, Inc.  All Rights Reserved */
 #include <winsock2.h>
 
-#pragma optimize( "", off ) // JB 010718
+#pragma optimize("", off) // JB 010718
 
 /*++
 
@@ -33,13 +33,11 @@ Return Value:
 --*/
 int FindProtocols(LPWSAPROTOCOL_INFO *InstalledProtocols, int *NumProtocols)
 {
-    DWORD BufferSize = 0;       /* size of InstalledProtocols buffer */
+    DWORD BufferSize = 0; /* size of InstalledProtocols buffer */
 
 
     /* Call WSAEnumProtocols to figure out how big of a buffer we need. */
-    *NumProtocols = WSAEnumProtocols(NULL,
-                                     NULL,
-                                     &BufferSize);
+    *NumProtocols = WSAEnumProtocols(NULL, NULL, &BufferSize);
 
     if ((*NumProtocols != SOCKET_ERROR) && (WSAGetLastError() != WSAENOBUFS))
     {
@@ -62,9 +60,8 @@ int FindProtocols(LPWSAPROTOCOL_INFO *InstalledProtocols, int *NumProtocols)
         goto Fail;
     }
 
-    *NumProtocols = WSAEnumProtocols(NULL,
-                                     (LPVOID) * InstalledProtocols,
-                                     &BufferSize);
+    *NumProtocols =
+        WSAEnumProtocols(NULL, (LPVOID)*InstalledProtocols, &BufferSize);
 
     if (*NumProtocols == SOCKET_ERROR)
     {

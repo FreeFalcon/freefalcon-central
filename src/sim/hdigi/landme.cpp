@@ -1,11 +1,11 @@
 #include <float.h>
-#include "Graphics/Include/drawBSP.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
 #include "hdigi.h"
 #include "simdrive.h"
 #include "simveh.h"
-#include "CampRwy.h"
-#include "Find.h"
+#include "camprwy.h"
+#include "find.h"
 #include "campbase.h"
 #include "camplist.h"
 #include "campstr.h"
@@ -39,110 +39,110 @@ void HeliBrain::LandMe(void)
 
     switch (onStation)
     {
-        case NotThereYet:
-            break;
+    case NotThereYet:
+        break;
 
             // just got there, start decent
-        case Arrived:
+    case Arrived:
 
-            groundZ = OTWDriver.GetGroundLevel(self->XPos(), self->YPos());
+        groundZ = OTWDriver.GetGroundLevel(self->XPos(), self->YPos());
 
             // next state
-            onStation = Landing;
+        onStation = Landing;
 
-            LevelTurn(0.0f, 0.0f, TRUE);
-            AltitudeHold(holdAlt);
-            MachHold(0.0f, 0.0F, FALSE);
+        LevelTurn(0.0f, 0.0f, TRUE);
+        AltitudeHold(holdAlt);
+        MachHold(0.0f, 0.0F, FALSE);
             // MonoPrint( "HELO BRAIN Landing\n" );
-            break;
+        break;
 
-        case Landing:
-            if (self->ZPos() >= groundZ - 5.0f || self->OnGround())
-            {
-                rStick = 0.0f;
-                pStick = 0.0f;
-                throtl = 0.50f;
-                onStation = Landed;
-                jinkTime = SimLibElapsedTime + 30000;
+    case Landing:
+        if (self->ZPos() >= groundZ - 5.0f || self->OnGround())
+        {
+            rStick = 0.0f;
+            pStick = 0.0f;
+            throtl = 0.50f;
+            onStation = Landed;
+            jinkTime = SimLibElapsedTime + 30000;
                 // MonoPrint( "HELO BRAIN Landed!\n" );
-            }
+        }
+        else
+        {
+            LevelTurn(0.0f, 0.0f, TRUE);
+            throtl = 0.00;
+            MachHold(0.0f, 0.0F, FALSE);
+        }
+
+        break;
+
+    case Landed:
+        rStick = 0.0f;
+        pStick = 0.0f;
+        throtl = 0.5f;
+
+        if (SimLibElapsedTime > jinkTime)
+        {
+            if (self->curWaypoint->GetWPAction() == WP_PICKUP)
+                onStation = PickUp;
+            else if (self->curWaypoint->GetWPAction() == WP_AIRDROP)
+                onStation = DropOff;
             else
-            {
-                LevelTurn(0.0f, 0.0f, TRUE);
-                throtl = 0.00;
-                MachHold(0.0f, 0.0F, FALSE);
-            }
+                onStation = OnStation;
+        }
 
-            break;
+        break;
 
-        case Landed:
-            rStick = 0.0f;
-            pStick = 0.0f;
-            throtl = 0.5f;
-
-            if (SimLibElapsedTime > jinkTime)
-            {
-                if (self->curWaypoint->GetWPAction() == WP_PICKUP)
-                    onStation = PickUp;
-                else if (self->curWaypoint->GetWPAction() == WP_AIRDROP)
-                    onStation = DropOff;
-                else
-                    onStation = OnStation;
-            }
-
-            break;
-
-        case PickUp:
+    case PickUp:
             // Load the airborne battalion.
-            cargo = (Unit) self->curWaypoint->GetWPTarget();
-            unit = (Unit)self->GetCampaignObject();
+        cargo = (Unit)self->curWaypoint->GetWPTarget();
+        unit = (Unit)self->GetCampaignObject();
 
-            if (cargo && unit)
-            {
-                unit->SetCargoId(cargo->Id());
-                cargo->SetCargoId(unit->Id());
-                cargo->SetInactive(1);
-                unit->LoadUnit(cargo);
-            }
+        if (cargo && unit)
+        {
+            unit->SetCargoId(cargo->Id());
+            cargo->SetCargoId(unit->Id());
+            cargo->SetInactive(1);
+            unit->LoadUnit(cargo);
+        }
 
-            rStick = 0.0f;
-            pStick = 0.0f;
-            throtl = 0.5f;
-            onStation = OnStation;
-            break;
+        rStick = 0.0f;
+        pStick = 0.0f;
+        throtl = 0.5f;
+        onStation = OnStation;
+        break;
 
-        case DropOff:
+    case DropOff:
             // Load the airborne battalion.
-            cargo = (Unit) self->curWaypoint->GetWPTarget();
-            unit = (Unit)self->GetCampaignObject();
+        cargo = (Unit)self->curWaypoint->GetWPTarget();
+        unit = (Unit)self->GetCampaignObject();
 
-            if (cargo && unit && unit->Cargo())
-            {
-                unit->UnloadUnit();
-                cargo->SetCargoId(FalconNullId);
-                cargo->SetInactive(0);
-                self->curWaypoint->GetWPLocation(&x, &y);
-                cargo->SetLocation(x, y);
-            }
+        if (cargo && unit && unit->Cargo())
+        {
+            unit->UnloadUnit();
+            cargo->SetCargoId(FalconNullId);
+            cargo->SetInactive(0);
+            self->curWaypoint->GetWPLocation(&x, &y);
+            cargo->SetLocation(x, y);
+        }
 
-            rStick = 0.0f;
-            pStick = 0.0f;
-            throtl = 0.5f;
-            onStation = OnStation;
-            break;
+        rStick = 0.0f;
+        pStick = 0.0f;
+        throtl = 0.5f;
+        onStation = OnStation;
+        break;
 
-        case OnStation:
-            if (self->OnGround())
-            {
-                self->UnSetFlag(ON_GROUND);
-            }
+    case OnStation:
+        if (self->OnGround())
+        {
+            self->UnSetFlag(ON_GROUND);
+        }
 
-            rStick = 0.0f;
-            pStick = 0.0f;
-            throtl = 0.5f;
-            break;
+        rStick = 0.0f;
+        pStick = 0.0f;
+        throtl = 0.5f;
+        break;
 
-        case Departing:
-            break;
+    case Departing:
+        break;
     }
 }

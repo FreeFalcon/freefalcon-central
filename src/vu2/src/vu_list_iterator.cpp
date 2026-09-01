@@ -1,7 +1,7 @@
 #include "vu2.h"
 //#include "vu_priv.h"
 
-VuListIterator::VuListIterator(VuLinkedList* coll) : VuIterator(coll)
+VuListIterator::VuListIterator(VuLinkedList *coll) : VuIterator(coll)
 {
     if (coll not_eq NULL)
     {
@@ -15,7 +15,8 @@ VuListIterator::~VuListIterator()
 
 void VuListIterator::RemoveCurrent()
 {
-    VuLinkedList::VuEntityBinList bl = static_cast<VuLinkedList*>(collection_)->l_;
+    VuLinkedList::VuEntityBinList bl =
+        static_cast<VuLinkedList *>(collection_)->l_;
 
     if (curr_ == bl.end())
     {
@@ -27,12 +28,12 @@ void VuListIterator::RemoveCurrent()
 
 VuEntity *VuListIterator::GetFirst()
 {
-    if ( not collection_)
+    if (not collection_)
     {
         return NULL;
     }
 
-    VuLinkedList *vl = static_cast<VuLinkedList*>(collection_);
+    VuLinkedList *vl = static_cast<VuLinkedList *>(collection_);
 
     if (vl->l_.empty())
     {
@@ -54,11 +55,11 @@ VuEntity *VuListIterator::GetFirst()
 
 VuEntity *VuListIterator::GetNext()
 {
-    VuLinkedList *vl = static_cast<VuLinkedList*>(collection_);
+    VuLinkedList *vl = static_cast<VuLinkedList *>(collection_);
 
     // FIX: without a collection curr_ is value-initialized (ctor); and you can't increment an end() iterator
     // (debug-STL "cannot increment value-initialized/end list iterator"). Check BEFORE ++curr_.
-    if ( not vl)
+    if (not vl)
     {
         return NULL;
     }
@@ -81,11 +82,10 @@ VuEntity *VuListIterator::GetNext()
         {
             return curr_->get();
         }
-    }
-    while (1);
+    } while (1);
 }
 
-VuEntity *VuListIterator::GetFirst(VuFilter* filter)
+VuEntity *VuListIterator::GetFirst(VuFilter *filter)
 {
     if (collection_)
     {
@@ -98,7 +98,7 @@ VuEntity *VuListIterator::GetFirst(VuFilter* filter)
     {
         return NULL;
     }
-    else if (( not filter) or filter->Test(e))
+    else if ((not filter) or filter->Test(e))
     {
         return e;
     }
@@ -116,12 +116,11 @@ VuEntity *VuListIterator::GetNext(VuFilter *filter)
     {
         e = GetNext();
 
-        if ( not filter or filter->Test(e))
+        if (not filter or filter->Test(e))
         {
             return e;
         }
-    }
-    while (e not_eq NULL);
+    } while (e not_eq NULL);
 
     return NULL;
 }
@@ -135,10 +134,8 @@ VU_ERRCODE VuListIterator::Cleanup()
 {
     if (collection_)
     {
-        curr_ = static_cast<VuLinkedList*>(collection_)->l_.end();
+        curr_ = static_cast<VuLinkedList *>(collection_)->l_.end();
     }
 
     return VU_SUCCESS;
 }
-
-

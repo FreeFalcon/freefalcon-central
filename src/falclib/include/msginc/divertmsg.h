@@ -1,10 +1,10 @@
 #ifndef _DIVERTMSG_H
 #define _DIVERTMSG_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
 //==============================
 // Defines
@@ -17,9 +17,10 @@
 
 #define DIVERT_DENIGNED -1 // AWACS refused to divert the flight
 #define DIVERT_CANCLED -2 // AWACS canceled the divert (enemy aborted or killed)
-#define DIVERT_SUCCEEDED -3 // AWACS letting you know the divert is over (enemy dead)
+#define DIVERT_SUCCEEDED                                                       \
+    -3 // AWACS letting you know the divert is over (enemy dead)
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Divert Message
@@ -28,7 +29,8 @@ class FalconDivertMessage : public FalconEvent
 {
 public:
     FalconDivertMessage(void);
-    FalconDivertMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconDivertMessage(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     FalconDivertMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconDivertMessage(void);
     virtual int Size() const
@@ -68,12 +70,13 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 extern int CheckDivertStatus(int reply);
 
 extern void ApplyDivert(Flight flight, FalconDivertMessage *fdm);
 
-extern void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int broadcast);
+extern void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight,
+                                 int broadcast);
 
 #endif

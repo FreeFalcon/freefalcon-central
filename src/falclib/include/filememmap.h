@@ -13,11 +13,13 @@ class FileMemMap
     BYTE *m_Data; // the mapped data
     int m_len; // the length of the data
     void Clear();
+
 public:
     FileMemMap();
     ~FileMemMap();
 
-    BOOL Open(const char *filename, BOOL rw = FALSE, BOOL nomap = FALSE); // open it
+    BOOL Open(const char *filename, BOOL rw = FALSE,
+              BOOL nomap = FALSE); // open it
     void Close(); // release stoarage and stuff
     BYTE *GetData(int offset, int len); // access data at given offset
     HANDLE GetFileHandle()

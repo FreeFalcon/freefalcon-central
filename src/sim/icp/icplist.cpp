@@ -3,7 +3,7 @@
 #include "aircrft.h"
 #include "navsystem.h"
 #include "flightdata.h"
-#include "Phyconst.h"
+#include "phyconst.h"
 #include "fcc.h"
 #include "hud.h"
 #include "cpmanager.h"
@@ -79,7 +79,9 @@ void ICPClass::ExecDESTMode(void)
 
     latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
     cosLatitude = (float)cos(latitude);
-    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + yCurr) / (EARTH_RADIUS_FT * cosLatitude);
+    longitude =
+        ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + yCurr) /
+        (EARTH_RADIUS_FT * cosLatitude);
 
     latitude *= RTD;
     longitude *= RTD;
@@ -124,7 +126,6 @@ void ICPClass::ExecDESTMode(void)
         FillDEDMatrix(1, 5, "LAT  N");
         sprintf(tempstr, "%s", latStr);
         FillDEDMatrix(1, 14, tempstr);
-
     }
 
     //Line3
@@ -160,9 +161,10 @@ void ICPClass::ExecDESTMode(void)
     //Line5
     if (playerAC)
     {
-        VU_TIME ETA = SimLibElapsedTime / SEC_TO_MSEC + FloatToInt32(Distance(
-                          playerAC->XPos(), playerAC->YPos(), xCurr, yCurr)
-                      / playerAC->af->vt);
+        VU_TIME ETA = SimLibElapsedTime / SEC_TO_MSEC +
+                      FloatToInt32(Distance(playerAC->XPos(), playerAC->YPos(),
+                                            xCurr, yCurr) /
+                                   playerAC->af->vt);
         FormatTime(ETA, tempstr);
     }
 
@@ -273,7 +275,7 @@ void ICPClass::ExecBingo(void)
     total = 0;
 
     if (playerAC)
-        total = (long)((AircraftClass*)(playerAC))->GetTotalFuel();
+        total = (long)((AircraftClass *)(playerAC))->GetTotalFuel();
 
     //Line3
     PossibleInputs = 5;
@@ -392,19 +394,19 @@ void ICPClass::ExecINSMode(void)
             FillDEDMatrix(0, 9, tempstr1);
             FillDEDMatrix(0, 14, tempstr2);
 
-            if ( not playerAC->HasAligned and 
+            if (not playerAC->HasAligned and
                 playerAC->INSState(AircraftClass::INS_Nav))
             {
                 FillDEDMatrix(0, 14, "00");
             }
-            else if ( not playerAC->INSState(AircraftClass::INS_Aligned))
+            else if (not playerAC->INSState(AircraftClass::INS_Aligned))
             {
                 if (State <= 70)
                     FillDEDMatrix(0, 17, "RDY");
                 else
                     FillDEDMatrix(0, 17, "   ");
             }
-            else if (playerAC->INSState(AircraftClass::INS_AlignNorm) and 
+            else if (playerAC->INSState(AircraftClass::INS_AlignNorm) and
                      playerAC->INSState(AircraftClass::INS_Aligned))
             {
                 if (vuxRealTime bitand 0x200)
@@ -427,7 +429,9 @@ void ICPClass::ExecINSMode(void)
             }
             else
             {
-                if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
+                if (playerAC->INSState(
+                        AircraftClass::
+                            INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
                 {
                     FillDEDMatrix(1, 13, INSLat);
                 }
@@ -452,7 +456,9 @@ void ICPClass::ExecINSMode(void)
             }
             else
             {
-                if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
+                if (playerAC->INSState(
+                        AircraftClass::
+                            INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
                 {
                     FillDEDMatrix(2, 13, INSLong);
                 }
@@ -477,9 +483,13 @@ void ICPClass::ExecINSMode(void)
             }
             else
             {
-                if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
+                if (playerAC->INSState(
+                        AircraftClass::
+                            INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
                 {
-                    FillDEDMatrix(3, 21 - (strlen(altStr)), " "); //Wombat778 10-17-2003 make sure that old digit doesnt show below 10000ft
+                    FillDEDMatrix(
+                        3, 21 - (strlen(altStr)),
+                        " "); //Wombat778 10-17-2003 make sure that old digit doesnt show below 10000ft
                     FillDEDMatrix(3, 22 - (strlen(altStr)), altStr);
                 }
 
@@ -490,7 +500,9 @@ void ICPClass::ExecINSMode(void)
                 }
                 else
                 {
-                    if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
+                    if (playerAC->INSState(
+                            AircraftClass::
+                                INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
                     {
                         FillDEDMatrix(3, 14, " ");
                         FillDEDMatrix(3, 22, " ");
@@ -504,8 +516,11 @@ void ICPClass::ExecINSMode(void)
                 PossibleInputs = 4;
                 ScratchPad(4, 8, 15);
 
-                int GroundSpeed = FloatToInt32((float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
-                                               cockpitFlightData.yDot * cockpitFlightData.yDot) * FTPSEC_TO_KNOTS);
+                int GroundSpeed = FloatToInt32(
+                    (float)sqrt(
+                        cockpitFlightData.xDot * cockpitFlightData.xDot +
+                        cockpitFlightData.yDot * cockpitFlightData.yDot) *
+                    FTPSEC_TO_KNOTS);
                 GroundSpeed = max(GroundSpeed, 999);
                 sprintf(tempstr, "%d", GroundSpeed);
                 FillDEDMatrix(4, 17, "G/S");
@@ -513,7 +528,9 @@ void ICPClass::ExecINSMode(void)
             }
             else
             {
-                if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
+                if (playerAC->INSState(
+                        AircraftClass::
+                            INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
                 {
                     FillDEDMatrix(4, 15 - (strlen(INSHead)), INSHead);
                 }
@@ -527,16 +544,20 @@ void ICPClass::ExecINSMode(void)
                 {
                     FillDEDMatrix(4, 8, " ");
                     FillDEDMatrix(4, 15, " ");
-
                 }
 
-                int GroundSpeed = FloatToInt32((float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
-                                               cockpitFlightData.yDot * cockpitFlightData.yDot) * FTPSEC_TO_KNOTS);
+                int GroundSpeed = FloatToInt32(
+                    (float)sqrt(
+                        cockpitFlightData.xDot * cockpitFlightData.xDot +
+                        cockpitFlightData.yDot * cockpitFlightData.yDot) *
+                    FTPSEC_TO_KNOTS);
                 FillDEDMatrix(4, 20, "     ");
                 sprintf(tempstr, "%d", GroundSpeed);
                 FillDEDMatrix(4, 17, "G/S");
 
-                if (playerAC->INSState(AircraftClass::INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
+                if (playerAC->INSState(
+                        AircraftClass::
+                            INS_HUD_FPM)) //28 Jul 04 - If INS off/failed, we lose all cruise info
                 {
                     FillDEDMatrix(4, (25 - strlen(tempstr)), tempstr);
                 }
@@ -549,9 +570,13 @@ void ICPClass::ExecINSMode(void)
         AddSTPT(0, 22);
         //Display some bogus INS info here, along with the current
         //coords of the plane
-        latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+        latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) /
+                   EARTH_RADIUS_FT;
         cosLatitude = (float)cos(latitude);
-        longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
+        longitude =
+            ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) +
+             cockpitFlightData.y) /
+            (EARTH_RADIUS_FT * cosLatitude);
 
         latitude *= RTD;
         longitude *= RTD;
@@ -580,12 +605,14 @@ void ICPClass::ExecINSMode(void)
 
         //Line4
         FillDEDMatrix(3, 4, "SALT");
-        sprintf(tempstr,  "%dFT", (long) - cockpitFlightData.z);
+        sprintf(tempstr, "%dFT", (long)-cockpitFlightData.z);
         FillDEDMatrix(3, 15, tempstr);
         //Line5
         FillDEDMatrix(4, 3, "THDG  228.2*");
-        int GroundSpeed = FloatToInt32((float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
-                                       cockpitFlightData.yDot * cockpitFlightData.yDot) * FTPSEC_TO_KNOTS);
+        int GroundSpeed = FloatToInt32(
+            (float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
+                        cockpitFlightData.yDot * cockpitFlightData.yDot) *
+            FTPSEC_TO_KNOTS);
         sprintf(tempstr, "%d", GroundSpeed);
         FillDEDMatrix(4, 16, "G/S");
         FillDEDMatrix(4, (24 - strlen(tempstr)), tempstr);
@@ -632,8 +659,11 @@ void ICPClass::ExecEWSMode(void)
         FillDEDMatrix(2, (10 - strlen(tempstr)), tempstr);
     }
 
-    FillDEDMatrix(2, 13, "FDBK"); //JPG 12 Jun 04 - Ideally, it would be nice to turn this bitand REQCTR on/off to coincide w/
-    FillDEDMatrix(2, 21, " ON"); //the Betty words, but it's more trouble than it's worth.
+    FillDEDMatrix(
+        2, 13,
+        "FDBK"); //JPG 12 Jun 04 - Ideally, it would be nice to turn this bitand REQCTR on/off to coincide w/
+    FillDEDMatrix(
+        2, 21, " ON"); //the Betty words, but it's more trouble than it's worth.
     //Line4
     FillDEDMatrix(3, 2, "O1");
     FillDEDMatrix(3, 9, "0");
@@ -804,17 +834,20 @@ void ICPClass::UpdateMODEMode(void)
 {
     if (IN_AA and mICPPrimaryMode not_eq AA_MODE)
     {
-        CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_AA_BUTTON_ID);
+        CPButtonObject *pButton =
+            OTWDriver.pCockpitManager->GetButtonPointer(ICP_AA_BUTTON_ID);
         SimICPAA1(ICP_AA_BUTTON_ID, KEY_DOWN, pButton);
     }
     else if (IN_AG and mICPPrimaryMode not_eq AG_MODE)
     {
-        CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_NAV_BUTTON_ID);
+        CPButtonObject *pButton =
+            OTWDriver.pCockpitManager->GetButtonPointer(ICP_NAV_BUTTON_ID);
         SimICPAG1(ICP_AG_BUTTON_ID, KEY_DOWN, pButton);
     }
     else
     {
-        CPButtonObject* pButton = OTWDriver.pCockpitManager->GetButtonPointer(ICP_NAV_BUTTON_ID);
+        CPButtonObject *pButton =
+            OTWDriver.pCockpitManager->GetButtonPointer(ICP_NAV_BUTTON_ID);
         SimICPNav1(ICP_NAV_BUTTON_ID, KEY_DOWN, pButton);
     }
 
@@ -872,7 +905,7 @@ void ICPClass::ExecINTGMode(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not g_bIFF)
+    if (not g_bIFF)
     {
         //Line1
         FillDEDMatrix(0, 1, "INTG ON");

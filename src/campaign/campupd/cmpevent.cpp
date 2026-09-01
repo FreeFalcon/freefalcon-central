@@ -11,28 +11,28 @@
 #include <fcntl.h>
 #include <string.h>
 #include <stdlib.h>
-#include "Falclib.h"
+#include "falclib.h"
 #include "cmpglobl.h"
 #include "cmpevent.h"
 #include "team.h"
 #include "atm.h"
 #include "f4find.h"
-#include "CUIEvent.h"
-#include "Campaign.h"
-#include "CmpClass.h"
-#include "Find.h"
-#include "Debuggr.h"
-#include "Team.h"
-#include "Brief.h"
-#include "GTMObj.h"
+#include "cuievent.h"
+#include "campaign.h"
+#include "cmpclass.h"
+#include "find.h"
+#include "debuggr.h"
+#include "team.h"
+#include "brief.h"
+#include "gtmobj.h"
 #include "falcsess.h"
-#include "DispCfg.h"
-#include "FalcUser.h"
-#include "PlayerOp.h"
-#include "MsgInc/CampEventDataMsg.h"
+#include "dispcfg.h"
+#include "falcuser.h"
+#include "playerop.h"
+#include "msginc/campeventdatamsg.h"
 
 //sfr: for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 #include "debuggr.h"
 
@@ -45,10 +45,10 @@ short CE_Events = 0;
 // External Function Prototypes
 // ============================
 
-extern void UI_AddMovieToList(long ID, long timestamp, _TCHAR *Description);
+extern void UI_AddMovieToList(long ID, long timestamp, _TCHAR* Description);
 extern void ReadComments(FILE* fh);
-extern char* ReadToken(FILE *fp, char name[], int len);
-extern char* ReadMemToken(char **data, char name[], int len);
+extern char* ReadToken(FILE* fp, char name[], int len);
+extern char* ReadMemToken(char** data, char name[], int len);
 
 // ================================
 // External variables 2002-04-17 MN
@@ -77,16 +77,18 @@ EventClass::EventClass(short id)
 
 EventClass::EventClass(FILE* file)
 {
-    if ( not file)
+    if (not file)
         return;
 
     fread(&event, sizeof(short), 1, file);
     fread(&flags, sizeof(short), 1, file);
 }
 
-EventClass::EventClass(uchar **stream, long *rem)
+EventClass::EventClass(uchar** stream, long* rem)
 {
-    if ((rem <= 0) or ( not stream))
+    // Artscout - 2026 (Linux port): `rem` is a pointer; `rem <= 0` was a null check (a valid pointer
+    // is never <= 0). clang rejects the ordered pointer/int comparison, so spell it as a null test.
+    if ((not rem) or (not stream))
     {
         return;
     }
@@ -101,7 +103,7 @@ EventClass::~EventClass(void)
 
 int EventClass::Save(FILE* file)
 {
-    if ( not file)
+    if (not file)
         return 0;
 
     fwrite(&event, sizeof(short), 1, file);
@@ -117,7 +119,8 @@ void EventClass::DoEvent(void)
 
 void EventClass::SetEvent(int status)
 {
-    CampEventDataMessage *msg = new CampEventDataMessage(vuLocalSession, FalconLocalGame);
+    CampEventDataMessage* msg =
+        new CampEventDataMessage(vuLocalSession, FalconLocalGame);
     msg->dataBlock.message = CampEventDataMessage::eventMessage;
     msg->dataBlock.event = event;
 
@@ -140,9 +143,9 @@ void EventClass::SetEvent(int status)
 // Global functions
 // ======================================
 
-int CheckTriggers(char *scenario)
+int CheckTriggers(char* scenario)
 {
-    if ( not FalconLocalGame or not FalconLocalGame->IsLocal())
+    if (not FalconLocalGame or not FalconLocalGame->IsLocal())
         return 0;
 
     if (FalconLocalSession->GetTeam() == 255)
@@ -156,24 +159,31 @@ int ReadNumberOfEvents(char* scenario)
 {
     char token[121];
     int done = 0;
-    FILE *fp;
+    FILE* fp;
 
     CE_Events = 0;
 
     if ((fp = OpenCampFile(scenario, "tri", "r")) == NULL)
         return 0;
 
-    while ( not done)
+    while (not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if ( not token[0])
+        // #104: these parse loops only terminated on a specific end-token (#ENDINIT / #END...). A missing or
+        // unmatched end-token (e.g. a CRLF '\r' left on it on Linux, or a truncated file) made ReadToken return
+        // stale/empty at EOF forever -> campaign-entry hang (main thread spinning in ReadComments/fgetc).
+        // Terminate at end-of-file regardless.
+        if (feof(fp))
+            break;
+
+        if (not token[0])
             continue;
 
         if (strncmp(token, "#TOTAL_EVENTS", 13) == 0)
         {
-            char *sptr = strchr(token, ' ');
+            char* sptr = strchr(token, ' ');
 
             if (sptr)
                 sptr++;
@@ -186,7 +196,7 @@ int ReadNumberOfEvents(char* scenario)
     CloseCampFile(fp);
 
     if (CampEvents not_eq NULL)
-        delete [] CampEvents;
+        delete[] CampEvents;
 
     CampEvents = new EventClass*[CE_Events];
     return CE_Events;
@@ -201,17 +211,24 @@ void SetInitialEvents(char* scenario)
     if ((fp = OpenCampFile(scenario, "tri", "r")) == NULL)
         return;
 
-    while ( not done)
+    while (not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if ( not token[0])
+        // #104: these parse loops only terminated on a specific end-token (#ENDINIT / #END...). A missing or
+        // unmatched end-token (e.g. a CRLF '\r' left on it on Linux, or a truncated file) made ReadToken return
+        // stale/empty at EOF forever -> campaign-entry hang (main thread spinning in ReadComments/fgetc).
+        // Terminate at end-of-file regardless.
+        if (feof(fp))
+            break;
+
+        if (not token[0])
             continue;
 
         if (strncmp(token, "#SET_EVENT", 10) == 0)
         {
-            char *sptr = strchr(token, ' ');
+            char* sptr = strchr(token, ' ');
             int i = 0;
 
             if (sptr)
@@ -222,7 +239,7 @@ void SetInitialEvents(char* scenario)
         }
         else if (strncmp(token, "#RESET_EVENT", 10) == 0)
         {
-            char *sptr = strchr(token, ' ');
+            char* sptr = strchr(token, ' ');
             int i = 0;
 
             if (sptr)
@@ -277,19 +294,27 @@ void ReadSpecialCampaignData(char* scenario)
     if ((fp = OpenCampFile(scenario, "tri", "r")) == NULL)
         return;
 
-    while ( not done)
+    while (not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if ( not token[0])
+        // #104: these parse loops only terminated on a specific end-token (#ENDINIT / #END...). A missing or
+        // unmatched end-token (e.g. a CRLF '\r' left on it on Linux, or a truncated file) made ReadToken return
+        // stale/empty at EOF forever -> campaign-entry hang (main thread spinning in ReadComments/fgetc).
+        // Terminate at end-of-file regardless.
+        if (feof(fp))
+            break;
+
+        if (not token[0])
             continue;
 
         // 2002-04-17 MN these have originally been read from Falcon4.AII - but now from trigger files so we can
         // set them individually for each campaign :-)
-        if (strncmp(token, "#BULLSEYE_X", 11) == 0) // bullseye reference point X position
+        if (strncmp(token, "#BULLSEYE_X", 11) ==
+            0) // bullseye reference point X position
         {
-            char *sptr = strchr(token, ' ');
+            char* sptr = strchr(token, ' ');
             int i = 0;
 
             if (sptr)
@@ -298,9 +323,10 @@ void ReadSpecialCampaignData(char* scenario)
             i = atoi(sptr);
             TheaterXPosition = i;
         }
-        else if (strncmp(token, "#BULLSEYE_Y", 11) == 0) // bullseye reference point Y position
+        else if (strncmp(token, "#BULLSEYE_Y", 11) ==
+                 0) // bullseye reference point Y position
         {
-            char *sptr = strchr(token, ' ');
+            char* sptr = strchr(token, ' ');
             int i = 0;
 
             if (sptr)
@@ -309,9 +335,10 @@ void ReadSpecialCampaignData(char* scenario)
             i = atoi(sptr);
             TheaterYPosition = i;
         }
-        else if (strncmp(token, "#FLOT_SORTDIRECTION", 19) == 0) // 0 = West-East, 1 = North-South
+        else if (strncmp(token, "#FLOT_SORTDIRECTION", 19) ==
+                 0) // 0 = West-East, 1 = North-South
         {
-            char *sptr = strchr(token, ' ');
+            char* sptr = strchr(token, ' ');
             int i = 0;
 
             if (sptr)
@@ -320,9 +347,10 @@ void ReadSpecialCampaignData(char* scenario)
             i = atoi(sptr);
             FLOTSortDirection = i;
         }
-        else if (strncmp(token, "#FLOT_DRAWDISTANCE", 11) == 0) // bullseye reference point X position
+        else if (strncmp(token, "#FLOT_DRAWDISTANCE", 11) ==
+                 0) // bullseye reference point X position
         {
-            char *sptr = strchr(token, ' ');
+            char* sptr = strchr(token, ' ');
             float i = 0.0f;
 
             if (sptr)
@@ -356,7 +384,7 @@ int NewCampaignEvents(char* scenario)
 // Load both events and triggers
 int LoadCampaignEvents(char* filename, char* scenario)
 {
-    uchar /* *data,*/ *data_ptr;
+    uchar /* *data,*/* data_ptr;
     short i, events;
 
     ReadNumberOfEvents(scenario);
@@ -367,7 +395,7 @@ int LoadCampaignEvents(char* filename, char* scenario)
         return 0;
     }
 
-    data_ptr = (uchar *)cd.data;
+    data_ptr = (uchar*)cd.data;
 
     events = *((short*)data_ptr);
     data_ptr += sizeof(short);
@@ -416,40 +444,25 @@ void DisposeCampaignEvents(void)
 {
     int i;
 
-    if ( not CampEvents or not CE_Events)
+    if (not CampEvents or not CE_Events)
         return;
 
     for (i = 0; i < CE_Events; i++)
-        delete CampEvents[i];;
+        delete CampEvents[i];
+    ;
 
-    delete [] CampEvents;
+    delete[] CampEvents;
     CampEvents = NULL;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 int ReadScriptedTriggerFile(char* filename)
 {
     FILE* fp;
-    int i, done = 0, initdone = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
+    int i, done = 0, initdone = 0, curr_stack = 0,
+           stack_active[MAX_STACK] = {1};
     char token[128], *sptr;
-    _TCHAR eol[2] = { '\n', 0 };
+    _TCHAR eol[2] = {'\n', 0};
     Objective o;
     Team team;
 
@@ -464,12 +477,19 @@ int ReadScriptedTriggerFile(char* filename)
     // Read # of events
     ReadToken(fp, token, 120);
 
-    while ( not done)
+    while (not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if ( not token[0])
+        // #104: these parse loops only terminated on a specific end-token (#ENDINIT / #END...). A missing or
+        // unmatched end-token (e.g. a CRLF '\r' left on it on Linux, or a truncated file) made ReadToken return
+        // stale/empty at EOF forever -> campaign-entry hang (main thread spinning in ReadComments/fgetc).
+        // Terminate at end-of-file regardless.
+        if (feof(fp))
+            break;
+
+        if (not token[0])
             continue;
 
         // Check for still in init section
@@ -481,7 +501,7 @@ int ReadScriptedTriggerFile(char* filename)
             continue;
         }
 
-        if ( not initdone)
+        if (not initdone)
             continue;
 
         // Handle standard tokens
@@ -489,7 +509,7 @@ int ReadScriptedTriggerFile(char* filename)
         {
             curr_stack++;
 
-            if ( not stack_active[curr_stack - 1])
+            if (not stack_active[curr_stack - 1])
                 stack_active[curr_stack] = 0;
             else
                 stack_active[curr_stack] = 1;
@@ -503,7 +523,7 @@ int ReadScriptedTriggerFile(char* filename)
         }
         else if (strcmp(token, "#ENDIF") == 0)
         {
-            if ( not curr_stack)
+            if (not curr_stack)
                 MonoPrint("<script reading Error - unmatched #ENDIF>\n");
             else
                 curr_stack--;
@@ -519,7 +539,9 @@ int ReadScriptedTriggerFile(char* filename)
             {
                 if (curr_stack >= MAX_STACK)
                 {
-                    MonoPrint("<Brief Reading Error - stack overflow. Max stacks = %d", MAX_STACK);
+                    MonoPrint("<Brief Reading Error - stack overflow. Max "
+                              "stacks = %d",
+                              MAX_STACK);
                     CloseCampFile(fp);
                     return 0;
                 }
@@ -571,9 +593,9 @@ int ReadScriptedTriggerFile(char* filename)
                         sptr++;
 
                     i = atoi(sptr);
-                    o = (Objective) GetEntityByCampID(i);
+                    o = (Objective)GetEntityByCampID(i);
 
-                    if ( not o)
+                    if (not o)
                         stack_active[curr_stack] = 0;
                     else
                     {
@@ -609,7 +631,7 @@ int ReadScriptedTriggerFile(char* filename)
 
                         while (stack_active[curr_stack] and sptr and atoi(sptr))
                         {
-                            o = (Objective) GetEntityByCampID(atoi(sptr));
+                            o = (Objective)GetEntityByCampID(atoi(sptr));
 
                             if (o and o->GetTeam() not_eq team)
                                 stack_active[curr_stack] = 0;
@@ -623,9 +645,10 @@ int ReadScriptedTriggerFile(char* filename)
                         // Or logic
                         stack_active[curr_stack] = 0;
 
-                        while ( not stack_active[curr_stack] and sptr and atoi(sptr))
+                        while (not stack_active[curr_stack] and sptr and
+                               atoi(sptr))
                         {
-                            o = (Objective) GetEntityByCampID(atoi(sptr));
+                            o = (Objective)GetEntityByCampID(atoi(sptr));
 
                             if (o and o->GetTeam() == team)
                                 stack_active[curr_stack] = 1;
@@ -768,7 +791,9 @@ int ReadScriptedTriggerFile(char* filename)
 
                     team = atoi(sptr);
 
-                    if (TeamInfo[team] and TeamInfo[team]->GetGroundAction() and TeamInfo[team]->GetGroundAction()->actionType == GACTION_OFFENSIVE)
+                    if (TeamInfo[team] and TeamInfo[team]->GetGroundAction() and
+                        TeamInfo[team]->GetGroundAction()->actionType ==
+                            GACTION_OFFENSIVE)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -822,25 +847,27 @@ int ReadScriptedTriggerFile(char* filename)
 
                     switch (type)
                     {
-                        case 'A':
-                            os = TeamInfo[team]->GetCurrentStats()->aircraft;
-                            ts = TeamInfo[opposite]->GetCurrentStats()->aircraft;
-                            break;
+                    case 'A':
+                        os = TeamInfo[team]->GetCurrentStats()->aircraft;
+                        ts = TeamInfo[opposite]->GetCurrentStats()->aircraft;
+                        break;
 
-                        case 'G':
-                            os = TeamInfo[team]->GetCurrentStats()->groundVehs;
-                            ts = TeamInfo[opposite]->GetCurrentStats()->groundVehs;
-                            break;
+                    case 'G':
+                        os = TeamInfo[team]->GetCurrentStats()->groundVehs;
+                        ts = TeamInfo[opposite]->GetCurrentStats()->groundVehs;
+                        break;
 
-                        case 'N':
-                            os = TeamInfo[team]->GetCurrentStats()->ships;
-                            ts = TeamInfo[opposite]->GetCurrentStats()->ships;
-                            break;
+                    case 'N':
+                        os = TeamInfo[team]->GetCurrentStats()->ships;
+                        ts = TeamInfo[opposite]->GetCurrentStats()->ships;
+                        break;
 
-                        default:
-                            os = TeamInfo[team]->GetCurrentStats()->groundVehs + TeamInfo[team]->GetCurrentStats()->aircraft;
-                            ts = TeamInfo[opposite]->GetCurrentStats()->groundVehs + TeamInfo[opposite]->GetCurrentStats()->aircraft;
-                            break;
+                    default:
+                        os = TeamInfo[team]->GetCurrentStats()->groundVehs +
+                             TeamInfo[team]->GetCurrentStats()->aircraft;
+                        ts = TeamInfo[opposite]->GetCurrentStats()->groundVehs +
+                             TeamInfo[opposite]->GetCurrentStats()->aircraft;
+                        break;
                     }
 
                     ratio = os * 10 / ts;
@@ -856,7 +883,9 @@ int ReadScriptedTriggerFile(char* filename)
                     if (sptr = strchr(token, ' '))
                         sptr++;
 
-                    if (((TheCampaign.CurrentTime - TheCampaign.lastMajorEvent) / CampaignHours) > static_cast<CampaignTime>(atoi(sptr)))
+                    if (((TheCampaign.CurrentTime -
+                          TheCampaign.lastMajorEvent) /
+                         CampaignHours) > static_cast<CampaignTime>(atoi(sptr)))
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -934,7 +963,8 @@ int ReadScriptedTriggerFile(char* filename)
             if (strncmp(token, "#PLAY_MOVIE", 11) == 0)
             {
                 // _TCHAR str[128] = {0};
-                CampEventDataMessage *msg = new CampEventDataMessage(vuLocalSession, FalconLocalGame);
+                CampEventDataMessage* msg =
+                    new CampEventDataMessage(vuLocalSession, FalconLocalGame);
 
                 if (sptr = strchr(token, ' '))
                     sptr++;
@@ -1032,7 +1062,8 @@ int ReadScriptedTriggerFile(char* filename)
                     sptr++;
 
                 // Post the campaign over message
-                PostMessage(FalconDisplay.appWin, FM_CAMPAIGN_OVER, atoi(sptr), 1);
+                PostMessage(FalconDisplay.appWin, FM_CAMPAIGN_OVER, atoi(sptr),
+                            1);
                 continue;
             }
             else if (strcmp(token, "#RESET_BORDOM_TIMEOUT") == 0)
@@ -1098,7 +1129,7 @@ int ReadScriptedTriggerFile(char* filename)
                 if (sptr = strchr(sptr, ' '))
                     sptr++;
 
-                e = (CampEntity) GetEntityByCampID(atoi(sptr));
+                e = (CampEntity)GetEntityByCampID(atoi(sptr));
 
                 if (sptr = strchr(sptr, ' '))
                     sptr++;
@@ -1111,7 +1142,7 @@ int ReadScriptedTriggerFile(char* filename)
 #ifdef DEBUG
                     ShiAssert(pod);
 
-                    if ( not pod)
+                    if (not pod)
                         continue;
 
 #endif
@@ -1129,7 +1160,9 @@ int ReadScriptedTriggerFile(char* filename)
                  TheCampaign.Tempo = atoi (sptr);
                 */
             }
-            else if (strncmp(token, "#TOTAL_EVENTS", 13) == 0 or strncmp(token, "#SET", 4) == 0 or strcmp(token, "#ENDINIT") == 0)
+            else if (strncmp(token, "#TOTAL_EVENTS", 13) == 0 or
+                     strncmp(token, "#SET", 4) == 0 or
+                     strcmp(token, "#ENDINIT") == 0)
             {
                 // KCK: For initialization only.
             }

@@ -19,7 +19,7 @@
 #include "msginc/trackmsg.h"
 #include "msginc/tankermsg.h"
 #include "otwdrive.h"
-#include "Sms.h"
+#include "sms.h"
 /* S.G. 2001-06-16 AI SWITCH TO NAV ON GO COVER */ #include "fcc.h"
 
 extern bool g_bPitchLimiterForAI; // 2002-02-12 S.G.
@@ -64,7 +64,6 @@ void DigitalBrain::AiSaveSetSearchDomain(char domain)
 }
 
 
-
 // ----------------------------------------------------
 // DigitalBrain::AiRestoreSearchDomain
 // ----------------------------------------------------
@@ -75,7 +74,6 @@ void DigitalBrain::AiRestoreSearchDomain()
 }
 
 
-
 // ----------------------------------------------------
 // DigitalBrain::AiSetManeuver
 // ----------------------------------------------------
@@ -83,11 +81,10 @@ void DigitalBrain::AiRestoreSearchDomain()
 void DigitalBrain::AiSetManeuver(int maneuver)
 {
     mpActionFlags[AI_EXECUTE_MANEUVER] = TRUE;
-    mpActionFlags[AI_RTB]              = FALSE;
+    mpActionFlags[AI_RTB] = FALSE;
     mCurrentManeuver = maneuver;
     mnverTime = 10.0F;
 }
-
 
 
 // ----------------------------------------------------
@@ -96,9 +93,9 @@ void DigitalBrain::AiSetManeuver(int maneuver)
 
 void DigitalBrain::AiClearManeuver(void)
 {
-    mpActionFlags[AI_USE_COMPLEX]      = FALSE;
+    mpActionFlags[AI_USE_COMPLEX] = FALSE;
     mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
-    mpActionFlags[AI_RTB]              = FALSE;
+    mpActionFlags[AI_RTB] = FALSE;
     mCurrentManeuver = FalconWingmanMsg::WMTotalMsg;
 }
 
@@ -112,7 +109,6 @@ void DigitalBrain::AiClearManeuver(void)
 // ----------------------------------------------------
 
 
-
 // ----------------------------------------------------
 // DigitalBrain::AiSmokeOn
 // ----------------------------------------------------
@@ -124,7 +120,8 @@ void DigitalBrain::AiSmokeOn(FalconWingmanMsg* msg)
 
     if (SimDriver.GetPlayerEntity())
     {
-        FalconTrackMessage* trackMsg = new FalconTrackMessage(1, SimDriver.GetPlayerEntity()->Id(), FalconLocalGame);
+        FalconTrackMessage* trackMsg = new FalconTrackMessage(
+            1, SimDriver.GetPlayerEntity()->Id(), FalconLocalGame);
         ShiAssert(trackMsg);
         trackMsg->dataBlock.trackType = Track_SmokeOn;
         trackMsg->dataBlock.id = self->Id();
@@ -160,7 +157,8 @@ void DigitalBrain::AiSmokeOff(FalconWingmanMsg* msg)
 
     if (SimDriver.GetPlayerEntity())
     {
-        FalconTrackMessage* trackMsg = new FalconTrackMessage(1, SimDriver.GetPlayerEntity()->Id(), FalconLocalGame);
+        FalconTrackMessage* trackMsg = new FalconTrackMessage(
+            1, SimDriver.GetPlayerEntity()->Id(), FalconLocalGame);
         ShiAssert(trackMsg);
         trackMsg->dataBlock.trackType = Track_SmokeOff;
         trackMsg->dataBlock.id = self->Id();
@@ -241,7 +239,7 @@ void DigitalBrain::AiECMOff(FalconWingmanMsg* msg)
 // DigitalBrain::AiClearLeadersSix
 // ----------------------------------------------------
 
-void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
+void DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
 {
 
     int flightIdx;
@@ -258,7 +256,7 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
     int random;
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
-    pfrom = (AircraftClass*) vuDatabase->Find(msg->dataBlock.from);
+    pfrom = (AircraftClass*)vuDatabase->Find(msg->dataBlock.from);
 
     if (msg->dataBlock.newTarget == FalconNullId)
     {
@@ -266,7 +264,8 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
         // angles of the aircraft we are clearing
         mlSinCos(&trig, pfrom->Yaw());
 
-        xpos = pfrom->XPos() - trig.cos * 1000.0F; // 1000 feet behind aircraft we are clearing
+        xpos = pfrom->XPos() -
+               trig.cos * 1000.0F; // 1000 feet behind aircraft we are clearing
         ypos = pfrom->YPos() - trig.sin * 1000.0F;
 
         xpos = xpos - self->XPos();
@@ -294,7 +293,6 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
             AiMakeRadioResponse(self, rcROGER, edata);
             AiCheckFormStrip();
         }
-
     }
     else
     {
@@ -302,9 +300,11 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
         AiCheckFormStrip();
 
         mDesignatedObject = msg->dataBlock.newTarget;
-        ptgt = (AircraftClass*) vuDatabase->Find(mDesignatedObject);
+        ptgt = (AircraftClass*)vuDatabase->Find(mDesignatedObject);
 
-        if (ptgt and pfrom and not F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) and not F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
+        if (ptgt and pfrom and
+            not F4IsBadReadPtr(ptgt, sizeof(AircraftClass)) and
+            not F4IsBadReadPtr(pfrom, sizeof(AircraftClass))) // JB 010318 CTD
         {
             if (ptgt->ZPos() - pfrom->ZPos() < -500.0F)
             {
@@ -331,7 +331,8 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
             AiMakeRadioResponse(self, rcBREAK, edata);
 
 
-            mpActionFlags[AI_ENGAGE_TARGET] = AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+            mpActionFlags[AI_ENGAGE_TARGET] =
+                AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
             AiSaveWeaponState();
             mWeaponsAction = AI_WEAPONS_FREE;
 
@@ -345,7 +346,7 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
 
             angle = (float)atan2(ydiff, xdiff);
             angle = angle - pfrom->Yaw();
-            navangle =  FloatToInt32(RTD * angle);
+            navangle = FloatToInt32(RTD * angle);
 
             if (navangle < 0)
             {
@@ -361,7 +362,8 @@ void  DigitalBrain::AiClearLeadersSix(FalconWingmanMsg* msg)
 
             rz = ptgt->ZPos() - pfrom->ZPos();
 
-            if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
+            if (rz < 300.0F and
+                rz > -300.0F) // check relative alt and select correct frag
             {
                 edata[2] = 1;
             }
@@ -396,14 +398,15 @@ void DigitalBrain::AiEngageThreatAtSix(VU_ID threat)
     float rz;
 
     mDesignatedObject = threat;
-    mpActionFlags[AI_ENGAGE_TARGET] = AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    mpActionFlags[AI_ENGAGE_TARGET] =
+        AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
     AiSaveWeaponState();
     mWeaponsAction = AI_WEAPONS_FREE;
 
     AiCheckFormStrip();
 
 
-    ptgt = (AircraftClass*) vuDatabase->Find(mDesignatedObject);
+    ptgt = (AircraftClass*)vuDatabase->Find(mDesignatedObject);
 
     if (ptgt)
     {
@@ -415,7 +418,7 @@ void DigitalBrain::AiEngageThreatAtSix(VU_ID threat)
 
         angle = (float)atan2(ydiff, xdiff);
         angle = angle - self->Yaw();
-        navangle =  FloatToInt32(RTD * angle);
+        navangle = FloatToInt32(RTD * angle);
 
         if (navangle < 0)
         {
@@ -431,7 +434,8 @@ void DigitalBrain::AiEngageThreatAtSix(VU_ID threat)
 
         rz = ptgt->ZPos() - self->ZPos();
 
-        if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
+        if (rz < 300.0F and
+            rz > -300.0F) // check relative alt and select correct frag
         {
             edata[2] = 1;
         }
@@ -453,8 +457,6 @@ void DigitalBrain::AiEngageThreatAtSix(VU_ID threat)
 }
 
 
-
-
 // ----------------------------------------------------
 // DigitalBrain::AiCheckOwnSix
 // ----------------------------------------------------
@@ -470,7 +472,7 @@ void DigitalBrain::AiCheckOwnSix(FalconWingmanMsg* msg)
     AircraftClass* pfrom;
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
-    pfrom = (AircraftClass*) vuDatabase->Find(msg->dataBlock.from);
+    pfrom = (AircraftClass*)vuDatabase->Find(msg->dataBlock.from);
 
     AiSaveSetSearchDomain(DOMAIN_AIR);
     threat = AiCheckForThreat(self, DOMAIN_AIR, 1, &az);
@@ -493,7 +495,10 @@ void DigitalBrain::AiCheckOwnSix(FalconWingmanMsg* msg)
         if (AiIsFullResponse(flightIdx, msg->dataBlock.to))
         {
             edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + self->GetCampaignObject()->GetComponentIndex(self) + 1;
+            edata[1] =
+                (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) *
+                    4 +
+                self->GetCampaignObject()->GetComponentIndex(self) + 1;
             edata[2] = -1;
             edata[3] = -1;
             AiMakeRadioResponse(self, rcCOPY, edata);
@@ -533,7 +538,6 @@ void DigitalBrain::AiBreakLeft(void)
     mSpeedOrdered = self->GetVt() * FTPSEC_TO_KNOTS;
     mAltitudeOrdered = self->ZPos();
     mnverTime = 15.0F;
-
 }
 
 
@@ -556,7 +560,6 @@ void DigitalBrain::AiBreakRight(void)
     mSpeedOrdered = self->GetVt() * FTPSEC_TO_KNOTS;
     mAltitudeOrdered = self->ZPos();
     mnverTime = 15.0F;
-
 }
 
 // ----------------------------------------------------
@@ -584,8 +587,9 @@ void DigitalBrain::AiInitSSOffset(FalconWingmanMsg* msg)
     if (vuDatabase->Find(msg->dataBlock.newTarget))
     {
         mDesignatedObject = msg->dataBlock.newTarget;
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-        mWeaponsAction                      = AI_WEAPONS_FREE;
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        mWeaponsAction = AI_WEAPONS_FREE;
         mpSearchFlags[AI_FIXATE_ON_TARGET] = TRUE;
         AiRunTargetSelection();
         // mpActionFlags[AI_USE_COMPLEX]       = TRUE;
@@ -602,19 +606,21 @@ void DigitalBrain::AiInitSSOffset(FalconWingmanMsg* msg)
     if (targetPtr)
     {
         trigYaw = self->Yaw() + TargetAz(self, targetPtr);
-        mSpeedOrdered    = self->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
+        mSpeedOrdered =
+            self->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
         mAltitudeOrdered = self->ZPos();
     }
     else if (flightLead)
     {
         trigYaw = flightLead->Yaw();
-        mSpeedOrdered    = flightLead->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
+        mSpeedOrdered =
+            flightLead->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
         mAltitudeOrdered = flightLead->ZPos();
     }
     else
     {
         trigYaw = self->Yaw();
-        mSpeedOrdered    = self->GetVt() * FTPSEC_TO_KNOTS;
+        mSpeedOrdered = self->GetVt() * FTPSEC_TO_KNOTS;
         mAltitudeOrdered = self->ZPos();
     }
 
@@ -626,19 +632,27 @@ void DigitalBrain::AiInitSSOffset(FalconWingmanMsg* msg)
     // Instead, odd plane number (wingmen) have the 1.0F side. Leaders (flight and element) have the -1.0F side
     // if (isWing bitand 1)
     // 2001-8-03 BUT INSTEAD, I'LL REVERSE IT SO THE WINGS GO TO THE LEFT
-    if ( not (isWing bitand 1))
+    if (not(isWing bitand 1))
         side = 1.0F;
     else
         side = -1.0F;
 
     // 2002-04-07 MODIFIED BY S.G. Replaced the constant by FalconSP.cfg vars
-    mpManeuverPoints[0][0] = XSelf + firstTrig.cos *  g_fSSoffsetManeuverPoints1a * NM_TO_FT - firstTrig.sin * g_fSSoffsetManeuverPoints1b * NM_TO_FT * side;
-    mpManeuverPoints[0][1] = YSelf + firstTrig.sin *  g_fSSoffsetManeuverPoints1a * NM_TO_FT + firstTrig.cos * g_fSSoffsetManeuverPoints1b * NM_TO_FT * side;
+    mpManeuverPoints[0][0] =
+        XSelf + firstTrig.cos * g_fSSoffsetManeuverPoints1a * NM_TO_FT -
+        firstTrig.sin * g_fSSoffsetManeuverPoints1b * NM_TO_FT * side;
+    mpManeuverPoints[0][1] =
+        YSelf + firstTrig.sin * g_fSSoffsetManeuverPoints1a * NM_TO_FT +
+        firstTrig.cos * g_fSSoffsetManeuverPoints1b * NM_TO_FT * side;
     // S.G. SECOND LEG IS JUST 4 NM, NOT 20 NM
     // mpManeuverPoints[1][0] = XSelf + firstTrig.cos * 20.0F * NM_TO_FT - firstTrig.sin * 5.0F * NM_TO_FT * side;
     // mpManeuverPoints[1][1] = YSelf + firstTrig.sin * 20.0F * NM_TO_FT + firstTrig.cos * 5.0F * NM_TO_FT * side;
-    mpManeuverPoints[1][0] = XSelf + firstTrig.cos *  g_fSSoffsetManeuverPoints2a * NM_TO_FT - firstTrig.sin * g_fSSoffsetManeuverPoints2b * NM_TO_FT * side;
-    mpManeuverPoints[1][1] = YSelf + firstTrig.sin *  g_fSSoffsetManeuverPoints2a * NM_TO_FT + firstTrig.cos * g_fSSoffsetManeuverPoints2b * NM_TO_FT * side;
+    mpManeuverPoints[1][0] =
+        XSelf + firstTrig.cos * g_fSSoffsetManeuverPoints2a * NM_TO_FT -
+        firstTrig.sin * g_fSSoffsetManeuverPoints2b * NM_TO_FT * side;
+    mpManeuverPoints[1][1] =
+        YSelf + firstTrig.sin * g_fSSoffsetManeuverPoints2a * NM_TO_FT +
+        firstTrig.cos * g_fSSoffsetManeuverPoints2b * NM_TO_FT * side;
 
     mPointCounter = 0;
 
@@ -646,7 +660,9 @@ void DigitalBrain::AiInitSSOffset(FalconWingmanMsg* msg)
 
     if (flightIdx and msg)
     {
-        AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx); // this has nothing to do witht he doSplit variable
+        AiSplitFlight(
+            msg->dataBlock.to, msg->dataBlock.from,
+            flightIdx); // this has nothing to do witht he doSplit variable
     }
 
 
@@ -684,14 +700,16 @@ void DigitalBrain::AiInitPosthole(FalconWingmanMsg* msg)
     if (vuDatabase->Find(msg->dataBlock.newTarget))
     {
         mDesignatedObject = msg->dataBlock.newTarget;
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-        mWeaponsAction                      = AI_WEAPONS_FREE;
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        mWeaponsAction = AI_WEAPONS_FREE;
         mpSearchFlags[AI_FIXATE_ON_TARGET] = TRUE;
         AiSetManeuver(FalconWingmanMsg::WMPosthole);
         AiRunTargetSelection();
-        mpActionFlags[AI_USE_COMPLEX]       = TRUE;
+        mpActionFlags[AI_USE_COMPLEX] = TRUE;
         mSpeedOrdered = cornerSpeed;
-        SetTrackPoint(self->XPos(), self->YPos(), OTWDriver.GetGroundLevel(trackX, trackY) - 4000.0F);
+        SetTrackPoint(self->XPos(), self->YPos(),
+                      OTWDriver.GetGroundLevel(trackX, trackY) - 4000.0F);
         mPointCounter = 0;
 
         flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
@@ -724,13 +742,15 @@ void DigitalBrain::AiInitPosthole(FalconWingmanMsg* msg)
     else
     {
         mDesignatedObject = FalconNullId;
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-        mWeaponsAction                      = AI_WEAPONS_HOLD;
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        mWeaponsAction = AI_WEAPONS_HOLD;
         mpSearchFlags[AI_FIXATE_ON_TARGET] = FALSE;
         AiClearManeuver();
         edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-        edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
-                      self->GetCampaignObject()->GetComponentIndex(self) + 1;
+        edata[1] =
+            (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
+            self->GetCampaignObject()->GetComponentIndex(self) + 1;
         edata[2] = -1;
         edata[3] = -1;
         edata[4] = 1;
@@ -763,8 +783,9 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
     if (vuDatabase->Find(msg->dataBlock.newTarget))
     {
         mDesignatedObject = msg->dataBlock.newTarget;
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-        mWeaponsAction                      = AI_WEAPONS_FREE;
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        mWeaponsAction = AI_WEAPONS_FREE;
         mpSearchFlags[AI_FIXATE_ON_TARGET] = TRUE;
         AiRunTargetSelection();
         // mpActionFlags[AI_USE_COMPLEX]       = TRUE;
@@ -782,19 +803,21 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
     if (targetPtr)
     {
         trigYaw = self->Yaw() + TargetAz(self, targetPtr);
-        mSpeedOrdered    = self->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
+        mSpeedOrdered =
+            self->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
         mAltitudeOrdered = self->ZPos();
     }
     else if (flightLead)
     {
         trigYaw = flightLead->Yaw();
-        mSpeedOrdered    = flightLead->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
+        mSpeedOrdered =
+            flightLead->GetVt() * FTPSEC_TO_KNOTS; // Cobra - convert to kts.
         mAltitudeOrdered = flightLead->ZPos();
     }
     else
     {
         trigYaw = self->Yaw();
-        mSpeedOrdered    = self->GetVt() * FTPSEC_TO_KNOTS;
+        mSpeedOrdered = self->GetVt() * FTPSEC_TO_KNOTS;
         mAltitudeOrdered = self->ZPos();
     }
 
@@ -810,13 +833,21 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
         side = -1.0F;
 
     // 2002-04-07 MODIFIED BY S.G. Replaced the constant by FalconSP.cfg vars
-    mpManeuverPoints[0][0] = XSelf + firstTrig.cos *  g_fPinceManeuverPoints1a * NM_TO_FT - firstTrig.sin * g_fPinceManeuverPoints1b * NM_TO_FT * side;
-    mpManeuverPoints[0][1] = YSelf + firstTrig.sin *  g_fPinceManeuverPoints1a * NM_TO_FT + firstTrig.cos * g_fPinceManeuverPoints1b * NM_TO_FT * side;
+    mpManeuverPoints[0][0] =
+        XSelf + firstTrig.cos * g_fPinceManeuverPoints1a * NM_TO_FT -
+        firstTrig.sin * g_fPinceManeuverPoints1b * NM_TO_FT * side;
+    mpManeuverPoints[0][1] =
+        YSelf + firstTrig.sin * g_fPinceManeuverPoints1a * NM_TO_FT +
+        firstTrig.cos * g_fPinceManeuverPoints1b * NM_TO_FT * side;
     // S.G. SECOND LEG IS JUST 4 NM, NOT 20 NM
     // mpManeuverPoints[1][0] = XSelf + firstTrig.cos * 20.0F * NM_TO_FT - firstTrig.sin * 5.0F * NM_TO_FT * side;
     // mpManeuverPoints[1][1] = YSelf + firstTrig.sin * 20.0F * NM_TO_FT + firstTrig.cos * 5.0F * NM_TO_FT * side;
-    mpManeuverPoints[1][0] = XSelf + firstTrig.cos *  g_fPinceManeuverPoints2a * NM_TO_FT - firstTrig.sin * g_fPinceManeuverPoints2b * NM_TO_FT * side;
-    mpManeuverPoints[1][1] = YSelf + firstTrig.sin *  g_fPinceManeuverPoints2a * NM_TO_FT + firstTrig.cos * g_fPinceManeuverPoints2b * NM_TO_FT * side;
+    mpManeuverPoints[1][0] =
+        XSelf + firstTrig.cos * g_fPinceManeuverPoints2a * NM_TO_FT -
+        firstTrig.sin * g_fPinceManeuverPoints2b * NM_TO_FT * side;
+    mpManeuverPoints[1][1] =
+        YSelf + firstTrig.sin * g_fPinceManeuverPoints2a * NM_TO_FT +
+        firstTrig.cos * g_fPinceManeuverPoints2b * NM_TO_FT * side;
 
     mPointCounter = 0;
 
@@ -824,7 +855,9 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
 
     if (flightIdx and msg)
     {
-        AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx); // this has nothing to do witht he doSplit variable
+        AiSplitFlight(
+            msg->dataBlock.to, msg->dataBlock.from,
+            flightIdx); // this has nothing to do witht he doSplit variable
     }
 
 
@@ -847,7 +880,6 @@ void DigitalBrain::AiInitPince(FalconWingmanMsg* msg, int doSplit)
         }
     }
 }
-
 
 
 // ----------------------------------------------------
@@ -926,7 +958,8 @@ void DigitalBrain::AiInitTrig(mlTrig* firstTrig, mlTrig* secondTrig)
     // For a 2 ship 0 goes right, 1 goes left
     // In a 4 ship 0 bitand 1 go right, 2 bitand 3 go left
 
-    if (isWing >= 2 or (isWing == 1 and self->GetCampaignObject()->NumberOfComponents() < 3))
+    if (isWing >= 2 or
+        (isWing == 1 and self->GetCampaignObject()->NumberOfComponents() < 3))
     {
         firstTrig->cos = -firstTrig->cos;
         firstTrig->sin = -firstTrig->sin;
@@ -981,12 +1014,13 @@ void DigitalBrain::AiInitChainsaw(FalconWingmanMsg* msg)
     if (vuDatabase->Find(msg->dataBlock.newTarget))
     {
         mDesignatedObject = msg->dataBlock.newTarget;
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-        mWeaponsAction                      = AI_WEAPONS_FREE;
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        mWeaponsAction = AI_WEAPONS_FREE;
         mpSearchFlags[AI_FIXATE_ON_TARGET] = TRUE;
         AiSetManeuver(FalconWingmanMsg::WMChainsaw);
         AiRunTargetSelection();
-        mpActionFlags[AI_USE_COMPLEX]       = TRUE;
+        mpActionFlags[AI_USE_COMPLEX] = TRUE;
         AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx);
 
         // 2002-03-15 ADDED BY S.G.
@@ -996,8 +1030,9 @@ void DigitalBrain::AiInitChainsaw(FalconWingmanMsg* msg)
     else
     {
         mDesignatedObject = FalconNullId;
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-        mWeaponsAction                      = AI_WEAPONS_HOLD;
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        mWeaponsAction = AI_WEAPONS_HOLD;
         mpSearchFlags[AI_FIXATE_ON_TARGET] = FALSE;
         AiClearManeuver();
     }
@@ -1023,15 +1058,17 @@ void DigitalBrain::AiInitChainsaw(FalconWingmanMsg* msg)
 
 void DigitalBrain::AiGoShooter(void)
 {
-    if (mpActionFlags[AI_ENGAGE_TARGET] == AI_NONE) // 2002-03-04 ADDED BY S.G. Change it if not already set, assume an air target (can't tell)
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    if (mpActionFlags[AI_ENGAGE_TARGET] ==
+        AI_NONE) // 2002-03-04 ADDED BY S.G. Change it if not already set, assume an air target (can't tell)
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_AIR_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
 
     mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
     mWeaponsAction = AI_WEAPONS_FREE;
 
     mpSearchFlags[AI_FIXATE_ON_TARGET] = TRUE;
     mpSearchFlags[AI_MONITOR_TARGET] = FALSE;
-    mpActionFlags[AI_RTB]               = FALSE;
+    mpActionFlags[AI_RTB] = FALSE;
 
     AiClearManeuver();
 
@@ -1045,18 +1082,20 @@ void DigitalBrain::AiGoShooter(void)
 void DigitalBrain::AiGoCover(void)
 {
 
-    mpActionFlags[AI_ENGAGE_TARGET]   = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    mpActionFlags[AI_ENGAGE_TARGET] =
+        AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
     mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
-    mpActionFlags[AI_RTB]              = FALSE;
-    mWeaponsAction                     = AI_WEAPONS_HOLD;
+    mpActionFlags[AI_RTB] = FALSE;
+    mWeaponsAction = AI_WEAPONS_HOLD;
 
     mpSearchFlags[AI_FIXATE_ON_TARGET] = FALSE;
-    mpSearchFlags[AI_MONITOR_TARGET]   = TRUE;
+    mpSearchFlags[AI_MONITOR_TARGET] = TRUE;
 
     AiClearManeuver();
 
     // 2001-06-16 ADDED BY S.G. NEED TO GO BACK IN NAV MODE.
-    if (self->AutopilotType() == AircraftClass::CombatAP or self->IsDigital()) // 2002-01-28 ADDED BY S.G But only if in CombatAP
+    if (self->AutopilotType() == AircraftClass::CombatAP or
+        self->IsDigital()) // 2002-01-28 ADDED BY S.G But only if in CombatAP
         self->FCC->SetMasterMode(FireControlComputer::Nav);
 
     // END OF ADDED SECTION
@@ -1073,7 +1112,8 @@ void DigitalBrain::AiSearchForTargets(char domain)
     mSearchDomain = domain;
     // 2000-09-13 MODIFIED BY S.G. PRETTY USELESS LINE IF YOU ASK ME... NOT IN RP4
     // mpSearchFlags[AI_SEARCH_FOR_TARGET];
-    mpSearchFlags[AI_SEARCH_FOR_TARGET] = TRUE; // Cobra - try turning them loose
+    mpSearchFlags[AI_SEARCH_FOR_TARGET] =
+        TRUE; // Cobra - try turning them loose
     mLastReportTime = 0;
 }
 
@@ -1086,9 +1126,10 @@ void DigitalBrain::AiResumeFlightPlan(FalconWingmanMsg* msg)
     int flightIdx;
     short edata[10];
 
-    mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    mpActionFlags[AI_ENGAGE_TARGET] =
+        AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
     mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
-    mpActionFlags[AI_RTB]               = FALSE;
+    mpActionFlags[AI_RTB] = FALSE;
 
     mpSearchFlags[AI_FIXATE_ON_TARGET] = FALSE;
     mpSearchFlags[AI_MONITOR_TARGET] = FALSE;
@@ -1129,7 +1170,8 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
     AiCheckPosition();
     // mInPositionFlag = FALSE;
 
-    mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    mpActionFlags[AI_ENGAGE_TARGET] =
+        AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
     mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
     mpActionFlags[AI_FOLLOW_FORMATION] = TRUE;
     mpActionFlags[AI_RTB] = FALSE;
@@ -1140,17 +1182,18 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
     // cancel atc here
 
     // 2001-07-11 ADDED BY S.G. NEED TO SET THE SAME WAYPOINT AS THE LEAD ONCE WE REJOIN...
-    WayPointClass* wlistUs   = self->waypoint;
+    WayPointClass* wlistUs = self->waypoint;
     WayPointClass* wlistLead = NULL;
 
     if (flightLead)
-        wlistLead = ((AircraftClass *)flightLead)->waypoint;
+        wlistLead = ((AircraftClass*)flightLead)->waypoint;
 
     // This will set our current waypoint to the leads waypoint
     // 2001-10-20 Modified by M.N. Added ->GetNextWP() to assure that we get a valid waypoint
-    while (wlistUs->GetNextWP() and wlistLead and wlistLead->GetNextWP() and wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
+    while (wlistUs->GetNextWP() and wlistLead and wlistLead->GetNextWP() and
+           wlistLead not_eq ((AircraftClass*)flightLead)->curWaypoint)
     {
-        wlistUs   = wlistUs->GetNextWP();
+        wlistUs = wlistUs->GetNextWP();
         wlistLead = wlistLead->GetNextWP();
     }
 
@@ -1160,7 +1203,7 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
     rwIndex = 0;
     self->af->gearHandle = -1.0F; //up
 
-    mpActionFlags[AI_USE_COMPLEX]       = FALSE;
+    mpActionFlags[AI_USE_COMPLEX] = FALSE;
 
     mpSearchFlags[AI_FIXATE_ON_TARGET] = FALSE;
 
@@ -1192,7 +1235,8 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
         FalconTankerMessage* TankerMsg;
 
         if (theTanker)
-            TankerMsg = new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
+            TankerMsg =
+                new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
         else
             TankerMsg = new FalconTankerMessage(FalconNullId, FalconLocalGame);
 
@@ -1214,14 +1258,17 @@ void DigitalBrain::AiRejoin(FalconWingmanMsg* msg, AiHint hint)
         edata[0] = -1;
         edata[1] = -1;
         edata[2] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-        edata[3] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
+        edata[3] =
+            (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
+            flightIdx + 1;
         AiMakeRadioResponse(self, rcONMYWAY, edata);
     }
-    else if (hint == AI_TAKEOFF)   // JPO take the hint
+    else if (hint == AI_TAKEOFF) // JPO take the hint
     {
         short edata[10];
 
-        edata[0] = ((FlightClass*) self->GetCampaignObject())->GetComponentIndex(self);
+        edata[0] =
+            ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
         edata[1] = -1;
         edata[2] = -1;
         edata[3] = -1;
@@ -1259,7 +1306,8 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
 {
     int flightIdx;
     short edata[10];
-    FalconEntity* newTarg = (FalconEntity*)vuDatabase->Find(msg->dataBlock.newTarget);
+    FalconEntity* newTarg =
+        (FalconEntity*)vuDatabase->Find(msg->dataBlock.newTarget);
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
@@ -1273,16 +1321,19 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
         // END OF ADDED SECTION
 
         // Try not to attack friendlies
-        if (newTarg->GetTeam() not_eq self->GetTeam() or (SkillLevel() < 2 and rand() % 10 > SkillLevel() + 8))
+        if (newTarg->GetTeam() not_eq self->GetTeam() or
+            (SkillLevel() < 2 and rand() % 10 > SkillLevel() + 8))
         {
             mWeaponsAction = AI_WEAPONS_FREE;
 
             // 2000-09-26 ADDED BY S.G. SO ASSIGN GROUP WORKS BY ASSIGNING TARGETS ACCORDING TO THEIR POSITION IN FLIGHT (LIKE FOR THE AI)
-            if ((FalconWingmanMsg::WingManCmd) msg->dataBlock.command == FalconWingmanMsg::WMAssignGroup)
+            if ((FalconWingmanMsg::WingManCmd)msg->dataBlock.command ==
+                FalconWingmanMsg::WMAssignGroup)
             {
                 // If it's a sim object, get the corresponding campaign object and assign it
                 if (((FalconEntity*)newTarg)->IsSim())
-                    AiSearchTargetList(((SimBaseClass *)newTarg)->GetCampaignObject());
+                    AiSearchTargetList(
+                        ((SimBaseClass*)newTarg)->GetCampaignObject());
                 else
                     AiSearchTargetList(newTarg);
 
@@ -1295,13 +1346,14 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
 
             // mpActionFlags[AI_ENGAGE_TARGET] = TRUE; // 2002-03-04 REMOVED BY S.G. Done within the "if (newTarg->OnGround())" test below now
 
-            mpActionFlags[AI_RTB]               = FALSE;
+            mpActionFlags[AI_RTB] = FALSE;
             mCurrentManeuver = FalconWingmanMsg::WMTotalMsg;
 
 
             if (newTarg->OnGround())
             {
-                mpActionFlags[AI_ENGAGE_TARGET] = AI_GROUND_TARGET; // 2002-03-04 ADDED BY S.G. It's a ground target, say that's what we're engaging
+                mpActionFlags[AI_ENGAGE_TARGET] =
+                    AI_GROUND_TARGET; // 2002-03-04 ADDED BY S.G. It's a ground target, say that's what we're engaging
                 // 2001-06-20 ADDED BY S.G. NEED TO TELL AI THERE AG MISSION IS NOT COMPLETE ANYMORE
                 missionComplete = FALSE;
                 // END OF ADDED SECTION
@@ -1315,10 +1367,18 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
                     if (groundTargetPtr == NULL)
                     {
                         mDesignatedObject = FalconNullId;
-                        mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+                        mpActionFlags[AI_ENGAGE_TARGET] =
+                            AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
 
-                        edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-                        edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + self->GetCampaignObject()->GetComponentIndex(self) + 1;
+                        edata[0] = ((FlightClass*)self->GetCampaignObject())
+                                       ->callsign_id;
+                        edata[1] =
+                            (((FlightClass*)self->GetCampaignObject())
+                                 ->callsign_num -
+                             1) *
+                                4 +
+                            self->GetCampaignObject()->GetComponentIndex(self) +
+                            1;
                         edata[2] = -1;
                         edata[3] = -1;
                         edata[4] = 0;
@@ -1329,7 +1389,8 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
                         edata[0] = flightIdx;
                         edata[1] = 2;
                         AiMakeRadioResponse(self, rcROGER, edata);
-                        AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx);
+                        AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from,
+                                      flightIdx);
                     }
                 }
                 else
@@ -1350,8 +1411,9 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
                 {
                     if (isWing == AiSecondWing)
                     {
-                        AircraftClass *myLead;
-                        myLead = (AircraftClass *)self->GetCampaignObject()->GetComponentNumber(2);
+                        AircraftClass* myLead;
+                        myLead = (AircraftClass*)self->GetCampaignObject()
+                                     ->GetComponentNumber(2);
 
                         if (myLead and myLead->IsPlayer())
                             leadIsPlayer = TRUE;
@@ -1359,7 +1421,7 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
                 }
 
                 if (leadIsPlayer)
-                    // END OF ADDED SECTION 2002-03-04
+                // END OF ADDED SECTION 2002-03-04
                 {
                     agDoctrine = AGD_NONE;
                     SetGroundTarget(NULL);
@@ -1375,14 +1437,17 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
                 edata[1] = 2;
                 AiMakeRadioResponse(self, rcROGER, edata);
 
-                AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from, flightIdx);
+                AiSplitFlight(msg->dataBlock.to, msg->dataBlock.from,
+                              flightIdx);
             }
         }
         else
         {
             edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
-                          self->GetCampaignObject()->GetComponentIndex(self) + 1;
+            edata[1] =
+                (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) *
+                    4 +
+                self->GetCampaignObject()->GetComponentIndex(self) + 1;
             edata[2] = -1;
             edata[3] = -1;
             edata[4] = 1;
@@ -1393,7 +1458,8 @@ void DigitalBrain::AiDesignateTarget(FalconWingmanMsg* msg)
     else
     {
         mDesignatedObject = FalconNullId;
-        mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+        mpActionFlags[AI_ENGAGE_TARGET] =
+            AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
     }
 }
 
@@ -1435,7 +1501,8 @@ void DigitalBrain::AiDesignateGroup(FalconWingmanMsg* msg)
 // DigitalBrain::AiSetWeaponsAction
 // ----------------------------------------------------
 
-void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWeaponsAction action)
+void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg,
+                                      DigitalBrain::AiWeaponsAction action)
 {
     WayPointClass* tmpWaypoint = self->waypoint;
     int flightIdx;
@@ -1450,12 +1517,12 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
     {
         missileShotTimer = SimLibElapsedTime + 2 * 60 * 60 * SEC_TO_MSEC;
         AiRejoin(NULL);
-
     }
 
     //Cobra TJL let's remove the WaitingPermission.  If I give weaponsfree I'm expecting the AI
     //to get its game on and find targets
-    if (action == AI_WEAPONS_FREE and missionClass == AGMission /* and IsSetATC(WaitingPermission)*/)
+    if (action == AI_WEAPONS_FREE and
+        missionClass == AGMission /* and IsSetATC(WaitingPermission)*/)
     {
         missileShotTimer = 0;
 
@@ -1489,9 +1556,9 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
         SelectGroundTarget (TARGET_ANYTHING);
         if (groundTargetPtr == NULL)
          groundTargetPtr = tmpGroundTargetPtr;*/
-        groundTargetPtr = NULL;//Ok, let's force a reevaluation each command.
+        groundTargetPtr = NULL; //Ok, let's force a reevaluation each command.
 
-        if (groundTargetPtr == NULL)//cobra
+        if (groundTargetPtr == NULL) //cobra
             SelectGroundTarget(TARGET_ANYTHING);
 
         SetupAGMode(NULL, NULL);
@@ -1499,11 +1566,14 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
         if (groundTargetPtr == NULL)
         {
             mDesignatedObject = FalconNullId;
-            mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+            mpActionFlags[AI_ENGAGE_TARGET] =
+                AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
 
             edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
-                       self->GetCampaignObject()->GetComponentIndex(self) + 1;
+            edata[1] =
+                (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) *
+                    4 +
+                self->GetCampaignObject()->GetComponentIndex(self) + 1;
             edata[2] = -1;
             edata[3] = -1;
             edata[4] = 0;
@@ -1515,8 +1585,9 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
             ClearATCFlag(WaitingPermission);
 
             mDesignatedObject = groundTargetPtr->BaseData()->Id();
-            mpActionFlags[AI_ENGAGE_TARGET] = AI_GROUND_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
-            mpActionFlags[AI_RTB]               = FALSE;
+            mpActionFlags[AI_ENGAGE_TARGET] =
+                AI_GROUND_TARGET; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+            mpActionFlags[AI_RTB] = FALSE;
             edata[0] = flightIdx;
             edata[1] = 2;
             AiMakeRadioResponse(self, rcROGER, edata);
@@ -1542,8 +1613,6 @@ void DigitalBrain::AiSetWeaponsAction(FalconWingmanMsg* msg, DigitalBrain::AiWea
         }
     }
 }
-
-
 
 
 // ----------------------------------------------------
@@ -1602,69 +1671,69 @@ void DigitalBrain::AiSetFormation(FalconWingmanMsg* msg)
 
         switch (radioform)
         {
-            case FalconWingmanMsg::WMSpread:
-                edata[1] = 1;
-                break;
+        case FalconWingmanMsg::WMSpread:
+            edata[1] = 1;
+            break;
 
-            case FalconWingmanMsg::WMWedge:
-                edata[1] = 2;
-                break;
+        case FalconWingmanMsg::WMWedge:
+            edata[1] = 2;
+            break;
 
-            case FalconWingmanMsg::WMTrail:
-                edata[1] = 3;
-                break;
+        case FalconWingmanMsg::WMTrail:
+            edata[1] = 3;
+            break;
 
-            case FalconWingmanMsg::WMLadder:
-                edata[1] = 4;
-                break;
+        case FalconWingmanMsg::WMLadder:
+            edata[1] = 4;
+            break;
 
-            case FalconWingmanMsg::WMStack:
-                edata[1] = 5;
-                break;
+        case FalconWingmanMsg::WMStack:
+            edata[1] = 5;
+            break;
 
-            case FalconWingmanMsg::WMResCell:
-                edata[1] = 6;
-                break;
+        case FalconWingmanMsg::WMResCell:
+            edata[1] = 6;
+            break;
 
-            case FalconWingmanMsg::WMBox:
-                edata[1] = 7;
-                break;
+        case FalconWingmanMsg::WMBox:
+            edata[1] = 7;
+            break;
 
-            case FalconWingmanMsg::WMArrowHead:
-                edata[1] = 8;
-                break;
+        case FalconWingmanMsg::WMArrowHead:
+            edata[1] = 8;
+            break;
 
-            case FalconWingmanMsg::WMFluidFour:
-                edata[1] = 14;
-                break;
+        case FalconWingmanMsg::WMFluidFour:
+            edata[1] = 14;
+            break;
 
-            case FalconWingmanMsg::WMVic:
-                edata[1] = 10;
-                break;
+        case FalconWingmanMsg::WMVic:
+            edata[1] = 10;
+            break;
 
-            case FalconWingmanMsg::WMEchelon:
-                edata[1] = 11;
-                break;
+        case FalconWingmanMsg::WMEchelon:
+            edata[1] = 11;
+            break;
 
-            case FalconWingmanMsg::WMFinger4:
-                edata[1] = 13;
-                break;
+        case FalconWingmanMsg::WMFinger4:
+            edata[1] = 13;
+            break;
 
-            case FalconWingmanMsg::WMForm1:
-                edata[1] = 15;
-                break;
+        case FalconWingmanMsg::WMForm1:
+            edata[1] = 15;
+            break;
 
-            case FalconWingmanMsg::WMForm2:
-                edata[1] = 16;
-                break;
+        case FalconWingmanMsg::WMForm2:
+            edata[1] = 16;
+            break;
 
-            case FalconWingmanMsg::WMForm3:
-                edata[1] = 17;
-                break;
+        case FalconWingmanMsg::WMForm3:
+            edata[1] = 17;
+            break;
 
-            case FalconWingmanMsg::WMForm4:
-                edata[1] = 18;
-                break;
+        case FalconWingmanMsg::WMForm4:
+            edata[1] = 18;
+            break;
         }
 
         AiMakeRadioResponse(self, rcFORMRESPONSEB, edata);
@@ -1797,7 +1866,6 @@ void DigitalBrain::AiIncreaseRelativeAltitude(void)
     edata[1] = 0;
 
     AiMakeRadioResponse(self, rcFORMRESPONSEA, edata);
-
 }
 
 void DigitalBrain::AiDecreaseRelativeAltitude(void)
@@ -1824,7 +1892,6 @@ void DigitalBrain::AiDecreaseRelativeAltitude(void)
 }
 
 
-
 // ----------------------------------------------------
 // ----------------------------------------------------
 //
@@ -1849,14 +1916,15 @@ void DigitalBrain::AiGiveBra(FalconWingmanMsg* msg)
 
     AircraftClass* psender;
 
-    psender = (AircraftClass*) vuDatabase->Find(msg->dataBlock.from);
+    psender = (AircraftClass*)vuDatabase->Find(msg->dataBlock.from);
 
 
     rx = self->XPos() - psender->XPos();
     ry = self->YPos() - psender->YPos();
     rz = self->ZPos() - psender->ZPos();
 
-    navangle = FloatToInt32(ConvertRadtoNav((float)atan2(ry, rx))); // convert to compass angle
+    navangle = FloatToInt32(
+        ConvertRadtoNav((float)atan2(ry, rx))); // convert to compass angle
 
     dsq = rx * rx + ry * ry;
 
@@ -1870,7 +1938,7 @@ void DigitalBrain::AiGiveBra(FalconWingmanMsg* msg)
 
         angle = (float)atan2(ydiff, xdiff);
         angle = angle - psender->Yaw();
-        navangle =  FloatToInt32(RTD * angle);
+        navangle = FloatToInt32(RTD * angle);
 
         if (navangle < 0)
         {
@@ -1890,7 +1958,8 @@ void DigitalBrain::AiGiveBra(FalconWingmanMsg* msg)
          edata[1] = 0;
          }
         */
-        if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
+        if (rz < 300.0F and
+            rz > -300.0F) // check relative alt and select correct frag
         {
             edata[2] = 1;
         }
@@ -1912,15 +1981,19 @@ void DigitalBrain::AiGiveBra(FalconWingmanMsg* msg)
     else
     {
         edata[0] = ((FlightClass*)psender->GetCampaignObject())->callsign_id;
-        edata[1] = (((FlightClass*)psender->GetCampaignObject())->callsign_num - 1) * 4 + psender->GetCampaignObject()->GetComponentIndex(psender) + 1;
+        edata[1] =
+            (((FlightClass*)psender->GetCampaignObject())->callsign_num - 1) *
+                4 +
+            psender->GetCampaignObject()->GetComponentIndex(psender) + 1;
         edata[2] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-        edata[3] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + self->GetCampaignObject()->GetComponentIndex(self) + 1;
-        edata[4] = (short) SimToGrid(self->YPos());
-        edata[5] = (short) SimToGrid(self->XPos());
-        edata[6] = (short) - self->ZPos() ;
+        edata[3] =
+            (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
+            self->GetCampaignObject()->GetComponentIndex(self) + 1;
+        edata[4] = (short)SimToGrid(self->YPos());
+        edata[5] = (short)SimToGrid(self->XPos());
+        edata[6] = (short)-self->ZPos();
 
         response = rcPOSITIONRESPONSEA;
-
     }
 
     AiMakeRadioResponse(self, response, edata);
@@ -1951,7 +2024,8 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
 
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
-    if ((curMode == GunsJinkMode or curMode == MissileDefeatMode) and pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+    if ((curMode == GunsJinkMode or curMode == MissileDefeatMode) and
+        pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
 
         xdiff = self->XPos() - pmytarget->XPos();
@@ -1969,10 +2043,13 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             }
 
             edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
-            edata[2] = (short) SimToGrid(pmytarget->YPos());
-            edata[3] = (short) SimToGrid(pmytarget->XPos());
-            edata[4] = (short) pmytarget->ZPos();
+            edata[1] =
+                (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) *
+                    4 +
+                flightIdx + 1;
+            edata[2] = (short)SimToGrid(pmytarget->YPos());
+            edata[3] = (short)SimToGrid(pmytarget->XPos());
+            edata[4] = (short)pmytarget->ZPos();
         }
         else
         {
@@ -1980,22 +2057,26 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             response = rcENGDEFENSIVEC;
         }
     }
-    else if (pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+    else if (pmytarget and
+             (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
 
         edata[0] = -1;
         edata[1] = -1;
         edata[2] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-        edata[3] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
-        edata[4] = (short) SimToGrid(pmytarget->YPos());
-        edata[5] = (short) SimToGrid(pmytarget->XPos());
-        edata[6] = (short) pmytarget->ZPos();
+        edata[3] =
+            (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
+            flightIdx + 1;
+        edata[4] = (short)SimToGrid(pmytarget->YPos());
+        edata[5] = (short)SimToGrid(pmytarget->XPos());
+        edata[6] = (short)pmytarget->ZPos();
 
         response = rcAIRTARGETBRA;
 
         // rcBANDIT
     }
-    else if (mpActionFlags[AI_EXECUTE_MANEUVER]/* == TRUE *//* 2002-03-15 REMOVED BY S.G. Can be TRUE or TRUE+1 now */)
+    else if (mpActionFlags[AI_EXECUTE_MANEUVER] /* == TRUE */
+             /* 2002-03-15 REMOVED BY S.G. Can be TRUE or TRUE+1 now */)
     {
 
         edata[0] = self->GetCampaignObject()->GetComponentIndex(self);
@@ -2003,32 +2084,32 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
         switch (mCurrentManeuver)
         {
 
-            case FalconWingmanMsg::WMChainsaw:
-                edata[1] = 6;
-                break;
+        case FalconWingmanMsg::WMChainsaw:
+            edata[1] = 6;
+            break;
 
-            case FalconWingmanMsg::WMPince:
-                edata[1] = 4;
-                break;
+        case FalconWingmanMsg::WMPince:
+            edata[1] = 4;
+            break;
 
-            case FalconWingmanMsg::WMPosthole:
-                edata[1] = 5;
-                break;
+        case FalconWingmanMsg::WMPosthole:
+            edata[1] = 5;
+            break;
 
-            case FalconWingmanMsg::WMFlex:
-            case FalconWingmanMsg::WMSkate:
-            case FalconWingmanMsg::WMSSOffset:
-                edata[1] = 8;
-                break;
+        case FalconWingmanMsg::WMFlex:
+        case FalconWingmanMsg::WMSkate:
+        case FalconWingmanMsg::WMSSOffset:
+            edata[1] = 8;
+            break;
         }
 
         // status = performing maneuver
         response = rcEXECUTERESPONSE;
     }
-    else if ((curMode == GunsEngageMode or
-              curMode == MissileEngageMode or
-              curMode == WVREngageMode or
-              curMode == BVREngageMode) and pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+    else if ((curMode == GunsEngageMode or curMode == MissileEngageMode or
+              curMode == WVREngageMode or curMode == BVREngageMode) and
+             pmytarget and
+             (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
         xdiff = self->XPos() - pmytarget->XPos();
         ydiff = self->YPos() - pmytarget->YPos();
@@ -2045,15 +2126,18 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             }
 
             edata[0] = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-            edata[1] = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
+            edata[1] =
+                (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) *
+                    4 +
+                flightIdx + 1;
             edata[2] = 2 * (pmytarget->Type() - VU_LAST_ENTITY_TYPE);
-            edata[3] = (short) SimToGrid(pmytarget->YPos());
-            edata[4] = (short) SimToGrid(pmytarget->XPos());
-            edata[5] = (short) pmytarget->ZPos();
+            edata[3] = (short)SimToGrid(pmytarget->YPos());
+            edata[4] = (short)SimToGrid(pmytarget->XPos());
+            edata[5] = (short)pmytarget->ZPos();
         }
         else
         {
-            pfrom = (AircraftClass*) vuDatabase->Find(msg->dataBlock.from);
+            pfrom = (AircraftClass*)vuDatabase->Find(msg->dataBlock.from);
             edata[0] = 2 * (pmytarget->Type() - VU_LAST_ENTITY_TYPE);
 
             xdiff = pmytarget->XPos() - pfrom->XPos();
@@ -2061,7 +2145,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
 
             angle = (float)atan2(ydiff, xdiff);
             angle = angle - pfrom->Yaw();
-            navangle =  FloatToInt32(RTD * angle);
+            navangle = FloatToInt32(RTD * angle);
 
             if (navangle < 0)
             {
@@ -2077,7 +2161,8 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
 
             rz = pmytarget->ZPos() - pfrom->ZPos();
 
-            if (rz < 300.0F and rz > -300.0F)   // check relative alt and select correct frag
+            if (rz < 300.0F and
+                rz > -300.0F) // check relative alt and select correct frag
             {
                 edata[2] = 1;
             }
@@ -2097,10 +2182,11 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
             response = rcENGAGINGC;
         }
     }
-    else if (pmytarget and (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
+    else if (pmytarget and
+             (pmytarget->IsAirplane() or pmytarget->IsHelicopter()))
     {
         // and i am spiked
-        response =  rcSPIKE;
+        response = rcSPIKE;
     }
     // else if(have stuff on radar) {
     // response = rcPICTUREBRA;
@@ -2108,7 +2194,7 @@ void DigitalBrain::AiGiveStatus(FalconWingmanMsg* msg)
     else
     {
         // status = clean, clear bitand naked
-        random = 4 * (FloatToInt32((float) rand() / (float) RAND_MAX));
+        random = 4 * (FloatToInt32((float)rand() / (float)RAND_MAX));
 
         edata[0] = flightIdx;
         edata[1] = random;
@@ -2137,21 +2223,19 @@ void DigitalBrain::AiGiveDamageReport(FalconWingmanMsg* msg)
         int status;
     } DamageEntry;
 
-    DamageEntry pFaultList[DAMAGELIST] = {{FaultClass::eng_fault, FALSE},
-        {FaultClass::fcr_fault, FALSE},
-        {FaultClass::flcs_fault, FALSE},
-        {FaultClass::sms_fault, FALSE},
-        {FaultClass::ins_fault, FALSE},
-        {FaultClass::rwr_fault, FALSE},
-        {FaultClass::tcn_fault, FALSE},
-        {FaultClass::ufc_fault, FALSE},
-        {FaultClass::amux_fault, FALSE}
-    };
+    DamageEntry pFaultList[DAMAGELIST] = {
+        {FaultClass::eng_fault, FALSE},  {FaultClass::fcr_fault, FALSE},
+        {FaultClass::flcs_fault, FALSE}, {FaultClass::sms_fault, FALSE},
+        {FaultClass::ins_fault, FALSE},  {FaultClass::rwr_fault, FALSE},
+        {FaultClass::tcn_fault, FALSE},  {FaultClass::ufc_fault, FALSE},
+        {FaultClass::amux_fault, FALSE}};
 
-    edata[0] = self->GetCampaignObject()->GetComponentIndex(self); // Get my slot in the flight
-    count = ((AircraftClass*) self)->mFaults->GetFFaultCount(); // Check how many faults are set
+    edata[0] = self->GetCampaignObject()->GetComponentIndex(
+        self); // Get my slot in the flight
+    count = ((AircraftClass*)self)
+                ->mFaults->GetFFaultCount(); // Check how many faults are set
 
-    if (count == 0)   // If is no damage, say a-okay
+    if (count == 0) // If is no damage, say a-okay
     {
         edata[1] = 3;
         AiMakeRadioResponse(self, rcGENERALRESPONSEC, edata);
@@ -2163,12 +2247,14 @@ void DigitalBrain::AiGiveDamageReport(FalconWingmanMsg* msg)
     while (lastFault < DAMAGELIST)
     {
 
-        if (((AircraftClass*) self)->mFaults->GetFault(pFaultList[lastFault].subSystem) == TRUE)
+        if (((AircraftClass*)self)
+                ->mFaults->GetFault(pFaultList[lastFault].subSystem) == TRUE)
         {
 
             pFaultList[lastFault].status = TRUE;
 
-            if (pFaultList[lastFault].subSystem == FaultClass::eng_fault)   // Evaluate each system
+            if (pFaultList[lastFault].subSystem ==
+                FaultClass::eng_fault) // Evaluate each system
             {
                 edata[1] = 0;
                 edata[2] = 4;
@@ -2236,47 +2322,56 @@ void DigitalBrain::AiGiveDamageReport(FalconWingmanMsg* msg)
             if (pFaultList[lastFault].status == FALSE)
             {
 
-                if (pFaultList[lastFault].subSystem == FaultClass::eng_fault)   // Evaluate each system
+                if (pFaultList[lastFault].subSystem ==
+                    FaultClass::eng_fault) // Evaluate each system
                 {
                     edata[1] = 0;
                     edata[2] = 4;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::fcr_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::fcr_fault)
                 {
                     edata[1] = 1;
                     edata[2] = 1;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::flcs_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::flcs_fault)
                 {
                     edata[1] = 2;
                     edata[2] = 2;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::sms_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::sms_fault)
                 {
                     edata[1] = 3;
                     edata[2] = 2;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::ins_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::ins_fault)
                 {
                     edata[1] = 4;
                     edata[2] = 1;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::rwr_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::rwr_fault)
                 {
                     edata[1] = 5;
                     edata[2] = 2;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::tcn_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::tcn_fault)
                 {
                     edata[1] = 6;
                     edata[2] = 1;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::ufc_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::ufc_fault)
                 {
                     edata[1] = 7;
                     edata[2] = 2;
                 }
-                else if (pFaultList[lastFault].subSystem == FaultClass::amux_fault)
+                else if (pFaultList[lastFault].subSystem ==
+                         FaultClass::amux_fault)
                 {
                     edata[1] = 8;
                     edata[2] = 1;
@@ -2310,7 +2405,8 @@ void DigitalBrain::AiGiveFuelStatus(FalconWingmanMsg* msg)
     else
     {
         response = rcFUELCHECKRSP;
-        edata[1] = (FloatToInt32(self->af->Fuel() + self->af->ExternalFuel()));// / 1000;
+        edata[1] = (FloatToInt32(self->af->Fuel() +
+                                 self->af->ExternalFuel())); // / 1000;
     }
 
     AiMakeRadioResponse(self, response, edata);
@@ -2340,7 +2436,9 @@ void DigitalBrain::AiGiveWeaponsStatus(void)
     flightIdx = self->GetCampaignObject()->GetComponentIndex(self);
 
     short e0 = ((FlightClass*)self->GetCampaignObject())->callsign_id;
-    short e1 = (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 + flightIdx + 1;
+    short e1 =
+        (((FlightClass*)self->GetCampaignObject())->callsign_num - 1) * 4 +
+        flightIdx + 1;
 
 
     // 2001-10-16 M.N. only one time the full callsign
@@ -2351,34 +2449,43 @@ void DigitalBrain::AiGiveWeaponsStatus(void)
 
 
     // Do a search for Heaters and Radars
-    SMSClass *sms = (SMSClass*) self->GetSMS();
+    SMSClass* sms = (SMSClass*)self->GetSMS();
 
     if (sms)
     {
         for (hp = 1; hp < sms->NumHardpoints(); hp++)
         {
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAim120)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtAim120)
                 hasRadar += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAim9)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtAim9)
                 hasHeat += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtAgm88)
                 hasHARM += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtAgm65)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtAgm65)
                 hasAGM += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtMk82)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtMk82)
                 hasBomb += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtMk84)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtMk84)
                 hasBomb += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtGBU)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtGBU)
                 hasLGB += sms->hardPoint[hp]->weaponCount;
 
-            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->GetWeaponType() == wtLAU and sms->hardPoint[hp]->GetWeaponClass() == wcRocketWpn)
+            if (sms->hardPoint[hp] and sms->hardPoint[hp]->weaponPointer and
+                sms->hardPoint[hp]->GetWeaponType() == wtLAU and
+                sms->hardPoint[hp]->GetWeaponClass() == wcRocketWpn)
                 // hasRockets += sms->hardPoint[hp]->weaponCount;
                 hasRockets++;
 
@@ -2408,13 +2515,15 @@ void DigitalBrain::AiGiveWeaponsStatus(void)
     if (hasRockets > 24)
         hasRockets = 24;
 
-    hasWeapons = hasRadar + hasHARM + hasHeat + hasAGM + hasBomb + hasLGB + hasRockets;
+    hasWeapons =
+        hasRadar + hasHARM + hasHeat + hasAGM + hasBomb + hasLGB + hasRockets;
 
     if (hasAGM)
     {
         edata[0] = (short)hasAGM--;
         edata[1] = 242;
-        AiMakeRadioResponse(self, rcWEAPONSCHECKRSP, edata); // Commsequence changed 01-11-15
+        AiMakeRadioResponse(self, rcWEAPONSCHECKRSP,
+                            edata); // Commsequence changed 01-11-15
     }
 
     if (hasHARM)
@@ -2459,7 +2568,7 @@ void DigitalBrain::AiGiveWeaponsStatus(void)
         AiMakeRadioResponse(self, rcWEAPONSCHECKRSP, edata);
     }
 
-    if ( not hasWeapons)
+    if (not hasWeapons)
     {
         edata[0] = -1;
         edata[1] = 0; // Winchester
@@ -2478,15 +2587,12 @@ void DigitalBrain::AiGiveWeaponsStatus(void)
     else
     {
         response = rcFUELCHECKRSP;
-        edata[1] = (FloatToInt32(self->af->Fuel() + self->af->ExternalFuel()));// / 1000;
+        edata[1] = (FloatToInt32(self->af->Fuel() +
+                                 self->af->ExternalFuel())); // / 1000;
     }
 
     AiMakeRadioResponse(self, response, edata);
-
 }
-
-
-
 
 
 // ----------------------------------------------------
@@ -2504,9 +2610,9 @@ void DigitalBrain::AiPromote(void)
 
     if (isWing > 0)
     {
-        isWing --;
+        isWing--;
 
-        if ( not isWing)
+        if (not isWing)
         {
             SetLead(TRUE);
         }
@@ -2579,7 +2685,6 @@ void DigitalBrain::AiBuddySpikeReact(FalconWingmanMsg* msg)
 }
 
 
-
 // ----------------------------------------------------
 // DigitalBrain::AiSetRadarActive
 // ----------------------------------------------------
@@ -2650,12 +2755,13 @@ void DigitalBrain::AiRTB(FalconWingmanMsg* msg)
     WayPointClass* pWaypoint = self->waypoint;
     BOOL done = FALSE;
 
-    mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
+    mpActionFlags[AI_ENGAGE_TARGET] =
+        AI_NONE; // 2002-03-04 MODIFIED BY S.G. Use new enum type
     mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
     mpActionFlags[AI_FOLLOW_FORMATION] = FALSE;
     mpActionFlags[AI_RTB] = TRUE;
 
-    while ( not done)
+    while (not done)
     {
         if (pWaypoint)
         {
@@ -2684,7 +2790,7 @@ void DigitalBrain::AiRTB(FalconWingmanMsg* msg)
     {
         edata[0] = flightIdx;
 
-        if ( not IsSetATC(SaidRTB))
+        if (not IsSetATC(SaidRTB))
         {
             SetATCFlag(SaidRTB);
             AiMakeRadioResponse(self, rcIMADOT, edata);
@@ -2715,7 +2821,11 @@ void DigitalBrain::AiCheckInPositionCall(float trX, float trY, float trZ)
         // 2002-02-12 ADDED BY S.G. If the lead is climbing (or is the player since I can't tell what altitude he wants), be more relax about z
         float maxZDiff;
 
-        if (g_bPitchLimiterForAI and flightLead and (flightLead->IsSetFlag(MOTION_OWNSHIP) or (((AircraftClass*)flightLead)->DBrain() and fabs(flightLead->ZPos() - ((AircraftClass*)flightLead)->DBrain()->trackZ) > 2000.0f)))
+        if (g_bPitchLimiterForAI and flightLead and
+            (flightLead->IsSetFlag(MOTION_OWNSHIP) or
+             (((AircraftClass*)flightLead)->DBrain() and
+              fabs(flightLead->ZPos() -
+                   ((AircraftClass*)flightLead)->DBrain()->trackZ) > 2000.0f)))
             maxZDiff = 2000.0f;
         else
             maxZDiff = 250.0f;
@@ -2726,18 +2836,23 @@ void DigitalBrain::AiCheckInPositionCall(float trX, float trY, float trZ)
         ydiff = trY - self->YPos();
         zdiff = trZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff * ydiff <  250.0F * 250.0F) and fabs(zdiff) < maxZDiff)  // 2002-02-12 MODIFIED BY S.G. It's "ydiff * ydiff" not "ydiff + ydiff" plus replaced 250.0f for maxZDiff
+        if ((xdiff * xdiff + ydiff * ydiff < 250.0F * 250.0F) and
+            fabs(zdiff) <
+                maxZDiff) // 2002-02-12 MODIFIED BY S.G. It's "ydiff * ydiff" not "ydiff + ydiff" plus replaced 250.0f for maxZDiff
         {
             mInPositionFlag = TRUE;
             edata[0] = self->GetCampaignObject()->GetComponentIndex(self);
             AiMakeRadioResponse(self, rcINPOSITION, edata);
 
-            vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-            flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+            vehInFlight =
+                ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+            flightIdx = ((FlightClass*)self->GetCampaignObject())
+                            ->GetComponentIndex(self);
 
             if (flightIdx == AiElementLead and vehInFlight == 4)
             {
-                AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMGlue, AiWingman, FalconNullId);
+                AiMakeCommandMsg((SimBaseClass*)self, FalconWingmanMsg::WMGlue,
+                                 AiWingman, FalconNullId);
             }
         }
     }
@@ -2748,30 +2863,37 @@ void DigitalBrain::AiCheckPosition(void)
 {
     float xdiff, ydiff, zdiff;
     float trX, trY, trZ, rangeFactor;
-    ACFormationData::PositionData *curPosition;
+    ACFormationData::PositionData* curPosition;
     AircraftClass* paircraft;
     int vehInFlight, flightIdx;
 
     if (flightLead and flightLead not_eq self)
     {
         // Get wingman slot position relative to the leader
-        vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-        flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+        vehInFlight =
+            ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+        flightIdx =
+            ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
         if (flightIdx == AiFirstWing and vehInFlight == 2)
         {
-            curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
-            paircraft = (AircraftClass*) flightLead;
+            curPosition = &(
+                acFormationData->twoposData
+                    [mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
+            paircraft = (AircraftClass*)flightLead;
         }
         else if (flightIdx == AiSecondWing and mSplitFlight)
         {
             curPosition = &(acFormationData->twoposData[mFormation]);
-            paircraft = (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
+            paircraft =
+                (AircraftClass*)((FlightClass*)self->GetCampaignObject())
+                    ->GetComponentEntity(AiElementLead);
         }
         else
         {
-            curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
-            paircraft = (AircraftClass*) flightLead;
+            curPosition =
+                &(acFormationData->positionData[mFormation][flightIdx - 1]);
+            paircraft = (AircraftClass*)flightLead;
         }
 
         rangeFactor = curPosition->range * (2.0F * mFormLateralSpaceFactor);
@@ -2779,15 +2901,17 @@ void DigitalBrain::AiCheckPosition(void)
         // Get my leader's position
         ShiAssert(paircraft)
 
-        if (paircraft)
+            if (paircraft)
         {
             trX = paircraft->XPos();
             trY = paircraft->YPos();
             trZ = paircraft->ZPos();
 
             // Calculate position relative to the leader
-            trX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
-            trY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
+            trX += rangeFactor * (float)cos(curPosition->relAz * mFormSide +
+                                            paircraft->af->sigma);
+            trY += rangeFactor * (float)sin(curPosition->relAz * mFormSide +
+                                            paircraft->af->sigma);
         }
 
         if (curPosition->relEl)
@@ -2803,7 +2927,8 @@ void DigitalBrain::AiCheckPosition(void)
         ydiff = trY - self->YPos();
         zdiff = trZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff + ydiff >  250.0F * 250.0F) or fabs(zdiff) < 250.0F)
+        if ((xdiff * xdiff + ydiff + ydiff > 250.0F * 250.0F) or
+            fabs(zdiff) < 250.0F)
         {
             mInPositionFlag = FALSE;
         }
@@ -2831,7 +2956,6 @@ void DigitalBrain::AiCheckFormStrip(void)
 }
 
 
-
 // ----------------------------------------------------
 // DigitalBrain::AiGlueWing
 // ----------------------------------------------------
@@ -2855,7 +2979,7 @@ void DigitalBrain::AiSplitWing(void)
 // DigitalBrain::AiDropStores
 // ----------------------------------------------------
 
-void DigitalBrain::AiDropStores(FalconWingmanMsg *msg)
+void DigitalBrain::AiDropStores(FalconWingmanMsg* msg)
 {
     short edata[10];
     int flightIdx;

@@ -12,7 +12,7 @@
 #include <windows.h>
 #include "falclib.h"
 #include "f4vu.h"
-#include "Mesg.h"
+#include "mesg.h"
 #include "msginc/sendchatmessage.h"
 #include "msginc/requestlogbook.h"
 #include "falcmesg.h"
@@ -23,12 +23,12 @@
 #include "userids.h"
 #include "textids.h"
 #include "sim/include/commands.h"
-#include "CmpClass.h"
+#include "cmpclass.h"
 #include "flight.h"
 #include "queue.h"
-#include "Dispcfg.h"
-#include "FalcSnd/voicemanager.h"
-#include "FalcSnd/voicefilter.h"
+#include "dispcfg.h"
+#include "falcsnd/voicemanager.h"
+#include "falcsnd/voicefilter.h"
 #include "remotelb.h"
 
 #include "include/comsup.h"
@@ -44,10 +44,10 @@ void CloseWindowCB(long ID, short hittype, C_Base *control);
 void GetPlayerInfo(VU_ID ID);
 extern void Phone_Connect_CB(long n, short hittype, C_Base *control);
 
-#pragma warning(disable:4192)
+#pragma warning(disable : 4192)
 #import "gnet\bin\core.tlb"
 #import "gnet\bin\shared.tlb" named_guids
-#pragma warning(default:4192)
+#pragma warning(default : 4192)
 
 extern char g_strMasterServerName[0x40];
 // M.N. EnableUplink UI switch
@@ -60,10 +60,9 @@ struct __declspec(uuid("41C27D56-3A03-4E9D-BE01-3423126C3983")) GameSpyUplink;
 extern int gLangIDNum;
 
 // Helper classes
-class CGNetUpdater :
-    public CComObjectRootEx<CComMultiThreadModel>,
-    public IGameEvents,
-    public IRemoteMasterServerEvents
+class CGNetUpdater : public CComObjectRootEx<CComMultiThreadModel>,
+                     public IGameEvents,
+                     public IRemoteMasterServerEvents
 {
 public:
     CGNetUpdater();
@@ -125,7 +124,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
@@ -212,40 +212,40 @@ static void UpdateServerStatus();
 
 BOOL ServerListSortCB_Name(TREELIST *_pItem1, TREELIST *_pItem2)
 {
-    C_ServerItem *pItem1 = (C_ServerItem *) _pItem1->Item_;
-    C_ServerItem *pItem2 = (C_ServerItem *) _pItem2->Item_;
+    C_ServerItem *pItem1 = (C_ServerItem *)_pItem1->Item_;
+    C_ServerItem *pItem2 = (C_ServerItem *)_pItem2->Item_;
 
     return pItem1->CompareText(pItem2, 0) >= 0;
 }
 
 BOOL ServerListSortCB_Ping(TREELIST *_pItem1, TREELIST *_pItem2)
 {
-    C_ServerItem *pItem1 = (C_ServerItem *) _pItem1->Item_;
-    C_ServerItem *pItem2 = (C_ServerItem *) _pItem2->Item_;
+    C_ServerItem *pItem1 = (C_ServerItem *)_pItem1->Item_;
+    C_ServerItem *pItem2 = (C_ServerItem *)_pItem2->Item_;
 
     return pItem1->ComparePing(pItem2);
 }
 
 BOOL ServerListSortCB_Mode(TREELIST *_pItem1, TREELIST *_pItem2)
 {
-    C_ServerItem *pItem1 = (C_ServerItem *) _pItem1->Item_;
-    C_ServerItem *pItem2 = (C_ServerItem *) _pItem2->Item_;
+    C_ServerItem *pItem1 = (C_ServerItem *)_pItem1->Item_;
+    C_ServerItem *pItem2 = (C_ServerItem *)_pItem2->Item_;
 
     return pItem1->CompareText(pItem2, 2) >= 0;
 }
 
 BOOL ServerListSortCB_Players(TREELIST *_pItem1, TREELIST *_pItem2)
 {
-    C_ServerItem *pItem1 = (C_ServerItem *) _pItem1->Item_;
-    C_ServerItem *pItem2 = (C_ServerItem *) _pItem2->Item_;
+    C_ServerItem *pItem1 = (C_ServerItem *)_pItem1->Item_;
+    C_ServerItem *pItem2 = (C_ServerItem *)_pItem2->Item_;
 
     return pItem1->ComparePlayers(pItem2);
 }
 
 BOOL ServerListSortCB_Location(TREELIST *_pItem1, TREELIST *_pItem2)
 {
-    C_ServerItem *pItem1 = (C_ServerItem *) _pItem1->Item_;
-    C_ServerItem *pItem2 = (C_ServerItem *) _pItem2->Item_;
+    C_ServerItem *pItem1 = (C_ServerItem *)_pItem1->Item_;
+    C_ServerItem *pItem2 = (C_ServerItem *)_pItem2->Item_;
 
     return pItem1->CompareText(pItem2, 4) >= 0;
 }
@@ -346,7 +346,7 @@ static void OnClickedPlay(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not m_pSelectedItem or m_bConnectPending)
+    if (not m_pSelectedItem or m_bConnectPending)
         return;
 
     C_Base *wndClose = control->GetParent()->FindControl(CLOSE_WINDOW);
@@ -358,7 +358,7 @@ static void OnClickedPlay(long, short hittype, C_Base *control)
         m_bConnectPending = true;
 
     else
-        Phone_Connect_CB((long) m_pSelectedItem->GetIP(), hittype, control);
+        Phone_Connect_CB((long)m_pSelectedItem->GetIP(), hittype, control);
 }
 
 static void OnClickedFilter_All(long, short hittype, C_Base *control)
@@ -486,34 +486,36 @@ static void OnSelchangeServerList(long n, short hittype, C_Base *control)
 {
     switch (hittype)
     {
-        case C_TYPE_LMOUSEDOWN:
-        {
+    case C_TYPE_LMOUSEDOWN:
+    {
             // F4CSECTIONHANDLE *Leave = UI_Enter(control->Parent_);
-            if (m_pSelectedItem)
-            {
-                m_pSelectedItem->SetState(static_cast<short>(control->GetState() bitand compl 1));
-                m_pSelectedItem->Refresh();
-            }
-
-            m_pSelectedItem = (C_ServerItem *) control;
-            m_pSelectedItem->SetState(static_cast<short>(control->GetState() bitor 1));
+        if (m_pSelectedItem)
+        {
+            m_pSelectedItem->SetState(
+                static_cast<short>(control->GetState() bitand compl 1));
             m_pSelectedItem->Refresh();
+        }
+
+        m_pSelectedItem = (C_ServerItem *)control;
+        m_pSelectedItem->SetState(
+            static_cast<short>(control->GetState() bitor 1));
+        m_pSelectedItem->Refresh();
 
             // UI_Leave(Leave);
-            break;
-        }
+        break;
+    }
 
-        case C_TYPE_LMOUSEDBLCLK:
-        {
-            OnClickedPlay(n, C_TYPE_LMOUSEUP, control);
-            break;
-        }
+    case C_TYPE_LMOUSEDBLCLK:
+    {
+        OnClickedPlay(n, C_TYPE_LMOUSEUP, control);
+        break;
+    }
 
-        case C_TYPE_RMOUSEDOWN:
-        {
+    case C_TYPE_RMOUSEDOWN:
+    {
             // Context menu
-            break;
-        }
+        break;
+    }
     }
 }
 /*
@@ -530,21 +532,23 @@ static void OnClickedSetup(long,short hittype,C_Base *control)
     gMainHandler->WindowToFront(win);
 }
 */
-static BOOL MainKBCallback(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount)
+static BOOL MainKBCallback(unsigned char DKScanCode, unsigned char Ascii,
+                           unsigned char ShiftStates, long RepeatCount)
 {
     switch (DKScanCode)
     {
-        case DIK_RETURN:
-        case DIK_NUMPADENTER:
+    case DIK_RETURN:
+    case DIK_NUMPADENTER:
+    {
+        if (RepeatCount == 1 and m_pSelectedItem)
         {
-            if (RepeatCount == 1 and m_pSelectedItem)
-            {
-                OnClickedPlay(0, C_TYPE_LMOUSEUP, m_pWnd->FindControl(JETNET_BROWSER_PLAY));
-                return TRUE;
-            }
-
-            break;
+            OnClickedPlay(0, C_TYPE_LMOUSEUP,
+                          m_pWnd->FindControl(JETNET_BROWSER_PLAY));
+            return TRUE;
         }
+
+        break;
+    }
     }
 
     return FALSE;
@@ -552,9 +556,6 @@ static BOOL MainKBCallback(unsigned char DKScanCode, unsigned char Ascii, unsign
 
 static void OnJNEnableUplink(long, short hittype, C_Base *control)
 {
-
-
-
 }
 
 void HookupServerBrowserControls(long ID)
@@ -571,12 +572,12 @@ void HookupServerBrowserControls(long ID)
     m_pWnd = winme;
     m_pWnd->SetKBCallback(MainKBCallback);
 
-    ctrl = (C_Button *) winme->FindControl(CLOSE_WINDOW);
+    ctrl = (C_Button *)winme->FindControl(CLOSE_WINDOW);
 
     if (ctrl)
         ctrl->SetCallback(LocalCloseWindowCB);
 
-    tree = (C_TreeList*)winme->FindControl(JETNET_SERVER_TREE);
+    tree = (C_TreeList *)winme->FindControl(JETNET_SERVER_TREE);
 
     if (tree)
     {
@@ -586,72 +587,72 @@ void HookupServerBrowserControls(long ID)
         m_pListServers->SetSortCallback(ServerListSortCB_Ping);
     }
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_BACK);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_BACK);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedBack);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_REFRESH);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_REFRESH);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedRefresh);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_PLAY);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_PLAY);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedPlay);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_FILTER_ALL);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_FILTER_ALL);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedFilter_All);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_FILTER_CAMPAIGN);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_FILTER_CAMPAIGN);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedFilter_Campaign);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_FILTER_TE);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_FILTER_TE);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedFilter_TE);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_FILTER_DOGFIGHT);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_FILTER_DOGFIGHT);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedFilter_Dogfight);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_FILTER_FAVORITES);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_FILTER_FAVORITES);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedFilter_Favorites);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_BROWSER_FILTER_POPULATED);
+    ctrl = (C_Button *)winme->FindControl(JETNET_BROWSER_FILTER_POPULATED);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedFilter_Populated);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_SORT_SERVERNAME);
+    ctrl = (C_Button *)winme->FindControl(JETNET_SORT_SERVERNAME);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedSort_ServerName);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_SORT_PING);
+    ctrl = (C_Button *)winme->FindControl(JETNET_SORT_PING);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedSort_Ping);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_SORT_MODE);
+    ctrl = (C_Button *)winme->FindControl(JETNET_SORT_MODE);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedSort_Mode);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_SORT_PLAYERS);
+    ctrl = (C_Button *)winme->FindControl(JETNET_SORT_PLAYERS);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedSort_Players);
 
-    ctrl = (C_Button *) winme->FindControl(JETNET_SORT_LOCATION);
+    ctrl = (C_Button *)winme->FindControl(JETNET_SORT_LOCATION);
 
     if (ctrl)
         ctrl->SetCallback(OnClickedSort_Location);
@@ -660,7 +661,7 @@ void HookupServerBrowserControls(long ID)
      if(ctrl)
      ctrl->SetCallback(OnClickedSettings);
     */
-    m_pWndStatus = (C_Text *) winme->FindControl(JETNET_STATUS);
+    m_pWndStatus = (C_Text *)winme->FindControl(JETNET_STATUS);
 
     m_hEventShutdown = CreateEvent(NULL, FALSE, FALSE, NULL);
 
@@ -671,28 +672,29 @@ void HookupServerBrowserControls(long ID)
 
 C_ServerItem *MakeServerItem(C_TreeList *pTree, IGame *p)
 {
-	C_ServerItem* pServerItem = NULL;
+    C_ServerItem *pServerItem = NULL;
     C_Window *pWindow;
-	TREELIST* pTreeItem = NULL;
+    TREELIST *pTreeItem = NULL;
 
-    if ( not pTree or not p)
+    if (not pTree or not p)
         return NULL;
 
     try
     {
         pServerItem = new C_ServerItem;
 
-        if ( not pServerItem)
-            return(NULL);
+        if (not pServerItem)
+            return (NULL);
 
         pWindow = pTree->GetParent();
 
-        if ( not pWindow)
-            return(NULL);
+        if (not pWindow)
+            return (NULL);
 
         pServerItem->SetFont(pTree->GetFont());
         pServerItem->SetClient(pTree->GetClient());
-        pServerItem->SetW(pWindow->ClientArea_[pTree->GetClient()].right - pWindow->ClientArea_[pTree->GetClient()].left);
+        pServerItem->SetW(pWindow->ClientArea_[pTree->GetClient()].right -
+                          pWindow->ClientArea_[pTree->GetClient()].left);
         pServerItem->SetH(gFontList->GetHeight(pTree->GetFont()));
         pServerItem->Setup(p, pTree);
         pServerItem->SetCallback(OnSelchangeServerList);
@@ -731,11 +733,11 @@ static void Update()
 {
     try
     {
-        if ( not m_pUpdater)
+        if (not m_pUpdater)
         {
             m_pUpdater = new GNetUpdater;
 
-            if ( not m_pUpdater)
+            if (not m_pUpdater)
                 throw _com_error(E_OUTOFMEMORY);
 
             m_pUpdater->Init();
@@ -749,7 +751,8 @@ static void Update()
 
         else
         {
-            m_pListServers->DeleteBranch(m_pListServers->GetRoot()); // Delete all items
+            m_pListServers->DeleteBranch(
+                m_pListServers->GetRoot()); // Delete all items
             ClearServerList();
 
 #if 0
@@ -816,36 +819,36 @@ static inline bool FilterGame(IGame *p)
 {
     switch (m_eFilterMode)
     {
-        case FILTER_MODE_ALL:
-            return true;
+    case FILTER_MODE_ALL:
+        return true;
 
-        case FILTER_MODE_CAMPAIGN:
-        {
-            static const _bstr_t bstrCA("CA");
-            return GNETCORELib::IGamePtr(p)->GetType() == bstrCA;
-        }
+    case FILTER_MODE_CAMPAIGN:
+    {
+        static const _bstr_t bstrCA("CA");
+        return GNETCORELib::IGamePtr(p)->GetType() == bstrCA;
+    }
 
-        case FILTER_MODE_TE:
-        {
-            static const _bstr_t bstrTE("TE");
-            return GNETCORELib::IGamePtr(p)->GetType() == bstrTE;
-        }
+    case FILTER_MODE_TE:
+    {
+        static const _bstr_t bstrTE("TE");
+        return GNETCORELib::IGamePtr(p)->GetType() == bstrTE;
+    }
 
-        case FILTER_MODE_DOGFIGHT:
-        {
-            static const _bstr_t bstrDF("DF");
-            return GNETCORELib::IGamePtr(p)->GetType() == bstrDF;
-        }
+    case FILTER_MODE_DOGFIGHT:
+    {
+        static const _bstr_t bstrDF("DF");
+        return GNETCORELib::IGamePtr(p)->GetType() == bstrDF;
+    }
 
-        case FILTER_MODE_POPULATED:
-            return GNETCORELib::IGamePtr(p)->GetNumPlayers() > 0;
+    case FILTER_MODE_POPULATED:
+        return GNETCORELib::IGamePtr(p)->GetNumPlayers() > 0;
 
-        case FILTER_MODE_FAVORITES:
-        {
+    case FILTER_MODE_FAVORITES:
+    {
             // Currently not support
-            ShiAssert(false);
-            return true;
-        }
+        ShiAssert(false);
+        return true;
+    }
     }
 
     return false;
@@ -909,7 +912,9 @@ static void UpdateComplete(BOOL bSuccess)
             ShiAssert(m_pSelectedItem);
 
             if (m_pSelectedItem)
-                Phone_Connect_CB((long) m_pSelectedItem->GetIP(), C_TYPE_LMOUSEUP, pWin->FindControl(JETNET_BROWSER_PLAY));
+                Phone_Connect_CB((long)m_pSelectedItem->GetIP(),
+                                 C_TYPE_LMOUSEUP,
+                                 pWin->FindControl(JETNET_BROWSER_PLAY));
         }
     }
 
@@ -918,7 +923,7 @@ static void UpdateComplete(BOOL bSuccess)
 
     else
     {
-        if ( not m_bConnectedToMaster)
+        if (not m_bConnectedToMaster)
             UpdateStatus("Failed to connect to master server");
 
         else
@@ -971,12 +976,14 @@ static void UpdateServerStatus()
 {
     int nServerCount;
 
-    if ( not m_pUpdater or m_pUpdater->m_nServerCount == 0)
+    if (not m_pUpdater or m_pUpdater->m_nServerCount == 0)
         nServerCount = 1;
     else
         nServerCount = m_pUpdater->m_nServerCount;
 
-    UpdateStatus("%.1f%% (%d of %d Servers)", ((float) m_nUpdatedServers / ((float) nServerCount / 100.0f)), m_nUpdatedServers, nServerCount);
+    UpdateStatus("%.1f%% (%d of %d Servers)",
+                 ((float)m_nUpdatedServers / ((float)nServerCount / 100.0f)),
+                 m_nUpdatedServers, nServerCount);
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -1017,48 +1024,53 @@ C_ServerItem::~C_ServerItem()
 
 long C_ServerItem::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 {
-    if ( not _pGame or not pParent)
+    if (not _pGame or not pParent)
         return;
 
     GNETCORELib::IGamePtr pGame(_pGame);
 
     m_dwIP = GNETCORELib::IHostPtr(pGame)->GetIP();
-    m_nPing = GNETCORELib::IHostPtr(pGame)->GetPing(); // remember for quick sorting
+    m_nPing =
+        GNETCORELib::IHostPtr(pGame)->GetPing(); // remember for quick sorting
     m_nPlayers = pGame->GetNumPlayers(); // remember for quick sorting
 
     char buf[0x10];
     _bstr_t str;
     int x, n;
 
-    SetID((long) pGame.GetInterfacePtr());
+    SetID((long)pGame.GetInterfacePtr());
     SetType(0);
     SetDefaultFlags();
     SetReady(1);
 
     m_arrOutput[0] = new O_Output;
 
-    if ( not m_arrOutput[0]) throw _com_error(E_OUTOFMEMORY);
+    if (not m_arrOutput[0])
+        throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[0]->SetOwner(this);
     m_arrOutput[0]->SetFont(Font_);
     m_arrOutput[0]->SetXY(pParent->GetUserNumber(C_STATE_0), 0);
     str = pGame->GetServerName();
-    n = TrimString(str, pParent->GetUserNumber(C_STATE_1) - pParent->GetUserNumber(C_STATE_0));
+    n = TrimString(str, pParent->GetUserNumber(C_STATE_1) -
+                            pParent->GetUserNumber(C_STATE_0));
     m_arrOutput[0]->SetTextWidth(n + 1);
     m_arrOutput[0]->SetText(str);
 
     m_arrOutput[1] = new O_Output;
 
-    if ( not m_arrOutput[1]) throw _com_error(E_OUTOFMEMORY);
+    if (not m_arrOutput[1])
+        throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[1]->SetOwner(this);
     m_arrOutput[1]->SetFont(Font_);
-    m_arrOutput[1]->SetTextWidth(sprintf(buf, "%4d", GNETCORELib::IHostPtr(pGame)->GetPing()) + 1);
+    m_arrOutput[1]->SetTextWidth(
+        sprintf(buf, "%4d", GNETCORELib::IHostPtr(pGame)->GetPing()) + 1);
     // Center
     //x = ((pParent->GetUserNumber(C_STATE_2) - pParent->GetUserNumber(C_STATE_1)) - gFontList->StrWidth(Font_, buf, strlen(buf))) / 2;
     x = pParent->GetUserNumber(C_STATE_1);
@@ -1067,23 +1079,28 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[2] = new O_Output;
 
-    if ( not m_arrOutput[2]) throw _com_error(E_OUTOFMEMORY);
+    if (not m_arrOutput[2])
+        throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[2]->SetOwner(this);
     m_arrOutput[2]->SetFont(Font_);
     str = pGame->GetType();
-    n = TrimString(str, pParent->GetUserNumber(C_STATE_3) - pParent->GetUserNumber(C_STATE_2));
+    n = TrimString(str, pParent->GetUserNumber(C_STATE_3) -
+                            pParent->GetUserNumber(C_STATE_2));
     m_arrOutput[2]->SetTextWidth(n + 1);
     m_arrOutput[2]->SetXY(pParent->GetUserNumber(C_STATE_2), 0);
     m_arrOutput[2]->SetText(str);
 
     m_arrOutput[3] = new O_Output;
 
-    if ( not m_arrOutput[3]) throw _com_error(E_OUTOFMEMORY);
+    if (not m_arrOutput[3])
+        throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[3]->SetOwner(this);
     m_arrOutput[3]->SetFont(Font_);
-    m_arrOutput[3]->SetTextWidth(sprintf(buf, "%2d/%2d", pGame->GetNumPlayers(), pGame->GetMaxPlayers()) + 1);
+    m_arrOutput[3]->SetTextWidth(sprintf(buf, "%2d/%2d", pGame->GetNumPlayers(),
+                                         pGame->GetMaxPlayers()) +
+                                 1);
     // Center
     //x = ((pParent->GetUserNumber(C_STATE_4) - pParent->GetUserNumber(C_STATE_3)) - gFontList->StrWidth(Font_, (char *) str, str.length())) / 2;
     x = pParent->GetUserNumber(C_STATE_3);
@@ -1092,7 +1109,8 @@ void C_ServerItem::Setup(IGame *_pGame, C_TreeList *pParent)
 
     m_arrOutput[4] = new O_Output;
 
-    if ( not m_arrOutput[4]) throw _com_error(E_OUTOFMEMORY);
+    if (not m_arrOutput[4])
+        throw _com_error(E_OUTOFMEMORY);
 
     m_arrOutput[4]->SetOwner(this);
     m_arrOutput[4]->SetFont(Font_);
@@ -1109,7 +1127,8 @@ int C_ServerItem::TrimString(char *str, int nMaxPixelWidth)
 
     int nLength = strlen(str);
 
-    while (nLength and gFontList->StrWidth(Font_, str, nLength) > nMaxPixelWidth)
+    while (nLength and
+           gFontList->StrWidth(Font_, str, nLength) > nMaxPixelWidth)
         nLength--;
 
     return nLength;
@@ -1141,13 +1160,15 @@ void C_ServerItem::SetFont(long id)
 
 long C_ServerItem::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (0);
 
-    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
-        return(GetID());
+    if (relx >= GetX() and rely >= GetY() and relx <= (GetX() + GetW()) and
+        rely <= (GetY() + GetH()))
+        return (GetID());
 
-    return(0);
+    return (0);
 }
 
 BOOL C_ServerItem::Process(long ID, short HitType)
@@ -1163,7 +1184,7 @@ BOOL C_ServerItem::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_ServerItem::Refresh()
@@ -1171,7 +1192,8 @@ void C_ServerItem::Refresh()
     if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
 }
 
 void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
@@ -1199,7 +1221,8 @@ void C_ServerItem::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 inline int C_ServerItem::CompareText(C_ServerItem *pOther, int nIndex)
 {
-    return strcmp(m_arrOutput[nIndex]->GetText(), pOther->m_arrOutput[nIndex]->GetText());
+    return strcmp(m_arrOutput[nIndex]->GetText(),
+                  pOther->m_arrOutput[nIndex]->GetText());
 }
 
 inline int C_ServerItem::ComparePing(C_ServerItem *pOther)
@@ -1227,7 +1250,7 @@ void C_ServerItem::SetState(short state)
 
 short C_ServerItem::GetState()
 {
-    return(State_);
+    return (State_);
 }
 
 void C_ServerItem::SetOwner(TREELIST *item)
@@ -1237,12 +1260,12 @@ void C_ServerItem::SetOwner(TREELIST *item)
 
 TREELIST *C_ServerItem::GetOwner()
 {
-    return(Owner_);
+    return (Owner_);
 }
 
 long C_ServerItem::GetFont()
 {
-    return(Font_);
+    return (Font_);
 }
 
 void C_ServerItem::SetDefaultFlags()
@@ -1252,7 +1275,7 @@ void C_ServerItem::SetDefaultFlags()
 
 long C_ServerItem::GetDefaultFlags()
 {
-    return(DefaultFlags_);
+    return (DefaultFlags_);
 }
 
 DWORD C_ServerItem::GetIP()
@@ -1271,10 +1294,13 @@ CGNetUpdater::CGNetUpdater()
 
 void CGNetUpdater::Init()
 {
-    CheckHR(m_pMasterServer.CreateInstance(__uuidof(SHAREDLib::RemoteMasterServer)));
+    CheckHR(m_pMasterServer.CreateInstance(
+        __uuidof(SHAREDLib::RemoteMasterServer)));
 
-    CheckHR(AtlAdvise(m_pMasterServer, (IGameEvents *) this, IID_IRemoteMasterServerEvents, &m_dwMasterServerCookie));
-    CheckHR(AtlAdvise(m_pMasterServer, (IGameEvents *) this, IID_IGameEvents, &m_dwMasterServerCookie2));
+    CheckHR(AtlAdvise(m_pMasterServer, (IGameEvents *)this,
+                      IID_IRemoteMasterServerEvents, &m_dwMasterServerCookie));
+    CheckHR(AtlAdvise(m_pMasterServer, (IGameEvents *)this, IID_IGameEvents,
+                      &m_dwMasterServerCookie2));
 }
 
 void CGNetUpdater::Cleanup()
@@ -1283,13 +1309,15 @@ void CGNetUpdater::Cleanup()
     {
         if (m_dwMasterServerCookie)
         {
-            AtlUnadvise(m_pMasterServer, IID_IRemoteMasterServerEvents, m_dwMasterServerCookie);
+            AtlUnadvise(m_pMasterServer, IID_IRemoteMasterServerEvents,
+                        m_dwMasterServerCookie);
             m_dwMasterServerCookie = NULL;
         }
 
         if (m_dwMasterServerCookie2)
         {
-            AtlUnadvise(m_pMasterServer, IID_IGameEvents, m_dwMasterServerCookie2);
+            AtlUnadvise(m_pMasterServer, IID_IGameEvents,
+                        m_dwMasterServerCookie2);
             m_dwMasterServerCookie2 = NULL;
         }
 
@@ -1354,7 +1382,8 @@ void CGNetUpdater::UpdateGame(IGame *p, bool bSuccess)
 #ifndef _DEBUG
             BSTR _bstr;
 
-            if (SUCCEEDED(p->get_Name(&_bstr) or _bstr_t(_bstr) == _bstr_t("Falcon4")))
+            if (SUCCEEDED(p->get_Name(&_bstr) or
+                          _bstr_t(_bstr) == _bstr_t("Falcon4")))
 #endif
             {
                 p->AddRef();
@@ -1366,7 +1395,8 @@ void CGNetUpdater::UpdateGame(IGame *p, bool bSuccess)
 
                     m_pListServers->ReorderBranch(m_pListServers->GetRoot());
                     m_pListServers->RecalcSize();
-                    m_pListServers->Parent_->RefreshClient(m_pListServers->GetClient());
+                    m_pListServers->Parent_->RefreshClient(
+                        m_pListServers->GetClient());
                 }
             }
         }
@@ -1437,4 +1467,3 @@ STDMETHODIMP CGNetUpdater::ServerListReceived(int nServers)
         return e.Error();
     }
 }
-

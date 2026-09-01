@@ -1,6 +1,8 @@
-#include "Graphics/Include/Render2d.h"
+#include "graphics/include/render2d.h"
 #include "stdhdr.h"
-#include "drawable.h"
+// Artscout - 2026 (Linux port): use the canonical sim DrawableClass, not the legacy
+// falclib/include/drawable.h that wins on the global -I order for a bare "drawable.h".
+#include "sim/include/drawable.h"
 #include "otwdrive.h"
 #include "cppanel.h"
 #include "tod.h"
@@ -31,41 +33,43 @@ void DrawableClass::DrawBorder()
     display->Line(-st, bd, st, bd);
 }
 
-unsigned int DrawableClass::MFDColors[] =   // JPO MLU MFD Colors
-{
-    0xFFFFFFFF, // #7: WHITE by default (was green 0xFF00FF00) -- F-16 MFD realism, per user request 2026-06-17. HUD/RWR unaffected (own color)
-    0xFFFFFFFF, // white
-    0xFF0000ff, // red
-    0xFF00ffff, // yellow
-    0xFFffff00, // cyan
-    0xFFff00ff, // magenta
-    0xFFff0000, // blue
-    0xFF7b7b7b, // grey
-    0xFFFFFFFF, // #2: bright green -> white (MFD text white everywhere, per request 2026-06-17)
-    0xFFafafaf, // "whity gray"
+unsigned int DrawableClass::MFDColors[] = // JPO MLU MFD Colors
+    {
+        0xFFFFFFFF, // #7: WHITE by default (was green 0xFF00FF00) -- F-16 MFD realism, per user request 2026-06-17. HUD/RWR unaffected (own color)
+        0xFFFFFFFF, // white
+        0xFF0000ff, // red
+        0xFF00ffff, // yellow
+        0xFFffff00, // cyan
+        0xFFff00ff, // magenta
+        0xFFff0000, // blue
+        0xFF7b7b7b, // grey
+        0xFFFFFFFF, // #2: bright green -> white (MFD text white everywhere, per request 2026-06-17)
+        0xFFafafaf, // "whity gray"
 };
 
-unsigned int DrawableClass::AltMFDColors[] =   // JPO Alternative High contrast color table (for color blind use)
-{
-    0xFFFFFFFF, // #7: WHITE by default (was green 0xFF00CC00) -- consistent with MFDColors
-    0xFFFFFFFF, // white
-    0xFF6666ff, // pink
-    0xFF00ffff, // yellow
-    0xFFffcc33, // cyan
-    0xFFff00ff, // magenta
-    0xFFff0000, // blue
-    0xFF7b7b7b, // grey
-    0xFFFFFFFF, // #2: bright green -> white
-    0xFFafafaf, // "whity gray"
+unsigned int DrawableClass::AltMFDColors
+    [] = // JPO Alternative High contrast color table (for color blind use)
+    {
+        0xFFFFFFFF, // #7: WHITE by default (was green 0xFF00CC00) -- consistent with MFDColors
+        0xFFFFFFFF, // white
+        0xFF6666ff, // pink
+        0xFF00ffff, // yellow
+        0xFFffcc33, // cyan
+        0xFFff00ff, // magenta
+        0xFFff0000, // blue
+        0xFF7b7b7b, // grey
+        0xFFFFFFFF, // #2: bright green -> white
+        0xFFafafaf, // "whity gray"
 };
 
 // JPO - pick color with intensity and backwards compat
 unsigned int DrawableClass::GetMfdColor(MfdColor type)
 {
-    ShiAssert(GetIntensity() not_eq 0 and 
-              GetIntensity() not_eq 0xCCCCCCCC); // we shouldn't ever switch off completely.
+    ShiAssert(GetIntensity() not_eq 0 and
+              GetIntensity() not_eq
+                  0xCCCCCCCC); // we shouldn't ever switch off completely.
 
-    if ( not g_bEnableColorMfd or greenMode)
+    if (not g_bEnableColorMfd or greenMode)
         type = MFD_DEFAULT;
 
     if (g_bMFDHighContrast)
@@ -79,9 +83,11 @@ unsigned int DrawableClass::GetAgedMfdColor(MfdColor type, int age)
 {
     unsigned int color = GetMfdColor(type);
 
-    if (age == 0) return color;
+    if (age == 0)
+        return color;
 
-    color = (((color bitand 0xff0000) >> age) bitand 0xff0000) bitor  // RED (or BLUE)
+    color = (((color bitand 0xff0000) >> age) bitand
+             0xff0000) bitor // RED (or BLUE)
             (((color bitand 0xff00) >> age) bitand 0xff00) bitor //  GREEN
             (((color bitand 0xff) >> age) bitand 0xff); // BLUE (or RED)
     return color;
@@ -90,32 +96,19 @@ unsigned int DrawableClass::GetAgedMfdColor(MfdColor type, int age)
 
 // NOTE - Sms buttons are labeled starting at the top left and
 //        proceeding clockwise around the MFD.
-static const float textLoc[20][2] =
-{
-    -0.6F,  0.95F,   // 0
-    -0.3F,  0.95F,
-    0.0F,  0.95F,
-    0.3F,  0.95F,
-    0.6F,  0.95F,   // 4
-    0.95F,  0.6F,   // 5
-    0.95F,  0.3F,
-    0.95F,  0.0F,
-    0.95F, -0.3F,
-    0.95F, -0.6F,   // 8
-    0.6F, -0.85F,   // 9
-    0.3F, -0.85F,
-    0.0F, -0.85F,
-    -0.3F, -0.85F,
-    -0.6F, -0.85F,   // 14
-    -0.95F, -0.6F,   // 15
-    -0.95F, -0.3F,
-    -0.95F,  0.0F,
-    -0.95F,  0.3F,
-    -0.95F,  0.6F    // 19
+static const float textLoc[20][2] = {
+    -0.6F,  0.95F, // 0
+    -0.3F,  0.95F,  0.0F,   0.95F,  0.3F,   0.95F,  0.6F,   0.95F, // 4
+    0.95F,  0.6F, // 5
+    0.95F,  0.3F,   0.95F,  0.0F,   0.95F,  -0.3F,  0.95F,  -0.6F, // 8
+    0.6F,   -0.85F, // 9
+    0.3F,   -0.85F, 0.0F,   -0.85F, -0.3F,  -0.85F, -0.6F,  -0.85F, // 14
+    -0.95F, -0.6F, // 15
+    -0.95F, -0.3F,  -0.95F, 0.0F,   -0.95F, 0.3F,   -0.95F, 0.6F // 19
 };
 
 // JPO - work out where a button would be.
-void DrawableClass::GetButtonPos(int bno, float *xp, float *yp)
+void DrawableClass::GetButtonPos(int bno, float* xp, float* yp)
 {
     CPPanel* curPanel = OTWDriver.pCockpitManager->GetActivePanel();
 
@@ -125,28 +118,26 @@ void DrawableClass::GetButtonPos(int bno, float *xp, float *yp)
         //Wombat778 4-15-04 Made safer, because it looks like MFDOn might not get initiliazed
         switch (MFDOn)
         {
-            default:
-                *xp = curPanel->osbLocation[0][bno][0];
-                *yp = curPanel->osbLocation[0][bno][1];
-                break;
+        default:
+            *xp = curPanel->osbLocation[0][bno][0];
+            *yp = curPanel->osbLocation[0][bno][1];
+            break;
 
-            case 1:
-                *xp = curPanel->osbLocation[1][bno][0];
-                *yp = curPanel->osbLocation[1][bno][1];
-                break;
+        case 1:
+            *xp = curPanel->osbLocation[1][bno][0];
+            *yp = curPanel->osbLocation[1][bno][1];
+            break;
 
-            case 2:
-                *xp = curPanel->osbLocation[2][bno][0];
-                *yp = curPanel->osbLocation[2][bno][1];
-                break;
+        case 2:
+            *xp = curPanel->osbLocation[2][bno][0];
+            *yp = curPanel->osbLocation[2][bno][1];
+            break;
 
-            case 3:
-                *xp = curPanel->osbLocation[3][bno][0];
-                *yp = curPanel->osbLocation[3][bno][1];
-                break;
+        case 3:
+            *xp = curPanel->osbLocation[3][bno][0];
+            *yp = curPanel->osbLocation[3][bno][1];
+            break;
         }
-
-
     }
     else
     {
@@ -155,7 +146,8 @@ void DrawableClass::GetButtonPos(int bno, float *xp, float *yp)
     }
 }
 
-void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
+void DrawableClass::LabelButton(int idx, const char* str1, const char* str2,
+                                int inverse)
 {
 
     float multiLineOffset;
@@ -191,13 +183,17 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
         }
         else if (idx > 4 and idx < 10)
         {
-            display->TextRight(xPos, yPos + multiLineOffset * 0.5F, str1, inverse);
-            display->TextRight(xPos, yPos - multiLineOffset * 0.5F, str2, inverse);
+            display->TextRight(xPos, yPos + multiLineOffset * 0.5F, str1,
+                               inverse);
+            display->TextRight(xPos, yPos - multiLineOffset * 0.5F, str2,
+                               inverse);
         }
         else if (idx > 14)
         {
-            display->TextLeft(xPos, yPos + multiLineOffset * 0.5F, str1, inverse);
-            display->TextLeft(xPos, yPos - multiLineOffset * 0.5F, str2, inverse);
+            display->TextLeft(xPos, yPos + multiLineOffset * 0.5F, str1,
+                              inverse);
+            display->TextLeft(xPos, yPos - multiLineOffset * 0.5F, str2,
+                              inverse);
         }
         else
         {
@@ -223,4 +219,3 @@ void DrawableClass::SetLighting(float red, float green, float blue)
     lighting[1] = green;
     lighting[2] = blue;*/
 }
-

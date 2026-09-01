@@ -11,11 +11,11 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Persistant List
@@ -23,7 +23,8 @@
 class FalconSendPersistantList : public FalconEvent
 {
 public:
-    FalconSendPersistantList(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconSendPersistantList(VU_ID entityId, VuTargetEntity *target,
+                             VU_BOOL loopback = TRUE);
     FalconSendPersistantList(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconSendPersistantList(void);
     virtual int Size() const;
@@ -35,12 +36,12 @@ public:
     {
     public:
         short size;
-        void* data;
+        void *data;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

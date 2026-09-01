@@ -20,14 +20,13 @@ typedef struct
     int maxValPosition;
     float minTapeValue;
     int minValPosition;
-    DWORD* TapeBitmapHandle;
+    DWORD *TapeBitmapHandle;
 } CPGaugeInitStruct;
 
 
 class CPGauge : public CPObject
 {
 public:
-
 #ifdef USE_SH_POOLS
     // Overload new/delete to use a SmartHeap pool
     void *operator new(size_t size)
@@ -36,7 +35,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
@@ -48,16 +48,14 @@ public:
     int mMaxValPosition;
     float mMinTapeValue;
     int mMinValPosition;
-    DWORD* mpTapeBitmapHandle;
+    DWORD *mpTapeBitmapHandle;
     float mCurrentVal;
 
     virtual ~CPGauge();
     void Exec(void);
     void HandleEvent(int Event) {};
-    void Display(Render2D*, BOOL);
+    void Display(Render2D *, BOOL);
     void DrawTape(float, int, int, BOOL);
-
 };
 
 #endif
-

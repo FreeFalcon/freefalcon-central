@@ -5,14 +5,14 @@
 
     Provides custom code for use by specific BSPlib objects.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
 #include <math.h>
-#include "TimeMgr.h"
-#include "StateStack.h"
-#include "ObjectInstance.h"
-#include "Scripts.h"
-#include "falclib/include/mlTrig.h"
+#include "timemgr.h"
+#include "statestack.h"
+#include "objectinstance.h"
+#include "scripts.h"
+#include "falclib/include/mltrig.h"
 
 // Some handy constants to get things into units of ms and Radians
 static const float Seconds = 1.0f / 1000.0f;
@@ -20,7 +20,6 @@ static const float Minutes = Seconds / (60.0f);
 static const float Hours = Minutes / (60.0f);
 static const float Degrees = (PI / 180.0f);
 static const float DegreesPerSecond = Degrees * Seconds;
-
 
 
 /********************************************\
@@ -38,11 +37,14 @@ static void AH64(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 4);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 4) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 4)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[2].rotation += delta; // Main rotor
-    TheStateStack.CurrentInstance->DOFValues[3].rotation += delta * 1.6f; // Tail rotor
-    TheStateStack.CurrentInstance->DOFValues[4].rotation += delta * 2.1f; // Muzzle flash
+    TheStateStack.CurrentInstance->DOFValues[3].rotation +=
+        delta * 1.6f; // Tail rotor
+    TheStateStack.CurrentInstance->DOFValues[4].rotation +=
+        delta * 2.1f; // Muzzle flash
 }
 
 // Four propellors spinning
@@ -52,7 +54,8 @@ static void C130(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 5);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 5) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 5)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[2].rotation += delta;
     TheStateStack.CurrentInstance->DOFValues[3].rotation += delta;
@@ -63,11 +66,13 @@ static void C130(void)
 // Approach angle apprpriate VASI light indications (FAR set)
 static void VASIF(void)
 {
-    float angle = (float)atan2(-TheStateStack.ObjSpaceEye.z, TheStateStack.ObjSpaceEye.x);
+    float angle =
+        (float)atan2(-TheStateStack.ObjSpaceEye.z, TheStateStack.ObjSpaceEye.x);
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 0);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0)
+        return;
 
     if (angle > 4.0f * Degrees)
     {
@@ -82,11 +87,13 @@ static void VASIF(void)
 // Approach angle apprpriate VASI light indications (NEAR set)
 static void VASIN(void)
 {
-    float angle = (float)atan2(-TheStateStack.ObjSpaceEye.z, TheStateStack.ObjSpaceEye.x);
+    float angle =
+        (float)atan2(-TheStateStack.ObjSpaceEye.z, TheStateStack.ObjSpaceEye.x);
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 0);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0)
+        return;
 
     if (angle > 2.0f * Degrees)
     {
@@ -104,7 +111,8 @@ static void Chaff(void)
 {
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 0);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0)
+        return;
 
     if (TheStateStack.CurrentInstance->SwitchValues[0] == 0)
     {
@@ -134,9 +142,11 @@ static void Beacon(void)
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 1);
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 0);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 0) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 0)
+        return;
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 1) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 1)
+        return;
 
     DWORD sw = TheStateStack.CurrentInstance->SwitchValues[1];
     float delta = TheTimeManager.GetDeltaTime() * 36.0f * DegreesPerSecond;
@@ -153,8 +163,10 @@ static void Beacon(void)
 
     // 0 degree green light
     mlSinCos(&trig, rot);
-    dx =  TheStateStack.ObjSpaceEye.x * trig.cos + TheStateStack.ObjSpaceEye.y * trig.sin;
-    dy = -TheStateStack.ObjSpaceEye.x * trig.sin + TheStateStack.ObjSpaceEye.y * trig.cos;
+    dx = TheStateStack.ObjSpaceEye.x * trig.cos +
+         TheStateStack.ObjSpaceEye.y * trig.sin;
+    dy = -TheStateStack.ObjSpaceEye.x * trig.sin +
+         TheStateStack.ObjSpaceEye.y * trig.cos;
     da = (float)atan2(dy, dx);
 
     if (fabs(da) > 5.0f * Degrees)
@@ -182,8 +194,10 @@ static void Beacon(void)
 
     // 165 degree white light
     mlSinCos(&trig, rot + 165.0F * Degrees);
-    dx =  TheStateStack.ObjSpaceEye.x * trig.cos + TheStateStack.ObjSpaceEye.y * trig.sin;
-    dy = -TheStateStack.ObjSpaceEye.x * trig.sin + TheStateStack.ObjSpaceEye.y * trig.cos;
+    dx = TheStateStack.ObjSpaceEye.x * trig.cos +
+         TheStateStack.ObjSpaceEye.y * trig.sin;
+    dy = -TheStateStack.ObjSpaceEye.x * trig.sin +
+         TheStateStack.ObjSpaceEye.y * trig.cos;
     da = (float)atan2(dy, dx);
 
     if (fabs(da) > 5.0f * Degrees)
@@ -211,8 +225,10 @@ static void Beacon(void)
 
     // 195 degree white light
     mlSinCos(&trig, rot + 195.0F * Degrees);
-    dx =  TheStateStack.ObjSpaceEye.x * trig.cos + TheStateStack.ObjSpaceEye.y * trig.sin;
-    dy = -TheStateStack.ObjSpaceEye.x * trig.sin + TheStateStack.ObjSpaceEye.y * trig.cos;
+    dx = TheStateStack.ObjSpaceEye.x * trig.cos +
+         TheStateStack.ObjSpaceEye.y * trig.sin;
+    dy = -TheStateStack.ObjSpaceEye.x * trig.sin +
+         TheStateStack.ObjSpaceEye.y * trig.cos;
     da = (float)atan2(dy, dx);
 
     if (fabs(da) > 5.0f * Degrees)
@@ -239,7 +255,8 @@ static void Beacon(void)
     }
 
     // Now store the computed results
-    TheStateStack.CurrentInstance->DOFValues[0].rotation = (float)fmod(rot, 2.0f * PI);
+    TheStateStack.CurrentInstance->DOFValues[0].rotation =
+        (float)fmod(rot, 2.0f * PI);
     TheStateStack.CurrentInstance->SwitchValues[1] = sw;
 }
 
@@ -278,7 +295,8 @@ static void E3(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 3);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 3) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 3)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[14].rotation += delta;
 }
@@ -290,7 +308,8 @@ static void UH1(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 3);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 3) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 3)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[2].rotation += delta;
     TheStateStack.CurrentInstance->DOFValues[3].rotation += delta * 2.1f;
@@ -303,12 +322,16 @@ static void LongBow(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 5);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 5) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 5)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[2].rotation += delta; // Main rotor
-    TheStateStack.CurrentInstance->DOFValues[3].rotation += delta * 1.6f; // Tail rotor
-    TheStateStack.CurrentInstance->DOFValues[4].rotation += delta * 2.1f; // Muzzle flash
-    TheStateStack.CurrentInstance->DOFValues[5].rotation += delta * 0.1f; // Radar
+    TheStateStack.CurrentInstance->DOFValues[3].rotation +=
+        delta * 1.6f; // Tail rotor
+    TheStateStack.CurrentInstance->DOFValues[4].rotation +=
+        delta * 2.1f; // Muzzle flash
+    TheStateStack.CurrentInstance->DOFValues[5].rotation +=
+        delta * 0.1f; // Radar
 }
 
 // Hokum main rotor rotations
@@ -318,7 +341,8 @@ static void Hokum(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 4);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 4) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 4)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[2].rotation += delta;
     TheStateStack.CurrentInstance->DOFValues[3].rotation += delta;
@@ -332,7 +356,8 @@ static void OneProp(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 2);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 2) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 2)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[2].rotation += delta;
 }
@@ -343,7 +368,8 @@ static void Cycle2(void)
 {
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 0);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0)
+        return;
 
     if (TheStateStack.CurrentInstance->SwitchValues[0] == 1)
     {
@@ -361,7 +387,8 @@ static void Cycle4(void)
 {
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 0);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0)
+        return;
 
     if (TheStateStack.CurrentInstance->SwitchValues[0] >= 8)
     {
@@ -383,7 +410,8 @@ static void Cycle10(void)
 {
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 0);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 0)
+        return;
 
     if (TheStateStack.CurrentInstance->SwitchValues[0] >= 0x200)
     {
@@ -405,7 +433,8 @@ static void TStrobe(void)
 {
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches > 7);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 7) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= 7)
+        return;
 
     if (TheStateStack.CurrentInstance->SwitchValues[7] >= 0x10)
     {
@@ -424,7 +453,8 @@ static void TU95(void)
 
     ShiAssert(TheStateStack.CurrentInstance->ParentObject->nDOFs > 9);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 9) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nDOFs <= 9)
+        return;
 
     TheStateStack.CurrentInstance->DOFValues[2].rotation += delta;
     TheStateStack.CurrentInstance->DOFValues[3].rotation += delta;
@@ -439,19 +469,20 @@ static void TU95(void)
 // Approach angle for Carrier MeatBall - 13 switches (0-12) for vertical Glide Slope
 static void MeatBall(void)
 {
-    float angle = (float)atan2(-TheStateStack.ObjSpaceEye.z, TheStateStack.ObjSpaceEye.x);
+    float angle =
+        (float)atan2(-TheStateStack.ObjSpaceEye.z, TheStateStack.ObjSpaceEye.x);
     static const float GS = 3;
-    static const float angles[] =
-    {
-        GS + 2.3f, GS + 2, GS + 1.7f, GS + 1.3f, GS + 1, GS + 0.7F, GS + 0.3f,
-        GS,
-        GS - 0.3f, GS - 0.7f, GS - 1, GS - 1.3f, GS - 1.7f
-    };
+    static const float angles[] = {GS + 2.3f, GS + 2,    GS + 1.7f, GS + 1.3f,
+                                   GS + 1,    GS + 0.7F, GS + 0.3f, GS,
+                                   GS - 0.3f, GS - 0.7f, GS - 1,    GS - 1.3f,
+                                   GS - 1.7f};
     static const int NANGLES = sizeof(angles) / sizeof(angles[0]);
 
-    ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches >= NANGLES - 2);
+    ShiAssert(TheStateStack.CurrentInstance->ParentObject->nSwitches >=
+              NANGLES - 2);
 
-    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= NANGLES - 2) return;
+    if (TheStateStack.CurrentInstance->ParentObject->nSwitches <= NANGLES - 2)
+        return;
 
     angle /= Degrees;
 
@@ -482,27 +513,10 @@ static void ComplexProp(void)
  MAKE SURE TO ADD SCRIPTS HERE
  AND IN ScriptNames.cpp
 \********************************************/
-ScriptFunctionPtr ScriptArray[] =
-{
-    UH1,
-    AH64,
-    Hokum,
-    OneProp,
-    C130,
-    E3,
-    VASIF,
-    VASIN,
-    Chaff,
-    Beacon,
-    CollapseChute,
-    LongBow,
-    Cycle2,
-    Cycle4,
-    Cycle10,
-    TStrobe,
-    TU95,
-    MeatBall,
-    ComplexProp,
+ScriptFunctionPtr ScriptArray[] = {
+    UH1,     AH64,    Hokum,  OneProp,       C130,        E3,     VASIF,
+    VASIN,   Chaff,   Beacon, CollapseChute, LongBow,     Cycle2, Cycle4,
+    Cycle10, TStrobe, TU95,   MeatBall,      ComplexProp,
 };
 
 int ScriptArrayLength = sizeof(ScriptArray) / sizeof(*ScriptArray);

@@ -36,4 +36,3 @@ public:
 };
 
 #endif // _ALPHAPATCH_H_
-

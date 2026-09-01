@@ -8,6 +8,5 @@
 //
 // ==========================================================================
 
-extern BOOL WINAPI MissionPlanner(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-
-
+extern BOOL WINAPI MissionPlanner(HWND hDlg, UINT message, WPARAM wParam,
+                                  LPARAM lParam);

@@ -9,10 +9,10 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include "shi/ShiError.h"
-#include "../../Terrain/Ttypes.h"
-#include "../../3Dlib/Image.h"
-#include "TileList.h"
+#include "shi/shierror.h"
+#include "../../terrain/ttypes.h"
+#include "../../3dlib/image.h"
+#include "tilelist.h"
 
 
 void TileListManager::Setup(char *path)
@@ -97,11 +97,12 @@ void TileListManager::Cleanup(void)
 }
 
 
-const char* TileListManager::GetFileName(WORD texCode)
+const char *TileListManager::GetFileName(WORD texCode)
 {
     TileListEntry *pTileRecord;
 
-    for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
+    for (pTileRecord = tileListHead; pTileRecord != NULL;
+         pTileRecord = pTileRecord->next)
     {
         if (pTileRecord->texCode == texCode)
         {
@@ -109,16 +110,18 @@ const char* TileListManager::GetFileName(WORD texCode)
         }
     }
 
-    printf("tile coded %0X was requested, but not found in TileList!\n", texCode);
+    printf("tile coded %0X was requested, but not found in TileList!\n",
+           texCode);
     return NULL;
 }
 
 
-const BYTE* TileListManager::GetImageData(WORD texCode)
+const BYTE *TileListManager::GetImageData(WORD texCode)
 {
     TileListEntry *pTileRecord;
 
-    for (pTileRecord = tileListHead; pTileRecord != NULL; pTileRecord = pTileRecord->next)
+    for (pTileRecord = tileListHead; pTileRecord != NULL;
+         pTileRecord = pTileRecord->next)
     {
         if (pTileRecord->texCode == texCode)
         {
@@ -126,14 +129,15 @@ const BYTE* TileListManager::GetImageData(WORD texCode)
         }
     }
 
-    printf("tile coded %0X was requested, but not found in TileList!\n", texCode);
+    printf("tile coded %0X was requested, but not found in TileList!\n",
+           texCode);
     return NULL;
 }
 
 
 void TileListManager::ReadImageData(char *filename, BYTE *target, DWORD size)
 {
-    CImageFileMemory  texFile;
+    CImageFileMemory texFile;
     int result;
     DWORD width;
     DWORD height;
@@ -144,11 +148,11 @@ void TileListManager::ReadImageData(char *filename, BYTE *target, DWORD size)
 
 
     // Make sure we recognize this file type
-    texFile.imageType = CheckImageType((GLbyte*)filename);
+    texFile.imageType = CheckImageType((GLbyte *)filename);
     ShiAssert(texFile.imageType != IMAGE_TYPE_UNKNOWN);
 
     // Open the input file
-    result = texFile.glOpenFileMem((GLbyte*)filename);
+    result = texFile.glOpenFileMem((GLbyte *)filename);
 
     if (result != 1)
     {
@@ -180,7 +184,7 @@ void TileListManager::ReadImageData(char *filename, BYTE *target, DWORD size)
     // If we don't already have the shared palette, save it
     if (!palette)
     {
-        palette = (DWORD*)texFile.image.palette;
+        palette = (DWORD *)texFile.image.palette;
     }
     else
     {

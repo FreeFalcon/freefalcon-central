@@ -2,21 +2,21 @@
 // Map.cpp deals with the various modes of coloring the small theater map
 //
 
-#include <cISO646>
+#include <ciso646>
 #include <stdio.h>
 #include <tchar.h>
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Find.h"
-#include "CampMap.h"
-#include "Objectiv.h"
-#include "CampList.h"
-#include "Campaign.h"
-#include "Team.h"
-#include "CmpClass.h"
-#include "FalcSess.h"
-#include "CmpRadar.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "find.h"
+#include "campmap.h"
+#include "objectiv.h"
+#include "camplist.h"
+#include "campaign.h"
+#include "team.h"
+#include "cmpclass.h"
+#include "falcsess.h"
+#include "cmpradar.h"
 
 extern void UI_UpdateOccupationMap();
 
@@ -24,7 +24,8 @@ extern void UI_UpdateOccupationMap();
 
 // 2001-03-14 MODIFIED BY S.G. SO IT USES THE SAME VALUE AS GetArcRange
 //int ALT_TO_BUILD_RANGES_TO = 5000; // What altitude we should draw our low alt detection ranges to
-int ALT_TO_BUILD_RANGES_TO = 2500; // What altitude we should draw our low alt detection ranges to
+int ALT_TO_BUILD_RANGES_TO =
+    2500; // What altitude we should draw our low alt detection ranges to
 
 // =================================
 // Prototypes
@@ -60,31 +61,31 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
     switch (type)
     {
-        case MAP_SAMCOVERAGE:
-            // MRX = Map_Max_X/MAP_RATIO;
-            // MRY = Map_Max_Y/MAP_RATIO;
-            size = sizeof(uchar) * MRX * MRY;
-            break;
+    case MAP_SAMCOVERAGE:
+        // MRX = Map_Max_X/MAP_RATIO;
+        // MRY = Map_Max_Y/MAP_RATIO;
+        size = sizeof(uchar) * MRX * MRY;
+        break;
 
-        case MAP_RADARCOVERAGE:
-            // MRX = Map_Max_X/MAP_RATIO;
-            // MRY = Map_Max_Y/MAP_RATIO;
-            size = sizeof(uchar) * MRX * MRY;
-            break;
+    case MAP_RADARCOVERAGE:
+        // MRX = Map_Max_X/MAP_RATIO;
+        // MRY = Map_Max_Y/MAP_RATIO;
+        size = sizeof(uchar) * MRX * MRY;
+        break;
 
-        case MAP_PAK:
-        case MAP_PAK_BUILD:
-            // PMRX = Map_Max_X/PAK_MAP_RATIO;
-            // PMRY = Map_Max_Y/PAK_MAP_RATIO;
-            size = sizeof(uchar) * PMRX * PMRY;
-            break;
+    case MAP_PAK:
+    case MAP_PAK_BUILD:
+        // PMRX = Map_Max_X/PAK_MAP_RATIO;
+        // PMRY = Map_Max_Y/PAK_MAP_RATIO;
+        size = sizeof(uchar) * PMRX * PMRY;
+        break;
 
-        case MAP_OWNERSHIP:
-        default:
-            // MRX = Map_Max_X/MAP_RATIO;
-            // MRY = Map_Max_Y/MAP_RATIO;
-            size = sizeof(uchar) * MRX * MRY / 2;
-            break;
+    case MAP_OWNERSHIP:
+    default:
+        // MRX = Map_Max_X/MAP_RATIO;
+        // MRY = Map_Max_Y/MAP_RATIO;
+        size = sizeof(uchar) * MRX * MRY / 2;
+        break;
     }
 
     if (size not_eq csize or not map_data)
@@ -93,7 +94,7 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
         CampEnterCriticalSection();
 
         if (map_data)
-            delete [] map_data;
+            delete[] map_data;
 
         map_data = new unsigned char[size];
         CampLeaveCriticalSection();
@@ -103,151 +104,149 @@ uchar* MakeCampMap(int type, uchar* map_data, int csize)
 
     switch (type)
     {
-        case MAP_RADARCOVERAGE:
-        {
-            VuListIterator uit(EmitterList);
-            CampEntity e;
-            e = (CampEntity) uit.GetFirst();
+    case MAP_RADARCOVERAGE:
+    {
+        VuListIterator uit(EmitterList);
+        CampEntity e;
+        e = (CampEntity)uit.GetFirst();
 
-            while (e)
-            {
-                AddToDetectionMap(e, map_data, team);
-                e = (CampEntity) uit.GetNext();
-            }
+        while (e)
+        {
+            AddToDetectionMap(e, map_data, team);
+            e = (CampEntity)uit.GetNext();
         }
-        break;
+    }
+    break;
 
-        case MAP_SAMCOVERAGE:
+    case MAP_SAMCOVERAGE:
+    {
+        VuListIterator uit(AirDefenseList);
+        Unit e;
+        e = (Unit)uit.GetFirst();
+
+        while (e)
         {
-            VuListIterator uit(AirDefenseList);
-            Unit e;
-            e = (Unit) uit.GetFirst();
-
-            while (e)
+            if (not e->Moving())
             {
-                if ( not e->Moving())
-                {
-                    AddToThreatMap(e, map_data, team);
-                }
-
-                e = (Unit) uit.GetNext();
-            }
-        }
-        break;
-
-        case MAP_PAK:
-        {
-            FILE *fp = OpenCampFile(TheCampaign.TheaterName, "pak", "rb");
-            int got = fread(map_data, 1, size, fp);
-            ShiAssert(got == size);
-            fclose(fp);
-        }
-        break;
-
-        case MAP_PAK_BUILD:
-        {
-            VU_ID pakTable[50];
-            int p, done, own;
-
-            // Build our table
-            for (p = 0; p < 50; p++)
-                pakTable[p] = FalconNullId;
-
-            p = 1;
-            {
-                VuListIterator poit(POList);
-                o = (Objective) poit.GetFirst();
-
-                while (o)
-                {
-                    pakTable[p] = o->Id();
-                    p++;
-                    o = (Objective) poit.GetNext();
-                }
+                AddToThreatMap(e, map_data, team);
             }
 
-            for (x = 0; x < PMRX - 1; x++)
-            {
-                for (y = 0; y < PMRY - 1; y++)
-                {
-                    i = ((PMRY - 1) * PMRX) - y * PMRX + x;
-                    rx = x * PAK_MAP_RATIO;
-                    ry = y * PAK_MAP_RATIO;
-                    own = GetOwner(TheCampaign.CampMapData, rx, ry);
+            e = (Unit)uit.GetNext();
+        }
+    }
+    break;
 
-                    // Let the ownership map decide if we're over water or not
-                    //if (GetCover(rx,ry) not_eq Water or GetCover(rx+PAK_MAP_RATIO-1,ry) not_eq Water or
-                    // GetCover(rx,ry+PAK_MAP_RATIO-1) not_eq Water)
-                    if (own)
+    case MAP_PAK:
+    {
+        FILE* fp = OpenCampFile(TheCampaign.TheaterName, "pak", "rb");
+        int got = fread(map_data, 1, size, fp);
+        ShiAssert(got == size);
+        fclose(fp);
+    }
+    break;
+
+    case MAP_PAK_BUILD:
+    {
+        VU_ID pakTable[50];
+        int p, done, own;
+
+        // Build our table
+        for (p = 0; p < 50; p++)
+            pakTable[p] = FalconNullId;
+
+        p = 1;
+        {
+            VuListIterator poit(POList);
+            o = (Objective)poit.GetFirst();
+
+            while (o)
+            {
+                pakTable[p] = o->Id();
+                p++;
+                o = (Objective)poit.GetNext();
+            }
+        }
+
+        for (x = 0; x < PMRX - 1; x++)
+        {
+            for (y = 0; y < PMRY - 1; y++)
+            {
+                i = ((PMRY - 1) * PMRX) - y * PMRX + x;
+                rx = x * PAK_MAP_RATIO;
+                ry = y * PAK_MAP_RATIO;
+                own = GetOwner(TheCampaign.CampMapData, rx, ry);
+
+                // Let the ownership map decide if we're over water or not
+                //if (GetCover(rx,ry) not_eq Water or GetCover(rx+PAK_MAP_RATIO-1,ry) not_eq Water or
+                // GetCover(rx,ry+PAK_MAP_RATIO-1) not_eq Water)
+                if (own)
+                {
+                    float last = -1.0F;
+                    o = FindNearestObjective(POList, rx, ry, &last);
+
+                    while (o and o->GetTeam() not_eq own)
                     {
-                        float last = -1.0F;
                         o = FindNearestObjective(POList, rx, ry, &last);
+                    }
 
-                        while (o and o->GetTeam() not_eq own)
+                    if (o)
+                    {
+                        for (p = 1, done = 0; p < 50 and not done and o; p++)
                         {
-                            o = FindNearestObjective(POList, rx, ry, &last);
-                        }
-
-                        if (o)
-                        {
-                            for (p = 1, done = 0; p < 50 and not done and o; p++)
+                            if (o->Id() == pakTable[p])
                             {
-                                if (o->Id() == pakTable[p])
-                                {
-                                    map_data[i] = p;
-                                    done = 1;
-                                }
+                                map_data[i] = p;
+                                done = 1;
                             }
-
-                            ShiAssert(done);
                         }
-                        else
-                            map_data[i] = 255;
+
+                        ShiAssert(done);
+                    }
+                    else
+                        map_data[i] = 255;
+                }
+            }
+        }
+    }
+    break;
+
+    case MAP_OWNERSHIP:
+    default:
+        for (x = 0; x < MRX; x++)
+        {
+            for (y = 0; y < MRY; y++)
+            {
+                i = y * MRX + x;
+                hi = 4 * (i % 2);
+                rx = x * MAP_RATIO;
+                ry = y * MAP_RATIO;
+
+                if (GetCover(rx, ry) not_eq Water or
+                    GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
+                    GetCover(rx, ry + MAP_RATIO - 1) not_eq Water)
+                {
+                    // KCK: Search a small area first, then if I don't find something, search a larger area
+                    o = FindNearestObjective(rx, ry, NULL, 10);
+
+                    if (not o)
+                    {
+                        o = FindNearestObjective(rx, ry, NULL, 80);
+                    }
+
+                    if (o)
+                    {
+                        map_data[i / 2] or_eq o->GetTeam() << hi;
+                    }
+                    else
+                    {
+                        map_data[i / 2] or_eq 0xF << hi;
                     }
                 }
             }
         }
+
+        UI_UpdateOccupationMap();
         break;
-
-        case MAP_OWNERSHIP:
-        default:
-            for (x = 0; x < MRX; x++)
-            {
-                for (y = 0; y < MRY; y++)
-                {
-                    i = y * MRX + x;
-                    hi = 4 * (i % 2);
-                    rx = x * MAP_RATIO;
-                    ry = y * MAP_RATIO;
-
-                    if (
-                        GetCover(rx, ry) not_eq Water or
-                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
-                        GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
-                    )
-                    {
-                        // KCK: Search a small area first, then if I don't find something, search a larger area
-                        o = FindNearestObjective(rx, ry, NULL, 10);
-
-                        if ( not o)
-                        {
-                            o = FindNearestObjective(rx, ry, NULL, 80);
-                        }
-
-                        if (o)
-                        {
-                            map_data[i / 2] or_eq o->GetTeam() << hi;
-                        }
-                        else
-                        {
-                            map_data[i / 2] or_eq 0xF << hi;
-                        }
-                    }
-                }
-            }
-
-            UI_UpdateOccupationMap();
-            break;
     }
 
     return map_data;
@@ -260,7 +259,7 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
     int i, hi;
     Objective o;
 
-    if ( not map_data)
+    if (not map_data)
         return NULL;
 
     fx = cx - MAP_RADIUS;
@@ -287,51 +286,49 @@ uchar* UpdateCampMap(int type, uchar* map_data, GridIndex cx, GridIndex cy)
 
     switch (type)
     {
-        case MAP_RADARCOVERAGE:
-        case MAP_SAMCOVERAGE:
-            break;
+    case MAP_RADARCOVERAGE:
+    case MAP_SAMCOVERAGE:
+        break;
 
-        case MAP_OWNERSHIP:
-        default:
-            for (x = fx; x < lx; x++)
+    case MAP_OWNERSHIP:
+    default:
+        for (x = fx; x < lx; x++)
+        {
+            for (y = fy; y < ly; y++)
             {
-                for (y = fy; y < ly; y++)
+                i = y * MRX + x;
+                hi = 4 * (i % 2);
+                rx = x * MAP_RATIO;
+                ry = y * MAP_RATIO;
+
+                if (GetCover(rx, ry) not_eq Water or
+                    GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
+                    GetCover(rx, ry + MAP_RATIO - 1) not_eq Water)
                 {
-                    i = y * MRX + x;
-                    hi = 4 * (i % 2);
-                    rx = x * MAP_RATIO;
-                    ry = y * MAP_RATIO;
+                    // KCK: Searh a small area first, then if I don't find something, search a larger area
+                    o = FindNearestObjective(rx, ry, NULL, 10);
 
-                    if (
-                        GetCover(rx, ry) not_eq Water or
-                        GetCover(rx + MAP_RATIO - 1, ry) not_eq Water or
-                        GetCover(rx, ry + MAP_RATIO - 1) not_eq Water
-                    )
+                    if (not o)
                     {
-                        // KCK: Searh a small area first, then if I don't find something, search a larger area
-                        o = FindNearestObjective(rx, ry, NULL, 10);
+                        o = FindNearestObjective(rx, ry, NULL, 80);
+                    }
 
-                        if ( not o)
-                        {
-                            o = FindNearestObjective(rx, ry, NULL, 80);
-                        }
-
-                        if (o)
-                        {
-                            map_data[i / 2] or_eq o->GetTeam() << hi;
-                        }
-                        else
-                        {
-                            map_data[i / 2] or_eq 0xF << hi;
-                        }
+                    if (o)
+                    {
+                        map_data[i / 2] or_eq o->GetTeam() << hi;
+                    }
+                    else
+                    {
+                        map_data[i / 2] or_eq 0xF << hi;
                     }
                 }
             }
+        }
 
-            // KCK: Robin or Peter - this will cause deadlock - Entering a critical section from here is a no-no
-            // Either post a message or set a dirty flag..
-            // UI_UpdateOccupationMap();
-            break;
+        // KCK: Robin or Peter - this will cause deadlock - Entering a critical section from here is a no-no
+        // Either post a message or set a dirty flag..
+        // UI_UpdateOccupationMap();
+        break;
     }
 
     return map_data;
@@ -341,7 +338,7 @@ uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y)
 {
     int i, hi;
 
-    if ( not map_data)
+    if (not map_data)
         return 0;
 
     i = (y / MAP_RATIO) * MRX + (x / MAP_RATIO);
@@ -398,10 +395,10 @@ int GetAproxThreat(Team who, GridIndex x, GridIndex y)
 }
 
 
-void FreeCampMap(uchar *map_data)
+void FreeCampMap(uchar* map_data)
 {
     if (map_data)
-        delete [] map_data;
+        delete[] map_data;
 }
 
 // =================================
@@ -410,15 +407,15 @@ void FreeCampMap(uchar *map_data)
 
 int AddToThreatMap(CampEntity e, uchar* map_data, int who)
 {
-    GridIndex   x, y, X, Y;
+    GridIndex x, y, X, Y;
     int fx, lx, fy, ly, bd, li, hi, i, c;
     float d, ld, hd;
 
     e->GetLocation(&X, &Y);
     X /= MAP_RATIO;
     Y /= MAP_RATIO;
-    ld = (float) e->GetWeaponRange(LowAir) / MAP_RATIO;
-    hd = (float) e->GetWeaponRange(Air) / MAP_RATIO;
+    ld = (float)e->GetWeaponRange(LowAir) / MAP_RATIO;
+    hd = (float)e->GetWeaponRange(Air) / MAP_RATIO;
     bd = MAX(FloatToInt32(hd), FloatToInt32(ld));
     fx = MAX(X - bd - 1, 0);
     lx = MIN(X + bd + 1, MRX - 1);
@@ -444,7 +441,8 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
             d = Distance(x, y, X, Y) - 1.0F;
             c = (map_data[i] >> li) bitand 0x03;
 
-            if (ld >= d and c < 3 and e->GetAproxHitChance(LowAir, FloatToInt32(d * MAP_RATIO)))
+            if (ld >= d and c < 3 and
+                e->GetAproxHitChance(LowAir, FloatToInt32(d * MAP_RATIO)))
             {
                 map_data[i] xor_eq (c << li);
                 map_data[i] or_eq ((c + 1) << li);
@@ -452,7 +450,8 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
 
             c = (map_data[i] >> hi) bitand 0x03;
 
-            if (hd >= d and c < 3 and e->GetAproxHitChance(Air, FloatToInt32(d * MAP_RATIO)))
+            if (hd >= d and c < 3 and
+                e->GetAproxHitChance(Air, FloatToInt32(d * MAP_RATIO)))
             {
                 map_data[i] xor_eq (c << hi);
                 map_data[i] or_eq ((c + 1) << hi);
@@ -465,11 +464,11 @@ int AddToThreatMap(CampEntity e, uchar* map_data, int who)
 
 int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
 {
-    GridIndex   x, y, X, Y;
+    GridIndex x, y, X, Y;
     int fx, lx, fy, ly, li, hi, i, c, oct, bdi;
     float d, hd, bd, ld[NUM_RADAR_ARCS] /* 2001-03-13 S.G. */, ld0;
 
-    if ( not e->GetNumberOfArcs())
+    if (not e->GetNumberOfArcs())
         return 0;
 
     bd = 0.0F;
@@ -478,7 +477,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
     Y /= MAP_RATIO;
 
     // 2001-03-13 ADDED BY S.G. I NEED THE DETECTION RANGE FROM THE DATA FILE AS WELL, JUST LIKE THE THREAT MAP DOES
-    ld0 = (float) e->GetDetectionRange(LowAir) / MAP_RATIO;
+    ld0 = (float)e->GetDetectionRange(LowAir) / MAP_RATIO;
     // END OF ADDED SECTION
 
     for (i = 0; i < NUM_RADAR_ARCS; i++)
@@ -487,7 +486,8 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
         // ld[i] = (float) (((ALT_TO_BUILD_RANGES_TO / e->GetArcRatio(i)) * FT_TO_KM)/MAP_RATIO);
         if (float arcRatio = e->GetArcRatio(i))
         {
-            ld[i] = (float)(((ALT_TO_BUILD_RANGES_TO / arcRatio) * FT_TO_KM) / MAP_RATIO);
+            ld[i] = (float)(((ALT_TO_BUILD_RANGES_TO / arcRatio) * FT_TO_KM) /
+                            MAP_RATIO);
 
             if (ld0 < ld[i])
                 ld[i] = ld0;
@@ -500,7 +500,7 @@ int AddToDetectionMap(CampEntity e, uchar* map_data, int who)
             bd = ld[i];
     }
 
-    hd = (float) e->GetDetectionRange(Air) / MAP_RATIO;
+    hd = (float)e->GetDetectionRange(Air) / MAP_RATIO;
 
     if (hd > bd)
         bd = hd;

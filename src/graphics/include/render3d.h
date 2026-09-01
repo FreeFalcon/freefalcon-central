@@ -9,8 +9,8 @@
 #ifndef _RENDER3D_H_
 #define _RENDER3D_H_
 
-#include "StateStack.h"
-#include "Render2D.h"
+#include "statestack.h"
+#include "render2d.h"
 
 
 // Possible values for CullFlag in DrawSquare call
@@ -24,7 +24,7 @@ static const float NEAR_CLIP = 1.0f;
 static const float Q_SCALE = 0.0008f; // Use to keep Q in 16.16 range for MPR
 
 
-typedef struct ThreeDVertex: public TwoDVertex
+typedef struct ThreeDVertex : public TwoDVertex
 {
     /* TwoDVertex provides:
      float x, y;
@@ -43,17 +43,19 @@ class Render3D : public Render2D
 public:
     Render3D();
     virtual ~Render3D();
+
 private:
-    void IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
-    void IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v);
+    void IntersectNear(ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v);
+    void IntersectTop(ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v);
+    void IntersectBottom(ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v);
+    void IntersectLeft(ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v);
+    void IntersectRight(ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v);
+
 public:
     Trotation Tbb; // Transformation matrix for billboards
 
     // Setup and Cleanup need to have additions here, but still call the parent versions
-    virtual void Setup(ImageBuffer *imageBuffer);
+    virtual void Setup(ImageBuffer* imageBuffer);
     virtual void Cleanup(void);
 
     // Overload this function to get extra work done at start frame
@@ -67,8 +69,10 @@ public:
     // EXACTLY to SetFOV (offX=offY=0), so it is safe to use for all VR views. Bakes the off-axis shift
     // into matProj (objects/cockpit) and arms it for SetCamera to fold into T (terrain/world points);
     // the submitted projection layer must carry the SAME raw per-view fov (see OpenXRBackend::EndEye).
-    void SetVRFrustum(float angL, float angR, float angU, float angD, float NearZ = 0.2f);
-    void ClearVROffAxis(void);   // Artscout - 2026 (VR): disarm off-axis before RTT instrument displays
+    void SetVRFrustum(float angL, float angR, float angU, float angD,
+                      float NearZ = 0.2f);
+    void ClearVROffAxis(
+        void); // Artscout - 2026 (VR): disarm off-axis before RTT instrument displays
     void SetFar(float distance);
     void SetCamera(const Tpoint* pos, const Trotation* rot);
 
@@ -79,7 +83,8 @@ public:
     float GetFar(void); //JAM 09Dec03
 
 
-    virtual void SetViewport(float leftSide, float topSide, float rightSide, float bottomSide);
+    virtual void SetViewport(float leftSide, float topSide, float rightSide,
+                             float bottomSide);
 
     // Setup the 3D object lighting
     void SetLightDirection(const Tpoint* dir);
@@ -98,17 +103,20 @@ public:
     float Pitch(void);
     float Roll(void);
 
-    void GetAt(Tpoint *v);
-    void GetLeft(Tpoint *v);
-    void GetUp(Tpoint *v);
+    void GetAt(Tpoint* v);
+    void GetLeft(Tpoint* v);
+    void GetUp(Tpoint* v);
 
 
     // Transform the given worldspace point into pixel coordinates using the current camera
     void TransformPoint(Tpoint* world, ThreeDVertex* pixel);
-    void TransformPointToView(Tpoint* world, Tpoint *result);
-    void TransformPointToViewSwapped(Tpoint *world, Tpoint *result); //JAM 03Dec03
-    void TransformBillboardPoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
-    void TransformTreePoint(Tpoint* world, Tpoint *viewOffset, ThreeDVertex* pixel);
+    void TransformPointToView(Tpoint* world, Tpoint* result);
+    void TransformPointToViewSwapped(Tpoint* world,
+                                     Tpoint* result); //JAM 03Dec03
+    void TransformBillboardPoint(Tpoint* world, Tpoint* viewOffset,
+                                 ThreeDVertex* pixel);
+    void TransformTreePoint(Tpoint* world, Tpoint* viewOffset,
+                            ThreeDVertex* pixel);
     void UnTransformPoint(Tpoint* pixel, Tpoint* vector);
     // Artscout - 2026 (#58 true 3D mouse): unproject a NORMALIZED device coord (ndc in [-1,1], y down like the
     // pixel convention) to a world/body ray direction -- UnTransformPoint's math WITHOUT the pixel->ndc viewport
@@ -126,8 +134,12 @@ public:
 
     // Draw a full featured square or tri given the already transformed (but not clipped) verts
     //JAM 14Sep03
-    void DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v3, int CullFlag, bool gifPicture = false, bool terrain = false);
-    void DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture = false, bool terrain = false);
+    void DrawSquare(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2,
+                    ThreeDVertex* v3, int CullFlag, bool gifPicture = false,
+                    bool terrain = false);
+    void DrawTriangle(ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2,
+                      int CullFlag, bool gifPicture = false,
+                      bool terrain = false);
     /* void DrawSquare( ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, ThreeDVertex* v3, int CullFlag, bool gifPicture = false );
      void DrawTriangle( ThreeDVertex* v0, ThreeDVertex* v1, ThreeDVertex* v2, int CullFlag, bool gifPicture = false);*/
     //JAM
@@ -135,7 +147,9 @@ public:
 protected:
     // Draw a fan which is known to require clipping
     //JAM 14Sep03
-    void ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture = false, bool terrain = false, bool sort = false);
+    void ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count,
+                          int CullFlag, bool gifPicture = false,
+                          bool terrain = false, bool sort = false);
     // void ClipAndDraw3DFan( ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture = false );
     //JAM
 protected:
@@ -156,7 +170,7 @@ protected:
     // clears it so the flat/stereo path is untouched.
     float m_vrOffAxisX;
     float m_vrOffAxisY;
-    bool  m_vrOffAxisActive;
+    bool m_vrOffAxisActive;
     // Artscout - 2026 (VR quad): off-axis gaze angles (radians) -- the sky (RenderOTW::DrawSky) shifts
     // its effective Pitch()/Yaw() by these so the haze/clear bands follow the focus view (else looking
     // up shows the dark upper-sky/clear color where the gradient should be). 0 for a symmetric view.
@@ -175,7 +189,8 @@ protected:
     float lightSpecular;
     Tpoint lightVector;
 
-    Tpoint move; // Camera space translation required to position visible objects
+    Tpoint
+        move; // Camera space translation required to position visible objects
     Trotation T; // Transformation matrix including aspect ratio and FOV effects
     //Trotation Tbb; // Transformation matrix for billboards
     Trotation Tt; // Transformation matrix for trees

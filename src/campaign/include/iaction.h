@@ -129,16 +129,16 @@ struct ia_data
     float aspect;
     float altitude;
     instant_action_unit_type type;
-    int size: 4;
-    int side: 8;
-    int kill: 1;
-    int dumb: 1;
-    int skill: 4;
-    int guns: 1;
-    int radar: 1;
-    int heat: 1;
-    int ground: 1;
-    int num_vector: 8;
+    int size : 4;
+    int side : 8;
+    int kill : 1;
+    int dumb : 1;
+    int skill : 4;
+    int guns : 1;
+    int radar : 1;
+    int heat : 1;
+    int ground : 1;
+    int num_vector : 8;
 
     float vector[32];
     float v_dist[32];
@@ -150,7 +150,6 @@ class instant_action
 {
 
 protected:
-
     static long start_time;
     static float start_x;
     static float start_y;
@@ -168,7 +167,6 @@ protected:
     static void create_battalion(ia_data &data);
 
 public:
-
     static void create_player_flight(void);
     static void move_player_flight(void);
     static void create_wave(void);

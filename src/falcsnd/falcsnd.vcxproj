@@ -318,6 +318,7 @@
     <ClCompile Include="mlrVoice.cpp" />
     <ClCompile Include="mlrVoiceHandle.cpp" />
     <ClCompile Include="psound.cpp" />
+    <ClCompile Include="..\platform\win32shim\dsound_openal.cpp" />
     <ClCompile Include="silence.cpp" />
     <ClCompile Include="Soundfx.cpp" />
     <ClCompile Include="transprt.cpp" />

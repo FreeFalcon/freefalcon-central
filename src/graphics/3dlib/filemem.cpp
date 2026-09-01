@@ -3,7 +3,7 @@
 #include "filemem.h"
 
 
-CImageFileMemory::CImageFileMemory(): CFileMemory()
+CImageFileMemory::CImageFileMemory() : CFileMemory()
 {
     image.image = NULL;
     image.palette = NULL;
@@ -14,8 +14,10 @@ GLint CFileMemory::glOpenFileMem(const char *filename)
     ShiAssert(buffer == NULL);
 
     // Open the file and get its size
-    if ( not CurrentFile.openread(filename))
+    if (not CurrentFile.openread(filename))
+    {
         return -1; // JPO fail it.
+    }
 
     bytesLeft = CurrentFile.getfilesize();
 
@@ -26,9 +28,9 @@ GLint CFileMemory::glOpenFileMem(const char *filename)
     }
 
     // Allocate memory for the whole file contents
-    buffer = (GLubyte*)glAllocateMemory(bytesLeft);
+    buffer = (GLubyte *)glAllocateMemory(bytesLeft);
 
-    if ( not buffer)
+    if (not buffer)
     {
         CurrentFile.closefile();
         bytesLeft = 0;
@@ -69,7 +71,8 @@ GLint CFileMemory::glReadMem(void *target, GLint total)
 {
     ShiAssert(buffer);
 
-    if (total >= bytesLeft) total = bytesLeft;
+    if (total >= bytesLeft)
+        total = bytesLeft;
 
     memcpy(target, CurrentMemoryPointer, total);
     CurrentMemoryPointer += total;
@@ -84,23 +87,24 @@ GLint CFileMemory::glSetFilePosMem(GLint offset, GLint mode)
 
     switch (mode)
     {
-        case 0:
-            CurrentMemoryPointer = buffer + offset;
-            break;
+    case 0:
+        CurrentMemoryPointer = buffer + offset;
+        break;
 
-        case 1:
-            CurrentMemoryPointer = CurrentMemoryPointer + offset;
-            break;
+    case 1:
+        CurrentMemoryPointer = CurrentMemoryPointer + offset;
+        break;
 
-        case 2:
-            CurrentMemoryPointer = bufferEnd + offset;
-            break;
+    case 2:
+        CurrentMemoryPointer = bufferEnd + offset;
+        break;
     }
 
-    if (CurrentMemoryPointer < buffer) return -1;
+    if (CurrentMemoryPointer < buffer)
+        return -1;
 
-    if (CurrentMemoryPointer >= bufferEnd) return 1;
+    if (CurrentMemoryPointer >= bufferEnd)
+        return 1;
 
     return 0;
 } /* glSetFilePosMem */
-

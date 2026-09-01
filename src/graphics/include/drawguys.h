@@ -8,13 +8,14 @@
 #ifndef _DRAWGUYS_H_
 #define _DRAWGUYS_H_
 
-#include "DrawGrnd.h"
+#include "drawgrnd.h"
 
 
 class DrawableGuys : public DrawableGroundVehicle
 {
 public:
-    DrawableGuys(int type, Tpoint *pos, float heading, int numGuys, float scale = 1.0f);
+    DrawableGuys(int type, Tpoint *pos, float heading, int numGuys,
+                 float scale = 1.0f);
     virtual ~DrawableGuys() {};
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
@@ -46,7 +47,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

@@ -14,7 +14,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -42,7 +43,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -87,7 +89,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void SetWorldRange(float minx, float miny, float maxx, float maxy)
     {
@@ -103,10 +105,12 @@ public:
     }
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
 
-    WAYPOINTLIST *AddWaypointToList(long CampID, short type, long NormID, long SelID, long OthrID, float x, float y, short Dragable);
+    WAYPOINTLIST *AddWaypointToList(long CampID, short type, long NormID,
+                                    long SelID, long OthrID, float x, float y,
+                                    short Dragable);
     BOOL UpdateInfo(long ID, float x, float y);
     void EraseWaypointList();
     void EraseWaypointGroup(long groupid);
@@ -126,32 +130,31 @@ public:
 
     WAYPOINTLIST *GetRoot()
     {
-        return(Root_);
+        return (Root_);
     }
     WAYPOINTLIST *GetLast()
     {
-        return(LastWP_);
+        return (LastWP_);
     }
 
     // Handler/Window Functions
     long CheckHotSpots(long relX, long relY);
     BOOL Dragable(long)
     {
-        return(GetFlags() bitand C_BIT_DRAGABLE);
+        return (GetFlags() bitand C_BIT_DRAGABLE);
     }
     BOOL Process(long ID, short ButtonHitType);
     BOOL MouseOver(long relX, long relY, C_Base *);
     void GetItemXY(long ID, long *x, long *y);
     BOOL Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *);
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *);
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
-    short  Dragging()
+    short Dragging()
     {
-        return(Dragging_);
+        return (Dragging_);
     }
     void SetSubParents(C_Window *par);
 };
 
 #endif
-

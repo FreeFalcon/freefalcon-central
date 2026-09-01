@@ -7,21 +7,21 @@
  ground and reoriented so that it's "up" vector is aligned with the
  terrain normal.)
 \***************************************************************************/
-#include "Matrix.h"
-#include "RViewPnt.h"
-#include "RenderOW.h"
-#include "DrawGrnd.h"
+#include "matrix.h"
+#include "rviewpnt.h"
+#include "renderow.h"
+#include "drawgrnd.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawableGroundVehicle::pool;
 #endif
 
 
-
 /***************************************************************************\
     Initialize a container for a BSP object to be drawn
 \***************************************************************************/
-DrawableGroundVehicle::DrawableGroundVehicle(int ID, Tpoint *pos, float heading, float s)
+DrawableGroundVehicle::DrawableGroundVehicle(int ID, Tpoint *pos, float heading,
+                                             float s)
     : DrawableBSP(s, ID)
 {
     // Store this objects properties
@@ -39,7 +39,6 @@ DrawableGroundVehicle::DrawableGroundVehicle(int ID, Tpoint *pos, float heading,
 }
 
 
-
 /***************************************************************************\
     Add ourselves to our parent list and request callbacks
 \***************************************************************************/
@@ -52,7 +51,6 @@ void DrawableGroundVehicle::SetParentList(ObjectDisplayList *list)
 }
 
 
-
 /***************************************************************************\
     Update the object's position and heading.
 \***************************************************************************/
@@ -72,7 +70,6 @@ void DrawableGroundVehicle::Update(Tpoint *pos, float heading)
 }
 
 
-
 /***************************************************************************\
     Make sure the object is placed on the ground then draw it.
 \***************************************************************************/
@@ -91,13 +88,17 @@ void DrawableGroundVehicle::Draw(class RenderOTW *renderer, int LOD)
         {
             // Get the normal and update our height to conform to the platform we're driving on
             // COBRA - RED - Little Offset to avoid ZBuffering conflicts
-            position.z = drivingOn->GetGroundLevel(position.x, position.y, &normal) - .1f;
+            position.z =
+                drivingOn->GetGroundLevel(position.x, position.y, &normal) -
+                .1f;
         }
         else
         {
             // Get the normal and update our height to reflect the terrain beneath us
             // COBRA - RED - Little Offset to avoid ZBuffering conflict
-            position.z = renderer->viewpoint->GetGroundLevel(position.x, position.y, &normal) - .1f;
+            position.z = renderer->viewpoint->GetGroundLevel(
+                             position.x, position.y, &normal) -
+                         .1f;
         }
 
         previousLOD = LOD;
@@ -106,25 +107,22 @@ void DrawableGroundVehicle::Draw(class RenderOTW *renderer, int LOD)
         // The "old" axes are those of a pure rotation about Z (for heading).
         // The "new" axes include the alignment of "up" with the terrain normal.
         // New Z axis (Inverted Terrain Normal)
-        Nx = -normal.x,
-        Ny = -normal.y,
-        Nz = -normal.z;
-        s =  1.0f / (float)sqrt(Nx * Nx + Ny * Ny + Nz * Nz);
-        orientation.M13 = Nx * s, orientation.M23 = Ny * s, orientation.M33 = Nz * s;
+        Nx = -normal.x, Ny = -normal.y, Nz = -normal.z;
+        s = 1.0f / (float)sqrt(Nx * Nx + Ny * Ny + Nz * Nz);
+        orientation.M13 = Nx * s, orientation.M23 = Ny * s,
+        orientation.M33 = Nz * s;
 
         // New X axis (New Z axis cross negative old Y axis)
-        x =  Nz * cosYaw,
-        y =  Nz * sinYaw,
-        z = -Nx * cosYaw - Ny * sinYaw;
-        s =  1.0f / (float)sqrt(x * x + y * y + z * z);
-        orientation.M11 = x * s, orientation.M21 = y * s, orientation.M31 = z * s;
+        x = Nz * cosYaw, y = Nz * sinYaw, z = -Nx * cosYaw - Ny * sinYaw;
+        s = 1.0f / (float)sqrt(x * x + y * y + z * z);
+        orientation.M11 = x * s, orientation.M21 = y * s,
+        orientation.M31 = z * s;
 
         // New Y axis (New Z axis cross old X axis)
-        x = -Nz * sinYaw,
-        y =  Nz * cosYaw,
-        z =  Nx * sinYaw - Ny * cosYaw;
-        s =  1.0f / (float)sqrt(x * x + y * y + z * z);
-        orientation.M12 = x * s, orientation.M22 = y * s, orientation.M32 = z * s;
+        x = -Nz * sinYaw, y = Nz * cosYaw, z = Nx * sinYaw - Ny * cosYaw;
+        s = 1.0f / (float)sqrt(x * x + y * y + z * z);
+        orientation.M12 = x * s, orientation.M22 = y * s,
+        orientation.M32 = z * s;
     }
 
     // Tell our parent class to draw us now

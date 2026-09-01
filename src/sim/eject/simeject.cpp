@@ -1,7 +1,7 @@
-#include "Graphics/Include/drawShdw.h"
-#include "Graphics/Include/drawGuys.h"
+#include "graphics/include/drawshdw.h"
+#include "graphics/include/drawguys.h"
 #include "stdhdr.h"
-#include "Classtbl.h"
+#include "classtbl.h"
 #include "object.h"
 #include "falcmesg.h"
 #include "otwdrive.h"
@@ -11,8 +11,8 @@
 #include "aircrft.h"
 #include "weather.h"
 #include "simeject.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/DeathMessage.h"
+#include "msginc/damagemsg.h"
+#include "msginc/deathmessage.h"
 #include "campbase.h"
 #include "simdrive.h"
 #include "acmi/src/include/acmirec.h"
@@ -20,19 +20,19 @@
 #include "otwdrive.h"
 #include "falcsess.h"
 #include "fsound.h"
-#include "SimVuDrv.h"
-#include "MsgInc/RadioChatterMsg.h"
+#include "simvudrv.h"
+#include "msginc/radiochattermsg.h"
 #include "falcsnd/conv.h"
 #include "simveh.h"
 #include "airunit.h"
 #include "rules.h"
 #include "falcsnd/voicemanager.h"
-#include "GameMgr.h"
+#include "gamemgr.h"
 #include "team.h"
 #include "dofsnswitches.h"
 #include "fakerand.h"
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 // References.
 
@@ -63,65 +63,50 @@ BOOL EjectedPilotClass::_classTypeFound = FALSE;
 // ejection mode data.
 
 // F-16 mode 1 player ejected pilot aero data.
-EP_PHYS_DATA F16Mode1PhysicalData =
-{
+EP_PHYS_DATA F16Mode1PhysicalData = {
     // Stage-dependent data.
-    {
-        // Jettison canopy stage.
-        {
-            // End stage time (in seconds).
-            0.0F,
-            // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
-            AIR_DENSITY * 8.0F * 1.0F,
-            // Mass (in slugs).
-            300.0F * KG_TO_SLUGS
-        },
-        // Eject seat stage
-        {
-            // End stage time (in seconds).
-            1.5F,
-            // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
-            AIR_DENSITY * 8.0F * 1.0F,
-            // Mass (in slugs).
-            300.0F * KG_TO_SLUGS
-        },
-        // Free fall stage with seat, chute closed
-        {
-            // End stage time (in seconds).
-            1.5F,
-            // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
-            AIR_DENSITY * 8.0F * 1.0F,
-            // Mass (in slugs).
-            300.0F * KG_TO_SLUGS
-        },
-        // Chute opening
-        {
-            // End stage time (in seconds).
-            7.5F,
-            // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
-            AIR_DENSITY * 70.0F * 1.2F,
-            // Mass (in slugs).
-            100.0F * KG_TO_SLUGS
-        },
-        // Free fall stage with open parachute, no seat
-        {
-            // End stage time (in seconds).
-            10000.0F,
-            // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
-            AIR_DENSITY * 150.0F * 50.2F, //MI make chute slower, was *1.2F
-            // Mass (in slugs).
-            100.0F * KG_TO_SLUGS
-        },
-        // Free fall stage with collapsed parachute, no seat
-        {
-            // End stage time (in seconds).
-            10000.0F,
-            // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
-            AIR_DENSITY * 4.0F * 0.8F,
-            // Mass (in slugs).
-            100.0F * KG_TO_SLUGS
-        }
-    },
+    {// Jettison canopy stage.
+     {// End stage time (in seconds).
+      0.0F,
+      // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
+      AIR_DENSITY * 8.0F * 1.0F,
+      // Mass (in slugs).
+      300.0F * KG_TO_SLUGS},
+     // Eject seat stage
+     {// End stage time (in seconds).
+      1.5F,
+      // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
+      AIR_DENSITY * 8.0F * 1.0F,
+      // Mass (in slugs).
+      300.0F * KG_TO_SLUGS},
+     // Free fall stage with seat, chute closed
+     {// End stage time (in seconds).
+      1.5F,
+      // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
+      AIR_DENSITY * 8.0F * 1.0F,
+      // Mass (in slugs).
+      300.0F * KG_TO_SLUGS},
+     // Chute opening
+     {// End stage time (in seconds).
+      7.5F,
+      // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
+      AIR_DENSITY * 70.0F * 1.2F,
+      // Mass (in slugs).
+      100.0F * KG_TO_SLUGS},
+     // Free fall stage with open parachute, no seat
+     {// End stage time (in seconds).
+      10000.0F,
+      // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
+      AIR_DENSITY * 150.0F * 50.2F, //MI make chute slower, was *1.2F
+      // Mass (in slugs).
+      100.0F * KG_TO_SLUGS},
+     // Free fall stage with collapsed parachute, no seat
+     {// End stage time (in seconds).
+      10000.0F,
+      // Drag factor (atmospheric density * cross-sectional area * drag coefficient).
+      AIR_DENSITY * 4.0F * 0.8F,
+      // Mass (in slugs).
+      100.0F * KG_TO_SLUGS}},
     // Speed of pilot at time of ejection (in ft/s).
     20.0F,
     // Acceleration of ejection seat from thrust (ft/(sec*sec))
@@ -139,21 +124,20 @@ EP_PHYS_DATA F16Mode1PhysicalData =
     // Delta yaw of pilot in free fall with chute (radians/sec)
     1.0F * DTR,
     // Seat offset from center of plane
-    9.5F, 0.0F, 0.0F,
+    9.5F,
+    0.0F,
+    0.0F,
     // Player pilot end stage time adjustment.
     // This is added to the end stage time for the player pilot.
-    0.5F
-};
+    0.5F};
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] =
-{
+EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] = {
     // pilot and seat.
-    EP_MODEL_DATA
-    (
+    EP_MODEL_DATA(
         // bsp model id.
         VIS_EJECT2,
         // physical stage that this model is created in.
@@ -161,16 +145,9 @@ EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] =
         // camera mode.
         1,
         // focus point offset in model space.
-        EP_VECTOR
-        (
-            0.0,
-            0.0,
-            0.0
-        )
-    ),
+        EP_VECTOR(0.0, 0.0, 0.0)),
     // pilot and open chute.
-    EP_MODEL_DATA
-    (
+    EP_MODEL_DATA(
         // bsp model id.
         VIS_EJECT1,
         // physical stage that this model is created in.
@@ -178,16 +155,9 @@ EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] =
         // camera mode.
         1,
         // focus point offset in model space.
-        EP_VECTOR
-        (
-            0.0,
-            0.0,
-            70.0
-        )
-    ),
+        EP_VECTOR(0.0, 0.0, 70.0)),
     // pilot and collapsed chute.
-    EP_MODEL_DATA
-    (
+    EP_MODEL_DATA(
         // bsp model id.
         VIS_EJECT3,
         // physical stage that this model is created in.
@@ -195,16 +165,9 @@ EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] =
         // camera mode.
         1,
         // focus point offset in model space.
-        EP_VECTOR
-        (
-            0.0,
-            0.0,
-            70.0
-        )
-    ),
+        EP_VECTOR(0.0, 0.0, 70.0)),
     // Safe Landing
-    EP_MODEL_DATA
-    (
+    EP_MODEL_DATA(
         // bsp model id.
         VIS_EJECT4,
         // physical stage that this model is created in.
@@ -212,16 +175,9 @@ EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] =
         // camera mode.
         2,
         // focus point offset in model space.
-        EP_VECTOR
-        (
-            0.0,
-            0.0,
-            70.0
-        )
-    ),
+        EP_VECTOR(0.0, 0.0, 70.0)),
     // Crash Landing
-    EP_MODEL_DATA
-    (
+    EP_MODEL_DATA(
         // bsp model id.
         VIS_EJECT5,
         // physical stage that this model is created in.
@@ -229,16 +185,10 @@ EP_MODEL_DATA F16ModelData[MD_NUM_MODELS] =
         // camera mode.
         2,
         // focus point offset in model space.
-        EP_VECTOR
-        (
-            0.0,
-            0.0,
-            70.0
-        )
-    )
-};
+        EP_VECTOR(0.0, 0.0, 70.0))};
 
-EjectedPilotClass::EjectedPilotClass(VU_BYTE** stream, long *rem) : SimMoverClass(stream, rem)
+EjectedPilotClass::EjectedPilotClass(VU_BYTE **stream, long *rem)
+    : SimMoverClass(stream, rem)
 {
     VU_ID airVuId;
     int ejMode;
@@ -253,12 +203,9 @@ EjectedPilotClass::EjectedPilotClass(VU_BYTE** stream, long *rem) : SimMoverClas
 }
 
 
-
 int EjectedPilotClass::SaveSize()
 {
-    return SimMoverClass::SaveSize() +
-           sizeof(VU_ID) +
-           sizeof(int);
+    return SimMoverClass::SaveSize() + sizeof(VU_ID) + sizeof(int);
 }
 
 int EjectedPilotClass::Save(VU_BYTE **stream)
@@ -273,8 +220,8 @@ int EjectedPilotClass::Save(VU_BYTE **stream)
     return (saveSize + sizeof(VU_ID) + sizeof(int));
 }
 
-EjectedPilotClass::EjectedPilotClass(AircraftClass *ac, int mode, int no) :
-    SimMoverClass(EjectedPilotClass::ClassType())
+EjectedPilotClass::EjectedPilotClass(AircraftClass *ac, int mode, int no)
+    : SimMoverClass(EjectedPilotClass::ClassType())
 {
     InitLocalData(ac, mode, no);
 }
@@ -380,11 +327,7 @@ void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
     }
 
     _endStageTimeAdjust =
-        (
-            IsDigiPilot() ?
-            0.0F :
-            _pd->humanPilotEndStageTimeAdjust
-        );
+        (IsDigiPilot() ? 0.0F : _pd->humanPilotEndStageTimeAdjust);
 
     // It hasn't hit the ground yet.
     _hitGround = FALSE;
@@ -439,7 +382,7 @@ void EjectedPilotClass::InitLocalData(AircraftClass *ac, int mode, int no)
     {
         strcpy(_label, "Pilot");
         labelLen = strlen(_label);
-        _labelColor = 0;//acBSP->LabelColor();
+        _labelColor = 0; //acBSP->LabelColor();
     }
 
     _execCalledFromAircraft = FALSE;
@@ -508,7 +451,7 @@ int EjectedPilotClass::Sleep(void)
 {
     int retval = 0;
 
-    if ( not IsAwake())
+    if (not IsAwake())
         return retval;
 
     return SimMoverClass::Sleep();
@@ -527,10 +470,10 @@ int EjectedPilotClass::Exec()
     // Call superclass Exec.
     SimMoverClass::Exec();
 
-    if ( not SimDriver.MotionOn())
+    if (not SimDriver.MotionOn())
         return IsLocal();
 
-    if (_delayTime > SimLibElapsedTime)   // not time yet
+    if (_delayTime > SimLibElapsedTime) // not time yet
     {
         RunJettisonCanopy(); // stay with it
         return IsLocal();
@@ -542,130 +485,131 @@ int EjectedPilotClass::Exec()
     // Simulate the ejected pilot here.
     switch (_stage)
     {
-        case PD_JETTISON_CANOPY :
-        {
-            RunJettisonCanopy();
+    case PD_JETTISON_CANOPY:
+    {
+        RunJettisonCanopy();
 
-            break;
+        break;
+    }
+
+    case PD_EJECT_SEAT:
+    {
+        RunEjectSeat();
+
+        break;
+    }
+
+    case PD_FREE_FALL_WITH_SEAT:
+    {
+        RunFreeFall();
+
+        break;
+    }
+
+    case PD_CHUTE_OPENING:
+    {
+        RunFreeFall();
+
+        // Here we run our little switch based animation...
+        static const int NUM_FRAMES = 31;
+
+        float percent = (_runTime - StageEndTime(_stage - 1)) /
+                        (StageEndTime(_stage) - StageEndTime(_stage - 1));
+        int frame = FloatToInt32(percent * (NUM_FRAMES - 0.5f));
+
+        if (frame < 0)
+            frame = 0;
+        else if (frame > NUM_FRAMES)
+            frame = NUM_FRAMES;
+
+        percent = ((_runTime - _deltaTime) - StageEndTime(_stage - 1)) /
+                  (StageEndTime(_stage) - StageEndTime(_stage - 1));
+
+        int prevframe = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
+
+        if (prevframe < 0)
+            prevframe = 0;
+        else if (prevframe > NUM_FRAMES)
+            prevframe = NUM_FRAMES;
+
+        if (gACMIRec.IsRecording() and prevframe not_eq frame)
+        {
+            acmiSwitch.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            acmiSwitch.data.type = Type();
+            acmiSwitch.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
+            acmiSwitch.data.switchNum = 0;
+            acmiSwitch.data.prevSwitchVal = 1 << prevframe;
+            acmiSwitch.data.switchVal = 1 << frame;
+            gACMIRec.SwitchRecord(&acmiSwitch);
         }
 
-        case PD_EJECT_SEAT :
-        {
-            RunEjectSeat();
+        if (drawPointer)
+            ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 1 << frame);
 
-            break;
-        }
+        break;
+    }
 
-        case PD_FREE_FALL_WITH_SEAT :
-        {
-            RunFreeFall();
+    case PD_FREE_FALL_WITH_OPEN_CHUTE:
+    {
+        RunFreeFallWithOpenChute();
 
-            break;
-        }
+        break;
+    }
 
-        case PD_CHUTE_OPENING :
-        {
-            RunFreeFall();
+    case PD_FREE_FALL_WITH_COLLAPSED_CHUTE:
+    {
+        RunFreeFall();
 
-            // Here we run our little switch based animation...
-            static const int NUM_FRAMES = 31;
+        break;
+    }
 
-            float percent = (_runTime             - StageEndTime(_stage - 1)) /
-                            (StageEndTime(_stage) - StageEndTime(_stage - 1));
-            int frame = FloatToInt32(percent * (NUM_FRAMES - 0.5f));
+    case PD_SAFE_LANDING:
+    {
+        RunSafeLanding();
 
-            if (frame < 0)
-                frame = 0;
-            else if (frame > NUM_FRAMES)
-                frame = NUM_FRAMES;
+        _stageTimer += _deltaTime;
 
-            percent = ((_runTime  - _deltaTime)           - StageEndTime(_stage - 1)) /
-                      (StageEndTime(_stage) - StageEndTime(_stage - 1));
+        static const int NUM_FRAMES = 13;
+        float percent = _stageTimer / 2.0f;
+        int frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
 
-            int prevframe = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
+        if (frame < 0)
+            frame = 0;
+        else if (frame > NUM_FRAMES)
+            frame = NUM_FRAMES;
 
-            if (prevframe < 0)
-                prevframe = 0;
-            else if (prevframe > NUM_FRAMES)
-                prevframe = NUM_FRAMES;
+        if (drawPointer)
+            ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 1 << frame);
 
-            if (gACMIRec.IsRecording() and prevframe not_eq frame)
-            {
-                acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
-                acmiSwitch.data.type = Type();
-                acmiSwitch.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
-                acmiSwitch.data.switchNum = 0;
-                acmiSwitch.data.prevSwitchVal = 1 << prevframe;
-                acmiSwitch.data.switchVal = 1 << frame;
-                gACMIRec.SwitchRecord(&acmiSwitch);
-            }
+        break;
+    }
 
-            if (drawPointer)
-                ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 1 << frame);
+    case PD_CRASH_LANDING:
+    {
+        RunCrashLanding();
 
-            break;
-        }
+        _stageTimer += _deltaTime;
 
-        case PD_FREE_FALL_WITH_OPEN_CHUTE :
-        {
-            RunFreeFallWithOpenChute();
+        static const int NUM_FRAMES = 12;
+        float percent = _stageTimer / 2.0f;
+        int frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
 
-            break;
-        }
+        if (frame < 0)
+            frame = 0;
+        else if (frame > NUM_FRAMES)
+            frame = NUM_FRAMES;
 
-        case PD_FREE_FALL_WITH_COLLAPSED_CHUTE :
-        {
-            RunFreeFall();
+        if (drawPointer)
+            ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 1 << frame);
 
-            break;
-        }
+        break;
+    }
 
-        case PD_SAFE_LANDING :
-        {
-            RunSafeLanding();
-
-            _stageTimer += _deltaTime;
-
-            static const int NUM_FRAMES = 13;
-            float percent = _stageTimer / 2.0f;
-            int frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
-
-            if (frame < 0)
-                frame = 0;
-            else if (frame > NUM_FRAMES)
-                frame = NUM_FRAMES;
-
-            if (drawPointer)
-                ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 1 << frame);
-
-            break;
-        }
-
-        case PD_CRASH_LANDING :
-        {
-            RunCrashLanding();
-
-            _stageTimer += _deltaTime;
-
-            static const int NUM_FRAMES = 12;
-            float percent = _stageTimer / 2.0f;
-            int frame = FloatToInt32(percent * ((float)NUM_FRAMES - 0.5f));
-
-            if (frame < 0)
-                frame = 0;
-            else if (frame > NUM_FRAMES)
-                frame = NUM_FRAMES;
-
-            if (drawPointer)
-                ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 1 << frame);
-
-            break;
-        }
-
-        default :
-        {
-            ShiWarning("Bad Eject Mode");
-        }
+    default:
+    {
+        ShiWarning("Bad Eject Mode");
+    }
     }
 
     // Make sure all components of orientation are in range ( 0 <= n <= TWO_PI).
@@ -681,7 +625,8 @@ int EjectedPilotClass::Exec()
     {
         genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         genPos.data.type = Type();
-        genPos.data.uniqueID = ACMIIDTable->Add(Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
+        genPos.data.uniqueID = ACMIIDTable->Add(
+            Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
         genPos.data.x = XPos();
         genPos.data.y = YPos();
         genPos.data.z = ZPos();
@@ -732,14 +677,17 @@ void EjectedPilotClass::ApplyDamage(FalconDamageMessage *damageMsg)
             // _flightId is the VU_ID of the flight the pilot ejected from
 
             Flight flight;
-            flight = (Flight) vuDatabase->Find(_flightId);
+            flight = (Flight)vuDatabase->Find(_flightId);
 
             if (flight)
             {
-                FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(flight->Id(), FalconLocalSession);
+                FalconRadioChatterMessage *radioMessage =
+                    new FalconRadioChatterMessage(flight->Id(),
+                                                  FalconLocalSession);
                 radioMessage->dataBlock.from = flight->Id();
                 radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-                radioMessage->dataBlock.voice_id = flight->GetFlightLeadVoiceID();
+                radioMessage->dataBlock.voice_id =
+                    flight->GetFlightLeadVoiceID();
                 radioMessage->dataBlock.message = rcAIRMANDOWNB;
                 //M.N. changed to 32767 -> flexibly use randomized values of max available eval indexes
                 radioMessage->dataBlock.edata[0] = 32767;
@@ -756,22 +704,23 @@ void EjectedPilotClass::ApplyDamage(FalconDamageMessage *damageMsg)
 #ifdef MLR_NEWSNDCODE
             SoundPos.Sfx(SFX_SCREAM, 0, 1, 0);
 #else
-            F4SoundFXSetPos(SFX_SCREAM, TRUE, XPos(), YPos(), ZPos(), 1.0f , 0 , XDelta(), YDelta(), ZDelta());
+            F4SoundFXSetPos(SFX_SCREAM, TRUE, XPos(), YPos(), ZPos(), 1.0f, 0,
+                            XDelta(), YDelta(), ZDelta());
 #endif
 
             _deathMsg->dataBlock.damageType = damageMsg->dataBlock.damageType;
-            _deathMsg->dataBlock.dEntityID  = Id();
+            _deathMsg->dataBlock.dEntityID = Id();
             _deathMsg->dataBlock.dCampID = 0;
-            _deathMsg->dataBlock.dSide   = GetCountry();
-            _deathMsg->dataBlock.dPilotID   = pilotSlot;
-            _deathMsg->dataBlock.dIndex     = Type();
+            _deathMsg->dataBlock.dSide = GetCountry();
+            _deathMsg->dataBlock.dPilotID = pilotSlot;
+            _deathMsg->dataBlock.dIndex = Type();
 
-            _deathMsg->dataBlock.fEntityID  = damageMsg->dataBlock.fEntityID;
-            _deathMsg->dataBlock.fCampID    = damageMsg->dataBlock.fCampID;
-            _deathMsg->dataBlock.fSide      = damageMsg->dataBlock.fSide;
-            _deathMsg->dataBlock.fPilotID   = damageMsg->dataBlock.fPilotID;
-            _deathMsg->dataBlock.fIndex     = damageMsg->dataBlock.fIndex;
-            _deathMsg->dataBlock.fWeaponID  = damageMsg->dataBlock.fWeaponID;
+            _deathMsg->dataBlock.fEntityID = damageMsg->dataBlock.fEntityID;
+            _deathMsg->dataBlock.fCampID = damageMsg->dataBlock.fCampID;
+            _deathMsg->dataBlock.fSide = damageMsg->dataBlock.fSide;
+            _deathMsg->dataBlock.fPilotID = damageMsg->dataBlock.fPilotID;
+            _deathMsg->dataBlock.fIndex = damageMsg->dataBlock.fIndex;
+            _deathMsg->dataBlock.fWeaponID = damageMsg->dataBlock.fWeaponID;
             _deathMsg->dataBlock.fWeaponUID = damageMsg->dataBlock.fWeaponUID;
         }
 
@@ -823,7 +772,7 @@ BOOL EjectedPilotClass::HasHitGround() const
     }
 
     // TODO: do a cheaper ground height check 1st
-    if (testHeight  >= OTWDriver.GetGroundLevel(_pos[I_X], _pos[I_Y]))
+    if (testHeight >= OTWDriver.GetGroundLevel(_pos[I_X], _pos[I_Y]))
     {
         return TRUE;
     }
@@ -869,7 +818,8 @@ void EjectedPilotClass::GetTransform(TransformMatrix tMat)
     memcpy(tMat, dmx, sizeof(TransformMatrix));
 }
 
-void EjectedPilotClass::GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y, BIG_SCALAR &z)
+void EjectedPilotClass::GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y,
+                                      BIG_SCALAR &z)
 {
     SIM_FLOAT startTime, totalTime;
 
@@ -914,19 +864,13 @@ void EjectedPilotClass::GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y, BIG_SCALAR &
     // Get the model space offset here.  We should linearly interpolate
     // over time so that the focus point doesnt jump around.
     startTime = ModelCreateTime(_model);
-    totalTime =
-        (
-            _model >= MD_PILOT_AND_OPEN_CHUTE ?
-            5.0F :
-            ModelCreateTime(_model + 1) - startTime
-        );
+    totalTime = (_model >= MD_PILOT_AND_OPEN_CHUTE ?
+                     5.0F :
+                     ModelCreateTime(_model + 1) - startTime);
     F4Assert(totalTime > 0.0F);
     finalFocus =
-        (
-            _model >= MD_PILOT_AND_OPEN_CHUTE ?
-            _md[_model].focusOffset :
-            _md[_model + 1].focusOffset
-        );
+        (_model >= MD_PILOT_AND_OPEN_CHUTE ? _md[_model].focusOffset :
+                                             _md[_model + 1].focusOffset);
 
     if (_runTime > startTime + totalTime)
     {
@@ -946,12 +890,7 @@ void EjectedPilotClass::GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y, BIG_SCALAR &
 
     // Transform the model space offset into a world space offset.
     _rot.GetTrotation(rot);
-    MatrixMult
-    (
-        &rot,
-        &modelSpaceOffset,
-        &worldSpaceOffset
-    );
+    MatrixMult(&rot, &modelSpaceOffset, &worldSpaceOffset);
 
     // Find the focus point in world space by adding the world space
     // offset to the position
@@ -969,18 +908,18 @@ void EjectedPilotClass::SetMode(int mode)
     // Point us to the correct physical data.
     switch (mode)
     {
-        case EM_F16_MODE1:
-        {
-            _pd = &F16Mode1PhysicalData;
-            _md = F16ModelData;
+    case EM_F16_MODE1:
+    {
+        _pd = &F16Mode1PhysicalData;
+        _md = F16ModelData;
 
-            break;
-        }
+        break;
+    }
 
-        default:
-        {
-            ShiWarning("Bad Eject Mode");
-        }
+    default:
+    {
+        ShiWarning("Bad Eject Mode");
+    }
     }
 }
 
@@ -988,37 +927,25 @@ int EjectedPilotClass::ClassType()
 {
     if (_classTypeFound == FALSE)
     {
-        _classType = GetClassID
-                     (
-                         DOMAIN_AIR,
-                         CLASS_VEHICLE,
-                         TYPE_EJECT,
-                         STYPE_EJECT1,
-                         SPTYPE_ANY,
-                         VU_ANY,
-                         VU_ANY,
-                         VU_ANY
-                     ) + VU_LAST_ENTITY_TYPE;
+        _classType =
+            GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_EJECT, STYPE_EJECT1,
+                       SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY) +
+            VU_LAST_ENTITY_TYPE;
         _classTypeFound = TRUE;
     }
 
     return _classType;
 }
 
-AircraftClass* EjectedPilotClass::GetParentAircraft(void)
+AircraftClass *EjectedPilotClass::GetParentAircraft(void)
 {
-    return (AircraftClass*) vuDatabase->Find(_aircraftId);
+    return (AircraftClass *)vuDatabase->Find(_aircraftId);
 }
 
 void EjectedPilotClass::AdvanceTime()
 {
     // Get delta time.
-    _deltaTime =
-        (
-            _stage == PD_START ?
-            0.0F :
-            SimLibMajorFrameTime
-        );
+    _deltaTime = (_stage == PD_START ? 0.0F : SimLibMajorFrameTime);
 
     // Update position.
     //XX _pos += _vel * _deltaTime;
@@ -1042,7 +969,8 @@ void EjectedPilotClass::AdvanceTime()
     _runTime += _deltaTime;
 
     // Advance stage if necessary.
-    if ( not _hitGround and _collapseChute and _stage not_eq PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
+    if (not _hitGround and _collapseChute and
+        _stage not_eq PD_FREE_FALL_WITH_COLLAPSED_CHUTE)
     {
         SetStage(PD_FREE_FALL_WITH_COLLAPSED_CHUTE);
         InitFreeFallWithCollapsedChute();
@@ -1067,49 +995,50 @@ void EjectedPilotClass::AdvanceTime()
     }
     else
     {
-        while (_stage < PD_FREE_FALL_WITH_OPEN_CHUTE and _runTime >= StageEndTime())
+        while (_stage < PD_FREE_FALL_WITH_OPEN_CHUTE and
+               _runTime >= StageEndTime())
         {
             switch (AdvanceStage())
             {
-                case PD_JETTISON_CANOPY :
-                {
-                    InitJettisonCanopy();
+            case PD_JETTISON_CANOPY:
+            {
+                InitJettisonCanopy();
 
-                    break;
-                }
+                break;
+            }
 
-                case PD_EJECT_SEAT :
-                {
-                    InitEjectSeat();
+            case PD_EJECT_SEAT:
+            {
+                InitEjectSeat();
 
-                    break;
-                }
+                break;
+            }
 
-                case PD_FREE_FALL_WITH_SEAT :
-                {
-                    InitFreeFallWithSeat();
+            case PD_FREE_FALL_WITH_SEAT:
+            {
+                InitFreeFallWithSeat();
 
-                    break;
-                }
+                break;
+            }
 
-                case PD_CHUTE_OPENING :
-                {
-                    InitChuteOpening();
+            case PD_CHUTE_OPENING:
+            {
+                InitChuteOpening();
 
-                    break;
-                }
+                break;
+            }
 
-                case PD_FREE_FALL_WITH_OPEN_CHUTE :
-                {
-                    InitFreeFallWithOpenChute();
+            case PD_FREE_FALL_WITH_OPEN_CHUTE:
+            {
+                InitFreeFallWithOpenChute();
 
-                    break;
-                }
+                break;
+            }
 
-                default :
-                {
-                    ShiWarning("Bad Eject Mode");
-                }
+            default:
+            {
+                ShiWarning("Bad Eject Mode");
+            }
             }
         }
 
@@ -1177,13 +1106,14 @@ void EjectedPilotClass::SetModel(int model)
 
 void EjectedPilotClass::InitJettisonCanopy()
 {
-    AircraftClass *aircraft = (AircraftClass*) vuDatabase->Find(_aircraftId);
+    AircraftClass *aircraft = (AircraftClass *)vuDatabase->Find(_aircraftId);
 
     _stageTimer = 0.0f;
 
     if (aircraft)
     {
-        FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(OwnerId());
+        FalconSessionEntity *session =
+            (FalconSessionEntity *)vuDatabase->Find(OwnerId());
 
         // Turn off the canopy.
         aircraft->SetSwitch(SIMP_CANOPY, FALSE);
@@ -1227,11 +1157,11 @@ void EjectedPilotClass::InitEjectSeat()
     p *= EjectSpeed();
     _vel += p;
 
-    F4Assert(_vel[I_X] <  10000.0F);
+    F4Assert(_vel[I_X] < 10000.0F);
     F4Assert(_vel[I_X] > -10000.0F);
-    F4Assert(_vel[I_Y] <  10000.0F);
+    F4Assert(_vel[I_Y] < 10000.0F);
     F4Assert(_vel[I_Y] > -10000.0F);
-    F4Assert(_vel[I_Z] <  10000.0F);
+    F4Assert(_vel[I_Z] < 10000.0F);
     F4Assert(_vel[I_Z] > -10000.0F);
 
     // No angular velocity.
@@ -1255,11 +1185,12 @@ void EjectedPilotClass::InitFreeFallWithSeat()
     // check _aircraft->flightPtr for someone in the flight to see the chute
     // Randomize these three (i think)
     Flight flight;
-    flight = (Flight) vuDatabase->Find(_flightId);
+    flight = (Flight)vuDatabase->Find(_flightId);
 
     if (flight)
     {
-        FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(flight->Id(), FalconLocalGame);
+        FalconRadioChatterMessage *radioMessage =
+            new FalconRadioChatterMessage(flight->Id(), FalconLocalGame);
         radioMessage->dataBlock.from = flight->Id();
         radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
         radioMessage->dataBlock.voice_id = flight->GetFlightLeadVoiceID();
@@ -1267,7 +1198,8 @@ void EjectedPilotClass::InitFreeFallWithSeat()
         if (rand() % 2)
         {
             radioMessage->dataBlock.message = rcAIRMANDOWNE;
-            radioMessage->dataBlock.edata[0] = SimToGrid(YPos());// MN Fix - need SimToGrid, not FloatToInt32 as previoiusly..
+            radioMessage->dataBlock.edata[0] = SimToGrid(
+                YPos()); // MN Fix - need SimToGrid, not FloatToInt32 as previoiusly..
             radioMessage->dataBlock.edata[1] = SimToGrid(XPos());
         }
         else
@@ -1305,9 +1237,10 @@ void EjectedPilotClass::InitChuteOpening()
 
     // play the sound
 #ifdef MLR_NEWSNDCODE
-    SoundPos.Sfx(SFX_CHUTE, 0, 1.0f , 0);
+    SoundPos.Sfx(SFX_CHUTE, 0, 1.0f, 0);
 #else
-    F4SoundFXSetPos(SFX_CHUTE, TRUE, XPos(), YPos(), ZPos(), 1.0f , 0 , XDelta(), YDelta(), ZDelta());
+    F4SoundFXSetPos(SFX_CHUTE, TRUE, XPos(), YPos(), ZPos(), 1.0f, 0, XDelta(),
+                    YDelta(), ZDelta());
 #endif
 
     _stageTimer = 0.0f;
@@ -1336,18 +1269,20 @@ void EjectedPilotClass::InitSafeLanding()
     // check _aircraft->flightPtr for someone in the flight to see the landing
 
     Flight flight;
-    flight = (Flight) vuDatabase->Find(_flightId);
+    flight = (Flight)vuDatabase->Find(_flightId);
 
     if (flight)
     {
-        FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(flight->Id(), FalconLocalGame);
+        FalconRadioChatterMessage *radioMessage =
+            new FalconRadioChatterMessage(flight->Id(), FalconLocalGame);
         radioMessage->dataBlock.from = flight->Id();
         radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
         radioMessage->dataBlock.voice_id = flight->GetFlightLeadVoiceID();
         radioMessage->dataBlock.message = rcAIRMANDOWND;
         radioMessage->dataBlock.edata[0] = flight->callsign_id;
         radioMessage->dataBlock.edata[1] = flight->GetFlightLeadCallNumber();
-        radioMessage->dataBlock.edata[2] = SimToGrid(YPos()); // MN Fix - need SimToGrid, not FloatToInt32 as previoiusly..and reversed X/YPos
+        radioMessage->dataBlock.edata[2] = SimToGrid(
+            YPos()); // MN Fix - need SimToGrid, not FloatToInt32 as previoiusly..and reversed X/YPos
         radioMessage->dataBlock.edata[3] = SimToGrid(XPos());
         FalconSendMessage(radioMessage, FALSE);
     }
@@ -1443,9 +1378,7 @@ void EjectedPilotClass::RunJettisonCanopy()
 void EjectedPilotClass::RunEjectSeat()
 {
     EP_VECTOR
-    thrustVector,
-    dragVector,
-    accelVector;
+    thrustVector, dragVector, accelVector;
 
     // Calculate all forces acting on the seat.
     CalculateGravityVector(accelVector);
@@ -1459,18 +1392,18 @@ void EjectedPilotClass::RunEjectSeat()
     accelVector *= _deltaTime / Mass();
 
     // Don't cross the zero line
-    if (dragVector[I_X] < - _vel[I_X])
-        dragVector[I_X] = - _vel[I_X];
+    if (dragVector[I_X] < -_vel[I_X])
+        dragVector[I_X] = -_vel[I_X];
     else if (dragVector[I_X] > _vel[I_X])
         dragVector[I_X] = _vel[I_X];
 
-    if (dragVector[I_Y] < - _vel[I_Y])
-        dragVector[I_Y] = - _vel[I_Y];
+    if (dragVector[I_Y] < -_vel[I_Y])
+        dragVector[I_Y] = -_vel[I_Y];
     else if (dragVector[I_Y] > _vel[I_Y])
         dragVector[I_Y] = _vel[I_Y];
 
-    if (dragVector[I_Z] < - _vel[I_Z])
-        dragVector[I_Z] = - _vel[I_Z];
+    if (dragVector[I_Z] < -_vel[I_Z])
+        dragVector[I_Z] = -_vel[I_Z];
     else if (dragVector[I_Z] > _vel[I_Z])
         dragVector[I_Z] = _vel[I_Z];
 
@@ -1478,13 +1411,12 @@ void EjectedPilotClass::RunEjectSeat()
 
     // Ajust the velocity by the acceleration.
     _vel += accelVector;
-    F4Assert(_vel[I_X] <  10000.0F);
+    F4Assert(_vel[I_X] < 10000.0F);
     F4Assert(_vel[I_X] > -10000.0F);
-    F4Assert(_vel[I_Y] <  10000.0F);
+    F4Assert(_vel[I_Y] < 10000.0F);
     F4Assert(_vel[I_Y] > -10000.0F);
-    F4Assert(_vel[I_Z] <  10000.0F);
+    F4Assert(_vel[I_Z] < 10000.0F);
     F4Assert(_vel[I_Z] > -10000.0F);
-
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -1519,8 +1451,7 @@ void EjectedPilotClass::RunCrashLanding()
 void EjectedPilotClass::RunFreeFallWithOpenChute()
 {
     EP_VECTOR
-    dragVector,
-    accelVector;
+    dragVector, accelVector;
 
     // Calculate all forces acting on the seat.
     CalculateGravityVector(accelVector);
@@ -1532,18 +1463,18 @@ void EjectedPilotClass::RunFreeFallWithOpenChute()
     accelVector *= _deltaTime / Mass();
 
     // Don't cross the zero line
-    if (dragVector[I_X] < - _vel[I_X])
-        dragVector[I_X] = - _vel[I_X];
+    if (dragVector[I_X] < -_vel[I_X])
+        dragVector[I_X] = -_vel[I_X];
     else if (dragVector[I_X] > _vel[I_X])
         dragVector[I_X] = _vel[I_X];
 
-    if (dragVector[I_Y] < - _vel[I_Y])
-        dragVector[I_Y] = - _vel[I_Y];
+    if (dragVector[I_Y] < -_vel[I_Y])
+        dragVector[I_Y] = -_vel[I_Y];
     else if (dragVector[I_Y] > _vel[I_Y])
         dragVector[I_Y] = _vel[I_Y];
 
-    if (dragVector[I_Z] < - _vel[I_Z])
-        dragVector[I_Z] = - _vel[I_Z];
+    if (dragVector[I_Z] < -_vel[I_Z])
+        dragVector[I_Z] = -_vel[I_Z];
     else if (dragVector[I_Z] > _vel[I_Z])
         dragVector[I_Z] = _vel[I_Z];
 
@@ -1551,11 +1482,11 @@ void EjectedPilotClass::RunFreeFallWithOpenChute()
 
     // Ajust the velocity by the acceleration.
     _vel += accelVector;
-    F4Assert(_vel[I_X] <  10000.0F);
+    F4Assert(_vel[I_X] < 10000.0F);
     F4Assert(_vel[I_X] > -10000.0F);
-    F4Assert(_vel[I_Y] <  10000.0F);
+    F4Assert(_vel[I_Y] < 10000.0F);
     F4Assert(_vel[I_Y] > -10000.0F);
-    F4Assert(_vel[I_Z] <  10000.0F);
+    F4Assert(_vel[I_Z] < 10000.0F);
     F4Assert(_vel[I_Z] > -10000.0F);
 
 
@@ -1573,8 +1504,7 @@ void EjectedPilotClass::RunFreeFallWithOpenChute()
 void EjectedPilotClass::RunFreeFall()
 {
     EP_VECTOR
-    dragVector,
-    accelVector;
+    dragVector, accelVector;
 
     // Calculate all forces acting on the seat.
     CalculateGravityVector(accelVector);
@@ -1586,18 +1516,18 @@ void EjectedPilotClass::RunFreeFall()
     accelVector *= _deltaTime / Mass();
 
     // Don't cross the zero line
-    if (dragVector[I_X] < - _vel[I_X])
-        dragVector[I_X] = - _vel[I_X];
+    if (dragVector[I_X] < -_vel[I_X])
+        dragVector[I_X] = -_vel[I_X];
     else if (dragVector[I_X] > _vel[I_X])
         dragVector[I_X] = _vel[I_X];
 
-    if (dragVector[I_Y] < - _vel[I_Y])
-        dragVector[I_Y] = - _vel[I_Y];
+    if (dragVector[I_Y] < -_vel[I_Y])
+        dragVector[I_Y] = -_vel[I_Y];
     else if (dragVector[I_Y] > _vel[I_Y])
         dragVector[I_Y] = _vel[I_Y];
 
-    if (dragVector[I_Z] < - _vel[I_Z])
-        dragVector[I_Z] = - _vel[I_Z];
+    if (dragVector[I_Z] < -_vel[I_Z])
+        dragVector[I_Z] = -_vel[I_Z];
     else if (dragVector[I_Z] > _vel[I_Z])
         dragVector[I_Z] = _vel[I_Z];
 
@@ -1605,11 +1535,11 @@ void EjectedPilotClass::RunFreeFall()
 
     // Ajust the velocity by the acceleration.
     _vel += accelVector;
-    F4Assert(_vel[I_X] <  10000.0F);
+    F4Assert(_vel[I_X] < 10000.0F);
     F4Assert(_vel[I_X] > -10000.0F);
-    F4Assert(_vel[I_Y] <  10000.0F);
+    F4Assert(_vel[I_Y] < 10000.0F);
     F4Assert(_vel[I_Y] > -10000.0F);
-    F4Assert(_vel[I_Z] <  10000.0F);
+    F4Assert(_vel[I_Z] < 10000.0F);
     F4Assert(_vel[I_Z] > -10000.0F);
 
     if (_vel[I_X] > 10000.0F)
@@ -1642,16 +1572,13 @@ void EjectedPilotClass::RunFreeFall()
 
 void EjectedPilotClass::CalculateAndSetPositionAndOrientationInCockpit()
 {
-    Trotation
-    rot;
+    Trotation rot;
 
-    Tpoint
-    modelOffset,
-    worldOffset;
+    Tpoint modelOffset, worldOffset;
 
-    AircraftClass *aircraft = (AircraftClass*) vuDatabase->Find(_aircraftId);
+    AircraftClass *aircraft = (AircraftClass *)vuDatabase->Find(_aircraftId);
 
-    if ( not aircraft)
+    if (not aircraft)
         return;
 
     // Orient the seat the same way as the plane.
@@ -1667,21 +1594,12 @@ void EjectedPilotClass::CalculateAndSetPositionAndOrientationInCockpit()
     MatrixMult(&rot, &modelOffset, &worldOffset);
 
     // Get position of aircraft + model space offset.
-    _pos = EP_VECTOR
-           (
-               aircraft->XPos(),
-               aircraft->YPos(),
-               aircraft->ZPos()
-           );
+    _pos = EP_VECTOR(aircraft->XPos(), aircraft->YPos(), aircraft->ZPos());
     _pos += worldOffset;
 
     // Velocity is the velocity of the plane.
-    _vel = EP_VECTOR
-           (
-               aircraft->XDelta(),
-               aircraft->YDelta(),
-               aircraft->ZDelta()
-           );
+    _vel =
+        EP_VECTOR(aircraft->XDelta(), aircraft->YDelta(), aircraft->ZDelta());
 
     // Angular velocity is the same as the plane.
     _aVel[I_ROLL] = aircraft->RollDelta();
@@ -1720,8 +1638,7 @@ void EjectedPilotClass::CalculateThrustVector(EP_VECTOR &result) const
 void EjectedPilotClass::CalculateDragVector(EP_VECTOR &result) const
 {
     SIM_FLOAT
-    windHdg,
-    relSpeed;
+    windHdg, relSpeed;
 
     EP_VECTOR
     windVelocity;
@@ -1734,10 +1651,11 @@ void EjectedPilotClass::CalculateDragVector(EP_VECTOR &result) const
 
     // Find the velocity vector for the wind.
     //JAM 24Nov03
-    windHdg = ((WeatherClass*)realWeather)->windHeading;
+    windHdg = ((WeatherClass *)realWeather)->windHeading;
 
     windVelocity = EP_VECTOR((float)cos(windHdg), (float)sin(windHdg), 0);
-    windVelocity *= ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+    windVelocity *=
+        ((WeatherClass *)realWeather)->WindSpeedInFeetPerSecond(&pos);
 
     // Subtract the velocity of the wind from the velocity of the seat before computing drag.
     result = _vel;
@@ -1781,24 +1699,16 @@ void EjectedPilotClass::CalculateGravityVector(EP_VECTOR &result) const
 
 void EjectedPilotClass::CalculateEjectionVector(EP_VECTOR &result) const
 {
-    Trotation
-    rot;
+    Trotation rot;
 
-    Tpoint
-    modelEject,
-    worldEject;
+    Tpoint modelEject, worldEject;
 
     EP_VECTOR
     dir;
 
     float fudge = 30 * PRANDFloat() * DTR;
-    dir =
-        EP_VECTOR
-        (
-            (float)cos(EjectAngle() + fudge),
-            0,
-            -(float)sin(EjectAngle() + fudge)
-        );
+    dir = EP_VECTOR((float)cos(EjectAngle() + fudge), 0,
+                    -(float)sin(EjectAngle() + fudge));
 
     _rot.GetTrotation(rot);
     dir.GetTpoint(modelEject);
@@ -1813,8 +1723,7 @@ void EjectedPilotClass::CalculateEjectionVector(EP_VECTOR &result) const
 
 void EjectedPilotClass::ZeroPitchAndRoll()
 {
-    Trotation
-    rot;
+    Trotation rot;
 
     EP_VECTOR
     hdg;
@@ -1831,12 +1740,7 @@ void EjectedPilotClass::ZeroPitchAndRoll()
     }
     else
     {
-        hdg = EP_VECTOR
-              (
-                  rot.M11,
-                  rot.M21,
-                  0
-              );
+        hdg = EP_VECTOR(rot.M11, rot.M21, 0);
         hdg.Normalize();
 
         _rot[I_YAW] = (float)atan2(hdg[I_Y], hdg[I_X]);
@@ -2034,4 +1938,3 @@ void EjectedPilotClass::SpewDebugData()
      MonoLocate(monoX, monoY);
     */
 }
-

@@ -1,4 +1,4 @@
-#pragma optimize( "", off )
+#pragma optimize("", off)
 
 #include <stdio.h>
 #include <winsock2.h>
@@ -17,8 +17,10 @@ main(int argc, char **argv)
     {
         printf("Winsock Version %d.%d", version, minor);
 
-        if (release) printf("  (RELEASE)\n");
-        else        printf("  (BETA)\n");
+        if (release)
+            printf("  (RELEASE)\n");
+        else
+            printf("  (BETA)\n");
     }
     else
         printf("Winsock2 not Installed\n");
@@ -66,7 +68,6 @@ DWORD GetWinsock2Version(DWORD *major, DWORD *minor, DWORD *release)
     }
 
 
-
     socket = WSASocket(AF_INET, SOCK_DGRAM, IPPROTO_UDP, 0, 0, 0);
 
     /* inquire MAX Buffer size for UDP */
@@ -81,8 +82,8 @@ DWORD GetWinsock2Version(DWORD *major, DWORD *minor, DWORD *release)
     WSACleanup();
 
 
-
-    if (size) *release = 1;
+    if (size)
+        *release = 1;
 
 
     return *major;

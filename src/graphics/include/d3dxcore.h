@@ -27,42 +27,43 @@
 //=============================================================================
 // D3DX surface-format enum (verbatim DX7 ordering -- used as array index).
 //=============================================================================
-enum _D3DX_SURFACEFORMAT
-{
-	D3DX_SF_UNKNOWN    = 0,
-	D3DX_SF_R8G8B8     = 1,
-	D3DX_SF_A8R8G8B8   = 2,
-	D3DX_SF_X8R8G8B8   = 3,
-	D3DX_SF_R5G6B5     = 4,
-	D3DX_SF_R5G5B5     = 5,		// X1R5G5B5
-	D3DX_SF_PALETTE4   = 6,
-	D3DX_SF_PALETTE8   = 7,
-	D3DX_SF_A1R5G5B5   = 8,
-	D3DX_SF_X4R4G4B4   = 9,
-	D3DX_SF_A4R4G4B4   = 10,
-	D3DX_SF_L8         = 11,
-	D3DX_SF_A8L8       = 12,
-	D3DX_SF_U8V8       = 13,
-	D3DX_SF_U5V5L6     = 14,
-	D3DX_SF_U8V8L8     = 15,
-	D3DX_SF_UYVY       = 16,
-	D3DX_SF_YUY2       = 17,
-	D3DX_SF_DXT1       = 18,
-	D3DX_SF_DXT3       = 19,
-	D3DX_SF_DXT5       = 20,
-	D3DX_SF_R3G3B2     = 21,
-	D3DX_SF_A8         = 22,
-	D3DX_SF_TEXTUREMAX = 23
+enum _D3DX_SURFACEFORMAT : int // Artscout - 2026 (Linux Ф1): fixed underlying type so the forward decl in tex.h
+{ // is complete enough to declare a member (context.h). MSVC defaults enums to int,
+    // so this is behaviour-neutral on Windows.
+    D3DX_SF_UNKNOWN = 0,
+    D3DX_SF_R8G8B8 = 1,
+    D3DX_SF_A8R8G8B8 = 2,
+    D3DX_SF_X8R8G8B8 = 3,
+    D3DX_SF_R5G6B5 = 4,
+    D3DX_SF_R5G5B5 = 5, // X1R5G5B5
+    D3DX_SF_PALETTE4 = 6,
+    D3DX_SF_PALETTE8 = 7,
+    D3DX_SF_A1R5G5B5 = 8,
+    D3DX_SF_X4R4G4B4 = 9,
+    D3DX_SF_A4R4G4B4 = 10,
+    D3DX_SF_L8 = 11,
+    D3DX_SF_A8L8 = 12,
+    D3DX_SF_U8V8 = 13,
+    D3DX_SF_U5V5L6 = 14,
+    D3DX_SF_U8V8L8 = 15,
+    D3DX_SF_UYVY = 16,
+    D3DX_SF_YUY2 = 17,
+    D3DX_SF_DXT1 = 18,
+    D3DX_SF_DXT3 = 19,
+    D3DX_SF_DXT5 = 20,
+    D3DX_SF_R3G3B2 = 21,
+    D3DX_SF_A8 = 22,
+    D3DX_SF_TEXTUREMAX = 23
 };
 
 typedef enum _D3DX_SURFACEFORMAT D3DX_SURFACEFORMAT;
 
 // D3DX flag/filter constants used by the engine.
 #ifndef D3DX_DEFAULT
-#define D3DX_DEFAULT          (0xFFFFFFFFUL)
+#define D3DX_DEFAULT (0xFFFFFFFFUL)
 #endif
-#define D3DX_TEXTURE_NOMIPMAP (0x00000100UL)	// don't generate mip chain
-#define D3DX_FT_LINEAR        (0x00000003UL)	// linear filter (load/resample)
+#define D3DX_TEXTURE_NOMIPMAP (0x00000100UL) // don't generate mip chain
+#define D3DX_FT_LINEAR (0x00000003UL) // linear filter (load/resample)
 
 //=============================================================================
 // Legacy D3DX texture helper functions (reimplemented in d3dxcompat.cpp).
@@ -78,25 +79,19 @@ D3DX_SURFACEFORMAT D3DXMakeSurfaceFormat(struct _DDPIXELFORMAT* pddpf);
 long /*HRESULT*/ D3DXInitialize(void);
 long /*HRESULT*/ D3DXUninitialize(void);
 
-long /*HRESULT*/ D3DXCreateTexture(
-	struct IDirect3DDevice7*      pDevice,
-	unsigned long*                pFlags,
-	unsigned long*                pWidth,
-	unsigned long*                pHeight,
-	D3DX_SURFACEFORMAT*           pFormat,
-	struct IDirectDrawPalette*    pPalette,
-	struct IDirectDrawSurface7**  ppTexture,
-	unsigned long*                pNumMipMaps);
+long /*HRESULT*/ D3DXCreateTexture(struct IDirect3DDevice7* pDevice,
+                                   unsigned long* pFlags, unsigned long* pWidth,
+                                   unsigned long* pHeight,
+                                   D3DX_SURFACEFORMAT* pFormat,
+                                   struct IDirectDrawPalette* pPalette,
+                                   struct IDirectDrawSurface7** ppTexture,
+                                   unsigned long* pNumMipMaps);
 
 long /*HRESULT*/ D3DXLoadTextureFromMemory(
-	struct IDirect3DDevice7*      pDevice,
-	struct IDirectDrawSurface7*   pTexture,
-	unsigned long                 dwMipLevel,
-	void*                         pSrc,
-	void*                         pSrcRect,		// RECT* (NULL = whole surface)
-	D3DX_SURFACEFORMAT            srcFormat,
-	unsigned long                 srcPitch,
-	struct IDirectDrawPalette*    srcPalette,
-	unsigned long                 dwFilter);
+    struct IDirect3DDevice7* pDevice, struct IDirectDrawSurface7* pTexture,
+    unsigned long dwMipLevel, void* pSrc,
+    void* pSrcRect, // RECT* (NULL = whole surface)
+    D3DX_SURFACEFORMAT srcFormat, unsigned long srcPitch,
+    struct IDirectDrawPalette* srcPalette, unsigned long dwFilter);
 
 #endif // _REDVIPER_D3DXCORE_H_

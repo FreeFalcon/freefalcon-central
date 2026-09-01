@@ -6,7 +6,7 @@
 #include "msginc/radiochattermsg.h"
 #include "falcent.h"
 #include "team.h"
-#include "Find.h"
+#include "find.h"
 #include "vuevent.h"
 
 //#define F4_DEBUG_COMMS
@@ -25,28 +25,31 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
     if (theEvent->Type() == RadioChatterMsg)
     {
-        FalconRadioChatterMessage *radioMessage = (FalconRadioChatterMessage*)theEvent;
+        FalconRadioChatterMessage* radioMessage =
+            (FalconRadioChatterMessage*)theEvent;
 
-        if (radioMessage->dataBlock.message < 0 or radioMessage->dataBlock.message >= LastComm)
+        if (radioMessage->dataBlock.message < 0 or
+            radioMessage->dataBlock.message >= LastComm)
         {
             ShiWarning("Bad radio message");
-            MonoPrint("Dropping Chatter Message ID: %d \n", radioMessage->dataBlock.message);
+            MonoPrint("Dropping Chatter Message ID: %d \n",
+                      radioMessage->dataBlock.message);
             delete theEvent;
             return;
         }
 
-        FalconEntity *from =
-            (FalconEntity*)vuDatabase->Find(((FalconRadioChatterMessage*)theEvent)->dataBlock.from);
+        FalconEntity* from = (FalconEntity*)vuDatabase->Find(
+            ((FalconRadioChatterMessage*)theEvent)->dataBlock.from);
 
         if (from)
         {
             int friendly = FALSE, inrange = FALSE;
-            FalconSessionEntity *session = NULL;
-            FalconEntity *player = NULL;
+            FalconSessionEntity* session = NULL;
+            FalconEntity* player = NULL;
             VuSessionsIterator sit(FalconLocalGame);
-            session = (FalconSessionEntity*) sit.GetFirst();
+            session = (FalconSessionEntity*)sit.GetFirst();
 
-            while (session and ( not friendly or not inrange))
+            while (session and (not friendly or not inrange))
             {
                 if (session->GetPlayerEntity())
                     player = (FalconEntity*)session->GetPlayerEntity();
@@ -56,22 +59,24 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
                     player = (FalconEntity*)session->GetPlayerSquadron();
                 else
                 {
-                    session = (FalconSessionEntity*) sit.GetNext();
+                    session = (FalconSessionEntity*)sit.GetNext();
                     continue;
                 }
 
                 //the sender is friendly to at least one player
-                if (GetTTRelations(player->GetTeam(), from->GetTeam()) <= Friendly)
+                if (GetTTRelations(player->GetTeam(), from->GetTeam()) <=
+                    Friendly)
                     friendly = TRUE;
 
                 //the sender is within radio range of at least one player
-                if (DistSqu(from->XPos(), from->YPos(), player->XPos(), player->YPos()) < MAX_RADIO_RANGE * MAX_RADIO_RANGE)
+                if (DistSqu(from->XPos(), from->YPos(), player->XPos(),
+                            player->YPos()) < MAX_RADIO_RANGE * MAX_RADIO_RANGE)
                     inrange = TRUE;
 
-                session = (FalconSessionEntity*) sit.GetNext();
+                session = (FalconSessionEntity*)sit.GetNext();
             }
 
-            if ( not friendly or not inrange)
+            if (not friendly or not inrange)
             {
                 // MonoPrint("Dropping Chatter Message ID: %d  Friendly:%d  In Range:%d\n", radioMessage->dataBlock.message, friendly, inrange );
                 delete theEvent;
@@ -89,9 +94,8 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     if (monoall == 0 or
         ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and monoall == 1) or
         ((theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 2) or
-        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and 
-         (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3)
-       )
+        ((theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG) and
+         (theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG) and monoall == 3))
         printit = 1;
 
     if (theEvent->Target() == vuLocalSessionEntity)
@@ -106,511 +110,572 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
     switch (theEvent->Type())
     {
-        case DamageMsg:
+    case DamageMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)        MonoPrint("DamageMsg ");
+        if (printit)
+            MonoPrint("DamageMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case WeaponFireMsg:
+    case WeaponFireMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)        MonoPrint("WeaponFireMsg ");
+        if (printit)
+            MonoPrint("WeaponFireMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case CampWeaponFireMsg:
+    case CampWeaponFireMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)       MonoPrint("CampWeaponFireMsg ");
+        if (printit)
+            MonoPrint("CampWeaponFireMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case CampMsg:
+    case CampMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)       MonoPrint("CampMsg ");
+        if (printit)
+            MonoPrint("CampMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case SimCampMsg:
+    case SimCampMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)       MonoPrint("SimCampMsg ");
+        if (printit)
+            MonoPrint("SimCampMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case UnitMsg:
+    case UnitMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)      MonoPrint("UnitMsg ");
+        if (printit)
+            MonoPrint("UnitMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case ObjectiveMsg:
+    case ObjectiveMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)     MonoPrint("ObjectiveMsg ");
+        if (printit)
+            MonoPrint("ObjectiveMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case UnitAssignmentMsg:
+    case UnitAssignmentMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("UnitAssignmentMsg ");
+        if (printit)
+            MonoPrint("UnitAssignmentMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case SendCampaignMsg:
+    case SendCampaignMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("SendCampaignMsg ");
+        if (printit)
+            MonoPrint("SendCampaignMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case TimingMsg:
+    case TimingMsg:
 #ifdef F4_DEBUG_COMMS
-            //      MonoPrint ("TimingMsg ");
+        //      MonoPrint ("TimingMsg ");
 #endif
 
-            break;
+        break;
 
-        case CampTaskingMsg:
+    case CampTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("CampTaskingMsg ");
+        if (printit)
+            MonoPrint("CampTaskingMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case AirTaskingMsg:
+    case AirTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("AirTaskingMsg ");
+        if (printit)
+            MonoPrint("AirTaskingMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case GndTaskingMsg:
+    case GndTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("GndTaskingMsg ");
+        if (printit)
+            MonoPrint("GndTaskingMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case NavalTaskingMsg:
+    case NavalTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("NavalTaskingMsg ");
+        if (printit)
+            MonoPrint("NavalTaskingMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case TeamMsg:
+    case TeamMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("TeamMsg ");
+        if (printit)
+            MonoPrint("TeamMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case WingmanMsg:
+    case WingmanMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("WingmanMsg ");
+        if (printit)
+            MonoPrint("WingmanMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case AirAIModeChange:
+    case AirAIModeChange:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("AirAIModeChange ");
+        if (printit)
+            MonoPrint("AirAIModeChange ");
 
 #endif
-            break;
+        break;
 
-        case MissionRequestMsg:
+    case MissionRequestMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("MissionRequestMsg ");
+        if (printit)
+            MonoPrint("MissionRequestMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case DivertMsg:
+    case DivertMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)  MonoPrint("DivertMsg ");
+        if (printit)
+            MonoPrint("DivertMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case WeatherMsg:
+    case WeatherMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("WeatherMsg ");
+        if (printit)
+            MonoPrint("WeatherMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case MissileEndMsg:
+    case MissileEndMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("MissileEndMsg ");
+        if (printit)
+            MonoPrint("MissileEndMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case AWACSMsg:
+    case AWACSMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("AWACSMsg ");
+        if (printit)
+            MonoPrint("AWACSMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case FACMsg:
+    case FACMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("FACMsg ");
+        if (printit)
+            MonoPrint("FACMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case ATCMsg:
+    case ATCMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("ATCMsg ");
+        if (printit)
+            MonoPrint("ATCMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case DeathMessage:
+    case DeathMessage:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("DeathMessage ");
+        if (printit)
+            MonoPrint("DeathMessage ");
 
 #endif
 
-            break;
+        break;
 
-        case CampEventMsg:
+    case CampEventMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("CampEventMsg  ");
+        if (printit)
+            MonoPrint("CampEventMsg  ");
 
 #endif
 
-            break;
+        break;
 
-        case LandingMessage:
+    case LandingMessage:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("LandingMessage ");
+        if (printit)
+            MonoPrint("LandingMessage ");
 
 #endif
 
-            break;
+        break;
 
-        case ControlSurfaceMsg:
+    case ControlSurfaceMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("ControlSurfaceMsg ");
+        if (printit)
+            MonoPrint("ControlSurfaceMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case SimDataToggle:
+    case SimDataToggle:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("SimDataToggle ");
+        if (printit)
+            MonoPrint("SimDataToggle ");
 
 #endif
 
-            break;
+        break;
 
-        case RequestDogfightInfo:
+    case RequestDogfightInfo:
 #ifdef F4_DEBUG_COMMS
-            if (printit)  MonoPrint("RequestDogfightInfo ");
+        if (printit)
+            MonoPrint("RequestDogfightInfo ");
 
 #endif
 
-            break;
+        break;
 
-        case SendDogfightInfo:
+    case SendDogfightInfo:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("SendDogfightInfo ");
+        if (printit)
+            MonoPrint("SendDogfightInfo ");
 
 #endif
 
-            break;
+        break;
 
-        case RequestAircraftSlot:
+    case RequestAircraftSlot:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("RequestAircraftSlot ");
+        if (printit)
+            MonoPrint("RequestAircraftSlot ");
 
 #endif
 
-            break;
+        break;
 
-        case SendAircraftSlot:
+    case SendAircraftSlot:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("SendAircraftSlot ");
+        if (printit)
+            MonoPrint("SendAircraftSlot ");
 
 #endif
 
-            break;
+        break;
 
-        case GraphicsTextDisplayMsg:
+    case GraphicsTextDisplayMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("GraphicsTextDisplayMsg ");
+        if (printit)
+            MonoPrint("GraphicsTextDisplayMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case AddSFXMessage:
+    case AddSFXMessage:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("AddSFXMessage ");
+        if (printit)
+            MonoPrint("AddSFXMessage ");
 
 #endif
 
-            break;
+        break;
 
-        case SendPersistantList:
+    case SendPersistantList:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("SendPersistantList ");
+        if (printit)
+            MonoPrint("SendPersistantList ");
 
 #endif
 
-            break;
+        break;
 
-        case SendObjData:
+    case SendObjData:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("SendObjData ");
+        if (printit)
+            MonoPrint("SendObjData ");
 
 #endif
 
-            break;
+        break;
 
-        case SendUnitData:
+    case SendUnitData:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("SendUnitData ");
+        if (printit)
+            MonoPrint("SendUnitData ");
 
 #endif
 
-            break;
+        break;
 
-        case RequestCampaignData:
+    case RequestCampaignData:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("RequestCampaignData ");
+        if (printit)
+            MonoPrint("RequestCampaignData ");
 
 #endif
 
-            break;
+        break;
 
-        case SendChatMessage:
+    case SendChatMessage:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("SendChatMessage ");
+        if (printit)
+            MonoPrint("SendChatMessage ");
 
 #endif
 
-            break;
+        break;
 
-        case TankerMsg:
+    case TankerMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("TankerMsg ");
+        if (printit)
+            MonoPrint("TankerMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case EjectMsg:
+    case EjectMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("EjectMsg ");
+        if (printit)
+            MonoPrint("EjectMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case TrackMsg:
+    case TrackMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("TrackMsg ");
+        if (printit)
+            MonoPrint("TrackMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case CampDataMsg:
+    case CampDataMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("CampDataMsg ");
+        if (printit)
+            MonoPrint("CampDataMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case VoiceDataMsg:
+    case VoiceDataMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("VoiceDataMsg ");
+        if (printit)
+            MonoPrint("VoiceDataMsg ");
 
 #endif
 
-            break;
+        break;
 
-        case RadioChatterMsg:
+    case RadioChatterMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("RadioChatterMsg ");
+        if (printit)
+            MonoPrint("RadioChatterMsg ");
 
 #endif
-            break;
+        break;
 
-        case PlayerStatusMsg:
+    case PlayerStatusMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("PlayerStatusMsg ");
+        if (printit)
+            MonoPrint("PlayerStatusMsg ");
 
 #endif
-            break;
+        break;
 
-        case LaserDesignateMsg:
+    case LaserDesignateMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("LaserDesignateMsg ");
+        if (printit)
+            MonoPrint("LaserDesignateMsg ");
 
 #endif
-            break;
+        break;
 
-        case ATCCmdMsg:
+    case ATCCmdMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("ATCCmdMsg ");
+        if (printit)
+            MonoPrint("ATCCmdMsg ");
 
 #endif
-            break;
+        break;
 
-        case DLinkMsg:
-#ifdef  F4_DEBUG_COMMS
-            if (printit)  MonoPrint("DLinkMsg ");
-
-#endif
-            break;
-
-        case RequestObject:
+    case DLinkMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("RequestObject ");
+        if (printit)
+            MonoPrint("DLinkMsg ");
 
 #endif
-            break;
+        break;
 
-        case RegenerationMsg:
+    case RequestObject:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("RegenerationMsg ");
+        if (printit)
+            MonoPrint("RequestObject ");
 
 #endif
-            break;
+        break;
 
-        case RequestLogbook:
+    case RegenerationMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)    MonoPrint("RequestLogbook ");
+        if (printit)
+            MonoPrint("RegenerationMsg ");
 
 #endif
-            break;
+        break;
 
-        case SendLogbook:
+    case RequestLogbook:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("SendLogbook ");
+        if (printit)
+            MonoPrint("RequestLogbook ");
 
 #endif
-            break;
+        break;
 
-        case SendImage:
+    case SendLogbook:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("SendImage ");
+        if (printit)
+            MonoPrint("SendLogbook ");
 
 #endif
-            break;
+        break;
 
-        case FalconFlightPlanMsg:
+    case SendImage:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("FalconFlightPlanMsg ");
+        if (printit)
+            MonoPrint("SendImage ");
 
 #endif
-            break;
+        break;
 
-        case SimDirtyDataMsg:
+    case FalconFlightPlanMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)  MonoPrint("SimDirtyDataMsg ");
+        if (printit)
+            MonoPrint("FalconFlightPlanMsg ");
 
 #endif
-            break;
+        break;
 
-        case CampDirtyDataMsg:
+    case SimDirtyDataMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("CampDirtyDataMsg ");
+        if (printit)
+            MonoPrint("SimDirtyDataMsg ");
 
 #endif
-            break;
+        break;
 
-        case CampEventDataMsg:
+    case CampDirtyDataMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("CampEventDataMsg ");
+        if (printit)
+            MonoPrint("CampDirtyDataMsg ");
 
 #endif
-            break;
+        break;
 
-        case SendVCMsg:
+    case CampEventDataMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)  MonoPrint("SendVCMsg ");
+        if (printit)
+            MonoPrint("CampEventDataMsg ");
 
 #endif
-            break;
+        break;
 
-        case SendUIMsg:
+    case SendVCMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("SendUIMsg ");
+        if (printit)
+            MonoPrint("SendVCMsg ");
 
 #endif
-            break;
+        break;
 
-        case SendEvalMsg:
+    case SendUIMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)  MonoPrint("SendEvalMsg ");
+        if (printit)
+            MonoPrint("SendUIMsg ");
 
 #endif
-            break;
+        break;
+
+    case SendEvalMsg:
+#ifdef F4_DEBUG_COMMS
+        if (printit)
+            MonoPrint("SendEvalMsg ");
+
+#endif
+        break;
 
 #if 1
 
-        case SimPositionUpdateMsg:
+    case SimPositionUpdateMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)   MonoPrint("SimPositionUpdateMsg ");
+        if (printit)
+            MonoPrint("SimPositionUpdateMsg ");
 
 #endif
-            break;
+        break;
 
-        case SimRoughPositionUpdateMsg:
+    case SimRoughPositionUpdateMsg:
 #ifdef F4_DEBUG_COMMS
-            if (printit)  MonoPrint("SimRoughPositionUpdateMsg ");
+        if (printit)
+            MonoPrint("SimRoughPositionUpdateMsg ");
 
 #endif
-            break;
+        break;
 #endif
-
     }
 
     if ((printit) and theEvent->Type() not_eq 30)
-        MonoPrint("Sent Message: time %d,  Keepalive %d, LowPrio %d , reliable %d, oob %d, , size %d, target %d\n" ,
-                  vuxGameTime,
-                  theEvent->Flags() bitand VU_KEEPALIVE_MSG_FLAG,
+        MonoPrint("Sent Message: time %d,  Keepalive %d, LowPrio %d , reliable "
+                  "%d, oob %d, , size %d, target %d\n",
+                  vuxGameTime, theEvent->Flags() bitand VU_KEEPALIVE_MSG_FLAG,
                   theEvent->Flags() bitand 0xf0,
                   theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG,
-                  theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG ,
-                  theEvent->Size(),
-                  theEvent->Target());
+                  theEvent->Flags() bitand VU_OUT_OF_BAND_MSG_FLAG,
+                  theEvent->Size(), theEvent->Target());
 
 #endif
 #endif
@@ -627,7 +692,7 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
     static int TOTsendtotal = 0;
     static int msgcount = 0;
     static int count = 0;
-    msgcount ++;
+    msgcount++;
 
     if (theEvent->Flags() bitand VU_RELIABLE_MSG_FLAG)
     {
@@ -646,14 +711,15 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 
     if (vuxGameTime > laststatcound + 1000)
     {
-        count ++;
+        count++;
 
         //MonoPrint("reliable %d, oob %d, total %d \n", sendreliable, msgoob, sendtotal);
         //MonoPrint("TOTreliable %d, TOToob %d, TOTtotal %d \n", TOTsendreliable, TOToob, TOTsendtotal);
         if ((printit) and count > 5 and theEvent->Type() not_eq 30)
         {
             MonoPrint("Avgreliable %d, Avgoob %d, Avgtotal %d mescount %d \n",
-                      (TOTsendreliable / count), (TOToob / count), (TOTsendtotal / count), msgcount);
+                      (TOTsendreliable / count), (TOToob / count),
+                      (TOTsendtotal / count), msgcount);
         }
 
         sendreliable = 0;
@@ -680,7 +746,10 @@ void FalconSendMessage(VuMessage* theEvent, BOOL reliableTransmit)
 // FreeFalcon Event
 // =============================================
 
-FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : VuMessage(type, entityId, target, FALSE)
+FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID,
+                         VU_ID entityId, VuTargetEntity* target,
+                         VU_BOOL loopback)
+    : VuMessage(type, entityId, target, FALSE)
 {
     // KCK NOTE: VU will not send a message to ourselves unless loopback is set to false - regardless of the target.
     // Also, it will send to ourselves if loopback is set to true - again, regarless of the target.
@@ -691,9 +760,11 @@ FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entity
     {
         // if ( not target and not FalconLocalGame)
         // RequestLoopback();
-        if ( not target)
+        if (not target)
             loopback = FALSE;
-        else if (target->IsGroup() and not ((VuGroupEntity*)target)->SessionInGroup(FalconLocalSession))
+        else if (target->IsGroup() and
+                 not((VuGroupEntity*)target)
+                        ->SessionInGroup(FalconLocalSession))
             loopback = FALSE;
         else if (target->IsSession() and target not_eq FalconLocalSession)
             loopback = FALSE;
@@ -704,7 +775,9 @@ FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID entity
     handlingThread = threadID;
 }
 
-FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID, VU_ID senderid, VU_ID target) : VuMessage(type, senderid, target)
+FalconEvent::FalconEvent(VU_MSG_TYPE type, HandlingThread threadID,
+                         VU_ID senderid, VU_ID target)
+    : VuMessage(type, senderid, target)
 {
     handlingThread = threadID;
 }
@@ -723,7 +796,7 @@ int FalconEvent::LocalSize() const
     return sizeof(HandlingThread);
 }
 
-int FalconEvent::Decode(VU_BYTE **buf, long *rem)
+int FalconEvent::Decode(VU_BYTE** buf, long* rem)
 {
     // long start = (long) *buf;
     long init = *rem;
@@ -736,10 +809,10 @@ int FalconEvent::Decode(VU_BYTE **buf, long *rem)
     return init - *rem;
 }
 
-int FalconEvent::Encode(VU_BYTE **buf)
+int FalconEvent::Encode(VU_BYTE** buf)
 {
     int size;
-    long start = (long) * buf;
+    long start = (long)*buf;
 
     size = VuMessage::Encode(buf);
     memcpy(*buf, &handlingThread, sizeof(HandlingThread));
@@ -747,12 +820,12 @@ int FalconEvent::Encode(VU_BYTE **buf)
 
     size += FalconEvent::LocalSize();
 
-    ShiAssert(size == (long) *buf - start);
+    ShiAssert(size == (long)*buf - start);
 
     return size;
 }
 
-int FalconEvent::Activate(VuEntity *theEntity)
+int FalconEvent::Activate(VuEntity* theEntity)
 {
     unsigned char* buffer;
     unsigned char* savePos;
@@ -761,7 +834,8 @@ int FalconEvent::Activate(VuEntity *theEntity)
     VuMessage::Activate(theEntity);
 
     // Only record sim events to disk if ACMI is recording
-    if (F4EventFile and gACMIRec.IsRecording() and handlingThread == SimThread and Type() not_eq ControlSurfaceMsg)
+    if (F4EventFile and gACMIRec.IsRecording() and
+        handlingThread == SimThread and Type() not_eq ControlSurfaceMsg)
     {
         idData.size = (unsigned short)Size();
         idData.type = Type();
@@ -770,7 +844,7 @@ int FalconEvent::Activate(VuEntity *theEntity)
         Encode(&buffer);
         fwrite(&idData, sizeof(EventIdData), 1, F4EventFile);
         fwrite(savePos, idData.size, 1, F4EventFile);
-        delete [] savePos;
+        delete[] savePos;
     }
 
     return 0;
@@ -781,12 +855,14 @@ int FalconEvent::Activate(VuEntity *theEntity)
 // ====================================
 
 #if VU_USE_ENUM_FOR_TYPES
-FalconMessageFilter::FalconMessageFilter(FalconEvent::HandlingThread theThread, bool processVu) :
-    filterThread(theThread), processVu(processVu)
+FalconMessageFilter::FalconMessageFilter(FalconEvent::HandlingThread theThread,
+                                         bool processVu)
+    : filterThread(theThread), processVu(processVu)
 {
 }
 #else
-FalconMessageFilter::FalconMessageFilter(FalconEvent::HandlingThread theThread, ulong vuMessageBits)
+FalconMessageFilter::FalconMessageFilter(FalconEvent::HandlingThread theThread,
+                                         ulong vuMessageBits)
 {
     {
         filterThread = theThread;
@@ -803,7 +879,7 @@ FalconMessageFilter::~FalconMessageFilter()
 {
 }
 
-VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
+VU_BOOL FalconMessageFilter::Test(VuMessage* event) const
 {
     uchar retval = TRUE;
 
@@ -822,7 +898,7 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
 
         // This is a Vu Event. Compare vs filter bits
         // sfr: fixed shift adding -1
-        if ( not processVu)
+        if (not processVu)
         {
             retval = FALSE;
         }
@@ -831,12 +907,10 @@ VU_BOOL FalconMessageFilter::Test(VuMessage * event) const
 
         // This is a Vu Event. Compare vs filter bits
         // sfr: fixed shift adding -1
-        if ( not 
-            ((1 << (event->Type() - 1)) bitand vuFilterBits)
-           )
-        {
-            retval = FALSE;
-        }
+            if (not((1 << (event->Type() - 1)) bitand vuFilterBits))
+            {
+                retval = FALSE;
+            }
 
 #endif
     }
@@ -849,6 +923,6 @@ VuMessageFilter* FalconMessageFilter::Copy() const
 #if VU_USE_ENUM_FOR_TYPES
     return new FalconMessageFilter(filterThread, processVu);
 #else
-    return new FalconMessageFilter(filterThread, vuFilterBits);
+        return new FalconMessageFilter(filterThread, vuFilterBits);
 #endif
 }

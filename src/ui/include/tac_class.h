@@ -86,7 +86,6 @@ class victory_condition
 {
 
 private:
-
     friend tactical_mission;
 
     tactical_mission *mission;
@@ -113,11 +112,9 @@ private:
     int max_vehicles; // number of aircraft in intercept
 
 public:
-
     C_Base *control;
 
 public:
-
     victory_condition(tactical_mission *);
     ~victory_condition();
 
@@ -210,7 +207,6 @@ class tactical_mission
 {
 
 private:
-
     friend victory_condition;
 
     char *filename;
@@ -243,7 +239,6 @@ private:
     void process_load(char *data, int size, int full_load);
 
 public:
-
     tactical_mission(char *filename);
     tactical_mission(void); // Online
     ~tactical_mission(void);
@@ -263,7 +258,7 @@ public:
     }
     int get_game_over()
     {
-        return(game_over);
+        return (game_over);
     }
 
     tactical_type get_type(void);
@@ -315,7 +310,7 @@ public:
     // void evaluate_parameters (void *wp, double x, double y, double z, double s);
 
     void calculate_victory_points(void);
-    int  determine_victor(void);
+    int determine_victor(void);
     int determine_rating(void);
 
     void set_victory_condition_filter(victory_condition_filter);
@@ -329,7 +324,6 @@ public:
 
     void set_points_required(int value);
     int get_points_required(void);
-
 };
 
 //////////////////////////////////////////////////////////////////////////////

@@ -8,16 +8,17 @@
 #ifndef _TEXBANK_H_
 #define _TEXBANK_H_
 
-#include "Tex.h"
-#include "PolyLib.h"
-#include "../../Falclib/Include/FileMemMap.h"
+#include "tex.h"
+#include "polylib.h"
+#include "../../falclib/include/filememmap.h"
 
 extern class TextureBankClass TheTextureBank;
 
 typedef struct TexBankEntry
 {
-    long   fileOffset; // How far into the .TEX file does the compressed data start?
-    long   fileSize; // How big is the compressed data on disk?
+    long
+        fileOffset; // How far into the .TEX file does the compressed data start?
+    long fileSize; // How big is the compressed data on disk?
     Texture tex; // The container class which manages the texture data
     Texture texN; // The container class which manages the texture data
     int palID; // The offset into ThePaletteBank to use with this texture
@@ -26,8 +27,9 @@ typedef struct TexBankEntry
 
 typedef struct TempTexBankEntry
 {
-    long   fileOffset; // How far into the .TEX file does the compressed data start?
-    long   fileSize; // How big is the compressed data on disk?
+    long
+        fileOffset; // How far into the .TEX file does the compressed data start?
+    long fileSize; // How big is the compressed data on disk?
     Texture tex; // The container class which manages the texture data
     int palID; // The offset into ThePaletteBank to use with this texture
     int refCount; // How many objects want this texture right now
@@ -37,7 +39,7 @@ typedef struct
 {
     char OnOrder;
     char OnRelease;
-} TexFlagsType ;
+} TexFlagsType;
 
 class TextureBankClass
 {
@@ -80,8 +82,10 @@ public:
     static BOOL IsValidIndex(int id);
     static void SyncDDSTextures(bool bForce = false);
     static void RestoreTexturePool();
-    static void SelectHandle(DWORD_PTR); // Artscout - 2026 (x64): pointer-sized handle
-    static DWORD_PTR GetHandle(DWORD id); // Artscout - 2026 (x64): returns pointer-sized handle
+    static void
+        SelectHandle(DWORD_PTR); // Artscout - 2026 (x64): pointer-sized handle
+    static DWORD_PTR
+    GetHandle(DWORD id); // Artscout - 2026 (x64): returns pointer-sized handle
 
 
 protected:
@@ -90,16 +94,17 @@ protected:
     static void OpenTextureFile();
     static void ReadImageData(int id, bool forceNoDDS = false);
     static void CloseTextureFile(void);
-    static void LoaderCallBack(struct LoaderQ* request);
+    static void LoaderCallBack(struct LoaderQ *request);
     static void UnpackPalettizedTexture(DWORD id);
     static void ReadImageDDS(DWORD id);
     static void ReadImageDDSN(DWORD id);
 
     // New texture management...
     static TexFlagsType *TexFlags;
-    static void CreateCallBack(LoaderQ* request);
-    static bool   RatedLoad; // This flag makes textures loaded once x loader frame
-    static short  *CacheLoad, *CacheRelease;
+    static void CreateCallBack(LoaderQ *request);
+    static bool
+        RatedLoad; // This flag makes textures loaded once x loader frame
+    static short *CacheLoad, *CacheRelease;
     static volatile short LoadIn, LoadOut, ReleaseIn, ReleaseOut;
 
 public:

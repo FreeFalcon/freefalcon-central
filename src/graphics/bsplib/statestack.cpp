@@ -7,24 +7,25 @@
 \***************************************************************************/
 #include "stdafx.h"
 #include <math.h>
-#include "ColorBank.h"
-#include "ObjectInstance.h"
-#include "ClipFlags.h"
-#include "StateStack.h"
+#include "colorbank.h"
+#include "objectinstance.h"
+#include "clipflags.h"
+#include "statestack.h"
 #include "context.h"
 #include "vmath.h"
 #include "fmath.h"
-#include "FalcLib/include/playerop.h"
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
 
-#include "Graphics/DXEngine/DXTools.h"
-#include "Graphics/DXEngine/DXDefines.h"
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "graphics/dxengine/dxtools.h"
+#include "graphics/dxengine/dxdefines.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
 extern bool g_bUse_DX_Engine;
 
 
-extern "C" {
+extern "C"
+{
     void MonoPrint(char *string, ...);
 }
 
@@ -123,7 +124,7 @@ void StateStackClass::SetLight(float a, float d, float s, Ppoint *atLight)
     if (g_bUse_DX_Engine)
     {
         // Setup light properties
-        TheDXEngine.SetSunLight(a, d , s);
+        TheDXEngine.SetSunLight(a, d, s);
 
         // Setup Light Vector - Light direction has to be reversed
         D3DVECTOR Dir;
@@ -132,10 +133,11 @@ void StateStackClass::SetLight(float a, float d, float s, Ppoint *atLight)
         Dir.z = -ObjSpaceLight.z;
         TheDXEngine.SetSunVector(Dir);
     }
-
 }
 
-void StateStackClass::SetCameraProperties(float ooTanHHAngle, float ooTanVHAngle, float sclx, float scly, float shftx, float shfty)
+void StateStackClass::SetCameraProperties(float ooTanHHAngle,
+                                          float ooTanVHAngle, float sclx,
+                                          float scly, float shftx, float shfty)
 {
     float rx2;
 
@@ -151,7 +153,6 @@ void StateStackClass::SetCameraProperties(float ooTanHHAngle, float ooTanVHAngle
     scaleY = scly;
     shiftX = shftx;
     shiftY = shfty;
-
 }
 
 void StateStackClass::SetTextureState(BOOL state)
@@ -190,11 +191,12 @@ void StateStackClass::SetFog(float alpha, Pcolor *color)
     {
         UInt32 c;
 
-        c  = FloatToInt32(color->r * 255.9f);
+        c = FloatToInt32(color->r * 255.9f);
         c or_eq FloatToInt32(color->g * 255.9f) << 8;
         c or_eq FloatToInt32(color->b * 255.9f) << 16;
         context->SetState(MPR_STA_FOG_COLOR, c);
-        D3DCOLORVALUE cx;   // Artscout - 2026: [DX7-PURGE] D3DCOLORVALUE uses r/g/b/a (was dvR/dvG/dvB/dvA)
+        D3DCOLORVALUE
+        cx; // Artscout - 2026: [DX7-PURGE] D3DCOLORVALUE uses r/g/b/a (was dvR/dvG/dvB/dvA)
         cx.r = color->r;
         cx.g = color->g;
         cx.b = color->b;
@@ -214,7 +216,7 @@ void StateStackClass::SetView(const Ppoint *pos, Pmatrix *cameraRot)
 {
     D3DFrame::Vector vP;
 
-    float pitch = (float) - asin(cameraRot->M13);
+    float pitch = (float)-asin(cameraRot->M13);
     float roll = (float)atan2(cameraRot->M23, cameraRot->M33);
     float yaw = (float)atan2(cameraRot->M12, cameraRot->M11);
 
@@ -254,7 +256,8 @@ void StateStackClass::SetProjection(float fov, float aspect)
     // mW.SetProjectionMatrix(fov,aspect,context->ZNEAR,context->ZFAR);
 }
 
-void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect, Pmatrix *Bill, Pmatrix *Tree)
+void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect,
+                                Pmatrix *Bill, Pmatrix *Tree)
 {
     ShiAssert(stackDepth == 0);
 
@@ -284,9 +287,12 @@ void StateStackClass::SetCamera(const Ppoint *pos, const Pmatrix *rotWaspect, Pm
     Rotation = *rotWaspect;
 
     // Compute the vector from the camera to the origin rotated into camera space
-    Xlation.x = -pos->x * Rotation.M11 - pos->y * Rotation.M12 - pos->z * Rotation.M13;
-    Xlation.y = -pos->x * Rotation.M21 - pos->y * Rotation.M22 - pos->z * Rotation.M23;
-    Xlation.z = -pos->x * Rotation.M31 - pos->y * Rotation.M32 - pos->z * Rotation.M33;
+    Xlation.x =
+        -pos->x * Rotation.M11 - pos->y * Rotation.M12 - pos->z * Rotation.M13;
+    Xlation.y =
+        -pos->x * Rotation.M21 - pos->y * Rotation.M22 - pos->z * Rotation.M23;
+    Xlation.z =
+        -pos->x * Rotation.M31 - pos->y * Rotation.M32 - pos->z * Rotation.M33;
 
     // Initialize the eye postion in world space
     ObjSpaceEye = *pos;
@@ -300,9 +306,12 @@ void StateStackClass::CompoundTransform(const Pmatrix *rot, const Ppoint *pos)
     Ppoint tempP;
 
     // Compute the rotated translation vector for this object
-    Xlation.x += pos->x * Rotation.M11 + pos->y * Rotation.M12 + pos->z * Rotation.M13;
-    Xlation.y += pos->x * Rotation.M21 + pos->y * Rotation.M22 + pos->z * Rotation.M23;
-    Xlation.z += pos->x * Rotation.M31 + pos->y * Rotation.M32 + pos->z * Rotation.M33;
+    Xlation.x +=
+        pos->x * Rotation.M11 + pos->y * Rotation.M12 + pos->z * Rotation.M13;
+    Xlation.y +=
+        pos->x * Rotation.M21 + pos->y * Rotation.M22 + pos->z * Rotation.M23;
+    Xlation.z +=
+        pos->x * Rotation.M31 + pos->y * Rotation.M32 + pos->z * Rotation.M33;
 
     Pmatrix tempM = Rotation;
     tempP.x = ObjSpaceEye.x - pos->x;
@@ -318,7 +327,6 @@ void StateStackClass::CompoundTransform(const Pmatrix *rot, const Ppoint *pos)
 
     // Compute the light direction in object space.
     MatrixMultTranspose(rot, &tempP2, &ObjSpaceLight);
-
 }
 
 // The asymetric scale factors MUST be <= 1.0f.
@@ -330,7 +338,10 @@ static const UInt32 OP_WARP = 2;
 
 
 /*inline*/
-void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, const Pmatrix *rot, const Ppoint *pos, const float sx, const float sy, const float sz, const float scale)
+void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst,
+                                    const Pmatrix *rot, const Ppoint *pos,
+                                    const float sx, const float sy,
+                                    const float sz, const float scale)
 {
 
     UInt32 clipFlag;
@@ -364,10 +375,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
         ShiAssert((sy > 0.0f) and (sy <= 1.0f));
         ShiAssert((sz > 0.0f) and (sz <= 1.0f));
 
-        Pmatrix stretchM = { cx, 0.f, 0.f,
-                                0.f, cy, 0.f,
-                                0.f, 0.f, cz
-                           };
+        Pmatrix stretchM = {cx, 0.f, 0.f, 0.f, cy, 0.f, 0.f, 0.f, cz};
 
         tempM = Rotation;
         MatrixMult(&tempM, &stretchM, &Rotation);
@@ -407,16 +415,20 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
     if (objInst->ParentObject)
     {
-        if (g_bSlowButSafe and F4IsBadCodePtr((FARPROC) objInst->ParentObject)) // JB 010220 CTD (too much CPU)
+        if (g_bSlowButSafe and
+            F4IsBadCodePtr(
+                (FARPROC)objInst->ParentObject)) // JB 010220 CTD (too much CPU)
             CurrentLOD = 0; // JB 010220 CTD
         else // JB 010220 CTD
-            if (objInst->id < 0 or objInst->id >= TheObjectListLength or objInst->TextureSet < 0) // JB 010705 CTD second try
+            if (objInst->id < 0 or objInst->id >= TheObjectListLength or
+                objInst->TextureSet < 0) // JB 010705 CTD second try
             {
                 ShiAssert(FALSE);
                 CurrentLOD = 0;
             }
             else
-                CurrentLOD = objInst->ParentObject->ChooseLOD(LODRange, &LODused, &MaxLODRange);
+                CurrentLOD = objInst->ParentObject->ChooseLOD(
+                    LODRange, &LODused, &MaxLODRange);
 
         if (CurrentLOD)
         {
@@ -439,7 +451,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 }
 
                 // Choose perspective correction or not
-                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) and 
+                // if ((Xlation.x > CurrentInstance->Radius() * PERSP_CORR_RADIUS_MULTIPLIER) and
                 // not (CurrentLOD->flags bitand ObjectLOD::PERSP_CORR))
                 // {
                 // RenderStateTable = RenderStateTableNPC;
@@ -449,7 +461,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 RenderStateTable = RenderStateTablePC;
                 // }
 
-                in ++;
+                in++;
 
                 if (in == 1)
                 {
@@ -467,7 +479,7 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
                 // }
                 // }
 
-                in --;
+                in--;
             }
         }
     }
@@ -478,7 +490,8 @@ void StateStackClass::pvtDrawObject(UInt32 operation, ObjectInstance *objInst, c
 
 Ppoint Kpos = {0, 0, 0};
 // This call is for the application to call to draw an instance of an object.
-void StateStackClass::DrawObject(ObjectInstance *objInst, const Pmatrix *rot, const Ppoint *pos, const float scale)
+void StateStackClass::DrawObject(ObjectInstance *objInst, const Pmatrix *rot,
+                                 const Ppoint *pos, const float scale)
 {
 
     // COBRA - DX - Switching btw Old and New Engine - the Camera projections
@@ -486,15 +499,18 @@ void StateStackClass::DrawObject(ObjectInstance *objInst, const Pmatrix *rot, co
     {
         //START_PROFILE(DX_ENGINE_PROF);
         D3DXMATRIX Rot;
-        AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix*)rot);
-        TheDXEngine.DrawObject(objInst, &Rot, pos, 1.f, 1.f, 1.f, scale, false, NULL);
+        AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix *)rot);
+        TheDXEngine.DrawObject(objInst, &Rot, pos, 1.f, 1.f, 1.f, scale, false,
+                               NULL);
         //STOP_PROFILE(DX_ENGINE_PROF);
     }
-    else pvtDrawObject(OP_NONE, objInst, rot, pos, 1.f, 1.f, 1.f, scale);
+    else
+        pvtDrawObject(OP_NONE, objInst, rot, pos, 1.f, 1.f, 1.f, scale);
 }
 
 // This call is for the BSPlib to call to draw a child instance attached to a slot.
-void StateStackClass::DrawSubObject(ObjectInstance *objInst, const Pmatrix *rot, const Ppoint *pos)
+void StateStackClass::DrawSubObject(ObjectInstance *objInst, const Pmatrix *rot,
+                                    const Ppoint *pos)
 {
 
     // COBRA - DX - Switching btw Old and New Engine - the Camera projections
@@ -502,29 +518,33 @@ void StateStackClass::DrawSubObject(ObjectInstance *objInst, const Pmatrix *rot,
     {
         //START_PROFILE(DX_ENGINE_PROF);
         D3DXMATRIX Rot;
-        AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix*)rot);
+        AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix *)rot);
         TheDXEngine.DrawObject(objInst, &Rot, pos, 1.f, 1.f, 1.f, 1.f);
         //STOP_PROFILE(DX_ENGINE_PROF);
     }
-    else pvtDrawObject(OP_NONE, objInst, rot, pos, 1.f, 1.f, 1.f, 1.f);
+    else
+        pvtDrawObject(OP_NONE, objInst, rot, pos, 1.f, 1.f, 1.f, 1.f);
 }
 
 // This call is rather specialized.  It is intended for use in drawing shadows which
 // are simple objects (no slots, dofs, etc) but require asymetric scaling in x and y
 // to simulate orientation changes of the object casting the shadow.
-void StateStackClass::DrawWarpedObject(ObjectInstance *objInst, const Pmatrix *rot, const Ppoint *pos, const float sx, const float sy, const float sz, const float scale)
+void StateStackClass::DrawWarpedObject(ObjectInstance *objInst,
+                                       const Pmatrix *rot, const Ppoint *pos,
+                                       const float sx, const float sy,
+                                       const float sz, const float scale)
 {
     // COBRA - DX - Switching btw Old and New Engine - the Camera projections
     if (g_bUse_DX_Engine)
     {
         //START_PROFILE(DX_ENGINE_PROF);
         D3DXMATRIX Rot;
-        AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix*)rot);
+        AssignPmatrixToD3DXMATRIX(&Rot, (Pmatrix *)rot);
         TheDXEngine.DrawObject(objInst, &Rot, pos, sx, sy, sz, scale);
         //STOP_PROFILE(DX_ENGINE_PROF);
     }
-    else pvtDrawObject(OP_WARP, objInst, rot, pos, sx, sy, sz, scale);
-
+    else
+        pvtDrawObject(OP_WARP, objInst, rot, pos, sx, sy, sz, scale);
 }
 
 /*inline*/ UInt32 StateStackClass::CheckBoundingSphereClipping(void)
@@ -720,11 +740,15 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
         // Cobra - RED - End
 
 
-        iDiff = max(n->i * ObjSpaceLight.x + n->j * ObjSpaceLight.y + n->k * ObjSpaceLight.z, 0.f) * lightDiffuse;
+        iDiff = max(n->i * ObjSpaceLight.x + n->j * ObjSpaceLight.y +
+                        n->k * ObjSpaceLight.z,
+                    0.f) *
+                lightDiffuse;
 
         // Cobra - RED - Zero is Zero both in Float and Long...but Long is faster
         // ...........(lightSpecular).........................................
-        if ( not LODused and ((*(long*)&lightSpecular) bitand 0x7fffffff) and DisplayOptions.bSpecularLighting)
+        if (not LODused and ((*(long *)&lightSpecular) bitand 0x7fffffff) and
+            DisplayOptions.bSpecularLighting)
         {
             viewVector.x = ObjSpaceEye.x - p->x;
             viewVector.y = ObjSpaceEye.y - p->y;
@@ -735,9 +759,12 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
             // LOOKING at the poly face, even iDiff could be not calculated
             // but till when BSP seems to draw even hidden polys I have to assign just
             // iDiff to have not dark spots on near polys, however avoiding iSpec calculations
-            if ((viewVector.x * n->i + viewVector.y * n->j + viewVector.z * n->k) < 0.0)
+            if ((viewVector.x * n->i + viewVector.y * n->j +
+                 viewVector.z * n->k) < 0.0)
             {
-                *IntensityPoolNext = min(lightAmbient + iDiff, 1.f); // Operations are following the Normal check to keep the pocessor
+                *IntensityPoolNext = min(
+                    lightAmbient + iDiff,
+                    1.f); // Operations are following the Normal check to keep the pocessor
                 n++;
                 p++;
                 IntensityPoolNext++; // cache still online and execute a backaward cache call
@@ -751,9 +778,11 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 
             // Cobra - RED - Easy using FPU... isn't it...? But now Conditional Integers improve of about 100%
             //iSpec = powf(max(n->i*halfVector.x+n->j*halfVector.y+n->k*halfVector.z,0.f),32.f)*lightSpecular;
-            iSpec = n->i * halfVector.x + n->j * halfVector.y + n->k * halfVector.z;
+            iSpec =
+                n->i * halfVector.x + n->j * halfVector.y + n->k * halfVector.z;
 
-            if (iSpec <= 0) iSpec = 0;
+            if (iSpec <= 0)
+                iSpec = 0;
             else
             {
                 iSpec = iSpec * iSpec; // iSpec^2;
@@ -765,7 +794,6 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
             }
 
             // Cobra - RED - End
-
         }
 
         *IntensityPoolNext = min(lightAmbient + iDiff + iSpec, 1.f);
@@ -776,7 +804,8 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 }
 
 
-/*inline*/ void StateStackClass::TransformInline(Ppoint *p, int n, const BOOL clip)
+/*inline*/ void StateStackClass::TransformInline(Ppoint *p, int n,
+                                                 const BOOL clip)
 {
     float scratch_x, scratch_y, scratch_z;
 
@@ -785,9 +814,12 @@ void StateStackClass::Light(const Pnormal *n, int i, const Ppoint *p)
 
     while (n--)
     {
-        scratch_z = Rotation.M11 * p->x + Rotation.M12 * p->y + Rotation.M13 * p->z + Xlation.x;
-        scratch_x = Rotation.M21 * p->x + Rotation.M22 * p->y + Rotation.M23 * p->z + Xlation.y;
-        scratch_y = Rotation.M31 * p->x + Rotation.M32 * p->y + Rotation.M33 * p->z + Xlation.z;
+        scratch_z = Rotation.M11 * p->x + Rotation.M12 * p->y +
+                    Rotation.M13 * p->z + Xlation.x;
+        scratch_x = Rotation.M21 * p->x + Rotation.M22 * p->y +
+                    Rotation.M23 * p->z + Xlation.y;
+        scratch_y = Rotation.M31 * p->x + Rotation.M32 * p->y +
+                    Rotation.M33 * p->z + Xlation.z;
 
         if (clip)
         {
@@ -840,7 +872,8 @@ void StateStackClass::TransformWithClip(Ppoint *p, int n)
     TransformInline(p, n, TRUE);
 }
 
-void StateStackClass::TransformBillboardWithClip(Ppoint *p, int n, BTransformType type)
+void StateStackClass::TransformBillboardWithClip(Ppoint *p, int n,
+                                                 BTransformType type)
 {
     float scratch_x, scratch_y, scratch_z;
     Pmatrix *T;

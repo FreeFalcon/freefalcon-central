@@ -2,22 +2,22 @@
 #include "mfd.h"
 #include "hud.h"
 #include "sms.h"
-#include "SmsDraw.h"
+#include "smsdraw.h"
 #include "airframe.h"
-#include "Aircrft.h"
+#include "aircrft.h"
 #include "fcc.h"
 #include "otwdrive.h"
 #include "playerop.h"
-#include "Graphics/Include/render2d.h"
-#include "Graphics/Include/canvas3d.h"
-#include "Graphics/Include/tviewpnt.h"
-#include "Graphics/Include/renderir.h"
+#include "graphics/include/render2d.h"
+#include "graphics/include/canvas3d.h"
+#include "graphics/include/tviewpnt.h"
+#include "graphics/include/renderir.h"
 #include "dispcfg.h"
 #include "simdrive.h"
 #include "camp2sim.h"
 #include "digi.h"
 #include "lantirn.h"
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/dispopts.h"
 
 static int flash = FALSE;
 static int lantdebug = FALSE;
@@ -37,13 +37,19 @@ void LantirnDrawable::DisplayInit(ImageBuffer* image)
 
 void LantirnDrawable::Display(VirtualDisplay* newDisplay)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     display = newDisplay;
     ShiAssert(theLantirn);
     flash = vuxRealTime bitand 0x200;
 
-    if (display->type == VirtualDisplay::DISPLAY_GENERAL)
+    // Artscout - 2026: gated like the doA5 scene block (see laserpod.cpp) -- under a GPU backend
+    // this sensor-terrain render bypasses the RTT atlas and paints the bottom of the screen.
+    extern bool g_bUseD3D12, g_bUseVulkan, g_bSensorSceneD3D12;
+    extern bool g_bSensorSceneVulkan;
+    if ((!(g_bUseD3D12 or g_bUseVulkan) || g_bSensorSceneD3D12 ||
+         (g_bUseVulkan and g_bSensorSceneVulkan)) and
+        display->type == VirtualDisplay::DISPLAY_GENERAL)
         DrawTerrain();
 
     display->SetColor(GetMfdColor(MFD_DEFAULT));
@@ -54,45 +60,47 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
     DrawRangeScale();
     DrawRadarArrows();
 
-    switch (theLantirn -> GetTFRMode())
+    switch (theLantirn->GetTFRMode())
     {
-        case LantirnClass::TFR_NORM:
-            LabelButton(0, "NORM");
-            break;
+    case LantirnClass::TFR_NORM:
+        LabelButton(0, "NORM");
+        break;
 
-        case LantirnClass::TFR_LP1:
-            LabelButton(0, "LP1");
-            break;
+    case LantirnClass::TFR_LP1:
+        LabelButton(0, "LP1");
+        break;
 
-        case LantirnClass::TFR_STBY:
-            LabelButton(0, "STBY");
-            break;
+    case LantirnClass::TFR_STBY:
+        LabelButton(0, "STBY");
+        break;
 
-        case LantirnClass::TFR_WX:
-            LabelButton(0, "WX");
-            break;
+    case LantirnClass::TFR_WX:
+        LabelButton(0, "WX");
+        break;
 
-        case LantirnClass::TFR_ECCM:
-            LabelButton(0, "ECCM");
-            break;
+    case LantirnClass::TFR_ECCM:
+        LabelButton(0, "ECCM");
+        break;
     }
 
     switch (theLantirn->GetTFRRide())
     {
-        case LantirnClass::TFR_HARD:
-            LabelButton(1, "HARD");
-            break;
+    case LantirnClass::TFR_HARD:
+        LabelButton(1, "HARD");
+        break;
 
-        case LantirnClass::TFR_MED:
-            LabelButton(1, "MED");
-            break;
+    case LantirnClass::TFR_MED:
+        LabelButton(1, "MED");
+        break;
 
-        case LantirnClass::TFR_SOFT:
-            LabelButton(1, "SOFT");
-            break;
+    case LantirnClass::TFR_SOFT:
+        LabelButton(1, "SOFT");
+        break;
     }
 
-    LabelButton(3, playerAC->AutopilotType() == AircraftClass::LantirnAP ? "ON" : "OFF");
+    LabelButton(3, playerAC->AutopilotType() == AircraftClass::LantirnAP ?
+                       "ON" :
+                       "OFF");
     LabelButton(4, "CHN1");
 
     LabelButton(5, "1000", NULL, theLantirn->GetTFRAlt() == 1000);
@@ -103,11 +111,16 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
 
     BottomRow();
 
-    LabelButton(15, "ECCM", NULL, theLantirn -> GetTFRMode() == LantirnClass::TFR_ECCM);
-    LabelButton(16, "WX", NULL, theLantirn -> GetTFRMode() == LantirnClass::TFR_WX);
-    LabelButton(17, "STBY", NULL, theLantirn -> GetTFRMode() == LantirnClass::TFR_STBY);
-    LabelButton(18, "LP1", NULL, theLantirn -> GetTFRMode() == LantirnClass::TFR_LP1);
-    LabelButton(19, "NORM", NULL, theLantirn -> GetTFRMode() == LantirnClass::TFR_NORM);
+    LabelButton(15, "ECCM", NULL,
+                theLantirn->GetTFRMode() == LantirnClass::TFR_ECCM);
+    LabelButton(16, "WX", NULL,
+                theLantirn->GetTFRMode() == LantirnClass::TFR_WX);
+    LabelButton(17, "STBY", NULL,
+                theLantirn->GetTFRMode() == LantirnClass::TFR_STBY);
+    LabelButton(18, "LP1", NULL,
+                theLantirn->GetTFRMode() == LantirnClass::TFR_LP1);
+    LabelButton(19, "NORM", NULL,
+                theLantirn->GetTFRMode() == LantirnClass::TFR_NORM);
 
     // JB 010325
     //MI reenabled with config var
@@ -130,7 +143,8 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
         display->TextCenter(0, (pos--) / divs, buf);
         sprintf(buf, "safeD %.0f ft", theLantirn->min_safe_dist);
         display->TextCenter(0, (pos--) / divs, buf);
-        sprintf(buf, "GndDist2 %.0f ft /%.1f", theLantirn->gDist2, theLantirn->lookingAngle);
+        sprintf(buf, "GndDist2 %.0f ft /%.1f", theLantirn->gDist2,
+                theLantirn->lookingAngle);
         display->TextCenter(0, (pos--) / divs, buf);
         sprintf(buf, "PIDMX %.3f", theLantirn->PID_MX);
         display->TextCenter(0, (pos--) / divs, buf);
@@ -146,11 +160,14 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
         display->TextCenter(0, (pos--) / divs, buf);
         sprintf(buf, "gamma %.2f", theLantirn->gamma * RTD);
         display->TextCenter(0, (pos--) / divs, buf);
-        sprintf(buf, "f1Ht/Dist %.0f / %.0f", theLantirn->featureHeight, theLantirn->featureDistance);
+        sprintf(buf, "f1Ht/Dist %.0f / %.0f", theLantirn->featureHeight,
+                theLantirn->featureDistance);
         display->TextCenter(0, (pos--) / divs, buf);
-        sprintf(buf, "f2Ht/Dist %.0f / %.0f", theLantirn->featureHeight2, theLantirn->featureDistance2);
+        sprintf(buf, "f2Ht/Dist %.0f / %.0f", theLantirn->featureHeight2,
+                theLantirn->featureDistance2);
         display->TextCenter(0, (pos--) / divs, buf);
-        sprintf(buf, "f3Ht/Dist %.0f / %.0f", theLantirn->featureHeight3, theLantirn->featureDistance3);
+        sprintf(buf, "f3Ht/Dist %.0f / %.0f", theLantirn->featureHeight3,
+                theLantirn->featureDistance3);
         display->TextCenter(0, (pos--) / divs, buf);
         // sprintf (buf, "MinDist %.0f", theLantirn->minavoiddist);
         // display->TextCenter(0, -0.25, buf);
@@ -161,9 +178,9 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
     {
         char tempstr[20] = "";
 
-        if (theLantirn->evasize  == 1 and flash)
+        if (theLantirn->evasize == 1 and flash)
             sprintf(tempstr, "FLY UP");
-        else if (theLantirn->evasize  == 2 and flash)
+        else if (theLantirn->evasize == 2 and flash)
             sprintf(tempstr, "OBSTACLE");
 
         if (theLantirn->SpeedUp and not flash)
@@ -177,87 +194,87 @@ void LantirnDrawable::Display(VirtualDisplay* newDisplay)
 void LantirnDrawable::PushButton(int whichButton, int whichMFD)
 {
     ShiAssert(theLantirn);
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     switch (whichButton)
     {
-        case 0:
-            theLantirn->StepTFRMode();
-            break;
+    case 0:
+        theLantirn->StepTFRMode();
+        break;
 
-        case 1:
-            theLantirn->StepTFRRide();
-            break;
+    case 1:
+        theLantirn->StepTFRRide();
+        break;
 
-        case 2:
-            lantdebug = not lantdebug;
-            break;
+    case 2:
+        lantdebug = not lantdebug;
+        break;
 
-        case 3:
-            if (playerAC->AutopilotType() == AircraftClass::LantirnAP)
-            {
-                playerAC->SetAutopilot(AircraftClass::APOff);
+    case 3:
+        if (playerAC->AutopilotType() == AircraftClass::LantirnAP)
+        {
+            playerAC->SetAutopilot(AircraftClass::APOff);
                 //MI
-                playerAC->lastapType = AircraftClass::APOff;
-            }
-            else
-            {
-                playerAC->SetAutopilot(AircraftClass::LantirnAP);
-                playerAC->lastapType = AircraftClass::LantirnAP;
-            }
+            playerAC->lastapType = AircraftClass::APOff;
+        }
+        else
+        {
+            playerAC->SetAutopilot(AircraftClass::LantirnAP);
+            playerAC->lastapType = AircraftClass::LantirnAP;
+        }
 
-            break;
+        break;
 
-        case 4:
-            break;
+    case 4:
+        break;
 
-        case 5:
-            theLantirn->SetTFRAlt(1000);
-            break;
+    case 5:
+        theLantirn->SetTFRAlt(1000);
+        break;
 
-        case 6:
-            theLantirn->SetTFRAlt(500);
-            break;
+    case 6:
+        theLantirn->SetTFRAlt(500);
+        break;
 
-        case 7:
-            theLantirn->SetTFRAlt(300);
-            break;
+    case 7:
+        theLantirn->SetTFRAlt(300);
+        break;
 
-        case 8:
-            theLantirn->SetTFRAlt(200);
-            break;
+    case 8:
+        theLantirn->SetTFRAlt(200);
+        break;
 
-        case 9:
-            theLantirn->SetTFRAlt(100);
-            break;
+    case 9:
+        theLantirn->SetTFRAlt(100);
+        break;
 
-        case 10:
-        case 11:
-        case 12:
-        case 13:
-        case 14:
-            MfdDrawable::PushButton(whichButton, whichMFD);
-            return;
+    case 10:
+    case 11:
+    case 12:
+    case 13:
+    case 14:
+        MfdDrawable::PushButton(whichButton, whichMFD);
+        return;
 
-        case 15:
-            theLantirn->SetTFRMode(LantirnClass::TFR_ECCM);
-            break;
+    case 15:
+        theLantirn->SetTFRMode(LantirnClass::TFR_ECCM);
+        break;
 
-        case 16:
-            theLantirn->SetTFRMode(LantirnClass::TFR_WX);
-            break;
+    case 16:
+        theLantirn->SetTFRMode(LantirnClass::TFR_WX);
+        break;
 
-        case 17:
-            theLantirn->SetTFRMode(LantirnClass::TFR_STBY);
-            break;
+    case 17:
+        theLantirn->SetTFRMode(LantirnClass::TFR_STBY);
+        break;
 
-        case 18:
-            theLantirn->SetTFRMode(LantirnClass::TFR_LP1);
-            break;
+    case 18:
+        theLantirn->SetTFRMode(LantirnClass::TFR_LP1);
+        break;
 
-        case 19:
-            theLantirn->SetTFRMode(LantirnClass::TFR_NORM);
-            break;
+    case 19:
+        theLantirn->SetTFRMode(LantirnClass::TFR_NORM);
+        break;
     }
 }
 
@@ -292,8 +309,8 @@ void LantirnDrawable::DrawAzimuthScan()
 
     for (int i = 0; i < 5; i++)
     {
-        display->Line(azminx + i * azstep, azy,
-                      azminx + i * azstep, azy + 0.05f);
+        display->Line(azminx + i * azstep, azy, azminx + i * azstep,
+                      azy + 0.05f);
     }
 
     float scanline = azminx + (azmaxx - azminx) / 2.0f +
@@ -341,7 +358,7 @@ void LantirnDrawable::DrawTerrain()
     viewRotation.M33 = costha * cosphi;
 
     Tpoint p;
-    Trotation *r = &viewRotation;
+    Trotation* r = &viewRotation;
     p.x = cameraPos.x;
     p.y = cameraPos.y;
     p.z = cameraPos.z;
@@ -359,14 +376,35 @@ void LantirnDrawable::DrawTerrain()
     extern void FF_SetIRGrey(bool);
     extern void FF_SetTerrainRadiusCap(int);
     extern bool g_bUseD3D12, g_bSensorSceneD3D12;
-    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
+    // Artscout - 2026: Vulkan gated too -- its object path cannot target the RTT atlas (see lantirn.cpp doA5 note).
+    extern bool g_bUseVulkan, g_bSensorSceneVulkan;
+    const bool doA5 = !(g_bUseD3D12 or g_bUseVulkan) || g_bSensorSceneD3D12 ||
+        (g_bUseVulkan and g_bSensorSceneVulkan);
     if (doA5)
     {
+        // Artscout - 2026: full RTT bracket, parity with laserpod.cpp/mavdisp.cpp. This block had NO bracket at
+        // all -- no atlas re-bind, no zone confine, no pending-2D flush, no main-context flush -- so under a GPU
+        // backend its objects flushed later against the full atlas (or the eye).
+        ((VirtualDisplay*)display)
+            ->ReBindRttTarget(); // rebind the shared RTT atlas
+        // Confine BEFORE DrawScene on BOTH backends -- the sensor sky flushes from inside DrawScene and needs
+        // the zone scissor armed, else its above-horizon fill covers the whole atlas (see laserpod.cpp).
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
         FF_SetIRGrey(true);
         FF_SetTerrainRadiusCap(32);
         ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
-        if (DisplayOptions.bZBuffering or g_bUseD3D12)
+        // Confine BEFORE the 2D flush: arms the renderer's per-draw zone SCISSOR for the span flush
+        // (strays clipped, not splatted over HUD/DED) and the zone viewport for the object flush.
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        // Flush the batched 2D spans INSIDE the RTT bracket -- a leftover VB tail otherwise flushes after
+        // FinishRtt and paints the sensor scene over the EYE.
+        ((RenderIR*)display)->context.FlushPending();
+        if (DisplayOptions.bZBuffering or g_bUseD3D12 or g_bUseVulkan)
             ((RenderIR*)display)->context.FlushPolyLists();
+        // The sensor's objects queue into the MAIN renderer's poly lists (DrawableBSP draws through the object's
+        // renderer, not this display's) -- flush them inside the bracket so they land in the MFD zone.
+        if (g_bUseVulkan and OTWDriver.renderer)
+            OTWDriver.renderer->context.FlushPolyLists();
         FF_SetIRGrey(false);
         FF_SetTerrainRadiusCap(0);
     }

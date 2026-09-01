@@ -3,9 +3,9 @@
 
 /** this file declares the vu application part. Parts of VU are left open, since its a generic library */
 
-#include "../../vu2/include/VU2.h"
+#include "../../vu2/include/vu2.h"
 #include "vutypes.h"
-#include "FalcEnt.h"
+#include "falcent.h"
 
 struct F4CSECTIONHANDLE;
 
@@ -24,15 +24,15 @@ struct F4CSECTIONHANDLE;
 // These never change
 // ========================
 
-#define DOMAIN_ANY     255
-#define CLASS_ANY      255
-#define TYPE_ANY       255
-#define STYPE_ANY      255
-#define SPTYPE_ANY     255
-#define RFU1_ANY       255
-#define RFU2_ANY       255
-#define RFU3_ANY       255
-#define VU_ANY         255
+#define DOMAIN_ANY 255
+#define CLASS_ANY 255
+#define TYPE_ANY 255
+#define STYPE_ANY 255
+#define SPTYPE_ANY 255
+#define RFU1_ANY 255
+#define RFU2_ANY 255
+#define RFU3_ANY 255
+#define VU_ANY 255
 
 // ========================
 // Vis type defines
@@ -57,7 +57,8 @@ struct F4CSECTIONHANDLE;
 // Default values
 // ========================
 
-#define F4_EVENT_QUEUE_SIZE 2000 // How many events we can have on the queue at one time
+#define F4_EVENT_QUEUE_SIZE                                                    \
+    2000 // How many events we can have on the queue at one time
 
 // ====================
 // extern global defs
@@ -66,7 +67,7 @@ struct F4CSECTIONHANDLE;
 extern VuMainThread *gMainThread;
 extern int NumEntities;
 extern VU_ID FalconNullId;
-extern F4CSECTIONHANDLE* vuCritical;
+extern F4CSECTIONHANDLE *vuCritical;
 
 // ==================================
 // defines for backward compatibility

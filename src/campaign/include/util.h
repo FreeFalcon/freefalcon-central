@@ -11,25 +11,25 @@
  * pass this about and do comparisons on these values but don't necessarily
  * have access or want access to the GameInfo Struct (like in sound.c)
  ---------------------------------------------------------------------------*/
-#define CPU486          0
-#define CPUPENTIUM      1
+#define CPU486 0
+#define CPUPENTIUM 1
 
-#define MONO_NORMAL  0x07
+#define MONO_NORMAL 0x07
 #define MONO_INTENSE 0x08
-#define MONO_UNDER   0x01
+#define MONO_UNDER 0x01
 #define MONO_REVERSE 0x70
-#define MONO_BLINK   0x80
+#define MONO_BLINK 0x80
 
 #define MONO_TEXT 0xB0000
 
 #ifdef NDEBUG
-#define MonoPrint(x)    ((void) 0)
-#define MonoLocate(x, y) ((void) 0)
-#define MonoCls() ((void) 0)
-#define MonoScroll() ((void) 0)
-#define MonoColor( attribute ) ((void) 0)
+#define MonoPrint(x) ((void)0)
+#define MonoLocate(x, y) ((void)0)
+#define MonoCls() ((void)0)
+#define MonoScroll() ((void)0)
+#define MonoColor(attribute) ((void)0)
 #else
-#define MonoPrint(x)    MonPrint x
+#define MonoPrint(x) MonPrint x
 extern void MonPrint(const char *string, ...);
 extern void MonoLocate(unsigned char x, unsigned char y);
 extern void MonoCls(void);
@@ -37,8 +37,8 @@ extern void MonoScroll(void);
 extern void MonoColor(char attribute);
 #endif
 
-#define cos(x) (((float) IGetCosine((short) (((x))*2607.5))) * 0.000000059604)
-#define sin(x) (((float) IGetSine((short) (((x))*2607.5))) * 0.000000059604)
+#define cos(x) (((float)IGetCosine((short)(((x)) * 2607.5))) * 0.000000059604)
+#define sin(x) (((float)IGetSine((short)(((x)) * 2607.5))) * 0.000000059604)
 
 int UnzipFile(char *zipfile, char *filename, char **retbuf, long *size,
               int *zipID);

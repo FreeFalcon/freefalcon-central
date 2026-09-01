@@ -26,7 +26,7 @@
 #define NVG_LIGHT_LEVEL 0.703125f // 180 256ths
 
 #define MOON_PHASE_SIZE 128 // max is 128
-#define NEW_MOON_PHASE (MOON_PHASE_SIZE/2)
+#define NEW_MOON_PHASE (MOON_PHASE_SIZE / 2)
 
 //#define USE_TRANSPARENT_MOON
 
@@ -53,8 +53,7 @@ typedef struct TimeOfDayStruct
     Tcolor LightningColor;
     Tcolor VisColor;
     float MinVis;
-}
-TimeOfDayStruct;
+} TimeOfDayStruct;
 
 class CTimeOfDay
 {
@@ -65,7 +64,8 @@ public:
     };
     ~CTimeOfDay()
     {
-        if (IsReady()) Cleanup();
+        if (IsReady())
+            Cleanup();
     };
 
     void Setup(char *dataPath);
@@ -149,8 +149,10 @@ public:
 
     void GetHazeSunHorizonColor(Tcolor *rgb)
     {
-        if (ISunPitch > 4096) *rgb = HazeSunsetColor;
-        else *rgb = HazeSunriseColor;
+        if (ISunPitch > 4096)
+            *rgb = HazeSunsetColor;
+        else
+            *rgb = HazeSunriseColor;
     };
 
     float GetAmbientValue()
@@ -194,7 +196,8 @@ public:
     {
         int pitch = ISunPitch;
 
-        if (pitch > 4096) pitch = 8192 - pitch;
+        if (pitch > 4096)
+            pitch = 8192 - pitch;
 
         return pitch;
     };
@@ -203,7 +206,8 @@ public:
     {
         int yaw = ISunYaw;
 
-        if (ISunPitch > 4096) yaw += 8192;
+        if (ISunPitch > 4096)
+            yaw += 8192;
 
         return yaw & 0x3fff;
     };
@@ -212,7 +216,8 @@ public:
     {
         int pitch = IMoonPitch;
 
-        if (pitch > 4096) pitch = 8192 - pitch;
+        if (pitch > 4096)
+            pitch = 8192 - pitch;
 
         return pitch;
     };
@@ -221,7 +226,8 @@ public:
     {
         int yaw = IMoonYaw;
 
-        if (IMoonPitch > 4096) yaw += 8192;
+        if (IMoonPitch > 4096)
+            yaw += 8192;
 
         return yaw & 0x3fff;
     };
@@ -253,7 +259,8 @@ public:
 
     float GetGroundColoring(int c)
     {
-        return (TimeOfDay[c].GroundColor.r + TimeOfDay[c].GroundColor.g + TimeOfDay[c].GroundColor.b);
+        return (TimeOfDay[c].GroundColor.r + TimeOfDay[c].GroundColor.g +
+                TimeOfDay[c].GroundColor.b);
     };
 
 protected:

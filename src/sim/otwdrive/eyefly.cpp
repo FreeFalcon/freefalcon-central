@@ -1,7 +1,7 @@
 #include "stdhdr.h"
-#include "Graphics/Include/DrawBSP.h"
-#include "Graphics/Include/RenderOW.h"
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/rviewpnt.h"
 #include "otwdrive.h"
 #include "simdrive.h"
 #include "simfiltr.h"
@@ -42,19 +42,23 @@ void OTWDriverClass::SetEyeFlyCameraPosition(float dT)
     //if (IO.ReadDigital(0))
     if (keyboardTriggerOverride) //THW 2003-11-11 fixed
     {
-        p = Math.DeadBand(IO.ReadAnalog(AXIS_ROLL), -0.05F, 0.05F) * (1.0F / 0.95F);  // Retro 31Dec2003
+        p = Math.DeadBand(IO.ReadAnalog(AXIS_ROLL), -0.05F, 0.05F) *
+            (1.0F / 0.95F);  // Retro 31Dec2003
         p = max(min(p, 1.0F), -1.0F) * dT * 1.0f;
 
-        q = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) * (1.0F / 0.95F);  // Retro 31Dec2003
+        q = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) *
+            (1.0F / 0.95F);  // Retro 31Dec2003
         q = max(min(q, 1.0F), -1.0F) * dT * 1.0f;
 
-        r = -Math.DeadBand(-IO.ReadAnalog(AXIS_YAW), -0.05F, 0.05F) * (1.0F / 0.95F);  // Retro 31Dec2003
+        r = -Math.DeadBand(-IO.ReadAnalog(AXIS_YAW), -0.05F, 0.05F) *
+            (1.0F / 0.95F);  // Retro 31Dec2003
         r = max(min(r, 1.0F), -1.0F) * dT * 1.0f;
 
         if (IO.AnalogIsUsed(AXIS_THROTTLE))  // Retro 31Dec2003
         {
             //throttle = (1.0F - Math.DeadBand(IO.ReadAnalog(2), -0.03F, 0.03F)) * 0.5F;
-            throttle = 0.66666F * IO.ReadAnalog(AXIS_THROTTLE);  // Retro 31Dec2003
+            throttle =
+                0.66666F * IO.ReadAnalog(AXIS_THROTTLE); // Retro 31Dec2003
             throttle *= throttle;
         }
         else
@@ -148,7 +152,7 @@ void OTWDriverClass::FindNearestBuilding(void)
             else
                 radius = 30.0F;
 
-            if (fabs(intersect.x - testFeature->XPos()) < radius and 
+            if (fabs(intersect.x - testFeature->XPos()) < radius and
                 fabs(intersect.y - testFeature->YPos()) < radius)
             {
                 eyeFlyTgt = testFeature;
@@ -161,7 +165,8 @@ void OTWDriverClass::FindNearestBuilding(void)
 
     if (eyeFlyTgt)
     {
-        sprintf(labelStr, "State %d\n", eyeFlyTgt->Status() bitand VIS_TYPE_MASK);
+        sprintf(labelStr, "State %d\n",
+                eyeFlyTgt->Status() bitand VIS_TYPE_MASK);
         ShiAssert(strlen(labelStr) < 40);
         eyeFlyTgt->drawPointer->SetLabel(labelStr, 0xff00ff00);
     }

@@ -1,14 +1,14 @@
 #ifndef _WINGMANMSG_H
 #define _WINGMANMSG_H
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
 
 //sfr: checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type WingmanMsg
@@ -104,29 +104,48 @@ public:
           WMBvrGrind = 87, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
           WMLastMsg = 88}; // WMLastMsg = 92 fake command};
         */
-        WMPlevel1a = 74, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel2a = 75, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel3a = 76, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel1b = 77, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel2b = 78, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel3b = 79, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel1c = 80, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel2c = 81, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPlevel3c = 82, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPbeamdeploy = 83,// 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPbeambeam = 84, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPwall = 85, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPgrinder = 86, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPwideazimuth = 87,// 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPshortazimuth = 88,// 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPwideLT = 89, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPShortLT = 90, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
-        WMPDefensive = 91, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel1a =
+            74, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel2a =
+            75, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel3a =
+            76, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel1b =
+            77, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel2b =
+            78, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel3b =
+            79, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel1c =
+            80, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel2c =
+            81, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPlevel3c =
+            82, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPbeamdeploy =
+            83, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPbeambeam =
+            84, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPwall =
+            85, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPgrinder =
+            86, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPwideazimuth =
+            87, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPshortazimuth =
+            88, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPwideLT =
+            89, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPShortLT =
+            90, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
+        WMPDefensive =
+            91, // 2002-03-15 ADDED BY S.G. BVR profiles that the player can send to his element
         WMLastMsg = 92
     }; // WMLastMsg = 92 fake command};
 
 
-    FalconWingmanMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconWingmanMsg(VU_ID entityId, VuTargetEntity *target,
+                     VU_BOOL loopback = TRUE);
     FalconWingmanMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconWingmanMsg(void);
     virtual int Size() const
@@ -155,7 +174,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         short to;
         unsigned int command;
@@ -165,6 +183,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

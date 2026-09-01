@@ -1,24 +1,25 @@
-#include "Graphics/Include/TViewPnt.h"
-#include "Graphics/Include/renderir.h"
-#include "Graphics/Include/rendertv.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/Mono2D.h"
-#include "Graphics/Include/DrawBSP.h"
+#include "graphics/include/tviewpnt.h"
+extern "C" int FF_VkRttActive(void); // Vulkan display-RTT-open probe (gates PostSceneCloudOcclusion below)
+#include "graphics/include/renderir.h"
+#include "graphics/include/rendertv.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/mono2d.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
-#include "Classtbl.h"
+#include "classtbl.h"
 #include "missile.h"
 #include "otwdrive.h"
 #include "mavdisp.h"
 #include "simbase.h"
-#include "Entity.h"
+#include "entity.h"
 #include "sensclas.h"
 #include "sms.h"
 #include "aircrft.h"
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/dispopts.h"
 
-#define LOCK_RING_MAX_SIZE     0.65F  //JPG 21 Jan 04 - was 0.5F
-#define LOCK_RING_MIN_SIZE     0.25F
-#define LOCK_RING_TICK_SIZE    0.075F
+#define LOCK_RING_MAX_SIZE 0.65F  //JPG 21 Jan 04 - was 0.5F
+#define LOCK_RING_MIN_SIZE 0.25F
+#define LOCK_RING_TICK_SIZE 0.075F
 
 extern bool g_bGreyMFD;
 extern bool g_bGreyScaleMFD;
@@ -28,7 +29,8 @@ extern bool g_bRealisticAvionics;
 extern float g_fMavEXPLevel; //Wombat778 9-27-2003
 extern float g_fMavFOVLevel; //Wombat778 9-27-2003
 
-MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : MissileDisplayClass(newPlatform)
+MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform)
+    : MissileDisplayClass(newPlatform)
 {
     Falcon4EntityClassType* classPtr;
 
@@ -42,7 +44,8 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
 
     // RV - Biker - New FOV data from missile FMs
     //curFOV = g_fMavFOVLevel * DTR; //Wombat778 9-28-2003
-    if ((MissileClass*)platform and ((MissileClass*)platform)->GetFOVLevel() > 0)
+    if ((MissileClass*)platform and
+        ((MissileClass*)platform)->GetFOVLevel() > 0)
         curFOV = 12.0f / ((MissileClass*)platform)->GetFOVLevel() * DTR;
     else
         curFOV = g_fMavFOVLevel * DTR;
@@ -72,25 +75,25 @@ MaverickDisplayClass::MaverickDisplayClass(SimMoverClass* newPlatform) : Missile
 
 void MaverickDisplayClass::DisplayInit(ImageBuffer* image)
 {
-    if ( not g_bGreyScaleMFD)
+    if (not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
     switch (displayType)
     {
-        case AGM65_IR:
-            privateDisplay =  new RenderIR;
-            ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
-            break;
+    case AGM65_IR:
+        privateDisplay = new RenderIR;
+        ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
+        break;
 
-        case AGM65_TV:
-            privateDisplay =  new RenderTV;
-            ((RenderTV*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
-            break;
+    case AGM65_TV:
+        privateDisplay = new RenderTV;
+        ((RenderTV*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
+        break;
     }
 
     SetReady(TRUE);
 
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -104,14 +107,15 @@ void MaverickDisplayClass::Display(VirtualDisplay* newDisplay)
     display = newDisplay;
 
     // SCR  9/1/98  Is it every legal to have viewPoint NULL???
-    ShiAssert(viewPoint); // If we don't hit this after a while, get rid of onMainScreen...
+    ShiAssert(
+        viewPoint); // If we don't hit this after a while, get rid of onMainScreen...
 
     if (viewPoint)
         onMainScreen = TRUE;
     else
         onMainScreen = FALSE;
 
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(GetMfdColor(MFD_GREEN));
@@ -129,7 +133,9 @@ void MaverickDisplayClass::DrawDisplay(void)
     float ZoomMin;
     float ZoomMax;
 
-    if ((MissileClass*)platform and ((MissileClass*)platform)->GetEXPLevel() > 0 and ((MissileClass*)platform)->GetFOVLevel() > 0)
+    if ((MissileClass*)platform and
+        ((MissileClass*)platform)->GetEXPLevel() > 0 and
+        ((MissileClass*)platform)->GetFOVLevel() > 0)
     {
         ZoomMin = ((MissileClass*)platform)->GetFOVLevel();
         ZoomMax = ((MissileClass*)platform)->GetEXPLevel();
@@ -174,32 +180,38 @@ void MaverickDisplayClass::DrawDisplay(void)
 
         ShiAssert(platform->IsMissile());
 
-        if (((MissileClass*)platform)->parent->IsAirplane() and ((AircraftClass*)((MissileClass*)platform)->parent.get())->Sms->MasterArm() not_eq SMSBaseClass::Safe)
+        // Artscout - 2026: gated like the doA5 scene block (see laserpod.cpp) -- under a GPU backend
+        // this sensor-terrain render bypasses the RTT atlas and paints the bottom of the screen.
+        extern bool g_bUseD3D12, g_bUseVulkan, g_bSensorSceneD3D12;
+        extern bool g_bSensorSceneVulkan;
+        if ((!(g_bUseD3D12 or g_bUseVulkan) || g_bSensorSceneD3D12 ||
+             (g_bUseVulkan and g_bSensorSceneVulkan)) and
+            ((MissileClass*)platform)->parent->IsAirplane() and
+            ((AircraftClass*)((MissileClass*)platform)->parent.get())
+                    ->Sms->MasterArm() not_eq SMSBaseClass::Safe)
             DrawTerrain();
 
         display->StartDraw();
 
         // Artscout - 2026: display->EndDraw() above did ContextMPR::EndDraw -> BindBackBuffer, which
         // UNBINDS the shared RTT atlas; display->StartDraw() only InvalidateState's (does NOT rebind).
-        // Without this the rest of the WPN/MAV page -- crosshair lines AND the OSB button labels (same
-        // display context) -- renders to the back buffer instead of the atlas -> the whole Maverick page
-        // is BLACK (confirmed: page is fine with no Maverick loaded = no EndDraw/StartDraw dance). Re-bind
-        // the atlas, exactly like the GM radar beam sub-render fix.
-        // Artscout - 2026 (D3D11 purge): the D3D11-only RTT re-bind was removed. Under D3D12 the sensor
-        // atlas is re-bound via ConfineObjectViewportToZone before DrawScene (see the D3D12 guards below).
+        // With the sensor scene gated off under the GPU backends nothing re-binds, so the whole WPN/MAV
+        // page (crosshair + OSB labels) leaked to the screen. Re-bind explicitly; safe now that the
+        // Vulkan RTT re-bind PRESERVES the atlas (LOAD pass).
+        ((VirtualDisplay*)display)->ReBindRttTarget();
     }
 
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(tmpColor);
 
     display->Line(0.0F, -1.0F, 0.0F, -0.03F);
-    display->Line(0.0F,  1.0F, 0.0F,  0.03F);
+    display->Line(0.0F, 1.0F, 0.0F, 0.03F);
     display->Line(-1.0F, 0.0F, -0.03F, 0.0F);
-    display->Line(1.0F, 0.0F,  0.03F, 0.0F);
+    display->Line(1.0F, 0.0F, 0.03F, 0.0F);
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         display->Line(-0.1F, -0.2F, 0.1F, -0.2F);
         display->Line(-0.1F, -0.4F, 0.1F, -0.4F);
@@ -215,28 +227,36 @@ void MaverickDisplayClass::DrawDisplay(void)
     if (IsLocked())
     {
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,
-                          -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE), -LOCK_RING_MIN_SIZE);
+                          -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE),
+                          -LOCK_RING_MIN_SIZE);
             display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,
-                          -LOCK_RING_MIN_SIZE, -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
-            display->Line(LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE,
-                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE),  LOCK_RING_MIN_SIZE);
-            display->Line(LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE,
-                          LOCK_RING_MIN_SIZE, (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
-            display->Line(-LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE,
-                          -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE),  LOCK_RING_MIN_SIZE);
-            display->Line(-LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE,
-                          -LOCK_RING_MIN_SIZE, (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
+                          -LOCK_RING_MIN_SIZE,
+                          -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
+            display->Line(LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE,
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE),
+                          LOCK_RING_MIN_SIZE);
+            display->Line(LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE,
+                          LOCK_RING_MIN_SIZE,
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
+            display->Line(-LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE,
+                          -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE),
+                          LOCK_RING_MIN_SIZE);
+            display->Line(-LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE,
+                          -LOCK_RING_MIN_SIZE,
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
             display->Line(LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,
-                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE), -LOCK_RING_MIN_SIZE);
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE),
+                          -LOCK_RING_MIN_SIZE);
             display->Line(LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,
-                          LOCK_RING_MIN_SIZE, -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
+                          LOCK_RING_MIN_SIZE,
+                          -(LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE));
         }
         else
         {
-            if ((g_bGreyMFD) and ( not bNVGmode))
+            if ((g_bGreyMFD) and (not bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -252,13 +272,12 @@ void MaverickDisplayClass::DrawDisplay(void)
             display->Line (-size, size, size, size);
             display->Line (size, size, size, -size);
             display->Line (size, -size, -size, -size);*/
-
         }
     }
     else if (IsDetected())
     {
         //MI doesn't do this in real
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             unsigned long tmp = vuxRealTime;
             float offset = (float)(tmp bitand 0x3FF) / 0x400;
@@ -268,28 +287,44 @@ void MaverickDisplayClass::DrawDisplay(void)
 
             offset *= LOCK_RING_MAX_SIZE - LOCK_RING_MIN_SIZE;
 
-            display->Line(-(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),
-                          -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset), -(LOCK_RING_MIN_SIZE + offset));
-            display->Line(-(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),
-                          -(LOCK_RING_MIN_SIZE + offset), -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset));
-            display->Line(LOCK_RING_MIN_SIZE + offset,    LOCK_RING_MIN_SIZE + offset,
-                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset,    LOCK_RING_MIN_SIZE + offset);
-            display->Line(LOCK_RING_MIN_SIZE + offset,    LOCK_RING_MIN_SIZE + offset,
-                          LOCK_RING_MIN_SIZE + offset, (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset);
-            display->Line(-(LOCK_RING_MIN_SIZE + offset),   LOCK_RING_MIN_SIZE + offset,
-                          -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset),   LOCK_RING_MIN_SIZE + offset);
-            display->Line(-(LOCK_RING_MIN_SIZE + offset),   LOCK_RING_MIN_SIZE + offset,
-                          -(LOCK_RING_MIN_SIZE + offset), (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset);
-            display->Line(LOCK_RING_MIN_SIZE + offset,  -(LOCK_RING_MIN_SIZE + offset),
-                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset,  -(LOCK_RING_MIN_SIZE + offset));
-            display->Line(LOCK_RING_MIN_SIZE + offset,  -(LOCK_RING_MIN_SIZE + offset),
-                          LOCK_RING_MIN_SIZE + offset,  -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset));
+            display->Line(
+                -(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),
+                -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset),
+                -(LOCK_RING_MIN_SIZE + offset));
+            display->Line(
+                -(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),
+                -(LOCK_RING_MIN_SIZE + offset),
+                -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset));
+            display->Line(LOCK_RING_MIN_SIZE + offset,
+                          LOCK_RING_MIN_SIZE + offset,
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset,
+                          LOCK_RING_MIN_SIZE + offset);
+            display->Line(LOCK_RING_MIN_SIZE + offset,
+                          LOCK_RING_MIN_SIZE + offset,
+                          LOCK_RING_MIN_SIZE + offset,
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset);
+            display->Line(
+                -(LOCK_RING_MIN_SIZE + offset), LOCK_RING_MIN_SIZE + offset,
+                -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset),
+                LOCK_RING_MIN_SIZE + offset);
+            display->Line(-(LOCK_RING_MIN_SIZE + offset),
+                          LOCK_RING_MIN_SIZE + offset,
+                          -(LOCK_RING_MIN_SIZE + offset),
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset);
+            display->Line(LOCK_RING_MIN_SIZE + offset,
+                          -(LOCK_RING_MIN_SIZE + offset),
+                          (LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset,
+                          -(LOCK_RING_MIN_SIZE + offset));
+            display->Line(
+                LOCK_RING_MIN_SIZE + offset, -(LOCK_RING_MIN_SIZE + offset),
+                LOCK_RING_MIN_SIZE + offset,
+                -((LOCK_RING_MIN_SIZE - LOCK_RING_TICK_SIZE) + offset));
         }
         else
         {
             // RV - Biker - Make FOV switching this dynamic
             //if(curFOV > 3.0f * DTR)
-            if ((g_bGreyMFD) and ( not bNVGmode))
+            if ((g_bGreyMFD) and (not bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -300,29 +335,37 @@ void MaverickDisplayClass::DrawDisplay(void)
     }
     else
     {
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
 
             display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,
-                          -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE), -LOCK_RING_MAX_SIZE);
+                          -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE),
+                          -LOCK_RING_MAX_SIZE);
             display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,
-                          -LOCK_RING_MAX_SIZE, -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
-            display->Line(LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE,
-                          (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE),  LOCK_RING_MAX_SIZE);
-            display->Line(LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE,
-                          LOCK_RING_MAX_SIZE, (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
-            display->Line(-LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE,
-                          -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE),  LOCK_RING_MAX_SIZE);
-            display->Line(-LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE,
-                          -LOCK_RING_MAX_SIZE, (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
+                          -LOCK_RING_MAX_SIZE,
+                          -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
+            display->Line(LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE,
+                          (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE),
+                          LOCK_RING_MAX_SIZE);
+            display->Line(LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE,
+                          LOCK_RING_MAX_SIZE,
+                          (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
+            display->Line(-LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE,
+                          -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE),
+                          LOCK_RING_MAX_SIZE);
+            display->Line(-LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE,
+                          -LOCK_RING_MAX_SIZE,
+                          (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
             display->Line(LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,
-                          (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE), -LOCK_RING_MAX_SIZE);
+                          (LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE),
+                          -LOCK_RING_MAX_SIZE);
             display->Line(LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,
-                          LOCK_RING_MAX_SIZE, -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
+                          LOCK_RING_MAX_SIZE,
+                          -(LOCK_RING_MAX_SIZE - LOCK_RING_TICK_SIZE));
         }
         else
         {
-            if ((g_bGreyMFD) and ( not bNVGmode))
+            if ((g_bGreyMFD) and (not bNVGmode))
                 display->SetColor(GetMfdColor(MFD_WHITE));
             else
                 display->SetColor(GetMfdColor(MFD_GREEN));
@@ -335,22 +378,22 @@ void MaverickDisplayClass::DrawDisplay(void)
     }
 
     // FRB - B&W display
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         display->SetColor(GetMfdColor(MFD_WHITE));
     else
         display->SetColor(GetMfdColor(MFD_GREEN));
 
-    if ( not IsSOI())
+    if (not IsSOI())
     {
         //MI
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
             display->TextCenter(0.0F, 0.4F, "NOT SOI");
         else
             display->TextCenter(0.0F, 0.7F, "NOT SOI");
     }
     else
     {
-        if ((g_bGreyMFD) and ( not bNVGmode))
+        if ((g_bGreyMFD) and (not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(GetMfdColor(MFD_GREEN));
@@ -358,36 +401,49 @@ void MaverickDisplayClass::DrawDisplay(void)
         DrawBorder(); // JPO SOI
     }
 
-    totalAngle = (float)acos(cos(platform->sensorArray[0]->SeekerEl()) * cos(platform->sensorArray[0]->SeekerAz()));
+    totalAngle = (float)acos(cos(platform->sensorArray[0]->SeekerEl()) *
+                             cos(platform->sensorArray[0]->SeekerAz()));
 
     //MI
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         if ((totalAngle < 30.0F * DTR) or vuxRealTime bitand 0x200)
         {
-            display->AdjustOriginInViewport(platform->sensorArray[0]->SeekerAz(), platform->sensorArray[0]->SeekerEl());
-            display->Line(0.0F,  0.2F,  0.0F, -0.2F);
-            display->Line(0.2F,  0.0F, -0.2F,  0.0F);
-            display->AdjustOriginInViewport(-platform->sensorArray[0]->SeekerAz(), -platform->sensorArray[0]->SeekerEl());
+            display->AdjustOriginInViewport(
+                platform->sensorArray[0]->SeekerAz(),
+                platform->sensorArray[0]->SeekerEl());
+            display->Line(0.0F, 0.2F, 0.0F, -0.2F);
+            display->Line(0.2F, 0.0F, -0.2F, 0.0F);
+            display->AdjustOriginInViewport(
+                -platform->sensorArray[0]->SeekerAz(),
+                -platform->sensorArray[0]->SeekerEl());
         }
     }
     else
     {
         if (totalAngle < 30.0F * DTR and IsLocked())
         {
-            display->AdjustOriginInViewport(platform->sensorArray[0]->SeekerAz(), platform->sensorArray[0]->SeekerEl());
-            display->Line(0.0F,  0.15F,  0.0F, -0.15F);
-            display->Line(0.15F,  0.0F, -0.15F,  0.0F);
-            display->AdjustOriginInViewport(-platform->sensorArray[0]->SeekerAz(), -platform->sensorArray[0]->SeekerEl());
+            display->AdjustOriginInViewport(
+                platform->sensorArray[0]->SeekerAz(),
+                platform->sensorArray[0]->SeekerEl());
+            display->Line(0.0F, 0.15F, 0.0F, -0.15F);
+            display->Line(0.15F, 0.0F, -0.15F, 0.0F);
+            display->AdjustOriginInViewport(
+                -platform->sensorArray[0]->SeekerAz(),
+                -platform->sensorArray[0]->SeekerEl());
         }
         else
         {
             if (vuxRealTime bitand 0x100)
             {
-                display->AdjustOriginInViewport(platform->sensorArray[0]->SeekerAz(), platform->sensorArray[0]->SeekerEl());
-                display->Line(0.0F,  0.15F,  0.0F, -0.15F);
-                display->Line(0.15F,  0.0F, -0.15F,  0.0F);
-                display->AdjustOriginInViewport(-platform->sensorArray[0]->SeekerAz(), -platform->sensorArray[0]->SeekerEl());
+                display->AdjustOriginInViewport(
+                    platform->sensorArray[0]->SeekerAz(),
+                    platform->sensorArray[0]->SeekerEl());
+                display->Line(0.0F, 0.15F, 0.0F, -0.15F);
+                display->Line(0.15F, 0.0F, -0.15F, 0.0F);
+                display->AdjustOriginInViewport(
+                    -platform->sensorArray[0]->SeekerAz(),
+                    -platform->sensorArray[0]->SeekerEl());
             }
         }
     }
@@ -488,24 +544,47 @@ void MaverickDisplayClass::DrawTerrain(void)
     extern bool g_bUseD3D12, g_bSensorSceneD3D12;
     extern void FF_SetIRGrey(bool);
     extern void FF_SetTerrainRadiusCap(int);
-    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
+    // Artscout - 2026: Vulkan gated too -- its object path cannot target the RTT atlas (see lantirn.cpp doA5
+    // note). Un-gated, the open Maverick page drew the IR world into the eye scene AND leaked the atlas
+    // viewport metric into the composite (whole shrunk atlas in the left MFD, black fill over the cockpit).
+    extern bool g_bUseVulkan, g_bSensorSceneVulkan;
+    const bool doA5 = !(g_bUseD3D12 or g_bUseVulkan) || g_bSensorSceneD3D12 ||
+        (g_bUseVulkan and g_bSensorSceneVulkan);
     /* if (displayType == AGM65_IR)
      {*/
     ((RenderIR*)display)->StartDraw();
     if (doA5)
     {
         ((VirtualDisplay*)display)->ReBindRttTarget();
-        if (g_bUseD3D12) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        // Confine BEFORE DrawScene on BOTH backends -- the sensor sky flushes from inside DrawScene and needs
+        // the zone scissor armed, else its above-horizon fill covers the whole atlas (see laserpod.cpp).
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
         FF_SetIRGrey(true);
         FF_SetTerrainRadiusCap(32);
         ((RenderIR*)display)->DrawScene(&cameraPos, &viewRotation);
+        // Confine again AFTER DrawScene: re-arms the zone in case a mid-scene re-bind cleared it, for the
+        // span flush (zone SCISSOR) and the object flush (zone viewport).
         ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        // Flush the batched 2D spans INSIDE the RTT bracket -- a leftover VB tail otherwise flushes
+        // after FinishRtt and paints the sensor scene over the EYE ("scene on screen").
+        ((RenderIR*)display)->context.FlushPending();
         ((RenderIR*)display)->context.FlushPolyLists();
+        // Artscout - 2026 (sensor video): flush the MAIN renderer's poly lists inside the RTT
+        // bracket too -- the sensor objects queue THERE, not in this display's context (see
+        // laserpod.cpp). Without this they flushed later into the EYE.
+        if (g_bUseVulkan and OTWDriver.renderer)
+            OTWDriver.renderer->context.FlushPolyLists();
         FF_SetIRGrey(false);
         FF_SetTerrainRadiusCap(0);
         ((VirtualDisplay*)display)->ReBindRttTarget();
     }
-    ((RenderIR*)display)->PostSceneCloudOcclusion();
+    // Artscout - 2026 (sensor video): the cloud-occlusion overlay is a FULLSCREEN quad whose Vulkan
+    // path is hard-wired to the EYE scene cmd -- from the sensor page it painted the whole view black.
+    // The sensor picture does not need cloud occlusion; skip it while a display RTT is open.
+    {
+        if (FF_VkRttActive() != 1) // file-scope extern "C" decl at the top
+            ((RenderIR*)display)->PostSceneCloudOcclusion();
+    }
     ((RenderIR*)display)->EndDraw();
     /* }
      else if (displayType == AGM65_TV)
@@ -569,7 +648,7 @@ void MaverickDisplayClass::DrawFOV(void)
     display->Line(value, -value, value, -value + Lenght);
     display->Line(-value, -value, -value, -value + Lenght);
     display->Line(value, value, value, value - Lenght);
-    display->Line(-value, value, -value,  value - Lenght);
+    display->Line(-value, value, -value, value - Lenght);
     display->Line(value, -value, value - Lenght, -value);
     display->Line(-value, -value, -value + Lenght, -value);
     display->Line(value, value, value - Lenght, value);

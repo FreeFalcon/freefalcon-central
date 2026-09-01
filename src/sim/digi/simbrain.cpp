@@ -26,7 +26,7 @@ void BaseBrain::SetTarget(SimObjectType* newTarget)
 
     if (newTarget)
     {
-        ShiAssert(newTarget->BaseData() not_eq (FalconEntity*)0xDDDDDDDD);
+        ShiAssert(newTarget->BaseData() not_eq (FalconEntity*) 0xDDDDDDDD);
         newTarget->Reference();
         targetData = newTarget->localData;
     }
@@ -50,4 +50,3 @@ FeatureBrain::FeatureBrain(void)
 FeatureBrain::~FeatureBrain(void)
 {
 }
-

@@ -8,11 +8,20 @@
 #ifndef _DEVMGR_H_
 #define _DEVMGR_H_
 
-#include "Device.h"
+#include "device.h"
 
 #include <string>
 #include <vector>
 #include "d3d7compat.h"
+
+// Artscout - 2026 (#104): the API-neutral display-mode table, shared by the resolution UI and the render backends
+// (DX12 and Vulkan). Defined in devmgr.cpp; declared here so any TU can read it. (Was the static g_d3d11Modes.)
+struct DisplayModeEntry
+{
+    unsigned int w, h;
+};
+extern const DisplayModeEntry g_DisplayModes[];
+extern const int g_nDisplayModes;
 
 class DeviceManager
 {
@@ -23,7 +32,7 @@ public:
     };
     ~DeviceManager()
     {
-        ShiAssert( not IsReady());
+        ShiAssert(not IsReady());
     };
 
     // OW
@@ -43,7 +52,8 @@ public:
         class D3DDeviceInfo
         {
         public:
-            D3DDeviceInfo(D3DDEVICEDESC7 &devDesc, LPSTR lpDeviceName, LPSTR lpDeviceDescription);
+            D3DDeviceInfo(D3DDEVICEDESC7 &devDesc, LPSTR lpDeviceName,
+                          LPSTR lpDeviceDescription);
 
             D3DDEVICEDESC7 m_devDesc;
             std::string m_strName;
@@ -69,8 +79,12 @@ public:
         DDDEVICEIDENTIFIER2 devID;
 
         void EnumD3DDrivers();
-        static HRESULT _stdcall CALLBACK EnumD3DDriversCallback(LPSTR lpDeviceDescription, LPSTR lpDeviceName, LPD3DDEVICEDESC7 lpD3DHWDeviceDesc, LPVOID lpContext);
-        static HRESULT WINAPI EnumModesCallback(LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext);
+        static HRESULT _stdcall CALLBACK
+        EnumD3DDriversCallback(LPSTR lpDeviceDescription, LPSTR lpDeviceName,
+                               LPD3DDEVICEDESC7 lpD3DHWDeviceDesc,
+                               LPVOID lpContext);
+        static HRESULT WINAPI
+        EnumModesCallback(LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext);
 
         const char *GetName()
         {
@@ -112,18 +126,29 @@ public:
 
     // OW
     void EnumDDDrivers(DeviceManager *pThis);
-    static BOOL WINAPI EnumDDCallback(GUID FAR *lpGUID, LPSTR lpDriverDescription, LPSTR lpDriverName, LPVOID lpContext);
-    static BOOL WINAPI EnumDDCallbackEx(GUID FAR *lpGUID, LPSTR lpDriverDescription, LPSTR lpDriverName, LPVOID lpContext, HMONITOR hm);
-    static HRESULT WINAPI EnumModesCallback(LPDDSURFACEDESC2 lpDDSurfaceDesc, LPVOID lpContext);
-    bool GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth, UINT *pHeight, UINT *pDepth);
-    DXContext *CreateContext(int driverNum, int devNum, int resNum, BOOL fullScreen, HWND hWnd);
+    static BOOL WINAPI EnumDDCallback(GUID FAR *lpGUID,
+                                      LPSTR lpDriverDescription,
+                                      LPSTR lpDriverName, LPVOID lpContext);
+    static BOOL WINAPI EnumDDCallbackEx(GUID FAR *lpGUID,
+                                        LPSTR lpDriverDescription,
+                                        LPSTR lpDriverName, LPVOID lpContext,
+                                        HMONITOR hm);
+    static HRESULT WINAPI EnumModesCallback(LPDDSURFACEDESC2 lpDDSurfaceDesc,
+                                            LPVOID lpContext);
+    bool GetMode(int driverNum, int devNum, int modeNum, UINT *pWidth,
+                 UINT *pHeight, UINT *pDepth);
+    DXContext *CreateContext(int driverNum, int devNum, int resNum,
+                             BOOL fullScreen, HWND hWnd);
 
     // Artscout - 2026 (#89): real GPU selector for the D3D11/D3D12 backends. Enumerates DXGI hardware
     // adapters (cached). The settings UI populates the "video card" combo from these; the backends pick
     // the chosen adapter (DispVideoCard index) at device-create time. Software/WARP adapters are skipped.
-    static int  GetDxgiAdapterCount();
-    static bool GetDxgiAdapterName(int index, char *buf, int bufLen);   // UTF-8 description; false if OOR
-    static struct IDXGIAdapter1 *GetDxgiAdapter(int index);            // AddRef'd (caller Releases); NULL if OOR/fail
+    static int GetDxgiAdapterCount();
+    static bool
+    GetDxgiAdapterName(int index, char *buf,
+                       int bufLen); // UTF-8 description; false if OOR
+    static struct IDXGIAdapter1 *
+    GetDxgiAdapter(int index); // AddRef'd (caller Releases); NULL if OOR/fail
 };
 
 #endif // _DEVMGR_H_

@@ -9,10 +9,10 @@
 #include <stdio.h>
 #include <tchar.h>
 #include "mesg.h"
-#include "Team.h"
-#include "CUIEvent.h"
-#include "Entity.h"
-#include "Campaign.h"
+#include "team.h"
+#include "cuievent.h"
+#include "entity.h"
+#include "campaign.h"
 
 // =================================
 // A few globals
@@ -25,13 +25,14 @@
 
 void SendCampUIMessage(FalconCampEventMessage *message)
 {
-    FalconSendMessage(message, FALSE); // KCK NOTE: We can miss a few of these and live
+    FalconSendMessage(message,
+                      FALSE); // KCK NOTE: We can miss a few of these and live
 }
 
 // This frees the memory for the list passed
-void DisposeEventList(CampUIEventElement* root)
+void DisposeEventList(CampUIEventElement *root)
 {
-    CampUIEventElement* deadEvent;
+    CampUIEventElement *deadEvent;
 
     while (root)
     {

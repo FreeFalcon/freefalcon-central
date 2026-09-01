@@ -1,4 +1,4 @@
-#include <cISO646>
+#include <ciso646>
 #include <windows.h>
 #include <tchar.h>
 
@@ -24,18 +24,19 @@ void StoresList::Cleanup()
     GetType_ = _ALL_;
 }
 
-STORESLIST *StoresList::Create(long ID, _TCHAR *Name, long Type, long wgt, long fuel, float df, short stock)
+STORESLIST *StoresList::Create(long ID, _TCHAR *Name, long Type, long wgt,
+                               long fuel, float df, short stock)
 {
     STORESLIST *store;
     int i;
 
     if (Find(ID))
-        return(current);
+        return (current);
 
     store = new STORESLIST;
 
     if (store == NULL)
-        return(NULL);
+        return (NULL);
 
     store->ID = ID;
     _tcscpy(store->Name, Name);
@@ -50,7 +51,7 @@ STORESLIST *StoresList::Create(long ID, _TCHAR *Name, long Type, long wgt, long 
 
     store->Next = NULL;
 
-    return(store);
+    return (store);
 }
 
 void StoresList::AddHardPoint(long ID, long hp, short count)
@@ -69,7 +70,8 @@ void StoresList::Add(STORESLIST *store, STORESLIST **list)
 {
     STORESLIST *cur;
 
-    if (store == NULL) return;
+    if (store == NULL)
+        return;
 
     if (*list == NULL)
         *list = store;
@@ -104,7 +106,8 @@ void StoresList::Remove(long ID, STORESLIST **top)
 {
     STORESLIST *cur, *delme;
 
-    if (*top == NULL) return;
+    if (*top == NULL)
+        return;
 
     cur = *top;
 
@@ -137,7 +140,8 @@ void StoresList::Sort(long ID)
     STORESLIST temp;
     int i;
 
-    if (ID >= _ALL_) return;
+    if (ID >= _ALL_)
+        return;
 
     list = Stores_[ID];
 

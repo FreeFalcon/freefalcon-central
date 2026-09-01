@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -41,7 +42,6 @@ private:
     VU_ID vuID;
 
 public:
-
     C_Squadron();
     C_Squadron(char **stream);
     C_Squadron(FILE *fp);
@@ -66,7 +66,7 @@ public:
     }
     TREELIST *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
 
     void SetIconBg(short x, short y, short w, short h)
@@ -132,7 +132,8 @@ public:
 
     void SetIcon(long ImageID)
     {
-        if (Icon_) Icon_->SetImage(ImageID);
+        if (Icon_)
+            Icon_->SetImage(ImageID);
     }
     void SetName(_TCHAR *str)
     {
@@ -184,7 +185,7 @@ public:
     }
     short GetState()
     {
-        return(State_);
+        return (State_);
     }
 
     void SetBaseID(long CampID)
@@ -206,71 +207,75 @@ public:
 
     long GetBaseID()
     {
-        return(BaseID_);
+        return (BaseID_);
     }
     short GetNumVehicles()
     {
-        return(NumVehicles_);
+        return (NumVehicles_);
     }
     short GetNumPilots()
     {
-        return(NumPilots_);
+        return (NumPilots_);
     }
     short GetNumPlayers()
     {
-        return(NumPlayers_);
+        return (NumPlayers_);
     }
 
     void SetFont(long FontID);
 
     UI95_RECT GetIconBg()
     {
-        return(IconBg_);
+        return (IconBg_);
     }
     UI95_RECT GetInfoBg()
     {
-        return(InfoBg_);
+        return (InfoBg_);
     }
     _TCHAR *GetName()
     {
-        if (Name_) return(Name_->GetText());
+        if (Name_)
+            return (Name_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetPlanes()
     {
-        if (Planes_) return(Planes_->GetText());
+        if (Planes_)
+            return (Planes_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetPilots()
     {
-        if (Pilots_) return(Pilots_->GetText());
+        if (Pilots_)
+            return (Pilots_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetPlayers()
     {
-        if (Players_) return(Players_->GetText());
+        if (Players_)
+            return (Players_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
 
     O_Output *GetIconCtrl()
     {
-        return(Icon_);
+        return (Icon_);
     }
     O_Output *GetNameCtrl()
     {
-        return(Name_);
+        return (Name_);
     }
     O_Output *GetPlanesCtrl()
     {
-        return(Planes_);
+        return (Planes_);
     }
     O_Output *GetPlayersCtrl()
     {
-        return(Players_);
+        return (Players_);
     }
 
     long CheckHotSpots(long relX, long relY);
@@ -290,7 +295,7 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
 };
 

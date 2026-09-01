@@ -28,7 +28,7 @@ C_Help::~C_Help()
 
 long C_Help::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Help::Setup(long ID, short Type)
@@ -38,13 +38,13 @@ void C_Help::Setup(long ID, short Type)
     SetDefaultFlags();
     SetReady(1);
 
-    if ( not Picture_)
+    if (not Picture_)
     {
         Picture_ = new O_Output;
         Picture_->SetOwner(this);
     }
 
-    if ( not Text_)
+    if (not Text_)
     {
         Text_ = new O_Output;
         Text_->SetOwner(this);
@@ -84,12 +84,13 @@ void C_Help::SetText(long x, long y, long w, long TextID)
     Text_->SetInfo();
 }
 
-long C_Help::CheckHotSpots(long , long)
+long C_Help::CheckHotSpots(long, long)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (0);
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Help::Process(long ID, short HitType)
@@ -99,7 +100,7 @@ BOOL C_Help::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Help::Refresh()
@@ -107,7 +108,8 @@ void C_Help::Refresh()
     if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
 }
 
 void C_Help::Draw(SCREEN *surface, UI95_RECT *cliprect)
@@ -126,7 +128,7 @@ void C_Help::SetSubParents(C_Window *parent)
 {
     int w = 0, h = 0;
 
-    if ( not parent)
+    if (not parent)
         return;
 
     if (Picture_)

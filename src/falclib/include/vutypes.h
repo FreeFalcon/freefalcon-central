@@ -6,8 +6,8 @@
 // sfr: vu base types
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/shmalloc.h"
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/shmalloc.h"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
 typedef int VU_ERRCODE;
@@ -17,14 +17,22 @@ typedef int VU_ERRCODE;
 
 typedef void *VuMutex;
 typedef unsigned int uint;
+// NB: 'ulong' is a system typedef on Linux (<sys/types.h> == unsigned long) so it CANNOT be pinned
+// to 32 bits here without a redefinition clash. On-disk campaign 'ulong' fields are 32-bit, so their
+// reads/writes use memcpychk_u32 / a 32-bit member instead (see invalidbufferexception.h). #104.
 typedef unsigned long ulong;
 typedef unsigned short ushort;
 typedef unsigned char uchar;
 
 // note: BIG_SCALAR and SM_SCALAR are defined in vumath.h
 
-typedef unsigned long VU_DAMAGE;
-typedef unsigned long VU_TIME;
+// #104: 32-bit, NOT `unsigned long`. These ride inside serialized structs (VuEntityType.updateRate_/damageSeed_
+// in the .ct class table, plus VU network/save payloads) laid out by the original x86 build where long is 4 bytes.
+// On Windows x64 (LLP64) long is still 4, so it worked; on LP64 Linux `unsigned long` is 8, which inflates every
+// VuEntityType by 12 bytes and desyncs .ct deserialization (garbage dataPtr -> OOB write in LoadClassTable).
+// `unsigned int` is 32-bit on every target we build, matching the on-disk/on-wire format exactly.
+typedef unsigned int VU_DAMAGE;
+typedef unsigned int VU_TIME;
 
 #define VU_TICS_PER_SECOND 1000
 
@@ -44,91 +52,99 @@ typedef signed char VU_TRI_STATE; // TRUE, FALSE, or DONT_CARE
 
 typedef unsigned char VU_MSG_TYPE;
 typedef unsigned long VU_KEY;
-typedef unsigned long VU_ID_NUMBER;
+// #104 (Linux LP64): VU_ID_NUMBER is a 32-bit id on disk and in the x86/Win64 (LLP64) reference ABI
+// where 'unsigned long' is 4 bytes. On Linux LP64 it is 8 bytes, doubling sizeof(VU_ID) (num_ +
+// creator_) from the on-disk 8 to 16 and desyncing every VU_ID read/write. Pin to 32 bits (no size
+// change on Win32/Win64; Linux shrinks back to the reference width). Keep VU_SESSION_ID::value_ in sync.
+typedef unsigned int VU_ID_NUMBER;
 
 // sfr: back to inline for efficiency
 class VU_SESSION_ID
 {
 public:
     // constructor
-    VU_SESSION_ID() : value_(0) {}
-    VU_SESSION_ID(unsigned long value) : value_((unsigned long)value) { }
+    VU_SESSION_ID() : value_(0)
+    {
+    }
+    VU_SESSION_ID(unsigned long value) : value_((unsigned long)value)
+    {
+    }
 
-    int operator == (const VU_SESSION_ID &rhs) const
+    int operator==(const VU_SESSION_ID &rhs) const
     {
         return (value_ == rhs.value_ ? TRUE : FALSE);
     }
 
-    int operator not_eq (const VU_SESSION_ID &rhs) const
+    int operator not_eq(const VU_SESSION_ID &rhs) const
     {
         return (value_ not_eq rhs.value_ ? TRUE : FALSE);
     }
 
-    int operator > (const VU_SESSION_ID &rhs) const
+    int operator>(const VU_SESSION_ID &rhs) const
     {
         return (value_ > rhs.value_ ? TRUE : FALSE);
     }
 
-    int operator >= (const VU_SESSION_ID &rhs) const
+    int operator>=(const VU_SESSION_ID &rhs) const
     {
         return (value_ >= rhs.value_ ? TRUE : FALSE);
     }
 
-    int operator < (const VU_SESSION_ID &rhs) const
+    int operator<(const VU_SESSION_ID &rhs) const
     {
         return (value_ < rhs.value_ ? TRUE : FALSE);
     }
 
-    int operator <= (const VU_SESSION_ID &rhs) const
+    int operator<=(const VU_SESSION_ID &rhs) const
     {
         return (value_ <= rhs.value_ ? TRUE : FALSE);
     }
 
     operator unsigned long() const
     {
-        return (unsigned long) value_;
+        return (unsigned long)value_;
     }
 
     // note: these are private to prevent (mis)use
 private:
-    int operator == (unsigned long &rhs) const ;
-    int operator not_eq (unsigned long &rhs) const ;
-    int operator > (unsigned long &rhs) const ;
-    int operator >= (unsigned long &rhs) const ;
-    int operator < (unsigned long &rhs) const ;
-    int operator <= (unsigned long &rhs) const ;
+    int operator==(unsigned long &rhs) const;
+    int operator not_eq(unsigned long &rhs) const;
+    int operator>(unsigned long &rhs) const;
+    int operator>=(unsigned long &rhs) const;
+    int operator<(unsigned long &rhs) const;
+    int operator<=(unsigned long &rhs) const;
 
     // DATA
 public:
-    unsigned long  value_;
+    unsigned int
+        value_; // #104 (LP64): 32-bit session id -- keeps sizeof(VU_ID)==8 (see VU_ID_NUMBER)
 };
 
 class VU_ID
 {
 public:
     //sfr: vu change
-    VU_ID() : num_(0), creator_(0) {}
-    VU_ID(VU_SESSION_ID sessionpart, VU_ID_NUMBER idpart) : num_(idpart), creator_(sessionpart) {}
+    VU_ID() : num_(0), creator_(0)
+    {
+    }
+    VU_ID(VU_SESSION_ID sessionpart, VU_ID_NUMBER idpart)
+        : num_(idpart), creator_(sessionpart)
+    {
+    }
 
     // basic operator overloading
-    bool operator == (const VU_ID &rhs) const
+    bool operator==(const VU_ID &rhs) const
     {
-        return (
-                   num_ == rhs.num_ ?
-                   (creator_ == rhs.creator_ ? true : false) :
-                       false
-                   );
+        return (num_ == rhs.num_ ? (creator_ == rhs.creator_ ? true : false) :
+                                   false);
     }
-    bool operator not_eq (const VU_ID &rhs) const
-{
-        return (
-                   num_ == rhs.num_ ?
-                   (creator_ == rhs.creator_ ? false : true) :
-                       true
-                   );
+    bool operator not_eq(const VU_ID &rhs) const
+    {
+        return (num_ == rhs.num_ ? (creator_ == rhs.creator_ ? false : true) :
+                                   true);
     }
-    bool operator > (const VU_ID &rhs) const
-{
+    bool operator>(const VU_ID &rhs) const
+    {
         if (creator_ > rhs.creator_)
         {
             return true;
@@ -144,7 +160,7 @@ public:
 
         return false;
     }
-    bool operator >= (const VU_ID &rhs) const
+    bool operator>=(const VU_ID &rhs) const
     {
         if (creator_ > rhs.creator_)
         {
@@ -161,7 +177,7 @@ public:
 
         return false;
     }
-    bool operator < (const VU_ID &rhs) const
+    bool operator<(const VU_ID &rhs) const
     {
         if (creator_ < rhs.creator_)
         {
@@ -178,7 +194,7 @@ public:
 
         return false;
     }
-    bool operator <= (const VU_ID &rhs) const
+    bool operator<=(const VU_ID &rhs) const
     {
         if (creator_ < rhs.creator_)
         {
@@ -197,22 +213,23 @@ public:
     }
     operator VU_KEY() const
     {
-        return (VU_KEY)(((unsigned short)creator_ << 16) bitor ((unsigned short)num_));
+        return (VU_KEY)(((unsigned short)creator_ << 16) bitor
+                        ((unsigned short)num_));
     }
 
     // note: these are private to prevent (mis)use
 private:
-    int operator == (const VU_KEY &rhs) const ;
-    int operator not_eq (VU_KEY &rhs) const ;
-    int operator > (VU_KEY &rhs) const ;
-    int operator >= (VU_KEY &rhs) const ;
-    int operator < (VU_KEY &rhs) const ;
-    int operator <= (VU_KEY &rhs) const ;
+    int operator==(const VU_KEY &rhs) const;
+    int operator not_eq(VU_KEY &rhs) const;
+    int operator>(VU_KEY &rhs) const;
+    int operator>=(VU_KEY &rhs) const;
+    int operator<(VU_KEY &rhs) const;
+    int operator<=(VU_KEY &rhs) const;
 
     // DATA
 public:
     VU_ID_NUMBER num_;
-    VU_SESSION_ID  creator_;
+    VU_SESSION_ID creator_;
 };
 
 /** Represents an entity address. All entities are composed of
@@ -224,10 +241,11 @@ public:
     /** default constructor
     * the receive ports always need to be specified
     */
-    VU_ADDRESS(
-        unsigned long ip = 0,                                //< entity IP
-        unsigned short recvPort = 0,//CAPI_UDP_PORT,         //< port where he receives
-        unsigned short reliableRecvPort = 0 //CAPI_TCP_PORT  //< port where he receives reliable data
+    VU_ADDRESS(unsigned long ip = 0, //< entity IP
+               unsigned short recvPort =
+                   0, //CAPI_UDP_PORT,         //< port where he receives
+               unsigned short reliableRecvPort =
+                   0 //CAPI_TCP_PORT  //< port where he receives reliable data
     )
     {
         this->ip = ip;
@@ -238,18 +256,15 @@ public:
     // returns the struct size
     int Size() const
     {
-        // ip + ports
-        return sizeof(long) + sizeof(short) * 2;
+        // ip + ports  (#104: ip is 32-bit on the wire, not sizeof(long))
+        return sizeof(int) + sizeof(short) * 2;
     }
 
     // equality: everything equal
     bool operator==(const VU_ADDRESS bitand rhs) const
     {
-        return (
-                   (this->ip == rhs.ip) and 
-                   (this->recvPort == rhs.recvPort) and 
-                   (this->reliableRecvPort == rhs.reliableRecvPort)
-               );
+        return ((this->ip == rhs.ip) and (this->recvPort == rhs.recvPort) and
+                (this->reliableRecvPort == rhs.reliableRecvPort));
     }
 
 

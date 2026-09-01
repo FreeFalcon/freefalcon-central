@@ -5,7 +5,7 @@
 #include "aircrft.h"
 #include "simdrive.h"
 
-#include "Graphics/Include/grinline.h" //Wombat778 3-22-04
+#include "graphics/include/grinline.h" //Wombat778 3-22-04
 extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
 
@@ -13,7 +13,9 @@ extern bool g_bFilter2DPit; //Wombat778 3-30-04
 // CPLight::CPLight
 //====================================================//
 
-CPLight::CPLight(ObjectInitStr *pobjectInitStr, LightButtonInitStr *plightInitStr) : CPObject(pobjectInitStr)
+CPLight::CPLight(ObjectInitStr* pobjectInitStr,
+                 LightButtonInitStr* plightInitStr)
+    : CPObject(pobjectInitStr)
 {
 
     mStates = plightInitStr->states;
@@ -35,7 +37,6 @@ CPLight::CPLight(ObjectInitStr *pobjectInitStr, LightButtonInitStr *plightInitSt
     }
 
     //Wombat778 end
-
 }
 
 //====================================================//
@@ -45,15 +46,15 @@ CPLight::CPLight(ObjectInitStr *pobjectInitStr, LightButtonInitStr *plightInitSt
 CPLight::~CPLight()
 {
 
-    delete [] mpSrcRect;
+    delete[] mpSrcRect;
 
     //Wombat778 3-22-04 clean up buffers
     if (DisplayOptions.bRender2DCockpit)
     {
         for (int i = 0; i < mStates; i++)
-            glReleaseMemory((char*) mpSourceBuffer[i].light);
+            glReleaseMemory((char*)mpSourceBuffer[i].light);
 
-        delete [] mpSourceBuffer;
+        delete[] mpSourceBuffer;
     }
 }
 
@@ -83,7 +84,7 @@ void CPLight::DisplayBlit(void)
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag or not SimDriver.GetPlayerEntity())
+    if (not mDirtyFlag or not SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -102,15 +103,17 @@ void CPLight::DisplayBlit(void)
     // CPLIGHT_AR_NWS_OFF
 
     //MI check for electrics
-    if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-       and mPersistant == 3)
+    if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+         AircraftClass::MainPowerOff) and
+        mPersistant == 3)
     {
         //restore our original state
         if (mState)
         {
             if (mTransparencyType == CPTRANSPARENT)
             {
-                mpOTWImage->ComposeTransparent(mpTemplate, &mpSrcRect[mState], &mDestRect);
+                mpOTWImage->ComposeTransparent(mpTemplate, &mpSrcRect[mState],
+                                               &mDestRect);
             }
             else
             {
@@ -120,8 +123,9 @@ void CPLight::DisplayBlit(void)
 
         return;
     }
-    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-            and mPersistant not_eq 3)
+    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+              AircraftClass::MainPowerOff) and
+             mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -132,13 +136,15 @@ void CPLight::DisplayBlit(void)
 
         return;
     }
-    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerBatt))
+    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+              AircraftClass::MainPowerBatt))
     {
         if (mState)
         {
             if (mTransparencyType == CPTRANSPARENT)
             {
-                mpOTWImage->ComposeTransparent(mpTemplate, &mpSrcRect[mState], &mDestRect);
+                mpOTWImage->ComposeTransparent(mpTemplate, &mpSrcRect[mState],
+                                               &mDestRect);
             }
             else
             {
@@ -148,8 +154,9 @@ void CPLight::DisplayBlit(void)
 
         return;
     }
-    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerMain)
-            and mPersistant == 3)
+    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+              AircraftClass::MainPowerMain) and
+             mPersistant == 3)
     {
         //make them go away
         mPersistant = 0;
@@ -157,7 +164,8 @@ void CPLight::DisplayBlit(void)
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and not WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and
+        mPersistant not_eq 3 and not WasPersistant)
     {
         mState = TRUE;
     }
@@ -166,7 +174,8 @@ void CPLight::DisplayBlit(void)
     {
         if (mTransparencyType == CPTRANSPARENT)
         {
-            mpOTWImage->ComposeTransparent(mpTemplate, &mpSrcRect[mState], &mDestRect);
+            mpOTWImage->ComposeTransparent(mpTemplate, &mpSrcRect[mState],
+                                           &mDestRect);
         }
         else
         {
@@ -177,23 +186,25 @@ void CPLight::DisplayBlit(void)
     mDirtyFlag = FALSE;
 }
 
-void RenderLightPoly(SourceLightType *sb, tagRECT *destrect, GLint alpha) //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
+void RenderLightPoly(
+    SourceLightType* sb, tagRECT* destrect,
+    GLint
+        alpha) //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
 {
 
     OTWDriver.renderer->CenterOriginInViewport();
     OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
-    TextureHandle *pTex = sb->m_arrTex[0];
+    TextureHandle* pTex = sb->m_arrTex[0];
     // Setup vertices
     float fStartU = 0;
-    float fMaxU = (float) pTex->m_nWidth / (float) pTex->m_nActualWidth;
+    float fMaxU = (float)pTex->m_nWidth / (float)pTex->m_nActualWidth;
     fMaxU -= fStartU;
     float fStartV = 0;
-    float fMaxV = (float) pTex->m_nHeight / (float) pTex->m_nActualHeight;
+    float fMaxV = (float)pTex->m_nHeight / (float)pTex->m_nActualHeight;
     fMaxV -= fStartV;
 
     TwoDVertex pVtx[4];
     ZeroMemory(pVtx, sizeof(pVtx));
-
 
 
     pVtx[0].x += (Float_t)destrect->left;
@@ -221,17 +232,19 @@ void RenderLightPoly(SourceLightType *sb, tagRECT *destrect, GLint alpha) //Womb
     OTWDriver.pCockpitManager->AddTurbulence(pVtx);
 
     OTWDriver.renderer->context.RestoreState(alpha);
-    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
-
+    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR)pTex);
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN,
+                                              MPR_VI_COLOR bitor MPR_VI_TEXTURE,
+                                              4, pVtx, sizeof(pVtx[0]));
 }
 
 
-void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered lights.  Much faster than blitting.
+void CPLight::
+    DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered lights.  Much faster than blitting.
 {
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag or not SimDriver.GetPlayerEntity())
+    if (not mDirtyFlag or not SimDriver.GetPlayerEntity())
     {
         return;
     }
@@ -241,15 +254,16 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         mState = 0;
     }
 
-    if ( not DisplayOptions.bRender2DCockpit) //Handle these in displayblit
+    if (not DisplayOptions.bRender2DCockpit) //Handle these in displayblit
         return;
 
 
     if (mpSourceBuffer[mState].m_arrTex.size() not_eq 1)
         return;
 
-    if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-       and mPersistant == 3)
+    if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+         AircraftClass::MainPowerOff) and
+        mPersistant == 3)
     {
         //restore our original state
         if (mState)
@@ -257,23 +271,28 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
             if (mTransparencyType == CPTRANSPARENT)
             {
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_CHROMA_TEXTURE);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_CHROMA_TEXTURE);
                 else
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_ALPHA_TEXTURE_NOFILTER);
             }
             else
             {
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_TEXTURE);
                 else
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE_NOFILTER);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_TEXTURE_NOFILTER);
             }
         }
 
         return;
     }
-    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerOff)
-            and mPersistant not_eq 3)
+    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+              AircraftClass::MainPowerOff) and
+             mPersistant not_eq 3)
     {
         //restore our original state
         if (WasPersistant)
@@ -284,30 +303,36 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
 
         return;
     }
-    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerBatt))
+    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+              AircraftClass::MainPowerBatt))
     {
         if (mState)
         {
             if (mTransparencyType == CPTRANSPARENT)
             {
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_CHROMA_TEXTURE);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_CHROMA_TEXTURE);
                 else
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_ALPHA_TEXTURE_NOFILTER);
             }
             else
             {
                 if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_TEXTURE);
                 else
-                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE_NOFILTER);
+                    RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                    STATE_TEXTURE_NOFILTER);
             }
         }
 
         return;
     }
-    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() == AircraftClass::MainPowerMain)
-            and mPersistant == 3)
+    else if ((((AircraftClass*)(SimDriver.GetPlayerEntity()))->MainPower() ==
+              AircraftClass::MainPowerMain) and
+             mPersistant == 3)
     {
         //make them go away
         mPersistant = 0;
@@ -315,7 +340,8 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         WasPersistant = TRUE;
     }
 
-    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and mPersistant not_eq 3 and not WasPersistant)
+    if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->TestLights and
+        mPersistant not_eq 3 and not WasPersistant)
     {
         mState = TRUE;
     }
@@ -325,25 +351,25 @@ void CPLight::DisplayBlit3D() //Wombat778 3-22-04 Add support for rendered light
         if (mTransparencyType == CPTRANSPARENT)
         {
             if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_CHROMA_TEXTURE);
+                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                STATE_CHROMA_TEXTURE);
             else
-                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER);
+                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                STATE_ALPHA_TEXTURE_NOFILTER);
         }
         else
         {
             if (g_bFilter2DPit) //Wombat778 3-30-04 Added option to filter
-                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE);
+                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                STATE_TEXTURE);
             else
-                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect, STATE_TEXTURE_NOFILTER);
+                RenderLightPoly(&mpSourceBuffer[mState], &mDestRect,
+                                STATE_TEXTURE_NOFILTER);
         }
     }
 
     mDirtyFlag = FALSE;
-
-
-
 }
-
 
 
 //Wombat778 3-22-04 Additional functions for rendering the image
@@ -355,40 +381,52 @@ void CPLight::CreateLit(void)
 
         try
         {
-            const DWORD dwMaxTextureWidth = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
-            const DWORD dwMaxTextureHeight = mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
-            m_pPalette = new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
+            const DWORD dwMaxTextureWidth =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
+            const DWORD dwMaxTextureHeight =
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
+            m_pPalette = new PaletteHandle(
+                mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if ( not m_pPalette)
+            if (not m_pPalette)
                 throw _com_error(E_OUTOFMEMORY);
 
             for (int i = 0; i < mStates; i++)
             {
                 // Check if we can use a single texture
-                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth) and 
+                if (((int)(dwMaxTextureWidth) >= mpSourceBuffer[i].mWidth) and
                     ((int)(dwMaxTextureHeight) >= mpSourceBuffer[i].mHeight))
                 {
-                    TextureHandle *pTex = new TextureHandle;
+                    TextureHandle* pTex = new TextureHandle;
 
-                    if ( not pTex)
+                    if (not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     m_pPalette->AttachToTexture(pTex);
 
-                    if ( not pTex->Create("CPLight", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, mpSourceBuffer[i].mWidth, mpSourceBuffer[i].mHeight))
+                    if (not pTex->Create("CPLight",
+                                         MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY,
+                                         8, mpSourceBuffer[i].mWidth,
+                                         mpSourceBuffer[i].mHeight))
                         throw _com_error(E_FAIL);
 
-                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) mpSourceBuffer[i].light, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if (not pTex->Load(
+                            0, 0xFFFF0000, (BYTE*)mpSourceBuffer[i].light, true,
+                            true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     mpSourceBuffer[i].m_arrTex.push_back(pTex);
                 }
             }
-
         }
-        catch (const _com_error &e)
+        catch (const _com_error& e)
         {
-            MonoPrint("CPLight::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
+            MonoPrint("CPLight::CreateLit - Error 0x%X (%s)\n", e.Error(),
+                      e.ErrorMessage());
             DiscardLit();
         }
     }
@@ -400,14 +438,16 @@ void CPLight::DiscardLit(void)
     {
         for (int i2 = 0; i2 < mStates; i2++)
         {
-            for (unsigned int i = 0; i < mpSourceBuffer[i2].m_arrTex.size(); i++) //delete the textures for each light
+            for (unsigned int i = 0; i < mpSourceBuffer[i2].m_arrTex.size();
+                 i++) //delete the textures for each light
                 delete mpSourceBuffer[i2].m_arrTex[i];
 
             mpSourceBuffer[i2].m_arrTex.clear();
         }
     }
 
-    for (unsigned int i = 0; i < m_arrTex.size(); i++) delete m_arrTex[i]; //delete the local textures
+    for (unsigned int i = 0; i < m_arrTex.size(); i++)
+        delete m_arrTex[i]; //delete the local textures
 
     m_arrTex.clear();
 

@@ -5,7 +5,7 @@
 #ifndef VEHICLE_H
 #define VEHICLE_H
 
-#include "Entity.h"
+#include "entity.h"
 
 // ===================
 // Flags
@@ -33,7 +33,8 @@
 #define VEH_HAS_CREW 0x4000
 #define VEH_IS_TOWED 0x8000
 #define VEH_HAS_JAMMER 0x10000 // Has built in self protection jamming
-#define VEH_IS_AIR_DEFENSE 0x20000 // This ground thing prefers to shoot air things
+#define VEH_IS_AIR_DEFENSE                                                     \
+    0x20000 // This ground thing prefers to shoot air things
 
 // 2002-02-13 ADDED BY S.G. Used to flag the unit/vehicle has having NCTR or EXACT RWR capabilities
 #define VEH_HAS_NCTR 0x40000
@@ -53,8 +54,8 @@
 // Other stuff
 // ===================
 
-typedef  uchar VehicleSP;
-typedef  short VehicleID;
+typedef uchar VehicleSP;
+typedef short VehicleID;
 
 class UnitClass;
 typedef UnitClass* Unit;
@@ -87,7 +88,8 @@ extern int CalculateVehicleRange(int id, int mt);
 
 extern int GetVehicleDetectionRange(int id, int mt);
 
-extern int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range, int *hard_point);
+extern int GetBestVehicleWeapon(int id, uchar* dam, MoveType m, int range,
+                                int* hard_point);
 
 extern void CalculateVehicleStatistics(int id);
 

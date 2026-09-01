@@ -22,8 +22,8 @@
 #include "cphsi.h"
 #include "kneeboard.h"
 #include "dofsnswitches.h"
-#include "PilotInputs.h" //MI
-#include "SimIO.h" // MD
+#include "pilotinputs.h" //MI
+#include "simio.h" // MD
 
 extern bool g_bRealisticAvionics;
 extern bool g_bIFF;
@@ -54,10 +54,10 @@ void CBEAMChaffFlare(void *, int)
 }
 
 
-void CBExAMChaffFlare(void * pButton, int)
+void CBExAMChaffFlare(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -67,7 +67,8 @@ void CBExAMChaffFlare(void * pButton, int)
 
     if (playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -75,7 +76,6 @@ void CBExAMChaffFlare(void * pButton, int)
         }
     }
 }
-
 
 
 void CBEHandoffB(void *, int)
@@ -89,7 +89,8 @@ void CBEHandoffB(void *, int)
 
     if ((playerAC->IsSetFlag(MOTION_OWNSHIP)))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -119,7 +120,8 @@ void CBEPriModeB(void *, int)
 
     if (playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -140,7 +142,8 @@ void CBEUnknownB(void *, int)
 
     if ((playerAC->IsSetFlag(MOTION_OWNSHIP)))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -160,7 +163,8 @@ void CBENavalB(void *, int)
 
     if ((playerAC->IsSetFlag(MOTION_OWNSHIP)))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -180,7 +184,8 @@ void CBETgtSepB(void *, int)
 
     if ((playerAC->IsSetFlag(MOTION_OWNSHIP)))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -201,7 +206,8 @@ void CBEAuxWarnSearchB(void *, int)
 
     if ((playerAC->IsSetFlag(MOTION_OWNSHIP)))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -221,7 +227,8 @@ void CBEAuxWarnAltB(void *, int)
 
     if ((playerAC->IsSetFlag(MOTION_OWNSHIP)))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
@@ -241,15 +248,15 @@ void CBEAuxWarnPwrB(void *, int)
 
     if ((playerAC->IsSetFlag(MOTION_OWNSHIP)))
     {
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(playerAC, SensorClass::RWR);
+        PlayerRwrClass *theRwr =
+            (PlayerRwrClass *)FindSensor(playerAC, SensorClass::RWR);
 
         if (theRwr)
         {
-            theRwr->SetPower( not theRwr->IsOn());
+            theRwr->SetPower(not theRwr->IsOn());
         }
     }
 }
-
 
 
 //Landing Gear Handle
@@ -271,10 +278,10 @@ void CBEAutoPilot(void *, int)
     SimToggleAutopilot(0, KEY_DOWN, NULL);
 }
 
-void CBExAutoPilot(void * pButton, int)
+void CBExAutoPilot(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if ((playerAC == NULL) or not playerAC->IsSetFlag(MOTION_OWNSHIP))
@@ -305,11 +312,12 @@ void CBECourseSelect(void *, int event)
     }
 }
 
-void CBExCourseSelect(void * pButton, int)
+void CBExCourseSelect(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
-    pCPButton->SetCurrentState(OTWDriver.pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_CRS_STATE));
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
+    pCPButton->SetCurrentState(
+        OTWDriver.pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_CRS_STATE));
 }
 
 void CBEHeadingSelect(void *, int event)
@@ -325,12 +333,13 @@ void CBEHeadingSelect(void *, int event)
     }
 }
 
-void CBExHeadingSelect(void * pButton, int)
+void CBExHeadingSelect(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
-    pCPButton->SetCurrentState(OTWDriver.pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_HDG_STATE));
+    pCPButton->SetCurrentState(
+        OTWDriver.pCockpitManager->mpHsi->GetState(CPHsi::HSI_STA_HDG_STATE));
 }
 
 
@@ -340,10 +349,10 @@ void CBEChaffDispense(void *, int)
     SimDropChaff(0, KEY_DOWN, NULL);
 }
 
-void CBExChaffDispense(void * pButton, int event)
+void CBExChaffDispense(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
 }
 
@@ -353,10 +362,10 @@ void CBEFlareDispense(void *, int)
     SimDropFlare(0, KEY_DOWN, NULL);
 }
 
-void CBExFlareDispense(void * pButton, int event)
+void CBExFlareDispense(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
 }
 
@@ -378,10 +387,10 @@ void CBEStoresJettison(void *, int)
 }
 
 
-void CBExStoresJettison(void * pButton, int)
+void CBExStoresJettison(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     // pCPButton->SetCurrentState(1);
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -401,17 +410,16 @@ void CBExStoresJettison(void * pButton, int)
 }
 
 
-
 void CBEAVTRControl(void *, int)
 {
 
     SimAVTRToggle(0, KEY_DOWN, NULL);
 }
 
-void CBExAVTRControl(void * pButton, int)
+void CBExAVTRControl(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (SimDriver.AVTROn() == TRUE)
     {
@@ -424,32 +432,32 @@ void CBExAVTRControl(void * pButton, int)
 }
 
 
-void CBExModeSelect(void * pButton, int event)
+void CBExModeSelect(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (gNavigationSys->GetInstrumentMode())
     {
-        case NavigationSystem::NAV:
-            pCPButton->SetCurrentState(0);
-            break;
+    case NavigationSystem::NAV:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case NavigationSystem::ILS_NAV:
-            pCPButton->SetCurrentState(1);
-            break;
+    case NavigationSystem::ILS_NAV:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case NavigationSystem::ILS_TACAN:
-            pCPButton->SetCurrentState(2);
-            break;
+    case NavigationSystem::ILS_TACAN:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case NavigationSystem::TACAN:
-            pCPButton->SetCurrentState(3);
-            break;
+    case NavigationSystem::TACAN:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(0);
-            break;
+    default:
+        pCPButton->SetCurrentState(0);
+        break;
     }
 }
 
@@ -459,7 +467,9 @@ void CBEModeSelect(void *, int event)
         SimStepHSIMode(0, KEY_DOWN, NULL);
     else
     {
-        SimStepHSIMode(0, KEY_DOWN, NULL); // JPO - surely one of the grossest hacks you ever did see
+        SimStepHSIMode(
+            0, KEY_DOWN,
+            NULL); // JPO - surely one of the grossest hacks you ever did see
         SimStepHSIMode(0, KEY_DOWN, NULL);
         SimStepHSIMode(0, KEY_DOWN, NULL);
     }
@@ -468,7 +478,7 @@ void CBEModeSelect(void *, int event)
 // =============================================//
 // Callback Function CBEMPO, Manual Pitch Override
 // =============================================//
-void CBExMPO(void * pButton, int)
+void CBExMPO(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -477,7 +487,7 @@ void CBExMPO(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->IsSet(AirframeClass::MPOverride))
     {
@@ -495,10 +505,10 @@ void CBEMPO(void *, int)
     SimMPOToggle(0, KEY_DOWN, NULL);
 }
 
-void CBExHornSilencer(void * pButton, int event)
+void CBExHornSilencer(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
 }
@@ -509,16 +519,16 @@ void CBEHornSilencer(void *, int)
     SimSilenceHorn(0, KEY_DOWN, NULL);
 }
 
-void CBExHUDColor(void* pButton, int event)
+void CBExHUDColor(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
 }
 
-void CBExMFDButton(void * pButton, int event)
+void CBExMFDButton(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     //pCPButton->SetCurrentState(1);
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
 }
@@ -1052,7 +1062,6 @@ void CBEICPALOW(void *pButton, int)
 }
 
 
-
 // =============================================//
 // Callback Function CBEICPFAck
 // =============================================//
@@ -1073,13 +1082,12 @@ void CBEICPPrevious(void *pButton, int)
     SimICPPrevious(0, KEY_DOWN, pButton);
 }
 
-void CBExICPPrevious(void * pButton, int event)
+void CBExICPPrevious(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     //pCPButton->SetCurrentState(1);
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
-
 }
 
 
@@ -1087,25 +1095,24 @@ void CBExICPPrevious(void * pButton, int event)
 // Callback Function CBEICPNext
 // =============================================//
 
-void CBEICPNext(void * pButton, int)
+void CBEICPNext(void *pButton, int)
 {
 
     SimICPNext(0, KEY_DOWN, pButton);
 }
 
-void CBExICPNext(void * pButton, int event)
+void CBExICPNext(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     //pCPButton->SetCurrentState(1);
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
-
 }
 // =============================================//
 // Callback Function CBEICPLink
 // =============================================//
 
-void CBEICPLink(void * pButton, int)
+void CBEICPLink(void *pButton, int)
 {
 
     SimICPLink(0, KEY_DOWN, pButton);
@@ -1115,7 +1122,7 @@ void CBEICPLink(void * pButton, int)
 // Callback Function CBEICPCrus
 // =============================================//
 
-void CBEICPCrus(void * pButton, int)
+void CBEICPCrus(void *pButton, int)
 {
 
     SimICPCrus(0, KEY_DOWN, pButton);
@@ -1125,7 +1132,7 @@ void CBEICPCrus(void * pButton, int)
 // Callback Function CBEICPStpt
 // =============================================//
 
-void CBEICPStpt(void * pButton, int)
+void CBEICPStpt(void *pButton, int)
 {
 
     SimICPStpt(0, KEY_DOWN, pButton);
@@ -1135,7 +1142,7 @@ void CBEICPStpt(void * pButton, int)
 // Callback Function CBEICPMark
 // =============================================//
 
-void CBEICPMark(void * pButton, int)
+void CBEICPMark(void *pButton, int)
 {
 
     SimICPMark(0, KEY_DOWN, pButton);
@@ -1145,26 +1152,25 @@ void CBEICPMark(void * pButton, int)
 // Callback Function CBEICPEnter
 // =============================================//
 
-void CBEICPEnter(void * pButton, int)
+void CBEICPEnter(void *pButton, int)
 {
 
     SimICPEnter(0, KEY_DOWN, pButton);
 }
 
-void CBExICPEnter(void * pButton, int event)
+void CBExICPEnter(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     //pCPButton->SetCurrentState(1);
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
-
 }
 
 // =============================================//
 // Callback Function CBEICPCom1
 // =============================================//
 
-void CBEICPCom1(void * pButton, int)
+void CBEICPCom1(void *pButton, int)
 {
 
     SimICPCom1(0, KEY_DOWN, pButton);
@@ -1175,7 +1181,7 @@ void CBEICPCom1(void * pButton, int)
 // Callback Function CBEICPCom2
 // =============================================//
 
-void CBEICPCom2(void * pButton, int)
+void CBEICPCom2(void *pButton, int)
 {
 
     SimICPCom2(0, KEY_DOWN, pButton);
@@ -1185,7 +1191,7 @@ void CBEICPCom2(void * pButton, int)
 // Callback Function CBEICPNav
 // =============================================//
 
-void CBEICPNav(void * pButton, int)
+void CBEICPNav(void *pButton, int)
 {
 
     SimICPNav(0, KEY_DOWN, pButton);
@@ -1195,7 +1201,7 @@ void CBEICPNav(void * pButton, int)
 // Callback Function CBEICPAA
 // =============================================//
 
-void CBEICPAA(void * pButton, int)
+void CBEICPAA(void *pButton, int)
 {
 
     SimICPAA(0, KEY_DOWN, pButton);
@@ -1205,7 +1211,7 @@ void CBEICPAA(void * pButton, int)
 // Callback Function CBEICPAG
 // =============================================//
 
-void CBEICPAG(void * pButton, int)
+void CBEICPAG(void *pButton, int)
 {
 
     SimICPAG(0, KEY_DOWN, pButton);
@@ -1213,15 +1219,16 @@ void CBEICPAG(void * pButton, int)
 
 
 ////
-void CBExICPPrimaryExclusive(void * pButton, int event)
+void CBExICPPrimaryExclusive(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI original code
-        if (OTWDriver.pCockpitManager->mpIcp->GetPrimaryExclusiveButton() == pButton)
+        if (OTWDriver.pCockpitManager->mpIcp->GetPrimaryExclusiveButton() ==
+            pButton)
         {
             pCPButton->SetCurrentState(1);
         }
@@ -1238,15 +1245,16 @@ void CBExICPPrimaryExclusive(void * pButton, int event)
     }
 }
 
-void CBExICPSecondaryExclusive(void * pButton, int event)
+void CBExICPSecondaryExclusive(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI original code
-        if (OTWDriver.pCockpitManager->mpIcp->GetSecondaryExclusiveButton() == pButton)
+        if (OTWDriver.pCockpitManager->mpIcp->GetSecondaryExclusiveButton() ==
+            pButton)
         {
             pCPButton->SetCurrentState(1);
         }
@@ -1264,15 +1272,16 @@ void CBExICPSecondaryExclusive(void * pButton, int event)
 }
 
 
-void CBExICPTertiaryExclusive(void * pButton, int event)
+void CBExICPTertiaryExclusive(void *pButton, int event)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI original code
-        if (OTWDriver.pCockpitManager->mpIcp->GetTertiaryExclusiveButton() == pButton)
+        if (OTWDriver.pCockpitManager->mpIcp->GetTertiaryExclusiveButton() ==
+            pButton)
         {
             pCPButton->SetCurrentState(1);
         }
@@ -1292,27 +1301,27 @@ void CBExICPTertiaryExclusive(void * pButton, int event)
 // =============================================//
 // Callback Function
 // =============================================//
-void CBExHUDScales(void * pButton, int)
+void CBExHUDScales(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (TheHud->GetScalesSwitch())
     {
-        case HudClass::VAH:
-            pCPButton->SetCurrentState(0);
-            break;
+    case HudClass::VAH:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case HudClass::VV_VAH:
-            pCPButton->SetCurrentState(1);
-            break;
+    case HudClass::VV_VAH:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case HudClass::SS_OFF:
-            pCPButton->SetCurrentState(2);
-            break;
+    case HudClass::SS_OFF:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(0);
-            break;
+    default:
+        pCPButton->SetCurrentState(0);
+        break;
     }
 }
 
@@ -1326,27 +1335,27 @@ void CBEHUDScales(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExHUDFPM(void * pButton, int)
+void CBExHUDFPM(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (TheHud->GetFPMSwitch())
     {
-        case HudClass::FPM:
-            pCPButton->SetCurrentState(0);
-            break;
+    case HudClass::FPM:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case HudClass::ATT_FPM:
-            pCPButton->SetCurrentState(1);
-            break;
+    case HudClass::ATT_FPM:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case HudClass::FPM_OFF:
-            pCPButton->SetCurrentState(2);
-            break;
+    case HudClass::FPM_OFF:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(0);
-            break;
+    default:
+        pCPButton->SetCurrentState(0);
+        break;
     }
 }
 
@@ -1360,27 +1369,27 @@ void CBEHUDFPM(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExHUDDED(void * pButton, int)
+void CBExHUDDED(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (TheHud->GetDEDSwitch())
     {
-        case HudClass::DED_OFF:
-            pCPButton->SetCurrentState(0);
-            break;
+    case HudClass::DED_OFF:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case HudClass::DED_DATA:
-            pCPButton->SetCurrentState(1);
-            break;
+    case HudClass::DED_DATA:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case HudClass::PFL_DATA:
-            pCPButton->SetCurrentState(2);
-            break;
+    case HudClass::PFL_DATA:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(0);
-            break;
+    default:
+        pCPButton->SetCurrentState(0);
+        break;
     }
 }
 
@@ -1396,23 +1405,23 @@ void CBEHUDDED(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExHUDDriftCO(void * pButton, int)
+void CBExHUDDriftCO(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (TheHud->GetDriftCOSwitch())
     {
-        case HudClass::DRIFT_CO_OFF:
-            pCPButton->SetCurrentState(0);
-            break;
+    case HudClass::DRIFT_CO_OFF:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case HudClass::DRIFT_CO_ON:
-            pCPButton->SetCurrentState(1);
-            break;
+    case HudClass::DRIFT_CO_ON:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(0);
-            break;
+    default:
+        pCPButton->SetCurrentState(0);
+        break;
     }
 }
 
@@ -1430,27 +1439,27 @@ void CBEHUDDriftCO(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExHUDVelocity(void * pButton, int)
+void CBExHUDVelocity(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (TheHud->GetVelocitySwitch())
     {
-        case HudClass::CAS:
-            pCPButton->SetCurrentState(0);
-            break;
+    case HudClass::CAS:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case HudClass::TAS:
-            pCPButton->SetCurrentState(1);
-            break;
+    case HudClass::TAS:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case HudClass::GND_SPD:
-            pCPButton->SetCurrentState(2);
-            break;
+    case HudClass::GND_SPD:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(0);
-            break;
+    default:
+        pCPButton->SetCurrentState(0);
+        break;
     }
 }
 
@@ -1464,27 +1473,27 @@ void CBEHUDVelocity(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExHUDRadar(void * pButton, int)
+void CBExHUDRadar(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (TheHud->GetRadarSwitch())
     {
-        case HudClass::ALT_RADAR:
-            pCPButton->SetCurrentState(0);
-            break;
+    case HudClass::ALT_RADAR:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case HudClass::BARO:
-            pCPButton->SetCurrentState(1);
-            break;
+    case HudClass::BARO:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case HudClass::RADAR_AUTO:
-            pCPButton->SetCurrentState(2);
-            break;
+    case HudClass::RADAR_AUTO:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(0);
-            break;
+    default:
+        pCPButton->SetCurrentState(0);
+        break;
     }
 }
 
@@ -1498,27 +1507,27 @@ void CBEHUDRadar(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExHUDBrightness(void * pButton, int)
+void CBExHUDBrightness(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (TheHud->GetBrightnessSwitch())
     {
-        case HudClass::DAY:
-            pCPButton->SetCurrentState(1);
-            break;
+    case HudClass::DAY:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case HudClass::BRIGHT_AUTO:
-            pCPButton->SetCurrentState(3);
-            break;
+    case HudClass::BRIGHT_AUTO:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        case HudClass::NIGHT:
-            pCPButton->SetCurrentState(2);
-            break;
+    case HudClass::NIGHT:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            pCPButton->SetCurrentState(1);
-            break;
+    default:
+        pCPButton->SetCurrentState(1);
+        break;
     }
 }
 
@@ -1531,7 +1540,7 @@ void CBEHUDBrightness(void *, int event)
 // Callback Function
 // =============================================//
 
-void CBExECMSwitch(void * pButton, int)
+void CBExECMSwitch(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1540,7 +1549,7 @@ void CBExECMSwitch(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->IsSetFlag(ECM_ON))
     {
@@ -1562,11 +1571,12 @@ void CBEECMSwitch(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExUHFSwitch(void * pButton, int)
+void CBExUHFSwitch(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
-    pCPButton->SetCurrentState(OTWDriver.pCockpitManager->mMiscStates.mUHFPosition);
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
+    pCPButton->SetCurrentState(
+        OTWDriver.pCockpitManager->mMiscStates.mUHFPosition);
 }
 
 void CBEUHFSwitch(void *, int)
@@ -1586,7 +1596,7 @@ void CBEUHFSwitch(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExAuxCommLeft(void * pButton, int)
+void CBExAuxCommLeft(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1595,8 +1605,9 @@ void CBExAuxCommLeft(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
-    pCPButton->SetCurrentState(gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM, 2));
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
+    pCPButton->SetCurrentState(
+        gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM, 2));
 }
 
 void CBEAuxCommLeft(void *, int event)
@@ -1612,7 +1623,7 @@ void CBEAuxCommLeft(void *, int event)
     }
 }
 
-void CBExAuxCommCenter(void * pButton, int)
+void CBExAuxCommCenter(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1621,8 +1632,9 @@ void CBExAuxCommCenter(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
-    pCPButton->SetCurrentState(gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM, 1));
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
+    pCPButton->SetCurrentState(
+        gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM, 1));
 }
 
 void CBEAuxCommCenter(void *, int event)
@@ -1638,7 +1650,7 @@ void CBEAuxCommCenter(void *, int event)
     }
 }
 
-void CBExAuxCommRight(void * pButton, int)
+void CBExAuxCommRight(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1647,8 +1659,9 @@ void CBExAuxCommRight(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
-    pCPButton->SetCurrentState(gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM, 0));
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
+    pCPButton->SetCurrentState(
+        gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM, 0));
 }
 
 void CBEAuxCommRight(void *, int event)
@@ -1664,7 +1677,7 @@ void CBEAuxCommRight(void *, int event)
     }
 }
 
-void CBExAuxCommBand(void * pButton, int)
+void CBExAuxCommBand(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1673,7 +1686,7 @@ void CBExAuxCommBand(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X)
     {
@@ -1694,11 +1707,12 @@ void CBEAuxCommBand(void *, int)
 // =============================================//
 // Callback Function
 // =============================================//
-void CBExEject(void * pButton, int)
+void CBExEject(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
-    pCPButton->SetCurrentState(OTWDriver.pCockpitManager->mMiscStates.GetEjectButtonState());
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
+    pCPButton->SetCurrentState(
+        OTWDriver.pCockpitManager->mMiscStates.GetEjectButtonState());
 }
 
 void CBEEject(void *pButton, int)
@@ -1730,7 +1744,7 @@ void CBEEject(void *pButton, int)
 // Callback Function
 // =============================================//
 
-void CBExAuxCommMaster(void * pButton, int)
+void CBExAuxCommMaster(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1739,7 +1753,7 @@ void CBExAuxCommMaster(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     int state = 0;
 
     if (gNavigationSys->GetControlSrc() == NavigationSystem::AUXCOMM)
@@ -1759,7 +1773,7 @@ void CBEAuxCommMaster(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExAuxCommAATR(void * pButton, int)
+void CBExAuxCommAATR(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1768,7 +1782,7 @@ void CBExAuxCommAATR(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (gNavigationSys->GetDomain(NavigationSystem::AUXCOMM) == TacanList::AA)
     {
@@ -1794,7 +1808,7 @@ void CBEAuxCommAATR(void *, int)
 // function.  If the UHF function knob is modeled properly at some point,
 // this will likely need to be changed again.
 
-void CBExUHFMaster(void * pButton, int)
+void CBExUHFMaster(void *pButton, int)
 {
 
 #if 0
@@ -1825,10 +1839,10 @@ void CBEUHFMaster(void *, int)
 // Callback Function
 // =============================================//
 
-void CBExExteriorLite(void * pButton, int)
+void CBExExteriorLite(void *pButton, int)
 {
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -1836,7 +1850,8 @@ void CBExExteriorLite(void * pButton, int)
         return;
     }
 
-    if (playerAC->af->IsSet(AirframeClass::HasComplexGear) and playerAC->GetSwitch(COMP_NAV_LIGHTS))
+    if (playerAC->af->IsSet(AirframeClass::HasComplexGear) and
+        playerAC->GetSwitch(COMP_NAV_LIGHTS))
     {
         pCPButton->SetCurrentState(1);
     }
@@ -1864,26 +1879,26 @@ void CBEMasterArm(void *, int event)
     {
         switch (playerAC->Sms->MasterArm())
         {
-            case SMSBaseClass::Sim:
-                playerAC->Sms->SetMasterArm(SMSBaseClass::Safe);
-                break;
+        case SMSBaseClass::Sim:
+            playerAC->Sms->SetMasterArm(SMSBaseClass::Safe);
+            break;
 
-            case SMSBaseClass::Safe:
-                playerAC->Sms->SetMasterArm(SMSBaseClass::Arm);
-                break;
+        case SMSBaseClass::Safe:
+            playerAC->Sms->SetMasterArm(SMSBaseClass::Arm);
+            break;
         }
     }
     else
     {
         switch (playerAC->Sms->MasterArm())
         {
-            case SMSBaseClass::Arm:
-                playerAC->Sms->SetMasterArm(SMSBaseClass::Safe);
-                break;
+        case SMSBaseClass::Arm:
+            playerAC->Sms->SetMasterArm(SMSBaseClass::Safe);
+            break;
 
-            case SMSBaseClass::Safe:
-                playerAC->Sms->SetMasterArm(SMSBaseClass::Sim);
-                break;
+        case SMSBaseClass::Safe:
+            playerAC->Sms->SetMasterArm(SMSBaseClass::Sim);
+            break;
         }
     }
 }
@@ -1925,7 +1940,7 @@ void CBEHUDColor(void *, int event)
         OTWStepHudContrastDn(0, KEY_DOWN, NULL);
 }
 
-void CBExMasterArm(void * pButton, int)
+void CBExMasterArm(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1934,35 +1949,33 @@ void CBExMasterArm(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     // sfr: TODO this MUST go away
-    if (
- not F4IsBadReadPtr(playerAC, sizeof(AircraftClass*)) and 
- not F4IsBadReadPtr(playerAC->Sms, sizeof(SMSClass))
-    )  // JB 010326 CTD
+    if (not F4IsBadReadPtr(playerAC, sizeof(AircraftClass *)) and
+        not F4IsBadReadPtr(playerAC->Sms, sizeof(SMSClass))) // JB 010326 CTD
     {
         switch (playerAC->Sms->MasterArm())
         {
-            case SMSBaseClass::Safe:
-                pCPButton->SetCurrentState(2);
-                break;
+        case SMSBaseClass::Safe:
+            pCPButton->SetCurrentState(2);
+            break;
 
-            case SMSBaseClass::Sim:
-                pCPButton->SetCurrentState(1);
-                break;
+        case SMSBaseClass::Sim:
+            pCPButton->SetCurrentState(1);
+            break;
 
-            case SMSBaseClass::Arm:
-                pCPButton->SetCurrentState(0);
-                break;
+        case SMSBaseClass::Arm:
+            pCPButton->SetCurrentState(0);
+            break;
         }
     }
 }
 
 // OW CAT III cockpit switch extension
-void CBExCatIII(void * pButton, int)
+void CBExCatIII(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if ((playerAC == NULL) or (playerAC->af == NULL))
@@ -1970,7 +1983,8 @@ void CBExCatIII(void * pButton, int)
         return;
     }
 
-    pCPButton->SetCurrentState(playerAC->af->IsSet(AirframeClass::CATLimiterIII) ? 1 : 0);
+    pCPButton->SetCurrentState(
+        playerAC->af->IsSet(AirframeClass::CATLimiterIII) ? 1 : 0);
 }
 
 
@@ -1980,7 +1994,7 @@ void CBEJfs(void *, int)
     SimJfsStart(0, KEY_DOWN, NULL);
 }
 
-void CBExJfs(void * pButton, int)
+void CBExJfs(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -1989,7 +2003,7 @@ void CBExJfs(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->IsSet(AirframeClass::JfsStart))
     {
@@ -2006,7 +2020,7 @@ void CBEEpu(void *, int)
     SimEpuToggle(0, KEY_DOWN, NULL);
 }
 
-void CBExEpu(void * pButton, int)
+void CBExEpu(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2015,21 +2029,21 @@ void CBExEpu(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (playerAC->af->GetEpuSwitch())
     {
-        case AirframeClass::OFF:
-            pCPButton->SetCurrentState(0);
-            break;
+    case AirframeClass::OFF:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case AirframeClass::AUTO:
-            pCPButton->SetCurrentState(1);
-            break;
+    case AirframeClass::AUTO:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case AirframeClass::ON:
-            pCPButton->SetCurrentState(2);
-            break;
+    case AirframeClass::ON:
+        pCPButton->SetCurrentState(2);
+        break;
     }
 }
 
@@ -2043,7 +2057,7 @@ void CBEAltLGearReset(void *, int)
     AFAlternateGearReset(0, KEY_DOWN, NULL);
 }
 
-void CBExAltLGear(void * pButton, int)
+void CBExAltLGear(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2052,7 +2066,7 @@ void CBExAltLGear(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState(playerAC->af->altGearDeployed ? 1 : 0);
 }
 
@@ -2060,7 +2074,7 @@ void CBExAltLGear(void * pButton, int)
 // =============================================//
 // Callback Function CBEICPIFF, IFF Override button
 // =============================================//
-void CBEICPIFF(void * pButton, int)
+void CBEICPIFF(void *pButton, int)
 {
     SimICPIFF(0, KEY_DOWN, pButton);
 }
@@ -2068,7 +2082,7 @@ void CBEICPIFF(void * pButton, int)
 // =============================================//
 // Callback Function CBEICPLIST, LIST Override button
 // =============================================//
-void CBEICPLIST(void * pButton, int)
+void CBEICPLIST(void *pButton, int)
 {
     SimICPLIST(0, KEY_DOWN, pButton);
 }
@@ -2076,70 +2090,70 @@ void CBEICPLIST(void * pButton, int)
 // =============================================//
 // Callback Function CBEThreeButton, ICP 3
 // =============================================//
-void CBETHREEButton(void * pButton, int)
+void CBETHREEButton(void *pButton, int)
 {
     SimICPTHREE(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBESixButton, ICP 6
 // =============================================//
-void CBESIXButton(void * pButton, int)
+void CBESIXButton(void *pButton, int)
 {
     SimICPSIX(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBEEightButton, ICP 8
 // =============================================//
-void CBEEIGHTButton(void * pButton, int)
+void CBEEIGHTButton(void *pButton, int)
 {
     SimICPEIGHT(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBENineButton, ICP 9
 // =============================================//
-void CBENINEButton(void * pButton, int)
+void CBENINEButton(void *pButton, int)
 {
     SimICPNINE(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBEZeroButton, ICP 0
 // =============================================//
-void CBEZEROButton(void * pButton, int)
+void CBEZEROButton(void *pButton, int)
 {
     SimICPZERO(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBEResetDEDPage, ICP 0
 // =============================================//
-void CBEResetDEDPage(void * pButton, int)
+void CBEResetDEDPage(void *pButton, int)
 {
     SimICPResetDED(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBEDEDUP, ICP UP
 // =============================================//
-void CBEICPDEDUP(void * pButton, int)
+void CBEICPDEDUP(void *pButton, int)
 {
     SimICPDEDUP(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBEDEDDOWN, ICP DOWN
 // =============================================//
-void CBEICPDEDDOWN(void * pButton, int)
+void CBEICPDEDDOWN(void *pButton, int)
 {
     SimICPDEDDOWN(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBEDEDSeq, ICP SEQUENCE
 // =============================================//
-void CBEICPDEDSEQ(void * pButton, int)
+void CBEICPDEDSEQ(void *pButton, int)
 {
     SimICPDEDSEQ(0, KEY_DOWN, pButton);
 }
 // =============================================//
 // Callback Function CBEICPCLEAR, ICP DOWN
 // =============================================//
-void CBEICPCLEAR(void * pButton, int)
+void CBEICPCLEAR(void *pButton, int)
 {
     SimICPCLEAR(0, KEY_DOWN, pButton);
 }
@@ -2147,7 +2161,7 @@ void CBEICPCLEAR(void * pButton, int)
 // =============================================//
 // Callback Function CBExRALT, RALT
 // =============================================//
-void CBExRALTSwitch(void * pButton, int)
+void CBExRALTSwitch(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2156,33 +2170,33 @@ void CBExRALTSwitch(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     //MI reported CTD check
     switch (playerAC->RALTStatus)
     {
-        case AircraftClass::ROFF:
-            pCPButton->SetCurrentState(0);
-            break;
+    case AircraftClass::ROFF:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case AircraftClass::RSTANDBY:
-            pCPButton->SetCurrentState(1);
-            break;
+    case AircraftClass::RSTANDBY:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case AircraftClass::RON:
-            pCPButton->SetCurrentState(2);
-            break;
+    case AircraftClass::RON:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            ShiWarning("Inconsistant ralt state");
-            break;
+    default:
+        ShiWarning("Inconsistant ralt state");
+        break;
     }
 }
 
 // =============================================//
 // Callback Function CBERALTSTDBY, RALT Standby
 // =============================================//
-void CBERALTSTDBY(void * pButton, int)
+void CBERALTSTDBY(void *pButton, int)
 {
     SimRALTSTDBY(0, KEY_DOWN, pButton);
 }
@@ -2190,7 +2204,7 @@ void CBERALTSTDBY(void * pButton, int)
 // =============================================//
 // Callback Function CBERALTON, RALT On
 // =============================================//
-void CBERALTON(void * pButton, int)
+void CBERALTON(void *pButton, int)
 {
     SimRALTON(0, KEY_DOWN, pButton);
 }
@@ -2198,7 +2212,7 @@ void CBERALTON(void * pButton, int)
 // =============================================//
 // Callback Function CBERALTOFF, RALT Off
 // =============================================//
-void CBERALTOFF(void * pButton, int)
+void CBERALTOFF(void *pButton, int)
 {
     SimRALTOFF(0, KEY_DOWN, pButton);
 }
@@ -2206,7 +2220,7 @@ void CBERALTOFF(void * pButton, int)
 // =============================================//
 // Callback Function CBERALTOFF, RALT Switch
 // =============================================//
-void CBERALTSwitch(void * pButton, int event)
+void CBERALTSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2250,7 +2264,7 @@ void CBESmsPower(void *pButton, int)
     SimSMSPower(0, KEY_DOWN, pButton);
 }
 
-void CBExSmsPower(void * pButton, int)
+void CBExSmsPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2259,7 +2273,7 @@ void CBExSmsPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::SMSPower))
     {
@@ -2280,7 +2294,7 @@ void CBEFCCPower(void *pButton, int)
     SimFCCPower(0, KEY_DOWN, pButton);
 }
 
-void CBExFCCPower(void * pButton, int)
+void CBExFCCPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2289,7 +2303,7 @@ void CBExFCCPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::FCCPower))
     {
@@ -2311,7 +2325,7 @@ void CBEMFDPower(void *pButton, int)
     SimMFDPower(0, KEY_DOWN, pButton);
 }
 
-void CBExMFDPower(void * pButton, int)
+void CBExMFDPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2320,7 +2334,7 @@ void CBExMFDPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::MFDPower))
     {
@@ -2342,7 +2356,7 @@ void CBEUFCPower(void *pButton, int)
     SimUFCPower(0, KEY_DOWN, pButton);
 }
 
-void CBExUFCPower(void * pButton, int)
+void CBExUFCPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2351,7 +2365,7 @@ void CBExUFCPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::UFCPower))
     {
@@ -2373,7 +2387,7 @@ void CBEGPSPower(void *pButton, int)
     SimGPSPower(0, KEY_DOWN, pButton);
 }
 
-void CBExGPSPower(void * pButton, int)
+void CBExGPSPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2382,7 +2396,7 @@ void CBExGPSPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::GPSPower))
     {
@@ -2404,7 +2418,7 @@ void CBEDLPower(void *pButton, int)
     SimDLPower(0, KEY_DOWN, pButton);
 }
 
-void CBExDLPower(void * pButton, int)
+void CBExDLPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2413,7 +2427,7 @@ void CBExDLPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::DLPower))
     {
@@ -2435,7 +2449,7 @@ void CBEMAPPower(void *pButton, int)
     SimMAPPower(0, KEY_DOWN, pButton);
 }
 
-void CBExMAPPower(void * pButton, int)
+void CBExMAPPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2444,7 +2458,7 @@ void CBExMAPPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::MAPPower))
     {
@@ -2465,7 +2479,7 @@ void CBELEFTHPTPower(void *pButton, int)
     SimLeftHptPower(0, KEY_DOWN, pButton);
 }
 
-void CBExLEFTHPTPower(void * pButton, int)
+void CBExLEFTHPTPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2474,7 +2488,7 @@ void CBExLEFTHPTPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::LeftHptPower))
     {
@@ -2495,7 +2509,7 @@ void CBERIGHTHPTPower(void *pButton, int)
     SimRightHptPower(0, KEY_DOWN, pButton);
 }
 
-void CBExRIGHTHPTPower(void * pButton, int)
+void CBExRIGHTHPTPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2504,7 +2518,7 @@ void CBExRIGHTHPTPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::RightHptPower))
     {
@@ -2525,7 +2539,7 @@ void CBETISLPower(void *pButton, int)
     SimTISLPower(0, KEY_DOWN, pButton);
 }
 
-void CBExTISLPower(void * pButton, int)
+void CBExTISLPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2534,7 +2548,7 @@ void CBExTISLPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::TISLPower))
     {
@@ -2555,7 +2569,7 @@ void CBEFCRPower(void *pButton, int)
     SimFCRPower(0, KEY_DOWN, pButton);
 }
 
-void CBExFCRPower(void * pButton, int)
+void CBExFCRPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2564,7 +2578,7 @@ void CBExFCRPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::FCRPower))
     {
@@ -2584,7 +2598,7 @@ void CBEHUDPower(void *pButton, int)
     SimHUDPower(0, KEY_DOWN, pButton);
 }
 
-void CBExHUDPower(void * pButton, int)
+void CBExHUDPower(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2593,7 +2607,7 @@ void CBExHUDPower(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->PowerSwitchOn(AircraftClass::HUDPower))
     {
@@ -2608,7 +2622,7 @@ void CBExHUDPower(void * pButton, int)
 //=============================================//
 // Callback Function Fuel Gauge Display
 //=============================================//
-void CBEFuelSwitch(void * pButton, int event)
+void CBEFuelSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2627,7 +2641,7 @@ void CBEFuelSwitch(void * pButton, int event)
     }
 }
 
-void CBExFuelDisplay(void * pButton, int)
+void CBExFuelDisplay(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2636,13 +2650,13 @@ void CBExFuelDisplay(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState((int)playerAC->af->GetFuelSwitch());
 }
 //=============================================//
 // Callback Function Fuel Valve Display
 //=============================================//
-void CBEFuelPump(void * pButton, int event)
+void CBEFuelPump(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2661,7 +2675,7 @@ void CBEFuelPump(void * pButton, int event)
     }
 }
 
-void CBExFuelPump(void * pButton, int)
+void CBExFuelPump(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2670,14 +2684,14 @@ void CBExFuelPump(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState((int)playerAC->af->GetFuelPump());
 }
 
 //=============================================//
 // Callback Function Fuel Cock Valve
 //=============================================//
-void CBEFuelCock(void * pButton, int event)
+void CBEFuelCock(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2689,7 +2703,7 @@ void CBEFuelCock(void * pButton, int event)
     playerAC->af->ToggleEngineFlag(AirframeClass::MasterFuelOff);
 }
 
-void CBExFuelCock(void * pButton, int)
+void CBExFuelCock(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2698,7 +2712,7 @@ void CBExFuelCock(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->IsEngineFlag(AirframeClass::MasterFuelOff))
     {
@@ -2713,7 +2727,7 @@ void CBExFuelCock(void * pButton, int)
 //=============================================//
 // Callback Function Fuel External Transfer Switch
 //=============================================//
-void CBEFuelExtTrans(void * pButton, int event)
+void CBEFuelExtTrans(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2725,7 +2739,7 @@ void CBEFuelExtTrans(void * pButton, int event)
     playerAC->af->ToggleEngineFlag(AirframeClass::WingFirst);
 }
 
-void CBExFuelExtTrans(void * pButton, int)
+void CBExFuelExtTrans(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2734,7 +2748,7 @@ void CBExFuelExtTrans(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->IsEngineFlag(AirframeClass::WingFirst))
     {
@@ -2748,7 +2762,7 @@ void CBExFuelExtTrans(void * pButton, int)
 //=============================================//
 // Callback Function Air Source Display
 //=============================================//
-void CBEAirSource(void * pButton, int event)
+void CBEAirSource(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2767,7 +2781,7 @@ void CBEAirSource(void * pButton, int event)
     }
 }
 
-void CBExAirSource(void * pButton, int)
+void CBExAirSource(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2776,18 +2790,18 @@ void CBExAirSource(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState((int)playerAC->af->GetAirSource());
 }
 //=============================================//
 // Callback Function LandingLight switch
 //=============================================//
-void CBELandingLightToggle(void * pButton, int event)
+void CBELandingLightToggle(void *pButton, int event)
 {
     SimLandingLightToggle(0, KEY_DOWN, pButton);
 }
 
-void CBExLandingLightToggle(void * pButton, int)
+void CBExLandingLightToggle(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2796,7 +2810,7 @@ void CBExLandingLightToggle(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LANDINGLIGHT))
     {
@@ -2810,12 +2824,12 @@ void CBExLandingLightToggle(void * pButton, int)
 //=============================================//
 // Callback Function Parkingbrake
 //=============================================//
-void CBEParkingBrakeToggle(void * pButton, int event)
+void CBEParkingBrakeToggle(void *pButton, int event)
 {
     SimParkingBrakeToggle(0, KEY_DOWN, pButton);
 }
 
-void CBExParkingBrakeToggle(void * pButton, int)
+void CBExParkingBrakeToggle(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2824,7 +2838,7 @@ void CBExParkingBrakeToggle(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->PBON)
     {
@@ -2840,12 +2854,12 @@ void CBExParkingBrakeToggle(void * pButton, int)
 //=============================================//
 // Callback Function Hook
 //=============================================//
-void CBEHookToggle(void * pButton, int event)
+void CBEHookToggle(void *pButton, int event)
 {
     SimHookToggle(0, KEY_DOWN, pButton);
 }
 
-void CBExHookToggle(void * pButton, int)
+void CBExHookToggle(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2854,7 +2868,7 @@ void CBExHookToggle(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     //MI if the hook is not up, we get the caution
     // MD -- 20031006: true but that should be moved to ToggleHook() in Airframe.cpp
     // to ensure that the fault is set regardless of whether we are looking at the cockpit
@@ -2881,14 +2895,14 @@ void CBExHookToggle(void * pButton, int)
 //=============================================//
 // Callback Function LaserArm
 //=============================================//
-void CBELaserArmToggle(void * pButton, int event)
+void CBELaserArmToggle(void *pButton, int event)
 {
     SimLaserArmToggle(0, KEY_DOWN, pButton);
 }
 
-void CBExLaserArmToggle(void * pButton, int)
+void CBExLaserArmToggle(void *pButton, int)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -2908,12 +2922,12 @@ void CBExLaserArmToggle(void * pButton, int)
 //=============================================//
 // Callback Function FuelDoor
 //=============================================//
-void CBEFuelDoorToggle(void * pButton, int event)
+void CBEFuelDoorToggle(void *pButton, int event)
 {
     SimFuelDoorToggle(0, KEY_DOWN, pButton);
 }
 
-void CBExFuelDoorToggle(void * pButton, int)
+void CBExFuelDoorToggle(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2922,7 +2936,7 @@ void CBExFuelDoorToggle(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->IsEngineFlag(AirframeClass::FuelDoorOpen))
     {
@@ -2936,12 +2950,12 @@ void CBExFuelDoorToggle(void * pButton, int)
 //=============================================//
 // Callback Function RightAPSwitch
 //=============================================//
-void CBERightAPSwitch(void * pButton, int event)
+void CBERightAPSwitch(void *pButton, int event)
 {
     SimRightAPSwitch(0, KEY_DOWN, pButton);
 }
 
-void CBExRightAPSwitch(void * pButton, int)
+void CBExRightAPSwitch(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2950,7 +2964,7 @@ void CBExRightAPSwitch(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->IsOn(AircraftClass::AttHold))
     {
@@ -2968,12 +2982,12 @@ void CBExRightAPSwitch(void * pButton, int)
 //=============================================//
 // Callback Function LeftAPSwitch
 //=============================================//
-void CBELeftAPSwitch(void * pButton, int event)
+void CBELeftAPSwitch(void *pButton, int event)
 {
     SimLeftAPSwitch(0, KEY_DOWN, pButton);
 }
 
-void CBExLeftAPSwitch(void * pButton, int)
+void CBExLeftAPSwitch(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -2982,7 +2996,7 @@ void CBExLeftAPSwitch(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->IsOn(AircraftClass::HDGSel))
     {
@@ -3000,7 +3014,7 @@ void CBExLeftAPSwitch(void * pButton, int)
 //=============================================//
 // Callback Function APOverride
 //=============================================//
-void CBEAPOverride(void * pButton, int event)
+void CBEAPOverride(void *pButton, int event)
 {
     SimAPOverride(0, KEY_DOWN, pButton);
 }
@@ -3008,16 +3022,16 @@ void CBEAPOverride(void * pButton, int event)
 //=============================================//
 // Callback Function WarnReset
 //=============================================//
-void CBEWarnReset(void * pButton, int event)
+void CBEWarnReset(void *pButton, int event)
 {
     SimWarnReset(0, KEY_DOWN, pButton);
 }
 //=============================================//
 // Callback Function WarnReset
 //=============================================//
-void CBExWarnReset(void * pButton, int event)
+void CBExWarnReset(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (g_bRealisticAvionics)
     {
@@ -3027,12 +3041,12 @@ void CBExWarnReset(void * pButton, int event)
 //=============================================//
 // Callback Function ReticleSwitch
 //=============================================//
-void CBEReticleSwitch(void * pButton, int event)
+void CBEReticleSwitch(void *pButton, int event)
 {
     SimReticleSwitch(0, KEY_DOWN, pButton);
 }
 
-void CBExReticleSwitch(void * pButton, int)
+void CBExReticleSwitch(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3041,7 +3055,7 @@ void CBExReticleSwitch(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (TheHud->WhichMode == 1)
     {
@@ -3063,12 +3077,12 @@ void CBExReticleSwitch(void * pButton, int)
 // Callback Function Panel Lights
 //=============================================//
 
-void CBEInteriorLightSwitch(void * pButton, int event)
+void CBEInteriorLightSwitch(void *pButton, int event)
 {
     SimInteriorLight(0, KEY_DOWN, pButton);
 }
 
-void CBExInteriorLightSwitch(void * pButton, int event)
+void CBExInteriorLightSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3077,39 +3091,38 @@ void CBExInteriorLightSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (playerAC->GetInteriorLight())
     {
-        case AircraftClass::LT_OFF:
-            pCPButton->SetCurrentState(0);
-            break;
+    case AircraftClass::LT_OFF:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case AircraftClass::LT_LOW:
-            pCPButton->SetCurrentState(1);
-            break;
+    case AircraftClass::LT_LOW:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case AircraftClass::LT_NORMAL:
-            pCPButton->SetCurrentState(2);
-            break;
+    case AircraftClass::LT_NORMAL:
+        pCPButton->SetCurrentState(2);
+        break;
     }
 
     // if (OTWDriver.pCockpitManager not_eq NULL){
     // OTWDriver.pCockpitManager->UpdatePalette();
     // }
-
 }
 
 //=============================================//
 // Callback Function Panel Lights
 //=============================================//
 
-void CBEInstrumentLightSwitch(void * pButton, int event)
+void CBEInstrumentLightSwitch(void *pButton, int event)
 {
     SimInstrumentLight(0, KEY_DOWN, pButton);
 }
 
-void CBExInstrumentLightSwitch(void * pButton, int event)
+void CBExInstrumentLightSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3118,21 +3131,21 @@ void CBExInstrumentLightSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (playerAC->GetInstrumentLight())
     {
-        case AircraftClass::LT_OFF:
-            pCPButton->SetCurrentState(0);
-            break;
+    case AircraftClass::LT_OFF:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case AircraftClass::LT_LOW:
-            pCPButton->SetCurrentState(1);
-            break;
+    case AircraftClass::LT_LOW:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case AircraftClass::LT_NORMAL:
-            pCPButton->SetCurrentState(2);
-            break;
+    case AircraftClass::LT_NORMAL:
+        pCPButton->SetCurrentState(2);
+        break;
     }
 
     // if (OTWDriver.pCockpitManager not_eq NULL){
@@ -3144,12 +3157,12 @@ void CBExInstrumentLightSwitch(void * pButton, int event)
 // Callback Function Panel Lights
 //=============================================//
 
-void CBESpotLightSwitch(void * pButton, int event)
+void CBESpotLightSwitch(void *pButton, int event)
 {
     SimSpotLight(0, KEY_DOWN, pButton);
 }
 
-void CBExSpotLightSwitch(void * pButton, int event)
+void CBExSpotLightSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3158,33 +3171,33 @@ void CBExSpotLightSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (playerAC->GetSpotLight())
     {
-        case AircraftClass::LT_OFF:
-            pCPButton->SetCurrentState(0);
-            break;
+    case AircraftClass::LT_OFF:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case AircraftClass::LT_LOW:
-            pCPButton->SetCurrentState(1);
-            break;
+    case AircraftClass::LT_LOW:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case AircraftClass::LT_NORMAL:
-            pCPButton->SetCurrentState(2);
-            break;
+    case AircraftClass::LT_NORMAL:
+        pCPButton->SetCurrentState(2);
+        break;
     }
 }
 //=============================================//
 // Callback Function Seat Arm
 //=============================================//
 
-void CBESeatArmSwitch(void * pButton, int event)
+void CBESeatArmSwitch(void *pButton, int event)
 {
     SimSeatArm(0, KEY_DOWN, pButton);
 }
 
-void CBExSeatArmSwitch(void * pButton, int event)
+void CBExSeatArmSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3193,7 +3206,7 @@ void CBExSeatArmSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->SeatArmed)
     {
@@ -3206,7 +3219,7 @@ void CBExSeatArmSwitch(void * pButton, int event)
 }
 
 //MI EWS Stuff
-void CBExEWSRWRPowerSwitch(void * pButton, int event)
+void CBExEWSRWRPowerSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3215,7 +3228,7 @@ void CBExEWSRWRPowerSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (g_bRealisticAvionics)
     {
@@ -3233,12 +3246,12 @@ void CBExEWSRWRPowerSwitch(void * pButton, int event)
     }
 }
 
-void CBEEWSRWRPower(void * pButton, int event)
+void CBEEWSRWRPower(void *pButton, int event)
 {
     SimEWSRWRPower(0, KEY_DOWN, pButton);
 }
 
-void CBExEWSJammerPowerSwitch(void * pButton, int event)
+void CBExEWSJammerPowerSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3247,7 +3260,7 @@ void CBExEWSJammerPowerSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (g_bRealisticAvionics)
     {
@@ -3265,12 +3278,12 @@ void CBExEWSJammerPowerSwitch(void * pButton, int event)
     }
 }
 
-void CBEEWSJammerPower(void * pButton, int event)
+void CBEEWSJammerPower(void *pButton, int event)
 {
     SimEWSJammerPower(0, KEY_DOWN, pButton);
 }
 
-void CBExEWSChaffPowerSwitch(void * pButton, int event)
+void CBExEWSChaffPowerSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3279,7 +3292,7 @@ void CBExEWSChaffPowerSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (g_bRealisticAvionics)
     {
@@ -3297,12 +3310,12 @@ void CBExEWSChaffPowerSwitch(void * pButton, int event)
     }
 }
 
-void CBEEWSChaffPower(void * pButton, int event)
+void CBEEWSChaffPower(void *pButton, int event)
 {
     SimEWSChaffPower(0, KEY_DOWN, pButton);
 }
 
-void CBExEWSFlarePowerSwitch(void * pButton, int event)
+void CBExEWSFlarePowerSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3311,7 +3324,7 @@ void CBExEWSFlarePowerSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (g_bRealisticAvionics)
     {
@@ -3329,14 +3342,14 @@ void CBExEWSFlarePowerSwitch(void * pButton, int event)
     }
 }
 
-void CBEEWSFlarePower(void * pButton, int event)
+void CBEEWSFlarePower(void *pButton, int event)
 {
     SimEWSFlarePower(0, KEY_DOWN, pButton);
 }
 
-void CBExEWSPGMButton(void * pButton, int event)
+void CBExEWSPGMButton(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -3346,33 +3359,33 @@ void CBExEWSPGMButton(void * pButton, int event)
 
     switch (playerAC->EWSPGM())
     {
-        case AircraftClass::Off:
-            pCPButton->SetCurrentState(0);
-            break;
+    case AircraftClass::Off:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case AircraftClass::Stby:
-            pCPButton->SetCurrentState(1);
-            break;
+    case AircraftClass::Stby:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case AircraftClass::Man:
-            pCPButton->SetCurrentState(2);
-            break;
+    case AircraftClass::Man:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case AircraftClass::Semi:
-            pCPButton->SetCurrentState(3);
-            break;
+    case AircraftClass::Semi:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        case AircraftClass::Auto:
-            pCPButton->SetCurrentState(4);
-            break;
+    case AircraftClass::Auto:
+        pCPButton->SetCurrentState(4);
+        break;
 
-        default:
-            ShiWarning("Unknown EWS PGM state");
-            break;
+    default:
+        ShiWarning("Unknown EWS PGM state");
+        break;
     }
 }
 
-void CBEEWSPGMButton(void * pButton, int event)
+void CBEEWSPGMButton(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -3385,7 +3398,7 @@ void CBEEWSPGMButton(void * pButton, int event)
 }
 
 //Program select button
-void CBExEWSProgButton(void * pButton, int event)
+void CBExEWSProgButton(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3394,34 +3407,33 @@ void CBExEWSProgButton(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (playerAC->EWSProgNum)
     {
-        case 0:
-            pCPButton->SetCurrentState(0);
-            break;
+    case 0:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case 1:
-            pCPButton->SetCurrentState(1);
-            break;
+    case 1:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case 2:
-            pCPButton->SetCurrentState(2);
-            break;
+    case 2:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case 3:
-            pCPButton->SetCurrentState(3);
-            break;
+    case 3:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        default:
-            ShiWarning("Unknown EWS Program state");
-            break;
+    default:
+        ShiWarning("Unknown EWS Program state");
+        break;
     }
-
 }
 
-void CBEEWSProgButton(void * pButton, int event)
+void CBEEWSProgButton(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -3446,7 +3458,7 @@ void CBEMainPower(void *pButton, int event)
     }
 }
 
-void CBExMainPower(void * pButton, int event)
+void CBExMainPower(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3455,34 +3467,33 @@ void CBExMainPower(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (playerAC->MainPower())
     {
-        case AircraftClass::MainPowerOff:
-            pCPButton->SetCurrentState(0);
-            break;
+    case AircraftClass::MainPowerOff:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case AircraftClass::MainPowerBatt:
-            pCPButton->SetCurrentState(1);
-            break;
+    case AircraftClass::MainPowerBatt:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case AircraftClass::MainPowerMain:
-            pCPButton->SetCurrentState(2);
-            break;
+    case AircraftClass::MainPowerMain:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            ShiWarning("Unknown main power state");
-            break;
+    default:
+        ShiWarning("Unknown main power state");
+        break;
     }
-
 }
 
 
 //=============================================//
 // Callback Function NWS
 //=============================================//
-void CBENwsToggle(void * pButton, int event)
+void CBENwsToggle(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3491,7 +3502,7 @@ void CBENwsToggle(void * pButton, int event)
         return;
     }
 
-    if ( not playerAC->af->IsSet(AirframeClass::NoseSteerOn))
+    if (not playerAC->af->IsSet(AirframeClass::NoseSteerOn))
     {
         playerAC->af->SetFlag(AirframeClass::NoseSteerOn);
     }
@@ -3501,7 +3512,7 @@ void CBENwsToggle(void * pButton, int event)
     }
 }
 
-void CBExNwsToggle(void * pButton, int)
+void CBExNwsToggle(void *pButton, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3510,7 +3521,7 @@ void CBExNwsToggle(void * pButton, int)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->IsSet(AirframeClass::NoseSteerOn))
     {
@@ -3525,25 +3536,25 @@ void CBExNwsToggle(void * pButton, int)
 //=============================================//
 // Callback Function Idle Detent
 //=============================================//
-void CBEIdleDetent(void * pButton, int event)
+void CBEIdleDetent(void *pButton, int event)
 {
     SimThrottleIdleDetent(0, KEY_DOWN, pButton);
 }
 
-void CBExIdleDetent(void * pButton, int event)
+void CBExIdleDetent(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     pCPButton->SetCurrentState(event == CP_CHECK_EVENT ? 0 : 1); // JPO
 }
 //=============================================//
 // Callback Function Inhibit VMS
 //=============================================//
-void CBEInhibitVMS(void * pButton, int event)
+void CBEInhibitVMS(void *pButton, int event)
 {
     SimInhibitVMS(0, KEY_DOWN, pButton);
 }
 
-void CBExInhibitVMS(void * pButton, int event)
+void CBExInhibitVMS(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3552,9 +3563,9 @@ void CBExInhibitVMS(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
-    if ( not playerAC->playBetty)
+    if (not playerAC->playBetty)
     {
         pCPButton->SetCurrentState(1); // Betty Off
     }
@@ -3562,17 +3573,16 @@ void CBExInhibitVMS(void * pButton, int event)
     {
         pCPButton->SetCurrentState(0);
     }
-
 }
 //=============================================//
 // Callback Function RF Switch
 //=============================================//
-void CBERFSwitch(void * pButton, int event)
+void CBERFSwitch(void *pButton, int event)
 {
     SimRFSwitch(0, KEY_DOWN, pButton);
 }
 
-void CBExRFSwitch(void * pButton, int event)
+void CBExRFSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3581,41 +3591,40 @@ void CBExRFSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (playerAC->RFState)
     {
-        case 0:
-            //NORM
-            pCPButton->SetCurrentState(0);
-            break;
+    case 0:
+        //NORM
+        pCPButton->SetCurrentState(0);
+        break;
 
-        case 1:
-            //QUIET
-            pCPButton->SetCurrentState(1);
-            break;
+    case 1:
+        //QUIET
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case 2:
-            //SILENT
-            pCPButton->SetCurrentState(2);
-            break;
+    case 2:
+        //SILENT
+        pCPButton->SetCurrentState(2);
+        break;
 
-        default:
-            ;
+    default:;
     }
 }
 
 //=============================================//
 // Callback Function Gear Handle
 //=============================================//
-void CBEGearHandle(void * pButton, int event)
+void CBEGearHandle(void *pButton, int event)
 {
     AFGearToggle(0, KEY_DOWN, NULL);
 }
 
-void CBExGearHandle(void * pButton, int event)
+void CBExGearHandle(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -3635,21 +3644,21 @@ void CBExGearHandle(void * pButton, int event)
 //=============================================//
 // Callback Function PinkySwitch
 //=============================================//
-void CBEPinkySwitch(void * pButton, int event)
+void CBEPinkySwitch(void *pButton, int event)
 {
     SimPinkySwitch(0, KEY_DOWN, pButton);
 }
 //=============================================//
 // Callback Function Ground Jett Enable
 //=============================================//
-void CBEGndJettEnable(void * pButton, int event)
+void CBEGndJettEnable(void *pButton, int event)
 {
     SimGndJettEnable(0, KEY_DOWN, NULL);
 }
 
-void CBExGndJettEnable(void * pButton, int event)
+void CBExGndJettEnable(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL or playerAC->Sms == NULL)
@@ -3669,14 +3678,14 @@ void CBExGndJettEnable(void * pButton, int event)
 //=============================================//
 // Callback Function Exterior Lights Power
 //=============================================//
-void CBEExtlPower(void * pButton, int event)
+void CBEExtlPower(void *pButton, int event)
 {
     SimExtlPower(0, KEY_DOWN, NULL);
 }
 
-void CBExExtlPower(void * pButton, int event)
+void CBExExtlPower(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -3696,14 +3705,14 @@ void CBExExtlPower(void * pButton, int event)
 //=============================================//
 // Callback Function Exterior Lights Anti Collision
 //=============================================//
-void CBEExtlAntiColl(void * pButton, int event)
+void CBEExtlAntiColl(void *pButton, int event)
 {
     SimExtlAntiColl(0, KEY_DOWN, NULL);
 }
 
-void CBExExtlAntiColl(void * pButton, int event)
+void CBExExtlAntiColl(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -3723,14 +3732,14 @@ void CBExExtlAntiColl(void * pButton, int event)
 //=============================================//
 // Callback Function Exterior Lights Steady/Flash
 //=============================================//
-void CBEExtlSteady(void * pButton, int event)
+void CBEExtlSteady(void *pButton, int event)
 {
     SimExtlSteady(0, KEY_DOWN, NULL);
 }
 
-void CBExExtlSteady(void * pButton, int event)
+void CBExExtlSteady(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -3750,14 +3759,14 @@ void CBExExtlSteady(void * pButton, int event)
 //=============================================//
 // Callback Function Exterior Lights Wing/Tail
 //=============================================//
-void CBEExtlWing(void * pButton, int event)
+void CBEExtlWing(void *pButton, int event)
 {
     SimExtlWing(0, KEY_DOWN, NULL);
 }
 
-void CBExExtlWing(void * pButton, int event)
+void CBExExtlWing(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC == NULL)
@@ -3777,12 +3786,12 @@ void CBExExtlWing(void * pButton, int event)
 //=============================================//
 // Callback Function AVTR Switch
 //=============================================//
-void CBEAVTRSwitch(void * pButton, int event)
+void CBEAVTRSwitch(void *pButton, int event)
 {
     SimAVTRSwitch(0, KEY_DOWN, NULL);
 }
 
-void CBExAVTRSwitch(void * pButton, int event)
+void CBExAVTRSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3791,7 +3800,7 @@ void CBExAVTRSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->AVTRState(AircraftClass::AVTR_ON))
     {
@@ -3809,12 +3818,12 @@ void CBExAVTRSwitch(void * pButton, int event)
 //=============================================//
 // Callback Function IFF Power Switch
 //=============================================//
-void CBEIFFPower(void * pButton, int event)
+void CBEIFFPower(void *pButton, int event)
 {
     SimIFFPower(0, KEY_DOWN, NULL);
 }
 
-void CBExIFFPower(void * pButton, int event)
+void CBExIFFPower(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3823,7 +3832,7 @@ void CBExIFFPower(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (g_bIFF or g_bMLU)
     {
@@ -3844,7 +3853,7 @@ void CBExIFFPower(void * pButton, int event)
 //=============================================//
 // Callback Function INS Switch
 //=============================================//
-void CBEINSSwitch(void * pButton, int event)
+void CBEINSSwitch(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -3856,7 +3865,7 @@ void CBEINSSwitch(void * pButton, int event)
     }
 }
 
-void CBExINSSwitch(void * pButton, int event)
+void CBExINSSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3865,7 +3874,7 @@ void CBExINSSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->INSState(AircraftClass::INS_PowerOff))
     {
@@ -3887,12 +3896,12 @@ void CBExINSSwitch(void * pButton, int event)
 //=============================================//
 // Callback Function LEF Lock Switch
 //=============================================//
-void CBELEFLockSwitch(void * pButton, int event)
+void CBELEFLockSwitch(void *pButton, int event)
 {
     SimLEFLockSwitch(0, KEY_DOWN, NULL);
 }
 
-void CBExLEFLockSwitch(void * pButton, int event)
+void CBExLEFLockSwitch(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3901,7 +3910,7 @@ void CBExLEFLockSwitch(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->LEFLocked)
     {
@@ -3915,24 +3924,24 @@ void CBExLEFLockSwitch(void * pButton, int event)
 //=============================================//
 // Callback Function Digital Backup Switch
 //=============================================//
-void CBEDigitalBUP(void * pButton, int event)
+void CBEDigitalBUP(void *pButton, int event)
 {
     SimDigitalBUP(0, KEY_DOWN, NULL);
 }
 
-void CBExDigitalBUP(void * pButton, int event)
+void CBExDigitalBUP(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function Alt Flaps Switch
 //=============================================//
-void CBEAltFlaps(void * pButton, int event)
+void CBEAltFlaps(void *pButton, int event)
 {
     SimAltFlaps(0, KEY_DOWN, NULL);
 }
 
-void CBExAltFlaps(void * pButton, int event)
+void CBExAltFlaps(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -3941,7 +3950,7 @@ void CBExAltFlaps(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->TEFExtend)
     {
@@ -3955,55 +3964,55 @@ void CBExAltFlaps(void * pButton, int event)
 //=============================================//
 // Callback Function Manual Flyup Switch
 //=============================================//
-void CBEManualFlyup(void * pButton, int event)
+void CBEManualFlyup(void *pButton, int event)
 {
     SimManualFlyup(0, KEY_DOWN, NULL);
 }
 
-void CBExManualFlyup(void * pButton, int event)
+void CBExManualFlyup(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function FLCS Reset Switch
 //=============================================//
-void CBEFLCSReset(void * pButton, int event)
+void CBEFLCSReset(void *pButton, int event)
 {
     SimFLCSReset(0, KEY_DOWN, NULL);
 }
 
-void CBExFLCSReset(void * pButton, int event)
+void CBExFLCSReset(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function BIT switch Switch
 //=============================================//
-void CBEFLTBIT(void * pButton, int event)
+void CBEFLTBIT(void *pButton, int event)
 {
     SimFLTBIT(0, KEY_DOWN, NULL);
 }
 
-void CBExFLTBIT(void * pButton, int event)
+void CBExFLTBIT(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function OBOGS Bit Switch
 //=============================================//
-void CBEOBOGSBit(void * pButton, int event)
+void CBEOBOGSBit(void *pButton, int event)
 {
     SimOBOGSBit(0, KEY_DOWN, NULL);
 }
 
-void CBExOBOGSBit(void * pButton, int event)
+void CBExOBOGSBit(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function Mal + Ind lights Switch
 //=============================================//
-void CBEMalIndLights(void * pButton, int event)
+void CBEMalIndLights(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
         SimMalIndLights(0, KEY_DOWN, NULL);
@@ -4011,7 +4020,7 @@ void CBEMalIndLights(void * pButton, int event)
         SimMalIndLights(0, 0, NULL);
 }
 
-void CBExMalIndLights(void * pButton, int event)
+void CBExMalIndLights(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -4020,7 +4029,7 @@ void CBExMalIndLights(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->TestLights)
     {
@@ -4034,60 +4043,60 @@ void CBExMalIndLights(void * pButton, int event)
 //=============================================//
 // Callback Function Probeheat Switch
 //=============================================//
-void CBEProbeHeat(void * pButton, int event)
+void CBEProbeHeat(void *pButton, int event)
 {
     SimProbeHeat(0, KEY_DOWN, NULL);
 }
 
-void CBExProbeHeat(void * pButton, int event)
+void CBExProbeHeat(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function EPU GEN Switch
 //=============================================//
-void CBEEPUGEN(void * pButton, int event)
+void CBEEPUGEN(void *pButton, int event)
 {
     SimEPUGEN(0, KEY_DOWN, NULL);
 }
 
-void CBExEPUGEN(void * pButton, int event)
+void CBExEPUGEN(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function Test Switch
 //=============================================//
-void CBETestSwitch(void * pButton, int event)
+void CBETestSwitch(void *pButton, int event)
 {
     SimTestSwitch(0, KEY_DOWN, NULL);
 }
 
-void CBExTestSwitch(void * pButton, int event)
+void CBExTestSwitch(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function Overheat Switch
 //=============================================//
-void CBEOverHeat(void * pButton, int event)
+void CBEOverHeat(void *pButton, int event)
 {
     SimOverHeat(0, KEY_DOWN, NULL);
 }
 
-void CBExOverHeat(void * pButton, int event)
+void CBExOverHeat(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function Trim/AP Disc Switch
 //=============================================//
-void CBETrimAPDisc(void * pButton, int event)
+void CBETrimAPDisc(void *pButton, int event)
 {
     SimTrimAPDisc(0, KEY_DOWN, NULL);
 }
 
-void CBExTrimAPDisc(void * pButton, int event)
+void CBExTrimAPDisc(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -4096,7 +4105,7 @@ void CBExTrimAPDisc(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->TrimAPDisc)
     {
@@ -4110,31 +4119,31 @@ void CBExTrimAPDisc(void * pButton, int event)
 //=============================================//
 // Callback Function Max Power Switch
 //=============================================//
-void CBEMaxPower(void * pButton, int event)
+void CBEMaxPower(void *pButton, int event)
 {
     SimMaxPower(0, KEY_DOWN, NULL);
 }
 
-void CBExMaxPower(void * pButton, int event)
+void CBExMaxPower(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function AB Reset Switch
 //=============================================//
-void CBEABReset(void * pButton, int event)
+void CBEABReset(void *pButton, int event)
 {
     SimABReset(0, KEY_DOWN, NULL);
 }
 
-void CBExABReset(void * pButton, int event)
+void CBExABReset(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 }
 //=============================================//
 // Callback Function Trim NoseUp
 //=============================================//
-void CBETrimNose(void * pButton, int event)
+void CBETrimNose(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4148,7 +4157,7 @@ void CBETrimNose(void * pButton, int event)
 //=============================================//
 // Callback Function Trim YawLeft
 //=============================================//
-void CBETrimYaw(void * pButton, int event)
+void CBETrimYaw(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4160,9 +4169,9 @@ void CBETrimYaw(void * pButton, int event)
     }
 }
 
-void CBExTrimYaw(void * pButton, int event)
+void CBExTrimYaw(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     int state = -(int)(UserStickInputs.ytrim * 100);
 
     if (state <= -50)
@@ -4191,7 +4200,7 @@ void CBExTrimYaw(void * pButton, int event)
 //=============================================//
 // Callback Function Trim RollLeft
 //=============================================//
-void CBETrimRoll(void * pButton, int event)
+void CBETrimRoll(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4206,7 +4215,7 @@ void CBETrimRoll(void * pButton, int event)
 //=============================================//
 // Callback Function Missile Volume
 //=============================================//
-void CBEMissileVol(void * pButton, int event)
+void CBEMissileVol(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4217,7 +4226,7 @@ void CBEMissileVol(void * pButton, int event)
         SimStepMissileVolumeDown(0, KEY_DOWN, NULL);
     }
 }
-void CBExMissileVol(void * pButton, int event)
+void CBExMissileVol(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -4226,55 +4235,55 @@ void CBExMissileVol(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     int pos = playerAC->MissileVolume;
 
     switch (pos)
     {
-        case 0: //max vol
-            pCPButton->SetCurrentState(8);
-            break;
+    case 0: //max vol
+        pCPButton->SetCurrentState(8);
+        break;
 
-        case 1:
-            pCPButton->SetCurrentState(7);
-            break;
+    case 1:
+        pCPButton->SetCurrentState(7);
+        break;
 
-        case 2:
-            pCPButton->SetCurrentState(6);
-            break;
+    case 2:
+        pCPButton->SetCurrentState(6);
+        break;
 
-        case 3:
-            pCPButton->SetCurrentState(5);
-            break;
+    case 3:
+        pCPButton->SetCurrentState(5);
+        break;
 
-        case 4:
-            pCPButton->SetCurrentState(4);
-            break;
+    case 4:
+        pCPButton->SetCurrentState(4);
+        break;
 
-        case 5:
-            pCPButton->SetCurrentState(3);
-            break;
+    case 5:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        case 6:
-            pCPButton->SetCurrentState(2);
-            break;
+    case 6:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case 7:
-            pCPButton->SetCurrentState(1);
-            break;
+    case 7:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case 8:
-            pCPButton->SetCurrentState(0);
-            break;
+    case 8:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 //=============================================//
 // Callback Function Missile Volume
 //=============================================//
-void CBEThreatVol(void * pButton, int event)
+void CBEThreatVol(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4285,7 +4294,7 @@ void CBEThreatVol(void * pButton, int event)
         SimStepThreatVolumeDown(0, KEY_DOWN, NULL);
     }
 }
-void CBExThreatVol(void * pButton, int event)
+void CBExThreatVol(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -4294,55 +4303,55 @@ void CBExThreatVol(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
     int pos = playerAC->ThreatVolume;
 
     switch (pos)
     {
-        case 0: //max vol
-            pCPButton->SetCurrentState(8);
-            break;
+    case 0: //max vol
+        pCPButton->SetCurrentState(8);
+        break;
 
-        case 1:
-            pCPButton->SetCurrentState(7);
-            break;
+    case 1:
+        pCPButton->SetCurrentState(7);
+        break;
 
-        case 2:
-            pCPButton->SetCurrentState(6);
-            break;
+    case 2:
+        pCPButton->SetCurrentState(6);
+        break;
 
-        case 3:
-            pCPButton->SetCurrentState(5);
-            break;
+    case 3:
+        pCPButton->SetCurrentState(5);
+        break;
 
-        case 4:
-            pCPButton->SetCurrentState(4);
-            break;
+    case 4:
+        pCPButton->SetCurrentState(4);
+        break;
 
-        case 5:
-            pCPButton->SetCurrentState(3);
-            break;
+    case 5:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        case 6:
-            pCPButton->SetCurrentState(2);
-            break;
+    case 6:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case 7:
-            pCPButton->SetCurrentState(1);
-            break;
+    case 7:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case 8:
-            pCPButton->SetCurrentState(0);
-            break;
+    case 8:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 //=============================================//
 // Callback Function DEPR RET
 //=============================================//
-void CBEDeprRet(void * pButton, int event)
+void CBEDeprRet(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4353,9 +4362,9 @@ void CBEDeprRet(void * pButton, int event)
         SimRetDn(0, KEY_DOWN, NULL);
     }
 }
-void CBExDeprRet(void * pButton, int event)
+void CBExDeprRet(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (TheHud)
     {
@@ -4366,7 +4375,7 @@ void CBExDeprRet(void * pButton, int event)
 //=============================================//
 // Callback Function TFR Button
 //=============================================//
-void CBETFRButton(void * pButton, int event)
+void CBETFRButton(void *pButton, int event)
 {
     SimToggleTFR(0, KEY_DOWN, NULL);
 }
@@ -4374,7 +4383,7 @@ void CBETFRButton(void * pButton, int event)
 //=============================================//
 // Callback Function Thrust Reverser Button
 //=============================================//
-void CBEThrRevButton(void * pButton, int event)
+void CBEThrRevButton(void *pButton, int event)
 {
     SimReverseThrusterToggle(0, KEY_DOWN, NULL);
 }
@@ -4383,9 +4392,9 @@ void CBEThrRevButton(void * pButton, int event)
 // Callback Function FLAP Switch
 //=============================================//
 
-void CBEFlap(void * pButton, int event)
+void CBEFlap(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = static_cast<CPButtonObject*>(pButton);
+    CPButtonObject *pCPButton = static_cast<CPButtonObject *>(pButton);
 
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4401,10 +4410,10 @@ void CBEFlap(void * pButton, int event)
     }
 }
 
-void CBExFlap(void * pButton, int event)
+void CBExFlap(void *pButton, int event)
 {
     return;
-    CPButtonObject *pCPButton = static_cast<CPButtonObject*>(pButton);
+    CPButtonObject *pCPButton = static_cast<CPButtonObject *>(pButton);
 
     if (pCPButton == NULL)
     {
@@ -4426,9 +4435,9 @@ void CBExFlap(void * pButton, int event)
 // Callback Function TEF Switch
 //=============================================//
 
-void CBELef(void * pButton, int event)
+void CBELef(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = static_cast<CPButtonObject*>(pButton);
+    CPButtonObject *pCPButton = static_cast<CPButtonObject *>(pButton);
 
     if (event == CP_MOUSE_BUTTON0)
     {
@@ -4445,12 +4454,12 @@ void CBELef(void * pButton, int event)
 //=============================================//
 // Callback Function DragChute
 //=============================================//
-void CBEDragChute(void * pButton, int event)
+void CBEDragChute(void *pButton, int event)
 {
     AFDragChute(0, KEY_DOWN, NULL);
 }
 
-void CBExDragChute(void * pButton, int event)
+void CBExDragChute(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -4459,7 +4468,7 @@ void CBExDragChute(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->dragChute not_eq AirframeClass::DRAGC_STOWED)
     {
@@ -4474,12 +4483,12 @@ void CBExDragChute(void * pButton, int event)
 //=============================================//
 // Callback Function Canopy
 //=============================================//
-void CBECanopy(void * pButton, int event)
+void CBECanopy(void *pButton, int event)
 {
     AFCanopyToggle(0, KEY_DOWN, NULL);
 }
 
-void CBExCanopy(void * pButton, int event)
+void CBExCanopy(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -4488,7 +4497,7 @@ void CBExCanopy(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (playerAC->af->canopyState)
         pCPButton->SetCurrentState(1);
@@ -4498,14 +4507,14 @@ void CBExCanopy(void * pButton, int event)
 //=============================================//
 // Callback Function Comm1 Volume
 //=============================================//
-void CBEComm1Vol(void * pButton, int event)
+void CBEComm1Vol(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
         SimStepComm1VolumeUp(0, KEY_DOWN, NULL);
     else
         SimStepComm1VolumeDown(0, KEY_DOWN, NULL);
 }
-void CBExComm1Vol(void * pButton, int event)
+void CBExComm1Vol(void *pButton, int event)
 {
     int pos = 0;
 
@@ -4521,61 +4530,61 @@ void CBExComm1Vol(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (pos)
     {
-        case 0: //max vol
-            pCPButton->SetCurrentState(8);
-            break;
+    case 0: //max vol
+        pCPButton->SetCurrentState(8);
+        break;
 
-        case 1:
-            pCPButton->SetCurrentState(7);
-            break;
+    case 1:
+        pCPButton->SetCurrentState(7);
+        break;
 
-        case 2:
-            pCPButton->SetCurrentState(6);
-            break;
+    case 2:
+        pCPButton->SetCurrentState(6);
+        break;
 
-        case 3:
-            pCPButton->SetCurrentState(5);
-            break;
+    case 3:
+        pCPButton->SetCurrentState(5);
+        break;
 
-        case 4:
-            pCPButton->SetCurrentState(4);
-            break;
+    case 4:
+        pCPButton->SetCurrentState(4);
+        break;
 
-        case 5:
-            pCPButton->SetCurrentState(3);
-            break;
+    case 5:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        case 6:
-            pCPButton->SetCurrentState(2);
-            break;
+    case 6:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case 7:
-            pCPButton->SetCurrentState(1);
-            break;
+    case 7:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case 8:
-            pCPButton->SetCurrentState(0);
-            break;
+    case 8:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 //=============================================//
 // Callback Function Comm2 Volume
 //=============================================//
-void CBEComm2Vol(void * pButton, int event)
+void CBEComm2Vol(void *pButton, int event)
 {
     if (event == CP_MOUSE_BUTTON0)
         SimStepComm2VolumeUp(0, KEY_DOWN, NULL);
     else
         SimStepComm2VolumeDown(0, KEY_DOWN, NULL);
 }
-void CBExComm2Vol(void * pButton, int event)
+void CBExComm2Vol(void *pButton, int event)
 {
     int pos = 0;
 
@@ -4589,51 +4598,51 @@ void CBExComm2Vol(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (pos)
     {
-        case 0: //max vol
-            pCPButton->SetCurrentState(8);
-            break;
+    case 0: //max vol
+        pCPButton->SetCurrentState(8);
+        break;
 
-        case 1:
-            pCPButton->SetCurrentState(7);
-            break;
+    case 1:
+        pCPButton->SetCurrentState(7);
+        break;
 
-        case 2:
-            pCPButton->SetCurrentState(6);
-            break;
+    case 2:
+        pCPButton->SetCurrentState(6);
+        break;
 
-        case 3:
-            pCPButton->SetCurrentState(5);
-            break;
+    case 3:
+        pCPButton->SetCurrentState(5);
+        break;
 
-        case 4:
-            pCPButton->SetCurrentState(4);
-            break;
+    case 4:
+        pCPButton->SetCurrentState(4);
+        break;
 
-        case 5:
-            pCPButton->SetCurrentState(3);
-            break;
+    case 5:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        case 6:
-            pCPButton->SetCurrentState(2);
-            break;
+    case 6:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case 7:
-            pCPButton->SetCurrentState(1);
-            break;
+    case 7:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case 8:
-            pCPButton->SetCurrentState(0);
-            break;
+    case 8:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
-void CBESymWheel(void * pButton, int event)
+void CBESymWheel(void *pButton, int event)
 {
     // MD -- 20040703: if analog control is mapped, then change this
     // mouse behavior to be a power on/off toggle instead of changing
@@ -4653,7 +4662,7 @@ void CBESymWheel(void * pButton, int event)
             SimSymWheelDn(0, KEY_DOWN, NULL);
     }
 }
-void CBExSymWheel(void * pButton, int event)
+void CBExSymWheel(void *pButton, int event)
 {
     int pos = 0;
 
@@ -4667,41 +4676,41 @@ void CBExSymWheel(void * pButton, int event)
         return;
     }
 
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     switch (pos)
     {
-        case 10: //max vol
-            pCPButton->SetCurrentState(5);
-            break;
+    case 10: //max vol
+        pCPButton->SetCurrentState(5);
+        break;
 
-        case 9:
-            pCPButton->SetCurrentState(4);
-            break;
+    case 9:
+        pCPButton->SetCurrentState(4);
+        break;
 
-        case 8:
-            pCPButton->SetCurrentState(3);
-            break;
+    case 8:
+        pCPButton->SetCurrentState(3);
+        break;
 
-        case 7:
-            pCPButton->SetCurrentState(2);
-            break;
+    case 7:
+        pCPButton->SetCurrentState(2);
+        break;
 
-        case 6:
-            pCPButton->SetCurrentState(1);
-            break;
+    case 6:
+        pCPButton->SetCurrentState(1);
+        break;
 
-        case 5:
-            pCPButton->SetCurrentState(0);
-            break;
+    case 5:
+        pCPButton->SetCurrentState(0);
+        break;
 
-        default:
-            // ShiWarning("No good state");
-            break;
+    default:
+        // ShiWarning("No good state");
+        break;
     }
 }
 //MI for Jags
-void CBESetNightPanel(void * pButton, int event)
+void CBESetNightPanel(void *pButton, int event)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
@@ -4712,7 +4721,7 @@ void CBESetNightPanel(void * pButton, int event)
 
     if (OTWDriver.pCockpitManager)
     {
-        CPPanel* curPanel = OTWDriver.pCockpitManager->GetActivePanel();
+        CPPanel *curPanel = OTWDriver.pCockpitManager->GetActivePanel();
 
         if (curPanel->mIdNum == 94700)
         {
@@ -4743,7 +4752,7 @@ void CBExSetNightPanel(void * pButton, int event)
 
 void CBEDummyCallback(void *pButton, int event)
 {
-    CPButtonObject *pCPButton = (CPButtonObject*) pButton;
+    CPButtonObject *pCPButton = (CPButtonObject *)pButton;
 
     if (event == CP_MOUSE_BUTTON0)
     {

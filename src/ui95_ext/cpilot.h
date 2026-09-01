@@ -14,7 +14,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -26,7 +27,7 @@ private:
     short slot_;
     short isplayer_;
 
-    VU_ID  vuID;
+    VU_ID vuID;
 
     O_Output *Callsign_;
 
@@ -64,7 +65,7 @@ public:
     }
     short GetSlot()
     {
-        return(slot_);
+        return (slot_);
     }
     void SetSkill(short skill)
     {
@@ -72,7 +73,7 @@ public:
     }
     short GetSkill()
     {
-        return(skill_);
+        return (skill_);
     }
     void SetPlayer(short isplayer)
     {
@@ -80,16 +81,16 @@ public:
     }
     short GetPlayer()
     {
-        return(isplayer_);
+        return (isplayer_);
     }
     void SetState(short state);
     short GetState()
     {
-        return(state_);
+        return (state_);
     }
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
     void SetSubParents(C_Window *);
     void SetDefaultFlags()
@@ -98,7 +99,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     long CheckHotSpots(long relx, long rely);
     BOOL Process(long ID, short hittype);
@@ -111,7 +112,7 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
 };
 

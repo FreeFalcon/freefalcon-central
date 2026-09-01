@@ -1,6 +1,6 @@
 #include "stdhdr.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/drawsgmt.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawsgmt.h"
 #include "classtbl.h"
 #include "entity.h"
 #include "object.h"
@@ -13,20 +13,20 @@
 #include "sfx.h"
 #include "falcsess.h"
 #include "simdrive.h"
-#include "campList.h"
+#include "camplist.h"
 #include "mvrdef.h"
-#include "Unit.h"
+#include "unit.h"
 #include "simmover.h"
 #include "dofsnswitches.h"
-#include "MsgInc/RequestSimMoverPosition.h"
-#include "MsgInc/ControlSurfaceMsg.h"
-#include "DrawParticleSys.h" // RV I-Hawk - added to support RV new trails calls
+#include "msginc/requestsimmoverposition.h"
+#include "msginc/controlsurfacemsg.h"
+#include "drawparticlesys.h" // RV I-Hawk - added to support RV new trails calls
 #include "simobj.h"
 
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#include "IVibeData.h"
+#include "ivibedata.h"
 extern IntellivibeData g_intellivibeData;
 
 #ifdef USE_SH_POOLS
@@ -37,7 +37,8 @@ HANDLE graphicsDOFDataPool;
 #define MemAllocPtr MemAlloc2HeapAlloc
 #define MemFreePtr(p) HeapFree(graphicsDOFDataPool, 0, p)
 
-static inline LPVOID MemAlloc2HeapAlloc(HANDLE heap, DWORD dwSize, DWORD dwFlags)
+static inline LPVOID MemAlloc2HeapAlloc(HANDLE heap, DWORD dwSize,
+                                        DWORD dwFlags)
 {
     return HeapAlloc(heap, dwFlags, dwSize);
 }
@@ -46,7 +47,8 @@ static inline LPVOID MemAlloc2HeapAlloc(HANDLE heap, DWORD dwSize, DWORD dwFlags
 void GraphicsDataPoolInitializeStorage(void)
 {
 #ifdef USE_SH_POOLS
-    graphicsDOFDataPool = MemPoolInit(MEM_POOL_DEFAULT bitor MEM_POOL_SERIALIZE);
+    graphicsDOFDataPool =
+        MemPoolInit(MEM_POOL_DEFAULT bitor MEM_POOL_SERIALIZE);
 #else
     graphicsDOFDataPool = HeapCreate(NULL, 0, 0);
 #endif
@@ -65,7 +67,8 @@ SimMoverClass::SimMoverClass(FILE* filePtr) : SimBaseClass(filePtr)
 {
     InitLocalData();
     fread(&numDofs, sizeof(int), 1, filePtr);
-    DOFData = (float*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numDofs, 0);
+    DOFData =
+        (float*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numDofs, 0);
     fread(DOFData, sizeof(float), numDofs, filePtr);
 
     DOFType = (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numDofs, 0);
@@ -75,7 +78,8 @@ SimMoverClass::SimMoverClass(FILE* filePtr) : SimBaseClass(filePtr)
 
     if (numVertices)
     {
-        VertexData = (float*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numVertices, 0);
+        VertexData = (float*)MemAllocPtr(graphicsDOFDataPool,
+                                         sizeof(float) * numVertices, 0);
         fread(VertexData, sizeof(float), numVertices, filePtr);
     }
     else
@@ -84,9 +88,11 @@ SimMoverClass::SimMoverClass(FILE* filePtr) : SimBaseClass(filePtr)
     }
 
     fread(&numSwitches, sizeof(int), 1, filePtr);
-    switchData = (int *)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numDofs, 0);
+    switchData =
+        (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numDofs, 0);
     fread(switchData, sizeof(int), numSwitches, filePtr);
-    switchChange = (int *)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numDofs, 0);
+    switchChange =
+        (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numDofs, 0);
 
     for (int i = 0; i < numSwitches; i++)
     {
@@ -98,16 +104,19 @@ SimMoverClass::SimMoverClass(FILE* filePtr) : SimBaseClass(filePtr)
     vehicleInUnit = 0;
 }
 
-SimMoverClass::SimMoverClass(VU_BYTE** stream, long *rem) : SimBaseClass(stream, rem)
+SimMoverClass::SimMoverClass(VU_BYTE** stream, long* rem)
+    : SimBaseClass(stream, rem)
 {
     InitLocalData();
     memcpychk(&numDofs, stream, sizeof(int), rem);
 
     if (numDofs)
     {
-        DOFData = (float*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numDofs, 0);
+        DOFData = (float*)MemAllocPtr(graphicsDOFDataPool,
+                                      sizeof(float) * numDofs, 0);
         memcpychk(DOFData, stream, sizeof(float) * numDofs, rem);
-        DOFType = (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numDofs, 0);
+        DOFType =
+            (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numDofs, 0);
         memcpychk(DOFType, stream, sizeof(int) * numDofs, rem);
     }
     else
@@ -120,7 +129,8 @@ SimMoverClass::SimMoverClass(VU_BYTE** stream, long *rem) : SimBaseClass(stream,
 
     if (numVertices)
     {
-        VertexData = (float*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numVertices, 0);
+        VertexData = (float*)MemAllocPtr(graphicsDOFDataPool,
+                                         sizeof(float) * numVertices, 0);
         memcpychk(VertexData, stream, sizeof(float) * numVertices, rem);
     }
     else
@@ -132,9 +142,11 @@ SimMoverClass::SimMoverClass(VU_BYTE** stream, long *rem) : SimBaseClass(stream,
 
     if (numSwitches)
     {
-        switchData = (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numSwitches, 0);
+        switchData = (int*)MemAllocPtr(graphicsDOFDataPool,
+                                       sizeof(int) * numSwitches, 0);
         memcpychk(switchData, stream, sizeof(int) * numSwitches, rem);
-        switchChange = (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numSwitches, 0);
+        switchChange = (int*)MemAllocPtr(graphicsDOFDataPool,
+                                         sizeof(int) * numSwitches, 0);
 
         for (int i = 0; i < numSwitches; i++)
         {
@@ -205,7 +217,8 @@ void SimMoverClass::AllocateSwitchAndDof()
 
     if (numVertices)
     {
-        VertexData = (float*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numVertices, 0);
+        VertexData = (float*)MemAllocPtr(graphicsDOFDataPool,
+                                         sizeof(float) * numVertices, 0);
 
         for (i = 0; i < numVertices; i++)
         {
@@ -219,8 +232,10 @@ void SimMoverClass::AllocateSwitchAndDof()
 
     if (numDofs)
     {
-        DOFData = (float*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numDofs, 0);
-        DOFType = (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numDofs, 0);
+        DOFData = (float*)MemAllocPtr(graphicsDOFDataPool,
+                                      sizeof(float) * numDofs, 0);
+        DOFType =
+            (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(float) * numDofs, 0);
 
         for (i = 0; i < numDofs; i++)
         {
@@ -236,8 +251,10 @@ void SimMoverClass::AllocateSwitchAndDof()
 
     if (numSwitches)
     {
-        switchData = (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numSwitches, 0);
-        switchChange = (int*)MemAllocPtr(graphicsDOFDataPool, sizeof(int) * numSwitches, 0);
+        switchData = (int*)MemAllocPtr(graphicsDOFDataPool,
+                                       sizeof(int) * numSwitches, 0);
+        switchChange = (int*)MemAllocPtr(graphicsDOFDataPool,
+                                         sizeof(int) * numSwitches, 0);
 
         for (i = 0; i < numSwitches; i++)
         {
@@ -282,7 +299,8 @@ void SimMoverClass::InitLocalData()
         {
             if (GetType() == TYPE_AIRPLANE)
             {
-                if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and GetSPType() == SPTYPE_F16C)
+                if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and
+                    GetSPType() == SPTYPE_F16C)
                 {
                     MakeComplex();
                 }
@@ -321,7 +339,7 @@ void SimMoverClass::Init(SimInitDataClass* initData)
     SimBaseClass::Init(initData);
 
     Falcon4EntityClassType* classPtr;
-    SimVuDriver *oldd;
+    SimVuDriver* oldd;
 
     if (initData)
     {
@@ -347,11 +365,11 @@ void SimMoverClass::Init(SimInitDataClass* initData)
     // SetYPRDelta(0.0F, 0.0F, 0.0F);
     if (IsLocal())
     {
-        oldd = (SimVuDriver *)SetDriver(new SimVuDriver(this));
+        oldd = (SimVuDriver*)SetDriver(new SimVuDriver(this));
     }
     else
     {
-        oldd = (SimVuDriver *)SetDriver(new SimVuSlave(this));
+        oldd = (SimVuDriver*)SetDriver(new SimVuSlave(this));
     }
 
     if (oldd)
@@ -400,7 +418,8 @@ void SimMoverClass::CleanupData()
 void SimMoverClass::CleanupLocalData()
 {
     // sfr: @TODO remove this shit (for now im just calling base class cleanup)
-    if (numSensors > 0 and ( not sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
+    if (numSensors > 0 and
+        (not sensorArray or F4IsBadReadPtr(sensorArray, sizeof(SensorClass*))))
     {
         // JB 010223 CTD
         return; // JB 010223 CTD
@@ -416,14 +435,15 @@ void SimMoverClass::CleanupLocalData()
         }
 
         sensorArray[i]->SetPower(FALSE);
-        delete(sensorArray[i]);
+        delete (sensorArray[i]);
         sensorArray[i] = NULL;
-        numSensors = 0; // 2002-02-01 ADDED BY S.G. Say we don't have any sensors
+        numSensors =
+            0; // 2002-02-01 ADDED BY S.G. Say we don't have any sensors
     }
 
-    delete [] sensorArray;
+    delete[] sensorArray;
     sensorArray = NULL;
-    SimVuDriver *oldd = (SimVuDriver *)SetDriver(NULL);
+    SimVuDriver* oldd = (SimVuDriver*)SetDriver(NULL);
 
     if (oldd)
     {
@@ -461,19 +481,16 @@ void SimMoverClass::PositionUpdateDone()
 
 bool SimMoverClass::UpdatePositionFromLastOwner(unsigned long ms)
 {
-    if (
-        (FalconLocalGame == NULL) or
-        (lastOwnerId == FalconNullId) or
+    if ((FalconLocalGame == NULL) or (lastOwnerId == FalconNullId) or
         (lastOwnerId == FalconLocalSessionId) or
-        (vuDatabase->Find(lastOwnerId) == NULL)
-    )
+        (vuDatabase->Find(lastOwnerId) == NULL))
     {
         // sfr: we need to see if this check is causing clients to not request the unit
         return false;
     }
 
     waitingUpdateFromServer = true;
-    FalconEvent *rpu = new RequestSimMoverPosition(this, lastOwnerId);
+    FalconEvent* rpu = new RequestSimMoverPosition(this, lastOwnerId);
     FalconSendMessage(rpu, true);
     unsigned long delay = 0;
 
@@ -484,8 +501,7 @@ bool SimMoverClass::UpdatePositionFromLastOwner(unsigned long ms)
         const unsigned int SLEEP_IVAL_MS = 100;
         ::Sleep(SLEEP_IVAL_MS);
         delay += SLEEP_IVAL_MS;
-    }
-    while (waitingUpdateFromServer and delay < ms);
+    } while (waitingUpdateFromServer and delay < ms);
 
     waitingUpdateFromServer = false;
     return delay < ms ? true : false;
@@ -531,7 +547,8 @@ int SimMoverClass::Wake(void)
 
         for (i = 0; i < numVertices; i++)
         {
-            ((DrawableBSP*)drawPointer)->SetDynamicVertex(i, VertexData[i], 0.0F, 0.0F);
+            ((DrawableBSP*)drawPointer)
+                ->SetDynamicVertex(i, VertexData[i], 0.0F, 0.0F);
         }
     }
 
@@ -557,7 +574,7 @@ int SimMoverClass::Sleep(void)
 
     while (targetList)
     {
-        SimObjectType *tmpObject = targetList;
+        SimObjectType* tmpObject = targetList;
         targetList = targetList->next;
         tmpObject->prev = NULL;
         tmpObject->next = NULL;
@@ -618,7 +635,7 @@ void SimMoverClass::MakeLocal()
     // SetDelta(0.0F, 0.0F, 0.0F);
     // SetYPRDelta(0.0F, 0.0F, 0.0F);
 
-    VuDriver *oldd = SetDriver(NULL);
+    VuDriver* oldd = SetDriver(NULL);
 
     if (oldd not_eq NULL)
     {
@@ -648,7 +665,7 @@ void SimMoverClass::MakeRemote(void)
     // SetDelta(0.0F, 0.0F, 0.0F);
     // SetYPRDelta(0.0F, 0.0F, 0.0F);
 
-    SimVuDriver *oldd = (SimVuDriver *)SetDriver(new SimVuSlave(this));
+    SimVuDriver* oldd = (SimVuDriver*)SetDriver(new SimVuSlave(this));
 
     if (oldd)
     {
@@ -665,7 +682,8 @@ int SimMoverClass::Exec(void)
     // Without setting this, when the unit reaggregates, the unit will replay its mission from the time that
     // it deaggregated so that movement not following the waypoints of the unit's mission is lost.
     if (GetCampaignObject())
-        ((UnitClass*)GetCampaignObject())->SetUnitLastMove(TheCampaign.CurrentTime);
+        ((UnitClass*)GetCampaignObject())
+            ->SetUnitLastMove(TheCampaign.CurrentTime);
 
     if (drawPointer and not IsExploding())
     {
@@ -688,13 +706,15 @@ int SimMoverClass::Exec(void)
 
         for (i = 0; i < numVertices; i++)
         {
-            ((DrawableBSP*)drawPointer)->SetDynamicVertex(i, VertexData[i], 0.0F, 0.0F);
+            ((DrawableBSP*)drawPointer)
+                ->SetDynamicVertex(i, VertexData[i], 0.0F, 0.0F);
         }
     }
 
     if (IsLocal())
     {
-        if ((requestCount > 0 and (SimLibFrameCount bitand 0x2F) == 0) or ((SimLibFrameCount bitand 0x1FF) == 0))
+        if ((requestCount > 0 and (SimLibFrameCount bitand 0x2F) == 0) or
+            ((SimLibFrameCount bitand 0x1FF) == 0))
         {
             //newControlData = new FalconControlSurfaceMsg(Id(), FalconLocalGame);
             //newControlData->dataBlock.gameTime = SimLibElapsedTime;
@@ -737,7 +757,8 @@ int SimMoverClass::Exec(void)
                              new SfxClass ( 2.0f, // time to live
                              nonLocalData->smokeTrail ) );
                             */
-                            DrawableParticleSys::PS_KillTrail((PS_PTR)nonLocalData->smokeTrail);
+                            DrawableParticleSys::PS_KillTrail(
+                                (PS_PTR)nonLocalData->smokeTrail);
 
                             nonLocalData->smokeTrail = NULL;
                         }
@@ -750,21 +771,27 @@ int SimMoverClass::Exec(void)
                         pos.x = XPos();
                         pos.y = YPos();
                         pos.z = ZPos();
-                        vec.x = XDelta() * ((900 + rand() % 200) / 1000) ;
+                        vec.x = XDelta() * ((900 + rand() % 200) / 1000);
                         vec.y = YDelta() * ((900 + rand() % 200) / 1000);
                         vec.z = ZDelta() * ((900 + rand() % 200) / 1000);
                         //RV I-Hawk - RV new trails call changes
                         //OTWDriver.AddTrailHead( nonLocalData->smokeTrail, pos.x, pos.y, pos.z );
-                        nonLocalData->smokeTrail = (DrawableTrail*)DrawableParticleSys::PS_EmitTrail((TRAIL_HANDLE)nonLocalData->smokeTrail, TRAIL_GUN, XPos(), YPos(), ZPos());
+                        nonLocalData->smokeTrail =
+                            (DrawableTrail*)DrawableParticleSys::PS_EmitTrail(
+                                (TRAIL_HANDLE)nonLocalData->smokeTrail,
+                                TRAIL_GUN, XPos(), YPos(), ZPos());
 
                         // for the moment (at least), bullets only go in direction
                         // object is pointing
                         // vec.x += dmx[0][0]*3000.0f;
                         // vec.y += dmx[0][1]*3000.0f;
                         // vec.z += dmx[0][2]*3000.0f;
-                        vec.x += nonLocalData->dx * ((900 + rand() % 200) / 1000);
-                        vec.y += nonLocalData->dy * ((900 + rand() % 200) / 1000);
-                        vec.z += nonLocalData->dz * ((900 + rand() % 200) / 1000);
+                        vec.x +=
+                            nonLocalData->dx * ((900 + rand() % 200) / 1000);
+                        vec.y +=
+                            nonLocalData->dy * ((900 + rand() % 200) / 1000);
+                        vec.z +=
+                            nonLocalData->dz * ((900 + rand() % 200) / 1000);
                         pos.x += vec.x * SimLibMajorFrameTime;
                         pos.y += vec.y * SimLibMajorFrameTime;
                         pos.z += vec.z * SimLibMajorFrameTime;
@@ -779,13 +806,11 @@ int SimMoverClass::Exec(void)
                          3.0f, // time to live
                          1.0f)); // scale
                          */
-                        DrawableParticleSys::PS_AddParticleEx((SFX_GUN_TRACER + 1),
-                                                              &pos,
-                                                              &vec);
-
+                        DrawableParticleSys::PS_AddParticleEx(
+                            (SFX_GUN_TRACER + 1), &pos, &vec);
                     }
                 }
-                else if ( not nonLocalData->timer2)
+                else if (not nonLocalData->timer2)
                 {
                     // we haven't yet started firing....
                     // will be set when recieving a fire message nonLocalData->flags or_eq NONLOCAL_GUNS_FIRING;
@@ -810,7 +835,10 @@ int SimMoverClass::Exec(void)
                     OTWDriver.AddTrailHead( nonLocalData->smokeTrail, pos.x, pos.y, pos.z );
                     */
                     // using the original drawbletrail* variable, and casting...
-                    nonLocalData->smokeTrail = (DrawableTrail*)DrawableParticleSys::PS_EmitTrail((TRAIL_HANDLE)nonLocalData->smokeTrail, TRAIL_GUN, XPos(), YPos(), ZPos());
+                    nonLocalData->smokeTrail =
+                        (DrawableTrail*)DrawableParticleSys::PS_EmitTrail(
+                            (TRAIL_HANDLE)nonLocalData->smokeTrail, TRAIL_GUN,
+                            XPos(), YPos(), ZPos());
 
                     // for the moment (at least), bullets only go in direction
                     // object is pointing
@@ -835,9 +863,7 @@ int SimMoverClass::Exec(void)
                      1.0f)); // scale
                      */
                     DrawableParticleSys::PS_AddParticleEx((SFX_GUN_TRACER + 1),
-                                                          &pos,
-                                                          &vec);
-
+                                                          &pos, &vec);
                 }
             }
             else // not firing
@@ -857,7 +883,8 @@ int SimMoverClass::Exec(void)
                          new SfxClass ( 2.0f, // time to live
                          nonLocalData->smokeTrail ) );
                         */
-                        DrawableParticleSys::PS_KillTrail((PS_PTR)nonLocalData->smokeTrail);
+                        DrawableParticleSys::PS_KillTrail(
+                            (PS_PTR)nonLocalData->smokeTrail);
                         nonLocalData->smokeTrail = NULL;
                     }
                 }
@@ -868,47 +895,47 @@ int SimMoverClass::Exec(void)
     return (IsLocal());
 }
 
-float SimMoverClass:: GetP(void)
+float SimMoverClass::GetP(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetQ(void)
+float SimMoverClass::GetQ(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetR(void)
+float SimMoverClass::GetR(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetAlpha(void)
+float SimMoverClass::GetAlpha(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetBeta(void)
+float SimMoverClass::GetBeta(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetNx(void)
+float SimMoverClass::GetNx(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetNy(void)
+float SimMoverClass::GetNy(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetNz(void)
+float SimMoverClass::GetNz(void)
 {
     return (0.0F);
 }
 
-float SimMoverClass:: GetGamma(void)
+float SimMoverClass::GetGamma(void)
 {
     return (0.0F);
 }
@@ -928,16 +955,16 @@ float SimMoverClass::GetMu(void)
 int SimMoverClass::SaveSize()
 {
     return SimBaseClass::SaveSize() +
-           numDofs * (sizeof(float) + sizeof(int)) +   // DOFData and DofType
-           numSwitches * sizeof(int) +  // SwitchData
-           numVertices * sizeof(float) +  // VertexData
-           3 * sizeof(int) +  // numDofs, numSwitches, numVertices;
-           2 * sizeof(uchar);  // pilotSlot and aircraftSlot;
+           numDofs * (sizeof(float) + sizeof(int)) + // DOFData and DofType
+           numSwitches * sizeof(int) + // SwitchData
+           numVertices * sizeof(float) + // VertexData
+           3 * sizeof(int) + // numDofs, numSwitches, numVertices;
+           2 * sizeof(uchar); // pilotSlot and aircraftSlot;
     //   return SimBaseClass::SaveSize() + numDofs * (sizeof (float) + sizeof (int)) +
     //      (numSwitches + 3) * sizeof (int) + + numVertices * sizeof(float);
 }
 
-int SimMoverClass::Save(VU_BYTE **stream)
+int SimMoverClass::Save(VU_BYTE** stream)
 {
     SimBaseClass::Save(stream);
 
@@ -968,10 +995,11 @@ int SimMoverClass::Save(VU_BYTE **stream)
     memcpy(*stream, &pilotSlot, sizeof(uchar));
     *stream += sizeof(uchar);
 
-    return numDofs * sizeof(float) + numSwitches * sizeof(int) + 2 * sizeof(int) + 2 * sizeof(uchar);
+    return numDofs * sizeof(float) + numSwitches * sizeof(int) +
+           2 * sizeof(int) + 2 * sizeof(uchar);
 }
 
-int SimMoverClass::Save(FILE *file)
+int SimMoverClass::Save(FILE* file)
 {
     int retval;
 
@@ -994,7 +1022,7 @@ int SimMoverClass::Save(FILE *file)
     return (retval);
 }
 
-int SimMoverClass::Handle(VuFullUpdateEvent *event)
+int SimMoverClass::Handle(VuFullUpdateEvent* event)
 {
     SimMoverClass* tmpMover = (SimMoverClass*)(event->expandedData_.get());
     int i;
@@ -1018,22 +1046,23 @@ int SimMoverClass::Handle(VuFullUpdateEvent *event)
     return (SimBaseClass::Handle(event));
 }
 
-int SimMoverClass::Handle(VuPositionUpdateEvent *event)
+int SimMoverClass::Handle(VuPositionUpdateEvent* event)
 {
-    UnitClass *campObj = (UnitClass*) GetCampaignObject();
+    UnitClass* campObj = (UnitClass*)GetCampaignObject();
 
     if (campObj and campObj->IsLocal() and campObj->GetComponentLead() == this)
     {
         campObj->SimSetLocation(event->x_, event->y_, event->z_);
 
         if (campObj->IsFlight())
-            campObj->SimSetOrientation(event->yaw_, event->pitch_, event->roll_);
+            campObj->SimSetOrientation(event->yaw_, event->pitch_,
+                                       event->roll_);
     }
 
     return (SimBaseClass::Handle(event));
 }
 
-int SimMoverClass::Handle(VuTransferEvent *event)
+int SimMoverClass::Handle(VuTransferEvent* event)
 {
     return (SimBaseClass::Handle(event));
 }
@@ -1092,7 +1121,7 @@ void SimMoverClass::AddDataRequest(int flag)
     requestCount += flag;
 }
 
-void SimMoverClass::SetTarget(SimObjectType *newTarget)
+void SimMoverClass::SetTarget(SimObjectType* newTarget)
 {
     if (newTarget == targetPtr)
     {
@@ -1100,7 +1129,8 @@ void SimMoverClass::SetTarget(SimObjectType *newTarget)
     }
 
 #if FINE_INT
-    SimMoverClass *playerAC = (SimMoverClass *)SimDriver.GetPlayerAircraft(); // FRB
+    SimMoverClass* playerAC =
+        (SimMoverClass*)SimDriver.GetPlayerAircraft(); // FRB
 #endif
 
     if (targetPtr)
@@ -1110,7 +1140,8 @@ void SimMoverClass::SetTarget(SimObjectType *newTarget)
         // sfr: if we are targeting, remove our old from interest list...
         if (this == playerAC)
         {
-            FalconLocalSession->RemoveFromFineInterest(targetPtr->BaseData(), false);
+            FalconLocalSession->RemoveFromFineInterest(targetPtr->BaseData(),
+                                                       false);
         }
 
 #endif
@@ -1143,16 +1174,14 @@ void SimMoverClass::ClearTarget()
     }
 }
 
-void SimMoverClass::UpdateLOS(SimObjectType *obj)
+void SimMoverClass::UpdateLOS(SimObjectType* obj)
 {
     float top, bottom;
 
     OTWDriver.GetAreaFloorAndCeiling(&bottom, &top);
 
-    if (
-        (ZPos() < top and obj->BaseData()->ZPos() < top) or
-        (OTWDriver.CheckLOS(this, obj->BaseData()))
-    )
+    if ((ZPos() < top and obj->BaseData()->ZPos() < top) or
+        (OTWDriver.CheckLOS(this, obj->BaseData())))
     {
         obj->localData->SetTerrainLOS(TRUE);
     }
@@ -1170,11 +1199,11 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
         obj->localData->SetCloudLOS(FALSE);
     }
 
-    if ( not OnGround())
+    if (not OnGround())
     {
         obj->localData->nextLOSCheck = SimLibElapsedTime + 200;
     }
-    else if ( not obj->BaseData()->OnGround())
+    else if (not obj->BaseData()->OnGround())
     {
         obj->localData->nextLOSCheck = SimLibElapsedTime + 1000;
     }
@@ -1184,9 +1213,9 @@ void SimMoverClass::UpdateLOS(SimObjectType *obj)
     }
 }
 
-int SimMoverClass::CheckLOS(SimObjectType *obj)
+int SimMoverClass::CheckLOS(SimObjectType* obj)
 {
-    if ( not obj or not obj->BaseData())
+    if (not obj or not obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)
@@ -1195,9 +1224,9 @@ int SimMoverClass::CheckLOS(SimObjectType *obj)
     return obj->localData->TerrainLOS();
 }
 
-int SimMoverClass::CheckCompositeLOS(SimObjectType *obj)
+int SimMoverClass::CheckCompositeLOS(SimObjectType* obj)
 {
-    if ( not obj or not obj->BaseData())
+    if (not obj or not obj->BaseData())
         return FALSE;
 
     if (SimLibElapsedTime > obj->localData->nextLOSCheck)
@@ -1218,7 +1247,7 @@ int SimMoverClass::CheckCompositeLOS(SimObjectType *obj)
 ** sort of more refined test with elements in the objective bubble.
 ** Returns pointer of base class feature struck
 */
-SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
+SimBaseClass* SimMoverClass::FeatureCollision(float groundZ)
 {
     CampBaseClass* objective;
     // sfr: from 3 to 5. Some airbases like seoul are too big
@@ -1228,18 +1257,21 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
     VuGridIterator gridIt(ObjProxList, XPos(), YPos(), 3.0F * NM_TO_FT);
 #endif
 
-    SimBaseClass *foundFeature = NULL;
-    SimBaseClass *testFeature;
+    SimBaseClass* foundFeature = NULL;
+    SimBaseClass* testFeature;
     float radius;
     Tpoint pos, fpos, vec, p3, collide;
     BOOL firstFeature;
     WeaponClassDataType* wc = NULL;
-    const float deltat = 1.0f; // JPO time to look ahead for flat surfaces - arrived at by experiment.
+    const float deltat =
+        1.0f; // JPO time to look ahead for flat surfaces - arrived at by experiment.
     // this required to land on highway strips - that are in forest or similar.
 
     if (IsWeapon())
     {
-        wc = (WeaponClassDataType*)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+        wc = (WeaponClassDataType*)
+                 Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE]
+                     .dataPtr;
     }
 
     onFlatFeature = FALSE;
@@ -1266,7 +1298,7 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
 
             // loop thru each element in the objective
             VuListIterator featureWalker(objective->GetComponents());
-            testFeature = (SimBaseClass*) featureWalker.GetFirst();
+            testFeature = (SimBaseClass*)featureWalker.GetFirst();
             firstFeature = TRUE;
 
             while (testFeature)
@@ -1282,15 +1314,16 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                     testFeature->drawPointer->GetPosition(&fpos);
 
                     // test with gross level bounds of object
-                    if (fabs(pos.x - fpos.x) < radius + p3.x and 
-                        fabs(pos.y - fpos.y) < radius + p3.y and 
+                    if (fabs(pos.x - fpos.x) < radius + p3.x and
+                        fabs(pos.y - fpos.y) < radius + p3.y and
                         fabs(pos.z - fpos.z) < radius + p3.z)
                     {
                         // if we're on the ground make sure we have a downward vector if
                         // we're testing a flat container so we detect a collision
                         if (OnGround())
                         {
-                            if (testFeature->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
+                            if (testFeature->IsSetCampaignFlag(
+                                    FEAT_FLAT_CONTAINER))
                             {
                                 vec.z = 1500.0f;
                                 pos.z = groundZ - 50.0f;
@@ -1307,12 +1340,13 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                             pos.z = ZPos();
                         }
 
-                        if (testFeature->drawPointer->GetRayHit(&pos, &vec, &collide, 1.0f))
+                        if (testFeature->drawPointer->GetRayHit(&pos, &vec,
+                                                                &collide, 1.0f))
                         {
                             if (IsWeapon())
                             {
-                                FeatureClassDataType* fc =
-                                    GetFeatureClassData(testFeature->Type() - VU_LAST_ENTITY_TYPE);
+                                FeatureClassDataType* fc = GetFeatureClassData(
+                                    testFeature->Type() - VU_LAST_ENTITY_TYPE);
 
                                 if (fc->DamageMod[wc->DamageType])
                                     return testFeature;
@@ -1324,13 +1358,16 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                                 // if we're a bomb and we've hit a flat thingy, it's OK to
                                 // return detect a hit on the feature so return it....
                                 // other wise we just note if we're on top of a flat feature
-                                if (testFeature->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
+                                if (testFeature->IsSetCampaignFlag(
+                                        FEAT_FLAT_CONTAINER))
                                 {
                                     onFlatFeature = TRUE;
                                 }
                                 else
                                 {
-                                    if (FalconLocalSession and this == FalconLocalSession->GetPlayerEntity())
+                                    if (FalconLocalSession and
+                                        this == FalconLocalSession
+                                                    ->GetPlayerEntity())
                                         g_intellivibeData.CollisionCounter++;
 
                                     return testFeature;
@@ -1340,7 +1377,7 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
                     }
                 }
 
-                testFeature = (SimBaseClass*) featureWalker.GetNext();
+                testFeature = (SimBaseClass*)featureWalker.GetNext();
                 firstFeature = FALSE;
             }
         }
@@ -1348,7 +1385,8 @@ SimBaseClass *SimMoverClass::FeatureCollision(float groundZ)
         objective = (CampBaseClass*)gridIt.GetNext();
     }
 
-    if (foundFeature and FalconLocalSession and this == FalconLocalSession->GetPlayerEntity())
+    if (foundFeature and FalconLocalSession and
+        this == FalconLocalSession->GetPlayerEntity())
         g_intellivibeData.CollisionCounter++;
 
     return foundFeature;
@@ -1389,5 +1427,3 @@ float SimMoverClass::GetVt() const
  //kias = get_air_speed(vt * FTPSEC_TO_KNOTS, -1*FloatToInt32(ZPos()));
 }
 */
-
-

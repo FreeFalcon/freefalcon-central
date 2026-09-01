@@ -5,21 +5,21 @@
 /*****************************************************************************/
 
 #include "cmpglobl.h"
-#include "F4Vu.h"
+#include "f4vu.h"
 #include "objectiv.h"
 #include "listadt.h"
-#include "CampList.h"
+#include "camplist.h"
 #include "gtmobj.h"
 #include "team.h"
 #include "falcgame.h"
-#include "CampBase.h"
-#include "Campaign.h"
-#include "Find.h"
-#include "AIInput.h"
-#include "CmpClass.h"
-#include "CampMap.h"
+#include "campbase.h"
+#include "campaign.h"
+#include "find.h"
+#include "aiinput.h"
+#include "cmpclass.h"
+#include "campmap.h"
 #include "classtbl.h"
-#include "FalcSess.h"
+#include "falcsess.h"
 
 using namespace std;
 
@@ -45,10 +45,11 @@ UnitFilter::UnitFilter(uchar p, uchar r, ushort h, uchar a)
 
 VU_BOOL UnitFilter::Test(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -57,9 +58,9 @@ VU_BOOL UnitFilter::Test(VuEntity *e)
     if (host and not e->IsLocal())
         return FALSE;
 
-    if ( not inactive and ((Unit)e)->Inactive())
+    if (not inactive and ((Unit)e)->Inactive())
         return FALSE;
-    else if (inactive and not ((Unit)e)->Inactive())
+    else if (inactive and not((Unit)e)->Inactive())
         return FALSE;
 
     return TRUE;
@@ -67,10 +68,11 @@ VU_BOOL UnitFilter::Test(VuEntity *e)
 
 VU_BOOL UnitFilter::RemoveTest(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -79,9 +81,9 @@ VU_BOOL UnitFilter::RemoveTest(VuEntity *e)
     if (host and not e->IsLocal())
         return FALSE;
 
-    if ( not inactive and ((Unit)e)->Inactive())
+    if (not inactive and ((Unit)e)->Inactive())
         return FALSE;
-    else if (inactive and not ((Unit)e)->Inactive())
+    else if (inactive and not((Unit)e)->Inactive())
         return FALSE;
 
     return TRUE;
@@ -96,13 +98,14 @@ AirUnitFilter::AirUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL AirUnitFilter::Test(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -119,13 +122,14 @@ VU_BOOL AirUnitFilter::Test(VuEntity *e)
 
 VU_BOOL AirUnitFilter::RemoveTest(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() not_eq DOMAIN_AIR)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -149,13 +153,14 @@ GroundUnitFilter::GroundUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL GroundUnitFilter::Test(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -172,13 +177,14 @@ VU_BOOL GroundUnitFilter::Test(VuEntity *e)
 
 VU_BOOL GroundUnitFilter::RemoveTest(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() not_eq DOMAIN_LAND)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -202,13 +208,14 @@ NavalUnitFilter::NavalUnitFilter(uchar p, uchar r, ushort h)
 
 VU_BOOL NavalUnitFilter::Test(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -225,13 +232,14 @@ VU_BOOL NavalUnitFilter::Test(VuEntity *e)
 
 VU_BOOL NavalUnitFilter::RemoveTest(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
         return FALSE;
 
     if (((Unit)e)->GetDomain() not_eq DOMAIN_SEA)
         return FALSE;
 
-    if (parent and not ((Unit)e)->Parent())
+    if (parent and not((Unit)e)->Parent())
         return FALSE;
 
     if (real and not Real((e->EntityType())->classInfo_[VU_TYPE]))
@@ -264,29 +272,31 @@ UnitProxFilter::UnitProxFilter(int r) : VuBiKeyFilter()
     // VU_KEY max = compl 0;
     VU_KEY max = 0xFFFF;
     step = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
-    real = (uchar) r;
+    real = (uchar)r;
 }
 
-UnitProxFilter::UnitProxFilter(const UnitProxFilter *other, int r) : VuBiKeyFilter(other)
+UnitProxFilter::UnitProxFilter(const UnitProxFilter *other, int r)
+    : VuBiKeyFilter(other)
 {
     // KCK NOTE: Using this max will cause errors, since we'll
     // have more percision than the sim coordinates we're deriving from
     // VU_KEY max = compl 0;
     VU_KEY max = 0xFFFF;
     step = (float)(max / (GRID_SIZE_FT * (Map_Max_Y + 1)));
-    real = (uchar) r;
+    real = (uchar)r;
 }
 #endif
 
 
 VU_BOOL UnitProxFilter::Test(VuEntity *ent)
 {
-    if ( not ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not ent->EntityType()->classInfo_[VU_DOMAIN] or
+        ent->EntityType()->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
     {
         return FALSE;
     }
 
-    if ( not Real((ent->EntityType())->classInfo_[VU_TYPE]))
+    if (not Real((ent->EntityType())->classInfo_[VU_TYPE]))
     {
         return FALSE;
     }
@@ -301,12 +311,13 @@ VU_BOOL UnitProxFilter::Test(VuEntity *ent)
 
 VU_BOOL UnitProxFilter::RemoveTest(VuEntity *ent)
 {
-    if ( not ent->EntityType()->classInfo_[VU_DOMAIN] or ent->EntityType()->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
+    if (not ent->EntityType()->classInfo_[VU_DOMAIN] or
+        ent->EntityType()->classInfo_[VU_CLASS] not_eq CLASS_UNIT)
     {
         return FALSE;
     }
 
-    if ( not Real((ent->EntityType())->classInfo_[VU_TYPE]))
+    if (not Real((ent->EntityType())->classInfo_[VU_TYPE]))
     {
         return FALSE;
     }
@@ -314,8 +325,8 @@ VU_BOOL UnitProxFilter::RemoveTest(VuEntity *ent)
     return TRUE;
 }
 
-UnitProxFilter* AllUnitProxFilter = NULL;
-UnitProxFilter* RealUnitProxFilter = NULL;
+UnitProxFilter *AllUnitProxFilter = NULL;
+UnitProxFilter *RealUnitProxFilter = NULL;
 
 // ==============================
 // Objective specific filters
@@ -329,7 +340,8 @@ ObjFilter::ObjFilter(ushort h)
 
 VU_BOOL ObjFilter::Test(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
     if (host and not e->IsLocal())
@@ -340,7 +352,8 @@ VU_BOOL ObjFilter::Test(VuEntity *e)
 
 VU_BOOL ObjFilter::RemoveTest(VuEntity *e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
     if (host and not e->IsLocal())
@@ -377,7 +390,8 @@ ObjProxFilter::ObjProxFilter(const ObjProxFilter *other) : VuBiKeyFilter(other)
 
 VU_BOOL ObjProxFilter::Test(VuEntity *ent)
 {
-    if ((ent->EntityType())->classInfo_[VU_DOMAIN] and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
+    if ((ent->EntityType())->classInfo_[VU_DOMAIN] and
+        (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
     {
         return FALSE;
     }
@@ -387,7 +401,8 @@ VU_BOOL ObjProxFilter::Test(VuEntity *ent)
 
 VU_BOOL ObjProxFilter::RemoveTest(VuEntity *ent)
 {
-    if ((ent->EntityType())->classInfo_[VU_DOMAIN] and (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
+    if ((ent->EntityType())->classInfo_[VU_DOMAIN] and
+        (ent->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
     {
         return FALSE;
     }
@@ -395,7 +410,7 @@ VU_BOOL ObjProxFilter::RemoveTest(VuEntity *ent)
     return TRUE;
 }
 
-ObjProxFilter* AllObjProxFilter = NULL;
+ObjProxFilter *AllObjProxFilter = NULL;
 
 // ==============================
 // General Filters
@@ -403,7 +418,7 @@ ObjProxFilter* AllObjProxFilter = NULL;
 
 VU_BOOL CampBaseFilter::Test(VuEntity *e)
 {
-    if ((e->EntityType())->classInfo_[VU_DOMAIN] and 
+    if ((e->EntityType())->classInfo_[VU_DOMAIN] and
         ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT or
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
@@ -413,7 +428,7 @@ VU_BOOL CampBaseFilter::Test(VuEntity *e)
 
 VU_BOOL CampBaseFilter::RemoveTest(VuEntity *e)
 {
-    if ((e->EntityType())->classInfo_[VU_DOMAIN] and 
+    if ((e->EntityType())->classInfo_[VU_DOMAIN] and
         ((e->EntityType())->classInfo_[VU_CLASS] == CLASS_UNIT or
          (e->EntityType())->classInfo_[VU_CLASS] == CLASS_OBJECTIVE))
         return TRUE;
@@ -428,21 +443,21 @@ CampBaseFilter CampFilter;
 // ==============================
 
 #if VU_ALL_FILTERED
-VuLinkedList* AllUnitList = NULL; // All units
-VuLinkedList* AllAirList = NULL; // All air units
-VuLinkedList* AllParentList = NULL; // All parent units
-VuLinkedList* AllRealList = NULL; // All real units
-VuLinkedList* AllObjList = NULL; // All objectives
-VuLinkedList* AllCampList = NULL; // All campaign entities
-VuLinkedList* InactiveList = NULL; // Inactive units (reinforcements)
+VuLinkedList *AllUnitList = NULL; // All units
+VuLinkedList *AllAirList = NULL; // All air units
+VuLinkedList *AllParentList = NULL; // All parent units
+VuLinkedList *AllRealList = NULL; // All real units
+VuLinkedList *AllObjList = NULL; // All objectives
+VuLinkedList *AllCampList = NULL; // All campaign entities
+VuLinkedList *InactiveList = NULL; // Inactive units (reinforcements)
 #else
-VuFilteredList* AllUnitList = NULL; // All units
-VuFilteredList* AllAirList = NULL; // All air units
-VuFilteredList* AllParentList = NULL; // All parent units
-VuFilteredList* AllRealList = NULL; // All real units
-VuFilteredList* AllObjList = NULL; // All objectives
-VuFilteredList* AllCampList = NULL; // All campaign entities
-VuFilteredList* InactiveList = NULL; // Inactive units (reinforcements)
+VuFilteredList *AllUnitList = NULL; // All units
+VuFilteredList *AllAirList = NULL; // All air units
+VuFilteredList *AllParentList = NULL; // All parent units
+VuFilteredList *AllRealList = NULL; // All real units
+VuFilteredList *AllObjList = NULL; // All objectives
+VuFilteredList *AllCampList = NULL; // All campaign entities
+VuFilteredList *InactiveList = NULL; // Inactive units (reinforcements)
 #endif
 
 // ==============================
@@ -450,7 +465,10 @@ VuFilteredList* InactiveList = NULL; // Inactive units (reinforcements)
 // ==============================
 
 #if not USE_VU_COLL_FOR_CAMPAIGN
-CampBaseMap::CampBaseMap(const string &name) : mutex(F4CreateCriticalSection(name.c_str())) {}
+CampBaseMap::CampBaseMap(const string &name)
+    : mutex(F4CreateCriticalSection(name.c_str()))
+{
+}
 CampBaseMap::~CampBaseMap()
 {
     F4DestroyCriticalSection(mutex);
@@ -507,14 +525,15 @@ F4CSECTIONHANDLE *simDirtyMutexes[MAX_DIRTY_BUCKETS];
 // ==============================
 
 List PODataList = NULL;
-List FLOTList = NULL; // A List of PackXY points defining the Forward Line Of Troops.
+List FLOTList =
+    NULL; // A List of PackXY points defining the Forward Line Of Troops.
 
 // ==============================
 // Proximity Lists
 // ==============================
 
-VuGridTree* ObjProxList = NULL; // Proximity list of all objectives
-VuGridTree* RealUnitProxList = NULL; // Proximity list of all units
+VuGridTree *ObjProxList = NULL; // Proximity list of all objectives
+VuGridTree *RealUnitProxList = NULL; // Proximity list of all units
 
 // ==============================
 // List maintenance routines
@@ -560,7 +579,7 @@ void InitCampaignLists(void)
 #endif
 
     /* sfr: these are initialized with campaign now */
-    for (int loop = 0; loop < MAX_DIRTY_BUCKETS; loop ++)
+    for (int loop = 0; loop < MAX_DIRTY_BUCKETS; loop++)
     {
         // sfr: new dirty buckets
         //DirtyBucket[loop] = new TailInsertList (&AllOpaqueFilter);
@@ -629,7 +648,8 @@ void InitCampaignLists(void)
     }
 
 #if GRID_CORRECTION
-    RealUnitProxFilter = new UnitProxFilter(TREE_RES, (GRID_SIZE_FT * (Map_Max_Y + 1)));
+    RealUnitProxFilter =
+        new UnitProxFilter(TREE_RES, (GRID_SIZE_FT * (Map_Max_Y + 1)));
 #else
     RealUnitProxFilter = new UnitProxFilter(1);
 #endif
@@ -644,7 +664,8 @@ void InitCampaignLists(void)
 void InitTheaterLists(void)
 {
 #if GRID_CORRECTION
-    AllObjProxFilter = new ObjProxFilter(TREE_RES, (GRID_SIZE_FT * (Map_Max_Y + 1)));
+    AllObjProxFilter =
+        new ObjProxFilter(TREE_RES, (GRID_SIZE_FT * (Map_Max_Y + 1)));
 #else
     AllObjProxFilter = new ObjProxFilter();
 #endif
@@ -683,7 +704,7 @@ void DisposeBaseLists(void)
 void DisposeCampaignLists(void)
 {
     /* sfr: finalized with campaign now */
-    for (int loop = 0; loop < MAX_DIRTY_BUCKETS; loop ++)
+    for (int loop = 0; loop < MAX_DIRTY_BUCKETS; loop++)
     {
         // sfr: new dirty bucket
         //DirtyBucket[loop]->DeInit();
@@ -842,16 +863,15 @@ int RebuildFrontList(int do_barcaps, int incremental)
     //lastRequest is now subtracted from CurrentTime.
     //Barcap Request also needed to be converted to milliseconds.
     //if (do_barcaps and lastRequest - Camp_GetCurrentTime() > (unsigned int)BARCAP_REQUEST_INTERVAL)
-    if (
-        do_barcaps and 
-        (Camp_GetCurrentTime() - lastRequest > ((unsigned int)BARCAP_REQUEST_INTERVAL * CampaignMinutes))
-    )
+    if (do_barcaps and
+        (Camp_GetCurrentTime() - lastRequest >
+         ((unsigned int)BARCAP_REQUEST_INTERVAL * CampaignMinutes)))
     {
         lastRequest = Camp_GetCurrentTime();
         bok = 1;
     }
 
-    if ( not incremental)
+    if (not incremental)
     {
         FrontList->Purge();
     }
@@ -866,7 +886,9 @@ int RebuildFrontList(int do_barcaps, int incremental)
             fseed = 0;
             isolated = 1;
 
-            for (i = 0, n = o; i < o->static_data.links and n and ( not front or isolated); i++)
+            for (i = 0, n = o;
+                 i < o->static_data.links and n and (not front or isolated);
+                 i++)
             {
                 n = o->GetNeighbor(i);
 
@@ -876,12 +898,14 @@ int RebuildFrontList(int do_barcaps, int incremental)
                     {
                         front = n->GetOwner();
                     }
-                    else if (isolated and not GetRoE(n->GetTeam(), o->GetTeam(), ROE_GROUND_CAPTURE))
+                    else if (isolated and not GetRoE(n->GetTeam(), o->GetTeam(),
+                                                     ROE_GROUND_CAPTURE))
                     {
                         isolated = 0;
                     }
 
-                    if (bok and front and GetRoE(o->GetTeam(), n->GetTeam(), ROE_AIR_ENGAGE))
+                    if (bok and front and
+                        GetRoE(o->GetTeam(), n->GetTeam(), ROE_AIR_ENGAGE))
                     {
                         fseed = o->Id() + n->Id();
                         mis.vs = n->GetTeam();
@@ -897,19 +921,20 @@ int RebuildFrontList(int do_barcaps, int incremental)
                 o->GetLocation(&x, &y);
                 u = FindNearestRealUnit(x, y, NULL, 5);
 
-                if (u and GetRoE(u->GetTeam(), o->GetTeam(), ROE_GROUND_CAPTURE))
+                if (u and
+                    GetRoE(u->GetTeam(), o->GetTeam(), ROE_GROUND_CAPTURE))
                 {
                     front = u->GetOwner();
                 }
 
-                if ( not u or (u and u->GetTeam() not_eq o->GetTeam()))
+                if (not u or (u and u->GetTeam() not_eq o->GetTeam()))
                 {
                     // Enemy units are in control, send a captured message
                     CaptureObjective(o, (Control)front, NULL);
                 }
             }
 
-            if ( not front)
+            if (not front)
             {
                 if (o->IsFrontline())
                 {
@@ -920,7 +945,8 @@ int RebuildFrontList(int do_barcaps, int incremental)
                         FrontList->Remove(o);
                     }
 
-                    o->ClearObjFlags(O_FRONTLINE bitor O_SECONDLINE bitor O_THIRDLINE);
+                    o->ClearObjFlags(O_FRONTLINE bitor O_SECONDLINE bitor
+                                     O_THIRDLINE);
                 }
 
                 o->SetAbandoned(0);
@@ -928,14 +954,14 @@ int RebuildFrontList(int do_barcaps, int incremental)
             }
             else if (front)
             {
-                if ( not o->IsFrontline())
+                if (not o->IsFrontline())
                 {
                     dirty = 1;
                     o->SetObjFlags(O_FRONTLINE);
                     o->ClearObjFlags(O_SECONDLINE bitor O_THIRDLINE);
                 }
 
-                if ( not incremental or not o->IsFrontline())
+                if (not incremental or not o->IsFrontline())
                 {
                     FrontList->ForcedInsert(o);
                 }
@@ -952,7 +978,8 @@ int RebuildFrontList(int do_barcaps, int incremental)
                 mis.vs = 0;
                 // Try to base TOT on the combined ID of the two frontline objectives -
                 // to try and get both teams here at same time
-                mis.tot = Camp_GetCurrentTime() + (60 + fseed % 60) * CampaignMinutes;
+                mis.tot =
+                    Camp_GetCurrentTime() + (60 + fseed % 60) * CampaignMinutes;
                 mis.tot_type = TYPE_EQ;
 
                 //Cobra This allows a variety of CAP missions
@@ -1001,7 +1028,7 @@ void RebuildFLOTList(void)
     // I need to think of an algorythm to sort based on the relative geometry between frontline objectives.
     FLOTList->Purge();
     VuListIterator frontit(FrontList);
-    o = (Objective) frontit.GetFirst();
+    o = (Objective)frontit.GetFirst();
 
     while (o)
     {
@@ -1024,13 +1051,14 @@ void RebuildFLOTList(void)
                 {
                     UnpackXY(lp->GetUserData(), &x, &y);
 
-                    if (DistSqu(x, y, fx, fy) < 900.0F) // Min 30 km between points
+                    if (DistSqu(x, y, fx, fy) <
+                        900.0F) // Min 30 km between points
                         found = 1;
 
                     lp = lp->GetNext();
                 }
 
-                if ( not found)
+                if (not found)
                 {
                     if (FLOTSortDirection)
                         FLOTList->InsertNewElement(fy, data, 0);
@@ -1040,7 +1068,7 @@ void RebuildFLOTList(void)
             }
         }
 
-        o = (Objective) frontit.GetNext();
+        o = (Objective)frontit.GetNext();
     }
 }
 
@@ -1077,7 +1105,7 @@ void MarkObjectives(void)
 
                 if (n)
                 {
-                    if ( not n->IsFrontline() and o->GetTeam() == n->GetTeam())
+                    if (not n->IsFrontline() and o->GetTeam() == n->GetTeam())
                     {
                         n->SetObjFlags(O_SECONDLINE);
                         secondlist.ForcedInsert(n);
@@ -1101,7 +1129,7 @@ void MarkObjectives(void)
 
                 if (n)
                 {
-                    if ( not n->IsFrontline() and not n->IsSecondline())
+                    if (not n->IsFrontline() and not n->IsSecondline())
                     {
                         n->SetObjFlags(O_THIRDLINE);
                     }
@@ -1175,7 +1203,9 @@ int RebuildEmitterList()
 
     while (e)
     {
-        if (e->GetDomain() == DOMAIN_LAND and ( not e->IsUnit() or ( not ((Unit)e)->Inactive() and ((Unit)e)->Real())))
+        if (e->GetDomain() == DOMAIN_LAND and
+            (not e->IsUnit() or
+             (not((Unit)e)->Inactive() and ((Unit)e)->Real())))
         {
             rl = e->GetElectronicDetectionRange(LowAir);
             range = e->GetElectronicDetectionRange(Air);
@@ -1197,7 +1227,7 @@ int RebuildEmitterList()
                 e->GetLocation(&x, &y);
                 team = e->GetTeam();
 
-                if ( not e->IsObjective())
+                if (not e->IsObjective())
                 {
                     VuListIterator airit(EmitterList);
                     a = (CampEntity)airit.GetFirst();
@@ -1209,14 +1239,15 @@ int RebuildEmitterList()
                         if (a->GetTeam() == team and not a->IsObjective())
                         {
                             a->GetLocation(&ex, &ey);
-                            d =  FloatToInt32(Distance(x, y, ex, ey));
+                            d = FloatToInt32(Distance(x, y, ex, ey));
                             r = a->GetElectronicDetectionRange(mt);
 
                             if (r > d + range)
                             {
                                 emit = 0;
                             }
-                            else if ((range > d + r) and (a->GetRadarMode() < FEC_RADAR_SEARCH_1))
+                            else if ((range > d + r) and
+                                     (a->GetRadarMode() < FEC_RADAR_SEARCH_1))
                             {
                                 a->SetEmitting(0);
                             }
@@ -1226,18 +1257,20 @@ int RebuildEmitterList()
                     }
                 }
 
-                if (e->IsBattalion() and e->GetSType() == STYPE_UNIT_AIR_DEFENSE)
+                if (e->IsBattalion() and
+                    e->GetSType() == STYPE_UNIT_AIR_DEFENSE)
                     // if (e->GetAproxHitChance(LowAir,0) > 0)
                     AirDefenseList->ForcedInsert(e);
 
-                if ( not change and ((emit and not e->IsEmitting()) or ( not emit and e->IsEmitting())))
+                if (not change and ((emit and not e->IsEmitting()) or
+                                    (not emit and e->IsEmitting())))
                     change = 1;
 
                 e->SetEmitting(emit);
 
                 if (emit and e->GetRadarMode() < FEC_RADAR_AQUIRE)
-                    e->SetSearchMode(FEC_RADAR_SEARCH_1);//me123 + rand()%3);
-                else if ( not emit)
+                    e->SetSearchMode(FEC_RADAR_SEARCH_1); //me123 + rand()%3);
+                else if (not emit)
                     e->SetSearchMode(FEC_RADAR_OFF); // Our "search mode" is off
             }
         }
@@ -1255,7 +1288,7 @@ void StandardRebuild(void)
     RebuildFrontList(TRUE, FALSE);
     RebuildEmitterList();
 
-    if ( not build or not TheCampaign.SamMapData)
+    if (not build or not TheCampaign.SamMapData)
     {
         TheCampaign.MakeCampMap(MAP_SAMCOVERAGE);
     }
@@ -1268,7 +1301,7 @@ void StandardRebuild(void)
         build = -1;
     }
 
-    if ( not TheCampaign.CampMapData)
+    if (not TheCampaign.CampMapData)
     {
         TheCampaign.MakeCampMap(MAP_OWNERSHIP);
     }
@@ -1277,26 +1310,25 @@ void StandardRebuild(void)
 }
 
 
-
 // JPO - some debug stuff - to check if lists are ok
 int CheckObjProxyOK(int X, int Y)
 {
-    if (ObjProxList == NULL) return 1;
+    if (ObjProxList == NULL)
+        return 1;
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator myit(ObjProxList, (BIG_SCALAR)GridToSim(X), (BIG_SCALAR)GridToSim(Y), (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(ObjProxList, (BIG_SCALAR)GridToSim(X),
+                        (BIG_SCALAR)GridToSim(Y), (BIG_SCALAR)GridToSim(100));
 #else
-    VuGridIterator myit(ObjProxList, (BIG_SCALAR)GridToSim(Y), (BIG_SCALAR)GridToSim(X), (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(ObjProxList, (BIG_SCALAR)GridToSim(Y),
+                        (BIG_SCALAR)GridToSim(X), (BIG_SCALAR)GridToSim(100));
 #endif
     Objective o;
 
-    for (
-        o = (Objective) myit.GetFirst();
-        o not_eq NULL;
-        o = (Objective) myit.GetNext()
-    )
+    for (o = (Objective)myit.GetFirst(); o not_eq NULL;
+         o = (Objective)myit.GetNext())
     {
-        if (F4IsBadReadPtr(o, sizeof * o))
+        if (F4IsBadReadPtr(o, sizeof *o))
         {
             return 0;
         }
@@ -1307,22 +1339,21 @@ int CheckObjProxyOK(int X, int Y)
 
 int CheckUnitProxyOK(int X, int Y)
 {
-    if (RealUnitProxList == NULL) return 1;
+    if (RealUnitProxList == NULL)
+        return 1;
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)GridToSim(X), (BIG_SCALAR)GridToSim(Y), (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)GridToSim(X),
+                        (BIG_SCALAR)GridToSim(Y), (BIG_SCALAR)GridToSim(100));
 #else
-    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)GridToSim(Y), (BIG_SCALAR)GridToSim(X), (BIG_SCALAR)GridToSim(100));
+    VuGridIterator myit(RealUnitProxList, (BIG_SCALAR)GridToSim(Y),
+                        (BIG_SCALAR)GridToSim(X), (BIG_SCALAR)GridToSim(100));
 #endif
     Unit u;
 
-    for (
-        u = (Unit) myit.GetFirst();
-        u not_eq NULL;
-        u = (Unit) myit.GetNext()
-    )
+    for (u = (Unit)myit.GetFirst(); u not_eq NULL; u = (Unit)myit.GetNext())
     {
-        if (F4IsBadReadPtr(u, sizeof * u))
+        if (F4IsBadReadPtr(u, sizeof *u))
         {
             return 0;
         }
@@ -1344,4 +1375,3 @@ void InactivateUnit(UnitClass *unit)
     // insert into inactive
     InactiveList->Insert(unit);
 }
-

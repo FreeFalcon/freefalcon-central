@@ -7,7 +7,8 @@ C_MapMover::C_MapMover() : C_Control()
     SY_ = 0;
     Draging_ = 0;
     DrawCallback_ = NULL;
-    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor
+                    C_BIT_MOUSEOVER;
 }
 
 C_MapMover::C_MapMover(char **stream) : C_Control(stream)
@@ -24,7 +25,7 @@ C_MapMover::~C_MapMover()
 
 long C_MapMover::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_MapMover::Setup(long ID, short Type)
@@ -44,38 +45,41 @@ void C_MapMover::Cleanup()
 
 long C_MapMover::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (0);
 
-    if (relX >= (GetX()) and relX <= (GetX() + GetW()) and relY >= (GetY()) and relY <= (GetY() + GetH()))
+    if (relX >= (GetX()) and relX <= (GetX() + GetW()) and relY >= (GetY()) and
+        relY <= (GetY() + GetH()))
     {
         SetRelXY(relX - GetX(), relY - GetY());
-        return(GetID());
+        return (GetID());
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_MapMover::Process(long, short HitType)
 {
-    if ( not Ready()) return(FALSE);
+    if (not Ready())
+        return (FALSE);
 
     switch (HitType)
     {
-        case C_TYPE_LMOUSEDOWN:
-            break;
+    case C_TYPE_LMOUSEDOWN:
+        break;
 
-        case C_TYPE_LMOUSEUP:
-            SX_ = 0;
-            SY_ = 0;
-            Refresh();
-            break;
+    case C_TYPE_LMOUSEUP:
+        SX_ = 0;
+        SY_ = 0;
+        Refresh();
+        break;
 
-        case C_TYPE_LMOUSEDBLCLK:
-        case C_TYPE_RMOUSEDOWN:
-        case C_TYPE_RMOUSEUP:
-        case C_TYPE_RMOUSEDBLCLK:
-            break;
+    case C_TYPE_LMOUSEDBLCLK:
+    case C_TYPE_RMOUSEDOWN:
+    case C_TYPE_RMOUSEUP:
+    case C_TYPE_RMOUSEDBLCLK:
+        break;
     }
 
     gSoundMgr->PlaySound(GetSound(HitType));
@@ -86,20 +90,22 @@ BOOL C_MapMover::Process(long, short HitType)
     if (HitType == C_TYPE_LMOUSEUP)
         Draging_ = 0;
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_MapMover::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1,
+                           GetY() + GetH() + 1, GetFlags(), GetClient());
 }
 
 void C_MapMover::Draw(SCREEN *, UI95_RECT *)
 {
-    if ( not Ready()) return;
+    if (not Ready())
+        return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
@@ -110,10 +116,10 @@ void C_MapMover::Draw(SCREEN *, UI95_RECT *)
 
 BOOL C_MapMover::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
-        return(FALSE);
+        return (FALSE);
 
     Leave = UI_Enter(Parent_);
     Draging_ = 1;
@@ -129,7 +135,7 @@ BOOL C_MapMover::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     }
 
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_MapMover::Wheel(int increment, WORD MouseX, WORD MouseY)

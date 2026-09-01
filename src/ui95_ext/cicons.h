@@ -15,7 +15,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -51,7 +52,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -65,7 +67,7 @@ public:
     long ImageID;
     short Dragable;
     DETECTOR *Detect;
-    C_MapIcon   *Owner;
+    C_MapIcon *Owner;
     O_Output *Icon;
     O_Output *Div;
     O_Output *Brig;
@@ -84,7 +86,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -100,7 +103,6 @@ private:
     C_Resmgr *Icons_[NUM_DIRECTIONS][2];
 
 public:
-
     enum
     {
         LOW_SAM = 0x0001,
@@ -134,7 +136,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     void ShowCircles(short val)
@@ -143,20 +145,31 @@ public:
     }
     short GetShowCircles()
     {
-        return(ShowCircles_);
+        return (ShowCircles_);
     }
 
-    MAPICONLIST *AddIconToList(long CampID, short type, long ImageID, float x, float y, short Dragable, _TCHAR *str, long DivID, long BrigID, long BatID, long newstatus, long newstate, DETECTOR *detptr);
-    MAPICONLIST *AddIconToList(long CampID, short type, long ImageID, float x, float y, short Dragable, _TCHAR *str, long DivID, long BrigID, long BatID, long newstatus, long newstate)
+    MAPICONLIST *AddIconToList(long CampID, short type, long ImageID, float x,
+                               float y, short Dragable, _TCHAR *str, long DivID,
+                               long BrigID, long BatID, long newstatus,
+                               long newstate, DETECTOR *detptr);
+    MAPICONLIST *AddIconToList(long CampID, short type, long ImageID, float x,
+                               float y, short Dragable, _TCHAR *str, long DivID,
+                               long BrigID, long BatID, long newstatus,
+                               long newstate)
     {
-        return(AddIconToList(CampID, type, ImageID, x, y, Dragable, str, DivID, BrigID, BatID, newstatus, newstate, NULL));
+        return (AddIconToList(CampID, type, ImageID, x, y, Dragable, str, DivID,
+                              BrigID, BatID, newstatus, newstate, NULL));
     }
-    MAPICONLIST *AddIconToList(long CampID, short type, long ImageID, float x, float y, short Dragable, _TCHAR *str, long newstatus, long newstate)
+    MAPICONLIST *AddIconToList(long CampID, short type, long ImageID, float x,
+                               float y, short Dragable, _TCHAR *str,
+                               long newstatus, long newstate)
     {
-        return(AddIconToList(CampID, type, ImageID, x, y, Dragable, str, 0, 0, 0, newstatus, newstate, NULL));
+        return (AddIconToList(CampID, type, ImageID, x, y, Dragable, str, 0, 0,
+                              0, newstatus, newstate, NULL));
     }
     BOOL UpdateInfo(long ID, float x, float y, long newstatus, long newstate);
-    BOOL UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, long newstate);
+    BOOL UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus,
+                    long newstate);
     void RemoveIcon(long CampID);
     BOOL ShowByType(long mask);
     BOOL HideByType(long mask);
@@ -166,7 +179,7 @@ public:
     MAPICONLIST *FindID(long ID);
     MAPICONLIST *GetLastItem()
     {
-        return(Last_);
+        return (Last_);
     }
     void SetLabel(long ID, _TCHAR *txt);
     void SetColor(long ID, COLORREF color);
@@ -174,9 +187,10 @@ public:
     void SetTextOffset(long ID, short x, short y);
     long GetIconID()
     {
-        if (Last_) return(Last_->ID);
+        if (Last_)
+            return (Last_->ID);
 
-        return(0);
+        return (0);
     }
     void Refresh(MAPICONLIST *icon);
 
@@ -185,7 +199,7 @@ public:
 
     C_Hash *GetRoot()
     {
-        return(Root_);
+        return (Root_);
     }
 
     void SetTeam(short team)
@@ -194,7 +208,7 @@ public:
     }
     short GetTeam()
     {
-        return(Team_);
+        return (Team_);
     }
 
     void SetFont(long ID)
@@ -203,7 +217,7 @@ public:
     }
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
 
     long GetHelpText();
@@ -212,13 +226,13 @@ public:
     long CheckHotSpots(long relX, long relY);
     BOOL Dragable(long)
     {
-        return(GetFlags() bitand C_BIT_DRAGABLE);
+        return (GetFlags() bitand C_BIT_DRAGABLE);
     }
     BOOL Process(long ID, short ButtonHitType);
     BOOL MouseOver(long relX, long relY, C_Base *);
     void GetItemXY(long ID, long *x, long *y);
     BOOL Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *)
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *)
     {
         return FALSE;
     }
@@ -227,4 +241,3 @@ public:
 };
 
 #endif
-

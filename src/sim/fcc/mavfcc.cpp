@@ -1,4 +1,4 @@
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
 #include "fcc.h"
 #include "missile.h"
@@ -13,14 +13,14 @@
 #include "radar.h"
 #include "camp2sim.h"
 #include "playerop.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "hud.h" //MI
 #include "aircrft.h" // 2002-03-01 MN
 
 #include "simio.h"  // MD -- 20040111: added for analog cursor support
 
 static const float rangeFOV = (float)tan(1.0F * DTR);
-static const float MAVERICK_SLEW_RATE  = 0.05F;
+static const float MAVERICK_SLEW_RATE = 0.05F;
 extern float g_fCursorSpeed;
 
 extern bool g_bRealisticAvionics; //MI
@@ -32,51 +32,51 @@ void FireControlComputer::AirGroundMissileMode(void)
 {
     switch (Sms->curWeaponType)
     {
-        case wtAgm88:
-            HarmMode();
-            break;
+    case wtAgm88:
+        HarmMode();
+        break;
 
-        case wtAgm65:
-            MaverickMode();
-            break;
+    case wtAgm65:
+        MaverickMode();
+        break;
 
-        default:
-            if ( not releaseConsent)
-            {
+    default:
+        if (not releaseConsent)
+        {
                 // Check for regeneration of weapon
-                if (postDrop and Sms->curWeapon == NULL)
+            if (postDrop and Sms->curWeapon == NULL)
+            {
+                Sms->ResetCurrentWeapon();
+                Sms->WeaponStep();
+
+                if (Sms->curWeapon)
                 {
-                    Sms->ResetCurrentWeapon();
-                    Sms->WeaponStep();
-
-                    if (Sms->curWeapon)
-                    {
-                        platform->SOIManager(SimVehicleClass::SOI_WEAPON);
-                    }
-
-                    ClearCurrentTarget();
+                    platform->SOIManager(SimVehicleClass::SOI_WEAPON);
                 }
 
-                postDrop = FALSE;
+                ClearCurrentTarget();
             }
 
-            missileTOF = 0.0F;
-            missileActiveRange = 0.0F;
-            missileActiveTime = -1.0F;
-            missileSeekerAz = 0.0F;
-            missileSeekerEl = 0.0F;
+            postDrop = FALSE;
+        }
+
+        missileTOF = 0.0F;
+        missileActiveRange = 0.0F;
+        missileActiveTime = -1.0F;
+        missileSeekerAz = 0.0F;
+        missileSeekerEl = 0.0F;
             //LRKLUDGE
-            missileRMax   = 10000.0F;
-            missileRMin   = 0.075F * missileRMax;
-            missileRneMax = 0.8F * missileRMax;
-            missileRneMin = 0.2F * missileRMax;
-            break;
+        missileRMax = 10000.0F;
+        missileRMin = 0.075F * missileRMax;
+        missileRneMax = 0.8F * missileRMax;
+        missileRneMin = 0.2F * missileRMax;
+        break;
     }
 }
 
 void FireControlComputer::MaverickMode(void)
 {
-    SimObjectType *curTarget;
+    SimObjectType* curTarget;
     MissileClass* theMissile;
     MaverickDisplayClass* theDisplay = NULL;
     float yaw, pitch, roll;
@@ -86,13 +86,14 @@ void FireControlComputer::MaverickMode(void)
     int isLimited;
     mlTrig trig;
     //Tpoint pos;
-    SimObjectType *systemTarget;
+    SimObjectType* systemTarget;
 
     // MD -- 20040110: adding for analog cursor support
     float xMove = 0.0F, yMove = 0.0F;
 
     if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and
+            (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
         {
             yMove = (float)cursorYCmd / 10000.0F;
             xMove = (float)cursorXCmd / 10000.0F;
@@ -105,7 +106,8 @@ void FireControlComputer::MaverickMode(void)
 
 
     // See if we have a radar target
-    RadarClass* theRadar = (RadarClass*) FindSensor(platform, SensorClass::Radar);
+    RadarClass* theRadar =
+        (RadarClass*)FindSensor(platform, SensorClass::Radar);
 
     if (theRadar)
         systemTarget = theRadar->CurrentTarget();
@@ -113,9 +115,10 @@ void FireControlComputer::MaverickMode(void)
         systemTarget = targetPtr;
 
     // COBRA - RED - FIXING CTDs - Make the display to be available before using it...
-    theMissile = (MissileClass *)(Sms->GetCurrentWeapon());
+    theMissile = (MissileClass*)(Sms->GetCurrentWeapon());
 
-    if (theMissile and (MaverickDisplayClass*)(theMissile->display) and Sms->CurHardpoint() >= 0)
+    if (theMissile and (MaverickDisplayClass*)(theMissile->display) and
+        Sms->CurHardpoint() >= 0)
     {
         theDisplay = (MaverickDisplayClass*)(theMissile->display);
         // RV - Biker - Get WEZ max/min and convert to ft
@@ -124,13 +127,16 @@ void FireControlComputer::MaverickMode(void)
     }
 
     //sfr: added display check
-    if ((theDisplay not_eq NULL) and systemTarget and systemTarget->BaseData()->IsAirplane()) // Cobra - Target only ground targets
+    if ((theDisplay not_eq NULL) and systemTarget and
+        systemTarget->BaseData()
+            ->IsAirplane()) // Cobra - Target only ground targets
     {
-        if (theDisplay) theDisplay->DropTarget();
+        if (theDisplay)
+            theDisplay->DropTarget();
 
         ClearCurrentTarget();
         missileTarget = FALSE;
-        missileTOF    = 0.0f;
+        missileTOF = 0.0f;
         return;
     }
 
@@ -148,19 +154,29 @@ void FireControlComputer::MaverickMode(void)
 
     if (theDisplay)
     {
-        Sms->hardPoint[Sms->CurHardpoint()]->GetSubPosition(Sms->curWpnNum, &rx, &ry, &rz);
+        Sms->hardPoint[Sms->CurHardpoint()]->GetSubPosition(Sms->curWpnNum, &rx,
+                                                            &ry, &rz);
         rx += 5.0F;
-        dx = rx * platform->dmx[0][0] + ry * platform->dmx[1][0] + rz * platform->dmx[2][0];
-        dy = rx * platform->dmx[0][1] + ry * platform->dmx[1][1] + rz * platform->dmx[2][1];
-        dz = rx * platform->dmx[0][2] + ry * platform->dmx[1][2] + rz * platform->dmx[2][2];
+        dx = rx * platform->dmx[0][0] + ry * platform->dmx[1][0] +
+             rz * platform->dmx[2][0];
+        dy = rx * platform->dmx[0][1] + ry * platform->dmx[1][1] +
+             rz * platform->dmx[2][1];
+        dz = rx * platform->dmx[0][2] + ry * platform->dmx[1][2] +
+             rz * platform->dmx[2][2];
 
-        theDisplay->SetXYZ(platform->XPos() + dx, platform->YPos() + dy, platform->ZPos() + dz);
+        theDisplay->SetXYZ(platform->XPos() + dx, platform->YPos() + dy,
+                           platform->ZPos() + dz);
 
         // Simple radars, look at locked target if any, otherwise look at cursors
         // M.N. added full realism mode
-        AircraftClass *pa = (AircraftClass *)platform;
+        AircraftClass* pa = (AircraftClass*)platform;
 
-        if ( not playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP) or ((PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) and (subMode == SLAVE)))
+        if (not playerFCC or
+            (pa->IsPlayer() and
+             pa->AutopilotType() == AircraftClass::CombatAP) or
+            ((PlayerOptions.GetAvionicsType() not_eq ATRealistic and
+              PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) and
+             (subMode == SLAVE)))
         {
             if (systemTarget and systemTarget->BaseData()->OnGround())
             {
@@ -180,12 +196,14 @@ void FireControlComputer::MaverickMode(void)
             else
             {
                 // Find the ground Point
-                RadarClass* theRadar = (RadarClass*) FindSensor(platform, SensorClass::Radar);
+                RadarClass* theRadar =
+                    (RadarClass*)FindSensor(platform, SensorClass::Radar);
 
                 if (theRadar)
                 {
                     theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
-                    groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
+                    groundDesignateZ = OTWDriver.GetGroundLevel(
+                        groundDesignateX, groundDesignateY);
                 }
             }
 
@@ -196,14 +214,19 @@ void FireControlComputer::MaverickMode(void)
             dx = groundDesignateX - platform->XPos();
             dy = groundDesignateY - platform->YPos();
             dz = groundDesignateZ - platform->ZPos();
-            theMissile->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+            theMissile->SetTargetPosition(groundDesignateX, groundDesignateY,
+                                          groundDesignateZ);
 
-            rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-            ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-            rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+            rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy +
+                 platform->dmx[0][2] * dz;
+            ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy +
+                 platform->dmx[1][2] * dz;
+            rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy +
+                 platform->dmx[2][2] * dz;
 
             groundDesignateAz = (float)atan2(ry, rx);
-            groundDesignateEl = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+            groundDesignateEl =
+                (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
             groundDesignateDroll = (float)atan2(ry, -rz);
 
             // Can the missile see the target?
@@ -213,12 +236,13 @@ void FireControlComputer::MaverickMode(void)
             // 2001-05-25 MODIFIED BY S.G. DONE IN 'SetTarget' INSTEAD.
             // 2001-10-20 MODIFIED BY S.G. THE CODE IN 'SetTarget' SLOWS DOWN AIM-9 TARGET HUNTING. TRYING IT HERE AGAIN...
             if (theMissile->targetPtr)
-                CalcRelGeom(platform, theMissile->targetPtr, NULL, 1.0F / SimLibMajorFrameTime);
+                CalcRelGeom(platform, theMissile->targetPtr, NULL,
+                            1.0F / SimLibMajorFrameTime);
 
             // END OF ADDED SECTION
 
             pitch = groundDesignateEl;
-            yaw   = groundDesignateAz;
+            yaw = groundDesignateAz;
             isLimited = theMissile->SetSeekerPos(&yaw, &pitch);
             theMissile->RunSeeker();
 
@@ -227,14 +251,16 @@ void FireControlComputer::MaverickMode(void)
                 theDisplay->LockTarget();
                 SetTarget(theMissile->targetPtr);
                 missileTarget = TRUE;
-                missileTOF    = theMissile->GetTOF(-platform->ZPos(), platform->GetVt(), 0.0f, 0.0f, targetPtr->localData->range);
+                missileTOF =
+                    theMissile->GetTOF(-platform->ZPos(), platform->GetVt(),
+                                       0.0f, 0.0f, targetPtr->localData->range);
             }
             else
             {
                 theDisplay->DropTarget();
                 ClearCurrentTarget();
                 missileTarget = FALSE;
-                missileTOF    = 0.0f;
+                missileTOF = 0.0f;
             }
 
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);
@@ -269,7 +295,8 @@ void FireControlComputer::MaverickMode(void)
                     yaw = 0.0F;
                     pitch = 0.0F;
                     theMissile->SetSeekerPos(&yaw, &pitch);
-                    theDisplay->SetYPR(platform->Yaw(), platform->Pitch(), platform->Roll());
+                    theDisplay->SetYPR(platform->Yaw(), platform->Pitch(),
+                                       platform->Roll());
                     dropTrackCmd = FALSE;
                     ClearCurrentTarget();
                     theDisplay->DropTarget();
@@ -282,11 +309,13 @@ void FireControlComputer::MaverickMode(void)
             {
                 if (designateCmd)
                 {
-                    yaw   = platform->Yaw();
+                    yaw = platform->Yaw();
                     pitch = platform->Pitch();
                     mlSinCos(&trig, platform->Roll());
-                    pitch += groundDesignateEl * trig.cos - groundDesignateAz * trig.sin;
-                    yaw   += groundDesignateEl * trig.sin + groundDesignateAz * trig.cos;
+                    pitch += groundDesignateEl * trig.cos -
+                             groundDesignateAz * trig.sin;
+                    yaw += groundDesignateEl * trig.sin +
+                           groundDesignateAz * trig.cos;
 
                     if (FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
                     {
@@ -294,14 +323,23 @@ void FireControlComputer::MaverickMode(void)
                         dx = groundDesignateX - platform->XPos();
                         dy = groundDesignateY - platform->YPos();
                         dz = groundDesignateZ - platform->ZPos();
-                        theMissile->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                        theMissile->SetTargetPosition(groundDesignateX,
+                                                      groundDesignateY,
+                                                      groundDesignateZ);
 
-                        rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-                        ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-                        rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+                        rx = platform->dmx[0][0] * dx +
+                             platform->dmx[0][1] * dy +
+                             platform->dmx[0][2] * dz;
+                        ry = platform->dmx[1][0] * dx +
+                             platform->dmx[1][1] * dy +
+                             platform->dmx[1][2] * dz;
+                        rz = platform->dmx[2][0] * dx +
+                             platform->dmx[2][1] * dy +
+                             platform->dmx[2][2] * dz;
 
                         groundDesignateAz = (float)atan2(ry, rx);
-                        groundDesignateEl = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+                        groundDesignateEl = (float)atan(
+                            -rz / (float)sqrt(rx * rx + ry * ry + .1f));
                         groundDesignateDroll = (float)atan2(ry, -rz);
                         theMissile->SetTargetPosition(tmpX, tmpY, tmpZ);
                         preDesignate = FALSE;
@@ -323,7 +361,7 @@ void FireControlComputer::MaverickMode(void)
                     {
                         if (systemTarget)
                         {
-                            yaw   = systemTarget->localData->az;
+                            yaw = systemTarget->localData->az;
                             pitch = systemTarget->localData->el;
                             groundDesignateX = systemTarget->BaseData()->XPos();
                             groundDesignateY = systemTarget->BaseData()->YPos();
@@ -331,19 +369,22 @@ void FireControlComputer::MaverickMode(void)
                         }
                         else
                         {
-                            RadarClass* theRadar = (RadarClass*) FindSensor(platform, SensorClass::Radar);
+                            RadarClass* theRadar = (RadarClass*)FindSensor(
+                                platform, SensorClass::Radar);
 
                             if (theRadar)
                             {
                                 pitch = theRadar->SeekerEl();
-                                yaw   = theRadar->SeekerAz();
-                                theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
-                                groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
+                                yaw = theRadar->SeekerAz();
+                                theRadar->GetAGCenter(&groundDesignateX,
+                                                      &groundDesignateY);
+                                groundDesignateZ = OTWDriver.GetGroundLevel(
+                                    groundDesignateX, groundDesignateY);
                             }
                             else
                             {
                                 pitch = 0.0f;
-                                yaw   = 0.0f;
+                                yaw = 0.0f;
                                 groundDesignateX = 0.0F;
                                 groundDesignateY = 0.0F;
                                 groundDesignateZ = 0.0F;
@@ -352,35 +393,48 @@ void FireControlComputer::MaverickMode(void)
                         }
 
                         mlSinCos(&trig, platform->Roll());
-                        groundDesignateEl =  pitch * trig.cos + yaw * trig.sin;
+                        groundDesignateEl = pitch * trig.cos + yaw * trig.sin;
                         groundDesignateAz = -pitch * trig.sin + yaw * trig.cos;
-                        groundDesignateDroll = (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
+                        groundDesignateDroll = (float)atan2(
+                            sin(groundDesignateAz), sin(groundDesignateEl));
                         groundPipperEl = 0.0F;
                         groundPipperAz = 0.0F;
 
                         pitch += platform->Pitch();
-                        yaw   += platform->Yaw();
-                        roll  = 0.0F;
+                        yaw += platform->Yaw();
+                        roll = 0.0F;
                     }
                     else
                     {
-                        groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
-                        groundDesignateEl = -cockpitFlightData.alpha * DTR + cockpitFlightData.windOffset * platform->platformAngles.sinphi;
+                        groundDesignateAz = -cockpitFlightData.beta * DTR +
+                                            cockpitFlightData.windOffset *
+                                                platform->platformAngles.cosphi;
+                        groundDesignateEl = -cockpitFlightData.alpha * DTR +
+                                            cockpitFlightData.windOffset *
+                                                platform->platformAngles.sinphi;
                         groundDesignateAz += groundPipperAz;
                         groundDesignateEl += groundPipperEl;
-                        groundDesignateDroll = (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
+                        groundDesignateDroll = (float)atan2(
+                            sin(groundDesignateAz), sin(groundDesignateEl));
 
-                        groundPipperEl += yMove * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime;
-                        groundPipperAz += xMove * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime;
+                        groundPipperEl += yMove * g_fCursorSpeed *
+                                          MAVERICK_SLEW_RATE *
+                                          SimLibMajorFrameTime;
+                        groundPipperAz += xMove * g_fCursorSpeed *
+                                          MAVERICK_SLEW_RATE *
+                                          SimLibMajorFrameTime;
 
-                        yaw   = platform->Yaw();
+                        yaw = platform->Yaw();
                         pitch = platform->Pitch();
-                        roll  = platform->Roll();
+                        roll = platform->Roll();
                         mlSinCos(&trig, platform->Roll());
-                        pitch += groundDesignateEl * trig.cos - groundDesignateAz * trig.sin;
-                        yaw += groundDesignateEl * trig.sin + groundDesignateAz * trig.cos;
+                        pitch += groundDesignateEl * trig.cos -
+                                 groundDesignateAz * trig.sin;
+                        yaw += groundDesignateEl * trig.sin +
+                               groundDesignateAz * trig.cos;
 
-                        if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                        if (not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY,
+                                                       &tmpZ))
                         {
                             groundDesignateX = 0.0F;
                             groundDesignateY = 0.0F;
@@ -403,12 +457,14 @@ void FireControlComputer::MaverickMode(void)
 
                     if (missileTarget)
                     {
-                        theMissile->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                        theMissile->SetTargetPosition(groundDesignateX,
+                                                      groundDesignateY,
+                                                      groundDesignateZ);
                         MavCheckLock(theMissile);
                     }
                 }
             }
-            else if ( not preDesignate)
+            else if (not preDesignate)
             {
                 if (theDisplay->IsLocked())
                 {
@@ -428,14 +484,19 @@ void FireControlComputer::MaverickMode(void)
                     dx = groundDesignateX - platform->XPos();
                     dy = groundDesignateY - platform->YPos();
                     dz = groundDesignateZ - platform->ZPos();
-                    theMissile->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                    theMissile->SetTargetPosition(
+                        groundDesignateX, groundDesignateY, groundDesignateZ);
 
-                    rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-                    ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-                    rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+                    rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy +
+                         platform->dmx[0][2] * dz;
+                    ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy +
+                         platform->dmx[1][2] * dz;
+                    rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy +
+                         platform->dmx[2][2] * dz;
 
                     groundDesignateAz = (float)atan2(ry, rx);
-                    groundDesignateEl = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+                    groundDesignateEl =
+                        (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
                     groundDesignateDroll = (float)atan2(ry, -rz);
 
                     if (targetPtr)
@@ -444,20 +505,22 @@ void FireControlComputer::MaverickMode(void)
 
                         // 2001-10-20 ADDED BY S.G. THE CODE IN 'SetTarget' BETTER BE SAFE THAN SORRY. FOR PLAYER'S FCC, ALSO SET THE Target Geometry
                         if (theMissile->targetPtr)
-                            CalcRelGeom(platform, theMissile->targetPtr, NULL, 1.0F / SimLibMajorFrameTime);
+                            CalcRelGeom(platform, theMissile->targetPtr, NULL,
+                                        1.0F / SimLibMajorFrameTime);
 
                         // END OF ADDED SECTION
                         pitch = groundDesignateEl;
-                        yaw   = groundDesignateAz;
+                        yaw = groundDesignateAz;
                         isLimited = theMissile->SetSeekerPos(&yaw, &pitch);
                         theMissile->RunSeeker();
 
-                        if ( not theMissile->targetPtr)
+                        if (not theMissile->targetPtr)
                         {
                             if (subMode not_eq SLAVE)
                                 platform->SOIManager(SimVehicleClass::SOI_HUD);
                             else
-                                platform->SOIManager(SimVehicleClass::SOI_RADAR);
+                                platform->SOIManager(
+                                    SimVehicleClass::SOI_RADAR);
 
                             ClearCurrentTarget();
                             theDisplay->DropTarget();
@@ -479,10 +542,11 @@ void FireControlComputer::MaverickMode(void)
                     {
 
                         if (g_bMavFixes) // a.s. 20.Febr.2002. begin: New Code for slewing MAVs. With this code, not the angles are altered, but
-                            // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
+                        // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
                         {
                             float deltaX = 0.0F, deltaY = 0.0F;
-                            float theta = 0.0F, costheta = 0.0F, sintheta = 0.0F;
+                            float theta = 0.0F, costheta = 0.0F,
+                                  sintheta = 0.0F;
                             float phi = 0.0F, cosphi = 0.0F, sinphi = 0.0F;
                             float alpha = 0, cosalpha, sensoryaw = 0.0F;
                             float groundrange, range;
@@ -492,37 +556,66 @@ void FireControlComputer::MaverickMode(void)
                             dy = groundDesignateY - platform->YPos();
                             dz = groundDesignateZ - platform->ZPos();
 
-                            groundrange = (float) sqrt(dx * dx + dy * dy + 0.01F);
-                            range = (float) sqrt(dx * dx + dy * dy + dz * dz + 0.01F);
+                            groundrange =
+                                (float)sqrt(dx * dx + dy * dy + 0.01F);
+                            range = (float)sqrt(dx * dx + dy * dy + dz * dz +
+                                                0.01F);
 
-                            theta = -(platform->Yaw());  // platform yaw  - rotation angle of y-achse
+                            theta = -(
+                                platform
+                                    ->Yaw()); // platform yaw  - rotation angle of y-achse
 
-                            sensoryaw = -(float)atan2(dy, dx);  // sensor yaw
+                            sensoryaw = -(float)atan2(dy, dx); // sensor yaw
 
-                            phi =   pi / 2.0F + sensoryaw; // rotation angle of x-achse
+                            phi = pi / 2.0F +
+                                  sensoryaw; // rotation angle of x-achse
 
-                            alpha = pi / 2.0F + ((float)atan(-dz / groundrange)); // (90° - sensor pitch)
+                            alpha =
+                                pi / 2.0F +
+                                ((float)atan(
+                                    -dz / groundrange)); // (90° - sensor pitch)
 
-                            costheta = (float) cos(theta);
-                            sintheta = (float) sin(theta);
-                            cosphi = (float) cos(phi);
-                            sinphi = (float) sin(phi);
-                            cosalpha = max((float) cos(alpha),  0.0001F);  // we need this for adjusting slew-rate
+                            costheta = (float)cos(theta);
+                            sintheta = (float)sin(theta);
+                            cosphi = (float)cos(phi);
+                            sinphi = (float)sin(phi);
+                            cosalpha = max(
+                                (float)cos(alpha),
+                                0.0001F); // we need this for adjusting slew-rate
 
 
                             if (theDisplay->CurFOV() < (3.5F * DTR))
                             {
-                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * (MAVERICK_SLEW_RATE / 2.0F) * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
-                                deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * (MAVERICK_SLEW_RATE / 2.0F) * SimLibMajorFrameTime; // calibrated for 21000 ft range
+                                deltaX =
+                                    yMove * 50000.0F * dz /
+                                    (cosalpha * cosalpha) * (0.03F / 4000) *
+                                    g_fCursorSpeed *
+                                    (MAVERICK_SLEW_RATE / 2.0F) *
+                                    SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
+                                deltaY =
+                                    xMove * 12000.0F * range / 21000.0F *
+                                    g_fCursorSpeed *
+                                    (MAVERICK_SLEW_RATE / 2.0F) *
+                                    SimLibMajorFrameTime; // calibrated for 21000 ft range
                             }
                             else
                             {
-                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03
-                                deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime; // calibrated for 21000 ft range
+                                deltaX =
+                                    yMove * 50000.0F * dz /
+                                    (cosalpha * cosalpha) * (0.03F / 4000) *
+                                    g_fCursorSpeed * MAVERICK_SLEW_RATE *
+                                    SimLibMajorFrameTime; // calibrated for 4000 ft high and 10° pitch, (cos^2 10) = 0.03
+                                deltaY =
+                                    xMove * 12000.0F * range / 21000.0F *
+                                    g_fCursorSpeed * MAVERICK_SLEW_RATE *
+                                    SimLibMajorFrameTime; // calibrated for 21000 ft range
                             }
 
 
-                            ry = (costheta * deltaY + cosphi * deltaX);    // non-orthogonal rotation of euklidian base
+                            ry =
+                                (costheta * deltaY +
+                                 cosphi *
+                                     deltaX); // non-orthogonal rotation of euklidian base
                             rx = (sintheta * deltaY + sinphi * deltaX);
                             rz = 0.0F;
 
@@ -532,12 +625,13 @@ void FireControlComputer::MaverickMode(void)
                             rz = 0.0F;
                             */
 
-                            groundDesignateX += rx;   // adjusting the designated point
+                            groundDesignateX +=
+                                rx; // adjusting the designated point
                             groundDesignateY += ry;
                             groundDesignateZ += 0.0F;
 
 
-                            if (range > 210000.0F)  // no more than 40 Miles
+                            if (range > 210000.0F) // no more than 40 Miles
                             {
                                 preDesignate = TRUE;
                                 groundPipperAz = 0.0F;
@@ -553,7 +647,9 @@ void FireControlComputer::MaverickMode(void)
                             }
                             else
                             {
-                                theMissile->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                                theMissile->SetTargetPosition(groundDesignateX,
+                                                              groundDesignateY,
+                                                              groundDesignateZ);
                                 missileTarget = TRUE;
                             }
 
@@ -561,23 +657,32 @@ void FireControlComputer::MaverickMode(void)
                         }
                         // a.s. end of new slew code
 
-                        else  // old SLEW Code
+                        else // old SLEW Code
                         {
                             theDisplay->GetYPR(&yaw, &pitch, &roll);
 
                             //MI
                             if (theDisplay->CurFOV() < (3.5F * DTR))
                             {
-                                pitch += yMove * g_fCursorSpeed * (MAVERICK_SLEW_RATE / 2) * SimLibMajorFrameTime;
-                                yaw += xMove * g_fCursorSpeed * (MAVERICK_SLEW_RATE / 2) * SimLibMajorFrameTime;
+                                pitch += yMove * g_fCursorSpeed *
+                                         (MAVERICK_SLEW_RATE / 2) *
+                                         SimLibMajorFrameTime;
+                                yaw += xMove * g_fCursorSpeed *
+                                       (MAVERICK_SLEW_RATE / 2) *
+                                       SimLibMajorFrameTime;
                             }
                             else
                             {
-                                pitch += yMove * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime;
-                                yaw += xMove * g_fCursorSpeed * MAVERICK_SLEW_RATE * SimLibMajorFrameTime;
+                                pitch += yMove * g_fCursorSpeed *
+                                         MAVERICK_SLEW_RATE *
+                                         SimLibMajorFrameTime;
+                                yaw += xMove * g_fCursorSpeed *
+                                       MAVERICK_SLEW_RATE *
+                                       SimLibMajorFrameTime;
                             }
 
-                            if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                            if (not FindGroundIntersection(pitch, yaw, &tmpX,
+                                                           &tmpY, &tmpZ))
                             {
                                 preDesignate = TRUE;
                                 groundPipperAz = 0.0F;
@@ -599,35 +704,42 @@ void FireControlComputer::MaverickMode(void)
 
                             theMissile->SetTarget(NULL);
                         } // end old SLEW Code
-
                     }
 
                     // Point at the designated spot
                     dx = groundDesignateX - platform->XPos();
                     dy = groundDesignateY - platform->YPos();
                     dz = groundDesignateZ - platform->ZPos();
-                    theMissile->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                    theMissile->SetTargetPosition(
+                        groundDesignateX, groundDesignateY, groundDesignateZ);
 
-                    rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-                    ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-                    rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+                    rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy +
+                         platform->dmx[0][2] * dz;
+                    ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy +
+                         platform->dmx[1][2] * dz;
+                    rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy +
+                         platform->dmx[2][2] * dz;
 
                     groundDesignateAz = (float)atan2(ry, rx);
-                    groundDesignateEl = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+                    groundDesignateEl =
+                        (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
                     groundDesignateDroll = (float)atan2(ry, -rz);
 
                     pitch = groundDesignateEl;
-                    yaw   = groundDesignateAz;
+                    yaw = groundDesignateAz;
                     isLimited = theMissile->SetSeekerPos(&yaw, &pitch);
 
-                    if ( not isLimited)
+                    if (not isLimited)
                     {
                         curTarget = MavCheckLock(theMissile);
 
                         mlSinCos(&trig, platform->Roll());
-                        pitch = groundDesignateEl * trig.cos - groundDesignateAz * trig.sin;
-                        yaw = groundDesignateEl * trig.sin + groundDesignateAz * trig.cos;
-                        theDisplay->SetYPR(yaw + platform->Yaw(), pitch + platform->Pitch(), 0.0F);
+                        pitch = groundDesignateEl * trig.cos -
+                                groundDesignateAz * trig.sin;
+                        yaw = groundDesignateEl * trig.sin +
+                              groundDesignateAz * trig.cos;
+                        theDisplay->SetYPR(yaw + platform->Yaw(),
+                                           pitch + platform->Pitch(), 0.0F);
                         theDisplay->DetectTarget();
                     }
                     else
@@ -641,7 +753,8 @@ void FireControlComputer::MaverickMode(void)
                             platform->SOIManager(SimVehicleClass::SOI_RADAR);
                     }
 
-                    if (theMissile->targetPtr and designateCmd and not lastDesignate)
+                    if (theMissile->targetPtr and designateCmd and
+                        not lastDesignate)
                     {
                         SetTarget(curTarget);
                         theDisplay->LockTarget();
@@ -660,20 +773,23 @@ void FireControlComputer::MaverickMode(void)
                             groundDesignateX = targetPtr->BaseData()->XPos();
                             groundDesignateY = targetPtr->BaseData()->YPos();
                             groundDesignateZ = targetPtr->BaseData()->ZPos();
-                            theMissile->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                            theMissile->SetTargetPosition(groundDesignateX,
+                                                          groundDesignateY,
+                                                          groundDesignateZ);
                         }
                     }
                 }
 
                 if (targetPtr)
                 {
-                    pitch = (float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1f));
+                    pitch =
+                        (float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1f));
                     yaw = (float)atan2(dy, dx);
                     roll = 0.0F;
 
                     theDisplay->SetYPR(yaw, pitch, roll);
                     pitch = groundDesignateEl;
-                    yaw   = groundDesignateAz;
+                    yaw = groundDesignateAz;
                     theMissile->SetSeekerPos(&yaw, &pitch);
                 }
             }
@@ -710,28 +826,34 @@ void FireControlComputer::MaverickMode(void)
                     }
                     else
                     {
-                        missileWEZDisplayRange = theRadar->GetRange() * NM_TO_FT;
-                        missileWEZDisplayRange = min(missileWEZDisplayRange, missileWEZmax);
+                        missileWEZDisplayRange =
+                            theRadar->GetRange() * NM_TO_FT;
+                        missileWEZDisplayRange =
+                            min(missileWEZDisplayRange, missileWEZmax);
                     }
 
-                    missileWEZDisplayRange = max(missileWEZDisplayRange, missileWEZmin);
+                    missileWEZDisplayRange =
+                        max(missileWEZDisplayRange, missileWEZmin);
                 }
                 else
                     missileWEZDisplayRange = 20.0F * NM_TO_FT;
 
                 theDisplay->SetTarget(TRUE);
-                missileTOF = theMissile->GetTOF(-platform->ZPos(), platform->GetVt(), 0.0f, 0.0f, targetPtr->localData->range);
+                missileTOF =
+                    theMissile->GetTOF(-platform->ZPos(), platform->GetVt(),
+                                       0.0f, 0.0f, targetPtr->localData->range);
             }
 
             else
             {
-                float range = (float)sqrt(groundDesignateX * groundDesignateX + groundDesignateY * groundDesignateY);
+                float range = (float)sqrt(groundDesignateX * groundDesignateX +
+                                          groundDesignateY * groundDesignateY);
 
                 theDisplay->SetTarget(FALSE);
-                missileTOF    = theMissile->GetTOF(-platform->ZPos(), platform->GetVt(), 0.0f, 0.0f, range);
+                missileTOF = theMissile->GetTOF(
+                    -platform->ZPos(), platform->GetVt(), 0.0f, 0.0f, range);
             }
         }
-
     }
     else
     {
@@ -744,7 +866,7 @@ void FireControlComputer::MaverickMode(void)
         missileTarget = FALSE;
     }
 
-    if ( not releaseConsent)
+    if (not releaseConsent)
     {
         postDrop = FALSE;
     }
@@ -754,11 +876,12 @@ void FireControlComputer::MaverickMode(void)
     // RV - Biker - Why all data is wrong??? Data can be fixed easier
     //missileRMax = 8.0f * NM_TO_FT;
     if (targetPtr)
-        missileRMax   = theMissile->GetRMax(-platform->ZPos(), platform->GetVt(), targetPtr->localData->az, 0.0f, 0.0f);
+        missileRMax = theMissile->GetRMax(-platform->ZPos(), platform->GetVt(),
+                                          targetPtr->localData->az, 0.0f, 0.0f);
     else
         missileRMax = 8.0f * NM_TO_FT;
 
-    missileRMin   = 0.075F * missileRMax;
+    missileRMin = 0.075F * missileRMax;
     missileRneMax = 0.8F * missileRMax;
     missileRneMin = 0.2F * missileRMax;
 
@@ -769,20 +892,17 @@ void FireControlComputer::MaverickMode(void)
     missileSeekerEl = 0.0F;
 
     //MI
-    MissileClass *curWeapon = NULL;
+    MissileClass* curWeapon = NULL;
     curWeapon = ((MissileClass*)Sms->GetCurrentWeapon());
 
     if (g_bRealisticAvionics and Sms and playerFCC)
     {
-        AircraftClass *pa = (AircraftClass *)curWeapon->parent.get();
+        AircraftClass* pa = (AircraftClass*)curWeapon->parent.get();
 
-        if (
-            curWeapon and 
-            (curWeapon->parent and 
-             pa->IsPlayer() and 
- not (pa->AutopilotType() == AircraftClass::CombatAP) and 
-             (curWeapon->Covered or not Sms->Powered))
-        )
+        if (curWeapon and
+            (curWeapon->parent and pa->IsPlayer() and
+             not(pa->AutopilotType() == AircraftClass::CombatAP) and
+             (curWeapon->Covered or not Sms->Powered)))
         {
             missileTarget = FALSE;
             ClearCurrentTarget();
@@ -797,7 +917,8 @@ void FireControlComputer::MaverickMode(void)
     }
 }
 
-int FireControlComputer::FindGroundIntersection(float el, float az, float* x, float* y, float* z)
+int FireControlComputer::FindGroundIntersection(float el, float az, float* x,
+                                                float* y, float* z)
 {
     euler dir;
     vector pos;
@@ -805,7 +926,7 @@ int FireControlComputer::FindGroundIntersection(float el, float az, float* x, fl
 
     dir.yaw = az;
     dir.pitch = el;
-    dir.roll  = platform->Roll();
+    dir.roll = platform->Roll();
 
     if (OTWDriver.GetGroundIntersection(&dir, &pos))
     {
@@ -831,11 +952,14 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
     float groundRange;
     float curMin, dx, dy;
 
-    if ( not targetPtr)
+    if (not targetPtr)
     {
-        groundRange = (float)sqrt((groundDesignateX - platform->XPos()) * (groundDesignateX - platform->XPos()) +
-                                  (groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos()) +
-                                  (groundDesignateZ - platform->ZPos()) * (groundDesignateZ - platform->ZPos()));
+        groundRange = (float)sqrt((groundDesignateX - platform->XPos()) *
+                                      (groundDesignateX - platform->XPos()) +
+                                  (groundDesignateY - platform->YPos()) *
+                                      (groundDesignateY - platform->YPos()) +
+                                  (groundDesignateZ - platform->ZPos()) *
+                                      (groundDesignateZ - platform->ZPos()));
         curMin = rangeFOV * groundRange;
 
         {
@@ -849,7 +973,8 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
                 //in his head when he wrote this Fix for the jumping cursors
                 float CurRange = (float)sqrt(dx * dx + dy * dy);
 
-                if ((CurRange < curMin) and not (testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and
+                    not(testObject->IsDead() or testObject->IsExploding()))
                 {
                     closestObj = testObject;
                     curMin = CurRange;
@@ -881,14 +1006,19 @@ void FireControlComputer::CheckFeatures(MissileClass* theMissile)
 
             tmpTarget->localData->az = groundDesignateAz;
             tmpTarget->localData->el = groundDesignateEl;
-            groundDesignateDroll = (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
+            groundDesignateDroll =
+                (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
 
-            tmpTarget->localData->ata = (float)acos(cos(groundDesignateAz) * cos(groundDesignateEl));
+            tmpTarget->localData->ata =
+                (float)acos(cos(groundDesignateAz) * cos(groundDesignateEl));
 
-            tmpTarget->localData->range = (float) sqrt(
-                                              ((tmpTarget->BaseData()->XPos() - platform->XPos()) * (tmpTarget->BaseData()->XPos() - platform->XPos())) +
-                                              ((tmpTarget->BaseData()->YPos() - platform->YPos()) * (tmpTarget->BaseData()->YPos() - platform->YPos())) +
-                                              ((tmpTarget->BaseData()->ZPos() - platform->ZPos()) * (tmpTarget->BaseData()->ZPos() - platform->ZPos())));
+            tmpTarget->localData->range = (float)sqrt(
+                ((tmpTarget->BaseData()->XPos() - platform->XPos()) *
+                 (tmpTarget->BaseData()->XPos() - platform->XPos())) +
+                ((tmpTarget->BaseData()->YPos() - platform->YPos()) *
+                 (tmpTarget->BaseData()->YPos() - platform->YPos())) +
+                ((tmpTarget->BaseData()->ZPos() - platform->ZPos()) *
+                 (tmpTarget->BaseData()->ZPos() - platform->ZPos())));
 
             theMissile->SetTarget(tmpTarget);
             theMissile->RunSeeker();
@@ -916,15 +1046,19 @@ void FireControlComputer::UpdateGroundObjectRelativeGeometry(void)
 
     targetPtr->localData->az = groundDesignateAz;
     targetPtr->localData->el = groundDesignateEl;
-    targetPtr->localData->droll = groundDesignateDroll = -(float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
+    targetPtr->localData->droll = groundDesignateDroll =
+        -(float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
 
     tmp = (float)(cos(groundDesignateAz) * cos(groundDesignateEl));
     targetPtr->localData->ata = (float)atan2(sqrt(1 - tmp * tmp), tmp);
 
-    targetPtr->localData->range = (float) sqrt(
-                                      ((groundDesignateX - platform->XPos()) * (groundDesignateX - platform->XPos())) +
-                                      ((groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos())) +
-                                      ((groundDesignateZ - platform->ZPos()) * (groundDesignateZ - platform->ZPos())));
+    targetPtr->localData->range =
+        (float)sqrt(((groundDesignateX - platform->XPos()) *
+                     (groundDesignateX - platform->XPos())) +
+                    ((groundDesignateY - platform->YPos()) *
+                     (groundDesignateY - platform->YPos())) +
+                    ((groundDesignateZ - platform->ZPos()) *
+                     (groundDesignateZ - platform->ZPos())));
 }
 
 SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
@@ -935,25 +1069,28 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     float range = 0.0F; // a.s.
 
     //MI fix for better Maverick target selection
-    AircraftClass *pa = (AircraftClass *)platform;
+    AircraftClass* pa = (AircraftClass*)platform;
 
-    if ( not playerFCC or (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP))
+    if (not playerFCC or
+        (pa->IsPlayer() and pa->AutopilotType() == AircraftClass::CombatAP))
         minDist = 1.0F * DTR;
     else
     {
-        if (g_bMavFixes)  // a.s. 20.Ferb.2002 begin
+        if (g_bMavFixes) // a.s. 20.Ferb.2002 begin
         {
-            range = (float) sqrt(
-                        ((groundDesignateX - platform->XPos()) * (groundDesignateX - platform->XPos())) +
-                        ((groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos())) +
-                        ((groundDesignateZ - platform->ZPos()) * (groundDesignateZ - platform->ZPos())));
+            range = (float)sqrt(((groundDesignateX - platform->XPos()) *
+                                 (groundDesignateX - platform->XPos())) +
+                                ((groundDesignateY - platform->YPos()) *
+                                 (groundDesignateY - platform->YPos())) +
+                                ((groundDesignateZ - platform->ZPos()) *
+                                 (groundDesignateZ - platform->ZPos())));
             // minDist is now between 0.2 and 0.6, depending on the dinstance to the rarget. The closer to the target the bigger minDist.
             // Min (0.2) is reached at 45000 ft (apprx 9 miles
-            minDist = min(0.6F , max(0.2F, 0.6F - 0.000009F * range)) * DTR;
-        }  // a.s. end
+            minDist = min(0.6F, max(0.2F, 0.6F - 0.000009F * range)) * DTR;
+        } // a.s. end
         else
         {
-            minDist = 0.2F * DTR;  // old value
+            minDist = 0.2F * DTR; // old value
         }
     }
 
@@ -966,18 +1103,20 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
     // Look for a target
     while (curTarget)
     {
-        if (fabs(curTarget->localData->az - yaw) < minDist and 
-            fabs(curTarget->localData->el - pitch) < minDist and 
-            curTarget->BaseData()->IsSim() and 
- not curTarget->BaseData()->IsWeapon() and 
-            curTarget->BaseData()->GetVt() <= 60 * KNOTS_TO_FTPSEC) //MI Maverik lockup fix
+        if (fabs(curTarget->localData->az - yaw) < minDist and
+            fabs(curTarget->localData->el - pitch) < minDist and
+            curTarget->BaseData()->IsSim() and
+            not curTarget->BaseData()->IsWeapon() and
+            curTarget->BaseData()->GetVt() <=
+                60 * KNOTS_TO_FTPSEC) //MI Maverik lockup fix
         {
             theMissile->SetTarget(curTarget);
             theMissile->RunSeeker();
 
             if (theMissile->targetPtr)
             {
-                minDist = (float)min(fabs(curTarget->localData->az - yaw), fabs(curTarget->localData->el - pitch));
+                minDist = (float)min(fabs(curTarget->localData->az - yaw),
+                                     fabs(curTarget->localData->el - pitch));
             }
         }
 
@@ -986,7 +1125,7 @@ SimObjectType* FireControlComputer::MavCheckLock(MissileClass* theMissile)
 
     curTarget = theMissile->targetPtr;
 
-    if ( not theMissile->targetPtr)
+    if (not theMissile->targetPtr)
     {
         CheckFeatures(theMissile);
         curTarget = theMissile->targetPtr;

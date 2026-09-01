@@ -26,7 +26,7 @@ C_History::~C_History()
 
 long C_History::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_History::Setup(long ID, short type, short count)
@@ -64,7 +64,7 @@ void C_History::AddIconSet(short idx, short team, short x, short y)
 
 void C_History::Refresh()
 {
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
+    if (not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
         return;
 
     Parent_->RefreshClient(GetClient());
@@ -74,7 +74,7 @@ void C_History::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     short i;
 
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
+    if (not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
         return;
 
     for (i = 0; i < Count_; i++)

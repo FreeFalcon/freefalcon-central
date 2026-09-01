@@ -27,13 +27,13 @@
 
 #ifdef _MSC_VER
 // We don't need EMMS instruction warnings
-#pragma warning(disable:4799)
+#pragma warning(disable : 4799)
 #endif
 
 static float fdct_ws[64];
 static float a1[2] = {0.707106781f, 0.707106781f};
 static float a2[2] = {0.541196100f, 1.306562965f};
-static float a4 =  1.306562965f;
+static float a4 = 1.306562965f;
 static float a5 = 0.382683433f;
 static float PMOne[2] = {1.0f, -1.0f};
 

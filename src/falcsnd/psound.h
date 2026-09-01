@@ -6,19 +6,20 @@
 #endif
 
 #ifndef __DSOUND_INCLUDED__
-#include "dsound.h"
+#include "platform/win32shim/dsound.h" // Artscout - 2026: OpenAL-backed DirectSound on BOTH platforms (see dsound_openal.cpp)
 #endif
 
 #include "grtypes.h"
 enum
 {
-    SND_NO_HANDLE       = 0,
+    SND_NO_HANDLE = 0,
 
     // JPO - best guess at what the next 4 mean
-    SND_BIT1     = 0x00000001, // no idea what this is - its used but never tested that I can find
-    SND_STREAM_PART2    = 0x00000002, // were processing 2nd part of the buffer
-    SND_STREAM_DONE     = 0x00000004, // weve read the whole stream now
-    SND_STREAM_FINAL    = 0x00000008, // we've played the whole stream now
+    SND_BIT1 =
+        0x00000001, // no idea what this is - its used but never tested that I can find
+    SND_STREAM_PART2 = 0x00000002, // were processing 2nd part of the buffer
+    SND_STREAM_DONE = 0x00000004, // weve read the whole stream now
+    SND_STREAM_FINAL = 0x00000008, // we've played the whole stream now
 
     // Use SFX_ flags instead of these
     //SND_LOOP_SAMPLE     =0x00000004, // MLR was: DSBSTATUS_LOOPING, same value. // MLR 12/6/2003 - OBSOLETE // Use SFX_ flags
@@ -26,26 +27,26 @@ enum
     //SND_OVERRIDE        =0x00000400, // MLR 12/6/2003 - - OBSOLETE
     //SND_EXCLUSIVE       =0x00000800, // MLR 12/6/2003 - - OBSOLETE
 
-    SND_STREAM_FILE     = 0x00001000,
-    SND_STREAM_MEMORY   = 0x00002000,
+    SND_STREAM_FILE = 0x00001000,
+    SND_STREAM_MEMORY = 0x00002000,
     SND_STREAM_CALLBACK = 0x00004000,
-    SND_STREAM_LOOP     = 0x00008000,
+    SND_STREAM_LOOP = 0x00008000,
     SND_STREAM_FADE_OUT = 0x00010000,
-    SND_STREAM_FADE_IN  = 0x00020000,
+    SND_STREAM_FADE_IN = 0x00020000,
     SND_STREAM_CONTINUE = 0x00040000,
     SND_STREAM_FADEDOUT = 0x00080000,
-    SND_STREAM_PAN_RT   = 0x00100000,
-    SND_STREAM_PAN_LT   = 0x00200000,
-    SND_STREAM_PAN_CIR  = 0x00400000,
+    SND_STREAM_PAN_RT = 0x00100000,
+    SND_STREAM_PAN_LT = 0x00200000,
+    SND_STREAM_PAN_CIR = 0x00400000,
     SND_IS_IMAADPCM = 0x10000000,
-    SND_USE_THREAD      = 0x40000000,
+    SND_USE_THREAD = 0x40000000,
 
     SND_MIN_VOLUME = -3000,
     SND_MAX_VOLUME = 0,
 
-    SND_ADPCM_SBLOCK_ALIGN  = 1024, //ima adpcm block alignment for 16-bit stereo
+    SND_ADPCM_SBLOCK_ALIGN = 1024, //ima adpcm block alignment for 16-bit stereo
     SND_PCM_SBLOCK_ALIGN = 4, //pcm block alignment for 16-bit stereo
-    SND_ADPCM_MBLOCK_ALIGN  = 512, //ima adpcm block alignment for 16-bit mono
+    SND_ADPCM_MBLOCK_ALIGN = 512, //ima adpcm block alignment for 16-bit mono
     SND_PCM_MBLOCK_ALIGN = 2, //pcm block alignment for 16-bit mono
     SND_BLOCK_SAMPLE = 1017, //#samples per block of ima adpcm
     SND_COMPRESSION_RATIO = 4,
@@ -69,7 +70,7 @@ struct Tpoint;
 struct Trotation;
 struct SfxDef;
 
-typedef class SoundList  SOUNDLIST;
+typedef class SoundList SOUNDLIST;
 typedef class SoundStream SOUNDSTREAM;
 
 #define DS3DBUFFERMAX 1
@@ -102,7 +103,7 @@ public:
     float MaxDist, MinDist;
     //IDirectSoundBuffer *DSoundBuffer;
 
-    int DS3DBufferCount;  // always use this and not DS3DBUFFERMAX;
+    int DS3DBufferCount; // always use this and not DS3DBUFFERMAX;
     int Cur3dBuffer; // buffer to assign sound to when the Sample is non-looping.
     int is3d;
 
@@ -111,8 +112,6 @@ public:
     struct slChannel Buf[DS3DBUFFERMAX]; // Sample Queue
     SOUNDLIST *Next;
 };
-
-
 
 
 typedef struct
@@ -125,26 +124,28 @@ typedef struct
 typedef struct
 {
     char *src; // source buffer ptr (can point to memory other than srcbuffer
-    char *srcbuffer; // Actual malloc'd buffer (filled 1/2 at a time (except for initial read)
-    long  bufsize; // size of srcbuffer
-    long  sidx; // location we are decoding from
-    long  slen; // size of total IMA compressed data
-    long  sreadidx; // location we are filling from (reading into from a file)
-    long  srcsize; // size of buffer we are streaming from (may be different from bufsize)
-    long  didx; // # bytes sent to output
-    long  dlen; // total size of output... when didx >= dlen, we are done
+    char *
+        srcbuffer; // Actual malloc'd buffer (filled 1/2 at a time (except for initial read)
+    long bufsize; // size of srcbuffer
+    long sidx; // location we are decoding from
+    long slen; // size of total IMA compressed data
+    long sreadidx; // location we are filling from (reading into from a file)
+    long
+        srcsize; // size of buffer we are streaming from (may be different from bufsize)
+    long didx; // # bytes sent to output
+    long dlen; // total size of output... when didx >= dlen, we are done
     short type; // 1=Mono/2=Stereo
     short Status;
     // Decoding stuff
-    long  blockLength; // Block length of section we are decompressing
+    long blockLength; // Block length of section we are decompressing
     short count; // a counter which goes 8 -> 0 and is used for decoding
     // Mono stuff
     short predSampleL;
-    long  leftSamples;
+    long leftSamples;
     short stepIndexL;
     // Stereo stuff
     short predSampleR;
-    long  rightSamples;
+    long rightSamples;
     short stepIndexR;
 } IMA_STREAM;
 
@@ -152,7 +153,8 @@ typedef struct
 {
     char *data; // actual file data (All except for 1st 8 bytes,free this)
     WAVEFORMATEX *Format; // ptr to format info in data
-    long NumSamples; // for IMA_ADPCM, (and maybe others) get # samples so we know when we're done
+    long
+        NumSamples; // for IMA_ADPCM, (and maybe others) get # samples so we know when we're done
     char *Start; // ptr to start of sample in data
     long SampleLen; // Length of sample
 } RIFF_FILE;
@@ -183,7 +185,8 @@ public:
     DWORD LastPos;
     DWORD LoopOffset;
     long HeaderOffset;
-    IMA_STREAM *ImaInfo; // Contains ALL info for streaming using IMA_ADPCM (including buffers)
+    IMA_STREAM *
+        ImaInfo; // Contains ALL info for streaming using IMA_ADPCM (including buffers)
     void *startptr;
     void *memptr;
     DWORD (*Callback)(void *me, char *mem, DWORD Len);
@@ -241,7 +244,9 @@ public:
     BOOL SetSampleVolume(long ID, long Volume);
     BOOL SetSamplePan(long ID, long Direction);
     // 3d effects for samples
-    BOOL SetSamplePosition(long ID, float x, float y, float z, float pitch, float vol, float vx, float vy, float vz, float dist, int uid, int is3d);
+    BOOL SetSamplePosition(long ID, float x, float y, float z, float pitch,
+                           float vol, float vx, float vy, float vz, float dist,
+                           int uid, int is3d);
     BOOL Disable3dSample(long ID);
     void AssignSamples(void);
 
@@ -250,17 +255,20 @@ public:
     BOOL IsSamplePlaying(long ID, int UID);
     DWORD SampleStatus(SOUNDLIST *Sample);
     // Adding a Stream Stream
-    long CreateStream(WAVEFORMATEX *Format, float StreamSeconds); // Quesize is in seconds
+    long CreateStream(WAVEFORMATEX *Format,
+                      float StreamSeconds); // Quesize is in seconds
     void SetMessageCallback(int ID, void (*cb)(SOUNDSTREAM *, int));
     void RemoveStream(long ID);
     void RemoveAllStreams();
     void ResumeAllStreams();
     // Starting a Stream
     void SilenceStream(SOUNDSTREAM *Stream, DWORD Buffer, DWORD Length);
-    BOOL StartFileStream(long StreamID, char *filename, long Flags, long offset = 0);
+    BOOL StartFileStream(long StreamID, char *filename, long Flags,
+                         long offset = 0);
     BOOL StartMemoryStream(long StreamID, char *Data, long size);
     BOOL StartMemoryStream(long StreamID, RIFF_FILE *file, long Flags);
-    BOOL StartCallbackStream(long StreamID, void *classptr, DWORD (*cb)(void *me, char *mem, DWORD Len));
+    BOOL StartCallbackStream(long StreamID, void *classptr,
+                             DWORD (*cb)(void *me, char *mem, DWORD Len));
     long SetStreamVolume(long ID, long Volume);
     void ResumeStream(long ID);
     void ResumeStreamFadeIn(long ID);
@@ -290,10 +298,11 @@ public:
     // Function to pass data into the Stream buffer
     DWORD ReadStream(SOUNDSTREAM *Stream, DWORD Buffer, DWORD Length);
     void RestartStream(SOUNDSTREAM *Stream);
-    SOUNDSTREAM * FirstStreamBuffer();
+    SOUNDSTREAM *FirstStreamBuffer();
 
     // 3d stuff
-    void SetCameraPostion(Tpoint *camPos, Trotation *camRot, Tpoint *camvel, bool Reset);
+    void SetCameraPostion(Tpoint *camPos, Trotation *camRot, Tpoint *camvel,
+                          bool Reset);
     struct
     {
         float x, y, z;
@@ -304,23 +313,33 @@ public:
     void ChatCleanup(void);
     void ChatToggleXmitReceive(void);
     SOUNDLIST *FindSample(long ID);
-    SOUNDSTREAM * FindStream(long ID);
+    SOUNDSTREAM *FindStream(long ID);
     long SkipRiffHeader(FILE *fp);
     long SkipRiffHeader(HANDLE fp);
-    long LoadRiffFormat(char *filename, WAVEFORMATEX *Format, long *HeaderSize, long *SampleCount);
-    long LoadRiffFormat(HANDLE fp, WAVEFORMATEX *Format, long *HeaderSize, long *SampleCount);
+    long LoadRiffFormat(char *filename, WAVEFORMATEX *Format, long *HeaderSize,
+                        long *SampleCount);
+    long LoadRiffFormat(HANDLE fp, WAVEFORMATEX *Format, long *HeaderSize,
+                        long *SampleCount);
     long FillRiffInfo(char *memory, RIFF_FILE *riff);
     RIFF_FILE *LoadRiff(char *filename);
     // IMA ADPCM decompression stuff
-    long StreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen); // This functions reads from a file, bitand calls appropriate decode
-    long MemStreamIMAADPCM(SOUNDSTREAM *Stream, char *dest, long dlen); // This functions reads from memory, bitand calls appropriate decode
+    long StreamIMAADPCM(
+        SOUNDSTREAM *Stream, char *dest,
+        long
+            dlen); // This functions reads from a file, bitand calls appropriate decode
+    long MemStreamIMAADPCM(
+        SOUNDSTREAM *Stream, char *dest,
+        long
+            dlen); // This functions reads from memory, bitand calls appropriate decode
     static void DSoundCheck(HRESULT hr);
 
 private:
     long ConvertVolumeToDB(long Percentage);
     long ConvertPanToDB(long Direction);
-    long AddSampleToMgr(long Volume, long Frequency, long Direction, IDirectSoundBuffer *NewSound, long Flags, SfxDef *sfx);
-    long AddStreamToMgr(long Volume, WAVEFORMATEX *Header, long StreamSize, IDirectSoundBuffer *NewSound);
+    long AddSampleToMgr(long Volume, long Frequency, long Direction,
+                        IDirectSoundBuffer *NewSound, long Flags, SfxDef *sfx);
+    long AddStreamToMgr(long Volume, WAVEFORMATEX *Header, long StreamSize,
+                        IDirectSoundBuffer *NewSound);
     SOUNDLIST *AddDuplicateSample(SOUNDLIST *Sample);
     static unsigned int __stdcall StreamThread(void *Param);
     void ThreadHandler();
@@ -329,18 +348,20 @@ private:
     long StreamImaM16(IMA_STREAM *Info, char *dBuff, long dlen);
     long ImaDecodeS16(char *sBuff, char *dBuff, long bufferLength);
     long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength);
-    BOOL BuildObjectList(HANDLE hArray[], int *nHandles, SoundStream *streams[]); // work out whats happening
+    BOOL BuildObjectList(HANDLE hArray[], int *nHandles,
+                         SoundStream *streams[]); // work out whats happening
     void ProcessStream(SoundStream *stream);
     void NotifyThread()
     {
         SetEvent(signalEvent);
     }; // poke the thread
-    void SetNotification(SOUNDSTREAM *Stream); // work out notification positions
-    short IMA_SampleDecode(short nEncodedSample, short nPredictedSample, short nStepSize);
+    void
+    SetNotification(SOUNDSTREAM *Stream); // work out notification positions
+    short IMA_SampleDecode(short nEncodedSample, short nPredictedSample,
+                           short nStepSize);
     short IMA_NextStepIndex(short nEncodedSample, short nStepIndex);
     BOOL IMA_ValidStepIndex(short nStepIndex);
 };
-
 
 
 #endif

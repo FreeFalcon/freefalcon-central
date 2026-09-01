@@ -30,14 +30,14 @@
 /* Define the float type consistantly with the */
 /* rest of the portable header-file system     */
 
-typedef float       Float32;
-typedef double      Float64;
+typedef float Float32;
+typedef double Float64;
 
 /* Compile time percision macros */
 
-#define TYPEDEF_FLOAT(NAME,BITS)     typedef SHI_XYZZY_CAT(Float,BITS)   NAME
-#define TYPEDEF_FLOAT_PTR(NAME,BITS) typedef SHI_XYZZY_CAT(Float,BITS)*  NAME
-#define TYPEDEF_FLOAT_HND(NAME,BITS) typedef SHI_XYZZY_CAT(Float,BITS)** NAME
+#define TYPEDEF_FLOAT(NAME, BITS) typedef SHI_XYZZY_CAT(Float, BITS) NAME
+#define TYPEDEF_FLOAT_PTR(NAME, BITS) typedef SHI_XYZZY_CAT(Float, BITS) * NAME
+#define TYPEDEF_FLOAT_HND(NAME, BITS) typedef SHI_XYZZY_CAT(Float, BITS) * *NAME
 
 
 /*  SEE: access.h  Same rules apply  */
@@ -47,5 +47,3 @@ typedef double      Float64;
 
 
 #endif /* _SHI__FLOAT_H_ */
-
-

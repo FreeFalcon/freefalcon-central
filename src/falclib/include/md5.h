@@ -37,11 +37,11 @@ typedef struct MD5Context
     unsigned char buffer[64]; /* input buffer */
 } MD5_CTX;
 
-void   MD5Init(MD5_CTX *);
-void   MD5Update(MD5_CTX *, const unsigned char *, unsigned int);
-void   MD5Final(unsigned char [16], MD5_CTX *);
-char * MD5End(MD5_CTX *, char *);
-char * MD5File(const char *, char *);
-char * MD5Data(const unsigned char *, unsigned int, char *);
+void MD5Init(MD5_CTX *);
+void MD5Update(MD5_CTX *, const unsigned char *, unsigned int);
+void MD5Final(unsigned char[16], MD5_CTX *);
+char *MD5End(MD5_CTX *, char *);
+char *MD5File(const char *, char *);
+char *MD5Data(const unsigned char *, unsigned int, char *);
 
 #endif /* _SYS_MD5_H_ */

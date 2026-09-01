@@ -4,7 +4,7 @@
 * @author sfr
 */
 
-#include <cISO646>
+#include <ciso646>
 #include <assert.h>
 #include <time.h>
 #include "capibwcontrol.h"
@@ -13,7 +13,7 @@
 // define to instrument BW usage
 #define INSTRUMENT_BW 0
 #if INSTRUMENT_BW
-#include "RedProfiler.h"
+#include "redprofiler.h"
 #endif
 
 ////////////
@@ -21,7 +21,7 @@
 ////////////
 
 /** transforms clock to microseconds */
-#define CLOCKS_TO_MSEC(clocks) (clocks * 1000 / CLOCKS_PER_SEC )
+#define CLOCKS_TO_MSEC(clocks) (clocks * 1000 / CLOCKS_PER_SEC)
 /** number of renews per second */
 #define RENEWS_PER_SEC (2)
 /** we renew bandiwidth every COMP_INTERVAL_MSEC microseconds */
@@ -34,9 +34,9 @@
 /** percentage of total bw reserved for positional updates */
 #define BW_POSITIONAL_RESERVED (0.0f)
 /** percentage of total bw reserved for dirty updates */
-#define BW_DIRTY_RESERVED      (0.0f)
+#define BW_DIRTY_RESERVED (0.0f)
 /** percentage reserved for other stuff */
-#define BW_OTHER_RESERVED      (0.0f)
+#define BW_OTHER_RESERVED (0.0f)
 
 ///////////////////////
 // BW STATE VARIABLE //
@@ -48,11 +48,11 @@ public:
     /** this structure holds BW types. If changed here, also adjust ComAPI (look for BWTYPE) */
     typedef enum
     {
-        BW_POSITIONAL = 0,   ///< positional update (MUST BE ZERO)
-        BW_DIRTY,            ///< dirty data
-        BW_OTHER,            ///< other stuff
-        BW_COMMON,           ///< common pool
-        BW_NUM_TYPES         ///< number of types
+        BW_POSITIONAL = 0, ///< positional update (MUST BE ZERO)
+        BW_DIRTY, ///< dirty data
+        BW_OTHER, ///< other stuff
+        BW_COMMON, ///< common pool
+        BW_NUM_TYPES ///< number of types
     } BWTypes;
 
 private:
@@ -132,7 +132,9 @@ private:
     {
         clock_t now = clock();
         // clock can wrap around, in this case renew bw immediately
-        clock_t interval_msec = now < last_renew ? RENEW_INTERVAL_MSEC : CLOCKS_TO_MSEC(now - last_renew);
+        clock_t interval_msec = now < last_renew ?
+                                    RENEW_INTERVAL_MSEC :
+                                    CLOCKS_TO_MSEC(now - last_renew);
 
         if (interval_msec >= RENEW_INTERVAL_MSEC)
         {
@@ -175,10 +177,8 @@ public:
         // we are flexible here
         // if we have any spare bw of that type, ok
         // this avoids starvation for low bw connections
-        if (
-            (used_by_type[type] < bytes_by_type[type]) or
-            (used_by_type[BW_COMMON] < bytes_by_type[BW_COMMON])
-        )
+        if ((used_by_type[type] < bytes_by_type[type]) or
+            (used_by_type[BW_COMMON] < bytes_by_type[BW_COMMON]))
         {
             return true;
         }
@@ -198,7 +198,8 @@ public:
         used_by_type[type] += size;
 
         // see if used exceed amount for that type
-        if ((used_by_type[type] > bytes_by_type[type]) and (type not_eq BW_COMMON))
+        if ((used_by_type[type] > bytes_by_type[type]) and
+            (type not_eq BW_COMMON))
         {
             // consume common
             int common = used_by_type[type] - bytes_by_type[type];
@@ -239,7 +240,6 @@ public:
         fsm.PlayerLeft();
         Set(fsm.GetBandwidth());
     }
-
 };
 /** object holding bw information */
 static BW bw_object;
@@ -282,4 +282,3 @@ void cut_bandwidth(void)
 {
     bw_object.Cut();
 }
-

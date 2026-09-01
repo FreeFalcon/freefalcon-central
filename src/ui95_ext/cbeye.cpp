@@ -26,7 +26,7 @@ C_BullsEye::~C_BullsEye()
 
 long C_BullsEye::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_BullsEye::Setup(long ID, short Type)
@@ -46,14 +46,17 @@ void C_BullsEye::SetPos(float x, float y)
     WorldX_ = x;
     WorldY_ = y;
 
-    SetXY(static_cast<long>(WorldX_ * Scale_), static_cast<long>(WorldY_ * Scale_)); //
+    SetXY(static_cast<long>(WorldX_ * Scale_),
+          static_cast<long>(WorldY_ * Scale_)); //
 }
 
 void C_BullsEye::SetScale(float scl)
 {
     Scale_ = scl;
-    SetXY(static_cast<long>(WorldX_ * Scale_), static_cast<long>(WorldY_ * Scale_));
-    SetWH((short)(BullsEyeLines[0][1] * Scale_) * 2, (short)(BullsEyeLines[0][1] * Scale_) * 2);
+    SetXY(static_cast<long>(WorldX_ * Scale_),
+          static_cast<long>(WorldY_ * Scale_));
+    SetWH((short)(BullsEyeLines[0][1] * Scale_) * 2,
+          (short)(BullsEyeLines[0][1] * Scale_) * 2);
 }
 
 void C_BullsEye::Refresh()
@@ -61,7 +64,9 @@ void C_BullsEye::Refresh()
     if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX() - GetW() / 2, GetY() - GetH() / 2, GetX() + GetW() / 2 + 1, GetY() + GetH() / 2 + 1, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX() - GetW() / 2, GetY() - GetH() / 2,
+                           GetX() + GetW() / 2 + 1, GetY() + GetH() / 2 + 1,
+                           GetFlags(), GetClient());
 }
 
 void C_BullsEye::Draw(SCREEN *surface, UI95_RECT *cliprect)
@@ -74,7 +79,9 @@ void C_BullsEye::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     for (i = 0; i < NUM_BE_CIRCLES; i++)
     {
-        Parent_->DrawCircle(surface, Color_, GetX(), GetY(), BullsEyeRadius[i]*Scale_, GetFlags(), GetClient(), cliprect);
+        Parent_->DrawCircle(surface, Color_, GetX(), GetY(),
+                            BullsEyeRadius[i] * Scale_, GetFlags(), GetClient(),
+                            cliprect);
     }
 
     for (i = 0; i < NUM_BE_LINES; i++)
@@ -83,6 +90,7 @@ void C_BullsEye::Draw(SCREEN *surface, UI95_RECT *cliprect)
         y1 = GetY() + (short)(BullsEyeLines[i][1] * Scale_);
         x2 = GetX() + (short)(BullsEyeLines[i][2] * Scale_);
         y2 = GetY() + (short)(BullsEyeLines[i][3] * Scale_);
-        Parent_->DrawLine(surface, Color_, x1, y1, x2, y2, GetFlags(), GetClient(), cliprect);
+        Parent_->DrawLine(surface, Color_, x1, y1, x2, y2, GetFlags(),
+                          GetClient(), cliprect);
     }
 }

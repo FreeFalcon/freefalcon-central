@@ -7,7 +7,7 @@
 /*
 
 //sfr: this file is not used anywhere and has errors
-#include "MsgInc/updateailist.h"
+#include "msginc/updateailist.h"
 
 #include "mesg.h"
 #include "falclib.h"
@@ -17,7 +17,7 @@
 #include "uicomms.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
 extern UIComms *gCommsMgr;

@@ -39,10 +39,10 @@ atan2(0,0) is undefined and should give an error.
 #define DPI 3.1415926535897932384626433832795
 #endif
 #ifndef HALF_DPI
-#define HALF_DPI (DPI/2.0)
+#define HALF_DPI (DPI / 2.0)
 #endif
 #pragma function(atan2)
-#define atan2(x,y) checked_atan2(x,y)
+#define atan2(x, y) checked_atan2(x, y)
 inline double checked_atan2(double y, double x)
 {
     double z;

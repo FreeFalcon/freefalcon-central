@@ -1,14 +1,14 @@
 // Targetting Code goes here
 #include <windows.h>
-#include "Graphics/Include/TimeMgr.h"
-#include "Graphics/Include/imagebuf.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/drawbrdg.h"
-#include "Graphics/Include/drawplat.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/timemgr.h"
+#include "graphics/include/imagebuf.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/drawbrdg.h"
+#include "graphics/include/drawplat.h"
+#include "graphics/include/drawbsp.h"
 #include "vu2.h"
-#include "F4vu.h"
+#include "f4vu.h"
 #include "team.h"
 //#include "simbase.h"
 //#include "simlib.h"
@@ -22,8 +22,8 @@
 #include "feature.h"
 #include "find.h"
 #include "dispcfg.h"
-#include "Graphics/Include/setup.h"
-#include "Graphics/Include/loader.h"
+#include "graphics/include/setup.h"
+#include "graphics/include/loader.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "cmap.h"
@@ -34,9 +34,9 @@
 #include "textids.h"
 #include "teamdata.h"
 #include "classtbl.h"
-#include "PtData.h"
+#include "ptdata.h"
 
-#include "FalcLib/include/playerop.h" // OW
+#include "falclib/include/playerop.h" // OW
 
 void CenterOnFeatureCB(long ID, short hittype, C_Base *control);
 void SetBullsEye(C_Window *);
@@ -61,9 +61,9 @@ void PickFirstChildCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    cent = (C_Entity*)control;
+    cent = (C_Entity *)control;
 
-    if ( not cent)
+    if (not cent)
         return;
 
     parent = cent->GetOwner();
@@ -92,7 +92,7 @@ C_Entity *BuildObjective(Objective obj)
     ObjPtr = obj->GetObjectiveClassData();
 
     if (ObjPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     // Create new parent class
     newinfo = new C_Entity;
@@ -106,11 +106,12 @@ C_Entity *BuildObjective(Objective obj)
 
     newinfo->SetOperational(obj->GetObjectiveStatus());
 
-    res = gImageMgr->GetImageRes(TeamColorIconIDs[TeamInfo[obj->GetTeam()]->GetColor()][0]);
+    res = gImageMgr->GetImageRes(
+        TeamColorIconIDs[TeamInfo[obj->GetTeam()]->GetColor()][0]);
 
     if (res)
     {
-        rsc = (IMAGE_RSC*)res->Find(ObjPtr->IconIndex);
+        rsc = (IMAGE_RSC *)res->Find(ObjPtr->IconIndex);
 
         if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
@@ -133,17 +134,19 @@ C_Entity *BuildObjective(Objective obj)
     newinfo->SetName(35, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set # bitand Airplane type
-    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
-    newinfo->SetStatus(300, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(),
+              gStringMgr->GetString(TXT_OPERATIONAL));
+    newinfo->SetStatus(300, 10,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 
 C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
 {
     C_Feature *feat;
     long TextID;
-    FeatureClassDataType* fc;
+    FeatureClassDataType *fc;
     long classID;
 
     classID = obj->GetFeatureID(featureID);
@@ -153,8 +156,9 @@ C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
         fc = GetFeatureClassData(classID);
 
         // RV - Biker - Don't add trees to target list
-        if ( not fc or fc->Flags bitand FEAT_VIRTUAL or fc->Flags bitand FEAT_NO_HITEVAL)
-            return(NULL);
+        if (not fc or fc->Flags bitand FEAT_VIRTUAL or
+            fc->Flags bitand FEAT_NO_HITEVAL)
+            return (NULL);
 
         feat = new C_Feature;
         feat->Setup(obj->GetCampID() << 16 bitor featureID, 0);
@@ -165,25 +169,25 @@ C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
 
         switch (obj->GetFeatureStatus(featureID))
         {
-            case 0:
-                TextID = TXT_NO_DAMAGE;
-                break;
+        case 0:
+            TextID = TXT_NO_DAMAGE;
+            break;
 
-            case 1:
-                TextID = TXT_REPAIRED;
-                break;
+        case 1:
+            TextID = TXT_REPAIRED;
+            break;
 
-            case 2:
-                TextID = TXT_DAMAGED;
-                break;
+        case 2:
+            TextID = TXT_DAMAGED;
+            break;
 
-            case 3:
-                TextID = TXT_DESTROYED;
-                break;
+        case 3:
+            TextID = TXT_DESTROYED;
+            break;
 
-            default:
-                TextID = TXT_NO_DAMAGE;
-                break;
+        default:
+            TextID = TXT_NO_DAMAGE;
+            break;
         }
 
         feat->SetStatus(280, 0, TextID);
@@ -203,11 +207,12 @@ C_Feature *BuildFeature(Objective obj, long featureID, Tpoint *)
         feat->SetCallback(CenterOnFeatureCB);
         feat->SetVUID(obj->Id());
         feat->SetFeatureID(featureID);
-        feat->SetFeatureValue(static_cast<uchar>(obj->GetFeatureValue(featureID)));
-        return(feat);
+        feat->SetFeatureValue(
+            static_cast<uchar>(obj->GetFeatureValue(featureID)));
+        return (feat);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_Entity *BuildUnitParent(Unit unit)
@@ -222,7 +227,7 @@ C_Entity *BuildUnitParent(Unit unit)
     UnitPtr = unit->GetUnitClassData();
 
     if (UnitPtr == NULL)
-        return(NULL);
+        return (NULL);
 
     // Create new parent class
     newinfo = new C_Entity;
@@ -242,25 +247,30 @@ C_Entity *BuildUnitParent(Unit unit)
             Flight flt = (Flight)unit;
             planecount = 0;
 
-            while (flt->plane_stats[planecount] not_eq AIRCRAFT_NOT_ASSIGNED and planecount < PILOTS_PER_FLIGHT)
+            while (flt->plane_stats[planecount] not_eq AIRCRAFT_NOT_ASSIGNED and
+                   planecount < PILOTS_PER_FLIGHT)
                 planecount++;
 
             if (planecount)
-                newinfo->SetOperational(static_cast<uchar>(unit->GetTotalVehicles() * 100 / planecount));
+                newinfo->SetOperational(static_cast<uchar>(
+                    unit->GetTotalVehicles() * 100 / planecount));
             else
                 newinfo->SetOperational(0);
         }
         else
-            newinfo->SetOperational(static_cast<uchar>(unit->GetTotalVehicles() * 100 / unit->GetFullstrengthVehicles()));
+            newinfo->SetOperational(
+                static_cast<uchar>(unit->GetTotalVehicles() * 100 /
+                                   unit->GetFullstrengthVehicles()));
     }
     else
         newinfo->SetOperational(0);
 
-    res = gImageMgr->GetImageRes(TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
+    res = gImageMgr->GetImageRes(
+        TeamColorIconIDs[TeamInfo[unit->GetTeam()]->GetColor()][0]);
 
     if (res)
     {
-        rsc = (IMAGE_RSC*)res->Find(UnitPtr->IconIndex);
+        rsc = (IMAGE_RSC *)res->Find(UnitPtr->IconIndex);
 
         if (rsc and rsc->Header->Type == _RSC_IS_IMAGE_)
             type = rsc->Header->h;
@@ -280,7 +290,10 @@ C_Entity *BuildUnitParent(Unit unit)
 
     // Set Name
     // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-    if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and not unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+    if (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and
+        unit->IsFlight() and gGps->GetTeamNo() >= 0 and
+        unit->GetTeam() not_eq gGps->GetTeamNo() and
+        not unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
         _stprintf(buffer, "Bandit");
     else
         // END OF ADDED SECTION 2002-02-21
@@ -289,10 +302,12 @@ C_Entity *BuildUnitParent(Unit unit)
     newinfo->SetName(35, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
     // Set # bitand Airplane type
-    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(), gStringMgr->GetString(TXT_OPERATIONAL));
-    newinfo->SetStatus(300, 10, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+    _stprintf(buffer, "%1d%% %s", newinfo->GetOperational(),
+              gStringMgr->GetString(TXT_OPERATIONAL));
+    newinfo->SetStatus(300, 10,
+                       gStringMgr->GetText(gStringMgr->AddText(buffer)));
 
-    return(newinfo);
+    return (newinfo);
 }
 C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
 {
@@ -313,7 +328,10 @@ C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
         veh->InitEntity();
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, change its label to 'Bandit'
-        if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and un->IsFlight() and gGps->GetTeamNo() >= 0 and un->GetTeam() not_eq gGps->GetTeamNo() and not un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
+        if (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and
+            un->IsFlight() and gGps->GetTeamNo() >= 0 and
+            un->GetTeam() not_eq gGps->GetTeamNo() and
+            not un->GetIdentified(static_cast<uchar>(gGps->GetTeamNo())))
             veh->SetName(25, 0, "Bandit");
         else
             // END OF ADDED SECTION 2002-02-21
@@ -327,10 +345,10 @@ C_Feature *BuildUnit(Unit un, long vehno, long vehid, Tpoint *)
         veh->SetVUID(un->Id());
         veh->SetFeatureID(vehno);
         veh->SetFeatureValue(100);
-        return(veh);
+        return (veh);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void AddUnitToTargetTree(Unit unit)
@@ -341,7 +359,8 @@ void AddUnitToTargetTree(Unit unit)
     C_Feature *veh;
 
     if (gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo())
-        if ( not unit->GetSpotted(static_cast<uchar>(gGps->GetTeamNo())) and not unit->IsFlight())
+        if (not unit->GetSpotted(static_cast<uchar>(gGps->GetTeamNo())) and
+            not unit->IsFlight())
             return;
 
     if (TargetTree)
@@ -361,7 +380,8 @@ void AddUnitToTargetTree(Unit unit)
         if (recon_ent)
             recon_ent->SetCallback(PickFirstChildCB);
 
-        parent = TargetTree->CreateItem(unit->GetCampID(), C_TYPE_MENU, recon_ent);
+        parent =
+            TargetTree->CreateItem(unit->GetCampID(), C_TYPE_MENU, recon_ent);
 
         if (parent)
         {
@@ -372,7 +392,10 @@ void AddUnitToTargetTree(Unit unit)
         }
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified and not editing a TE, don't break it down by vehicle so it can't be reconed either NOTE THE '!' IN FRONT OF THE WHOLE STATEMENT TO REVERSE IT
-        if ( not ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and unit->IsFlight() and gGps->GetTeamNo() >= 0 and unit->GetTeam() not_eq gGps->GetTeamNo() and not unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
+        if (not(not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and
+                unit->IsFlight() and gGps->GetTeamNo() >= 0 and
+                unit->GetTeam() not_eq gGps->GetTeamNo() and
+                not unit->GetIdentified(static_cast<uchar>(gGps->GetTeamNo()))))
         {
             // END OF ADDED DATA 2002-02-21
             simdata.vehicleInUnit = -1;
@@ -401,13 +424,24 @@ void AddUnitToTargetTree(Unit unit)
                     objPos.y = simdata.y;
                     objPos.z = simdata.z;
                     visType = Falcon4ClassTable[classID].visType[VIS_NORMAL];
-                    gUIViewer->LoadDrawableUnit(unit->GetCampID() << 16 bitor (v << 8) bitor (vehs + 1), visType, &objPos, simdata.heading, Falcon4ClassTable[classID].vuClassData.classInfo_[VU_DOMAIN], Falcon4ClassTable[classID].vuClassData.classInfo_[VU_TYPE], Falcon4ClassTable[classID].vuClassData.classInfo_[VU_STYPE]);
+                    gUIViewer->LoadDrawableUnit(
+                        unit->GetCampID() << 16 bitor (v << 8) bitor (vehs + 1),
+                        visType, &objPos, simdata.heading,
+                        Falcon4ClassTable[classID]
+                            .vuClassData.classInfo_[VU_DOMAIN],
+                        Falcon4ClassTable[classID]
+                            .vuClassData.classInfo_[VU_TYPE],
+                        Falcon4ClassTable[classID]
+                            .vuClassData.classInfo_[VU_STYPE]);
 
                     veh = BuildUnit(unit, v, (v << 8) bitor vehs + 1, &objPos);
 
                     if (veh)
                     {
-                        item = TargetTree->CreateItem(unit->GetCampID() << 16 bitor (v << 8) bitor (vehs + 1), C_TYPE_ITEM, veh);
+                        item = TargetTree->CreateItem(
+                            unit->GetCampID() << 16 bitor (v << 8) bitor
+                                (vehs + 1),
+                            C_TYPE_ITEM, veh);
 
                         if (item)
                         {
@@ -424,16 +458,16 @@ void AddUnitToTargetTree(Unit unit)
     }
 }
 
-#include "../../../Sim/Include/Atcbrain.h" // 2002-02-28 S.G.
+#include "../../../sim/include/atcbrain.h" // 2002-02-28 S.G.
 
 void AddObjectiveToTargetTree(Objective obj)
 {
     short f, fid;
     VehicleID classID;
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     float x, y, z;
-    FeatureClassDataType* fc;
-    ObjClassDataType* oc;
+    FeatureClassDataType *fc;
+    ObjClassDataType *oc;
     BSPLIST *drawptr;
     Tpoint objPos;
     TREELIST *item, *parent;
@@ -449,7 +483,8 @@ void AddObjectiveToTargetTree(Objective obj)
         if (recon_ent)
             recon_ent->SetCallback(PickFirstChildCB);
 
-        parent = TargetTree->CreateItem(obj->GetCampID(), C_TYPE_MENU, recon_ent);
+        parent =
+            TargetTree->CreateItem(obj->GetCampID(), C_TYPE_MENU, recon_ent);
 
         if (parent)
         {
@@ -459,7 +494,8 @@ void AddObjectiveToTargetTree(Objective obj)
 
         Parent = NULL;
 
-        if (obj->GetType() == TYPE_CITY or obj->GetType() == TYPE_TOWN or obj->GetType() == TYPE_VILLAGE)
+        if (obj->GetType() == TYPE_CITY or obj->GetType() == TYPE_TOWN or
+            obj->GetType() == TYPE_VILLAGE)
             ShowAllFeatures = 1;
 
         oc = obj->GetObjectiveClassData();
@@ -473,7 +509,7 @@ void AddObjectiveToTargetTree(Objective obj)
             {
                 fc = GetFeatureClassData(classID);
 
-                if ( not fc or fc->Flags bitand FEAT_VIRTUAL)
+                if (not fc or fc->Flags bitand FEAT_VIRTUAL)
                     continue;
 
                 obj->GetFeatureOffset(f, &y, &x, &z);
@@ -484,12 +520,19 @@ void AddObjectiveToTargetTree(Objective obj)
 
                 if (classPtr not_eq NULL)
                 {
-                    drawptr = gUIViewer->LoadDrawableFeature(obj->GetCampID() << 16 bitor f, obj, f, fid, classPtr, fc, &objPos, Parent);
+                    drawptr = gUIViewer->LoadDrawableFeature(
+                        obj->GetCampID() << 16 bitor f, obj, f, fid, classPtr,
+                        fc, &objPos, Parent);
 
                     if (drawptr not_eq NULL)
                     {
                         // 2002-02-28 ADDED BY S.G. If runway, adjust texture so runway number is accurate
-                        if (Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_TYPE] == TYPE_RUNWAY and Falcon4ClassTable[fc->Index].vuClassData.classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
+                        if (Falcon4ClassTable[fc->Index]
+                                    .vuClassData.classInfo_[VU_TYPE] ==
+                                TYPE_RUNWAY and
+                            Falcon4ClassTable[fc->Index]
+                                    .vuClassData.classInfo_[VU_STYPE] ==
+                                STYPE_RUNWAY_NUM)
                         {
                             ShiAssert(obj->brain);
 
@@ -497,7 +540,8 @@ void AddObjectiveToTargetTree(Objective obj)
                             {
                                 // index = obj->GetComponentIndex(this);
                                 int texIdx = obj->brain->GetRunwayTexture(f);
-                                ((DrawableBSP*)drawptr->object)->SetTextureSet(texIdx);
+                                ((DrawableBSP *)drawptr->object)
+                                    ->SetTextureSet(texIdx);
                             }
                         }
 
@@ -506,13 +550,15 @@ void AddObjectiveToTargetTree(Objective obj)
 
                         if (obj->GetFeatureValue(f) or ShowAllFeatures)
                         {
-                            ((DrawableObject*)drawptr)->GetPosition(&objPos);
+                            ((DrawableObject *)drawptr)->GetPosition(&objPos);
 
                             feat = BuildFeature(obj, f, &objPos);
 
                             if (feat)
                             {
-                                item = TargetTree->CreateItem(obj->GetCampID() << 16 bitor f, C_TYPE_ITEM, feat);
+                                item = TargetTree->CreateItem(
+                                    obj->GetCampID() << 16 bitor f, C_TYPE_ITEM,
+                                    feat);
 
                                 if (item)
                                 {
@@ -541,9 +587,11 @@ void GetGroundUnitsNear(float x, float y, float range)
         deltax = x - un->XPos();
         deltay = y - un->YPos();
 
-        if (deltax < 0) deltax = -deltax;
+        if (deltax < 0)
+            deltax = -deltax;
 
-        if (deltay < 0) deltay = -deltay;
+        if (deltay < 0)
+            deltay = -deltay;
 
         // KCK: I made the following change here. Not sure what was intended
         // if((deltax < range bitand deltay < range) and not un->IsSquadron())
@@ -567,9 +615,11 @@ void GetObjectivesNear(float x, float y, float range)
         deltax = x - Obj->XPos();
         deltay = y - Obj->YPos();
 
-        if (deltax < 0) deltax = -deltax;
+        if (deltax < 0)
+            deltax = -deltax;
 
-        if (deltay < 0) deltay = -deltay;
+        if (deltay < 0)
+            deltay = -deltay;
 
         // KCK: I made the following change here. Not sure what was intended
         // if(deltax < range bitand deltay < range)
@@ -641,7 +691,8 @@ void ReconArea(float x, float y, float range)
 
             if (FalconDisplay.theDisplayDevice.IsHardware())
             {
-                gUIViewer->GetRendOTW()->SetFilteringMode(PlayerOptions.FilteringOn());
+                gUIViewer->GetRendOTW()->SetFilteringMode(
+                    PlayerOptions.FilteringOn());
                 // gUIViewer->GetRendOTW()->SetAlphaMode(PlayerOptions.AlphaOn());
                 gUIViewer->GetRendOTW()->SetHazeMode(PlayerOptions.HazingOn());
                 // gUIViewer->GetRendOTW()->SetSmoothShadingMode( PlayerOptions.GouraudOn() );
@@ -655,8 +706,10 @@ void ReconArea(float x, float y, float range)
                 // gUIViewer->GetRendOTW()->SetSmoothShadingMode(false);
             }
 
-            gUIViewer->GetRendOTW()->SetObjectDetail(PlayerOptions.ObjectDetailLevel());
-            gUIViewer->GetRendOTW()->SetObjectTextureState(TRUE);//PlayerOptions.ObjectTexturesOn());
+            gUIViewer->GetRendOTW()->SetObjectDetail(
+                PlayerOptions.ObjectDetailLevel());
+            gUIViewer->GetRendOTW()->SetObjectTextureState(
+                TRUE); //PlayerOptions.ObjectTexturesOn());
         }
 
 #endif
@@ -799,7 +852,7 @@ void BuildSpecificTargetList(VU_ID targetID)
 
     ent = (CampEntity)vuDatabase->Find(targetID);
 
-    if ( not ent)
+    if (not ent)
         return;
 
     win = gMainHandler->FindWindow(RECON_WIN);

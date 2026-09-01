@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props" Condition="Exists('packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props')" />
-  <Import Project="packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props" Condition="Exists('packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props')" />
+  <Import Project="packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props" Condition="Exists('packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props')" />
+  <Import Project="packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.props" Condition="Exists('packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -171,10 +171,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /FORCE:MULTIPLE /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libCMTd.lib;libCPMTd.lib;libvcruntimed.lib;libucrtd.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;version.lib;comsuppwd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libCMTd.lib;libCPMTd.lib;libvcruntimed.lib;libucrtd.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;src\extlibs\openal\libs\win64\OpenAL32.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;version.lib;comsuppwd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)FFViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\Falcon4\SP3\ExtLibs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;C:\Falcon4\SP3\ExtLibs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Falcon4.pdb</ProgramDatabaseFile>
@@ -185,6 +185,10 @@
       <LargeAddressAware>true</LargeAddressAware>
       <DataExecutionPrevention />
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -216,10 +220,10 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libCMTd.lib;libCPMTd.lib;libvcruntimed.lib;libucrtd.lib;atls.lib;delayimp.lib;comsupp.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;version.lib;comsuppwd.lib;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\lib\x64-v142\nvtt30205.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libCMTd.lib;libCPMTd.lib;libvcruntimed.lib;libucrtd.lib;atls.lib;delayimp.lib;comsupp.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;src\extlibs\openal\libs\win64\OpenAL32.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;version.lib;comsuppwd.lib;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\lib\x64-v142\nvtt30205.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)FFViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
-      <AdditionalLibraryDirectories>C:\Falcon4\SP3\ExtLibs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(VULKAN_SDK)\Lib;C:\Falcon4\SP3\ExtLibs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <ProgramDatabaseFile>$(OutDir)Falcon4.pdb</ProgramDatabaseFile>
@@ -231,6 +235,10 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <Midl>
@@ -271,7 +279,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /FIXED:NO /FORCE:MULTIPLE /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;version.lib;comsuppwd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;src\extlibs\openal\libs\win64\OpenAL32.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;version.lib;comsuppwd.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)FFViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -284,6 +292,10 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -322,7 +334,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/FIXED:NO /FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;comsupp.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;version.lib;comsuppwd.lib;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\lib\x64-v142\nvtt30205.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;comsupp.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;src\extlibs\openal\libs\win64\OpenAL32.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;version.lib;comsuppwd.lib;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\lib\x64-v142\nvtt30205.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)FFViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -336,6 +348,10 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Remote|Win32'">
     <Midl>
@@ -376,7 +392,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/MACHINE:I386 /FIXED:NO /FORCE:MULTIPLE /SAFESEH:NO %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;src\Landh\Lib\st80w.lib;comsupp.lib;src\amd\lib\release\amd3d.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;src\extlibs\openal\libs\win64\OpenAL32.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;version.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)RedViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -389,6 +405,10 @@
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
       <DataExecutionPrevention />
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Remote|x64'">
     <Midl>
@@ -427,7 +447,7 @@
     </ResourceCompile>
     <Link>
       <AdditionalOptions>/FIXED:NO /FORCE:MULTIPLE %(AdditionalOptions)</AdditionalOptions>
-      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;comsupp.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;dsound.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;version.lib;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\lib\x64-v142\nvtt30205.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libCMT.lib;libCPMT.lib;libvcruntime.lib;libucrt.lib;atls.lib;delayimp.lib;comsupp.lib;oldnames.lib;comctl32.lib;winmm.lib;vfw32.lib;wsock32.lib;src\extlibs\openal\libs\win64\OpenAL32.lib;dxguid.lib;dinput8.lib;ddraw.lib;dbghelp.lib;d3d11.lib;d3d12.lib;dxgi.lib;d3dcompiler.lib;$(VULKAN_SDK)\Lib\vulkan-1.lib;version.lib;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\lib\x64-v142\nvtt30205.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)RedViper.exe</OutputFile>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <IgnoreAllDefaultLibraries>true</IgnoreAllDefaultLibraries>
@@ -441,6 +461,10 @@
       <DataExecutionPrevention>
       </DataExecutionPrevention>
     </Link>
+    <PostBuildEvent>
+      <Command>copy /Y "$(ProjectDir)src\extlibs\openal\bin\win64\soft_oal.dll" "$(OutDir)OpenAL32.dll"</Command>
+      <Message>Deploy OpenAL Soft next to the exe (the System32 legacy Creative router caps sources at 256 and cannot reach the HMD)</Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="RedProfiler.cpp" />
@@ -779,16 +803,16 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets" Condition="Exists('packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets')" />
-    <Import Project="packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets" Condition="Exists('packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets')" />
+    <Import Project="packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.targets" Condition="Exists('packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.targets')" />
+    <Import Project="packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets" Condition="Exists('packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props'))" />
-    <Error Condition="!Exists('packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets'))" />
-    <Error Condition="!Exists('packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props'))" />
-    <Error Condition="!Exists('packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets'))" />
+    <Error Condition="!Exists('packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.props'))" />
+    <Error Condition="!Exists('packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\Microsoft.Direct3D.DXC.1.9.2602.24\build\native\Microsoft.Direct3D.DXC.targets'))" />
+    <Error Condition="!Exists('packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props')" Text="$([System.String]::Format('$(ErrorText)', 'packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props'))" />
+    <Error Condition="!Exists('packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets')" Text="$([System.String]::Format('$(ErrorText)', 'packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets'))" />
   </Target>
 </Project>

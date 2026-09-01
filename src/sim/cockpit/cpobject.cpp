@@ -77,7 +77,8 @@ CPObject::~CPObject()
 
 void CPObject::DiscardLit()
 {
-    for (int i = 0; i < (int)m_arrTex.size(); i++) delete m_arrTex[i];
+    for (int i = 0; i < (int)m_arrTex.size(); i++)
+        delete m_arrTex[i];
 
     m_arrTex.clear();
 
@@ -93,6 +94,6 @@ void CPObject::Translate3D(DWORD* palette32)
 {
     if (m_pPalette)
     {
-        m_pPalette->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*) palette32);
+        m_pPalette->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*)palette32);
     }
 }

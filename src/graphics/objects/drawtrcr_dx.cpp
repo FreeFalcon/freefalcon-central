@@ -1,16 +1,16 @@
-#include "TimeMgr.h"
-#include "TOD.h"
-#include "RenderOW.h"
-#include "RViewPnt.h"
-#include "Tex.h"
+#include "timemgr.h"
+#include "tod.h"
+#include "renderow.h"
+#include "rviewpnt.h"
+#include "tex.h"
 #include "falclib/include/fakerand.h"
-#include "Drawtrcr.h"
-#include "Draw2d.h"
+#include "drawtrcr.h"
+#include "draw2d.h"
 
-#include "Graphics/DXEngine/DXTools.h"
-#include "Graphics/DXEngine/DXDefines.h"
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "graphics/dxengine/dxtools.h"
+#include "graphics/dxengine/dxdefines.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawableTracer::pool;
@@ -36,11 +36,11 @@ DXDrawableTracer::DXDrawableTracer(float w) : DrawableTracer(w)
 /***************************************************************************\
     Initialize a tracer
 \***************************************************************************/
-DXDrawableTracer::DXDrawableTracer(Tpoint *p, float w) : DrawableTracer(p, w)
+DXDrawableTracer::DXDrawableTracer(Tpoint* p, float w) : DrawableTracer(p, w)
 {
 }
 
-
+
 /***************************************************************************\
     Remove an instance of a tracer
 \***************************************************************************/
@@ -48,22 +48,22 @@ DXDrawableTracer::~DXDrawableTracer(void)
 {
 }
 
-
+
 /***************************************************************************\
     Remove an instance of a tracer
 \***************************************************************************/
-void DXDrawableTracer::Update(Tpoint *head, Tpoint *tail)
+void DXDrawableTracer::Update(Tpoint* head, Tpoint* tail)
 {
     position = *head;
     tailEnd = *tail;
 }
 
-
+
 /***************************************************************************\
     Draw this segmented trail on the given renderer.
 \***************************************************************************/
 //void DrawableTracer::Draw( class RenderOTW *renderer, int LOD )
-void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
+void DXDrawableTracer::Draw(class RenderOTW* renderer, int)
 {
     D3DVECTOR v0, v1, v2, v3, v4, v5;
     int lineColor, LineEndColor;
@@ -77,9 +77,11 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
 
     // COBRA - RED - Tracers are updated on by the Gun Exec... this makes flying tracers to freeze
     // if no more 'driven' by the gun EXEC... they appear stopped at midair
-    if (LastPos.x == position.x and LastPos.z == position.z and LastPos.y == position.y and gameCompressionRatio)
+    if (LastPos.x == position.x and LastPos.z == position.z and
+        LastPos.y == position.y and gameCompressionRatio)
     {
-        if (parentList) parentList->RemoveMe();
+        if (parentList)
+            parentList->RemoveMe();
 
         return;
     }
@@ -88,7 +90,9 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     LastPos = position;
 
     // Get the Detail level of the drawable
-    DetailLevel = TheDXEngine.GetDetailLevel((D3DVECTOR*)&position, TRACER_VISIBLE_DISTANCE) / radius;
+    DetailLevel = TheDXEngine.GetDetailLevel((D3DVECTOR*)&position,
+                                             TRACER_VISIBLE_DISTANCE) /
+                  radius;
 
     // Artscout - 2026: raw camera distance, independent of GetDetailLevel's m_LODBiasCx. The LOD bias is
     // derived from the render resolution/FOV (1/(detailScaler*RadiansPerPixel*scaleX*oneOVERtanHFOV)) and is
@@ -109,22 +113,23 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     }
 
     // Alpha Check
-    if (alpha > 1.0f) alpha = 1.0f;
+    if (alpha > 1.0f)
+        alpha = 1.0f;
 
     // now Alpha is proportional to distance
-    float LineAlpha =/*alpha * */(1 - DetailLevel * 0.2f);
+    float LineAlpha = /*alpha * */ (1 - DetailLevel * 0.2f);
 
 
     // Set the Colour
-    lineColor = ((unsigned int)(LineAlpha * 255.0f) << 24)       + // alpha
+    lineColor = ((unsigned int)(LineAlpha * 255.0f) << 24) + // alpha
                 ((unsigned int)(r * 255.0f) << 16) + // blue
-                ((unsigned int)(g * 255.0f) << 8)  + // green
-                ((unsigned int)(b * 255.0f));   // red
+                ((unsigned int)(g * 255.0f) << 8) + // green
+                ((unsigned int)(b * 255.0f)); // red
 
-    LineEndColor = ((unsigned int)(LineAlpha * 32.0f) << 24)       + // alpha
-                    ((unsigned int)(r * 255.0f) << 16) + // blue
-                    ((unsigned int)(g * 255.0f) << 8)  + // green
-                    ((unsigned int)(b * 255.0f));   // red
+    LineEndColor = ((unsigned int)(LineAlpha * 32.0f) << 24) + // alpha
+                   ((unsigned int)(r * 255.0f) << 16) + // blue
+                   ((unsigned int)(g * 255.0f) << 8) + // green
+                   ((unsigned int)(b * 255.0f)); // red
 
     if (DetailLevel > 0.15f)
     {
@@ -135,7 +140,8 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
 
     if (DetailLevel > 0.03f)
     {
-        TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
+        TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd,
+                               lineColor, LineEndColor, EMISSIVE);
         //STOP_PROFILE("Tracers Time");
         return;
     }
@@ -145,7 +151,8 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     // instead -- this kills the "all tracers are crooked stars for the first few bursts" warmup artifact.
     if (camDist > 1500.0f)
     {
-        TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
+        TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd,
+                               lineColor, LineEndColor, EMISSIVE);
         return;
     }
 
@@ -155,7 +162,8 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     Vector.z = tailEnd.z - position.z;
 
     // Normalize the Direction vector
-    float k = sqrtf(Vector.x * Vector.x + Vector.y * Vector.y + Vector.z * Vector.z);
+    float k =
+        sqrtf(Vector.x * Vector.x + Vector.y * Vector.y + Vector.z * Vector.z);
     Vector.x /= k;
     Vector.y /= k;
     Vector.z /= k;
@@ -196,12 +204,15 @@ void DXDrawableTracer::Draw(class RenderOTW *renderer, int)
     v4.y += position.y;
     v4.z += position.z;
 
-    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v5, lineColor, LineEndColor, EMISSIVE);
-    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v1, lineColor, LineEndColor, EMISSIVE);
-    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v2, lineColor, LineEndColor, EMISSIVE);
-    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v3, lineColor, LineEndColor, EMISSIVE);
-    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v4, lineColor, LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v5, lineColor,
+                           LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v1, lineColor,
+                           LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v2, lineColor,
+                           LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v3, lineColor,
+                           LineEndColor, EMISSIVE);
+    TheDXEngine.Draw3DLine((D3DVECTOR*)&v0, (D3DVECTOR*)&v4, lineColor,
+                           LineEndColor, EMISSIVE);
     //STOP_PROFILE("Tracers Time");
-
 }
-

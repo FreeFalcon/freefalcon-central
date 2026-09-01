@@ -9,8 +9,8 @@
 #ifndef _DRAWPLAT_H_
 #define _DRAWPLAT_H_
 
-#include "ObjList.h"
-#include "DrawObj.h"
+#include "objlist.h"
+#include "drawobj.h"
 
 
 class DrawablePlatform : public DrawableObject
@@ -40,7 +40,8 @@ protected:
     BOOL ObjectInside(DrawableObject *object);
     virtual void SetParentList(ObjectDisplayList *list);
 
-    static void UpdateMetrics(void *self, long listNo, const Tpoint *pos, TransportStr *transList);
+    static void UpdateMetrics(void *self, long listNo, const Tpoint *pos,
+                              TransportStr *transList);
     void UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList);
 
     static void SortForViewpoint(void *self);
@@ -56,7 +57,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

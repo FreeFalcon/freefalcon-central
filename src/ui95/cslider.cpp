@@ -12,14 +12,8 @@ enum
     CSLD_SETSTEPS,
 };
 
-char *C_Sld_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[BGIMAGE]",
-    "[SLIDERIMAGE]",
-    "[STEPS]",
-    0,
+char *C_Sld_Tokens[] = {
+    "[NOTHING]", "[SETUP]", "[BGIMAGE]", "[SLIDERIMAGE]", "[STEPS]", 0,
 };
 
 #endif
@@ -39,7 +33,8 @@ C_Slider::C_Slider() : C_Control()
     BgImage_ = NULL; // draw at x,y of control
     Slider_ = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor
+                    C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_Slider::C_Slider(char **stream) : C_Control(stream)
@@ -56,7 +51,7 @@ C_Slider::~C_Slider()
 
 long C_Slider::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Slider::Setup(long ID, short Type)
@@ -104,7 +99,7 @@ void C_Slider::SetSliderRange(const long Min, const long Max)
     MaxPos_ = static_cast<short>(Max);
 }
 
-void C_Slider::SetSliderPos(long Pos) 
+void C_Slider::SetSliderPos(long Pos)
 {
     long dist;
 
@@ -117,7 +112,7 @@ void C_Slider::SetSliderPos(long Pos)
     {
         dist = (MaxPos_ - MinPos_) / Steps_;
 
-        if ( not dist)
+        if (not dist)
         {
             dist = 1;
         }
@@ -143,9 +138,10 @@ void C_Slider::SetSliderPos(long Pos)
 long C_Slider::CheckHotSpots(long relX, long relY)
 {
     // check visibility, enabled and ready
-    if ((GetFlags() bitand C_BIT_INVISIBLE) or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
+    if ((GetFlags() bitand C_BIT_INVISIBLE) or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
     {
-        return(0);
+        return (0);
     }
 
 
@@ -155,36 +151,35 @@ long C_Slider::CheckHotSpots(long relX, long relY)
          (relX > (GetX()+(Slider_->Header->w)+SX_)) or
          (relY < (GetY()+SY_)) or
          (relY > (GetY()+(Slider_->Header->h)+SY_))*/
-        (relX < GetX()) or (relX > (GetX() + GetW())) or
-        (relY < GetY()) or (relY > (GetY() + GetH()))
-    )
+        (relX < GetX()) or (relX > (GetX() + GetW())) or (relY < GetY()) or
+        (relY > (GetY() + GetH())))
     {
-        return(0);
+        return (0);
     }
 
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            SetRelXY(relX - GetX(), relY - GetY());
-            return(GetID());
-            break;
+    case C_TYPE_VERTICAL:
+        SetRelXY(relX - GetX(), relY - GetY());
+        return (GetID());
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            SetRelXY(relX - GetX(), relY - GetY());
-            return(GetID());
-            break;
+    case C_TYPE_HORIZONTAL:
+        SetRelXY(relX - GetX(), relY - GetY());
+        return (GetID());
+        break;
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Slider::Wheel(int increments, WORD MouseX, WORD MouseY)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
     {
-        return(FALSE);
+        return (FALSE);
     }
 
     Leave = UI_Enter(Parent_);
@@ -244,7 +239,7 @@ BOOL C_Slider::Wheel(int increments, WORD MouseX, WORD MouseY)
 
     Refresh();
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Slider::Process(long ID, short HitType)
@@ -254,22 +249,25 @@ BOOL C_Slider::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_Slider::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX() + SX_, GetY() + SY_, GetX() + SX_ + GetW() + 1, GetY() + SY_ + GetH() + 1, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX() + SX_, GetY() + SY_,
+                           GetX() + SX_ + GetW() + 1, GetY() + SY_ + GetH() + 1,
+                           GetFlags(), GetClient());
 }
 
 void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT rect, s;
 
-    if ( not Ready()) return;
+    if (not Ready())
+        return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
@@ -298,7 +296,7 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
         if (GetFlags() bitand C_BIT_ABSOLUTE)
         {
-            if ( not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
+            if (not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
                 return;
         }
         else
@@ -308,11 +306,12 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
             rect.right += Parent_->VX_[GetClient()];
             rect.bottom += Parent_->VY_[GetClient()];
 
-            if ( not Parent_->ClipToArea(&s, &rect, &Parent_->ClientArea_[GetClient()]))
+            if (not Parent_->ClipToArea(&s, &rect,
+                                        &Parent_->ClientArea_[GetClient()]))
                 return;
         }
 
-        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
+        if (not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         rect.left += Parent_->GetX();
@@ -320,7 +319,8 @@ void C_Slider::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.right += Parent_->GetX();
         rect.bottom += Parent_->GetY();
 
-        Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
+        Slider_->Blit(surface, s.left, s.top, s.right - s.left,
+                      s.bottom - s.top, rect.left, rect.top);
 
         if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
             HighLite(surface, cliprect);
@@ -344,7 +344,7 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     else if (Flags_ bitand C_BIT_VCENTER)
         clip.top -= GetH() / 2;
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -353,40 +353,43 @@ void C_Slider::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     clip.right = clip.left + Slider_->Header->w;
     clip.bottom = clip.top + Slider_->Header->h;
 
-    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if (not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
-        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
+        if (not Parent_->ClipToArea(&tmp, &clip,
+                                    &Parent_->ClientArea_[Client_]))
             return;
 
-    Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
+    Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip,
+                             C_BIT_ABSOLUTE, 0);
 }
 
 BOOL C_Slider::MouseOver(long relx, long rely, C_Base *)
 {
     // Don't want to do anything here
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (FALSE);
 
-    if (relx >= (GetX() + SX_) and relx < (GetX() + GetW() + SX_) and 
+    if (relx >= (GetX() + SX_) and relx < (GetX() + GetW() + SX_) and
         rely >= (GetY() + SY_) and rely < (GetY() + GetH() + SY_))
     {
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 {
     long x, y;
     float dist;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
-        return(FALSE);
+        return (FALSE);
 
     Leave = UI_Enter(Parent_);
     Refresh();
@@ -395,41 +398,43 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            SY_ = y;
+    case C_TYPE_VERTICAL:
+        SY_ = y;
 
-            if (SY_ < MinPos_)
-                SY_ = MinPos_;
+        if (SY_ < MinPos_)
+            SY_ = MinPos_;
 
-            if (Steps_ > 0)
-            {
-                dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
-                SY_ = static_cast<long>((static_cast<float>(SY_ - MinPos_) + dist / 2.0) / dist); 
-                SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;    
-            }
+        if (Steps_ > 0)
+        {
+            dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
+            SY_ = static_cast<long>(
+                (static_cast<float>(SY_ - MinPos_) + dist / 2.0) / dist);
+            SY_ = static_cast<long>(static_cast<float>(SY_) * dist) + MinPos_;
+        }
 
-            if (SY_ > MaxPos_)
-                SY_ = MaxPos_;
+        if (SY_ > MaxPos_)
+            SY_ = MaxPos_;
 
-            break;
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            SX_ = x;
+    case C_TYPE_HORIZONTAL:
+        SX_ = x;
 
-            if (SX_ < MinPos_)
-                SX_ = MinPos_;
+        if (SX_ < MinPos_)
+            SX_ = MinPos_;
 
-            if (Steps_ > 0)
-            {
-                dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
-                SX_ = static_cast<long>((static_cast<float>(SX_ - MinPos_) + dist / 2.0) / dist); 
-                SX_ = static_cast<long>(static_cast<float>(SX_) * dist)  + MinPos_;  
-            }
+        if (Steps_ > 0)
+        {
+            dist = (float)(MaxPos_ - MinPos_) / (float)Steps_;
+            SX_ = static_cast<long>(
+                (static_cast<float>(SX_ - MinPos_) + dist / 2.0) / dist);
+            SX_ = static_cast<long>(static_cast<float>(SX_) * dist) + MinPos_;
+        }
 
-            if (SX_ > MaxPos_)
-                SX_ = MaxPos_;
+        if (SX_ > MaxPos_)
+            SX_ = MaxPos_;
 
-            break;
+        break;
     }
 
     Refresh();
@@ -438,10 +443,10 @@ BOOL C_Slider::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
         (*Callback_)(GetID(), C_TYPE_MOUSEMOVE, this);
 
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
-void C_Slider::GetItemXY(long , long *x, long *y)
+void C_Slider::GetItemXY(long, long *x, long *y)
 {
     *x = SX_;
     *y = SY_;
@@ -453,13 +458,13 @@ void C_Slider::SetSubParents(C_Window *)
     {
         switch (GetType())
         {
-            case C_TYPE_VERTICAL:
-                SetSliderRange(0, GetH() - (Slider_->Header->h));
-                break;
+        case C_TYPE_VERTICAL:
+            SetSliderRange(0, GetH() - (Slider_->Header->h));
+            break;
 
-            case C_TYPE_HORIZONTAL:
-                SetSliderRange(0, GetW() - (Slider_->Header->w));
-                break;
+        case C_TYPE_HORIZONTAL:
+            SetSliderRange(0, GetW() - (Slider_->Header->w));
+            break;
         }
     }
 }
@@ -473,33 +478,33 @@ short C_Slider::LocalFind(char *token)
     while (C_Sld_Tokens[i])
     {
         if (strnicmp(token, C_Sld_Tokens[i], strlen(C_Sld_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Slider::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CSLD_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CSLD_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CSLD_SETBGIMAGE:
-            SetBgImage(P[0]);
-            break;
+    case CSLD_SETBGIMAGE:
+        SetBgImage(P[0]);
+        break;
 
-        case CSLD_SETSLIDERIMAGE:
-            SetSliderImage(P[0]);
-            break;
+    case CSLD_SETSLIDERIMAGE:
+        SetSliderImage(P[0]);
+        break;
 
-        case CSLD_SETSTEPS:
-            SetSteps((short)P[0]);
-            break;
+    case CSLD_SETSTEPS:
+        SetSteps((short)P[0]);
+        break;
     }
 }
 

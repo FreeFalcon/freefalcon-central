@@ -5,30 +5,30 @@
 #include <io.h>
 #include <stdlib.h>
 #include <math.h>
-#include "CmpGlobl.h"
-#include "F4Vu.h"
-#include "ListADT.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "ASearch.h"
-#include "Path.h"
-#include "Find.h"
+#include "cmpglobl.h"
+#include "f4vu.h"
+#include "listadt.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "asearch.h"
+#include "path.h"
+#include "find.h"
 #include "vutypes.h"
-#include "Campaign.h"
-#include "ATM.h"
-#include "CampList.h"
+#include "campaign.h"
+#include "atm.h"
+#include "camplist.h"
 #include "campwp.h"
 #include "update.h"
 #include "loadout.h"
 #include "campweap.h"
 #include "airunit.h"
 #include "tactics.h"
-#include "Team.h"
-#include "Feature.h"
-#include "AIInput.h"
-#include "CmpClass.h"
-#include "CampMap.h"
-#include "FalcSess.h"
+#include "team.h"
+#include "feature.h"
+#include "aiinput.h"
+#include "cmpclass.h"
+#include "campmap.h"
+#include "falcsess.h"
 #include "classtbl.h"
 
 #include "debuggr.h"
@@ -42,13 +42,9 @@ extern char MissStr[AMIS_OTHER][16];
 extern int MRX;
 extern int MRY;
 
-extern FILE
-*save_log,
-*load_log;
+extern FILE *save_log, *load_log;
 
-extern int
-start_save_stream,
-start_load_stream;
+extern int start_save_stream, start_load_stream;
 
 // =========================================
 // Air Unit functions
@@ -60,7 +56,8 @@ AirUnitClass::AirUnitClass(ushort type, VU_ID_NUMBER id) : UnitClass(type, id)
 
 
 //AirUnitClass::AirUnitClass(VU_BYTE **stream, long size) : UnitClass(stream)
-AirUnitClass::AirUnitClass(VU_BYTE **stream, long *size) : UnitClass(stream, size)
+AirUnitClass::AirUnitClass(VU_BYTE **stream, long *size)
+    : UnitClass(stream, size)
 {
     if (load_log)
     {
@@ -127,16 +124,14 @@ int AirUnitClass::GetUnitSpeed() const
 
 int AirUnitClass::IsHelicopter() const
 {
-    if ( not (class_data->Flags bitand VEH_VTOL))
+    if (not(class_data->Flags bitand VEH_VTOL))
     {
         return 0;
     }
 
-    if (
-        GetSType() == STYPE_UNIT_ATTACK_HELO or
+    if (GetSType() == STYPE_UNIT_ATTACK_HELO or
         GetSType() == STYPE_UNIT_TRANSPORT_HELO or
-        GetSType() == STYPE_UNIT_RECON_HELO
-    )
+        GetSType() == STYPE_UNIT_RECON_HELO)
     {
         return 1;
     }
@@ -157,7 +152,7 @@ int AirUnitClass::OnGround(void)
 
 int GetUnitScore(Unit u, MoveType mt)
 {
-    if ( not u)
+    if (not u)
         return 0;
     else if (u->IsPackage() or u->IsBrigade())
     {

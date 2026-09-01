@@ -9,20 +9,20 @@
 #include <windows.h>
 #include <io.h>
 #include <fcntl.h>
-#include <SYS/STAT.H>
+#include <sys/stat.h>
 #include <stdlib.h>
 #include <float.h>
-#include "shi/ShiError.h"
-#include "../BSPutil/ParentBuildList.h"
-#include "../BSPutil/LODBuildList.h"
-#include "../BSPutil/ColorBuildList.h"
-#include "../BSPutil/PalBuildList.h"
-#include "../BSPutil/TexBuildList.h"
+#include "shi/shierror.h"
+#include "../bsputil/parentbuildlist.h"
+#include "../bsputil/lodbuildlist.h"
+#include "../bsputil/colorbuildlist.h"
+#include "../bsputil/palbuildlist.h"
+#include "../bsputil/texbuildlist.h"
 #include "grinline.h"
-#include <Commdlg.h>
-#include "PalBank.h"
-#include "ObjectLod.h"
-#include "PlayerOp.h"
+#include <commdlg.h>
+#include "palbank.h"
+#include "objectlod.h"
+#include "playerop.h"
 
 // Time stamp from utility library
 extern char FLTtoGeometryTimeStamp[];
@@ -101,12 +101,13 @@ static int sstr2arg(char *srcptr, int maxpf, char *argv[], const char *dlmstr)
             return (-1);
 
         /* Skip leading white space */
-        for (; *srcptr == ' ' || *srcptr == '\t'; srcptr++);
+        for (; *srcptr == ' ' || *srcptr == '\t'; srcptr++)
+            ;
 
-        argv [ind] = srcptr;
+        argv[ind] = srcptr;
         destptr = srcptr;
 
-        for (gotquote = 0; ;)
+        for (gotquote = 0;;)
         {
 
             if (idex[*(unsigned char *)srcptr])
@@ -125,72 +126,72 @@ static int sstr2arg(char *srcptr, int maxpf, char *argv[], const char *dlmstr)
             {
                 switch (*srcptr)
                 {
-                    default:        /* just copy it                     */
-                        *destptr++ = *srcptr++;
-                        break;
+                default:        /* just copy it                     */
+                    *destptr++ = *srcptr++;
+                    break;
 
-                    case '\"':      /* beginning or end of string       */
-                        gotquote = (gotquote) ? 0 : 1 ;
-                        srcptr++;   /* just toggle */
-                        break;
+                case '\"':      /* beginning or end of string       */
+                    gotquote = (gotquote) ? 0 : 1;
+                    srcptr++;   /* just toggle */
+                    break;
 
-                    case '\\':      /* quote next character     */
-                        srcptr++;   /* skip the back-slash      */
+                case '/':      /* quote next character     */
+                    srcptr++;   /* skip the back-slash      */
 
-                        switch (*srcptr)
-                        {
-                                /* Octal character          */
-                            case '0':
-                            case '1':
-                            case '2':
-                            case '3':
-                            case '4':
-                            case '5':
-                            case '6':
-                            case '7':
-                                *destptr = '\0';
-
-                                do
-                                    *destptr = (*destptr << 3) | (*srcptr++ - '0');
-
-                                while (*srcptr >= '0' && *srcptr <= '7');
-
-                                destptr++;
-                                break;
-
-                                /* C escape char            */
-                            case 'b':
-                                *destptr++ = '\b';
-                                srcptr++;
-                                break;
-
-                            case 'n':
-                                *destptr++ = '\n';
-                                srcptr++;
-                                break;
-
-                            case 'r':
-                                *destptr++ = '\r';
-                                srcptr++;
-                                break;
-
-                            case 't':
-                                *destptr++ = '\t';
-                                srcptr++;
-                                break;
-
-                                /* Boring -- just copy ASIS */
-                            default:
-                                *destptr++ = *srcptr++;
-                        }
-
-                        break;
-
-                    case '\0':
+                    switch (*srcptr)
+                    {
+                        /* Octal character          */
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
                         *destptr = '\0';
-                        ind++;
-                        argv[ind] = (char *) 0;
-                        return (ind);
+
+                        do
+                            *destptr = (*destptr << 3) | (*srcptr++ - '0');
+
+                        while (*srcptr >= '0' && *srcptr <= '7');
+
+                        destptr++;
+                        break;
+
+                        /* C escape char            */
+                    case 'b':
+                        *destptr++ = '\b';
+                        srcptr++;
+                        break;
+
+                    case 'n':
+                        *destptr++ = '\n';
+                        srcptr++;
+                        break;
+
+                    case 'r':
+                        *destptr++ = '\r';
+                        srcptr++;
+                        break;
+
+                    case 't':
+                        *destptr++ = '\t';
+                        srcptr++;
+                        break;
+
+                        /* Boring -- just copy ASIS */
+                    default:
+                        *destptr++ = *srcptr++;
+                    }
+
+                    break;
+
+                case '\0':
+                    *destptr = '\0';
+                    ind++;
+                    argv[ind] = (char *)0;
+                    return (ind);
                 }
             }
         }
@@ -211,7 +212,7 @@ int main(int argc, char *argv[])
     char path[_MAX_DIR];
     char fname[_MAX_FNAME];
     char ext[_MAX_EXT];
-    char msgbuf [1024];
+    char msgbuf[1024];
     char linebuf[1024 * 4];
     char *preload = NULL;
     FILE *IDSfile;
@@ -223,7 +224,9 @@ int main(int argc, char *argv[])
 
     // Set the FPU to 24 bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
     _controlfp(_RC_CHOP, MCW_RC);
 #ifdef USE_SH_POOLS
@@ -231,24 +234,25 @@ int main(int argc, char *argv[])
     Palette::InitializeStorage();
 #endif
     // Display are startup banner
-    printf("BSPbuild compiled %s.  FLT reader %s\n", __TIMESTAMP__, FLTtoGeometryTimeStamp);
+    printf("BSPbuild compiled %s.  FLT reader %s\n", __TIMESTAMP__,
+           FLTtoGeometryTimeStamp);
 
     while (argc > 1 && argv[1][0] == '-')
     {
         switch (argv[1][1])
         {
-            case '-': // end of args
-                break;
+        case '-': // end of args
+            break;
 
-            case 'l':
-                preload = argv[2];
-                argc --;
-                argv ++;
-                break;
+        case 'l':
+            preload = argv[2];
+            argc--;
+            argv++;
+            break;
         }
 
-        argv ++;
-        argc --;
+        argv++;
+        argc--;
         break;
     }
 
@@ -293,8 +297,10 @@ int main(int argc, char *argv[])
 
 
     // Open the object id input file
-    printf("Step 1:  Reading %s.  (Time %0.0fmin)\n", filename, (GetTickCount() - startTime) / 60000.0);
-    fprintf(stderr, "Step 1:  Reading %s.  (Time %0.0fmin)\n", filename, (GetTickCount() - startTime) / 60000.0);
+    printf("Step 1:  Reading %s.  (Time %0.0fmin)\n", filename,
+           (GetTickCount() - startTime) / 60000.0);
+    fprintf(stderr, "Step 1:  Reading %s.  (Time %0.0fmin)\n", filename,
+            (GetTickCount() - startTime) / 60000.0);
     fflush(NULL);
     IDSfile = fopen(filename, "r");
 
@@ -324,15 +330,17 @@ int main(int argc, char *argv[])
             continue;
 
         if (cp = strchr(linebuf, '\n'))
-            * cp = '\0';
+            *cp = '\0';
 
         ac = sstr2arg(linebuf, 100, av, " \t,");
 
-        if (ac < 2) continue;
+        if (ac < 2)
+            continue;
 
         id = atoi(av[0]);
 
-        if (id == -1) id = lastid ++;
+        if (id == -1)
+            id = lastid++;
 
         TheParentBuildList.AddItem(id, av[1]);
     }
@@ -342,14 +350,19 @@ int main(int argc, char *argv[])
 
 
     // Now construct the object array and read each object
-    printf("Step 2:  Reading FLT files.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
-    fprintf(stderr, "Step 2:  Reading FLT files.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
+    printf("Step 2:  Reading FLT files.  (Time %0.0fmin)\n",
+           (GetTickCount() - startTime) / 60000.0);
+    fprintf(stderr, "Step 2:  Reading FLT files.  (Time %0.0fmin)\n",
+            (GetTickCount() - startTime) / 60000.0);
     fflush(NULL);
 
     if (!TheParentBuildList.BuildParentTable())
     {
-        printf("ERROR:  We got no objects to process.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
-        fprintf(stderr, "ERROR:  We got no objects to process.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
+        printf("ERROR:  We got no objects to process.  (Time %0.0fmin)\n",
+               (GetTickCount() - startTime) / 60000.0);
+        fprintf(stderr,
+                "ERROR:  We got no objects to process.  (Time %0.0fmin)\n",
+                (GetTickCount() - startTime) / 60000.0);
         fflush(NULL);
         exit(-1);
     }
@@ -363,13 +376,16 @@ int main(int argc, char *argv[])
 
 
     // Create the object LOD file
-    printf("Step 3:  Writing object LODs.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
-    fprintf(stderr, "Step 3:  Writing object LODs.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
+    printf("Step 3:  Writing object LODs.  (Time %0.0fmin)\n",
+           (GetTickCount() - startTime) / 60000.0);
+    fprintf(stderr, "Step 3:  Writing object LODs.  (Time %0.0fmin)\n",
+            (GetTickCount() - startTime) / 60000.0);
     fflush(NULL);
     strcpy(filename, basename);
     strcat(filename, ".LOD");
     printf("\nCreating %s\n", filename);
-    file = open(filename,  _O_WRONLY | _O_BINARY | _O_TRUNC | _O_CREAT, _S_IWRITE);
+    file =
+        open(filename, _O_WRONLY | _O_BINARY | _O_TRUNC | _O_CREAT, _S_IWRITE);
 
     if (file < 0)
     {
@@ -385,13 +401,16 @@ int main(int argc, char *argv[])
 
 
     // Create the object texture file
-    printf("Step 4:  Writing object textures.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
-    fprintf(stderr, "Step 4:  Writing object textures.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
+    printf("Step 4:  Writing object textures.  (Time %0.0fmin)\n",
+           (GetTickCount() - startTime) / 60000.0);
+    fprintf(stderr, "Step 4:  Writing object textures.  (Time %0.0fmin)\n",
+            (GetTickCount() - startTime) / 60000.0);
     fflush(NULL);
     strcpy(filename, basename);
     strcat(filename, ".TEX");
     printf("\nCreating %s\n", filename);
-    file = open(filename,  _O_WRONLY | _O_BINARY | _O_TRUNC | _O_CREAT, _S_IWRITE);
+    file =
+        open(filename, _O_WRONLY | _O_BINARY | _O_TRUNC | _O_CREAT, _S_IWRITE);
 
     if (file < 0)
     {
@@ -411,13 +430,17 @@ int main(int argc, char *argv[])
 
 
     // Create the master object file
-    printf("Step 5:  Writing object headers.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
-    fprintf(stderr, "Step 4:  Writing object headers.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
+    printf("Step 5:  Writing object headers.  (Time %0.0fmin)\n",
+           (GetTickCount() - startTime) / 60000.0);
+    fprintf(stderr, "Step 4:  Writing object headers.  (Time %0.0fmin)\n",
+            (GetTickCount() - startTime) / 60000.0);
     fflush(NULL);
     strcpy(filename, basename);
     strcat(filename, ".HDR");
     printf("\nCreating %s\n", filename);
-    file = open(filename, _O_WRONLY | _O_BINARY | _O_TRUNC | _O_CREAT | _O_SEQUENTIAL, _S_IWRITE);
+    file = open(filename,
+                _O_WRONLY | _O_BINARY | _O_TRUNC | _O_CREAT | _O_SEQUENTIAL,
+                _S_IWRITE);
 
     if (file < 0)
     {
@@ -447,8 +470,10 @@ int main(int argc, char *argv[])
     close(file);
 
 
-    printf("Step 6:  Reporting.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
-    fprintf(stderr, "Step 5:  Reporting.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
+    printf("Step 6:  Reporting.  (Time %0.0fmin)\n",
+           (GetTickCount() - startTime) / 60000.0);
+    fprintf(stderr, "Step 5:  Reporting.  (Time %0.0fmin)\n",
+            (GetTickCount() - startTime) / 60000.0);
     fflush(NULL);
 
 
@@ -457,8 +482,10 @@ int main(int argc, char *argv[])
     TheTextureBuildList.Report();
 
 
-    printf("Finished.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
-    fprintf(stderr, "Finished.  (Time %0.0fmin)\n", (GetTickCount() - startTime) / 60000.0);
+    printf("Finished.  (Time %0.0fmin)\n",
+           (GetTickCount() - startTime) / 60000.0);
+    fprintf(stderr, "Finished.  (Time %0.0fmin)\n",
+            (GetTickCount() - startTime) / 60000.0);
     fprintf(stderr, "Press ENTER to end.\n");
     getchar();
     return 0;

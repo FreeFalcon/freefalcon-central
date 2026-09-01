@@ -15,11 +15,8 @@ matrix33.h
 #include "euler.h"
 #include "matrixdefs.h"
 
-static float matrix33_ident[9] =
-{
-    1.f, 0.f, 0.f,
-    0.f, 1.f, 0.f,
-    0.f, 0.f, 1.f,
+static float matrix33_ident[9] = {
+    1.f, 0.f, 0.f, 0.f, 1.f, 0.f, 0.f, 0.f, 1.f,
 };
 
 struct matrix33
@@ -48,9 +45,8 @@ struct matrix33
         memcpy(m, &(m1.m[0][0]), 9 * sizeof(float));
     }
 
-    matrix33(float _m11, float _m12, float _m13,
-             float _m21, float _m22, float _m23,
-             float _m31, float _m32, float _m33)
+    matrix33(float _m11, float _m12, float _m13, float _m21, float _m22,
+             float _m23, float _m31, float _m32, float _m33)
     {
         m11 = _m11;
         m12 = _m12;
@@ -76,42 +72,48 @@ struct matrix33
         float wz = q.w * q.z;
 
         m[0][0] = 1.f - 2.f * (yy + zz);
-        m[1][0] =        2.f * (xy - wz);
-        m[2][0] =        2.f * (xz + wy);
+        m[1][0] = 2.f * (xy - wz);
+        m[2][0] = 2.f * (xz + wy);
 
-        m[0][1] =        2.f * (xy + wz);
+        m[0][1] = 2.f * (xy + wz);
         m[1][1] = 1.f - 2.f * (xx + zz);
-        m[2][1] =        2.f * (yz - wx);
+        m[2][1] = 2.f * (yz - wx);
 
-        m[0][2] =        2.f * (xz - wy);
-        m[1][2] =        2.f * (yz + wx);
+        m[0][2] = 2.f * (xz - wy);
+        m[1][2] = 2.f * (yz + wx);
         m[2][2] = 1.f - 2.f * (xx + yy);
     }
 
-    friend matrix33 operator *(const matrix33& m0, const matrix33& m1)
+    friend matrix33 operator*(const matrix33& m0, const matrix33& m1)
     {
-        matrix33 m2(
-            m0.m[0][0]*m1.m[0][0] + m0.m[0][1]*m1.m[1][0] + m0.m[0][2]*m1.m[2][0],
-            m0.m[0][0]*m1.m[0][1] + m0.m[0][1]*m1.m[1][1] + m0.m[0][2]*m1.m[2][1],
-            m0.m[0][0]*m1.m[0][2] + m0.m[0][1]*m1.m[1][2] + m0.m[0][2]*m1.m[2][2],
+        matrix33 m2(m0.m[0][0] * m1.m[0][0] + m0.m[0][1] * m1.m[1][0] +
+                        m0.m[0][2] * m1.m[2][0],
+                    m0.m[0][0] * m1.m[0][1] + m0.m[0][1] * m1.m[1][1] +
+                        m0.m[0][2] * m1.m[2][1],
+                    m0.m[0][0] * m1.m[0][2] + m0.m[0][1] * m1.m[1][2] +
+                        m0.m[0][2] * m1.m[2][2],
 
-            m0.m[1][0]*m1.m[0][0] + m0.m[1][1]*m1.m[1][0] + m0.m[1][2]*m1.m[2][0],
-            m0.m[1][0]*m1.m[0][1] + m0.m[1][1]*m1.m[1][1] + m0.m[1][2]*m1.m[2][1],
-            m0.m[1][0]*m1.m[0][2] + m0.m[1][1]*m1.m[1][2] + m0.m[1][2]*m1.m[2][2],
+                    m0.m[1][0] * m1.m[0][0] + m0.m[1][1] * m1.m[1][0] +
+                        m0.m[1][2] * m1.m[2][0],
+                    m0.m[1][0] * m1.m[0][1] + m0.m[1][1] * m1.m[1][1] +
+                        m0.m[1][2] * m1.m[2][1],
+                    m0.m[1][0] * m1.m[0][2] + m0.m[1][1] * m1.m[1][2] +
+                        m0.m[1][2] * m1.m[2][2],
 
-            m0.m[2][0]*m1.m[0][0] + m0.m[2][1]*m1.m[1][0] + m0.m[2][2]*m1.m[2][0],
-            m0.m[2][0]*m1.m[0][1] + m0.m[2][1]*m1.m[1][1] + m0.m[2][2]*m1.m[2][1],
-            m0.m[2][0]*m1.m[0][2] + m0.m[2][1]*m1.m[1][2] + m0.m[2][2]*m1.m[2][2]
-        );
+                    m0.m[2][0] * m1.m[0][0] + m0.m[2][1] * m1.m[1][0] +
+                        m0.m[2][2] * m1.m[2][0],
+                    m0.m[2][0] * m1.m[0][1] + m0.m[2][1] * m1.m[1][1] +
+                        m0.m[2][2] * m1.m[2][1],
+                    m0.m[2][0] * m1.m[0][2] + m0.m[2][1] * m1.m[1][2] +
+                        m0.m[2][2] * m1.m[2][2]);
         return m2;
     }
 
-    friend vector3 operator *(const matrix33& m, const vector3& v)
+    friend vector3 operator*(const matrix33& m, const vector3& v)
     {
-        return vector3(
-                   m.m11 * v.x + m.m21 * v.y + m.m31 * v.z,
-                   m.m12 * v.x + m.m22 * v.y + m.m32 * v.z,
-                   m.m13 * v.x + m.m23 * v.y + m.m33 * v.z);
+        return vector3(m.m11 * v.x + m.m21 * v.y + m.m31 * v.z,
+                       m.m12 * v.x + m.m22 * v.y + m.m32 * v.z,
+                       m.m13 * v.x + m.m23 * v.y + m.m33 * v.z);
     };
 
     quaternion GetQuaternion() const
@@ -133,9 +135,11 @@ struct matrix33
             int i, j, k, nxt[3] = {1, 2, 0};
             i = 0;
 
-            if (m[1][1] > m[0][0]) i = 1;
+            if (m[1][1] > m[0][0])
+                i = 1;
 
-            if (m[2][2] > m[i][i]) i = 2;
+            if (m[2][2] > m[i][i])
+                i = 2;
 
             j = nxt[i];
             k = nxt[j];
@@ -164,18 +168,18 @@ struct matrix33
 
         if (s == EulRepYes)
         {
-            double sy = (float) sqrt(tmp.m12 * tmp.m12 + tmp.m13 * tmp.m13);
+            double sy = (float)sqrt(tmp.m12 * tmp.m12 + tmp.m13 * tmp.m13);
 
             if (sy > 16 * FLT_EPSILON)
             {
-                ea.x = (float) atan2(tmp.m12, tmp.m13);
-                ea.y = (float) atan2((float)sy, tmp.m11);
-                ea.z = (float) atan2(tmp.m21, -tmp.m31);
+                ea.x = (float)atan2(tmp.m12, tmp.m13);
+                ea.y = (float)atan2((float)sy, tmp.m11);
+                ea.z = (float)atan2(tmp.m21, -tmp.m31);
             }
             else
             {
-                ea.x = (float) atan2(-tmp.m23, tmp.m22);
-                ea.y = (float) atan2((float)sy, tmp.m11);
+                ea.x = (float)atan2(-tmp.m23, tmp.m22);
+                ea.y = (float)atan2((float)sy, tmp.m11);
                 ea.z = 0;
             }
         }
@@ -185,14 +189,14 @@ struct matrix33
 
             if (cy > 16 * FLT_EPSILON)
             {
-                ea.x = (float) atan2(tmp.m32, tmp.m33);
-                ea.y = (float) atan2(-tmp.m31, (float)cy);
-                ea.z = (float) atan2(tmp.m21, tmp.m11);
+                ea.x = (float)atan2(tmp.m32, tmp.m33);
+                ea.y = (float)atan2(-tmp.m31, (float)cy);
+                ea.z = (float)atan2(tmp.m21, tmp.m11);
             }
             else
             {
-                ea.x = (float) atan2(-tmp.m23, tmp.m22);
-                ea.y = (float) atan2(-tmp.m31, (float)cy);
+                ea.x = (float)atan2(-tmp.m23, tmp.m22);
+                ea.y = (float)atan2(-tmp.m31, (float)cy);
                 ea.z = 0;
             }
         }
@@ -200,7 +204,7 @@ struct matrix33
         if (n == EulParOdd)
         {
             ea.x = -ea.x;
-            ea.y = - ea.y;
+            ea.y = -ea.y;
             ea.z = -ea.z;
         }
 
@@ -317,9 +321,8 @@ struct matrix33
         m33 = z.z;
     }
 
-    void Set(float _m11, float _m12, float _m13,
-             float _m21, float _m22, float _m23,
-             float _m31, float _m32, float _m33)
+    void Set(float _m11, float _m12, float _m13, float _m21, float _m22,
+             float _m23, float _m31, float _m32, float _m33)
     {
         m11 = _m11;
         m12 = _m12;
@@ -358,7 +361,12 @@ struct matrix33
     void Transpose()
     {
 #undef _swap
-#define _swap(x,y) { float t=x; x=y; y=t; }
+#define _swap(x, y)                                                            \
+    {                                                                          \
+        float t = x;                                                           \
+        x = y;                                                                 \
+        y = t;                                                                 \
+    }
         _swap(m[0][1], m[1][0]);
         _swap(m[0][2], m[2][0]);
         _swap(m[1][2], m[2][1]);
@@ -440,10 +448,10 @@ struct matrix33
     void RotateLocalX(const float a)
     {
         matrix33 rotM;  // initialized as identity matrix
-        rotM.m22 = (float) cosf(a);
-        rotM.m23 = -(float) sinf(a);
-        rotM.m32 = (float) sinf(a);
-        rotM.m33 = (float) cosf(a);
+        rotM.m22 = (float)cosf(a);
+        rotM.m23 = -(float)sinf(a);
+        rotM.m32 = (float)sinf(a);
+        rotM.m33 = (float)cosf(a);
 
         (*this) = rotM * (*this);
     }
@@ -451,10 +459,10 @@ struct matrix33
     void RotateLocalY(const float a)
     {
         matrix33 rotM;  // initialized as identity matrix
-        rotM.m11 = (float) cosf(a);
-        rotM.m13 = (float) sinf(a);
-        rotM.m31 = -(float) sinf(a);
-        rotM.m33 = (float) cosf(a);
+        rotM.m11 = (float)cosf(a);
+        rotM.m13 = (float)sinf(a);
+        rotM.m31 = -(float)sinf(a);
+        rotM.m33 = (float)cosf(a);
 
         (*this) = rotM * (*this);
     }
@@ -462,10 +470,10 @@ struct matrix33
     void RotateLocalZ(const float a)
     {
         matrix33 rotM;  // initialized as identity matrix
-        rotM.m11 = (float) cosf(a);
-        rotM.m12 = -(float) sinf(a);
-        rotM.m21 = (float) sinf(a);
-        rotM.m22 = (float) cosf(a);
+        rotM.m11 = (float)cosf(a);
+        rotM.m12 = -(float)sinf(a);
+        rotM.m21 = (float)sinf(a);
+        rotM.m22 = (float)cosf(a);
 
         (*this) = rotM * (*this);
     }
@@ -474,8 +482,8 @@ struct matrix33
     {
         vector3 v(vec);
         v.Normalize();
-        float sa = (float) sinf(a);
-        float ca = (float) cosf(a);
+        float sa = (float)sinf(a);
+        float ca = (float)cosf(a);
 
         matrix33 rotM;
         rotM.m11 = ca + (1.f - ca) * v.x * v.x;
@@ -509,7 +517,7 @@ struct matrix33
         return v;
     };
 
-    void operator *=(const matrix33& m1)
+    void operator*=(const matrix33& m1)
     {
         int i;
 

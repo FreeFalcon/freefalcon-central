@@ -4,7 +4,9 @@
 #define _IDX_HASH_SIZE_ 10
 
 // MACRO to convert to screen format from TARGA format (0rrrrrgggggbbbbb)
-#define COLOR15BIT(color,rs,gs,bs) ((((color >> 10) bitand 0x1f) << rs) bitor (((color >> 5) bitand 0x1f) << gs) bitor (((color) bitand 0x1f) << bs))
+#define COLOR15BIT(color, rs, gs, bs)                                          \
+    ((((color >> 10) bitand 0x1f) << rs) bitor                                 \
+     (((color >> 5) bitand 0x1f) << gs) bitor (((color) bitand 0x1f) << bs))
 
 extern C_Parser *gMainParser;
 extern char FalconUIArtDirectory[];
@@ -12,7 +14,7 @@ extern char FalconUIArtThrDirectory[];
 
 void ImageCleanupCB(void *rec)
 {
-    IMAGE_RSC *data = (IMAGE_RSC*)rec;
+    IMAGE_RSC *data = (IMAGE_RSC *)rec;
 
     if (data)
     {
@@ -30,13 +32,13 @@ void C_Resmgr::ConvertToScreen()
     WORD *color = NULL;
     long count = 0;
 
-    if ( not Data_ or not Index_)
+    if (not Data_ or not Index_)
         return;
 
     if (reds == 10 and greens == 5 and not blues)
         return;
 
-    rec = (IMAGE_RSC*)Index_->GetFirst(&current, &curidx);
+    rec = (IMAGE_RSC *)Index_->GetFirst(&current, &curidx);
 
     while (rec)
     {
@@ -47,25 +49,26 @@ void C_Resmgr::ConvertToScreen()
             if (hdr->flags bitand _RSC_8_BIT_)
             {
                 count = hdr->palettesize;
-                color = (WORD*)(Data_ + hdr->paletteoffset);
+                color = (WORD *)(Data_ + hdr->paletteoffset);
             }
             else if (hdr->flags bitand _RSC_16_BIT_)
             {
                 count = hdr->w * hdr->h;
-                color = (WORD*)(Data_ + hdr->imageoffset);
+                color = (WORD *)(Data_ + hdr->imageoffset);
             }
             else
                 count = 0;
 
             while (count--)
             {
-                *color = static_cast<short>(COLOR15BIT(*color, reds, greens, blues));
+                *color =
+                    static_cast<short>(COLOR15BIT(*color, reds, greens, blues));
 
                 color++;
             }
         }
 
-        rec = (IMAGE_RSC*)Index_->GetNext(&current, &curidx);
+        rec = (IMAGE_RSC *)Index_->GetNext(&current, &curidx);
     }
 }
 
@@ -142,10 +145,10 @@ void C_Resmgr::Cleanup()
 
 void C_Resmgr::AddIndex(long ID, IMAGE_RSC *resheader)
 {
-    if ( not resheader or Type_ == _RSC_MULTIPLE_)
+    if (not resheader or Type_ == _RSC_MULTIPLE_)
         return;
 
-    if ( not Index_)
+    if (not Index_)
     {
         Index_ = new C_Hash;
         Index_->Setup(1);
@@ -161,12 +164,12 @@ FILE *C_Resmgr::OpenResFile(const char *name, const char *sfx, const char *mode)
     char filename[MAX_PATH];
     FILE *fp;
 
-    sprintf(filename, "%s\\%s.%s", FalconUIArtThrDirectory, name, sfx);
+    sprintf(filename, "%s/%s.%s", FalconUIArtThrDirectory, name, sfx);
 
     if ((fp = fopen(filename, mode)) not_eq NULL)
         return fp;
 
-    sprintf(filename, "%s\\%s.%s", FalconUIArtDirectory, name, sfx);
+    sprintf(filename, "%s/%s.%s", FalconUIArtDirectory, name, sfx);
     return fopen(filename, mode);
 }
 
@@ -176,33 +179,39 @@ void C_Resmgr::LoadIndex()
     char buffer[MAX_PATH] = {0};
     FILE *fp = NULL;
     long recID = 0;
-    long size = 0;
-    long *rectype = NULL;
+    int size =
+        0; // #104: .idx sizes/counts are 32-bit on disk (see ImageHeader) -- LP64 `long` mis-reads
+    int *rectype =
+        NULL; // #104: record type is the 4-byte ImageHeader::Type; a `long*` read 8 bytes on Linux
     char *ptr = NULL;
     IMAGE_RSC *irec = NULL;
     SOUND_RSC *srec = NULL;
-    FLAT_RSC  *frec = NULL;
+    FLAT_RSC *frec = NULL;
 
     strcpy(buffer, name_);
     strcat(buffer, ".idx");
 
     fp = OpenResFile(name_, "idx", "rb");
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint("Error opening index file (%s)\n", buffer);
         return;
     }
 
-    fread(&size, sizeof(long), 1, fp);
+    fread(&size, sizeof(int), 1, fp); // #104: 4-byte on-disk size
 
-    if ( not size)
+    if (not size)
     {
         fclose(fp);
         return;
     }
 
-    fread(&ResIndexVersion_, sizeof(long), 1, fp);
+    {
+        int _v = 0;
+        fread(&_v, sizeof(int), 1, fp);
+        ResIndexVersion_ = _v;
+    } // #104: 4-byte on-disk version
 
     if (Index_)
     {
@@ -216,12 +225,13 @@ void C_Resmgr::LoadIndex()
     Index_->SetCallback(NULL);
 
 #ifdef USE_SH_POOLS
-    Idx_ = (char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (size), FALSE);
+    Idx_ = (char *)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (size),
+                               FALSE);
 #else
     Idx_ = new char[size];
 #endif
 
-    if ( not Idx_)
+    if (not Idx_)
     {
         fclose(fp);
         Index_->Cleanup();
@@ -237,151 +247,154 @@ void C_Resmgr::LoadIndex()
 
     while (ptr and size)
     {
-        rectype = (long *)ptr;
+        rectype = (int *)ptr;
 
         switch (*rectype)
         {
-            case _RSC_IS_IMAGE_:
-                irec = new IMAGE_RSC;
-                irec->Header = (ImageHeader*)ptr;
-                irec->Owner = this;
+        case _RSC_IS_IMAGE_:
+            irec = new IMAGE_RSC;
+            irec->Header = (ImageHeader *)ptr;
+            irec->Owner = this;
 
+            recID = IDTable_->FindTextID(irec->Header->ID);
+
+            if (recID >= 0)
+            {
+                irec->ID = recID;
+
+                if (Index_->Find(recID))
+                {
+                    MonoPrint("ERROR: %s already in Index\n", irec->Header->ID);
+                    delete irec;
+                }
+                else
+                    Index_->Add(recID, irec);
+            }
+            else
+            {
+                gMainParser->AddNewID(irec->Header->ID, 100);
                 recID = IDTable_->FindTextID(irec->Header->ID);
 
-                if (recID >= 0)
+                if (recID)
                 {
                     irec->ID = recID;
 
                     if (Index_->Find(recID))
                     {
-                        MonoPrint("ERROR: %s already in Index\n", irec->Header->ID);
+                        MonoPrint("ERROR: %s already in Index\n",
+                                  irec->Header->ID);
                         delete irec;
                     }
                     else
                         Index_->Add(recID, irec);
                 }
-                else
+            }
+
+            size -= sizeof(ImageHeader);
+            ptr += sizeof(ImageHeader);
+            break;
+
+        case _RSC_IS_SOUND_:
+            srec = new SOUND_RSC;
+            srec->Header = (SoundHeader *)ptr;
+            srec->Owner = this;
+
+            recID = IDTable_->FindTextID(srec->Header->ID);
+
+            if (recID >= 0)
+            {
+                srec->ID = recID;
+
+                if (Index_->Find(recID))
                 {
-                    gMainParser->AddNewID(irec->Header->ID, 100);
-                    recID = IDTable_->FindTextID(irec->Header->ID);
-
-                    if (recID)
-                    {
-                        irec->ID = recID;
-
-                        if (Index_->Find(recID))
-                        {
-                            MonoPrint("ERROR: %s already in Index\n", irec->Header->ID);
-                            delete irec;
-                        }
-                        else
-                            Index_->Add(recID, irec);
-                    }
+                    MonoPrint("ERROR: %s already in Index\n", frec->Header->ID);
+                    delete srec;
                 }
-
-                size -= sizeof(ImageHeader);
-                ptr += sizeof(ImageHeader);
-                break;
-
-            case _RSC_IS_SOUND_:
-                srec = new SOUND_RSC;
-                srec->Header = (SoundHeader*)ptr;
-                srec->Owner = this;
-
+                else
+                    Index_->Add(recID, srec);
+            }
+            else
+            {
+                gMainParser->AddNewID(srec->Header->ID, 50);
                 recID = IDTable_->FindTextID(srec->Header->ID);
 
-                if (recID >= 0)
+                if (recID)
                 {
                     srec->ID = recID;
 
                     if (Index_->Find(recID))
                     {
-                        MonoPrint("ERROR: %s already in Index\n", frec->Header->ID);
+                        MonoPrint("ERROR: %s already in Index\n",
+                                  srec->Header->ID);
                         delete srec;
                     }
                     else
                         Index_->Add(recID, srec);
                 }
-                else
+            }
+
+            size -= sizeof(SoundHeader);
+            ptr += sizeof(SoundHeader);
+            break;
+
+        case _RSC_IS_FLAT_:
+            frec = new FLAT_RSC;
+            frec->Header = (FlatHeader *)ptr;
+            frec->Owner = this;
+
+            recID = IDTable_->FindTextID(frec->Header->ID);
+
+            if (recID >= 0)
+            {
+                frec->ID = recID;
+
+                if (Index_->Find(recID))
                 {
-                    gMainParser->AddNewID(srec->Header->ID, 50);
-                    recID = IDTable_->FindTextID(srec->Header->ID);
-
-                    if (recID)
-                    {
-                        srec->ID = recID;
-
-                        if (Index_->Find(recID))
-                        {
-                            MonoPrint("ERROR: %s already in Index\n", srec->Header->ID);
-                            delete srec;
-                        }
-                        else
-                            Index_->Add(recID, srec);
-                    }
+                    MonoPrint("ERROR: %s already in Index\n", frec->Header->ID);
+                    delete frec;
                 }
-
-                size -= sizeof(SoundHeader);
-                ptr += sizeof(SoundHeader);
-                break;
-
-            case _RSC_IS_FLAT_:
-                frec = new FLAT_RSC;
-                frec->Header = (FlatHeader*)ptr;
-                frec->Owner = this;
-
+                else
+                    Index_->Add(recID, frec);
+            }
+            else
+            {
+                gMainParser->AddNewID(frec->Header->ID, 50);
                 recID = IDTable_->FindTextID(frec->Header->ID);
 
-                if (recID >= 0)
+                if (recID)
                 {
                     frec->ID = recID;
 
                     if (Index_->Find(recID))
                     {
-                        MonoPrint("ERROR: %s already in Index\n", frec->Header->ID);
+                        MonoPrint("ERROR: %s already in Index\n",
+                                  frec->Header->ID);
                         delete frec;
                     }
                     else
                         Index_->Add(recID, frec);
                 }
-                else
-                {
-                    gMainParser->AddNewID(frec->Header->ID, 50);
-                    recID = IDTable_->FindTextID(frec->Header->ID);
+            }
 
-                    if (recID)
-                    {
-                        frec->ID = recID;
+            size -= sizeof(FlatHeader);
+            ptr += sizeof(FlatHeader);
+            break;
 
-                        if (Index_->Find(recID))
-                        {
-                            MonoPrint("ERROR: %s already in Index\n", frec->Header->ID);
-                            delete frec;
-                        }
-                        else
-                            Index_->Add(recID, frec);
-                    }
-                }
-
-                size -= sizeof(FlatHeader);
-                ptr += sizeof(FlatHeader);
-                break;
-
-            default:
-                ptr = NULL;
-                size = 0;
-                break;
+        default:
+            ptr = NULL;
+            size = 0;
+            break;
         }
     }
 }
 
 void C_Resmgr::LoadData()
 {
-    long size;
+    int size; // #104: 4-byte on-disk .rsc size -- LP64 `long` over-read -> huge size -> new[] threw bad_alloc
     FILE *fp;
     char buffer[MAX_PATH];
 
-    if ( not Index_)
+    if (not Index_)
         return;
 
     if (Data_)
@@ -392,25 +405,30 @@ void C_Resmgr::LoadData()
 
     fp = OpenResFile(name_, "rsc", "rb");
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint("Error: Can't open Datafile (%s)\n", buffer);
         return;
     }
 
-    fread(&size, sizeof(long), 1, fp);
+    fread(&size, sizeof(int), 1, fp); // #104: 4-byte on-disk size
 
-    if ( not size)
+    if (not size)
     {
         fclose(fp);
         return;
     }
 
-    fread(&ResDataVersion_, sizeof(long), 1, fp);
+    {
+        int _v = 0;
+        fread(&_v, sizeof(int), 1, fp);
+        ResDataVersion_ = _v;
+    } // #104: 4-byte on-disk version
     // F4Assert(ResIndexVersion_ == ResDataVersion_); // MLR 1/21/2004 - This Asserts every time, so obviously it serves no purpose.
 
 #ifdef USE_SH_POOLS
-    Data_ = (char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (size), FALSE);
+    Data_ = (char *)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (size),
+                                FALSE);
 #else
     Data_ = new char[size];
 #endif
@@ -418,7 +436,7 @@ void C_Resmgr::LoadData()
     if (Data_)
         fread(Data_, size, 1, fp);
     else
-        MonoPrint("Error allocating (%1ld) bytes for Datafile\n", size);
+        MonoPrint("Error allocating (%1d) bytes for Datafile\n", size);
 
     fclose(fp);
 
@@ -434,4 +452,3 @@ void C_Resmgr::UnloadData()
         Data_ = NULL;
     }
 }
-

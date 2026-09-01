@@ -7,7 +7,7 @@
 #include <windows.h>
 #include "falclib.h"
 #include "targa.h"
-#include "Graphics/Include/imagebuf.h"
+#include "graphics/include/imagebuf.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "entity.h"
@@ -17,12 +17,12 @@
 #include "f4vu.h"
 #include "falcsess.h"
 #include "sim/include/stdhdr.h"
-#include "Mesg.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/LandingMessage.h"
+#include "mesg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/landingmessage.h"
 #include "playerop.h"
 #include "falcuser.h"
 #include "falclib/include/f4find.h"
@@ -33,16 +33,16 @@
 #include "userids.h"
 #include "iconids.h"
 #include "textids.h"
-#include "CmpClass.h"
+#include "cmpclass.h"
 #include "campaign.h"
 #include "classtbl.h"
-#include "Dispcfg.h"
+#include "dispcfg.h"
 #include "iconids.h"
 #include "logbook.h"
 #include "ui_dgfgt.h"
-#include "ACSelect.h"
-#include "MissEval.h"
-#include "Team.h"
+#include "acselect.h"
+#include "misseval.h"
+#include "team.h"
 
 #define _USE_REGISTRY_ 1 // 0=No,1=Yes
 
@@ -65,10 +65,15 @@ extern void StartCampaignGame(int local, int game_type);
 extern void DisplayJoinStatusWindow(int);
 
 void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)());
-void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[], _TCHAR *extension);
-void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
+void AreYouSure(long TitleID, long MessageID,
+                void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[],
+                  _TCHAR *extension);
+void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base *),
+                  void (*NoCB)(long, short, C_Base *));
 void CloseWindowCB(long ID, short hittype, C_Base *control);
 void ChangeTimeCB(long ID, short hittype, C_Base *control);
 void CheckFlyButton();
@@ -88,9 +93,14 @@ static void HookupDogFightControls(long ID);
 static void SelectDFSettingsFileCB(long ID, short hittype, C_Base *control);
 void SetSingle_Comms_Ctrls();
 TREELIST *StartTreeSearch(VU_ID findme, TREELIST *top, C_TreeList *tree);
-void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[], long group, BOOL cutext, long UseMenu);
-void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
-void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*), _TCHAR *filename);
+void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[],
+                     long group, BOOL cutext, long UseMenu);
+void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *));
+void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *), _TCHAR *filename);
 void SaveDogfightResults(char *filename);
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 BOOL DateCB(C_Base *me);
@@ -105,7 +115,7 @@ void DelTacFileCB(long ID, short hittype, C_Base *control);
 void DelTGAFileCB(long ID, short hittype, C_Base *control);
 void DelVHSFileCB(long ID, short hittype, C_Base *control);
 void DelKeyFileCB(long ID, short hittype, C_Base *control);
-void SetDeleteCallback(void (*cb)(long, short, C_Base*));
+void SetDeleteCallback(void (*cb)(long, short, C_Base *));
 void OpenTacticalReferenceCB(long ID, short hittype, C_Base *ctrl);
 void OpenLogBookCB(long ID, short hittype, C_Base *ctrl);
 void OpenCommsCB(long ID, short hittype, C_Base *ctrl);
@@ -126,34 +136,33 @@ void DogfightMenuSetup();
 
 void SendChatStringCB(long ID, short hittype, C_Base *control);
 
-extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+extern FILE *OpenCampFile(char *filename, char *ext, char *mode);
 
 extern bool g_bEmptyFilenameFix; // 2002-04-18 MN
 
-char gCurDogfightFile[MAX_PATH] = "campaign\\save\\New Game.dfs";
+char gCurDogfightFile[MAX_PATH] = "campaign/save/New Game.dfs";
 
-_TCHAR *DFExcludeList[] =
-{
+_TCHAR *DFExcludeList[] = {
     "New Game",
     NULL,
 };
 
-float MapXtoRatio(C_Cursor* crsr);
-float MapYtoRatio(C_Cursor* crsr);
-long RatiotoMapX(float ratio, C_Cursor* crsr);
-long RatiotoMapY(float ratio, C_Cursor* crsr);
+float MapXtoRatio(C_Cursor *crsr);
+float MapYtoRatio(C_Cursor *crsr);
+long RatiotoMapX(float ratio, C_Cursor *crsr);
+long RatiotoMapY(float ratio, C_Cursor *crsr);
 
 static short AddToTeam = 0;
 
 enum
 {
-    SND_SCREAM        = 500005,
-    SND_BAD1          = 500006,
-    SND_SECOND        = 500007,
-    SND_FIRST         = 500008,
-    SND_NICE          = 500009,
-    SND_BAD2          = 500010,
-    SND_YOUSUCK       = 500011,
+    SND_SCREAM = 500005,
+    SND_BAD1 = 500006,
+    SND_SECOND = 500007,
+    SND_FIRST = 500008,
+    SND_NICE = 500009,
+    SND_BAD2 = 500010,
+    SND_YOUSUCK = 500011,
 };
 
 enum // Map Icon Res IDs
@@ -174,64 +183,66 @@ enum // Map Icon Res IDs
     WHITE_AIR_NORTH_W = 565121101,
     YELLOW_AIR_NORTH = 565121116,
     YELLOW_AIR_NORTH_W = 565121117,
-    ICON_F16   = 10065,
-    ICON_A10   = 10066,
-    ICON_AH64   = 10067,
-    ICON_AN2  = 10068,
-    ICON_B52  = 10069,
-    ICON_C130  = 10070,
-    ICON_CH47  = 10071,
+    ICON_F16 = 10065,
+    ICON_A10 = 10066,
+    ICON_AH64 = 10067,
+    ICON_AN2 = 10068,
+    ICON_B52 = 10069,
+    ICON_C130 = 10070,
+    ICON_CH47 = 10071,
     ICON_F111 = 10072,
-    ICON_F117  = 10073,
-    ICON_F14  = 10074,
-    ICON_F15C  = 10075,
-    ICON_F18  = 10076,
-    ICON_F4  = 10077,
-    ICON_F5  = 10078,
-    ICON_IL28  = 10079,
-    ICON_IL76  = 10080,
-    ICON_KA50  = 10081,
-    ICON_KC10  = 10082,
-    ICON_KC135   = 10083,
-    ICON_MD500   = 10084,
-    ICON_MI24  = 10085,
-    ICON_MIG19   = 10086,
-    ICON_MIG21   = 10087,
+    ICON_F117 = 10073,
+    ICON_F14 = 10074,
+    ICON_F15C = 10075,
+    ICON_F18 = 10076,
+    ICON_F4 = 10077,
+    ICON_F5 = 10078,
+    ICON_IL28 = 10079,
+    ICON_IL76 = 10080,
+    ICON_KA50 = 10081,
+    ICON_KC10 = 10082,
+    ICON_KC135 = 10083,
+    ICON_MD500 = 10084,
+    ICON_MI24 = 10085,
+    ICON_MIG19 = 10086,
+    ICON_MIG21 = 10087,
     ICON_MIG23 = 10088,
-    ICON_MIG25   = 10089,
-    ICON_MIG29   = 10090,
-    ICON_OH58  = 10091,
-    ICON_SU25  = 10092,
-    ICON_SU27  = 10093,
-    ICON_TU16N   = 10094,
-    ICON_UH1H  = 10095,
-    ICON_UH60  = 10096,
-    ICON_AN24   = 10097,
-    ICON_E3  = 10098,
-    ICON_A50   = 10099,
-    ICON_F22        = 10122,
-    ICON_EA6B       = 10123,
-    ICON_TU95       = 10124,
-    ICON_B1B        = 10125,
-    ICON_UKN        = 10126,
+    ICON_MIG25 = 10089,
+    ICON_MIG29 = 10090,
+    ICON_OH58 = 10091,
+    ICON_SU25 = 10092,
+    ICON_SU27 = 10093,
+    ICON_TU16N = 10094,
+    ICON_UH1H = 10095,
+    ICON_UH60 = 10096,
+    ICON_AN24 = 10097,
+    ICON_E3 = 10098,
+    ICON_A50 = 10099,
+    ICON_F22 = 10122,
+    ICON_EA6B = 10123,
+    ICON_TU95 = 10124,
+    ICON_B1B = 10125,
+    ICON_UKN = 10126,
 };
 
-uchar calltable[5][5] =
-{
-    {   0,   0,   0,   0,   0 }, // UFO (No team)
-    { CRIMSON_CALL_GROUP1,  CRIMSON_CALL_GROUP2, CRIMSON_CALL_GROUP3, CRIMSON_CALL_GROUP4, CRIMSON_CALL_GROUP5 }, // crimson team
-    { SHARK_CALL_GROUP1,  SHARK_CALL_GROUP2, SHARK_CALL_GROUP3, SHARK_CALL_GROUP4, SHARK_CALL_GROUP5 }, // SHARK team
-    { VIPER_CALL_GROUP1,  VIPER_CALL_GROUP2, VIPER_CALL_GROUP3, VIPER_CALL_GROUP4, VIPER_CALL_GROUP5 }, // VIPER team
-    { TIGER_CALL_GROUP1,  TIGER_CALL_GROUP2, TIGER_CALL_GROUP3, TIGER_CALL_GROUP4, TIGER_CALL_GROUP5 }, // TIGER team
+uchar calltable[5][5] = {
+    {0, 0, 0, 0, 0}, // UFO (No team)
+    {CRIMSON_CALL_GROUP1, CRIMSON_CALL_GROUP2, CRIMSON_CALL_GROUP3,
+     CRIMSON_CALL_GROUP4, CRIMSON_CALL_GROUP5}, // crimson team
+    {SHARK_CALL_GROUP1, SHARK_CALL_GROUP2, SHARK_CALL_GROUP3, SHARK_CALL_GROUP4,
+     SHARK_CALL_GROUP5}, // SHARK team
+    {VIPER_CALL_GROUP1, VIPER_CALL_GROUP2, VIPER_CALL_GROUP3, VIPER_CALL_GROUP4,
+     VIPER_CALL_GROUP5}, // VIPER team
+    {TIGER_CALL_GROUP1, TIGER_CALL_GROUP2, TIGER_CALL_GROUP3, TIGER_CALL_GROUP4,
+     TIGER_CALL_GROUP5}, // TIGER team
 };
 
-static long DFTeamIconResID[5][2] =
-{
-    { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // UFO Team
-    { RED_AIR_NORTH, RED_AIR_NORTH_W }, // Crimson
-    { BLUE_AIR_NORTH, BLUE_AIR_NORTH_W }, // Shark
-    { WHITE_AIR_NORTH, WHITE_AIR_NORTH_W }, // FreeFalcon Team 
-    { ORANGE_AIR_NORTH, ORANGE_AIR_NORTH_W }, // Tiger
+static long DFTeamIconResID[5][2] = {
+    {WHITE_AIR_NORTH, WHITE_AIR_NORTH_W}, // UFO Team
+    {RED_AIR_NORTH, RED_AIR_NORTH_W}, // Crimson
+    {BLUE_AIR_NORTH, BLUE_AIR_NORTH_W}, // Shark
+    {WHITE_AIR_NORTH, WHITE_AIR_NORTH_W}, // FreeFalcon Team
+    {ORANGE_AIR_NORTH, ORANGE_AIR_NORTH_W}, // Tiger
 };
 
 typedef struct
@@ -241,58 +252,76 @@ typedef struct
     uchar planeid;
 } DF_ID_PLANE;
 
-DF_AIRPLANE_TYPE DFAIPlanesDef[] =
-{
-    NULL, NULL, NULL, NULL, DF_NO_AC, 0, 0,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_A10,       STYPE_UNIT_ATTACK, DF_AC_A10,         TXT_A10,        ICON_A10,
-    TYPE_AIRPLANE,  STYPE_AIR_AWACS,         SPTYPE_A50,       STYPE_UNIT_AWACS, DF_AC_A50,         TXT_A50,        ICON_A50,
+DF_AIRPLANE_TYPE DFAIPlanesDef[] = {
+    NULL, NULL, NULL, NULL, DF_NO_AC, 0, 0, TYPE_AIRPLANE, STYPE_AIR_ATTACK,
+    SPTYPE_A10, STYPE_UNIT_ATTACK, DF_AC_A10, TXT_A10, ICON_A10, TYPE_AIRPLANE,
+    STYPE_AIR_AWACS, SPTYPE_A50, STYPE_UNIT_AWACS, DF_AC_A50, TXT_A50, ICON_A50,
     // TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_AC130U,    STYPE_UNIT_ATTACK, DF_AC_AC130U,      TXT_AC130U,     ICON_C130,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_AH64,      STYPE_UNIT_ATTACK_HELO, DF_AC_AH64,        TXT_AH64,       ICON_AH64,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_AH64D,     STYPE_UNIT_ATTACK_HELO, DF_AC_AH64D,       TXT_AH64D,      ICON_AH64,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_AN2,       STYPE_UNIT_AIR_TRANSPORT, DF_AC_AN2,         TXT_AN2,        ICON_AN2,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_AN24,      STYPE_UNIT_AIR_TRANSPORT, DF_AC_AN24,        TXT_AN24,       ICON_AN24,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_B1B,       STYPE_UNIT_BOMBER, DF_AC_B1B,         TXT_B1B,        ICON_B1B,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_B52G,      STYPE_UNIT_BOMBER, DF_AC_B52G,        TXT_B52G,       ICON_B52,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_C130,      STYPE_UNIT_AIR_TRANSPORT, DF_AC_C130,        TXT_C130,       ICON_C130,
-    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_CH47,      STYPE_UNIT_TRANSPORT_HELO, DF_AC_CH47,        TXT_CH47,       ICON_CH47,
-    TYPE_AIRPLANE,  STYPE_AIR_AWACS,         SPTYPE_E3,        STYPE_UNIT_AWACS, DF_AC_E3,          TXT_E3,         ICON_E3,
-    TYPE_AIRPLANE,  STYPE_AIR_ECM,           SPTYPE_EA6B,      STYPE_UNIT_ECM, DF_AC_EA6B,        TXT_EA6B,       ICON_F4,
-    TYPE_AIRPLANE,  STYPE_AIR_ECM,           SPTYPE_EF111,     STYPE_UNIT_ECM, DF_AC_EF111,       TXT_EF111,      ICON_F111,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F4E,       STYPE_UNIT_FIGHTER, DF_AC_F4E,         TXT_F4E,        ICON_F4,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_F4G,       STYPE_UNIT_ATTACK, DF_AC_F4G,         TXT_F4G,        ICON_F4,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F5E,       STYPE_UNIT_FIGHTER, DF_AC_F5E,         TXT_F5E,        ICON_F5,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F14A,      STYPE_UNIT_FIGHTER, DF_AC_F14A,        TXT_F14A,       ICON_F14,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F15C,      STYPE_UNIT_FIGHTER, DF_AC_F15C,        TXT_F15C,       ICON_F15C,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F15E,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F15E,        TXT_F15E,       ICON_F15C,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F16C,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F16C,        TXT_F16C,       ICON_F16,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F18A,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F18A,        TXT_F18A,       ICON_F18,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F18D,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F18D,        TXT_F18D,       ICON_F18,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_F22,       STYPE_UNIT_FIGHTER, DF_AC_F22,         TXT_F22,        ICON_F22,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F117,      STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F117,        TXT_F117,       ICON_F117,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_FB111,     STYPE_UNIT_ATTACK, DF_AC_FB111,       TXT_FB111,      ICON_F111,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_IL28,      STYPE_UNIT_ATTACK, DF_AC_IL28,        TXT_IL28,       ICON_IL28,
-    TYPE_AIRPLANE,  STYPE_AIR_TRANSPORT,     SPTYPE_IL76M,     STYPE_UNIT_AIR_TRANSPORT, DF_AC_IL76M,       TXT_IL76M,      ICON_IL76,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_KA50,      STYPE_UNIT_ATTACK_HELO, DF_AC_KA50,        TXT_KA50,       ICON_KA50,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_KC10,      STYPE_UNIT_TANKER, DF_AC_KC10,        TXT_KC10,       ICON_KC10,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_IL78,      STYPE_UNIT_TANKER, DF_AC_IL78,        TXT_IL78,       ICON_IL76,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_KC135,     STYPE_UNIT_TANKER, DF_AC_KC135,       TXT_KC135,      ICON_KC135,
-    TYPE_HELICOPTER, STYPE_AIR_RECON_HELO,    SPTYPE_MD500,     STYPE_UNIT_RECON_HELO, DF_AC_MD500,       TXT_MD500,      ICON_MD500,
-    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,   SPTYPE_MI24,      STYPE_UNIT_ATTACK_HELO, DF_AC_MI24,        TXT_MI24,       ICON_MI24,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG19,     STYPE_UNIT_FIGHTER, DF_AC_MIG19,       TXT_MIG19,      ICON_MIG19,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG21,     STYPE_UNIT_FIGHTER, DF_AC_MIG21,       TXT_MIG21,      ICON_MIG21,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG23MS,   STYPE_UNIT_FIGHTER, DF_AC_MIG23MS,     TXT_MIG23MS,    ICON_MIG23,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG25,     STYPE_UNIT_FIGHTER, DF_AC_MIG25,       TXT_MIG25,      ICON_MIG25,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_MIG29,     STYPE_UNIT_FIGHTER, DF_AC_MIG29,       TXT_MIG29,      ICON_MIG29,
-    TYPE_HELICOPTER, STYPE_AIR_RECON_HELO,    SPTYPE_OH58D,     STYPE_UNIT_RECON_HELO, DF_AC_OH58D,       TXT_OH58D,      ICON_OH58,
-    TYPE_AIRPLANE,  STYPE_AIR_ATTACK,        SPTYPE_SU25,      STYPE_UNIT_ATTACK, DF_AC_SU25,        TXT_SU25,       ICON_SU25,
-    TYPE_AIRPLANE,  STYPE_AIR_FIGHTER,       SPTYPE_SU27,      STYPE_UNIT_FIGHTER, DF_AC_SU27,        TXT_SU27,       ICON_SU27,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_TU16,      STYPE_UNIT_BOMBER, DF_AC_TU16,        TXT_TU16,       ICON_TU16N,
-    TYPE_AIRPLANE,  STYPE_AIR_TANKER,        SPTYPE_TU16N,     STYPE_UNIT_TANKER, DF_AC_TU16N,       TXT_TU16N,      ICON_TU16N,
-    TYPE_AIRPLANE,  STYPE_AIR_BOMBER,        SPTYPE_TU95,      STYPE_UNIT_BOMBER, DF_AC_TU95,        TXT_TU95,       ICON_TU95,
-    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH1N,      STYPE_UNIT_TRANSPORT_HELO, DF_AC_UH1N,        TXT_UH1N,       ICON_UH1H,
-    TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH60L,     STYPE_UNIT_TRANSPORT_HELO, DF_AC_UH60L,       TXT_UH60L,      ICON_UH60,
-    NULL, NULL, NULL, NULL, 0, 0, 0
-};
+    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO, SPTYPE_AH64, STYPE_UNIT_ATTACK_HELO,
+    DF_AC_AH64, TXT_AH64, ICON_AH64, TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO,
+    SPTYPE_AH64D, STYPE_UNIT_ATTACK_HELO, DF_AC_AH64D, TXT_AH64D, ICON_AH64,
+    TYPE_AIRPLANE, STYPE_AIR_TRANSPORT, SPTYPE_AN2, STYPE_UNIT_AIR_TRANSPORT,
+    DF_AC_AN2, TXT_AN2, ICON_AN2, TYPE_AIRPLANE, STYPE_AIR_TRANSPORT,
+    SPTYPE_AN24, STYPE_UNIT_AIR_TRANSPORT, DF_AC_AN24, TXT_AN24, ICON_AN24,
+    TYPE_AIRPLANE, STYPE_AIR_BOMBER, SPTYPE_B1B, STYPE_UNIT_BOMBER, DF_AC_B1B,
+    TXT_B1B, ICON_B1B, TYPE_AIRPLANE, STYPE_AIR_BOMBER, SPTYPE_B52G,
+    STYPE_UNIT_BOMBER, DF_AC_B52G, TXT_B52G, ICON_B52, TYPE_AIRPLANE,
+    STYPE_AIR_TRANSPORT, SPTYPE_C130, STYPE_UNIT_AIR_TRANSPORT, DF_AC_C130,
+    TXT_C130, ICON_C130, TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_CH47,
+    STYPE_UNIT_TRANSPORT_HELO, DF_AC_CH47, TXT_CH47, ICON_CH47, TYPE_AIRPLANE,
+    STYPE_AIR_AWACS, SPTYPE_E3, STYPE_UNIT_AWACS, DF_AC_E3, TXT_E3, ICON_E3,
+    TYPE_AIRPLANE, STYPE_AIR_ECM, SPTYPE_EA6B, STYPE_UNIT_ECM, DF_AC_EA6B,
+    TXT_EA6B, ICON_F4, TYPE_AIRPLANE, STYPE_AIR_ECM, SPTYPE_EF111,
+    STYPE_UNIT_ECM, DF_AC_EF111, TXT_EF111, ICON_F111, TYPE_AIRPLANE,
+    STYPE_AIR_FIGHTER, SPTYPE_F4E, STYPE_UNIT_FIGHTER, DF_AC_F4E, TXT_F4E,
+    ICON_F4, TYPE_AIRPLANE, STYPE_AIR_ATTACK, SPTYPE_F4G, STYPE_UNIT_ATTACK,
+    DF_AC_F4G, TXT_F4G, ICON_F4, TYPE_AIRPLANE, STYPE_AIR_FIGHTER, SPTYPE_F5E,
+    STYPE_UNIT_FIGHTER, DF_AC_F5E, TXT_F5E, ICON_F5, TYPE_AIRPLANE,
+    STYPE_AIR_FIGHTER, SPTYPE_F14A, STYPE_UNIT_FIGHTER, DF_AC_F14A, TXT_F14A,
+    ICON_F14, TYPE_AIRPLANE, STYPE_AIR_FIGHTER, SPTYPE_F15C, STYPE_UNIT_FIGHTER,
+    DF_AC_F15C, TXT_F15C, ICON_F15C, TYPE_AIRPLANE, STYPE_AIR_FIGHTER_BOMBER,
+    SPTYPE_F15E, STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F15E, TXT_F15E, ICON_F15C,
+    TYPE_AIRPLANE, STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F16C,
+    STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F16C, TXT_F16C, ICON_F16, TYPE_AIRPLANE,
+    STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F18A, STYPE_UNIT_FIGHTER_BOMBER,
+    DF_AC_F18A, TXT_F18A, ICON_F18, TYPE_AIRPLANE, STYPE_AIR_FIGHTER_BOMBER,
+    SPTYPE_F18D, STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F18D, TXT_F18D, ICON_F18,
+    TYPE_AIRPLANE, STYPE_AIR_FIGHTER, SPTYPE_F22, STYPE_UNIT_FIGHTER, DF_AC_F22,
+    TXT_F22, ICON_F22, TYPE_AIRPLANE, STYPE_AIR_FIGHTER_BOMBER, SPTYPE_F117,
+    STYPE_UNIT_FIGHTER_BOMBER, DF_AC_F117, TXT_F117, ICON_F117, TYPE_AIRPLANE,
+    STYPE_AIR_ATTACK, SPTYPE_FB111, STYPE_UNIT_ATTACK, DF_AC_FB111, TXT_FB111,
+    ICON_F111, TYPE_AIRPLANE, STYPE_AIR_ATTACK, SPTYPE_IL28, STYPE_UNIT_ATTACK,
+    DF_AC_IL28, TXT_IL28, ICON_IL28, TYPE_AIRPLANE, STYPE_AIR_TRANSPORT,
+    SPTYPE_IL76M, STYPE_UNIT_AIR_TRANSPORT, DF_AC_IL76M, TXT_IL76M, ICON_IL76,
+    TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO, SPTYPE_KA50, STYPE_UNIT_ATTACK_HELO,
+    DF_AC_KA50, TXT_KA50, ICON_KA50, TYPE_AIRPLANE, STYPE_AIR_TANKER,
+    SPTYPE_KC10, STYPE_UNIT_TANKER, DF_AC_KC10, TXT_KC10, ICON_KC10,
+    TYPE_AIRPLANE, STYPE_AIR_TANKER, SPTYPE_IL78, STYPE_UNIT_TANKER, DF_AC_IL78,
+    TXT_IL78, ICON_IL76, TYPE_AIRPLANE, STYPE_AIR_TANKER, SPTYPE_KC135,
+    STYPE_UNIT_TANKER, DF_AC_KC135, TXT_KC135, ICON_KC135, TYPE_HELICOPTER,
+    STYPE_AIR_RECON_HELO, SPTYPE_MD500, STYPE_UNIT_RECON_HELO, DF_AC_MD500,
+    TXT_MD500, ICON_MD500, TYPE_HELICOPTER, STYPE_AIR_ATTACK_HELO, SPTYPE_MI24,
+    STYPE_UNIT_ATTACK_HELO, DF_AC_MI24, TXT_MI24, ICON_MI24, TYPE_AIRPLANE,
+    STYPE_AIR_FIGHTER, SPTYPE_MIG19, STYPE_UNIT_FIGHTER, DF_AC_MIG19, TXT_MIG19,
+    ICON_MIG19, TYPE_AIRPLANE, STYPE_AIR_FIGHTER, SPTYPE_MIG21,
+    STYPE_UNIT_FIGHTER, DF_AC_MIG21, TXT_MIG21, ICON_MIG21, TYPE_AIRPLANE,
+    STYPE_AIR_FIGHTER, SPTYPE_MIG23MS, STYPE_UNIT_FIGHTER, DF_AC_MIG23MS,
+    TXT_MIG23MS, ICON_MIG23, TYPE_AIRPLANE, STYPE_AIR_FIGHTER, SPTYPE_MIG25,
+    STYPE_UNIT_FIGHTER, DF_AC_MIG25, TXT_MIG25, ICON_MIG25, TYPE_AIRPLANE,
+    STYPE_AIR_FIGHTER, SPTYPE_MIG29, STYPE_UNIT_FIGHTER, DF_AC_MIG29, TXT_MIG29,
+    ICON_MIG29, TYPE_HELICOPTER, STYPE_AIR_RECON_HELO, SPTYPE_OH58D,
+    STYPE_UNIT_RECON_HELO, DF_AC_OH58D, TXT_OH58D, ICON_OH58, TYPE_AIRPLANE,
+    STYPE_AIR_ATTACK, SPTYPE_SU25, STYPE_UNIT_ATTACK, DF_AC_SU25, TXT_SU25,
+    ICON_SU25, TYPE_AIRPLANE, STYPE_AIR_FIGHTER, SPTYPE_SU27,
+    STYPE_UNIT_FIGHTER, DF_AC_SU27, TXT_SU27, ICON_SU27, TYPE_AIRPLANE,
+    STYPE_AIR_BOMBER, SPTYPE_TU16, STYPE_UNIT_BOMBER, DF_AC_TU16, TXT_TU16,
+    ICON_TU16N, TYPE_AIRPLANE, STYPE_AIR_TANKER, SPTYPE_TU16N,
+    STYPE_UNIT_TANKER, DF_AC_TU16N, TXT_TU16N, ICON_TU16N, TYPE_AIRPLANE,
+    STYPE_AIR_BOMBER, SPTYPE_TU95, STYPE_UNIT_BOMBER, DF_AC_TU95, TXT_TU95,
+    ICON_TU95, TYPE_HELICOPTER, STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH1N,
+    STYPE_UNIT_TRANSPORT_HELO, DF_AC_UH1N, TXT_UH1N, ICON_UH1H, TYPE_HELICOPTER,
+    STYPE_AIR_TRANSPORT_HELO, SPTYPE_UH60L, STYPE_UNIT_TRANSPORT_HELO,
+    DF_AC_UH60L, TXT_UH60L, ICON_UH60, NULL, NULL, NULL, NULL, 0, 0, 0};
 
 DF_AIRPLANE_TYPE *DFAIPlanes;
 
@@ -312,18 +341,15 @@ void LoadDfPlanes()
     {
         DFAIPlanes = DFAIPlanesDef;
         fp = OpenCampFile("teplanes", "lst", "w");
-        fprintf(fp, "// Type SubType Specific UnitSubType    ID text UnitIcon\n");
+        fprintf(fp,
+                "// Type SubType Specific UnitSubType    ID text UnitIcon\n");
 
         for (int i = 0; DFAIPlanes[i].ID not_eq 0; i++)
         {
-            fprintf(fp, "%7d %7d %8d %11d %5d %4d %8d\n",
-                    DFAIPlanes[i].Type,
-                    DFAIPlanes[i].SType,
-                    DFAIPlanes[i].SPType,
-                    DFAIPlanes[i].UnitSType,
-                    DFAIPlanes[i].ID,
-                    DFAIPlanes[i].TextID,
-                    DFAIPlanes[i].IconID);
+            fprintf(fp, "%7d %7d %8d %11d %5d %4d %8d\n", DFAIPlanes[i].Type,
+                    DFAIPlanes[i].SType, DFAIPlanes[i].SPType,
+                    DFAIPlanes[i].UnitSType, DFAIPlanes[i].ID,
+                    DFAIPlanes[i].TextID, DFAIPlanes[i].IconID);
         }
 
         fclose(fp);
@@ -338,25 +364,23 @@ void LoadDfPlanes()
         if (buf[0] == '#' or buf[0] == '/' or buf[0] == '\r' or buf[0] == '\n')
             continue;
 
-        if (curdf >= maxdf - 2)   // time to grow the array
+        if (curdf >= maxdf - 2) // time to grow the array
         {
             if (DFAIPlanes == NULL)
-                DFAIPlanes = (DF_AIRPLANE_TYPE*)calloc(maxdf = 10, sizeof * DFAIPlanes);
+                DFAIPlanes =
+                    (DF_AIRPLANE_TYPE *)calloc(maxdf = 10, sizeof *DFAIPlanes);
             else
             {
                 maxdf *= 2;
-                DFAIPlanes = (DF_AIRPLANE_TYPE*)realloc(DFAIPlanes, maxdf * sizeof(*DFAIPlanes));
+                DFAIPlanes = (DF_AIRPLANE_TYPE *)realloc(
+                    DFAIPlanes, maxdf * sizeof(*DFAIPlanes));
             }
         }
 
         int Type, SType, SPType, UnitSType;
 
-        if (sscanf(buf, "%7d %7d %8d %11d %5ld %4ld %8ld",
-                   &Type,
-                   &SType,
-                   &SPType,
-                   &UnitSType,
-                   &DFAIPlanes[curdf].ID,
+        if (sscanf(buf, "%7d %7d %8d %11d %5ld %4ld %8ld", &Type, &SType,
+                   &SPType, &UnitSType, &DFAIPlanes[curdf].ID,
                    &DFAIPlanes[curdf].TextID,
                    &DFAIPlanes[curdf].IconID) not_eq 7)
         {
@@ -371,15 +395,13 @@ void LoadDfPlanes()
         DFAIPlanes[curdf].SPType = SPType;
         DFAIPlanes[curdf].UnitSType = UnitSType;
 
-        curdf ++;
+        curdf++;
         DFAIPlanes[curdf].Type = 0;
         DFAIPlanes[curdf].ID = 0; // JB 010531
     }
 
     fclose(fp);
 }
-
-
 
 
 // If we are playing a game... we need this type of squadron... don't make new ones
@@ -394,12 +416,13 @@ BOOL FindSquadronType(long ClassID, long teamid)
 
     while (entity)
     {
-        if (entity->GetTeam() == teamid and entity->IsSquadron() and not entity->IsDead())
+        if (entity->GetTeam() == teamid and entity->IsSquadron() and
+            not entity->IsDead())
         {
             if (entity->Type() == ClassID)
             {
                 CampLeaveCriticalSection();
-                return(TRUE);
+                return (TRUE);
             }
         }
 
@@ -408,7 +431,7 @@ BOOL FindSquadronType(long ClassID, long teamid)
 
     CampLeaveCriticalSection();
 
-    return(FALSE);
+    return (FALSE);
 }
 // This routine is used in TAC_ENG to fill the AC Type listbox in the flight window
 
@@ -423,13 +446,15 @@ void FillListBoxWithACTypes(C_ListBox *lbox)
 
     while (DFAIPlanes and DFAIPlanes[i].Type) //ctd fix
     {
-        ID = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_SQUADRON, DFAIPlanes[i].UnitSType, DFAIPlanes[i].SPType, VU_ANY, VU_ANY, VU_ANY);
+        ID = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_SQUADRON,
+                        DFAIPlanes[i].UnitSType, DFAIPlanes[i].SPType, VU_ANY,
+                        VU_ANY, VU_ANY);
 
         if (ID)
         {
             ID += VU_LAST_ENTITY_TYPE;
 
-            if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
+            if (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
             {
                 if (FindSquadronType(ID, FalconLocalSession->GetTeam()))
                     lbox->AddItem(ID, C_TYPE_ITEM, DFAIPlanes[i].TextID);
@@ -441,19 +466,6 @@ void FillListBoxWithACTypes(C_ListBox *lbox)
         i++;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // =====================================================
@@ -475,7 +487,8 @@ void SetCurrentGameState(C_TreeList *tree, short state)
     {
         if (vuLocalGame not_eq vuPlayerPoolGroup)
         {
-            group = StartTreeSearch(FalconLocalGame->Id(), tree->GetRoot(), tree);
+            group =
+                StartTreeSearch(FalconLocalGame->Id(), tree->GetRoot(), tree);
 
             if (group and group->Item_)
             {
@@ -498,7 +511,7 @@ void JoinDogfightCB(long, short hittype, C_Base *)
     if (gCommsMgr == NULL)
         return;
 
-    if ( not gCommsMgr->Online())
+    if (not gCommsMgr->Online())
     {
         win = gMainHandler->FindWindow(PB_WIN);
 
@@ -508,9 +521,9 @@ void JoinDogfightCB(long, short hittype, C_Base *)
         return;
     }
 
-    game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+    game = (FalconGameEntity *)gCommsMgr->GetTargetGame();
 
-    if ( not game)
+    if (not game)
         return;
 
     win = gMainHandler->FindWindow(INFO_WIN);
@@ -571,7 +584,7 @@ static void DogfightBeginCB(long ID, short hittype, C_Base *control)
     // KCK: Really, we shouldn't do anything (except maybe show a
     // 'connecting to game' dialog for the multiplayer case) UNTIL
     // we've successfully joined/loaded the game.
-    game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+    game = (FalconGameEntity *)gCommsMgr->GetTargetGame();
 
     if (game)
     {
@@ -599,8 +612,7 @@ static void DogfightBeginCB(long ID, short hittype, C_Base *control)
 // KCK: Called as a result of a successfull dogfight game load
 void DogfightJoinSuccess(void)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
     F4CSECTIONHANDLE *Leave;
 
@@ -644,19 +656,23 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
         return;
 
     // If we're not yet in a game, this equates to host
-    if ( not FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
+    if (not FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
         return;
 
     LoadDfPlanes();
     flight = (Flight)vuDatabase->Find(gCurrentFlightID);
     teamid = static_cast<uchar>(ConvertDFIDtoTeam(ID));
     idx = GetPlaneListID(DF_AC_F16C);
-    type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT, DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;
+    type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT,
+                      DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY,
+                      VU_ANY, VU_ANY) +
+           VU_LAST_ENTITY_TYPE;
 
     // For the furball buttons:
     // a) Change team of selected flight   OR
     // b) Request a new player flight
-    if (ID == DF_MARK_CRIMSON or ID == DF_MARK_SHARK or ID == DF_MARK_VIPER or ID == DF_MARK_TIGER)
+    if (ID == DF_MARK_CRIMSON or ID == DF_MARK_SHARK or ID == DF_MARK_VIPER or
+        ID == DF_MARK_TIGER)
     {
         if (flight)
             RequestTeamChange(flight, teamid);
@@ -669,7 +685,8 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
     else
     {
         if (flight and flight->GetTeam() == teamid)
-            RequestACSlot(flight, flight->GetTeam(), 0, 0, (flight->Type() - VU_LAST_ENTITY_TYPE), 1);
+            RequestACSlot(flight, flight->GetTeam(), 0, 0,
+                          (flight->Type() - VU_LAST_ENTITY_TYPE), 1);
         else
             RequestACSlot(NULL, teamid, 0, 0, type, 1);
     }
@@ -678,7 +695,8 @@ void AddDogfightPlayerCB(long ID, short hittype, C_Base *)
 // Will attempt to add an AI aircraft to the currently selected flight
 void AddDogfightAIPlane(Flight flight, int type, int skill, int team)
 {
-    RequestACSlot(flight, static_cast<uchar>(team), 0, static_cast<uchar>(skill), type, 0);
+    RequestACSlot(flight, static_cast<uchar>(team), 0,
+                  static_cast<uchar>(skill), type, 0);
 }
 
 // Will attempt to remove currently selected aircraft/player
@@ -706,27 +724,27 @@ void ClearAllTreeStates()
 
     if (win)
     {
-        tree = (C_TreeList*)win->FindControl(FURBALL_TREE);
+        tree = (C_TreeList *)win->FindControl(FURBALL_TREE);
 
         if (tree)
             tree->SetAllControlStates(0, tree->GetRoot());
 
-        tree = (C_TreeList*)win->FindControl(CRIMSON_TREE);
+        tree = (C_TreeList *)win->FindControl(CRIMSON_TREE);
 
         if (tree)
             tree->SetAllControlStates(0, tree->GetRoot());
 
-        tree = (C_TreeList*)win->FindControl(SHARK_TREE);
+        tree = (C_TreeList *)win->FindControl(SHARK_TREE);
 
         if (tree)
             tree->SetAllControlStates(0, tree->GetRoot());
 
-        tree = (C_TreeList*)win->FindControl(TIGER_TREE);
+        tree = (C_TreeList *)win->FindControl(TIGER_TREE);
 
         if (tree)
             tree->SetAllControlStates(0, tree->GetRoot());
 
-        tree = (C_TreeList*)win->FindControl(VIPER_TREE);
+        tree = (C_TreeList *)win->FindControl(VIPER_TREE);
 
         if (tree)
             tree->SetAllControlStates(0, tree->GetRoot());
@@ -743,7 +761,7 @@ void CheckDelButtons()
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(DEL_FURBALL_PLANE);
+        btn = (C_Button *)win->FindControl(DEL_FURBALL_PLANE);
 
         if (btn)
         {
@@ -751,7 +769,7 @@ void CheckDelButtons()
             btn->Refresh();
         }
 
-        btn = (C_Button*)win->FindControl(DEL_CRIMSON_PLANE);
+        btn = (C_Button *)win->FindControl(DEL_CRIMSON_PLANE);
 
         if (btn)
         {
@@ -759,7 +777,7 @@ void CheckDelButtons()
             btn->Refresh();
         }
 
-        btn = (C_Button*)win->FindControl(DEL_SHARK_PLANE);
+        btn = (C_Button *)win->FindControl(DEL_SHARK_PLANE);
 
         if (btn)
         {
@@ -767,7 +785,7 @@ void CheckDelButtons()
             btn->Refresh();
         }
 
-        btn = (C_Button*)win->FindControl(DEL_TBIRD_PLANE);
+        btn = (C_Button *)win->FindControl(DEL_TBIRD_PLANE);
 
         if (btn)
         {
@@ -775,7 +793,7 @@ void CheckDelButtons()
             btn->Refresh();
         }
 
-        btn = (C_Button*)win->FindControl(DEL_TIGER_PLANE);
+        btn = (C_Button *)win->FindControl(DEL_TIGER_PLANE);
 
         if (btn)
         {
@@ -794,45 +812,45 @@ void CheckDelButtons()
             {
                 switch (SimDogfight.GetGameType())
                 {
-                    case dog_TeamFurball:
-                    case dog_TeamMatchplay:
-                        switch (flight->GetTeam())
-                        {
-                            case 1:
-                                btn = (C_Button*)win->FindControl(DEL_CRIMSON_PLANE);
-                                break;
-
-                            case 2:
-                                btn = (C_Button*)win->FindControl(DEL_SHARK_PLANE);
-                                break;
-
-                            case 3:
-                                btn = (C_Button*)win->FindControl(DEL_TBIRD_PLANE);
-                                break;
-
-                            case 4:
-                                btn = (C_Button*)win->FindControl(DEL_TIGER_PLANE);
-                                break;
-                        }
-
-                        if (btn)
-                        {
-                            btn->SetFlagBitOn(C_BIT_ENABLED);
-                            btn->Refresh();
-                        }
-
+                case dog_TeamFurball:
+                case dog_TeamMatchplay:
+                    switch (flight->GetTeam())
+                    {
+                    case 1:
+                        btn = (C_Button *)win->FindControl(DEL_CRIMSON_PLANE);
                         break;
 
-                    default:
-                        btn = (C_Button*)win->FindControl(DEL_FURBALL_PLANE);
-
-                        if (btn)
-                        {
-                            btn->SetFlagBitOn(C_BIT_ENABLED);
-                            btn->Refresh();
-                        }
-
+                    case 2:
+                        btn = (C_Button *)win->FindControl(DEL_SHARK_PLANE);
                         break;
+
+                    case 3:
+                        btn = (C_Button *)win->FindControl(DEL_TBIRD_PLANE);
+                        break;
+
+                    case 4:
+                        btn = (C_Button *)win->FindControl(DEL_TIGER_PLANE);
+                        break;
+                    }
+
+                    if (btn)
+                    {
+                        btn->SetFlagBitOn(C_BIT_ENABLED);
+                        btn->Refresh();
+                    }
+
+                    break;
+
+                default:
+                    btn = (C_Button *)win->FindControl(DEL_FURBALL_PLANE);
+
+                    if (btn)
+                    {
+                        btn->SetFlagBitOn(C_BIT_ENABLED);
+                        btn->Refresh();
+                    }
+
+                    break;
                 }
             }
         }
@@ -844,14 +862,14 @@ void SelectDogfightFlightCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (((C_Dog_Flight*)control)->GetVUID() == gCurrentFlightID)
+    if (((C_Dog_Flight *)control)->GetVUID() == gCurrentFlightID)
     {
         gCurrentFlightID = FalconNullId;
         control->SetState(0);
     }
     else
     {
-        gCurrentFlightID = ((C_Dog_Flight*)control)->GetVUID();
+        gCurrentFlightID = ((C_Dog_Flight *)control)->GetVUID();
         control->SetState(1);
     }
 
@@ -863,7 +881,7 @@ void SelectDogfightPilotCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (((C_Pilot*)control)->GetVUID() == gCurrentFlightID)
+    if (((C_Pilot *)control)->GetVUID() == gCurrentFlightID)
     {
         gCurrentAircraftNum = -1;
         gCurrentFlightID = FalconNullId;
@@ -871,8 +889,8 @@ void SelectDogfightPilotCB(long, short hittype, C_Base *control)
     }
     else
     {
-        gCurrentFlightID = ((C_Pilot*)control)->GetVUID();
-        gCurrentAircraftNum = ((C_Pilot*)control)->GetSlot();
+        gCurrentFlightID = ((C_Pilot *)control)->GetVUID();
+        gCurrentAircraftNum = ((C_Pilot *)control)->GetSlot();
         control->SetState(1);
     }
 }
@@ -888,7 +906,7 @@ void SelectDogfightItemCB(long, short hittype, C_Base *control)
 
     tree = (C_TreeList *)control;
 
-    if ( not tree)
+    if (not tree)
         return;
 
     item = tree->GetLastItem();
@@ -916,14 +934,15 @@ void SelectDogfightItemCB(long, short hittype, C_Base *control)
 // ==============================================
 
 // Init the C_Pilot structure for a player
-C_Pilot *MakePilot(C_TreeList *list, Flight flight, FalconSessionEntity *session, int acnum, int skill)
+C_Pilot *MakePilot(C_TreeList *list, Flight flight,
+                   FalconSessionEntity *session, int acnum, int skill)
 {
     long team, ACID;
     long idx;
     C_Resmgr *iconresdark, *iconreslite;
     C_Pilot *newpilot;
     _TCHAR callbuf[40];
-    _TCHAR      acefactor[10];
+    _TCHAR acefactor[10];
 
     team = flight->GetTeam();
     ACID = GetACIDFromFlight(flight);
@@ -941,32 +960,32 @@ C_Pilot *MakePilot(C_TreeList *list, Flight flight, FalconSessionEntity *session
     // Set Callsign
     switch (skill)
     {
-        case -1:
-            _tcscpy(callbuf, session->GetPlayerCallsign());
-            _stprintf(acefactor, "(%4.2f)", session->GetAceFactor());
-            Uni_Float(acefactor);
-            _tcscat(callbuf, acefactor);
-            break;
+    case -1:
+        _tcscpy(callbuf, session->GetPlayerCallsign());
+        _stprintf(acefactor, "(%4.2f)", session->GetAceFactor());
+        Uni_Float(acefactor);
+        _tcscat(callbuf, acefactor);
+        break;
 
-        case 0:
-            _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_RECRUIT));
-            break;
+    case 0:
+        _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_RECRUIT));
+        break;
 
-        case 1:
-            _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_CADET));
-            break;
+    case 1:
+        _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_CADET));
+        break;
 
-        case 2:
-            _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_ROOKIE));
-            break;
+    case 2:
+        _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_ROOKIE));
+        break;
 
-        case 3:
-            _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_VETERAN));
-            break;
+    case 3:
+        _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_VETERAN));
+        break;
 
-        case 4:
-            _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_ACE));
-            break;
+    case 4:
+        _stprintf(callbuf, "%s", gStringMgr->GetString(TXT_ACE));
+        break;
     }
 
     newpilot->SetSkill(static_cast<short>(skill));
@@ -986,7 +1005,7 @@ C_Pilot *MakePilot(C_TreeList *list, Flight flight, FalconSessionEntity *session
     else
         newpilot->SetMenu(DF_AI_PILOT_POPUP);
 
-    return(newpilot);
+    return (newpilot);
 }
 
 // Init the C_Pilot structure for a flight
@@ -1015,17 +1034,17 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     // Find AC_Icon in database
     if (iconresdark)
     {
-        dark = (IMAGE_RSC*)iconresdark->Find(DFAIPlanes[idx].IconID);
+        dark = (IMAGE_RSC *)iconresdark->Find(DFAIPlanes[idx].IconID);
 
-        if ( not dark or dark->Header->Type not_eq _RSC_IS_IMAGE_)
+        if (not dark or dark->Header->Type not_eq _RSC_IS_IMAGE_)
             dark = NULL;
     }
 
     if (iconreslite)
     {
-        lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
+        lite = (IMAGE_RSC *)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if ( not lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
+        if (not lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1033,7 +1052,8 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     {
         w = dark->Header->w;
         h = dark->Header->h;
-        newflt->SetIcon(static_cast<short>(18 - w / 2), static_cast<short>(15 - h / 2), dark, lite);
+        newflt->SetIcon(static_cast<short>(18 - w / 2),
+                        static_cast<short>(15 - h / 2), dark, lite);
     }
     else
         newflt->SetIcon(0, 0, dark, lite);
@@ -1041,7 +1061,8 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     GetCallsign(flight->callsign_id, flight->callsign_num, callbuf);
     newflt->SetCallsign(34, 2, callbuf);
 
-    _stprintf(callbuf, "%1ld %s", flight->GetTotalVehicles(), gStringMgr->GetString(DFAIPlanes[idx].TextID));
+    _stprintf(callbuf, "%1d %s", flight->GetTotalVehicles(),
+              gStringMgr->GetString(DFAIPlanes[idx].TextID));
 
     newflt->SetAircraft(34, 16, callbuf);
     newflt->SetVUID(flight->Id());
@@ -1049,7 +1070,7 @@ C_Dog_Flight *MakeFlight(C_TreeList *list, Flight flight)
     newflt->SetParent(list->GetParent());
     newflt->SetSubParents(list->GetParent());
     newflt->SetMenu(DF_FLIGHT_POPUP);
-    return(newflt);
+    return (newflt);
 }
 
 // Update the C_Pilot structure for a flight
@@ -1061,11 +1082,14 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     IMAGE_RSC *dark = NULL, *lite = NULL;
     _TCHAR callbuf[40];
 
-    if ( not newflt)
+    if (not newflt)
         return;
 
     // 2002-03-02 ADDED BY S.G. HACK so MP dogfights client sets their class_ptr since they don't get messages to set it.
-    flight->class_data = (UnitClassDataType*) Falcon4ClassTable[flight->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    flight->class_data =
+        (UnitClassDataType *)
+            Falcon4ClassTable[flight->Type() - VU_LAST_ENTITY_TYPE]
+                .dataPtr;
     // END OF ADDED SECTION
 
     LoadDfPlanes();
@@ -1082,7 +1106,7 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     // Find AC_Icon in database
     if (iconresdark)
     {
-        dark = (IMAGE_RSC*)iconresdark->Find(DFAIPlanes[idx].IconID);
+        dark = (IMAGE_RSC *)iconresdark->Find(DFAIPlanes[idx].IconID);
 
         if (dark->Header->Type not_eq _RSC_IS_IMAGE_)
             dark = NULL;
@@ -1090,9 +1114,9 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
 
     if (iconreslite)
     {
-        lite = (IMAGE_RSC*)iconreslite->Find(DFAIPlanes[idx].IconID);
+        lite = (IMAGE_RSC *)iconreslite->Find(DFAIPlanes[idx].IconID);
 
-        if ( not lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
+        if (not lite or lite->Header->Type not_eq _RSC_IS_IMAGE_)
             lite = NULL;
     }
 
@@ -1100,7 +1124,8 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     {
         w = dark->Header->w;
         h = dark->Header->h;
-        newflt->SetIcon(static_cast<short>(18 - w / 2), static_cast<short>(15 - h / 2), dark, lite);
+        newflt->SetIcon(static_cast<short>(18 - w / 2),
+                        static_cast<short>(15 - h / 2), dark, lite);
     }
     else
         newflt->SetIcon(0, 0, dark, lite);
@@ -1108,7 +1133,8 @@ void UpdateFlight(C_Dog_Flight *newflt, Flight flight)
     GetCallsign(flight->callsign_id, flight->callsign_num, callbuf);
     newflt->SetCallsign(34, 2, callbuf);
 
-    _stprintf(callbuf, "%1ld %s", flight->GetTotalVehicles(), gStringMgr->GetString(DFAIPlanes[idx].TextID));
+    _stprintf(callbuf, "%1d %s", flight->GetTotalVehicles(),
+              gStringMgr->GetString(DFAIPlanes[idx].TextID));
 
     newflt->SetAircraft(34, 16, callbuf);
     newflt->SetVUID(flight->Id());
@@ -1125,59 +1151,64 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
     int found = 0;
 
     // Create a unique ID
-    ID  = flight->GetTeam() << 24;
+    ID = flight->GetTeam() << 24;
     ID or_eq flight->callsign_id << 16;
     ID or_eq flight->callsign_num << 8;
     ID or_eq (ac + 1);
 
-    if ( not list)
-        return(NULL);
+    if (not list)
+        return (NULL);
 
     item = list->Find(ID);
 
     if (item)
     {
-        pilot = (C_Pilot*)item->Item_;
+        pilot = (C_Pilot *)item->Item_;
 
         if (pilot)
         {
-            if ( not pilot->GetPlayer())
+            if (not pilot->GetPlayer())
             {
                 if (pilot->GetSkill() not_eq flight->pilots[ac])
                 {
                     switch (flight->pilots[ac])
                     {
-                        case 0:
-                            pilot->SetCallsign(0, 0, gStringMgr->GetString(TXT_RECRUIT));
-                            break;
+                    case 0:
+                        pilot->SetCallsign(0, 0,
+                                           gStringMgr->GetString(TXT_RECRUIT));
+                        break;
 
-                        case 1:
-                            pilot->SetCallsign(0, 0, gStringMgr->GetString(TXT_CADET));
-                            break;
+                    case 1:
+                        pilot->SetCallsign(0, 0,
+                                           gStringMgr->GetString(TXT_CADET));
+                        break;
 
-                        case 2:
-                            pilot->SetCallsign(0, 0, gStringMgr->GetString(TXT_ROOKIE));
-                            break;
+                    case 2:
+                        pilot->SetCallsign(0, 0,
+                                           gStringMgr->GetString(TXT_ROOKIE));
+                        break;
 
-                        case 3:
-                            pilot->SetCallsign(0, 0, gStringMgr->GetString(TXT_VETERAN));
-                            break;
+                    case 3:
+                        pilot->SetCallsign(0, 0,
+                                           gStringMgr->GetString(TXT_VETERAN));
+                        break;
 
-                        case 4:
-                            pilot->SetCallsign(0, 0, gStringMgr->GetString(TXT_ACE));
-                            break;
+                    case 4:
+                        pilot->SetCallsign(0, 0,
+                                           gStringMgr->GetString(TXT_ACE));
+                        break;
                     }
                 }
             }
 
-            return(pilot);
+            return (pilot);
         }
     }
 
     flt = list->Find(ID bitand 0xffffff00);
 
-    if ( not flt)
-        return(NULL);
+    if (not flt)
+        return (NULL);
 
     if (flight->player_slots[ac] not_eq 255)
     {
@@ -1188,18 +1219,20 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
             VuSessionsIterator sit(FalconLocalGame);
 
             // Find this player's session
-            session = (FalconSessionEntity*) sit.GetFirst();
+            session = (FalconSessionEntity *)sit.GetFirst();
 
             while (session and not found)
             {
-                if (session->GetAircraftNum() == ac and session->GetPlayerFlight() == flight and session->GetPilotSlot() == flight->player_slots[ac])
+                if (session->GetAircraftNum() == ac and
+                    session->GetPlayerFlight() == flight and
+                    session->GetPilotSlot() == flight->player_slots[ac])
                     found = 1;
                 else
-                    session = (FalconSessionEntity*) sit.GetNext();
+                    session = (FalconSessionEntity *)sit.GetNext();
             }
 
-            if ( not found)
-                return(NULL);
+            if (not found)
+                return (NULL);
 
             pilot = MakePilot(list, flight, session, ac, -1);
             pilot->SetPlayer(1);
@@ -1217,14 +1250,14 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
         pilot->SetPlayer(0);
     }
 
-    if ( not pilot)
-        return(NULL);
+    if (not pilot)
+        return (NULL);
 
     item = list->CreateItem(ID, C_TYPE_ITEM, pilot);
     list->AddChildItem(flt, item);
 
     // Kludge to update the # planes in dogfight
-    fltctrl = (C_Dog_Flight*)flt->Item_;
+    fltctrl = (C_Dog_Flight *)flt->Item_;
 
     if (fltctrl)
     {
@@ -1251,7 +1284,7 @@ C_Pilot *AddDogfightPilot(C_TreeList *list, Flight flight, int ac)
     if (list->GetParent())
         list->GetParent()->RefreshClient(list->GetClient());
 
-    return(pilot);
+    return (pilot);
 }
 
 C_Dog_Flight *AddDogfightFlight(C_TreeList *list, Flight flight)
@@ -1261,25 +1294,25 @@ C_Dog_Flight *AddDogfightFlight(C_TreeList *list, Flight flight)
     long ID;
 
     // Create a unique ID
-    ID  = flight->GetTeam() << 24;
+    ID = flight->GetTeam() << 24;
     ID or_eq flight->callsign_id << 16;
     ID or_eq flight->callsign_num << 8;
 
-    if ( not list)
-        return(NULL);
+    if (not list)
+        return (NULL);
 
     item = list->Find(ID);
 
     if (item)
     {
-        UpdateFlight((C_Dog_Flight*)item->Item_, flight);
-        return((C_Dog_Flight*)item->Item_);
+        UpdateFlight((C_Dog_Flight *)item->Item_, flight);
+        return ((C_Dog_Flight *)item->Item_);
     }
 
     dfflight = MakeFlight(list, flight);
 
-    if ( not dfflight)
-        return(NULL);
+    if (not dfflight)
+        return (NULL);
 
     item = list->CreateItem(ID, C_TYPE_MENU, dfflight);
     list->AddItem(list->GetRoot(), item);
@@ -1288,7 +1321,7 @@ C_Dog_Flight *AddDogfightFlight(C_TreeList *list, Flight flight)
     if (list->GetParent())
         list->GetParent()->RefreshClient(list->GetClient());
 
-    return(dfflight);
+    return (dfflight);
 }
 
 void EraseOldLimbs(C_TreeList *tree, TREELIST *first, long timestamp)
@@ -1392,12 +1425,12 @@ void BuildDFPlayerList()
     C_Dog_Flight *furflt, *teamflt;
     long timestamp;
 
-    if ( not gMainHandler)
+    if (not gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(DF_TEAM_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     ClearAllTreeStates();
@@ -1424,22 +1457,22 @@ void BuildDFPlayerList()
 
             switch (team)
             {
-                case 1:
-                    tlist = (C_TreeList *)win->FindControl(CRIMSON_TREE);
-                    break;
+            case 1:
+                tlist = (C_TreeList *)win->FindControl(CRIMSON_TREE);
+                break;
 
-                case 2:
-                    tlist = (C_TreeList *)win->FindControl(SHARK_TREE);
-                    break;
+            case 2:
+                tlist = (C_TreeList *)win->FindControl(SHARK_TREE);
+                break;
 
-                case 3:
-                    tlist = (C_TreeList *)win->FindControl(VIPER_TREE);
-                    break;
+            case 3:
+                tlist = (C_TreeList *)win->FindControl(VIPER_TREE);
+                break;
 
-                case 4:
-                default:
-                    tlist = (C_TreeList *)win->FindControl(TIGER_TREE);
-                    break;
+            case 4:
+            default:
+                tlist = (C_TreeList *)win->FindControl(TIGER_TREE);
+                break;
             }
 
             teamflt = AddDogfightFlight(tlist, flight);
@@ -1451,24 +1484,25 @@ void BuildDFPlayerList()
             {
                 switch (SimDogfight.GetGameType())
                 {
-                    case dog_TeamFurball:
-                    case dog_TeamMatchplay:
-                        if (teamflt)
-                            teamflt->SetState(1);
+                case dog_TeamFurball:
+                case dog_TeamMatchplay:
+                    if (teamflt)
+                        teamflt->SetState(1);
 
-                        break;
+                    break;
 
-                    default:
-                        if (furflt)
-                            furflt->SetState(1);
+                default:
+                    if (furflt)
+                        furflt->SetState(1);
 
-                        break;
+                    break;
                 }
             }
 
             for (ac = 0; ac < PILOTS_PER_FLIGHT; ac++)
             {
-                if (flight->pilots[ac] not_eq NO_PILOT or flight->player_slots[ac] not_eq NO_PILOT)
+                if (flight->pilots[ac] not_eq NO_PILOT or
+                    flight->player_slots[ac] not_eq NO_PILOT)
                 {
                     // Add PLAYER to Furball Tree
                     furplt = AddDogfightPilot(flist, flight, ac);
@@ -1482,22 +1516,23 @@ void BuildDFPlayerList()
                     if (teamplt)
                         teamplt->SetUserNumber(0, timestamp);
 
-                    if (gCurrentFlightID == flight->Id() and gCurrentAircraftNum == ac)
+                    if (gCurrentFlightID == flight->Id() and
+                        gCurrentAircraftNum == ac)
                     {
                         switch (SimDogfight.GetGameType())
                         {
-                            case dog_TeamFurball:
-                            case dog_TeamMatchplay:
-                                if (teamplt)
-                                    teamplt->SetState(1);
+                        case dog_TeamFurball:
+                        case dog_TeamMatchplay:
+                            if (teamplt)
+                                teamplt->SetState(1);
 
-                                break;
+                            break;
 
-                            default:
-                                if (furplt)
-                                    furplt->SetState(1);
+                        default:
+                            if (furplt)
+                                furplt->SetState(1);
 
-                                break;
+                            break;
                         }
                     }
                 }
@@ -1524,7 +1559,7 @@ void DeleteGroupList(long ID)
 {
     C_Window *win;
     CONTROLLIST *winctrls;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     // Clear controls from window with the userdata[_UI95_DELGROUP_SLOT_] == _UI95_DELGROUP_ID_
 
@@ -1537,7 +1572,8 @@ void DeleteGroupList(long ID)
 
         while (winctrls)
         {
-            if (winctrls->Control_->GetUserNumber(_UI95_DELGROUP_SLOT_) == _UI95_DELGROUP_ID_)
+            if (winctrls->Control_->GetUserNumber(_UI95_DELGROUP_SLOT_) ==
+                _UI95_DELGROUP_ID_)
             {
                 winctrls = win->RemoveControl(winctrls);
             }
@@ -1565,12 +1601,12 @@ uchar GetPlaneListID(long ID)
     while (DFAIPlanes[i].ID and i < 255)
     {
         if (DFAIPlanes[i].ID == ID)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 long GetACIDFromFlight(Flight flight)
@@ -1582,13 +1618,14 @@ long GetACIDFromFlight(Flight flight)
 
     while (DFAIPlanes[i].ID and i < 255)
     {
-        if (DFAIPlanes[i].UnitSType and DFAIPlanes[i].SPType and DFAIPlanes[i].UnitSType == stype and DFAIPlanes[i].SPType == sptype)
-            return(DFAIPlanes[i].ID);
+        if (DFAIPlanes[i].UnitSType and DFAIPlanes[i].SPType and
+            DFAIPlanes[i].UnitSType == stype and DFAIPlanes[i].SPType == sptype)
+            return (DFAIPlanes[i].ID);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 // Use ONLY as a TreeList callback
@@ -1603,25 +1640,28 @@ static void SelectDogfightGameCB(long, short hittype, C_Base *control)
 
     item = ((C_TreeList *)control)->GetLastItem();
 
-    if (item == NULL) return;
+    if (item == NULL)
+        return;
 
-    if (item->Item_ == NULL) return;
+    if (item->Item_ == NULL)
+        return;
 
     if (gCommsMgr->GetGame() not_eq vuPlayerPoolGroup)
         return;
 
     if (item->Type_ == C_TYPE_MENU)
     {
-        if ( not item->Item_->GetState())
+        if (not item->Item_->GetState())
         {
-            ((C_TreeList *)control)->SetAllControlStates(0, ((C_TreeList *)control)->GetRoot());
+            ((C_TreeList *)control)
+                ->SetAllControlStates(0, ((C_TreeList *)control)->GetRoot());
             item->Item_->SetState(1);
             item->Item_->Refresh();
             tmpID = (VU_ID *)item->Item_->GetUserPtr(_UI95_VU_ID_SLOT_);
 
             if (tmpID)
             {
-                game = (FalconGameEntity*)vuDatabase->Find(*tmpID);
+                game = (FalconGameEntity *)vuDatabase->Find(*tmpID);
                 gCommsMgr->LookAtGame(game);
 
                 if (game)
@@ -1645,32 +1685,32 @@ short ConvertDFIDtoTeam(long ID)
 {
     switch (ID)
     {
-        case DF_CRIMSON:
-        case ADD_CRIMSON_PLANE:
-        case DF_MARK_CRIMSON:
-            return(1);
-            break;
+    case DF_CRIMSON:
+    case ADD_CRIMSON_PLANE:
+    case DF_MARK_CRIMSON:
+        return (1);
+        break;
 
-        case DF_SHARK:
-        case ADD_SHARK_PLANE:
-        case DF_MARK_SHARK:
-            return(2);
-            break;
+    case DF_SHARK:
+    case ADD_SHARK_PLANE:
+    case DF_MARK_SHARK:
+        return (2);
+        break;
 
-        case DF_VIPER:
-        case ADD_USA_PLANE:
-        case DF_MARK_VIPER:
-            return(3);
-            break;
+    case DF_VIPER:
+    case ADD_USA_PLANE:
+    case DF_MARK_VIPER:
+        return (3);
+        break;
 
-        case DF_TIGER:
-        case ADD_TIGER_PLANE:
-        case DF_MARK_TIGER:
-            return(4);
-            break;
+    case DF_TIGER:
+    case ADD_TIGER_PLANE:
+    case DF_MARK_TIGER:
+        return (4);
+        break;
     }
 
-    return(0);
+    return (0);
 }
 
 void AddDogfightFlightCB(long, short hittype, C_Base *control)
@@ -1683,35 +1723,35 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
+    if (not FalconLocalGame or FalconLocalSession->Game() == vuPlayerPoolGroup)
         return;
 
     LoadDfPlanes();
 
     switch (AddToTeam)
     {
-        case DF_CRIMSON_CALLS:
-            teamid = 1;
-            break;
+    case DF_CRIMSON_CALLS:
+        teamid = 1;
+        break;
 
-        case DF_SHARK_CALLS:
-            teamid = 2;
-            break;
+    case DF_SHARK_CALLS:
+        teamid = 2;
+        break;
 
-        case DF_TBIRD_CALLS:
-            teamid = 3;
-            break;
+    case DF_TBIRD_CALLS:
+        teamid = 3;
+        break;
 
-        case DF_TIGER_CALLS:
-            teamid = 4;
-            break;
+    case DF_TIGER_CALLS:
+        teamid = 4;
+        break;
 
-        case DF_FURBALL_CALLS:
-            teamid = 0;
-            break;
+    case DF_FURBALL_CALLS:
+        teamid = 0;
+        break;
     }
 
-    lbox = (C_ListBox*)control->Parent_->FindControl(AddToTeam);
+    lbox = (C_ListBox *)control->Parent_->FindControl(AddToTeam);
 
     if (lbox)
         value = lbox->GetTextID();
@@ -1724,14 +1764,14 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
         teamid = value;
     }
 
-    lbox = (C_ListBox*)control->Parent_->FindControl(DF_AIRCRAFT_TYPE);
+    lbox = (C_ListBox *)control->Parent_->FindControl(DF_AIRCRAFT_TYPE);
 
     if (lbox)
         acid = lbox->GetTextID();
     else
         acid = DF_AC_F16C;
 
-    lbox = (C_ListBox*)control->Parent_->FindControl(DF_SKILL);
+    lbox = (C_ListBox *)control->Parent_->FindControl(DF_SKILL);
 
     if (lbox)
         skill = lbox->GetTextID() - 1;
@@ -1740,22 +1780,25 @@ void AddDogfightFlightCB(long, short hittype, C_Base *control)
 
     switch (SimDogfight.GetGameType())
     {
-        case dog_TeamMatchplay:
-        case dog_TeamFurball:
-            flight = (Flight)vuDatabase->Find(gCurrentFlightID);
+    case dog_TeamMatchplay:
+    case dog_TeamFurball:
+        flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-            if (flight and flight->GetTeam() not_eq teamid)
-                flight = NULL;
-
-            break;
-
-        default:
+        if (flight and flight->GetTeam() not_eq teamid)
             flight = NULL;
-            break;
+
+        break;
+
+    default:
+        flight = NULL;
+        break;
     }
 
     idx = GetPlaneListID(acid);
-    type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT, DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;
+    type = GetClassID(DOMAIN_AIR, CLASS_UNIT, TYPE_FLIGHT,
+                      DFAIPlanes[idx].UnitSType, DFAIPlanes[idx].SPType, VU_ANY,
+                      VU_ANY, VU_ANY) +
+           VU_LAST_ENTITY_TYPE;
     AddDogfightAIPlane(flight, type, skill, teamid);
 
     gMainHandler->DisableWindowGroup(control->GetGroup());
@@ -1769,7 +1812,8 @@ void AddDogfightAICB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr and gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr and gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -1779,32 +1823,32 @@ void AddDogfightAICB(long ID, short hittype, C_Base *control)
 
     switch (ID)
     {
-        case ADD_CRIMSON_PLANE:
-            AddToTeam = DF_CRIMSON_CALLS;
-            break;
+    case ADD_CRIMSON_PLANE:
+        AddToTeam = DF_CRIMSON_CALLS;
+        break;
 
-        case ADD_SHARK_PLANE:
-            AddToTeam = DF_SHARK_CALLS;
-            break;
+    case ADD_SHARK_PLANE:
+        AddToTeam = DF_SHARK_CALLS;
+        break;
 
-        case ADD_USA_PLANE:
-            AddToTeam = DF_TBIRD_CALLS;
-            break;
+    case ADD_USA_PLANE:
+        AddToTeam = DF_TBIRD_CALLS;
+        break;
 
-        case ADD_TIGER_PLANE:
-            AddToTeam = DF_TIGER_CALLS;
-            break;
+    case ADD_TIGER_PLANE:
+        AddToTeam = DF_TIGER_CALLS;
+        break;
 
-        case ADD_FURBALL_PLANE:
-            AddToTeam = DF_FURBALL_CALLS;
-            break;
+    case ADD_FURBALL_PLANE:
+        AddToTeam = DF_FURBALL_CALLS;
+        break;
     }
 
     win = gMainHandler->FindWindow(DF_FLIGHT_WIN);
 
     if (win)
     {
-        lbox = (C_ListBox*)win->FindControl(AddToTeam);
+        lbox = (C_ListBox *)win->FindControl(AddToTeam);
 
         if (lbox)
         {
@@ -1829,10 +1873,11 @@ void RemoveAICB(long ID, short hittype, C_Base *)
 
     flight = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-    if ( not flight)
+    if (not flight)
         return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -1842,25 +1887,25 @@ void RemoveAICB(long ID, short hittype, C_Base *)
 
     switch (ID)
     {
-        case DEL_CRIMSON_PLANE:
-            teamid = 1;
-            break;
+    case DEL_CRIMSON_PLANE:
+        teamid = 1;
+        break;
 
-        case DEL_SHARK_PLANE:
-            teamid = 2;
-            break;
+    case DEL_SHARK_PLANE:
+        teamid = 2;
+        break;
 
-        case DEL_TBIRD_PLANE:
-            teamid = 3;
-            break;
+    case DEL_TBIRD_PLANE:
+        teamid = 3;
+        break;
 
-        case DEL_TIGER_PLANE:
-            teamid = 4;
-            break;
+    case DEL_TIGER_PLANE:
+        teamid = 4;
+        break;
 
-        case DEL_FURBALL_PLANE:
-            teamid = -1;
-            break;
+    case DEL_FURBALL_PLANE:
+        teamid = -1;
+        break;
     }
 
     if (teamid == -1)
@@ -1875,7 +1920,10 @@ void PositionSlider(C_Slider *slider, long value, long minv, long maxv)
 
     if (slider)
     {
-        pos = ((slider->GetSliderMax() - slider->GetSliderMin()) * (value - minv)) / (maxv - minv + 1) + 1;
+        pos = ((slider->GetSliderMax() - slider->GetSliderMin()) *
+               (value - minv)) /
+                  (maxv - minv + 1) +
+              1;
         slider->Refresh();
         slider->SetSliderPos(pos);
         slider->Refresh();
@@ -1897,17 +1945,17 @@ void UpdateDogfightWindows(void)
         {
             switch (SimDogfight.GetGameType())
             {
-                case dog_TeamFurball:
-                    btn->SetState(1);
-                    break;
+            case dog_TeamFurball:
+                btn->SetState(1);
+                break;
 
-                case dog_TeamMatchplay:
-                    btn->SetState(2);
-                    break;
+            case dog_TeamMatchplay:
+                btn->SetState(2);
+                break;
 
-                default:
-                    btn->SetState(0);
-                    break;
+            default:
+                btn->SetState(0);
+                break;
             }
         }
 
@@ -1953,7 +2001,7 @@ void CopyDFSettingsToWindow(void)
     C_Cursor *crsr;
     C_Clock *clk;
 
-    if ( not gMainHandler)
+    if (not gMainHandler)
         return;
 
     gMainHandler->EnterCritical();
@@ -1971,7 +2019,8 @@ void CopyDFSettingsToWindow(void)
             sldr = (C_Slider *)win->FindControl(RADAR_SLIDER);
 
             if (sldr)
-                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(), ebox->GetMaxInteger());
+                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(),
+                               ebox->GetMaxInteger());
         }
 
         ebox = (C_EditBox *)win->FindControl(ALLIR_READOUT);
@@ -1983,7 +2032,8 @@ void CopyDFSettingsToWindow(void)
             sldr = (C_Slider *)win->FindControl(ALLIR_SLIDER);
 
             if (sldr)
-                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(), ebox->GetMaxInteger());
+                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(),
+                               ebox->GetMaxInteger());
         }
 
         ebox = (C_EditBox *)win->FindControl(RIR_READOUT);
@@ -1995,19 +2045,22 @@ void CopyDFSettingsToWindow(void)
             sldr = (C_Slider *)win->FindControl(RIR_SLIDER);
 
             if (sldr)
-                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(), ebox->GetMaxInteger());
+                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(),
+                               ebox->GetMaxInteger());
         }
 
         ebox = (C_EditBox *)win->FindControl(RANGE_READOUT);
 
         if (ebox)
         {
-            ebox->SetInteger(static_cast<long>(SimDogfight.startRange * FT_TO_NM));
+            ebox->SetInteger(
+                static_cast<long>(SimDogfight.startRange * FT_TO_NM));
             ebox->Refresh();
             sldr = (C_Slider *)win->FindControl(RANGE_SLIDER);
 
             if (sldr)
-                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(), ebox->GetMaxInteger());
+                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(),
+                               ebox->GetMaxInteger());
         }
 
         ebox = (C_EditBox *)win->FindControl(ALTITUDE_READOUT);
@@ -2019,7 +2072,8 @@ void CopyDFSettingsToWindow(void)
             sldr = (C_Slider *)win->FindControl(ALTITUDE_SLIDER);
 
             if (sldr)
-                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(), ebox->GetMaxInteger());
+                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(),
+                               ebox->GetMaxInteger());
         }
 
         ebox = (C_EditBox *)win->FindControl(MP_READOUT);
@@ -2035,7 +2089,8 @@ void CopyDFSettingsToWindow(void)
             sldr = (C_Slider *)win->FindControl(MP_SLIDER);
 
             if (sldr)
-                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(), ebox->GetMaxInteger());
+                PositionSlider(sldr, ebox->GetInteger(), ebox->GetMinInteger(),
+                               ebox->GetMaxInteger());
         }
 
         lbox = (C_ListBox *)win->FindControl(DF_GAME_TYPE);
@@ -2044,17 +2099,17 @@ void CopyDFSettingsToWindow(void)
         {
             switch (SimDogfight.GetGameType())
             {
-                case dog_Furball:
-                    lbox->SetValue(DF_GAME_FURBALL);
-                    break;
+            case dog_Furball:
+                lbox->SetValue(DF_GAME_FURBALL);
+                break;
 
-                case dog_TeamFurball:
-                    lbox->SetValue(DF_GAME_TEAM_FURBALL);
-                    break;
+            case dog_TeamFurball:
+                lbox->SetValue(DF_GAME_TEAM_FURBALL);
+                break;
 
-                case dog_TeamMatchplay:
-                    lbox->SetValue(DF_GAME_TEAM_MATCH);
-                    break;
+            case dog_TeamMatchplay:
+                lbox->SetValue(DF_GAME_TEAM_MATCH);
+                break;
             }
 
             lbox->Refresh();
@@ -2089,11 +2144,12 @@ void CopyDFSettingsToWindow(void)
 
     if (win)
     {
-        crsr = (C_Cursor*)win->FindControl(DF_MAP_CURSOR);
+        crsr = (C_Cursor *)win->FindControl(DF_MAP_CURSOR);
 
         if (crsr)
         {
-            crsr->SetXY(RatiotoMapX(SimDogfight.xRatio, crsr), RatiotoMapY(SimDogfight.yRatio, crsr));
+            crsr->SetXY(RatiotoMapX(SimDogfight.xRatio, crsr),
+                        RatiotoMapY(SimDogfight.yRatio, crsr));
             crsr->Refresh();
         }
     }
@@ -2102,7 +2158,7 @@ void CopyDFSettingsToWindow(void)
 
     if (win)
     {
-        clk = (C_Clock*)win->FindControl(TIME_ID);
+        clk = (C_Clock *)win->FindControl(TIME_ID);
 
         if (clk)
         {
@@ -2132,7 +2188,7 @@ void CopyDFSettingsToSelectWindow(void)
     C_Clock *clk;
     C_Cursor *crsr;
 
-    if ( not gMainHandler)
+    if (not gMainHandler)
         return;
 
     gMainHandler->EnterCritical();
@@ -2141,7 +2197,7 @@ void CopyDFSettingsToSelectWindow(void)
     if (win)
     {
         // Copy in the time
-        clk = (C_Clock*)win->FindControl(TIME_ID);
+        clk = (C_Clock *)win->FindControl(TIME_ID);
 
         if (clk)
         {
@@ -2157,11 +2213,12 @@ void CopyDFSettingsToSelectWindow(void)
 
     if (win)
     {
-        crsr = (C_Cursor*)win->FindControl(DF_MAP_CURSOR);
+        crsr = (C_Cursor *)win->FindControl(DF_MAP_CURSOR);
 
         if (crsr)
         {
-            crsr->SetXY(RatiotoMapX(SimDogfight.xRatio, crsr), RatiotoMapY(SimDogfight.yRatio, crsr));
+            crsr->SetXY(RatiotoMapX(SimDogfight.xRatio, crsr),
+                        RatiotoMapY(SimDogfight.yRatio, crsr));
             crsr->Refresh();
         }
     }
@@ -2179,9 +2236,11 @@ void CopyDFSettingsFromWindow(void)
     C_Button *btn;
     C_Clock *clk;
 
-    if ( not gMainHandler) return;
+    if (not gMainHandler)
+        return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
         return;
 
     gMainHandler->EnterCritical();
@@ -2195,17 +2254,20 @@ void CopyDFSettingsFromWindow(void)
         ebox->Refresh();
 
         if (ebox)
-            SimDogfight.SetNumRadarMissiles(static_cast<uchar>(ebox->GetInteger()));
+            SimDogfight.SetNumRadarMissiles(
+                static_cast<uchar>(ebox->GetInteger()));
 
         ebox = (C_EditBox *)win->FindControl(ALLIR_READOUT);
 
         if (ebox)
-            SimDogfight.SetNumAllAspectMissiles(static_cast<uchar>(ebox->GetInteger()));
+            SimDogfight.SetNumAllAspectMissiles(
+                static_cast<uchar>(ebox->GetInteger()));
 
         ebox = (C_EditBox *)win->FindControl(RIR_READOUT);
 
         if (ebox)
-            SimDogfight.SetNumRearAspectMissiles(static_cast<uchar>(ebox->GetInteger()));
+            SimDogfight.SetNumRearAspectMissiles(
+                static_cast<uchar>(ebox->GetInteger()));
 
         ebox = (C_EditBox *)win->FindControl(RANGE_READOUT);
 
@@ -2249,7 +2311,7 @@ void CopyDFSettingsFromWindow(void)
     {
         //sfr: another temporary hack to check this
         //crsr=(C_Cursor*)win->FindControl(10049);
-        crsr = (C_Cursor*)win->FindControl(DF_MAP_CURSOR);
+        crsr = (C_Cursor *)win->FindControl(DF_MAP_CURSOR);
 
         if (crsr)
         {
@@ -2268,17 +2330,17 @@ void CopyDFSettingsFromWindow(void)
         {
             switch (lbox->GetTextID())
             {
-                case DF_GAME_TEAM_MATCH:
-                    SimDogfight.SetGameType(dog_TeamMatchplay);
-                    break;
+            case DF_GAME_TEAM_MATCH:
+                SimDogfight.SetGameType(dog_TeamMatchplay);
+                break;
 
-                case DF_GAME_TEAM_FURBALL:
-                    SimDogfight.SetGameType(dog_TeamFurball);
-                    break;
+            case DF_GAME_TEAM_FURBALL:
+                SimDogfight.SetGameType(dog_TeamFurball);
+                break;
 
-                default:
-                    SimDogfight.SetGameType(dog_Furball);
-                    break;
+            default:
+                SimDogfight.SetGameType(dog_Furball);
+                break;
             }
         }
     }
@@ -2287,10 +2349,12 @@ void CopyDFSettingsFromWindow(void)
 
     if (win)
     {
-        clk = (C_Clock*)win->FindControl(TIME_ID);
+        clk = (C_Clock *)win->FindControl(TIME_ID);
 
         if (clk)
-            SimDogfight.startTime = clk->GetHour() * CampaignHours + clk->GetMinute() * CampaignMinutes + clk->GetSecond() * CampaignSeconds;
+            SimDogfight.startTime = clk->GetHour() * CampaignHours +
+                                    clk->GetMinute() * CampaignMinutes +
+                                    clk->GetSecond() * CampaignSeconds;
     }
 
     UpdateDogfightWindows();
@@ -2310,7 +2374,8 @@ static void DFGameModeCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2344,11 +2409,14 @@ void CheckFlyButton()
 
     Enabled = FALSE;
 
-    if (vuLocalGame not_eq vuPlayerPoolGroup and FalconLocalSession->GetTeam() not_eq 255 and FalconLocalSession->GetPilotSlot() not_eq 255)
+    if (vuLocalGame not_eq vuPlayerPoolGroup and
+        FalconLocalSession->GetTeam() not_eq 255 and
+        FalconLocalSession->GetPilotSlot() not_eq 255)
         Enabled = TRUE;
 
     // In dogfight games, check ready state
-    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight and not SimDogfight.ReadyToStart())
+    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_Dogfight and
+        not SimDogfight.ReadyToStart())
         Enabled = FALSE;
 
     if (Enabled)
@@ -2394,7 +2462,7 @@ void LoadDogFightWindows()
     C_TimerHook *tmr;
     long ID;
 
-    if ( not DFLoaded)
+    if (not DFLoaded)
     {
         if (_LOAD_ART_RESOURCES_)
             gMainParser->LoadImageList("df_res.lst");
@@ -2403,10 +2471,12 @@ void LoadDogFightWindows()
 
         gMainParser->LoadSoundList("df_snd.lst");
 
-        if ( not gDogfightBites)
-            gDogfightBites = gMainParser->ParseSoundBite("art\\dgft\\play\\uiddf.scf");
+        if (not gDogfightBites)
+            gDogfightBites =
+                gMainParser->ParseSoundBite("art/dgft/play/uiddf.scf");
 
-        gMainParser->LoadWindowList("df_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+        gMainParser->LoadWindowList(
+            "df_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
         ID = gMainParser->GetFirstWindowLoaded();
 
@@ -2424,7 +2494,9 @@ void LoadDogFightWindows()
             tmr->Setup(C_DONT_CARE, C_TYPE_TIMER);
             tmr->SetUpdateCallback(GenericTimerCB);
             tmr->SetRefreshCallback(BlinkCommsButtonTimerCB);
-            tmr->SetUserNumber(_UI95_TIMER_DELAY_, 1 * _UI95_TICKS_PER_SECOND_); // Timer activates every 2 seconds (Only when this window is open)
+            tmr->SetUserNumber(
+                _UI95_TIMER_DELAY_,
+                1 * _UI95_TICKS_PER_SECOND_); // Timer activates every 2 seconds (Only when this window is open)
 
             win->AddControl(tmr);
         }
@@ -2447,7 +2519,7 @@ void LoadDogFightWindows()
 
     if (win)
     {
-        tree = (C_TreeList*)win->FindControl(FILELIST_TREE);
+        tree = (C_TreeList *)win->FindControl(FILELIST_TREE);
 
         if (tree)
         {
@@ -2457,7 +2529,7 @@ void LoadDogFightWindows()
             tree->SetSortCallback(FileNameSortCB);
             tree->SetCallback(SelectDFSettingsFileCB);
             char path[_MAX_PATH];
-            sprintf(path, "%s\\*.DFS", FalconCampaignSaveDirectory);
+            sprintf(path, "%s/*.DFS", FalconCampaignSaveDirectory);
 
             GetFileListTree(tree, path, DFExcludeList, C_TYPE_ITEM, TRUE, 0);
             tree->RecalcSize();
@@ -2478,7 +2550,8 @@ static void DogFightSLDRCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2492,41 +2565,44 @@ static void DogFightSLDRCB(long ID, short hittype, C_Base *control)
 
     switch (ID)
     {
-        case RADAR_SLIDER:
-            ebox = (C_EditBox *)winme->FindControl(RADAR_READOUT);
-            step = 2;
-            break;
+    case RADAR_SLIDER:
+        ebox = (C_EditBox *)winme->FindControl(RADAR_READOUT);
+        step = 2;
+        break;
 
-        case ALLIR_SLIDER:
-            ebox = (C_EditBox *)winme->FindControl(ALLIR_READOUT);
-            step = 2;
-            break;
+    case ALLIR_SLIDER:
+        ebox = (C_EditBox *)winme->FindControl(ALLIR_READOUT);
+        step = 2;
+        break;
 
-        case RIR_SLIDER:
-            ebox = (C_EditBox *)winme->FindControl(RIR_READOUT);
-            step = 2;
-            break;
+    case RIR_SLIDER:
+        ebox = (C_EditBox *)winme->FindControl(RIR_READOUT);
+        step = 2;
+        break;
 
-        case RANGE_SLIDER:
-            ebox = (C_EditBox *)winme->FindControl(RANGE_READOUT);
-            step = 5;
-            break;
+    case RANGE_SLIDER:
+        ebox = (C_EditBox *)winme->FindControl(RANGE_READOUT);
+        step = 5;
+        break;
 
-        case ALTITUDE_SLIDER:
-            ebox = (C_EditBox *)winme->FindControl(ALTITUDE_READOUT);
-            step = 1000;
-            break;
+    case ALTITUDE_SLIDER:
+        ebox = (C_EditBox *)winme->FindControl(ALTITUDE_READOUT);
+        step = 1000;
+        break;
 
-        case MP_SLIDER:
-            ebox = (C_EditBox *)winme->FindControl(MP_READOUT);
-            step = 1;
-            break;
+    case MP_SLIDER:
+        ebox = (C_EditBox *)winme->FindControl(MP_READOUT);
+        step = 1;
+        break;
     }
 
     if (ebox)
     {
         sldr = (C_Slider *)control;
-        value = ((ebox->GetMaxInteger() - ebox->GetMinInteger()) * sldr->GetSliderPos() / (sldr->GetSliderMax() - sldr->GetSliderMin())) + 1;
+        value = ((ebox->GetMaxInteger() - ebox->GetMinInteger()) *
+                 sldr->GetSliderPos() /
+                 (sldr->GetSliderMax() - sldr->GetSliderMin())) +
+                1;
         value += ebox->GetMinInteger();
 
         if (step > 1)
@@ -2544,7 +2620,8 @@ static void DogFightSLDRCB(long ID, short hittype, C_Base *control)
             value = 5;
 
         ebox->SetInteger(value);
-        PositionSlider(sldr, value, ebox->GetMinInteger(), ebox->GetMaxInteger());
+        PositionSlider(sldr, value, ebox->GetMinInteger(),
+                       ebox->GetMaxInteger());
 
         if (ID == MP_SLIDER)
         {
@@ -2581,7 +2658,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
+            if (not(list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2592,7 +2669,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
+            if (not(list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2603,7 +2680,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
+            if (not(list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2614,7 +2691,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
+            if (not(list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
 
@@ -2625,7 +2702,7 @@ void ClearDFTeamLists()
             list->DeleteBranch(list->GetRoot());
             list->RecalcSize();
 
-            if ( not (list->GetFlags() bitand C_BIT_INVISIBLE))
+            if (not(list->GetFlags() bitand C_BIT_INVISIBLE))
                 win->RefreshClient(list->GetClient());
         }
     }
@@ -2783,17 +2860,18 @@ void SaveItCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     gMainHandler->HideWindow(win);
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)win->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)win->FindControl(FILE_NAME);
 
     if (ebox)
     {
-        _stprintf(filename, "%s\\%s.dfs", FalconCampUserSaveDirectory, ebox->GetText());
+        _stprintf(filename, "%s/%s.dfs", FalconCampUserSaveDirectory,
+                  ebox->GetText());
 
         // SAVE SETTINGS HERE
         SimDogfight.SaveSettings(filename);
@@ -2803,13 +2881,14 @@ void SaveItCB(long, short hittype, C_Base *control)
 
     if (win)
     {
-        tree = (C_TreeList*)win->FindControl(FILELIST_TREE);
+        tree = (C_TreeList *)win->FindControl(FILELIST_TREE);
 
         if (tree)
         {
-            _stprintf(filename, "%s\\*.dfs", FalconCampUserSaveDirectory);
+            _stprintf(filename, "%s/*.dfs", FalconCampUserSaveDirectory);
             tree->DeleteBranch(tree->GetRoot());
-            GetFileListTree(tree, filename, DFExcludeList, C_TYPE_ITEM, TRUE, 0);
+            GetFileListTree(tree, filename, DFExcludeList, C_TYPE_ITEM, TRUE,
+                            0);
             tree->RecalcSize();
 
             if (tree->Parent_)
@@ -2827,7 +2906,7 @@ void VerifySaveItCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -2836,28 +2915,35 @@ void VerifySaveItCB(long ID, short hittype, C_Base *control)
         {
             if (_tcslen(ebox->GetText()) == 0)
             {
-                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB, CloseWindowCB);
+                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB,
+                           CloseWindowCB);
                 return;
             }
         }
 
         //end EmptyFilenameSaveFix
-        _stprintf(filename, "%s\\%s.dfs", FalconCampUserSaveDirectory, ebox->GetText());
+        _stprintf(filename, "%s/%s.dfs", FalconCampUserSaveDirectory,
+                  ebox->GetText());
         fp = fopen(filename, "r");
 
         if (fp)
         {
             fclose(fp);
 
-            if (CheckExclude(filename, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
-                AreYouSure(TXT_ERROR, TXT_CANT_OVERWRITE, CloseWindowCB, CloseWindowCB);
+            if (CheckExclude(filename, FalconCampUserSaveDirectory,
+                             DFExcludeList, "dfs"))
+                AreYouSure(TXT_ERROR, TXT_CANT_OVERWRITE, CloseWindowCB,
+                           CloseWindowCB);
             else
-                AreYouSure(TXT_WARNING, TXT_FILE_EXISTS, SaveItCB, CloseWindowCB);
+                AreYouSure(TXT_WARNING, TXT_FILE_EXISTS, SaveItCB,
+                           CloseWindowCB);
         }
         else
         {
-            if (CheckExclude(filename, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
-                AreYouSure(TXT_ERROR, TXT_CANT_OVERWRITE, CloseWindowCB, CloseWindowCB);
+            if (CheckExclude(filename, FalconCampUserSaveDirectory,
+                             DFExcludeList, "dfs"))
+                AreYouSure(TXT_ERROR, TXT_CANT_OVERWRITE, CloseWindowCB,
+                           CloseWindowCB);
             else
                 SaveItCB(ID, hittype, control);
         }
@@ -2872,8 +2958,9 @@ static void SaveDFSettingsCB(long, short hittype, C_Base *)
         return;
 
     SetDeleteCallback(DelDFSFileCB);
-    _stprintf(fname, "%s\\*.dfs", FalconCampUserSaveDirectory);
-    SaveAFile(TXT_SAVE_DOGFIGHT, fname, DFExcludeList, VerifySaveItCB, CloseWindowCB, "");
+    _stprintf(fname, "%s/*.dfs", FalconCampUserSaveDirectory);
+    SaveAFile(TXT_SAVE_DOGFIGHT, fname, DFExcludeList, VerifySaveItCB,
+              CloseWindowCB, "");
 }
 
 // Callback from clicking on a saved game's name
@@ -2881,12 +2968,12 @@ static void SelectDFSettingsFileCB(long, short hittype, C_Base *control)
 {
     C_TreeList *tree;
     TREELIST *item;
-    C_Button   *btn;
+    C_Button *btn;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)control;
+    tree = (C_TreeList *)control;
 
     if (tree)
     {
@@ -2894,16 +2981,18 @@ static void SelectDFSettingsFileCB(long, short hittype, C_Base *control)
 
         if (item)
         {
-            btn = (C_Button*)item->Item_;
+            btn = (C_Button *)item->Item_;
 
             if (btn)
             {
-                if ( not btn->GetState())
+                if (not btn->GetState())
                 {
                     tree->SetAllControlStates(0, tree->GetRoot());
                     btn->SetState(1);
                     tree->Refresh();
-                    _stprintf(gCurDogfightFile, "%s\\%s.DFS", FalconCampUserSaveDirectory, btn->GetText(C_STATE_0));
+                    _stprintf(gCurDogfightFile, "%s/%s.DFS",
+                              FalconCampUserSaveDirectory,
+                              btn->GetText(C_STATE_0));
                     SimDogfight.SetFilename(gCurDogfightFile);
                     SimDogfight.LoadSettings();
                     CopyDFSettingsToSelectWindow();
@@ -2918,7 +3007,7 @@ static void SelectDFSettingsFileCB(long, short hittype, C_Base *control)
                 if (gCurDogfightFile[0] == 0)
                 {
                     _tcscpy(gCurDogfightFile, FalconCampUserSaveDirectory);
-                    _tcscat(gCurDogfightFile, "\\New Game.dfs");
+                    _tcscat(gCurDogfightFile, "/New Game.dfs");
                 }
             }
         }
@@ -2928,12 +3017,13 @@ static void SelectDFSettingsFileCB(long, short hittype, C_Base *control)
 // Callback from clicking on a remote game's name
 void SelectDFGameFileCB(long, short hittype, C_Base *)
 {
-    FalconGameEntity *game = NULL; // KCK: Need to get game associated with button
+    FalconGameEntity *game =
+        NULL; // KCK: Need to get game associated with button
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not game)
+    if (not game)
         return;
 
     // Request Settings here
@@ -2957,7 +3047,7 @@ void JoinRadioCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not gCommsMgr->Online())
+    if (not gCommsMgr->Online())
     {
         win = gMainHandler->FindWindow(PB_WIN);
 
@@ -2977,7 +3067,8 @@ static void ToggleGunCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -2993,7 +3084,8 @@ static void ToggleECMCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3009,7 +3101,8 @@ static void MoveGameLocationCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LDROP)
         return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3020,7 +3113,7 @@ static void MoveGameLocationCB(long, short hittype, C_Base *)
     CopyDFSettingsFromWindow();
 }
 
-float MapXtoSimX(C_Cursor* crsr)
+float MapXtoSimX(C_Cursor *crsr)
 {
     float xpos, ratio;
 
@@ -3033,11 +3126,12 @@ float MapXtoSimX(C_Cursor* crsr)
     // return xpos;
 }
 
-float MapYtoSimY(C_Cursor* crsr)
+float MapYtoSimY(C_Cursor *crsr)
 {
     float ypos, ratio;
 
-    ratio = (float)(crsr->MaxY_ - crsr->GetY()) / (float)(crsr->MaxY_ - crsr->MinY_);
+    ratio = (float)(crsr->MaxY_ - crsr->GetY()) /
+            (float)(crsr->MaxY_ - crsr->MinY_);
     ypos = TheCampaign.TheaterSizeY * FEET_PER_KM * ratio;
     return ypos;
     // KCK: This is cut and paste from peter's code. I don't pretend to understand how it works.
@@ -3046,7 +3140,7 @@ float MapYtoSimY(C_Cursor* crsr)
     // return ypos;
 }
 
-long SimXtoMapX(float simx, C_Cursor* crsr)
+long SimXtoMapX(float simx, C_Cursor *crsr)
 {
     float ratio = 0.5F;
     int mapx;
@@ -3060,7 +3154,7 @@ long SimXtoMapX(float simx, C_Cursor* crsr)
     // return FloatToInt32(((simx * ((crsr->MaxX_-crsr->MinX_)*256.0f)) /  3072.0F) - (crsr->GetW()/2) + crsr->MinX_);
 }
 
-long SimYtoMapY(float simy, C_Cursor* crsr)
+long SimYtoMapY(float simy, C_Cursor *crsr)
 {
     float ratio = 0.5F;
     int mapy;
@@ -3074,31 +3168,34 @@ long SimYtoMapY(float simy, C_Cursor* crsr)
     // return -1 * FloatToInt32(((simy * ((crsr->MaxY_-crsr->MinY_)*256.0f)) /  4096.0F) + crsr->MinY_ + (crsr->GetH()/2) - (crsr->MaxY_-crsr->MinY_));
 }
 
-float MapXtoRatio(C_Cursor* crsr)
+float MapXtoRatio(C_Cursor *crsr)
 {
     float ratio;
-    ratio = (float)(crsr->GetX() + crsr->GetW() / 2) / (float)(crsr->MaxX_ - crsr->MinX_);
+    ratio = (float)(crsr->GetX() + crsr->GetW() / 2) /
+            (float)(crsr->MaxX_ - crsr->MinX_);
     return ratio;
 }
 
-float MapYtoRatio(C_Cursor* crsr)
+float MapYtoRatio(C_Cursor *crsr)
 {
     float ratio;
-    ratio = (float)(crsr->MaxY_ - (crsr->GetY() + crsr->GetH() / 2)) / (float)(crsr->MaxY_ - crsr->MinY_);
+    ratio = (float)(crsr->MaxY_ - (crsr->GetY() + crsr->GetH() / 2)) /
+            (float)(crsr->MaxY_ - crsr->MinY_);
     return ratio;
 }
 
-long RatiotoMapX(float ratio, C_Cursor* crsr)
+long RatiotoMapX(float ratio, C_Cursor *crsr)
 {
     int mapx;
     mapx = FloatToInt32((crsr->MaxX_ - crsr->MinX_) * ratio) - crsr->GetW() / 2;
     return mapx;
 }
 
-long RatiotoMapY(float ratio, C_Cursor* crsr)
+long RatiotoMapY(float ratio, C_Cursor *crsr)
 {
     int mapy;
-    mapy = FloatToInt32((crsr->MaxY_ - crsr->MinY_) * (1.0F - ratio)) - crsr->GetH() / 2;
+    mapy = FloatToInt32((crsr->MaxY_ - crsr->MinY_) * (1.0F - ratio)) -
+           crsr->GetH() / 2;
     return mapy;
 }
 
@@ -3111,7 +3208,7 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
 
     flight = FalconLocalSession->GetPlayerFlight();
 
-    if ( not flight)
+    if (not flight)
         return;
 
     // TheCampaign.MissionEvaluator->PreMissionEval(flight,FalconLocalSession->GetPilotSlot());
@@ -3120,11 +3217,14 @@ static void DogfightFlyCB(long, short hittype, C_Base *)
     flight->SetAborted(0);
     flight->SetDead(0);
 
-    if ( not CompressCampaignUntilTakeoff(flight))
+    if (not CompressCampaignUntilTakeoff(flight))
         return;
 
     // 2002-03-09 MN Send a "[Commiting now]" message to the chat windows
-    enum { PSEUDO_CONTROL_DF = 565419998 };
+    enum
+    {
+        PSEUDO_CONTROL_DF = 565419998
+    };
 
     C_EditBox control;
     control.Setup(PSEUDO_CONTROL_DF, 39);
@@ -3154,13 +3254,13 @@ void SaveResultsFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     gMainHandler->HideWindow(win);
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)win->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)win->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -3184,7 +3284,7 @@ void VerifySaveResultsFileCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -3193,7 +3293,8 @@ void VerifySaveResultsFileCB(long ID, short hittype, C_Base *control)
         {
             if (_tcslen(ebox->GetText()) == 0)
             {
-                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB, CloseWindowCB);
+                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB,
+                           CloseWindowCB);
                 return;
             }
         }
@@ -3205,7 +3306,8 @@ void VerifySaveResultsFileCB(long ID, short hittype, C_Base *control)
         if (fp)
         {
             fclose(fp);
-            AreYouSure(TXT_WARNING, TXT_FILE_EXISTS, SaveResultsFileCB, CloseWindowCB);
+            AreYouSure(TXT_WARNING, TXT_FILE_EXISTS, SaveResultsFileCB,
+                       CloseWindowCB);
         }
         else
             SaveResultsFileCB(ID, hittype, control);
@@ -3218,7 +3320,8 @@ void SaveResultsCB(long, short hittype, C_Base *)
         return;
 
     SetDeleteCallback(DelLSTFileCB);
-    SaveAFile(TXT_SAVE_RESULTS, "*.LST", NULL, VerifySaveResultsFileCB, CloseWindowCB, "");
+    SaveAFile(TXT_SAVE_RESULTS, "*.LST", NULL, VerifySaveResultsFileCB,
+              CloseWindowCB, "");
 }
 
 void CleanupDebriefCB(long, short hittype, C_Base *control)
@@ -3237,7 +3340,7 @@ void SeeDFFilesCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)control->Parent_->FindControl(FILELIST_TREE);
+    tree = (C_TreeList *)control->Parent_->FindControl(FILELIST_TREE);
 
     if (tree)
     {
@@ -3247,7 +3350,7 @@ void SeeDFFilesCB(long, short hittype, C_Base *control)
         tree->SetSortCallback(FileNameSortCB);
         tree->SetCallback(SelectDFSettingsFileCB);
         char path[_MAX_PATH];
-        sprintf(path, "%s\\*.DFS", FalconCampaignSaveDirectory);
+        sprintf(path, "%s/*.DFS", FalconCampaignSaveDirectory);
         GetFileListTree(tree, path, DFExcludeList, C_TYPE_ITEM, TRUE, 0);
         tree->RecalcSize();
 
@@ -3264,7 +3367,7 @@ void SeeDFGamesCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not gCommsMgr->Online())
+    if (not gCommsMgr->Online())
         gMainHandler->EnableWindowGroup(6001);
 
     control->Parent_->HideCluster(control->GetUserNumber(1));
@@ -3276,7 +3379,8 @@ void DogfightChangeTimeCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    if (gCommsMgr->Online() and SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
+    if (gCommsMgr->Online() and
+        SimDogfight.GetDogfightGameStatus() not_eq dog_Waiting)
     {
         GameHasStarted();
         gMainHandler->DropControl();
@@ -3299,18 +3403,19 @@ void DeleteCurrentFileCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(DF_LOAD_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
 
-    if ( not CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
+    if (not CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory,
+                         DFExcludeList, "dfs"))
     {
         DeleteFile(gCurDogfightFile);
         _tcscpy(gCurDogfightFile, FalconCampUserSaveDirectory);
-        _tcscat(gCurDogfightFile, "\\new game.dfs");
+        _tcscat(gCurDogfightFile, "/new game.dfs");
 
-        tree = (C_TreeList*)win->FindControl(FILELIST_TREE);
+        tree = (C_TreeList *)win->FindControl(FILELIST_TREE);
 
         if (tree)
         {
@@ -3320,7 +3425,7 @@ void DeleteCurrentFileCB(long, short hittype, C_Base *control)
             tree->SetSortCallback(FileNameSortCB);
             tree->SetCallback(SelectDFSettingsFileCB);
             char path[_MAX_PATH];
-            sprintf(path, "%s\\*.DFS", FalconCampaignSaveDirectory);
+            sprintf(path, "%s/*.DFS", FalconCampaignSaveDirectory);
 
             GetFileListTree(tree, path, DFExcludeList, C_TYPE_ITEM, TRUE, 0);
             tree->RecalcSize();
@@ -3336,7 +3441,8 @@ void DeleteVerifyFileCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory, DFExcludeList, "dfs"))
+    if (not CheckExclude(gCurDogfightFile, FalconCampUserSaveDirectory,
+                         DFExcludeList, "dfs"))
         VerifyDelete(0, DeleteCurrentFileCB, CloseWindowCB);
 }
 
@@ -3573,62 +3679,62 @@ static void HookupDogFightControls(long ID)
     if (ctrl)
         ctrl->SetCallback(AddDogfightPlayerCB);
 
-    ctrl = (C_Button*)winme->FindControl(ADD_CRIMSON_PLANE);
+    ctrl = (C_Button *)winme->FindControl(ADD_CRIMSON_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(AddDogfightAICB);
 
-    ctrl = (C_Button*)winme->FindControl(ADD_SHARK_PLANE);
+    ctrl = (C_Button *)winme->FindControl(ADD_SHARK_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(AddDogfightAICB);
 
-    ctrl = (C_Button*)winme->FindControl(ADD_USA_PLANE);
+    ctrl = (C_Button *)winme->FindControl(ADD_USA_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(AddDogfightAICB);
 
-    ctrl = (C_Button*)winme->FindControl(ADD_TIGER_PLANE);
+    ctrl = (C_Button *)winme->FindControl(ADD_TIGER_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(AddDogfightAICB);
 
-    ctrl = (C_Button*)winme->FindControl(ADD_FURBALL_PLANE);
+    ctrl = (C_Button *)winme->FindControl(ADD_FURBALL_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(AddDogfightAICB);
 
-    ctrl = (C_Button*)winme->FindControl(DEL_CRIMSON_PLANE);
+    ctrl = (C_Button *)winme->FindControl(DEL_CRIMSON_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(RemoveAICB);
 
-    ctrl = (C_Button*)winme->FindControl(DEL_SHARK_PLANE);
+    ctrl = (C_Button *)winme->FindControl(DEL_SHARK_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(RemoveAICB);
 
-    ctrl = (C_Button*)winme->FindControl(DEL_TBIRD_PLANE);
+    ctrl = (C_Button *)winme->FindControl(DEL_TBIRD_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(RemoveAICB);
 
-    ctrl = (C_Button*)winme->FindControl(DEL_TIGER_PLANE);
+    ctrl = (C_Button *)winme->FindControl(DEL_TIGER_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(RemoveAICB);
 
-    ctrl = (C_Button*)winme->FindControl(DEL_FURBALL_PLANE);
+    ctrl = (C_Button *)winme->FindControl(DEL_FURBALL_PLANE);
 
     if (ctrl)
         ctrl->SetCallback(RemoveAICB);
 
-    ctrl = (C_Button*)winme->FindControl(OK_FLIGHT);
+    ctrl = (C_Button *)winme->FindControl(OK_FLIGHT);
 
     if (ctrl)
         ctrl->SetCallback(AddDogfightFlightCB);
 
-    ctrl = (C_Button*)winme->FindControl(CANCEL_FLIGHT);
+    ctrl = (C_Button *)winme->FindControl(CANCEL_FLIGHT);
 
     if (ctrl)
         ctrl->SetCallback(CloseWindowCB);
@@ -3685,7 +3791,7 @@ static void HookupDogFightControls(long ID)
         ctrl->SetCallback(DeleteVerifyFileCB);
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);

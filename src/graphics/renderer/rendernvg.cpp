@@ -5,16 +5,16 @@
 
     This sub class draws an out the window view in simulated IR (green on black)
 \***************************************************************************/
-#include "Tmap.h"
-#include "Tpost.h"
-#include "TOD.h"
-#include "Tex.h"
-#include "Draw2D.h"
-#include "DrawOVC.h"
-#include "ColorBank.h"
-#include "RenderNVG.h"
-#include "RealWeather.h"
-#include "FalcLib/include/playerop.h"
+#include "tmap.h"
+#include "tpost.h"
+#include "tod.h"
+#include "tex.h"
+#include "draw2d.h"
+#include "drawovc.h"
+#include "colorbank.h"
+#include "rendernvg.h"
+#include "realweather.h"
+#include "falclib/include/playerop.h"
 
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
@@ -43,7 +43,8 @@ void RenderNVG::DrawSun(void)
     RenderOTW::DrawSun();
 }
 
-void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x, float y)
+void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post,
+                                   float distance, float x, float y)
 {
     float alpha, fog;
 
@@ -52,11 +53,12 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
     vert->g = NVG_LIGHT_LEVEL;
 
     // FRB - B&W
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         vert->r = vert->b = vert->g;
 
-    if ((distance > haze_start + haze_depth + 3000)
-        or (realWeather->weatherCondition > FAIR and (-realWeather->viewerZ) > (-realWeather->stratusZ)))
+    if ((distance > haze_start + haze_depth + 3000) or
+        (realWeather->weatherCondition > FAIR and
+         (-realWeather->viewerZ) > (-realWeather->stratusZ)))
     {
         vert->RenderingStateHandle = state_far;
     }
@@ -64,7 +66,7 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
     {
         vert->RenderingStateHandle = state_fore;
     }
-    else if ( not hazed and distance < haze_start)
+    else if (not hazed and distance < haze_start)
     {
         vert->RenderingStateHandle = state_near;
     }
@@ -99,7 +101,8 @@ void RenderNVG::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float dista
             {
                 alpha = GetRangeOnlyFog(distance);
 
-                if (alpha < fog) alpha = fog;
+                if (alpha < fog)
+                    alpha = fog;
 
                 alpha = 1.f - alpha;
             }
@@ -142,18 +145,18 @@ void RenderNVG::SetTimeOfDayColor(void)
     haze_ground_color.g = NVG_SKY_LEVEL;
     haze_ground_color.b = 0.f;
 
-    DWORD ground_haze = (FloatToInt32(haze_ground_color.g * 255.9f) << 8) + 0xff000000;
+    DWORD ground_haze =
+        (FloatToInt32(haze_ground_color.g * 255.9f) << 8) + 0xff000000;
     context.SetState(MPR_STA_FOG_COLOR, ground_haze);
 }
 
 void RenderNVG::ProcessColor(Tcolor *color)
 {
-    color->r  = 0.f;
+    color->r = 0.f;
     color->g *= NVG_LIGHT_LEVEL;
-    color->b  = 0.f;
+    color->b = 0.f;
 
     // FRB - B&W
     if (g_bGreyMFD)
         color->r = color->b = color->g;
-
 }

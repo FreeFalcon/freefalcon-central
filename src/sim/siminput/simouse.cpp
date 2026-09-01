@@ -1,4 +1,4 @@
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "sinput.h"
 #include "cpmanager.h"
 #include "dispcfg.h"
@@ -7,7 +7,7 @@
 
 #include "commands.h" //Wombat778 10-07-2003 added for scroll wheel support
 
-#include "inpFunc.h" //Wombat778 10-07-2003 added for scroll wheel support
+#include "inpfunc.h" //Wombat778 10-07-2003 added for scroll wheel support
 
 int gxFuzz;
 int gyFuzz;
@@ -35,7 +35,8 @@ extern bool MouseMenuActive; // Retro 15Feb2004 - oh well. Not too pretty.
 // This indicates that some sort of overlay menu
 // is active, and that the mouse should act in '2d mode'
 // currently only used for the 'exit' screen
-bool clickableMouseMode = false; // Retro 15Feb2004 - this holds the CURRENT STATE of the
+bool clickableMouseMode =
+    false; // Retro 15Feb2004 - this holds the CURRENT STATE of the
 // clickable cockpit. The SAVED (and DEFAULT) value is in the
 // playeroptions, and is only loaded on entering the pit
 // (in otwdrive.cpp)
@@ -45,10 +46,13 @@ bool clickableMouseMode = false; // Retro 15Feb2004 - this holds the CURRENT STA
 extern float g_fMouseLookSensitivity; //Wombat778 10-08-2003
 #endif
 
-#include "SimIO.h" // Retro 17Jan2004
+#include "simio.h" // Retro 17Jan2004
 #include "mouselook.h" // Retro 18Jan2004
 
-static const int MAX_AXIS_THROW; // Retro 18Jan2004
+static const int MAX_AXIS_THROW =
+    (150 *
+     10); // Retro 18Jan2004 (value mirrors mouselook.cpp; a bare `static const
+// int X;` is a definition needing an initializer -- MSVC tolerated the missing one, clang correctly rejects it)
 
 // sfr: touch buddy support
 /** variable indicating mouse is inside client area */
@@ -89,10 +93,11 @@ void OnSimMouseInput(HWND)
     DWORD dwElements = 0;
     HRESULT hResult;
     UINT i = 0;
-    int dx = 0, dy = 0, dz = 0; //Wombat778 10-07-2003  added dz=0 for scrollwheel
+    int dx = 0, dy = 0,
+        dz = 0; //Wombat778 10-07-2003  added dz=0 for scrollwheel
     int action = 0;
     BOOL passThru = TRUE;
-    static BOOL         oneDown = FALSE;
+    static BOOL oneDown = FALSE;
 
     static int tempx = 0; //Wombat778 10-10-2003
     static int tempy = 0; //Wombat778 10-10-2003
@@ -109,7 +114,8 @@ void OnSimMouseInput(HWND)
 
 #else // Retro 15Feb2004 - 'my version' tries to re-aquire by itself.
     dwElements = DMOUSE_BUFFERSIZE;
-    hResult = gpDIDevice[SIM_MOUSE]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
+    hResult = gpDIDevice[SIM_MOUSE]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA),
+                                                   ObjData, &dwElements, 0);
 
     if ((hResult == DIERR_INPUTLOST) or (hResult == DIERR_NOTACQUIRED))
     {
@@ -117,9 +123,9 @@ void OnSimMouseInput(HWND)
 
         if (hResult not_eq DI_OK)
         {
-#pragma warning(disable:4127)
+#pragma warning(disable : 4127)
             ShiAssert(false);
-#pragma warning(default:4127)
+#pragma warning(default : 4127)
             gpDeviceAcquired[SIM_MOUSE] = FALSE;
             return;
         }
@@ -146,13 +152,17 @@ void OnSimMouseInput(HWND)
                 dy += ObjData[i].dwData;
                 action = CP_MOUSE_MOVE;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_Z)   //Wombat778 10-07-2003 Added following for scrollwheel.  Wheel acts as mouse Z axis.
+            else if (
+                ObjData[i].dwOfs ==
+                DIMOFS_Z) //Wombat778 10-07-2003 Added following for scrollwheel.  Wheel acts as mouse Z axis.
             {
                 dz += ObjData[i].dwData;
 
-                if (theMouseWheelAxis.IsWheelActive() == false) // Retro 21Jan2004 - wheel not mapped to an axis, use it otherwise
+                if (theMouseWheelAxis.IsWheelActive() ==
+                    false) // Retro 21Jan2004 - wheel not mapped to an axis, use it otherwise
                 {
-                    if (dz > 0)   //Wombat778 11-16-2003  Changed from < to > .  It was backwards before.
+                    if (dz >
+                        0) //Wombat778 11-16-2003  Changed from < to > .  It was backwards before.
                     {
                         if (scrollupfunc)
                             scrollupfunc(1, KEY_DOWN, NULL);
@@ -164,23 +174,28 @@ void OnSimMouseInput(HWND)
                     }
                 }
 
-                action = CP_CHECK_EVENT; //Wombat778 10-07-2003 apparently this is a fake event...seems like the right thing to do
+                action =
+                    CP_CHECK_EVENT; //Wombat778 10-07-2003 apparently this is a fake event...seems like the right thing to do
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and not (ObjData[i].dwData bitand 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON0 and
+                     not(ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON0;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and not (ObjData[i].dwData bitand 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and
+                     not(ObjData[i].dwData bitand 0x80))
             {
                 action = CP_MOUSE_BUTTON1;
                 oneDown = FALSE;
             }
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and (ObjData[i].dwData bitand 0x80))
+            else if (ObjData[i].dwOfs == DIMOFS_BUTTON1 and
+                     (ObjData[i].dwData bitand 0x80))
             {
                 action = static_cast<unsigned long>(-1);
                 oneDown = TRUE;
             }
-            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) and (ObjData[i].dwData bitand 0x80))   // Retro 22Jan2004
+            else if ((ObjData[i].dwOfs == DIMOFS_BUTTON3) and
+                     (ObjData[i].dwData bitand 0x80)) // Retro 22Jan2004
             {
 #if 0
                 PlayerOptions.SetClickablePitMode( not PlayerOptions.GetClickablePitMode()); //Wombat778 1-22-04 moved to playeroptions.
@@ -189,11 +204,16 @@ void OnSimMouseInput(HWND)
 #endif
             } // Retro 22Jan2004
 
-            else if (ObjData[i].dwOfs == DIMOFS_BUTTON2 and (ObjData[i].dwData bitand 0x80))   //Wombat778 10-07-2003 Added for middle mouse button support
+            else if (
+                ObjData[i].dwOfs == DIMOFS_BUTTON2 and
+                (ObjData[i].dwData bitand
+                 0x80)) //Wombat778 10-07-2003 Added for middle mouse button support
             {
-                if (middlebuttonfunc) middlebuttonfunc(1, KEY_DOWN, NULL);
+                if (middlebuttonfunc)
+                    middlebuttonfunc(1, KEY_DOWN, NULL);
 
-                action = CP_CHECK_EVENT; //Wombat778 10-07-2003 same rationale as above
+                action =
+                    CP_CHECK_EVENT; //Wombat778 10-07-2003 same rationale as above
                 theMouseWheelAxis.ResetAxisValue(); // Retro 18Jan2004
             }
 
@@ -211,11 +231,12 @@ void OnSimMouseInput(HWND)
 
                     //Wombat778 10-11-2003  This is a hack because I couldnt get the
                     // button finding code to run from here. go figure
-                    if (
-                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit or
-                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockF3 or
-                        OTWDriver.GetOTWDisplayMode() == OTWDriverClass::ModePadlockEFOV
-                    )
+                    if (OTWDriver.GetOTWDisplayMode() ==
+                            OTWDriverClass::Mode3DCockpit or
+                        OTWDriver.GetOTWDisplayMode() ==
+                            OTWDriverClass::ModePadlockF3 or
+                        OTWDriver.GetOTWDisplayMode() ==
+                            OTWDriverClass::ModePadlockEFOV)
                     {
                         if (action == CP_MOUSE_BUTTON0)
                         {
@@ -235,7 +256,8 @@ void OnSimMouseInput(HWND)
 
             if (passThru)
             {
-                gSelectedCursor = OTWDriver.pCockpitManager->Dispatch(action, gxPos, gyPos);
+                gSelectedCursor =
+                    OTWDriver.pCockpitManager->Dispatch(action, gxPos, gyPos);
             }
         }
 
@@ -244,7 +266,7 @@ void OnSimMouseInput(HWND)
         /************************************************************************/
         // Retro 17Jan2004
         // "Faking" an absolute axis with the (relative) mouse z axis
-        // Problem is that I can´t set the range as a dinput property, so I have
+        // Problem is that I canï¿½t set the range as a dinput property, so I have
         // to clamp manually. Range is either 0..15000 for unipolar or -10000..10000
         // for bipolar axis. MouseWheelSensitivity is for this axis an INTEGER
         // (as opposed to the mouselook sensitivity)
@@ -254,13 +276,14 @@ void OnSimMouseInput(HWND)
         // (except pitch/bank and throttle/throttle2)
         //
         // Problem: all this data is on the global scope. Also, this data is not
-        // reinit when I exit/enter the 3d. it´s also not init correctly for all
+        // reinit when I exit/enter the 3d. itï¿½s also not init correctly for all
         // axis (it inits to 0 which can be bad for some axis, ie FOV)
         /************************************************************************/
         if ((dz) and (IO.MouseWheelExists() == true))
         {
             // Retro 18Jan2004
-            theMouseWheelAxis.AddToAxisValue(dz * PlayerOptions.GetMouseWheelSensitivity());
+            theMouseWheelAxis.AddToAxisValue(
+                dz * PlayerOptions.GetMouseWheelSensitivity());
         }
 
 #endif // ..ends
@@ -290,7 +313,7 @@ void OnSimMouseInput(HWND)
                     tempx = 0; //Wombat778 10-10-2003
                 }
 
-                // now, if we´re in panning mode, do some stuff with eyepan/eyetilt
+                // now, if weï¿½re in panning mode, do some stuff with eyepan/eyetilt
 #if 0 // Retro 15Feb2004
 
                 if (PlayerOptions.GetClickablePitMode() == false) //Wombat778 1-22-04 moved to playeroptions
@@ -298,27 +321,33 @@ void OnSimMouseInput(HWND)
                 if (clickableMouseMode == false)
 #endif
                 {
-                    if ( not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
+                    if (not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
                     {
-                        float MouseSensitivity = PlayerOptions.GetMouseLookSensitivity(); // Retro 16Jan2004
-                        OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity);
+                        float MouseSensitivity =
+                            PlayerOptions
+                                .GetMouseLookSensitivity(); // Retro 16Jan2004
+                        OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity,
+                                                      dy * MouseSensitivity);
                     }
                     else
                         UpdateCursorPosition(dx, dy);
-
                 }
-                else // if we´re in clickable mode, move only the mousepointer
+                else // if weï¿½re in clickable mode, move only the mousepointer
                 {
-                    if ( not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
+                    if (not oneDown) // Retro 22Jan2004 - the RMB can temporarily (when held down) force the 'opposite' mode
                         UpdateCursorPosition(dx, dy);
                     else
                     {
-                        float MouseSensitivity = PlayerOptions.GetMouseLookSensitivity(); // Retro 16Jan2004
-                        OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity);
+                        float MouseSensitivity =
+                            PlayerOptions
+                                .GetMouseLookSensitivity(); // Retro 16Jan2004
+                        OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity,
+                                                      dy * MouseSensitivity);
                     }
                 }
             }
-            else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)
+            else if (OTWDriver.GetOTWDisplayMode() ==
+                     OTWDriverClass::Mode2DCockpit)
             {
                 if (oneDown)
                 {
@@ -332,7 +361,9 @@ void OnSimMouseInput(HWND)
                     tempx += dx;
                     tempy += dy;
 
-                    float MouseSensitivity = PlayerOptions.GetMouseLookSensitivity(); // Retro 16Jan2004
+                    float MouseSensitivity =
+                        PlayerOptions
+                            .GetMouseLookSensitivity(); // Retro 16Jan2004
 
                     //Wombat778 10-10-2003 Look at the total distance mouse has moved rather than speed
                     if (tempx * MouseSensitivity > 20)
@@ -399,18 +430,19 @@ void OnSimMouseInput(HWND)
                 }
             }
             // in most of the other views (external..)
-            else if (( not MouseMenuActive) and (PlayerOptions.GetMouseLook() == true))
+            else if ((not MouseMenuActive) and
+                     (PlayerOptions.GetMouseLook() == true))
             {
                 /************************************************************************/
                 // Retro 16Jan2004
                 //
                 // Making mouselook smoother by cirumvention the whole 'button-simulation'
                 // stuff. Problems:
-                // 1) there´s only one mouselook sensitivity variable, but inside<->outside
+                // 1) thereï¿½s only one mouselook sensitivity variable, but inside<->outside
                 // need different sensitivity
                 // 2) this code would not have to be executed every frame (and also not
                 // everytime new mousedata is there) but only everytime we are in a
-                // outside view mode - however I can´t tell this here
+                // outside view mode - however I canï¿½t tell this here
                 //
                 // Solution to 1) the external mouselook values (range 0.2 - 1.5) get scaled up
                 // by a factor or 10 so I get a range of 2 - 15 (nice integers)
@@ -420,10 +452,14 @@ void OnSimMouseInput(HWND)
                 // on it in the otwdriver class (that only does this when needed)
                 /************************************************************************/
                 if (dx)
-                    theMouseView.AddAzimuth((float)dx * 10.f * PlayerOptions.GetMouseLookSensitivity());
+                    theMouseView.AddAzimuth(
+                        (float)dx * 10.f *
+                        PlayerOptions.GetMouseLookSensitivity());
 
                 if (dy)
-                    theMouseView.AddElevation((float)dy * 10.f * PlayerOptions.GetMouseLookSensitivity());
+                    theMouseView.AddElevation(
+                        (float)dy * 10.f *
+                        PlayerOptions.GetMouseLookSensitivity());
 
                 theMouseView.Compute(0, true);
 
@@ -433,7 +469,6 @@ void OnSimMouseInput(HWND)
             {
                 UpdateCursorPosition(dx, dy);
             }
-
         }
         /************************************************************************/
         // get here if the mouse hasnt moved at all
@@ -462,20 +497,23 @@ void OnSimMouseInput(HWND)
         // oneDown = FALSE
 
         /************************************************************************/
-        // This is wombat´s 3d cockpit mouselook
+        // This is wombatï¿½s 3d cockpit mouselook
         /************************************************************************/
         if (dx or dy)
         {
             if (oneDown)
             {
-                float MouseSensitivity = PlayerOptions.GetMouseLookSensitivity(); // Retro 16Jan2004
+                float MouseSensitivity =
+                    PlayerOptions.GetMouseLookSensitivity(); // Retro 16Jan2004
 
                 /************************************************************************/
                 //Wombat778 10-09-2003 function only is true if in 3d cockpit
                 /************************************************************************/
-                if ( not OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity, dy * MouseSensitivity))
+                if (not OTWDriver.ViewRelativePanTilt(dx * MouseSensitivity,
+                                                      dy * MouseSensitivity))
                 {
-                    if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)
+                    if (OTWDriver.GetOTWDisplayMode() ==
+                        OTWDriverClass::Mode2DCockpit)
                     {
                         /************************************************************************/
                         // Retain old method for the 2d cockpit and external views because
@@ -560,7 +598,8 @@ void OnSimMouseInput(HWND)
             /************************************************************************/
             else
             {
-                if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode2DCockpit)
+                if (OTWDriver.GetOTWDisplayMode() ==
+                    OTWDriverClass::Mode2DCockpit)
                 {
                     if (didTilt)
                     {
@@ -577,8 +616,10 @@ void OnSimMouseInput(HWND)
                     }
                 }
 
-                if ((OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) or
-                    (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit))
+                if ((OTWDriver.GetOTWDisplayMode() not_eq
+                     OTWDriverClass::Mode3DCockpit) or
+                    (OTWDriver.GetOTWDisplayMode() not_eq
+                     OTWDriverClass::Mode2DCockpit))
                 {
                     // Update cursor position otherwise
                     UpdateCursorPosition(dx, dy);
@@ -586,21 +627,23 @@ void OnSimMouseInput(HWND)
             }
 
             // we come here if 1) no RMB pressed 2) not in 2d pit mode
-            // aargh this (whole mouselook) code is a freaking mess 
-            if ((PlayerOptions.GetMouseLook() == true) and 
-                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode3DCockpit) and 
-                (OTWDriver.GetOTWDisplayMode() not_eq OTWDriverClass::Mode2DCockpit))
+            // aargh this (whole mouselook) code is a freaking mess
+            if ((PlayerOptions.GetMouseLook() == true) and
+                (OTWDriver.GetOTWDisplayMode() not_eq
+                 OTWDriverClass::Mode3DCockpit) and
+                (OTWDriver.GetOTWDisplayMode() not_eq
+                 OTWDriverClass::Mode2DCockpit))
             {
                 /************************************************************************/
                 // Retro 16Jan2004
                 //
                 // Making mouselook smoother by cirumvention the whole 'button-simulation'
                 // stuff. Problems:
-                // 1) there´s only one mouselook sensitivity variable, but inside<->outside
+                // 1) thereï¿½s only one mouselook sensitivity variable, but inside<->outside
                 // need different sensitivity
                 // 2) this code would not have to be executed every frame (and also not
                 // everytime new mousedata is there) but only everytime we are in a
-                // outside view mode - however I can´t tell this here
+                // outside view mode - however I canï¿½t tell this here
                 //
                 // Solution to 1) the external mouselook values (range 0.2 - 1.5) get scaled up
                 // by a factor or 10 so I get a range of 2 - 15 (nice integers)
@@ -610,15 +653,18 @@ void OnSimMouseInput(HWND)
                 // on it in the otwdriver class (that only does this when needed)
                 /************************************************************************/
                 if (dx)
-                    theMouseView.AddAzimuth((float)dx * 10.f * PlayerOptions.GetMouseLookSensitivity());
+                    theMouseView.AddAzimuth(
+                        (float)dx * 10.f *
+                        PlayerOptions.GetMouseLookSensitivity());
 
                 if (dy)
-                    theMouseView.AddElevation((float)dy * 10.f * PlayerOptions.GetMouseLookSensitivity());
+                    theMouseView.AddElevation(
+                        (float)dy * 10.f *
+                        PlayerOptions.GetMouseLookSensitivity());
 
                 theMouseView.Compute(0, true);
                 // Retro end
             }
-
         }
         /************************************************************************/
         // get here if the mouse hasnt moved at all
@@ -651,15 +697,20 @@ void OnSimMouseInput(HWND)
 
                 //Wombat778 10-08-2003  The following function handles all of the crap below and makes mouselook smooth,
 
-                if ( not OTWDriver.ViewRelativePanTilt(dx * g_fMouseLookSensitivity, dy * g_fMouseLookSensitivity)) //Wombat778 10-09-2003 function only is true if in 3d cockpit
+                if (not OTWDriver.ViewRelativePanTilt(
+                        dx * g_fMouseLookSensitivity,
+                        dy *
+                            g_fMouseLookSensitivity)) //Wombat778 10-09-2003 function only is true if in 3d cockpit
                 {
                     //Retain old method for the 2d cockpit and external views because eyepan/eyetilt doesnt do anything in those views
 
-                    tempx += dx; //Wombat778 10-10-2003 added these because the previous method of 2d mouselook was crap.
+                    tempx +=
+                        dx; //Wombat778 10-10-2003 added these because the previous method of 2d mouselook was crap.
                     tempy += dy;
 
 
-                    if (tempx * g_fMouseLookSensitivity > 20) //Wombat778 10-10-2003 Look at the total distance mouse has moved rather than speed
+                    if (tempx * g_fMouseLookSensitivity >
+                        20) //Wombat778 10-10-2003 Look at the total distance mouse has moved rather than speed
                     {
                         didSpin = TRUE;
                         OTWDriver.ViewSpinRight();
@@ -688,7 +739,8 @@ void OnSimMouseInput(HWND)
                     }
 
 
-                    if (abs(dy) < 3)  //if the mouse has stopped moving quickly stop spinning or tilting
+                    if (abs(dy) <
+                        3) //if the mouse has stopped moving quickly stop spinning or tilting
                     {
                         didTilt = FALSE;
                         OTWDriver.ViewTiltHold();
@@ -699,7 +751,6 @@ void OnSimMouseInput(HWND)
                         didSpin = FALSE;
                         OTWDriver.ViewSpinHold();
                     }
-
 
 
                     //Wombat778 10-10-2003 REmoved because my way is better
@@ -752,7 +803,6 @@ void OnSimMouseInput(HWND)
                         tempx = 0; //Wombat778 10-10-2003
                     }
                 }
-
             }
             else //get here if the RMB was not down.
             {
@@ -820,22 +870,22 @@ void UpdateCursorPosition(DWORD xOffset, DWORD yOffset)
     switch (gMouseSensitivity)
     {
 
-        case LO_SENSITIVITY:
-            gxFuzz = xOffset % 2; // Remember the fuzz for next time
-            gyFuzz = yOffset % 2;
+    case LO_SENSITIVITY:
+        gxFuzz = xOffset % 2; // Remember the fuzz for next time
+        gyFuzz = yOffset % 2;
 
-            xOffset /= 2;
-            yOffset /= 2;
-            break;
+        xOffset /= 2;
+        yOffset /= 2;
+        break;
 
-        case NORM_SENSITIVITY: // No Adjustments needed
-        default:
-            break;
+    case NORM_SENSITIVITY: // No Adjustments needed
+    default:
+        break;
 
-        case HI_SENSITIVITY:
-            xOffset *= 2; // Magnify
-            yOffset *= 2;
-            break;
+    case HI_SENSITIVITY:
+        xOffset *= 2; // Magnify
+        yOffset *= 2;
+        break;
     }
 
     gxLast = gxPos;
@@ -865,5 +915,6 @@ void UpdateCursorPosition(DWORD xOffset, DWORD yOffset)
         gyPos = DisplayOptions.DispHeight - 1;
     }
 
-    gTimeLastCursorUpdate = vuxRealTime; //Wombat778 1-23-03  added so we know the last time the cursor position moved.
+    gTimeLastCursorUpdate =
+        vuxRealTime; //Wombat778 1-23-03  added so we know the last time the cursor position moved.
 }

@@ -1,25 +1,34 @@
-#include <cISO646>
+#include <ciso646>
 #include "../include/polylib.h"
-#include "../../include/ComSup.h"
-#include "DXdefines.h"
-#include "../include/ObjectInstance.h"
-#include "DXEngine.h"
+#include "../../include/comsup.h"
+#include "dxdefines.h"
+#include "../include/objectinstance.h"
+#include "dxengine.h"
 #include "dxvbmanager.h"
-#include "DXTools.h"
-#include <d3d11.h>	// PHASE 4: D3D11 mirror VB
-#include "d3d12/D3D12TextureManager.h"	// #DX12 п.4: per-model D3D12 VB
-extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- GPU mode = D3D11 OR D3D12 (never the dead DDraw7 else-branch)
+#include "dxtools.h"
+// Artscout - 2026: the retired D3D11 mirror VB (VbD3D11, ID3D11Buffer*) is always NULL under D3D12, but the
+// cleanup paths still spell VbD3D11->Release() -- which needs the COMPLETE ID3D11Buffer type. So <d3d11.h> is
+// required on Windows (an earlier Linux-Ф0 pass wrongly removed it as "vestigial" and broke the MSVC build with
+// C2027). Windows-only: DXEngine is the D3D12 renderer, not built on Linux (which uses the Vulkan backend), so the
+// Linux compile never sees this Windows-SDK header. (The full purge of the dead VbD3D11 mirror is a later cleanup.)
+#ifdef _WIN32
+#include <d3d11.h>
+#endif
+#include "d3d12/d3d12texturemanager.h" // #DX12 п.4: per-model D3D12 VB
+#include "../vulkan/vulkanvbmanager.h" // Artscout - 2026 (#104): per-model Vulkan VB (g_pVulkanVbManager)
+extern bool
+    g_bUseGpu; // Artscout - 2026: #DX12 -- GPU mode = D3D11 OR D3D12 (never the dead DDraw7 else-branch)
 #ifndef DEBUG_ENGINE
-#include "../../sim/INCLUDE/ivibedata.h"
-#include "../../FALCLIB/include/fakerand.h"
+#include "../../sim/include/ivibedata.h"
+#include "../../falclib/include/fakerand.h"
 #endif
 CRITICAL_SECTION cs_VbManager;
 
 #ifdef STAT_DX_ENGINE
-#include "RedProfiler.h"
+#include "redprofiler.h"
 #endif
 #ifdef DATE_PROTECTION
-#include "include/ComSup.h"
+#include "include/comsup.h"
 extern bool DateOff;
 #endif
 extern int TheObjectLODsCount;
@@ -50,7 +59,7 @@ CDrawItem::CDrawItem()
 
 
 // Encrypting function for the model pointed by 'Buffer'
-VOID CDXVbManager::Encrypt(DWORD *Buffer)
+VOID CDXVbManager::Encrypt(DWORD* Buffer)
 {
     // The Crypting Key
     DWORD Key = KEY_CRYPTER;
@@ -75,10 +84,8 @@ VOID CDXVbManager::Encrypt(DWORD *Buffer)
 }
 
 
-
-
 // Decrypting function for the model pointed by 'Buffer'
-VOID CDXVbManager::Decrypt(DWORD *Buffer)
+VOID CDXVbManager::Decrypt(DWORD* Buffer)
 {
     // The Crypting Key
     DWORD Key = KEY_CRYPTER;
@@ -103,8 +110,8 @@ VOID CDXVbManager::Decrypt(DWORD *Buffer)
 }
 
 
-
-CVbVAT::CVbVAT(CVbVAT *Parent, CVbVAT *Child, DWORD Id, DWORD Start, DWORD Size, DWORD VBFree)
+CVbVAT::CVbVAT(CVbVAT* Parent, CVbVAT* Child, DWORD Id, DWORD Start, DWORD Size,
+               DWORD VBFree)
 {
     // Assign parents
     Next = Child;
@@ -139,9 +146,7 @@ CVbVAT::~CVbVAT(void)
 }
 
 
-
-
-void CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
+void CDXVbManager::DestroyVAT(VBufferListType* pVb, CVbVAT* Vat)
 {
     // if a Parent, link it to next Item and Update its data
     if (Vat->Prev)
@@ -151,7 +156,8 @@ void CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
         Vat->Prev->Gap += Vat->Gap + Vat->VSize;
 
         // if a Child, Link it to next Item
-        if (Vat->Next) Vat->Next->Prev = Vat->Prev;
+        if (Vat->Next)
+            Vat->Next->Prev = Vat->Prev;
     }
     else
     {
@@ -168,7 +174,8 @@ void CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
         }
 
         // the next ecames the Root
-        if (Vat->Next) Vat->Next->Prev = NULL;
+        if (Vat->Next)
+            Vat->Next->Prev = NULL;
     }
 
     //  Kill It
@@ -176,19 +183,11 @@ void CDXVbManager::DestroyVAT(VBufferListType *pVb, CVbVAT *Vat)
 }
 
 
-
-
 // This is mapped to initialize Vertex Buffers Class
-const DWORD BaseClassFeaturesMap[BASE_VERTEX_BUFFERS] =
-{
-    VB_CLASS_FEATURES,
-    VB_CLASS_FEATURES,
-    VB_CLASS_DOMAIN_GROUND,
-    VB_CLASS_DOMAIN_GROUND,
-    VB_CLASS_DOMAIN_AIR,
-    VB_CLASS_DOMAIN_AIR,
-    VB_CLASS_DOMAIN_AIR,
-    VB_CLASS_DOMAIN_AIR,
+const DWORD BaseClassFeaturesMap[BASE_VERTEX_BUFFERS] = {
+    VB_CLASS_FEATURES,      VB_CLASS_FEATURES,   VB_CLASS_DOMAIN_GROUND,
+    VB_CLASS_DOMAIN_GROUND, VB_CLASS_DOMAIN_AIR, VB_CLASS_DOMAIN_AIR,
+    VB_CLASS_DOMAIN_AIR,    VB_CLASS_DOMAIN_AIR,
 };
 
 
@@ -215,7 +214,6 @@ void CDXVbManager::CreateVB(DWORD i, DWORD Class)
 }
 
 
-
 // COBRA - RED -
 // Main Vertex Buffer Manager initialization
 // The Base Number of vertex buffers are immediatly allocated
@@ -223,7 +221,8 @@ void CDXVbManager::CreateVB(DWORD i, DWORD Class)
 void CDXVbManager::Setup()
 {
     // if already initialized exit here
-    if (VBManagerInitialized) return;
+    if (VBManagerInitialized)
+        return;
 
     // Initialize the Buffer Pointers
     ZeroMemory(pVBuffers, sizeof(pVBuffers));
@@ -249,8 +248,10 @@ void CDXVbManager::Setup()
     for (int i = 0; i < BASE_DRAWS; i++)
     {
         // if 1st item
-        if ( not pVDrawItemPool) pVDrawItemPool = dp = new CDrawItem();
-        else dp = dp->NextInPool = new CDrawItem();
+        if (not pVDrawItemPool)
+            pVDrawItemPool = dp = new CDrawItem();
+        else
+            dp = dp->NextInPool = new CDrawItem();
     }
 
     // Rests the Pool Pointer for the Draw Items
@@ -269,8 +270,13 @@ void CDXVbManager::Setup()
     // +16 padding (like Dyn2D): guards a write overrun at the end of the buffer.
     // #55 free before malloc: Setup may be called again (3D entry) -> else a 1.8MB/cycle leak.
     {
-        if (SimpleBuffer.VbPtr) { free(SimpleBuffer.VbPtr); SimpleBuffer.VbPtr = NULL; }
-        SimpleBuffer.VbPtr = (D3DSIMPLEVERTEX*)malloc(((size_t)0xffff + 16) * sizeof(D3DSIMPLEVERTEX));
+        if (SimpleBuffer.VbPtr)
+        {
+            free(SimpleBuffer.VbPtr);
+            SimpleBuffer.VbPtr = NULL;
+        }
+        SimpleBuffer.VbPtr = (D3DSIMPLEVERTEX*)malloc(((size_t)0xffff + 16) *
+                                                      sizeof(D3DSIMPLEVERTEX));
     }
 
     //////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -287,18 +293,32 @@ void CDXVbManager::Release(void)
 {
 
     // if already NON initialized exit here
-    if ( not VBManagerInitialized) return;
+    if (not VBManagerInitialized)
+        return;
 
     // Release all eventually allocated models
     //for(int i=0; i<MAX_MANAGED_MODELS; i++) ReleaseModel(i);
     // FRB - Reduced number from 16384 to the number of LODs in KO.dxh
-    for (int i = 0; i < TheObjectLODsCount; i++) ReleaseModel(i);
+    for (int i = 0; i < TheObjectLODsCount; i++)
+        ReleaseModel(i);
 
     // Release all vertex Buffers
     for (int i = 0; i < MAX_VERTEX_BUFFERS; i++)
     {
         // Artscout - 2026: [DX7-PURGE] no D3D7 VB to release (Vb is NULL under GPU).
-        if (pVbList[i].VbD3D11) { pVbList[i].VbD3D11->Release(); pVbList[i].VbD3D11 = NULL; }	// PHASE 4
+#ifdef _WIN32
+        if (pVbList[i].VbD3D11)
+        {
+            pVbList[i].VbD3D11->Release();
+            pVbList[i].VbD3D11 = NULL;
+        } // PHASE 4 (D3D11 mirror; always NULL on Linux)
+#endif
+        // Artscout - 2026 (#104): free the per-model Vulkan VB (VkBuffer+memory) via its manager.
+        if (pVbList[i].VbVulkan && g_pVulkanVbManager)
+        {
+            g_pVulkanVbManager->Destroy((VulkanVb*)pVbList[i].VbVulkan);
+            pVbList[i].VbVulkan = NULL;
+        }
     }
 
     for (int i = 0; i < MAX_DYNAMIC_BUFFERS; i++)
@@ -336,12 +356,11 @@ void CDXVbManager::Release(void)
 }
 
 
-
 // This Function traverses the VAT of the Vertex Buffers List to find a chunk of space
 // for the passed number of vertices... If found, the new VAT item is added to the list
 // and the Index in the Vertex Buffer for the starting point is returned
 // else is returned CHUNK_NOT_FOUND
-DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
+DWORD CDXVbManager::VBAddObject(VBufferListType* Vbl, DWORD nVertices, DWORD ID)
 {
     // If not enough space or wrong Vertex Buffer class skip
     if (Vbl->Free >= nVertices)
@@ -349,7 +368,7 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
 
         ///////////////// if Here, check for a chunk of space in the VB ///////////////////////////
         // if a free buffer, no VAT still assigned, assign it and exit
-        if ( not Vbl->pVAT)
+        if (not Vbl->pVAT)
         {
             // Create and assign the VAT
             Vbl->pVAT = new CVbVAT(NULL, NULL, ID, 0, nVertices, Vbl->Free);
@@ -363,7 +382,7 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
             return Vbl->pVAT->VStart;
         }
 
-        CVbVAT *Vat = Vbl->pVAT;
+        CVbVAT* Vat = Vbl->pVAT;
 
         //////////////////// if Here, Traverse the VAT to look for space //////////////////////////
         // Till End of List
@@ -374,7 +393,8 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
             if (Vbl->BootGap >= nVertices)
             {
                 // Insert new VAT btw Root and the present VAT
-                Vbl->pVAT = new CVbVAT(NULL, Vbl->pVAT, ID, 0x0000, nVertices, Vbl->Free);
+                Vbl->pVAT = new CVbVAT(NULL, Vbl->pVAT, ID, 0x0000, nVertices,
+                                       Vbl->Free);
                 //Update VB Free Space
                 Vbl->Free -= nVertices;
                 // Gap to 1st Item is Zero..
@@ -387,7 +407,8 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
             // if found a gap equal or major than requested Vertices add a new VAT
             if (Vat->Gap >= nVertices)
             {
-                Vat = new CVbVAT(Vat, Vat->Next, ID, Vat->VStart + Vat->VSize, nVertices, Vbl->Free);
+                Vat = new CVbVAT(Vat, Vat->Next, ID, Vat->VStart + Vat->VSize,
+                                 nVertices, Vbl->Free);
                 // Assign the Object Buffer Descriptor VAT
                 pVBuffers[ID].pVAT = Vat;
                 // Update the Vertices Free Count in the Bufer descriptor
@@ -404,7 +425,6 @@ DWORD CDXVbManager::VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID)
 }
 
 
-
 // This function looks for an Avilable VB Buffer for the object ID of nVertices Vertices
 // if ound, updates the pVuBuffers Data for the ID and returns true
 bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
@@ -412,17 +432,19 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
     int i = 0;
 
     // if invalid class, exit here
-    if ( not Class) return false;
+    if (not Class)
+        return false;
 
     // Scan all possible VBs
     while (i < MAX_VERTEX_BUFFERS)
     {
 
-        // if a still inexistant VB ( no class assigned ) create it 
-        if ( not pVbList[i].Class) CreateVB(i, Class);
+        // if a still inexistant VB ( no class assigned ) create it
+        if (not pVbList[i].Class)
+            CreateVB(i, Class);
 
         // if a VB with wrong Class next VB and skip
-        if ( not (pVbList[i].Class bitand Class))
+        if (not(pVbList[i].Class bitand Class))
         {
             i++;
             continue;
@@ -432,7 +454,8 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
 
         // if here, the right Class, check for Space and eventually scan
         // if found assign data to the Objects Buffer pointer whose ID is passed
-        if ((Base = VBAddObject(&pVbList[i], nVertices, ID)) not_eq CHUNK_NOT_FOUND)
+        if ((Base = VBAddObject(&pVbList[i], nVertices, ID)) not_eq
+            CHUNK_NOT_FOUND)
         {
             // Assign the Buffer address
             pVBuffers[ID].Vb = pVbList[i].Vb;
@@ -445,36 +468,25 @@ bool CDXVbManager::VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices)
         i++;
     }
 
-    // if here, all is full 
+    // if here, all is full
     return false;
-
 }
-
-
-
-
-
-
-
-
-
-
 
 
 // COBRA - RED -
 // This function is called whenever there is to prepare a model or drawing
 // if the model is not already present it disposes vertex buffer, Nodes List and mark the model as present
-bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
+bool CDXVbManager::SetupModel(DWORD ID, BYTE* Root, DWORD Class)
 {
     // Local Copy of data start
-    DWORD *rt = (DWORD*)Root;
+    DWORD* rt = (DWORD*)Root;
 
     // FRB - Hack to skip huge bad model (dwNVertices > 2 million verts)
     if ((ID == 0) and (((DxDbHeader*)rt)->dwNVertices) > 100)
         return false;
 
     // If model not already present in list
-    if ( not pVBuffers[ID].Valid)
+    if (not pVBuffers[ID].Valid)
     {
 
 #ifdef CRYPTED_MODELS
@@ -488,16 +500,18 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
         if (Class == 0)
             Class = 7; // Airborne, probably cockpit
 
-        if ( not VBCheckForBuffer(ID, Class, dwNVertices)) goto Failure;
+        if (not VBCheckForBuffer(ID, Class, dwNVertices))
+            goto Failure;
 
         DWORD pVPool = ((DxDbHeader*)rt)->pVPool;
         //********************************************************************
         // Allocate local copy of Nodes, no more managed by the old code
         // pVPool is the offset from start of model of the Vertex Pool, so,
         // also the size of Header+Nodes
-        void *ptr = NULL;
+        void* ptr = NULL;
 
-        if ( not (ptr = malloc(pVPool))) goto Failure;
+        if (not(ptr = malloc(pVPool)))
+            goto Failure;
 
         // Copy the nodes
         memcpy(ptr, Root, pVPool);
@@ -519,7 +533,8 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
         pVBuffers[ID].NNodes = dwNodesNr;
 
         // The Nodes
-        pVBuffers[ID].Nodes = (void*)((BYTE*)rt + sizeof(DxDbHeader) + pVBuffers[ID].NTex * sizeof(DWORD));
+        pVBuffers[ID].Nodes = (void*)((BYTE*)rt + sizeof(DxDbHeader) +
+                                      pVBuffers[ID].NTex * sizeof(DWORD));
 
         // FRB - Buffer overrun ??? DX7 buffer size limit
         if ((pVBuffers[ID].BaseOffset + dwNVertices) > 0xffff)
@@ -539,12 +554,25 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
             // Vertices start at 0 -> baseVertex=0 when drawing (BaseOffset not needed).
             pVBuffers[ID].VbD3D11 = NULL;
             pVBuffers[ID].VbD3D12 = NULL;
+            pVBuffers[ID].VbVulkan = NULL;
             extern bool g_bUseD3D12;
+            extern bool g_bUseVulkan;
             if (g_bUseD3D12)
             {
+#ifdef _WIN32 // D3D12 is Windows-only; Linux uses the Vulkan branch below
                 // #DX12 п.4: per-model DEFAULT-heap VB (uploaded via the texture manager's serialized queue).
                 if (g_pD3D12TextureManager && dwNVertices)
-                    pVBuffers[ID].VbD3D12 = (void*)g_pD3D12TextureManager->CreateVertexBufferGPU(Root + pVPool, dwNVertices * VERTEX_STRIDE);
+                    pVBuffers[ID].VbD3D12 =
+                        (void*)g_pD3D12TextureManager->CreateVertexBufferGPU(
+                            Root + pVPool, dwNVertices * VERTEX_STRIDE);
+#endif // _WIN32
+            }
+            else if (g_bUseVulkan)
+            {
+                // Artscout - 2026 (#104): per-model device-local Vulkan VB (peer of VbD3D12). Handle is a VulkanVb*.
+                if (g_pVulkanVbManager && dwNVertices)
+                    pVBuffers[ID].VbVulkan = (void*)g_pVulkanVbManager->Create(
+                        Root + pVPool, dwNVertices * VERTEX_STRIDE);
             }
             // Artscout - 2026 (D3D11 purge): the D3D11 IMMUTABLE-VB creation branch was removed (D3D12 owns VBs).
         }
@@ -558,29 +586,27 @@ bool CDXVbManager::SetupModel(DWORD ID, BYTE *Root, DWORD Class)
         COUNT_PROFILE("VB Added : ");
         VBModels++;
 #endif
-
     }
 
     // Object Allocated
     return true;
 
-Failure:
-    ;
+Failure:;
 
     // Failure to allocate Object
     return false;
 }
 
 
-
 //  This function just releases a Model and free the memory and VBuffer
 void CDXVbManager::ReleaseModel(DWORD ID)
 {
-    if (ID  >= (WORD) TheObjectLODsCount)
+    if (ID >= (WORD)TheObjectLODsCount)
         return;
 
     // Exit if not a valid model
-    if ( not pVBuffers[ID].Valid) return;
+    if (not pVBuffers[ID].Valid)
+        return;
 
     // Enter the Critical section
     LOCK_VB_MANAGER; // FRB
@@ -589,14 +615,29 @@ void CDXVbManager::ReleaseModel(DWORD ID)
     pVBuffers[ID].Valid = false;
 
     // Free Model allocated memory
-    if (pVBuffers[ID].Root) free(pVBuffers[ID].Root);
+    if (pVBuffers[ID].Root)
+        free(pVBuffers[ID].Root);
 
     // Then destroy all
-    if (pVBuffers[ID].pVAT) DestroyVAT(pVBuffers[ID].pVbList, pVBuffers[ID].pVAT);
+    if (pVBuffers[ID].pVAT)
+        DestroyVAT(pVBuffers[ID].pVbList, pVBuffers[ID].pVAT);
 
-    if (pVBuffers[ID].pVbList) pVBuffers[ID].pVbList->Free += pVBuffers[ID].NVertices;
+    if (pVBuffers[ID].pVbList)
+        pVBuffers[ID].pVbList->Free += pVBuffers[ID].NVertices;
 
-    if (pVBuffers[ID].VbD3D11) { pVBuffers[ID].VbD3D11->Release(); pVBuffers[ID].VbD3D11 = NULL; }	// PHASE 4
+#ifdef _WIN32
+    if (pVBuffers[ID].VbD3D11)
+    {
+        pVBuffers[ID].VbD3D11->Release();
+        pVBuffers[ID].VbD3D11 = NULL;
+    } // PHASE 4 (D3D11 mirror; always NULL on Linux)
+#endif
+    // Artscout - 2026 (#104): free the per-model Vulkan VB (VkBuffer+memory) via its manager.
+    if (pVBuffers[ID].VbVulkan && g_pVulkanVbManager)
+    {
+        g_pVulkanVbManager->Destroy((VulkanVb*)pVBuffers[ID].VbVulkan);
+        pVBuffers[ID].VbVulkan = NULL;
+    }
 
     pVBuffers[ID].Vb = NULL;
     pVBuffers[ID].Nodes = NULL;
@@ -620,21 +661,22 @@ void CDXVbManager::ReleaseModel(DWORD ID)
 // Given a model ID and a Texture Index, returns the Texture ID
 DWORD CDXVbManager::GetTextureID(DWORD ID, DWORD TexIdx)
 {
-    if (ID >= (WORD) TheObjectLODsCount)
+    if (ID >= (WORD)TheObjectLODsCount)
         return 0;
 
     // Consistency  checking
-    if ( not pVBuffers[ID].Valid) return 0;
+    if (not pVBuffers[ID].Valid)
+        return 0;
 
-    if (TexIdx >= pVBuffers[ID].NTex) return 0;
+    if (TexIdx >= pVBuffers[ID].NTex)
+        return 0;
 
-    return(*(pVBuffers[ID].Texs + TexIdx));
-
+    return (*(pVBuffers[ID].Texs + TexIdx));
 }
 
 
 // Retuns the pointer to a
-void CDXVbManager::GetModelData(VBItemType &vi, DWORD ID)
+void CDXVbManager::GetModelData(VBItemType& vi, DWORD ID)
 {
     vi = pVBuffers[ID];
 }
@@ -643,28 +685,30 @@ void CDXVbManager::GetModelData(VBItemType &vi, DWORD ID)
 // Checks if a Model ID is valid
 bool CDXVbManager::CheckDataID(DWORD ID)
 {
-    if (ID >= (WORD) TheObjectLODsCount)
+    if (ID >= (WORD)TheObjectLODsCount)
         return false;
 
-    return(pVBuffers[ID].Valid);
-
+    return (pVBuffers[ID].Valid);
 }
 
 
-
 // The Draw request enqueuer
-void CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstance *objInst, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel)
+void CDXVbManager::AddDrawItem(VBufferListType* pVBDesc, DWORD ID,
+                               ObjectInstance* objInst,
+                               D3DXMATRIX* Transformation, bool Lited,
+                               DWORD LightID, float FogLevel)
 {
 
 #ifdef DATE_PROTECTION
     extern IntellivibeData g_intellivibeData;
 
-    if (DateOff and g_intellivibeData.In3D and PRANDFloat() < 0.3f) return;
+    if (DateOff and g_intellivibeData.In3D and PRANDFloat() < 0.3f)
+        return;
 
 #endif
 
     // if Draw list for this VB is Empty
-    if ( not pVBDesc->pDrawRoot)
+    if (not pVBDesc->pDrawRoot)
     {
         // Assigns the Draw Item
         pVBDesc->pDrawPtr = pVBDesc->pDrawRoot = pDrawPoolPtr;
@@ -697,18 +741,20 @@ void CDXVbManager::AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstanc
 
 
     // check if no more Draw Items in the Draw Items Pool add a new one
-    if ( not pDrawPoolPtr->NextInPool) pDrawPoolPtr->NextInPool = new CDrawItem();
+    if (not pDrawPoolPtr->NextInPool)
+        pDrawPoolPtr->NextInPool = new CDrawItem();
 
     // and select this as the next Draw Item to Use
     pDrawPoolPtr = pDrawPoolPtr->NextInPool;
 }
 
 
-
 // This function appends a Draw request for an Object to the VB the object belongs to
-void CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel)
+void CDXVbManager::AddDrawRequest(ObjectInstance* objInst, DWORD ID,
+                                  D3DXMATRIX* Transformation, bool Lited,
+                                  DWORD LightID, float FogLevel)
 {
-    if (ID >= (WORD) TheObjectLODsCount)
+    if (ID >= (WORD)TheObjectLODsCount)
         return;
 
     // Enter the Critical section
@@ -717,10 +763,10 @@ void CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX 
     // if Such Object allocated in the Vertex Buffers
     if (pVBuffers[ID].Valid)
     {
-        VBufferListType *pVBDesc;
+        VBufferListType* pVBDesc;
 
         // if not a pit object
-        if ( not TheDXEngine.GetPitMode())
+        if (not TheDXEngine.GetPitMode())
             // Get the Vertex Buffer Descriptor
             pVBDesc = pVBuffers[ID].pVbList;
         else
@@ -728,7 +774,8 @@ void CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX 
             pVBDesc = &PitList;
 
         // Add the draw Item to the Vertex Buffer List
-        AddDrawItem(pVBDesc, ID, objInst, Transformation, Lited, LightID, FogLevel);
+        AddDrawItem(pVBDesc, ID, objInst, Transformation, Lited, LightID,
+                    FogLevel);
         // one draw more
         TotalDraws++;
     }
@@ -740,7 +787,6 @@ void CDXVbManager::AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX 
     REPORT_VALUE("VB Models :", VBModels);
 #endif
 }
-
 
 
 // This function Resets the draw List making them ready to be flushed
@@ -755,7 +801,6 @@ void CDXVbManager::ResetDrawList(void)
     ZeroMemory(DrawHits, sizeof(DrawHits));
 #endif
 }
-
 
 
 // This function Clear all Draw list to hold nothing
@@ -788,9 +833,10 @@ void CDXVbManager::ClearDrawList(void)
 }
 
 
-
 // This function fill variables of the next Item to draw, returns FALSE if no more Itames to draw
-bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *Transformation, bool *Lited, DWORD *LightID, float *FogLevel)
+bool CDXVbManager::GetDrawItem(ObjectInstance** objInst, DWORD* ID,
+                               D3DXMATRIX* Transformation, bool* Lited,
+                               DWORD* LightID, float* FogLevel)
 {
     bool Traversed = false;
 
@@ -827,7 +873,8 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
     TheDXEngine.SetPitMode(false);
 
     // if No More draws then exit here
-    if ( not TotalDraws) return false;
+    if (not TotalDraws)
+        return false;
 
     // if the Buffer has no VB assigned, we r at end of Used Buffer List... restart
     // #16/#87: under the GPU path (D3D11 OR D3D12) .Vb is always NULL (geometry lives in the per-model
@@ -836,14 +883,15 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
     // 1,2,...) were silently lost. #87: the guard used g_bUseD3D11, so under D3D12 (g_bUseD3D11==false) it
     // fell back to the .Vb==NULL test -> ALL world objects vanished (cockpit uses the PitList, so it survived).
     // Now gated by g_bUseGpu = D3D11||D3D12. The D3D7 path is untouched (as before -- by .Vb).
-    if ( g_bUseGpu ? ( not pVbList[BufferToDraw].Class) : ( not pVbList[BufferToDraw].Vb) )
+    if (g_bUseGpu ? (not pVbList[BufferToDraw].Class) :
+                    (not pVbList[BufferToDraw].Vb))
     {
         BufferToDraw = 0;
         Traversed = true;
     }
 
     // if no more Items to draw in the selected VBuffer, seeks in other Buffers
-    while ( not pVbList[BufferToDraw].DrawsCount)
+    while (not pVbList[BufferToDraw].DrawsCount)
     {
         // No more to Draw, then clear the DRAW ROOT
         pVbList[BufferToDraw].pDrawRoot = NULL;
@@ -852,11 +900,13 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
 
         // if the new Buffer has no VB assigned, we r at end of Used Buffer List...
         // #16: D3D11 -- the allocated-buffer marker is .Class, not .Vb (NULL). See above.
-        if ( g_bUseGpu ? ( not pVbList[BufferToDraw].Class) : ( not pVbList[BufferToDraw].Vb) )
+        if (g_bUseGpu ? (not pVbList[BufferToDraw].Class) :
+                        (not pVbList[BufferToDraw].Vb))
         {
             // CONSISTENCY CHECK - AVOID EVERLASTING LOOPS
             // if already traversed all buffer end here
-            if (Traversed) return false;
+            if (Traversed)
+                return false;
 
             // Restart from buffer 0
             BufferToDraw = 0;
@@ -881,7 +931,8 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
         pVbList[BufferToDraw].pDrawRoot = RootItemToDraw->Next;
 
         // One Draw Less for this Buffer, if no more draws, clear the Draw pointer
-        if ( not (--pVbList[BufferToDraw].DrawsCount)) pVbList[BufferToDraw].pDrawRoot = NULL;
+        if (not(--pVbList[BufferToDraw].DrawsCount))
+            pVbList[BufferToDraw].pDrawRoot = NULL;
     }
     else
     {
@@ -897,14 +948,9 @@ bool CDXVbManager::GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *
 }
 
 
-
-
-
 // The simple buffer opening function
 void CDXVbManager::OpenSimpleBuffer(void)
 {
     // Artscout - 2026: [DX7-PURGE] GPU-only: the DDraw7 "simple buffer" (Vb->Lock) is gone.
     return;
 }
-
-

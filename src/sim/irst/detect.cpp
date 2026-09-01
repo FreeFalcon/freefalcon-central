@@ -4,15 +4,16 @@
 #include "simbase.h"
 #include "otwdrive.h"
 #include "fakerand.h"
-#include "Missile.h"
-#include "Graphics/Include/tod.h"
+#include "missile.h"
+#include "graphics/include/tod.h"
 #include "irst.h"
 #include "entity.h" // MN
 
 extern int g_nMissileFix;
 
 // Angle off sun at which sun effect goes to zero
-static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(20.0f * DTR);  //me123 changed from 10 since the sun is so small in FF
+static const float COS_SUN_EFFECT_HALF_ANGLE = (float)cos(
+    20.0f * DTR);  //me123 changed from 10 since the sun is so small in FF
 //extern bool g_bHardCoreReal; //me123 MI replaced with g_bRealisticAvionics
 extern bool g_bRealisticAvionics;
 
@@ -31,7 +32,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
-        WeaponClassDataType *wc = NULL;
+        WeaponClassDataType* wc = NULL;
 
         ShiAssert(classPtr);
 
@@ -44,15 +45,17 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
             return true;
     }
 
-    if (platform->IsMissile() and ((MissileClass*)platform)->parent and ((MissileClass*)platform)->parent->OnGround())
+    if (platform->IsMissile() and ((MissileClass*)platform)->parent and
+        ((MissileClass*)platform)->parent->OnGround())
     {
         // TODO: Fix this case to deal with localData->az being heading instead of relative az
         return TRUE;
     }
     //else if ( not g_bHardCoreReal) MI
-    else if ( not g_bRealisticAvionics)
+    else if (not g_bRealisticAvionics)
     {
-        if (obj == lockedTarget and obj->localData->ata < typeData->GimbalLimitHalfAngle)
+        if (obj == lockedTarget and
+            obj->localData->ata < typeData->GimbalLimitHalfAngle)
         {
             return TRUE;
         }
@@ -61,15 +64,19 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
             return FALSE;
         }
     }
-    else if (platform->IsMissile())//me123 status bad. make the heatseekers limited to 28 degree radar slew and 6 degree cone in bore.
+    else if (
+        platform
+            ->IsMissile()) //me123 status bad. make the heatseekers limited to 28 degree radar slew and 6 degree cone in bore.
     {
         // Marco Edit - if missile is both slaved and caged (ie. radar points it to target)
-        if (((MissileClass*)platform)->isSlave == TRUE and ((MissileClass*)platform)->isCaged == TRUE)
+        if (((MissileClass*)platform)->isSlave == TRUE and
+            ((MissileClass*)platform)->isCaged == TRUE)
         {
-            tracking = FALSE ;
+            tracking = FALSE;
 
             //me123 slave mode
-            if (obj == lockedTarget and obj->localData->ata < (typeData->GimbalLimitHalfAngle / 1.5))
+            if (obj == lockedTarget and
+                obj->localData->ata < (typeData->GimbalLimitHalfAngle / 1.5))
             {
                 return TRUE;
             }
@@ -84,7 +91,7 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
             }
         }
         // Marco Edit - here it is either uncaged or boresighted
-        else//me123 bore/uncaged
+        else //me123 bore/uncaged
         {
             //RV - I-Hawk - use tracking factor from missile FMs. Default value is 1.0 so
             //nothing is changed from before. But if the missile requires high Off boresight
@@ -96,23 +103,26 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
             if (tracking)
             {
                 //me123  tracking
-                if (obj->localData->ata < typeData->GimbalLimitHalfAngle / trackFactor)
+                if (obj->localData->ata <
+                    typeData->GimbalLimitHalfAngle / trackFactor)
                 {
                     return TRUE;
                 }
                 else
                 {
-                    tracking = FALSE ;
+                    tracking = FALSE;
                     return FALSE;
                 }
             }
 
             else
             {
-                if (fabs(obj->localData->el - seekerElCenter) < (typeData->FOVHalfAngle / noneTrackingFactor) and 
-                    fabs(obj->localData->az - seekerAzCenter) < (typeData->FOVHalfAngle / noneTrackingFactor))
+                if (fabs(obj->localData->el - seekerElCenter) <
+                        (typeData->FOVHalfAngle / noneTrackingFactor) and
+                    fabs(obj->localData->az - seekerAzCenter) <
+                        (typeData->FOVHalfAngle / noneTrackingFactor))
                 {
-                    tracking = TRUE ;
+                    tracking = TRUE;
                     return TRUE;
                 }
                 else
@@ -122,7 +132,8 @@ int IrstClass::CanSeeObject(SimObjectType* obj)
             }
         }
     }
-    else return FALSE;
+    else
+        return FALSE;
 }
 
 float IrstClass::GetSignature(SimObjectType* obj)
@@ -135,35 +146,47 @@ float IrstClass::GetSignature(SimObjectType* obj)
     signal = (obj->BaseData()->GetIRFactor());
 
     // Get our angle off his nose
-    if ( not obj->BaseData()->OnGround())
+    if (not obj->BaseData()->OnGround())
 
         if (0)
         {
-            if (obj->localData->ataFrom < 45 * DTR) //me123 status test. scale ir signature ahead of 3/9 line
+            if (obj->localData->ataFrom <
+                45 *
+                    DTR) //me123 status test. scale ir signature ahead of 3/9 line
             {
-                ataFactor = (float)sin((obj->localData->ataFrom) * RADIANS_TO_DEG);
+                ataFactor =
+                    (float)sin((obj->localData->ataFrom) * RADIANS_TO_DEG);
                 ataFactor *= ataFactor;
                 // Scale for aspect
-                signal *= 0.03f + 0.08F * ataFactor; //me123 status test. changed from min (1.0f, 0.6f - 0.55F*ataFactor)
+                signal *=
+                    0.03f +
+                    0.08F *
+                        ataFactor; //me123 status test. changed from min (1.0f, 0.6f - 0.55F*ataFactor)
             }
             else if (obj->localData->ataFrom < 90 * DTR) //me123 status test.
             {
-                ataFactor = (float)sin((obj->localData->ataFrom) * RADIANS_TO_DEG);
+                ataFactor =
+                    (float)sin((obj->localData->ataFrom) * RADIANS_TO_DEG);
                 ataFactor *= ataFactor;
                 // Scale for aspect
                 signal *= 0.075f + 0.005F * ataFactor;
             }
 
-            else if (obj->localData->ataFrom < 135 * DTR) //me123 status test. scale  ir signature between 3/9 and 135 aspect line
+            else if (
+                obj->localData->ataFrom <
+                135 *
+                    DTR) //me123 status test. scale  ir signature between 3/9 and 135 aspect line
             {
-                ataFactor = (float)cos((obj->localData->ataFrom) * RADIANS_TO_DEG);
+                ataFactor =
+                    (float)cos((obj->localData->ataFrom) * RADIANS_TO_DEG);
                 ataFactor *= ataFactor;
                 // Scale for aspect
                 signal *= 0.08f + 0.008F * ataFactor;
             }
-            else   //me123 status test. scale  ir signature behind of 135 aspect line
+            else //me123 status test. scale  ir signature behind of 135 aspect line
             {
-                ataFactor = (float)cos((obj->localData->ataFrom) * RADIANS_TO_DEG);
+                ataFactor =
+                    (float)cos((obj->localData->ataFrom) * RADIANS_TO_DEG);
                 ataFactor *= ataFactor;
                 // Scale for aspect
                 signal *= 0.084F + 0.04F * ataFactor;
@@ -173,10 +196,17 @@ float IrstClass::GetSignature(SimObjectType* obj)
         {
             /* 0-180 DEGREES IS COS -1 TO 1. SINCE IT IS SQUARED, IT BECOMES 0 TO 1. 0 BEING FRONT OR BACK
             I CHANGED IT TO 0-90 SO FRONT IS 0 AND BACK IS 1 LIKE IT SHOULD BE */
-            ataFactor = (float)cos(obj->localData->ataFrom/* S.G. TO BRING IT FROM 0-180 TO 0-90 */ / 2.0F);
+            ataFactor = (float)cos(
+                obj->localData
+                    ->ataFrom /* S.G. TO BRING IT FROM 0-180 TO 0-90 */
+                / 2.0F);
             ataFactor *= ataFactor;
             // Scale for aspect
-            signal *= min(1.0f, 1.2f - 1.10F * ataFactor);//me123 if they screwed the squared thing, then they most likely didn't use it here either  so changed from 0.6 - 0.55
+            signal *= min(
+                1.0f,
+                1.2f -
+                    1.10F *
+                        ataFactor); //me123 if they screwed the squared thing, then they most likely didn't use it here either  so changed from 0.6 - 0.55
         }
 
     return signal;
@@ -191,7 +221,7 @@ float IrstClass::GetSunFactor(SimObjectType* obj)
     float strength;
 
     // Skip out if no sun
-    if ( not TheTimeOfDay.ThereIsASun())
+    if (not TheTimeOfDay.ThereIsASun())
     {
         return 0.0f;
     }
@@ -216,7 +246,8 @@ float IrstClass::GetSunFactor(SimObjectType* obj)
         return 0.0f;
 
     // Normalize the result to 0 to 1 and return it
-    return (strength - COS_SUN_EFFECT_HALF_ANGLE) / (1.0f - COS_SUN_EFFECT_HALF_ANGLE);
+    return (strength - COS_SUN_EFFECT_HALF_ANGLE) /
+           (1.0f - COS_SUN_EFFECT_HALF_ANGLE);
 }
 
 
@@ -230,7 +261,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
     {
         Falcon4EntityClassType* classPtr = NULL;
         classPtr = (Falcon4EntityClassType*)platform->EntityType();
-        WeaponClassDataType *wc = NULL;
+        WeaponClassDataType* wc = NULL;
 
         ShiAssert(classPtr);
 
@@ -248,12 +279,13 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
 
     // TODO:  Eliminate this once each vehicle has its own IR signal strength in the class table
     // Cut the signature for being on the ground
-    if (obj->BaseData()->IsSim() and ((SimBaseClass*)obj->BaseData())->OnGround())
+    if (obj->BaseData()->IsSim() and
+        ((SimBaseClass*)obj->BaseData())->OnGround())
         signature *= typeData->GroundFactor;
 
     // Scale for range squared
     signature *= typeData->NominalRange * typeData->NominalRange;
-    signature /= obj->localData->range  * obj->localData->range;
+    signature /= obj->localData->range * obj->localData->range;
 
     // Bonus for being locked target
 
@@ -265,7 +297,7 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
     }
 
     //if ( not g_bHardCoreReal and obj == lockedTarget) MI
-    if ( not g_bRealisticAvionics and obj == lockedTarget)
+    if (not g_bRealisticAvionics and obj == lockedTarget)
     {
         signature *= 1.5F;
     }
@@ -300,11 +332,11 @@ int IrstClass::CanDetectObject(SimObjectType* obj)
             sunRay.x = sunRay.x * 1e6f + platform->XPos();
             sunRay.y = sunRay.y * 1e6f + platform->YPos();
             sunRay.z = sunRay.z * 1e6f + platform->ZPos();
-            ((MissileClass*)platform)->SetTargetPosition(sunRay.x, sunRay.y, sunRay.z);
+            ((MissileClass*)platform)
+                ->SetTargetPosition(sunRay.x, sunRay.y, sunRay.z);
         }
 
         return FALSE;
-
     }
     else if ((signature > 0.75F) and (signature > PRANDFloatPos()))
     {

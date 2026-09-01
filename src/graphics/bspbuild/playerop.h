@@ -6,7 +6,7 @@
 //#include "falclib.h"
 //#include "ui/include/logbook.h"
 #include <tchar.h>
-#include "PlayerOpDef.h"
+#include "playeropdef.h"
 //#include "rules.h"
 
 
@@ -37,8 +37,8 @@ public:
     FlightModelType SimFlightModel; // FlightModelType
     WeaponEffectType SimWeaponEffect; // WeaponEffectType
     AvionicsType SimAvionicsType; // Avionics Difficulty
-    AutopilotModeType   SimAutopilotType; // AutopilotModeType
-    RefuelModeType SimAirRefuelingMode;// RefuelModeType
+    AutopilotModeType SimAutopilotType; // AutopilotModeType
+    RefuelModeType SimAirRefuelingMode; // RefuelModeType
     PadlockModeType SimPadlockMode; // PadlockModeType
     VisualCueType SimVisualCueMode; // VisualCueType
 
@@ -54,12 +54,12 @@ public:
     int CampEnemyStockpile; // 0-100 % of max
     int CampFriendlyStockpile; // 0-100 % of max
 
-    int   GroupVol[NUM_SOUND_GROUPS]; // Values are 0 to -3600 in dBs
+    int GroupVol[NUM_SOUND_GROUPS]; // Values are 0 to -3600 in dBs
 
     float Realism; // stores last realism value saved less the value
     // from UnlimitedAmmo (this is used to modify scores in
     // Instant Action.)
-    _TCHAR  keyfile[PL_FNAME_LEN]; // name of keystrokes file to use
+    _TCHAR keyfile[PL_FNAME_LEN]; // name of keystrokes file to use
     GUID joystick; // unique identifier for which joystick to use
 
     int SimTaxiFirst; // if true, start player taxiing instead of on the runway
@@ -68,12 +68,14 @@ public:
     // Important stuff
     PlayerOptionsClass(void) {};
     void Initialize(void);
-    int LoadOptions(char* filename/* = LogBook.OptionsFile()*/);
-    int SaveOptions(char* filename/* = LogBook.Callsign()*/);
+    int LoadOptions(char *filename /* = LogBook.OptionsFile()*/);
+    int SaveOptions(char *filename /* = LogBook.Callsign()*/);
     void ApplyOptions(void);
 
     int InCompliance(void *rules); // returns TRUE if in FULL compliance w/rules
-    void ComplyWRules(void *rules); // forces all settings not in compliance to minimum settings
+    void ComplyWRules(
+        void *
+            rules); // forces all settings not in compliance to minimum settings
 
     // Nifty Access functions
     int GouraudOn(void)
@@ -324,9 +326,9 @@ public:
     {
         SimTaxiFirst = flag;
     }
-    int  GetTaxiFlag()
+    int GetTaxiFlag()
     {
-        return(SimTaxiFirst);
+        return (SimTaxiFirst);
     }
 
     void SetKeyFile(_TCHAR *fname)

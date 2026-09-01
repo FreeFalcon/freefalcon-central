@@ -8,7 +8,7 @@
 #include <windows.h>
 #include <targa.h>
 #include "falclib.h"
-#include "Graphics/Include/imagebuf.h"
+#include "graphics/include/imagebuf.h"
 #include "dispcfg.h"
 #include "chandler.h"
 #include "ui95_ext.h"
@@ -16,12 +16,12 @@
 #include "feature.h"
 #include "vehicle.h"
 #include "evtparse.h"
-#include "Mesg.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/LandingMessage.h"
+#include "mesg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/landingmessage.h"
 #include "find.h"
 #include "flight.h"
 #include "falcuser.h"
@@ -33,7 +33,7 @@
 #include "playerop.h"
 #include "userids.h"
 #include "logbook.h"
-#include "sim/include/controlsxml.h"   // Artscout - 2026: pilot list from profiles.xml
+#include "sim/include/controlsxml.h" // Artscout - 2026: pilot list from profiles.xml
 #include "userids.h"
 #include "cstringrc.h"
 #include "textids.h"
@@ -51,11 +51,17 @@ void CloseLogWindowCB(long ID, short hittype, C_Base *control);
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 void Uni_Float(_TCHAR *buffer);
 void LBSetupControls(IMAGE_RSC *Picture = NULL, IMAGE_RSC *Patch = NULL);
-int SetImage(long ID, _TCHAR *filename , long ImageID);
+int SetImage(long ID, _TCHAR *filename, long ImageID);
 int SetResourceImage(long ID, long ImageID);
 void MakeVirtualListFromRsc(long ID, long startid);
-void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
-void LoadVirtualFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*), _TCHAR virtuallist[200][64], void (*VirtualCB)(long, short, C_Base*));
+void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *));
+void LoadVirtualFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+                     void (*YesCB)(long, short, C_Base *),
+                     void (*NoCB)(long, short, C_Base *),
+                     _TCHAR virtuallist[200][64],
+                     void (*VirtualCB)(long, short, C_Base *));
 void SaveLogBookCB(long ID, short hittype, C_Base *control);
 int CheckCallsign(_TCHAR *filename);
 void AwardDevices(C_Window *win, long ID, uchar Medal, uchar Number);
@@ -64,8 +70,11 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
                   C_ListBox *lbox, BOOL cutext, BOOL exclude_te);
 int SetPilot(_TCHAR *callsign, C_ListBox *lbox);
 int SaveControlValues(void);
-void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void AreYouSure(long TitleID, long MessageID,
+                void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
 
 
 //for testing
@@ -74,7 +83,8 @@ void CourtMartialWindow(void);
 void PromotionWindow(void);
 void LoadCommonWindows(void);
 
-_TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width, BOOL *status);
+_TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width,
+                    BOOL *status);
 
 extern _TCHAR VirtualFileList[200][64];
 extern int LBLoaded;
@@ -92,23 +102,14 @@ enum
 
 extern C_String *gStringMgr;
 
-long gFullRanksTxt[NUM_RANKS] = { TXT_SEC_LT,
-                                    TXT_LEIUTENANT,
-                                    TXT_CAPTAIN,
-                                    TXT_MAJOR,
-                                    TXT_LT_COL,
-                                    TXT_COLONEL,
-                                    TXT_BRIG_GEN,
-                                };
+long gFullRanksTxt[NUM_RANKS] = {
+    TXT_SEC_LT, TXT_LEIUTENANT, TXT_CAPTAIN,  TXT_MAJOR,
+    TXT_LT_COL, TXT_COLONEL,    TXT_BRIG_GEN,
+};
 
-long gRanksTxt[NUM_RANKS] =
-{
-    TXT_ABBRV_RANK_SEC_LT,
-    TXT_ABBRV_RANK_LIEUTENANT,
-    TXT_ABBRV_RANK_CAPTAIN,
-    TXT_ABBRV_RANK_MAJOR,
-    TXT_ABBRV_RANK_LT_COL,
-    TXT_ABBRV_RANK_COLONEL,
+long gRanksTxt[NUM_RANKS] = {
+    TXT_ABBRV_RANK_SEC_LT,   TXT_ABBRV_RANK_LIEUTENANT, TXT_ABBRV_RANK_CAPTAIN,
+    TXT_ABBRV_RANK_MAJOR,    TXT_ABBRV_RANK_LT_COL,     TXT_ABBRV_RANK_COLONEL,
     TXT_ABBRV_RANK_BRIG_GEN,
 };
 int LogState = 0;
@@ -121,14 +122,12 @@ int PWLoaded = 0;
 RECT PicArea;
 
 
-
-void F4DialogBox(_TCHAR *string, void (*YesCB)(long, short, C_Base*),
-                 void (*NoCB)(long, short, C_Base*))
+void F4DialogBox(_TCHAR *string, void (*YesCB)(long, short, C_Base *),
+                 void (*NoCB)(long, short, C_Base *))
 {
     C_Window *win;
     C_Button *btn;
-    C_Text  *text;
-
+    C_Text *text;
 
 
     win = gMainHandler->FindWindow(DIALOG_WIN);
@@ -183,54 +182,54 @@ void F4DialogBox(_TCHAR *string, void (*YesCB)(long, short, C_Base*),
 
 #endif
 
-    btn = (C_Button *)win->FindControl(OK);
+        btn = (C_Button *)win->FindControl(OK);
 
-    if (btn)
-    {
-        if (YesCB)
-            btn->SetCallback(YesCB);
-        else
-            btn->SetCallback(CloseWindowCB);
-
-        if (NoCB)
-            btn->SetX(btn->GetUserNumber(0));
-        else
-            btn->SetX(btn->GetUserNumber(1));
-    }
-
-    btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
-
-    if (btn)
-    {
-        if (NoCB)
-            btn->SetCallback(NoCB);
-        else
-            btn->SetCallback(CloseWindowCB);
-    }
-
-    btn = (C_Button *)win->FindControl(CANCEL);
-
-    if (btn)
-    {
-        if (NoCB)
+        if (btn)
         {
-            btn->SetFlagBitOff(C_BIT_INVISIBLE);
-            btn->SetCallback(NoCB);
+            if (YesCB)
+                btn->SetCallback(YesCB);
+            else
+                btn->SetCallback(CloseWindowCB);
+
+            if (NoCB)
+                btn->SetX(btn->GetUserNumber(0));
+            else
+                btn->SetX(btn->GetUserNumber(1));
         }
-        else
+
+        btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
+
+        if (btn)
         {
-            btn->SetFlagBitOn(C_BIT_INVISIBLE);
-            btn->SetCallback(CloseWindowCB);
+            if (NoCB)
+                btn->SetCallback(NoCB);
+            else
+                btn->SetCallback(CloseWindowCB);
         }
+
+        btn = (C_Button *)win->FindControl(CANCEL);
+
+        if (btn)
+        {
+            if (NoCB)
+            {
+                btn->SetFlagBitOff(C_BIT_INVISIBLE);
+                btn->SetCallback(NoCB);
+            }
+            else
+            {
+                btn->SetFlagBitOn(C_BIT_INVISIBLE);
+                btn->SetCallback(CloseWindowCB);
+            }
+        }
+
+        gMainHandler->ShowWindow(win);
+        gMainHandler->WindowToFront(win);
     }
-
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
-}
 }
 
-void F4DialogBox(long ID, void (*YesCB)(long, short, C_Base*),
-                 void (*NoCB)(long, short, C_Base*))
+void F4DialogBox(long ID, void (*YesCB)(long, short, C_Base *),
+                 void (*NoCB)(long, short, C_Base *))
 {
     F4DialogBox(gStringMgr->GetText(ID), YesCB, NoCB);
 }
@@ -244,15 +243,16 @@ void ChoosePilotCB(long, short hittype, C_Base *control)
     _tcscpy(Pilot, ((C_ListBox *)control)->GetText());
 
     //return if current logbook is selected
-    if ( not _tcscmp(Pilot, UI_logbk.Callsign()))
+    if (not _tcscmp(Pilot, UI_logbk.Callsign()))
         return;
 
     UI_logbk.LoadData(Pilot);
     LBSetupControls();
-
 }
 
-void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*))
+void PasswordWindow(long TitleID, long MessageID,
+                    void (*YesCB)(long, short, C_Base *),
+                    void (*NoCB)(long, short, C_Base *))
 {
     C_Window *win;
     C_Button *btn;
@@ -260,7 +260,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
     C_ListBox *lbox;
     C_EditBox *ebox;
 
-    if ( not YesCB or not NoCB)
+    if (not YesCB or not NoCB)
         return;
 
     if (LogState bitand LB_CHECKED)
@@ -297,7 +297,7 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
             }
             else
             {
-                _stprintf(buf, _T("%s\\config\\*.lbk"), FalconDataDirectory);
+                _stprintf(buf, _T("%s/config/*.lbk"), FalconDataDirectory);
                 GetPilotList(win, buf, NULL, lbox, TRUE, TRUE);
 
                 SetPilot(UI_logbk.Callsign(), lbox);
@@ -347,70 +347,70 @@ void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_B
     }
 
 #endif
-    text = (C_Text*)win->FindControl(PW_TITLE_BAR);
+        text = (C_Text *)win->FindControl(PW_TITLE_BAR);
 
-    if (text)
-    {
-        text->SetText(TitleID);
-        text->Refresh();
-    }
-
-    btn = (C_Button *)win->FindControl(OK);
-
-    if (btn)
-    {
-        btn->SetCallback(YesCB);
-    }
-
-    ebox = (C_EditBox*)win->FindControl(PASSWORD);
-
-    if (ebox)
-    {
-        win->SetControl(PASSWORD);
-    }
-
-    btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
-
-    if (btn)
-    {
-        btn->SetCallback(NoCB);
-    }
-
-    btn = (C_Button *)win->FindControl(LOG_NEW);
-
-    if (btn)
-    {
-        btn->Refresh();
-        btn->SetCallback(NoCB);
-
-        if (TitleID == TXT_VERIFY_PASSWORD)
+        if (text)
         {
-            btn->SetLabel(0, TXT_CANCEL);
-            btn->SetLabel(1, TXT_CANCEL);
-        }
-        else
-        {
-            btn->SetLabel(0, TXT_NEW);
-            btn->SetLabel(1, TXT_NEW);
+            text->SetText(TitleID);
+            text->Refresh();
         }
 
-        btn->Refresh();
-    }
+        btn = (C_Button *)win->FindControl(OK);
 
-    gMainHandler->ShowWindow(win);
-    gMainHandler->WindowToFront(win);
-}
+        if (btn)
+        {
+            btn->SetCallback(YesCB);
+        }
+
+        ebox = (C_EditBox *)win->FindControl(PASSWORD);
+
+        if (ebox)
+        {
+            win->SetControl(PASSWORD);
+        }
+
+        btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
+
+        if (btn)
+        {
+            btn->SetCallback(NoCB);
+        }
+
+        btn = (C_Button *)win->FindControl(LOG_NEW);
+
+        if (btn)
+        {
+            btn->Refresh();
+            btn->SetCallback(NoCB);
+
+            if (TitleID == TXT_VERIFY_PASSWORD)
+            {
+                btn->SetLabel(0, TXT_CANCEL);
+                btn->SetLabel(1, TXT_CANCEL);
+            }
+            else
+            {
+                btn->SetLabel(0, TXT_NEW);
+                btn->SetLabel(1, TXT_NEW);
+            }
+
+            btn->Refresh();
+        }
+
+        gMainHandler->ShowWindow(win);
+        gMainHandler->WindowToFront(win);
+    }
 }
 
 void CheckPasswordCB(long, short hittype, C_Base *control)
 {
-    C_EditBox * ebox;
+    C_EditBox *ebox;
     _TCHAR pwd[MAX_PATH];
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(PASSWORD);
+    ebox = (C_EditBox *)control->Parent_->FindControl(PASSWORD);
 
     if (ebox)
     {
@@ -441,7 +441,8 @@ void RealLoadLogbook() // without daves extra garbage
         gMainParser->LoadImageList("lb_art.lst");
 
     gMainParser->LoadSoundList("lb_snd.lst");
-    gMainParser->LoadWindowList("lb_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "lb_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -454,8 +455,9 @@ void RealLoadLogbook() // without daves extra garbage
     LBLoaded++;
 }
 
-void LoadLogBookWindows(LB_PILOT *Pilot = &LogBook.Pilot, int flag = LB_EDITABLE,
-                        IMAGE_RSC *Picture = NULL, IMAGE_RSC *Patch = NULL)
+void LoadLogBookWindows(LB_PILOT *Pilot = &LogBook.Pilot,
+                        int flag = LB_EDITABLE, IMAGE_RSC *Picture = NULL,
+                        IMAGE_RSC *Patch = NULL)
 {
     UI_logbk.LoadData(Pilot);
 
@@ -472,7 +474,7 @@ void LoadLogBookWindows(LB_PILOT *Pilot = &LogBook.Pilot, int flag = LB_EDITABLE
 
     if (win)
     {
-        C_Box *box = (C_Box *)win->FindControl(50096);//PIC_BOX
+        C_Box *box = (C_Box *)win->FindControl(50096); //PIC_BOX
 
         if (box)
         {
@@ -514,7 +516,7 @@ int SetPilot(_TCHAR *callsign, C_ListBox *lbox)
 
         if (CurCallsign)
         {
-            if ( not _tcsicmp(CurCallsign, callsign))
+            if (not _tcsicmp(CurCallsign, callsign))
             {
                 return TRUE;
             }
@@ -532,9 +534,12 @@ int SetPilot(_TCHAR *callsign, C_ListBox *lbox)
 void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
                   C_ListBox *lbox, BOOL cutext, BOOL exclude_te)
 {
-    (void)fspec; (void)cutext; (void)exclude_te;
+    (void)fspec;
+    (void)cutext;
+    (void)exclude_te;
 
-    if ( not win or not lbox) return;
+    if (not win or not lbox)
+        return;
 
     lbox->RemoveAllItems();
 
@@ -552,7 +557,7 @@ void GetPilotList(C_Window *win, _TCHAR *fspec, _TCHAR *excludelist[],
                 if (stricmp(excludelist[i], names[k]) == 0)
                     ignore = TRUE;
 
-        if ( not ignore)
+        if (not ignore)
         {
             items++;
             lbox->AddItem(items, C_TYPE_ITEM, names[k]);
@@ -622,7 +627,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
+            if (not(LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -630,13 +635,15 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
             if (Patch)
             {
                 _TCHAR buf[MAX_PATH];
-                _stprintf(buf, _T("%s\\patches\\%s.tga"), FalconDataDirectory, Patch);
+                _stprintf(buf, _T("%s/patches/%s.tga"), FalconDataDirectory,
+                          Patch);
                 SetImage(PATCH_PIC, buf, CurPatch);
             }
             else if (*(UI_logbk.GetPatch()) not_eq 0)
             {
                 _TCHAR buf[MAX_PATH];
-                _stprintf(buf, _T("%s\\patches\\%s.tga"), FalconDataDirectory, UI_logbk.GetPatch());
+                _stprintf(buf, _T("%s/patches/%s.tga"), FalconDataDirectory,
+                          UI_logbk.GetPatch());
                 SetImage(PATCH_PIC, buf, CurPatch);
             }
             else
@@ -659,7 +666,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (button)
         {
-            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
+            if (not(LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 button->SetFlagBitOff(C_BIT_ENABLED);
             else
                 button->SetFlagBitOn(C_BIT_ENABLED);
@@ -675,7 +682,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
             else if (*(UI_logbk.GetPicture()) not_eq 0)
             {
                 _TCHAR buf[MAX_PATH];
-                _stprintf(buf, _T("%s\\pictures\\%s.tga"), FalconDataDirectory, UI_logbk.GetPicture());
+                _stprintf(buf, _T("%s/pictures/%s.tga"), FalconDataDirectory,
+                          UI_logbk.GetPicture());
                 SetImage(PILOT_PIC, buf, CurPic);
             }
             else
@@ -699,7 +707,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
+            if (not(LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -715,13 +723,11 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
         }
 
 
-
-
         ebox = (C_EditBox *)win->FindControl(PILOT_LIST);
 
         if (ebox)
         {
-            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
+            if (not(LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -734,7 +740,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
+            if (not(LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -750,7 +756,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
             if (lbox)
             {
                 _TCHAR buf[MAX_PATH];
-                _stprintf(buf, _T("%s\\config\\*.lbk"), FalconDataDirectory);
+                _stprintf(buf, _T("%s/config/*.lbk"), FalconDataDirectory);
                 GetPilotList(win, buf, NULL, lbox, TRUE, TRUE);
 
                 if (ebox)
@@ -771,7 +777,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
+            if (not(LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -784,7 +790,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (ebox)
         {
-            if ( not (LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
+            if (not(LogState bitand LB_EDITABLE) or LogState bitand LB_OPPONENT)
                 ebox->SetFlagBitOff(C_BIT_ENABLED);
             else
                 ebox->SetFlagBitOn(C_BIT_ENABLED);
@@ -793,7 +799,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
             ebox->Refresh();
         }
 
-        button = (C_Button *)win->FindControl(50095);//RANKS value was changed
+        button = (C_Button *)win->FindControl(50095); //RANKS value was changed
 
         if (button)
         {
@@ -879,7 +885,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
         if (text)
         {
             if (camp->Missions)
-                _stprintf(buf, _T("%2.3f"), (double)camp->Kills / camp->Missions);
+                _stprintf(buf, _T("%2.3f"),
+                          (double)camp->Kills / camp->Missions);
             else
                 _stprintf(buf, "0");
 
@@ -894,7 +901,10 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
         if (text)
         {
             if (camp->Missions)
-                _stprintf(buf, _T("%2.3f"), ((double)camp->AirToGround + camp->Static + camp->Naval) / camp->Missions);
+                _stprintf(
+                    buf, _T("%2.3f"),
+                    ((double)camp->AirToGround + camp->Static + camp->Naval) /
+                        camp->Missions);
             else
                 _stprintf(buf, "0");
 
@@ -909,7 +919,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
         if (text)
         {
             if (camp->Missions)
-                _stprintf(buf, _T("%2.3f"), ((double)UI_logbk.FlightHours() / camp->Missions));
+                _stprintf(buf, _T("%2.3f"),
+                          ((double)UI_logbk.FlightHours() / camp->Missions));
             else
                 _stprintf(buf, "0");
 
@@ -917,7 +928,6 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
             text->SetText(buf);
             text->Refresh();
         }
-
 
 
         //End
@@ -958,7 +968,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (text)
         {
-            _stprintf(buf, _T("%2d/%2d"), dgft->MatchesWonVHum, dgft->MatchesLostVHum);
+            _stprintf(buf, _T("%2d/%2d"), dgft->MatchesWonVHum,
+                      dgft->MatchesLostVHum);
             text->SetText(buf);
             text->Refresh();
         }
@@ -979,7 +990,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (text)
         {
-            _stprintf(buf, _T("%2d/%2d"), dgft->HumanKills, dgft->KilledByHuman);
+            _stprintf(buf, _T("%2d/%2d"), dgft->HumanKills,
+                      dgft->KilledByHuman);
             text->SetText(buf);
             text->Refresh();
         }
@@ -992,7 +1004,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (text)
         {
-            _stprintf(buf, _T("%d/%d/%d"), camp->GamesWon, camp->GamesLost, camp->GamesTied);
+            _stprintf(buf, _T("%d/%d/%d"), camp->GamesWon, camp->GamesLost,
+                      camp->GamesTied);
             text->SetText(buf);
             text->Refresh();
         }
@@ -1013,7 +1026,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
         if (text)
         {
             if (camp->Missions)
-                _stprintf(buf, _T("%2.3f"), (double)camp->TotalMissionScore / camp->Missions);
+                _stprintf(buf, _T("%2.3f"),
+                          (double)camp->TotalMissionScore / camp->Missions);
             else
                 _stprintf(buf, "0");
 
@@ -1037,7 +1051,8 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
         if (text)
         {
-            _stprintf(buf, _T("%2d/%2d"), camp->HumanKills, camp->KilledByHuman);
+            _stprintf(buf, _T("%2d/%2d"), camp->HumanKills,
+                      camp->KilledByHuman);
             text->SetText(buf);
             text->Refresh();
         }
@@ -1096,7 +1111,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
         //need to also do stars and oakleafs for multiple medals
         int CurrMedal = MEDALS_AFC;
 
-        for (i = 0; i < NUM_MEDALS ; i++)
+        for (i = 0; i < NUM_MEDALS; i++)
         {
             if (UI_logbk.Pilot.Medals[i])
             {
@@ -1104,18 +1119,19 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 
                 if (button)
                 {
-                    AwardDevices(win, CurrMedal, static_cast<uchar>(i), UI_logbk.Pilot.Medals[i]);
+                    AwardDevices(win, CurrMedal, static_cast<uchar>(i),
+                                 UI_logbk.Pilot.Medals[i]);
                     button->SetFlagBitOff(C_BIT_INVISIBLE);
                     button->SetState(static_cast<short>(i));
-                    button->SetHelpText(gStringMgr->AddText(button->GetLabel(static_cast<short>(i))));
+                    button->SetHelpText(gStringMgr->AddText(
+                        button->GetLabel(static_cast<short>(i))));
                     button->Refresh();
                     CurrMedal++;
                 }
             }
-
         }
 
-        for (i = CurrMedal; i < NUM_MEDALS + MEDALS_AFC ; i++)
+        for (i = CurrMedal; i < NUM_MEDALS + MEDALS_AFC; i++)
         {
             button = (C_Button *)win->FindControl(i);
 
@@ -1136,7 +1152,7 @@ void LBSetupControls(IMAGE_RSC *Picture, IMAGE_RSC *Patch)
 //Number is how times it has been awarded
 void AwardDevices(C_Window *win, long ID, uchar Medal, uchar Number)
 {
-    if ( not win)
+    if (not win)
         return;
 
     int Awarded = 0;
@@ -1174,7 +1190,6 @@ void AwardDevices(C_Window *win, long ID, uchar Medal, uchar Number)
             }
 
             button->SetHelpText(gStringMgr->AddText("5"));
-
         }
 
         Awarded += 5;
@@ -1201,7 +1216,6 @@ void AwardDevices(C_Window *win, long ID, uchar Medal, uchar Number)
 
             button->SetHelpText(gStringMgr->AddText("5"));
         }
-
     }
     else
     {
@@ -1247,7 +1261,7 @@ void AwardDevices(C_Window *win, long ID, uchar Medal, uchar Number)
 
 void LoadTGACB(long, short hittype, C_Base *control)
 {
-    C_EditBox * ebox;
+    C_EditBox *ebox;
     _TCHAR fname[MAX_PATH];
     long imageID;
 
@@ -1256,7 +1270,7 @@ void LoadTGACB(long, short hittype, C_Base *control)
 
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -1274,12 +1288,13 @@ void LoadTGACB(long, short hittype, C_Base *control)
         if (CurControl == PATCH_PIC)
         {
             imageID = CurPatch;
-            _stprintf(buf, _T("%s\\patches\\%s.tga"), FalconDataDirectory, fname);
+            _stprintf(buf, _T("%s/patches/%s.tga"), FalconDataDirectory, fname);
         }
         else
         {
             imageID = CurPic;
-            _stprintf(buf, _T("%s\\pictures\\%s.tga"), FalconDataDirectory, fname);
+            _stprintf(buf, _T("%s/pictures/%s.tga"), FalconDataDirectory,
+                      fname);
         }
 
         if (SetImage(CurControl, buf, imageID))
@@ -1294,7 +1309,7 @@ void LoadTGACB(long, short hittype, C_Base *control)
 
                 if (win)
                 {
-                    ebox = (C_EditBox*)win->FindControl(SQUADRON_NAME);
+                    ebox = (C_EditBox *)win->FindControl(SQUADRON_NAME);
 
                     if (ebox)
                     {
@@ -1311,7 +1326,7 @@ void LoadTGACB(long, short hittype, C_Base *control)
 
 void LoadVirtualTGACB(long, short hittype, C_Base *control)
 {
-    C_EditBox * ebox;
+    C_EditBox *ebox;
     _TCHAR fname[MAX_PATH];
     long imageID;
     C_Resmgr *res;
@@ -1321,7 +1336,7 @@ void LoadVirtualTGACB(long, short hittype, C_Base *control)
 
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -1355,7 +1370,7 @@ void LoadVirtualTGACB(long, short hittype, C_Base *control)
 
 void ChangeImageCB(long ID, short hittype, C_Base *control)
 {
-    if (LogState bitand LB_OPPONENT or not (LogState bitand LB_EDITABLE))
+    if (LogState bitand LB_OPPONENT or not(LogState bitand LB_EDITABLE))
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1366,14 +1381,16 @@ void ChangeImageCB(long ID, short hittype, C_Base *control)
     if (CurControl == PATCH_PIC)
     {
         MakeVirtualListFromRsc(PATCHES_RESOURCE, 0);
-        LoadVirtualFile(TXT_LOAD_PATCH, "patches\\*.tga", NULL, LoadTGACB, CloseWindowCB, VirtualFileList, LoadVirtualTGACB);
-        //LoadAFile("patches\\*.tga",NULL,LoadTGACB,CloseWindowCB);
+        LoadVirtualFile(TXT_LOAD_PATCH, "patches/*.tga", NULL, LoadTGACB,
+                        CloseWindowCB, VirtualFileList, LoadVirtualTGACB);
+        //LoadAFile("patches/*.tga",NULL,LoadTGACB,CloseWindowCB);
     }
     else
     {
         MakeVirtualListFromRsc(PILOTS_RESOURCE, 0);
-        LoadVirtualFile(TXT_LOAD_PICTURE, "pictures\\*.tga", NULL, LoadTGACB, CloseWindowCB, VirtualFileList, LoadVirtualTGACB);
-        //LoadAFile("pictures\\*.tga",NULL,LoadTGACB,CloseWindowCB);
+        LoadVirtualFile(TXT_LOAD_PICTURE, "pictures/*.tga", NULL, LoadTGACB,
+                        CloseWindowCB, VirtualFileList, LoadVirtualTGACB);
+        //LoadAFile("pictures/*.tga",NULL,LoadTGACB,CloseWindowCB);
     }
 
     control->Refresh();
@@ -1411,7 +1428,7 @@ int SetResourceImage(long ID, long ImageID)
 }
 
 //sets image for button with ID == ID
-int SetImage(long ID, _TCHAR *filename , long ImageID)
+int SetImage(long ID, _TCHAR *filename, long ImageID)
 {
     C_Button *button;
     C_Window *win;
@@ -1429,38 +1446,40 @@ int SetImage(long ID, _TCHAR *filename , long ImageID)
 
         switch (ImageID)
         {
-            case LOGBOOK_PICTURE_ID:
-                ImageID = LOGBOOK_PICTURE_ID_2;
-                break;
+        case LOGBOOK_PICTURE_ID:
+            ImageID = LOGBOOK_PICTURE_ID_2;
+            break;
 
-            case LOGBOOK_PICTURE_ID_2:
+        case LOGBOOK_PICTURE_ID_2:
+            ImageID = LOGBOOK_PICTURE_ID;
+            break;
+
+        case LOGBOOK_SQUADRON_ID:
+            ImageID = LOGBOOK_SQUADRON_ID_2;
+            break;
+
+        case LOGBOOK_SQUADRON_ID_2:
+            ImageID = LOGBOOK_SQUADRON_ID;
+            break;
+
+        default:
+            if (ID == PATCH_PIC)
                 ImageID = LOGBOOK_PICTURE_ID;
-                break;
-
-            case LOGBOOK_SQUADRON_ID:
-                ImageID = LOGBOOK_SQUADRON_ID_2;
-                break;
-
-            case LOGBOOK_SQUADRON_ID_2:
+            else if (ID == PILOT_PIC)
                 ImageID = LOGBOOK_SQUADRON_ID;
-                break;
 
-            default:
-                if (ID == PATCH_PIC)
-                    ImageID = LOGBOOK_PICTURE_ID;
-                else if (ID == PILOT_PIC)
-                    ImageID = LOGBOOK_SQUADRON_ID;
-
-                break;
+            break;
         };
 
         resmgr = gImageMgr->LoadImage(ImageID, filename, -1, -1);
 
         Image = gImageMgr->GetImage(ImageID);
 
-        if ( not Image)
+        if (not Image)
         {
-            MonoPrint("FUNCTION: void SetImage()  -> Failed to load PHOTO file: %s \n", filename);
+            MonoPrint("FUNCTION: void SetImage()  -> Failed to load PHOTO "
+                      "file: %s \n",
+                      filename);
             UI_Leave(Leave);
             return FALSE;
         }
@@ -1575,8 +1594,8 @@ void LoadLogCB(long ID,short hittype,C_Base *control)
 */
 void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
 {
-    C_EditBox * ebox;
-    C_EditBox * pwdbox;
+    C_EditBox *ebox;
+    C_EditBox *pwdbox;
     C_Window *win;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1587,7 +1606,7 @@ void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
     if (win == NULL)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(PASSWORD);
+    ebox = (C_EditBox *)control->Parent_->FindControl(PASSWORD);
 
     if (ebox)
     {
@@ -1609,13 +1628,12 @@ void PasswordChangeVerifiedCB(long, short hittype, C_Base *control)
             LogState or_eq LB_CHECKED;
         }
     }
-
 }
 
 void PwdVerifiedContLoading(long, short hittype, C_Base *control)
 {
-    C_EditBox * ebox;
-    C_EditBox * pwdbox;
+    C_EditBox *ebox;
+    C_EditBox *pwdbox;
     C_Window *win;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1626,7 +1644,7 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
     if (win == NULL)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(PASSWORD);
+    ebox = (C_EditBox *)control->Parent_->FindControl(PASSWORD);
 
     if (ebox)
     {
@@ -1652,22 +1670,22 @@ void PwdVerifiedContLoading(long, short hittype, C_Base *control)
             if (lbox)
             {
                 //if current log is selected do nothing
-                if ( not _tcscmp(lbox->GetText(), UI_logbk.Callsign()))
+                if (not _tcscmp(lbox->GetText(), UI_logbk.Callsign()))
                     return;
 
                 if (UI_logbk.LoadData(lbox->GetText()))
                 {
                     LogState and_eq compl LB_CHECKED;
 
-                    if ( not UI_logbk.CheckPassword(_T("")))
-                        PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
+                    if (not UI_logbk.CheckPassword(_T("")))
+                        PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE,
+                                       CheckPasswordCB, NoPasswordCB);
 
                     LBSetupControls();
                 }
             }
         }
     }
-
 }
 
 
@@ -1683,10 +1701,11 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
         if (ebox not_eq NULL)
         {
-            if ( not UI_logbk.CheckPassword(ebox->GetText()))
+            if (not UI_logbk.CheckPassword(ebox->GetText()))
             {
                 LogState and_eq compl LB_CHECKED;
-                PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE, PwdVerifiedContLoading, CloseWindowCB);
+                PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE,
+                               PwdVerifiedContLoading, CloseWindowCB);
                 return;
             }
         }
@@ -1695,11 +1714,12 @@ void LoadPilotCB(long, short hittype, C_Base *control)
         _tcscpy(Pilot, ((C_ListBox *)control)->GetText());
 
         //return if current logbook is selected
-        if ( not _tcscmp(Pilot, UI_logbk.Callsign()))
+        if (not _tcscmp(Pilot, UI_logbk.Callsign()))
         {
             if (LogState bitand LB_INVALID_CALLSIGN)
             {
-                AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, NULL);
+                AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB,
+                           NULL);
                 LogState and_eq compl LB_INVALID_CALLSIGN;
                 //return;
             }
@@ -1721,8 +1741,9 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
                 //if password check is passed, allow access, otherwise
                 //initialize UI_logbk and update controls
-                if ( not UI_logbk.CheckPassword(_T("")))
-                    PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
+                if (not UI_logbk.CheckPassword(_T("")))
+                    PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE,
+                                   CheckPasswordCB, NoPasswordCB);
                 else
                 {
                     PlayerOptions.LoadOptions(UI_logbk.OptionsFile());
@@ -1750,7 +1771,8 @@ void LoadPilotCB(long, short hittype, C_Base *control)
                 //notify user the callsign entered was invalid
                 if (LogState bitand LB_INVALID_CALLSIGN)
                 {
-                    AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, NULL);
+                    AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB,
+                               NULL);
                     LogState and_eq compl LB_INVALID_CALLSIGN;
                     //return;
                 }
@@ -1766,7 +1788,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
         if (ebox not_eq NULL)
         {
-            if ( not CheckCallsign(ebox->GetText()))
+            if (not CheckCallsign(ebox->GetText()))
             {
                 ebox->SetText(UI_logbk.Callsign());
                 LogState or_eq LB_INVALID_CALLSIGN;
@@ -1779,7 +1801,7 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
             if (pbox not_eq NULL)
             {
-                if ( not UI_logbk.CheckPassword(pbox->GetText()))
+                if (not UI_logbk.CheckPassword(pbox->GetText()))
                 {
                     return;
                 }
@@ -1800,8 +1822,9 @@ void LoadPilotCB(long, short hittype, C_Base *control)
 
             //build new list and select correct pilot
             _TCHAR buf[MAX_PATH];
-            _stprintf(buf, _T("%s\\config\\*.lbk"), FalconDataDirectory);
-            GetPilotList(control->Parent_, buf, NULL, (C_ListBox *)control, TRUE, TRUE);
+            _stprintf(buf, _T("%s/config/*.lbk"), FalconDataDirectory);
+            GetPilotList(control->Parent_, buf, NULL, (C_ListBox *)control,
+                         TRUE, TRUE);
             SetPilot(UI_logbk.Callsign(), (C_ListBox *)control);
         }
     }
@@ -1813,7 +1836,7 @@ void LoadLogBookCB(long ID,short hittype,C_Base *control)
  if(hittype not_eq C_TYPE_LMOUSEUP)
  return;
 
- LoadAFile("config\\*.lbk",NULL,LoadLogCB,CloseWindowCB);
+ LoadAFile("config/*.lbk",NULL,LoadLogCB,CloseWindowCB);
 }
 */
 
@@ -1829,8 +1852,9 @@ void OpenLogBookCB(long, short hittype, C_Base *control)
     gMainHandler->EnableWindowGroup(control->GetGroup());
     SetCursor(gCursors[CRSR_F16]);
 
-    if ( not LogBook.CheckPassword(_T("")))
-        PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
+    if (not LogBook.CheckPassword(_T("")))
+        PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB,
+                       NoPasswordCB);
 }
 
 
@@ -1875,11 +1899,11 @@ void ClearLogBookCB(long, short hittype, C_Base *)
 
 int CheckCallsign(_TCHAR *filename)
 {
-    if ( not _tcslen(filename))
+    if (not _tcslen(filename))
         return FALSE;
 
 
-    unsigned long pos = _tcscspn(filename, _T("\\/:?\"<>|"));
+    unsigned long pos = _tcscspn(filename, _T("//:?\"<>|"));
 
     if (pos < _tcslen(filename))
         return FALSE;
@@ -1917,14 +1941,14 @@ int SaveControlValues(void)
         return FALSE;
 
 
-
     ebox = (C_EditBox *)win->FindControl(CALLSIGN_LIST);
 
     if (ebox not_eq NULL)
     {
-        if ( not CheckCallsign(ebox->GetText()))
+        if (not CheckCallsign(ebox->GetText()))
         {
-            AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB, CloseWindowCB);
+            AreYouSure(TXT_ERROR, TXT_INVALID_CALLSIGN, CloseWindowCB,
+                       CloseWindowCB);
             return FALSE;
         }
 
@@ -2029,7 +2053,7 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (LogState bitand LB_OPPONENT or not (LogState bitand LB_EDITABLE))
+    if (LogState bitand LB_OPPONENT or not(LogState bitand LB_EDITABLE))
     {
         CloseLogWindowCB(ID, hittype, control);
         return;
@@ -2045,15 +2069,16 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
 
     if (ebox not_eq NULL)
     {
-        if ( not UI_logbk.CheckPassword(ebox->GetText()))
+        if (not UI_logbk.CheckPassword(ebox->GetText()))
         {
             LogState and_eq compl LB_CHECKED;
-            PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE, PasswordChangeVerifiedCB, CloseWindowCB);
+            PasswordWindow(TXT_VERIFY_PASSWORD, TXT_VERIFY_PASS_MESSAGE,
+                           PasswordChangeVerifiedCB, CloseWindowCB);
             return;
         }
     }
 
-    if ( not SaveControlValues())
+    if (not SaveControlValues())
         return;
 
     LogState or_eq LB_REFRESH_PILOT;
@@ -2061,7 +2086,6 @@ void SaveLogBookCB(long ID, short hittype, C_Base *control)
     LogBook.LoadData(&UI_logbk.Pilot);
 
     CloseLogWindowCB(ID, hittype, control);
-
 }
 
 void CloseLogWindowCB(long ID, short hittype, C_Base *control)
@@ -2135,14 +2159,14 @@ void HookupLBControls(long ID)
         lbox->SetCallback(LoadPilotCB);
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
-
 }
 
-void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL EditFlag)
+void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch,
+                    BOOL EditFlag)
 {
     C_EditBox *ebox;
     C_Window *win;
@@ -2281,10 +2305,11 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
         {
             if (EditFlag)
             {
-                _stprintf(buf, _T("%s\\config\\*.lbk"), FalconDataDirectory);
+                _stprintf(buf, _T("%s/config/*.lbk"), FalconDataDirectory);
                 GetPilotList(win, buf, NULL, lbox, TRUE, TRUE);
 
-                ebox = (C_EditBox *)win->FindControl(CALLSIGN_LIST); // just for good measure
+                ebox = (C_EditBox *)win->FindControl(
+                    CALLSIGN_LIST); // just for good measure
 
                 if (ebox)
                     SetPilot(ebox->GetText(), lbox);
@@ -2332,7 +2357,7 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
             ebox->SetText(Pilot->Squadron);
         }
 
-        button = (C_Button *)win->FindControl(50095);//RANKS value was changed
+        button = (C_Button *)win->FindControl(50095); //RANKS value was changed
 
         if (button)
         {
@@ -2398,7 +2423,8 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
 
         if (text)
         {
-            _stprintf(buf, _T("%2d/%2d"), dgft->MatchesWonVHum, dgft->MatchesLostVHum);
+            _stprintf(buf, _T("%2d/%2d"), dgft->MatchesWonVHum,
+                      dgft->MatchesLostVHum);
             text->SetText(buf);
         }
 
@@ -2417,7 +2443,8 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
 
         if (text)
         {
-            _stprintf(buf, _T("%2d/%2d"), dgft->HumanKills, dgft->KilledByHuman);
+            _stprintf(buf, _T("%2d/%2d"), dgft->HumanKills,
+                      dgft->KilledByHuman);
             text->SetText(buf);
         }
 
@@ -2428,7 +2455,8 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
 
         if (text)
         {
-            _stprintf(buf, _T("%d/%d/%d"), camp->GamesWon, camp->GamesLost, camp->GamesTied);
+            _stprintf(buf, _T("%d/%d/%d"), camp->GamesWon, camp->GamesLost,
+                      camp->GamesTied);
             text->SetText(buf);
         }
 
@@ -2447,7 +2475,8 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
         if (text)
         {
             if (camp->Missions)
-                _stprintf(buf, _T("%2.3f"), (double)camp->TotalMissionScore / camp->Missions);
+                _stprintf(buf, _T("%2.3f"),
+                          (double)camp->TotalMissionScore / camp->Missions);
             else
                 _stprintf(buf, "0");
 
@@ -2469,7 +2498,8 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
 
         if (text)
         {
-            _stprintf(buf, _T("%2d/%2d"), camp->HumanKills, camp->KilledByHuman);
+            _stprintf(buf, _T("%2d/%2d"), camp->HumanKills,
+                      camp->KilledByHuman);
             text->SetText(buf);
         }
 
@@ -2522,7 +2552,7 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
         //need to also do stars and oakleafs for multiple medals
         int CurrMedal = MEDALS_AFC;
 
-        for (i = 0; i < NUM_MEDALS ; i++)
+        for (i = 0; i < NUM_MEDALS; i++)
         {
             if (Pilot->Medals[i])
             {
@@ -2530,18 +2560,19 @@ void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL Ed
 
                 if (button)
                 {
-                    AwardDevices(win, CurrMedal, static_cast<uchar>(i), Pilot->Medals[i]);
+                    AwardDevices(win, CurrMedal, static_cast<uchar>(i),
+                                 Pilot->Medals[i]);
                     button->SetFlagBitOff(C_BIT_INVISIBLE);
                     button->SetState(static_cast<short>(i));
-                    button->SetHelpText(gStringMgr->AddText(button->GetLabel(static_cast<short>(i))));
+                    button->SetHelpText(gStringMgr->AddText(
+                        button->GetLabel(static_cast<short>(i))));
                     button->Refresh();
                     CurrMedal++;
                 }
             }
-
         }
 
-        for (i = CurrMedal; i < NUM_MEDALS + MEDALS_AFC ; i++)
+        for (i = CurrMedal; i < NUM_MEDALS + MEDALS_AFC; i++)
         {
             button = (C_Button *)win->FindControl(i);
 

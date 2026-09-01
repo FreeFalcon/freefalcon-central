@@ -7,7 +7,8 @@
 // Flags
 // ====================================
 
-#define GTMOBJ_PLAYER_SET_PRIORITY 0x01 // Player has modified priorities for this objective
+#define GTMOBJ_PLAYER_SET_PRIORITY                                             \
+    0x01 // Player has modified priorities for this objective
 #define GTMOBJ_SCRIPTED_PRIORITY 0x02 // Priority set by script
 
 // ====================================
@@ -19,8 +20,10 @@ struct PrimaryObjectiveData
     VU_ID objective; // Id of the objective
     short ground_priority[NUM_TEAMS]; // It's calculated priority (per team)
     short ground_assigned[NUM_TEAMS]; // Combat factors assigned (per team)
-    short air_priority[NUM_TEAMS]; // Air tasking manager's assessment of priority
-    short player_priority[NUM_TEAMS]; // Player adjusted priorities (or ATM's if no modifications)
+    short
+        air_priority[NUM_TEAMS]; // Air tasking manager's assessment of priority
+    short player_priority
+        [NUM_TEAMS]; // Player adjusted priorities (or ATM's if no modifications)
     uchar flags;
 };
 typedef PrimaryObjectiveData* POData;
@@ -44,7 +47,7 @@ public:
     Unit unit;
     int score;
     int distance;
-    UnitScoreNode *next;
+    UnitScoreNode* next;
 
 public:
     UnitScoreNode(void);
@@ -63,8 +66,8 @@ public:
     Objective obj;
     int priority_score;
     int unit_options;
-    UnitScoreNode *unit_list;
-    GndObjDataType *next;
+    UnitScoreNode* unit_list;
+    GndObjDataType* next;
 
 public:
     GndObjDataType(void);

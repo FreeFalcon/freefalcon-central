@@ -6,7 +6,8 @@ int foo_x2 = 0;// only for solving warnings
 #if not VU_ALL_FILTERED
 
 
-VuFilteredList::VuFilteredList(VuFilter* filter) : VuLinkedList(),  filter_(filter->Copy())
+VuFilteredList::VuFilteredList(VuFilter* filter)
+    : VuLinkedList(), filter_(filter->Copy())
 {
 }
 
@@ -28,7 +29,7 @@ VU_ERRCODE VuFilteredList::Handle(VuMessage* msg)
         {
             if (Find(ent->Id()))
             {
-                if ( not filter_->Test(ent))
+                if (not filter_->Test(ent))
                 {
                     // ent is in table, but doesn't belong there...
                     VuLinkedList::Remove(ent);
@@ -47,7 +48,7 @@ VU_ERRCODE VuFilteredList::Handle(VuMessage* msg)
     return VU_NO_OP;
 }
 
-VU_ERRCODE VuFilteredList::ForcedInsert(VuEntity *entity)
+VU_ERRCODE VuFilteredList::ForcedInsert(VuEntity* entity)
 {
     if (entity == NULL)
     {
@@ -64,7 +65,7 @@ VU_ERRCODE VuFilteredList::ForcedInsert(VuEntity *entity)
     return VU_NO_OP;
 }
 
-VU_ERRCODE VuFilteredList::Insert(VuEntity *entity)
+VU_ERRCODE VuFilteredList::Insert(VuEntity* entity)
 {
     if (entity == NULL)
     {
@@ -81,7 +82,7 @@ VU_ERRCODE VuFilteredList::Insert(VuEntity *entity)
     return VU_NO_OP;
 }
 
-VU_ERRCODE VuFilteredList::Remove(VuEntity *entity)
+VU_ERRCODE VuFilteredList::Remove(VuEntity* entity)
 {
     if (entity == NULL)
     {

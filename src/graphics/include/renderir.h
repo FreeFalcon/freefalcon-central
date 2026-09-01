@@ -8,8 +8,7 @@
 #ifndef _RENDERIR_H_
 #define _RENDERIR_H_
 
-#include "RenderTV.h"
-
+#include "rendertv.h"
 
 
 class RenderIR : public RenderTV
@@ -26,14 +25,15 @@ public:
 
 protected:
     // Overloaded to provide appropriate sky effects
-    virtual void DrawMoon(GLint) {};
+    virtual void DrawMoon(GLint){};
     virtual void DrawStars(void) {};
 
     // Overloaded to prevent the ambient light level and sky color from changing
     virtual void SetTimeOfDayColor(void) {};
     virtual void AdjustSkyColor(void) {};
 
-    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x, float y);
+    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post,
+                                    float distance, float x, float y);
 };
 
 

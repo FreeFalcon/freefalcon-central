@@ -6,7 +6,7 @@ extern HINSTANCE hInst;
 
 // constants
 
-#define FILE_LEN            80
+#define FILE_LEN 80
 
 // Function prototypes
 
@@ -17,19 +17,26 @@ extern BOOL CALLBACK EditState(HWND, UINT, WPARAM, LPARAM);
 
 extern BOOL CALLBACK EditObjective(HWND, UINT, WPARAM, LPARAM);
 
-extern BOOL CALLBACK MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL CALLBACK MissionTriggerProc(HWND hDlg, UINT message, WPARAM wParam,
+                                        LPARAM lParam);
 
-extern BOOL CALLBACK WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL CALLBACK WeatherEditProc(HWND hDlg, UINT message, WPARAM wParam,
+                                     LPARAM lParam);
 
-extern BOOL CALLBACK EditRelations(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL CALLBACK EditRelations(HWND hDlg, UINT message, WPARAM wParam,
+                                   LPARAM lParam);
 
-extern BOOL CALLBACK EditTeams(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL CALLBACK EditTeams(HWND hDlg, UINT message, WPARAM wParam,
+                               LPARAM lParam);
 
-extern BOOL CALLBACK MapDialogProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL CALLBACK MapDialogProc(HWND hDlg, UINT message, WPARAM wParam,
+                                   LPARAM lParam);
 
-extern BOOL CALLBACK AdjustForceRatioProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL CALLBACK AdjustForceRatioProc(HWND hDlg, UINT message,
+                                          WPARAM wParam, LPARAM lParam);
 
-extern BOOL CALLBACK CampClipperProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam) ;
+extern BOOL CALLBACK CampClipperProc(HWND hDlg, UINT message, WPARAM wParam,
+                                     LPARAM lParam);
 
 extern BOOL CALLBACK EnterNew(HWND, UINT, WPARAM, LPARAM);
 

@@ -8,7 +8,7 @@
 #ifndef _DRAWPUFF_H_
 #define _DRAWPUFF_H_
 
-#include "DrawBSP.h"
+#include "drawbsp.h"
 
 class DrawablePuff : public DrawableBSP
 {
@@ -22,7 +22,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

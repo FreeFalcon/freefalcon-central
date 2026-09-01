@@ -15,7 +15,7 @@ public:
         EmptyWeight = 0,
         Area = 1,
         InternalFuel = 2,
-        AOAMax = 3 ,
+        AOAMax = 3,
         AOAMin = 4,
         BetaMax = 5,
         BetaMin = 6,
@@ -58,12 +58,11 @@ public:
 
 void ReadAllAirframeData(void);
 void FreeAllAirframeData(void);
-AeroData *AirframeAeroRead(SimlibFileClass* inputFile);
-AuxAeroData *AirframeAuxAeroRead(SimlibFileClass* inputFile); // JB 010714
-EngineData *AirframeEngineRead(SimlibFileClass* inputFile);
-RollData *AirframeFcsRead(SimlibFileClass* inputFile);
-void ReadData(float* inputData, SimlibFileClass* inputFile);
+AeroData *AirframeAeroRead(SimlibFileClass *inputFile);
+AuxAeroData *AirframeAuxAeroRead(SimlibFileClass *inputFile); // JB 010714
+EngineData *AirframeEngineRead(SimlibFileClass *inputFile);
+RollData *AirframeFcsRead(SimlibFileClass *inputFile);
+void ReadData(float *inputData, SimlibFileClass *inputFile);
 
 extern AeroDataSet *aeroDataset;
 #endif
-

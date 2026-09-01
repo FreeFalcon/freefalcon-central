@@ -5,12 +5,12 @@
 
     Provides clipping functions for 3D polygons of various types.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
-#include "StateStack.h"
-#include "ColorBank.h"
-#include "PolyLib.h"
-#include "ClipFlags.h"
+#include "statestack.h"
+#include "colorbank.h"
+#include "polylib.h"
+#include "clipflags.h"
 
 
 typedef struct ClipVert
@@ -24,40 +24,56 @@ typedef struct ClipVert
 
 // Intersect edge with z=near plane
 // This function is expected to be called first in the clipping chain
-static void IntersectNear(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex)
+static void IntersectNear(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color,
+                          BOOL light, BOOL tex)
 {
     float x, y, z, t;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
-    t = (NEAR_CLIP_DISTANCE                      - TheStateStack.ClipInfoPool[v1->xyz].csZ) /
-        (TheStateStack.ClipInfoPool[v2->xyz].csZ - TheStateStack.ClipInfoPool[v1->xyz].csZ);
+    t = (NEAR_CLIP_DISTANCE - TheStateStack.ClipInfoPool[v1->xyz].csZ) /
+        (TheStateStack.ClipInfoPool[v2->xyz].csZ -
+         TheStateStack.ClipInfoPool[v1->xyz].csZ);
     ShiAssert((t >= -0.001f) and (t <= 1.001f));
 
     // Compute the camera space intersection point
     TheStateStack.ClipInfoPool[v->xyz].csZ = z = NEAR_CLIP_DISTANCE;
 
-    TheStateStack.ClipInfoPool[v->xyz].csX = x = TheStateStack.ClipInfoPool[v1->xyz].csX +
-            t * (TheStateStack.ClipInfoPool[v2->xyz].csX - TheStateStack.ClipInfoPool[v1->xyz].csX);
-    TheStateStack.ClipInfoPool[v->xyz].csY = y = TheStateStack.ClipInfoPool[v1->xyz].csY +
-            t * (TheStateStack.ClipInfoPool[v2->xyz].csY - TheStateStack.ClipInfoPool[v1->xyz].csY);
+    TheStateStack.ClipInfoPool[v->xyz].csX = x =
+        TheStateStack.ClipInfoPool[v1->xyz].csX +
+        t * (TheStateStack.ClipInfoPool[v2->xyz].csX -
+             TheStateStack.ClipInfoPool[v1->xyz].csX);
+    TheStateStack.ClipInfoPool[v->xyz].csY = y =
+        TheStateStack.ClipInfoPool[v1->xyz].csY +
+        t * (TheStateStack.ClipInfoPool[v2->xyz].csY -
+             TheStateStack.ClipInfoPool[v1->xyz].csY);
 
     // Now interpolate any other vertex parameters required
     if (color)
     {
-        TheColorBank.ColorPool[v->rgba].r = TheColorBank.ColorPool[v1->rgba].r +
-                                            t * (TheColorBank.ColorPool[v2->rgba].r - TheColorBank.ColorPool[v1->rgba].r);
-        TheColorBank.ColorPool[v->rgba].g = TheColorBank.ColorPool[v1->rgba].g +
-                                            t * (TheColorBank.ColorPool[v2->rgba].g - TheColorBank.ColorPool[v1->rgba].g);
-        TheColorBank.ColorPool[v->rgba].b = TheColorBank.ColorPool[v1->rgba].b +
-                                            t * (TheColorBank.ColorPool[v2->rgba].b - TheColorBank.ColorPool[v1->rgba].b);
-        TheColorBank.ColorPool[v->rgba].a = TheColorBank.ColorPool[v1->rgba].a +
-                                            t * (TheColorBank.ColorPool[v2->rgba].a - TheColorBank.ColorPool[v1->rgba].a);
+        TheColorBank.ColorPool[v->rgba].r =
+            TheColorBank.ColorPool[v1->rgba].r +
+            t * (TheColorBank.ColorPool[v2->rgba].r -
+                 TheColorBank.ColorPool[v1->rgba].r);
+        TheColorBank.ColorPool[v->rgba].g =
+            TheColorBank.ColorPool[v1->rgba].g +
+            t * (TheColorBank.ColorPool[v2->rgba].g -
+                 TheColorBank.ColorPool[v1->rgba].g);
+        TheColorBank.ColorPool[v->rgba].b =
+            TheColorBank.ColorPool[v1->rgba].b +
+            t * (TheColorBank.ColorPool[v2->rgba].b -
+                 TheColorBank.ColorPool[v1->rgba].b);
+        TheColorBank.ColorPool[v->rgba].a =
+            TheColorBank.ColorPool[v1->rgba].a +
+            t * (TheColorBank.ColorPool[v2->rgba].a -
+                 TheColorBank.ColorPool[v1->rgba].a);
     }
 
     if (light)
     {
-        TheStateStack.IntensityPool[v->I] = TheStateStack.IntensityPool[v1->I] +
-                                            t * (TheStateStack.IntensityPool[v2->I] - TheStateStack.IntensityPool[v1->I]);
+        TheStateStack.IntensityPool[v->I] =
+            TheStateStack.IntensityPool[v1->I] +
+            t * (TheStateStack.IntensityPool[v2->I] -
+                 TheStateStack.IntensityPool[v1->I]);
     }
 
     if (tex)
@@ -67,83 +83,102 @@ static void IntersectNear(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, B
     }
 
     // Now determine if the point is out to the sides
-    TheStateStack.ClipInfoPool[v->xyz].clipFlag  = GetHorizontalClipFlags(x, z);
-    TheStateStack.ClipInfoPool[v->xyz].clipFlag or_eq GetVerticalClipFlags(y, z);
+    TheStateStack.ClipInfoPool[v->xyz].clipFlag = GetHorizontalClipFlags(x, z);
+    TheStateStack.ClipInfoPool[v->xyz].clipFlag or_eq
+        GetVerticalClipFlags(y, z);
 
     // Compute the screen space coordinates of the new point
     register float OneOverZ = 1.0f / z;
     TheStateStack.XformedPosPool[v->xyz].z = z;
-    TheStateStack.XformedPosPool[v->xyz].x = TheStateStack.XtoPixel(x * OneOverZ);
-    TheStateStack.XformedPosPool[v->xyz].y = TheStateStack.YtoPixel(y * OneOverZ);
+    TheStateStack.XformedPosPool[v->xyz].x =
+        TheStateStack.XtoPixel(x * OneOverZ);
+    TheStateStack.XformedPosPool[v->xyz].y =
+        TheStateStack.YtoPixel(y * OneOverZ);
 }
 
 
 // Compute the parametric location of the intersection of the ray with the edge indicated
 // by the flag parameter
-static inline float ComputeT(float x, float y, float z, float dx, float dy, float dz, UInt32 flag)
+static inline float ComputeT(float x, float y, float z, float dx, float dy,
+                             float dz, UInt32 flag)
 {
     switch (flag)
     {
-        case CLIP_BOTTOM:
-            return (y - z) / (dz - dy);
+    case CLIP_BOTTOM:
+        return (y - z) / (dz - dy);
 
-        case CLIP_TOP:
-            return (y + z) / (-dz - dy);
+    case CLIP_TOP:
+        return (y + z) / (-dz - dy);
 
-        case CLIP_RIGHT:
-            return (x - z) / (dz - dx);
+    case CLIP_RIGHT:
+        return (x - z) / (dz - dx);
 
-        case CLIP_LEFT:
-            return (x + z) / (-dz - dx);
+    case CLIP_LEFT:
+        return (x + z) / (-dz - dx);
 
-        default:
-            ShiWarning("Bad clip type");
-            return 1.0f;
+    default:
+        ShiWarning("Bad clip type");
+        return 1.0f;
     }
 }
 
 
 // Helper function which clips the segment against the edge indicated by the flag argument
-static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex, UInt32 flag)
+static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v,
+                                 BOOL color, BOOL light, BOOL tex, UInt32 flag)
 {
     float x, y, z, t;
     float dx, dy, dz;
 
     // Compute the parametric location of the intersection of the edge and the clip plane
-    dx = TheStateStack.ClipInfoPool[v2->xyz].csX - TheStateStack.ClipInfoPool[v1->xyz].csX;
-    dy = TheStateStack.ClipInfoPool[v2->xyz].csY - TheStateStack.ClipInfoPool[v1->xyz].csY;
-    dz = TheStateStack.ClipInfoPool[v2->xyz].csZ - TheStateStack.ClipInfoPool[v1->xyz].csZ;
+    dx = TheStateStack.ClipInfoPool[v2->xyz].csX -
+         TheStateStack.ClipInfoPool[v1->xyz].csX;
+    dy = TheStateStack.ClipInfoPool[v2->xyz].csY -
+         TheStateStack.ClipInfoPool[v1->xyz].csY;
+    dz = TheStateStack.ClipInfoPool[v2->xyz].csZ -
+         TheStateStack.ClipInfoPool[v1->xyz].csZ;
     t = ComputeT(TheStateStack.ClipInfoPool[v1->xyz].csX,
                  TheStateStack.ClipInfoPool[v1->xyz].csY,
-                 TheStateStack.ClipInfoPool[v1->xyz].csZ,
-                 dx,
-                 dy,
-                 dz,
-                 flag);
+                 TheStateStack.ClipInfoPool[v1->xyz].csZ, dx, dy, dz, flag);
     ShiAssert((t >= -0.002f) and (t <= 1.002f));
 
     // Compute the camera space intersection point
-    TheStateStack.ClipInfoPool[v->xyz].csZ = z = TheStateStack.ClipInfoPool[v1->xyz].csZ + t * (dz);
-    TheStateStack.ClipInfoPool[v->xyz].csX = x = TheStateStack.ClipInfoPool[v1->xyz].csX + t * (dx); // Note: either dx or dy is used only once, so could
-    TheStateStack.ClipInfoPool[v->xyz].csY = y = TheStateStack.ClipInfoPool[v1->xyz].csY + t * (dy); // be avoided, but this way, the code is more standardized...
+    TheStateStack.ClipInfoPool[v->xyz].csZ = z =
+        TheStateStack.ClipInfoPool[v1->xyz].csZ + t * (dz);
+    TheStateStack.ClipInfoPool[v->xyz].csX = x =
+        TheStateStack.ClipInfoPool[v1->xyz].csX +
+        t * (dx); // Note: either dx or dy is used only once, so could
+    TheStateStack.ClipInfoPool[v->xyz].csY = y =
+        TheStateStack.ClipInfoPool[v1->xyz].csY +
+        t * (dy); // be avoided, but this way, the code is more standardized...
 
     // Now interpolate any other vertex parameters required
     if (color)
     {
-        TheColorBank.ColorPool[v->rgba].r = TheColorBank.ColorPool[v1->rgba].r +
-                                            t * (TheColorBank.ColorPool[v2->rgba].r - TheColorBank.ColorPool[v1->rgba].r);
-        TheColorBank.ColorPool[v->rgba].g = TheColorBank.ColorPool[v1->rgba].g +
-                                            t * (TheColorBank.ColorPool[v2->rgba].g - TheColorBank.ColorPool[v1->rgba].g);
-        TheColorBank.ColorPool[v->rgba].b = TheColorBank.ColorPool[v1->rgba].b +
-                                            t * (TheColorBank.ColorPool[v2->rgba].b - TheColorBank.ColorPool[v1->rgba].b);
-        TheColorBank.ColorPool[v->rgba].a = TheColorBank.ColorPool[v1->rgba].a +
-                                            t * (TheColorBank.ColorPool[v2->rgba].a - TheColorBank.ColorPool[v1->rgba].a);
+        TheColorBank.ColorPool[v->rgba].r =
+            TheColorBank.ColorPool[v1->rgba].r +
+            t * (TheColorBank.ColorPool[v2->rgba].r -
+                 TheColorBank.ColorPool[v1->rgba].r);
+        TheColorBank.ColorPool[v->rgba].g =
+            TheColorBank.ColorPool[v1->rgba].g +
+            t * (TheColorBank.ColorPool[v2->rgba].g -
+                 TheColorBank.ColorPool[v1->rgba].g);
+        TheColorBank.ColorPool[v->rgba].b =
+            TheColorBank.ColorPool[v1->rgba].b +
+            t * (TheColorBank.ColorPool[v2->rgba].b -
+                 TheColorBank.ColorPool[v1->rgba].b);
+        TheColorBank.ColorPool[v->rgba].a =
+            TheColorBank.ColorPool[v1->rgba].a +
+            t * (TheColorBank.ColorPool[v2->rgba].a -
+                 TheColorBank.ColorPool[v1->rgba].a);
     }
 
     if (light)
     {
-        TheStateStack.IntensityPool[v->I] = TheStateStack.IntensityPool[v1->I] +
-                                            t * (TheStateStack.IntensityPool[v2->I] - TheStateStack.IntensityPool[v1->I]);
+        TheStateStack.IntensityPool[v->I] =
+            TheStateStack.IntensityPool[v1->I] +
+            t * (TheStateStack.IntensityPool[v2->I] -
+                 TheStateStack.IntensityPool[v1->I]);
     }
 
     if (tex)
@@ -155,7 +190,8 @@ static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL c
     // Now determine if the point is out to the sides
     if (flag bitand (CLIP_TOP bitor CLIP_BOTTOM))
     {
-        TheStateStack.ClipInfoPool[v->xyz].clipFlag = GetHorizontalClipFlags(x, z);
+        TheStateStack.ClipInfoPool[v->xyz].clipFlag =
+            GetHorizontalClipFlags(x, z);
     }
     else
     {
@@ -165,15 +201,18 @@ static inline void IntersectSide(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL c
     // Compute the screen space coordinates of the new point
     register float OneOverZ = 1.0f / z;
     TheStateStack.XformedPosPool[v->xyz].z = z;
-    TheStateStack.XformedPosPool[v->xyz].x = TheStateStack.XtoPixel(x * OneOverZ);
-    TheStateStack.XformedPosPool[v->xyz].y = TheStateStack.YtoPixel(y * OneOverZ);
+    TheStateStack.XformedPosPool[v->xyz].x =
+        TheStateStack.XtoPixel(x * OneOverZ);
+    TheStateStack.XformedPosPool[v->xyz].y =
+        TheStateStack.YtoPixel(y * OneOverZ);
 }
 
 
 // Intersect edge with y=z plane
 // This function is expected to be called second in the clipping chain
 // (ie: after near clip, but before all the others)
-static void IntersectBottom(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex)
+static void IntersectBottom(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color,
+                            BOOL light, BOOL tex)
 {
     IntersectSide(v1, v2, v, color, light, tex, CLIP_BOTTOM);
 }
@@ -182,7 +221,8 @@ static void IntersectBottom(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color,
 // Intersect edge with y=z plane
 // This function is expected to be called second in the clipping chain
 // (ie: after near clip, but before all the others)
-static void IntersectTop(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex)
+static void IntersectTop(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color,
+                         BOOL light, BOOL tex)
 {
     IntersectSide(v1, v2, v, color, light, tex, CLIP_TOP);
 }
@@ -191,7 +231,8 @@ static void IntersectTop(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BO
 // Intersect edge with y=z plane
 // This function is expected to be called second in the clipping chain
 // (ie: after near clip, but before all the others)
-static void IntersectRight(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex)
+static void IntersectRight(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color,
+                           BOOL light, BOOL tex)
 {
     IntersectSide(v1, v2, v, color, light, tex, CLIP_RIGHT);
 }
@@ -200,7 +241,8 @@ static void IntersectRight(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, 
 // Intersect edge with y=z plane
 // This function is expected to be called second in the clipping chain
 // (ie: after near clip, but before all the others)
-static void IntersectLeft(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color, BOOL light, BOOL tex)
+static void IntersectLeft(ClipVert *v1, ClipVert *v2, ClipVert *v, BOOL color,
+                          BOOL light, BOOL tex)
 {
     IntersectSide(v1, v2, v, color, light, tex, CLIP_LEFT);
 }
@@ -219,7 +261,6 @@ static inline void pvtClipPrimPoint(PrimPointFC *point, DrawPrimFp drawFn)
     ShiAssert(point->nVerts > 0);
 
 
-
     xyzIdxPtr = point->xyz;
     end = xyzIdxPtr + point->nVerts;
     newPoint.nVerts = 0;
@@ -234,8 +275,7 @@ static inline void pvtClipPrimPoint(PrimPointFC *point, DrawPrimFp drawFn)
         }
 
         xyzIdxPtr++;
-    }
-    while (xyzIdxPtr < end);
+    } while (xyzIdxPtr < end);
 
     if (newPoint.nVerts)
     {
@@ -285,10 +325,14 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
     do
     {
         // Copy the relevant data to avoid clobbering it for any other lines which share it
-        TheStateStack.XformedPosPool[v0.xyz] = TheStateStack.XformedPosPool[xyzIdxPtr[0]];
-        TheStateStack.ClipInfoPool[v0.xyz] = TheStateStack.ClipInfoPool[xyzIdxPtr[0]];
-        TheStateStack.XformedPosPool[v1.xyz] = TheStateStack.XformedPosPool[xyzIdxPtr[1]];
-        TheStateStack.ClipInfoPool[v1.xyz] = TheStateStack.ClipInfoPool[xyzIdxPtr[1]];
+        TheStateStack.XformedPosPool[v0.xyz] =
+            TheStateStack.XformedPosPool[xyzIdxPtr[0]];
+        TheStateStack.ClipInfoPool[v0.xyz] =
+            TheStateStack.ClipInfoPool[xyzIdxPtr[0]];
+        TheStateStack.XformedPosPool[v1.xyz] =
+            TheStateStack.XformedPosPool[xyzIdxPtr[1]];
+        TheStateStack.ClipInfoPool[v1.xyz] =
+            TheStateStack.ClipInfoPool[xyzIdxPtr[1]];
 
         // Clip near
         if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand CLIP_NEAR)
@@ -300,7 +344,8 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
             IntersectNear(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand
+            TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
@@ -315,7 +360,8 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
             IntersectBottom(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand
+            TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
@@ -330,7 +376,8 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
             IntersectTop(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand
+            TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
@@ -345,7 +392,8 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
             IntersectRight(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand
+            TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
@@ -360,7 +408,8 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
             IntersectLeft(&v0, &v1, &v1, FALSE, FALSE, FALSE);
         }
 
-        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
+        if (TheStateStack.ClipInfoPool[v0.xyz].clipFlag bitand
+            TheStateStack.ClipInfoPool[v1.xyz].clipFlag)
         {
             continue;
         }
@@ -370,8 +419,7 @@ static inline void pvtClipPrimLine(PrimLineFC *line, DrawPrimFp drawFn)
         xyz[1] = v1.xyz;
         drawFn(&newLine);
 
-    }
-    while (++xyzIdxPtr < end);
+    } while (++xyzIdxPtr < end);
 }
 
 
@@ -389,9 +437,10 @@ void ClipPrimFLine(PrimLineFC *line, UInt32)
 
 // TODO:  If we really want this inlined and optimized fully, we need to pass in flags to say
 // which pointers are in use so that the tests can be evaulated at compile time in all cases.
-inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *I, Ptexcoord *uv)
+inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba,
+                        int *I, Ptexcoord *uv)
 {
-    ClipVert *v, *p, *lastIn,  *nextOut;
+    ClipVert *v, *p, *lastIn, *nextOut;
     ClipVert *inList, *outList, *temp;
     ClipVert vertList1[MAX_VERTS_PER_CLIPPED_POLYGON];
     ClipVert vertList2[MAX_VERTS_PER_CLIPPED_POLYGON];
@@ -411,21 +460,25 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
     {
         nextOut->xyz = xyz[i];
 
-        if (rgba) nextOut->rgba = rgba[i];
+        if (rgba)
+            nextOut->rgba = rgba[i];
 
-        if (I) nextOut->I = I[i];
+        if (I)
+            nextOut->I = I[i];
 
-        if (uv) nextOut->uv = uv[i];
+        if (uv)
+            nextOut->uv = uv[i];
 
         i++;
         nextOut++;
-    }
-    while (i < *nVerts);
+    } while (i < *nVerts);
 
     inList = vertList2;
-    extraVertIdx.xyz = TheStateStack.XformedPosPoolNext - TheStateStack.XformedPosPool;
+    extraVertIdx.xyz =
+        TheStateStack.XformedPosPoolNext - TheStateStack.XformedPosPool;
     extraVertIdx.rgba = TheColorBank.nColors;
-    extraVertIdx.I = TheStateStack.IntensityPoolNext - TheStateStack.IntensityPool;
+    extraVertIdx.I =
+        TheStateStack.IntensityPoolNext - TheStateStack.IntensityPool;
 
 
     // Clip to the near plane
@@ -441,23 +494,30 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_NEAR bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_NEAR bitand
+                (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor
+                 TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba) extraVertIdx.rgba++;
+                if (rgba)
+                    extraVertIdx.rgba++;
 
-                if (I) extraVertIdx.I++;
+                if (I)
+                    extraVertIdx.I++;
 
-                IntersectNear(p, v, nextOut, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
-                clipTest or_eq TheStateStack.ClipInfoPool[nextOut->xyz].clipFlag;
+                IntersectNear(p, v, nextOut, rgba not_eq NULL, I not_eq NULL,
+                              uv not_eq NULL);
+                clipTest or_eq
+                    TheStateStack.ClipInfoPool[nextOut->xyz].clipFlag;
                 nextOut++;
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_NEAR))
+            if (not(TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand
+                    CLIP_NEAR))
             {
                 *nextOut++ = *v;
             }
@@ -467,7 +527,8 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
         ShiAssert(nextOut - outList <= MAX_VERTS_PER_CLIPPED_POLYGON);
 
-        if (nextOut - outList <= 2)  return FALSE;
+        if (nextOut - outList <= 2)
+            return FALSE;
 
         // NOTE:  We might get to this point and find a polygon is now marked totally clipped
         // since doing the near clip can change the flags and make a vertex appear to have
@@ -489,21 +550,27 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_BOTTOM bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_BOTTOM bitand
+                (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor
+                 TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba) extraVertIdx.rgba++;
+                if (rgba)
+                    extraVertIdx.rgba++;
 
-                if (I) extraVertIdx.I++;
+                if (I)
+                    extraVertIdx.I++;
 
-                IntersectBottom(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
+                IntersectBottom(p, v, nextOut++, rgba not_eq NULL,
+                                I not_eq NULL, uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_BOTTOM))
+            if (not(TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand
+                    CLIP_BOTTOM))
             {
                 *nextOut++ = *v;
             }
@@ -513,7 +580,8 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
         ShiAssert(nextOut - outList <= MAX_VERTS_PER_CLIPPED_POLYGON);
 
-        if (nextOut - outList <= 2)  return FALSE;
+        if (nextOut - outList <= 2)
+            return FALSE;
     }
 
 
@@ -530,21 +598,26 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_TOP bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_TOP bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor
+                                 TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba) extraVertIdx.rgba++;
+                if (rgba)
+                    extraVertIdx.rgba++;
 
-                if (I) extraVertIdx.I++;
+                if (I)
+                    extraVertIdx.I++;
 
-                IntersectTop(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
+                IntersectTop(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL,
+                             uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_TOP))
+            if (not(TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand
+                    CLIP_TOP))
             {
                 *nextOut++ = *v;
             }
@@ -554,7 +627,8 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
         ShiAssert(nextOut - outList <= MAX_VERTS_PER_CLIPPED_POLYGON);
 
-        if (nextOut - outList <= 2)  return FALSE;
+        if (nextOut - outList <= 2)
+            return FALSE;
     }
 
 
@@ -571,21 +645,27 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_RIGHT bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_RIGHT bitand
+                (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor
+                 TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba) extraVertIdx.rgba++;
+                if (rgba)
+                    extraVertIdx.rgba++;
 
-                if (I) extraVertIdx.I++;
+                if (I)
+                    extraVertIdx.I++;
 
-                IntersectRight(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
+                IntersectRight(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL,
+                               uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_RIGHT))
+            if (not(TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand
+                    CLIP_RIGHT))
             {
                 *nextOut++ = *v;
             }
@@ -595,7 +675,8 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
         ShiAssert(nextOut - outList <= MAX_VERTS_PER_CLIPPED_POLYGON);
 
-        if (nextOut - outList <= 2)  return FALSE;
+        if (nextOut - outList <= 2)
+            return FALSE;
     }
 
 
@@ -612,21 +693,27 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         {
 
             // If the edge between this vert and the previous one crosses the line, trim it
-            if (CLIP_LEFT bitand (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor TheStateStack.ClipInfoPool[v->xyz].clipFlag))
+            if (CLIP_LEFT bitand
+                (TheStateStack.ClipInfoPool[p->xyz].clipFlag xor
+                 TheStateStack.ClipInfoPool[v->xyz].clipFlag))
             {
                 ShiAssert(TheStateStack.IsValidPosIndex(extraVertIdx.xyz));
                 *nextOut = extraVertIdx;
                 extraVertIdx.xyz++;
 
-                if (rgba) extraVertIdx.rgba++;
+                if (rgba)
+                    extraVertIdx.rgba++;
 
-                if (I) extraVertIdx.I++;
+                if (I)
+                    extraVertIdx.I++;
 
-                IntersectLeft(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL, uv not_eq NULL);
+                IntersectLeft(p, v, nextOut++, rgba not_eq NULL, I not_eq NULL,
+                              uv not_eq NULL);
             }
 
             // If this vert isn't clipped, use it
-            if ( not (TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand CLIP_LEFT))
+            if (not(TheStateStack.ClipInfoPool[v->xyz].clipFlag bitand
+                    CLIP_LEFT))
             {
                 *nextOut++ = *v;
             }
@@ -636,7 +723,8 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
 
         ShiAssert(nextOut - outList <= MAX_VERTS_PER_CLIPPED_POLYGON);
 
-        if (nextOut - outList <= 2)  return FALSE;
+        if (nextOut - outList <= 2)
+            return FALSE;
     }
 
 
@@ -649,11 +737,14 @@ inline BOOL pvtClipPoly(UInt32 clipTest, int *nVerts, int *xyz, int *rgba, int *
         i--;
         xyz[i] = outList->xyz;
 
-        if (rgba) rgba[i] = outList->rgba;
+        if (rgba)
+            rgba[i] = outList->rgba;
 
-        if (I) I[i] = outList->I;
+        if (I)
+            I[i] = outList->I;
 
-        if (uv) uv[i] = outList->uv;
+        if (uv)
+            uv[i] = outList->uv;
 
         outList++;
     }
@@ -784,7 +875,8 @@ void ClipPolyG(PolyVC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL, NULL))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL,
+                    NULL))
     {
         DrawPolyG(&newPoly);
     }
@@ -811,7 +903,8 @@ void ClipPolyFG(PolyVC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL, NULL))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL,
+                    NULL))
     {
         DrawPolyFG(&newPoly);
     }
@@ -841,7 +934,8 @@ void ClipPolyGL(PolyVCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, newPoly.I, NULL))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba,
+                    newPoly.I, NULL))
     {
         DrawPolyGL(&newPoly);
     }
@@ -871,7 +965,8 @@ void ClipPolyFGL(PolyVCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, newPoly.I, NULL))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba,
+                    newPoly.I, NULL))
     {
         DrawPolyFGL(&newPoly);
     }
@@ -899,7 +994,8 @@ void ClipPolyT(PolyTexFC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyT(&newPoly);
     }
@@ -927,7 +1023,8 @@ void ClipPolyFT(PolyTexFC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyFT(&newPoly);
     }
@@ -956,7 +1053,8 @@ void ClipPolyAT(PolyTexFC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyAT(&newPoly);
     }
@@ -986,7 +1084,8 @@ void ClipPolyFAT(PolyTexFC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyFAT(&newPoly);
     }
@@ -1016,7 +1115,8 @@ void ClipPolyTL(PolyTexFCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyTL(&newPoly);
     }
@@ -1045,7 +1145,8 @@ void ClipPolyFTL(PolyTexFCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyFTL(&newPoly);
     }
@@ -1075,7 +1176,8 @@ void ClipPolyATL(PolyTexFCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyATL(&newPoly);
     }
@@ -1106,7 +1208,8 @@ void ClipPolyFATL(PolyTexFCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyFATL(&newPoly);
     }
@@ -1135,7 +1238,8 @@ void ClipPolyTG(PolyTexVC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyTG(&newPoly);
     }
@@ -1163,7 +1267,8 @@ void ClipPolyFTG(PolyTexVC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, NULL,
+                    newPoly.uv))
     {
         DrawPolyFTG(&newPoly);
     }
@@ -1194,7 +1299,8 @@ void ClipPolyATG(PolyTexVC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL,
+                    newPoly.uv))
     {
         DrawPolyATG(&newPoly);
     }
@@ -1226,7 +1332,8 @@ void ClipPolyFATG(PolyTexVC *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, NULL,
+                    newPoly.uv))
     {
         DrawPolyFATG(&newPoly);
     }
@@ -1258,7 +1365,8 @@ void ClipPolyTGL(PolyTexVCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, newPoly.I, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, newPoly.I,
+                    newPoly.uv))
     {
         DrawPolyTGL(&newPoly);
     }
@@ -1289,7 +1397,8 @@ void ClipPolyFTGL(PolyTexVCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, newPoly.I, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, NULL, newPoly.I,
+                    newPoly.uv))
     {
         DrawPolyFTGL(&newPoly);
     }
@@ -1323,7 +1432,8 @@ void ClipPolyATGL(PolyTexVCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, newPoly.I, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba,
+                    newPoly.I, newPoly.uv))
     {
         DrawPolyATGL(&newPoly);
     }
@@ -1358,7 +1468,8 @@ void ClipPolyFATGL(PolyTexVCN *poly, UInt32 clipTest)
     }
 
     // Clip the temporary polygon (destructive)
-    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba, newPoly.I, newPoly.uv))
+    if (pvtClipPoly(clipTest, &newPoly.nVerts, newPoly.xyz, newPoly.rgba,
+                    newPoly.I, newPoly.uv))
     {
         DrawPolyFATGL(&newPoly);
     }

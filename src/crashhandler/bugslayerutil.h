@@ -61,9 +61,9 @@ FEB '99 - Updated the CrashHandler code to work on Win9x.
 #else
 #ifndef BUGSUTIL_DLLINTERFACE
 #ifdef BUILDING_BUGSUTILITY_DLL
-#define BUGSUTIL_DLLINTERFACE __declspec ( dllexport )
+#define BUGSUTIL_DLLINTERFACE __declspec(dllexport)
 #else
-#define BUGSUTIL_DLLINTERFACE __declspec ( dllimport )
+#define BUGSUTIL_DLLINTERFACE __declspec(dllimport)
 #endif  // BUILDING_BUGSTILITY_DLL
 #endif  // BUGSUTIL_DLLINTERFACE
 #endif // BUGSUITL_LIB
@@ -76,10 +76,10 @@ FEB '99 - Updated the CrashHandler code to work on Win9x.
 //#include "MemDumperValidator.h"
 
 // The CrashHandler routines.
-#include "CrashHandler.h"
+#include "crashhandler.h"
 
 // The ASSERT routines.
-#include "DiagAssert.h"
+#include "diagassert.h"
 
 
 /*//////////////////////////////////////////////////////////////////////
@@ -87,7 +87,8 @@ FEB '99 - Updated the CrashHandler code to work on Win9x.
                                  START
 //////////////////////////////////////////////////////////////////////*/
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif  // _cplusplus
 
     /*----------------------------------------------------------------------
@@ -113,11 +114,10 @@ extern "C" {
         TRUE  - The function succeeded.  See the parameter discussion for
                 the output parameters.
     ----------------------------------------------------------------------*/
-    BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    GetLoadedModules(DWORD     dwPID        ,
-                     UINT      uiCount      ,
-                     HMODULE * paModArray   ,
-                     LPUINT    puiRealCount);
+    BOOL BUGSUTIL_DLLINTERFACE __stdcall GetLoadedModules(DWORD dwPID,
+                                                          UINT uiCount,
+                                                          HMODULE *paModArray,
+                                                          LPUINT puiRealCount);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   AllocAndFillProcessModuleList
@@ -134,32 +134,31 @@ extern "C" {
  not NULL - The block of memory holding the HMODULEs.
     ----------------------------------------------------------------------*/
     HMODULE * /*BUGSUTIL_DLLINTERFACE*/ __stdcall
-    AllocAndFillProcessModuleList(HANDLE hHeap    ,
-                                  LPUINT puiCount);
+    AllocAndFillProcessModuleList(HANDLE hHeap, LPUINT puiCount);
 
     typedef struct tag_HOOKFUNCDESCA
     {
         // The name of the function to hook.
-        LPCSTR szFunc   ;
+        LPCSTR szFunc;
         // The procedure to blast in.
-        PROC   pProc    ;
-    } HOOKFUNCDESCA , * LPHOOKFUNCDESCA ;
+        PROC pProc;
+    } HOOKFUNCDESCA, *LPHOOKFUNCDESCA;
 
     typedef struct tag_HOOKFUNCDESCW
     {
         // The name of the function to hook.
-        LPCWSTR szFunc   ;
+        LPCWSTR szFunc;
         // The procedure to blast in.
-        PROC    pProc    ;
-    } HOOKFUNCDESCW , * LPHOOKFUNCDESCW ;
+        PROC pProc;
+    } HOOKFUNCDESCW, *LPHOOKFUNCDESCW;
 
 #ifdef UNICODE
-#define HOOKFUNCDESC   HOOKFUNCDESCW
+#define HOOKFUNCDESC HOOKFUNCDESCW
 #define LPHOOKFUNCDESC LPHOOKFUNCDESCW
 #else
-#define HOOKFUNCDESC   HOOKFUNCDESCA
+#define HOOKFUNCDESC HOOKFUNCDESCA
 #define LPHOOKFUNCDESC LPHOOKFUNCDESCA
-#endif  // UNICODE
+#endif // UNICODE
 
     /*----------------------------------------------------------------------
     FUNCTION        :   HookImportedFunctionsByName
@@ -205,12 +204,9 @@ extern "C" {
                 the output parameters.
     ----------------------------------------------------------------------*/
     BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    HookImportedFunctionsByName(HMODULE         hModule     ,
-                                LPCSTR          szImportMod ,
-                                UINT            uiCount     ,
-                                LPHOOKFUNCDESCA paHookArray ,
-                                PROC *          paOrigFuncs ,
-                                LPUINT          puiHooked) ;
+    HookImportedFunctionsByName(HMODULE hModule, LPCSTR szImportMod,
+                                UINT uiCount, LPHOOKFUNCDESCA paHookArray,
+                                PROC *paOrigFuncs, LPUINT puiHooked);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   BSUGetModuleBaseName
@@ -230,10 +226,8 @@ extern "C" {
              call GetLastError
     ----------------------------------------------------------------------*/
     DWORD BUGSUTIL_DLLINTERFACE __stdcall
-    BSUGetModuleBaseName(HANDLE  hProcess   ,
-                         HMODULE hModule    ,
-                         LPTSTR  lpBaseName ,
-                         DWORD   nSize) ;
+    BSUGetModuleBaseName(HANDLE hProcess, HMODULE hModule, LPTSTR lpBaseName,
+                         DWORD nSize);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   IsNT
@@ -247,12 +241,12 @@ extern "C" {
     RETURNS         :
 
     ----------------------------------------------------------------------*/
-    BOOL BUGSUTIL_DLLINTERFACE __stdcall IsNT(void) ;
+    BOOL BUGSUTIL_DLLINTERFACE __stdcall IsNT(void);
 
 
 #ifdef __cplusplus
 }
-#endif  // _cplusplus
+#endif // _cplusplus
 /*//////////////////////////////////////////////////////////////////////
                                   END
                       C Function Declaration Area
@@ -264,14 +258,12 @@ extern "C" {
 //////////////////////////////////////////////////////////////////////*/
 #ifdef __cplusplus
 
-#include "SymbolEngine.h"
+#include "symbolengine.h"
 
-#endif  // __cplusplus
+#endif // __cplusplus
 /*//////////////////////////////////////////////////////////////////////
                                   END
                          C++ Only Declarations
 //////////////////////////////////////////////////////////////////////*/
 
-#endif  // _BUGSLAYERUTIL_H
-
-
+#endif // _BUGSLAYERUTIL_H

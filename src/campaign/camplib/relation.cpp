@@ -2,12 +2,12 @@
 #include <fcntl.h>
 #include <io.h>
 #include "campmap.h"
-#include "CmpGlobl.h"
+#include "cmpglobl.h"
 #include "team.h"
 #include "falcmesg.h"
-#include "cmpClass.h"
-#include "Dispcfg.h"
-#include "Falcuser.h"
+#include "cmpclass.h"
+#include "dispcfg.h"
+#include "falcuser.h"
 #include "entity.h" // 2002-04-20 MN for DDP datafile
 
 // =========================================================================
@@ -112,4 +112,3 @@ void SetCTRelations(Control who, Team with, int rel)
 {
     SetTTRelations(GetTeam(who), with, rel);
 }
-

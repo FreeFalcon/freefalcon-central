@@ -6,8 +6,8 @@
 #define GNDUNIT_H
 
 #include "unit.h"
-#include "AIInput.h"
-#include "SIM/INCLUDE/gndai.h"
+#include "aiinput.h"
+#include "sim/include/gndai.h"
 
 class AircraftClass;
 
@@ -153,8 +153,10 @@ public:
     void SetAObj(VU_ID);
 
     // Core functions
-    int DetectVs(AircraftClass *ac, float *d, int *combat, int *spotted, int *capture, int *nomove, int *estr);
-    int DetectVs(CampEntity e, float *d, int *combat, int *spotted, int *capture, int *nomove, int *estr);
+    int DetectVs(AircraftClass *ac, float *d, int *combat, int *spotted,
+                 int *capture, int *nomove, int *estr);
+    int DetectVs(CampEntity e, float *d, int *combat, int *spotted,
+                 int *capture, int *nomove, int *estr);
     virtual void SetUnitOrders(uchar o)
     {
         orders = o;
@@ -219,14 +221,14 @@ public:
     void ReadDirty(unsigned char **stream, long *rem);
 };
 
-#include "Battalion.h"
-#include "Brigade.h"
+#include "battalion.h"
+#include "brigade.h"
 
 // ============================
 // Global functions
 // ============================
 
-extern char* DirectionToEnemy(char* buf, GridIndex x, GridIndex y, Team who);
+extern char *DirectionToEnemy(char *buf, GridIndex x, GridIndex y, Team who);
 
 extern void ReorderRallied(Unit u);
 
@@ -238,7 +240,8 @@ extern void ReorganizeUnit(Unit u);
 
 extern int BuildGroundWP(Unit u);
 
-extern void GetCombatPos(Unit e, int positions[], char ed[], GridIndex* tx, GridIndex *ty);
+extern void GetCombatPos(Unit e, int positions[], char ed[], GridIndex *tx,
+                         GridIndex *ty);
 
 extern int GetActionFromOrders(int orders);
 
@@ -252,17 +255,22 @@ extern int SOSecured(Objective o, Team who);
 
 extern int GetActionFromOrders(int orders);
 
-extern CampaignHeading GetAlternateHeading(Unit u, GridIndex x, GridIndex y, GridIndex nx, GridIndex ny, CampaignHeading h);
+extern CampaignHeading GetAlternateHeading(Unit u, GridIndex x, GridIndex y,
+                                           GridIndex nx, GridIndex ny,
+                                           CampaignHeading h);
 
-extern int ScorePosition(GridIndex x, GridIndex y, GridIndex px, GridIndex py, int position, int ours);
+extern int ScorePosition(GridIndex x, GridIndex y, GridIndex px, GridIndex py,
+                         int position, int ours);
 
 extern Objective FindBestPosition(Unit u, Unit e, F4PFList nearlist);
 
-extern void ClassifyUnitElements(Unit u, int *recon, int *combat, int *reserve, int *support);
+extern void ClassifyUnitElements(Unit u, int *recon, int *combat, int *reserve,
+                                 int *support);
 
 extern int GetPositionOrders(Unit e);
 
-extern void FindBestCover(GridIndex x, GridIndex y, CampaignHeading h, GridIndex *cx, GridIndex *cy, int roadok);
+extern void FindBestCover(GridIndex x, GridIndex y, CampaignHeading h,
+                          GridIndex *cx, GridIndex *cy, int roadok);
 
 extern Objective FindRetreatPath(Unit u, int depth, int flags);
 

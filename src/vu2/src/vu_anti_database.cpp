@@ -19,7 +19,8 @@
 // VuAntiDatabase
 //-----------------------------------------------------------------------------
 
-VuAntiDatabase::VuAntiDatabase(uint tableSize, uint key) : VuHashTable(tableSize, key)
+VuAntiDatabase::VuAntiDatabase(uint tableSize, uint key)
+    : VuHashTable(tableSize, key)
 {
     // empty
 }
@@ -57,7 +58,8 @@ int VuAntiDatabase::Purge(VU_BOOL all)
             // sfr: smartpointer
             VuEntity *ent = ptr->entity_.get();
 
-            if (!all && ((ent->IsPrivate() && ent->IsPersistent()) || ent->IsGlobal()))
+            if (!all &&
+                ((ent->IsPrivate() && ent->IsPersistent()) || ent->IsGlobal()))
             {
                 ptr->next_ = vuTailNode;
 

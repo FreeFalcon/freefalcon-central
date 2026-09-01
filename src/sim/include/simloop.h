@@ -29,7 +29,7 @@ public:
     {
         return currentMode == RunningGraphics;
     }
-    static int  GetSimTick(void)
+    static int GetSimTick(void)
     {
         return sim_tick;
     }
@@ -38,8 +38,7 @@ public:
     static HANDLE wait_for_graphics_cleanup;
 
 protected:
-    static enum SimLoopControlMode
-    {
+    static enum SimLoopControlMode {
         Stopped,
         StartingSim,
         RunningSim,

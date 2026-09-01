@@ -1,13 +1,13 @@
 /** @file vu_mq.cpp message queue implementation */
 
-#include <cISO646>
+#include <ciso646>
 #include "vu2.h"
 
 ////////////////////
 // VuMessageQueue //
 ////////////////////
 
-extern VuMainThread *vuMainThread;
+extern VuMainThread* vuMainThread;
 
 static VuNullMessageFilter vuNullFilter;
 
@@ -15,10 +15,10 @@ VuMessageQueue* VuMessageQueue::queuecollhead_ = 0;
 
 VuMessageQueue::VuMessageQueue(int queueSize, VuMessageFilter* filter)
 {
-    head_  = new VuMessage*[queueSize];
-    read_  = head_;
+    head_ = new VuMessage*[queueSize];
+    read_ = head_;
     write_ = head_;
-    tail_  = head_ + queueSize;
+    tail_ = head_ + queueSize;
 
     // initialize queue
     for (int i = 0; i < queueSize; i++)
@@ -26,7 +26,7 @@ VuMessageQueue::VuMessageQueue(int queueSize, VuMessageFilter* filter)
         head_[i] = 0;
     }
 
-    if ( not filter)
+    if (not filter)
     {
         filter = &vuNullFilter;
     }
@@ -35,14 +35,14 @@ VuMessageQueue::VuMessageQueue(int queueSize, VuMessageFilter* filter)
 
     // add this queue to list of queues
     VuEnterCriticalSection();
-    nextqueue_     = queuecollhead_;
+    nextqueue_ = queuecollhead_;
     queuecollhead_ = this;
     VuExitCriticalSection();
 }
 
 VuMessageQueue::~VuMessageQueue()
 {
-    delete [] head_;
+    delete[] head_;
     delete filter_;
     filter_ = 0;
 
@@ -69,7 +69,7 @@ VuMessageQueue::~VuMessageQueue()
         }
 
         last = cur;
-        cur  = cur->nextqueue_;
+        cur = cur->nextqueue_;
     }
 
     VuExitCriticalSection();
@@ -78,7 +78,7 @@ VuMessageQueue::~VuMessageQueue()
 VU_BOOL VuMessageQueue::DispatchVuMessage(VU_BOOL autod)
 {
     // used to return message... not anymore
-    VuMessage *msg = 0;
+    VuMessage* msg = 0;
     VuEnterCriticalSection();
 
     if (*read_)
@@ -112,15 +112,18 @@ int VuMessageQueue::DispatchMessages(int max, VU_BOOL autod)
 
     int i = 0;
 
-    while (DispatchVuMessage(autod) and (++i < max)) ;
+    while (DispatchVuMessage(autod) and (++i < max))
+        ;
 
     return i;
 }
 
-int VuMessageQueue::InvalidateQueueMessages(VU_BOOL(*evalFunc)(VuMessage*, void*), void *arg)
+int VuMessageQueue::InvalidateQueueMessages(VU_BOOL (*evalFunc)(VuMessage*,
+                                                                void*),
+                                            void* arg)
 {
     VuEnterCriticalSection();
-    int         count = 0;
+    int count = 0;
     VuMessage** cur = read_;
 
     while (*cur)
@@ -178,21 +181,18 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     }
 
     // outgoing message, try send. If fails, add to send queue
-    if (
-        vuGlobalGroup and vuGlobalGroup->Connected() and 
-        msg->Target() and msg->Target() not_eq vuLocalSessionEntity and 
-        msg->DoSend() and ( not ent or not ent->IsPrivate()) and 
-        (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_)
-    )
+    if (vuGlobalGroup and vuGlobalGroup->Connected() and msg->Target() and
+        msg->Target() not_eq vuLocalSessionEntity and msg->DoSend() and
+        (not ent or not ent->IsPrivate()) and
+        (vuLocalSession.creator_ not_eq VU_SESSION_NULL_CONNECTION.creator_))
     {
         retval = msg->Send();
-        VuPendingSendQueue *sq = vuMainThread->SendQueue();
+        VuPendingSendQueue* sq = vuMainThread->SendQueue();
 
-        if (
-            (retval == 0) and sq and 
-            (msg->Flags() bitand VU_SEND_FAILED_MSG_FLAG) and 
-            ((msg->Flags() bitand VU_RELIABLE_MSG_FLAG) or (msg->Flags() bitand VU_KEEPALIVE_MSG_FLAG))
-        )
+        if ((retval == 0) and sq and
+            (msg->Flags() bitand VU_SEND_FAILED_MSG_FLAG) and
+            ((msg->Flags() bitand VU_RELIABLE_MSG_FLAG) or
+             (msg->Flags() bitand VU_KEEPALIVE_MSG_FLAG)))
         {
             //if (msg->Flags() bitand VU_NORMAL_PRIORITY_MSG_FLAG){
             sq->AddMessage(msg);
@@ -207,17 +207,16 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     }
 
     // if message is remote or is a local message loopback, place in local queues
-    if (
- not msg->IsLocal() or
-        ((msg->Flags() bitand VU_LOOPBACK_MSG_FLAG) and msg->IsLocal())
-    )
+    if (not msg->IsLocal() or
+        ((msg->Flags() bitand VU_LOOPBACK_MSG_FLAG) and msg->IsLocal()))
     {
         VuMessageQueue* cur = queuecollhead_;
 
         while (cur)
         {
             // sfr: this is only for received messages. exclude send queues
-            if (/*cur not_eq vuLowSendQueue and */cur not_eq vuMainThread->SendQueue())
+            if (/*cur not_eq vuLowSendQueue and */ cur not_eq
+                vuMainThread->SendQueue())
             {
                 cur->AddMessage(msg);
             }
@@ -227,10 +226,8 @@ int VuMessageQueue::PostVuMessage(VuMessage* msg)
     }
 
     // message not added to any queue, auto destroy
-    if (
-        (msg->refcnt_ == 1) and 
-        ( not msg->IsLocal() or (msg->Flags() bitand VU_LOOPBACK_MSG_FLAG))
-    )
+    if ((msg->refcnt_ == 1) and
+        (not msg->IsLocal() or (msg->Flags() bitand VU_LOOPBACK_MSG_FLAG)))
     {
         VuExitCriticalSection();
         msg->Process(TRUE);
@@ -250,11 +247,8 @@ void VuMessageQueue::FlushAllQueues()
     // must enter critical section as this modifies multiple threads' queues
     VuEnterCriticalSection();
 
-    for (
-        VuMessageQueue* cur = queuecollhead_;
-        cur not_eq NULL;
-        cur = cur->nextqueue_
-    )
+    for (VuMessageQueue* cur = queuecollhead_; cur not_eq NULL;
+         cur = cur->nextqueue_)
     {
         cur->DispatchMessages(-1, TRUE);
     }
@@ -279,7 +273,8 @@ int VuMessageQueue::InvalidateMessages(VU_BOOL (*evalFunc)(VuMessage*, void*), v
 void VuMessageQueue::RepostMessage(VuMessage* msg, int delay)
 {
     msg->flags_ or_eq compl VU_LOOPBACK_MSG_FLAG;
-    VuTimerEvent *timer = new VuTimerEvent(0, vuxRealTime + delay, VU_DELAY_TIMER, msg);
+    VuTimerEvent* timer =
+        new VuTimerEvent(0, vuxRealTime + delay, VU_DELAY_TIMER, msg);
     VuMessageQueue::PostVuMessage(timer);
 }
 
@@ -292,7 +287,7 @@ VU_BOOL VuMessageQueue::ReallocQueue()
     VuMessage **newhead, **cp, **rp;
 
     newhead = new VuMessage*[size];
-    cp      = newhead;
+    cp = newhead;
 
     for (rp = read_; rp not_eq tail_; cp++, rp++)
         *cp = *rp;
@@ -301,10 +296,10 @@ VU_BOOL VuMessageQueue::ReallocQueue()
         *cp = *rp;
 
     delete[] head_;
-    head_  = newhead;
-    read_  = head_;
+    head_ = newhead;
+    read_ = head_;
     write_ = cp;
-    tail_  = head_ + size;
+    tail_ = head_ + size;
 
     while (cp not_eq tail_)
     {
@@ -317,7 +312,7 @@ VU_BOOL VuMessageQueue::ReallocQueue()
 VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
 {
     // JB 010121
-    if ( not event or not filter_)
+    if (not event or not filter_)
     {
         return 0;
     }
@@ -334,7 +329,7 @@ VU_BOOL VuMessageQueue::AddMessage(VuMessage* event)
 
         if (write_ == read_ and *read_)
         {
-            if ( not ReallocQueue() and write_ == read_ and *read_)
+            if (not ReallocQueue() and write_ == read_ and *read_)
             {
                 // do simple dispatch -- cannot be handled by user
                 // danm_note: should we issue a warning here?
@@ -358,7 +353,9 @@ VuMainMessageQueue::VuMainMessageQueue(int queueSize, VuMessageFilter* filter)
     timerlisthead_ = 0;
 }
 
-VuMainMessageQueue::~VuMainMessageQueue() {}
+VuMainMessageQueue::~VuMainMessageQueue()
+{
+}
 
 VU_BOOL VuMainMessageQueue::DispatchVuMessage(VU_BOOL autod)
 {
@@ -390,14 +387,14 @@ VU_BOOL VuMainMessageQueue::AddMessage(VuMessage* msg)
         while (cur and cur->mark_ <= insert->mark_)
         {
             last = cur;
-            cur  = cur->next_;
+            cur = cur->next_;
         }
 
         insert->next_ = cur;
 
         if (last)
         {
-            last->next_    = insert;
+            last->next_ = insert;
         }
         else
         {
@@ -430,7 +427,7 @@ VuPendingSendQueue::~VuPendingSendQueue()
 
 VU_BOOL VuPendingSendQueue::DispatchVuMessage(VU_BOOL autod)
 {
-    VuMessage* msg    = 0;
+    VuMessage* msg = 0;
     VU_BOOL retval = FALSE;
 
     VuEnterCriticalSection();
@@ -455,7 +452,7 @@ VU_BOOL VuPendingSendQueue::DispatchVuMessage(VU_BOOL autod)
             {
                 retval = FALSE;
 
-                if ( not autod)
+                if (not autod)
                 {
                     // note: this puts the unsent message on the end of the send queue
                     AddMessage(msg);
@@ -474,15 +471,15 @@ VU_BOOL VuPendingSendQueue::DispatchVuMessage(VU_BOOL autod)
 // static namespace
 namespace
 {
-    VU_BOOL TargetInvalidateCheck(VuMessage* msg, void *arg)
+VU_BOOL TargetInvalidateCheck(VuMessage* msg, void* arg)
+{
+    if (msg->Target() == arg)
     {
-        if (msg->Target() == arg)
-        {
-            return TRUE;
-        }
-
-        return FALSE;
+        return TRUE;
     }
+
+    return FALSE;
+}
 } // namespace
 
 void VuPendingSendQueue::RemoveTarget(VuTargetEntity* target)
@@ -501,8 +498,3 @@ VU_BOOL VuPendingSendQueue::AddMessage(VuMessage* msg)
 
     return retval;
 }
-
-
-
-
-

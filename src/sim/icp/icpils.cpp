@@ -17,7 +17,7 @@ extern int mpHsi;
 
 void ICPClass::ExecILSMode(void)
 {
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI Original code
         VU_ID id;
@@ -66,8 +66,10 @@ void ICPClass::ExecILSMode(void)
                 {
                     gNavigationSys->GetHomeID(&homeid);
 
-                    isValidILS = gNavigationSys->GetILSAttribute(NavigationSystem::AIRBASE_ID, &ilsid);
-                    isValidRWY = gNavigationSys->GetILSAttribute(NavigationSystem::RWY_NUM, (char*)rwyNum);
+                    isValidILS = gNavigationSys->GetILSAttribute(
+                        NavigationSystem::AIRBASE_ID, &ilsid);
+                    isValidRWY = gNavigationSys->GetILSAttribute(
+                        NavigationSystem::RWY_NUM, (char*)rwyNum);
 
                     if (id == homeid)
                     {
@@ -100,7 +102,8 @@ void ICPClass::ExecILSMode(void)
                 }
 
                 // Line #3
-                gNavigationSys->GetTacanChannel(NavigationSystem::ICP, &channel, &set);
+                gNavigationSys->GetTacanChannel(NavigationSystem::ICP, &channel,
+                                                &set);
 
                 if (set == TacanList::X)
                 {
@@ -120,7 +123,8 @@ void ICPClass::ExecILSMode(void)
                     strcpy(p_signaltype, "TR");
                 }
 
-                sprintf(mpLine3, "TCN %-3d%c %s", channel, setchar, p_signaltype);
+                sprintf(mpLine3, "TCN %-3d%c %s", channel, setchar,
+                        p_signaltype);
             }
         }
         else if (frame == 9)
@@ -135,8 +139,10 @@ void ICPClass::ExecILSMode(void)
                 {
                     gNavigationSys->GetHomeID(&homeid);
 
-                    isValidILS = gNavigationSys->GetILSAttribute(NavigationSystem::AIRBASE_ID, &ilsid);
-                    isValidRWY = gNavigationSys->GetILSAttribute(NavigationSystem::RWY_NUM, (char*)rwyNum);
+                    isValidILS = gNavigationSys->GetILSAttribute(
+                        NavigationSystem::AIRBASE_ID, &ilsid);
+                    isValidRWY = gNavigationSys->GetILSAttribute(
+                        NavigationSystem::RWY_NUM, (char*)rwyNum);
 
                     if (id == homeid)
                     {
@@ -177,14 +183,15 @@ void ICPClass::ExecILSMode(void)
         char p_signaltype[10] = "";
         static int frame = 0;
 
-        HSICourse = static_cast<int>
-                    (OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS));
+        HSICourse = static_cast<int>(OTWDriver.pCockpitManager->mpHsi->GetValue(
+            CPHsi::HSI_VAL_DESIRED_CRS));
 
         if (gNavigationSys->GetControlSrc() == NavigationSystem::AUXCOMM)
             ILSBackup();
         else
         {
-            if (gNavigationSys->GetTacanBand(NavigationSystem::ICP) == TacanList::X)
+            if (gNavigationSys->GetTacanBand(NavigationSystem::ICP) ==
+                TacanList::X)
                 TacanBand = 'X';
             else
                 TacanBand = 'Y';
@@ -205,7 +212,8 @@ void ICPClass::ExecILSMode(void)
                     ILSOn = 0;
             }
 
-            if (gNavigationSys->GetDomain(NavigationSystem::ICP) == TacanList::AA)
+            if (gNavigationSys->GetDomain(NavigationSystem::ICP) ==
+                TacanList::AA)
             {
                 //Line1
                 FillDEDMatrix(0, 1, "TCN A/A TR");
@@ -271,7 +279,7 @@ void ICPClass::ExecILSMode(void)
 
 void ICPClass::PNUpdateILSMode(int button, int)
 {
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI original code
         if (button == PREV_BUTTON)
@@ -288,7 +296,9 @@ void ICPClass::PNUpdateILSMode(int button, int)
     else
         ExecILSMode();
 }
-void ICPClass::ENTRUpdateILSMode() {}
+void ICPClass::ENTRUpdateILSMode()
+{
+}
 
 void ICPClass::FakeILSFreq(void)
 {

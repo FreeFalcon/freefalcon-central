@@ -7,8 +7,8 @@
 /*
 
 //sfr: this is not used, and does not compile
-#include "MsgInc/RequestCampaignMsg.h"
-#include "MsgInc/SendCampaignMsg.h"
+#include "msginc/requestcampaignmsg.h"
+#include "msginc/sendcampaignmsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -16,7 +16,7 @@
 #include "falcsess.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
 

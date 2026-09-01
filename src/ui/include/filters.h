@@ -10,10 +10,10 @@
 #endif
 
 #define _MAX_TEAMS_ (NUM_TEAMS) // (8) Kevin only has 7 defined
-#define _MAX_DIRECTIONS_   (8)
-#define _MIN_ZOOM_LEVEL_      (1)
-#define _MAX_ZOOM_LEVEL_     (32)
-#define I_NEED_TO_DRAW     (0x01)
+#define _MAX_DIRECTIONS_ (8)
+#define _MIN_ZOOM_LEVEL_ (1)
+#define _MAX_ZOOM_LEVEL_ (32)
+#define I_NEED_TO_DRAW (0x01)
 #define I_NEED_TO_DRAW_MAP (0x02)
 
 #define _MAP_NUM_OBJ_TYPES_ (14)
@@ -68,7 +68,7 @@ enum
     OOB_ARMY = 0x00020000,
     OOB_NAVY = 0x00040000,
     OOB_OBJECTIVE = 0x00080000,
-    OOB_TEAM_MASK   = 0xff000000,
+    OOB_TEAM_MASK = 0xff000000,
 };
 
 enum
@@ -107,8 +107,8 @@ enum // Ship/Air Unit Icon IDs
     STPT_OTR = 10516,
     STPT_OTR_SEL = 10517,
     STPT_OTR_OTHER = 10518,
-    ASSIGNED_TGT_CUR  = 10519,
-    HOME_BASE_CUR   = 10520,
+    ASSIGNED_TGT_CUR = 10519,
+    HOME_BASE_CUR = 10520,
     ADDLINE_CUR = 10521,
     ADDLINE_CUR_SEL = 10522,
 };

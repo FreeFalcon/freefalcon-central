@@ -1,13 +1,13 @@
 #ifndef _SENDDOGFIGHTINFO_H
 #define _SENDDOGFIGHTINFO_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "falcmesg.h"
 #include "mission.h"
 #include "dogfight.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Dogfight Info
@@ -15,7 +15,8 @@
 class UI_SendDogfightInfo : public FalconEvent
 {
 public:
-    UI_SendDogfightInfo(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_SendDogfightInfo(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     UI_SendDogfightInfo(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~UI_SendDogfightInfo(void);
     virtual int Size() const
@@ -43,7 +44,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         VU_ID game;
         DogfightClass settings;
@@ -52,6 +52,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

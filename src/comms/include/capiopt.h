@@ -4,4 +4,3 @@
 /*#define DEBUG_COMMS */
 //#define CAPI_NET_DEBUG_FEATURES
 #define COMPRESS_DATA
-

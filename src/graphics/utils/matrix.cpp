@@ -17,31 +17,33 @@
 
 void MatrixMult_Generic(const Trotation* S1, const Trotation* S2, Trotation* T);
 void MatrixMult_Generic(const Trotation* M, const float k, Trotation* T);
-void MatrixMultTranspose_Generic(const Trotation* M, const Tpoint *P, Tpoint *Tgt);
+void MatrixMultTranspose_Generic(const Trotation* M, const Tpoint* P,
+                                 Tpoint* Tgt);
 
 #if defined(_M_IX86)
 void MatrixMult_3DNow(const Trotation* S1, const Trotation* S2, Trotation* T);
 void MatrixMult_3DNow(const Trotation* M, const float k, Trotation* T);
-void MatrixMultTranspose_3DNow(const Trotation* M, const Tpoint *P, Tpoint *Tgt);
+void MatrixMultTranspose_3DNow(const Trotation* M, const Tpoint* P,
+                               Tpoint* Tgt);
 #endif
 
-void (*pMatrixMult1)(const Trotation* Mat1, const Trotation* Mat2, Trotation* Transform) = MatrixMult_Generic;
-void (*pMatrixMult2)(const Trotation* Mat1, const float k, Trotation* Transform) = MatrixMult_Generic;
-void (*pMatrixMultTranspose)(const Trotation* M, const Tpoint *P, Tpoint *Tgt) = MatrixMultTranspose_Generic;
+void (*pMatrixMult1)(const Trotation* Mat1, const Trotation* Mat2,
+                     Trotation* Transform) = MatrixMult_Generic;
+void (*pMatrixMult2)(const Trotation* Mat1, const float k,
+                     Trotation* Transform) = MatrixMult_Generic;
+void (*pMatrixMultTranspose)(const Trotation* M, const Tpoint* P,
+                             Tpoint* Tgt) = MatrixMultTranspose_Generic;
 
 // Handy constants to have available
-const Tpoint Origin = { 0.0f, 0.0f, 0.0f };
-const Trotation IMatrix = { 1.0f, 0.0f, 0.0f,
-                            0.0f, 1.0f, 0.0f,
-                            0.0f, 0.0f, 1.0f
-                          };
+const Tpoint Origin = {0.0f, 0.0f, 0.0f};
+const Trotation IMatrix = {1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+                           0.0f, 0.0f, 0.0f, 1.0f};
 
 /***************************************************************************\
  Initialize the contents of a matrix provided by the caller
 \***************************************************************************/
-void MatrixLoad(Trotation* T, float a11, float a12, float a13,
-                float a21, float a22, float a23,
-                float a31, float a32, float a33)
+void MatrixLoad(Trotation* T, float a11, float a12, float a13, float a21,
+                float a22, float a23, float a31, float a32, float a33)
 {
     T->M11 = a11, T->M12 = a12, T->M13 = a13;
     T->M21 = a21, T->M22 = a22, T->M23 = a23;
@@ -80,7 +82,7 @@ void MatrixMult(const Trotation* M, const float k, Trotation* T)
 /***************************************************************************\
  Multiply the matrix with the point and store the result in the target
 \***************************************************************************/
-void MatrixMult(const Trotation* M, const Tpoint *P, Tpoint *Tgt)
+void MatrixMult(const Trotation* M, const Tpoint* P, Tpoint* Tgt)
 {
     Tgt->x = M->M11 * P->x + M->M12 * P->y + M->M13 * P->z;
     Tgt->y = M->M21 * P->x + M->M22 * P->y + M->M23 * P->z;
@@ -92,7 +94,7 @@ void MatrixMult(const Trotation* M, const Tpoint *P, Tpoint *Tgt)
  Multiply the transpose of the matrix with the point and store the
  result in the target
 \***************************************************************************/
-void MatrixMultTranspose(const Trotation* M, const Tpoint *P, Tpoint *Tgt)
+void MatrixMultTranspose(const Trotation* M, const Tpoint* P, Tpoint* Tgt)
 {
     pMatrixMultTranspose(M, P, Tgt);
 }
@@ -142,7 +144,8 @@ void MatrixMult_Generic(const Trotation* M, const float k, Trotation* T)
  Multiply the transpose of the matrix with the point and store the
  result in the target
 \***************************************************************************/
-void MatrixMultTranspose_Generic(const Trotation* M, const Tpoint *P, Tpoint *Tgt)
+void MatrixMultTranspose_Generic(const Trotation* M, const Tpoint* P,
+                                 Tpoint* Tgt)
 {
     Tgt->x = M->M11 * P->x + M->M21 * P->y + M->M31 * P->z;
     Tgt->y = M->M12 * P->x + M->M22 * P->y + M->M32 * P->z;
@@ -173,7 +176,7 @@ void MatrixMult_3DNow(const Trotation* M, const float k, Trotation* T)
  Multiply the transpose of the matrix with the point and store the
  result in the target
 \***************************************************************************/
-void MatrixMultTranspose_3DNow(const Trotation* M, const Tpoint *P, Tpoint *Tgt)
+void MatrixMultTranspose_3DNow(const Trotation* M, const Tpoint* P, Tpoint* Tgt)
 {
     //_trans_v1x3((float *) Tgt, (float *) M, (float *) P);
 }
@@ -187,38 +190,38 @@ void SetMatrixCPUMode(int nMode) // 0 - Generic (default), 1- 3DNow, 2- ISSE
 {
     switch (nMode)
     {
-        case 0:
-        {
-            pMatrixMult1 = MatrixMult_Generic;
-            pMatrixMult2 = MatrixMult_Generic;
-            pMatrixMultTranspose = MatrixMultTranspose_Generic;
-            break;
-        }
+    case 0:
+    {
+        pMatrixMult1 = MatrixMult_Generic;
+        pMatrixMult2 = MatrixMult_Generic;
+        pMatrixMultTranspose = MatrixMultTranspose_Generic;
+        break;
+    }
 
-        case 1:
-        {
+    case 1:
+    {
 #if defined(_M_IX86)
-            pMatrixMult1 = MatrixMult_3DNow;
-            pMatrixMult2 = MatrixMult_3DNow;
-            pMatrixMultTranspose = MatrixMultTranspose_3DNow;
+        pMatrixMult1 = MatrixMult_3DNow;
+        pMatrixMult2 = MatrixMult_3DNow;
+        pMatrixMultTranspose = MatrixMultTranspose_3DNow;
 #else
-            // Artscout - 2026 (x64): no 3DNow; fall back to the generic C path.
-            pMatrixMult1 = MatrixMult_Generic;
-            pMatrixMult2 = MatrixMult_Generic;
-            pMatrixMultTranspose = MatrixMultTranspose_Generic;
+        // Artscout - 2026 (x64): no 3DNow; fall back to the generic C path.
+        pMatrixMult1 = MatrixMult_Generic;
+        pMatrixMult2 = MatrixMult_Generic;
+        pMatrixMultTranspose = MatrixMultTranspose_Generic;
 #endif
-            break;
-        }
+        break;
+    }
 
-        case 2:
-        {
-            // pMatrixMult1 = MatrixMult_ISSE;
-            // pMatrixMult2 = MatrixMult_ISSE;
-            // pMatrixMultTranspose = MatrixMultTranspose_ISSE;
-            // break;
-        }
+    case 2:
+    {
+        // pMatrixMult1 = MatrixMult_ISSE;
+        // pMatrixMult2 = MatrixMult_ISSE;
+        // pMatrixMultTranspose = MatrixMultTranspose_ISSE;
+        // break;
+    }
 
-        default:
-            ShiAssert(false);
+    default:
+        ShiAssert(false);
     }
 }

@@ -2,7 +2,7 @@
 #ifndef UPDATE
 #define UPDATE
 
-#include "Unit.h"
+#include "unit.h"
 
 // ====================
 // Update defines
@@ -25,7 +25,7 @@
 // ===================
 
 class FlightClass;
-typedef FlightClass* Flight;
+typedef FlightClass *Flight;
 
 extern int UpdateUnit(Unit U, CampaignTime DeltaTime);
 
@@ -39,6 +39,7 @@ extern int Detected(Unit u, FalconEntity *e, float *range);
 
 extern int DoCombat(CampEntity u, FalconEntity *e);
 
-extern void UpdateLocation(GridIndex *x, GridIndex *y, Path path, int start, int end);
+extern void UpdateLocation(GridIndex *x, GridIndex *y, Path path, int start,
+                           int end);
 
 #endif

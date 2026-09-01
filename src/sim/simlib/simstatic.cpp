@@ -2,12 +2,13 @@
 #include "simstatc.h"
 #include "initdata.h"
 
-SimStaticClass::SimStaticClass(FILE* filePtr) : SimBaseClass(filePtr)
+SimStaticClass::SimStaticClass(FILE *filePtr) : SimBaseClass(filePtr)
 {
     InitLocalData();
 }
 
-SimStaticClass::SimStaticClass(VU_BYTE** stream, long *rem) : SimBaseClass(stream, rem)
+SimStaticClass::SimStaticClass(VU_BYTE **stream, long *rem)
+    : SimBaseClass(stream, rem)
 {
     InitLocalData();
 }
@@ -41,7 +42,7 @@ void SimStaticClass::CleanupLocalData()
 {
 }
 
-void SimStaticClass::Init(SimInitDataClass* initData)
+void SimStaticClass::Init(SimInitDataClass *initData)
 {
     SimBaseClass::Init(initData);
     SetTypeFlag(FalconSimObjective);

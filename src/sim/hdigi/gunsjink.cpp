@@ -3,7 +3,7 @@
 #include "object.h"
 #include "simbase.h"
 
-#define INIT_GUN_VEL   3500.0F
+#define INIT_GUN_VEL 3500.0F
 
 void HeliBrain::GunsJinkCheck(void)
 {

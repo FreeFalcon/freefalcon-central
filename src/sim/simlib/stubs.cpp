@@ -1,14 +1,16 @@
 #include "stdhdr.h"
-#include "Renderer/RenderOW.h"
-#include "3Dlib/3d.h"
+#include "renderer/renderow.h"
+#include "3dlib/3d.h"
 #include "f4vu.h"
 
 extern "C"
 {
-    int _CrtDbgReport(int reportType, const char *filename, int linenumber, const char *moduleName, const char *format, ...);
+    int _CrtDbgReport(int reportType, const char *filename, int linenumber,
+                      const char *moduleName, const char *format, ...);
 };
 
-int _CrtDbgReport(int reportType, const char *filename, int linenumber, const char *moduleName, const char *format, ...)
+int _CrtDbgReport(int reportType, const char *filename, int linenumber,
+                  const char *moduleName, const char *format, ...)
 {
     char buffer[80];
     int choice = IDRETRY;
@@ -31,5 +33,4 @@ int _CrtDbgReport(int reportType, const char *filename, int linenumber, const ch
     }
 
     return (0);
-
 }

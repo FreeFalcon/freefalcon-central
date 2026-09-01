@@ -1,17 +1,17 @@
-#include "MsgInc/SendCampaignMsg.h"
+#include "msginc/sendcampaignmsg.h"
 #include "mesg.h"
-#include "CmpClass.h"
-#include "FalcSess.h"
-#include "MsgInc/RequestCampaignData.h"
-#include "Campaign.h"
-#include "Weather.h"
+#include "cmpclass.h"
+#include "falcsess.h"
+#include "msginc/requestcampaigndata.h"
+#include "campaign.h"
+#include "weather.h"
 #include "ui/include/falcuser.h"
 #include "ui95/chandler.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
 extern C_Handler *gMainHandler;
@@ -20,14 +20,20 @@ extern int gCampDataVersion;
 
 extern void CampaignJoinKeepAlive(void);
 
-FalconSendCampaign::FalconSendCampaign(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendCampaignMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconSendCampaign::FalconSendCampaign(VU_ID entityId, VuTargetEntity *target,
+                                       VU_BOOL loopback)
+    : FalconEvent(SendCampaignMsg, FalconEvent::CampaignThread, entityId,
+                  target, loopback)
 {
     uchar *buffer;
     dataBlock.dataSize = (short)TheCampaign.Encode(&buffer);
     dataBlock.campInfo = buffer;
 }
 
-FalconSendCampaign::FalconSendCampaign(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendCampaignMsg, FalconEvent::CampaignThread, senderid, target)
+FalconSendCampaign::FalconSendCampaign(VU_MSG_TYPE type, VU_ID senderid,
+                                       VU_ID target)
+    : FalconEvent(SendCampaignMsg, FalconEvent::CampaignThread, senderid,
+                  target)
 {
     dataBlock.campInfo = NULL;
     dataBlock.dataSize = -1;
@@ -102,7 +108,8 @@ int FalconSendCampaign::Process(uchar autodisp)
 
         if (gMainHandler)
         {
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
+            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA,
+                        CAMP_NEED_PRELOAD, 0);
         }
 
         return 1;

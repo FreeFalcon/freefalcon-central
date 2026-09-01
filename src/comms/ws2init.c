@@ -3,12 +3,13 @@
 
 // SYSTEM INCLUDES
 #include <iso646.h>
-#include <StdIO.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <WinSock.h>
-#include <WinBase.h>
+#include <winsock.h>
+#ifdef _WIN32
+#include <winbase.h> // SearchPath/LoadLibrary live here on Windows; the Linux path below needs none of it.
+#endif
 // END OF SYSTEM INCLUDES
-
 
 
 // PREPROCESSOR DIRECTIVES
@@ -16,22 +17,22 @@
 // END OF PREPROCESSOR DIRECTIVES
 
 
-
 // SIM INCLUDES
-#include "CAPI.h"
-#include "CapiOpt.h"
-#include "CapiPriv.h"
-#include "WsProtos.h"
+#include "capi.h"
+#include "capiopt.h"
+#include "capipriv.h"
+#include "wsprotos.h"
+#include "ws2init.h" // declares initialize_windows_sockets under extern "C"; include it here so this file's
+// DEFINITION picks up that linkage (Linux builds this as C++), matching every caller.
 // END OF SIM INCLUDES
-
 
 
 // GLOBAL VARIABLES
 signed int windows_sockets_connections = 0;
 HINSTANCE h_windows_sockets_DLL = 0;
-extern ComAPILastError;
+extern int
+    ComAPILastError; // implicit-int 'extern ComAPILastError' is a C++ error; the real type is int (capi.c).
 // END OF GLOBAL VARIABLES
-
 
 
 // FUNCTION DECLARATIONS
@@ -69,7 +70,6 @@ WSFN_WSAGetLastError CAPI_WSAGetLastError = NULL;
 // END OF FUNCTION DECLARATIONS
 
 
-
 // FUNCTION DEFINITIONS
 /*++
 Routine Description:
@@ -85,83 +85,85 @@ FALSE - Error starting up WinSock 2 DLL.
 int initialize_windows_sockets(WSADATA* windows_sockets_data)
 {
 
-	const char DLL_NAME[] = "WSOCK32.DLL";
+    const char DLL_NAME[] = "WSOCK32.DLL";
 
-    if ( not windows_sockets_connections) // No successful connection yet?
+    if (not windows_sockets_connections) // No successful connection yet?
     {
-		TCHAR output_buffer[MAX_PATH];
-		DWORD buffer_length;
-		buffer_length = SearchPath(NULL, DLL_NAME, NULL, MAX_PATH,
-								   output_buffer, NULL);
+#ifdef _WIN32
+        // Windows locates the Winsock DLL on disk before use. On Linux BSD sockets are part of libc -- there is no DLL
+        // to find -- so this discovery step is skipped and CAPI_GetProcAddresses just wires the func pointers directly.
+        TCHAR output_buffer[MAX_PATH];
+        DWORD buffer_length;
+        buffer_length =
+            SearchPath(NULL, DLL_NAME, NULL, MAX_PATH, output_buffer, NULL);
 
-//		buffer_length = 0; // my debug		
-		if (0 == buffer_length)
+        //		buffer_length = 0; // my debug
+        if (0 == buffer_length)
         {
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
-			return EXIT_SUCCESS;
+            return EXIT_SUCCESS;
         }
+#endif
 
-		HINSTANCE h_windows_sockets_DLL = 0;
+        HINSTANCE h_windows_sockets_DLL = 0;
 #ifdef LOAD_DLLS
         h_windows_sockets_DLL = LoadLibrary(DLL_NAME);
 
-		if (NULL == h_windows_sockets_DLL)
+        if (NULL == h_windows_sockets_DLL)
         {
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
-			return EXIT_SUCCESS;
+            return EXIT_SUCCESS;
         }
 
 #endif
 
-        if ( not CAPI_GetProcAddresses(h_windows_sockets_DLL))
+        if (not CAPI_GetProcAddresses(h_windows_sockets_DLL))
         {
 #ifdef LOAD_DLLS
             FreeLibrary(h_windows_sockets_DLL);
             ComAPILastError = COMAPI_WINSOCKDLL_ERROR;
 #endif
-			return EXIT_SUCCESS;
+            return EXIT_SUCCESS;
         }
 
 
-		int major_version = 1;
-		int minor_version = 1;
-		int windows_sockets_status;
-		windows_sockets_status = CAPI_WSAStartup(MAKEWORD(major_version, minor_version), windows_sockets_data);
-		if (windows_sockets_status)
+        int major_version = 1;
+        int minor_version = 1;
+        int windows_sockets_status;
+        windows_sockets_status = CAPI_WSAStartup(
+            MAKEWORD(major_version, minor_version), windows_sockets_data);
+        if (windows_sockets_status)
         {
-            
-            MessageBox(NULL,
-                       "Could not find high enough version of WinSock",
+
+            MessageBox(NULL, "Could not find high enough version of WinSock",
                        "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
-              
-			return EXIT_SUCCESS;
+
+            return EXIT_SUCCESS;
         }
         else
         {
             // Now confirm that the WinSock 2 DLL supports the exact version
-            // we want. If not, make sure to call WSACleanup(). 
+            // we want. If not, make sure to call WSACleanup().
             if (LOBYTE(windows_sockets_data->wVersion) not_eq major_version or
                 HIBYTE(windows_sockets_data->wVersion) not_eq minor_version)
             {
-                
-                 MessageBox(NULL,
-                            "Could not find the correct version of WinSock",
-                            "Error",  MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
-                  
+
+                MessageBox(
+                    NULL, "Could not find the correct version of WinSock",
+                    "Error", MB_OK bitor MB_ICONSTOP bitor MB_SETFOREGROUND);
+
                 CAPI_WSACleanup();
                 return EXIT_SUCCESS;
             }
-
         }
     }
 
-    // If we get here , either we just need to increment counter or we execute 
+    // If we get here , either we just need to increment counter or we execute
     // the first successful WSAStartup.
 
     windows_sockets_connections++;
-	
-	return EXIT_FAILURE;
 
+    return EXIT_FAILURE;
 }
 
 
@@ -170,186 +172,241 @@ static int CAPI_GetProcAddresses(HINSTANCE hWinSockDLL)
 
 #ifdef LOAD_DLLS
 
-    CAPI_accept            = (WSFN_accept) GetProcAddress(hWinSockDLL, "accept");
+    CAPI_accept = (WSFN_accept)GetProcAddress(hWinSockDLL, "accept");
 
-    if (CAPI_accept == NULL) return 0;
+    if (CAPI_accept == NULL)
+        return 0;
 
-    CAPI_bind              = (WSFN_bind)GetProcAddress(hWinSockDLL, "bind");
+    CAPI_bind = (WSFN_bind)GetProcAddress(hWinSockDLL, "bind");
 
-    if (CAPI_bind == NULL)  return 0;
+    if (CAPI_bind == NULL)
+        return 0;
 
-    CAPI_closesocket       = (WSFN_closesocket)GetProcAddress(hWinSockDLL, "closesocket");
+    CAPI_closesocket =
+        (WSFN_closesocket)GetProcAddress(hWinSockDLL, "closesocket");
 
-    if (CAPI_closesocket == NULL)  return 0;
+    if (CAPI_closesocket == NULL)
+        return 0;
 
-    CAPI_connect           = (WSFN_connect)GetProcAddress(hWinSockDLL, "connect");;
+    CAPI_connect = (WSFN_connect)GetProcAddress(hWinSockDLL, "connect");
+    ;
 
-    if (CAPI_connect == NULL)  return 0;
+    if (CAPI_connect == NULL)
+        return 0;
 
-    CAPI_ioctlsocket       = (WSFN_ioctlsocket)GetProcAddress(hWinSockDLL, "ioctlsocket");
+    CAPI_ioctlsocket =
+        (WSFN_ioctlsocket)GetProcAddress(hWinSockDLL, "ioctlsocket");
 
-    if (CAPI_ioctlsocket == NULL)  return 0;
+    if (CAPI_ioctlsocket == NULL)
+        return 0;
 
-    CAPI_getsockopt        = (WSFN_getsockopt)GetProcAddress(hWinSockDLL, "getsockopt");
+    CAPI_getsockopt =
+        (WSFN_getsockopt)GetProcAddress(hWinSockDLL, "getsockopt");
 
-    if (CAPI_getsockopt == NULL)  return 0;
+    if (CAPI_getsockopt == NULL)
+        return 0;
 
-    CAPI_htonl             = (WSFN_htonl)GetProcAddress(hWinSockDLL, "htonl");
+    CAPI_htonl = (WSFN_htonl)GetProcAddress(hWinSockDLL, "htonl");
 
-    if (CAPI_htonl == NULL)  return 0;
+    if (CAPI_htonl == NULL)
+        return 0;
 
-    CAPI_htons             = (WSFN_htons)GetProcAddress(hWinSockDLL, "htons");
+    CAPI_htons = (WSFN_htons)GetProcAddress(hWinSockDLL, "htons");
 
-    if (CAPI_htons == NULL)  return 0;
+    if (CAPI_htons == NULL)
+        return 0;
 
-    CAPI_inet_addr         = (WSFN_inet_addr)GetProcAddress(hWinSockDLL, "inet_addr");
+    CAPI_inet_addr = (WSFN_inet_addr)GetProcAddress(hWinSockDLL, "inet_addr");
 
-    if (CAPI_inet_addr == NULL)  return 0;
+    if (CAPI_inet_addr == NULL)
+        return 0;
 
-    CAPI_inet_ntoa         = (WSFN_inet_ntoa)GetProcAddress(hWinSockDLL, "inet_ntoa");
+    CAPI_inet_ntoa = (WSFN_inet_ntoa)GetProcAddress(hWinSockDLL, "inet_ntoa");
 
-    if (CAPI_inet_ntoa == NULL)  return 0;
+    if (CAPI_inet_ntoa == NULL)
+        return 0;
 
-    CAPI_listen            = (WSFN_listen)GetProcAddress(hWinSockDLL, "listen");
+    CAPI_listen = (WSFN_listen)GetProcAddress(hWinSockDLL, "listen");
 
-    if (CAPI_listen == NULL)  return 0;
+    if (CAPI_listen == NULL)
+        return 0;
 
-    CAPI_ntohl             = (WSFN_ntohl)GetProcAddress(hWinSockDLL, "ntohl");
+    CAPI_ntohl = (WSFN_ntohl)GetProcAddress(hWinSockDLL, "ntohl");
 
-    if (CAPI_ntohl == NULL)  return 0;
+    if (CAPI_ntohl == NULL)
+        return 0;
 
-    CAPI_ntohs             = (WSFN_ntohs)GetProcAddress(hWinSockDLL, "ntohs");
+    CAPI_ntohs = (WSFN_ntohs)GetProcAddress(hWinSockDLL, "ntohs");
 
-    if (CAPI_ntohs == NULL)  return 0;
+    if (CAPI_ntohs == NULL)
+        return 0;
 
-    CAPI_recv              = (WSFN_recv)GetProcAddress(hWinSockDLL, "recv");
+    CAPI_recv = (WSFN_recv)GetProcAddress(hWinSockDLL, "recv");
 
-    if (CAPI_recv == NULL)  return 0;
+    if (CAPI_recv == NULL)
+        return 0;
 
-    CAPI_recvfrom          = (WSFN_recvfrom)GetProcAddress(hWinSockDLL, "recvfrom");
+    CAPI_recvfrom = (WSFN_recvfrom)GetProcAddress(hWinSockDLL, "recvfrom");
 
-    if (CAPI_recvfrom == NULL)  return 0;
+    if (CAPI_recvfrom == NULL)
+        return 0;
 
-    CAPI_select            = (WSFN_select)GetProcAddress(hWinSockDLL, "select");
+    CAPI_select = (WSFN_select)GetProcAddress(hWinSockDLL, "select");
 
-    if (CAPI_select == NULL)  return 0;
+    if (CAPI_select == NULL)
+        return 0;
 
-    CAPI_send              = (WSFN_send)GetProcAddress(hWinSockDLL, "send");
+    CAPI_send = (WSFN_send)GetProcAddress(hWinSockDLL, "send");
 
-    if (CAPI_send == NULL)  return 0;
+    if (CAPI_send == NULL)
+        return 0;
 
-    CAPI_sendto            = (WSFN_sendto)GetProcAddress(hWinSockDLL, "sendto");
+    CAPI_sendto = (WSFN_sendto)GetProcAddress(hWinSockDLL, "sendto");
 
-    if (CAPI_sendto == NULL)  return 0;
+    if (CAPI_sendto == NULL)
+        return 0;
 
-    CAPI_setsockopt        = (WSFN_setsockopt)GetProcAddress(hWinSockDLL, "setsockopt");
+    CAPI_setsockopt =
+        (WSFN_setsockopt)GetProcAddress(hWinSockDLL, "setsockopt");
 
-    if (CAPI_setsockopt == NULL)  return 0;
+    if (CAPI_setsockopt == NULL)
+        return 0;
 
-    CAPI_shutdown          = (WSFN_shutdown)GetProcAddress(hWinSockDLL, "shutdown");
+    CAPI_shutdown = (WSFN_shutdown)GetProcAddress(hWinSockDLL, "shutdown");
 
-    if (CAPI_shutdown == NULL)  return 0;
+    if (CAPI_shutdown == NULL)
+        return 0;
 
-    CAPI_socket            = (WSFN_socket)GetProcAddress(hWinSockDLL, "socket");
+    CAPI_socket = (WSFN_socket)GetProcAddress(hWinSockDLL, "socket");
 
-    if (CAPI_socket == NULL)  return 0;
+    if (CAPI_socket == NULL)
+        return 0;
 
-    CAPI_gethostbyaddr     = (WSFN_gethostbyaddr)GetProcAddress(hWinSockDLL, "gethostbyaddr");
+    CAPI_gethostbyaddr =
+        (WSFN_gethostbyaddr)GetProcAddress(hWinSockDLL, "gethostbyaddr");
 
-    if (CAPI_gethostbyaddr == NULL)  return 0;
+    if (CAPI_gethostbyaddr == NULL)
+        return 0;
 
-    CAPI_gethostbyname     = (WSFN_gethostbyname)GetProcAddress(hWinSockDLL, "gethostbyname");
+    CAPI_gethostbyname =
+        (WSFN_gethostbyname)GetProcAddress(hWinSockDLL, "gethostbyname");
 
-    if (CAPI_gethostbyname == NULL)  return 0;
+    if (CAPI_gethostbyname == NULL)
+        return 0;
 
-    CAPI_gethostname       = (WSFN_gethostname)GetProcAddress(hWinSockDLL, "gethostname");
+    CAPI_gethostname =
+        (WSFN_gethostname)GetProcAddress(hWinSockDLL, "gethostname");
 
-    if (CAPI_gethostname == NULL)  return 0;
+    if (CAPI_gethostname == NULL)
+        return 0;
 
-    CAPI_getsockname       = (WSFN_getsockname)GetProcAddress(hWinSockDLL, "getsockname");
+    CAPI_getsockname =
+        (WSFN_getsockname)GetProcAddress(hWinSockDLL, "getsockname");
 
-    if (CAPI_getsockname == NULL)  return 0;
+    if (CAPI_getsockname == NULL)
+        return 0;
 
 
-    CAPI_WSAStartup        = (WSFN_WSAStartup)GetProcAddress(hWinSockDLL, "WSAStartup");
+    CAPI_WSAStartup =
+        (WSFN_WSAStartup)GetProcAddress(hWinSockDLL, "WSAStartup");
 
-    if (CAPI_WSAStartup == NULL)  return 0;
+    if (CAPI_WSAStartup == NULL)
+        return 0;
 
-    CAPI_WSACleanup        = (WSFN_WSACleanup)GetProcAddress(hWinSockDLL, "WSACleanup");
+    CAPI_WSACleanup =
+        (WSFN_WSACleanup)GetProcAddress(hWinSockDLL, "WSACleanup");
 
-    if (CAPI_WSACleanup == NULL)  return 0;
+    if (CAPI_WSACleanup == NULL)
+        return 0;
 
-    CAPI_WSASetLastError   = (WSFN_WSASetLastError)GetProcAddress(hWinSockDLL, "WSASetLastError");
+    CAPI_WSASetLastError =
+        (WSFN_WSASetLastError)GetProcAddress(hWinSockDLL, "WSASetLastError");
 
-    if (CAPI_WSASetLastError == NULL)  return 0;
+    if (CAPI_WSASetLastError == NULL)
+        return 0;
 
-    CAPI_WSAGetLastError   = (WSFN_WSAGetLastError)GetProcAddress(hWinSockDLL, "WSAGetLastError");
+    CAPI_WSAGetLastError =
+        (WSFN_WSAGetLastError)GetProcAddress(hWinSockDLL, "WSAGetLastError");
 
-    if (CAPI_WSAGetLastError == NULL)  return 0;
-
+    if (CAPI_WSAGetLastError == NULL)
+        return 0;
 
 
 #else
-    CAPI_accept            = (WSFN_accept)accept;
-    CAPI_bind              = (WSFN_bind)bind;
+    CAPI_accept = (WSFN_accept)accept;
+    CAPI_bind = (WSFN_bind)bind;
 
-    CAPI_closesocket       = (WSFN_closesocket)closesocket;
+    CAPI_closesocket = (WSFN_closesocket)closesocket;
 
-    CAPI_connect           = (WSFN_connect)connect;;
+    CAPI_connect = (WSFN_connect)connect;
+    ;
 
-    CAPI_ioctlsocket       = (WSFN_ioctlsocket)ioctlsocket;
+    CAPI_ioctlsocket = (WSFN_ioctlsocket)ioctlsocket;
 
-    CAPI_getsockopt        = (WSFN_getsockopt)getsockopt;
+    CAPI_getsockopt = (WSFN_getsockopt)getsockopt;
 
-    CAPI_htonl             = (WSFN_htonl)htonl;
+    CAPI_htonl = (WSFN_htonl)htonl;
 
-    CAPI_htons             = (WSFN_htons)htons;
+    CAPI_htons = (WSFN_htons)htons;
 
-    CAPI_inet_addr         = (WSFN_inet_addr)inet_addr;
+    CAPI_inet_addr = (WSFN_inet_addr)inet_addr;
 
-    CAPI_inet_ntoa         = (WSFN_inet_ntoa)inet_ntoa;
+    CAPI_inet_ntoa = (WSFN_inet_ntoa)inet_ntoa;
 
-    CAPI_listen            = (WSFN_listen)listen;
+    CAPI_listen = (WSFN_listen)listen;
 
-    CAPI_ntohl             = (WSFN_ntohl)ntohl;
+    CAPI_ntohl = (WSFN_ntohl)ntohl;
 
-    CAPI_ntohs             = (WSFN_ntohs)ntohs;
+    CAPI_ntohs = (WSFN_ntohs)ntohs;
 
-    CAPI_recv              = (WSFN_recv)recv;
+    CAPI_recv = (WSFN_recv)recv;
 
-    CAPI_recvfrom          = (WSFN_recvfrom)recvfrom;
+    CAPI_recvfrom = (WSFN_recvfrom)recvfrom;
 
-    CAPI_select            = (WSFN_select)select;
+    CAPI_select = (WSFN_select)select;
 
-    CAPI_send              = (WSFN_send)send;
+    CAPI_send = (WSFN_send)send;
 
-    CAPI_sendto            = (WSFN_sendto)sendto;
+    CAPI_sendto = (WSFN_sendto)sendto;
 
-    CAPI_setsockopt        = (WSFN_setsockopt)setsockopt;
+    CAPI_setsockopt = (WSFN_setsockopt)setsockopt;
 
-    CAPI_shutdown          = (WSFN_shutdown)shutdown;
+    CAPI_shutdown = (WSFN_shutdown)shutdown;
 
-    CAPI_socket            = (WSFN_socket)socket;
+    CAPI_socket = (WSFN_socket)socket;
 
-    CAPI_gethostbyaddr     = (WSFN_gethostbyaddr)gethostbyaddr;
+    CAPI_gethostbyaddr = (WSFN_gethostbyaddr)gethostbyaddr;
 
-    CAPI_gethostbyname     = (WSFN_gethostbyname)gethostbyname;
+    CAPI_gethostbyname = (WSFN_gethostbyname)gethostbyname;
 
-    CAPI_gethostname       = (WSFN_gethostname)gethostname;
+    CAPI_gethostname = (WSFN_gethostname)gethostname;
 
-    CAPI_getsockname       = (WSFN_getsockname)getsockname;
+    CAPI_getsockname = (WSFN_getsockname)getsockname;
 
-    CAPI_WSAStartup        = (WSFN_WSAStartup)WSAStartup;
+    CAPI_WSAStartup = (WSFN_WSAStartup)WSAStartup;
 
-    CAPI_WSACleanup        = (WSFN_WSACleanup)WSACleanup;
+    CAPI_WSACleanup = (WSFN_WSACleanup)WSACleanup;
 
-    CAPI_WSASetLastError   = (WSFN_WSASetLastError)WSASetLastError;
+    CAPI_WSASetLastError = (WSFN_WSASetLastError)WSASetLastError;
 
-    CAPI_WSAGetLastError   = (WSFN_WSAGetLastError)WSAGetLastError;
+    CAPI_WSAGetLastError = (WSFN_WSAGetLastError)WSAGetLastError;
 
 #endif
 
     return 1;
-
 }
+
+#ifndef _WIN32
+// #104 (Linux): the CAPI_* function pointers (ntohs/htons/socket/...) are wired lazily inside
+// initialize_windows_sockets(), which is only reached when a socket is actually created. Single
+// player (InstantAction/Dogfight) never opens a socket, yet the VU layer still builds its local
+// address via com_API_get_my_receive_port() -> CAPI_ntohs(myRecvPort). With the pointers still NULL
+// that is a call through a null pointer (SIGSEGV, jump to 0x0) on the sim thread. Wire the BSD
+// functions once at load time so they are always valid; initialize_windows_sockets() re-wires them
+// harmlessly when real networking spins up.
+__attribute__((constructor)) static void capi_wire_bsd_functions_at_load(void)
+{
+    CAPI_GetProcAddresses((HINSTANCE)0);
+}
+#endif
 // END OF FUNCTION DEFINITIONS

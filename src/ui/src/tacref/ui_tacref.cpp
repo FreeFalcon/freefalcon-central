@@ -1,16 +1,16 @@
 #include <windows.h>
-#include "Graphics/Include/TimeMgr.h"
-#include "Graphics/Include/imagebuf.h"
+#include "graphics/include/timemgr.h"
+#include "graphics/include/imagebuf.h"
 #include "dispcfg.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/drawbsp.h"
 #include "unit.h"
 #include "classtbl.h"
 #include "cmpclass.h"
 #include "chandler.h"
 #include "cbsplist.h"
-#include "Graphics/Include/loader.h"
+#include "graphics/include/loader.h"
 #include "c3dview.h"
 #include "soundfx.h"
 #include "fsound.h"
@@ -52,8 +52,8 @@ void CloseWindowCB(long ID, short hittype, C_Base *control);
 void FindCameraDeltas(OBJECTINFO *Info);
 void UnloadObject();
 void TacRef_Cleanup();
-void PositandOrientSetData(float x, float y, float z, float pitch, float roll, float yaw,
-                           Tpoint* simView, Trotation* viewRotation);
+void PositandOrientSetData(float x, float y, float z, float pitch, float roll,
+                           float yaw, Tpoint *simView, Trotation *viewRotation);
 
 enum
 {
@@ -61,33 +61,22 @@ enum
     SUBGROUP_COUNT = 18,
 };
 
-static long GroupButtonID[GROUP_COUNT] =
-{
+static long GroupButtonID[GROUP_COUNT] = {
     CAT_AIRCRAFT,
     CAT_VEHICLES,
     CAT_MUNITIONS,
 };
 
-static long SubGroupButtonID[SUBGROUP_COUNT] =
-{
-    SUB_CAT_AIRCRAFT_FIGHTERS,
-    SUB_CAT_AIRCRAFT_ATTACK,
-    SUB_CAT_AIRCRAFT_BOMBERS,
-    SUB_CAT_AIRCRAFT_HELICOPTERS,
-    SUB_CAT_AIRCRAFT_SUPPORT,
-    SUB_CAT_AIRCRAFT_EW,
-    SUB_CAT_VEHICLES_TANKS,
-    SUB_CAT_VEHICLES_IFVS,
-    SUB_CAT_VEHICLES_ARTILLERY,
-    SUB_CAT_VEHICLES_AIRDEFENSE,
-    SUB_CAT_VEHICLES_SUPPORT,
-    SUB_CAT_VEHICLES_SHIPS,
-    SUB_CAT_MUNITIONS_AAM,
-    SUB_CAT_MUNITIONS_AGM,
-    SUB_CAT_MUNITIONS_ARM,
-    SUB_CAT_MUNITIONS_BOMBS,
-    SUB_CAT_MUNITIONS_STORES,
-    SUB_CAT_MUNITIONS_GROUND,
+static long SubGroupButtonID[SUBGROUP_COUNT] = {
+    SUB_CAT_AIRCRAFT_FIGHTERS,  SUB_CAT_AIRCRAFT_ATTACK,
+    SUB_CAT_AIRCRAFT_BOMBERS,   SUB_CAT_AIRCRAFT_HELICOPTERS,
+    SUB_CAT_AIRCRAFT_SUPPORT,   SUB_CAT_AIRCRAFT_EW,
+    SUB_CAT_VEHICLES_TANKS,     SUB_CAT_VEHICLES_IFVS,
+    SUB_CAT_VEHICLES_ARTILLERY, SUB_CAT_VEHICLES_AIRDEFENSE,
+    SUB_CAT_VEHICLES_SUPPORT,   SUB_CAT_VEHICLES_SHIPS,
+    SUB_CAT_MUNITIONS_AAM,      SUB_CAT_MUNITIONS_AGM,
+    SUB_CAT_MUNITIONS_ARM,      SUB_CAT_MUNITIONS_BOMBS,
+    SUB_CAT_MUNITIONS_STORES,   SUB_CAT_MUNITIONS_GROUND,
 };
 
 void TACMoveRendererCB(C_Window *win)
@@ -164,12 +153,13 @@ void TACREFCloseWindowCB(long ID, short hittype, C_Base *control)
 
 void TACREF_PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if ( not TAC_Viewer or not Info or not win)
+    if (not TAC_Viewer or not Info or not win)
         return;
 
     FindCameraDeltas(Info);
 
-    TAC_Viewer->SetCamera(Info->DeltaX, Info->DeltaY, Info->DeltaZ, Info->Heading, -Info->Pitch, 0.0f);
+    TAC_Viewer->SetCamera(Info->DeltaX, Info->DeltaY, Info->DeltaZ,
+                          Info->Heading, -Info->Pitch, 0.0f);
     win->RefreshClient(client);
 }
 
@@ -182,32 +172,37 @@ static void TACREF_PannerCB(long, short hittype, C_Base *control)
         return;
 
     pnr = static_cast<C_Panner *>(control);
-    dx  = static_cast<float>(pnr->GetHRange());
-    dy  = static_cast<float>(pnr->GetVRange());
+    dx = static_cast<float>(pnr->GetHRange());
+    dy = static_cast<float>(pnr->GetVRange());
 
     TACREF_Object.Heading += dx;
     TACREF_Object.Pitch += dy;
 
-    if (TACREF_Object.Heading < 0) TACREF_Object.Heading += 360;
+    if (TACREF_Object.Heading < 0)
+        TACREF_Object.Heading += 360;
 
-    if (TACREF_Object.Heading > 360) TACREF_Object.Heading -= 360;
+    if (TACREF_Object.Heading > 360)
+        TACREF_Object.Heading -= 360;
 
     if (TACREF_Object.CheckPitch)
     {
-        if (TACREF_Object.Pitch < TACREF_Object.MinPitch) TACREF_Object.Pitch = TACREF_Object.MinPitch;
+        if (TACREF_Object.Pitch < TACREF_Object.MinPitch)
+            TACREF_Object.Pitch = TACREF_Object.MinPitch;
 
-        if (TACREF_Object.Pitch > TACREF_Object.MaxPitch) TACREF_Object.Pitch = TACREF_Object.MaxPitch;
+        if (TACREF_Object.Pitch > TACREF_Object.MaxPitch)
+            TACREF_Object.Pitch = TACREF_Object.MaxPitch;
     }
     else
     {
-        if (TACREF_Object.Pitch < 0) TACREF_Object.Pitch += 360;
+        if (TACREF_Object.Pitch < 0)
+            TACREF_Object.Pitch += 360;
 
-        if (TACREF_Object.Pitch > 360) TACREF_Object.Pitch -= 360;
+        if (TACREF_Object.Pitch > 360)
+            TACREF_Object.Pitch -= 360;
     }
 
-    TACREF_PositionCamera(&TACREF_Object, control->Parent_, control->GetClient());
-
-
+    TACREF_PositionCamera(&TACREF_Object, control->Parent_,
+                          control->GetClient());
 }
 
 static void TACREF_ZoomCB(long, short hittype, C_Base *control)
@@ -220,17 +215,19 @@ static void TACREF_ZoomCB(long, short hittype, C_Base *control)
         return;
 
 
-
-    pnr = (C_Panner*)control;
+    pnr = (C_Panner *)control;
     dy = static_cast<float>(pnr->GetVRange());
 
     TACREF_Object.Distance += dy;
 
-    if (TACREF_Object.Distance < TACREF_Object.MinDistance) TACREF_Object.Distance = TACREF_Object.MinDistance;
+    if (TACREF_Object.Distance < TACREF_Object.MinDistance)
+        TACREF_Object.Distance = TACREF_Object.MinDistance;
 
-    if (TACREF_Object.Distance > TACREF_Object.MaxDistance) TACREF_Object.Distance = TACREF_Object.MaxDistance;
+    if (TACREF_Object.Distance > TACREF_Object.MaxDistance)
+        TACREF_Object.Distance = TACREF_Object.MaxDistance;
 
-    TACREF_PositionCamera(&TACREF_Object, control->Parent_, control->GetClient());
+    TACREF_PositionCamera(&TACREF_Object, control->Parent_,
+                          control->GetClient());
 }
 
 void TACREF_ViewTimerAnimCB(long, short, C_Base *control)
@@ -250,8 +247,8 @@ void TACREF_ViewTimerAnimCB(long, short, C_Base *control)
                 if (BladeAngle > (PI * 2.0f))
                     BladeAngle -= PI * 2.0f;
 
-                ((DrawableBSP*)obj->object)->SetDOFangle(2, BladeAngle);
-                ((DrawableBSP*)obj->object)->SetDOFangle(4, BladeAngle);
+                ((DrawableBSP *)obj->object)->SetDOFangle(2, BladeAngle);
+                ((DrawableBSP *)obj->object)->SetDOFangle(4, BladeAngle);
             }
         }
 
@@ -262,10 +259,12 @@ void TACREF_ViewTimerAnimCB(long, short, C_Base *control)
         else
             control->Parent_->RefreshClient(control->GetClient());
 
-        control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_DELAY_));
+        control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                               control->GetUserNumber(_UI95_TIMER_DELAY_));
     }
 
-    control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
+    control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                           control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
 }
 
 void TACREF_ViewTimerCB(long, short, C_Base *control)
@@ -307,7 +306,7 @@ static void BuildStatsTree(Statistics *stats, C_TreeList *tree)
     long catval = 0; // internal... don't use for anything
     long UniqueID = 1;
 
-    if ( not stats or not tree)
+    if (not stats or not tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -345,7 +344,7 @@ static void BuildDescTree(Description *desc, C_TreeList *tree)
     long textval = 0;
     long UniqueID = 1;
 
-    if ( not desc or not tree)
+    if (not desc or not tree)
         return;
 
     tree->Parent_->ScanClientArea(tree->GetClient());
@@ -355,7 +354,9 @@ static void BuildDescTree(Description *desc, C_TreeList *tree)
     {
         txt = new C_Text;
         txt->Setup(UniqueID, 0);
-        txt->SetW(tree->Parent_->ClientArea_[tree->GetClient()].right - tree->Parent_->ClientArea_[tree->GetClient()].left - 10 - tree->GetX());
+        txt->SetW(tree->Parent_->ClientArea_[tree->GetClient()].right -
+                  tree->Parent_->ClientArea_[tree->GetClient()].left - 10 -
+                  tree->GetX());
         txt->SetFlagBitOn(C_BIT_WORDWRAP);
         txt->SetFont(tree->GetFont());
         txt->SetFixedWidth(desctext->length);
@@ -385,7 +386,7 @@ void SelectRWR(long ID)
 
     if (win)
     {
-        lbox = (C_ListBox*)win->FindControl(RWR_LIST);
+        lbox = (C_ListBox *)win->FindControl(RWR_LIST);
 
         if (lbox)
         {
@@ -393,28 +394,29 @@ void SelectRWR(long ID)
 
             if (item)
             {
-                btn = (C_Button*)win->FindControl(PLAY_LOCK_TONE);
+                btn = (C_Button *)win->FindControl(PLAY_LOCK_TONE);
 
                 if (btn)
                     btn->SetUserNumber(0, item->Label_->GetUserNumber(3));
 
-                btn = (C_Button*)win->FindControl(LOCK_ICON);
+                btn = (C_Button *)win->FindControl(LOCK_ICON);
 
                 if (btn)
                 {
                     btn->Refresh();
-                    btn->SetState(static_cast<short>(item->Label_->GetUserNumber(1)));
+                    btn->SetState(
+                        static_cast<short>(item->Label_->GetUserNumber(1)));
                     btn->Refresh();
                 }
             }
             else
             {
-                btn = (C_Button*)win->FindControl(PLAY_LOCK_TONE);
+                btn = (C_Button *)win->FindControl(PLAY_LOCK_TONE);
 
                 if (btn)
                     btn->SetUserNumber(0, -1);
 
-                btn = (C_Button*)win->FindControl(LOCK_ICON);
+                btn = (C_Button *)win->FindControl(LOCK_ICON);
 
                 if (btn)
                 {
@@ -433,7 +435,7 @@ static void BuildRWRList(RWR *rwr, C_ListBox *listbox)
     long rwrval = 0;
     long UniqueID = 1;
 
-    if ( not rwr or not listbox)
+    if (not rwr or not listbox)
         return;
 
     radar = rwr->GetFirst(&rwrval);
@@ -465,7 +467,7 @@ static void BuildRWRList(RWR *rwr, C_ListBox *listbox)
 
 static void Unload3dModel()
 {
-    VehicleClassDataType* vc;
+    VehicleClassDataType *vc;
     long i, visFlag;
     BSPLIST *obj, *Weapon;
 
@@ -482,7 +484,8 @@ static void Unload3dModel()
             if (visFlag bitand (1 << i))
             {
                 // This is a visible weapon, so detach
-                ((DrawableBSP*)obj->object)->DetachChild(((DrawableBSP*)Weapon->object), i);
+                ((DrawableBSP *)obj->object)
+                    ->DetachChild(((DrawableBSP *)Weapon->object), i);
             }
         }
 
@@ -497,14 +500,15 @@ static void Unload3dModel()
     }
 }
 
-static void CustomPosStuff(long GroupID, long SubGroupID, long ModelID, BSPLIST *Vehicle)
+static void CustomPosStuff(long GroupID, long SubGroupID, long ModelID,
+                           BSPLIST *Vehicle)
 {
     TACREF_Object.Heading = -200.0f;
     TACREF_Object.Pitch = 10.0f;
 
     switch (GroupID)
     {
-        case CAT_AIRCRAFT:
+    case CAT_AIRCRAFT:
             //switch(SubGroupID)
             //{
             /*case SUB_CAT_AIRCRAFT_FIGHTERS: // Fighters
@@ -523,146 +527,163 @@ static void CustomPosStuff(long GroupID, long SubGroupID, long ModelID, BSPLIST 
              TACREF_Object.Distance=350.0f;
              break;*/ //Cobra test
             //default:
-            //TACREF_Object.Distance=((DrawableBSP*)Vehicle->object)->Radius()*4;
-            //break;
-            //}
-            //Cobra Steve asked for all aircraft to use the same value
-            TACREF_Object.Distance = ((DrawableBSP*)Vehicle->object)->Radius() * 4;
+        //TACREF_Object.Distance=((DrawableBSP*)Vehicle->object)->Radius()*4;
+        //break;
+        //}
+        //Cobra Steve asked for all aircraft to use the same value
+        TACREF_Object.Distance = ((DrawableBSP *)Vehicle->object)->Radius() * 4;
+        TACREF_Object.Direction = 0.0f;
+
+        TACREF_Object.MinPitch = 0;
+        TACREF_Object.MaxPitch = 0;
+        TACREF_Object.CheckPitch = FALSE;
+
+        TACREF_Object.PosX = 0;
+        TACREF_Object.PosY = 0;
+        TACREF_Object.PosZ = 0;
+        TACREF_Object.MinDistance =
+            ((DrawableBSP *)Vehicle->object)->Radius() + 30;
+        TACREF_Object.MaxDistance = TACREF_Object.Distance + 200;
+        break;
+
+    case CAT_VEHICLES:
+        switch (SubGroupID)
+        {
+        case SUB_CAT_VEHICLES_SHIPS:
+            TACREF_Object.Distance = static_cast<float>(max(
+                150, (long)((float)((DrawableBSP *)Vehicle->object)->Radius() *
+                            2.7)));
             TACREF_Object.Direction = 0.0f;
 
-            TACREF_Object.MinPitch = 0;
-            TACREF_Object.MaxPitch = 0;
-            TACREF_Object.CheckPitch = FALSE;
+            TACREF_Object.MinDistance =
+                ((DrawableBSP *)Vehicle->object)->Radius() + 40;
+            TACREF_Object.MaxDistance =
+                ((DrawableBSP *)Vehicle->object)->Radius() * 20;
+            TACREF_Object.MinPitch = 5;
+            TACREF_Object.MaxPitch = 90;
+            TACREF_Object.CheckPitch = TRUE;
 
             TACREF_Object.PosX = 0;
             TACREF_Object.PosY = 0;
-            TACREF_Object.PosZ = 0;
-            TACREF_Object.MinDistance = ((DrawableBSP*)Vehicle->object)->Radius() + 30;
-            TACREF_Object.MaxDistance = TACREF_Object.Distance + 200;
+            TACREF_Object.PosZ =
+                ((DrawableBSP *)Vehicle->object)->Radius() / 20 + 5;
             break;
 
-        case CAT_VEHICLES:
-            switch (SubGroupID)
+        default:
+            switch (ModelID)
             {
-                case SUB_CAT_VEHICLES_SHIPS:
-                    TACREF_Object.Distance = static_cast<float>(max(150, (long)((float)((DrawableBSP*)Vehicle->object)->Radius() * 2.7)));
-                    TACREF_Object.Direction = 0.0f;
+            case VIS_SA2R: // Fan Song
+            case VIS_SA3R: // Low Blow
+                TACREF_Object.Distance = 130.0f;
+                TACREF_Object.MinDistance =
+                    max(90.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 10);
+                TACREF_Object.PosZ = 14;
+                break;
 
-                    TACREF_Object.MinDistance = ((DrawableBSP*)Vehicle->object)->Radius() + 40;
-                    TACREF_Object.MaxDistance = ((DrawableBSP*)Vehicle->object)->Radius() * 20;
-                    TACREF_Object.MinPitch = 5;
-                    TACREF_Object.MaxPitch = 90;
-                    TACREF_Object.CheckPitch = TRUE;
+            case VIS_SA5R: // Barlock
+            case VIS_SA4R: // Long Track
+                TACREF_Object.Distance = 110.0f;
+                TACREF_Object.MinDistance =
+                    max(80.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 10);
+                TACREF_Object.PosZ = 10;
+                break;
 
-                    TACREF_Object.PosX = 0;
-                    TACREF_Object.PosY = 0;
-                    TACREF_Object.PosZ = ((DrawableBSP*)Vehicle->object)->Radius() / 20 + 5;
-                    break;
+            case VIS_PATRIOTRAD:
+            case VIS_SA8L:
+            case VIS_SA13L:
+                TACREF_Object.Distance = 85.0f;
+                TACREF_Object.MinDistance =
+                    max(50.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 20);
+                TACREF_Object.PosZ = 6;
+                break;
 
-                default:
-                    switch (ModelID)
-                    {
-                        case VIS_SA2R: // Fan Song
-                        case VIS_SA3R: // Low Blow
-                            TACREF_Object.Distance = 130.0f;
-                            TACREF_Object.MinDistance = max(90.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
-                            TACREF_Object.PosZ = 14;
-                            break;
+            case VIS_SA3L:
+                TACREF_Object.Distance = 80.0f;
+                TACREF_Object.MinDistance =
+                    max(50.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 10);
+                TACREF_Object.PosZ = 3;
+                break;
 
-                        case VIS_SA5R: // Barlock
-                        case VIS_SA4R: // Long Track
-                            TACREF_Object.Distance = 110.0f;
-                            TACREF_Object.MinDistance = max(80.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
-                            TACREF_Object.PosZ = 10;
-                            break;
+            case VIS_SA14:
+            case VIS_STINGER:
+                TACREF_Object.Distance = 40.0f;
+                TACREF_Object.MinDistance =
+                    max(20.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 10);
+                TACREF_Object.PosZ = 1;
+                break;
 
-                        case VIS_PATRIOTRAD:
-                        case VIS_SA8L:
-                        case VIS_SA13L:
-                            TACREF_Object.Distance = 85.0f;
-                            TACREF_Object.MinDistance = max(50.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 20);
-                            TACREF_Object.PosZ = 6;
-                            break;
+            case VIS_SA2L: // sorting problem, need fixing in 3D models
+            case VIS_SA5L:
+                TACREF_Object.Distance = 110.0f;
+                TACREF_Object.MinDistance = max(
+                    100.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 10);
+                TACREF_Object.PosZ = 5;
+                break;
 
-                        case VIS_SA3L:
-                            TACREF_Object.Distance = 80.0f;
-                            TACREF_Object.MinDistance = max(50.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
-                            TACREF_Object.PosZ = 3;
-                            break;
+            case VIS_M88: // M-88/A2 IRV, sorting problem need fixing
+                TACREF_Object.Distance = 135.0f;
+                TACREF_Object.MinDistance =
+                    max(50.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 10);
+                TACREF_Object.PosZ = 14;
+                break;
 
-                        case VIS_SA14:
-                        case VIS_STINGER:
-                            TACREF_Object.Distance = 40.0f;
-                            TACREF_Object.MinDistance = max(20.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
-                            TACREF_Object.PosZ = 1;
-                            break;
+            case VIS_NIKEL:
+                TACREF_Object.Distance = 140.0f;
+                TACREF_Object.MinDistance =
+                    max(80.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 5);
+                TACREF_Object.PosZ = 14;
+                ((DrawableBSP *)Vehicle->object)
+                    ->SetDOFangle(1, 30.0f * PI / 180);
+                break;
 
-                        case VIS_SA2L: // sorting problem, need fixing in 3D models
-                        case VIS_SA5L:
-                            TACREF_Object.Distance = 110.0f;
-                            TACREF_Object.MinDistance = max(100.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
-                            TACREF_Object.PosZ = 5;
-                            break;
+            case VIS_ZSU57_2:
+                TACREF_Object.Distance = 90.0f;
+                TACREF_Object.MinDistance =
+                    max(20.0f, ((DrawableBSP *)Vehicle->object)->Radius());
+                TACREF_Object.PosZ = 5;
+                break;
 
-                        case VIS_M88: // M-88/A2 IRV, sorting problem need fixing
-                            TACREF_Object.Distance = 135.0f;
-                            TACREF_Object.MinDistance = max(50.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 10);
-                            TACREF_Object.PosZ = 14;
-                            break;
-
-                        case VIS_NIKEL:
-                            TACREF_Object.Distance = 140.0f;
-                            TACREF_Object.MinDistance = max(80.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 5);
-                            TACREF_Object.PosZ = 14;
-                            ((DrawableBSP*)Vehicle->object)->SetDOFangle(1, 30.0f * PI / 180);
-                            break;
-
-                        case VIS_ZSU57_2:
-                            TACREF_Object.Distance = 90.0f;
-                            TACREF_Object.MinDistance = max(20.0f, ((DrawableBSP*)Vehicle->object)->Radius());
-                            TACREF_Object.PosZ = 5;
-                            break;
-
-                        default:
-                            TACREF_Object.Distance = 80.0f;
-                            TACREF_Object.MinDistance = max(40.0f, ((DrawableBSP*)Vehicle->object)->Radius() + 5);
-                            TACREF_Object.PosZ = 5;
-                            break;
-                    }
-
-                    TACREF_Object.Direction = 0.0f;
-
-                    TACREF_Object.MaxDistance = 250.0f;
-                    TACREF_Object.MinPitch = 5;
-                    TACREF_Object.MaxPitch = 90;
-                    TACREF_Object.CheckPitch = TRUE;
-
-                    TACREF_Object.PosX = 0;
-                    TACREF_Object.PosY = 0;
-                    break;
+            default:
+                TACREF_Object.Distance = 80.0f;
+                TACREF_Object.MinDistance =
+                    max(40.0f, ((DrawableBSP *)Vehicle->object)->Radius() + 5);
+                TACREF_Object.PosZ = 5;
+                break;
             }
 
-            break;
-
-        case CAT_MUNITIONS:
             TACREF_Object.Direction = 0.0f;
 
-            TACREF_Object.MinPitch = 0;
-            TACREF_Object.MaxPitch = 0;
-            TACREF_Object.CheckPitch = FALSE;
+            TACREF_Object.MaxDistance = 250.0f;
+            TACREF_Object.MinPitch = 5;
+            TACREF_Object.MaxPitch = 90;
+            TACREF_Object.CheckPitch = TRUE;
 
             TACREF_Object.PosX = 0;
             TACREF_Object.PosY = 0;
-            TACREF_Object.PosZ = 0;
+            break;
+        }
+
+        break;
+
+    case CAT_MUNITIONS:
+        TACREF_Object.Direction = 0.0f;
+
+        TACREF_Object.MinPitch = 0;
+        TACREF_Object.MaxPitch = 0;
+        TACREF_Object.CheckPitch = FALSE;
+
+        TACREF_Object.PosX = 0;
+        TACREF_Object.PosY = 0;
+        TACREF_Object.PosZ = 0;
 #if 0
             TACREF_Object.Distance = ((DrawableBSP*)Vehicle->object)->Radius() * 3;
             TACREF_Object.MinDistance = ((DrawableBSP*)Vehicle->object)->Radius() + 5;
             TACREF_Object.MaxDistance = ((DrawableBSP*)Vehicle->object)->Radius() * 10;
 #endif
-            TACREF_Object.Distance = 30.0f;
-            TACREF_Object.MinDistance = 20.0f;
-            TACREF_Object.MaxDistance = 50.f;
-            break;
+        TACREF_Object.Distance = 30.0f;
+        TACREF_Object.MinDistance = 20.0f;
+        TACREF_Object.MaxDistance = 50.f;
+        break;
     }
 }
 
@@ -673,11 +694,11 @@ static void Load3dModel(Entity *ent)
     Tpoint objPos;
     Trotation objRot;
     C_Window *win;
-    VehicleClassDataType* vc;
+    VehicleClassDataType *vc;
     long i, visFlag;
 
     // M.N. read the CT index visType[0] (= Normal model) to get the model ID instead of the tacref hardcoded one
-    Falcon4EntityClassType* ct;
+    Falcon4EntityClassType *ct;
     short modelid;
 
     ct = &Falcon4ClassTable[ent->EntityID];
@@ -687,7 +708,8 @@ static void Load3dModel(Entity *ent)
         modelid = 1225; // LANTIRN Pod -> no CT record
 
     if (ent->EntityID == 531)
-        modelid = 875; // M-2A2/ADATS -> this vehicle doesn't exist in the datafiles (huh ?)
+        modelid =
+            875; // M-2A2/ADATS -> this vehicle doesn't exist in the datafiles (huh ?)
 
     // if(ent->ModelID)
     if (modelid)
@@ -701,16 +723,21 @@ static void Load3dModel(Entity *ent)
             obj = TAC_Viewer->LoadBSP(modelid, modelid, TRUE);
 
             // if (ent->ModelID == MapVisId(VIS_F16C))
-            if (modelid == MapVisId(VIS_F16C) or ((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10)
+            if (modelid == MapVisId(VIS_F16C) or
+                ((DrawableBSP *)obj->object)
+                        ->instance.ParentObject->nSwitches >= 10)
             {
-                ((DrawableBSP*)obj->object)->SetSwitchMask(10, 1); // Afterburner
-                ((DrawableBSP*)obj->object)->SetSwitchMask(31, 1); // Afterburner
+                ((DrawableBSP *)obj->object)
+                    ->SetSwitchMask(10, 1); // Afterburner
+                ((DrawableBSP *)obj->object)
+                    ->SetSwitchMask(31, 1); // Afterburner
             }
 
             if (ent->SubGroupID == SUB_CAT_AIRCRAFT_HELICOPTERS)
             {
                 Helicopter = TRUE;
-                ((DrawableBSP*)obj->object)->SetSwitchMask(0, 1); // Turn on rotors
+                ((DrawableBSP *)obj->object)
+                    ->SetSwitchMask(0, 1); // Turn on rotors
                 //((DrawableBSP*)obj->object)->SetDofAngle(2, 0);
                 //((DrawableBSP*)obj->object)->SetDofAngle(5, 0);
             }
@@ -739,7 +766,9 @@ static void Load3dModel(Entity *ent)
                         if (visFlag bitand (1 << i))
                         {
                             // This is a visible weapon, so attach
-                            ((DrawableBSP*)obj->object)->AttachChild(((DrawableBSP*)Weapon->object), i);
+                            ((DrawableBSP *)obj->object)
+                                ->AttachChild(((DrawableBSP *)Weapon->object),
+                                              i);
                         }
                     }
                 }
@@ -751,7 +780,7 @@ static void Load3dModel(Entity *ent)
             CurrentModel = modelid;
             //TJL 12/28/03 This code allows for the texture set to be cycled by reselecting the model
             int newtext;
-            newtext = ((DrawableBSP*)obj->object)->GetNTextureSet() - 1;
+            newtext = ((DrawableBSP *)obj->object)->GetNTextureSet() - 1;
 
             if (newtext >= prevtext)
             {
@@ -761,13 +790,14 @@ static void Load3dModel(Entity *ent)
             if (prevtext > newtext)
                 prevtext = 0;
 
-            ((DrawableBSP*)obj->object)->SetTextureSet(prevtext);
+            ((DrawableBSP *)obj->object)->SetTextureSet(prevtext);
             //end new code
 
-            PositandOrientSetData(TACREF_Object.PosX, TACREF_Object.PosY, TACREF_Object.PosZ, 0.0f, 0.0f, 0.0f, &objPos, &objRot);
+            PositandOrientSetData(TACREF_Object.PosX, TACREF_Object.PosY,
+                                  TACREF_Object.PosZ, 0.0f, 0.0f, 0.0f, &objPos,
+                                  &objRot);
 
-            ((DrawableBSP*)obj->object)->Update(&objPos, &objRot);
-
+            ((DrawableBSP *)obj->object)->Update(&objPos, &objRot);
 
 
             win = gMainHandler->FindWindow(TAC_REF_WIN);
@@ -781,7 +811,7 @@ static void Load3dModel(Entity *ent)
 }
 
 // Moves individual entity to Window (info,model,RWR etc)
-static void EntityToWindow(Entity* ent)
+static void EntityToWindow(Entity *ent)
 {
     C_Window *win;
     C_ListBox *lbox;
@@ -799,7 +829,7 @@ static void EntityToWindow(Entity* ent)
         StopRWRSounds();
 
         // Make Stats Tree
-        tree = (C_TreeList*)win->FindControl(STAT_TREE);
+        tree = (C_TreeList *)win->FindControl(STAT_TREE);
 
         if (tree)
         {
@@ -808,7 +838,7 @@ static void EntityToWindow(Entity* ent)
         }
 
         // Make Description Tree
-        tree = (C_TreeList*)win->FindControl(DESC_TREE);
+        tree = (C_TreeList *)win->FindControl(DESC_TREE);
 
         if (tree)
         {
@@ -817,7 +847,7 @@ static void EntityToWindow(Entity* ent)
         }
 
         // Make RWR Listbox;
-        lbox = (C_ListBox*)win->FindControl(RWR_LIST);
+        lbox = (C_ListBox *)win->FindControl(RWR_LIST);
 
         if (lbox)
         {
@@ -845,7 +875,7 @@ static long InfoToWindow(long SubGroupID)
 
     if (win)
     {
-        lbox = (C_ListBox*)win->FindControl(ENTITY_LIST);
+        lbox = (C_ListBox *)win->FindControl(ENTITY_LIST);
 
         if (lbox)
         {
@@ -861,17 +891,17 @@ static long InfoToWindow(long SubGroupID)
                 ent = Reference->GetNext(&entval);
             }
 
-            if ( not lbox->GetRoot())
+            if (not lbox->GetRoot())
             {
                 lbox->AddItem(1, C_TYPE_ITEM, TXT_NONE);
                 lbox->SetValue(1);
             }
 
-            return(lbox->GetTextID());
+            return (lbox->GetTextID());
         }
     }
 
-    return(0);
+    return (0);
 }
 
 static void SetGroupButton(long GroupID)
@@ -886,7 +916,7 @@ static void SetGroupButton(long GroupID)
     {
         for (i = 0; i < GROUP_COUNT; i++)
         {
-            btn = (C_Button*)win->FindControl(GroupButtonID[i]);
+            btn = (C_Button *)win->FindControl(GroupButtonID[i]);
 
             if (btn)
             {
@@ -918,7 +948,7 @@ static void SetSubGroupButton(long SubGroupID)
     {
         for (i = 0; i < SUBGROUP_COUNT; i++)
         {
-            btn = (C_Button*)win->FindControl(SubGroupButtonID[i]);
+            btn = (C_Button *)win->FindControl(SubGroupButtonID[i]);
 
             if (btn)
             {
@@ -959,21 +989,21 @@ static void LoadGroup(long GroupID)
 
     switch (GroupID)
     {
-        case CAT_AIRCRAFT:
-            SubGroupID = SUB_CAT_AIRCRAFT_FIGHTERS;
-            break;
+    case CAT_AIRCRAFT:
+        SubGroupID = SUB_CAT_AIRCRAFT_FIGHTERS;
+        break;
 
-        case CAT_VEHICLES:
-            SubGroupID = SUB_CAT_VEHICLES_TANKS;
-            break;
+    case CAT_VEHICLES:
+        SubGroupID = SUB_CAT_VEHICLES_TANKS;
+        break;
 
-        case CAT_MUNITIONS:
-            SubGroupID = SUB_CAT_MUNITIONS_AAM;
-            break;
+    case CAT_MUNITIONS:
+        SubGroupID = SUB_CAT_MUNITIONS_AAM;
+        break;
 
-        default:
-            SubGroupID = 0;
-            break;
+    default:
+        SubGroupID = 0;
+        break;
     }
 
     SetSubGroupButton(SubGroupID);
@@ -1021,7 +1051,7 @@ static void SelectSubGroupCB(long ID, short hittype, C_Base *control)
 static void SelectEntityCB(long ID, short hittype, C_Base *control)
 {
     F4CSECTIONHANDLE *Leave;
-    C_ListBox *lbox = (C_ListBox*)control;
+    C_ListBox *lbox = (C_ListBox *)control;
 
     if (hittype not_eq C_TYPE_SELECT)
         return;
@@ -1035,7 +1065,7 @@ static void SelectEntityCB(long ID, short hittype, C_Base *control)
 
 static void SelectRWRCB(long ID, short hittype, C_Base *control)
 {
-    C_ListBox *lbox = (C_ListBox*)control;
+    C_ListBox *lbox = (C_ListBox *)control;
 
     if (hittype not_eq C_TYPE_SELECT)
         return;
@@ -1090,9 +1120,12 @@ void ReplaceDummyControl(C_Window *win)
             objectviewer = new C_TimerHook;
             objectviewer->Setup(C_DONT_CARE, C_TYPE_NORMAL);
             objectviewer->SetClient(0);
-            objectviewer->SetXY(win->ClientArea_[0].left, win->ClientArea_[0].top);
-            objectviewer->SetW(win->ClientArea_[0].right - win->ClientArea_[0].left);
-            objectviewer->SetH(win->ClientArea_[0].bottom - win->ClientArea_[0].top);
+            objectviewer->SetXY(win->ClientArea_[0].left,
+                                win->ClientArea_[0].top);
+            objectviewer->SetW(win->ClientArea_[0].right -
+                               win->ClientArea_[0].left);
+            objectviewer->SetH(win->ClientArea_[0].bottom -
+                               win->ClientArea_[0].top);
             objectviewer->SetRefreshCallback(TACREF_ViewTimerCB); // new
             objectviewer->SetDrawCallback(TACREF_ViewBSPObjectCB);
             objectviewer->SetFlagBitOff(C_BIT_TIMER);
@@ -1296,7 +1329,7 @@ static void HookupTacticalReferenceControls(long ID)
         ctrl->SetCallback(PlaySoundCB);
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
@@ -1309,8 +1342,10 @@ static void HookupTacticalReferenceControls(long ID)
         drawTimer->Setup(C_DONT_CARE, C_TYPE_NORMAL);
         drawTimer->SetClient(0);
         drawTimer->SetXY(winme->ClientArea_[0].left, winme->ClientArea_[0].top);
-        drawTimer->SetW(winme->ClientArea_[0].right - winme->ClientArea_[0].left);
-        drawTimer->SetH(winme->ClientArea_[0].bottom - winme->ClientArea_[0].top);
+        drawTimer->SetW(winme->ClientArea_[0].right -
+                        winme->ClientArea_[0].left);
+        drawTimer->SetH(winme->ClientArea_[0].bottom -
+                        winme->ClientArea_[0].top);
         drawTimer->SetUpdateCallback(TACREF_ViewTimerAnimCB);
         drawTimer->SetReady(1);
         drawTimer->SetUserNumber(_UI95_TIMER_DELAY_, 1);
@@ -1324,7 +1359,7 @@ BOOL TacRef_Setup()
 
     // RV - Biker - Add theater switching for tacref
     char tmpPath[_MAX_PATH];
-    sprintf(tmpPath, "%s\\%s", FalconTacrefThrDirectory, "tacrefdb.bin");
+    sprintf(tmpPath, "%s/%s", FalconTacrefThrDirectory, "tacrefdb.bin");
 
     win = gMainHandler->FindWindow(TAC_REF_WIN);
 
@@ -1347,7 +1382,7 @@ BOOL TacRef_Setup()
             TAC_Viewer->Init3d(30.0f);
         }
 
-        if ( not Reference)
+        if (not Reference)
         {
             Reference = new TacticalReference;
             // RV - Biker - Load theater specific tacref
@@ -1357,10 +1392,10 @@ BOOL TacRef_Setup()
             LoadGroup(CAT_AIRCRAFT);
         }
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void TacRef_Cleanup()
@@ -1385,7 +1420,8 @@ void LoadTacticalReferenceWindows()
 {
     long ID;
 
-    if (TACREFLoaded) return;
+    if (TACREFLoaded)
+        return;
 
     if (_LOAD_ART_RESOURCES_)
         gMainParser->LoadImageList("ref_res.lst");
@@ -1404,5 +1440,4 @@ void LoadTacticalReferenceWindows()
     }
 
     TACREFLoaded++;
-
 }

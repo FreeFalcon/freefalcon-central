@@ -12,14 +12,14 @@
 
 // tinyxml2 BEFORE falclib.h: falclib does #define new DEBUG_NEW, which breaks the inline methods
 // of tinyxml2::XMLDocument in tinyxml2.h (XMLDocument becomes "incomplete"). STL above - before windows/min-max.
-#include "extlibs/tinyxml2/tinyxml2.h"   // include path ..\.. = src\
+#include "extlibs/tinyxml2/tinyxml2.h" // include path ..\.. = src\
 
 // Same preamble as the working siloop.cpp: falclib + sinput expand the windows/dinput/types
 // needed by simio.h (otherwise simio.h's body - DeviceAxis/AxisMapping/SIM_NUMDEVICES - won't expand).
 #include "falclib.h"
 #include "sinput.h"
-#include "simio.h"                         // AxisMapping / DeviceAxis / SIM_NUMDEVICES
-#include "datadir.h"                        // FalconDataDirectory
+#include "simio.h" // AxisMapping / DeviceAxis / SIM_NUMDEVICES
+#include "datadir.h" // FalconDataDirectory
 
 #include "controlsxml.h"
 
@@ -34,7 +34,7 @@ static std::map<std::string, std::string> g_category;
 
 static void cfgPath(char *out, const char *rel)
 {
-    sprintf(out, "%s\\config\\%s", FalconDataDirectory, rel);
+    sprintf(out, "%s/config/%s", FalconDataDirectory, rel);
 }
 
 int ControlsXml_LoadCatalog(void)
@@ -50,15 +50,17 @@ int ControlsXml_LoadCatalog(void)
     if (doc.LoadFile(path) != tinyxml2::XML_SUCCESS)
         return 0;
 
-    tinyxml2::XMLElement *root  = doc.FirstChildElement("controls");
-    tinyxml2::XMLElement *funcs = root ? root->FirstChildElement("functions") : NULL;
+    tinyxml2::XMLElement *root = doc.FirstChildElement("controls");
+    tinyxml2::XMLElement *funcs =
+        root ? root->FirstChildElement("functions") : NULL;
 
     if (not funcs)
         return 0;
 
     int cnt = 0;
 
-    for (tinyxml2::XMLElement *fe = funcs->FirstChildElement("function"); fe; fe = fe->NextSiblingElement("function"))
+    for (tinyxml2::XMLElement *fe = funcs->FirstChildElement("function"); fe;
+         fe = fe->NextSiblingElement("function"))
     {
         const char *name = fe->Attribute("name");
 
@@ -66,7 +68,7 @@ int ControlsXml_LoadCatalog(void)
             continue;
 
         const char *label = fe->Attribute("label");
-        const char *cat   = fe->Attribute("category");
+        const char *cat = fe->Attribute("category");
 
         g_label[name] = label ? label : name;
 
@@ -103,7 +105,8 @@ const char *ControlsXml_GetCategory(const char *funcName)
 static int iattr(tinyxml2::XMLElement *e, const char *n, int def)
 {
     const char *a = e->Attribute(n);
-    return a ? (int)strtol(a, NULL, 0) : def;   // base 0: hex (0x..), dec, negatives
+    return a ? (int)strtol(a, NULL, 0) :
+               def; // base 0: hex (0x..), dec, negatives
 }
 
 // Active profile token. Defaults to "default"; the logbook switches it per pilot via
@@ -121,7 +124,8 @@ void ControlsXml_SetProfile(const char *name)
 
 bool ControlsXml_ActiveProfilePath(char *out, int outSize)
 {
-    _snprintf(out, outSize, "%s\\config\\profiles\\%s", FalconDataDirectory, g_controlsProfile);
+    _snprintf(out, outSize, "%s/config/profiles/%s", FalconDataDirectory,
+              g_controlsProfile);
     out[outSize - 1] = 0;
     return true;
 }
@@ -129,7 +133,7 @@ bool ControlsXml_ActiveProfilePath(char *out, int outSize)
 static void ensureProfileDir(void)
 {
     char p[_MAX_PATH];
-    sprintf(p, "%s\\config\\profiles", FalconDataDirectory);
+    sprintf(p, "%s/config/profiles", FalconDataDirectory);
     _mkdir(p);
     ControlsXml_ActiveProfilePath(p, sizeof(p));
     _mkdir(p);
@@ -141,20 +145,28 @@ static void ensureProfileDir(void)
 // customised) lives in config\profiles\default\. g_controlsProfile holds the active
 // folder token ("default" or a number) - all profile paths are built from it.
 // ===========================================================================
-struct CxProfileRec { std::string name; int dir; };
+struct CxProfileRec
+{
+    std::string name;
+    int dir;
+};
 
-static void profilesXmlPath(char *out) { cfgPath(out, "profiles.xml"); }
+static void profilesXmlPath(char *out)
+{
+    cfgPath(out, "profiles.xml");
+}
 
 static void profileDirPathFor(char *out, int outSize, const char *token)
 {
-    _snprintf(out, outSize, "%s\\config\\profiles\\%s", FalconDataDirectory, token);
+    _snprintf(out, outSize, "%s/config/profiles/%s", FalconDataDirectory,
+              token);
     out[outSize - 1] = 0;
 }
 
 static void ensureProfileDirFor(const char *token)
 {
     char p[_MAX_PATH];
-    sprintf(p, "%s\\config\\profiles", FalconDataDirectory);
+    sprintf(p, "%s/config/profiles", FalconDataDirectory);
     _mkdir(p);
     profileDirPathFor(p, sizeof(p), token);
     _mkdir(p);
@@ -163,12 +175,18 @@ static void ensureProfileDirFor(const char *token)
 static bool copyFileSimple(const char *src, const char *dst)
 {
     FILE *fs = fopen(src, "rb");
-    if (not fs) return false;
+    if (not fs)
+        return false;
     FILE *fd = fopen(dst, "wb");
-    if (not fd) { fclose(fs); return false; }
+    if (not fd)
+    {
+        fclose(fs);
+        return false;
+    }
     char buf[4096];
     size_t r;
-    while ((r = fread(buf, 1, sizeof(buf), fs)) > 0) fwrite(buf, 1, r, fd);
+    while ((r = fread(buf, 1, sizeof(buf), fs)) > 0)
+        fwrite(buf, 1, r, fd);
     fclose(fs);
     fclose(fd);
     return true;
@@ -180,21 +198,67 @@ static bool copyFileSimple(const char *src, const char *dst)
 static void seedKeyboardFor(const char *token, bool force)
 {
     if (strcmp(token, "default") == 0)
-        return;                          // default ships its own keyboard.xml
+        return; // default ships its own keyboard.xml
 
     char dir[_MAX_PATH], dst[_MAX_PATH], src[_MAX_PATH];
     profileDirPathFor(dir, sizeof(dir), token);
-    sprintf(dst, "%s\\keyboard.xml", dir);
+    sprintf(dst, "%s/keyboard.xml", dir);
 
     if (not force)
     {
         FILE *t = fopen(dst, "rb");
-        if (t) { fclose(t); return; }   // already has its own - leave it
+        if (t)
+        {
+            fclose(t);
+            return;
+        } // already has its own - leave it
     }
 
-    profileDirPathFor(src, sizeof(src), "default");      // template = shipped default profile
-    strncat(src, "\\keyboard.xml", sizeof(src) - strlen(src) - 1);
+    profileDirPathFor(src, sizeof(src),
+                      "default"); // template = shipped default profile
+    strncat(src, "/keyboard.xml", sizeof(src) - strlen(src) - 1);
     copyFileSimple(src, dst);
+}
+
+// ===========================================================================
+// Input bindings dir (keyboard.xml / <GUID>.xml / axismapping.xml)
+// ===========================================================================
+// 2026-07: input bindings are shared across ALL pilots and live in a single config/input/ folder, NOT in the
+// per-pilot profile dirs (those keep only logbook/stats/options/rules). This replaces the earlier per-profile
+// input layout so the keyboard/joystick setup is global.
+static void inputDirPath(char *out, int outSize)
+{
+    _snprintf(out, outSize, "%s/config/input", FalconDataDirectory);
+    out[outSize - 1] = 0;
+}
+
+static void ensureInputDir(void)
+{
+    char dir[_MAX_PATH];
+    inputDirPath(dir, sizeof(dir));
+    _mkdir(dir);
+
+    // First run: seed the shared keyboard layout from the shipped master (config/keyboard.xml, else the default
+    // profile's copy) so key bindings exist before the user customises them.
+    char kb[_MAX_PATH];
+    sprintf(kb, "%s/keyboard.xml", dir);
+    FILE *have = fopen(kb, "rb");
+    if (have)
+    {
+        fclose(have);
+        return;
+    }
+
+    char src[_MAX_PATH];
+    cfgPath(src, "keyboard.xml"); // config/keyboard.xml (shipped master)
+    if (not copyFileSimple(src, kb))
+    {
+        profileDirPathFor(
+            src, sizeof(src),
+            "default"); // fallback: config/profiles/default/keyboard.xml
+        strncat(src, "/keyboard.xml", sizeof(src) - strlen(src) - 1);
+        copyFileSimple(src, kb);
+    }
 }
 
 static bool profilesRead(std::vector<CxProfileRec> &out, std::string *active)
@@ -216,24 +280,26 @@ static bool profilesRead(std::vector<CxProfileRec> &out, std::string *active)
         *active = a ? a : "";
     }
 
-    for (tinyxml2::XMLElement *p = root->FirstChildElement("profile"); p; p = p->NextSiblingElement("profile"))
+    for (tinyxml2::XMLElement *p = root->FirstChildElement("profile"); p;
+         p = p->NextSiblingElement("profile"))
     {
         const char *nm = p->Attribute("name");
         if (not nm)
             continue;
         CxProfileRec rec;
         rec.name = nm;
-        rec.dir  = iattr(p, "dir", 0);
+        rec.dir = iattr(p, "dir", 0);
         out.push_back(rec);
     }
 
     return true;
 }
 
-static bool profilesWrite(const std::vector<CxProfileRec> &list, const char *active)
+static bool profilesWrite(const std::vector<CxProfileRec> &list,
+                          const char *active)
 {
     char cfg[_MAX_PATH];
-    sprintf(cfg, "%s\\config", FalconDataDirectory);
+    sprintf(cfg, "%s/config", FalconDataDirectory);
     _mkdir(cfg);
 
     tinyxml2::XMLDocument doc;
@@ -266,14 +332,18 @@ static void ensureProfilesXml(void)
     profilesXmlPath(path);
 
     FILE *t = fopen(path, "rb");
-    if (t) { fclose(t); return; }        // already exists
+    if (t)
+    {
+        fclose(t);
+        return;
+    } // already exists
 
     std::vector<CxProfileRec> list;
     CxProfileRec def;
-    def.name = "Viper";                  // matches LogBookData::Initialize default callsign
-    def.dir  = 0;                        // dir 0 == default pilot == folder "default"
+    def.name = "Viper"; // matches LogBookData::Initialize default callsign
+    def.dir = 0; // dir 0 == default pilot == folder "default"
     list.push_back(def);
-    profilesWrite(list, "Viper");        // default pilot active
+    profilesWrite(list, "Viper"); // default pilot active
 
     ensureProfileDirFor("default");
     seedKeyboardFor("default", false);
@@ -281,7 +351,8 @@ static void ensureProfilesXml(void)
 
 // Map a callsign to its profile folder token. Pure lookup, no state change.
 // dir 0 is reserved for our default pilot -> folder "default"; real pilots use "1","2",...
-static void profileTokenForCallsign(const char *callsign, char *out, int outSize)
+static void profileTokenForCallsign(const char *callsign, char *out,
+                                    int outSize)
 {
     _snprintf(out, outSize, "default");
     out[outSize - 1] = 0;
@@ -294,7 +365,8 @@ static void profileTokenForCallsign(const char *callsign, char *out, int outSize
                 if (_stricmp(list[i].name.c_str(), callsign) == 0)
                 {
                     if (list[i].dir <= 0)
-                        _snprintf(out, outSize, "default");   // dir 0 = default pilot
+                        _snprintf(out, outSize,
+                                  "default"); // dir 0 = default pilot
                     else
                         _snprintf(out, outSize, "%d", list[i].dir);
                     out[outSize - 1] = 0;
@@ -312,9 +384,9 @@ static void profilesSetActive(const char *activeCallsign)
     const char *a = activeCallsign ? activeCallsign : "";
 
     if (have and cur == a)
-        return;                       // already current - no rewrite
+        return; // already current - no rewrite
     if (not have and not a[0])
-        return;                       // nothing to persist yet
+        return; // nothing to persist yet
 
     profilesWrite(list, a);
 }
@@ -331,8 +403,10 @@ void ControlsXml_SelectProfileForCallsign(const char *callsign)
 
     ControlsXml_SetProfile(token);
     ensureProfileDirFor(token);
-    seedKeyboardFor(token, false);   // default is seeded from config\keyboard.xml if empty
-    profilesSetActive(callsign);     // remember the last selection for the next launch
+    seedKeyboardFor(
+        token, false); // default is seeded from config\keyboard.xml if empty
+    profilesSetActive(
+        callsign); // remember the last selection for the next launch
 }
 
 // Restore g_controlsProfile from the persisted active pilot (profiles.xml) at startup, so the
@@ -381,7 +455,7 @@ void ControlsXml_CreateProfile(const char *callsign)
 
     CxProfileRec rec;
     rec.name = callsign;
-    rec.dir  = maxDir + 1;
+    rec.dir = maxDir + 1;
     list.push_back(rec);
 
     char token[64];
@@ -390,7 +464,8 @@ void ControlsXml_CreateProfile(const char *callsign)
     profilesWrite(list, callsign);
     ControlsXml_SetProfile(token);
     ensureProfileDirFor(token);
-    seedKeyboardFor(token, true);    // fresh copy of the master keyboard into the new profile
+    seedKeyboardFor(
+        token, true); // fresh copy of the master keyboard into the new profile
 }
 
 // Active pilot callsign from profiles.xml (the last-selected pilot). true if non-empty.
@@ -427,14 +502,18 @@ void ControlsXml_EnsureDefaultPilot(const char *callsign)
     {
         if (list[i].dir == 0)
         {
-            if (haveZero) continue;            // keep only one dir-0 entry
-            CxProfileRec d; d.name = callsign; d.dir = 0;
-            cleaned.push_back(d);              // (re)name the dir-0 slot to the default callsign
+            if (haveZero)
+                continue; // keep only one dir-0 entry
+            CxProfileRec d;
+            d.name = callsign;
+            d.dir = 0;
+            cleaned.push_back(
+                d); // (re)name the dir-0 slot to the default callsign
             haveZero = true;
         }
         else if (_stricmp(list[i].name.c_str(), callsign) == 0)
         {
-            continue;                          // drop a spurious non-default copy of the default
+            continue; // drop a spurious non-default copy of the default
         }
         else
         {
@@ -444,11 +523,13 @@ void ControlsXml_EnsureDefaultPilot(const char *callsign)
 
     if (not haveZero)
     {
-        CxProfileRec d; d.name = callsign; d.dir = 0;
+        CxProfileRec d;
+        d.name = callsign;
+        d.dir = 0;
         cleaned.insert(cleaned.begin(), d);
     }
 
-    profilesWrite(cleaned, callsign);          // default pilot active
+    profilesWrite(cleaned, callsign); // default pilot active
     ControlsXml_SetProfile("default");
     ensureProfileDirFor("default");
     seedKeyboardFor("default", false);
@@ -458,7 +539,8 @@ void ControlsXml_EnsureDefaultPilot(const char *callsign)
 // profile's data (logbook.xml/keyboard/etc.) stays put. Updates 'active' if it pointed at oldName.
 void ControlsXml_RenameProfile(const char *oldName, const char *newName)
 {
-    if (not oldName or not newName or not newName[0] or _stricmp(oldName, newName) == 0)
+    if (not oldName or not newName or not newName[0] or
+        _stricmp(oldName, newName) == 0)
         return;
 
     ensureProfilesXml();
@@ -479,7 +561,8 @@ void ControlsXml_RenameProfile(const char *oldName, const char *newName)
     if (not found)
         return;
 
-    const char *newActive = (_stricmp(active.c_str(), oldName) == 0) ? newName : active.c_str();
+    const char *newActive =
+        (_stricmp(active.c_str(), oldName) == 0) ? newName : active.c_str();
     profilesWrite(list, newActive);
 }
 
@@ -511,11 +594,17 @@ static float fattr(tinyxml2::XMLElement *e, const char *n, float def)
     return a ? (float)atof(a) : def;
 }
 
-static void sattr(tinyxml2::XMLElement *e, const char *n, char *out, int outSize)
+static void sattr(tinyxml2::XMLElement *e, const char *n, char *out,
+                  int outSize)
 {
     const char *a = e->Attribute(n);
-    if (a) { strncpy(out, a, outSize - 1); out[outSize - 1] = 0; }
-    else out[0] = 0;
+    if (a)
+    {
+        strncpy(out, a, outSize - 1);
+        out[outSize - 1] = 0;
+    }
+    else
+        out[0] = 0;
 }
 
 bool ControlsXml_WriteLogbook(const CxLogbook *p)
@@ -551,7 +640,11 @@ bool ControlsXml_WriteLogbook(const CxLogbook *p)
 
     tinyxml2::XMLElement *med = doc.NewElement("medals");
     char a[8];
-    for (int i = 0; i < 8; i++) { sprintf(a, "m%d", i); med->SetAttribute(a, p->medals[i]); }
+    for (int i = 0; i < 8; i++)
+    {
+        sprintf(a, "m%d", i);
+        med->SetAttribute(a, p->medals[i]);
+    }
     root->InsertEndChild(med);
 
     tinyxml2::XMLElement *df = doc.NewElement("dogfight");
@@ -582,12 +675,13 @@ bool ControlsXml_WriteLogbook(const CxLogbook *p)
     cm->SetAttribute("static", p->cmp_static);
     cm->SetAttribute("naval", p->cmp_naval);
     cm->SetAttribute("friendliesKilled", p->cmp_friendliesKilled);
-    cm->SetAttribute("missSinceLastFriendlyKill", p->cmp_missSinceLastFriendlyKill);
+    cm->SetAttribute("missSinceLastFriendlyKill",
+                     p->cmp_missSinceLastFriendlyKill);
     root->InsertEndChild(cm);
 
     char prof[_MAX_PATH], path[_MAX_PATH];
     ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\logbook.xml", prof);
+    sprintf(path, "%s/logbook.xml", prof);
     return doc.SaveFile(path) == tinyxml2::XML_SUCCESS;
 }
 
@@ -598,7 +692,7 @@ bool ControlsXml_ReadLogbook(CxLogbook *out)
 
     char prof[_MAX_PATH], path[_MAX_PATH];
     ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\logbook.xml", prof);
+    sprintf(path, "%s/logbook.xml", prof);
 
     tinyxml2::XMLDocument doc;
     if (doc.LoadFile(path) != tinyxml2::XML_SUCCESS)
@@ -616,7 +710,8 @@ bool ControlsXml_ReadLogbook(CxLogbook *out)
         sattr(pilot, "name", out->name, sizeof(out->name));
         sattr(pilot, "callsign", out->callsign, sizeof(out->callsign));
         sattr(pilot, "squadron", out->squadron, sizeof(out->squadron));
-        sattr(pilot, "commissioned", out->commissioned, sizeof(out->commissioned));
+        sattr(pilot, "commissioned", out->commissioned,
+              sizeof(out->commissioned));
         out->rank = iattr(pilot, "rank", 0);
         out->flightHours = fattr(pilot, "flightHours", 0.f);
         out->aceFactor = fattr(pilot, "aceFactor", 1.f);
@@ -634,42 +729,47 @@ bool ControlsXml_ReadLogbook(CxLogbook *out)
     if (med)
     {
         char a[8];
-        for (int i = 0; i < 8; i++) { sprintf(a, "m%d", i); out->medals[i] = iattr(med, a, 0); }
+        for (int i = 0; i < 8; i++)
+        {
+            sprintf(a, "m%d", i);
+            out->medals[i] = iattr(med, a, 0);
+        }
     }
 
     tinyxml2::XMLElement *df = root->FirstChildElement("dogfight");
     if (df)
     {
-        out->df_matchesWon      = iattr(df, "matchesWon", 0);
-        out->df_matchesLost     = iattr(df, "matchesLost", 0);
-        out->df_matchesWonVHum  = iattr(df, "matchesWonVHum", 0);
+        out->df_matchesWon = iattr(df, "matchesWon", 0);
+        out->df_matchesLost = iattr(df, "matchesLost", 0);
+        out->df_matchesWonVHum = iattr(df, "matchesWonVHum", 0);
         out->df_matchesLostVHum = iattr(df, "matchesLostVHum", 0);
-        out->df_kills           = iattr(df, "kills", 0);
-        out->df_killed          = iattr(df, "killed", 0);
-        out->df_humanKills      = iattr(df, "humanKills", 0);
-        out->df_killedByHuman   = iattr(df, "killedByHuman", 0);
+        out->df_kills = iattr(df, "kills", 0);
+        out->df_killed = iattr(df, "killed", 0);
+        out->df_humanKills = iattr(df, "humanKills", 0);
+        out->df_killedByHuman = iattr(df, "killedByHuman", 0);
     }
 
     tinyxml2::XMLElement *cm = root->FirstChildElement("campaign");
     if (cm)
     {
-        out->cmp_gamesWon                  = iattr(cm, "gamesWon", 0);
-        out->cmp_gamesLost                 = iattr(cm, "gamesLost", 0);
-        out->cmp_gamesTied                 = iattr(cm, "gamesTied", 0);
-        out->cmp_missions                  = iattr(cm, "missions", 0);
-        out->cmp_totalScore                = iattr(cm, "totalScore", 0);
-        out->cmp_totalMissionScore         = iattr(cm, "totalMissionScore", 0);
-        out->cmp_consecMissions            = iattr(cm, "consecMissions", 0);
-        out->cmp_kills                     = iattr(cm, "kills", 0);
-        out->cmp_killed                    = iattr(cm, "killed", 0);
-        out->cmp_humanKills                = iattr(cm, "humanKills", 0);
-        out->cmp_killedByHuman             = iattr(cm, "killedByHuman", 0);
-        out->cmp_killedBySelf              = iattr(cm, "killedBySelf", 0);
-        out->cmp_airToGround               = iattr(cm, "airToGround", 0);
-        out->cmp_static                    = iattr(cm, "static", 0);
-        out->cmp_naval                     = iattr(cm, "naval", 0);
-        out->cmp_friendliesKilled          = iattr(cm, "friendliesKilled", 0);
-        out->cmp_missSinceLastFriendlyKill = iattr(cm, "missSinceLastFriendlyKill", 0);
+        out->cmp_gamesWon = iattr(cm, "gamesWon", 0);
+        out->cmp_gamesLost = iattr(cm, "gamesLost", 0);
+        out->cmp_gamesTied = iattr(cm, "gamesTied", 0);
+        out->cmp_missions = iattr(cm, "missions", 0);
+        out->cmp_totalScore = iattr(cm, "totalScore", 0);
+        out->cmp_totalMissionScore = iattr(cm, "totalMissionScore", 0);
+        out->cmp_consecMissions = iattr(cm, "consecMissions", 0);
+        out->cmp_kills = iattr(cm, "kills", 0);
+        out->cmp_killed = iattr(cm, "killed", 0);
+        out->cmp_humanKills = iattr(cm, "humanKills", 0);
+        out->cmp_killedByHuman = iattr(cm, "killedByHuman", 0);
+        out->cmp_killedBySelf = iattr(cm, "killedBySelf", 0);
+        out->cmp_airToGround = iattr(cm, "airToGround", 0);
+        out->cmp_static = iattr(cm, "static", 0);
+        out->cmp_naval = iattr(cm, "naval", 0);
+        out->cmp_friendliesKilled = iattr(cm, "friendliesKilled", 0);
+        out->cmp_missSinceLastFriendlyKill =
+            iattr(cm, "missSinceLastFriendlyKill", 0);
     }
 
     return true;
@@ -680,9 +780,10 @@ bool ControlsXml_ReadLogbook(CxLogbook *out)
 // ===========================================================================
 int ControlsXml_ReadKeyboard(CxKbBind *out, int maxN)
 {
-    char prof[_MAX_PATH], path[_MAX_PATH];
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\keyboard.xml", prof);
+    char dir[_MAX_PATH], path[_MAX_PATH];
+    ensureInputDir();
+    inputDirPath(dir, sizeof(dir));
+    sprintf(path, "%s/keyboard.xml", dir);
 
     tinyxml2::XMLDocument doc;
 
@@ -696,7 +797,8 @@ int ControlsXml_ReadKeyboard(CxKbBind *out, int maxN)
 
     int n = 0;
 
-    for (tinyxml2::XMLElement *b = root->FirstChildElement("bind"); b and n < maxN; b = b->NextSiblingElement("bind"))
+    for (tinyxml2::XMLElement *b = root->FirstChildElement("bind");
+         b and n < maxN; b = b->NextSiblingElement("bind"))
     {
         const char *fn = b->Attribute("function");
 
@@ -720,7 +822,7 @@ int ControlsXml_ReadKeyboard(CxKbBind *out, int maxN)
 
 bool ControlsXml_WriteKeyboard(const CxKbBind *in, int n)
 {
-    ensureProfileDir();
+    ensureInputDir();
 
     tinyxml2::XMLDocument doc;
     doc.InsertEndChild(doc.NewDeclaration());
@@ -735,10 +837,16 @@ bool ControlsXml_WriteKeyboard(const CxKbBind *in, int n)
         tinyxml2::XMLElement *b = doc.NewElement("bind");
         b->SetAttribute("function", in[i].func);
         // negatives (key=-1 / legacy key1=-1) -> decimal, otherwise strtol breaks on read
-        if (in[i].k2 >= 0) sprintf(buf, "0x%X", in[i].k2); else sprintf(buf, "%d", in[i].k2);
+        if (in[i].k2 >= 0)
+            sprintf(buf, "0x%X", in[i].k2);
+        else
+            sprintf(buf, "%d", in[i].k2);
         b->SetAttribute("k2", buf);
         b->SetAttribute("m2", in[i].m2);
-        if (in[i].k1 >= 0) sprintf(buf, "0x%X", in[i].k1); else sprintf(buf, "%d", in[i].k1);
+        if (in[i].k1 >= 0)
+            sprintf(buf, "0x%X", in[i].k1);
+        else
+            sprintf(buf, "%d", in[i].k1);
         b->SetAttribute("k1", buf);
         b->SetAttribute("m1", in[i].m1);
         b->SetAttribute("cpbtn", in[i].cpbtn);
@@ -747,9 +855,9 @@ bool ControlsXml_WriteKeyboard(const CxKbBind *in, int n)
         root->InsertEndChild(b);
     }
 
-    char prof[_MAX_PATH], path[_MAX_PATH];
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\keyboard.xml", prof);
+    char dir[_MAX_PATH], path[_MAX_PATH];
+    inputDirPath(dir, sizeof(dir));
+    sprintf(path, "%s/keyboard.xml", dir);
     return doc.SaveFile(path) == tinyxml2::XML_SUCCESS;
 }
 
@@ -777,14 +885,14 @@ bool ControlsXml_KeyBindForFunc(const char *func, CxKbBind *out)
 // ===========================================================================
 int ControlsXml_ReadDevice(const char *guidStr, CxBtnBind *out, int maxN)
 {
-    char prof[_MAX_PATH], path[_MAX_PATH];
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\%s.xml", prof, guidStr);
+    char dir[_MAX_PATH], path[_MAX_PATH];
+    inputDirPath(dir, sizeof(dir));
+    sprintf(path, "%s/%s.xml", dir, guidStr);
 
     tinyxml2::XMLDocument doc;
 
     if (doc.LoadFile(path) != tinyxml2::XML_SUCCESS)
-        return 0;   // no file - fine (device has no bindings yet)
+        return 0; // no file - fine (device has no bindings yet)
 
     tinyxml2::XMLElement *root = doc.FirstChildElement("device");
 
@@ -793,7 +901,8 @@ int ControlsXml_ReadDevice(const char *guidStr, CxBtnBind *out, int maxN)
 
     int n = 0;
 
-    for (tinyxml2::XMLElement *e = root->FirstChildElement(); e and n < maxN; e = e->NextSiblingElement())
+    for (tinyxml2::XMLElement *e = root->FirstChildElement(); e and n < maxN;
+         e = e->NextSiblingElement())
     {
         const char *fn = e->Attribute("function");
 
@@ -825,15 +934,15 @@ int ControlsXml_ReadDevice(const char *guidStr, CxBtnBind *out, int maxN)
 
 bool ControlsXml_WriteDevice(const char *guidStr, const CxBtnBind *in, int n)
 {
-    ensureProfileDir();
+    ensureInputDir();
 
-    char prof[_MAX_PATH], path[_MAX_PATH];
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\%s.xml", prof, guidStr);
+    char dir[_MAX_PATH], path[_MAX_PATH];
+    inputDirPath(dir, sizeof(dir));
+    sprintf(path, "%s/%s.xml", dir, guidStr);
 
     if (n <= 0)
     {
-        remove(path);   // no bindings - file not needed
+        remove(path); // no bindings - file not needed
         return true;
     }
 
@@ -874,23 +983,40 @@ bool ControlsXml_WriteDevice(const char *guidStr, const CxBtnBind *in, int n)
 // #57 the GameAxis_t lets us also persist the per-axis "soft" properties (reversed / center=AB
 // detent / cutoff=idle / smoothing) that used to live in the binary config/joystick.cal — those
 // are now stored here in axismapping.xml, so joystick.cal is gone.
-struct AxisField { const char *name; DeviceAxis AxisMapping::*ptr; GameAxis_t axis; };
-
-static const AxisField kAxisFields[] =
+struct AxisField
 {
-    {"Pitch", &AxisMapping::Pitch, AXIS_PITCH}, {"Bank", &AxisMapping::Bank, AXIS_ROLL}, {"Yaw", &AxisMapping::Yaw, AXIS_YAW},
-    {"Throttle", &AxisMapping::Throttle, AXIS_THROTTLE}, {"Throttle2", &AxisMapping::Throttle2, AXIS_THROTTLE2},
-    {"BrakeLeft", &AxisMapping::BrakeLeft, AXIS_BRAKE_LEFT}, {"BrakeRight", &AxisMapping::BrakeRight, AXIS_BRAKE_RIGHT},
-    {"FOV", &AxisMapping::FOV, AXIS_FOV}, {"PitchTrim", &AxisMapping::PitchTrim, AXIS_TRIM_PITCH},
-    {"YawTrim", &AxisMapping::YawTrim, AXIS_TRIM_YAW}, {"BankTrim", &AxisMapping::BankTrim, AXIS_TRIM_ROLL},
-    {"AntElev", &AxisMapping::AntElev, AXIS_ANT_ELEV}, {"RngKnob", &AxisMapping::RngKnob, AXIS_RANGE_KNOB},
-    {"CursorX", &AxisMapping::CursorX, AXIS_CURSOR_X}, {"CursorY", &AxisMapping::CursorY, AXIS_CURSOR_Y},
-    {"Comm1Vol", &AxisMapping::Comm1Vol, AXIS_COMM_VOLUME_1}, {"Comm2Vol", &AxisMapping::Comm2Vol, AXIS_COMM_VOLUME_2},
-    {"MSLVol", &AxisMapping::MSLVol, AXIS_MSL_VOLUME}, {"ThreatVol", &AxisMapping::ThreatVol, AXIS_THREAT_VOLUME},
-    {"InterComVol", &AxisMapping::InterComVol, AXIS_INTERCOM_VOLUME}, {"HudBrt", &AxisMapping::HudBrt, AXIS_HUD_BRIGHTNESS},
-    {"RetDepr", &AxisMapping::RetDepr, AXIS_RET_DEPR}, {"Zoom", &AxisMapping::Zoom, AXIS_ZOOM},
+    const char *name;
+    DeviceAxis AxisMapping::*ptr;
+    GameAxis_t axis;
 };
-static const int kAxisCount = (int)(sizeof(kAxisFields) / sizeof(kAxisFields[0]));
+
+static const AxisField kAxisFields[] = {
+    {"Pitch", &AxisMapping::Pitch, AXIS_PITCH},
+    {"Bank", &AxisMapping::Bank, AXIS_ROLL},
+    {"Yaw", &AxisMapping::Yaw, AXIS_YAW},
+    {"Throttle", &AxisMapping::Throttle, AXIS_THROTTLE},
+    {"Throttle2", &AxisMapping::Throttle2, AXIS_THROTTLE2},
+    {"BrakeLeft", &AxisMapping::BrakeLeft, AXIS_BRAKE_LEFT},
+    {"BrakeRight", &AxisMapping::BrakeRight, AXIS_BRAKE_RIGHT},
+    {"FOV", &AxisMapping::FOV, AXIS_FOV},
+    {"PitchTrim", &AxisMapping::PitchTrim, AXIS_TRIM_PITCH},
+    {"YawTrim", &AxisMapping::YawTrim, AXIS_TRIM_YAW},
+    {"BankTrim", &AxisMapping::BankTrim, AXIS_TRIM_ROLL},
+    {"AntElev", &AxisMapping::AntElev, AXIS_ANT_ELEV},
+    {"RngKnob", &AxisMapping::RngKnob, AXIS_RANGE_KNOB},
+    {"CursorX", &AxisMapping::CursorX, AXIS_CURSOR_X},
+    {"CursorY", &AxisMapping::CursorY, AXIS_CURSOR_Y},
+    {"Comm1Vol", &AxisMapping::Comm1Vol, AXIS_COMM_VOLUME_1},
+    {"Comm2Vol", &AxisMapping::Comm2Vol, AXIS_COMM_VOLUME_2},
+    {"MSLVol", &AxisMapping::MSLVol, AXIS_MSL_VOLUME},
+    {"ThreatVol", &AxisMapping::ThreatVol, AXIS_THREAT_VOLUME},
+    {"InterComVol", &AxisMapping::InterComVol, AXIS_INTERCOM_VOLUME},
+    {"HudBrt", &AxisMapping::HudBrt, AXIS_HUD_BRIGHTNESS},
+    {"RetDepr", &AxisMapping::RetDepr, AXIS_RET_DEPR},
+    {"Zoom", &AxisMapping::Zoom, AXIS_ZOOM},
+};
+static const int kAxisCount =
+    (int)(sizeof(kAxisFields) / sizeof(kAxisFields[0]));
 
 static void hexToGuid(const char *hex, GUID *g)
 {
@@ -916,9 +1042,9 @@ static void guidToHex(const GUID *g, char *out)
 
 bool ControlsXml_ReadAxes(AxisMapping *out)
 {
-    char prof[_MAX_PATH], path[_MAX_PATH];
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\axismapping.xml", prof);
+    char dir[_MAX_PATH], path[_MAX_PATH];
+    inputDirPath(dir, sizeof(dir));
+    sprintf(path, "%s/axismapping.xml", dir);
 
     tinyxml2::XMLDocument doc;
 
@@ -930,19 +1056,21 @@ bool ControlsXml_ReadAxes(AxisMapping *out)
     if (not root)
         return false;
 
-    *out = AxisMapping();   // defaults (axes -1/100, GUIDs zeroed)
+    *out = AxisMapping(); // defaults (axes -1/100, GUIDs zeroed)
     out->FlightControlDevice = iattr(root, "flightControlDevice", -1);
-    out->totalDeviceCount    = iattr(root, "totalDeviceCount", 0);
+    out->totalDeviceCount = iattr(root, "totalDeviceCount", 0);
 
     tinyxml2::XMLElement *guids = root->FirstChildElement("deviceGuids");
 
     if (guids)
-        for (tinyxml2::XMLElement *g = guids->FirstChildElement("guid"); g; g = g->NextSiblingElement("guid"))
+        for (tinyxml2::XMLElement *g = guids->FirstChildElement("guid"); g;
+             g = g->NextSiblingElement("guid"))
         {
             int idx = iattr(g, "index", -1);
             const char *val = g->Attribute("value");
 
-            if (idx >= 0 and idx < SIM_NUMDEVICES and val and strlen(val) >= 2 * sizeof(GUID))
+            if (idx >= 0 and idx < SIM_NUMDEVICES and val and
+                strlen(val) >= 2 * sizeof(GUID))
                 hexToGuid(val, &out->DeviceGUIDs[idx]);
         }
 
@@ -950,13 +1078,15 @@ bool ControlsXml_ReadAxes(AxisMapping *out)
     // current flight controller's guidInstance. The XML doesn't store FlightControllerGUID separately,
     // so derive it from the persisted per-device GUID (== guidInstance). Without this it stays zero ->
     // mismatch -> IO.Reset() -> axes dead at startup until the controls window calls SetupGameAxis.
-    if (out->FlightControlDevice >= 0 and out->FlightControlDevice < SIM_NUMDEVICES)
+    if (out->FlightControlDevice >= 0 and
+        out->FlightControlDevice < SIM_NUMDEVICES)
         out->FlightControllerGUID = out->DeviceGUIDs[out->FlightControlDevice];
 
     tinyxml2::XMLElement *axes = root->FirstChildElement("axes");
 
     if (axes)
-        for (tinyxml2::XMLElement *a = axes->FirstChildElement("axis"); a; a = a->NextSiblingElement("axis"))
+        for (tinyxml2::XMLElement *a = axes->FirstChildElement("axis"); a;
+             a = a->NextSiblingElement("axis"))
         {
             const char *nm = a->Attribute("name");
 
@@ -967,17 +1097,20 @@ bool ControlsXml_ReadAxes(AxisMapping *out)
                 if (strcmp(kAxisFields[i].name, nm) == 0)
                 {
                     DeviceAxis &ax = out->*(kAxisFields[i].ptr);
-                    ax.Device     = iattr(a, "device", -1);
-                    ax.Axis       = iattr(a, "axis", -1);
-                    ax.Deadzone   = iattr(a, "deadzone", 100);
+                    ax.Device = iattr(a, "device", -1);
+                    ax.Axis = iattr(a, "axis", -1);
+                    ax.Deadzone = iattr(a, "deadzone", 100);
                     ax.Saturation = iattr(a, "saturation", -1);
                     // #57 soft properties (formerly in joystick.cal)
                     {
                         const GameAxis_t ga = kAxisFields[i].axis;
-                        IO.SetAnalogIsReversed(ga, iattr(a, "reversed", 0) != 0);
-                        IO.analog[ga].center          = iattr(a, "center", 0);
-                        IO.analog[ga].cutoff          = iattr(a, "cutoff", 15000);   // matches IO::Reset default
-                        IO.analog[ga].smoothingFactor = iattr(a, "smoothing", 0);
+                        IO.SetAnalogIsReversed(ga,
+                                               iattr(a, "reversed", 0) != 0);
+                        IO.analog[ga].center = iattr(a, "center", 0);
+                        IO.analog[ga].cutoff = iattr(
+                            a, "cutoff", 15000); // matches IO::Reset default
+                        IO.analog[ga].smoothingFactor =
+                            iattr(a, "smoothing", 0);
                     }
                     break;
                 }
@@ -988,14 +1121,18 @@ bool ControlsXml_ReadAxes(AxisMapping *out)
 
 bool ControlsXml_WriteAxes(const AxisMapping *in)
 {
-    ensureProfileDir();
+    ensureInputDir();
 
     tinyxml2::XMLDocument doc;
     doc.InsertEndChild(doc.NewDeclaration());
     tinyxml2::XMLElement *root = doc.NewElement("axismapping");
     root->SetAttribute("version", 1);
     root->SetAttribute("flightControlDevice", in->FlightControlDevice);
-    root->SetAttribute("totalDeviceCount", in->totalDeviceCount);
+    // Same staleness guard as <deviceGuids> below: fall back to the live enumerated count (gTotalJoy) when the
+    // passed-in AxisMapping was never synced (SaveGUIDAndCount runs only on the binary .dat path). The reader
+    // gates remapping on totalDeviceCount == gTotalJoy, so a stale 0 here would defeat GUID remap on next load.
+    root->SetAttribute("totalDeviceCount",
+                       in->totalDeviceCount ? in->totalDeviceCount : gTotalJoy);
     doc.InsertEndChild(root);
 
     tinyxml2::XMLElement *guids = doc.NewElement("deviceGuids");
@@ -1004,15 +1141,30 @@ bool ControlsXml_WriteAxes(const AxisMapping *in)
     static const GUID zero = {0};
     char hex[2 * sizeof(GUID) + 1];
 
+    // deviceGuids records which physical devices were present when this mapping was saved, so the axis
+    // Device indices can be remapped by GUID on the next load. Prefer the LIVE enumeration (gDIDevGUIDs):
+    // the binary .dat writer syncs AxisMap.DeviceGUIDs via SaveGUIDAndCount(), but this XML path is reached
+    // directly (setup Apply / soft-prop saves) without that sync -- so in->DeviceGUIDs is usually still zero
+    // and <deviceGuids> came out empty. Fall back to the passed-in GUID only for a slot whose device is not
+    // currently connected (live slot zero), so a saved-but-absent device's GUID is preserved.
     for (int i = 0; i < SIM_NUMDEVICES; i++)
-        if (memcmp(&in->DeviceGUIDs[i], &zero, sizeof(GUID)) != 0)
+    {
+        const GUID *src = (memcmp(&gDIDevGUIDs[i], &zero, sizeof(GUID)) != 0) ?
+                              &gDIDevGUIDs[i] :
+                              &in->DeviceGUIDs[i];
+        if (memcmp(src, &zero, sizeof(GUID)) != 0)
         {
-            guidToHex(&in->DeviceGUIDs[i], hex);
+            guidToHex(src, hex);
             tinyxml2::XMLElement *g = doc.NewElement("guid");
             g->SetAttribute("index", i);
             g->SetAttribute("value", hex);
+            // Human-readable device name for the reader of the file -- informational only (the binding keys off
+            // value/index). Joystick slots only (gDIDevNames is full-device-indexed, filled in sijoy.cpp).
+            if (i >= SIM_JOYSTICK1 && i < SIM_NUMDEVICES && gDIDevNames[i])
+                g->SetAttribute("name", gDIDevNames[i]);
             guids->InsertEndChild(g);
         }
+    }
 
     tinyxml2::XMLElement *axes = doc.NewElement("axes");
     root->InsertEndChild(axes);
@@ -1035,8 +1187,8 @@ bool ControlsXml_WriteAxes(const AxisMapping *in)
         axes->InsertEndChild(a);
     }
 
-    char prof[_MAX_PATH], path[_MAX_PATH];
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    sprintf(path, "%s\\axismapping.xml", prof);
+    char dir[_MAX_PATH], path[_MAX_PATH];
+    inputDirPath(dir, sizeof(dir));
+    sprintf(path, "%s/axismapping.xml", dir);
     return doc.SaveFile(path) == tinyxml2::XML_SUCCESS;
 }

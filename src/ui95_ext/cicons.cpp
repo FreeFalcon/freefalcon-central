@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "IsBad.h"
+#include "isbad.h"
 
 _TCHAR *OrdinalString(long value);
 
@@ -11,7 +11,7 @@ static void DeleteCB(void *record)
     MAPICONLIST *last;
     last = (MAPICONLIST *)record;
 
-    if ( not last)
+    if (not last)
         return;
 
     ShiAssert(FALSE == F4IsBadReadPtr(last, sizeof(*last))); //JPO
@@ -53,7 +53,7 @@ static void DeleteCB(void *record)
     {
         if (last->Detect->LowRadar)   // JPO fix memory leak fix
         {
-            delete [] last->Detect->LowRadar->arcs;
+            delete[] last->Detect->LowRadar->arcs;
             delete last->Detect->LowRadar;
         }
 
@@ -72,7 +72,8 @@ C_MapIcon::C_MapIcon() : C_Control()
     _SetCType_(_CNTL_MAPICON_);
     SetReady(0);
     ShowCircles_ = 0;
-    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_SELECTABLE bitor C_BIT_HCENTER bitor C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_SELECTABLE bitor
+                    C_BIT_HCENTER bitor C_BIT_MOUSEOVER;
     SetDefaultFlags();
     Team_ = 0;
 
@@ -103,7 +104,7 @@ C_MapIcon::~C_MapIcon()
 
 long C_MapIcon::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_MapIcon::Setup(long ID, short Type)
@@ -138,7 +139,7 @@ BOOL C_MapIcon::ShowByType(long typemask)
     MAPICONLIST *cur;
     BOOL retval = FALSE;
 
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
@@ -148,10 +149,10 @@ BOOL C_MapIcon::ShowByType(long typemask)
             retval = TRUE;
         }
 
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 
-    return(retval);
+    return (retval);
 }
 
 BOOL C_MapIcon::HideByType(long typemask)
@@ -161,7 +162,7 @@ BOOL C_MapIcon::HideByType(long typemask)
     MAPICONLIST *cur;
     BOOL retval = FALSE;
 
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
@@ -171,10 +172,10 @@ BOOL C_MapIcon::HideByType(long typemask)
             retval = TRUE;
         }
 
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 
-    return(retval);
+    return (retval);
 }
 
 void C_MapIcon::Show()
@@ -183,12 +184,12 @@ void C_MapIcon::Show()
     long curidx;
     MAPICONLIST *cur;
 
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
         cur->Flags and_eq compl C_BIT_INVISIBLE;
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 }
 
@@ -198,12 +199,12 @@ void C_MapIcon::Hide()
     long curidx;
     MAPICONLIST *cur;
 
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
         cur->Flags or_eq C_BIT_INVISIBLE;
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 }
 
@@ -216,10 +217,10 @@ BOOL C_MapIcon::Process(long ID, short HitType)
         if (Callback_)
             (*Callback_)(ID, HitType, this);
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_MapIcon::SetMainImage(long OffID, long OnID)
@@ -264,7 +265,7 @@ void C_MapIcon::RemapIconImages()
     F4CSECTIONHANDLE *Leave;
 
     Leave = UI_Enter(Parent_);
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
@@ -272,57 +273,57 @@ void C_MapIcon::RemapIconImages()
         {
             img = (IMAGE_RSC *)Icons_[cur->state][0]->Find(cur->ImageID);
 
-            if ( not img)
+            if (not img)
             {
-                MonoPrint("C_MapIcon::RemapIconImages() Image ID (%1ld) - Not found\n", cur->ImageID);
+                MonoPrint("C_MapIcon::RemapIconImages() Image ID (%1ld) - Not "
+                          "found\n",
+                          cur->ImageID);
                 return;
             }
 
             cur->Icon->SetImage(img);
         }
 
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 
     UI_Leave(Leave);
 }
 
 
-MAPICONLIST *C_MapIcon::AddIconToList(
-    long CampID,
-    short type, long ImageID,
-    float x, float y,
-    short Dragable, _TCHAR *str,
-    long DivID, long BrigID, long BatID,
-    long newstatus, long newstate,
-    DETECTOR *detector
-)
+MAPICONLIST *C_MapIcon::AddIconToList(long CampID, short type, long ImageID,
+                                      float x, float y, short Dragable,
+                                      _TCHAR *str, long DivID, long BrigID,
+                                      long BatID, long newstatus, long newstate,
+                                      DETECTOR *detector)
 {
     MAPICONLIST *newitem;
     IMAGE_RSC *img = NULL;
     _TCHAR buf[10];
 
-    if ( not ImageID or Root_->Find(CampID) or not Icons_[0])
-        return(NULL);
+    if (not ImageID or Root_->Find(CampID) or not Icons_[0])
+        return (NULL);
 
     newitem = new MAPICONLIST;
 
     if (newitem == NULL)
-        return(NULL);
+        return (NULL);
 
     if (Icons_[newstate][0])
         img = (IMAGE_RSC *)Icons_[newstate][0]->Find(ImageID);
 
-    if ( not img)
+    if (not img)
     {
-        MonoPrint("C_MapIcon::AddIconToList() Image ID (%1ld) - Not found\n", ImageID);
-        return(NULL);
+        MonoPrint("C_MapIcon::AddIconToList() Image ID (%1ld) - Not found\n",
+                  ImageID);
+        return (NULL);
     }
 
     if (img->Header->Type not_eq _RSC_IS_IMAGE_)
     {
-        MonoPrint("C_MapIcon::AddIconToList() Image ID (%1ld) - Not an Image\n", ImageID);
-        return(NULL);
+        MonoPrint("C_MapIcon::AddIconToList() Image ID (%1ld) - Not an Image\n",
+                  ImageID);
+        return (NULL);
     }
 
     newitem->ID = CampID;
@@ -372,7 +373,8 @@ MAPICONLIST *C_MapIcon::AddIconToList(
         newitem->Brig->SetOwner(this);
         newitem->Brig->SetFont(Font_);
         newitem->Brig->SetFgColor(0x00f0f0f0);
-        newitem->Brig->SetXY(newitem->Icon->GetX() + newitem->Icon->GetW() + 5, -img->Header->centery);
+        newitem->Brig->SetXY(newitem->Icon->GetX() + newitem->Icon->GetW() + 5,
+                             -img->Header->centery);
         newitem->Brig->SetFlags(C_BIT_LEFT);
         newitem->Brig->SetText(gStringMgr->GetText(gStringMgr->AddText(buf)));
         newitem->Brig->SetInfo();
@@ -385,7 +387,8 @@ MAPICONLIST *C_MapIcon::AddIconToList(
         newitem->Bat->SetOwner(this);
         newitem->Bat->SetFgColor(0x00f0f0f0);
         newitem->Bat->SetFont(Font_);
-        newitem->Bat->SetXY(newitem->Icon->GetX() + newitem->Icon->GetW() / 2, img->Header->centery + 2);
+        newitem->Bat->SetXY(newitem->Icon->GetX() + newitem->Icon->GetW() / 2,
+                            img->Header->centery + 2);
         newitem->Bat->SetFlags(C_BIT_HCENTER);
         newitem->Bat->SetText(gStringMgr->GetText(gStringMgr->AddText(buf)));
         newitem->Bat->SetInfo();
@@ -396,7 +399,8 @@ MAPICONLIST *C_MapIcon::AddIconToList(
     newitem->Label->SetFont(Font_);
     newitem->Label->SetFgColor(0x00f0f0f0);
     newitem->Label->SetFlags(GetFlags());
-    newitem->Label->SetXY(newitem->Icon->GetX() + newitem->Icon->GetW() / 2, img->Header->centery + 5);
+    newitem->Label->SetXY(newitem->Icon->GetX() + newitem->Icon->GetW() / 2,
+                          img->Header->centery + 5);
     newitem->Label->SetFlags(C_BIT_HCENTER);
 
     if (str)
@@ -405,7 +409,7 @@ MAPICONLIST *C_MapIcon::AddIconToList(
     newitem->Label->SetInfo();
 
     Root_->Add(CampID, newitem);
-    return(newitem);
+    return (newitem);
 }
 
 void C_MapIcon::RemoveIcon(long ID)
@@ -421,7 +425,7 @@ void C_MapIcon::SetLabel(long ID, _TCHAR *txt)
 {
     MAPICONLIST *cur;
 
-    cur = (MAPICONLIST*)Root_->Find(ID);
+    cur = (MAPICONLIST *)Root_->Find(ID);
 
     if (cur)
         cur->Label->SetText(gStringMgr->GetText(gStringMgr->AddText(txt)));
@@ -431,7 +435,7 @@ void C_MapIcon::SetColor(long ID, COLORREF color)
 {
     MAPICONLIST *cur;
 
-    cur = (MAPICONLIST*)Root_->Find(ID);
+    cur = (MAPICONLIST *)Root_->Find(ID);
 
     if (cur)
         cur->Label->SetFgColor(color);
@@ -441,19 +445,19 @@ _TCHAR *C_MapIcon::GetLabel(long ID)
 {
     MAPICONLIST *cur;
 
-    cur = (MAPICONLIST*)Root_->Find(ID);
+    cur = (MAPICONLIST *)Root_->Find(ID);
 
     if (cur)
-        return(cur->Label->GetText());
+        return (cur->Label->GetText());
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_MapIcon::SetTextOffset(long ID, short x, short y)
 {
     MAPICONLIST *cur;
 
-    cur = (MAPICONLIST*)Root_->Find(ID);
+    cur = (MAPICONLIST *)Root_->Find(ID);
 
     if (cur)
         cur->Label->SetXY(x, y);
@@ -470,13 +474,13 @@ void C_MapIcon::SetScaleFactor(float scale)
 
     scale_ = scale;
 
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
         cur->x = (short)(cur->worldx * scale_);
         cur->y = (short)(cur->worldy * scale_);
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 }
 
@@ -484,13 +488,13 @@ long C_MapIcon::GetHelpText()
 {
     long ID = 0;
 
-    if ( not OverLast_)
-        return(0);
+    if (not OverLast_)
+        return (0);
 
     if (OverLast_->Label)
         ID = gStringMgr->AddText(OverLast_->Label->GetText());
 
-    return(ID);
+    return (ID);
 }
 
 void C_MapIcon::Refresh(MAPICONLIST *icon)
@@ -499,11 +503,11 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
 
     // 2020-02-21 MODIFIED BY S.G. Even if that type of airplane isn't showned, if it's an Unknown, deal with it
     // if( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or ( not icon) or (Parent_ == NULL))
-    if ( not Ready() or ( not icon) or (Parent_ == NULL))
+    if (not Ready() or (not icon) or (Parent_ == NULL))
         return;
 
     // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-    if ( not gShowUnknown and icon->ImageID == ICON_UKN)
+    if (not gShowUnknown and icon->ImageID == ICON_UKN)
     {
         icon->Flags or_eq C_BIT_INVISIBLE;
         Leave = UI_Enter(Parent_);
@@ -512,12 +516,15 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
         UI_Leave(Leave);
     }
 
-    if (( not gShowUnknown or icon->ImageID not_eq ICON_UKN) and (GetFlags() bitand C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+    if ((not gShowUnknown or icon->ImageID not_eq ICON_UKN) and
+        (GetFlags() bitand
+         C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         return;
 
     // END OF ADDED SECTION 2002-02-21
 
-    if ( not (icon->Flags bitand C_BIT_ENABLED) or (icon->Flags bitand C_BIT_INVISIBLE))
+    if (not(icon->Flags bitand C_BIT_ENABLED) or
+        (icon->Flags bitand C_BIT_INVISIBLE))
         return;
 
     if (icon->Icon)
@@ -526,7 +533,7 @@ void C_MapIcon::Refresh(MAPICONLIST *icon)
         SetXY(icon->x, icon->y);
         icon->Icon->Refresh();
 
-        if ( not (GetFlags() bitand C_BIT_NOLABEL))
+        if (not(GetFlags() bitand C_BIT_NOLABEL))
         {
             if (icon->Div)
                 icon->Div->Refresh();
@@ -554,16 +561,16 @@ void C_MapIcon::Refresh()
 
     // 2020-02-21 MODIFIED BY S.G. Even if that type of airplane isn't showned, if it's an Unknown, deal with it
     // if( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or (Parent_ == NULL))
-    if ( not Ready() or (Parent_ == NULL))
+    if (not Ready() or (Parent_ == NULL))
         return;
 
     Leave = UI_Enter(Parent_);
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-        if ( not gShowUnknown and cur->ImageID == ICON_UKN)
+        if (not gShowUnknown and cur->ImageID == ICON_UKN)
         {
             cur->Flags or_eq C_BIT_INVISIBLE;
             SetXY(cur->x, cur->y);
@@ -571,17 +578,20 @@ void C_MapIcon::Refresh()
         }
 
         // if ( not ( not (gShowUnknown and cur->ImageID == ICON_UKN) and (GetFlags() bitand C_BIT_INVISIBLE))) { // (From above) If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
-        if ((gShowUnknown and cur->ImageID == ICON_UKN) or not (GetFlags() bitand C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        if ((gShowUnknown and cur->ImageID == ICON_UKN) or
+            not(GetFlags() bitand
+                C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {
             // END OF ADDED SECTION 2002-02-21
-            if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
+            if (not(cur->Flags bitand C_BIT_INVISIBLE) and
+                cur->Flags bitand C_BIT_ENABLED)
             {
                 if (cur->Icon)
                 {
                     SetXY(cur->x, cur->y);
                     cur->Icon->Refresh();
 
-                    if ( not (GetFlags() bitand C_BIT_NOLABEL))
+                    if (not(GetFlags() bitand C_BIT_NOLABEL))
                     {
                         if (cur->Div)
                             cur->Div->Refresh();
@@ -599,16 +609,16 @@ void C_MapIcon::Refresh()
             }
         }
 
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 
     UI_Leave(Leave);
 }
 
 // 2002-02-23 ADDED BY S.G. Need to include them for the gMapMgr hack below to work
-#include "../Campaign/Include/team.h"
-#include "../Campaign/Include/package.h"
-#include "../Campaign/Include/division.h"
+#include "../campaign/include/team.h"
+#include "../campaign/include/package.h"
+#include "../campaign/include/division.h"
 #include "../ui/include/cmap.h"
 extern C_Map *gMapMgr;
 // END OF ADDED SECTION 2002-02-23
@@ -621,7 +631,9 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     // 2020-02-21 MODIFIED BY S.G. Even if that type of airplane isn't showned, if it's an Unknown, deal with it if we ask for unknown to be seen
     // if( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL) return;
-    if ( not Ready() or ( not gShowUnknown and (GetFlags() bitand C_BIT_INVISIBLE)) or Parent_ == NULL)
+    if (not Ready() or
+        (not gShowUnknown and (GetFlags() bitand C_BIT_INVISIBLE)) or
+        Parent_ == NULL)
         return;
 
     // 2002-02-23 ADDED BY S.G. Test if it's an AirUnits C_MapIcon and only those will go in if the invisible flag is set
@@ -641,24 +653,27 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
             }
         }
 
-        if ( not airUnit)
+        if (not airUnit)
             return;
     }
 
     // END OF ADDED SECTION 2002-02-23
 
-    cur = (MAPICONLIST*)Root_->GetFirst(&CurHash, &HashIdx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&CurHash, &HashIdx);
 
     while (cur)
     {
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-        if ( not gShowUnknown and cur->ImageID == ICON_UKN)
+        if (not gShowUnknown and cur->ImageID == ICON_UKN)
             cur->Flags or_eq C_BIT_INVISIBLE;
 
-        if ((gShowUnknown and cur->ImageID == ICON_UKN) or not (GetFlags() bitand C_BIT_INVISIBLE))   // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
+        if ((gShowUnknown and cur->ImageID == ICON_UKN) or
+            not(GetFlags() bitand
+                C_BIT_INVISIBLE)) // If the template shouldn't be displayed and it's not an unknown and we're not looking at unknown, then don't continue otherwise this will display it
         {
             // END OF ADDED SECTION 2002-02-21
-            if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
+            if (not(cur->Flags bitand C_BIT_INVISIBLE) and
+                cur->Flags bitand C_BIT_ENABLED)
             {
                 if (cur->Icon)
                 {
@@ -669,31 +684,46 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
                         if (ShowCircles_ bitand LOW_SAM)
                         {
                             if (cur->Detect->LowSam)
-                                Parent_->DrawCircle(surface, 0x0000ff, cur->x, cur->y, cur->Detect->LowSam * scale_, Flags_, Client_, cliprect);
+                                Parent_->DrawCircle(
+                                    surface, 0x0000ff, cur->x, cur->y,
+                                    cur->Detect->LowSam * scale_, Flags_,
+                                    Client_, cliprect);
                         }
 
                         if (ShowCircles_ bitand HIGH_SAM)
                         {
                             if (cur->Detect->HighSam)
-                                Parent_->DrawCircle(surface, 0x0000aa, cur->x, cur->y, cur->Detect->HighSam * scale_, Flags_, Client_, cliprect);
+                                Parent_->DrawCircle(
+                                    surface, 0x0000aa, cur->x, cur->y,
+                                    cur->Detect->HighSam * scale_, Flags_,
+                                    Client_, cliprect);
                         }
 
                         if (ShowCircles_ bitand HIGH_RADAR)
                         {
                             if (cur->Detect->HighRadar)
-                                Parent_->DrawCircle(surface, 0xaa0000, cur->x, cur->y, cur->Detect->HighRadar * scale_, Flags_, Client_, cliprect);
+                                Parent_->DrawCircle(
+                                    surface, 0xaa0000, cur->x, cur->y,
+                                    cur->Detect->HighRadar * scale_, Flags_,
+                                    Client_, cliprect);
                         }
 
                         if (ShowCircles_ bitand LOW_RADAR)
                         {
-                            if (cur->Detect->LowRadar and cur->Detect->LowRadar->arcs and cur->Detect->LowRadar->arcs[0].range)
-                                Parent_->DrawCircle(surface, 0xff0000, cur->x, cur->y, cur->Detect->LowRadar->arcs[0].range * scale_, Flags_, Client_, cliprect);
+                            if (cur->Detect->LowRadar and
+                                cur->Detect->LowRadar->arcs and
+                                cur->Detect->LowRadar->arcs[0].range)
+                                Parent_->DrawCircle(
+                                    surface, 0xff0000, cur->x, cur->y,
+                                    cur->Detect->LowRadar->arcs[0].range *
+                                        scale_,
+                                    Flags_, Client_, cliprect);
                         }
                     }
 
                     cur->Icon->Draw(surface, cliprect);
 
-                    if ( not (GetFlags() bitand C_BIT_NOLABEL))
+                    if (not(GetFlags() bitand C_BIT_NOLABEL))
                     {
                         if (cur->Div)
                             cur->Div->Draw(surface, cliprect);
@@ -704,30 +734,34 @@ void C_MapIcon::Draw(SCREEN *surface, UI95_RECT *cliprect)
                         if (cur->Bat)
                             cur->Bat->Draw(surface, cliprect);
 
-                        if (cur->Label and ( not cur->Div and not cur->Brig and not cur->Bat))
+                        if (cur->Label and
+                            (not cur->Div and not cur->Brig and not cur->Bat))
                             cur->Label->Draw(surface, cliprect);
                     }
                 }
             }
         }
 
-        cur = (MAPICONLIST*)Root_->GetNext(&CurHash, &HashIdx);
+        cur = (MAPICONLIST *)Root_->GetNext(&CurHash, &HashIdx);
     }
 }
 
 MAPICONLIST *C_MapIcon::FindID(long iID)
 {
-    return((MAPICONLIST*)Root_->Find(iID));
+    return ((MAPICONLIST *)Root_->Find(iID));
 }
 
-BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, long newstate)
+BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus,
+                           long newstate)
 {
     short ox, oy;
     F4CSECTIONHANDLE *Leave = NULL;
 
-    if ( not icon) return(FALSE);
+    if (not icon)
+        return (FALSE);
 
-    if (icon->worldx not_eq x or icon->worldy not_eq y or icon->state not_eq newstate)
+    if (icon->worldx not_eq x or icon->worldy not_eq y or
+        icon->state not_eq newstate)
     {
         if (icon->Status not_eq newstatus)
         {
@@ -746,9 +780,11 @@ BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, 
         ox = icon->x;
         oy = icon->y;
 
-        if (ox not_eq ((icon->worldx * scale_)) or oy not_eq (icon->worldy * scale_))
+        if (ox not_eq ((icon->worldx * scale_)) or
+            oy not_eq (icon->worldy * scale_))
         {
-            if ( not (icon->Flags bitand C_BIT_INVISIBLE) and icon->Flags bitand C_BIT_ENABLED)
+            if (not(icon->Flags bitand C_BIT_INVISIBLE) and
+                icon->Flags bitand C_BIT_ENABLED)
             {
                 Leave = UI_Enter(icon->Owner->GetParent());
                 Refresh(icon);
@@ -758,31 +794,34 @@ BOOL C_MapIcon::UpdateInfo(MAPICONLIST *icon, float x, float y, long newstatus, 
         icon->x = (short)(icon->worldx * scale_);
         icon->y = (short)(icon->worldy * scale_);
 
-        if ((ox not_eq icon->x) or (oy not_eq icon->y) or (icon->state not_eq newstate) or (icon->Status not_eq newstatus))
+        if ((ox not_eq icon->x) or (oy not_eq icon->y) or
+            (icon->state not_eq newstate) or (icon->Status not_eq newstatus))
         {
             if (icon->Icon)
-                icon->Icon->SetImage((IMAGE_RSC*)Icons_[icon->state][0]->Find(icon->ImageID));
+                icon->Icon->SetImage(
+                    (IMAGE_RSC *)Icons_[icon->state][0]->Find(icon->ImageID));
 
             Refresh(icon);
             UI_Leave(Leave);
-            return(TRUE);
+            return (TRUE);
         }
 
         UI_Leave(Leave);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
-BOOL C_MapIcon::UpdateInfo(long ID, float x, float y, long newstatus, long newstate)
+BOOL C_MapIcon::UpdateInfo(long ID, float x, float y, long newstatus,
+                           long newstate)
 {
     MAPICONLIST *cur;
     short ox, oy;
 
-    cur = (MAPICONLIST*)Root_->Find(ID);
+    cur = (MAPICONLIST *)Root_->Find(ID);
 
     if (cur == NULL)
-        return(FALSE);
+        return (FALSE);
 
     if (cur->worldx not_eq x or cur->worldy not_eq y)
     {
@@ -795,11 +834,12 @@ BOOL C_MapIcon::UpdateInfo(long ID, float x, float y, long newstatus, long newst
         cur->x = (short)(cur->worldx * scale_);
         cur->y = (short)(cur->worldy * scale_);
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) and not (cur->Flags bitand C_BIT_INVISIBLE))
-            return(TRUE);
+        if ((ox not_eq cur->x or oy not_eq cur->y) and
+            not(cur->Flags bitand C_BIT_INVISIBLE))
+            return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 long C_MapIcon::CheckHotSpots(long relX, long relY)
@@ -809,14 +849,17 @@ long C_MapIcon::CheckHotSpots(long relX, long relY)
     MAPICONLIST *cur;
     long x, y, w, h;
 
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or not (GetFlags() bitand C_BIT_ENABLED)) return(0);
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL or
+        not(GetFlags() bitand C_BIT_ENABLED))
+        return (0);
 
     Last_ = NULL;
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
-        if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
+        if (not(cur->Flags bitand C_BIT_INVISIBLE) and
+            cur->Flags bitand C_BIT_ENABLED)
         {
             x = cur->x + cur->Icon->GetX();
             y = cur->y + cur->Icon->GetY();
@@ -827,16 +870,16 @@ long C_MapIcon::CheckHotSpots(long relX, long relY)
                 Last_ = cur;
         }
 
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 
     if (Last_)
     {
         SetRelXY(relX - GetX(), relY - GetY());
-        return(Last_->ID);
+        return (Last_->ID);
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_MapIcon::MouseOver(long relX, long relY, C_Base *)
@@ -846,14 +889,16 @@ BOOL C_MapIcon::MouseOver(long relX, long relY, C_Base *)
     MAPICONLIST *cur;
     long x, y, w, h;
 
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL) return(0);
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+        return (0);
 
     OverLast_ = NULL;
-    cur = (MAPICONLIST*)Root_->GetFirst(&current, &curidx);
+    cur = (MAPICONLIST *)Root_->GetFirst(&current, &curidx);
 
     while (cur)
     {
-        if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
+        if (not(cur->Flags bitand C_BIT_INVISIBLE) and
+            cur->Flags bitand C_BIT_ENABLED)
         {
             x = cur->x + cur->Icon->GetX();
             y = cur->y + cur->Icon->GetY();
@@ -864,48 +909,53 @@ BOOL C_MapIcon::MouseOver(long relX, long relY, C_Base *)
                 OverLast_ = cur;
         }
 
-        cur = (MAPICONLIST*)Root_->GetNext(&current, &curidx);
+        cur = (MAPICONLIST *)Root_->GetNext(&current, &curidx);
     }
 
     if (OverLast_)
     {
-        SetXY(OverLast_->x + OverLast_->Icon->GetX(), OverLast_->y + OverLast_->Icon->GetY());
+        SetXY(OverLast_->x + OverLast_->Icon->GetX(),
+              OverLast_->y + OverLast_->Icon->GetY());
         SetWH(OverLast_->Icon->GetW(), OverLast_->Icon->GetH());
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_MapIcon::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
 {
     long x, y;
     long relx, rely;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not (GetFlags() bitand C_BIT_DRAGABLE))
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or
+        not(GetFlags() bitand C_BIT_DRAGABLE))
+        return (FALSE);
 
     if (over not_eq Parent_)
-        return(FALSE);
+        return (FALSE);
 
-    if ( not (GetFlags() bitand C_BIT_ABSOLUTE))
+    if (not(GetFlags() bitand C_BIT_ABSOLUTE))
     {
         relx = MouseX - over->GetX();
         rely = MouseY - over->GetY();
 
-        if (relx < over->ClientArea_[GetClient()].left or relx > over->ClientArea_[GetClient()].right)
-            return(FALSE);
+        if (relx < over->ClientArea_[GetClient()].left or
+            relx > over->ClientArea_[GetClient()].right)
+            return (FALSE);
 
-        if (rely < over->ClientArea_[GetClient()].top or rely > over->ClientArea_[GetClient()].bottom)
-            return(FALSE);
+        if (rely < over->ClientArea_[GetClient()].top or
+            rely > over->ClientArea_[GetClient()].bottom)
+            return (FALSE);
     }
 
-    if ( not Last_)
-        return(FALSE);
+    if (not Last_)
+        return (FALSE);
 
-    if ( not (Last_->Flags bitand C_BIT_DRAGABLE))
-        return(FALSE);
+    if (not(Last_->Flags bitand C_BIT_DRAGABLE))
+        return (FALSE);
 
     Leave = UI_Enter(Parent_);
     Refresh();
@@ -934,14 +984,14 @@ BOOL C_MapIcon::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
         (*Callback_)(Last_->ID, C_TYPE_MOUSEMOVE, this);
 
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_MapIcon::GetItemXY(long ID, long *x, long *y)
 {
     MAPICONLIST *Icon;
 
-    Icon = (MAPICONLIST*)Root_->Find(ID);
+    Icon = (MAPICONLIST *)Root_->Find(ID);
 
     if (Icon == NULL)
         return;
@@ -949,4 +999,3 @@ void C_MapIcon::GetItemXY(long ID, long *x, long *y)
     *x = Icon->x;
     *y = Icon->y;
 }
-

@@ -1,15 +1,15 @@
 #ifndef _REQUESTAIRCRAFTSLOT_H
 #define _REQUESTAIRCRAFTSLOT_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 class FlightClass;
-typedef FlightClass* Flight;
+typedef FlightClass *Flight;
 
 /*
  * Message Type Request Aircraft Slot
@@ -27,7 +27,8 @@ typedef FlightClass* Flight;
 class UI_RequestAircraftSlot : public FalconEvent
 {
 public:
-    UI_RequestAircraftSlot(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_RequestAircraftSlot(VU_ID entityId, VuTargetEntity *target,
+                           VU_BOOL loopback = TRUE);
     UI_RequestAircraftSlot(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~UI_RequestAircraftSlot(void);
     virtual int Size() const
@@ -41,7 +42,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID requesting_session;
         uchar request_type;
         uchar game_type;
@@ -60,8 +60,7 @@ protected:
     int ChangePilotSkill(Flight flight);
     int EmptyFlightSlot(Flight flight);
     int AddFlightSlot(Flight flight);
-
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

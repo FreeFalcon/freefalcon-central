@@ -2,7 +2,7 @@
 #ifndef EVTPARSE_H
 #define EVTPARSE_H
 
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 // ===========================================================================
 // This event structure has gone through many iterations.
@@ -40,7 +40,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -69,8 +70,8 @@ public:
 // Functions
 // ============================
 
-void InsertEventToList(EventElement* theEvent, EventElement* baseEvent);
+void InsertEventToList(EventElement *theEvent, EventElement *baseEvent);
 
-void DisposeEventList(EventElement* rootEvent);
+void DisposeEventList(EventElement *rootEvent);
 
 #endif

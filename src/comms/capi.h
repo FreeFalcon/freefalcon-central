@@ -1,6 +1,6 @@
 // CONFIGURATION notes:
 // within: capiopt.h #define LOAD_DLLS for expicit LoadLibrary() calls to be
-// used for WS2_32.DLL and DPLAYX.DLL and OLE32.DLL. If not #defined 
+// used for WS2_32.DLL and DPLAYX.DLL and OLE32.DLL. If not #defined
 // application must link with WS2_32.LIB and DPLAYX.LIB and OLE32.LIB otherwise
 // these LIBs are not needed.
 
@@ -9,7 +9,8 @@
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 
@@ -116,163 +117,167 @@ extern "C" {
 #define CAPI_COMMON_BWTYPE 3
 #define CAPI_JOIN_BW_TYPE 4
 
-typedef struct ComApiHandle* com_API_handle;
-	// Initialize comms optional - done automatically by any open, but needed
-	// if calling utility functions before opening a handle.
-	int com_API_initialize_communications(void);
-	void com_API_set_name(com_API_handle, char*);
-	// All these functions receive and return in host order.
-	// Sets comm ports (best effort and reliable). 
-	void com_API_set_local_ports(unsigned short b, unsigned short r);
-	unsigned long com_API_get_peer_IP(com_API_handle c);
-	unsigned short com_API_get_receive_port(com_API_handle c);
-	unsigned short com_API_get_peer_receive_port(com_API_handle c);
-	int com_API_get_protocol(com_API_handle c);
-	unsigned long com_API_get_peer_ID(com_API_handle c);
-	// The globals are defined in CAPI.c
-	unsigned short com_API_get_my_receive_port();
-	unsigned short com_API_get_my_reliable_receive_port();
-	void com_API_set_my_receive_port(unsigned short);
-	void com_API_set_my_reliable_receive_port(unsigned short);
-	// Checks if an IP comes from a private network
-	// IP is in host order
-	int com_API_private_IP(unsigned long ip);
+    typedef struct ComApiHandle *com_API_handle;
+    // Initialize comms optional - done automatically by any open, but needed
+    // if calling utility functions before opening a handle.
+    int com_API_initialize_communications(void);
+    void com_API_set_name(com_API_handle, char *);
+    // All these functions receive and return in host order.
+    // Sets comm ports (best effort and reliable).
+    void com_API_set_local_ports(unsigned short b, unsigned short r);
+    unsigned long com_API_get_peer_IP(com_API_handle c);
+    unsigned short com_API_get_receive_port(com_API_handle c);
+    unsigned short com_API_get_peer_receive_port(com_API_handle c);
+    int com_API_get_protocol(com_API_handle c);
+    unsigned long com_API_get_peer_ID(com_API_handle c);
+    // The globals are defined in CAPI.c
+    unsigned short com_API_get_my_receive_port();
+    unsigned short com_API_get_my_reliable_receive_port();
+    void com_API_set_my_receive_port(unsigned short);
+    void com_API_set_my_reliable_receive_port(unsigned short);
+    // Checks if an IP comes from a private network
+    // IP is in host order
+    int com_API_private_IP(unsigned long ip);
 
-	// Enumerate available protocols.
-	int com_API_enum_protocols(int* protocols, int max_protocols);
+    // Enumerate available protocols.
+    int com_API_enum_protocols(int *protocols, int max_protocols);
 
-	com_API_handle com_IP_multicast_open(int buffer_size, char* game_name,
-									  int mc_scope);
-
-
-	// TCP specific open.
-	// Begin a TCP connection as a listener to wait for connections.
-	com_API_handle com_TCP_open_listen(int buffer_size, char* game_name, 
-									int TCP_port, 
-									void(*accept_callback)
-									(com_API_handle c, int ret));
-
-	// Begin a TCP connection to a targeted listening TCP listener.
-	com_API_handle com_TCP_open_connect(int buffer_size, char* game_name, 
-										int TCP_port, unsigned long IP_address,
-										void(*connect_callback)
-										(com_API_handle c, int ret),
-										int timeout_seconds);
-
-	// Get handle for an anticipated acception from target IP.
-	// Fails if no listening handle has not been previously opened on the port.
-	com_API_handle com_TCP_open_accept(unsigned long IP_address, int TCP_port,
-									   int timeout_seconds);
-
-	// Get a handle to use with ComAPISend for sending data to all TCP
-	// connections. Will send to all open connections, either accept() or
-	// connect() type will ignore listen sockets.
-	com_API_handle com_TCP_get_group_handle(int buffer_size);
-
-	//com_API_handle ComDPLAYOpen(int protocol, int mode, char* address,
-	//                            int buffer_size, void* guid, 
-	//                            void (*connect_callback)
-	//                            (com_API_handle c, int ret),
-	//                            int timeout_seconds);
-
-	//void ComAPIDPLAYSendMode(com_API_handle c, int sendmode);   /* default is GUARANTEED */
+    com_API_handle com_IP_multicast_open(int buffer_size, char *game_name,
+                                         int mc_scope);
 
 
-	/* end comms session */
-	void ComAPIClose(com_API_handle c);
+    // TCP specific open.
+    // Begin a TCP connection as a listener to wait for connections.
+    com_API_handle
+    com_TCP_open_listen(int buffer_size, char *game_name, int TCP_port,
+                        void (*accept_callback)(com_API_handle c, int ret));
 
-	// send and receive data from comms
-	int ComAPISendOOB(com_API_handle c, int msgsize, int type);
-	int ComAPISend(com_API_handle c, int msgsize, int type);
-	int ComAPISendDummy(com_API_handle c, unsigned long ip, unsigned short port);
+    // Begin a TCP connection to a targeted listening TCP listener.
+    com_API_handle
+    com_TCP_open_connect(int buffer_size, char *game_name, int TCP_port,
+                         unsigned long IP_address,
+                         void (*connect_callback)(com_API_handle c, int ret),
+                         int timeout_seconds);
 
-	int ComAPIGet(com_API_handle c);
+    // Get handle for an anticipated acception from target IP.
+    // Fails if no listening handle has not been previously opened on the port.
+    com_API_handle com_TCP_open_accept(unsigned long IP_address, int TCP_port,
+                                       int timeout_seconds);
 
-	void ComAPIRegisterInfoCallback(void(*func)(com_API_handle c, int send, int msgsize));
+    // Get a handle to use with ComAPISend for sending data to all TCP
+    // connections. Will send to all open connections, either accept() or
+    // connect() type will ignore listen sockets.
+    com_API_handle com_TCP_get_group_handle(int buffer_size);
 
-	//////////////////
-	// BW FUNCTIONS //
-	//////////////////
-	// sfr: changed bw functions
-	/** starts bw control */
-	void ComAPIBWStart();
-	/** gets local bandwidth, bytes per second */
-	int ComAPIBWGet(void);
-	/** called when a player joins, adjusting bw */
-	void ComAPIBWPlayerJoined();
-	/** called when a player leaves, adjusting bw */
-	void ComAPIBWPlayerLeft();
-	/** enters a given state: CAPI_LOBBY_ST, CAPI_CAS_ST, CAC_ST e DF_ST */
-	void ComAPIBWEnterState(int state);
-	/** gets BW situation for a connection: 0 ok, 1 yellow, 2 or more critical */
-	int ComAPIBWGetStatus(int isReliable);
+    //com_API_handle ComDPLAYOpen(int protocol, int mode, char* address,
+    //                            int buffer_size, void* guid,
+    //                            void (*connect_callback)
+    //                            (com_API_handle c, int ret),
+    //                            int timeout_seconds);
+
+    //void ComAPIDPLAYSendMode(com_API_handle c, int sendmode);   /* default is GUARANTEED */
 
 
-	/* set the group to send and recieve data from */
-	void ComAPIGroupSet(com_API_handle c, int group);
+    /* end comms session */
+    void ComAPIClose(com_API_handle c);
 
-	/* get the local hosts unique id */
-	int ComAPIHostIDLen(com_API_handle c);
-	int ComAPIHostIDGet(com_API_handle c, char *buf, int reset);
+    // send and receive data from comms
+    int ComAPISendOOB(com_API_handle c, int msgsize, int type);
+    int ComAPISend(com_API_handle c, int msgsize, int type);
+    int ComAPISendDummy(com_API_handle c, unsigned long ip,
+                        unsigned short port);
 
-	/* get the associated buffers */
-	char *ComAPISendBufferGet(com_API_handle c);
-	char *ComAPIRecvBufferGet(com_API_handle c);
+    int ComAPIGet(com_API_handle c);
 
-	/* query connection information - not all options are supported on all protocols */
-	/* refer to query types #defined above */
-	unsigned long ComAPIQuery(com_API_handle c, int querytype);
+    void ComAPIRegisterInfoCallback(void (*func)(com_API_handle c, int send,
+                                                 int msgsize));
 
-	/* Group functions*/
-	com_API_handle ComAPICreateGroup(char *name, int messagesize, ...);
-	/* Must call with 0 terminating parameter ie: ComCreateGroup(1024,0)
+    //////////////////
+    // BW FUNCTIONS //
+    //////////////////
+    // sfr: changed bw functions
+    /** starts bw control */
+    void ComAPIBWStart();
+    /** gets local bandwidth, bytes per second */
+    int ComAPIBWGet(void);
+    /** called when a player joins, adjusting bw */
+    void ComAPIBWPlayerJoined();
+    /** called when a player leaves, adjusting bw */
+    void ComAPIBWPlayerLeft();
+    /** enters a given state: CAPI_LOBBY_ST, CAPI_CAS_ST, CAC_ST e DF_ST */
+    void ComAPIBWEnterState(int state);
+    /** gets BW situation for a connection: 0 ok, 1 yellow, 2 or more critical */
+    int ComAPIBWGetStatus(int isReliable);
+
+
+    /* set the group to send and recieve data from */
+    void ComAPIGroupSet(com_API_handle c, int group);
+
+    /* get the local hosts unique id */
+    int ComAPIHostIDLen(com_API_handle c);
+    int ComAPIHostIDGet(com_API_handle c, char *buf, int reset);
+
+    /* get the associated buffers */
+    char *ComAPISendBufferGet(com_API_handle c);
+    char *ComAPIRecvBufferGet(com_API_handle c);
+
+    /* query connection information - not all options are supported on all protocols */
+    /* refer to query types #defined above */
+    unsigned long ComAPIQuery(com_API_handle c, int querytype);
+
+    /* Group functions*/
+    com_API_handle ComAPICreateGroup(char *name, int messagesize, ...);
+    /* Must call with 0 terminating parameter ie: ComCreateGroup(1024,0)
 	If called with comhandles , these will be used to determine Group Message size
 	ie:   ComCreateGroup(1024,,ch1,ch2,0)  */
 
 
-	/* member may be a group handle or a connection handle */
-	int ComAPIAddToGroup(com_API_handle grouphandle, com_API_handle memberhandle);
-	int ComAPIDeleteFromGroup(com_API_handle grouphandle, com_API_handle memberhandle);
-	com_API_handle CAPIIsInGroup(com_API_handle grouphandle, unsigned long ipAddress);
-	/* Send to a group but exclude Xhandle */
-	//int ComAPISendX(com_API_handle group, int msgsize, com_API_handle Xhandle );
+    /* member may be a group handle or a connection handle */
+    int ComAPIAddToGroup(com_API_handle grouphandle,
+                         com_API_handle memberhandle);
+    int ComAPIDeleteFromGroup(com_API_handle grouphandle,
+                              com_API_handle memberhandle);
+    com_API_handle CAPIIsInGroup(com_API_handle grouphandle,
+                                 unsigned long ipAddress);
+    /* Send to a group but exclude Xhandle */
+    //int ComAPISendX(com_API_handle group, int msgsize, com_API_handle Xhandle );
 
-	/* Close all Open IP handles */
-	void ComAPICloseOpenHandles(void);
+    /* Close all Open IP handles */
+    void ComAPICloseOpenHandles(void);
 
-	/* Convert host long IP address to string */
-	char *ComAPIinet_htoa(unsigned long ip);
+    /* Convert host long IP address to string */
+    char *ComAPIinet_htoa(unsigned long ip);
 
-	/* Convert net long IP address to string */
-	char *ComAPIinet_ntoa(unsigned long ip);
-	/* Convert dotted string ipa ddress to host long */
-	unsigned long ComAPIinet_haddr(char * IPaddress);
+    /* Convert net long IP address to string */
+    char *ComAPIinet_ntoa(unsigned long ip);
+    /* Convert dotted string ipa ddress to host long */
+    unsigned long ComAPIinet_haddr(char *IPaddress);
 
-	/* reports last error for ComOPen calls */
-	unsigned long ComAPIGetLastError(void);
+    /* reports last error for ComOPen calls */
+    unsigned long ComAPIGetLastError(void);
 
-	unsigned long ComAPIGetNetHostBySocket(int Socket);
-	unsigned long ComAPIGetNetHostByHandle(com_API_handle c);
+    unsigned long ComAPIGetNetHostBySocket(int Socket);
+    unsigned long ComAPIGetNetHostByHandle(com_API_handle c);
 
-	/* TIMESTAMP functions */
-	/* OPTIONAL call to set the timestamp function */
-	void ComAPISetTimeStampFunction(unsigned long(*TimeStamp)(void));
+    /* TIMESTAMP functions */
+    /* OPTIONAL call to set the timestamp function */
+    void ComAPISetTimeStampFunction(unsigned long (*TimeStamp)(void));
 
-	/* get the timestamp associated with the most recent ComAPIGet()
+    /* get the timestamp associated with the most recent ComAPIGet()
 	returns 0 if no timestamp function has been defined */
-	unsigned long ComAPIGetTimeStamp(com_API_handle c);
+    unsigned long ComAPIGetTimeStamp(com_API_handle c);
 
-	/****  Protoype for TimeStamp callback
+    /****  Protoype for TimeStamp callback
 	unsigned long ComAPIGetTimeStamp(com_API_handle c)
 	***/
 
 
-	/* sets the rececive thread priority for UDP .. receive thread .. if exists*/
-	void ComAPISetReceiveThreadPriority(com_API_handle c, int priority);
+    /* sets the rececive thread priority for UDP .. receive thread .. if exists*/
+    void ComAPISetReceiveThreadPriority(com_API_handle c, int priority);
 
 
-	/** sfr: translates address to ip. Answer in machine order */
-	long ComAPIGetIP(const char *address);
+    /** sfr: translates address to ip. Answer in machine order */
+    long ComAPIGetIP(const char *address);
 
 
 #ifdef __cplusplus

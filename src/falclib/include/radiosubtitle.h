@@ -18,7 +18,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "AList.h"
+#include "alist.h"
 
 struct ColouredSubTitle
 {
@@ -46,13 +46,15 @@ public:
 
     void ResetAll();
 
-    void NewMessage(const int theTalker, const int theFrag, const unsigned long thePlayTime, const char theFilter);
+    void NewMessage(const int theTalker, const int theFrag,
+                    const unsigned long thePlayTime, const char theFilter);
     void AddToMessage(const int theTalker, const int theFrag);
 
     void SetTTLAndMessageNum(const int MessageNum, const unsigned long TTL);
 
-    void SetChannelColours(unsigned long flight, unsigned long toPackage, unsigned long ToFromPackage,
-                           unsigned long Team, unsigned long Proximity, unsigned long World,
+    void SetChannelColours(unsigned long flight, unsigned long toPackage,
+                           unsigned long ToFromPackage, unsigned long Team,
+                           unsigned long Proximity, unsigned long World,
                            unsigned long Tower, unsigned long Standard);
 
     void SetChannelColours(char* flight, char* toPackage, char* ToFromPackage,
@@ -69,6 +71,7 @@ public:
     };
 
     static CRITICAL_SECTION cs_radiosubtitle;
+
 private:
     AList* theRadioChatterList;
 
@@ -140,7 +143,8 @@ private:
 #endif // DYNAMIC_LINE_NUM
 
     bool ReadNewFile(const char* theFileName);
-    void breakDownLine(csvLine_t* theTextString, char* theLine, const int theLength);
+    void breakDownLine(csvLine_t* theTextString, char* theLine,
+                       const int theLength);
     void HandleChunk(csvLine_t* theTextString, char* theChunk, int* ChunkCount);
 
     char* GetRadioChunk(const int theTalker, const int theFrag);
@@ -160,7 +164,8 @@ private:
     unsigned long colour_Proximity;
     unsigned long colour_World;
     unsigned long colour_Tower;
-    unsigned long colour_Standard; // only used in default cases which (shouldn´t happen actually)
+    unsigned long
+        colour_Standard; // only used in default cases which (shouldn´t happen actually)
 };
 
 extern RadioSubTitle* radioLabel;

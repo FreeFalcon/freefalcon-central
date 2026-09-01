@@ -53,17 +53,18 @@ void PlayerStats::LoadStats()
     {
         while (fread(&rec, sizeof(StatRec), 1, fp))
         {
-            DecryptBuffer(0x25, (uchar*)&rec, sizeof(StatRec));
+            DecryptBuffer(0x25, (uchar *)&rec, sizeof(StatRec));
 
-            if ( not rec.CheckSum) // No tampering... keep it
+            if (not rec.CheckSum) // No tampering... keep it
             {
-                if (rec.aa_kills or rec.ag_kills or rec.as_kills or rec.an_kills or rec.rating or rec.missions)
+                if (rec.aa_kills or rec.ag_kills or rec.as_kills or
+                    rec.an_kills or rec.rating or rec.missions)
                 {
                     newrec = new StatList;
                     newrec->Next = NULL;
                     memcpy(&newrec->data, &rec, sizeof(StatRec));
 
-                    if ( not Root_)
+                    if (not Root_)
                         Root_ = newrec;
                     else
                     {
@@ -81,14 +82,15 @@ void PlayerStats::LoadStats()
         fclose(fp);
     }
 
-    if ( not Find(-1, -1, -1))
+    if (not Find(-1, -1, -1))
     {
         cur = Root_;
 
         while (cur)
         {
             if (cur->data.missions)
-                cur->data.rating = (char)min(100.0f, max(0, ((float)cur->data.rating + 0.5f) * 25.0f));
+                cur->data.rating = (char)min(
+                    100.0f, max(0, ((float)cur->data.rating + 0.5f) * 25.0f));
 
             cur = cur->Next;
         }
@@ -103,7 +105,7 @@ void PlayerStats::SaveStats()
     StatList *cur;
     FILE *fp;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
     fp = fopen(SaveName_, "wb");
@@ -115,7 +117,7 @@ void PlayerStats::SaveStats()
         while (cur)
         {
             memcpy(&rec, &cur->data, sizeof(StatRec));
-            EncryptBuffer(0x25, (uchar*)&rec, sizeof(StatRec));
+            EncryptBuffer(0x25, (uchar *)&rec, sizeof(StatRec));
             fwrite(&rec, sizeof(StatRec), 1, fp);
             cur = cur->Next;
         }
@@ -124,26 +126,26 @@ void PlayerStats::SaveStats()
     }
 }
 
-void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, short an, short as, short missions, char rating)
+void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag,
+                          short an, short as, short missions, char rating)
 {
     StatList *newrec, *cur;
 
-    if ( not aa and not ag and not an and not as and not missions and not rating)
+    if (not aa and not ag and not an and not as and not missions and not rating)
         return;
 
     cur = Find(IP, Date, Rev);
 
     if (cur)
     {
-        if (cur->data.aa_kills == aa and 
-            cur->data.ag_kills == ag and 
-            cur->data.an_kills == an and 
-            cur->data.as_kills == as and 
-            cur->data.missions == missions and 
-            cur->data.rating == rating)  // No reason to save if nothing changed
+        if (cur->data.aa_kills == aa and cur->data.ag_kills == ag and
+            cur->data.an_kills == an and cur->data.as_kills == as and
+            cur->data.missions == missions and
+            cur->data.rating == rating) // No reason to save if nothing changed
             return;
 
-        if (cur->data.IP == IP and cur->data.Date == Date and cur->data.Rev == Rev)
+        if (cur->data.IP == IP and cur->data.Date == Date and
+            cur->data.Rev == Rev)
         {
             cur->data.aa_kills = aa;
             cur->data.ag_kills = ag;
@@ -170,7 +172,7 @@ void PlayerStats::AddStat(long IP, long Date, long Rev, short aa, short ag, shor
     newrec->data.rating = rating;
     newrec->data.CheckSum = 0;
 
-    if ( not Root_)
+    if (not Root_)
         Root_ = newrec;
     else
     {
@@ -194,7 +196,8 @@ StatList *PlayerStats::Find(long IP, long Date, long Rev)
 
     while (cur)
     {
-        if (cur->data.IP == IP and cur->data.Date == Date and cur->data.Rev <= Rev)
+        if (cur->data.IP == IP and cur->data.Date == Date and
+            cur->data.Rev <= Rev)
         {
             Found = cur;
         }
@@ -202,5 +205,5 @@ StatList *PlayerStats::Find(long IP, long Date, long Rev)
         cur = cur->Next;
     }
 
-    return(Found);
+    return (Found);
 }

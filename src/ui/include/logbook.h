@@ -1,5 +1,6 @@
 #ifndef _LOG_BOOK_H
 #define _LOG_BOOK_H
+#include <cstdint>
 
 #include <tchar.h>
 //#include "stdhdr.h"
@@ -81,8 +82,8 @@ typedef struct CampaignStats
     short GamesLost;
     short GamesTied;
     short Missions;
-    long TotalScore;
-    long TotalMissionScore;
+    int32_t TotalScore;
+    int32_t TotalMissionScore;
     short ConsecMissions;
     short Kills;
     short Killed;
@@ -109,14 +110,15 @@ typedef struct Pilot
     DF_STATS Dogfight;
     CAMP_STATS Campaign;
     uchar Medals[NUM_MEDALS];
-    long PictureResource;
+    int32_t PictureResource;
     _TCHAR Picture[FILENAME_LEN + 1];
-    long PatchResource;
+    int32_t PatchResource;
     _TCHAR Patch[FILENAME_LEN + 1];
     _TCHAR Personal[PERSONAL_TEXT_LEN + 1];
     _TCHAR Squadron[_NAME_LEN_];
     short voice; // index from 0 - 11 indicating which voice they want
-    long CheckSum; // If this value is ever NON zero after Decrypting, the Data has been modified
+    int32_t
+        CheckSum; // If this value is ever NON zero after Decrypting, the Data has been modified
 } LB_PILOT;
 
 class LogBookData
@@ -127,6 +129,7 @@ private:
     void AwardMedals(CAMP_MISS_STRUCT *MissStats);
     float MissionComplexity(CAMP_MISS_STRUCT *MissStats);
     float CampaignDifficulty(void);
+
 public:
     LB_PILOT Pilot;
 
@@ -141,7 +144,9 @@ public:
     void Clear(void);
     void Encrypt(void);
 
-    void UpdateDogfight(short MatchWonLost, float Hours, short VsHuman, short Kills, short Killed, short HumanKills, short KilledByHuman);
+    void UpdateDogfight(short MatchWonLost, float Hours, short VsHuman,
+                        short Kills, short Killed, short HumanKills,
+                        short KilledByHuman);
     void UpdateCampaign(CAMP_MISS_STRUCT *MissStats);
     void FinishCampaign(short WonLostTied);
 
@@ -160,17 +165,21 @@ public:
     // This is used for remote pilots...so I can get them in the class used for drawing the UI
     void SetPilot(LB_PILOT *data)
     {
-        if (data) memcpy(&Pilot, data, sizeof(Pilot));
+        if (data)
+            memcpy(&Pilot, data, sizeof(Pilot));
     }
 
     uchar GetMedal(LB_MEDAL MedalNo)
     {
-        if (MedalNo < NUM_MEDALS) return Pilot.Medals[MedalNo];
-        else return 0;
+        if (MedalNo < NUM_MEDALS)
+            return Pilot.Medals[MedalNo];
+        else
+            return 0;
     }
     void SetMedal(LB_MEDAL MedalNo, uchar Medal)
     {
-        if (MedalNo < NUM_MEDALS) Pilot.Medals[MedalNo] = Medal;
+        if (MedalNo < NUM_MEDALS)
+            Pilot.Medals[MedalNo] = Medal;
     }
 
     void SetFlightHours(float Hours)
@@ -192,7 +201,8 @@ public:
     }
     void SetPicture(_TCHAR *filename)
     {
-        if (_tcslen(filename) <= FILENAME_LEN) _tcscpy(Pilot.Picture, filename);
+        if (_tcslen(filename) <= FILENAME_LEN)
+            _tcscpy(Pilot.Picture, filename);
 
         Pilot.PictureResource = 0;
     }
@@ -212,7 +222,8 @@ public:
     }
     void SetPatch(_TCHAR *filename)
     {
-        if (_tcslen(filename) <= FILENAME_LEN) _tcscpy(Pilot.Patch, filename);
+        if (_tcslen(filename) <= FILENAME_LEN)
+            _tcscpy(Pilot.Patch, filename);
 
         Pilot.PatchResource = 0;
     }
@@ -229,7 +240,8 @@ public:
     _TCHAR *NameWRank(void);
     void SetName(_TCHAR *Name)
     {
-        if (_tcslen(Name) <= _NAME_LEN_) _tcscpy(Pilot.Name, Name);
+        if (_tcslen(Name) <= _NAME_LEN_)
+            _tcscpy(Pilot.Name, Name);
     }
 
     _TCHAR *Callsign(void)
@@ -238,7 +250,8 @@ public:
     }
     void SetCallsign(_TCHAR *Callsign)
     {
-        if (_tcslen(Callsign) <= _CALLSIGN_LEN_) _tcscpy(Pilot.Callsign, Callsign);
+        if (_tcslen(Callsign) <= _CALLSIGN_LEN_)
+            _tcscpy(Pilot.Callsign, Callsign);
     }
 
     _TCHAR *Squadron(void)
@@ -247,7 +260,8 @@ public:
     }
     void SetSquadron(_TCHAR *Squadron)
     {
-        if (_tcslen(Squadron) <= _NAME_LEN_) _tcscpy(Pilot.Squadron, Squadron);
+        if (_tcslen(Squadron) <= _NAME_LEN_)
+            _tcscpy(Pilot.Squadron, Squadron);
     }
 
     int CheckPassword(_TCHAR *Pwd);
@@ -260,7 +274,8 @@ public:
     }
     void SetPersonal(_TCHAR *Personal)
     {
-        if (_tcslen(Personal) <= PERSONAL_TEXT_LEN) _tcscpy(Pilot.Personal, Personal);
+        if (_tcslen(Personal) <= PERSONAL_TEXT_LEN)
+            _tcscpy(Pilot.Personal, Personal);
     }
 
     _TCHAR *OptionsFile(void)
@@ -269,7 +284,8 @@ public:
     }
     void SetOptionsFile(_TCHAR *OptionsFile)
     {
-        if (_tcslen(OptionsFile) <= _CALLSIGN_LEN_) _tcscpy(Pilot.OptionsFile, OptionsFile);
+        if (_tcslen(OptionsFile) <= _CALLSIGN_LEN_)
+            _tcscpy(Pilot.OptionsFile, OptionsFile);
     }
 
     float AceFactor(void)
@@ -292,7 +308,8 @@ public:
     }
     void SetCommissioned(_TCHAR *Date)
     {
-        if (_tcslen(Date) <= COMM_LEN) _tcscpy(Pilot.Commissioned, Date);
+        if (_tcslen(Date) <= COMM_LEN)
+            _tcscpy(Pilot.Commissioned, Date);
     }
     float FlightHours(void)
     {

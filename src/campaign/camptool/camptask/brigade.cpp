@@ -5,21 +5,21 @@
 #include <io.h>
 #include <stdlib.h>
 #include <math.h>
-#include "CmpGlobl.h"
-#include "ListADT.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "ASearch.h"
-#include "Path.h"
-#include "Find.h"
-#include "Campaign.h"
-#include "ATM.h"
+#include "cmpglobl.h"
+#include "listadt.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "asearch.h"
+#include "path.h"
+#include "find.h"
+#include "campaign.h"
+#include "atm.h"
 #include "update.h"
 #include "loadout.h"
 #include "gndunit.h"
 #include "team.h"
-#include "Debuggr.h"
-#include "AIInput.h"
+#include "debuggr.h"
+#include "aiinput.h"
 #include "classtbl.h"
 
 #ifdef DEBUG
@@ -29,7 +29,7 @@ extern int gDumping;
 extern int gCheckConstructFunction;
 extern char OrderStr[GORD_LAST][15];
 
-#include "CampStr.h"
+#include "campstr.h"
 #endif
 
 #ifdef ROBIN_GDEBUG
@@ -48,7 +48,7 @@ extern VU_ID_NUMBER lastLowVolitileId;
 extern VU_ID_NUMBER lastVolitileId;
 
 #ifdef CAMPTOOL
-extern unsigned char        SHOWSTATS;
+extern unsigned char SHOWSTATS;
 #endif
 
 #ifdef CAMPTOOL
@@ -60,20 +60,18 @@ extern int gRenameIds;
 extern int BreakNumber[4]; // none, Ground, Air, Naval unit's break number
 extern int HDelta[7];
 
-extern int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridIndex x, GridIndex y, int owned_by_us);
-extern Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList nearlist);
+extern int ScorePosition(Unit battalion, int role, int role_score, Objective o,
+                         GridIndex x, GridIndex y, int owned_by_us);
+extern Objective FindBestPosition(Unit battalion, Brigade brigade, int role,
+                                  F4PFList nearlist);
 extern int OnValidObjective(Unit e, int role, F4PFList nearlist);
 extern int GetNewRole(Unit e, Unit brig);
 
 extern int FindUnitSupportRole(Unit u);
 
-extern FILE
-*save_log,
-*load_log;
+extern FILE *save_log, *load_log;
 
-extern int
-start_save_stream,
-start_load_stream;
+extern int start_save_stream, start_load_stream;
 
 // ============================================
 // Prototypes
@@ -103,7 +101,7 @@ MEM_POOL BrigadeClass::pool;
 // ============================================
 
 // KCK: ALL BRIGADE CONSTRUCTION SHOULD USE THIS FUNCTION!
-BrigadeClass* NewBrigade(int type)
+BrigadeClass *NewBrigade(int type)
 {
     BrigadeClass *new_brigade;
 #ifdef DEBUG
@@ -135,7 +133,7 @@ BrigadeClass::BrigadeClass(int type) : GroundUnitClass(type)
 
     elements = 0;
     c_element = 0;
-    memset(element, 0, sizeof(VU_ID)*MAX_UNIT_CHILDREN);
+    memset(element, 0, sizeof(VU_ID) * MAX_UNIT_CHILDREN);
     fullstrength = 0;
     SetParent(1);
 }
@@ -148,10 +146,10 @@ BrigadeClass::BrigadeClass(VU_BYTE **stream) : GroundUnitClass(stream)
         fflush(load_log);
     }
 
-    memset(element, 0, sizeof(VU_ID)*MAX_UNIT_CHILDREN);
+    memset(element, 0, sizeof(VU_ID) * MAX_UNIT_CHILDREN);
     memcpy(&elements, *stream, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(element, *stream, sizeof(VU_ID)*elements);
+    memcpy(element, *stream, sizeof(VU_ID) * elements);
     *stream += sizeof(VU_ID) * elements;
 #ifdef DEBUG
 
@@ -165,7 +163,7 @@ BrigadeClass::BrigadeClass(VU_BYTE **stream) : GroundUnitClass(stream)
 #ifdef DEBUG
     char buffer[256];
 
-    sprintf(buffer, "campaign\\save\\dump\\%d.BRI", GetCampID());
+    sprintf(buffer, "campaign/save/dump/%d.BRI", GetCampID());
     unlink(buffer);
 #endif
 }
@@ -193,9 +191,8 @@ int BrigadeClass::SaveSize(void)
 
 #endif
 #endif
-    return GroundUnitClass::SaveSize()
-           + sizeof(uchar)
-           + sizeof(VU_ID) * elements;
+    return GroundUnitClass::SaveSize() + sizeof(uchar) +
+           sizeof(VU_ID) * elements;
 }
 
 int BrigadeClass::Save(VU_BYTE **stream)
@@ -219,7 +216,7 @@ int BrigadeClass::Save(VU_BYTE **stream)
 #endif
     memcpy(*stream, &elements, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(*stream, element, sizeof(VU_ID)*elements);
+    memcpy(*stream, element, sizeof(VU_ID) * elements);
     *stream += sizeof(VU_ID) * elements;
     return GroundUnitClass::SaveSize();
 }
@@ -242,7 +239,8 @@ int BrigadeClass::MoveUnit(CampaignTime time)
 
     if (!o || !TeamInfo[GetTeam()]->gtm->IsValidObjective(GetOrders(), o))
     {
-        if (o && (GetOrders() == GORD_CAPTURE || GetOrders() == GORD_ASSAULT || GetOrders() == GORD_AIRBORNE))
+        if (o && (GetOrders() == GORD_CAPTURE || GetOrders() == GORD_ASSAULT ||
+                  GetOrders() == GORD_AIRBORNE))
             SetUnitOrders(GORD_SECURE, o->Id());
         else
         {
@@ -299,9 +297,11 @@ int BrigadeClass::MoveUnit(CampaignTime time)
         o = GetUnitObjective();
 
         if (role == GRO_ATTACK)
-            nearlist = GetChildObjectives(o, MAXLINKS_FROM_SO_OFFENSIVE, FIND_STANDARDONLY);
+            nearlist = GetChildObjectives(o, MAXLINKS_FROM_SO_OFFENSIVE,
+                                          FIND_STANDARDONLY);
         else
-            nearlist = GetChildObjectives(o, MAXLINKS_FROM_SO_DEFENSIVE, FIND_STANDARDONLY);
+            nearlist = GetChildObjectives(o, MAXLINKS_FROM_SO_DEFENSIVE,
+                                          FIND_STANDARDONLY);
 
         // Eliminate any objectives we've previously been unable to find a path to
 
@@ -310,12 +310,14 @@ int BrigadeClass::MoveUnit(CampaignTime time)
 
         while (e)
         {
-            if (!e->Broken() && !e->Engaged() && e->Assigned() && e->GetUnitCurrentRole() != GRO_ATTACK)
+            if (!e->Broken() && !e->Engaged() && e->Assigned() &&
+                e->GetUnitCurrentRole() != GRO_ATTACK)
             {
                 e->SetAssigned(0);
                 toorder++;
             }
-            else if (e->Assigned() && !OnValidObjective(e, e->GetUnitCurrentRole(), nearlist))
+            else if (e->Assigned() &&
+                     !OnValidObjective(e, e->GetUnitCurrentRole(), nearlist))
             {
                 e->SetAssigned(0);
                 toorder++;
@@ -384,7 +386,8 @@ int BrigadeClass::MoveUnit(CampaignTime time)
         if (role == GRO_ATTACK)
             SetOrders(GORD_DEFEND); // Switch to defense orders
         else if (GetOrders() != GORD_RESERVE)
-            SetUnitObjective(FalconNullId); // We'll pick a reserve location next time through
+            SetUnitObjective(
+                FalconNullId); // We'll pick a reserve location next time through
     }
 
     UpdateParentStatistics();
@@ -442,7 +445,8 @@ int BrigadeClass::ChooseTactic(void)
 #ifdef ROBIN_GDEBUG
 
     if (TrackingOn[GetCampID()])
-        MonoPrint("Brigade %d (%s) chose tactic %s.\n", GetCampID(), OrderStr[GetUnitOrders()], TacticsTable[tid].name);
+        MonoPrint("Brigade %d (%s) chose tactic %s.\n", GetCampID(),
+                  OrderStr[GetUnitOrders()], TacticsTable[tid].name);
 
 #endif
     return tid;
@@ -509,7 +513,9 @@ int BrigadeClass::CheckTactic(int tid)
     if (!CheckOwned(tid, ourObjOwner))
         return 0;
 
-    if (TeamInfo[GetTeam()]->GetGroundAction()->actionType != GACTION_OFFENSIVE && !CheckRole(tid, 0))
+    if (TeamInfo[GetTeam()]->GetGroundAction()->actionType !=
+            GACTION_OFFENSIVE &&
+        !CheckRole(tid, 0))
         return 0;
 
     if (!CheckRange(tid, ourObjDist))
@@ -545,7 +551,7 @@ void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
         char buffer[256];
         char name1[80], name2[80], timestr[80];
 
-        sprintf(buffer, "campaign\\save\\dump\\%d.BRI", GetCampID());
+        sprintf(buffer, "campaign/save/dump/%d.BRI", GetCampID());
 
         fp = fopen(buffer, "a");
 
@@ -564,7 +570,8 @@ void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
 
             GetName(name2, 79, FALSE);
             GetTimeString(TheCampaign.CurrentTime, timestr);
-            sprintf(buffer, "%s (%d) ordered to %s %s (%d) @ %s.\n", name2, GetCampID(), OrderStr[neworders], name1, id1, timestr);
+            sprintf(buffer, "%s (%d) ordered to %s %s (%d) @ %s.\n", name2,
+                    GetCampID(), OrderStr[neworders], name1, id1, timestr);
             fprintf(fp, buffer);
             fclose(fp);
         }
@@ -608,7 +615,8 @@ void BrigadeClass::SetUnitOrders(int neworders, VU_ID oid)
     if (o->IsNearfront())
     {
         MissionRequestClass mis;
-        mis.tot = Camp_GetCurrentTime() + (rand() % MIN_TASK_GROUND + 30) * CampaignMinutes;
+        mis.tot = Camp_GetCurrentTime() +
+                  (rand() % MIN_TASK_GROUND + 30) * CampaignMinutes;
         mis.vs = GetTeam();
         mis.tot_type = TYPE_NE;
         o->GetLocation(&mis.tx, &mis.ty);
@@ -667,7 +675,7 @@ void BrigadeClass::SetUnitDivision(int d)
 int BrigadeClass::GetUnitSpeed(void)
 {
     int speed = 9999;
-    Battalion   e;
+    Battalion e;
 
     e = (Battalion)GetFirstUnitElement();
 
@@ -743,7 +751,8 @@ int OnValidObjective(Unit e, int role, F4PFList nearlist)
         GridIndex x, y;
         e->GetLocation(&x, &y);
 
-        if (ScorePosition(e, role, 100, bo, x, y, (bo->GetTeam() == e->GetTeam()) ? 1 : 0) < -30000)
+        if (ScorePosition(e, role, 100, bo, x, y,
+                          (bo->GetTeam() == e->GetTeam()) ? 1 : 0) < -30000)
             bo = NULL;
     }
 
@@ -790,26 +799,26 @@ int BrigadeClass::OrderElement(Unit e, F4PFList nearlist)
 
     switch (role)
     {
-        case GRO_ATTACK:
-        case GRO_ASSAULT:
-        case GRO_AIRBORNE:
-        case GRO_RECON:
-            // Assign to best offensive objective
-            bo = FindBestPosition(e, this, GRO_ATTACK, nearlist);
-            break;
+    case GRO_ATTACK:
+    case GRO_ASSAULT:
+    case GRO_AIRBORNE:
+    case GRO_RECON:
+        // Assign to best offensive objective
+        bo = FindBestPosition(e, this, GRO_ATTACK, nearlist);
+        break;
 
-        case GRO_DEFENSE:
-        case GRO_ENGINEER:
-        case GRO_AIRDEFENSE:
-        case GRO_FIRESUPPORT:
-        case GRO_RESERVE:
-            bo = FindBestPosition(e, this, role, nearlist);
-            break;
+    case GRO_DEFENSE:
+    case GRO_ENGINEER:
+    case GRO_AIRDEFENSE:
+    case GRO_FIRESUPPORT:
+    case GRO_RESERVE:
+        bo = FindBestPosition(e, this, role, nearlist);
+        break;
 
-        default:
-            // Assign to an objective out of the way
-            bo = FindBestPosition(e, this, GRO_RESERVE, nearlist);
-            break;
+    default:
+        // Assign to an objective out of the way
+        bo = FindBestPosition(e, this, GRO_RESERVE, nearlist);
+        break;
     }
 
     // If we didn't find a location, then look for a reserve location
@@ -836,7 +845,8 @@ int BrigadeClass::OrderElement(Unit e, F4PFList nearlist)
     {
         GridIndex x, y;
         o->GetLocation(&x, &y);
-        MonoPrint("Battalion %d ordered to %s obj %d at %d,%d.\n", e->GetCampID(), OrderStr[neworders], o->GetCampID(), x, y);
+        MonoPrint("Battalion %d ordered to %s obj %d at %d,%d.\n",
+                  e->GetCampID(), OrderStr[neworders], o->GetCampID(), x, y);
     }
 
 #endif
@@ -956,7 +966,8 @@ int GetPriority(Unit e)
     if (!e)
         return 0;
 
-    ep = OrderPriority[e->GetUnitOrders()] + OrderPriority[GetGroundOrders(e->GetUnitNormalRole())];
+    ep = OrderPriority[e->GetUnitOrders()] +
+         OrderPriority[GetGroundOrders(e->GetUnitNormalRole())];
 
     if (e->Broken())
         ep /= 2;
@@ -1329,7 +1340,8 @@ int BrigadeClass::RallyUnit(int minutes)
         if (e->RallyUnit(minutes))
             rallied = 0;
 
-        if (role != GRO_FIRESUPPORT && e->GetUnitNormalRole() != GRO_FIRESUPPORT)
+        if (role != GRO_FIRESUPPORT &&
+            e->GetUnitNormalRole() != GRO_FIRESUPPORT)
             gotnon = 1;
 
         e = GetNextUnitElement();

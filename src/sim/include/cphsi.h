@@ -58,7 +58,6 @@ typedef struct
 } HsiInitStr;
 
 
-
 //====================================================
 // CPHsi Class Definition
 //====================================================
@@ -74,11 +73,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================
     // Button States
     //====================================================
@@ -139,8 +138,10 @@ public:
     // Access Functions
     //====================================================
 
-    void IncState(HSIButtonStates, float step = 5.0F);  // MD -- 20040118: add default arg
-    void DecState(HSIButtonStates, float step = 5.0F);  // MD -- 20040118: add default arg
+    void IncState(HSIButtonStates,
+                  float step = 5.0F);  // MD -- 20040118: add default arg
+    void DecState(HSIButtonStates,
+                  float step = 5.0F);  // MD -- 20040118: add default arg
     int GetState(HSIButtonStates);
     float GetValue(HSIValues);
     BOOL GetFlag(HSIFlags);
@@ -151,7 +152,6 @@ public:
     float LastHSIHeading;
 
 private:
-
     //====================================================
     // Internal Data
     //====================================================
@@ -164,7 +164,7 @@ private:
     BOOL mpHsiFlags[HSI_FLAG_TOTAL_FLAGS];
 
     NavigationSystem::Instrument_Mode mLastMode;
-    WayPointClass* mLastWaypoint;
+    WayPointClass *mLastWaypoint;
     VU_TIME lastCheck;
     BOOL lastResult;
 
@@ -183,12 +183,11 @@ private:
 };
 
 
-
 //====================================================
 // Class Definition for CPHSIView
 //====================================================
 
-class CPHsiView: public CPObject
+class CPHsiView : public CPObject
 {
 #ifdef USE_SH_POOLS
 public:
@@ -199,12 +198,12 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
 private:
-
     //====================================================
     // Pointers to the Outside World
     //====================================================
@@ -241,7 +240,8 @@ private:
     int mCompassWidth;
     int mCompassHeight;
 
-    ImageBuffer *CompassBuffer; //Wombat778 10-06-2003   Added to hold temporary buffer for HSI autoscaling/rotation
+    ImageBuffer *
+        CompassBuffer; //Wombat778 10-06-2003   Added to hold temporary buffer for HSI autoscaling/rotation
 
     ulong mColor[2][HSI_COLOR_TOTAL];
 
@@ -268,14 +268,13 @@ private:
     void DrawToFrom(void);
 
 public:
-
     //====================================================
     // Runtime Public Draw Routines
     //====================================================
 
     virtual void DisplayDraw(void);
     virtual void DisplayBlit(void);
-    virtual void Exec(SimBaseClass*);
+    virtual void Exec(SimBaseClass *);
 
     //Wombat778 3-24-04 Stuff for rendered hsi
     void DisplayBlit3D();
@@ -287,7 +286,7 @@ public:
     // Constructors and Destructors
     //====================================================
 
-    CPHsiView(ObjectInitStr*, HsiInitStr*);
+    CPHsiView(ObjectInitStr *, HsiInitStr *);
     virtual ~CPHsiView();
 };
 

@@ -27,7 +27,7 @@ void CloseWindowCB(long ID, short hittype, C_Base *control);
 
 // copies stuff from params into window's controls
 // local port, remote host ip, remote port
-static ComDataClass localData = { 0, 0, 0};
+static ComDataClass localData = {0, 0, 0};
 
 // URL line
 static _TCHAR localDescription[MAX_URL_SIZE + 1] = "server address";
@@ -39,17 +39,24 @@ void CopyDataToWindow()
 {
     // get pbook window handlers
     C_Window *win = gMainHandler->FindWindow(PB_WIN);
-    C_EditBox *hostAddressControl = (C_EditBox*)win->FindControl(IP_ADDRESS_1);
-    C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
-    C_Button *clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT);
 
-    if ((win == NULL) or (hostAddressControl == NULL) or (servButtonControl == NULL))
+    if (win ==
+        NULL) // #104: was checked AFTER dereferencing win->FindControl -> crash when PB_WIN did not load
+        return;
+
+    C_EditBox *hostAddressControl = (C_EditBox *)win->FindControl(IP_ADDRESS_1);
+    C_Button *servButtonControl = (C_Button *)win->FindControl(COMM_MODE_SERV);
+    C_Button *clientButtonControl =
+        (C_Button *)win->FindControl(COMM_MODE_CLIENT);
+
+    if ((hostAddressControl == NULL) or (servButtonControl == NULL) or
+        (clientButtonControl == NULL))
     {
         return;
     }
 
     // enter critical session
-    F4CSECTIONHANDLE* uics = UI_Enter(win);
+    F4CSECTIONHANDLE *uics = UI_Enter(win);
 
     if (localData.ip_address == 0)
     {
@@ -76,16 +83,17 @@ void CopyDataFromWindow()
 {
     // get pbook window handlers
     C_Window *win = gMainHandler->FindWindow(PB_WIN);
-    C_EditBox *hostAddressControl = (C_EditBox*)win->FindControl(IP_ADDRESS_1);
-    C_Button *servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV);
+    C_EditBox *hostAddressControl = (C_EditBox *)win->FindControl(IP_ADDRESS_1);
+    C_Button *servButtonControl = (C_Button *)win->FindControl(COMM_MODE_SERV);
 
-    if ((win == NULL) or (hostAddressControl == NULL) or (servButtonControl == NULL))
+    if ((win == NULL) or (hostAddressControl == NULL) or
+        (servButtonControl == NULL))
     {
         return;
     }
 
     // enter critical session
-    F4CSECTIONHANDLE* uics = UI_Enter(win);
+    F4CSECTIONHANDLE *uics = UI_Enter(win);
 
     if (servButtonControl->GetState() == C_STATE_1)
     {
@@ -98,7 +106,8 @@ void CopyDataFromWindow()
         string uiText(hostAddressControl->GetText());
         // look for a :
         bool foundColon = false;
-        string::iterator it = uiText.begin(); // outside for cause well need this below
+        string::iterator it =
+            uiText.begin(); // outside for cause well need this below
 
         for (; it not_eq uiText.end(); ++it)
         {
@@ -150,11 +159,11 @@ void AddressInputCB(long ID, short hittype, C_Base *)
     C_Button *servButtonControl = NULL;
     C_Button *clientButtonControl = NULL;
 
-    if (
-        ((win = gMainHandler->FindWindow(PB_WIN)) == NULL) or
-        ((clientButtonControl = (C_Button*)win->FindControl(COMM_MODE_CLIENT)) == NULL) or
-        ((servButtonControl = (C_Button*)win->FindControl(COMM_MODE_SERV)) == NULL)
-    )
+    if (((win = gMainHandler->FindWindow(PB_WIN)) == NULL) or
+        ((clientButtonControl =
+              (C_Button *)win->FindControl(COMM_MODE_CLIENT)) == NULL) or
+        ((servButtonControl = (C_Button *)win->FindControl(COMM_MODE_SERV)) ==
+         NULL))
     {
         return;
     }
@@ -197,7 +206,7 @@ void CopyPBToWindow(long ID, long Client)
     C_Window *win;
     C_Button *btn = NULL;
     PHONEBOOK *entry;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     int y = 4;
 
     win = gMainHandler->FindWindow(ID);
@@ -215,7 +224,10 @@ void CopyPBToWindow(long ID, long Client)
             btn = new C_Button;
             btn->Setup(entry->ID, C_TYPE_RADIO, 0, 0);
             btn->SetXY(5, y);
-            btn->SetHotSpot(0, 0, win->ClientArea_[Client].right - win->ClientArea_[Client].left - 10, gFontList->GetHeight(win->Font_));
+            btn->SetHotSpot(0, 0,
+                            win->ClientArea_[Client].right -
+                                win->ClientArea_[Client].left - 10,
+                            gFontList->GetHeight(win->Font_));
             btn->SetText(C_STATE_0, entry->url);
             btn->SetText(C_STATE_1, entry->url);
             btn->SetColor(C_STATE_0, 0x00dddddd);
@@ -272,7 +284,8 @@ void Phone_Apply_CB(long, short hittype, C_Base *)
     CopyDataFromWindow();
 
     // add new entry
-    gPlayerBook->Add(localDescription, localData.localPort, localData.remotePort);
+    gPlayerBook->Add(localDescription, localData.localPort,
+                     localData.remotePort);
     CopyPBToWindow(PB_WIN, 0);
 }
 
@@ -305,7 +318,7 @@ void Phone_Connect_CB(long n, short hittype, C_Base *control)
     //CopyDataFromWindow(localDescription,&localData);
     CopyDataFromWindow();
 
-    if ( not gUICommsQ)
+    if (not gUICommsQ)
     {
         CommsQueue *nq = new CommsQueue;
 

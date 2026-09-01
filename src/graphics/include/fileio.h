@@ -33,17 +33,17 @@ public:
         }
     }
     //-------------------------------------------------------------------
-    GLint  openread(const char *filename);
-    GLint  openwrite(const char *filename, GLint binary = 0);
-    void  closefile();
+    GLint openread(const char *filename);
+    GLint openwrite(const char *filename, GLint binary = 0);
+    void closefile();
     GLint getfilehandle();
-    GLint  getfileptr();
-    GLint  getfilesize();
-    GLint  eof();
-    GLint  movefileptr(GLint offset = 0, GLint origin = FILEIO_SEEK_SET);
-    GLbyte  read_char();
+    GLint getfileptr();
+    GLint getfilesize();
+    GLint eof();
+    GLint movefileptr(GLint offset = 0, GLint origin = FILEIO_SEEK_SET);
+    GLbyte read_char();
     GLshort read_short();
-    GLint  read_int();
+    GLint read_int();
     GLfloat read_float();
     GLdouble read_double();
     GLint readdata(void *buf, GLint len);

@@ -1,12 +1,12 @@
 #ifndef _CAMPEVENTDATAMSG_H
 #define _CAMPEVENTDATAMSG_H
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Camp Event Data
@@ -21,7 +21,8 @@ public:
         playMovie
     };
 
-    CampEventDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    CampEventDataMessage(VU_ID entityId, VuTargetEntity *target,
+                         VU_BOOL loopback = TRUE);
     CampEventDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~CampEventDataMessage(void);
     virtual int Size() const
@@ -58,6 +59,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

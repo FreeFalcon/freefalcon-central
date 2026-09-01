@@ -11,20 +11,20 @@
 #include "userids.h"
 #include "textids.h"
 #include "unit.h"
-#include "Find.h"
-#include "CmpClass.h"
-#include "MissEval.h"
-#include "Flight.h"
+#include "find.h"
+#include "cmpclass.h"
+#include "misseval.h"
+#include "flight.h"
 #include "campmiss.h"
 #include "logbook.h"
 
 extern C_Handler *gMainHandler;
-extern C_Parser  *gMainParser;
+extern C_Parser *gMainParser;
 
 C_SoundBite *gCampaignBites = NULL;
 
 extern int CommonLoaded;
-void CloseWindowCB(long, short, C_Base*);
+void CloseWindowCB(long, short, C_Base *);
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 
 void Cancel_Scramble_CB(long ID, short hittype, C_Base *control);
@@ -109,7 +109,7 @@ void AwardWindow(void)
     C_Window *win;
     C_Button *btn;
 
-    if ( not (MissionResult bitand AWARD_MEDAL))
+    if (not(MissionResult bitand AWARD_MEDAL))
     {
         PromotionWindow();
         return;
@@ -165,7 +165,6 @@ void AwardWindow(void)
             }
 
             btn->Refresh();
-
         }
 
         btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
@@ -193,7 +192,7 @@ void PromotionWindow(void)
     C_Window *win;
     C_Button *btn;
 
-    if ( not (MissionResult bitand PROMOTION))
+    if (not(MissionResult bitand PROMOTION))
     {
         MissionResult = 0;
         return;
@@ -327,13 +326,15 @@ void HookupCommonControls(long ID)
         btn = (C_Button *)win->FindControl(CANCEL);
 
         if (btn)
-            btn->SetCallback(Cancel_Scramble_CB); // KCK: This callback is in campaign.cpp
+            btn->SetCallback(
+                Cancel_Scramble_CB); // KCK: This callback is in campaign.cpp
 
         // Scramble... Intercept incoming bogeys
         btn = (C_Button *)win->FindControl(INTERCEPT);
 
         if (btn)
-            btn->SetCallback(Scramble_Intercept_CB); // KCK: This callback is in campaign.cpp
+            btn->SetCallback(
+                Scramble_Intercept_CB); // KCK: This callback is in campaign.cpp
 
         // TOTIME... Wait until mission is ready
         btn = (C_Button *)win->FindControl(WAIT);
@@ -366,40 +367,40 @@ void HookupCommonControls(long ID)
             btn->SetCallback(Truce_Fight_CB);
 
         // Help GUIDE thing
-        btn = (C_Button*)win->FindControl(UI_HELP_GUIDE);
+        btn = (C_Button *)win->FindControl(UI_HELP_GUIDE);
 
         if (btn)
             btn->SetCallback(UI_Help_Guide_CB);
 
-        btn = (C_Button *) win->FindControl(ADD_PACKAGE_FLIGHT);
+        btn = (C_Button *)win->FindControl(ADD_PACKAGE_FLIGHT);
 
         if (btn)
         {
             btn->SetCallback(Open_Flight_WindowCB);
         }
 
-        btn = (C_Button *) win->FindControl(EDIT_PACKAGE_FLIGHT);
+        btn = (C_Button *)win->FindControl(EDIT_PACKAGE_FLIGHT);
 
         if (btn)
         {
             btn->SetCallback(EditFlightInPackage);
         }
 
-        btn = (C_Button *) win->FindControl(DELETE_PACKAGE_FLIGHT);
+        btn = (C_Button *)win->FindControl(DELETE_PACKAGE_FLIGHT);
 
         if (btn)
         {
             btn->SetCallback(DeleteFlightFromPackage);
         }
 
-        btn = (C_Button *) win->FindControl(CANCEL_PACK);
+        btn = (C_Button *)win->FindControl(CANCEL_PACK);
 
         if (btn)
         {
             btn->SetCallback(tactical_cancel_package);
         }
 
-        btn = (C_Button *) win->FindControl(OK_PACK);
+        btn = (C_Button *)win->FindControl(OK_PACK);
 
         if (btn)
         {
@@ -412,7 +413,8 @@ void LoadCommonWindows()
 {
     long ID;
 
-    if (CommonLoaded) return;
+    if (CommonLoaded)
+        return;
 
     if (_LOAD_ART_RESOURCES_)
         gMainParser->LoadImageList("cmn_res.lst");
@@ -421,10 +423,11 @@ void LoadCommonWindows()
 
     gMainParser->LoadSoundList("cmn_snd.lst");
 
-    if ( not gCampaignBites)
-        gCampaignBites = gMainParser->ParseSoundBite("art\\common\\uidcp.scf");
+    if (not gCampaignBites)
+        gCampaignBites = gMainParser->ParseSoundBite("art/common/uidcp.scf");
 
-    gMainParser->LoadWindowList("cmn_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "cmn_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -436,4 +439,3 @@ void LoadCommonWindows()
 
     CommonLoaded++;
 }
-

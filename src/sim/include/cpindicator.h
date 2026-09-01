@@ -30,12 +30,12 @@ typedef struct
 {
     int numTapes;
     float minVal;
-    int* minPos;
+    int *minPos;
     float maxVal;
-    int* maxPos;
+    int *maxPos;
     int orientation;
-    RECT* pdestRect;
-    RECT* psrcRect;
+    RECT *pdestRect;
+    RECT *psrcRect;
     int calibrationVal;
 
     SourceIndicatorType *sourceindicator; //Wombat778 3-22-04
@@ -56,11 +56,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================//
     // Tape Properties
     //====================================================//
@@ -96,9 +96,9 @@ public:
     // Pointers to Runtime Member Functions
     //====================================================//
 
-    virtual void Exec(SimBaseClass*);
+    virtual void Exec(SimBaseClass *);
     virtual void DisplayBlit(void);
-    void    DisplayBlit3D(); //Wombat778 3-22-04
+    void DisplayBlit3D(); //Wombat778 3-22-04
 
     //Wombat778 3-22-04 Stuff for rendered indicators
     SourceIndicatorType *mpSourceBuffer;
@@ -110,7 +110,7 @@ public:
     // Constructors and Destructors
     //====================================================//
 
-    CPIndicator(ObjectInitStr*, IndicatorInitStr*);
+    CPIndicator(ObjectInitStr *, IndicatorInitStr *);
     virtual ~CPIndicator();
 };
 

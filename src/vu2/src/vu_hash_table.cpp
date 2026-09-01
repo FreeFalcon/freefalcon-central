@@ -4,8 +4,9 @@
 
 #if VU_ALL_FILTERED
 
-VuHashTable::VuHashTable(VuFilter *filter, unsigned int tableSize, unsigned int key)
-    :  VuCollection(filter), capacity_(tableSize), key_(key)
+VuHashTable::VuHashTable(VuFilter *filter, unsigned int tableSize,
+                         unsigned int key)
+    : VuCollection(filter), capacity_(tableSize), key_(key)
 {
     table_ = new VuLinkedList[capacity_];
 }
@@ -15,7 +16,7 @@ VuHashTable::~VuHashTable()
     Unregister();
     Purge(TRUE);
     // this will call lists cleanup
-    delete [] table_;
+    delete[] table_;
 }
 
 VU_ERRCODE VuHashTable::PrivateInsert(VuEntity *entity)
@@ -49,7 +50,6 @@ VU_ERRCODE VuHashTable::Remove(VU_ID entityId)
     }
 
     return VU_NO_OP;
-
 }
 
 VuEntity *VuHashTable::Find(VU_ID entityId) const
@@ -70,7 +70,7 @@ VuEntity *VuHashTable::Find(VU_ID entityId) const
 #else
 
 VuHashTable::VuHashTable(unsigned int tableSize, unsigned int key)
-    :  VuCollection(), capacity_(tableSize), key_(key)
+    : VuCollection(), capacity_(tableSize), key_(key)
 {
     table_ = new VuLinkedList[capacity_];
 }
@@ -78,12 +78,12 @@ VuHashTable::VuHashTable(unsigned int tableSize, unsigned int key)
 VuHashTable::~VuHashTable()
 {
     // this will call lists cleanup
-    delete [] table_;
+    delete[] table_;
 }
 
 VU_ERRCODE VuHashTable::Insert(VuEntity *entity)
 {
-    if ( not entity)
+    if (not entity)
     {
         return VU_NO_OP;
     }

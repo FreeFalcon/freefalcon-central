@@ -15,7 +15,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -37,7 +38,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -46,7 +48,8 @@ private:
     long LabelFlags_;
     long DefaultFlags_;
     long Font_;
-    short state_; // 0=Current,1=Up,2=Down,3=Disabled (Current means... if user hits return... this will be the button)
+    short
+        state_; // 0=Current,1=Up,2=Down,3=Disabled (Current means... if user hits return... this will be the button)
     short laststate_;
     short Percent_;
     short FixedHotSpot_;
@@ -56,6 +59,7 @@ private:
     C_Hash *Root_;
     O_Output *BgImage_;
     C_Base *Owner_;
+
 public:
 #ifdef _UI95_PARSER_
     short UseHotSpot_;
@@ -80,7 +84,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     // Setup Functions
     void Setup(long ID, short Type, long x, long y);
@@ -88,8 +92,10 @@ public:
     {
         HotSpot_ = hotspot;
 
-        if (hotspot.left == -1 and hotspot.right == -1) UseHotSpot_ = 0;
-        else UseHotSpot_ = 1;
+        if (hotspot.left == -1 and hotspot.right == -1)
+            UseHotSpot_ = 0;
+        else
+            UseHotSpot_ = 1;
     }
     void SetHotSpot(long x, long y, long x2, long y2)
     {
@@ -98,12 +104,14 @@ public:
         HotSpot_.right = x2;
         HotSpot_.bottom = y2;
 
-        if (x == -1 and x2 == -1) UseHotSpot_ = 0;
-        else UseHotSpot_ = 1;
+        if (x == -1 and x2 == -1)
+            UseHotSpot_ = 0;
+        else
+            UseHotSpot_ = 1;
     }
     UI95_RECT GetHotSpot(void)
     {
-        return(HotSpot_);
+        return (HotSpot_);
     }
     void SetBackImage(long ImageID);
     void SetLabel(long ID, _TCHAR *txt);
@@ -122,7 +130,7 @@ public:
     }
     short GetState()
     {
-        return(state_);
+        return (state_);
     }
     void SetImage(short ID, long ImageID);
     void ClearImage(short ID, long ImageID);
@@ -138,7 +146,7 @@ public:
     }
     short GetPercent()
     {
-        return(Percent_);
+        return (Percent_);
     }
     BOOL TimerUpdate();
 
@@ -158,7 +166,7 @@ public:
     // Query Functions
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
     short GetImageW(short ID);
     short GetImageH(short ID);
@@ -175,28 +183,30 @@ public:
 
     // Handler/Window Functions
     long CheckHotSpots(long relx, long rely);
-    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char , unsigned char ShiftStates, long)
+    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char,
+                       unsigned char ShiftStates, long)
     {
-        if ((DKScanCode bitor (ShiftStates << 8)) == GetHotKey()) return(TRUE);
+        if ((DKScanCode bitor (ShiftStates << 8)) == GetHotKey())
+            return (TRUE);
 
-        return(FALSE);
+        return (FALSE);
     }
     BOOL Process(long ID, short ButtonHitType);
     BOOL Dragable(long)
     {
-        return(GetFlags() bitand C_BIT_DRAGABLE);
+        return (GetFlags() bitand C_BIT_DRAGABLE);
     }
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
     void HighLite(SCREEN *surface, UI95_RECT *cliprect);
     BOOL MouseOver(long relX, long relY, C_Base *me);
-    void GetItemXY(long , long *x, long *y)
+    void GetItemXY(long, long *x, long *y)
     {
         *x = GetX();
         *y = GetY();
     }
     BOOL Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *)
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *)
     {
         return FALSE;
     }
@@ -206,7 +216,7 @@ public:
 
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

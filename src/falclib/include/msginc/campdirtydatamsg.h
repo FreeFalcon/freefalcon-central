@@ -11,10 +11,10 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Camp Dirty Data
@@ -22,7 +22,8 @@
 class CampDirtyData : public FalconEvent
 {
 public:
-    CampDirtyData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    CampDirtyData(VU_ID entityId, VuTargetEntity *target,
+                  VU_BOOL loopback = TRUE);
     CampDirtyData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~CampDirtyData(void);
     virtual int Size(void) const;
@@ -32,14 +33,13 @@ public:
     class DATA_BLOCK
     {
     public:
-
         long size;
-        uchar* data;
+        uchar *data;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

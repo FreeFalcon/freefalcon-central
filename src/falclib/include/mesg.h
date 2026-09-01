@@ -7,7 +7,6 @@
 #include "falclib.h"
 
 
-
 /*
  * Shared data arrays
  */
@@ -94,6 +93,4 @@ enum FalconMsgID
 };
 
 
-
 #endif
-

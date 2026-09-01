@@ -11,7 +11,7 @@
 
 #include <iso646.h>
 #include <math.h>
-#include "grTypes.h"
+#include "grtypes.h"
 
 class DrawableObject
 {
@@ -32,7 +32,21 @@ public:
         return 0.0f;
     }
 
-    enum DrawClass { Default, BSP, GroundVehicle, Guys, Building, Platform, Bridge, Roadbed, Overcast, Puffy, Trail, realClouds }; //JAM 09Nov03
+    enum DrawClass
+    {
+        Default,
+        BSP,
+        GroundVehicle,
+        Guys,
+        Building,
+        Platform,
+        Bridge,
+        Roadbed,
+        Overcast,
+        Puffy,
+        Trail,
+        realClouds
+    }; //JAM 09Nov03
 
     DrawClass GetClass() const
     {
@@ -42,7 +56,7 @@ public:
     {
         return radius;
     }
-    void GetPosition(Tpoint* pos)
+    void GetPosition(Tpoint *pos)
     {
         *pos = position;
     }
@@ -69,19 +83,20 @@ public:
         return scale;
     };
 
-    virtual void SetLabel(char*, DWORD) {};
+    virtual void SetLabel(char *, DWORD) {};
 
-    virtual void SetInhibitFlag(BOOL) {};
+    virtual void SetInhibitFlag(BOOL){};
 
     virtual void Draw(class RenderOTW *renderer, int LOD) = 0;
-    virtual void Draw(class Render3D*) {};
+    virtual void Draw(class Render3D *) {};
 
 
     // ray hit not implemented yet for object
-    virtual BOOL GetRayHit(const Tpoint*, const Tpoint*, Tpoint*, float = 1.0f)
+    virtual BOOL GetRayHit(const Tpoint *, const Tpoint *, Tpoint *,
+                           float = 1.0f)
     {
         return FALSE;
-    } ;
+    };
 
     BOOL InDisplayList(void)
     {
@@ -114,8 +129,10 @@ protected:
 #endif
     friend class ObjectDisplayList;
     friend class RViewPoint;
-    friend class DrawablePlatform;  // This one is weird -- DrawablePlatform isa DrawableObject,
-    friend class DrawableBridge; // but the compiler complains.  Apparently, a second order
+    friend class
+        DrawablePlatform; // This one is weird -- DrawablePlatform isa DrawableObject,
+    friend class
+        DrawableBridge; // but the compiler complains.  Apparently, a second order
     // inheritance doesn't get to see "protected" members of its
     // grand parent.
 public:

@@ -9,7 +9,7 @@
 \*******************************************************************************/
 #include <stdio.h>
 #include <math.h>
-#include "TileDB.h"
+#include "tiledb.h"
 
 
 // Terrain and feature types defined in the the visual basic tile tool
@@ -30,7 +30,7 @@ const int COVERAGE_RUNWAY = 13;
 const int COVERAGE_STATION = 14;
 
 
-void TileDatabase::Load(char *filename)
+void TileDatabase::Load(char* filename)
 {
     HANDLE inputFile;
     DWORD bytes;
@@ -39,7 +39,8 @@ void TileDatabase::Load(char *filename)
 
 
     // Open the texture tile database for reading
-    inputFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    inputFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (inputFile == INVALID_HANDLE_VALUE)
     {
@@ -119,7 +120,7 @@ void TileDatabase::Free(void)
 }
 
 
-void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
+void TileDatabase::ReadTile(HANDLE inputFile, TileRecord* tile)
 {
     DWORD bytes;
     char string[8];
@@ -210,8 +211,10 @@ void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
 
 
     // Allocate memory for the features in this tile
-    tile->features = (FeatureRecord*)malloc(tile->numFeatures * sizeof(*tile->features));
-    tile->sortedFeatures = (FeatureRecord**)malloc(tile->numFeatures * sizeof(void*));
+    tile->features =
+        (FeatureRecord*)malloc(tile->numFeatures * sizeof(*tile->features));
+    tile->sortedFeatures =
+        (FeatureRecord**)malloc(tile->numFeatures * sizeof(void*));
     tile->nareas = 0;
     tile->npaths = 0;
 
@@ -228,7 +231,6 @@ void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
             // Make sure each path has at least two defining points
             ShiAssert(tile->features[feature].numPoints >= 2);
             tile->npaths += tile->features[feature].numPoints - 1;
-
         }
         else
         {
@@ -236,7 +238,6 @@ void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
             // Make sure each area has exactly one center point
             ShiAssert(tile->features[feature].numPoints == 1);
             tile->nareas++;
-
         }
     }
 
@@ -265,14 +266,17 @@ void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
                 ShiAssert(pathIndex < tile->npaths);
                 tile->paths[pathIndex].type = tile->features[feature].type;
                 tile->paths[pathIndex].size = tile->features[feature].size;
-                tile->paths[pathIndex].x1 = tile->features[feature].points[pntIndex - 1].x;
-                tile->paths[pathIndex].y1 = tile->features[feature].points[pntIndex - 1].y;
-                tile->paths[pathIndex].x2 = tile->features[feature].points[pntIndex].x;
-                tile->paths[pathIndex].y2 = tile->features[feature].points[pntIndex].y;
+                tile->paths[pathIndex].x1 =
+                    tile->features[feature].points[pntIndex - 1].x;
+                tile->paths[pathIndex].y1 =
+                    tile->features[feature].points[pntIndex - 1].y;
+                tile->paths[pathIndex].x2 =
+                    tile->features[feature].points[pntIndex].x;
+                tile->paths[pathIndex].y2 =
+                    tile->features[feature].points[pntIndex].y;
                 pathIndex++;
                 pntIndex++;
             }
-
         }
         else
         {
@@ -287,7 +291,7 @@ void TileDatabase::ReadTile(HANDLE inputFile, TileRecord *tile)
 }
 
 
-void TileDatabase::ReadFeature(HANDLE inputFile, FeatureRecord *feature)
+void TileDatabase::ReadFeature(HANDLE inputFile, FeatureRecord* feature)
 {
     DWORD bytes;
     char message[80];
@@ -311,7 +315,8 @@ void TileDatabase::ReadFeature(HANDLE inputFile, FeatureRecord *feature)
 
 
     // Allocate memory for the list of points
-    feature->points = (PointRecord*)malloc(feature->numPoints * sizeof(*feature->points));
+    feature->points =
+        (PointRecord*)malloc(feature->numPoints * sizeof(*feature->points));
     ShiAssert(feature->points);
 
     // Read the point records
@@ -326,10 +331,10 @@ void TileDatabase::ReadFeature(HANDLE inputFile, FeatureRecord *feature)
 }
 
 
-void TileDatabase::SortArray(FeatureRecord **array, int numElements)
+void TileDatabase::SortArray(FeatureRecord** array, int numElements)
 {
     int i, j, k;
-    FeatureRecord *p;
+    FeatureRecord* p;
 
 
     for (i = 1; i < numElements; i++)
@@ -385,7 +390,7 @@ TileRecord* TileDatabase::GetTileRecord(WORD code)
 }
 
 
-AreaRecord* TileDatabase::GetArea(TileRecord *pTile, int area)
+AreaRecord* TileDatabase::GetArea(TileRecord* pTile, int area)
 {
     if (pTile == NULL)
     {
@@ -398,7 +403,7 @@ AreaRecord* TileDatabase::GetArea(TileRecord *pTile, int area)
 }
 
 
-PathRecord* TileDatabase::GetPath(TileRecord *pTile, int path)
+PathRecord* TileDatabase::GetPath(TileRecord* pTile, int path)
 {
     if (pTile == NULL)
     {
@@ -413,9 +418,8 @@ PathRecord* TileDatabase::GetPath(TileRecord *pTile, int path)
 
 BOOL TileDatabase::typeIsPath(BYTE featureType)
 {
-    return ((featureType == COVERAGE_RIVER) ||
-            (featureType == COVERAGE_ROAD)  ||
-            (featureType == COVERAGE_RAIL)  ||
+    return ((featureType == COVERAGE_RIVER) || (featureType == COVERAGE_ROAD) ||
+            (featureType == COVERAGE_RAIL) ||
             (featureType == COVERAGE_BRIDGE) ||
             (featureType == COVERAGE_RUNWAY));
 }

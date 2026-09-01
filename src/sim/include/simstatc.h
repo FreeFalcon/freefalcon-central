@@ -7,15 +7,17 @@ class SimStaticClass : public SimBaseClass
 {
 public:
     SimStaticClass(int type);
-    SimStaticClass(VU_BYTE** stream, long *rem);
-    SimStaticClass(FILE* filePtr);
+    SimStaticClass(VU_BYTE **stream, long *rem);
+    SimStaticClass(FILE *filePtr);
     virtual ~SimStaticClass(void);
-    virtual void Init(SimInitDataClass* initData);
+    virtual void Init(SimInitDataClass *initData);
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
+
 public:
     // pure virtual implementation
     virtual float GetVt(void) const

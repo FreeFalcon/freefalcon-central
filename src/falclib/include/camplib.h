@@ -1,34 +1,40 @@
 #ifndef CAMPLIB
 #define CAMPLIB
 
-#include "FalcLib.h"
-#include "F4Vu.h"
-#include "FalcList.h"
+#include "falclib.h"
+#include "f4vu.h"
+#include "falclist.h"
 
 // =====================================
 // Campaign defines and typedefs
 // =====================================
 
-typedef ulong CampaignTime;
-#define CampaignSeconds   1000
-#define CampaignMinutes  60000
-#define CampaignHours  3600000
-#define CampaignDay   86400000
+// #104 (Linux LP64): CampaignTime is a 32-bit tick count on disk and in the x86/Win64 (LLP64)
+// reference ABI where 'ulong' is 4 bytes. On Linux LP64 'ulong' is 8 bytes, which desynced every
+// campaign-stream read and inflated struct sizes vs the on-disk layout. Pin it to 32 bits on all
+// platforms (unchanged size on Win32/Win64; only Linux shrinks back to the reference width).
+typedef unsigned int CampaignTime;
+#define CampaignSeconds 1000
+#define CampaignMinutes 60000
+#define CampaignHours 3600000
+#define CampaignDay 86400000
 
-#define INFINITE_TIME     4294967295 // Max value of CampaignTime
+#define INFINITE_TIME 4294967295 // Max value of CampaignTime
 #define VEHICLE_GROUPS_PER_UNIT 16
-#define FEATURES_PER_OBJ        32
-#define MAXIMUM_ROLES           16
-#define MAXIMUM_OBJTYPES        32
-#define MAXIMUM_WEAPTYPES       600
+#define FEATURES_PER_OBJ 32
+#define MAXIMUM_ROLES 16
+#define MAXIMUM_OBJTYPES 32
+#define MAXIMUM_WEAPTYPES 600
 //#define MAXIMUM_WEAPTYPES       1200
-#define MAX_UNIT_CHILDREN       5
-#define MAX_FEAT_DEPEND         5
+#define MAX_UNIT_CHILDREN 5
+#define MAX_FEAT_DEPEND 5
 
 #define MAX_NUMBER_OF_OBJECTIVES 8000
 #define MAX_NUMBER_OF_UNITS 4000 // Max # of NON volitile units only
 #define MAX_NUMBER_OF_VOLATILE_UNITS 16000
-#define MAX_CAMP_ENTITIES (MAX_NUMBER_OF_OBJECTIVES+MAX_NUMBER_OF_UNITS+MAX_NUMBER_OF_VOLATILE_UNITS)
+#define MAX_CAMP_ENTITIES                                                      \
+    (MAX_NUMBER_OF_OBJECTIVES + MAX_NUMBER_OF_UNITS +                          \
+     MAX_NUMBER_OF_VOLATILE_UNITS)
 
 #define MONOMODE_OFF 0
 #define MONOMODE_TEXT 1
@@ -65,6 +71,6 @@ extern void Camp_SetCurrentTime(double newTime);
 
 extern void Camp_FreeMemory(void);
 
-extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+extern FILE* OpenCampFile(char* filename, char* ext, char* mode);
 
 #endif

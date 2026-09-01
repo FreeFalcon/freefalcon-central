@@ -1,22 +1,23 @@
 #include <math.h>
-#include "../include/ObjectInstance.h"
+#include "../include/objectinstance.h"
 #include "dxdefines.h"
-#include "DXVBManager.h"
-extern bool g_bUseGpu;		// Artscout - 2026: #DX12 -- GPU mode; the DDraw7 2D-engine VB path is dead
+#include "dxvbmanager.h"
+extern bool
+    g_bUseGpu; // Artscout - 2026: #DX12 -- GPU mode; the DDraw7 2D-engine VB path is dead
 // #DX12 A4: g_pRenderer (neutral IRenderer*) comes from the common/IRenderer.h include below.
 #include "mmsystem.h"
-#include "../include/TexBank.h"
+#include "../include/texbank.h"
 #include "dxengine.h"
-#include "common/IRenderer.h"	// #27: DrawDynamic2D/BeginDynamic2D + g_pRenderer
-#include "../include/ObjectLOD.h"
+#include "common/irenderer.h" // #27: DrawDynamic2D/BeginDynamic2D + g_pRenderer
+#include "../include/objectlod.h"
 #include "../../falclib/include/token.h"
 #include "../../falclib/include/falclib.h"
 #include "../../falclib/include/f4find.h"
 #include "../../falclib/include/fakerand.h"
 #ifndef DEBUG_ENGINE
-#include "../include/Realweather.h"
+#include "../include/realweather.h"
 #endif
-#include "../../include/ComSup.h"
+#include "../../include/comsup.h"
 
 //#define DRAW_USING_2D_FANS
 extern bool g_bGreyMFD;
@@ -30,8 +31,10 @@ DWORD Debug_Vertices2D;
 
 DWORD CDXEngine::IndexStart;
 
-_MM_ALIGN16 XMMVector CDXEngine::vbb0, CDXEngine::vbb1, CDXEngine::vbb2, CDXEngine::vbb3; // The Vertices
-_MM_ALIGN16 XMMVector CDXEngine::BBvbb0, CDXEngine::BBvbb1, CDXEngine::BBvbb2, CDXEngine::BBvbb3; // The Vertices used for BillBoarding
+_MM_ALIGN16 XMMVector CDXEngine::vbb0, CDXEngine::vbb1, CDXEngine::vbb2,
+    CDXEngine::vbb3; // The Vertices
+_MM_ALIGN16 XMMVector CDXEngine::BBvbb0, CDXEngine::BBvbb1, CDXEngine::BBvbb2,
+    CDXEngine::BBvbb3; // The Vertices used for BillBoarding
 
 _MM_ALIGN16 __m128 XMMAcc, XMMAcc1;
 _MM_ALIGN16 XMMVector XMMPos, XMMRadius, XMMStore;
@@ -42,30 +45,28 @@ _MM_ALIGN16 XMMVector CDXEngine::BBCx[3];
 float CDXEngine::TestDistance;
 
 
-
-
-
-
 ///////////////////////////// TEXTURES MANAGEMEND FOR 2D FEATURES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
 // This function load and create a Texture, look for its items definition file and add them
-void CDXEngine::LoadTexture(char *FileName)
+void CDXEngine::LoadTexture(char* FileName)
 {
 #ifndef DEBUG_ENGINE
     char Path[256];
     char Buffer[1024];
-    FILE *fp;
-    CTextureSurface *Ts = TexturesList;
-    CTextureItem *Ti;
+    FILE* fp;
+    CTextureSurface* Ts = TexturesList;
+    CTextureItem* Ti;
 
 
     // ok...The surface manager
-    if ( not Ts) Ts = TexturesList = new CTextureSurface();
+    if (not Ts)
+        Ts = TexturesList = new CTextureSurface();
     else
     {
         // look for last texture manager
-        while (Ts->Next) Ts = Ts->Next;
+        while (Ts->Next)
+            Ts = Ts->Next;
 
         // append the new one
         Ts->Next = new CTextureSurface();
@@ -89,21 +90,22 @@ void CDXEngine::LoadTexture(char *FileName)
     Ti->TuTv[3][1] = 1.0f;
 
     // look for the Texture Items name
-    sprintf(Path, "%s\\terrdata\\MiscTex\\%s.ITM", FalconDataDirectory, FileName);
+    sprintf(Path, "%s/terrdata/MiscTex/%s.ITM", FalconDataDirectory, FileName);
     fp = fopen(Path, "r");
 
     // if not found return
-    if ( not fp) return;
+    if (not fp)
+        return;
 
-    char *Name;
-    int  b;
+    char* Name;
+    int b;
     float Unit = 1.0f;
 
     // ok, now the parsing
     while (1)
     {
         // if EOF exit here
-        if ( not fgets(Buffer, sizeof Buffer, fp))
+        if (not fgets(Buffer, sizeof Buffer, fp))
         {
             fclose(fp);
             return;
@@ -114,13 +116,16 @@ void CDXEngine::LoadTexture(char *FileName)
             continue;
 
         // Skip initial Spaces or TABs
-        for (b = 0; b < sizeof(Buffer) and (Buffer[b] == ' ' or Buffer[b] == '\t'); b++);
+        for (b = 0;
+             b < sizeof(Buffer) and (Buffer[b] == ' ' or Buffer[b] == '\t');
+             b++)
+            ;
 
         // Ok, get the Item Name
         Name = strtok(&Buffer[b], "=\n");
 
         // Check if Unit Command
-        if ( not strcmp(Name, "Unit"))
+        if (not strcmp(Name, "Unit"))
         {
             Unit = TokenF(0);
             continue;
@@ -131,7 +136,8 @@ void CDXEngine::LoadTexture(char *FileName)
             Ti = Ts->ItemList;
 
             // look for last texture manager
-            while (Ti->Next) Ti = Ti->Next;
+            while (Ti->Next)
+                Ti = Ti->Next;
 
             // append the new one
             Ti->Next = new CTextureItem();
@@ -140,7 +146,8 @@ void CDXEngine::LoadTexture(char *FileName)
 
         strncpy(Ti->Name, Name, sizeof(Ti->Name));
         // Get the U/V Coords
-        float PosX = TokenF(0) * Unit, PosY = TokenF(0) * Unit, SizeX = TokenF(0) * Unit, SizeY = TokenF(0) * Unit;
+        float PosX = TokenF(0) * Unit, PosY = TokenF(0) * Unit,
+              SizeX = TokenF(0) * Unit, SizeY = TokenF(0) * Unit;
         Ti->TuTv[0][0] = PosX;
         Ti->TuTv[0][1] = PosY;
         Ti->TuTv[1][0] = PosX + SizeX;
@@ -155,13 +162,13 @@ void CDXEngine::LoadTexture(char *FileName)
 }
 
 
-
-DWORD_PTR CDXEngine::GetTextureHandle(char *TexName) // Artscout - 2026 (x64): pointer-sized
+DWORD_PTR CDXEngine::GetTextureHandle(
+    char* TexName) // Artscout - 2026 (x64): pointer-sized
 {
 
     // look for an item owning such a name
-    CTextureSurface *Ts = TexturesList;
-    CTextureItem *Ti;
+    CTextureSurface* Ts = TexturesList;
+    CTextureItem* Ti;
 
     // Look thru the list
     while (Ts)
@@ -173,7 +180,8 @@ DWORD_PTR CDXEngine::GetTextureHandle(char *TexName) // Artscout - 2026 (x64): p
         while (Ti)
         {
             // if found, return the surface handle
-            if ( not strcmp(Ti->Name, TexName)) return Ts->Tex.TexHandle();
+            if (not strcmp(Ti->Name, TexName))
+                return Ts->Tex.TexHandle();
 
             // else next item
             Ti = Ti->Next;
@@ -184,13 +192,12 @@ DWORD_PTR CDXEngine::GetTextureHandle(char *TexName) // Artscout - 2026 (x64): p
 
     // if here, no texture item owning such name found
     return NULL;
-
 }
 
 
 void CDXEngine::SetupTexturesOnDevice(void)
 {
-    CTextureSurface *Ts = TexturesList;
+    CTextureSurface* Ts = TexturesList;
 
     while (Ts)
     {
@@ -204,10 +211,10 @@ void CDXEngine::SetupTexturesOnDevice(void)
 
 void CDXEngine::CleanUpTexturesOnDevice(void)
 {
-    if ( not TexturesList)
+    if (not TexturesList)
         return;
 
-    CTextureSurface *Ts = TexturesList;
+    CTextureSurface* Ts = TexturesList;
 
     // Release all Textures
     while (Ts)
@@ -222,14 +229,13 @@ void CDXEngine::CleanUpTexturesOnDevice(void)
         delete ZeroTex;
         ZeroTex = NULL;
     }
-
 }
 
 
-
-void CDXEngine::DX2D_GetTextureCoords(CTextureItem *Ti, CDrawBaseItem *Item)
+void CDXEngine::DX2D_GetTextureCoords(CTextureItem* Ti, CDrawBaseItem* Item)
 {
-    if ( not Ti) return;
+    if (not Ti)
+        return;
 
     // Assign vertices of the Passed texture
     for (int a = 0; a < 4; a++)
@@ -240,23 +246,22 @@ void CDXEngine::DX2D_GetTextureCoords(CTextureItem *Ti, CDrawBaseItem *Item)
 }
 
 
-
-void CDXEngine::DX2D_GetTextureUV(CTextureItem *Ti, DWORD Index, float &u, float &v)
+void CDXEngine::DX2D_GetTextureUV(CTextureItem* Ti, DWORD Index, float& u,
+                                  float& v)
 {
-    if ( not Ti) return;
+    if (not Ti)
+        return;
 
     u = Ti->TuTv[Index][0];
     v = Ti->TuTv[Index][1];
 }
 
 
-
-
-CTextureItem *CDXEngine::DX2D_GetTextureItem(char *TexName)
+CTextureItem* CDXEngine::DX2D_GetTextureItem(char* TexName)
 {
     // look for an item owning such a name
-    CTextureSurface *Ts = TexturesList;
-    CTextureItem *Ti;
+    CTextureSurface* Ts = TexturesList;
+    CTextureItem* Ti;
 
     // Look thru the list
     while (Ts)
@@ -268,7 +273,8 @@ CTextureItem *CDXEngine::DX2D_GetTextureItem(char *TexName)
         while (Ti)
         {
             // if found, assign coords and exit
-            if ( not strcmp(Ti->Name, TexName)) return(Ti);
+            if (not strcmp(Ti->Name, TexName))
+                return (Ti);
 
             // else next item
             Ti = Ti->Next;
@@ -308,7 +314,6 @@ void CDXEngine::ReleaseTextures(void)
 }
 
 
-
 ///////////////////////////////////////// 2D STUFF \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 
@@ -328,7 +333,9 @@ SortItemType CDXEngine::SortBuffer[MAX_2D_ITEMS];
 DWORD CDXEngine::SortBuckets[4][256];
 DWORD CDXEngine::SortTail[4][256];
 DWORD CDXEngine::DrawOrder[MAX_2D_LAYERS];
-static const DWORD DefOrder[] = {LAYER_ROOF, LAYER_STRATUS2, LAYER_MIDDLE, LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP, LAYER_NODRAW};
+static const DWORD DefOrder[] = {LAYER_ROOF,     LAYER_STRATUS2, LAYER_MIDDLE,
+                                 LAYER_STRATUS1, LAYER_GROUND,   LAYER_TOP,
+                                 LAYER_NODRAW};
 
 
 // reset function before any use
@@ -340,11 +347,11 @@ void CDXEngine::DX2D_InitLists(void)
     memset(Layers, 0xff, sizeof(Layers));
 
     // Layers Flags
-    for (int l = 0; l < MAX_2D_LAYERS; l++) Layers[l].Flags = 0;
+    for (int l = 0; l < MAX_2D_LAYERS; l++)
+        Layers[l].Flags = 0;
 
     // Default Draw Order
     memcpy(DrawOrder, DefOrder, sizeof(DrawOrder));
-
 }
 
 // reset function before any use
@@ -369,26 +376,33 @@ void CDXEngine::DX2D_Reset(void)
 // Gribb-Hartmann planes for the v*M convention: colK=(m0K,m1K,m2K,m3K).
 // The sphere is VISIBLE if its center is no farther than -radius from any plane (conservative:
 // cull only fully-outside ones -> visible particles never disappear).
-static bool DX2D_SphereVisibleD3D11(const D3DXMATRIX &View, const D3DXMATRIX &Proj,
-                                    float px, float py, float pz, float r)
+static bool DX2D_SphereVisibleD3D11(const D3DXMATRIX& View,
+                                    const D3DXMATRIX& Proj, float px, float py,
+                                    float pz, float r)
 {
     D3DXMATRIX M;
     D3DXMatrixMultiply(&M, &View, &Proj);
-    const float pl[6][4] =
-    {
-        { M.m00 + M.m03, M.m10 + M.m13, M.m20 + M.m23, M.m30 + M.m33 }, // left  (x>=-w)
-        { M.m03 - M.m00, M.m13 - M.m10, M.m23 - M.m20, M.m33 - M.m30 }, // right (x<= w)
-        { M.m01 + M.m03, M.m11 + M.m13, M.m21 + M.m23, M.m31 + M.m33 }, // bottom(y>=-w)
-        { M.m03 - M.m01, M.m13 - M.m11, M.m23 - M.m21, M.m33 - M.m31 }, // top   (y<= w)
-        { M.m02,         M.m12,         M.m22,         M.m32         }, // near  (z>= 0)
-        { M.m03 - M.m02, M.m13 - M.m12, M.m23 - M.m22, M.m33 - M.m32 }, // far   (z<= w)
+    const float pl[6][4] = {
+        {M.m00 + M.m03, M.m10 + M.m13, M.m20 + M.m23,
+         M.m30 + M.m33}, // left  (x>=-w)
+        {M.m03 - M.m00, M.m13 - M.m10, M.m23 - M.m20,
+         M.m33 - M.m30}, // right (x<= w)
+        {M.m01 + M.m03, M.m11 + M.m13, M.m21 + M.m23,
+         M.m31 + M.m33}, // bottom(y>=-w)
+        {M.m03 - M.m01, M.m13 - M.m11, M.m23 - M.m21,
+         M.m33 - M.m31}, // top   (y<= w)
+        {M.m02, M.m12, M.m22, M.m32}, // near  (z>= 0)
+        {M.m03 - M.m02, M.m13 - M.m12, M.m23 - M.m22,
+         M.m33 - M.m32}, // far   (z<= w)
     };
     for (int i = 0; i < 6; ++i)
     {
         const float a = pl[i][0], b = pl[i][1], c = pl[i][2], d = pl[i][3];
         const float len = sqrtf(a * a + b * b + c * c);
-        if (len < 1e-6f) continue;
-        if ((px * a + py * b + pz * c + d) / len < -r) return false;
+        if (len < 1e-6f)
+            continue;
+        if ((px * a + py * b + pz * c + d) / len < -r)
+            return false;
     }
     return true;
 }
@@ -397,7 +411,7 @@ static bool DX2D_SphereVisibleD3D11(const D3DXMATRIX &View, const D3DXMATRIX &Pr
 // WARNING  This function stores the calculated position for following uses in XMMPos variable
 // as we suppose calculating the visibility is just before rendering same item
 // returns the Distance from Camera, -1 if out of FOV
-bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
+bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3* Pos, float Radius, DWORD Flags)
 {
     DWORD ClipResult;
     //Store the radius
@@ -405,24 +419,27 @@ bool CDXEngine::DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if ( not (Flags bitand CAMERA_VERTICES)) XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if (not(Flags bitand CAMERA_VERTICES))
+        XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // Check for object visibility, return NULL is not visible
     if (g_bUseGpu)
     {
-        if (Flags bitand CAMERA_VERTICES) return true;   // verts already in camera space
+        if (Flags bitand CAMERA_VERTICES)
+            return true; // verts already in camera space
         // #13/clouds: CameraView is rotation ONLY (no translation), so the frustum is centered
         // at the origin -> we must test the CAMERA-RELATIVE point (XMMPos = Pos - Camera,
         // see above), not the world Pos. Previously world was passed -> visibility depended on HEADING
         // (clouds came and went). The D3D7 path below also uses XMMPos.d3d. (per report 2026-06-17)
-        return DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x, XMMPos.d3d.y, XMMPos.d3d.z, Radius);
+        return DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x,
+                                       XMMPos.d3d.y, XMMPos.d3d.z, Radius);
     }
-    return true;   // #34 dead D3D7 ComputeSphereVisibility path removed (D3D11 returns above)
+    return true; // #34 dead D3D7 ComputeSphereVisibility path removed (D3D11 returns above)
 }
 
 
-
-DWORD CDXEngine::ComputeSphereVisibility(LPD3DVECTOR lpCenters, LPD3DVALUE  lpRadii, DWORD dwNumSpheres)
+DWORD CDXEngine::ComputeSphereVisibility(LPD3DVECTOR lpCenters,
+                                         LPD3DVALUE lpRadii, DWORD dwNumSpheres)
 {
     DWORD ClipResult;
     XMMAcc = _mm_loadu_ps((float*)lpCenters);
@@ -430,13 +447,16 @@ DWORD CDXEngine::ComputeSphereVisibility(LPD3DVECTOR lpCenters, LPD3DVALUE  lpRa
     // Check for object visibility, return NULL is not visible
     if (g_bUseGpu)
         // #13: camera-relative point (XMMPos = lpCenters - Camera, see above), not world -- see comment in DX2D_GetVisibility
-        return DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x, XMMPos.d3d.y, XMMPos.d3d.z,
-                                       lpRadii ? lpRadii[0] : 0.0f) ? 0 : D3DSTATUS_DEFAULT;
-    return 0;   // #34 dead D3D7 ComputeSphereVisibility path removed (D3D11 returns above)
+        return DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x,
+                                       XMMPos.d3d.y, XMMPos.d3d.z,
+                                       lpRadii ? lpRadii[0] : 0.0f) ?
+                   0 :
+                   D3DSTATUS_DEFAULT;
+    return 0; // #34 dead D3D7 ComputeSphereVisibility path removed (D3D11 returns above)
 }
 
 
-float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
+float CDXEngine::DX2D_GetDistance(D3DXVECTOR3* Pos, float Radius, DWORD Flags)
 {
     DWORD ClipResult;
     //Store the radius
@@ -444,33 +464,40 @@ float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, float Radius, DWORD Flags)
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if ( not (Flags bitand CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if (not(Flags bitand CAMERA_VERTICES))
+        XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // Check for object visibility, return -1 if not visible (out of frustum)
     if (g_bUseGpu)
     {
-        if ( not (Flags bitand CAMERA_VERTICES)
-             and not DX2D_SphereVisibleD3D11(CameraView, Projection, XMMPos.d3d.x, XMMPos.d3d.y, XMMPos.d3d.z, Radius))	// #13: camera-relative, not world (CameraView has no translation)
+        if (not(Flags bitand CAMERA_VERTICES) and
+            not DX2D_SphereVisibleD3D11(
+                CameraView, Projection, XMMPos.d3d.x, XMMPos.d3d.y,
+                XMMPos.d3d.z,
+                Radius)) // #13: camera-relative, not world (CameraView has no translation)
             return -1.0f;
     }
     // #34 dead D3D7 ComputeSphereVisibility else-branch removed (D3D11 path above)
 
     // setup the DISTANCE FROM CAMERA
     XMMStore.Xmm = _mm_mul_ps(XMMPos.Xmm, XMMPos.Xmm);
-    return TestDistance = sqrtf(XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z);
+    return TestDistance =
+               sqrtf(XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z);
 }
 
 
-float CDXEngine::DX2D_GetDistance(D3DXVECTOR3 *Pos, DWORD Flags)
+float CDXEngine::DX2D_GetDistance(D3DXVECTOR3* Pos, DWORD Flags)
 {
     // get the position and make it camera relative
     XMMPos.Xmm = _mm_loadu_ps((float*)Pos);
 
-    if ( not (Flags bitand CAMERA_VERTICES))XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
+    if (not(Flags bitand CAMERA_VERTICES))
+        XMMPos.Xmm = _mm_sub_ps(XMMPos.Xmm, XMMCamera.Xmm);
 
     // setup the DISTANCE FROM CAMERA
     XMMStore.Xmm = _mm_mul_ps(XMMPos.Xmm, XMMPos.Xmm);
-    return TestDistance = sqrtf(XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z);
+    return TestDistance =
+               sqrtf(XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z);
 }
 
 
@@ -480,8 +507,7 @@ void CDXEngine::DX2D_ForceDistance(float Distance)
 }
 
 
-
-void CDXEngine::DX2D_GetRelativePosition(D3DXVECTOR3 *Pos)
+void CDXEngine::DX2D_GetRelativePosition(D3DXVECTOR3* Pos)
 {
     Pos->x = XMMPos.d3d.x;
     Pos->y = XMMPos.d3d.y;
@@ -489,15 +515,12 @@ void CDXEngine::DX2D_GetRelativePosition(D3DXVECTOR3 *Pos)
 }
 
 
-
-
-void CDXEngine::DX2D_MakeCameraSpace(D3DXVECTOR3 *Result, D3DXVECTOR3 *Pos)
+void CDXEngine::DX2D_MakeCameraSpace(D3DXVECTOR3* Result, D3DXVECTOR3* Pos)
 {
-    Result->x = (float)((double) Pos->x - (double) XMMCamera.d3d.x);
-    Result->y = (float)((double) Pos->y - (double) XMMCamera.d3d.y);
-    Result->z = (float)((double) Pos->z - (double) XMMCamera.d3d.z);
+    Result->x = (float)((double)Pos->x - (double)XMMCamera.d3d.x);
+    Result->y = (float)((double)Pos->y - (double)XMMCamera.d3d.y);
+    Result->z = (float)((double)Pos->z - (double)XMMCamera.d3d.z);
 }
-
 
 
 inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
@@ -506,8 +529,10 @@ inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
     // PREVIOUSLY: VBSelected++ on overflow, but MAX_2D_BUFFERS=1 -> VBSelected=1, and
     // the next Add* accessed Dyn2DVertexBuffer[1] (out of the static array) -> OOB.
     // The multi-buffer mechanism is vestigial (1 buffer) -- just drop, leave VBSelected alone.
-    if (VbIndex + Size >= MAX_2D_VERTICES) return false;
-    if (VBSelected >= MAX_2D_BUFFERS) return false;
+    if (VbIndex + Size >= MAX_2D_VERTICES)
+        return false;
+    if (VBSelected >= MAX_2D_BUFFERS)
+        return false;
 
     return true;
 }
@@ -515,7 +540,9 @@ inline bool CDXEngine::CheckBufferSpace(DWORD VbIndex, DWORD Size)
 
 // This function add a Quad to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle)
+void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3* Pos,
+                             D3DDYNVERTEX* Quad, float Radius,
+                             DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr (DX2D_Init), draw in DX2D_Flush2DObjects via DrawDynamic2D.
     _MM_ALIGN16 XMMVector V[4];
@@ -523,37 +550,45 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 #ifdef DATE_PROTECTION
     extern bool DateOff;
 
-    if (DateOff and PRANDFloat() < 0.3f) return;
+    if (DateOff and PRANDFloat() < 0.3f)
+        return;
 
 #endif
 
     // not going to overflow stuff
-    if (Total2DItems >= MAX_2D_ITEMS) return;
+    if (Total2DItems >= MAX_2D_ITEMS)
+        return;
 
     // Get the Index for the selected VB
-    DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
+    DWORD& VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if ( not CheckBufferSpace(VbIndex, 4)) return;
+    if (not CheckBufferSpace(VbIndex, 4))
+        return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
 
-    if (Flags bitand POLY_VISIBLE) Distance = TestDistance;
+    if (Flags bitand POLY_VISIBLE)
+        Distance = TestDistance;
     else
     {
         Distance = DX2D_GetDistance(Pos, Radius, Flags);
 
-        if (Distance < 0.0f) return;
+        if (Distance < 0.0f)
+            return;
     }
 
     // if Camera vertices, the passed position is the real one
-    if (Flags bitand CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
+    if (Flags bitand CAMERA_VERTICES)
+        *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
 
-    if (Flags bitand CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
+    if (Flags bitand CALC_DISTANCE)
+        Distance = DX2D_GetDistance(Pos, Flags);
 
     // check if layer initialized, if not, initialize it
-    if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
+    if (Layers[Layer].Start == -1)
+        Layers[Layer].Start = Total2DItems;
     // If layer already initialized
     else
     {
@@ -585,30 +620,48 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     }
 
     // * BILLBOARD VERTICES * - go directly into Vertex Buffer
-    if (Flags bitand POLY_BB) DX2D_TransformBB(&XMMPos, V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 4);
+    if (Flags bitand POLY_BB)
+        DX2D_TransformBB(&XMMPos, V,
+                         &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 4);
     // if not BillBoarded, add Distance here and put into Vertex Buffer
     else
     {
         // if passed coords in already camera vertex, just copy
         if (Flags bitand CAMERA_VERTICES)
         {
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], V[0].Xmm);
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1], V[1].Xmm);
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2], V[2].Xmm);
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 3], V[3].Xmm);
-
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0],
+                V[0].Xmm);
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1],
+                V[1].Xmm);
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2],
+                V[2].Xmm);
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 3],
+                V[3].Xmm);
         }
         else
         {
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], _mm_add_ps(XMMPos.Xmm, V[0].Xmm));
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1], _mm_add_ps(XMMPos.Xmm, V[1].Xmm));
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2], _mm_add_ps(XMMPos.Xmm, V[2].Xmm));
-            _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 3], _mm_add_ps(XMMPos.Xmm, V[3].Xmm));
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0],
+                _mm_add_ps(XMMPos.Xmm, V[0].Xmm));
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1],
+                _mm_add_ps(XMMPos.Xmm, V[1].Xmm));
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2],
+                _mm_add_ps(XMMPos.Xmm, V[2].Xmm));
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 3],
+                _mm_add_ps(XMMPos.Xmm, V[3].Xmm));
         }
     }
 
-    D3DDYNVERTEX *ptr = (D3DDYNVERTEX*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex].dwColour;
-    D3DDYNVERTEX *src = (D3DDYNVERTEX*)&Quad[0].dwColour;
+    D3DDYNVERTEX* ptr =
+        (D3DDYNVERTEX*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex].dwColour;
+    D3DDYNVERTEX* src = (D3DDYNVERTEX*)&Quad[0].dwColour;
 
     // copy the Rest of Vertex Data
     _mm_storeu_ps((float*)ptr++, _mm_loadu_ps((float*)src++));
@@ -618,7 +671,7 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 
 
     // get the Draw under setting
-    DrawItemType &Draw = Draws2D[Total2DItems];
+    DrawItemType& Draw = Draws2D[Total2DItems];
     // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
@@ -642,7 +695,8 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     Draw.Height = Pos->z;
 
     // if local coords, update with camera Z
-    if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
+    if (Flags bitand CAMERA_VERTICES)
+        Draw.Height += CameraPos.z;
 
     // Update the Sort Buffer
     SortBuffer[Total2DItems].Index = Total2DItems;
@@ -657,30 +711,37 @@ void CDXEngine::DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 }
 
 
-
 // This function add a Quad to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle)
+void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3* Pos,
+                            D3DDYNVERTEX* Tri, float Radius,
+                            DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V[4];
 
     // not going to overflow stuff
-    if (Total2DItems >= MAX_2D_ITEMS) return;
+    if (Total2DItems >= MAX_2D_ITEMS)
+        return;
 
     // Get the Index for the selected VB
-    DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
+    DWORD& VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if ( not CheckBufferSpace(VbIndex, 3)) return;
+    if (not CheckBufferSpace(VbIndex, 3))
+        return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
-    float Distance = (Flags bitand POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
+    float Distance = (Flags bitand POLY_VISIBLE) ?
+                         TestDistance :
+                         DX2D_GetDistance(Pos, Radius);
 
-    if (Distance < 0.0f) return;
+    if (Distance < 0.0f)
+        return;
 
     // check if layer initialized, if not, initialize it
-    if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
+    if (Layers[Layer].Start == -1)
+        Layers[Layer].Start = Total2DItems;
     // If layer already initialized
     else
     {
@@ -698,23 +759,34 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
     V[2].Xmm = _mm_loadu_ps((float*)&Tri[2].pos);
 
     // * BILLBOARD VERTICES * - go directly into Vertex Buffer
-    if (Flags bitand POLY_BB) DX2D_TransformBB(&XMMPos, V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 3);
+    if (Flags bitand POLY_BB)
+        DX2D_TransformBB(&XMMPos, V,
+                         &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex], 3);
     // if not BillBoarded, add Distance here and put into Vertex Buffer
     else
     {
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], _mm_add_ps(XMMPos.Xmm, V[0].Xmm));
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1], _mm_add_ps(XMMPos.Xmm, V[1].Xmm));
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2], _mm_add_ps(XMMPos.Xmm, V[2].Xmm));
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0],
+                      _mm_add_ps(XMMPos.Xmm, V[0].Xmm));
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1],
+                      _mm_add_ps(XMMPos.Xmm, V[1].Xmm));
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2],
+                      _mm_add_ps(XMMPos.Xmm, V[2].Xmm));
     }
 
     // copy the Rest of Vertex Data
-    _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0].dwColour, _mm_loadu_ps((float*)&Tri[0].dwColour));
-    _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1].dwColour, _mm_loadu_ps((float*)&Tri[1].dwColour));
-    _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2].dwColour, _mm_loadu_ps((float*)&Tri[2].dwColour));
+    _mm_storeu_ps(
+        (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0].dwColour,
+        _mm_loadu_ps((float*)&Tri[0].dwColour));
+    _mm_storeu_ps(
+        (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1].dwColour,
+        _mm_loadu_ps((float*)&Tri[1].dwColour));
+    _mm_storeu_ps(
+        (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 2].dwColour,
+        _mm_loadu_ps((float*)&Tri[2].dwColour));
 
 
     // get the Draw under setting
-    DrawItemType &Draw = Draws2D[Total2DItems];
+    DrawItemType& Draw = Draws2D[Total2DItems];
     // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
@@ -734,7 +806,8 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
     Draw.Height = Pos->z;
 
     // if local coords, update with camera Z
-    if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
+    if (Flags bitand CAMERA_VERTICES)
+        Draw.Height += CameraPos.z;
 
     // Update the Sort Buffer
     SortBuffer[Total2DItems].Index = Total2DItems;
@@ -751,38 +824,47 @@ void CDXEngine::DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVE
 
 // This function add a 2 vertex element to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle)
+void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3* Pos,
+                           D3DDYNVERTEX* Segment, float Radius,
+                           DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V[2];
 
     // not going to overflow stuff
-    if (Total2DItems >= MAX_2D_ITEMS) return;
+    if (Total2DItems >= MAX_2D_ITEMS)
+        return;
 
     // Get the Index for the selected VB
-    DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
+    DWORD& VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if ( not CheckBufferSpace(VbIndex, 2)) return;
+    if (not CheckBufferSpace(VbIndex, 2))
+        return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
 
-    if (Flags bitand POLY_VISIBLE) Distance = TestDistance;
+    if (Flags bitand POLY_VISIBLE)
+        Distance = TestDistance;
     else
     {
         Distance = DX2D_GetDistance(Pos, Radius, Flags);
 
-        if (Distance < 0.0f) return;
+        if (Distance < 0.0f)
+            return;
     }
 
     // if Camera vertices, the passed position is the real one
-    if (Flags bitand CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
+    if (Flags bitand CAMERA_VERTICES)
+        *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
 
-    if (Flags bitand CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
+    if (Flags bitand CALC_DISTANCE)
+        Distance = DX2D_GetDistance(Pos, Flags);
 
     // check if layer initialized, if not, initialize it
-    if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
+    if (Layers[Layer].Start == -1)
+        Layers[Layer].Start = Total2DItems;
     // If layer already initialized
     else
     {
@@ -801,18 +883,22 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     // if passed coords in already camera vertex, just copy
     if (Flags bitand CAMERA_VERTICES)
     {
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], V[0].Xmm);
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1], V[1].Xmm);
-
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0],
+                      V[0].Xmm);
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1],
+                      V[1].Xmm);
     }
     else
     {
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], _mm_add_ps(XMMPos.Xmm, V[0].Xmm));
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1], _mm_add_ps(XMMPos.Xmm, V[1].Xmm));
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0],
+                      _mm_add_ps(XMMPos.Xmm, V[0].Xmm));
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 1],
+                      _mm_add_ps(XMMPos.Xmm, V[1].Xmm));
     }
 
-    D3DDYNVERTEX *ptr = (D3DDYNVERTEX*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex].dwColour;
-    D3DDYNVERTEX *src = (D3DDYNVERTEX*)&Segment[0].dwColour;
+    D3DDYNVERTEX* ptr =
+        (D3DDYNVERTEX*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex].dwColour;
+    D3DDYNVERTEX* src = (D3DDYNVERTEX*)&Segment[0].dwColour;
 
     // copy the Rest of Vertex Data
     _mm_storeu_ps((float*)ptr++, _mm_loadu_ps((float*)src++));
@@ -828,7 +914,7 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
     else
     {
         // get the Draw under setting
-        DrawItemType &Draw = Draws2D[Total2DItems];
+        DrawItemType& Draw = Draws2D[Total2DItems];
         // * setup the items to track bitand sort the Quad *
         // The Scaled Distance for sorting
         Draw.Dist256 = F_I32(Distance * 256.0f);
@@ -837,12 +923,15 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
         // The vertex buffer assigned
         Draw.Vb = Dyn2DVertexBuffer[VBSelected].Vb;
         // Index of vertices in the Vertex Buffer
-        Draw.Index = VbIndex, Draw.Index2 = Dyn2DVertexBuffer[VBSelected].LastTapeIndex;
+        Draw.Index = VbIndex,
+        Draw.Index2 = Dyn2DVertexBuffer[VBSelected].LastTapeIndex;
 
         // vertices of the item, vertices for a quad are 6 ( 2 triangles )
-        if (Flags bitand POLY_LINE) Draw.NrVertices = 2;
+        if (Flags bitand POLY_LINE)
+            Draw.NrVertices = 2;
 
-        if (Flags bitand POLY_TAPE) Draw.NrVertices = 6;
+        if (Flags bitand POLY_TAPE)
+            Draw.NrVertices = 6;
 
         // Final Item in the list
         Draw.Next = 0xffffffff;
@@ -852,7 +941,8 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
         Draw.Height = Pos->z;
 
         // if local coords, update with camera Z
-        if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
+        if (Flags bitand CAMERA_VERTICES)
+            Draw.Height += CameraPos.z;
 
         // Update the Sort Buffer
         SortBuffer[Total2DItems].Index = Total2DItems;
@@ -869,43 +959,49 @@ void CDXEngine::DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVER
 }
 
 
-
-
-
 // This function add a SINGLE VERTEX element to the vertex buffers and sorting list...
 // WARNING  Does not check for Visibility, call DX2D_GetVisibility() or DX2D_SetupQuad before...
-void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle)
+void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3* Pos,
+                               D3DDYNVERTEX* Segment, float Radius,
+                               DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V;
 
     // not going to overflow stuff
-    if (Total2DItems >= MAX_2D_ITEMS) return;
+    if (Total2DItems >= MAX_2D_ITEMS)
+        return;
 
     // Get the Index for the selected VB
-    DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
+    DWORD& VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if ( not CheckBufferSpace(VbIndex, 1)) return;
+    if (not CheckBufferSpace(VbIndex, 1))
+        return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance;
 
-    if (Flags bitand POLY_VISIBLE) Distance = TestDistance;
+    if (Flags bitand POLY_VISIBLE)
+        Distance = TestDistance;
     else
     {
         Distance = DX2D_GetDistance(Pos, Radius, Flags);
 
-        if (Distance < 0.0f) return;
+        if (Distance < 0.0f)
+            return;
     }
 
     // if Camera vertices, the passed position is the real one
-    if (Flags bitand CAMERA_VERTICES) *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
+    if (Flags bitand CAMERA_VERTICES)
+        *(D3DXVECTOR3*)&XMMPos.d3d = *Pos;
 
-    if (Flags bitand CALC_DISTANCE) Distance = DX2D_GetDistance(Pos, Flags);
+    if (Flags bitand CALC_DISTANCE)
+        Distance = DX2D_GetDistance(Pos, Flags);
 
     // check if layer initialized, if not, initialize it
-    if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
+    if (Layers[Layer].Start == -1)
+        Layers[Layer].Start = Total2DItems;
     // If layer already initialized
     else
     {
@@ -923,16 +1019,18 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     // if passed coords in already camera vertex, just copy
     if (Flags bitand CAMERA_VERTICES)
     {
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], V.Xmm);
-
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0],
+                      V.Xmm);
     }
     else
     {
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0], _mm_add_ps(XMMPos.Xmm, V.Xmm));
+        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + 0],
+                      _mm_add_ps(XMMPos.Xmm, V.Xmm));
     }
 
-    D3DDYNVERTEX *ptr = (D3DDYNVERTEX*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex].dwColour;
-    D3DDYNVERTEX *src = (D3DDYNVERTEX*)&Segment->dwColour;
+    D3DDYNVERTEX* ptr =
+        (D3DDYNVERTEX*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex].dwColour;
+    D3DDYNVERTEX* src = (D3DDYNVERTEX*)&Segment->dwColour;
 
     // copy the Rest of Vertex Data
     _mm_storeu_ps((float*)ptr++, _mm_loadu_ps((float*)src++));
@@ -947,7 +1045,7 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
     else
     {
         // get the Draw under setting
-        DrawItemType &Draw = Draws2D[Total2DItems];
+        DrawItemType& Draw = Draws2D[Total2DItems];
         // * setup the items to track bitand sort the Quad *
         // The Scaled Distance for sorting
         Draw.Dist256 = F_I32(Distance * 256.0f);
@@ -956,11 +1054,14 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
         // The vertex buffer assigned
         Draw.Vb = Dyn2DVertexBuffer[VBSelected].Vb;
         // Index of vertices in the Vertex Buffer
-        Draw.Index = VbIndex, Draw.Index2 = Dyn2DVertexBuffer[VBSelected].LastTapeIndex;
+        Draw.Index = VbIndex,
+        Draw.Index2 = Dyn2DVertexBuffer[VBSelected].LastTapeIndex;
 
         // vertices of the item, vertices for a quad are 6 ( 2 triangles )
-        if (Flags bitand POLY_LINE) Draw.NrVertices = 2;
-        else Draw.NrVertices = 1;
+        if (Flags bitand POLY_LINE)
+            Draw.NrVertices = 2;
+        else
+            Draw.NrVertices = 1;
 
         // Final Item in the list
         Draw.Next = 0xffffffff;
@@ -970,7 +1071,8 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
         Draw.Height = Pos->z;
 
         // if local coords, update with camera Z
-        if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
+        if (Flags bitand CAMERA_VERTICES)
+            Draw.Height += CameraPos.z;
 
         // Update the Sort Buffer
         SortBuffer[Total2DItems].Index = Total2DItems;
@@ -987,29 +1089,36 @@ void CDXEngine::DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDY
 }
 
 
-
-void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD_PTR TexHandle)
+void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3* Pos,
+                             D3DDYNVERTEX* Poly, float Radius, DWORD Vertices,
+                             DWORD_PTR TexHandle)
 {
     // #27 D3D11: accumulate in the CPU VbPtr, draw via DrawDynamic2D in DX2D_Flush2DObjects.
     _MM_ALIGN16 XMMVector V;
 
 
     // not going to overflow stuff
-    if (Total2DItems >= MAX_2D_ITEMS) return;
+    if (Total2DItems >= MAX_2D_ITEMS)
+        return;
 
     // Get the Index for the selected VB
-    DWORD &VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
+    DWORD& VbIndex = Dyn2DVertexBuffer[VBSelected].LastIndex;
 
     // if no more space, exit
-    if ( not CheckBufferSpace(VbIndex, Vertices)) return;
+    if (not CheckBufferSpace(VbIndex, Vertices))
+        return;
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
-    float Distance = (Flags bitand POLY_VISIBLE) ? TestDistance : DX2D_GetDistance(Pos, Radius);
+    float Distance = (Flags bitand POLY_VISIBLE) ?
+                         TestDistance :
+                         DX2D_GetDistance(Pos, Radius);
 
-    if (Distance < 0.0f) return;
+    if (Distance < 0.0f)
+        return;
 
     // check if layer initialized, if not, initialize it
-    if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
+    if (Layers[Layer].Start == -1)
+        Layers[Layer].Start = Total2DItems;
     // If layer already initialized
     else
     {
@@ -1027,17 +1136,24 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
         V.Xmm = _mm_loadu_ps((float*)&Poly[a].pos);
 
         // * BILLBOARD VERTICES * - go directly into Vertex Buffer
-        if (Flags bitand POLY_BB) DX2D_TransformBB(&XMMPos, &V, &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a], 1);
+        if (Flags bitand POLY_BB)
+            DX2D_TransformBB(&XMMPos, &V,
+                             &Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a],
+                             1);
         // if not BillBoarded, add Distance here and put into Vertex Buffer
-        else _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a], _mm_add_ps(XMMPos.Xmm, V.Xmm));
+        else
+            _mm_storeu_ps(
+                (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a],
+                _mm_add_ps(XMMPos.Xmm, V.Xmm));
 
         // copy the Rest of Vertex Data
-        _mm_storeu_ps((float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a].dwColour, _mm_loadu_ps((float*)&Poly[a].dwColour));
-
+        _mm_storeu_ps(
+            (float*)&Dyn2DVertexBuffer[VBSelected].VbPtr[VbIndex + a].dwColour,
+            _mm_loadu_ps((float*)&Poly[a].dwColour));
     }
 
     // get the Draw under setting
-    DrawItemType &Draw = Draws2D[Total2DItems];
+    DrawItemType& Draw = Draws2D[Total2DItems];
     // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
@@ -1057,7 +1173,8 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
     Draw.Height = Pos->z;
 
     // if local coords, update with camera Z
-    if (Flags bitand CAMERA_VERTICES) Draw.Height += CameraPos.z;
+    if (Flags bitand CAMERA_VERTICES)
+        Draw.Height += CameraPos.z;
 
     // Update the Sort Buffer
     SortBuffer[Total2DItems].Index = Total2DItems;
@@ -1071,16 +1188,17 @@ void CDXEngine::DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNV
 }
 
 
-
 // function inserting a 3D object into the Alpha sorting list
-void CDXEngine::DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType *Stack, D3DXVECTOR3 *Pos)
+void CDXEngine::DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType* Stack,
+                               D3DXVECTOR3* Pos)
 {
 
     // Get Distance from a previous test if POLY DECLARED VISIBLE, or calcualte if from scratch
     float Distance = DX2D_GetDistance(Pos, (DWORD)CAMERA_VERTICES);
 
     // check if layer initialized, if not, initialize it
-    if (Layers[Layer].Start == -1) Layers[Layer].Start = Total2DItems;
+    if (Layers[Layer].Start == -1)
+        Layers[Layer].Start = Total2DItems;
     // If layer already initialized
     else
     {
@@ -1094,7 +1212,7 @@ void CDXEngine::DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType *Stack, D
     Layers[Layer].End = Total2DItems;
 
     // get the Draw under setting
-    DrawItemType &Draw = Draws2D[Total2DItems];
+    DrawItemType& Draw = Draws2D[Total2DItems];
     // * setup the items to track bitand sort the Quad *
     // The Scaled Distance for sorting
     Draw.Dist256 = F_I32(Distance * 256.0f);
@@ -1121,11 +1239,6 @@ void CDXEngine::DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType *Stack, D
 }
 
 
-
-
-
-
-
 // This function generates Indexes built from the sorting list
 // returns the ending index
 DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
@@ -1142,42 +1255,53 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
     // Setup the starting VB
     DWORD Vb = (DWORD)Draws2D[Start].Vb;
 #endif
-    DWORD_PTR Tex = Draws2D[Start].TexHandle; // Artscout - 2026 (x64): pointer-sized
+    DWORD_PTR Tex =
+        Draws2D[Start].TexHandle; // Artscout - 2026 (x64): pointer-sized
 
     // Setup for lines
-    if (Draws2D[Start].Flags bitand POLY_LINE) LineMode = true;
+    if (Draws2D[Start].Flags bitand POLY_LINE)
+        LineMode = true;
 
     // thru all the list
     while (Start not_eq 0xffffffff and Index < MAX_VERTICES_PER_DRAW)
     {
-        DrawItemType &Draw = Draws2D[Start];
+        DrawItemType& Draw = Draws2D[Start];
 #if MAX_2D_BUFFERS > 1
 
         // check if changed VB, exit if changed
-        if (Draw.Vb not_eq (LPDIRECT3DVERTEXBUFFER7)Vb) return Start;
+        if (Draw.Vb not_eq (LPDIRECT3DVERTEXBUFFER7) Vb)
+            return Start;
 
 #endif
 
         // if texture changed exit here
-        if (Draw.TexHandle not_eq Tex) return Start;
+        if (Draw.TexHandle not_eq Tex)
+            return Start;
 
         // * SORTED 3D OBJECT *
         if (Draw.Flags bitand POLY_3DOBJECT)
         {
             //if 1st item, return it
-            if ( not Index) return Draw.Next;
-            else return Start;
+            if (not Index)
+                return Draw.Next;
+            else
+                return Start;
         }
 
         // * LINE INDEXED *
         if (Draw.Flags bitand POLY_LINE)
         {
             // if it was not a Line mode, close here
-            if ( not LineMode) return Start;
+            if (not LineMode)
+                return Start;
 
             //  if a line Tape
-            if (Draw.Flags bitand POLY_TAPE) DrawIndexes[Index++] = (unsigned short)Draw.Index, DrawIndexes[Index++] = (unsigned short)Draw.Index2;
-            else DrawIndexes[Index++] = (unsigned short)Draw.Index, DrawIndexes[Index++] = (unsigned short)Draw.Index + 1;
+            if (Draw.Flags bitand POLY_TAPE)
+                DrawIndexes[Index++] = (unsigned short)Draw.Index,
+                DrawIndexes[Index++] = (unsigned short)Draw.Index2;
+            else
+                DrawIndexes[Index++] = (unsigned short)Draw.Index,
+                DrawIndexes[Index++] = (unsigned short)Draw.Index + 1;
 
             // number of indexed vertices
             Indexed2D += 2;
@@ -1189,15 +1313,17 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         else
 
             // if we are in Line Mode, exit here
-            if (LineMode) return Start;
+            if (LineMode)
+                return Start;
 
         // * FAN INDEXED *
         if (Draw.Flags bitand POLY_FAN)
         {
             // Check if indexing overflows the draw limit
-            if ((Index + (Draw.NrVertices - 2) * 3) > MAX_VERTICES_PER_DRAW) return Start;
+            if ((Index + (Draw.NrVertices - 2) * 3) > MAX_VERTICES_PER_DRAW)
+                return Start;
 
-            unsigned short  Count = (unsigned short)Draw.Index;
+            unsigned short Count = (unsigned short)Draw.Index;
             unsigned short v, Center = DrawIndexes[Index++] = Count++;
             DrawIndexes[Index++] = Count++;
             v = DrawIndexes[Index++] = Count++;
@@ -1220,7 +1346,7 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         // * STRIP INDEXED *
         if (Draw.Flags bitand POLY_STRIP)
         {
-            unsigned short  Count = (unsigned short)Draw.Index;
+            unsigned short Count = (unsigned short)Draw.Index;
             DrawIndexes[Index++] = Count++;
             unsigned short v = DrawIndexes[Index++] = Count++;
             unsigned short l = DrawIndexes[Index++] = Count++;
@@ -1244,8 +1370,8 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
         // * TAPE INDEXED *
         if (Draw.Flags bitand POLY_TAPE)
         {
-            unsigned short  Count1 = (unsigned short)Draw.Index;
-            unsigned short  Count2 = (unsigned short)Draw.Index2;
+            unsigned short Count1 = (unsigned short)Draw.Index;
+            unsigned short Count2 = (unsigned short)Draw.Index2;
 
             DrawIndexes[Index++] = Count2;
             DrawIndexes[Index++] = Count2 + 1;
@@ -1265,13 +1391,13 @@ DWORD CDXEngine::DX2D_GenerateIndexes(DWORD Start)
 
 
         // * LIST INDEXED *
-        for (DWORD a = 0; a < Draw.NrVertices; a++) DrawIndexes[Index++] = (unsigned short)(Draw.Index + VOffsets[a]);
+        for (DWORD a = 0; a < Draw.NrVertices; a++)
+            DrawIndexes[Index++] = (unsigned short)(Draw.Index + VOffsets[a]);
 
         // number of indexed vertices
         Indexed2D += Draw.NrVertices;
         // next item
         Start = Draw.Next;
-
     }
 
     return Start;
@@ -1296,14 +1422,18 @@ void CDXEngine::DX2D_AssignLayers(void)
         // Default to GROUND LAYER
         Layer = LAYER_GROUND;
         // get the Item and it's Z
-        DrawItemType &Draw = Draws2D[Start];
+        DrawItemType& Draw = Draws2D[Start];
 
-        if (Draw.Height <= Stratus2Z) Layer = LAYER_ROOF;
-        else if (Draw.Height <= Stratus1Z) Layer = LAYER_MIDDLE;
+        if (Draw.Height <= Stratus2Z)
+            Layer = LAYER_ROOF;
+        else if (Draw.Height <= Stratus1Z)
+            Layer = LAYER_MIDDLE;
 
         // ok, assign the item at the end of the layer
-        if (Layers[Layer].Start == -1) Layers[Layer].Start = Start;
-        else Draws2D[Layers[Layer].End].Next = Start;
+        if (Layers[Layer].Start == -1)
+            Layers[Layer].Start = Start;
+        else
+            Draws2D[Layers[Layer].End].Next = Start;
 
         // assign links
         Layers[Layer].End = Start;
@@ -1313,7 +1443,6 @@ void CDXEngine::DX2D_AssignLayers(void)
         Start = Next;
     }
 }
-
 
 
 DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
@@ -1335,7 +1464,8 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
         Idx = *(unsigned char*)&Draws2D[Start].Dist256;
 
         // If bucket already assigned, link to old one
-        if (SortBuckets[0][Idx] not_eq 0xffffffff) Draws2D[Start].Next = SortBuckets[0][Idx];
+        if (SortBuckets[0][Idx] not_eq 0xffffffff)
+            Draws2D[Start].Next = SortBuckets[0][Idx];
 
         // Assign this to the bucked
         SortBuckets[0][Idx] = Start;
@@ -1366,16 +1496,17 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
                 Idx = *(((unsigned char*)&Draws2D[Start].Dist256) + 1);
 
                 // If bucket not already assigned assign
-                if (SortBuckets[1][Idx] == 0xffffffff) SortBuckets[1][Idx] = Start;
+                if (SortBuckets[1][Idx] == 0xffffffff)
+                    SortBuckets[1][Idx] = Start;
                 // else tail it
-                else Draws2D[SortTail[1][Idx]].Next = Start;
+                else
+                    Draws2D[SortTail[1][Idx]].Next = Start;
 
                 // This is always however the last item
                 SortTail[1][Idx] = Start;
                 // Next Item
                 Start = Next;
-            }
-            while (Start not_eq 0xffffffff); // Repeat till end of list
+            } while (Start not_eq 0xffffffff); // Repeat till end of list
         }
 
         // Next Row
@@ -1405,16 +1536,17 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
                 Idx = *(((unsigned char*)&Draws2D[Start].Dist256) + 2);
 
                 // If bucket not already assigned assign
-                if (SortBuckets[2][Idx] == 0xffffffff) SortBuckets[2][Idx] = Start;
+                if (SortBuckets[2][Idx] == 0xffffffff)
+                    SortBuckets[2][Idx] = Start;
                 // else tail it
-                else Draws2D[SortTail[2][Idx]].Next = Start;
+                else
+                    Draws2D[SortTail[2][Idx]].Next = Start;
 
                 // This is always however the last item
                 SortTail[2][Idx] = Start;
                 // Next Item
                 Start = Next;
-            }
-            while (Start not_eq 0xffffffff); // Repeat till end of list
+            } while (Start not_eq 0xffffffff); // Repeat till end of list
         }
 
         // Next Row
@@ -1444,16 +1576,17 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
                 Idx = *(((unsigned char*)&Draws2D[Start].Dist256) + 3);
 
                 // If bucket not already assigned assign
-                if (SortBuckets[3][Idx] == 0xffffffff) SortBuckets[3][Idx] = Start;
+                if (SortBuckets[3][Idx] == 0xffffffff)
+                    SortBuckets[3][Idx] = Start;
                 // else tail it
-                else Draws2D[SortTail[3][Idx]].Next = Start;
+                else
+                    Draws2D[SortTail[3][Idx]].Next = Start;
 
                 // This is always however the last item
                 SortTail[3][Idx] = Start;
                 // Next Item
                 Start = Next;
-            }
-            while (Start not_eq 0xffffffff); // Repeat till end of list
+            } while (Start not_eq 0xffffffff); // Repeat till end of list
         }
 
         // Next Row
@@ -1483,9 +1616,7 @@ DWORD CDXEngine::DX2D_SortIndexes(DWORD Start)
 
     // Return the Entry point of the List
     return Start;
-
 }
-
 
 
 // Sorting and Flushing all the 2D objects
@@ -1495,7 +1626,9 @@ void CDXEngine::DX2D_SetViewMode(void)
     {
         // #27 D3D11: a single 2D-in-3D state (alpha-blend, no Z-write, no lighting, alpha-test
         // chroma) is set by BeginDynamic2D. Texture/indices in DX2D_Flush2DObjects.
-        if (g_pRenderer) g_pRenderer->BeginDynamic2D(false);   // #DX12 A4: IRenderer has no default arg (D3D11Renderer did)
+        if (g_pRenderer)
+            g_pRenderer->BeginDynamic2D(
+                false); // #DX12 A4: IRenderer has no default arg (D3D11Renderer did)
         return;
     }
     // Artscout - 2026: #34 dead D3D7 tail removed (D3D11 branch above returns).
@@ -1510,7 +1643,8 @@ void CDXEngine::DX2D_Flush2DObjects(void)
     bool Mode_2D = false, Mode_3D = false;
 
     // if no 2D objects to Draw, exit here
-    if ( not Total2DItems) return;
+    if (not Total2DItems)
+        return;
 
     // Set the View Mode for the 2D stuff
     DX2D_SetViewMode();
@@ -1518,8 +1652,9 @@ void CDXEngine::DX2D_Flush2DObjects(void)
     // #27 D3D11: vertices accumulated by Add* in the CPU VbPtr -- convert+upload ONCE
     // (MAX_2D_BUFFERS=1 -> VBSelected=0). Then DrawDynamic2DIndexed per Draws2D item.
     if (g_bUseGpu and g_pRenderer)
-        g_pRenderer->UploadDynamic2D(Dyn2DVertexBuffer[VBSelected].VbPtr,
-                                          (int)Dyn2DVertexBuffer[VBSelected].LastIndex);
+        g_pRenderer->UploadDynamic2D(
+            Dyn2DVertexBuffer[VBSelected].VbPtr,
+            (int)Dyn2DVertexBuffer[VBSelected].LastIndex);
 
 #ifdef DEBUG_2D_ENGINE
     DWORD Vertices = 0;
@@ -1547,7 +1682,8 @@ void CDXEngine::DX2D_Flush2DObjects(void)
         // DX2D_SetDrawOrder (e.g. the menu Munitions 3D viewer, no world render), Layer==0xFFFFFFFF.
         // The old code indexed Layers[0xFFFFFFFF] at line below and only checked NODRAW afterwards:
         // on x86 the index wrapped mod 2^32 into mapped static memory (harmless); on x64 it faults.
-        if (Layer >= MAX_2D_LAYERS) continue; // covers LAYER_NODRAW and any garbage index
+        if (Layer >= MAX_2D_LAYERS)
+            continue; // covers LAYER_NODRAW and any garbage index
 
         // get the Layer Entry point in the list
         DrawStart = Layers[Layer].Start;
@@ -1555,10 +1691,12 @@ void CDXEngine::DX2D_Flush2DObjects(void)
         START_PROFILE("DYN SORT:");
 #endif
 
-        if (Layer == LAYER_NODRAW) continue;
+        if (Layer == LAYER_NODRAW)
+            continue;
 
         // check if Layer need to be sorted and eventually sort it
-        if (1 or Layers[Layer].Flags bitand LAYER_SORT) DrawStart = DX2D_SortIndexes(DrawStart);
+        if (1 or Layers[Layer].Flags bitand LAYER_SORT)
+            DrawStart = DX2D_SortIndexes(DrawStart);
 
 #ifdef DEBUG_2D_ENGINE
         STOP_PROFILE("DYN SORT:");
@@ -1582,7 +1720,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 #endif
 #endif
             // Assign the Draw Item
-            DrawItemType &Draw = Draws2D[DrawStart];
+            DrawItemType& Draw = Draws2D[DrawStart];
 
             /////////////////// DRAWING A 3D ALPHA OBJECT HERE ////////////////////////////////
             // Check if a solid 3D object
@@ -1599,7 +1737,7 @@ void CDXEngine::DX2D_Flush2DObjects(void)
                 ////////////////// DRAWING A 2D OBJECT HERE ////////////////////////////////
 
                 // if not already in 2D mode, set the 2D drawing parameters
-                if ( not Mode_2D)
+                if (not Mode_2D)
                 {
                     DX2D_SetViewMode();
                     LastTexHandle = -1;
@@ -1616,17 +1754,22 @@ void CDXEngine::DX2D_Flush2DObjects(void)
                 // #34 dead D3D7 else-branches removed (D3D11 indexed draw only)
                 {
                     // #27: indexed draw over the uploaded UploadDynamic2D buffer.
-                    void *srv = Draw.TexHandle ? (void*)((TextureHandle *)Draw.TexHandle)->m_pDDS : NULL;
-                    int prim = (Draw.Flags bitand POLY_LINE) ? D3DPT_LINELIST : D3DPT_TRIANGLELIST;
+                    void* srv =
+                        Draw.TexHandle ?
+                            (void*)((TextureHandle*)Draw.TexHandle)->m_pDDS :
+                            NULL;
+                    int prim = (Draw.Flags bitand POLY_LINE) ?
+                                   D3DPT_LINELIST :
+                                   D3DPT_TRIANGLELIST;
                     if (g_pRenderer)
-                        g_pRenderer->DrawDynamic2DIndexed((unsigned short*)&DrawIndexes, (int)Indexed2D,
-                                                               (struct ID3D11ShaderResourceView*)srv, prim);
+                        g_pRenderer->DrawDynamic2DIndexed(
+                            (unsigned short*)&DrawIndexes, (int)Indexed2D,
+                            (struct ID3D11ShaderResourceView*)srv, prim);
                 }
 
                 // Mark that we are in 2D mode
                 Mode_3D = false;
                 Mode_2D = true;
-
             }
 
             ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1638,8 +1781,8 @@ void CDXEngine::DX2D_Flush2DObjects(void)
 #endif
         }
 
-    }
-    while (Layer not_eq LAYER_TOP and l <= LAYER_TOP); // END with TOP LAYER in any case
+    } while (Layer not_eq LAYER_TOP and
+             l <= LAYER_TOP); // END with TOP LAYER in any case
 
 
     // buffer is flushed
@@ -1649,16 +1792,16 @@ void CDXEngine::DX2D_Flush2DObjects(void)
     // Debug_Vertices2D=0;
 #endif
     DX2D_InitLists();
-
 }
 
 
-void CDXEngine::DX2D_SetDrawOrder(DWORD *Order)
+void CDXEngine::DX2D_SetDrawOrder(DWORD* Order)
 {
     memcpy(DrawOrder, Order, sizeof(DrawOrder));
 }
 
-void CDXEngine::DX2D_TransformBB(XMMVector *Pos, XMMVector *Coord, D3DDYNVERTEX *Dest, DWORD Nr)
+void CDXEngine::DX2D_TransformBB(XMMVector* Pos, XMMVector* Coord,
+                                 D3DDYNVERTEX* Dest, DWORD Nr)
 {
     _MM_ALIGN16 XMMVector XMMStore;
     _MM_ALIGN16 __m128 C0 = BBCx[0].Xmm, C1 = BBCx[1].Xmm, C2 = BBCx[2].Xmm;
@@ -1667,13 +1810,16 @@ void CDXEngine::DX2D_TransformBB(XMMVector *Pos, XMMVector *Coord, D3DDYNVERTEX 
     {
         // Execute the BB by 1st Cx
         XMMStore.Xmm = _mm_mul_ps(C0, Coord->Xmm);
-        Dest->pos.x = XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.x;
+        Dest->pos.x =
+            XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.x;
         // Execute the BB by 2nd Cx
         XMMStore.Xmm = _mm_mul_ps(C1, Coord->Xmm);
-        Dest->pos.y = XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.y;
+        Dest->pos.y =
+            XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.y;
         // Execute the BB by 3rd Cx
         XMMStore.Xmm = _mm_mul_ps(C2, Coord->Xmm);
-        Dest->pos.z = XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.z;
+        Dest->pos.z =
+            XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.z;
         // Next vertex
         Coord++;
         Dest++;
@@ -1681,8 +1827,7 @@ void CDXEngine::DX2D_TransformBB(XMMVector *Pos, XMMVector *Coord, D3DDYNVERTEX 
 }
 
 
-
-void CDXEngine::DX2D_TransformBB(XMMVector *Pos, D3DDYNVERTEX *Vertex, DWORD Nr)
+void CDXEngine::DX2D_TransformBB(XMMVector* Pos, D3DDYNVERTEX* Vertex, DWORD Nr)
 {
     _MM_ALIGN16 XMMVector XMMStore, XMMStore1, XMMStore2, Coord;
     _MM_ALIGN16 __m128 C0 = BBCx[0].Xmm, C1 = BBCx[1].Xmm, C2 = BBCx[2].Xmm;
@@ -1693,13 +1838,16 @@ void CDXEngine::DX2D_TransformBB(XMMVector *Pos, D3DDYNVERTEX *Vertex, DWORD Nr)
         Coord.Xmm = _mm_loadu_ps((float*)&Vertex->pos);
         // Execute the BB by 1st Cx
         XMMStore.Xmm = _mm_mul_ps(C0, Coord.Xmm);
-        Vertex->pos.x = XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.x;
+        Vertex->pos.x =
+            XMMStore.d3d.x + XMMStore.d3d.y + XMMStore.d3d.z + Pos->d3d.x;
         // Execute the BB by 2nd Cx
         XMMStore1.Xmm = _mm_mul_ps(C1, Coord.Xmm);
-        Vertex->pos.y = XMMStore1.d3d.x + XMMStore1.d3d.y + XMMStore1.d3d.z + Pos->d3d.y;
+        Vertex->pos.y =
+            XMMStore1.d3d.x + XMMStore1.d3d.y + XMMStore1.d3d.z + Pos->d3d.y;
         // Execute the BB by 3rd Cx
         XMMStore2.Xmm = _mm_mul_ps(C2, Coord.Xmm);
-        Vertex->pos.z = XMMStore2.d3d.x + XMMStore2.d3d.y + XMMStore2.d3d.z + Pos->d3d.z;
+        Vertex->pos.z =
+            XMMStore2.d3d.x + XMMStore2.d3d.y + XMMStore2.d3d.z + Pos->d3d.z;
         // next quad
         Vertex++;
     }
@@ -1728,12 +1876,12 @@ void CDXEngine::DX2D_Init(void)
         Dyn2DVertexBuffer[i].Vb = NULL;
         // +16 vertices of padding: the D3D7 VB rounded the size, malloc does not; guards a small
         // write overrun of billboard quads at the very end of the buffer (else heap corruption).
-        Dyn2DVertexBuffer[i].VbPtr = (D3DDYNVERTEX*)malloc(((size_t)MAX_2D_VERTICES + 16) * sizeof(D3DDYNVERTEX));
+        Dyn2DVertexBuffer[i].VbPtr = (D3DDYNVERTEX*)malloc(
+            ((size_t)MAX_2D_VERTICES + 16) * sizeof(D3DDYNVERTEX));
     }
 
     DX2D_Reset();
 }
-
 
 
 // 2DEngine release
@@ -1750,39 +1898,38 @@ void CDXEngine::DX2D_Release(void)
 
 // this function returns a detail level as a float
 // used to scale some 2D/3D items like lines...
-float CDXEngine::GetDetailLevel(D3DVECTOR *WorldPos, float MaxRange)
+float CDXEngine::GetDetailLevel(D3DVECTOR* WorldPos, float MaxRange)
 {
     _MM_ALIGN16 XMMVector CPos;
     // make it in camera space
     // Artscout - 2026 (x64): SSE asm rewritten with intrinsics (x86+x64; rest of file uses .Xmm).
     // Load x,y,z safely (no 16-byte OOB read past the 12-byte D3DVECTOR).
     __m128 wp = _mm_set_ps(0.0f, WorldPos->z, WorldPos->y, WorldPos->x);
-    CPos.Xmm = _mm_sub_ps(wp, XMMCamera.Xmm);   // subtract camera
-    CPos.Xmm = _mm_mul_ps(CPos.Xmm, CPos.Xmm);  // square all components
+    CPos.Xmm = _mm_sub_ps(wp, XMMCamera.Xmm); // subtract camera
+    CPos.Xmm = _mm_mul_ps(CPos.Xmm, CPos.Xmm); // square all components
 
-    return  sqrtf(CPos.d3d.x + CPos.d3d.y + CPos.d3d.z) / MaxRange * m_LODBiasCx;
+    return sqrtf(CPos.d3d.x + CPos.d3d.y + CPos.d3d.z) / MaxRange * m_LODBiasCx;
 }
 
 
-
-
-
 // The 3D Point draw function
-void CDXEngine::Draw3DPoint(D3DVECTOR *WorldPos, DWORD Color, bool Emissive, bool CameraSpace)
+void CDXEngine::Draw3DPoint(D3DVECTOR* WorldPos, DWORD Color, bool Emissive,
+                            bool CameraSpace)
 {
     if (g_bUseGpu)
     {
         // #27 D3D11: store FULL world-space (view*proj handles it), without camera subtraction.
-        SimpleBufferType &sb = TheVbManager.SimpleBuffer;
+        SimpleBufferType& sb = TheVbManager.SimpleBuffer;
         if (sb.VbPtr and sb.Points < MAX_POINTS)
         {
-            D3DSIMPLEVERTEX *VPtr = &sb.VbPtr[POINTS_OFFSET + sb.Points];
+            D3DSIMPLEVERTEX* VPtr = &sb.VbPtr[POINTS_OFFSET + sb.Points];
             VPtr->pos = *WorldPos;
             VPtr->dwColour = Color;
             VPtr->dwSpecular = Emissive ? Color : 0;
             VPtr->tu = VPtr->tv = 0.0f;
             sb.Points++;
-            if (sb.MaxPoints < MAX_POINTS) sb.MaxPoints++;
+            if (sb.MaxPoints < MAX_POINTS)
+                sb.MaxPoints++;
         }
         return;
     }
@@ -1790,40 +1937,34 @@ void CDXEngine::Draw3DPoint(D3DVECTOR *WorldPos, DWORD Color, bool Emissive, boo
 }
 
 
-
-
 // The 3D Line draw function
-void CDXEngine::Draw3DLine(D3DVECTOR *WorldStart, D3DVECTOR *WorldEnd, DWORD ColorStart, DWORD ColorEnd, bool Emissive, bool CameraSpace)
+void CDXEngine::Draw3DLine(D3DVECTOR* WorldStart, D3DVECTOR* WorldEnd,
+                           DWORD ColorStart, DWORD ColorEnd, bool Emissive,
+                           bool CameraSpace)
 {
     if (g_bUseGpu)
     {
         // #27 D3D11: tracers. FULL world-space for both ends, without camera subtraction.
-        SimpleBufferType &sb = TheVbManager.SimpleBuffer;
+        SimpleBufferType& sb = TheVbManager.SimpleBuffer;
         if (sb.VbPtr and sb.Lines < MAX_LINES)
         {
-            D3DSIMPLEVERTEX *VPtr = &sb.VbPtr[LINES_OFFSET + sb.Lines * 2];
-            VPtr[0].pos = *WorldStart; VPtr[0].dwColour = ColorStart;
-            VPtr[0].dwSpecular = Emissive ? ColorStart : 0; VPtr[0].tu = VPtr[0].tv = 0.0f;
-            VPtr[1].pos = *WorldEnd;   VPtr[1].dwColour = ColorEnd;
-            VPtr[1].dwSpecular = Emissive ? ColorEnd : 0;   VPtr[1].tu = VPtr[1].tv = 0.0f;
+            D3DSIMPLEVERTEX* VPtr = &sb.VbPtr[LINES_OFFSET + sb.Lines * 2];
+            VPtr[0].pos = *WorldStart;
+            VPtr[0].dwColour = ColorStart;
+            VPtr[0].dwSpecular = Emissive ? ColorStart : 0;
+            VPtr[0].tu = VPtr[0].tv = 0.0f;
+            VPtr[1].pos = *WorldEnd;
+            VPtr[1].dwColour = ColorEnd;
+            VPtr[1].dwSpecular = Emissive ? ColorEnd : 0;
+            VPtr[1].tu = VPtr[1].tv = 0.0f;
             sb.Lines++;
-            if (sb.MaxLines < MAX_LINES) sb.MaxLines++;
+            if (sb.MaxLines < MAX_LINES)
+                sb.MaxLines++;
         }
         return;
     }
     // Artscout - 2026: #34 dead D3D7 tail removed (D3D11 branch above returns).
 }
-
-
-
-
-
-
-
-
-
-
-
 
 
 // This function setups the Square sides CX, even not normalized, for following Billboarded DrawBaseItems to be returned
@@ -1837,15 +1978,15 @@ void CDXEngine::DX2D_SetupSquareCx(float y, float z)
     vbb2.d3d.z = vbb3.d3d.z = z;
 
     // the 4 vertices of the square with BillBoard CXs
-    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb0.d3d, (D3DXVECTOR3*)&vbb0.d3d, &BBMatrix);
-    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb1.d3d, (D3DXVECTOR3*)&vbb1.d3d, &BBMatrix);
-    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb2.d3d, (D3DXVECTOR3*)&vbb2.d3d, &BBMatrix);
-    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb3.d3d, (D3DXVECTOR3*)&vbb3.d3d, &BBMatrix);
+    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb0.d3d, (D3DXVECTOR3*)&vbb0.d3d,
+                           &BBMatrix);
+    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb1.d3d, (D3DXVECTOR3*)&vbb1.d3d,
+                           &BBMatrix);
+    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb2.d3d, (D3DXVECTOR3*)&vbb2.d3d,
+                           &BBMatrix);
+    D3DXVec3TransformCoord((D3DXVECTOR3*)&BBvbb3.d3d, (D3DXVECTOR3*)&vbb3.d3d,
+                           &BBMatrix);
 }
-
-
-
-
 
 
 void CDXEngine::FlushDynamicObjects(void)
@@ -1854,16 +1995,22 @@ void CDXEngine::FlushDynamicObjects(void)
     {
         // #27 D3D11: first the simple items (points/line tracers from Draw3DPoint/Line),
         // then 2D particles. All via the object pipeline (BeginDynamic2D), no texture.
-        SimpleBufferType &sb = TheVbManager.SimpleBuffer;
+        SimpleBufferType& sb = TheVbManager.SimpleBuffer;
         if (g_pRenderer and sb.VbPtr and (sb.MaxPoints or sb.MaxLines))
         {
-            g_pRenderer->BeginDynamic2D(true);   // #31 tracers/sparks -- additive glow
+            g_pRenderer->BeginDynamic2D(
+                true); // #31 tracers/sparks -- additive glow
             if (sb.MaxPoints)
-                g_pRenderer->DrawDynamic2D(&sb.VbPtr[POINTS_OFFSET], (int)sb.MaxPoints, NULL, D3DPT_POINTLIST);
+                g_pRenderer->DrawDynamic2D(&sb.VbPtr[POINTS_OFFSET],
+                                           (int)sb.MaxPoints, NULL,
+                                           D3DPT_POINTLIST);
             if (sb.MaxLines)
-                g_pRenderer->DrawDynamic2D(&sb.VbPtr[LINES_OFFSET], (int)sb.MaxLines * 2, NULL, D3DPT_LINELIST);
+                g_pRenderer->DrawDynamic2D(&sb.VbPtr[LINES_OFFSET],
+                                           (int)sb.MaxLines * 2, NULL,
+                                           D3DPT_LINELIST);
         }
-        sb.Points = sb.Lines = sb.MaxPoints = sb.MaxLines = 0;   // reset for the next frame
+        sb.Points = sb.Lines = sb.MaxPoints = sb.MaxLines =
+            0; // reset for the next frame
 
         DX2D_Flush2DObjects();
         return;
@@ -1872,19 +2019,18 @@ void CDXEngine::FlushDynamicObjects(void)
 }
 
 
-
-
-
 /////////////////////////////////////////// RADAR STUFF ////////////////////////////////////////////////////
 
 // This function is used for just drawin Radar stuff
 // in this function m_FogLevel is the blit intensity
 
-void CDXEngine::DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace)
+void CDXEngine::DrawBlip(ObjectInstance* objInst, D3DXMATRIX* RotMatrix,
+                         const Ppoint* Pos, const float sx, const float sy,
+                         const float sz, const float scale, bool CameraSpace)
 {
     D3DXMATRIX Scale, State;
     D3DVECTOR p;
-    DxDbHeader *Model;
+    DxDbHeader* Model;
 
     // The object position is always calculated relative to the camera position
     // if coming from out world, if IN CAMERA SPACE, position is already relative to camera,
@@ -1908,14 +2054,16 @@ void CDXEngine::DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const P
     // get the object distance
     float LODRange = sqrtf(p.x * p.x + p.y * p.y + p.z * p.z) * m_LODBiasCx;
     // The model pointer
-    ObjectLOD *CurrentLOD = NULL;
+    ObjectLOD* CurrentLOD = NULL;
     // Calculate the LOD based on FOV
     float MaxLODRange;
     int LODused;
-    CurrentLOD = objInst->ParentObject->ChooseLOD(LODRange , &LODused, &MaxLODRange);
+    CurrentLOD =
+        objInst->ParentObject->ChooseLOD(LODRange, &LODused, &MaxLODRange);
 
     // if not a lod persent, end here
-    if ( not CurrentLOD) return;
+    if (not CurrentLOD)
+        return;
 
     // ok assign The Model
     Model = (DxDbHeader*)CurrentLOD->root;
@@ -1933,16 +2081,16 @@ void CDXEngine::DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const P
     D3DXMatrixMultiply(&State, &State, &Scale);
     // *******************************************
 
-    TheVbManager.AddDrawRequest(objInst, Model->Id, &State, false, 0, m_BlipIntensity);
+    TheVbManager.AddDrawRequest(objInst, Model->Id, &State, false, 0,
+                                m_BlipIntensity);
 }
-
 
 
 void CDXEngine::FlushBlips(void)
 {
     // #27 D3D11: radar blips (DX_DBS) via the object pipeline, green material.
     // #34: the dead D3D7 (m_pD3DD) paths have been removed from this file.
-    ObjectInstance *objInst = NULL;
+    ObjectInstance* objInst = NULL;
     DWORD LodID;
     bool Lited;
     DWORD LightOwner;
@@ -1954,12 +2102,14 @@ void CDXEngine::FlushBlips(void)
     // not a previous object instalce
     m_LastObjectInstance = NULL;
 
-    RadarMaterial.specular.r = RadarMaterial.specular.g = RadarMaterial.specular.b = 0.0f;
+    RadarMaterial.specular.r = RadarMaterial.specular.g =
+        RadarMaterial.specular.b = 0.0f;
     RadarMaterial.emissive.r = RadarMaterial.emissive.b = 0.0f;
     RadarMaterial.emissive.g = 0.5f;
     RadarMaterial.diffuse.r = RadarMaterial.diffuse.b = 0.0f;
     RadarMaterial.diffuse.g = 0.0f;
-    RadarMaterial.ambient.r = RadarMaterial.ambient.g = RadarMaterial.ambient.b = 0.0f;
+    RadarMaterial.ambient.r = RadarMaterial.ambient.g =
+        RadarMaterial.ambient.b = 0.0f;
     RadarMaterial.dvPower = 0.0f;
 
     // Radar: alpha-blend ON, no texture; color comes from the material (green, set per blip below).
@@ -1971,16 +2121,17 @@ void CDXEngine::FlushBlips(void)
     }
 
 
-
     ///////////////////////////// HERE STARTS THE DRAWING ENGINE LOOP //////////////////////////////
     // The Loop flushes all objects from the VBuffers
 
     // Till objects to Draw
-    while (TheVbManager.GetDrawItem(&objInst, &LodID, &AppliedState, &Lited, &LightOwner, &m_BlipIntensity))
+    while (TheVbManager.GetDrawItem(&objInst, &LodID, &AppliedState, &Lited,
+                                    &LightOwner, &m_BlipIntensity))
     {
 
         // Consistency Check
-        if ( not objInst) continue;
+        if (not objInst)
+            continue;
 
         // assign for engine use
         m_TheObjectInstance = objInst;
@@ -1989,17 +2140,19 @@ void CDXEngine::FlushBlips(void)
         TheVbManager.GetModelData(m_VB, LodID);
 
         // Consistency Check
-        if ( not m_VB.Valid) continue;
+        if (not m_VB.Valid)
+            continue;
 
         // Ok... transform the object
         DofLevel = 0;
         RadarMaterial.diffuse.a = m_BlipIntensity / 255.0f;
 
-        if (g_pRenderer)   // #34 dead D3D7 else-branch removed
+        if (g_pRenderer) // #34 dead D3D7 else-branch removed
         {
             g_pRenderer->SetWorld((const float*)&AppliedState);
             // green blip, alpha=intensity (equiv. D3D7 emissive.g + diffuse.a).
-            g_pRenderer->SetMaterialColor(0.15f, 1.0f, 0.15f, m_BlipIntensity / 255.0f);
+            g_pRenderer->SetMaterialColor(0.15f, 1.0f, 0.15f,
+                                          m_BlipIntensity / 255.0f);
         }
 
 
@@ -2016,38 +2169,38 @@ void CDXEngine::FlushBlips(void)
         {
 
 
-
             // Selects actions for each node
             switch (m_NODE.HEAD->Type)
             {
 
 
-                case DX_SWITCH:
-                    case DX_LIGHT:
-                        case DX_TEXTURE:
-                            case DX_MATERIAL:
-                                case DX_SLOT:
-                                    case DX_ROOT:
-                                            break;
+            case DX_SWITCH:
+            case DX_LIGHT:
+            case DX_TEXTURE:
+            case DX_MATERIAL:
+            case DX_SLOT:
+            case DX_ROOT:
+                break;
 
-                case DX_SURFACE: // Setup the Texture setup the Texture to be used
-                        if ( not DofLevel) DrawBlitNode();
+            case DX_SURFACE: // Setup the Texture setup the Texture to be used
+                if (not DofLevel)
+                    DrawBlitNode();
 
-                    break;
+                break;
 
-                case DX_DOF:
-                        DofLevel++;
-                    break;
+            case DX_DOF:
+                DofLevel++;
+                break;
 
-                case DX_ENDDOF:
-                        DofLevel--;
-                    break;
+            case DX_ENDDOF:
+                DofLevel--;
+                break;
 
 
-                default :
-                        char s[128];
-                    printf(s, "Corrupted Model ID : %d ", LodID);
-                    MessageBox(NULL, s, "DX Engine", NULL);
+            default:
+                char s[128];
+                printf(s, "Corrupted Model ID : %d ", LodID);
+                MessageBox(NULL, s, "DX Engine", NULL);
             }
 
 
@@ -2063,12 +2216,11 @@ void CDXEngine::FlushBlips(void)
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////
     }
 
-    if (g_pRenderer)   // #34 dead D3D7 else-branch removed
+    if (g_pRenderer) // #34 dead D3D7 else-branch removed
     {
-        g_pRenderer->SetMaterialColor(1.0f, 1.0f, 1.0f, 1.0f);   // reset material
+        g_pRenderer->SetMaterialColor(1.0f, 1.0f, 1.0f, 1.0f); // reset material
         g_pRenderer->SetObjectAlphaBlend(false);
     }
-
 }
 
 
@@ -2078,18 +2230,22 @@ void CDXEngine::DrawBlitNode(void)
     {
         // #27/#DX12 A4: draw the radar-blip surface from the GPU mirror VB (D3D11 buffer or D3D12 resource).
         extern bool g_bUseD3D12;
-        void* vbh = g_bUseD3D12 ? m_VB.VbD3D12 : m_VB.VbD3D11;
+        extern bool g_bUseVulkan;
+        void* vbh = g_bUseD3D12 ?
+                        m_VB.VbD3D12 :
+                        (g_bUseVulkan ? m_VB.VbVulkan : (void*)m_VB.VbD3D11);
         if (g_pRenderer and vbh)
         {
-            void *idxPtr = m_NODE.BYTE + sizeof(DxSurfaceType);
+            void* idxPtr = m_NODE.BYTE + sizeof(DxSurfaceType);
             if (m_NODE.SURFACE->dwPrimType == D3DPT_POINTLIST)
-                g_pRenderer->DrawObjectStrip(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
-                                                  (int)((DWORD) * ((Int16*)idxPtr)),
-                                                  (int)m_NODE.SURFACE->dwVCount);
+                g_pRenderer->DrawObjectStrip(m_NODE.SURFACE->dwPrimType, vbh,
+                                             VERTEX_STRIDE,
+                                             (int)((DWORD) * ((Int16*)idxPtr)),
+                                             (int)m_NODE.SURFACE->dwVCount);
             else
-                g_pRenderer->DrawObjectIndexed(m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE,
-                                                    0, (unsigned short*)idxPtr,
-                                                    (int)m_NODE.SURFACE->dwVCount);
+                g_pRenderer->DrawObjectIndexed(
+                    m_NODE.SURFACE->dwPrimType, vbh, VERTEX_STRIDE, 0,
+                    (unsigned short*)idxPtr, (int)m_NODE.SURFACE->dwVCount);
         }
         return;
     }

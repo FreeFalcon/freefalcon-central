@@ -10,7 +10,7 @@
 
 #include <iso646.h>
 #include "grtypes.h"
-#include "Context.h"
+#include "context.h"
 
 struct IDirectDrawPalette;
 class Texture;
@@ -29,7 +29,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -43,8 +44,8 @@ public:
 #endif
 public:
     //sfr: sent to CPP for better debug
-    Palette();// { refCount = 0; palHandle = NULL; memset(paletteData, 0, sizeof(paletteData)); };
-    ~Palette();// { ShiAssert( refCount == 0); };
+    Palette(); // { refCount = 0; palHandle = NULL; memset(paletteData, 0, sizeof(paletteData)); };
+    ~Palette(); // { ShiAssert( refCount == 0); };
 
 public:
     DWORD paletteData[256];
@@ -56,14 +57,15 @@ protected:
 public:
     static void SetupForDevice(DXContext *texRC);
     static void CleanupForDevice(DXContext *texRC);
-    void Setup24(BYTE  *data24);
+    void Setup24(BYTE *data24);
     void Setup32(DWORD *data32);
     void Cleanup();
     void Reference();
     int Release();
     void Activate()
     {
-        if ( not palHandle) UpdateMPR();
+        if (not palHandle)
+            UpdateMPR();
     };
     void UpdateMPR(DWORD *pal);
     void UpdateMPR()

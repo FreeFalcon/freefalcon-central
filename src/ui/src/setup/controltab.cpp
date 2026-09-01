@@ -1,16 +1,16 @@
 #include "falclib.h"
 #include "chandler.h"
 #include "userids.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include <mmsystem.h>
 #include "sim/include/stdhdr.h"
 #include "sim/include/simio.h"
 #include "ui_setup.h"
 #include <tchar.h>
-#include "sim/include/inpFunc.h"
+#include "sim/include/inpfunc.h"
 #include "sim/include/commands.h"
-#include "sim/include/controlsxml.h"   // #53: BMS function labels from controls.xml
-#include "logbook.h"                    // #53: UI_logbk.Callsign() for "SETTINGS FOR:"
+#include "sim/include/controlsxml.h" // #53: BMS function labels from controls.xml
+#include "logbook.h" // #53: UI_logbk.Callsign() for "SETTINGS FOR:"
 #include "f4find.h"
 #include "sim/include/sinput.h"
 
@@ -21,7 +21,7 @@ bool JoyEffectPlaying = false;
 
 #include "sim/include/ffeedbk.h" // Retro 25Dec2003 for instant FFB feedback
 
-#pragma warning (disable : 4706) // assignment within conditional expression
+#pragma warning(disable : 4706) // assignment within conditional expression
 
 extern C_Handler *gMainHandler;
 extern C_Parser *gMainParser;
@@ -63,7 +63,7 @@ enum
     MOUSE_SIDE,
     EDITABLE,
     FUNCTION_PTR,
-    DEVICE_IDX,   // #53 device cell: SIM device index this cell belongs to
+    DEVICE_IDX, // #53 device cell: SIM device index this cell belongs to
 };
 
 KeyVars KeyVar = {FALSE, 0, 0, 0, 0, FALSE, FALSE};
@@ -71,7 +71,8 @@ KeyMap UndisplayedKeys[300] = {NULL, 0, 0, 0, 0, 0, 0, 0};
 int NumUndispKeys = 0;
 int NumDispKeys = 0;
 extern int NoRudder;
-extern long mHelmetIsUR; // hack for Italian 1.06 version - Only gets set to true IF UR Helmet detected
+extern long
+    mHelmetIsUR; // hack for Italian 1.06 version - Only gets set to true IF UR Helmet detected
 extern long mHelmetID;
 
 extern int setABdetent;
@@ -82,7 +83,7 @@ int InitializeValueBars = 1; // Retro 26Dec2003, pulled up
 //CalibrateStruct Calibration = {FALSE,1,0,TRUE};
 extern int hasForceFeedback; // Retro 27Dec2003
 
-void SetThrottleAndRudderBars(C_Base* control); // Retro 17Jan2004
+void SetThrottleAndRudderBars(C_Base *control); // Retro 17Jan2004
 
 /************************************************************************/
 // Retro Macro/Define definitions
@@ -107,7 +108,9 @@ extern int g_nKeyPOVSensMax;
 extern int g_nKeyPOVSensMin;
 
 // macro out of soundtab.cpp
-#define RESCALE(in,inmin,inmax,outmin,outmax) ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin)
+#define RESCALE(in, inmin, inmax, outmin, outmax)                              \
+    ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) +    \
+        (outmin)
 /************************************************************************/
 // Retro Macro/Define definitions end
 /************************************************************************/
@@ -120,12 +123,19 @@ int CreateKeyMapList(C_Window *win);
 //defined in another file
 void InitKeyDescrips(void);
 void CleanupKeys(void);
-void SetDeleteCallback(void (*cb)(long, short, C_Base*));
-void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*), _TCHAR *filename);
-void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[], void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
+void SetDeleteCallback(void (*cb)(long, short, C_Base *));
+void SaveAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *), _TCHAR *filename);
+void LoadAFile(long TitleID, _TCHAR *filespec, _TCHAR *excludelist[],
+               void (*YesCB)(long, short, C_Base *),
+               void (*NoCB)(long, short, C_Base *));
 void CloseWindowCB(long ID, short hittype, C_Base *control);
-void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void AreYouSure(long TitleID, long MessageID,
+                void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
 void SetJoystickCenter(void);
 void DelSTRFileCB(long ID, short hittype, C_Base *control);
 void DelDFSFileCB(long ID, short hittype, C_Base *control);
@@ -142,7 +152,7 @@ void DelKeyFileCB(long ID, short hittype, C_Base *control);
 
 void HideKeyStatusLines(C_Window *win)
 {
-    if ( not win)
+    if (not win)
         return;
 
     C_Line *line;
@@ -155,7 +165,7 @@ void HideKeyStatusLines(C_Window *win)
     {
         button = (C_Button *)win->FindControl(KEYCODES + count);
 
-        if ( not button or button->GetUserNumber(EDITABLE) not_eq -1)
+        if (not button or button->GetUserNumber(EDITABLE) not_eq -1)
         {
             line->SetFlagBitOn(C_BIT_INVISIBLE);
             line->Refresh();
@@ -189,7 +199,9 @@ void RecenterJoystickCB(long, short hittype, C_Base *)
 // Retro
 ///////////**************************************/////////////////
 extern AxisMapping AxisMap;
-extern AxisIDStuff DIAxisNames[SIM_NUMDEVICES * 8]; /* '8' is defined by dinput: 8 axis maximum per device */
+extern AxisIDStuff
+    DIAxisNames[SIM_NUMDEVICES *
+                8]; /* '8' is defined by dinput: 8 axis maximum per device */
 extern void SetupGameAxis();
 extern int CheckForForceFeedback(const int theJoyIndex);
 extern GameAxisSetup_t AxisSetup[AXIS_MAX];
@@ -206,41 +218,78 @@ typedef struct
     int DeadzoneLB;
     int SaturationLB;
     int ReverseBtn;
-    DeviceAxis* theDeviceAxis;
+    DeviceAxis *theDeviceAxis;
 } UIInputStuff_t;
 
-UIInputStuff_t UIInputStuff[AXIS_MAX] =
-{
+UIInputStuff_t UIInputStuff[AXIS_MAX] = {
     //   InGameAxis Axis Listbox Value Bar Deadzone Listbox Saturation Listbox Reverse Button DeviceAxis Struct
     // #24: pitch/roll now have their own axis-selection dropdowns (like rudder),
     // instead of being assigned implicitly via the "controller" dropdown (FlightControlDevice).
-    { AXIS_PITCH, SETUP_ADVANCED_PITCH_AXIS, SETUP_ADVANCED_PITCH_VAL, SETUP_ADVANCED_PITCH_DEADZONE, SETUP_ADVANCED_SAT_PITCH, 0, &AxisMap.Pitch },
-    { AXIS_ROLL, SETUP_ADVANCED_BANK_AXIS, SETUP_ADVANCED_BANK_VAL, SETUP_ADVANCED_BANK_DEADZONE, SETUP_ADVANCED_SAT_BANK, 0, &AxisMap.Bank },
-    { AXIS_FOV, SETUP_ADVANCED_FOV, SETUP_ADVANCED_FOV_VAL, 0, SETUP_ADVANCED_SAT_FOV, SETUP_ADVANCED_REVERSE_FOV, &AxisMap.FOV },
-    { AXIS_YAW, SETUP_ADVANCED_RUDDER_AXIS, SETUP_ADVANCED_RUDDER_VAL, SETUP_ADVANCED_RUDDER_AXIS_DEADZONE, SETUP_ADVANCED_SAT_YAW, SETUP_ADVANCED_REVERSE_RUDDER, &AxisMap.Yaw },
-    { AXIS_THROTTLE, SETUP_ADVANCED_THROTTLE_AXIS, SETUP_ADVANCED_THROTTLE_VAL, 0, SETUP_ADVANCED_SAT_THROTTLE, 0, &AxisMap.Throttle },
-    { AXIS_THROTTLE2, SETUP_ADVANCED_THROTTLE2_AXIS, SETUP_ADVANCED_THROTTLE2_VAL, 0, SETUP_ADVANCED_SAT_THROTTLE2, 0, &AxisMap.Throttle2 },
+    {AXIS_PITCH, SETUP_ADVANCED_PITCH_AXIS, SETUP_ADVANCED_PITCH_VAL,
+     SETUP_ADVANCED_PITCH_DEADZONE, SETUP_ADVANCED_SAT_PITCH, 0,
+     &AxisMap.Pitch},
+    {AXIS_ROLL, SETUP_ADVANCED_BANK_AXIS, SETUP_ADVANCED_BANK_VAL,
+     SETUP_ADVANCED_BANK_DEADZONE, SETUP_ADVANCED_SAT_BANK, 0, &AxisMap.Bank},
+    {AXIS_FOV, SETUP_ADVANCED_FOV, SETUP_ADVANCED_FOV_VAL, 0,
+     SETUP_ADVANCED_SAT_FOV, SETUP_ADVANCED_REVERSE_FOV, &AxisMap.FOV},
+    {AXIS_YAW, SETUP_ADVANCED_RUDDER_AXIS, SETUP_ADVANCED_RUDDER_VAL,
+     SETUP_ADVANCED_RUDDER_AXIS_DEADZONE, SETUP_ADVANCED_SAT_YAW,
+     SETUP_ADVANCED_REVERSE_RUDDER, &AxisMap.Yaw},
+    {AXIS_THROTTLE, SETUP_ADVANCED_THROTTLE_AXIS, SETUP_ADVANCED_THROTTLE_VAL,
+     0, SETUP_ADVANCED_SAT_THROTTLE, 0, &AxisMap.Throttle},
+    {AXIS_THROTTLE2, SETUP_ADVANCED_THROTTLE2_AXIS,
+     SETUP_ADVANCED_THROTTLE2_VAL, 0, SETUP_ADVANCED_SAT_THROTTLE2, 0,
+     &AxisMap.Throttle2},
     // #53 trim roll/pitch/yaw axes removed from the UI (rarely mapped to an axis; trim is on the stick/HOTAS buttons).
-    { AXIS_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT_VAL, 0, SETUP_ADVANCED_SAT_BRAKELEFT, SETUP_ADVANCED_REVERSE_BRAKE_LEFT, &AxisMap.BrakeLeft },
-    { AXIS_BRAKE_RIGHT, SETUP_ADVANCED_BRAKE_RIGHT, SETUP_ADVANCED_BRAKE_RIGHT_VAL, 0, SETUP_ADVANCED_SAT_BRAKERIGHT, SETUP_ADVANCED_REVERSE_BRAKE_RIGHT, &AxisMap.BrakeRight },   // #57 differential braking
-    { AXIS_ANT_ELEV, SETUP_ADVANCED_ANT_ELEV, SETUP_ADVANCED_ANT_ELEV_VAL, SETUP_ADVANCED_ANT_ELEV_DEADZONE, SETUP_ADVANCED_SAT_ANT_ELEV, SETUP_ADVANCED_REVERSE_ANT_ELEV, &AxisMap.AntElev },
-    { AXIS_CURSOR_X, SETUP_ADVANCED_CURSOR_X, SETUP_ADVANCED_CURSOR_X_VAL, SETUP_ADVANCED_CURSOR_X_DEADZONE, SETUP_ADVANCED_SAT_CURSOR_X, SETUP_ADVANCED_REVERSE_CURSOR_X, &AxisMap.CursorX },
-    { AXIS_CURSOR_Y, SETUP_ADVANCED_CURSOR_Y, SETUP_ADVANCED_CURSOR_Y_VAL, SETUP_ADVANCED_CURSOR_Y_DEADZONE, SETUP_ADVANCED_SAT_CURSOR_Y, SETUP_ADVANCED_REVERSE_CURSOR_Y, &AxisMap.CursorY },
-    { AXIS_RANGE_KNOB, SETUP_ADVANCED_RANGE_KNOB, SETUP_ADVANCED_RANGE_KNOB_VAL, SETUP_ADVANCED_RANGE_KNOB_DEADZONE, SETUP_ADVANCED_SAT_RNG_KNOB, SETUP_ADVANCED_REVERSE_RANGE_KNOB, &AxisMap.RngKnob },
-    { AXIS_COMM_VOLUME_1, SETUP_ADVANCED_COMM1_VOL, SETUP_ADVANCED_COMM1_VOL_VAL, 0, SETUP_ADVANCED_SAT_COMM1_VOL, SETUP_ADVANCED_REVERSE_COMM1_VOL, &AxisMap.Comm1Vol },
-    { AXIS_COMM_VOLUME_2, SETUP_ADVANCED_COMM2_VOL, SETUP_ADVANCED_COMM2_VOL_VAL, 0, SETUP_ADVANCED_SAT_COMM2_VOL, SETUP_ADVANCED_REVERSE_COMM2_VOL, &AxisMap.Comm2Vol },
-    { AXIS_MSL_VOLUME, SETUP_ADVANCED_MSL_VOL, SETUP_ADVANCED_MSL_VOL_VAL, 0, SETUP_ADVANCED_SAT_MSL_VOL, SETUP_ADVANCED_REVERSE_MSL_VOL, &AxisMap.MSLVol },
-    { AXIS_THREAT_VOLUME, SETUP_ADVANCED_THREAT_VOL, SETUP_ADVANCED_THREAT_VOL_VAL, 0, SETUP_ADVANCED_SAT_THREAT_VOL, SETUP_ADVANCED_REVERSE_THREAT_VOL, &AxisMap.ThreatVol },
-    { AXIS_HUD_BRIGHTNESS, SETUP_ADVANCED_HUD_BRIGHT, SETUP_ADVANCED_HUD_BRIGHT_VAL, 0, SETUP_ADVANCED_SAT_HUD_BRT, SETUP_ADVANCED_REVERSE_HUD_BRIGHT, &AxisMap.HudBrt },
-    { AXIS_RET_DEPR, SETUP_ADVANCED_RET_DEPR, SETUP_ADVANCED_RET_DEPR_VAL, 0, SETUP_ADVANCED_SAT_RET_DEPR, SETUP_ADVANCED_REVERSE_RET_DEPR, &AxisMap.RetDepr },
-    { AXIS_ZOOM, SETUP_ADVANCED_ZOOM, SETUP_ADVANCED_ZOOM_VAL, 0, SETUP_ADVANCED_SAT_ZOOM, SETUP_ADVANCED_REVERSE_ZOOM, &AxisMap.Zoom },
-    { AXIS_INTERCOM_VOLUME, SETUP_ADVANCED_INTERCOM_VOL, SETUP_ADVANCED_INTERCOM_VOL_VAL, 0, SETUP_ADVANCED_SAT_INTERCOM_VOL, SETUP_ADVANCED_REVERSE_INTERCOM_VOL, &AxisMap.InterComVol },
+    {AXIS_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT, SETUP_ADVANCED_BRAKE_LEFT_VAL,
+     0, SETUP_ADVANCED_SAT_BRAKELEFT, SETUP_ADVANCED_REVERSE_BRAKE_LEFT,
+     &AxisMap.BrakeLeft},
+    {AXIS_BRAKE_RIGHT, SETUP_ADVANCED_BRAKE_RIGHT,
+     SETUP_ADVANCED_BRAKE_RIGHT_VAL, 0, SETUP_ADVANCED_SAT_BRAKERIGHT,
+     SETUP_ADVANCED_REVERSE_BRAKE_RIGHT,
+     &AxisMap.BrakeRight}, // #57 differential braking
+    {AXIS_ANT_ELEV, SETUP_ADVANCED_ANT_ELEV, SETUP_ADVANCED_ANT_ELEV_VAL,
+     SETUP_ADVANCED_ANT_ELEV_DEADZONE, SETUP_ADVANCED_SAT_ANT_ELEV,
+     SETUP_ADVANCED_REVERSE_ANT_ELEV, &AxisMap.AntElev},
+    {AXIS_CURSOR_X, SETUP_ADVANCED_CURSOR_X, SETUP_ADVANCED_CURSOR_X_VAL,
+     SETUP_ADVANCED_CURSOR_X_DEADZONE, SETUP_ADVANCED_SAT_CURSOR_X,
+     SETUP_ADVANCED_REVERSE_CURSOR_X, &AxisMap.CursorX},
+    {AXIS_CURSOR_Y, SETUP_ADVANCED_CURSOR_Y, SETUP_ADVANCED_CURSOR_Y_VAL,
+     SETUP_ADVANCED_CURSOR_Y_DEADZONE, SETUP_ADVANCED_SAT_CURSOR_Y,
+     SETUP_ADVANCED_REVERSE_CURSOR_Y, &AxisMap.CursorY},
+    {AXIS_RANGE_KNOB, SETUP_ADVANCED_RANGE_KNOB, SETUP_ADVANCED_RANGE_KNOB_VAL,
+     SETUP_ADVANCED_RANGE_KNOB_DEADZONE, SETUP_ADVANCED_SAT_RNG_KNOB,
+     SETUP_ADVANCED_REVERSE_RANGE_KNOB, &AxisMap.RngKnob},
+    {AXIS_COMM_VOLUME_1, SETUP_ADVANCED_COMM1_VOL, SETUP_ADVANCED_COMM1_VOL_VAL,
+     0, SETUP_ADVANCED_SAT_COMM1_VOL, SETUP_ADVANCED_REVERSE_COMM1_VOL,
+     &AxisMap.Comm1Vol},
+    {AXIS_COMM_VOLUME_2, SETUP_ADVANCED_COMM2_VOL, SETUP_ADVANCED_COMM2_VOL_VAL,
+     0, SETUP_ADVANCED_SAT_COMM2_VOL, SETUP_ADVANCED_REVERSE_COMM2_VOL,
+     &AxisMap.Comm2Vol},
+    {AXIS_MSL_VOLUME, SETUP_ADVANCED_MSL_VOL, SETUP_ADVANCED_MSL_VOL_VAL, 0,
+     SETUP_ADVANCED_SAT_MSL_VOL, SETUP_ADVANCED_REVERSE_MSL_VOL,
+     &AxisMap.MSLVol},
+    {AXIS_THREAT_VOLUME, SETUP_ADVANCED_THREAT_VOL,
+     SETUP_ADVANCED_THREAT_VOL_VAL, 0, SETUP_ADVANCED_SAT_THREAT_VOL,
+     SETUP_ADVANCED_REVERSE_THREAT_VOL, &AxisMap.ThreatVol},
+    {AXIS_HUD_BRIGHTNESS, SETUP_ADVANCED_HUD_BRIGHT,
+     SETUP_ADVANCED_HUD_BRIGHT_VAL, 0, SETUP_ADVANCED_SAT_HUD_BRT,
+     SETUP_ADVANCED_REVERSE_HUD_BRIGHT, &AxisMap.HudBrt},
+    {AXIS_RET_DEPR, SETUP_ADVANCED_RET_DEPR, SETUP_ADVANCED_RET_DEPR_VAL, 0,
+     SETUP_ADVANCED_SAT_RET_DEPR, SETUP_ADVANCED_REVERSE_RET_DEPR,
+     &AxisMap.RetDepr},
+    {AXIS_ZOOM, SETUP_ADVANCED_ZOOM, SETUP_ADVANCED_ZOOM_VAL, 0,
+     SETUP_ADVANCED_SAT_ZOOM, SETUP_ADVANCED_REVERSE_ZOOM, &AxisMap.Zoom},
+    {AXIS_INTERCOM_VOLUME, SETUP_ADVANCED_INTERCOM_VOL,
+     SETUP_ADVANCED_INTERCOM_VOL_VAL, 0, SETUP_ADVANCED_SAT_INTERCOM_VOL,
+     SETUP_ADVANCED_REVERSE_INTERCOM_VOL, &AxisMap.InterComVol},
 };
 
 /************************************************************************/
 // Yuck.. you know, this should actually go into the listbox class methinks
 /************************************************************************/
-bool SetListBoxItemData(C_ListBox* theLB, const long ID, const short theItemIndex, const long theItemData)
+bool SetListBoxItemData(C_ListBox *theLB, const long ID,
+                        const short theItemIndex, const long theItemData)
 {
     // ID seems to be the index of the item in the listbox.
     if (theLB)
@@ -259,7 +308,8 @@ bool SetListBoxItemData(C_ListBox* theLB, const long ID, const short theItemInde
 // return values only valid if >= -1 (of course THAT should NOT get into
 // the class in anyone volunteers to do that)
 /************************************************************************/
-long GetListBoxItemData(C_ListBox* theLB, const int theItemIndex, const long theIndex = 0)
+long GetListBoxItemData(C_ListBox *theLB, const int theItemIndex,
+                        const long theIndex = 0)
 {
     if (theLB)
     {
@@ -284,7 +334,7 @@ long GetListBoxItemData(C_ListBox* theLB, const int theItemIndex, const long the
 /************************************************************************/
 //
 /************************************************************************/
-void SaveAxisMappings(C_Window* win)
+void SaveAxisMappings(C_Window *win)
 {
     if (win)
     {
@@ -293,7 +343,8 @@ void SaveAxisMappings(C_Window* win)
             if (UIInputStuff[i].AxisLB == 0)
                 continue;
 
-            C_ListBox* listbox = (C_ListBox *)win->FindControl(UIInputStuff[i].AxisLB);
+            C_ListBox *listbox =
+                (C_ListBox *)win->FindControl(UIInputStuff[i].AxisLB);
 
             if (listbox)
             {
@@ -303,8 +354,10 @@ void SaveAxisMappings(C_Window* win)
                 {
                     if (index not_eq -1)
                     {
-                        UIInputStuff[i].theDeviceAxis->Device = DIAxisNames[index].DXDeviceID;
-                        UIInputStuff[i].theDeviceAxis->Axis = DIAxisNames[index].DXAxisID;
+                        UIInputStuff[i].theDeviceAxis->Device =
+                            DIAxisNames[index].DXDeviceID;
+                        UIInputStuff[i].theDeviceAxis->Axis =
+                            DIAxisNames[index].DXAxisID;
                     }
                     else
                     {
@@ -344,24 +397,31 @@ bool g_keyListPreserveScroll = false;
 // Artscout - 2026: modal button-assign dialog flag (defined further down, used by the controls
 // window's OK/Back/Cancel above its definition).
 extern bool g_baWindowOpen;
-void ControlTab_KeepButtonAssignFront(void); // Artscout - 2026: defined in the assign-window block
+void ControlTab_KeepButtonAssignFront(
+    void); // Artscout - 2026: defined in the assign-window block
 
 // #53 forward declarations (defined further down) needed by AdvancedControlCB to wire the
 // CONTROLS SETUP tab (key capture + search box) when the window opens.
-BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
+BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char Ascii,
+                 unsigned char ShiftStates, long RepeatCount);
 void KeyListSearchCB(long ID, short hittype, C_Base *control);
-int  UpdateKeyMapList(char *fname, int flag);
-void RefreshJoystickCB(long ID, short hittype, C_Base *control);   // #53 timer cb (defined below)
-void GenericTimerCB(long ID, short hittype, C_Base *control);      // #53 (defined in ui_setup.cpp)
-extern char g_keyFilter[64];   // #22 search substring (defined below, before KeystrokeCB)
-extern int  g_keyDevFilter;    // #22 device filter (defined below, before KeystrokeCB)
+int UpdateKeyMapList(char *fname, int flag);
+void RefreshJoystickCB(long ID, short hittype,
+                       C_Base *control); // #53 timer cb (defined below)
+void GenericTimerCB(long ID, short hittype,
+                    C_Base *control); // #53 (defined in ui_setup.cpp)
+extern char
+    g_keyFilter[64]; // #22 search substring (defined below, before KeystrokeCB)
+extern int
+    g_keyDevFilter; // #22 device filter (defined below, before KeystrokeCB)
 
 void SetupControlTabsCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    g_editPollReseed = true;   // #51 tab changed -> re-baseline buttons for the INPUT field
+    g_editPollReseed =
+        true; // #51 tab changed -> re-baseline buttons for the INPUT field
 
     int i = 1;
 
@@ -382,7 +442,8 @@ void SetupControlTabsCB(long, short hittype, C_Base *control)
     {
         C_Window *w = (C_Window *)control->Parent_;
         UI95_RECT ca = w->GetClientArea(1);
-        w->SetClientArea(ca.left, ca.top, ca.right - ca.left, ca.bottom - ca.top, 1);
+        w->SetClientArea(ca.left, ca.top, ca.right - ca.left,
+                         ca.bottom - ca.top, 1);
         w->ScanClientArea(1);
         w->RefreshClient(1);
     }
@@ -416,11 +477,13 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (win == NULL) return;
+    if (win == NULL)
+        return;
 
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     /* array of pointers to all axis listboxes in this sheet */
     C_ListBox *listbox;
@@ -429,7 +492,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     SaveAxisMappings(win);
 
     // check contents of deadzone listboxes..
-    listbox = (C_ListBox*)0;
+    listbox = (C_ListBox *)0;
 
     for (int j = 0; j < AXIS_MAX; j++)
     {
@@ -438,7 +501,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
         if (UIInputStuff[j].DeadzoneLB == 0)
             continue;
 
-        listbox = (C_ListBox*)win->FindControl(UIInputStuff[j].DeadzoneLB);
+        listbox = (C_ListBox *)win->FindControl(UIInputStuff[j].DeadzoneLB);
 
         if (listbox)
         {
@@ -446,26 +509,28 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 
             if (index >= 0)
             {
-                switch (index) // not every axis used the deadzone though.. only bipolar ones 
+                switch (
+                    index) // not every axis used the deadzone though.. only bipolar ones
                 {
-                    case SETUP_ADVANCED_DZ_SMALL:
-                        UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneSmall;
-                        break; // 1%
+                case SETUP_ADVANCED_DZ_SMALL:
+                    UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneSmall;
+                    break; // 1%
 
-                    default:
-                        ShiAssert(false); // fallthrough intentional to give me 5% deadzone in these cases..
+                default:
+                    ShiAssert(
+                        false); // fallthrough intentional to give me 5% deadzone in these cases..
 
-                    case SETUP_ADVANCED_DZ_MEDIUM:
-                        UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneMedium;
-                        break; // 5%
+                case SETUP_ADVANCED_DZ_MEDIUM:
+                    UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneMedium;
+                    break; // 5%
 
-                    case SETUP_ADVANCED_DZ_LARGE:
-                        UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneLarge;
-                        break; // 10%
+                case SETUP_ADVANCED_DZ_LARGE:
+                    UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneLarge;
+                    break; // 10%
 
-                    case SETUP_ADVANCED_DZ_HUGE:
-                        UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneHuge;
-                        break; // 50%
+                case SETUP_ADVANCED_DZ_HUGE:
+                    UIInputStuff[j].theDeviceAxis->Deadzone = g_nDeadzoneHuge;
+                    break; // 50%
                 }
             }
         }
@@ -474,7 +539,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     }
 
     // check contents of saturtaion listboxes..
-    listbox = (C_ListBox*)0;
+    listbox = (C_ListBox *)0;
 
     for (int j = 0; j < AXIS_MAX; j++)
     {
@@ -483,7 +548,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
         if (UIInputStuff[j].SaturationLB == 0)
             continue;
 
-        listbox = (C_ListBox*)win->FindControl(UIInputStuff[j].SaturationLB);
+        listbox = (C_ListBox *)win->FindControl(UIInputStuff[j].SaturationLB);
 
         if (listbox)
         {
@@ -493,24 +558,27 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
             {
                 switch (index)
                 {
-                    case SETUP_ADVANCED_SAT_NONE:
-                        UIInputStuff[j].theDeviceAxis->Saturation = SATURATION_NONE;
-                        break;
+                case SETUP_ADVANCED_SAT_NONE:
+                    UIInputStuff[j].theDeviceAxis->Saturation = SATURATION_NONE;
+                    break;
 
-                    default:
-                        ShiAssert(false);
+                default:
+                    ShiAssert(false);
 
-                    case SETUP_ADVANCED_DZ_SMALL:
-                        UIInputStuff[j].theDeviceAxis->Saturation = g_nSaturationSmall;
-                        break;
+                case SETUP_ADVANCED_DZ_SMALL:
+                    UIInputStuff[j].theDeviceAxis->Saturation =
+                        g_nSaturationSmall;
+                    break;
 
-                    case SETUP_ADVANCED_DZ_MEDIUM:
-                        UIInputStuff[j].theDeviceAxis->Saturation = g_nSaturationMedium;
-                        break;
+                case SETUP_ADVANCED_DZ_MEDIUM:
+                    UIInputStuff[j].theDeviceAxis->Saturation =
+                        g_nSaturationMedium;
+                    break;
 
-                    case SETUP_ADVANCED_DZ_LARGE:
-                        UIInputStuff[j].theDeviceAxis->Saturation = g_nSaturationLarge;
-                        break;
+                case SETUP_ADVANCED_DZ_LARGE:
+                    UIInputStuff[j].theDeviceAxis->Saturation =
+                        g_nSaturationLarge;
+                    break;
                 }
             }
         }
@@ -519,7 +587,7 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     }
 
 
-    C_Button* button = (C_Button*)0;
+    C_Button *button = (C_Button *)0;
     // check 'reversed' buttons..
 
     for (int j = 0; j < AXIS_MAX; j++) // Retro 15Jan2004
@@ -542,7 +610,8 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
 
     {
         extern AxisMapping AxisMap;
-        ControlsXml_WriteAxes(&AxisMap);   // #53: axes + soft props into the profile axismapping.xml (#57: replaces joystick.cal)
+        ControlsXml_WriteAxes(
+            &AxisMap); // #53: axes + soft props into the profile axismapping.xml (#57: replaces joystick.cal)
     }
     SetupGameAxis();
 
@@ -554,7 +623,8 @@ void AdvancedControlApplyCB(long ID, short hittype, C_Base *control)
     /* PROBLEM: have to call the 'SetThrottleAndRudderBars' functions in the setup->controls tab.. hmm */
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (win == NULL) return;
+    if (win == NULL)
+        return;
 
     button = (C_Button *)win->FindControl(SETUP_CONTROL_ADVANCED);
 
@@ -608,8 +678,8 @@ void AdvancedControlBackCB(long ID, short hittype, C_Base *control)
         return;
     }
 
-    AdvancedControlApplyCB(ID, hittype, control);   // save axis changes
-    CloseWindowCB(ID, hittype, control);            // close the controls window
+    AdvancedControlApplyCB(ID, hittype, control); // save axis changes
+    CloseWindowCB(ID, hittype, control); // close the controls window
 
     // return to the main options window and switch it to the SIMULATION tab. The controls
     // window is EXCLUSIVE, so bring SETUP_WIN back up and to the front before selecting the tab.
@@ -667,7 +737,7 @@ void MouseLookCB(long ID, short hittype, C_Base *control)
         return;
     }
 
-    PlayerOptions.SetMouseLook( not PlayerOptions.GetMouseLook());
+    PlayerOptions.SetMouseLook(not PlayerOptions.GetMouseLook());
 }
 
 /************************************************************************/
@@ -680,7 +750,7 @@ void TouchBuddyCB(long ID, short hittype, C_Base *control)
         return;
     }
 
-    C_Button *b = static_cast<C_Button*>(control);
+    C_Button *b = static_cast<C_Button *>(control);
     PlayerOptions.SetTouchBuddy(b->GetState() == C_STATE_1);
 }
 
@@ -694,11 +764,11 @@ void EnableFFBCB(long ID, short hittype, C_Base *control)
     if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
-    C_Button* button = (C_Button*)control;
+    C_Button *button = (C_Button *)control;
 
     if (button)
         if (hasForceFeedback == TRUE)
-            PlayerOptions.SetFFB( not PlayerOptions.GetFFB());
+            PlayerOptions.SetFFB(not PlayerOptions.GetFFB());
         else
             button->SetState(C_STATE_0);
 }
@@ -714,10 +784,11 @@ void ToggleClickableModeCB(long ID, short hittype, C_Base *control)
     if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
-    C_Button* button = (C_Button*)control;
+    C_Button *button = (C_Button *)control;
 
     if (button)
-        PlayerOptions.SetClickablePitMode( not PlayerOptions.GetClickablePitMode());
+        PlayerOptions.SetClickablePitMode(
+            not PlayerOptions.GetClickablePitMode());
 }
 
 /************************************************************************/
@@ -730,11 +801,11 @@ void TrackIR2dCB(long ID, short hittype, C_Base *control)
     if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
-    C_Button* button = (C_Button*)control;
+    C_Button *button = (C_Button *)control;
 
     if (button)
         if (g_bEnableTrackIR)
-            PlayerOptions.SetTrackIR2d( not PlayerOptions.Get2dTrackIR());
+            PlayerOptions.SetTrackIR2d(not PlayerOptions.Get2dTrackIR());
         else
             button->SetState(C_STATE_0);
 }
@@ -749,11 +820,11 @@ void TrackIR3dCB(long ID, short hittype, C_Base *control)
     if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
-    C_Button* button = (C_Button*)control;
+    C_Button *button = (C_Button *)control;
 
     if (button)
         if (g_bEnableTrackIR)
-            PlayerOptions.SetTrackIR3d( not PlayerOptions.Get3dTrackIR());
+            PlayerOptions.SetTrackIR3d(not PlayerOptions.Get3dTrackIR());
         else
             button->SetState(C_STATE_0);
 }
@@ -766,7 +837,7 @@ void AxisShapingCB(long ID, short hittype, C_Base *control)
     if ((hittype not_eq C_TYPE_LMOUSEUP))
         return;
 
-    C_Button* button = (C_Button*)control;
+    C_Button *button = (C_Button *)control;
 
     if (button)
         if (PlayerOptions.GetAxisShaping() == false)
@@ -792,7 +863,7 @@ void MouseLookSensitivityCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if ( not control)
+    if (not control)
     {
         ShiAssert(false);
         return;
@@ -802,17 +873,20 @@ void MouseLookSensitivityCB(long ID, short hittype, C_Base *control)
 
     smax = ((C_Slider *)control)->GetSliderMax();
     smin = ((C_Slider *)control)->GetSliderMin();
-    pos  = ((C_Slider *)control)->GetSliderPos();
+    pos = ((C_Slider *)control)->GetSliderPos();
 
     // if mouselook is disabled don�t allow the ball to move..
     if (PlayerOptions.GetMouseLook() == false)
     {
-        pos = (int) RESCALE(PlayerOptions.GetMouseLookSensitivity() * 1000, g_nMouseLookSensMin, g_nMouseLookSensMax, smin, smax);
+        pos =
+            (int)RESCALE(PlayerOptions.GetMouseLookSensitivity() * 1000,
+                         g_nMouseLookSensMin, g_nMouseLookSensMax, smin, smax);
         ((C_Slider *)control)->SetSliderPos(pos);
         return;
     }
 
-    float theSens = RESCALE(pos, smin, smax, g_nMouseLookSensMin, g_nMouseLookSensMax);
+    float theSens =
+        RESCALE(pos, smin, smax, g_nMouseLookSensMin, g_nMouseLookSensMax);
 
     theSens /= 1000;
 
@@ -828,7 +902,7 @@ void MouseWheelSensitivityCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if ( not control)
+    if (not control)
     {
         ShiAssert(false);
         return;
@@ -838,17 +912,20 @@ void MouseWheelSensitivityCB(long ID, short hittype, C_Base *control)
 
     smax = ((C_Slider *)control)->GetSliderMax();
     smin = ((C_Slider *)control)->GetSliderMin();
-    pos  = ((C_Slider *)control)->GetSliderPos();
+    pos = ((C_Slider *)control)->GetSliderPos();
 
     // if no mouse wheel detected don�t allow the ball to move..
     if (IO.MouseWheelExists() == false)
     {
-        pos = (int) RESCALE(PlayerOptions.GetMouseWheelSensitivity(), g_nMouseWheelSensMin, g_nMouseWheelSensMax, smin, smax);
+        pos = (int)RESCALE(PlayerOptions.GetMouseWheelSensitivity(),
+                           g_nMouseWheelSensMin, g_nMouseWheelSensMax, smin,
+                           smax);
         ((C_Slider *)control)->SetSliderPos(pos);
         return;
     }
 
-    PlayerOptions.SetMouseWheelSensitivity((int)RESCALE(pos, smin, smax, g_nMouseWheelSensMin, g_nMouseWheelSensMax));
+    PlayerOptions.SetMouseWheelSensitivity((int)RESCALE(
+        pos, smin, smax, g_nMouseWheelSensMin, g_nMouseWheelSensMax));
 }
 
 /************************************************************************/
@@ -860,7 +937,7 @@ void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    if ( not control)
+    if (not control)
     {
         ShiAssert(false);
         return;
@@ -870,9 +947,10 @@ void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
 
     smax = ((C_Slider *)control)->GetSliderMax();
     smin = ((C_Slider *)control)->GetSliderMin();
-    pos  = ((C_Slider *)control)->GetSliderPos();
+    pos = ((C_Slider *)control)->GetSliderPos();
 
-    PlayerOptions.SetKeyboardPOVPanningSensitivity((int) RESCALE(pos, smin, smax, g_nKeyPOVSensMin, g_nKeyPOVSensMax));
+    PlayerOptions.SetKeyboardPOVPanningSensitivity(
+        (int)RESCALE(pos, smin, smax, g_nKeyPOVSensMin, g_nKeyPOVSensMax));
 }
 
 /************************************************************************/
@@ -881,11 +959,11 @@ void KeyPOVPanningSensitivityCB(long ID, short hittype, C_Base *control)
 /************************************************************************/
 void MarkMappedAxis()
 {
-    if ( not gTotalJoy)
+    if (not gTotalJoy)
         return;
 
     // mark all unmapped..
-    for (int i = 0 ; DIAxisNames[i].DXAxisName; i++)
+    for (int i = 0; DIAxisNames[i].DXAxisName; i++)
     {
         DIAxisNames[i].isMapped = false;
     }
@@ -897,12 +975,15 @@ void MarkMappedAxis()
         {
             // #53 skip empty UIInputStuff slots (trim axes were removed -> trailing entries are
             // zero-initialized with theDeviceAxis == NULL). Other loops guard via AxisLB==0.
-            if (UIInputStuff[j].AxisLB == 0 or not UIInputStuff[j].theDeviceAxis)
+            if (UIInputStuff[j].AxisLB == 0 or
+                not UIInputStuff[j].theDeviceAxis)
                 continue;
 
-            if (DIAxisNames[i].DXDeviceID == UIInputStuff[j].theDeviceAxis->Device)
+            if (DIAxisNames[i].DXDeviceID ==
+                UIInputStuff[j].theDeviceAxis->Device)
             {
-                if (DIAxisNames[i].DXAxisID == UIInputStuff[j].theDeviceAxis->Axis)
+                if (DIAxisNames[i].DXAxisID ==
+                    UIInputStuff[j].theDeviceAxis->Axis)
                 {
                     DIAxisNames[i].isMapped = true;
                 }
@@ -922,7 +1003,7 @@ void MarkMappedAxis()
 // the listbox itemdata contains the index of this axis in the array of
 // enumerated axis. I need this for saving.
 /************************************************************************/
-void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
+void FillListBox(C_ListBox *theLB, const int theUIAxisIndex)
 {
     if (theLB)
     {
@@ -931,7 +1012,8 @@ void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
             // loop through all enumerated axis and add the unmapped ones..
             for (int i = 0; DIAxisNames[i].DXAxisName; i++)
             {
-                theLB->AddItem(i + SIM_JOYSTICK1, C_TYPE_ITEM, DIAxisNames[i].DXAxisName);
+                theLB->AddItem(i + SIM_JOYSTICK1, C_TYPE_ITEM,
+                               DIAxisNames[i].DXAxisName);
                 SetListBoxItemData(theLB, i + SIM_JOYSTICK1, 0, i);
 
                 if (DIAxisNames[i].isMapped == false)
@@ -945,9 +1027,11 @@ void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
 
                 // this one is the axis that is mapped to the axis the listbox is about
                 // it is of course mapped so we have to do some fancy coding..
-                if (DIAxisNames[i].DXDeviceID == UIInputStuff[theUIAxisIndex].theDeviceAxis->Device)
+                if (DIAxisNames[i].DXDeviceID ==
+                    UIInputStuff[theUIAxisIndex].theDeviceAxis->Device)
                 {
-                    if (DIAxisNames[i].DXAxisID == UIInputStuff[theUIAxisIndex].theDeviceAxis->Axis)
+                    if (DIAxisNames[i].DXAxisID ==
+                        UIInputStuff[theUIAxisIndex].theDeviceAxis->Axis)
                     {
                         // Add the axis and hilight it
                         theLB->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_ENABLED);
@@ -970,9 +1054,9 @@ void FillListBox(C_ListBox* theLB, const int theUIAxisIndex)
 // Clear all axis listboxes and refill them. Only axis that are unmapped
 // (plus the one that�s mapped to this axis) get listed.
 //
-// SHOULD ONLY BE DONE ONCE 
+// SHOULD ONLY BE DONE ONCE
 /************************************************************************/
-void PopulateAllListBoxes(C_Window* win)
+void PopulateAllListBoxes(C_Window *win)
 {
     if (win)
     {
@@ -983,7 +1067,8 @@ void PopulateAllListBoxes(C_Window* win)
             if (UIInputStuff[UIAxisIndex].AxisLB == 0)
                 continue;
 
-            listbox = (C_ListBox *)win->FindControl(UIInputStuff[UIAxisIndex].AxisLB);
+            listbox =
+                (C_ListBox *)win->FindControl(UIInputStuff[UIAxisIndex].AxisLB);
 
             if (listbox)
             {
@@ -1002,7 +1087,6 @@ void PopulateAllListBoxes(C_Window* win)
 
                 // fill it with other available (unmapped) axis
                 FillListBox(listbox, UIAxisIndex);
-
             }
             else
                 ShiAssert(false);
@@ -1019,7 +1103,7 @@ void PopulateAllListBoxes(C_Window* win)
 // (plus the one that�s mapped to this axis) get listed.
 //
 /************************************************************************/
-void RePopulateAllListBoxes(C_Window* win)
+void RePopulateAllListBoxes(C_Window *win)
 {
     if (win)
     {
@@ -1031,7 +1115,8 @@ void RePopulateAllListBoxes(C_Window* win)
             if (UIInputStuff[UIAxisIndex].AxisLB == 0)
                 continue;
 
-            listbox = (C_ListBox *)win->FindControl(UIInputStuff[UIAxisIndex].AxisLB);
+            listbox =
+                (C_ListBox *)win->FindControl(UIInputStuff[UIAxisIndex].AxisLB);
 
             if (listbox)
             {
@@ -1043,21 +1128,26 @@ void RePopulateAllListBoxes(C_Window* win)
                         if (DIAxisNames[i].isMapped == false)
                         {
                             // SetListBoxItemData(listbox,i+SIM_JOYSTICK1,0,i);
-                            listbox->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_ENABLED);
+                            listbox->SetItemFlags(i + SIM_JOYSTICK1,
+                                                  C_BIT_ENABLED);
                         }
                         else
                         {
-                            listbox->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_INVISIBLE);
+                            listbox->SetItemFlags(i + SIM_JOYSTICK1,
+                                                  C_BIT_INVISIBLE);
                         }
 
                         // this one is the axis that is mapped to the axis the listbox is about
                         // it is of course mapped so we have to do some fancy coding..
-                        if (DIAxisNames[i].DXDeviceID == UIInputStuff[UIAxisIndex].theDeviceAxis->Device)
+                        if (DIAxisNames[i].DXDeviceID ==
+                            UIInputStuff[UIAxisIndex].theDeviceAxis->Device)
                         {
-                            if (DIAxisNames[i].DXAxisID == UIInputStuff[UIAxisIndex].theDeviceAxis->Axis)
+                            if (DIAxisNames[i].DXAxisID ==
+                                UIInputStuff[UIAxisIndex].theDeviceAxis->Axis)
                             {
                                 // Add the axis and hilight it
-                                listbox->SetItemFlags(i + SIM_JOYSTICK1, C_BIT_ENABLED);
+                                listbox->SetItemFlags(i + SIM_JOYSTICK1,
+                                                      C_BIT_ENABLED);
                                 // SetListBoxItemData(listbox,i+SIM_JOYSTICK1,0,i);
                                 listbox->SetValue(i + SIM_JOYSTICK1);
                                 ShiAssert(DIAxisNames[i].isMapped == true);
@@ -1095,12 +1185,12 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     if ((hittype not_eq C_TYPE_SELECT))
         return;
 
-    if ( not me)
+    if (not me)
         return;
 
-    C_ListBox *listbox = (C_ListBox*)me;
+    C_ListBox *listbox = (C_ListBox *)me;
 
-    if ( not listbox)
+    if (not listbox)
         return;
 
     /* pointer to mommy */
@@ -1108,11 +1198,13 @@ void AxisChangeCB(long, short hittype, C_Base *me)
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (win == NULL) return;
+    if (win == NULL)
+        return;
 
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     // k now I figure we can start working ;)
 
@@ -1122,13 +1214,14 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     if (i == -2) // whoops, error in the above routine..
         return;
 
-    // now I know in which axis box I am 
+    // now I know in which axis box I am
     long index = GetListBoxItemData(listbox, 0);
 
     if (index == -2) // whoops, error in the above routine..
         return;
 
-    if ((index == -1) and (UIInputStuff[i].theDeviceAxis->Device == -1) and (UIInputStuff[i].theDeviceAxis->Axis == -1))
+    if ((index == -1) and (UIInputStuff[i].theDeviceAxis->Device == -1) and
+        (UIInputStuff[i].theDeviceAxis->Axis == -1))
     {
         return; // no change
     }
@@ -1138,8 +1231,10 @@ void AxisChangeCB(long, short hittype, C_Base *me)
         // now how do I find out the old axis ? hmm
         for (int j = 0; DIAxisNames[j].DXAxisName; j++)
         {
-            if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) and 
-                (DIAxisNames[j].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
+            if ((DIAxisNames[j].DXDeviceID ==
+                 UIInputStuff[i].theDeviceAxis->Device) and
+                (DIAxisNames[j].DXAxisID ==
+                 UIInputStuff[i].theDeviceAxis->Axis))
             {
                 ShiAssert(DIAxisNames[j].isMapped == true);
 
@@ -1147,7 +1242,8 @@ void AxisChangeCB(long, short hittype, C_Base *me)
                 UIInputStuff[i].theDeviceAxis->Device = -1;
                 UIInputStuff[i].theDeviceAxis->Axis = -1;
 
-                AdvancedControlApplyCB(0, C_TYPE_LMOUSEUP, 0); // Retro 27Mar2004
+                AdvancedControlApplyCB(0, C_TYPE_LMOUSEUP,
+                                       0); // Retro 27Mar2004
 
                 RePopulateAllListBoxes(win);
             }
@@ -1159,8 +1255,10 @@ void AxisChangeCB(long, short hittype, C_Base *me)
     {
         // was not keyboard
         // so we have the change from one axis to another axis
-        if ((DIAxisNames[index].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) and 
-            (DIAxisNames[index].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
+        if ((DIAxisNames[index].DXDeviceID ==
+             UIInputStuff[i].theDeviceAxis->Device) and
+            (DIAxisNames[index].DXAxisID ==
+             UIInputStuff[i].theDeviceAxis->Axis))
         {
             ShiAssert(DIAxisNames[index].isMapped == true);
             return; // no change
@@ -1168,15 +1266,15 @@ void AxisChangeCB(long, short hittype, C_Base *me)
         else
         {
             // super-special exception case:
-            // I don�t want the mouse axis to act as a throttle 
+            // I don�t want the mouse axis to act as a throttle
             if (DIAxisNames[index].DXDeviceID == SIM_MOUSE)
             {
                 if ((UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE_AXIS) or
                     (UIInputStuff[i].AxisLB == SETUP_ADVANCED_THROTTLE2_AXIS))
                 {
-                    // NEED TO RESET THE OLD NAME HERE 
-                    RePopulateAllListBoxes(win); // no change 
-                    return; // tadaa 
+                    // NEED TO RESET THE OLD NAME HERE
+                    RePopulateAllListBoxes(win); // no change
+                    return; // tadaa
                 }
             }
 
@@ -1186,14 +1284,17 @@ void AxisChangeCB(long, short hittype, C_Base *me)
             // now how do I find out the old axis ? hmm
             for (int j = 0; DIAxisNames[j].DXAxisName; j++)
             {
-                if ((DIAxisNames[j].DXDeviceID == UIInputStuff[i].theDeviceAxis->Device) and 
-                    (DIAxisNames[j].DXAxisID == UIInputStuff[i].theDeviceAxis->Axis))
+                if ((DIAxisNames[j].DXDeviceID ==
+                     UIInputStuff[i].theDeviceAxis->Device) and
+                    (DIAxisNames[j].DXAxisID ==
+                     UIInputStuff[i].theDeviceAxis->Axis))
                 {
                     DIAxisNames[j].isMapped = false;
                 }
             }
 
-            UIInputStuff[i].theDeviceAxis->Device = DIAxisNames[index].DXDeviceID;
+            UIInputStuff[i].theDeviceAxis->Device =
+                DIAxisNames[index].DXDeviceID;
             UIInputStuff[i].theDeviceAxis->Axis = DIAxisNames[index].DXAxisID;
 
             AdvancedControlApplyCB(0, C_TYPE_LMOUSEUP, 0); // Retro 27Mar2004
@@ -1223,17 +1324,21 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (win == NULL) return;
+    if (win == NULL)
+        return;
 
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     // #53 declare client 2 (CONTROLS SETUP table area) here in code — a 3rd [CLIENTAREA] in
     // the .scf window header breaks the parse. x y WIDTH HEIGHT, fitted to the grey panel
     // of WIN_SETUP_NEW (panel 161,125..860,688). Controls tagged [CLIENT] 2 then offset/clip
     // to this rect and the table scrollbars work.
-    win->SetClientArea(163, 155, 682, 528, 2);   // 163 = TBL_LEFT; top 155 (header row at +2, data at +22)
+    win->SetClientArea(
+        163, 155, 682, 528,
+        2); // 163 = TBL_LEFT; top 155 (header row at +2, data at +22)
 
     // #53 client 3 = MFD joystick-cal window (same 140x140 @273,273 as the old CONTROLLERS page in
     // setup.scf). The JOY_INDICATOR crosshair lives on client 3 and is positioned in RefreshJoystickCB.
@@ -1248,12 +1353,12 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
         if (vbar)
         {
-            AxisValueBox.left   = vbar->GetX();
-            AxisValueBox.right  = vbar->GetX() + vbar->GetW();
-            AxisValueBox.top    = vbar->GetY();
+            AxisValueBox.left = vbar->GetX();
+            AxisValueBox.right = vbar->GetX() + vbar->GetW();
+            AxisValueBox.top = vbar->GetY();
             AxisValueBox.bottom = vbar->GetY() + vbar->GetH();
-            AxisValueBoxHScale  = (float)vbar->GetH();
-            AxisValueBoxWScale  = (float)vbar->GetW();
+            AxisValueBoxHScale = (float)vbar->GetH();
+            AxisValueBoxWScale = (float)vbar->GetW();
         }
     }
 
@@ -1269,7 +1374,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     {
         static bool s_ctlTimerAdded = false;
 
-        if ( not s_ctlTimerAdded)
+        if (not s_ctlTimerAdded)
         {
             C_TimerHook *tmr = new C_TimerHook;
 
@@ -1290,14 +1395,14 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     PopulateAllListBoxes(win);
 
     // fill and init the deadzone listboxes..
-    listbox = (C_ListBox*)0;
+    listbox = (C_ListBox *)0;
 
     for (int j = 0; j < AXIS_MAX; j++)
     {
         if (UIInputStuff[j].DeadzoneLB == 0)
             continue;
 
-        listbox = (C_ListBox*)win->FindControl(UIInputStuff[j].DeadzoneLB);
+        listbox = (C_ListBox *)win->FindControl(UIInputStuff[j].DeadzoneLB);
 
         if (listbox)
         {
@@ -1317,7 +1422,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     }
 
     // fill and init the saturation listboxes..
-    listbox = (C_ListBox*)0;
+    listbox = (C_ListBox *)0;
 
     for (int j = 0; j < AXIS_MAX; j++)
     {
@@ -1325,20 +1430,25 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         if (UIInputStuff[j].SaturationLB == 0)
             continue;
 
-        listbox = (C_ListBox*)win->FindControl(UIInputStuff[j].SaturationLB);
+        listbox = (C_ListBox *)win->FindControl(UIInputStuff[j].SaturationLB);
 
         if (listbox)
         {
             int theSat = UIInputStuff[j].theDeviceAxis->Saturation;
 
-            if (theSat == SATURATION_NONE) // no saturation. this value is -1  (do not use unsigned with this )
+            if (theSat ==
+                SATURATION_NONE) // no saturation. this value is -1  (do not use unsigned with this )
                 listbox->SetValue(SETUP_ADVANCED_SAT_NONE);
-            else if (theSat >= g_nSaturationSmall) // 1% saturation, I 'borrowed' the DZ item for this
+            else if (
+                theSat >=
+                g_nSaturationSmall) // 1% saturation, I 'borrowed' the DZ item for this
                 listbox->SetValue(SETUP_ADVANCED_DZ_SMALL);
             else if (theSat >= g_nSaturationMedium)
-                listbox->SetValue(SETUP_ADVANCED_DZ_MEDIUM);// 5% saturation, I 'borrowed' the DZ item for this
+                listbox->SetValue(
+                    SETUP_ADVANCED_DZ_MEDIUM); // 5% saturation, I 'borrowed' the DZ item for this
             else // whatever (smaller than 9500) (MEDIUM)
-                listbox->SetValue(SETUP_ADVANCED_DZ_LARGE); // 10% saturation, I 'borrowed' the DZ item for this
+                listbox->SetValue(
+                    SETUP_ADVANCED_DZ_LARGE); // 10% saturation, I 'borrowed' the DZ item for this
         }
         else
             ShiAssert(false);
@@ -1424,7 +1534,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     else
         ShiAssert(false);
 
-    button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_MOUSELOOK);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_ENABLE_MOUSELOOK);
 
     if (button not_eq NULL)
     {
@@ -1447,11 +1557,12 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     PlayerOptions.SetTrackIR2d(false);
 
     // TrackIR callbacks.. check the funcs itself for more explanation
-    button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_3DTIR);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_ENABLE_3DTIR);
 
     if (button not_eq NULL)
     {
-        if ((g_bEnableTrackIR == true) and (PlayerOptions.Get3dTrackIR() == true))
+        if ((g_bEnableTrackIR == true) and
+            (PlayerOptions.Get3dTrackIR() == true))
             button->SetState(C_STATE_1);
         else
             button->SetState(C_STATE_0);
@@ -1463,7 +1574,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         ShiAssert(false);
 
     // Retro 27Jan2004 - Axisshaping button + callback
-    button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_AXISSHAPING);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_ENABLE_AXISSHAPING);
 
     if (button not_eq NULL)
     {
@@ -1483,7 +1594,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // this config var doesn�t influence loading or unloading FFB effects,
     // however effect playback is (de)activated on it
     // still need to look at centering though
-    button = (C_Button*)win->FindControl(SETUP_ADVANCED_ENABLE_FFB);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_ENABLE_FFB);
 
     if (button not_eq NULL)
     {
@@ -1504,14 +1615,16 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // Retro 15Jan2004 - mouselook sensitivity slider
     C_Slider *sldr;
 
-    sldr = (C_Slider*)win->FindControl(SETUP_ADVANCED_MOUSELOOK_SENS);
+    sldr = (C_Slider *)win->FindControl(SETUP_ADVANCED_MOUSELOOK_SENS);
 
     if (sldr)
     {
-        if ((PlayerOptions.GetMouseLookSensitivity() * 1000) < g_nMouseLookSensMin)
+        if ((PlayerOptions.GetMouseLookSensitivity() * 1000) <
+            g_nMouseLookSensMin)
             PlayerOptions.SetMouseLookSensitivity(g_nMouseLookSensMin / 1000.f);
 
-        if ((PlayerOptions.GetMouseLookSensitivity() * 1000) > g_nMouseLookSensMax)
+        if ((PlayerOptions.GetMouseLookSensitivity() * 1000) >
+            g_nMouseLookSensMax)
             PlayerOptions.SetMouseLookSensitivity(g_nMouseLookSensMax / 1000.f);
 
         int smin, smax, pos;
@@ -1519,14 +1632,15 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         smax = sldr->GetSliderMax();
         smin = sldr->GetSliderMin();
 
-        pos = (int)RESCALE((PlayerOptions.GetMouseLookSensitivity() * 1000.f), g_nMouseLookSensMin, g_nMouseLookSensMax, smin, smax);
+        pos =
+            (int)RESCALE((PlayerOptions.GetMouseLookSensitivity() * 1000.f),
+                         g_nMouseLookSensMin, g_nMouseLookSensMax, smin, smax);
 
         sldr->SetSliderPos(pos);
 
         sldr->SetSliderRange(smin, smax);
         sldr->SetCallback(MouseLookSensitivityCB);
         sldr->Refresh();
-
     }
     else
         ShiAssert(false);
@@ -1534,7 +1648,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // Retro 15Jan2004 ends
 
     // Retro 17JAn2004 - mousewheel sensitivity slider
-    sldr = (C_Slider*)win->FindControl(SETUP_ADVANCED_MOUSEWHEEL_SENS);
+    sldr = (C_Slider *)win->FindControl(SETUP_ADVANCED_MOUSEWHEEL_SENS);
 
     if (sldr)
     {
@@ -1549,14 +1663,15 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         smax = sldr->GetSliderMax();
         smin = sldr->GetSliderMin();
 
-        pos = (int) RESCALE(PlayerOptions.GetMouseWheelSensitivity(), g_nMouseWheelSensMin, g_nMouseWheelSensMax, smin, smax);
+        pos = (int)RESCALE(PlayerOptions.GetMouseWheelSensitivity(),
+                           g_nMouseWheelSensMin, g_nMouseWheelSensMax, smin,
+                           smax);
 
         sldr->SetSliderPos(pos);
 
         sldr->SetSliderRange(smin, smax);
         sldr->SetCallback(MouseWheelSensitivityCB);
         sldr->Refresh();
-
     }
     else
         ShiAssert(false);
@@ -1564,7 +1679,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // Retro 17Jan2004 ends
 
     // Retro 18Jan2004 - keyboard / POV panning sensitivity slider
-    sldr = (C_Slider*)win->FindControl(SETUP_ADVANCED_KEYPOV_SENS);
+    sldr = (C_Slider *)win->FindControl(SETUP_ADVANCED_KEYPOV_SENS);
 
     if (sldr)
     {
@@ -1579,14 +1694,14 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         smax = sldr->GetSliderMax();
         smin = sldr->GetSliderMin();
 
-        pos = (int) RESCALE(PlayerOptions.GetKeyboardPOVPanningSensitivity(), g_nKeyPOVSensMin, g_nKeyPOVSensMax, smin, smax);
+        pos = (int)RESCALE(PlayerOptions.GetKeyboardPOVPanningSensitivity(),
+                           g_nKeyPOVSensMin, g_nKeyPOVSensMax, smin, smax);
 
         sldr->SetSliderPos(pos);
 
         sldr->SetSliderRange(smin, smax);
         sldr->SetCallback(KeyPOVPanningSensitivityCB);
         sldr->Refresh();
-
     }
     else
         ShiAssert(false);
@@ -1598,26 +1713,26 @@ void AdvancedControlCB(long, short hittype, C_Base *)
 
     // #53: OK applies everything (axes + key/button bindings) and closes. The separate Apply
     // button was removed — OK now does apply+close, so Apply is redundant.
-    button = (C_Button*)win->FindControl(OK);
+    button = (C_Button *)win->FindControl(OK);
 
     if (button)
         button->SetCallback(AdvancedControlOKCB);
 
     // #53 "Back" button (SIMULATION image): apply + close + return to the SIMULATION page
-    button = (C_Button*)win->FindControl(SETUP_CONTROL_BACK);
+    button = (C_Button *)win->FindControl(SETUP_CONTROL_BACK);
 
     if (button)
         button->SetCallback(AdvancedControlBackCB);
 
     // Cancel: quit without saving
-    button = (C_Button*)win->FindControl(CANCEL);
+    button = (C_Button *)win->FindControl(CANCEL);
 
     if (button)
         button->SetCallback(AdvancedControlCancelCB);
 
     // #53 bottom-left corner exit (B_BACK) / ESC: same as the SIMULATION-image Back button
     // (apply + close + return to the SIMULATION page).
-    button = (C_Button*)win->FindControl(CLOSE_WINDOW);
+    button = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
     if (button)
         button->SetCallback(AdvancedControlBackCB);
@@ -1625,12 +1740,12 @@ void AdvancedControlCB(long, short hittype, C_Base *)
     // #53 joystick test panel buttons (moved from the old CONTROLLERS page).
     // CALIBRATE actually recenters the stick (RecenterJoystickCB); SET_AB_DETENT: LMB = set AB
     // detent, RMB = set idle cutoff (SetABDetentCB). All persist to axismapping.xml (#57).
-    button = (C_Button*)win->FindControl(CALIBRATE);
+    button = (C_Button *)win->FindControl(CALIBRATE);
 
     if (button)
         button->SetCallback(RecenterJoystickCB);
 
-    button = (C_Button*)win->FindControl(SET_AB_DETENT);
+    button = (C_Button *)win->FindControl(SET_AB_DETENT);
 
     if (button)
         button->SetCallback(SetABDetentCB);
@@ -1641,7 +1756,7 @@ void AdvancedControlCB(long, short hittype, C_Base *)
         if (UIInputStuff[j].AxisLB == 0)
             continue;
 
-        listbox = (C_ListBox*)win->FindControl(UIInputStuff[j].AxisLB);
+        listbox = (C_ListBox *)win->FindControl(UIInputStuff[j].AxisLB);
 
         if (listbox)
             listbox->SetCallback(AxisChangeCB);
@@ -1726,9 +1841,12 @@ void SetABDetentCB(long, short hittype, C_Base *)
     }
 }
 
-void ButtonAssignAutodetectPoll(void); // #18: button autodetect (defined below in the assign-window block)
-void RebuildKeyListDeferred(void);     // #52 deferred key-list rebuild (defined below)
-void ControlTab_KeepButtonAssignFront(void); // Artscout - 2026: modal — keep assign dialog on top (defined below)
+void ButtonAssignAutodetectPoll(
+    void); // #18: button autodetect (defined below in the assign-window block)
+void RebuildKeyListDeferred(
+    void); // #52 deferred key-list rebuild (defined below)
+void ControlTab_KeepButtonAssignFront(
+    void); // Artscout - 2026: modal — keep assign dialog on top (defined below)
 
 void RefreshJoystickCB(long, short, C_Base *)
 {
@@ -1737,12 +1855,13 @@ void RefreshJoystickCB(long, short, C_Base *)
     {
         g_keyListNeedRebuild = false;
         RebuildKeyListDeferred();
-        return;   // list rebuilt this frame; the rest is updated from the next one
+        return; // list rebuilt this frame; the rest is updated from the next one
     }
 
     static SIM_FLOAT JoyXPrev, JoyYPrev, RudderPrev, ThrottlePrev, ABDetentPrev;
     static SIM_FLOAT IdleCutoffPrev; // Retro 1Feb2004
-    static DWORD ButtonPrev[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES], POVPrev; // Retro 31Dec2003
+    static DWORD ButtonPrev[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES],
+        POVPrev; // Retro 31Dec2003
 
     static int state = 1; // Retro 26Dec2003
     C_Bitmap *bmap;
@@ -1773,7 +1892,9 @@ void RefreshJoystickCB(long, short, C_Base *)
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
         //test to see if joystick moved, if so update the control
-        if ((IO.analog[AXIS_ROLL].engrValue not_eq JoyXPrev) or (IO.analog[AXIS_PITCH].engrValue not_eq JoyYPrev) or InitializeValueBars) // Retro 31Dec2003
+        if ((IO.analog[AXIS_ROLL].engrValue not_eq JoyXPrev) or
+            (IO.analog[AXIS_PITCH].engrValue not_eq JoyYPrev) or
+            InitializeValueBars) // Retro 31Dec2003
 #endif
         {
             bmap = (C_Bitmap *)win->FindControl(JOY_INDICATOR);
@@ -1781,10 +1902,13 @@ void RefreshJoystickCB(long, short, C_Base *)
             if (bmap not_eq NULL)
             {
                 bmap->Refresh();
-                bmap->SetX((int)(JoyScale + IO.analog[AXIS_ROLL].engrValue * JoyScale)); // Retro 31Dec2003
-                bmap->SetY((int)(JoyScale + IO.analog[AXIS_PITCH].engrValue * JoyScale)); // Retro 31Dec2003
+                bmap->SetX((int)(JoyScale + IO.analog[AXIS_ROLL].engrValue *
+                                                JoyScale)); // Retro 31Dec2003
+                bmap->SetY((int)(JoyScale + IO.analog[AXIS_PITCH].engrValue *
+                                                JoyScale)); // Retro 31Dec2003
                 bmap->Refresh();
-                win->RefreshClient(3);   // #53 JOY_INDICATOR is on client 3 (MFD cal window)
+                win->RefreshClient(
+                    3); // #53 JOY_INDICATOR is on client 3 (MFD cal window)
             }
         }
 
@@ -1793,7 +1917,9 @@ void RefreshJoystickCB(long, short, C_Base *)
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
             //test to see if rudder moved, if so update the control
-            if (((IO.analog[AXIS_YAW].engrValue not_eq RudderPrev) or InitializeValueBars) and state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_YAW].engrValue not_eq RudderPrev) or
+                 InitializeValueBars) and
+                state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(RUDDER);
@@ -1801,7 +1927,10 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line not_eq NULL)
                 {
                     line->Refresh();
-                    line->SetY((int)(Rudder.top + RudderScale - IO.analog[AXIS_YAW].engrValue * RudderScale + .5)); // Retro 31Dec2003
+                    line->SetY(
+                        (int)(Rudder.top + RudderScale -
+                              IO.analog[AXIS_YAW].engrValue * RudderScale +
+                              .5)); // Retro 31Dec2003
 
                     if (line->GetY() < Rudder.top)
                         line->SetY(Rudder.top);
@@ -1819,7 +1948,9 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             //test to see if throttle moved, if so update the control
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
-            if (((IO.analog[AXIS_THROTTLE].engrValue not_eq ThrottlePrev) or InitializeValueBars) and state) // Retro 31Dec2003
+            if (((IO.analog[AXIS_THROTTLE].engrValue not_eq ThrottlePrev) or
+                 InitializeValueBars) and
+                state) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(THROTTLE);
@@ -1827,7 +1958,11 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line not_eq NULL)
                 {
                     line->Refresh();
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].ioVal / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
+                    line->SetY(FloatToInt32(
+                        static_cast<float>(Throttle.top +
+                                           IO.analog[AXIS_THROTTLE].ioVal /
+                                               15000.0F * ThrottleScale +
+                                           .5))); // Retro 31Dec2003
 
                     if (line->GetY() < Throttle.top)
                         line->SetY(Throttle.top);
@@ -1848,9 +1983,17 @@ void RefreshJoystickCB(long, short, C_Base *)
                 line->Refresh();
 
                 if (IO.AnalogIsUsed(AXIS_THROTTLE2))
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE2].ioVal / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
+                    line->SetY(FloatToInt32(
+                        static_cast<float>(Throttle.top +
+                                           IO.analog[AXIS_THROTTLE2].ioVal /
+                                               15000.0F * ThrottleScale +
+                                           .5))); // Retro 31Dec2003
                 else
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].ioVal / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
+                    line->SetY(FloatToInt32(
+                        static_cast<float>(Throttle.top +
+                                           IO.analog[AXIS_THROTTLE].ioVal /
+                                               15000.0F * ThrottleScale +
+                                           .5))); // Retro 31Dec2003
 
                 if (line->GetY() < Throttle.top)
                     line->SetY(Throttle.top);
@@ -1866,7 +2009,8 @@ void RefreshJoystickCB(long, short, C_Base *)
 
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (ABDetentPrev not_eq IO.analog[AXIS_THROTTLE].center or InitializeValueBars) // Retro 31Dec2003
+            if (ABDetentPrev not_eq IO.analog[AXIS_THROTTLE].center or
+                InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(AB_DETENT);
@@ -1874,7 +2018,11 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line not_eq NULL)
                 {
                     line->Refresh();
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].center / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
+                    line->SetY(FloatToInt32(
+                        static_cast<float>(Throttle.top +
+                                           IO.analog[AXIS_THROTTLE].center /
+                                               15000.0F * ThrottleScale +
+                                           .5))); // Retro 31Dec2003
 
                     if (line->GetY() <= Throttle.top - 1)
                         line->SetY(Throttle.top);
@@ -1888,7 +2036,8 @@ void RefreshJoystickCB(long, short, C_Base *)
 
 #ifndef UPDATE_ALWAYS // Retro 13Jan2004
 
-            if (IdleCutoffPrev not_eq IO.analog[AXIS_THROTTLE].cutoff or InitializeValueBars) // Retro 31Dec2003
+            if (IdleCutoffPrev not_eq IO.analog[AXIS_THROTTLE].cutoff or
+                InitializeValueBars) // Retro 31Dec2003
 #endif
             {
                 line = (C_Line *)win->FindControl(SETUP_IDLE_CUTOFF);
@@ -1896,7 +2045,11 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (line not_eq NULL)
                 {
                     line->Refresh();
-                    line->SetY(FloatToInt32(static_cast<float>(Throttle.top + IO.analog[AXIS_THROTTLE].cutoff / 15000.0F * ThrottleScale + .5))); // Retro 31Dec2003
+                    line->SetY(FloatToInt32(
+                        static_cast<float>(Throttle.top +
+                                           IO.analog[AXIS_THROTTLE].cutoff /
+                                               15000.0F * ThrottleScale +
+                                           .5))); // Retro 31Dec2003
 
                     if (line->GetY() <= Throttle.top - 1)
                         line->SetY(Throttle.top);
@@ -1915,7 +2068,8 @@ void RefreshJoystickCB(long, short, C_Base *)
         // EDGE detection for button assignment: which buttons were held in the previous frame.
         // Without it, 3-position switches (permanently "pressed") hijacked the assignment —
         // you could not assign ANY button. Now we assign only on a NEW press.
-        static char s_editPrevDigital[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {0};
+        static char s_editPrevDigital[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {
+            0};
         // #51 "armed-after-release": a button becomes "armed" (ready to be shown/
         // assigned) ONLY after we have seen it RELEASED at least once. Permanently pressed ones
         // (always =1: stuck buttons, 3-pos switches in the active position) never get armed ->
@@ -1935,16 +2089,19 @@ void RefreshJoystickCB(long, short, C_Base *)
             g_editPollReseed = false;
         }
 
-        for (i = 0; i < SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES; i++) // Retro 31Dec2003
+        for (i = 0; i < SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES;
+             i++) // Retro 31Dec2003
         {
             // Retro 31Dec2003:
             // actually I only want to show the buttons on the flight control device here..
             // if FFB is enabled then the user also gets effects
             if (AxisMap.FlightControlDevice not_eq -1)
             {
-                int theIndex = (AxisMap.FlightControlDevice - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL;
+                int theIndex = (AxisMap.FlightControlDevice - SIM_JOYSTICK1) *
+                               SIMLIB_MAX_DIGITAL;
 
-                if ((i >= (unsigned long) theIndex) and (i  < (unsigned long) theIndex + 8))
+                if ((i >= (unsigned long)theIndex) and
+                    (i < (unsigned long)theIndex + 8))
                 {
                     // Retro 14Feb2004 - only do this when FFB is available (duh)
                     if ((hasForceFeedback) and (PlayerOptions.GetFFB()))
@@ -1977,7 +2134,7 @@ void RefreshJoystickCB(long, short, C_Base *)
 
             // #51 arm a button as soon as we see it RELEASED (cur==0). A permanently pressed one
             // never reaches here -> stays unarmed -> is filtered out below.
-            if ( not IO.digital[i])
+            if (not IO.digital[i])
                 s_editArmed[i] = 1;
 
             // On the EDGE (new press) AND only if the button is armed (was released at least once):
@@ -1996,15 +2153,21 @@ void RefreshJoystickCB(long, short, C_Base *)
                     // (as filled in sijoy.cpp: gDIDevNames[SIM_JOYSTICK1+joy]); SIM index =
                     // SIM_JOYSTICK1 + i/128, local button = i%128+1. The name is truncated (%.14s).
                     {
-                        int dev      = SIM_JOYSTICK1 + (i / SIMLIB_MAX_DIGITAL);
+                        int dev = SIM_JOYSTICK1 + (i / SIMLIB_MAX_DIGITAL);
                         int localBtn = i % SIMLIB_MAX_DIGITAL;
-                        const char *dn = (dev >= SIM_JOYSTICK1 and dev < SIM_NUMDEVICES
-                                          and gDIDevNames[dev]) ? gDIDevNames[dev] : NULL;
+                        const char *dn =
+                            (dev >= SIM_JOYSTICK1 and dev < SIM_NUMDEVICES and
+                             gDIDevNames[dev]) ?
+                                gDIDevNames[dev] :
+                                NULL;
 
                         if (dn)
-                            sprintf(string, "%.14s  %s %d", dn, gStringMgr->GetString(TXT_BUTTON), localBtn + 1);
+                            sprintf(string, "%.14s  %s %d", dn,
+                                    gStringMgr->GetString(TXT_BUTTON),
+                                    localBtn + 1);
                         else
-                            sprintf(string, "%s %d", gStringMgr->GetString(TXT_BUTTON), i + 1);
+                            sprintf(string, "%s %d",
+                                    gStringMgr->GetString(TXT_BUTTON), i + 1);
                     }
                     text->SetText(string);
                     text->Refresh();
@@ -2014,7 +2177,9 @@ void RefreshJoystickCB(long, short, C_Base *)
                 if (KeyVar.EditKey)
                 {
                     button = (C_Button *)win->FindControl(KeyVar.CurrControl);
-                    UserFunctionTable.SetButtonFunction(i, (InputFunctionType)button->GetUserPtr(FUNCTION_PTR), button->GetUserNumber(BUTTON_ID));
+                    UserFunctionTable.SetButtonFunction(
+                        i, (InputFunctionType)button->GetUserPtr(FUNCTION_PTR),
+                        button->GetUserNumber(BUTTON_ID));
                     KeyVar.EditKey = FALSE;
                     KeyVar.Modified = TRUE;
                     SetButtonColor(button);
@@ -2033,13 +2198,16 @@ void RefreshJoystickCB(long, short, C_Base *)
                     {
                         int i = 0;
 
-                        C_Button *tButton = (C_Button *)win->FindControl(KEYCODES);
+                        C_Button *tButton =
+                            (C_Button *)win->FindControl(KEYCODES);
 
                         while (tButton)
                         {
-                            if (func == (InputFunctionType)tButton->GetUserPtr(5))
+                            if (func ==
+                                (InputFunctionType)tButton->GetUserPtr(5))
                             {
-                                C_Text *temp = (C_Text *)win->FindControl(tButton->GetID() - KEYCODES + MAPPING);
+                                C_Text *temp = (C_Text *)win->FindControl(
+                                    tButton->GetID() - KEYCODES + MAPPING);
 
                                 if (temp)
                                 {
@@ -2057,7 +2225,8 @@ void RefreshJoystickCB(long, short, C_Base *)
                             }
                             else
                             {
-                                tButton = (C_Button *)win->FindControl(KEYCODES + i++);
+                                tButton = (C_Button *)win->FindControl(
+                                    KEYCODES + i++);
                             }
                         }
                     }
@@ -2088,9 +2257,10 @@ void RefreshJoystickCB(long, short, C_Base *)
                 extern bool g_baActive;
                 if (not g_baActive)
                 {
-                    InputFunctionType sfunc = UserFunctionTable.GetButtonFunction(i, NULL);
+                    InputFunctionType sfunc =
+                        UserFunctionTable.GetButtonFunction(i, NULL);
                     C_Button *anchor = (C_Button *)win->FindControl(KEYCODES);
-                    C_Line   *vln    = (C_Line *)win->FindControl(VLINE);
+                    C_Line *vln = (C_Line *)win->FindControl(VLINE);
 
                     if (sfunc and anchor and vln)
                     {
@@ -2098,9 +2268,11 @@ void RefreshJoystickCB(long, short, C_Base *)
 
                         for (int n = 0; n < NumDispKeys; ++n)
                         {
-                            C_Button *rb = (C_Button *)win->FindControl(KEYCODES + n);
+                            C_Button *rb =
+                                (C_Button *)win->FindControl(KEYCODES + n);
 
-                            if (rb and (InputFunctionType)rb->GetUserPtr(FUNCTION_PTR) == sfunc)
+                            if (rb and (InputFunctionType) rb->GetUserPtr(
+                                           FUNCTION_PTR) == sfunc)
                             {
                                 srow = rb;
                                 break;
@@ -2111,9 +2283,11 @@ void RefreshJoystickCB(long, short, C_Base *)
 
                         if (srow and rowH > 0)
                         {
-                            long kc   = anchor->GetClient();
-                            int  count = srow->GetID() - KEYCODES;
-                            int  lead  = (count > 2) ? (count - 2) : 0;        // 2-row lead-in for context
+                            long kc = anchor->GetClient();
+                            int count = srow->GetID() - KEYCODES;
+                            int lead = (count > 2) ?
+                                           (count - 2) :
+                                           0; // 2-row lead-in for context
 
                             // Draw model (cwindow.cpp): a control's screen Y = control.Y + VY_, visible window
                             // = [ClientArea.top, ClientArea.bottom]; SetVirtualY(y) sets VY_ = -y. So to put the
@@ -2122,9 +2296,12 @@ void RefreshJoystickCB(long, short, C_Base *)
                             UI95_RECT ca = win->GetClientArea(kc);
                             long y = anchor->GetY() + rowH * lead - ca.top;
 
-                            win->SetVirtualY(y, kc);       // scroll the client to the target row
-                            win->ScanClientArea(kc);       // clamp to range + re-sync scrollbar visibility
-                            win->AdjustScrollbar(kc);      // move the slider to match
+                            win->SetVirtualY(
+                                y, kc); // scroll the client to the target row
+                            win->ScanClientArea(
+                                kc); // clamp to range + re-sync scrollbar visibility
+                            win->AdjustScrollbar(
+                                kc); // move the slider to match
 
                             // Artscout - 2026 (#95): highlight the target row's text -- rows colour their text
                             // via SetFgColor(0,...) (SetButtonColor: green/white). Set it yellow here and
@@ -2133,14 +2310,18 @@ void RefreshJoystickCB(long, short, C_Base *)
                             static int s_hiliteRow = -1;
                             if (s_hiliteRow >= 0 and s_hiliteRow != count)
                             {
-                                C_Button *prev = (C_Button *)win->FindControl(KEYCODES + s_hiliteRow);
-                                if (prev) SetButtonColor(prev);   // restore normal green/white
+                                C_Button *prev = (C_Button *)win->FindControl(
+                                    KEYCODES + s_hiliteRow);
+                                if (prev)
+                                    SetButtonColor(
+                                        prev); // restore normal green/white
                             }
-                            srow->SetFgColor(0, RGB(255, 255, 0));   // highlight: yellow text
+                            srow->SetFgColor(
+                                0, RGB(255, 255, 0)); // highlight: yellow text
                             srow->Refresh();
                             s_hiliteRow = count;
 
-                            win->RefreshClient(kc);        // redraw the list
+                            win->RefreshClient(kc); // redraw the list
                         }
                     }
                 }
@@ -2157,7 +2338,8 @@ void RefreshJoystickCB(long, short, C_Base *)
         {
             Direction = 0;
 
-            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and IO.povHatAngle[i] not_eq -1)
+            if ((IO.povHatAngle[i] < 2250 or IO.povHatAngle[i] > 33750) and
+                IO.povHatAngle[i] not_eq -1)
             {
                 flags or_eq 0x01;
                 Direction = 0;
@@ -2203,7 +2385,10 @@ void RefreshJoystickCB(long, short, C_Base *)
                 C_Button *button;
 
                 button = (C_Button *)win->FindControl(KeyVar.CurrControl);
-                UserFunctionTable.SetPOVFunction(i, Direction, (InputFunctionType)button->GetUserPtr(FUNCTION_PTR), button->GetUserNumber(BUTTON_ID));
+                UserFunctionTable.SetPOVFunction(
+                    i, Direction,
+                    (InputFunctionType)button->GetUserPtr(FUNCTION_PTR),
+                    button->GetUserNumber(BUTTON_ID));
                 KeyVar.EditKey = FALSE;
                 KeyVar.Modified = TRUE;
                 SetButtonColor(button);
@@ -2219,7 +2404,9 @@ void RefreshJoystickCB(long, short, C_Base *)
                 {
                     char button[_MAX_PATH];
                     text2->Refresh();
-                    sprintf(button, "%s %d : %s", gStringMgr->GetString(TXT_POV), i + 1, gStringMgr->GetString(TXT_UP + Direction));
+                    sprintf(button, "%s %d : %s",
+                            gStringMgr->GetString(TXT_POV), i + 1,
+                            gStringMgr->GetString(TXT_UP + Direction));
                     text2->SetText(button);
                     text2->Refresh();
                 }
@@ -2239,7 +2426,8 @@ void RefreshJoystickCB(long, short, C_Base *)
                     {
                         if (func == (InputFunctionType)tButton->GetUserPtr(5))
                         {
-                            C_Text *temp = (C_Text *)win->FindControl(tButton->GetID() - KEYCODES + MAPPING);
+                            C_Text *temp = (C_Text *)win->FindControl(
+                                tButton->GetID() - KEYCODES + MAPPING);
 
                             if (temp)
                             {
@@ -2257,7 +2445,8 @@ void RefreshJoystickCB(long, short, C_Base *)
                         }
                         else
                         {
-                            tButton = (C_Button *)win->FindControl(KEYCODES + i++);
+                            tButton =
+                                (C_Button *)win->FindControl(KEYCODES + i++);
                         }
                     }
                 }
@@ -2325,7 +2514,8 @@ void RefreshJoystickCB(long, short, C_Base *)
         ThrottlePrev = IO.analog[AXIS_THROTTLE].engrValue;
         RudderPrev = IO.analog[AXIS_YAW].engrValue;
         ABDetentPrev = static_cast<float>(IO.analog[AXIS_THROTTLE].center);
-        IdleCutoffPrev = static_cast<float>(IO.analog[AXIS_THROTTLE].cutoff); // Retro 1Feb2004
+        IdleCutoffPrev = static_cast<float>(
+            IO.analog[AXIS_THROTTLE].cutoff); // Retro 1Feb2004
 
         POVPrev = IO.povHatAngle[0];
     }
@@ -2336,7 +2526,8 @@ void RefreshJoystickCB(long, short, C_Base *)
     // Retro - trying to get some of this shit into my advanced controller window..
     win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     for (int i = 0; i < AXIS_MAX; i++)
     {
@@ -2354,9 +2545,16 @@ void RefreshJoystickCB(long, short, C_Base *)
             if (IO.AnalogIsUsed(UIInputStuff[i].InGameAxis) == true)
             {
                 if (AxisSetup[UIInputStuff[i].InGameAxis].isUniPolar == true)
-                    newWidth  = (float) FloatToInt32(static_cast<float>(IO.analog[UIInputStuff[i].InGameAxis].ioVal / 15000.0F * AxisValueBoxWScale + .5));
+                    newWidth = (float)FloatToInt32(static_cast<float>(
+                        IO.analog[UIInputStuff[i].InGameAxis].ioVal / 15000.0F *
+                            AxisValueBoxWScale +
+                        .5));
                 else
-                    newWidth = (float) FloatToInt32(static_cast<float>(AxisValueBoxWScale / 2. + IO.analog[UIInputStuff[i].InGameAxis].ioVal / 20000.0F * AxisValueBoxWScale + .5));
+                    newWidth = (float)FloatToInt32(static_cast<float>(
+                        AxisValueBoxWScale / 2. +
+                        IO.analog[UIInputStuff[i].InGameAxis].ioVal / 20000.0F *
+                            AxisValueBoxWScale +
+                        .5));
 
                 if (newWidth < 0)
                 {
@@ -2381,15 +2579,15 @@ void RefreshJoystickCB(long, short, C_Base *)
             ShiAssert(false);
         }
     }
-}//RefreshJoystickCB
+} //RefreshJoystickCB
 
 SIM_INT CalibrateFile(void)
 {
     int i, numAxis;
-    FILE* filePtr;
+    FILE *filePtr;
 
     char fileName[_MAX_PATH];
-    sprintf(fileName, "%s\\config\\joystick.dat", FalconDataDirectory);
+    sprintf(fileName, "%s/config/joystick.dat", FalconDataDirectory);
 
     filePtr = fopen(fileName, "rb");
 
@@ -2674,7 +2872,7 @@ SIM_INT Calibrate ( void )
  }
 
  char filename[_MAX_PATH];
- sprintf(filename,"%s\\config\\joystick.dat",FalconDataDirectory);
+ sprintf(filename,"%s/config/joystick.dat",FalconDataDirectory);
  filePtr = fopen (filename, "wb");
  if(filePtr)
  {
@@ -2806,7 +3004,7 @@ void DoShiftStates(char *mods, int ShiftStates)
 //                 (Keyboard) = keyboard combos as before; >= SIM_JOYSTICK1 = the button
 //                 of that joystick assigned to the function (or empty).
 char g_keyFilter[64] = "";
-int  g_keyDevFilter = -1;
+int g_keyDevFilter = -1;
 // true = UpdateKeyMapList only rebuilds the rows (without re-reading the function table),
 // so the filter does not lose unsaved button assignments (buttonTable in memory).
 static bool g_keyListDisplayOnly = false;
@@ -2814,15 +3012,18 @@ static bool g_keyListDisplayOnly = false;
 // UpdateKeyMapList is defined below — forward declaration for KeystrokeCB/SaveKeyMapList.
 int UpdateKeyMapList(char *fname, int flag);
 
-BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftStates, long)
+BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char,
+                 unsigned char ShiftStates, long)
 {
     if (DKScanCode == DIK_ESCAPE)
     {
         // #22: ESC while the search field is active — clear text, reset the filter, release
         // focus (restore default key scanning) and do NOT close the settings window.
-        C_Window *sw = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN); // #53 list is in the new window
+        C_Window *sw = gMainHandler->FindWindow(
+            SETUP_CONTROL_ADVANCED_WIN); // #53 list is in the new window
 
-        if (sw and sw->GetCurControl() and sw->GetCurControl()->GetID() == SETUP_KEY_SEARCH)
+        if (sw and sw->GetCurControl() and
+            sw->GetCurControl()->GetID() == SETUP_KEY_SEARCH)
         {
             ((C_EditBox *)sw->GetCurControl())->SetText("");
             sw->ClearActiveControl();
@@ -2830,27 +3031,30 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             g_keyListDisplayOnly = true;
             UpdateKeyMapList(PlayerOptions.GetKeyfile(), TRUE);
             g_keyListDisplayOnly = false;
-            return TRUE;   // ate the ESC — do not close the window
+            return TRUE; // ate the ESC — do not close the window
         }
 
         return FALSE;
     }
 
-    if (Cluster == 10005) // #53 the button list is now in the new window's CONTROLS SETUP cluster
+    if (Cluster ==
+        10005) // #53 the button list is now in the new window's CONTROLS SETUP cluster
     {
         // #22: if the function search field is active — do NOT intercept keys (otherwise the window's
         // KB callback eats the character before the editbox and nothing is typed into search). Return
         // FALSE → C_Window::CheckKeyboard routes the key to the active control (editbox).
         {
-            C_Window *sw = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN); // #53 list is in the new window
+            C_Window *sw = gMainHandler->FindWindow(
+                SETUP_CONTROL_ADVANCED_WIN); // #53 list is in the new window
 
-            if (sw and sw->GetCurControl() and sw->GetCurControl()->GetID() == SETUP_KEY_SEARCH)
+            if (sw and sw->GetCurControl() and
+                sw->GetCurControl()->GetID() == SETUP_KEY_SEARCH)
                 return FALSE;
         }
 
-        if (DKScanCode == DIK_LSHIFT or DKScanCode == DIK_RSHIFT or \
-            DKScanCode == DIK_LCONTROL or DKScanCode == DIK_RCONTROL or \
-            DKScanCode == DIK_LMENU or DKScanCode == DIK_RMENU or \
+        if (DKScanCode == DIK_LSHIFT or DKScanCode == DIK_RSHIFT or
+            DKScanCode == DIK_LCONTROL or DKScanCode == DIK_RCONTROL or
+            DKScanCode == DIK_LMENU or DKScanCode == DIK_RMENU or
             DKScanCode == 0x45)
             return TRUE;
 
@@ -2860,12 +3064,15 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             ShiftStates and_eq compl _SHIFT_DOWN_;
 
         //int flags = ShiftStates;
-        int flags = ShiftStates + (KeyVar.CommandsKeyCombo << SECOND_KEY_SHIFT) + (KeyVar.CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT);
+        int flags = ShiftStates +
+                    (KeyVar.CommandsKeyCombo << SECOND_KEY_SHIFT) +
+                    (KeyVar.CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT);
 
         C_Window *win;
         int CommandCombo = 0;
 
-        win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window
+        win = gMainHandler->FindWindow(
+            SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window
 
         if (KeyVar.EditKey)
         {
@@ -2873,12 +3080,18 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             long ID;
 
             button = (C_Button *)win->FindControl(KeyVar.CurrControl);
-            flags = ShiftStates + (button->GetUserNumber(FLAGS) bitand SECOND_KEY_MASK);
-            KeyVar.CommandsKeyCombo = (button->GetUserNumber(FLAGS) bitand KEY1_MASK) >> SECOND_KEY_SHIFT;
-            KeyVar.CommandsKeyComboMod = (button->GetUserNumber(FLAGS) bitand MOD1_MASK) >> SECOND_KEY_MOD_SHIFT;
+            flags = ShiftStates +
+                    (button->GetUserNumber(FLAGS) bitand SECOND_KEY_MASK);
+            KeyVar.CommandsKeyCombo =
+                (button->GetUserNumber(FLAGS) bitand KEY1_MASK) >>
+                SECOND_KEY_SHIFT;
+            KeyVar.CommandsKeyComboMod =
+                (button->GetUserNumber(FLAGS) bitand MOD1_MASK) >>
+                SECOND_KEY_MOD_SHIFT;
 
             //here is where we need to change the key combo for the function
-            if (DKScanCode not_eq button->GetUserNumber(KEY2) or flags not_eq button->GetUserNumber(FLAGS))
+            if (DKScanCode not_eq button->GetUserNumber(KEY2) or
+                flags not_eq button->GetUserNumber(FLAGS))
             {
                 char keydescrip[_MAX_PATH];
                 keydescrip[0] = 0;
@@ -2888,7 +3101,8 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                 theFunc = (InputFunctionType)button->GetUserPtr(FUNCTION_PTR);
 
                 //is the key combo already used?
-                if (oldFunc = UserFunctionTable.GetFunction(DKScanCode, flags, &pmouse, &pbutton))
+                if (oldFunc = UserFunctionTable.GetFunction(DKScanCode, flags,
+                                                            &pmouse, &pbutton))
                 {
                     C_Button *temp;
 
@@ -2898,7 +3112,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
 
                     //there is a function mapped but it's not visible
                     //don't allow user to remap this key combo
-                    if ( not ID and oldFunc)
+                    if (not ID and oldFunc)
                         return TRUE;
 
 
@@ -2915,11 +3129,15 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                 }
 
                 //remove function that's being remapped from it's old place
-                UserFunctionTable.RemoveFunction(button->GetUserNumber(KEY2), button->GetUserNumber(FLAGS));
+                UserFunctionTable.RemoveFunction(button->GetUserNumber(KEY2),
+                                                 button->GetUserNumber(FLAGS));
 
                 //add function into it's new place
-                UserFunctionTable.AddFunction(DKScanCode, flags, button->GetUserNumber(BUTTON_ID), button->GetUserNumber(MOUSE_SIDE), theFunc);
-                UserFunctionTable.SetControl(DKScanCode, flags, KeyVar.CurrControl);
+                UserFunctionTable.AddFunction(
+                    DKScanCode, flags, button->GetUserNumber(BUTTON_ID),
+                    button->GetUserNumber(MOUSE_SIDE), theFunc);
+                UserFunctionTable.SetControl(DKScanCode, flags,
+                                             KeyVar.CurrControl);
 
                 //mark that the keymapping needs to be saved
                 KeyVar.Modified = TRUE;
@@ -2934,7 +3152,8 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
 
                 // JPO crash log detection.
                 ShiAssert(DKScanCode >= 0 and DKScanCode < 256);
-                ShiAssert(FALSE == IsBadStringPtr(KeyDescrips[DKScanCode], MAX_PATH));
+                ShiAssert(FALSE ==
+                          IsBadStringPtr(KeyDescrips[DKScanCode], MAX_PATH));
 
                 if (KeyVar.CommandsKeyCombo > 0)
                 {
@@ -2942,7 +3161,9 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                     DoShiftStates(mods, ShiftStates);
 
                     if (KeyDescrips[DKScanCode])
-                        _stprintf(totalDescrip, "%s%s : %s%s", firstKey, KeyDescrips[KeyVar.CommandsKeyCombo], mods, KeyDescrips[DKScanCode]);
+                        _stprintf(totalDescrip, "%s%s : %s%s", firstKey,
+                                  KeyDescrips[KeyVar.CommandsKeyCombo], mods,
+                                  KeyDescrips[DKScanCode]);
                 }
                 else
                 {
@@ -2972,7 +3193,9 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                     {
                         SetButtonColor(temp);
                         temp->SetUserNumber(KEY2, -1);
-                        temp->SetUserNumber(FLAGS, temp->GetUserNumber(FLAGS) bitand SECOND_KEY_MASK);
+                        temp->SetUserNumber(FLAGS,
+                                            temp->GetUserNumber(FLAGS) bitand
+                                                SECOND_KEY_MASK);
                         temp->Refresh();
                         temp->SetText(0, TXT_NO_KEY);
                         temp->Refresh();
@@ -3039,7 +3262,9 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                 {
                     DoShiftStates(firstKey, KeyVar.CommandsKeyComboMod);
                     DoShiftStates(mods, ShiftStates);
-                    _stprintf(totalDescrip, "%s%s : %s%s", firstKey, KeyDescrips[KeyVar.CommandsKeyCombo], mods, KeyDescrips[DKScanCode]);
+                    _stprintf(totalDescrip, "%s%s : %s%s", firstKey,
+                              KeyDescrips[KeyVar.CommandsKeyCombo], mods,
+                              KeyDescrips[DKScanCode]);
                 }
                 else
                 {
@@ -3055,7 +3280,8 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
             }
 
             //flags = flags + (KeyVar.CommandsKeyCombo << SECOND_KEY_SHIFT) + (KeyVar.CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT);
-            function = UserFunctionTable.GetFunction(DKScanCode, flags, &pmouse, &pbutton);
+            function = UserFunctionTable.GetFunction(DKScanCode, flags, &pmouse,
+                                                     &pbutton);
 
             text = (C_Text *)win->FindControl(FUNCTION_LIST);
 
@@ -3069,7 +3295,7 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                     C_Button *btn;
                     long ID;
 
-                    ID = UserFunctionTable.GetControl(DKScanCode, flags) ;
+                    ID = UserFunctionTable.GetControl(DKScanCode, flags);
 
                     CommandCombo = 0;
 
@@ -3100,12 +3326,13 @@ BOOL KeystrokeCB(unsigned char DKScanCode, unsigned char, unsigned char ShiftSta
                     else
                         text->SetText(TXT_NO_FUNCTION);
 
-                    if ( not KeyVar.EditKey and temp)
+                    if (not KeyVar.EditKey and temp)
                     {
                         UI95_RECT Client;
                         Client = win->GetClientArea(temp->GetClient());
 
-                        win->SetVirtualY(temp->GetY() - Client.top, temp->GetClient());
+                        win->SetVirtualY(temp->GetY() - Client.top,
+                                         temp->GetClient());
                         win->AdjustScrollbar(temp->GetClient());
                         win->RefreshClient(temp->GetClient());
                     }
@@ -3140,30 +3367,37 @@ void BuildControllerList(C_ListBox *lbox);
 // Modifier — keyboard only. Device identity is stable (GUID, #19).
 /****************************************************************************/
 static InputFunctionType g_baTargetFunc = NULL; // function being assigned
-static int  g_baTargetCpId = 0;                 // cockpit button id (from the source row)
-static long g_baSourceCtrl = 0;                 // the source row control on the main screen
-static int  g_baDevice = -1;                    // SIM index of the selected device
-static int  g_baMod = 0;                        // selected modifier (0..7, keyboard)
-static char g_baSearch[64] = {0};               // function search string (not used in the popup)
-static int  g_baStagedButton = -1;              // selected/detected button (applied on OK)
-static bool g_baStagedClear = false;            // #53 "Clear" staged: OK clears this function's binding on g_baDevice
-static int  g_baOpenDevice = -1;                // #53 device to preselect when opening (set by a device-cell click)
-bool        g_baActive = false;                 // assign window is open (autodetect gate)
+static int g_baTargetCpId = 0; // cockpit button id (from the source row)
+static long g_baSourceCtrl = 0; // the source row control on the main screen
+static int g_baDevice = -1; // SIM index of the selected device
+static int g_baMod = 0; // selected modifier (0..7, keyboard)
+static char g_baSearch[64] = {
+    0}; // function search string (not used in the popup)
+static int g_baStagedButton = -1; // selected/detected button (applied on OK)
+static bool g_baStagedClear =
+    false; // #53 "Clear" staged: OK clears this function's binding on g_baDevice
+static int g_baOpenDevice =
+    -1; // #53 device to preselect when opening (set by a device-cell click)
+bool g_baActive = false; // assign window is open (autodetect gate)
 // Artscout - 2026: g_baActive is the *autodetect* gate and is cleared by the poll once a button
 // is captured, so it can't tell whether the window is still on screen. This dedicated flag tracks
 // the window's open/closed state for the modal behaviour (block leaving options while it is up).
-bool        g_baWindowOpen = false;
-bool        g_baPollInit = false;               // first poll frame: only capture prev (fresh IO)
-short       g_baPrevDigital[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {0}; // prev button state (for CHANGE detection)
-short       g_baStable[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {0};     // #15: consecutive polls in the current state (since the last change)
-short       g_baChanged[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {0};    // #15: button changed state AFTER the window opened (excludes untouched "permanently pressed" ones)
-short       g_baArmed[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {0};      // #51: armed (seen released) -> permanently-pressed ones are not detected
-#define BA_HOLD_THRESHOLD 6 // a changed button must stay stable for N polls -> catches a switch click, rejects oscillation/jitter
+bool g_baWindowOpen = false;
+bool g_baPollInit = false; // first poll frame: only capture prev (fresh IO)
+short g_baPrevDigital[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {
+    0}; // prev button state (for CHANGE detection)
+short g_baStable[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {
+    0}; // #15: consecutive polls in the current state (since the last change)
+short g_baChanged[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {
+    0}; // #15: button changed state AFTER the window opened (excludes untouched "permanently pressed" ones)
+short g_baArmed[SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES] = {
+    0}; // #51: armed (seen released) -> permanently-pressed ones are not detected
+#define BA_HOLD_THRESHOLD                                                      \
+    6 // a changed button must stay stable for N polls -> catches a switch click, rejects oscillation/jitter
 
-static const char* g_baModNames[8] =
-{
-    "None", "Shift", "Ctrl", "Ctrl+Shift", "Alt", "Alt+Shift", "Ctrl+Alt", "Ctrl+Alt+Shift"
-};
+static const char *g_baModNames[8] = {
+    "None", "Shift",     "Ctrl",     "Ctrl+Shift",
+    "Alt",  "Alt+Shift", "Ctrl+Alt", "Ctrl+Alt+Shift"};
 
 static char baLower(char c)
 {
@@ -3171,22 +3405,23 @@ static char baLower(char c)
 }
 
 // case-insensitive substring search
-static bool baMatch(const char* hay, const char* needle)
+static bool baMatch(const char *hay, const char *needle)
 {
-    if ( not needle or not needle[0])
+    if (not needle or not needle[0])
         return true;
 
-    if ( not hay)
+    if (not hay)
         return false;
 
     for (int i = 0; hay[i]; ++i)
     {
         int k = 0;
 
-        while (needle[k] and hay[i + k] and baLower(hay[i + k]) == baLower(needle[k]))
+        while (needle[k] and hay[i + k] and
+               baLower(hay[i + k]) == baLower(needle[k]))
             ++k;
 
-        if ( not needle[k])
+        if (not needle[k])
             return true;
     }
 
@@ -3194,14 +3429,14 @@ static bool baMatch(const char* hay, const char* needle)
 }
 
 // fill the button dropdown of the selected device (manual mode)
-static void FillButtonAssignButtonList(C_Window* win)
+static void FillButtonAssignButtonList(C_Window *win)
 {
-    if ( not win)
+    if (not win)
         return;
 
-    C_ListBox* bl = (C_ListBox*)win->FindControl(BTNASSIGN_BUTTON_LIST);
+    C_ListBox *bl = (C_ListBox *)win->FindControl(BTNASSIGN_BUTTON_LIST);
 
-    if ( not bl)
+    if (not bl)
         return;
 
     bl->RemoveAllItems();
@@ -3222,14 +3457,14 @@ static void FillButtonAssignButtonList(C_Window* win)
 }
 
 // fill the function list; column = button of the selected device (empty if none)
-static void FillButtonAssignFuncList(C_Window* win)
+static void FillButtonAssignFuncList(C_Window *win)
 {
-    if ( not win)
+    if (not win)
         return;
 
-    C_ListBox* fl = (C_ListBox*)win->FindControl(BTNASSIGN_FUNC_LIST);
+    C_ListBox *fl = (C_ListBox *)win->FindControl(BTNASSIGN_FUNC_LIST);
 
-    if ( not fl)
+    if (not fl)
         return;
 
     fl->RemoveAllItems();
@@ -3241,12 +3476,12 @@ static void FillButtonAssignFuncList(C_Window* win)
 
     for (int i = 0; i < n; ++i)
     {
-        char* name = GetUserFunctionName(i);
+        char *name = GetUserFunctionName(i);
 
-        if ( not name)
+        if (not name)
             continue;
 
-        if ( not baMatch(name, g_baSearch))
+        if (not baMatch(name, g_baSearch))
             continue;
 
         char col[24] = "";
@@ -3279,12 +3514,12 @@ static void FillButtonAssignFuncList(C_Window* win)
 // the device+button in the popup. Called from RefreshJoystickCB while g_baActive.
 void ButtonAssignAutodetectPoll(void)
 {
-    if ( not g_baActive)
+    if (not g_baActive)
         return;
 
     // #53 g_baStable[i] is reused as the press-order (rise sequence) of button i; s_holdCand/
     // s_holdCount track how long the candidate detent has been held before committing.
-    static int s_riseSeq  = 0;
+    static int s_riseSeq = 0;
     static int s_holdCand = -1;
     static int s_holdCount = 0;
 
@@ -3295,7 +3530,7 @@ void ButtonAssignAutodetectPoll(void)
         for (int i = 0; i < SIMLIB_MAX_DIGITAL * SIM_NUMDEVICES; ++i)
         {
             g_baPrevDigital[i] = (short)(IO.digital[i] != 0);
-            g_baStable[i] = 0;   // rise-order: 0 = not pressed
+            g_baStable[i] = 0; // rise-order: 0 = not pressed
             g_baChanged[i] = 0;
             // #51 do NOT pre-arm from a snapshot (timing-dependent: if IO.digital on the open frame
             // is not fresh, ALL held buttons read as 0 -> get armed -> fire; with several
@@ -3311,7 +3546,7 @@ void ButtonAssignAutodetectPoll(void)
         return;
     }
 
-    C_Window* baw = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
+    C_Window *baw = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
 
     // #53 device-locked autodetect: only scan buttons of the device chosen by the clicked cell
     // (g_baDevice). Buttons on other devices are ignored (no device switching in the window).
@@ -3319,7 +3554,7 @@ void ButtonAssignAutodetectPoll(void)
         return;
 
     int base = (g_baDevice - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL;
-    int cnt  = gDIDevButtons[g_baDevice];
+    int cnt = gDIDevButtons[g_baDevice];
 
     if (cnt <= 0 or cnt > SIMLIB_MAX_DIGITAL)
         cnt = SIMLIB_MAX_DIGITAL;
@@ -3335,30 +3570,31 @@ void ButtonAssignAutodetectPoll(void)
         int i = base + b;
         short cur = (short)(IO.digital[i] != 0);
 
-        if ( not cur)
+        if (not cur)
         {
-            g_baArmed[i] = 1;          // released -> armed
+            g_baArmed[i] = 1; // released -> armed
             g_baPrevDigital[i] = 0;
-            g_baStable[i] = 0;         // rise-order cleared
+            g_baStable[i] = 0; // rise-order cleared
             continue;
         }
 
-        if ( not g_baPrevDigital[i])   // rising edge
+        if (not g_baPrevDigital[i]) // rising edge
         {
             g_baPrevDigital[i] = 1;
 
             if (g_baArmed[i])
-                g_baStable[i] = (short)(++s_riseSeq);   // remember press order
+                g_baStable[i] = (short)(++s_riseSeq); // remember press order
         }
 
-        if (g_baArmed[i] and g_baStable[i] > candSeq)   // latest-risen held armed button
+        if (g_baArmed[i] and
+            g_baStable[i] > candSeq) // latest-risen held armed button
         {
             candSeq = g_baStable[i];
             cand = b;
         }
     }
 
-    if (cand < 0)                      // nothing (armed) held -> reset hold tracking
+    if (cand < 0) // nothing (armed) held -> reset hold tracking
     {
         s_holdCand = -1;
         s_holdCount = 0;
@@ -3374,7 +3610,7 @@ void ButtonAssignAutodetectPoll(void)
     }
 
     if (s_holdCount < BA_HOLD_THRESHOLD)
-        return;                        // keep holding the desired detent to commit
+        return; // keep holding the desired detent to commit
 
     // commit the held detent (device stays g_baDevice)
     g_baStagedButton = cand;
@@ -3382,7 +3618,7 @@ void ButtonAssignAutodetectPoll(void)
 
     if (baw)
     {
-        C_Text* dl = (C_Text*)baw->FindControl(BTNASSIGN_DEVICE_LABEL);
+        C_Text *dl = (C_Text *)baw->FindControl(BTNASSIGN_DEVICE_LABEL);
 
         if (dl and gDIDevNames[g_baDevice])
         {
@@ -3392,7 +3628,7 @@ void ButtonAssignAutodetectPoll(void)
 
         FillButtonAssignButtonList(baw);
 
-        C_ListBox* bl = (C_ListBox*)baw->FindControl(BTNASSIGN_BUTTON_LIST);
+        C_ListBox *bl = (C_ListBox *)baw->FindControl(BTNASSIGN_BUTTON_LIST);
 
         if (bl)
         {
@@ -3400,7 +3636,7 @@ void ButtonAssignAutodetectPoll(void)
             bl->Refresh();
         }
 
-        C_Text* d = (C_Text*)baw->FindControl(BTNASSIGN_DETECTED);
+        C_Text *d = (C_Text *)baw->FindControl(BTNASSIGN_DETECTED);
 
         if (d)
         {
@@ -3418,19 +3654,19 @@ void ButtonAssignAutodetectPoll(void)
 }
 
 // manual button selection from the dropdown -> staged (applied on OK)
-void ButtonAssignButtonCB(long, short hittype, C_Base* control)
+void ButtonAssignButtonCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    int btn = ((C_ListBox*)control)->GetTextID() - 1;
+    int btn = ((C_ListBox *)control)->GetTextID() - 1;
 
     if (btn < 0)
         return;
 
     g_baStagedButton = btn;
 
-    C_Text* d = (C_Text*)control->Parent_->FindControl(BTNASSIGN_DETECTED);
+    C_Text *d = (C_Text *)control->Parent_->FindControl(BTNASSIGN_DETECTED);
 
     if (d)
     {
@@ -3438,44 +3674,52 @@ void ButtonAssignButtonCB(long, short hittype, C_Base* control)
         sprintf(s, "Selected: Button %d", btn + 1);
         d->SetText(s);
         d->Refresh();
-        ((C_Window*)control->Parent_)->RefreshWindow();   // clear any tail of the longer prompt
+        ((C_Window *)control->Parent_)
+            ->RefreshWindow(); // clear any tail of the longer prompt
     }
 }
 
 // #53 "Clear" staged action: on OK, remove this function's binding from the selected device
 // (all of that device's buttons currently bound to the function). Staged so Cancel is a no-op.
-void ButtonAssignClearCB(long, short hittype, C_Base* control)
+void ButtonAssignClearCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
     g_baStagedClear = true;
-    g_baStagedButton = -1;   // clearing wins over any pending assignment
-    g_baActive = false;      // stop autodetect so it does not stage a button over the clear
+    g_baStagedButton = -1; // clearing wins over any pending assignment
+    g_baActive =
+        false; // stop autodetect so it does not stage a button over the clear
 
-    C_Text* d = control ? (C_Text*)control->Parent_->FindControl(BTNASSIGN_DETECTED) : NULL;
+    C_Text *d =
+        control ? (C_Text *)control->Parent_->FindControl(BTNASSIGN_DETECTED) :
+                  NULL;
 
     if (d)
     {
-        const char* dn = (g_baDevice >= SIM_JOYSTICK1 and g_baDevice < SIM_NUMDEVICES and gDIDevNames[g_baDevice])
-                         ? gDIDevNames[g_baDevice] : "this device";
+        const char *dn =
+            (g_baDevice >= SIM_JOYSTICK1 and g_baDevice < SIM_NUMDEVICES and
+             gDIDevNames[g_baDevice]) ?
+                gDIDevNames[g_baDevice] :
+                "this device";
         char s[120];
         sprintf(s, "Will clear binding on %.40s (press OK)", dn);
         d->SetText(s);
         d->Refresh();
-        ((C_Window*)control->Parent_)->RefreshWindow();   // clear any tail of the previous text
+        ((C_Window *)control->Parent_)
+            ->RefreshWindow(); // clear any tail of the previous text
     }
 }
 
 // OK: apply the staged action — either clear this device's binding, or assign the staged
 // button of the selected device to the function.
-void ButtonAssignOkCB(long, short hittype, C_Base* control)
+void ButtonAssignOkCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if (g_baStagedClear and g_baTargetFunc and
-        g_baDevice >= SIM_JOYSTICK1 and g_baDevice < SIM_NUMDEVICES)
+    if (g_baStagedClear and g_baTargetFunc and g_baDevice >= SIM_JOYSTICK1 and
+        g_baDevice < SIM_NUMDEVICES)
     {
         // #53 unbind every button of g_baDevice currently mapped to this function
         int base = (g_baDevice - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL;
@@ -3486,18 +3730,21 @@ void ButtonAssignOkCB(long, short hittype, C_Base* control)
 
         for (int b = 0; b < cnt; ++b)
         {
-            if (UserFunctionTable.GetButtonFunction(base + b, NULL) == g_baTargetFunc)
+            if (UserFunctionTable.GetButtonFunction(base + b, NULL) ==
+                g_baTargetFunc)
                 UserFunctionTable.SetButtonFunction(base + b, NULL, -1);
         }
 
         KeyVar.Modified = TRUE;
-        g_keyListNeedRebuild = true;   // refresh the table next frame
+        g_keyListNeedRebuild = true; // refresh the table next frame
     }
     else if (g_baTargetFunc and g_baStagedButton >= 0 and
              g_baDevice >= SIM_JOYSTICK1 and g_baDevice < SIM_NUMDEVICES)
     {
-        int buttonId = (g_baDevice - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL + g_baStagedButton;
-        UserFunctionTable.SetButtonFunction(buttonId, g_baTargetFunc, g_baTargetCpId);
+        int buttonId = (g_baDevice - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL +
+                       g_baStagedButton;
+        UserFunctionTable.SetButtonFunction(buttonId, g_baTargetFunc,
+                                            g_baTargetCpId);
         KeyVar.Modified = TRUE;
         g_keyListNeedRebuild = true;
     }
@@ -3508,7 +3755,7 @@ void ButtonAssignOkCB(long, short hittype, C_Base* control)
 }
 
 // Cancel: close without applying, turn off autodetect
-void ButtonAssignCancelCB(long, short hittype, C_Base* control)
+void ButtonAssignCancelCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -3530,7 +3777,7 @@ void ControlTab_ForceCloseButtonAssign(void)
     g_baActive = false;
     g_baWindowOpen = false;
 
-    C_Window* win = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
+    C_Window *win = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
 
     if (win)
         gMainHandler->HideWindow(win);
@@ -3539,43 +3786,44 @@ void ControlTab_ForceCloseButtonAssign(void)
 // Keep the dialog on top of the setup window while it is open (called once per poll frame).
 void ControlTab_KeepButtonAssignFront(void)
 {
-    if ( not g_baWindowOpen)
+    if (not g_baWindowOpen)
         return;
 
-    C_Window* win = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
+    C_Window *win = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
 
     if (win)
         gMainHandler->WindowToFront(win);
 }
 
-void ButtonAssignModCB(long, short hittype, C_Base* control)
+void ButtonAssignModCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    g_baMod = ((C_ListBox*)control)->GetTextID() - 1;
+    g_baMod = ((C_ListBox *)control)->GetTextID() - 1;
 }
 
 // #53: human-readable description for a function pointer, taken from the MAPPING column of the
 // controls table (the same text shown in the function list), NOT the internal callback name.
-static char* ControlTab_DescribeFunction(InputFunctionType func)
+static char *ControlTab_DescribeFunction(InputFunctionType func)
 {
-    if ( not func)
+    if (not func)
         return NULL;
 
-    C_Window* win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
+    C_Window *win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN);
 
-    if ( not win)
+    if (not win)
         return NULL;
 
     int n = 0;
-    C_Button* b;
+    C_Button *b;
 
-    while ((b = (C_Button*)win->FindControl(KEYCODES + n)) != NULL)
+    while ((b = (C_Button *)win->FindControl(KEYCODES + n)) != NULL)
     {
         if (func == (InputFunctionType)b->GetUserPtr(FUNCTION_PTR))
         {
-            C_Text* t = (C_Text*)win->FindControl(b->GetID() - KEYCODES + MAPPING);
+            C_Text *t =
+                (C_Text *)win->FindControl(b->GetID() - KEYCODES + MAPPING);
             return t ? t->GetText() : NULL;
         }
 
@@ -3586,53 +3834,55 @@ static char* ControlTab_DescribeFunction(InputFunctionType func)
 }
 
 // pick a different target function from the list
-void ButtonAssignFuncCB(long, short hittype, C_Base* control)
+void ButtonAssignFuncCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    int idx = ((C_ListBox*)control)->GetTextID() - 1;
+    int idx = ((C_ListBox *)control)->GetTextID() - 1;
     g_baTargetFunc = GetUserFunctionByIndex(idx);
-    g_baTargetCpId = 0; // cockpit button id is unknown for an arbitrarily chosen function
+    g_baTargetCpId =
+        0; // cockpit button id is unknown for an arbitrarily chosen function
 
-    C_Text* t = (C_Text*)control->Parent_->FindControl(BTNASSIGN_TITLE);
+    C_Text *t = (C_Text *)control->Parent_->FindControl(BTNASSIGN_TITLE);
 
     if (t)
     {
         char s[160];
-        char* nm = ControlTab_DescribeFunction(g_baTargetFunc);   // #53: human-readable description, not the callback name
+        char *nm = ControlTab_DescribeFunction(
+            g_baTargetFunc); // #53: human-readable description, not the callback name
 
-        if ( not nm)
-            nm = GetUserFunctionName(idx);                        // fallback if not found in the table
+        if (not nm)
+            nm = GetUserFunctionName(idx); // fallback if not found in the table
 
         sprintf(s, "Assign: %s", nm ? nm : "?");
         t->SetText(s);
     }
 }
 
-void ButtonAssignSearchCB(long, short, C_Base* control)
+void ButtonAssignSearchCB(long, short, C_Base *control)
 {
-    C_EditBox* eb = (C_EditBox*)control;
-    char* txt = eb->GetText();
+    C_EditBox *eb = (C_EditBox *)control;
+    char *txt = eb->GetText();
     strncpy(g_baSearch, txt ? txt : "", sizeof(g_baSearch) - 1);
     g_baSearch[sizeof(g_baSearch) - 1] = 0;
     FillButtonAssignFuncList(control->Parent_);
 }
 
-void ButtonAssignDeviceCB(long, short hittype, C_Base* control)
+void ButtonAssignDeviceCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    C_ListBox* lb = (C_ListBox*)control;
+    C_ListBox *lb = (C_ListBox *)control;
     g_baDevice = lb->GetTextID() - 1;
 
-    C_Window* win = control->Parent_;
-    C_Text* lbl = (C_Text*)win->FindControl(BTNASSIGN_DEVICE_LABEL);
+    C_Window *win = control->Parent_;
+    C_Text *lbl = (C_Text *)win->FindControl(BTNASSIGN_DEVICE_LABEL);
 
     if (lbl)
     {
-        char* nm = lb->GetText();
+        char *nm = lb->GetText();
 
         if (nm)
             lbl->SetText(nm);
@@ -3646,60 +3896,70 @@ void ButtonAssignDeviceCB(long, short hittype, C_Base* control)
 // of an armed button; permanently-pressed stay silent). Pressing again re-arms (if it caught the wrong one).
 // TODO #53 (new UI): keyboard — full mode (modifiers + two-key combos do not cancel
 // detect); filter detection by the device of the clicked cell.
-void ButtonAssignDetectCB(long, short hittype, C_Base* control)
+void ButtonAssignDetectCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    g_baPollInit = true;   // the first frame captures the baseline from fresh IO.digital
-    g_baActive = true;     // arm a single capture (ButtonAssignAutodetectPoll clears g_baActive itself)
+    g_baPollInit =
+        true; // the first frame captures the baseline from fresh IO.digital
+    g_baActive =
+        true; // arm a single capture (ButtonAssignAutodetectPoll clears g_baActive itself)
 
-    C_Window* w = control ? (C_Window*)control->Parent_ : gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
+    C_Window *w = control ? (C_Window *)control->Parent_ :
+                            gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
 
     if (w)
     {
-        C_Text* d = (C_Text*)w->FindControl(BTNASSIGN_DETECTED);
+        C_Text *d = (C_Text *)w->FindControl(BTNASSIGN_DETECTED);
 
         if (d)
         {
             d->SetText("Press key or button to assign...");
             d->Refresh();
-            w->RefreshWindow();   // clear any tail of a previous (longer) message
+            w->RefreshWindow(); // clear any tail of a previous (longer) message
         }
     }
 }
 
-static void SetupButtonAssignWindow(C_Window* win)
+static void SetupButtonAssignWindow(C_Window *win)
 {
-    if ( not win)
+    if (not win)
         return;
 
-    C_Text* t;
+    C_Text *t;
 
-    if ((t = (C_Text*)win->FindControl(BTNASSIGN_LBL_DEVICE))) t->SetText("Device:");
+    if ((t = (C_Text *)win->FindControl(BTNASSIGN_LBL_DEVICE)))
+        t->SetText("Device:");
 
-    if ((t = (C_Text*)win->FindControl(BTNASSIGN_LBL_BUTTON))) t->SetText("Button:");
+    if ((t = (C_Text *)win->FindControl(BTNASSIGN_LBL_BUTTON)))
+        t->SetText("Button:");
 
-    if ((t = (C_Text*)win->FindControl(BTNASSIGN_LBL_MOD))) t->SetText("Modifier:");
+    if ((t = (C_Text *)win->FindControl(BTNASSIGN_LBL_MOD)))
+        t->SetText("Modifier:");
 
-    if ((t = (C_Text*)win->FindControl(BTNASSIGN_LBL_SEARCH))) t->SetText("Search:");
+    if ((t = (C_Text *)win->FindControl(BTNASSIGN_LBL_SEARCH)))
+        t->SetText("Search:");
 
-    if ((t = (C_Text*)win->FindControl(BTNASSIGN_AUTODETECT)))
-        t->SetText("Hold the button/switch you want to assign");	// #15: hint for the new debounce (hold until capture)
+    if ((t = (C_Text *)win->FindControl(BTNASSIGN_AUTODETECT)))
+        t->SetText(
+            "Hold the button/switch you want to assign"); // #15: hint for the new debounce (hold until capture)
 
-    if ((t = (C_Text*)win->FindControl(BTNASSIGN_TITLE)))
+    if ((t = (C_Text *)win->FindControl(BTNASSIGN_TITLE)))
     {
         char s[160];
-        char* nm = ControlTab_DescribeFunction(g_baTargetFunc);   // #53: human-readable description, not the callback name
+        char *nm = ControlTab_DescribeFunction(
+            g_baTargetFunc); // #53: human-readable description, not the callback name
 
-        if ( not nm)
-            nm = g_baTargetFunc ? FindStringFromFunction(g_baTargetFunc) : NULL;   // fallback
+        if (not nm)
+            nm = g_baTargetFunc ? FindStringFromFunction(g_baTargetFunc) :
+                                  NULL; // fallback
 
         sprintf(s, "Assign: %s", nm ? nm : "?");
         t->SetText(s);
     }
 
-    C_ListBox* dev = (C_ListBox*)win->FindControl(BTNASSIGN_DEVICE_LIST);
+    C_ListBox *dev = (C_ListBox *)win->FindControl(BTNASSIGN_DEVICE_LIST);
 
     if (dev)
     {
@@ -3707,14 +3967,14 @@ static void SetupButtonAssignWindow(C_Window* win)
         dev->SetCallback(ButtonAssignDeviceCB);
     }
 
-    C_ListBox* mod = (C_ListBox*)win->FindControl(BTNASSIGN_MODIFIER_LIST);
+    C_ListBox *mod = (C_ListBox *)win->FindControl(BTNASSIGN_MODIFIER_LIST);
 
     if (mod)
     {
         mod->RemoveAllItems();
 
         for (int m = 0; m < 8; ++m)
-            mod->AddItem(m + 1, C_TYPE_ITEM, (char*)g_baModNames[m]);
+            mod->AddItem(m + 1, C_TYPE_ITEM, (char *)g_baModNames[m]);
 
         mod->SetValue(g_baMod + 1);
         mod->SetCallback(ButtonAssignModCB);
@@ -3724,17 +3984,17 @@ static void SetupButtonAssignWindow(C_Window* win)
         mod->Refresh();
     }
 
-    C_ListBox* bl = (C_ListBox*)win->FindControl(BTNASSIGN_BUTTON_LIST);
+    C_ListBox *bl = (C_ListBox *)win->FindControl(BTNASSIGN_BUTTON_LIST);
 
     if (bl)
         bl->SetCallback(ButtonAssignButtonCB);
 
-    C_ListBox* fl = (C_ListBox*)win->FindControl(BTNASSIGN_FUNC_LIST);
+    C_ListBox *fl = (C_ListBox *)win->FindControl(BTNASSIGN_FUNC_LIST);
 
     if (fl)
         fl->SetCallback(ButtonAssignFuncCB);
 
-    C_EditBox* eb = (C_EditBox*)win->FindControl(BTNASSIGN_SEARCH);
+    C_EditBox *eb = (C_EditBox *)win->FindControl(BTNASSIGN_SEARCH);
 
     if (eb)
     {
@@ -3743,7 +4003,7 @@ static void SetupButtonAssignWindow(C_Window* win)
     }
 
     // OK / Cancel (BTNASSIGN_ASSIGN / BTNASSIGN_OPEN) — button text + callbacks
-    C_Button* okb = (C_Button*)win->FindControl(BTNASSIGN_ASSIGN);
+    C_Button *okb = (C_Button *)win->FindControl(BTNASSIGN_ASSIGN);
 
     if (okb)
     {
@@ -3751,7 +4011,7 @@ static void SetupButtonAssignWindow(C_Window* win)
         okb->SetCallback(ButtonAssignOkCB);
     }
 
-    C_Button* cab = (C_Button*)win->FindControl(BTNASSIGN_OPEN);
+    C_Button *cab = (C_Button *)win->FindControl(BTNASSIGN_OPEN);
 
     if (cab)
     {
@@ -3760,7 +4020,7 @@ static void SetupButtonAssignWindow(C_Window* win)
     }
 
     // #51 Detect button — arms autodetect for one press
-    C_Button* detb = (C_Button*)win->FindControl(BTNASSIGN_DETECT);
+    C_Button *detb = (C_Button *)win->FindControl(BTNASSIGN_DETECT);
 
     if (detb)
     {
@@ -3769,7 +4029,7 @@ static void SetupButtonAssignWindow(C_Window* win)
     }
 
     // #53 Clear button: stages "remove this function's binding on the selected device"
-    C_Button* clrb = (C_Button*)win->FindControl(BTNASSIGN_CLEAR);
+    C_Button *clrb = (C_Button *)win->FindControl(BTNASSIGN_CLEAR);
 
     if (clrb)
     {
@@ -3777,11 +4037,12 @@ static void SetupButtonAssignWindow(C_Window* win)
         clrb->SetCallback(ButtonAssignClearCB);
     }
 
-    C_Text* lbl = (C_Text*)win->FindControl(BTNASSIGN_DEVICE_LABEL);
+    C_Text *lbl = (C_Text *)win->FindControl(BTNASSIGN_DEVICE_LABEL);
 
     if (lbl)
     {
-        if (g_baDevice >= SIM_JOYSTICK1 and g_baDevice < SIM_NUMDEVICES and gDIDevNames[g_baDevice])
+        if (g_baDevice >= SIM_JOYSTICK1 and g_baDevice < SIM_NUMDEVICES and
+            gDIDevNames[g_baDevice])
             lbl->SetText(gDIDevNames[g_baDevice]);
         else if (g_baDevice == SIM_KEYBOARD)
             lbl->SetText("Keyboard");
@@ -3793,9 +4054,9 @@ static void SetupButtonAssignWindow(C_Window* win)
 
 void OpenButtonAssignWindow(InputFunctionType func, int cpId, long sourceCtrl)
 {
-    C_Window* win = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
+    C_Window *win = gMainHandler->FindWindow(SETUP_BTNASSIGN_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     g_baTargetFunc = func;
@@ -3804,7 +4065,7 @@ void OpenButtonAssignWindow(InputFunctionType func, int cpId, long sourceCtrl)
     g_baSearch[0] = 0;
     g_baMod = 0;
     g_baStagedButton = -1;
-    g_baStagedClear = false;   // #53 fresh open: nothing staged to clear
+    g_baStagedClear = false; // #53 fresh open: nothing staged to clear
 
     // #53 if opened from a specific device column cell, preselect that device so the
     // Clear/Assign actions target it; otherwise default to the first joystick (or keyboard).
@@ -3813,7 +4074,7 @@ void OpenButtonAssignWindow(InputFunctionType func, int cpId, long sourceCtrl)
     else
         g_baDevice = (gTotalJoy > 0) ? SIM_JOYSTICK1 : SIM_KEYBOARD;
 
-    g_baOpenDevice = -1;   // consume the one-shot preselect
+    g_baOpenDevice = -1; // consume the one-shot preselect
 
     // #51 auto-arm autodetect IMMEDIATELY on open (for ONE press — catch and stop, no "jumps").
     // The user need not press a button; the "Redetect" button restarts capture (if it caught the wrong one).
@@ -3824,7 +4085,7 @@ void OpenButtonAssignWindow(InputFunctionType func, int cpId, long sourceCtrl)
 
     // prompt in the detected field (like everywhere: "press a key/button")
     {
-        C_Text* d = (C_Text*)win->FindControl(BTNASSIGN_DETECTED);
+        C_Text *d = (C_Text *)win->FindControl(BTNASSIGN_DETECTED);
 
         if (d)
             d->SetText("Press key or button to assign...");
@@ -3832,7 +4093,8 @@ void OpenButtonAssignWindow(InputFunctionType func, int cpId, long sourceCtrl)
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
-    g_baWindowOpen = true;   // Artscout - 2026: modal — blocks leaving options until OK/Cancel
+    g_baWindowOpen =
+        true; // Artscout - 2026: modal — blocks leaving options until OK/Cancel
 }
 
 
@@ -3840,24 +4102,26 @@ void OpenButtonAssignWindow(InputFunctionType func, int cpId, long sourceCtrl)
 // The handler opens the cell's attached menu (KEYCTX_MENU) automatically on right-click
 // (chandler WM_RBUTTONUP -> gPopupMgr->OpenMenu(control->GetMenu(), ...)). These statics
 // remember which row/function the menu was opened for (captured in KeyCtxMenuOpenCB).
-static InputFunctionType g_ctxFunc   = NULL;
-static int               g_ctxBtnId  = -1;
-static long              g_ctxCtrlId = 0;
-static int               g_ctxDevice = -1;     // #53 device index if the cell is a device cell
-static bool              g_ctxIsKeyboard = false; // #53 true if the cell is the keyboard column
+static InputFunctionType g_ctxFunc = NULL;
+static int g_ctxBtnId = -1;
+static long g_ctxCtrlId = 0;
+static int g_ctxDevice = -1; // #53 device index if the cell is a device cell
+static bool g_ctxIsKeyboard =
+    false; // #53 true if the cell is the keyboard column
 
 // Capture the right-clicked cell (function + which column) when the context menu opens.
 void KeyCtxMenuOpenCB(C_Base *, C_Base *caller)
 {
-    if ( not caller)
+    if (not caller)
         return;
 
-    g_ctxFunc   = (InputFunctionType)caller->GetUserPtr(FUNCTION_PTR);
-    g_ctxBtnId  = caller->GetUserNumber(BUTTON_ID);
+    g_ctxFunc = (InputFunctionType)caller->GetUserPtr(FUNCTION_PTR);
+    g_ctxBtnId = caller->GetUserNumber(BUTTON_ID);
     g_ctxCtrlId = caller->GetID();
-    g_ctxDevice = caller->GetUserNumber(DEVICE_IDX);   // 0 for keyboard cells
+    g_ctxDevice = caller->GetUserNumber(DEVICE_IDX); // 0 for keyboard cells
     // keyboard cells use ids KEYCODES..KEYCODES+rows; device cells use DEVCELL_BASE..
-    g_ctxIsKeyboard = (g_ctxCtrlId >= KEYCODES and g_ctxCtrlId < KEYCODES + 10000);
+    g_ctxIsKeyboard =
+        (g_ctxCtrlId >= KEYCODES and g_ctxCtrlId < KEYCODES + 10000);
 }
 
 // Context menu "Assign..." -> keyboard cell: cyan key-capture (KeystrokeCB binds the next key);
@@ -3867,7 +4131,7 @@ void KeyCtxAssignCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_RMOUSEUP)
         return;
 
-    if ( not g_ctxFunc)
+    if (not g_ctxFunc)
         return;
 
     if (g_ctxIsKeyboard)
@@ -3878,14 +4142,16 @@ void KeyCtxAssignCB(long, short hittype, C_Base *)
         if (b)
         {
             KeyVar.CurrControl = g_ctxCtrlId;
-            KeyVar.EditKey = TRUE;            // next keypress (KeystrokeCB) binds the combo
+            KeyVar.EditKey =
+                TRUE; // next keypress (KeystrokeCB) binds the combo
             b->SetFgColor(0, RGB(0, 255, 255));
             b->Refresh();
         }
     }
     else
     {
-        g_baOpenDevice = g_ctxDevice;         // assign on the device of the clicked cell
+        g_baOpenDevice =
+            g_ctxDevice; // assign on the device of the clicked cell
         OpenButtonAssignWindow(g_ctxFunc, g_ctxBtnId, g_ctxCtrlId);
     }
 }
@@ -3898,7 +4164,7 @@ void KeyCtxClearCB(long, short hittype, C_Base *)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_RMOUSEUP)
         return;
 
-    if ( not g_ctxFunc)
+    if (not g_ctxFunc)
         return;
 
     BOOL changed = FALSE;
@@ -3916,7 +4182,8 @@ void KeyCtxClearCB(long, short hittype, C_Base *)
         KeyVar.Modified = TRUE;
 
     g_keyListNeedRebuild = true;
-    g_keyListPreserveScroll = true;   // a Clear shouldn't scroll the table back to the top
+    g_keyListPreserveScroll =
+        true; // a Clear shouldn't scroll the table back to the top
 }
 
 // #53 build (once) and register the keyboard-cell context menu in the popup manager.
@@ -3928,7 +4195,8 @@ void EnsureKeyCtxMenu(C_Button *Keycodes)
     if (s_built or not Keycodes or not gPopupMgr)
         return;
 
-    if (gPopupMgr->GetMenu(KEYCTX_MENU))   // already present (e.g. reopened window)
+    if (gPopupMgr->GetMenu(
+            KEYCTX_MENU)) // already present (e.g. reopened window)
     {
         s_built = true;
         return;
@@ -3936,7 +4204,7 @@ void EnsureKeyCtxMenu(C_Button *Keycodes)
 
     C_PopupList *menu = new C_PopupList;
 
-    if ( not menu)
+    if (not menu)
         return;
 
     menu->Setup(KEYCTX_MENU, C_TYPE_NORMAL, gMainHandler, 0, 0);
@@ -3950,9 +4218,9 @@ void EnsureKeyCtxMenu(C_Button *Keycodes)
     menu->SetOpaque(100);
 
     menu->AddItem(KEYCTX_ASSIGN, C_TYPE_ITEM, "Assign...", 0);
-    menu->AddItem(KEYCTX_CLEAR,  C_TYPE_ITEM, "Clear", 0);
+    menu->AddItem(KEYCTX_CLEAR, C_TYPE_ITEM, "Clear", 0);
     menu->SetCallback(KEYCTX_ASSIGN, KeyCtxAssignCB);
-    menu->SetCallback(KEYCTX_CLEAR,  KeyCtxClearCB);
+    menu->SetCallback(KEYCTX_CLEAR, KeyCtxClearCB);
     menu->SetOpenCallback(KeyCtxMenuOpenCB);
 
     gPopupMgr->AddMenu(menu);
@@ -3970,7 +4238,8 @@ void KeycodeCB(long ID, short hittype, C_Base *control)
     if (KeyVar.EditKey)
     {
         // restore the colour of the previously-edited cell
-        C_Button *prev = (C_Button *)control->Parent_->FindControl(KeyVar.CurrControl);
+        C_Button *prev =
+            (C_Button *)control->Parent_->FindControl(KeyVar.CurrControl);
 
         if (prev)
             SetButtonColor(prev);
@@ -3987,12 +4256,13 @@ void KeycodeCB(long ID, short hittype, C_Base *control)
 
     if (control->GetUserNumber(EDITABLE) < 1)
     {
-        KeyVar.EditKey = FALSE;   // this row is not remappable
+        KeyVar.EditKey = FALSE; // this row is not remappable
     }
     else
     {
-        KeyVar.EditKey = TRUE;    // next keypress (KeystrokeCB) binds the combo
-        ((C_Button *)control)->SetFgColor(0, RGB(0, 255, 255));   // cyan = "press a key"
+        KeyVar.EditKey = TRUE; // next keypress (KeystrokeCB) binds the combo
+        ((C_Button *)control)
+            ->SetFgColor(0, RGB(0, 255, 255)); // cyan = "press a key"
         ((C_Button *)control)->Refresh();
     }
 
@@ -4023,10 +4293,10 @@ int AddUndisplayedKey(KeyMap &Map)
 // row separators to the table's real right border. Full definitions live further down (identical
 // macro redefinition is legal; the count is defined once here and shared).
 #ifndef DEVCOL_X0
-#define DEVCOL_X0       340
+#define DEVCOL_X0 340
 #endif
 #ifndef DEVCOL_W
-#define DEVCOL_W        200
+#define DEVCOL_W 200
 #endif
 static int g_tblDevCount = 0;
 
@@ -4034,7 +4304,7 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
 {
     int retval = TRUE;
 
-    if ( not win)
+    if (not win)
         return FALSE;
 
     // Artscout - 2026: clamp each row separator to the actual right border of the table
@@ -4042,15 +4312,15 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
     // spans the full client width, so without clamping the row lines run past the right border
     // into the empty area, looking like extra (phantom) cells.
     int hlRightX = DEVCOL_X0 + g_tblDevCount * DEVCOL_W - 12;
-    int hlWidth  = hlRightX - Hline->GetX();
+    int hlWidth = hlRightX - Hline->GetX();
 
     if (hlWidth < 1)
-        hlWidth = Hline->GetW();   // safety: fall back to the template width
+        hlWidth = Hline->GetW(); // safety: fall back to the template width
 
     C_Line *line;
     line = (C_Line *)win->FindControl(HLINE + count);
 
-    if ( not line)
+    if (not line)
     {
         line = new C_Line;
 
@@ -4058,7 +4328,8 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
         {
             line->Setup(HLINE + count, Hline->GetType());
             line->SetColor(RGB(191, 191, 191));
-            line->SetXYWH(Hline->GetX(), Hline->GetY() + Vline->GetH()*count, hlWidth, Hline->GetH());
+            line->SetXYWH(Hline->GetX(), Hline->GetY() + Vline->GetH() * count,
+                          hlWidth, Hline->GetH());
             line->SetFlags(Hline->GetFlags());
             line->SetClient(Hline->GetClient());
             line->SetGroup(Hline->GetGroup());
@@ -4079,7 +4350,7 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
 
     line = (C_Line *)win->FindControl(VLINE + count);
 
-    if ( not line)
+    if (not line)
     {
         line = new C_Line;
 
@@ -4087,7 +4358,8 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
         {
             line->Setup(VLINE + count, Vline->GetType());
             line->SetColor(RGB(191, 191, 191));
-            line->SetXYWH(Vline->GetX(), Vline->GetY() + Vline->GetH()*count, Vline->GetW(), Vline->GetH());
+            line->SetXYWH(Vline->GetX(), Vline->GetY() + Vline->GetH() * count,
+                          Vline->GetW(), Vline->GetH());
             line->SetFlags(Vline->GetFlags());
             line->SetClient(Vline->GetClient());
             line->SetGroup(Vline->GetGroup());
@@ -4108,21 +4380,23 @@ int AddKeyMapLines(C_Window *win, C_Line *Hline, C_Line *Vline, int count)
 // UpdateKeyMapList are declared ABOVE (before KeystrokeCB) — needed there too (ESC search reset).
 
 // Case-insensitive substring search (without depending on the platform strcasestr).
-static bool ContainsNoCase(const char* hay, const char* needle)
+static bool ContainsNoCase(const char *hay, const char *needle)
 {
-    if ( not needle or not needle[0])
+    if (not needle or not needle[0])
         return true;
 
-    if ( not hay)
+    if (not hay)
         return false;
 
     size_t nl = strlen(needle);
 
-    for (const char* p = hay; *p; ++p)
+    for (const char *p = hay; *p; ++p)
     {
         size_t k = 0;
 
-        while (k < nl and p[k] and tolower((unsigned char)p[k]) == tolower((unsigned char)needle[k]))
+        while (k < nl and p[k] and
+               tolower((unsigned char)p[k]) ==
+                   tolower((unsigned char)needle[k]))
             ++k;
 
         if (k == nl)
@@ -4133,19 +4407,21 @@ static bool ContainsNoCase(const char* hay, const char* needle)
 }
 
 // #22: does a list row pass the search filter? We match the visible description AND the function name.
-bool KeyListRowVisible(const char* funcName, const char* descrip)
+bool KeyListRowVisible(const char *funcName, const char *descrip)
 {
     if (g_keyFilter[0] == 0)
         return true;
 
-    return ContainsNoCase(descrip, g_keyFilter) or ContainsNoCase(funcName, g_keyFilter);
+    return ContainsNoCase(descrip, g_keyFilter) or
+           ContainsNoCase(funcName, g_keyFilter);
 }
 
 // #22: find the button number of the selected device (g_keyDevFilter) assigned to the function.
 // Returns a 0-based button number, or -1 if the function is not assigned on this device.
 static int FindDeviceButtonForFunc(InputFunctionType func)
 {
-    if (g_keyDevFilter < SIM_JOYSTICK1 or g_keyDevFilter >= SIM_NUMDEVICES or not func)
+    if (g_keyDevFilter < SIM_JOYSTICK1 or g_keyDevFilter >= SIM_NUMDEVICES or
+        not func)
         return -1;
 
     int base = (g_keyDevFilter - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL;
@@ -4171,14 +4447,18 @@ static int FindDeviceButtonForFunc(InputFunctionType func)
 // #53 column layout (client-relative x). Sized so desc + keyboard + 3 device columns FIT
 // the grey panel width WITHOUT horizontal scroll — ui95's horizontal client scroll mis-sets
 // VX_ when ClientArea.left != 0, so we avoid h-overflow entirely (then VX_ = ClientArea.left).
-#define TBL_LEFT        163   // = client 2 left (see SetClientArea in AdvancedControlCB)
-#define TBL_HDR_Y       158   // absolute Y of the (separate, always-visible) header row
-#define MAPCOL_X          3   // description column x (matches MAPPING template)
-#define KEYCOL_X        190   // #53 keyboard column x (matches KEYCODES template; +40 = wider FUNCTION column)
-#define DEVCOL_X0       340   // X of the first device column (full device names; table h-scrolls)
-#define DEVCOL_W        200   // width/step of a device column (wide enough for full device names)
-#define TBL_MAX_DEVCOLS 14    // SIM_NUMDEVICES - SIM_JOYSTICK1 (max device columns)
-#define KEYCELL_W       135   // mouse-over/click width of the keyboard cell (150..285)
+#define TBL_LEFT 163 // = client 2 left (see SetClientArea in AdvancedControlCB)
+#define TBL_HDR_Y 158 // absolute Y of the (separate, always-visible) header row
+#define MAPCOL_X 3 // description column x (matches MAPPING template)
+#define KEYCOL_X                                                               \
+    190 // #53 keyboard column x (matches KEYCODES template; +40 = wider FUNCTION column)
+#define DEVCOL_X0                                                              \
+    340 // X of the first device column (full device names; table h-scrolls)
+#define DEVCOL_W                                                               \
+    200 // width/step of a device column (wide enough for full device names)
+#define TBL_MAX_DEVCOLS                                                        \
+    14 // SIM_NUMDEVICES - SIM_JOYSTICK1 (max device columns)
+#define KEYCELL_W 135 // mouse-over/click width of the keyboard cell (150..285)
 
 // #53 row height of the current table (= VLINE template height); used to size cell
 // mouse-over hotspots uniformly for keyboard and device cells.
@@ -4193,7 +4473,8 @@ static void RebuildTableDeviceList()
 {
     g_tblDevCount = 0;
 
-    for (int dev = SIM_JOYSTICK1; dev < SIM_NUMDEVICES and g_tblDevCount < TBL_MAX_DEVCOLS; ++dev)
+    for (int dev = SIM_JOYSTICK1;
+         dev < SIM_NUMDEVICES and g_tblDevCount < TBL_MAX_DEVCOLS; ++dev)
         if (gDIDevButtons[dev] > 0)
             g_tblDevs[g_tblDevCount++] = dev;
 }
@@ -4233,12 +4514,13 @@ static const char *SafeKeyDescrip(int idx)
 
 void UpdateKeyMapButton(C_Button *button, KeyMap &Map, int count)
 {
-    if ( not button)   // #53 template missing -> never deref (was a 0x0 crash)
+    if (not button) // #53 template missing -> never deref (was a 0x0 crash)
         return;
 
-    int flags = Map.mod2 + (Map.key1 << SECOND_KEY_SHIFT) + (Map.mod1 << SECOND_KEY_MOD_SHIFT);
+    int flags = Map.mod2 + (Map.key1 << SECOND_KEY_SHIFT) +
+                (Map.mod1 << SECOND_KEY_MOD_SHIFT);
 
-    button->SetMenu(KEYCTX_MENU);   // #53 right-click context menu (Assign/Clear)
+    button->SetMenu(KEYCTX_MENU); // #53 right-click context menu (Assign/Clear)
     // #53 uniform mouse-over highlight: a fixed hotspot the size of the keyboard cell
     // (a text button has no image, so HighLite only draws with a FIXED hotspot).
     button->SetFixedHotSpot(1);
@@ -4250,7 +4532,7 @@ void UpdateKeyMapButton(C_Button *button, KeyMap &Map, int count)
     button->SetUserNumber(BUTTON_ID, Map.buttonId);
     button->SetUserNumber(MOUSE_SIDE, Map.mouseSide);
     button->SetUserNumber(EDITABLE, Map.editable);
-    button->SetUserPtr(FUNCTION_PTR, (void*)Map.func);
+    button->SetUserPtr(FUNCTION_PTR, (void *)Map.func);
 
     if (Map.key2 == -1)
     {
@@ -4267,7 +4549,9 @@ void UpdateKeyMapButton(C_Button *button, KeyMap &Map, int count)
             _TCHAR secondMod[MAX_PATH] = {0};
             DoShiftStates(firstMod, Map.mod1);
             DoShiftStates(secondMod, Map.mod2);
-            _stprintf(totalDescrip, "%s%s : %s%s", firstMod, SafeKeyDescrip(Map.key1), secondMod, SafeKeyDescrip(Map.key2));
+            _stprintf(totalDescrip, "%s%s : %s%s", firstMod,
+                      SafeKeyDescrip(Map.key1), secondMod,
+                      SafeKeyDescrip(Map.key2));
         }
         else
         {
@@ -4275,7 +4559,8 @@ void UpdateKeyMapButton(C_Button *button, KeyMap &Map, int count)
             strcat(totalDescrip, SafeKeyDescrip(Map.key2));
         }
 
-        UserFunctionTable.SetControl(Map.key2, flags, KEYCODES + count); //define this as KEYCODES
+        UserFunctionTable.SetControl(
+            Map.key2, flags, KEYCODES + count); //define this as KEYCODES
         button->SetText(0, totalDescrip);
     }
 
@@ -4299,15 +4584,16 @@ void UpdateKeyMapButton(C_Button *button, KeyMap &Map, int count)
     }
 
     SetButtonColor(button);
-
 }
 
-int UpdateKeyMap(C_Window *win, C_Button *Keycodes, int height, KeyMap &Map, HotSpotStruct HotSpot, int count)
+int UpdateKeyMap(C_Window *win, C_Button *Keycodes, int height, KeyMap &Map,
+                 HotSpotStruct HotSpot, int count)
 {
     C_Button *button;
     long flags;
 
-    flags = Map.mod2 + (Map.key1 << SECOND_KEY_SHIFT) + (Map.mod1 << SECOND_KEY_MOD_SHIFT);
+    flags = Map.mod2 + (Map.key1 << SECOND_KEY_SHIFT) +
+            (Map.mod1 << SECOND_KEY_MOD_SHIFT);
 
     button = (C_Button *)win->FindControl(KEYCODES + count);
 
@@ -4324,8 +4610,8 @@ int UpdateKeyMap(C_Window *win, C_Button *Keycodes, int height, KeyMap &Map, Hot
 
         if (button)
         {
-            button->Setup(KEYCODES + count, Keycodes->GetType(), Keycodes->GetX(),
-                          Keycodes->GetY() + height * count);
+            button->Setup(KEYCODES + count, Keycodes->GetType(),
+                          Keycodes->GetX(), Keycodes->GetY() + height * count);
 
             button->SetClient(Keycodes->GetClient());
             button->SetGroup(Keycodes->GetGroup());
@@ -4351,8 +4637,8 @@ int UpdateKeyMap(C_Window *win, C_Button *Keycodes, int height, KeyMap &Map, Hot
 
 // #52 geometry of the "Clear" button (list client coords, CLIENT 3, client width ~288;
 // slider outside at abs 822). Easy to nudge here after a visual layout check.
-#define CLEAR_BTN_X   250
-#define CLEAR_BTN_W    34
+#define CLEAR_BTN_X 250
+#define CLEAR_BTN_W 34
 
 // #52 "Clear" for a list row: remove the device BUTTON binding of the function (across ALL
 // devices). The keyboard combo is NOT touched (only the button, as the user asked). Then
@@ -4362,9 +4648,10 @@ void ClearKeyCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP or not control)
         return;
 
-    InputFunctionType func = (InputFunctionType)control->GetUserPtr(FUNCTION_PTR);
+    InputFunctionType func =
+        (InputFunctionType)control->GetUserPtr(FUNCTION_PTR);
 
-    if ( not func)
+    if (not func)
         return;
 
     BOOL changed = FALSE;
@@ -4396,20 +4683,21 @@ void RebuildKeyListDeferred(void)
 // #52 per-row "Clear" button at index count (CLEARBTN+count) — created in CODE (colored, like
 // KEYCODES). If it already exists — only update the bound function. Style/client taken from
 // the KEYCODES template button; position — right edge of the client (CLEAR_BTN_X), Y per row.
-void UpdateClearButton(C_Window *win, C_Button *Keycodes, C_Text *Mapping, int height, InputFunctionType func, int count)
+void UpdateClearButton(C_Window *win, C_Button *Keycodes, C_Text *Mapping,
+                       int height, InputFunctionType func, int count)
 {
     C_Button *btn = (C_Button *)win->FindControl(CLEARBTN + count);
 
     if (btn)
     {
-        btn->SetUserPtr(FUNCTION_PTR, (void*)func);
+        btn->SetUserPtr(FUNCTION_PTR, (void *)func);
         btn->Refresh();
         return;
     }
 
     btn = new C_Button;
 
-    if ( not btn)
+    if (not btn)
         return;
 
     btn->Setup(CLEARBTN + count, C_TYPE_NORMAL, 0, 0);
@@ -4417,12 +4705,13 @@ void UpdateClearButton(C_Window *win, C_Button *Keycodes, C_Text *Mapping, int h
     btn->SetGroup(Keycodes->GetGroup());
     btn->SetCluster(Keycodes->GetCluster());
     btn->SetFont(Keycodes->GetFont());
-    btn->SetColor(C_STATE_0, RGB(255, 90, 90));        // up — reddish
-    btn->SetColor(C_STATE_1, RGB(230, 230, 230));      // down
+    btn->SetColor(C_STATE_0, RGB(255, 90, 90)); // up — reddish
+    btn->SetColor(C_STATE_1, RGB(230, 230, 230)); // down
     btn->SetColor(C_STATE_DISABLED, RGB(102, 102, 102));
-    btn->SetXYWH(CLEAR_BTN_X, Mapping->GetY() + height * count, CLEAR_BTN_W, height - 4);
+    btn->SetXYWH(CLEAR_BTN_X, Mapping->GetY() + height * count, CLEAR_BTN_W,
+                 height - 4);
     btn->SetText(0, "Clr");
-    btn->SetUserPtr(FUNCTION_PTR, (void*)func);
+    btn->SetUserPtr(FUNCTION_PTR, (void *)func);
     btn->SetCallback(ClearKeyCB);
     btn->SetFlagBitOn(C_BIT_ENABLED);
 
@@ -4430,7 +4719,8 @@ void UpdateClearButton(C_Window *win, C_Button *Keycodes, C_Text *Mapping, int h
     btn->Refresh();
 }
 
-int UpdateMappingDescrip(C_Window *win, C_Text *Mapping, int height, _TCHAR *descrip, int count)
+int UpdateMappingDescrip(C_Window *win, C_Text *Mapping, int height,
+                         _TCHAR *descrip, int count)
 {
     C_Text *text;
 
@@ -4476,13 +4766,15 @@ void DeviceCellCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP or not control)
         return;
 
-    InputFunctionType func = (InputFunctionType)control->GetUserPtr(FUNCTION_PTR);
+    InputFunctionType func =
+        (InputFunctionType)control->GetUserPtr(FUNCTION_PTR);
     int dev = control->GetUserNumber(DEVICE_IDX);
 
-    if ( not func)
+    if (not func)
         return;
 
-    g_baOpenDevice = dev;   // one-shot preselect consumed by OpenButtonAssignWindow
+    g_baOpenDevice =
+        dev; // one-shot preselect consumed by OpenButtonAssignWindow
     OpenButtonAssignWindow(func, 0, 0);
 }
 
@@ -4490,9 +4782,10 @@ void DeviceCellCB(long, short hittype, C_Base *control)
 // button ("Btn N") in that device's column, or leave the cell empty. Cells are clickable
 // buttons cloned from the KEYCODES template (same client/group/cluster/flags) so they
 // scroll with the table; a click opens the assign window targeting that device.
-void UpdateDeviceCells(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &Map, int count)
+void UpdateDeviceCells(C_Window *win, C_Button *Keycodes, C_Line *Vline,
+                       KeyMap &Map, int count)
 {
-    if ( not win or not Keycodes or not Vline)
+    if (not win or not Keycodes or not Vline)
         return;
 
     int rowH = Vline->GetH();
@@ -4520,7 +4813,7 @@ void UpdateDeviceCells(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap 
             cell->SetColor(C_STATE_1, RGB(0, 255, 0));
             cell->SetColor(C_STATE_DISABLED, RGB(0, 255, 0));
             cell->SetText(0, s);
-            cell->SetUserPtr(FUNCTION_PTR, (void*)Map.func);
+            cell->SetUserPtr(FUNCTION_PTR, (void *)Map.func);
             cell->SetUserNumber(DEVICE_IDX, g_tblDevs[vis]);
             cell->Refresh();
             continue;
@@ -4530,7 +4823,7 @@ void UpdateDeviceCells(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap 
         // (right-click menu + mouse-over highlight + click-to-assign on that device).
         cell = new C_Button;
 
-        if ( not cell)
+        if (not cell)
             continue;
 
         cell->Setup(id, C_TYPE_NORMAL, DEVCOL_X0 + vis * DEVCOL_W, y);
@@ -4544,10 +4837,11 @@ void UpdateDeviceCells(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap 
         cell->SetColor(C_STATE_1, RGB(0, 255, 0));
         cell->SetColor(C_STATE_DISABLED, RGB(0, 255, 0));
         cell->SetText(0, s);
-        cell->SetUserPtr(FUNCTION_PTR, (void*)Map.func);
+        cell->SetUserPtr(FUNCTION_PTR, (void *)Map.func);
         cell->SetUserNumber(DEVICE_IDX, g_tblDevs[vis]);
         cell->SetCallback(DeviceCellCB);
-        cell->SetMenu(KEYCTX_MENU);   // #53 same right-click menu as keyboard cells
+        cell->SetMenu(
+            KEYCTX_MENU); // #53 same right-click menu as keyboard cells
         cell->SetFlagBitOn(C_BIT_ENABLED);
         // #53 uniform mouse-over highlight (fixed hotspot the size of the device cell)
         cell->SetFixedHotSpot(1);
@@ -4563,15 +4857,16 @@ void UpdateDeviceCells(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap 
 // #53 create/update one header label INSIDE client 2 (client-relative x, y=2 = top row above
 // the data rows at y=22+). In-client so the header scrolls WITH the columns: widths stay in
 // sync and it can't drift off-bounds on horizontal scroll. clientX matches the column x.
-static void SetTableHeader(C_Window *win, long id, int clientX, long client, long cluster, long font, const char *txt)
+static void SetTableHeader(C_Window *win, long id, int clientX, long client,
+                           long cluster, long font, const char *txt)
 {
     C_Text *t = (C_Text *)win->FindControl(id);
 
-    if ( not t)
+    if (not t)
     {
         t = new C_Text;
 
-        if ( not t)
+        if (not t)
             return;
 
         t->Setup(id, C_TYPE_LEFT);
@@ -4587,7 +4882,7 @@ static void SetTableHeader(C_Window *win, long id, int clientX, long client, lon
         t->SetXY(clientX, 2);
     }
 
-    t->SetFGColor(RGB(0, 255, 0));   // #53 all table headers: bright green
+    t->SetFGColor(RGB(0, 255, 0)); // #53 all table headers: bright green
 
     t->SetText((char *)txt);
     t->Refresh();
@@ -4598,15 +4893,17 @@ static void SetTableHeader(C_Window *win, long id, int clientX, long client, lon
 // header and the data columns always line up (incl. under horizontal scroll).
 void BuildTableHeader(C_Window *win, C_Button *Keycodes, C_Text *Mapping)
 {
-    if ( not win or not Keycodes or not Mapping)
+    if (not win or not Keycodes or not Mapping)
         return;
 
-    long client  = Mapping->GetClient();
+    long client = Mapping->GetClient();
     long cluster = Mapping->GetCluster();
-    long font    = Mapping->GetFont();
+    long font = Mapping->GetFont();
 
-    SetTableHeader(win, TBLHDR_FUNC, MAPCOL_X, client, cluster, font, "FUNCTION");
-    SetTableHeader(win, TBLHDR_KEY,  KEYCOL_X, client, cluster, font, "KEYBOARD");
+    SetTableHeader(win, TBLHDR_FUNC, MAPCOL_X, client, cluster, font,
+                   "FUNCTION");
+    SetTableHeader(win, TBLHDR_KEY, KEYCOL_X, client, cluster, font,
+                   "KEYBOARD");
 
     // device headers: truncated text + full name as a hover tooltip (help text). A C_Button
     // is used (not C_Text) because only C_Control supports SetHelpText; the handler shows the
@@ -4617,11 +4914,14 @@ void BuildTableHeader(C_Window *win, C_Button *Keycodes, C_Text *Mapping)
     for (int vis = 0; vis < g_tblDevCount; ++vis)
     {
         int dev = g_tblDevs[vis];
-        const char *dn = (dev >= SIM_JOYSTICK1 and dev < SIM_NUMDEVICES and gDIDevNames[dev])
-                         ? gDIDevNames[dev] : "Device";
+        const char *dn = (dev >= SIM_JOYSTICK1 and dev < SIM_NUMDEVICES and
+                          gDIDevNames[dev]) ?
+                             gDIDevNames[dev] :
+                             "Device";
 
         // register the full name as a string ONCE per (column, name) -> tooltip id
-        if (strncmp(s_devHelpName[vis], dn, sizeof(s_devHelpName[vis]) - 1) != 0)
+        if (strncmp(s_devHelpName[vis], dn, sizeof(s_devHelpName[vis]) - 1) !=
+            0)
         {
             strncpy(s_devHelpName[vis], dn, sizeof(s_devHelpName[vis]) - 1);
             s_devHelpName[vis][sizeof(s_devHelpName[vis]) - 1] = 0;
@@ -4629,13 +4929,13 @@ void BuildTableHeader(C_Window *win, C_Button *Keycodes, C_Text *Mapping)
         }
 
         char trunc[32];
-        sprintf(trunc, "%.27s", dn);   // truncated to the column width
+        sprintf(trunc, "%.27s", dn); // truncated to the column width
 
         long id = DEVHDR_BASE + vis;
         int x = DEVCOL_X0 + vis * DEVCOL_W;
         C_Button *hb = (C_Button *)win->FindControl(id);
 
-        if ( not hb)
+        if (not hb)
         {
             hb = new C_Button;
 
@@ -4657,9 +4957,12 @@ void BuildTableHeader(C_Window *win, C_Button *Keycodes, C_Text *Mapping)
 
         if (hb)
         {
-            hb->SetColor(C_STATE_0, RGB(0, 255, 0));   // #53 device headers: bright green (bold via the MAPPING font)
+            hb->SetColor(
+                C_STATE_0,
+                RGB(0, 255,
+                    0)); // #53 device headers: bright green (bold via the MAPPING font)
             hb->SetText(0, trunc);
-            hb->SetHelpText(s_devHelpId[vis]);   // full name on hover
+            hb->SetHelpText(s_devHelpId[vis]); // full name on hover
             hb->Refresh();
         }
     }
@@ -4673,14 +4976,15 @@ void BuildTableHeader(C_Window *win, C_Button *Keycodes, C_Text *Mapping)
 // #53 full-height vertical separators between columns (client 2), so device columns are
 // visually divided like the keyboard column. Called after the list is (re)built so the
 // height matches the row count (header row at client-y 2, data rows start at 22).
-void UpdateColumnSeparators(C_Window *win, C_Button *Keycodes, C_Line *Vline, int rowCount)
+void UpdateColumnSeparators(C_Window *win, C_Button *Keycodes, C_Line *Vline,
+                            int rowCount)
 {
-    if ( not win or not Keycodes or not Vline)
+    if (not win or not Keycodes or not Vline)
         return;
 
     int rowH = Vline->GetH();
-    int top  = 2;
-    int h    = 20 + rowH * rowCount;   // header band + all data rows
+    int top = 2;
+    int h = 20 + rowH * rowCount; // header band + all data rows
 
     // column 0 = boundary before the keyboard column (matches the per-row VLINE x),
     // columns 1..N = boundary before each device column, column N+1 = right border of the table.
@@ -4691,16 +4995,16 @@ void UpdateColumnSeparators(C_Window *win, C_Button *Keycodes, C_Line *Vline, in
 
         if (wanted)
         {
-            int x = (col == 0) ? Vline->GetX()
-                               : (DEVCOL_X0 + (col - 1) * DEVCOL_W - 12);
+            int x = (col == 0) ? Vline->GetX() :
+                                 (DEVCOL_X0 + (col - 1) * DEVCOL_W - 12);
 
             C_Line *ln = (C_Line *)win->FindControl(id);
 
-            if ( not ln)
+            if (not ln)
             {
                 ln = new C_Line;
 
-                if ( not ln)
+                if (not ln)
                     continue;
 
                 ln->Setup(id, Vline->GetType());
@@ -4728,14 +5032,14 @@ void UpdateColumnSeparators(C_Window *win, C_Button *Keycodes, C_Line *Vline, in
     int rightX = DEVCOL_X0 + g_tblDevCount * DEVCOL_W - 12;
     C_Line *hsep = (C_Line *)win->FindControl(TBLHDR_SEP);
 
-    if ( not hsep)
+    if (not hsep)
     {
         hsep = new C_Line;
 
         if (hsep)
         {
             hsep->Setup(TBLHDR_SEP, Vline->GetType());
-            hsep->SetClient(Vline->GetClient());   // table client (2)
+            hsep->SetClient(Vline->GetClient()); // table client (2)
             hsep->SetCluster(Vline->GetCluster());
             hsep->SetFlags(Vline->GetFlags());
             hsep->SetColor(RGB(191, 191, 191));
@@ -4751,7 +5055,8 @@ void UpdateColumnSeparators(C_Window *win, C_Button *Keycodes, C_Line *Vline, in
     }
 }
 
-int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &Map, HotSpotStruct HotSpot, int count)
+int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline,
+                     KeyMap &Map, HotSpotStruct HotSpot, int count)
 {
     C_Line *line;
 
@@ -4778,14 +5083,15 @@ int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &M
         if (line)
         {
             UI95_RECT client;
-            client = win->GetClientArea(Vline->GetClient());   // #53 table client (was hardcoded 3)
+            client = win->GetClientArea(
+                Vline->GetClient()); // #53 table client (was hardcoded 3)
 
             line->Setup(KEYCODES - count, 0);
             //line->SetXYWH( Keycodes->GetX() + HotX,
             // Keycodes->GetY() + Vline->GetH()*count + HotY,
             // HotW,HotH);
             line->SetXYWH(Keycodes->GetX() + HotSpot.X,
-                          Keycodes->GetY() + Vline->GetH()*count + HotSpot.Y,
+                          Keycodes->GetY() + Vline->GetH() * count + HotSpot.Y,
                           client.right - client.left, HotSpot.H);
 
             line->SetColor(RGB(65, 128, 173)); //lt blue
@@ -4814,7 +5120,7 @@ int SetHdrStatusLine(C_Window *win, C_Button *Keycodes, C_Line *Vline, KeyMap &M
 // #20: device GUID for a joystick buttonId (joyIndex = buttonId/128). Writes a 32-character
 // hex into out and returns true if the device for this id is known (GUID non-zero).
 // Lets buttonId be remapped on the next start by the stable GUID (like axes #19).
-static bool FormatButtonDeviceGUID(int buttonId, char* out)
+static bool FormatButtonDeviceGUID(int buttonId, char *out)
 {
     int dev = SIM_JOYSTICK1 + (buttonId / SIMLIB_MAX_DIGITAL);
 
@@ -4822,12 +5128,12 @@ static bool FormatButtonDeviceGUID(int buttonId, char* out)
         return false;
 
     static const GUID zero = {0};
-    const GUID& g = gDIDevGUIDs[dev];
+    const GUID &g = gDIDevGUIDs[dev];
 
     if (memcmp(&g, &zero, sizeof(GUID)) == 0)
         return false;
 
-    const unsigned char* b = (const unsigned char*)&g;
+    const unsigned char *b = (const unsigned char *)&g;
 
     for (int i = 0; i < (int)sizeof(GUID); ++i)
         sprintf(out + i * 2, "%02X", b[i]);
@@ -4837,7 +5143,7 @@ static bool FormatButtonDeviceGUID(int buttonId, char* out)
 
 BOOL SaveKeyMapList(char *filename)
 {
-    if ( not KeyVar.Modified)
+    if (not KeyVar.Modified)
         return TRUE;
 
     KeyVar.Modified = FALSE;
@@ -4852,9 +5158,10 @@ BOOL SaveKeyMapList(char *filename)
     C_Text *text;
     char descrip[_MAX_PATH];
 
-    win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window
+    win = gMainHandler->FindWindow(
+        SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window
 
-    if ( not win)
+    if (not win)
         return FALSE;
 
     // #22: the keyboard section is written from the VISIBLE list rows. If a search/device
@@ -4926,13 +5233,15 @@ BOOL SaveKeyMapList(char *filename)
         for (int oi = 0; oi < oldN and nkb < 1200; oi++)
         {
             if (oldKb[oi].editable != -2)
-                continue;   // user-editable binds are authoritative from the UI rows above
+                continue; // user-editable binds are authoritative from the UI rows above
 
             bool dup = false;
 
             for (int j = 0; j < nkb; j++)
-                if (strcmp(kbArr[j].func, oldKb[oi].func) == 0 and kbArr[j].k2 == oldKb[oi].k2 and
-                    kbArr[j].m2 == oldKb[oi].m2 and kbArr[j].k1 == oldKb[oi].k1 and kbArr[j].m1 == oldKb[oi].m1)
+                if (strcmp(kbArr[j].func, oldKb[oi].func) == 0 and
+                    kbArr[j].k2 == oldKb[oi].k2 and
+                    kbArr[j].m2 == oldKb[oi].m2 and
+                    kbArr[j].k1 == oldKb[oi].k1 and kbArr[j].m1 == oldKb[oi].m1)
                 {
                     dup = true;
                     break;
@@ -4952,8 +5261,8 @@ BOOL SaveKeyMapList(char *filename)
         int base = (dev - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL;
         char guidStr[2 * sizeof(GUID) + 1];
 
-        if ( not FormatButtonDeviceGUID(base, guidStr))
-            continue;   // device not present / has no GUID
+        if (not FormatButtonDeviceGUID(base, guidStr))
+            continue; // device not present / has no GUID
 
         static CxBtnBind devArr[SIMLIB_MAX_DIGITAL];
         int nd = 0;
@@ -4963,12 +5272,12 @@ BOOL SaveKeyMapList(char *filename)
             int cp;
             theFunc = UserFunctionTable.GetButtonFunction(base + b, &cp);
 
-            if ( not theFunc)
+            if (not theFunc)
                 continue;
 
             funcDescrip = FindStringFromFunction(theFunc);
 
-            if ( not funcDescrip)
+            if (not funcDescrip)
                 continue;
 
             strncpy(devArr[nd].func, funcDescrip, sizeof(devArr[nd].func) - 1);
@@ -4989,7 +5298,7 @@ BOOL SaveKeyMapList(char *filename)
 void SaveKeyCB(long, short hittype, C_Base *control)
 {
     C_Window *win;
-    C_EditBox * ebox;
+    C_EditBox *ebox;
     _TCHAR fname[MAX_PATH];
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -4997,13 +5306,13 @@ void SaveKeyCB(long, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SAVE_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     gMainHandler->HideWindow(win);
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)win->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)win->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -5016,20 +5325,19 @@ void SaveKeyCB(long, short hittype, C_Base *control)
 
         if (SaveKeyMapList(fname))
             _tcscpy(PlayerOptions.keyfile, ebox->GetText());
-
     }
 }
 
 void VerifySaveKeyCB(long ID, short hittype, C_Base *control)
 {
-    C_EditBox * ebox;
+    C_EditBox *ebox;
     _TCHAR fname[MAX_PATH];
     FILE *fp;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -5038,13 +5346,14 @@ void VerifySaveKeyCB(long ID, short hittype, C_Base *control)
         {
             if (_tcslen(ebox->GetText()) == 0)
             {
-                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB, CloseWindowCB);
+                AreYouSure(TXT_WARNING, TXT_ENTER_FILENAME, CloseWindowCB,
+                           CloseWindowCB);
                 return;
             }
         }
 
         //end EmptyFilenameSaveFix
-        _stprintf(fname, "config\\%s.key", ebox->GetText());
+        _stprintf(fname, "config/%s.key", ebox->GetText());
         fp = fopen(fname, "r");
 
         if (fp)
@@ -5064,7 +5373,8 @@ void SaveKeyButtonCB(long, short hittype, C_Base *)
         return;
 
     SetDeleteCallback(DelKeyFileCB);
-    SaveAFile(TXT_SAVE_KEYBOARD, "config\\*.KEY", NULL, VerifySaveKeyCB, CloseWindowCB, "");
+    SaveAFile(TXT_SAVE_KEYBOARD, "config/*.KEY", NULL, VerifySaveKeyCB,
+              CloseWindowCB, "");
 }
 
 
@@ -5150,23 +5460,24 @@ int UpdateKeyMapList(char *fname, int flag)
     C_Window *win;
 
 
-    win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window (CONTROLS SETUP tab)
+    win = gMainHandler->FindWindow(
+        SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window (CONTROLS SETUP tab)
 
-    if ( not win)
+    if (not win)
     {
         KeyVar.NeedUpdate = TRUE;
         return FALSE;
     }
 
     if (flag)
-        sprintf(filename, "%s\\config\\%s.key", FalconDataDirectory, fname);
+        sprintf(filename, "%s/config/%s.key", FalconDataDirectory, fname);
     else
-        sprintf(filename, "%s\\config\\keystrokes.key", FalconDataDirectory);
+        sprintf(filename, "%s/config/keystrokes.key", FalconDataDirectory);
 
     // #53: the list is built from the catalog+profile (XML); keystrokes.key is not opened.
     // In "display-only" mode (rebuild for a filter) we do NOT re-read the function table —
     // otherwise ClearTable+LoadFunctionTables would wipe unsaved assignments (kept in memory until Apply).
-    if ( not g_keyListDisplayOnly)
+    if (not g_keyListDisplayOnly)
     {
         UserFunctionTable.ClearTable();
         LoadFunctionTables(fname);
@@ -5195,13 +5506,15 @@ int UpdateKeyMapList(char *fname, int flag)
     C_Button *Keycodes;
     C_Text *Mapping;
 
-    Keycodes = button = (C_Button *)win->FindControl(KEYCODES); //define this as KEYCODES
-    Mapping = text = (C_Text *)win->FindControl(MAPPING);     //define this as MAPPING
-    Hline = (C_Line *)win->FindControl(HLINE);     //define this as HLINE
-    Vline = (C_Line *)win->FindControl(VLINE);     //define this as VLINE
+    Keycodes = button =
+        (C_Button *)win->FindControl(KEYCODES); //define this as KEYCODES
+    Mapping = text =
+        (C_Text *)win->FindControl(MAPPING); //define this as MAPPING
+    Hline = (C_Line *)win->FindControl(HLINE); //define this as HLINE
+    Vline = (C_Line *)win->FindControl(VLINE); //define this as VLINE
 
     // #53 if the .scf templates are missing, bail out instead of crashing later
-    if ( not Keycodes or not Mapping or not Hline or not Vline)
+    if (not Keycodes or not Mapping or not Hline or not Vline)
     {
         SetCursor(gCursors[CRSR_F16]);
         return FALSE;
@@ -5225,7 +5538,7 @@ int UpdateKeyMapList(char *fname, int flag)
     // display-only rebuild (filter/search refresh, or the deferred rebuild after an assignment)
     // must NOT clear it — otherwise unsaved bindings live in memory but SaveKeyMapList early-outs
     // on (!Modified) and never writes them to disk.
-    if ( not g_keyListDisplayOnly)
+    if (not g_keyListDisplayOnly)
         KeyVar.Modified = FALSE;
 
     NumUndispKeys = 0;
@@ -5239,7 +5552,8 @@ int UpdateKeyMapList(char *fname, int flag)
     int s_nkb = ControlsXml_ReadKeyboard(s_kb, 1200);
 
     // #53 refresh the device-column list and the header row before (re)building the rows.
-    if (Vline) g_tblRowH = Vline->GetH();   // #53 row height for uniform cell hotspots
+    if (Vline)
+        g_tblRowH = Vline->GetH(); // #53 row height for uniform cell hotspots
     RebuildTableDeviceList();
     // #53 row separators span the actual table width (desc..last device column right edge).
     // Artscout - 2026: end the template Hline (the row-0 separator, just under the header) exactly
@@ -5248,7 +5562,9 @@ int UpdateKeyMapList(char *fname, int flag)
     // single stray line under the header and a phantom cell corner on the right.
     if (Hline)
         Hline->SetXYWH(Hline->GetX(), Hline->GetY(),
-                       (DEVCOL_X0 + g_tblDevCount * DEVCOL_W - 12) - Hline->GetX(), Hline->GetH());
+                       (DEVCOL_X0 + g_tblDevCount * DEVCOL_W - 12) -
+                           Hline->GetX(),
+                       Hline->GetH());
     BuildTableHeader(win, Keycodes, Mapping);
     EnsureKeyCtxMenu(Keycodes);
 
@@ -5259,22 +5575,23 @@ int UpdateKeyMapList(char *fname, int flag)
         theFunc = GetUserFunctionByIndex(fi);
         const char *nm = GetUserFunctionName(fi);
 
-        if ( not theFunc or not nm or not nm[0])
+        if (not theFunc or not nm or not nm[0])
             continue;
 
         // label (BMS from controls.xml, otherwise the raw name), truncated to column width
         const char *lbl = ControlsXml_GetLabel(nm);
 
-        if ( not lbl or not lbl[0])
+        if (not lbl or not lbl[0])
             lbl = nm;
 
         strncpy(descrip, lbl, sizeof(descrip) - 1);
         descrip[sizeof(descrip) - 1] = 0;
         parsed = descrip;
-        parsed[40] = 0;   // #53 wider description column (no Clear button anymore)
+        parsed[40] =
+            0; // #53 wider description column (no Clear button anymore)
 
         // #22: search filter (matches both label and function name)
-        if ( not KeyListRowVisible(nm, parsed))
+        if (not KeyListRowVisible(nm, parsed))
             continue;
 
         KeyMap Map;
@@ -5284,7 +5601,7 @@ int UpdateKeyMapList(char *fname, int flag)
         Map.editable = 1;
         Map.key1 = 0;
         Map.mod1 = 0;
-        Map.key2 = -1;   // default = "not assigned"
+        Map.key2 = -1; // default = "not assigned"
         Map.mod2 = 0;
         strncpy(Map.descrip, parsed, sizeof(Map.descrip) - 1);
         Map.descrip[sizeof(Map.descrip) - 1] = 0;
@@ -5293,17 +5610,17 @@ int UpdateKeyMapList(char *fname, int flag)
         for (int ki = 0; ki < s_nkb; ki++)
             if (strcmp(s_kb[ki].func, nm) == 0)
             {
-                Map.buttonId  = s_kb[ki].cpbtn;
+                Map.buttonId = s_kb[ki].cpbtn;
                 Map.mouseSide = s_kb[ki].mouse;
-                Map.editable  = s_kb[ki].editable;
-                Map.key2      = s_kb[ki].k2;
-                Map.mod2      = s_kb[ki].m2;
-                Map.key1      = s_kb[ki].k1;
-                Map.mod1      = s_kb[ki].m1;
+                Map.editable = s_kb[ki].editable;
+                Map.key2 = s_kb[ki].k2;
+                Map.mod2 = s_kb[ki].m2;
+                Map.key1 = s_kb[ki].k1;
+                Map.mod1 = s_kb[ki].m1;
                 break;
             }
 
-        if ( not count)
+        if (not count)
         {
             //first time through .. special case
             UpdateKeyMapButton(button, Map, count);
@@ -5341,15 +5658,18 @@ int UpdateKeyMapList(char *fname, int flag)
     if (count == 0)
     {
         C_Button *tmplBtn = (C_Button *)win->FindControl(KEYCODES);
-        C_Text   *tmplTxt = (C_Text *)win->FindControl(MAPPING);
+        C_Text *tmplTxt = (C_Text *)win->FindControl(MAPPING);
 
-        if (tmplBtn) tmplBtn->SetText(0, "");
-        if (tmplTxt) tmplTxt->SetText("");
+        if (tmplBtn)
+            tmplBtn->SetText(0, "");
+        if (tmplTxt)
+            tmplTxt->SetText("");
 
         cleanupStart = 1;
     }
 
-    while (RemoveExcessControls(win, cleanupStart++));
+    while (RemoveExcessControls(win, cleanupStart++))
+        ;
 
     // #53 column separators sized to the final row count
     UpdateColumnSeparators(win, Keycodes, Vline, count);
@@ -5370,7 +5690,8 @@ int UpdateKeyMapList(char *fname, int flag)
         if (not g_keyListPreserveScroll)
         {
             UI95_RECT ca = win->GetClientArea(kc);
-            win->SetClientArea(ca.left, ca.top, ca.right - ca.left, ca.bottom - ca.top, kc);
+            win->SetClientArea(ca.left, ca.top, ca.right - ca.left,
+                               ca.bottom - ca.top, kc);
         }
         // ScanClientArea recomputes the virtual height from the actual rows AND shows/
         // hides VScroll (cwindow.cpp:446/452). Without it the slider does not appear after a rebuild
@@ -5380,7 +5701,7 @@ int UpdateKeyMapList(char *fname, int flag)
         win->RefreshClient(kc);
     }
 
-    g_keyListPreserveScroll = false;   // one-shot: consumed by this rebuild
+    g_keyListPreserveScroll = false; // one-shot: consumed by this rebuild
 
     gMainHandler->WindowToFront(win);
 
@@ -5390,7 +5711,7 @@ int UpdateKeyMapList(char *fname, int flag)
 
 void LoadKeyCB(long, short hittype, C_Base *control)
 {
-    C_EditBox * ebox;
+    C_EditBox *ebox;
     _TCHAR fname[MAX_PATH];
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -5398,7 +5719,7 @@ void LoadKeyCB(long, short hittype, C_Base *control)
 
     gMainHandler->HideWindow(control->Parent_);
 
-    ebox = (C_EditBox*)control->Parent_->FindControl(FILE_NAME);
+    ebox = (C_EditBox *)control->Parent_->FindControl(FILE_NAME);
 
     if (ebox)
     {
@@ -5415,7 +5736,6 @@ void LoadKeyCB(long, short hittype, C_Base *control)
 
         if (UpdateKeyMapList(fname, USE_FILENAME))
             _tcscpy(PlayerOptions.keyfile, ebox->GetText());
-
     }
 }
 
@@ -5426,7 +5746,8 @@ void LoadKeyButtonCB(long, short hittype, C_Base *)
         return;
 
     SetDeleteCallback(DelKeyFileCB);
-    LoadAFile(TXT_LOAD_KEYBOARD, "config\\*.KEY", NULL, LoadKeyCB, CloseWindowCB);
+    LoadAFile(TXT_LOAD_KEYBOARD, "config/*.KEY", NULL, LoadKeyCB,
+              CloseWindowCB);
 }
 
 int CreateKeyMapList(char *filename)
@@ -5436,21 +5757,22 @@ int CreateKeyMapList(char *filename)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window
+    win = gMainHandler->FindWindow(
+        SETUP_CONTROL_ADVANCED_WIN); // #53 button list is in the new window
 
-    if ( not win)
+    if (not win)
         return FALSE;
 
-    sprintf(path, "%s\\config\\%s.key", FalconDataDirectory, filename);
+    sprintf(path, "%s/config/%s.key", FalconDataDirectory, filename);
 
     fp = fopen(path, "rt");
 
-    if ( not fp)
+    if (not fp)
     {
-        sprintf(path, "%s\\config\\keystrokes.key", FalconDataDirectory);
+        sprintf(path, "%s/config/keystrokes.key", FalconDataDirectory);
         fp = fopen(path, "rt");
 
-        if ( not fp)
+        if (not fp)
             return FALSE;
     }
 
@@ -5477,21 +5799,24 @@ int CreateKeyMapList(char *filename)
     keydescrip[0] = 0;
 
     Keycodes = (C_Button *)win->FindControl(KEYCODES); //define this as KEYCODES
-    Mapping = (C_Text *)win->FindControl(MAPPING);     //define this as MAPPING
-    Hline = (C_Line *)win->FindControl(HLINE);     //define this as HLINE
-    Vline = (C_Line *)win->FindControl(VLINE);     //define this as VLINE
+    Mapping = (C_Text *)win->FindControl(MAPPING); //define this as MAPPING
+    Hline = (C_Line *)win->FindControl(HLINE); //define this as HLINE
+    Vline = (C_Line *)win->FindControl(VLINE); //define this as VLINE
 
     // #53 if the .scf templates are missing, bail out instead of crashing later
-    if ( not Keycodes or not Mapping or not Hline or not Vline)
+    if (not Keycodes or not Mapping or not Hline or not Vline)
     {
         fclose(fp);
         return FALSE;
     }
 
-    client = win->GetClientArea(Keycodes ? Keycodes->GetClient() : 2); // #53 table client (was hardcoded 3)
+    client =
+        win->GetClientArea(Keycodes ? Keycodes->GetClient() :
+                                      2); // #53 table client (was hardcoded 3)
 
     // #53 refresh device columns + header before the initial build
-    if (Vline) g_tblRowH = Vline->GetH();   // #53 row height for uniform cell hotspots
+    if (Vline)
+        g_tblRowH = Vline->GetH(); // #53 row height for uniform cell hotspots
     RebuildTableDeviceList();
     // #53 row separators span the actual table width (desc..last device column right edge).
     // Artscout - 2026: end the template Hline (the row-0 separator, just under the header) exactly
@@ -5500,7 +5825,9 @@ int CreateKeyMapList(char *filename)
     // single stray line under the header and a phantom cell corner on the right.
     if (Hline)
         Hline->SetXYWH(Hline->GetX(), Hline->GetY(),
-                       (DEVCOL_X0 + g_tblDevCount * DEVCOL_W - 12) - Hline->GetX(), Hline->GetH());
+                       (DEVCOL_X0 + g_tblDevCount * DEVCOL_W - 12) -
+                           Hline->GetX(),
+                       Hline->GetH());
     BuildTableHeader(win, Keycodes, Mapping);
     EnsureKeyCtxMenu(Keycodes);
 
@@ -5526,7 +5853,9 @@ int CreateKeyMapList(char *filename)
         if (buff[0] == ';' or buff[0] == '\n' or buff[0] == '#')
             continue;
 
-        if (sscanf(buff, "%s %d %d %x %x %x %x %d %[^\n]s", funcName, &buttonId, &mouseSide, &key2, &mod2, &key1, &mod1, &editable, &descrip) < 8)
+        if (sscanf(buff, "%s %d %d %x %x %x %x %d %[^\n]s", funcName, &buttonId,
+                   &mouseSide, &key2, &mod2, &key1, &mod1, &editable,
+                   &descrip) < 8)
             continue;
 
         if (key2 == -2)
@@ -5536,7 +5865,7 @@ int CreateKeyMapList(char *filename)
 
         keydescrip[0] = 0;
 
-        if ( not theFunc)
+        if (not theFunc)
             continue;
 
         KeyMap Map;
@@ -5574,15 +5903,16 @@ int CreateKeyMapList(char *filename)
             }
         }
 
-        parsed[40] = 0;   // #53 wider description column (no Clear button anymore)
+        parsed[40] =
+            0; // #53 wider description column (no Clear button anymore)
 
         // #22: search filter — skip non-matching rows WITHOUT incrementing count (rows stay
         // contiguous with no gaps; extras are removed by RemoveExcessControls and the scrollbar
         // is recomputed). Matches both description and function name.
-        if ( not KeyListRowVisible(funcName, parsed))
+        if (not KeyListRowVisible(funcName, parsed))
             continue;
 
-        if ( not count)
+        if (not count)
         {
             NumDispKeys++;
             //first time through .. special case
@@ -5602,7 +5932,9 @@ int CreateKeyMapList(char *filename)
             // #53 SetHdrStatusLine removed (old per-row blue bar; filled the table blue)
             UpdateKeyMap(win, Keycodes, Vline->GetH(), Map, HotSpot, count);
 
-            UpdateMappingDescrip(win, Mapping, Vline->GetH(), parsed, count); //this will add the control if it doesn't exist
+            UpdateMappingDescrip(
+                win, Mapping, Vline->GetH(), parsed,
+                count); //this will add the control if it doesn't exist
 
             AddKeyMapLines(win, Hline, Vline, count);
         }
@@ -5619,7 +5951,6 @@ int CreateKeyMapList(char *filename)
 
     fclose(fp);
     return FALSE;
-
 }
 
 
@@ -5634,7 +5965,8 @@ void SetKeyDefaultCB(long, short, C_Base *)
 /************************************************************************/
 void SetJoystickAndPOVSymbols(const bool isActive, C_Base *control)
 {
-    const int POVSymbols[] = { LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT, DOWN_HAT };
+    const int POVSymbols[] = {LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT,
+                              DOWN_HAT};
     const int POVSymbolCount = sizeof(POVSymbols) / sizeof(int);
     C_Button *button = NULL;
 
@@ -5644,7 +5976,7 @@ void SetJoystickAndPOVSymbols(const bool isActive, C_Base *control)
 
         if (button not_eq NULL)
         {
-            if ( not isActive)
+            if (not isActive)
                 button->SetFlagBitOn(C_BIT_INVISIBLE);
             else
                 button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -5665,14 +5997,14 @@ void SetThrottleAndRudderBars(C_Base *control)
 {
     C_Line *line = NULL;
 
-    // Retro 17Jan2004 - have to cater for 2 throttles now 
+    // Retro 17Jan2004 - have to cater for 2 throttles now
     /* do throttle mumbo-jumbo */
     line = (C_Line *)control->Parent_->FindControl(THROTTLE);
 
     if (line not_eq NULL)
     {
         // line->Refresh();
-        if ( not IO.AnalogIsUsed(AXIS_THROTTLE))
+        if (not IO.AnalogIsUsed(AXIS_THROTTLE))
         {
             line->SetColor(RGB(130, 130, 130)); //grey
             line->SetH(Throttle.bottom - Throttle.top);
@@ -5709,7 +6041,6 @@ void SetThrottleAndRudderBars(C_Base *control)
                 ShiAssert(false);
             }
         }
-
     }
     else
     {
@@ -5723,7 +6054,7 @@ void SetThrottleAndRudderBars(C_Base *control)
     {
         line->Refresh();
 
-        if ( not IO.AnalogIsUsed(AXIS_YAW))
+        if (not IO.AnalogIsUsed(AXIS_YAW))
         {
             line->SetColor(RGB(130, 130, 130)); //grey
             line->SetH(Rudder.bottom - Rudder.top);
@@ -5794,14 +6125,16 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
     newcontroller = lbox->GetTextID() - 1;
 
-    if (newcontroller == AxisMap.FlightControlDevice) // nothing changed, so no action required
+    if (newcontroller ==
+        AxisMap.FlightControlDevice) // nothing changed, so no action required
     {
         return;
     }
 
     IO.Reset(); // set all axis (real and game) back to nada (off)
 
-    if (AxisMap.FlightControlDevice == SIM_KEYBOARD) // hrmmm... no sure what�s up here
+    if (AxisMap.FlightControlDevice ==
+        SIM_KEYBOARD) // hrmmm... no sure what�s up here
     {
         SaveKeyMapList("laptop");
         UpdateKeyMapList(PlayerOptions.GetKeyfile(), TRUE);
@@ -5809,7 +6142,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
     if ((newcontroller == SIM_MOUSE) or (newcontroller == SIM_NUMDEVICES))
     {
-        // ??? not allowed 
+        // ??? not allowed
         ShiAssert(false);
     }
     else if (newcontroller == SIM_KEYBOARD) // hrmmm... no sure what�s up here
@@ -5817,7 +6150,8 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         SaveKeyMapList(PlayerOptions.GetKeyfile());
         UpdateKeyMapList("laptop", TRUE);
 
-        SetJoystickAndPOVSymbols(false, control); // kill POV symbol (the keyboard has none)
+        SetJoystickAndPOVSymbols(
+            false, control); // kill POV symbol (the keyboard has none)
     }
     else // at last, a reasonable user
     {
@@ -5837,12 +6171,13 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         gpDIDevice[newcontroller]->GetCapabilities(&CurJoyCaps);
 
         //NumberOfPOVs = (CurJoyCaps.dwPOVs>0)?1:0; // Retro 26Dec2003
-        NumberOfPOVs = CurJoyCaps.dwPOVs; // Wombat778 4-27-04 Dont limit to 1 POV
+        NumberOfPOVs =
+            CurJoyCaps.dwPOVs; // Wombat778 4-27-04 Dont limit to 1 POV
 
         if (NumberOfPOVs > 0) // Retro 26Dec2003
             hasPOV = TRUE; // Retro 26Dec2003
 
-        int POVSymbols[] = { LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT, DOWN_HAT };
+        int POVSymbols[] = {LEFT_HAT, RIGHT_HAT, CENTER_HAT, UP_HAT, DOWN_HAT};
         const int POVSymbolCount = sizeof(POVSymbols) / sizeof(int);
 
         for (int i = 0; i < POVSymbolCount; i++)
@@ -5851,7 +6186,7 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
             if (button not_eq NULL)
             {
-                if ( not hasPOV)
+                if (not hasPOV)
                     button->SetFlagBitOn(C_BIT_INVISIBLE);
                 else
                     button->SetFlagBitOff(C_BIT_INVISIBLE);
@@ -5869,11 +6204,13 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         HRESULT hres;
         devobj.dwSize = sizeof(DIDEVICEOBJECTINSTANCE);
 
-        hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_X, DIPH_BYOFFSET);
+        hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_X,
+                                                        DIPH_BYOFFSET);
 
         if (hres == DI_OK)
         {
-            hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_Y, DIPH_BYOFFSET);
+            hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_Y,
+                                                            DIPH_BYOFFSET);
 
             if (hres == DI_OK)
             {
@@ -5899,11 +6236,12 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         }
 
         /* now check if device has a throttle */
-        bool weHaveACougerUser = false; // ahh... that dumb metal POS has the throttle on RZ since it has no rudder.. or whatever..
+        bool weHaveACougerUser =
+            false; // ahh... that dumb metal POS has the throttle on RZ since it has no rudder.. or whatever..
 
         if (gDIDevNames[newcontroller])
         {
-            if ( not strcmp(gDIDevNames[newcontroller], "HOTAS Cougar Joystick"))
+            if (not strcmp(gDIDevNames[newcontroller], "HOTAS Cougar Joystick"))
             {
                 weHaveACougerUser = true;
             }
@@ -5911,7 +6249,8 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
 
         if (weHaveACougerUser == false)
         {
-            hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_SLIDER(0), DIPH_BYOFFSET);
+            hres = gpDIDevice[newcontroller]->GetObjectInfo(
+                &devobj, DIJOFS_SLIDER(0), DIPH_BYOFFSET);
 
             if (hres == DI_OK)
             {
@@ -5921,7 +6260,8 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         }
         else
         {
-            hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_Z, DIPH_BYOFFSET);
+            hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_Z,
+                                                            DIPH_BYOFFSET);
 
             if (hres == DI_OK)
             {
@@ -5932,9 +6272,11 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
         }
 
         /* now check if device has a rudder */
-        if (weHaveACougerUser == false) // cougar has no rudder and the RZ is taken anyways..
+        if (weHaveACougerUser ==
+            false) // cougar has no rudder and the RZ is taken anyways..
         {
-            hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_RZ, DIPH_BYOFFSET);
+            hres = gpDIDevice[newcontroller]->GetObjectInfo(&devobj, DIJOFS_RZ,
+                                                            DIPH_BYOFFSET);
 
             if (hres == DI_OK)
             {
@@ -5955,7 +6297,8 @@ void ControllerSelectCB(long, short hittype, C_Base *control)
     SetThrottleAndRudderBars(control);
     {
         extern AxisMapping AxisMap;
-        ControlsXml_WriteAxes(&AxisMap);   // #53/#57: axes + soft props (center/ABDetent/reversed) into axismapping.xml
+        ControlsXml_WriteAxes(
+            &AxisMap); // #53/#57: axes + soft props (center/ABDetent/reversed) into axismapping.xml
     }
 
     InitializeValueBars = 1; // Retro 26Dec2003
@@ -5977,14 +6320,15 @@ void BuildControllerList(C_ListBox *lbox)
     {
         for (int i = 0; i < gTotalJoy; i++)
         {
-            if ( not stricmp(gDIDevNames[SIM_JOYSTICK1 + i], "tm"))
+            if (not stricmp(gDIDevNames[SIM_JOYSTICK1 + i], "tm"))
             {
-                delete [] gDIDevNames[SIM_JOYSTICK1 + i];
+                delete[] gDIDevNames[SIM_JOYSTICK1 + i];
                 gDIDevNames[SIM_JOYSTICK1 + i] = new TCHAR[MAX_PATH];
                 _tcscpy(gDIDevNames[SIM_JOYSTICK1 + i], "Thrustmaster");
             }
 
-            lbox->AddItem(i + SIM_JOYSTICK1 + 1, C_TYPE_ITEM, gDIDevNames[SIM_JOYSTICK1 + i]);
+            lbox->AddItem(i + SIM_JOYSTICK1 + 1, C_TYPE_ITEM,
+                          gDIDevNames[SIM_JOYSTICK1 + i]);
 
             if (mHelmetIsUR and i == mHelmetID)
                 lbox->SetItemFlags(i + SIM_JOYSTICK1 + 1, 0);

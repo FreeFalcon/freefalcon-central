@@ -173,7 +173,6 @@ void FlightTrail(unsigned long, int state, void*)
 }
 
 
-
 // Spread
 
 void WingmanSpread(unsigned long, int state, void*)
@@ -732,13 +731,14 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
     VU_ID tgtId = FalconNullId;
     MissileClass* theMissile = NULL;
     SensorClass* mslDisplay = NULL;
-    SensorClass* tPodDisplay = tPodDisplay = FindLaserPod(theAC);;
-    RadarClass* theRadar = (RadarClass*) FindSensor(theAC, SensorClass::Radar);
+    SensorClass* tPodDisplay = tPodDisplay = FindLaserPod(theAC);
+    ;
+    RadarClass* theRadar = (RadarClass*)FindSensor(theAC, SensorClass::Radar);
 
     // 2000-11-15 ADDED BY S.G. SO PADLOCKED OBJECT CAN BE TARGETED FIRST
     if (OTWDriver.mpPadlockPriorityObject)
     {
-        if ( not OTWDriver.mpPadlockPriorityObject->IsMissile())
+        if (not OTWDriver.mpPadlockPriorityObject->IsMissile())
         {
             tgtId = OTWDriver.mpPadlockPriorityObject->Id();
 
@@ -771,9 +771,10 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
     }
 
     //Cobra need to separate out HTS so it still targets after all 88's fired
-    HarmTargetingPod *theHtS = (HarmTargetingPod*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::HTS);
+    HarmTargetingPod* theHtS = (HarmTargetingPod*)FindSensor(
+        SimDriver.GetPlayerAircraft(), SensorClass::HTS);
 
-    if ( not mslDisplay and theHtS)
+    if (not mslDisplay and theHtS)
     {
         tgtId = theHtS->FindIDUnderCursor();
 
@@ -797,8 +798,10 @@ VU_ID FindAircraftTarget(AircraftClass* theAC)
         }
         else
         {
-            if (((MissileDisplayClass*)mslDisplay)->DisplayType() == MissileDisplayClass::AGM65_IR or
-                ((MissileDisplayClass*)mslDisplay)->DisplayType() == MissileDisplayClass::AGM65_TV)
+            if (((MissileDisplayClass*)mslDisplay)->DisplayType() ==
+                    MissileDisplayClass::AGM65_IR or
+                ((MissileDisplayClass*)mslDisplay)->DisplayType() ==
+                    MissileDisplayClass::AGM65_TV)
             {
                 if (theMissile->targetPtr)
                     tgtId = theMissile->targetPtr->BaseData()->Id();
@@ -1314,7 +1317,6 @@ void FlightGoCoverMode(unsigned long, int state, void*)
 }
 
 
-
 void WingmanGoShooterMode(unsigned long, int state, void*)
 {
 
@@ -1341,7 +1343,6 @@ void FlightGoShooterMode(unsigned long, int state, void*)
         AiSendPlayerCommand(FalconWingmanMsg::WMShooterMode, AiFlight);
     }
 }
-
 
 
 //--
@@ -1487,5 +1488,3 @@ void FlightResumeNormal(unsigned long, int state, void*)
         AiSendPlayerCommand(FalconWingmanMsg::WMResumeNormal, AiFlight);
     }
 }
-
-

@@ -8,9 +8,12 @@
 // Loadout functions
 // ============================
 
-int LoadWeapons(void* squadron, int vindex, uchar *dam, MoveType mt, int num, int type_flags, int guide_flags, short Weapon[HARDPOINT_MAX], uchar Weapons[HARDPOINT_MAX]);
+int LoadWeapons(void *squadron, int vindex, uchar *dam, MoveType mt, int num,
+                int type_flags, int guide_flags, short Weapon[HARDPOINT_MAX],
+                uchar Weapons[HARDPOINT_MAX]);
 
-void LoadvsAir(int vindex, short Weapon[HARDPOINT_MAX], uchar Weapons[HARDPOINT_MAX]);
+void LoadvsAir(int vindex, short Weapon[HARDPOINT_MAX],
+               uchar Weapons[HARDPOINT_MAX]);
 
 struct LoadoutStruct
 {
@@ -35,12 +38,13 @@ struct LoadoutStruct
         memset(WeaponCount, 0, (sizeof(uchar) * HARDPOINT_MAX));
     }
 
-    const LoadoutStruct bitand operator = (const LoadoutStruct &rhs)
+    const LoadoutStruct bitand operator=(const LoadoutStruct &rhs)
     {
         if (&rhs not_eq this)
         {
             memcpy(WeaponID, rhs.WeaponID, (sizeof(short) * HARDPOINT_MAX));
-            memcpy(WeaponCount, rhs.WeaponCount, (sizeof(uchar) * HARDPOINT_MAX));
+            memcpy(WeaponCount, rhs.WeaponCount,
+                   (sizeof(uchar) * HARDPOINT_MAX));
         }
 
         return *this;

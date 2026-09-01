@@ -5,21 +5,21 @@
 #ifndef CAMPTERR
 #define CAMPTERR
 
-#include "CmpGlobl.h"
-#include "CampCell.h"
+#include "cmpglobl.h"
+#include "campcell.h"
 
 // ---------------------------------------
 // Type and External Function Declarations
 // ---------------------------------------
 
-#define GroundCoverMask    0x0F // 0xF0
-#define GroundCoverShift   0
-#define ReliefMask         0x30 // 0xCF
-#define ReliefShift        4
-#define RoadMask           0x40 // 0xBF
-#define RoadShift          6
-#define RailMask           0x80 // 0x7F
-#define RailShift          7
+#define GroundCoverMask 0x0F // 0xF0
+#define GroundCoverShift 0
+#define ReliefMask 0x30 // 0xCF
+#define ReliefShift 4
+#define RoadMask 0x40 // 0xBF
+#define RoadShift 6
+#define RailMask 0x80 // 0x7F
+#define RailShift 7
 
 typedef Int16 GridIndex;
 

@@ -9,7 +9,7 @@
 #include <string.h>
 
 // Constant IDs returned by class IsA() functions
-#include "IsA.h"
+#include "isa.h"
 
 #define ELEMENTNOTFOUND -5
 
@@ -28,12 +28,16 @@
 class CBaseObject
 {
 public:
-    CBaseObject(void) {}
-    virtual ~CBaseObject(void) {}
+    CBaseObject(void)
+    {
+    }
+    virtual ~CBaseObject(void)
+    {
+    }
     virtual BOOL IsValid(void) = 0;
     virtual int IsA(void) = 0;
 };
-typedef CBaseObject * CBOPTR;
+typedef CBaseObject *CBOPTR;
 
 //////////////////////////////////////////////////////////////////////////
 // CBOPArray object array class managing above base class
@@ -47,7 +51,8 @@ class CBOPArray
     unsigned int mSlots;
     unsigned int mOccupied;
     unsigned int mAllocIncrement;
-    CBOPTR * mPtrArray;
+    CBOPTR *mPtrArray;
+
 public:
     // public interface
     CBOPArray(void); // construct with default # of elements
@@ -56,18 +61,20 @@ public:
     {
         delete mPtrArray;
     }
-    BOOL Insert(CBaseObject * item);    // insert an item at the front
-    BOOL InsertAt(CBaseObject * item, unsigned int index); // insert an item at location 'index'
-    BOOL Add(CBaseObject * item);   // add element at the end (fastest)
+    BOOL Insert(CBaseObject *item);    // insert an item at the front
+    BOOL InsertAt(CBaseObject *item,
+                  unsigned int index); // insert an item at location 'index'
+    BOOL Add(CBaseObject *item);   // add element at the end (fastest)
     BOOL RemoveAt(unsigned int element);    // remove at given index
-    CBaseObject * GetAt(unsigned int element); // get pointer given index
+    CBaseObject *GetAt(unsigned int element); // get pointer given index
     // return index given pointer, or ELEMENTNOTFOUND (a negative)
-    int GetIndexGivenPointer(CBaseObject * item);
+    int GetIndexGivenPointer(CBaseObject *item);
     unsigned int OccupiedSlots(void)  // tell how many occupied slots in array
     {
         return mOccupied;
     }
-    unsigned int ArraySize(void)  // tell how big the array is including extra space
+    unsigned int
+    ArraySize(void)  // tell how big the array is including extra space
     {
         return mSlots;
     }
@@ -75,11 +82,8 @@ public:
     // actual size obtained
     unsigned int SetSize(unsigned int newsize, unsigned int expandby);
     // discards unused memory/elements, returns new actual size obtained
-    unsigned int  ShrinkToMinimumSize();
+    unsigned int ShrinkToMinimumSize();
 };
 
 
-
 #endif
-
-

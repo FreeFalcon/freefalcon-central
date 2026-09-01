@@ -2,24 +2,24 @@
 #include "entity.h"
 #include "classtbl.h"
 #include "falcsess.h"
-#include "F4Vu.h"
-#include "Flight.h"
-#include "CampList.h"
-#include "FalcMesg.h"
-#include "SimBase.h"
-#include "SimMover.h"
-#include "SimDrive.h"
-#include "OTWDrive.h"
-#include "MsgInc/PlayerStatusMsg.h"
-#include "GameMgr.h"
-#include "PlayerOp.h"
-#include "TimerThread.h"
+#include "f4vu.h"
+#include "flight.h"
+#include "camplist.h"
+#include "falcmesg.h"
+#include "simbase.h"
+#include "simmover.h"
+#include "simdrive.h"
+#include "otwdrive.h"
+#include "msginc/playerstatusmsg.h"
+#include "gamemgr.h"
+#include "playerop.h"
+#include "timerthread.h"
 #include "aircrft.h"
-#include "MsgInc/RadioChatterMsg.h"
+#include "msginc/radiochattermsg.h"
 #include "fsound.h"
-#include "FalcSnd/LHSP.h"
-#include "FalcSnd/FalcVoice.h"
-#include "FalcSnd/VoiceManager.h"
+#include "falcsnd/lhsp.h"
+#include "falcsnd/falcvoice.h"
+#include "falcsnd/voicemanager.h"
 #include "digi.h"
 #include "atcbrain.h"
 #include "dogfight.h"
@@ -46,14 +46,13 @@ GameManagerClass GameManager;
 ///////////////////////////////////////////////////////////////////////////////
 // Returns 1 if all players in the game are ready to fly.
 
-int GameManagerClass::AllPlayersReady(VuGameEntity *game)
+int GameManagerClass::AllPlayersReady(VuGameEntity* game)
 {
     VuSessionsIterator sessionWalker(game);
-    FalconSessionEntity *session;
-    FalconEntity *sessent;
+    FalconSessionEntity* session;
+    FalconEntity* sessent;
 
-    int
-    ok = TRUE;
+    int ok = TRUE;
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -61,9 +60,11 @@ int GameManagerClass::AllPlayersReady(VuGameEntity *game)
     {
         sessent = (FalconEntity*)session->GetPlayerEntity();
 
-        MonoPrint("APR %s %d\n", session->GetPlayerCallsign(), session->GetFlyState());
+        MonoPrint("APR %s %d\n", session->GetPlayerCallsign(),
+                  session->GetFlyState());
 
-        if ((session->GetFlyState() not_eq FLYSTATE_WAITING) and (session->GetFlyState() not_eq FLYSTATE_FLYING))
+        if ((session->GetFlyState() not_eq FLYSTATE_WAITING) and
+            (session->GetFlyState() not_eq FLYSTATE_FLYING))
         {
             ok = FALSE;
         }
@@ -79,13 +80,12 @@ int GameManagerClass::AllPlayersReady(VuGameEntity *game)
 ///////////////////////////////////////////////////////////////////////////////
 
 // Returns 1 if all players in the game are in the UI (or heading there)
-int GameManagerClass::NoMorePlayers(VuGameEntity *game)
+int GameManagerClass::NoMorePlayers(VuGameEntity* game)
 {
     VuSessionsIterator sessionWalker(game);
-    FalconSessionEntity *session;
+    FalconSessionEntity* session;
 
-    int
-    ok = TRUE;
+    int ok = TRUE;
 
     session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -110,13 +110,13 @@ int GameManagerClass::NoMorePlayers(VuGameEntity *game)
 
 // Checks and sets player status of this entity
 // (i.e: is there one or more players attached to this?)
-int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
+int GameManagerClass::CheckPlayerStatus(FalconEntity* entity)
 {
     VuSessionsIterator sessionWalker(FalconLocalGame);
-    FalconSessionEntity *session;
+    FalconSessionEntity* session;
     int player = 0;
 
-    if ( not entity)
+    if (not entity)
     {
         return 0;
     }
@@ -129,13 +129,9 @@ int GameManagerClass::CheckPlayerStatus(FalconEntity *entity)
         {
             player = 1;
         }
-        else if (
-            (entity->IsCampaign()) and 
-            (
-                (entity == session->GetPlayerFlight()) or
-                (entity == session->GetPlayerSquadron())
-            )
-        )
+        else if ((entity->IsCampaign()) and
+                 ((entity == session->GetPlayerFlight()) or
+                  (entity == session->GetPlayerSquadron())))
         {
             player = 1;
         }
@@ -165,20 +161,24 @@ void GameManagerClass::AnnounceEntry()
     // GetPlayerEntity() not ready yet) -> playerEntity->Id() crashed on this=NULL (crash
     // VuEntity::Id line 155 <- AnnounceEntry). Skip the announce (it's for status in
     // multiplayer; in single-player/when not ready it's harmless).
-    SimBaseClass *playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
-    if ( not playerEntity)
+    SimBaseClass* playerEntity =
+        (SimBaseClass*)FalconLocalSession->GetPlayerEntity();
+    if (not playerEntity)
         return;
 
     // Announce our entry to the other players
-    FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
+    FalconPlayerStatusMessage* msg =
+        new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
 
     _tcscpy(msg->dataBlock.callsign, FalconLocalSession->GetPlayerCallsign());
-    msg->dataBlock.playerID         = playerEntity->Id();
-    msg->dataBlock.campID           = ((CampBaseClass*)(playerEntity->GetCampaignObject()))->GetCampID();
-    msg->dataBlock.side             = ((CampBaseClass*)(playerEntity->GetCampaignObject()))->GetOwner();
-    msg->dataBlock.pilotID          = FalconLocalSession->GetPilotSlot();
+    msg->dataBlock.playerID = playerEntity->Id();
+    msg->dataBlock.campID =
+        ((CampBaseClass*)(playerEntity->GetCampaignObject()))->GetCampID();
+    msg->dataBlock.side =
+        ((CampBaseClass*)(playerEntity->GetCampaignObject()))->GetOwner();
+    msg->dataBlock.pilotID = FalconLocalSession->GetPilotSlot();
     msg->dataBlock.vehicleID = FalconLocalSession->GetAircraftNum();
-    msg->dataBlock.state            = PSM_STATE_ENTERED_SIM;
+    msg->dataBlock.state = PSM_STATE_ENTERED_SIM;
     FalconSendMessage(msg, TRUE);
 }
 
@@ -189,12 +189,15 @@ void GameManagerClass::AnnounceEntry()
 void GameManagerClass::AnnounceExit()
 {
     // Announce our exit to the other players
-    FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
-    SimBaseClass *playerEntity = (SimBaseClass*) FalconLocalSession->GetPlayerEntity();
+    FalconPlayerStatusMessage* msg =
+        new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
+    SimBaseClass* playerEntity =
+        (SimBaseClass*)FalconLocalSession->GetPlayerEntity();
 
     if (FalconLocalSession->GetPlayerFlight())
     {
-        msg->dataBlock.campID = FalconLocalSession->GetPlayerFlight()->GetCampID();
+        msg->dataBlock.campID =
+            FalconLocalSession->GetPlayerFlight()->GetCampID();
     }
     else
     {
@@ -203,15 +206,15 @@ void GameManagerClass::AnnounceExit()
 
     if (playerEntity)
     {
-        msg->dataBlock.playerID         = playerEntity->Id();
+        msg->dataBlock.playerID = playerEntity->Id();
     }
 
     _tcscpy(msg->dataBlock.callsign, FalconLocalSession->GetPlayerCallsign());
 
-    msg->dataBlock.side             = FalconLocalSession->GetCountry();
-    msg->dataBlock.pilotID          = FalconLocalSession->GetPilotSlot();
+    msg->dataBlock.side = FalconLocalSession->GetCountry();
+    msg->dataBlock.pilotID = FalconLocalSession->GetPilotSlot();
     msg->dataBlock.vehicleID = FalconLocalSession->GetAircraftNum();
-    msg->dataBlock.state            = PSM_STATE_LEFT_SIM;
+    msg->dataBlock.state = PSM_STATE_LEFT_SIM;
 
     if (FalconLocalGame->GetGameType() == game_Dogfight)
     {
@@ -229,27 +232,30 @@ void GameManagerClass::AnnounceExit()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void GameManagerClass::AnnounceTransfer(SimBaseClass *oldObj, SimBaseClass *newObj)
+void GameManagerClass::AnnounceTransfer(SimBaseClass* oldObj,
+                                        SimBaseClass* newObj)
 {
     // Announce our transfer of entities to the other players
-    FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
+    FalconPlayerStatusMessage* msg =
+        new FalconPlayerStatusMessage(FalconLocalSessionId, FalconLocalGame);
 
     _tcscpy(msg->dataBlock.callsign, FalconLocalSession->GetPlayerCallsign());
-    msg->dataBlock.playerID         = newObj->Id();
+    msg->dataBlock.playerID = newObj->Id();
     msg->dataBlock.oldID = oldObj->Id();
 
     if (oldObj->GetCampaignObject())
     {
-        msg->dataBlock.campID = ((CampBaseClass*)(oldObj->GetCampaignObject()))->GetCampID();
+        msg->dataBlock.campID =
+            ((CampBaseClass*)(oldObj->GetCampaignObject()))->GetCampID();
     }
     else
     {
         msg->dataBlock.campID = 0;
     }
 
-    msg->dataBlock.pilotID          = FalconLocalSession->GetPilotSlot();
+    msg->dataBlock.pilotID = FalconLocalSession->GetPilotSlot();
     msg->dataBlock.vehicleID = FalconLocalSession->GetAircraftNum();
-    msg->dataBlock.state            = PSM_STATE_TRANSFERED;
+    msg->dataBlock.state = PSM_STATE_TRANSFERED;
     FalconSendMessage(msg, TRUE);
 }
 
@@ -262,11 +268,12 @@ void GameManagerClass::AnnounceTransfer(SimBaseClass *oldObj, SimBaseClass *newO
 // ===============================================================
 
 // Find a specific vehicle inside campEntity
-SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int vehSlot)
+SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass* campEntity,
+                                                   int vehSlot)
 {
     SimMoverClass* simEntity = NULL;
 
-    if (( not campEntity) or ( not campEntity->GetComponents()))
+    if ((not campEntity) or (not campEntity->GetComponents()))
     {
         return NULL;
     }
@@ -280,7 +287,7 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 
     while (simEntity->vehicleInUnit not_eq vehSlot)
     {
-        simEntity = (SimMoverClass*) flit.GetNext();
+        simEntity = (SimMoverClass*)flit.GetNext();
     }
 
     return simEntity;
@@ -326,7 +333,8 @@ SimMoverClass* GameManagerClass::FindPlayerVehicle(UnitClass *campEntity, int ve
 
 
 // Attach passed player to this sim entity
-SimMoverClass* GameManagerClass::AttachPlayerToVehicle(FalconSessionEntity *player, SimMoverClass *simEntity, int playerSlot)
+SimMoverClass* GameManagerClass::AttachPlayerToVehicle(
+    FalconSessionEntity* player, SimMoverClass* simEntity, int playerSlot)
 {
     Unit campEntity;
 
@@ -374,7 +382,8 @@ SimMoverClass* GameManagerClass::AttachPlayerToVehicle(FalconSessionEntity *play
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int GameManagerClass::DetachPlayerFromVehicle(FalconSessionEntity *player, SimMoverClass* simEntity)
+int GameManagerClass::DetachPlayerFromVehicle(FalconSessionEntity* player,
+                                              SimMoverClass* simEntity)
 {
     Unit campEntity;
 
@@ -414,7 +423,9 @@ int GameManagerClass::DetachPlayerFromVehicle(FalconSessionEntity *player, SimMo
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void GameManagerClass::ReassignPlayerVehicle(FalconSessionEntity *player, SimMoverClass *oldEntity, SimMoverClass *newEntity)
+void GameManagerClass::ReassignPlayerVehicle(FalconSessionEntity* player,
+                                             SimMoverClass* oldEntity,
+                                             SimMoverClass* newEntity)
 {
     DetachPlayerFromVehicle(player, oldEntity);
     AttachPlayerToVehicle(player, newEntity, player->GetPilotSlot());
@@ -424,13 +435,14 @@ void GameManagerClass::ReassignPlayerVehicle(FalconSessionEntity *player, SimMov
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void GameManagerClass::LockPlayer(FalconSessionEntity *player)
+void GameManagerClass::LockPlayer(FalconSessionEntity* player)
 {
-    SimMoverClass* simEntity = (SimMoverClass*) player->GetPlayerEntity();
+    SimMoverClass* simEntity = (SimMoverClass*)player->GetPlayerEntity();
 
     if (simEntity)
     {
-        MonoPrint("Locking up the hounds %08x - setting invulnerable\n", simEntity);
+        MonoPrint("Locking up the hounds %08x - setting invulnerable\n",
+                  simEntity);
 
         // Set our entry flags
         simEntity->SetFalcFlag(FEC_INVULNERABLE);
@@ -450,9 +462,9 @@ void GameManagerClass::LockPlayer(FalconSessionEntity *player)
 ///////////////////////////////////////////////////////////////////////////////
 
 // The player is ready to go.. We're going to set our invulnerability countdown and release the aircraft from motion pause
-void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
+void GameManagerClass::ReleasePlayer(FalconSessionEntity* player)
 {
-    SimMoverClass* simEntity = (SimMoverClass*) player->GetPlayerEntity();
+    SimMoverClass* simEntity = (SimMoverClass*)player->GetPlayerEntity();
 
     ShiAssert(player not_eq FalconLocalSession or simEntity);
 
@@ -462,9 +474,10 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         simEntity->UnSetFalcFlag(FEC_HOLDSHORT);
         MonoPrint("Releasing the player\n");
 
-        if ( not PlayerOptions.InvulnerableOn())
+        if (not PlayerOptions.InvulnerableOn())
         {
-            MonoPrint("Releasing the hounds %08x - not invulnerable\n", simEntity);
+            MonoPrint("Releasing the hounds %08x - not invulnerable\n",
+                      simEntity);
             simEntity->UnSetFalcFlag(FEC_INVULNERABLE);
         }
         else
@@ -485,9 +498,9 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         // sfr: why OnGround its not disabled ???
         // this is causing players to begin with AP on.
         // commentted out
-        if (simEntity->IsAirplane()/* and not simEntity->OnGround()*/)
+        if (simEntity->IsAirplane() /* and not simEntity->OnGround()*/)
         {
-            ((AircraftClass *)simEntity)->SetAutopilot(AircraftClass::APOff);
+            ((AircraftClass*)simEntity)->SetAutopilot(AircraftClass::APOff);
         }
 
         SetTimeCompression(1);
@@ -497,41 +510,47 @@ void GameManagerClass::ReleasePlayer(FalconSessionEntity *player)
         if (simEntity->OnGround() and simEntity->IsAirplane())
         {
             gBumpFlag = TRUE;
-            gBumpTime = SimLibElapsedTime + FalconLocalGame->GetRules()->BumpTimer;
+            gBumpTime =
+                SimLibElapsedTime + FalconLocalGame->GetRules()->BumpTimer;
 
-            if (((AircraftClass *)simEntity)->DBrain()->CreateTime() + 2 * CampaignSeconds < SimLibElapsedTime)
+            if (((AircraftClass*)simEntity)->DBrain()->CreateTime() +
+                    2 * CampaignSeconds <
+                SimLibElapsedTime)
             {
-                FalconRadioChatterMessage *radioMessage = NULL;
-                ObjectiveClass *atc = (ObjectiveClass*)vuDatabase->Find(
-                                          ((AircraftClass*)simEntity)->DBrain()->Airbase()
-                                      );
+                FalconRadioChatterMessage* radioMessage = NULL;
+                ObjectiveClass* atc = (ObjectiveClass*)vuDatabase->Find(
+                    ((AircraftClass*)simEntity)->DBrain()->Airbase());
 
-                if (((AircraftClass*)simEntity)->DBrain()->IsSetATC(DigitalBrain::PermitTakeoff))
+                if (((AircraftClass*)simEntity)
+                        ->DBrain()
+                        ->IsSetATC(DigitalBrain::PermitTakeoff))
                 {
                     radioMessage = CreateCallFromATC(
-                                       atc, (AircraftClass*)simEntity, rcCLEAREDONRUNWAY, FalconLocalSession
-                                   );
-                    radioMessage->dataBlock.edata[3] = atc->brain->GetRunwayName(
-                                                           ((AircraftClass*)simEntity)->DBrain()->Runway()
-                                                       );
+                        atc, (AircraftClass*)simEntity, rcCLEAREDONRUNWAY,
+                        FalconLocalSession);
+                    radioMessage->dataBlock.edata[3] =
+                        atc->brain->GetRunwayName(
+                            ((AircraftClass*)simEntity)->DBrain()->Runway());
                 }
-                else if (((AircraftClass*)simEntity)->DBrain()->IsSetATC(DigitalBrain::PermitRunway))
+                else if (((AircraftClass*)simEntity)
+                             ->DBrain()
+                             ->IsSetATC(DigitalBrain::PermitRunway))
                 {
                     radioMessage = CreateCallFromATC(
-                                       atc, (AircraftClass*)simEntity, rcPOSITIONANDHOLD, FalconLocalSession
-                                   );
-                    radioMessage->dataBlock.edata[3] = atc->brain->GetRunwayName(
-                                                           ((AircraftClass*)simEntity)->DBrain()->Runway()
-                                                       );
+                        atc, (AircraftClass*)simEntity, rcPOSITIONANDHOLD,
+                        FalconLocalSession);
+                    radioMessage->dataBlock.edata[3] =
+                        atc->brain->GetRunwayName(
+                            ((AircraftClass*)simEntity)->DBrain()->Runway());
                 }
                 else
                 {
-                    radioMessage = CreateCallFromATC(
-                                       atc, (AircraftClass*)simEntity, rcCLEARTOTAXI, FalconLocalSession
-                                   );
-                    radioMessage->dataBlock.edata[2] = atc->brain->GetRunwayName(
-                                                           ((AircraftClass*)simEntity)->DBrain()->Runway()
-                                                       );
+                    radioMessage =
+                        CreateCallFromATC(atc, (AircraftClass*)simEntity,
+                                          rcCLEARTOTAXI, FalconLocalSession);
+                    radioMessage->dataBlock.edata[2] =
+                        atc->brain->GetRunwayName(
+                            ((AircraftClass*)simEntity)->DBrain()->Runway());
                 }
 
                 radioMessage->dataBlock.time_to_play = 2 * CampaignSeconds;

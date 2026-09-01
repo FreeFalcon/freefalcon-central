@@ -28,7 +28,7 @@
 #include "stdhdr.h"
 #include "airframe.h"
 #include "debuggr.h"
-#include "Simbase.h"
+#include "simbase.h"
 #include "limiters.h"
 #include "aircrft.h"
 #include "arfrmdat.h"
@@ -80,7 +80,7 @@ void AirframeClass::Roll(void)
     /*--------------*/
     /* command path */
     /*--------------*/
-    pscmd  = Math.Limit((rshape * kr01), -kr01, kr01);
+    pscmd = Math.Limit((rshape * kr01), -kr01, kr01);
     pscmd = min(max(pscmd, -kr01), kr01);
 
     if (((AircraftClass *)platform)->IsF16())
@@ -107,7 +107,8 @@ void AirframeClass::Roll(void)
 
         if (IsSet(CATLimiterIII))
         {
-            limiter = gLimiterMgr->GetLimiter(CatIIIRollRateLimiter, vehicleIndex);
+            limiter =
+                gLimiterMgr->GetLimiter(CatIIIRollRateLimiter, vehicleIndex);
 
             if (limiter)
                 pscmd = limiter->Limit(pscmd);
@@ -125,44 +126,49 @@ void AirframeClass::Roll(void)
     }
 
 
-    if ( not IsSet(Simplified))
+    if (not IsSet(Simplified))
     {
         switch (stallMode)
         {
-            case None:
-                if (assymetry * platform->platformAngles.cosmu > 0.0F)
-                    pscmd +=  max((assymetry / weight) * 0.04F, 0.0F) * (nzcgs - 1.0F);
-                else
-                    pscmd +=  min((assymetry / weight) * 0.04F, 0.0F) * (nzcgs - 1.0F);
+        case None:
+            if (assymetry * platform->platformAngles.cosmu > 0.0F)
+                pscmd +=
+                    max((assymetry / weight) * 0.04F, 0.0F) * (nzcgs - 1.0F);
+            else
+                pscmd +=
+                    min((assymetry / weight) * 0.04F, 0.0F) * (nzcgs - 1.0F);
 
-                break;
+            break;
 
-            case DeepStall:
-                if (platform->platformAngles.cosphi > 0.0F)
-                    pscmd = platform->platformAngles.sinphi * -5.0F * DTR;
-                else
-                    pscmd = platform->platformAngles.sinphi * 5.0F * DTR;
-
-                pscmd += (oscillationTimer * 40.0F * max(0.0F, (0.4F - (float)fabs(r)) * 2.5F) * DTR * (max(0.0F, loadingFraction - 1.3F)));
-                break;
-
-            case EnteringDeepStall:
-                if (platform->platformAngles.cosphi > 0.0F)
-                    pscmd = platform->platformAngles.sinphi * -40.0F * DTR + rshape * kr01 * 0.1F;
-                else
-                    pscmd = platform->platformAngles.sinphi * 40.0F * DTR + rshape * kr01 * 0.1F;
-
-                break;
-
-            case Spinning:
-                pscmd = oscillationTimer * DTR;
-                break;
-
-            case FlatSpin:
+        case DeepStall:
+            if (platform->platformAngles.cosphi > 0.0F)
+                pscmd = platform->platformAngles.sinphi * -5.0F * DTR;
+            else
                 pscmd = platform->platformAngles.sinphi * 5.0F * DTR;
-                break;
-        }
 
+            pscmd += (oscillationTimer * 40.0F *
+                      max(0.0F, (0.4F - (float)fabs(r)) * 2.5F) * DTR *
+                      (max(0.0F, loadingFraction - 1.3F)));
+            break;
+
+        case EnteringDeepStall:
+            if (platform->platformAngles.cosphi > 0.0F)
+                pscmd = platform->platformAngles.sinphi * -40.0F * DTR +
+                        rshape * kr01 * 0.1F;
+            else
+                pscmd = platform->platformAngles.sinphi * 40.0F * DTR +
+                        rshape * kr01 * 0.1F;
+
+            break;
+
+        case Spinning:
+            pscmd = oscillationTimer * DTR;
+            break;
+
+        case FlatSpin:
+            pscmd = platform->platformAngles.sinphi * 5.0F * DTR;
+            break;
+        }
     }
 
     //TJL 01/14/03 Multi-engine asymmetric thrust roll
@@ -186,7 +192,6 @@ void AirframeClass::Roll(void)
         asymmRoll = (engine1 - engine2) * 0.05f;
 
         pscmd = (pscmd + asymmRoll);
-
     }
 
     /*---------------------------------*/
@@ -228,22 +233,24 @@ void AirframeClass::RollIt(float pscmd, float dt)
         //TJL 12/11/03 Call RollInertia
         RollInertia(inertia);
         addInertia = RollInertia(inertia);
-        pstab  = Math.FLTust(pscmd, tr01 * (auxaeroData->rollMomentum + addInertia), dt, oldr01);
+        pstab = Math.FLTust(
+            pscmd, tr01 * (auxaeroData->rollMomentum + addInertia), dt, oldr01);
     }
 
     else
     {
         // JB 010714 mult by the momentum
-        pstab  = Math.FLTust(pscmd, tr01 * auxaeroData->rollMomentum, dt, oldr01);
+        pstab =
+            Math.FLTust(pscmd, tr01 * auxaeroData->rollMomentum, dt, oldr01);
     }
-
 }
 
 float AirframeClass::GetMaxCurrentRollRate()
 {
-    float maxcurrentrollrate = Math.TwodInterp(alpha, qbar, rollCmd->alpha, rollCmd->qbar,
-                               rollCmd->roll, rollCmd->numAlpha, rollCmd->numQbar,
-                               &curRollAlphaBreak, &curRollQbarBreak);
+    float maxcurrentrollrate =
+        Math.TwodInterp(alpha, qbar, rollCmd->alpha, rollCmd->qbar,
+                        rollCmd->roll, rollCmd->numAlpha, rollCmd->numQbar,
+                        &curRollAlphaBreak, &curRollQbarBreak);
 
     return maxcurrentrollrate;
 }
@@ -271,50 +278,57 @@ float AirframeClass::RollInertia(float inertia)
     for (i = 0; i < platform->Sms->NumHardpoints(); i++)
     {
         // Check for various stores
-        if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn)
+        if (platform->Sms->hardPoint[i]->weaponPointer and
+            platform->Sms->hardPoint[i]->GetWeaponClass() == wcAgmWpn)
         {
             hasAGMissile += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcHARMWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and
+                 platform->Sms->hardPoint[i]->GetWeaponClass() == wcHARMWpn)
         {
             hasHARM += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcBombWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and
+                 platform->Sms->hardPoint[i]->GetWeaponClass() == wcBombWpn)
         {
             hasBomb += 1;
         }
 
-        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcGbuWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and
+                 platform->Sms->hardPoint[i]->GetWeaponClass() == wcGbuWpn)
         {
             hasGBU += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and
+                 platform->Sms->hardPoint[i]->GetWeaponClass() == wcRocketWpn)
         {
             hasRocket += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcCamera)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and
+                 platform->Sms->hardPoint[i]->GetWeaponClass() == wcCamera)
         {
             hasCamera += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcSamWpn)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and
+                 platform->Sms->hardPoint[i]->GetWeaponClass() == wcSamWpn)
         {
             hasSamWpn += 1;
         }
-        else if (platform->Sms->hardPoint[i]->weaponPointer and platform->Sms->hardPoint[i]->GetWeaponClass() == wcTank)
+        else if (platform->Sms->hardPoint[i]->weaponPointer and
+                 platform->Sms->hardPoint[i]->GetWeaponClass() == wcTank)
         {
             haswcTank += 1;
             //Add this so we can divide the inertia by the number of tanks
             //since externalFuel is one value and fuel isn't recorded per tank
             wcTankCount = haswcTank;
         }
-
     }
 
     //TJL 12/12/03 We just counted the loadout, now assign inertia score based on loadout
     while (hasAGMissile > 0)
     {
         inertia += 0.2f;
-        hasAGMissile --;
+        hasAGMissile--;
     }
 
     while (hasHARM > 0)

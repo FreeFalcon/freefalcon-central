@@ -20,7 +20,7 @@ typedef struct PIXELCLUSTER
     BYTE p1A, p2A, p3A, p4A;
     BYTE p1B, p2B, p3B, p4B;
     BYTE p1C, p2C, p3C, p4C;
-}  PIXELCLUSTER;
+} PIXELCLUSTER;
 
 
 typedef struct codeListEntry

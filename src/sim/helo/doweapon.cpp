@@ -12,10 +12,10 @@
 #include "sms.h"
 #include "fcc.h"
 #include "guns.h"
-#include "MsgInc/WeaponFireMsg.h"
+#include "msginc/weaponfiremsg.h"
 #include "campbase.h"
-#include "Simdrive.h"
-#include "Graphics/Include/drawsgmt.h"
+#include "simdrive.h"
+#include "graphics/include/drawsgmt.h"
 #include "otwdrive.h"
 #include "sfx.h"
 #include "falcsess.h"
@@ -51,13 +51,12 @@ void HelicopterClass::DoWeapons(void)
             vec.y = PRANDFloat() * 30.0f;
             vec.z = -PRANDFloatPos() * 30.0f;
 
-            OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_LIGHT_CLOUD, // type
-                             SFX_MOVES,
-                             &pos, // world pos
-                             &vec, // vel vector
-                             2.3f, // time to live
-                             2.0f)); // scale
+            OTWDriver.AddSfxRequest(new SfxClass(SFX_LIGHT_CLOUD, // type
+                                                 SFX_MOVES,
+                                                 &pos, // world pos
+                                                 &vec, // vel vector
+                                                 2.3f, // time to live
+                                                 2.0f)); // scale
 
             if (!IsFiring())
             {
@@ -89,7 +88,8 @@ void HelicopterClass::DoWeapons(void)
         {
             if (IsFiring())
             {
-                SendFireMessage((SimWeaponClass*)Guns, FalconWeaponsFire::GUN, FALSE, targetPtr);
+                SendFireMessage((SimWeaponClass *)Guns, FalconWeaponsFire::GUN,
+                                FALSE, targetPtr);
             }
 
             SetFiring(FALSE);

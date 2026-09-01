@@ -2,7 +2,7 @@
 #define SQUADUI_H
 
 #include <tchar.h>
-#include "F4Vu.h"
+#include "f4vu.h"
 
 
 // =====================

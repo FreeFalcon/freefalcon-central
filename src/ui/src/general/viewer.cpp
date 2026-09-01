@@ -1,10 +1,10 @@
-#include "graphics/include/TimeMgr.h"
+#include "graphics/include/timemgr.h"
 #include "graphics/include/imagebuf.h"
 #include "graphics/include/renderow.h"
-#include "graphics/include/RViewPnt.h"
+#include "graphics/include/rviewpnt.h"
 #include "graphics/include/drawbsp.h"
 #include "vu2.h"
-#include "F4vu.h"
+#include "f4vu.h"
 #include "team.h"
 //#include "simbase.h"
 //#include "simlib.h"
@@ -53,39 +53,43 @@ extern C_TreeList *TargetTree;
 
 C_BSPList *gBSPList = NULL;
 
-Render3D   *UIrend3d = NULL;
+Render3D *UIrend3d = NULL;
 static void AddToDisplayList();
 RViewPoint *UIviewPoint = NULL;
-static RenderOTW  *UIrenderer = NULL;
+static RenderOTW *UIrenderer = NULL;
 static Tpoint zeroPos = {0.0F, 0.0F, 0.0F};
 static Tpoint viewPos = {0.0F, 0.0F, 0.0F};
 static Trotation viewRot;
-static VuOrderedList* UIfeatureList;
+static VuOrderedList *UIfeatureList;
 static long currentObj = -1;
 
-static long CountryNames[] =
-{
-    TXT_NEUTRAL,
-    TXT_USA,
-    TXT_ROK,
-    TXT_JAPAN,
-    TXT_CIS,
-    TXT_CHINA,
-    TXT_DPRK,
-    TXT_NEUTRAL,
+static long CountryNames[] = {
+    TXT_NEUTRAL, TXT_USA,   TXT_ROK,  TXT_JAPAN,
+    TXT_CIS,     TXT_CHINA, TXT_DPRK, TXT_NEUTRAL,
 };
 
-void CalculateViewport(C_Window *win, long client, float *l, float *t, float *r, float *b)
+void CalculateViewport(C_Window *win, long client, float *l, float *t, float *r,
+                       float *b)
 {
     float sw, sh;
 
     sw = (float)gMainHandler->GetFront()->targetXres();
     sh = (float)gMainHandler->GetFront()->targetYres();
 
-    *l = static_cast<float>(-1.0f + ((float)(win->GetX() + win->ClientArea_[client].left + 6) / (sw * .5)));
-    *t = static_cast<float>(1.0f - ((float)(win->GetY() + win->ClientArea_[client].top + 6) / (sh * .5)));
-    *r = static_cast<float>(1.0f - ((float)(sw - (win->GetX() + win->ClientArea_[client].right) - 6) / (sw * .5)));
-    *b = static_cast<float>(-1.0f + ((float)(sh - (win->GetY() + win->ClientArea_[client].bottom) - 6) / (sh * .5)));
+    *l = static_cast<float>(
+        -1.0f +
+        ((float)(win->GetX() + win->ClientArea_[client].left + 6) / (sw * .5)));
+    *t = static_cast<float>(
+        1.0f -
+        ((float)(win->GetY() + win->ClientArea_[client].top + 6) / (sh * .5)));
+    *r = static_cast<float>(
+        1.0f -
+        ((float)(sw - (win->GetX() + win->ClientArea_[client].right) - 6) /
+         (sw * .5)));
+    *b = static_cast<float>(
+        -1.0f +
+        ((float)(sh - (win->GetY() + win->ClientArea_[client].bottom) - 6) /
+         (sh * .5)));
 }
 
 void CenterOnFeatureCB(long, short hittype, C_Base *control)
@@ -131,10 +135,10 @@ void SetHeading(C_Window *win)
     C_Text *txt;
     _TCHAR buffer[5];
 
-    if ( not win)
+    if (not win)
         return;
 
-    txt = (C_Text*)win->FindControl(RECON_HEADING);
+    txt = (C_Text *)win->FindControl(RECON_HEADING);
 
     if (txt)
     {
@@ -147,19 +151,22 @@ void SetHeading(C_Window *win)
 
 void FindCameraDeltas(OBJECTINFO *Info)
 {
-    Info->DeltaX = static_cast<float>(-Info->Distance * cos(Info->Heading * DTR) * cos(Info->Pitch * DTR));
-    Info->DeltaY = static_cast<float>(-Info->Distance * sin(Info->Heading * DTR) * cos(Info->Pitch * DTR));
+    Info->DeltaX = static_cast<float>(
+        -Info->Distance * cos(Info->Heading * DTR) * cos(Info->Pitch * DTR));
+    Info->DeltaY = static_cast<float>(
+        -Info->Distance * sin(Info->Heading * DTR) * cos(Info->Pitch * DTR));
     Info->DeltaZ = static_cast<float>(-Info->Distance * sin(Info->Pitch * DTR));
 }
 
 void PositionCamera(OBJECTINFO *Info, C_Window *win, long client)
 {
-    if ( not gUIViewer or not Info or not win)
+    if (not gUIViewer or not Info or not win)
         return;
 
     FindCameraDeltas(Info);
     SetHeading(win);
-    gUIViewer->SetCamera(Info->DeltaX, Info->DeltaY, Info->DeltaZ, Info->Heading, -Info->Pitch, 0.0f);
+    gUIViewer->SetCamera(Info->DeltaX, Info->DeltaY, Info->DeltaZ,
+                         Info->Heading, -Info->Pitch, 0.0f);
     win->RefreshClient(client);
 }
 
@@ -168,10 +175,10 @@ void SetSlantRange(C_Window *win)
     C_Text *txt;
     _TCHAR buffer[15];
 
-    if ( not win)
+    if (not win)
         return;
 
-    txt = (C_Text*)win->FindControl(SLANT_RANGE);
+    txt = (C_Text *)win->FindControl(SLANT_RANGE);
 
     if (txt)
     {
@@ -188,10 +195,10 @@ void SetBullsEye(C_Window *win)
     long brg, dist;
     _TCHAR buffer[40];
 
-    if ( not win)
+    if (not win)
         return;
 
-    txt = (C_Text*)win->FindControl(BULLSEYE);
+    txt = (C_Text *)win->FindControl(BULLSEYE);
 
     if (txt)
     {
@@ -210,9 +217,11 @@ void SetBullsEye(C_Window *win)
 #else
         brg += 180;
 #endif
-        dist = FloatToInt32(TheCampaign.RangeToBullseyeFt(Recon.PosX, Recon.PosY) * FT_TO_NM);
+        dist = FloatToInt32(
+            TheCampaign.RangeToBullseyeFt(Recon.PosX, Recon.PosY) * FT_TO_NM);
 
-        _stprintf(buffer, "%03d  %1ld %s", brg, dist, gStringMgr->GetString(TXT_NM));
+        _stprintf(buffer, "%03d  %1ld %s", brg, dist,
+                  gStringMgr->GetString(TXT_NM));
 
         txt->SetText(buffer);
         txt->Refresh();
@@ -224,57 +233,57 @@ BOOL ReconListSortCB(TREELIST *list, TREELIST *newitem)
     C_Feature *feat1, *feat2;
     C_Entity *ent1, *ent2;
 
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
     if (list->Type_ == C_TYPE_ROOT)
     {
         // Sort by ID (ID = Team)
         if (newitem->ID_ < list->ID_)
-            return(TRUE);
+            return (TRUE);
     }
 
     if (list->Type_ == C_TYPE_MENU)
     {
         // Sort for the Headers (Alphabetical)
-        ent1 = (C_Entity*)list->Item_;
-        ent2 = (C_Entity*)newitem->Item_;
+        ent1 = (C_Entity *)list->Item_;
+        ent2 = (C_Entity *)newitem->Item_;
 
-        if ( not ent1 or not ent2)
-            return(FALSE);
+        if (not ent1 or not ent2)
+            return (FALSE);
 
         if (_tcscmp(ent2->GetName(), ent1->GetName()) < 0)
-            return(TRUE);
+            return (TRUE);
     }
     else if (list->Type_ == C_TYPE_ITEM)
     {
         // Sort for the Individual Items (Based on Value)
-        feat1 = (C_Feature*)list->Item_;
-        feat2 = (C_Feature*)newitem->Item_;
+        feat1 = (C_Feature *)list->Item_;
+        feat2 = (C_Feature *)newitem->Item_;
 
-        if ( not feat1 or not feat2)
-            return(FALSE);
+        if (not feat1 or not feat2)
+            return (FALSE);
 
         if (feat2->GetFeatureValue() > feat1->GetFeatureValue())
-            return(TRUE);
+            return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BSPLIST *LoadFeature(long ID, int visID, Tpoint *pos, float facing)
 {
-    return(gUIViewer->LoadBuilding(ID, visID, pos, facing * DEG_TO_RADIANS));
+    return (gUIViewer->LoadBuilding(ID, visID, pos, facing * DEG_TO_RADIANS));
 }
 
-int UI_Deaggregate(ObjectiveClass* objective)
+int UI_Deaggregate(ObjectiveClass *objective)
 {
     int f, fid;
     VehicleID classID;
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     float x, y, z;
-    FeatureClassDataType* fc;
-    ObjClassDataType* oc;
+    FeatureClassDataType *fc;
+    ObjClassDataType *oc;
     BSPLIST *drawptr;
     Tpoint objPos;
     C_Window *win;
@@ -285,22 +294,22 @@ int UI_Deaggregate(ObjectiveClass* objective)
     C_Feature *feat;
 
     if (gUIViewer == NULL)
-        return(0);
+        return (0);
 
     CloseAllRenderers(RECON_WIN);
     win = gMainHandler->FindWindow(RECON_WIN);
 
     if (win == NULL)
-        return(0);
+        return (0);
 
-    tree = (C_TreeList*)win->FindControl(RECON_TREE);
+    tree = (C_TreeList *)win->FindControl(RECON_TREE);
 
-    if ( not tree)
-        return(0);
+    if (not tree)
+        return (0);
 
     root = tree->Find(objective->GetTeam());
 
-    if ( not root)
+    if (not root)
     {
         txt = new C_Text;
         txt->Setup(C_DONT_CARE, 0);
@@ -313,11 +322,10 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
         if (root)
             tree->AddItem(tree->GetRoot(), root);
-
     }
 
-    if ( not root)
-        return(0);
+    if (not root)
+        return (0);
 
     recon_ent = BuildObjective(objective);
 
@@ -338,7 +346,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
         {
             fc = GetFeatureClassData(classID);
 
-            if ( not fc or fc->Flags bitand FEAT_VIRTUAL)
+            if (not fc or fc->Flags bitand FEAT_VIRTUAL)
                 continue;
 
             objective->GetFeatureOffset(f, &y, &x, &z);
@@ -349,19 +357,24 @@ int UI_Deaggregate(ObjectiveClass* objective)
 
             if (classPtr not_eq NULL)
             {
-                drawptr = LoadFeature(objective->GetCampID() << 16 bitor f, classPtr->visType[objective->GetFeatureStatus(f)], &objPos, (float)FeatureEntryDataTable[fid].Facing);
+                drawptr = LoadFeature(
+                    objective->GetCampID() << 16 bitor f,
+                    classPtr->visType[objective->GetFeatureStatus(f)], &objPos,
+                    (float)FeatureEntryDataTable[fid].Facing);
 
                 if (drawptr not_eq NULL)
                 {
                     // if(objective->GetFeatureValue(f))
                     // {
-                    ((DrawableObject*)drawptr)->GetPosition(&objPos);
+                    ((DrawableObject *)drawptr)->GetPosition(&objPos);
 
                     feat = BuildFeature(objective, f, &objPos);
 
                     if (feat)
                     {
-                        item = tree->CreateItem(objective->GetCampID() << 16 bitor f, C_TYPE_ITEM, feat);
+                        item = tree->CreateItem(
+                            objective->GetCampID() << 16 bitor f, C_TYPE_ITEM,
+                            feat);
 
                         if (item)
                             tree->AddChildItem(parent, item);
@@ -378,7 +391,7 @@ int UI_Deaggregate(ObjectiveClass* objective)
     if (tree->Parent_)
         tree->Parent_->RefreshClient(tree->GetClient());
 
-    return(1);
+    return (1);
 }
 
 void DisplayView(long, short, C_Base *)
@@ -406,10 +419,12 @@ void MoveViewTimerCB(long, short, C_Base *control)
             Recon.Heading += 360.0f;
 
         PositionCamera(&Recon, control->Parent_, 0);
-        control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_DELAY_));
+        control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                               control->GetUserNumber(_UI95_TIMER_DELAY_));
     }
 
-    control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
+    control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                           control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
 }
 
 void InitObjectViewer(C_Window *win, long client)
@@ -487,14 +502,15 @@ void ViewBSPObjectCB(long, short, C_Base *)
 {
     BSPLIST *obj;
 
-    if (gBSPList == NULL) return;
+    if (gBSPList == NULL)
+        return;
 
     obj = gBSPList->Find(FirstPlane << 24);
 
     if (obj not_eq NULL)
     {
         UIrend3d->StartDraw();
-        ((DrawableBSP*)obj->object)->Draw(UIrend3d);
+        ((DrawableBSP *)obj->object)->Draw(UIrend3d);
         UIrend3d->EndDraw();
     }
 }

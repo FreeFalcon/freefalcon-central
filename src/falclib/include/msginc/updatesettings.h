@@ -7,19 +7,20 @@
 
 #ifndef _UPDATESETTINGS_H
 #define _UPDATESETTINGS_H
+#include <cstdint>
 
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 //sfr: checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Update Settings
@@ -27,7 +28,8 @@ using std::memcpychk;
 class UI_UpdateSettings : public FalconEvent
 {
 public:
-    UI_UpdateSettings(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_UpdateSettings(VU_ID entityId, VuTargetEntity *target,
+                      VU_BOOL loopback = TRUE);
     UI_UpdateSettings(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~UI_UpdateSettings(void);
     int Size(void)
@@ -56,15 +58,14 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         short setting;
-        long value;
+        int32_t value;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

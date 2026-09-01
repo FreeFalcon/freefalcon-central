@@ -6,7 +6,7 @@
 #include "fcc.h"
 #include "sms.h"
 #include "object.h"
-#include "MsgInc/airaimodechange.h"
+#include "msginc/airaimodechange.h"
 #include "campwp.h"
 #include "falcsess.h"
 #include "simdrive.h"
@@ -71,8 +71,7 @@ void HeliBrain::TargetSelection(void)
 
     // check to see if our current ground target is a sim and exploding or
     // dead, if so let's get a new target from the campaign
-    if (targetPtr &&
-        targetPtr->BaseData()->IsSim() &&
+    if (targetPtr && targetPtr->BaseData()->IsSim() &&
         (targetPtr->BaseData()->IsExploding() ||
          !((SimBaseClass *)targetPtr->BaseData())->IsAwake()))
     {
@@ -91,7 +90,7 @@ void HeliBrain::TargetSelection(void)
         }
 
         // itsa campaign object.  Check to see if its deagg'd
-        if (((CampBaseClass*)target)->IsAggregate())
+        if (((CampBaseClass *)target)->IsAggregate())
         {
             // still aggregated, return
             return;
@@ -99,19 +98,19 @@ void HeliBrain::TargetSelection(void)
 
         // the campaign object is now deaggregated, choose a sim entity
         // to target on it
-        numComponents = ((CampBaseClass*)target)->NumberOfComponents();
+        numComponents = ((CampBaseClass *)target)->NumberOfComponents();
 
         for (i = 0; i < numComponents; i++)
         {
-            simTarg = ((CampBaseClass*)target)->GetComponentEntity(rand() % numComponents);
+            simTarg = ((CampBaseClass *)target)
+                          ->GetComponentEntity(rand() % numComponents);
 
             if (!simTarg)   //sanity check
                 continue;
 
             // don't target runways (yet)
             if ( // !simTarg->IsSetCampaignFlag (FEAT_FLAT_CONTAINER) &&
-                !simTarg->IsExploding() &&
-                !simTarg->IsDead() &&
+                !simTarg->IsExploding() && !simTarg->IsDead() &&
                 simTarg->pctStrength > 0.0f)
             {
                 SetTargetEntity(simTarg);
@@ -148,12 +147,9 @@ void HeliBrain::TargetSelection(void)
     campTactic = campUnit->GetUnitTactic();
 
     // sanity check and make sure its on ground, what to do if not?!...
-    if (!target ||
-        campTactic == ATACTIC_RETROGRADE ||
-        campTactic == ATACTIC_IGNORE ||
-        campTactic == ATACTIC_AVOID ||
-        campTactic == ATACTIC_ABORT ||
-        campTactic == ATACTIC_REFUEL)
+    if (!target || campTactic == ATACTIC_RETROGRADE ||
+        campTactic == ATACTIC_IGNORE || campTactic == ATACTIC_AVOID ||
+        campTactic == ATACTIC_ABORT || campTactic == ATACTIC_REFUEL)
     {
         ClearTarget();
         return;
@@ -162,7 +158,6 @@ void HeliBrain::TargetSelection(void)
 
     // set it as our target
     SetTargetEntity(target);
-
 }
 
 /*
@@ -359,83 +354,83 @@ void HeliBrain::RunDecisionRoutines(void)
 
 void HeliBrain::PrtMode(void)
 {
-    AirAIModeMsg* modeMsg;
+    AirAIModeMsg *modeMsg;
 
     if (curMode != lastMode)
     {
         switch (curMode)
         {
-            case RTBMode:
-                PrintOnline("DIGI RTBMode");
-                break;
+        case RTBMode:
+            PrintOnline("DIGI RTBMode");
+            break;
 
-            case WingyMode:
-                PrintOnline("DIGI WINGMAN");
-                break;
+        case WingyMode:
+            PrintOnline("DIGI WINGMAN");
+            break;
 
-            case WaypointMode:
-                PrintOnline("DIGI WaypointMode");
-                break;
+        case WaypointMode:
+            PrintOnline("DIGI WaypointMode");
+            break;
 
-            case GunsEngageMode:
-                PrintOnline("DIGI GUNS ENGAGE");
-                break;
+        case GunsEngageMode:
+            PrintOnline("DIGI GUNS ENGAGE");
+            break;
 
-            case BVREngageMode:
-                PrintOnline("DIGI BVR ENGAGE");
-                break;
+        case BVREngageMode:
+            PrintOnline("DIGI BVR ENGAGE");
+            break;
 
-            case WVREngageMode:
-                PrintOnline("DIGI WVR ENGAGE");
-                break;
+        case WVREngageMode:
+            PrintOnline("DIGI WVR ENGAGE");
+            break;
 
-            case MissileDefeatMode:
-                PrintOnline("DIGI MISSILE DEFEAT");
-                break;
+        case MissileDefeatMode:
+            PrintOnline("DIGI MISSILE DEFEAT");
+            break;
 
-            case MissileEngageMode:
-                PrintOnline("DIGI MSSLE ENGAGE");
-                break;
+        case MissileEngageMode:
+            PrintOnline("DIGI MSSLE ENGAGE");
+            break;
 
-            case GunsJinkMode:
-                PrintOnline("DIGI GUNS JINK");
-                break;
+        case GunsJinkMode:
+            PrintOnline("DIGI GUNS JINK");
+            break;
 
-            case GroundAvoidMode:
-                PrintOnline("DIGI GROUND AVOID");
-                break;
+        case GroundAvoidMode:
+            PrintOnline("DIGI GROUND AVOID");
+            break;
 
-            case LoiterMode:
-                PrintOnline("DIGI LoiterMode");
-                break;
+        case LoiterMode:
+            PrintOnline("DIGI LoiterMode");
+            break;
 
-            case RunAwayMode:
-                PrintOnline("DIGI DISENGAGE");
-                break;
+        case RunAwayMode:
+            PrintOnline("DIGI DISENGAGE");
+            break;
 
-            case OvershootMode:
-                PrintOnline("DIGI OvershootMode");
-                break;
+        case OvershootMode:
+            PrintOnline("DIGI OvershootMode");
+            break;
 
-            case CollisionAvoidMode:
-                PrintOnline("DIGI COLLISION");
-                break;
+        case CollisionAvoidMode:
+            PrintOnline("DIGI COLLISION");
+            break;
 
-            case AccelerateMode:
-                PrintOnline("DIGI AccelerateMode");
-                break;
+        case AccelerateMode:
+            PrintOnline("DIGI AccelerateMode");
+            break;
 
-            case SeparateMode:
-                PrintOnline("DIGI SeparateMode");
-                break;
+        case SeparateMode:
+            PrintOnline("DIGI SeparateMode");
+            break;
 
-            case RoopMode:
-                PrintOnline("DIGI RoopMode");
-                break;
+        case RoopMode:
+            PrintOnline("DIGI RoopMode");
+            break;
 
-            case OverBMode:
-                PrintOnline("DIGI OVERBANK");
-                break;
+        case OverBMode:
+            PrintOnline("DIGI OVERBANK");
+            break;
         }
 
         modeMsg = new AirAIModeMsg(self->Id(), FalconLocalGame);
@@ -461,6 +456,6 @@ void HeliBrain::ResolveModeConflicts(void)
     /* What were we doing */
     /*--------------------*/
     lastMode = curMode;
-    curMode  = nextMode;
+    curMode = nextMode;
     nextMode = NoMode;
 }

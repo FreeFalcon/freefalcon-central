@@ -11,10 +11,14 @@ static DWORD redm, greenm, bluem;//color masks
 
 extern int FloatToInt32(float);
 
-WORD UIColorTable[201][256];  // Used for translucent conversion (Color Range 0.0 to 2.0)
-WORD rUIColorTable[201][256]; // Used for translucent conversion (Color Range 0.0 to 2.0)
-WORD gUIColorTable[201][256]; // Used for translucent conversion (Color Range 0.0 to 2.0)
-WORD bUIColorTable[201][256]; // Used for translucent conversion (Color Range 0.0 to 2.0)
+WORD UIColorTable
+    [201][256];  // Used for translucent conversion (Color Range 0.0 to 2.0)
+WORD rUIColorTable
+    [201][256]; // Used for translucent conversion (Color Range 0.0 to 2.0)
+WORD gUIColorTable
+    [201][256]; // Used for translucent conversion (Color Range 0.0 to 2.0)
+WORD bUIColorTable
+    [201][256]; // Used for translucent conversion (Color Range 0.0 to 2.0)
 
 WORD Grey_1[32];
 WORD Grey_3[32];
@@ -44,17 +48,20 @@ void UIBuildColorTable()
             else
             {
                 UIColorTable[i][j] = WORD(j * color);
-                rUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << reds); 
-                gUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << greens);
-                bUIColorTable[i][j] = static_cast<WORD>(WORD(j * color) << blues);
+                rUIColorTable[i][j] =
+                    static_cast<WORD>(WORD(j * color) << reds);
+                gUIColorTable[i][j] =
+                    static_cast<WORD>(WORD(j * color) << greens);
+                bUIColorTable[i][j] =
+                    static_cast<WORD>(WORD(j * color) << blues);
             }
     }
 
     for (i = 0; i < 32; i++)
     {
-        Grey_1[i] = static_cast<WORD>(FloatToInt32((float)i * 0.1f)); 
-        Grey_3[i] = static_cast<WORD>(FloatToInt32((float)i * 0.3f)); 
-        Grey_6[i] = static_cast<WORD>(FloatToInt32((float)i * 0.6f)); 
+        Grey_1[i] = static_cast<WORD>(FloatToInt32((float)i * 0.1f));
+        Grey_3[i] = static_cast<WORD>(FloatToInt32((float)i * 0.3f));
+        Grey_6[i] = static_cast<WORD>(FloatToInt32((float)i * 0.6f));
         rShift[i] = static_cast<short>(i << reds);
         gShift[i] = static_cast<short>(i << greens);
         bShift[i] = static_cast<short>(i << blues);
@@ -64,7 +71,8 @@ void UIBuildColorTable()
 //XXvoid UI95_SetScreenColorInfo( WORD r_mask,WORD g_mask,WORD b_mask )
 void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
 {
-    ShiAssert(r_mask not_eq 0 and g_mask not_eq 0 and b_mask not_eq 0); // this should never happen
+    ShiAssert(r_mask not_eq 0 and g_mask not_eq 0 and
+              b_mask not_eq 0); // this should never happen
     // but I saw it once (JPO)
 
 
@@ -85,7 +93,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // RED
     reds = 0;
 
-    while (r_mask and not (r_mask bitand 1))   // JPO cater for no reds - weird
+    while (r_mask and not(r_mask bitand 1))   // JPO cater for no reds - weird
     {
         r_mask >>= 1;
         reds++;
@@ -105,7 +113,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // GREEN
     greens = 0;
 
-    while (g_mask and not (g_mask bitand 1))
+    while (g_mask and not(g_mask bitand 1))
     {
         g_mask >>= 1;
         greens++;
@@ -125,7 +133,7 @@ void UI95_SetScreenColorInfo(DWORD r_mask, DWORD g_mask, DWORD b_mask)
     // BLUE
     blues = 0;
 
-    while (b_mask and not (b_mask bitand 1))
+    while (b_mask and not(b_mask bitand 1))
     {
         b_mask >>= 1;
         blues++;
@@ -156,7 +164,8 @@ void UI95_GetScreenColorInfo(WORD *r_mask,WORD *r_shift,WORD *g_mask,WORD *g_shi
 }*/
 
 //XX void UI95_GetScreenColorInfo(WORD &r_mask,WORD &r_shift,WORD &g_mask, WORD &g_shift,WORD &b_mask,WORD &b_shift)
-void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask, WORD &g_shift, DWORD &b_mask, WORD &b_shift)
+void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask,
+                             WORD &g_shift, DWORD &b_mask, WORD &b_shift)
 {
     r_mask = redm;
     g_mask = greenm;
@@ -170,13 +179,17 @@ void UI95_GetScreenColorInfo(DWORD &r_mask, WORD &r_shift, DWORD &g_mask, WORD &
 
 WORD UI95_RGB15Bit(WORD rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] bitor gShift[(rgb >> 5) bitand 0x1f] bitor bShift[rgb bitand 0x1f]); 
+    return static_cast<WORD>(rShift[(rgb >> 10) bitand 0x1f] bitor
+                             gShift[(rgb >> 5) bitand 0x1f] bitor
+                             bShift[rgb bitand 0x1f]);
 }
 
 
 WORD UI95_RGB24Bit(unsigned long rgb)
 {
-    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] bitor gShift[(rgb >> 11) bitand 0x1f] bitor bShift[(rgb >> 19) bitand 0x1f]);
+    return static_cast<WORD>(rShift[(rgb >> 3) bitand 0x1f] bitor
+                             gShift[(rgb >> 11) bitand 0x1f] bitor
+                             bShift[(rgb >> 19) bitand 0x1f]);
 }
 
 WORD UI95_ScreenToTga(WORD color)
@@ -187,14 +200,17 @@ WORD UI95_ScreenToTga(WORD color)
     g = ((color >> greens) bitand 0x1f) << 5;
     b = ((color >> blues) bitand 0x1f);
 
-    return static_cast<WORD>(r bitor g bitor b); 
+    return static_cast<WORD>(r bitor g bitor b);
 }
 
 WORD UI95_ScreenToGrey(WORD color)
 {
-    long grey = Grey_3[(color  >> reds) bitand 0x1f] + Grey_6[(color  >> greens) bitand 0x1f] + Grey_1[(color  >> blues) bitand 0x1f];
+    long grey = Grey_3[(color >> reds) bitand 0x1f] +
+                Grey_6[(color >> greens) bitand 0x1f] +
+                Grey_1[(color >> blues) bitand 0x1f];
 
-    return static_cast<WORD>(rShift[grey] bitor gShift[grey] bitor bShift[grey]); 
+    return static_cast<WORD>(rShift[grey] bitor gShift[grey] bitor
+                             bShift[grey]);
 }
 
 /*

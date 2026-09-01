@@ -3,7 +3,7 @@
 #include "aircrft.h"
 #include "navsystem.h"
 #include "flightdata.h"
-#include "Phyconst.h"
+#include "phyconst.h"
 #include "fcc.h"
 #include "hud.h"
 #include "cpmanager.h"
@@ -55,7 +55,6 @@ void ICPClass::ExecMISCMode(void)
         FillDEDMatrix(3, PosH, "HARM");
     else
         FillDEDMatrix(3, PosH, "    ");
-
 }
 void ICPClass::ExecCORRMode(void)
 {
@@ -79,9 +78,12 @@ void ICPClass::ExecCORRMode(void)
 }
 void ICPClass::ExecMAGVMode(void)
 {
-    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) /
+               EARTH_RADIUS_FT;
     cosLatitude = (float)cos(latitude);
-    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
+    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) +
+                 cockpitFlightData.y) /
+                (EARTH_RADIUS_FT * cosLatitude);
     latitude *= RTD;
     longitude *= RTD;
     /****************************************************************
@@ -179,10 +181,12 @@ void ICPClass::ExecGPSMode(void)
 
     //  Calculate the date
     SYSTEMTIME time;
-    GetLocalTime(&time); //Wombat778 10-18-2003 is this going to hurt performance?  It doesnt really need to balculated every frame
+    GetLocalTime(
+        &time); //Wombat778 10-18-2003 is this going to hurt performance?  It doesnt really need to balculated every frame
     int temptime = time.wYear;
 
-    if (temptime > 1999) //convert the date to 2 digits. This wont work > 2100 but FreeFalcon wont be around by then;-)
+    if (temptime >
+        1999) //convert the date to 2 digits. This wont work > 2100 but FreeFalcon wont be around by then;-)
         temptime -= 2000;
     else
         temptime -= 1900;
@@ -198,8 +202,10 @@ void ICPClass::ExecGPSMode(void)
 
     //  calculate the speed
 
-    int GroundSpeed = FloatToInt32((float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
-                                   cockpitFlightData.yDot * cockpitFlightData.yDot) * FTPSEC_TO_KNOTS);
+    int GroundSpeed = FloatToInt32(
+        (float)sqrt(cockpitFlightData.xDot * cockpitFlightData.xDot +
+                    cockpitFlightData.yDot * cockpitFlightData.yDot) *
+        FTPSEC_TO_KNOTS);
     sprintf(tempstr, "%03d", GroundSpeed);
     FillDEDMatrix(3, (15 - strlen(tempstr)), tempstr);
 
@@ -210,14 +216,15 @@ void ICPClass::ExecGPSMode(void)
     //FillDEDMatrix(4,12,"003*"); //Wombat778 10-18-2003 Removed to make heading live
 
     //calculate the heading
-    int tempheading = FloatToInt32((cockpitFlightData.yaw * 10.0F * RTD) / 10.0f);
+    int tempheading =
+        FloatToInt32((cockpitFlightData.yaw * 10.0F * RTD) / 10.0f);
 
-    if (tempheading < 0) tempheading += 360;
+    if (tempheading < 0)
+        tempheading += 360;
 
     sprintf(tempstr, "%03d*", tempheading);
     FillDEDMatrix(4, 12, tempstr);
     //end of heading code
-
 }
 void ICPClass::ExecDRNGMode(void)
 {
@@ -295,7 +302,7 @@ BOOL ICPClass::CheckForHARM(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC or not playerAC->Sms)
+    if (not playerAC or not playerAC->Sms)
         return FALSE;
 
     if (playerAC->Sms->curWeapon and playerAC->Sms->curWeaponClass == wcHARMWpn)
@@ -316,23 +323,24 @@ extern bool g_bPilotEntertainment; // Retro 3Jan2004
 void ICPClass::ExecWinAmpMode(void)
 {
 
-    if ( not g_bPilotEntertainment)
+    if (not g_bPilotEntertainment)
     {
-        ShiAssert(false); // we really shouldn´t be here then 
+        ShiAssert(false); // we really shouldn´t be here then
         return;
     }
 
-    if ( not winamp)
+    if (not winamp)
         return;
 
-    winamp->Refresh(vuxRealTime); // have to use real timer here, in case of pause etc..
+    winamp->Refresh(
+        vuxRealTime); // have to use real timer here, in case of pause etc..
 
     ClearStrings();
 
     //Line1
     FillDEDMatrix(0, 1, "BMS Crew Entertainment");
     //Line3
-    char* title = winamp->getDEDTitle(0);
+    char *title = winamp->getDEDTitle(0);
 
     if (title)
         FillDEDMatrix(2, 1, title);

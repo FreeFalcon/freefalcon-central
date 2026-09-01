@@ -9,13 +9,13 @@
 #include "otwdrive.h"
 #include "simio.h"
 #include "sinput.h"
-#include "ThreadMgr.h"
+#include "threadmgr.h"
 #include "falcsess.h"
-#include "F4Comms.h"
-#include "Campaign/Include/Campaign.h"
-#include "TimerThread.h"
+#include "f4comms.h"
+#include "campaign/include/campaign.h"
+#include "timerthread.h"
 
-#include "Campaign/Include/Cmpclass.h"
+#include "campaign/include/cmpclass.h"
 
 extern int EndFlightFlag;
 #define MAJOR_FRAME_RESOLUTION 50
@@ -30,7 +30,7 @@ extern int UpdateDanglingSessions();
 * Also, it should be as simple as possible for performance reasons.
 * One day I intend to make this a separe thread so that messages dont depend on simloop running.
 */
-void RealTimeFunction(unsigned long, void*)
+void RealTimeFunction(unsigned long, void *)
 {
     static unsigned long update_time = 0, send_time = 0;
 
@@ -89,4 +89,3 @@ void RealTimeFunction(unsigned long, void*)
 
 #endif
 }
-

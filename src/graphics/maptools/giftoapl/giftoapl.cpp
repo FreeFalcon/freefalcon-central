@@ -13,18 +13,19 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <shi/ShiError.h>
-#include "../../3Dlib/Image.h"
+#include <shi/shierror.h>
+#include "../../3dlib/image.h"
 
 
-#define NUM_ALPHAS 7 // This doesn't count the default fully transparent chroma color in slot 0
-#define NUM_COLORS (255/NUM_ALPHAS)
+#define NUM_ALPHAS                                                             \
+    7 // This doesn't count the default fully transparent chroma color in slot 0
+#define NUM_COLORS (255 / NUM_ALPHAS)
 
 
+void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width,
+               WORD *height);
 
-void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD *height);
-
-void main(int argc, char* argv[])
+void main(int argc, char *argv[])
 {
     char inName[MAX_PATH];
     char alphaName[MAX_PATH];
@@ -96,7 +97,7 @@ void main(int argc, char* argv[])
 
     // Allocate memory for the output image and palette
     outPalette = new DWORD[256];
-    outImage = new BYTE[ width * height ];
+    outImage = new BYTE[width * height];
 
 
     // If we don't have an alpha map, just copy the data, otherwise do the hard stuff
@@ -131,7 +132,8 @@ void main(int argc, char* argv[])
         {
             for (a = 0; a < NUM_ALPHAS; a++)
             {
-                outPalette[NUM_ALPHAS * (i - 1) + a + 1] = (inPalette[i] & 0x00FFFFFF) | alpha[a];
+                outPalette[NUM_ALPHAS * (i - 1) + a + 1] =
+                    (inPalette[i] & 0x00FFFFFF) | alpha[a];
             }
         }
 
@@ -154,7 +156,8 @@ void main(int argc, char* argv[])
 
     // Open the output file
     printf("Opening output file %s\n", outName);
-    outFile = open(outName, _O_CREAT | _O_TRUNC | _O_WRONLY | _O_BINARY, _S_IREAD | _S_IWRITE);
+    outFile = open(outName, _O_CREAT | _O_TRUNC | _O_WRONLY | _O_BINARY,
+                   _S_IREAD | _S_IWRITE);
     ShiAssert(outFile != -1);
 
     // Write the magic number and the width and height to the file
@@ -195,9 +198,10 @@ void main(int argc, char* argv[])
 }
 
 
-void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD *height)
+void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width,
+               WORD *height)
 {
-    CImageFileMemory  texFile;
+    CImageFileMemory texFile;
     DWORD result;
 
     *image = NULL;
@@ -233,5 +237,5 @@ void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD 
     ShiAssert(texFile.image.palette);
 
     *image = texFile.image.image;
-    *palette = (DWORD*)texFile.image.palette;
+    *palette = (DWORD *)texFile.image.palette;
 }

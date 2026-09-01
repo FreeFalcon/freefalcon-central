@@ -9,8 +9,8 @@
  * ---------------------------------------------------------------------
  */
 
-#ifndef   NETAPI_H
-#define   NETAPI_H
+#ifndef NETAPI_H
+#define NETAPI_H
 
 #include "apitypes.h"
 #include "vu2/comms/comcore.h"
@@ -21,57 +21,57 @@
 #define NET_VERSION 1.3
 #endif
 
-#define  NET_MAXIMUM_STATIONS               6
+#define NET_MAXIMUM_STATIONS 6
 
 /* Net Function return values:  */
 
-#define  NET_ERROR_NONE                     0
-#define  NET_ERROR_NETWORK_DISRUPTED        1
-#define  NET_ERROR_NETWORK_RESTORED         2
-#define  NET_ERROR_NOT_OPEN                -1
-#define  NET_ERROR_INVALID_MESSAGE_SIZE    -2
-#define  NET_ERROR_INVALID_STATION_ID      -3
-#define  NET_ERROR_INVALID_GROUP_ID        -4
-#define  NET_ERROR_RECEIVER_OVERRUN        -5
-#define  NET_ERROR_DUPLICATE_STATION_ID    -6
+#define NET_ERROR_NONE 0
+#define NET_ERROR_NETWORK_DISRUPTED 1
+#define NET_ERROR_NETWORK_RESTORED 2
+#define NET_ERROR_NOT_OPEN -1
+#define NET_ERROR_INVALID_MESSAGE_SIZE -2
+#define NET_ERROR_INVALID_STATION_ID -3
+#define NET_ERROR_INVALID_GROUP_ID -4
+#define NET_ERROR_RECEIVER_OVERRUN -5
+#define NET_ERROR_DUPLICATE_STATION_ID -6
 
-#define  NET_POLL_NO_CHANGE                 0
-#define  NET_POLL_MESSAGE_RECEIVED          3
-#define  NET_POLL_STATUS_CHANGE             4
+#define NET_POLL_NO_CHANGE 0
+#define NET_POLL_MESSAGE_RECEIVED 3
+#define NET_POLL_STATUS_CHANGE 4
 
-#define  NET_SEND_TRANSMIT_BUFFER_FULL      5
+#define NET_SEND_TRANSMIT_BUFFER_FULL 5
 
-#define  NET_TO_ALL_STATIONS               -1
-#define  NET_TO_GAME_STATIONS              16
+#define NET_TO_ALL_STATIONS -1
+#define NET_TO_GAME_STATIONS 16
 
-typedef  struct
+typedef struct
 {
-    int    stationId;
-    char   gameId[VU_GAME_IDENTIFICATION_LENGTH];
-    int    maxMessageSize;
-}  NetOpenRequest;
+    int stationId;
+    char gameId[VU_GAME_IDENTIFICATION_LENGTH];
+    int maxMessageSize;
+} NetOpenRequest;
 
-typedef  struct
+typedef struct
 {
-    int    messageDestination;
-    VU_BYTE  *messageDataBuffer;
-    int    messageDataCount;
-    int    messagePriority;
-}  NetSendRequest;
+    int messageDestination;
+    VU_BYTE *messageDataBuffer;
+    int messageDataCount;
+    int messagePriority;
+} NetSendRequest;
 
-typedef  struct
+typedef struct
 {
-    int    messageOriginator;
-    VU_BYTE  *messageDataBuffer;
-    int    messageDataCount;
-    int    messageCount;
-}  NetPollRequest;
+    int messageOriginator;
+    VU_BYTE *messageDataBuffer;
+    int messageDataCount;
+    int messageCount;
+} NetPollRequest;
 
-typedef  struct
+typedef struct
 {
-    int              stationCount;
-    ComStationDesc  *stationTablePtr;
-}  NetInqRequest;
+    int stationCount;
+    ComStationDesc *stationTablePtr;
+} NetInqRequest;
 
 int NetBegin(float version, char mode);
 
@@ -136,8 +136,8 @@ int NetPoll(NetPollRequest *pollReq);
 int NetInquire(NetInqRequest *inqReq);
 
 int NetOpen(NetOpenRequest *openReq);
-int  NetEnd(void);
-int  NetClose(void);
+int NetEnd(void);
+int NetClose(void);
 
 ushort GetTempStationID(ushort);
 

@@ -16,8 +16,8 @@ typedef struct
     RECT srcRect;
     int xhotSpot;
     int yhotSpot;
-    ImageBuffer* pOtwImage;
-    ImageBuffer* pTemplate;
+    ImageBuffer *pOtwImage;
+    ImageBuffer *pTemplate;
 } CursorInitStr;
 
 //====================================================//
@@ -35,11 +35,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================//
     // ID Tag
     //====================================================//
@@ -71,7 +71,7 @@ public:
     // Constructors and Destructors
     //====================================================//
 
-    CPCursor(CursorInitStr*);
+    CPCursor(CursorInitStr *);
 };
 
 #endif

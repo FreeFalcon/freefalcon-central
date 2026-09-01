@@ -19,35 +19,35 @@
 #include <xmmintrin.h>
 #include <float.h>
 
-#undef  PI
+#undef PI
 #define PI (3.1415926535897932384626433832795028841971693993751f)
 #define PI_FRAC (PI / 180.0)
 #define TINY (0.0000001)
 
-#define MAXIMUM(a,b,c) ((a>b)?max(a,c):max(b,c))
-#define MINIMUM(a,b,c) ((a<b)?min(a,c):min(b,c))
+#define MAXIMUM(a, b, c) ((a > b) ? max(a, c) : max(b, c))
+#define MINIMUM(a, b, c) ((a < b) ? min(a, c) : min(b, c))
 
-template<class T> inline T Abs(const T A)
+template <class T> inline T Abs(const T A)
 {
     return (A >= (T)0) ? A : -A;
 }
 
-template<class T> inline T Sgn(const T A)
+template <class T> inline T Sgn(const T A)
 {
     return (A > 0) ? 1 : ((A < 0) ? -1 : 0);
 }
 
-template<class T> inline T Max(const T A, const T B)
+template <class T> inline T Max(const T A, const T B)
 {
     return (A >= B) ? A : B;
 }
 
-template<class T> inline T Min(const T A, const T B)
+template <class T> inline T Min(const T A, const T B)
 {
     return (A <= B) ? A : B;
 }
 
-template<class T> inline T Square(const T A)
+template <class T> inline T Square(const T A)
 {
     return A * A;
 }
@@ -57,7 +57,7 @@ template<class T> inline T Square(const T A)
 // return X<Min ? Min : X<Max ? X : Max;
 //}
 
-template<class T> inline T Align(const T Ptr, int Alignment)
+template <class T> inline T Align(const T Ptr, int Alignment)
 {
 #if WIN32
     return (T)(((DWORD)Ptr + Alignment - 1) & ~(Alignment - 1));
@@ -66,14 +66,14 @@ template<class T> inline T Align(const T Ptr, int Alignment)
 #endif
 }
 
-template<class T> inline void Exchange(T& A, T& B)
+template <class T> inline void Exchange(T& A, T& B)
 {
     const T Temp = A;
     A = B;
     B = Temp;
 }
 
-template< class T > T Lerp(T& A, T& B, float Alpha)
+template <class T> T Lerp(T& A, T& B, float Alpha)
 {
     return A + Alpha * (B - A);
 }
@@ -128,10 +128,10 @@ static inline float SqrtSSE(float x)
 static inline float Rsqrt(float v)
 {
     float v_half = v * .5f;
-    long i = *(long *)&v;
+    long i = *(long*)&v;
 
     i = 0x5f3759df - (i >> 1);
-    v = *(float *)&i;
+    v = *(float*)&i;
 
     return v * (1.5f - v_half * v * v);
 }
@@ -156,7 +156,7 @@ static inline float Sqrt(float x)
 
 #endif //_MSC_VER >= 1300
 
-static inline void SinCos(const float a, float *s, float *c)
+static inline void SinCos(const float a, float* s, float* c)
 {
 #if defined(_M_IX86)
     _asm
@@ -188,24 +188,31 @@ static inline bool Fequal(float f0, float f1, float tol)
 {
     float f = f0 - f1;
 
-    if ((f > (-tol)) && (f < tol)) return true;
-    else                       return false;
+    if ((f > (-tol)) && (f < tol))
+        return true;
+    else
+        return false;
 }
 
 static inline bool Fless(float f0, float f1, float tol)
 {
-    if ((f0 - f1) < tol) return true;
-    else             return false;
+    if ((f0 - f1) < tol)
+        return true;
+    else
+        return false;
 }
 
 static inline bool Fgreater(float f0, float f1, float tol)
 {
-    if ((f0 - f1) > tol) return true;
-    else             return false;
+    if ((f0 - f1) > tol)
+        return true;
+    else
+        return false;
 }
 
 #if WIN32
-#pragma warning(disable : 4035) // Retro 29Apr2004 - suppress 'No return value' warning
+#pragma warning(                                                               \
+    disable : 4035) // Retro 29Apr2004 - suppress 'No return value' warning
 #endif
 static inline int FloatToInt32(float x)
 {
@@ -227,7 +234,7 @@ static inline int FloatToInt32(float x)
 #pragma warning(default : 4035) // Retro 29Apr2004
 #endif
 
-static inline void FloatToInt32Store(int *a, float x)
+static inline void FloatToInt32Store(int* a, float x)
 {
 #if defined(_M_IX86)
     __asm
@@ -284,16 +291,22 @@ static inline float Smooth(float newVal, float curVal, float maxChange)
 
 static inline float Clamp(float val, float lower, float upper)
 {
-    if (val < lower) return lower;
-    else if (val > upper) return upper;
-    else return val;
+    if (val < lower)
+        return lower;
+    else if (val > upper)
+        return upper;
+    else
+        return val;
 }
 
 static inline float Clamp(float val)
 {
-    if (val < 0.f) return 0.f;
-    else if (val > 1.f) return 1.f;
-    else return val;
+    if (val < 0.f)
+        return 0.f;
+    else if (val > 1.f)
+        return 1.f;
+    else
+        return val;
 }
 
 static inline float Rand()
@@ -323,4 +336,3 @@ static inline float Cot(float a)
 }
 
 #endif
-

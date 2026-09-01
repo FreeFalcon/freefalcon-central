@@ -12,13 +12,13 @@
 #include "flight.h"
 #include "playerop.h"
 //#include "brief.h"
-#include "Graphics/Include/TMap.h"
-#include "Graphics/Include/filemem.h"
-#include "Graphics/Include/image.h"
+#include "graphics/include/tmap.h"
+#include "graphics/include/filemem.h"
+#include "graphics/include/image.h"
 #include "kneeboard.h"
 #include "otwdrive.h"
 //#include "cpmanager.h"
-#include "Falclib/include/dispcfg.h"
+#include "falclib/include/dispcfg.h"
 #include "flightdata.h" //MI
 #include "aircrft.h" //MI
 #include "phyconst.h" //MI
@@ -28,7 +28,7 @@
 #include "weather.h"
 #include "tod.h"
 
-static const char KNEEBOARD_MAP_NAME[] = "art\\ckptart\\KneeMap.gif";
+static const char KNEEBOARD_MAP_NAME[] = "art/ckptart/KneeMap.gif";
 static const char THR_KNEEBOARD_MAP_NAME[] = "KneeMap.gif";
 //static const int KNEEBOARD_MAP_KM_PER_TEXEL = 2; // Property of source art on disk
 
@@ -88,7 +88,8 @@ void KneeBoard::LoadKneeImage()
     char pathname[MAX_PATH];
     int result;
 
-    sprintf(pathname, "%s\\%s", FalconCampaignSaveDirectory, THR_KNEEBOARD_MAP_NAME);
+    sprintf(pathname, "%s/%s", FalconCampaignSaveDirectory,
+            THR_KNEEBOARD_MAP_NAME);
     // Make sure we recognize this file type
     mapImageFile.imageType = CheckImageType(pathname);
     ShiAssert(mapImageFile.imageType not_eq IMAGE_TYPE_UNKNOWN);

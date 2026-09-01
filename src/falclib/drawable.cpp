@@ -1,4 +1,4 @@
-#include "Renderer/Render2d.h"
+#include "renderer/render2d.h"
 #include "sim/include/stdhdr.h"
 #include "drawable.h"
 #include "sim/include/otwdrive.h"
@@ -19,29 +19,12 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
 {
     // NOTE - Sms buttons are labeled starting at the top left and
     //        proceeding clockwise around the MFD.
-    static float textLoc[20][2] =
-    {
-        -0.6F,  0.95F,
-        -0.3F,  0.95F,
-        0.0F,  0.95F,
-        0.3F,  0.95F,
-        0.6F,  0.95F,
-        0.95F,  0.6F,
-        0.95F,  0.3F,
-        0.95F,  0.0F,
-        0.95F, -0.3F,
-        0.95F, -0.6F,
-        0.6F, -0.85F,
-        0.3F, -0.85F,
-        0.0F, -0.85F,
-        -0.3F, -0.85F,
-        -0.6F, -0.85F,
-        -0.95F, -0.6F,
-        -0.95F, -0.3F,
-        -0.95F,  0.0F,
-        -0.95F,  0.3F,
-        -0.95F,  0.6F
-    };
+    static float textLoc[20][2] = {
+        -0.6F,  0.95F,  -0.3F,  0.95F,  0.0F,   0.95F,  0.3F,   0.95F,
+        0.6F,   0.95F,  0.95F,  0.6F,   0.95F,  0.3F,   0.95F,  0.0F,
+        0.95F,  -0.3F,  0.95F,  -0.6F,  0.6F,   -0.85F, 0.3F,   -0.85F,
+        0.0F,   -0.85F, -0.3F,  -0.85F, -0.6F,  -0.85F, -0.95F, -0.6F,
+        -0.95F, -0.3F,  -0.95F, 0.0F,   -0.95F, 0.3F,   -0.95F, 0.6F};
 
     float multiLineOffset;
     float xPos, yPos;
@@ -54,27 +37,26 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
 
         switch (MFDOn)
         {
-            default:
-                xPos = curPanel->osbLocation[0][idx][0];
-                yPos = curPanel->osbLocation[0][idx][1];
-                break;
+        default:
+            xPos = curPanel->osbLocation[0][idx][0];
+            yPos = curPanel->osbLocation[0][idx][1];
+            break;
 
-            case 1:
-                xPos = curPanel->osbLocation[1][idx][0];
-                yPos = curPanel->osbLocation[1][idx][1];
-                break;
+        case 1:
+            xPos = curPanel->osbLocation[1][idx][0];
+            yPos = curPanel->osbLocation[1][idx][1];
+            break;
 
-            case 2:
-                xPos = curPanel->osbLocation[2][idx][0];
-                yPos = curPanel->osbLocation[2][idx][1];
-                break;
+        case 2:
+            xPos = curPanel->osbLocation[2][idx][0];
+            yPos = curPanel->osbLocation[2][idx][1];
+            break;
 
-            case 3:
-                xPos = curPanel->osbLocation[3][idx][0];
-                yPos = curPanel->osbLocation[3][idx][1];
-                break;
+        case 3:
+            xPos = curPanel->osbLocation[3][idx][0];
+            yPos = curPanel->osbLocation[3][idx][1];
+            break;
         }
-
     }
     else
     {
@@ -112,13 +94,17 @@ void DrawableClass::LabelButton(int idx, char* str1, char* str2, int inverse)
         }
         else if (idx > 4 && idx < 10)
         {
-            display->TextRight(xPos, yPos + multiLineOffset * 0.5F, str1, inverse);
-            display->TextRight(xPos, yPos - multiLineOffset * 0.5F, str2, inverse);
+            display->TextRight(xPos, yPos + multiLineOffset * 0.5F, str1,
+                               inverse);
+            display->TextRight(xPos, yPos - multiLineOffset * 0.5F, str2,
+                               inverse);
         }
         else if (idx > 14)
         {
-            display->TextLeft(xPos, yPos + multiLineOffset * 0.5F, str1, inverse);
-            display->TextLeft(xPos, yPos - multiLineOffset * 0.5F, str2, inverse);
+            display->TextLeft(xPos, yPos + multiLineOffset * 0.5F, str1,
+                              inverse);
+            display->TextLeft(xPos, yPos - multiLineOffset * 0.5F, str2,
+                              inverse);
         }
         else
         {

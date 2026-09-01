@@ -5,7 +5,7 @@
 
 #include <vector>
 
-#include "SimDrive.h"
+#include "simdrive.h"
 #include "stdhdr.h"
 #include "simvudrv.h"
 #include "simmover.h"
@@ -20,24 +20,28 @@ using namespace std;
 // useful constants
 
 /** factor from units bubble to send fine updates */
-#define FINE_DISTANCE_FACTOR   (0.2f) // % of bubble
+#define FINE_DISTANCE_FACTOR (0.2f) // % of bubble
 /** rough update distance (ft) */
-#define ROUGH_DISTANCE_FACTOR  (1.0f) // bubble range
+#define ROUGH_DISTANCE_FACTOR (1.0f) // bubble range
 
 /** number of position updates sent for objects inside fine distance */
-#define FINE_POSITIONAL_UPDATES_PER_SEC    (5)
-#define FINE_POSITIONAL_UPDATES_PERIOD     (VU_TICS_PER_SECOND / FINE_POSITIONAL_UPDATES_PER_SEC)
+#define FINE_POSITIONAL_UPDATES_PER_SEC (5)
+#define FINE_POSITIONAL_UPDATES_PERIOD                                         \
+    (VU_TICS_PER_SECOND / FINE_POSITIONAL_UPDATES_PER_SEC)
 /** number of seconds per rough position updates (outside fine, less than rough)*/
-#define ROUGH_POSITIONAL_UPDATE_TIME       (2)
-#define ROUGH_POSITIONAL_UPDATES_PERIOD    (VU_TICS_PER_SECOND * ROUGH_POSITIONAL_UPDATE_TIME)
+#define ROUGH_POSITIONAL_UPDATE_TIME (2)
+#define ROUGH_POSITIONAL_UPDATES_PERIOD                                        \
+    (VU_TICS_PER_SECOND * ROUGH_POSITIONAL_UPDATE_TIME)
 /** number of seconds per mandatory position update (outside rough) */
-#define MANDATORY_POSITIONAL_UPDATE_TIME   (10)
-#define MANDATORY_POSITIONAL_UPDATE_PERIOD (VU_TICS_PER_SECOND*MANDATORY_POSITIONAL_UPDATE_TIME)
+#define MANDATORY_POSITIONAL_UPDATE_TIME (10)
+#define MANDATORY_POSITIONAL_UPDATE_PERIOD                                     \
+    (VU_TICS_PER_SECOND * MANDATORY_POSITIONAL_UPDATE_TIME)
 
 /** we predict unit position in current time + prediction period
 * the higher this time, smoother updates, but errors get bigger too
 */
-#define PREDICTION_PERIOD (VU_TICS_PER_SECOND*MANDATORY_POSITIONAL_UPDATE_TIME/3)
+#define PREDICTION_PERIOD                                                      \
+    (VU_TICS_PER_SECOND * MANDATORY_POSITIONAL_UPDATE_TIME / 3)
 
 
 ////////////////
@@ -72,7 +76,6 @@ void SpotDriver::Exec(VU_TIME time)
             if (dx + dy + dz < 1.0)
             {
                 entity_->SetDelta(0.0, 0.0, 0.0);
-
             }
             else
             {
@@ -95,24 +98,27 @@ void SpotDriver::Exec(VU_TIME time)
 
 VU_BOOL SimVuDriver::ExecModel(VU_TIME timestamp)
 {
-    SimBaseClass *ptr = static_cast<SimBaseClass*>(entity_);
+    SimBaseClass *ptr = static_cast<SimBaseClass *>(entity_);
     VU_BOOL retval = (VU_BOOL)(ptr->Exec());
     // sfr: i think this is being called twice (one in vudriver, other here)
     entity_->SetUpdateTime(timestamp);
     return retval;
 }
 
-VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME timeDelta)
+VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs,
+                                            VU_TIME timeDelta)
 {
     // TODO2 implement const functions at FalconSessionEntity
-    FalconSessionEntity *localSession = static_cast<FalconSessionEntity*>(vuLocalSessionEntity.get());
-    const FalconSessionEntity *targetSession = static_cast<const FalconSessionEntity*>(vs);
-    SimBaseClass *pEntity = static_cast<SimBaseClass*>(targetSession->GetPlayerEntity());
-    SimMoverClass *entity = static_cast<SimMoverClass*>(entity_);
+    FalconSessionEntity *localSession =
+        static_cast<FalconSessionEntity *>(vuLocalSessionEntity.get());
+    const FalconSessionEntity *targetSession =
+        static_cast<const FalconSessionEntity *>(vs);
+    SimBaseClass *pEntity =
+        static_cast<SimBaseClass *>(targetSession->GetPlayerEntity());
+    SimMoverClass *entity = static_cast<SimMoverClass *>(entity_);
 
     // invalid entity or time smaller than fine
-    if (
-        (timeDelta < FINE_POSITIONAL_UPDATES_PERIOD) or
+    if ((timeDelta < FINE_POSITIONAL_UPDATES_PERIOD) or
         (entity->VuState() not_eq VU_MEM_ACTIVE)
         /* or ( not ToleranceReached())*/
     )
@@ -154,7 +160,8 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
 
 #endif
 
-    BIG_SCALAR fineDist = entity->EntityType()->bubbleRange_ * FINE_DISTANCE_FACTOR;
+    BIG_SCALAR fineDist =
+        entity->EntityType()->bubbleRange_ * FINE_DISTANCE_FACTOR;
     BIG_SCALAR fineDistD2 = fineDist * fineDist;
 
     // distance from entity to session squared
@@ -179,7 +186,8 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     }
 
     // distance from camera entities squared
-    std::vector<BIG_SCALAR> cameraD2 = std::vector<BIG_SCALAR>(targetSession->CameraCount());
+    std::vector<BIG_SCALAR> cameraD2 =
+        std::vector<BIG_SCALAR>(targetSession->CameraCount());
 
     // if entity is close to any of session camera, send
     for (int i = 0; i < targetSession->CameraCount(); ++i)
@@ -191,14 +199,15 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
             continue;
         }
 
-        FalconEntity *cameraEntity = static_cast<FalconEntity*>(ce);
+        FalconEntity *cameraEntity = static_cast<FalconEntity *>(ce);
 
         // session camera has entity... (like flight has a plane)
         if (cameraEntity->HasEntity(entity_))
         {
             // we are using 0 here, which means high priority...
             // should we use SEND_OOB instead?
-            return SEND_SCORE(ENQUEUE_SEND, 0.0f);;
+            return SEND_SCORE(ENQUEUE_SEND, 0.0f);
+            ;
         }
 
         // ... or is close to it
@@ -226,7 +235,8 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
     }
 
     // get rough distance squared
-    BIG_SCALAR roughDistD2 = entity->EntityType()->bubbleRange_ * ROUGH_DISTANCE_FACTOR;
+    BIG_SCALAR roughDistD2 =
+        entity->EntityType()->bubbleRange_ * ROUGH_DISTANCE_FACTOR;
     roughDistD2 *= roughDistD2;
 
     // if entity is in rough range of session entity, check rough (distance is already computed)
@@ -262,7 +272,6 @@ VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME t
 }
 
 
-
 ////////////////
 // SimVuSlave //
 ////////////////
@@ -278,14 +287,14 @@ void SimVuSlave::Exec(VU_TIME timestamp)
 
     VuDelaySlave::Exec(timestamp);
     // tricles down to all the inheritance classes
-    ((SimBaseClass*)entity_)->Exec();
+    ((SimBaseClass *)entity_)->Exec();
 }
 
 VU_ERRCODE SimVuSlave::Handle(VuPositionUpdateEvent *event)
 {
     VU_ERRCODE err = VU_SUCCESS;
 
-    if ( not ((SimBaseClass*)entity_)->IsAwake())
+    if (not((SimBaseClass *)entity_)->IsAwake())
     {
         VuDelaySlave::Handle(event);
         entity_->SetUpdateTime(vuxGameTime);
@@ -296,7 +305,8 @@ VU_ERRCODE SimVuSlave::Handle(VuPositionUpdateEvent *event)
     else
     {
         VuSessionEntity *localSession = vuLocalSessionEntity.get();
-        VuEntity *localEntity = static_cast<FalconSessionEntity*>(localSession)->GetPlayerEntity();
+        VuEntity *localEntity =
+            static_cast<FalconSessionEntity *>(localSession)->GetPlayerEntity();
 
         if (predictedTime_ == 0)
         {
@@ -342,7 +352,10 @@ VU_ERRCODE SimVuSlave::Handle(VuPositionUpdateEvent *event)
             // speed can never get bigger than 1.5 event speed
             SM_SCALAR drsp = (dx * dx + dy * dy + dz * dz);
             // use *2.25 here because its 1.5 squared
-            SM_SCALAR evsp = (event->dx_ * event->dx_ + event->dy_ * event->dy_ + event->dz_ * event->dz_) * 2.25f;
+            SM_SCALAR evsp =
+                (event->dx_ * event->dx_ + event->dy_ * event->dy_ +
+                 event->dz_ * event->dz_) *
+                2.25f;
 
             if (drsp > evsp)
             {
@@ -398,10 +411,9 @@ VU_ERRCODE SimVuSlave::Handle(VuPositionUpdateEvent *event)
             d_drroll_ = pdt[2];
         }
 
-        lastRemoteUpdateTime_ = vuxGameTime;//event->updateTime_;
+        lastRemoteUpdateTime_ = vuxGameTime; //event->updateTime_;
         err = VU_SUCCESS;
     }
 
     return err;
 }
-

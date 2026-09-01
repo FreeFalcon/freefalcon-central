@@ -19,7 +19,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -114,8 +115,8 @@ public:
     virtual int RallyUnit(int minutes);
 };
 
-typedef BrigadeClass* Brigade;
+typedef BrigadeClass *Brigade;
 
-BrigadeClass* NewBrigade(int type);
+BrigadeClass *NewBrigade(int type);
 
 #endif

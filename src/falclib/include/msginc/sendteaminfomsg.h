@@ -11,15 +11,15 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 //sfr: for chks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Team Info
@@ -54,7 +54,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         ulong campTime;
         ushort whoDidIt;
         short stuff;
@@ -63,6 +62,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

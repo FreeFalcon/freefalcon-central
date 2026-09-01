@@ -5,10 +5,10 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
-#include "StateStack.h"
-#include "ObjectInstance.h"
+#include "statestack.h"
+#include "objectinstance.h"
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gBSPLibMemPool;
@@ -19,20 +19,17 @@ ObjectInstance::ObjectInstance(int tid)
     id = tid;
 
     ShiAssert(TheObjectList);
-    ShiAssert(id < TheObjectListLength); // Make sure the requested object ID is in
-    ShiAssert(TheObjectList[tid].nLODs); // the current object set (IDS.TXT, etc).
+    ShiAssert(id <
+              TheObjectListLength); // Make sure the requested object ID is in
+    ShiAssert(
+        TheObjectList[tid].nLODs); // the current object set (IDS.TXT, etc).
 
     ParentObject = &TheObjectList[tid];
 
     /***** BEGIN HACK HACK HACK HACK - Billy forced me to do it :-) -RH *****/
-    if
-    ( // F16c
-        (tid == 1052) or
-        (tid == 564) or
-        (tid == 563) or
-        (tid == 562) or
-        (tid == 5)
-    )
+    if ( // F16c
+        (tid == 1052) or (tid == 564) or (tid == 563) or (tid == 562) or
+        (tid == 5))
     {
         ParentObject->radius = 40.0;
     }
@@ -53,11 +50,13 @@ ObjectInstance::ObjectInstance(int tid)
     else
     {
 #ifdef USE_SH_POOLS
-        SwitchValues = (DWORD *)MemAllocPtr(gBSPLibMemPool, sizeof(DWORD) * (ParentObject->nSwitches), 0);
+        SwitchValues = (DWORD *)MemAllocPtr(
+            gBSPLibMemPool, sizeof(DWORD) * (ParentObject->nSwitches), 0);
 #else
         SwitchValues = new DWORD[ParentObject->nSwitches];
 #endif
-        memset(SwitchValues, 0, sizeof(*SwitchValues)*ParentObject->nSwitches);
+        memset(SwitchValues, 0,
+               sizeof(*SwitchValues) * ParentObject->nSwitches);
     }
 
     if (ParentObject->nDOFs == 0)
@@ -67,11 +66,12 @@ ObjectInstance::ObjectInstance(int tid)
     else
     {
 #ifdef USE_SH_POOLS
-        DOFValues = (DOFvalue *)MemAllocPtr(gBSPLibMemPool, sizeof(DOFvalue) * (ParentObject->nDOFs), 0);
+        DOFValues = (DOFvalue *)MemAllocPtr(
+            gBSPLibMemPool, sizeof(DOFvalue) * (ParentObject->nDOFs), 0);
 #else
         DOFValues = new DOFvalue[ParentObject->nDOFs];
 #endif
-        memset(DOFValues, 0, sizeof(*DOFValues)*ParentObject->nDOFs);
+        memset(DOFValues, 0, sizeof(*DOFValues) * ParentObject->nDOFs);
     }
 
     if (ParentObject->nSlots == 0)
@@ -81,27 +81,31 @@ ObjectInstance::ObjectInstance(int tid)
     else
     {
 #ifdef USE_SH_POOLS
-        SlotChildren = (ObjectInstance **)MemAllocPtr(gBSPLibMemPool, sizeof(ObjectInstance *) * (ParentObject->nSlots), 0);
+        SlotChildren = (ObjectInstance **)MemAllocPtr(
+            gBSPLibMemPool, sizeof(ObjectInstance *) * (ParentObject->nSlots),
+            0);
 #else
-        SlotChildren = new ObjectInstance*[ParentObject->nSlots];
+        SlotChildren = new ObjectInstance *[ParentObject->nSlots];
 #endif
-        memset(SlotChildren, 0, sizeof(*SlotChildren)*ParentObject->nSlots);
+        memset(SlotChildren, 0, sizeof(*SlotChildren) * ParentObject->nSlots);
     }
 
-    if ((ParentObject->nDynamicCoords == 0) or (ParentObject->nDynamicCoords > 10))
+    if ((ParentObject->nDynamicCoords == 0) or
+        (ParentObject->nDynamicCoords > 10))
     {
         DynamicCoords = NULL;
     }
     else
     {
 #ifdef USE_SH_POOLS
-        DynamicCoords = (Ppoint *)MemAllocPtr(gBSPLibMemPool, sizeof(Ppoint) * (ParentObject->nDynamicCoords), 0);
+        DynamicCoords = (Ppoint *)MemAllocPtr(
+            gBSPLibMemPool, sizeof(Ppoint) * (ParentObject->nDynamicCoords), 0);
 #else
         DynamicCoords = new Ppoint[ParentObject->nDynamicCoords];
 #endif
         memcpy(DynamicCoords,
                ParentObject->pSlotAndDynamicPositions + ParentObject->nSlots,
-               sizeof(*DynamicCoords)*ParentObject->nDynamicCoords);
+               sizeof(*DynamicCoords) * ParentObject->nDynamicCoords);
     }
 
     TextureSet = 0;
@@ -117,15 +121,12 @@ ObjectInstance::ObjectInstance(int tid)
     RadarSignal = sqrtf(fabs(RadarSignal));*/
 
     RadarSignal = ParentObject->RadarSign;
-
-
-
 }
 
 
 ObjectInstance::~ObjectInstance()
 {
-    if (TexSetReferenced) 
+    if (TexSetReferenced)
         ParentObject->ReleaseTexSet(TextureSet);
 
     ParentObject->Release();
@@ -177,7 +178,8 @@ void ObjectInstance::SetDynamicVertex(int id, float dx, float dy, float dz)
 
     ShiAssert(id < ParentObject->nDynamicCoords);
 
-    original = ParentObject->pSlotAndDynamicPositions + ParentObject->nSlots + id;
+    original =
+        ParentObject->pSlotAndDynamicPositions + ParentObject->nSlots + id;
 
 #ifdef _DEBUG
     float r1 = Radius() * Radius();
@@ -188,7 +190,9 @@ void ObjectInstance::SetDynamicVertex(int id, float dx, float dy, float dz)
     DynamicCoords[id].z = original->z + dz;
 
 #ifdef _DEBUG
-    float r2 = DynamicCoords[id].x * DynamicCoords[id].x + DynamicCoords[id].y * DynamicCoords[id].y + DynamicCoords[id].z * DynamicCoords[id].z;
+    float r2 = DynamicCoords[id].x * DynamicCoords[id].x +
+               DynamicCoords[id].y * DynamicCoords[id].y +
+               DynamicCoords[id].z * DynamicCoords[id].z;
 
     //Need to take a further look why it should be this way.
     //ShiAssert(r2 <= r1 + 0.00001f); // Illegal for dynamic verts to exceed object bounding volume
@@ -203,7 +207,8 @@ void ObjectInstance::GetDynamicVertex(int id, float *dx, float *dy, float *dz)
 
     ShiAssert(id < ParentObject->nDynamicCoords);
 
-    original = ParentObject->pSlotAndDynamicPositions + ParentObject->nSlots + id;
+    original =
+        ParentObject->pSlotAndDynamicPositions + ParentObject->nSlots + id;
 
     *dx = DynamicCoords[id].x - original->x;
     *dy = DynamicCoords[id].y - original->y;
@@ -219,17 +224,18 @@ void ObjectInstance::GetDynamicCoords(int id, float *dx, float *dy, float *dz)
 }
 
 
-
 void ObjectInstance::SetTextureSet(int id)
 {
     // edg: sanity check texture setting
-    if (id >= ParentObject->nTextureSets) id = 0;
+    if (id >= ParentObject->nTextureSets)
+        id = 0;
 
     // check if we already hold a texture set
     if (TexSetReferenced)
     {
         // if same texture set, exit
-        if (id == TextureSet) return;
+        if (id == TextureSet)
+            return;
 
         // else release the owned one
         ParentObject->ReleaseTexSet(TextureSet);

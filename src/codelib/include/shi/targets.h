@@ -29,7 +29,7 @@
 #define SHI_CS_m_i686 7
 #define SHI_CS_m_i786 8
 #define SHI_CS_m_i886 9
-#define SHI_CS_m_k6_2   10
+#define SHI_CS_m_k6_2 10
 #define SHI_CS_m_m2 11
 #define SHI_CS_m_mips1 12
 #define SHI_CS_m_mips2 13

@@ -18,5 +18,5 @@ double Prof_get_time(void)
     ok = QueryPerformanceCounter(&time);
     assert(ok == TRUE);
 
-    return time.QuadPart / (double) freq.QuadPart;
+    return time.QuadPart / (double)freq.QuadPart;
 }

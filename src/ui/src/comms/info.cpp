@@ -8,7 +8,7 @@
 #include <windows.h>
 #include "f4version.h"
 #include "targa.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "falcsess.h"
@@ -16,7 +16,7 @@
 #include "userids.h"
 #include "iconids.h"
 #include "textids.h"
-#include "Dispcfg.h"
+#include "dispcfg.h"
 #include "logbook.h"
 #include "rules.h"
 #include "uicomms.h"
@@ -27,8 +27,11 @@ void CloseWindowCB(long ID, short hittype, C_Base *control);
 static void INFOSaveValues(void);
 static void INFOSaveRules(void);
 void CheckCompliance(void);
-void AreYouSure(long TitleID, long MessageID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
-void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void AreYouSure(long TitleID, long MessageID,
+                void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
+void AreYouSure(long TitleID, _TCHAR *text, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
 
 extern int INFOLoaded;
 RulesClass CurrRules;
@@ -129,21 +132,21 @@ void INFOSetupRulesControls(void)
         switch (CurrRules.GetAvionicsType())
         {
                 // M.N. full realism mode added
-            case ATRealisticAV:
-                lbox->SetValue(RADAR_0);
-                break;
+        case ATRealisticAV:
+            lbox->SetValue(RADAR_0);
+            break;
 
-            case ATRealistic:
-                lbox->SetValue(RADAR_1);
-                break;
+        case ATRealistic:
+            lbox->SetValue(RADAR_1);
+            break;
 
-            case ATSimplified:
-                lbox->SetValue(RADAR_2);
-                break;
+        case ATSimplified:
+            lbox->SetValue(RADAR_2);
+            break;
 
-            case ATEasy:
-                lbox->SetValue(RADAR_3);
-                break;
+        case ATEasy:
+            lbox->SetValue(RADAR_3);
+            break;
         }
 
         lbox->Refresh();
@@ -160,17 +163,17 @@ void INFOSetupRulesControls(void)
 
         switch (CurrRules.GetWeaponEffectiveness())
         {
-            case WEAccurate:
-                lbox->SetValue(WEAPEFF_1);
-                break;
+        case WEAccurate:
+            lbox->SetValue(WEAPEFF_1);
+            break;
 
-            case WEEnhanced:
-                lbox->SetValue(WEAPEFF_2);
-                break;
+        case WEEnhanced:
+            lbox->SetValue(WEAPEFF_2);
+            break;
 
-            case WEExaggerated:
-                lbox->SetValue(WEAPEFF_3);
-                break;
+        case WEExaggerated:
+            lbox->SetValue(WEAPEFF_3);
+            break;
         }
 
         lbox->Refresh();
@@ -187,17 +190,17 @@ void INFOSetupRulesControls(void)
 
         switch (CurrRules.GetAutopilotMode())
         {
-            case APNormal:
-                lbox->SetValue(AUTO_1);
-                break;
+        case APNormal:
+            lbox->SetValue(AUTO_1);
+            break;
 
-            case APEnhanced:
-                lbox->SetValue(AUTO_2);
-                break;
+        case APEnhanced:
+            lbox->SetValue(AUTO_2);
+            break;
 
-            case APIntelligent:
-                lbox->SetValue(AUTO_3);
-                break;
+        case APIntelligent:
+            lbox->SetValue(AUTO_3);
+            break;
         }
 
         lbox->Refresh();
@@ -214,17 +217,17 @@ void INFOSetupRulesControls(void)
 
         switch (CurrRules.GetRefuelingMode())
         {
-            case ARRealistic:
-                lbox->SetValue(REFUEL_1);
-                break;
+        case ARRealistic:
+            lbox->SetValue(REFUEL_1);
+            break;
 
-            case ARModerated:
-                lbox->SetValue(REFUEL_2);
-                break;
+        case ARModerated:
+            lbox->SetValue(REFUEL_2);
+            break;
 
-            case ARSimplistic:
-                lbox->SetValue(REFUEL_3);
-                break;
+        case ARSimplistic:
+            lbox->SetValue(REFUEL_3);
+            break;
         }
 
         lbox->Refresh();
@@ -241,17 +244,17 @@ void INFOSetupRulesControls(void)
 
         switch (CurrRules.GetPadlockMode())
         {
-            case PDDisabled:
-                lbox->SetValue(PADLOCK_4);
-                break;
+        case PDDisabled:
+            lbox->SetValue(PADLOCK_4);
+            break;
 
-            case PDRealistic:
-                lbox->SetValue(PADLOCK_1);
-                break;
+        case PDRealistic:
+            lbox->SetValue(PADLOCK_1);
+            break;
 
-            case PDEnhanced:
-                lbox->SetValue(PADLOCK_2);
-                break;
+        case PDEnhanced:
+            lbox->SetValue(PADLOCK_2);
+            break;
                 //case PDSuper:
                 // lbox->SetValue(PADLOCK_3);
                 // break;
@@ -282,7 +285,6 @@ void INFOSetupRulesControls(void)
             button->SetState(C_STATE_0);
 
         button->Refresh();
-
     }
 
     button = (C_Button *)win->FindControl(COLLISIONS_REQ);
@@ -367,7 +369,9 @@ void INFOSetupRulesControls(void)
         else
             slider->SetFlagBitOff(C_BIT_ENABLED);
 
-        slider->SetSliderPos(static_cast<long>((slider->GetSliderMax() - slider->GetSliderMin()) * ((CurrRules.ObjMagnification) - 1) / 4.0f));
+        slider->SetSliderPos(static_cast<long>(
+            (slider->GetSliderMax() - slider->GetSliderMin()) *
+            ((CurrRules.ObjMagnification) - 1) / 4.0f));
         ebox = (C_EditBox *)win->FindControl(VEHICLE_SIZE_READOUT_REQ);
 
         if (ebox)
@@ -431,21 +435,21 @@ void INFOSetupControls(void)
         switch (PlayerOptions.GetAvionicsType())
         {
                 // M.N. full realism mode added
-            case ATRealisticAV:
-                lbox->SetValue(RADAR_0);
-                break;
+        case ATRealisticAV:
+            lbox->SetValue(RADAR_0);
+            break;
 
-            case ATRealistic:
-                lbox->SetValue(RADAR_1);
-                break;
+        case ATRealistic:
+            lbox->SetValue(RADAR_1);
+            break;
 
-            case ATSimplified:
-                lbox->SetValue(RADAR_2);
-                break;
+        case ATSimplified:
+            lbox->SetValue(RADAR_2);
+            break;
 
-            case ATEasy:
-                lbox->SetValue(RADAR_3);
-                break;
+        case ATEasy:
+            lbox->SetValue(RADAR_3);
+            break;
         }
 
         lbox->Refresh();
@@ -457,17 +461,17 @@ void INFOSetupControls(void)
     {
         switch (PlayerOptions.GetWeaponEffectiveness())
         {
-            case WEAccurate:
-                lbox->SetValue(WEAPEFF_1);
-                break;
+        case WEAccurate:
+            lbox->SetValue(WEAPEFF_1);
+            break;
 
-            case WEEnhanced:
-                lbox->SetValue(WEAPEFF_2);
-                break;
+        case WEEnhanced:
+            lbox->SetValue(WEAPEFF_2);
+            break;
 
-            case WEExaggerated:
-                lbox->SetValue(WEAPEFF_3);
-                break;
+        case WEExaggerated:
+            lbox->SetValue(WEAPEFF_3);
+            break;
         }
 
         lbox->Refresh();
@@ -479,17 +483,17 @@ void INFOSetupControls(void)
     {
         switch (PlayerOptions.GetAutopilotMode())
         {
-            case APNormal:
-                lbox->SetValue(AUTO_1);
-                break;
+        case APNormal:
+            lbox->SetValue(AUTO_1);
+            break;
 
-            case APEnhanced:
-                lbox->SetValue(AUTO_2);
-                break;
+        case APEnhanced:
+            lbox->SetValue(AUTO_2);
+            break;
 
-            case APIntelligent:
-                lbox->SetValue(AUTO_3);
-                break;
+        case APIntelligent:
+            lbox->SetValue(AUTO_3);
+            break;
         }
 
         lbox->Refresh();
@@ -501,17 +505,17 @@ void INFOSetupControls(void)
     {
         switch (PlayerOptions.GetRefuelingMode())
         {
-            case ARRealistic:
-                lbox->SetValue(REFUEL_1);
-                break;
+        case ARRealistic:
+            lbox->SetValue(REFUEL_1);
+            break;
 
-            case ARModerated:
-                lbox->SetValue(REFUEL_2);
-                break;
+        case ARModerated:
+            lbox->SetValue(REFUEL_2);
+            break;
 
-            case ARSimplistic:
-                lbox->SetValue(REFUEL_3);
-                break;
+        case ARSimplistic:
+            lbox->SetValue(REFUEL_3);
+            break;
         }
 
         lbox->Refresh();
@@ -523,17 +527,17 @@ void INFOSetupControls(void)
     {
         switch (PlayerOptions.GetPadlockMode())
         {
-            case PDDisabled:
-                lbox->SetValue(PADLOCK_4);
-                break;
+        case PDDisabled:
+            lbox->SetValue(PADLOCK_4);
+            break;
 
-            case PDRealistic:
-                lbox->SetValue(PADLOCK_1);
-                break;
+        case PDRealistic:
+            lbox->SetValue(PADLOCK_1);
+            break;
 
-            case PDEnhanced:
-                lbox->SetValue(PADLOCK_2);
-                break;
+        case PDEnhanced:
+            lbox->SetValue(PADLOCK_2);
+            break;
                 //case PDSuper:
                 // lbox->SetValue(PADLOCK_3);
                 // break;
@@ -564,7 +568,6 @@ void INFOSetupControls(void)
             button->SetState(C_STATE_0);
 
         button->Refresh();
-
     }
 
     button = (C_Button *)win->FindControl(COLLISIONS_CUR);
@@ -631,12 +634,15 @@ void INFOSetupControls(void)
 
     if (slider not_eq NULL)
     {
-        slider->SetSliderPos(static_cast<long>((slider->GetSliderMax() - slider->GetSliderMin()) * ((PlayerOptions.ObjMagnification) - 1) / 4));
+        slider->SetSliderPos(static_cast<long>(
+            (slider->GetSliderMax() - slider->GetSliderMin()) *
+            ((PlayerOptions.ObjMagnification) - 1) / 4));
         ebox = (C_EditBox *)win->FindControl(VEHICLE_SIZE_READOUT_CUR);
 
         if (ebox)
         {
-            ebox->SetInteger(static_cast<short>(PlayerOptions.ObjMagnification));
+            ebox->SetInteger(
+                static_cast<short>(PlayerOptions.ObjMagnification));
             ebox->Refresh();
             slider->SetUserNumber(0, VEHICLE_SIZE_READOUT_CUR);
         }
@@ -651,7 +657,7 @@ void UpdateRules(void)
     if (vuPlayerPoolGroup not_eq vuLocalGame)
         CurrRules.LoadRules(FalconLocalGame->rules.GetRules());
 
-    if ( not gMainHandler)
+    if (not gMainHandler)
         return;
 
     INFOSetupRulesControls();
@@ -691,7 +697,7 @@ void ComplyCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+    game = (FalconGameEntity *)gCommsMgr->GetTargetGame();
 
     ebox = (C_EditBox *)control->Parent_->FindControl(INFO_GAMENAME);
 
@@ -718,9 +724,10 @@ void ComplyCB(long ID, short hittype, C_Base *control)
         tail++;
         *tail = 0;
 
-        if ((tail - head) < (3 * sizeof(_TCHAR)) or not (*head))
+        if ((tail - head) < (3 * sizeof(_TCHAR)) or not(*head))
         {
-            AreYouSure(TXT_ERROR, TXT_INVALID_GAMENAME, CloseWindowCB, CloseWindowCB);
+            AreYouSure(TXT_ERROR, TXT_INVALID_GAMENAME, CloseWindowCB,
+                       CloseWindowCB);
             return;
         }
 
@@ -741,15 +748,15 @@ void ComplyCB(long ID, short hittype, C_Base *control)
  PlayerOptions.SaveOptions();
  INFOSetupControls();
  }*/
-    ebox = (C_EditBox*)control->Parent_->FindControl(INFO_PASSWORD);
+    ebox = (C_EditBox *)control->Parent_->FindControl(INFO_PASSWORD);
 
     if (ebox)
     {
-        game = (FalconGameEntity*)gCommsMgr->GetTargetGame();
+        game = (FalconGameEntity *)gCommsMgr->GetTargetGame();
 
         if (game and OkCB)
         {
-            if ( not game->CheckPassword(ebox->GetText()))
+            if (not game->CheckPassword(ebox->GetText()))
             {
                 AreYouSure(TXT_ERROR, TXT_WRONGPASSWORD, NULL, CloseWindowCB);
                 return;
@@ -792,7 +799,7 @@ void CheckCompliance(void)
 {
     C_Window *win = gMainHandler->FindWindow(INFO_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     C_ListBox *lbox;
@@ -841,35 +848,36 @@ void CheckCompliance(void)
     {
         switch (lbox->GetTextID())
         {
-            case RADAR_1:
-                if (CurrRules.SimAvionicsType > ATRealistic) // we've now a fourth setting
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case RADAR_1:
+            if (CurrRules.SimAvionicsType >
+                ATRealistic) // we've now a fourth setting
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            case RADAR_2:
-                if (CurrRules.SimAvionicsType > ATSimplified)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case RADAR_2:
+            if (CurrRules.SimAvionicsType > ATSimplified)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            case RADAR_3:
-                if (CurrRules.SimAvionicsType > ATEasy)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case RADAR_3:
+            if (CurrRules.SimAvionicsType > ATEasy)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         line = (C_Line *)win->FindControl(RADAR_LINE);
@@ -898,26 +906,26 @@ void CheckCompliance(void)
     {
         switch (lbox->GetTextID())
         {
-            case WEAPEFF_2:
-                if (CurrRules.SimWeaponEffect > WEEnhanced)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case WEAPEFF_2:
+            if (CurrRules.SimWeaponEffect > WEEnhanced)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            case WEAPEFF_3:
-                if (CurrRules.SimWeaponEffect > WEExaggerated)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case WEAPEFF_3:
+            if (CurrRules.SimWeaponEffect > WEExaggerated)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         line = (C_Line *)win->FindControl(WEAPEFF_LINE);
@@ -946,26 +954,26 @@ void CheckCompliance(void)
     {
         switch (lbox->GetTextID())
         {
-            case AUTO_2:
-                if (CurrRules.SimAutopilotType > APEnhanced)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case AUTO_2:
+            if (CurrRules.SimAutopilotType > APEnhanced)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            case AUTO_3:
-                if (CurrRules.SimAutopilotType > APIntelligent)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case AUTO_3:
+            if (CurrRules.SimAutopilotType > APIntelligent)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         line = (C_Line *)win->FindControl(AUTOPILOT_LINE);
@@ -994,32 +1002,32 @@ void CheckCompliance(void)
     {
         switch (lbox->GetTextID())
         {
-            case PADLOCK_1:
-                if (CurrRules.SimPadlockMode > PDRealistic)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case PADLOCK_1:
+            if (CurrRules.SimPadlockMode > PDRealistic)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            case PADLOCK_2:
-                if (CurrRules.SimPadlockMode > PDEnhanced)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case PADLOCK_2:
+            if (CurrRules.SimPadlockMode > PDEnhanced)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            case PADLOCK_4:
-                if (CurrRules.SimPadlockMode > PDDisabled)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case PADLOCK_4:
+            if (CurrRules.SimPadlockMode > PDDisabled)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
                 /* case PADLOCK_3:
                  if(CurrRules.SimPadlockMode > PDSuper)
@@ -1028,8 +1036,8 @@ void CheckCompliance(void)
                  MakeRed++;
                  }
                  break;*/
-            default:
-                break;
+        default:
+            break;
         }
 
         line = (C_Line *)win->FindControl(PADLOCK_LINE);
@@ -1058,26 +1066,26 @@ void CheckCompliance(void)
     {
         switch (lbox->GetTextID())
         {
-            case REFUEL_2:
-                if (CurrRules.SimAirRefuelingMode < ARModerated)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case REFUEL_2:
+            if (CurrRules.SimAirRefuelingMode < ARModerated)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            case REFUEL_3:
-                if (CurrRules.SimAirRefuelingMode < ARSimplistic)
-                {
-                    InCompliance = FALSE;
-                    MakeRed++;
-                }
+        case REFUEL_3:
+            if (CurrRules.SimAirRefuelingMode < ARSimplistic)
+            {
+                InCompliance = FALSE;
+                MakeRed++;
+            }
 
-                break;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
 
         line = (C_Line *)win->FindControl(REFUELING_LINE);
@@ -1104,7 +1112,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, not CurrRules.UnlimitedFuel()))
+        if (not CheckButtonCompliance(button, not CurrRules.UnlimitedFuel()))
             InCompliance = FALSE;
     }
 
@@ -1112,7 +1120,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, not CurrRules.UnlimitedChaff()))
+        if (not CheckButtonCompliance(button, not CurrRules.UnlimitedChaff()))
             InCompliance = FALSE;
     }
 
@@ -1120,7 +1128,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, not CurrRules.NoCollisions()))
+        if (not CheckButtonCompliance(button, not CurrRules.NoCollisions()))
             InCompliance = FALSE;
     }
 
@@ -1128,7 +1136,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, not CurrRules.NoBlackout()))
+        if (not CheckButtonCompliance(button, not CurrRules.NoBlackout()))
             InCompliance = FALSE;
     }
 
@@ -1137,7 +1145,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, not CurrRules.NameTagsOn()))
+        if (not CheckButtonCompliance(button, not CurrRules.NameTagsOn()))
             InCompliance = FALSE;
     }
 
@@ -1145,7 +1153,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, CurrRules.WeatherOn()))
+        if (not CheckButtonCompliance(button, CurrRules.WeatherOn()))
             InCompliance = FALSE;
     }
 
@@ -1154,7 +1162,7 @@ void CheckCompliance(void)
 
     if (button not_eq NULL)
     {
-        if ( not CheckButtonCompliance(button, not CurrRules.InvulnerableOn()))
+        if (not CheckButtonCompliance(button, not CurrRules.InvulnerableOn()))
             InCompliance = FALSE;
     }
 
@@ -1172,12 +1180,14 @@ void CheckCompliance(void)
     }*/
 
 
-
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_CUR);
 
     if (slider not_eq NULL)
     {
-        if (CurrRules.ObjMagnification < (int)((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5f))
+        if (CurrRules.ObjMagnification <
+            (int)((float)slider->GetSliderPos() /
+                      (slider->GetSliderMax() - slider->GetSliderMin()) * 4 +
+                  1.5f))
         {
             InCompliance = FALSE;
             MakeRed++;
@@ -1235,12 +1245,16 @@ void SliderChangeCB(long, short hittype, C_Base *control)
     int scale;
 
     slider = (C_Slider *)control;
-    scale = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5F);
+    scale =
+        FloatToInt32((float)slider->GetSliderPos() /
+                         (slider->GetSliderMax() - slider->GetSliderMin()) * 4 +
+                     1.5F);
 
     if (scale not_eq slider->GetUserNumber(2))
     {
         C_EditBox *ebox;
-        ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
+        ebox = (C_EditBox *)control->Parent_->FindControl(
+            slider->GetUserNumber(0));
 
         if (ebox)
         {
@@ -1291,12 +1305,16 @@ static void SliderRuleControlCB(long, short hittype, C_Base *control)
     int scale;
 
     slider = (C_Slider *)control;
-    scale = static_cast<int>(((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5F));
+    scale = static_cast<int>(
+        ((float)slider->GetSliderPos() /
+             (slider->GetSliderMax() - slider->GetSliderMin()) * 4 +
+         1.5F));
 
     if (scale not_eq slider->GetUserNumber(2))
     {
         C_EditBox *ebox;
-        ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
+        ebox = (C_EditBox *)control->Parent_->FindControl(
+            slider->GetUserNumber(0));
 
         if (ebox)
         {
@@ -1313,7 +1331,7 @@ static void SliderRuleControlCB(long, short hittype, C_Base *control)
 
 static void RuleControlCB(long, short hittype, C_Base *control)
 {
-    if ( not control)
+    if (not control)
         return;
 
     if ((hittype not_eq C_TYPE_LMOUSEUP) and (hittype not_eq C_TYPE_SELECT))
@@ -1355,7 +1373,7 @@ void INFOHookupControls()
 
     win = gMainHandler->FindWindow(INFO_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     button = (C_Button *)win->FindControl(CLOSE_WINDOW);
@@ -1570,7 +1588,6 @@ void INFOHookupControls()
     }*/
 
 
-
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_REQ);
 
     if (slider not_eq NULL)
@@ -1584,7 +1601,7 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
 
     win = gMainHandler->FindWindow(INFO_WIN);
 
-    if ( not win)
+    if (not win)
     {
         if (tCancelCB)
             (*tCancelCB)();
@@ -1615,22 +1632,24 @@ void SetupInfoWindow(void (*tOkCB)(), void (*tCancelCB)())
     CancelCB = tCancelCB;
 
 
-    if ( not INFOLoaded)
+    if (not INFOLoaded)
     {
         switch (gLangIDNum)
         {
-            case F4LANG_ENGLISH:
-            case F4LANG_UK:
-            case F4LANG_GERMAN:
-                _stprintf(GameName, "%s%s", LogBook.Callsign(), gStringMgr->GetString(TXT_APPEND_GAME));
-                break;
+        case F4LANG_ENGLISH:
+        case F4LANG_UK:
+        case F4LANG_GERMAN:
+            _stprintf(GameName, "%s%s", LogBook.Callsign(),
+                      gStringMgr->GetString(TXT_APPEND_GAME));
+            break;
 
-            case F4LANG_FRENCH:
-            case F4LANG_SPANISH:
-            case F4LANG_ITALIAN:
-            case F4LANG_PORTUGESE:
-                _stprintf(GameName, "%s %s", gStringMgr->GetString(TXT_APPEND_GAME), LogBook.Callsign());
-                break;
+        case F4LANG_FRENCH:
+        case F4LANG_SPANISH:
+        case F4LANG_ITALIAN:
+        case F4LANG_PORTUGESE:
+            _stprintf(GameName, "%s %s", gStringMgr->GetString(TXT_APPEND_GAME),
+                      LogBook.Callsign());
+            break;
         }
 
         INFOHookupControls();
@@ -1650,7 +1669,7 @@ static void INFOSaveRules(void)
     C_ListBox *lbox;
     C_Slider *slider;
     C_EditBox *ebox;
-    RulesClass  tempRules;
+    RulesClass tempRules;
 
     tempRules.Initialize();
 
@@ -1715,22 +1734,22 @@ static void INFOSaveRules(void)
         {
             switch (lbox->GetTextID())
             {
-                    // M.N. full realism mode added
-                case RADAR_0:
-                    tempRules.SimAvionicsType = ATRealisticAV;
-                    break;
+                // M.N. full realism mode added
+            case RADAR_0:
+                tempRules.SimAvionicsType = ATRealisticAV;
+                break;
 
-                case RADAR_1:
-                    tempRules.SimAvionicsType = ATRealistic;
-                    break;
+            case RADAR_1:
+                tempRules.SimAvionicsType = ATRealistic;
+                break;
 
-                case RADAR_2:
-                    tempRules.SimAvionicsType = ATSimplified;
-                    break;
+            case RADAR_2:
+                tempRules.SimAvionicsType = ATSimplified;
+                break;
 
-                case RADAR_3:
-                    tempRules.SimAvionicsType = ATEasy;
-                    break;
+            case RADAR_3:
+                tempRules.SimAvionicsType = ATEasy;
+                break;
             }
         }
 
@@ -1740,17 +1759,17 @@ static void INFOSaveRules(void)
         {
             switch (lbox->GetTextID())
             {
-                case WEAPEFF_1:
-                    tempRules.SimWeaponEffect = WEAccurate;
-                    break;
+            case WEAPEFF_1:
+                tempRules.SimWeaponEffect = WEAccurate;
+                break;
 
-                case WEAPEFF_2:
-                    tempRules.SimWeaponEffect = WEEnhanced;
-                    break;
+            case WEAPEFF_2:
+                tempRules.SimWeaponEffect = WEEnhanced;
+                break;
 
-                case WEAPEFF_3:
-                    tempRules.SimWeaponEffect = WEExaggerated;
-                    break;
+            case WEAPEFF_3:
+                tempRules.SimWeaponEffect = WEExaggerated;
+                break;
             }
         }
 
@@ -1760,17 +1779,17 @@ static void INFOSaveRules(void)
         {
             switch (lbox->GetTextID())
             {
-                case AUTO_1:
-                    tempRules.SimAutopilotType = APNormal;
-                    break;
+            case AUTO_1:
+                tempRules.SimAutopilotType = APNormal;
+                break;
 
-                case AUTO_2:
-                    tempRules.SimAutopilotType = APEnhanced;
-                    break;
+            case AUTO_2:
+                tempRules.SimAutopilotType = APEnhanced;
+                break;
 
-                case AUTO_3:
-                    tempRules.SimAutopilotType = APIntelligent;
-                    break;
+            case AUTO_3:
+                tempRules.SimAutopilotType = APIntelligent;
+                break;
             }
         }
 
@@ -1780,20 +1799,20 @@ static void INFOSaveRules(void)
         {
             switch (lbox->GetTextID())
             {
-                case PADLOCK_4:
-                    tempRules.SimPadlockMode = PDDisabled;
-                    break;
+            case PADLOCK_4:
+                tempRules.SimPadlockMode = PDDisabled;
+                break;
 
-                case PADLOCK_1:
-                    tempRules.SimPadlockMode = PDRealistic;
-                    break;
+            case PADLOCK_1:
+                tempRules.SimPadlockMode = PDRealistic;
+                break;
 
-                case PADLOCK_2:
-                    tempRules.SimPadlockMode = PDEnhanced;
-                    break;
-                    //case PADLOCK_3:
-                    // tempRules.SimPadlockMode = PDSuper;
-                    // break;
+            case PADLOCK_2:
+                tempRules.SimPadlockMode = PDEnhanced;
+                break;
+                //case PADLOCK_3:
+                // tempRules.SimPadlockMode = PDSuper;
+                // break;
             }
         }
 
@@ -1803,17 +1822,17 @@ static void INFOSaveRules(void)
         {
             switch (lbox->GetTextID())
             {
-                case REFUEL_1:
-                    tempRules.SimAirRefuelingMode = ARRealistic;
-                    break;
+            case REFUEL_1:
+                tempRules.SimAirRefuelingMode = ARRealistic;
+                break;
 
-                case REFUEL_2:
-                    tempRules.SimAirRefuelingMode = ARModerated;
-                    break;
+            case REFUEL_2:
+                tempRules.SimAirRefuelingMode = ARModerated;
+                break;
 
-                case REFUEL_3:
-                    tempRules.SimAirRefuelingMode = ARSimplistic;
-                    break;
+            case REFUEL_3:
+                tempRules.SimAirRefuelingMode = ARSimplistic;
+                break;
             }
         }
 
@@ -1835,7 +1854,6 @@ static void INFOSaveRules(void)
                 tempRules.SetSimFlag(SIM_UNLIMITED_CHAFF);
             else
                 tempRules.ClearSimFlag(SIM_UNLIMITED_CHAFF);
-
         }
 
         button = (C_Button *)win->FindControl(COLLISIONS_REQ);
@@ -1914,7 +1932,10 @@ static void INFOSaveRules(void)
 
         if (slider not_eq NULL)
         {
-            tempRules.ObjMagnification = static_cast<float>((int)((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5f));
+            tempRules.ObjMagnification = static_cast<float>((
+                int)((float)slider->GetSliderPos() /
+                         (slider->GetSliderMax() - slider->GetSliderMin()) * 4 +
+                     1.5f));
         }
 
         // if(FalconLocalGameEntity)
@@ -1939,7 +1960,8 @@ static void INFOSaveValues(void)
 
     int host = FALSE;
 
-    if (FalconLocalGame and FalconLocalSession and FalconLocalGame->OwnerId() == FalconLocalSession->Id())
+    if (FalconLocalGame and FalconLocalSession and
+        FalconLocalGame->OwnerId() == FalconLocalSession->Id())
         host = TRUE;
 
     lbox = (C_ListBox *)win->FindControl(FLTMOD_CUR);
@@ -1960,22 +1982,22 @@ static void INFOSaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-                // M.N. full realism mode added
-            case RADAR_0:
-                PlayerOptions.SimAvionicsType = ATRealisticAV;
-                break;
+            // M.N. full realism mode added
+        case RADAR_0:
+            PlayerOptions.SimAvionicsType = ATRealisticAV;
+            break;
 
-            case RADAR_1:
-                PlayerOptions.SimAvionicsType = ATRealistic;
-                break;
+        case RADAR_1:
+            PlayerOptions.SimAvionicsType = ATRealistic;
+            break;
 
-            case RADAR_2:
-                PlayerOptions.SimAvionicsType = ATSimplified;
-                break;
+        case RADAR_2:
+            PlayerOptions.SimAvionicsType = ATSimplified;
+            break;
 
-            case RADAR_3:
-                PlayerOptions.SimAvionicsType = ATEasy;
-                break;
+        case RADAR_3:
+            PlayerOptions.SimAvionicsType = ATEasy;
+            break;
         }
 
         lbox->Refresh();
@@ -1987,17 +2009,17 @@ static void INFOSaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case WEAPEFF_1:
-                PlayerOptions.SimWeaponEffect = WEAccurate;
-                break;
+        case WEAPEFF_1:
+            PlayerOptions.SimWeaponEffect = WEAccurate;
+            break;
 
-            case WEAPEFF_2:
-                PlayerOptions.SimWeaponEffect = WEEnhanced;
-                break;
+        case WEAPEFF_2:
+            PlayerOptions.SimWeaponEffect = WEEnhanced;
+            break;
 
-            case WEAPEFF_3:
-                PlayerOptions.SimWeaponEffect = WEExaggerated;
-                break;
+        case WEAPEFF_3:
+            PlayerOptions.SimWeaponEffect = WEExaggerated;
+            break;
         }
 
         lbox->Refresh();
@@ -2009,17 +2031,17 @@ static void INFOSaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case AUTO_1:
-                PlayerOptions.SimAutopilotType = APNormal;
-                break;
+        case AUTO_1:
+            PlayerOptions.SimAutopilotType = APNormal;
+            break;
 
-            case AUTO_2:
-                PlayerOptions.SimAutopilotType = APEnhanced;
-                break;
+        case AUTO_2:
+            PlayerOptions.SimAutopilotType = APEnhanced;
+            break;
 
-            case AUTO_3:
-                PlayerOptions.SimAutopilotType = APIntelligent;
-                break;
+        case AUTO_3:
+            PlayerOptions.SimAutopilotType = APIntelligent;
+            break;
         }
 
         lbox->Refresh();
@@ -2031,20 +2053,20 @@ static void INFOSaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case PADLOCK_4:
-                PlayerOptions.SimPadlockMode = PDDisabled;
-                break;
+        case PADLOCK_4:
+            PlayerOptions.SimPadlockMode = PDDisabled;
+            break;
 
-            case PADLOCK_1:
-                PlayerOptions.SimPadlockMode = PDRealistic;
-                break;
+        case PADLOCK_1:
+            PlayerOptions.SimPadlockMode = PDRealistic;
+            break;
 
-            case PADLOCK_2:
-                PlayerOptions.SimPadlockMode = PDEnhanced;
-                break;
-                //case PADLOCK_3:
-                // PlayerOptions.SimPadlockMode = PDSuper;
-                // break;
+        case PADLOCK_2:
+            PlayerOptions.SimPadlockMode = PDEnhanced;
+            break;
+            //case PADLOCK_3:
+            // PlayerOptions.SimPadlockMode = PDSuper;
+            // break;
         }
 
         lbox->Refresh();
@@ -2056,17 +2078,17 @@ static void INFOSaveValues(void)
     {
         switch (lbox->GetTextID())
         {
-            case REFUEL_1:
-                PlayerOptions.SimAirRefuelingMode = ARRealistic;
-                break;
+        case REFUEL_1:
+            PlayerOptions.SimAirRefuelingMode = ARRealistic;
+            break;
 
-            case REFUEL_2:
-                PlayerOptions.SimAirRefuelingMode = ARModerated;
-                break;
+        case REFUEL_2:
+            PlayerOptions.SimAirRefuelingMode = ARModerated;
+            break;
 
-            case REFUEL_3:
-                PlayerOptions.SimAirRefuelingMode = ARSimplistic;
-                break;
+        case REFUEL_3:
+            PlayerOptions.SimAirRefuelingMode = ARSimplistic;
+            break;
         }
 
         lbox->Refresh();
@@ -2090,7 +2112,6 @@ static void INFOSaveValues(void)
             PlayerOptions.SetSimFlag(SIM_UNLIMITED_CHAFF);
         else
             PlayerOptions.ClearSimFlag(SIM_UNLIMITED_CHAFF);
-
     }
 
     button = (C_Button *)win->FindControl(COLLISIONS_CUR);
@@ -2156,12 +2177,14 @@ static void INFOSaveValues(void)
     }*/
 
 
-
     slider = (C_Slider *)win->FindControl(VEHICLE_SIZE_CUR);
 
     if (slider not_eq NULL)
     {
-        PlayerOptions.ObjMagnification = static_cast<float>((int)((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1.5f));
+        PlayerOptions.ObjMagnification = static_cast<float>(
+            (int)((float)slider->GetSliderPos() /
+                      (slider->GetSliderMax() - slider->GetSliderMin()) * 4 +
+                  1.5f));
     }
 
     PlayerOptions.SaveOptions();
@@ -2169,7 +2192,7 @@ static void INFOSaveValues(void)
     INFOSaveRules();
     INFOSaveRulesToFile();
 
-}//SaveValues
+} //SaveValues
 
 void CopyRulesToGame(FalconGameEntity *)
 {

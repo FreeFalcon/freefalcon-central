@@ -5,9 +5,9 @@
 #include <list>
 
 #include "tchar.h"
-#include "FalcGame.h"
+#include "falcgame.h"
 //sfr: added for lengths
-#include "UI/INCLUDE/logbook.h"
+#include "ui/include/logbook.h"
 
 /** sfr: maximum number of entities a session can have fine interest
 * MUST be smaller than 256
@@ -89,7 +89,7 @@ private:
 
     uchar assignedAircraftNum;
     uchar assignedPilotSlot;
-    FlightClass *assignedPlayerFlightPtr;
+    FlightClass* assignedPlayerFlightPtr;
 #if FINE_INT
     // sfr: fine interest object list
     typedef VuBin<FalconEntity> FalconEntityBin;
@@ -98,34 +98,37 @@ private:
 #endif
 
 
-
 public:
-    uchar* unitDataSendBuffer; // Unit data the local session is sending to this session
+    uchar*
+        unitDataSendBuffer; // Unit data the local session is sending to this session
     short unitDataSendSet;
     long unitDataSendSize;
-    uchar* unitDataReceiveBuffer; // Unit data the local session is receiving from this session
+    uchar*
+        unitDataReceiveBuffer; // Unit data the local session is receiving from this session
     short unitDataReceiveSet;
     uchar unitDataReceived[FS_MAXBLK / 8];
-    uchar* objDataSendBuffer; // Objective data the local session is sending to this session
+    uchar*
+        objDataSendBuffer; // Objective data the local session is sending to this session
     short objDataSendSet;
     long objDataSendSize;
-    uchar* objDataReceiveBuffer; // Objective data the local session is receiving from this session
+    uchar*
+        objDataReceiveBuffer; // Objective data the local session is receiving from this session
     short objDataReceiveSet;
     uchar objDataReceived[FS_MAXBLK / 8];
 
 public:
     // constructors bitand destructor
-    FalconSessionEntity(ulong domainMask, char *callsign);
+    FalconSessionEntity(ulong domainMask, char* callsign);
     //sfr: added rem
-    FalconSessionEntity(VU_BYTE **stream, long *rem);
-    FalconSessionEntity(FILE *file);
+    FalconSessionEntity(VU_BYTE** stream, long* rem);
+    FalconSessionEntity(FILE* file);
     virtual VU_ERRCODE InsertionCallback(void);
     virtual ~FalconSessionEntity();
 
     // encoders
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream);
-    virtual int Save(FILE *file);
+    virtual int Save(VU_BYTE** stream);
+    virtual int Save(FILE* file);
     void DoFullUpdate(void);
 
     // accessors
@@ -165,11 +168,11 @@ public:
     }
     float GetAceFactor() const
     {
-        return(AceFactor);
+        return (AceFactor);
     }
     float GetInitAceFactor() const
     {
-        return(initAceFactor);
+        return (initAceFactor);
     }
     uchar GetTeam(void);
     uchar GetCountry(void) const
@@ -198,9 +201,10 @@ public:
     }
     ushort GetKill(ushort CAT) const
     {
-        if (CAT < _KILL_CATS_) return(kills[CAT]);
+        if (CAT < _KILL_CATS_)
+            return (kills[CAT]);
 
-        return(0);
+        return (0);
     }
     ushort GetMissions() const
     {
@@ -263,7 +267,8 @@ public:
     }
     void SetKill(ushort CAT, ushort kill)
     {
-        if (CAT < _KILL_CATS_) kills[CAT] = kill;
+        if (CAT < _KILL_CATS_)
+            kills[CAT] = kill;
     }
     void SetMissions(ushort count)
     {
@@ -290,29 +295,29 @@ public:
 
     // event Handlers
     // virtual VU_ERRCODE Handle(VuEvent *event);
-    virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
+    virtual VU_ERRCODE Handle(VuFullUpdateEvent* event);
     // virtual VU_ERRCODE Handle(VuSessionEvent *event);
 
 #if FINE_INT
     // sfr
     /* add a unit to this session fine interest list. This unit will be updated in fine fashion */
-    bool AddToFineInterest(FalconEntity *entity, bool silent = true);
+    bool AddToFineInterest(FalconEntity* entity, bool silent = true);
     /** removes unit from fine interest list. Will be updated normally */
-    bool RemoveFromFineInterest(const FalconEntity *entity, bool silent = true);
+    bool RemoveFromFineInterest(const FalconEntity* entity, bool silent = true);
     /** clears fine interest list */
     void ClearFineInterest(bool silent = true);
     /** checks if a unit is in fine interest list */
-    bool HasFineInterest(const FalconEntity *entity) const ;
+    bool HasFineInterest(const FalconEntity* entity) const;
 #endif
-
 };
 
 // Some conversion equivalencies between vuLocalSession and FalconLocalSession
 #define FalconLocalSession ((FalconSessionEntity*)vuLocalSessionEntity.get())
 #define FalconLocalSessionId vuLocalSession
-#define FalconLocalGame (vuLocalSessionEntity ?\
- ((FalconSessionEntity*)vuLocalSessionEntity.get())->GetGame() : NULL)
+#define FalconLocalGame                                                        \
+    (vuLocalSessionEntity ?                                                    \
+         ((FalconSessionEntity*)vuLocalSessionEntity.get())->GetGame() :       \
+         NULL)
 #define FalconLocalGameId (vuLocalSessionEntity->GameId())
 
 #endif
-

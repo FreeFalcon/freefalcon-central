@@ -1,12 +1,14 @@
-#include "MsgInc/SendSimMoverPosition.h"
+#include "msginc/sendsimmoverposition.h"
 #include "mesg.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 using namespace std;
 
 
-SendSimMoverPosition::SendSimMoverPosition(SimMoverClass *mover, VuTargetEntity *target) :
-    FalconEvent(SendSimMoverPositionMsg, FalconEvent::SimThread, mover->Id(), target, FALSE)
+SendSimMoverPosition::SendSimMoverPosition(SimMoverClass *mover,
+                                           VuTargetEntity *target)
+    : FalconEvent(SendSimMoverPositionMsg, FalconEvent::SimThread, mover->Id(),
+                  target, FALSE)
 {
     // this is always reliable and OOB
     RequestReliableTransmit();
@@ -25,14 +27,14 @@ SendSimMoverPosition::SendSimMoverPosition(SimMoverClass *mover, VuTargetEntity 
     droll_ = mover->RollDelta();
 }
 
-SendSimMoverPosition::SendSimMoverPosition(VU_ID senderID, VU_ID targetID) :
-    FalconEvent(SendSimMoverPositionMsg, FalconEvent::SimThread, senderID, targetID)
+SendSimMoverPosition::SendSimMoverPosition(VU_ID senderID, VU_ID targetID)
+    : FalconEvent(SendSimMoverPositionMsg, FalconEvent::SimThread, senderID,
+                  targetID)
 {
 }
 
 SendSimMoverPosition::~SendSimMoverPosition()
 {
-
 }
 
 int SendSimMoverPosition::Size() const
@@ -116,4 +118,3 @@ int SendSimMoverPosition::Process(uchar autodisp)
 
     return 0;
 }
-

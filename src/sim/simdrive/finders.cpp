@@ -3,7 +3,7 @@
 #include "simbase.h"
 #include "falclist.h"
 #include "team.h"
-#include "campBase.h"
+#include "campbase.h"
 
 SimBaseClass* SimulationDriver::FindFac(SimBaseClass* center)
 {
@@ -39,7 +39,7 @@ FlightClass* SimulationDriver::FindTanker(SimBaseClass* center)
 {
     FlightClass* tankerFlight;
 
-    tankerFlight = (FlightClass*) FindNearest(center, tankerList);
+    tankerFlight = (FlightClass*)FindNearest(center, tankerList);
 
     if (tankerFlight)
     {
@@ -56,7 +56,8 @@ FlightClass* SimulationDriver::FindTanker(SimBaseClass* center)
 //   return FindNearest(center, airbaseList);
 //}
 
-SimBaseClass* SimulationDriver::FindNearest(SimBaseClass* center, VuLinkedList* sourceList)
+SimBaseClass* SimulationDriver::FindNearest(SimBaseClass* center,
+                                            VuLinkedList* sourceList)
 {
     SimBaseClass* curObj;
     SimBaseClass* retval = NULL;
@@ -77,8 +78,8 @@ SimBaseClass* SimulationDriver::FindNearest(SimBaseClass* center, VuLinkedList* 
                      (curObj->YPos() - myY) * (curObj->YPos() - myY) +
                      (curObj->ZPos() - myZ) * (curObj->ZPos() - myZ);
 
-            if (tmpRng < rngSqr and 
-                TeamInfo[curObj->GetTeam()]->TStance(center->GetTeam()) < Hostile)
+            if (tmpRng < rngSqr and TeamInfo[curObj->GetTeam()]->TStance(
+                                        center->GetTeam()) < Hostile)
             {
                 rngSqr = tmpRng;
                 retval = curObj;

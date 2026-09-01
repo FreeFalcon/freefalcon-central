@@ -22,9 +22,11 @@ static void Normalize(double *xp, double *yp, double *zp)
 
 static void freenode(mgrec *db)
 {
-    if (db->next) freenode(db->next);
+    if (db->next)
+        freenode(db->next);
 
-    if (db->child) freenode(db->child);
+    if (db->child)
+        freenode(db->child);
 
     free(db);
 }
@@ -38,24 +40,24 @@ inline void exch_char(char *a, char *b)
 
 inline short swap_short(short num)
 {
-    short   data = num;
-    char *cnum = (char *) &data;
+    short data = num;
+    char *cnum = (char *)&data;
     exch_char(&cnum[1], &cnum[0]);
     return data;
 }
 
 inline int swap_int(int num)
 {
-    int     data = num;
-    char *cnum = (char *) &data;
+    int data = num;
+    char *cnum = (char *)&data;
     exch_char(&cnum[3], &cnum[0]);
     exch_char(&cnum[2], &cnum[1]);
     return data;
 }
 inline float swap_float(float num)
 {
-    float   data = num;
-    char *cnum = (char *) &data;
+    float data = num;
+    char *cnum = (char *)&data;
     exch_char(&cnum[3], &cnum[0]);
     exch_char(&cnum[2], &cnum[1]);
     return data;
@@ -63,8 +65,8 @@ inline float swap_float(float num)
 
 inline double swap_double(double num)
 {
-    double  data = num;
-    char *cnum = (char *) &data;
+    double data = num;
+    char *cnum = (char *)&data;
     exch_char(&cnum[7], &cnum[0]);
     exch_char(&cnum[6], &cnum[1]);
     exch_char(&cnum[5], &cnum[2]);
@@ -76,9 +78,8 @@ struct
 {
     FltTypes type;
     const char *name;
-} FltNames[] =
-{
-#define MKENT(x) { x, #x }
+} FltNames[] = {
+#define MKENT(x) {x, #x}
     MKENT(fltHeader),
     MKENT(fltGroup),
     MKENT(fltIcoord),
@@ -121,8 +122,7 @@ struct
     MKENT(fltXref),
     MKENT(fltLodSwitchIn),
     MKENT(fltXrefFilename),
-    MKENT(fltLod)
-};
+    MKENT(fltLod)};
 static const int FltSize = sizeof(FltNames) / sizeof(FltNames[0]);
 
 static int mgIgnoreRec(OpCode type)
@@ -133,30 +133,30 @@ static int mgIgnoreRec(OpCode type)
 
     switch (type)
     {
-        case OPCODE_POLYGON:
-        case OPCODE_BINARY_SEPARATING_PLANE:
-        case OPCODE_SWITCH_BEAD:
-        case OPCODE_DEGREE_OF_FREEDOM:
-        case OPCODE_LIGHT_SOURCE_RECORD:
-        case OPCODE_LEVEL_OF_DETAIL:
-        case OPCODE_VERTEX_LIST:
-        case OPCODE_COLOR_TABLE:
-        case OPCODE_HEADER:
-        case OPCODE_TEXT_COMMENT:
-        case OPCODE_TEXTURE_REFERENCE_RECORD:
-        case OPCODE_VERTEX_PALETTE:
-        case OPCODE_VERTEX_WITH_NORMAL:
-        case OPCODE_VERTEX_WITH_NORMAL_AND_UV:
-        case OPCODE_VERTEX_WITH_UV:
-        case OPCODE_MATERIAL_TABLE:
-        case OPCODE_PUSH_LEVEL:
-        case OPCODE_POP_LEVEL:
-        case OPCODE_MATERIAL_PALETTE:
-        case OPCODE_VERTEX_COORDINATE:
-            return 0;
+    case OPCODE_POLYGON:
+    case OPCODE_BINARY_SEPARATING_PLANE:
+    case OPCODE_SWITCH_BEAD:
+    case OPCODE_DEGREE_OF_FREEDOM:
+    case OPCODE_LIGHT_SOURCE_RECORD:
+    case OPCODE_LEVEL_OF_DETAIL:
+    case OPCODE_VERTEX_LIST:
+    case OPCODE_COLOR_TABLE:
+    case OPCODE_HEADER:
+    case OPCODE_TEXT_COMMENT:
+    case OPCODE_TEXTURE_REFERENCE_RECORD:
+    case OPCODE_VERTEX_PALETTE:
+    case OPCODE_VERTEX_WITH_NORMAL:
+    case OPCODE_VERTEX_WITH_NORMAL_AND_UV:
+    case OPCODE_VERTEX_WITH_UV:
+    case OPCODE_MATERIAL_TABLE:
+    case OPCODE_PUSH_LEVEL:
+    case OPCODE_POP_LEVEL:
+    case OPCODE_MATERIAL_PALETTE:
+    case OPCODE_VERTEX_COORDINATE:
+        return 0;
 
-        default:
-            return 1;
+    default:
+        return 1;
     }
 
 #endif
@@ -166,23 +166,23 @@ static int mgIsAncillary(OpCode type)
 {
     switch (type)
     {
-        case OPCODE_TEXT_COMMENT:
-        case OPCODE_LONG_IDENTIFIER:
-        case OPCODE_REPLICATE_CODE:
-        case OPCODE_ROAD_ZONE:
-        case OPCODE_TRANSFORMATION_MATRIX:
-        case OPCODE_VECTOR:
-        case OPCODE_BOUNDING_BOX:
-        case OPCODE_CAT_DATA:
-        case OPCODE_EXTENSION:
-        case OPCODE_VERTEX_COORDINATE:
-        case OPCODE_VERTEX_WITH_NORMAL:
-        case OPCODE_VERTEX_WITH_NORMAL_AND_UV:
-        case OPCODE_VERTEX_WITH_UV:
-            return 1;
+    case OPCODE_TEXT_COMMENT:
+    case OPCODE_LONG_IDENTIFIER:
+    case OPCODE_REPLICATE_CODE:
+    case OPCODE_ROAD_ZONE:
+    case OPCODE_TRANSFORMATION_MATRIX:
+    case OPCODE_VECTOR:
+    case OPCODE_BOUNDING_BOX:
+    case OPCODE_CAT_DATA:
+    case OPCODE_EXTENSION:
+    case OPCODE_VERTEX_COORDINATE:
+    case OPCODE_VERTEX_WITH_NORMAL:
+    case OPCODE_VERTEX_WITH_NORMAL_AND_UV:
+    case OPCODE_VERTEX_WITH_UV:
+        return 1;
 
-        default:
-            return 0;
+    default:
+        return 0;
     }
 }
 
@@ -190,22 +190,22 @@ static int mgIsPalette(OpCode type)
 {
     switch (type)
     {
-        case OPCODE_VERTEX_PALETTE:
-        case OPCODE_COLOR_TABLE:
-        case OPCODE_COLOR_NAME_PALETTE:
-        case OPCODE_MATERIAL_PALETTE:
-        case OPCODE_TEXTURE_REFERENCE_RECORD:
-        case OPCODE_EYEPOINT_AND_TRACKPLANE_POSITION:
-        case OPCODE_LINKAGE_RECORD:
-        case OPCODE_SOUND_PALETTE:
-        case OPCODE_LIGHT_SOURCE_PALETTE:
-        case OPCODE_LINE_STYLE_RECORD:
-        case OPCODE_TEXTURE_MAPPING_PALETTE:
-        case OPCODE_MATERIAL_TABLE:
-            return 1;
+    case OPCODE_VERTEX_PALETTE:
+    case OPCODE_COLOR_TABLE:
+    case OPCODE_COLOR_NAME_PALETTE:
+    case OPCODE_MATERIAL_PALETTE:
+    case OPCODE_TEXTURE_REFERENCE_RECORD:
+    case OPCODE_EYEPOINT_AND_TRACKPLANE_POSITION:
+    case OPCODE_LINKAGE_RECORD:
+    case OPCODE_SOUND_PALETTE:
+    case OPCODE_LIGHT_SOURCE_PALETTE:
+    case OPCODE_LINE_STYLE_RECORD:
+    case OPCODE_TEXTURE_MAPPING_PALETTE:
+    case OPCODE_MATERIAL_TABLE:
+        return 1;
 
-        default:
-            return 0;
+    default:
+        return 0;
     }
 }
 
@@ -213,7 +213,8 @@ const char *FindFltName(FltTypes f)
 {
     for (int i = 0; i < FltSize; i++)
     {
-        if (FltNames[i].type == f) return FltNames[i].name;
+        if (FltNames[i].type == f)
+            return FltNames[i].name;
     }
 
     return 0;
@@ -223,42 +224,44 @@ static int mgGetColorInd(mgrec *rec, int ind, int *rgb)
 {
     mgrec *pbase = rec;
 
-    while (pbase -> parent)
+    while (pbase->parent)
     {
-        pbase = pbase -> parent;
+        pbase = pbase->parent;
     }
 
-    while (pbase && pbase -> type != OPCODE_COLOR_TABLE)
+    while (pbase && pbase->type != OPCODE_COLOR_TABLE)
     {
         pbase = mgGetNext(pbase);
     }
 
-    if (pbase == NULL) return MG_FALSE;
+    if (pbase == NULL)
+        return MG_FALSE;
 
     if (rec->vrsn > 1500)
     {
-        if ((unsigned)ind > (pbase -> len - offsetof(struct aflt_ColorRecord, rgb)) / 4)
+        if ((unsigned)ind >
+            (pbase->len - offsetof(struct aflt_ColorRecord, rgb)) / 4)
             return MG_FALSE;
 
         struct aflt_ColorRecord *cr;
         cr = (struct aflt_ColorRecord *)pbase->data;
-        *rgb = swap_int(cr -> rgb[ind]);
+        *rgb = swap_int(cr->rgb[ind]);
         return MG_TRUE;
     }
     else
     {
-        if ((unsigned)ind > (pbase -> len - offsetof(struct flt_ColorRecord, rgb)) / 4)
+        if ((unsigned)ind >
+            (pbase->len - offsetof(struct flt_ColorRecord, rgb)) / 4)
             return MG_FALSE;
 
         struct flt_ColorRecord *cr;
         cr = (struct flt_ColorRecord *)pbase->data;
-        *rgb = swap_int(cr -> rgb[ind]);
+        *rgb = swap_int(cr->rgb[ind]);
         return MG_TRUE;
     }
 }
 
-void
-mgInit(int type, void *param)
+void mgInit(int type, void *param)
 {
 }
 
@@ -266,7 +269,7 @@ char *mgGetName(mgrec *rec)
 {
     mgrec *p;
 
-    for (p = rec->next; p && mgIsAncillary(p->type); p = p -> next)
+    for (p = rec->next; p && mgIsAncillary(p->type); p = p->next)
     {
         if (p->type == OPCODE_LONG_IDENTIFIER)
         {
@@ -282,8 +285,7 @@ char *mgGetName(mgrec *rec)
     return comm;
 }
 
-char *
-mgRec2Filename(mgrec *rec)
+char *mgRec2Filename(mgrec *rec)
 {
     char *comm = (char *)malloc(9);
     strcpy(comm, "filename");
@@ -292,11 +294,13 @@ mgRec2Filename(mgrec *rec)
 
 mgrec *mgGetChild(mgrec *rec)
 {
-    if (rec -> child) return rec->child;
+    if (rec->child)
+        return rec->child;
 
     mgrec *p;
 
-    for (p = rec->next; p && (mgIsAncillary(p->type) || mgIsPalette(p->type)); p = p->next)
+    for (p = rec->next; p && (mgIsAncillary(p->type) || mgIsPalette(p->type));
+         p = p->next)
         if (p->child)
             return p->child;
 
@@ -305,7 +309,7 @@ mgrec *mgGetChild(mgrec *rec)
 
 mgrec *mgGetParent(mgrec *rec)
 {
-    return rec -> parent;
+    return rec->parent;
 }
 
 void mgExit()
@@ -315,8 +319,7 @@ mgrec *mgGetNext(mgrec *rec)
 {
     mgrec *p;
 
-    for (p = rec->next;
-         p && (mgIsAncillary(p->type) || mgIsPalette(p->type));
+    for (p = rec->next; p && (mgIsAncillary(p->type) || mgIsPalette(p->type));
          p = p->next)
         continue;
 
@@ -329,31 +332,31 @@ int mgIsCode(mgrec *rec, FltTypes type)
 
     switch (type)
     {
-        case fltPolygon:
-            return rec->type == OPCODE_POLYGON;
+    case fltPolygon:
+        return rec->type == OPCODE_POLYGON;
 
-        case fltBsp:
-            return rec->type == OPCODE_BINARY_SEPARATING_PLANE;
+    case fltBsp:
+        return rec->type == OPCODE_BINARY_SEPARATING_PLANE;
 
-        case fltSwitch:
-            return rec->type == OPCODE_SWITCH_BEAD;
+    case fltSwitch:
+        return rec->type == OPCODE_SWITCH_BEAD;
 
-        case fltDof:
-            return rec->type == OPCODE_DEGREE_OF_FREEDOM;
+    case fltDof:
+        return rec->type == OPCODE_DEGREE_OF_FREEDOM;
 
-        case fltLightPoint:
-            return rec->type == OPCODE_LIGHT_SOURCE_RECORD;
+    case fltLightPoint:
+        return rec->type == OPCODE_LIGHT_SOURCE_RECORD;
 
-        case fltLod:
-            return rec->type == OPCODE_LEVEL_OF_DETAIL;
+    case fltLod:
+        return rec->type == OPCODE_LEVEL_OF_DETAIL;
 
-        case fltVertex:
-            return rec->type == OPCODE_VERTEX_LIST;
+    case fltVertex:
+        return rec->type == OPCODE_VERTEX_LIST;
 
-        default:
-            sprintf(buf, "Unknown FltType %d %s\n", type, FindFltName(type));
-            OutputDebugString(buf);
-            break;
+    default:
+        sprintf(buf, "Unknown FltType %d %s\n", type, FindFltName(type));
+        OutputDebugString(buf);
+        break;
     }
 
     return MG_FALSE;
@@ -371,15 +374,15 @@ void mgFree(char *data)
 
 char *mgGetComment(mgrec *record)
 {
-    while (record && record -> type != OPCODE_TEXT_COMMENT)
+    while (record && record->type != OPCODE_TEXT_COMMENT)
     {
-        record = record -> next;
+        record = record->next;
     }
 
     if (record)
     {
-        char *comm = (char *)malloc(record -> len - 4);
-        memcpy(comm, record -> data, record -> len - 4);
+        char *comm = (char *)malloc(record->len - 4);
+        memcpy(comm, record->data, record->len - 4);
         return comm;
     }
 
@@ -391,9 +394,9 @@ int mgGetFirstTexture(mgrec *record, int *texind, char *texname)
 {
     return MG_FALSE;
 
-    while (record && record -> type != OPCODE_TEXTURE_REFERENCE_RECORD)
+    while (record && record->type != OPCODE_TEXTURE_REFERENCE_RECORD)
     {
-        record = record -> next;
+        record = record->next;
     }
 
     if (record)
@@ -407,19 +410,18 @@ int mgGetFirstTexture(mgrec *record, int *texind, char *texname)
         }
 
 #endif
-        struct flt_TexturePatternRecord *tr = (struct flt_TexturePatternRecord *)record -> data;
+        struct flt_TexturePatternRecord *tr =
+            (struct flt_TexturePatternRecord *)record->data;
 
-        *texind = swap_int(tr -> patternIndex);
-        strcpy(texname, tr -> filename);
+        *texind = swap_int(tr->patternIndex);
+        strcpy(texname, tr->filename);
         return MG_TRUE;
-
     }
 
     return MG_FALSE;
 }
 
-int
-mgGetNextTexture(mgrec *record, int *texind, char *texname)
+int mgGetNextTexture(mgrec *record, int *texind, char *texname)
 {
     if (record->vrsn > 1500)
     {
@@ -427,23 +429,25 @@ mgGetNextTexture(mgrec *record, int *texind, char *texname)
         return MG_FALSE;
     }
 
-    while (record && record -> type != OPCODE_TEXTURE_REFERENCE_RECORD)
+    while (record && record->type != OPCODE_TEXTURE_REFERENCE_RECORD)
     {
-        record = record -> next;
+        record = record->next;
     }
 
-    if (record == NULL) return MG_FALSE;
+    if (record == NULL)
+        return MG_FALSE;
 
-    while (record && record -> type == OPCODE_TEXTURE_REFERENCE_RECORD)
+    while (record && record->type == OPCODE_TEXTURE_REFERENCE_RECORD)
     {
-        struct flt_TexturePatternRecord *tr = (struct flt_TexturePatternRecord *)record -> data;
+        struct flt_TexturePatternRecord *tr =
+            (struct flt_TexturePatternRecord *)record->data;
 
-        int ind = swap_int(tr -> patternIndex);
+        int ind = swap_int(tr->patternIndex);
 
         if (ind > *texind)
         {
             *texind = ind;
-            strcpy(texname, tr -> filename);
+            strcpy(texname, tr->filename);
             return MG_TRUE;
         }
 
@@ -456,21 +460,24 @@ mgGetNextTexture(mgrec *record, int *texind, char *texname)
 
 static mgrec *GetVertex(mgrec *rec, int n)
 {
-    while (rec -> parent) rec = rec->parent;
+    while (rec->parent)
+        rec = rec->parent;
 
-    while (rec && rec -> type != OPCODE_VERTEX_PALETTE)
+    while (rec && rec->type != OPCODE_VERTEX_PALETTE)
         rec = rec->next;
 
-    if (rec == 0) return 0;
+    if (rec == 0)
+        return 0;
 
     int voff = rec->len;
     rec = rec->next;
 
     for (int i = 0; rec && voff < n; i++)
     {
-        if (voff == n) return rec;
+        if (voff == n)
+            return rec;
 
-        voff += rec -> len;
+        voff += rec->len;
         rec = rec->next;
     }
 
@@ -479,7 +486,7 @@ static mgrec *GetVertex(mgrec *rec, int n)
 
 static int mgGetVertexNormal(mgrec *rec, double *i, double *j, double *k)
 {
-    if (rec -> type != OPCODE_VERTEX_LIST)
+    if (rec->type != OPCODE_VERTEX_LIST)
     {
         OutputDebugString("GetVertexNormal not a vertex list\n");
         return MG_FALSE;
@@ -494,28 +501,30 @@ static int mgGetVertexNormal(mgrec *rec, double *i, double *j, double *k)
         return MG_FALSE;
     }
 
-    switch (vr -> type)
+    switch (vr->type)
     {
-        case OPCODE_VERTEX_WITH_NORMAL:
-        {
-            struct flt_VertexCoordinateNormal *vn = (struct flt_VertexCoordinateNormal *)vr->data;
-            *i = swap_float(vn->nx);
-            *j = swap_float(vn->ny);
-            *k = swap_float(vn->nz);
-            return MG_TRUE;
-        }
+    case OPCODE_VERTEX_WITH_NORMAL:
+    {
+        struct flt_VertexCoordinateNormal *vn =
+            (struct flt_VertexCoordinateNormal *)vr->data;
+        *i = swap_float(vn->nx);
+        *j = swap_float(vn->ny);
+        *k = swap_float(vn->nz);
+        return MG_TRUE;
+    }
 
-        case OPCODE_VERTEX_WITH_NORMAL_AND_UV:
-        {
-            struct flt_VertexCoordinateTextureNormal *vn = (struct flt_VertexCoordinateTextureNormal *)vr->data;
-            *i = swap_float(vn->nx);
-            *j = swap_float(vn->ny);
-            *k = swap_float(vn->nz);
-            return MG_TRUE;
-        }
+    case OPCODE_VERTEX_WITH_NORMAL_AND_UV:
+    {
+        struct flt_VertexCoordinateTextureNormal *vn =
+            (struct flt_VertexCoordinateTextureNormal *)vr->data;
+        *i = swap_float(vn->nx);
+        *j = swap_float(vn->ny);
+        *k = swap_float(vn->nz);
+        return MG_TRUE;
+    }
 
-        default:
-            return MG_FALSE;
+    default:
+        return MG_FALSE;
     }
 }
 
@@ -536,7 +545,7 @@ int mgGetVtxNormal(mgrec *rec, float *i, float *j, float *k)
 
 int mgGetVtxColorRGB(mgrec *rec, short *r, short *g, short *b)
 {
-    if (rec -> type != OPCODE_VERTEX_LIST)
+    if (rec->type != OPCODE_VERTEX_LIST)
     {
         OutputDebugString("mgGetVtxColorRGB not a vertex list\n");
     }
@@ -554,7 +563,7 @@ int mgGetVtxColorRGB(mgrec *rec, short *r, short *g, short *b)
 
     struct flt_VertexCoordinate *vc = (struct flt_VertexCoordinate *)vr->data;
 
-    int pc = swap_short(vc -> vertexColor);
+    int pc = swap_short(vc->vertexColor);
 
     int colind = pc >> 7;
 
@@ -580,7 +589,7 @@ int mgGetIcoord(mgrec *rec, FltTypes type, double *x, double *y, double *z)
         return MG_FALSE;
     }
 
-    if (rec -> type == OPCODE_VERTEX_LIST)
+    if (rec->type == OPCODE_VERTEX_LIST)
     {
         int *vtx = (int *)rec->data;
         mgrec *vr = GetVertex(rec, *vtx);
@@ -593,13 +602,14 @@ int mgGetIcoord(mgrec *rec, FltTypes type, double *x, double *y, double *z)
             return MG_FALSE;
         }
 
-        struct flt_VertexCoordinate *vc = (struct flt_VertexCoordinate *)vr->data;
+        struct flt_VertexCoordinate *vc =
+            (struct flt_VertexCoordinate *)vr->data;
 
-        *x = swap_double(vc -> x);
+        *x = swap_double(vc->x);
 
-        *y = swap_double(vc -> y);
+        *y = swap_double(vc->y);
 
-        *z = swap_double(vc -> z);
+        *z = swap_double(vc->z);
 
         return MG_TRUE;
     }
@@ -609,7 +619,8 @@ int mgGetIcoord(mgrec *rec, FltTypes type, double *x, double *y, double *z)
 
 static int mgVtxFetch(mgrec *rec, FltTypes type, void *ptr)
 {
-    if (rec -> type != OPCODE_VERTEX_LIST) return MG_FALSE;
+    if (rec->type != OPCODE_VERTEX_LIST)
+        return MG_FALSE;
 
     int *vtx = (int *)rec->data;
     mgrec *vr = GetVertex(rec, *vtx);
@@ -624,284 +635,285 @@ static int mgVtxFetch(mgrec *rec, FltTypes type, void *ptr)
 
     switch (type)
     {
-        case fltVU:
+    case fltVU:
+    {
+        if (vr->type == OPCODE_VERTEX_WITH_NORMAL_AND_UV)
         {
-            if (vr -> type == OPCODE_VERTEX_WITH_NORMAL_AND_UV)
-            {
-                struct flt_VertexCoordinateTextureNormal *vt = (struct flt_VertexCoordinateTextureNormal *) vr -> data;
-                *(float *)ptr = swap_float(vt -> u);
-                break;
-            }
-            else if (vr -> type = OPCODE_VERTEX_WITH_UV)
-            {
-                struct flt_VertexCoordinateTexture *vt = (struct flt_VertexCoordinateTexture *) vr -> data;
-                *(float *)ptr = swap_float(vt -> u);
-                break;
-            }
-            else return MG_FALSE;
+            struct flt_VertexCoordinateTextureNormal *vt =
+                (struct flt_VertexCoordinateTextureNormal *)vr->data;
+            *(float *)ptr = swap_float(vt->u);
+            break;
         }
-        break;
-
-        case fltVV:
+        else if (vr->type = OPCODE_VERTEX_WITH_UV)
         {
-            if (vr -> type == OPCODE_VERTEX_WITH_NORMAL_AND_UV)
-            {
-                struct flt_VertexCoordinateTextureNormal *vt = (struct flt_VertexCoordinateTextureNormal *) vr -> data;
-                *(float *)ptr = swap_float(vt -> v);
-                break;
-            }
-            else if (vr -> type = OPCODE_VERTEX_WITH_UV)
-            {
-                struct flt_VertexCoordinateTexture *vt = (struct flt_VertexCoordinateTexture *) vr -> data;
-                *(float *)ptr = swap_float(vt -> v);
-                break;
-            }
-            else return MG_FALSE;
+            struct flt_VertexCoordinateTexture *vt =
+                (struct flt_VertexCoordinateTexture *)vr->data;
+            *(float *)ptr = swap_float(vt->u);
+            break;
         }
-        break;
-
-        default:
+        else
             return MG_FALSE;
+    }
+    break;
+
+    case fltVV:
+    {
+        if (vr->type == OPCODE_VERTEX_WITH_NORMAL_AND_UV)
+        {
+            struct flt_VertexCoordinateTextureNormal *vt =
+                (struct flt_VertexCoordinateTextureNormal *)vr->data;
+            *(float *)ptr = swap_float(vt->v);
+            break;
+        }
+        else if (vr->type = OPCODE_VERTEX_WITH_UV)
+        {
+            struct flt_VertexCoordinateTexture *vt =
+                (struct flt_VertexCoordinateTexture *)vr->data;
+            *(float *)ptr = swap_float(vt->v);
+            break;
+        }
+        else
+            return MG_FALSE;
+    }
+    break;
+
+    default:
+        return MG_FALSE;
     }
 
     return MG_TRUE;
-
 }
 
 static int mgBspFetch(mgrec *rec, FltTypes type, void *ptr)
 {
-    if (rec -> type != OPCODE_BINARY_SEPARATING_PLANE)
+    if (rec->type != OPCODE_BINARY_SEPARATING_PLANE)
         return 0;
 
     struct aflt_BinarySeparatingPlane *bsp =
-        (struct aflt_BinarySeparatingPlane *)rec -> data;
+        (struct aflt_BinarySeparatingPlane *)rec->data;
 
     switch (type)
     {
-        case fltDPlaneA:
-            *(double *)ptr = swap_double(bsp->a);
-            break;
+    case fltDPlaneA:
+        *(double *)ptr = swap_double(bsp->a);
+        break;
 
-        case fltDPlaneB:
-            *(double *)ptr = swap_double(bsp->b);
-            break;
+    case fltDPlaneB:
+        *(double *)ptr = swap_double(bsp->b);
+        break;
 
-        case fltDPlaneC:
-            *(double *)ptr = swap_double(bsp->c);
-            break;
+    case fltDPlaneC:
+        *(double *)ptr = swap_double(bsp->c);
+        break;
 
-        case fltDPlaneD:
-            *(double *)ptr = swap_double(bsp->d);
-            break;
+    case fltDPlaneD:
+        *(double *)ptr = swap_double(bsp->d);
+        break;
 
-        default:
-            OutputDebugString("Unknown BSP\n");
-            break;
+    default:
+        OutputDebugString("Unknown BSP\n");
+        break;
     }
 
     return 1;
 }
 
-static int
-mgPolyFetch(mgrec *rec, FltTypes type, void *ptr)
+static int mgPolyFetch(mgrec *rec, FltTypes type, void *ptr)
 {
-    if (rec -> type != OPCODE_POLYGON)
+    if (rec->type != OPCODE_POLYGON)
         return 0;
 
-    if (rec -> vrsn > 1500)
+    if (rec->vrsn > 1500)
     {
-        struct aflt_PolygonRecord *pr =
-            (struct aflt_PolygonRecord *)rec->data;
+        struct aflt_PolygonRecord *pr = (struct aflt_PolygonRecord *)rec->data;
 
         switch (type)
         {
-            case fltPolyMaterial:
-            {
-                *(short *)ptr = swap_short(pr->materialCode);
-                break;
-            }
+        case fltPolyMaterial:
+        {
+            *(short *)ptr = swap_short(pr->materialCode);
+            break;
+        }
 
-            case fltPolyTransparency:
-            {
-                *(short*)ptr = swap_short(pr->transparency);
-                break;
-            }
+        case fltPolyTransparency:
+        {
+            *(short *)ptr = swap_short(pr->transparency);
+            break;
+        }
 
-            case fltPolyMgTemplate:
-            {
-                *(char *)ptr = pr->templateTransparency;
-                break;
-            }
+        case fltPolyMgTemplate:
+        {
+            *(char *)ptr = pr->templateTransparency;
+            break;
+        }
 
-            case fltGcLightMode:
-            {
-                *(char *)ptr = pr->lightMode;
-                break;
-            }
+        case fltGcLightMode:
+        {
+            *(char *)ptr = pr->lightMode;
+            break;
+        }
 
-            case fltPolyTexture:
-            {
-                *(short*)ptr = swap_short(pr->textureNo);
-                break;
-            }
+        case fltPolyTexture:
+        {
+            *(short *)ptr = swap_short(pr->textureNo);
+            break;
+        }
 
-            case fltPolyLineStyle:
-            {
-                *(char *)ptr = pr->linestyle;
-                break;
-            }
+        case fltPolyLineStyle:
+        {
+            *(char *)ptr = pr->linestyle;
+            break;
+        }
 
-            case fltPolyDrawType:
-            {
-                *(char *)ptr = pr->howToDraw;
-                break;
-            }
+        case fltPolyDrawType:
+        {
+            *(char *)ptr = pr->howToDraw;
+            break;
+        }
 
-            default:
-                OutputDebugString("Unknown poly attr\n");
-                break;
+        default:
+            OutputDebugString("Unknown poly attr\n");
+            break;
         }
     }
     else
     {
-        struct flt_PolygonRecord *pr =
-            (struct flt_PolygonRecord *)rec->data;
+        struct flt_PolygonRecord *pr = (struct flt_PolygonRecord *)rec->data;
 
         switch (type)
         {
-            case fltPolyMaterial:
-            {
-                *(short *)ptr = swap_short(pr->materialCode);
-                break;
-            }
+        case fltPolyMaterial:
+        {
+            *(short *)ptr = swap_short(pr->materialCode);
+            break;
+        }
 
-            case fltPolyTransparency:
-            {
-                *(short*)ptr = swap_short(pr->transparency);
-                break;
-            }
+        case fltPolyTransparency:
+        {
+            *(short *)ptr = swap_short(pr->transparency);
+            break;
+        }
 
-            case fltPolyMgTemplate:
-            {
-                *(char *)ptr = pr->templateTransparency;
-                break;
-            }
+        case fltPolyMgTemplate:
+        {
+            *(char *)ptr = pr->templateTransparency;
+            break;
+        }
 
-            case fltGcLightMode:
-            {
-                *(char *)ptr = pr->lightMode;
-                break;
-            }
+        case fltGcLightMode:
+        {
+            *(char *)ptr = pr->lightMode;
+            break;
+        }
 
-            case fltPolyTexture:
-            {
-                *(short*)ptr = swap_short(pr->textureNo);
-                break;
-            }
+        case fltPolyTexture:
+        {
+            *(short *)ptr = swap_short(pr->textureNo);
+            break;
+        }
 
-            case fltPolyLineStyle:
-            {
-                *(char *)ptr = pr->linestyle;
-                break;
-            }
+        case fltPolyLineStyle:
+        {
+            *(char *)ptr = pr->linestyle;
+            break;
+        }
 
-            case fltPolyDrawType:
-            {
-                *(char *)ptr = pr->howToDraw;
-                break;
-            }
+        case fltPolyDrawType:
+        {
+            *(char *)ptr = pr->howToDraw;
+            break;
+        }
 
-            default:
-                OutputDebugString("Unknown poly attr\n");
-                break;
+        default:
+            OutputDebugString("Unknown poly attr\n");
+            break;
         }
     }
 
     return 1;
 }
 
-static int
-mgDofFetch(mgrec *rec, FltTypes type, void *ptr)
+static int mgDofFetch(mgrec *rec, FltTypes type, void *ptr)
 {
-    if (rec -> type != OPCODE_DEGREE_OF_FREEDOM)
+    if (rec->type != OPCODE_DEGREE_OF_FREEDOM)
         return 0;
 
-    if (rec -> vrsn > 1500)
+    if (rec->vrsn > 1500)
     {
         struct aflt_DegreeOfFreedomRecord *dof =
             (struct aflt_DegreeOfFreedomRecord *)rec->data;
 
         switch (type)
         {
-            case fltDofPutAnchorX:
-            {
-                *(double *)ptr = swap_double(dof->originx);
-                break;
-            }
+        case fltDofPutAnchorX:
+        {
+            *(double *)ptr = swap_double(dof->originx);
+            break;
+        }
 
-            case fltDofPutAnchorY:
-            {
-                *(double *)ptr = swap_double(dof->originy);
-                break;
-            }
+        case fltDofPutAnchorY:
+        {
+            *(double *)ptr = swap_double(dof->originy);
+            break;
+        }
 
-            case fltDofPutAnchorZ:
-            {
-                *(double *)ptr = swap_double(dof->originz);
-                break;
-            }
+        case fltDofPutAnchorZ:
+        {
+            *(double *)ptr = swap_double(dof->originz);
+            break;
+        }
 
-            case fltDofPutAlignX:
-            {
-                *(double *)ptr = swap_double(dof->pointxaxis_x);
-                break;
-            }
+        case fltDofPutAlignX:
+        {
+            *(double *)ptr = swap_double(dof->pointxaxis_x);
+            break;
+        }
 
-            case fltDofPutAlignY:
-            {
-                *(double *)ptr = swap_double(dof->pointxaxis_y);
-                break;
-            }
+        case fltDofPutAlignY:
+        {
+            *(double *)ptr = swap_double(dof->pointxaxis_y);
+            break;
+        }
 
-            case fltDofPutAlignZ:
-            {
-                *(double *)ptr = swap_double(dof->pointxaxis_z);
-                break;
-            }
+        case fltDofPutAlignZ:
+        {
+            *(double *)ptr = swap_double(dof->pointxaxis_z);
+            break;
+        }
 
-            case fltDofPutTrackX:
-            {
-                *(double *)ptr = swap_double(dof->pointxyplane_x);
-                break;
-            }
+        case fltDofPutTrackX:
+        {
+            *(double *)ptr = swap_double(dof->pointxyplane_x);
+            break;
+        }
 
-            case fltDofPutTrackY:
-            {
-                *(double *)ptr = swap_double(dof->pointxyplane_y);
-                break;
-            }
+        case fltDofPutTrackY:
+        {
+            *(double *)ptr = swap_double(dof->pointxyplane_y);
+            break;
+        }
 
-            case fltDofPutTrackZ:
-            {
-                *(double *)ptr = swap_double(dof->pointxyplane_z);
-                break;
-            }
+        case fltDofPutTrackZ:
+        {
+            *(double *)ptr = swap_double(dof->pointxyplane_z);
+            break;
+        }
 
-            case fltDofMaxX:
-            {
-                *(double *)ptr = swap_double(dof->maxx);
-                break;
-            }
+        case fltDofMaxX:
+        {
+            *(double *)ptr = swap_double(dof->maxx);
+            break;
+        }
 
-            case fltDofMinX:
-            {
-                *(double *)ptr = swap_double(dof->minx);
-                break;
-            }
+        case fltDofMinX:
+        {
+            *(double *)ptr = swap_double(dof->minx);
+            break;
+        }
 
-            default:
-                OutputDebugString("Unknown DOF attr\n");
-                break;
+        default:
+            OutputDebugString("Unknown DOF attr\n");
+            break;
         }
     }
     else
@@ -911,75 +923,75 @@ mgDofFetch(mgrec *rec, FltTypes type, void *ptr)
 
         switch (type)
         {
-            case fltDofPutAnchorX:
-            {
-                *(double *)ptr = swap_double(dof->originx);
-                break;
-            }
+        case fltDofPutAnchorX:
+        {
+            *(double *)ptr = swap_double(dof->originx);
+            break;
+        }
 
-            case fltDofPutAnchorY:
-            {
-                *(double *)ptr = swap_double(dof->originy);
-                break;
-            }
+        case fltDofPutAnchorY:
+        {
+            *(double *)ptr = swap_double(dof->originy);
+            break;
+        }
 
-            case fltDofPutAnchorZ:
-            {
-                *(double *)ptr = swap_double(dof->originz);
-                break;
-            }
+        case fltDofPutAnchorZ:
+        {
+            *(double *)ptr = swap_double(dof->originz);
+            break;
+        }
 
-            case fltDofPutAlignX:
-            {
-                *(double *)ptr = swap_double(dof->pointxaxis_x);
-                break;
-            }
+        case fltDofPutAlignX:
+        {
+            *(double *)ptr = swap_double(dof->pointxaxis_x);
+            break;
+        }
 
-            case fltDofPutAlignY:
-            {
-                *(double *)ptr = swap_double(dof->pointxaxis_y);
-                break;
-            }
+        case fltDofPutAlignY:
+        {
+            *(double *)ptr = swap_double(dof->pointxaxis_y);
+            break;
+        }
 
-            case fltDofPutAlignZ:
-            {
-                *(double *)ptr = swap_double(dof->pointxaxis_z);
-                break;
-            }
+        case fltDofPutAlignZ:
+        {
+            *(double *)ptr = swap_double(dof->pointxaxis_z);
+            break;
+        }
 
-            case fltDofPutTrackX:
-            {
-                *(double *)ptr = swap_double(dof->pointxyplane_x);
-                break;
-            }
+        case fltDofPutTrackX:
+        {
+            *(double *)ptr = swap_double(dof->pointxyplane_x);
+            break;
+        }
 
-            case fltDofPutTrackY:
-            {
-                *(double *)ptr = swap_double(dof->pointxyplane_y);
-                break;
-            }
+        case fltDofPutTrackY:
+        {
+            *(double *)ptr = swap_double(dof->pointxyplane_y);
+            break;
+        }
 
-            case fltDofPutTrackZ:
-            {
-                *(double *)ptr = swap_double(dof->pointxyplane_z);
-                break;
-            }
+        case fltDofPutTrackZ:
+        {
+            *(double *)ptr = swap_double(dof->pointxyplane_z);
+            break;
+        }
 
-            case fltDofMaxX:
-            {
-                *(double *)ptr = swap_double(dof->maxx);
-                break;
-            }
+        case fltDofMaxX:
+        {
+            *(double *)ptr = swap_double(dof->maxx);
+            break;
+        }
 
-            case fltDofMinX:
-            {
-                *(double *)ptr = swap_double(dof->minx);
-                break;
-            }
+        case fltDofMinX:
+        {
+            *(double *)ptr = swap_double(dof->minx);
+            break;
+        }
 
-            default:
-                OutputDebugString("Unknown DOF attr\n");
-                break;
+        default:
+            OutputDebugString("Unknown DOF attr\n");
+            break;
         }
     }
 
@@ -994,19 +1006,19 @@ static int mgMatFetch(mgrec *rec, FltTypes type, void *ptr)
         return MG_FALSE;
     }
 
-    if (rec -> type != OPCODE_MATERIAL_TABLE)
+    if (rec->type != OPCODE_MATERIAL_TABLE)
         return MG_FALSE;
 
-    struct flt_MaterialTable *mt = (struct flt_MaterialTable *)rec -> data;
+    struct flt_MaterialTable *mt = (struct flt_MaterialTable *)rec->data;
 
     switch (type)
     {
-        case fltMatAlpha:
-            *(float *)ptr = swap_float(mt -> alpha);
-            break;
+    case fltMatAlpha:
+        *(float *)ptr = swap_float(mt->alpha);
+        break;
 
-        default:
-            return MG_FALSE;
+    default:
+        return MG_FALSE;
     }
 
     return MG_TRUE;
@@ -1023,136 +1035,134 @@ int mgGetAttList(mgrec *rec, ...)
     {
         switch (type)
         {
-            case fltVU:
-            case fltVV:
-            {
-                float *fp = va_arg(ap, float *);
+        case fltVU:
+        case fltVV:
+        {
+            float *fp = va_arg(ap, float *);
 
-                if (mgVtxFetch(rec, type, fp))
-                    count ++;
-            }
-            break;
+            if (mgVtxFetch(rec, type, fp))
+                count++;
+        }
+        break;
 
-            case fltDPlaneA:
-            case fltDPlaneB:
-            case fltDPlaneC:
-            case fltDPlaneD:
-            {
-                double *dp = va_arg(ap, double *);
+        case fltDPlaneA:
+        case fltDPlaneB:
+        case fltDPlaneC:
+        case fltDPlaneD:
+        {
+            double *dp = va_arg(ap, double *);
 
-                if (mgBspFetch(rec, type, dp))
-                    count ++;
-            }
-            break;
+            if (mgBspFetch(rec, type, dp))
+                count++;
+        }
+        break;
 
-            case fltPolyMaterial:
-            {
-                short *mind = va_arg(ap, short *);
+        case fltPolyMaterial:
+        {
+            short *mind = va_arg(ap, short *);
 
-                if (mgPolyFetch(rec, type, mind))
-                    count ++;
-            }
-            break;
+            if (mgPolyFetch(rec, type, mind))
+                count++;
+        }
+        break;
 
-            case fltPolyTransparency:
-            {
-                short *tp = va_arg(ap,  short *);
+        case fltPolyTransparency:
+        {
+            short *tp = va_arg(ap, short *);
 
-                if (mgPolyFetch(rec, type, tp))
-                    count ++;
-            }
-            break;
+            if (mgPolyFetch(rec, type, tp))
+                count++;
+        }
+        break;
 
-            case fltPolyMgTemplate:
-            {
-                char *cp = va_arg(ap, char *);
+        case fltPolyMgTemplate:
+        {
+            char *cp = va_arg(ap, char *);
 
-                if (mgPolyFetch(rec, type, cp))
-                    count ++;
-            }
-            break;
+            if (mgPolyFetch(rec, type, cp))
+                count++;
+        }
+        break;
 
-            case fltGcLightMode:
-            {
-                char *cp = va_arg(ap, char *);
+        case fltGcLightMode:
+        {
+            char *cp = va_arg(ap, char *);
 
-                if (mgPolyFetch(rec, type, cp))
-                    count ++;
-            }
-            break;
+            if (mgPolyFetch(rec, type, cp))
+                count++;
+        }
+        break;
 
-            case fltPolyTexture:
-            {
-                short *cp = va_arg(ap, short *);
+        case fltPolyTexture:
+        {
+            short *cp = va_arg(ap, short *);
 
-                if (mgPolyFetch(rec, type, cp))
-                    count ++;
-            }
-            break;
+            if (mgPolyFetch(rec, type, cp))
+                count++;
+        }
+        break;
 
-            case fltPolyLineStyle:
-            {
-                char *cp = va_arg(ap, char *);
+        case fltPolyLineStyle:
+        {
+            char *cp = va_arg(ap, char *);
 
-                if (mgPolyFetch(rec, type, cp))
-                    count ++;
-            }
-            break;
+            if (mgPolyFetch(rec, type, cp))
+                count++;
+        }
+        break;
 
-            case fltPolyDrawType:
-            {
-                char *cp = va_arg(ap, char *);
+        case fltPolyDrawType:
+        {
+            char *cp = va_arg(ap, char *);
 
-                if (mgPolyFetch(rec, type, cp))
-                    count ++;
-            }
-            break;
+            if (mgPolyFetch(rec, type, cp))
+                count++;
+        }
+        break;
 
-            case fltMatAlpha:
-            {
-                float *fp = va_arg(ap, float *);
+        case fltMatAlpha:
+        {
+            float *fp = va_arg(ap, float *);
 
-                if (mgMatFetch(rec, type, fp))
-                    count ++;
+            if (mgMatFetch(rec, type, fp))
+                count++;
+        }
+        break;
 
-            }
-            break;
+        case fltDofPutAnchorX:
+        case fltDofPutAnchorY:
+        case fltDofPutAnchorZ:
+        case fltDofPutAlignX:
+        case fltDofPutAlignY:
+        case fltDofPutAlignZ:
+        case fltDofPutTrackX:
+        case fltDofPutTrackY:
+        case fltDofPutTrackZ:
+        case fltDofMaxX:
+        case fltDofMinX:
+        {
+            double *dp = va_arg(ap, double *);
 
-            case fltDofPutAnchorX:
-            case fltDofPutAnchorY:
-            case fltDofPutAnchorZ:
-            case fltDofPutAlignX:
-            case fltDofPutAlignY:
-            case fltDofPutAlignZ:
-            case fltDofPutTrackX:
-            case fltDofPutTrackY:
-            case fltDofPutTrackZ:
-            case fltDofMaxX:
-            case fltDofMinX:
-            {
-                double *dp = va_arg(ap, double *);
+            if (mgDofFetch(rec, type, dp))
+                count++;
+        }
+        break;
 
-                if (mgDofFetch(rec, type, dp))
-                    count ++;
-            }
-            break;
-
-            default:
-            {
-                char buf[1024];
-                sprintf(buf, "Unsupported attr type %d %s\n", type, FindFltName(type));
-                OutputDebugString(buf);
-                va_arg(ap, char *);  // best guess
-            }
-            break;
-
+        default:
+        {
+            char buf[1024];
+            sprintf(buf, "Unsupported attr type %d %s\n", type,
+                    FindFltName(type));
+            OutputDebugString(buf);
+            va_arg(ap, char *);  // best guess
+        }
+        break;
         }
     }
 
     va_end(ap);
     return count;
 }
-
 
 
 static short getshort(FILE *fp)
@@ -1171,17 +1181,18 @@ static mgrec *mgReadRecord(FILE *fp, mgrec *prnt, int vrsn)
     {
         short type = getshort(fp);
 
-        if (feof(fp)) return 0;
+        if (feof(fp))
+            return 0;
 
-        rec = (mgrec *)calloc(1, sizeof * rec);
+        rec = (mgrec *)calloc(1, sizeof *rec);
         rec->type = (OpCode)type;
         rec->len = getshort(fp);
-        rec->data = (char *) calloc(1, rec -> len);
+        rec->data = (char *)calloc(1, rec->len);
         rec->vrsn = vrsn;
         rec->parent = prnt;
         memcpy(rec->data, &rec->type, 2);
         memcpy(rec->data + 2, &rec->len, 2);
-        fread(rec -> data + 4, rec -> len - 4, 1, fp);
+        fread(rec->data + 4, rec->len - 4, 1, fp);
 
         if (mgIgnoreRec(rec->type))
         {
@@ -1191,26 +1202,26 @@ static mgrec *mgReadRecord(FILE *fp, mgrec *prnt, int vrsn)
         }
         else if (rec->type == OPCODE_PUSH_LEVEL)
         {
-            rec -> child = mgReadSequence(fp, prnt, vrsn);
+            rec->child = mgReadSequence(fp, prnt, vrsn);
         }
-        else if (rec -> type == OPCODE_VERTEX_LIST)   // recode this as a sequence
+        else if (rec->type == OPCODE_VERTEX_LIST) // recode this as a sequence
         {
             mgrec *last = rec;
-            char *data = rec -> data;
+            char *data = rec->data;
             struct flt_VertexList *vl = (struct flt_VertexList *)data;
-            rec -> data = (char *)malloc(sizeof(int));
-            *(int*)rec -> data = swap_int(vl->offset[0]);
+            rec->data = (char *)malloc(sizeof(int));
+            *(int *)rec->data = swap_int(vl->offset[0]);
 
             for (int i = 1; i < (rec->len - 4) / 4; i++)
             {
-                last->next = (mgrec *)calloc(1, sizeof * rec);
+                last->next = (mgrec *)calloc(1, sizeof *rec);
                 last = last->next;
-                last -> type = rec -> type;
-                last -> len = rec -> len;
-                last -> parent = prnt;
-                last -> vrsn = vrsn;
-                last -> data = (char *)malloc(sizeof(int));
-                *(int*)last -> data = swap_int(vl->offset[i]);
+                last->type = rec->type;
+                last->len = rec->len;
+                last->parent = prnt;
+                last->vrsn = vrsn;
+                last->data = (char *)malloc(sizeof(int));
+                *(int *)last->data = swap_int(vl->offset[i]);
             }
 
             free(data);
@@ -1229,36 +1240,37 @@ static mgrec *mgReadSequence(FILE *fp, mgrec *prnt, int vrsn)
 
     while (np = mgReadRecord(fp, base, vrsn))
     {
-        if (np -> type == OPCODE_PUSH_LEVEL)
+        if (np->type == OPCODE_PUSH_LEVEL)
         {
-            pcount ++;
+            pcount++;
 
             if (cur == NULL)
             {
-                cur = np -> child;
+                cur = np->child;
 
-                if (base == NULL) base = cur;
+                if (base == NULL)
+                    base = cur;
             }
             else
             {
-                cur-> child = np -> child;
+                cur->child = np->child;
             }
 
-            np -> child = NULL;
+            np->child = NULL;
             freenode(np);
 
             if (cur)
             {
-                for (np = cur -> child; np; np = np -> next)
+                for (np = cur->child; np; np = np->next)
                 {
-                    np -> parent = base;
+                    np->parent = base;
                 }
             }
         }
-        else if (np -> type == OPCODE_POP_LEVEL)
+        else if (np->type == OPCODE_POP_LEVEL)
         {
             freenode(np);
-            pcount --;
+            pcount--;
 
             if (pcount <= 0)
                 break;
@@ -1269,11 +1281,12 @@ static mgrec *mgReadSequence(FILE *fp, mgrec *prnt, int vrsn)
             {
                 cur = base = np;
             }
-            else cur->next = np;
+            else
+                cur->next = np;
 
-            np ->parent = prnt;
+            np->parent = prnt;
 
-            while (cur -> next)
+            while (cur->next)
             {
                 cur->parent = prnt;
                 cur = cur->next;
@@ -1287,7 +1300,8 @@ mgrec *mgOpenDb(char *filename)
 {
     FILE *fp = fopen(filename, "rb");
 
-    if (fp == NULL) return NULL;
+    if (fp == NULL)
+        return NULL;
 
     mgrec *base = mgReadRecord(fp, 0, 0);
 
@@ -1298,9 +1312,10 @@ mgrec *mgOpenDb(char *filename)
 
     struct flt_HeaderRecord *fh = (struct flt_HeaderRecord *)base->data;
 
-    printf("Version %d, db version %d\n", swap_int(fh->formatRev), swap_int(fh->DBRev));
+    printf("Version %d, db version %d\n", swap_int(fh->formatRev),
+           swap_int(fh->DBRev));
 
-    base -> next = mgReadSequence(fp, 0, swap_int(fh->formatRev));
+    base->next = mgReadSequence(fp, 0, swap_int(fh->formatRev));
 
     fclose(fp);
 
@@ -1320,7 +1335,7 @@ void mgCloseDb(mgrec *db)
 
 mgrec *mgGetMaterial(mgrec *db, int matind)
 {
-    if (db -> vrsn > 1500)
+    if (db->vrsn > 1500)
     {
         OutputDebugString("mgGetMaterial doesn't support 1500\n");
         return MG_FALSE;
@@ -1328,23 +1343,24 @@ mgrec *mgGetMaterial(mgrec *db, int matind)
 
     mgrec *pbase = db;
 
-    while (pbase -> parent)
+    while (pbase->parent)
     {
-        pbase = pbase -> parent;
+        pbase = pbase->parent;
     }
 
-    while (pbase && pbase -> type != OPCODE_MATERIAL_TABLE)
+    while (pbase && pbase->type != OPCODE_MATERIAL_TABLE)
     {
-        pbase = pbase -> next;
+        pbase = pbase->next;
     }
 
-    if (pbase == NULL) return 0;
+    if (pbase == NULL)
+        return 0;
 
-    if (pbase -> child)
+    if (pbase->child)
     {
-        for (mgrec *cp = pbase -> child; cp; cp = cp -> next)
+        for (mgrec *cp = pbase->child; cp; cp = cp->next)
         {
-            if (cp -> xdata == matind)
+            if (cp->xdata == matind)
                 return cp;
         }
     }
@@ -1354,14 +1370,14 @@ mgrec *mgGetMaterial(mgrec *db, int matind)
     if (matind < 0 || matind > 64)
         return 0;
 
-    mgrec *mr = (mgrec *) calloc(1, sizeof * mr);
-    mr -> type = OPCODE_MATERIAL_TABLE;
-    mr -> parent = pbase;
-    mr -> xdata = matind;
-    mr -> next = pbase -> child;
+    mgrec *mr = (mgrec *)calloc(1, sizeof *mr);
+    mr->type = OPCODE_MATERIAL_TABLE;
+    mr->parent = pbase;
+    mr->xdata = matind;
+    mr->next = pbase->child;
     pbase->child = mr;
-    mr -> data = (char *)calloc(1, sizeof(flt_MaterialTable));
-    memcpy(mr -> data, &fmr -> mat[matind], sizeof(flt_MaterialTable));
+    mr->data = (char *)calloc(1, sizeof(flt_MaterialTable));
+    memcpy(mr->data, &fmr->mat[matind], sizeof(flt_MaterialTable));
     return mr;
 }
 
@@ -1369,17 +1385,18 @@ static int mgFind15Material(mgrec *db, int matind, short *r, short *g, short *b)
 {
     mgrec *pbase = db;
 
-    while (pbase -> parent)
+    while (pbase->parent)
     {
-        pbase = pbase -> parent;
+        pbase = pbase->parent;
     }
 
-    while (pbase && pbase -> type != OPCODE_MATERIAL_PALETTE)
+    while (pbase && pbase->type != OPCODE_MATERIAL_PALETTE)
     {
-        pbase = pbase -> next;
+        pbase = pbase->next;
     }
 
-    if (pbase == NULL) return 0;
+    if (pbase == NULL)
+        return 0;
 
     while (pbase->type == OPCODE_MATERIAL_PALETTE)
     {
@@ -1397,14 +1414,14 @@ static int mgFind15Material(mgrec *db, int matind, short *r, short *g, short *b)
     }
 
     return MG_FALSE;
-
 }
 
 static int mgFind14Material(mgrec *db, int matind, short *r, short *g, short *b)
 {
     mgrec *pbase = mgGetMaterial(db, matind);
 
-    if (pbase == NULL) return MG_FALSE;
+    if (pbase == NULL)
+        return MG_FALSE;
 
     flt_MaterialTable *matrec = (flt_MaterialTable *)pbase->data;
     *r = (short)(255.0f * swap_float(matrec->diffuseRed));
@@ -1415,7 +1432,7 @@ static int mgFind14Material(mgrec *db, int matind, short *r, short *g, short *b)
 
 int mgGetPolyColorRGB(mgrec *rec, short *r, short *g, short *b)
 {
-    if (rec -> type != OPCODE_POLYGON)
+    if (rec->type != OPCODE_POLYGON)
         return MG_FALSE;
 
     int colindex;
@@ -1474,7 +1491,8 @@ int mgGetPolyColorRGB(mgrec *rec, short *r, short *g, short *b)
     return MG_TRUE;
 }
 
-static int mgGetFaceFromVertexNormal(mgrec *vert, double *i, double *j, double *k)
+static int mgGetFaceFromVertexNormal(mgrec *vert, double *i, double *j,
+                                     double *k)
 {
     double i1, j1, k1;
     double nx = 0.0, ny = 0.0, nz = 0.0;
@@ -1488,7 +1506,7 @@ static int mgGetFaceFromVertexNormal(mgrec *vert, double *i, double *j, double *
         nx += i1;
         ny += j1;
         nz += k1;
-        count ++;
+        count++;
         vert = mgGetNext(vert);
     }
 
@@ -1506,7 +1524,7 @@ int mgGetPolyNormal(mgrec *rec, double *i, double *j, double *k)
 {
     mgrec *child = mgGetChild(rec);
 
-    if (child == 0 || child -> type != OPCODE_VERTEX_LIST)
+    if (child == 0 || child->type != OPCODE_VERTEX_LIST)
     {
         OutputDebugString("No child with vertex\n");
         return MG_FALSE;
@@ -1526,7 +1544,7 @@ int mgGetPolyNormal(mgrec *rec, double *i, double *j, double *k)
     }
 
     double x2, y2, z2;
-    child = child -> next;
+    child = child->next;
 
     if (mgGetIcoord(child, fltIcoord, &x2, &y2, &z2) == MG_FALSE)
     {
@@ -1535,7 +1553,7 @@ int mgGetPolyNormal(mgrec *rec, double *i, double *j, double *k)
     }
 
     double x3, y3, z3;
-    child = child -> next;
+    child = child->next;
 
     if (mgGetIcoord(child, fltIcoord, &x3, &y3, &z3) == MG_FALSE)
     {
@@ -1577,28 +1595,29 @@ int mgGetNormColor(mgrec *rec, FltTypes type, float *r, float *g, float *b)
         return MG_FALSE;
     }
 
-    if (rec -> type != OPCODE_MATERIAL_TABLE)
+    if (rec->type != OPCODE_MATERIAL_TABLE)
         return MG_FALSE;
 
-    struct flt_MaterialTable *mt = (struct flt_MaterialTable *)rec -> data;
+    struct flt_MaterialTable *mt = (struct flt_MaterialTable *)rec->data;
 
     switch (type)
     {
-        case fltDiffuse:
-            *r = swap_float(mt->diffuseRed);
-            *g = swap_float(mt->diffuseGreen);
-            *b = swap_float(mt->diffuseBlue);
-            break;
+    case fltDiffuse:
+        *r = swap_float(mt->diffuseRed);
+        *g = swap_float(mt->diffuseGreen);
+        *b = swap_float(mt->diffuseBlue);
+        break;
 
-        default:
-            OutputDebugString("Unknown type for GetNormColor\n");
-            return MG_FALSE;
+    default:
+        OutputDebugString("Unknown type for GetNormColor\n");
+        return MG_FALSE;
     }
 
     return MG_TRUE;
 }
 
-int mgIndex2RGB(mgrec *rec, int colind, float intensity, short *r, short *g, short *b)
+int mgIndex2RGB(mgrec *rec, int colind, float intensity, short *r, short *g,
+                short *b)
 {
     OutputDebugString("mgIndex2RGB not implemented\n");
     return MG_FALSE;

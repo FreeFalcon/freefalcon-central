@@ -36,7 +36,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
     float pan, tilt;
@@ -56,11 +57,9 @@ public:
 #endif
 
 public:
-
-    CPLiftLine(ObjectInitStr*, LiftInitStr*);
+    CPLiftLine(ObjectInitStr *, LiftInitStr *);
     virtual ~CPLiftLine();
     virtual void DisplayDraw(void);
-
 };
 
 #endif

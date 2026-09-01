@@ -6,9 +6,9 @@
     Provides build time services for sharing palettes among all objects.
 \***************************************************************************/
 #include <io.h>
-#include "PalBank.h"
-#include "TexBuildList.h"
-#include "PalBuildList.h"
+#include "palbank.h"
+#include "texbuildlist.h"
+#include "palbuildlist.h"
 
 
 BuildTimePaletteList ThePaletteBuildList;
@@ -92,7 +92,6 @@ void BuildTimePaletteList::BuildPool(void)
         // Setup the new palette (this will start us with one extra reference, which we _want_)
         ShiAssert(ThePaletteBank.IsValidIndex(entry->index));
         ThePaletteBank.PalettePool[entry->index].Setup32(entry->palData);
-
     }
 
     // Walk through our list of textures discarding their private palettes and
@@ -109,7 +108,8 @@ void BuildTimePaletteList::BuildPool(void)
         // Point into ThePaletteBank
         palID = TheTextureBank.TexturePool[texID].palID;
         ShiAssert(ThePaletteBank.IsValidIndex(palID));
-        TheTextureBank.TexturePool[texID].tex.palette = &ThePaletteBank.PalettePool[palID];
+        TheTextureBank.TexturePool[texID].tex.palette =
+            &ThePaletteBank.PalettePool[palID];
         TheTextureBank.TexturePool[texID].tex.palette->Reference();
     }
 }
@@ -123,13 +123,15 @@ void BuildTimePaletteList::WritePool(int file)
     write(file, &ThePaletteBank.nPalettes, sizeof(ThePaletteBank.nPalettes));
 
     // Now write the data for each palette
-    write(file, ThePaletteBank.PalettePool, sizeof(*ThePaletteBank.PalettePool)*ThePaletteBank.nPalettes);
+    write(file, ThePaletteBank.PalettePool,
+          sizeof(*ThePaletteBank.PalettePool) * ThePaletteBank.nPalettes);
 }
 
 
 void BuildTimePaletteList::Report()
 {
-    printf("PALETTEBANK: There were %0d palettes used\n", ThePaletteBank.nPalettes);
+    printf("PALETTEBANK: There were %0d palettes used\n",
+           ThePaletteBank.nPalettes);
 }
 
 void BuildTimePaletteList::MergePalette()

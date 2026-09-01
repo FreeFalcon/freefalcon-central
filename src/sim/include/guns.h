@@ -48,7 +48,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -67,16 +68,17 @@ private:
     float dragFactor;
     int fireCount, bursts;
     int initialRounds;
-    float fractionalRoundsRemaining; // Could make numRoundsRemaining a float, but this changed less code...
-    DrawableTracer** tracers;
-    Drawable2D** bullets;
+    float
+        fractionalRoundsRemaining; // Could make numRoundsRemaining a float, but this changed less code...
+    DrawableTracer **tracers;
+    Drawable2D **bullets;
     // ********** NEW TRAIL STUFF *************
     //DrawableTrail* smokeTrail;
     DWORD Trail;
     DWORD TrailIdNew;
     // ****************************************
 
-    DrawableTrail* smokeTrail;
+    DrawableTrail *smokeTrail;
     TracerCollisionMode tracerMode;
 
     // these variables are used to do the series of muzzle tracers
@@ -86,7 +88,7 @@ private:
     float *muzzleAlpha;
     float *muzzleWidth;
 
-    int* trailState;
+    int *trailState;
     int muzzleStart;
     float qTimer;
     void UpdateTracers(int firing);
@@ -96,7 +98,8 @@ private:
 public:
     void SetTrailID(int ID)
     {
-        trailID = ID;   // MLR 12/13/2003 - DrawableTrailID, has to be set before Exec() is called;
+        trailID =
+            ID; // MLR 12/13/2003 - DrawableTrailID, has to be set before Exec() is called;
     }
     void InitTracers();
     void CleanupTracers();
@@ -104,11 +107,18 @@ public:
     virtual ~GunClass();
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData(int type);
     void CleanupLocalData();
+
 public:
-    enum GunStatus {Ready, Sim, Safe};
+    enum GunStatus
+    {
+        Ready,
+        Sim,
+        Safe
+    };
     float initBulletVelocity;
     GunStatus status;
     GunTracerType *bullet;
@@ -121,8 +131,10 @@ public:
     unsigned long FiremsgsendTime;
 
     void Init(float muzzleVel, int numRounds);
-    void SetPosition(float xOffset, float yOffset, float zOffset, float pitch, float yaw);
-    int Exec(int* fire, TransformMatrix dmx, ObjectGeometry *geomData, SimObjectType* objList, BOOL isOwnship);
+    void SetPosition(float xOffset, float yOffset, float zOffset, float pitch,
+                     float yaw);
+    int Exec(int *fire, TransformMatrix dmx, ObjectGeometry *geomData,
+             SimObjectType *objList, BOOL isOwnship);
 
     void NewBurst(void)
     {
@@ -168,13 +180,13 @@ public:
     float TargetAlt; //How high our target currently is
 
     // member variables
-    WeaponDomain  gunDomain; // air, land, both
-    SimObjectType  *shellTargetPtr; // set when shell flying
+    WeaponDomain gunDomain; // air, land, both
+    SimObjectType *shellTargetPtr; // set when shell flying
     GunType typeOfGun; // tracer or shell
     VU_TIME shellDetonateTime; // when it goes cablooey
     float minShellRange; // minimum for shell
     float maxShellRange; // max for shell
-    WeaponClassDataType  *wcPtr; // pointer to weapon class data
+    WeaponClassDataType *wcPtr; // pointer to weapon class data
 };
 
 #endif

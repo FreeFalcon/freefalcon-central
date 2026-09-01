@@ -4,10 +4,10 @@
 #include "simmath.h"
 #include "geometry.h"
 #include "simweapn.h"
-#include "MsgInc/MissileEndMsg.h"
+#include "msginc/missileendmsg.h"
 #include "graphics/include/grtypes.h"
 #include "fsound.h"
-#include "RealWeather.h"
+#include "realweather.h"
 
 // Forward declarations for class pointers
 class SimInitDataClass;
@@ -36,7 +36,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -120,7 +121,7 @@ public:
         delete alpha;
         delete cx;
         delete cz;
-    } ;
+    };
     int numMach;
     int numAlpha;
     float *mach;
@@ -152,7 +153,7 @@ public:
         delete velBreakpoints;
         delete aspectBreakpoints;
         delete data;
-    } ;
+    };
     int numAltBreakpoints;
     int numVelBreakpoints;
     int numAspectBreakpoints;
@@ -187,22 +188,23 @@ public:
     float mslBwap;
     float mslLoftTime;
     float mslActiveTtg;
-    int   seekerType, seekerVersion;
-    int   displayType;
+    int seekerType, seekerVersion;
+    int displayType;
     float boostguidesec;//me123 how many sec we are in boostguide mode
-    float terminalguiderange;//me123 what range we transfere to terminal guidence
-    float boostguideSensorPrecision;//me123
-    float sustainguideSensorPrecision;//me123
+    float
+        terminalguiderange; //me123 what range we transfere to terminal guidence
+    float boostguideSensorPrecision; //me123
+    float sustainguideSensorPrecision; //me123
     float terminalguideSensorPrecision; //me123
-    float boostguideLead;//me123
-    float sustainguideLead;//me123
-    float terminalguideLead;//me123
-    float boostguideGnav;//me123
-    float sustainguideGnav;//me123
-    float terminalguideGnav;//me123
-    float boostguideBwap;//me123
-    float sustainguideBwap;//me123
-    float terminalguideBwap;//me123
+    float boostguideLead; //me123
+    float sustainguideLead; //me123
+    float terminalguideLead; //me123
+    float boostguideGnav; //me123
+    float sustainguideGnav; //me123
+    float terminalguideGnav; //me123
+    float boostguideBwap; //me123
+    float sustainguideBwap; //me123
+    float terminalguideBwap; //me123
 };
 
 class MissileAuxData
@@ -210,7 +212,8 @@ class MissileAuxData
 public:
     MissileAuxData()
     {
-        psGroundImpact = psMissileKill = psFeatureImpact = psBombImpact = psArmingDelay = psExceedFOV = 0;
+        psGroundImpact = psMissileKill = psFeatureImpact = psBombImpact =
+            psArmingDelay = psExceedFOV = 0;
     }
     ~MissileAuxData()
     {
@@ -232,8 +235,10 @@ public:
 
     float maxGNormal; // manueveur limits in normal phase
     float maxGTerminal; // limits in the terminal phase
-    float MinEngagementRange; // Min range for the missiles -> MN moved to radarData 2002-03-08 S.G. Reinstated here so it's more granular
-    float MinEngagementAlt; //  2002-03-08 ADDED BY S.G. Instead of in radarData so it's more granular
+    float
+        MinEngagementRange; // Min range for the missiles -> MN moved to radarData 2002-03-08 S.G. Reinstated here so it's more granular
+    float
+        MinEngagementAlt; //  2002-03-08 ADDED BY S.G. Instead of in radarData so it's more granular
     float ProximityfuseChange;
     float SecondStageTimer; // JPO - 2 stage missiles
     float SecondStageWeight; // JPO - 2 stage missile weight of discarded stage
@@ -253,7 +258,7 @@ public:
     int sndAim9Uncaged;
     int sndAim9EnviroSky;
     int sndAim9EnviroGround;
-    int pickleTimeDelay;  // MD -- 20040613: # of millisecs you need to hold pickle continuously before launch can occur
+    int pickleTimeDelay; // MD -- 20040613: # of millisecs you need to hold pickle continuously before launch can occur
     //end missile particle effects
     char *psGroundImpact;
     char *psMissileKill;
@@ -275,31 +280,44 @@ public:
 class MissileClass : public SimWeaponClass
 {
 public:
-    MissileClass(VU_BYTE** stream, long *rem);
-    MissileClass(FILE* filePtr);
+    MissileClass(VU_BYTE **stream, long *rem);
+    MissileClass(FILE *filePtr);
     MissileClass(int type);
     virtual ~MissileClass();
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
-public:
 
+public:
     enum MissileFlags
     {
-        EndGame             = 0x1,
-        ClosestApprch       = 0x2,
-        SensorLostLock      = 0x4,
-        FindingImpact       = 0x8,
+        EndGame = 0x1,
+        ClosestApprch = 0x2,
+        SensorLostLock = 0x4,
+        FindingImpact = 0x8,
     };
 
     int Flags(void)
     {
         return flags;
     };
-    enum FlightState {PreLaunch, Launching, InFlight};
-    enum DisplayType {DisplayNone, DisplayBW, DisplayIR, DisplayColor, DisplayHTS};
+    enum FlightState
+    {
+        PreLaunch,
+        Launching,
+        InFlight
+    };
+    enum DisplayType
+    {
+        DisplayNone,
+        DisplayBW,
+        DisplayIR,
+        DisplayColor,
+        DisplayHTS
+    };
     int GetDisplayType(void)
     {
         return inputData->displayType;
@@ -311,7 +329,7 @@ public:
     float GetmaxTof(void)
     {
         return inputData->maxTof;
-    };//me123
+    }; //me123
     int LaunchDelayTime(void)
     {
         return auxData->pickleTimeDelay;
@@ -360,8 +378,8 @@ public:
     Drawable2D *engGlow;
     Drawable2D *groundGlow;
     DrawableBSP *engGlowBSP1;
-    DrawableClass* display;
-    SimBaseClass* slaveTgt;
+    DrawableClass *display;
+    SimBaseClass *slaveTgt;
     FalconMissileEndMessage::MissileEndCode done;
     FlightState launchState;
     int isCaged;
@@ -377,16 +395,16 @@ public:
     int lastRmaxAlt, lastRmaxVt;
 
     void Init(void);
-    virtual void Init(SimInitDataClass* initData);
+    virtual void Init(SimInitDataClass *initData);
     int Exec(void);
     void GetTransform(TransformMatrix vmat);
-    void Start(SimObjectType* tgt);
+    void Start(SimObjectType *tgt);
     void UpdateTargetData(void);
-    void SetTarget(SimObjectType* tgt);
+    void SetTarget(SimObjectType *tgt);
     void ClearReferences(void);
     void DropTarget(void);
-    int  SetSeekerPos(float* az, float* el);
-    void GetSeekerPos(float* az, float* el);
+    int SetSeekerPos(float *az, float *el);
+    void GetSeekerPos(float *az, float *el);
     void RunSeeker(void);
     void InitTrail(void);
     void UpdatePosition(void);
@@ -396,7 +414,7 @@ public:
         targetY = newY;
         targetZ = newZ;
     };
-    void GetTargetPosition(float* newX, float* newY, float* newZ)
+    void GetTargetPosition(float *newX, float *newY, float *newZ)
     {
         *newX = targetX;
         *newY = targetY;
@@ -408,7 +426,7 @@ public:
         targetDY = newDY;
         targetDZ = newDZ;
     };
-    void GetTargetVelocity(float* newDX, float* newDY, float* newDZ)
+    void GetTargetVelocity(float *newDX, float *newDY, float *newDZ)
     {
         *newDX = targetDX;
         *newDY = targetDY;
@@ -417,11 +435,17 @@ public:
     float GetRMax(float alt, float vt, float az, float targetVt, float ataFrom);
     float GetRMin(float alt, float vt, float ataFrom, float targetVt);
     float GetRNe(float alt, float vt, float ataFrom, float targetVt);
-    float GetTOF(float alt, float vt, float ataFrom, float targetVt, float range);
-    float GetASE(float alt, float vt, float ataFrom, float targetVt, float range);
-    float GetActiveTime(float alt, float vt, float ataFrom, float targetVt, float range);
-    float GetActiveRange(float alt, float vt, float ataFrom, float targetVt, float range);
-    void SetLaunchPosition(float nx, float ny, float nz);  /* {initXLoc = nx; initYLoc = ny; initZLoc = nz;}; */
+    float GetTOF(float alt, float vt, float ataFrom, float targetVt,
+                 float range);
+    float GetASE(float alt, float vt, float ataFrom, float targetVt,
+                 float range);
+    float GetActiveTime(float alt, float vt, float ataFrom, float targetVt,
+                        float range);
+    float GetActiveRange(float alt, float vt, float ataFrom, float targetVt,
+                         float range);
+    void SetLaunchPosition(
+        float nx, float ny,
+        float nz); /* {initXLoc = nx; initYLoc = ny; initZLoc = nz;}; */
     void SetLaunchRotation(float az, float el)
     {
         initAz = az;
@@ -437,7 +461,8 @@ public:
     {
         return TRUE;
     };
-    BOOL FindRocketGroundImpact(float *impactX, float *impactY, float *impactZ, float *impactTime);
+    BOOL FindRocketGroundImpact(float *impactX, float *impactY, float *impactZ,
+                                float *impactTime);
     //MI
     bool Covered;
     bool HOC;
@@ -465,25 +490,25 @@ public:
     {
         return auxData->sndAim9EnviroGround;
     };
-private:
 
+private:
     // Performance Data
     float weight, wprop, mass;
     float m0, mp0, mprop;
 
-    MissileAeroData    *aeroData;
-    MissileInputData   *inputData;
-    MissileRangeData   *rangeData;
-    MissileEngineData  *engineData;
+    MissileAeroData *aeroData;
+    MissileInputData *inputData;
+    MissileRangeData *rangeData;
+    MissileEngineData *engineData;
     MissileAuxData *auxData;
 
     int flags;
     float runTime;
-    int guidencephase;//me123 0=boost 1=intercept 2=terminal
+    int guidencephase; //me123 0=boost 1=intercept 2=terminal
     float GuidenceTime;
     float vt, vtdot, mach, rho, ps, vcas;
 
-    float targetX,  targetY,  targetZ;
+    float targetX, targetY, targetZ;
     float targetDX, targetDY, targetDZ;
 
     // Launch Data
@@ -493,7 +518,7 @@ private:
     float ata;
     float p, q, r;
     float timpct, ricept;
-    float range ;
+    float range;
 
     // pointer to class for in flight data
     MissileInFlightData *ifd;
@@ -542,7 +567,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -557,4 +583,3 @@ public:
 };
 
 #endif
-

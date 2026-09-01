@@ -13,7 +13,6 @@
 #include <math.h>
 
 
-
 #include "stdhdr.h"
 #include "ground.h"
 #include "mesg.h"
@@ -24,19 +23,19 @@
 #include "object.h"
 #include "simobj.h"
 #include "simdrive.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawobj.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawobj.h"
 #include "entity.h"
 #include "classtbl.h"
 #include "sms.h"
 #include "fcc.h"
-#include "PilotInputs.h"
-#include "MsgInc/DamageMsg.h"
+#include "pilotinputs.h"
+#include "msginc/damagemsg.h"
 #include "guns.h"
 #include "hardpnt.h"
 #include "campwp.h"
 #include "sfx.h"
-#include "Unit.h"
+#include "unit.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "fakerand.h"
@@ -46,7 +45,7 @@
 #include "camp2sim.h"
 #include "team.h"
 
-#if 0  // TEST AI code
+#if 0 // TEST AI code
 #include "simveh.h"
 #include "gndai.h"
 #include "simbase.h"
@@ -69,20 +68,14 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
 {
 
     float vel;
-    float distance,
-                dx,
-                dy,
-                dz;
+    float distance, dx, dy, dz;
 
     // Used for the campaign movement..
     //
     BattalionClass *theBattalion;
     WayPoint waypoint = NULL;
     int dir;
-    GridIndex ox,
-                    oy,
-                    x,
-                    y;
+    GridIndex ox, oy, x, y;
     mlTrig trig;
 
     //MonoPrint("GNDAI: %s, called going for next waypoint\n", RankText[rank] );
@@ -95,8 +88,8 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         // First find the location of the current way point
         //
         self->curWaypoint->GetLocation(&dx, &dy, &dz);
-        distance = (float) sqrt(((self->XPos() - dx) * (self->XPos() - dx)) +
-                                ((self->YPos() - dy) * (self->YPos() - dy)));
+        distance = (float)sqrt(((self->XPos() - dx) * (self->XPos() - dx)) +
+                               ((self->YPos() - dy) * (self->YPos() - dy)));
 
         // Assume we are at the current way point if we are very close ( not )
         //
@@ -111,13 +104,17 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
             if (self->curWaypoint)
             {
                 self->curWaypoint->GetLocation(&dx, &dy, &dz);
-                self->SetYPR((float)atan2(dy - self->YPos(), dx - self->XPos()), 0.0F, 0.0F);
-                distance = (float) sqrt(((self->XPos() - dx) * (self->XPos() - dx)) +
-                                        ((self->YPos() - dy) * (self->YPos() - dy)));
+                self->SetYPR((float)atan2(dy - self->YPos(), dx - self->XPos()),
+                             0.0F, 0.0F);
+                distance =
+                    (float)sqrt(((self->XPos() - dx) * (self->XPos() - dx)) +
+                                ((self->YPos() - dy) * (self->YPos() - dy)));
 
                 // Setup the movement for the next frame
                 //
-                vel = distance / ((self->curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) / SEC_TO_MSEC);
+                vel = distance / ((self->curWaypoint->GetWPArrivalTime() -
+                                   SimLibElapsedTime) /
+                                  SEC_TO_MSEC);
             }
             else
             {
@@ -145,10 +142,10 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
         theBattalion = (BattalionClass *)self->GetCampaignObject();
 
         theBattalion->GetLocation(&ox, &oy);
-        self->SetPosition(self->XPos() + (self->XDelta() * SimLibMajorFrameTime),
-                          self->YPos() + (self->YDelta() * SimLibMajorFrameTime),
-                          OTWDriver.GetGroundLevel(self->XPos(), self->YPos())
-                         );
+        self->SetPosition(
+            self->XPos() + (self->XDelta() * SimLibMajorFrameTime),
+            self->YPos() + (self->YDelta() * SimLibMajorFrameTime),
+            OTWDriver.GetGroundLevel(self->XPos(), self->YPos()));
         theBattalion->GetLocation(&x, &y);
 
         // Check if the vehicle hasn't moved
@@ -162,7 +159,7 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
             if (dir >= 0)
             {
                 self->SetYPR(45.0F * DTR * dir, 0.0F, 0.0F);
-                vel = theBattalion->GetUnitSpeed() * KPH_TO_FPS ;
+                vel = theBattalion->GetUnitSpeed() * KPH_TO_FPS;
             }
             else
             {
@@ -175,7 +172,8 @@ WayPointClass *GNDAIClass::Next_WayPoint(void)
             self->SetYPRDelta(0.0F, 0.0F, 0.0F);
         }
 
-        waypoint = (WayPoint)&waypoint; // MCC WARNING - this tells the AI code we
+        waypoint =
+            (WayPoint)&waypoint; // MCC WARNING - this tells the AI code we
         // are still moving.....
     }
 
@@ -222,7 +220,8 @@ void GNDAIClass::Fire(void)
             nextFire = nextAirFire + xtraFireTime;
 
         // RV - Biker - Chech if we do have any weapons (radar units should not have)
-        VehicleClassDataType* vc = GetVehicleClassData(self->Type() - VU_LAST_ENTITY_TYPE);
+        VehicleClassDataType *vc =
+            GetVehicleClassData(self->Type() - VU_LAST_ENTITY_TYPE);
 
         int hasWeapons = 0;
 
@@ -236,14 +235,15 @@ void GNDAIClass::Fire(void)
         }
 
         // RV - Biker - Radar vehicles shouldn't do this
-        if (SimLibElapsedTime > nextFire and not (self->isEmitter and not hasWeapons))
+        if (SimLibElapsedTime > nextFire and
+            not(self->isEmitter and not hasWeapons))
         {
             // FRB - The weapns search above seems to break the SAM firing (decreases it or stops it)
             //if (SimLibElapsedTime > nextFire and not (self->isEmitter and not self->Sms->GetCurrentWeapon())) {
             nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
 
-            if ( not self->targetPtr->BaseData()->OnGround())
-                self->SelectWeapon( not battalionCommand->self->allowSamFire);
+            if (not self->targetPtr->BaseData()->OnGround())
+                self->SelectWeapon(not battalionCommand->self->allowSamFire);
             else
                 self->SelectWeapon(FALSE);
 
@@ -256,7 +256,8 @@ void GNDAIClass::Fire(void)
             {
                 // If it's just TRUE, it's a missile launch, wait 'airFireRate' otherwise wait half a second
                 if (ret == TRUE)
-                    nextAirFire = SimLibElapsedTime + airFireRate; // Shot -- wait a while
+                    nextAirFire =
+                        SimLibElapsedTime + airFireRate; // Shot -- wait a while
                 else
                 {
                     // 2000-10-27 ADDED BY S.G.
@@ -282,7 +283,8 @@ void GNDAIClass::Fire(void)
                 }
             }
 
-            nextGroundFire = SimLibElapsedTime + gndFireRate; // Shot or not shot, wait a while
+            nextGroundFire = SimLibElapsedTime +
+                             gndFireRate; // Shot or not shot, wait a while
         }
         else
         {
@@ -293,7 +295,8 @@ void GNDAIClass::Fire(void)
 
             // RV - Biker - Radar vehicles without weapons should do this also
             //if(SimLibElapsedTime > nextTurretCalc) {
-            if (SimLibElapsedTime > nextTurretCalc or (self->isEmitter and not self->Sms->GetCurrentWeapon()))
+            if (SimLibElapsedTime > nextTurretCalc or
+                (self->isEmitter and not self->Sms->GetCurrentWeapon()))
             {
                 float xft, yft, zft;
                 float realRange, tof;
@@ -303,12 +306,12 @@ void GNDAIClass::Fire(void)
 
                 // RV - Biker - Adjust this
                 //if( not theWeapon)
-                if ( not theWeapon and not self->isEmitter)
+                if (not theWeapon and not self->isEmitter)
                     return;
 
                 target = self->targetPtr->BaseData();
 
-                if ( not target)
+                if (not target)
                     return;
 
                 nextTurretCalc = SimLibElapsedTime + TURRET_CALC_RATE;
@@ -322,7 +325,7 @@ void GNDAIClass::Fire(void)
                 //if(theWeapon->IsGun()) {
                 if (theWeapon and theWeapon->IsGun())
                 {
-                    GunClass *Gun = (GunClass*)theWeapon;
+                    GunClass *Gun = (GunClass *)theWeapon;
 
                     // Guess TOF
                     tof = realRange / Gun->initBulletVelocity + 0.25F;
@@ -340,7 +343,8 @@ void GNDAIClass::Fire(void)
                 // Note: This factors our induced error and target's vector into the Rel Geometry data,
                 // but as we use this only for aiming and targetting, it shouldn't matter.
                 self->targetPtr->localData->az = (float)atan2(yft, xft);
-                self->targetPtr->localData->el = (float)atan(-zft / (float)sqrt(xft * xft + yft * yft + 0.1F));
+                self->targetPtr->localData->el = (float)atan(
+                    -zft / (float)sqrt(xft * xft + yft * yft + 0.1F));
                 self->targetPtr->localData->range = realRange;
             }
 
@@ -364,4 +368,3 @@ void GNDAIClass::Fire(void)
 
     return;
 }
-

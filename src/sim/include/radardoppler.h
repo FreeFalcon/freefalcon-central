@@ -3,27 +3,27 @@
 
 #include <iso646.h>
 #include "radar.h"
-#include "Campwp.h"  // MD -- 20040214: added for GM SP mode pseudo waypoint
+#include "campwp.h"  // MD -- 20040214: added for GM SP mode pseudo waypoint
 #include "alist.h"
 
 class SimBaseClass;
 
-#define EL_CHANGE_RATE    0.005F//me123 status ok. changed from 0.01
-#define NUM_RANGES        5
-#define NUM_VELS          2
-#define NUM_RWS_AZS       3
-#define NUM_RWS_BARS      3
-#define NUM_TWS_AZS       3
-#define NUM_TWS_BARS      3
-#define NUM_SAM_AZS       2
-#define NUM_SAM_BARS      3
-#define PFA               0.000001F
-#define AZL               1.0F
-#define MAX_ANT_EL        (60.0F * DTR)
-#define HITS_FOR_LOCK     2
-#define HITS_FOR_TRACK    1
-#define MAX_NCTR_RANGE    (60.0F * NM_TO_FT)
-#define NCTR_DELTA        0.1F
+#define EL_CHANGE_RATE 0.005F//me123 status ok. changed from 0.01
+#define NUM_RANGES 5
+#define NUM_VELS 2
+#define NUM_RWS_AZS 3
+#define NUM_RWS_BARS 3
+#define NUM_TWS_AZS 3
+#define NUM_TWS_BARS 3
+#define NUM_SAM_AZS 2
+#define NUM_SAM_BARS 3
+#define PFA 0.000001F
+#define AZL 1.0F
+#define MAX_ANT_EL (60.0F * DTR)
+#define HITS_FOR_LOCK 2
+#define HITS_FOR_TRACK 1
+#define MAX_NCTR_RANGE (60.0F * NM_TO_FT)
+#define NCTR_DELTA 0.1F
 //MI
 #define IFF_FRIENDLY 1
 #define IFF_HOSTILE 2
@@ -31,7 +31,7 @@ class SimBaseClass;
 #define MAX_CONTACTS 20 //for random IFF offset
 
 // MD
-#define MAX_TWS_TRACKS 10  // BLK50/52 APG-68 TWS mode tracks at most 10 targets
+#define MAX_TWS_TRACKS 10 // BLK50/52 APG-68 TWS mode tracks at most 10 targets
 
 class RadarDopplerClass : public RadarClass
 {
@@ -94,8 +94,10 @@ public:
     };
     virtual void SelectSAM(void)
     {
-        if (prevMode == LRS) modeDesiredCmd = LRS;
-        else modeDesiredCmd = RWS;
+        if (prevMode == LRS)
+            modeDesiredCmd = LRS;
+        else
+            modeDesiredCmd = RWS;
 
         ClearFlagBit(STTingTarget);
     };
@@ -130,7 +132,7 @@ public:
         scanWidthCmd = TRUE;
     };
     virtual void StepAAelvation(int cmd);
-    virtual float AntElevKnob(void);  // MD -- 20031223: antenna elevation fixes
+    virtual float AntElevKnob(void); // MD -- 20031223: antenna elevation fixes
 
     virtual void StepAGmode(void);
 
@@ -155,7 +157,7 @@ public:
     virtual void NextTarget(void);
     virtual void PrevTarget(void);
     virtual void SetGroundPoint(float rx, float ry, float rz);
-    virtual int  IsAG(void);
+    virtual int IsAG(void);
     virtual void GetAGCenter(float* x, float* y);
     virtual float GetRange(void)
     {
@@ -166,7 +168,7 @@ public:
         return azScan;
     };
     virtual void GetCursorPosition(float* xPos, float* yPos);
-    virtual int GetBuggedData(float *x, float *y, float *dir, float *speed);
+    virtual int GetBuggedData(float* x, float* y, float* dir, float* speed);
 
     virtual void SetMode(RadarMode cmd);
 
@@ -179,15 +181,16 @@ public:
     virtual void RestoreAGCursor(void);
     virtual void SetAutoAGRange(bool flag)
     {
-        WasAutoAGRange = flag;    // MD -- 20040305: saint's range command F3/F4 fix
+        WasAutoAGRange =
+            flag; // MD -- 20040305: saint's range command F3/F4 fix
     }
 
 protected:
     // Command queues -- These store commands until we're able to process them
     float gainCmd;
-    int   rangeChangeCmd, scanHeightCmd, scanWidthCmd, elSlewCmd;
-    int   modeDesiredCmd, fovStepCmd;
-    int   dropTrackCmd, designateCmd, centerCmd;
+    int rangeChangeCmd, scanHeightCmd, scanWidthCmd, elSlewCmd;
+    int modeDesiredCmd, fovStepCmd;
+    int dropTrackCmd, designateCmd, centerCmd;
 
     virtual void ClearSensorTarget(void);
     virtual void SetSensorTarget(SimObjectType*);
@@ -208,23 +211,25 @@ public:
         CZ = 0x10,
         FZ = 0x20,
         SP = 0x40,
-        SP_STAB = 0x80,  // MD -- 20040214: adding a state flag for the SP mode after ground stabilization
+        SP_STAB =
+            0x80, // MD -- 20040214: adding a state flag for the SP mode after ground stabilization
         SpaceStabalized = 0x100,
         Designating = 0x200,
         Spotlight = 0x400,
         ChangingBars = 0x800,
         HorizontalScan = 0x1000,
         VerticalScan = 0x2000,
-        WasMoving    = 0x4000,
+        WasMoving = 0x4000,
         SAMingTarget = 0x8000,
         STTingTarget = 0x10000,
-        HomingBeam   = 0x20000,
+        HomingBeam = 0x20000,
         AADecluttered = 0x40000,
         AGDecluttered = 0x80000,
-        MenuMode  = 0x100000,
-        CtlMode      = 0x200000,
-        AutoAGRange  = 0x400000,
+        MenuMode = 0x100000,
+        CtlMode = 0x200000,
+        AutoAGRange = 0x400000,
     };
+
 protected:
     enum Declutter
     {
@@ -250,8 +255,11 @@ protected:
         AzBar = 0x8000,
         Rng = 0x10000,
         Arrows = 0x20000,
-        DefaultAgDclt = Ovrd bitor Cntl bitor BupSen bitor FzSp bitor Cz bitor Dclt bitor Fmt1 bitor Fmt2 bitor Fmt3 bitor Swap bitor Arrows,
-        DefaultAaDclt = Ovrd bitor Cntl bitor Dclt bitor Fmt1 bitor Fmt2 bitor Fmt3 bitor Swap bitor Arrows,
+        DefaultAgDclt = Ovrd bitor Cntl bitor BupSen bitor FzSp bitor Cz bitor
+                        Dclt bitor Fmt1 bitor Fmt2 bitor Fmt3 bitor Swap bitor
+                        Arrows,
+        DefaultAaDclt = Ovrd bitor Cntl bitor Dclt bitor Fmt1 bitor Fmt2 bitor
+                        Fmt3 bitor Swap bitor Arrows,
     };
 
     class GMList
@@ -280,16 +288,16 @@ protected:
     class TWSTrackList
     {
     protected:
-        SimObjectType *track;
-        TWSTrackList *nextTrack;
+        SimObjectType* track;
+        TWSTrackList* nextTrack;
         int count;
 
     public:
-        TWSTrackList(SimObjectType *tgt);
-        TWSTrackList* Insert(SimObjectType *tgt, int depth = 0);
-        TWSTrackList* ForceInsert(SimObjectType *tgt, int depth = 0);
-        TWSTrackList* Remove(SimObjectType *tgt);
-        TWSTrackList* OnList(SimObjectType *tgt);
+        TWSTrackList(SimObjectType* tgt);
+        TWSTrackList* Insert(SimObjectType* tgt, int depth = 0);
+        TWSTrackList* ForceInsert(SimObjectType* tgt, int depth = 0);
+        TWSTrackList* Remove(SimObjectType* tgt);
+        TWSTrackList* OnList(SimObjectType* tgt);
         int CountTracks(void);
         void Release(void);
         TWSTrackList* Purge(void);
@@ -315,7 +323,7 @@ protected:
     // State
     //MI moved to public
 public:
-    int  IsSet(int newFlag)
+    int IsSet(int newFlag)
     {
         return (newFlag bitand flags) ? TRUE : FALSE;
     }; //MI moved to public
@@ -334,8 +342,10 @@ public:
 
     //MI
     class SimObjectLocalData* lockedTargetData;
-    void TargetToXY(SimObjectLocalData *localData, int hist, float drange, float *x, float *y);
-    int HitsOnTrack(SimObjectLocalData *rdrData);  // MD -- 20031222: helper function
+    void TargetToXY(SimObjectLocalData* localData, int hist, float drange,
+                    float* x, float* y);
+    int
+    HitsOnTrack(SimObjectLocalData* rdrData); // MD -- 20031222: helper function
     float GetDisplayRange(void)
     {
         return tdisplayRange;
@@ -345,12 +355,11 @@ public:
     {
         scanDir = dir;
     };
-    bool wipeIFF;//Cobra 11/24/04
+    bool wipeIFF; //Cobra 11/24/04
 
 protected:
-
     // DCLT variables
-    int  IsAADcltBit(int newFlag)
+    int IsAADcltBit(int newFlag)
     {
         return (newFlag bitand aadclt) ? TRUE : FALSE;
     };
@@ -375,7 +384,7 @@ protected:
     {
         return IsSet(AGDecluttered) and IsAGDcltBit(flg);
     };
-    int  IsAGDcltBit(int newFlag)
+    int IsAGDcltBit(int newFlag)
     {
         return (newFlag bitand agdclt) ? TRUE : FALSE;
     };
@@ -403,18 +412,49 @@ protected:
     float displayRange, displayAzScan;
     float cursorX, cursorY;
     float curCursorRate;
-    float antElevKnob; // angle in radians commanded via HOTAS antenna knob, zero = centered
+    float
+        antElevKnob; // angle in radians commanded via HOTAS antenna knob, zero = centered
     //MI moved to public
     //class SimObjectLocalData* lockedTargetData;
     float iffTimer;
 
-protected :
-    enum {ScanFwd = 1, ScanRev = -1, ScanNone = 0};
-    enum {TwsFlashTime = 8000, TwsExtrapolateTime = 13000, ReacqusitionCount = 13000};  // MD -- 20040121: fix TWS extrapolate time
-    enum DisplayShapes {None, Det, Solid, Track, FlashTrack, Prio, Schweem, Bug, FlashBug,
-                        Tail, SolidTrack, GMObj, GMTrack, GMBeacon, Jam,
-                        HitInd, AimRel, AimFlash, InterogateFoe, InterogateFriend, InterogateUnk // JPO new symbols
-                       };
+protected:
+    enum
+    {
+        ScanFwd = 1,
+        ScanRev = -1,
+        ScanNone = 0
+    };
+    enum
+    {
+        TwsFlashTime = 8000,
+        TwsExtrapolateTime = 13000,
+        ReacqusitionCount = 13000
+    }; // MD -- 20040121: fix TWS extrapolate time
+    enum DisplayShapes
+    {
+        None,
+        Det,
+        Solid,
+        Track,
+        FlashTrack,
+        Prio,
+        Schweem,
+        Bug,
+        FlashBug,
+        Tail,
+        SolidTrack,
+        GMObj,
+        GMTrack,
+        GMBeacon,
+        Jam,
+        HitInd,
+        AimRel,
+        AimFlash,
+        InterogateFoe,
+        InterogateFriend,
+        InterogateUnk // JPO new symbols
+    };
 
     // Beam Movement
     float targetEl, targetAz;
@@ -424,26 +464,26 @@ protected :
     float curScanTop, curScanBottom, curScanLeft, curScanRight;
     float scanCenterAlt;
     float lastAzScan, lastSAMAzScan;
-    int   patternTime;
-    int   lastBars, lastSAMBars;
+    int patternTime;
+    int lastBars, lastSAMBars;
 
     // Mode/State Data
     float rangeScales[NUM_RANGES], rwsAzs[NUM_RWS_AZS], twsAzs[NUM_TWS_AZS];
     float velScales[NUM_VELS];
-    int   rwsBars[NUM_RWS_BARS], twsBars[NUM_TWS_BARS];
-    int   curRangeIdx, curBarIdx, vsVelIdx, curAzIdx;
-    int   gmRangeIdx, airRangeIdx;
-    int   rwsAzIdx, twsAzIdx, lastTwsAzIdx, vsAzIdx, gmAzIdx, gmtAzIdx;
-    int   rwsBarIdx, twsBarIdx, lastTwsBarIdx, gmBarIdx, vsBarIdx;
+    int rwsBars[NUM_RWS_BARS], twsBars[NUM_TWS_BARS];
+    int curRangeIdx, curBarIdx, vsVelIdx, curAzIdx;
+    int gmRangeIdx, airRangeIdx;
+    int rwsAzIdx, twsAzIdx, lastTwsAzIdx, vsAzIdx, gmAzIdx, gmtAzIdx;
+    int rwsBarIdx, twsBarIdx, lastTwsBarIdx, gmBarIdx, vsBarIdx;
     float groundDesignateX, groundDesignateY, groundDesignateZ;
     float groundLookAz, groundLookEl, groundMapRange;
     float cursRange;
     float reacqEl;
     float nctrData;
-    unsigned int  flags;
+    unsigned int flags;
     unsigned int aadclt;
     unsigned int agdclt;
-    int  subMode;
+    int subMode;
     char groundMapLOD;
     long lastFeatureUpdate;
     GMList* GMFeatureListRoot;
@@ -453,7 +493,8 @@ protected :
 
     float GMXCenter, GMYCenter;
     void SetGroundTarget(FalconEntity* newTarget);
-    TWSTrackList* TWSTrackDirectory;  // MD -- 20040118: keep list of TWS track files
+    TWSTrackList*
+        TWSTrackDirectory; // MD -- 20040118: keep list of TWS track files
     WayPointClass* GMSPPseudoWaypt;
 
     // Detection Factors
@@ -468,7 +509,7 @@ protected :
     float GetRCS(SimObjectType*);
     float DopplerNotch(SimObjectType*);
     float Jamming(SimObjectType*);
-    int InResCell(SimObjectType*, int, int *, int *, int*);
+    int InResCell(SimObjectType*, int, int*, int*, int*);
     // radar data stuff JPO
     int channelno;
     int histno;
@@ -478,9 +519,9 @@ protected :
     enum RadarModeFlags
     {
         AltTrack = 0x1,
-        PmMode     = 0x2,
+        PmMode = 0x2,
         NaroBand = 0x4,
-        SpeedLo     = 0x8,
+        SpeedLo = 0x8,
     };
     unsigned int radarmodeflags;
     void SetModeFlag(int flag)
@@ -504,7 +545,7 @@ protected :
     //CPL couples IFF returns to current A/A scan volume.  DCPL allows for everything 60 degrees
     enum IFFFlags
     {
-        Dcpl = 0x1,//Yes DCPL, no CPL
+        Dcpl = 0x1, //Yes DCPL, no CPL
     };
     unsigned int iffmodeflags;
     void SetIFFFlags(int flag)
@@ -525,7 +566,6 @@ protected :
     };
 
 
-
     // Mode Functions
     void TWSMode(void);
     void RWSMode(void);
@@ -540,7 +580,8 @@ protected :
     void ClearAllHistory(void);
     void SlipHistory(SimObjectType* ptr);
     void ExtrapolateHistory(SimObjectType* ptr);
-    TWSTrackList* UpdateTWSDirectory(SimObjectType* tgtList, TWSTrackList* directory = NULL);
+    TWSTrackList* UpdateTWSDirectory(SimObjectType* tgtList,
+                                     TWSTrackList* directory = NULL);
 
     // Bscope Functions
     void DrawRangeTicks(void);
@@ -566,9 +607,12 @@ protected :
     void AGRangingDisplay(void);
     void DrawReference(VirtualDisplay* display);
     void DrawDLZSymbol(void);
-    void DrawSymbol(int type, float schweemLen, int age, int flash = 0); // MD -- 20040121: removed unused parameters and put in flash hint
-    int  IsUnderCursor(SimObjectType* , float heading);
-    int  IsUnderVSCursor(SimObjectType* , float heading);
+    void DrawSymbol(
+        int type, float schweemLen, int age,
+        int flash =
+            0); // MD -- 20040121: removed unused parameters and put in flash hint
+    int IsUnderCursor(SimObjectType*, float heading);
+    int IsUnderVSCursor(SimObjectType*, float heading);
     void DrawWaterline(void);
     void DrawScanMarkers(void);
     void DrawCursor(void);
@@ -584,8 +628,11 @@ public:
     {
         return GMSPPseudoWaypt;
     }
-    void SetGMSPWaypt(WayPointClass* pt = NULL);  // MD -- default arg clears the waypoint pointer
-    int GetInterogate(SimObjectType *rdrObj, SimObjectType *lockedTarget = NULL);
+    void
+    SetGMSPWaypt(WayPointClass* pt =
+                     NULL); // MD -- default arg clears the waypoint pointer
+    int GetInterogate(SimObjectType* rdrObj,
+                      SimObjectType* lockedTarget = NULL);
     void SetInterogateTimer(int Dir = 0);
     bool LOS, SCAN, CmdLOS;
     float InterogateTimer;
@@ -603,19 +650,24 @@ public:
     void DrawIFFStatus(void);
     void UpdateLOSScan(void);
     int GetCurScanMode(int i);
-    void GetBuggedIFF(float *x, float *y, int *type);
+    void GetBuggedIFF(float* x, float* y, int* type);
+
 protected:
     void SetGMScan(void);
     void SetAimPoint(float, float);
     void AdjustGMOffset(int rangeChangeCmd);
-    int  CheckGMBump(void);
+    int CheckGMBump(void);
     void DropGMTrack(void);
-    static void AddTargetReturnCallback(void* self, class RenderGMRadar* renderer, bool Shaping);
+    static void AddTargetReturnCallback(void* self,
+                                        class RenderGMRadar* renderer,
+                                        bool Shaping);
     void AddTargetReturns(class RenderGMRadar* renderer, bool Shaping);
     void AddTargetReturnsOldStyle(GMList*);
     void DoGMDesignate(GMList*);
     void FreeGMList(GMList* theList);
-    void GetGMCursorPosition(float* xLoc, float* yLoc);  // MD -- 20040228: find x/y position of GM cursor
+    void GetGMCursorPosition(
+        float* xLoc,
+        float* yLoc); // MD -- 20040228: find x/y position of GM cursor
     //MI moved to public
     //void TargetToXY(SimObjectLocalData *localData, int hist, float drange, float *x, float *y);
     void DrawNCTR(bool TWS);
@@ -625,26 +677,23 @@ protected:
     bool WasAutoAGRange;
     float GainPos;
     float curgain;
-    int lastRngKnobPos;  // MD -- 20040108: added for analog RNG knob
+    int lastRngKnobPos; // MD -- 20040108: added for analog RNG knob
     bool InitGain;
     // float GMTSlowSpeedReject; MN externalised F4Config.cpp
     // float GMTHighSpeedReject;
 
-    int InitialGroundContactTest(
-        float &ownX, float &ownY, float &ownZ,
-        float &radarHorizonSq, FalconEntity *contact,
-        mlTrig &trig,
-        // returned values
-        float &range, float &radius, float &canSee);
-    int GMTObjectContactTest(FalconEntity *contact);
-    int GMObjectContactTest(FalconEntity *contact);
-
-
+    int InitialGroundContactTest(float& ownX, float& ownY, float& ownZ,
+                                 float& radarHorizonSq, FalconEntity* contact,
+                                 mlTrig& trig,
+                                 // returned values
+                                 float& range, float& radius, float& canSee);
+    int GMTObjectContactTest(FalconEntity* contact);
+    int GMObjectContactTest(FalconEntity* contact);
 };
 
 /* KLUDGE MACRO */
-#define RES180(a)  ((a) > 180.0F*DTR ? (a) - 360.0F*DTR :\
- ((a) < -180.0F * DTR ? (a) + 360.0F * DTR : (a)))
+#define RES180(a)                                                              \
+    ((a) > 180.0F * DTR ? (a) - 360.0F * DTR :                                 \
+                          ((a) < -180.0F * DTR ? (a) + 360.0F * DTR : (a)))
 
 #endif
-

@@ -11,14 +11,14 @@
 #define _TLEVEL_H_
 
 #include <iso646.h>
-#include "Loader.h"
-#include "Ttypes.h"
-#include "Falclib/Include/FileMemMap.h"
-#include "Tdskpost.h"
+#include "loader.h"
+#include "ttypes.h"
+#include "falclib/include/filememmap.h"
+#include "tdskpost.h"
 
 typedef union tBlockAddress
 {
-    TBlock* ptr;
+    TBlock *ptr;
     DWORD offset;
 } tBlockAddress;
 
@@ -27,11 +27,13 @@ class PostFile : public FileMemMap
 public:
     TdiskPost *GetDiskPost(DWORD offset)
     {
-        return (TdiskPost*)GetData(offset, sizeof(TdiskPost) * POSTS_PER_BLOCK);
+        return (TdiskPost *)GetData(offset,
+                                    sizeof(TdiskPost) * POSTS_PER_BLOCK);
     };
     TNewdiskPost *GetNewDiskPost(DWORD offset)
     {
-        return (TNewdiskPost *)GetData(offset, sizeof(TNewdiskPost) * POSTS_PER_BLOCK);
+        return (TNewdiskPost *)GetData(offset,
+                                       sizeof(TNewdiskPost) * POSTS_PER_BLOCK);
     };
 };
 
@@ -98,10 +100,11 @@ public:
 
 
 protected:
-    UINT blocks_wide;   // How many blocks across is this level
+    UINT blocks_wide; // How many blocks across is this level
     UINT blocks_high; // How many blocks high is this level
 
-    tBlockAddress *blocks; // Point to an array of pointers to blocks (NULL means not loaded)
+    tBlockAddress *
+        blocks; // Point to an array of pointers to blocks (NULL means not loaded)
 
     float feet_per_post;
     float feet_per_block;
@@ -110,14 +113,14 @@ protected:
 
     int myLevel; // (0 is highest detail, goes up from there by ones)
 
-    PostFile postFileMap;     // mem mapped post file
+    PostFile postFileMap; // mem mapped post file
 
     CRITICAL_SECTION cs_blockArray;
 
 
     // Handle asychronous block loading
-    static void LoaderCallBack(LoaderQ* request); // Dummy front end
-    void PreProcessBlock(LoaderQ* request); // Actual worker function
+    static void LoaderCallBack(LoaderQ *request); // Dummy front end
+    void PreProcessBlock(LoaderQ *request); // Actual worker function
 
     // Handle time of day and lighting notifications
     static void TimeUpdateCallback(void *self);
@@ -126,7 +129,8 @@ protected:
     // Map from virutal block addresses (unbounded) to physical ones (one in the map)
     inline void VirtualToPhysicalBlockAddress(int *r, int *c)
     {
-        if ((*r >= (int)blocks_high) or (*r < 0) or (*c >= (int)blocks_wide) or (*c < 0))
+        if ((*r >= (int)blocks_high) or (*r < 0) or (*c >= (int)blocks_wide) or
+            (*c < 0))
         {
             *r = 0;
             *c = 0;
@@ -139,11 +143,10 @@ protected:
 
 public:
     // The following functions should not be compiled into the final game...
-    void  SaveBlock(TBlock *block);
+    void SaveBlock(TBlock *block);
     static void DebugDisplayInit(void);
     static void DebugDisplayOutput(void);
     void DebugDisplayLevel(void);
-
 };
 
 #endif // _TLEVEL_H_

@@ -133,15 +133,16 @@ void ImportFromRaw8(char *name)
         return;
 
     height = rct[0].bottom;
-    fontdata = new unsigned char[(last - first + 1)*bytesperline * height];
-    memset(fontdata, 0, (last - first + 1)*bytesperline * height);
+    fontdata = new unsigned char[(last - first + 1) * bytesperline * height];
+    memset(fontdata, 0, (last - first + 1) * bytesperline * height);
 
     for (i = 0; i < (last - first + 1); i++)
     {
         for (y = 0; y < rct[i].bottom; y++)
             for (x = 0; x < rct[i].right; x++)
                 if (mem[(y + rct[i].top) * 800 + (x + rct[i].left)])
-                    fontdata[i * bytesperline * height + y * bytesperline + x / 8] |= 1 << (x % 8);
+                    fontdata[i * bytesperline * height + y * bytesperline +
+                             x / 8] |= 1 << (x % 8);
     }
 
     i = last - first + 1;
@@ -299,15 +300,16 @@ void ImportFromRaw16(char *name)
         return;
 
     height = rct[0].bottom;
-    fontdata = new unsigned char[(last - first + 1)*bytesperline * height];
-    memset(fontdata, 0, (last - first + 1)*bytesperline * height);
+    fontdata = new unsigned char[(last - first + 1) * bytesperline * height];
+    memset(fontdata, 0, (last - first + 1) * bytesperline * height);
 
     for (i = 0; i < (last - first + 1); i++)
     {
         for (y = 0; y < rct[i].bottom; y++)
             for (x = 0; x < rct[i].right; x++)
                 if (mem[(y + rct[i].top) * 800 + (x + rct[i].left)])
-                    fontdata[i * bytesperline * height + y * bytesperline + x / 8] |= 1 << (x % 8);
+                    fontdata[i * bytesperline * height + y * bytesperline +
+                             x / 8] |= 1 << (x % 8);
     }
 
     i = last - first + 1;
@@ -465,8 +467,8 @@ void ImportFromRaw24(char *name)
         return;
 
     height = rct[0].bottom;
-    fontdata = new unsigned char[(last - first + 1)*bytesperline * height];
-    memset(fontdata, 0, (last - first + 1)*bytesperline * height);
+    fontdata = new unsigned char[(last - first + 1) * bytesperline * height];
+    memset(fontdata, 0, (last - first + 1) * bytesperline * height);
 
     for (i = 0; i < (last - first + 1); i++)
     {
@@ -475,7 +477,8 @@ void ImportFromRaw24(char *name)
                 if (mem[(y + rct[i].top) * 800 + (x + rct[i].left)].r ||
                     mem[(y + rct[i].top) * 800 + (x + rct[i].left)].g ||
                     mem[(y + rct[i].top) * 800 + (x + rct[i].left)].b)
-                    fontdata[i * bytesperline * height + y * bytesperline + x / 8] |= 1 << (x % 8);
+                    fontdata[i * bytesperline * height + y * bytesperline +
+                             x / 8] |= 1 << (x % 8);
     }
 
     i = last - first + 1;
@@ -515,7 +518,8 @@ void main(int argc, char **argv)
     long size;
     char filename[200];
 
-    printf("RAW_FONT - Version 1.0 by Peter Ward - Convert a RAW file to my font format\n");
+    printf("RAW_FONT - Version 1.0 by Peter Ward - Convert a RAW file to my "
+           "font format\n");
     strcpy(filename, argv[1]);
     strcat(filename, ".raw");
     fp = fopen(filename, "rb");

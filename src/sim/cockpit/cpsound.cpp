@@ -12,7 +12,8 @@ CPSoundList::CPSoundList(int numSounds)
     mSoundTally = 0;
     mNumSounds = numSounds;
 #ifdef USE_SH_POOLS
-    mpSoundArray = (CPSoundIndex *)MemAllocPtr(gCockMemPool, sizeof(CPSoundIndex) * mNumSounds, FALSE);
+    mpSoundArray = (CPSoundIndex *)MemAllocPtr(
+        gCockMemPool, sizeof(CPSoundIndex) * mNumSounds, FALSE);
 #else
     mpSoundArray = new CPSoundIndex[mNumSounds];
 #endif
@@ -25,7 +26,7 @@ CPSoundList::CPSoundList(int numSounds)
 CPSoundList::~CPSoundList()
 {
 
-    delete [] mpSoundArray;
+    delete[] mpSoundArray;
 }
 
 ////////////////////////////////////////////////////////////////////////////
@@ -39,7 +40,7 @@ int CPSoundList::GetSoundIndex(int id)
     int i = 0;
     BOOL found = FALSE;
 
-    while ( not found and i < mSoundTally)
+    while (not found and i < mSoundTally)
     {
 
         if (mpSoundArray[i].soundId == id)

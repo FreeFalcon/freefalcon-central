@@ -8,33 +8,33 @@
 #include "vutypes.h"
 #include "vumath.h"
 
-#define MAX_VU_STR_LEN                      255
+#define MAX_VU_STR_LEN 255
 
-#define VU_UNKNOWN_ENTITY_TYPE              0
-#define VU_SESSION_ENTITY_TYPE              1
-#define VU_GROUP_ENTITY_TYPE                2
-#define VU_GLOBAL_GROUP_ENTITY_TYPE         3
-#define VU_GAME_ENTITY_TYPE                 4
-#define VU_PLAYER_POOL_GROUP_ENTITY_TYPE    5
-#define VU_LAST_ENTITY_TYPE                 100
+#define VU_UNKNOWN_ENTITY_TYPE 0
+#define VU_SESSION_ENTITY_TYPE 1
+#define VU_GROUP_ENTITY_TYPE 2
+#define VU_GLOBAL_GROUP_ENTITY_TYPE 3
+#define VU_GAME_ENTITY_TYPE 4
+#define VU_PLAYER_POOL_GROUP_ENTITY_TYPE 5
+#define VU_LAST_ENTITY_TYPE 100
 
-#define VU_CREATE_PRIORITY_BASE             100
+#define VU_CREATE_PRIORITY_BASE 100
 
-#define CLASS_NUM_BYTES                     8
+#define CLASS_NUM_BYTES 8
 
 // domains
-#define VU_GLOBAL_DOMAIN                    0
+#define VU_GLOBAL_DOMAIN 0
 
 // Predefined entity ids
-#define VU_NULL_ENTITY_ID                   0
-#define VU_GLOBAL_GROUP_ENTITY_ID           1
-#define VU_PLAYER_POOL_ENTITY_ID            2
-#define VU_SESSION_ENTITY_ID                3
-#define VU_FIRST_ENTITY_ID                  4       // first generated
+#define VU_NULL_ENTITY_ID 0
+#define VU_GLOBAL_GROUP_ENTITY_ID 1
+#define VU_PLAYER_POOL_ENTITY_ID 2
+#define VU_SESSION_ENTITY_ID 3
+#define VU_FIRST_ENTITY_ID 4       // first generated
 
 // Standard Collision type
-#define VU_NON_COLLIDABLE                   0
-#define VU_DEFAULT_COLLIDABLE               1
+#define VU_NON_COLLIDABLE 0
+#define VU_DEFAULT_COLLIDABLE 1
 
 struct VuEntityType
 {
@@ -45,7 +45,8 @@ struct VuEntityType
     VU_TIME updateRate_;
     VU_TIME updateTolerance_;
     SM_SCALAR bubbleRange_; // max distance to send position updates
-    SM_SCALAR fineUpdateForceRange_; // distance to force position updates, sfr: seems this is not used at all...
+    SM_SCALAR
+    fineUpdateForceRange_; // distance to force position updates, sfr: seems this is not used at all...
     SM_SCALAR fineUpdateMultiplier_; // multiplier for noticing position updates
     VU_DAMAGE damageSeed_;
     int hitpoints_;
@@ -64,14 +65,14 @@ struct VuEntityType
 // keep this 16 bit
 struct VuFlagBits
 {
-    uint private_       : 1;  // 1 --> not public
-    uint transfer_      : 1;  // 1 --> can be transferred
-    uint tangible_      : 1;  // 1 --> can be seen/touched with
-    uint collidable_    : 1;  // 1 --> put in auto collision table
-    uint global_        : 1;  // 1 --> visible to all groups
-    uint persistent_    : 1;  // 1 --> keep ent local across group joins
-    uint sendCreate_    : 2;  // 0 --> dont send, 1 send, 2 send immediately (oob)
-    uint pad_           : 8;  // unused
+    uint private_ : 1; // 1 --> not public
+    uint transfer_ : 1; // 1 --> can be transferred
+    uint tangible_ : 1; // 1 --> can be seen/touched with
+    uint collidable_ : 1; // 1 --> put in auto collision table
+    uint global_ : 1; // 1 --> visible to all groups
+    uint persistent_ : 1; // 1 --> keep ent local across group joins
+    uint sendCreate_ : 2; // 0 --> dont send, 1 send, 2 send immediately (oob)
+    uint pad_ : 8; // unused
 };
 
 // function declarations
@@ -84,12 +85,15 @@ int VuDeReferenceEntity(VuEntity *ent);
 /** memory state enumeration */
 enum VU_MEM
 {
-    VU_MEM_CREATED        = 0x01, ///< entity has been created (constructor called)
-    VU_MEM_TO_BE_INSERTED = 0x02, ///< entity was added to birth list, will be inserted soon
-    VU_MEM_ACTIVE         = 0x03, ///< entity inserted into vuDB
-    VU_MEM_INACTIVE       = 0x04, ///< entity marked for collection
-    VU_MEM_REMOVED        = 0x05, ///< entity garbage collected or purged from collection
-    VU_MEM_DELETED        = 0xDD  ///< happens just before entity deletion by unreferencing
+    VU_MEM_CREATED = 0x01, ///< entity has been created (constructor called)
+    VU_MEM_TO_BE_INSERTED =
+        0x02, ///< entity was added to birth list, will be inserted soon
+    VU_MEM_ACTIVE = 0x03, ///< entity inserted into vuDB
+    VU_MEM_INACTIVE = 0x04, ///< entity marked for collection
+    VU_MEM_REMOVED =
+        0x05, ///< entity garbage collected or purged from collection
+    VU_MEM_DELETED =
+        0xDD ///< happens just before entity deletion by unreferencing
 };
 
 class VuEntity
@@ -186,9 +190,10 @@ public:
     /** action to take for a created local unit inserted into DB */
     typedef enum
     {
-        VU_SC_DONT_SEND = 0, ///< dont send creation, since each session reads its own from files (non volatiles)
-        VU_SC_SEND      = 1, ///< send creation, reliable but no hurry
-        VU_SC_SEND_OOB  = 2  ///< send creation, hurry (OOB)
+        VU_SC_DONT_SEND =
+            0, ///< dont send creation, since each session reads its own from files (non volatiles)
+        VU_SC_SEND = 1, ///< send creation, reliable but no hurry
+        VU_SC_SEND_OOB = 2 ///< send creation, hurry (OOB)
     } VU_SEND_TYPE;
     /** if true, entity is sent immediately (OOB) to others upon creation */
     VU_SEND_TYPE SendCreate() const
@@ -294,7 +299,7 @@ public:
 
     VuEntityType *EntityType() const
     {
-        return const_cast<VuEntityType*>(entityTypePtr_);
+        return const_cast<VuEntityType *>(entityTypePtr_);
     }
 
     // entity driver
@@ -316,14 +321,13 @@ public:
         enqueuedForPositionUpdate = val;
     }
 
-    VU_BOOL CollisionCheck(VuEntity *other, SM_SCALAR deltatime); // uses built-in
+    VU_BOOL CollisionCheck(VuEntity *other,
+                           SM_SCALAR deltatime); // uses built-in
     virtual VU_BOOL CustomCollisionCheck(VuEntity *other, SM_SCALAR deltatime);
     virtual VU_BOOL TerrainCollisionCheck(); // default returns false
-    VU_BOOL LineCollisionCheck(
-        BIG_SCALAR x1, BIG_SCALAR y1, BIG_SCALAR z1,
-        BIG_SCALAR x2, BIG_SCALAR y2, BIG_SCALAR z2,
-        SM_SCALAR timeDelta, SM_SCALAR sizeFactor
-    );
+    VU_BOOL LineCollisionCheck(BIG_SCALAR x1, BIG_SCALAR y1, BIG_SCALAR z1,
+                               BIG_SCALAR x2, BIG_SCALAR y2, BIG_SCALAR z2,
+                               SM_SCALAR timeDelta, SM_SCALAR sizeFactor);
     // virtual VU type getters
     virtual VU_BOOL IsTarget(); // returns FALSE
     virtual VU_BOOL IsSession(); // returns FALSE
@@ -354,6 +358,7 @@ public:
     {
         return refcount_;
     };
+
 protected:
     // destructor
     virtual ~VuEntity();
@@ -371,7 +376,7 @@ protected:
     virtual VU_ERRCODE RemovalCallback();
 
 private:
-    int LocalSize();                      // returns local bytes written
+    int LocalSize(); // returns local bytes written
 
     // DATA
 protected:

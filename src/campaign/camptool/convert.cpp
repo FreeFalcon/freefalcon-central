@@ -2,11 +2,11 @@
 #include <stdlib.h>
 #include <string.h>
 #include "convert.h"
-#include "Campterr.h"
+#include "campterr.h"
 
 #ifdef CAMPTOOL
 
-extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+extern FILE *OpenCampFile(char *filename, char *ext, char *mode);
 extern void CloseCampFile(FILE *fp);
 
 // ========================
@@ -33,17 +33,17 @@ void InitConverter(char *filename)
 
 void CleanupConverter(void)
 {
-    delete [] Tiles;
-    delete [] TexCodes;
+    delete[] Tiles;
+    delete[] TexCodes;
     Tiles = NULL;
     TexCodes = NULL;
 }
 
-char* GetFilename(short x, short y)
+char *GetFilename(short x, short y)
 {
     int index, i;
 
-    if ( not Tiles or not TexCodes)
+    if (not Tiles or not TexCodes)
         return "INVALID";
 
     i = (Map_Max_Y - (y + 1)) * Map_Max_X + x;
@@ -60,7 +60,7 @@ int GetTextureIndex(short x, short y)
 {
     int i;
 
-    if ( not Tiles)
+    if (not Tiles)
         return 0;
 
     i = (Map_Max_Y - (y + 1)) * Map_Max_X + x;
@@ -71,12 +71,12 @@ int GetTextureIndex(short x, short y)
     return Tiles[i];
 }
 
-char* GetTextureId(int index)
+char *GetTextureId(int index)
 {
     char *file;
-    static char ret[20] = { "NON" };
+    static char ret[20] = {"NON"};
 
-    if ( not TexCodes)
+    if (not TexCodes)
         return ret;
 
     file = &TexCodes[index * FILENAMELEN];
@@ -111,7 +111,7 @@ int readTexCodes(char *codeFile)
     {
         printf("Unable to allocate memory.\n");
         CloseCampFile(texCodesFile);
-        delete [] tempCodes;
+        delete[] tempCodes;
         //cleanup( );
         return -1;
     }
@@ -130,12 +130,13 @@ int readTexCodes(char *codeFile)
         {
             MonoPrint("Error in convert.cpp: ID is too big.\n");
             CloseCampFile(texCodesFile);
-            delete [] tempCodes;
+            delete[] tempCodes;
             //cleanup( );
             return -1;
         }
 
-        if (ret = fscanf(texCodesFile, "%s %*[^\n]", &tempCodes[id * FILENAMELEN]) not_eq 1)
+        if (ret = fscanf(texCodesFile, "%s %*[^\n]",
+                         &tempCodes[id * FILENAMELEN]) not_eq 1)
             break;
 
         lid = id;
@@ -145,7 +146,7 @@ int readTexCodes(char *codeFile)
     {
         MonoPrint("Error in convert.cpp: TEXCODELEN is too small.\n");
         CloseCampFile(texCodesFile);
-        delete [] tempCodes;
+        delete[] tempCodes;
         //cleanup( );
         return -1;
     }
@@ -156,7 +157,7 @@ int readTexCodes(char *codeFile)
     TexCodes = new char[FILENAMELEN * (lid + 1)];
     memcpy(TexCodes, tempCodes, FILENAMELEN * (lid + 1));
     MaxTextureType = lid;
-    delete [] tempCodes;
+    delete[] tempCodes;
 
     return 0;
 }
@@ -189,6 +190,9 @@ int readMap(char *mapFile)
 #else
 
 // Anonymous namespace, prevents the linker from complaining that convert.obj is empty
-namespace { char dummy; };
+namespace
+{
+char dummy;
+};
 
 #endif

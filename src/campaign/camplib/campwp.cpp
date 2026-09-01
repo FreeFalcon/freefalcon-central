@@ -2,9 +2,9 @@
 #include "listadt.h"
 #include "find.h"
 #include "tactics.h"
-#include "Graphics/Include/TMap.h"
+#include "graphics/include/tmap.h"
 
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 #define WP_HAVE_DEPTIME 0x01
 #define WP_HAVE_TARGET 0x02
@@ -23,10 +23,10 @@ MEM_POOL WayPointClass::pool;
 namespace
 {
     /** converts Z from grid to Sim. */
-    BIG_SCALAR ConvertGridToSimZ(GridIndex gz)
-    {
-        return static_cast<BIG_SCALAR>(gz * -GRIDZ_SCALE_FACTOR);
-    }
+BIG_SCALAR ConvertGridToSimZ(GridIndex gz)
+{
+    return static_cast<BIG_SCALAR>(gz * -GRIDZ_SCALE_FACTOR);
+}
 }
 
 WayPointClass::WayPointClass(void)
@@ -47,10 +47,9 @@ WayPointClass::WayPointClass(void)
     Tactic = 0;
 }
 
-WayPointClass::WayPointClass(
-    GridIndex x, GridIndex y,
-    int alt, int speed, CampaignTime arr, CampaignTime station, uchar action, int flags
-)
+WayPointClass::WayPointClass(GridIndex x, GridIndex y, int alt, int speed,
+                             CampaignTime arr, CampaignTime station,
+                             uchar action, int flags)
 {
     GridX = x;
     GridY = y;
@@ -112,7 +111,7 @@ WayPointClass::WayPointClass(VU_BYTE **stream, long *rem)
     }
     else
     {
-        memcpychk(&Flags, stream, sizeof(ulong), rem);
+        memcpychk_u32(&Flags, stream, rem); // #104: on-disk 32-bit ulong
     }
 
     if (haves bitand WP_HAVE_TARGET)
@@ -140,7 +139,7 @@ WayPointClass::WayPointClass(VU_BYTE **stream, long *rem)
     Tactic = 0;
 }
 
-WayPointClass::WayPointClass(FILE* fp)
+WayPointClass::WayPointClass(FILE *fp)
 {
     uchar haves;
     fread(&haves, sizeof(uchar), 1, fp);
@@ -166,7 +165,11 @@ WayPointClass::WayPointClass(FILE* fp)
     }
     else
     {
-        fread(&Flags, sizeof(ulong), 1, fp);
+        {
+            unsigned int _t32 = 0;
+            fread(&_t32, sizeof(int), 1, fp);
+            Flags = _t32;
+        } // #104: on-disk 32-bit ulong
     }
 
     if (haves bitand WP_HAVE_TARGET)
@@ -205,15 +208,10 @@ int WayPointClass::SaveSize(void)
     if (Depart not_eq Arrive)
         size += sizeof(CampaignTime);
 
-    size += sizeof(uchar)
-            + sizeof(GridIndex)
-            + sizeof(GridIndex)
-            + sizeof(short)
-            + sizeof(CampaignTime)
-            + sizeof(uchar)
-            + sizeof(uchar)
-            + sizeof(uchar)
-            + sizeof(ulong);
+    size += sizeof(uchar) + sizeof(GridIndex) + sizeof(GridIndex) +
+            sizeof(short) + sizeof(CampaignTime) + sizeof(uchar) +
+            sizeof(uchar) + sizeof(uchar) +
+            DISK_LONG; // #104: on-disk 32-bit ulong (Flags)
     return size;
 }
 
@@ -247,8 +245,7 @@ int WayPointClass::Save(VU_BYTE **stream)
     *stream += sizeof(uchar);
     memcpy(*stream, &Formation, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(*stream, &Flags, sizeof(ulong));
-    *stream  += sizeof(ulong);
+    memcpy_u32(stream, &Flags); // #104: on-disk 32-bit ulong
 
 
     if (haves bitand WP_HAVE_TARGET)
@@ -280,11 +277,11 @@ int WayPointClass::Save(VU_BYTE **stream)
     return SaveSize();
 }
 
-int WayPointClass::Save(FILE* fp)
+int WayPointClass::Save(FILE *fp)
 {
     uchar haves = 0;
 
-    if ( not fp)
+    if (not fp)
     {
         return 0;
     }
@@ -307,7 +304,10 @@ int WayPointClass::Save(FILE* fp)
     fwrite(&Action, sizeof(uchar), 1, fp);
     fwrite(&RouteAction, sizeof(uchar), 1, fp);
     fwrite(&Formation, sizeof(uchar), 1, fp);
-    fwrite(&Flags, sizeof(ulong), 1, fp);
+    {
+        unsigned int _t32 = (unsigned int)Flags;
+        fwrite(&_t32, sizeof(int), 1, fp);
+    } // #104: on-disk 32-bit ulong
 
     if (haves bitand WP_HAVE_TARGET)
     {
@@ -380,7 +380,8 @@ void WayPointClass::SetNextWP(WayPointClass *w)
 
     if (NextWP)
     {
-        MonoPrint("Trying to Set Next WP on a waypoint that already has a next waypoint\n");
+        MonoPrint("Trying to Set Next WP on a waypoint that already has a next "
+                  "waypoint\n");
     }
     else
     {
@@ -399,7 +400,9 @@ void WayPointClass::SetNextWP(WayPointClass *w)
                 delta_y = dy - sy;
 
                 dist = (float)sqrt(delta_x * delta_x + delta_y * delta_y);
-                time = (float)(NextWP->GetWPArrivalTime() - GetWPArrivalTime()) / CampaignHours; // Hours
+                time =
+                    (float)(NextWP->GetWPArrivalTime() - GetWPArrivalTime()) /
+                    CampaignHours; // Hours
 
                 if (time not_eq 0.0)
                 {
@@ -425,7 +428,8 @@ void WayPointClass::SetPrevWP(WayPointClass *w)
 {
     if (PrevWP)
     {
-        MonoPrint("Trying to Set Prev WP on a waypoint that already has a previous waypoint\n");
+        MonoPrint("Trying to Set Prev WP on a waypoint that already has a "
+                  "previous waypoint\n");
     }
     else
     {
@@ -444,7 +448,7 @@ void WayPointClass::SplitWP()
     GridIndex x, y, z;
     CampaignTime time;
 
-    if ( not NextWP)
+    if (not NextWP)
     {
         first_wp = PrevWP;
         second_wp = this;
@@ -531,7 +535,7 @@ void WayPointClass::SetLocation(float x, float y, float z)
 {
     // sfr: fix xy order
     //GridX = SimToGrid(y); GridY = SimToGrid(x);
-    ::vector pos = { x, y };
+    ::vector pos = {x, y};
     ConvertSimToGrid(&pos, &GridX, &GridY);
     GridZ = (short)((-1.0F * z) / GRIDZ_SCALE_FACTOR);
 
@@ -572,24 +576,23 @@ void WayPointClass::SetWPLocation(GridIndex x, GridIndex y)
 void WayPointClass::GetLocation(float *x, float *y, float *z) const
 {
     // No waypoint?
-    if ( not this)
+    if (not this)
         return;
 
     // sfr: xy order
     // this is the current waypoint in grid coordinates
     GridIndex gx, gy;
     // FRB - CTD's Here
-    ::vector pos = { SimX, SimY };
+    ::vector pos = {SimX, SimY};
     ConvertSimToGrid(&pos, &gx, &gy);
 
     if (g_bPrecisionWaypoints)
     {
         //Check that the Sim position and the Grid position are in sync.  If so, return the sim position
         if (
-            //(GridX == SimToGrid(SimX)) and (GridY == SimToGrid(SimY)) and 
-            (GridX == gx) and (GridY == gy) and 
-            (GridZ == (short)((-1.0F * SimZ) / GRIDZ_SCALE_FACTOR))
-        )
+            //(GridX == SimToGrid(SimX)) and (GridY == SimToGrid(SimY)) and
+            (GridX == gx) and (GridY == gy) and
+            (GridZ == (short)((-1.0F * SimZ) / GRIDZ_SCALE_FACTOR)))
         {
             //*x = SimY;  *y = SimX; *z = SimZ;
             *x = SimX;
@@ -658,7 +661,7 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
     GridIndex x, y, nx, ny;
     CampaignTime station;
 
-    if ( not w)
+    if (not w)
     {
         return 0;
     }
@@ -698,7 +701,8 @@ CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags)
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and not (flags bitand WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and
+            not(flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -718,7 +722,7 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
     CampaignTime mission_time, length, land = 0;
     int station;
 
-    if ( not w)
+    if (not w)
         return 0;
 
     // If the first waypoint passed is an alternate - assume we want it's time set
@@ -752,7 +756,8 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
             land = mission_time;
         }
 
-        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and not (flags bitand WPTS_SET_ALTERNATE_TIMES))
+        if ((w->GetWPFlags() bitand WPF_ALTERNATE) and
+            not(flags bitand WPTS_SET_ALTERNATE_TIMES))
         {
             w->SetWPTimes(0);
         }
@@ -765,19 +770,21 @@ CampaignTime SetWPTimes(WayPoint w, long delta, int flags)
 }
 
 // Sets a set of waypoint times to start at waypoint w as soon as we can get there from x,y.
-CampaignTime SetWPTimes(WayPoint w, GridIndex x, GridIndex y, int speed, int flags)
+CampaignTime SetWPTimes(WayPoint w, GridIndex x, GridIndex y, int speed,
+                        int flags)
 {
     CampaignTime mission_time, length;
     GridIndex nx, ny;
 
-    if ( not w)
+    if (not w)
     {
         return 0;
     }
 
     w->GetWPLocation(&nx, &ny);
     mission_time = TimeToArrive(Distance(x, y, nx, ny), (float)speed);
-    length = SetWPTimes(w, mission_time + Camp_GetCurrentTime(), speed, flags) + mission_time;
+    length = SetWPTimes(w, mission_time + Camp_GetCurrentTime(), speed, flags) +
+             mission_time;
     return length;
 }
 
@@ -792,7 +799,7 @@ WayPoint CloneWPToList(WayPoint w, WayPoint stop)
         nw = new WayPointClass();
         nw->CloneWP(w);
 
-        if ( not list)
+        if (not list)
         {
             list = nw;
         }
@@ -820,7 +827,7 @@ WayPoint CloneWPList(WayPoint w)
         nw = new WayPointClass();
         nw->CloneWP(w);
 
-        if ( not list)
+        if (not list)
         {
             list = nw;
         }
@@ -852,7 +859,7 @@ WayPoint CloneWPList(WayPointClass wps[], int waypoints)
             nw = new WayPointClass();
             nw->CloneWP(w);
 
-            if ( not list)
+            if (not list)
             {
                 list = nw;
             }
@@ -888,9 +895,13 @@ float AdjustAltitudeForMSL_AGL(float x, float y, float z)
 
     // Do we need to test for z being negative, it should anyhow. Also, MINIMUM_ASL_ALTITUDE is POSITIVE
     // terrain_level IS ALSO POSITIVE
-    if (z < 0.0F and z > -MINIMUM_ASL_ALTITUDE) // z is AGL if it's 'below' this altitude
+    if (z < 0.0F and
+        z > -MINIMUM_ASL_ALTITUDE) // z is AGL if it's 'below' this altitude
         return z - terrain_level; // This returns the altitude above MSL
-    else if (z < 0.0F and z + terrain_level > -500.0F) // If our -MSL height plus the terrain height is less than -500
+    else if (
+        z < 0.0F and
+        z + terrain_level >
+            -500.0F) // If our -MSL height plus the terrain height is less than -500
         return -500.0F - terrain_level; // return 500 feet 'above' the terrain
     else // We ok (not flagged AGL and above high hills), use the MSL height 'as is'
         return z;

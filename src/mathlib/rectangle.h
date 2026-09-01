@@ -31,8 +31,7 @@ public:
 //------------------------------------------------------------------------------
 /**
 */
-inline
-rectangle::rectangle()
+inline rectangle::rectangle()
 {
     // empty
 }
@@ -40,10 +39,8 @@ rectangle::rectangle()
 //------------------------------------------------------------------------------
 /**
 */
-inline
-rectangle::rectangle(const vector2& topLeft, const vector2& bottomRight) :
-    v0(topLeft),
-    v1(bottomRight)
+inline rectangle::rectangle(const vector2& topLeft, const vector2& bottomRight)
+    : v0(topLeft), v1(bottomRight)
 {
     // empty
 }
@@ -51,9 +48,7 @@ rectangle::rectangle(const vector2& topLeft, const vector2& bottomRight) :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-rectangle::set(const vector2& topLeft, const vector2& bottomRight)
+inline void rectangle::set(const vector2& topLeft, const vector2& bottomRight)
 {
     this->v0 = topLeft;
     this->v1 = bottomRight;
@@ -62,20 +57,16 @@ rectangle::set(const vector2& topLeft, const vector2& bottomRight)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bool
-rectangle::inside(const vector2& p) const
+inline bool rectangle::inside(const vector2& p) const
 {
-    return ((this->v0.x <= p.x) && (p.x <= this->v1.x) &&
-            (this->v0.y <= p.y) && (p.y <= this->v1.y));
+    return ((this->v0.x <= p.x) && (p.x <= this->v1.x) && (this->v0.y <= p.y) &&
+            (p.y <= this->v1.y));
 }
 
 //------------------------------------------------------------------------------
 /**
 */
-inline
-vector2
-rectangle::midpoint() const
+inline vector2 rectangle::midpoint() const
 {
     return (this->v0 + this->v1) * 0.5f;
 }
@@ -83,9 +74,7 @@ rectangle::midpoint() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-float
-rectangle::width() const
+inline float rectangle::width() const
 {
     return this->v1.x - this->v0.x;
 }
@@ -93,9 +82,7 @@ rectangle::width() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-float
-rectangle::height() const
+inline float rectangle::height() const
 {
     return this->v1.y - this->v0.y;
 }
@@ -103,9 +90,7 @@ rectangle::height() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-vector2
-rectangle::size() const
+inline vector2 rectangle::size() const
 {
     return this->v1 - this->v0;
 }

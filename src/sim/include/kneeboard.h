@@ -9,7 +9,7 @@
 #define _KNEEBOARD_H_
 
 //#include "Graphics/Include/Render2d.h"
-#include "Graphics/Include/image.h"
+#include "graphics/include/image.h"
 
 class SimVehicleClass;
 class WayPointClass;
@@ -21,13 +21,20 @@ class KneeBoard
 public:
     KneeBoard();
     virtual ~KneeBoard();
-    void KneeBoard::DrawMissionText(Render2D *renderer, SimVehicleClass *platform);
+    void KneeBoard::DrawMissionText(Render2D *renderer,
+                                    SimVehicleClass *platform);
     // loads and cleanup kneeboard resources
-    virtual void Setup(/*DisplayDevice *device, int top, int left, int bottom, int right*/);
+    virtual void Setup(
+        /*DisplayDevice *device, int top, int left, int bottom, int right*/);
     virtual void Cleanup(void);
 
     // sfr: page information functions and variables
-    enum Page {BRIEF, MAP, STEERPOINT};
+    enum Page
+    {
+        BRIEF,
+        MAP,
+        STEERPOINT
+    };
     void SetPage(Page p)
     {
         page = p;
@@ -72,8 +79,7 @@ private:
     */
     // Map image surface and Blt rectangles
     bool imageLoaded;
-    CImageFileMemory  mapImageFile;
-
+    CImageFileMemory mapImageFile;
 };
 
 #endif // _KNEEBOARD_H_

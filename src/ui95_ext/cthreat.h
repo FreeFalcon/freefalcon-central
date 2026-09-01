@@ -7,7 +7,7 @@ typedef struct
 {
     long ID;
     long Type;
-    long  Flags;
+    long Flags;
     long x, y;
     long Radius[8];
     C_Threat *Owner;
@@ -44,7 +44,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -70,14 +71,15 @@ public:
     void SetRadius(long radius)
     {
         Radius = radius;
-        Diagonal = (long)((double) radius * HALFSQUAREROOT2 + 0.5);
+        Diagonal = (long)((double)radius * HALFSQUAREROOT2 + 0.5);
     };
 
     void FillLeftEdge(long cx, long cy)
     {
         if (cy >= 0 and cy < MaxHeight and cx < MaxWidth)
         {
-            if (cx < 0) cx = 0;
+            if (cx < 0)
+                cx = 0;
 
             Edge[cy].Left = cx;
         }
@@ -87,7 +89,8 @@ public:
     {
         if (cy >= 0 and cy < MaxHeight and cx > 0)
         {
-            if (cx > MaxWidth1) cx = MaxWidth1;
+            if (cx > MaxWidth1)
+                cx = MaxWidth1;
 
             Edge[cy].Right = cx;
         }
@@ -115,13 +118,15 @@ public:
             {
                 CircleEdge *edge = &(Edge[y]);
 
-                if (x < 0) x = 0;
+                if (x < 0)
+                    x = 0;
 
-                edge -> Left = x;
+                edge->Left = x;
 
-                if (x1 > MaxWidth1) x1 = MaxWidth1;
+                if (x1 > MaxWidth1)
+                    x1 = MaxWidth1;
 
-                edge -> Right = x1;
+                edge->Right = x1;
             }
         }
     };
@@ -130,8 +135,10 @@ public:
     {
         long i;
 
-        if (cx < 0) cx = 0;
-        else if (cx > MaxWidth1) cx = MaxWidth1;
+        if (cx < 0)
+            cx = 0;
+        else if (cx > MaxWidth1)
+            cx = MaxWidth1;
 
         cy--;
 
@@ -146,8 +153,10 @@ public:
     {
         long i;
 
-        if (cx < 0) cx = 0;
-        else if (cx > MaxWidth1) cx = MaxWidth1;
+        if (cx < 0)
+            cx = 0;
+        else if (cx > MaxWidth1)
+            cx = MaxWidth1;
 
         cy--;
 
@@ -162,8 +171,10 @@ public:
     {
         long i;
 
-        if (cx < 0) cx = 0;
-        else if (cx > MaxWidth1) cx = MaxWidth1;
+        if (cx < 0)
+            cx = 0;
+        else if (cx > MaxWidth1)
+            cx = MaxWidth1;
 
         for (i = 0; i <= Radius; i++)
         {
@@ -176,8 +187,10 @@ public:
     {
         long i;
 
-        if (cx < 0) cx = 0;
-        else if (cx > MaxWidth1) cx = MaxWidth1;
+        if (cx < 0)
+            cx = 0;
+        else if (cx > MaxWidth1)
+            cx = MaxWidth1;
 
         for (i = 0; i <= Radius; i++)
         {
@@ -298,7 +311,6 @@ public:
 
     void CreateFilledCircle();
     void CreateFilledCirclePoints(long x, long y);
-
 };
 
 class C_Threat : public C_Base
@@ -318,15 +330,17 @@ public:
 
     void Setup(long ID, long type);
     void Cleanup();
-    void AddCircle(long ID, long type, long worldx, long worldy, long radius); // all units are KM
+    void AddCircle(long ID, long type, long worldx, long worldy,
+                   long radius); // all units are KM
     void UpdateCircle(long ID, long worldx, long worldy);
     void SetRadius(long ID, long slice, long radius);
     void Remove(long ID);
     THREAT_CIRCLE *GetThreat(long ID)
     {
-        if (Root_) return((THREAT_CIRCLE*)Root_->Find(ID));
+        if (Root_)
+            return ((THREAT_CIRCLE *)Root_->Find(ID));
 
-        return(NULL);
+        return (NULL);
     }
     void BuildOverlay(BYTE *overlay, long w, long h, float kmperpixel);
 };

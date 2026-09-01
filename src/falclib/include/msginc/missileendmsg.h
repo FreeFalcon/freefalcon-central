@@ -11,12 +11,12 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
 #include "falcmesg.h"
 #include "fsound.h"
-#include "InvalidBufferException.h"
-#pragma pack (1)
+#include "invalidbufferexception.h"
+#pragma pack(1)
 
 /*
  * Message Type Missile Endgame
@@ -42,7 +42,8 @@ public:
         BombImpact
     };
 
-    FalconMissileEndMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconMissileEndMessage(VU_ID entityId, VuTargetEntity *target,
+                            VU_BOOL loopback = TRUE);
     FalconMissileEndMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconMissileEndMessage(void);
     virtual int Size() const
@@ -96,11 +97,13 @@ public:
     } dataBlock;
 
     void SetParticleEffectName(char *name);
+
 protected:
     int Process(uchar autodisp);
+
 private:
     F4SoundPos SoundPos;
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

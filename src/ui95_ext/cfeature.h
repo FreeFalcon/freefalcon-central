@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -33,7 +34,6 @@ private:
     VU_ID vuID;
 
 public:
-
     C_Feature();
     C_Feature(char **stream);
     C_Feature(FILE *fp);
@@ -58,7 +58,7 @@ public:
     }
     TREELIST *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
 
     void SetName(short x, short y, long ID)
@@ -168,7 +168,7 @@ public:
     void SetState(short newstate);
     short GetState()
     {
-        return(State_);
+        return (State_);
     }
 
     void SetColor(COLORREF off, COLORREF on)
@@ -183,7 +183,7 @@ public:
     }
     uchar GetOperational()
     {
-        return(Operational_);
+        return (Operational_);
     }
 
     void SetFeatureValue(uchar s)
@@ -192,26 +192,29 @@ public:
     }
     uchar GetFeatureValue()
     {
-        return(FeatureValue_);
+        return (FeatureValue_);
     }
 
     _TCHAR *GetName()
     {
-        if (Name_) return(Name_->GetText());
+        if (Name_)
+            return (Name_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetStatus()
     {
-        if (Status_) return(Status_->GetText());
+        if (Status_)
+            return (Status_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetValue()
     {
-        if (Value_) return(Value_->GetText());
+        if (Value_)
+            return (Value_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
 
     void SetFont(long FontID);
@@ -234,7 +237,7 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
     void SetFeatureID(long id)
     {
@@ -242,7 +245,7 @@ public:
     }
     long GetFeatureID()
     {
-        return(featureID_);
+        return (featureID_);
     }
 };
 

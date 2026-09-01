@@ -9,13 +9,13 @@
 #define _GMRADAR_H_
 
 #include <iso646.h>
-#include "Render3D.h"
+#include "render3d.h"
 
 
 static const float GM_NO_GIMBAL_LIMIT = -1.0f;
 
 
-typedef struct GroundMapVertex: public MPRVtxClr_t
+typedef struct GroundMapVertex : public MPRVtxClr_t
 {
     /* MPRVtxClr_t provides:
      float x, y;
@@ -47,7 +47,8 @@ public:
     BOOL SetRange(float newRange, int newLOD);
     void SetGain(float newGain)
     {
-        if (newGain <= 1000.0F and newGain >= 0.0F) gain = newGain;
+        if (newGain <= 1000.0F and newGain >= 0.0F)
+            gain = newGain;
     };
 
     float GetRange(void)
@@ -70,7 +71,7 @@ public:
     void PrepareToDrawTargets(void);
     void FlushDrawnTargets(void);
     void DrawBlip(float worldX, float worldY);
-    void DrawBlip(class DrawableObject* drawable, float GainScale, bool Shaped);
+    void DrawBlip(class DrawableObject *drawable, float GainScale, bool Shaped);
     void FinishScene(void);
 
     // Recover the information passed into start frame
@@ -94,10 +95,12 @@ protected:
 
     void ComputeLightAngles(Tpoint *from, Tpoint *at);
     float ComputeReflectedIntensity(Tpost *post);
-    void DrawGMsquare(GroundMapVertex*, GroundMapVertex*, GroundMapVertex*, GroundMapVertex*);
+    void DrawGMsquare(GroundMapVertex *, GroundMapVertex *, GroundMapVertex *,
+                      GroundMapVertex *);
 
 protected:
-    BOOL SkipDraw; // Disables drawing the rest of a scene (reset in ComputeScene)
+    BOOL
+        SkipDraw; // Disables drawing the rest of a scene (reset in ComputeScene)
 
     Tpoint cameraPos; // Camera position in world space
     Tpoint centerPos; // Center of attention in world space (COA)

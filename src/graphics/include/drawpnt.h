@@ -8,10 +8,10 @@
 #ifndef _DRAWPNT_H_
 #define _DRAWPNT_H_
 
-#include "DrawObj.h"
+#include "drawobj.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.h"
+#include "smartheap/include/smrtheap.h"
 #endif
 
 
@@ -27,7 +27,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -40,7 +41,8 @@ public:
     static MEM_POOL pool;
 #endif
 public:
-    DrawablePoint(DWORD color, BOOL grnd, const Tpoint *pos, float scale = 1.0f);
+    DrawablePoint(DWORD color, BOOL grnd, const Tpoint *pos,
+                  float scale = 1.0f);
     virtual ~DrawablePoint();
 
     void Update(const Tpoint *pos);
@@ -60,16 +62,17 @@ public:
     void SetOnGround(BOOL grnd)
     {
         onGround = grnd;
-    } ;
+    };
     void SetPointColor(DWORD c)
     {
         pointColor = c;
-    } ;
+    };
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
 public:
-    static BOOL drawLabels; // Shared by ALL drawable points (now just labels, of course)
+    static BOOL
+        drawLabels; // Shared by ALL drawable points (now just labels, of course)
 
 protected:
     char label[32];

@@ -10,8 +10,8 @@
 #ifndef _DRAWGRND_H_
 #define _DRAWGRND_H_
 
-#include "DrawBSP.h"
-#include "DrawBrdg.h"
+#include "drawbsp.h"
+#include "drawbrdg.h"
 
 
 class DrawableGroundVehicle : public DrawableBSP
@@ -26,7 +26,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -40,7 +41,8 @@ public:
 #endif
 
 public:
-    DrawableGroundVehicle(int type, Tpoint *pos, float heading, float scale = 1.0f);
+    DrawableGroundVehicle(int type, Tpoint *pos, float heading,
+                          float scale = 1.0f);
     virtual ~DrawableGroundVehicle() {};
 
     virtual void SetParentList(ObjectDisplayList *list);

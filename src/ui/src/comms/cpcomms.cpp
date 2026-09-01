@@ -15,33 +15,30 @@
 //#include "Find.h"
 #include "vu2.h"
 #include "uicomms.h"
-#include "Flight.h"
-
+#include "flight.h"
 
 
 FalconSessionEntity *UIComms::FindCampaignPlayer(VU_ID flightID, uchar planeid)
 {
-    Flight flight = (Flight) vuDatabase->Find(flightID);
+    Flight flight = (Flight)vuDatabase->Find(flightID);
 
     if (flight)
     {
         VuSessionsIterator sessionWalker(FalconLocalGame);
         FalconSessionEntity *curSession;
 
-        curSession = (FalconSessionEntity*)sessionWalker.GetFirst();
+        curSession = (FalconSessionEntity *)sessionWalker.GetFirst();
 
         while (curSession)
         {
-            if (
-                curSession->GetPlayerFlightID() == flightID and 
-                curSession->GetAircraftNum() == planeid and 
-                curSession->GetPilotSlot() < 255
-            )
+            if (curSession->GetPlayerFlightID() == flightID and
+                curSession->GetAircraftNum() == planeid and
+                curSession->GetPilotSlot() < 255)
             {
                 return (curSession);
             }
 
-            curSession = (FalconSessionEntity*)sessionWalker.GetNext();
+            curSession = (FalconSessionEntity *)sessionWalker.GetNext();
         }
 
         // Clear out any slot which we thought we had
@@ -49,5 +46,5 @@ FalconSessionEntity *UIComms::FindCampaignPlayer(VU_ID flightID, uchar planeid)
         //flight->player_slots[planeid] = 255;
     }
 
-    return(NULL);
+    return (NULL);
 }

@@ -22,7 +22,6 @@ void Mono2D::Setup(void)
     aspectRatio = 0.775F;
 
     UnLock();
-
 }
 
 void Mono2D::Cleanup(void)
@@ -40,7 +39,8 @@ void Mono2D::DisplayCircle(int x_center, int y_center, int radius)
     DisplayDebugCircle(x_center, y_center, radius);
 }
 
-void Mono2D::DisplayArc(int xCenter, int yCenter, int radius, float start, float end)
+void Mono2D::DisplayArc(int xCenter, int yCenter, int radius, float start,
+                        float end)
 {
     int x, y, lastX, lastY;
     float ang;
@@ -57,7 +57,7 @@ void Mono2D::DisplayArc(int xCenter, int yCenter, int radius, float start, float
 
         if (x != lastX || y != lastY)
         {
-            WriteDebugPixel(x + xCenter,  y + yCenter);
+            WriteDebugPixel(x + xCenter, y + yCenter);
         }
 
         lastX = x;

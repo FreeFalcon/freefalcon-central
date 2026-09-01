@@ -7,74 +7,74 @@
 
 /* Include Files */
 #include "mesg.h"
-#include "CUIEvent.h"
-#include "CampStr.h"
+#include "cuievent.h"
+#include "campstr.h"
 #include "sim/include/simvudrv.h"
 
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/CampWeaponFireMsg.h"
-#include "MsgInc/CampMsg.h"
-#include "MsgInc/SimCampMsg.h"
-#include "MsgInc/UnitMsg.h"
-#include "MsgInc/ObjectiveMsg.h"
-#include "MsgInc/UnitAssignmentMsg.h"
-#include "MsgInc/SendCampaignMsg.h"
-#include "MsgInc/TimingMsg.h"
-#include "MsgInc/CampTaskingMsg.h"
-#include "MsgInc/AirTaskingMsg.h"
-#include "MsgInc/GndTaskingMsg.h"
-#include "MsgInc/NavalTaskingMsg.h"
-#include "MsgInc/TeamMsg.h"
-#include "MsgInc/WingmanMsg.h"
-#include "MsgInc/AirAIModeChange.h"
-#include "MsgInc/MissionRequestMsg.h"
-#include "MsgInc/DivertMsg.h"
-#include "MsgInc/WeatherMsg.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/AWACSMsg.h"
-#include "MsgInc/FACMsg.h"
-#include "MsgInc/ATCMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/CampEventMsg.h"
-#include "MsgInc/LandingMessage.h"
-#include "MsgInc/ControlSurfaceMsg.h"
-#include "MsgInc/SimDataToggle.h"
-#include "MsgInc/RequestDogfightInfo.h"
-#include "MsgInc/SendDogfightInfo.h"
-#include "MsgInc/RequestAircraftSlot.h"
-#include "MsgInc/SendAircraftSlot.h"
-#include "MsgInc/GraphicsTextDisplayMsg.h"
-#include "MsgInc/AddSFXMessage.h"
-#include "MsgInc/SendPersistantList.h"
-#include "MsgInc/SendObjData.h"
-#include "MsgInc/SendUnitData.h"
-#include "MsgInc/RequestCampaignData.h"
-#include "MsgInc/SendChatMessage.h"
-#include "MsgInc/TankerMsg.h"
-#include "MsgInc/EjectMsg.h"
-#include "MsgInc/TrackMsg.h"
-#include "MsgInc/CampDataMsg.h"
-#include "MsgInc/VoiceDataMsg.h"
-#include "MsgInc/RadioChatterMsg.h"
-#include "MsgInc/PlayerStatusMsg.h"
-#include "MsgInc/LaserDesignateMsg.h"
-#include "MsgInc/ATCCmdMsg.h"
-#include "MsgInc/DLinkMsg.h"
-#include "MsgInc/RequestObject.h"
-#include "MsgInc/RegenerationMsg.h"
-#include "MsgInc/RequestLogbook.h"
-#include "MsgInc/SendLogbook.h"
-#include "MsgInc/SendImage.h"
-#include "MsgInc/FalconFlightPlanMsg.h"
-#include "MsgInc/SimDirtyDataMsg.h"
-#include "MsgInc/CampDirtyDataMsg.h"
-#include "MsgInc/CampEventDataMsg.h"
-#include "MsgInc/SendVCMsg.h"
-#include "MsgInc/SendUIMsg.h"
-#include "MsgInc/SendEvalMsg.h"
-#include "MsgInc/RequestSimMoverPosition.h"
-#include "MsgInc/SendSimMoverPosition.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/campweaponfiremsg.h"
+#include "msginc/campmsg.h"
+#include "msginc/simcampmsg.h"
+#include "msginc/unitmsg.h"
+#include "msginc/objectivemsg.h"
+#include "msginc/unitassignmentmsg.h"
+#include "msginc/sendcampaignmsg.h"
+#include "msginc/timingmsg.h"
+#include "msginc/camptaskingmsg.h"
+#include "msginc/airtaskingmsg.h"
+#include "msginc/gndtaskingmsg.h"
+#include "msginc/navaltaskingmsg.h"
+#include "msginc/teammsg.h"
+#include "msginc/wingmanmsg.h"
+#include "msginc/airaimodechange.h"
+#include "msginc/missionrequestmsg.h"
+#include "msginc/divertmsg.h"
+#include "msginc/weathermsg.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/awacsmsg.h"
+#include "msginc/facmsg.h"
+#include "msginc/atcmsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/campeventmsg.h"
+#include "msginc/landingmessage.h"
+#include "msginc/controlsurfacemsg.h"
+#include "msginc/simdatatoggle.h"
+#include "msginc/requestdogfightinfo.h"
+#include "msginc/senddogfightinfo.h"
+#include "msginc/requestaircraftslot.h"
+#include "msginc/sendaircraftslot.h"
+#include "msginc/graphicstextdisplaymsg.h"
+#include "msginc/addsfxmessage.h"
+#include "msginc/sendpersistantlist.h"
+#include "msginc/sendobjdata.h"
+#include "msginc/sendunitdata.h"
+#include "msginc/requestcampaigndata.h"
+#include "msginc/sendchatmessage.h"
+#include "msginc/tankermsg.h"
+#include "msginc/ejectmsg.h"
+#include "msginc/trackmsg.h"
+#include "msginc/campdatamsg.h"
+#include "msginc/voicedatamsg.h"
+#include "msginc/radiochattermsg.h"
+#include "msginc/playerstatusmsg.h"
+#include "msginc/laserdesignatemsg.h"
+#include "msginc/atccmdmsg.h"
+#include "msginc/dlinkmsg.h"
+#include "msginc/requestobject.h"
+#include "msginc/regenerationmsg.h"
+#include "msginc/requestlogbook.h"
+#include "msginc/sendlogbook.h"
+#include "msginc/sendimage.h"
+#include "msginc/falconflightplanmsg.h"
+#include "msginc/simdirtydatamsg.h"
+#include "msginc/campdirtydatamsg.h"
+#include "msginc/campeventdatamsg.h"
+#include "msginc/sendvcmsg.h"
+#include "msginc/senduimsg.h"
+#include "msginc/sendevalmsg.h"
+#include "msginc/requestsimmoverposition.h"
+#include "msginc/sendsimmoverposition.h"
 
 //#define F4_DEBUG_COMMS
 
@@ -91,454 +91,454 @@ VuMessage* VuxCreateMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
 
     switch (type)
     {
-        case DamageMsg:
+    case DamageMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("DamageMsg\n");
+        MonoPrint("DamageMsg\n");
 #endif
-            retval = new FalconDamageMessage(type, senderid, target);
-            break;
+        retval = new FalconDamageMessage(type, senderid, target);
+        break;
 
-        case WeaponFireMsg:
+    case WeaponFireMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("WeaponFireMsg\n");
+        MonoPrint("WeaponFireMsg\n");
 #endif
-            retval = new FalconWeaponsFire(type, senderid, target);
-            break;
+        retval = new FalconWeaponsFire(type, senderid, target);
+        break;
 
-        case CampWeaponFireMsg:
+    case CampWeaponFireMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("CampWeaponFireMsg\n");
+        MonoPrint("CampWeaponFireMsg\n");
 #endif
-            retval = new FalconCampWeaponsFire(type, senderid, target);
-            break;
+        retval = new FalconCampWeaponsFire(type, senderid, target);
+        break;
 
-        case CampMsg:
+    case CampMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("CampMsg\n");
+        MonoPrint("CampMsg\n");
 #endif
-            retval = new FalconCampMessage(type, senderid, target);
-            break;
+        retval = new FalconCampMessage(type, senderid, target);
+        break;
 
-        case SimCampMsg:
+    case SimCampMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SimCampMsg\n");
+        MonoPrint("SimCampMsg\n");
 #endif
-            retval = new FalconSimCampMessage(type, senderid, target);
-            break;
+        retval = new FalconSimCampMessage(type, senderid, target);
+        break;
 
-        case UnitMsg:
+    case UnitMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("UnitMsg\n");
+        MonoPrint("UnitMsg\n");
 #endif
-            retval = new FalconUnitMessage(type, senderid, target);
-            break;
+        retval = new FalconUnitMessage(type, senderid, target);
+        break;
 
-        case ObjectiveMsg:
+    case ObjectiveMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("ObjectiveMsg\n");
+        MonoPrint("ObjectiveMsg\n");
 #endif
-            retval = new FalconObjectiveMessage(type, senderid, target);
-            break;
+        retval = new FalconObjectiveMessage(type, senderid, target);
+        break;
 
-        case UnitAssignmentMsg:
+    case UnitAssignmentMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("UnitAssignmentMsg\n");
+        MonoPrint("UnitAssignmentMsg\n");
 #endif
-            retval = new FalconUnitAssignmentMessage(type, senderid, target);
-            break;
+        retval = new FalconUnitAssignmentMessage(type, senderid, target);
+        break;
 
-        case SendCampaignMsg:
+    case SendCampaignMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendCampaignMsg\n");
+        MonoPrint("SendCampaignMsg\n");
 #endif
-            retval = new FalconSendCampaign(type, senderid, target);
-            break;
+        retval = new FalconSendCampaign(type, senderid, target);
+        break;
 
-        case TimingMsg:
+    case TimingMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("TimingMsg\n");
+        MonoPrint("TimingMsg\n");
 #endif
-            retval = new FalconTimingMessage(type, senderid, target);
-            break;
+        retval = new FalconTimingMessage(type, senderid, target);
+        break;
 
-        case CampTaskingMsg:
+    case CampTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("CampTaskingMsg\n");
+        MonoPrint("CampTaskingMsg\n");
 #endif
-            retval = new FalconCampTaskingMessage(type, senderid, target);
-            break;
+        retval = new FalconCampTaskingMessage(type, senderid, target);
+        break;
 
-        case AirTaskingMsg:
+    case AirTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("AirTaskingMsg\n");
+        MonoPrint("AirTaskingMsg\n");
 #endif
-            retval = new FalconAirTaskingMessage(type, senderid, target);
-            break;
+        retval = new FalconAirTaskingMessage(type, senderid, target);
+        break;
 
-        case GndTaskingMsg:
+    case GndTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("GndTaskingMsg\n");
+        MonoPrint("GndTaskingMsg\n");
 #endif
-            retval = new FalconGndTaskingMessage(type, senderid, target);
-            break;
+        retval = new FalconGndTaskingMessage(type, senderid, target);
+        break;
 
-        case NavalTaskingMsg:
+    case NavalTaskingMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("NavalTaskingMsg\n");
+        MonoPrint("NavalTaskingMsg\n");
 #endif
-            retval = new FalconNavalTaskingMessage(type, senderid, target);
-            break;
+        retval = new FalconNavalTaskingMessage(type, senderid, target);
+        break;
 
-        case TeamMsg:
+    case TeamMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("TeamMsg\n");
+        MonoPrint("TeamMsg\n");
 #endif
-            retval = new FalconTeamMessage(type, senderid, target);
-            break;
+        retval = new FalconTeamMessage(type, senderid, target);
+        break;
 
-        case WingmanMsg:
+    case WingmanMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("WingmanMsg\n");
+        MonoPrint("WingmanMsg\n");
 #endif
-            retval = new FalconWingmanMsg(type, senderid, target);
-            break;
+        retval = new FalconWingmanMsg(type, senderid, target);
+        break;
 
-        case AirAIModeChange:
+    case AirAIModeChange:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("AirAIModeChange\n");
+        MonoPrint("AirAIModeChange\n");
 #endif
-            retval = new AirAIModeMsg(type, senderid, target);
-            break;
+        retval = new AirAIModeMsg(type, senderid, target);
+        break;
 
-        case MissionRequestMsg:
+    case MissionRequestMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("MissionRequestMsg\n");
+        MonoPrint("MissionRequestMsg\n");
 #endif
-            retval = new FalconMissionRequestMessage(type, senderid, target);
-            break;
+        retval = new FalconMissionRequestMessage(type, senderid, target);
+        break;
 
-        case DivertMsg:
+    case DivertMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("DivertMsg\n");
+        MonoPrint("DivertMsg\n");
 #endif
-            retval = new FalconDivertMessage(type, senderid, target);
-            break;
+        retval = new FalconDivertMessage(type, senderid, target);
+        break;
 
-        case WeatherMsg:
+    case WeatherMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("WeatherMsg\n");
+        MonoPrint("WeatherMsg\n");
 #endif
-            retval = new FalconWeatherMessage(type, senderid, target);
-            break;
+        retval = new FalconWeatherMessage(type, senderid, target);
+        break;
 
-        case MissileEndMsg:
+    case MissileEndMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("MissileEndMsg\n");
+        MonoPrint("MissileEndMsg\n");
 #endif
-            retval = new FalconMissileEndMessage(type, senderid, target);
-            break;
+        retval = new FalconMissileEndMessage(type, senderid, target);
+        break;
 
-        case AWACSMsg:
+    case AWACSMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("AWACSMsg\n");
+        MonoPrint("AWACSMsg\n");
 #endif
-            retval = new FalconAWACSMessage(type, senderid, target);
-            break;
+        retval = new FalconAWACSMessage(type, senderid, target);
+        break;
 
-        case FACMsg:
+    case FACMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("FACMsg\n");
+        MonoPrint("FACMsg\n");
 #endif
-            retval = new FalconFACMessage(type, senderid, target);
-            break;
+        retval = new FalconFACMessage(type, senderid, target);
+        break;
 
-        case ATCMsg:
+    case ATCMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("ATCMsg\n");
+        MonoPrint("ATCMsg\n");
 #endif
-            retval = new FalconATCMessage(type, senderid, target);
-            break;
+        retval = new FalconATCMessage(type, senderid, target);
+        break;
 
-        case DeathMessage:
+    case DeathMessage:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("DeathMessage\n");
+        MonoPrint("DeathMessage\n");
 #endif
-            retval = new FalconDeathMessage(type, senderid, target);
-            break;
+        retval = new FalconDeathMessage(type, senderid, target);
+        break;
 
-        case CampEventMsg:
+    case CampEventMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("CampEventMsg\n");
+        MonoPrint("CampEventMsg\n");
 #endif
-            retval = new FalconCampEventMessage(type, senderid, target);
-            break;
+        retval = new FalconCampEventMessage(type, senderid, target);
+        break;
 
-        case LandingMessage:
+    case LandingMessage:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("LandingMessage\n");
+        MonoPrint("LandingMessage\n");
 #endif
-            retval = new FalconLandingMessage(type, senderid, target);
-            break;
+        retval = new FalconLandingMessage(type, senderid, target);
+        break;
 
-        case ControlSurfaceMsg:
+    case ControlSurfaceMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("ControlSurfaceMsg\n");
+        MonoPrint("ControlSurfaceMsg\n");
 #endif
-            retval = new FalconControlSurfaceMsg(type, senderid, target);
-            break;
+        retval = new FalconControlSurfaceMsg(type, senderid, target);
+        break;
 
-        case SimDataToggle:
+    case SimDataToggle:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SimDataToggle\n");
+        MonoPrint("SimDataToggle\n");
 #endif
-            retval = new FalconSimDataToggle(type, senderid, target);
-            break;
+        retval = new FalconSimDataToggle(type, senderid, target);
+        break;
 
-        case RequestDogfightInfo:
+    case RequestDogfightInfo:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RequestDogfightInfo\n");
+        MonoPrint("RequestDogfightInfo\n");
 #endif
-            retval = new UI_RequestDogfightInfo(type, senderid, target);
-            break;
+        retval = new UI_RequestDogfightInfo(type, senderid, target);
+        break;
 
-        case SendDogfightInfo:
+    case SendDogfightInfo:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendDogfightInfo\n");
+        MonoPrint("SendDogfightInfo\n");
 #endif
-            retval = new UI_SendDogfightInfo(type, senderid, target);
-            break;
+        retval = new UI_SendDogfightInfo(type, senderid, target);
+        break;
 
-        case RequestAircraftSlot:
+    case RequestAircraftSlot:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RequestAircraftSlot\n");
+        MonoPrint("RequestAircraftSlot\n");
 #endif
-            retval = new UI_RequestAircraftSlot(type, senderid, target);
-            break;
+        retval = new UI_RequestAircraftSlot(type, senderid, target);
+        break;
 
-        case SendAircraftSlot:
+    case SendAircraftSlot:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendAircraftSlot\n");
+        MonoPrint("SendAircraftSlot\n");
 #endif
-            retval = new UI_SendAircraftSlot(type, senderid, target);
-            break;
+        retval = new UI_SendAircraftSlot(type, senderid, target);
+        break;
 
-        case GraphicsTextDisplayMsg:
+    case GraphicsTextDisplayMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("GraphicsTextDisplayMsg\n");
+        MonoPrint("GraphicsTextDisplayMsg\n");
 #endif
-            retval = new GraphicsTextDisplay(type, senderid, target);
-            break;
+        retval = new GraphicsTextDisplay(type, senderid, target);
+        break;
 
-        case AddSFXMessage:
+    case AddSFXMessage:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("AddSFXMessage\n");
+        MonoPrint("AddSFXMessage\n");
 #endif
-            retval = new FalconAddSFXMessage(type, senderid, target);
-            break;
+        retval = new FalconAddSFXMessage(type, senderid, target);
+        break;
 
-        case SendPersistantList:
+    case SendPersistantList:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendPersistantList\n");
+        MonoPrint("SendPersistantList\n");
 #endif
-            retval = new FalconSendPersistantList(type, senderid, target);
-            break;
+        retval = new FalconSendPersistantList(type, senderid, target);
+        break;
 
-        case SendObjData:
+    case SendObjData:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendObjData\n");
+        MonoPrint("SendObjData\n");
 #endif
-            retval = new FalconSendObjData(type, senderid, target);
-            break;
+        retval = new FalconSendObjData(type, senderid, target);
+        break;
 
-        case SendUnitData:
+    case SendUnitData:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendUnitData\n");
+        MonoPrint("SendUnitData\n");
 #endif
-            retval = new FalconSendUnitData(type, senderid, target);
-            break;
+        retval = new FalconSendUnitData(type, senderid, target);
+        break;
 
-        case RequestCampaignData:
+    case RequestCampaignData:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RequestCampaignData\n");
+        MonoPrint("RequestCampaignData\n");
 #endif
-            retval = new FalconRequestCampaignData(type, senderid, target);
-            break;
+        retval = new FalconRequestCampaignData(type, senderid, target);
+        break;
 
-        case SendChatMessage:
+    case SendChatMessage:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendChatMessage\n");
+        MonoPrint("SendChatMessage\n");
 #endif
-            retval = new UI_SendChatMessage(type, senderid, target);
-            break;
+        retval = new UI_SendChatMessage(type, senderid, target);
+        break;
 
-        case TankerMsg:
+    case TankerMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("TankerMsg\n");
+        MonoPrint("TankerMsg\n");
 #endif
-            retval = new FalconTankerMessage(type, senderid, target);
-            break;
+        retval = new FalconTankerMessage(type, senderid, target);
+        break;
 
-        case EjectMsg:
+    case EjectMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("EjectMsg\n");
+        MonoPrint("EjectMsg\n");
 #endif
-            retval = new FalconEjectMessage(type, senderid, target);
-            break;
+        retval = new FalconEjectMessage(type, senderid, target);
+        break;
 
-        case TrackMsg:
+    case TrackMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("TrackMsg\n");
+        MonoPrint("TrackMsg\n");
 #endif
-            retval = new FalconTrackMessage(type, senderid, target);
-            break;
+        retval = new FalconTrackMessage(type, senderid, target);
+        break;
 
-        case CampDataMsg:
+    case CampDataMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("CampDataMsg\n");
+        MonoPrint("CampDataMsg\n");
 #endif
-            retval = new FalconCampDataMessage(type, senderid, target);
-            break;
+        retval = new FalconCampDataMessage(type, senderid, target);
+        break;
 
-        case VoiceDataMsg:
+    case VoiceDataMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("VoiceDataMsg\n");
+        MonoPrint("VoiceDataMsg\n");
 #endif
-            retval = new FalconVoiceDataMessage(type, senderid, target);
-            break;
+        retval = new FalconVoiceDataMessage(type, senderid, target);
+        break;
 
-        case RadioChatterMsg:
+    case RadioChatterMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RadioChatterMsg\n");
+        MonoPrint("RadioChatterMsg\n");
 #endif
-            retval = new FalconRadioChatterMessage(type, senderid, target);
-            break;
+        retval = new FalconRadioChatterMessage(type, senderid, target);
+        break;
 
-        case PlayerStatusMsg:
+    case PlayerStatusMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("PlayerStatusMsg\n");
+        MonoPrint("PlayerStatusMsg\n");
 #endif
-            retval = new FalconPlayerStatusMessage(type, senderid, target);
-            break;
+        retval = new FalconPlayerStatusMessage(type, senderid, target);
+        break;
 
-        case LaserDesignateMsg:
+    case LaserDesignateMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("LaserDesignateMsg\n");
+        MonoPrint("LaserDesignateMsg\n");
 #endif
-            retval = new FalconLaserDesignateMsg(type, senderid, target);
-            break;
+        retval = new FalconLaserDesignateMsg(type, senderid, target);
+        break;
 
-        case ATCCmdMsg:
+    case ATCCmdMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("ATCCmdMsg\n");
+        MonoPrint("ATCCmdMsg\n");
 #endif
-            retval = new FalconATCCmdMessage(type, senderid, target);
-            break;
+        retval = new FalconATCCmdMessage(type, senderid, target);
+        break;
 
-        case DLinkMsg:
+    case DLinkMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("DLinkMsg\n");
+        MonoPrint("DLinkMsg\n");
 #endif
-            retval = new FalconDLinkMessage(type, senderid, target);
-            break;
+        retval = new FalconDLinkMessage(type, senderid, target);
+        break;
 
-        case RequestObject:
+    case RequestObject:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RequestObject\n");
+        MonoPrint("RequestObject\n");
 #endif
-            retval = new FalconRequestObject(type, senderid, target);
-            break;
+        retval = new FalconRequestObject(type, senderid, target);
+        break;
 
-        case RegenerationMsg:
+    case RegenerationMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RegenerationMsg\n");
+        MonoPrint("RegenerationMsg\n");
 #endif
-            retval = new FalconRegenerationMessage(type, senderid, target);
-            break;
+        retval = new FalconRegenerationMessage(type, senderid, target);
+        break;
 
-        case RequestLogbook:
+    case RequestLogbook:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RequestLogbook\n");
+        MonoPrint("RequestLogbook\n");
 #endif
-            retval = new UI_RequestLogbook(type, senderid, target);
-            break;
+        retval = new UI_RequestLogbook(type, senderid, target);
+        break;
 
-        case SendLogbook:
+    case SendLogbook:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendLogbook\n");
+        MonoPrint("SendLogbook\n");
 #endif
-            retval = new UI_SendLogbook(type, senderid, target);
-            break;
+        retval = new UI_SendLogbook(type, senderid, target);
+        break;
 
-        case SendImage:
+    case SendImage:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendImage\n");
+        MonoPrint("SendImage\n");
 #endif
-            retval = new UI_SendImage(type, senderid, target);
-            break;
+        retval = new UI_SendImage(type, senderid, target);
+        break;
 
-        case FalconFlightPlanMsg:
+    case FalconFlightPlanMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("FalconFlightPlanMsg\n");
+        MonoPrint("FalconFlightPlanMsg\n");
 #endif
-            retval = new FalconFlightPlanMessage(type, senderid, target);
-            break;
+        retval = new FalconFlightPlanMessage(type, senderid, target);
+        break;
 
-        case SimDirtyDataMsg:
+    case SimDirtyDataMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SimDirtyDataMsg\n");
+        MonoPrint("SimDirtyDataMsg\n");
 #endif
-            retval = new SimDirtyData(type, senderid, target);
-            break;
+        retval = new SimDirtyData(type, senderid, target);
+        break;
 
-        case CampDirtyDataMsg:
+    case CampDirtyDataMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("CampDirtyDataMsg\n");
+        MonoPrint("CampDirtyDataMsg\n");
 #endif
-            retval = new CampDirtyData(type, senderid, target);
-            break;
+        retval = new CampDirtyData(type, senderid, target);
+        break;
 
-        case CampEventDataMsg:
+    case CampEventDataMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("CampEventDataMsg\n");
+        MonoPrint("CampEventDataMsg\n");
 #endif
-            retval = new CampEventDataMessage(type, senderid, target);
-            break;
+        retval = new CampEventDataMessage(type, senderid, target);
+        break;
 
-        case SendVCMsg:
+    case SendVCMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendVCMsg\n");
+        MonoPrint("SendVCMsg\n");
 #endif
-            retval = new FalconSendVC(type, senderid, target);
-            break;
+        retval = new FalconSendVC(type, senderid, target);
+        break;
 
-        case SendUIMsg:
+    case SendUIMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendUIMsg\n");
+        MonoPrint("SendUIMsg\n");
 #endif
-            retval = new UISendMsg(type, senderid, target);
-            break;
+        retval = new UISendMsg(type, senderid, target);
+        break;
 
-        case SendEvalMsg:
+    case SendEvalMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendEvalMsg\n");
+        MonoPrint("SendEvalMsg\n");
 #endif
-            retval = new SendEvalMessage(type, senderid, target);
-            break;
+        retval = new SendEvalMessage(type, senderid, target);
+        break;
 
             // sfr: added position messages
-        case RequestSimMoverPositionMsg:
+    case RequestSimMoverPositionMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("RequestSimMoverPosition\n");
+        MonoPrint("RequestSimMoverPosition\n");
 #endif
-            retval = new RequestSimMoverPosition(senderid, target);
-            break;
+        retval = new RequestSimMoverPosition(senderid, target);
+        break;
 
-        case SendSimMoverPositionMsg:
+    case SendSimMoverPositionMsg:
 #ifdef F4_DEBUG_COMMS
-            MonoPrint("SendSimMoverPosition\n");
+        MonoPrint("SendSimMoverPosition\n");
 #endif
-            retval = new SendSimMoverPosition(senderid, target);
-            break;
+        retval = new SendSimMoverPosition(senderid, target);
+        break;
 
 #if 0
 
@@ -556,7 +556,6 @@ VuMessage* VuxCreateMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
             retval = new SimRoughPositionUpdateEvent(type, senderid, target);
             break;
 #endif
-
     }
 
     return retval;

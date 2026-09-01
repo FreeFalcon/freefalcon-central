@@ -1,8 +1,8 @@
 #ifndef _GAME_MANAGER_H
 #define _GAME_MANAGER_H
 
-#include "CampLib.h"
-#include "SimBase.h"
+#include "camplib.h"
+#include "simbase.h"
 
 class FalconSessionEntity;
 class FalconGameEntity;
@@ -14,7 +14,6 @@ class VuGameEntity;
 class GameManagerClass
 {
 private:
-
 public:
     GameManagerClass(void) {};
     ~GameManagerClass() {};
@@ -26,10 +25,15 @@ public:
     void AnnounceExit(void);
     void AnnounceTransfer(SimBaseClass *oldObj, SimBaseClass *newObj);
 
-    SimMoverClass* FindPlayerVehicle(UnitClass *campEntity, int vehSlot);
-    SimMoverClass* AttachPlayerToVehicle(FalconSessionEntity *player, SimMoverClass *simEntity, int playerSlot);
-    int DetachPlayerFromVehicle(FalconSessionEntity *player, SimMoverClass* simEntity);
-    void ReassignPlayerVehicle(FalconSessionEntity *player, SimMoverClass *oldEntity, SimMoverClass *newEntity);
+    SimMoverClass *FindPlayerVehicle(UnitClass *campEntity, int vehSlot);
+    SimMoverClass *AttachPlayerToVehicle(FalconSessionEntity *player,
+                                         SimMoverClass *simEntity,
+                                         int playerSlot);
+    int DetachPlayerFromVehicle(FalconSessionEntity *player,
+                                SimMoverClass *simEntity);
+    void ReassignPlayerVehicle(FalconSessionEntity *player,
+                               SimMoverClass *oldEntity,
+                               SimMoverClass *newEntity);
 
     void LockPlayer(FalconSessionEntity *player);
     void ReleasePlayer(FalconSessionEntity *player);

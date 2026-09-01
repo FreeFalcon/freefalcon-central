@@ -11,11 +11,11 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 class EventDataClass
 {
@@ -31,7 +31,7 @@ public:
     short textIds[CUI_MS];
 };
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Campaign Event Message
@@ -54,7 +54,8 @@ public:
         triggeredEvent
     };
 
-    FalconCampEventMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconCampEventMessage(VU_ID entityId, VuTargetEntity *target,
+                           VU_BOOL loopback = TRUE);
     FalconCampEventMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconCampEventMessage(void);
     virtual int Size() const
@@ -62,12 +63,12 @@ public:
         return sizeof(dataBlock) + FalconEvent::Size();
     };
     //sfr: changed to long *
-    int Decode(VU_BYTE **buf,  long *rem)
+    int Decode(VU_BYTE **buf, long *rem)
     {
         long init = *rem;
         FalconEvent::Decode(buf, rem);
         memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
-        return init  - *rem;
+        return init - *rem;
     };
     int Encode(VU_BYTE **buf)
     {
@@ -82,7 +83,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         unsigned int eventType;
         uchar flags;
         uchar team;
@@ -94,6 +94,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

@@ -3,7 +3,8 @@
 #include "dispopts.h"
 #include "cpmanager.h"
 #include "cpres.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
+#include "graphics/dxengine/dxengine.h" // Artscout - 2026: TheDXEngine.FlushBuffers (comms-menu 2D flush)
 #include "otwdrive.h"
 #include "mesg.h"
 #include "msginc/wingmanmsg.h"
@@ -11,55 +12,50 @@
 #include "msginc/awacsmsg.h"
 #include "msginc/tankermsg.h"
 #include "dispcfg.h"
-#include "Graphics/Include/grinline.h"
+#include "graphics/include/grinline.h"
 #include "sinput.h"
 #include "commands.h"
-#include "inpFunc.h"
+#include "inpfunc.h"
 #include "wingorder.h"
 #include "simdrive.h"
 #include "nav.h"
 #include "navsystem.h"
 #include "popcbproto.h"
 #include "flight.h"
-#include "Sms.h"
-#include "Fsound.h" // JPO for VF_FLIGHTNUMBER_OFFSET
+#include "sms.h"
+#include "fsound.h" // JPO for VF_FLIGHTNUMBER_OFFSET
 
 extern bool g_bAWACSRequired;
 extern bool g_bDisableCommsBorder; //Cobra 10/31/04 TJL
 
-enum MenuColors {MENU_BLACK,
-                 MENU_WHITE,
-                 MENU_BRIGHT_RED,
-                 MENU_BRIGHT_GREEN,
-                 MENU_BRIGHT_BLUE,
-                 MENU_DARK_GREY,
-                 MENU_LIGHT_GREY,
-                 MENU_CYAN,
-                 MENU_YELLOW,
-                 MENU_DARK_RED,
-                 MENU_TOTAL_COLORS
-                } MenuColors;
-
-MenuColorStruct gMenuColorTable[MENU_TOTAL_COLORS] =
+enum MenuColors
 {
-    {"black", 0xff000000},
-    {"white", 0xffffffff},
-    {"bright_red", 0xff0000ff},
-    {"bright_green", 0xff00ff00},
-    {"bright_blue", 0xffff0000},
-    {"dark_grey", 0xff505050},
-    {"light_grey", 0xffc0c0c0},
-    {"cyan", 0xffffff00},
-    {"yellow", 0xff00ffff},
-    {"dark_red", 0xff000080}
-};
+    MENU_BLACK,
+    MENU_WHITE,
+    MENU_BRIGHT_RED,
+    MENU_BRIGHT_GREEN,
+    MENU_BRIGHT_BLUE,
+    MENU_DARK_GREY,
+    MENU_LIGHT_GREY,
+    MENU_CYAN,
+    MENU_YELLOW,
+    MENU_DARK_RED,
+    MENU_TOTAL_COLORS
+} MenuColors;
+
+MenuColorStruct gMenuColorTable[MENU_TOTAL_COLORS] = {
+    {"black", 0xff000000},       {"white", 0xffffffff},
+    {"bright_red", 0xff0000ff},  {"bright_green", 0xff00ff00},
+    {"bright_blue", 0xffff0000}, {"dark_grey", 0xff505050},
+    {"light_grey", 0xffc0c0c0},  {"cyan", 0xffffff00},
+    {"yellow", 0xff00ffff},      {"dark_red", 0xff000080}};
 
 BOOL FindMenuColorIndex(char* pColorName, int* pindex)
 {
     BOOL found = FALSE;
     *pindex = 0;
 
-    while ( not found and *pindex < MENU_TOTAL_COLORS)
+    while (not found and *pindex < MENU_TOTAL_COLORS)
     {
         if (strcmpi(gMenuColorTable[*pindex].mName, pColorName) == 0)
         {
@@ -111,7 +107,7 @@ MenuManager::MenuManager(int width, int height)
     mTargetId = FalconNullId;
     mpResDimensions = NULL;
 
-    ReadDataFile("art\\ckptart\\menu.dat");
+    ReadDataFile("art/ckptart/menu.dat");
 
     ShiAssert(mpResDimensions); // No dimension information in the data file
 
@@ -120,7 +116,8 @@ MenuManager::MenuManager(int width, int height)
 
     for (i = 0; i < mTotalRes; i++)
     {
-        if ( not found and mpResDimensions[i].xRes == width and mpResDimensions[i].yRes == height)
+        if (not found and mpResDimensions[i].xRes == width and
+            mpResDimensions[i].yRes == height)
         {
             backDest.top = mpResDimensions[i].mDimensions.top;
             backDest.left = mpResDimensions[i].mDimensions.left;
@@ -129,10 +126,9 @@ MenuManager::MenuManager(int width, int height)
 
             found = TRUE;
         }
-        else if ( not found and 
-                 mpResDimensions[i].xRes < width and 
-                 mpResDimensions[i].xRes > backWidth and 
-                 mpResDimensions[i].yRes < height and 
+        else if (not found and mpResDimensions[i].xRes < width and
+                 mpResDimensions[i].xRes > backWidth and
+                 mpResDimensions[i].yRes < height and
                  mpResDimensions[i].yRes > backHeight)
         {
 
@@ -153,8 +149,8 @@ MenuManager::MenuManager(int width, int height)
     mDestRect.bottom = FloatToInt32(mDestRect.top + bufHeight);
     mDestRect.right = FloatToInt32(mDestRect.left + bufWidth);
 
-    halfSWidth = (float) DisplayOptions.DispWidth * 0.5F;
-    halfSHeight = (float) DisplayOptions.DispHeight * 0.5F;
+    halfSWidth = (float)DisplayOptions.DispWidth * 0.5F;
+    halfSHeight = (float)DisplayOptions.DispHeight * 0.5F;
 
     mLeft = (mDestRect.left - halfSWidth) / halfSWidth;
     mRight = (mDestRect.right - halfSWidth) / halfSWidth;
@@ -166,12 +162,12 @@ MenuManager::MenuManager(int width, int height)
 void MenuManager::ReadDataFile(char* pfileName)
 {
     FILE* pFile;
-    BOOL quitFlag  = FALSE;
+    BOOL quitFlag = FALSE;
     char* presult = "";
     char* plinePtr;
     const int lineLen = MAX_LINE_BUFFER - 1;
     char plineBuffer[MAX_LINE_BUFFER] = "";
-    char *ptoken;
+    char* ptoken;
     char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
     int menuNumber = -1;
     int pageNumber = -1;
@@ -184,7 +180,7 @@ void MenuManager::ReadDataFile(char* pfileName)
     quitFlag = (presult == NULL);
     plinePtr = plineBuffer;
 
-    while ( not quitFlag)
+    while (not quitFlag)
     {
 
         if (*plineBuffer == '#')
@@ -192,23 +188,23 @@ void MenuManager::ReadDataFile(char* pfileName)
 
             ptoken = FindToken(&plinePtr, pseparators);
 
-            if ( not strcmpi(ptoken, TYPE_MENUMANGER_STR))
+            if (not strcmpi(ptoken, TYPE_MENUMANGER_STR))
             {
                 ParseManagerInfo(plinePtr);
             }
-            else if ( not strcmpi(ptoken, TYPE_MENU_STR))
+            else if (not strcmpi(ptoken, TYPE_MENU_STR))
             {
                 ParseMenuInfo(plinePtr, &menuNumber, &pageNumber);
             }
-            else if ( not strcmpi(ptoken, TYPE_PAGE_STR))
+            else if (not strcmpi(ptoken, TYPE_PAGE_STR))
             {
                 ParsePageInfo(plinePtr, &menuNumber, &pageNumber, &itemNumber);
             }
-            else if ( not strcmpi(ptoken, TYPE_ITEM_STR))
+            else if (not strcmpi(ptoken, TYPE_ITEM_STR))
             {
                 ParseItemInfo(plinePtr, &menuNumber, &pageNumber, &itemNumber);
             }
-            else if ( not strcmpi(ptoken, TYPE_RES_STR))
+            else if (not strcmpi(ptoken, TYPE_RES_STR))
             {
                 ParseResInfo(plinePtr, --mResCount);
             }
@@ -232,16 +228,19 @@ void MenuManager::ParseResInfo(char* plinePtr, int resCount)
 {
     ShiAssert(resCount >= 0);
 
+    // Artscout - 2026 (LP64): RECT fields (top/left/bottom/right) are LONG == 8 bytes on Linux, but "%d"
+    // writes a 4-byte int -> the high 4 bytes stayed uninitialized garbage, so mDimensions came out as huge
+    // junk coordinates. mDestRect then inherited that junk (drL/drR ~= -5.7e18, FloatToInt32 overflow ->
+    // INT_MIN) and the whole comms/AWACS menu drew at insane off-screen coords = invisible on BOTH paths.
+    // Scan into plain ints, then assign to the LONG RECT fields. (xRes/yRes are int, so they were fine.)
+    int dTop = 0, dLeft = 0, dBottom = 0, dRight = 0;
     sscanf(plinePtr, "%d %d %d %d %d %d", &(mpResDimensions[resCount].xRes),
-           &(mpResDimensions[resCount].yRes),
-           &(mpResDimensions[resCount].mDimensions.top),
-           &(mpResDimensions[resCount].mDimensions.left),
-           &(mpResDimensions[resCount].mDimensions.bottom),
-           &(mpResDimensions[resCount].mDimensions.right));
-
-
+           &(mpResDimensions[resCount].yRes), &dTop, &dLeft, &dBottom, &dRight);
+    mpResDimensions[resCount].mDimensions.top = dTop;
+    mpResDimensions[resCount].mDimensions.left = dLeft;
+    mpResDimensions[resCount].mDimensions.bottom = dBottom;
+    mpResDimensions[resCount].mDimensions.right = dRight;
 }
-
 
 
 void MenuManager::ParseManagerInfo(char* plinePtr)
@@ -251,7 +250,8 @@ void MenuManager::ParseManagerInfo(char* plinePtr)
     mMaxTextLen++;
 
 #ifdef USE_SH_POOLS
-    mpMenus = (MenuStruct *)MemAllocPtr(gCockMemPool, sizeof(MenuStruct) * mNumMenus, FALSE);
+    mpMenus = (MenuStruct*)MemAllocPtr(gCockMemPool,
+                                       sizeof(MenuStruct) * mNumMenus, FALSE);
 #else
     mpMenus = new MenuStruct[mNumMenus];
 #endif
@@ -259,14 +259,16 @@ void MenuManager::ParseManagerInfo(char* plinePtr)
     mResCount = mTotalRes;
 
 #ifdef USE_SH_POOLS
-    mpResDimensions = (ResStruct *)MemAllocPtr(gCockMemPool, sizeof(ResStruct) * mTotalRes, FALSE);
+    mpResDimensions = (ResStruct*)MemAllocPtr(
+        gCockMemPool, sizeof(ResStruct) * mTotalRes, FALSE);
 #else
     mpResDimensions = new ResStruct[mTotalRes];
 #endif
 }
 
 
-void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber)
+void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber,
+                                int* pageNumber)
 {
     (*menuNumber)++;
     *pageNumber = -1;
@@ -274,7 +276,7 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
     char pdrawColor[20];
     ULONG color;
     char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
-    char *ptoken;
+    char* ptoken;
     char pmsgName[30] = "";
     char paiExtent[20] = "";
     BOOL found;
@@ -285,7 +287,8 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
     MenuStruct* pMenu = &(mpMenus[*menuNumber]);
 
 #ifdef USE_SH_POOLS
-    pMenu->mpTitle = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
+    pMenu->mpTitle =
+        (char*)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
 #else
     pMenu->mpTitle = new char[mMaxTextLen];
 #endif
@@ -293,15 +296,15 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
 
 
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%s",  pmsgName);
+    sscanf(ptoken, "%s", pmsgName);
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%s",  paiExtent);
+    sscanf(ptoken, "%s", paiExtent);
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%d",  &(pMenu->mNumPages));
+    sscanf(ptoken, "%d", &(pMenu->mNumPages));
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%d",  &(pMenu->mCondition));
+    sscanf(ptoken, "%d", &(pMenu->mCondition));
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%s",  pdrawColor);
+    sscanf(ptoken, "%s", pdrawColor);
 
     ptoken = FindToken(&plinePtr, pseparators);
 
@@ -318,9 +321,10 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
 
     for (i = 0; i < AiTotalExtent; i++)
     {
-        if ( not strcmpi(paiExtent, gpAiExtentStr[i]))
+        if (not strcmpi(paiExtent, gpAiExtentStr[i]))
         {
-            pMenu->mWingExtent = i;;
+            pMenu->mWingExtent = i;
+            ;
         }
     }
 
@@ -336,10 +340,10 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
     id = 0;
     found = FALSE;
 
-    while ( not found and id <= SimRoughPositionUpdateMsg)
+    while (not found and id <= SimRoughPositionUpdateMsg)
     {
 
-        if ( not strcmpi(pmsgName, TheEventStrings[FalconMsgIdStr[id]]))
+        if (not strcmpi(pmsgName, TheEventStrings[FalconMsgIdStr[id]]))
         {
             found = TRUE;
             pMenu->mMsgId = id + (VU_LAST_EVENT + 1);
@@ -354,13 +358,15 @@ void MenuManager::ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber
 
 
 #ifdef USE_SH_POOLS
-    pMenu->mpPages = (PageStruct *)MemAllocPtr(gCockMemPool, sizeof(PageStruct) * pMenu->mNumPages, FALSE);
+    pMenu->mpPages = (PageStruct*)MemAllocPtr(
+        gCockMemPool, sizeof(PageStruct) * pMenu->mNumPages, FALSE);
 #else
     pMenu->mpPages = new PageStruct[pMenu->mNumPages];
 #endif
 }
 
-void MenuManager::ParsePageInfo(char* plinePtr, int* menuNumber, int* pageNumber, int* itemNumber)
+void MenuManager::ParsePageInfo(char* plinePtr, int* menuNumber,
+                                int* pageNumber, int* itemNumber)
 {
     (*pageNumber)++;
     *itemNumber = -1;
@@ -368,12 +374,13 @@ void MenuManager::ParsePageInfo(char* plinePtr, int* menuNumber, int* pageNumber
     char pdrawColor[20];
     ULONG color;
     char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
-    char *ptoken;
+    char* ptoken;
 
     PageStruct* pPage = &(mpMenus[*menuNumber].mpPages[*pageNumber]);
 
 #ifdef USE_SH_POOLS
-    pPage->mpTitle = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
+    pPage->mpTitle =
+        (char*)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
 #else
     pPage->mpTitle = new char[mMaxTextLen];
 #endif
@@ -381,11 +388,11 @@ void MenuManager::ParsePageInfo(char* plinePtr, int* menuNumber, int* pageNumber
     *(pPage->mpTitle) = '\0';
 
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%d",  &(pPage->mNumItems));
+    sscanf(ptoken, "%d", &(pPage->mNumItems));
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%d",  &(pPage->mCondition));
+    sscanf(ptoken, "%d", &(pPage->mCondition));
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%s",  pdrawColor);
+    sscanf(ptoken, "%s", pdrawColor);
 
     *(pPage->mpTitle) = NULL;
     ptoken = FindToken(&plinePtr, pseparators);
@@ -412,25 +419,29 @@ void MenuManager::ParsePageInfo(char* plinePtr, int* menuNumber, int* pageNumber
 
 
 #ifdef USE_SH_POOLS
-    pPage->mpItems = (ItemStruct *)MemAllocPtr(gCockMemPool, sizeof(ItemStruct) * pPage->mNumItems, FALSE);
+    pPage->mpItems = (ItemStruct*)MemAllocPtr(
+        gCockMemPool, sizeof(ItemStruct) * pPage->mNumItems, FALSE);
 #else
     pPage->mpItems = new ItemStruct[pPage->mNumItems];
 #endif
 }
 
-void MenuManager::ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber, int* itemNumber)
+void MenuManager::ParseItemInfo(char* plinePtr, int* menuNumber,
+                                int* pageNumber, int* itemNumber)
 {
     (*itemNumber)++;
 
     char pdrawColor[20];
     ULONG color;
     char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x23, 0x00};
-    char *ptoken;
+    char* ptoken;
 
-    ItemStruct* pItem = &(mpMenus[*menuNumber].mpPages[*pageNumber].mpItems[*itemNumber]);
+    ItemStruct* pItem =
+        &(mpMenus[*menuNumber].mpPages[*pageNumber].mpItems[*itemNumber]);
 
 #ifdef USE_SH_POOLS
-    pItem->mpText = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
+    pItem->mpText =
+        (char*)MemAllocPtr(gCockMemPool, sizeof(char) * mMaxTextLen, FALSE);
 #else
     pItem->mpText = new char[mMaxTextLen];
 #endif
@@ -438,15 +449,15 @@ void MenuManager::ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber
     *(pItem->mpText) = '\0';
 
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%d",  &(pItem->mCondition));
+    sscanf(ptoken, "%d", &(pItem->mCondition));
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%d",  &(pItem->mPoll));
+    sscanf(ptoken, "%d", &(pItem->mPoll));
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%s",  pdrawColor);
+    sscanf(ptoken, "%s", pdrawColor);
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%f",  &(pItem->mSpacing));
+    sscanf(ptoken, "%f", &(pItem->mSpacing));
     ptoken = FindToken(&plinePtr, pseparators);
-    sscanf(ptoken, "%d",  &(pItem->mMessage));
+    sscanf(ptoken, "%d", &(pItem->mMessage));
 
     int i = 0;
 
@@ -468,7 +479,6 @@ void MenuManager::ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber
 }
 
 
-
 MenuManager::~MenuManager()
 {
     int i, j, k;
@@ -479,26 +489,30 @@ MenuManager::~MenuManager()
         {
             for (k = 0; k < mpMenus[i].mpPages[j].mNumItems; k++)
             {
-                delete [] mpMenus[i].mpPages[j].mpItems[k].mpText;
+                delete[] mpMenus[i].mpPages[j].mpItems[k].mpText;
             }
 
-            delete [] mpMenus[i].mpPages[j].mpItems;
-            delete [] mpMenus[i].mpPages[j].mpTitle;
+            delete[] mpMenus[i].mpPages[j].mpItems;
+            delete[] mpMenus[i].mpPages[j].mpTitle;
         }
 
-        delete [] mpMenus[i].mpPages;
-        delete [] mpMenus[i].mpTitle;
+        delete[] mpMenus[i].mpPages;
+        delete[] mpMenus[i].mpTitle;
     }
 
-    delete [] mpResDimensions;
-    delete [] mpMenus;
+    delete[] mpResDimensions;
+    delete[] mpMenus;
 }
 
 
 void MenuManager::InitPage()
 {
-    mCallerIdx = SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentIndex(SimDriver.GetPlayerEntity());
-    mNumInFlight = ((FlightClass*) SimDriver.GetPlayerEntity()->GetCampaignObject())->GetTotalVehicles();
+    mCallerIdx =
+        SimDriver.GetPlayerEntity()->GetCampaignObject()->GetComponentIndex(
+            SimDriver.GetPlayerEntity());
+    mNumInFlight =
+        ((FlightClass*)SimDriver.GetPlayerEntity()->GetCampaignObject())
+            ->GetTotalVehicles();
     mExtent = mpMenus[mCurMenu].mWingExtent;
 
     mpPage = &(mpMenus[mCurMenu].mpPages[mCurPage]);
@@ -512,23 +526,24 @@ void MenuManager::InitPage()
     // check for an AWACS in the sky
     mAWACSavail = false;
 
-    if ( not g_bAWACSRequired) // Only check for AWACS available if user wants AWACS required...
+    if (not g_bAWACSRequired) // Only check for AWACS available if user wants AWACS required...
         mAWACSavail = true;
 
     Unit nu, cf;
     VuListIterator myit(AllAirList);
-    nu = (Unit) myit.GetFirst();
+    nu = (Unit)myit.GetFirst();
 
     while (nu and not mAWACSavail)
     {
         cf = nu;
-        nu = (Unit) myit.GetNext();
+        nu = (Unit)myit.GetNext();
 
         // 2002-03-07 MN of course only AWACS from our team - doh
-        if ( not cf->IsFlight() or cf->IsDead())
+        if (not cf->IsFlight() or cf->IsDead())
             continue;
 
-        if (cf->GetUnitMission() == AMIS_AWACS and cf->GetTeam() == SimDriver.GetPlayerEntity()->GetTeam())
+        if (cf->GetUnitMission() == AMIS_AWACS and
+            cf->GetTeam() == SimDriver.GetPlayerEntity()->GetTeam())
         {
             mAWACSavail = true;
         }
@@ -542,12 +557,13 @@ void MenuManager::CheckItemConditions(BOOL poll)
     int condition;
 
     // COBRA - RED - CTD Fix
-    if ( not SimDriver.GetPlayerEntity()) return;
+    if (not SimDriver.GetPlayerEntity())
+        return;
 
     mIsPolling = poll;
     //Cobra this should update our menu list while open
     bool doLoop = TRUE;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     mTargetId = AiDesignateTarget(playerAC);
 
     for (i = 0; i < mNumItems; i++)
@@ -576,7 +592,9 @@ void MenuManager::CheckItemConditions(BOOL poll)
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;
             }
-            else if (MenuCallbackArray[mpPage->mpItems[i].mCondition](mCallerIdx, mNumInFlight, mExtent, mIsPolling, mTargetId))
+            else if (MenuCallbackArray[mpPage->mpItems[i].mCondition](
+                         mCallerIdx, mNumInFlight, mExtent, mIsPolling,
+                         mTargetId))
             {
                 mpPage->mpItems[i].mIsAvailable = TRUE;
                 mpPage->mpItems[i].mDrawColor = mpPage->mpItems[i].mNormColor;
@@ -584,7 +602,8 @@ void MenuManager::CheckItemConditions(BOOL poll)
             else
             {
                 mpPage->mpItems[i].mIsAvailable = FALSE;
-                mpPage->mpItems[i].mDrawColor = gMenuColorTable[MENU_DARK_GREY].mValue;
+                mpPage->mpItems[i].mDrawColor =
+                    gMenuColorTable[MENU_DARK_GREY].mValue;
             }
         }
     }
@@ -629,45 +648,47 @@ void MenuManager::DisplayDraw(void)
         // with VR enabled in options but the headset OFF we render flat, and this reposition+viewport-remap
         // must NOT run -- otherwise the menu is mispositioned and the NDC viewport remap below corrupts the
         // flat path (and the cockpit cursor hit-test that follows).
-        extern bool g_bVrFrameActive; extern float g_fVrMenuScale;
-        float drL = (float)mDestRect.left,  drT = (float)mDestRect.top;
+        extern bool g_bVrFrameActive;
+        extern float g_fVrMenuScale;
+        float drL = (float)mDestRect.left, drT = (float)mDestRect.top;
         float drR = (float)mDestRect.right, drB = (float)mDestRect.bottom;
         float vpL = mLeft, vpT = mTop, vpR = mRight, vpB = mBottom;
         if (g_bVrFrameActive)
         {
-            float cx = (float)DisplayOptions.DispWidth  * 0.5F;
+            float cx = (float)DisplayOptions.DispWidth * 0.5F;
             float cy = (float)DisplayOptions.DispHeight * 0.5F;
-            float hw = ((float)mDestRect.right  - (float)mDestRect.left) * 0.5F * g_fVrMenuScale;
-            float hh = ((float)mDestRect.bottom - (float)mDestRect.top)  * 0.5F * g_fVrMenuScale;
-            drL = cx - hw; drR = cx + hw; drT = cy - hh; drB = cy + hh;
-            vpL = (drL - cx) / cx;  vpR = (drR - cx) / cx;
-            vpT = -(drT - cy) / cy; vpB = -(drB - cy) / cy;
+            float hw = ((float)mDestRect.right - (float)mDestRect.left) * 0.5F *
+                       g_fVrMenuScale;
+            float hh = ((float)mDestRect.bottom - (float)mDestRect.top) * 0.5F *
+                       g_fVrMenuScale;
+            drL = cx - hw;
+            drR = cx + hw;
+            drT = cy - hh;
+            drB = cy + hh;
+            vpL = (drL - cx) / cx;
+            vpR = (drR - cx) / cx;
+            vpT = -(drT - cy) / cy;
+            vpB = -(drB - cy) / cy;
         }
 
         // ASSO: disable the radio comms menu border //Cobra 10/31/04 TJL
-        if ( not g_bDisableCommsBorder)
+        if (not g_bDisableCommsBorder)
         {
             OTWDriver.renderer->SetViewport(-1.0, 1.0, 1.0, -1.0);
 
             OTWDriver.renderer->SetColor(0x997B5200); // 60% alpha blue
             OTWDriver.renderer->context.RestoreState(STATE_ALPHA_SOLID);
-            OTWDriver.renderer->Render2DTri(drL, drT,
-                                            drR - 1.0F, drT,
+            OTWDriver.renderer->Render2DTri(drL, drT, drR - 1.0F, drT,
                                             drR - 1.0F, drB);
-            OTWDriver.renderer->Render2DTri(drL, drT,
-                                            drL, drB,
-                                            drR - 1.0F, drB);
+            OTWDriver.renderer->Render2DTri(drL, drT, drL, drB, drR - 1.0F,
+                                            drB);
 
             OTWDriver.renderer->SetColor(0xFF000000); // black
 
-            OTWDriver.renderer->Render2DLine(drL, drT,
-                                             drR - 1.0F, drT);
-            OTWDriver.renderer->Render2DLine(drR - 1.0F, drT,
-                                             drR - 1.0F, drB);
-            OTWDriver.renderer->Render2DLine(drR - 1.0F, drB,
-                                             drL, drB);
-            OTWDriver.renderer->Render2DLine(drL, drB,
-                                             drL, drT);
+            OTWDriver.renderer->Render2DLine(drL, drT, drR - 1.0F, drT);
+            OTWDriver.renderer->Render2DLine(drR - 1.0F, drT, drR - 1.0F, drB);
+            OTWDriver.renderer->Render2DLine(drR - 1.0F, drB, drL, drB);
+            OTWDriver.renderer->Render2DLine(drL, drB, drL, drT);
         }
 
 
@@ -675,12 +696,15 @@ void MenuManager::DisplayDraw(void)
 
         // set the color and print the text for the menu
         OTWDriver.renderer->SetColor(mpMenus[mCurMenu].mDrawColor);
-        OTWDriver.renderer->TextCenter(0.0F, position, mpMenus[mCurMenu].mpTitle);
+        OTWDriver.renderer->TextCenter(0.0F, position,
+                                       mpMenus[mCurMenu].mpTitle);
 
         // set the color and print the text for the page
         position -= 0.15F;
-        OTWDriver.renderer->SetColor(mpMenus[mCurMenu].mpPages[mCurPage].mDrawColor);
-        OTWDriver.renderer->TextCenter(0.0F, position, mpMenus[mCurMenu].mpPages[mCurPage].mpTitle);
+        OTWDriver.renderer->SetColor(
+            mpMenus[mCurMenu].mpPages[mCurPage].mDrawColor);
+        OTWDriver.renderer->TextCenter(
+            0.0F, position, mpMenus[mCurMenu].mpPages[mCurPage].mpTitle);
 
         CheckItemConditions(TRUE);
 
@@ -708,20 +732,36 @@ void MenuManager::DisplayDraw(void)
 
             if (mpMenus[mCurMenu].mpPages[mCurPage].mpItems[i].mIsAvailable)
             {
-                OTWDriver.renderer->SetColor(gMenuColorTable[MENU_BRIGHT_GREEN].mValue);
+                OTWDriver.renderer->SetColor(
+                    gMenuColorTable[MENU_BRIGHT_GREEN].mValue);
             }
             else
             {
-                OTWDriver.renderer->SetColor(gMenuColorTable[MENU_DARK_GREY].mValue);
+                OTWDriver.renderer->SetColor(
+                    gMenuColorTable[MENU_DARK_GREY].mValue);
             }
 
             OTWDriver.renderer->TextLeft(-0.70F, position, ptextStr);
 
-            OTWDriver.renderer->SetColor(mpMenus[mCurMenu].mpPages[mCurPage].mpItems[i].mDrawColor);
-            OTWDriver.renderer->TextLeft(-0.60F, position, mpMenus[mCurMenu].mpPages[mCurPage].mpItems[i].mpText);
+            OTWDriver.renderer->SetColor(
+                mpMenus[mCurMenu].mpPages[mCurPage].mpItems[i].mDrawColor);
+            OTWDriver.renderer->TextLeft(
+                -0.60F, position,
+                mpMenus[mCurMenu].mpPages[mCurPage].mpItems[i].mpText);
         }
 
         OTWDriver.renderer->EndDraw();
+
+        // Artscout - 2026: the comms/AWACS menu's 2D border (Render2DTri/Render2DLine) and text (TextCenter/
+        // TextLeft) batch into TheDXEngine's polylists via context.DrawPrimitive. Unlike DrawExitMenu (which
+        // flushes explicitly right here) this path relied on an implicit later flush -- which on Linux/Vulkan
+        // never reaches the presented target (the frame's 2D batch is already flushed / the render-pass target
+        // switches before it runs), so the whole menu was invisible while the exit dialog rendered fine. Flush
+        // the batched geometry NOW, exactly like DrawExitMenu, so it lands on this frame's target.
+        TheDXEngine.SaveState();
+        TheDXEngine.SetState(DX_OTW);
+        TheDXEngine.FlushBuffers();
+        TheDXEngine.RestoreState();
 
         // restore the old viewport
         OTWDriver.renderer->SetViewport(left, top, right, bottom);
@@ -786,13 +826,14 @@ void MenuManager::DeActivateAndClear(void)
 }
 
 
-void MenuManager::ProcessInput(unsigned long val, int state, int type, int extent)
+void MenuManager::ProcessInput(unsigned long val, int state, int type,
+                               int extent)
 {
     int message;
     int item = -1;
     int i;
     ItemStruct* pitem;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (state bitand KEY_DOWN)
     {
@@ -803,21 +844,21 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
             switch (val)
             {
 
-                case DIK_0:
-                    item = 9;
-                    break;
+            case DIK_0:
+                item = 9;
+                break;
 
-                case DIK_1:
-                case DIK_2:
-                case DIK_3:
-                case DIK_4:
-                case DIK_5:
-                case DIK_6:
-                case DIK_7:
-                case DIK_8:
-                case DIK_9:
-                    item = val - DIK_1;
-                    break;
+            case DIK_1:
+            case DIK_2:
+            case DIK_3:
+            case DIK_4:
+            case DIK_5:
+            case DIK_6:
+            case DIK_7:
+            case DIK_8:
+            case DIK_9:
+                item = val - DIK_1;
+                break;
             }
 
             if (item not_eq -1)
@@ -830,7 +871,8 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
                 {
                     message = pitem->mMessage;
                     mTargetId = AiDesignateTarget(playerAC);
-                    SendMenuMsg(mpMenus[mCurMenu].mMsgId, message, mpMenus[mCurMenu].mWingExtent, mTargetId);
+                    SendMenuMsg(mpMenus[mCurMenu].mMsgId, message,
+                                mpMenus[mCurMenu].mWingExtent, mTargetId);
                 }
             }
             else if (val == DIK_SYSRQ)
@@ -852,7 +894,8 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
 
             for (i = 0; i < mNumMenus; i++)
             {
-                if (mpMenus[i].mMsgId == type and mpMenus[i].mWingExtent == extent)
+                if (mpMenus[i].mMsgId == type and
+                    mpMenus[i].mWingExtent == extent)
                 {
                     mCurMenu = i;
                 }
@@ -867,31 +910,32 @@ void MenuManager::ProcessInput(unsigned long val, int state, int type, int exten
 }
 
 
-void MenuManager::SendMenuMsg(int msgType, int enumId, int aiExtent, VU_ID targetId)
+void MenuManager::SendMenuMsg(int msgType, int enumId, int aiExtent,
+                              VU_ID targetId)
 {
     if (SimDriver.GetPlayerEntity())
     {
         switch (msgType)
         {
-            case AWACSMsg:
-                MenuSendAwacs(enumId, targetId);
-                break;
+        case AWACSMsg:
+            MenuSendAwacs(enumId, targetId);
+            break;
 
-            case ATCMsg:
-                MenuSendAtc(enumId);
-                break;
+        case ATCMsg:
+            MenuSendAtc(enumId);
+            break;
 
-            case TankerMsg:
-                MenuSendTanker(enumId);
-                break;
+        case TankerMsg:
+            MenuSendTanker(enumId);
+            break;
 
-            case WingmanMsg:
-                AiSendPlayerCommand(enumId, aiExtent, targetId);
-                break;
+        case WingmanMsg:
+            AiSendPlayerCommand(enumId, aiExtent, targetId);
+            break;
 
-            default:
-                ShiWarning("Unsupported Message Type"); // unsupported message
-                break;
+        default:
+            ShiWarning("Unsupported Message Type"); // unsupported message
+            break;
         }
     }
 }
@@ -900,9 +944,9 @@ void MenuManager::SendMenuMsg(int msgType, int enumId, int aiExtent, VU_ID targe
 void MenuSendAtc(int enumId, int sendRequest)
 {
     VU_ID ATCId = vuNullId;
-    ObjectiveClass *theATC;
-    FalconATCMessage *atcMsg;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    ObjectiveClass* theATC;
+    FalconATCMessage* atcMsg;
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     gNavigationSys->GetAirbase(&ATCId);
 
@@ -910,40 +954,43 @@ void MenuSendAtc(int enumId, int sendRequest)
     {
         switch (enumId)
         {
-            case FalconATCMessage::ContactApproach:
-            case FalconATCMessage::RequestClearance:
-                SendCallToATC(playerAC, ATCId, rcLANDCLEARANCE, FalconLocalGame);
-                break;
+        case FalconATCMessage::ContactApproach:
+        case FalconATCMessage::RequestClearance:
+            SendCallToATC(playerAC, ATCId, rcLANDCLEARANCE, FalconLocalGame);
+            break;
 
-            case FalconATCMessage::RequestEmerClearance:
-                SendCallToATC(playerAC, ATCId, rcLANDCLEAREMERGENCY, FalconLocalGame);
-                break;
+        case FalconATCMessage::RequestEmerClearance:
+            SendCallToATC(playerAC, ATCId, rcLANDCLEAREMERGENCY,
+                          FalconLocalGame);
+            break;
 
-            case FalconATCMessage::RequestTakeoff:
-                SendCallToATC(playerAC, ATCId, rcREADYFORDERARTURE, FalconLocalGame);
-                break;
+        case FalconATCMessage::RequestTakeoff:
+            SendCallToATC(playerAC, ATCId, rcREADYFORDERARTURE,
+                          FalconLocalGame);
+            break;
 
-            case FalconATCMessage::RequestTaxi:
-                SendCallToATC(playerAC, ATCId, rcREADYFORDERARTURE, FalconLocalGame);
-                break;
+        case FalconATCMessage::RequestTaxi:
+            SendCallToATC(playerAC, ATCId, rcREADYFORDERARTURE,
+                          FalconLocalGame);
+            break;
 
-            case FalconATCMessage::AbortApproach:
-                SendCallToATC(playerAC, ATCId, rcABORTAPPROACH, FalconLocalGame);
-                break;
+        case FalconATCMessage::AbortApproach:
+            SendCallToATC(playerAC, ATCId, rcABORTAPPROACH, FalconLocalGame);
+            break;
 
-                //RAS-17Jan04-Added for traffic call acknowledgement
-            case FalconATCMessage::TrafficInSight:
-                SendCallToATC(playerAC, rcCOPY, FalconLocalGame);
-                break;
+            //RAS-17Jan04-Added for traffic call acknowledgement
+        case FalconATCMessage::TrafficInSight:
+            SendCallToATC(playerAC, rcCOPY, FalconLocalGame);
+            break;
 
-                //TJL 08/16/04 Hotpit Refuel //Cobra 10/31/04 TJL
-            case FalconATCMessage::RequestHotpitRefuel:
-                SendCallToATC(playerAC, rcCOPY, FalconLocalGame);
-                break;
+            //TJL 08/16/04 Hotpit Refuel //Cobra 10/31/04 TJL
+        case FalconATCMessage::RequestHotpitRefuel:
+            SendCallToATC(playerAC, rcCOPY, FalconLocalGame);
+            break;
 
-            case FalconATCMessage::UpdateStatus:
-            default:
-                break;
+        case FalconATCMessage::UpdateStatus:
+        default:
+            break;
         }
     }
 
@@ -968,162 +1015,163 @@ void MenuSendAtc(int enumId, int sendRequest)
 
 void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
 {
-    FalconAWACSMessage *pawacsMsg;
+    FalconAWACSMessage* pawacsMsg;
     FalconRadioChatterMessage* radioMessage;
     Flight flight;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     // Send the 'call' message
     if (sendRequest and PlayerOptions.PlayerRadioVoice)
     {
         switch (enumId)
         {
-            case FalconAWACSMessage::Unable:
-                SendCallToAWACS(playerAC, rcUNABLE, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::Unable:
+            SendCallToAWACS(playerAC, rcUNABLE, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::Wilco:
-                SendCallToAWACS(playerAC, rcCOPY, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::Wilco:
+            SendCallToAWACS(playerAC, rcCOPY, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::Judy:
-                // SendCallToAWACS(playerAC, rcJUDY);
-                break;
+        case FalconAWACSMessage::Judy:
+            // SendCallToAWACS(playerAC, rcJUDY);
+            break;
 
-            case FalconAWACSMessage::RequestPicture:
-                SendCallToAWACS(playerAC, rcPICTUREQUERY, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::RequestPicture:
+            SendCallToAWACS(playerAC, rcPICTUREQUERY, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::GivePicture:
-                break;
+        case FalconAWACSMessage::GivePicture:
+            break;
 
-            case FalconAWACSMessage::RequestHelp:
-                radioMessage = CreateCallToAWACS(playerAC, rcNEEDHELP, FalconLocalGame);
-                radioMessage->dataBlock.edata[1] -= VF_FLIGHTNUMBER_OFFSET; // jpo - rewrite this...
-                radioMessage->dataBlock.edata[2] = SimToGrid(playerAC->YPos());
-                radioMessage->dataBlock.edata[3] = SimToGrid(playerAC->XPos());
-                FalconSendMessage(radioMessage, FALSE);
-                break;
+        case FalconAWACSMessage::RequestHelp:
+            radioMessage =
+                CreateCallToAWACS(playerAC, rcNEEDHELP, FalconLocalGame);
+            radioMessage->dataBlock.edata[1] -=
+                VF_FLIGHTNUMBER_OFFSET; // jpo - rewrite this...
+            radioMessage->dataBlock.edata[2] = SimToGrid(playerAC->YPos());
+            radioMessage->dataBlock.edata[3] = SimToGrid(playerAC->XPos());
+            FalconSendMessage(radioMessage, FALSE);
+            break;
 
-            case FalconAWACSMessage::RequestRelief:
-                flight = (Flight)playerAC->GetCampaignObject();
+        case FalconAWACSMessage::RequestRelief:
+            flight = (Flight)playerAC->GetCampaignObject();
 
-                if (flight)
+            if (flight)
+            {
+                int hasWeaps = 0, role, hp;
+                SMSClass* sms = (SMSClass*)playerAC->GetSMS();
+
+                role = flight->GetUnitCurrentRole();
+
+                if (sms)
                 {
-                    int hasWeaps = 0, role, hp;
-                    SMSClass *sms = (SMSClass*) playerAC->GetSMS();
-
-                    role = flight->GetUnitCurrentRole();
-
-                    if (sms)
+                    for (hp = 1; hp < sms->NumHardpoints(); hp++)
                     {
-                        for (hp = 1; hp < sms->NumHardpoints(); hp++)
+                        if (role == ARO_CA)
                         {
-                            if (role == ARO_CA)
+                            if (sms->hardPoint[hp] and
+                                sms->hardPoint[hp]->weaponPointer and
+                                sms->hardPoint[hp]->Domain() bitand wdAir)
                             {
-                                if (
-                                    sms->hardPoint[hp] and 
-                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdAir
-                                )
-                                {
-                                    hasWeaps++;
-                                }
+                                hasWeaps++;
                             }
-                            else if (role == ARO_S or role == ARO_GA or role == ARO_SB or role == ARO_SEAD)
+                        }
+                        else if (role == ARO_S or role == ARO_GA or
+                                 role == ARO_SB or role == ARO_SEAD)
+                        {
+                            if (sms->hardPoint[hp] and
+                                sms->hardPoint[hp]->weaponPointer and
+                                sms->hardPoint[hp]->Domain() bitand wdGround)
                             {
-                                if (
-                                    sms->hardPoint[hp] and 
-                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround
-                                )
-                                {
-                                    hasWeaps++;
-                                }
+                                hasWeaps++;
                             }
-                            else if (role == ARO_ASW or role == ARO_ASHIP)
+                        }
+                        else if (role == ARO_ASW or role == ARO_ASHIP)
+                        {
+                            if (sms->hardPoint[hp] and
+                                sms->hardPoint[hp]->weaponPointer and
+                                sms->hardPoint[hp]->Domain() bitand wdGround)
                             {
-                                if (
-                                    sms->hardPoint[hp] and 
-                                    sms->hardPoint[hp]->weaponPointer and sms->hardPoint[hp]->Domain() bitand wdGround
-                                )
-                                {
-                                    hasWeaps++;
-                                }
+                                hasWeaps++;
                             }
                         }
                     }
-
-                    // Pick what we say depending on our status
-                    if ( not hasWeaps)
-                        SendCallToAWACS(playerAC, rcENDCAPARMS, FalconLocalGame);
-                    else
-                        SendCallToAWACS(playerAC, rcENDCAPFUEL, FalconLocalGame);
                 }
 
-                break;
+                // Pick what we say depending on our status
+                if (not hasWeaps)
+                    SendCallToAWACS(playerAC, rcENDCAPARMS, FalconLocalGame);
+                else
+                    SendCallToAWACS(playerAC, rcENDCAPFUEL, FalconLocalGame);
+            }
 
-            case FalconAWACSMessage::RequestDivert:
-                SendCallToAWACS(playerAC, rcREQUESTTASK, FalconLocalGame);
-                break;
+            break;
 
-            case FalconAWACSMessage::RequestSAR:
-                SendCallToAWACS(playerAC, rcSENDCHOPPERS, FalconLocalGame);
-                // SendCallToAWACS(plane, rcAIRMANDOWND, FalconLocalGame); // JPO addition doesn't work
-                break;
+        case FalconAWACSMessage::RequestDivert:
+            SendCallToAWACS(playerAC, rcREQUESTTASK, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::OnStation:
-                //TJL 12/14/03 Changing FAC Request
-                //SendCallToAWACS(plane, rcFACCONTACT, FalconLocalGame);
-                SendCallToAWACS(playerAC, rcFACREADY, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::RequestSAR:
+            SendCallToAWACS(playerAC, rcSENDCHOPPERS, FalconLocalGame);
+            // SendCallToAWACS(plane, rcAIRMANDOWND, FalconLocalGame); // JPO addition doesn't work
+            break;
 
-            case FalconAWACSMessage::OffStation:
-                // KCK: I don't think we have the speach to impliment this
-                // SendCallToAWACS(plane, rcFACCONTACT);
-                // VWF: It seems we dont have a "check out" call. Vamoose is as
-                // close as it gets.
-                //TJL 12/14/03 Enable Check Out Speech.
-                SendCallToAWACS(playerAC, rcIMADOT, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::OnStation:
+            //TJL 12/14/03 Changing FAC Request
+            //SendCallToAWACS(plane, rcFACCONTACT, FalconLocalGame);
+            SendCallToAWACS(playerAC, rcFACREADY, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::VectorHome:
-                SendCallToAWACS(playerAC, rcVECTORHOMEPLATE, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::OffStation:
+            // KCK: I don't think we have the speach to impliment this
+            // SendCallToAWACS(plane, rcFACCONTACT);
+            // VWF: It seems we dont have a "check out" call. Vamoose is as
+            // close as it gets.
+            //TJL 12/14/03 Enable Check Out Speech.
+            SendCallToAWACS(playerAC, rcIMADOT, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::VectorToAltAirfield:
-                SendCallToAWACS(playerAC, rcDIVERTFIELD, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::VectorHome:
+            SendCallToAWACS(playerAC, rcVECTORHOMEPLATE, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::VectorToPackage:
-                SendCallToAWACS(playerAC, rcVECTORTOPACKAGE, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::VectorToAltAirfield:
+            SendCallToAWACS(playerAC, rcDIVERTFIELD, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::VectorToTanker:
-                SendCallToAWACS(playerAC, rcREQUESTVECTORTOTANKER, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::VectorToPackage:
+            SendCallToAWACS(playerAC, rcVECTORTOPACKAGE, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::VectorToCarrier: // Carrier
-                SendCallToAWACS(playerAC, rcVECTORTOCARRIER, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::VectorToTanker:
+            SendCallToAWACS(playerAC, rcREQUESTVECTORTOTANKER, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::VectorToThreat:
-                SendCallToAWACS(playerAC, rcVECTORTOTHREAT, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::VectorToCarrier: // Carrier
+            SendCallToAWACS(playerAC, rcVECTORTOCARRIER, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::VectorToTarget:
-                SendCallToAWACS(playerAC, rcVECTORTOTARGET, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::VectorToThreat:
+            SendCallToAWACS(playerAC, rcVECTORTOTHREAT, FalconLocalGame);
+            break;
 
-            case FalconAWACSMessage::DeclareAircraft:
-                SendCallToAWACS(playerAC, rcDECLARE, FalconLocalGame);
-                break;
+        case FalconAWACSMessage::VectorToTarget:
+            SendCallToAWACS(playerAC, rcVECTORTOTARGET, FalconLocalGame);
+            break;
 
-            default:
-                break;
+        case FalconAWACSMessage::DeclareAircraft:
+            SendCallToAWACS(playerAC, rcDECLARE, FalconLocalGame);
+            break;
+
+        default:
+            break;
         }
     }
 
     // Now send the message
-    pawacsMsg = new FalconAWACSMessage(SimDriver.GetPlayerEntity()->Id(), FalconLocalGame);
+    pawacsMsg = new FalconAWACSMessage(SimDriver.GetPlayerEntity()->Id(),
+                                       FalconLocalGame);
     pawacsMsg->dataBlock.type = enumId;
     pawacsMsg->dataBlock.caller = targetId;
 
@@ -1134,15 +1182,16 @@ void MenuSendAwacs(int enumId, VU_ID targetId, int sendRequest)
 
 void MenuSendWingman(int enumId, int extent)
 {
-    AiSendPlayerCommand(enumId, extent, AiDesignateTarget(SimDriver.GetPlayerAircraft()));
+    AiSendPlayerCommand(enumId, extent,
+                        AiDesignateTarget(SimDriver.GetPlayerAircraft()));
 }
 
 void MenuSendTanker(int enumId)
 {
     VU_ID TankerId = vuNullId;
-    AircraftClass *theTanker = NULL;
-    FalconTankerMessage *TankerMsg;
-    FlightClass *flight;
+    AircraftClass* theTanker = NULL;
+    FalconTankerMessage* TankerMsg;
+    FlightClass* flight;
 
     gNavigationSys->GetTacanVUID(gNavigationSys->GetControlSrc(), &TankerId);
 
@@ -1152,14 +1201,14 @@ void MenuSendTanker(int enumId)
     {
         flight = (Flight)vuDatabase->Find(TankerId);
 
-        if ( not flight->IsFlight())
+        if (not flight->IsFlight())
         {
             flight = SimDriver.FindTanker(SimDriver.GetPlayerEntity());
         }
     }
 
     if (flight)
-        theTanker = (AircraftClass*) flight->GetComponentLead();
+        theTanker = (AircraftClass*)flight->GetComponentLead();
 
     if (theTanker)
         TankerMsg = new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
@@ -1167,8 +1216,7 @@ void MenuSendTanker(int enumId)
         TankerMsg = new FalconTankerMessage(FalconNullId, FalconLocalGame);
 
     TankerMsg->dataBlock.type = enumId;
-    TankerMsg->dataBlock.data1  = 1;
+    TankerMsg->dataBlock.data1 = 1;
     TankerMsg->dataBlock.caller = SimDriver.GetPlayerEntity()->Id();
     FalconSendMessage(TankerMsg);
 }
-

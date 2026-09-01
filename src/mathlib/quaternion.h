@@ -15,15 +15,10 @@ public:
     float x, y, z, w;
 
     //-- constructors -----------------------------------------------
-    quaternion()
-        : x(0.0f), y(0.0f), z(0.0f), w(1.0f)
-    {};
+    quaternion() : x(0.0f), y(0.0f), z(0.0f), w(1.0f) {};
     quaternion(float _x, float _y, float _z, float _w)
-        : x(_x), y(_y), z(_z), w(_w)
-    {};
-    quaternion(const quaternion& q)
-        : x(q.x), y(q.y), z(q.z), w(q.w)
-    {};
+        : x(_x), y(_y), z(_z), w(_w) {};
+    quaternion(const quaternion& q) : x(q.x), y(q.y), z(q.z), w(q.w) {};
 
     //-- setting elements -------------------------------------------
     void set(float _x, float _y, float _z, float _w)
@@ -74,15 +69,18 @@ public:
     {
         float n = norm();
 
-        if (n > 0.0f) return sqrt(n);
-        else          return 0.0f;
+        if (n > 0.0f)
+            return sqrt(n);
+        else
+            return 0.0f;
     };
 
     void invert(void)
     {
         float n = norm();
 
-        if (n > 0.0f) scale(1.0f / norm());
+        if (n > 0.0f)
+            scale(1.0f / norm());
 
         conjugate();
     };
@@ -91,19 +89,23 @@ public:
     {
         float l = magnitude();
 
-        if (l > 0.0f) scale(1.0f / l);
-        else          set(0.0f, 0.0f, 0.0f, 1.0f);
+        if (l > 0.0f)
+            scale(1.0f / l);
+        else
+            set(0.0f, 0.0f, 0.0f, 1.0f);
     };
 
     //-- operators --------------------------------------------------
     bool operator==(const quaternion& q)
     {
-        return ((x == q.x) && (y == q.y) && (z == q.z) && (w == q.w)) ? true : false;
+        return ((x == q.x) && (y == q.y) && (z == q.z) && (w == q.w)) ? true :
+                                                                        false;
     };
 
     bool operator!=(const quaternion& q)
     {
-        return ((x != q.x) || (y != q.y) || (z != q.z) || (w != q.w)) ? true : false;
+        return ((x != q.x) || (y != q.y) || (z != q.z) || (w != q.w)) ? true :
+                                                                        false;
     };
 
     const quaternion& operator+=(const quaternion& q)
@@ -140,10 +142,8 @@ public:
     /// rotate vector by quaternion
     vector3 rotate(const vector3& v)
     {
-        quaternion q(v.x * w + v.z * y - v.y * z,
-                     v.y * w + v.x * z - v.z * x,
-                     v.z * w + v.y * x - v.x * y,
-                     v.x * x + v.y * y + v.z * z);
+        quaternion q(v.x * w + v.z * y - v.y * z, v.y * w + v.x * z - v.z * x,
+                     v.z * w + v.y * x - v.x * y, v.x * x + v.y * y + v.z * z);
 
         return vector3(w * q.x + x * q.w + y * q.z - z * q.y,
                        w * q.y + y * q.w + z * q.x - x * q.z,
@@ -264,10 +264,14 @@ public:
     //--- fuzzy compare operators -----------------------------------
     bool isequal(const quaternion& v, float tol) const
     {
-        if (fabs(v.x - x) > tol)      return false;
-        else if (fabs(v.y - y) > tol) return false;
-        else if (fabs(v.z - z) > tol) return false;
-        else if (fabs(v.w - w) > tol) return false;
+        if (fabs(v.x - x) > tol)
+            return false;
+        else if (fabs(v.y - y) > tol)
+            return false;
+        else if (fabs(v.z - z) > tol)
+            return false;
+        else if (fabs(v.w - w) > tol)
+            return false;
 
         return true;
     };
@@ -305,7 +309,7 @@ public:
             else
             {
                 // Otherwise, do spherical interpolation
-                float fTheta    = acosf(fCosTheta);
+                float fTheta = acosf(fCosTheta);
                 float fSinTheta = sinf(fTheta);
                 fScale1 = sinf(fTheta * (1.0f - l)) / fSinTheta;
                 fScale2 = sinf(fTheta * l) / fSinTheta;
@@ -314,9 +318,9 @@ public:
         else
         {
             B.x = -A.y;
-            B.y =  A.x;
+            B.y = A.x;
             B.z = -A.w;
-            B.w =  A.z;
+            B.w = A.z;
             fScale1 = sinf(PI * (0.5f - l));
             fScale2 = sinf(PI * l);
         }

@@ -1,12 +1,13 @@
 #ifndef _SENDLOGBOOK_H
 #define _SENDLOGBOOK_H
+#include <cstdint>
 
 #include "vutypes.h"
 #include "logbook.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Logbook
@@ -14,7 +15,8 @@
 class UI_SendLogbook : public FalconEvent
 {
 public:
-    UI_SendLogbook(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_SendLogbook(VU_ID entityId, VuTargetEntity *target,
+                   VU_BOOL loopback = TRUE);
     UI_SendLogbook(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~UI_SendLogbook(void);
     virtual int Size() const
@@ -45,12 +47,12 @@ public:
     public:
         VU_ID fromID;
         LB_PILOT Pilot;
-        long Flags;
+        int32_t Flags;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

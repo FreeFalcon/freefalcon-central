@@ -22,6 +22,7 @@ class VuDriver
 {
 protected:
     VuDriver(VuEntity *entity);
+
 public:
     virtual ~VuDriver();
 
@@ -79,6 +80,7 @@ public:
     virtual void NoExec(VU_TIME timestamp);
     /** execute dead reckon computations for entity */
     virtual void ExecDR(VU_TIME timestamp);
+
 protected:
     /** resets DR data */
     void Reset();
@@ -108,7 +110,9 @@ class VuDelaySlave : public VuDeadReckon
 {
 public:
     VuDelaySlave(VuEntity *entity);
-    virtual ~VuDelaySlave() {}
+    virtual ~VuDelaySlave()
+    {
+    }
 
     /** computes DR data based on past data */
     virtual void Exec(VU_TIME timestamp);
@@ -126,7 +130,8 @@ public:
     {
         return VU_NO_OP;
     }
-    virtual VU_ERRCODE Handle(VuPositionUpdateEvent *event); // just set position...
+    virtual VU_ERRCODE
+    Handle(VuPositionUpdateEvent *event); // just set position...
 
 protected:
     /** last time an updated was received */
@@ -154,7 +159,9 @@ public:
     virtual ~VuMaster();
 
     /** does nothing */
-    virtual void NoExec(VU_TIME timestamp) {}
+    virtual void NoExec(VU_TIME timestamp)
+    {
+    }
     /** executes masters model, calls ExecModel */
     virtual void Exec(VU_TIME timestamp);
 
@@ -189,7 +196,8 @@ public:
     static unsigned int SendsPerPlayer();
 
     /** generates a position update for this unit */
-    VU_ERRCODE GeneratePositionUpdate(bool reliable, bool oob, VU_TIME timestamp, VuSessionEntity *e);
+    VU_ERRCODE GeneratePositionUpdate(bool reliable, bool oob,
+                                      VU_TIME timestamp, VuSessionEntity *e);
 
 
     // DATA
@@ -214,7 +222,8 @@ protected:
     * If ENQEUE_SEND, it will be sent if bw allows (selected by distance)
     * Otherwise, wont be sent
     */
-    virtual SEND_SCORE SendScore(const VuSessionEntity *s, VU_TIME timeDelta) = 0;
+    virtual SEND_SCORE SendScore(const VuSessionEntity *s,
+                                 VU_TIME timeDelta) = 0;
 
     /** time we sent a positional update in MP for this driver (real time) */
     VU_TIME updateSentRealTime_;

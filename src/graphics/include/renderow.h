@@ -12,8 +12,8 @@
 #ifndef _RENDEROW_H_
 #define _RENDEROW_H_
 
-#include "Edge.h"
-#include "Render3D.h"
+#include "edge.h"
+#include "render3d.h"
 //#include "rviewpnt.h"
 
 
@@ -21,11 +21,11 @@
 //#define TWO_D_MAP_AVAILABLE // Compile with this on to make the 2D debugging "map" view available
 #ifdef TWO_D_MAP_AVAILABLE
 extern BOOL twoDmode;
-extern int  TWODSCALE;
+extern int TWODSCALE;
 #endif
 
 
-typedef struct TerrainVertex: public ThreeDVertex
+typedef struct TerrainVertex : public ThreeDVertex
 {
     /* ThreeDVertex provides:
      float x, y, z;  // screen space x bitand y, camera space z
@@ -113,6 +113,7 @@ class RenderOTW : public Render3D
 public:
     RenderOTW();
     virtual ~RenderOTW();
+
 protected:
     // Control states
     // BOOL smoothed; // Smooth shading state (on or off)
@@ -135,7 +136,7 @@ protected:
     // Sky properties
     Tcolor sky_color; // This is the color of the sky above the horizon
     Tcolor haze_ground_color; // This is the color distant terrain blends toward
-    Tcolor  ground_color; // JAM 03Dec03
+    Tcolor ground_color; // JAM 03Dec03
     Tcolor earth_end_color; // This is the color of the ground at the horizon
     Tcolor haze_sky_color; // This is the color at which the sky blend starts
     /*JAM 17Sep03 float haze_start; // The distance (in feet) from the viewer at which hazing starts
@@ -149,7 +150,8 @@ protected:
     float visibility; // what sort of vis there is.
     float rainFactor; // what sort of rain, 0 none, else 0-1 gives heaviness
     float snowFactor; // what sort of snow, 0 none, else 0-1 gives heaviness
-    float brightness;   // how bright things are given the cloud thickness overhead
+    float
+        brightness; // how bright things are given the cloud thickness overhead
     bool thunderAndLightning; // is this likely....
     bool thunder; // set if we should hear thunder
     unsigned long thundertimer; // when to play
@@ -173,7 +175,7 @@ protected:
     float rightY2;
     float leftX1;
     float leftX2;
-    float leftY1; 
+    float leftY1;
     float leftY2;
 
     // Edges which define the viewing volume
@@ -205,6 +207,7 @@ protected:
     LODdataBlock *LODdata;
 
     bool GreenMode;
+
 public:
     // Setup and Cleanup need to have additions here, but still call the parent versions
     virtual void Setup(class ImageBuffer *imageBuffer, class RViewPoint *vp);
@@ -214,8 +217,8 @@ public:
     void VrDrawCelestial(void);
 
     // Overload this function to get extra work done at start frame
-    virtual void StartDraw(void) ;
-    virtual void EndDraw(void) ;
+    virtual void StartDraw(void);
+    virtual void EndDraw(void);
 
     // Select the amount of terrain texturing employed
     void SetTerrainTextureLevel(int level);
@@ -223,7 +226,7 @@ public:
 
     // Set/get rendering settings
     void SetHazeMode(BOOL state);
-    
+
     BOOL GetHazeMode(void);
 
     // alpha setting
@@ -248,7 +251,7 @@ public:
     float GetRangeOnlyFog(float range);
 
     float GetValleyFog(float distance, float worldZ);
-    Tcolor* GetFogColor(void);
+    Tcolor *GetFogColor(void);
 
     // Draw the out the window view, including terrain and all registered objects
     void DrawScene(const Tpoint *offset, const Trotation *orientation);
@@ -257,8 +260,10 @@ public:
 
     // Special calls used for tunnel vision and cloud occulsion effects
     float GetTunnelPercent(void);
-    void SetTunnelPercent(float percent, DWORD color); // CALL _BEFORE_ DrawScene()
-    void PostSceneCloudOcclusion(void); // CALL between DrawScene() and FinishFrame()
+    void SetTunnelPercent(float percent,
+                          DWORD color); // CALL _BEFORE_ DrawScene()
+    void
+    PostSceneCloudOcclusion(void); // CALL between DrawScene() and FinishFrame()
     void DrawTunnelBorder(); // CALL _AFTER_ FinishFrame()
     bool IsThunder();
     float RainFactor();
@@ -270,6 +275,7 @@ public:
     bool GetGreenMode();
     static void SetupTexturesOnDevice(DXContext *rc);
     static void ReleaseTexturesOnDevice(DXContext *rc);
+
 protected:
     // Utility functions used within this class
     void SetupStates(void);
@@ -286,7 +292,8 @@ protected:
     void TransformRun(int row, int col, int stop, int LOD, BOOL do_row);
 
     //JAM 03Dec03
-    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x = 0, float y = 0);
+    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post,
+                                    float distance, float x = 0, float y = 0);
 
     void PreSceneCloudOcclusion(float percent, DWORD color);
     void DrawTerrainRing(SpanListEntry *span);
@@ -297,21 +304,19 @@ protected:
     // Artscout - 2026: #96 -- 3D world-space skydome + sun/moon billboards (VI-correct; replaces the 2D sky path
     // when g_b3DSky). DrawSkyBillboard: camera-facing world disc (dir=Tpoint*). See otwsky.cpp.
     void DrawSkyDome(void);
-    // Artscout - 2026: #13 -- raymarched volumetric cloud LAYER (g_bVolumetricClouds). Called AFTER terrain and
-    // objects (otw.cpp) so the depth buffer already holds the world: the backing geometry is a camera-relative
-    // disc AT the layer altitude, so the rasterizer occludes it against terrain with no depth SRV needed.
-    void DrawVolumetricClouds(void);
     // flatten = VERTICAL scale of the disc (1 = round). Atmospheric refraction squashes a body near the horizon --
     // the lower limb is lifted more than the upper one, so it reads as an oval (~0.8 at the horizon). Refraction
     // never magnifies: a symmetric atmosphere can only lift and compress. See DrawSkyDome's moon block.
     // additive = the atmospheric glare (scattered light ADDS to the sky; alpha-blending it just greys the sky).
-    void DrawSkyBillboard(const void* dir, float R, float sz, float r, float g, float b, void* srv = 0, float a = 1.0f,
+    void DrawSkyBillboard(const void *dir, float R, float sz, float r, float g,
+                          float b, void *srv = 0, float a = 1.0f,
                           float flatten = 1.0f, bool additive = false);
     void DrawSkyNoRoof(void);
     void DrawSkyAbove(void);
     void DrawSkyBelow(void);
     void DrawGroundAndObjects(class ObjectDisplayList *objectList);
-    void DrawCloudsAndObjects(class ObjectDisplayList *clouds, class ObjectDisplayList *objects);
+    void DrawCloudsAndObjects(class ObjectDisplayList *clouds,
+                              class ObjectDisplayList *objects);
     void DrawWeather(const Trotation *orientation);
 
     // These are overridden by the "green" displays (TV bitand IR)
@@ -321,7 +326,9 @@ protected:
     virtual void DrawStars(void);
     virtual void ComputeHorizonEffect(HorizonRecord *pHorizon);
 
-    int DrawCelestialBody(Tpoint *center, float dist, float alpha = 1.f, float r = 1.f, float g = 1.f, float b = 1.f);  //JAM 30Sep03
+    int DrawCelestialBody(Tpoint *center, float dist, float alpha = 1.f,
+                          float r = 1.f, float g = 1.f,
+                          float b = 1.f); //JAM 30Sep03
     void DrawClearSky(HorizonRecord *pHorizon);
     void DrawSkyHazeBand(HorizonRecord *pHorizon);
     void DrawFillerToHorizon(HorizonRecord *pHorizon);
@@ -336,9 +343,11 @@ protected:
     virtual void SetTimeOfDayColor(void);
     virtual void AdjustSkyColor(void);
     static void TimeUpdateCallback(void *self);
+
 public:
     //RViewPoint vtemp;
     class RViewPoint *viewpoint;
+
 public:
     static const float PERSPECTIVE_RANGE;
     static const float NVG_TUNNEL_PERCENT;

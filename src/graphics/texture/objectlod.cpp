@@ -8,8 +8,8 @@
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
-#include "Loader.h"
-#include "ObjectLOD.h"
+#include "loader.h"
+#include "objectlod.h"
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gBSPLibMemPool;
@@ -18,12 +18,12 @@ extern MEM_POOL gBSPLibMemPool;
 ObjectLOD *TheObjectLODs = NULL;
 int TheObjectLODsCount = 0;
 #ifdef _DEBUG
-int     ObjectLOD::lodsLoaded = 0;
+int ObjectLOD::lodsLoaded = 0;
 #endif
-FileMemMap  ObjectLOD::ObjectLodMap;
+FileMemMap ObjectLOD::ObjectLodMap;
 
 CRITICAL_SECTION ObjectLOD::cs_ObjectLOD;
-static  int maxTagList;
+static int maxTagList;
 extern bool g_bUseMappedFiles;
 
 
@@ -52,7 +52,8 @@ void ObjectLOD::SetupEmptyTable(int numEntries)
     // Create the contiguous array of (unitialized) LOD records
     ShiAssert(TheObjectLODs == NULL);
 #ifdef USE_SH_POOLS
-    TheObjectLODs = (ObjectLOD *)MemAllocPtr(gBSPLibMemPool, sizeof(ObjectLOD) * (numEntries), 0);
+    TheObjectLODs = (ObjectLOD *)MemAllocPtr(
+        gBSPLibMemPool, sizeof(ObjectLOD) * (numEntries), 0);
 #else
     TheObjectLODs = new ObjectLOD[numEntries];
 #endif
@@ -90,7 +91,8 @@ void ObjectLOD::SetupTable(int file, char *basename)
     ShiAssert(tagListBuffer);
 
     // Read the elements of the header array
-    result = read(file, TheObjectLODs, sizeof(*TheObjectLODs) * TheObjectLODsCount);
+    result =
+        read(file, TheObjectLODs, sizeof(*TheObjectLODs) * TheObjectLODsCount);
 
     if (result < 0)
     {
@@ -124,7 +126,8 @@ void ObjectLOD::CleanupTable(void)
         ShiAssert(TheObjectLODs[i].refCount == 0);
 
         // Must wait until loader is done before we delete the object out from under it.
-        while (TheObjectLODs[i].onOrder);
+        while (TheObjectLODs[i].onOrder)
+            ;
     }
 
     // Free our array of object LODs
@@ -215,14 +218,14 @@ void ObjectLOD::RequestLoad(void)
 }
 
 
-void ObjectLOD::LoaderCallBack(LoaderQ* request)
+void ObjectLOD::LoaderCallBack(LoaderQ *request)
 {
     int size;
     int tagCount;
     BYTE *nodeTreeData;
     BRoot *root;
     BNodeType *tagList = tagListBuffer;
-    ObjectLOD *objLOD = (ObjectLOD*)request->parameter;
+    ObjectLOD *objLOD = (ObjectLOD *)request->parameter;
     DWORD offset = objLOD->fileoffset;
 
     // TODO:  Decompress in here...
@@ -241,17 +244,19 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
             ShiError(message);
         }
 
-        tagCount = *(DWORD *)data;;
+        tagCount = *(DWORD *)data;
+        ;
         data += sizeof(DWORD);
         ShiAssert(tagCount <= maxTagList);
         memcpy(tagListBuffer, data, tagCount * sizeof(*tagListBuffer));
         data += tagCount * sizeof(*tagListBuffer);
 
-        size = objLOD->filesize - sizeof(tagCount) - tagCount * sizeof(*tagListBuffer);
+        size = objLOD->filesize - sizeof(tagCount) -
+               tagCount * sizeof(*tagListBuffer);
 #ifdef USE_SMART_HEAP
-        nodeTreeData = (BYTE*)MemAllocPtr(pool, size, 0);
+        nodeTreeData = (BYTE *)MemAllocPtr(pool, size, 0);
 #else
-        nodeTreeData = (BYTE*)malloc(size);
+        nodeTreeData = (BYTE *)malloc(size);
 #endif
         ShiAssert(nodeTreeData);
         memcpy(nodeTreeData, data, size);
@@ -270,7 +275,8 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
         ShiAssert(tagCount <= maxTagList);
 
         // Read the tag list
-        if (!ObjectLodMap.ReadDataAt(offset, tagListBuffer, tagCount * sizeof(*tagListBuffer)))
+        if (!ObjectLodMap.ReadDataAt(offset, tagListBuffer,
+                                     tagCount * sizeof(*tagListBuffer)))
         {
             char message[120];
             sprintf(message, "%s:  Bad taglist read", strerror(errno));
@@ -279,13 +285,14 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
 
         offset += tagCount * sizeof(*tagListBuffer);
         // Compute the size of the node tree
-        size = objLOD->filesize - sizeof(tagCount) - tagCount * sizeof(*tagListBuffer);
+        size = objLOD->filesize - sizeof(tagCount) -
+               tagCount * sizeof(*tagListBuffer);
 
         // Allocate memory for the node tree
 #ifdef USE_SMART_HEAP
-        nodeTreeData = (BYTE*)MemAllocPtr(pool, size, 0);
+        nodeTreeData = (BYTE *)MemAllocPtr(pool, size, 0);
 #else
-        nodeTreeData = (BYTE*)malloc(size);
+        nodeTreeData = (BYTE *)malloc(size);
 #endif
         ShiAssert(nodeTreeData);
 
@@ -299,9 +306,11 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
     }
 
     // Restore the virtual function tables and pointer connectivity of the node tree
-    root = (BRoot*)BNode::RestorePointers(nodeTreeData, 0, &tagList);
+    root = (BRoot *)BNode::RestorePointers(nodeTreeData, 0, &tagList);
     ShiAssert(root->Type() == tagBRoot);
-    ShiAssert((BYTE*)root == nodeTreeData); // Ensure it will be legal to use "root" to delete the whole buffer later...
+    ShiAssert(
+        (BYTE *)root ==
+        nodeTreeData); // Ensure it will be legal to use "root" to delete the whole buffer later...
 
     // Load all our textures
     root->LoadTextures();
@@ -309,7 +318,7 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
     // Mark ourselves no longer queued for IO
     EnterCriticalSection(&cs_ObjectLOD);
 #ifdef _DEBUG
-    objLOD->lodsLoaded ++;
+    objLOD->lodsLoaded++;
 #endif
 
     if (objLOD->onOrder == 1)
@@ -318,10 +327,11 @@ void ObjectLOD::LoaderCallBack(LoaderQ* request)
     }
     else
     {
-        ShiAssert(objLOD->onOrder == -1); // We must have been Unloaded before IO completed
+        ShiAssert(objLOD->onOrder ==
+                  -1); // We must have been Unloaded before IO completed
         root->UnloadTextures();
 #ifdef _DEBUG
-        objLOD->lodsLoaded --;
+        objLOD->lodsLoaded--;
 #endif
         delete root;
     }
@@ -345,7 +355,7 @@ void ObjectLOD::Unload(void)
         if (root)
         {
             root->UnloadTextures();
-            nodeTreeData = (BYTE*)root;
+            nodeTreeData = (BYTE *)root;
 #ifdef USE_SMART_HEAP
             MemFreePtr(nodeTreeData);
 #else
@@ -353,7 +363,7 @@ void ObjectLOD::Unload(void)
 #endif
             root = NULL;
 #ifdef _DEBUG
-            lodsLoaded --;
+            lodsLoaded--;
 #endif
         }
     }
@@ -376,10 +386,9 @@ void ObjectLOD::Unload(void)
 }
 
 
-
 // Privatly used static members
 //int ObjectLOD::objectFile = -1;
-BNodeType* ObjectLOD::tagListBuffer = NULL;
+BNodeType *ObjectLOD::tagListBuffer = NULL;
 
 #ifdef USE_SMART_HEAP
 MEM_POOL ObjectLOD::pool;

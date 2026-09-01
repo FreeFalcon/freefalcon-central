@@ -38,9 +38,10 @@
 #include "error.h"
 #include "f4find.h"
 #include "falclib.h"
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "cmpclass.h"
-extern "C" {
+extern "C"
+{
 #include "codelib/resources/reslib/src/resmgr.h"
 };
 
@@ -61,9 +62,11 @@ SIM_FLOAT SimLibMinorFrameRate = 50.0F;
 SIM_FLOAT SimLibMajorFrameTime = 0.06F;
 SIM_FLOAT SimLibMajorFrameRate = 16.667F;
 SIM_FLOAT SimLibTimeOfDay;
-SIM_ULONG SimLibElapsedTime;
-float SimLibElapsedSeconds; // COBRA - RED - Added Variable of Elasped Simulation Seconds
-float SimLibFrameElapsed, SimLibLastFrameTime; // COBRA - RED - Added Variable of Elasped Frame Time
+VU_TIME SimLibElapsedTime; // #104: match the VU_TIME (32-bit) header decl
+float
+    SimLibElapsedSeconds; // COBRA - RED - Added Variable of Elasped Simulation Seconds
+float SimLibFrameElapsed,
+    SimLibLastFrameTime; // COBRA - RED - Added Variable of Elasped Frame Time
 SIM_UINT SimLibFrameCount = 0;
 SIM_INT SimLibMinorPerMajor = 3;
 
@@ -120,9 +123,9 @@ SimlibFileClass::SimlibFileClass(void)
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-SimlibFileClass* SimlibFileClass::Open(char *fName, int flags)
+SimlibFileClass *SimlibFileClass::Open(char *fName, int flags)
 {
-    SimlibFileClass* fHandle;
+    SimlibFileClass *fHandle;
     char access[4] = {0};
     char fileName[_MAX_PATH];
     int offset, len;
@@ -179,11 +182,20 @@ SimlibFileClass* SimlibFileClass::Open(char *fName, int flags)
             SimLibErrno = EACCESS;
 
         MonoPrint("Unable to open %s\n", fName);
+        // #104 diag: pinpoint the separator/path failure -- log the requested name, what F4FindFile resolved it to,
+        // and the registry-seeded data root. Remove once the theater-load open path is confirmed. (stderr = visible.)
+        {
+            extern char FalconDataDirectory[];
+            fprintf(stderr,
+                    "[SIMLIB-OPEN-FAIL] req='%s' resolved='%s' dataDir='%s'\n",
+                    fName, fileName, FalconDataDirectory);
+            fflush(stderr);
+        }
     }
     else
     {
 #ifdef _DEBUG
-        fnumOpen ++;
+        fnumOpen++;
 #endif
 
         // Set the file data for this handle
@@ -249,7 +261,7 @@ int SimlibFileClass::ReadLine(char *buf, int max_len)
         *(strchr(buf, '\r')) = 0;
 
     // Strip the trailing new-line
-    if ( not feof(fptr))
+    if (not feof(fptr))
     {
         if (buf[strlen(buf) - 1] == '\n')
             buf[strlen(buf) - 1] = 0;
@@ -321,7 +333,7 @@ int SimlibFileClass::WriteLine(char *buf)
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-int SimlibFileClass::Read(void* buffer, unsigned int max_len)
+int SimlibFileClass::Read(void *buffer, unsigned int max_len)
 {
     int retval = SIMLIB_ERR;
 
@@ -359,7 +371,7 @@ int SimlibFileClass::Read(void* buffer, unsigned int max_len)
 /*  23-Jan-95 LR                  Initial Write                     */
 /*                                                                  */
 /********************************************************************/
-int SimlibFileClass::Write(void* buffer, int max_len)
+int SimlibFileClass::Write(void *buffer, int max_len)
 {
     SIM_INT retval = SIMLIB_ERR;
 
@@ -423,8 +435,7 @@ char *SimlibFileClass::GetNext(void)
         {
             is_comment = FALSE;
         }
-    }
-    while (is_comment);
+    } while (is_comment);
 
     return (aline);
 }
@@ -457,7 +468,7 @@ int SimlibFileClass::Close(void)
     if (ResFClose(fptr) == 0)
     {
 #ifdef _DEBUG
-        fnumOpen --;
+        fnumOpen--;
 #endif
         fptr = NULL;
         rights = 0;
@@ -502,7 +513,7 @@ int SimlibFileClass::Position(int offset, int origin)
     return (retval);
 }
 
-void SwapCRLF(char* buf)
+void SwapCRLF(char *buf)
 {
     int len = strlen(buf);
     int i;

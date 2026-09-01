@@ -30,32 +30,13 @@ enum
     CBTN_FIXED_HOTSPOT,
 };
 
-char *C_Btn_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[HOTSPOT]",
-    "[BACKIMAGE]",
-    "[IMAGES]",
-    "[STATE]",
-    "[LABEL]",
-    "[LABELALL]",
-    "[UPCOLOR]",
-    "[DOWNCOLOR]",
-    "[SELCOLOR]",
-    "[DISCOLOR]",
-    "[BUTTONIMAGE]",
-    "[BUTTONANIM]",
-    "[TEXTOFFSET]",
-    "[TEXTCOLOR]",
-    "[BUTTONTEXT]",
-    "[BUTTONFILL]",
-    "[PERCENT]",
-    "[BUTTONCOLOR]",
-    "[LABELFLAGBITON]",
-    "[LABELFLAGBITOFF]",
-    "[FIXEDHOTSPOT]",
-    0,
+char *C_Btn_Tokens[] = {
+    "[NOTHING]",        "[SETUP]",           "[HOTSPOT]",      "[BACKIMAGE]",
+    "[IMAGES]",         "[STATE]",           "[LABEL]",        "[LABELALL]",
+    "[UPCOLOR]",        "[DOWNCOLOR]",       "[SELCOLOR]",     "[DISCOLOR]",
+    "[BUTTONIMAGE]",    "[BUTTONANIM]",      "[TEXTOFFSET]",   "[TEXTCOLOR]",
+    "[BUTTONTEXT]",     "[BUTTONFILL]",      "[PERCENT]",      "[BUTTONCOLOR]",
+    "[LABELFLAGBITON]", "[LABELFLAGBITOFF]", "[FIXEDHOTSPOT]", 0,
 };
 
 #endif
@@ -64,10 +45,10 @@ static void ButtonCleanupCB(void *rec)
 {
     BUTTONLIST *btn;
 
-    if ( not rec)
+    if (not rec)
         return;
 
-    btn = (BUTTONLIST*)rec;
+    btn = (BUTTONLIST *)rec;
 
     if (btn->Image_)
     {
@@ -103,7 +84,8 @@ C_Button::C_Button() : C_Control()
     HotKey_ = 0;
     Font_ = 0;
     FixedHotSpot_ = 0;
-    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor
+                    C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 
     Root_ = NULL;
     BgImage_ = NULL;
@@ -125,7 +107,7 @@ C_Button::~C_Button(void)
 
 long C_Button::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Button::Setup(long ID, short Type, long x, long y)
@@ -194,22 +176,22 @@ void C_Button::SetLabelFlagBitsOn(long flags)
 
     // Mutually exclusive flags...
     if (flags bitand C_BIT_TOP)
-        LabelFlags_ and_eq compl (C_BIT_VCENTER bitor C_BIT_BOTTOM);
+        LabelFlags_ and_eq compl(C_BIT_VCENTER bitor C_BIT_BOTTOM);
 
     if (flags bitand C_BIT_BOTTOM)
-        LabelFlags_ and_eq compl (C_BIT_VCENTER bitor C_BIT_TOP);
+        LabelFlags_ and_eq compl(C_BIT_VCENTER bitor C_BIT_TOP);
 
     if (flags bitand C_BIT_VCENTER)
-        LabelFlags_ and_eq compl (C_BIT_TOP bitor C_BIT_BOTTOM);
+        LabelFlags_ and_eq compl(C_BIT_TOP bitor C_BIT_BOTTOM);
 
     if (flags bitand C_BIT_LEFT)
-        LabelFlags_ and_eq compl (C_BIT_HCENTER bitor C_BIT_RIGHT);
+        LabelFlags_ and_eq compl(C_BIT_HCENTER bitor C_BIT_RIGHT);
 
     if (flags bitand C_BIT_RIGHT)
-        LabelFlags_ and_eq compl (C_BIT_HCENTER bitor C_BIT_LEFT);
+        LabelFlags_ and_eq compl(C_BIT_HCENTER bitor C_BIT_LEFT);
 
     if (flags bitand C_BIT_HCENTER)
-        LabelFlags_ and_eq compl (C_BIT_LEFT bitor C_BIT_RIGHT);
+        LabelFlags_ and_eq compl(C_BIT_LEFT bitor C_BIT_RIGHT);
 
     SetLabelInfo();
 }
@@ -222,19 +204,19 @@ void C_Button::SetLabelFlagBitsOff(long flags)
 
 void C_Button::SetLabel(long ID, _TCHAR *str)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     BUTTONLIST *btn;
 
-    if ( not Root_ or not str)
+    if (not Root_ or not str)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
         Leave = UI_Enter(Parent_);
 
-        if ( not btn->Label_)
+        if (not btn->Label_)
         {
             btn->Label_ = new O_Output;
             btn->Label_->SetOwner(this);
@@ -256,19 +238,19 @@ void C_Button::SetLabel(long ID, _TCHAR *str)
 
 void C_Button::SetLabel(long ID, long txtID)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
         Leave = UI_Enter(Parent_);
 
-        if ( not btn->Label_)
+        if (not btn->Label_)
         {
             btn->Label_ = new O_Output;
             btn->Label_->SetOwner(this);
@@ -292,36 +274,36 @@ _TCHAR *C_Button::GetText(short ID)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
-        return(NULL);
+    if (not Root_)
+        return (NULL);
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
         if (btn->Image_)
-            return(btn->Image_->GetText());
+            return (btn->Image_->GetText());
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 _TCHAR *C_Button::GetLabel(short ID)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
-        return(NULL);
+    if (not Root_)
+        return (NULL);
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
         if (btn->Label_)
-            return(btn->Label_->GetText());
+            return (btn->Label_->GetText());
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_Button::SetAllLabel(_TCHAR *str)
@@ -332,12 +314,12 @@ void C_Button::SetAllLabel(_TCHAR *str)
 
     if (Root_)
     {
-        btn = (BUTTONLIST*)Root_->GetFirst(&cur, &curidx);
+        btn = (BUTTONLIST *)Root_->GetFirst(&cur, &curidx);
 
         while (btn)
         {
             SetLabel((short)cur->ID, str);
-            btn = (BUTTONLIST*)Root_->GetNext(&cur, &curidx);
+            btn = (BUTTONLIST *)Root_->GetNext(&cur, &curidx);
         }
     }
 }
@@ -350,12 +332,12 @@ void C_Button::SetAllLabel(long txtID)
 
     if (Root_)
     {
-        btn = (BUTTONLIST*)Root_->GetFirst(&cur, &curidx);
+        btn = (BUTTONLIST *)Root_->GetFirst(&cur, &curidx);
 
         while (btn)
         {
             SetLabel(cur->ID, txtID);
-            btn = (BUTTONLIST*)Root_->GetNext(&cur, &curidx);
+            btn = (BUTTONLIST *)Root_->GetNext(&cur, &curidx);
         }
     }
 }
@@ -364,10 +346,10 @@ void C_Button::SetFgColor(short ID, COLORREF color)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
@@ -385,25 +367,25 @@ O_Output *C_Button::GetImage(short ID)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
-        return(NULL);
+    if (not Root_)
+        return (NULL);
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
-        return(btn->Image_);
+        return (btn->Image_);
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_Button::SetBgColor(short ID, COLORREF color)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
@@ -421,10 +403,10 @@ void C_Button::SetFill(short ID, short w, short h)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
@@ -438,7 +420,7 @@ void C_Button::SetFill(short ID, short w, short h)
             }
         }
 
-        if ( not btn->Image_)
+        if (not btn->Image_)
         {
             btn->Image_ = new O_Output;
             btn->Image_->SetOwner(this);
@@ -448,7 +430,7 @@ void C_Button::SetFill(short ID, short w, short h)
         btn->Image_->SetFlags(GetFlags());
         btn->Image_->SetFill();
 
-        if ( not ID)
+        if (not ID)
         {
             SetReady(btn->Image_->Ready());
 
@@ -462,12 +444,12 @@ void C_Button::SetImage(short ID, long ImageID)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
-    if ( not btn)
+    if (not btn)
     {
         btn = new BUTTONLIST;
         btn->FgColor_ = 0xcccccc;
@@ -491,7 +473,7 @@ void C_Button::SetImage(short ID, long ImageID)
             }
         }
 
-        if ( not btn->Image_)
+        if (not btn->Image_)
         {
             btn->Image_ = new O_Output;
             btn->Image_->SetOwner(this);
@@ -500,7 +482,7 @@ void C_Button::SetImage(short ID, long ImageID)
         btn->Image_->SetFlags(GetFlags());
         btn->Image_->SetImage(ImageID);
 
-        if ( not ID)
+        if (not ID)
         {
             SetReady(btn->Image_->Ready());
 
@@ -516,10 +498,10 @@ void C_Button::ClearImage(short ID, long ImageID)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
@@ -536,12 +518,12 @@ void C_Button::SetImage(short ID, IMAGE_RSC *image)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
-    if ( not btn)
+    if (not btn)
     {
         btn = new BUTTONLIST;
         btn->FgColor_ = 0xcccccc;
@@ -565,7 +547,7 @@ void C_Button::SetImage(short ID, IMAGE_RSC *image)
             }
         }
 
-        if ( not btn->Image_)
+        if (not btn->Image_)
         {
             btn->Image_ = new O_Output;
             btn->Image_->SetOwner(this);
@@ -574,7 +556,7 @@ void C_Button::SetImage(short ID, IMAGE_RSC *image)
         btn->Image_->SetFlags(GetFlags());
         btn->Image_->SetImage(image);
 
-        if ( not ID)
+        if (not ID)
         {
             SetReady(btn->Image_->Ready());
 
@@ -590,12 +572,12 @@ void C_Button::SetAnim(short ID, long AnimID, short animtype, short dir)
 {
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
-    if ( not btn)
+    if (not btn)
     {
         btn = new BUTTONLIST;
         btn->FgColor_ = 0xcccccc;
@@ -630,7 +612,7 @@ void C_Button::SetAnim(short ID, long AnimID, short animtype, short dir)
         btn->Image_->SetAnimType(animtype);
         btn->Image_->SetDirection(dir);
 
-        if ( not ID)
+        if (not ID)
         {
             SetReady(btn->Image_->Ready());
 
@@ -660,7 +642,7 @@ void C_Button::SetFont(long FontID)
 
     if (Root_)
     {
-        btn = (BUTTONLIST*)Root_->GetFirst(&cur, &curidx);
+        btn = (BUTTONLIST *)Root_->GetFirst(&cur, &curidx);
 
         while (btn)
         {
@@ -676,22 +658,22 @@ void C_Button::SetFont(long FontID)
                 btn->Label_->SetInfo();
             }
 
-            btn = (BUTTONLIST*)Root_->GetNext(&cur, &curidx);
+            btn = (BUTTONLIST *)Root_->GetNext(&cur, &curidx);
         }
     }
 }
 
 void C_Button::SetText(short ID, const _TCHAR *str)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
-    if ( not btn)
+    if (not btn)
     {
         btn = new BUTTONLIST;
         btn->FgColor_ = 0xcccccc;
@@ -727,7 +709,7 @@ void C_Button::SetText(short ID, const _TCHAR *str)
 
         btn->Image_->SetText(gStringMgr->GetText(gStringMgr->AddText(str)));
 
-        if ( not ID)
+        if (not ID)
         {
             SetReady(1);
         }
@@ -738,15 +720,15 @@ void C_Button::SetText(short ID, const _TCHAR *str)
 
 void C_Button::SetText(short ID, long txtID)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
-    if ( not btn)
+    if (not btn)
     {
         btn = new BUTTONLIST;
         btn->FgColor_ = 0xcccccc;
@@ -782,7 +764,7 @@ void C_Button::SetText(short ID, long txtID)
 
         btn->Image_->SetText(gStringMgr->GetString(txtID));
 
-        if ( not ID)
+        if (not ID)
         {
             SetReady(1);
         }
@@ -793,13 +775,13 @@ void C_Button::SetText(short ID, long txtID)
 
 void C_Button::SetColor(short ID, COLORREF color)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
@@ -814,13 +796,13 @@ void C_Button::SetColor(short ID, COLORREF color)
 
 void C_Button::SetLabelOffset(short ID, long x, long y)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
@@ -833,13 +815,13 @@ void C_Button::SetLabelOffset(short ID, long x, long y)
 
 void C_Button::SetLabelColor(short ID, COLORREF color)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     BUTTONLIST *btn;
 
-    if ( not Root_)
+    if (not Root_)
         return;
 
-    btn = (BUTTONLIST*)Root_->Find(ID);
+    btn = (BUTTONLIST *)Root_->Find(ID);
 
     if (btn)
     {
@@ -861,7 +843,7 @@ void C_Button::SetLabelInfo()
 
     if (Root_)
     {
-        btn = (BUTTONLIST*)Root_->GetFirst(&cur, &curidx);
+        btn = (BUTTONLIST *)Root_->GetFirst(&cur, &curidx);
 
         while (btn)
         {
@@ -902,7 +884,7 @@ void C_Button::SetLabelInfo()
                 btn->Label_->SetInfo();
             }
 
-            btn = (BUTTONLIST*)Root_->GetNext(&cur, &curidx);
+            btn = (BUTTONLIST *)Root_->GetNext(&cur, &curidx);
         }
     }
 }
@@ -918,7 +900,7 @@ void C_Button::SetSubParents(C_Window *)
 
     if (Root_)
     {
-        btn = (BUTTONLIST*)Root_->GetFirst(&cur, &curidx);
+        btn = (BUTTONLIST *)Root_->GetFirst(&cur, &curidx);
 
         while (btn)
         {
@@ -931,10 +913,10 @@ void C_Button::SetSubParents(C_Window *)
                 btn->Image_->SetInfo();
             }
 
-            if ( not cur->ID and btn->Image_)
+            if (not cur->ID and btn->Image_)
                 SetWH(btn->Image_->GetW(), btn->Image_->GetH());
 
-            btn = (BUTTONLIST*)Root_->GetNext(&cur, &curidx);
+            btn = (BUTTONLIST *)Root_->GetNext(&cur, &curidx);
         }
 
         SetLabelInfo();
@@ -948,15 +930,15 @@ BOOL C_Button::TimerUpdate()
     short i;
     BUTTONLIST *btn;
 
-    if ( not Root_)
-        return(FALSE);
+    if (not Root_)
+        return (FALSE);
 
     i = state_;
 
-    if ( not i and Parent_->GetHandler()->Over() == this)
+    if (not i and Parent_->GetHandler()->Over() == this)
         i = C_STATE_MOUSE;
 
-    btn = (BUTTONLIST*)Root_->Find(i);
+    btn = (BUTTONLIST *)Root_->Find(i);
 
     if (btn)
     {
@@ -966,62 +948,72 @@ BOOL C_Button::TimerUpdate()
 
             switch (btn->Image_->GetAnimType())
             {
-                case C_TYPE_LOOP:
-                    btn->Image_->SetFrame(btn->Image_->GetFrame() + btn->Image_->GetDirection());
+            case C_TYPE_LOOP:
+                btn->Image_->SetFrame(btn->Image_->GetFrame() +
+                                      btn->Image_->GetDirection());
 
-                    if (btn->Image_->GetFrame() < 0)
-                        btn->Image_->SetFrame(btn->Image_->GetAnim()->Anim->Frames - 1);
+                if (btn->Image_->GetFrame() < 0)
+                    btn->Image_->SetFrame(btn->Image_->GetAnim()->Anim->Frames -
+                                          1);
 
-                    if (btn->Image_->GetFrame() >= btn->Image_->GetAnim()->Anim->Frames)
-                        btn->Image_->SetFrame(0);
+                if (btn->Image_->GetFrame() >=
+                    btn->Image_->GetAnim()->Anim->Frames)
+                    btn->Image_->SetFrame(0);
 
-                    return(TRUE);
-                    break;
+                return (TRUE);
+                break;
 
-                case C_TYPE_STOPATEND:
-                    btn->Image_->SetFrame(btn->Image_->GetFrame() + btn->Image_->GetDirection());
+            case C_TYPE_STOPATEND:
+                btn->Image_->SetFrame(btn->Image_->GetFrame() +
+                                      btn->Image_->GetDirection());
 
-                    if (btn->Image_->GetFrame() < 0)
-                    {
-                        btn->Image_->SetFrame(0);
-                        return(FALSE);
-                    }
+                if (btn->Image_->GetFrame() < 0)
+                {
+                    btn->Image_->SetFrame(0);
+                    return (FALSE);
+                }
 
-                    if (btn->Image_->GetFrame() >= btn->Image_->GetAnim()->Anim->Frames)
-                    {
-                        btn->Image_->SetFrame(btn->Image_->GetAnim()->Anim->Frames - 1);
-                        return(FALSE);
-                    }
+                if (btn->Image_->GetFrame() >=
+                    btn->Image_->GetAnim()->Anim->Frames)
+                {
+                    btn->Image_->SetFrame(btn->Image_->GetAnim()->Anim->Frames -
+                                          1);
+                    return (FALSE);
+                }
 
-                    return(TRUE);
-                    break;
+                return (TRUE);
+                break;
 
-                case C_TYPE_PINGPONG:
-                    btn->Image_->SetFrame(btn->Image_->GetFrame() + btn->Image_->GetDirection());
+            case C_TYPE_PINGPONG:
+                btn->Image_->SetFrame(btn->Image_->GetFrame() +
+                                      btn->Image_->GetDirection());
 
-                    if ((btn->Image_->GetFrame() < 0) or (btn->Image_->GetFrame() >= btn->Image_->GetAnim()->Anim->Frames))
-                    {
-                        btn->Image_->SetFrame(btn->Image_->GetFrame() - btn->Image_->GetDirection());
-                        btn->Image_->SetDirection(-btn->Image_->GetDirection());
-                    }
+                if ((btn->Image_->GetFrame() < 0) or
+                    (btn->Image_->GetFrame() >=
+                     btn->Image_->GetAnim()->Anim->Frames))
+                {
+                    btn->Image_->SetFrame(btn->Image_->GetFrame() -
+                                          btn->Image_->GetDirection());
+                    btn->Image_->SetDirection(-btn->Image_->GetDirection());
+                }
 
-                    return(TRUE);
-                    break;
+                return (TRUE);
+                break;
             }
         }
         else if (laststate_)
         {
             laststate_ = 0;
-            return(TRUE);
+            return (TRUE);
         }
     }
     else if (laststate_)
     {
         laststate_ = 0;
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Button::Refresh()
@@ -1029,29 +1021,36 @@ void C_Button::Refresh()
     BUTTONLIST *btn;
     short i;
 
-    if ( not Root_ or not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
+    if (not Root_ or not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or
+        not Parent_)
         return;
 
     if (UseHotSpot_)
     {
         if (FixedHotSpot_)
-            Parent_->SetUpdateRect(GetX() + HotSpot_.left, GetY() + HotSpot_.top, GetX() + HotSpot_.right, GetY() + HotSpot_.bottom, GetFlags(), GetClient());
+            Parent_->SetUpdateRect(
+                GetX() + HotSpot_.left, GetY() + HotSpot_.top,
+                GetX() + HotSpot_.right, GetY() + HotSpot_.bottom, GetFlags(),
+                GetClient());
         else
         {
             i = state_;
-            btn = (BUTTONLIST*)Root_->Find(i);
+            btn = (BUTTONLIST *)Root_->Find(i);
 
-            if ( not btn and i)
-                btn = (BUTTONLIST*)Root_->Find(0);
+            if (not btn and i)
+                btn = (BUTTONLIST *)Root_->Find(0);
 
             if (btn)
             {
                 UI95_RECT clip;
                 clip.left = GetX() + btn->Image_->GetX() + HotSpot_.left;
                 clip.top = GetY() + btn->Image_->GetY() + HotSpot_.top;
-                clip.right = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
-                clip.bottom = GetY() + btn->Image_->GetY() + btn->Image_->GetH() + HotSpot_.bottom;
-                Parent_->SetUpdateRect(clip.left, clip.top, clip.right, clip.bottom, GetFlags(), GetClient());
+                clip.right = GetX() + btn->Image_->GetX() +
+                             btn->Image_->GetW() + HotSpot_.right;
+                clip.bottom = GetY() + btn->Image_->GetY() +
+                              btn->Image_->GetH() + HotSpot_.bottom;
+                Parent_->SetUpdateRect(clip.left, clip.top, clip.right,
+                                       clip.bottom, GetFlags(), GetClient());
             }
         }
     }
@@ -1060,17 +1059,17 @@ void C_Button::Refresh()
         BgImage_->Refresh();
 
     i = state_;
-    btn = (BUTTONLIST*)Root_->Find(i);
+    btn = (BUTTONLIST *)Root_->Find(i);
 
-    if ( not btn and i)
-        btn = (BUTTONLIST*)Root_->Find(0);
+    if (not btn and i)
+        btn = (BUTTONLIST *)Root_->Find(0);
 
     if (btn)
     {
         if (btn->Image_)
             btn->Image_->Refresh();
 
-        if ( not (GetFlags() bitand C_BIT_NOLABEL) and btn->Label_)
+        if (not(GetFlags() bitand C_BIT_NOLABEL) and btn->Label_)
             btn->Label_->Refresh();
     }
 }
@@ -1094,17 +1093,19 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
         }
         else
         {
-            btn = (BUTTONLIST*)Root_->Find(GetState());
+            btn = (BUTTONLIST *)Root_->Find(GetState());
 
-            if ( not btn)
-                btn = (BUTTONLIST*)Root_->Find(0);
+            if (not btn)
+                btn = (BUTTONLIST *)Root_->Find(0);
 
             if (btn and btn->Image_)
             {
                 clip.left = GetX() + btn->Image_->GetX() + HotSpot_.left;
                 clip.top = GetY() + btn->Image_->GetY() + HotSpot_.top;
-                clip.right = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
-                clip.bottom = GetY() + btn->Image_->GetY() + btn->Image_->GetH() + HotSpot_.bottom;
+                clip.right = GetX() + btn->Image_->GetX() +
+                             btn->Image_->GetW() + HotSpot_.right;
+                clip.bottom = GetY() + btn->Image_->GetY() +
+                              btn->Image_->GetH() + HotSpot_.bottom;
             }
             else
                 return;
@@ -1112,10 +1113,10 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
     }
     else
     {
-        btn = (BUTTONLIST*)Root_->Find(GetState());
+        btn = (BUTTONLIST *)Root_->Find(GetState());
 
-        if ( not btn)
-            btn = (BUTTONLIST*)Root_->Find(0);
+        if (not btn)
+            btn = (BUTTONLIST *)Root_->Find(0);
 
         if (btn and btn->Image_)
         {
@@ -1128,7 +1129,7 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
             return;
     }
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
     {
         clip.left += Parent_->VX_[Client_];
         clip.top += Parent_->VY_[Client_];
@@ -1136,20 +1137,24 @@ void C_Button::HighLite(SCREEN *surface, UI95_RECT *cliprect)
         clip.bottom += Parent_->VY_[Client_];
     }
 
-    if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
+    if (not Parent_->ClipToArea(&tmp, &clip, cliprect))
         return;
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
-        if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
+        if (not Parent_->ClipToArea(&tmp, &clip,
+                                    &Parent_->ClientArea_[Client_]))
             return;
 
     if (UseHotSpot_)
     {
-        Parent_->CustomBlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
+        Parent_->CustomBlitTranslucent(surface, MouseOverColor_,
+                                       MouseOverPercent_, &clip, C_BIT_ABSOLUTE,
+                                       0);
     }
     else
     {
-        Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
+        Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_,
+                                 &clip, C_BIT_ABSOLUTE, 0);
     }
 }
 
@@ -1158,21 +1163,22 @@ void C_Button::Draw(SCREEN *surface, UI95_RECT *cliprect)
     BUTTONLIST *btn;
     short i;
 
-    if ( not Root_ or not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_)
+    if (not Root_ or not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or
+        not Parent_)
         return;
 
-    if ( not (GetFlags() bitand C_BIT_ENABLED))
+    if (not(GetFlags() bitand C_BIT_ENABLED))
         i = C_STATE_DISABLED;
     else
         i = state_;
 
-    if ( not state_ and Parent_ and Parent_->GetHandler()->Over() == this)
+    if (not state_ and Parent_ and Parent_->GetHandler()->Over() == this)
         i = C_STATE_MOUSE;
 
-    btn = (BUTTONLIST*)Root_->Find(i);
+    btn = (BUTTONLIST *)Root_->Find(i);
 
-    if ( not btn and i)
-        btn = (BUTTONLIST*)Root_->Find(0);
+    if (not btn and i)
+        btn = (BUTTONLIST *)Root_->Find(0);
 
     if (BgImage_)
         BgImage_->Draw(surface, cliprect);
@@ -1180,7 +1186,7 @@ void C_Button::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (btn and btn->Image_)
         btn->Image_->Draw(surface, cliprect);
 
-    if ( not (GetFlags() bitand C_BIT_NOLABEL) and btn and btn->Label_)
+    if (not(GetFlags() bitand C_BIT_NOLABEL) and btn and btn->Label_)
         btn->Label_->Draw(surface, cliprect);
 
     if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
@@ -1192,46 +1198,54 @@ long C_Button::CheckHotSpots(long relx, long rely)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if ( not Root_ or (GetFlags() bitand C_BIT_INVISIBLE) or not (GetFlags() bitand C_BIT_ENABLED) or ( not Ready() and not UseHotSpot_))
-        return(0);
+    if (not Root_ or (GetFlags() bitand C_BIT_INVISIBLE) or
+        not(GetFlags() bitand C_BIT_ENABLED) or
+        (not Ready() and not UseHotSpot_))
+        return (0);
 
 
     if (UseHotSpot_)
     {
         if (FixedHotSpot_)
         {
-            if (relx >= (GetX() + HotSpot_.left) and rely >= (GetY() + HotSpot_.top) and relx <= (GetX() + HotSpot_.right) and rely <= (GetY() + HotSpot_.bottom))
+            if (relx >= (GetX() + HotSpot_.left) and
+                rely >= (GetY() + HotSpot_.top) and
+                relx <= (GetX() + HotSpot_.right) and
+                rely <= (GetY() + HotSpot_.bottom))
             {
-                SetRelXY(relx - GetX() - HotSpot_.left, rely - GetY() - HotSpot_.top);
-                return(GetID());
+                SetRelXY(relx - GetX() - HotSpot_.left,
+                         rely - GetY() - HotSpot_.top);
+                return (GetID());
             }
         }
         else
         {
-            btn = (BUTTONLIST*)Root_->Find(GetState());
+            btn = (BUTTONLIST *)Root_->Find(GetState());
 
-            if ( not btn)
-                btn = (BUTTONLIST*)Root_->Find(0);
+            if (not btn)
+                btn = (BUTTONLIST *)Root_->Find(0);
 
             if (btn and btn->Image_)
             {
                 x = GetX() + btn->Image_->GetX() + HotSpot_.left;
                 y = GetY() + btn->Image_->GetY() + HotSpot_.top;
-                w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
-                h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
+                w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() +
+                    HotSpot_.right;
+                h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() +
+                    HotSpot_.bottom;
 
-                if (relx >= (x) and relx < (w) and 
-                    rely >= (y) and rely < (h))
+                if (relx >= (x) and relx < (w) and rely >= (y) and rely < (h))
                 {
-                    SetRelXY(relx - GetX() - HotSpot_.left, rely - GetY() - HotSpot_.top);
-                    return(GetID());
+                    SetRelXY(relx - GetX() - HotSpot_.left,
+                             rely - GetY() - HotSpot_.top);
+                    return (GetID());
                 }
             }
         }
     }
     else
     {
-        btn = (BUTTONLIST*)Root_->Find(0);
+        btn = (BUTTONLIST *)Root_->Find(0);
 
         if (btn and btn->Image_)
         {
@@ -1240,16 +1254,16 @@ long C_Button::CheckHotSpots(long relx, long rely)
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) and relx < (x + w) and 
-                rely >= (y) and rely < (y + h))
+            if (relx >= (x) and relx < (x + w) and rely >= (y) and
+                rely < (y + h))
             {
                 SetRelXY(relx - x, rely - y);
-                return(GetID());
+                return (GetID());
             }
         }
     }
 
-    return(0);
+    return (0);
 };
 
 BOOL C_Button::Process(long ID, short HitType)
@@ -1263,46 +1277,45 @@ BOOL C_Button::Process(long ID, short HitType)
 
     switch (HitType)
     {
-        case C_TYPE_LMOUSEDOWN:
-        case C_TYPE_REPEAT:
-            if (GetType() == C_TYPE_NORMAL)
-                state_ = 1;
+    case C_TYPE_LMOUSEDOWN:
+    case C_TYPE_REPEAT:
+        if (GetType() == C_TYPE_NORMAL)
+            state_ = 1;
 
-            break;
+        break;
 
-        case C_TYPE_LMOUSEUP:
-            if (GetType() == C_TYPE_NORMAL)
-                state_ = 0;
-            else if ((GetType() == C_TYPE_RADIO) and state_ not_eq 1)
+    case C_TYPE_LMOUSEUP:
+        if (GetType() == C_TYPE_NORMAL)
+            state_ = 0;
+        else if ((GetType() == C_TYPE_RADIO) and state_ not_eq 1)
+        {
+            Parent_->SetGroupState(GetGroup(), 0);
+            state_ = 1;
+        }
+        else if (GetType() == C_TYPE_SELECT)
+        {
+            do
             {
-                Parent_->SetGroupState(GetGroup(), 0);
-                state_ = 1;
-            }
-            else if (GetType() == C_TYPE_SELECT)
+                state_++;
+                btn = (BUTTONLIST *)Root_->Find(state_);
+
+                if (not btn and state_)
+                    state_ = 0;
+            } while (not btn and state_ not_eq startstate and
+                     (not btn and state_));
+        }
+        else if (GetType() == C_TYPE_TOGGLE)
+            state_ = (short)((1 - state_) bitand 1);
+
+        if (GetFlags() bitand C_BIT_CLOSEWINDOW)
+        {
+            if (Owner_ and Owner_->_GetCType_() == _CNTL_LISTBOX_)
             {
-                do
-                {
-                    state_++;
-                    btn = (BUTTONLIST*)Root_->Find(state_);
-
-                    if ( not btn and state_)
-                        state_ = 0;
-                }
-                while ( not btn and state_ not_eq startstate and ( not btn and state_));
+                ((C_ListBox *)Owner_)->CloseWindow();
             }
-            else if (GetType() == C_TYPE_TOGGLE)
-                state_ = (short)((1 - state_) bitand 1); 
+        }
 
-            if (GetFlags() bitand C_BIT_CLOSEWINDOW)
-            {
-                if (Owner_ and Owner_->_GetCType_() == _CNTL_LISTBOX_)
-                {
-                    ((C_ListBox *)Owner_)->CloseWindow();
-                }
-            }
-
-            break;
-
+        break;
     }
 
     //if(state_ < 0)
@@ -1321,7 +1334,7 @@ BOOL C_Button::Process(long ID, short HitType)
         // JB 000812
         (*Callback_)(ID, HitType, this);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
@@ -1329,58 +1342,63 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
     BUTTONLIST *btn;
     long x, y, w, h;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (FALSE);
 
     if (UseHotSpot_)
     {
         if (FixedHotSpot_)
         {
-            if (relx >= (GetX() + HotSpot_.left) and rely >= (GetY() + HotSpot_.top) and relx <= (GetX() + HotSpot_.right) and rely <= (GetY() + HotSpot_.bottom))
+            if (relx >= (GetX() + HotSpot_.left) and
+                rely >= (GetY() + HotSpot_.top) and
+                relx <= (GetX() + HotSpot_.right) and
+                rely <= (GetY() + HotSpot_.bottom))
             {
                 // Set cursor...
-                if (this not_eq (C_Button *)me)
+                if (this not_eq (C_Button *) me)
                 {
                     gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
                 }
 
-                return(TRUE);
+                return (TRUE);
             }
         }
         else
         {
-            btn = (BUTTONLIST*)Root_->Find(GetState());
+            btn = (BUTTONLIST *)Root_->Find(GetState());
 
-            if ( not btn)
-                btn = (BUTTONLIST*)Root_->Find(0);
+            if (not btn)
+                btn = (BUTTONLIST *)Root_->Find(0);
 
             if (btn and btn->Image_)
             {
                 x = GetX() + btn->Image_->GetX() + HotSpot_.left;
                 y = GetY() + btn->Image_->GetY() + HotSpot_.top;
-                w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() + HotSpot_.right;
-                h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() + HotSpot_.bottom;
+                w = GetX() + btn->Image_->GetX() + btn->Image_->GetW() +
+                    HotSpot_.right;
+                h = GetY() + btn->Image_->GetX() + btn->Image_->GetH() +
+                    HotSpot_.bottom;
 
-                if (relx >= (x) and relx < (w) and 
-                    rely >= (y) and rely < (h))
+                if (relx >= (x) and relx < (w) and rely >= (y) and rely < (h))
                 {
                     // Set cursor...
-                    if (this not_eq (C_Button *)me)
+                    if (this not_eq (C_Button *) me)
                     {
                         gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
                     }
 
-                    return(TRUE);
+                    return (TRUE);
                 }
             }
         }
     }
     else
     {
-        btn = (BUTTONLIST*)Root_->Find(GetState());
+        btn = (BUTTONLIST *)Root_->Find(GetState());
 
-        if ( not btn)
-            btn = (BUTTONLIST*)Root_->Find(0);
+        if (not btn)
+            btn = (BUTTONLIST *)Root_->Find(0);
 
         if (btn and btn->Image_)
         {
@@ -1389,37 +1407,39 @@ BOOL C_Button::MouseOver(long relx, long rely, C_Base *me)
             w = btn->Image_->GetW();
             h = btn->Image_->GetH();
 
-            if (relx >= (x) and relx < (x + w) and 
-                rely >= (y) and rely < (y + h))
+            if (relx >= (x) and relx < (x + w) and rely >= (y) and
+                rely < (y + h))
             {
                 // Set cursor...
-                if (this not_eq (C_Button *)me)
+                if (this not_eq (C_Button *) me)
                 {
                     gSoundMgr->PlaySound(GetSound(C_TYPE_MOUSEOVER));
                 }
 
-                return(TRUE);
+                return (TRUE);
             }
         }
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Button::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
 {
     long x, y;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not (GetFlags() bitand C_BIT_DRAGABLE))
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or
+        not(GetFlags() bitand C_BIT_DRAGABLE))
+        return (FALSE);
 
     Leave = UI_Enter(Parent_);
 
     x = MouseX - Parent_->GetX() - GetX();
     y = MouseY - Parent_->GetY() - GetY();
 
-    if ( not (GetFlags() bitand C_BIT_ABSOLUTE))
+    if (not(GetFlags() bitand C_BIT_ABSOLUTE))
     {
         x -= Parent_->ClientArea_[GetClient()].left;
         y -= Parent_->ClientArea_[GetClient()].top;
@@ -1431,7 +1451,7 @@ BOOL C_Button::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
         (*Callback_)(GetID(), C_TYPE_DRAGXY, this);
 
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 #ifdef _UI95_PARSER_
@@ -1443,110 +1463,110 @@ short C_Button::LocalFind(char *token)
     while (C_Btn_Tokens[i])
     {
         if (strnicmp(token, C_Btn_Tokens[i], strlen(C_Btn_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Button::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CBTN_SETUP:
-            Setup(P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CBTN_SETUP:
+        Setup(P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
 
-        case CBTN_SETHOTSPOT:
-            SetFixedHotSpot(0);
-            SetHotSpot((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CBTN_SETHOTSPOT:
+        SetFixedHotSpot(0);
+        SetHotSpot((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
 
-        case CBTN_SETBACKIMAGE:
-            SetBackImage(P[0]);
-            break;
+    case CBTN_SETBACKIMAGE:
+        SetBackImage(P[0]);
+        break;
 
-        case CBTN_SETIMAGES:
-            SetImage(C_STATE_0, P[0]);
-            SetImage(C_STATE_1, P[1]);
-            SetImage(C_STATE_SELECTED, P[2]);
-            SetImage(C_STATE_DISABLED, P[3]);
-            break;
+    case CBTN_SETIMAGES:
+        SetImage(C_STATE_0, P[0]);
+        SetImage(C_STATE_1, P[1]);
+        SetImage(C_STATE_SELECTED, P[2]);
+        SetImage(C_STATE_DISABLED, P[3]);
+        break;
 
-        case CBTN_SETSTATE:
-            SetState((short)P[0]);
-            break;
+    case CBTN_SETSTATE:
+        SetState((short)P[0]);
+        break;
 
-        case CBTN_SETLABEL:
-            SetLabel((short)P[0], P[1]);
-            break;
+    case CBTN_SETLABEL:
+        SetLabel((short)P[0], P[1]);
+        break;
 
-        case CBTN_SETALLLABEL:
-            SetAllLabel(P[0]);
-            break;
+    case CBTN_SETALLLABEL:
+        SetAllLabel(P[0]);
+        break;
 
-        case CBTN_SETUPCOLOR:
-            SetColor(C_STATE_0, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CBTN_SETUPCOLOR:
+        SetColor(C_STATE_0, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CBTN_SETDOWNCOLOR:
-            SetColor(C_STATE_1, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CBTN_SETDOWNCOLOR:
+        SetColor(C_STATE_1, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CBTN_SETDISCOLOR:
-            SetColor(C_STATE_DISABLED, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CBTN_SETDISCOLOR:
+        SetColor(C_STATE_DISABLED, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CBTN_SETSELCOLOR:
-            SetColor(C_STATE_SELECTED, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CBTN_SETSELCOLOR:
+        SetColor(C_STATE_SELECTED, P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CBTN_SETBUTTONIMAGE:
-            SetImage((short)P[0], P[1]);
-            break;
+    case CBTN_SETBUTTONIMAGE:
+        SetImage((short)P[0], P[1]);
+        break;
 
-        case CBTN_SETBUTTONTEXT:
-            SetText((short)P[0], P[1]);
-            break;
+    case CBTN_SETBUTTONTEXT:
+        SetText((short)P[0], P[1]);
+        break;
 
-        case CBTN_SETBUTTONANIM:
-            SetAnim((short)P[0], P[1], (short)P[2], (short)P[3]);
-            break;
+    case CBTN_SETBUTTONANIM:
+        SetAnim((short)P[0], P[1], (short)P[2], (short)P[3]);
+        break;
 
-        case CBTN_SETTEXTOFFSET:
-            SetLabelOffset((short)P[0], P[1], P[2]);
-            break;
+    case CBTN_SETTEXTOFFSET:
+        SetLabelOffset((short)P[0], P[1], P[2]);
+        break;
 
-        case CBTN_SETTEXTCOLOR:
-            SetLabelColor((short)P[0], P[1] bitor (P[2] << 8) bitor (P[3] << 16));
-            break;
+    case CBTN_SETTEXTCOLOR:
+        SetLabelColor((short)P[0], P[1] bitor (P[2] << 8) bitor (P[3] << 16));
+        break;
 
-        case CBTN_SETFILL:
-            SetFill((short)P[0], (short)P[1], (short)P[2]);
-            break;
+    case CBTN_SETFILL:
+        SetFill((short)P[0], (short)P[1], (short)P[2]);
+        break;
 
-        case CBTN_SETPERCENT:
-            SetPercent((short)P[0]);
-            break;
+    case CBTN_SETPERCENT:
+        SetPercent((short)P[0]);
+        break;
 
-        case CBTN_SETBUTTONCOLOR:
-            SetColor((short)P[0], (P[1] bitor (P[2] << 8) bitor (P[3] << 16))); 
-            break;
+    case CBTN_SETBUTTONCOLOR:
+        SetColor((short)P[0], (P[1] bitor (P[2] << 8) bitor (P[3] << 16)));
+        break;
 
-        case CBTN_TEXTFLAGON:
-            SetLabelFlagBitsOn(P[0]);
-            break;
+    case CBTN_TEXTFLAGON:
+        SetLabelFlagBitsOn(P[0]);
+        break;
 
-        case CBTN_TEXTFLAGOFF:
-            SetLabelFlagBitsOff(P[0]);
-            break;
+    case CBTN_TEXTFLAGOFF:
+        SetLabelFlagBitsOff(P[0]);
+        break;
 
-        case CBTN_FIXED_HOTSPOT:
-            SetFixedHotSpot(1);
-            SetHotSpot((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CBTN_FIXED_HOTSPOT:
+        SetFixedHotSpot(1);
+        SetHotSpot((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
     }
 }
 

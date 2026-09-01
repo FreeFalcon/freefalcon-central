@@ -3,7 +3,7 @@
 #include "renderow.h"
 #include "weather.h"
 
-extern unsigned long    vuxGameTime;
+extern unsigned int vuxGameTime;
 
 extern bool g_bDrawWakeTurbulence;
 
@@ -18,7 +18,6 @@ TurbulanceList::~TurbulanceList()
 
     while (at = (AircraftTurbulence *)RemHead())
         delete at;
-
 }
 
 
@@ -33,7 +32,7 @@ private:
         Tpoint position; // feet
         Tpoint vector;   // normalized vector
         float time;     // seconds
-        float   stength;  // arbitrary strength value
+        float stength;  // arbitrary strength value
     };
 
     AircraftTurbulence *owner;
@@ -44,7 +43,9 @@ private:
 };
 
 
-int ClosestApproachLinePoint(Tpoint &A, Tpoint &B, Tpoint &C, float &PercentOfAB) // AB is the line, C is the point
+int ClosestApproachLinePoint(
+    Tpoint &A, Tpoint &B, Tpoint &C,
+    float &PercentOfAB) // AB is the line, C is the point
 {
     Tpoint AC;
     AC.x = C.x - A.x;
@@ -66,8 +67,9 @@ int ClosestApproachLinePoint(Tpoint &A, Tpoint &B, Tpoint &C, float &PercentOfAB
     ABnorm.y = AB.y / (lengthAB + .00000001f);
     ABnorm.z = AB.z / (lengthAB + .00000001f);
 
-    float cosAngleCAB = ACnorm.x * ABnorm.x + ACnorm.y * ABnorm.y + ACnorm.z * ABnorm.z;
-    float lengthAD   = cosAngleCAB * lengthAC;
+    float cosAngleCAB =
+        ACnorm.x * ABnorm.x + ACnorm.y * ABnorm.y + ACnorm.z * ABnorm.z;
+    float lengthAD = cosAngleCAB * lengthAC;
 
     //D = A + ABnorm * lengthAD;
     PercentOfAB = lengthAD / (lengthAB + .00000001f);
@@ -88,7 +90,6 @@ AircraftTurbulence::AircraftTurbulence()
     lTurbulenceList.AddHead(this);
     lTurbulenceList.Unlock();
     type = WAKE;
-
 }
 
 AircraftTurbulence::~AircraftTurbulence()
@@ -102,7 +103,6 @@ AircraftTurbulence::~AircraftTurbulence()
     {
         delete rn;
     }
-
 }
 
 void AircraftTurbulence::Release(void)
@@ -111,7 +111,8 @@ void AircraftTurbulence::Release(void)
 }
 
 
-void AircraftTurbulence::RecordPosition(float Strength, float X, float Y, float Z)
+void AircraftTurbulence::RecordPosition(float Strength, float X, float Y,
+                                        float Z)
 {
     lTurbulenceList.Lock();
 
@@ -161,8 +162,8 @@ void AircraftTurbulence::RecordPosition(float Strength, float X, float Y, float 
         rn->End.position.y = Y;
         rn->End.position.z = Z;
         rn->End.stength = Strength;
-        rn->End.time   = vuxGameTime * .001f;
-        counter --;
+        rn->End.time = vuxGameTime * .001f;
+        counter--;
     }
 
     lTurbulenceList.Unlock();
@@ -176,7 +177,10 @@ struct RetrieveTurbulanceParams
     float wakeEffect, yawEffect, pitchEffect, rollEffect;
 };
 
-float AircraftTurbulence::GetTurbulence(float X, float Y, float Z, float Yaw, float Pitch, float Roll, float &WakeEffect, float &YawEffect, float &PitchEffect, float &RollEffect)
+float AircraftTurbulence::GetTurbulence(float X, float Y, float Z, float Yaw,
+                                        float Pitch, float Roll,
+                                        float &WakeEffect, float &YawEffect,
+                                        float &PitchEffect, float &RollEffect)
 {
     lTurbulenceList.Lock();
     float str = 0;
@@ -185,9 +189,9 @@ float AircraftTurbulence::GetTurbulence(float X, float Y, float Z, float Yaw, fl
     RetrieveTurbulanceParams rtp;
 
     rtp.pitchEffect = 0;
-    rtp.rollEffect  = 0;
-    rtp.yawEffect   = 0;
-    rtp.wakeEffect  = 0;
+    rtp.rollEffect = 0;
+    rtp.yawEffect = 0;
+    rtp.wakeEffect = 0;
     rtp.pos.x = 0;
     rtp.pos.y = 0;
     rtp.pos.z = 0;
@@ -205,17 +209,17 @@ float AircraftTurbulence::GetTurbulence(float X, float Y, float Z, float Yaw, fl
     cosphi = (float)cos(Roll);
     sinphi = (float)sin(Roll);
 
-    rtp.fwd.x =  cospsi * costhe;
+    rtp.fwd.x = cospsi * costhe;
     rtp.fwd.y = -sinpsi * cosphi + cospsi * sinthe * sinphi;
-    rtp.fwd.z =  sinpsi * sinphi + cospsi * sinthe * cosphi;
+    rtp.fwd.z = sinpsi * sinphi + cospsi * sinthe * cosphi;
 
-    rtp.right.x =  sinpsi * costhe;
-    rtp.right.y =  cospsi * cosphi + sinpsi * sinthe * sinphi;
+    rtp.right.x = sinpsi * costhe;
+    rtp.right.y = cospsi * cosphi + sinpsi * sinthe * sinphi;
     rtp.right.z = -cospsi * sinphi + sinpsi * sinthe * cosphi;
 
     rtp.up.x = -sinthe;
-    rtp.up.y =  costhe * sinphi;
-    rtp.up.z =  costhe * cosphi;
+    rtp.up.y = costhe * sinphi;
+    rtp.up.z = costhe * cosphi;
 
     if (lastPurgeTime > vuxGameTime)
     {
@@ -254,15 +258,15 @@ float AircraftTurbulence::GetTurbulence(float X, float Y, float Z, float Yaw, fl
         at = (AircraftTurbulence *)at->GetSucc();
     }
 
-    WakeEffect  = rtp.wakeEffect;
-    YawEffect   = rtp.yawEffect;
+    WakeEffect = rtp.wakeEffect;
+    YawEffect = rtp.yawEffect;
     PitchEffect = rtp.pitchEffect;
-    RollEffect  = rtp.rollEffect;
+    RollEffect = rtp.rollEffect;
 
     //MonoPrint("Returning Turb %f\n",str);
 
     lTurbulenceList.Unlock();
-    return(str);
+    return (str);
 }
 
 float AircraftTurbulence::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
@@ -299,23 +303,31 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
 {
     float fraction;
 
-    if (ClosestApproachLinePoint(Start.position, End.position, rtp.pos, fraction))
+    if (ClosestApproachLinePoint(Start.position, End.position, rtp.pos,
+                                 fraction))
     {
         Tpoint linePoint;
         Tpoint delta;
-        linePoint.x = Start.position.x + (End.position.x - Start.position.x) * fraction;
-        linePoint.y = Start.position.y + (End.position.y - Start.position.y) * fraction;
-        linePoint.z = Start.position.z + (End.position.z - Start.position.z) * fraction;
+        linePoint.x =
+            Start.position.x + (End.position.x - Start.position.x) * fraction;
+        linePoint.y =
+            Start.position.y + (End.position.y - Start.position.y) * fraction;
+        linePoint.z =
+            Start.position.z + (End.position.z - Start.position.z) * fraction;
         delta.x = linePoint.x - rtp.pos.x;
         delta.y = linePoint.y - rtp.pos.y;
         delta.z = linePoint.z - rtp.pos.z;
-        float distance = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z) + 1;
-        float age      = (vuxGameTime * .001F) - (Start.time    + (End.time    - Start.time) * fraction);
+        float distance =
+            sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z) + 1;
+        float age = (vuxGameTime * .001F) -
+                    (Start.time + (End.time - Start.time) * fraction);
         float radius = owner->growthRate * age + 1 + owner->startRadius;
 
-        if (distance > radius) return 0;
+        if (distance > radius)
+            return 0;
 
-        float strength = Start.stength + (End.stength - Start.stength) * fraction;
+        float strength =
+            Start.stength + (End.stength - Start.stength) * fraction;
         age = age / owner->lifeSpan; // make 0..1
         age *= age * age; // this will make the fade out less linear
 
@@ -323,7 +335,9 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
             age = 1;
 
         float rad = distance / radius;
-        rad *= rad * rad; // this will make the interpolation from funnel center to a/c position less linear
+        rad *=
+            rad *
+            rad; // this will make the interpolation from funnel center to a/c position less linear
 
         strength *= (1 - rad) * (1 - age);
         float dirMult = 1;
@@ -332,20 +346,20 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
         {
             switch (owner->type)
             {
-                case AircraftTurbulence::WAKE:
-                    rtp.wakeEffect += strength;
-                    break;
+            case AircraftTurbulence::WAKE:
+                rtp.wakeEffect += strength;
+                break;
 
-                case AircraftTurbulence::RVORTEX:
+            case AircraftTurbulence::RVORTEX:
 
-                    //dirMult = -1;
-                case AircraftTurbulence::LVORTEX:
-                    Tpoint segNormal;
-                    segNormal.x = End.position.x - Start.position.x;
-                    segNormal.y = End.position.y - Start.position.y;
-                    segNormal.z = End.position.z - Start.position.z;
+                //dirMult = -1;
+            case AircraftTurbulence::LVORTEX:
+                Tpoint segNormal;
+                segNormal.x = End.position.x - Start.position.x;
+                segNormal.y = End.position.y - Start.position.y;
+                segNormal.z = End.position.z - Start.position.z;
 
-                    /*
+                /*
                     // segNormal.Normalize();
                      float l = sqrt(segNormal.x*segNormal.x + segNormal.y*segNormal.y + segNormal.z*segNormal.z);
                      if (l > 0.000001f)
@@ -358,13 +372,13 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
                      // only doing roll for now;
                      float rcos = segNormal % rtp.fwd;
                     */
-                    if (owner->type == AircraftTurbulence::RVORTEX)
-                        dirMult = 1.0f;
-                    else
-                        dirMult = -1.0f;
+                if (owner->type == AircraftTurbulence::RVORTEX)
+                    dirMult = 1.0f;
+                else
+                    dirMult = -1.0f;
 
-                    rtp.rollEffect += strength * dirMult;
-                    break;
+                rtp.rollEffect += strength * dirMult;
+                break;
             }
         }
 
@@ -375,7 +389,7 @@ float TurbRecordNode::RetieveTurbulence(RetrieveTurbulanceParams &rtp)
 }
 
 
-void AircraftTurbulence::Draw(class RenderOTW *renderer)   // debug useage
+void AircraftTurbulence::Draw(class RenderOTW *renderer) // debug useage
 {
     if (!g_bDrawWakeTurbulence)
         return;
@@ -401,7 +415,9 @@ void AircraftTurbulence::Draw(class RenderOTW *renderer)   // debug useage
             pos1.y = pos2.y = rn->End.position.y;
             pos1.z = pos2.z = rn->End.position.z;
 
-            float size = rn->owner->growthRate * ((vuxGameTime * .001f) - rn->End.time) + 1 + rn->owner->startRadius;
+            float size =
+                rn->owner->growthRate * ((vuxGameTime * .001f) - rn->End.time) +
+                1 + rn->owner->startRadius;
 
             pos1.x -= size;
             pos2.x += size;

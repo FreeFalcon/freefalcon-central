@@ -61,17 +61,17 @@ void HeliBrain::MissileEngage(void)
 
         switch (self->Sms->hardPoint[curMissileStation]->GetWeaponType())
         {
-            case wtAim9:
-                newSubMode = FireControlComputer::Aim9;
-                break;
+        case wtAim9:
+            newSubMode = FireControlComputer::Aim9;
+            break;
 
-            case wtAim120:
-                newSubMode = FireControlComputer::Aim120;
-                break;
+        case wtAim120:
+            newSubMode = FireControlComputer::Aim120;
+            break;
 
-            default:
-                newSubMode = FireControlComputer::Aim9;
-                break;
+        default:
+            newSubMode = FireControlComputer::Aim9;
+            break;
         }
 
         self->FCC->SetSubMode(newSubMode);
@@ -84,8 +84,9 @@ void HeliBrain::MissileEngage(void)
     tof = curMissile->GetTOF((-self->ZPos()), self->Vt(), targetData->ataFrom,
                              targetPtr->BaseData()->Vt(), targetData->range);
 
-    rMax = curMissile->GetRMax((-self->ZPos()), self->Vt(), targetData->az,
-                               targetPtr->BaseData()->Vt(), targetData->ataFrom);
+    rMax =
+        curMissile->GetRMax((-self->ZPos()), self->Vt(), targetData->az,
+                            targetPtr->BaseData()->Vt(), targetData->ataFrom);
 
 
     /*---------------------------------*/
@@ -138,9 +139,9 @@ void HeliBrain::MissileEngage(void)
             trackZ = targetPtr->BaseData()->ZPos() + zDot * tof * 0.9F;
         }
         else
-            /*-------------------------*/
-            /* Not closing fast enough */
-            /*-------------------------*/
+        /*-------------------------*/
+        /* Not closing fast enough */
+        /*-------------------------*/
         {
 
             /*----------------------*/
@@ -157,7 +158,8 @@ void HeliBrain::MissileEngage(void)
         rngdot = (targetData->rangedot) * FTPSEC_TO_KNOTS;
         desSpeed = self->Kias() + desiredClosure - rngdot;
 
-        if (desSpeed < 200.0) desSpeed = 200.0F;
+        if (desSpeed < 200.0)
+            desSpeed = 200.0F;
     }
 
     /*----------*/

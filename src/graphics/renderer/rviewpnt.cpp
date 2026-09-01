@@ -7,16 +7,17 @@
  terrain, and object lists in synch.
 \***************************************************************************/
 #include "grmath.h"
-#include "TimeMgr.h"
-#include "TOD.h"
-#include "DrawOvc.h"
-#include "RViewPnt.h"
+#include "timemgr.h"
+#include "tod.h"
+#include "drawovc.h"
+#include "rviewpnt.h"
 #include "context.h"
-#include "FalcLib/include/dispopts.h" //JAM 04Oct03
-#include "tmap.h"   // Artscout - 2026 (#79): TheMap.LastFarTexLOD() for the far-LOD clamp
+#include "falclib/include/dispopts.h" //JAM 04Oct03
+#include "tmap.h" // Artscout - 2026 (#79): TheMap.LastFarTexLOD() for the far-LOD clamp
+#include "terrainclipmap.h" // #78: drop the clipmap windows with the viewpoint
 
 //JAM 18Nov03
-#include "RealWeather.h"
+#include "realweather.h"
 
 //#define _OLD_UPDATE_ // use scotts Update() funtion
 
@@ -28,43 +29,54 @@
 // holes). Double the base range per extra level: the range loops below halve per level down from the coarsest,
 // so doubling the base keeps the finer detail rings at their original distances and only extends the far edge.
 // Gives the old coarsest ring a geomorph target (LOD < loLOD now) -> kills the far-terrain height-pop.
-static void ApplyFarLodExtra(float& gndRange, int& minDetail)
+static void ApplyFarLodExtra(float &gndRange, int &minDetail)
 {
     extern int g_nFarLodExtra;
-    int extra = g_nFarLodExtra; if (extra < 0) extra = 0;
+    int extra = g_nFarLodExtra;
+    if (extra < 0)
+        extra = 0;
     int maxFar = TheMap.LastFarTexLOD();
-    if (minDetail + extra > maxFar) extra = maxFar - minDetail;
-    if (extra <= 0) return;
+    if (minDetail + extra > maxFar)
+        extra = maxFar - minDetail;
+    if (extra <= 0)
+        return;
     minDetail += extra;
-    gndRange  *= (float)(1 << extra);
+    gndRange *= (float)(1 << extra);
 }
 
-void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuffer)
+void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail,
+                       bool isZBuffer)
 {
     int i;
 
     bZBuffering = isZBuffer; //JAM 13Dec03
 
-    ApplyFarLodExtra(gndRange, minDetail);   // #79: extend far relief + give far tiles a geomorph target
+    ApplyFarLodExtra(
+        gndRange,
+        minDetail); // #79: extend far relief + give far tiles a geomorph target
 
-    ShiAssert( not IsReady());
+    ShiAssert(not IsReady());
 
     // Initialize our sun and moon textures
     SetupTextures();
 
     // Determine how many object lists we'll need
-    nObjectLists = _NUM_OBJECT_LISTS_; // 0=in terrain, 1=below cloud, 2=in cloud, 3=above clouds, 4= above roof
+    nObjectLists =
+        _NUM_OBJECT_LISTS_; // 0=in terrain, 1=below cloud, 2=in cloud, 3=above clouds, 4= above roof
 
     // Allocate memory for the list of altitude segregated object lists
 
     objectLists = new ObjectListRecord[nObjectLists];
     ShiAssert(objectLists);
+    fprintf(stderr,
+            "[FF] RViewPoint::Setup this=%p objectLists=%p nObjectLists=%d\n",
+            (void *)this, (void *)objectLists, nObjectLists);
 
     // Initialize each display list -- update will set the top and base values
     for (i = 0; i < nObjectLists; i++)
     {
         objectLists[i].displayList.Setup();
-        objectLists[i].Ztop  = -1e13f;
+        objectLists[i].Ztop = -1e13f;
     }
 
     // Initialize the cloud display list
@@ -77,7 +89,7 @@ void RViewPoint::Setup(float gndRange, int maxDetail, int minDetail, bool isZBuf
     // near-terrain LOD rings; kFarTileScale pushes out the lowest-detail "far tiles" ring (the
     // distant fog-blended terrain). Both ~1.5x. Independent so each band can be tuned separately.
     const float kNearDrawScale = 1.5f;
-    const float kFarTileScale   = 1.5f;
+    const float kFarTileScale = 1.5f;
 
     for (i = minDetail; i >= 0; i--)
     {
@@ -130,10 +142,13 @@ void RViewPoint::Cleanup(void)
     delete[] objectLists;
     objectLists = NULL;
 
+    // Artscout - 2026 (#78): the mesh-terrain clipmap holds posts fetched from
+    // THIS viewpoint's blocks -- drop the windows before they go away.
+    TerrainClipmap_Invalidate();
+
     // Cleanup our bases class's terrain manager
     TViewPoint::Cleanup();
 }
-
 
 
 /***************************************************************************\
@@ -148,7 +163,9 @@ void RViewPoint::SetGroundRange(float gndRange, int maxDetail, int minDetail)
 
     ShiAssert(IsReady());
 
-    ApplyFarLodExtra(gndRange, minDetail);   // #79: keep the extra far LOD ring(s) when the draw distance changes
+    ApplyFarLodExtra(
+        gndRange,
+        minDetail); // #79: keep the extra far LOD ring(s) when the draw distance changes
 
     // Calculate the ranges we'll need at each LOD
     float *Ranges = new float[minDetail + 1];
@@ -197,8 +214,10 @@ void RViewPoint::Update(const Tpoint *pos)
 
     // Update the ceiling values of the object display lists
     objectLists[0].Ztop = terrainCeiling;
-    objectLists[1].Ztop = realWeather->stratusZ + ((realWeather->stratusDepth) / 4.f);
-    objectLists[2].Ztop = realWeather->stratusZ - ((realWeather->stratusDepth) / 4.f);
+    objectLists[1].Ztop =
+        realWeather->stratusZ + ((realWeather->stratusDepth) / 4.f);
+    objectLists[2].Ztop =
+        realWeather->stratusZ - ((realWeather->stratusDepth) / 4.f);
     objectLists[3].Ztop = roofHeight;
 
     previousTop = 1e12f;
@@ -235,7 +254,7 @@ void RViewPoint::Update(const Tpoint *pos)
     }
 
     //JAM 265Dec03
-    if ( not bZBuffering)
+    if (not bZBuffering)
     {
         for (i = 0; i < nObjectLists; i++)
             objectLists[i].displayList.SortForViewpoint();
@@ -254,13 +273,13 @@ void RViewPoint::Update(const Tpoint *pos)
 /***************************************************************************\
  Insert an instance of an object into the active display lists
 \***************************************************************************/
-void RViewPoint::InsertObject(DrawableObject* object)
+void RViewPoint::InsertObject(DrawableObject *object)
 {
     int i;
 
     ShiAssert(object);
 
-    if ( not object) // JB 010710 CTD?
+    if (not object) // JB 010710 CTD?
         return;
 
     // Decide into which list to put the object
@@ -281,7 +300,7 @@ void RViewPoint::InsertObject(DrawableObject* object)
 /***************************************************************************\
  Remove an instance of an object from the active display lists
 \***************************************************************************/
-void RViewPoint::RemoveObject(DrawableObject* object)
+void RViewPoint::RemoveObject(DrawableObject *object)
 {
     ShiAssert(object);
     ShiAssert(object->parentList);
@@ -297,6 +316,19 @@ void RViewPoint::RemoveObject(DrawableObject* object)
 void RViewPoint::ResetObjectTraversal(void)
 {
     ShiAssert(IsReady());
+
+    // #104 (Linux) DIAGNOSTIC + guard: objectLists has been seen NULL here (RViewPoint not Setup / was
+    // Cleanup'd) -> ResetTraversal on a NULL list crashed on the first 3D frame.
+    if (!objectLists)
+    {
+        static int _n = 0;
+        if (_n++ < 4)
+            fprintf(stderr,
+                    "[FF] ResetObjectTraversal: objectLists=NULL this=%p "
+                    "nObjectLists=%d\n",
+                    (void *)this, nObjectLists);
+        return;
+    }
 
     for (int i = 0; i < nObjectLists; i++)
         objectLists[i].displayList.ResetTraversal();
@@ -361,31 +393,35 @@ int RViewPoint::CloudLineOfSight(Tpoint *p1, Tpoint *p2)
 \***************************************************************************/
 void RViewPoint::UpdateMoon()
 {
-    if ( not TheTimeOfDay.ThereIsAMoon())
+    if (not TheTimeOfDay.ThereIsAMoon())
     {
         lastDay = 1;
         return;
     }
 
-    if ( not lastDay) return;
+    if (not lastDay)
+        return;
 
     lastDay = 0; // do it only once when the moon appear
 
     TheTimeOfDay.CalculateMoonPhase();
 
     // Edit the image data for the texture to darken a portion of the moon
-    TheTimeOfDay.CreateMoonPhase((unsigned char *)OriginalMoonTexture.imageData, (unsigned char *)MoonTexture.imageData);
+    TheTimeOfDay.CreateMoonPhase((unsigned char *)OriginalMoonTexture.imageData,
+                                 (unsigned char *)MoonTexture.imageData);
 
     // Create the green moon texture based on the color version
-    BYTE *texel = (BYTE*)MoonTexture.imageData;
-    BYTE *dest = (BYTE*)GreenMoonTexture.imageData;
-    BYTE *stopTexel = (BYTE*)MoonTexture.imageData + MoonTexture.dimensions * MoonTexture.dimensions;
+    BYTE *texel = (BYTE *)MoonTexture.imageData;
+    BYTE *dest = (BYTE *)GreenMoonTexture.imageData;
+    BYTE *stopTexel = (BYTE *)MoonTexture.imageData +
+                      MoonTexture.dimensions * MoonTexture.dimensions;
 
     while (texel < stopTexel)
     {
-        if (*texel not_eq 0)   // Don't touch the chromakeyed texels
+        if (*texel not_eq 0) // Don't touch the chromakeyed texels
         {
-            *dest++ = (BYTE)((*texel++) bitor 128); // Use the "green" set of palette entries
+            *dest++ = (BYTE)((*texel++) bitor
+                             128); // Use the "green" set of palette entries
         }
         else
         {
@@ -417,12 +453,14 @@ void RViewPoint::SetupTextures()
     else
     {
         // Build the normal sun texture
-        SunTexture.LoadAndCreate("sun5.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
+        SunTexture.LoadAndCreate("sun5.apl",
+                                 MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE);
         SunTexture.FreeImage();
 
         // Now load the image to construct the green sun texture
         // (Could do without this, but this is easy and done only once...)
-        if ( not GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE))
+        if (not GreenSunTexture.LoadImage("sun5.apl", MPR_TI_CHROMAKEY bitor
+                                                          MPR_TI_PALETTE))
         {
             ShiError("Failed to load sun texture(2)");
         }
@@ -451,10 +489,13 @@ void RViewPoint::SetupTextures()
     //JAM
 
     // Now setup the moon textures.  (We'll tweak them periodicaly in BuildMoon)
-    OriginalMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
-    MoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
+    OriginalMoonTexture.LoadAndCreate(
+        "moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
+    MoonTexture.LoadAndCreate(
+        "moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
     GreenMoonTexture.SetPalette(MoonTexture.GetPalette());
-    GreenMoonTexture.LoadAndCreate("moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
+    GreenMoonTexture.LoadAndCreate(
+        "moon.gif", MPR_TI_CHROMAKEY bitor MPR_TI_PALETTE bitor MPR_TI_ALPHA);
 
     // build white moon with alpha
     Palette *moonPal = MoonTexture.GetPalette();
@@ -502,7 +543,6 @@ void RViewPoint::SetupTextures()
     moonPal->UpdateMPR();
 
 
-
     // Request time updates
     TheTimeManager.RegisterTimeUpdateCB(TimeUpdateCallback, this);
 }
@@ -535,5 +575,5 @@ void RViewPoint::ReleaseTextures(void)
 \***************************************************************************/
 void RViewPoint::TimeUpdateCallback(void *self)
 {
-    ((RViewPoint*)self)->UpdateMoon();
+    ((RViewPoint *)self)->UpdateMoon();
 }

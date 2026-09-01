@@ -1,20 +1,24 @@
 /** sfr: requests a position update from unit owner for a simmover entity */
-#include "MsgInc/RequestSimMoverPosition.h"
-#include "MsgInc/SendSimMoverPosition.h"
+#include "msginc/requestsimmoverposition.h"
+#include "msginc/sendsimmoverposition.h"
 #include "mesg.h"
 
 // TODO discover what thread uses it...
 
-RequestSimMoverPosition::RequestSimMoverPosition(SimMoverClass *mover, VU_ID target) :
-    FalconEvent(RequestSimMoverPositionMsg, FalconEvent::SimThread, mover->Id(), static_cast<VuTargetEntity*>(vuDatabase->Find(target)), FALSE)
+RequestSimMoverPosition::RequestSimMoverPosition(SimMoverClass *mover,
+                                                 VU_ID target)
+    : FalconEvent(
+          RequestSimMoverPositionMsg, FalconEvent::SimThread, mover->Id(),
+          static_cast<VuTargetEntity *>(vuDatabase->Find(target)), FALSE)
 {
     // this is always reliable and OOB
     RequestReliableTransmit();
     RequestOutOfBandTransmit();
 }
 
-RequestSimMoverPosition::RequestSimMoverPosition(VU_ID senderID, VU_ID targetID) :
-    FalconEvent(RequestSimMoverPositionMsg, FalconEvent::SimThread, senderID, targetID)
+RequestSimMoverPosition::RequestSimMoverPosition(VU_ID senderID, VU_ID targetID)
+    : FalconEvent(RequestSimMoverPositionMsg, FalconEvent::SimThread, senderID,
+                  targetID)
 {
 }
 
@@ -51,7 +55,8 @@ int RequestSimMoverPosition::Process(uchar autodisp)
         return 0;
     }
 
-    VuTargetEntity *sender = static_cast<VuTargetEntity*>(vuDatabase->Find(sender_));
+    VuTargetEntity *sender =
+        static_cast<VuTargetEntity *>(vuDatabase->Find(sender_));
 
     if (sender == NULL)
     {

@@ -9,7 +9,13 @@
 ** We go dancing in......
 */
 
-#if _MSC_VER >= 1300
+// The test used to be a bare `_MSC_VER >= 1300`, which asks "is this Visual C++ .NET or newer?" when what it means
+// is "does this compiler have the standard headers?". An undefined _MSC_VER evaluates to 0, so every non-MSVC
+// compiler -- clang on Linux included -- failed that test and fell into the #else, reaching for <iomanip.h>, a
+// pre-standard header removed from every toolchain decades ago. MSVC's own answer is unchanged (_MSC_VER is 1920+,
+// so it took and still takes the standard branch); the #else now only serves the VC6-era compilers it was written
+// for. Note <string.h> below is C's, not the old C++ <string>, so the standard branch pairs it with <string>.
+#if !defined(_MSC_VER) || _MSC_VER >= 1300
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -37,7 +43,7 @@ float B2 = 1.0F - 0.5F; // integration constant
 // This cheat MM cheat is necessary to run the model in small
 // enough time increments -- essentially dividing the frame time
 // by a factor
-#define TIME_CHEAT  (1.0F)
+#define TIME_CHEAT (1.0F)
 
 // constant which determines number of times to iterate on
 // solution for thrust and induced velocity for both tail
@@ -513,8 +519,7 @@ HELI_MODEL_DATA gModelData[NUM_MODELS] =
  },
 };
 */
-HELI_MODEL_DATA gModelData[NUM_MODELS] =
-{
+HELI_MODEL_DATA gModelData[NUM_MODELS] = {
     // This model is for the Agusta A102
     {
         A109,
@@ -979,9 +984,7 @@ HELI_MODEL_DATA gModelData[NUM_MODELS] =
 };
 
 
-
-inline float
-FABS(float a)
+inline float FABS(float a)
 {
     return ((a >= 0.0) ? a : -a);
 }
@@ -1005,7 +1008,7 @@ HeliMMClass::HeliMMClass(SimBaseClass *self, int helitype)
     platform = self;
 
     // set pointer to model data
-    md = &gModelData[ helitype ];
+    md = &gModelData[helitype];
 
     // reset variables
     ResetForceVars();
@@ -1018,8 +1021,8 @@ HeliMMClass::HeliMMClass(SimBaseClass *self, int helitype)
     p_mr = 0; // main rotor power
     p_tr = 0; // tail rotor power
     torque_mr = 0; // main rotor torque
-    vr_tr  = 0; // air vel relative to tail rotor disk
-    vb_tr  = 0; // air vel relative to tail rotor blade
+    vr_tr = 0; // air vel relative to tail rotor disk
+    vb_tr = 0; // air vel relative to tail rotor blade
     thrust_tr = 0; // thrust tail rotor
     vi_tr = 0; // induced air tail rotor
     dw_ht_pos = 0; // downwash on horizontal tail pos
@@ -1059,7 +1062,6 @@ HeliMMClass::HeliMMClass(SimBaseClass *self, int helitype)
     // set delta time resolution for model
 
 
-
     // run some precalcs to set variables based on the model data
     PreCalc();
 }
@@ -1080,18 +1082,18 @@ HeliMMClass::~HeliMMClass(void)
 ** Sets up cyclic, collective and tail rotor pitches based on
 ** control inputs
 */
-void
-HeliMMClass::SetControls(float pstick, float rstick, float throttle, float pedals)
+void HeliMMClass::SetControls(float pstick, float rstick, float throttle,
+                              float pedals)
 {
 
     ctlcpitch = throttle;
 
     // for pedals bitand stick, put in a centered dead zone
     // when human controlled
-    if ( not isDigital)
+    if (not isDigital)
     {
         if (pedals > 0.30F)
-            ctltpitch = (pedals - 0.30F) / 0.70F  ;
+            ctltpitch = (pedals - 0.30F) / 0.70F;
         else if (pedals < -0.30F)
             ctltpitch = (pedals + 0.30F) / 0.70F;
         else
@@ -1119,18 +1121,14 @@ HeliMMClass::SetControls(float pstick, float rstick, float throttle, float pedal
     }
 
     // get math model control inputs and convert to radians
-    cyc_roll = md->td.cyc_roll_center *
-               (PI / 180.0F) + ctlroll *
-               md->td.cyc_roll_max * (PI / 180.0F);
-    cyc_pitch = md->td.cyc_pitch_center *
-                (PI / 180.0F) + ctlpitch *
-                md->td.cyc_pitch_max * (PI / 180.0F);
-    coll_pitch = md->td.coll_pitch_center *
-                 (PI / 180.0F) + ctlcpitch *
-                 md->td.coll_pitch_max * (PI / 180.0F);
-    tr_pitch = md->td.tr_pitch_center *
-               (PI / 180.0F) + ctltpitch *
-               md->td.tr_pitch_max * (PI / 180.0F);
+    cyc_roll = md->td.cyc_roll_center * (PI / 180.0F) +
+               ctlroll * md->td.cyc_roll_max * (PI / 180.0F);
+    cyc_pitch = md->td.cyc_pitch_center * (PI / 180.0F) +
+                ctlpitch * md->td.cyc_pitch_max * (PI / 180.0F);
+    coll_pitch = md->td.coll_pitch_center * (PI / 180.0F) +
+                 ctlcpitch * md->td.coll_pitch_max * (PI / 180.0F);
+    tr_pitch = md->td.tr_pitch_center * (PI / 180.0F) +
+               ctltpitch * md->td.tr_pitch_max * (PI / 180.0F);
 }
 
 
@@ -1140,8 +1138,7 @@ HeliMMClass::SetControls(float pstick, float rstick, float throttle, float pedal
 ** Precalculates some variables to be used by the flight dynamics
 ** functions.
 */
-void
-HeliMMClass::PreCalc(void)
+void HeliMMClass::PreCalc(void)
 {
     // get mass based on weight and gravity
     mass = md->fus.weight / GRAVITY;
@@ -1165,14 +1162,13 @@ HeliMMClass::PreCalc(void)
     rh02 = rh0 / 2.0F;
 
     // I've got no idea on this one yet -- used in other calcs
-    gam_om_16 =
-        rh0 * md->mr.lslope * md->mr.chord * (float)pow(md->mr.radius, 4) /
-        md->mr.b_mi * omega_mr /
-        16.0F * (1.0F + 8.0F / 3.0F * md->mr.h_offset / md->mr.radius);
+    gam_om_16 = rh0 * md->mr.lslope * md->mr.chord *
+                (float)pow(md->mr.radius, 4) / md->mr.b_mi * omega_mr / 16.0F *
+                (1.0F + 8.0F / 3.0F * md->mr.h_offset / md->mr.radius);
 
     // kC is flapping aerodynamic couple
-    kC = (0.75F * omega_mr * md->mr.h_offset / md->mr.radius /
-          gam_om_16) + md->mr.k1;
+    kC = (0.75F * omega_mr * md->mr.h_offset / md->mr.radius / gam_om_16) +
+         md->mr.k1;
 
     // flapping x-couple coeff
     itb2_om = omega_mr / (1.0F + (float)pow(omega_mr / gam_om_16, 2));
@@ -1181,15 +1177,14 @@ HeliMMClass::PreCalc(void)
     itb = itb2_om * omega_mr / gam_om_16;
 
 
-
     // primary flapping stiffness
     dl_db1 = md->mr.nb / 2.0F *
-             (1.5F * md->mr.b_mi * md->mr.h_offset / md->mr.radius *
-              omega_mr * omega_mr);
+             (1.5F * md->mr.b_mi * md->mr.h_offset / md->mr.radius * omega_mr *
+              omega_mr);
 
     // cross flapping stiffness
-    dl_da1 = (rh02) * md->mr.lslope * md->mr.nb * md->mr.chord *
-             md->mr.radius * vtip * vtip * md->mr.h_offset / 6.0F;
+    dl_da1 = (rh02)*md->mr.lslope * md->mr.nb * md->mr.chord * md->mr.radius *
+             vtip * vtip * md->mr.h_offset / 6.0F;
 
     // empirical hack for the Agusta A102
     if (md->type == A109)
@@ -1204,8 +1199,7 @@ HeliMMClass::PreCalc(void)
 
     // thrust coefficient
     cT = md->fus.weight /
-         (rh0 * PI * md->mr.radius * md->mr.radius *
-          vtip * vtip);
+         (rh0 * PI * md->mr.radius * md->mr.radius * vtip * vtip);
 
     // a * sigma
     a_sigma = md->mr.lslope * md->mr.nb * md->mr.chord / md->mr.radius / PI;
@@ -1226,8 +1220,8 @@ HeliMMClass::PreCalc(void)
     }
 
     // pre-calc some values for main rotor
-    mr_tmp1 = omega_mr * md->mr.radius * rh0 * md->mr.lslope *
-              md->mr.nb * md->mr.chord * md->mr.radius / 4.0F;
+    mr_tmp1 = omega_mr * md->mr.radius * rh0 * md->mr.lslope * md->mr.nb *
+              md->mr.chord * md->mr.radius / 4.0F;
     mr_tmp2 = md->mr.radius * rh0 * md->mr.radius * PI;
 
     // calculate the moment arms
@@ -1258,8 +1252,7 @@ HeliMMClass::PreCalc(void)
 ** Runs the functions calculating the dynamic math model functions
 ** for helicopter flight.
 */
-void
-HeliMMClass::Exec(void)
+void HeliMMClass::Exec(void)
 {
     int i;
 
@@ -1299,8 +1292,7 @@ HeliMMClass::Exec(void)
 ** Description:
 ** Caluclate setup variables for the frame
 */
-void
-HeliMMClass::Setup(void)
+void HeliMMClass::Setup(void)
 {
 
     // set rel airmass velocity
@@ -1309,10 +1301,7 @@ HeliMMClass::Setup(void)
     VA = VB;
 
     // total relative airspeed
-    vta = (float)sqrt(
-              VA.x * VA.x +
-              VA.y * VA.y +
-              VA.z * VA.z);
+    vta = (float)sqrt(VA.x * VA.x + VA.y * VA.y + VA.z * VA.z);
 }
 
 
@@ -1321,8 +1310,7 @@ HeliMMClass::Setup(void)
 ** Description:
 ** Caluclate setup variables for the frame
 */
-void
-HeliMMClass::TipPlanePath(void)
+void HeliMMClass::TipPlanePath(void)
 {
     float wake_effect;
 
@@ -1339,27 +1327,16 @@ HeliMMClass::TipPlanePath(void)
 
     // these 2 statements read the cyclic control and
     // dihedral effect based slip and aoa
-    a_sum = GV.y - cyc_pitch +
-            kC * GV.x +
-            db1dv * VA.y * (1.0F + wake_effect);
+    a_sum = GV.y - cyc_pitch + kC * GV.x + db1dv * VA.y * (1.0F + wake_effect);
 
-    b_sum = GV.x + cyc_roll -
-            kC * GV.y +
+    b_sum = GV.x + cyc_roll - kC * GV.y +
             da1du * VA.x * (1.0F + 2.0F * wake_effect);
 
-    GR.x = -itb * b_sum -
-           itb2_om * a_sum -
-           VA.ay;
-    GR.y = -itb * a_sum +
-           itb2_om * b_sum -
-           VA.ax;
+    GR.x = -itb * b_sum - itb2_om * a_sum - VA.ay;
+    GR.y = -itb * a_sum + itb2_om * b_sum - VA.ax;
 
-    GV.x = GV.x +
-           dT * (A2 * GR.x +
-                 B2 * ABprev.a1);
-    GV.y = GV.y +
-           dT * (A2 * GR.y +
-                 B2 * ABprev.b1);
+    GV.x = GV.x + dT * (A2 * GR.x + B2 * ABprev.a1);
+    GV.y = GV.y + dT * (A2 * GR.y + B2 * ABprev.b1);
 
     // save past values
     ABprev.a1 = GR.x;
@@ -1372,8 +1349,7 @@ HeliMMClass::TipPlanePath(void)
 ** Description:
 ** Calculates main rotor thrust and induced velocity
 */
-void
-HeliMMClass::MainRotor(void)
+void HeliMMClass::MainRotor(void)
 {
     int i;
     float tmp3;
@@ -1392,12 +1368,9 @@ HeliMMClass::MainRotor(void)
     {
         // get velocities relative to rotor plane and blade
         // collective setting gets factored in here
-        wr = VA.z +
-             (GV.x - md->mr.hub_is) * VA.x -
-             GV.y * VA.y;
-        wb = wr +
-             (2.0F / 3.0F) * omega_mr * md->mr.radius *
-             (coll_pitch + 0.75F * md->mr.twist);
+        wr = VA.z + (GV.x - md->mr.hub_is) * VA.x - GV.y * VA.y;
+        wb = wr + (2.0F / 3.0F) * omega_mr * md->mr.radius *
+                      (coll_pitch + 0.75F * md->mr.twist);
 
         va_x_sq = VA.x * VA.x;
         va_y_sq = VA.y * VA.y;
@@ -1425,7 +1398,6 @@ HeliMMClass::MainRotor(void)
     */
 
 
-
     // if ( thrust_mr < 0.0f )
     // thrust_mr = -thrust_mr;
 }
@@ -1435,8 +1407,7 @@ HeliMMClass::MainRotor(void)
 ** Description:
 ** Calculates forces acting on fuselage
 */
-void
-HeliMMClass::Fuselage(void)
+void HeliMMClass::Fuselage(void)
 {
     float om_radius;
 
@@ -1453,9 +1424,8 @@ HeliMMClass::Fuselage(void)
 
         // calc position on fuselage
         if (wa_fus not_eq 0)
-            wa_fus_pos =
-                (VA.x / (-wa_fus) * (ma_hub.y - ma_fus.y)) -
-                (ma_fus.x - ma_hub.x);
+            wa_fus_pos = (VA.x / (-wa_fus) * (ma_hub.y - ma_fus.y)) -
+                         (ma_fus.x - ma_hub.x);
         else
             wa_fus_pos = 0.0F;
     }
@@ -1465,12 +1435,11 @@ HeliMMClass::Fuselage(void)
     // wa_fus_pos *= 3.0;
 
     // compute the forces and moments on the fuselage
-    fus6d.x = (rh02) * md->fus.fe.x * va_x_sq;
-    fus6d.y = (rh02) * md->fus.fe.y * va_y_sq;
-    fus6d.z = (rh02) * md->fus.fe.z * wa_fus * wa_fus;
+    fus6d.x = (rh02)*md->fus.fe.x * va_x_sq;
+    fus6d.y = (rh02)*md->fus.fe.y * va_y_sq;
+    fus6d.z = (rh02)*md->fus.fe.z * wa_fus * wa_fus;
     fus6d.ax = fus6d.y * ma_fus.y;
-    fus6d.ay = fus6d.z * wa_fus_pos -
-               fus6d.x * ma_fus.y;
+    fus6d.ay = fus6d.z * wa_fus_pos - fus6d.x * ma_fus.y;
 
     // drag of fuselage based on velocity^2 of rotation and mass
     fus6d.az = -(float)fabs(VB.az) * VB.az * 0.004f * mass;
@@ -1480,12 +1449,9 @@ HeliMMClass::Fuselage(void)
     mr6d.x = -thrust_mr * (GV.x - md->mr.hub_is);
     mr6d.y = thrust_mr * (GV.y);
     mr6d.z = -thrust_mr;
-    mr6d.ax = mr6d.y * ma_hub.y +
-              dl_db1 * GV.y +
+    mr6d.ax = mr6d.y * ma_hub.y + dl_db1 * GV.y +
               dl_da1 * (GV.x + cyc_roll - md->mr.k1 * GV.y);
-    mr6d.ay = mr6d.z * ma_hub.x -
-              mr6d.x * ma_hub.y +
-              dl_db1 * GV.x +
+    mr6d.ay = mr6d.z * ma_hub.x - mr6d.x * ma_hub.y + dl_db1 * GV.x +
               dl_da1 * (-GV.y + cyc_pitch - md->mr.k1 * GV.x);
 
     // power calcs
@@ -1496,17 +1462,12 @@ HeliMMClass::Fuselage(void)
     // should be VE.z
     p_climb = md->fus.weight * VE.z;
 
-    p_par = - fus6d.x * VA.x -
-            fus6d.y * VA.y -
-            fus6d.z * wa_fus;
+    p_par = -fus6d.x * VA.x - fus6d.y * VA.y - fus6d.z * wa_fus;
 
     om_radius = omega_mr * md->mr.radius;
 
-    p_prof = (rh02) *
-             (fr_mr / 4.0F) *
-             om_radius *
-             (om_radius * om_radius + 4.6F *
-              (va_x_sq + va_y_sq));
+    p_prof = (rh02) * (fr_mr / 4.0F) * om_radius *
+             (om_radius * om_radius + 4.6F * (va_x_sq + va_y_sq));
 
     p_tot = p_ind + p_climb + p_par + p_prof;
 
@@ -1537,7 +1498,6 @@ HeliMMClass::Fuselage(void)
     {
         mr6d.az *= 0.53f;
     }
-
 }
 
 
@@ -1546,8 +1506,7 @@ HeliMMClass::Fuselage(void)
 ** Description:
 ** Calculates Tail rotor thrust and induced velocity
 */
-void
-HeliMMClass::TailRotor(void)
+void HeliMMClass::TailRotor(void)
 {
     int i;
     float tmp1;
@@ -1582,12 +1541,9 @@ HeliMMClass::TailRotor(void)
     else
     {
         // relative wind on tail rotor
-        vr_tr = -(VA.y -
-                  VA.az * ma_tr.x +
-                  VA.ax * ma_tr.y);
-        vb_tr = vr_tr +
-                2.0F / 3.0F * omega_tr * md->tr.radius *
-                (tr_pitch + 0.75F * md->tr.twist);
+        vr_tr = -(VA.y - VA.az * ma_tr.x + VA.ax * ma_tr.y);
+        vb_tr = vr_tr + 2.0F / 3.0F * omega_tr * md->tr.radius *
+                            (tr_pitch + 0.75F * md->tr.twist);
 
 
         // pre-calc some values
@@ -1617,7 +1573,6 @@ HeliMMClass::TailRotor(void)
         tr6d.ax = tr6d.y * ma_tr.y;
         tr6d.az = -tr6d.y * ma_tr.x;
     }
-
 }
 
 /*
@@ -1625,8 +1580,7 @@ HeliMMClass::TailRotor(void)
 ** Description:
 ** Calculates Tail rotor thrust and induced velocity
 */
-void
-HeliMMClass::Wing(void)
+void HeliMMClass::Wing(void)
 {
     float wa_wn;
     float vta_wn;
@@ -1652,12 +1606,9 @@ HeliMMClass::Wing(void)
 
         // induced drag
         if (vta_wn not_eq 0)
-            wn6d.x =
-                -(rh02) / PI / vta_wn / vta_wn *
-                (md->wn.zuu * va_x_sq +
-                 md->wn.zuw * (VA.x) * wa_wn) *
-                (md->wn.zuu * va_x_sq +
-                 md->wn.zuw * (VA.x) * wa_wn) ;
+            wn6d.x = -(rh02) / PI / vta_wn / vta_wn *
+                     (md->wn.zuu * va_x_sq + md->wn.zuw * (VA.x) * wa_wn) *
+                     (md->wn.zuu * va_x_sq + md->wn.zuw * (VA.x) * wa_wn);
         else
             wn6d.x = 0;
     }
@@ -1665,17 +1616,10 @@ HeliMMClass::Wing(void)
 
     // surface stalled?
     if (FABS(wa_wn) > 0.3F * FABS(VA.x))
-        wn6d.z =
-            (rh02) *
-            md->wn.zmax * FABS(vta_wn) * wa_wn;
+        wn6d.z = (rh02)*md->wn.zmax * FABS(vta_wn) * wa_wn;
     else
         // circulation lift on HT
-        wn6d.z =
-            (rh02) *
-            (md->wn.zuu * va_x_sq +
-             md->wn.zuw * (VA.x) * wa_wn);
-
-
+        wn6d.z = (rh02) * (md->wn.zuu * va_x_sq + md->wn.zuw * (VA.x) * wa_wn);
 }
 
 /*
@@ -1683,8 +1627,7 @@ HeliMMClass::Wing(void)
 ** Description:
 ** Calculates Tail rotor thrust and induced velocity
 */
-void
-HeliMMClass::HorizTail(void)
+void HeliMMClass::HorizTail(void)
 {
     float tmp1;
 
@@ -1706,9 +1649,8 @@ HeliMMClass::HorizTail(void)
         }
         else
         {
-            dw_ht_pos =
-                (VA.x / (tmp1) * (ma_hub.y - ma_ht.y)) -
-                (ma_ht.x - ma_hub.x - md->mr.radius);
+            dw_ht_pos = (VA.x / (tmp1) * (ma_hub.y - ma_ht.y)) -
+                        (ma_ht.x - ma_hub.x - md->mr.radius);
 
             // empirical hack
             if (md->type == A109)
@@ -1722,10 +1664,7 @@ HeliMMClass::HorizTail(void)
             eps_ht = 0.0F;
 
         // airflow (Z) velocity on ht
-        wa_ht = VA.z -
-                eps_ht * vi_mr +
-                ma_ht.x * VA.ay;
-
+        wa_ht = VA.z - eps_ht * vi_mr + ma_ht.x * VA.ay;
     }
 
     // total tail rel air velocity
@@ -1734,17 +1673,14 @@ HeliMMClass::HorizTail(void)
 
     // surface stalled?
     if (FABS(wa_ht) > 0.3F * FABS(VA.x))
-        ht6d.z = (rh02) * md->ht.zmax * FABS(vta_ht) * wa_ht;
+        ht6d.z = (rh02)*md->ht.zmax * FABS(vta_ht) * wa_ht;
     else
         // circulation lift on HT
         ht6d.z =
-            (rh02) *
-            (md->ht.zuu * va_x_sq +
-             md->ht.zuw * FABS(VA.x) * wa_ht);
+            (rh02) * (md->ht.zuu * va_x_sq + md->ht.zuw * FABS(VA.x) * wa_ht);
 
     // pitching moment
     ht6d.ay = ht6d.z * ma_ht.x;
-
 }
 
 /*
@@ -1752,8 +1688,7 @@ HeliMMClass::HorizTail(void)
 ** Description:
 ** Calculates Tail rotor thrust and induced velocity
 */
-void
-HeliMMClass::VertTail(void)
+void HeliMMClass::VertTail(void)
 {
     // airflow (Z) velocity on vt
     if (md->type == STABLE)
@@ -1772,20 +1707,15 @@ HeliMMClass::VertTail(void)
 
     // surface stalled?
     if (FABS(va_vt) > 0.3F * FABS(VA.x))
-        vt6d.y =
-            (rh02) *
-            md->vt.ymax * FABS(vta_vt) * va_vt;
+        vt6d.y = (rh02)*md->vt.ymax * FABS(vta_vt) * va_vt;
     else
         // circulation lift on VT
         vt6d.y =
-            (rh02) *
-            (md->vt.yuu * va_x_sq +
-             md->vt.yuv * FABS(VA.x) * va_vt);
+            (rh02) * (md->vt.yuu * va_x_sq + md->vt.yuv * FABS(VA.x) * va_vt);
 
     // rolling and yawing moment
     vt6d.ax = vt6d.y * ma_vt.y;
     vt6d.az = -vt6d.y * ma_vt.x;
-
 }
 
 
@@ -1794,8 +1724,7 @@ HeliMMClass::VertTail(void)
 ** Description:
 ** Calculates final forces, acclerations and velocities
 */
-void
-HeliMMClass::ForceCalc(void)
+void HeliMMClass::ForceCalc(void)
 {
     mlTrig trig;
 
@@ -1806,39 +1735,15 @@ HeliMMClass::ForceCalc(void)
 
 
     // Calculate Translational Forces
-    F.x =
-        grav.x +
-        mr6d.x +
-        wn6d.x +
-        fus6d.x;
-    F.y =
-        grav.y +
-        mr6d.y +
-        fus6d.y +
-        tr6d.y +
-        vt6d.y;
-    F.z =
-        grav.z +
-        mr6d.z +
-        wn6d.z +
-        fus6d.z +
-        ht6d.z;
+    F.x = grav.x + mr6d.x + wn6d.x + fus6d.x;
+    F.y = grav.y + mr6d.y + fus6d.y + tr6d.y + vt6d.y;
+    F.z = grav.z + mr6d.z + wn6d.z + fus6d.z + ht6d.z;
 
     // calculate torques
     F.ax =
-        mr6d.ax +
-        fus6d.ax +
-        tr6d.ax / md->roll_damp +
-        vt6d.ax / md->roll_damp;
-    F.ay =
-        mr6d.ay +
-        fus6d.ay +
-        ht6d.ay;
-    F.az =
-        mr6d.az +
-        tr6d.az +
-        vt6d.az +
-        fus6d.az;
+        mr6d.ax + fus6d.ax + tr6d.ax / md->roll_damp + vt6d.ax / md->roll_damp;
+    F.ay = mr6d.ay + fus6d.ay + ht6d.ay;
+    F.az = mr6d.az + tr6d.az + vt6d.az + fus6d.az;
 
     // pitch and roll flap
     F.a1 = GR.x / itb;
@@ -1852,8 +1757,7 @@ HeliMMClass::ForceCalc(void)
     AB.ay = F.ay / md->fus.mi.y -
             VB.ax * VB.az * (md->fus.mi.x - md->fus.mi.z) / md->fus.mi.y +
             (VB.az * VB.az - VB.ax * VB.ax) * md->fus.mi_xz / md->fus.mi.y;
-    AB.az = F.az / md->fus.mi.z +
-            md->fus.mi_xz * AB.ax / md->fus.mi.z;
+    AB.az = F.az / md->fus.mi.z + md->fus.mi_xz * AB.ax / md->fus.mi.z;
 
 
     // integrate body accelerations
@@ -1871,8 +1775,7 @@ HeliMMClass::ForceCalc(void)
     ABprev.b1 = GR.y;
 
 
-    VE.x = (VB.x * eucos.y + VB.z * eusin.y) *
-           eucos.x * (float)cos(XE.az);
+    VE.x = (VB.x * eucos.y + VB.z * eusin.y) * eucos.x * (float)cos(XE.az);
     mlSinCos(&trig, XE.az);
     VE.y = VB.y * trig.cos + VB.x * trig.sin;
     VE.z = -(VB.x * eusin.y - VB.z * eucos.y) * eucos.x;
@@ -1888,20 +1791,19 @@ HeliMMClass::ForceCalc(void)
     VEprev = VE;
 
     // get sines and cosines
-    mlSinCos(&trig, XE.ax);  // Roll
+    mlSinCos(&trig, XE.ax); // Roll
     eucos.x = trig.cos;
     eusin.x = trig.sin;
-    mlSinCos(&trig, XE.ay);  // Pitch
+    mlSinCos(&trig, XE.ay); // Pitch
     eucos.y = trig.cos;
     eusin.y = trig.sin;
-    mlSinCos(&trig, XE.az);  // Yaw
+    mlSinCos(&trig, XE.az); // Yaw
     eucos.z = trig.cos;
     eusin.z = trig.sin;
 
     // get alpha and beta
     alpha = (float)atan2(VB.z, VB.x) * RTD;
     beta = (float)atan2(VB.y, VB.x) * RTD;
-
 }
 
 /*
@@ -1909,8 +1811,7 @@ HeliMMClass::ForceCalc(void)
 ** Description:
 ** Resets the dynamic force variables
 */
-void
-HeliMMClass::ResetForceVars(void)
+void HeliMMClass::ResetForceVars(void)
 {
     memset(&AB, 0, sizeof(D6DOF));
     memset(&ABprev, 0, sizeof(D6DOF));
@@ -1930,15 +1831,14 @@ HeliMMClass::ResetForceVars(void)
 ** Description:
 ** Sets values for the platform
 */
-void
-HeliMMClass::SetPlatformData(void)
+void HeliMMClass::SetPlatformData(void)
 {
     float t1, t2;
     float alpharad, betarad;
     mlTrig trig;
 
     alpharad = alpha * DTR;
-    betarad  = beta  * DTR;
+    betarad = beta * DTR;
 
     platform->platformAngles.cospsi = (float)eucos.z;
     platform->platformAngles.costhe = (float)eucos.y;
@@ -1963,57 +1863,66 @@ HeliMMClass::SetPlatformData(void)
     /*-------*/
     /* gamma */
     /*-------*/
-    platform->platformAngles.singam = (platform->platformAngles.sinthe *
-                                       platform->platformAngles.cosalp - platform->platformAngles.costhe *
-                                       platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-                                      platform->platformAngles.cosbet - platform->platformAngles.costhe *
-                                      platform->platformAngles.sinphi * platform->platformAngles.sinbet;
+    platform->platformAngles.singam =
+        (platform->platformAngles.sinthe * platform->platformAngles.cosalp -
+         platform->platformAngles.costhe * platform->platformAngles.cosphi *
+             platform->platformAngles.sinalp) *
+            platform->platformAngles.cosbet -
+        platform->platformAngles.costhe * platform->platformAngles.sinphi *
+            platform->platformAngles.sinbet;
 
-    platform->platformAngles.cosgam = (float)sqrt(1.0f -
-                                      platform->platformAngles.singam * platform->platformAngles.singam);
+    platform->platformAngles.cosgam =
+        (float)sqrt(1.0f - platform->platformAngles.singam *
+                               platform->platformAngles.singam);
 
-    gmma = (float)atan2(platform->platformAngles.singam, platform->platformAngles.cosgam);
+    gmma = (float)atan2(platform->platformAngles.singam,
+                        platform->platformAngles.cosgam);
 
     /*----*/
     /* mu */
     /*----*/
     t1 = platform->platformAngles.costhe * platform->platformAngles.sinphi *
-         platform->platformAngles.cosbet + (platform->platformAngles.sinthe *
-                                            platform->platformAngles.cosalp - platform->platformAngles.costhe *
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-         platform->platformAngles.sinbet;
+             platform->platformAngles.cosbet +
+         (platform->platformAngles.sinthe * platform->platformAngles.cosalp -
+          platform->platformAngles.costhe * platform->platformAngles.cosphi *
+              platform->platformAngles.sinalp) *
+             platform->platformAngles.sinbet;
     t2 = platform->platformAngles.costhe * platform->platformAngles.cosphi *
-         platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-         platform->platformAngles.sinalp;
+             platform->platformAngles.cosalp +
+         platform->platformAngles.sinthe * platform->platformAngles.sinalp;
 
-    mu     = (float)atan2(t1, t2);
-    platform->platformAngles.sinmu  = t1 * mu;
-    platform->platformAngles.cosmu  = t2 * mu;
+    mu = (float)atan2(t1, t2);
+    platform->platformAngles.sinmu = t1 * mu;
+    platform->platformAngles.cosmu = t2 * mu;
 
 
     /*-------*/
     /* sigma */
     /*-------*/
-    t1 = (-platform->platformAngles.sinphi *
-          platform->platformAngles.sinalp * platform->platformAngles.cosbet +
+    t1 = (-platform->platformAngles.sinphi * platform->platformAngles.sinalp *
+              platform->platformAngles.cosbet +
           platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.cospsi + ((platform->platformAngles.costhe *
-                                            platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-                                            platform->platformAngles.cosbet + platform->platformAngles.sinthe *
-                                            platform->platformAngles.sinphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.sinpsi;
-    t2 = ((platform->platformAngles.costhe *
-           platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-           platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-          platform->platformAngles.cosbet + platform->platformAngles.sinthe *
-          platform->platformAngles.sinphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.cospsi + (platform->platformAngles.sinphi *
-                                            platform->platformAngles.sinalp * platform->platformAngles.cosbet -
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.sinpsi;
+             platform->platformAngles.cospsi +
+         ((platform->platformAngles.costhe * platform->platformAngles.cosalp +
+           platform->platformAngles.sinthe * platform->platformAngles.cosphi *
+               platform->platformAngles.sinalp) *
+              platform->platformAngles.cosbet +
+          platform->platformAngles.sinthe * platform->platformAngles.sinphi *
+              platform->platformAngles.sinbet) *
+             platform->platformAngles.sinpsi;
+    t2 = ((platform->platformAngles.costhe * platform->platformAngles.cosalp +
+           platform->platformAngles.sinthe * platform->platformAngles.cosphi *
+               platform->platformAngles.sinalp) *
+              platform->platformAngles.cosbet +
+          platform->platformAngles.sinthe * platform->platformAngles.sinphi *
+              platform->platformAngles.sinbet) *
+             platform->platformAngles.cospsi +
+         (platform->platformAngles.sinphi * platform->platformAngles.sinalp *
+              platform->platformAngles.cosbet -
+          platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
+             platform->platformAngles.sinpsi;
 
-    sigma  = (float)atan2(t1, t2);
+    sigma = (float)atan2(t1, t2);
     platform->platformAngles.sinsig = sigma * t1;
     platform->platformAngles.cossig = sigma * t2;
 
@@ -2033,7 +1942,6 @@ HeliMMClass::SetPlatformData(void)
 
     // indicated air speed in knots -- don't include rate of climb/descent
     GetKias = (float)sqrt(VB.x * VB.x + VB.y * VB.y) * FTPSEC_TO_KNOTS;
-
 }
 
 /*
@@ -2041,8 +1949,7 @@ HeliMMClass::SetPlatformData(void)
 ** Description:
 ** Set initial position and velocity
 */
-void
-HeliMMClass::Init(float x, float y, float z)
+void HeliMMClass::Init(float x, float y, float z)
 {
     XE.x = x;
     XE.y = y;
@@ -2058,8 +1965,7 @@ HeliMMClass::Init(float x, float y, float z)
 ** Description:
 ** Set initial quaternion vals and init integration arrays
 */
-void
-HeliMMClass::InitQuat(void)
+void HeliMMClass::InitQuat(void)
 {
     float e10, e20, e30, e40;
     mlTrig trigAZ, trigAY, trigAX;
@@ -2147,7 +2053,6 @@ HeliMMClass::InitQuat(void)
     oldABaz[1] = 0.0F;
     oldABaz[2] = 0.0F;
     oldABaz[3] = 0.0F;
-
 }
 
 
@@ -2157,8 +2062,7 @@ HeliMMClass::InitQuat(void)
 ** Based on the angular velocities relative to body, calc the
 ** euler angles using quaternion integration
 */
-void
-HeliMMClass::CalcBodyOrientation(void)
+void HeliMMClass::CalcBodyOrientation(void)
 {
     float e1dot, e2dot, e3dot, e4dot;
     float enorm;
@@ -2183,12 +2087,12 @@ HeliMMClass::CalcBodyOrientation(void)
     /*--------------------------*/
     /* quaternion normalization */
     /*--------------------------*/
-    enorm = (float)sqrt(e1temp * e1temp + e2temp * e2temp +
-                        e3temp * e3temp + e4temp * e4temp);
-    e1    = e1temp / enorm;
-    e2    = e2temp / enorm;
-    e3    = e3temp / enorm;
-    e4    = e4temp / enorm;
+    enorm = (float)sqrt(e1temp * e1temp + e2temp * e2temp + e3temp * e3temp +
+                        e4temp * e4temp);
+    e1 = e1temp / enorm;
+    e2 = e2temp / enorm;
+    e3 = e3temp / enorm;
+    e4 = e4temp / enorm;
 
     /*------------------------------*/
     /* reset quaternion integrators */
@@ -2201,20 +2105,17 @@ HeliMMClass::CalcBodyOrientation(void)
     /*-------------------*/
     /* direction cosines */
     /*-------------------*/
-    platform->dmx[0][0] = e1 * e1 - e2 * e2 -
-                          e3 * e3 + e4 * e4;
+    platform->dmx[0][0] = e1 * e1 - e2 * e2 - e3 * e3 + e4 * e4;
     platform->dmx[0][1] = 2.0F * (e3 * e4 + e1 * e2);
     platform->dmx[0][2] = 2.0F * (e2 * e4 - e1 * e3);
 
     platform->dmx[1][0] = 2.0F * (e3 * e4 - e1 * e2);
-    platform->dmx[1][1] = e1 * e1 - e2 * e2 +
-                          e3 * e3 - e4 * e4;
+    platform->dmx[1][1] = e1 * e1 - e2 * e2 + e3 * e3 - e4 * e4;
     platform->dmx[1][2] = 2.0F * (e2 * e3 + e4 * e1);
 
     platform->dmx[2][0] = 2.0F * (e1 * e3 + e2 * e4);
     platform->dmx[2][1] = 2.0F * (e2 * e3 - e1 * e4);
-    platform->dmx[2][2] = e1 * e1 + e2 * e2 -
-                          e3 * e3 - e4 * e4;
+    platform->dmx[2][2] = e1 * e1 + e2 * e2 - e3 * e3 - e4 * e4;
 
     /*--------------*/
     /* euler angles */
@@ -2228,10 +2129,9 @@ HeliMMClass::CalcBodyOrientation(void)
     */
 
     // roll (ax) constrained to +/- 90 deg, pitch(ay) +/- 180 deg
-    XE.az   = (float)atan2(platform->dmx[0][1], platform->dmx[0][0]);
+    XE.az = (float)atan2(platform->dmx[0][1], platform->dmx[0][0]);
     XE.ax = (float)asin(platform->dmx[1][2]);
     XE.ay = -(float)atan2(platform->dmx[0][2], platform->dmx[2][2]);
-
 }
 
 
@@ -2241,10 +2141,9 @@ HeliMMClass::CalcBodyOrientation(void)
 ** Based on the angular velocities relative to body, calc the
 ** euler angles using quaternion integration
 */
-void
-HeliMMClass::SimpleModel(void)
+void HeliMMClass::SimpleModel(void)
 {
-    float  totspeed;
+    float totspeed;
     float dx, dy;
     float len;
     float tmp;
@@ -2311,13 +2210,13 @@ HeliMMClass::SimpleModel(void)
         XE.az += 360.0f * DTR;
 
     // get sines and cosines
-    mlSinCos(&trig, XE.ax);  // Roll
+    mlSinCos(&trig, XE.ax); // Roll
     eucos.x = trig.cos;
     eusin.x = trig.sin;
-    mlSinCos(&trig, XE.ay);  // Pitch
+    mlSinCos(&trig, XE.ay); // Pitch
     eucos.y = trig.cos;
     eusin.y = trig.sin;
-    mlSinCos(&trig, XE.az);  // Yaw
+    mlSinCos(&trig, XE.az); // Yaw
     eucos.z = trig.cos;
     eusin.z = trig.sin;
 
@@ -2329,17 +2228,33 @@ HeliMMClass::SimpleModel(void)
     platform->platformAngles.sinphi = (float)eusin.x;
 
     // build matrix
-    platform->dmx[0][0] = platform->platformAngles.cospsi * platform->platformAngles.costhe;
-    platform->dmx[0][1] = platform->platformAngles.sinpsi * platform->platformAngles.costhe;
+    platform->dmx[0][0] =
+        platform->platformAngles.cospsi * platform->platformAngles.costhe;
+    platform->dmx[0][1] =
+        platform->platformAngles.sinpsi * platform->platformAngles.costhe;
     platform->dmx[0][2] = -platform->platformAngles.sinthe;
 
-    platform->dmx[1][0] = -platform->platformAngles.sinpsi * platform->platformAngles.cosphi + platform->platformAngles.cospsi * platform->platformAngles.sinthe * platform->platformAngles.sinphi;
-    platform->dmx[1][1] = platform->platformAngles.cospsi * platform->platformAngles.cosphi + platform->platformAngles.sinpsi * platform->platformAngles.sinthe * platform->platformAngles.sinphi;
-    platform->dmx[1][2] = platform->platformAngles.costhe * platform->platformAngles.sinphi;
+    platform->dmx[1][0] =
+        -platform->platformAngles.sinpsi * platform->platformAngles.cosphi +
+        platform->platformAngles.cospsi * platform->platformAngles.sinthe *
+            platform->platformAngles.sinphi;
+    platform->dmx[1][1] =
+        platform->platformAngles.cospsi * platform->platformAngles.cosphi +
+        platform->platformAngles.sinpsi * platform->platformAngles.sinthe *
+            platform->platformAngles.sinphi;
+    platform->dmx[1][2] =
+        platform->platformAngles.costhe * platform->platformAngles.sinphi;
 
-    platform->dmx[2][0] = platform->platformAngles.sinpsi * platform->platformAngles.sinphi + platform->platformAngles.cospsi * platform->platformAngles.sinthe * platform->platformAngles.cosphi;
-    platform->dmx[2][1] = -platform->platformAngles.cospsi * platform->platformAngles.sinphi + platform->platformAngles.sinpsi * platform->platformAngles.sinthe * platform->platformAngles.cosphi;
-    platform->dmx[2][2] = platform->platformAngles.costhe * platform->platformAngles.cosphi;
+    platform->dmx[2][0] =
+        platform->platformAngles.sinpsi * platform->platformAngles.sinphi +
+        platform->platformAngles.cospsi * platform->platformAngles.sinthe *
+            platform->platformAngles.cosphi;
+    platform->dmx[2][1] =
+        -platform->platformAngles.cospsi * platform->platformAngles.sinphi +
+        platform->platformAngles.sinpsi * platform->platformAngles.sinthe *
+            platform->platformAngles.cosphi;
+    platform->dmx[2][2] =
+        platform->platformAngles.costhe * platform->platformAngles.cosphi;
 
 
     // speed is based on pitch
@@ -2373,7 +2288,7 @@ HeliMMClass::SimpleModel(void)
     float alpharad, betarad;
 
     alpharad = alpha * DTR;
-    betarad  = beta  * DTR;
+    betarad = beta * DTR;
 
     mlSinCos(&trig, alpharad);
     platform->platformAngles.sinalp = trig.sin;
@@ -2391,63 +2306,67 @@ HeliMMClass::SimpleModel(void)
     /*-------*/
     /* gamma */
     /*-------*/
-    platform->platformAngles.singam = (platform->platformAngles.sinthe *
-                                       platform->platformAngles.cosalp - platform->platformAngles.costhe *
-                                       platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-                                      platform->platformAngles.cosbet - platform->platformAngles.costhe *
-                                      platform->platformAngles.sinphi * platform->platformAngles.sinbet;
+    platform->platformAngles.singam =
+        (platform->platformAngles.sinthe * platform->platformAngles.cosalp -
+         platform->platformAngles.costhe * platform->platformAngles.cosphi *
+             platform->platformAngles.sinalp) *
+            platform->platformAngles.cosbet -
+        platform->platformAngles.costhe * platform->platformAngles.sinphi *
+            platform->platformAngles.sinbet;
 
-    platform->platformAngles.cosgam = (float)sqrt(1.0f -
-                                      platform->platformAngles.singam * platform->platformAngles.singam);
+    platform->platformAngles.cosgam =
+        (float)sqrt(1.0f - platform->platformAngles.singam *
+                               platform->platformAngles.singam);
 
-    gmma  = (float)asin(platform->platformAngles.singam);
+    gmma = (float)asin(platform->platformAngles.singam);
 
 
     /*----*/
     /* mu */
     /*----*/
     t1 = platform->platformAngles.costhe * platform->platformAngles.sinphi *
-         platform->platformAngles.cosbet + (platform->platformAngles.sinthe *
-                                            platform->platformAngles.cosalp - platform->platformAngles.costhe *
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-         platform->platformAngles.sinbet;
+             platform->platformAngles.cosbet +
+         (platform->platformAngles.sinthe * platform->platformAngles.cosalp -
+          platform->platformAngles.costhe * platform->platformAngles.cosphi *
+              platform->platformAngles.sinalp) *
+             platform->platformAngles.sinbet;
     t2 = platform->platformAngles.costhe * platform->platformAngles.cosphi *
-         platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-         platform->platformAngles.sinalp;
+             platform->platformAngles.cosalp +
+         platform->platformAngles.sinthe * platform->platformAngles.sinalp;
 
-    mu     = (float)atan2(t1, t2);
-    platform->platformAngles.sinmu  = mu * t1;
-    platform->platformAngles.cosmu  = mu * t2;
+    mu = (float)atan2(t1, t2);
+    platform->platformAngles.sinmu = mu * t1;
+    platform->platformAngles.cosmu = mu * t2;
 
     /*-------*/
     /* sigma */
     /*-------*/
-    t1 = (-platform->platformAngles.sinphi *
-          platform->platformAngles.sinalp * platform->platformAngles.cosbet +
+    t1 = (-platform->platformAngles.sinphi * platform->platformAngles.sinalp *
+              platform->platformAngles.cosbet +
           platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.cospsi + ((platform->platformAngles.costhe *
-                                            platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-                                            platform->platformAngles.cosbet + platform->platformAngles.sinthe *
-                                            platform->platformAngles.sinphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.sinpsi;
-    t2 = ((platform->platformAngles.costhe *
-           platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-           platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-          platform->platformAngles.cosbet + platform->platformAngles.sinthe *
-          platform->platformAngles.sinphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.cospsi + (platform->platformAngles.sinphi *
-                                            platform->platformAngles.sinalp * platform->platformAngles.cosbet -
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.sinpsi;
+             platform->platformAngles.cospsi +
+         ((platform->platformAngles.costhe * platform->platformAngles.cosalp +
+           platform->platformAngles.sinthe * platform->platformAngles.cosphi *
+               platform->platformAngles.sinalp) *
+              platform->platformAngles.cosbet +
+          platform->platformAngles.sinthe * platform->platformAngles.sinphi *
+              platform->platformAngles.sinbet) *
+             platform->platformAngles.sinpsi;
+    t2 = ((platform->platformAngles.costhe * platform->platformAngles.cosalp +
+           platform->platformAngles.sinthe * platform->platformAngles.cosphi *
+               platform->platformAngles.sinalp) *
+              platform->platformAngles.cosbet +
+          platform->platformAngles.sinthe * platform->platformAngles.sinphi *
+              platform->platformAngles.sinbet) *
+             platform->platformAngles.cospsi +
+         (platform->platformAngles.sinphi * platform->platformAngles.sinalp *
+              platform->platformAngles.cosbet -
+          platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
+             platform->platformAngles.sinpsi;
 
-    sigma  = (float)atan2(t1, t2);
+    sigma = (float)atan2(t1, t2);
     platform->platformAngles.sinsig = sigma * t1;
     platform->platformAngles.cossig = sigma * t2;
 
-    vta = (float)sqrt(
-              VB.x * VB.x +
-              VB.y * VB.y +
-              VB.z * VB.z);
-
+    vta = (float)sqrt(VB.x * VB.x + VB.y * VB.y + VB.z * VB.z);
 }

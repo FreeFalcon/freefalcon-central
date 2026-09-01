@@ -1,13 +1,13 @@
 #ifndef _ATCMSG_H
 #define _ATCMSG_H
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
 #include "aircrft.h" //TJL 08/16/04 //Cobra 10/31/04 TJL
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 #define STRENGTH_PCT_FOR_EMERG_LDG 0.4f
 
@@ -32,7 +32,8 @@ public:
     //TrafficInSight RAS-22Jan04-Acknowledge Traffic calls
     //Cobra 10/31/04 TJL
 
-    FalconATCMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconATCMessage(VU_ID entityId, VuTargetEntity *target,
+                     VU_BOOL loopback = TRUE);
     FalconATCMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconATCMessage(void);
     virtual int Size() const
@@ -60,7 +61,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         unsigned int type;
         short status;
@@ -69,6 +69,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

@@ -7,16 +7,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "F4vu.h"
-#include "CmpGlobl.h"
-#include "CmpEvent.h"
-#include "Team.h"
-#include "F4Find.h"
-#include "../../Campaign/CampUpd/CmpEvent.cpp"
+#include "f4vu.h"
+#include "cmpglobl.h"
+#include "cmpevent.h"
+#include "team.h"
+#include "f4find.h"
+#include "../../campaign/campupd/cmpevent.cpp"
 
 int LoadCampaignEventsText(char* filename);
 int SaveCampaignEvents(char* filename);
-FILE* OpenCampFile(char *filename, char *ext, char *mode);
+FILE* OpenCampFile(char* filename, char* ext, char* mode);
 
 VU_ID FalconNullId;
 
@@ -57,10 +57,10 @@ void ReadComments(FILE* fh)
     ungetc(c, fh);
 }
 
-char* ReadName(FILE *fp, char name[], int len)
+char* ReadName(FILE* fp, char name[], int len)
 {
     char buffer[80];
-    char *sptr;
+    char* sptr;
 
     fgets(buffer, 80, fp);
     strncpy(name, buffer, len);
@@ -95,7 +95,8 @@ int LoadCampaignEventsText(char* filename)
     fscanf(fp, "%d\n", &CE_Events);
 
     if (CE_Events > 0)
-        CampEvents = (EventClass**) F4AllocMemory(sizeof(EventClass*)*CE_Events);
+        CampEvents =
+            (EventClass**)F4AllocMemory(sizeof(EventClass*) * CE_Events);
     else
     {
         CampEvents = NULL;
@@ -110,8 +111,9 @@ int LoadCampaignEventsText(char* filename)
         fscanf(fp, "%d\n", &i);
         CampEvents[i] = new EventClass(i);
         ReadComments(fp);
-        fscanf(fp, "%s %d %d %d %d %d\n", trigtype, &CampEvents[i]->priority, &CampEvents[i]->data[0],
-               &CampEvents[i]->data[1], &CampEvents[i]->data[2], &CampEvents[i]->data[3]);
+        fscanf(fp, "%s %d %d %d %d %d\n", trigtype, &CampEvents[i]->priority,
+               &CampEvents[i]->data[0], &CampEvents[i]->data[1],
+               &CampEvents[i]->data[2], &CampEvents[i]->data[3]);
         sprintf(CampEvents[i]->name, trigtype);
         done = 0;
 
@@ -123,26 +125,36 @@ int LoadCampaignEventsText(char* filename)
             if (strstr(trigtype, "AND"))
             {
                 CampEvents[i]->and_trigs = trignum;
-                CampEvents[i]->and_triggers = (Trigger*) F4AllocMemory(sizeof(Trigger) * trignum);
+                CampEvents[i]->and_triggers =
+                    (Trigger*)F4AllocMemory(sizeof(Trigger) * trignum);
 
                 for (j = 0; j < trignum; j++)
                 {
                     CampEvents[i]->and_triggers[j].flags = 0;
-                    fscanf(fp, "%s %d %d %d %d\n", CampEvents[i]->and_triggers[j].type, &CampEvents[i]->and_triggers[j].data[0],
-                           &CampEvents[i]->and_triggers[j].data[1], &CampEvents[i]->and_triggers[j].data[2], &CampEvents[i]->and_triggers[j].data[3]);
+                    fscanf(fp, "%s %d %d %d %d\n",
+                           CampEvents[i]->and_triggers[j].type,
+                           &CampEvents[i]->and_triggers[j].data[0],
+                           &CampEvents[i]->and_triggers[j].data[1],
+                           &CampEvents[i]->and_triggers[j].data[2],
+                           &CampEvents[i]->and_triggers[j].data[3]);
                 }
             }
 
             if (strstr(trigtype, "OR"))
             {
                 CampEvents[i]->or_trigs = trignum;
-                CampEvents[i]->or_triggers = (Trigger*) F4AllocMemory(sizeof(Trigger) * trignum);
+                CampEvents[i]->or_triggers =
+                    (Trigger*)F4AllocMemory(sizeof(Trigger) * trignum);
 
                 for (j = 0; j < trignum; j++)
                 {
                     CampEvents[i]->or_triggers[j].flags = 0;
-                    fscanf(fp, "%s %d %d %d %d\n", CampEvents[i]->or_triggers[j].type, &CampEvents[i]->or_triggers[j].data[0],
-                           &CampEvents[i]->or_triggers[j].data[1], &CampEvents[i]->or_triggers[j].data[2], &CampEvents[i]->or_triggers[j].data[3]);
+                    fscanf(fp, "%s %d %d %d %d\n",
+                           CampEvents[i]->or_triggers[j].type,
+                           &CampEvents[i]->or_triggers[j].data[0],
+                           &CampEvents[i]->or_triggers[j].data[1],
+                           &CampEvents[i]->or_triggers[j].data[2],
+                           &CampEvents[i]->or_triggers[j].data[3]);
                 }
             }
 

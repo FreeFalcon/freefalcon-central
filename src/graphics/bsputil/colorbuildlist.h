@@ -8,7 +8,7 @@
 #ifndef _COLORBUILDLIST_H_
 #define _COLORBUILDLIST_H_
 
-#include "ColorBank.h"
+#include "colorbank.h"
 
 extern class BuildTimeColorList TheColorBuildList;
 

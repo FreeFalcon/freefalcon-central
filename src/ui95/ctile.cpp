@@ -11,13 +11,8 @@ enum
     CTILE_SETPERCENT,
 };
 
-char *C_Tile_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[STRETCHRECT]",
-    "[PERCENT]",
-    0,
+char *C_Tile_Tokens[] = {
+    "[NOTHING]", "[SETUP]", "[STRETCHRECT]", "[PERCENT]", 0,
 };
 
 #endif
@@ -44,7 +39,7 @@ C_Tile::~C_Tile()
 
 long C_Tile::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Tile::Setup(long ID, short Type, long ImageID)
@@ -113,7 +108,8 @@ void C_Tile::Refresh()
     if (GetFlags() bitand C_BIT_INVISIBLE or not Ready() or not Parent_)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
 }
 
 void C_Tile::Draw(SCREEN *surface, UI95_RECT *cliprect)
@@ -128,13 +124,17 @@ void C_Tile::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (GetFlags() bitand C_BIT_ABSOLUTE)
     {
-        if (clip.left < GetX()) clip.left = GetX();
+        if (clip.left < GetX())
+            clip.left = GetX();
 
-        if (clip.top < GetY()) clip.top = GetY();
+        if (clip.top < GetY())
+            clip.top = GetY();
 
-        if (clip.right > (GetX() + GetW())) clip.right = GetX() + GetW();
+        if (clip.right > (GetX() + GetW()))
+            clip.right = GetX() + GetW();
 
-        if (clip.bottom > (GetY() + GetH())) clip.bottom = GetY() + GetH();
+        if (clip.bottom > (GetY() + GetH()))
+            clip.bottom = GetY() + GetH();
     }
 
     y = 0;
@@ -170,30 +170,30 @@ short C_Tile::LocalFind(char *token)
     while (C_Tile_Tokens[i])
     {
         if (strnicmp(token, C_Tile_Tokens[i], strlen(C_Tile_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Tile::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CTILE_SETUP:
-            Setup(P[0], (short)P[1], P[2]);
-            break;
+    case CTILE_SETUP:
+        Setup(P[0], (short)P[1], P[2]);
+        break;
 
-        case CTILE_SETPERCENT:
-            if (Image_)
-            {
-                Image_->SetFrontPerc((short)P[0]);
-                Image_->SetBackPerc(100 - (short)P[0]);
-            }
+    case CTILE_SETPERCENT:
+        if (Image_)
+        {
+            Image_->SetFrontPerc((short)P[0]);
+            Image_->SetBackPerc(100 - (short)P[0]);
+        }
 
-            break;
+        break;
     }
 }
 
@@ -201,4 +201,3 @@ extern char ParseSave[];
 extern char ParseCRLF[];
 
 #endif // PARSER
-

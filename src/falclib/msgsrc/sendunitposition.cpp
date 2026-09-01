@@ -1,13 +1,14 @@
-#include "MsgInc/SendUnitPosition.h"
+#include "msginc/sendunitposition.h"
 #include "mesg.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 using namespace std;
 
 // TODO discover what thread uses it...
 
-SendUnitPosition::SendUnitPosition(SimMoverClass *mover, VuTargetEntity *target) :
-    FalconEvent(SendUnitPositionMsg, FalconEvent::SimThread, mover->Id(), target, FALSE)
+SendUnitPosition::SendUnitPosition(SimMoverClass *mover, VuTargetEntity *target)
+    : FalconEvent(SendUnitPositionMsg, FalconEvent::SimThread, mover->Id(),
+                  target, FALSE)
 {
     // this is always reliable
     this->RequestReliableTransmit();
@@ -23,18 +24,16 @@ SendUnitPosition::SendUnitPosition(SimMoverClass *mover, VuTargetEntity *target)
     dyaw_ = mover->YawDelta();
     dpitch_ = mover->PitchDelta();
     droll_ = mover->RollDelta();
-
 }
 
-SendUnitPosition::SendUnitPosition(VU_ID senderID, VU_ID targetID) :
-    FalconEvent(SendUnitPositionMsg, FalconEvent::SimThread, senderID, targetID)
+SendUnitPosition::SendUnitPosition(VU_ID senderID, VU_ID targetID)
+    : FalconEvent(SendUnitPositionMsg, FalconEvent::SimThread, senderID,
+                  targetID)
 {
-
 }
 
 SendUnitPosition::~SendUnitPosition()
 {
-
 }
 
 int SendUnitPosition::Size(void)
@@ -118,4 +117,3 @@ int SendUnitPosition::Process(uchar autodisp)
 
     return 0;
 }
-

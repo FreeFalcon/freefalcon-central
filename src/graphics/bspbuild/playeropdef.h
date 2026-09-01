@@ -55,38 +55,51 @@ enum PO_GEN_FLAGS
     GEN_RULES_FLAGS = 0x21,
 };
 
-enum { PL_FNAME_LEN = 32};
+enum
+{
+    PL_FNAME_LEN = 32
+};
 
 // Flight model enum
-typedef enum { FMSimplified,
-                FMModerated,
-                FMAccurate
-             } FlightModelType;
+typedef enum
+{
+    FMSimplified,
+    FMModerated,
+    FMAccurate
+} FlightModelType;
 
 // Weapon effectiveness enum
-typedef enum { WEExaggerated,
-                WEEnhanced,
-                WEAccurate
-             } WeaponEffectType;
+typedef enum
+{
+    WEExaggerated,
+    WEEnhanced,
+    WEAccurate
+} WeaponEffectType;
 
 // Avionics Difficulty enum
-typedef enum { ATEasy,
-                ATSimplified,
-                ATRealistic,
-                ATRealisticAV
-             } AvionicsType;
+typedef enum
+{
+    ATEasy,
+    ATSimplified,
+    ATRealistic,
+    ATRealisticAV
+} AvionicsType;
 
 // Autopilot mode
-typedef enum { APIntelligent,
-                APEnhanced,
-                APNormal
-             } AutopilotModeType;
+typedef enum
+{
+    APIntelligent,
+    APEnhanced,
+    APNormal
+} AutopilotModeType;
 
 // Air Refeuling mode
-typedef enum { ARRealistic = 1,
-                ARModerated,
-                ARSimplistic
-             } RefuelModeType;
+typedef enum
+{
+    ARRealistic = 1,
+    ARModerated,
+    ARSimplistic
+} RefuelModeType;
 
 // Padlock mode
 typedef enum   //PDSuper,
@@ -97,11 +110,13 @@ typedef enum   //PDSuper,
 } PadlockModeType;
 
 // Visual cues
-typedef enum { VCNone,
-                VCLiftLine,
-                VCReflection,
-                VCBoth
-             } VisualCueType;
+typedef enum
+{
+    VCNone,
+    VCLiftLine,
+    VCReflection,
+    VCBoth
+} VisualCueType;
 
 
 #endif

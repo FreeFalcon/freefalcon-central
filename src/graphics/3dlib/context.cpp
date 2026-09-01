@@ -6,39 +6,42 @@
     //JAM 06Oct03 - Begin Major Rewrite
 \***************************************************************************/
 #include "stdafx.h"
-#include "ImageBuf.h"
+#include "imagebuf.h"
 #include "context.h"
 #include "polylib.h"
-#include "StateStack.h"
+#include "statestack.h"
 #include "render3d.h"
 #include "alloc.h"
 #include "radix.h"
 #include "graphics/include/texbank.h"
 #include "graphics/include/fartex.h"
 #include "graphics/include/terrtex.h"
-#include "FalcLib/include/playerop.h"
-#include "FalcLib/include/dispopts.h"
-#include "Graphics/Include/TOD.h"
-#include "Sim/Include/otwdrive.h"
-#include "RealWeather.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
+#include "graphics/include/tod.h"
+#include "sim/include/otwdrive.h"
+#include "realweather.h"
 
 
 extern DWORD p3DpitHilite; // Cobra - 3D pit high night lighting color
 extern DWORD p3DpitLolite; // Cobra - 3D pit low night lighting color
 
 
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
-#include "Graphics/DXEngine/common/IRenderer.h"	// PHASE 4: D3D11 screen-path
-#include "Graphics/DXEngine/D3D12Backend.h"	// #DX12 п.5: per-eye gScreenSize (SceneW/H) for the 2D sky/terrain
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
+#include "graphics/dxengine/common/irenderer.h" // PHASE 4: D3D11 screen-path
+#include "graphics/dxengine/d3d12backend.h" // #DX12 п.5: per-eye gScreenSize (SceneW/H) for the 2D sky/terrain
 extern bool g_bUse_DX_Engine;
-extern bool g_bUseD3D12;   // Artscout - 2026: #DX12 -- the (sole) GPU backend selector
-extern bool g_bUseGpu;     // Artscout - 2026: #DX12 -- GPU render mode (D3D11 || D3D12), not dead DDraw7
+extern bool
+    g_bUseD3D12; // Artscout - 2026: #DX12 -- the (sole) GPU backend selector
+extern bool
+    g_bUseGpu; // Artscout - 2026: #DX12 -- GPU render mode (D3D11 || D3D12), not dead DDraw7
 
 extern bool g_bSlowButSafe;
 extern float g_fMipLodBias;
 
-#define INT3 __debugbreak()   // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
+#define INT3                                                                   \
+    __debugbreak() // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
 
 #ifdef _DEBUG
 
@@ -82,10 +85,9 @@ inline void ContextMPR::ZCX_Calculate(void)
 }
 
 // Macro to use CXes
-#define SCALE_SZ(x) (szCX1+szCX2/x)
+#define SCALE_SZ(x) (szCX1 + szCX2 / x)
 
 // COBRA - RED - End
-
 
 
 ContextMPR::ContextMPR()
@@ -121,7 +123,8 @@ ContextMPR::ContextMPR()
     m_colFG_Raw = m_colBG_Raw = 0;
     bZBuffering = false;
     gZBias = 0.f;
-    m_2DPrimZ = 1.0f;	// #48: 2D screen primitives default to the near plane (reversed-Z: near = 1.0)
+    m_2DPrimZ =
+        1.0f; // #48: 2D screen primitives default to the near plane (reversed-Z: near = 1.0)
     ZFAR = 280000.f;
     // COBRA - RED - TEST
     //ZNEAR = 1.f;
@@ -158,7 +161,7 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
     {
         m_pCtxDX = c;
 
-        if ( not m_pCtxDX)
+        if (not m_pCtxDX)
         {
             ShiWarning("Failed to create device");
             return FALSE;
@@ -168,7 +171,8 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
 
         ShiAssert(pIB);
 
-        if ( not pIB) return FALSE;
+        if (not pIB)
+            return FALSE;
 
         m_pIB = pIB;
 
@@ -187,18 +191,24 @@ BOOL ContextMPR::Setup(ImageBuffer *pIB, DXContext *c)
 
             m_dwVBSize = 32768;
             m_pVBCpu = new TLVERTEX[m_dwVBSize];
-            if ( not m_pVBCpu) throw _com_error(E_OUTOFMEMORY);
+            if (not m_pVBCpu)
+                throw _com_error(E_OUTOFMEMORY);
 
-            m_pIdx = new WORD[m_dwVBSize * 3 + 64];	// +slack: fan triangulation is right up against 3*N
-            if ( not m_pIdx) throw _com_error(E_OUTOFMEMORY);
+            m_pIdx = new WORD
+                [m_dwVBSize * 3 +
+                 64]; // +slack: fan triangulation is right up against 3*N
+            if (not m_pIdx)
+                throw _com_error(E_OUTOFMEMORY);
 
-            m_bUseSetStateInternal = true;	// SetState(MPR_STA_*) -> SetStateInternal (m_pD3DD-free)
+            m_bUseSetStateInternal =
+                true; // SetState(MPR_STA_*) -> SetStateInternal (m_pD3DD-free)
 
             // Initialize the buckets/states (like the D3D7 branch below, but without D3D7 calls)
             mIdx = 0;
             plainPolys = texturedPolys = translucentPolys = NULL;
             plainPolyVCnt = texturedPolyVCnt = translucentPolyVCnt = 0;
-            currentState = lastState = currentTexture1 = currentTexture2 = lastTexture1 = lastTexture2 = -1;
+            currentState = lastState = currentTexture1 = currentTexture2 =
+                lastTexture1 = lastTexture2 = -1;
             m_dwStartVtx = m_dwNumVtx = m_dwNumIdx = 0;
             m_nCurPrimType = 0;
             memPool = AllocInit();
@@ -256,7 +266,7 @@ void ContextMPR::Cleanup()
         m_pIdx = NULL;
     }
 
-    if (m_pVBCpu)	// PHASE 4
+    if (m_pVBCpu) // PHASE 4
     {
         delete[] m_pVBCpu;
         m_pVBCpu = NULL;
@@ -316,8 +326,9 @@ void ContextMPR::ClearBuffers(WORD ClearInfo)
     if (g_bUseGpu)
     {
         extern bool g_rttBatchActive;
-        extern IRenderBackend* g_pRenderBackend;
-        if (g_rttBatchActive and (ClearInfo bitand MPR_CI_DRAW_BUFFER) and g_pRenderBackend)
+        extern IRenderBackend *g_pRenderBackend;
+        if (g_rttBatchActive and (ClearInfo bitand MPR_CI_DRAW_BUFFER) and
+            g_pRenderBackend)
             g_pRenderBackend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
     }
 }
@@ -332,15 +343,21 @@ void ContextMPR::StartDraw(void)
 
 void ContextMPR::EndDraw(void)
 {
-    FlushVB();	// flush the display content into the current RTV (its RTT)
+    FlushVB(); // flush the display content into the current RTV (its RTT)
 
     // PHASE 5 (RTT): after rendering the display into its RTT, restore the scene target + its gScreenSize.
-    if (g_bUseD3D12 && g_pD3D12Backend && m_pIB && not m_pIB->IsScreenBuffer())
+    // Artscout - 2026 (#104): asks the ACTIVE backend, not g_pD3D12Backend. Under Vulkan this restore was skipped
+    // entirely, so gScreenSize stayed at the display ATLAS size for everything drawn afterwards -- including the RTT
+    // composite quad, whose pixel->NDC mapping then had nothing to do with the screen. The displays ended up glued
+    // to the camera instead of to their panels.
+    if (g_bUseGpu && g_pRenderBackend && m_pIB && not m_pIB->IsScreenBuffer())
     {
-        // #DX12 п.5: the RTT display just set gScreenSize to its atlas size; restore it to the SCENE size
-        // (eye in VR, back buffer flat) so the next scene draws map correctly. The scene RTV itself is
-        // rebound by UnbindSceneRtt/BindBackBufferRTV in the display path -- here we only fix gScreenSize.
-        if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
+        // The RTT display just set gScreenSize to its atlas size; restore it to the SCENE size (eye in VR, back
+        // buffer flat) so the next scene draws map correctly. The scene RTV itself is rebound by
+        // UnbindSceneRtt/BindBackBufferRTV in the display path -- here we only fix gScreenSize.
+        if (g_pRenderer)
+            g_pRenderer->SetViewportSize(g_pRenderBackend->SceneW(),
+                                         g_pRenderBackend->SceneH());
     }
 }
 
@@ -354,7 +371,7 @@ void ContextMPR::StartFrame(void)
     {
         m_pIB->BindRttTarget(true);
     }
-    else if (g_bUseD3D12 && g_pD3D12Backend)
+    else if (g_bUseGpu && g_pRenderBackend)
     {
         // #DX12 п.5: the scene target (eye in VR, back buffer flat) is already bound + cleared by
         // BeginEyeFrame/BeginFrame. Only set gScreenSize here -- to the SCENE size, so VS_Screen's pixel->NDC
@@ -363,7 +380,11 @@ void ContextMPR::StartFrame(void)
         // no-op stub + this block gated on g_pD3D11Backend), so the eye-sized sky was mapped by the back-buffer
         // size -> horizon mis-scaled/inverted ("dark blue, sky only when inverted"). Terrain/objects survive it
         // (world matProj is unaffected) which is why only the pure-2D sky visibly broke.
-        if (g_pRenderer) g_pRenderer->SetViewportSize(g_pD3D12Backend->SceneW(), g_pD3D12Backend->SceneH());
+        // Artscout - 2026 (#104): via the neutral backend, so Vulkan gets the same treatment -- it was named
+        // g_pD3D12Backend, which made this a D3D12-only fix and left the Vulkan 2D path mapped by the wrong size.
+        if (g_pRenderer)
+            g_pRenderer->SetViewportSize(g_pRenderBackend->SceneW(),
+                                         g_pRenderBackend->SceneH());
     }
 
     InvalidateState();
@@ -377,7 +398,11 @@ void ContextMPR::BindD3D11RttNoClear(void)
     // StartDraw would wipe the accumulated image (StartScene/ClearDraw clears when a scene restarts).
     // Without this the radar sweep leaks onto the screen (no RTT bound -> draws to the back buffer).
     // #DX12 A5: BindRttTarget delegates to the D3D12 RTT under g_bUseD3D12.
-    if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer())
+    // Artscout - 2026 (GM radar): Vulkan too -- BindRttTarget routes by backend. Un-gated, the Vulkan GM sweep
+    // was never bound to its private buffer, so it leaked onto the current target and StartScene's clear wiped
+    // the cockpit atlas mid-frame (dark MFDs).
+    extern bool g_bUseVulkan;
+    if ((g_bUseD3D12 || g_bUseVulkan) && m_pIB && not m_pIB->IsScreenBuffer())
         m_pIB->BindRttTarget(false);
 }
 
@@ -387,9 +412,12 @@ void ContextMPR::ClearBoundD3D11Rtt(void)
     // batch (g_rttBatchActive) and no-ops for the GM radar's private buffer, so the sweep never cleared
     // and accumulated green to a full-field white. The GM calls this once per sweep (StartScene), after
     // StartDraw has bound its buffer; the per-beam-op accumulation within the sweep is unaffected.
-    // #DX12 A5: same for the D3D12 backend (ClearCurrentRTV clears the currently-bound off-screen RTV).
-    if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer() && g_pD3D12Backend)
-        g_pD3D12Backend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
+    // #DX12 A5: same for a GPU backend (ClearCurrentRTV clears the currently-bound off-screen RTV).
+    // Artscout - 2026 (#104): via the ACTIVE backend -- ClearCurrentRTV is already an IRenderBackend method, so
+    // naming D3D12 here only meant Vulkan never cleared. That is the very bug the comment above describes (a sweep
+    // that never clears accumulates to a full-field white), just re-armed for the other backend.
+    if (g_bUseGpu && m_pIB && not m_pIB->IsScreenBuffer() && g_pRenderBackend)
+        g_pRenderBackend->ClearCurrentRTV(0.0f, 0.0f, 0.0f, 0.0f);
 }
 
 void ContextMPR::FinishFrame(void *lpFnPtr)
@@ -402,8 +430,13 @@ void ContextMPR::FinishFrame(void *lpFnPtr)
     // back to PIXEL_SHADER_RESOURCE and rebind the scene target, so the sensor render is finished and the
     // main pass (or the readback copy) can continue. Under D3D11 the RTV stays bound (next BindBackBuffer
     // restores it); under D3D12 explicit unbind is required.
-    if (g_bUseD3D12 && m_pIB && not m_pIB->IsScreenBuffer())
-        m_pIB->UnbindD3D12RenderTarget();
+    {
+        extern bool
+            g_bUseVulkan; // Artscout - 2026 (GM radar): Vulkan unbinds through the same neutral call
+        if ((g_bUseD3D12 || g_bUseVulkan) && m_pIB &&
+            not m_pIB->IsScreenBuffer())
+            m_pIB->UnbindGpuRenderTarget();
+    }
 }
 
 // DX - COBRA - Red
@@ -414,9 +447,9 @@ void ContextMPR::TexColorDiffuse(void)
     // PHASE 4/6: emulate COLORARG1=DIFFUSE in the FFEmu shader (FF_TEXCOLORDIFFUSE): text color
     // from the vertex, the font texture is only a mask. Cleared on the next RestoreState.
     // #34: dead D3D7 SetTextureStageState removed.
-    if (g_pRenderer) g_pRenderer->SetTexColorDiffuse(true);
+    if (g_pRenderer)
+        g_pRenderer->SetTexColorDiffuse(true);
 }
-
 
 
 void ContextMPR::SetState(WORD State, DWORD Value)
@@ -435,80 +468,103 @@ void ContextMPR::SetStateInternal(WORD State, DWORD Value)
 {
     switch (State)
     {
-        case MPR_STA_NONE:
+    case MPR_STA_NONE:
+    {
+        break;
+    }
+
+    case MPR_STA_DISABLES:
+    case MPR_STA_ENABLES:
+    {
+        bool bNewVal = (State == MPR_STA_ENABLES) ? true : false;
+
+        // Artscout - 2026: currentState is -1 right after InvalidateState() (the rendered-
+        // cursor path runs StartDraw -> SetViewport(SCISSORING) before any RestoreState).
+        // Writing StateTableInternal[-1] is an out-of-bounds store that corrupted adjacent
+        // memory -> Release-only crash on mouse move (garbage m_dwNumVtx / nulled m_pIdx,
+        // lost sky/HUD/MFD). Only touch the per-slot table when the slot index is valid;
+        // the scissor enable still updates the global m_bEnableScissors below.
+        bool bValidSlot =
+            (currentState >= 0 and currentState < MAXIMUM_MPR_STATE);
+
+        if (Value bitand MPR_SE_SCISSORING)
         {
-            break;
-        }
-
-        case MPR_STA_DISABLES:
-        case MPR_STA_ENABLES:
-        {
-            bool bNewVal = (State == MPR_STA_ENABLES) ? true : false;
-
-            // Artscout - 2026: currentState is -1 right after InvalidateState() (the rendered-
-            // cursor path runs StartDraw -> SetViewport(SCISSORING) before any RestoreState).
-            // Writing StateTableInternal[-1] is an out-of-bounds store that corrupted adjacent
-            // memory -> Release-only crash on mouse move (garbage m_dwNumVtx / nulled m_pIdx,
-            // lost sky/HUD/MFD). Only touch the per-slot table when the slot index is valid;
-            // the scissor enable still updates the global m_bEnableScissors below.
-            bool bValidSlot = (currentState >= 0 and currentState < MAXIMUM_MPR_STATE);
-
-            if (Value bitand MPR_SE_SCISSORING)
-            {
-                if (bValidSlot) StateTableInternal[currentState].SE_SCISSORING = bNewVal;
-                // PHASE 5: apply the per-display viewport (MFD/HUD are positioned by it)
-                if (bNewVal not_eq (m_bEnableScissors ? true : false))
-                {
-                    FlushVB();
-                    m_bEnableScissors = bNewVal;
-                    UpdateViewport();
-                }
-            }
-
             if (bValidSlot)
+                StateTableInternal[currentState].SE_SCISSORING = bNewVal;
+            // PHASE 5: apply the per-display viewport (MFD/HUD are positioned by it)
+            if (bNewVal not_eq (m_bEnableScissors ? true : false))
             {
-                if (Value bitand MPR_SE_MODULATION)
-                    StateTableInternal[currentState].SE_MODULATION = bNewVal;
-
-                if (Value bitand MPR_SE_TEXTURING)
-                    StateTableInternal[currentState].SE_TEXTURING = bNewVal;
-
-                if (Value bitand MPR_SE_SHADING)
-                    StateTableInternal[currentState].SE_SHADING = bNewVal;
-
-                if (Value bitand MPR_SE_Z_BUFFERING)
-                    StateTableInternal[currentState].SE_Z_BUFFERING = bNewVal;
-
-                if (Value bitand MPR_SE_Z_WRITE)
-                    StateTableInternal[currentState].SE_Z_WRITE = bNewVal;
-
-                if (Value bitand MPR_SE_FILTERING)
-                    StateTableInternal[currentState].SE_FILTERING = bNewVal;
-
-                if (Value bitand MPR_SE_ALPHA)
-                    StateTableInternal[currentState].SE_ALPHA = bNewVal;
-
-                if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
-                    StateTableInternal[currentState].SE_NON_PERSPECTIVE_CORRECTION_MODE = bNewVal;
+                FlushVB();
+                m_bEnableScissors = bNewVal;
+                UpdateViewport();
             }
-
-            break;
         }
 
-        // PHASE 5: the display's scissor rect (MFD/HUD). In D3D11 it wasn't handled before ->
-        // all displays were fullscreen. Now -> per-display viewport.
-        case MPR_STA_SCISSOR_LEFT:
-            if (Value not_eq (DWORD)m_rcVP.left)   { FlushVB(); m_rcVP.left = Value;   UpdateViewport(); }
-            break;
-        case MPR_STA_SCISSOR_TOP:
-            if (Value not_eq (DWORD)m_rcVP.top)    { FlushVB(); m_rcVP.top = Value;    UpdateViewport(); }
-            break;
-        case MPR_STA_SCISSOR_RIGHT:
-            if (Value not_eq (DWORD)m_rcVP.right)  { FlushVB(); m_rcVP.right = Value;  UpdateViewport(); }
-            break;
-        case MPR_STA_SCISSOR_BOTTOM:
-            if (Value not_eq (DWORD)m_rcVP.bottom) { FlushVB(); m_rcVP.bottom = Value; UpdateViewport(); }
-            break;
+        if (bValidSlot)
+        {
+            if (Value bitand MPR_SE_MODULATION)
+                StateTableInternal[currentState].SE_MODULATION = bNewVal;
+
+            if (Value bitand MPR_SE_TEXTURING)
+                StateTableInternal[currentState].SE_TEXTURING = bNewVal;
+
+            if (Value bitand MPR_SE_SHADING)
+                StateTableInternal[currentState].SE_SHADING = bNewVal;
+
+            if (Value bitand MPR_SE_Z_BUFFERING)
+                StateTableInternal[currentState].SE_Z_BUFFERING = bNewVal;
+
+            if (Value bitand MPR_SE_Z_WRITE)
+                StateTableInternal[currentState].SE_Z_WRITE = bNewVal;
+
+            if (Value bitand MPR_SE_FILTERING)
+                StateTableInternal[currentState].SE_FILTERING = bNewVal;
+
+            if (Value bitand MPR_SE_ALPHA)
+                StateTableInternal[currentState].SE_ALPHA = bNewVal;
+
+            if (Value bitand MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE)
+                StateTableInternal[currentState]
+                    .SE_NON_PERSPECTIVE_CORRECTION_MODE = bNewVal;
+        }
+
+        break;
+    }
+
+    // PHASE 5: the display's scissor rect (MFD/HUD). In D3D11 it wasn't handled before ->
+    // all displays were fullscreen. Now -> per-display viewport.
+    case MPR_STA_SCISSOR_LEFT:
+        if (Value not_eq (DWORD) m_rcVP.left)
+        {
+            FlushVB();
+            m_rcVP.left = Value;
+            UpdateViewport();
+        }
+        break;
+    case MPR_STA_SCISSOR_TOP:
+        if (Value not_eq (DWORD) m_rcVP.top)
+        {
+            FlushVB();
+            m_rcVP.top = Value;
+            UpdateViewport();
+        }
+        break;
+    case MPR_STA_SCISSOR_RIGHT:
+        if (Value not_eq (DWORD) m_rcVP.right)
+        {
+            FlushVB();
+            m_rcVP.right = Value;
+            UpdateViewport();
+        }
+        break;
+    case MPR_STA_SCISSOR_BOTTOM:
+        if (Value not_eq (DWORD) m_rcVP.bottom)
+        {
+            FlushVB();
+            m_rcVP.bottom = Value;
+            UpdateViewport();
+        }
+        break;
     }
 }
 
@@ -520,14 +576,15 @@ void ContextMPR::SetCurrentState(GLint state, GLint flag)
     // (StateSetupCounter stays 0; m_pD3DD is NULL). State is applied via SetStateInternal/FFStateMap.
 }
 
-void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, int totalWidth, DWORD *pSrc, bool Fit)
+void ContextMPR::Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h,
+                                int totalWidth, DWORD *pSrc, bool Fit)
 {
     // #30/#34 D3D11: CPU bitmap (splash/cursor/mirror) via a temporary texture + screen quad.
     // Dead D3D7 D3DXCreateTexture/SetTexture path removed.
     if (g_pRenderer)
         g_pRenderer->DrawBitmap2D(dX, dY, w, h, totalWidth, sX, sY,
-                                       (const unsigned*)pSrc, Fit,
-                                       m_pCtxDX->m_nWidth, m_pCtxDX->m_nHeight);
+                                  (const unsigned *)pSrc, Fit,
+                                  m_pCtxDX->m_nWidth, m_pCtxDX->m_nHeight);
 }
 
 inline void ContextMPR::SetStateTable(GLint state, GLint flag)
@@ -556,7 +613,8 @@ void ContextMPR::SetupMPRState(GLint flag)
     // Record one stateblock per poly type
     MonoPrint("ContextMPR - Setting up state table\n");
 
-    for (currentState = STATE_SOLID; currentState < MAXIMUM_MPR_STATE; currentState++)
+    for (currentState = STATE_SOLID; currentState < MAXIMUM_MPR_STATE;
+         currentState++)
         SetStateTable(currentState, flag);
 
     InvalidateState();
@@ -564,7 +622,7 @@ void ContextMPR::SetupMPRState(GLint flag)
 
 void ContextMPR::CleanupMPRState(GLint flag)
 {
-    if ( not StateSetupCounter)
+    if (not StateSetupCounter)
     {
         ShiWarning("MPR not initialized");
         return;
@@ -584,7 +642,8 @@ void ContextMPR::CleanupMPRState(GLint flag)
         ClearStateTable(i);
 }
 
-void ContextMPR::SetTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
+void ContextMPR::SetTexture1(
+    DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
     if (texID not_eq lastTexture1)
     {
@@ -592,11 +651,14 @@ void ContextMPR::SetTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-
 
         lastTexture1 = texID;
 
-        if (g_bUseGpu)	// PHASE 4/#DX12
+        if (g_bUseGpu) // PHASE 4/#DX12
         {
             if (g_pRenderer)
             {
-                g_pRenderer->SetTexture(0, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
+                g_pRenderer->SetTexture(
+                    0, (texID == -1) ?
+                           NULL :
+                           (struct ID3D11ShaderResourceView *)texID);
                 g_pRenderer->SetTexture(1, NULL);
             }
             return;
@@ -605,7 +667,8 @@ void ContextMPR::SetTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-
     }
 }
 
-void ContextMPR::SetTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
+void ContextMPR::SetTexture2(
+    DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
     if (texID not_eq lastTexture2)
     {
@@ -613,24 +676,29 @@ void ContextMPR::SetTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-
 
         lastTexture2 = texID;
 
-        if (g_bUseGpu)	// PHASE 4/#DX12
+        if (g_bUseGpu) // PHASE 4/#DX12
         {
             if (g_pRenderer)
-                g_pRenderer->SetTexture(1, (texID == -1) ? NULL : (struct ID3D11ShaderResourceView *)texID);
+                g_pRenderer->SetTexture(
+                    1, (texID == -1) ?
+                           NULL :
+                           (struct ID3D11ShaderResourceView *)texID);
             return;
         }
         // #34 dead D3D7 SetTexture removed (D3D11 returns above)
     }
 }
 
-void ContextMPR::SelectTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
+void ContextMPR::SelectTexture1(
+    DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::ApplyTexture1(0x%X)\n", texID);
 #endif
 
     if (texID)
-        texID = (DWORD_PTR)((TextureHandle *)texID)->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
+        texID = (DWORD_PTR)((TextureHandle *)texID)
+                    ->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
 
     if (texID not_eq currentTexture1)
     {
@@ -643,17 +711,19 @@ void ContextMPR::SelectTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): point
         // PHASE 5: in D3D11 bind the texture/font REGARDLESS of bZBuffering. The
         // "if(not bZBuffering)" gate is a D3D7 quirk; because of it the MFD/HUD font wasn't bound
         // in the cockpit (bZBuffering=true) -> empty gTex0 -> "little squares".
-        if ( not bZBuffering or g_bUseGpu)
+        if (not bZBuffering or g_bUseGpu)
         {
             // JB 010326 CTD (too much CPU)
-            if ( not g_bUseGpu and g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if (not g_bUseGpu and g_bSlowButSafe and
+                F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
 
             // #34 D3D11: m_pDDS holds the D3D11 SRV (dead D3D7 else removed)
             if (g_pRenderer)
-                g_pRenderer->SetTexture(0, (struct ID3D11ShaderResourceView *)texID);
+                g_pRenderer->SetTexture(
+                    0, (struct ID3D11ShaderResourceView *)texID);
         }
     }
     else if (g_bUseGpu and g_pRenderer)
@@ -666,21 +736,24 @@ void ContextMPR::SelectTexture1(DWORD_PTR texID) // Artscout - 2026 (x64): point
     }
 
 #ifdef _CONTEXT_ENABLE_STATS
-    else m_stats.PutTexture(true);
+    else
+        m_stats.PutTexture(true);
 
 #endif
 
     currentTexture2 = -1;
 }
 
-void ContextMPR::SelectTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
+void ContextMPR::SelectTexture2(
+    DWORD_PTR texID) // Artscout - 2026 (x64): pointer-sized handle/SRV
 {
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::ApplyTexture2(0x%X)\n", texID);
 #endif
 
     if (texID)
-        texID = (DWORD_PTR)((TextureHandle *)texID)->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
+        texID = (DWORD_PTR)((TextureHandle *)texID)
+                    ->m_pDDS; // Artscout - 2026 (x64): no pointer truncation
 
     if (texID not_eq currentTexture2)
     {
@@ -690,22 +763,25 @@ void ContextMPR::SelectTexture2(DWORD_PTR texID) // Artscout - 2026 (x64): point
         m_stats.PutTexture(false);
 #endif
 
-        if ( not bZBuffering)
+        if (not bZBuffering)
         {
             // JB 010326 CTD (too much CPU)
-            if (g_bSlowButSafe and F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
+            if (g_bSlowButSafe and
+                F4IsBadReadPtr((TextureHandle *)texID, sizeof(TextureHandle)))
                 return;
 
             FlushVB();
 
             // #34 D3D11 (dead D3D7 else removed)
             if (g_pRenderer)
-                g_pRenderer->SetTexture(1, (struct ID3D11ShaderResourceView *)texID);
+                g_pRenderer->SetTexture(
+                    1, (struct ID3D11ShaderResourceView *)texID);
         }
     }
 
 #ifdef _CONTEXT_ENABLE_STATS
-    else m_stats.PutTexture(true);
+    else
+        m_stats.PutTexture(true);
 
 #endif
 }
@@ -730,7 +806,8 @@ void ContextMPR::SelectBackgroundColor(GLint color)
 
 void ContextMPR::ApplyStateBlock(GLint state)
 {
-    if (state == -1) return;
+    if (state == -1)
+        return;
 
     ShiAssert(state >= 0 and state < MAXIMUM_MPR_STATE);
 
@@ -751,10 +828,12 @@ void ContextMPR::RestoreState(GLint state)
     // Dead D3D7 ApplyStateBlock path removed.
     if (state not_eq currentState)
     {
-        if (currentState == -1 or (StateTableInternal[currentState].SE_TEXTURING and not StateTableInternal[state].SE_TEXTURING))
+        if (currentState == -1 or
+            (StateTableInternal[currentState].SE_TEXTURING and
+             not StateTableInternal[state].SE_TEXTURING))
             currentTexture1 = -1;
 
-        if ( not bZBuffering)
+        if (not bZBuffering)
             FlushVB();
 
         currentState = state;
@@ -769,7 +848,7 @@ void ContextMPR::UpdateSpecularFog(DWORD specular)
 
 void ContextMPR::SetZBuffering(BOOL state)
 {
-    if ( not bZBuffering and state)
+    if (not bZBuffering and state)
     {
         FlushVB();
         bZBuffering = state;
@@ -802,8 +881,9 @@ void ContextMPR::SetIRmode(BOOL state)
 // composed pixel to luma, so the terrain (whose vertex colours are cached from the main colour view) greys too.
 void FF_SetIRGrey(bool on)
 {
-    extern IRenderer* g_pRenderer;
-    if (g_pRenderer) g_pRenderer->SetIRGrey(on);
+    extern IRenderer *g_pRenderer;
+    if (g_pRenderer)
+        g_pRenderer->SetIRGrey(on);
 }
 
 // Artscout - 2026 (D3D11 purge): re-homed from the deleted D3D11Renderer.cpp. Free shim so the object path
@@ -811,8 +891,9 @@ void FF_SetIRGrey(bool on)
 // renderer header. Sticky flag on the active renderer, cleared after the pit is drawn.
 void FF_SetCockpitPass(bool on)
 {
-    extern IRenderer* g_pRenderer;
-    if (g_pRenderer) g_pRenderer->SetCockpitPass(on);
+    extern IRenderer *g_pRenderer;
+    if (g_pRenderer)
+        g_pRenderer->SetCockpitPass(on);
 }
 
 // COBRA - RED - Comparing or a so short conditional action has no sense, do it always
@@ -828,14 +909,18 @@ void ContextMPR::SetTexID(int id)
 
 DWORD ContextMPR::MPRColor2D3DRGBA(GLint color)
 {
-    return RGBA_MAKE(RGBA_GETBLUE(color), RGBA_GETGREEN(color), RGBA_GETRED(color), RGBA_GETALPHA(color));
+    return RGBA_MAKE(RGBA_GETBLUE(color), RGBA_GETGREEN(color),
+                     RGBA_GETRED(color), RGBA_GETALPHA(color));
 }
 
-HRESULT WINAPI ContextMPR::EnumSurfacesCB2(IDirectDrawSurface7 *lpDDSurface, struct _DDSURFACEDESC2 *lpDDSurfaceDesc, LPVOID lpContext)
+HRESULT WINAPI ContextMPR::EnumSurfacesCB2(
+    IDirectDrawSurface7 *lpDDSurface, struct _DDSURFACEDESC2 *lpDDSurfaceDesc,
+    LPVOID lpContext)
 {
     ContextMPR *pThis = (ContextMPR *)lpContext;
-    ShiAssert(FALSE == F4IsBadReadPtr(pThis, sizeof * pThis));
-    ShiAssert(FALSE == F4IsBadReadPtr(lpDDSurfaceDesc, sizeof * lpDDSurfaceDesc));
+    ShiAssert(FALSE == F4IsBadReadPtr(pThis, sizeof *pThis));
+    ShiAssert(FALSE ==
+              F4IsBadReadPtr(lpDDSurfaceDesc, sizeof *lpDDSurfaceDesc));
 
     if (lpDDSurfaceDesc->ddsCaps.dwCaps bitand DDSCAPS_PRIMARYSURFACE)
     {
@@ -880,7 +965,7 @@ void ContextMPR::UnlockViewport()
 
 void ContextMPR::GetViewport(RECT *prc)
 {
-    ShiAssert(FALSE == F4IsBadWritePtr(prc, sizeof * prc));
+    ShiAssert(FALSE == F4IsBadWritePtr(prc, sizeof *prc));
     *prc = m_rcVP;
 }
 
@@ -895,17 +980,22 @@ void ContextMPR::TextOut(short x, short y, DWORD col, LPSTR str)
     MonoPrint("ContextMPR::TextOut(%d,%d,0x%X,%s)\n", x, y, col, str);
 #endif
 
-    if ( not str) return;
+    if (not str)
+        return;
 
     // Artscout - 2026: [DX7-PURGE] GDI-on-DDraw-surface text (GetDC/DrawText/ReleaseDC) removed;
     // the GPU path draws text through the renderer, not a DirectDraw surface DC.
-    (void)col; (void)x; (void)y;
+    (void)col;
+    (void)x;
+    (void)y;
 }
 
 bool ContextMPR::LockVB(int nVtxCount, void **p)
 {
 #ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::LockVB(%d,0x%X) (m_dwStartVtx = %d,m_dwNumVtx = %d)\n", nVtxCount, p, m_dwStartVtx, m_dwNumVtx);
+    MonoPrint(
+        "ContextMPR::LockVB(%d,0x%X) (m_dwStartVtx = %d,m_dwNumVtx = %d)\n",
+        nVtxCount, p, m_dwStartVtx, m_dwNumVtx);
 #endif
 
     HRESULT hr;
@@ -920,10 +1010,14 @@ bool ContextMPR::LockVB(int nVtxCount, void **p)
         // batch counters; Release exposes it as a null write in DrawPrimitive or an EnsureVB
         // size-overflow hang. If a buffer pointer was wiped, bail cleanly (drop this draw)
         // instead of crashing; the caller treats a false return as "skip primitive".
-        if (not m_pVBCpu or not m_pIdx) { *p = NULL; m_pTLVtx = NULL; return false; }
-        if (m_dwNumVtx   >= m_dwVBSize ||
-            m_dwStartVtx >= m_dwVBSize ||
-            m_dwNumIdx   >= (DWORD)(m_dwVBSize * 3))
+        if (not m_pVBCpu or not m_pIdx)
+        {
+            *p = NULL;
+            m_pTLVtx = NULL;
+            return false;
+        }
+        if (m_dwNumVtx >= m_dwVBSize || m_dwStartVtx >= m_dwVBSize ||
+            m_dwNumIdx >= (DWORD)(m_dwVBSize * 3))
         {
             m_dwStartVtx = m_dwNumVtx = m_dwNumIdx = 0;
         }
@@ -966,15 +1060,16 @@ void ContextMPR::FlushPolyLists(bool clearDepthBeforeObjects)
     VCounter = 0;
 
 
-
     // START_PROFILE(BSP_ENGINE_PROF);
 
     SetState(MPR_STA_ENABLES, MPR_SE_Z_WRITE);
     SetState(MPR_STA_ENABLES, MPR_SE_Z_BUFFERING);
 
-    if (plainPolys not_eq NULL) RenderPolyList(plainPolys);
+    if (plainPolys not_eq NULL)
+        RenderPolyList(plainPolys);
 
-    if (texturedPolys not_eq NULL) RenderPolyList(texturedPolys);
+    if (texturedPolys not_eq NULL)
+        RenderPolyList(texturedPolys);
 
     // STOP_PROFILE(BSP_ENGINE_PROF);
 
@@ -1005,14 +1100,14 @@ void ContextMPR::FlushPolyLists(bool clearDepthBeforeObjects)
     SetState(MPR_STA_DISABLES, MPR_SE_Z_WRITE);
     //TheDXEngine.SetStencilMode(STENCIL_CHECK);
 
-    if (translucentPolys not_eq NULL) RenderPolyList(translucentPolys);
+    if (translucentPolys not_eq NULL)
+        RenderPolyList(translucentPolys);
 
     TheDXEngine.SetStencilMode(STENCIL_OFF);
 
     mIdx = 0;
     plainPolys = texturedPolys = translucentPolys = NULL;
     plainPolyVCnt = texturedPolyVCnt = translucentPolyVCnt = 0;
-
 
 
     AllocResetPool();
@@ -1026,17 +1121,17 @@ void ContextMPR::FlushPolyLists(bool clearDepthBeforeObjects)
 
 void ContextMPR::FlushVB()
 {
-    if ( not m_dwNumVtx) return;
+    if (not m_dwNumVtx)
+        return;
 
     // Artscout - 2026: FlushVB is reached directly from SelectTexture1/RestoreState/EndDraw
     // (bypassing the LockVB guard). If a batch counter is garbage (corruption), DrawTL/
     // DrawTLIndexed get a huge count / out-of-range start vertex and memcpy reads off the end
     // of m_pVBCpu -> AV. Drop a clearly-invalid batch here instead of crashing.
-    if (g_bUseGpu and (not m_pVBCpu or not m_pIdx or
-                         m_dwNumVtx   >= m_dwVBSize or
-                         m_dwStartVtx >= m_dwVBSize or
-                         (m_dwStartVtx + m_dwNumVtx) > m_dwVBSize or
-                         m_dwNumIdx   >= (DWORD)(m_dwVBSize * 3)))
+    if (g_bUseGpu and (not m_pVBCpu or not m_pIdx or m_dwNumVtx >= m_dwVBSize or
+                       m_dwStartVtx >= m_dwVBSize or
+                       (m_dwStartVtx + m_dwNumVtx) > m_dwVBSize or
+                       m_dwNumIdx >= (DWORD)(m_dwVBSize * 3)))
     {
         // Cheap sanity guard: drop an out-of-range batch instead of memcpy'ing off the end of
         // m_pVBCpu. Kept as defensive hardening against any future counter desync.
@@ -1064,17 +1159,19 @@ void ContextMPR::FlushVB()
 
             if (m_dwNumIdx)
             {
-                int listType = (m_nCurPrimType == D3DPT_LINESTRIP or m_nCurPrimType == D3DPT_LINELIST) ? 2 : 4;
-                g_pRenderer->DrawTLIndexed(listType,
-                                                (ScreenVertex *)&m_pVBCpu[m_dwStartVtx],
-                                                (int)m_dwNumVtx,
-                                                m_pIdx, (int)m_dwNumIdx);
+                int listType = (m_nCurPrimType == D3DPT_LINESTRIP or
+                                m_nCurPrimType == D3DPT_LINELIST) ?
+                                   2 :
+                                   4;
+                g_pRenderer->DrawTLIndexed(
+                    listType, (ScreenVertex *)&m_pVBCpu[m_dwStartVtx],
+                    (int)m_dwNumVtx, m_pIdx, (int)m_dwNumIdx);
             }
             else
             {
                 g_pRenderer->DrawTL(m_nCurPrimType,
-                                         (ScreenVertex *)&m_pVBCpu[m_dwStartVtx],
-                                         (int)m_dwNumVtx);
+                                    (ScreenVertex *)&m_pVBCpu[m_dwStartVtx],
+                                    (int)m_dwNumVtx);
             }
         }
 
@@ -1097,7 +1194,6 @@ void ContextMPR::ZeroViewport()
     //ZeroMemory(&m_rcVP,sizeof(m_rcVP));
     m_rcVP.right = m_rcVP.left;
     m_rcVP.bottom = m_rcVP.top;
-
 }
 
 void ContextMPR::SetPrimitiveType(int nType)
@@ -1133,18 +1229,19 @@ void ContextMPR::SetProjection(LPD3DMATRIX l_pMP)
 
 void ContextMPR::setGlobalZBias(float zBias)
 {
-    if (gZBias not_eq zBias) gZBias = zBias;
+    if (gZBias not_eq zBias)
+        gZBias = zBias;
 
     ZCX_Calculate(); // COBRA - RED - Drawing CXs update
 }
 
-inline TLVERTEX* SPolygon::CopyToVertexBuffer(TLVERTEX *bufferPos)
+inline TLVERTEX *SPolygon::CopyToVertexBuffer(TLVERTEX *bufferPos)
 {
-    if ( not bufferPos)
+    if (not bufferPos)
         return NULL;
 
     // COBRA - RED - Using arrays of TLVERTEX it is possible to copy directly into DX Buffer
-    memcpy(bufferPos, pVertexList, sizeof(TLVERTEX)*numVertices);
+    memcpy(bufferPos, pVertexList, sizeof(TLVERTEX) * numVertices);
     return bufferPos + numVertices;
 }
 
@@ -1157,9 +1254,11 @@ inline void SPolygon::CalcPolyZ(float Avg)
     zBuffer = FloatToInt32(Avg * 16777215.f);
 }
 
-/*inline*/ void ContextMPR::AllocatePolygon(SPolygon *&curPoly, const DWORD numVertices)
+/*inline*/ void ContextMPR::AllocatePolygon(SPolygon *&curPoly,
+                                            const DWORD numVertices)
 {
-    curPoly = (SPolygon *)Alloc(sizeof(SPolygon) + numVertices * sizeof(TLVERTEX));
+    curPoly =
+        (SPolygon *)Alloc(sizeof(SPolygon) + numVertices * sizeof(TLVERTEX));
     curPoly->numVertices = numVertices;
     // Artscout - 2026 (x64): was `(TLVERTEX*)(DWORD(curPoly) + sizeof(SPolygon))` -- DWORD() truncated the
     // 64-bit curPoly to 32 bits, so pVertexList pointed at the LOW 32 bits of the pointer (e.g. 0x00FEE040)
@@ -1185,10 +1284,12 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
     // with state/texture through g_pRenderer.
     if (g_bUseGpu)
     {
-        if ((pHead->renderState >= STATE_ALPHA_SOLID) and (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
+        if ((pHead->renderState >= STATE_ALPHA_SOLID) and
+            (pHead->renderState <= STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP))
         {
             offset = DWORD(&pHead->zBuffer) - DWORD(pHead);
-            pHead = (SPolygon *)RadixSortDescending((radix_sort_t *)pHead, offset);
+            pHead =
+                (SPolygon *)RadixSortDescending((radix_sort_t *)pHead, offset);
         }
 
         if (g_pRenderer and g_pRenderer->IsValid())
@@ -1198,13 +1299,16 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
             DWORD base = 0;
             for (pCur = pHead; pCur not_eq NULL; pCur = pCur->pNext)
             {
-                if (base + pCur->numVertices >= m_dwVBSize) base = 0;
-                memcpy(&m_pVBCpu[base], pCur->pVertexList, sizeof(TLVERTEX) * pCur->numVertices);
+                if (base + pCur->numVertices >= m_dwVBSize)
+                    base = 0;
+                memcpy(&m_pVBCpu[base], pCur->pVertexList,
+                       sizeof(TLVERTEX) * pCur->numVertices);
 
                 g_pRenderer->SetState(pCur->renderState);
 
-                if ((pCur->renderState > STATE_GOURAUD and pCur->renderState < STATE_ALPHA_SOLID)
-                    or pCur->renderState > STATE_ALPHA_GOURAUD)
+                if ((pCur->renderState > STATE_GOURAUD and
+                     pCur->renderState < STATE_ALPHA_SOLID) or
+                    pCur->renderState > STATE_ALPHA_GOURAUD)
                     SetTexture1(pCur->textureID0);
                 else
                     SetTexture1(-1);
@@ -1213,8 +1317,8 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
                     SetTexture2(pCur->textureID1);
 
                 g_pRenderer->DrawTL(D3DPT_TRIANGLEFAN,
-                                         (ScreenVertex *)&m_pVBCpu[base],
-                                         (int)pCur->numVertices);
+                                    (ScreenVertex *)&m_pVBCpu[base],
+                                    (int)pCur->numVertices);
                 base += pCur->numVertices;
             }
         }
@@ -1224,47 +1328,50 @@ void ContextMPR::RenderPolyList(SPolygon *&pHead)
 }
 
 
-void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor)
+void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr,
+                          int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv,
+                          bool bUseFGColor)
 {
     float *I;
     Spoint *xyz;
     Pcolor *rgba;
-	TLVERTEX* pVtx = NULL;
-	TLVERTEX* sVertex = NULL;
-    SPolygon* sPolygon = NULL;
+    TLVERTEX *pVtx = NULL;
+    TLVERTEX *sVertex = NULL;
+    SPolygon *sPolygon = NULL;
     float PolyZAvg = 0;
 
     // Incoming type is always MPR_PRM_TRIFAN
-    ShiAssert(FALSE == F4IsBadReadPtr(poly, sizeof * poly));
+    ShiAssert(FALSE == F4IsBadReadPtr(poly, sizeof *poly));
     ShiAssert(poly->nVerts >= 3);
     ShiAssert(xyzIdxPtr);
-    ShiAssert( not bUseFGColor or (bUseFGColor and rgbaIdxPtr == NULL));
+    ShiAssert(not bUseFGColor or (bUseFGColor and rgbaIdxPtr == NULL));
 
 #ifdef _CONTEXT_TRACE_ALL
     MonoPrint("ContextMPR::DrawPoly(0x%X,0x%X,0x%X,0x%X,0x%X,0x%X,%s)\n",
-              opFlag, poly, xyzIdxPtr, rgbaIdxPtr, IIdxPtr, uv, bUseFGColor ? "true" : "false");
+              opFlag, poly, xyzIdxPtr, rgbaIdxPtr, IIdxPtr, uv,
+              bUseFGColor ? "true" : "false");
 #endif
 
 #ifdef _CONTEXT_ENABLE_STATS
     m_stats.Primitive(D3DPT_TRIANGLEFAN, poly->nVerts);
 #endif
 
-    if ( not bZBuffering)
+    if (not bZBuffering)
     {
         // Lock VB
-        if ( not LockVB(poly->nVerts, (void **)&m_pTLVtx))
+        if (not LockVB(poly->nVerts, (void **)&m_pTLVtx))
         {
             m_colFOG = 0xFFFFFFFF;
             return;
         }
 
-        ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+        ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
         ShiAssert(m_dwStartVtx < m_dwVBSize);
         pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
-        ShiAssert(FALSE == F4IsBadWritePtr(pVtx, poly->nVerts * sizeof * pVtx));
+        ShiAssert(FALSE == F4IsBadWritePtr(pVtx, poly->nVerts * sizeof *pVtx));
 
         // JB 011124 CTD
-        if ( not pVtx)
+        if (not pVtx)
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -1302,23 +1409,28 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 
         if (denom > 1e-6f)
         {
-            float cos2  = (ne * ne) / denom;   // cos^2(normal, eye direction), 0..1
-            float graze = 1.0f - cos2;         // 0 head-on .. 1 grazing
-            int   ai    = (int)((0.06f + 0.30f * graze) * 255.0f + 0.5f); // ~0x10 .. ~0x5C
-            if (ai < 0) ai = 0; else if (ai > 255) ai = 255;
+            float cos2 =
+                (ne * ne) / denom; // cos^2(normal, eye direction), 0..1
+            float graze = 1.0f - cos2; // 0 head-on .. 1 grazing
+            int ai = (int)((0.06f + 0.30f * graze) * 255.0f +
+                           0.5f); // ~0x10 .. ~0x5C
+            if (ai < 0)
+                ai = 0;
+            else if (ai > 255)
+                ai = 255;
             reflAlpha = (DWORD)ai << 24;
         }
     }
 
     // Iterate for each vertex
-    if ( not bZBuffering)
+    if (not bZBuffering)
     {
         for (int i = 0; i < poly->nVerts; i++)
         {
             // Check for overrun
             ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
-            xyz  = &TheStateStack.XformedPosPool[*xyzIdxPtr++];
+            xyz = &TheStateStack.XformedPosPool[*xyzIdxPtr++];
 
 
             if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
@@ -1334,7 +1446,8 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
 
             // NOTE: HACK
             if (xyz->z > 5)
-                pVtx->sz = SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs
+                pVtx->sz =
+                    SCALE_SZ(xyz->z); // COBRA - RED - Using precomputed CXs
             else
                 pVtx->sz = 0.f;
 
@@ -1344,7 +1457,8 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             // End Mission box
             if (texID > 25 and texID < 32)
                 pVtx->color = 0xFFFFFFFF;
-            else if (OTWDriver.GetOTWDisplayMode() == OTWDriverClass::Mode3DCockpit)
+            else if (OTWDriver.GetOTWDisplayMode() ==
+                     OTWDriverClass::Mode3DCockpit)
             {
                 // Cobra - unshaded 3D cockpit nodes (verts) need full intensity at night
                 // Cobra - Added adjustable instrument/interior lighting in 3D pit
@@ -1367,12 +1481,18 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     else if (TheColorBank.PitLightLevel == 1)
                     {
                         src = p3DpitLolite;
-                        pVtx->color = (src bitand 0xFF000000) + ((src bitand 0x00FF0000) >> 16) + (src bitand 0x0000FF00) + ((src bitand 0x000000FF) << 16);
+                        pVtx->color = (src bitand 0xFF000000) +
+                                      ((src bitand 0x00FF0000) >> 16) +
+                                      (src bitand 0x0000FF00) +
+                                      ((src bitand 0x000000FF) << 16);
                     }
                     else
                     {
                         src = p3DpitHilite;
-                        pVtx->color = (src bitand 0xFF000000) + ((src bitand 0x00FF0000) >> 16) + (src bitand 0x0000FF00) + ((src bitand 0x000000FF) << 16);
+                        pVtx->color = (src bitand 0xFF000000) +
+                                      ((src bitand 0x00FF0000) >> 16) +
+                                      (src bitand 0x0000FF00) +
+                                      ((src bitand 0x000000FF) << 16);
                     }
                 }
             }
@@ -1393,12 +1513,14 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     {
                         ShiAssert(IIdxPtr);
                         I = &TheStateStack.IntensityPool[*IIdxPtr++];
-                        pVtx->color = D3DRGBA(rgba->r * *I, rgba->g * *I, rgba->b * *I, rgba->a);
+                        pVtx->color = D3DRGBA(rgba->r * *I, rgba->g * *I,
+                                              rgba->b * *I, rgba->a);
                     }
 
                     else
                     {
-                        pVtx->color = D3DRGBA(rgba->r, rgba->g, rgba->b, rgba->a);
+                        pVtx->color =
+                            D3DRGBA(rgba->r, rgba->g, rgba->b, rgba->a);
                     }
                 }
             }
@@ -1419,7 +1541,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // Set the light level with "special cockpit reflection alpha"
                 // Artscout - 2026: #44 alpha is now view-dependent (reflAlpha), keep TOD RGB.
                 else if (palID == 2)
-                    pVtx->color = (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor reflAlpha;
+                    pVtx->color =
+                        (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor
+                        reflAlpha;
             }
 
             if (opFlag bitand PRIM_COLOP_TEXTURE)
@@ -1438,8 +1562,12 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     else
                     {
                         DWORD c = pVtx->color;
-                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) + (((c >> 8) bitand 0xFF) * 150) + ((c bitand 0xFF) * 29)) >> 8;
-                        pVtx->color = (c bitand 0xFF000000) bitor (lum << 16) bitor (lum << 8) bitor lum;
+                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) +
+                                     (((c >> 8) bitand 0xFF) * 150) +
+                                     ((c bitand 0xFF) * 29)) >>
+                                    8;
+                        pVtx->color = (c bitand 0xFF000000) bitor
+                                      (lum << 16) bitor (lum << 8) bitor lum;
                     }
                 }
 
@@ -1482,12 +1610,14 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
             */
             // COBRA - RED - New Version
 
-            *(Spoint*)&(sVertex->sx) = *(Spoint*)&TheStateStack.XformedPosPool[*xyzIdxPtr++];
+            *(Spoint *)&(sVertex->sx) =
+                *(Spoint *)&TheStateStack.XformedPosPool[*xyzIdxPtr++];
             sVertex->rhw = 1.f / sVertex->sz;
 
             // NOTE: HACK
             if (sVertex->sz > 5)
-                sVertex->sz = SCALE_SZ(sVertex->sz); // COBRA - RED - Using precomputed CXs;
+                sVertex->sz = SCALE_SZ(
+                    sVertex->sz); // COBRA - RED - Using precomputed CXs;
             else
                 sVertex->sz = 0.f;
 
@@ -1514,12 +1644,14 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     {
                         ShiAssert(IIdxPtr);
                         I = &TheStateStack.IntensityPool[*IIdxPtr++];
-                        sVertex->color = D3DRGBA(rgba->r * *I, rgba->g * *I, rgba->b * *I, rgba->a);
+                        sVertex->color = D3DRGBA(rgba->r * *I, rgba->g * *I,
+                                                 rgba->b * *I, rgba->a);
                     }
 
                     else
                     {
-                        sVertex->color = D3DRGBA(rgba->r, rgba->g, rgba->b, rgba->a);
+                        sVertex->color =
+                            D3DRGBA(rgba->r, rgba->g, rgba->b, rgba->a);
                     }
                 }
             }
@@ -1540,7 +1672,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 // Set the light level with "special cockpit reflection alpha"
                 // Artscout - 2026: #44 alpha is now view-dependent (reflAlpha), keep TOD RGB.
                 else if (palID == 2)
-                    sVertex->color = (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor reflAlpha;
+                    sVertex->color =
+                        (TheColorBank.TODcolor bitand 0x00FFFFFF) bitor
+                        reflAlpha;
             }
 
             if (opFlag bitand PRIM_COLOP_TEXTURE)
@@ -1558,8 +1692,12 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                     else
                     {
                         DWORD c = sVertex->color;
-                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) + (((c >> 8) bitand 0xFF) * 150) + ((c bitand 0xFF) * 29)) >> 8;
-                        sVertex->color = (c bitand 0xFF000000) bitor (lum << 16) bitor (lum << 8) bitor lum;
+                        DWORD lum = ((((c >> 16) bitand 0xFF) * 77) +
+                                     (((c >> 8) bitand 0xFF) * 150) +
+                                     ((c bitand 0xFF) * 29)) >>
+                                    8;
+                        sVertex->color = (c bitand 0xFF000000) bitor
+                                         (lum << 16) bitor (lum << 8) bitor lum;
                     }
                 }
 
@@ -1576,7 +1714,9 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
                 sVertex->tv0 = 0;
             }
 
-            PolyZAvg += sVertex->sz; // COBRA - RED - Poly Z Sum is calculated on the fly
+            PolyZAvg +=
+                sVertex
+                    ->sz; // COBRA - RED - Poly Z Sum is calculated on the fly
 
             // COBRA - RED - No More Linking of vertexes, as single ARRAYS of TLVERTEX structures
             sVertex++;
@@ -1584,7 +1724,7 @@ void ContextMPR::DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdx
     }
 
     // Generate Indices
-    if ( not bZBuffering)
+    if (not bZBuffering)
     {
         WORD *pIdx = &m_pIdx[m_dwNumIdx];
 
@@ -1658,16 +1798,16 @@ void ContextMPR::Draw2DPoint(Tpoint *v0)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if ( not LockVB(1, (void **)&m_pTLVtx))
+    if (not LockVB(1, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
     }
 
-    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
     ShiAssert(m_dwStartVtx < m_dwVBSize);
     pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
-    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, sizeof * pVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, sizeof *pVtx));
 
     // Check for overrun
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
@@ -1695,7 +1835,11 @@ void ContextMPR::Draw2DPoint(Tpoint *v0)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color =
+        currentState not_eq -1 ?
+            RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                      (currentState << 1) + 50, (currentState << 1) + 50) :
+            D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     m_dwNumVtx++;
@@ -1724,19 +1868,19 @@ void ContextMPR::Draw2DPoint(float x, float y)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if ( not LockVB(1, (void **)&m_pTLVtx))
+    if (not LockVB(1, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
     }
 
-    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
     ShiAssert(m_dwStartVtx < m_dwVBSize);
     pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
 
     // Check for overrun
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
-    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, sizeof * pVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, sizeof *pVtx));
 
     if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
@@ -1749,7 +1893,8 @@ void ContextMPR::Draw2DPoint(float x, float y)
         pVtx->sy = y;
     }
 
-    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
+    pVtx->sz =
+        m_2DPrimZ; // #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -1757,7 +1902,11 @@ void ContextMPR::Draw2DPoint(float x, float y)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color =
+        currentState not_eq -1 ?
+            RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                      (currentState << 1) + 50, (currentState << 1) + 50) :
+            D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     m_dwNumVtx++;
@@ -1786,19 +1935,19 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if ( not LockVB(2, (void **)&m_pTLVtx))
+    if (not LockVB(2, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
     }
 
-    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
     ShiAssert(m_dwStartVtx < m_dwVBSize);
     pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
 
     // Check for overrun
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
-    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, 2 * sizeof * pVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, 2 * sizeof *pVtx));
 
     if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
     {
@@ -1827,7 +1976,11 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     pVtx++;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color =
+        currentState not_eq -1 ?
+            RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                      (currentState << 1) + 50, (currentState << 1) + 50) :
+            D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
@@ -1842,7 +1995,8 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     }
 
     if (v1->z)
-        pVtx->sz = (ZFAR / (ZFAR - ZNEAR)) + (ZFAR * ZNEAR / (ZNEAR - ZFAR)) / v1->z;
+        pVtx->sz =
+            (ZFAR / (ZFAR - ZNEAR)) + (ZFAR * ZNEAR / (ZNEAR - ZFAR)) / v1->z;
     else
         pVtx->sz = 0.f;
 
@@ -1853,7 +2007,11 @@ void ContextMPR::Draw2DLine(Tpoint *v0, Tpoint *v1)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color =
+        currentState not_eq -1 ?
+            RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                      (currentState << 1) + 50, (currentState << 1) + 50) :
+            D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     WORD *pIdx = &m_pIdx[m_dwNumIdx];
@@ -1886,16 +2044,16 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if ( not LockVB(2, (void **)&m_pTLVtx))
+    if (not LockVB(2, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
     }
 
-    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
     ShiAssert(m_dwStartVtx < m_dwVBSize);
     pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
-    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, 2 * sizeof * pVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, 2 * sizeof *pVtx));
 
     // Check for overrun
     ShiAssert((BYTE *)pVtx < m_pVtxEnd);
@@ -1911,7 +2069,8 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
         pVtx->sy = y0;
     }
 
-    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
+    pVtx->sz =
+        m_2DPrimZ; // #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -1920,7 +2079,11 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     pVtx++;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color =
+        currentState not_eq -1 ?
+            RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                      (currentState << 1) + 50, (currentState << 1) + 50) :
+            D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     if (DisplayOptions.bScreenCoordinateBiasFix) //Wombat778 4-01-04
@@ -1934,7 +2097,8 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
         pVtx->sy = y1;
     }
 
-    pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
+    pVtx->sz =
+        m_2DPrimZ; // #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
     pVtx->rhw = 1.0f;
     pVtx->color = m_colFG;
     pVtx->specular = m_colFOG;
@@ -1942,7 +2106,11 @@ void ContextMPR::Draw2DLine(float x0, float y0, float x1, float y1)
     pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-    pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+    pVtx->color =
+        currentState not_eq -1 ?
+            RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                      (currentState << 1) + 50, (currentState << 1) + 50) :
+            D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
     WORD *pIdx = &m_pIdx[m_dwNumIdx];
@@ -1964,7 +2132,8 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
     ShiAssert(xyzIdxPtr);
 
 #ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::DrawPrimitive2D(%d,%d,0x%X)\n", type, nVerts, xyzIdxPtr);
+    MonoPrint("ContextMPR::DrawPrimitive2D(%d,%d,0x%X)\n", type, nVerts,
+              xyzIdxPtr);
 #endif
 
     SetPrimitiveType(type == LineF ? D3DPT_LINESTRIP : D3DPT_POINTLIST);
@@ -1976,16 +2145,16 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
     // Lock VB
     TLVERTEX *pVtx;
 
-    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
+    if (not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
     }
 
-    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
     ShiAssert(m_dwStartVtx < m_dwVBSize);
     pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
-    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof *pVtx));
 
     Ppoint *xyz;
 
@@ -2024,7 +2193,11 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
         pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-        pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+        pVtx->color =
+            currentState not_eq -1 ?
+                RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                          (currentState << 1) + 50, (currentState << 1) + 50) :
+                D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
         pVtx++;
@@ -2050,16 +2223,19 @@ void ContextMPR::DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr)
     m_colFOG = 0xFFFFFFFF;
 }
 
-void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_t *pData, WORD Stride)
+void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts,
+                               MPRVtx_t *pData, WORD Stride)
 {
     // Impossible
-    ShiAssert( not (VtxInfo bitand MPR_VI_COLOR));
+    ShiAssert(not(VtxInfo bitand MPR_VI_COLOR));
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or
+              (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::DrawPrimitive(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
+    MonoPrint("ContextMPR::DrawPrimitive(%d,0x%X,%d,0x%X,%d)\n", nPrimType,
+              VtxInfo, nVerts, pData, Stride);
 #endif
 
     SetPrimitiveType(nPrimType);
@@ -2071,16 +2247,16 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
     // Lock VB
     TLVERTEX *pVtx;
 
-    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
+    if (not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
     }
 
-    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
     ShiAssert(m_dwStartVtx < m_dwVBSize);
     pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
-    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof *pVtx));
 
     // Iterate for each vertex
     for (int i = 0; i < nVerts; i++)
@@ -2100,7 +2276,8 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
             pVtx->sy = pData->y;
         }
 
-        pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
+        pVtx->sz =
+            m_2DPrimZ; // #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
         pVtx->rhw = 1.0f;
         pVtx->color = m_colFG;
         pVtx->specular = m_colFOG;
@@ -2108,7 +2285,11 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
         pVtx->tv0 = 0;
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-        pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+        pVtx->color =
+            currentState not_eq -1 ?
+                RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50,
+                          (currentState << 1) + 50, (currentState << 1) + 50) :
+                D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
         pVtx++;
@@ -2150,15 +2331,18 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtx_
     m_colFOG = 0xFFFFFFFF;
 }
 
-void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxTexClr_t *pData, WORD Stride)
+void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts,
+                               MPRVtxTexClr_t *pData, WORD Stride)
 {
     TLVERTEX *pVtx;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or
+              (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::DrawPrimitive2(%d,0x%X,%d,0x%X,%d)\n", nPrimType, VtxInfo, nVerts, pData, Stride);
+    MonoPrint("ContextMPR::DrawPrimitive2(%d,0x%X,%d,0x%X,%d)\n", nPrimType,
+              VtxInfo, nVerts, pData, Stride);
 #endif
 
 #ifdef _CONTEXT_ENABLE_STATS
@@ -2166,20 +2350,20 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
 #endif
 
     // Lock VB
-    if ( not LockVB(nVerts, (void **)&m_pTLVtx))
+    if (not LockVB(nVerts, (void **)&m_pTLVtx))
     {
         m_colFOG = 0xFFFFFFFF;
         return;
     }
 
-    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
     ShiAssert(m_dwStartVtx < m_dwVBSize);
     pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
 
-    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
+    ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof *pVtx));
 
     // JB 011124 CTD
-    if ( not pVtx)
+    if (not pVtx)
     {
         m_colFOG = 0xFFFFFFFF;
         return;
@@ -2204,7 +2388,8 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             pVtx->sy = pData->y;
         }
 
-        pVtx->sz = m_2DPrimZ;	// #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
+        pVtx->sz =
+            m_2DPrimZ; // #48: reversed-Z near (1) for UI, far (0) for the sky background (see m_2DPrimZ set-points)
 
         // OW FIXME: this should be 1.0f / pData->z
         pVtx->rhw = 1.0f;
@@ -2229,7 +2414,11 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         }
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-        pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, , (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+        pVtx->color =
+            currentState not_eq -1 ?
+                RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, ,
+                          (currentState << 1) + 50, (currentState << 1) + 50) :
+                D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
         pVtx++;
@@ -2270,41 +2459,44 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     m_colFOG = 0xFFFFFFFF;
 }
 
-void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxTexClr_t **pData, bool terrain)
+void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts,
+                               MPRVtxTexClr_t **pData, bool terrain)
 {
-	TLVERTEX* pVtx = NULL;
-	TLVERTEX* sVertex = NULL;
-	SPolygon* sPolygon = NULL;
+    TLVERTEX *pVtx = NULL;
+    TLVERTEX *sVertex = NULL;
+    SPolygon *sPolygon = NULL;
     float PolyZAvg = 0;
 
     // Ensure no degenerate nPrimTypeitives
-    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
+    ShiAssert((nVerts >= 3) or (nPrimType == MPR_PRM_POINTS and nVerts >= 1) or
+              (nPrimType <= MPR_PRM_POLYLINE and nVerts >= 2));
 
 #ifdef _CONTEXT_TRACE_ALL
-    MonoPrint("ContextMPR::DrawPrimitive3(%d,0x%X,%d,0x%X)\n", nPrimType, VtxInfo, nVerts, pData);
+    MonoPrint("ContextMPR::DrawPrimitive3(%d,0x%X,%d,0x%X)\n", nPrimType,
+              VtxInfo, nVerts, pData);
 #endif
 
 #ifdef _CONTEXT_ENABLE_STATS
     m_stats.Primitive(m_nCurPrimType, nVerts);
 #endif
 
-    if ( not bZBuffering)
+    if (not bZBuffering)
     {
         // Lock VB
-        if ( not LockVB(nVerts, (void **)&m_pTLVtx))
+        if (not LockVB(nVerts, (void **)&m_pTLVtx))
         {
             m_colFOG = 0xFFFFFFFF;
             return;
         }
 
-        ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof * m_pTLVtx));
+        ShiAssert(FALSE == F4IsBadWritePtr(m_pTLVtx, sizeof *m_pTLVtx));
         ShiAssert(m_dwStartVtx < m_dwVBSize);
         pVtx = &m_pTLVtx[m_dwStartVtx + m_dwNumVtx];
 
-        ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof * pVtx));
+        ShiAssert(FALSE == F4IsBadWritePtr(pVtx, nVerts * sizeof *pVtx));
 
         // JB 011124 CTD
-        if ( not pVtx)
+        if (not pVtx)
         {
             m_colFOG = 0xFFFFFFFF;
             return;
@@ -2327,7 +2519,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         sVertex = sPolygon->pVertexList;
     }
 
-    if ( not bZBuffering)
+    if (not bZBuffering)
     {
         // Iterate for each vertex
         for (int i = 0; i < nVerts; i++)
@@ -2336,7 +2528,8 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             ShiAssert((BYTE *)pVtx < m_pVtxEnd);
 
             // JB 010712 CTD second try
-            if ( not pData[i]) break;
+            if (not pData[i])
+                break;
 
             if (DisplayOptions.bScreenCoordinateBiasFix)
             {
@@ -2352,19 +2545,24 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             // NOTE: HACK -- reversed-Z: 0.0 = far plane (was 1.0 under standard Z). 2D screen prims that don't
             // depth-test ignore it; ones that do now sit at the far plane as intended.
             pVtx->sz = 0.0f;
-            pVtx->rhw = pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
+            pVtx->rhw =
+                pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
 
             if (terrain)
             {
                 if (VtxInfo bitand MPR_VI_COLOR)
-                    pVtx->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, 1.f);
+                    pVtx->color =
+                        D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, 1.f);
 
-                pVtx->specular = (min(255, FloatToInt32(pData[i]->a * 255.f)) << 24) + 0xFFFFFF;
+                pVtx->specular =
+                    (min(255, FloatToInt32(pData[i]->a * 255.f)) << 24) +
+                    0xFFFFFF;
             }
             else
             {
                 if (VtxInfo bitand MPR_VI_COLOR)
-                    pVtx->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, pData[i]->a);
+                    pVtx->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b,
+                                          pData[i]->a);
 
                 pVtx->specular = m_colFOG;
             }
@@ -2373,7 +2571,8 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             {
                 if (terrain)
                 {
-                    if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+                    if (DisplayOptions.m_texMode ==
+                        DisplayOptionsClass::TEX_MODE_DDS)
                     {
                         // Tex coords for night texture
                         pVtx->tu1 = pData[i]->u;
@@ -2386,7 +2585,12 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             }
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-            pVtx->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+            pVtx->color = currentState not_eq -1 ?
+                              RGBA_MAKE((currentState << 1) + 50,
+                                        (currentState << 1) + 50,
+                                        (currentState << 1) + 50,
+                                        (currentState << 1) + 50) :
+                              D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
 
             pVtx++;
@@ -2411,7 +2615,8 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
         for (int i = 0; i < nVerts; i++)
         {
             // JB 010712 CTD
-            if ( not pData[i]) break;
+            if (not pData[i])
+                break;
 
             sVertex->sx = pData[i]->x;
             sVertex->sy = pData[i]->y;
@@ -2422,19 +2627,24 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             else
                 sVertex->sz = 0.f;
 
-            sVertex->rhw = pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
+            sVertex->rhw =
+                pData[i]->q > 0.0f ? 1.0f / (pData[i]->q / Q_SCALE) : 1.0f;
 
             if (terrain)
             {
                 if (VtxInfo bitand MPR_VI_COLOR)
-                    sVertex->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, 1.f);
+                    sVertex->color =
+                        D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, 1.f);
 
-                sVertex->specular = (min(255, FloatToInt32(pData[i]->a * 255.f)) << 24) + 0xFFFFFF;
+                sVertex->specular =
+                    (min(255, FloatToInt32(pData[i]->a * 255.f)) << 24) +
+                    0xFFFFFF;
             }
             else
             {
                 if (VtxInfo bitand MPR_VI_COLOR)
-                    sVertex->color = D3DRGBA(pData[i]->r, pData[i]->g, pData[i]->b, pData[i]->a);
+                    sVertex->color = D3DRGBA(pData[i]->r, pData[i]->g,
+                                             pData[i]->b, pData[i]->a);
 
                 sVertex->specular = m_colFOG;
             }
@@ -2443,7 +2653,8 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             {
                 if (terrain)
                 {
-                    if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+                    if (DisplayOptions.m_texMode ==
+                        DisplayOptionsClass::TEX_MODE_DDS)
                     {
                         sVertex->tu1 = pData[i]->u;
                         sVertex->tv1 = pData[i]->v;
@@ -2455,9 +2666,15 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
             }
 
 #ifdef _CONTEXT_ENABLE_RENDERSTATE_HIGHLIGHT
-            sVertex->color = currentState not_eq -1 ? RGBA_MAKE((currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50, (currentState << 1) + 50) : D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
+            sVertex->color = currentState not_eq -1 ?
+                                 RGBA_MAKE((currentState << 1) + 50,
+                                           (currentState << 1) + 50,
+                                           (currentState << 1) + 50,
+                                           (currentState << 1) + 50) :
+                                 D3DRGBA(1.0f, 1.0f, 1.0f, 1.0f);
 #endif
-            PolyZAvg += sVertex->sz; // COBRA - RED - Poly Z Sum is calculated onthe fly
+            PolyZAvg +=
+                sVertex->sz; // COBRA - RED - Poly Z Sum is calculated onthe fly
 
             // COBRA - RED - No More Linking of vertexes, as single ARRAYS of TLVERTEX structures
             sVertex++;
@@ -2465,7 +2682,7 @@ void ContextMPR::DrawPrimitive(int nPrimType, WORD VtxInfo, WORD nVerts, MPRVtxT
     }
 
     // Generate Indices
-    if ( not bZBuffering)
+    if (not bZBuffering)
     {
         if (m_nCurPrimType == D3DPT_TRIANGLEFAN)
         {
@@ -2559,14 +2776,14 @@ void ContextMPR::Stats::Check()
 
         if (dwTotalSeconds)
         {
-            dwAvgVtxCountPerSecond = (WORD) dwTotalVtxCount / dwTotalSeconds;
-            dwAvgPrimCountPerSecond = (WORD) dwTotalPrimCount / dwTotalSeconds;
+            dwAvgVtxCountPerSecond = (WORD)dwTotalVtxCount / dwTotalSeconds;
+            dwAvgPrimCountPerSecond = (WORD)dwTotalPrimCount / dwTotalSeconds;
         }
 
         if (dwTotalBatches)
         {
-            dwAvgVtxBatchSize = (WORD) dwTotalVtxBatchSize / dwTotalBatches;
-            dwAvgPrimBatchSize = (WORD) dwTotalPrimBatchSize / dwTotalBatches;
+            dwAvgVtxBatchSize = (WORD)dwTotalVtxBatchSize / dwTotalBatches;
+            dwAvgPrimBatchSize = (WORD)dwTotalPrimBatchSize / dwTotalBatches;
         }
 
         if (dwLastFPS < dwMinFPS)
@@ -2629,7 +2846,8 @@ void ContextMPR::Stats::PutTexture(bool bCached)
 {
     dwPutTextureTotal++;
 
-    if (bCached) dwPutTextureCached++;
+    if (bCached)
+        dwPutTextureCached++;
 }
 
 void ContextMPR::Stats::Report()
@@ -2642,12 +2860,18 @@ void ContextMPR::Stats::Report()
     MonoPrint(" MaxFPS: %d\n", dwMaxFPS);
     MonoPrint(" AverageFPS: %d\n", dwAverageFPS);
     MonoPrint(" TotalPrimitives: %d\n", dwTotalPrimitives);
-    MonoPrint(" Triangle Lists: %d (%.2f %%)\n", arrPrimitives[3], arrPrimitives[3] / fT);
-    MonoPrint(" Triangle Strips: %d (%.2f %%)\n", arrPrimitives[4], arrPrimitives[4] / fT);
-    MonoPrint(" Triangle Fans: %d (%.2f %%)\n", arrPrimitives[5], arrPrimitives[5] / fT);
-    MonoPrint(" Point Lists: %d (%.2f %%)\n", arrPrimitives[0], arrPrimitives[0] / fT);
-    MonoPrint(" Line Lists: %d (%.2f %%)\n", arrPrimitives[1], arrPrimitives[1] / fT);
-    MonoPrint(" Line Strips: %d (%.2f %%)\n", arrPrimitives[2], arrPrimitives[2] / fT);
+    MonoPrint(" Triangle Lists: %d (%.2f %%)\n", arrPrimitives[3],
+              arrPrimitives[3] / fT);
+    MonoPrint(" Triangle Strips: %d (%.2f %%)\n", arrPrimitives[4],
+              arrPrimitives[4] / fT);
+    MonoPrint(" Triangle Fans: %d (%.2f %%)\n", arrPrimitives[5],
+              arrPrimitives[5] / fT);
+    MonoPrint(" Point Lists: %d (%.2f %%)\n", arrPrimitives[0],
+              arrPrimitives[0] / fT);
+    MonoPrint(" Line Lists: %d (%.2f %%)\n", arrPrimitives[1],
+              arrPrimitives[1] / fT);
+    MonoPrint(" Line Strips: %d (%.2f %%)\n", arrPrimitives[2],
+              arrPrimitives[2] / fT);
     MonoPrint(" AvgVtxBatchSize: %d\n", dwAvgVtxBatchSize);
     MonoPrint(" MaxVtxBatchSize: %d\n", dwMaxVtxBatchSize);
     MonoPrint(" AvgPrimBatchSize: %d\n", dwAvgPrimBatchSize);
@@ -2657,7 +2881,8 @@ void ContextMPR::Stats::Report()
     MonoPrint(" AvgPrimCountPerSecond: %d\n", dwAvgPrimCountPerSecond);
     MonoPrint(" MaxPrimCountPerSecond: %d\n", dwMaxPrimCountPerSecond);
     MonoPrint(" TextureChangesTotal: %d\n", dwPutTextureTotal);
-    MonoPrint(" TextureChangesCached: %d (%.2f %%)\n", dwPutTextureCached, (float) dwPutTextureCached / (dwPutTextureTotal / 100.0f));
+    MonoPrint(" TextureChangesCached: %d (%.2f %%)\n", dwPutTextureCached,
+              (float)dwPutTextureCached / (dwPutTextureTotal / 100.0f));
 
     MonoPrint("End of stats report\n");
 }

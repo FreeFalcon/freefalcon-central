@@ -24,7 +24,7 @@
 #include "vu.h"
 
 // Stubs
-extern char * ComAPIRecvBufferGet(int a);
+extern char* ComAPIRecvBufferGet(int a);
 extern int ComAPIGet(int a);
 extern int ComAPIHostIDLen(int a);
 extern int ComAPIHostIDGet(int a, char* b);

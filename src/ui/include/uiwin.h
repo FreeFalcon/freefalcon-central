@@ -42,14 +42,14 @@ struct MapWindowType
     unsigned char ShowUnits;
     unsigned char ShowWPs;
 };
-typedef MapWindowType* MapData;
+typedef MapWindowType *MapData;
 
 // Map sizing Info
-#define  MAX_XPIX 1536
-#define  MAX_YPIX 768
+#define MAX_XPIX 1536
+#define MAX_YPIX 768
 
-#define  XSIDE 0
-#define  YSIDE 1
+#define XSIDE 0
+#define YSIDE 1
 
 // ==============================================================
 // Map drawing routines

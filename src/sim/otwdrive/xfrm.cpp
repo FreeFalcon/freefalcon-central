@@ -1,8 +1,9 @@
 #include "stdhdr.h"
 #include "otwdrive.h"
-#include "Graphics/Include/grtypes.h"
+#include "graphics/include/grtypes.h"
 
-void OTWDriverClass::BuildHeadMatrix(int doFlip, int order, float headYaw, float headPitch, float headRoll)
+void OTWDriverClass::BuildHeadMatrix(int doFlip, int order, float headYaw,
+                                     float headPitch, float headRoll)
 {
     Tpoint at = {1.0F}, up = {1.0F}, rt = {1.0F};
     float scale = 0.0F;
@@ -26,7 +27,7 @@ void OTWDriverClass::BuildHeadMatrix(int doFlip, int order, float headYaw, float
 
 #endif
     // at is a point on the unit sphere
-    mlSinCos(&trigYaw,   headYaw);
+    mlSinCos(&trigYaw, headYaw);
     mlSinCos(&trigPitch, headPitch);
 
     if (order == YAW_PITCH)   // front
@@ -98,8 +99,8 @@ void OTWDriverClass::BuildHeadMatrix(int doFlip, int order, float headYaw, float
 }
 
 
-
-void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at, Tpoint* p_up, Tpoint* p_rt)
+void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at,
+                                       Tpoint* p_up, Tpoint* p_rt)
 {
     // Gillman was medicated when he requested this head roll...
     // Oh yeah simple, no problem.  Well just do a rotation in 3 space about
@@ -119,7 +120,8 @@ void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at, Tpoint* p_u
         float x, y, z;
         float scale;
 
-        scale = 1.0f / (float)sqrt(p_at->x * p_at->x + p_at->y * p_at->y + p_at->z * p_at->z);
+        scale = 1.0f / (float)sqrt(p_at->x * p_at->x + p_at->y * p_at->y +
+                                   p_at->z * p_at->z);
         x = p_at->x * scale;
         y = p_at->y * scale;
         z = p_at->z * scale;
@@ -151,4 +153,3 @@ void OTWDriverClass::CalculateHeadRoll(float headRoll, Tpoint* p_at, Tpoint* p_u
         p_up->z = p.z;
     }
 }
-

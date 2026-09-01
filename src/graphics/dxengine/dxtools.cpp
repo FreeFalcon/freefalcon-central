@@ -1,9 +1,9 @@
-#include <cISO646>
+#include <ciso646>
 #include <math.h>
-#include "../include/TimeMgr.h"
-#include "../include/ObjectInstance.h"
+#include "../include/timemgr.h"
+#include "../include/objectinstance.h"
 #include "dxdefines.h"
-#include "DxTools.h"
+#include "dxtools.h"
 #include "../../falclib/include/mltrig.h"
 #include "dxengine.h"
 
@@ -47,7 +47,6 @@ void AssignD3DXMATRIXToPmatrix(Pmatrix *d, D3DXMATRIX *s)
 #endif
 
 
-
 //////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 ///////////////////////////////////////////// SCRIPTS MANAGEMENT \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -75,9 +74,11 @@ bool DXScript_None(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 bool DXScript_Animate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     // Consistency check
-    if (obj->ParentObject->nSwitches <= 0) return true;
+    if (obj->ParentObject->nSwitches <= 0)
+        return true;
 
-    if (Argument[0]  >= (WORD) obj->ParentObject->nSwitches) return true;
+    if (Argument[0] >= (WORD)obj->ParentObject->nSwitches)
+        return true;
 
 #ifdef DEBUG_ENGINE
     // Get the timings
@@ -95,7 +96,6 @@ bool DXScript_Animate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 }
 
 
-
 /////////////////////////////////////////////////////////////////////////////////
 // The Rotating animation
 // Argument 0 = Starting Dof
@@ -104,7 +104,8 @@ bool DXScript_Animate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 bool DXScript_Rotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     // Consistency check
-    if (obj->ParentObject->nDOFs <= 0) return true;
+    if (obj->ParentObject->nDOFs <= 0)
+        return true;
 
     // Get the Starting DOF
     DWORD Dof = Argument[0];
@@ -112,16 +113,19 @@ bool DXScript_Rotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
     DWORD Count = Argument[1];
 
     // consistency check and Limitation
-    if (Dof >= (WORD) obj->ParentObject->nDOFs) return true;
+    if (Dof >= (WORD)obj->ParentObject->nDOFs)
+        return true;
 
-    if ((Dof + Count) >= (WORD) obj->ParentObject->nDOFs) Count = obj->ParentObject->nDOFs - Dof - 1;
+    if ((Dof + Count) >= (WORD)obj->ParentObject->nDOFs)
+        Count = obj->ParentObject->nDOFs - Dof - 1;
 
 #ifdef DEBUG_ENGINE
     // Get the timings
-    float Delta = GetTickCount() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = GetTickCount() * ((float *)Argument)[2] * DegreesPerSecond;
 #else
     // Get the timings
-    float Delta = TheTimeManager.GetClockTime() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = TheTimeManager.GetClockTime() * ((float *)Argument)[2] *
+                  DegreesPerSecond;
 #endif
 
     // for each DOF
@@ -134,8 +138,6 @@ bool DXScript_Rotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 }
 
 
-
-
 /////////////////////////////////////////////////////////////////////////////////
 // The Helicopter aniamtion, up to 4 DOFs rotated with 4 different CXs
 // Argument 0 = Starting Dof
@@ -144,7 +146,8 @@ bool DXScript_Rotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 bool DXScript_HelyRotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     // Consistency check
-    if (obj->ParentObject->nDOFs <= 0) return true;
+    if (obj->ParentObject->nDOFs <= 0)
+        return true;
 
     // Get the Starting DOF
     DWORD Dof = Argument[0];
@@ -152,26 +155,33 @@ bool DXScript_HelyRotate(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
     DWORD Count = Argument[1];
 
     // consistency check and Limitation
-    if (Dof >= (WORD) obj->ParentObject->nDOFs) return true;
+    if (Dof >= (WORD)obj->ParentObject->nDOFs)
+        return true;
 
-    if ((Dof + Count) >= (WORD) obj->ParentObject->nDOFs) Count = obj->ParentObject->nDOFs - Dof - 1;
+    if ((Dof + Count) >= (WORD)obj->ParentObject->nDOFs)
+        Count = obj->ParentObject->nDOFs - Dof - 1;
 
 #ifdef DEBUG_ENGINE
     // Get the timings
-    float Delta = GetTickCount() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = GetTickCount() * ((float *)Argument)[2] * DegreesPerSecond;
 #else
     // Get the timings
-    float Delta = TheTimeManager.GetClockTime() * ((float*)Argument)[2] * DegreesPerSecond;
+    float Delta = TheTimeManager.GetClockTime() * ((float *)Argument)[2] *
+                  DegreesPerSecond;
 #endif
 
     // for each DOF
-    if (Count--)obj->DOFValues[Dof++].rotation = Delta;
+    if (Count--)
+        obj->DOFValues[Dof++].rotation = Delta;
 
-    if (Count--)obj->DOFValues[Dof++].rotation = Delta * 1.6f;
+    if (Count--)
+        obj->DOFValues[Dof++].rotation = Delta * 1.6f;
 
-    if (Count--)obj->DOFValues[Dof++].rotation = Delta * 2.1f;
+    if (Count--)
+        obj->DOFValues[Dof++].rotation = Delta * 2.1f;
 
-    if (Count--)obj->DOFValues[Dof++].rotation = Delta * 0.1f;
+    if (Count--)
+        obj->DOFValues[Dof++].rotation = Delta * 0.1f;
 
     return true;
 }
@@ -197,9 +207,11 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
     ShiAssert(obj->ParentObject->nSwitches > 1);
     ShiAssert(obj->ParentObject->nDOFs > 0);
 
-    if (obj->ParentObject->nDOFs <= 0) return true;
+    if (obj->ParentObject->nDOFs <= 0)
+        return true;
 
-    if (obj->ParentObject->nSwitches <= 1) return true;
+    if (obj->ParentObject->nSwitches <= 1)
+        return true;
 
     DWORD sw = obj->SwitchValues[1];
 
@@ -214,7 +226,8 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
     float RelAngle;
 
     // get the angular difference btw camera and object ALWAYS POSITIVE ( + 2PI )
-    if (pos->y) RelAngle = (float)atan2(pos->x, pos->y);
+    if (pos->y)
+        RelAngle = (float)atan2(pos->x, pos->y);
 
     // calculate the Beacon World Transformation
     D3DXVECTOR3 BeaconWorldDir(1, 0, 0);
@@ -238,11 +251,14 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 
     /////// 0 degree green light
 
-    if (fabs(RelAngle) <= 3.0f) sw or_eq 0x7; // Flash on, has flashed, visible
+    if (fabs(RelAngle) <= 3.0f)
+        sw or_eq 0x7; // Flash on, has flashed, visible
 
-    if (RelAngle >= 162.0f and RelAngle <= 168.0f) sw or_eq 0x700; // Flash on, has flashed, visible
+    if (RelAngle >= 162.0f and RelAngle <= 168.0f)
+        sw or_eq 0x700; // Flash on, has flashed, visible
 
-    if (RelAngle >= -168.0f and RelAngle <= -162.0f) sw or_eq 0x70; // Flash on, has flashed, visible
+    if (RelAngle >= -168.0f and RelAngle <= -162.0f)
+        sw or_eq 0x70; // Flash on, has flashed, visible
 
     // Now store the computed results
     obj->DOFValues[0].rotation = (float)fmod(Delta, 2.0f * PI);
@@ -253,19 +269,23 @@ bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 }
 
 
-
 // Approach angle apprpriate VASI light indications (FAR set)
 bool DXScript_VASIF(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
 
     ShiAssert(obj->ParentObject->nSwitches > 0);
 
-    if (obj->ParentObject->nSwitches <= 0) return true;
+    if (obj->ParentObject->nSwitches <= 0)
+        return true;
 
-    float angle = (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) / Degrees;
+    float angle =
+        (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) /
+        Degrees;
 
-    if (angle > 4.0f) obj->SetSwitch(0, 2); // White
-    else obj->SetSwitch(0, 1); // Red
+    if (angle > 4.0f)
+        obj->SetSwitch(0, 2); // White
+    else
+        obj->SetSwitch(0, 1); // Red
 
     return true;
 }
@@ -275,38 +295,48 @@ bool DXScript_VASIN(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
     ShiAssert(obj->ParentObject->nSwitches > 0);
 
-    if (obj->ParentObject->nSwitches <= 0) return true;
+    if (obj->ParentObject->nSwitches <= 0)
+        return true;
 
-    float angle = (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) / Degrees;
+    float angle =
+        (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) /
+        Degrees;
 
-    if (angle > 2.0f) obj->SetSwitch(0, 2); // White
-    else obj->SetSwitch(0, 1); // Red
+    if (angle > 2.0f)
+        obj->SetSwitch(0, 2); // White
+    else
+        obj->SetSwitch(0, 1); // Red
 
     return true;
 }
 
 
 #define GS (3.0f)
-#define NANGLES (sizeof(angles)/sizeof(float))
+#define NANGLES (sizeof(angles) / sizeof(float))
 
-const float angles[] = {GS + 2.3f, GS + 2, GS + 1.7f, GS + 1.3f, GS + 1, GS + 0.7F, GS + 0.3f, GS,
-                          GS - 0.3f, GS - 0.7f, GS - 1, GS - 1.3f, GS - 1.7f
-                       };
+const float angles[] = {GS + 2.3f, GS + 2,    GS + 1.7f, GS + 1.3f, GS + 1,
+                        GS + 0.7F, GS + 0.3f, GS,        GS - 0.3f, GS - 0.7f,
+                        GS - 1,    GS - 1.3f, GS - 1.7f};
 
 
 // Approach angle for Carrier MeatBall - 13 switches (0-12) for vertical Glide Slope
 bool DXScript_MeatBall(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 {
-    float angle = (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) / Degrees;
+    float angle =
+        (float)atan2(pos->z, sqrtf(pos->y * pos->y + pos->x * pos->x)) /
+        Degrees;
 
     ShiAssert(obj->ParentObject->nSwitches >= NANGLES - 2);
 
-    if (obj->ParentObject->nSwitches <= NANGLES - 2) return true;
+    if (obj->ParentObject->nSwitches <= NANGLES - 2)
+        return true;
 
     for (int i = 0; i < NANGLES - 1; i++)
     {
-        if (angle < angles[i] and angle > angles[i + 1]) obj->SetSwitch(i, 1);
-        else obj->SetSwitch(i, 0);
+        if (angle < angles[i] and angle > angles[i + 1])
+            obj->SetSwitch(i, 1);
+        else
+            obj->SetSwitch(i, 0);
     }
 
     return true;
@@ -326,20 +356,26 @@ bool DXScript_Chaff(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
 #endif
 
     // consistency check
-    if (obj->ParentObject->nSwitches <= 0) return true;
+    if (obj->ParentObject->nSwitches <= 0)
+        return true;
 
     // if 1st frame set the starting time
-    if ((obj->SwitchValues[0] bitand 0xffff0000) == 0x0000) obj->SwitchValues[0] = (Delta << 16) bitand 0xffff0000;
+    if ((obj->SwitchValues[0] bitand 0xffff0000) == 0x0000)
+        obj->SwitchValues[0] = (Delta << 16) bitand 0xffff0000;
 
     // update frame number every 100 mSec
-    if ( not (obj->SwitchValues[0] bitand 0x8000))
-        obj->SwitchValues[0] = (obj->SwitchValues[0] bitand 0xffff0000) bitor (1 << ((Delta bitand 0xffff) - (obj->SwitchValues[0] >> 16) bitand 0x00ffff));
+    if (not(obj->SwitchValues[0] bitand 0x8000))
+        obj->SwitchValues[0] =
+            (obj->SwitchValues[0] bitand 0xffff0000) bitor
+            (1 << ((Delta bitand 0xffff) - (obj->SwitchValues[0] >> 16) bitand
+                   0x00ffff));
 
     return true;
 }
 
 
-bool DXScript_CollapseChute(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument)
+bool DXScript_CollapseChute(D3DVECTOR *pos, ObjectInstance *obj,
+                            DWORD *Argument)
 {
     ShiAssert(obj->ParentObject->nSwitches > 0);
 
@@ -368,20 +404,10 @@ bool DXScript_CollapseChute(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument
 }
 
 
-
-bool (*DXScriptArray[])(D3DVECTOR *pos, ObjectInstance*, DWORD*) =
-{
-    DXScript_None,
-    DXScript_Animate,
-    DXScript_Rotate,
-    DXScript_HelyRotate,
-    DXScript_Beacon,
-    DXScript_VASIF,
-    DXScript_VASIN,
-    DXScript_MeatBall,
-    DXScript_Chaff,
+bool (*DXScriptArray[])(D3DVECTOR *pos, ObjectInstance *, DWORD *) = {
+    DXScript_None,          DXScript_Animate,  DXScript_Rotate,
+    DXScript_HelyRotate,    DXScript_Beacon,   DXScript_VASIF,
+    DXScript_VASIN,         DXScript_MeatBall, DXScript_Chaff,
     DXScript_CollapseChute,
 
 };
-
-

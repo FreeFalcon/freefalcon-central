@@ -3,14 +3,16 @@
 #define NOFLY_H
 
 #include "vutypes.h"
-#include "Cmpglobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Team.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "team.h"
 
 // Types of no fly zones:
-#define NFZ_OWNER_NOFLY 0 // Only owner team and allies not allowed here (ie: SAM defense zone)
-#define NFZ_OVERFLY_ONLY 1 // Only people with overfly privledges allowed (ie country borders)
+#define NFZ_OWNER_NOFLY                                                        \
+    0 // Only owner team and allies not allowed here (ie: SAM defense zone)
+#define NFZ_OVERFLY_ONLY                                                       \
+    1 // Only people with overfly privledges allowed (ie country borders)
 
 // No-fly zone class
 class NoFlyZoneClass;
@@ -26,6 +28,7 @@ public:
     uchar owner; // Who 'owns' this NFZ. Determines who can modify it
     uchar type; // what type of NoFlyZone is it?
     NFZ next;
+
 public:
     NoFlyZoneClass(void);
     int InZone(GridIndex x, GridIndex y, Team who, int flags);

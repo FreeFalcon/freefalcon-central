@@ -8,7 +8,8 @@
 class C_3dViewer
 {
 private:
-    Render3D  *rend3d_; // 3d Renderer... use rend3d OR rendOTW NOT both at same time
+    Render3D
+        *rend3d_; // 3d Renderer... use rend3d OR rendOTW NOT both at same time
     RenderOTW *rendOTW_; // Terrain Renderer
     RViewPoint *viewPoint_; // Terrain viewpoint
     Tpoint zeroPos_; // Used ONLY for Terrain Viewing
@@ -19,7 +20,8 @@ private:
     C_BSPList *objects_; // loaded objects list
 
     ImageBuffer *m_pImgGray; // OW
-    ImageBuffer *m_pRTT; // Artscout - 2026 (#34): off-screen RTT for D3D11 menu 3D-viewer (see View3d)
+    ImageBuffer *
+        m_pRTT; // Artscout - 2026 (#34): off-screen RTT for D3D11 menu 3D-viewer (see View3d)
 
 
     float CameraHeading_, CameraPitch_, CameraRoll_;
@@ -87,11 +89,15 @@ public:
         MinTexture_ = min;
         MaxTexture_ = max;
     }
-    void Viewport(C_Window *win, long client); // Calulates the left,top,right,bottom offsets for viewport
+    void Viewport(
+        C_Window *win,
+        long
+            client); // Calulates the left,top,right,bottom offsets for viewport
     void SetPosition(float x, float y, float z);
     // VERY IMPORTANT: Camera Position is RELATIVE to Position
     // for Object Viewing: 0,0,0 is the assumed object position... camera is relative to that
-    void SetCamera(float x, float y, float z, float heading, float climb, float roll);
+    void SetCamera(float x, float y, float z, float heading, float climb,
+                   float roll);
     // void SetTextureLevel(long tl) { TextureLevel_=tl; }
     // void SetSmoothShading(long ss) { SmoothShading_=ss; }
     void SetTextureLevels(long min, long max)
@@ -101,72 +107,84 @@ public:
     }
     void SetCameraHeading(float h)
     {
-        SetCamera(CameraPos_.x, CameraPos_.y, CameraPos_.z, h, CameraPitch_, CameraRoll_);
+        SetCamera(CameraPos_.x, CameraPos_.y, CameraPos_.z, h, CameraPitch_,
+                  CameraRoll_);
     }
     void SetCameraPitch(float y)
     {
-        SetCamera(CameraPos_.x, CameraPos_.y, CameraPos_.z, CameraHeading_, y, CameraRoll_);
+        SetCamera(CameraPos_.x, CameraPos_.y, CameraPos_.z, CameraHeading_, y,
+                  CameraRoll_);
     }
     void SetCameraRoll(float r)
     {
-        SetCamera(CameraPos_.x, CameraPos_.y, CameraPos_.z, CameraHeading_, CameraPitch_, r);
+        SetCamera(CameraPos_.x, CameraPos_.y, CameraPos_.z, CameraHeading_,
+                  CameraPitch_, r);
     }
     void SetCameraX(float x)
     {
-        SetCamera(x, CameraPos_.y, CameraPos_.z, CameraHeading_, CameraPitch_, CameraRoll_);
+        SetCamera(x, CameraPos_.y, CameraPos_.z, CameraHeading_, CameraPitch_,
+                  CameraRoll_);
     }
     void SetCameraY(float y)
     {
-        SetCamera(CameraPos_.x, y, CameraPos_.z, CameraHeading_, CameraPitch_, CameraRoll_);
+        SetCamera(CameraPos_.x, y, CameraPos_.z, CameraHeading_, CameraPitch_,
+                  CameraRoll_);
     }
     void SetCameraZ(float z)
     {
-        SetCamera(CameraPos_.x, CameraPos_.y, z, CameraHeading_, CameraPitch_, CameraRoll_);
+        SetCamera(CameraPos_.x, CameraPos_.y, z, CameraHeading_, CameraPitch_,
+                  CameraRoll_);
     }
     float GetCameraHeading()
     {
-        return(CameraHeading_);
+        return (CameraHeading_);
     }
     float GetCameraPitch()
     {
-        return(CameraPitch_);
+        return (CameraPitch_);
     }
     float GetCameraRoll()
     {
-        return(CameraRoll_);
+        return (CameraRoll_);
     }
     float GetCameraX()
     {
-        return(CameraPos_.x);
+        return (CameraPos_.x);
     }
     float GetCameraY()
     {
-        return(CameraPos_.y);
+        return (CameraPos_.y);
     }
     float GetCameraZ()
     {
-        return(CameraPos_.z);
+        return (CameraPos_.z);
     }
     Render3D *GetRend3d()
     {
-        return(rend3d_);
+        return (rend3d_);
     }
     RenderOTW *GetRendOTW()
     {
-        return(rendOTW_);
+        return (rendOTW_);
     }
     RViewPoint *GetVP()
     {
-        return(viewPoint_);
+        return (viewPoint_);
     }
-    BOOL InitOTW(float FOV, BOOL Preload = FALSE); // This loads terrain (ie SLOW)
+    BOOL InitOTW(float FOV,
+                 BOOL Preload = FALSE); // This loads terrain (ie SLOW)
     BOOL Init3d(float FOV); // This just sets viewport
     BSPLIST *Load(long ID, int objID);
     BSPLIST *LoadBSP(long ID, int objID, BOOL aircraft = FALSE);
     BSPLIST *LoadBuilding(long ID, int objID, Tpoint *pos, float heading);
     BSPLIST *LoadBridge(long ID, int objID);
-    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid, Falcon4EntityClassType *classPtr, FeatureClassDataType* fc, Tpoint *objPos, BSPLIST *Parent);
-    BSPLIST *LoadDrawableUnit(long ID, long visType, Tpoint *objPos, float facing, uchar domain, uchar type, uchar stype);
+    BSPLIST *LoadDrawableFeature(long ID, Objective obj, short f, short fid,
+                                 Falcon4EntityClassType *classPtr,
+                                 FeatureClassDataType *fc, Tpoint *objPos,
+                                 BSPLIST *Parent);
+    BSPLIST *LoadDrawableUnit(long ID, long visType, Tpoint *objPos,
+                              float facing, uchar domain, uchar type,
+                              uchar stype);
     BOOL Remove(long ID);
     BOOL RemoveAll();
     BOOL AddToView(BSPLIST *obj);
@@ -178,7 +196,7 @@ public:
     BSPLIST *Find(long ID);
     C_BSPList *GetBSPList()
     {
-        return(objects_);
+        return (objects_);
     }
 };
 

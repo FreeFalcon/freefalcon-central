@@ -7,35 +7,36 @@
   It starts and stops each as appropriate during transitions between
   the SIM and UI.
 ***************************************************************************/
+#include <cfenv> // Artscout - 2026 (Linux port): fesetround/FE_TOWARDZERO for the FPU rounding mode
 #include "stdhdr.h"
-#include "Graphics/Include/Loader.h"
+#include "graphics/include/loader.h"
 #include "find.h"
-#include "Flight.h"
-#include "FalcSess.h"
-#include "ui/include/FalcUser.h"
-#include "ThreadMgr.h"
+#include "flight.h"
+#include "falcsess.h"
+#include "ui/include/falcuser.h"
+#include "threadmgr.h"
 #include "dispcfg.h"
 #include "dispopts.h" // #33: DisplayOptions.bWindowed
-#include "simDrive.h"
-#include "OTWDrive.h"
+#include "simdrive.h"
+#include "otwdrive.h"
 #include "sinput.h"
-#include "Statistics.h"
-#include "SimLoop.h"
-#include "Campaign.h"
-#include "Dogfight.h"
-#include "TimerThread.h"
+#include "statistics.h"
+#include "simloop.h"
+#include "campaign.h"
+#include "dogfight.h"
+#include "timerthread.h"
 #include "playerop.h"
-#include "GameMgr.h"
+#include "gamemgr.h"
 #include "fsound.h"
-#include "Graphics/Include/TexBank.h"
-#include "MsgInc/SimCampMsg.h"
+#include "graphics/include/texbank.h"
+#include "msginc/simcampmsg.h"
 #include "acmi/src/include/acmirec.h"
 #include "ui/include/uicomms.h"
 #include "ehandler.h"
-#include "VRInput.h"
+#include "vrinput.h"
 #include "aircrft.h"
-#include "PlayerOp.h"
-#include "Graphics/Include/Tod.h"
+#include "playerop.h"
+#include "graphics/include/tod.h"
 
 // Almost works, but seems to cause trouble if wait for loader is disabled or on very fast (450+) machines.
 #define DELAY_TEX_LOAD // Define this to delay object texture loads for improved disk access locality
@@ -53,8 +54,9 @@ extern void set_spinner1(int);
 extern void ACMI_ImportFile(void);
 extern int tactical_is_training(void);
 extern void RecordPlayerFlightStart(void);
-bool g_bSleepAll;//me123
-SimulationLoopControl::SimLoopControlMode SimulationLoopControl::currentMode = Stopped;
+bool g_bSleepAll; //me123
+SimulationLoopControl::SimLoopControlMode SimulationLoopControl::currentMode =
+    Stopped;
 HANDLE SimulationLoopControl::wait_for_start_graphics = 0;
 HANDLE SimulationLoopControl::wait_for_stop_graphics = 0;
 HANDLE SimulationLoopControl::wait_for_sim_cleanup = 0;
@@ -98,9 +100,9 @@ extern ulong objTime;
 extern int inMission;
 #endif
 
-#include "IVibeData.h"
+#include "ivibedata.h"
 extern IntellivibeData g_intellivibeData;
-extern void *gSharedIntellivibe;
+extern void* gSharedIntellivibe;
 
 // This function just gets from C call style required by the threader
 // back into C++
@@ -136,7 +138,9 @@ static unsigned int __stdcall StartingGraphicsWrapper(void)
 
     // Set the FPU to 24bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
 #endif
 
@@ -146,7 +150,8 @@ static unsigned int __stdcall StartingGraphicsWrapper(void)
     {
         SimulationLoopControl::StartLoop();
     }
-    __except (RecordExceptionInfo(GetExceptionInformation(), "StartLoop Thread"))
+    __except (
+        RecordExceptionInfo(GetExceptionInformation(), "StartLoop Thread"))
     {
         // Do nothing here - RecordExceptionInfo() has already done
         // everything that is needed. Actually this code won't even
@@ -161,7 +166,8 @@ static unsigned int __stdcall StartingGraphicsWrapper(void)
 // We only create the thread.  It will actually start executing later.
 void SimulationLoopControl::StartSim(void)
 {
-    unsigned long value;
+    DWORD
+    value; // Artscout - 2026 (Linux port): CreateThread's tid out-param is DWORD* (32-bit)
 
     // Don't start until we're ready
     while (currentMode not_eq Stopped)
@@ -179,9 +185,9 @@ void SimulationLoopControl::StartSim(void)
     wait_for_sim_cleanup = CreateEvent(0, 0, 0, 0);
     wait_for_graphics_cleanup = CreateEvent(0, 0, 0, 0);
 
-    CreateThread(
-        NULL, 0, (unsigned long(__stdcall*)(void*))StartingGraphicsWrapper, 0, 0, &value
-    );
+    CreateThread(NULL, 0,
+                 (unsigned long(__stdcall*)(void*))StartingGraphicsWrapper, 0,
+                 0, &value);
 }
 
 
@@ -223,7 +229,7 @@ void SimulationLoopControl::StartGraphics(void)
     ///////////////////MP hacK
     int delayCounter = 1200; // 2 minutes
     bool someoneawake = 1;
-    g_bSleepAll = TRUE;//me123 host it's ok to sleep
+    g_bSleepAll = TRUE; //me123 host it's ok to sleep
 
     // gRebuildBubbleNow = TRUE;
     while (someoneawake and (delayCounter))
@@ -257,7 +263,7 @@ void SimulationLoopControl::StartGraphics(void)
         }
 
         Sleep(100);
-        delayCounter --;
+        delayCounter--;
     }
 
     ////////////////// mp hack
@@ -316,10 +322,14 @@ void SimulationLoopControl::Loop(void)
 #if defined(_MSC_VER)
     _controlfp(_RC_CHOP, MCW_RC); // Set the FPU to Truncate
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
 #else
-#error Pay special attention to rounding mode and precision effects on floating point ops
+    // Artscout - 2026 (Linux port): match "set the FPU to truncate" via the standard C rounding mode.
+    // On x86-64 all float math is SSE, so this controls the same rounding _controlfp(_RC_CHOP) did.
+    fesetround(FE_TOWARDZERO);
 #endif
 
     // Record the fact that we're up and running
@@ -330,7 +340,7 @@ void SimulationLoopControl::Loop(void)
     {
         //START_PROFILE("INPUT");
 
-        sim_tick ++;
+        sim_tick++;
         set_spinner1(sim_tick);
 
         // Get input if we're "in game"
@@ -348,12 +358,9 @@ void SimulationLoopControl::Loop(void)
         //START_PROFILE("BUBBLE");
 
         // Rebuild the bubble here
-        if (
-            gRebuildBubbleNow or (
-                static_cast<CampaignTime>(vuxRealTime - lastBubbleTime) >
-                static_cast<CampaignTime>(BUBBLE_REBUILD_TIME * CampaignSeconds)
-            )
-        )
+        if (gRebuildBubbleNow or
+            (static_cast<CampaignTime>(vuxRealTime - lastBubbleTime) >
+             static_cast<CampaignTime>(BUBBLE_REBUILD_TIME * CampaignSeconds)))
         {
             int forced = 0;
 
@@ -362,23 +369,21 @@ void SimulationLoopControl::Loop(void)
                 forced = 1;
             }
 
-            if (
-                (static_cast<CampaignTime>(vuxRealTime - lastBubbleTime) >
-                 static_cast<CampaignTime>(BUBBLE_REBUILD_TIME * CampaignSeconds))
-            )
+            if ((static_cast<CampaignTime>(vuxRealTime - lastBubbleTime) >
+                 static_cast<CampaignTime>(BUBBLE_REBUILD_TIME *
+                                           CampaignSeconds)))
             {
                 forced = 0;
             }
 
             RebuildBubble(forced);
 
-            if ( not forced)
+            if (not forced)
             {
                 lastBubbleTime = vuxRealTime;
             }
 
             gRebuildBubbleNow = 0;
-
         }
 
         //STOP_PROFILE("BUBBLE");
@@ -390,13 +395,12 @@ void SimulationLoopControl::Loop(void)
         vuxRealTime = GetTickCount();
         real_delta = delta = (vuxRealTime - lastStartTime);
 
-        if (
-            FalconLocalGame and (
-                ((vuPlayerPoolGroup) and (FalconLocalGame->Id() not_eq vuPlayerPoolGroup->Id())) or not vuPlayerPoolGroup
-            )
-        )
+        if (FalconLocalGame and
+            (((vuPlayerPoolGroup) and
+              (FalconLocalGame->Id() not_eq vuPlayerPoolGroup->Id())) or
+             not vuPlayerPoolGroup))
         {
-            if (( not FalconLocalGame->IsLocal()) and (lastTimingMessage > 0))
+            if ((not FalconLocalGame->IsLocal()) and (lastTimingMessage > 0))
             {
                 static int last_ratio = 0;
                 int y, ratio, lookahead;
@@ -406,7 +410,8 @@ void SimulationLoopControl::Loop(void)
                 // KCK Add half of lookahead time, so we round to nearest
                 // integer compression
                 //me123 added 100 for latency
-                y = vuxTargetGameTime + (targetGameCompressionRatio * lookahead) - vuxGameTime;
+                y = vuxTargetGameTime +
+                    (targetGameCompressionRatio * lookahead) - vuxGameTime;
 
                 if (y < 0)
                 {
@@ -419,12 +424,14 @@ void SimulationLoopControl::Loop(void)
                     if ((y >= lookahead) and (delta))
                     {
                         // we are behind
-                        delta = delta * (min(10, (y - lookahead) / 10) + 100) / 100; //
+                        delta = delta * (min(10, (y - lookahead) / 10) + 100) /
+                                100; //
                     }
                     else if ((y <= lookahead) and (delta))
                     {
                         // we are infront
-                        delta = delta * ((100 - min(10, (lookahead - y) / 10)) / 100); //
+                        delta = delta * ((100 - min(10, (lookahead - y) / 10)) /
+                                         100); //
                     }
 
                     ratio = 1;
@@ -467,7 +474,9 @@ void SimulationLoopControl::Loop(void)
                         compress = 4;
                     }
 
-                    vuxTargetGameTime = vuxTargetGameTime + real_delta * compress; // lets dead recon time
+                    vuxTargetGameTime =
+                        vuxTargetGameTime +
+                        real_delta * compress; // lets dead recon time
                 }
             }
             else
@@ -476,53 +485,46 @@ void SimulationLoopControl::Loop(void)
                 VuSessionsIterator sessionIter(vuLocalGame);
                 int flying = FALSE;
 
-                for (
-                    VuSessionEntity *sess = sessionIter.GetFirst(), *nextSess;
-                    sess not_eq NULL and not flying;
-                    sess = nextSess
-                )
+                for (VuSessionEntity *sess = sessionIter.GetFirst(), *nextSess;
+                     sess not_eq NULL and not flying; sess = nextSess)
                 {
                     nextSess = sessionIter.GetNext();
-                    FalconSessionEntity *sessionEntity = static_cast<FalconSessionEntity*>(sess);
+                    FalconSessionEntity* sessionEntity =
+                        static_cast<FalconSessionEntity*>(sess);
 
                     if (sessionEntity not_eq NULL)
                     {
                         uchar flyState = sessionEntity->GetFlyState();
 
-                        if (
-                            (flyState ==  FLYSTATE_FLYING) or
-                            (flyState ==  FLYSTATE_WAITING) or
-                            (flyState ==  FLYSTATE_LOADING)
-                        )
+                        if ((flyState == FLYSTATE_FLYING) or
+                            (flyState == FLYSTATE_WAITING) or
+                            (flyState == FLYSTATE_LOADING))
                         {
                             flying = TRUE;
                         }
                     }
                 }
 
-                if (
-                    flying and gameCompressionRatio > 4
-                   and (gCommsMgr and gCommsMgr->Online())
-                )
+                if (flying and gameCompressionRatio > 4 and
+                    (gCommsMgr and gCommsMgr->Online()))
                 {
-                    SetTimeCompression(1) ;
+                    SetTimeCompression(1);
                 }
 
                 tmpTime = vuxGameTime + delta * gameCompressionRatio;
             }
 
-            if (
-                FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and 
-                gCompressTillTime and tmpTime > gLaunchTime + 1000
-            )
+            if (FalconLocalSession->GetFlyState() not_eq FLYSTATE_FLYING and
+                gCompressTillTime and tmpTime > gLaunchTime + 1000)
             {
                 if (vuxGameTime < gCompressTillTime)
                 {
-                    tmpTime = gCompressTillTime; // We don't want to advance time past here
+                    tmpTime =
+                        gCompressTillTime; // We don't want to advance time past here
                 }
                 else
                 {
-                    tmpTime = vuxGameTime;       // Unless it's already to late
+                    tmpTime = vuxGameTime; // Unless it's already to late
                 }
             }
 
@@ -580,66 +582,67 @@ void SimulationLoopControl::Loop(void)
         // Do any graphics related processing required
         switch (currentMode)
         {
-            case StartRunningGraphics:
-                if ( not SimDriver.lastRealTime)
-                {
-                    SimDriver.lastRealTime = vuxGameTime;
-                }
+        case StartRunningGraphics:
+            if (not SimDriver.lastRealTime)
+            {
+                SimDriver.lastRealTime = vuxGameTime;
+            }
 
-            case RunningGraphics:
-                if (sRewakeSessions)
-                {
-                    RewakeSessions();
-                    sRewakeSessions = 0;
-                }
+        case RunningGraphics:
+            if (sRewakeSessions)
+            {
+                RewakeSessions();
+                sRewakeSessions = 0;
+            }
 
-                gGraphicsTime = GetTickCount();
-                // we cant profile here, since its zeroed inside function
-                OTWDriver.Cycle();
-                gGraphicsTimeLast = GetTickCount() - gGraphicsTime;
+            gGraphicsTime = GetTickCount();
+            // we cant profile here, since its zeroed inside function
+            OTWDriver.Cycle();
+            gGraphicsTimeLast = GetTickCount() - gGraphicsTime;
 
-                // Campaign gets fed some food by putting us to sleep
-                // the length of time is determined by how long the sim and graphics
-                // take.  Unfortunately, the longer these take the longer we must
-                // sleep so that the campaign doesn't starve
+            // Campaign gets fed some food by putting us to sleep
+            // the length of time is determined by how long the sim and graphics
+            // take.  Unfortunately, the longer these take the longer we must
+            // sleep so that the campaign doesn't starve
 
-                // average over 8 frames
-                gAveSimGraphicsTime = (gAveSimGraphicsTime * 7 + gSimTime + gGraphicsTimeLast * 100) / 8;
+            // average over 8 frames
+            gAveSimGraphicsTime =
+                (gAveSimGraphicsTime * 7 + gSimTime + gGraphicsTimeLast * 100) /
+                8;
 
-                // WARNING  WARNING  WARNING  WARNING  WARNING 
-                // COBRA - RED - REMOVED THIS WAITING FOR CAMPAIGN - HAS TO BE TESTED FOR SIDE EFFECTS
-                //START_PROFILE("SIMLOOP:");
-                //ThreadManager::sim_signal_campaign();
-                //ThreadManager::sim_wait_for_campaign ( min( 50, ( gAveSimGraphicsTime )/3 ) );
-                //STOP_PROFILE("SIMLOOP:");
-                // WARNING  WARNING  WARNING  WARNING  WARNING 
-                if (currentMode == StartRunningGraphics)
-                {
-                    currentMode = RunningGraphics;
-                }
+            // WARNING  WARNING  WARNING  WARNING  WARNING
+            // COBRA - RED - REMOVED THIS WAITING FOR CAMPAIGN - HAS TO BE TESTED FOR SIDE EFFECTS
+            //START_PROFILE("SIMLOOP:");
+            //ThreadManager::sim_signal_campaign();
+            //ThreadManager::sim_wait_for_campaign ( min( 50, ( gAveSimGraphicsTime )/3 ) );
+            //STOP_PROFILE("SIMLOOP:");
+            // WARNING  WARNING  WARNING  WARNING  WARNING
+            if (currentMode == StartRunningGraphics)
+            {
+                currentMode = RunningGraphics;
+            }
 
-                break;
+            break;
 
-            case RunningSim:
+        case RunningSim:
 #if not NEW_SYNC
-                ThreadManager::sim_signal_campaign();
-                ThreadManager::sim_wait_for_campaign(10);
+            ThreadManager::sim_signal_campaign();
+            ThreadManager::sim_wait_for_campaign(10);
 #endif
-                break;
+            break;
 
-            case StartingGraphics:
-                OTWDriver.ClearSfxLists();
-                SetEvent(wait_for_start_graphics);
-                currentMode = Step2;
-                break;
+        case StartingGraphics:
+            OTWDriver.ClearSfxLists();
+            SetEvent(wait_for_start_graphics);
+            currentMode = Step2;
+            break;
 
-            case StoppingGraphics:
-                SetEvent(wait_for_stop_graphics);
-                currentMode = Step5;
-                break;
+        case StoppingGraphics:
+            SetEvent(wait_for_stop_graphics);
+            currentMode = Step5;
+            break;
         }
-    }
-    while (1);
+    } while (1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -647,8 +650,8 @@ void SimulationLoopControl::Loop(void)
 //sfr: pie screens
 void SimulationLoopControl::StartLoop(void)
 {
-    FlightClass *flight;
-    SimMoverClass *player;
+    FlightClass* flight;
+    SimMoverClass* player;
     int delayCounter;
     int abortMission;
 
@@ -661,7 +664,7 @@ void SimulationLoopControl::StartLoop(void)
 
         TheTimeOfDay.Cleanup(); // destroy the old tod data
         char theaterdir[1024];
-        sprintf(theaterdir, "%s\\weather", FalconTerrainDataDir);
+        sprintf(theaterdir, "%s/weather", FalconTerrainDataDir);
         TheTimeOfDay.Setup(theaterdir); // load the new one
 
         // Our pause/suspend state varies by type of game and online status - set appropriately
@@ -673,31 +676,31 @@ void SimulationLoopControl::StartLoop(void)
         {
             switch (FalconLocalGame->GetGameType())
             {
-                default:
-                case game_InstantAction:
-                    // Same as single player
+            default:
+            case game_InstantAction:
+                // Same as single player
+                TheCampaign.Suspend();
+                break;
+
+            case game_Dogfight:
+                if (SimDogfight.GetGameType() == dog_TeamMatchplay)
                     TheCampaign.Suspend();
-                    break;
-
-                case game_Dogfight:
-                    if (SimDogfight.GetGameType() == dog_TeamMatchplay)
-                        TheCampaign.Suspend();
-                    else
-                        SetTimeCompression(1);
-
-                    break;
-
-                case game_TacticalEngagement:
-                    if (tactical_is_training())
-                        TheCampaign.Suspend();
-                    else
-                        SetTimeCompression(1);
-
-                    break;
-
-                case game_Campaign:
+                else
                     SetTimeCompression(1);
-                    break;
+
+                break;
+
+            case game_TacticalEngagement:
+                if (tactical_is_training())
+                    TheCampaign.Suspend();
+                else
+                    SetTimeCompression(1);
+
+                break;
+
+            case game_Campaign:
+                SetTimeCompression(1);
+                break;
             }
         }
 
@@ -719,21 +722,24 @@ void SimulationLoopControl::StartLoop(void)
         if (flight)
         {
             // JB 010616 CTD
-            OTWDriver.SetOwnshipPosition(flight->XPos(), flight->YPos(), flight->ZPos());
+            OTWDriver.SetOwnshipPosition(flight->XPos(), flight->YPos(),
+                                         flight->ZPos());
 
             // Get the graphics control up and running
             OTWDriver.Enter();
 
             // Ask the game to send all deag entities to me
-            VuTargetEntity* target = (VuTargetEntity*) vuDatabase->Find(FalconLocalGame->OwnerId());
+            VuTargetEntity* target =
+                (VuTargetEntity*)vuDatabase->Find(FalconLocalGame->OwnerId());
 
-            if ( not target->IsLocal())
+            if (not target->IsLocal())
             {
-                FalconSimCampMessage *msg;
+                FalconSimCampMessage* msg;
                 //here we ask for all deaggregated data
                 msg = new FalconSimCampMessage(flight->Id(), target);
                 msg->dataBlock.from = FalconLocalSessionId;
-                msg->dataBlock.message = FalconSimCampMessage::simcampRequestAllDeagData;
+                msg->dataBlock.message =
+                    FalconSimCampMessage::simcampRequestAllDeagData;
                 msg->RequestReliableTransmit();
                 msg->RequestOutOfBandTransmit();
                 FalconSendMessage(msg, TRUE);
@@ -764,12 +770,13 @@ void SimulationLoopControl::StartLoop(void)
         delayCounter = 120;
 
         // Wait until our flight is deaggregated
-        g_bSleepAll = FALSE;//me123 host it's ok to wake again now you are attached
+        g_bSleepAll =
+            FALSE; //me123 host it's ok to wake again now you are attached
 
         while (flight and flight->IsAggregate() and (delayCounter))
         {
             Sleep(1000);
-            delayCounter --;
+            delayCounter--;
         }
 
         // If we didn't deaggregate ourselves - RH
@@ -782,7 +789,8 @@ void SimulationLoopControl::StartLoop(void)
         {
             if (flight)
             {
-                MonoPrint("Flight deaggregation done... %d, %d\n", flight->IsAggregate(), GetTickCount());
+                MonoPrint("Flight deaggregation done... %d, %d\n",
+                          flight->IsAggregate(), GetTickCount());
             }
 
             // Attach the player to the aircraft
@@ -791,7 +799,8 @@ void SimulationLoopControl::StartLoop(void)
             //FalconLocalSession, flight, FalconLocalSession->GetAircraftNum(),
             //FalconLocalSession->GetPilotSlot()
             //);
-            player = GameManager.FindPlayerVehicle(flight, FalconLocalSession->GetAircraftNum());
+            player = GameManager.FindPlayerVehicle(
+                flight, FalconLocalSession->GetAircraftNum());
             FalconLocalSession->SetPlayerEntity(player);
             MonoPrint("Player %08x\n", player);
         }
@@ -821,12 +830,9 @@ void SimulationLoopControl::StartLoop(void)
             delayCounter = 100;
 
             // Wait until all necessary deaggregation events have been handled
-            while (
-                (gLeftToDeaggregate) and 
-                (delayCounter) and 
-                (SimDriver.GetPlayerEntity()) and 
-                ( not (SimDriver.GetPlayerEntity()->IsLocal()))
-            )
+            while ((gLeftToDeaggregate) and (delayCounter) and
+                   (SimDriver.GetPlayerEntity()) and
+                   (not(SimDriver.GetPlayerEntity()->IsLocal())))
             {
                 Sleep(100);
                 delayCounter--;
@@ -927,7 +933,8 @@ void SimulationLoopControl::StartLoop(void)
             if (wait_for_loaded)
             {
                 int loadGuard = 0;
-                while (not TheLoader.LoaderQueueEmpty() and loadGuard < 200)   // 200 * 50ms = 10s ceiling
+                while (not TheLoader.LoaderQueueEmpty() and
+                       loadGuard < 200) // 200 * 50ms = 10s ceiling
                 {
                     Sleep(50);
                     loadGuard++;
@@ -944,7 +951,8 @@ void SimulationLoopControl::StartLoop(void)
 
             // Dogfights have some special case start code -
             // i.e. For match play and instant entry
-            if ( not SimDriver.RunningDogfight() or SimDogfight.GetGameType() not_eq dog_TeamMatchplay)
+            if (not SimDriver.RunningDogfight() or
+                SimDogfight.GetGameType() not_eq dog_TeamMatchplay)
             {
                 GameManager.ReleasePlayer(FalconLocalSession);
             }
@@ -986,7 +994,11 @@ void SimulationLoopControl::StartLoop(void)
             OTWDriver.Reset3DParameters();
 
             g_intellivibeData.In3D = false;
-            memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
+            if (gSharedIntellivibe)
+                memcpy(
+                    gSharedIntellivibe, &g_intellivibeData,
+                    sizeof(
+                        g_intellivibeData)); // optional IntelliVibe export; NULL on Linux
 
             // #33: restore the menu window mode after leaving the 3D session.
             FalconDisplay.LeaveSimWindowMode();
@@ -995,7 +1007,7 @@ void SimulationLoopControl::StartLoop(void)
         }
         else
         {
-            if ( not player)
+            if (not player)
             {
                 MonoPrint("Failed to fly\n");
             }
@@ -1035,7 +1047,7 @@ void SimulationLoopControl::StartLoop(void)
         // MonoPrint("Requesting campain to do a final bubble rebuild\n");
         CampaignRequestSleep();
 
-        while ( not CampaignAllAsleep())
+        while (not CampaignAllAsleep())
         {
             Sleep(100);
             // 2002-02-19 REMOVED BY S.G. NO NO NO Wrong thread to do this
@@ -1116,7 +1128,7 @@ void SimulationLoopControl::StartLoop(void)
 // this here. Bit hacky, but it works.
 void FixupGroundHeights()
 {
-    SimBaseClass *theObject;
+    SimBaseClass* theObject;
     float gndz;
 
     // We need to ensure that nobody changes the VU database contents while we're iterating
@@ -1146,9 +1158,9 @@ void FixupGroundHeights()
 void RewakeSessions(void)
 {
     VuSessionsIterator sessionWalker(FalconLocalGame);
-    FalconSessionEntity *session;
-    SimBaseClass *theObject;
-    UnitClass *theUnit;
+    FalconSessionEntity* session;
+    SimBaseClass* theObject;
+    UnitClass* theUnit;
 
     ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
@@ -1156,13 +1168,14 @@ void RewakeSessions(void)
 
     while (session)
     {
-        theObject = (SimBaseClass*) session->GetPlayerEntity();
-        theUnit = (UnitClass*) session->GetPlayerFlight();
+        theObject = (SimBaseClass*)session->GetPlayerEntity();
+        theUnit = (UnitClass*)session->GetPlayerFlight();
 
-        if (theObject and theUnit and theUnit->IsAwake() and not theObject->IsAwake() and not theObject->IsDead() and not theObject->IsExploding())
+        if (theObject and theUnit and theUnit->IsAwake() and
+            not theObject->IsAwake() and not theObject->IsDead() and
+            not theObject->IsExploding())
             SimDriver.WakeObject(theObject);
 
         session = (FalconSessionEntity*)sessionWalker.GetNext();
     }
 }
-

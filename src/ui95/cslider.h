@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -52,7 +53,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     // if using bitmaps for all
@@ -74,29 +75,30 @@ public:
     void Refresh();
     long GetSteps()
     {
-        return(Steps_);
+        return (Steps_);
     }
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
     void SetSliderPos(long Pos);
     long GetSliderMax()
     {
-        return(MaxPos_);
+        return (MaxPos_);
     }
     long GetSliderMin()
     {
-        return(MinPos_);
+        return (MinPos_);
     }
     long GetSliderPos()
     {
-        if (GetType() == C_TYPE_VERTICAL) return(SY_);
+        if (GetType() == C_TYPE_VERTICAL)
+            return (SY_);
 
-        return(SX_);
+        return (SX_);
     }
     BOOL MouseOver(long relX, long relY, C_Base *);
     void HighLite(SCREEN *surface, UI95_RECT *cliprect);
     void GetItemXY(long, long *x, long *y);
     BOOL Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *)
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *)
     {
         return FALSE;
     }

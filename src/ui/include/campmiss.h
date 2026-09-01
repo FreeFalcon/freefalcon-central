@@ -4,7 +4,7 @@
 typedef enum
 {
     AWARD_MEDAL = 0x001,
-    MDL_AFCROSS  = 0x002,
+    MDL_AFCROSS = 0x002,
     MDL_SILVERSTAR = 0x004,
     MDL_DIST_FLY = 0x008,
     MDL_AIR_MDL = 0x010,

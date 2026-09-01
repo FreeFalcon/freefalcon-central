@@ -106,6 +106,6 @@ public:
     virtual VuFilter *Copy();
 };
 
-int SimCompare(VuEntity* ent1, VuEntity*ent2);
+int SimCompare(VuEntity *ent1, VuEntity *ent2);
 
 #endif

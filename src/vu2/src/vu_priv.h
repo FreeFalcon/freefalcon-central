@@ -66,16 +66,16 @@ public:
 
 private:
     // registered collections and mutexes
-    std::list<VuCollection*> collcoll_;
+    std::list<VuCollection *> collcoll_;
     VuMutex collsMutex_;
-    std::list<VuGridTree*> gridcoll_;
+    std::list<VuGridTree *> gridcoll_;
     VuMutex gridsMutex_;
 
     // garbage collector
-    VuMutex gcMutex_;                        ///< garbage collector insertion mutex
-    std::list<VuEntityBin> gclist_;          ///< list entities to be deleted
-    VuMutex birthMutex_;                      ///< birth list mutex
-    std::list<VuEntityBin> birthlist_;       ///< list entities to be created
+    VuMutex gcMutex_; ///< garbage collector insertion mutex
+    std::list<VuEntityBin> gclist_; ///< list entities to be deleted
+    VuMutex birthMutex_; ///< birth list mutex
+    std::list<VuEntityBin> birthlist_; ///< list entities to be created
 };
 
 // vu private globals

@@ -5,35 +5,35 @@
 #include <io.h>
 #include <stdlib.h>
 #include <time.h>
-#include "CmpGlobl.h"
-#include "ListADT.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "ASearch.h"
-#include "Path.h"
-#include "Find.h"
+#include "cmpglobl.h"
+#include "listadt.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "asearch.h"
+#include "path.h"
+#include "find.h"
 #include "vutypes.h"
-#include "Campaign.h"
+#include "campaign.h"
 #include "update.h"
-#include "Unit.h"
+#include "unit.h"
 #include "airunit.h"
-#include "Gndunit.h"
+#include "gndunit.h"
 #include "navunit.h"
-#include "ATM.h"
-#include "GTM.h"
+#include "atm.h"
+#include "gtm.h"
 #include "mission.h"
 #include "team.h"
 #include "tactics.h"
-#include "AIInput.h"
-#include "CUIEvent.h"
-#include "MsgInc/RadioChatterMsg.h"
-#include "MsgInc/CampWeaponFireMsg.h"
-#include "MsgInc/AWACsMsg.h"
-#include "MissEval.h"
-#include "CmpClass.h"
+#include "aiinput.h"
+#include "cuievent.h"
+#include "msginc/radiochattermsg.h"
+#include "msginc/campweaponfiremsg.h"
+#include "msginc/awacsmsg.h"
+#include "misseval.h"
+#include "cmpclass.h"
 #include "classtbl.h"
-#include "Debuggr.h"
-#include "Tacan.h"
+#include "debuggr.h"
+#include "tacan.h"
 #include "falcsess.h"
 #include "aircrft.h"
 
@@ -72,8 +72,11 @@ extern int gReplacmentsFromAirlift[NUM_TEAMS];
 int ProcessedCount;
 
 #ifdef DEBUG
-DWORD gAverageFlightDetectionTime = 0, gAverageBattalionDetectionTime = 0, gAverageFlightMoveTime = 0, gAverageBattalionMoveTime = 0, gAverageBrigadeMovetime = 0;
-int gFlightDetects = 0, gBattalionDetects = 0, gFlightMoves = 0, gBattalionMoves = 0, gBrigadeMoves = 0;
+DWORD gAverageFlightDetectionTime = 0, gAverageBattalionDetectionTime = 0,
+      gAverageFlightMoveTime = 0, gAverageBattalionMoveTime = 0,
+      gAverageBrigadeMovetime = 0;
+int gFlightDetects = 0, gBattalionDetects = 0, gFlightMoves = 0,
+    gBattalionMoves = 0, gBrigadeMoves = 0;
 #endif DEBUG
 
 // ================================
@@ -116,8 +119,7 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
 #if FIX_RESET_UNIT
         (lastCheck == 0) or
 #endif
-        (TheCampaign.CurrentTime - lastCheck > u->UpdateTime())
-    )
+        (TheCampaign.CurrentTime - lastCheck > u->UpdateTime()))
     {
         //START_PROFILE("UU SET");
         u->SetLastCheck(TheCampaign.CurrentTime);
@@ -141,11 +143,9 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
         //START_PROFILE("UU WP");
         // In tactical engagement, we want to make sure battalions always have a waypoint,
         // So they can be reordered
-        if (
-            u->IsBattalion() and 
-            FalconLocalGame->GetGameType() == game_TacticalEngagement and 
- not u->GetCurrentUnitWP()
-        )
+        if (u->IsBattalion() and
+            FalconLocalGame->GetGameType() == game_TacticalEngagement and
+            not u->GetCurrentUnitWP())
         {
             GridIndex x, y;
             u->GetLocation(&x, &y);
@@ -175,7 +175,8 @@ int UpdateUnit(Unit u, CampaignTime DeltaTime)
 // Let's see if (a) can see (e)
 void DetectOneWay(CampEntity a, FalconEntity *e, int d, int *det, int *ran)
 {
-    int em /* ADDED BY S.G. TO GET THE SHOOTERS OBJECT TYPE */, am = a->GetMovementType();
+    int em /* ADDED BY S.G. TO GET THE SHOOTERS OBJECT TYPE */,
+        am = a->GetMovementType();
 
     em = e->GetMovementType();
 
@@ -185,7 +186,10 @@ void DetectOneWay(CampEntity a, FalconEntity *e, int d, int *det, int *ran)
     // if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and a->GetWeaponRange(em) >= d) // REMOVED BY S.G.
     // WILL MAKE SURE BOTH OBJECTS ARE PLANE, SHOOTER HAS MORE THEN JUST GUN (1 NM) AND TARGET WITHIN AT LEAST 20 NM OF US
     //Cobra changed to d <= 100 from 37 (only 20 nm)
-    if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and ((am == Air and em == Air and d <= 100 and a->GetWeaponRange(em) > 1) or a->GetWeaponRange(em, e) >= d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
+    if (a->IsUnit() and a->GetAproxWeaponRange(em) >= d and
+        ((am == Air and em == Air and d <= 100 and a->GetWeaponRange(em) > 1) or
+         a->GetWeaponRange(em, e) >=
+             d)) // 2002-03-08 MODIFIED BY S.G. Added 'e' at the end of a->GetWeaponRange so we test the min/max weapon range against this guy
         *ran = 1;
 }
 
@@ -194,22 +198,25 @@ int Detected(Unit u, FalconEntity *e, float *range)
     int udet, edet, uran, eran, retval = 0;
 
     // KCK: Someday, I should make this range squared - but it'd affect a lot of shit
-    *range = Distance(u->XPos(), u->YPos(), e->XPos(), e->YPos()) / GRID_SIZE_FT;
+    *range =
+        Distance(u->XPos(), u->YPos(), e->XPos(), e->YPos()) / GRID_SIZE_FT;
 
     if (*range < 1.0F)
-        // 2001-03-26 MODIFIED BY S.G. IF THE FIRST UNIT IS BELOW THE SECOND ONE AT ANY ALTITUDE SEPARATION), OR IF ABOVE WITH LESS THAN 5000 FEET ALTITUDE SEPARATION, RETURN 'DETECTION BASED ON WHO SAW WHO'
-        // return ALL_DETECTION;
+    // 2001-03-26 MODIFIED BY S.G. IF THE FIRST UNIT IS BELOW THE SECOND ONE AT ANY ALTITUDE SEPARATION), OR IF ABOVE WITH LESS THAN 5000 FEET ALTITUDE SEPARATION, RETURN 'DETECTION BASED ON WHO SAW WHO'
+    // return ALL_DETECTION;
     {
         int det = 0;
 
         if (u->ZPos() - e->ZPos() > -5000.0f)
-            det = ENEMY_SAME_HEX bitor ENEMY_IN_RANGE bitor ENEMY_DETECTED bitor FRIENDLY_IN_RANGE;
+            det = ENEMY_SAME_HEX bitor ENEMY_IN_RANGE bitor ENEMY_DETECTED bitor
+                  FRIENDLY_IN_RANGE;
 
         if (e->ZPos() - u->ZPos() > -5000.0f)
-            det or_eq ENEMY_SAME_HEX bitor ENEMY_IN_RANGE bitor FRIENDLY_IN_RANGE bitor FRIENDLY_DETECTED;
+            det or_eq ENEMY_SAME_HEX bitor ENEMY_IN_RANGE bitor
+                      FRIENDLY_IN_RANGE bitor FRIENDLY_DETECTED;
 
         if (det)
-            return(det);
+            return (det);
 
         // Need to say we're in range, even if it can't detect it because we are very close
         uran = eran = 1;
@@ -243,21 +250,22 @@ int Detected(Unit u, FalconEntity *e, float *range)
 
 int DoCombat(CampBaseClass *att, FalconEntity *def)
 {
-    uchar* damageMods;
+    uchar *damageMods;
     MoveType defmt;
     short weapon[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
     uchar wcount[MAX_TYPES_PER_CAMP_FIRE_MESSAGE];
     int d, i, id = 255, shot = 0;
     float bonus = 1.0F;
-    GridIndex   defx, defy, attx, atty;
+    GridIndex defx, defy, attx, atty;
 
-    if ( not att or not def)
+    if (not att or not def)
         return -1;
 
     // 2001-06-13 ADDED BY S.G. BEFORE WE CAN REALLY COMBAT, WE MUST SEE BE ABLE TO DETECT THE TARGET OURSELF BUT ONLY IF WE ARE A BATTALION
     // This is only called by aggregated UNITS so I safely call CanDetect from att as a unit against def
     // Since this is for SOJ, limit it to battalions...
-    if (((UnitClass *)att)->IsBattalion() and not ((UnitClass *)att)->CanDetect(def))
+    if (((UnitClass *)att)->IsBattalion() and
+        not((UnitClass *)att)->CanDetect(def))
     {
         att->StepRadar(0, 0, 1);
         return 0;
@@ -272,7 +280,7 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     damageMods = def->GetDamageModifiers();
     defmt = def->GetMovementType();
 
-    if (def->IsFlight() and not ((Flight)def)->Moving())
+    if (def->IsFlight() and not((Flight)def)->Moving())
         defmt = NoMove; // Aircraft on the ground bomb away
 
     memset(weapon, 0, sizeof(weapon));
@@ -282,25 +290,30 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     ShiAssert(att->IsUnit());
 
     // Step our radar if we're shoot'n at them flying thingys..
-    if ( not def->OnGround())
+    if (not def->OnGround())
     {
         if (att->IsAggregate())
         {
-            att->StepRadar(1, 1, (float) d);
+            att->StepRadar(1, 1, (float)d);
 
-            if (att->GetRadarMode() == FEC_RADAR_AQUIRE)//me123
+            if (att->GetRadarMode() == FEC_RADAR_AQUIRE) //me123
             {
                 // Shortern our next combat interval if we're aquiring
                 // 2002-03-22 MODIFIED BY S.G. Combat time will happen using the experience of the shooter as well (3 to 8 seconds)
                 // ((Unit)att)->SetCombatTime(TheCampaign.CurrentTime - ((GROUND_COMBAT_CHECK_INTERVAL-rand()%3-2)*CampaignSeconds));
-                ((Unit)att)->SetCombatTime(TheCampaign.CurrentTime - (((BattalionClass *)att)->CombatTime() - (rand() % 4 + 6 - (TeamInfo[att->GetOwner()]->airDefenseExperience >> 5)) * CampaignSeconds));
+                ((Unit)att)->SetCombatTime(
+                    TheCampaign.CurrentTime -
+                    (((BattalionClass *)att)->CombatTime() -
+                     (rand() % 4 + 6 -
+                      (TeamInfo[att->GetOwner()]->airDefenseExperience >> 5)) *
+                         CampaignSeconds));
             }
         }
     }
 
     ((Unit)att)->CollectWeapons(damageMods, defmt, weapon, wcount, d);
 
-    if ( not weapon[0])
+    if (not weapon[0])
         return 0; // We have no weapons to shoot
 
     // Apply combat related bonuses
@@ -315,7 +328,8 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     else if (att->IsBattalion())
     {
         bonus *= ((Battalion)att)->AdjustForSupply();
-        ((Battalion)att)->SetUnitFatigue(((Battalion)att)->GetUnitFatigue() + 1);
+        ((Battalion)att)
+            ->SetUnitFatigue(((Battalion)att)->GetUnitFatigue() + 1);
     }
 
     // Minimum bonus
@@ -323,17 +337,18 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
         bonus = 0.01F;
 
     // Adjust by combat bonus
-    for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE and weapon[i] and wcount[i]; i++)
+    for (i = 0; i < MAX_TYPES_PER_CAMP_FIRE_MESSAGE and weapon[i] and wcount[i];
+         i++)
     {
         wcount[i] = FloatToInt32(wcount[i] * bonus);
 
-        if ( not wcount[i])
+        if (not wcount[i])
             wcount[i] = 1; // minimum of one shot, regardless of bonuses
 
         shot++;
     }
 
-    if ( not shot)
+    if (not shot)
         return 0;
 
     // Mark us as taking a shot (only vs other air)
@@ -348,20 +363,22 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
     {
         if (((CampEntity)def)->IsAggregate())
         {
-            FalconCampWeaponsFire *cwfm = new FalconCampWeaponsFire(def->Id(), FalconLocalGame);
+            FalconCampWeaponsFire *cwfm =
+                new FalconCampWeaponsFire(def->Id(), FalconLocalGame);
             cwfm->dataBlock.shooterID = att->Id();
-            memcpy(cwfm->dataBlock.weapon, weapon, sizeof cwfm->dataBlock.weapon);
+            memcpy(cwfm->dataBlock.weapon, weapon,
+                   sizeof cwfm->dataBlock.weapon);
             memcpy(cwfm->dataBlock.shots, wcount, sizeof cwfm->dataBlock.shots);
-            ((CampBaseClass*)def)->ApplyDamage(cwfm, 0);
+            ((CampBaseClass *)def)->ApplyDamage(cwfm, 0);
         }
         else
         {
-            FireOnSimEntity(att, (CampBaseClass*)def, weapon, wcount, 255);
+            FireOnSimEntity(att, (CampBaseClass *)def, weapon, wcount, 255);
         }
     }
     else if (def->IsSim())
     {
-        FireOnSimEntity(att, (SimBaseClass*)def, weapon[0]);
+        FireOnSimEntity(att, (SimBaseClass *)def, weapon[0]);
     }
 
     return shot;
@@ -376,13 +393,13 @@ int DoCombat(CampBaseClass *att, FalconEntity *def)
 // 2002-02-20 COMMENT BY S.G. It is called as well if the WP action is WP_REFUEL under some condition (see ResetCurrentWP).
 int DoWPAction(Flight u)
 {
-    int       action = WP_NOTHING, speed;
+    int action = WP_NOTHING, speed;
     WayPoint w, pw;
     FalconRadioChatterMessage *msg;
 
     w = u->GetCurrentUnitWP(); // Find this unit's WP action
 
-    if ( not w)
+    if (not w)
         return 0;
 
     action = w->GetWPAction();
@@ -390,163 +407,174 @@ int DoWPAction(Flight u)
     // Check Actions
     switch (action)
     {
-        case WP_TAKEOFF:
-        {
+    case WP_TAKEOFF:
+    {
 #ifdef KEV_DEBUG
-            //noprint MonoPrint("Unit %d taking off at time %d / %d.\n", u->GetCampID(), Camp_GetCurrentTime(), w->GetWPArrivalTime());
+        //noprint MonoPrint("Unit %d taking off at time %d / %d.\n", u->GetCampID(), Camp_GetCurrentTime(), w->GetWPArrivalTime());
 #endif
-            AircraftLaunch(u); // Tell UI
-            // Rack up a mission
-            Squadron sq = (Squadron) u->GetUnitSquadron();
+        AircraftLaunch(u); // Tell UI
+        // Rack up a mission
+        Squadron sq = (Squadron)u->GetUnitSquadron();
 
-            if (sq)
-                sq->SendUnitMessage(u->Id(), FalconUnitMessage::unitStatistics, 0, ASTAT_MISSIONS, 1);
-        }
-        break;
+        if (sq)
+            sq->SendUnitMessage(u->Id(), FalconUnitMessage::unitStatistics, 0,
+                                ASTAT_MISSIONS, 1);
+    }
+    break;
 
-        case WP_ASSEMBLE:
+    case WP_ASSEMBLE:
 
-            // Radio Chatter messages
-            if ( not u->GetUnitMissionID())
-            {
-                // Main flight
-                msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
-                msg->dataBlock.from = u->Id();
-                msg->dataBlock.to = MESSAGE_FOR_PACKAGE;
-                msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
-                msg->dataBlock.message = rcPACKJOINED;
-                msg->dataBlock.edata[0] = u->callsign_id;
-                msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
-                FalconSendMessage(msg, FALSE);
-                msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
-                msg->dataBlock.from = u->Id();
-                msg->dataBlock.to = MESSAGE_FOR_PACKAGE;
-                msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
-                msg->dataBlock.message = rcPACKDEPARTING;
-                msg->dataBlock.edata[0] = u->callsign_id;
-                msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
-                msg->dataBlock.time_to_play = 2 * CampaignSeconds;
-                FalconSendMessage(msg, FALSE);
-                FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
-                msg->dataBlock.from = u->Id();
-                msg->dataBlock.to = MESSAGE_FOR_TEAM;
-                msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
-                msg->dataBlock.message = rcFLIGHTIN;
-                msg->dataBlock.edata[0] = u->callsign_id;
-                msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
-                //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes
-                msg->dataBlock.edata[2] = 32767;
-                msg->dataBlock.time_to_play = 4 * CampaignSeconds;
-                FalconSendMessage(msg, FALSE);
-            }
-            else
-            {
-                // non main flight arriving at assembly point
-                // KCK: We may want to skip this if the package has already departed
-                msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
-                msg->dataBlock.from = u->Id();
-                msg->dataBlock.to = MESSAGE_FOR_PACKAGE;
-                msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
-                msg->dataBlock.message = rcPACKATJOIN;
-                msg->dataBlock.edata[0] = -1;
-                msg->dataBlock.edata[1] = -1;
-                msg->dataBlock.edata[2] = u->callsign_id;
-                msg->dataBlock.edata[3] = u->GetFlightLeadCallNumber();
-                FalconSendMessage(msg, FALSE);
-            }
-
-            break;
-
-        case WP_POSTASSEMBLE:
-            // We're done with our task, so we can now be reassigned
-            u->SetUnitPriority(0);
-            break;
-
-        case WP_REARM:
-        case WP_REFUEL:
-            u->SetBurntFuel(0);
-            pw = w->GetNextWP();
-
-            if ( not pw)
-                GoHome((Flight)u);
-
-            break;
-
-        case WP_CASCP:
+        // Radio Chatter messages
+        if (not u->GetUnitMissionID())
         {
-            Flight fac = u->GetFACFlight();
-
-            AircraftClass* lead = (AircraftClass*)u->GetComponentLead();
-
-            // If we've got a FAC flight attached to us, send it a message
-            // there has to be someone alive to talk
-            if (fac and lead)
-            {
-                SendCallToAWACS(lead, rcFACCONTACT);
-                // SendCallToAWACS(lead, rcFACREADY); // JPO removed so it doesn't collide with previous - could delay instead.
-            }
+            // Main flight
+            msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
+            msg->dataBlock.from = u->Id();
+            msg->dataBlock.to = MESSAGE_FOR_PACKAGE;
+            msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
+            msg->dataBlock.message = rcPACKJOINED;
+            msg->dataBlock.edata[0] = u->callsign_id;
+            msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
+            FalconSendMessage(msg, FALSE);
+            msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
+            msg->dataBlock.from = u->Id();
+            msg->dataBlock.to = MESSAGE_FOR_PACKAGE;
+            msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
+            msg->dataBlock.message = rcPACKDEPARTING;
+            msg->dataBlock.edata[0] = u->callsign_id;
+            msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
+            msg->dataBlock.time_to_play = 2 * CampaignSeconds;
+            FalconSendMessage(msg, FALSE);
+            FalconRadioChatterMessage *msg =
+                new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
+            msg->dataBlock.from = u->Id();
+            msg->dataBlock.to = MESSAGE_FOR_TEAM;
+            msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
+            msg->dataBlock.message = rcFLIGHTIN;
+            msg->dataBlock.edata[0] = u->callsign_id;
+            msg->dataBlock.edata[1] = u->GetFlightLeadCallNumber();
+            //M.N. changed to 32767 -> flexibly use randomized value of max available eval indexes
+            msg->dataBlock.edata[2] = 32767;
+            msg->dataBlock.time_to_play = 4 * CampaignSeconds;
+            FalconSendMessage(msg, FALSE);
         }
+        else
+        {
+            // non main flight arriving at assembly point
+            // KCK: We may want to skip this if the package has already departed
+            msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
+            msg->dataBlock.from = u->Id();
+            msg->dataBlock.to = MESSAGE_FOR_PACKAGE;
+            msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
+            msg->dataBlock.message = rcPACKATJOIN;
+            msg->dataBlock.edata[0] = -1;
+            msg->dataBlock.edata[1] = -1;
+            msg->dataBlock.edata[2] = u->callsign_id;
+            msg->dataBlock.edata[3] = u->GetFlightLeadCallNumber();
+            FalconSendMessage(msg, FALSE);
+        }
+
         break;
 
-        case WP_LAND:
-            // We're either landing mid-mission or as part of our mission -
-            // Check if we're planning to take off again
-            pw = w->GetNextWP();
+    case WP_POSTASSEMBLE:
+        // We're done with our task, so we can now be reassigned
+        u->SetUnitPriority(0);
+        break;
 
-            if ( not pw or ( not (w->GetWPFlags() bitand WPF_TAKEOFF) and pw->GetWPAction() not_eq WP_TAKEOFF))
-            {
-                UpdateSquadronStatus(u, TRUE, FALSE);
-                return -1;
-            }
+    case WP_REARM:
+    case WP_REFUEL:
+        u->SetBurntFuel(0);
+        pw = w->GetNextWP();
 
-            // Check if this was an airlift mission, and give us supplies, if so
-            if (u->GetUnitMission() == AMIS_AIRLIFT)
-            {
-                int team = u->GetTeam();
-                // RV - Biker - Make airlift supply dependent on package strength
-                TeamInfo[team]->SetSupplyAvail(TeamInfo[team]->GetSupplyAvail() + AIRLIFT_SUPPLIES * u->CountUnitElements() / 3);
-                TeamInfo[team]->SetFuelAvail(TeamInfo[team]->GetFuelAvail() + AIRLIFT_FUEL * u->CountUnitElements() / 3);
-                TeamInfo[team]->SetReplacementsAvail(TeamInfo[team]->GetReplacementsAvail() + AIRLIFT_REPLACEMENTS * u->CountUnitElements() / 3);
+        if (not pw)
+            GoHome((Flight)u);
+
+        break;
+
+    case WP_CASCP:
+    {
+        Flight fac = u->GetFACFlight();
+
+        AircraftClass *lead = (AircraftClass *)u->GetComponentLead();
+
+        // If we've got a FAC flight attached to us, send it a message
+        // there has to be someone alive to talk
+        if (fac and lead)
+        {
+            SendCallToAWACS(lead, rcFACCONTACT);
+            // SendCallToAWACS(lead, rcFACREADY); // JPO removed so it doesn't collide with previous - could delay instead.
+        }
+    }
+    break;
+
+    case WP_LAND:
+        // We're either landing mid-mission or as part of our mission -
+        // Check if we're planning to take off again
+        pw = w->GetNextWP();
+
+        if (not pw or (not(w->GetWPFlags() bitand WPF_TAKEOFF) and
+                       pw->GetWPAction() not_eq WP_TAKEOFF))
+        {
+            UpdateSquadronStatus(u, TRUE, FALSE);
+            return -1;
+        }
+
+        // Check if this was an airlift mission, and give us supplies, if so
+        if (u->GetUnitMission() == AMIS_AIRLIFT)
+        {
+            int team = u->GetTeam();
+            // RV - Biker - Make airlift supply dependent on package strength
+            TeamInfo[team]->SetSupplyAvail(TeamInfo[team]->GetSupplyAvail() +
+                                           AIRLIFT_SUPPLIES *
+                                               u->CountUnitElements() / 3);
+            TeamInfo[team]->SetFuelAvail(TeamInfo[team]->GetFuelAvail() +
+                                         AIRLIFT_FUEL * u->CountUnitElements() /
+                                             3);
+            TeamInfo[team]->SetReplacementsAvail(
+                TeamInfo[team]->GetReplacementsAvail() +
+                AIRLIFT_REPLACEMENTS * u->CountUnitElements() / 3);
 #ifdef DEBUG
-                gSupplyFromAirlift[team] += AIRLIFT_SUPPLIES;
-                gFuelFromAirlift[team] += AIRLIFT_FUEL;
-                gReplacmentsFromAirlift[team] += AIRLIFT_REPLACEMENTS;
+            gSupplyFromAirlift[team] += AIRLIFT_SUPPLIES;
+            gFuelFromAirlift[team] += AIRLIFT_FUEL;
+            gReplacmentsFromAirlift[team] += AIRLIFT_REPLACEMENTS;
 #endif
-            }
+        }
 
-            if (pw->GetWPAction() == WP_TAKEOFF)
-                u->SetCurrentUnitWP(pw);
+        if (pw->GetWPAction() == WP_TAKEOFF)
+            u->SetCurrentUnitWP(pw);
 
-            break;
+        break;
 
-        case WP_AIRDROP:
-            if (u->Cargo())
-            {
-                // Drop off our cargo unit
-                u->UnloadUnit();
-            }
+    case WP_AIRDROP:
+        if (u->Cargo())
+        {
+            // Drop off our cargo unit
+            u->UnloadUnit();
+        }
 
-            break;
+        break;
 
-        case WP_PICKUP:
+    case WP_PICKUP:
 
-            // Pick up a unit
-            if (u->GetUnitMission() == AMIS_AIRCAV and not u->Cargo())
-                u->LoadUnit(NULL);
+        // Pick up a unit
+        if (u->GetUnitMission() == AMIS_AIRCAV and not u->Cargo())
+            u->LoadUnit(NULL);
 
-            break;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     // Check Flags
-    if ((w->GetWPFlags() bitand WPF_REPEAT) or (w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
+    if ((w->GetWPFlags() bitand WPF_REPEAT) or
+        (w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
     {
         speed = u->GetCruiseSpeed();
 
         // Check if we've been here long enough
-        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and not (w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
+        if (Camp_GetCurrentTime() > w->GetWPDepartureTime() and
+            not(w->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS))
         {
             // If so, go on to the next wp and adjust their times from now.
             u->SetCurrentUnitWP(w->GetNextWP());
@@ -555,7 +583,8 @@ int DoWPAction(Flight u)
             if (u->GetUnitMission() == AMIS_AWACS)
             {
                 // AWACS off station
-                msg = new FalconRadioChatterMessage(FalconNullId, FalconLocalGame);
+                msg = new FalconRadioChatterMessage(FalconNullId,
+                                                    FalconLocalGame);
                 msg->dataBlock.from = u->Id();
                 msg->dataBlock.to = MESSAGE_FOR_TEAM;
                 msg->dataBlock.message = rcAWACSOFF;
@@ -594,13 +623,19 @@ int DoWPAction(Flight u)
             u->SetTacan(1);
         }
 
-        u->SetUnitPriority(0); // We're just hanging out here... waiting for something to do.
+        u->SetUnitPriority(
+            0); // We're just hanging out here... waiting for something to do.
     }
 
-    if (w->GetWPFlags() bitand WPF_TARGET and not (w->GetWPFlags() bitand WPF_LAND) and not (w->GetWPFlags() bitand WPF_TAKEOFF) and not (w->GetWPFlags() bitand WPF_CP) and not (w->GetWPFlags() bitand WPF_REPEAT))
+    if (w->GetWPFlags() bitand WPF_TARGET and
+        not(w->GetWPFlags() bitand WPF_LAND) and
+        not(w->GetWPFlags() bitand WPF_TAKEOFF) and
+        not(w->GetWPFlags() bitand WPF_CP) and
+        not(w->GetWPFlags() bitand WPF_REPEAT))
     {
         // Radio Chatter message
-        FalconRadioChatterMessage *msg = new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
+        FalconRadioChatterMessage *msg =
+            new FalconRadioChatterMessage(u->Id(), FalconLocalGame);
         msg->dataBlock.from = u->Id();
         msg->dataBlock.to = MESSAGE_FOR_PACKAGE;
         msg->dataBlock.voice_id = u->GetFlightLeadVoiceID();
@@ -619,8 +654,10 @@ int DoWPAction(Flight u)
         // KCK NOTE: We might want to check for abort here.
     }
 
-    if (w->GetWPFlags() bitand WPF_TARGET or w->GetWPFlags() bitand WPF_TURNPOINT)
-        u->SetUnitPriority(0); // We're done with our task, so we can now be reassigned
+    if (w->GetWPFlags() bitand WPF_TARGET or
+        w->GetWPFlags() bitand WPF_TURNPOINT)
+        u->SetUnitPriority(
+            0); // We're done with our task, so we can now be reassigned
 
     return 1;
 }
@@ -726,7 +763,7 @@ int EngageParent(Unit u, FalconEntity *e)
 
     p = u->GetUnitParent();
 
-    if ( not p or p->Engaged())
+    if (not p or p->Engaged())
         return 0;
 
     p->SetTarget(e);
@@ -737,4 +774,3 @@ int EngageParent(Unit u, FalconEntity *e)
 //
 // Aircraft support functions
 //
-

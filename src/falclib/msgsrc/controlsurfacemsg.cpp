@@ -5,23 +5,29 @@
  * Generated from file EVENTS.XLS by Leon Rosenshein
  */
 
-#include "MsgInc/ControlSurfaceMsg.h"
+#include "msginc/controlsurfacemsg.h"
 #include "mesg.h"
-#include "MsgInc/RequestObject.h"
+#include "msginc/requestobject.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
-#include "OTWDrive.h"
+#include "invalidbufferexception.h"
+#include "otwdrive.h"
 #include "simdrive.h"
 
-FalconControlSurfaceMsg::FalconControlSurfaceMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(ControlSurfaceMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconControlSurfaceMsg::FalconControlSurfaceMsg(VU_ID entityId,
+                                                 VuTargetEntity* target,
+                                                 VU_BOOL loopback)
+    : FalconEvent(ControlSurfaceMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-FalconControlSurfaceMsg::FalconControlSurfaceMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(ControlSurfaceMsg, FalconEvent::SimThread, senderid, target)
+FalconControlSurfaceMsg::FalconControlSurfaceMsg(VU_MSG_TYPE type,
+                                                 VU_ID senderid, VU_ID target)
+    : FalconEvent(ControlSurfaceMsg, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -43,9 +49,10 @@ int FalconControlSurfaceMsg::Process(uchar autodisp)
 
     if (theEntity)
     {
-        if ( not theEntity->IsLocal())
+        if (not theEntity->IsLocal())
         {
-            theEntity->nonLocalData->timer3 = (float)SimLibElapsedTime / SEC_TO_MSEC;
+            theEntity->nonLocalData->timer3 =
+                (float)SimLibElapsedTime / SEC_TO_MSEC;
         }
     }
     else
@@ -58,4 +65,3 @@ int FalconControlSurfaceMsg::Process(uchar autodisp)
 
     return TRUE;
 }
-

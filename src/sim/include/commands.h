@@ -1,86 +1,86 @@
 #ifndef _COMMANDS_H
 #define _COMMANDS_H
 
-#define SHIFT_KEY  0x1
-#define CTRL_KEY   0x2
-#define ALT_KEY    0x4
-#define MODS_MASK  (CTRL_KEY bitor ALT_KEY bitor SHIFT_KEY)
-#define KEY_DOWN   0x8
-#define SECOND_KEY_SHIFT        8
-#define SECOND_KEY_MOD_SHIFT    16
+#define SHIFT_KEY 0x1
+#define CTRL_KEY 0x2
+#define ALT_KEY 0x4
+#define MODS_MASK (CTRL_KEY bitor ALT_KEY bitor SHIFT_KEY)
+#define KEY_DOWN 0x8
+#define SECOND_KEY_SHIFT 8
+#define SECOND_KEY_MOD_SHIFT 16
 
 
-void SimSetBubbleSize(unsigned long val, int state, void*);  // JB 000509
+void SimSetBubbleSize(unsigned long val, int state, void *);  // JB 000509
 void SimHookToggle(unsigned long val, int state, void *); // JB carrier
 void SimHookUp(unsigned long val, int state, void *);  // MD
 void SimHookDown(unsigned long val, int state, void *);  // MD
 
 // JPO
-void SimThrottleIdleDetent(unsigned long, int state, void*); // JPO
-void SimJfsStart(unsigned long, int state, void*); // JPO
-void SimEpuToggle(unsigned long, int state, void*);  // JPO
-void SimEpuOff(unsigned long, int state, void*);  // MD
-void SimEpuAuto(unsigned long, int state, void*);  // MD
-void SimEpuOn(unsigned long, int state, void*);  // MD
-void AFRudderTrimLeft(unsigned long, int state, void*); // JPO
-void AFRudderTrimRight(unsigned long, int state, void*); // JPO
-void AFAileronTrimLeft(unsigned long, int state, void*); // JPO
-void AFAileronTrimRight(unsigned long, int state, void*); // JPO
-void AFElevatorTrimUp(unsigned long, int state, void*); // JPO
-void AFElevatorTrimDown(unsigned long, int state, void*); // JPO
-void AFResetTrim(unsigned long, int state, void*); // JPO
-void AFAlternateGear(unsigned long, int state, void*); // JPO
-void AFAlternateGearReset(unsigned long, int state, void*); // JPO
-void SimFLIRToggle(unsigned long, int state, void*); // JPO
-void SimToggleRealisticAvionics(unsigned long, int state, void*); // JPO
-void SimIncFuelSwitch(unsigned long, int state, void*); // JPO
-void SimDecFuelSwitch(unsigned long, int state, void*); // JPO
-void SimFuelSwitchTest(unsigned long, int state, void*); // MD
-void SimFuelSwitchNorm(unsigned long, int state, void*); // MD
-void SimFuelSwitchResv(unsigned long, int state, void*); // MD
-void SimFuelSwitchWingInt(unsigned long, int state, void*); // MD
-void SimFuelSwitchWingExt(unsigned long, int state, void*); // MD
-void SimFuelSwitchCenterExt(unsigned long, int state, void*); // MD
-void SimIncFuelPump(unsigned long, int state, void*); // JPO
-void SimDecFuelPump(unsigned long, int state, void*); // JPO
-void SimFuelPumpOff(unsigned long, int state, void*); // MD
-void SimFuelPumpNorm(unsigned long, int state, void*); // MD
-void SimFuelPumpAft(unsigned long, int state, void*); // MD
-void SimFuelPumpFwd(unsigned long, int state, void*); // MD
-void SimToggleMasterFuel(unsigned long, int state, void*); // JPO
-void SimMasterFuelOn(unsigned long, int state, void*);  // MD
-void SimMasterFuelOff(unsigned long, int state, void*);  // MD
-void SimIncAirSource(unsigned long, int state, void*); // JPO
-void SimDecAirSource(unsigned long, int state, void*); // JPO
-void SimAirSourceOff(unsigned long, int state, void*); // MD
-void SimAirSourceNorm(unsigned long, int state, void*); // MD
-void SimAirSourceDump(unsigned long, int state, void*); // MD
-void SimAirSourceRam(unsigned long, int state, void*); // MD
-void SimDecLeftAuxComDigit(unsigned long, int state, void*); // JPO
-void SimDecCenterAuxComDigit(unsigned long, int state, void*); //JPO
-void SimDecRightAuxComDigit(unsigned long, int state, void*); //JPO
-void SimInteriorLight(unsigned long, int state, void*); //JPO
-void SimInstrumentLight(unsigned long, int state, void*); //JPO
-void SimSpotLight(unsigned long, int state, void*); //JPO
-void SimToggleTFR(unsigned long, int state, void*); //JPO
-void SimMainPowerDec(unsigned long, int state, void*); //JPO
-void SimMainPowerInc(unsigned long, int state, void*); //JPO
-void SimMainPowerOff(unsigned long, int state, void*); //MD
-void SimMainPowerBatt(unsigned long, int state, void*); //MD
-void SimMainPowerMain(unsigned long, int state, void*); //MD
-void AFFullFlap(unsigned long, int state, void*); // JPO
-void AFNoFlap(unsigned long, int state, void*); // JPO
-void AFIncFlap(unsigned long, int state, void*); // JPO
-void AFDecFlap(unsigned long, int state, void*); // JPO
-void AFFullLEF(unsigned long, int state, void*); // JPO
-void AFNoLEF(unsigned long, int state, void*); // JPO
-void AFIncLEF(unsigned long, int state, void*); // JPO
-void AFDecLEF(unsigned long, int state, void*); // JPO
-void AFDragChute(unsigned long, int state, void*); // JPO
-void AFCanopyToggle(unsigned long, int state, void*); // JPO
-void SimReverseThrusterOn(unsigned long, int state, void*); // FRB
-void SimReverseThrusterOff(unsigned long, int state, void*); // FRB
-void SimReverseThrusterToggle(unsigned long, int state, void*); // FRB
+void SimThrottleIdleDetent(unsigned long, int state, void *); // JPO
+void SimJfsStart(unsigned long, int state, void *); // JPO
+void SimEpuToggle(unsigned long, int state, void *);  // JPO
+void SimEpuOff(unsigned long, int state, void *);  // MD
+void SimEpuAuto(unsigned long, int state, void *);  // MD
+void SimEpuOn(unsigned long, int state, void *);  // MD
+void AFRudderTrimLeft(unsigned long, int state, void *); // JPO
+void AFRudderTrimRight(unsigned long, int state, void *); // JPO
+void AFAileronTrimLeft(unsigned long, int state, void *); // JPO
+void AFAileronTrimRight(unsigned long, int state, void *); // JPO
+void AFElevatorTrimUp(unsigned long, int state, void *); // JPO
+void AFElevatorTrimDown(unsigned long, int state, void *); // JPO
+void AFResetTrim(unsigned long, int state, void *); // JPO
+void AFAlternateGear(unsigned long, int state, void *); // JPO
+void AFAlternateGearReset(unsigned long, int state, void *); // JPO
+void SimFLIRToggle(unsigned long, int state, void *); // JPO
+void SimToggleRealisticAvionics(unsigned long, int state, void *); // JPO
+void SimIncFuelSwitch(unsigned long, int state, void *); // JPO
+void SimDecFuelSwitch(unsigned long, int state, void *); // JPO
+void SimFuelSwitchTest(unsigned long, int state, void *); // MD
+void SimFuelSwitchNorm(unsigned long, int state, void *); // MD
+void SimFuelSwitchResv(unsigned long, int state, void *); // MD
+void SimFuelSwitchWingInt(unsigned long, int state, void *); // MD
+void SimFuelSwitchWingExt(unsigned long, int state, void *); // MD
+void SimFuelSwitchCenterExt(unsigned long, int state, void *); // MD
+void SimIncFuelPump(unsigned long, int state, void *); // JPO
+void SimDecFuelPump(unsigned long, int state, void *); // JPO
+void SimFuelPumpOff(unsigned long, int state, void *); // MD
+void SimFuelPumpNorm(unsigned long, int state, void *); // MD
+void SimFuelPumpAft(unsigned long, int state, void *); // MD
+void SimFuelPumpFwd(unsigned long, int state, void *); // MD
+void SimToggleMasterFuel(unsigned long, int state, void *); // JPO
+void SimMasterFuelOn(unsigned long, int state, void *);  // MD
+void SimMasterFuelOff(unsigned long, int state, void *);  // MD
+void SimIncAirSource(unsigned long, int state, void *); // JPO
+void SimDecAirSource(unsigned long, int state, void *); // JPO
+void SimAirSourceOff(unsigned long, int state, void *); // MD
+void SimAirSourceNorm(unsigned long, int state, void *); // MD
+void SimAirSourceDump(unsigned long, int state, void *); // MD
+void SimAirSourceRam(unsigned long, int state, void *); // MD
+void SimDecLeftAuxComDigit(unsigned long, int state, void *); // JPO
+void SimDecCenterAuxComDigit(unsigned long, int state, void *); //JPO
+void SimDecRightAuxComDigit(unsigned long, int state, void *); //JPO
+void SimInteriorLight(unsigned long, int state, void *); //JPO
+void SimInstrumentLight(unsigned long, int state, void *); //JPO
+void SimSpotLight(unsigned long, int state, void *); //JPO
+void SimToggleTFR(unsigned long, int state, void *); //JPO
+void SimMainPowerDec(unsigned long, int state, void *); //JPO
+void SimMainPowerInc(unsigned long, int state, void *); //JPO
+void SimMainPowerOff(unsigned long, int state, void *); //MD
+void SimMainPowerBatt(unsigned long, int state, void *); //MD
+void SimMainPowerMain(unsigned long, int state, void *); //MD
+void AFFullFlap(unsigned long, int state, void *); // JPO
+void AFNoFlap(unsigned long, int state, void *); // JPO
+void AFIncFlap(unsigned long, int state, void *); // JPO
+void AFDecFlap(unsigned long, int state, void *); // JPO
+void AFFullLEF(unsigned long, int state, void *); // JPO
+void AFNoLEF(unsigned long, int state, void *); // JPO
+void AFIncLEF(unsigned long, int state, void *); // JPO
+void AFDecLEF(unsigned long, int state, void *); // JPO
+void AFDragChute(unsigned long, int state, void *); // JPO
+void AFCanopyToggle(unsigned long, int state, void *); // JPO
+void SimReverseThrusterOn(unsigned long, int state, void *); // FRB
+void SimReverseThrusterOff(unsigned long, int state, void *); // FRB
+void SimReverseThrusterToggle(unsigned long, int state, void *); // FRB
 
 //MD 20031003
 void SimExtFuelTrans(unsigned long val, int state, void *);
@@ -88,13 +88,13 @@ void SimFuelTransNorm(unsigned long val, int state, void *);
 void SimFuelTransWing(unsigned long val, int state, void *);
 
 //MI
-void SimICPIFF(unsigned long val, int state, void*);
-void SimICPLIST(unsigned long val, int state, void*);
-void SimICPTHREE(unsigned long val, int state, void*);
-void SimICPSIX(unsigned long val, int state, void*);
-void SimICPEIGHT(unsigned long val, int state, void*);
-void SimICPNINE(unsigned long val, int state, void*);
-void SimICPZERO(unsigned long val, int state, void*);
+void SimICPIFF(unsigned long val, int state, void *);
+void SimICPLIST(unsigned long val, int state, void *);
+void SimICPTHREE(unsigned long val, int state, void *);
+void SimICPSIX(unsigned long val, int state, void *);
+void SimICPEIGHT(unsigned long val, int state, void *);
+void SimICPNINE(unsigned long val, int state, void *);
+void SimICPZERO(unsigned long val, int state, void *);
 void SimICPNav1(unsigned long val, int state, void *);
 void SimICPAA1(unsigned long val, int state, void *);
 void SimICPAG1(unsigned long val, int state, void *);
@@ -151,19 +151,19 @@ void SimEWSChaffOff(unsigned long val, int state, void *);  // MD
 void SimEWSFlarePower(unsigned long val, int state, void *);
 void SimEWSFlareOn(unsigned long val, int state, void *);  // MD
 void SimEWSFlareOff(unsigned long val, int state, void *);  // MD
-void SimEWSPGMDec(unsigned long, int state, void*);
-void SimEWSPGMInc(unsigned long, int state, void*);
-void SimEWSModeOff(unsigned long, int state, void*);  // MD
-void SimEWSModeStby(unsigned long, int state, void*);  // MD
-void SimEWSModeMan(unsigned long, int state, void*);  // MD
-void SimEWSModeSemi(unsigned long, int state, void*);  // MD
-void SimEWSModeAuto(unsigned long, int state, void*);  // MD
-void SimEWSProgDec(unsigned long, int state, void*);
-void SimEWSProgInc(unsigned long, int state, void*);
-void SimEWSProgOne(unsigned long, int state, void*);  // MD
-void SimEWSProgTwo(unsigned long, int state, void*);  // MD
-void SimEWSProgThree(unsigned long, int state, void*);  // MD
-void SimEWSProgFour(unsigned long, int state, void*);  // MD
+void SimEWSPGMDec(unsigned long, int state, void *);
+void SimEWSPGMInc(unsigned long, int state, void *);
+void SimEWSModeOff(unsigned long, int state, void *);  // MD
+void SimEWSModeStby(unsigned long, int state, void *);  // MD
+void SimEWSModeMan(unsigned long, int state, void *);  // MD
+void SimEWSModeSemi(unsigned long, int state, void *);  // MD
+void SimEWSModeAuto(unsigned long, int state, void *);  // MD
+void SimEWSProgDec(unsigned long, int state, void *);
+void SimEWSProgInc(unsigned long, int state, void *);
+void SimEWSProgOne(unsigned long, int state, void *);  // MD
+void SimEWSProgTwo(unsigned long, int state, void *);  // MD
+void SimEWSProgThree(unsigned long, int state, void *);  // MD
+void SimEWSProgFour(unsigned long, int state, void *);  // MD
 void SimInhibitVMS(unsigned long val, int state, void *);
 void SimVMSOn(unsigned long val, int state, void *);  // MD
 void SimVMSOff(unsigned long val, int state, void *);  // MD
@@ -240,7 +240,7 @@ void SimTriggerFirstDetent(unsigned long val, int state, void *);
 void SimTriggerSecondDetent(unsigned long val, int state, void *);
 void SimRetUp(unsigned long val, int state, void *);
 void SimRetDn(unsigned long val, int state, void *);
-void SimCursorEnable(unsigned long, int state, void*);
+void SimCursorEnable(unsigned long, int state, void *);
 void SimStepComm1VolumeUp(unsigned long val, int state, void *);
 void SimStepComm1VolumeDown(unsigned long val, int state, void *);
 void SimStepComm2VolumeUp(unsigned long val, int state, void *);
@@ -295,7 +295,8 @@ void SimHUDOff(unsigned long val, int state, void *);  // MD
 
 void SimRwrPower(unsigned long val, int state, void *);
 
-void SendRadioMenuMsg(int, int, int); // not an actual command, but is called by RadioMessageSend
+void SendRadioMenuMsg(
+    int, int, int); // not an actual command, but is called by RadioMessageSend
 
 void BreakToggle(unsigned long val, int state, void *);
 
@@ -304,8 +305,8 @@ void ToggleNVGMode(unsigned long val, int state, void *);
 void ToggleSmoke(unsigned long val, int state, void *);
 void TimeAccelerate(unsigned long val, int state, void *);
 void TimeAccelerateMaxToggle(unsigned long val, int state, void *);
-void TimeAccelerateInc(unsigned long val, int state, void *);  // JB 010109
-void TimeAccelerateDec(unsigned long val, int state, void *);  // JB 010109
+void TimeAccelerateInc(unsigned long val, int state, void *); // JB 010109
+void TimeAccelerateDec(unsigned long val, int state, void *); // JB 010109
 void SimFuelDump(unsigned long val, int state, void *); // JB 020313
 void SimCycleDebugLabels(unsigned long val, int state, void *); // JB 020316
 void AFABFull(unsigned long val, int state, void *);
@@ -334,8 +335,8 @@ void SimRadarPrevTarget(unsigned long val, int state, void *);
 void SimRadarBarScanChange(unsigned long val, int state, void *);
 void SimRadarAzimuthScanChange(unsigned long val, int state, void *);
 void SimRadarFOVStep(unsigned long val, int state, void *);
-void SimMaverickFOVStep(unsigned long val, int state, void * pButton);
-void SimSOIFOVStep(unsigned long val, int state, void * pButton);
+void SimMaverickFOVStep(unsigned long val, int state, void *pButton);
+void SimSOIFOVStep(unsigned long val, int state, void *pButton);
 void SimRadarFreeze(unsigned long val, int state, void *);
 void SimRadarSnowplow(unsigned long val, int state, void *);
 void SimRadarCursorZero(unsigned long val, int state, void *);
@@ -347,7 +348,7 @@ void SimACMSlew(unsigned long val, int state, void *);
 void SimACM30x20(unsigned long val, int state, void *);
 void SimRadarElevationDown(unsigned long val, int state, void *);
 void SimRadarElevationUp(unsigned long val, int state, void *);
-void SimRadarElevationCenter(unsigned long val, int state, void * pButton);
+void SimRadarElevationCenter(unsigned long val, int state, void *pButton);
 void SimRWRSetPriority(unsigned long val, int state, void *);
 //void SimRWRSetSound (unsigned long val, int state, void *);
 void SimRWRSetTargetSep(unsigned long val, int state, void *);
@@ -396,8 +397,8 @@ void AFBrakesOut(unsigned long val, int state, void *);
 void AFBrakesIn(unsigned long val, int state, void *);
 void AFBrakesToggle(unsigned long val, int state, void *);
 void AFGearToggle(unsigned long val, int state, void *);
-void AFGearUp(unsigned long val, int state, void *);   // MD
-void AFGearDown(unsigned long val, int state, void *);   // MD
+void AFGearUp(unsigned long val, int state, void *); // MD
+void AFGearDown(unsigned long val, int state, void *); // MD
 void AFCoarseThrottleUp(unsigned long val, int state, void *);
 void AFCoarseThrottleDown(unsigned long val, int state, void *);
 void AFElevatorUp(unsigned long val, int state, void *);
@@ -414,19 +415,27 @@ void OTWTimeOfDayStep(unsigned long val, int state, void *);
 void OTWStepNextAC(unsigned long val, int state, void *);
 void OTWStepPrevAC(unsigned long val, int state, void *);
 void OTWStepNextPadlock(unsigned long val, int state, void *);
-void OTWStepNextPadlockAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
-void OTWStepNextPadlockAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWStepNextPadlockAA(unsigned long val, int state,
+                          void *); // 2002-03-12 S.G.
+void OTWStepNextPadlockAG(unsigned long val, int state,
+                          void *); // 2002-03-12 S.G.
 void OTWStepPrevPadlock(unsigned long val, int state, void *);
-void OTWStepPrevPadlockAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
-void OTWStepPrevPadlockAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWStepPrevPadlockAA(unsigned long val, int state,
+                          void *); // 2002-03-12 S.G.
+void OTWStepPrevPadlockAG(unsigned long val, int state,
+                          void *); // 2002-03-12 S.G.
 void OTWToggleNames(unsigned long val, int state, void *);
 void OTWToggleCampNames(unsigned long val, int state, void *);
 void OTWSelectF3PadlockMode(unsigned long val, int state, void *);
-void OTWSelectF3PadlockModeAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
-void OTWSelectF3PadlockModeAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWSelectF3PadlockModeAA(unsigned long val, int state,
+                              void *); // 2002-03-12 S.G.
+void OTWSelectF3PadlockModeAG(unsigned long val, int state,
+                              void *); // 2002-03-12 S.G.
 void OTWSelectEFOVPadlockMode(unsigned long val, int state, void *);
-void OTWSelectEFOVPadlockModeAA(unsigned long val, int state, void *); // 2002-03-12 S.G.
-void OTWSelectEFOVPadlockModeAG(unsigned long val, int state, void *); // 2002-03-12 S.G.
+void OTWSelectEFOVPadlockModeAA(unsigned long val, int state,
+                                void *); // 2002-03-12 S.G.
+void OTWSelectEFOVPadlockModeAG(unsigned long val, int state,
+                                void *); // 2002-03-12 S.G.
 void OTWRadioMenuStep(unsigned long val, int state, void *);
 void OTWRadioMenuStepBack(unsigned long val, int state, void *);
 void OTWStepMFD1(unsigned long val, int state, void *);
@@ -435,9 +444,9 @@ void OTWStepMFD3(unsigned long val, int state, void *);
 void OTWStepMFD4(unsigned long val, int state, void *);
 void OTWToggleScales(unsigned long val, int state, void *);
 void OTWTogglePitchLadder(unsigned long val, int state, void *);
-void SimPitchLadderOff(unsigned long val, int state, void *);   // MD
-void SimPitchLadderFPM(unsigned long val, int state, void *);   // MD
-void SimPitchLadderATTFPM(unsigned long val, int state, void *);   // MD
+void SimPitchLadderOff(unsigned long val, int state, void *); // MD
+void SimPitchLadderFPM(unsigned long val, int state, void *); // MD
+void SimPitchLadderATTFPM(unsigned long val, int state, void *); // MD
 void OTWStepHeadingScale(unsigned long val, int state, void *);
 void OTWSelectHUDMode(unsigned long val, int state, void *);
 void OTWToggleGLOC(unsigned long val, int state, void *);
@@ -458,15 +467,17 @@ void OTWToggleBilinearFilter(unsigned long val, int state, void *);
 void OTWToggleShading(unsigned long val, int state, void *);
 void OTWToggleHaze(unsigned long val, int state, void *);
 void OTWToggleLocationDisplay(unsigned long val, int state, void *);
-void OTWToggleAeroDisplay(unsigned long val, int state, void *);  // JPO
-void OTWToggleFlapDisplay(unsigned long val, int state, void *);  // TJL 11/09/03 On/off Flaps
-void OTWToggleEngineDisplay(unsigned long val, int state, void *);  // Retro 1Feb2004
+void OTWToggleAeroDisplay(unsigned long val, int state, void *); // JPO
+void OTWToggleFlapDisplay(unsigned long val, int state,
+                          void *); // TJL 11/09/03 On/off Flaps
+void OTWToggleEngineDisplay(unsigned long val, int state,
+                            void *); // Retro 1Feb2004
 void OTWToggleActionCamera(unsigned long val, int state, void *);
 void OTWScaleDown(unsigned long val, int state, void *);
 void OTWScaleUp(unsigned long val, int state, void *);
-void OTWSetObjDetail(unsigned long val, int state, void * pButton);
-void OTWObjDetailDown(unsigned long val, int state, void * pButton);
-void OTWObjDetailUp(unsigned long val, int state, void * pButton);
+void OTWSetObjDetail(unsigned long val, int state, void *pButton);
+void OTWObjDetailDown(unsigned long val, int state, void *pButton);
+void OTWObjDetailUp(unsigned long val, int state, void *pButton);
 void OTWTextureIncrease(unsigned long val, int state, void *);
 void OTWTextureDecrease(unsigned long val, int state, void *);
 void OTWToggleClouds(unsigned long val, int state, void *);
@@ -480,16 +491,17 @@ void OTWViewLeft(unsigned long val, int state, void *);
 void OTWViewRight(unsigned long val, int state, void *);
 void OTWViewUp(unsigned long val, int state, void *);
 void OTWViewDown(unsigned long val, int state, void *);
-void OTWViewDownLeft(unsigned long val, int state, void * pButton);
-void OTWViewDownRight(unsigned long val, int state, void * pButton);
-void OTWViewUpLeft(unsigned long val, int state, void * pButton);
-void OTWViewUpRight(unsigned long val, int state, void * pButton);
+void OTWViewDownLeft(unsigned long val, int state, void *pButton);
+void OTWViewDownRight(unsigned long val, int state, void *pButton);
+void OTWViewUpLeft(unsigned long val, int state, void *pButton);
+void OTWViewUpRight(unsigned long val, int state, void *pButton);
 void OTWViewReset(unsigned long val, int state, void *);
 void OTWViewZoomIn(unsigned long val, int state, void *);
 void OTWViewZoomOut(unsigned long val, int state, void *);
 void OTWSwapMFDS(unsigned long val, int state, void *);
 void OTWGlanceForward(unsigned long val, int state, void *);
-void SimRecenterVR(unsigned long val, int state, void *);   // Artscout - 2026 (#67): VR recenter (reset view)
+void SimRecenterVR(unsigned long val, int state,
+                   void *); // Artscout - 2026 (#67): VR recenter (reset view)
 void OTWCheckSix(unsigned long val, int state, void *);
 void OTWStateStep(unsigned long val, int state, void *);
 void CommandsSetKeyCombo(unsigned long val, int state, void *);
@@ -497,13 +509,13 @@ void KevinsFistOfGod(unsigned long val, int state, void *);
 void SuperCruise(unsigned long val, int state, void *);
 // 2000-11-10 FUNCTIONS ADDED BY S.G. FOR THE Drift C/O switch
 void SimDriftCO(unsigned long val, int state, void *);
-void SimDriftCOOn(unsigned long val, int state, void *);   // MD
-void SimDriftCOOff(unsigned long val, int state, void *);   // MD
+void SimDriftCOOn(unsigned long val, int state, void *); // MD
+void SimDriftCOOff(unsigned long val, int state, void *); // MD
 // END OF ADDED SECTION
 // 2000-11-17 FUNCTIONS ADDED BY S.G. FOR THE Cat I/III switch
 void SimCATSwitch(unsigned long val, int state, void *);
-void SimCATI(unsigned long val, int state, void *);   // MD
-void SimCATIII(unsigned long val, int state, void *);   // MD
+void SimCATI(unsigned long val, int state, void *); // MD
+void SimCATIII(unsigned long val, int state, void *); // MD
 // END OF ADDED SECTION
 void SimRegen(unsigned long val, int state, void *); // 2002-03-22 ADDED BT S.G.
 void OTW1200View(unsigned long val, int state, void *);
@@ -521,19 +533,21 @@ void RadioMessageSend(unsigned long val, int state, void *);
 void SimToggleChatMode(unsigned long val, int state, void *);
 void SimMotionFreeze(unsigned long val, int state, void *);
 void ScreenShot(unsigned long val, int state, void *);
-void PrettyScreenShot(unsigned long val, int state, void*); // Retro 7May2004
+void PrettyScreenShot(unsigned long val, int state, void *); // Retro 7May2004
 void FOVToggle(unsigned long val, int state, void *);
-void FOVDecrease(unsigned long val, int state, void *);   //Wombat778 9-27-2003
-void FOVIncrease(unsigned long val, int state, void *);   //Wombat778 9-27-2003
-void FOVDefault(unsigned long val, int state, void *);   //Wombat778 9-27-2003
+void FOVDecrease(unsigned long val, int state, void *); //Wombat778 9-27-2003
+void FOVIncrease(unsigned long val, int state, void *); //Wombat778 9-27-2003
+void FOVDefault(unsigned long val, int state, void *); //Wombat778 9-27-2003
 void OTWToggleAlpha(unsigned long val, int state, void *);
 void ACMIToggleRecording(unsigned long val, int state, void *);
 void SimSelectiveJettison(unsigned long val, int state, void *);
 void SimEmergencyJettison(unsigned long val, int state, void *);
 void SimWheelBrakes(unsigned long val, int state, void *);
 void SimECMOn(unsigned long val, int state, void *);
-void SimECMStandby(unsigned long val, int state, void *); //Wombat778 11-3-2003 + MD 20031128
-void SimECMConsent(unsigned long val, int state, void *); //Wombat778 11-3-2003 + MD 20031128
+void SimECMStandby(unsigned long val, int state,
+                   void *); //Wombat778 11-3-2003 + MD 20031128
+void SimECMConsent(unsigned long val, int state,
+                   void *); //Wombat778 11-3-2003 + MD 20031128
 // CMS (Countermeasures Management Switch) -- a 5-position HOTAS switch (composition of EWS/ECM).
 // BMS names: Up=Forward, Down=Aft, Press=Depress.
 void SimCMSUp(unsigned long val, int state, void *);
@@ -543,33 +557,33 @@ void SimCMSRight(unsigned long val, int state, void *);
 void SimCMSPress(unsigned long val, int state, void *);
 void SimRandomError(unsigned long val, int state, void *); //THW 2003-11-16
 
-void SoundOff(unsigned long val, int state, void * pButton);
-void SimStepMasterArm(unsigned long val, int state, void * pButton);
-void SimArmMasterArm(unsigned long val, int state, void * pButton);
-void SimSafeMasterArm(unsigned long val, int state, void * pButton);
-void SimSimMasterArm(unsigned long val, int state, void * pButton);
+void SoundOff(unsigned long val, int state, void *pButton);
+void SimStepMasterArm(unsigned long val, int state, void *pButton);
+void SimArmMasterArm(unsigned long val, int state, void *pButton);
+void SimSafeMasterArm(unsigned long val, int state, void *pButton);
+void SimSimMasterArm(unsigned long val, int state, void *pButton);
 
 
 void SimHsiCourseInc(unsigned long val, int state, void *);
 void SimHsiCourseDec(unsigned long val, int state, void *);
 void SimHsiHeadingInc(unsigned long val, int state, void *);
 void SimHsiHeadingDec(unsigned long val, int state, void *);
-void SimHsiCrsIncBy1(unsigned long val, int state, void *);   // MD
-void SimHsiCrsDecBy1(unsigned long val, int state, void *);   // MD
-void SimHsiHdgIncBy1(unsigned long val, int state, void *);   // MD
-void SimHsiHdgDecBy1(unsigned long val, int state, void *);   // MD
+void SimHsiCrsIncBy1(unsigned long val, int state, void *); // MD
+void SimHsiCrsDecBy1(unsigned long val, int state, void *); // MD
+void SimHsiHdgIncBy1(unsigned long val, int state, void *); // MD
+void SimHsiHdgDecBy1(unsigned long val, int state, void *); // MD
 void SimAVTRToggle(unsigned long val, int state, void *);
 void SimMPOToggle(unsigned long val, int state, void *);
-void SimMPO(unsigned long val, int state, void *);  // MD
+void SimMPO(unsigned long val, int state, void *); // MD
 void SimSilenceHorn(unsigned long val, int state, void *);
 void SimStepHSIMode(unsigned long val, int state, void *);
-void SimHSIIlsTcn(unsigned long val, int state, void *);  // MD
-void SimHSITcn(unsigned long val, int state, void *);  // MD
-void SimHSINav(unsigned long val, int state, void *);  // MD
-void SimHSIIlsNav(unsigned long val, int state, void *);  // MD
-void SimCATLimiterToggle(unsigned long val, int state, void * pButton);
-void DecreaseAlow(unsigned long val, int state, void * pButton);
-void IncreaseAlow(unsigned long val, int state, void * pButton);
+void SimHSIIlsTcn(unsigned long val, int state, void *); // MD
+void SimHSITcn(unsigned long val, int state, void *); // MD
+void SimHSINav(unsigned long val, int state, void *); // MD
+void SimHSIIlsNav(unsigned long val, int state, void *); // MD
+void SimCATLimiterToggle(unsigned long val, int state, void *pButton);
+void DecreaseAlow(unsigned long val, int state, void *pButton);
+void IncreaseAlow(unsigned long val, int state, void *pButton);
 
 
 void SimCBEOSB_1L(unsigned long val, int state, void *);
@@ -691,27 +705,27 @@ void SimScalesVAH(unsigned long val, int state, void *);
 void SimScalesOff(unsigned long val, int state, void *);
 void SimHUDFPM(unsigned long val, int state, void *);
 void SimHUDDED(unsigned long val, int state, void *);
-void SimHUDDEDOff(unsigned long val, int state, void *);  // MD
-void SimHUDDEDPFL(unsigned long val, int state, void *);  // MD
-void SimHUDDEDDED(unsigned long val, int state, void *);  // MD
+void SimHUDDEDOff(unsigned long val, int state, void *); // MD
+void SimHUDDEDPFL(unsigned long val, int state, void *); // MD
+void SimHUDDEDDED(unsigned long val, int state, void *); // MD
 void SimHUDVelocity(unsigned long val, int state, void *);
-void SimHUDVelocityCAS(unsigned long val, int state, void *);  // MD
-void SimHUDVelocityTAS(unsigned long val, int state, void *);  // MD
-void SimHUDVelocityGND(unsigned long val, int state, void *);  // MD
+void SimHUDVelocityCAS(unsigned long val, int state, void *); // MD
+void SimHUDVelocityTAS(unsigned long val, int state, void *); // MD
+void SimHUDVelocityGND(unsigned long val, int state, void *); // MD
 void SimHUDRadar(unsigned long val, int state, void *);
-void SimHUDAltRadar(unsigned long val, int state, void *);  // MD
-void SimHUDAltBaro(unsigned long val, int state, void *);  // MD
-void SimHUDAltAuto(unsigned long val, int state, void *);  // MD
+void SimHUDAltRadar(unsigned long val, int state, void *); // MD
+void SimHUDAltBaro(unsigned long val, int state, void *); // MD
+void SimHUDAltAuto(unsigned long val, int state, void *); // MD
 void SimHUDBrightness(unsigned long val, int state, void *);
-void SimHUDBrtDay(unsigned long val, int state, void *);  // MD
-void SimHUDBrtAuto(unsigned long val, int state, void *);  // MD
-void SimHUDBrtNight(unsigned long val, int state, void *);  // MD
+void SimHUDBrtDay(unsigned long val, int state, void *); // MD
+void SimHUDBrtAuto(unsigned long val, int state, void *); // MD
+void SimHUDBrtNight(unsigned long val, int state, void *); // MD
 //MI
 void SimHUDBrightnessUp(unsigned long val, int state, void *);
 void SimHUDBrightnessDown(unsigned long val, int state, void *);
 
 void SimCycleRadioChannel(unsigned long val, int state, void *);
-void SimDecRadioChannel(unsigned long val, int state, void *);  // MD
+void SimDecRadioChannel(unsigned long val, int state, void *); // MD
 void SimToggleRadioVolume(unsigned long val, int state, void *);
 void ExtinguishMasterCaution(unsigned long val, int state, void *);
 
@@ -720,14 +734,14 @@ void SimCycleCenterAuxComDigit(unsigned long val, int state, void *);
 void SimCycleRightAuxComDigit(unsigned long val, int state, void *);
 void SimCycleBandAuxComDigit(unsigned long val, int state, void *);
 void SimToggleAuxComMaster(unsigned long val, int state, void *);
-void SimAuxComBackup(unsigned long val, int state, void *);  // MD
-void SimAuxComUFC(unsigned long val, int state, void *);  // MD
+void SimAuxComBackup(unsigned long val, int state, void *); // MD
+void SimAuxComUFC(unsigned long val, int state, void *); // MD
 void SimToggleAuxComAATR(unsigned long val, int state, void *);
-void SimTACANTR(unsigned long val, int state, void *);  // MD
-void SimTACANAATR(unsigned long val, int state, void *);  // MD
+void SimTACANTR(unsigned long val, int state, void *); // MD
+void SimTACANAATR(unsigned long val, int state, void *); // MD
 void SimToggleUHFMaster(unsigned long val, int state, void *);
-void SimTransmitCom1(unsigned long val, int state, void *);//me123
-void SimTransmitCom2(unsigned long val, int state, void *);//me123
+void SimTransmitCom1(unsigned long val, int state, void *); //me123
+void SimTransmitCom2(unsigned long val, int state, void *); //me123
 void SimToggleExtLights(unsigned long val, int state, void *);
 void SimOpenChatBox(unsigned long val, int state, void *);
 void SaveCockpitDefaults(unsigned long val, int state, void *);
@@ -758,18 +772,18 @@ void GotoSMSMenu(int);
 void GotoFCRMenu(int);
 void GotoWpnPage(int);
 
-void RadioTankerCommand(unsigned long val, int state, void * pButton);
-void RadioTowerCommand(unsigned long val, int state, void * pButton);
-void RadioAWACSCommand(unsigned long val, int state, void * pButton);
+void RadioTankerCommand(unsigned long val, int state, void *pButton);
+void RadioTowerCommand(unsigned long val, int state, void *pButton);
+void RadioAWACSCommand(unsigned long val, int state, void *pButton);
 
 
 // ---------------------------------------------------------------------------
 // Flight Menu Commands
 // ---------------------------------------------------------------------------
 
-void RadioWingCommand(unsigned long val, int state, void * pButton);
-void RadioElementCommand(unsigned long val, int state, void * pButton);
-void RadioFlightCommand(unsigned long val, int state, void * pButton);
+void RadioWingCommand(unsigned long val, int state, void *pButton);
+void RadioElementCommand(unsigned long val, int state, void *pButton);
+void RadioFlightCommand(unsigned long val, int state, void *pButton);
 void OTWRadioPageStep(unsigned long val, int state, void *);
 void OTWRadioPageStepBack(unsigned long val, int state, void *);
 
@@ -863,41 +877,41 @@ void FlightWeaponsFree(unsigned long val, int state, void *);
 // Commands that modify formation
 //
 
-void WingmanSpread(unsigned long val, int state, void * pButton);
-void ElementSpread(unsigned long val, int state, void * pButton);
-void FlightSpread(unsigned long val, int state, void * pButton);
+void WingmanSpread(unsigned long val, int state, void *pButton);
+void ElementSpread(unsigned long val, int state, void *pButton);
+void FlightSpread(unsigned long val, int state, void *pButton);
 
-void WingmanStack(unsigned long val, int state, void * pButton);
-void ElementStack(unsigned long val, int state, void * pButton);
-void FlightStack(unsigned long val, int state, void * pButton);
+void WingmanStack(unsigned long val, int state, void *pButton);
+void ElementStack(unsigned long val, int state, void *pButton);
+void FlightStack(unsigned long val, int state, void *pButton);
 
-void WingmanLadder(unsigned long val, int state, void * pButton);
-void ElementLadder(unsigned long val, int state, void * pButton);
-void FlightLadder(unsigned long val, int state, void * pButton);
+void WingmanLadder(unsigned long val, int state, void *pButton);
+void ElementLadder(unsigned long val, int state, void *pButton);
+void FlightLadder(unsigned long val, int state, void *pButton);
 
-void WingmanFluid(unsigned long val, int state, void * pButton);
-void ElementFluid(unsigned long val, int state, void * pButton);
-void FlightFluid(unsigned long val, int state, void * pButton);
+void WingmanFluid(unsigned long val, int state, void *pButton);
+void ElementFluid(unsigned long val, int state, void *pButton);
+void FlightFluid(unsigned long val, int state, void *pButton);
 
-void WingmanWedge(unsigned long val, int state, void * pButton);
-void ElementWedge(unsigned long val, int state, void * pButton);
-void FlightWedge(unsigned long val, int state, void * pButton);
+void WingmanWedge(unsigned long val, int state, void *pButton);
+void ElementWedge(unsigned long val, int state, void *pButton);
+void FlightWedge(unsigned long val, int state, void *pButton);
 
-void WingmanTrail(unsigned long val, int state, void * pButton);
-void ElementTrail(unsigned long val, int state, void * pButton);
-void FlightTrail(unsigned long val, int state, void * pButton);
+void WingmanTrail(unsigned long val, int state, void *pButton);
+void ElementTrail(unsigned long val, int state, void *pButton);
+void FlightTrail(unsigned long val, int state, void *pButton);
 
-void WingmanResCell(unsigned long val, int state, void * pButton);
-void ElementResCell(unsigned long val, int state, void * pButton);
-void FlightResCell(unsigned long val, int state, void * pButton);
+void WingmanResCell(unsigned long val, int state, void *pButton);
+void ElementResCell(unsigned long val, int state, void *pButton);
+void FlightResCell(unsigned long val, int state, void *pButton);
 
-void WingmanBox(unsigned long val, int state, void * pButton);
-void ElementBox(unsigned long val, int state, void * pButton);
-void FlightBox(unsigned long val, int state, void * pButton);
+void WingmanBox(unsigned long val, int state, void *pButton);
+void ElementBox(unsigned long val, int state, void *pButton);
+void FlightBox(unsigned long val, int state, void *pButton);
 
-void WingmanArrow(unsigned long val, int state, void * pButton);
-void ElementArrow(unsigned long val, int state, void * pButton);
-void FlightArrow(unsigned long val, int state, void * pButton);
+void WingmanArrow(unsigned long val, int state, void *pButton);
+void ElementArrow(unsigned long val, int state, void *pButton);
+void FlightArrow(unsigned long val, int state, void *pButton);
 
 void WingmanKickout(unsigned long val, int state, void *);
 void ElementKickout(unsigned long val, int state, void *);
@@ -989,46 +1003,46 @@ void ElementRTB(unsigned long val, int state, void *);
 void FlightRTB(unsigned long val, int state, void *);
 
 // Direct access to ATC commands
-void ATCRequestClearance(unsigned long val, int state, void * pButton);
-void ATCRequestEmergencyClearance(unsigned long val, int state, void * pButton);
-void ATCRequestTakeoff(unsigned long val, int state, void * pButton);
-void ATCRequestTaxi(unsigned long val, int state, void * pButton);
-void ATCTaxiing(unsigned long val, int state, void * pButton);
-void ATCReadyToGo(unsigned long val, int state, void * pButton);
-void ATCRotate(unsigned long val, int state, void * pButton);
-void ATCGearUp(unsigned long val, int state, void * pButton);
-void ATCGearDown(unsigned long val, int state, void * pButton);
-void ATCBrake(unsigned long val, int state, void * pButton);
-void ATCAbortApproach(unsigned long val, int state, void * pButton);
+void ATCRequestClearance(unsigned long val, int state, void *pButton);
+void ATCRequestEmergencyClearance(unsigned long val, int state, void *pButton);
+void ATCRequestTakeoff(unsigned long val, int state, void *pButton);
+void ATCRequestTaxi(unsigned long val, int state, void *pButton);
+void ATCTaxiing(unsigned long val, int state, void *pButton);
+void ATCReadyToGo(unsigned long val, int state, void *pButton);
+void ATCRotate(unsigned long val, int state, void *pButton);
+void ATCGearUp(unsigned long val, int state, void *pButton);
+void ATCGearDown(unsigned long val, int state, void *pButton);
+void ATCBrake(unsigned long val, int state, void *pButton);
+void ATCAbortApproach(unsigned long val, int state, void *pButton);
 
 // Direct access to FAC commands
-void FACCheckIn(unsigned long val, int state, void * pButton);
-void FACWilco(unsigned long val, int state, void * pButton);
-void FACUnable(unsigned long val, int state, void * pButton);
-void FACReady(unsigned long val, int state, void * pButton);
-void FACIn(unsigned long val, int state, void * pButton);
-void FACOut(unsigned long val, int state, void * pButton);
-void FACRequestMark(unsigned long val, int state, void * pButton);
-void FACRequestTarget(unsigned long val, int state, void * pButton);
-void FACRequestBDA(unsigned long val, int state, void * pButton);
-void FACRequestLocation(unsigned long val, int state, void * pButton);
-void FACRequestTACAN(unsigned long val, int state, void * pButton);
+void FACCheckIn(unsigned long val, int state, void *pButton);
+void FACWilco(unsigned long val, int state, void *pButton);
+void FACUnable(unsigned long val, int state, void *pButton);
+void FACReady(unsigned long val, int state, void *pButton);
+void FACIn(unsigned long val, int state, void *pButton);
+void FACOut(unsigned long val, int state, void *pButton);
+void FACRequestMark(unsigned long val, int state, void *pButton);
+void FACRequestTarget(unsigned long val, int state, void *pButton);
+void FACRequestBDA(unsigned long val, int state, void *pButton);
+void FACRequestLocation(unsigned long val, int state, void *pButton);
+void FACRequestTACAN(unsigned long val, int state, void *pButton);
 
 // Direct access to Tanker commands
-void TankerRequestFuel(unsigned long val, int state, void * pButton);
-void TankerReadyForGas(unsigned long val, int state, void * pButton);
-void TankerDoneRefueling(unsigned long val, int state, void * pButton);
-void TankerBreakaway(unsigned long val, int state, void * pButton);
+void TankerRequestFuel(unsigned long val, int state, void *pButton);
+void TankerReadyForGas(unsigned long val, int state, void *pButton);
+void TankerDoneRefueling(unsigned long val, int state, void *pButton);
+void TankerBreakaway(unsigned long val, int state, void *pButton);
 
 // Direct access to AWACS commands
-void AWACSRequestPicture(unsigned long val, int state, void * pButton);
-void AWACSRequestTanker(unsigned long val, int state, void * pButton);
+void AWACSRequestPicture(unsigned long val, int state, void *pButton);
+void AWACSRequestTanker(unsigned long val, int state, void *pButton);
 // MN
-void AWACSRequestCarrier(unsigned long val, int state, void * pButton);
-void AWACSWilco(unsigned long val, int state, void * pButton);
-void AWACSUnable(unsigned long val, int state, void * pButton);
-void AWACSRequestHelp(unsigned long val, int state, void * pButton);
-void AWACSRequestRelief(unsigned long val, int state, void * pButton);
+void AWACSRequestCarrier(unsigned long val, int state, void *pButton);
+void AWACSWilco(unsigned long val, int state, void *pButton);
+void AWACSUnable(unsigned long val, int state, void *pButton);
+void AWACSRequestHelp(unsigned long val, int state, void *pButton);
+void AWACSRequestRelief(unsigned long val, int state, void *pButton);
 
 // ---------------------------------------------------------------------------
 // End Flight Commands
@@ -1068,7 +1082,8 @@ void ToggleSubTitles(unsigned long val, int state, void *);
 void ToggleInfoBar(unsigned long val, int state, void *);
 // end Retro
 
-void ToggleDisplacementCam(unsigned long val, int state, void *); // Retro 24Dec2003
+void ToggleDisplacementCam(unsigned long val, int state,
+                           void *); // Retro 24Dec2003
 
 // Retro 4Jan2004
 void WinAmpNextTrack(unsigned long val, int state, void *);
@@ -1080,17 +1095,20 @@ void WinAmpVolumeUp(unsigned long val, int state, void *);
 void WinAmpVolumeDown(unsigned long val, int state, void *);
 
 // Retro 12Jan2004
-void CycleEngine(unsigned long val, int state, void*); // Retro 12Jan2004
-void selectLeftEngine(unsigned long, int state, void*);
-void selectRightEngine(unsigned long, int state, void*);
-void selectBothEngines(unsigned long, int state, void*);
+void CycleEngine(unsigned long val, int state, void *); // Retro 12Jan2004
+void selectLeftEngine(unsigned long, int state, void *);
+void selectRightEngine(unsigned long, int state, void *);
+void selectBothEngines(unsigned long, int state, void *);
 // Retro 12Jan2004 end
 
-void ToggleTIR(unsigned long, int state, void*); //Keyboard/Cockpit toggle for TIR mode
-void ToggleClickablePitMode(unsigned long, int state, void*); //Wombat778 1-22-04 Keyboard toggle for mouselook mode
-void SimToggleRearView(unsigned long, int state, void*); //Wombat778 4-13-04
-void SimToggleAltView(unsigned long, int state, void*); //Wombat778 4-13-04
+void ToggleTIR(unsigned long, int state,
+               void *); //Keyboard/Cockpit toggle for TIR mode
+void ToggleClickablePitMode(
+    unsigned long, int state,
+    void *); //Wombat778 1-22-04 Keyboard toggle for mouselook mode
+void SimToggleRearView(unsigned long, int state, void *); //Wombat778 4-13-04
+void SimToggleAltView(unsigned long, int state, void *); //Wombat778 4-13-04
 
 
-void OTWStepHudContrastDn(unsigned long, int state, void*);
-void OTWStepHudContrastUp(unsigned long, int state, void*);
+void OTWStepHudContrastDn(unsigned long, int state, void *);
+void OTWStepHudContrastUp(unsigned long, int state, void *);

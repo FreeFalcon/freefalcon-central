@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -62,7 +63,7 @@ public:
     }
     long GetTakeOffTime()
     {
-        return(TakeOffTime_);
+        return (TakeOffTime_);
     }
     void SetMissionID(short ID)
     {
@@ -70,7 +71,7 @@ public:
     }
     short GetMissionID()
     {
-        return(MissionID_);
+        return (MissionID_);
     }
     void SetPackageID(short ID)
     {
@@ -78,7 +79,7 @@ public:
     }
     short GetPackageID()
     {
-        return(PackageID_);
+        return (PackageID_);
     }
     void SetStatusID(short ID)
     {
@@ -86,7 +87,7 @@ public:
     }
     short GetStatusID()
     {
-        return(StatusID_);
+        return (StatusID_);
     }
     void SetPriorityID(short ID)
     {
@@ -94,7 +95,7 @@ public:
     }
     short GetPriorityID()
     {
-        return(PriorityID_);
+        return (PriorityID_);
     }
 
     void SetState(short state)
@@ -103,7 +104,7 @@ public:
     }
     short GetState()
     {
-        return(State_);
+        return (State_);
     }
 
     void SetNormalColor(COLORREF color)
@@ -139,33 +140,38 @@ public:
 
     _TCHAR *GetTakeOff()
     {
-        if (TakeOff_) return(TakeOff_->GetText());
+        if (TakeOff_)
+            return (TakeOff_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetMission()
     {
-        if (Mission_) return(Mission_->GetText());
+        if (Mission_)
+            return (Mission_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetPackage()
     {
-        if (Package_) return(Package_->GetText());
+        if (Package_)
+            return (Package_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetStatus()
     {
-        if (Status_) return(Status_->GetText());
+        if (Status_)
+            return (Status_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     _TCHAR *GetPriority()
     {
-        if (Priority_) return(Priority_->GetText());
+        if (Priority_)
+            return (Priority_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
 
     void SetOwner(TREELIST *item)
@@ -174,12 +180,12 @@ public:
     }
     TREELIST *GetOwner()
     {
-        return(Owner_);
+        return (Owner_);
     }
 
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
     void SetDefaultFlags()
     {
@@ -187,7 +193,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     long CheckHotSpots(long relx, long rely);
     BOOL Process(long ID, short hittype);
@@ -200,9 +206,8 @@ public:
     }
     VU_ID GetVUID()
     {
-        return(vuID);
+        return (vuID);
     }
 };
 
 #endif
-

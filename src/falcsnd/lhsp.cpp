@@ -14,13 +14,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "fsound.h"
-#include "FalcVoice.h"
+#include "falcvoice.h"
 #include "debuggr.h"
-#include "F4Find.h"
+#include "f4find.h"
 #pragma pack(1)
 #include "landh/include/st80.h"
 #pragma pack()
-#include "LHSP.h"
+#include "lhsp.h"
 
 void *map_file(char *filename);
 
@@ -30,7 +30,6 @@ void *map_file(char *filename);
 
 LHSP::LHSP(void)
 {
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -58,11 +57,11 @@ void LHSP::InitializeLHSP(void)
 #ifndef NO_ST80
     CODECINFOEX CodecInfoExStruct;
 
-    ST80_GetCodecInfoEx( &CodecInfoExStruct, sizeof( CODECINFOEX ) );
+    ST80_GetCodecInfoEx(&CodecInfoExStruct, sizeof(CODECINFOEX));
     PMSIZE = CodecInfoExStruct.wInputBufferSize;
     CODESIZE = CodecInfoExStruct.wCodedBufferSize;
 
-    if ( ( hAccess = ST80_Open_Decoder( LINEAR_PCM_16_BIT ) ) == NULL )
+    if ((hAccess = ST80_Open_Decoder(LINEAR_PCM_16_BIT)) == NULL)
     {
         return;
     }
@@ -94,15 +93,16 @@ long LHSP::ReadLHSPFile(COMPRESSION_DATA *input, unsigned char **buffer)
         if (remaining <= 0)
             return 0;
 
-        long chunk = (remaining > MAX_OUTDECODE_SIZE) ? MAX_OUTDECODE_SIZE : remaining;
+        long chunk =
+            (remaining > MAX_OUTDECODE_SIZE) ? MAX_OUTDECODE_SIZE : remaining;
         memcpy(*buffer, input->dataPtr, chunk);
-        input->dataPtr  += chunk;
+        input->dataPtr += chunk;
         input->bytesRead += chunk;
         return chunk;
     }
 
     if (hAccess == NULL)
-        return 0;   // Artscout - 2026 (x64/NO_ST80): always NULL -> silent, ST80 path below never built/run
+        return 0; // Artscout - 2026 (x64/NO_ST80): always NULL -> silent, ST80 path below never built/run
 
 #ifdef NO_ST80
     return 0;
@@ -123,18 +123,12 @@ long LHSP::ReadLHSPFile(COMPRESSION_DATA *input, unsigned char **buffer)
     {
         // ST80_Decode takes LPWORD (16-bit) for in/out -- use WORD locals,
         // long casts clobbered the high word with garbage (see issue #35).
-        WORD inLen  = (WORD)((loopCount > CODESIZE) ? CODESIZE : loopCount);
+        WORD inLen = (WORD)((loopCount > CODESIZE) ? CODESIZE : loopCount);
         WORD outLen = (WORD)PMSIZE;
 
         /* I must check if Decode adjusts the output buffer size to use for channel struct */
-        errorCode = ST80_Decode
-        (
-            hAccess,
-            (LPBYTE)input->dataPtr,
-            &inLen,
-            outputPtr,
-            &outLen
-        );
+        errorCode = ST80_Decode(hAccess, (LPBYTE)input->dataPtr, &inLen,
+                                outputPtr, &outLen);
 
         if (errorCode != LH_SUCCESS)
             break;
@@ -149,7 +143,7 @@ long LHSP::ReadLHSPFile(COMPRESSION_DATA *input, unsigned char **buffer)
         compDecodeSize += outLen;
     }
 
-    return(compDecodeSize);
+    return (compDecodeSize);
 #endif // NO_ST80
 }
 
@@ -164,7 +158,7 @@ void LHSP::CleanupLHSP(void)
 #ifndef NO_ST80
     if (hAccess)
     {
-        ST80_Close_Decoder( hAccess );
+        ST80_Close_Decoder(hAccess);
         hAccess = NULL;
     }
 #endif

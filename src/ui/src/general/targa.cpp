@@ -15,13 +15,13 @@
 #include "falclib.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/shmalloc.h"
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/shmalloc.h"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
 #include "targa.h"
 #include "ui.h"
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "f4find.h"
 
 // ALL RESMGR CODE ADDITIONS START HERE
@@ -30,11 +30,11 @@
 #ifndef _USE_RES_MGR_ // DON'T USE RESMGR
 
 #define UI_HANDLE FILE *
-#define UI_OPEN   fopen
-#define UI_READ   fread
-#define UI_CLOSE  fclose
-#define UI_SEEK   fseek
-#define UI_TELL   ftell
+#define UI_OPEN fopen
+#define UI_READ fread
+#define UI_CLOSE fclose
+#define UI_SEEK fseek
+#define UI_TELL ftell
 
 #else // USE RESMGR
 
@@ -45,11 +45,11 @@ extern "C"
 }
 
 #define UI_HANDLE FILE *
-#define UI_OPEN   RES_FOPEN
-#define UI_READ   RES_FREAD
-#define UI_CLOSE  RES_FCLOSE
-#define UI_SEEK   RES_FSEEK
-#define UI_TELL   RES_FTELL
+#define UI_OPEN RES_FOPEN
+#define UI_READ RES_FREAD
+#define UI_CLOSE RES_FCLOSE
+#define UI_SEEK RES_FSEEK
+#define UI_TELL RES_FTELL
 
 #endif
 // ALL RESMGR CODE ADDITIONS AND END HERE
@@ -82,18 +82,18 @@ BOOL LoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
     }
 
     // Read in image data
-    F4Assert( not (Targa.Width > 3000 or Targa.Height > 3000));
+    F4Assert(not(Targa.Width > 3000 or Targa.Height > 3000));
 
     bytesToRead = Targa.Width * Targa.Height * 2;
 
-    if ( not bytesToRead)
-        return(NULL);
+    if (not bytesToRead)
+        return (NULL);
 
-    data = new char [bytesToRead];
+    data = new char[bytesToRead];
     F4Assert(data);
 
     if (data == NULL)
-        return(NULL);
+        return (NULL);
 
     if (UI_READ(data, bytesToRead, 1, hFile) not_eq 1)
     {
@@ -128,48 +128,49 @@ BOOL NonResLoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
     WORD width, height;
     DWORD bytesToRead, bytesread;
 
-    hFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    hFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (hFile == INVALID_HANDLE_VALUE)
     {
         return FALSE;
     }
 
-    if ( not ReadFile(hFile, buf, 12, &bytesread, NULL))
+    if (not ReadFile(hFile, buf, 12, &bytesread, NULL))
     {
         CloseHandle(hFile);
-        return(FALSE);
+        return (FALSE);
     }
 
     // Read width
-    if ( not ReadFile(hFile, &width, sizeof(width), &bytesread, NULL))
+    if (not ReadFile(hFile, &width, sizeof(width), &bytesread, NULL))
     {
         CloseHandle(hFile);
-        return(FALSE);
+        return (FALSE);
     }
 
     // Read height
-    if ( not ReadFile(hFile, &height, sizeof(height), &bytesread, NULL))
+    if (not ReadFile(hFile, &height, sizeof(height), &bytesread, NULL))
     {
         CloseHandle(hFile);
-        return(FALSE);
+        return (FALSE);
     }
 
     // For 15-bit Targa file, skip last 2 bytes.
-    if ( not ReadFile(hFile, buf, 2, &bytesread, NULL))
+    if (not ReadFile(hFile, buf, 2, &bytesread, NULL))
     {
         CloseHandle(hFile);
-        return(FALSE);
+        return (FALSE);
     }
 
     // Read in image data
     bytesToRead = width * height * 2;
-    data = new char [bytesToRead];
+    data = new char[bytesToRead];
 
-    if ( not ReadFile(hFile, data, bytesToRead, &bytesread, NULL))
+    if (not ReadFile(hFile, data, bytesToRead, &bytesread, NULL))
     {
         CloseHandle(hFile);
-        return(FALSE);
+        return (FALSE);
     }
 
     CloseHandle(hFile);
@@ -190,5 +191,3 @@ BOOL NonResLoadTargaFile(char *filename, char **image, BITMAPINFO *bmi)
 
     return TRUE;
 }
-
-

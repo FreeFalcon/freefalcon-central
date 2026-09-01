@@ -1,0 +1,38 @@
+# FreeFalcon shader manifest -- Artscout - 2026.
+#
+# ONE list feeding both build systems: tools/build_shaders.sh (CMake/Linux) and
+# tools/build_shaders.bat (MSBuild/Windows). Each line is compiled by DXC into a
+# C++ header holding the bytecode, which ffshaderblobs.cpp includes -- so every
+# shader ships INSIDE the binary, no .hlsl/.spv files next to the exe.
+#
+# Fields, separated by '|':
+#   source | entry | profile | target | defines | variable
+#     source   -- .hlsl file in this directory
+#     entry    -- entry point
+#     profile  -- DXC target profile (as_6_5 / ms_6_5 / ps_6_6 / vs_6_x ...)
+#     target   -- dxil (D3D12) or spirv (Vulkan)
+#     defines  -- comma-separated -D list, or '-' for none
+#     variable -- C array name; the generated header is <variable>.h
+#
+# D3D12 samples tiles through ResourceDescriptorHeap (SM 6.6); Vulkan through an
+# unbounded descriptor-indexing array. Same slot numbers, one #if in the shader.
+
+ffterrain.hlsl|AS_Terrain|as_6_5|dxil |-                |g_ffterrain_as_dxil
+ffterrain.hlsl|MS_Terrain|ms_6_5|dxil |-                |g_ffterrain_ms_dxil
+ffterrain.hlsl|PS_Terrain|ps_6_6|dxil |FF_BINDLESS_HEAP |g_ffterrain_ps_dxil
+ffterrain.hlsl|AS_Terrain|as_6_5|spirv|-                |g_ffterrain_as_spv
+ffterrain.hlsl|MS_Terrain|ms_6_5|spirv|-                |g_ffterrain_ms_spv
+ffterrain.hlsl|PS_Terrain|ps_6_5|spirv|FF_BINDLESS_ARRAY|g_ffterrain_ps_spv
+
+# The engine passes, replacing the Vulkan GLSL set. SPIR-V only: D3D12 still
+# runs these through ffemu.hlsl.
+ffobject.hlsl   |VS_Object   |vs_6_5|spirv|-|g_ffobject_vs_spv
+ffobject.hlsl   |PS_Object   |ps_6_5|spirv|-|g_ffobject_ps_spv
+ffscreen.hlsl   |VS_Screen   |vs_6_5|spirv|-|g_ffscreen_vs_spv
+ffscreen.hlsl   |PS_Screen   |ps_6_5|spirv|-|g_ffscreen_ps_spv
+ffparticle.hlsl |VS_Particle |vs_6_5|spirv|-|g_ffparticle_vs_spv
+ffparticle.hlsl |PS_Particle |ps_6_5|spirv|-|g_ffparticle_ps_spv
+ffcomposite.hlsl|VS_Composite|vs_6_5|spirv|-|g_ffcomposite_vs_spv
+ffcomposite.hlsl|PS_Composite|ps_6_5|spirv|-|g_ffcomposite_ps_spv
+ffxrblit.hlsl   |VS_XrBlit   |vs_6_5|spirv|-|g_ffxrblit_vs_spv
+ffxrblit.hlsl   |PS_XrBlit   |ps_6_5|spirv|-|g_ffxrblit_ps_spv

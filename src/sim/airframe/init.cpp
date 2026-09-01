@@ -28,8 +28,8 @@
 #include "stdhdr.h"
 #include "airframe.h"
 #include "aircrft.h"
-#include "Graphics/Include/tmap.h"
-#include "Graphics/Include/rviewpnt.h"  // to get ground type
+#include "graphics/include/tmap.h"
+#include "graphics/include/rviewpnt.h" // to get ground type
 #include "otwdrive.h"
 
 
@@ -54,7 +54,7 @@
 /********************************************************************/
 void AirframeClass::Initialize()
 {
-    float e10, e20, e30, e40 , qptchc;
+    float e10, e20, e30, e40, qptchc;
     mlTrig trigMu, trigSig, trigGam;
 
     Accelerometers();
@@ -62,26 +62,26 @@ void AirframeClass::Initialize()
     /*--------------------------------------------------*/
     /* initial angles for 1-g straight and level flight */
     /*--------------------------------------------------*/
-    beta  = 0.0f;
+    beta = 0.0f;
     alpha = 0.0f;
     Trigenometry();
 
-    xdot  =  vt * platform->platformAngles.cosgam *
-             platform->platformAngles.cossig;
-    ydot  =  vt * platform->platformAngles.cosgam *
-             platform->platformAngles.sinsig;
-    zdot  = -vt * platform->platformAngles.singam ;
+    xdot =
+        vt * platform->platformAngles.cosgam * platform->platformAngles.cossig;
+    ydot =
+        vt * platform->platformAngles.cosgam * platform->platformAngles.sinsig;
+    zdot = -vt * platform->platformAngles.singam;
 
-    ShiAssert( not _isnan(xdot));
-    ShiAssert( not _isnan(ydot));
-    ShiAssert( not _isnan(zdot));
+    ShiAssert(not _isnan(xdot));
+    ShiAssert(not _isnan(ydot));
+    ShiAssert(not _isnan(zdot));
     /*------------------------*/
     /* initialize quaternions */
     /*------------------------*/
 
     mlSinCos(&trigGam, gmma * 0.5F);
     mlSinCos(&trigSig, sigma * 0.5F);
-    mlSinCos(&trigMu,  mu * 0.5F);
+    mlSinCos(&trigMu, mu * 0.5F);
     e10 = trigSig.cos * trigGam.cos * trigMu.cos +
           trigSig.sin * trigGam.sin * trigMu.sin;
 
@@ -102,7 +102,7 @@ void AirframeClass::Initialize()
     /*------------------------------------*/
     /* initial earth coordinate positions */
     /*------------------------------------*/
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
     {
         Tpoint normal;
         float groundZ = OTWDriver.GetGroundLevel(x, y, &normal);
@@ -236,7 +236,7 @@ void AirframeClass::Initialize()
     oldRoll1[2] = 0.0;
     oldRoll1[3] = 0.0;
 
-    if (IsSet(InAir))  // JPO - if in the air only.
+    if (IsSet(InAir)) // JPO - if in the air only.
     {
 
         oldRpm[0] = 0.75F;
@@ -251,14 +251,11 @@ void AirframeClass::Initialize()
         oldRpm2[2] = 0.75F;
         oldRpm2[3] = 0.75F;
         rpm2 = 0.75;
-
-
-
     }
     else
     {
         rpm = 0.0f;
-        rpm2 = 0.0f;//TJL 01/14/03 multi-engine
+        rpm2 = 0.0f; //TJL 01/14/03 multi-engine
     }
 
 
@@ -277,7 +274,8 @@ void AirframeClass::InitializeEOM(void)
     Accelerometers();
 
     groundZ = OTWDriver.GetGroundLevel(x, y, &gndNormal);
-    mag = (float)sqrt(gndNormal.x * gndNormal.x + gndNormal.y * gndNormal.y + gndNormal.z * gndNormal.z);
+    mag = (float)sqrt(gndNormal.x * gndNormal.x + gndNormal.y * gndNormal.y +
+                      gndNormal.z * gndNormal.z);
     gndNormal.x /= mag;
     gndNormal.y /= mag;
     gndNormal.z /= mag;
@@ -294,24 +292,24 @@ void AirframeClass::ReInitialize()
     /*--------------------------------------------------*/
     /* initial angles for 1-g straight and level flight */
     /*--------------------------------------------------*/
-    beta  = 0.0f;
+    beta = 0.0f;
     ResetOrientation();
     Trigenometry();
 
-    xdot  =  vt * platform->platformAngles.cosgam *
-             platform->platformAngles.cossig;
-    ydot  =  vt * platform->platformAngles.cosgam *
-             platform->platformAngles.sinsig;
-    zdot  = -vt * platform->platformAngles.singam ;
+    xdot =
+        vt * platform->platformAngles.cosgam * platform->platformAngles.cossig;
+    ydot =
+        vt * platform->platformAngles.cosgam * platform->platformAngles.sinsig;
+    zdot = -vt * platform->platformAngles.singam;
 
-    ShiAssert( not _isnan(xdot));
-    ShiAssert( not _isnan(ydot));
-    ShiAssert( not _isnan(zdot));
+    ShiAssert(not _isnan(xdot));
+    ShiAssert(not _isnan(ydot));
+    ShiAssert(not _isnan(zdot));
 
     /*------------------------------------*/
     /* initial earth coordinate positions */
     /*------------------------------------*/
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
     {
         Tpoint normal;
         float groundZ = OTWDriver.GetGroundLevel(x, y, &normal);

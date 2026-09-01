@@ -1,13 +1,13 @@
 #ifndef _ADVHARMPOD_H
 #define _ADVHARMPOD_H
 
-#include "HarmPod.h"
+#include "harmpod.h"
 
 
 class AdvancedHarmTargetingPod : public HarmTargetingPod
 {
 public:
-    AdvancedHarmTargetingPod(int idx, SimMoverClass* newPlatform);
+    AdvancedHarmTargetingPod(int idx, SimMoverClass *newPlatform);
     virtual ~AdvancedHarmTargetingPod(void);
 
     virtual void HADDisplay(VirtualDisplay *newDisplay);
@@ -17,7 +17,8 @@ public:
     virtual void HandoffDisplay(VirtualDisplay *newDisplay);
 
 private:
-    void DrawEmitter(GroundListElement* tmpElement, float &displayX, float &displayY, float &origDisplayY);
+    void DrawEmitter(GroundListElement *tmpElement, float &displayX,
+                     float &displayY, float &origDisplayY);
     void GetOsbPos(int &OsbIndex, float &OsbPosX, float &OsbPosY);
 
     MissileClass *curMissile;

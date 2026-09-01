@@ -1,17 +1,17 @@
 #include <ctype.h>
-#include "TheaterDef.h"
+#include "theaterdef.h"
 #include "stdhdr.h"
 #include "datafile.h"
 #include "simfile.h"
 #include "codelib/resources/reslib/src/resmgr.h"
-#include "FalcSnd/voicemapper.h"
+#include "falcsnd/voicemapper.h"
 #include "entity.h"
 #include "f4find.h"
 #include "tactics.h"
-#include "AIInput.h"
-#include "Fsound.h"
+#include "aiinput.h"
+#include "fsound.h"
 #include "dispcfg.h"
-#include "Falcsnd/voicefilter.h"
+#include "falcsnd/voicefilter.h"
 #include "campstr.h"
 
 static const char THEATERLIST[] = "theater.lst";
@@ -35,9 +35,9 @@ extern char FalconPictureDirectory[];
 
 // RV - Biker - Theater switching stuff
 extern int numZips;
-extern int* resourceHandle;
+extern int *resourceHandle;
 extern int SimPathHandle;
-#define ZIPFILE_NAME    "ziplist.lst"
+#define ZIPFILE_NAME "ziplist.lst"
 
 extern int g_nMinTacanChannel;
 
@@ -79,13 +79,12 @@ void TheaterList::AddTheater(TheaterDef *nt)
         continue;
 
     *ptr = nt;
-    m_count ++;
+    m_count++;
 }
 
 #define OFFSET(x) offsetof(TheaterDef, x)
 
-static const InputDataDesc theaterdesc[] =
-{
+static const InputDataDesc theaterdesc[] = {
     {"name", InputDataDesc::ID_STRING, OFFSET(m_name), ""},
     {"desc", InputDataDesc::ID_STRING, OFFSET(m_description), ""},
     {"campaigndir", InputDataDesc::ID_STRING, OFFSET(m_campaign), ""},
@@ -99,23 +98,27 @@ static const InputDataDesc theaterdesc[] =
     {"bitmap", InputDataDesc::ID_STRING, OFFSET(m_bitmap), ""},
     {"mintacan", InputDataDesc::ID_INT, OFFSET(m_mintacan), "70"},
     {"sounddir", InputDataDesc::ID_STRING, OFFSET(m_sounddir), ""},
-    {"cockpitdir", InputDataDesc::ID_STRING, OFFSET(m_cockpitdir), "art\\ckptart"},
+    {"cockpitdir", InputDataDesc::ID_STRING, OFFSET(m_cockpitdir),
+     "art/ckptart"},
     {"zipsdir", InputDataDesc::ID_STRING, OFFSET(m_zipsdir), ""},
     {"tacrefdir", InputDataDesc::ID_STRING, OFFSET(m_tacrefdir), ""},
-    {"splashdir", InputDataDesc::ID_STRING, OFFSET(m_splashdir), "art\\splash"},
-    { NULL,},
+    {"splashdir", InputDataDesc::ID_STRING, OFFSET(m_splashdir), "art/splash"},
+    {
+        NULL,
+    },
 };
 
 void LoadTheaterDef(char *name)
 {
-    SimlibFileClass* theaterfile;
+    SimlibFileClass *theaterfile;
 
     theaterfile = SimlibFileClass::Open(name, SIMLIB_READ);
 
-    if (theaterfile == NULL) return;
+    if (theaterfile == NULL)
+        return;
 
     TheaterDef *theater = new TheaterDef;
-    memset(theater, 0, sizeof * theater);
+    memset(theater, 0, sizeof *theater);
 
     if (ParseSimlibFile(theater, theaterdesc, theaterfile) == false)
     {
@@ -133,10 +136,10 @@ void LoadTheaterDef(char *name)
 void LoadTheaterList()
 {
     char tlist[_MAX_PATH];
-    sprintf(tlist, "%s\\%s", FalconDataDirectory, THEATERLIST);
+    sprintf(tlist, "%s/%s", FalconDataDirectory, THEATERLIST);
     FILE *fp = fopen(tlist, "r");
 
-    if (fp == NULL)   // yikes- make something up
+    if (fp == NULL) // yikes- make something up
     {
         return;
     }
@@ -145,19 +148,24 @@ void LoadTheaterList()
 
     while (fgets(line, sizeof line, fp))
     {
-        if (line[0] == '\r' or line[0] == '#' or line[0] == ';' or line[0] == '\n')
+        if (line[0] == '\r' or line[0] == '#' or line[0] == ';' or
+            line[0] == '\n')
             continue;
 
         char *cp;
 
         if (cp = strchr(line, '\n'))
-            * cp = '\0';
+            *cp = '\0';
+
+        // #104: theater.lst ships with CRLF line endings; Linux has no text-mode CRLF translation, so a trailing
+        // '\r' survives (e.g. "...korea.tdf\r") and makes the .tdf open fail. Strip it.
+        if (cp = strchr(line, '\r'))
+            *cp = '\0';
 
         LoadTheaterDef(line);
     }
 
     fclose(fp);
-
 }
 
 TheaterList::~TheaterList()
@@ -200,7 +208,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
         }
 
         if (resourceHandle[0] < 0)
-            delete [] resourceHandle;
+            delete[] resourceHandle;
 
         numZips = 0;
     }
@@ -211,21 +219,26 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //========
     if (strlen(td->m_campaign) > 0)
-        SetPathName(FalconCampUserSaveDirectory, td->m_campaign, FalconDataDirectory);
+        SetPathName(FalconCampUserSaveDirectory, td->m_campaign,
+                    FalconDataDirectory);
     else
-        SetPathName(FalconCampUserSaveDirectory, "Campaign\\Save", FalconDataDirectory);
+        SetPathName(FalconCampUserSaveDirectory, "Campaign/Save",
+                    FalconDataDirectory);
 
     //========
     if (strlen(td->m_campaign) > 0)
-        SetPathName(FalconCampaignSaveDirectory, td->m_campaign, FalconDataDirectory);
+        SetPathName(FalconCampaignSaveDirectory, td->m_campaign,
+                    FalconDataDirectory);
     else
-        SetPathName(FalconCampaignSaveDirectory, "Campaign\\Save", FalconDataDirectory);
+        SetPathName(FalconCampaignSaveDirectory, "Campaign/Save",
+                    FalconDataDirectory);
 
     //========
     if (strlen(td->m_terrain) > 0)
         SetPathName(FalconTerrainDataDir, td->m_terrain, FalconDataDirectory);
     else
-        SetPathName(FalconTerrainDataDir, "terrdata\\Korea", FalconDataDirectory);
+        SetPathName(FalconTerrainDataDir, "terrdata/Korea",
+                    FalconDataDirectory);
 
     //========
     if (strlen(td->m_moviedir) > 0)
@@ -235,31 +248,37 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //========
     if (strlen(td->m_splashdir) > 0)
-        SetPathName(FalconSplashThrDirectory, td->m_splashdir, FalconDataDirectory);
+        SetPathName(FalconSplashThrDirectory, td->m_splashdir,
+                    FalconDataDirectory);
     else
-        SetPathName(FalconSplashThrDirectory, "art\\splash", FalconDataDirectory);
+        SetPathName(FalconSplashThrDirectory, "art/splash",
+                    FalconDataDirectory);
 
     //========
     if (strlen(td->m_objectdir) > 0)
         SetPathName(FalconObjectDataDir, td->m_objectdir, FalconDataDirectory);
     else
-        SetPathName(FalconObjectDataDir, "terrdata\\objects", FalconDataDirectory);
+        SetPathName(FalconObjectDataDir, "terrdata/objects",
+                    FalconDataDirectory);
 
     //========
     if (strlen(td->m_3ddatadir) > 0)
         SetPathName(Falcon3DDataDir, td->m_3ddatadir, FalconDataDirectory);
     else
-        SetPathName(Falcon3DDataDir, "terrdata\\objects", FalconDataDirectory);
+        SetPathName(Falcon3DDataDir, "terrdata/objects", FalconDataDirectory);
 
     //========
     if (strlen(td->m_misctexdir) > 0)
-        SetPathName(FalconMiscTexDataDir, td->m_misctexdir, FalconDataDirectory);
+        SetPathName(FalconMiscTexDataDir, td->m_misctexdir,
+                    FalconDataDirectory);
     else
-        SetPathName(FalconMiscTexDataDir, "terrdata\\misctex", FalconDataDirectory);
+        SetPathName(FalconMiscTexDataDir, "terrdata/misctex",
+                    FalconDataDirectory);
 
     //========
     if (strlen(td->m_uisounddir) > 0)
-        SetPathName(FalconUISoundDirectory, td->m_uisounddir, FalconDataDirectory);
+        SetPathName(FalconUISoundDirectory, td->m_uisounddir,
+                    FalconDataDirectory);
     else
         strcpy(FalconUISoundDirectory, FalconDataDirectory);
 
@@ -271,7 +290,8 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //========
     if (strlen(td->m_tacrefdir) > 0)
-        SetPathName(FalconTacrefThrDirectory, td->m_tacrefdir, FalconDataDirectory);
+        SetPathName(FalconTacrefThrDirectory, td->m_tacrefdir,
+                    FalconDataDirectory);
     else
         strcpy(FalconTacrefThrDirectory, FalconDataDirectory);
 
@@ -283,33 +303,38 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     //========
     if (strlen(td->m_cockpitdir) > 0)
-        SetPathName(FalconCockpitThrDirectory, td->m_cockpitdir, FalconDataDirectory);
+        SetPathName(FalconCockpitThrDirectory, td->m_cockpitdir,
+                    FalconDataDirectory);
     else
-        SetPathName(FalconCockpitThrDirectory, "art\\ckptart", FalconDataDirectory);
+        SetPathName(FalconCockpitThrDirectory, "art/ckptart",
+                    FalconDataDirectory);
 
     //========
     if (strlen(td->m_sounddir) > 0)
-        SetPathName(FalconSoundThrDirectory, td->m_sounddir, FalconDataDirectory);
+        SetPathName(FalconSoundThrDirectory, td->m_sounddir,
+                    FalconDataDirectory);
     else
         SetPathName(FalconSoundThrDirectory, "sounds", FalconDataDirectory);
 
     // We need some variables to store the diff. paths
     char tmpPath1[_MAX_PATH];
-    sprintf(tmpPath1, "%s\\config", FalconDataDirectory);
+    sprintf(tmpPath1, "%s/config", FalconDataDirectory);
     ResAddPath(tmpPath1, FALSE);
 
-    sprintf(tmpPath1, "%s\\art", FalconDataDirectory);
+    sprintf(tmpPath1, "%s/art", FalconDataDirectory);
     ResAddPath(tmpPath1, TRUE);
 
-    sprintf(tmpPath1, "%s", FalconPictureDirectory);  // JB 010623
-    ResAddPath(tmpPath1, FALSE);  // JB 010623
+    sprintf(tmpPath1, "%s", FalconPictureDirectory); // JB 010623
+    ResAddPath(tmpPath1, FALSE); // JB 010623
 
     //======================================================
     // Cobra - Add "sim" path if Korea theater
-    if (( not strnicmp(td->m_name, "Korea", 5)) or ( not strnicmp(td->m_name, "Eurowar", 7)))
+    if ((not strnicmp(td->m_name, "Korea", 5)) or
+        (not strnicmp(td->m_name, "Eurowar", 7)))
     {
         char tmpPath[256];
-        sprintf(tmpPath, "%s\\sim", FalconDataDirectory); // JPO - so we can find raw sim files
+        sprintf(tmpPath, "%s/sim",
+                FalconDataDirectory); // JPO - so we can find raw sim files
 
         if (SimPathHandle == -1)
             SimPathHandle = ResAddPath(tmpPath, TRUE);
@@ -322,12 +347,12 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
 
     // Cobra - Setup theater's Zip folder files
     char tmpPath[_MAX_PATH];
-    FILE* zipFile;
+    FILE *zipFile;
 
-    sprintf(tmpPath, "%s\\%s", FalconDataDirectory, ZIPFILE_NAME);
+    sprintf(tmpPath, "%s/%s", FalconDataDirectory, ZIPFILE_NAME);
     zipFile = fopen(tmpPath, "r");
 
-    if ( not zipFile)
+    if (not zipFile)
     {
         char string[300];
         sprintf(string, "Failed to open %s\n", tmpPath);
@@ -344,14 +369,16 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
         {
             char tmp[256];
             fscanf(zipFile, "%*c%s", tmp);
-            sprintf(tmpPath, "%s\\%s", FalconZipsThrDirectory, tmp);
+            sprintf(tmpPath, "%s/%s", FalconZipsThrDirectory, tmp);
 
-            if ( not strnicmp(td->m_name, "Korea", 5))
-                resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, FALSE);
+            if (not strnicmp(td->m_name, "Korea", 5))
+                resourceHandle[i] =
+                    ResAttach(FalconDataDirectory, tmpPath, FALSE);
             else
                 // FRB - Must use FalconDataDirectory and not FalconZipsThrDirectory (don't know why?)
                 //resourceHandle[i] = ResAttach (FalconZipsThrDirectory, tmpPath, TRUE);
-                resourceHandle[i] = ResAttach(FalconDataDirectory, tmpPath, TRUE);
+                resourceHandle[i] =
+                    ResAttach(FalconDataDirectory, tmpPath, TRUE);
         }
 
         fclose(zipFile);
@@ -399,7 +426,7 @@ bool TheaterList::SetNewTheater(TheaterDef *td)
     return true;
 }
 
-void TheaterList::DoSoundSetup() // must be done after END_UI 
+void TheaterList::DoSoundSetup() // must be done after END_UI
 {
     if (g_nSoundSwitchFix bitand 0x01)
     {
@@ -412,7 +439,6 @@ void TheaterList::DoSoundSetup() // must be done after END_UI
     // 2002-04-08 MN Moved here in, as InitSoundManager destroys the voice flag list -
     // need to rebuild voicemapping here
     g_voicemap.LoadVoices();
-
 }
 
 
@@ -426,34 +452,39 @@ void TheaterList::SetPathName(char *dest, char *src, char *reldir)
              (src[0] == '\\' and src[1] == '\\')) // probably full pathname
         strcpy(dest, src);
     else
-        sprintf(dest, "%s\\%s", reldir, src);
+        sprintf(dest, "%s/%s", reldir, src);
 }
 
 void TheaterList::SetCurrentTheater(TheaterDef *td)
 {
     HKEY theKey;
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0,
+                 KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
 
-    RegSetValueEx(theKey, "curTheater", 0, REG_SZ, (LPBYTE)td->m_name, strlen(td->m_name));
+    RegSetValueEx(theKey, "curTheater", 0, REG_SZ, (LPBYTE)td->m_name,
+                  strlen(td->m_name));
     RegCloseKey(theKey);
 }
 
-TheaterDef * TheaterList::GetCurrentTheater()
+TheaterDef *TheaterList::GetCurrentTheater()
 {
     char TheaterName[_MAX_PATH];
     HKEY theKey;
     DWORD size, type;
 
 
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0,
+                 KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
 
     size = sizeof(TheaterName);
 
-    if (RegQueryValueEx(theKey, "curTheater", 0, &type, (LPBYTE)TheaterName, &size) not_eq ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "curTheater", 0, &type, (LPBYTE)TheaterName,
+                        &size) not_eq ERROR_SUCCESS)
     {
         //TheaterName[0] = '\0';
         strcpy(TheaterName, "Korea");
-        RegSetValueEx(theKey, "curTheater", 0, REG_SZ, (LPBYTE)TheaterName, strlen(TheaterName));
+        RegSetValueEx(theKey, "curTheater", 0, REG_SZ, (LPBYTE)TheaterName,
+                      strlen(TheaterName));
     }
 
     //if (strnicmp(TheaterName, "Korea", 5) == 0)
@@ -463,7 +494,7 @@ TheaterDef * TheaterList::GetCurrentTheater()
     return FindTheaterByName(TheaterName);
 }
 
-TheaterDef * TheaterList::FindTheaterByName(const char *name)
+TheaterDef *TheaterList::FindTheaterByName(const char *name)
 {
     TheaterDef *ptr;
 

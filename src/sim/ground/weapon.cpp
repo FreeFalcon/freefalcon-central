@@ -1,17 +1,17 @@
 #include "stdhdr.h"
 #include "mesg.h"
 #include "guns.h"
-#include "Graphics/Include/drawsgmt.h"
+#include "graphics/include/drawsgmt.h"
 #include "object.h"
 #include "otwdrive.h"
 #include "sfx.h"
 #include "falcmesg.h"
 #include "fcc.h"
 #include "sms.h"
-#include "MsgInc/WeaponFireMsg.h"
+#include "msginc/weaponfiremsg.h"
 #include "hardpnt.h"
 #include "battalion.h"
-#include "Simdrive.h"
+#include "simdrive.h"
 #include "missile.h"
 #include "falcsess.h"
 #include "fsound.h"
@@ -19,15 +19,15 @@
 #include "fakerand.h"
 #include "camp2sim.h"
 #include "vehicle.h"
-#include "Unit.h"
-#include "Radar.h"
-#include "BeamRider.h"
-#include "IRST.h"
+#include "unit.h"
+#include "radar.h"
+#include "beamrider.h"
+#include "irst.h"
 #include "ground.h"
 #include "dofsnswitches.h"
 #include "missile.h"//me123
 #include "missdata.h" // 2002-03-08 S.G.
-#include "Graphics/Include/drawparticlesys.h"
+#include "graphics/include/drawparticlesys.h"
 
 extern float g_fTracerAccuracyFactor; // 2002-03-12
 extern bool g_bToggleAAAGunFlag; // 2002-03-12
@@ -45,7 +45,7 @@ void GroundClass::WeaponKeepAlive(void)
     int i;
     int fire;
     int whatWasHit;
-    GunClass *Gun;
+    GunClass* Gun;
     BOOL keepAliveCheck = FALSE;
 
     // Rewritten by Kevin on 6/22
@@ -89,10 +89,9 @@ void GroundClass::WeaponKeepAlive(void)
 
                         // this is a hack right now -- it seems like the
                         // unit aren't always set right on the ground
-                        SetPosition(
-                            XPos(),
-                            YPos(),
-                            OTWDriver.GetGroundLevel(XPos(), YPos()) - 0.7f);
+                        SetPosition(XPos(), YPos(),
+                                    OTWDriver.GetGroundLevel(XPos(), YPos()) -
+                                        0.7f);
 
                         vec.x = PRANDFloat() * 30.0f;
                         vec.y = PRANDFloat() * 30.0f;
@@ -109,9 +108,8 @@ void GroundClass::WeaponKeepAlive(void)
                          2.3F, // time to live
                          2.0f ) ); // scale
                          */
-                        DrawableParticleSys::PS_AddParticleEx((SFX_GUNSMOKE + 1),
-                                                              &pos,
-                                                              &vec);
+                        DrawableParticleSys::PS_AddParticleEx(
+                            (SFX_GUNSMOKE + 1), &pos, &vec);
                     }
                     else
                     {
@@ -122,7 +120,8 @@ void GroundClass::WeaponKeepAlive(void)
                     // service the guns.   We need to keep any tracers that have been fired
                     // flying and detecting collisions.  The 2nd 2 args aren't used when
                     // we aren't actually starting new tracers.
-                    whatWasHit = Gun->Exec(&fire, gunDmx, &platformAngles, targetPtr, FALSE);
+                    whatWasHit = Gun->Exec(&fire, gunDmx, &platformAngles,
+                                           targetPtr, FALSE);
 
                     // if we hit something, stop firing....
                     if (whatWasHit not_eq TRACER_HIT_NOTHING)
@@ -132,13 +131,13 @@ void GroundClass::WeaponKeepAlive(void)
                         // debug....
                         if (whatWasHit bitand TRACER_HIT_GROUND)
                         {
-                            MonoPrint("Tracer keepalive stopped.  Zpos = %3.3f Ground = %3.3f, GunZ = %3.3f\n",
+                            MonoPrint("Tracer keepalive stopped.  Zpos = %3.3f "
+                                      "Ground = %3.3f, GunZ = %3.3f\n",
                                       ZPos(),
                                       OTWDriver.GetGroundLevel(XPos(), YPos()),
                                       gunDmx[0][2]);
                         }
                     }
-
                 }
             }
             else // a shell
@@ -176,7 +175,7 @@ BOOL GroundClass::DoWeapons(void)
     //SimWeaponClass *theWeapon;
     //theWeapon.reset(Sms->GetCurrentWeapon());
     //theWeapon.reset(Sms->GetCurrentWeapon());
-    if ( not theWeapon)
+    if (not theWeapon)
     {
         return FALSE;
     }
@@ -190,7 +189,7 @@ BOOL GroundClass::DoWeapons(void)
     if (theWeapon->IsGun())
     {
         // point to Gun Class
-        GunClass *Gun = static_cast<GunClass*>(theWeapon.get());
+        GunClass* Gun = static_cast<GunClass*>(theWeapon.get());
         //GunClass *Gun = static_cast<GunClass*>(theWeapon);
 
         // make sure a relative position is set
@@ -198,12 +197,14 @@ BOOL GroundClass::DoWeapons(void)
 
         if (GunTrack())
         {
-            if ( not IsGunFiring(Sms->GetCurrentWeaponHardpoint()) or Gun->IsShell())
+            if (not IsGunFiring(Sms->GetCurrentWeaponHardpoint()) or
+                Gun->IsShell())
             {
                 //me123 disabled for now...its looking realy strange in mp
-                if ( not Gun->FiremsgsendTime)
+                if (not Gun->FiremsgsendTime)
                 {
-                    SendFireMessage((SimWeaponClass*)Gun, FalconWeaponsFire::GUN, TRUE, targetPtr);
+                    SendFireMessage((SimWeaponClass*)Gun,
+                                    FalconWeaponsFire::GUN, TRUE, targetPtr);
                 }
 
                 Gun->FiremsgsendTime = vuxRealTime;
@@ -227,12 +228,14 @@ BOOL GroundClass::DoWeapons(void)
         }
         else
         {
-            if (1/*IsGunFiring(Sms->GetCurrentWeaponHardpoint())*/)
+            if (1 /*IsGunFiring(Sms->GetCurrentWeaponHardpoint())*/)
             {
-                if (Gun->FiremsgsendTime and vuxRealTime - Gun->FiremsgsendTime > 20000)
+                if (Gun->FiremsgsendTime and
+                    vuxRealTime - Gun->FiremsgsendTime > 20000)
                 {
                     //me123 disabled for now...its looking realy strange in mp
-                    SendFireMessage((SimWeaponClass*)Gun, FalconWeaponsFire::GUN, FALSE, targetPtr);
+                    SendFireMessage((SimWeaponClass*)Gun,
+                                    FalconWeaponsFire::GUN, FALSE, targetPtr);
                     Gun->FiremsgsendTime = 0;
                 }
             }
@@ -243,7 +246,7 @@ BOOL GroundClass::DoWeapons(void)
     else if (theWeapon->IsMissile())
     {
         // point to the missile
-        MissileClass *theMissile = static_cast<MissileClass*>(theWeapon.get());
+        MissileClass* theMissile = static_cast<MissileClass*>(theWeapon.get());
 
         //MissileClass *theMissile = static_cast<MissileClass*>(theWeapon);
         if (MissileTrack())
@@ -251,11 +254,9 @@ BOOL GroundClass::DoWeapons(void)
             // 2002-02-28 MODIFIED BY S.G.
             // Valid for campaign object as well, not just sim
             // We're testing inside for SIM or CAMPAIGN ANYWAY Otherwise nextSamFireTime is NEVER adjusted
-            if (
-                gai->battalionCommand and 
+            if (gai->battalionCommand and
                 /* targetPtr->BaseData()->IsSim() and */
- not targetPtr->BaseData()->OnGround()
-            )
+                not targetPtr->BaseData()->OnGround())
             {
                 gai->battalionCommand->self->allowSamFire = FALSE;
                 int numVeh = 1;
@@ -264,16 +265,21 @@ BOOL GroundClass::DoWeapons(void)
                 // If it's not a sim object, it doesn't have a campaignObject member variable so that test isn't valid
                 if (targetPtr->BaseData()->IsSim())
                 {
-                    if (((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject())
+                    if (((SimBaseClass*)targetPtr->BaseData())
+                            ->GetCampaignObject())
                     {
-                        numVeh = max(
-                                     1, ((Unit)((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject())->GetTotalVehicles() / 2
-                                 );
+                        numVeh =
+                            max(1, ((Unit)((SimBaseClass*)targetPtr->BaseData())
+                                        ->GetCampaignObject())
+                                           ->GetTotalVehicles() /
+                                       2);
                     }
                 }
                 else
                 {
-                    numVeh = max(1, ((Unit)targetPtr->BaseData())->GetTotalVehicles() / 2);
+                    numVeh = max(
+                        1,
+                        ((Unit)targetPtr->BaseData())->GetTotalVehicles() / 2);
                 }
 
                 int rate;
@@ -285,16 +291,19 @@ BOOL GroundClass::DoWeapons(void)
 
                 // RV - Biker - For IR missiles we don't have a fire rate
                 rate = MAX_SAM_FIRE_RATE;
-                VehicleClassDataType* vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
+                VehicleClassDataType* vc =
+                    GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
                 ShiAssert(vc);
 
                 // If the vehicle's VEH_USES_UNIT_RADAR flag is set,
                 // forget about your own (if you have one) and use the unit's radar vehicle
                 if (vc->Flags bitand VEH_USES_UNIT_RADAR)
                 {
-                    RadarDataSet* radarData = &radarDatFileTable[GetCampaignObject()->GetRadarType()];
+                    RadarDataSet* radarData =
+                        &radarDatFileTable[GetCampaignObject()->GetRadarType()];
 
-                    if (radarData->AirFireRate and GetCampaignObject()->GetRadarType())
+                    if (radarData->AirFireRate and
+                        GetCampaignObject()->GetRadarType())
                     {
                         rate = radarData->AirFireRate;
                     }
@@ -302,7 +311,8 @@ BOOL GroundClass::DoWeapons(void)
                 // Otherwise rate will be what our own radar AirFireRate says
                 else
                 {
-                    RadarDataSet* radarData = &radarDatFileTable[GetRadarType()];
+                    RadarDataSet* radarData =
+                        &radarDatFileTable[GetRadarType()];
 
                     if (radarData->AirFireRate and GetRadarType())
                     {
@@ -314,16 +324,20 @@ BOOL GroundClass::DoWeapons(void)
                 rate += rate - rate / (5 - gai->skillLevel);
                 // END OF MODIFIED SECTION 2002-02-28
 
-                gai->battalionCommand->self->nextSamFireTime = SimLibElapsedTime + rate / numVeh;
+                gai->battalionCommand->self->nextSamFireTime =
+                    SimLibElapsedTime + rate / numVeh;
             }
 
-            SendFireMessage(theMissile, FalconWeaponsFire::MRM, TRUE, targetPtr);
+            SendFireMessage(theMissile, FalconWeaponsFire::MRM, TRUE,
+                            targetPtr);
 
             // Special case for beam riders
-            if (theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (theMissile->sensorArray and
+                theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 // Have the missile use the radar vehicle's radar for guidance
-                ((BeamRiderClass*)theMissile->sensorArray[0])->SetGuidancePlatform(battalionFireControl);
+                ((BeamRiderClass*)theMissile->sensorArray[0])
+                    ->SetGuidancePlatform(battalionFireControl);
             }
 
             // Get it in the air
@@ -331,7 +345,7 @@ BOOL GroundClass::DoWeapons(void)
             theMissile->Start(targetPtr);
 
             // It's Alive
-            vuDatabase->/*Quick*/Insert(theWeapon.get());
+            vuDatabase->/*Quick*/ Insert(theWeapon.get());
             //vuDatabase->/*Quick*/Insert(theWeapon);
             theMissile->Wake();
             SoundPos.Sfx(SFX_MISSILE1, 0, 1.0, 0);
@@ -348,7 +362,8 @@ BOOL GroundClass::DoWeapons(void)
              1.0f, // time to live
              201.5f ) ); // scale
              */
-            DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_FLASH + 1), &pos, &PSvec);
+            DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_FLASH + 1), &pos,
+                                                  &PSvec);
 
             // RV - Biker - Add some smoke to the launcher
             Tpoint vec;
@@ -363,7 +378,8 @@ BOOL GroundClass::DoWeapons(void)
              2.0f,
              1.0f ) );
              */
-            DrawableParticleSys::PS_AddParticleEx((SFX_SAM_LAUNCH + 1), &pos, &vec);
+            DrawableParticleSys::PS_AddParticleEx((SFX_SAM_LAUNCH + 1), &pos,
+                                                  &vec);
 
             return TRUE; // We took a shot
         }
@@ -386,7 +402,7 @@ void GroundClass::RotateTurret(void)
     }
     else
     {
-        if ( not targetPtr->BaseData()->OnGround() and not isAirDefense)
+        if (not targetPtr->BaseData()->OnGround() and not isAirDefense)
         {
             newAz = 0.0F;
             newEl = 0.0F;
@@ -421,13 +437,16 @@ void GroundClass::RotateTurret(void)
         else
             SetDOF(AIRDEF_ELEV, newEl);
 
-        SetDOF(AIRDEF_ELEV, min(85.0F * DTR, max(GetDOFValue(AIRDEF_ELEV), 0.0F)));
+        SetDOF(AIRDEF_ELEV,
+               min(85.0F * DTR, max(GetDOFValue(AIRDEF_ELEV), 0.0F)));
         SetDOF(AIRDEF_ELEV2, GetDOFValue(AIRDEF_ELEV));
 
         // RV - Biker - For vehicles which have radar not looking forward by default read offset from FueFlow data
-        VehicleClassDataType* vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
+        VehicleClassDataType* vc =
+            GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
 
-        delta = newAz - GetDOFValue(AIRDEF_AZIMUTH) - min(max(0.0F, vc->FuelEcon * DTR), 360.0F * DTR);
+        delta = newAz - GetDOFValue(AIRDEF_AZIMUTH) -
+                min(max(0.0F, vc->FuelEcon * DTR), 360.0F * DTR);
 
         if (delta > 180.0F * DTR)
             delta -= 360.0F * DTR;
@@ -444,20 +463,19 @@ void GroundClass::RotateTurret(void)
         //else
         // SetDOF(AIRDEF_AZIMUTH, newAz);
     }
-
 }
 
 int GroundClass::GunTrack(void)
 {
     float xft, yft, zft;
     float az, el, tof;
-    FalconEntity *target;
+    FalconEntity* target;
     int fire = FALSE;
     float realRange, delta;
     Tpoint pos, vec;
     mlTrig trigtha, trigpsi;
-    SimWeaponClass *theWeapon;
-    WeaponClassDataType *wc;
+    SimWeaponClass* theWeapon;
+    WeaponClassDataType* wc;
 
     //RV - I-Hawk - Added a 0 vector for RV new PS calls
     Tpoint PSvec;
@@ -473,13 +491,13 @@ int GroundClass::GunTrack(void)
 
 
     // point to Gun Class
-    GunClass *Gun = (GunClass*)theWeapon;
+    GunClass* Gun = (GunClass*)theWeapon;
 
     wc = &WeaponDataTable[Sms->hardPoint[Sms->CurHardpoint()]->weaponId];
 
     target = targetPtr->BaseData();
 
-    if ( not target)
+    if (not target)
         return FALSE;
 
     // make guns less accurate by randomizing target position when in air, unless its AAA
@@ -487,7 +505,10 @@ int GroundClass::GunTrack(void)
     // if ( not target->OnGround() and not isAirDefense)
     float tracerError; // JB 010106
 
-    if ((((unsigned char *)Gun->wcPtr)[31] bitand 1) == (g_bToggleAAAGunFlag bitand 1) and not target->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
+    if ((((unsigned char*)Gun->wcPtr)[31] bitand 1) ==
+            (g_bToggleAAAGunFlag bitand 1) and
+        not target
+                ->OnGround()) // 2002-03-12 MODIFIED BY S.G. Added the 'g_bToggleAAAGunFlag' check to possibly reverse the check. RP5 reversed the check so this deals with it
     {
         //float tracerError; // JB 010106
         tracerError = PRANDFloatPos() / (float)(gai->skillLevel + 1);
@@ -495,9 +516,13 @@ int GroundClass::GunTrack(void)
         // tracerError = (5.0f + tracerError) * 360.0f;
         // tracerError = (5.0f + tracerError) * (float)(((unsigned int)(((unsigned char *)Gun->wcPtr)[31])) << 2);
         // 2002-03-12 MODIFIED BY S.G. Looking at the assembly of RP5, this was coded wrong here :-(
-        tracerError = 5.0f + (tracerError * (float)(((unsigned int)(((unsigned char *)Gun->wcPtr)[31])) << 2));
+        tracerError =
+            5.0f +
+            (tracerError *
+             (float)(((unsigned int)(((unsigned char*)Gun->wcPtr)[31])) << 2));
 
-        tracerError *= g_fTracerAccuracyFactor; // JB 010104 hack to make AAA more accurate 2002-03-12 MODIFIED BY S.G. Use the exported g_fTracerAccuracyFactor variable instead so we can tweak it without editing the code
+        tracerError *=
+            g_fTracerAccuracyFactor; // JB 010104 hack to make AAA more accurate 2002-03-12 MODIFIED BY S.G. Use the exported g_fTracerAccuracyFactor variable instead so we can tweak it without editing the code
 
         xft = target->XPos() + tracerError * PRANDFloat();
         yft = target->YPos() + tracerError * PRANDFloat();
@@ -508,9 +533,11 @@ int GroundClass::GunTrack(void)
         // xft = target->XPos();
         // yft = target->YPos();
         // 2000-10-19 MODIFIED BY S.G. THE TRACE ERROR WILL BE BASED ON THE GUN'S PERFORMANCE WHICH IS STORED IN THE LAST BYTE OF THE NAME OF THE WEAPON IN VAL / 4 FORMAT
-        tracerError = (float)(((unsigned int)(((unsigned char *)Gun->wcPtr)[31])) << 2); // JB 010106
+        tracerError = (float)(((unsigned int)(((unsigned char*)Gun->wcPtr)[31]))
+                              << 2); // JB 010106
 
-        tracerError *= g_fTracerAccuracyFactor; // JB 010106 hack to make AAA more accurate 2002-03-12 MODIFIED BY S.G. Use the exported g_fTracerAccuracyFactor variable instead so we can tweak it without editing the code
+        tracerError *=
+            g_fTracerAccuracyFactor; // JB 010106 hack to make AAA more accurate 2002-03-12 MODIFIED BY S.G. Use the exported g_fTracerAccuracyFactor variable instead so we can tweak it without editing the code
 
         xft = target->XPos() + tracerError * PRANDFloat();
         yft = target->YPos() + tracerError * PRANDFloat();
@@ -538,7 +565,8 @@ int GroundClass::GunTrack(void)
     // Note: This factors our induced error and target's vector into the Rel Geometry data,
     // but as we use this only for aiming and targetting, it shouldn't matter.
     targetPtr->localData->az = (float)atan2(yft, xft);
-    targetPtr->localData->el = (float)atan(-zft / (float)sqrt(xft * xft + yft * yft + 0.1F));
+    targetPtr->localData->el =
+        (float)atan(-zft / (float)sqrt(xft * xft + yft * yft + 0.1F));
     targetPtr->localData->range = realRange;
 
     az = targetPtr->localData->az - Yaw();
@@ -618,7 +646,7 @@ int GroundClass::GunTrack(void)
     // RV - Biker check max firing height for AAA (flak)
     else
     {
-        if ( not targetPtr->BaseData()->OnGround())
+        if (not targetPtr->BaseData()->OnGround())
         {
             WeaponClassDataType* wc = Gun->GetWCD();
             float maxFireRange;
@@ -636,8 +664,8 @@ int GroundClass::GunTrack(void)
         // we need to prevent flak from firing when aircraft are flying
         // low -- it should be a gameplay feature.  SelectWeapon isn't
         // being granular enough....
-        if ( not targetPtr->BaseData()->OnGround() and 
-            targetPtr->BaseData()->IsSim() and 
+        if (not targetPtr->BaseData()->OnGround() and
+            targetPtr->BaseData()->IsSim() and
             targetPtr->BaseData()->ZPos() - ZPos() > -2000.0f)
         {
             return FALSE;
@@ -672,9 +700,7 @@ int GroundClass::GunTrack(void)
          1.3f, // time to live
          7.0f ) ); // scale
          */
-        DrawableParticleSys::PS_AddParticleEx((SFX_GUN_SMOKE + 1),
-                                              &pos,
-                                              &vec);
+        DrawableParticleSys::PS_AddParticleEx((SFX_GUN_SMOKE + 1), &pos, &vec);
         /*
          pos.x = XPos() + gunDmx[0][0] * 8.0f;
          pos.y = YPos() + gunDmx[0][1] * 8.0f;
@@ -732,9 +758,9 @@ int GroundClass::MissileTrack(void)
 {
     float zft;
     float az, el;
-    FalconEntity *target;
-    MissileClass *theMissile;
-    WeaponClassDataType *wc;
+    FalconEntity* target;
+    MissileClass* theMissile;
+    WeaponClassDataType* wc;
     float minAlt, maxAlt;
 
     theMissile = (MissileClass*)Sms->GetCurrentWeapon();
@@ -742,7 +768,8 @@ int GroundClass::MissileTrack(void)
     ShiAssert(targetPtr);
     ShiAssert(theMissile);
     ShiAssert(theMissile->IsMissile());
-    RadarDataSet* radarData = &radarDatFileTable[GetCampaignObject()->GetRadarType()];
+    RadarDataSet* radarData =
+        &radarDatFileTable[GetCampaignObject()->GetRadarType()];
 
 
     // We don't want to shoot missiles while we're on the move
@@ -752,7 +779,7 @@ int GroundClass::MissileTrack(void)
 
     // RV - Biker - Think here is a problem
     // FRB - Increased VT = 1 to VT = 3, same as GMT threshold
-    if ( not isShip and (GetVt() > 3.0f and not g_bFireOntheMove))
+    if (not isShip and (GetVt() > 3.0f and not g_bFireOntheMove))
         return FALSE;
 
     // check for radar-guided missiles
@@ -760,47 +787,55 @@ int GroundClass::MissileTrack(void)
     {
         switch (theMissile->sensorArray[0]->Type())
         {
-            case SensorClass::RadarHoming:
+        case SensorClass::RadarHoming:
+        {
+            // Make sure this battalion at least has a radar assigned to it (though it could be dead)
+            ShiAssert(GetCampaignObject()->GetRadarType());
+
+            // if we don't have a fire control radar, don't launch
+            if (not battalionFireControl)
+                return FALSE;
+
+            // Shoot at our fire control radar's target
+            // (Kinda annoying to go to the trouble of picking a target for this vehicle,
+            // then ignoring the choice here, but oh well.)
+            RadarClass* radar = (RadarClass*)FindSensor(battalionFireControl,
+                                                        SensorClass::Radar);
+            ShiAssert(radar);
+
+            if (not radar->CurrentTarget() or
+                targetPtr->BaseData() not_eq radar->CurrentTarget()->BaseData())
+                SetTarget(radar->CurrentTarget());
+
+            // ADDED BY S.G. SO SAM DO NOT NORMALLY FIRE WHEN JAMMED. DEPENDING ON THE SKILL, THEY MIGHT FIRE THOUGH
+            if (radar->CurrentTarget() and
+                radar->CurrentTarget()
+                        ->localData->sensorState[SensorClass::Radar] not_eq
+                    SensorClass::SensorTrack and
+                (rand() % 1000 >=
+                 (4 - gai->skillLevel) * (4 - gai->skillLevel) * 10))
+                return FALSE;
+
+            // END OF ADDED SECTION
+
+            // Make sure we still have a target after all the above contortions
+            if (not targetPtr)
+                return FALSE;
+        }
+        break;
+
+        case SensorClass::IRST:
+        {
+            // Don't launch until the seeker sees the target
+            theMissile->SetPosition(XPos(), YPos(), ZPos());
+
+            if (not((IrstClass*)theMissile->sensorArray[0])
+                       ->CanDetectObject(targetPtr))
             {
-                // Make sure this battalion at least has a radar assigned to it (though it could be dead)
-                ShiAssert(GetCampaignObject()->GetRadarType());
-
-                // if we don't have a fire control radar, don't launch
-                if ( not battalionFireControl)
-                    return FALSE;
-
-                // Shoot at our fire control radar's target
-                // (Kinda annoying to go to the trouble of picking a target for this vehicle,
-                // then ignoring the choice here, but oh well.)
-                RadarClass *radar = (RadarClass*)FindSensor(battalionFireControl, SensorClass::Radar);
-                ShiAssert(radar);
-
-                if ( not radar->CurrentTarget() or targetPtr->BaseData() not_eq radar->CurrentTarget()->BaseData())
-                    SetTarget(radar->CurrentTarget());
-
-                // ADDED BY S.G. SO SAM DO NOT NORMALLY FIRE WHEN JAMMED. DEPENDING ON THE SKILL, THEY MIGHT FIRE THOUGH
-                if (radar->CurrentTarget() and radar->CurrentTarget()->localData->sensorState[SensorClass::Radar] not_eq SensorClass::SensorTrack and (rand() % 1000 >= (4 - gai->skillLevel) * (4 - gai->skillLevel) * 10))
-                    return FALSE;
-
-                // END OF ADDED SECTION
-
-                // Make sure we still have a target after all the above contortions
-                if ( not targetPtr)
-                    return FALSE;
+                return FALSE;
             }
-            break;
-
-            case SensorClass::IRST:
-            {
-                // Don't launch until the seeker sees the target
-                theMissile->SetPosition(XPos(), YPos(), ZPos());
-
-                if ( not ((IrstClass*)theMissile->sensorArray[0])->CanDetectObject(targetPtr))
-                {
-                    return FALSE;
-                }
-            }
-            break;
+        }
+        break;
         }
     }
 
@@ -809,12 +844,12 @@ int GroundClass::MissileTrack(void)
     ShiAssert(target);
 
 
-
-
-    if (radarData->AverageSpeed)//me123
+    if (radarData->AverageSpeed) //me123
     {
         vector collPoint;
-        FindCollisionPoint((SimBaseClass*)targetPtr->BaseData(), (SimVehicleClass*)this, &collPoint, radarData->AverageSpeed * NM_TO_FT);
+        FindCollisionPoint((SimBaseClass*)targetPtr->BaseData(),
+                           (SimVehicleClass*)this, &collPoint,
+                           radarData->AverageSpeed * NM_TO_FT);
         float xft, yft, zft, rx_t;
         float range;
         FalconEntity* theObject;
@@ -837,11 +872,12 @@ int GroundClass::MissileTrack(void)
         range = (float)(xft * xft + yft * yft + zft * zft);
 
         targetPtr->localData->range = (float)sqrt(range);
-        targetPtr->localData->ataFrom = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
+        targetPtr->localData->ataFrom =
+            (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
         targetPtr->localData->az = (float)atan2(yft, xft);
         targetPtr->localData->el = (float)atan2(-zft, sqrt(range - zft * zft));
     }
-    else  // KCK: Do our ground version of CalcRelGeometry to get needed info
+    else // KCK: Do our ground version of CalcRelGeometry to get needed info
         CalcRelAzElRangeAta(this, targetPtr);
 
     // edg: get real range.  Since we don't update targets every frame
@@ -857,8 +893,9 @@ int GroundClass::MissileTrack(void)
     //wc = &WeaponDataTable[Sms->hardPoint[Sms->CurHardpoint()]->weaponId];
 
     // 2002-03-08 ADDED BY S.G. Will use the new missile auxiliary data file for MinEngagementAlt and MinEngagementRange
-    SimWeaponDataType* wpnDefinition = &SimWeaponDataTable[Falcon4ClassTable[wc->Index].vehicleDataIndex];
-    MissileAuxData *auxData = NULL;
+    SimWeaponDataType* wpnDefinition =
+        &SimWeaponDataTable[Falcon4ClassTable[wc->Index].vehicleDataIndex];
+    MissileAuxData* auxData = NULL;
 
     if (wpnDefinition->dataIdx < numMissileDatasets)
         auxData = missileDataset[wpnDefinition->dataIdx].auxData;
@@ -876,19 +913,20 @@ int GroundClass::MissileTrack(void)
     //  minAlt = max(-1500.0F, maxAlt * 0.1f);
     // minAlt = (float)(wc->Name[18]) * -32.0F;
     // 2002-02-26 MN the radar data now decides on that
-    // 2002-03-09 MN mea culpa - minAlt above put back in - this makes is weapon dependant 
+    // 2002-03-09 MN mea culpa - minAlt above put back in - this makes is weapon dependant
     // minAlt = (float)-(radarData->MinEngagementAlt);
     // 2002-03-09 MODIFIED BY S.G. Uses the new missile auxiliary data file instead of the radar file so it's more granular
     if (auxData)
-        minAlt = (float) - auxData->MinEngagementAlt;
+        minAlt = (float)-auxData->MinEngagementAlt;
     else
-        minAlt = 1.0f; // Because I do a '-' in front of the previous statement, I need to make it 1.0 instead of -1.0
+        minAlt =
+            1.0f; // Because I do a '-' in front of the previous statement, I need to make it 1.0 instead of -1.0
 
     // If we haven't entered the MinEngagementAlt yet, use the one in the Falcon4.WCD file
     if (minAlt > 0.0f)
         minAlt = (float)(wc->Name[18]) * -32.0F;
 
-    if ( not target->OnGround())
+    if (not target->OnGround())
     {
         if (maxAlt == 0.0f)
             return FALSE;
@@ -900,13 +938,17 @@ int GroundClass::MissileTrack(void)
 
         // if (targetPtr->localData->range > wc->Range*KM_TO_FT /*or targetPtr->localData->range < wc->Range*KM_TO_FT*0.1F */)
         // return FALSE;
-        if (targetPtr->localData->range > theMissile->GetRMax(-target->ZPos(), 0,
-                targetPtr->localData->az, targetPtr->BaseData()->GetVt(), targetPtr->localData->ataFrom))
+        if (targetPtr->localData->range >
+            theMissile->GetRMax(-target->ZPos(), 0, targetPtr->localData->az,
+                                targetPtr->BaseData()->GetVt(),
+                                targetPtr->localData->ataFrom))
             return FALSE;
 
         if (auxData)
         {
-            if (targetPtr->localData->range < auxData->MinEngagementRange) // 2002-03-09 MODIFIED BY S.G. Uses the MISSILES data file, more granular than the radar data file
+            if (targetPtr->localData->range <
+                auxData
+                    ->MinEngagementRange) // 2002-03-09 MODIFIED BY S.G. Uses the MISSILES data file, more granular than the radar data file
                 return FALSE;
         }
 
@@ -920,7 +962,8 @@ int GroundClass::MissileTrack(void)
         */
     }
     // target on ground
-    else if (maxAlt not_eq 0.0f or targetPtr->localData->range > wc->Range * KM_TO_FT)
+    else if (maxAlt not_eq 0.0f or
+             targetPtr->localData->range > wc->Range * KM_TO_FT)
         return FALSE;
 
     // az and el are relative from our vehicles orientation so subtract
@@ -945,7 +988,7 @@ int GroundClass::MissileTrack(void)
     if (GetCampaignObject() and // MLR 5/27/2004 - CTD ?
         /* not ((BattalionClass*)GetCampaignObject())->GetMissilesFlying())*/
         //Cobra TJL 10/30/04
- not GetCampaignObject()->GetMissilesFlying())
+        not GetCampaignObject()->GetMissilesFlying())
     {
 
         BUMP = static_cast<float>(radarData->Elevationbumpamounta);
@@ -955,10 +998,12 @@ int GroundClass::MissileTrack(void)
         BUMP = static_cast<float>(radarData->Elevationbumpamountb);
     }
 
-    if (BUMP > 90) BUMP = (BUMP - 90) * -1.0f;
+    if (BUMP > 90)
+        BUMP = (BUMP - 90) * -1.0f;
 
     BUMP *= DTR;
-    el = max(5.0F * DTR, el + targetPtr->localData->range / (wc->Range * KM_TO_FT) * BUMP);
+    el = max(5.0F * DTR,
+             el + targetPtr->localData->range / (wc->Range * KM_TO_FT) * BUMP);
     //}
 
     // if we're within an acceptable tolerance, just snap to target and return TRUE,
@@ -996,17 +1041,16 @@ int GroundClass::MissileTrack(void)
 ** Find vehicle in unit who can emit (preferentially ourselves), and
 ** set them as our fire controller
 */
-void
-GroundClass::FindBattalionFireControl(void)
+void GroundClass::FindBattalionFireControl(void)
 {
-    GroundClass *firectl;
-    CampBaseClass *batt;
+    GroundClass* firectl;
+    CampBaseClass* batt;
     int battRadarType;
 
     // do we already have one?
     if (battalionFireControl)
     {
-        if ( not battalionFireControl->IsDead())
+        if (not battalionFireControl->IsDead())
         {
             // Can still use the one we've got
             return;
@@ -1030,24 +1074,27 @@ GroundClass::FindBattalionFireControl(void)
     // Get the type of radar the battalion thinks it has
     batt = GetCampaignObject();
     ShiAssert(batt); // We'de better belong to a battalion
-    ShiAssert(batt->GetComponents()); // If there aren't components, then WHAT ARE WE???
+    ShiAssert(
+        batt->GetComponents()); // If there aren't components, then WHAT ARE WE???
 
-    if ( not batt or batt->GetComponents() == NULL)  // Should never have been changed...
+    if (not batt or
+        batt->GetComponents() == NULL) // Should never have been changed...
         return;
 
     battRadarType = batt->GetRadarType();
 
     // If the battalion is blind, so are we...
-    if ( not battRadarType)
+    if (not battRadarType)
     {
-        ShiAssert(battalionFireControl == NULL); // Should never have been changed...
+        ShiAssert(battalionFireControl ==
+                  NULL); // Should never have been changed...
         return;
     }
 
 
     // Get the list of sim entities in our battalion
     VuListIterator battalionIterator(batt->GetComponents());
-    firectl = (GroundClass*) battalionIterator.GetFirst();
+    firectl = (GroundClass*)battalionIterator.GetFirst();
 
     // Search the list for a battalion radar vehicle
     while (firectl)
@@ -1059,6 +1106,6 @@ GroundClass::FindBattalionFireControl(void)
             break;
         }
 
-        firectl = (GroundClass*) battalionIterator.GetNext();
+        firectl = (GroundClass*)battalionIterator.GetNext();
     }
 }

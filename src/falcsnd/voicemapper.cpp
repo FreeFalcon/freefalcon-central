@@ -1,9 +1,9 @@
 #include <windows.h>
-#include "VoiceMapper.h"
+#include "voicemapper.h"
 #include "sim/include/stdhdr.h"
 #include "fakerand.h"
 
-extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+extern FILE *OpenCampFile(char *filename, char *ext, char *mode);
 extern void CloseCampFile(FILE *fp);
 
 // single instance of the voicemapper
@@ -15,8 +15,7 @@ VoiceMapper g_voicemap;
 // idea is to generalise the FF thing, so certain voices
 // can stick to certain things.
 
-const unsigned int  VoiceMapper::default_voices[] =
-{
+const unsigned int VoiceMapper::default_voices[] = {
     VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 0
     VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 1
     VOICE_AWACS bitor VOICE_PILOT bitor VOICE_SIDE_ALL, // 2
@@ -32,26 +31,27 @@ const unsigned int  VoiceMapper::default_voices[] =
     VOICE_ATC bitor VOICE_SIDE_ALL, // 12
     VOICE_ATC bitor VOICE_SIDE_ALL, // 13
 };
-const int  VoiceMapper::max_default_voices = sizeof(default_voices) / sizeof(default_voices[0]);
+const int VoiceMapper::max_default_voices =
+    sizeof(default_voices) / sizeof(default_voices[0]);
 
 //JAM 19Sep03 - Fixes MSVC7 compile errors
-static VoiceMapper::namemap Names[] =
-{
-    { "atc", VoiceMapper::VOICE_ATC},
-    { "awacs", VoiceMapper::VOICE_AWACS},
-    { "fac", VoiceMapper::VOICE_FAC},
-    { "pilot", VoiceMapper::VOICE_PILOT},
-    { "all", VoiceMapper::VOICE_PILOT bitor VoiceMapper::VOICE_ATC bitor VoiceMapper::VOICE_AWACS bitor VoiceMapper::VOICE_FAC},
-    { "any", VoiceMapper::VOICE_SIDE_ALL},
-    { "1", VoiceMapper::VOICE_SIDE1},
-    { "2", VoiceMapper::VOICE_SIDE2},
-    { "3", VoiceMapper::VOICE_SIDE3},
-    { "4", VoiceMapper::VOICE_SIDE4},
-    { "5", VoiceMapper::VOICE_SIDE5},
-    { "6", VoiceMapper::VOICE_SIDE6},
-    { "7", VoiceMapper::VOICE_SIDE7},
-    { "8", VoiceMapper::VOICE_SIDE8},
-    { NULL, 0},
+static VoiceMapper::namemap Names[] = {
+    {"atc", VoiceMapper::VOICE_ATC},
+    {"awacs", VoiceMapper::VOICE_AWACS},
+    {"fac", VoiceMapper::VOICE_FAC},
+    {"pilot", VoiceMapper::VOICE_PILOT},
+    {"all", VoiceMapper::VOICE_PILOT bitor VoiceMapper::VOICE_ATC bitor
+                VoiceMapper::VOICE_AWACS bitor VoiceMapper::VOICE_FAC},
+    {"any", VoiceMapper::VOICE_SIDE_ALL},
+    {"1", VoiceMapper::VOICE_SIDE1},
+    {"2", VoiceMapper::VOICE_SIDE2},
+    {"3", VoiceMapper::VOICE_SIDE3},
+    {"4", VoiceMapper::VOICE_SIDE4},
+    {"5", VoiceMapper::VOICE_SIDE5},
+    {"6", VoiceMapper::VOICE_SIDE6},
+    {"7", VoiceMapper::VOICE_SIDE7},
+    {"8", VoiceMapper::VOICE_SIDE8},
+    {NULL, 0},
 };
 /*
 const struct VoiceMapper::namemap {
@@ -98,7 +98,7 @@ void VoiceMapper::LoadVoices()
         return;
     }
 
-    memset(voiceflags, VOICE_NONE, sizeof * voiceflags * totalvoices);
+    memset(voiceflags, VOICE_NONE, sizeof *voiceflags * totalvoices);
 
     char buf[1024];
     char type[100];
@@ -130,7 +130,7 @@ unsigned int VoiceMapper::LookupName(const char *name)
 {
     const struct namemap *mp;
 
-    for (mp = Names; mp->name not_eq NULL; mp ++)
+    for (mp = Names; mp->name not_eq NULL; mp++)
     {
         if (stricmp(mp->name, name) == 0)
             return mp->id;
@@ -144,10 +144,10 @@ void VoiceMapper::SetVoiceCount(int n)
     totalvoices = n;
 
     if (voiceflags)
-        delete []voiceflags;
+        delete[] voiceflags;
 
     voiceflags = new unsigned int[n];
-    memset(voiceflags, VOICE_NONE, sizeof * voiceflags * n);
+    memset(voiceflags, VOICE_NONE, sizeof *voiceflags * n);
 }
 
 
@@ -176,7 +176,7 @@ int VoiceMapper::PickVoice(int type, int side)
         if ((voiceflags[i] bitand match) not_eq match)
             continue;
 
-        recno ++;
+        recno++;
         chance = 1.0f / recno;
 
         if (chance > PRANDFloatPos())

@@ -23,12 +23,12 @@
 #include <windows.h>
 #include "unit.h"
 #include "team.h"
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Listadt.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "listadt.h"
 #include "objectiv.h"
-#include "Campaign.h"
+#include "campaign.h"
 #include "campmap.h"
 #include "campwp.h"
 #include "campstr.h"
@@ -40,7 +40,7 @@
 #include "misseval.h"
 #include "cmpclass.h"
 #include "ui95_dd.h"
-#include "AirUnit.h"
+#include "airunit.h"
 #include "uicomms.h"
 #include "userids.h"
 #include "classtbl.h"
@@ -76,8 +76,7 @@ void LoadPlannerWindows(void);
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-extern C_Map
-*gMapMgr;
+extern C_Map *gMapMgr;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -89,12 +88,12 @@ void LoadTacEngSelectWindows()
     C_Button *tac_train = NULL;
     long ID;
 
-    if ( not PlannerLoaded)
+    if (not PlannerLoaded)
         LoadPlannerWindows();
 
     LoadCommonWindows();
 
-    if ( not TACSelLoaded)
+    if (not TACSelLoaded)
     {
         if (_LOAD_ART_RESOURCES_)
             gMainParser->LoadImageList("ts_res.lst");
@@ -163,7 +162,9 @@ void LoadTacticalWindows(void)
         tmr->Setup(C_DONT_CARE, C_TYPE_TIMER);
         tmr->SetUpdateCallback(GenericTimerCB);
         tmr->SetRefreshCallback(BlinkCommsButtonTimerCB);
-        tmr->SetUserNumber(_UI95_TIMER_DELAY_, 1 * _UI95_TICKS_PER_SECOND_); // Timer activates every 2 seconds (Only when this window is open)
+        tmr->SetUserNumber(
+            _UI95_TIMER_DELAY_,
+            1 * _UI95_TICKS_PER_SECOND_); // Timer activates every 2 seconds (Only when this window is open)
 
         win->AddControl(tmr);
     }

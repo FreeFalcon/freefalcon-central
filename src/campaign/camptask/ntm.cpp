@@ -1,33 +1,33 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
-#include "CmpGlobl.h"
-#include "ListADT.h"
-#include "F4Vu.h"
-#include "vutypes.h"
-#include "Objectiv.h"
-#include "Strategy.h"
-#include "Unit.h"
-#include "Find.h"
-#include "Path.h"
-#include "ASearch.h"
-#include "Campaign.h"
-#include "Update.h"
+#include "cmpglobl.h"
+#include "listadt.h"
 #include "f4vu.h"
-#include "CampList.h"
+#include "vutypes.h"
+#include "objectiv.h"
+#include "strategy.h"
+#include "unit.h"
+#include "find.h"
+#include "path.h"
+#include "asearch.h"
+#include "campaign.h"
+#include "update.h"
+#include "f4vu.h"
+#include "camplist.h"
 #include "gtm.h"
 #include "team.h"
 #include "gndunit.h"
 #include "gtmobj.h"
-#include "Manager.h"
-#include "MsgInc/NavalTaskingMsg.h"
-#include "FalcSess.h"
-#include "ClassTbl.h"
+#include "manager.h"
+#include "msginc/navaltaskingmsg.h"
+#include "falcsess.h"
+#include "classtbl.h"
 
 //sfr: buffer chks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#include "Debuggr.h"
+#include "debuggr.h"
 
 // ======================================================================
 // NTM (Naval Tasking Manager) Build ground tasking orders for each team
@@ -38,7 +38,8 @@
 // =====================
 
 // constructors
-NavalTaskingManagerClass::NavalTaskingManagerClass(ushort type, Team t) : CampManagerClass(type, t)
+NavalTaskingManagerClass::NavalTaskingManagerClass(ushort type, Team t)
+    : CampManagerClass(type, t)
 {
     flags = 0;
     // unitList = new FalconPrivateList(&AllNavalFilter);
@@ -49,7 +50,8 @@ NavalTaskingManagerClass::NavalTaskingManagerClass(ushort type, Team t) : CampMa
     done = 0;
 }
 
-NavalTaskingManagerClass::NavalTaskingManagerClass(VU_BYTE **stream, long *rem) : CampManagerClass(stream, rem)
+NavalTaskingManagerClass::NavalTaskingManagerClass(VU_BYTE **stream, long *rem)
+    : CampManagerClass(stream, rem)
 {
     memcpychk(&flags, stream, sizeof(short), rem);
     // unitList = new FalconPrivateList(&AllNavalFilter);
@@ -60,7 +62,8 @@ NavalTaskingManagerClass::NavalTaskingManagerClass(VU_BYTE **stream, long *rem) 
     done = 0;
 }
 
-NavalTaskingManagerClass::NavalTaskingManagerClass(FILE *file) : CampManagerClass(file)
+NavalTaskingManagerClass::NavalTaskingManagerClass(FILE *file)
+    : CampManagerClass(file)
 {
     fread(&flags, sizeof(short), 1, file);
     // unitList = new FalconPrivateList(&AllNavalFilter);
@@ -82,8 +85,7 @@ NavalTaskingManagerClass::~NavalTaskingManagerClass()
 
 int NavalTaskingManagerClass::SaveSize(void)
 {
-    return CampManagerClass::SaveSize()
-           + sizeof(short);
+    return CampManagerClass::SaveSize() + sizeof(short);
 }
 
 int NavalTaskingManagerClass::Save(VU_BYTE **stream)
@@ -98,7 +100,7 @@ int NavalTaskingManagerClass::Save(FILE *file)
 {
     int retval = 0;
 
-    if ( not file)
+    if (not file)
         return 0;
 
     retval += CampManagerClass::Save(file);
@@ -120,11 +122,12 @@ void NavalTaskingManagerClass::DoCalculations(void)
 
     // Target all naval units
     VuListIterator mit(AllRealList);
-    unit = (Unit) mit.GetFirst();
+    unit = (Unit)mit.GetFirst();
 
     while (unit)
     {
-        if (unit->IsTaskForce() and GetRoE(owner, unit->GetTeam(), ROE_NAVAL_FIRE) == ROE_ALLOWED)
+        if (unit->IsTaskForce() and
+            GetRoE(owner, unit->GetTeam(), ROE_NAVAL_FIRE) == ROE_ALLOWED)
         {
             mis.requesterID = FalconNullId;
             unit->GetLocation(&mis.tx, &mis.ty);
@@ -142,7 +145,8 @@ void NavalTaskingManagerClass::DoCalculations(void)
 
             if (o and o->GetType() == TYPE_PORT)
             {
-                if (unit->GetSType() == STYPE_UNIT_SEA_TANKER or unit->GetSType() == STYPE_UNIT_SEA_TRANSPORT)
+                if (unit->GetSType() == STYPE_UNIT_SEA_TANKER or
+                    unit->GetSType() == STYPE_UNIT_SEA_TRANSPORT)
                 {
                     mis.context = enemyNavalForceUnloading;
                 }
@@ -159,15 +163,18 @@ void NavalTaskingManagerClass::DoCalculations(void)
             mis.RequestMission();
         }
 
-        unit = (Unit) mit.GetNext();
+        unit = (Unit)mit.GetNext();
     }
 }
 
 // Sends a message to the NTM
-void NavalTaskingManagerClass::SendNTMMessage(VU_ID from, short message, short data1, short data2, VU_ID data3)
+void NavalTaskingManagerClass::SendNTMMessage(VU_ID from, short message,
+                                              short data1, short data2,
+                                              VU_ID data3)
 {
-    VuTargetEntity *target = (VuTargetEntity*) vuDatabase->Find(OwnerId());
-    FalconNavalTaskingMessage* tontm = new FalconNavalTaskingMessage(Id(), target);
+    VuTargetEntity *target = (VuTargetEntity *)vuDatabase->Find(OwnerId());
+    FalconNavalTaskingMessage *tontm =
+        new FalconNavalTaskingMessage(Id(), target);
 
     if (this)
     {
@@ -183,7 +190,8 @@ void NavalTaskingManagerClass::SendNTMMessage(VU_ID from, short message, short d
 
 int NavalTaskingManagerClass::Handle(VuFullUpdateEvent *event)
 {
-    NavalTaskingManagerClass* tmpGTM = (NavalTaskingManagerClass*)(event->expandedData_.get());
+    NavalTaskingManagerClass *tmpGTM =
+        (NavalTaskingManagerClass *)(event->expandedData_.get());
 
     // Copy in new data
     memcpy(&flags, &tmpGTM->flags, sizeof(short));
@@ -193,4 +201,3 @@ int NavalTaskingManagerClass::Handle(VuFullUpdateEvent *event)
 // ==================
 // Global functions
 // ==================
-

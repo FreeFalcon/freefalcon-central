@@ -18,7 +18,7 @@ CommsQueue *gUICommsQ = NULL;
  "_Q_GAME_UPDATE_",
 }; */
 
-F4CSECTIONHANDLE* QueueCritical = NULL;
+F4CSECTIONHANDLE *QueueCritical = NULL;
 
 CommsQueue::~CommsQueue()
 {
@@ -56,7 +56,7 @@ void CommsQueue::Add(short itemtype, VU_ID SessionID, VU_ID GameID)
     q->GameID = GameID;
     q->Next = NULL;
 
-    if ( not Root_)
+    if (not Root_)
         Root_ = q;
     else
     {
@@ -68,14 +68,13 @@ void CommsQueue::Add(short itemtype, VU_ID SessionID, VU_ID GameID)
         cur->Next = q;
     }
 
-    if ( not PostPending)
+    if (not PostPending)
     {
         PostMessage(appwin_, FM_UI_UPDATE_GAMELIST, 0, 0);
         PostPending = TRUE;
     }
 
     F4LeaveCriticalSection(QueueCritical);
-
 }
 
 QUEUEITEM *CommsQueue::Remove()
@@ -87,9 +86,9 @@ QUEUEITEM *CommsQueue::Remove()
     Root_ = Root_->Next;
     delete dl;
 
-    if ( not Root_)
+    if (not Root_)
         PostPending = FALSE;
 
     F4LeaveCriticalSection(QueueCritical);
-    return(Root_);
+    return (Root_);
 }

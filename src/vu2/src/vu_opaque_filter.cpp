@@ -25,8 +25,7 @@ int VuOpaqueFilter::Compare(VuEntity* ent1, VuEntity* ent2)
     return (int)ent1->Id() - (int)ent2->Id();
 }
 
-VuFilter *VuOpaqueFilter::Copy()
+VuFilter* VuOpaqueFilter::Copy()
 {
     return new VuOpaqueFilter(this);
 }
-

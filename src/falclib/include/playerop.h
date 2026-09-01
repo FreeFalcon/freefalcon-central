@@ -5,7 +5,7 @@
 #include "soundgroups.h"
 #include "falclib.h"
 #include "ui/include/logbook.h"
-#include "PlayerOpDef.h"
+#include "playeropdef.h"
 #include "rules.h"
 
 
@@ -38,8 +38,8 @@ public:
     FlightModelType SimFlightModel; // FlightModelType
     WeaponEffectType SimWeaponEffect; // WeaponEffectType
     AvionicsType SimAvionicsType; // Avionics Difficulty
-    AutopilotModeType   SimAutopilotType; // AutopilotModeType
-    RefuelModeType SimAirRefuelingMode;// RefuelModeType
+    AutopilotModeType SimAutopilotType; // AutopilotModeType
+    RefuelModeType SimAirRefuelingMode; // RefuelModeType
     PadlockModeType SimPadlockMode; // PadlockModeType
     VisualCueType SimVisualCueMode; // VisualCueType
 
@@ -55,12 +55,12 @@ public:
     int CampEnemyStockpile; // 0-100 % of max
     int CampFriendlyStockpile; // 0-100 % of max
 
-    int   GroupVol[NUM_SOUND_GROUPS]; // Values are 0 to -3600 in dBs
+    int GroupVol[NUM_SOUND_GROUPS]; // Values are 0 to -3600 in dBs
 
     float Realism; // stores last realism value saved less the value
     // from UnlimitedAmmo (this is used to modify scores in
     // Instant Action.)
-    _TCHAR  keyfile[PL_FNAME_LEN]; // name of keystrokes file to use
+    _TCHAR keyfile[PL_FNAME_LEN]; // name of keystrokes file to use
     // Retro_dead 15Jan2004 GUID joystick; // unique identifier for which joystick to use
 
     enum StartFlag
@@ -69,7 +69,10 @@ public:
         START_TAXI,
         START_RAMP,
     } SimStartFlags; // Where to start the whole thing (taxi/runway etc)
-    enum { RAMP_MINUTES = 20 }; // how long before take off MI increased from 8
+    enum
+    {
+        RAMP_MINUTES = 20
+    }; // how long before take off MI increased from 8
 
     // M.N.
     char skycol; // ID of chosen skyfix (256 should be enough)
@@ -97,19 +100,21 @@ public: // Retro
     int SoundExtAttenuation; // MLR 12/13/2003 -
 private:
     // sfr moved here because this has no correct serialization stuff... cant change order
-    bool enableTouchBuddy;      // sfr: added touch buddy support
-    bool drawMirror;            // sfr: rearview mirror
+    bool enableTouchBuddy; // sfr: added touch buddy support
+    bool drawMirror; // sfr: rearview mirror
 public:
-
     // Important stuff
     PlayerOptionsClass(void);
     void Initialize(void);
-    int LoadOptions(char* filename = LogBook.OptionsFile());
-    int SaveOptions(char* filename = LogBook.Callsign());
+    int LoadOptions(char *filename = LogBook.OptionsFile());
+    int SaveOptions(char *filename = LogBook.Callsign());
     void ApplyOptions(void);
 
-    int InCompliance(RulesStruct *rules); // returns TRUE if in FULL compliance w/rules
-    void ComplyWRules(RulesStruct *rules); // forces all settings not in compliance to minimum settings
+    int InCompliance(
+        RulesStruct *rules); // returns TRUE if in FULL compliance w/rules
+    void ComplyWRules(
+        RulesStruct *
+            rules); // forces all settings not in compliance to minimum settings
 
     // Nifty Access functions
     int GouraudOn(void)
@@ -223,7 +228,7 @@ public:
     }
     int BlackoutOn(void)
     {
-        return not (SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
+        return not(SimFlags bitand SIM_NO_BLACKOUT) and TRUE;
     }
     int NoBlackout(void)
     {
@@ -243,7 +248,7 @@ public:
     }
     int CollisionsOn(void)
     {
-        return not (SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
+        return not(SimFlags bitand SIM_NO_COLLISIONS) and TRUE;
     }
     int NoCollisions(void)
     {
@@ -268,7 +273,7 @@ public:
 
     int WeatherOn(void)
     {
-        return not (GeneralFlags bitand GEN_NO_WEATHER);
+        return not(GeneralFlags bitand GEN_NO_WEATHER);
     }
     int MFDTerrainOn(void)
     {
@@ -327,35 +332,35 @@ public:
 
     bool getInfoBar(void) const
     {
-        return infoBar;    // Retro 25Dec2003
+        return infoBar; // Retro 25Dec2003
     }
     bool getSubtitles(void) const
     {
-        return subTitles;    // Retro 25Dec2003
+        return subTitles; // Retro 25Dec2003
     }
     bool Get2dTrackIR(void) const
     {
-        return TrackIR_2d;    // Retro 27Dec2003
+        return TrackIR_2d; // Retro 27Dec2003
     }
     bool Get3dTrackIR(void) const
     {
-        return TrackIR_3d;    // Retro 27Dec2003
+        return TrackIR_3d; // Retro 27Dec2003
     }
     bool GetFFB(void) const
     {
-        return enableFFB;    // Retro 27Dec2003
+        return enableFFB; // Retro 27Dec2003
     }
     bool GetMouseLook(void) const
     {
-        return enableMouseLook;    // Retro 28Dec2003
+        return enableMouseLook; // Retro 28Dec2003
     }
     bool GetTouchBuddy(void) const
     {
-        return enableTouchBuddy;    // sfr: touch buddy support
+        return enableTouchBuddy; // sfr: touch buddy support
     }
     bool GetDrawMirror(void) const
     {
-        return drawMirror;    // sfr: rear mirror
+        return drawMirror; // sfr: rear mirror
     }
 
     // Setter functions
@@ -399,17 +404,17 @@ public:
     {
         SimStartFlags = flag;
     }
-    StartFlag  GetStartFlag()
+    StartFlag GetStartFlag()
     {
         switch (SimStartFlags) // MLR 12/11/2003 - Sanity check
         {
-            case START_RUNWAY:
-            case START_TAXI:
-            case START_RAMP:
-                return(SimStartFlags);
+        case START_RUNWAY:
+        case START_TAXI:
+        case START_RAMP:
+            return (SimStartFlags);
         }
 
-        return(START_RUNWAY);
+        return (START_RUNWAY);
     }
 
     void SetKeyFile(_TCHAR *fname)
@@ -452,62 +457,62 @@ public:
 
     void SetInfoBar(bool onOff)
     {
-        infoBar = onOff;    // Retro 25Dec2003
+        infoBar = onOff; // Retro 25Dec2003
     }
     void SetSubtitles(bool onOff)
     {
-        subTitles = onOff;    // Retro 25Dec2003
+        subTitles = onOff; // Retro 25Dec2003
     }
     void SetTrackIR2d(bool onOff)
     {
-        TrackIR_2d = onOff;    // Retro 27Dec2003
+        TrackIR_2d = onOff; // Retro 27Dec2003
     }
     void SetTrackIR3d(bool onOff)
     {
-        TrackIR_3d = onOff;    // Retro 27Dec2003
+        TrackIR_3d = onOff; // Retro 27Dec2003
     }
     void SetFFB(bool onOff)
     {
-        enableFFB = onOff;    // Retro 27Dec2003
+        enableFFB = onOff; // Retro 27Dec2003
     }
     void SetTouchBuddy(bool onOff)
     {
-        enableTouchBuddy = onOff;    //sfr: touch buddy support
+        enableTouchBuddy = onOff; //sfr: touch buddy support
     }
     void SetDrawMirror(bool onOff)
     {
-        drawMirror = onOff;    // sfr: rear view mirror
+        drawMirror = onOff; // sfr: rear view mirror
     }
     void SetMouseLook(bool onOff)
     {
-        enableMouseLook = onOff;    // Retro 28Dec2003
+        enableMouseLook = onOff; // Retro 28Dec2003
     }
 
     void SetMouseLookSensitivity(float theVal)
     {
-        MouseLookSensitivity = theVal;    // Retro 15Jan2004 - x/y axis
+        MouseLookSensitivity = theVal; // Retro 15Jan2004 - x/y axis
     }
     float GetMouseLookSensitivity(void)
     {
-        return MouseLookSensitivity;    // Retro 15Jan2004
+        return MouseLookSensitivity; // Retro 15Jan2004
     }
 
     void SetMouseWheelSensitivity(int theVal)
     {
-        MouseWheelSensitivity = theVal;    // Retro 17Jan2004 - z axis
+        MouseWheelSensitivity = theVal; // Retro 17Jan2004 - z axis
     }
     int GetMouseWheelSensitivity(void)
     {
-        return MouseWheelSensitivity;    // Retro 17Jan2004
+        return MouseWheelSensitivity; // Retro 17Jan2004
     }
 
     void SetKeyboardPOVPanningSensitivity(int theVal)
     {
-        KeyboardPOVPanningSensitivity = theVal;    // Retro 18Jan2004
+        KeyboardPOVPanningSensitivity = theVal; // Retro 18Jan2004
     }
     int GetKeyboardPOVPanningSensitivity(void)
     {
-        return KeyboardPOVPanningSensitivity;    // Retro 18Jan2004
+        return KeyboardPOVPanningSensitivity; // Retro 18Jan2004
     }
 
     bool GetClickablePitMode(void)
@@ -521,11 +526,11 @@ public:
 
     bool GetAxisShaping(void)
     {
-        return enableAxisShaping;    // Retro 27Jan2004
+        return enableAxisShaping; // Retro 27Jan2004
     }
     void SetAxisShaping(bool onOff)
     {
-        enableAxisShaping = onOff;    // Retro 27Jan2004
+        enableAxisShaping = onOff; // Retro 27Jan2004
     }
 };
 
@@ -544,9 +549,9 @@ typedef struct
     _TCHAR name[50]; // To display in UI
     _TCHAR todname[MAX_PATH]; // Filename of tod file
     _TCHAR image1[MAX_PATH]; // screenshot 5:00
-    _TCHAR image2[MAX_PATH];   // screenshot 10:00
+    _TCHAR image2[MAX_PATH]; // screenshot 10:00
     _TCHAR image3[MAX_PATH]; // screenshot 15:00
-    _TCHAR image4[MAX_PATH];   // screenshot 20:00
+    _TCHAR image4[MAX_PATH]; // screenshot 20:00
 } SkyColorDataType;
 
 typedef struct

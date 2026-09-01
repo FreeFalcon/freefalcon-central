@@ -6,7 +6,7 @@
 #include "sim/include/stdhdr.h"
 #include "falcsnd/falcvoice.h"
 #include "falcsnd/lhsp.h"
-#include "FileMemMap.h"
+#include "filememmap.h"
 
 class CONVERSATION
 {
@@ -16,14 +16,17 @@ public:
     char convIndex; // Conversation Index is the token(file) to play
     char sizeofConv; // The number of tokens(files) in the conversation
     char speaker; // The person speaking the conversation
-    char priority; // The conversations priority - for sorting the conversation queue
-    char interrupt; // To overide the conversation queue - also used to kill voice
+    char
+        priority; // The conversations priority - for sorting the conversation queue
+    char
+        interrupt; // To overide the conversation queue - also used to kill voice
     char channelIndex; // the channel voice will play through
     VU_TIME playTime; // when the message can be played
     VU_ID to; // the VuEntity that the message was sent to, if any
     VU_ID from; // the VuEntity that sent the message, if any
     char filter; // at what filter level should this message be played?
-    short *conversations; // The array of tokens(files) played to make up a conversation
+    short *
+        conversations; // The array of tokens(files) played to make up a conversation
 
 #ifdef USE_SH_POOLS
 public:
@@ -35,7 +38,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -94,15 +98,16 @@ enum
 };
 
 
-#define COMP_SIL_SIZE 0x6D60//0x3120 // Requested silence decompression from .tlk
-#define COMP_LZSS_SIZE 0x6D60//0x3120 // Requested lzss decompression from .tlk
+#define COMP_SIL_SIZE                                                          \
+    0x6D60 //0x3120 // Requested silence decompression from .tlk
+#define COMP_LZSS_SIZE 0x6D60 //0x3120 // Requested lzss decompression from .tlk
 
 /* Write .tlk file */
 #define WAV_TO_RAW 0
 #define COMPRESS_RAW_FILES 1
 #define TLK_HEADER_INFO 12
-#define FLAG_SET(a,b) ((a) or_eq (b) )
-#define FLAG_UNSET(a,b) ((a) and_eq compl (b))
+#define FLAG_SET(a, b) ((a) or_eq (b))
+#define FLAG_UNSET(a, b) ((a) and_eq compl(b))
 
 #ifndef BINARY_TOOL
 
@@ -113,13 +118,12 @@ typedef struct VMBuffQueue
 } VMBuffQueue;
 
 
-
 typedef struct VM_BUFFLIST
 {
-    VMBuffQueue * node;     /* pointer to node data */
+    VMBuffQueue *node; /* pointer to node data */
 
-    struct VM_BUFFLIST * next;   /* next list node */
-    struct VM_BUFFLIST * prev;   /* prev list node */
+    struct VM_BUFFLIST *next; /* next list node */
+    struct VM_BUFFLIST *prev; /* prev list node */
 
 #ifdef USE_SH_POOLS
 public:
@@ -131,7 +135,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -147,14 +152,12 @@ public:
 } VM_BUFFLIST;
 
 
-
-
 typedef struct VM_CONVLIST
 {
-    CONVERSATION *node;    /* pointer to node data */
+    CONVERSATION *node; /* pointer to node data */
 
-    struct VM_CONVLIST * next;   /* next list node */
-    struct VM_CONVLIST * prev;   /* prev list node */
+    struct VM_CONVLIST *next; /* next list node */
+    struct VM_CONVLIST *prev; /* prev list node */
 
 #ifdef USE_SH_POOLS
 public:
@@ -166,7 +169,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -184,20 +188,28 @@ class TlkFile : public FileMemMap
 {
     long Index2Data(int tlkind)
     {
-        return TLK_HEADER_INFO + sizeof(long) * tlkind;
+        // #104 (Linux LP64): the .tlk header index table has 4-byte (Windows DWORD) entries. sizeof(long) is 8 on
+        // Linux -> the stride doubled and every conversation resolved to the wrong header slot. Use a fixed 4 bytes.
+        return TLK_HEADER_INFO + (long)sizeof(uint32_t) * tlkind;
     };
     long GetFragIndex(int tlkind)
     {
-        BYTE *data = GetData(Index2Data(tlkind), sizeof(long));
+        // #104 (Linux LP64): each index-table entry is a 4-byte block index; read exactly 4 bytes, not sizeof(long)=8.
+        BYTE *data = GetData(Index2Data(tlkind), sizeof(uint32_t));
         ShiAssert(data not_eq NULL);
-        return data ? *(long *)data : 0;
+        return data ? *(uint32_t *)data : 0;
     };
     struct TlkBlock
     {
-        unsigned long filelen;
-        unsigned long compressedlen;
+        // #104 (Linux LP64): these map the ON-DISK .tlk block header, which stores 4-byte (Windows DWORD) fields.
+        // 'unsigned long' is 8 bytes on Linux -> the struct overlaid on the mmap'd file was mis-aligned (filelen
+        // read 8 bytes, compressedlen at offset 8 not 4, data at 16 not 8) -> garbage lengths + wrong data pointer
+        // -> the voice decode produced silence (no chatter). Fixed-width uint32_t matches the file on both ABIs.
+        uint32_t filelen;
+        uint32_t compressedlen;
         char data[1]; // more in practice
     };
+
 public:
     unsigned long GetFileLength(int tlkind);
     unsigned long GetCompressedLength(int tlkind);
@@ -210,7 +222,7 @@ public:
 
 class VoiceManager
 {
-    friend  DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm);
+    friend DWORD WINAPI VoiceManagementThread(LPVOID lpvThreadParm);
 
 public:
     // char *voiceMapPtr; // JPO - removed
@@ -221,7 +233,7 @@ public:
     CONVERSATION decompQueue[NUM_VOICE_CHANNELS];
     int radiofilter[2];
     int currRadio;
-    F4CSECTIONHANDLE* vmCriticalSection;
+    F4CSECTIONHANDLE *vmCriticalSection;
 
     VoiceManager(void);
     ~VoiceManager(void);
@@ -240,13 +252,15 @@ public:
     void VMSilenceChannel(int channel);
     void VMAddBuffToQueue(int channel, int buffer);
     //should be either SORT_TIME_PRIORITY or SORT_TIME
-    VM_CONVLIST *VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newnode, int insertType);
+    VM_CONVLIST *VMConvListInsert(VM_CONVLIST *list, VM_CONVLIST *newnode,
+                                  int insertType);
     VM_BUFFLIST *VMBuffListAppend(VM_BUFFLIST *list, VMBuffQueue *node);
     void VMListRemoveVCQ(VM_CONVLIST **list, VM_CONVLIST *node);
     VM_BUFFLIST *VMListRemoveVMBQ(VM_BUFFLIST *list);
     VM_BUFFLIST *VMListPopVMBQ(VM_BUFFLIST *list);
-    void VMDeleteNode(VMBuffQueue* vmNode);
-    VM_BUFFLIST *VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum, int searchType);
+    void VMDeleteNode(VMBuffQueue *vmNode);
+    VM_BUFFLIST *VMListSearchVMBQ(VM_BUFFLIST *list, int channelNum,
+                                  int searchType);
     int ListCheckChannelNum(void *node_a, int channelNum);
     VM_CONVLIST *VMListDestroyVCQ(VM_CONVLIST *list);
     VM_BUFFLIST *VMListDestroyVBQ(VM_BUFFLIST *list);
@@ -261,8 +275,12 @@ public:
     int IsChannelDone(int channel);
     void AddNoise(VOICE_STREAM_BUFFER *buffer, VU_ID from, int channel);
     void RemoveRadioCalls(VU_ID dead);
-    void RemoveDuplicateMessages(VU_ID from, VU_ID to, int msgid);   //this removes similar messages from the queues
-    int IsMessagePlaying(VU_ID from, VU_ID to, int msgid); //returns true if a the same message with the same to
+    void RemoveDuplicateMessages(
+        VU_ID from, VU_ID to,
+        int msgid); //this removes similar messages from the queues
+    int IsMessagePlaying(
+        VU_ID from, VU_ID to,
+        int msgid); //returns true if a the same message with the same to
     // and from is playing
 
     void SetChannelVolume(int channel, int volume);

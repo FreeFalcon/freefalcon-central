@@ -13,14 +13,16 @@ extern "C" struct F4BARRIERHANDLE;
 typedef unsigned(__stdcall *UFUNCTION)(void);
 
 // Thread status
-#define THREAD_STATUS_ACTIVE            1
-#define THREAD_STATUS_FRAME_RUNNING     2
+#define THREAD_STATUS_ACTIVE 1
+#define THREAD_STATUS_FRAME_RUNNING 2
 
 struct ThreadInfo
 {
-    HANDLE      handle;
-    DWORD       status;
-    unsigned long   id;
+    HANDLE handle;
+    DWORD status;
+    // Artscout - 2026 (Linux port): thread id is a Win32 DWORD (32-bit); CreateThread's out-param is
+    // DWORD*. `unsigned long` is 64-bit on LP64, so &id would not convert to DWORD*.
+    DWORD id;
 };
 
 class ThreadManager
@@ -58,4 +60,4 @@ private:
     static int initialized;
 };
 
-#endif      // _THREAD_MANAGER_H_
+#endif // _THREAD_MANAGER_H_

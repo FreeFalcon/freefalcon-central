@@ -4,13 +4,13 @@
 #include "object.h"
 #include "aircrft.h"
 #include "playerop.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "simbase.h"
 #include "sms.h"
 #include "simweapn.h"
 #include "simdrive.h"
 #include "missile.h"
-#include "radarDoppler.h" //JPG
+#include "radardoppler.h" //JPG
 #include "campbase.h"
 #include "falcent.h"
 #include "classtbl.h"
@@ -20,25 +20,25 @@
 
 #include "harmpod.h"
 
-#define SRM_RETICLE_SIZE  0.35F
-#define SRM_UNCAGE_RETICLE_SIZE  0.25F
-#define SRM_REARAA_RETICLE_SIZE  0.13F
+#define SRM_RETICLE_SIZE 0.35F
+#define SRM_UNCAGE_RETICLE_SIZE 0.25F
+#define SRM_REARAA_RETICLE_SIZE 0.13F
 
-#define HARM_RETICLE_SIZE  0.4F
+#define HARM_RETICLE_SIZE 0.4F
 // #45 ASEC per F-16C Blk50 specs: diameter 262 mr (bore/no-target), center 6deg below the gun cross
 // (MISSILE_RETICLE_OFFSET = RadToHudUnits(-6deg), already correct). Radius = MRToHudUnits(262/2) -- scaled
 // from halfAngle, not hardcoded. With R~7.5deg and center -6deg the gun cross (+6deg from center) falls INSIDE the circle.
-#define MRM_ASEC_DIAMETER_MR  262.0F
-#define MSL_OVERRIDE_SIZE  0.5F
+#define MRM_ASEC_DIAMETER_MR 262.0F
+#define MSL_OVERRIDE_SIZE 0.5F
 
 // Artscout - 2026 (HUD): display-scale for the bore 262mr ASEC (small HUD glass; see f4config.cpp).
 extern float g_fAsecScale;
 
-#define AIM120ASECX              45.0f * DTR
+#define AIM120ASECX 45.0f * DTR
 
-#define HARM_FOV_BOX_WIDTH       0.435f
-#define HARM_FOV_BOX_TOP  -0.925f
-#define HARM_FOV_BOX_BOTTOM      -1.075f
+#define HARM_FOV_BOX_WIDTH 0.435f
+#define HARM_FOV_BOX_TOP -0.925f
+#define HARM_FOV_BOX_BOTTOM -1.075f
 
 extern bool g_bRealistivAvionics;
 //TJL 01/26/04 Shoot Cue
@@ -49,7 +49,7 @@ float FindMinDistance(vector* a, vector* c, vector* b, vector* d);
 
 void HudClass::DrawDogfight()
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     float ang;
     char str[12];
 
@@ -63,12 +63,13 @@ void HudClass::DrawDogfight()
              DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
             }*/
             //MI changed
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
                 DrawTDBox();
 
             //else
             // DrawAATDBox();
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 DrawAim120DLZ(true);
                 DrawAim120ASE();
@@ -108,13 +109,17 @@ void HudClass::DrawDogfight()
              4)Self-track
             */
             //MI make it dependant on missil bore/slave
-            //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and 
+            //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and
             // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
             // DrawMissileReticle(0.3F, FALSE, TRUE);
             //else
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
-                DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale, FALSE, TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
+                DrawMissileReticle(
+                    MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale,
+                    FALSE,
+                    TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
                 DrawAim120Diamond();
             }
         }
@@ -124,17 +129,18 @@ void HudClass::DrawDogfight()
 
         if (targetPtr)
         {
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 //MI changed
-                if ( not g_bRealisticAvionics)
+                if (not g_bRealisticAvionics)
                     DrawTDBox();
 
                 // Marco Edit - not TD Box in Dogfight mode
                 // else
                 // DrawAATDBox();
                 DrawAim9DLZ();
-                DrawAim9Diamond();//me123 addet
+                DrawAim9Diamond(); //me123 addet
             }
             else
             {
@@ -143,14 +149,16 @@ void HudClass::DrawDogfight()
         }
         else
         {
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
                 DrawAim9Diamond();
             }
         }
     }
 
-    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+        (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
     {
         DrawGuns();
     }
@@ -160,23 +168,29 @@ void HudClass::DrawDogfight()
     // Add target aspect angle
     if (targetPtr)
     {
-        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+            (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
         {
             ang = max(min(targetData->aspect * RTD * 0.1F, 18.0F), -18.0F);
-            sprintf(str, "AA %02.0f%c", ang, (targetData->azFrom > 0.0F ? 'R' : 'L'));
-            display->TextCenter(
-                hudWinX[BORESIGHT_CROSS_WINDOW] + hudWinWidth[BORESIGHT_CROSS_WINDOW] * 0.5F,
-                hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F + 0.05F +
-                1.2F * display->TextHeight(), str);
+            sprintf(str, "AA %02.0f%c", ang,
+                    (targetData->azFrom > 0.0F ? 'R' : 'L'));
+            display->TextCenter(hudWinX[BORESIGHT_CROSS_WINDOW] +
+                                    hudWinWidth[BORESIGHT_CROSS_WINDOW] * 0.5F,
+                                hudWinY[BORESIGHT_CROSS_WINDOW] +
+                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] *
+                                        0.5F +
+                                    0.05F + 1.2F * display->TextHeight(),
+                                str);
         }
     }
 }
 
-void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
+void HudClass::DrawMissileOverride() //me123 addet aim9/120 check
 {
     SimWeaponClass* wpn;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
+    wpn =
+        playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
 #ifdef DEBUG
 
@@ -185,136 +199,157 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
 
 #endif
 
-    switch (FCC->GetMrmSubMode()) // ASSOCIATOR: Added MissileOverride here to get remembered mode
+    switch (
+        FCC->GetMrmSubMode()) // ASSOCIATOR: Added MissileOverride here to get remembered mode
     {
-        case FireControlComputer::Aim9:
-            if (targetPtr)
-            {
-                //MI changed
-                if ( not g_bRealisticAvionics)
-                    DrawTDBox();
-                else
-                    DrawAATDBox();
-
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                {
-                    DrawAim9DLZ();
-                    DrawAim9Diamond();//me123 addet
-                }
-
-                if (wpn)
-                {
-                    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                    {
-                        // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                        // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
-                        // Marco Edit - hack - check for 9P specifically)
-                        wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
-
-                        if (g_bRealisticAvionics and ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
-                        {
-                            DrawAim9Reticle(SRM_REARAA_RETICLE_SIZE, TRUE, TRUE);
-                        }
-                        else
-                        {
-                            // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
-                            {
-                                DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
-                            }
-                            else
-                            {
-                                DrawAim9Reticle(SRM_RETICLE_SIZE, TRUE, TRUE);
-                            }
-                        }
-                    }
-                }
-            }
+    case FireControlComputer::Aim9:
+        if (targetPtr)
+        {
+            //MI changed
+            if (not g_bRealisticAvionics)
+                DrawTDBox();
             else
-            {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                {
+                DrawAATDBox();
 
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            {
+                DrawAim9DLZ();
+                DrawAim9Diamond(); //me123 addet
+            }
+
+            if (wpn)
+            {
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                    (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                {
                     // Marco Edit - check for our missile type (ie. REAR ASPECT)
                     // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
                     // Marco Edit - hack - check for 9P specifically)
-                    if (g_bRealisticAvionics and wpn and ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
+                    wpn =
+                        playerAC->Sms
+                            ->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
+
+                    if (g_bRealisticAvionics and
+                        ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
                     {
                         DrawAim9Reticle(SRM_REARAA_RETICLE_SIZE, TRUE, TRUE);
                     }
                     else
                     {
                         // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
-                        if (g_bRealisticAvionics and wpn and (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr)))
+                        if (g_bRealisticAvionics and
+                                ((MissileClass*)wpn)->isSpot or
+                            (not((MissileClass*)wpn)->isCaged and
+                             ((MissileClass*)wpn)->targetPtr))
                         {
-                            DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
+                            DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE,
+                                            TRUE);
                         }
                         else
                         {
                             DrawAim9Reticle(SRM_RETICLE_SIZE, TRUE, TRUE);
                         }
                     }
-
-                    DrawAim9Diamond();
                 }
             }
-
-            break;
-
-        case FireControlComputer::Aim120:
-            if (targetPtr)
+        }
+        else
+        {
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+
+                // Marco Edit - check for our missile type (ie. REAR ASPECT)
+                // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
+                // Marco Edit - hack - check for 9P specifically)
+                if (g_bRealisticAvionics and wpn and
+                    ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
                 {
-                    // JPO flashing resizing reticle
-                    if (flash or
-                        targetData->range > FCC->missileRneMax or
-                        targetData->range < FCC->missileRneMin)
-                        DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
-
-                    DrawAim120DLZ(false);
-                    DrawAim120ASE();
+                    DrawAim9Reticle(SRM_REARAA_RETICLE_SIZE, TRUE, TRUE);
                 }
-
-                //MI changed
-                if ( not g_bRealisticAvionics)
-                    DrawTDBox();
                 else
-                    DrawAATDBox();
+                {
+                    // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
+                    if (g_bRealisticAvionics and wpn and
+                        (((MissileClass*)wpn)->isSpot or
+                         (not((MissileClass*)wpn)->isCaged and
+                          ((MissileClass*)wpn)->targetPtr)))
+                    {
+                        DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
+                    }
+                    else
+                    {
+                        DrawAim9Reticle(SRM_RETICLE_SIZE, TRUE, TRUE);
+                    }
+                }
+
+                DrawAim9Diamond();
             }
+        }
+
+        break;
+
+    case FireControlComputer::Aim120:
+        if (targetPtr)
+        {
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            {
+                // JPO flashing resizing reticle
+                if (flash or targetData->range > FCC->missileRneMax or
+                    targetData->range < FCC->missileRneMin)
+                    DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range),
+                                       FALSE, TRUE);
+
+                DrawAim120DLZ(false);
+                DrawAim120ASE();
+            }
+
+            //MI changed
+            if (not g_bRealisticAvionics)
+                DrawTDBox();
             else
-            {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                {
-                    // JPG 17 Jan 04 - No again MI, see above
-                    //MI make it dependant on missil bore/slave
-                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and 
-                    // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
-                    // DrawMissileReticle(0.3F, FALSE, TRUE);
-                    //else
-                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale, FALSE, TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
-                    DrawAim120Diamond();
-                }
-            }
-
-            break;
-
-            // ASSOCIATOR 03/12/03: Added the combined SnapShot LCOS Gunmode SSLC
-        case FireControlComputer::EEGS:
-        case FireControlComputer::SSLC:
-        case FireControlComputer::LCOS:
-        case FireControlComputer::Snapshot:
-            if (g_bRealisticAvionics)
-            {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                {
-                    DrawGuns();
-                }
-
                 DrawAATDBox();
+        }
+        else
+        {
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            {
+                // JPG 17 Jan 04 - No again MI, see above
+                //MI make it dependant on missil bore/slave
+                //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and
+                // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
+                // DrawMissileReticle(0.3F, FALSE, TRUE);
+                //else
+                DrawMissileReticle(
+                    MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale,
+                    FALSE,
+                    TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
+                DrawAim120Diamond();
+            }
+        }
+
+        break;
+
+        // ASSOCIATOR 03/12/03: Added the combined SnapShot LCOS Gunmode SSLC
+    case FireControlComputer::EEGS:
+    case FireControlComputer::SSLC:
+    case FireControlComputer::LCOS:
+    case FireControlComputer::Snapshot:
+        if (g_bRealisticAvionics)
+        {
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            {
+                DrawGuns();
             }
 
-            break;
+            DrawAATDBox();
+        }
+
+        break;
     }
 
     // Add waypoint info
@@ -331,127 +366,149 @@ void HudClass::DrawMissileOverride()//me123 addet aim9/120 check
 void HudClass::DrawAirMissile(void)
 {
     SimWeaponClass* wpn;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
+    wpn =
+        playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
     ShiAssert(wpn == NULL or wpn->IsMissile());
 
     switch (FCC->GetSubMode())
     {
-        case FireControlComputer::Aim9:
-            if (targetPtr)
-            {
-                //MI changed
-                if ( not g_bRealisticAvionics)
-                    DrawTDBox();
-                else
-                    DrawAATDBox();
-
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                {
-
-                    DrawAim9DLZ();
-                    DrawAim9Diamond();//me123 addet
-
-                    if (wpn)
-                    {
-                        // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                        // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
-                        // Marco Edit - hack - check for 9P specifically)
-                        wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
-
-                        if (g_bRealisticAvionics and ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
-                        {
-                            DrawAim9Reticle(SRM_REARAA_RETICLE_SIZE, TRUE, TRUE);
-
-                        }
-                        else
-                        {
-                            // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
-                            {
-                                DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
-                            }
-                            else
-                            {
-                                DrawAim9Reticle(SRM_RETICLE_SIZE, TRUE, TRUE);
-                            }
-                        }
-                    }
-                }
-            }
+    case FireControlComputer::Aim9:
+        if (targetPtr)
+        {
+            //MI changed
+            if (not g_bRealisticAvionics)
+                DrawTDBox();
             else
+                DrawAATDBox();
+
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
             {
+
+                DrawAim9DLZ();
+                DrawAim9Diamond(); //me123 addet
+
                 if (wpn)
                 {
-                    if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                    {
-                        // Marco Edit - check for our missile type (ie. REAR ASPECT)
-                        // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
-                        // Marco Edit - hack - check for 9P specifically)
-                        wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
+                    // Marco Edit - check for our missile type (ie. REAR ASPECT)
+                    // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
+                    // Marco Edit - hack - check for 9P specifically)
+                    wpn =
+                        playerAC->Sms
+                            ->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
-                        if (g_bRealisticAvionics and ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
+                    if (g_bRealisticAvionics and
+                        ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
+                    {
+                        DrawAim9Reticle(SRM_REARAA_RETICLE_SIZE, TRUE, TRUE);
+                    }
+                    else
+                    {
+                        // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
+                        if (g_bRealisticAvionics and
+                                ((MissileClass*)wpn)->isSpot or
+                            (not((MissileClass*)wpn)->isCaged and
+                             ((MissileClass*)wpn)->targetPtr))
                         {
-                            DrawAim9Reticle(SRM_REARAA_RETICLE_SIZE, TRUE, TRUE);
+                            DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE,
+                                            TRUE);
                         }
                         else
                         {
-                            // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
-                            if (g_bRealisticAvionics and ((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
-                            {
-                                DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
-                            }
-                            else
-                            {
-                                DrawAim9Reticle(SRM_RETICLE_SIZE, TRUE, TRUE);
-                            }
+                            DrawAim9Reticle(SRM_RETICLE_SIZE, TRUE, TRUE);
                         }
                     }
                 }
             }
-
-            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+        }
+        else
+        {
+            if (wpn)
             {
-                DrawAim9Diamond();
-            }
-
-            break;
-
-        case FireControlComputer::Aim120:
-            if (targetPtr)
-            {
-                //MI changed
-                if ( not g_bRealisticAvionics)
-                    DrawTDBox();
-                else
-                    DrawAATDBox();
-
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                    (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
                 {
-                    if (flash or
-                        targetData->range > FCC->missileRneMax or
-                        targetData->range < FCC->missileRneMin)
-                        DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
+                    // Marco Edit - check for our missile type (ie. REAR ASPECT)
+                    // if (wc and wc->Flags bitand WEAP_REAR_ASPECT)
+                    // Marco Edit - hack - check for 9P specifically)
+                    wpn =
+                        playerAC->Sms
+                            ->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
-                    DrawAim120DLZ(false);
-                    DrawAim120ASE();
+                    if (g_bRealisticAvionics and
+                        ((CampBaseClass*)wpn)->GetSPType() == SPTYPE_AIM9P)
+                    {
+                        DrawAim9Reticle(SRM_REARAA_RETICLE_SIZE, TRUE, TRUE);
+                    }
+                    else
+                    {
+                        // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
+                        if (g_bRealisticAvionics and
+                                ((MissileClass*)wpn)->isSpot or
+                            (not((MissileClass*)wpn)->isCaged and
+                             ((MissileClass*)wpn)->targetPtr))
+                        {
+                            DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE,
+                                            TRUE);
+                        }
+                        else
+                        {
+                            DrawAim9Reticle(SRM_RETICLE_SIZE, TRUE, TRUE);
+                        }
+                    }
                 }
             }
-            else   // JPG 17 Jan 04 - No for the last time
-            {
-                if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
-                {
-                    //MI make it dependant on missil bore/slave
-                    //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and 
-                    // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
-                    // DrawMissileReticle(0.3F, FALSE, TRUE);
-                    //else
-                    DrawMissileReticle(MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale, FALSE, TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
-                    DrawAim120Diamond();
-                }
-            }
+        }
 
-            break;
+        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+            (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+        {
+            DrawAim9Diamond();
+        }
+
+        break;
+
+    case FireControlComputer::Aim120:
+        if (targetPtr)
+        {
+            //MI changed
+            if (not g_bRealisticAvionics)
+                DrawTDBox();
+            else
+                DrawAATDBox();
+
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            {
+                if (flash or targetData->range > FCC->missileRneMax or
+                    targetData->range < FCC->missileRneMin)
+                    DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range),
+                                       FALSE, TRUE);
+
+                DrawAim120DLZ(false);
+                DrawAim120ASE();
+            }
+        }
+        else // JPG 17 Jan 04 - No for the last time
+        {
+            if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+                (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+            {
+                //MI make it dependant on missil bore/slave
+                //if(playerAC and playerAC->Sms and playerAC->Sms->curWeapon and
+                // ((MissileClass*)playerAC->Sms->curWeapon)->isSlave)
+                // DrawMissileReticle(0.3F, FALSE, TRUE);
+                //else
+                DrawMissileReticle(
+                    MRToHudUnits(MRM_ASEC_DIAMETER_MR * 0.5F) * g_fAsecScale,
+                    FALSE,
+                    TRUE); // ASEC 262 mr (bore) -- scaled to fit small HUD (Artscout - 2026)
+                DrawAim120Diamond();
+            }
+        }
+
+        break;
     }
 
     // Add waypoint info
@@ -468,11 +525,12 @@ void HudClass::DrawAirMissile(void)
 void HudClass::DrawGroundMissile(void)
 {
     // If we have a target, draw the DLZ
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (targetPtr)
     {
-        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
+        if ((playerAC->Sms->MasterArm() == SMSBaseClass::Arm) or
+            (playerAC->Sms->MasterArm() == SMSBaseClass::Sim))
         {
             DrawAGMDLZ();
         }
@@ -480,20 +538,24 @@ void HudClass::DrawGroundMissile(void)
 
     // Draw the TD box
 
-    display->AdjustOriginInViewport(0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // Marco edit - change size of Mav TD to approx DTOS size. (copied from DTOS code) - 6 Apr 2001 by Mirv's Suggestion
     // DrawDesignateMarker (Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
-    if ( not g_bRealisticAvionics)
-        DrawDesignateMarker(Square, FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll);
+    if (not g_bRealisticAvionics)
+        DrawDesignateMarker(Square, FCC->groundDesignateAz,
+                            FCC->groundDesignateEl, FCC->groundDesignateDroll);
     else
-        DrawTDMarker(FCC->groundDesignateAz, FCC->groundDesignateEl, FCC->groundDesignateDroll, 0.03F);
+        DrawTDMarker(FCC->groundDesignateAz, FCC->groundDesignateEl,
+                     FCC->groundDesignateDroll, 0.03F);
 
     // End Marco Edit
 
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
     // Add waypoint info
     if (waypointValid)
@@ -513,7 +575,7 @@ void HudClass::DrawBearing(void)
 {
     float steeringLineX = 0.0F;
     // Steering Line
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC and playerAC->Sms)
     {
@@ -521,7 +583,7 @@ void HudClass::DrawBearing(void)
         {
             steeringLineX = FCC->groundDesignateAz / (20.0F * DTR);
             steeringLineX += betaHudUnits;
-            steeringLineX = min(max(steeringLineX , -1.0F), 1.0F);
+            steeringLineX = min(max(steeringLineX, -1.0F), 1.0F);
             display->Line(steeringLineX, 1.0F, steeringLineX, -1.0F);
         }
     }
@@ -573,13 +635,18 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
 
     if (targetPtr == NULL)
     {
-        display->Circle(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
-                        hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F + MISSILE_RETICLE_OFFSET, radius);
+        display->Circle(0.0F,
+                        hudWinY[BORESIGHT_CROSS_WINDOW] +
+                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F +
+                            MISSILE_RETICLE_OFFSET,
+                        radius);
     }
     else
     {
-        display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                        hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F + MISSILE_RETICLE_OFFSET);
+        display->AdjustOriginInViewport(
+            0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
+                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F +
+                      MISSILE_RETICLE_OFFSET);
 
         // Range Tick
         angle = (targetData->range / 12000.0F) * 360.0F * DTR;
@@ -590,12 +657,15 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
             {
                 if (angle >= (90.0F * DTR))
                 {
-                    display->Arc(0.0F, 0.0F, radius, 0.0F, angle - (90.0F * DTR));
-                    display->Arc(0.0F, 0.0F, radius, 270.0F * DTR, 360.0F * DTR);
+                    display->Arc(0.0F, 0.0F, radius, 0.0F,
+                                 angle - (90.0F * DTR));
+                    display->Arc(0.0F, 0.0F, radius, 270.0F * DTR,
+                                 360.0F * DTR);
                 }
                 else
                 {
-                    display->Arc(0.0F, 0.0F, radius, 270.0F * DTR, 270.0F * DTR + angle);
+                    display->Arc(0.0F, 0.0F, radius, 270.0F * DTR,
+                                 270.0F * DTR + angle);
                 }
             }
             else
@@ -617,11 +687,13 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
 
         // Reference Ticks
         // M.N. added full realism mode
-        if (targetData->range < 12000.0F or (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV))
+        if (targetData->range < 12000.0F or
+            (PlayerOptions.GetAvionicsType() not_eq ATRealistic and
+             PlayerOptions.GetAvionicsType() not_eq ATRealisticAV))
         {
-            display->Line(0.0F,  radius, 0.0F,  radius + 0.04F);
+            display->Line(0.0F, radius, 0.0F, radius + 0.04F);
             display->Line(0.0F, -radius, 0.0F, -radius - 0.04F);
-            display->Line(radius, 0.0F,  radius + 0.04F, 0.0F);
+            display->Line(radius, 0.0F, radius + 0.04F, 0.0F);
             display->Line(-radius, 0.0F, -radius - 0.04F, 0.0F);
         }
 
@@ -634,8 +706,8 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
             else
                 display->AdjustRotationAboutOrigin(-targetData->ataFrom);
 
-            display->Line(0.0F, radius,  -0.04F, radius + 0.04F);
-            display->Line(0.0F, radius,   0.04F, radius + 0.04F);
+            display->Line(0.0F, radius, -0.04F, radius + 0.04F);
+            display->Line(0.0F, radius, 0.04F, radius + 0.04F);
             display->ZeroRotationAboutOrigin();
         }
 
@@ -644,11 +716,14 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
 
         if (FCC->GetSubMode() == FireControlComputer::HARM)
         {
-            HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
+            HarmTargetingPod* harmPod =
+                (HarmTargetingPod*)FindSensor(ownship, SensorClass::HTS);
 
             if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAS or
-                harmPod and harmPod->GetSubMode() == HarmTargetingPod::Handoff or
-                harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
+                harmPod and
+                    harmPod->GetSubMode() == HarmTargetingPod::Handoff or
+                harmPod and
+                    harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
             {
                 displayRange = false;
             }
@@ -666,8 +741,10 @@ void HudClass::DrawMissileReticle(float radius, int showRange, int showAspect)
         }
 
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
-        display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F + MISSILE_RETICLE_OFFSET));
+        display->AdjustOriginInViewport(
+            0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F +
+                    MISSILE_RETICLE_OFFSET));
         //      DrawWindowString(10, tmpStr);
     }
 }
@@ -677,20 +754,21 @@ void HudClass::DrawAim9Diamond(void)
 {
 
     float xPos, yPos;
-    SimWeaponClass *wpn; // JPO fix up
+    SimWeaponClass* wpn; // JPO fix up
 
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     wpn = playerAC->Sms->GetCurrentWeapon();
 
     // Marco - this shouldn't happen
-    if ( not wpn)
-        return ;
+    if (not wpn)
+        return;
 
     ShiAssert(wpn->IsMissile());
-    display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
+    display->AdjustOriginInViewport(
+        0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
+                  hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
 
-    if (1)//me123 (FCC->missileTarget)
+    if (1) //me123 (FCC->missileTarget)
     {
         xPos = RadToHudUnitsX(FCC->missileSeekerAz);
         yPos = RadToHudUnitsY(FCC->missileSeekerEl);
@@ -698,35 +776,43 @@ void HudClass::DrawAim9Diamond(void)
         // Marco Edit - if seeker is Slave and/or SPOT and no target, then vibrate
         if (g_bRealisticAvionics and playerAC->Sms->curWeaponType == wtAim9)
         {
-            if ( not ((MissileClass*)wpn)->targetPtr and (((MissileClass*)wpn)->isCaged or ((MissileClass*)wpn)->isSpot))
+            if (not((MissileClass*)wpn)->targetPtr and
+                (((MissileClass*)wpn)->isCaged or ((MissileClass*)wpn)->isSpot))
             {
                 if (FCC->Aim9AtGround)
                 {
-                    xPos = xPos + (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.015f;
-                    yPos = yPos + (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.015f;
+                    xPos = xPos +
+                           (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.015f;
+                    yPos = yPos +
+                           (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.015f;
                 }
                 else
                 {
-                    xPos = xPos + (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.008f;
-                    yPos = yPos + (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.008f;
+                    xPos = xPos +
+                           (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.008f;
+                    yPos = yPos +
+                           (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.008f;
                 }
             }
 
-            if (((MissileClass*)wpn)->targetPtr)// and not ((MissileClass*)wpn)->isCaged )
+            if (((MissileClass*)wpn)
+                    ->targetPtr) // and not ((MissileClass*)wpn)->isCaged )
             {
                 // Marco - here we have an uncaged seeker with a target locked
-                xPos = xPos + (((float)rand() / (float)RAND_MAX)  - 0.5f) * 0.01f;
-                yPos = yPos + (((float)rand() / (float)RAND_MAX)  - 0.5f) * 0.01f;
+                xPos =
+                    xPos + (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.01f;
+                yPos =
+                    yPos + (((float)rand() / (float)RAND_MAX) - 0.5f) * 0.01f;
             }
         }
-
     }
 
     else
     {
         xPos = 0.0F;
-        yPos =  -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                  hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) - 1.0F;
+        yPos = -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                 hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) -
+               1.0F;
     }
 
     // Marco Edit - AIM9P diamond stays in the centre of the HUD
@@ -738,16 +824,17 @@ void HudClass::DrawAim9Diamond(void)
     }*/
 
 
-    if (fabs(xPos) < 0.90F and fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                   hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
+    if (fabs(xPos) < 0.90F and
+        fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
+             hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
     {
         //MI draw our diammond depending on seeker state (cage or not)
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             display->AdjustOriginInViewport(xPos, yPos);
-            display->Line(0.0F,  0.03F,  0.03F, 0.0F); //me123 from 0.05 to 0.03
-            display->Line(0.0F,  0.03F, -0.03F, 0.0F);
-            display->Line(0.0F, -0.03F,  0.03F, 0.0F);
+            display->Line(0.0F, 0.03F, 0.03F, 0.0F); //me123 from 0.05 to 0.03
+            display->Line(0.0F, 0.03F, -0.03F, 0.0F);
+            display->Line(0.0F, -0.03F, 0.03F, 0.0F);
             display->Line(0.0F, -0.03F, -0.03F, 0.0F);
             display->AdjustOriginInViewport(-xPos, -yPos);
         }
@@ -756,16 +843,18 @@ void HudClass::DrawAim9Diamond(void)
             //MI
             if (wpn and wpn->IsMissile() and ((MissileClass*)wpn)->isCaged)
             {
-                if ((((MissileClass*)wpn)->targetPtr) and (targetData) and //JPG 24 Jun 04 - It flashes here too (only flash diamond when FCC has targeted and in range)
-                    (targetData->range > FCC->missileRMin) and (targetData->range < FCC->missileRMax))
+                if ((((MissileClass*)wpn)->targetPtr) and
+                    (targetData) and //JPG 24 Jun 04 - It flashes here too (only flash diamond when FCC has targeted and in range)
+                    (targetData->range > FCC->missileRMin) and
+                    (targetData->range < FCC->missileRMax))
                 {
                     if (vuxRealTime bitand 0x100)
                     {
                         //Small
                         display->AdjustOriginInViewport(xPos, yPos);
-                        display->Line(0.0F,  Small,  Small, 0.0F);
-                        display->Line(0.0F,  Small, -Small, 0.0F);
-                        display->Line(0.0F, -Small,  Small, 0.0F);
+                        display->Line(0.0F, Small, Small, 0.0F);
+                        display->Line(0.0F, Small, -Small, 0.0F);
+                        display->Line(0.0F, -Small, Small, 0.0F);
                         display->Line(0.0F, -Small, -Small, 0.0F);
                         display->AdjustOriginInViewport(-xPos, -yPos);
                     }
@@ -773,26 +862,29 @@ void HudClass::DrawAim9Diamond(void)
                 else
                 {
                     display->AdjustOriginInViewport(xPos, yPos);
-                    display->Line(0.0F,  Small,  Small, 0.0F);
-                    display->Line(0.0F,  Small, -Small, 0.0F);
-                    display->Line(0.0F, -Small,  Small, 0.0F);
+                    display->Line(0.0F, Small, Small, 0.0F);
+                    display->Line(0.0F, Small, -Small, 0.0F);
+                    display->Line(0.0F, -Small, Small, 0.0F);
                     display->Line(0.0F, -Small, -Small, 0.0F);
                     display->AdjustOriginInViewport(-xPos, -yPos);
                 }
             }
             // Marco Edit - flashing uncaged and locked diamond
-            else if (wpn and wpn->IsMissile() and not ((MissileClass*)wpn)->isCaged)
+            else if (wpn and wpn->IsMissile() and
+                     not((MissileClass*)wpn)->isCaged)
             {
 
-                if ((((MissileClass*)wpn)->targetPtr) and (targetData) and //Wombat778 10-16-2003 Added this mess as per MIRV (only flash diamond when FCC has targeted and in range)
-                    (targetData->range > FCC->missileRMin) and (targetData->range < FCC->missileRMax))
+                if ((((MissileClass*)wpn)->targetPtr) and
+                    (targetData) and //Wombat778 10-16-2003 Added this mess as per MIRV (only flash diamond when FCC has targeted and in range)
+                    (targetData->range > FCC->missileRMin) and
+                    (targetData->range < FCC->missileRMax))
                 {
                     if (vuxRealTime bitand 0x100)
                     {
                         display->AdjustOriginInViewport(xPos, yPos);
-                        display->Line(0.0F,  Large,  Large, 0.0F);
-                        display->Line(0.0F,  Large, -Large, 0.0F);
-                        display->Line(0.0F, -Large,  Large, 0.0F);
+                        display->Line(0.0F, Large, Large, 0.0F);
+                        display->Line(0.0F, Large, -Large, 0.0F);
+                        display->Line(0.0F, -Large, Large, 0.0F);
                         display->Line(0.0F, -Large, -Large, 0.0F);
                         display->AdjustOriginInViewport(-xPos, -yPos);
                     }
@@ -802,19 +894,19 @@ void HudClass::DrawAim9Diamond(void)
 
                     //Large
                     display->AdjustOriginInViewport(xPos, yPos);
-                    display->Line(0.0F,  Large,  Large, 0.0F);
-                    display->Line(0.0F,  Large, -Large, 0.0F);
-                    display->Line(0.0F, -Large,  Large, 0.0F);
+                    display->Line(0.0F, Large, Large, 0.0F);
+                    display->Line(0.0F, Large, -Large, 0.0F);
+                    display->Line(0.0F, -Large, Large, 0.0F);
                     display->Line(0.0F, -Large, -Large, 0.0F);
                     display->AdjustOriginInViewport(-xPos, -yPos);
                 }
-
             }
         }
     }
 
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 }
 
 void HudClass::DrawAim9DLZ(void)
@@ -826,16 +918,17 @@ void HudClass::DrawAim9DLZ(void)
     float rDot;
 
     SimWeaponClass* wpn;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    wpn = playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
+    wpn =
+        playerAC->Sms->GetCurrentWeapon(); // Marco Edit - for Aim9 Reticle Size
 
     //MI prevent some strange things writte on the HUD
-    if (FCC->missileTarget and playerAC and playerAC->Sms and 
+    if (FCC->missileTarget and playerAC and playerAC->Sms and
         playerAC->Sms->curWeapon)
     {
         // Range Carat / Closure
-        rMax   = FCC->missileRMax;
-        rMin   = FCC->missileRMin;
+        rMax = FCC->missileRMax;
+        rMin = FCC->missileRMin;
         rNeMax = FCC->missileRneMax / FCC->missileWEZDisplayRange;
         rNeMin = FCC->missileRneMin / FCC->missileWEZDisplayRange;
 
@@ -855,9 +948,12 @@ void HudClass::DrawAim9DLZ(void)
                     else
                     {
                         // if (((MissileClass*)wpn)->isCaged and not ((MissileClass*)wpn)->isSpot)
-                        if (((MissileClass*)wpn)->isSpot or ( not ((MissileClass*)wpn)->isCaged and ((MissileClass*)wpn)->targetPtr))
+                        if (((MissileClass*)wpn)->isSpot or
+                            (not((MissileClass*)wpn)->isCaged and
+                             ((MissileClass*)wpn)->targetPtr))
                         {
-                            DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE, TRUE);
+                            DrawAim9Reticle(SRM_UNCAGE_RETICLE_SIZE, TRUE,
+                                            TRUE);
                         }
                         else
                         {
@@ -875,7 +971,8 @@ void HudClass::DrawAim9DLZ(void)
 
         percentRange = targetData->range / FCC->missileWEZDisplayRange;
 
-        rDot = max(min(-targetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F), -1500.0F);
+        rDot = max(min(-targetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F),
+                   -1500.0F);
         sprintf(tmpStr, "%.0f", rDot);
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
@@ -883,7 +980,8 @@ void HudClass::DrawAim9DLZ(void)
         rMin = rMin / FCC->missileWEZDisplayRange;
         rMax = rMax / FCC->missileWEZDisplayRange;
 
-        DrawDLZSymbol(percentRange, tmpStr, rMin, rMax, rNeMin, rNeMax, TRUE, "");  //0
+        DrawDLZSymbol(percentRange, tmpStr, rMin, rMax, rNeMin, rNeMax, TRUE,
+                      ""); //0
 
         sprintf(tmpStr, "%.0f", FCC->missileTOF);
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
@@ -903,8 +1001,9 @@ void HudClass::DrawAim120Diamond(void)
 {
     float xPos, yPos;
 
-    display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
+    display->AdjustOriginInViewport(
+        0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
+                  hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
 
     if (FCC->missileTarget)
     {
@@ -917,24 +1016,26 @@ void HudClass::DrawAim120Diamond(void)
         yPos = MISSILE_RETICLE_OFFSET;
     }
 
-    if (fabs(xPos) < 0.90F and fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                   hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
+    if (fabs(xPos) < 0.90F and
+        fabs(yPos + hudWinY[BORESIGHT_CROSS_WINDOW] +
+             hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F) < 0.90F)
     {
         display->AdjustOriginInViewport(xPos, yPos);
-        display->Line(0.0F,  0.025F,  0.025F, 0.0F);
-        display->Line(0.0F,  0.025F, -0.025F, 0.0F);
-        display->Line(0.0F, -0.025F,  0.025F, 0.0F);
+        display->Line(0.0F, 0.025F, 0.025F, 0.0F);
+        display->Line(0.0F, 0.025F, -0.025F, 0.0F);
+        display->Line(0.0F, -0.025F, 0.025F, 0.0F);
         display->Line(0.0F, -0.025F, -0.025F, 0.0F);
 
-        display->Line(0.05F,  0.00F,  0.025F,  0.0F);
-        display->Line(-0.05F,  0.00F, -0.025F,  0.0F);
-        display->Line(0.0F, -0.025F,  0.00F, -0.05F);
-        display->Line(0.0F,  0.025F,  0.00F,  0.05F);
+        display->Line(0.05F, 0.00F, 0.025F, 0.0F);
+        display->Line(-0.05F, 0.00F, -0.025F, 0.0F);
+        display->Line(0.0F, -0.025F, 0.00F, -0.05F);
+        display->Line(0.0F, 0.025F, 0.00F, 0.05F);
         display->AdjustOriginInViewport(-xPos, -yPos);
     }
 
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 }
 
 void HudClass::DrawAim120DLZ(bool dfgt)
@@ -945,31 +1046,36 @@ void HudClass::DrawAim120DLZ(bool dfgt)
     float yOffset, rDot;
     float rMax, rMin;
     float rNeMin, rNeMax;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
+    RadarDopplerClass* theRadar =
+        (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
     if (FCC->missileTarget)
     {
         // Range Carat / Closure
-        rMax   = FCC->missileRMax;
-        rMin   = FCC->missileRMin;
-        rNeMax = (FCC->missileRneMax); // Marco Edit -  * 0.70f);//me123 addet *0.70
+        rMax = FCC->missileRMax;
+        rMin = FCC->missileRMin;
+        rNeMax =
+            (FCC->missileRneMax); // Marco Edit -  * 0.70f);//me123 addet *0.70
         rNeMin = FCC->missileRneMin;
 
         // JPO compare raw data first for ranging
         if (targetData->range < rNeMin or targetData->range > rNeMax or flash)
         {
             if (FCC->GetSubMode() == FireControlComputer::Aim120)
-                DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range), FALSE, TRUE);
+                DrawMissileReticle(FCC->Aim120ASECRadius(targetData->range),
+                                   FALSE, TRUE);
         }
 
-        if (targetData->range < rMin or targetData->range > rMax or flash and not dfgt)
+        if (targetData->range < rMin or targetData->range > rMax or
+            flash and not dfgt)
         {
             DrawAim120Diamond();
         }
 
         percentRange = targetData->range / FCC->missileWEZDisplayRange;
-        rDot = max(min(-targetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F), -1500.0F);
+        rDot = max(min(-targetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F),
+                   -1500.0F);
         sprintf(tmpStr, "%.0f", rDot);
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
 
@@ -978,17 +1084,34 @@ void HudClass::DrawAim120DLZ(bool dfgt)
             // Draw "A"/"F"-pole range for missile on the rail below closure (which is done above on line 2339)
             // "A" is not used to avoid confusion w/ AMRAAM active indications
             if (theRadar not_eq NULL)
-                if (FCC->nextMissileImpactTime > 0.0F and theRadar->lockedTargetData not_eq NULL)
-                    // assert(lockedTargetData not_eq NULL);
-                    // assert(FCC not_eq NULL);
+                if (FCC->nextMissileImpactTime > 0.0F and
+                    theRadar->lockedTargetData not_eq NULL)
+                // assert(lockedTargetData not_eq NULL);
+                // assert(FCC not_eq NULL);
                 {
                     if (FCC->nextMissileImpactTime > FCC->lastmissileActiveTime)
                     {
-                        sprintf(tmpStrpole, "%.0fM", (theRadar->lockedTargetData->range / 6076) - ((max(min(-theRadar->lockedTargetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F), -1500.0F) / 6076 * (FCC->nextMissileImpactTime - FCC->lastmissileActiveTime))));
+                        sprintf(tmpStrpole, "%.0fM",
+                                (theRadar->lockedTargetData->range / 6076) -
+                                    ((max(min(-theRadar->lockedTargetData
+                                                      ->rangedot *
+                                                  FTPSEC_TO_KNOTS,
+                                              1500.0F),
+                                          -1500.0F) /
+                                      6076 *
+                                      (FCC->nextMissileImpactTime -
+                                       FCC->lastmissileActiveTime))));
                     }
                     else
                     {
-                        sprintf(tmpStrpole, "%.0fF", (theRadar->lockedTargetData->range / 6076) - ((max(min(-theRadar->lockedTargetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F), -1500.0F) / 6076 * FCC->nextMissileImpactTime)));
+                        sprintf(tmpStrpole, "%.0fF",
+                                (theRadar->lockedTargetData->range / 6076) -
+                                    ((max(min(-theRadar->lockedTargetData
+                                                      ->rangedot *
+                                                  FTPSEC_TO_KNOTS,
+                                              1500.0F),
+                                          -1500.0F) /
+                                      6076 * FCC->nextMissileImpactTime)));
                     }
 
                     ShiAssert(strlen(tmpStrpole) < sizeof(tmpStrpole));
@@ -1004,11 +1127,13 @@ void HudClass::DrawAim120DLZ(bool dfgt)
 
         if (g_bnewAMRAAMdlz)
         {
-            DrawDLZSymbol(percentRange, tmpStr, rMin, rMax, rNeMin, rNeMax, TRUE, tmpStrpole);  // JPG last one was NULL
+            DrawDLZSymbol(percentRange, tmpStr, rMin, rMax, rNeMin, rNeMax,
+                          TRUE, tmpStrpole); // JPG last one was NULL
         }
         else
         {
-            DrawDLZSymbol(percentRange, tmpStr, rMin, rMax, rNeMin, rNeMax, TRUE, NULL);
+            DrawDLZSymbol(percentRange, tmpStr, rMin, rMax, rNeMin, rNeMax,
+                          TRUE, NULL);
         }
 
         if (g_bnewAMRAAMdlz)
@@ -1023,23 +1148,28 @@ void HudClass::DrawAim120DLZ(bool dfgt)
             //    yOffset = hudWinY[DLZ_WINDOW] + yOffset * hudWinHeight[DLZ_WINDOW] +
             //    hudWinHeight[DLZ_WINDOW];
 
-            display->Line(hudWinX[DLZ_WINDOW], yOffset, hudWinX[DLZ_WINDOW] + 0.03F, yOffset + 0.03F);
-            display->Line(hudWinX[DLZ_WINDOW], yOffset, hudWinX[DLZ_WINDOW] + 0.03F, yOffset - 0.03F);
+            display->Line(hudWinX[DLZ_WINDOW], yOffset,
+                          hudWinX[DLZ_WINDOW] + 0.03F, yOffset + 0.03F);
+            display->Line(hudWinX[DLZ_WINDOW], yOffset,
+                          hudWinX[DLZ_WINDOW] + 0.03F, yOffset - 0.03F);
 
             // Old AMRAAM active seeker range - kludge never worked right to begin with
             // Now Ropt - Max Launch Range. NOTE: KLUDGE :( Assumes optimum a/c steering and high quality termination criteria
             percentRange = (rMax * .85F);
             percentRange = min(max(0.0F, percentRange), 1.0F);
-            percentRange = hudWinY[DLZ_WINDOW] + percentRange * 0.8F * hudWinHeight[DLZ_WINDOW] +
+            percentRange = hudWinY[DLZ_WINDOW] +
+                           percentRange * 0.8F * hudWinHeight[DLZ_WINDOW] +
                            0.1F * hudWinHeight[DLZ_WINDOW];
             display->Circle(hudWinX[DLZ_WINDOW], percentRange, 0.03F);
         }
         else
         {
             // Range for immediate Active
-            percentRange = FCC->missileActiveRange / FCC->missileWEZDisplayRange;
+            percentRange =
+                FCC->missileActiveRange / FCC->missileWEZDisplayRange;
             percentRange = min(max(rMin, percentRange), rMax);
-            yOffset = hudWinY[DLZ_WINDOW] + percentRange * 0.8F * hudWinHeight[DLZ_WINDOW] +
+            yOffset = hudWinY[DLZ_WINDOW] +
+                      percentRange * 0.8F * hudWinHeight[DLZ_WINDOW] +
                       0.1F * hudWinHeight[DLZ_WINDOW];
             display->Circle(hudWinX[DLZ_WINDOW], yOffset, 0.02F);
         }
@@ -1053,7 +1183,8 @@ void HudClass::DrawAim120DLZ(bool dfgt)
 
 
     //MI Draw "HOJ" string, feature of RP4, Home on Jamming
-    else if (FCC->TargetPtr() and FCC->TargetPtr()->BaseData() and // JB 010708 CTD
+    else if (FCC->TargetPtr() and
+             FCC->TargetPtr()->BaseData() and // JB 010708 CTD
              FCC->TargetPtr()->BaseData()->IsSPJamming())
     {
         //only draw it when there is a missile in the air
@@ -1067,11 +1198,23 @@ void HudClass::DrawAim120DLZ(bool dfgt)
         {
             if (FCC->lastMissileImpactTime > FCC->lastmissileActiveTime)
             {
-                sprintf(tmpStr, "%.0fM", (theRadar->lockedTargetData->range / 6076) - ((max(min(-theRadar->lockedTargetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F), -1500.0F) / 6076 * FCC->lastmissileActiveTime)));
+                sprintf(tmpStr, "%.0fM",
+                        (theRadar->lockedTargetData->range / 6076) -
+                            ((max(min(-theRadar->lockedTargetData->rangedot *
+                                          FTPSEC_TO_KNOTS,
+                                      1500.0F),
+                                  -1500.0F) /
+                              6076 * FCC->lastmissileActiveTime)));
             }
             else
             {
-                sprintf(tmpStr, "%.0fF", (theRadar->lockedTargetData->range / 6076) - ((max(min(-theRadar->lockedTargetData->rangedot * FTPSEC_TO_KNOTS, 1500.0F), -1500.0F) / 6076 * FCC->lastMissileImpactTime)));
+                sprintf(tmpStr, "%.0fF",
+                        (theRadar->lockedTargetData->range / 6076) -
+                            ((max(min(-theRadar->lockedTargetData->rangedot *
+                                          FTPSEC_TO_KNOTS,
+                                      1500.0F),
+                                  -1500.0F) /
+                              6076 * FCC->lastMissileImpactTime)));
             }
 
             ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
@@ -1085,7 +1228,9 @@ void HudClass::DrawAim120DLZ(bool dfgt)
         {
             if (FCC->nextMissileImpactTime > FCC->lastmissileActiveTime)
             {
-                sprintf(tmpStr, "A%.0f", FCC->nextMissileImpactTime - FCC->lastmissileActiveTime);
+                sprintf(tmpStr, "A%.0f",
+                        FCC->nextMissileImpactTime -
+                            FCC->lastmissileActiveTime);
             }
             else
             {
@@ -1105,7 +1250,8 @@ void HudClass::DrawAim120DLZ(bool dfgt)
         }
         else if (FCC->lastMissileImpactTime > FCC->lastmissileActiveTime)
         {
-            sprintf(tmpStr, "A%.0f", FCC->lastMissileImpactTime - FCC->lastmissileActiveTime);
+            sprintf(tmpStr, "A%.0f",
+                    FCC->lastMissileImpactTime - FCC->lastmissileActiveTime);
         }
         else
         {
@@ -1126,57 +1272,65 @@ void HudClass::DrawAim120ASE(void)
     float rMax;
 
     yCenter = hudWinY[BORESIGHT_CROSS_WINDOW] +
-              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F + MISSILE_RETICLE_OFFSET;
+              hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F +
+              MISSILE_RETICLE_OFFSET;
 
     //MI possible CTD
-    if ( not FCC)
+    if (not FCC)
         return;
 
     display->AdjustOriginInViewport(0.0F, yCenter);
     display->AdjustOriginInViewport(0.0F, MISSILE_RETICLE_OFFSET);
 
     // Add missile avg speed to collision calc
-    if (targetPtr->BaseData()->IsSim() and FindCollisionPoint((SimBaseClass*)targetPtr->BaseData(), ownship, &collPoint, 2500.0F)) //me123 from speed 1500
+    if (targetPtr->BaseData()->IsSim() and
+        FindCollisionPoint((SimBaseClass*)targetPtr->BaseData(), ownship,
+                           &collPoint, 2500.0F)) //me123 from speed 1500
     {
         // edg: fix ASE.  Looks like collision point is returned in World Coords.  We need to
         // make it relative to ownship so subtract out ownship pos 1st....
-        rx =    collPoint.x -= ownship->XPos();
-        ry =    collPoint.y -= ownship->YPos();
-        rz =    collPoint.z -= ownship->ZPos();
+        rx = collPoint.x -= ownship->XPos();
+        ry = collPoint.y -= ownship->YPos();
+        rz = collPoint.z -= ownship->ZPos();
 
         collPoint.z -= targetData->range / 5.0f;
-        collPoint.z -= (ownship->ZPos() + 50000) * (targetData->range * FT_TO_NM / 40.0f);
+        collPoint.z -=
+            (ownship->ZPos() + 50000) * (targetData->range * FT_TO_NM / 40.0f);
 
         rx = ownship->dmx[0][0] * collPoint.x +
-                ownship->dmx[0][1] * collPoint.y +
-                ownship->dmx[0][2] * collPoint.z;
+             ownship->dmx[0][1] * collPoint.y +
+             ownship->dmx[0][2] * collPoint.z;
         ry = ownship->dmx[1][0] * collPoint.x +
-                ownship->dmx[1][1] * collPoint.y +
-                ownship->dmx[1][2] * collPoint.z;
+             ownship->dmx[1][1] * collPoint.y +
+             ownship->dmx[1][2] * collPoint.z;
         rz = ownship->dmx[2][0] * collPoint.x +
-                ownship->dmx[2][1] * collPoint.y +
-                ownship->dmx[2][2] * collPoint.z;
+             ownship->dmx[2][1] * collPoint.y +
+             ownship->dmx[2][2] * collPoint.z;
 
 
         az = RadToHudUnitsX(((float)atan2(ry, rx)));
         az = az / 6.0f;
-        el = RadToHudUnitsY(((float)atan((-rz) / (float)sqrt(rx * rx + ry * ry + .0001f))));
+        el = RadToHudUnitsY(
+            ((float)atan((-rz) / (float)sqrt(rx * rx + ry * ry + .0001f))));
         el = el / 6.0f;
 
         //   el -= MISSILE_RETICLE_OFFSET;
-        if (fabs(az) < 0.9F and fabs(el  /*+ yCenter*/) < 0.9F)
+        if (fabs(az) < 0.9F and fabs(el /*+ yCenter*/) < 0.9F)
         {
-            display->Circle(az, el , MISSILE_ASE_SIZE);
-            rMax   = FCC->missileRMax;
+            display->Circle(az, el, MISSILE_ASE_SIZE);
+            rMax = FCC->missileRMax;
 
             //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX or (float)fabs(FCC->missileSeekerEl) > AIM120ASECX or targetData->range > rMax)
-            if ((float)fabs(az) >= 0.9f or (float)fabs(el) >= 0.9f or targetData->range > rMax)
+            if ((float)fabs(az) >= 0.9f or (float) fabs(el) >= 0.9f or
+                targetData->range > rMax)
             {
                 // Display ASEC X
-                display->Line(az - 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE,
-                              az + 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE);
-                display->Line(az - 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE,
-                              az + 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE);
+                display->Line(
+                    az - 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE,
+                    az + 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE);
+                display->Line(
+                    az - 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE,
+                    az + 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE);
             }
         }
         else if (flash)
@@ -1192,17 +1346,20 @@ void HudClass::DrawAim120ASE(void)
               el -= yCenter;
             */
             display->Circle(az, el, MISSILE_ASE_SIZE);
-            rMax   = FCC->missileRMax;
+            rMax = FCC->missileRMax;
 
             //  if ((float)fabs(FCC->missileSeekerAz) > AIM120ASECX or (float)fabs(FCC->missileSeekerEl) > AIM120ASECX or targetData->range > rMax)
-            if ((float)fabs(az) >= 0.9f or (float)fabs(el) >= 0.9f or targetData->range > rMax)
+            if ((float)fabs(az) >= 0.9f or (float) fabs(el) >= 0.9f or
+                targetData->range > rMax)
 
             {
                 // Display ASEC X
-                display->Line(az - 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE,
-                              az + 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE);
-                display->Line(az - 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE,
-                              az + 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE);
+                display->Line(
+                    az - 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE,
+                    az + 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE);
+                display->Line(
+                    az - 0.6f * MISSILE_ASE_SIZE, el + 0.6f * MISSILE_ASE_SIZE,
+                    az + 0.6f * MISSILE_ASE_SIZE, el - 0.6f * MISSILE_ASE_SIZE);
             }
         }
     }
@@ -1213,7 +1370,6 @@ void HudClass::DrawAim120ASE(void)
 
     display->AdjustOriginInViewport(0.0F, -MISSILE_RETICLE_OFFSET);
     display->AdjustOriginInViewport(0.0F, -yCenter);
-
 }
 
 void HudClass::CheckBreakX(void)
@@ -1221,7 +1377,7 @@ void HudClass::CheckBreakX(void)
     vector a, b, c, d;
 
     // Quit now if nothing to do
-    if ( not targetPtr or Warnflash)
+    if (not targetPtr or Warnflash)
         return;
 
     // Check the next 5 seconds.
@@ -1235,20 +1391,23 @@ void HudClass::CheckBreakX(void)
     c.x = targetPtr->BaseData()->XPos();
     c.y = targetPtr->BaseData()->YPos();
     c.z = targetPtr->BaseData()->ZPos();
-    d.x = (targetPtr->BaseData()->XDelta() + 0.5F) * SimLibMajorFrameTime * -5.0F;
+    d.x =
+        (targetPtr->BaseData()->XDelta() + 0.5F) * SimLibMajorFrameTime * -5.0F;
     d.y = targetPtr->BaseData()->YDelta() * SimLibMajorFrameTime * -5.0F;
     d.z = targetPtr->BaseData()->ZDelta() * SimLibMajorFrameTime * -5.0F;
 
     if (FindMinDistance(&a, &b, &c, &d) < 500.0F)
     {
-        display->AdjustOriginInViewport(0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                        hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
+        display->AdjustOriginInViewport(
+            0.0F, hudWinY[BORESIGHT_CROSS_WINDOW] +
+                      hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F);
         display->AdjustOriginInViewport(0.0F, MISSILE_RETICLE_OFFSET);
-        display->Line(0.4F,  0.4F, -0.4F, -0.4F);
-        display->Line(0.4F, -0.4F, -0.4F,  0.4F);
+        display->Line(0.4F, 0.4F, -0.4F, -0.4F);
+        display->Line(0.4F, -0.4F, -0.4F, 0.4F);
         display->AdjustOriginInViewport(0.0F, -MISSILE_RETICLE_OFFSET);
-        display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+        display->AdjustOriginInViewport(
+            0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                    hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
     }
 }
 
@@ -1264,8 +1423,8 @@ void HudClass::DrawAGMDLZ(void)
     if (FCC->missileTarget)
     {
         // Range Carat / Closure
-        rMax   = FCC->missileRMax;
-        rMin   = FCC->missileRMin;
+        rMax = FCC->missileRMax;
+        rMin = FCC->missileRMin;
 
         // get range to ground designaate point
         dx = ownship->XPos() - FCC->groundDesignateX;
@@ -1286,7 +1445,8 @@ void HudClass::DrawAGMDLZ(void)
         rNeMax = FCC->missileRneMax / FCC->missileWEZDisplayRange;
         rNeMin = FCC->missileRneMin / FCC->missileWEZDisplayRange;
 
-        DrawDLZSymbol(percentRange, "", rMin , rMax, rNeMin, rNeMax, FALSE, ""); //0
+        DrawDLZSymbol(percentRange, "", rMin, rMax, rNeMin, rNeMax, FALSE,
+                      ""); //0
 
         sprintf(tmpStr, "%.0f", FCC->missileTOF);
         ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
@@ -1313,12 +1473,13 @@ void HudClass::DrawHTSDLZ(void)
     ShiAssert(targetData);
 
     // Range values
-    rMax   = FCC->missileRMax;
-    rMin   = FCC->missileRMin;
+    rMax = FCC->missileRMax;
+    rMin = FCC->missileRMin;
 
     if (targetData->range < rMin or targetData->range > rMax or flash)
     {
-        boresightOffset = hudWinY[BORESIGHT_CROSS_WINDOW] + hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
+        boresightOffset = hudWinY[BORESIGHT_CROSS_WINDOW] +
+                          hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F;
         xPos = RadToHudUnitsX(FCC->missileSeekerAz);
         yPos = RadToHudUnitsY(FCC->missileSeekerEl) + boresightOffset;
 
@@ -1346,7 +1507,7 @@ void HudClass::DrawHTSDLZ(void)
     rNeMax = FCC->missileRneMax / FCC->missileRMax;
     rNeMin = FCC->missileRneMin / FCC->missileRMax;
 
-    DrawDLZSymbol(percentRange, "", rMin, rMax, rNeMin, rNeMax, FALSE, "");  //0
+    DrawDLZSymbol(percentRange, "", rMin, rMax, rNeMin, rNeMax, FALSE, ""); //0
 
 
     // Draw Time to die strings
@@ -1363,7 +1524,7 @@ void HudClass::DrawHTSDLZ(void)
     }
 }
 
-static void DrawShootCue(VirtualDisplay *display)
+static void DrawShootCue(VirtualDisplay* display)
 {
     static const float vSize = 0.10f;
     static const float hSize = 0.05f;
@@ -1373,54 +1534,36 @@ static void DrawShootCue(VirtualDisplay *display)
         float x, y;
     };
 
-    static const struct Corner S[] =
-    {
-        { hSize,  vSize},
-        { -hSize,  vSize},
-        { -hSize,  0.0f},
-        { hSize,  0.0f},
-        { hSize, -vSize},
-        { -hSize, -vSize}
-    };
+    static const struct Corner S[] = {{hSize, vSize},  {-hSize, vSize},
+                                      {-hSize, 0.0f},  {hSize, 0.0f},
+                                      {hSize, -vSize}, {-hSize, -vSize}};
 
-    static const struct Corner H1[] =
-    {
-        {hSize,  vSize},
+    static const struct Corner H1[] = {
+        {hSize, vSize},
         {hSize, -vSize},
     };
-    static const struct Corner H2[] =
-    {
-        { -hSize,  0.0f},
-        { hSize,  0.0f},
+    static const struct Corner H2[] = {
+        {-hSize, 0.0f},
+        {hSize, 0.0f},
     };
-    static const struct Corner H3[] =
-    {
-        { -hSize,  vSize},
-        { -hSize, -vSize}
+    static const struct Corner H3[] = {{-hSize, vSize}, {-hSize, -vSize}};
+
+    static const struct Corner O[] = {
+        {hSize, vSize},  {-hSize, vSize}, {-hSize, -vSize},
+        {hSize, -vSize}, {hSize, vSize},
     };
 
-    static const struct Corner O[] =
-    {
-        { hSize,  vSize},
-        { -hSize,  vSize},
-        { -hSize, -vSize},
-        { hSize, -vSize},
-        { hSize,  vSize},
+    static const struct Corner T1[] = {
+        {hSize, vSize},
+        {-hSize, vSize},
     };
-
-    static const struct Corner T1[] =
-    {
-        { hSize,  vSize},
-        { -hSize,  vSize},
-    };
-    static const struct Corner T2[] =
-    {
-        {0.0f,  vSize},
+    static const struct Corner T2[] = {
+        {0.0f, vSize},
         {0.0f, -vSize},
     };
 
 
-    const struct Corner *letter;
+    const struct Corner* letter;
     int i;
 
     display->AdjustOriginInViewport(-0.3f, 0.0f);
@@ -1428,7 +1571,8 @@ static void DrawShootCue(VirtualDisplay *display)
 
     for (i = 1; i < sizeof(S) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     display->AdjustOriginInViewport(0.15f, 0.0f);
@@ -1436,21 +1580,24 @@ static void DrawShootCue(VirtualDisplay *display)
 
     for (i = 1; i < sizeof(H1) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     letter = H2;
 
     for (i = 1; i < sizeof(H2) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     letter = H3;
 
     for (i = 1; i < sizeof(H3) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     display->AdjustOriginInViewport(0.15f, 0.0f);
@@ -1458,7 +1605,8 @@ static void DrawShootCue(VirtualDisplay *display)
 
     for (i = 1; i < sizeof(O) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     display->AdjustOriginInViewport(0.15f, 0.0f);
@@ -1466,7 +1614,8 @@ static void DrawShootCue(VirtualDisplay *display)
 
     for (i = 1; i < sizeof(O) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     display->AdjustOriginInViewport(0.15f, 0.0f);
@@ -1474,24 +1623,28 @@ static void DrawShootCue(VirtualDisplay *display)
 
     for (i = 1; i < sizeof(T1) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     letter = T2;
 
     for (i = 1; i < sizeof(T2) / sizeof(Corner); i++)
     {
-        display->Line(letter[i].x, letter[i].y, letter[i - 1].x, letter[i - 1].y);
+        display->Line(letter[i].x, letter[i].y, letter[i - 1].x,
+                      letter[i - 1].y);
     }
 
     display->AdjustOriginInViewport(-0.3f, 0.0f);
 }
 
-void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float rMax, float rNeMin, float rNeMax, BOOL aaMode, char* tmpStrpole)
+void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin,
+                             float rMax, float rNeMin, float rNeMax,
+                             BOOL aaMode, char* tmpStrpole)
 {
     float yOffset;
     char wezStr[12];
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
 
     // Clamp in place
@@ -1515,33 +1668,42 @@ void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float
 
     if (g_bnewAMRAAMdlz)
     {
-        if (playerAC->Sms->curWeaponType == wtAim120)  //JPG 26 Jun 04 - ONLY for AIM120, or it screws the aim9 up
+        if (playerAC->Sms->curWeaponType ==
+            wtAim120) //JPG 26 Jun 04 - ONLY for AIM120, or it screws the aim9 up
         {
             if (yOffset > (1.25F * (rMax * hudWinHeight[DLZ_WINDOW])))
             {
-                display->TextCenter(hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW] * 0.5F,
-                                    hudWinY[DLZ_WINDOW] + hudWinHeight[DLZ_WINDOW] + 1.2F * display->TextHeight(),
-                                    wezStr);
+                display->TextCenter(
+                    hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW] * 0.5F,
+                    hudWinY[DLZ_WINDOW] + hudWinHeight[DLZ_WINDOW] +
+                        1.2F * display->TextHeight(),
+                    wezStr);
             }
         }
         else
         {
-            display->TextCenter(hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW] * 0.5F,
-                                hudWinY[DLZ_WINDOW] + hudWinHeight[DLZ_WINDOW] + 1.2F * display->TextHeight(),
+            display->TextCenter(hudWinX[DLZ_WINDOW] +
+                                    hudWinWidth[DLZ_WINDOW] * 0.5F,
+                                hudWinY[DLZ_WINDOW] + hudWinHeight[DLZ_WINDOW] +
+                                    1.2F * display->TextHeight(),
                                 wezStr);
         }
     }
     else
     {
-        display->TextCenter(hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW] * 0.5F,
-                            hudWinY[DLZ_WINDOW] + hudWinHeight[DLZ_WINDOW] + 1.2F * display->TextHeight(),
+        display->TextCenter(hudWinX[DLZ_WINDOW] +
+                                hudWinWidth[DLZ_WINDOW] * 0.5F,
+                            hudWinY[DLZ_WINDOW] + hudWinHeight[DLZ_WINDOW] +
+                                1.2F * display->TextHeight(),
                             wezStr);
     }
 
-    display->Line(hudWinX[DLZ_WINDOW],     //JPG 26 Jun 04 - Zero range tick mark in DLZ for all missiles
-                  hudWinY[DLZ_WINDOW] + 0.0F * hudWinHeight[DLZ_WINDOW],
-                  hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-                  hudWinY[DLZ_WINDOW] + 0.0F * hudWinHeight[DLZ_WINDOW]);
+    display->Line(
+        hudWinX
+            [DLZ_WINDOW], //JPG 26 Jun 04 - Zero range tick mark in DLZ for all missiles
+        hudWinY[DLZ_WINDOW] + 0.0F * hudWinHeight[DLZ_WINDOW],
+        hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+        hudWinY[DLZ_WINDOW] + 0.0F * hudWinHeight[DLZ_WINDOW]);
 
     if (g_bnewAMRAAMdlz)
     {
@@ -1549,24 +1711,32 @@ void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float
         {
             if (yOffset > (1.25F * (rMax * hudWinHeight[DLZ_WINDOW])))
             {
-                display->Line(hudWinX[DLZ_WINDOW],     //JPG 26 Jun 04 - Upper range tick mark for new AMRAAM DLZ only if tgt is 125% of Raero
-                              hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW],  // or else it is not drawn
-                              hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-                              hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW]);
+                display->Line(
+                    hudWinX
+                        [DLZ_WINDOW], //JPG 26 Jun 04 - Upper range tick mark for new AMRAAM DLZ only if tgt is 125% of Raero
+                    hudWinY[DLZ_WINDOW] +
+                        1.05F *
+                            hudWinHeight[DLZ_WINDOW], // or else it is not drawn
+                    hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                    hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW]);
             }
         }
         else
-            display->Line(hudWinX[DLZ_WINDOW],     //JPG 26 Jun 04 - Upper range tick mark for DLZ for all other AA missiles
-                          hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW],
-                          hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-                          hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW]);
+            display->Line(
+                hudWinX
+                    [DLZ_WINDOW], //JPG 26 Jun 04 - Upper range tick mark for DLZ for all other AA missiles
+                hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW],
+                hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW]);
     }
     else
     {
-        display->Line(hudWinX[DLZ_WINDOW],     //JPG 26 Jun 04 - Upper range tick mark for DLZ for when newAMRAAM is false
-                      hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW],
-                      hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-                      hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW]);
+        display->Line(
+            hudWinX
+                [DLZ_WINDOW], //JPG 26 Jun 04 - Upper range tick mark for DLZ for when newAMRAAM is false
+            hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW],
+            hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+            hudWinY[DLZ_WINDOW] + 1.05F * hudWinHeight[DLZ_WINDOW]);
     }
 
 
@@ -1578,16 +1748,16 @@ void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float
     {
         if (playerAC->Sms->curWeaponType == wtAim120)
         {
-            display->Line(
-                hudWinX[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
-                hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW]);
-            display->Line(
-                hudWinX[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
-                hudWinX[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + (rMax * .75F) * hudWinHeight[DLZ_WINDOW]);
+            display->Line(hudWinX[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
+                          hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] +
+                              rMin * hudWinHeight[DLZ_WINDOW]);
+            display->Line(hudWinX[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
+                          hudWinX[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] +
+                              (rMax * .75F) * hudWinHeight[DLZ_WINDOW]);
             display->Line(
                 hudWinX[DLZ_WINDOW],
                 hudWinY[DLZ_WINDOW] + (rMax * .75F) * hudWinHeight[DLZ_WINDOW],
@@ -1596,49 +1766,46 @@ void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float
         }
         else
         {
-            display->Line(
-                hudWinX[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
-                hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW]);
-            display->Line(
-                hudWinX[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
-                hudWinX[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW]);
-            display->Line(
-                hudWinX[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW],
-                hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-                hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW]);
+            display->Line(hudWinX[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
+                          hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] +
+                              rMin * hudWinHeight[DLZ_WINDOW]);
+            display->Line(hudWinX[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
+                          hudWinX[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] +
+                              rMax * hudWinHeight[DLZ_WINDOW]);
+            display->Line(hudWinX[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW],
+                          hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                          hudWinY[DLZ_WINDOW] +
+                              rMax * hudWinHeight[DLZ_WINDOW]);
         }
     }
-    else  // Rmin/Rmax - The older DLZ
+    else // Rmin/Rmax - The older DLZ
     {
-        display->Line(
-            hudWinX[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
-            hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW]);
-        display->Line(
-            hudWinX[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
-            hudWinX[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW]);
-        display->Line(
-            hudWinX[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW],
-            hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW]);
+        display->Line(hudWinX[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
+                      hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW]);
+        display->Line(hudWinX[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rMin * hudWinHeight[DLZ_WINDOW],
+                      hudWinX[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW]);
+        display->Line(hudWinX[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW],
+                      hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rMax * hudWinHeight[DLZ_WINDOW]);
     }
 
     // Range Caret
     //  yOffset = hudWinY[DLZ_WINDOW] + percentRange * hudWinHeight[DLZ_WINDOW];
 
-    display->Line(hudWinX[DLZ_WINDOW], yOffset,
-                  hudWinX[DLZ_WINDOW] - 0.03F, yOffset + 0.03F);
-    display->Line(hudWinX[DLZ_WINDOW], yOffset,
-                  hudWinX[DLZ_WINDOW] - 0.03F, yOffset - 0.03F);
+    display->Line(hudWinX[DLZ_WINDOW], yOffset, hudWinX[DLZ_WINDOW] - 0.03F,
+                  yOffset + 0.03F);
+    display->Line(hudWinX[DLZ_WINDOW], yOffset, hudWinX[DLZ_WINDOW] - 0.03F,
+                  yOffset - 0.03F);
 
     display->TextRight(hudWinX[DLZ_WINDOW] - 0.035F, yOffset + 0.03F, tmpStr);
 
@@ -1647,30 +1814,27 @@ void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float
     {
         if (yOffset < (1.25F * (rMax * hudWinHeight[DLZ_WINDOW])))
         {
-            display->TextRight(hudWinX[DLZ_WINDOW] - 0.035F, yOffset - 0.03F, tmpStrpole); //me123
+            display->TextRight(hudWinX[DLZ_WINDOW] - 0.035F, yOffset - 0.03F,
+                               tmpStrpole); //me123
             //   display->TextRight (hudWinX[DLZ_WINDOW] - 0.035F, yOffset- display->TextHeight(), tmpStrpole);//me123
         }
-
     }
 
     // No Escape Zone
     if (aaMode)
     {
-        display->Line(
-            hudWinX[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rNeMin * hudWinHeight[DLZ_WINDOW],
-            hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rNeMin * hudWinHeight[DLZ_WINDOW]);
-        display->Line(
-            hudWinX[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rNeMax * hudWinHeight[DLZ_WINDOW],
-            hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rNeMax * hudWinHeight[DLZ_WINDOW]);
-        display->Line(
-            hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rNeMin * hudWinHeight[DLZ_WINDOW],
-            hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
-            hudWinY[DLZ_WINDOW] + rNeMax * hudWinHeight[DLZ_WINDOW]);
+        display->Line(hudWinX[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rNeMin * hudWinHeight[DLZ_WINDOW],
+                      hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rNeMin * hudWinHeight[DLZ_WINDOW]);
+        display->Line(hudWinX[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rNeMax * hudWinHeight[DLZ_WINDOW],
+                      hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rNeMax * hudWinHeight[DLZ_WINDOW]);
+        display->Line(hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rNeMin * hudWinHeight[DLZ_WINDOW],
+                      hudWinX[DLZ_WINDOW] + hudWinWidth[DLZ_WINDOW],
+                      hudWinY[DLZ_WINDOW] + rNeMax * hudWinHeight[DLZ_WINDOW]);
     }
 
     //TJL 01/26/04 ShootCue
@@ -1704,7 +1868,10 @@ void HudClass::DrawDLZSymbol(float percentRange, char* tmpStr, float rMin, float
 void HudClass::DrawAim9Reticle(float radius, int showRange, int showAspect)
 {
 
-    if (targetPtr and targetData and (targetData->range < FCC->missileRneMax) and (targetData->range > FCC->missileRneMin)) //should only the MAX range be tested? Now it stops flashing if below RNE
+    if (targetPtr and targetData and
+        (targetData->range < FCC->missileRneMax) and
+        (targetData->range >
+         FCC->missileRneMin)) //should only the MAX range be tested? Now it stops flashing if below RNE
     {
         if (vuxRealTime bitand 0x100)
             DrawMissileReticle(radius, showRange, showAspect);
@@ -1715,15 +1882,20 @@ void HudClass::DrawAim9Reticle(float radius, int showRange, int showAspect)
 
 void HudClass::DrawHarmFovBox(void)
 {
-    display->AdjustOriginInViewport(0.0f, (hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                           hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0f, (hudWinY[BORESIGHT_CROSS_WINDOW] +
+               hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 
-    display->Line(-HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_TOP, HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_TOP);
-    display->Line(-HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_BOTTOM, HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_BOTTOM);
-    display->Line(-HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_TOP, -HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_BOTTOM);
-    display->Line(HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_TOP, HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_BOTTOM);
+    display->Line(-HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_TOP, HARM_FOV_BOX_WIDTH,
+                  HARM_FOV_BOX_TOP);
+    display->Line(-HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_BOTTOM, HARM_FOV_BOX_WIDTH,
+                  HARM_FOV_BOX_BOTTOM);
+    display->Line(-HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_TOP, -HARM_FOV_BOX_WIDTH,
+                  HARM_FOV_BOX_BOTTOM);
+    display->Line(HARM_FOV_BOX_WIDTH, HARM_FOV_BOX_TOP, HARM_FOV_BOX_WIDTH,
+                  HARM_FOV_BOX_BOTTOM);
 
-    display->AdjustOriginInViewport(0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
-                                            hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
+    display->AdjustOriginInViewport(
+        0.0F, -(hudWinY[BORESIGHT_CROSS_WINDOW] +
+                hudWinHeight[BORESIGHT_CROSS_WINDOW] * 0.5F));
 }
-

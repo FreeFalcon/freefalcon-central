@@ -32,11 +32,11 @@
 /*                                                                            */
 /******************************************************************************/
 #include "stdhdr.h"
-#include "AirFrame.h"
+#include "airframe.h"
 #include "simbase.h"
 #include "aircrft.h"
 #include "limiters.h"
-#include "Graphics/Include/tmap.h"
+#include "graphics/include/tmap.h"
 #include "otwdrive.h"
 #include "dofsnswitches.h"
 
@@ -62,12 +62,12 @@
 /********************************************************************/
 extern bool g_bNewFm;
 extern bool g_bTurb;
-extern int gameCompressionRatio;//TJL 05/30/04
+extern int gameCompressionRatio; //TJL 05/30/04
 
 void AirframeClass::Aerodynamics(void)
 {
     float dragAlpha;
-    float tempAlpha;//, flapFactor = 0.0F;
+    float tempAlpha; //, flapFactor = 0.0F;
     float lift, drag, cdStores;
     float cl1, cl2;
     float cd1, cd2;
@@ -76,7 +76,7 @@ void AirframeClass::Aerodynamics(void)
 
     ShiAssert(aeroData);
 
-    if ( not aeroData)
+    if (not aeroData)
         return;
 
     // make the tef's and lef's useful
@@ -86,16 +86,20 @@ void AirframeClass::Aerodynamics(void)
         if (platform->IsComplex())
         {
             if (auxaeroData->hasFlapperons)
-                tefFactor = platform->GetDOFValue(COMP_LT_FLAP) + platform->GetDOFValue(COMP_RT_FLAP);
+                tefFactor = platform->GetDOFValue(COMP_LT_FLAP) +
+                            platform->GetDOFValue(COMP_RT_FLAP);
             else
-                tefFactor = platform->GetDOFValue(COMP_LT_TEF) + platform->GetDOFValue(COMP_RT_TEF);
+                tefFactor = platform->GetDOFValue(COMP_LT_TEF) +
+                            platform->GetDOFValue(COMP_RT_TEF);
         }
         else
         {
             if (auxaeroData->hasFlapperons)
-                tefFactor = platform->GetDOFValue(SIMP_LT_AILERON) + platform->GetDOFValue(SIMP_RT_AILERON);
+                tefFactor = platform->GetDOFValue(SIMP_LT_AILERON) +
+                            platform->GetDOFValue(SIMP_RT_AILERON);
             else
-                tefFactor = platform->GetDOFValue(SIMP_LT_TEF) + platform->GetDOFValue(SIMP_RT_TEF);
+                tefFactor = platform->GetDOFValue(SIMP_LT_TEF) +
+                            platform->GetDOFValue(SIMP_RT_TEF);
         }
 
         if (auxaeroData->flap2Nozzle)
@@ -122,17 +126,19 @@ void AirframeClass::Aerodynamics(void)
     if (auxaeroData->hasLef)
     {
         if (platform->IsComplex())
-            lefFactor = platform->GetDOFValue(COMP_RT_LEF) + platform->GetDOFValue(COMP_LT_LEF);
+            lefFactor = platform->GetDOFValue(COMP_RT_LEF) +
+                        platform->GetDOFValue(COMP_LT_LEF);
         else
-            lefFactor = platform->GetDOFValue(SIMP_RT_LEF) + platform->GetDOFValue(SIMP_LT_LEF);
+            lefFactor = platform->GetDOFValue(SIMP_RT_LEF) +
+                        platform->GetDOFValue(SIMP_LT_LEF);
 
         lefFactor /= (2 * DTR * auxaeroData->lefMaxAngle);
 #if 0
         lefFactor = ((AircraftClass *)platform)->GetDOFValue(9) * RTD / 10.0f;
 #endif
-
     }
-    else lefFactor = 0;
+    else
+        lefFactor = 0;
 
     // JPO - I think the original is correct... after thinking about it a bit.
 #if 0
@@ -141,7 +147,7 @@ void AirframeClass::Aerodynamics(void)
         tempAlpha = alpha + tefFactor + lefFactor;//me123 changed - lef to + lef
     else
 #endif
-        tempAlpha = alpha + tefFactor - lefFactor;
+    tempAlpha = alpha + tefFactor - lefFactor;
 
     //TJL 03/13/04 Turb ideas 05/30/04 Disable turb with time compression
     float addTurb = 0.0f;
@@ -153,14 +159,12 @@ void AirframeClass::Aerodynamics(void)
     }
 
 
-
-
     /*-----------------------*/
     /* get aero coefficients */
     /*-----------------------*/
     cl = Math.TwodInterp(mach, tempAlpha, aeroData->mach, aeroData->alpha,
-                         aeroData->clift, aeroData->numMach,
-                         aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
+                         aeroData->clift, aeroData->numMach, aeroData->numAlpha,
+                         &curMachBreak, &curAlphaBreak) *
          aeroData->clFactor;
     //TJL 03/13/04 Turb ideas
     cl = cl + addTurb;
@@ -169,8 +173,8 @@ void AirframeClass::Aerodynamics(void)
 
 
     cy = Math.TwodInterp(mach, alpha, aeroData->mach, aeroData->alpha,
-                         aeroData->cy, aeroData->numMach,
-                         aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
+                         aeroData->cy, aeroData->numMach, aeroData->numAlpha,
+                         &curMachBreak, &curAlphaBreak) *
          aeroData->cyFactor;
 
     // If simplified, use a lower alpha to find drag. This results in
@@ -191,14 +195,15 @@ void AirframeClass::Aerodynamics(void)
     }
 
     cd = Math.TwodInterp(mach, dragAlpha, aeroData->mach, aeroData->alpha,
-                         aeroData->cdrag, aeroData->numMach,
-                         aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
+                         aeroData->cdrag, aeroData->numMach, aeroData->numAlpha,
+                         &curMachBreak, &curAlphaBreak) *
          aeroData->cdFactor;
 
     //TJL 03/13/04 Turb ideas
     cd = cd + (addTurb * 0.5f);
 
-    cd *= (1 + tefFactor * auxaeroData->CDtefFactor + lefFactor * auxaeroData->CDlefFactor);
+    cd *= (1 + tefFactor * auxaeroData->CDtefFactor +
+           lefFactor * auxaeroData->CDlefFactor);
 
 
     if (dragChute == DRAGC_DEPLOYED)
@@ -208,30 +213,32 @@ void AirframeClass::Aerodynamics(void)
     /* Local lift curve slope */
     /*------------------------*/
     i = 0;
-    cl1 = Math.TwodInterp(mach, tempAlpha - 2.0F, aeroData->mach, aeroData->alpha,
-                          aeroData->clift, aeroData->numMach,
+    cl1 = Math.TwodInterp(mach, tempAlpha - 2.0F, aeroData->mach,
+                          aeroData->alpha, aeroData->clift, aeroData->numMach,
                           aeroData->numAlpha, &curMachBreak, &i);
 
-    cd1 = Math.TwodInterp(mach, dragAlpha - 2.0F, aeroData->mach, aeroData->alpha,
-                          aeroData->cdrag, aeroData->numMach,
+    cd1 = Math.TwodInterp(mach, dragAlpha - 2.0F, aeroData->mach,
+                          aeroData->alpha, aeroData->cdrag, aeroData->numMach,
                           aeroData->numAlpha, &curMachBreak, &i);
 
-    cl2 = Math.TwodInterp(mach, tempAlpha + 2.0F, aeroData->mach, aeroData->alpha,
-                          aeroData->clift, aeroData->numMach,
+    cl2 = Math.TwodInterp(mach, tempAlpha + 2.0F, aeroData->mach,
+                          aeroData->alpha, aeroData->clift, aeroData->numMach,
                           aeroData->numAlpha, &curMachBreak, &i);
 
-    cd2 = Math.TwodInterp(mach, dragAlpha + 2.0F, aeroData->mach, aeroData->alpha,
-                          aeroData->cdrag, aeroData->numMach,
+    cd2 = Math.TwodInterp(mach, dragAlpha + 2.0F, aeroData->mach,
+                          aeroData->alpha, aeroData->cdrag, aeroData->numMach,
                           aeroData->numAlpha, &curMachBreak, &i);
 
     if (cl2 - cl1 not_eq 0.0F)
     {
-        clalpha = (cl2 - cl1) * 0.25F  * (1 + tefFactor * auxaeroData->CLtefFactor);
+        clalpha =
+            (cl2 - cl1) * 0.25F * (1 + tefFactor * auxaeroData->CLtefFactor);
         cnalpha = ((cl2 - cl1) * platform->platformAngles.cosalp +
-                   (cd2 - cd1) * platform->platformAngles.sinalp) * 0.25F * (1 + tefFactor * auxaeroData->CDtefFactor);
+                   (cd2 - cd1) * platform->platformAngles.sinalp) *
+                  0.25F * (1 + tefFactor * auxaeroData->CDtefFactor);
     }
 
-    F4Assert( not _isnan(cnalpha));
+    F4Assert(not _isnan(cnalpha));
 
     //F4Assert ( not IsSet(Trimming) and cnalpha not_eq 0.0F);
     //F4Assert ( not IsSet(Trimming) and clalpha not_eq 0.0F);
@@ -247,9 +254,9 @@ void AirframeClass::Aerodynamics(void)
                           aeroData->clift, aeroData->numMach,
                           aeroData->numAlpha, &curMachBreak, &i);
 
-    clalph = (cl2 - cl1) * 0.1F  * (1 + tefFactor * auxaeroData->CLtefFactor);
+    clalph = (cl2 - cl1) * 0.1F * (1 + tefFactor * auxaeroData->CLtefFactor);
     clalph0 = clalph;
-    clift0  = cl1  * (1 + tefFactor * auxaeroData->CLtefFactor);
+    clift0 = cl1 * (1 + tefFactor * auxaeroData->CLtefFactor);
 
     /*---------------*/
     /* lift and drag */
@@ -264,11 +271,13 @@ void AirframeClass::Aerodynamics(void)
     //Ground Effect
     BIG_SCALAR pz = platform->ZPos();
 
-    if ( not IsSet(IsDigital) and pz > -groundZ - 200.0F)
+    if (not IsSet(IsDigital) and pz > -groundZ - 200.0F)
     {
         float span, factor;
 
-        span = GetAeroData(AeroDataSet::Span); // 0.1066 correct for F-16, close enough for everyone else
+        span = GetAeroData(
+            AeroDataSet::
+                Span); // 0.1066 correct for F-16, close enough for everyone else
 
         if (fabs(groundZ - pz) < span * 0.2F)
         {
@@ -280,7 +289,9 @@ void AirframeClass::Aerodynamics(void)
         }
         else if (fabs(groundZ - pz) < span)
         {
-            factor = (1.13F - ((float)fabs(groundZ - pz - span * 0.2F) / (span * 0.8F)) * 0.13F);
+            factor = (1.13F - ((float)fabs(groundZ - pz - span * 0.2F) /
+                               (span * 0.8F)) *
+                                  0.13F);
 
             cl *= factor;
             clalph0 = clalph *= factor;
@@ -292,7 +303,8 @@ void AirframeClass::Aerodynamics(void)
 
     //TJL 09/05/04 Stall Model
     //Equation to determine stall: VI = 17.16 * SQRT ((W/S)/CL)
-    if (auxaeroData->criticalAOA > 0.0f and IsSet(InAir) and platform->IsPlayer())
+    if (auxaeroData->criticalAOA > 0.0f and IsSet(InAir) and
+        platform->IsPlayer())
     {
         float stallSpeed = 0.0f;
 
@@ -306,7 +318,8 @@ void AirframeClass::Aerodynamics(void)
         }
 
         //Stall Horn
-        if ((vcas - stallSpeed) < 3.0f or (auxaeroData->criticalAOA - alpha) < 3.0f)
+        if ((vcas - stallSpeed) < 3.0f or
+            (auxaeroData->criticalAOA - alpha) < 3.0f)
         {
             SetFlag(LowSpdHorn);
             platform->SoundPos.Sfx(auxaeroData->sndLowSpeed);
@@ -351,29 +364,28 @@ void AirframeClass::Aerodynamics(void)
         }
         else
         {
-            lift  =  cl * qsom;
+            lift = cl * qsom;
         }
     }
 
 
     cd += auxaeroData->CDSPDBFactor * dbrake +
-          auxaeroData->CDLDGFactor * gearPos +
-          cdStores;
-    drag  = cd * qsom;
+          auxaeroData->CDLDGFactor * gearPos + cdStores;
+    drag = cd * qsom;
 
     /*------------------*/
     /* body axis accels */
     /*------------------*/
     xaero = -drag * platform->platformAngles.cosalp +
             lift * platform->platformAngles.sinalp;
-    yaero =  cy * qsom * (beta - (float)fabs(beta) * yshape * 0.5F);
+    yaero = cy * qsom * (beta - (float)fabs(beta) * yshape * 0.5F);
     zaero = -lift * platform->platformAngles.cosalp -
             drag * platform->platformAngles.sinalp;
 
-    ShiAssert( not _isnan(platform->platformAngles.sinalp));
-    ShiAssert( not _isnan(platform->platformAngles.cosalp));
-    ShiAssert( not _isnan(xaero));
-    ShiAssert( not _isnan(zaero));
+    ShiAssert(not _isnan(platform->platformAngles.sinalp));
+    ShiAssert(not _isnan(platform->platformAngles.cosalp));
+    ShiAssert(not _isnan(xaero));
+    ShiAssert(not _isnan(zaero));
 
     /*-----------------------*/
     /* stability axis accels */
@@ -385,9 +397,9 @@ void AirframeClass::Aerodynamics(void)
     /*------------------*/
     /* wind axis accels */
     /*------------------*/
-    xwaero =  xsaero * platform->platformAngles.cosbet +
-              ysaero * platform->platformAngles.sinbet;
+    xwaero = xsaero * platform->platformAngles.cosbet +
+             ysaero * platform->platformAngles.sinbet;
     ywaero = -xsaero * platform->platformAngles.sinbet +
              ysaero * platform->platformAngles.cosbet;
-    zwaero =  zsaero;
+    zwaero = zsaero;
 }

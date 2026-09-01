@@ -24,7 +24,6 @@ public:
     long ReadLHSPFile(COMPRESSION_DATA *input, unsigned char **buffer);
     void CleanupLHSP(void);
     // void VoiceClose( FILE *falconVoiceFile );
-
 };
 
 #endif  /* _LHSP_H */

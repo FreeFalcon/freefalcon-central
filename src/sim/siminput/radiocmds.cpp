@@ -29,7 +29,9 @@ extern bool g_bRealisticAvionics;
 
 void OTWRadioMenuStep(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->StepNextPage(state);
     }
@@ -37,7 +39,9 @@ void OTWRadioMenuStep(unsigned long, int state, void*)
 
 void OTWRadioMenuStepBack(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->StepPrevPage(state);
     }
@@ -46,7 +50,9 @@ void OTWRadioMenuStepBack(unsigned long, int state, void*)
 
 void RadioMessageSend(unsigned long val, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->ProcessInput(val, state, 0);
     }
@@ -61,11 +67,14 @@ void RadioMessageSend(unsigned long val, int state, void*)
 
 void SimCycleRadioChannel(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
-            if (OTWDriver.pCockpitManager->mpIcp->GetICPTertiaryMode() == COMM1_MODE)
+            if (OTWDriver.pCockpitManager->mpIcp->GetICPTertiaryMode() ==
+                COMM1_MODE)
             {
                 VM->ForwardCycleFreq(0);
             }
@@ -81,8 +90,10 @@ void SimCycleRadioChannel(unsigned long, int state, void*)
         {
             VM->ForwardCycleFreq(0);
 
-            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_CNI) and 
-                OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() == NONE_MODE)
+            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(
+                    ICPClass::MODE_CNI) and
+                OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() ==
+                    NONE_MODE)
             {
                 OTWDriver.pCockpitManager->mpIcp->ClearStrings();
             }
@@ -94,7 +105,8 @@ void SimCycleRadioChannel(unsigned long, int state, void*)
             int val = 1 << OTWDriver.pCockpitManager->mMiscStates.mUHFPosition;
 
             if (OTWDriver.GetVirtualCockpit())
-                OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_UHF_CH, val);
+                OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_UHF_CH,
+                                                             val);
         }
     }
 }
@@ -107,17 +119,21 @@ void SimCycleRadioChannel(unsigned long, int state, void*)
 
 void SimDecRadioChannel(unsigned long, int state, void*)
 {
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         return;
 
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         if (gNavigationSys->GetUHFSrc() == NavigationSystem::UHF_BACKUP)
         {
             VM->BackwardCycleFreq(0);
 
-            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(ICPClass::MODE_CNI) and 
-                OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() == NONE_MODE)
+            if (OTWDriver.pCockpitManager->mpIcp->IsICPSet(
+                    ICPClass::MODE_CNI) and
+                OTWDriver.pCockpitManager->mpIcp->GetICPSecondaryMode() ==
+                    NONE_MODE)
             {
                 OTWDriver.pCockpitManager->mpIcp->ClearStrings();
             }
@@ -129,14 +145,17 @@ void SimDecRadioChannel(unsigned long, int state, void*)
             int val = 1 << OTWDriver.pCockpitManager->mMiscStates.mUHFPosition;
 
             if (OTWDriver.GetVirtualCockpit())
-                OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_UHF_CH, val);
+                OTWDriver.GetVirtualCockpit()->SetSwitchMask(COMP_3DPIT_UHF_CH,
+                                                             val);
         }
     }
 }
 
 void SimToggleRadioVolume(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         // SimDriver.GetPlayerAircraft()->Radio->ToggleVolume();
     }
@@ -144,7 +163,9 @@ void SimToggleRadioVolume(unsigned long, int state, void*)
 
 void RadioTankerCommand(unsigned long val, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->ProcessInput(val, state, TankerMsg);
     }
@@ -152,7 +173,9 @@ void RadioTankerCommand(unsigned long val, int state, void*)
 
 void RadioTowerCommand(unsigned long val, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->ProcessInput(val, state, ATCMsg);
     }
@@ -160,7 +183,9 @@ void RadioTowerCommand(unsigned long val, int state, void*)
 
 void RadioAWACSCommand(unsigned long val, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->ProcessInput(val, state, AWACSMsg);
     }
@@ -169,7 +194,9 @@ void RadioAWACSCommand(unsigned long val, int state, void*)
 
 void RadioWingCommand(unsigned long val, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->ProcessInput(val, state, WingmanMsg, AiWingman);
     }
@@ -178,7 +205,9 @@ void RadioWingCommand(unsigned long val, int state, void*)
 
 void RadioElementCommand(unsigned long val, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->ProcessInput(val, state, WingmanMsg, AiElement);
     }
@@ -187,7 +216,9 @@ void RadioElementCommand(unsigned long val, int state, void*)
 
 void RadioFlightCommand(unsigned long val, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         OTWDriver.pMenuManager->ProcessInput(val, state, WingmanMsg, AiFlight);
     }
@@ -196,7 +227,9 @@ void RadioFlightCommand(unsigned long val, int state, void*)
 // Direct access to ATC commands
 void ATCRequestClearance(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendAtc(FalconATCMessage::RequestClearance);
     }
@@ -204,7 +237,9 @@ void ATCRequestClearance(unsigned long, int state, void*)
 
 void ATCRequestEmergencyClearance(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendAtc(FalconATCMessage::RequestEmerClearance);
     }
@@ -212,7 +247,9 @@ void ATCRequestEmergencyClearance(unsigned long, int state, void*)
 
 void ATCRequestTakeoff(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendAtc(FalconATCMessage::RequestTakeoff);
     }
@@ -220,7 +257,9 @@ void ATCRequestTakeoff(unsigned long, int state, void*)
 
 void ATCRequestTaxi(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendAtc(FalconATCMessage::RequestTaxi);
     }
@@ -228,7 +267,9 @@ void ATCRequestTaxi(unsigned long, int state, void*)
 
 void ATCTaxiing(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //MenuSendAtc (FalconATCMessage::Taxiing + 1);
     }
@@ -236,7 +277,9 @@ void ATCTaxiing(unsigned long, int state, void*)
 
 void ATCReadyToGo(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //MenuSendAtc (FalconATCMessage::ReadyToGo + 1);
     }
@@ -244,7 +287,9 @@ void ATCReadyToGo(unsigned long, int state, void*)
 
 void ATCRotate(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //MenuSendAtc (FalconATCMessage::Rotate + 1);
     }
@@ -252,7 +297,9 @@ void ATCRotate(unsigned long, int state, void*)
 
 void ATCGearUp(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //MenuSendAtc (FalconATCMessage::GearUp + 1);
     }
@@ -260,7 +307,9 @@ void ATCGearUp(unsigned long, int state, void*)
 
 void ATCGearDown(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //MenuSendAtc (FalconATCMessage::GearDown + 1);
     }
@@ -268,7 +317,9 @@ void ATCGearDown(unsigned long, int state, void*)
 
 void ATCBrake(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //MenuSendAtc (FalconATCMessage::Brake + 1);
     }
@@ -277,18 +328,21 @@ void ATCBrake(unsigned long, int state, void*)
 // M.N. 2001-12-20
 void ATCAbortApproach(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendAtc(FalconATCMessage::AbortApproach);
     }
 }
 
 
-
 // Direct access to FAC commands
 void FACCheckIn(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::CheckIn + 1, FACMsg, 0);
     }
@@ -296,7 +350,9 @@ void FACCheckIn(unsigned long, int state, void*)
 
 void FACWilco(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::CheckIn + 1, FACMsg, 0);
     }
@@ -304,7 +360,9 @@ void FACWilco(unsigned long, int state, void*)
 
 void FACUnable(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::CheckIn + 1, FACMsg, 0);
     }
@@ -312,7 +370,9 @@ void FACUnable(unsigned long, int state, void*)
 
 void FACReady(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::CheckIn + 1, FACMsg, 0);
     }
@@ -320,7 +380,9 @@ void FACReady(unsigned long, int state, void*)
 
 void FACIn(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         ///      SendRadioMenuMsg (FalconFACMessage::In + 1, FACMsg, 0);
     }
@@ -328,7 +390,9 @@ void FACIn(unsigned long, int state, void*)
 
 void FACOut(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         ///      SendRadioMenuMsg (FalconFACMessage::Out + 1, FACMsg, 0);
     }
@@ -336,7 +400,9 @@ void FACOut(unsigned long, int state, void*)
 
 void FACRequestMark(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::RequestMark + 1, FACMsg, 0);
     }
@@ -344,7 +410,9 @@ void FACRequestMark(unsigned long, int state, void*)
 
 void FACRequestTarget(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::RequestTarget + 1, FACMsg, 0);
     }
@@ -352,7 +420,9 @@ void FACRequestTarget(unsigned long, int state, void*)
 
 void FACRequestBDA(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::RequestBDA + 1, FACMsg, 0);
     }
@@ -360,7 +430,9 @@ void FACRequestBDA(unsigned long, int state, void*)
 
 void FACRequestLocation(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::RequestLocation + 1, FACMsg, 0);
     }
@@ -368,7 +440,9 @@ void FACRequestLocation(unsigned long, int state, void*)
 
 void FACRequestTACAN(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         //      SendRadioMenuMsg (FalconFACMessage::RequestTACAN + 1, FACMsg, 0);
     }
@@ -378,7 +452,9 @@ void FACRequestTACAN(unsigned long, int state, void*)
 // Direct access to Tanker commands
 void TankerRequestFuel(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendTanker(FalconTankerMessage::RequestFuel);
     }
@@ -386,11 +462,14 @@ void TankerRequestFuel(unsigned long, int state, void*)
 
 void TankerReadyForGas(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         // JPO - requires the door to be opened.
-        if (g_bRealisticAvionics and 
- not SimDriver.GetPlayerAircraft()->af->IsEngineFlag(AirframeClass::FuelDoorOpen))
+        if (g_bRealisticAvionics and
+            not SimDriver.GetPlayerAircraft()->af->IsEngineFlag(
+                AirframeClass::FuelDoorOpen))
             return;
 
         MenuSendTanker(FalconTankerMessage::ReadyForGas);
@@ -399,7 +478,9 @@ void TankerReadyForGas(unsigned long, int state, void*)
 
 void TankerDoneRefueling(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendTanker(FalconTankerMessage::DoneRefueling);
     }
@@ -407,7 +488,9 @@ void TankerDoneRefueling(unsigned long, int state, void*)
 
 void TankerBreakaway(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
         MenuSendTanker(FalconTankerMessage::Breakaway);
     }
@@ -417,59 +500,79 @@ void TankerBreakaway(unsigned long, int state, void*)
 // Direct access to AWACS commands
 void AWACSRequestPicture(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        MenuSendAwacs(FalconAWACSMessage::RequestPicture, SimDriver.GetPlayerAircraft()->Id());
+        MenuSendAwacs(FalconAWACSMessage::RequestPicture,
+                      SimDriver.GetPlayerAircraft()->Id());
     }
 }
 
 void AWACSRequestTanker(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        MenuSendAwacs(FalconAWACSMessage::VectorToTanker, SimDriver.GetPlayerAircraft()->Id());
+        MenuSendAwacs(FalconAWACSMessage::VectorToTanker,
+                      SimDriver.GetPlayerAircraft()->Id());
     }
 }
 
 // MN Carrier
 void AWACSRequestCarrier(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        MenuSendAwacs(FalconAWACSMessage::VectorToCarrier, SimDriver.GetPlayerAircraft()->Id());
+        MenuSendAwacs(FalconAWACSMessage::VectorToCarrier,
+                      SimDriver.GetPlayerAircraft()->Id());
     }
 }
 
 
 void AWACSWilco(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        MenuSendAwacs(FalconAWACSMessage::Wilco, SimDriver.GetPlayerAircraft()->Id());
+        MenuSendAwacs(FalconAWACSMessage::Wilco,
+                      SimDriver.GetPlayerAircraft()->Id());
     }
 }
 
 void AWACSUnable(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        MenuSendAwacs(FalconAWACSMessage::Unable, SimDriver.GetPlayerAircraft()->Id());
+        MenuSendAwacs(FalconAWACSMessage::Unable,
+                      SimDriver.GetPlayerAircraft()->Id());
     }
 }
 
 void AWACSRequestHelp(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        MenuSendAwacs(FalconAWACSMessage::RequestHelp, SimDriver.GetPlayerAircraft()->Id());
+        MenuSendAwacs(FalconAWACSMessage::RequestHelp,
+                      SimDriver.GetPlayerAircraft()->Id());
     }
 }
 
 void AWACSRequestRelief(unsigned long, int state, void*)
 {
-    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+    if (state bitand KEY_DOWN and SimDriver.GetPlayerAircraft() and
+        SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+        not((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
     {
-        MenuSendAwacs(FalconAWACSMessage::RequestRelief, SimDriver.GetPlayerAircraft()->Id());
+        MenuSendAwacs(FalconAWACSMessage::RequestRelief,
+                      SimDriver.GetPlayerAircraft()->Id());
     }
 }
-

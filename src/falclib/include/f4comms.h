@@ -52,19 +52,23 @@ extern int F4CommsMTU;  // More of Unz and Boosters stuff
 // Protocols available to FreeFalcon
 #define FCP_UDP_AVAILABLE 0x01 // We have UDP available
 #define FCP_TCP_AVAILABLE 0x02 // We have TCP available
-#define FCP_SERIAL_AVAILABLE 0x04 // We have a serial (via modem or null modem) connection
+#define FCP_SERIAL_AVAILABLE                                                   \
+    0x04 // We have a serial (via modem or null modem) connection
 #define FCP_MULTICAST_AVAILABLE 0x08 // True multicast is available
 #define FCP_RUDP_AVAILABLE 0x10 // We have RUDP available
 
 // Virtual connection types available to FreeFalcon
-#define FCT_PTOP_AVAILABLE 0x01 // We can send point to point messages to multiple machines
+#define FCT_PTOP_AVAILABLE                                                     \
+    0x01 // We can send point to point messages to multiple machines
 #define FCT_BCAST_AVAILABLE 0x02 // We can send broadcast (to world) messages
 #define FCT_SERVER_AVAILABLE 0x04 // We are connecting to an exploder server
-#define FCT_SERIAL_AVAILABLE 0x08 // We are connected via modem or null modem to one other machine
+#define FCT_SERIAL_AVAILABLE                                                   \
+    0x08 // We are connected via modem or null modem to one other machine
 
 // Error codes returned from InitCommsStuff()
-#define F4COMMS_CONNECTED                        1
-#define F4COMMS_PENDING  2 // Seems successfull, but we're waiting for a connection
+#define F4COMMS_CONNECTED 1
+#define F4COMMS_PENDING                                                        \
+    2 // Seems successfull, but we're waiting for a connection
 #define F4COMMS_ERROR_TCP_NOT_AVAILABLE -1
 #define F4COMMS_ERROR_UDP_NOT_AVAILABLE -2
 #define F4COMMS_ERROR_MULTICAST_NOT_AVAILABLE -3
@@ -91,7 +95,7 @@ extern int FalconConnectionDescription;
 extern int gConnectionStatus;
 extern int gTimeModeServer;
 extern int g_b_forcebandwidth;
-extern char* g_ipadress;
+extern char *g_ipadress;
 
 
 // ========================================================================

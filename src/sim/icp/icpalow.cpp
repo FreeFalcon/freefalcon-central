@@ -38,7 +38,7 @@ void ICPClass::PNUpdateALOWMode(int button, int)
 }
 void ICPClass::ExecALOWMode(void)
 {
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI Original code
         char tmpstr[5] = "";
@@ -53,8 +53,8 @@ void ICPClass::ExecALOWMode(void)
 
         alt = (long)TheHud->lowAltWarning;
 
-        alt1 = (int) alt / 1000;
-        alt2 = (int) alt % 1000;
+        alt1 = (int)alt / 1000;
+        alt2 = (int)alt % 1000;
 
         if (alt1)
         {
@@ -93,7 +93,7 @@ void ICPClass::ExecALOWMode(void)
         //Line2
         FillDEDMatrix(1, 4, "CARA ALOW");
 
-        if ( not EDITMSLFLOOR and not TFADV)
+        if (not EDITMSLFLOOR and not TFADV)
         {
             PossibleInputs = 5;
             ScratchPad(1, 16, 24);
@@ -105,8 +105,8 @@ void ICPClass::ExecALOWMode(void)
             char tmpstr[5] = "";
             alt = (long)TheHud->lowAltWarning;
 
-            alt1 = (int) alt / 1000;
-            alt2 = (int) alt % 1000;
+            alt1 = (int)alt / 1000;
+            alt2 = (int)alt % 1000;
 
             if (alt1)
             {
@@ -158,5 +158,3 @@ void ICPClass::ExecALOWMode(void)
         }
     }
 }
-
-

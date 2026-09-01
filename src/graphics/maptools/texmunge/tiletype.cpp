@@ -3,27 +3,27 @@
 
 
 #define COSTCODE 0
-#define RIVER 15*16+2
-#define ROAD 15*16+3
-#define TOWN 15*16+4
+#define RIVER 15 * 16 + 2
+#define ROAD 15 * 16 + 3
+#define TOWN 15 * 16 + 4
 #define BURBCODE 2
 #define FARMCODE 3
 #define FREECODE 4
-#define BRIDGECODE 4*16+256*8
-#define BRIDGECODE2 4*16+256*9
-#define BRIDGECODE3 4*16+256*10
+#define BRIDGECODE 4 * 16 + 256 * 8
+#define BRIDGECODE2 4 * 16 + 256 * 9
+#define BRIDGECODE3 4 * 16 + 256 * 10
 #define EARTCODE3 5
-#define FORRCODE 2*16
-#define FORROAD (6*16)+1
-#define FORRIVER (7*16)
-#define BHILROAD (6*16)+2
+#define FORRCODE 2 * 16
+#define FORROAD (6 * 16) + 1
+#define FORRIVER (7 * 16)
+#define BHILROAD (6 * 16) + 2
 #define HILLCODE 7
 #define BARREN 8
 #define HILLROAD 9
 #define ORCHID 10
 #define DRYFARM 11
-#define RICEPAD 11+16
-#define RICEPAD2 11+17
+#define RICEPAD 11 + 16
+#define RICEPAD2 11 + 17
 #define RIVERCODE 12
 #define SIDECODE 13
 #define INDUCODE 14
@@ -36,12 +36,12 @@
 #define NONE 999
 #define EARTCODE 22
 #define BARRCITY 30
-#define AIRBASE 4*16
-#define BARROAD 6*16
-#define DRYRIVER 5*16
-#define CANYON 7*16
-#define OCEAN2 8*16
-#define SWAMP 9*16
+#define AIRBASE 4 * 16
+#define BARROAD 6 * 16
+#define DRYRIVER 5 * 16
+#define CANYON 7 * 16
+#define OCEAN2 8 * 16
+#define SWAMP 9 * 16
 
 
 WORD DecodeCluster(PIXELCLUSTER c, int row, int col);
@@ -168,16 +168,18 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
         // Check for bridges
         bridge = 0;
 
-        if ((k == 3  && (c.p1 == FREECODE || c.p2 == FREECODE))
-            || (k == 10 && (c.p2 == FREECODE || c.p4 == FREECODE))
-            || (k == 12 && (c.p3 == FREECODE || c.p4 == FREECODE))
-            || (k == 5  && (c.p1 == FREECODE || c.p3 == FREECODE)))
+        if ((k == 3 && (c.p1 == FREECODE || c.p2 == FREECODE)) ||
+            (k == 10 && (c.p2 == FREECODE || c.p4 == FREECODE)) ||
+            (k == 12 && (c.p3 == FREECODE || c.p4 == FREECODE)) ||
+            (k == 5 && (c.p1 == FREECODE || c.p3 == FREECODE)))
             bridge == 1;
 
-        if (c.p1 == COSTCODE || c.p2 == COSTCODE || c.p3 == COSTCODE || c.p4 == COSTCODE ||
-             c.p1A == COSTCODE || c.p2A == COSTCODE || c.p3A == COSTCODE || c.p4A == COSTCODE ||
-             c.p1B == COSTCODE || c.p2B == COSTCODE || c.p3B == COSTCODE || c.p4B == COSTCODE ||
-             c.p1C == COSTCODE || c.p2C == COSTCODE || c.p3C == COSTCODE || c.p4C == COSTCODE)
+        if (c.p1 == COSTCODE || c.p2 == COSTCODE || c.p3 == COSTCODE ||
+            c.p4 == COSTCODE || c.p1A == COSTCODE || c.p2A == COSTCODE ||
+            c.p3A == COSTCODE || c.p4A == COSTCODE || c.p1B == COSTCODE ||
+            c.p2B == COSTCODE || c.p3B == COSTCODE || c.p4B == COSTCODE ||
+            c.p1C == COSTCODE || c.p2C == COSTCODE || c.p3C == COSTCODE ||
+            c.p4C == COSTCODE)
         {
             if (bridge == 1)
                 return k += BRIDGECODE;
@@ -209,7 +211,6 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
     // return k;
 
 
-
     if (c.p1 == 0 && c.p2 == 0 && c.p3 == 0 && c.p4 == 0)
     {
         c.p1 = DRYFARM;
@@ -223,18 +224,19 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
 
     k = RoadSet(ROAD, c, 0);
 
-    if (k > 0 && (c.p1 == BARREN || c.p2 == BARREN ||
-                  c.p3 == BARREN || c.p4 == BARREN)) //Got Road
+    if (k > 0 && (c.p1 == BARREN || c.p2 == BARREN || c.p3 == BARREN ||
+                  c.p4 == BARREN)) //Got Road
         return k += BARROAD * 16;
 
     //Dry rivers
     k = RoadSet(RIVER, c, 0);
 
-    if (k > 0 && (c.p1 == BARREN || c.p2 == BARREN ||
-                  c.p3 == BARREN || c.p4 == BARREN)) //Got Dry River
+    if (k > 0 && (c.p1 == BARREN || c.p2 == BARREN || c.p3 == BARREN ||
+                  c.p4 == BARREN)) //Got Dry River
         return k += (5 * 16) * 16;
 
-    if (c.p1 == BARRHILL + 128 || c.p2 == BARRHILL + 128 || c.p3 == BARRHILL + 128 || c.p4 == BARRHILL + 128)
+    if (c.p1 == BARRHILL + 128 || c.p2 == BARRHILL + 128 ||
+        c.p3 == BARRHILL + 128 || c.p4 == BARRHILL + 128)
     {
         k = BlockSet(row, col, 3);
         return k += BARRHILL * 16 + 256 * 8;
@@ -242,7 +244,8 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
 
 
     // 2X2 blocks
-    if (c.p1 == BARRHILL + 192 || c.p2 == BARRHILL + 192 || c.p3 == BARRHILL + 192 || c.p4 == BARRHILL + 192)
+    if (c.p1 == BARRHILL + 192 || c.p2 == BARRHILL + 192 ||
+        c.p3 == BARRHILL + 192 || c.p4 == BARRHILL + 192)
     {
         k = BlockSet(row, col, 2);
         return k += BARRHILL * 16 + 256 * 8 + 9;
@@ -263,9 +266,6 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
      } */
 
 
-
-
-
     /* Forrest/Hill section */
     k = BasicSet(FORRCODE, c);
 
@@ -276,12 +276,10 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
 
 
         if ((k == 3 || k == 12 || k == 10 || k == 5) &&
-            (c.p1 == RIVER || c.p2 == RIVER ||
-             c.p3 == RIVER || c.p4 == RIVER))
+            (c.p1 == RIVER || c.p2 == RIVER || c.p3 == RIVER || c.p4 == RIVER))
             return k += 4 * 16 + FORRCODE * 16;
         else if ((k == 3 || k == 12 || k == 10 || k == 5) &&
-                 (c.p1 == ROAD || c.p2 == ROAD ||
-                  c.p3 == ROAD || c.p4 == ROAD))
+                 (c.p1 == ROAD || c.p2 == ROAD || c.p3 == ROAD || c.p4 == ROAD))
             return k += 4 * 16 + 1 + FORRCODE * 16;
         else if (k < 15) // Edge piece
             return k += FORRCODE * 16;
@@ -291,13 +289,11 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
 
         if (k > 0 && (c.p1 == FORRCODE || c.p2 == FORRCODE ||
                       c.p3 == FORRCODE || c.p4 == FORRCODE)) //Got Forrest Road
-            if ((k == 5 || k == 10) &&
-                (c.p1 == RIVER || c.p2 == RIVER ||
-                 c.p3 == RIVER || c.p4 == RIVER))
+            if ((k == 5 || k == 10) && (c.p1 == RIVER || c.p2 == RIVER ||
+                                        c.p3 == RIVER || c.p4 == RIVER))
                 return FORRCODE * 16 + 4 * 16 + k / 5;
-            else if ((k == 5 || k == 10) &&
-                     (c.p1 == TOWN || c.p2 == TOWN ||
-                      c.p3 == TOWN || c.p4 == TOWN))
+            else if ((k == 5 || k == 10) && (c.p1 == TOWN || c.p2 == TOWN ||
+                                             c.p3 == TOWN || c.p4 == TOWN))
                 return FORRCODE * 16 + 4 * 16 + 6 + k / 5;
             else
                 return k += roads * 16;
@@ -309,12 +305,11 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
                       c.p3 == FORRCODE || c.p4 == FORRCODE)) //Got Forrest River
             return k += rivers * 16;
 
-        k = BlockSet(row, col, 2); // We already know its a forrest block here...
+        k = BlockSet(row, col,
+                     2); // We already know its a forrest block here...
         return k += FORRCODE * 16 + 16 + 9;
 
     } /* end Forrest Section */
-
-
 
 
     k = BasicSet(INDUCODE, c);
@@ -346,12 +341,9 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
     //Barren hill Roads
     k = RoadSet(ROAD, c, 0);
 
-    if (k > 0 && (c.p1 == BARRHILL || c.p2 == BARRHILL ||
-                  c.p3 == BARRHILL || c.p4 == BARRHILL)) //Got Road
+    if (k > 0 && (c.p1 == BARRHILL || c.p2 == BARRHILL || c.p3 == BARRHILL ||
+                  c.p4 == BARRHILL)) //Got Road
         return k += (ROAD * 16);
-
-
-
 
 
 #if 0
@@ -367,7 +359,6 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
     }
 
 
-
 #endif
     k = BasicSet(SIDECODE, c);
 
@@ -381,8 +372,6 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
         else
             return k += SIDECODE * 16;
     }
-
-
 
 
     //Base
@@ -402,8 +391,6 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
     }
 
 
-
-
     k = BasicSet(BURBCODE, c);
 
     if (k == 15)
@@ -419,30 +406,29 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
         return k += FARMCODE * 16;
 
 
-
     // Rice Paddies
     k = BasicSet((11 + 16), c);
 
     if (k > 0)
     {
-        if ((k == 15) && ((c.p1 == ((11 + 16) + 128) || c.p2 == ((11 + 16) + 128) || c.p3 == ((11 + 16) + 128) || c.p4 == ((11 + 16) + 128))))
+        if ((k == 15) &&
+            ((c.p1 == ((11 + 16) + 128) || c.p2 == ((11 + 16) + 128) ||
+              c.p3 == ((11 + 16) + 128) || c.p4 == ((11 + 16) + 128))))
             k = BlockSet(row, col, 3) + 256 * 8;
 
         return k += (11 + 16) * 16;
     }
 
 
-
     /*MAIN FARMLANDS */
     k = RoadSet(ROAD, c, 0);
 
-    if (k > 0 && (c.p1 == DRYFARM || c.p2 == DRYFARM ||
-                  c.p3 == DRYFARM || c.p4 == DRYFARM)) //Got Road
+    if (k > 0 && (c.p1 == DRYFARM || c.p2 == DRYFARM || c.p3 == DRYFARM ||
+                  c.p4 == DRYFARM)) //Got Road
 
         // Check for bridges
         if ((k == 5 || k == 10) &&
-            (c.p1 == RIVER || c.p2 == RIVER ||
-             c.p3 == RIVER || c.p4 == RIVER))
+            (c.p1 == RIVER || c.p2 == RIVER || c.p3 == RIVER || c.p4 == RIVER))
             return k += BRIDGECODE2;
         else
             return k += FREECODE * 16;
@@ -450,12 +436,13 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
 
     k = RoadSet(RIVER, c, 0);
 
-    if (k > 0 && (c.p1 == DRYFARM || c.p2 == DRYFARM ||
-                  c.p3 == DRYFARM || c.p4 == DRYFARM)) //Got River
+    if (k > 0 && (c.p1 == DRYFARM || c.p2 == DRYFARM || c.p3 == DRYFARM ||
+                  c.p4 == DRYFARM)) //Got River
         return k += RIVERCODE * 16;
 
 
-    if (c.p1 == DRYFARM || c.p2 == DRYFARM || c.p3 == DRYFARM || c.p4 == DRYFARM)
+    if (c.p1 == DRYFARM || c.p2 == DRYFARM || c.p3 == DRYFARM ||
+        c.p4 == DRYFARM)
     {
         k = BlockSet(row, col, 2);
         return k += DRYFARM * 16 + 9;
@@ -484,7 +471,8 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
         return k += ORCHID * 16;
     }
 
-    if (c.p1 == EARTCODE3 || c.p2 == EARTCODE3 || c.p3 == EARTCODE3 || c.p4 == EARTCODE3)
+    if (c.p1 == EARTCODE3 || c.p2 == EARTCODE3 || c.p3 == EARTCODE3 ||
+        c.p4 == EARTCODE3)
     {
         k = BlockSet(row, col, 3);
         return k += EARTCODE3 * 16;
@@ -492,56 +480,70 @@ WORD DecodeCluster(PIXELCLUSTER c, int row, int col)
 
 
     // No Road Rice Paddies
-    if (c.p1 == ((11 + 17) + 128) || c.p2 == ((11 + 17) + 128) || c.p3 == ((11 + 17) + 128) || c.p4 == ((11 + 17) + 128))
+    if (c.p1 == ((11 + 17) + 128) || c.p2 == ((11 + 17) + 128) ||
+        c.p3 == ((11 + 17) + 128) || c.p4 == ((11 + 17) + 128))
     {
         k = BlockSet(row, col, 3) + 256 * 8;
         return k += (11 + 17) * 16;
     }
 
 
-    if ((c.p1 == CITYCODE || c.p2 == CITYCODE || c.p3 == CITYCODE || c.p4 == CITYCODE))   //cities
+    if ((c.p1 == CITYCODE || c.p2 == CITYCODE || c.p3 == CITYCODE ||
+         c.p4 == CITYCODE)) //cities
         k = CITYCODE * 16 + rand() % 2;
     // else if ((c.p1 == INDUCODE || c.p2 == INDUCODE || c.p3 == INDUCODE || c.p4 == INDUCODE))   //industrial
     // k = INDUCODE+rand()%3;
     // else if ((c.p1 == FARMCODE || c.p2 == FARMCODE || c.p3 == FARMCODE || c.p4 == FARMCODE))   //farms
     // k = FARMCODE;
-    else if ((c.p1 == FIELCODE || c.p2 == FIELCODE || c.p3 == FIELCODE || c.p4 == FIELCODE))   //Fields
+    else if ((c.p1 == FIELCODE || c.p2 == FIELCODE || c.p3 == FIELCODE ||
+              c.p4 == FIELCODE)) //Fields
         k = FIELCODE * 16 + rand() % 1;
-    else if ((c.p1 == EARTCODE || c.p2 == EARTCODE || c.p3 == EARTCODE || c.p4 == EARTCODE))   //Earthcode
+    else if ((c.p1 == EARTCODE || c.p2 == EARTCODE || c.p3 == EARTCODE ||
+              c.p4 == EARTCODE)) //Earthcode
         k = EARTCODE * 16;
 
     if (k == 0)
         k = c.p1;
 
 
-
     return k;
 }
-
 
 
 WORD BasicSet(WORD tileCode, PIXELCLUSTER c)
 {
     WORD k = 0;
 
-    if (c.p1 == tileCode || c.p1A == tileCode || c.p1B == tileCode || c.p1C == tileCode ||
-        c.p1 == (tileCode + 128) || c.p1A == (tileCode + 128) || c.p1B == (tileCode + 128) || c.p1C == (tileCode + 128) ||
-        c.p1 == (tileCode + 192) || c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) || c.p1C == (tileCode + 192))
+    if (c.p1 == tileCode || c.p1A == tileCode || c.p1B == tileCode ||
+        c.p1C == tileCode || c.p1 == (tileCode + 128) ||
+        c.p1A == (tileCode + 128) || c.p1B == (tileCode + 128) ||
+        c.p1C == (tileCode + 128) || c.p1 == (tileCode + 192) ||
+        c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) ||
+        c.p1C == (tileCode + 192))
         k |= 1;
 
-    if (c.p2 == tileCode || c.p2A == tileCode || c.p2B == tileCode || c.p2C == tileCode ||
-        c.p2 == (tileCode + 128) || c.p2A == (tileCode + 128) || c.p2B == (tileCode + 128) || c.p2C == (tileCode + 128) ||
-        c.p1 == (tileCode + 192) || c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) || c.p1C == (tileCode + 192))
+    if (c.p2 == tileCode || c.p2A == tileCode || c.p2B == tileCode ||
+        c.p2C == tileCode || c.p2 == (tileCode + 128) ||
+        c.p2A == (tileCode + 128) || c.p2B == (tileCode + 128) ||
+        c.p2C == (tileCode + 128) || c.p1 == (tileCode + 192) ||
+        c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) ||
+        c.p1C == (tileCode + 192))
         k |= 2;
 
-    if (c.p3 == tileCode || c.p3A == tileCode || c.p3B == tileCode || c.p3C == tileCode ||
-        c.p3 == (tileCode + 128) || c.p3A == (tileCode + 128) || c.p3B == (tileCode + 128) || c.p3C == (tileCode + 128) ||
-        c.p1 == (tileCode + 192) || c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) || c.p1C == (tileCode + 192))
+    if (c.p3 == tileCode || c.p3A == tileCode || c.p3B == tileCode ||
+        c.p3C == tileCode || c.p3 == (tileCode + 128) ||
+        c.p3A == (tileCode + 128) || c.p3B == (tileCode + 128) ||
+        c.p3C == (tileCode + 128) || c.p1 == (tileCode + 192) ||
+        c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) ||
+        c.p1C == (tileCode + 192))
         k |= 4;
 
-    if (c.p4 == tileCode || c.p4A == tileCode || c.p4B == tileCode || c.p4C == tileCode  ||
-        c.p4 == (tileCode + 128) || c.p4A == (tileCode + 128) || c.p4B == (tileCode + 128) || c.p4C == (tileCode + 128) ||
-        c.p1 == (tileCode + 192) || c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) || c.p1C == (tileCode + 192))
+    if (c.p4 == tileCode || c.p4A == tileCode || c.p4B == tileCode ||
+        c.p4C == tileCode || c.p4 == (tileCode + 128) ||
+        c.p4A == (tileCode + 128) || c.p4B == (tileCode + 128) ||
+        c.p4C == (tileCode + 128) || c.p1 == (tileCode + 192) ||
+        c.p1A == (tileCode + 192) || c.p1B == (tileCode + 192) ||
+        c.p1C == (tileCode + 192))
         k |= 8;
 
     return k;
@@ -555,30 +557,29 @@ WORD BlockSet(int row, int col, int blockSize)
     row = row % blockSize;
     col = col % blockSize;
 
-    index = (row) * blockSize + (col);
+    index = (row)*blockSize + (col);
 
     return index + 1;
-
 }
 
 WORD RoadSet(WORD code, PIXELCLUSTER c, unsigned ends)
 {
     WORD k = 0;
 
-    if (((c.p1 == code || c.p2 == code) && (c.p1C == code || c.p2A == code))
-        || (c.p1A == code && c.p1C == code) || (c.p1 == code && c.p1B == code))
+    if (((c.p1 == code || c.p2 == code) && (c.p1C == code || c.p2A == code)) ||
+        (c.p1A == code && c.p1C == code) || (c.p1 == code && c.p1B == code))
         k |= 1;
 
-    if (((c.p2 == code || c.p4 == code) && (c.p2C == code || c.p4C == code))
-        || (c.p2B == code && c.p2 == code) || (c.p4 == code && c.p4B == code))
+    if (((c.p2 == code || c.p4 == code) && (c.p2C == code || c.p4C == code)) ||
+        (c.p2B == code && c.p2 == code) || (c.p4 == code && c.p4B == code))
         k |= 2;
 
-    if (((c.p3 == code || c.p4 == code) && (c.p3C == code || c.p4A == code))
-        || (c.p3 == code && c.p3B == code) || (c.p3A == code && c.p3C == code))
+    if (((c.p3 == code || c.p4 == code) && (c.p3C == code || c.p4A == code)) ||
+        (c.p3 == code && c.p3B == code) || (c.p3A == code && c.p3C == code))
         k |= 4;
 
-    if (((c.p1 == code || c.p3 == code) && (c.p1A == code || c.p3A == code))
-        || (c.p1A == code && c.p1C == code) || (c.p3A == code && c.p3C == code))
+    if (((c.p1 == code || c.p3 == code) && (c.p1A == code || c.p3A == code)) ||
+        (c.p1A == code && c.p1C == code) || (c.p3A == code && c.p3C == code))
         k |= 8;
 
     if (k > 0 && ends == 0)

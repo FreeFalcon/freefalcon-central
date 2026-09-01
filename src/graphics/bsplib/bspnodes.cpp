@@ -5,27 +5,28 @@
 
     This provides the structure for the runtime BSP trees.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
-#include "StateStack.h"
-#include "ClipFlags.h"
-#include "TexBank.h"
-#include "ObjectInstance.h"
-#include "Scripts.h"
-#include "BSPnodes.h"
+#include "statestack.h"
+#include "clipflags.h"
+#include "texbank.h"
+#include "objectinstance.h"
+#include "scripts.h"
+#include "bspnodes.h"
 #include "falclib/include/mltrig.h"
-#include "falclib/include/IsBad.h"
+#include "falclib/include/isbad.h"
 
 #pragma warning(disable : 4291)
 
-#define XDOF_NEGATE (1<<0)
-#define XDOF_MINMAX (1<<1)
-#define XDOF_SUBRANGE (1<<2)
+#define XDOF_NEGATE (1 << 0)
+#define XDOF_MINMAX (1 << 1)
+#define XDOF_SUBRANGE (1 << 2)
 // compute the angle give sides of a triangle
 
-#define XDOF_ISDOF   (1<<31)
+#define XDOF_ISDOF (1 << 31)
 
-bool ShadowBSPRendering; // COBRA - RED - this is to inform we r rendering a shadow,
+bool
+    ShadowBSPRendering; // COBRA - RED - this is to inform we r rendering a shadow,
 float ShadowAlphaLevel; // that may be affected by TOD Light level
 
 /***************************************************************\
@@ -38,7 +39,8 @@ float ShadowAlphaLevel; // that may be affected by TOD Light level
 
 // Determine the type of an encoded node and initialize and contruct
 // it appropriatly.
-BNode* BNode::RestorePointers(BYTE *baseAddress, int offset, BNodeType **tagListPtr)
+BNode *BNode::RestorePointers(BYTE *baseAddress, int offset,
+                              BNodeType **tagListPtr)
 {
     BNode *node;
     BNodeType tag;
@@ -51,72 +53,79 @@ BNode* BNode::RestorePointers(BYTE *baseAddress, int offset, BNodeType **tagList
     // Apply the proper virtual table setup and constructor
     switch (tag)
     {
-        case tagBSubTree:
-            node = new(baseAddress + offset) BSubTree(baseAddress, tagListPtr);
-            break;
+    case tagBSubTree:
+        node = new (baseAddress + offset) BSubTree(baseAddress, tagListPtr);
+        break;
 
-        case tagBRoot:
-            node = new(baseAddress + offset) BRoot(baseAddress, tagListPtr);
-            break;
+    case tagBRoot:
+        node = new (baseAddress + offset) BRoot(baseAddress, tagListPtr);
+        break;
 
-        case tagBSpecialXform:
-            node = new(baseAddress + offset) BSpecialXform(baseAddress, tagListPtr);
-            break;
+    case tagBSpecialXform:
+        node =
+            new (baseAddress + offset) BSpecialXform(baseAddress, tagListPtr);
+        break;
 
-        case tagBSlotNode:
-            node = new(baseAddress + offset) BSlotNode(baseAddress, tagListPtr);
-            break;
+    case tagBSlotNode:
+        node = new (baseAddress + offset) BSlotNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBDofNode:
-            node = new(baseAddress + offset) BDofNode(baseAddress, tagListPtr);
-            break;
+    case tagBDofNode:
+        node = new (baseAddress + offset) BDofNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBSwitchNode:
-            node = new(baseAddress + offset) BSwitchNode(baseAddress, tagListPtr);
-            break;
+    case tagBSwitchNode:
+        node = new (baseAddress + offset) BSwitchNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBSplitterNode:
-            node = new(baseAddress + offset) BSplitterNode(baseAddress, tagListPtr);
-            break;
+    case tagBSplitterNode:
+        node =
+            new (baseAddress + offset) BSplitterNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBPrimitiveNode:
-            node = new(baseAddress + offset) BPrimitiveNode(baseAddress, tagListPtr);
-            break;
+    case tagBPrimitiveNode:
+        node =
+            new (baseAddress + offset) BPrimitiveNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBLitPrimitiveNode:
-            node = new(baseAddress + offset) BLitPrimitiveNode(baseAddress, tagListPtr);
-            break;
+    case tagBLitPrimitiveNode:
+        node = new (baseAddress + offset)
+            BLitPrimitiveNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBCulledPrimitiveNode:
-            node = new(baseAddress + offset) BCulledPrimitiveNode(baseAddress, tagListPtr);
-            break;
+    case tagBCulledPrimitiveNode:
+        node = new (baseAddress + offset)
+            BCulledPrimitiveNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBLightStringNode:
-            node = new(baseAddress + offset) BLightStringNode(baseAddress, tagListPtr);
-            break;
+    case tagBLightStringNode:
+        node = new (baseAddress + offset)
+            BLightStringNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBTransNode:
-            node = new(baseAddress + offset) BTransNode(baseAddress, tagListPtr);
-            break;
+    case tagBTransNode:
+        node = new (baseAddress + offset) BTransNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBScaleNode:
-            node = new(baseAddress + offset) BScaleNode(baseAddress, tagListPtr);
-            break;
+    case tagBScaleNode:
+        node = new (baseAddress + offset) BScaleNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBXDofNode:
-            node = new(baseAddress + offset) BXDofNode(baseAddress, tagListPtr);
-            break;
+    case tagBXDofNode:
+        node = new (baseAddress + offset) BXDofNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBXSwitchNode:
-            node = new(baseAddress + offset) BXSwitchNode(baseAddress, tagListPtr);
-            break;
+    case tagBXSwitchNode:
+        node = new (baseAddress + offset) BXSwitchNode(baseAddress, tagListPtr);
+        break;
 
-        case tagBRenderControlNode:
-            node = new(baseAddress + offset) BRenderControlNode(baseAddress, tagListPtr);
-            break;
+    case tagBRenderControlNode:
+        node = new (baseAddress + offset)
+            BRenderControlNode(baseAddress, tagListPtr);
+        break;
 
-        default:
-            ShiError("Decoding unrecognized BSP node type.");
+    default:
+        ShiError("Decoding unrecognized BSP node type.");
     }
 
     return node;
@@ -156,7 +165,7 @@ BRoot::BRoot(BYTE *baseAddress, BNodeType **tagListPtr)
     : BSubTree(baseAddress, tagListPtr)
 {
     // Fixup our extra data pointers
-    pTexIDs = (int*)(baseAddress + (int)pTexIDs);
+    pTexIDs = (int *)(baseAddress + (int)pTexIDs);
 }
 
 
@@ -211,12 +220,13 @@ BSwitchNode::BSwitchNode(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Fixup our table of children
-    subTrees = (BSubTree**)(baseAddress + (int)subTrees);
+    subTrees = (BSubTree **)(baseAddress + (int)subTrees);
 
     // Now fixup each child tree
     for (int i = 0; i < numChildren; i++)
     {
-        subTrees[i] = (BSubTree*)RestorePointers(baseAddress, (int)subTrees[i], tagListPtr);
+        subTrees[i] = (BSubTree *)RestorePointers(baseAddress, (int)subTrees[i],
+                                                  tagListPtr);
     }
 }
 
@@ -225,12 +235,13 @@ BXSwitchNode::BXSwitchNode(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Fixup our table of children
-    subTrees = (BSubTree**)(baseAddress + (int)subTrees);
+    subTrees = (BSubTree **)(baseAddress + (int)subTrees);
 
     // Now fixup each child tree
     for (int i = 0; i < numChildren; i++)
     {
-        subTrees[i] = (BSubTree*)RestorePointers(baseAddress, (int)subTrees[i], tagListPtr);
+        subTrees[i] = (BSubTree *)RestorePointers(baseAddress, (int)subTrees[i],
+                                                  tagListPtr);
     }
 }
 
@@ -241,7 +252,7 @@ BSplitterNode::BSplitterNode(BYTE *baseAddress, BNodeType **tagListPtr)
 {
     // Fixup our dependents
     front = RestorePointers(baseAddress, (int)front, tagListPtr);
-    back = RestorePointers(baseAddress, (int)back,  tagListPtr);
+    back = RestorePointers(baseAddress, (int)back, tagListPtr);
 }
 
 
@@ -259,17 +270,18 @@ BLitPrimitiveNode::BLitPrimitiveNode(BYTE *baseAddress, BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Now fixup our polygons
-    poly = (Poly*)RestorePrimPointers(baseAddress, (int)poly);
-    backpoly = (Poly*)RestorePrimPointers(baseAddress, (int)backpoly);
+    poly = (Poly *)RestorePrimPointers(baseAddress, (int)poly);
+    backpoly = (Poly *)RestorePrimPointers(baseAddress, (int)backpoly);
 }
 
 
 // Convert from file offsets back to pointers
-BCulledPrimitiveNode::BCulledPrimitiveNode(BYTE *baseAddress, BNodeType **tagListPtr)
+BCulledPrimitiveNode::BCulledPrimitiveNode(BYTE *baseAddress,
+                                           BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
     // Now fixup our polygon
-    poly = (Poly*)RestorePrimPointers(baseAddress, (int)poly);
+    poly = (Poly *)RestorePrimPointers(baseAddress, (int)poly);
 }
 
 
@@ -280,7 +292,8 @@ BLightStringNode::BLightStringNode(BYTE *baseAddress, BNodeType **tagListPtr)
 }
 
 
-BRenderControlNode::BRenderControlNode(BYTE *baseAddress, BNodeType **tagListPtr)
+BRenderControlNode::BRenderControlNode(BYTE *baseAddress,
+                                       BNodeType **tagListPtr)
     : BNode(baseAddress, tagListPtr)
 {
 }
@@ -290,33 +303,39 @@ void BSubTree::Draw(void)
 {
     BNode *child;
 
-    if (nNormals) TheStateStack.Light(pNormals, nNormals, pCoords); //- COBRA - RED - Call only if Normals available
+    if (nNormals)
+        TheStateStack.Light(
+            pNormals, nNormals,
+            pCoords); //- COBRA - RED - Call only if Normals available
 
     if (nDynamicCoords == 0)
         TheStateStack.Transform(pCoords, nCoords);
     else
     {
         TheStateStack.Transform(pCoords, nCoords - nDynamicCoords);
-        TheStateStack.Transform(TheStateStack.CurrentInstance->DynamicCoords + DynamicCoordOffset, nDynamicCoords);
+        TheStateStack.Transform(TheStateStack.CurrentInstance->DynamicCoords +
+                                    DynamicCoordOffset,
+                                nDynamicCoords);
     }
 
     child = subTree;
-    ShiAssert(FALSE == F4IsBadReadPtr(child, sizeof * child));
+    ShiAssert(FALSE == F4IsBadReadPtr(child, sizeof *child));
 
     do
     {
         child->Draw();
         child = child->sibling;
-    }
-    while (child); // JB 010306 CTD
+    } while (child); // JB 010306 CTD
 }
 //JAM
 
 void BRoot::Draw(void)
 {
     // Compute the offset to the first texture in the texture set
-    int texOffset = TheStateStack.CurrentInstance->TextureSet *
-                    (nTexIDs / max(1, TheStateStack.CurrentInstance->ParentObject->nTextureSets)); // Cobra - TexSets = 0 CTD
+    int texOffset =
+        TheStateStack.CurrentInstance->TextureSet *
+        (nTexIDs / max(1, TheStateStack.CurrentInstance->ParentObject
+                              ->nTextureSets)); // Cobra - TexSets = 0 CTD
     TheStateStack.SetTextureTable(pTexIDs + texOffset);
 
     if (ScriptNumber > 0)
@@ -332,7 +351,6 @@ void BRoot::Draw(void)
     BSubTree::Draw();
     // LOOK HERE JAM
     //TheStateStack.context.setGlobalZBias(0);
-
 }
 
 void BSpecialXform::Draw(void)
@@ -352,7 +370,8 @@ void BSlotNode::Draw(void)
     if (slotNumber >= TheStateStack.CurrentInstance->ParentObject->nSlots)
         return; // JPO fix
 
-    ObjectInstance *subObject = TheStateStack.CurrentInstance->SlotChildren[slotNumber];
+    ObjectInstance *subObject =
+        TheStateStack.CurrentInstance->SlotChildren[slotNumber];
 
     if (subObject)
     {
@@ -373,7 +392,8 @@ void BDofNode::Draw(void)
         return;
 
     // Set up our free rotation
-    mlSinCos(&trig, TheStateStack.CurrentInstance->DOFValues[dofNumber].rotation);
+    mlSinCos(&trig,
+             TheStateStack.CurrentInstance->DOFValues[dofNumber].rotation);
     dofRot.M11 = 1.0f;
     dofRot.M12 = 0.0f;
     dofRot.M13 = 0.0f;
@@ -395,7 +415,8 @@ void BDofNode::Draw(void)
     // only happens once in FreeFalcon, I'll leave it broken and put a workaround into
     // the KC10 object so that the parent's and child's x axis are forced into alignment
     // by inserting an extra dummy DOF bead.
-    T.x = translation.x + TheStateStack.CurrentInstance->DOFValues[dofNumber].translation;
+    T.x = translation.x +
+          TheStateStack.CurrentInstance->DOFValues[dofNumber].translation;
     T.y = translation.y;
     T.z = translation.z;
 
@@ -407,11 +428,11 @@ void BDofNode::Draw(void)
 }
 
 
+float Process_DOFRot(int dofNumber, int flags, float min, float max,
+                     float multiplier, float unused);
 
-
-float Process_DOFRot(int dofNumber, int flags, float min, float max, float multiplier, float unused);
-
-float Process_DOFRot(int dofNumber, int flags, float min, float max, float multiplier, float unused)
+float Process_DOFRot(int dofNumber, int flags, float min, float max,
+                     float multiplier, float unused)
 {
     float dofrot = TheStateStack.CurrentInstance->DOFValues[dofNumber].rotation;
 
@@ -443,7 +464,7 @@ float Process_DOFRot(int dofNumber, int flags, float min, float max, float multi
         // then it get's rescaled below.
     }
 
-    return(dofrot *= multiplier);
+    return (dofrot *= multiplier);
 }
 
 
@@ -461,7 +482,8 @@ void BXDofNode::Draw(void)
 
     // Set up our free rotation
 
-    float dofrot = Process_DOFRot(dofNumber, flags, min, max, multiplier, future);
+    float dofrot =
+        Process_DOFRot(dofNumber, flags, min, max, multiplier, future);
 
     /*
     float dofrot=TheStateStack.CurrentInstance->DOFValues[dofNumber].rotation;
@@ -514,7 +536,8 @@ void BXDofNode::Draw(void)
     // only happens once in FreeFalcon, I'll leave it broken and put a workaround into
     // the KC10 object so that the parent's and child's x axis are forced into alignment
     // by inserting an extra dummy DOF bead.
-    T.x = translation.x + TheStateStack.CurrentInstance->DOFValues[dofNumber].translation;
+    T.x = translation.x +
+          TheStateStack.CurrentInstance->DOFValues[dofNumber].translation;
     T.y = translation.y;
     T.z = translation.z;
 
@@ -585,7 +608,6 @@ void BTransNode::Draw(void)
     dofRot.M33 = 1.0;
 
 
-
     float a = 0;
 
     //ShiAssert( dofNumber < TheStateStack.CurrentInstance->ParentObject->nDOFs );
@@ -606,7 +628,6 @@ void BTransNode::Draw(void)
     BSubTree::Draw();
     TheStateStack.PopAll();
 }
-
 
 
 // MLR 2003-10-10
@@ -651,13 +672,13 @@ void BScaleNode::Draw(void)
 }
 
 
-
 void BSwitchNode::Draw(void)
 {
     UInt32 mask;
     int i = 0;
 
-    ShiAssert(switchNumber < TheStateStack.CurrentInstance->ParentObject->nSwitches);
+    ShiAssert(switchNumber <
+              TheStateStack.CurrentInstance->ParentObject->nSwitches);
 
     if (switchNumber >= TheStateStack.CurrentInstance->ParentObject->nSwitches)
         return;
@@ -676,7 +697,7 @@ void BSwitchNode::Draw(void)
     {
 #endif
 
-        if (subTrees[i])  // MLR 2003-10-12 changed from ShiAssert.
+        if (subTrees[i]) // MLR 2003-10-12 changed from ShiAssert.
         {
 
             // Only draw this subtree if the corresponding switch bit is set
@@ -694,7 +715,7 @@ void BSwitchNode::Draw(void)
 }
 
 
-#define XSWT_REVERSED_EFFECT (1<<0)
+#define XSWT_REVERSED_EFFECT (1 << 0)
 
 // MLR 2003-10-12 New Node, this switch is on opposite of the normal switch.
 void BXSwitchNode::Draw(void)
@@ -702,7 +723,8 @@ void BXSwitchNode::Draw(void)
     UInt32 mask;
     int i = 0;
 
-    ShiAssert(switchNumber < TheStateStack.CurrentInstance->ParentObject->nSwitches);
+    ShiAssert(switchNumber <
+              TheStateStack.CurrentInstance->ParentObject->nSwitches);
 
     if (switchNumber >= TheStateStack.CurrentInstance->ParentObject->nSwitches)
         return;
@@ -739,9 +761,9 @@ void BSplitterNode::Draw(void)
     ShiAssert(front);
     ShiAssert(back);
 
-    if (A * TheStateStack.ObjSpaceEye.x +
-        B * TheStateStack.ObjSpaceEye.y +
-        C * TheStateStack.ObjSpaceEye.z + D > 0.0f)
+    if (A * TheStateStack.ObjSpaceEye.x + B * TheStateStack.ObjSpaceEye.y +
+            C * TheStateStack.ObjSpaceEye.z + D >
+        0.0f)
     {
 
         child = front;
@@ -750,8 +772,7 @@ void BSplitterNode::Draw(void)
         {
             child->Draw();
             child = child->sibling;
-        }
-        while (child);
+        } while (child);
 
         child = back;
 
@@ -759,8 +780,7 @@ void BSplitterNode::Draw(void)
         {
             child->Draw();
             child = child->sibling;
-        }
-        while (child);
+        } while (child);
     }
     else
     {
@@ -770,8 +790,7 @@ void BSplitterNode::Draw(void)
         {
             child->Draw();
             child = child->sibling;
-        }
-        while (child);
+        } while (child);
 
         child = front;
 
@@ -779,8 +798,7 @@ void BSplitterNode::Draw(void)
         {
             child->Draw();
             child = child->sibling;
-        }
-        while (child);
+        } while (child);
     }
 }
 
@@ -793,7 +811,9 @@ void BPrimitiveNode::Draw(void)
 void BLitPrimitiveNode::Draw(void)
 {
     // Choose the front facing polygon so that lighting is correct
-    if ((poly->A * TheStateStack.ObjSpaceEye.x + poly->B * TheStateStack.ObjSpaceEye.y + poly->C * TheStateStack.ObjSpaceEye.z + poly->D) >= 0)
+    if ((poly->A * TheStateStack.ObjSpaceEye.x +
+         poly->B * TheStateStack.ObjSpaceEye.y +
+         poly->C * TheStateStack.ObjSpaceEye.z + poly->D) >= 0)
     {
         DrawPrimJumpTable[poly->type](poly);
     }
@@ -807,24 +827,26 @@ void BLitPrimitiveNode::Draw(void)
 void BCulledPrimitiveNode::Draw(void)
 {
     // Only draw front facing polygons
-    if ((poly->A * TheStateStack.ObjSpaceEye.x + poly->B * TheStateStack.ObjSpaceEye.y + poly->C * TheStateStack.ObjSpaceEye.z + poly->D) >= 0)
+    if ((poly->A * TheStateStack.ObjSpaceEye.x +
+         poly->B * TheStateStack.ObjSpaceEye.y +
+         poly->C * TheStateStack.ObjSpaceEye.z + poly->D) >= 0)
     {
         // Call the appropriate draw function for this polygon
         DrawPrimJumpTable[poly->type](poly);
-
     }
 }
 
 void BLightStringNode::Draw(void)
 {
     // Clobber the primitive color with the appropriate front or back color
-    if ((A * TheStateStack.ObjSpaceEye.x + B * TheStateStack.ObjSpaceEye.y + C * TheStateStack.ObjSpaceEye.z + D) >= 0)
+    if ((A * TheStateStack.ObjSpaceEye.x + B * TheStateStack.ObjSpaceEye.y +
+         C * TheStateStack.ObjSpaceEye.z + D) >= 0)
     {
-        ((PrimPointFC*)prim)->rgba = rgbaFront;
+        ((PrimPointFC *)prim)->rgba = rgbaFront;
     }
     else
     {
-        ((PrimPointFC*)prim)->rgba = rgbaBack;
+        ((PrimPointFC *)prim)->rgba = rgbaBack;
     }
 
     // Call the appropriate draw function for this polygon
@@ -860,8 +882,8 @@ void BRenderControlNode::Draw(void)
 {
     switch (Control)
     {
-        case rcZBias:
-            TheStateStack.context->setGlobalZBias(FArg[0]);
-            break;
+    case rcZBias:
+        TheStateStack.context->setGlobalZBias(FArg[0]);
+        break;
     }
 }

@@ -66,7 +66,7 @@ void C_Fontmgr::Setup(long ID, char *fontfile)
 
     if (dSize_)
     {
-        fontData_ = new char [dSize_];
+        fontData_ = new char[dSize_];
         fread(fontData_, dSize_, 1, fp);
     }
 
@@ -123,7 +123,8 @@ long C_Fontmgr::Width(_TCHAR *str)
         if (thechar >= first_ && thechar <= last_)
         {
             thechar -= first_;
-            size += fontTable_[thechar].lead + fontTable_[thechar].trail + fontTable_[thechar].w;
+            size += fontTable_[thechar].lead + fontTable_[thechar].trail +
+                    fontTable_[thechar].w;
 
             if (prevchar >= 0)
                 size += fontTable_[prevchar].trail;
@@ -134,7 +135,7 @@ long C_Fontmgr::Width(_TCHAR *str)
         i++;
     }
 
-    return(size);
+    return (size);
 }
 
 long C_Fontmgr::Width(_TCHAR *str, long len)
@@ -166,24 +167,25 @@ long C_Fontmgr::Width(_TCHAR *str, long len)
         i++;
     }
 
-    return(size);
+    return (size);
 }
 
 long C_Fontmgr::Height()
 {
-    return(pitch_);
+    return (pitch_);
 }
 
 CharStr *C_Fontmgr::GetChar(short ID)
 {
     if (fontTable_ && ID >= first_ && ID <= last_)
-        return(&fontTable_[ID - first_]);
+        return (&fontTable_[ID - first_]);
 
-    return(NULL);
+    return (NULL);
 }
 
 
-void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, long dwidth, WORD *dest)
+void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, long dwidth,
+                     WORD *dest)
 {
     long idx, i, j, k;
     long xoffset, yoffset;
@@ -197,7 +199,8 @@ void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, long dwidth, WORD 
     idx = 0;
     xoffset = x;
     yoffset = y;
-    dendv = dest + 800 * 600; // Make sure we don't go past the end of the surface
+    dendv =
+        dest + 800 * 600; // Make sure we don't go past the end of the surface
 
     while (str[idx])
     {
@@ -208,7 +211,8 @@ void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, long dwidth, WORD 
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
 
-            sptr = (unsigned char *)(fontData_ + (thechar * bytesperline_ * pitch_));
+            sptr = (unsigned char *)(fontData_ +
+                                     (thechar * bytesperline_ * pitch_));
             dstart = dest + (yoffset * dwidth) + xoffset;
             dendh = dest + (yoffset * dwidth) + dwidth;
 
@@ -249,7 +253,8 @@ void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, long dwidth, WORD 
     }
 }
 
-void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, RECT *cliprect, long dwidth, WORD *dest)
+void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, RECT *cliprect,
+                     long dwidth, WORD *dest)
 {
     long idx, i, j, k;
     long xoffset, yoffset;
@@ -266,7 +271,9 @@ void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, RECT *cliprect, lo
     xoffset = x;
     yoffset = y;
     dclipy = dest + (cliprect->top * dwidth);
-    dendv = dest + (cliprect->bottom * dwidth); // Make sure we don't go past the end of the surface
+    dendv =
+        dest + (cliprect->bottom *
+                dwidth); // Make sure we don't go past the end of the surface
 
     while (str[idx])
     {
@@ -277,7 +284,8 @@ void C_Fontmgr::Draw(_TCHAR *str, WORD color, long x, long y, RECT *cliprect, lo
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
 
-            sptr = (unsigned char *)(fontData_ + (thechar * bytesperline_ * pitch_));
+            sptr = (unsigned char *)(fontData_ +
+                                     (thechar * bytesperline_ * pitch_));
             dstart = dest + (yoffset * dwidth) + xoffset;
             dclipx = dclipy + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);

@@ -1,11 +1,12 @@
 #ifndef _ACMITAPE_H_
 #define _ACMITAPE_H_
+#include <cstdint>
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -62,21 +63,21 @@ typedef struct
     float trailEndTime;
 
     // missiles need engine glow drawables
-    DrawableBSP  *objBsp1;
-    DrawableBSP  *objBsp2;
+    DrawableBSP *objBsp1;
+    DrawableBSP *objBsp2;
 
     // for flare need a glowing sphere
-    Drawable2D  *obj2d;
+    Drawable2D *obj2d;
 
     // for wing tip trails
-    int   wtLength;
+    int wtLength;
     DrawableTrail *wlTrail;
     DrawableTrail *wrTrail;
 
     // for features we may need an index to the lead component and
     // the slot # that was in the camp component list (for bridges, bases...)
-    long   leadIndex;
-    int   slot;
+    int32_t leadIndex;
+    int slot;
 
 } SimTapeEntity;
 
@@ -100,8 +101,8 @@ typedef struct
 */
 typedef struct _ActiveEvent
 {
-    long eventType;
-    long index;
+    int32_t eventType;
+    int32_t index;
     float time;
     float timeEnd;
     void *eventData;
@@ -121,43 +122,43 @@ typedef struct _ActiveEvent
 //
 // Header for the tape file.
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
-    long fileID;
-    long fileSize;
-    long numEntities;
-    long numFeat;
-    long  entityBlockOffset;
-    long  featBlockOffset;
-    long numEntityPositions;
-    long timelineBlockOffset;
-    long firstEntEventOffset;
-    long firstGeneralEventOffset;
-    long firstEventTrailerOffset;
-    long firstTextEventOffset;
-    long firstFeatEventOffset;
-    long numEvents;
-    long numEntEvents;
-    long numTextEvents;
-    long numFeatEvents;
+    int32_t fileID;
+    int32_t fileSize;
+    int32_t numEntities;
+    int32_t numFeat;
+    int32_t entityBlockOffset;
+    int32_t featBlockOffset;
+    int32_t numEntityPositions;
+    int32_t timelineBlockOffset;
+    int32_t firstEntEventOffset;
+    int32_t firstGeneralEventOffset;
+    int32_t firstEventTrailerOffset;
+    int32_t firstTextEventOffset;
+    int32_t firstFeatEventOffset;
+    int32_t numEvents;
+    int32_t numEntEvents;
+    int32_t numTextEvents;
+    int32_t numFeatEvents;
     float startTime;
     float totPlayTime;
-    float  todOffset;
+    float todOffset;
 } ACMITapeHeader;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Entity data.
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
-    long uniqueID;
-    long type;
-    long count;
-    long flags;
+    int32_t uniqueID;
+    int32_t type;
+    int32_t count;
+    int32_t flags;
 
 #define ENTITY_FLAG_MISSILE 0x00000001
 #define ENTITY_FLAG_FEATURE 0x00000002
@@ -167,17 +168,17 @@ typedef struct
 
     // for features we may need an index to the lead component and
     // the slot # that was in the camp component list (for bridges, bases...)
-    long leadIndex;
+    int32_t leadIndex;
     int slot;
     int specialFlags;
 
 
     // Offset from the start of the file to the start of my positional data.
-    long  firstPositionDataOffset;
-    long  firstEventDataOffset;
+    int32_t firstPositionDataOffset;
+    int32_t firstEventDataOffset;
 
 } ACMIEntityData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -191,7 +192,7 @@ enum
     PosTypeDOF,
 };
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     // Time stamp for the positional data
@@ -210,7 +211,7 @@ typedef struct
             float pitch;
             float roll;
             float yaw;
-            long     radarTarget;
+            int32_t radarTarget;
         } posData;
         // switch change
         struct switchTag
@@ -231,10 +232,10 @@ typedef struct
     // Although position data is a fixed size, we still want
     // this so that we can organize the data to be friendly for
     // paging.
-    long nextPositionUpdateOffset;
-    long prevPositionUpdateOffset;
+    int32_t nextPositionUpdateOffset;
+    int32_t prevPositionUpdateOffset;
 } ACMIEntityPositionData;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // This raw format is used by the position/event/sfx bundler to
@@ -244,12 +245,13 @@ typedef struct
 typedef struct
 {
     int type; // type of object
-    long uniqueID; // A unique ID for the object. Many to One correlation to FreeFalcon Entities
+    int32_t
+        uniqueID; // A unique ID for the object. Many to One correlation to FreeFalcon Entities
     int flags; // side
 
     // for features we may need an index to the lead component and
     // the slot # that was in the camp component list (for bridges, bases...)
-    long leadIndex;
+    int32_t leadIndex;
     int slot;
     int specialFlags;
     ACMIEntityPositionData entityPosData;
@@ -259,64 +261,64 @@ typedef struct
 //
 // Header for event data.
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     // type of event this is
     BYTE eventType;
-    long  index;
+    int32_t index;
 
     // Time stamp for this event.
     float time;
     float timeEnd;
 
     // data specific to type of event
-    long type;
-    long user;
-    long flags;
+    int32_t type;
+    int32_t user;
+    int32_t flags;
     float scale;
     float x, y, z;
     float dx, dy, dz;
     float roll, pitch, yaw;
 
 } ACMIEventHeader;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 //
 // Trailer for event data.
 //
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     float timeEnd;
-    long  index; // into EventHeader
+    int32_t index; // into EventHeader
 } ACMIEventTrailer;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Feature Status Event
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 typedef struct
 {
     // Time stamp for this event.
     float time;
 
     // index of feature on tape
-    long  index;
+    int32_t index;
 
     // data specific to type of event
-    long newStatus;
-    long prevStatus;
+    int32_t newStatus;
+    int32_t prevStatus;
 
 } ACMIFeatEvent;
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 typedef struct
 {
-    long uniqueID;
+    int32_t uniqueID;
     ACMIFeatEvent data;
 } ACMIFeatEventImportData;
 
@@ -336,7 +338,7 @@ typedef struct
 //
 // bitor                    bitor                                       |
 // bitor number of entities bitor              entities                 |
-// bitor  sizeof(long)      bitor num entities * sizeof(ACMIEntityData) |
+// bitor  sizeof(int32_t)      bitor num entities * sizeof(ACMIEntityData) |
 //
 // entity:
 //
@@ -376,8 +378,8 @@ typedef struct
 
 extern "C"
 {
-    void DestroyACMIRawPositionDataList(LIST* _frameList);
-    void DeleteACMIRawPositionData(ACMIRawPositionData* rawPositionData);
+    void DestroyACMIRawPositionDataList(LIST *_frameList);
+    void DeleteACMIRawPositionData(ACMIRawPositionData *rawPositionData);
     void DeleteACMIEntityPositionData(ACMIEntityPositionData *data);
     void DeleteACMIEntityData(ACMIEntityData *data);
     void DeleteACMIEventHeader(ACMIEventHeader *data);
@@ -396,7 +398,8 @@ extern "C"
 // can be decoded with the event id.
 // The second void * parameter is for user data.
 
-typedef void (*ACMI_GENERAL_EVENT_CALLBACK)(ACMITape *, EventIdData, void *, void *);
+typedef void (*ACMI_GENERAL_EVENT_CALLBACK)(ACMITape *, EventIdData, void *,
+                                            void *);
 
 typedef struct
 {
@@ -412,8 +415,8 @@ typedef struct
 typedef struct
 {
 
-    long positionDataOffset;
-    long eventDataOffset;
+    int32_t positionDataOffset;
+    int32_t eventDataOffset;
 } ACMIEntityReadHead;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -423,7 +426,6 @@ typedef struct
 class ACMITape
 {
 public:
-
     // Constructors.
     // Do not put the extension with name.
     // This should be the name of the desired .vcr file.
@@ -439,40 +441,28 @@ public:
     static void WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr);
 
     // Time-independent entity access.
-    int NumEntities() ;
+    int NumEntities();
     int EntityId(int index);
     int EntityType(int index);
 
     // Time-dependent entity access.
-    BOOL GetEntityPosition
-    (
-        int index,
-        float &x,
-        float &y,
-        float &z,
-        float &yaw,
-        float &pitch,
-        float &roll,
-        float &speed,
-        float &turnrate,
-        float &turnradius
-    );
+    BOOL GetEntityPosition(int index, float &x, float &y, float &z, float &yaw,
+                           float &pitch, float &roll, float &speed,
+                           float &turnrate, float &turnradius);
 
 
     // Prototype of an ACMI_GENERAL_EVENT_CALLBACK:
     // void PoopooCB(ACMITape *tape, EventIdData id, void *eventData, void *userData);
-    void SetGeneralEventCallbacks
-    (
-        ACMI_GENERAL_EVENT_CALLBACK forwardEventCallback,
-        ACMI_GENERAL_EVENT_CALLBACK reverseEventCallback,
-        void *userData
-    );
+    void
+    SetGeneralEventCallbacks(ACMI_GENERAL_EVENT_CALLBACK forwardEventCallback,
+                             ACMI_GENERAL_EVENT_CALLBACK reverseEventCallback,
+                             void *userData);
 
     // Was the tape file found and opened successfully?
     BOOL IsLoaded();
 
     // Is the tape paused?
-    BOOL IsPaused() ;
+    BOOL IsPaused();
 
     // Playback controls.
     void Play();
@@ -487,26 +477,26 @@ public:
     // Play speed controls.
     // This is a ratio of sim time / real time.
     void SetPlayVelocity(float n);
-    float PlayVelocity() ;
+    float PlayVelocity();
 
     // Increase in play velocity per second of real time.
     void SetPlayAcceleration(float n);
-    float PlayAcceleration() ;
+    float PlayAcceleration();
 
     // This will be used to clamp play velocity.
     // It will be clamped to (-fabs(speed) <= velocity <= fabs(speed));
     void SetMaxPlaySpeed(float n);
-    float MaxPlaySpeed() ;
+    float MaxPlaySpeed();
 
     // Set the read head position.  This should be a number
     // from 0 to 1 (0 = beginning of tape, 1 = end of tape).
     // The input value will be clamped to fit this range.
     void SetHeadPosition(float t);
-    float HeadPosition() ;
+    float HeadPosition();
 
     // This gives the current simulation time.
-    float SimTime() ;
-    float GetTapePercent() ;
+    float SimTime();
+    float GetTapePercent();
 
     void Update(float newSimTime);
 
@@ -528,7 +518,7 @@ public:
     void UpdateSimTapeEntities(void);
 
     // sets the draw position and matrix for bsp update
-    void ObjectSetData(SimBaseClass*, Tpoint*, Trotation*);
+    void ObjectSetData(SimBaseClass *, Tpoint *, Trotation *);
 
     void SetScreenCapturing(BOOL val)
     {
@@ -557,8 +547,8 @@ public:
         _wtMaxLength = val;
     };
 
-    void * GetTextEvents(int *count);
-    void * GetCallsignList(long *count);
+    void *GetTextEvents(int *count);
+    void *GetCallsignList(int32_t *count);
 
 
     // list of sim entities from the tape that are manipulated and drawn
@@ -571,7 +561,6 @@ public:
     };
 
 private:
-
     void Init();
 
     // These are used for importation.
@@ -618,7 +607,7 @@ private:
     void CleanupSimTapeEntities(void);
 
     // open the tape file and setup memory mapping
-    long OpenTapeFile(char *fname);   // returns tape length
+    int32_t OpenTapeFile(char *fname); // returns tape length
     void CloseTapeFile(void);
 
     // event list related functions
@@ -629,7 +618,7 @@ private:
 
     // create/update feature drawables
     void CreateFeatureDrawable(SimTapeEntity *feat);
-    SimBaseClass *FindComponentFeature(long leadIndex, int slot);
+    SimBaseClass *FindComponentFeature(int32_t leadIndex, int slot);
 
     // update tracer data
     void UpdateTracerEvent(TracerEventData *td, float dT);
@@ -674,7 +663,7 @@ private:
     // for the tape data.
     void *_tape;
     ACMIEntityReadHead *_entityReadHeads;
-    long _generalEventReadHeadHeader;
+    int32_t _generalEventReadHeadHeader;
     ACMIEventTrailer *_generalEventReadHeadTrailer;
     ACMIGeneralEventCallback _generalEventCallbacks;
     ACMIFeatEvent *_featEventReadHead;
@@ -694,5 +683,4 @@ private:
 
 #include "acmtpinl.cpp"
 
-#endif  // _ACMITAPE_H_
-
+#endif // _ACMITAPE_H_

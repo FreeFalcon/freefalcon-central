@@ -3,7 +3,7 @@
 #include "cpmanager.h"
 #include "cptext.h"
 #include "dispopts.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
 #include "otwdrive.h"
 
 //====================================================//
@@ -11,7 +11,8 @@
 //====================================================//
 
 
-CPText::CPText(ObjectInitStr *pobjectInitStr, int numStrings) : CPObject(pobjectInitStr)
+CPText::CPText(ObjectInitStr *pobjectInitStr, int numStrings)
+    : CPObject(pobjectInitStr)
 {
     float halfWidth;
     float halfHeight;
@@ -21,22 +22,24 @@ CPText::CPText(ObjectInitStr *pobjectInitStr, int numStrings) : CPObject(pobject
     mNumStrings = numStrings;
 
 #ifdef USE_SH_POOLS
-    mpString = (char **)MemAllocPtr(gCockMemPool, sizeof(char *)*mNumStrings, FALSE);
+    mpString =
+        (char **)MemAllocPtr(gCockMemPool, sizeof(char *) * mNumStrings, FALSE);
 #else
-    mpString = new char*[mNumStrings];
+    mpString = new char *[mNumStrings];
 #endif
 
     for (i = 0; i < mNumStrings; i++)
     {
 #ifdef USE_SH_POOLS
-        mpString[i] = (char *)MemAllocPtr(gCockMemPool, sizeof(char) * 20, FALSE);
+        mpString[i] =
+            (char *)MemAllocPtr(gCockMemPool, sizeof(char) * 20, FALSE);
 #else
         mpString[i] = new char[20];
 #endif
     }
 
-    halfWidth = (float) DisplayOptions.DispWidth * 0.5F;
-    halfHeight = (float) DisplayOptions.DispHeight * 0.5F;
+    halfWidth = (float)DisplayOptions.DispWidth * 0.5F;
+    halfHeight = (float)DisplayOptions.DispHeight * 0.5F;
 
     mLeft = (mDestRect.left - halfWidth) / halfWidth;
     mRight = (mDestRect.right - halfWidth) / halfWidth;
@@ -77,7 +80,8 @@ void CPText::DisplayDraw(void)
 
     for (i = 0; i < mNumStrings; i++)
     {
-        OTWDriver.renderer->ScreenText((float)mDestRect.left + 5.0F, (float)start, mpString[i]);
+        OTWDriver.renderer->ScreenText((float)mDestRect.left + 5.0F,
+                                       (float)start, mpString[i]);
         start += step;
     }
 
@@ -85,7 +89,7 @@ void CPText::DisplayDraw(void)
 }
 
 
-void CPText::Exec(SimBaseClass* pOwnship)
+void CPText::Exec(SimBaseClass *pOwnship)
 {
 
     mpOwnship = pOwnship;

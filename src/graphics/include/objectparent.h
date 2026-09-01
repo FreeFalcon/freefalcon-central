@@ -8,7 +8,7 @@
 #ifndef _OBJECTPARENT_H_
 #define _OBJECTPARENT_H_
 
-#include "ObjectLOD.h"
+#include "objectlod.h"
 
 
 // Update this each time the object file formats change
@@ -17,7 +17,6 @@ static const UInt32 FORMAT_VERSION = 0x03087000;
 
 extern class ObjectParent *TheObjectList;
 extern int TheObjectListLength;
-
 
 
 // RED - this is the single record stucture in the parents file
@@ -44,7 +43,6 @@ typedef struct
     //DWORD Unused_2;
 
 } ParentFileRecord;
-
 
 
 typedef struct LODrecord

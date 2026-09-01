@@ -8,20 +8,55 @@ class SimWeaponClass;
 class SMSClass;
 
 // Public data types (used exclusively by AdvancedWeaponStation, however)
-enum WeaponType { wtGuns, wtAim9, wtAim120, wtAgm88, wtAgm65, wtMk82, wtMk84, wtGBU, wtSAM, wtLAU, wtFixed, wtNone, wtGPS};
-enum WeaponClass { wcAimWpn, wcRocketWpn, wcBombWpn, wcGunWpn, wcECM, wcTank, wcAgmWpn, wcHARMWpn, wcSamWpn, wcGbuWpn, wcCamera, wcNoWpn};
-enum WeaponDomain { wdAir = 0x1, wdGround = 0x2, wdBoth = 0x3, wdNoDomain = 0};
+enum WeaponType
+{
+    wtGuns,
+    wtAim9,
+    wtAim120,
+    wtAgm88,
+    wtAgm65,
+    wtMk82,
+    wtMk84,
+    wtGBU,
+    wtSAM,
+    wtLAU,
+    wtFixed,
+    wtNone,
+    wtGPS
+};
+enum WeaponClass
+{
+    wcAimWpn,
+    wcRocketWpn,
+    wcBombWpn,
+    wcGunWpn,
+    wcECM,
+    wcTank,
+    wcAgmWpn,
+    wcHARMWpn,
+    wcSamWpn,
+    wcGbuWpn,
+    wcCamera,
+    wcNoWpn
+};
+enum WeaponDomain
+{
+    wdAir = 0x1,
+    wdGround = 0x2,
+    wdBoth = 0x3,
+    wdNoDomain = 0
+};
 
 typedef struct
 {
-    int   flags;
+    int flags;
     float cd;
     float weight;
     float area;
     float xEjection;
     float yEjection;
     float zEjection;
-    char  mnemonic[8];
+    char mnemonic[8];
     WeaponClass weaponClass;
     WeaponDomain domain;
 } WeaponData;
@@ -34,14 +69,15 @@ class BasicWeaponStation
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(BasicWeaponStation));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -54,7 +90,7 @@ public:
     static MEM_POOL pool;
 #endif
 public:
-    int             hpId;          // parent's harpoint id
+    int hpId;          // parent's harpoint id
     /*
     short rocketId;      // MLR 1/11/2004 - weapon is in this pod
     int             rocketSalvoSize;  // MLR 2/2/2004 -
@@ -63,7 +99,7 @@ public:
     short weaponId;
     short weaponCount;
     VuBin<SimWeaponClass> weaponPointer;
-    DrawableBSP *theParent;
+    DrawableBSP* theParent;
 
 
 public:
@@ -93,7 +129,7 @@ public:
         return 0;
     };
 
-    virtual void SetSMS(SMSClass *Sms) {};
+    virtual void SetSMS(SMSClass* Sms) {};
     void SetParentDrawPtr(DrawableBSP* Parent);
 
     virtual void AttachPylonBSP(void) {};
@@ -111,10 +147,11 @@ public:
     virtual void DeleteRackBSP(void) {};
 
     virtual void AttachAllWeaponBSP(void);
-    virtual void AttachWeaponBSP(SimWeaponClass *weapPtr);
+    virtual void AttachWeaponBSP(SimWeaponClass* weapPtr);
     virtual void DetachAllWeaponBSP(void);
-    virtual void DetachWeaponBSP(SimWeaponClass *weapPtr);
-    virtual VuBin<SimWeaponClass> DetachFirstWeapon(void); // remove weapon ptr and bsp
+    virtual void DetachWeaponBSP(SimWeaponClass* weapPtr);
+    virtual VuBin<SimWeaponClass>
+    DetachFirstWeapon(void); // remove weapon ptr and bsp
     virtual void DeleteAllWeaponBSP(void); // detaches and deletes
 
     virtual int DetermineRackData(int HPGroup, int WeaponId, int WeaponCount);
@@ -154,12 +191,12 @@ public:
     {
         return NULL;
     };
-    virtual void SetWeaponData(WeaponData) {};
+    virtual void SetWeaponData(WeaponData){};
     virtual WeaponType GetWeaponType(void)
     {
         return (WeaponType)0;
     };
-    virtual void SetWeaponType(WeaponType) {};
+    virtual void SetWeaponType(WeaponType){};
     virtual WeaponClass GetWeaponClass(void)
     {
         return (WeaponClass)0;
@@ -168,25 +205,23 @@ public:
     {
         return wdNoDomain;
     };
-    virtual void SetWeaponClass(WeaponClass) {};
+    virtual void SetWeaponClass(WeaponClass){};
     virtual GunClass* GetGun(void);
     virtual void SetGun(GunClass*) {};
 
-    virtual char *GetPylonMnemonic(void)
+    virtual char* GetPylonMnemonic(void)
     {
         return NULL;
     };
-    virtual char *GetRackMnemonic(void)
+    virtual char* GetRackMnemonic(void)
     {
         return NULL;
     };
 
-    virtual int *GetLoadOrder(void)
+    virtual int* GetLoadOrder(void)
     {
         return 0;
     };
-
-
 };
 
 class AdvancedWeaponStation : public BasicWeaponStation
@@ -194,14 +229,15 @@ class AdvancedWeaponStation : public BasicWeaponStation
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(AdvancedWeaponStation));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -234,16 +270,16 @@ private:
     DrawableBSP* thePylon;
     int pylonId;
 
-    char *pylonmnemonic;
-    char *rackmnemonic;
+    char* pylonmnemonic;
+    char* rackmnemonic;
 
     GunClass* aGun;
     WeaponData weaponData;
     WeaponType weaponType;
 
-    SMSClass *theSMS;
+    SMSClass* theSMS;
 
-    int *loadOrder;  // MLR 3/20/2004 -
+    int* loadOrder;  // MLR 3/20/2004 -
 public:
     AdvancedWeaponStation(void);
     ~AdvancedWeaponStation(void);
@@ -303,7 +339,7 @@ public:
         return numPoints;
     };
 
-    virtual void SetSMS(SMSClass *Sms);
+    virtual void SetSMS(SMSClass* Sms);
     //virtual void SetParentDrawPtr(DrawableBSP* Parent);
 
     virtual void AttachPylonBSP(void);
@@ -315,10 +351,11 @@ public:
     virtual void DeleteRackBSP(void);
 
     virtual void AttachAllWeaponBSP(void);
-    virtual void AttachWeaponBSP(SimWeaponClass *weapPtr);
+    virtual void AttachWeaponBSP(SimWeaponClass* weapPtr);
     virtual void DetachAllWeaponBSP(void);
-    virtual void DetachWeaponBSP(SimWeaponClass *weapPtr);
-    virtual VuBin<SimWeaponClass> DetachFirstWeapon(void); // remove weapon ptr and bsp
+    virtual void DetachWeaponBSP(SimWeaponClass* weapPtr);
+    virtual VuBin<SimWeaponClass>
+    DetachFirstWeapon(void); // remove weapon ptr and bsp
     virtual void DeleteAllWeaponBSP(void); // detaches and deletes
 
     virtual int DetermineRackData(int HPGroup, int WeaponId, int WeaponCount);
@@ -397,10 +434,10 @@ public:
         aGun = gun;
     };
 
-    virtual char *GetPylonMnemonic(void);
-    virtual char *GetRackMnemonic(void);
+    virtual char* GetPylonMnemonic(void);
+    virtual char* GetRackMnemonic(void);
 
-    virtual int *GetLoadOrder(void)
+    virtual int* GetLoadOrder(void)
     {
         return loadOrder;
     };

@@ -2,15 +2,15 @@
 //
 
 #include "stdafx.h"
-#include "EventReader.h"
-#include "EventReaderDlg.h"
+#include "eventreader.h"
+#include "eventreaderdlg.h"
 
 #include "mesgrc.h"
 #include "mesg.h"
 #include "vuevent.h"
 
 char curFileName[_MAX_PATH] = {0};
-EventElement *RootEvent = NULL;
+EventElement* RootEvent = NULL;
 
 #ifdef _DEBUG
 #define new DEBUG_NEW
@@ -28,7 +28,10 @@ public:
 
     // Dialog Data
     //{{AFX_DATA(CAboutDlg)
-    enum { IDD = IDD_ABOUTBOX };
+    enum
+    {
+        IDD = IDD_ABOUTBOX
+    };
     //}}AFX_DATA
 
     // ClassWizard generated virtual function overrides
@@ -85,13 +88,13 @@ void CEventReaderDlg::DoDataExchange(CDataExchange* pDX)
 }
 
 BEGIN_MESSAGE_MAP(CEventReaderDlg, CDialog)
-    //{{AFX_MSG_MAP(CEventReaderDlg)
-    ON_WM_SYSCOMMAND()
-    ON_WM_PAINT()
-    ON_WM_QUERYDRAGICON()
-    ON_BN_CLICKED(IDC_FILE, OnFile)
-    ON_LBN_DBLCLK(IDC_EVENTLIST, OnDblclkEventlist)
-    //}}AFX_MSG_MAP
+//{{AFX_MSG_MAP(CEventReaderDlg)
+ON_WM_SYSCOMMAND()
+ON_WM_PAINT()
+ON_WM_QUERYDRAGICON()
+ON_BN_CLICKED(IDC_FILE, OnFile)
+ON_LBN_DBLCLK(IDC_EVENTLIST, OnDblclkEventlist)
+//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
 /////////////////////////////////////////////////////////////////////////////
@@ -123,10 +126,10 @@ BOOL CEventReaderDlg::OnInitDialog()
     SetIcon(m_hIcon, FALSE); // Set small icon
 
     // TODO: Add extra initialization here
-    ((CListBox*) GetDlgItem(IDC_EVENTLIST))->SetTabStops(75);
-    ((CListBox*) GetDlgItem(IDC_EVENTDATA))->SetTabStops(120);
+    ((CListBox*)GetDlgItem(IDC_EVENTLIST))->SetTabStops(75);
+    ((CListBox*)GetDlgItem(IDC_EVENTDATA))->SetTabStops(120);
 
-    return TRUE;  // return TRUE  unless you set the focus to a control
+    return TRUE; // return TRUE  unless you set the focus to a control
 }
 
 void CEventReaderDlg::OnSysCommand(UINT nID, LPARAM lParam)
@@ -152,7 +155,7 @@ void CEventReaderDlg::OnPaint()
     {
         CPaintDC dc(this); // device context for painting
 
-        SendMessage(WM_ICONERASEBKGND, (WPARAM) dc.GetSafeHdc(), 0);
+        SendMessage(WM_ICONERASEBKGND, (WPARAM)dc.GetSafeHdc(), 0);
 
         // Center icon in client rectangle
         int cxIcon = GetSystemMetrics(SM_CXICON);
@@ -175,7 +178,7 @@ void CEventReaderDlg::OnPaint()
 //  the minimized window.
 HCURSOR CEventReaderDlg::OnQueryDragIcon()
 {
-    return (HCURSOR) m_hIcon;
+    return (HCURSOR)m_hIcon;
 }
 
 void CEventReaderDlg::OnFile()
@@ -203,7 +206,7 @@ void CEventReaderDlg::ReadFile(void)
     FILE* inFile;
     EventElement* tmpEvent;
     EventElement* curEvent;
-    CListBox *theList;
+    CListBox* theList;
     char newString[1024];
 
     if (RootEvent)
@@ -213,9 +216,9 @@ void CEventReaderDlg::ReadFile(void)
 
     if (inFile)
     {
-        ((CListBox*) GetDlgItem(IDC_EVENTLIST))->ResetContent();
-        ((CListBox*) GetDlgItem(IDC_EVENTDATA))->ResetContent();
-        theList = (CListBox*) GetDlgItem(IDC_EVENTLIST);
+        ((CListBox*)GetDlgItem(IDC_EVENTLIST))->ResetContent();
+        ((CListBox*)GetDlgItem(IDC_EVENTDATA))->ResetContent();
+        theList = (CListBox*)GetDlgItem(IDC_EVENTLIST);
         curEvent = NULL;
         tmpEvent = new EventElement;
 
@@ -225,7 +228,8 @@ void CEventReaderDlg::ReadFile(void)
             tmpEvent->eventData = new char[tmpEvent->idData.size];
             fread(tmpEvent->eventData, tmpEvent->idData.size, 1, inFile);
             tmpEvent->idData.type -= VU_LAST_EVENT + 1;
-            sprintf(newString, "%.2f\t%s", (float)(*((double *)(tmpEvent->eventData))),
+            sprintf(newString, "%.2f\t%s",
+                    (float)(*((double*)(tmpEvent->eventData))),
                     TheEventStrings[FalconMsgIdStr[tmpEvent->idData.type]]);
             theList->InsertString(-1, newString);
 
@@ -250,12 +254,12 @@ void CEventReaderDlg::DisposeFile(void)
     {
         tmpEvent = RootEvent;
         RootEvent = RootEvent->next;
-        delete(tmpEvent->eventData);
-        delete(tmpEvent);
+        delete (tmpEvent->eventData);
+        delete (tmpEvent);
     }
 
-    ((CListBox*) GetDlgItem(IDC_EVENTLIST))->ResetContent();
-    ((CListBox*) GetDlgItem(IDC_EVENTDATA))->ResetContent();
+    ((CListBox*)GetDlgItem(IDC_EVENTLIST))->ResetContent();
+    ((CListBox*)GetDlgItem(IDC_EVENTDATA))->ResetContent();
     SetDlgItemText(IDC_EVENTTYPE, "");
     SetDlgItemText(IDC_EVENTTIME, "");
 }
@@ -267,12 +271,13 @@ void CEventReaderDlg::ParseEvent(EventElement* theEvent)
     char tmpStr[1024];
     int i, day, hour, min;
     double time;
-    char *tmp;
+    char* tmp;
 
-    theList = (CListBox*) GetDlgItem(IDC_EVENTDATA);
+    theList = (CListBox*)GetDlgItem(IDC_EVENTDATA);
     theList->ResetContent();
-    SetDlgItemText(IDC_EVENTTYPE, TheEventStrings[FalconMsgIdStr[theEvent->idData.type]]);
-    time = *((double *)(theEvent->eventData));
+    SetDlgItemText(IDC_EVENTTYPE,
+                   TheEventStrings[FalconMsgIdStr[theEvent->idData.type]]);
+    time = *((double*)(theEvent->eventData));
     day = (int)(time / (24.0F * 3600.0F));
     time -= day * 24.0F * 3600.0F;
     hour = (int)(time / 3600.0F);
@@ -286,59 +291,61 @@ void CEventReaderDlg::ParseEvent(EventElement* theEvent)
 
     for (i = 0; i < MsgNumElements[theEvent->idData.type]; i++)
     {
-        sprintf(tmpStr, "   %s:\t", TheEventStrings[FalconMsgElementStr[theEvent->idData.type][i]]);
+        sprintf(tmpStr, "   %s:\t",
+                TheEventStrings[FalconMsgElementStr[theEvent->idData.type][i]]);
 
         if (FalconMsgElementTypes[theEvent->idData.type][i] >= 1001)
         {
             int offset, array;
 
-            offset = *((int *)tmp);
-            array  = FalconMsgElementTypes[theEvent->idData.type][i] - 1001;
-            sprintf(tmpStr, "%s%s", tmpStr, TheEventStrings[FalconMsgEnumStr[array][offset]]);
+            offset = *((int*)tmp);
+            array = FalconMsgElementTypes[theEvent->idData.type][i] - 1001;
+            sprintf(tmpStr, "%s%s", tmpStr,
+                    TheEventStrings[FalconMsgEnumStr[array][offset]]);
             tmp += sizeof(int);
         }
         else
         {
             switch (FalconMsgElementTypes[theEvent->idData.type][i])
             {
-                case 1:
-                    sprintf(tmpStr, "%s%d", tmpStr,  *((int *)tmp));
-                    tmp += sizeof(int);
-                    break;
+            case 1:
+                sprintf(tmpStr, "%s%d", tmpStr, *((int*)tmp));
+                tmp += sizeof(int);
+                break;
 
-                case 2:
-                    sprintf(tmpStr, "%s%f", tmpStr,  *((float *)tmp));
-                    tmp += sizeof(float);
-                    break;
+            case 2:
+                sprintf(tmpStr, "%s%f", tmpStr, *((float*)tmp));
+                tmp += sizeof(float);
+                break;
 
-                case 3:
-                    sprintf(tmpStr, "%s%d", tmpStr,  *((ushort *)tmp));
-                    tmp += sizeof(ushort);
-                    break;
+            case 3:
+                sprintf(tmpStr, "%s%d", tmpStr, *((ushort*)tmp));
+                tmp += sizeof(ushort);
+                break;
 
-                case 4:
-                    sprintf(tmpStr, "%s id %d", tmpStr, *((int *)tmp));
-                    tmp += sizeof(VU_ID);
-                    break;
+            case 4:
+                sprintf(tmpStr, "%s id %d", tmpStr, *((int*)tmp));
+                tmp += sizeof(VU_ID);
+                break;
 
-                case 5:
-                    sprintf(tmpStr, "%s%d", tmpStr, (int)(*((uchar *)tmp)));
-                    tmp += sizeof(uchar);
-                    break;
+            case 5:
+                sprintf(tmpStr, "%s%d", tmpStr, (int)(*((uchar*)tmp)));
+                tmp += sizeof(uchar);
+                break;
 
-                case 6:
-                    sprintf(tmpStr, "%s%g", tmpStr,  *((double *)tmp));
-                    tmp += sizeof(double);
-                    break;
+            case 6:
+                sprintf(tmpStr, "%s%g", tmpStr, *((double*)tmp));
+                tmp += sizeof(double);
+                break;
 
-                case 7:
-                    sprintf(tmpStr, "%s%p", tmpStr, ((void *)tmp));
-                    tmp += sizeof(ushort);
-                    break;
+            case 7:
+                sprintf(tmpStr, "%s%p", tmpStr, ((void*)tmp));
+                tmp += sizeof(ushort);
+                break;
 
-                default:
-                    sprintf(tmpStr, "%sHow Do I Show This???", tmpStr);
-                    break;
+            default:
+                sprintf(tmpStr, "%sHow Do I Show This???", tmpStr);
+                break;
             }
         }
 
@@ -348,11 +355,11 @@ void CEventReaderDlg::ParseEvent(EventElement* theEvent)
 
 void CEventReaderDlg::OnDblclkEventlist()
 {
-    CListBox *theList;
+    CListBox* theList;
     EventElement* tmpEvent;
     int i, selEvent;
 
-    theList = (CListBox*) GetDlgItem(IDC_EVENTLIST);
+    theList = (CListBox*)GetDlgItem(IDC_EVENTLIST);
 
     if ((selEvent = theList->GetCurSel()) != LB_ERR)
     {

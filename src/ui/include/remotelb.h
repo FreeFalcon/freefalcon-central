@@ -23,7 +23,8 @@ struct RemoteImage
     long flags;
     long Size; // Total size of Image (excludes header)
     short numblocks; // Total # of sections being sent
-    uchar *blockflag; // bit flags for receiving data (ie marking which block has been received)
+    uchar *
+        blockflag; // bit flags for receiving data (ie marking which block has been received)
     uchar *ImageData; // Contains image data & palette if applicable
 };
 
@@ -42,8 +43,10 @@ public:
 
     void Cleanup();
     void SetPilotData(LB_PILOT *data);
-    void ReceiveImage(uchar ID, short packetno, short length, long offset, long size, uchar *data);
-    RemoteImage *Receive(RemoteImage *Image, short packetno, short length, long offset, long size, uchar *data);
+    void ReceiveImage(uchar ID, short packetno, short length, long offset,
+                      long size, uchar *data);
+    RemoteImage *Receive(RemoteImage *Image, short packetno, short length,
+                         long offset, long size, uchar *data);
 };
 
 #endif

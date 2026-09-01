@@ -7,20 +7,22 @@
  beam sweep.
 \***************************************************************************/
 #include <math.h>
-#include "Edge.h"
-#include "GMRadar.h"
-#include "GMComposit.h"
-#include "Falclib/include/dispcfg.h"
-#include "FalcLib/include/playerop.h"
-#include "FalcLib/include/dispopts.h"
+#include "edge.h"
+#include "gmradar.h"
+#include "gmcomposit.h"
+#include "falclib/include/dispcfg.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
 
 //MI
 extern bool g_bRealisticAvionics;
 extern bool g_bAGRadarFixes;
 
 static const int MAX_CLIP_EDGES = 3;
-static const int MAX_CONSTRUCTION_VERTS = 2 * MAX_CLIP_EDGES; // Create 2 per edge
-static const int MAX_VERTEX_LIST = 4 + MAX_CLIP_EDGES; // Add 2 remove at least 1 per edge
+static const int MAX_CONSTRUCTION_VERTS =
+    2 * MAX_CLIP_EDGES; // Create 2 per edge
+static const int MAX_VERTEX_LIST =
+    4 + MAX_CLIP_EDGES; // Add 2 remove at least 1 per edge
 
 // These are global to save some parameter passing, etc.
 // This implies that only one thread can call DrawOutput at a time.
@@ -36,38 +38,43 @@ static int NumCverts;
 
 // This list controls the distribution of work to generate each new
 // frame of radar return imagery.
-enum OpName { Start, Xform, Ground, Features, Targets, Finish, Replace };
+enum OpName
+{
+    Start,
+    Xform,
+    Ground,
+    Features,
+    Targets,
+    Finish,
+    Replace
+};
 struct OpRecord
 {
     enum OpName operation;
     int percent;
 };
 
-static const struct OpRecord OperationList[] =
-{
-    {Start, 15},
-    {Xform, 30},
-    {Ground, 45},
-    {Features, 50},
-    {Targets, 75},
-    {Finish, 90},
-    {Replace, 101}
-};
+static const struct OpRecord OperationList[] = {
+    {Start, 15},   {Xform, 30},  {Ground, 45},  {Features, 50},
+    {Targets, 75}, {Finish, 90}, {Replace, 101}};
 
 
 // Helper function defined at the bottom of this file
-static inline void Intersect(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *c, float t);
+static inline void Intersect(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *c,
+                             float t);
 static int ClipToBeamAndLimits(void);
 
 // Used to add random noise to the radar images
-static int random;
+// Artscout - 2026 (#104): renamed from 'random' -- collides with POSIX random(3) on Linux (glibc <stdlib.h>).
+static int s_radarNoiseSeed;
 static inline BYTE Noise(int input)
 {
     // return input;
 
-    random = random * 214013L + 2531011L; // Stolen from C Runtime RAND() function
+    s_radarNoiseSeed = s_radarNoiseSeed * 214013L +
+                       2531011L; // Stolen from C Runtime RAND() function
 
-    input = input + ((random >> 16) bitand 0x3F);
+    input = input + ((s_radarNoiseSeed >> 16) bitand 0x3F);
 
     // Gee, I sure whould like to get rid of this if...
     return (BYTE)min(input, 0xFF);
@@ -84,7 +91,10 @@ RenderGMComposite::RenderGMComposite()
     nextOperation = NULL;
 };
 
-void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*, RenderGMRadar*, bool), void *tgtDrawParam)
+void RenderGMComposite::Setup(ImageBuffer *output,
+                              void (*tgtDrawCallback)(void *, RenderGMRadar *,
+                                                      bool),
+                              void *tgtDrawParam)
 {
     // Call our parents Setup code
     Render2D::Setup(output);
@@ -121,9 +131,11 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     if (DisplayOptions.bRender2Texture)
     {
         // Set up our private rendering target image
-        MPRSurfaceType front = FalconDisplay.theDisplayDevice.IsHardware() ? VideoMem : SystemMem;
+        MPRSurfaceType front =
+            FalconDisplay.theDisplayDevice.IsHardware() ? VideoMem : SystemMem;
         m_pRenderTarget = new ImageBuffer;
-        m_pRenderTarget->Setup(output->GetDisplayDevice(), GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, front, None);
+        m_pRenderTarget->Setup(output->GetDisplayDevice(), GM_TEXTURE_SIZE,
+                               GM_TEXTURE_SIZE, front, None);
         m_bRenderTargetOwned = true;
 
         // Set up our child RenderGMRadar
@@ -145,17 +157,19 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
 
         // Setup backup buffer (let the driver decide where to put it - Note: on the V2 we are counting on the driver choosing system memory)
         m_pBackupBuffer = new ImageBuffer;
-        m_pBackupBuffer->Setup(output->GetDisplayDevice(), GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, None, None);
+        m_pBackupBuffer->Setup(output->GetDisplayDevice(), GM_TEXTURE_SIZE,
+                               GM_TEXTURE_SIZE, None, None);
 
         // Setup render buffer (contains a backup of ther rendered image)
         m_pRenderBuffer = new ImageBuffer;
-        m_pRenderBuffer->Setup(output->GetDisplayDevice(), GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, None, None);
+        m_pRenderBuffer->Setup(output->GetDisplayDevice(), GM_TEXTURE_SIZE,
+                               GM_TEXTURE_SIZE, None, None);
 
         // Here we fool the radar and make it thing it renders to a 128x128 surface
         radar.Setup(m_pRenderBuffer);
         // and now we are using a back door to make it actually use the primary surface (geez, ugly shit)
         IDirectDrawSurface7 *lpDDSBack = m_pRenderTarget->targetSurface();
-        radar.context.NewImageBuffer((UInt) lpDDSBack);
+        radar.context.NewImageBuffer((UInt)lpDDSBack);
     }
 
     paletteHandle = new PaletteHandle(context.m_pCtxDX->m_pDD, 32, 256);
@@ -166,31 +180,34 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     // CopyResource's the completed off-screen sweep into it (instead of the old DDraw Blt / the broken
     // borrowed-live-SRV hack). This is what makes the ground map PERSIST between sweeps instead of
     // resetting to black when the live buffer is cleared.
-    DWORD gmTexFlags = TextureHandle::FLAG_HINT_DYNAMIC bitor TextureHandle::FLAG_MATCHPRIMARY bitor
+    DWORD gmTexFlags = TextureHandle::FLAG_HINT_DYNAMIC bitor
+                       TextureHandle::FLAG_MATCHPRIMARY bitor
                        TextureHandle::FLAG_NOTMANAGED;
     {
         // #DX12 A5: both GPU backends need the panel as a real render-target texture (its own persistent
         // RGBA8 texture) so the completed sweep can be CopyResource'd in (D3D11: m_pGpuTex; D3D12: m_pDDS).
-        extern bool g_bUseD3D12;
-        if (g_bUseD3D12) gmTexFlags or_eq TextureHandle::FLAG_RENDERTARGET;
+        extern bool g_bUseGpu;
+        if (g_bUseGpu)
+            gmTexFlags or_eq TextureHandle::FLAG_RENDERTARGET;
     }
 
     lTexHandle = new TextureHandle;
     ShiAssert(lTexHandle);
-    lTexHandle->Create("GM Radar Left", 0, 0,
-                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, gmTexFlags);
+    lTexHandle->Create("GM Radar Left", 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE,
+                       gmTexFlags);
 
     rTexHandle = new TextureHandle;
     ShiAssert(rTexHandle);
-    rTexHandle->Create("GM Radar Right", 0, 0,
-                       GM_TEXTURE_SIZE, GM_TEXTURE_SIZE, gmTexFlags);
+    rTexHandle->Create("GM Radar Right", 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE,
+                       gmTexFlags);
 
     // Noise texture is twice as wide as the other textures to allow for random u (avoids time consuming re-generation)
     nTexHandle = new TextureHandle;
     ShiAssert(nTexHandle);
     paletteHandle->AttachToTexture(nTexHandle);
-    nTexHandle->Create("GM Radar Noise", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
-                       GM_TEXTURE_SIZE * 2, GM_TEXTURE_SIZE, TextureHandle::FLAG_HINT_STATIC);
+    nTexHandle->Create("GM Radar Noise", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY,
+                       8, GM_TEXTURE_SIZE * 2, GM_TEXTURE_SIZE,
+                       TextureHandle::FLAG_HINT_STATIC);
 
     // Generate the green palette for the noise texture
     DWORD paletteData[256];
@@ -205,7 +222,8 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     BYTE *pDst = pBuf;
     ShiAssert(pDst);
 
-    if ( not pDst) return;
+    if (not pDst)
+        return;
 
     const int nNoiseBase = 0x5;
 
@@ -219,7 +237,7 @@ void RenderGMComposite::Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*,
     nTexHandle->Load(0, 0, pBuf, true); // Chromakey 0 = black
 
     // this will eventually load (indirectly) the texture for the first and last time
-    paletteHandle->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*) paletteData);
+    paletteHandle->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE *)paletteData);
 
     // texture owns a copy of the image data
     delete[] pBuf;
@@ -292,7 +310,10 @@ void RenderGMComposite::Cleanup(void)
 }
 
 
-void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float platformHdg, float beamAngle, int beamPercent, float cursorAngle, BOOL movingRight, bool Shaped)
+void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center,
+                                float platformHdg, float beamAngle,
+                                int beamPercent, float cursorAngle,
+                                BOOL movingRight, bool Shaped)
 {
     float Px, Py;
     float dx, dy;
@@ -302,8 +323,10 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
     ShiAssert(lTexHandle);
 
     // Convert our location to use as the origion of the radar beam
-    Px = (from->x - center->x) * worldToUnitScale; // Normalize for display range
-    Py = (from->y - center->y) * worldToUnitScale; // Normalize for display range
+    Px =
+        (from->x - center->x) * worldToUnitScale; // Normalize for display range
+    Py =
+        (from->y - center->y) * worldToUnitScale; // Normalize for display range
 
     // Set up the edge with separates the old and new parts of the sweep
     hdg = platformHdg + beamAngle;
@@ -312,7 +335,9 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
     beam.SetupWithVector(Px, Py, dx, dy);
 
     // Set up the left gimbal limit edge
-    hdg = platformHdg - gimbalLimit + cursorAngle; // 2002-04-03 MN add in current cursor position angle for azimuth limitations
+    hdg =
+        platformHdg - gimbalLimit +
+        cursorAngle; // 2002-04-03 MN add in current cursor position angle for azimuth limitations
     dx = (float)cos(hdg);
     dy = (float)sin(hdg);
     leftLimit.SetupWithVector(Px, Py, dx, dy);
@@ -324,9 +349,9 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
     rightLimit.SetupWithVector(Px, Py, dx, dy);
 
     // OW
-    static RECT rcBlit = { 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE };
+    static RECT rcBlit = {0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE};
 
-    if ( not DisplayOptions.bRender2Texture)
+    if (not DisplayOptions.bRender2Texture)
     {
         // This whole blitting crap is slooow
 
@@ -337,13 +362,15 @@ void RenderGMComposite::SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float 
 
     // Do necessary background processing to prepare the next image
     ShiAssert(beamPercent <= 100);
-    bool bRender = BackgroundGeneration(from, at, platformHdg, beamPercent, movingRight, Shaped);
+    bool bRender = BackgroundGeneration(from, at, platformHdg, beamPercent,
+                                        movingRight, Shaped);
 
-    if ( not DisplayOptions.bRender2Texture)
+    if (not DisplayOptions.bRender2Texture)
     {
         // Artscout - 2026: [DX7-PURGE] DDraw surface->Blt save/restore removed (GPU renders to texture).
         radar.context.UnlockViewport();
-        radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
+        radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(),
+                                     m_pRenderTarget->targetYres());
     }
 }
 
@@ -362,10 +389,11 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     // completed sweep into targetHandle->m_pGpuTex; m_pDDS is its own SRV). No live-buffer borrow, so
     // the map survives the per-sweep clear.
 
-    if ( not DisplayOptions.bRender2Texture)
+    if (not DisplayOptions.bRender2Texture)
     {
         radar.context.UnlockViewport();
-        radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
+        radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(),
+                                     m_pRenderTarget->targetYres());
     }
 
     // Normalize the current center of attention position for display range
@@ -398,20 +426,20 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     v0.v = 1.0f; // Lower left
 
     x = -1.0f;
-    y =  GM_OVERSCAN_H;
+    y = GM_OVERSCAN_H;
     v1.x = x * cosRot - y * sinRot + dx;
     v1.y = x * sinRot + y * cosRot + dy;
     v1.u = 1.0f;
     v1.v = 1.0f; // Lower right
 
-    x =  GM_OVERSCAN_V;
-    y =  GM_OVERSCAN_H;
+    x = GM_OVERSCAN_V;
+    y = GM_OVERSCAN_H;
     v2.x = x * cosRot - y * sinRot + dx;
     v2.y = x * sinRot + y * cosRot + dy;
     v2.u = 1.0f;
     v2.v = 0.0f; // Upper right
 
-    x =  GM_OVERSCAN_V;
+    x = GM_OVERSCAN_V;
     y = -GM_OVERSCAN_H;
     v3.x = x * cosRot - y * sinRot + dx;
     v3.y = x * sinRot + y * cosRot + dy;
@@ -439,7 +467,8 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
         }
 
         context.RestoreState(STATE_TEXTURE);
-        context.SelectTexture1((DWORD_PTR) rTexHandle); // Artscout - 2026 (x64): pointer-sized
+        context.SelectTexture1(
+            (DWORD_PTR)rTexHandle); // Artscout - 2026 (x64): pointer-sized
         ClipAndDraw2DFan(vertArray, num);
     }
 
@@ -464,20 +493,20 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
     v0.v = 1.0f; // Lower left
 
     x = -1.0f;
-    y =  GM_OVERSCAN_H;
+    y = GM_OVERSCAN_H;
     v1.x = x * cosRot - y * sinRot + dx;
     v1.y = x * sinRot + y * cosRot + dy;
     v1.u = 1.0f;
     v1.v = 1.0f; // Lower right
 
-    x =  GM_OVERSCAN_V;
-    y =  GM_OVERSCAN_H;
+    x = GM_OVERSCAN_V;
+    y = GM_OVERSCAN_H;
     v2.x = x * cosRot - y * sinRot + dx;
     v2.y = x * sinRot + y * cosRot + dy;
     v2.u = 1.0f;
     v2.v = 0.0f; // Upper right
 
-    x =  GM_OVERSCAN_V;
+    x = GM_OVERSCAN_V;
     y = -GM_OVERSCAN_H;
     v3.x = x * cosRot - y * sinRot + dx;
     v3.y = x * sinRot + y * cosRot + dy;
@@ -505,14 +534,15 @@ void RenderGMComposite::DrawComposite(Tpoint *center, float platformHdg)
         }
 
         context.RestoreState(STATE_TEXTURE);
-        context.SelectTexture1((DWORD_PTR) lTexHandle); // Artscout - 2026 (x64): pointer-sized
+        context.SelectTexture1(
+            (DWORD_PTR)lTexHandle); // Artscout - 2026 (x64): pointer-sized
         ClipAndDraw2DFan(vertArray, num);
     }
 
     // Put the beam back the way it was in case we need it again next time
     beam.Reverse();
 
-    if ( not DisplayOptions.bRender2Texture)
+    if (not DisplayOptions.bRender2Texture)
     {
         radar.context.UnlockViewport();
     }
@@ -526,7 +556,7 @@ void RenderGMComposite::SetRange(float newRange, int newLOD)
     ShiAssert(rTexHandle);
 
     // Update our child class
-    if ( not radar.SetRange(newRange * GM_OVERSCAN_RNG, newLOD))
+    if (not radar.SetRange(newRange * GM_OVERSCAN_RNG, newLOD))
     {
         // If it required no changes, stop here
         return;
@@ -547,7 +577,9 @@ void RenderGMComposite::SetRange(float newRange, int newLOD)
 }
 
 
-bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float platformHdg, int beamPercent, BOOL movingRight, bool Shaped)
+bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at,
+                                             float platformHdg, int beamPercent,
+                                             BOOL movingRight, bool Shaped)
 {
     OpName operation;
     float dx, dy;
@@ -561,7 +593,9 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
         return FALSE;
 
     // Detect the beam reversal at the end of a sweep or a sweep restart
-    if ((prevBeamRight not_eq movingRight) /*or (beamPercent < prevBeamPercent)*/ or DrawChanged)
+    if ((prevBeamRight not_eq
+         movingRight) /*or (beamPercent < prevBeamPercent)*/
+        or DrawChanged)
     {
         //BackgroundGeneration( from, at, platformHdg, 101, prevBeamRight, Shaped );
         dx = (float)cos(radar.GetHdg());
@@ -588,69 +622,71 @@ bool RenderGMComposite::BackgroundGeneration(Tpoint *from, Tpoint *at, float pla
         switch (operation)
         {
 
-            case Start:
-                radar.StartDraw();
-                dx = (float)cos(platformHdg);
-                dy = (float)sin(platformHdg);
-                center.x = at->x + dx * GM_OVERSCAN * range;
-                center.y = at->y + dy * GM_OVERSCAN * range;
-                center.z = at->z;
-                radar.StartScene(from, &center, platformHdg);
-                radar.EndDraw();
+        case Start:
+            radar.StartDraw();
+            dx = (float)cos(platformHdg);
+            dy = (float)sin(platformHdg);
+            center.x = at->x + dx * GM_OVERSCAN * range;
+            center.y = at->y + dy * GM_OVERSCAN * range;
+            center.z = at->z;
+            radar.StartScene(from, &center, platformHdg);
+            radar.EndDraw();
+            break;
+
+        case Xform:
+            radar.StartDraw();
+            radar.TransformScene();
+            radar.EndDraw();
+            break;
+
+        case Ground:
+            radar.StartDraw();
+            radar.DrawScene();
+            radar.EndDraw();
+            break;
+
+        case Features:
+            if (not Shaped)
                 break;
 
-            case Xform:
-                radar.StartDraw();
-                radar.TransformScene();
-                radar.EndDraw();
-                break;
+            radar.StartDraw();
+            radar.DrawFeatures();
+            radar.EndDraw();
+            break;
 
-            case Ground:
-                radar.StartDraw();
-                radar.DrawScene();
-                radar.EndDraw();
-                break;
+        case Targets:
+            radar.StartDraw();
+            radar.PrepareToDrawTargets();
+            tgtDrawCB(tgtDrawCBparam, &radar, Shaped);
+            radar.FlushDrawnTargets();
+            radar.EndDraw();
+            break;
 
-            case Features:
-                if ( not Shaped) break;
+        case Finish:
+            radar.StartDraw();
+            radar.FinishScene();
+            radar.EndDraw();
+            break;
 
-                radar.StartDraw();
-                radar.DrawFeatures();
-                radar.EndDraw();
-                break;
+        case Replace:
+            beamPercent = 0;
+            break;
 
-            case Targets:
-                radar.StartDraw();
-                radar.PrepareToDrawTargets();
-                tgtDrawCB(tgtDrawCBparam, &radar, Shaped);
-                radar.FlushDrawnTargets();
-                radar.EndDraw();
-                break;
-
-            case Finish:
-                radar.StartDraw();
-                radar.FinishScene();
-                radar.EndDraw();
-                break;
-
-            case Replace:
-                beamPercent = 0;
-                break;
-
-            default:
-                ShiWarning("Bad GM Radar generation sequence");
-                break;
+        default:
+            ShiWarning("Bad GM Radar generation sequence");
+            break;
         }
-
     }
 
     return bRender;
 }
 
-void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRight, bool Shaped)
+void RenderGMComposite::NewImage(Tpoint *at, float platformHdg,
+                                 BOOL replaceRight, bool Shaped)
 {
     TextureHandle *targetHandle;
-    extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- noise overlay skipped in BOTH GPU modes
+    extern bool
+        g_bUseGpu; // Artscout - 2026: #DX12 -- noise overlay skipped in BOTH GPU modes
     ShiAssert(lTexHandle);
     ShiAssert(rTexHandle);
 
@@ -674,10 +710,11 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     }
 
     // Render Noise overlay
-    if ( not DisplayOptions.bRender2Texture)
+    if (not DisplayOptions.bRender2Texture)
     {
         radar.context.UnlockViewport();
-        radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(), m_pRenderTarget->targetYres());
+        radar.context.SetViewportAbs(0, 0, m_pRenderTarget->targetXres(),
+                                     m_pRenderTarget->targetYres());
     }
 
     // Artscout - 2026: skip the additive noise overlay under D3D11. Its per-call additive blend override
@@ -686,64 +723,78 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     // "white noise" symptom; the log showed center=(23,23,23) full-coverage). Cosmetic only.
     if (!g_bUseGpu)
     {
-    float Alpha = 0.3f;
+        float Alpha = 0.3f;
 
-    if (Shaped) Alpha = 0.7f;
+        if (Shaped)
+            Alpha = 0.7f;
 
-    radar.StartDraw();
+        radar.StartDraw();
 
-    // calc random U
-    int nRand = MulDiv(rand(), 128, RAND_MAX) - 1;
-    const float fUStart = nRand * (1.0f / (GM_TEXTURE_SIZE * 2));
-    const float fUStop = fUStart + 0.5f;
-    ShiAssert(fUStop <= 1.0f);
+        // calc random U
+        // Artscout - 2026 (#104): MulDiv is Win32-only; on Linux compute the rounded a*b/c directly
+        // (values are small: rand() <= RAND_MAX, so a*b fits comfortably in 64-bit). Behavior matches MulDiv.
+#ifdef _WIN32
+        int nRand = MulDiv(rand(), 128, RAND_MAX) - 1;
+#else
+        int nRand =
+            (int)(((__int64)rand() * 128 + RAND_MAX / 2) / RAND_MAX) - 1;
+#endif
+        const float fUStart = nRand * (1.0f / (GM_TEXTURE_SIZE * 2));
+        const float fUStop = fUStart + 0.5f;
+        ShiAssert(fUStop <= 1.0f);
 
-    // setup vertices
-    TwoDVertex pVtx[4];
-    ZeroMemory(pVtx, sizeof(pVtx));
-    pVtx[0].x = 0.0f;
-    pVtx[0].y = 0.0f;
-    pVtx[0].u = fUStart;
-    pVtx[0].v = 0.0f;
-    pVtx[0].r = pVtx[0].g = pVtx[0].b = pVtx[0].a = Alpha;
+        // setup vertices
+        TwoDVertex pVtx[4];
+        ZeroMemory(pVtx, sizeof(pVtx));
+        pVtx[0].x = 0.0f;
+        pVtx[0].y = 0.0f;
+        pVtx[0].u = fUStart;
+        pVtx[0].v = 0.0f;
+        pVtx[0].r = pVtx[0].g = pVtx[0].b = pVtx[0].a = Alpha;
 
-    pVtx[1].x = GM_TEXTURE_SIZE;
-    pVtx[1].y = 0.0f;
-    pVtx[1].u = fUStop;
-    pVtx[1].v = 0.0f;
-    pVtx[1].r = pVtx[1].g = pVtx[1].b = pVtx[1].a = Alpha;
+        pVtx[1].x = GM_TEXTURE_SIZE;
+        pVtx[1].y = 0.0f;
+        pVtx[1].u = fUStop;
+        pVtx[1].v = 0.0f;
+        pVtx[1].r = pVtx[1].g = pVtx[1].b = pVtx[1].a = Alpha;
 
-    pVtx[2].x = GM_TEXTURE_SIZE;
-    pVtx[2].y = GM_TEXTURE_SIZE;
-    pVtx[2].u = fUStop;
-    pVtx[2].v = 1.0f;
-    pVtx[2].r = pVtx[2].g = pVtx[2].b = pVtx[2].a = Alpha;
+        pVtx[2].x = GM_TEXTURE_SIZE;
+        pVtx[2].y = GM_TEXTURE_SIZE;
+        pVtx[2].u = fUStop;
+        pVtx[2].v = 1.0f;
+        pVtx[2].r = pVtx[2].g = pVtx[2].b = pVtx[2].a = Alpha;
 
-    pVtx[3].x = 0.0f;
-    pVtx[3].y = GM_TEXTURE_SIZE;
-    pVtx[3].u = fUStart;
-    pVtx[3].v = 1.0f;
-    pVtx[3].r = pVtx[3].g = pVtx[3].b = pVtx[3].a = Alpha;
+        pVtx[3].x = 0.0f;
+        pVtx[3].y = GM_TEXTURE_SIZE;
+        pVtx[3].u = fUStart;
+        pVtx[3].v = 1.0f;
+        pVtx[3].r = pVtx[3].g = pVtx[3].b = pVtx[3].a = Alpha;
 
-    // and action
-    radar.context.RestoreState(STATE_ALPHA_TEXTURE); //JAM 18Oct03
-    radar.context.SetState(MPR_STA_DST_BLEND_FUNCTION, MPR_BF_ONE);
-    //MI TEST
-    radar.context.SelectTexture1((DWORD_PTR) nTexHandle); // Artscout - 2026 (x64): pointer-sized
-    radar.context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
-    // radar.context.InvalidateState();
+        // and action
+        radar.context.RestoreState(STATE_ALPHA_TEXTURE); //JAM 18Oct03
+        radar.context.SetState(MPR_STA_DST_BLEND_FUNCTION, MPR_BF_ONE);
+        //MI TEST
+        radar.context.SelectTexture1(
+            (DWORD_PTR)nTexHandle); // Artscout - 2026 (x64): pointer-sized
+        radar.context.DrawPrimitive(MPR_PRM_TRIFAN,
+                                    MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx,
+                                    sizeof(pVtx[0]));
+        // radar.context.InvalidateState();
 
-    radar.EndDraw();
+        radar.EndDraw();
     } // Artscout - 2026: end !g_bUseD3D11 noise-overlay guard
 
-    static RECT rcBlit = { 0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE };
+    static RECT rcBlit = {0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE};
 
     // Artscout - 2026: [DX7-PURGE] DDraw surface->Blt "save image" removed (GPU renders to texture).
 
     // Now blit the final viewport image to the texture
-    ImageBuffer *pSrcBuffer = DisplayOptions.bRender2Texture ? m_pRenderTarget : m_pRenderBuffer;
+    ImageBuffer *pSrcBuffer =
+        DisplayOptions.bRender2Texture ? m_pRenderTarget : m_pRenderBuffer;
     extern bool g_bUseD3D12;
-    if (g_bUseD3D12)
+    extern bool
+        g_bUseVulkan; // Artscout - 2026 (GM radar): CopyRttTo routes by backend; Vulkan snapshots too
+    if (g_bUseD3D12 || g_bUseVulkan)
     {
         // Artscout - 2026: #DX12 A5 -- snapshot the sweep into the panel handle's OWN D3D12 texture
         // (m_pDDS is a D3D12Texture* under D3D12). GPU copy on the main list, recorded after the sweep
@@ -756,7 +807,7 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
     // Artscout - 2026: [DX7-PURGE] the legacy non-GPU DDraw surface->Blt snapshot is gone
     // (only the D3D11/D3D12 CopyResource snapshot paths above remain).
 
-    if ( not DisplayOptions.bRender2Texture)
+    if (not DisplayOptions.bRender2Texture)
     {
         radar.context.SetViewportAbs(0, 0, GM_TEXTURE_SIZE, GM_TEXTURE_SIZE);
         radar.context.LockViewport();
@@ -765,7 +816,8 @@ void RenderGMComposite::NewImage(Tpoint *at, float platformHdg, BOOL replaceRigh
 
 
 // Helper function to compute x, y, u, v between two points
-static inline void Intersect(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *c, float t)
+static inline void Intersect(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *c,
+                             float t)
 {
     c->x = v1->x + t * (v2->x - v1->x);
     c->y = v1->y + t * (v2->y - v1->y);
@@ -783,7 +835,8 @@ static inline void Intersect(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *c, floa
 }
 
 
-static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, int inCount)
+static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge,
+                      int inCount)
 {
     int i;
     int num;
@@ -805,7 +858,7 @@ static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, i
     // Check the first vert
     wasOut = startedOut = edge->RightOf(v->x, v->y);
 
-    if ( not startedOut)
+    if (not startedOut)
     {
         outArray[num] = v;
         num++;
@@ -834,7 +887,7 @@ static int ClipToEdge(TwoDVertex **inArray, TwoDVertex **outArray, Edge *edge, i
             NumCverts++;
         }
 
-        if ( not amOut)
+        if (not amOut)
         {
             outArray[num] = v;
             num++;
@@ -880,9 +933,9 @@ static int ClipToBeamAndLimits(void)
     NumCverts = 0;
 
     // Clip the incomming quad to the beam and gimbal limits
-    num = ClipToEdge(inArray,   vertArray, &leftLimit,  num);
-    num = ClipToEdge(vertArray, inArray,   &rightLimit, num);
-    num = ClipToEdge(inArray,   vertArray, &beam,       num);
+    num = ClipToEdge(inArray, vertArray, &leftLimit, num);
+    num = ClipToEdge(vertArray, inArray, &rightLimit, num);
+    num = ClipToEdge(inArray, vertArray, &beam, num);
 
     return num;
 }
@@ -897,7 +950,8 @@ void RenderGMComposite::DebugDrawLeftTexture(Render2D *renderer)
 
 
     renderer->context.RestoreState(STATE_TEXTURE);
-    renderer->context.SelectTexture1((DWORD_PTR) lTexHandle); // Artscout - 2026 (x64): pointer-sized
+    renderer->context.SelectTexture1(
+        (DWORD_PTR)lTexHandle); // Artscout - 2026 (x64): pointer-sized
 
     v0.x = 1.0f;
     v0.y = 1.0f;

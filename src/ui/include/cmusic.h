@@ -47,10 +47,10 @@ protected:
     // End of stuff for interactive music
 
     long Volume_;
-    int  StreamID_[2];
+    int StreamID_[2];
     long MusicFlags_;
     long Queue_[_MUSIC_QUEUE_SIZE_];
-    CSoundMgr   *Sound_;
+    CSoundMgr *Sound_;
 
     SOUND_RES *Current_;
 
@@ -62,13 +62,14 @@ public:
     void Cleanup();
     long GetFlags()
     {
-        return(MusicFlags_);
+        return (MusicFlags_);
     }
     BOOL Queued()
     {
-        if (Queue_[0] not_eq SND_NO_HANDLE) return(TRUE);
+        if (Queue_[0] not_eq SND_NO_HANDLE)
+            return (TRUE);
 
-        return(FALSE);
+        return (FALSE);
     }
     void CreateStream();
     void RemoveStream();
@@ -90,7 +91,7 @@ public:
 
     SOUND_RES *GetCurrent()
     {
-        return(Current_);
+        return (Current_);
     }
 
     void ToggleStream()

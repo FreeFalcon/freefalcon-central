@@ -4,8 +4,7 @@
 
 LRESULT CALLBACK WinProc(HWND, UINT, WPARAM, LPARAM);
 
-char *DikTable[256] =
-{
+char *DikTable[256] = {
     "0",
     "DIK_ESCAPE",
     "DIK_1",
@@ -264,8 +263,7 @@ char *DikTable[256] =
     "0",
 };
 
-char *ShiftTable[] =
-{
+char *ShiftTable[] = {
     "",//0
     "SHIFT",//1
     "CTRL",//2
@@ -276,8 +274,7 @@ char *ShiftTable[] =
     "SHIFT CTRL ALT",//7
 };
 
-char*FlagTable[] =
-{
+char *FlagTable[] = {
     "",//0
     "ASCII",//1
     "ALPHA",//2
@@ -306,7 +303,8 @@ RECT myrect;
 
 UI_Hash *NewKeys = NULL;
 
-int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdShow)
+int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine,
+                   int iCmdShow)
 {
     static char szAppName[] = "genascii";
     HWND hwnd;
@@ -318,7 +316,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdSho
     FILE *fp;
 
     wndclass.cbSize = sizeof(wndclass);
-    wndclass.style  = CS_HREDRAW | CS_VREDRAW;
+    wndclass.style = CS_HREDRAW | CS_VREDRAW;
     wndclass.lpfnWndProc = WinProc;
     wndclass.cbClsExtra = 0;
     wndclass.cbWndExtra = 0;
@@ -332,17 +330,9 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdSho
 
     RegisterClassEx(&wndclass);
 
-    hwnd = CreateWindow(szAppName,
-                        "Ascii Conversion Program",
-                        WS_OVERLAPPEDWINDOW,
-                        CW_USEDEFAULT,
-                        CW_USEDEFAULT,
-                        CW_USEDEFAULT,
-                        CW_USEDEFAULT,
-                        NULL,
-                        NULL,
-                        hInst,
-                        NULL);
+    hwnd = CreateWindow(szAppName, "Ascii Conversion Program",
+                        WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, CW_USEDEFAULT,
+                        CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInst, NULL);
 
     ShowWindow(hwnd, iCmdShow);
     UpdateWindow(hwnd);
@@ -356,7 +346,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdSho
         DispatchMessage(&msg);
     }
 
-    rec = (char*)NewKeys->GetFirst(&current, &curidx);
+    rec = (char *)NewKeys->GetFirst(&current, &curidx);
 
     if (rec)
     {
@@ -367,7 +357,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdSho
             while (rec)
             {
                 fprintf(fp, "%s\n", rec);
-                rec = (char*)NewKeys->GetNext(&current, &curidx);
+                rec = (char *)NewKeys->GetNext(&current, &curidx);
             }
 
             fclose(fp);
@@ -377,7 +367,7 @@ int WINAPI WinMain(HINSTANCE hInst, HINSTANCE hPrev, PSTR szCmdLine, int iCmdSho
     NewKeys->Cleanup();
     delete NewKeys;
 
-    return(msg.lParam);
+    return (msg.lParam);
 }
 
 LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -392,75 +382,81 @@ LRESULT CALLBACK WinProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_CREATE:
-            return(0);
+    case WM_CREATE:
+        return (0);
 
-        case WM_SYSKEYDOWN:
-        case WM_KEYDOWN:
-            LastScanCode = ((lParam >> 16) & 0xff) | ((lParam >> 17) & 0x80);
-            return(0);
+    case WM_SYSKEYDOWN:
+    case WM_KEYDOWN:
+        LastScanCode = ((lParam >> 16) & 0xff) | ((lParam >> 17) & 0x80);
+        return (0);
 
-        case WM_CHAR:
-            ShiftStates = 0;
+    case WM_CHAR:
+        ShiftStates = 0;
 
-            if (GetKeyState(VK_SHIFT) & 0x80)
-                ShiftStates |= _SHIFT_;
+        if (GetKeyState(VK_SHIFT) & 0x80)
+            ShiftStates |= _SHIFT_;
 
-            if (GetKeyState(VK_MENU) & 0x80)
-                ShiftStates |= _ALT_;
+        if (GetKeyState(VK_MENU) & 0x80)
+            ShiftStates |= _ALT_;
 
-            if (GetKeyState(VK_CONTROL) & 0x80)
-                ShiftStates |= _CTRL_;
+        if (GetKeyState(VK_CONTROL) & 0x80)
+            ShiftStates |= _CTRL_;
 
-            LastAscii = wParam;
-            AsciiFlags = 0;
+        LastAscii = wParam;
+        AsciiFlags = 0;
 
-            if (isdigit(LastAscii))
-                AsciiFlags |= _DIGIT_;
+        if (isdigit(LastAscii))
+            AsciiFlags |= _DIGIT_;
 
-            if (isalpha(LastAscii))
-                AsciiFlags |= _ALPHA_;
+        if (isalpha(LastAscii))
+            AsciiFlags |= _ALPHA_;
 
-            if (LastAscii > 31)
+        if (LastAscii > 31)
+        {
+            AsciiFlags |= _ASCII_;
+            sprintf(buffer, "%1ld   %1ld     %s       %s", LastScanCode,
+                    LastAscii, ShiftTable[ShiftStates], FlagTable[AsciiFlags]);
+            ID = (LastScanCode << 8) | ShiftStates;
+
+            if (!NewKeys->Find(ID))
             {
-                AsciiFlags |= _ASCII_;
-                sprintf(buffer, "%1ld   %1ld     %s       %s", LastScanCode, LastAscii, ShiftTable[ShiftStates], FlagTable[AsciiFlags]);
-                ID = (LastScanCode << 8) | ShiftStates;
-
-                if (!NewKeys->Find(ID))
-                {
-                    rec = new char[strlen(buffer) + 1];
-                    strcpy(rec, buffer);
-                    NewKeys->Add(ID, rec);
-                }
-
-                InvalidateRect(hwnd, &myrect, TRUE);
+                rec = new char[strlen(buffer) + 1];
+                strcpy(rec, buffer);
+                NewKeys->Add(ID, rec);
             }
 
-            return(0);
+            InvalidateRect(hwnd, &myrect, TRUE);
+        }
 
-        case WM_PAINT:
-            hdc = BeginPaint(hwnd, &ps);
-            GetClientRect(hwnd, &rect);
+        return (0);
 
-            myrect = rect;
+    case WM_PAINT:
+        hdc = BeginPaint(hwnd, &ps);
+        GetClientRect(hwnd, &rect);
 
-            DrawText(hdc, "Press All the keys for the language which need to be remapped", -1, &myrect, DT_SINGLELINE);
-            myrect.top += 40;
+        myrect = rect;
 
-            if (LastAscii)
-            {
-                sprintf(buffer, "%s       %1c (%1ld)         %s       %s", DikTable[LastScanCode], LastAscii, LastAscii, ShiftTable[ShiftStates], FlagTable[AsciiFlags]);
-                DrawText(hdc, buffer, -1, &myrect, DT_SINGLELINE);
-            }
+        DrawText(
+            hdc,
+            "Press All the keys for the language which need to be remapped", -1,
+            &myrect, DT_SINGLELINE);
+        myrect.top += 40;
 
-            EndPaint(hwnd, &ps);
-            return(0);
+        if (LastAscii)
+        {
+            sprintf(buffer, "%s       %1c (%1ld)         %s       %s",
+                    DikTable[LastScanCode], LastAscii, LastAscii,
+                    ShiftTable[ShiftStates], FlagTable[AsciiFlags]);
+            DrawText(hdc, buffer, -1, &myrect, DT_SINGLELINE);
+        }
 
-        case WM_DESTROY:
-            PostQuitMessage(0);
-            return(0);
+        EndPaint(hwnd, &ps);
+        return (0);
+
+    case WM_DESTROY:
+        PostQuitMessage(0);
+        return (0);
     }
 
-    return(DefWindowProc(hwnd, message, wParam, lParam));
+    return (DefWindowProc(hwnd, message, wParam, lParam));
 }

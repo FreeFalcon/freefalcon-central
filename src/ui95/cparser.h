@@ -3,7 +3,7 @@
 
 #ifdef _UI95_PARSER_
 
-#define PARSE_MAX_PARAMS    (12)
+#define PARSE_MAX_PARAMS (12)
 #define MAX_WINDOWS_IN_LIST (200)
 #define PARSE_HASH_SIZE (1024)
 
@@ -24,7 +24,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -32,7 +33,8 @@ private:
     char *script_; // script file (read into memory)
     long scriptlen_;
 
-    long P_[PARSE_MAX_PARAMS]; // used for passing parameters to Setup routines for the new windows/controls
+    long P_
+        [PARSE_MAX_PARAMS]; // used for passing parameters to Setup routines for the new windows/controls
     _TCHAR *str_; // string pointer (only 1 allowed per command)
 
     C_Handler *Handler_; // pointer to Window Handler (from Setup())
@@ -46,7 +48,7 @@ private:
     C_String *String_; // Pointer to String Manager (from script)
     C_Movie *Movie_; // Pointer to Movie Manager (from script)
 
-    long       WindowList_[MAX_WINDOWS_IN_LIST];
+    long WindowList_[MAX_WINDOWS_IN_LIST];
 
     C_Hash *IDOrder_; // Hash List in ID order... for finding tokens
     C_Hash *TokenOrder_; // Hash List in "Token" order
@@ -55,12 +57,12 @@ private:
 
     FILE *Perror_;
     // Current Token;
-    short  tokenlen_;
+    short tokenlen_;
 
     // Parameters
     short P_Idx_; // pointer to current parameter
 
-    short        WinIndex_, WinLoaded_;
+    short WinIndex_, WinLoaded_;
 
     C_Window *WindowParser();
     C_Base *ControlParser();
@@ -68,13 +70,16 @@ private:
     void AddInternalIDs(ID_TABLE tbl[]);
     long TokenizeIDs(char *idfile, long size);
     void LoadIDTable(char *filename);
-    FILE *OpenArtFile(char *filename, const char *thrdir, const char *maindir, int hirescapable = 1);
+    FILE *OpenArtFile(char *filename, const char *thrdir, const char *maindir,
+                      int hirescapable = 1);
 
 public:
     C_Parser();
     ~C_Parser();
 
-    void Setup(C_Handler *handler, C_Image *ImgMgr, C_Font *FontList, C_Sound *SndMgr, C_PopupMgr *PopupMgr, C_Animation *AnimMgr, C_String *StringMgr, C_Movie *MovieMgr);
+    void Setup(C_Handler *handler, C_Image *ImgMgr, C_Font *FontList,
+               C_Sound *SndMgr, C_PopupMgr *PopupMgr, C_Animation *AnimMgr,
+               C_String *StringMgr, C_Movie *MovieMgr);
     void Cleanup();
     char *FindIDStr(long ID);
     long FindID(char *token);
@@ -82,7 +87,8 @@ public:
 
     void SetCheck(long ID)
     {
-        if (TokenOrder_) TokenOrder_->SetCheck(ID);
+        if (TokenOrder_)
+            TokenOrder_->SetCheck(ID);
     }
     void LoadIDList(char *filelist);
     BOOL LoadScript(char *filename);
@@ -104,25 +110,29 @@ public:
     C_Base *ParsePopupMenu(char *filename);
     C_Hash *GetTokenHash()
     {
-        return(TokenOrder_);
+        return (TokenOrder_);
     }
     C_Hash *GetIDHash()
     {
-        return(IDOrder_);
+        return (IDOrder_);
     }
     long GetFirstWindowLoaded()
     {
         WinIndex_ = 0;
 
-        if (WinIndex_ < WinLoaded_) return(WindowList_[WinIndex_]);
-        else return(0);
+        if (WinIndex_ < WinLoaded_)
+            return (WindowList_[WinIndex_]);
+        else
+            return (0);
     }
     long GetNextWindowLoaded()
     {
         WinIndex_++;
 
-        if (WinIndex_ < WinLoaded_) return(WindowList_[WinIndex_]);
-        else return(0);
+        if (WinIndex_ < WinLoaded_)
+            return (WindowList_[WinIndex_]);
+        else
+            return (0);
     }
     long AddNewID(char *label, long);
     void LogError(char *str);

@@ -57,21 +57,22 @@
 // ---------------------------------------
 
 #define LogErrorsToScreen "ScreenErrors"
-#define ImmediateErrors   TRUE
-#define QueueErrors       FALSE
+#define ImmediateErrors TRUE
+#define QueueErrors FALSE
 
-typedef enum {ErrorReportingError,
-              ProgramInitFailure,
-              SystemInitFailure,
-              ModuleInitFailure,
-              FileOpenFailure,
-              ADTUseageError,
-              SystemLevelFailure,
-              SystemUseageError,
-              ModuleLevelFailure,
-              ModuleUseageError
-             }
-SystemErrorCode;
+typedef enum
+{
+    ErrorReportingError,
+    ProgramInitFailure,
+    SystemInitFailure,
+    ModuleInitFailure,
+    FileOpenFailure,
+    ADTUseageError,
+    SystemLevelFailure,
+    SystemUseageError,
+    ModuleLevelFailure,
+    ModuleUseageError
+} SystemErrorCode;
 
 extern void InitSystemErrors(char* LogFileName, unsigned char ImmediateReports);
 

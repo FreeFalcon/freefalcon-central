@@ -7,7 +7,8 @@
 #include "prof_gather.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     /*
@@ -38,12 +39,10 @@ extern "C" {
      *
      *  to avoid overprinting, you can make print_text truncate long strings
      */
-    extern void Prof_draw_gl(float sx, float sy,
-                             float width, float height,
-                             float line_spacing,
-                             int precision,
+    extern void Prof_draw_gl(float sx, float sy, float width, float height,
+                             float line_spacing, int precision,
                              void (*print_text)(float x, float y, char *str),
-                             float(*text_width)(char *str));
+                             float (*text_width)(char *str));
 
     /*
      *  Parameters
@@ -55,8 +54,8 @@ extern "C" {
      *                         8.0 would produce a 160-pixel tall display,
      *                         assuming screenspace is in pixels
      */
-    extern void Prof_draw_graph_gl(float sx, float sy,
-                                   float x_spacing, float y_spacing);
+    extern void Prof_draw_graph_gl(float sx, float sy, float x_spacing,
+                                   float y_spacing);
 
     typedef enum
     {
@@ -79,7 +78,7 @@ extern "C" {
     extern void Prof_set_cursor(int line);
 
     extern void Prof_dumpFile(); // Retro
-    extern char** Prof_dumpOverlay(); // Retro
+    extern char **Prof_dumpOverlay(); // Retro
 
     typedef enum
     {
@@ -94,4 +93,3 @@ extern "C" {
 #endif
 
 #endif // Prof_INC_PROF_H
-

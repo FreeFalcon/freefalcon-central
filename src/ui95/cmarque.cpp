@@ -14,16 +14,9 @@ enum
     CMRQ_SETDIRECTION,
 };
 
-char *C_Mrq_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[FGCOLOR]",
-    "[BGCOLOR]",
-    "[Font]",
-    "[BGIMAGE]",
-    "[DIRECTION]",
-    0,
+char *C_Mrq_Tokens[] = {
+    "[NOTHING]", "[SETUP]",   "[FGCOLOR]",   "[BGCOLOR]",
+    "[Font]",    "[BGIMAGE]", "[DIRECTION]", 0,
 };
 
 #endif
@@ -55,7 +48,7 @@ C_Marque::~C_Marque()
 
 long C_Marque::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Marque::Setup(long ID, short Type, _TCHAR *text)
@@ -161,22 +154,24 @@ void C_Marque::SetBGImage(long ImageID)
 
 void C_Marque::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
 }
 
 void C_Marque::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT dummy, rect;
 
-    if ( not Ready()) return;
+    if (not Ready())
+        return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if ( not (GetFlags() bitand C_BIT_ENABLED))
+    if (not(GetFlags() bitand C_BIT_ENABLED))
         return;
 
     rect.left = GetX();
@@ -200,24 +195,24 @@ BOOL C_Marque::TimerUpdate()
 
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            Text_->SetY(Position_);
+    case C_TYPE_VERTICAL:
+        Text_->SetY(Position_);
 
-            if (Position_ < -(MarqueLen_))
-                Position_ = GetH();
+        if (Position_ < -(MarqueLen_))
+            Position_ = GetH();
 
-            break;
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            Text_->SetX(Position_);
+    case C_TYPE_HORIZONTAL:
+        Text_->SetX(Position_);
 
-            if (Position_ < -(MarqueLen_))
-                Position_ = GetW();
+        if (Position_ < -(MarqueLen_))
+            Position_ = GetW();
 
-            break;
+        break;
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_Marque::SetSubParents(C_Window *)
@@ -231,17 +226,17 @@ void C_Marque::SetSubParents(C_Window *)
 
         switch (GetType())
         {
-            case C_TYPE_VERTICAL:
-                MarqueLen_ = Text_->GetH();
-                break;
+        case C_TYPE_VERTICAL:
+            MarqueLen_ = Text_->GetH();
+            break;
 
-            case C_TYPE_HORIZONTAL:
-                MarqueLen_ = Text_->GetW();
-                break;
+        case C_TYPE_HORIZONTAL:
+            MarqueLen_ = Text_->GetW();
+            break;
         }
     }
 
-    if ( not GetW() or not GetH())
+    if (not GetW() or not GetH())
         SetWH(Parent_->GetW(), Parent_->GetH());
 }
 
@@ -253,41 +248,41 @@ short C_Marque::LocalFind(char *token)
     while (C_Mrq_Tokens[i])
     {
         if (strnicmp(token, C_Mrq_Tokens[i], strlen(C_Mrq_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Marque::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CMRQ_SETUP:
-            Setup(P[0], (short)P[1], P[2]);
-            break;
+    case CMRQ_SETUP:
+        Setup(P[0], (short)P[1], P[2]);
+        break;
 
-        case CMRQ_SETFGCOLOR:
-            SetFGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CMRQ_SETFGCOLOR:
+        SetFGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CMRQ_SETBGCOLOR:
-            SetBGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CMRQ_SETBGCOLOR:
+        SetBGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CMRQ_SETFONT:
-            SetFont(P[0]);
-            break;
+    case CMRQ_SETFONT:
+        SetFont(P[0]);
+        break;
 
-        case CMRQ_SETBGIMAGE:
-            SetBGImage(P[0]);
-            break;
+    case CMRQ_SETBGIMAGE:
+        SetBGImage(P[0]);
+        break;
 
-        case CMRQ_SETDIRECTION:
-            SetDirection((short)P[0]);
-            break;
+    case CMRQ_SETDIRECTION:
+        SetDirection((short)P[0]);
+        break;
     }
 }
 

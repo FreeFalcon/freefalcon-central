@@ -65,7 +65,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 };
@@ -74,13 +75,12 @@ public:
 struct DecoyDispenser
 {
     Tpoint Pos[10],  // position of dispenser
-           Vec[10];  // vector (deltas) of fired decoy.
+        Vec[10];  // vector (deltas) of fired decoy.
     int Decoys[10];   // decoys per dispenser
     // Current dispenser for next firing will need to be in the airframe object.
-    int Count;       // number of dispensers
-    int Sequence;    // Firing sequence : 0 - alternate, 1 - sequential
+    int Count; // number of dispensers
+    int Sequence; // Firing sequence : 0 - alternate, 1 - sequential
 };
-
 
 
 // JB 010714 start
@@ -94,11 +94,13 @@ public:
     float fuelFlowFactorNormal; // fuel flow rate for normal engine rates
     float fuelFlowFactorAb; // fuel flow rate for afterburner lit
     float minFuelFlow; // least possible fuel flow rate
-    float normSpoolRate; // factor that the engines spool up/down by at normal operation
+    float
+        normSpoolRate; // factor that the engines spool up/down by at normal operation
     float abSpoolRate; // factor the engines spool up/down by in the AB regime
     float jfsSpoolUpRate; // rate the engines spool up when JFS started
     float jfsSpoolUpLimit; // rpm percentage that JFS stops at
-    float lightupSpoolRate; // spool up rate after engine is lit but before operating range
+    float
+        lightupSpoolRate; // spool up rate after engine is lit but before operating range
     float flameoutSpoolRate; // spool down rate when engine dies
     float jfsRechargeTime; // time jfs takes to recharge
     float jfsMinRechargeRpm; // min rpm required to recharge jfs
@@ -123,8 +125,10 @@ public:
     int hasFlapperons; // has flapperons as opposed to separates.
     int hasSwingWing; // swing wing
     int isComplex; // complex model
-    float tefMaxAngle; // divide angle of TEF by this to get amount of influence on CL and CD
-    float lefMaxAngle; // divide angle of LEF by this to get amount of influence on CL and CD
+    float
+        tefMaxAngle; // divide angle of TEF by this to get amount of influence on CL and CD
+    float
+        lefMaxAngle; // divide angle of LEF by this to get amount of influence on CL and CD
     int tefNStages;
     int lefNStages; // number of stages of flaps
     float tefRate; // how fast the TEFs move.
@@ -144,7 +148,7 @@ public:
     float lefMaxMach; // LEF maximum MACH
     int flapGearRelative; // if flaps only work with gear down
     float maxFlapVcas; // what Vcas flaps fully retract at
-    float  flapVcasRange; // what range of Vcas flaps work over
+    float flapVcasRange; // what range of Vcas flaps work over
     float rollMomentum;
     float pitchMomentum;
     float yawMomentum;
@@ -181,9 +185,9 @@ public:
     float fuelMinAft; // min fuel in the forward tanks to trigger warning
 
     Tpoint gunLocation; // offset of the gun
-    int gunTrailID;  // MLR 12/13/2003 - DrawableTrail ID
-    float gunElevation;  // MLR 1/28/2004 -
-    float gunAzimuth;    // MLR 1/28/2004 -
+    int gunTrailID; // MLR 12/13/2003 - DrawableTrail ID
+    float gunElevation; // MLR 1/28/2004 -
+    float gunAzimuth; // MLR 1/28/2004 -
     int engineSmokes; // engine emits smoke in nonAB
     int nEngines; // count of engines
     Tpoint engineLocation[8]; // location of engines
@@ -216,32 +220,27 @@ public:
     int sndExt2; // MLR 1/4/2004 -
     int sndWind; // SFX_ENGINEA
 
-    LookupTable sndIntChart,
-                sndAbIntChart,
-                sndInt2Chart,
-                sndExtChart,
-                sndAbExtChart,
-                sndExt2Chart;
+    LookupTable sndIntChart, sndAbIntChart, sndInt2Chart, sndExtChart,
+        sndAbExtChart, sndExt2Chart;
 
-    LookupTable sndIntPitchChart,
-                sndAbIntPitchChart,
-                sndInt2PitchChart,
-                sndExtPitchChart,
-                sndAbExtPitchChart,
-                sndExt2PitchChart;
+    LookupTable sndIntPitchChart, sndAbIntPitchChart, sndInt2PitchChart,
+        sndExtPitchChart, sndAbExtPitchChart, sndExt2PitchChart;
 
 
-    float sndExternalVol; // MLR 2003-11 volume of exterior sounds when inside the pit
+    float
+        sndExternalVol; // MLR 2003-11 volume of exterior sounds when inside the pit
 
-    int sndAero[4];   // MLR 1/7/2004 - Generic aerodynamic sounds (speed and AOA related)
-    LookupTable sndAeroSpeedChart[4],
-                sndAeroAOAChart[4];
+    int sndAero
+        [4]; // MLR 1/7/2004 - Generic aerodynamic sounds (speed and AOA related)
+    LookupTable sndAeroSpeedChart[4], sndAeroAOAChart[4];
 
     int sndEject; // SFX_EJECT
-    int sndSpdBrakeStart, sndSpdBrakeLoop, sndSpdBrakeEnd; // SFX_BRAKSTRT, SFX_BRAKLOOP, SFX_BRAKEND
+    int sndSpdBrakeStart, sndSpdBrakeLoop,
+        sndSpdBrakeEnd; // SFX_BRAKSTRT, SFX_BRAKLOOP, SFX_BRAKEND
     int sndSpdBrakeWind; // SFX_BRAKWIND
     int sndOverSpeed1, sndOverSpeed2; // SFX_OVERGSPEED1, SFX_OVERGSPEED2
-    int sndGunStart, sndGunLoop, sndGunEnd; //SFX_VULSTART, SFX_VULLOOP, SFX_VULLOOPE
+    int sndGunStart, sndGunLoop,
+        sndGunEnd; //SFX_VULSTART, SFX_VULLOOP, SFX_VULLOOPE
     int sndBBPullup; // SFX_BB_PULLUP
     int sndBBBingo; // SFX_BB_BINGO
     int sndBBWarning; // SFX_BB_WARNING
@@ -249,15 +248,17 @@ public:
     int sndBBChaffFlareLow; //SFX_BB_CHFLLOW
     int sndBBFlare; // SFX_FLARE
     int sndBBChaffFlare; //SFX_BB_CHAFLARE
-    int sndBBChaffFlareOut;//SFX_BB_CHFLOUT
+    int sndBBChaffFlareOut; //SFX_BB_CHFLOUT
     int sndBBAltitude; // SFX_BB_ALTITUDE
     int sndBBLock; // SFX_BB_LOCK
     int sndTouchDown; // SFX_TOUCHDOWN
     int sndWheelBrakes; // SFX_BIND
     int sndDragChute; // SFX_DRAGCHUTE
     int sndLowSpeed; // SFX_LOWSPDTONE
-    int sndFlapStart, sndFlapLoop, sndFlapEnd; // SFX_FLAPSTRT, SFX_FLAPLOOP, SFX_FLAPEND
-    int sndHookStart, sndHookLoop, sndHookEnd; // SFX_HOOKSTRT, SFX_HOOKLOOP, SFX_HOOKEND
+    int sndFlapStart, sndFlapLoop,
+        sndFlapEnd; // SFX_FLAPSTRT, SFX_FLAPLOOP, SFX_FLAPEND
+    int sndHookStart, sndHookLoop,
+        sndHookEnd; // SFX_HOOKSTRT, SFX_HOOKLOOP, SFX_HOOKEND
     int sndGearCloseStart, sndGearCloseEnd; // SFX_GEARCST, SFX_GEARCEND
     int sndGearOpenStart, sndGearOpenEnd; // SFX_GEAROST, SFX_GEAROEND
     int sndGearLoop; // SFX_GEARLOOP
@@ -270,25 +271,32 @@ public:
     int sndCanopyLoop;
 
 
-
-
-    float rollLimitForAiInWP; // 2002-01-31 ADDED BY S.G. AI limition on roll when in waypoint (or similar) mode
+    float
+        rollLimitForAiInWP; // 2002-01-31 ADDED BY S.G. AI limition on roll when in waypoint (or similar) mode
     int flap2Nozzle; // for harrier - nozzles follow flaps HACK HACK HACK
-    float startGroundAvoidCheck; // 2002-04-17 MN start ground avoid check only if closer than this distance to the ground
+    float
+        startGroundAvoidCheck; // 2002-04-17 MN start ground avoid check only if closer than this distance to the ground
     int limitPstick; // 0 = use pStick 1.0f; 1 = use SetPstick function (old code - probably better for heavies)
-    float refuelSpeed; // 2002-02-08 MN tanker speed for this aircraft when refueling
-    float refuelAltitude; // 2002-02-08 MN tanker altitude for this aircraft when refueling
+    float
+        refuelSpeed; // 2002-02-08 MN tanker speed for this aircraft when refueling
+    float
+        refuelAltitude; // 2002-02-08 MN tanker altitude for this aircraft when refueling
     int maxRippleCount; // 2002-02-23 MN maximum aircraft's ripple count (hardcoded 19 = F-16's max count)
     int largePark; // JPO - requires a large parking space
-    float decelDistance; // 2002-03-05 MN different deceleration distances at refuel for each aircraft
+    float
+        decelDistance; // 2002-03-05 MN different deceleration distances at refuel for each aircraft
     float followRate; // 2002-03-06 MN different follow rates for each aircraft
-    float desiredClosureFactor; // 2002-03-08 MN another important factor for a smooth approach to the tanker
+    float
+        desiredClosureFactor; // 2002-03-08 MN another important factor for a smooth approach to the tanker
     // float IL78Factor; // 2002-03-09 MN for fixing "GivingGas" range factor
     float longLeg; // 2002-03-13 MN long leg for tanker track pattern
     float shortLeg; // 2002-03-13 MN short leg for tanker track pattern
-    float refuelRate; // 2002-03-15 MN different aircraft have different refuel rates
-    float AIBoomDistance; // 2002-03-28 MN hack to put the AI on the boom when in close range to it
-    float BingoReturnDistance; // MN distance in nm to the closest friendly airbase at which AI is forced to go to RTB mode
+    float
+        refuelRate; // 2002-03-15 MN different aircraft have different refuel rates
+    float
+        AIBoomDistance; // 2002-03-28 MN hack to put the AI on the boom when in close range to it
+    float
+        BingoReturnDistance; // MN distance in nm to the closest friendly airbase at which AI is forced to go to RTB mode
     float jokerFactor; // 2002-03-12 MN default 2.0
     float bingoFactor; // 2002-03-12 MN default 5.0
     float fumesFactor; // 2002-03-12 MN default 15.0
@@ -296,9 +304,12 @@ public:
     int numDrogues; // 18NOV03 - FRB >=1 = has drogue service and how many stations
     int activeDrogue; // 26NOV03 - FRB Slot number of drogue used for refueling
     float DrogueExt; // 26NOV03 - FRB Drogue extension length (feet).
-    float BoomStoredAngle; // 12DEC03 - FRB Angle of boom in the stored position (deg. + = up)
-    Tpoint DrogueRFPos; // 12DEC03 - FRB - a/c 0,0,0 refueling position relative to drogue pack (Slot)
-    Tpoint BoomRFPos; // 12DEC03 - FRB - a/c 0,0,0 refueling position adjustments for different booms boom
+    float
+        BoomStoredAngle; // 12DEC03 - FRB Angle of boom in the stored position (deg. + = up)
+    Tpoint
+        DrogueRFPos; // 12DEC03 - FRB - a/c 0,0,0 refueling position relative to drogue pack (Slot)
+    Tpoint
+        BoomRFPos; // 12DEC03 - FRB - a/c 0,0,0 refueling position adjustments for different booms boom
 
     // RV - Biker - Catapult thrust multiplier
     float catapultThrustMultiplier;
@@ -339,65 +350,87 @@ public:
     float TFR_MedG; //Max TFR G pull in medium mode
     float TFR_HardG; //Max TFR G pull in hard mode
     float TFR_Clearance; //Minimum clearance above the top of any obstacle [ft]
-    float SlowPercent; //Flash SLOW when airspeed is lower then this percentage of corner speed
-    float TFR_lookAhead; //Distance from ground directly under a/c used to measure ground inclination [ft]
-    float EVA1_SoftFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in SLOW
-    float EVA2_SoftFactor; //Turnradius multiplier to get safe distance from ground for OBSTACLE in SLOW
-    float EVA1_MedFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in MED
-    float EVA2_MedFactor; //Turnradius multiplier to get safe distance from ground for OBSTACLE in MED
-    float EVA1_HardFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in HARD
-    float EVA2_HardFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in MED
-    float TFR_GammaCorrMult; //Turnradius multiplier to get safe distance from ground for OBSTACLE in HARD
+    float
+        SlowPercent; //Flash SLOW when airspeed is lower then this percentage of corner speed
+    float
+        TFR_lookAhead; //Distance from ground directly under a/c used to measure ground inclination [ft]
+    float
+        EVA1_SoftFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in SLOW
+    float
+        EVA2_SoftFactor; //Turnradius multiplier to get safe distance from ground for OBSTACLE in SLOW
+    float
+        EVA1_MedFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in MED
+    float
+        EVA2_MedFactor; //Turnradius multiplier to get safe distance from ground for OBSTACLE in MED
+    float
+        EVA1_HardFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in HARD
+    float
+        EVA2_HardFactor; //Turnradius multiplier to get safe distance from ground for FLY_UP in MED
+    float
+        TFR_GammaCorrMult; //Turnradius multiplier to get safe distance from ground for OBSTACLE in HARD
     float LantirnCameraX; //Position of the camera
     float LantirnCameraY;
     float LantirnCameraZ;
-    float minTGTMAR; // 2002-03-22 ADDED BY S.G. Min TGTMAR for this type of aicraft
-    float maxMARIdedStart; // 2002-03-22 ADDED BY S.G. Max MAR for this type of aicraft when target is ID'ed and below 28K
-    float addMARIded5k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 5K
-    float addMARIded18k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 18K
-    float addMARIded28k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 28K
-    float addMARIdedSpike; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and spiked
+    float
+        minTGTMAR; // 2002-03-22 ADDED BY S.G. Min TGTMAR for this type of aicraft
+    float
+        maxMARIdedStart; // 2002-03-22 ADDED BY S.G. Max MAR for this type of aicraft when target is ID'ed and below 28K
+    float
+        addMARIded5k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 5K
+    float
+        addMARIded18k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 18K
+    float
+        addMARIded28k; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and below 28K
+    float
+        addMARIdedSpike; // 2002-03-22 ADDED BY S.G. Add MAR for this type of aicraft when target is ID'ed and spiked
 
     // 2003-09-30 added by MLR to support Aircraft animations
-    float animEngineRPMMult;  // Prop/Turbine multiplier.
-    float animSpoiler1Max;    // spoiler max angle extended
-    float animSpoiler1Rate;   // spoiler motion rate
-    float animSpoiler1OffAtWingSweep; // at what degree of wing sweep does this spoiler become inoperable
-    int animSpoiler1AirBrake;         // spoiler funtions as airbrake aswell?
-    float animSpoiler2Max;            // spoiler max angle extended
-    float animSpoiler2Rate;           // spoiler motion rate
-    float animSpoiler2OffAtWingSweep; // at what degree of wing sweep does this spoiler become inoperable
+    float animEngineRPMMult; // Prop/Turbine multiplier.
+    float animSpoiler1Max; // spoiler max angle extended
+    float animSpoiler1Rate; // spoiler motion rate
+    float
+        animSpoiler1OffAtWingSweep; // at what degree of wing sweep does this spoiler become inoperable
+    int animSpoiler1AirBrake; // spoiler funtions as airbrake aswell?
+    float animSpoiler2Max; // spoiler max angle extended
+    float animSpoiler2Rate; // spoiler motion rate
+    float
+        animSpoiler2OffAtWingSweep; // at what degree of wing sweep does this spoiler become inoperable
     int animSpoiler2AirBrake; //  spoiler funtions as airbrake aswell?
-    float animExhNozIdle;     // Animation for exhaust nozzle DOF
-    float animExhNozMil;      //
-    float animExhNozAB;       //
-    float animExhNozRate;     //
-    float animAileronRate;    // ailerons used TEFrate before which is to slow
-    float animStrobeOnTime;   // Time for duration of the AntiCollision light(Tail top) ON sequence - Coment by MartinV
-    float animStrobeOffTime;  // Time for duration of the AntiCollision light(Tail top) OFF sequence - Coment by MartinV
-    float animWingFlashOnTime; // Time for duration of the Navigation light(wing/fuselage) ON sequence - MartinV
-    float animWingFlashOffTime; // Time for duration of the Navigation light(wing/fuselage) OFF sequence - MartinV
+    float animExhNozIdle; // Animation for exhaust nozzle DOF
+    float animExhNozMil; //
+    float animExhNozAB; //
+    float animExhNozRate; //
+    float animAileronRate; // ailerons used TEFrate before which is to slow
+    float
+        animStrobeOnTime; // Time for duration of the AntiCollision light(Tail top) ON sequence - Coment by MartinV
+    float
+        animStrobeOffTime; // Time for duration of the AntiCollision light(Tail top) OFF sequence - Coment by MartinV
+    float
+        animWingFlashOnTime; // Time for duration of the Navigation light(wing/fuselage) ON sequence - MartinV
+    float
+        animWingFlashOffTime; // Time for duration of the Navigation light(wing/fuselage) OFF sequence - MartinV
     float animHookAngle;
     float animHookRate;
     float animThrRevAngle; // FRB - Thrust reverser
-    float animThrRevRate;  // FRB - Thrust reverser
-    int   animSwingWingStages; // new wing sweep animation, default values mimic MPS code.
+    float animThrRevRate; // FRB - Thrust reverser
+    int animSwingWingStages; // new wing sweep animation, default values mimic MPS code.
     float animSwingWingRate;
     float animSwingWingMach[10];
     float animSwingWingAngle[10];
     float animWheelRadius[8]; // radius of wheels
     float animRefuelAngle; // 2003-10-12 MLR
-    float animRefuelRate ;
+    float animRefuelRate;
 
-    float fuelGaugeMultiplier; // MLR 2003-10-12 maybe this will make the fuel dial function properly? (def 10)
+    float
+        fuelGaugeMultiplier; // MLR 2003-10-12 maybe this will make the fuel dial function properly? (def 10)
 
-    float animGearMaxComp[8];  // 2003-10-14 maximum gear compression. ft
-    float animGearMaxExt[8];   // 2003-10-14 maximum gear extention. ft
+    float animGearMaxComp[8]; // 2003-10-14 maximum gear compression. ft
+    float animGearMaxExt[8]; // 2003-10-14 maximum gear extention. ft
 
     struct DecoyDispenser Flare, Chaff; // MLR 2003-11-17
 
-    Tpoint pilotEyePos;     // MLR 12/1/2003 - Exports pilots Eye view
-    Tpoint swingWingHinge;  // MLR 3/5/2004 -
+    Tpoint pilotEyePos; // MLR 12/1/2003 - Exports pilots Eye view
+    Tpoint swingWingHinge; // MLR 3/5/2004 -
 
     int typeAC; //TJL 02/08/04 Allows aircraft specific features based on number
     /*
@@ -422,18 +455,24 @@ public:
     100. Generic Old Engine
     */
 
-    float A2GJDAMAlt;// = 0.0f; //TJL 10/27/03 Sets AI JDAM attack altitude
-    float A2GJSOWAlt;// = 0.0f; //TJL 10/27/03 Sets AI JSOW attack altitude
-    float A2GHarmAlt;// = 0.0f; //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
-    float A2GAGMAlt;// = 4000.0f; //TJL 10/27/03 Sets AI AGM attack altitude
-    float A2GGBUAlt;// = 13000.0f; //TJL 10/27/03 Sets AI GBU attack altitude
-    float A2GDumbHDAlt;// = 250.0f; //TJL 10/27/03 Sets AI Durandal attack altitude
-    float A2GClusterAlt;// = 5000.0f; //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
-    float A2GDumbLDAlt;// = 11000.0f; //TJL 10/27/03 Sets AI Generic attack altitude
-    float A2GGenericBombAlt;// = 11000.0f; //TJL 10/27/03 Sets AI Generic Bomb attack altitude
-    float A2GGunRocketAlt;// = 1000.0f; //TJL 10/27/03 Sets AI Gun and Rocket altitude
-    float A2GCameraAlt;// = 7000.0f; //TJL 10/27/03 Sets AI BDA/Recon altitude
-    float A2GBombMissileAlt;//
+    float A2GJDAMAlt; // = 0.0f; //TJL 10/27/03 Sets AI JDAM attack altitude
+    float A2GJSOWAlt; // = 0.0f; //TJL 10/27/03 Sets AI JSOW attack altitude
+    float
+        A2GHarmAlt; // = 0.0f; //TJL 10/27/03 Sets AI HARM attack altitude (all set to SP3 defaults)
+    float A2GAGMAlt; // = 4000.0f; //TJL 10/27/03 Sets AI AGM attack altitude
+    float A2GGBUAlt; // = 13000.0f; //TJL 10/27/03 Sets AI GBU attack altitude
+    float
+        A2GDumbHDAlt; // = 250.0f; //TJL 10/27/03 Sets AI Durandal attack altitude
+    float
+        A2GClusterAlt; // = 5000.0f; //TJL 10/27/03 Sets AI Cluster Bomb attack altitude
+    float
+        A2GDumbLDAlt; // = 11000.0f; //TJL 10/27/03 Sets AI Generic attack altitude
+    float
+        A2GGenericBombAlt; // = 11000.0f; //TJL 10/27/03 Sets AI Generic Bomb attack altitude
+    float
+        A2GGunRocketAlt; // = 1000.0f; //TJL 10/27/03 Sets AI Gun and Rocket altitude
+    float A2GCameraAlt; // = 7000.0f; //TJL 10/27/03 Sets AI BDA/Recon altitude
+    float A2GBombMissileAlt; //
     //Cobra 10/30/04 TJL
     //    6,702.0 59,144.0 63,137.7 0.0 848.6 0.0  //f-16c slug/ft^2
     //float ixx, iyy, izz, ixy, ixz, iyz;
@@ -444,17 +483,15 @@ public:
         float Rate;
     } animIntakeRamp[3];
 
-    float FTITStart;//TJL 09/11/04
+    float FTITStart; //TJL 09/11/04
     float FTITIdle;
     float FTITMax;
     float criticalAOA;
-    int hasIFF;//Cobra 11/20/04
-    int hasThrRev;//Cobra
-
+    int hasIFF; //Cobra 11/20/04
+    int hasThrRev; //Cobra
 
 
     //char *JSBSimScript;
-
 };
 // JB 010714 end
 
@@ -485,7 +522,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 };
@@ -516,7 +554,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 };
@@ -533,17 +572,21 @@ public:
         GearProblem = 0x0F,
     };
     GearData(void);
-    ~GearData(void) {}
+    ~GearData(void)
+    {
+    }
     float strength; //how many hitpoints it has left
     float vel; //at what rate is it currently compressing/extending in ft/s
     float obstacle; //rock height/rut depth
     uint flags; //gear stuck/broken, door stuck/broken,
-    float   WheelAngle; // the current angle the wheel is rotated. Used to position DOF
-    float   WheelRPS;   // Wheel spins at Radians Per Sec. Used to spin wheel when not touching ground
+    float
+        WheelAngle; // the current angle the wheel is rotated. Used to position DOF
+    float
+        WheelRPS; // Wheel spins at Radians Per Sec. Used to spin wheel when not touching ground
     // sfr: not needed anymore
     //float   LastX;      // stored world position MLR 2003-10-04 - used to determin WheelRPS
     //float   LastY;
-    float   StrutExtension; // visual extension to the strut.
+    float StrutExtension; // visual extension to the strut.
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
@@ -553,7 +596,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 };
@@ -572,7 +616,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -587,19 +632,20 @@ public:
 
 private:
     // Airframe/Engine data
-    AeroData          *aeroData;
-    AuxAeroData   *auxaeroData; // JB 010714
-    EngineData        *engineData;
-    RollData          *rollCmd;
-    float area, fuel, fuelFlow, fuelFlow2, externalFuel, epuFuel;//TJL 01/11/04 Added fuelFlow2 Engine 2
+    AeroData *aeroData;
+    AuxAeroData *auxaeroData; // JB 010714
+    EngineData *engineData;
+    RollData *rollCmd;
+    float area, fuel, fuelFlow, fuelFlow2, externalFuel,
+        epuFuel; //TJL 01/11/04 Added fuelFlow2 Engine 2
     float mass, weight, dragIndex, emptyWeight;
     float gsAvail, maxGs, maxRoll, maxRollDelta, startRoll;
     float minVcas, maxVcas, cornerVcas;
     unsigned int flags;
     short vehicleIndex;
     float fuelFlowSS, fuelFlowSS2; //TJL 04/25/04
-    float ftitLeft;//TJL 09/11/04 //Cobra 10/30/04 TJL
-    float ftitRight;//TJL 09/11/04
+    float ftitLeft; //TJL 09/11/04 //Cobra 10/30/04 TJL
+    float ftitRight; //TJL 09/11/04
 
     // A bit of a trick to get ground handling to be smooth at low speed
     float groundAnchorX, groundAnchorY;
@@ -619,20 +665,18 @@ private:
     // Thrust Dynamics
     float thrtab; //Engine 1 Left
     float thrust; //TJL Default
-    float thrust1;//TJL Engine 1
+    float thrust1; //TJL Engine 1
     float athrev, anozl, ethrst; //Engine 1
     // TJL 01/11/04 Multi-Engines
     float thrtab2; //Engine 2 Right
-    float thrust2;// Engine 2
+    float thrust2; // Engine 2
     float athrev2, anoz2, ethrst2; //Engine 2
-    DWORD engEventTimer;//TJL 02/23/04 Engine random timer eng 1
-    DWORD engEventTimer2;//TJL 02/23/04 Engine random timer eng 2
-    int engFlag1;//TJL 02/23/04
-    int engFlag2;//TJL 02/23/04
-    DWORD turbTimer;//TJL 03/14/04
+    DWORD engEventTimer; //TJL 02/23/04 Engine random timer eng 1
+    DWORD engEventTimer2; //TJL 02/23/04 Engine random timer eng 2
+    int engFlag1; //TJL 02/23/04
+    int engFlag2; //TJL 02/23/04
+    DWORD turbTimer; //TJL 03/14/04
     DWORD turbOn; //TJL 03/14/04
-
-
 
 
     // Autopilot
@@ -658,7 +702,7 @@ public: // S.G. I NEED TO ACCES THEM FOR OTHSIDE AirframeClass FUNCTION
     int GetHasAB()
     {
         return engineData->hasAB;
-    };//Cobra
+    }; //Cobra
 private:
     // Normalization Params
     float qbar, qsom, qovt;
@@ -676,7 +720,7 @@ private:
     float rshape1;
     float pshape1;
     float yshape1;
-    float avgPdelta, avgRdelta , avgYdelta;
+    float avgPdelta, avgRdelta, avgYdelta;
 
     //stalls
     float oscillationTimer;
@@ -685,10 +729,10 @@ private:
     float oldnzcgs;
 
     // Accelerations
-    float xaero,  yaero,  zaero;
+    float xaero, yaero, zaero;
     float xsaero, ysaero, zsaero;
     float xwaero, ywaero, zwaero;
-    float xprop,  yprop,  zprop;
+    float xprop, yprop, zprop;
     float xsprop, ysprop, zsprop;
     float xwprop, ywprop, zwprop;
 
@@ -729,17 +773,18 @@ private:
     void TrimModel(void);
     void Yaw(void);
     float CalcMach(float GetKias, float pressRatio);
-    float CalcPressureRatio(float alt, float* ttheta, float* rsigma);
+    float CalcPressureRatio(float alt, float *ttheta, float *rsigma);
     float Predictor(float x1, float x2, float y1, float y2);
     void SetStallConditions(void);
     void ResetIntegrators(void);
     float CalculateVt(float dt);
-    void SetGroundPosition(float dt, float netAccel, float gndGmma, float relMu);
+    void SetGroundPosition(float dt, float netAccel, float gndGmma,
+                           float relMu);
     void CalculateGroundPlane(float *gndGmma, float *relMu) const;
     void CalcGroundTurnRate(float dt);
     void RunLandingGear(void); // MLR 2003-10-15
     float RollInertia(float inertia); //TJL 12/11/03
-    float Turbulence(float turb);//TJL 03/14/04
+    float Turbulence(float turb); //TJL 03/14/04
 
 
 public:
@@ -757,7 +802,7 @@ public:
     void LEFDec();
     void LEFTakeoff();
     void SetFlaps(bool islanding);
-    void SetFlapsPlayer(void);//TJL 02/28/04
+    void SetFlapsPlayer(void); //TJL 02/28/04
     void GetGunLocation(float *x, float *y, float *z)
     {
         *x = auxaeroData->gunLocation.x, *y = auxaeroData->gunLocation.y;
@@ -1045,33 +1090,33 @@ public:
     float Engine1RpmMods(float rpmCmd); //Engine 1
     float Engine2RpmMods(float rpmCmd2); //Engine 2
     int flapPos; //TJL 02/28/04
-    float tefState;//TJL 02/28/04
+    float tefState; //TJL 02/28/04
     int GetTypeAC()
     {
         return auxaeroData->typeAC;
-    };//TJL 02/28/04
+    }; //TJL 02/28/04
     int GetTypeEngine()
     {
         return auxaeroData->typeEngine;
-    };//TJL 02/28/04
+    }; //TJL 02/28/04
     float GetFuelFlowLeft()
     {
         return fuelFlowSS;
-    };//TJL 04/25/04
+    }; //TJL 04/25/04
     float GetFuelFlowRight()
     {
         return fuelFlowSS2;
-    };//TJL 04/25/04
+    }; //TJL 04/25/04
     float GetFTITLeft()
     {
         return ftitLeft;
-    };//TJL 09/11/04 //Cobra 10/30/04 TJL
+    }; //TJL 09/11/04 //Cobra 10/30/04 TJL
     float GetFTITRight()
     {
         return ftitRight;
-    };//TJL 09/11/04
-    float CalcFtit(float tmpLeft, float tmpRight);//TJL 09/11/04
-    float FTITStart;//TJL 09/11/04 .dat file variables.
+    }; //TJL 09/11/04
+    float CalcFtit(float tmpLeft, float tmpRight); //TJL 09/11/04
+    float FTITStart; //TJL 09/11/04 .dat file variables.
     float FTITIDLE;
     float FTITMax;
 
@@ -1150,20 +1195,20 @@ public:
     float Thrust2()
     {
         return thrust2;
-    };//TJL 01/13/04 Engine 2
+    }; //TJL 01/13/04 Engine 2
 
     float GetCanopyMaxAngle()
     {
         return auxaeroData->canopyMaxAngle;
-    };  // MLR 11/x/2003 -
+    }; // MLR 11/x/2003 -
     float GetSoundExternalVol()
     {
         return auxaeroData->sndExternalVol;
-    };  // MLR 11/x/2003 -
+    }; // MLR 11/x/2003 -
     Tpoint *GetPilotEyePos()
     {
         return &auxaeroData->pilotEyePos;
-    };  // MLR 12/1/2003 -
+    }; // MLR 12/1/2003 -
 
     int AnimPilotTime; // Cobra - time for next pilot animation act
     int AnimPilotAct; // Cobra - previous pilot animation action
@@ -1173,7 +1218,8 @@ public:
     int AnimPilotScenario; // Cobra - previous pilot animation routine
     int AnimWSOScenario; // Cobra - previous copilot animation routine
     int maxAnimPilotScenarios; // Cobra - max number of pilot animation routines
-    int TheRoutine[5][10]; // Cobra - Array of pilot actions (PilotAction) (5 routines)
+    int TheRoutine
+        [5][10]; // Cobra - Array of pilot actions (PilotAction) (5 routines)
     enum PilotAction
     {
         PA_None = 0,
@@ -1196,33 +1242,33 @@ public:
     /*------------------------*/
     enum
     {
-        IsDigital     = 0x1,
-        InAir         = 0x2,
-        Trimming      = 0x4,
-        WheelBrakes   = 0x8,
-        Refueling     = 0x10,
-        AOACmdMode    = 0x20,
+        IsDigital = 0x1,
+        InAir = 0x2,
+        Trimming = 0x4,
+        WheelBrakes = 0x8,
+        Refueling = 0x10,
+        AOACmdMode = 0x20,
         AutoCommand = 0x40,
         GCommand = 0x80,
         ErrorCommand = 0x100,
         GroundCommand = 0x200,
         AlphaCommand = 0x400,
-        GearBroken    = 0x800,
-        Planted       = 0x1000,
-        Simplified    = 0x2000,
-        NoFuelBurn    = 0x4000,
-        EngineOff     = 0x8000,
+        GearBroken = 0x800,
+        Planted = 0x1000,
+        Simplified = 0x2000,
+        NoFuelBurn = 0x4000,
+        EngineOff = 0x8000,
         ThrottleCheck = 0x10000,
-        SuperSimple   = 0x20000,
-        MPOverride   = 0x40000,
-        LowSpdHorn   = 0x80000,
-        HornSilenced  = 0x100000,
+        SuperSimple = 0x20000,
+        MPOverride = 0x40000,
+        LowSpdHorn = 0x80000,
+        HornSilenced = 0x100000,
         CATLimiterIII = 0x200000,
-        NoseSteerOn   = 0x400000,
-        OverRunway   = 0x800000,
+        NoseSteerOn = 0x400000,
+        OverRunway = 0x800000,
         HasComplexGear = 0x1000000,
-        GearDamaged   = 0x2000000,
-        OverAirStrip  = 0x4000000,
+        GearDamaged = 0x2000000,
+        OverAirStrip = 0x4000000,
         EngineStopped = 0x8000000,
         JfsStart = 0x10000000,
         // EpuRunning = 0x20000000, // no longer required
@@ -1244,7 +1290,7 @@ public:
         FlatSpin
     };
     // State data
-    AircraftClass* platform;
+    AircraftClass *platform;
 
     float e1, e2, e3, e4;
     BIG_SCALAR x, y, z;
@@ -1268,13 +1314,13 @@ public:
     float lefFactor;
     float curMaxGs;
     StallMode stallMode;
-    float strFactor;//Cobra 10/30/04 TJL
+    float strFactor; //Cobra 10/30/04 TJL
 
     GearData *gear;
     int groundType;
     float grndphi, grndthe, groundZ;
     float bumpphi, bumpthe, bumpyaw;
-    Tpoint  gndNormal;
+    Tpoint gndNormal;
 
     // Geometry Stuff
     float alpdot;
@@ -1295,7 +1341,7 @@ public:
     float zp01, zp02;
     float kp01, kp02, kp03, kp04, kp05, kp06;
     float wp01, wp02;
-    int   jp01, jp02;
+    int jp01, jp02;
     float tr01;
     float zr01;
     float kr01, kr02, kr03, kr04;
@@ -1304,9 +1350,9 @@ public:
     float zy01, zy02;
     float ky01, ky02, ky03, ky04, ky05, ky06;
     float wy01, wy02;
-    int   jy01, jy02;
+    int jy01, jy02;
     float zpdamp;
-    int carrierLand;//Cobra
+    int carrierLand; //Cobra
 
     // Pilot Commands
     float pstick, rstick, ypedal, throtl, pwrlev;
@@ -1348,16 +1394,18 @@ public:
     };
     bool canopyState; // open or shut canopy
     void CanopyToggle();
-    int thrustReverse;//Cobra
+    int thrustReverse; //Cobra
     int HasThrRev()
     {
         return auxaeroData->hasThrRev;
     };
 
 
-    enum EpuState   // JPO state of the EPU switch
+    enum EpuState // JPO state of the EPU switch
     {
-        OFF, AUTO, ON
+        OFF,
+        AUTO,
+        ON
     } epuState;
     EpuState GetEpuSwitch()
     {
@@ -1369,7 +1417,12 @@ public:
     };
     void StepEpuSwitch();
     // epu status and stuff
-    enum EpuBurnState { EpuNone = 0x0, EpuHydrazine = 0x1, EpuAir = 0x2 };
+    enum EpuBurnState
+    {
+        EpuNone = 0x0,
+        EpuHydrazine = 0x1,
+        EpuAir = 0x2
+    };
     unsigned char epuBurnState;
     void EpuSetHydrazine()
     {
@@ -1395,9 +1448,11 @@ public:
     unsigned char hydrAB; // JPO - state of the hydraulics system
     enum
     {
-        HYDR_A_SYSTEM = 0x01, HYDR_B_SYSTEM = 0x02,
+        HYDR_A_SYSTEM = 0x01,
+        HYDR_B_SYSTEM = 0x02,
         HYDR_ALL = HYDR_A_SYSTEM bitor HYDR_B_SYSTEM,
-        HYDR_A_BROKE = 0x04, HYDR_B_BROKE = 0x08, // whats permanently broke?
+        HYDR_A_BROKE = 0x04,
+        HYDR_B_BROKE = 0x08, // whats permanently broke?
     };
     int HydraulicA()
     {
@@ -1418,7 +1473,7 @@ public:
     void HydrBreak(int sys);
     void HydrDown(int sys)
     {
-        hydrAB and_eq compl (sys bitand HYDR_ALL);
+        hydrAB and_eq compl(sys bitand HYDR_ALL);
     };
     void HydrRestore(int sys);
 
@@ -1426,15 +1481,16 @@ public:
     float JFSSpinTime; //MI
     void JfsEngineStart(void);
     void QuickEngineStart();
-    float curMaxStoreSpeed;//me123
-    bool /*LLON,*/ PBON; //MI for LandingLight and Parkingbrake, sfr: removed LLON, aircraft has a flag for it
+    float curMaxStoreSpeed; //me123
+    bool /*LLON,*/
+        PBON; //MI for LandingLight and Parkingbrake, sfr: removed LLON, aircraft has a flag for it
     bool BrakesToggle; //MI for new Speedbrake
     void ToggleLL(void);
     void TogglePB(void);
     void ToggleHook(void); // JB carrier
     void HookUp(void); // MD
     void HookDown(void); // MD
-    SAVE_ARRAY oldFtit, oldFtit2;//TJL 01/11/04 Engine 2
+    SAVE_ARRAY oldFtit, oldFtit2; //TJL 01/11/04 Engine 2
     float ftit; // Forward Turbine Inlet Temp (Degrees C) / 100 //TJL Engine 1
     float ftit2; // TJL 01/11/04 Multi-Engine Engine #2
     //Will add a flag here instead of making new ENUM list
@@ -1465,8 +1521,14 @@ public:
     enum FuelSwitch
     {
         // ordered so that the first one is the defautl cockpit switch.
-        FS_NORM, FS_RESV, FS_WINGINT, FS_WINGEXT, FS_CENTEREXT, FS_TEST,
-        FS_FIRST = FS_NORM, FS_LAST = FS_TEST, // for wrap around
+        FS_NORM,
+        FS_RESV,
+        FS_WINGINT,
+        FS_WINGEXT,
+        FS_CENTEREXT,
+        FS_TEST,
+        FS_FIRST = FS_NORM,
+        FS_LAST = FS_TEST, // for wrap around
     } fuelSwitch;
     void IncFuelSwitch();
     void DecFuelSwitch();
@@ -1481,8 +1543,12 @@ public:
     enum FuelPump
     {
         // ordered so that the first one is the defautl cockpit switch.
-        FP_OFF, FP_NORM, FP_AFT, FP_FWD,
-        FP_FIRST = FP_OFF, FP_LAST = FP_FWD,
+        FP_OFF,
+        FP_NORM,
+        FP_AFT,
+        FP_FWD,
+        FP_FIRST = FP_OFF,
+        FP_LAST = FP_FWD,
     } fuelPump;
     void IncFuelPump();
     void DecFuelPump();
@@ -1494,9 +1560,20 @@ public:
     {
         return fuelPump;
     };
-    enum { TANK_FWDRES, TANK_AFTRES, TANK_F1, TANK_A1, TANK_WINGFR, TANK_WINGAL,
-           TANK_MAXINTERNAL = TANK_WINGAL, TANK_REXT, TANK_LEXT, TANK_CLINE, MAX_FUEL
-         };
+    enum
+    {
+        TANK_FWDRES,
+        TANK_AFTRES,
+        TANK_F1,
+        TANK_A1,
+        TANK_WINGFR,
+        TANK_WINGAL,
+        TANK_MAXINTERNAL = TANK_WINGAL,
+        TANK_REXT,
+        TANK_LEXT,
+        TANK_CLINE,
+        MAX_FUEL
+    };
     float m_tanks[MAX_FUEL]; // tank current capacity
     float m_tankcap[MAX_FUEL]; // tank max capacity
     float m_trate[MAX_FUEL]; // tank transfer rate (the from tank).
@@ -1510,8 +1587,12 @@ public:
     enum AirSource
     {
         // ordered so that the first one is the defautl cockpit switch.
-        AS_OFF, AS_NORM, AS_DUMP, AS_RAM,
-        AS_FIRST = AS_OFF, AS_LAST = AS_RAM
+        AS_OFF,
+        AS_NORM,
+        AS_DUMP,
+        AS_RAM,
+        AS_FIRST = AS_OFF,
+        AS_LAST = AS_RAM
     } airSource;
     void IncAirSource();
     void DecAirSource();
@@ -1524,7 +1605,7 @@ public:
         return airSource;
     };
 
-    enum Generator   // come in pairs - first is active/inactive 2nd ok/broke
+    enum Generator // come in pairs - first is active/inactive 2nd ok/broke
     {
         GenNone = 0x0,
         GenFlcsPmg = 0x1,
@@ -1537,8 +1618,10 @@ public:
         GenStdbyBroke = 0x80,
         GenStdbyPmg = 0x100,
         GenStdbyPmgBroke = 0x200,
-        GenMain = 0x400,   // MD -- 20031011: added missing zero to deconflict with GenStdby
-        GenMainBroke = 0x800,  // MD -- 20031011: added missing zero to deconflict with GenStdbyBroke
+        GenMain =
+            0x400, // MD -- 20031011: added missing zero to deconflict with GenStdby
+        GenMainBroke =
+            0x800, // MD -- 20031011: added missing zero to deconflict with GenStdbyBroke
     };
     unsigned int generators;
     BOOL GeneratorRunning(Generator gen)
@@ -1551,7 +1634,8 @@ public:
     };
     void GeneratorOn(Generator gen)
     {
-        if (GeneratorOK(gen)) generators or_eq gen;
+        if (GeneratorOK(gen))
+            generators or_eq gen;
     };
     void GeneratorOff(Generator gen)
     {
@@ -1566,7 +1650,7 @@ public:
     float nozzlePos;
 
     // Functions
-    AirframeClass(AircraftClass* self);
+    AirframeClass(AircraftClass *self);
     ~AirframeClass(void);
     void Init(int idx);
     void InitData(int idx);
@@ -1628,16 +1712,16 @@ public:
     {
         return maxRoll * RTD;
     };
-    void  SetMaxRoll(float newRoll)
+    void SetMaxRoll(float newRoll)
     {
         maxRoll = newRoll * DTR;
     };
-    void  SetMaxRollDelta(float newRoll)
+    void SetMaxRollDelta(float newRoll)
     {
         maxRollDelta = newRoll * DTR;
         startRoll = 0.0F;
     };
-    void  ReSetMaxRoll(void);
+    void ReSetMaxRoll(void);
     float MaxGs(void)
     {
         return maxGs;
@@ -1670,8 +1754,8 @@ public:
     {
         return externalFuel;
     };
-    void  AddExternalFuel(float lbs);
-    int  AddFuel(float lbs);  //this checks whether we're full
+    void AddExternalFuel(float lbs);
+    int AddFuel(float lbs); //this checks whether we're full
     void ClearFuel(void);
     void AllocateFuel(float totalfuel);
     int BurnFuel(float bfuel);
@@ -1701,8 +1785,8 @@ public:
     {
         return vehicleIndex;
     }
-    void  AddWeapon(float weight, float dragIndex, float offset);
-    void  RemoveWeapon(float Weight, float DragIndex, float offset);
+    void AddWeapon(float weight, float dragIndex, float offset);
+    void RemoveWeapon(float Weight, float DragIndex, float offset);
     void SetForcedConditions(float newSpeed, float newHeading)
     {
         forcedSpeed = newSpeed;
@@ -1718,7 +1802,8 @@ public:
     }
     int NumGear(void) const
     {
-        return FloatToInt32(aeroDataset[vehicleIndex].inputData[AeroDataSet::NumGear]);
+        return FloatToInt32(
+            aeroDataset[vehicleIndex].inputData[AeroDataSet::NumGear]);
     }
     float GetAeroData(int which) const
     {
@@ -1755,13 +1840,13 @@ public:
     // simple flight mode stuff....
     void SimpleModel(void);
     void SetSimpleMode(int);
-    int  GetSimpleMode(void)
+    int GetSimpleMode(void)
     {
         return simpleMode;
     };
 
     //MI
-    float GetOptKias(int mode);// climb, cruice end, cruice rng  0,1,2
+    float GetOptKias(int mode); // climb, cruice end, cruice rng  0,1,2
     float GetLandingAoASpd()
     {
         return CalcDesSpeed(auxaeroData->landingAOA);
@@ -1843,7 +1928,8 @@ public:
         return auxaeroData->limitPstick;
     }
 
-    float gearExtension[8];  // MLR 2/22/2004 - this will be used instead of using the drawable's DOF values
+    float gearExtension
+        [8]; // MLR 2/22/2004 - this will be used instead of using the drawable's DOF values
 };
 
 #endif

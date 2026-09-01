@@ -4,9 +4,12 @@
 
 #include <tchar.h>
 //#include "vutypes.h"
-#include "PlayerOpDef.h"
+#include "playeropdef.h"
 
-enum {RUL_PW_LEN = 20};
+enum
+{
+    RUL_PW_LEN = 20
+};
 
 typedef struct
 {
@@ -17,7 +20,7 @@ typedef struct
     FlightModelType SimFlightModel; // Flight model type
     WeaponEffectType SimWeaponEffect;
     AvionicsType SimAvionicsType;
-    AutopilotModeType   SimAutopilotType;
+    AutopilotModeType SimAutopilotType;
     RefuelModeType SimAirRefuelingMode;
     PadlockModeType SimPadlockMode;
     ulong BumpTimer;
@@ -36,7 +39,7 @@ typedef enum
     rNUM_MODES,
 } RulesModes;
 
-class RulesClass: public RulesStruct
+class RulesClass : public RulesStruct
 {
 private:
     void EncryptPwd(void);
@@ -47,7 +50,7 @@ public:
     int LoadRules(_TCHAR *filename = _T("default"));
     int SaveRules(_TCHAR *filename = _T("default"));
     void LoadRules(RulesStruct *rules);
-    RulesStruct* GetRules(void)
+    RulesStruct *GetRules(void)
     {
         return (this);
     }
@@ -164,7 +167,8 @@ public:
 
     void SetMaxPlayers(int num)
     {
-        if (num > 0) MaxPlayers = num;
+        if (num > 0)
+            MaxPlayers = num;
     }
     void SetSimFlightModel(FlightModelType FM)
     {

@@ -25,7 +25,7 @@
 
 #ifdef _MSC_VER
 // We don't need EMMS instruction warnings, we use FEMMS instead
-#pragma warning(disable:4799)
+#pragma warning(disable : 4799)
 #endif
 
 #include <amath.h>
@@ -33,7 +33,7 @@
 #include <amd3dx.h>
 
 #define ITER 2
-#define EPS  1.E-9f
+#define EPS 1.E-9f
 #define PI 3.141592653589
 
 static float zero[2] = {0.0f, 0.0f};
@@ -185,7 +185,7 @@ float _iir(float input, int n, float *coef, float *history)
  */
 void _fftInit(int m, COMPLEX *w, int forward)
 {
-    const unsigned long negate[2] = { 0L, 0x80000000 };
+    const unsigned long negate[2] = {0L, 0x80000000};
     COMPLEX *xj;
     int n, le, i, j;
     float wr[2], wrx[2], wrm[2];
@@ -197,8 +197,7 @@ void _fftInit(int m, COMPLEX *w, int forward)
     xj = w;
     arg = (forward * PI / (float)le);
 
-    __asm femms
-    _sincos((float) arg, wr);
+    __asm femms _sincos((float)arg, wr);
     wrx[1] = wr[0];
     wrx[0] = -wr[1];
     wrm[0] = wr[0];
@@ -264,7 +263,7 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
 
     COMPLEX u, ux;
     COMPLEX *xi, *xip, *xj, *wptr;
-    float pm[] = { +1, -1};
+    float pm[] = {+1, -1};
     int i, j, k, l, le, windex;
 
     n = 1 << m;
@@ -276,11 +275,11 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
         movq mm6, pm;
     }
 
-    for (l = 0 ; l < m ; l++)
+    for (l = 0; l < m; l++)
     {
         le = le / 2;
 
-        for (i = 0 ; i < n ; i = i + 2 * le)
+        for (i = 0; i < n; i = i + 2 * le)
         {
             xi = x + i;
             xip = xi + le;
@@ -301,14 +300,14 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
 
         wptr = w + windex - 1;
 
-        for (j = 1 ; j < le ; j++)
+        for (j = 1; j < le; j++)
         {
             u = *wptr;
             ux.real = wptr->imag;
             ux.imag = wptr->real;
             __asm movq mm7, ux;
 
-            for (i = j ; i < n ; i = i + 2 * le)
+            for (i = j; i < n; i = i + 2 * le)
             {
                 xi = x + i;
                 xip = xi + le;
@@ -343,7 +342,7 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
 
     j = 0;
 
-    for (i = 1 ; i < (n - 1) ; i++)
+    for (i = 1; i < (n - 1); i++)
     {
         k = n / 2;
 
@@ -384,7 +383,6 @@ void _fft(int m, COMPLEX *w, COMPLEX *x, int forward)
 }
 
 
-
 float _fir(float input, int n, float *coef, float *history)
 {
     int j, h;
@@ -407,7 +405,7 @@ float _fir(float input, int n, float *coef, float *history)
     for (j = 0; j < h; j++)
     {
         __asm
-        {
+            {
             movq mm2, [eax]
             sub eax, 8
 
@@ -421,7 +419,7 @@ float _fir(float input, int n, float *coef, float *history)
             movq mm1, [ebx+4]
             movq [ebx], mm3
             add ebx, 8
-        }
+            }
     }
 
     __asm

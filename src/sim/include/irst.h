@@ -2,17 +2,17 @@
 #define _IRST_MODEL_H
 
 #include "sensclas.h"
-#include "irstData.h"
+#include "irstdata.h"
 
 class IrstClass : public SensorClass
 {
 public:
-    IrstClass(int idx, SimMoverClass* self);
+    IrstClass(int idx, SimMoverClass *self);
     virtual ~IrstClass(void) {};
 
-    virtual void SetDesiredTarget(SimObjectType* newTarget);
+    virtual void SetDesiredTarget(SimObjectType *newTarget);
 
-    virtual SimObjectType* Exec(SimObjectType* targetList);
+    virtual SimObjectType *Exec(SimObjectType *targetList);
 
     int CanSeeObject(SimObjectType *target);
     int CanDetectObject(SimObjectType *target);
@@ -24,7 +24,7 @@ public:
 
 protected:
     float GetSignature(SimObjectType *target);
-    SimObjectType* ConsiderDecoy(SimObjectType *target);
+    SimObjectType *ConsiderDecoy(SimObjectType *target);
     float GetSunFactor(SimObjectType *target);
 
     VU_ID lastFlareID;
@@ -35,4 +35,3 @@ protected:
 };
 
 #endif
-

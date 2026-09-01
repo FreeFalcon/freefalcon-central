@@ -8,7 +8,7 @@
 #ifndef _DATABASE_H_
 #define _DATABASE_H_
 
-#include "Utils/Types.h"
+#include "utils/types.h"
 
 
 extern class DataBaseClass TheDataBase;
@@ -44,7 +44,8 @@ public:
     void ReadData(char *filename);
     void FreeData(void);
 
-    void Process(void(*fn)(DataPoint *arg), unsigned startAt, unsigned stopBefore);
+    void Process(void (*fn)(DataPoint *arg), unsigned startAt,
+                 unsigned stopBefore);
 
     DataPoint *TheData;
     int TheDataLength;

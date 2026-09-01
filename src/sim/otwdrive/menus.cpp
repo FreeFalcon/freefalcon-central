@@ -1,22 +1,22 @@
 #include <time.h>
 #include "stdhdr.h"
 #include "otwdrive.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/drawbsp.h"
 #include "simdrive.h"
 #include "mesg.h"
-#include "MsgInc/AWACSMsg.h"
-#include "MsgInc/ATCMsg.h"
-#include "MsgInc/FACMsg.h"
-#include "MsgInc/TankerMsg.h"
+#include "msginc/awacsmsg.h"
+#include "msginc/atcmsg.h"
+#include "msginc/facmsg.h"
+#include "msginc/tankermsg.h"
 #include "falcmesg.h"
 #include "aircrft.h"
 #include "falclib/include/f4find.h"
 
 #include "simio.h" // Retro 25Mar2004
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
-#include "Graphics/DXEngine/common/IRenderer.h"   // Artscout - 2026: #97 g_pRenderer->SetFullBright (exit-menu dialog)
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
+#include "graphics/dxengine/common/irenderer.h" // Artscout - 2026: #97 g_pRenderer->SetFullBright (exit-menu dialog)
 
 #include "fsound.h"
 #include "fakerand.h"
@@ -24,8 +24,8 @@
 #include "falcsess.h"
 #include "wingorder.h"
 #include "classtbl.h"
-#include "TimerThread.h"
-#include "F4Version.h"
+#include "timerthread.h"
+#include "f4version.h"
 #include "ui/include/uicomms.h"
 #include "entity.h"
 #include "airframe.h"
@@ -44,11 +44,12 @@ int tactical_is_training(void);
 
 extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 
-#define EXITMENU_POPUP_TIME 15000 // Exit menu will pop up 15 seconds after death
+#define EXITMENU_POPUP_TIME                                                    \
+    15000 // Exit menu will pop up 15 seconds after death
 
 void ResetVoices(void);
 
-#include "sim/include/IVibeData.h"
+#include "sim/include/ivibedata.h"
 extern IntellivibeData g_intellivibeData;
 extern void *gSharedIntellivibe;
 extern bool g_bShowFlaps;
@@ -68,10 +69,11 @@ void OTWDriverClass::ShowPosition(void)
     renderer->TextRight(0.95F, 0.80F, posStr);
     sprintf(posStr, "  Pitch = %10.2f", flyingEye->Pitch() * RTD);
     renderer->TextRight(0.95F, 0.75F, posStr);
-    sprintf(posStr, "   Roll = %10.2f", flyingEye->Roll() * RTD);  // 2002-01-31 ADDED BY S.G. Added roll to the readout
+    sprintf(posStr, "   Roll = %10.2f",
+            flyingEye->Roll() *
+                RTD); // 2002-01-31 ADDED BY S.G. Added roll to the readout
     renderer->TextRight(0.95F, 0.70F, posStr);
 }
-
 
 
 Tpoint OTWDriverClass::GetEyePosition(void)
@@ -82,31 +84,31 @@ Tpoint OTWDriverClass::GetEyePosition(void)
     pos.y = flyingEye->YPos();
     pos.z = flyingEye->ZPos();
 
-    return(pos);
+    return (pos);
 }
 
 void OTWDriverClass::ShowAerodynamics(void)
 {
     char posStr[120];
 
-    if (
-        otwPlatform and 
-        otwPlatform.get() == SimDriver.GetPlayerAircraft() and 
-        otwPlatform->IsAirplane()
-    )
+    if (otwPlatform and otwPlatform.get() == SimDriver.GetPlayerAircraft() and
+        otwPlatform->IsAirplane())
     {
-        AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
+        AirframeClass *af = ((AircraftClass *)otwPlatform.get())->af;
         renderer->SetColor(0xff00ff00);
-        sprintf(posStr, "Cd %8.4f Cl %8.4f Cy %8.4f Mu %8.4f", af->Cd(), af->Cl(), af->Cy(), af->mu);
+        sprintf(posStr, "Cd %8.4f Cl %8.4f Cy %8.4f Mu %8.4f", af->Cd(),
+                af->Cl(), af->Cy(), af->mu);
         renderer->TextRight(0.95F, 0.65F, posStr);
-        sprintf(posStr, "XDrag %6.4f Thrust %8.1f Mass %8.1f", af->XSAero(), af->Thrust()*af->Mass(), af->Mass());
+        sprintf(posStr, "XDrag %6.4f Thrust %8.1f Mass %8.1f", af->XSAero(),
+                af->Thrust() * af->Mass(), af->Mass());
         renderer->TextRight(0.95F, 0.60F, posStr);
-        sprintf(posStr, "AoABias %5.2f Lift %5.2f Down %6.4f", af->AOABias(), -af->ZSAero(), af->ZSProp());
+        sprintf(posStr, "AoABias %5.2f Lift %5.2f Down %6.4f", af->AOABias(),
+                -af->ZSAero(), af->ZSProp());
         renderer->TextRight(0.95F, 0.55F, posStr);
-        sprintf(posStr, "AOA %5.2f Tef %10.4f Lef %10.4f", af->alpha, af->tefFactor, af->lefFactor);
+        sprintf(posStr, "AOA %5.2f Tef %10.4f Lef %10.4f", af->alpha,
+                af->tefFactor, af->lefFactor);
         renderer->TextRight(0.95F, 0.50F, posStr);
     }
-
 }
 
 void OTWDriverClass::ShowFlaps(void)
@@ -117,13 +119,10 @@ void OTWDriverClass::ShowFlaps(void)
     // Making this always on and with a keystroke to turn it off
     // Human players need to know flap positions and most don't know about
     // g_bShowFlaps.
-    if (
-        otwPlatform and 
-        otwPlatform.get() == SimDriver.GetPlayerAircraft() and 
-        otwPlatform->IsAirplane()
-    )
+    if (otwPlatform and otwPlatform.get() == SimDriver.GetPlayerAircraft() and
+        otwPlatform->IsAirplane())
     {
-        AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
+        AirframeClass *af = ((AircraftClass *)otwPlatform.get())->af;
 
         if (af->HasManualFlaps())
         {
@@ -133,25 +132,21 @@ void OTWDriverClass::ShowFlaps(void)
             if (af->flapPos == 20)
             {
                 sprintf(posStr, "HALF MODE Flaps %3.0f LEFs %3.0f",
-                        af->TefDegrees(),
-                        af->LefDegrees());
+                        af->TefDegrees(), af->LefDegrees());
             }
             else if (af->flapPos == 30)
             {
                 sprintf(posStr, "FULL MODE Flaps %3.0f LEFs %3.0f",
-                        af->TefDegrees(),
-                        af->LefDegrees());
+                        af->TefDegrees(), af->LefDegrees());
             }
             else if (af->flapPos == 10)
             {
                 sprintf(posStr, "AUTO MODE Flaps %3.0f LEFs %3.0f",
-                        af->TefDegrees(),
-                        af->LefDegrees());
+                        af->TefDegrees(), af->LefDegrees());
             }
             else
             {
-                sprintf(posStr, "Flaps %3.0f LEFs %3.0f",
-                        af->TefDegrees(),
+                sprintf(posStr, "Flaps %3.0f LEFs %3.0f", af->TefDegrees(),
                         af->LefDegrees());
             }
 
@@ -159,21 +154,22 @@ void OTWDriverClass::ShowFlaps(void)
         }
         else
         {
-            showFlaps = true; // Retro 1Feb2004 so that we don�t enter here if the ac has no flaps anyway
+            showFlaps =
+                true; // Retro 1Feb2004 so that we don�t enter here if the ac has no flaps anyway
         }
     }
 }
 
 // Retro 1Feb2004 start
 // display some dual-throttle debug stuff
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 void OTWDriverClass::ShowEngine(void)
 {
-    if (otwPlatform.get() and 
-         otwPlatform.get() == SimDriver.GetPlayerAircraft() and 
-         otwPlatform->IsAirplane())
+    if (otwPlatform.get() and
+        otwPlatform.get() == SimDriver.GetPlayerAircraft() and
+        otwPlatform->IsAirplane())
     {
-        AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
+        AirframeClass *af = ((AircraftClass *)otwPlatform.get())->af;
 
         if (af->GetNumberEngines() == 2)
         {
@@ -183,26 +179,28 @@ void OTWDriverClass::ShowEngine(void)
             //TJL 02/16/04 Added RPM output to engine select
             switch (UserStickInputs.getCurrentEngine())
             {
-                case PilotInputs::Left_Engine:
-                    sprintf(tmp, "Left Engine rpm %5.2f rpm2 %5.2f", af->rpm, af->rpm2);
-                    break;
+            case PilotInputs::Left_Engine:
+                sprintf(tmp, "Left Engine rpm %5.2f rpm2 %5.2f", af->rpm,
+                        af->rpm2);
+                break;
 
-                case PilotInputs::Right_Engine:
-                    sprintf(tmp, "Right Engine rpm %5.2f rpm2 %5.2f", af->rpm, af->rpm2);
-                    break;
+            case PilotInputs::Right_Engine:
+                sprintf(tmp, "Right Engine rpm %5.2f rpm2 %5.2f", af->rpm,
+                        af->rpm2);
+                break;
 
-                case PilotInputs::Both_Engines:
-                    sprintf(tmp, "Both Engines rpm %5.2f rpm2 %5.2f", af->rpm, af->rpm2);
-                    break;
+            case PilotInputs::Both_Engines:
+                sprintf(tmp, "Both Engines rpm %5.2f rpm2 %5.2f", af->rpm,
+                        af->rpm2);
+                break;
 
-                default:
-                    sprintf(tmp, "Unknown");
-                    break;
+            default:
+                sprintf(tmp, "Unknown");
+                break;
             }
 
             // renderer->TextLeft(0.1F,0.9F,tmp);
             renderer->TextLeft(-0.95F, 0.88F, tmp);
-
         }
         else
             showEngine = false;
@@ -213,11 +211,14 @@ void OTWDriverClass::ShowEngine(void)
 // RV - Biker - This is for showing AC is attached to carrier catapult
 void OTWDriverClass::ShowCatMessage(void)
 {
-    if (otwPlatform.get() and otwPlatform.get() == SimDriver.GetPlayerAircraft() and otwPlatform->IsAirplane())
+    if (otwPlatform.get() and
+        otwPlatform.get() == SimDriver.GetPlayerAircraft() and
+        otwPlatform->IsAirplane())
     {
-        AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
+        AirframeClass *af = ((AircraftClass *)otwPlatform.get())->af;
 
-        if (af->IsSet(AirframeClass::OnObject) and af->IsSet(AirframeClass::Hook))
+        if (af->IsSet(AirframeClass::OnObject) and
+            af->IsSet(AirframeClass::Hook))
         {
             renderer->SetColor(0xff0000ff);
             char tmp[80];
@@ -231,30 +232,29 @@ void OTWDriverClass::ShowCatMessage(void)
 struct
 {
     GameAxis_t theAxis;
-    char* theText;
-} Axis2Text[] =
-{
-    { AXIS_PITCH, "AXIS_PITCH" },
-    { AXIS_ROLL, "AXIS_ROLL" },
-    { AXIS_YAW, "AXIS_YAW" },
-    { AXIS_THROTTLE, "AXIS_THROTTLE" },
-    { AXIS_THROTTLE2, "AXIS_THROTTLE2" },
-    { AXIS_TRIM_PITCH, "AXIS_TRIM_PITCH" },
-    { AXIS_TRIM_YAW, "AXIS_TRIM_YAW" },
-    { AXIS_TRIM_ROLL, "AXIS_TRIM_ROLL" },
-    { AXIS_BRAKE_LEFT, "AXIS_BRAKE_LEFT" },
-    { AXIS_FOV, "AXIS_FOV" },
-    { AXIS_ANT_ELEV, "AXIS_ANT_ELEV" },
-    { AXIS_CURSOR_X, "AXIS_CURSOR_X" },
-    { AXIS_CURSOR_Y, "AXIS_CURSOR_Y" },
-    { AXIS_RANGE_KNOB, "AXIS_RANGE_KNOB" },
-    { AXIS_COMM_VOLUME_1, "AXIS_COMM_VOLUME_1" },
-    { AXIS_COMM_VOLUME_2, "AXIS_COMM_VOLUME_2" },
-    { AXIS_MSL_VOLUME, "AXIS_MSL_VOLUME" },
-    { AXIS_THREAT_VOLUME, "AXIS_THREAT_VOLUME" },
-    { AXIS_HUD_BRIGHTNESS, "AXIS_HUD_BRIGHTNESS" },
-    { AXIS_RET_DEPR, "AXIS_RET_DEPR" },
-    { AXIS_ZOOM, "AXIS_ZOOM" }
+    char *theText;
+} Axis2Text[] = {
+    {AXIS_PITCH, "AXIS_PITCH"},
+    {AXIS_ROLL, "AXIS_ROLL"},
+    {AXIS_YAW, "AXIS_YAW"},
+    {AXIS_THROTTLE, "AXIS_THROTTLE"},
+    {AXIS_THROTTLE2, "AXIS_THROTTLE2"},
+    {AXIS_TRIM_PITCH, "AXIS_TRIM_PITCH"},
+    {AXIS_TRIM_YAW, "AXIS_TRIM_YAW"},
+    {AXIS_TRIM_ROLL, "AXIS_TRIM_ROLL"},
+    {AXIS_BRAKE_LEFT, "AXIS_BRAKE_LEFT"},
+    {AXIS_FOV, "AXIS_FOV"},
+    {AXIS_ANT_ELEV, "AXIS_ANT_ELEV"},
+    {AXIS_CURSOR_X, "AXIS_CURSOR_X"},
+    {AXIS_CURSOR_Y, "AXIS_CURSOR_Y"},
+    {AXIS_RANGE_KNOB, "AXIS_RANGE_KNOB"},
+    {AXIS_COMM_VOLUME_1, "AXIS_COMM_VOLUME_1"},
+    {AXIS_COMM_VOLUME_2, "AXIS_COMM_VOLUME_2"},
+    {AXIS_MSL_VOLUME, "AXIS_MSL_VOLUME"},
+    {AXIS_THREAT_VOLUME, "AXIS_THREAT_VOLUME"},
+    {AXIS_HUD_BRIGHTNESS, "AXIS_HUD_BRIGHTNESS"},
+    {AXIS_RET_DEPR, "AXIS_RET_DEPR"},
+    {AXIS_ZOOM, "AXIS_ZOOM"}
     // { AXIS_INTERCOM_VOLUME, "AXIS_INTERCOM_VOLUME" }
 };
 
@@ -297,7 +297,8 @@ void OTWDriverClass::DisplayAxisValues()
                 if (IO.IsAxisCutOff((GameAxis_t)i) == true)
                 {
                     sprintf(tmp, "Throttle %i OFF", i - AXIS_THROTTLE + 1);
-                    OTWDriver.renderer->TextLeft(0.0F, 0.85F - (i * 0.05f), tmp);
+                    OTWDriver.renderer->TextLeft(0.0F, 0.85F - (i * 0.05f),
+                                                 tmp);
                 }
             }
 
@@ -313,18 +314,19 @@ void OTWDriverClass::TakeScreenShot(void)
     char fileName[_MAX_PATH];
     char tmpStr[_MAX_PATH];
     time_t ltime;
-    struct tm* today;
+    struct tm *today;
 
     time(&ltime);
     takeScreenShot = FALSE;
     today = localtime(&ltime);
     //strftime( tmpStr, _MAX_PATH-1,"%m_%d_%Y-%H_%M_%S", today );
-    strftime(tmpStr, _MAX_PATH - 1, "%Y-%m-%d_%H%M%S", today); //THW Let's have ISO-Dates Darn Americans :)
+    strftime(tmpStr, _MAX_PATH - 1, "%Y-%m-%d_%H%M%S",
+             today); //THW Let's have ISO-Dates Darn Americans :)
     //MI put them where they belong
 #if 0
-    sprintf(fileName, "%s\\%s", FalconDataDirectory, tmpStr);
+    sprintf(fileName, "%s/%s", FalconDataDirectory, tmpStr);
 #else
-    sprintf(fileName, "%s\\%s", FalconPictureDirectory, tmpStr);
+    sprintf(fileName, "%s/%s", FalconPictureDirectory, tmpStr);
 #endif
 
     OTWImage->BackBufferToRAW(fileName);
@@ -344,7 +346,9 @@ void OTWDriverClass::DrawExitMenu(void)
     Tpoint origin = {0.0f, 0.0f, 0.0f};
 
     float tempFOV = GetFOV(); //Wombat778 3-26-04 Save the current FOV;
-    SetFOV(45.0f * DTR); //Wombat778 3-26-04 Set the FOV to 45 degrees to make it not dark (temporary fix till jam comes up with the real solution, then change to 60.0f)
+    SetFOV(
+        45.0f *
+        DTR); //Wombat778 3-26-04 Set the FOV to 45 degrees to make it not dark (temporary fix till jam comes up with the real solution, then change to 60.0f)
 
 
     if (exitMenuOn not_eq exitMenuDesired)
@@ -401,7 +405,6 @@ void OTWDriverClass::DrawExitMenu(void)
                 endDialogObject->SetSwitchMask(2, TRUE);
                 endsAvail[2] = TRUE;
             }
-
         }
 
         // DX - Not necessary
@@ -411,7 +414,8 @@ void OTWDriverClass::DrawExitMenu(void)
         // Artscout - 2026: #97 -- the exit dialog is a lit 3D-BSP, so at night it renders near-black (the old
         // SetFOV(45) hack barely helped). Draw it FULL-BRIGHT: force lit=1 in the PS for these surfaces so the
         // dialog reads at full material colour regardless of time-of-day. Cleared after the flush executes them.
-        if (g_pRenderer) g_pRenderer->SetFullBright(true);
+        if (g_pRenderer)
+            g_pRenderer->SetFullBright(true);
         renderer->StartDraw();
         renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
         renderer->SetCamera(&origin, &IMatrix);
@@ -425,11 +429,12 @@ void OTWDriverClass::DrawExitMenu(void)
         TheDXEngine.FlushBuffers();
         // And restore previous state
         TheDXEngine.RestoreState();
-        if (g_pRenderer) g_pRenderer->SetFullBright(false);   // #97: menu drawn -> back to normal lighting
+        if (g_pRenderer)
+            g_pRenderer->SetFullBright(
+                false); // #97: menu drawn -> back to normal lighting
         // DX - Not necessary
         //renderer->SetObjectTextureState( oldState );
         // DX - End
-
     }
 
     SetFOV(tempFOV); //Wombat778 3-26-04 Restore the FOV
@@ -474,9 +479,13 @@ void OTWDriverClass::Timeout(void)
         if (otwPlatform.get() not_eq NULL)
         {
             // MonoPrint ("Panning exit\n");
-            SetEndFlightPoint(otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f,
-                              otwPlatform->YPos() + otwPlatform->dmx[0][1] * 10.0f + otwPlatform->YDelta() * 2.0f,
-                              otwPlatform->ZPos() + otwPlatform->dmx[0][2] * 10.0f + otwPlatform->ZDelta() * 2.0f - 20.0f);
+            SetEndFlightPoint(
+                otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f +
+                    otwPlatform->XDelta() * 2.0f,
+                otwPlatform->YPos() + otwPlatform->dmx[0][1] * 10.0f +
+                    otwPlatform->YDelta() * 2.0f,
+                otwPlatform->ZPos() + otwPlatform->dmx[0][2] * 10.0f +
+                    otwPlatform->ZDelta() * 2.0f - 20.0f);
             SetEndFlightVec(0.0f, 0.0f, 0.0f);
         }
         else
@@ -500,7 +509,11 @@ void OTWDriverClass::ExitMenu(unsigned long i)
     else if ((i == DIK_E and endsAvail[0]) or (i == DIK_D and endsAvail[2]))
     {
         g_intellivibeData.IsEndFlight = true;
-        memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
+        // IntelliVibe shared-memory export is optional telemetry; on Linux the mapping may be absent (NULL),
+        // so guard the write (the Win32 code assumed the mapping always succeeds -> NULL memcpy crash on exit).
+        if (gSharedIntellivibe)
+            memcpy(gSharedIntellivibe, &g_intellivibeData,
+                   sizeof(g_intellivibeData));
 
         if (i == DIK_D or tactical_is_training())
             endAbort = TRUE;
@@ -530,16 +543,22 @@ void OTWDriverClass::ExitMenu(unsigned long i)
             if (otwPlatform)
             {
                 //    MonoPrint ("Panning exit\n");
-                SetEndFlightPoint(otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f + otwPlatform->XDelta() * 2.0f,
-                                  otwPlatform->YPos() + otwPlatform->dmx[0][1] * 10.0f + otwPlatform->YDelta() * 2.0f,
-                                  otwPlatform->ZPos() + otwPlatform->dmx[0][2] * 10.0f + otwPlatform->ZDelta() * 2.0f - 20.0f);
+                SetEndFlightPoint(
+                    otwPlatform->XPos() + otwPlatform->dmx[0][0] * 10.0f +
+                        otwPlatform->XDelta() * 2.0f,
+                    otwPlatform->YPos() + otwPlatform->dmx[0][1] * 10.0f +
+                        otwPlatform->YDelta() * 2.0f,
+                    otwPlatform->ZPos() + otwPlatform->dmx[0][2] * 10.0f +
+                        otwPlatform->ZDelta() * 2.0f - 20.0f);
                 SetEndFlightVec(0.0f, 0.0f, 0.0f);
             }
             else
             {
                 //          MonoPrint ("Fixed exit\n");
                 // not otwplatform, use last focus point with some randomness...
-                SetEndFlightPoint(focusPoint.x + 100.0f * PRANDFloat(), focusPoint.y + 100.0f * PRANDFloat(), focusPoint.z - 100.0f);
+                SetEndFlightPoint(focusPoint.x + 100.0f * PRANDFloat(),
+                                  focusPoint.y + 100.0f * PRANDFloat(),
+                                  focusPoint.z - 100.0f);
                 SetEndFlightVec(0.0f, 0.0f, 0.0f);
             }
         }
@@ -558,7 +577,9 @@ void OTWDriverClass::ExitMenu(unsigned long i)
     else if (i == DIK_R and endsAvail[1])
     {
         // Start E3 HACK
-        if (SimDriver.RunningInstantAction() and SimDriver.GetPlayerAircraft() and SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
+        if (SimDriver.RunningInstantAction() and
+            SimDriver.GetPlayerAircraft() and
+            SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP))
         {
             SimDriver.GetPlayerAircraft()->ResetFuel();
         }
@@ -588,15 +609,18 @@ int OTWDriverClass::HandleMouseClick(long x, long y)
 
         if (logicalX >= 230.0F / 640.0F and logicalX <= 250.0F / 640.0F)
         {
-            if (logicalY >= 200.0F / 480.0F and logicalY <= 220.0F / 480.0F and endsAvail[0])
+            if (logicalY >= 200.0F / 480.0F and logicalY <= 220.0F / 480.0F and
+                endsAvail[0])
             {
                 key = DIK_E;
             }
-            else if (logicalY >= 235.0F / 480.0F and logicalY <= 255.0F / 480.0F and endsAvail[1])
+            else if (logicalY >= 235.0F / 480.0F and
+                     logicalY <= 255.0F / 480.0F and endsAvail[1])
             {
                 key = DIK_R;
             }
-            else if (logicalY >= 270.0F / 480.0F and logicalY <= 290.0F / 480.0F and endsAvail[2])
+            else if (logicalY >= 270.0F / 480.0F and
+                     logicalY <= 290.0F / 480.0F and endsAvail[2])
             {
                 key = DIK_D;
             }
@@ -611,7 +635,8 @@ int OTWDriverClass::HandleMouseClick(long x, long y)
     return passThru;
 }
 
-bool MouseMenuActive = false; // Retro 15Feb2004 - see simouse.cpp for explanation
+bool MouseMenuActive =
+    false; // Retro 15Feb2004 - see simouse.cpp for explanation
 extern bool clickableMouseMode; // Retro 15Feb2004
 
 void OTWDriverClass::SetExitMenu(int newVal)
@@ -651,42 +676,43 @@ void OTWDriverClass::ChangeExitMenu(int newVal)
             endFlightTimer = vuxRealTime;
             newVal = FALSE;
         }
-        else if ( not endDialogObject)
+        else if (not endDialogObject)
         {
-            Tpoint pos = {4.0f, 0.f, 0.0f };
+            Tpoint pos = {4.0f, 0.f, 0.0f};
             pos.x *= (60.0F * DTR) / GetFOV();
-            endDialogObject = new DrawableBSP(MapVisId(VIS_END_MISSION), &pos, &IMatrix, 1.0f);
+            endDialogObject = new DrawableBSP(MapVisId(VIS_END_MISSION), &pos,
+                                              &IMatrix, 1.0f);
 
             switch (gLangIDNum)
             {
-                case F4LANG_UK:               // UK
-                case F4LANG_ENGLISH:          // US
-                    texSet = 0;
-                    break;
+            case F4LANG_UK: // UK
+            case F4LANG_ENGLISH: // US
+                texSet = 0;
+                break;
 
-                case F4LANG_GERMAN:           // DE
-                    texSet = 1;
-                    break;
+            case F4LANG_GERMAN: // DE
+                texSet = 1;
+                break;
 
-                case F4LANG_FRENCH:           // FR
-                    texSet = 2;
-                    break;
+            case F4LANG_FRENCH: // FR
+                texSet = 2;
+                break;
 
-                case F4LANG_SPANISH:
-                    texSet = 3;
-                    break;
+            case F4LANG_SPANISH:
+                texSet = 3;
+                break;
 
-                case F4LANG_ITALIAN:
-                    texSet = 4;
-                    break;
+            case F4LANG_ITALIAN:
+                texSet = 4;
+                break;
 
-                case F4LANG_PORTUGESE:
-                    texSet = 5;
-                    break;
+            case F4LANG_PORTUGESE:
+                texSet = 5;
+                break;
 
-                default:
-                    texSet = 0;
-                    break;
+            default:
+                texSet = 0;
+                break;
             }
 
             endDialogObject->SetTextureSet(texSet);
@@ -713,13 +739,13 @@ void OTWDriverClass::CancelExitMenuCountdown(void)
 
 void OTWDriverClass::ShowThrustReverse(void)
 {
-    if (otwPlatform and 
-         otwPlatform.get() == SimDriver.GetPlayerAircraft() and 
-         otwPlatform->IsAirplane())
+    if (otwPlatform and otwPlatform.get() == SimDriver.GetPlayerAircraft() and
+        otwPlatform->IsAirplane())
     {
-        AirframeClass *af = ((AircraftClass*)otwPlatform.get())->af;
+        AirframeClass *af = ((AircraftClass *)otwPlatform.get())->af;
 
-        if (SimDriver.GetPlayerAircraft()->OnGround() and af->thrustReverse == 2)
+        if (SimDriver.GetPlayerAircraft()->OnGround() and
+            af->thrustReverse == 2)
         {
             renderer->SetColor(0xff00ff00);
             renderer->TextRight(0.95F, 0.9F, "Thrust Reverser ACTIVATED");
@@ -730,5 +756,4 @@ void OTWDriverClass::ShowThrustReverse(void)
             renderer->TextRight(0.95F, 0.9F, "Thrust Reverser ARMED");
         }
     }
-
 }

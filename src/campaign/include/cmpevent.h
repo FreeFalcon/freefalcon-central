@@ -25,7 +25,7 @@ public:
 public:
     EventClass(short id);
     //sfr: added rem
-    EventClass(uchar **stream, long *rem);
+    EventClass(uchar** stream, long* rem);
     EventClass(FILE* fp);
     ~EventClass(void);
     int Save(FILE* fp);
@@ -86,7 +86,7 @@ class EventClass {
 // Global functions
 // ==============================
 
-int CheckTriggers(char *filename);
+int CheckTriggers(char* filename);
 
 int NewCampaignEvents(char* filename);
 

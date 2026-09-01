@@ -3,7 +3,8 @@
 #if VU_ALL_FILTERED
 
 VuRedBlackTree::VuRedBlackTree(VuKeyFilter *filter) : VuCollection(filter)
-{}
+{
+}
 
 VuRedBlackTree::~VuRedBlackTree()
 {
@@ -11,14 +12,14 @@ VuRedBlackTree::~VuRedBlackTree()
     Purge(TRUE);
 }
 
-VU_ERRCODE VuRedBlackTree::PrivateInsert(VuEntity* entity)
+VU_ERRCODE VuRedBlackTree::PrivateInsert(VuEntity *entity)
 {
     VuKeyFilter *kf = GetKeyFilter();
     map_.insert(std::make_pair(kf->Key(entity), VuEntityBin(entity)));
     return VU_SUCCESS;
 }
 
-VU_ERRCODE VuRedBlackTree::PrivateRemove(VuEntity* entity)
+VU_ERRCODE VuRedBlackTree::PrivateRemove(VuEntity *entity)
 {
     VuKeyFilter *kf = GetKeyFilter();
     VU_KEY k = kf->Key(entity);
@@ -42,8 +43,7 @@ VU_ERRCODE VuRedBlackTree::PrivateRemove(VuEntity* entity)
         }
 
         ++it;
-    }
-    while (--count);
+    } while (--count);
 
     return VU_NO_OP;
 }
@@ -73,8 +73,7 @@ bool VuRedBlackTree::PrivateFind(VuEntity *ent) const
         }
 
         ++it;
-    }
-    while (--count);
+    } while (--count);
 
     // can happen if all entities with given key are inactive
     return false;
@@ -85,14 +84,12 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
 {
     unsigned int ret = 0;
 
-    for (
-        RBMap::iterator it = map_.begin();
-        it not_eq map_.end();
-    )
+    for (RBMap::iterator it = map_.begin(); it not_eq map_.end();)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and not eb->IsGlobal()))
+        if (all or (not(eb->IsPrivate() and eb->IsPersistent()) and
+                    not eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;
@@ -110,11 +107,7 @@ unsigned int VuRedBlackTree::Count() const
 {
     int count = 0;
 
-    for (
-        RBMap::const_iterator it = map_.begin();
-        it not_eq map_.end();
-        ++it
-    )
+    for (RBMap::const_iterator it = map_.begin(); it not_eq map_.end(); ++it)
     {
         VuEntityBin eb = it->second;
 
@@ -134,7 +127,7 @@ unsigned int VuRedBlackTree::Count() const
 
 VuKeyFilter *VuRedBlackTree::GetKeyFilter() const
 {
-    return static_cast<VuKeyFilter*>(GetFilter());
+    return static_cast<VuKeyFilter *>(GetFilter());
 }
 
 VU_COLL_TYPE VuRedBlackTree::Type() const
@@ -143,8 +136,9 @@ VU_COLL_TYPE VuRedBlackTree::Type() const
 }
 
 #else
-VuRedBlackTree::VuRedBlackTree(VuKeyFilter *filter) :
-    VuCollection(), filter_(filter == NULL ? NULL : (VuKeyFilter *)filter->Copy())
+VuRedBlackTree::VuRedBlackTree(VuKeyFilter *filter)
+    : VuCollection(),
+      filter_(filter == NULL ? NULL : (VuKeyFilter *)filter->Copy())
 {
 }
 
@@ -165,7 +159,7 @@ VU_ERRCODE VuRedBlackTree::Handle(VuMessage *msg)
         {
             if (Find(ent))
             {
-                if ( not filter_->Test(ent))
+                if (not filter_->Test(ent))
                 {
                     // ent is in table, but doesn't belong there...
                     Remove(ent);
@@ -184,7 +178,7 @@ VU_ERRCODE VuRedBlackTree::Handle(VuMessage *msg)
     return VU_NO_OP;
 }
 
-VU_ERRCODE VuRedBlackTree::ForcedInsert(VuEntity* entity)
+VU_ERRCODE VuRedBlackTree::ForcedInsert(VuEntity *entity)
 {
     if (entity == NULL)
     {
@@ -193,7 +187,7 @@ VU_ERRCODE VuRedBlackTree::ForcedInsert(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if ( not filter_->RemoveTest(entity))
+    if (not filter_->RemoveTest(entity))
     {
         return VU_NO_OP;
     }
@@ -202,7 +196,7 @@ VU_ERRCODE VuRedBlackTree::ForcedInsert(VuEntity* entity)
     return VU_SUCCESS;
 }
 
-VU_ERRCODE VuRedBlackTree::Insert(VuEntity* entity)
+VU_ERRCODE VuRedBlackTree::Insert(VuEntity *entity)
 {
     if (entity == NULL)
     {
@@ -211,7 +205,7 @@ VU_ERRCODE VuRedBlackTree::Insert(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if ( not filter_->Test(entity))
+    if (not filter_->Test(entity))
     {
         return VU_NO_OP;
     }
@@ -219,7 +213,7 @@ VU_ERRCODE VuRedBlackTree::Insert(VuEntity* entity)
     return ForcedInsert(entity);
 }
 
-VU_ERRCODE VuRedBlackTree::Remove(VuEntity* entity)
+VU_ERRCODE VuRedBlackTree::Remove(VuEntity *entity)
 {
     if (entity == NULL)
     {
@@ -228,7 +222,7 @@ VU_ERRCODE VuRedBlackTree::Remove(VuEntity* entity)
 
     VuScopeLock l(GetMutex());
 
-    if ( not filter_->RemoveTest(entity))
+    if (not filter_->RemoveTest(entity))
     {
         return VU_NO_OP;
     }
@@ -254,8 +248,7 @@ VU_ERRCODE VuRedBlackTree::Remove(VuEntity* entity)
         }
 
         ++it;
-    }
-    while (--count);
+    } while (--count);
 
     return VU_NO_OP;
 }
@@ -270,14 +263,12 @@ unsigned int VuRedBlackTree::Purge(VU_BOOL all)
     VuScopeLock l(GetMutex());
     unsigned int ret = 0;
 
-    for (
-        RBMap::iterator it = map_.begin();
-        it not_eq map_.end();
-    )
+    for (RBMap::iterator it = map_.begin(); it not_eq map_.end();)
     {
         VuEntityBin &eb = it->second;
 
-        if (all or ( not (eb->IsPrivate() and eb->IsPersistent()) and not eb->IsGlobal()))
+        if (all or (not(eb->IsPrivate() and eb->IsPersistent()) and
+                    not eb->IsGlobal()))
         {
             it = map_.erase(it);
             ++ret;
@@ -296,11 +287,7 @@ unsigned int VuRedBlackTree::Count() const
     VuScopeLock l(GetMutex());
     int count = 0;
 
-    for (
-        RBMap::const_iterator it = map_.begin();
-        it not_eq map_.end();
-        ++it
-    )
+    for (RBMap::const_iterator it = map_.begin(); it not_eq map_.end(); ++it)
     {
         VuEntityBin eb = it->second;
 
@@ -343,8 +330,7 @@ VuEntity *VuRedBlackTree::Find(VuEntity *ent) const
         }
 
         ++it;
-    }
-    while (--count);
+    } while (--count);
 
     // can happen if all entities with given key are inactive
     return NULL;

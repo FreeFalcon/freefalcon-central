@@ -1,4 +1,4 @@
-#include <cISO646>
+#include <ciso646>
 #include <string>
 #include <vector>
 
@@ -20,11 +20,12 @@ typedef struct
 namespace
 {
     /** our array of threads */
-    F4THREAD_TYPE F4Thread[F4T_MAX_THREADS] = {0};
+F4THREAD_TYPE F4Thread[F4T_MAX_THREADS] = {0};
 }
 
 
-F4THREADHANDLE F4CreateThread(threadf_t tf, void *args, int createSuspended, tpri_e p)
+F4THREADHANDLE F4CreateThread(threadf_t tf, void* args, int createSuspended,
+                              tpri_e p)
 {
     int i;
 
@@ -43,7 +44,8 @@ F4THREADHANDLE F4CreateThread(threadf_t tf, void *args, int createSuspended, tpr
     }
 
     // create the thread
-    if ( not (F4Thread[i].handle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)tf, args, 0, &F4Thread[i].id)))
+    if (not(F4Thread[i].handle = CreateThread(
+                NULL, 0, (LPTHREAD_START_ROUTINE)tf, args, 0, &F4Thread[i].id)))
     {
         return F4T_RET_ERROR;
     }
@@ -54,22 +56,22 @@ F4THREADHANDLE F4CreateThread(threadf_t tf, void *args, int createSuspended, tpr
 
         switch (p)
         {
-            case F4T_PRI_NORMAL:
-                wp = THREAD_PRIORITY_NORMAL;
-                break;
+        case F4T_PRI_NORMAL:
+            wp = THREAD_PRIORITY_NORMAL;
+            break;
 
-            case F4T_PRI_HIGH:
-                wp = THREAD_PRIORITY_ABOVE_NORMAL;
-                break;
+        case F4T_PRI_HIGH:
+            wp = THREAD_PRIORITY_ABOVE_NORMAL;
+            break;
 
-            case F4T_PRI_REALTIME:
-                wp = THREAD_PRIORITY_TIME_CRITICAL;
-                break;
+        case F4T_PRI_REALTIME:
+            wp = THREAD_PRIORITY_TIME_CRITICAL;
+            break;
 
-            case F4T_PRI_IDLE:
-            default:
-                wp = THREAD_PRIORITY_IDLE;
-                break;
+        case F4T_PRI_IDLE:
+        default:
+            wp = THREAD_PRIORITY_IDLE;
+            break;
         }
 
         F4Thread[i].inUse = TRUE;
@@ -86,7 +88,9 @@ void F4JoinThread(F4THREADHANDLE t)
         return;
     }
 
-    WaitForSingleObject(F4Thread, INFINITE);
+    // Artscout - 2026 (Linux port): upstream passed the whole array (which decayed to a
+    // pointer under Win32's opaque HANDLE); the intent is to wait on this thread's handle.
+    WaitForSingleObject(F4Thread[t].handle, INFINITE);
     F4Thread[t].inUse = 0;
 }
 
@@ -105,17 +109,18 @@ struct F4CSECTIONHANDLE
 };
 
 
-F4CSECTIONHANDLE* F4CreateCriticalSection(const char *name)
+F4CSECTIONHANDLE* F4CreateCriticalSection(const char* name)
 {
     F4CSECTIONHANDLE* theSection;
     theSection = new F4CSECTIONHANDLE;
 
-    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*) 0xfeeefeee) and
+        (theSection not_eq (F4CSECTIONHANDLE*) 0xbaadf00d))
     {
         //if (theSection){
         memset(&(theSection->criticalSection), 0, sizeof(CRITICAL_SECTION));
         InitializeCriticalSection(&(theSection->criticalSection));
-        theSection->owningThread = (HANDLE) - 1;
+        theSection->owningThread = (HANDLE)-1;
         theSection->count = 0;
         theSection->name = name;
     }
@@ -127,7 +132,8 @@ F4CSECTIONHANDLE* F4CreateCriticalSection(const char *name)
 
 void F4DestroyCriticalSection(F4CSECTIONHANDLE* theSection)
 {
-    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*) 0xfeeefeee) and
+        (theSection not_eq (F4CSECTIONHANDLE*) 0xbaadf00d))
     {
         //if (theSection){
         DeleteCriticalSection(&(theSection->criticalSection));
@@ -140,7 +146,8 @@ void F4DestroyCriticalSection(F4CSECTIONHANDLE* theSection)
 #include <stdio.h>
 void F4EnterCriticalSection(F4CSECTIONHANDLE* theSection)
 {
-    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*) 0xfeeefeee) and
+        (theSection not_eq (F4CSECTIONHANDLE*) 0xbaadf00d))
     {
         //if (theSection){
         DWORD now = GetTickCount();
@@ -152,7 +159,7 @@ void F4EnterCriticalSection(F4CSECTIONHANDLE* theSection)
             printf("stutter");
         }
 
-        theSection->count ++;
+        theSection->count++;
         theSection->owningThread = (HANDLE)GetCurrentThreadId();
     }
     else
@@ -163,13 +170,15 @@ BOOL F4TryEnterCriticalSection(F4CSECTIONHANDLE* theSection)
 {
     HANDLE tid = (HANDLE)GetCurrentThreadId();
 
-    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*) 0xfeeefeee) and
+        (theSection not_eq (F4CSECTIONHANDLE*) 0xbaadf00d))
     {
         //if (theSection){
-        if ((int)theSection->owningThread < 0 or theSection->owningThread == tid)
+        if ((int)theSection->owningThread < 0 or
+            theSection->owningThread == tid)
         {
             EnterCriticalSection(&(theSection->criticalSection));
-            theSection->count ++;
+            theSection->count++;
             theSection->owningThread = tid;
             return TRUE;
         }
@@ -186,9 +195,11 @@ int F4CheckHasCriticalSection(F4CSECTIONHANDLE* theSection)
 {
     HANDLE tid = (HANDLE)GetCurrentThreadId();
 
-    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*) 0xfeeefeee) and
+        (theSection not_eq (F4CSECTIONHANDLE*) 0xbaadf00d))
     {
-        if (theSection and theSection->owningThread == tid and theSection->count > 0)
+        if (theSection and theSection->owningThread == tid and
+            theSection->count > 0)
         {
             return true;
         }
@@ -201,15 +212,16 @@ int F4CheckHasCriticalSection(F4CSECTIONHANDLE* theSection)
 
 void F4LeaveCriticalSection(F4CSECTIONHANDLE* theSection)
 {
-    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*)0xfeeefeee) and (theSection not_eq (F4CSECTIONHANDLE*)0xbaadf00d))
+    if (theSection and (theSection not_eq (F4CSECTIONHANDLE*) 0xfeeefeee) and
+        (theSection not_eq (F4CSECTIONHANDLE*) 0xbaadf00d))
     {
         //if (theSection){
-        theSection->count --;
+        theSection->count--;
 
         if (theSection->count == 0)
         {
             //F4Assert (theSection->owningThread == (HANDLE)GetCurrentThreadId());
-            theSection->owningThread = (HANDLE) - 2;
+            theSection->owningThread = (HANDLE)-2;
         }
 
         LeaveCriticalSection(&(theSection->criticalSection));
@@ -220,11 +232,11 @@ void F4LeaveCriticalSection(F4CSECTIONHANDLE* theSection)
 
         if (theSection->count == 0 and time > interesttime)
         {
-            MonoPrint("Has held critical section %s for %d\n", theSection->name, time);
+            MonoPrint("Has held critical section %s for %d\n", theSection->name,
+                      time);
         }
 
 #endif
-
     }
     else
         theSection = NULL;
@@ -234,21 +246,22 @@ void F4LeaveCriticalSection(F4CSECTIONHANDLE* theSection)
 /** barrier internal structure */
 struct F4BARRIERHANDLE
 {
-    F4CSECTIONHANDLE *criticalSection; ///< barrier critical section
-    vector<HANDLE> countReached;       ///< array of events to be notified when barrier reachs count
-    vector<HANDLE> notifierGo;         ///< notifier can only notify if this is set
-    unsigned int ccount;               ///< current count
-    unsigned int rcount;               ///< count to reach to release all
+    F4CSECTIONHANDLE* criticalSection; ///< barrier critical section
+    vector<HANDLE>
+        countReached; ///< array of events to be notified when barrier reachs count
+    vector<HANDLE> notifierGo; ///< notifier can only notify if this is set
+    unsigned int ccount; ///< current count
+    unsigned int rcount; ///< count to reach to release all
 };
 
-F4BARRIERHANDLE* F4CreateBarrier(const char *name, unsigned int count)
+F4BARRIERHANDLE* F4CreateBarrier(const char* name, unsigned int count)
 {
     if (count < 2)
     {
         return NULL;
     }
 
-    F4BARRIERHANDLE *b = new F4BARRIERHANDLE;
+    F4BARRIERHANDLE* b = new F4BARRIERHANDLE;
     b->countReached.resize(count - 1);
     b->notifierGo.resize(count - 1);
 
@@ -266,7 +279,7 @@ F4BARRIERHANDLE* F4CreateBarrier(const char *name, unsigned int count)
     return b;
 }
 
-void F4DestroyBarrier(F4BARRIERHANDLE *b)
+void F4DestroyBarrier(F4BARRIERHANDLE* b)
 {
     for (unsigned int i = 0; i < b->rcount - 1; ++i)
     {
@@ -277,7 +290,7 @@ void F4DestroyBarrier(F4BARRIERHANDLE *b)
     delete b;
 }
 
-void F4WaitBarrier(F4BARRIERHANDLE *b)
+void F4WaitBarrier(F4BARRIERHANDLE* b)
 {
     F4EnterCriticalSection(b->criticalSection);
 
@@ -310,7 +323,8 @@ void F4WaitBarrier(F4BARRIERHANDLE *b)
 
 int F4SetThreadProcessor(F4THREADHANDLE theThread, int theProcessor)
 {
-    if (SetThreadAffinityMask(F4Thread[theThread].handle, (DWORD)(1 << (theProcessor - 1))))
+    if (SetThreadAffinityMask(F4Thread[theThread].handle,
+                              (DWORD)(1 << (theProcessor - 1))))
     {
         return (F4T_RET_OK);
     }
@@ -319,12 +333,6 @@ int F4SetThreadProcessor(F4THREADHANDLE theThread, int theProcessor)
         return (F4T_RET_ERROR);
     }
 }
-
-
-
-
-
-
 
 
 #if 0

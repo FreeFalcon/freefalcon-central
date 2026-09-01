@@ -8,7 +8,7 @@
 #ifndef _TEXBUILDLIST_H_
 #define _TEXBUILDLIST_H_
 
-#include "TexBank.h"
+#include "texbank.h"
 
 extern class BuildTimeTextureList TheTextureBuildList;
 

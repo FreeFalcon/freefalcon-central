@@ -9,14 +9,14 @@
 #include "helimm.h"
 
 // Brain Choices
-#define GENERIC_BRAIN     0
-#define SEAD_BRAIN        1
-#define STRIKE_BRAIN      2
-#define INTERCEPT_BRAIN   3
-#define AIR_CAP_BRAIN     4
-#define AIR_SWEEP_BRAIN   5
-#define ESCORT_BRAIN      6
-#define WAYPOINTER_BRAIN  7
+#define GENERIC_BRAIN 0
+#define SEAD_BRAIN 1
+#define STRIKE_BRAIN 2
+#define INTERCEPT_BRAIN 3
+#define AIR_CAP_BRAIN 4
+#define AIR_SWEEP_BRAIN 5
+#define ESCORT_BRAIN 6
+#define WAYPOINTER_BRAIN 7
 
 void HeliBrain::FollowWaypoints(void)
 {
@@ -58,9 +58,10 @@ void HeliBrain::GoToCurrentWaypoint(void)
     float wpX, wpY, wpZ;
     float dx, dy, time;
 
-    if (self->curWaypoint->GetWPAction() == WP_PICKUP && onStation == NotThereYet)
+    if (self->curWaypoint->GetWPAction() == WP_PICKUP &&
+        onStation == NotThereYet)
     {
-        Unit cargo = (Unit) self->curWaypoint->GetWPTarget();
+        Unit cargo = (Unit)self->curWaypoint->GetWPTarget();
 
         if (cargo)
         {
@@ -80,7 +81,8 @@ void HeliBrain::GoToCurrentWaypoint(void)
 
     // follow terrain at 1000ft
     holdAlt = OTWDriver.GetGroundLevel(self->XPos() + self->XDelta(),
-                                       self->YPos() + self->YDelta()) - 1000.0f;
+                                       self->YPos() + self->YDelta()) -
+              1000.0f;
 
     desSpeed = 1.0f;
     rollDir = 0.0f;
@@ -140,9 +142,7 @@ void HeliBrain::GoToCurrentWaypoint(void)
     }
 
     // landing?
-    if (onStation == Landing ||
-        onStation == DropOff ||
-        onStation == Landed ||
+    if (onStation == Landing || onStation == DropOff || onStation == Landed ||
         onStation == PickUp)
     {
         LandMe();
@@ -175,7 +175,9 @@ void HeliBrain::GoToCurrentWaypoint(void)
         rng = (float)sqrt(rng);
 
         if (self->curWaypoint->GetWPArrivalTime() > SimLibElapsedTime)
-            time = (float)(self->curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) / SEC_TO_MSEC;
+            time = (float)(self->curWaypoint->GetWPArrivalTime() -
+                           SimLibElapsedTime) /
+                   SEC_TO_MSEC;
         else
             time = -1.0f;
 
@@ -183,7 +185,6 @@ void HeliBrain::GoToCurrentWaypoint(void)
         {
             // we're late
             desSpeed = 1.0f;
-
         }
         else
         {
@@ -210,16 +211,16 @@ void HeliBrain::GoToCurrentWaypoint(void)
 
 void HeliBrain::SelectNextWaypoint(void)
 {
-    WayPointClass* tmpWaypoint = self->curWaypoint;
-    WayPointClass* wlist = self->waypoint;
+    WayPointClass *tmpWaypoint = self->curWaypoint;
+    WayPointClass *wlist = self->waypoint;
     UnitClass *campUnit = NULL;
     WayPointClass *campCurWP = NULL;
     int waypointIndex, i;
 
     // first get our current waypoint index in the list
-    for (waypointIndex = 0;
-         wlist && wlist != tmpWaypoint;
-         wlist = wlist->GetNextWP(), waypointIndex++);
+    for (waypointIndex = 0; wlist && wlist != tmpWaypoint;
+         wlist = wlist->GetNextWP(), waypointIndex++)
+        ;
 
     // see if we're running in tactical or campaign.  If so, we want to
     // synch the campaign's waypoints with ours
@@ -236,7 +237,7 @@ void HeliBrain::SelectNextWaypoint(void)
             // list by index
             for (i = 0; i <= waypointIndex; i++)
             {
-                if (campCurWP)   // sanity check
+                if (campCurWP) // sanity check
                     campCurWP = campCurWP->GetNextWP();
             }
         }
@@ -278,62 +279,61 @@ void HeliBrain::ChooseBrain(void)
     {
         switch (self->curWaypoint->GetWPAction())
         {
-            case WP_NOTHING:
-            case WP_TAKEOFF:
-            case WP_ASSEMBLE:
-            case WP_POSTASSEMBLE:
-            case WP_REFUEL:
-            case WP_REARM:
-            case WP_LAND:
-            case WP_ELINT:
-            case WP_RECON:
-            case WP_RESCUE:
-            case WP_ASW:
-            case WP_TANKER:
-            case WP_AIRDROP:
-            case WP_JAM:
-            case WP_PICKUP:
-                // MonoPrint ("Helo Digi Chose Waypoint BRAIN\n");
-                //            MonoPrint ("Helo Digi Chose WAYPOINT BRAIN\n");
-                // modeData = digitalBrains->brainData[AIR_SWEEP_BRAIN];
-                break;
+        case WP_NOTHING:
+        case WP_TAKEOFF:
+        case WP_ASSEMBLE:
+        case WP_POSTASSEMBLE:
+        case WP_REFUEL:
+        case WP_REARM:
+        case WP_LAND:
+        case WP_ELINT:
+        case WP_RECON:
+        case WP_RESCUE:
+        case WP_ASW:
+        case WP_TANKER:
+        case WP_AIRDROP:
+        case WP_JAM:
+        case WP_PICKUP:
+            // MonoPrint ("Helo Digi Chose Waypoint BRAIN\n");
+            //            MonoPrint ("Helo Digi Chose WAYPOINT BRAIN\n");
+            // modeData = digitalBrains->brainData[AIR_SWEEP_BRAIN];
+            break;
 
-            case WP_ESCORT:
-                //            MonoPrint ("Helo Digi Chose ESCORT BRAIN\n");
-                break;
+        case WP_ESCORT:
+            //            MonoPrint ("Helo Digi Chose ESCORT BRAIN\n");
+            break;
 
-            case WP_CA:
-                //            MonoPrint ("Helo Digi Chose AIR SWEEP BRAIN\n");
-                break;
+        case WP_CA:
+            //            MonoPrint ("Helo Digi Chose AIR SWEEP BRAIN\n");
+            break;
 
-            case WP_CAP:
-                //            MonoPrint ("Helo Digi Chose AIR CAP BRAIN\n");
-                break;
+        case WP_CAP:
+            //            MonoPrint ("Helo Digi Chose AIR CAP BRAIN\n");
+            break;
 
-            case WP_INTERCEPT:
-                //            MonoPrint ("Helo Digi Chose AIR INTERCEPT BRAIN\n");
-                break;
+        case WP_INTERCEPT:
+            //            MonoPrint ("Helo Digi Chose AIR INTERCEPT BRAIN\n");
+            break;
 
-            case WP_GNDSTRIKE:
-            case WP_NAVSTRIKE:
-            case WP_STRIKE:
-            case WP_BOMB:
-            case WP_SAD:
-                //            MonoPrint ("Helo Digi Chose STRIKE BRAIN\n");
-                break;
+        case WP_GNDSTRIKE:
+        case WP_NAVSTRIKE:
+        case WP_STRIKE:
+        case WP_BOMB:
+        case WP_SAD:
+            //            MonoPrint ("Helo Digi Chose STRIKE BRAIN\n");
+            break;
 
-            case WP_SEAD:
-                //            MonoPrint ("Helo Digi Chose SEAD BRAIN\n");
-                break;
+        case WP_SEAD:
+            //            MonoPrint ("Helo Digi Chose SEAD BRAIN\n");
+            break;
 
-            default:
-                //            MonoPrint ("Why am I here (Helo Digi GetBrain)\n");
-                //          MonoPrint ("===>Waypoint action %d\n", self->curWaypoint->GetWPAction());
-                break;
+        default:
+            //            MonoPrint ("Why am I here (Helo Digi GetBrain)\n");
+            //          MonoPrint ("===>Waypoint action %d\n", self->curWaypoint->GetWPAction());
+            break;
         }
     }
     else
     {
     }
-
 }

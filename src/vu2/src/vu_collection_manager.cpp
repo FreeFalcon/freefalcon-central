@@ -11,8 +11,8 @@ VuCollectionManager::VuCollectionManager()
       gcMutex_(VuxCreateMutex("garbage collector mutex")),
       birthMutex_(VuxCreateMutex("birthlist mutex"))
 {
-    collsMutex_   = NULL;//VuxCreateMutex("colls mutex");
-    gridsMutex_   = NULL;//VuxCreateMutex("grids mutex");;
+    collsMutex_ = NULL;//VuxCreateMutex("colls mutex");
+    gridsMutex_ = NULL;//VuxCreateMutex("grids mutex");;
 }
 
 
@@ -44,7 +44,7 @@ void VuCollectionManager::Register(VuCollection* coll)
 
 void VuCollectionManager::DeRegister(VuCollection* coll)
 {
-    if ( not this)
+    if (not this)
         return;
 
     VuScopeLock l(collsMutex_);
@@ -59,7 +59,7 @@ void VuCollectionManager::GridRegister(VuGridTree* grid)
 }
 
 
-void VuCollectionManager::GridDeRegister(VuGridTree *grid)
+void VuCollectionManager::GridDeRegister(VuGridTree* grid)
 {
     VuScopeLock l(gridsMutex_);
     gridcoll_.remove(grid);
@@ -69,9 +69,10 @@ void VuCollectionManager::Add(VuEntity* ent)
 {
     VuScopeLock l(collsMutex_);
 
-    for (list<VuCollection*>::iterator it = collcoll_.begin(); it not_eq collcoll_.end(); ++it)
+    for (list<VuCollection*>::iterator it = collcoll_.begin();
+         it not_eq collcoll_.end(); ++it)
     {
-        VuCollection *c = *it;
+        VuCollection* c = *it;
 #if VU_ALL_FILTERED
         c->Insert(ent);
 #else
@@ -92,9 +93,10 @@ void VuCollectionManager::Remove(VuEntity* ent)
     // sfr: just to ensure it lives through all deletions
     VuBin<VuEntity> e(ent);
 
-    for (list<VuCollection*>::iterator it = collcoll_.begin(); it not_eq collcoll_.end(); ++it)
+    for (list<VuCollection*>::iterator it = collcoll_.begin();
+         it not_eq collcoll_.end(); ++it)
     {
-        VuCollection *c = *it;
+        VuCollection* c = *it;
 #if VU_ALL_FILTERED
         c->Remove(ent);
 #else
@@ -109,16 +111,18 @@ void VuCollectionManager::Remove(VuEntity* ent)
 }
 
 
-int VuCollectionManager::HandleMove(VuEntity*  ent, BIG_SCALAR coord1, BIG_SCALAR coord2)
+int VuCollectionManager::HandleMove(VuEntity* ent, BIG_SCALAR coord1,
+                                    BIG_SCALAR coord2)
 {
     VuScopeLock l(gridsMutex_);
     int retval = 0;
 
-    for (list<VuGridTree*>::iterator it = gridcoll_.begin(); it not_eq gridcoll_.end(); ++it)
+    for (list<VuGridTree*>::iterator it = gridcoll_.begin();
+         it not_eq gridcoll_.end(); ++it)
     {
-        VuGridTree *g = *it;
+        VuGridTree* g = *it;
 
-        if ( not g->suspendUpdates_)
+        if (not g->suspendUpdates_)
         {
             g->Move(ent, coord1, coord2);
         }
@@ -138,9 +142,10 @@ int VuCollectionManager::Handle(VuMessage* msg)
     VuScopeLock l(collsMutex_);
     int retval = VU_NO_OP;
 
-    for (list<VuCollection*>::iterator it = collcoll_.begin(); it not_eq collcoll_.end(); ++it)
+    for (list<VuCollection*>::iterator it = collcoll_.begin();
+         it not_eq collcoll_.end(); ++it)
     {
-        VuCollection *c = *it;
+        VuCollection* c = *it;
 #if VU_ALL_FILTERED
 
         if (c->Handle(msg) == VU_SUCCESS)
@@ -171,9 +176,10 @@ int VuCollectionManager::FindEnt(VuEntity* ent)
     VuScopeLock l(collsMutex_);
     int retval = 0;
 
-    for (list<VuCollection*>::iterator it = collcoll_.begin(); it not_eq collcoll_.end(); ++it)
+    for (list<VuCollection*>::iterator it = collcoll_.begin();
+         it not_eq collcoll_.end(); ++it)
     {
-        VuCollection *c = *it;
+        VuCollection* c = *it;
 #if VU_ALL_FILTERED
 
         if (c->Find(ent))
@@ -182,7 +188,7 @@ int VuCollectionManager::FindEnt(VuEntity* ent)
         }
 
 #else
-        VuEntity *ent2 = c->Find(ent);
+        VuEntity* ent2 = c->Find(ent);
 
         if (ent2 and ent2 == ent)
         {
@@ -195,13 +201,13 @@ int VuCollectionManager::FindEnt(VuEntity* ent)
     return retval;
 }
 
-void VuCollectionManager::AddToBirthList(VuEntity *e)
+void VuCollectionManager::AddToBirthList(VuEntity* e)
 {
     VuScopeLock l(birthMutex_);
     birthlist_.push_back(VuEntityBin(e));
 }
 
-void VuCollectionManager::AddToGc(VuEntity *e)
+void VuCollectionManager::AddToGc(VuEntity* e)
 {
     VuScopeLock l(gcMutex_);
     gclist_.push_back(VuEntityBin(e));
@@ -215,10 +221,10 @@ void VuCollectionManager::CreateEntitiesAndRunGc()
     const unsigned int bmax = 5;
     unsigned int bcount = 0;
 
-    while ( not birthlist_.empty() and (bcount < bmax))
+    while (not birthlist_.empty() and (bcount < bmax))
     {
         ++bcount;
-        VuEntityBin &eb = birthlist_.front();
+        VuEntityBin& eb = birthlist_.front();
         vuDatabase->ReallyInsert(eb.get());
         birthlist_.pop_front();
     }
@@ -227,10 +233,10 @@ void VuCollectionManager::CreateEntitiesAndRunGc()
     const unsigned int dmax = 5;
     unsigned int dcount = 0;
 
-    while ( not gclist_.empty() and (dcount < dmax))
+    while (not gclist_.empty() and (dcount < dmax))
     {
         ++dcount;
-        VuEntityBin &eb = gclist_.front();
+        VuEntityBin& eb = gclist_.front();
 
         // some entities are removed and re-inserted in DB because of ID change.
         // when they are removed, they are collected, but they shouldnt be removed...
@@ -255,9 +261,10 @@ void VuCollectionManager::Shutdown(VU_BOOL all)
     // copy the list since the purges can change the registered collection structure
     list<VuCollection*> collcollCopy(collcoll_);
 
-    for (list<VuCollection*>::iterator it = collcollCopy.begin(); it not_eq collcollCopy.end(); ++it)
+    for (list<VuCollection*>::iterator it = collcollCopy.begin();
+         it not_eq collcollCopy.end(); ++it)
     {
-        VuCollection *c = *it;
+        VuCollection* c = *it;
 #if VU_ALL_FILTERED
         c->Purge(all);
 #else
@@ -281,5 +288,3 @@ void VuCollectionManager::Shutdown(VU_BOOL all)
     //collcoll_.clear();
     //gridcoll_.clear();
 }
-
-

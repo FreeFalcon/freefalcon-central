@@ -8,10 +8,10 @@
 #ifndef _DISPLAY_H_
 #define _DISPLAY_H_
 
-#include "Ttypes.h"
-#include "ImageBuf.h" // ASSO:
-#include "Context.h" // ASSO:
-#include "Tex.h" // ASSO:
+#include "ttypes.h"
+#include "imagebuf.h" // ASSO:
+#include "context.h" // ASSO:
+#include "tex.h" // ASSO:
 
 // Artscout - 2026: ODR/layout guard (see context.h). VirtualDisplay embeds a ContextMPR member
 // (`context`); its offset must match in every translation unit, otherwise callers compute a
@@ -46,9 +46,11 @@ struct FontSet
         fontNum = 0;
         totalFont = 3;
     }
-    ~FontSet() {}
+    ~FontSet()
+    {
+    }
 
-    int ReadFontMetrics(int indx, char* fileName);
+    int ReadFontMetrics(int indx, char *fileName);
     Texture fontTexture[NUM_FONT_RESOLUTIONS];
     FontDataType fontData[NUM_FONT_RESOLUTIONS][256];
     //int fontSpacing[NUM_FONT_RESOLUTIONS];
@@ -77,11 +79,12 @@ static const DWORD CLIP_FAR = 0x20;
 static const DWORD OFF_SCREEN = 0xFF;
 
 static const int CircleStep = 4; // In units of degrees
-static const int CircleSegments = 360 / CircleStep + 1; // How many segments (plus one)?
+static const int CircleSegments =
+    360 / CircleStep + 1; // How many segments (plus one)?
 extern float CircleX[];
 extern float CircleY[];
 
-struct DisplayMatrix   // JPO - how a display is oriented
+struct DisplayMatrix // JPO - how a display is oriented
 {
     float translationX, translationY;
     float rotation00, rotation01;
@@ -113,19 +116,28 @@ public:
     virtual void Point(float x1, float y1);
     virtual void Line(float x1, float y1, float x2, float y2);
     virtual void Line(float x1, float y1, float x2, float y2, float width);
-    virtual void Tri(float x1, float y1, float x2, float y2, float x3, float y3);
+    virtual void Tri(float x1, float y1, float x2, float y2, float x3,
+                     float y3);
     virtual void Oval(float x, float y, float xRadius, float yRadius);
-    virtual void OvalArc(float x, float y, float xRadius, float yRadius, float start, float stop);
+    virtual void OvalArc(float x, float y, float xRadius, float yRadius,
+                         float start, float stop);
     virtual void Circle(float x, float y, float xRadius);
     virtual void Arc(float x, float y, float xRadius, float start, float stop);
 
-    virtual void TextLeft(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextRight(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextLeftVertical(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextRightVertical(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextCenter(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextCenterVertical(float x1, float y1, const char *string, int boxed = 0);
-    virtual int  TextWrap(float h, float v, const char *string, float spacing, float width);
+    virtual void TextLeft(float x1, float y1, const char *string,
+                          int boxed = 0);
+    virtual void TextRight(float x1, float y1, const char *string,
+                           int boxed = 0);
+    virtual void TextLeftVertical(float x1, float y1, const char *string,
+                                  int boxed = 0);
+    virtual void TextRightVertical(float x1, float y1, const char *string,
+                                   int boxed = 0);
+    virtual void TextCenter(float x1, float y1, const char *string,
+                            int boxed = 0);
+    virtual void TextCenterVertical(float x1, float y1, const char *string,
+                                    int boxed = 0);
+    virtual int TextWrap(float h, float v, const char *string, float spacing,
+                         float width);
 
     // NOTE:  These might need to be virtualized and overloaded by canvas3d (maybe???)
     virtual float TextWidth(char *string); // normalized screen space
@@ -134,7 +146,8 @@ public:
     //JAM 22Dec03
     virtual void SetColor(DWORD) = 0;
     virtual void SetBackground(DWORD) = 0;
-    virtual void ScreenText(float x, float y, const char *string, int boxed = 0) = 0;
+    virtual void ScreenText(float x, float y, const char *string,
+                            int boxed = 0) = 0;
 
     static int ScreenTextHeight(void);
     static int ScreenTextWidth(const char *string);
@@ -145,8 +158,10 @@ public:
     virtual void SetLineStyle(int);
     virtual DWORD Color(void);
 
-    virtual void SetViewport(float leftSide, float topSide, float rightSide, float bottomSide);
-    virtual void SetViewportRelative(float leftSide, float topSide, float rightSide, float bottomSide);
+    virtual void SetViewport(float leftSide, float topSide, float rightSide,
+                             float bottomSide);
+    virtual void SetViewportRelative(float leftSide, float topSide,
+                                     float rightSide, float bottomSide);
 
     void AdjustOriginInViewport(float horizontal, float vertical);
     void AdjustRotationAboutOrigin(float angle);
@@ -158,7 +173,8 @@ public:
     int GetXRes(void);
     int GetYRes(void);
 
-    void GetViewport(float *leftSide, float *topSide, float *rightSide, float *bottomSide);
+    void GetViewport(float *leftSide, float *topSide, float *rightSide,
+                     float *bottomSide);
 
     float GetTopPixel(void);
     float GetBottomPixel(void);
@@ -170,9 +186,21 @@ public:
 
     // VR: temporarily render at a per-eye resolution. Caller follows with SetViewport()
     // (recomputes scaleX/scaleY) and SetFOV() (recomputes the projection), then restores.
-    void VR_SetRes(int w, int h) { xRes = w; yRes = h; txRes = w; tyRes = h; }
-    int  VR_GetResX(void) const { return xRes; }
-    int  VR_GetResY(void) const { return yRes; }
+    void VR_SetRes(int w, int h)
+    {
+        xRes = w;
+        yRes = h;
+        txRes = w;
+        tyRes = h;
+    }
+    int VR_GetResX(void) const
+    {
+        return xRes;
+    }
+    int VR_GetResY(void) const
+    {
+        return yRes;
+    }
 
     enum
     {
@@ -191,7 +219,8 @@ protected:
     virtual void Render2DLine(float x1, float y1, float x2, float y2) = 0;
 
     // Functions which should be provided by all derived classes
-    virtual void Render2DTri(float x1, float y1, float x2, float y2, float x3, float y3);
+    virtual void Render2DTri(float x1, float y1, float x2, float y2, float x3,
+                             float y3);
 
 protected:
     // Store the currently selected resolution
@@ -213,7 +242,7 @@ public:
     float shiftY;
 
 protected:
-    ImageBuffer* image;
+    ImageBuffer *image;
 
     // Store the pixel space boundries of the current viewport
     // (top/right inclusive, bottom/left exclusive)
@@ -223,7 +252,8 @@ protected:
     float rightPixel;
 
     // The 2D rotation/translation settings
-    DisplayMatrix dmatrix; // JPO - now in a sub structure so you can save/restore
+    DisplayMatrix
+        dmatrix; // JPO - now in a sub structure so you can save/restore
     //float translationX, translationY;
     //float rotation00, rotation01;
     //float rotation10, rotation11;
@@ -231,8 +261,8 @@ protected:
     // The font information for drawing text
     static const unsigned char FontLUT[256];
     static const unsigned char *Font[];
-    static const unsigned int  FontLength;
-    static unsigned char       InvFont[][8];
+    static const unsigned int FontLength;
+    static unsigned char InvFont[][8];
     BOOL ready;
 
 public:
@@ -244,11 +274,11 @@ public:
     // ASFO:
     static FontSet Font2D;
     static FontSet Font3D;
-    static FontSet* pFontSet;
+    static FontSet *pFontSet;
 
     static bool SetupRttTarget(int tXres_, int tYres_, int tBpp_);
     static bool CleanupRttTarget();
-    void StartRtt(Render3D* r3d_);
+    void StartRtt(Render3D *r3d_);
     void FinishRtt();
     // Artscout - 2026: re-bind the shared RTT atlas as the active D3D11 target WITHOUT the StartRtt
     // bookkeeping (no save/clear/rect reset). The GM radar's beam sub-render does EndDraw->BindBackBuffer
@@ -262,8 +292,10 @@ public:
     // object flush; restore the full viewport afterwards (ReBindRttTarget). The terrain (screen-path,
     // full-atlas coords) is drawn earlier with the full viewport and is unaffected.
     void ConfineObjectViewportToZone();
-    void SetRttCanvas(Tpoint* ul_, Tpoint* ur_, Tpoint* ll_, char blendMode_, float alpha_);
-    void SetRttRect(int tLeft_, int tTop_, int tRight_, int tBottom_,  bool rt_ = true);
+    void SetRttCanvas(Tpoint *ul_, Tpoint *ur_, Tpoint *ll_, char blendMode_,
+                      float alpha_);
+    void SetRttRect(int tLeft_, int tTop_, int tRight_, int tBottom_,
+                    bool rt_ = true);
     void AdjustRttViewport();
     void ResetRttViewport();
     void DrawRttQuad();
@@ -271,9 +303,14 @@ public:
     // (the physical combiner-glass rectangle) so the glass plate reads as glass. Uses the SAME canvas
     // transform as DrawRttQuad (fixed in the cockpit world, NOT collimated), alpha-blended, no texture.
     void DrawGlassPlate(float r, float g, float b, float a);
-    void DrawRttDebugOverlay();	// debug helper: draw the raw renderTexture into a screen corner
+    void
+    DrawRttDebugOverlay(); // debug helper: draw the raw renderTexture into a screen corner
     int HasRttTarget();
-    void GetRttCanvas(Tpoint* Canvas);
+    // Artscout - 2026 (sensor video): map the 2D screen path by THIS display's atlas-zone size (the
+    // sensor scene's CPU spans arrive in zone pixels); the next atlas bind restores the atlas metric.
+    void ConfineScreenMetricToZone();
+    void GetRttCanvas(Tpoint *Canvas);
+
 protected:
     int tLeft;
     int tTop;
@@ -295,13 +332,14 @@ protected:
     static float oldBottom;
     static float oldRight;
 
-    static TextureHandle* renderTexture;
-    static IDirectDrawSurface7* oldTarget;
-    static Render3D* r3d;
+    static TextureHandle *renderTexture;
+    static IDirectDrawSurface7 *oldTarget;
+    static Render3D *r3d;
     // ASSO: END
 };
 
-#pragma pack(pop)	// Artscout - 2026: end ODR/layout packing guard (see top of file)
+#pragma pack(                                                                  \
+    pop) // Artscout - 2026: end ODR/layout packing guard (see top of file)
 
 
 #endif // _DISPLAY_H_

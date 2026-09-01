@@ -46,7 +46,7 @@ void HeliBrain::MissileEngage(void)
     float xDot, yDot, zDot;
     float tof, rMax;
 
-    if ( not targetPtr or not curMissile)
+    if (not targetPtr or not curMissile)
     {
         //   MonoPrint( "HELO BRAIN Exiting Missile Engange 3\n" );
         return;
@@ -61,17 +61,17 @@ void HeliBrain::MissileEngage(void)
 
         switch (self->Sms->hardPoint[curMissileStation]->GetWeaponType())
         {
-            case wtAim9:
-                newSubMode = FireControlComputer::Aim9;
-                break;
+        case wtAim9:
+            newSubMode = FireControlComputer::Aim9;
+            break;
 
-            case wtAim120:
-                newSubMode = FireControlComputer::Aim120;
-                break;
+        case wtAim120:
+            newSubMode = FireControlComputer::Aim120;
+            break;
 
-            default:
-                newSubMode = FireControlComputer::Aim9;
-                break;
+        default:
+            newSubMode = FireControlComputer::Aim9;
+            break;
         }
 
         self->FCC->SetSubMode(newSubMode);
@@ -83,12 +83,14 @@ void HeliBrain::MissileEngage(void)
 
     if (curMissile->IsMissile())
     {
-        tof  = ((MissileClass *)curMissile)->GetTOF((-self->ZPos()), self->GetVt(), targetData->ataFrom,
-                targetPtr->BaseData()->GetVt(), targetData->range);
+        tof = ((MissileClass *)curMissile)
+                  ->GetTOF((-self->ZPos()), self->GetVt(), targetData->ataFrom,
+                           targetPtr->BaseData()->GetVt(), targetData->range);
 
-        rMax = ((MissileClass *)curMissile)->GetRMax((-self->ZPos()), self->GetVt(), targetData->az,
-                targetPtr->BaseData()->GetVt(), targetData->ataFrom);
-
+        rMax =
+            ((MissileClass *)curMissile)
+                ->GetRMax((-self->ZPos()), self->GetVt(), targetData->az,
+                          targetPtr->BaseData()->GetVt(), targetData->ataFrom);
     }
     else
     {
@@ -148,9 +150,9 @@ void HeliBrain::MissileEngage(void)
             trackZ = targetPtr->BaseData()->ZPos() + zDot * tof * 0.9F;
         }
         else
-            /*-------------------------*/
-            /* Not closing fast enough */
-            /*-------------------------*/
+        /*-------------------------*/
+        /* Not closing fast enough */
+        /*-------------------------*/
         {
 
             /*----------------------*/
@@ -167,7 +169,8 @@ void HeliBrain::MissileEngage(void)
         rngdot = (targetData->rangedot) * FTPSEC_TO_KNOTS;
         desSpeed = self->GetKias() + desiredClosure - rngdot;
 
-        if (desSpeed < 200.0) desSpeed = 200.0F;
+        if (desSpeed < 200.0)
+            desSpeed = 200.0F;
     }
 
     /*----------*/

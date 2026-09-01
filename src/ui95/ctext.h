@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -55,7 +56,7 @@ public:
     void SetFlags(long flags);
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
     void SetDefaultFlags()
     {
@@ -63,25 +64,28 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     _TCHAR *GetText()
     {
-        if (Text_) return(Text_->GetText());
+        if (Text_)
+            return (Text_->GetText());
 
-        return(NULL);
+        return (NULL);
     }
     COLORREF GetFGColor()
     {
-        if (Text_) return(Text_->GetFgColor());
+        if (Text_)
+            return (Text_->GetFgColor());
 
-        return(0);
+        return (0);
     }
     COLORREF GetBGColor()
     {
-        if (Text_) return(Text_->GetBgColor());
+        if (Text_)
+            return (Text_->GetBgColor());
 
-        return(0);
+        return (0);
     }
     void SetTimerCallback(BOOL (*Callback)(C_Base *me))
     {
@@ -95,7 +99,7 @@ public:
 #ifdef _UI95_PARSER_
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }
@@ -106,11 +110,17 @@ public:
 class C_VersionText : public C_Text
 {
 public:
-    explicit C_VersionText() : C_Text() {}
+    explicit C_VersionText() : C_Text()
+    {
+    }
     virtual void Setup(long id, short type);
     // do nothing these ones
-    void SetText(_TCHAR *txt) {}
-    void SetText(long txtID) {}
+    void SetText(_TCHAR *txt)
+    {
+    }
+    void SetText(long txtID)
+    {
+    }
 };
 
 #endif

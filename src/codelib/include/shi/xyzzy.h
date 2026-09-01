@@ -34,8 +34,7 @@
 /*                                                  */
 /****************************************************/
 
-#define SHI_XYZZY_CAT(A,B) A ## B
-
+#define SHI_XYZZY_CAT(A, B) A##B
 
 
 /****************************************************/
@@ -51,8 +50,7 @@
 /*                                                  */
 /****************************************************/
 
-#define SHI_XYZZY_CAT3(A,B,C) A ## B ## C
-
+#define SHI_XYZZY_CAT3(A, B, C) A##B##C
 
 
 /****************************************************/
@@ -66,8 +64,7 @@
 /*                                                  */
 /****************************************************/
 
-#define SHI_XYZZY_CAT5(A,B,C,D,E) A ## B ## C ## D ## E
-
+#define SHI_XYZZY_CAT5(A, B, C, D, E) A##B##C##D##E
 
 
 /****************************************************/
@@ -82,8 +79,7 @@
 /****************************************************/
 
 #define SHI_XYZZY_STRING_L(X) #X
-#define SHI_XYZZY_STRING(X)   SHI_XYZZY_STRING_L(X)
-
+#define SHI_XYZZY_STRING(X) SHI_XYZZY_STRING_L(X)
 
 
 /****************************************************/
@@ -98,7 +94,7 @@
 /*                                                  */
 /****************************************************/
 
-#define SHI_TARGET_ID(X)  "$Configure: " #X " - " CHIPSET_ID_STR " $"
+#define SHI_TARGET_ID(X) "$Configure: " #X " - " CHIPSET_ID_STR " $"
 
 
 /****************************************************/
@@ -112,11 +108,8 @@
 /*                                                  */
 /****************************************************/
 
-#define SHI_COPYRIGHT_NOTICE(X)  "$Copyright: " #X " MicroProse, Inc.  All rights reserved $"
+#define SHI_COPYRIGHT_NOTICE(X)                                                \
+    "$Copyright: " #X " MicroProse, Inc.  All rights reserved $"
 
 
 #endif /* _SHI__XYZZY_H_ */
-
-
-
-

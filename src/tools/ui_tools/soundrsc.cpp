@@ -35,7 +35,7 @@ char Line[300];
 long InputSize = 0;
 long OutputSize = 0;
 
-int ParseCommandLine(LPSTR  lpCmdLine)
+int ParseCommandLine(LPSTR lpCmdLine)
 {
     char *Token;
     long expect = 0;
@@ -48,7 +48,7 @@ int ParseCommandLine(LPSTR  lpCmdLine)
     if (Token == NULL)
     {
         printf("No List file specified\n");
-        return(0);
+        return (0);
     }
 
     sprintf(FileList, "%s", Token);
@@ -57,7 +57,7 @@ int ParseCommandLine(LPSTR  lpCmdLine)
     if (Token == NULL)
     {
         printf("No output file specified\n");
-        return(0);
+        return (0);
     }
 
     sprintf(OutputFile, "%s", Token);
@@ -73,18 +73,18 @@ int ParseCommandLine(LPSTR  lpCmdLine)
         {
             switch (expecttype)
             {
-                case 0: // No compile errors
-                default:
-                    expect = 0;
-                    expecttype = 0;
-                    break;
+            case 0: // No compile errors
+            default:
+                expect = 0;
+                expecttype = 0;
+                break;
             }
         }
 
         Token = strtok(NULL, " \t\n\r,");
     }
 
-    return(1);
+    return (1);
 }
 
 void SaveResource(char *filename)
@@ -125,7 +125,7 @@ void SaveResource(char *filename)
 
     curpos = 0;
 
-    rec = (SoundList*)SoundTable->GetFirst();
+    rec = (SoundList *)SoundTable->GetFirst();
 
     while (rec)
     {
@@ -133,7 +133,7 @@ void SaveResource(char *filename)
         fwrite(rec->Sound->data, rec->Size, 1, data);
         curpos += rec->Size;
         fwrite(&rec->Header, sizeof(SoundFmt), 1, header);
-        rec = (SoundList*)SoundTable->GetNext();
+        rec = (SoundList *)SoundTable->GetNext();
     }
 
     fclose(header);
@@ -153,13 +153,13 @@ RIFF_FILE *LoadRiff(char *filename)
     fp = fopen(filename, "rb");
 
     if (!fp)
-        return(NULL);
+        return (NULL);
 
     fread(buffer, 4, 1, fp);
     buffer[4] = 0;
 
     if (strcmp(buffer, "RIFF"))
-        return(NULL); // Unknown file type
+        return (NULL); // Unknown file type
 
     fread(&datasize, sizeof(long), 1, fp);
 
@@ -188,11 +188,11 @@ RIFF_FILE *LoadRiff(char *filename)
         {
             hdr = ptr;
             ptr += 4;
-            size = *(long*)ptr;
+            size = *(long *)ptr;
             ptr += 4;
 
             if (!strncmp(hdr, "fmt ", 4))
-                filedata->Header = (WAVEFORMATEX*)ptr;
+                filedata->Header = (WAVEFORMATEX *)ptr;
 
             if (!strncmp(hdr, "data", 4))
             {
@@ -212,33 +212,19 @@ RIFF_FILE *LoadRiff(char *filename)
         filedata = NULL;
     }
 
-    return(filedata);
+    return (filedata);
 }
 
-char *SoundFlags[] =
-{
-    "S_BIT_NORMAL",
-    "S_BIT_FINISH",
-    "S_BIT_LOOP",
-    "S_BIT_FADE_IN",
-    "S_BIT_FADE_OUT",
-    "S_BIT_EXCLUSIVE",
-    NULL,
+char *SoundFlags[] = {
+    "S_BIT_NORMAL",   "S_BIT_FINISH",    "S_BIT_LOOP", "S_BIT_FADE_IN",
+    "S_BIT_FADE_OUT", "S_BIT_EXCLUSIVE", NULL,
 };
 
-long SoundFlagValues[] =
-{
-    2,
-    0,
-    4,
-    8,
-    16,
-    2048,
-    0,
+long SoundFlagValues[] = {
+    2, 0, 4, 8, 16, 2048, 0,
 };
 
-char *TODOList[] =
-{
+char *TODOList[] = {
     NULL,
     "[LOADSOUND]",
     NULL,
@@ -258,12 +244,12 @@ long FindTODO(char *token)
     while (TODOList[i])
     {
         if (!stricmp(token, TODOList[i]))
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 long FindFlag(char *token)
@@ -275,12 +261,12 @@ long FindFlag(char *token)
     while (SoundFlags[i])
     {
         if (!stricmp(token, SoundFlags[i]))
-            return(SoundFlagValues[i]);
+            return (SoundFlagValues[i]);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void ProcessSoundLine(char buffer[])
@@ -297,7 +283,8 @@ void ProcessSoundLine(char buffer[])
     eidx = 0;
 
     // Find Token
-    while (buffer[sidx + eidx] != ',' && buffer[sidx + eidx] > ' ' && buffer[sidx + eidx] != '#')
+    while (buffer[sidx + eidx] != ',' && buffer[sidx + eidx] > ' ' &&
+           buffer[sidx + eidx] != '#')
         eidx++;
 
     if (!eidx)
@@ -411,7 +398,8 @@ void ProcessSoundLine(char buffer[])
     }
 }
 
-int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLine, int nCmdShow)
+int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
+                   LPSTR lpCmdLine, int nCmdShow)
 {
     FILE *ifp;
     char buffer[220];
@@ -422,7 +410,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
         printf("Usage: SOUNDRSC [path]<soundrc.irc> [path]<output>\n");
         printf("    Sorry... ALL input MUST .WAV files (PCM or IMA ADPCM)\n");
         printf("    Only includes [LOADSOUND] Tokens\n");
-        return(0);
+        return (0);
     }
 
     ifp = fopen(FileList, "r");
@@ -430,7 +418,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
     if (!ifp)
     {
         printf("Can't open soundrc.irc file (%s)\n", FileList);
-        return(0);
+        return (0);
     }
 
     TheTime = GetCurrentTime();
@@ -445,6 +433,7 @@ int PASCAL WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR  lpCmdLin
     fclose(ifp);
 
     SaveResource(OutputFile);
-    printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize, OutputSize, OutputSize * 100 / InputSize);
-    return(0);
+    printf("Input (%1ld)... Output (%1ld)  %%%1ld\n", InputSize, OutputSize,
+           OutputSize * 100 / InputSize);
+    return (0);
 }

@@ -10,28 +10,30 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tchar.h>
-#include "Mission.h"
-#include "ClassTbl.h"
-#include "CampWp.h"
-#include "CampStr.h"
-#include "Campaign.h"
-#include "Brief.h"
-#include "F4Version.h"
+#include "mission.h"
+#include "classtbl.h"
+#include "campwp.h"
+#include "campstr.h"
+#include "campaign.h"
+#include "brief.h"
+#include "f4version.h"
 
 #define NUM_CAMERA_LABELS 16
 
 // These are used in my camp tool, so don't need to be UNICODE
 #ifdef DEBUG // 2001-10-22 MODIFIED BY S.G. Used to be CAMPTOOL but gave link error when CAMPTOOL was undefined.
-#include "GndUnit.h"
+#include "gndunit.h"
 
-char TOTStr[7][6] = { "NA", "<", "<=", "=", ">=", ">", "NA" };
-char TargetTypeStr[7][15] = { "Location", "Objective", "Unit" };
-char OrderStr[GORD_LAST][15] = { "Reserve", "Capture", "Secure", "Assault", "Airborne", "Commando", "Defend", "Support", "Repair", "Air Defense", "Recon", "Radar" };
-char FormStr[3][15] = { "None", "Line Abreast", "Wedge" };
-char Side[NUM_COUNS][3] = { "XX", "US", "SK", "JA", "RU", "CH", "NK", "GO" };
+char TOTStr[7][6] = {"NA", "<", "<=", "=", ">=", ">", "NA"};
+char TargetTypeStr[7][15] = {"Location", "Objective", "Unit"};
+char OrderStr[GORD_LAST][15] = {"Reserve",  "Capture",     "Secure", "Assault",
+                                "Airborne", "Commando",    "Defend", "Support",
+                                "Repair",   "Air Defense", "Recon",  "Radar"};
+char FormStr[3][15] = {"None", "Line Abreast", "Wedge"};
+char Side[NUM_COUNS][3] = {"XX", "US", "SK", "JA", "RU", "CH", "NK", "GO"};
 #endif
 
-char SpecialStr[3][15] = { "General", "Air to Air", "Air to Ground" };
+char SpecialStr[3][15] = {"General", "Air to Air", "Air to Ground"};
 
 // These are used by FreeFalcon text string builders
 _TCHAR ObjectiveStr[33][20];
@@ -45,7 +47,21 @@ _TCHAR gUnitNameFormat[40];
 
 // These are used by the Sim or somewhere else in the UI
 char CompressionStr[5][20];
-char CameraLabel[NUM_CAMERA_LABELS][40] = {"FLY-BY CAMERA", "CHASE CAMERA", "ORBIT CAMERA", "SATELLITE CAMERA", "WEAPON CAMERA", "TARGET TO WEAPON CAMERA", "ENEMY AIRCRAFT CAMERA", "FRIENDLY AIRCRAFT CAMERA", "ENEMY GROUND UNIT CAMERA", "FRIENDLY GROUND UNIT CAMERA", "INCOMING MISSILE CAMERA", "TARGET CAMERA", "TARGET TO SELF CAMERA", "ACTION CAMERA", "RECORDING"};
+char CameraLabel[NUM_CAMERA_LABELS][40] = {"FLY-BY CAMERA",
+                                           "CHASE CAMERA",
+                                           "ORBIT CAMERA",
+                                           "SATELLITE CAMERA",
+                                           "WEAPON CAMERA",
+                                           "TARGET TO WEAPON CAMERA",
+                                           "ENEMY AIRCRAFT CAMERA",
+                                           "FRIENDLY AIRCRAFT CAMERA",
+                                           "ENEMY GROUND UNIT CAMERA",
+                                           "FRIENDLY GROUND UNIT CAMERA",
+                                           "INCOMING MISSILE CAMERA",
+                                           "TARGET CAMERA",
+                                           "TARGET TO SELF CAMERA",
+                                           "ACTION CAMERA",
+                                           "RECORDING"};
 
 // Index and string information
 ushort *StringIndex;
@@ -55,7 +71,7 @@ _TCHAR *StringTable;
 // Functions
 //
 
-char* GetSTypeName(int domain, int type, int stype, char buffer[])
+char *GetSTypeName(int domain, int type, int stype, char buffer[])
 {
     if (domain == DOMAIN_AIR)
         _stprintf(buffer, AirSTypesStr[stype]);
@@ -69,7 +85,7 @@ char* GetSTypeName(int domain, int type, int stype, char buffer[])
     return buffer;
 }
 
-_TCHAR* GetNumberName(int nameid, _TCHAR *buffer)
+_TCHAR *GetNumberName(int nameid, _TCHAR *buffer)
 {
     _TCHAR tmp[5];
 
@@ -96,7 +112,7 @@ _TCHAR* GetNumberName(int nameid, _TCHAR *buffer)
     return buffer;
 }
 
-_TCHAR* GetTimeString(CampaignTime time, _TCHAR buffer[], int seconds)
+_TCHAR *GetTimeString(CampaignTime time, _TCHAR buffer[], int seconds)
 {
     int d, h, m, s;
     _TCHAR format[MAX_STRLEN_PER_TOKEN], hour[3], minute[3], second[3];
@@ -122,11 +138,12 @@ _TCHAR* GetTimeString(CampaignTime time, _TCHAR buffer[], int seconds)
     else
         ReadIndexedString(57, format, MAX_STRLEN_PER_TOKEN);
 
-    ConstructOrderedSentence(10, buffer, format, hour, minute, second); // PJW: my size is 10 characters
+    ConstructOrderedSentence(10, buffer, format, hour, minute,
+                             second); // PJW: my size is 10 characters
     return buffer;
 }
 
-void ReadIndex(char* filename)
+void ReadIndex(char *filename)
 {
     FILE *fp;
     short max, i;
@@ -182,9 +199,9 @@ void ReadIndex(char* filename)
 
 void FreeIndex(void)
 {
-    delete [] StringIndex;
+    delete[] StringIndex;
     StringIndex = NULL;
-    delete [] StringTable;
+    delete[] StringTable;
     StringTable = NULL;
 }
 
@@ -265,4 +282,3 @@ void ForeignToUpper(_TCHAR *buffer)
         i++;
     }
 }
-

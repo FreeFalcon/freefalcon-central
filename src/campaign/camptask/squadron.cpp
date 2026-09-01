@@ -5,42 +5,42 @@
 #include <io.h>
 #include <stdlib.h>
 #include <math.h>
-#include "CmpGlobl.h"
-#include "F4Vu.h"
-#include "ListADT.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "ASearch.h"
-#include "Path.h"
-#include "Find.h"
+#include "cmpglobl.h"
+#include "f4vu.h"
+#include "listadt.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "asearch.h"
+#include "path.h"
+#include "find.h"
 #include "vutypes.h"
-#include "Campaign.h"
-#include "ATM.h"
-#include "CampList.h"
+#include "campaign.h"
+#include "atm.h"
+#include "camplist.h"
 #include "campwp.h"
 #include "update.h"
 #include "loadout.h"
 #include "campweap.h"
 #include "airunit.h"
 #include "tactics.h"
-#include "Team.h"
-#include "Feature.h"
-#include "MsgInc/UnitMsg.h"
-#include "MsgInc/FalconFlightPlanMsg.h"
-#include "Pilot.h"
-#include "AIInput.h"
-#include "CmpClass.h"
+#include "team.h"
+#include "feature.h"
+#include "msginc/unitmsg.h"
+#include "msginc/falconflightplanmsg.h"
+#include "pilot.h"
+#include "aiinput.h"
+#include "cmpclass.h"
 #include "classtbl.h"
 #include "weaplist.h"
 #include "falcsess.h"
-#include "Supply.h"
-#include "Dispcfg.h"
-#include "FalcUser.h"
+#include "supply.h"
+#include "dispcfg.h"
+#include "falcuser.h"
 #include "teamdata.h"
 #include "misseval.h"
 
 //sfr: added for buffer checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 #include "debuggr.h"
 extern int g_npercentage_available_aircraft; //me123
@@ -64,7 +64,8 @@ extern VU_ID_NUMBER lastNonVolatileId;
 extern VU_ID_NUMBER lastLowVolitileId;
 extern VU_ID_NUMBER lastVolatileId;
 
-extern VU_ID gCurrentFlightID; // Current Mission Flight (Mission Window) Also sets gSelectedFlight
+extern VU_ID
+    gCurrentFlightID; // Current Mission Flight (Mission Window) Also sets gSelectedFlight
 
 extern int g_nRelocationWait; // JB 010728
 extern int g_nAirbaseReloc; // 2001-08-31 S.G.
@@ -72,13 +73,9 @@ extern int g_nAirbaseReloc; // 2001-08-31 S.G.
 #define AirBaseRelocNoFar 2 // 2001-08-31 S.G.
 extern bool g_bHelosReloc; // 2002-01-01 A.S.
 
-extern FILE
-*save_log,
-*load_log;
+extern FILE *save_log, *load_log;
 
-extern int
-start_save_stream,
-start_load_stream;
+extern int start_save_stream, start_load_stream;
 
 #ifdef CAMPTOOL
 // Renaming tool stuff
@@ -126,7 +123,7 @@ extern bool g_bScramble; //TJL 11/02/03 Enable Scramble Missions
 // ============================================
 
 // KCK: ALL SQUADRON CONSTRUCTION SHOULD USE THIS FUNCTION
-SquadronClass* NewSquadron(int type)
+SquadronClass *NewSquadron(int type)
 {
     SquadronClass *new_squadron;
     /*VuEnterCriticalSection();
@@ -143,20 +140,22 @@ SquadronClass* NewSquadron(int type)
     return new_squadron;
 }
 
-SquadronClass::SquadronClass(ushort type) :
-    AirUnitClass(type, GetIdFromNamespace(NonVolatileNS))
+SquadronClass::SquadronClass(ushort type)
+    : AirUnitClass(type, GetIdFromNamespace(NonVolatileNS))
 {
     specialty = 0;
     UnitClassDataType *uc;
-    uc = (UnitClassDataType*) Falcon4ClassTable[type - VU_LAST_ENTITY_TYPE].dataPtr;
+    uc = (UnitClassDataType *)Falcon4ClassTable[type - VU_LAST_ENTITY_TYPE]
+             .dataPtr;
 
     if (uc)
-        memcpy(stores, SquadronStoresDataTable[uc->SpecialIndex].Stores, MAXIMUM_WEAPTYPES);
+        memcpy(stores, SquadronStoresDataTable[uc->SpecialIndex].Stores,
+               MAXIMUM_WEAPTYPES);
     else
         memset(stores, 0, MAXIMUM_WEAPTYPES);
 
     fuel = uc->Fuel * 24 * SQUADRON_MISSIONS_PER_HOUR * MIN_RESUPPLY * 2 / 60;
-    memset(schedule, 0, sizeof(long)*VEHICLE_GROUPS_PER_UNIT);
+    memset(schedule, 0, sizeof(long) * VEHICLE_GROUPS_PER_UNIT);
     airbase_id = FalconNullId;
     hot_spot = FalconNullId;
     assigned = 0;
@@ -175,7 +174,8 @@ SquadronClass::SquadronClass(ushort type) :
     squadronRetaskAt = 0;
 }
 
-SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream, rem)
+SquadronClass::SquadronClass(VU_BYTE **stream, long *rem)
+    : AirUnitClass(stream, rem)
 {
     if (load_log)
     {
@@ -183,7 +183,7 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
         fflush(load_log);
     }
 
-    memcpychk(&fuel, stream, sizeof(long), rem);
+    memcpychk_l32(&fuel, stream, 1, rem); // #104: on-disk 32-bit long
     memcpychk(&specialty, stream, sizeof(uchar), rem);
 
     if (gCampDataVersion < 69)
@@ -198,7 +198,7 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
     }
     else
     {
-        memcpychk(stores, stream, sizeof(uchar)*MAXIMUM_WEAPTYPES, rem);
+        memcpychk(stores, stream, sizeof(uchar) * MAXIMUM_WEAPTYPES, rem);
     }
 
     if (gCampDataVersion < 47)
@@ -218,7 +218,8 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
     }
     else
     {
-        memcpychk(pilot_data, stream, sizeof(PilotClass)*PILOTS_PER_SQUADRON, rem);
+        memcpychk(pilot_data, stream, sizeof(PilotClass) * PILOTS_PER_SQUADRON,
+                  rem);
 
         if (gCampDataVersion < 55)
         {
@@ -231,7 +232,8 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
         InitPilots();
     }
 
-    memcpychk(schedule, stream, sizeof(long)*VEHICLE_GROUPS_PER_UNIT, rem);
+    memcpychk_u32(schedule, stream, rem,
+                  VEHICLE_GROUPS_PER_UNIT); // #104: on-disk 32-bit ulong[]
     memcpychk(&airbase_id, stream, sizeof(VU_ID), rem);
     memcpychk(&hot_spot, stream, sizeof(VU_ID), rem);
 
@@ -241,7 +243,7 @@ SquadronClass::SquadronClass(VU_BYTE **stream, long *rem) : AirUnitClass(stream,
         memcpychk(&junk, stream, sizeof(VU_ID), rem);
     }
 
-    memcpychk(rating, stream, sizeof(uchar)*ARO_OTHER, rem);
+    memcpychk(rating, stream, sizeof(uchar) * ARO_OTHER, rem);
     memcpychk(&aa_kills, stream, sizeof(short), rem);
     memcpychk(&ag_kills, stream, sizeof(short), rem);
     memcpychk(&as_kills, stream, sizeof(short), rem);
@@ -293,24 +295,16 @@ SquadronClass::~SquadronClass(void)
 
 int SquadronClass::SaveSize(void)
 {
-    return AirUnitClass::SaveSize()
-           + sizeof(long)
-           + sizeof(uchar)
-           + sizeof(uchar) * MAXIMUM_WEAPTYPES
-           + sizeof(PilotClass) * PILOTS_PER_SQUADRON
-           + sizeof(long) * VEHICLE_GROUPS_PER_UNIT
-           + sizeof(VU_ID)
-           + sizeof(VU_ID)
-           + sizeof(uchar) * ARO_OTHER
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(short)
-           + sizeof(uchar)
-           + sizeof(uchar)
-           + sizeof(uchar);
+    return AirUnitClass::SaveSize() +
+           DISK_LONG // #104: on-disk 32-bit long (fuel)
+           + sizeof(uchar) + sizeof(uchar) * MAXIMUM_WEAPTYPES +
+           sizeof(PilotClass) * PILOTS_PER_SQUADRON +
+           DISK_LONG *
+               VEHICLE_GROUPS_PER_UNIT // #104: on-disk 32-bit ulong[] (schedule)
+           + sizeof(VU_ID) + sizeof(VU_ID) + sizeof(uchar) * ARO_OTHER +
+           sizeof(short) + sizeof(short) + sizeof(short) + sizeof(short) +
+           sizeof(short) + sizeof(short) + sizeof(uchar) + sizeof(uchar) +
+           sizeof(uchar);
 }
 
 int SquadronClass::Save(VU_BYTE **stream)
@@ -323,16 +317,15 @@ int SquadronClass::Save(VU_BYTE **stream)
         fflush(save_log);
     }
 
-    memcpy(*stream, &fuel, sizeof(long));
-    *stream += sizeof(long);
+    memcpy_l32(stream, &fuel, 1); // #104: on-disk 32-bit long
     memcpy(*stream, &specialty, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(*stream, stores, sizeof(uchar)*MAXIMUM_WEAPTYPES);
+    memcpy(*stream, stores, sizeof(uchar) * MAXIMUM_WEAPTYPES);
     *stream += sizeof(uchar) * MAXIMUM_WEAPTYPES;
-    memcpy(*stream, pilot_data, sizeof(PilotClass)*PILOTS_PER_SQUADRON);
+    memcpy(*stream, pilot_data, sizeof(PilotClass) * PILOTS_PER_SQUADRON);
     *stream += sizeof(PilotClass) * PILOTS_PER_SQUADRON;
-    memcpy(*stream, schedule, sizeof(long)*VEHICLE_GROUPS_PER_UNIT);
-    *stream += sizeof(long) * VEHICLE_GROUPS_PER_UNIT;
+    memcpy_u32(stream, schedule,
+               VEHICLE_GROUPS_PER_UNIT); // #104: on-disk 32-bit ulong[]
 #ifdef CAMPTOOL
 
     if (gRenameIds)
@@ -349,7 +342,7 @@ int SquadronClass::Save(VU_BYTE **stream)
 #endif
     memcpy(*stream, &hot_spot, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
-    memcpy(*stream, rating, sizeof(uchar)*ARO_OTHER);
+    memcpy(*stream, rating, sizeof(uchar) * ARO_OTHER);
     *stream += sizeof(uchar) * ARO_OTHER;
     memcpy(*stream, &aa_kills, sizeof(short));
     *stream += sizeof(short);
@@ -376,12 +369,13 @@ int SquadronClass::Save(VU_BYTE **stream)
 int SquadronClass::Handle(VuFullUpdateEvent *event)
 {
     // copy data from temp entity to current entity
-    SquadronClass* tmp_ent = (SquadronClass*)(event->expandedData_.get());
+    SquadronClass *tmp_ent = (SquadronClass *)(event->expandedData_.get());
 
     fuel = tmp_ent->fuel;
-    memcpy(stores, tmp_ent->stores, sizeof(uchar)*MAXIMUM_WEAPTYPES);
-    memcpy(pilot_data, tmp_ent->pilot_data, sizeof(PilotClass)*PILOTS_PER_SQUADRON);
-    memcpy(schedule, tmp_ent->schedule, sizeof(long)*VEHICLE_GROUPS_PER_UNIT);
+    memcpy(stores, tmp_ent->stores, sizeof(uchar) * MAXIMUM_WEAPTYPES);
+    memcpy(pilot_data, tmp_ent->pilot_data,
+           sizeof(PilotClass) * PILOTS_PER_SQUADRON);
+    memcpy(schedule, tmp_ent->schedule, sizeof(long) * VEHICLE_GROUPS_PER_UNIT);
     airbase_id = tmp_ent->airbase_id;
     hot_spot = tmp_ent->hot_spot;
     aa_kills = tmp_ent->aa_kills;
@@ -398,8 +392,8 @@ int SquadronClass::Handle(VuFullUpdateEvent *event)
 
 int SquadronClass::MoveUnit(CampaignTime time)
 {
-    GridIndex       x, y, nx, ny;
-    VuGridIterator* myit = NULL;
+    GridIndex x, y, nx, ny;
+    VuGridIterator *myit = NULL;
     CampEntity ab;
     Objective o, bo = NULL;
     int i, want_alert = 0, bs = -999, range, score;
@@ -416,7 +410,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
             // alert flight.
             for (i = 0; i < VEHICLE_GROUPS_PER_UNIT / 2; i++)
             {
-                if ( not schedule[i])
+                if (not schedule[i])
                     want_alert = 1;
             }
 
@@ -434,7 +428,8 @@ int SquadronClass::MoveUnit(CampaignTime time)
                 mis.targetID = FalconNullId;
                 mis.mission = AMIS_ALERT;
                 mis.roe_check = ROE_AIR_ENGAGE;
-                mis.flags = REQF_ONETRY bitor REQF_USE_REQ_SQUAD bitor REQF_USERESERVES;
+                mis.flags =
+                    REQF_ONETRY bitor REQF_USE_REQ_SQUAD bitor REQF_USERESERVES;
                 mis.priority = 255; // High priority
                 mis.RequestMission();
             }
@@ -452,25 +447,28 @@ int SquadronClass::MoveUnit(CampaignTime time)
     }
 
     ab = FindEntity(airbase_id);
-    CampEntity ab_old;  // A.S. new variable
+    CampEntity ab_old; // A.S. new variable
 
     if (g_bHelosReloc)
     {
         ab_old = ab;
     }
 
-    ShiAssert( not ab or ab->IsObjective() or ab->IsTaskForce() or (ab == this and DontPlan()));
+    ShiAssert(not ab or ab->IsObjective() or ab->IsTaskForce() or
+              (ab == this and DontPlan()));
 
-    if ( not ab or ab->IsObjective() or ab == this)
+    if (not ab or ab->IsObjective() or ab == this)
     {
         // Don't plan flag used to mean don't rebase for squadrons
         if (DontPlan())
         {
             // 2001-08-06 MODIFIED BY S.G. FRIENDLY BASE WILL DO THE JOB ALL RIGHT. NO NEED TO LIMIT IT TO OUR TEAM.
-            if ( not ab or not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if (not ab or
+                not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 if (this == FalconLocalSession->GetPlayerSquadron())
-                    PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0, 0);
+                    PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0,
+                                0);
 
                 KillUnit();
             }
@@ -481,7 +479,8 @@ int SquadronClass::MoveUnit(CampaignTime time)
         // If airbase is non-functional, force a rebase
         // 2001-08-03 MODIFIED BY S.G. ONLY IF CAPTURED SHOULD IT RELOCATE. DESTROYED AIRBASE STILL OWN BY US WILL REPAIR EVENTUALLY.
         // if (ab and ab->IsObjective() and ((Objective)ab)->GetAdjustedDataRate() < 1)
-        if (ab and ab->IsObjective() and not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+        if (ab and ab->IsObjective() and
+            not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             ab = NULL;
 
         // Check airbase location - if to near or far from front, relocate
@@ -491,7 +490,11 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
         // 2001-07-05 MODIFIED BY S.G. DON'T RELOCATE IF TOO FAR FROM FLOT IF GLOBALLY SET TO ACT THAT WAY
         // if (fd < 999.0F and (fd < range/30 or fd > range/3 or not ab)) // We're to close or to far from the front or don't have an airbase
-        if (fd < 999.0F and (fd < range / 30 or ( not (g_nAirbaseReloc bitand AirBaseRelocNoFar) and fd > range / 3) or not ab)) // We're to close or to far from the front or don't have an airbase
+        if (fd < 999.0F and
+            (fd < range / 30 or
+             (not(g_nAirbaseReloc bitand AirBaseRelocNoFar) and
+              fd > range / 3) or
+             not ab)) // We're to close or to far from the front or don't have an airbase
         {
             // Find a better base for us
             UnitClassDataType *uc = GetUnitClassData();
@@ -500,7 +503,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
             {
                 VuListIterator myit(AllObjList);
-                o = (Objective) myit.GetFirst();
+                o = (Objective)myit.GetFirst();
 
                 while (o)
                 {
@@ -511,14 +514,20 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
                     if (g_nAirbaseReloc bitand AirBaseRelocTeamOnly)
                     {
-                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and o->GetTeam() == us) or
-                            (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and o->GetTeam() == us))
+                        if ((o->GetType() == TYPE_AIRBASE and
+                             not IsHelicopter() and o->GetTeam() == us) or
+                            (o->GetType() == TYPE_ARMYBASE and
+                             IsHelicopter() and o->GetTeam() == us))
                             enter = TRUE;
                     }
                     else
                     {
-                        if ((o->GetType() == TYPE_AIRBASE and not IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)) or
-                            (o->GetType() == TYPE_ARMYBASE and IsHelicopter() and GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)))
+                        if ((o->GetType() == TYPE_AIRBASE and
+                             not IsHelicopter() and
+                             GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)) or
+                            (o->GetType() == TYPE_ARMYBASE and
+                             IsHelicopter() and
+                             GetRoE(o->GetTeam(), us, ROE_AIR_USE_BASES)))
                             enter = TRUE;
                     }
 
@@ -529,15 +538,19 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
                         if (fd > range / 15 and o->GetAdjustedDataRate() > 0)
                         {
-                            score = o->GetObjectiveStatus() * 5 - FloatToInt32(fd);
+                            score =
+                                o->GetObjectiveStatus() * 5 - FloatToInt32(fd);
                             // Adjust by number of squadrons already based here.
-                            atmbase = TeamInfo[us]->atm->FindATMAirbase(o->Id());
+                            atmbase =
+                                TeamInfo[us]->atm->FindATMAirbase(o->Id());
 
                             if (atmbase and atmbase->usage)
                             {
-                                if (o not_eq ab)  score /= (atmbase->usage + 1);
+                                if (o not_eq ab)
+                                    score /= (atmbase->usage + 1);
 
-                                if (o == ab) score /= atmbase->usage;
+                                if (o == ab)
+                                    score /= atmbase->usage;
                             }
 
                             if (score > bs)
@@ -548,7 +561,7 @@ int SquadronClass::MoveUnit(CampaignTime time)
                         }
                     }
 
-                    o = (Objective) myit.GetNext();
+                    o = (Objective)myit.GetNext();
                 }
             }
 
@@ -562,16 +575,19 @@ int SquadronClass::MoveUnit(CampaignTime time)
                     TeamInfo[us]->atm->AddToAirbaseList(bo);
 
                     if (this == FalconLocalSession->GetPlayerSquadron())
-                        PostMessage(FalconDisplay.appWin, FM_SQUADRON_REBASED, 0, 0);
+                        PostMessage(FalconDisplay.appWin, FM_SQUADRON_REBASED,
+                                    0, 0);
 
-                    squadronRetaskAt = Camp_GetCurrentTime() + CampaignHours * g_nRelocationWait;
+                    squadronRetaskAt = Camp_GetCurrentTime() +
+                                       CampaignHours * g_nRelocationWait;
                 }
             }
             else
             {
                 // We're lost
                 if (this == FalconLocalSession->GetPlayerSquadron())
-                    PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0, 0);
+                    PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0,
+                                0);
 
                 KillUnit();
                 return 0;
@@ -596,19 +612,22 @@ int SquadronClass::MoveUnit(CampaignTime time)
         ab_old = ab;
     }
 
-    ShiAssert( not ab or ab->IsObjective() or ab->IsTaskForce() or (ab == this and DontPlan()));
+    ShiAssert(not ab or ab->IsObjective() or ab->IsTaskForce() or
+              (ab == this and DontPlan()));
 
-    if ( not ab or ab->IsObjective() or ab == this)
+    if (not ab or ab->IsObjective() or ab == this)
     {
         // Don't plan flag used to mean don't rebase for squadrons
         if (DontPlan())
         {
             // 2001-08-06 MODIFIED BY S.G. FRIENDLY BASE WILL DO THE JOB ALL RIGHT. NO NEED TO LIMIT IT TO OUR TEAM.
             // if (ab->GetTeam() not_eq GetTeam())
-            if ( not ab or not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if (not ab or
+                not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 if (this == FalconLocalSession->GetPlayerSquadron())
-                    PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0, 0);
+                    PostMessage(FalconDisplay.appWin, FM_SQUADRON_RECALLED, 0,
+                                0);
 
                 KillUnit();
             }
@@ -622,8 +641,8 @@ int SquadronClass::MoveUnit(CampaignTime time)
 
 int SquadronClass::MoveChopperUnit(CampaignTime time)
 {
-    GridIndex       x, y, nx, ny;
-    VuGridIterator* myit = NULL;
+    GridIndex x, y, nx, ny;
+    VuGridIterator *myit = NULL;
     Objective o, bo = NULL;
     float fd;
     int range, score, bs = -999;
@@ -637,12 +656,13 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 
     ab = FindEntity(airbase_id);
 
-    if ( not ab or ab->IsObjective() or ab == this)
+    if (not ab or ab->IsObjective() or ab == this)
     {
         // Don't plan flag used to mean don't rebase for squadrons
         if (DontPlan())
         {
-            if ( not ab or not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
+            if (not ab or
+                not GetRoE(ab->GetTeam(), GetTeam(), ROE_AIR_USE_BASES))
             {
                 KillUnit();
             }
@@ -651,7 +671,8 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
         }
 
         // Helos will be reallocated if armybase is destoyed.
-        if (ab and ab->IsObjective() and ab->GetType() == TYPE_ARMYBASE and ((Objective)ab)->GetAdjustedDataRate() < 1)
+        if (ab and ab->IsObjective() and ab->GetType() == TYPE_ARMYBASE and
+            ((Objective)ab)->GetAdjustedDataRate() < 1)
         {
             ab = NULL;
         }
@@ -670,11 +691,12 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
             reallocate = 1;
 
         // Reallocate if to far from front
-        if (fd < 999.0F and fd > maxDist and not (g_nAirbaseReloc bitand AirBaseRelocNoFar))
+        if (fd < 999.0F and fd > maxDist and
+            not(g_nAirbaseReloc bitand AirBaseRelocNoFar))
             reallocate = 2;
 
         // Reallocate if base is destroyed
-        if ( not ab)
+        if (not ab)
             reallocate = 3;
 
         // Find a better base for us
@@ -685,13 +707,13 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
             Team us = GetTeam();
 
             VuListIterator myit(AllObjList);
-            o = (Objective) myit.GetFirst();
+            o = (Objective)myit.GetFirst();
 
             while (o)
             {
                 if (o->GetType() not_eq TYPE_ARMYBASE)
                 {
-                    o = (Objective) myit.GetNext();
+                    o = (Objective)myit.GetNext();
                     continue;
                 }
 
@@ -721,9 +743,11 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 
                         if (atmbase and atmbase->usage)
                         {
-                            if (o not_eq ab)  score /= (atmbase->usage + 1);
+                            if (o not_eq ab)
+                                score /= (atmbase->usage + 1);
 
-                            if (o == ab) score /= atmbase->usage;
+                            if (o == ab)
+                                score /= atmbase->usage;
                         }
 
                         // Max 4 squadrons at one base
@@ -740,7 +764,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
                     }
                 }
 
-                o = (Objective) myit.GetNext();
+                o = (Objective)myit.GetNext();
             }
 
             if (bo)
@@ -752,7 +776,8 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
                     SetUnitAirbase(bo->Id());
                     TeamInfo[us]->atm->AddToAirbaseList(bo);
 
-                    squadronRetaskAt = Camp_GetCurrentTime() + CampaignHours * g_nRelocationWait;
+                    squadronRetaskAt = Camp_GetCurrentTime() +
+                                       CampaignHours * g_nRelocationWait;
                 }
             }
             // We're lost
@@ -770,7 +795,7 @@ int SquadronClass::MoveChopperUnit(CampaignTime time)
 // RV - Biker - Scramble code with appropriate function
 void SquadronClass::Scramble(void)
 {
-    int i, want_alert = 0;	// RTC: otherwise used uninitialized at 790
+    int i, want_alert = 0; // RTC: otherwise used uninitialized at 790
 
     // Set up an alert bird for this squadron
     if (rating[ARO_CA] > 25)
@@ -780,7 +805,7 @@ void SquadronClass::Scramble(void)
         // alert flight.
         for (i = 0; i < VEHICLE_GROUPS_PER_UNIT / 2; i++)
         {
-            if ( not schedule[i])
+            if (not schedule[i])
             {
                 want_alert = 1;
                 break;
@@ -807,7 +832,8 @@ void SquadronClass::Scramble(void)
             mis.targetID = FalconNullId;
             mis.mission = AMIS_ALERT;
             mis.roe_check = ROE_AIR_ENGAGE;
-            mis.flags = REQF_ONETRY bitor REQF_USE_REQ_SQUAD bitor REQF_USERESERVES;
+            mis.flags =
+                REQF_ONETRY bitor REQF_USE_REQ_SQUAD bitor REQF_USERESERVES;
             // High priority
             mis.priority = 255;
             int result = mis.RequestMission();
@@ -836,12 +862,12 @@ int SquadronClass::GetUnitSupplyNeed(int have)
     }
 
     int want = 0, got = 0, i;
-    UnitClassDataType* uc;
+    UnitClassDataType *uc;
 
     // Squadrons need supply based on their munitions
     uc = GetUnitClassData();
 
-    if ( not uc)
+    if (not uc)
         return 0;
 
     for (i = 0; i < MAXIMUM_WEAPTYPES; i++)
@@ -859,11 +885,11 @@ int SquadronClass::GetUnitSupplyNeed(int have)
 int SquadronClass::GetUnitFuelNeed(int have)
 {
     int need = 0;
-    UnitClassDataType* uc;
+    UnitClassDataType *uc;
 
     uc = GetUnitClassData();
 
-    if ( not uc)
+    if (not uc)
         return 0;
 
     // Squadrons want enough fuel to load each plane SQUADRON_MISSIONS_PER_HOUR times per hour for 2 supply periods
@@ -871,7 +897,9 @@ int SquadronClass::GetUnitFuelNeed(int have)
         return GetSquadronFuel() / SUPPLY_PT_FUEL;
     else
     {
-        need = (uc->Fuel * GetTotalVehicles() * SQUADRON_MISSIONS_PER_HOUR * 2 * MIN_RESUPPLY) / 60;
+        need = (uc->Fuel * GetTotalVehicles() * SQUADRON_MISSIONS_PER_HOUR * 2 *
+                MIN_RESUPPLY) /
+               60;
 
         if (need < fuel)
             return 0; // KCK: We've lost so many aircraft, we've now got spare fuel.
@@ -899,7 +927,8 @@ void SquadronClass::SupplyUnit(int supply, int fuel)
     {
         if (SquadronStoresDataTable[class_data->SpecialIndex].Stores[i])
         {
-            need = SquadronStoresDataTable[class_data->SpecialIndex].Stores[i] - GetUnitStores(i);
+            need = SquadronStoresDataTable[class_data->SpecialIndex].Stores[i] -
+                   GetUnitStores(i);
             SetUnitStores(i, GetUnitStores(i) + FloatToInt32(need * ratio));
         }
     }
@@ -911,7 +940,8 @@ int SquadronClass::NumActivePilots(void)
 
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
-        if (GetPilotData(i)->pilot_status == PILOT_AVAILABLE or GetPilotData(i)->pilot_status == PILOT_IN_USE)
+        if (GetPilotData(i)->pilot_status == PILOT_AVAILABLE or
+            GetPilotData(i)->pilot_status == PILOT_IN_USE)
             num++;
     }
 
@@ -931,12 +961,18 @@ void SquadronClass::InitPilots(void)
         // GetPilotData(i)->ResetStats();
         GetPilotData(i)->ResetStats(TeamInfo[GetOwner()]->airExperience);
 
-        if ( not i) // First slot is Colonel.
-            GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstColonel, TeamInfo[GetOwner()]->firstCommander, GetOwner());
+        if (not i) // First slot is Colonel.
+            GetPilotData(i)->pilot_id = GetAvailablePilot(
+                TeamInfo[GetOwner()]->firstColonel,
+                TeamInfo[GetOwner()]->firstCommander, GetOwner());
         else if (i < last_commander) // First 1/3 are commanders
-            GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstCommander, TeamInfo[GetOwner()]->firstWingman, GetOwner());
+            GetPilotData(i)->pilot_id = GetAvailablePilot(
+                TeamInfo[GetOwner()]->firstCommander,
+                TeamInfo[GetOwner()]->firstWingman, GetOwner());
         else // otherwise normal wingmen
-            GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstWingman, TeamInfo[GetOwner()]->lastWingman, GetOwner());
+            GetPilotData(i)->pilot_id = GetAvailablePilot(
+                TeamInfo[GetOwner()]->firstWingman,
+                TeamInfo[GetOwner()]->lastWingman, GetOwner());
     }
 
     // Special code to select certain squadron leaders.
@@ -957,7 +993,9 @@ void SquadronClass::ReinforcePilots(int max_new_pilots)
 
     for (i = 0; i < PILOTS_PER_SQUADRON; i++)
     {
-        if (pilot_data[i].pilot_id == 1 and (pilot_data[i].pilot_status == PILOT_MIA or pilot_data[i].pilot_status == PILOT_KIA))
+        if (pilot_data[i].pilot_id == 1 and
+            (pilot_data[i].pilot_status == PILOT_MIA or
+             pilot_data[i].pilot_status == PILOT_KIA))
             pilot_data[i].pilot_status = PILOT_AVAILABLE;
 
         if (GetPilotData(i)->pilot_status == PILOT_RESCUED)
@@ -968,7 +1006,7 @@ void SquadronClass::ReinforcePilots(int max_new_pilots)
         {
             result = rand() % 3;
 
-            if ( not result) // 33% chance of a rescue
+            if (not result) // 33% chance of a rescue
                 GetPilotData(i)->pilot_status = PILOT_RESCUED;
             else if (result == 1) // 33% chance of KIA
             {
@@ -976,18 +1014,25 @@ void SquadronClass::ReinforcePilots(int max_new_pilots)
                 SetPilotLosses(pilot_losses + 1);
             }
         }
-        else if (GetPilotData(i)->pilot_status == PILOT_KIA and added < max_new_pilots)
+        else if (GetPilotData(i)->pilot_status == PILOT_KIA and
+                 added < max_new_pilots)
         {
             // 2000-11-17 MODIFIED BY S.G. NEED TO PASS THE 'airExperience' OF THE TEAM SO I CAN USE IT AS A BASE
             // GetPilotData(i)->ResetStats();
             GetPilotData(i)->ResetStats(TeamInfo[GetOwner()]->airExperience);
 
-            if ( not i) // First slot is Colonel.
-                GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstColonel, TeamInfo[GetOwner()]->firstCommander, GetOwner());
+            if (not i) // First slot is Colonel.
+                GetPilotData(i)->pilot_id = GetAvailablePilot(
+                    TeamInfo[GetOwner()]->firstColonel,
+                    TeamInfo[GetOwner()]->firstCommander, GetOwner());
             else if (i < PILOTS_PER_SQUADRON / 3) // First 1/3 are commanders
-                GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstCommander, TeamInfo[GetOwner()]->firstWingman, GetOwner());
+                GetPilotData(i)->pilot_id = GetAvailablePilot(
+                    TeamInfo[GetOwner()]->firstCommander,
+                    TeamInfo[GetOwner()]->firstWingman, GetOwner());
             else // otherwise normal wingmen
-                GetPilotData(i)->pilot_id = GetAvailablePilot(TeamInfo[GetOwner()]->firstWingman, TeamInfo[GetOwner()]->lastWingman, GetOwner());
+                GetPilotData(i)->pilot_id = GetAvailablePilot(
+                    TeamInfo[GetOwner()]->firstWingman,
+                    TeamInfo[GetOwner()]->lastWingman, GetOwner());
         }
     }
 }
@@ -996,30 +1041,30 @@ void SquadronClass::ScoreKill(int pilot, int killtype)
 {
     switch (killtype)
     {
-        case ASTAT_AAKILL:
-        case ASTAT_PKILL:
-            pilot_data[pilot].aa_kills++;
-            aa_kills++;
-            break;
+    case ASTAT_AAKILL:
+    case ASTAT_PKILL:
+        pilot_data[pilot].aa_kills++;
+        aa_kills++;
+        break;
 
-        case ASTAT_AGKILL:
-            pilot_data[pilot].ag_kills++;
-            ag_kills++;
-            break;
+    case ASTAT_AGKILL:
+        pilot_data[pilot].ag_kills++;
+        ag_kills++;
+        break;
 
-        case ASTAT_ASKILL:
-            pilot_data[pilot].as_kills++;
-            as_kills++;
-            break;
+    case ASTAT_ASKILL:
+        pilot_data[pilot].as_kills++;
+        as_kills++;
+        break;
 
-        case ASTAT_ANKILL:
-            pilot_data[pilot].an_kills++;
-            an_kills++;
-            break;
+    case ASTAT_ANKILL:
+        pilot_data[pilot].an_kills++;
+        an_kills++;
+        break;
 
-        default:
-            return;
-            break;
+    default:
+        return;
+        break;
     }
 }
 
@@ -1030,14 +1075,15 @@ void SquadronClass::DisposeChildren(void)
     VuListIterator ait(AllAirList);
     Unit u;
 
-    u = (Unit) ait.GetFirst();
+    u = (Unit)ait.GetFirst();
 
     while (u)
     {
-        if (u->IsFlight() and not u->Moving() and ((Flight)u)->GetUnitSquadronID() == Id())
+        if (u->IsFlight() and not u->Moving() and
+            ((Flight)u)->GetUnitSquadronID() == Id())
             RegroupFlight((Flight)u);
 
-        u = (Unit) ait.GetNext();
+        u = (Unit)ait.GetNext();
     }
 }
 
@@ -1068,7 +1114,7 @@ void SquadronClass::ShiftSchedule(void)
 
     for (i = 0; i < VEHICLE_GROUPS_PER_UNIT; i++)
     {
-        if ( not GetNumVehicles(i))
+        if (not GetNumVehicles(i))
             SetSchedule(i, 0xFFFFFFFF); // Nothing here, set as used.
         else
             ShiftSchedule(i); // [i] = sq->schedule[i] >> 1;
@@ -1087,12 +1133,14 @@ int SquadronClass::FindAvailableAircraft(MissionRequest mis)
     if (mis->flags bitand REQF_USERESERVES)
         tav = GetTotalVehicles(); // Use any available aircraft
     //sfr: WTF are those FloatToInt32??? we dont need that
-    else if ((int)(GetTotalVehicles() * g_npercentage_available_aircraft / 100.0f) >
-             g_nminimum_available_aircraft)
+    else if ((int)(GetTotalVehicles() * g_npercentage_available_aircraft /
+                   100.0f) > g_nminimum_available_aircraft)
     {
-        tav = (int)(GetTotalVehicles() * g_npercentage_available_aircraft / 100.0f); // Save 1/4 as reserve
+        tav = (int)(GetTotalVehicles() * g_npercentage_available_aircraft /
+                    100.0f); // Save 1/4 as reserve
     }
-    else tav = g_nminimum_available_aircraft; // JPO fixup.
+    else
+        tav = g_nminimum_available_aircraft; // JPO fixup.
 
     // Mark our last allowed slot (so we don't assign reserve aircraft
     for (i = 0; i < VEHICLE_GROUPS_PER_UNIT and tav > 0; i++)
@@ -1128,11 +1176,12 @@ int SquadronClass::FindAvailableAircraft(MissionRequest mis)
     {
         for (ls = 0; ls < PILOTS_PER_FLIGHT; ls++)
         {
-            ShiAssert(i == ls or mis->slots[i] == 255 or mis->slots[ls] not_eq mis->slots[i]);
+            ShiAssert(i == ls or mis->slots[i] == 255 or
+                      mis->slots[ls] not_eq mis->slots[i]);
         }
     }
 
-    ShiAssert( not got or mis->slots[0] not_eq 255);
+    ShiAssert(not got or mis->slots[0] not_eq 255);
 #endif
 
     return got;
@@ -1181,7 +1230,9 @@ void SquadronClass::ScheduleAircraft(Flight fl, MissionRequest mis)
             {
                 // KCK: Add turn-around time to final block to determine when
                 // aircraft will be available next
-                int finalBlock = mis->final_block + (AIRCRAFT_TURNAROUND_TIME_MINUTES / MIN_PLAN_AIR);
+                int finalBlock =
+                    mis->final_block +
+                    (AIRCRAFT_TURNAROUND_TIME_MINUTES / MIN_PLAN_AIR);
 
                 if (finalBlock >= ATM_MAX_CYCLES)
                     finalBlock = ATM_MAX_CYCLES;
@@ -1260,12 +1311,14 @@ int SquadronClass::AssignPilots(Flight fl)
     {
         got = FALSE;
 
-        if (fl->plane_stats[plane] == AIRCRAFT_AVAILABLE and fl->pilots[plane] == NO_PILOT)
+        if (fl->plane_stats[plane] == AIRCRAFT_AVAILABLE and
+            fl->pilots[plane] == NO_PILOT)
         {
-            if ( not plane)
+            if (not plane)
             {
                 // Commander goes in first slot
-                for (pilot = 0; pilot < PILOTS_PER_SQUADRON / 3 and not got; pilot++)
+                for (pilot = 0; pilot < PILOTS_PER_SQUADRON / 3 and not got;
+                     pilot++)
                 {
                     if (GetPilotData(pilot)->pilot_status == PILOT_AVAILABLE)
                     {
@@ -1274,16 +1327,18 @@ int SquadronClass::AssignPilots(Flight fl)
                         got = TRUE;
                         fl->MakeFlightDirty(DIRTY_PILOTS, DDP[121].priority);
                         // fl->MakeFlightDirty (DIRTY_PILOTS, SEND_RELIABLE);
-                        fl->MakeFlightDirty(DIRTY_PLANE_STATS, DDP[122].priority);
+                        fl->MakeFlightDirty(DIRTY_PLANE_STATS,
+                                            DDP[122].priority);
                         //  fl->MakeFlightDirty (DIRTY_PLANE_STATS, SEND_RELIABLE);
                     }
                 }
             }
 
-            if ( not got)
+            if (not got)
             {
                 // Now Wingmen
-                for (pilot = PILOTS_PER_SQUADRON - 1; pilot >= 0 and not got; pilot--)
+                for (pilot = PILOTS_PER_SQUADRON - 1; pilot >= 0 and not got;
+                     pilot--)
                 {
                     if (GetPilotData(pilot)->pilot_status == PILOT_AVAILABLE)
                     {
@@ -1292,7 +1347,8 @@ int SquadronClass::AssignPilots(Flight fl)
                         got = TRUE;
                         fl->MakeFlightDirty(DIRTY_PILOTS, DDP[123].priority);
                         // fl->MakeFlightDirty (DIRTY_PILOTS, SEND_RELIABLE);
-                        fl->MakeFlightDirty(DIRTY_PLANE_STATS, DDP[124].priority);
+                        fl->MakeFlightDirty(DIRTY_PLANE_STATS,
+                                            DDP[124].priority);
                         // fl->MakeFlightDirty (DIRTY_PLANE_STATS, SEND_RELIABLE);
                     }
                 }
@@ -1305,18 +1361,21 @@ int SquadronClass::AssignPilots(Flight fl)
 
     fl->SetPilots(TRUE);
 
-    if (doUI and FalconLocalSession->GetPlayerFlight() and (fl->Id() == gCurrentFlightID or fl->InPackage()))
+    if (doUI and FalconLocalSession->GetPlayerFlight() and
+        (fl->Id() == gCurrentFlightID or fl->InPackage()))
     {
-        TheCampaign.MissionEvaluator->PreMissionEval(FalconLocalSession->GetPlayerFlight(), FalconLocalSession->GetPilotSlot());
+        TheCampaign.MissionEvaluator->PreMissionEval(
+            FalconLocalSession->GetPlayerFlight(),
+            FalconLocalSession->GetPilotSlot());
         UI_Refresh();
     }
 
     return TRUE;
 }
 
-void SquadronClass::UpdateSquadronStores(
-    short weapon[HARDPOINT_MAX], uchar weapons[HARDPOINT_MAX], int lbsfuel, int planes
-)
+void SquadronClass::UpdateSquadronStores(short weapon[HARDPOINT_MAX],
+                                         uchar weapons[HARDPOINT_MAX],
+                                         int lbsfuel, int planes)
 {
     int i, j, n, done = 0;
     long f;
@@ -1326,7 +1385,7 @@ void SquadronClass::UpdateSquadronStores(
     // Consolidate the weapons (we need to do this to minimize rounding errors)
     for (i = 0; i < HARDPOINT_MAX; i++)
     {
-        if ( not (WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
+        if (not(WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
         {
             for (j = 0, done = 0; j < HARDPOINT_MAX and not done; j++)
             {
@@ -1365,33 +1424,37 @@ void SquadronClass::UpdateSquadronStores(
 
     SetSquadronFuel(f);
 
-    if ( not IsLocal())
+    if (not IsLocal())
     {
         // Send a message to host notifying him of the changes to the squadron's weapon loads
-        VuSessionEntity *target = (VuSessionEntity*) vuDatabase->Find(OwnerId());
-        FalconFlightPlanMessage *msg = new FalconFlightPlanMessage(Id(), target);
+        VuSessionEntity *target =
+            (VuSessionEntity *)vuDatabase->Find(OwnerId());
+        FalconFlightPlanMessage *msg =
+            new FalconFlightPlanMessage(Id(), target);
         uchar *buffer;
 
         msg->dataBlock.type = FalconFlightPlanMessage::squadronStores;
-        msg->dataBlock.size = HARDPOINT_MAX + HARDPOINT_MAX * sizeof(short) + sizeof(long) * 2;
+        msg->dataBlock.size = HARDPOINT_MAX + HARDPOINT_MAX * sizeof(short) +
+                              sizeof(int) * 2; // #104: on-wire 32-bit
         msg->dataBlock.data = buffer = new uchar[msg->dataBlock.size];
         memcpy(buffer, weapon, HARDPOINT_MAX * sizeof(short));
         buffer += HARDPOINT_MAX * sizeof(short);
         memcpy(buffer, weapons, HARDPOINT_MAX);
         buffer += HARDPOINT_MAX;
-        memcpy(buffer, &lbsfuel, sizeof(long));
-        buffer += sizeof(long);
-        memcpy(buffer, &planes, sizeof(long));
-        buffer += sizeof(long);
+        memcpy(buffer, &lbsfuel,
+               sizeof(int)); // #104: on-wire 32-bit (int fields)
+        buffer += sizeof(int);
+        memcpy(buffer, &planes, sizeof(int));
+        buffer += sizeof(int);
         FalconSendMessage(msg, TRUE);
     }
 }
 
 // M.N. use this derived function to resupply the squad stores from aborted flights
 
-void SquadronClass::ResupplySquadronStores(
-    short weapon[HARDPOINT_MAX], uchar weapons[HARDPOINT_MAX], int lbsfuel, int planes
-)
+void SquadronClass::ResupplySquadronStores(short weapon[HARDPOINT_MAX],
+                                           uchar weapons[HARDPOINT_MAX],
+                                           int lbsfuel, int planes)
 {
     int i, j, n, done = 0;
     long f;
@@ -1401,7 +1464,7 @@ void SquadronClass::ResupplySquadronStores(
     // Consolidate the weapons (we need to do this to minimize rounding errors)
     for (i = 0; i < HARDPOINT_MAX; i++)
     {
-        if ( not (WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
+        if (not(WeaponDataTable[weapon[i]].Flags bitand WEAP_INFINITE_MASK))
         {
             for (j = 0, done = 0; j < HARDPOINT_MAX and not done; j++)
             {
@@ -1442,28 +1505,31 @@ void SquadronClass::ResupplySquadronStores(
 
     SetSquadronFuel(f);
 
-    if ( not IsLocal())
+    if (not IsLocal())
     {
         // Send a message to host notifying him of the changes to the squadron's weapon loads
-        VuSessionEntity *target = (VuSessionEntity*) vuDatabase->Find(OwnerId());
-        FalconFlightPlanMessage *msg = new FalconFlightPlanMessage(Id(), target);
+        VuSessionEntity *target =
+            (VuSessionEntity *)vuDatabase->Find(OwnerId());
+        FalconFlightPlanMessage *msg =
+            new FalconFlightPlanMessage(Id(), target);
         uchar *buffer;
 
         msg->dataBlock.type = FalconFlightPlanMessage::squadronStores;
-        msg->dataBlock.size = HARDPOINT_MAX + HARDPOINT_MAX * sizeof(short) + sizeof(long) * 2;
+        msg->dataBlock.size = HARDPOINT_MAX + HARDPOINT_MAX * sizeof(short) +
+                              sizeof(int) * 2; // #104: on-wire 32-bit
         msg->dataBlock.data = buffer = new uchar[msg->dataBlock.size];
         memcpy(buffer, weapon, HARDPOINT_MAX * sizeof(short));
         buffer += HARDPOINT_MAX * sizeof(short);
         memcpy(buffer, weapons, HARDPOINT_MAX);
         buffer += HARDPOINT_MAX;
-        memcpy(buffer, &lbsfuel, sizeof(long));
-        buffer += sizeof(long);
-        memcpy(buffer, &planes, sizeof(long));
-        buffer += sizeof(long);
+        memcpy(buffer, &lbsfuel,
+               sizeof(int)); // #104: on-wire 32-bit (int fields)
+        buffer += sizeof(int);
+        memcpy(buffer, &planes, sizeof(int));
+        buffer += sizeof(int);
         FalconSendMessage(msg, TRUE);
     }
 }
-
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1684,12 +1750,12 @@ void SquadronClass::SetLastResupply(int s)
 
 void SquadronClass::MakeSquadronDirty(Dirty_Squadron bits, Dirtyness score)
 {
-    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if ((not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
+    if (not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }
@@ -1705,21 +1771,20 @@ void SquadronClass::MakeSquadronDirty(Dirty_Squadron bits, Dirtyness score)
 
 void SquadronClass::WriteDirty(unsigned char **stream)
 {
-    unsigned char
-    *ptr;
+    unsigned char *ptr;
 
     ptr = *stream;
 
     //MonoPrint ("  SQ %08x", dirty_squadron);
 
     // Encode it up
-    *(ushort*)ptr = (ushort) dirty_squadron;
+    *(ushort *)ptr = (ushort)dirty_squadron;
     ptr += sizeof(ushort);
 
     if (dirty_squadron bitand DIRTY_SCHEDULE)
     {
-        memcpy(ptr, schedule, sizeof(schedule));
-        ptr += sizeof(schedule);
+        memcpy_u32(&ptr, schedule,
+                   VEHICLE_GROUPS_PER_UNIT); // #104: on-wire 32-bit ulong[]
     }
 
     if (dirty_squadron bitand DIRTY_RATING)
@@ -1730,68 +1795,67 @@ void SquadronClass::WriteDirty(unsigned char **stream)
 
     if (dirty_squadron bitand DIRTY_ASSIGNED)
     {
-        *(uchar*)ptr = assigned;
+        *(uchar *)ptr = assigned;
         ptr += sizeof(uchar);
     }
 
     if (dirty_squadron bitand DIRTY_PILOT_LOSSES)
     {
-        *(uchar*)ptr = pilot_losses;
+        *(uchar *)ptr = pilot_losses;
         ptr += sizeof(uchar);
     }
 
     if (dirty_squadron bitand DIRTY_TOTAL_LOSSES)
     {
-        *(uchar*)ptr = total_losses;
+        *(uchar *)ptr = total_losses;
         ptr += sizeof(uchar);
     }
 
     if (dirty_squadron bitand DIRTY_MISSION_SCORE)
     {
-        *(short*)ptr = mission_score;
+        *(short *)ptr = mission_score;
         ptr += sizeof(short);
     }
 
     if (dirty_squadron bitand DIRTY_MISSIONS_FLOWN)
     {
-        *(short*)ptr = missions_flown;
+        *(short *)ptr = missions_flown;
         ptr += sizeof(short);
     }
 
     if (dirty_squadron bitand DIRTY_AAKILLS)
     {
-        *(short*)ptr = aa_kills;
+        *(short *)ptr = aa_kills;
         ptr += sizeof(short);
     }
 
     if (dirty_squadron bitand DIRTY_AGKILLS)
     {
-        *(short*)ptr = ag_kills;
+        *(short *)ptr = ag_kills;
         ptr += sizeof(short);
     }
 
     if (dirty_squadron bitand DIRTY_ANKILLS)
     {
-        *(short*)ptr = an_kills;
+        *(short *)ptr = an_kills;
         ptr += sizeof(short);
     }
 
     if (dirty_squadron bitand DIRTY_HOT_SPOT)
     {
-        *(VU_ID*)ptr = hot_spot;
+        *(VU_ID *)ptr = hot_spot;
         ptr += sizeof(VU_ID);
     }
 
     if (dirty_squadron bitand DIRTY_AIRBASE)
     {
-        *(VU_ID*)ptr = airbase_id;
+        *(VU_ID *)ptr = airbase_id;
         ptr += sizeof(VU_ID);
     }
 
     if (dirty_squadron bitand DIRTY_FUEL)
     {
-        *(long*)ptr = fuel;
-        ptr += sizeof(long);
+        memcpy_l32(&ptr, &fuel, 1); // #104: on-wire 32-bit long
     }
 
     if (dirty_squadron bitand DIRTY_SQUAD_STORES)
@@ -1826,7 +1890,8 @@ void SquadronClass::ReadDirty(VU_BYTE **stream, long *rem)
 
     if (bits bitand DIRTY_SCHEDULE)
     {
-        memcpychk(schedule, stream, sizeof(schedule), rem);
+        memcpychk_u32(schedule, stream, rem,
+                      VEHICLE_GROUPS_PER_UNIT); // #104: on-wire 32-bit ulong[]
     }
 
     if (bits bitand DIRTY_RATING)
@@ -1886,7 +1951,7 @@ void SquadronClass::ReadDirty(VU_BYTE **stream, long *rem)
 
     if (bits bitand DIRTY_FUEL)
     {
-        memcpychk(&fuel, stream, sizeof(long), rem);
+        memcpychk_l32(&fuel, stream, 1, rem); // #104: on-wire 32-bit long
     }
 
     if (bits bitand DIRTY_SQUAD_STORES)

@@ -7,20 +7,20 @@
 \***************************************************************************/
 #include "stdafx.h"
 #include <stdio.h>
-#include "TimeMgr.h"
-#include "TOD.h"
-#include "Image.h"
-#include "FarTex.h"
+#include "timemgr.h"
+#include "tod.h"
+#include "image.h"
+#include "fartex.h"
 #include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
-#include "Graphics/DXEngine/d3d12/D3D12TextureManager.h" // Artscout - 2026: NVTT 3 DDS export
-#include "Falclib/Include/IsBad.h"
-#include "FalcLib/include/playerop.h"
-#include "FalcLib/include/dispopts.h"
+#include "graphics/dxengine/d3d12/d3d12texturemanager.h" // Artscout - 2026: NVTT 3 DDS export
+#include "falclib/include/isbad.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
 
 extern bool g_bEnableStaticTerrainTextures;
 extern bool g_bUseMappedFiles;
 
-#include "FalcLib/include/PlayerOp.h"
+#include "falclib/include/playerop.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL gFartexMemPool;
@@ -32,8 +32,8 @@ MEM_POOL gFartexMemPool;
 #define ARGB_TEXEL_SIZE 4
 #define ARGB_TEXEL_BITS 32
 
-#define MAX(a,b)            ((a>b)?a:b)
-#define MIN(a,b)            ((a<b)?a:b)
+#define MAX(a, b) ((a > b) ? a : b)
+#define MIN(a, b) ((a < b) ? a : b)
 
 //#define MAXIMUM(a,b,c)      ((a>b)?MAX(a,c):MAX(b,c))
 //#define MINIMUM(a,b,c)      ((a<b)?MIN(a,c):MIN(b,c))
@@ -43,7 +43,7 @@ FarTexDB TheFarTextures;
 static const DWORD INVALID_TEXID = 0xFFFFFFFF;
 
 // Setup the texture database
-BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
+BOOL FarTexDB::Setup(DXContext *hrc, const char *path)
 {
     char filename[MAX_PATH];
     HANDLE listFile;
@@ -57,7 +57,8 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
     ShiAssert(path);
 
 #ifdef USE_SH_POOLS
-    gFartexMemPool = MemPoolInitFS(sizeof(BYTE) * IMAGE_SIZE * IMAGE_SIZE, 24, MEM_POOL_SERIALIZE);
+    gFartexMemPool = MemPoolInitFS(sizeof(BYTE) * IMAGE_SIZE * IMAGE_SIZE, 24,
+                                   MEM_POOL_SERIALIZE);
 #endif
 
     // Store the rendering context to be used just for managing our textures
@@ -77,21 +78,23 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
 
     // Open the texture database description file
     sprintf(filename, "%s%s", path, "FarTiles.PAL");
-    listFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    listFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                          OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (listFile == INVALID_HANDLE_VALUE)
     {
         char string[80];
         char message[120];
         PutErrorString(string);
-        sprintf(message, "%s: Couldn't open far texture list %s", string, filename);
+        sprintf(message, "%s: Couldn't open far texture list %s", string,
+                filename);
         ShiError(message);
     }
 
     // Read the palette data shared by all the distant textures
     result = ReadFile(listFile, &palette, sizeof(palette), &bytesRead, NULL);
 
-    if ( not result)
+    if (not result)
     {
         char string[80];
         char message[120];
@@ -107,9 +110,9 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
     do
     {
         texCount += tilesAtLOD;
-        result = ReadFile(listFile, &tilesAtLOD, sizeof(tilesAtLOD), &bytesRead, NULL);
-    }
-    while (bytesRead == sizeof(tilesAtLOD));
+        result = ReadFile(listFile, &tilesAtLOD, sizeof(tilesAtLOD), &bytesRead,
+                          NULL);
+    } while (bytesRead == sizeof(tilesAtLOD));
 
     CloseHandle(listFile);
 
@@ -120,7 +123,7 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
     // Allocate memory for the texture records
     texArray = new FarTexEntry[texCount];
 
-    if ( not texArray)
+    if (not texArray)
         ShiError("Failed to allocate memory for the distant texture array.");
 
     // Set up the texture array
@@ -153,16 +156,21 @@ BOOL FarTexDB::Setup(DXContext *hrc, const char* path)
         sprintf(szRawName, "%s.dds", texturePath);
         fp = fopen(szRawName, "rb");
 
-        if ( not fp) return TRUE;
+        if (not fp)
+            return TRUE;
 
 #if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
 #else
-        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+        {
+            DDSDiskHeader _h;
+            fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp);
+            DDSDiskToDesc(_h, ddsd);
+        } // Artscout - 2026 (x64): on-disk DDS header
 #endif
         ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
-        linearSize = ddsd.dwLinearSize;
+            linearSize = ddsd.dwLinearSize;
 
         fclose(fp);
 
@@ -237,7 +245,7 @@ void FarTexDB::SetLightLevel(void)
     // Decide what color to use for lighting
     if (TheTimeOfDay.GetNVGmode())
     {
-        lightLevel  = NVG_LIGHT_LEVEL;
+        lightLevel = NVG_LIGHT_LEVEL;
         lightColor.r = 0.0f;
         lightColor.g = NVG_LIGHT_LEVEL;
         lightColor.b = 0.0f;
@@ -252,7 +260,7 @@ void FarTexDB::SetLightLevel(void)
     {
         // Apply the current lighting
         from = (BYTE *)palette;
-        to  = (BYTE *)scratchPal;
+        to = (BYTE *)scratchPal;
         stop = to + 256 * 4;
 
         while (to < stop)
@@ -272,37 +280,46 @@ void FarTexDB::SetLightLevel(void)
 
             if (PlayerOptions.Season == 1) //Autumn
             {
-                if ( not ((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or (tmpR + tmpG + tmpB) / 3 > 225)) //Not Greyscale / green / not very bright
+                if (not((tmpR == tmpG and tmpG == tmpB) or tmpG < 60 or
+                        (tmpR + tmpG + tmpB) / 3 >
+                            225)) //Not Greyscale / green / not very bright
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                    if (h >= 30 and h <= 165)  //Green
+                    if (h >= 30 and h <= 165) //Green
                     {
                         //h *= 0.6f; // min27 (yellow/orange/terracota/brown)
                         h = h * 0.33f + 15; //Shift to brown
-                        s *= 1.2f; //more saturated (intenser brown, just mudy green otherwise
+                        s *=
+                            1.2f; //more saturated (intenser brown, just mudy green otherwise
                         v *= 0.9f; //darker
                     }
-                    else if ( not (v > 0.9 and s > 0.9)) //Not a strong green, but neither very bright
+                    else if (
+                        not(v > 0.9 and
+                            s > 0.9)) //Not a strong green, but neither very bright
                     {
                         s *= 0.9f; //less saturated
                         v *= 0.85f; //darken a bit
                     }
 
-                    if (s > 255) s = 255;
+                    if (s > 255)
+                        s = 255;
 
-                    if (h > 255) h = 255;
+                    if (h > 255)
+                        h = 255;
 
                     HSVtoRGB(&tmpR, &tmpG, &tmpB, h, s, v);
                 }
             }
             else if (PlayerOptions.Season == 2) //Winter
             {
-                if ( not (tmpR == tmpG and tmpR == tmpB) or tmpG < 60) //((tmpR+tmpG+tmpB)/3)>225) //or (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
+                if (not(tmpR == tmpG and tmpR == tmpB) or
+                    tmpG <
+                        60) //((tmpR+tmpG+tmpB)/3)>225) //or (tmpR == 255 and tmpG == 255))) //Greyscale //or pure color
                 {
                     RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                    if ( not (s <= 0.2 or h == -1))  //If Not Greyscale
+                    if (not(s <= 0.2 or h == -1)) //If Not Greyscale
                     {
                         if (h >= 45 and h <= 150) //If Green
                         {
@@ -320,7 +337,8 @@ void FarTexDB::SetLightLevel(void)
 
                     //if (s==0 and v < 240) v *= 0.85f; //Greyscale, but not white: darken a bit (to increase contrast)
                     //if (s>230) s = 255; //bright...make even brighter
-                    if (v > 255) v = 255;
+                    if (v > 255)
+                        v = 255;
 
                     HSVtoRGB(&tmpR, &tmpG, &tmpB, h, s, v);
                 }
@@ -329,7 +347,7 @@ void FarTexDB::SetLightLevel(void)
             {
                 RGBtoHSV(tmpR, tmpG, tmpB, &h, &s, &v);
 
-                if ( not (s <= 0.1 or h == -1))  //Not Greyscale
+                if (not(s <= 0.1 or h == -1)) //Not Greyscale
                 {
                     if (h >= 45 and h <= 160) //Green
                     {
@@ -337,9 +355,11 @@ void FarTexDB::SetLightLevel(void)
                         v *= 1.2f;
                     }
 
-                    if (s > 255) s = 255;
+                    if (s > 255)
+                        s = 255;
 
-                    if (v > 255) v = 255;
+                    if (v > 255)
+                        v = 255;
 
                     HSVtoRGB(&tmpR, &tmpG, &tmpB, h, s, v);
                 }
@@ -352,14 +372,12 @@ void FarTexDB::SetLightLevel(void)
             *to = static_cast<BYTE>(FloatToInt32(tmpB * lightColor.b));
             to++;
             to++; // Alpha
-
-
         }
 
         // Turn on the lights if it is dark enough
         if (lightLevel < 0.5f)
         {
-            to = (BYTE *) bitand (scratchPal[252]);
+            to = (BYTE *)bitand(scratchPal[252]);
 
             if (TheTimeOfDay.GetNVGmode())
             {
@@ -440,12 +458,11 @@ void FarTexDB::SetLightLevel(void)
         }
 
         // Update MPR's palette
-        palHandle->Load(
-            MPR_TI_PALETTE, // Palette info
-            32, // Bits per entry
-            0, // Start index
-            256, // Number of entries
-            (BYTE *)&scratchPal);
+        palHandle->Load(MPR_TI_PALETTE, // Palette info
+                        32, // Bits per entry
+                        0, // Start index
+                        256, // Number of entries
+                        (BYTE *)&scratchPal);
     }
 }
 
@@ -456,17 +473,19 @@ void FarTexDB::Request(TextureID texID)
 
     ShiAssert(IsReady());
 
-    if (texID == INVALID_TEXID) return;
+    if (texID == INVALID_TEXID)
+        return;
 
-    ShiAssert(texID >= (DWORD) 0);
-    ShiAssert(texID < (DWORD) texCount);
+    ShiAssert(texID >= (DWORD)0);
+    ShiAssert(texID < (DWORD)texCount);
 
     EnterCriticalSection(&cs_textureList);
 
     ShiAssert(texArray);
 
     // 2002-04-13 MN CTD fix
-    if ( not texArray) return;
+    if (not texArray)
+        return;
 
     // If this is the first reference, we need to load the data
     needToLoad = (texArray[texID].refCount == 0);
@@ -491,10 +510,11 @@ void FarTexDB::Release(TextureID texID)
 {
     ShiAssert(IsReady());
 
-    if (texID == INVALID_TEXID) return;
+    if (texID == INVALID_TEXID)
+        return;
 
-    ShiAssert(texID >= (WORD) 0);
-    ShiAssert(texID < (WORD) texCount);
+    ShiAssert(texID >= (WORD)0);
+    ShiAssert(texID < (WORD)texCount);
 
     EnterCriticalSection(&cs_textureList);
 
@@ -515,10 +535,11 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
 {
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
-    ShiAssert(offset < (DWORD) texCount);
+    ShiAssert(offset < (DWORD)texCount);
     ShiAssert(texArray[offset].bits == NULL);
 
-    if ( not forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if (not forceNoDDS and
+        DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
 #ifdef USE_SH_POOLS
         texArray[offset].bits = (BYTE *)MemAllocFS(gFartexMemPool);
@@ -528,12 +549,15 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
         ShiAssert(texArray[offset].bits);
 
         // Read the image data
-        if ( not fartexDDSFile.ReadDataAt(DDS_DISK_HEADER_SIZE + (offset * linearSize), texArray[offset].bits, linearSize))
+        if (not fartexDDSFile.ReadDataAt(DDS_DISK_HEADER_SIZE +
+                                             (offset * linearSize),
+                                         texArray[offset].bits, linearSize))
         {
             char string[80];
             char message[120];
             PutErrorString(string);
-            sprintf(message, "%s: Couldn'd read far texture image %0d.", string, offset);
+            sprintf(message, "%s: Couldn'd read far texture image %0d.", string,
+                    offset);
             ShiError(message);
         }
     }
@@ -555,12 +579,15 @@ void FarTexDB::Load(DWORD offset, bool forceNoDDS)
             ShiAssert(texArray[offset].bits);
 
             // Read the image data
-            if ( not fartexFile.ReadDataAt(offset * IMAGE_SIZE * IMAGE_SIZE, texArray[offset].bits, IMAGE_SIZE * IMAGE_SIZE))
+            if (not fartexFile.ReadDataAt(offset * IMAGE_SIZE * IMAGE_SIZE,
+                                          texArray[offset].bits,
+                                          IMAGE_SIZE * IMAGE_SIZE))
             {
                 char string[80];
                 char message[120];
                 PutErrorString(string);
-                sprintf(message, "%s: Couldn'd read far texture image %0d.", string, offset);
+                sprintf(message, "%s: Couldn'd read far texture image %0d.",
+                        string, offset);
                 ShiError(message);
             }
         }
@@ -576,25 +603,29 @@ void FarTexDB::Activate(DWORD offset)
 {
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
-    ShiAssert(offset < (DWORD) texCount);
+    ShiAssert(offset < (DWORD)texCount);
     ShiAssert(texArray[offset].bits not_eq NULL);
     ShiAssert(texArray[offset].handle == NULL);
 
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
-        texArray[offset].handle = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
+        texArray[offset].handle =
+            (DWORD_PTR) new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(texArray[offset].handle);
 
         DWORD info = MPR_TI_DDS;
         info or_eq MPR_TI_DXT1;
         info or_eq MPR_TI_32;
 
-        ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 32, IMAGE_SIZE, IMAGE_SIZE);
-        ((TextureHandle *)texArray[offset].handle)->Load(0, 0, texArray[offset].bits, false, true, linearSize);
+        ((TextureHandle *)texArray[offset].handle)
+            ->Create("FarTexDB", info, 32, IMAGE_SIZE, IMAGE_SIZE);
+        ((TextureHandle *)texArray[offset].handle)
+            ->Load(0, 0, texArray[offset].bits, false, true, linearSize);
     }
     else
     {
-        texArray[offset].handle = (DWORD_PTR)new TextureHandle; // Artscout - 2026 (x64): pointer-sized
+        texArray[offset].handle =
+            (DWORD_PTR) new TextureHandle; // Artscout - 2026 (x64): pointer-sized
         ShiAssert(texArray[offset].handle);
         palHandle->AttachToTexture((TextureHandle *)texArray[offset].handle);
 
@@ -604,12 +635,15 @@ void FarTexDB::Activate(DWORD offset)
         if (g_bEnableStaticTerrainTextures)
             dwFlags or_eq TextureHandle::FLAG_HINT_STATIC;
 
-        ((TextureHandle *)texArray[offset].handle)->Create("FarTexDB", info, 8, IMAGE_SIZE, IMAGE_SIZE, dwFlags);
+        ((TextureHandle *)texArray[offset].handle)
+            ->Create("FarTexDB", info, 8, IMAGE_SIZE, IMAGE_SIZE, dwFlags);
 
 #ifdef _DONOT_COPY_BITS
-        ((TextureHandle *)texArray[offset].handle)->Load(0, 0, texArray[offset].bits, false, true);
+        ((TextureHandle *)texArray[offset].handle)
+            ->Load(0, 0, texArray[offset].bits, false, true);
 #else
-        ((TextureHandle *)texArray[offset].handle)->Load(0, 0, texArray[offset].bits);
+        ((TextureHandle *)texArray[offset].handle)
+            ->Load(0, 0, texArray[offset].bits);
 #endif
     }
 
@@ -626,16 +660,17 @@ void FarTexDB::Deactivate(DWORD offset)
 {
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
-    ShiAssert(offset < (DWORD) texCount);
+    ShiAssert(offset < (DWORD)texCount);
     ShiAssert(texArray[offset].refCount == 0);
 
-    if (texArray == 0) return;
+    if (texArray == 0)
+        return;
 
     // Quit now if we've got nothing to do
     if (texArray[offset].handle)
     {
         // Release the texture from the MPR context
-        delete(TextureHandle *)texArray[offset].handle;
+        delete (TextureHandle *)texArray[offset].handle;
         texArray[offset].handle = NULL;
 
 #ifdef _DEBUG
@@ -647,7 +682,7 @@ void FarTexDB::Deactivate(DWORD offset)
 
     if (texArray[offset].bits)
     {
-        if ( not g_bUseMappedFiles)
+        if (not g_bUseMappedFiles)
 #ifdef USE_SH_POOLS
             MemFreeFS(texArray[offset].bits);
 
@@ -671,15 +706,16 @@ void FarTexDB::Free(DWORD offset)
 {
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
-    ShiAssert(offset < (DWORD) texCount);
+    ShiAssert(offset < (DWORD)texCount);
 
     // Quit now if we've got nothing to do
-    if (texArray[offset].bits == NULL) return;
+    if (texArray[offset].bits == NULL)
+        return;
 
     // Release the image memory
 #ifndef _DONOT_COPY_BITS
 
-    if ( not g_bUseMappedFiles)
+    if (not g_bUseMappedFiles)
 #ifdef USE_SH_POOLS
         MemFreeFS(texArray[offset].bits);
 
@@ -701,10 +737,11 @@ void FarTexDB::Select(ContextMPR *localContext, TextureID texID)
     ShiAssert(IsReady());
     ShiAssert(localContext);
 
-    if (texID == INVALID_TEXID) return;
+    if (texID == INVALID_TEXID)
+        return;
 
     ShiAssert(texID >= 0);
-    ShiAssert(texID < (DWORD) texCount);
+    ShiAssert(texID < (DWORD)texCount);
 
     // Make sure the texture we're trying to use is local to MPR
     if (texArray[texID].handle == NULL)
@@ -721,15 +758,25 @@ void FarTexDB::Select(ContextMPR *localContext, TextureID texID)
 // returns the SRV instead of binding through a ContextMPR.
 void *FarTexDB::GetTileSRV(TextureID texID)
 {
-    if ( not IsReady()) return 0;
-    if (texID == INVALID_TEXID) return 0;
-    if ( not (texID >= 0 and texID < (DWORD)texCount)) return 0;
+    if (not IsReady())
+        return 0;
+    if (texID == INVALID_TEXID)
+        return 0;
+    if (not(texID >= 0 and texID < (DWORD)texCount))
+        return 0;
     if (texArray[texID].handle == NULL)
     {
-        if ( not texArray[texID].bits) return 0;
+        if (not texArray[texID].bits)
+            return 0;
+        extern int
+            g_nTileActivateBudget; // #107 spike budget -- see TextureDB::GetTileSRV
+        if (g_nTileActivateBudget <= 0)
+            return 0; // over budget -> flat fallback this frame, pops in next
+        --g_nTileActivateBudget;
         Activate(texID);
     }
-    if ( not texArray[texID].handle) return 0;
+    if (not texArray[texID].handle)
+        return 0;
     return (void *)((TextureHandle *)texArray[texID].handle)->m_pDDS;
 }
 
@@ -749,7 +796,8 @@ void FarTexDB::RestoreAll()
 
 void FarTexDB::FlushHandles()
 {
-    if (fartexDDSFile.IsReady()) fartexDDSFile.Close();
+    if (fartexDDSFile.IsReady())
+        fartexDDSFile.Close();
 
     if (DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
@@ -761,16 +809,21 @@ void FarTexDB::FlushHandles()
         sprintf(szRawName, "%s.dds", texturePath);
         fp = fopen(szRawName, "rb");
 
-        if ( not fp) return;
+        if (not fp)
+            return;
 
 #if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
 #else
-        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+        {
+            DDSDiskHeader _h;
+            fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp);
+            DDSDiskToDesc(_h, ddsd);
+        } // Artscout - 2026 (x64): on-disk DDS header
 #endif
         ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
-        linearSize = ddsd.dwLinearSize;
+            linearSize = ddsd.dwLinearSize;
 
         fclose(fp);
 
@@ -798,7 +851,7 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
     {
         fclose(fpRaw);
 
-        if ( not bForce)
+        if (not bForce)
             return false;
     }
 
@@ -815,20 +868,24 @@ bool FarTexDB::SyncDDSTextures(bool bForce)
         Load(i, true);
         DumpImageToFile(i);
 
-        sprintf(szDDSName, "%s\\%d.dds", texturePath, i);
+        sprintf(szDDSName, "%s/%d.dds", texturePath, i);
         fpDDS = fopen(szDDSName, "rb");
         fread(&dwMagic, 1, sizeof(DWORD), fpDDS);
 #if defined(_M_IX86)
         fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fpDDS);
 #else
-        { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fpDDS); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+        {
+            DDSDiskHeader _h;
+            fread(&_h, 1, DDS_DISK_HEADER_SIZE, fpDDS);
+            DDSDiskToDesc(_h, ddsd);
+        } // Artscout - 2026 (x64): on-disk DDS header
 #endif
 
         pBuf = new BYTE[ddsd.dwLinearSize];
         fread(pBuf, 1, ddsd.dwLinearSize, fpDDS);
 
         // One header only, all textures are the same linear size
-        if ( not bOnce)
+        if (not bOnce)
         {
             fwrite(&ddsd, 1, sizeof(ddsd), fpRaw);
             bOnce = true;
@@ -861,15 +918,16 @@ bool FarTexDB::DumpImageToFile(DWORD offset)
 
     ShiAssert(IsReady());
     ShiAssert(offset >= 0);
-    ShiAssert(offset < (DWORD) texCount);
+    ShiAssert(offset < (DWORD)texCount);
     ShiAssert(texArray[offset].bits);
 
-    if ( not texArray[offset].bits) return false;
+    if (not texArray[offset].bits)
+        return false;
 
-    sprintf(szFileName, "%s\\%d.dds", texturePath, offset);
+    sprintf(szFileName, "%s/%d.dds", texturePath, offset);
     fp = fopen(szFileName, "rb");
 
-    if ( not fp)
+    if (not fp)
     {
         dwSize = IMAGE_SIZE * IMAGE_SIZE;
 
@@ -902,11 +960,19 @@ bool FarTexDB::DumpImageToFile(DWORD offset)
     return true;
 }
 
-bool FarTexDB::SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions)
+bool FarTexDB::SaveDDS_DXTn(const char *szFileName, BYTE *pDst, int dimensions)
 {
     // Far tiles carry no alpha/chroma -> plain DXT1/BC1. Compress the BGRA source
     // to a .dds via modern NVTT 3 (x64).
-    return D3D12TextureManager::SaveBCnDDS(szFileName, 0, pDst, dimensions, dimensions);
+#ifdef _WIN32 // D3D12TextureManager (NVTT DDS writer) is Windows-only; Linux does not bake .dds
+    return D3D12TextureManager::SaveBCnDDS(szFileName, 0, pDst, dimensions,
+                                           dimensions);
+#else
+    (void)szFileName;
+    (void)pDst;
+    (void)dimensions;
+    return false;
+#endif // _WIN32
 }
 
 
@@ -950,7 +1016,8 @@ void FarTexDB::RGBtoHSV(float r, float g, float b, float *h, float *s, float *v)
 
     *h *= 60; // degrees
 
-    if (*h < 0) *h += 360;
+    if (*h < 0)
+        *h += 360;
 }
 
 void FarTexDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v)
@@ -974,40 +1041,40 @@ void FarTexDB::HSVtoRGB(float *r, float *g, float *b, float h, float s, float v)
 
     switch (i)
     {
-        case 0:
-            *r = v;
-            *g = t;
-            *b = p;
-            break;
+    case 0:
+        *r = v;
+        *g = t;
+        *b = p;
+        break;
 
-        case 1:
-            *r = q;
-            *g = v;
-            *b = p;
-            break;
+    case 1:
+        *r = q;
+        *g = v;
+        *b = p;
+        break;
 
-        case 2:
-            *r = p;
-            *g = v;
-            *b = t;
-            break;
+    case 2:
+        *r = p;
+        *g = v;
+        *b = t;
+        break;
 
-        case 3:
-            *r = p;
-            *g = q;
-            *b = v;
-            break;
+    case 3:
+        *r = p;
+        *g = q;
+        *b = v;
+        break;
 
-        case 4:
-            *r = t;
-            *g = p;
-            *b = v;
-            break;
+    case 4:
+        *r = t;
+        *g = p;
+        *b = v;
+        break;
 
-        default: // case 5:
-            *r = v;
-            *g = p;
-            *b = q;
-            //break;
+    default: // case 5:
+        *r = v;
+        *g = p;
+        *b = q;
+        //break;
     }
 }

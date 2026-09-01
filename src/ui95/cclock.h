@@ -15,7 +15,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -40,7 +41,6 @@ private:
     long Section_;
 
 public:
-
     C_Clock();
     C_Clock(char **stream);
     C_Clock(FILE *fp);
@@ -82,77 +82,87 @@ public:
 
     void SetDay(long dy)
     {
-        if (Day_) Day_->SetInteger(dy + 1);
+        if (Day_)
+            Day_->SetInteger(dy + 1);
     }
     void SetHour(long hr)
     {
-        if (Hour_) Hour_->SetInteger(hr);
+        if (Hour_)
+            Hour_->SetInteger(hr);
     }
     void SetMinute(long mn)
     {
-        if (Minute_) Minute_->SetInteger(mn);
+        if (Minute_)
+            Minute_->SetInteger(mn);
     }
     void SetSecond(long sc)
     {
-        if (Second_) Second_->SetInteger(sc);
+        if (Second_)
+            Second_->SetInteger(sc);
     }
 
     void SetLast(long val)
     {
-        if (CurEdit_) CurEdit_->SetInteger(val);
+        if (CurEdit_)
+            CurEdit_->SetInteger(val);
     }
 
     long GetDay()
     {
-        if (Day_) return(Day_->GetInteger() - 1);
+        if (Day_)
+            return (Day_->GetInteger() - 1);
 
-        return(0);
+        return (0);
     }
     long GetHour()
     {
-        if (Hour_) return(Hour_->GetInteger());
+        if (Hour_)
+            return (Hour_->GetInteger());
 
-        return(0);
+        return (0);
     }
     long GetMinute()
     {
-        if (Minute_) return(Minute_->GetInteger());
+        if (Minute_)
+            return (Minute_->GetInteger());
 
-        return(0);
+        return (0);
     }
     long GetSecond()
     {
-        if (Second_) return(Second_->GetInteger());
+        if (Second_)
+            return (Second_->GetInteger());
 
-        return(0);
+        return (0);
     }
 
     long GetLast()
     {
-        if (CurEdit_) return(CurEdit_->GetInteger());
+        if (CurEdit_)
+            return (CurEdit_->GetInteger());
 
-        return(0);
+        return (0);
     }
 
     C_EditBox *GetCurrentCtrl()
     {
-        return(CurEdit_);
+        return (CurEdit_);
     }
     C_EditBox *GetDayCtrl()
     {
-        return(Day_);
+        return (Day_);
     }
     C_EditBox *GetHourCtrl()
     {
-        return(Hour_);
+        return (Hour_);
     }
     C_EditBox *GetMinuteCtrl()
     {
-        return(Minute_);
+        return (Minute_);
     }
     C_EditBox *GetSecondCtrl()
     {
-        return(Second_);
+        return (Second_);
     }
 
     void SetTime(long theTime);
@@ -160,7 +170,7 @@ public:
 
     void SetSubParents(C_Window *Parent);
     long CheckHotSpots(long relX, long relY);
-    BOOL CheckKeyboard(unsigned char , unsigned char , unsigned char , long)
+    BOOL CheckKeyboard(unsigned char, unsigned char, unsigned char, long)
     {
         return FALSE;
     }
@@ -192,7 +202,6 @@ public:
     }
 
 #endif // parser
-
 };
 
 //#pragma warning (pop)

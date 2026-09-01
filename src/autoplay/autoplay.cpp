@@ -27,9 +27,9 @@ char *WindowTitle = "Falcon 4.0";
 
 // String array used to decend the registry tree to find our one entry
 // (NOTE:  We always start from HKEY_LOCAL_MACHINE)
-char *keyStrings[] = { "Software", "Microprose", "Falcon", "4.0" };
-char *dirString      = "baseDir";
-char *disableString  = "disableAutoplay";
+char *keyStrings[] = {"Software", "Microprose", "Falcon", "4.0"};
+char *dirString = "baseDir";
+char *disableString = "disableAutoplay";
 
 
 // Global resource used to ensure a single instance of this application
@@ -44,10 +44,10 @@ char TargetDir[_MAX_PATH];
 
 
 // Convert a windows error number into a printable string
-#define PutErrorString(buf)  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, \
-                                           NULL, GetLastError(),        \
-                                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), \
-                                           buf, sizeof(buf), NULL)
+#define PutErrorString(buf)                                                    \
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),            \
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf, sizeof(buf), \
+                  NULL)
 
 
 //
@@ -65,7 +65,7 @@ BOOL GetKeyHandle(HKEY *pKey)
 
 
     // One iteration for each entry in the key tree array
-    for (int i = 0; i < (sizeof(keyStrings) / sizeof(char*)); i++)
+    for (int i = 0; i < (sizeof(keyStrings) / sizeof(char *)); i++)
     {
 
         retval = RegOpenKeyEx(parent, keyStrings[i], 0, KEY_ALL_ACCESS, &child);
@@ -79,7 +79,6 @@ BOOL GetKeyHandle(HKEY *pKey)
 
             // We couldn't open the key we wanted, so return failure
             return FALSE;
-
         }
 
         // Use this child as the parent for the next iteration
@@ -90,7 +89,6 @@ BOOL GetKeyHandle(HKEY *pKey)
 
     return TRUE;
 }
-
 
 
 //
@@ -111,8 +109,8 @@ BOOL CreateKeyHandle(HKEY *pKey)
     for (int i = 0; i < (sizeof(keyStrings) >> 2); i++)
     {
 
-        retval = RegCreateKeyEx(parent, keyStrings[i],
-                                0, NULL, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
+        retval = RegCreateKeyEx(parent, keyStrings[i], 0, NULL,
+                                REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL,
                                 &child, &result);
 
         // We're done with the parent, so close it
@@ -124,7 +122,6 @@ BOOL CreateKeyHandle(HKEY *pKey)
 
             // We couldn't open OR create the key we wanted, so return failure
             return FALSE;
-
         }
 
         // Use this child as the parent for the next iteration
@@ -135,7 +132,6 @@ BOOL CreateKeyHandle(HKEY *pKey)
 
     return TRUE;
 }
-
 
 
 //
@@ -164,7 +160,7 @@ BOOL MatchDiskID(char *HDDpath)
 
     if (HDDfilename[strlen(HDDfilename) - 1] != '\\')
     {
-        strcat(HDDfilename, "\\");
+        strcat(HDDfilename, "/");
     }
 
     strcat(HDDfilename, disk_id);
@@ -227,31 +223,31 @@ BOOL MatchDiskID(char *HDDpath)
 //
 // The dialog procedure used to ask the user if they want to install, disable, or cancel
 //
-BOOL CALLBACK DialogProcedure(HWND hwndDlg, UINT uMsg, WPARAM wParam, LPARAM  lParam)
+BOOL CALLBACK DialogProcedure(HWND hwndDlg, UINT uMsg, WPARAM wParam,
+                              LPARAM lParam)
 {
     HWND control;
 
     switch (uMsg)
     {
 
-        case WM_INITDIALOG:
-            control = GetDlgItem(hwndDlg, IDC_PLAY);
+    case WM_INITDIALOG:
+        control = GetDlgItem(hwndDlg, IDC_PLAY);
 
-            if (GamePlayable)
-            {
-                EnableWindow(control, TRUE);
-            }
-            else
-            {
-                EnableWindow(control, FALSE);
-            }
+        if (GamePlayable)
+        {
+            EnableWindow(control, TRUE);
+        }
+        else
+        {
+            EnableWindow(control, FALSE);
+        }
 
-            return 1;
+        return 1;
 
-        case WM_COMMAND:
-            EndDialog(hwndDlg, wParam);
-            return 1;
-
+    case WM_COMMAND:
+        EndDialog(hwndDlg, wParam);
+        return 1;
     }
 
     return 0;
@@ -275,7 +271,8 @@ BOOL Validate()
 
         // We got the key handle, so now get the key value
         targetDirLen = sizeof(TargetDir);
-        retval = RegQueryValueEx(key, dirString, NULL, NULL, (unsigned char*)TargetDir, &targetDirLen);
+        retval = RegQueryValueEx(key, dirString, NULL, NULL,
+                                 (unsigned char *)TargetDir, &targetDirLen);
 
         if (retval == ERROR_SUCCESS)
         {
@@ -308,7 +305,7 @@ BOOL Install()
 
     if (fullPath[strlen(fullPath) - 1] != '\\')
     {
-        strcat(fullPath, "\\");
+        strcat(fullPath, "/");
     }
 
     strcat(fullPath, installer);
@@ -318,14 +315,14 @@ BOOL Install()
     GetStartupInfo(&startInfo);
 
     // Run the installer program
-    if (!CreateProcess(NULL, fullPath, NULL, NULL, FALSE, 0, NULL, NULL, &startInfo, &procInfo))
+    if (!CreateProcess(NULL, fullPath, NULL, NULL, FALSE, 0, NULL, NULL,
+                       &startInfo, &procInfo))
     {
 
         char string[256];
         PutErrorString(string);
         MessageBox(NULL, string, "Error Launching the Installer", MB_OK);
         return FALSE;
-
     }
 
     // Wait for the installer to finish
@@ -335,7 +332,6 @@ BOOL Install()
 
     return TRUE;
 }
-
 
 
 //
@@ -359,7 +355,7 @@ BOOL Play()
 
     if (TargetDir[strlen(TargetDir) - 1] != '\\')
     {
-        strcat(fullPath, "\\");
+        strcat(fullPath, "/");
     }
 
     strcat(fullPath, executable);
@@ -368,14 +364,14 @@ BOOL Play()
     GetStartupInfo(&startInfo);
 
     // Run the installer program
-    if (!CreateProcess(NULL, fullPath, NULL, NULL, FALSE, 0, NULL, NULL, &startInfo, &procInfo))
+    if (!CreateProcess(NULL, fullPath, NULL, NULL, FALSE, 0, NULL, NULL,
+                       &startInfo, &procInfo))
     {
 
         char string[256];
         PutErrorString(string);
         MessageBox(NULL, string, "Error Launching the Game", MB_OK);
         return FALSE;
-
     }
 
     // We're done!
@@ -383,11 +379,10 @@ BOOL Play()
 }
 
 
-
 //
 // Callback function to handel each window we are told about
 //
-BOOL CALLBACK EnumWindowsProc(HWND win, BOOL* found)
+BOOL CALLBACK EnumWindowsProc(HWND win, BOOL *found)
 {
     char title[256];
 
@@ -441,7 +436,10 @@ BOOL EnsureExclusion(void)
 
     if (!exclusionAtom)
     {
-        MessageBox(NULL, "We had trouble ensuring that only one copy of the autoloader was running", "Error", MB_OK);
+        MessageBox(NULL,
+                   "We had trouble ensuring that only one copy of the "
+                   "autoloader was running",
+                   "Error", MB_OK);
     }
 
     return TRUE;
@@ -459,12 +457,12 @@ void ReleaseExclusion(void)
 }
 
 
-
 /*
  * Main auto play routine.  Checks registry and disk id versions to decide if we should
  * launch the game or run the installer.
  */
-int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdshow)
+int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline,
+                   int cmdshow)
 {
     int done;
     int retval;
@@ -487,7 +485,8 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
 
         // Put up a three choice dialog box:  Play, Setup, Cancel
-        retval = DialogBox(this_inst, MAKEINTRESOURCE(IDD_INSTALL_OPTIONS), NULL, (DLGPROC)DialogProcedure);
+        retval = DialogBox(this_inst, MAKEINTRESOURCE(IDD_INSTALL_OPTIONS),
+                           NULL, (DLGPROC)DialogProcedure);
 
         if (retval == -1)
         {
@@ -499,24 +498,24 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
         switch (retval)
         {
 
-            case IDC_PLAY:
-                if (Play()) done = 3;
+        case IDC_PLAY:
+            if (Play())
+                done = 3;
 
-                break;
+            break;
 
-            case IDC_SETUP:
-                if (Install()) done = 4;
+        case IDC_SETUP:
+            if (Install())
+                done = 4;
 
-                break;
+            break;
 
-            case IDCANCEL:
-                done = 5;
-                break;
-
+        case IDCANCEL:
+            done = 5;
+            break;
         }
 
-    }
-    while (!done);
+    } while (!done);
 
 
     // Release our lock to allow a future instance of autoloader to run
@@ -525,4 +524,3 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
     return done;
 }
-

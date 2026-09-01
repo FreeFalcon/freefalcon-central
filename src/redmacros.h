@@ -24,7 +24,8 @@ inline D3DXVECTOR3 RED_NormalizeVector(D3DXVECTOR3 *V)
 
     if (Norm)
         R.x = V->x / Norm, R.y = V->y / Norm, R.z = V->z / Norm;
-    else R.x = R.y = R.z = 0;
+    else
+        R.x = R.y = R.z = 0;
 
     return R;
 }

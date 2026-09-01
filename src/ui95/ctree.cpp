@@ -22,24 +22,15 @@ enum
     CTL_ADDWORDWRAPITEM,
 };
 
-char *C_Tl_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[XOFFSET]",
-    "[YOFFSET]",
-    "[IMAGES]",
-    "[SORTBY]",
-    "[ADDTEXTITEM]",
-    "[ADDBITMAPITEM]",
-    "[ADDHELPITEM]",
-    "[HELPITEMIMAGE]",
-    "[HELPITEMTEXT]",
-    "[HELPITEMFONT]",
-    "[HELPITEMFLAGON]",
-    "[HELPITEMFLAGOFF]",
-    "[ADDWORDWRAPITEM]",
-    0,
+char *C_Tl_Tokens[] = {
+    "[NOTHING]",         "[SETUP]",
+    "[XOFFSET]",         "[YOFFSET]",
+    "[IMAGES]",          "[SORTBY]",
+    "[ADDTEXTITEM]",     "[ADDBITMAPITEM]",
+    "[ADDHELPITEM]",     "[HELPITEMIMAGE]",
+    "[HELPITEMTEXT]",    "[HELPITEMFONT]",
+    "[HELPITEMFLAGON]",  "[HELPITEMFLAGOFF]",
+    "[ADDWORDWRAPITEM]", 0,
 };
 
 #endif
@@ -64,7 +55,8 @@ C_TreeList::C_TreeList() : C_Control()
     SearchCB_ = NULL;
     SortCB_ = NULL;
     SortType_ = TREE_SORT_BY_ID;
-    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor
+                    C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_TreeList::C_TreeList(char **stream) : C_Control(stream)
@@ -83,7 +75,7 @@ C_TreeList::~C_TreeList()
 
 long C_TreeList::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_TreeList::Setup(long ID, short Type)
@@ -110,7 +102,7 @@ void C_TreeList::DeleteBranch(TREELIST *top)
     if (top == NULL)
         return;
 
-    F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
+    F4CSECTIONHANDLE *Leave = UI_Enter(Parent_);
 
     if (top == Root_)
         Root_ = NULL;
@@ -195,7 +187,7 @@ void C_TreeList::DeleteItem(long ID)
 
 void C_TreeList::DeleteItem(TREELIST *item)
 {
-    if ( not item)
+    if (not item)
     {
         return;
     }
@@ -256,9 +248,11 @@ void C_TreeList::DeleteItem(TREELIST *item)
 
 #else
 
-    if ( not F4IsBadReadPtr(item->Parent, sizeof(TREELIST)) and // JB 010317 CTD
- not F4IsBadReadPtr(item->Parent->Child, sizeof(TREELIST)) and // M.N. 011209 CTD
-        (item->Parent) and (item->Parent->Child == item))
+    if (not F4IsBadReadPtr(item->Parent, sizeof(TREELIST)) and // JB 010317 CTD
+        not F4IsBadReadPtr(item->Parent->Child,
+                           sizeof(TREELIST)) and // M.N. 011209 CTD
+        (item->Parent) and
+        (item->Parent->Child == item))
     {
         item->Parent->Child = item->Next;
     }
@@ -300,12 +294,12 @@ TREELIST *C_TreeList::CreateItem(long NewID, long ItemType, C_Base *Item)
     TREELIST *NewItem;
 
     if (Item == NULL)
-        return(NULL);
+        return (NULL);
 
     NewItem = new TREELIST;
 
     if (NewItem == NULL)
-        return(NULL);
+        return (NULL);
 
     NewItem->ID_ = NewID;
     NewItem->Type_ = ItemType;
@@ -320,7 +314,7 @@ TREELIST *C_TreeList::CreateItem(long NewID, long ItemType, C_Base *Item)
     NewItem->Prev = NULL;
     NewItem->Parent = NULL;
     NewItem->Child = NULL;
-    return(NewItem);
+    return (NewItem);
 }
 
 void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
@@ -357,7 +351,8 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
 
                 current->Prev = NewItem;
             }
-            else if (NewItem->Type_ == current->Type_ and NewItem->ID_ < current->ID_)
+            else if (NewItem->Type_ == current->Type_ and
+                     NewItem->ID_ < current->ID_)
             {
                 // Insert before
                 if (current->Parent and current->Parent->Child == current)
@@ -393,7 +388,8 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
         }
         else if (SortType_ == TREE_SORT_BY_ITEM_ID)
         {
-            while (current->Next and current->Item_->GetID() <= NewItem->Item_->GetID())
+            while (current->Next and
+                   current->Item_->GetID() <= NewItem->Item_->GetID())
                 current = current->Next;
 
             if (NewItem->Type_ < current->Type_)
@@ -414,7 +410,8 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
 
                 current->Prev = NewItem;
             }
-            else if (NewItem->Type_ == current->Type_ and NewItem->Item_->GetID() < current->Item_->GetID())
+            else if (NewItem->Type_ == current->Type_ and
+                     NewItem->Item_->GetID() < current->Item_->GetID())
             {
                 // Insert before
                 if (current->Parent and current->Parent->Child == current)
@@ -450,10 +447,12 @@ void C_TreeList::Add(TREELIST *current, TREELIST *NewItem)
         }
         else if (SortType_ == TREE_SORT_CALLBACK and SortCB_)
         {
-            while (current->Next and not (*SortCB_)(current, NewItem))
+            while (current->Next and not(*SortCB_)(current, NewItem))
                 current = current->Next;
 
-            if ((NewItem->Type_ < current->Type_) or (NewItem->Type_ == current->Type_ and (*SortCB_)(current, NewItem)))
+            if ((NewItem->Type_ < current->Type_) or
+                (NewItem->Type_ == current->Type_ and
+                 (*SortCB_)(current, NewItem)))
             {
                 // Insert before
                 if (current->Parent and current->Parent->Child == current)
@@ -513,52 +512,52 @@ void C_TreeList::AddChild(TREELIST *par, TREELIST *NewItem)
 BOOL C_TreeList::AddChildItem(TREELIST *par, TREELIST *NewItem)
 {
     if (par == NULL or Root_ == NULL or NewItem == NULL)
-        return(FALSE);
+        return (FALSE);
 
     if (Hash_->Find(NewItem->ID_))
-        return(FALSE);
+        return (FALSE);
 
-    if (par->Type_ ==  C_TYPE_INFO) // No SUB items can be attached to this type
-        return(FALSE);
+    if (par->Type_ == C_TYPE_INFO) // No SUB items can be attached to this type
+        return (FALSE);
 
-    if ( not NewItem->Item_->GetCursorID())
+    if (not NewItem->Item_->GetCursorID())
         NewItem->Item_->SetCursorID(GetCursorID());
 
-    if ( not NewItem->Item_->GetDragCursorID())
+    if (not NewItem->Item_->GetDragCursorID())
         NewItem->Item_->SetDragCursorID(GetDragCursorID());
 
-    F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
+    F4CSECTIONHANDLE *Leave = UI_Enter(Parent_);
 
     if (NewItem->Type_ not_eq C_TYPE_INFO)
         Hash_->Add(NewItem->ID_, NewItem);
 
     AddChild(par, NewItem);
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_TreeList::AddItem(TREELIST *current, TREELIST *NewItem)
 {
-    if (( not current and Root_) or not NewItem or not NewItem->Item_)
-        return(FALSE);
+    if ((not current and Root_) or not NewItem or not NewItem->Item_)
+        return (FALSE);
 
     if (Hash_->Find(NewItem->ID_))
-        return(FALSE);
+        return (FALSE);
 
-    if ( not NewItem->Item_->GetCursorID())
+    if (not NewItem->Item_->GetCursorID())
         NewItem->Item_->SetCursorID(GetCursorID());
 
-    if ( not NewItem->Item_->GetDragCursorID())
+    if (not NewItem->Item_->GetDragCursorID())
         NewItem->Item_->SetDragCursorID(GetDragCursorID());
 
-    F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
+    F4CSECTIONHANDLE *Leave = UI_Enter(Parent_);
     Add(current, NewItem);
 
     if (NewItem->Type_ not_eq C_TYPE_INFO)
         Hash_->Add(NewItem->ID_, NewItem);
 
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_TreeList::MoveChildItem(TREELIST *Parent, TREELIST *item)
@@ -595,8 +594,8 @@ void C_TreeList::MoveChildItem(TREELIST *Parent, TREELIST *item)
 
 BOOL C_TreeList::ChangeItemID(TREELIST *item, long NewID)
 {
-    if ( not item or Find(NewID))
-        return(FALSE);
+    if (not item or Find(NewID))
+        return (FALSE);
 
     if (item->Type_ not_eq C_TYPE_INFO)
     {
@@ -607,12 +606,12 @@ BOOL C_TreeList::ChangeItemID(TREELIST *item, long NewID)
     else
         item->ID_ = NewID;
 
-    return(TRUE);
+    return (TRUE);
 }
 
 TREELIST *C_TreeList::Find(long cID)
 {
-    return((TREELIST *)Hash_->Find(cID));
+    return ((TREELIST *)Hash_->Find(cID));
 }
 
 TREELIST *C_TreeList::FindOpen(long cID)
@@ -627,16 +626,16 @@ TREELIST *C_TreeList::FindOpen(long cID)
 
         while (cur->Parent)
         {
-            if ( not cur->Parent->state_)
-                return(NULL);
+            if (not cur->Parent->state_)
+                return (NULL);
 
             cur = cur->Parent;
         }
 
-        return(item);
+        return (item);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 TREELIST *C_TreeList::FindItemWithCB(TREELIST *me)
@@ -647,40 +646,40 @@ TREELIST *C_TreeList::FindItemWithCB(TREELIST *me)
         me = Root_;
 
     if (me == NULL)
-        return(NULL);
+        return (NULL);
 
     if ((*SearchCB_)(me))
-        return(me);
+        return (me);
 
     if (me->Child)
     {
         tmp = FindItemWithCB(me->Child);
 
         if (tmp)
-            return(tmp);
+            return (tmp);
     }
 
     if (me->Next)
-        return(FindItemWithCB(me->Next));
+        return (FindItemWithCB(me->Next));
 
-    return(NULL);
+    return (NULL);
 }
 
 
 TREELIST *C_TreeList::GetNextBranch(TREELIST *me)
 {
     if (me)
-        return(me->Next);
+        return (me->Next);
 
-    return(NULL);
+    return (NULL);
 }
 
 TREELIST *C_TreeList::GetChild(TREELIST *me)
 {
     if (me)
-        return(me->Child);
+        return (me->Child);
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_TreeList::SetItemState(long ItemID, short newstate)
@@ -741,9 +740,9 @@ void C_TreeList::SetAllControlStates(short newstate, TREELIST *me)
 long C_TreeList::GetMenu()
 {
     if (LastFound_ and LastFound_->Item_ and LastFound_->Item_->GetMenu())
-        return(LastFound_->Item_->GetMenu());
+        return (LastFound_->Item_->GetMenu());
 
-    return(C_Control::GetMenu());
+    return (C_Control::GetMenu());
 }
 
 void C_TreeList::ClearAllStates(long Mask)
@@ -766,7 +765,8 @@ void C_TreeList::RemoveOldBranch(long UserSlot, long Age, TREELIST *me)
         {
             if (me->Item_)
             {
-                if (me->Item_->GetUserNumber(UserSlot) and me->Item_->GetUserNumber(UserSlot) not_eq Age)
+                if (me->Item_->GetUserNumber(UserSlot) and
+                    me->Item_->GetUserNumber(UserSlot) not_eq Age)
                 {
                     DeleteItem(me);
                 }
@@ -781,7 +781,8 @@ void C_TreeList::RemoveOldBranch(long UserSlot, long Age, TREELIST *me)
         {
             if (me->Item_)
             {
-                if ((me->Item_->GetUserNumber(UserSlot)) and (me->Item_->GetUserNumber(UserSlot) < Age))
+                if ((me->Item_->GetUserNumber(UserSlot)) and
+                    (me->Item_->GetUserNumber(UserSlot) < Age))
                 {
                     DeleteItem(me);
                 }
@@ -807,13 +808,13 @@ BOOL C_TreeList::FindVisible(TREELIST *top)
 
     while (item)
     {
-        if ( not (item->Item_->GetFlags() bitand C_BIT_INVISIBLE))
-            return(TRUE);
+        if (not(item->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+            return (TRUE);
 
         item = item->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 long C_TreeList::CalculateTreePositions(TREELIST *top, long offx, long offy)
@@ -825,7 +826,8 @@ long C_TreeList::CalculateTreePositions(TREELIST *top, long offx, long offy)
 
     while (current)
     {
-        if (current->Item_ and not (current->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+        if (current->Item_ and
+            not(current->Item_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             current->x_ = offx;
             current->y_ = offy;
@@ -843,13 +845,14 @@ long C_TreeList::CalculateTreePositions(TREELIST *top, long offx, long offy)
                 treew_ = width;
 
             if (current->state_ and current->Child)
-                offy = CalculateTreePositions(current->Child, offx + xoffset_, offy);
+                offy = CalculateTreePositions(current->Child, offx + xoffset_,
+                                              offy);
         }
 
         current = current->Next;
     }
 
-    return(offy);
+    return (offy);
 }
 
 TREELIST *C_TreeList::CheckBranch(TREELIST *me, long mx, long my)
@@ -860,22 +863,24 @@ TREELIST *C_TreeList::CheckBranch(TREELIST *me, long mx, long my)
 
     while (cur)
     {
-        if (cur->Item_ and not (cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+        if (cur->Item_ and not(cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             if (cur->Child and ChildImage_[0] and FindVisible(cur->Child))
             {
-                if (mx >= (cur->x_ + 2) and mx <= (cur->x_ + (ChildImage_[0]->Header->w)) and 
-                    my >= (cur->y_ + 2) and my <= (cur->y_ + ChildImage_[0]->Header->h))
+                if (mx >= (cur->x_ + 2) and
+                    mx <= (cur->x_ + (ChildImage_[0]->Header->w)) and
+                    my >= (cur->y_ + 2) and
+                    my <= (cur->y_ + ChildImage_[0]->Header->h))
                 {
                     CheckFlag_ = C_TYPE_MENU;
-                    return(cur);
+                    return (cur);
                 }
             }
 
             if (cur->Item_->CheckHotSpots(mx, my))
             {
                 CheckFlag_ = C_TYPE_ITEM;
-                return(cur);
+                return (cur);
             }
 
             if (cur->state_ and cur->Child)
@@ -883,21 +888,22 @@ TREELIST *C_TreeList::CheckBranch(TREELIST *me, long mx, long my)
                 tmp = CheckBranch(cur->Child, mx, my);
 
                 if (tmp)
-                    return(tmp);
+                    return (tmp);
             }
         }
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_TreeList::RecalcSize()
 {
     F4CSECTIONHANDLE *Leave;
 
-    if ( not Ready()) return;
+    if (not Ready())
+        return;
 
     if (Parent_)
     {
@@ -918,8 +924,9 @@ long C_TreeList::CheckHotSpots(long relX, long relY)
 {
     TREELIST *cur;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED))
+        return (0);
 
     CheckFlag_ = C_BIT_NOTHING; // (0)
     cur = CheckBranch(Root_, relX, relY);
@@ -927,7 +934,7 @@ long C_TreeList::CheckHotSpots(long relX, long relY)
     if (cur == NULL)
     {
         LastFound_ = NULL;
-        return(0);
+        return (0);
     }
 
     if (LastFound_ not_eq cur)
@@ -937,7 +944,7 @@ long C_TreeList::CheckHotSpots(long relX, long relY)
 
     LastFound_ = cur;
     SetRelXY(relX - GetX(), relY - GetY());
-    return(GetID());
+    return (GetID());
 }
 
 void C_TreeList::Activate()
@@ -968,97 +975,104 @@ C_Base *C_TreeList::GetMe()
     if (MouseFound_)
     {
         if (CheckFlag_ == C_TYPE_MENU)
-            return(this);
+            return (this);
 
-        return(MouseFound_->Item_);
+        return (MouseFound_->Item_);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
-BOOL C_TreeList::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount)
+BOOL C_TreeList::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii,
+                               unsigned char ShiftStates, long RepeatCount)
 {
     if (LastFound_ and LastFound_->Item_)
-        return(LastFound_->Item_->CheckKeyboard(DKScanCode, Ascii, ShiftStates, RepeatCount));
+        return (LastFound_->Item_->CheckKeyboard(DKScanCode, Ascii, ShiftStates,
+                                                 RepeatCount));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_TreeList::Process(long cID, short HitType)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED))
+        return (0);
 
-    if (CheckFlag_ == C_BIT_NOTHING) return(FALSE); // CheckFlag is the segment of the button pressed (0=Nothing)
+    if (CheckFlag_ == C_BIT_NOTHING)
+        return (
+            FALSE); // CheckFlag is the segment of the button pressed (0=Nothing)
 
     gSoundMgr->PlaySound(GetSound(HitType));
 
     switch (HitType)
     {
-        case C_TYPE_LMOUSEDOWN:
-            switch (CheckFlag_)
+    case C_TYPE_LMOUSEDOWN:
+        switch (CheckFlag_)
+        {
+        case C_TYPE_MENU:
+            if (LastFound_)
             {
-                case C_TYPE_MENU:
-                    if (LastFound_)
-                    {
-                        Refresh();
-                        ToggleItemState(LastFound_);
+                Refresh();
+                ToggleItemState(LastFound_);
 
-                        if (Callback_)
-                            (*Callback_)(GetID(), HitType, this);
+                if (Callback_)
+                    (*Callback_)(GetID(), HitType, this);
 
-                        RecalcSize();
+                RecalcSize();
 
-                        Refresh();
-                    }
-
-                    break;
-
-                case C_TYPE_ITEM:
-                    if (LastFound_)
-                    {
-                        LastFound_->Item_->Process(cID, HitType);
-
-                        if (Callback_)
-                            (*Callback_)(cID, HitType, this);
-                    }
-
-                    break;
+                Refresh();
             }
 
             break;
 
-        case C_TYPE_LMOUSEUP:
-        case C_TYPE_LMOUSEDBLCLK:
-            switch (CheckFlag_)
+        case C_TYPE_ITEM:
+            if (LastFound_)
             {
-                case C_TYPE_ITEM:
-                    if (LastFound_)
-                    {
-                        LastFound_->Item_->Process(cID, HitType);
+                LastFound_->Item_->Process(cID, HitType);
 
-                        if (Callback_)
-                            (*Callback_)(cID, HitType, this);
-                    }
-
-                    break;
+                if (Callback_)
+                    (*Callback_)(cID, HitType, this);
             }
 
             break;
+        }
+
+        break;
+
+    case C_TYPE_LMOUSEUP:
+    case C_TYPE_LMOUSEDBLCLK:
+        switch (CheckFlag_)
+        {
+        case C_TYPE_ITEM:
+            if (LastFound_)
+            {
+                LastFound_->Item_->Process(cID, HitType);
+
+                if (Callback_)
+                    (*Callback_)(cID, HitType, this);
+            }
+
+            break;
+        }
+
+        break;
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_TreeList::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1,
+                           GetY() + GetH() + 1, GetFlags(), GetClient());
 }
 
-void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *cliprect)
+void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch,
+                            UI95_RECT *cliprect)
 {
     TREELIST *current;
     UI95_RECT src, dest;
@@ -1068,9 +1082,12 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
 
     while (current)
     {
-        if (current->Item_ and not (current->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+        if (current->Item_ and
+            not(current->Item_->GetFlags() bitand C_BIT_INVISIBLE))
         {
-            if (Parent_->InsideClientHeight(current->y_ - current->Item_->GetH(), current->y_ + current->Item_->GetH(), GetClient()))
+            if (Parent_->InsideClientHeight(
+                    current->y_ - current->Item_->GetH(),
+                    current->y_ + current->Item_->GetH(), GetClient()))
             {
                 if (current->Type_ not_eq C_TYPE_INFO)
                 {
@@ -1081,12 +1098,15 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
                             src.left = 0;
                             src.top = 0;
                             src.right = ChildImage_[current->state_]->Header->w;
-                            src.bottom = ChildImage_[current->state_]->Header->h;
+                            src.bottom =
+                                ChildImage_[current->state_]->Header->h;
 
                             dest.left = current->x_ + 2;
 
                             if (Flags_ bitand C_BIT_VCENTER)
-                                dest.top = current->y_ + current->Item_->GetH() / 2 - (src.bottom - src.top) / 2;
+                                dest.top = current->y_ +
+                                           current->Item_->GetH() / 2 -
+                                           (src.bottom - src.top) / 2;
                             else
                                 dest.top = current->y_ + 2;
 
@@ -1097,7 +1117,8 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
 
                             if (GetFlags() bitand C_BIT_ABSOLUTE)
                             {
-                                if ( not Parent_->ClipToArea(&src, &dest, &Parent_->Area_))
+                                if (not Parent_->ClipToArea(&src, &dest,
+                                                            &Parent_->Area_))
                                     doit = FALSE;
                             }
                             else
@@ -1107,11 +1128,13 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
                                 dest.right += Parent_->VX_[GetClient()];
                                 dest.bottom += Parent_->VY_[GetClient()];
 
-                                if ( not Parent_->ClipToArea(&src, &dest, &Parent_->ClientArea_[GetClient()]))
+                                if (not Parent_->ClipToArea(
+                                        &src, &dest,
+                                        &Parent_->ClientArea_[GetClient()]))
                                     doit = FALSE;
                             }
 
-                            if ( not Parent_->ClipToArea(&src, &dest, cliprect))
+                            if (not Parent_->ClipToArea(&src, &dest, cliprect))
                                 doit = FALSE;
 
                             if (doit)
@@ -1121,8 +1144,10 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
                                 dest.right += Parent_->GetX();
                                 dest.bottom += Parent_->GetY();
 
-                                ChildImage_[current->state_]->Blit(surface, src.left, src.top, src.right - src.left, src.bottom - src.top,
-                                                                   dest.left, dest.top);
+                                ChildImage_[current->state_]->Blit(
+                                    surface, src.left, src.top,
+                                    src.right - src.left, src.bottom - src.top,
+                                    dest.left, dest.top);
                             }
                         }
                     }
@@ -1146,7 +1171,7 @@ void C_TreeList::DrawBranch(SCREEN *surface, TREELIST *branch, UI95_RECT *clipre
 
 void C_TreeList::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready())
+    if (not Ready())
         return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
@@ -1164,7 +1189,7 @@ void C_TreeList::HighLite(SCREEN *surface, UI95_RECT *cliprect)
         clip.left = MouseFound_->x_ + 2;
         clip.top = MouseFound_->y_ + 2;
 
-        if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+        if (not(Flags_ bitand C_BIT_ABSOLUTE))
         {
             clip.left += Parent_->VX_[Client_];
             clip.top += Parent_->VY_[Client_];
@@ -1173,21 +1198,24 @@ void C_TreeList::HighLite(SCREEN *surface, UI95_RECT *cliprect)
         clip.right = clip.left + ChildImage_[0]->Header->w;
         clip.bottom = clip.top + ChildImage_[0]->Header->h;
 
-        if ( not Parent_->ClipToArea(&tmp, &clip, cliprect))
+        if (not Parent_->ClipToArea(&tmp, &clip, cliprect))
             return;
 
-        if ( not (Flags_ bitand C_BIT_ABSOLUTE))
-            if ( not Parent_->ClipToArea(&tmp, &clip, &Parent_->ClientArea_[Client_]))
+        if (not(Flags_ bitand C_BIT_ABSOLUTE))
+            if (not Parent_->ClipToArea(&tmp, &clip,
+                                        &Parent_->ClientArea_[Client_]))
                 return;
 
-        Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_, &clip, C_BIT_ABSOLUTE, 0);
+        Parent_->BlitTranslucent(surface, MouseOverColor_, MouseOverPercent_,
+                                 &clip, C_BIT_ABSOLUTE, 0);
     }
 }
 
 BOOL C_TreeList::MouseOver(long relx, long rely, C_Base *me)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED))
+        return (FALSE);
 
     CheckFlag_ = C_BIT_NOTHING; // (0)
     MouseFound_ = CheckBranch(Root_, relx, rely);
@@ -1195,13 +1223,13 @@ BOOL C_TreeList::MouseOver(long relx, long rely, C_Base *me)
     if (MouseFound_)
     {
         if (CheckFlag_ == C_TYPE_MENU)
-            return(TRUE);
+            return (TRUE);
         else if (MouseFound_->Item_)
-            return(MouseFound_->Item_->MouseOver(relx, rely, me));
+            return (MouseFound_->Item_->MouseOver(relx, rely, me));
     }
 
     MouseFound_ = NULL;
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_TreeList::SetControlParents(TREELIST *me)
@@ -1254,7 +1282,7 @@ void C_TreeList::ReorderBranch(TREELIST *branch)
 {
     TREELIST *cur, *top, *limb;
 
-    if ( not branch)
+    if (not branch)
         return;
 
     cur = branch;
@@ -1291,7 +1319,8 @@ void C_TreeList::ReorderBranch(TREELIST *branch)
     }
 }
 
-void C_TreeList::AddTextItem(long ID, long Type, long ParentID, long TextID, long color)
+void C_TreeList::AddTextItem(long ID, long Type, long ParentID, long TextID,
+                             long color)
 {
     C_Text *txt;
     TREELIST *item;
@@ -1308,7 +1337,7 @@ void C_TreeList::AddTextItem(long ID, long Type, long ParentID, long TextID, lon
     {
         if (ParentID)
         {
-            if ( not AddChildItem(Find(ParentID), item))
+            if (not AddChildItem(Find(ParentID), item))
             {
                 txt->Cleanup();
                 delete txt;
@@ -1317,7 +1346,7 @@ void C_TreeList::AddTextItem(long ID, long Type, long ParentID, long TextID, lon
         }
         else
         {
-            if ( not AddItem(Root_, item))
+            if (not AddItem(Root_, item))
             {
                 txt->Cleanup();
                 delete txt;
@@ -1332,7 +1361,8 @@ void C_TreeList::AddTextItem(long ID, long Type, long ParentID, long TextID, lon
     }
 }
 
-void C_TreeList::AddTextItem(long ID, long Type, long ParentID, char *Text, long color)
+void C_TreeList::AddTextItem(long ID, long Type, long ParentID, char *Text,
+                             long color)
 {
     C_Text *txt;
     TREELIST *item;
@@ -1349,7 +1379,7 @@ void C_TreeList::AddTextItem(long ID, long Type, long ParentID, char *Text, long
     {
         if (ParentID)
         {
-            if ( not AddChildItem(Find(ParentID), item))
+            if (not AddChildItem(Find(ParentID), item))
             {
                 txt->Cleanup();
                 delete txt;
@@ -1358,7 +1388,7 @@ void C_TreeList::AddTextItem(long ID, long Type, long ParentID, char *Text, long
         }
         else
         {
-            if ( not AddItem(Root_, item))
+            if (not AddItem(Root_, item))
             {
                 txt->Cleanup();
                 delete txt;
@@ -1373,7 +1403,8 @@ void C_TreeList::AddTextItem(long ID, long Type, long ParentID, char *Text, long
     }
 }
 
-void C_TreeList::AddWordWrapItem(long ID, long Type, long ParentID, long TextID, long w, long color)
+void C_TreeList::AddWordWrapItem(long ID, long Type, long ParentID, long TextID,
+                                 long w, long color)
 {
     C_Text *txt;
     TREELIST *item;
@@ -1392,7 +1423,7 @@ void C_TreeList::AddWordWrapItem(long ID, long Type, long ParentID, long TextID,
     {
         if (ParentID)
         {
-            if ( not AddChildItem(Find(ParentID), item))
+            if (not AddChildItem(Find(ParentID), item))
             {
                 txt->Cleanup();
                 delete txt;
@@ -1401,7 +1432,7 @@ void C_TreeList::AddWordWrapItem(long ID, long Type, long ParentID, long TextID,
         }
         else
         {
-            if ( not AddItem(Root_, item))
+            if (not AddItem(Root_, item))
             {
                 txt->Cleanup();
                 delete item;
@@ -1430,7 +1461,7 @@ void C_TreeList::AddBitmapItem(long ID, long Type, long ParentID, long ImageID)
     {
         if (ParentID)
         {
-            if ( not AddChildItem(Find(ParentID), item))
+            if (not AddChildItem(Find(ParentID), item))
             {
                 bmp->Cleanup();
                 delete bmp;
@@ -1439,7 +1470,7 @@ void C_TreeList::AddBitmapItem(long ID, long Type, long ParentID, long ImageID)
         }
         else
         {
-            if ( not AddItem(Root_, item))
+            if (not AddItem(Root_, item))
             {
                 bmp->Cleanup();
                 delete bmp;
@@ -1468,7 +1499,7 @@ void C_TreeList::AddHelpItem(long ID, long Type, long ParentID)
     {
         if (ParentID)
         {
-            if ( not AddChildItem(Find(ParentID), item))
+            if (not AddChildItem(Find(ParentID), item))
             {
                 hlp->Cleanup();
                 delete hlp;
@@ -1477,7 +1508,7 @@ void C_TreeList::AddHelpItem(long ID, long Type, long ParentID)
         }
         else
         {
-            if ( not AddItem(Root_, item))
+            if (not AddItem(Root_, item))
             {
                 hlp->Cleanup();
                 delete hlp;
@@ -1502,12 +1533,13 @@ void C_TreeList::SetHelpItemImage(long ID, long ImageID, long x, long y)
     {
         if (item->Item_->_GetCType_() == _CNTL_HELP_)
         {
-            ((C_Help*)item->Item_)->SetImage(x, y, ImageID);
+            ((C_Help *)item->Item_)->SetImage(x, y, ImageID);
         }
     }
 }
 
-void C_TreeList::SetHelpItemText(long ID, long TextID, long x, long y, long w, long color)
+void C_TreeList::SetHelpItemText(long ID, long TextID, long x, long y, long w,
+                                 long color)
 {
     TREELIST *item;
 
@@ -1517,8 +1549,8 @@ void C_TreeList::SetHelpItemText(long ID, long TextID, long x, long y, long w, l
     {
         if (item->Item_->_GetCType_() == _CNTL_HELP_)
         {
-            ((C_Help*)item->Item_)->SetText(x, y, w, TextID);
-            ((C_Help*)item->Item_)->SetFgColor(color);
+            ((C_Help *)item->Item_)->SetText(x, y, w, TextID);
+            ((C_Help *)item->Item_)->SetFgColor(color);
         }
     }
 }
@@ -1576,73 +1608,76 @@ short C_TreeList::LocalFind(char *token)
     while (C_Tl_Tokens[i])
     {
         if (strnicmp(token, C_Tl_Tokens[i], strlen(C_Tl_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_TreeList::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CTL_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CTL_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CTL_SETXOFFSET:
-            SetXOffset((long)P[0]);
-            break;
+    case CTL_SETXOFFSET:
+        SetXOffset((long)P[0]);
+        break;
 
-        case CTL_SETYOFFSET:
-            SetMinYOffset((long)P[0]);
-            break;
+    case CTL_SETYOFFSET:
+        SetMinYOffset((long)P[0]);
+        break;
 
-        case CTL_SETIMAGES:
-            SetImages(P[0], P[1], P[2]);
-            break;
+    case CTL_SETIMAGES:
+        SetImages(P[0], P[1], P[2]);
+        break;
 
-        case CTL_SETSORT:
-            SetSortType((short)P[0]);
-            break;
+    case CTL_SETSORT:
+        SetSortType((short)P[0]);
+        break;
 
-        case CTL_ADDTEXTITEM:
-            AddTextItem(P[0], P[1], P[2], P[3], P[4] bitor (P[5] << 8) bitor (P[6] << 16));
-            break;
+    case CTL_ADDTEXTITEM:
+        AddTextItem(P[0], P[1], P[2], P[3],
+                    P[4] bitor (P[5] << 8) bitor (P[6] << 16));
+        break;
 
-        case CTL_ADDBITMAPITEM:
-            AddBitmapItem(P[0], P[1], P[2], P[3]);
-            break;
+    case CTL_ADDBITMAPITEM:
+        AddBitmapItem(P[0], P[1], P[2], P[3]);
+        break;
 
-        case CTL_ADDHELPITEM:
-            AddHelpItem(P[0], P[1], P[2]);
-            break;
+    case CTL_ADDHELPITEM:
+        AddHelpItem(P[0], P[1], P[2]);
+        break;
 
-        case CTL_HELPITEMIMAGE:
-            SetHelpItemImage(P[0], P[1], P[2], P[3]);
-            break;
+    case CTL_HELPITEMIMAGE:
+        SetHelpItemImage(P[0], P[1], P[2], P[3]);
+        break;
 
-        case CTL_HELPITEMTEXT:
-            SetHelpItemText(P[0], P[1], P[2], P[3], P[4], P[5] bitor (P[6] << 8) bitor (P[7] << 16));
-            break;
+    case CTL_HELPITEMTEXT:
+        SetHelpItemText(P[0], P[1], P[2], P[3], P[4],
+                        P[5] bitor (P[6] << 8) bitor (P[7] << 16));
+        break;
 
-        case CTL_HELPITEMFONT:
-            SetHelpItemFont(P[0], P[1]);
-            break;
+    case CTL_HELPITEMFONT:
+        SetHelpItemFont(P[0], P[1]);
+        break;
 
-        case CTL_HELPITEMFLAGON:
-            SetHelpFlagOn(P[0], P[1]);
-            break;
+    case CTL_HELPITEMFLAGON:
+        SetHelpFlagOn(P[0], P[1]);
+        break;
 
-        case CTL_HELPITEMFLAGOFF:
-            SetHelpFlagOff(P[0], P[1]);
-            break;
+    case CTL_HELPITEMFLAGOFF:
+        SetHelpFlagOff(P[0], P[1]);
+        break;
 
-        case CTL_ADDWORDWRAPITEM:
-            AddWordWrapItem(P[0], P[1], P[2], P[3], (long)P[4], P[5] bitor (P[6] << 8) bitor (P[7] << 16));
-            break;
+    case CTL_ADDWORDWRAPITEM:
+        AddWordWrapItem(P[0], P[1], P[2], P[3], (long)P[4],
+                        P[5] bitor (P[6] << 8) bitor (P[7] << 16));
+        break;
     }
 }
 

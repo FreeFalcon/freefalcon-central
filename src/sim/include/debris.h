@@ -15,7 +15,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -38,15 +39,17 @@ private:
 
 public:
     //sfr: added rem
-    DebrisClass(VU_BYTE** stream, long *rem);
-    DebrisClass(FILE* filePtr);
+    DebrisClass(VU_BYTE **stream, long *rem);
+    DebrisClass(FILE *filePtr);
     DebrisClass(int type);
     virtual ~DebrisClass();
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
+
 public:
     virtual int SaveSize();
     virtual int Save(VU_BYTE **stream); // returns bytes written
@@ -54,10 +57,10 @@ public:
 
     virtual int Wake(void);
     virtual int Sleep(void);
-    virtual void Init(SimInitDataClass* initData);
+    virtual void Init(SimInitDataClass *initData);
     virtual void Init(void);
     virtual int Exec(void);
-    virtual void Start(vector* pos, vector* rate, float cd);
+    virtual void Start(vector *pos, vector *rate, float cd);
 };
 
 #endif

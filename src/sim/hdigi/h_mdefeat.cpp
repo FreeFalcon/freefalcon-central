@@ -7,8 +7,8 @@
 /*--------------------------*/
 /* last ditch maneuver time */
 /*--------------------------*/
-#define LD_TIME  4.5
-#define MISSILE_LETHAL_CONE    45.0F
+#define LD_TIME 4.5
+#define MISSILE_LETHAL_CONE 45.0F
 
 void HeliBrain::MissileDefeatCheck(void)
 {

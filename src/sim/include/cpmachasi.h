@@ -31,7 +31,6 @@ typedef struct
 } MachAsiInitStr;
 
 
-
 //===========================================================
 // CPMachAsi Class Definition
 //===========================================================
@@ -47,16 +46,15 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
-
     void CalculateDeflection(void);
     void CalculateNeedlePosition(void);
 
 public:
-
     //===========================================================
     // These memebers are used to gather Airframe Generated Data
     //===========================================================
@@ -74,13 +72,20 @@ public:
     // Members needed to draw ASI Needle
     //===========================================================
 
-    float mMinimumDialValue; // (unit: GetKias / 10) Minimum airspeed for this instrument
-    float mMaximumDialValue; // (unit: GetKias / 10) Maximum airspeed for this instrument
-    float mDialStartAngle; // (unit: radians) Angle measured from the positive x axis that intersects the instrument to the angle that intersects the instrument's minimum airspeed.
-    float mDialArcLength; // (unit: radians) Arc measured from mDialStartAngle to the angle that intersects the instruments maximum airspeed.
-    float mDeflection; // (unit: radians) Deflection of ASI needle, Measured from mDialStartAngle
-    float       mEndLength;          // (unit: percentage)                           Percentage of needle length that goes back behind center
-    float       mEndAngle;           // (unit: radians)                              Angle offset for back end of needle. 0 is straight back, PI/2 is straight forward
+    float
+        mMinimumDialValue; // (unit: GetKias / 10) Minimum airspeed for this instrument
+    float
+        mMaximumDialValue; // (unit: GetKias / 10) Maximum airspeed for this instrument
+    float
+        mDialStartAngle; // (unit: radians) Angle measured from the positive x axis that intersects the instrument to the angle that intersects the instrument's minimum airspeed.
+    float
+        mDialArcLength; // (unit: radians) Arc measured from mDialStartAngle to the angle that intersects the instruments maximum airspeed.
+    float
+        mDeflection; // (unit: radians) Deflection of ASI needle, Measured from mDialStartAngle
+    float
+        mEndLength; // (unit: percentage)                           Percentage of needle length that goes back behind center
+    float
+        mEndAngle; // (unit: radians)                              Angle offset for back end of needle. 0 is straight back, PI/2 is straight forward
 
     int mNeedleRadius; // (unit: pixels) Radius measured from instrument center to outermost vertex of the needle triangle.
     int mxNeedlePos1; // (unit: pixels relative to left of screen) x location of outermost needle vertex
@@ -90,14 +95,15 @@ public:
     int mxNeedlePos3; // (unit: pixels relative to left of screen)  x location of leftmost needle vertex, as viewed along the needle
     int myNeedlePos3; // (unit: pixels relative to top of screen)  y location of leftmost needle vertex, as viewed along the needle
 
-    long mColor[2][2]; // [0][?] daytime, [1][?] nvg, [?][0] color0, [?][1] color1
+    long mColor[2]
+               [2]; // [0][?] daytime, [1][?] nvg, [?][0] color0, [?][1] color1
 
     //===========================================================
     // Runtime Member Functions
     //===========================================================
 
     void Exec(void) {};
-    virtual void Exec(SimBaseClass*);
+    virtual void Exec(SimBaseClass *);
     virtual void DisplayDraw(void);
     virtual void HandleEvent(void) {};
 

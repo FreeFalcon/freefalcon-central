@@ -25,7 +25,6 @@ struct StoresStr
 class StoresList
 {
 public:
-
     enum
     {
         _AIR_TO_AIR_ = 0,
@@ -59,10 +58,13 @@ public:
         ListID_ = _ALL_;
         GetType_ = _ALL_;
     }
-    ~StoresList() {}
+    ~StoresList()
+    {
+    }
 
     void Cleanup();
-    STORESLIST *Create(long ID, _TCHAR *Name, long Type, long wgt, long fuel, float df, short stock);
+    STORESLIST *Create(long ID, _TCHAR *Name, long Type, long wgt, long fuel,
+                       float df, short stock);
     void AddHardPoint(long ID, long hp, short count);
     STORESLIST *Find(long ID)
     {
@@ -71,7 +73,7 @@ public:
         if (current)
         {
             if (current->ID == ID)
-                return(current);
+                return (current);
         }
 
         cur = GetFirst(_ALL_);
@@ -79,12 +81,12 @@ public:
         while (cur)
         {
             if (cur->ID == ID)
-                return(cur);
+                return (cur);
 
             cur = GetNext();
         }
 
-        return(NULL);
+        return (NULL);
     }
     void SetHardPoint(long ID, long hp, short value)
     {
@@ -101,17 +103,20 @@ public:
     void Add(STORESLIST *store, STORESLIST **list);
     void Add(STORESLIST *store, long ListID)
     {
-        if (ListID < _ALL_) Add(store, &Stores_[ListID]);
+        if (ListID < _ALL_)
+            Add(store, &Stores_[ListID]);
     }
     void RemoveAll(STORESLIST **list);
     void RemoveAll(long ID)
     {
-        if (ID < _ALL_) RemoveAll(&Stores_[ID]);
+        if (ID < _ALL_)
+            RemoveAll(&Stores_[ID]);
     }
     void Remove(long ID, STORESLIST **top);
     void Remove(long ID, long ListID)
     {
-        if (ListID < _ALL_) Remove(ID, &Stores_[ListID]);
+        if (ListID < _ALL_)
+            Remove(ID, &Stores_[ListID]);
     }
     void Sort(long ID);
     void Sort()
@@ -134,18 +139,18 @@ public:
         {
             current = NULL;
 
-            while ( not current and ListID_ < _ALL_)
+            while (not current and ListID_ < _ALL_)
             {
                 current = Stores_[ListID_];
 
-                if ( not current)
+                if (not current)
                     ListID_++;
             }
         }
         else
             current = Stores_[ListID_];
 
-        return(current);
+        return (current);
     }
     STORESLIST *GetNext()
     {
@@ -154,33 +159,33 @@ public:
             current = current->Next;
 
             if (current)
-                return(current);
+                return (current);
         }
 
         if (GetType_ == _ALL_ and ListID_ < _OTHER_)
         {
             ListID_++;
             current = Stores_[ListID_];
-            return(current);
+            return (current);
         }
 
-        return(NULL);
+        return (NULL);
     }
     STORESLIST *GetAll()
     {
-        return(GetFirst(_ALL_));
+        return (GetFirst(_ALL_));
     }
     STORESLIST *GetAirToAir()
     {
-        return(GetFirst(_AIR_TO_AIR_));
+        return (GetFirst(_AIR_TO_AIR_));
     }
     STORESLIST *GetAirToGround()
     {
-        return(GetFirst(_AIR_TO_GROUND_));
+        return (GetFirst(_AIR_TO_GROUND_));
     }
     STORESLIST *GetOther()
     {
-        return(GetFirst(_OTHER_));
+        return (GetFirst(_OTHER_));
     }
 };
 

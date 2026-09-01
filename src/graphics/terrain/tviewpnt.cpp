@@ -8,19 +8,20 @@
     own instance of this class.
 \***************************************************************************/
 #include <math.h>
-#include "TerrTex.h"
-#include "Edge.h"
+#include "terrtex.h"
+#include "falclib/include/isbad.h" // Artscout - 2026: F4IsBadReadPtr (wild-post guard)
+#include "edge.h"
 #include "ttypes.h"
-#include "TBlkList.h"
-#include "TBlock.h"
-#include "Tmap.h"
-#include "Tviewpnt.h"
+#include "tblklist.h"
+#include "tblock.h"
+#include "tmap.h"
+#include "tviewpnt.h"
 
 extern int g_nLowDetailFactor;
 extern float g_fTexDetailFactor;
 extern bool g_bDisableHighFartiles;
 
-#pragma warning(disable:4706)
+#pragma warning(disable : 4706)
 
 // X North, Y East, Z down
 void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
@@ -28,13 +29,15 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
     ShiAssert(minimumLOD >= 0);
     ShiAssert(maximumLOD >= minimumLOD);
 
-    minLOD  = minimumLOD;
-    maxLOD  = maximumLOD;
-    nLists  = maxLOD + 1; // Wastes extra array entries if minLOD not_eq 0 (compl 50 bytes per)
+    minLOD = minimumLOD;
+    maxLOD = maximumLOD;
+    nLists =
+        maxLOD +
+        1; // Wastes extra array entries if minLOD not_eq 0 (compl 50 bytes per)
 
-    maxRange = new float[(maxLOD + 1) ];
+    maxRange = new float[(maxLOD + 1)];
 
-    if ( not maxRange)
+    if (not maxRange)
     {
         ShiError("Failed memory allocation for viewer's range list");
     }
@@ -43,9 +46,9 @@ void TViewPoint::Setup(int minimumLOD, int maximumLOD, float *fetchRanges)
 
 
     // Allocate memory for the array of block lists
-    blockLists = new TBlockList[ nLists ];
+    blockLists = new TBlockList[nLists];
 
-    if ( not blockLists)
+    if (not blockLists)
     {
         ShiError("Failed memory allocation for viewer's block list");
     }
@@ -102,8 +105,8 @@ void TViewPoint::Cleanup(void)
     DeleteCriticalSection(&cs_update);
 }
 
-extern unsigned long vuxGameTime;
-#include "SIM/INCLUDE/Phyconst.h"
+extern unsigned int vuxGameTime;
+#include "sim/include/phyconst.h"
 
 // Move the viewer and swap blocks as needed (X North, Y East, Z Down)
 void TViewPoint::Update(const Tpoint *position)
@@ -120,9 +123,12 @@ void TViewPoint::Update(const Tpoint *position)
     if (vuxGameTime not_eq prevvuxGameTime)
     {
         float dist =
-            (float)sqrt(((pos.x - position->x) * (pos.x - position->x) + (pos.y - position->y) * (pos.y - position->y)));
-        dist = sqrt(dist * dist + (pos.z - position->z) * (pos.z - position->z));
-        Speed = dist * FT_TO_NM / ((vuxGameTime - prevvuxGameTime) / (3600000.0F));
+            (float)sqrt(((pos.x - position->x) * (pos.x - position->x) +
+                         (pos.y - position->y) * (pos.y - position->y)));
+        dist =
+            sqrt(dist * dist + (pos.z - position->z) * (pos.z - position->z));
+        Speed =
+            dist * FT_TO_NM / ((vuxGameTime - prevvuxGameTime) / (3600000.0F));
         prevvuxGameTime = vuxGameTime;
     }
 
@@ -187,16 +193,16 @@ void TViewPoint::Update(const Tpoint *position)
     }
 
     // Clamp the values to the avialable range of LODs
-    if (lowDetail  < minLOD) 
+    if (lowDetail < minLOD)
         lowDetail = minLOD;
 
-    if (lowDetail  > maxLOD) 
+    if (lowDetail > maxLOD)
         lowDetail = maxLOD;
 
-    if (highDetail > lowDetail) 
+    if (highDetail > lowDetail)
         highDetail = lowDetail;
 
-    if (highDetail < minLOD) 
+    if (highDetail < minLOD)
         highDetail = minLOD;
 
     // Unlock the viewpoint so others can query it
@@ -218,7 +224,8 @@ int TViewPoint::GetTileID(int r, int c)
     EnterCriticalSection(&cs_update);
 
     // See if we have the data we'll need
-    if (blockLists[LOD].RangeFromCenter(r, c) >= blockLists[LOD].GetAvailablePostRange())
+    if (blockLists[LOD].RangeFromCenter(r, c) >=
+        blockLists[LOD].GetAvailablePostRange())
     {
         LeaveCriticalSection(&cs_update);
         return -1;
@@ -247,7 +254,7 @@ BOOL TViewPoint::GetPath(int texID, int type, int offset, TpathFeature *target)
     // Get the requested path feature in tile space
     path = TheTerrTextures.GetPath(static_cast<TextureID>(texID), type, offset);
 
-    if ( not path)
+    if (not path)
     {
         return FALSE;
     }
@@ -275,7 +282,7 @@ BOOL TViewPoint::GetArea(int texID, int type, int offset, TareaFeature *target)
     // Get the requested area feature in tile space
     area = TheTerrTextures.GetArea(static_cast<TextureID>(texID), type, offset);
 
-    if ( not area)
+    if (not area)
     {
         return FALSE;
     }
@@ -359,7 +366,8 @@ int TViewPoint::GetGroundType(float x, float y)
 
 
     // See if we have the data we'll need
-    if (blockLists[LOD].RangeFromCenter(row, col) >= blockLists[LOD].GetAvailablePostRange())
+    if (blockLists[LOD].RangeFromCenter(row, col) >=
+        blockLists[LOD].GetAvailablePostRange())
     {
         LeaveCriticalSection(&cs_update);
         return 0;
@@ -374,7 +382,7 @@ int TViewPoint::GetGroundType(float x, float y)
 
     // Check all segment features for inclusion
     i = 0;
-#define GET_NEXT_PATH path = TheTerrTextures.GetPath( texID, 0, i++ )
+#define GET_NEXT_PATH path = TheTerrTextures.GetPath(texID, 0, i++)
 
 
     GET_NEXT_PATH;
@@ -471,7 +479,7 @@ float TViewPoint::GetGroundLevelApproximation(float x, float y)
     int LOD;
     int row;
     int col;
-    Tpost* post;
+    Tpost *post;
     float elevation;
 
     // Compute the level relative post address of interest at the highest available LOD
@@ -483,7 +491,8 @@ float TViewPoint::GetGroundLevelApproximation(float x, float y)
     EnterCriticalSection(&cs_update);
 
     // Figure out the highest detail level which has the required data available
-    while (blockLists[LOD].RangeFromCenter(row, col) >= blockLists[LOD].GetAvailablePostRange())
+    while (blockLists[LOD].RangeFromCenter(row, col) >=
+           blockLists[LOD].GetAvailablePostRange())
     {
         row >>= 1;
         col >>= 1;
@@ -541,7 +550,8 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
     EnterCriticalSection(&cs_update);
 
     // Figure out the highest detail level which has the required data available
-    while (blockLists[LOD].RangeFromCenter(row, col) >= blockLists[LOD].GetAvailablePostRange())
+    while (blockLists[LOD].RangeFromCenter(row, col) >=
+           blockLists[LOD].GetAvailablePostRange())
     {
         row >>= 1;
         col >>= 1;
@@ -591,18 +601,27 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
 
 
     // Compute the normal from the three posts which bound the point of interest
-    p1 = blockLists[LOD].GetPost(row,   col);
+    p1 = blockLists[LOD].GetPost(row, col);
     p3 = blockLists[LOD].GetPost(row + 1, col + 1);
     ShiAssert(p1);
     ShiAssert(p3);
+    // Artscout - 2026: a block can be mid-stream (owned, Posts() already set, content not yet valid) --
+    // seen as a WILD post pointer here (crash 0x00000100'00002FF8 from RealWeather::UpdateDrawables).
+    // The JB null-guards below don't catch a non-null garbage pointer; validate the reads like the rest
+    // of the Test*/GetPost family. Bad post -> flat sea-level answer, never a crash.
+    if (F4IsBadReadPtr(p1, sizeof(*p1)))
+        p1 = NULL;
+    if (F4IsBadReadPtr(p3, sizeof(*p3)))
+        p3 = NULL;
     Nz = -TheMap.Level(LOD)->FTperPOST(); // (remember positive Z is down)
 
-    if (x_pos >= y_pos
-       and p1 and p3) // JB 011019 CTD fix
+    if (x_pos >= y_pos and p1 and p3) // JB 011019 CTD fix
     {
         // upper left triangle
         p2 = blockLists[LOD].GetPost(row + 1, col);
         ShiAssert(p2);
+        if (F4IsBadReadPtr(p2, sizeof(*p2))) // Artscout - 2026: see above
+            p2 = NULL;
 
         if (p2) // JB 011019 CTD fix
         {
@@ -610,11 +629,13 @@ float TViewPoint::GetGroundLevel(float x, float y, Tpoint *normal)
             Ny = p3->z - p2->z; // (remember positive Z is down)
         }
     }
-    else if (p1 and p3)  // JB 011019 CTD fix
+    else if (p1 and p3) // JB 011019 CTD fix
     {
         // lower right triangle
         p2 = blockLists[LOD].GetPost(row, col + 1);
         ShiAssert(p2);
+        if (F4IsBadReadPtr(p2, sizeof(*p2))) // Artscout - 2026: see above
+            p2 = NULL;
 
         if (p2) // JB 011019 CTD fix
         {
@@ -669,10 +690,8 @@ int TViewPoint::GetLODLevel(float x, float y) const
     EnterCriticalSection(&cs_update);
 
     // Figure out the highest detail level which has the required data available
-    while (
-        lod <= maxLOD and 
-        blockLists[lod].RangeFromCenter(row, col) >= blockLists[lod].GetAvailablePostRange()
-    )
+    while (lod <= maxLOD and blockLists[lod].RangeFromCenter(row, col) >=
+                                 blockLists[lod].GetAvailablePostRange())
     {
         row >>= 1;
         col >>= 1;
@@ -690,7 +709,6 @@ BOOL TViewPoint::UnderGround(Tpoint *position)
 }
 
 
-
 //
 // Helper functions for the LOS check below
 // These return TRUE if the given Z value is below (less negative than)
@@ -701,14 +719,22 @@ BOOL TViewPoint::TestVertex(int row, int col, float z, int LOD)
     // Get the relevant post
     Tpost *post = blockLists[LOD].GetPost(row, col);
 
+    // #CTD (GM radar LOS): GetPost returns NULL for a post outside the resident range (long LOS rays cross it by
+    // design). Missing data = assume the ray is NOT blocked there, exactly like over not-yet-streamed terrain.
+    if (not post)
+        return FALSE;
+
     // Return true if the line crosses below the post (ie: is less negative)
     return (post->z < z);
 }
 BOOL TViewPoint::TestEast(int row, int col, float z, int LOD)
 {
     // Get the relevant posts
-    Tpost *left  = blockLists[LOD].GetPost(row, col);
+    Tpost *left = blockLists[LOD].GetPost(row, col);
     Tpost *right = blockLists[LOD].GetPost(row, col + 1);
+
+    if (not left or not right)
+        return FALSE; // #CTD: see TestNorth -- missing data never blocks the ray
 
     // Return true if the line crosses below the highest post (ie: is less negative)
     return (min(left->z, right->z) < z);
@@ -716,8 +742,11 @@ BOOL TViewPoint::TestEast(int row, int col, float z, int LOD)
 BOOL TViewPoint::TestNorth(int row, int col, float z, int LOD)
 {
     // Get the relevant posts
-    Tpost *bottom = blockLists[LOD].GetPost(row,   col);
-    Tpost *top    = blockLists[LOD].GetPost(row + 1, col);
+    Tpost *bottom = blockLists[LOD].GetPost(row, col);
+    Tpost *top = blockLists[LOD].GetPost(row + 1, col);
+
+    if (not bottom or not top)
+        return FALSE; // #CTD: see above -- missing data never blocks the ray
 
     // Return true if the line crosses below the highest post (ie: is less negative)
     return (min(bottom->z, top->z) < z);
@@ -751,7 +780,8 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
         Py = WORLD_TO_LEVEL_POST(p1->y, LOD_P);
 
         // If the point lies within this level's range, stop looking
-        if (blockLists[LOD_P].RangeFromCenter(Px, Py) <= blockLists[LOD_P].GetAvailablePostRange())
+        if (blockLists[LOD_P].RangeFromCenter(Px, Py) <=
+            blockLists[LOD_P].GetAvailablePostRange())
         {
             break;
         }
@@ -765,7 +795,8 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
         Qy = WORLD_TO_LEVEL_POST(p2->y, LOD_Q);
 
         // If the point lies within this level's range, stop looking
-        if (blockLists[LOD_Q].RangeFromCenter(Qx, Qy) <= blockLists[LOD_Q].GetAvailablePostRange())
+        if (blockLists[LOD_Q].RangeFromCenter(Qx, Qy) <=
+            blockLists[LOD_Q].GetAvailablePostRange())
         {
             break;
         }
@@ -787,7 +818,6 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
 #else
         return FALSE;
 #endif
-
     }
 
 
@@ -806,11 +836,12 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
 
 
     // Only check this LOD if at least one end point is "in" the terrain
-    if ((p1->z > blockLists[LOD].GetMinZ()) or (p2->z > blockLists[LOD].GetMinZ()))
+    if ((p1->z > blockLists[LOD].GetMinZ()) or
+        (p2->z > blockLists[LOD].GetMinZ()))
     {
 
         // Compute the z step rate
-        z  = p1->z;
+        z = p1->z;
         dz = (p2->z - p1->z) / max(abs(Qx - Px), abs(Qy - Py));
 
         /****************************************************\
@@ -821,11 +852,10 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
         dz *= 0.2f;
 
         // Call the single LOD Line of Sight function
-        if ( not SingleLODLineOfSight(Px, Py, Qx, Qy, z, dz, LOD))
+        if (not SingleLODLineOfSight(Px, Py, Qx, Qy, z, dz, LOD))
         {
             return FALSE;
         }
-
     }
 
     return TRUE;
@@ -834,7 +864,8 @@ BOOL TViewPoint::LineOfSight(Tpoint *p1, Tpoint *p2)
 
 // Return TRUE if the two specified points can see each other over the terrain
 // This version works only against a single LOD of the terrain
-BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, float dz, int LOD)
+BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z,
+                                      float dz, int LOD)
 {
     int nr; // remainder
     int deltax, deltay; // Q.x - P.x, Q.y - P.y
@@ -853,63 +884,89 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
     EnterCriticalSection(&cs_update);
 
 
-#define OCTANT(f1, f2, f3, f4, f5, i1, s1, r1, r2) \
- for (f1, f2, f3, nr=0; ((f4) and ( not hit)); f5) { \
- z += dz; \
-   if (nr < k) { \
- if (i1) { \
- hit = r1(row,col,z,LOD); \
- } else { \
- hit = TestVertex(row,col,z,LOD); \
- } \
- } else { \
- s1; \
- if (nr -= k) { \
- hit  = r2(row,col,z,LOD); \
- if ( not hit) { \
- hit = r1(row,col,z,LOD); \
- } \
- } else { \
- hit = TestVertex(row,col,z,LOD); \
- } \
- } \
- }
+#define OCTANT(f1, f2, f3, f4, f5, i1, s1, r1, r2)                             \
+    for (f1, f2, f3, nr = 0; ((f4) and (not hit)); f5)                         \
+    {                                                                          \
+        z += dz;                                                               \
+        if (nr < k)                                                            \
+        {                                                                      \
+            if (i1)                                                            \
+            {                                                                  \
+                hit = r1(row, col, z, LOD);                                    \
+            }                                                                  \
+            else                                                               \
+            {                                                                  \
+                hit = TestVertex(row, col, z, LOD);                            \
+            }                                                                  \
+        }                                                                      \
+        else                                                                   \
+        {                                                                      \
+            s1;                                                                \
+            if (nr -= k)                                                       \
+            {                                                                  \
+                hit = r2(row, col, z, LOD);                                    \
+                if (not hit)                                                   \
+                {                                                              \
+                    hit = r1(row, col, z, LOD);                                \
+                }                                                              \
+            }                                                                  \
+            else                                                               \
+            {                                                                  \
+                hit = TestVertex(row, col, z, LOD);                            \
+            }                                                                  \
+        }                                                                      \
+    }
 
 
     // For reference purposes, let theta be the angle from P to Q
-    if ((deltax >= 0) and (deltay >= 0) and (deltay < deltax))   // theta < 45
+    if ((deltax >= 0) and (deltay >= 0) and (deltay < deltax)) // theta < 45
     {
-        OCTANT(row = Px + 1, col = Py, k = deltax - deltay,  row < Qx, row++, nr += deltay, col++, TestEast, TestSouth);
+        OCTANT(row = Px + 1, col = Py, k = deltax - deltay, row < Qx, row++,
+               nr += deltay, col++, TestEast, TestSouth);
     }
-    else if ((deltax > 0) and (deltay >= 0) and (deltay >= deltax))   // 45 <= theta < 90
+    else if ((deltax > 0) and (deltay >= 0) and
+             (deltay >= deltax)) // 45 <= theta < 90
     {
-        OCTANT(col = Py + 1, row = Px, k = deltay - deltax,  col < Qy, col++, nr += deltax, row++, TestNorth, TestWest);
+        OCTANT(col = Py + 1, row = Px, k = deltay - deltax, col < Qy, col++,
+               nr += deltax, row++, TestNorth, TestWest);
     }
-    else if ((deltax <= 0) and (deltay >= 0) and (deltay > -deltax))  // 90 <= theta < 135
+    else if ((deltax <= 0) and (deltay >= 0) and
+             (deltay > -deltax)) // 90 <= theta < 135
     {
-        OCTANT(col = Py + 1, row = Px, k = deltay + deltax,  col < Qy, col++, nr -= deltax, row--, TestSouth, TestWest);
+        OCTANT(col = Py + 1, row = Px, k = deltay + deltax, col < Qy, col++,
+               nr -= deltax, row--, TestSouth, TestWest);
     }
-    else if ((deltax <= 0) and (deltay > 0) and (deltay <= -deltax))  // 135 <= theta < 180
+    else if ((deltax <= 0) and (deltay > 0) and
+             (deltay <= -deltax)) // 135 <= theta < 180
     {
-        OCTANT(row = Px - 1, col = Py, k = -deltax - deltay, row > Qx, row--, nr += deltay, col++, TestEast, TestNorth);
+        OCTANT(row = Px - 1, col = Py, k = -deltax - deltay, row > Qx, row--,
+               nr += deltay, col++, TestEast, TestNorth);
     }
-    else if ((deltax <= 0) and (deltay <= 0) and (deltay > deltax))   // 180 <= theta < 225
+    else if ((deltax <= 0) and (deltay <= 0) and
+             (deltay > deltax)) // 180 <= theta < 225
     {
-        OCTANT(row = Px - 1, col = Py, k = -deltax + deltay, row > Qx, row--, nr -= deltay, col--, TestWest, TestNorth);
+        OCTANT(row = Px - 1, col = Py, k = -deltax + deltay, row > Qx, row--,
+               nr -= deltay, col--, TestWest, TestNorth);
     }
-    else if ((deltax < 0) and (deltay <= 0) and (deltay <= deltax))   // 225 <= theta < 270
+    else if ((deltax < 0) and (deltay <= 0) and
+             (deltay <= deltax)) // 225 <= theta < 270
     {
-        OCTANT(col = Py - 1, row = Px, k = -deltay + deltax, col > Qy, col--, nr -= deltax, row--, TestSouth, TestEast);
+        OCTANT(col = Py - 1, row = Px, k = -deltay + deltax, col > Qy, col--,
+               nr -= deltax, row--, TestSouth, TestEast);
     }
-    else if ((deltax >= 0) and (deltay <= 0) and (-deltay > deltax))   // 270 <= theta < 315
+    else if ((deltax >= 0) and (deltay <= 0) and
+             (-deltay > deltax)) // 270 <= theta < 315
     {
-        OCTANT(col = Py - 1, row = Px, k = -deltay - deltax, col > Qy, col--, nr += deltax, row++, TestNorth, TestWest);
+        OCTANT(col = Py - 1, row = Px, k = -deltay - deltax, col > Qy, col--,
+               nr += deltax, row++, TestNorth, TestWest);
     }
-    else if ((deltax >= 0) and (deltay < 0) and (-deltay <= deltax))   // 315 <= theta < 360
+    else if ((deltax >= 0) and (deltay < 0) and
+             (-deltay <= deltax)) // 315 <= theta < 360
     {
-        OCTANT(row = Px + 1, col = Py, k = deltax + deltay,  row < Qx, row++, nr -= deltay, col--, TestWest, TestSouth);
+        OCTANT(row = Px + 1, col = Py, k = deltax + deltay, row < Qx, row++,
+               nr -= deltay, col--, TestWest, TestSouth);
     }
-    else   // P == Q
+    else // P == Q
     {
     }
 
@@ -917,7 +974,7 @@ BOOL TViewPoint::SingleLODLineOfSight(int Px, int Py, int Qx, int Qy, float z, f
     // Unlock the viewpoint
     LeaveCriticalSection(&cs_update);
 
-    return ( not hit);
+    return (not hit);
 }
 
 
@@ -1012,20 +1069,21 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                     // Check vertical edge we crossed
                     if (verticalEdgeTest(rowt, colt, xt, yt, zt, LOD))
                     {
-                        LineSquareIntersection(rowt, colt - stepRt, dir, intersection, LOD);
+                        LineSquareIntersection(rowt, colt - stepRt, dir,
+                                               intersection, LOD);
 
                         // Unlock the viewpoint
                         LeaveCriticalSection(&cs_update);
 
                         return TRUE;
                     }
-
                 }
 
                 // Check horizontal edge between (row,col) and (row,col+1)
                 if (horizontalEdgeTest(row, col, x, y, z, LOD))
                 {
-                    LineSquareIntersection(row - stepUp, col, dir, intersection, LOD);
+                    LineSquareIntersection(row - stepUp, col, dir, intersection,
+                                           LOD);
 
                     // Unlock the viewpoint
                     LeaveCriticalSection(&cs_update);
@@ -1078,20 +1136,21 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
                     // Check horizontal edge between we crossed
                     if (horizontalEdgeTest(rowt, colt, xt, yt, zt, LOD))
                     {
-                        LineSquareIntersection(rowt - stepUp, colt, dir, intersection, LOD);
+                        LineSquareIntersection(rowt - stepUp, colt, dir,
+                                               intersection, LOD);
 
                         // Unlock the viewpoint
                         LeaveCriticalSection(&cs_update);
 
                         return TRUE;
                     }
-
                 }
 
                 // Check vertical edge between (row,col) and (row+1,col)
                 if (verticalEdgeTest(row, col, x, y, z, LOD))
                 {
-                    LineSquareIntersection(row, col - stepRt, dir, intersection, LOD);
+                    LineSquareIntersection(row, col - stepRt, dir, intersection,
+                                           LOD);
 
                     // Unlock the viewpoint
                     LeaveCriticalSection(&cs_update);
@@ -1136,7 +1195,8 @@ BOOL TViewPoint::GroundIntersection(Tpoint *dir, Tpoint *intersection)
 // anchored at given row,col address.
 //
 //BOOL TViewPoint::horizontalEdgeTest( int row, int col, float x, float y, float z, int LOD )
-BOOL TViewPoint::horizontalEdgeTest(int row, int col, float, float y, float z, int LOD)
+BOOL TViewPoint::horizontalEdgeTest(int row, int col, float, float y, float z,
+                                    int LOD)
 {
     float t, height;
     Tpost *left, *right;
@@ -1147,7 +1207,9 @@ BOOL TViewPoint::horizontalEdgeTest(int row, int col, float, float y, float z, i
 
     // Compute the height of the edge at the point the line crosses it
     t = WORLD_TO_FLOAT_LEVEL_POST(y, LOD) - col;
-    ShiAssert((t > -0.1f) and (t < 1.1f));   // Make it more tolerant since it actually works anyway
+    ShiAssert(
+        (t > -0.1f) and
+        (t < 1.1f)); // Make it more tolerant since it actually works anyway
     height = left->z + t * (right->z - left->z);
 
     // Return true if the line crosses below the edge (ie: is less negative)
@@ -1155,14 +1217,15 @@ BOOL TViewPoint::horizontalEdgeTest(int row, int col, float, float y, float z, i
 }
 
 //BOOL TViewPoint::verticalEdgeTest( int row, int col, float x, float y, float z, int LOD )
-BOOL TViewPoint::verticalEdgeTest(int row, int col, float x, float, float z, int LOD)
+BOOL TViewPoint::verticalEdgeTest(int row, int col, float x, float, float z,
+                                  int LOD)
 {
     float t, height;
     Tpost *top, *bottom;
 
     // Get the relevant posts
     top = blockLists[LOD].GetPost(row + 1, col);
-    bottom = blockLists[LOD].GetPost(row,   col);
+    bottom = blockLists[LOD].GetPost(row, col);
 
     // Compute the height of the edge at the point the line crosses it
     t = WORLD_TO_FLOAT_LEVEL_POST(x, LOD) - row;
@@ -1182,7 +1245,8 @@ BOOL TViewPoint::verticalEdgeTest(int row, int col, float x, float, float z, int
 // the square whose lower left corner post is at (row,col).  Return
 // the exact location of the intersection in the provided Tpoint structure.
 //
-void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *intersection, int LOD)
+void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir,
+                                        Tpoint *intersection, int LOD)
 {
     Tpost *SW, *NW, *NE, *SE;
     float Nx, Ny, Nz;
@@ -1192,10 +1256,10 @@ void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *i
     float t;
 
     // Get the posts which bound this square
-    SW = blockLists[LOD].GetPost(row,   col);
+    SW = blockLists[LOD].GetPost(row, col);
     NW = blockLists[LOD].GetPost(row + 1, col);
     NE = blockLists[LOD].GetPost(row + 1, col + 1);
-    SE = blockLists[LOD].GetPost(row,   col + 1);
+    SE = blockLists[LOD].GetPost(row, col + 1);
     ShiAssert(SW and NW and NE and SE);
 
     // Store the world space location of the upper left and lower right corner posts
@@ -1217,7 +1281,7 @@ void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *i
 
         // Compute the intersection of the line with the plane
         PQdotN = (SWx - X()) * Nx + (SWy - Y()) * Ny + (SWz - Z()) * Nz;
-        NdotDIR = Nx * dir->x     + Ny * dir->y      + Nz * dir->z;
+        NdotDIR = Nx * dir->x + Ny * dir->y + Nz * dir->z;
         t = PQdotN / NdotDIR;
 
         intersection->x = X() + t * dir->x;
@@ -1229,7 +1293,6 @@ void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *i
         {
             return;
         }
-
     }
 
 
@@ -1239,7 +1302,7 @@ void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *i
 
     // Compute the intersection of the line with the plane
     PQdotN = (SWx - X()) * Nx + (SWy - Y()) * Ny + (SWz - Z()) * Nz;
-    NdotDIR = Nx * dir->x     + Ny * dir->y      + Nz * dir->z;
+    NdotDIR = Nx * dir->x + Ny * dir->y + Nz * dir->z;
     t = PQdotN / NdotDIR;
 
     intersection->x = X() + t * dir->x;
@@ -1249,5 +1312,4 @@ void TViewPoint::LineSquareIntersection(int row, int col, Tpoint *dir, Tpoint *i
     // Make sure the intersection we found is within the lower right half space
     // Rounding errors could make this assertion fail occasionally
     // ShiAssert( (intersection->x-SWx) <= (intersection->y-SWy) );
-
 }

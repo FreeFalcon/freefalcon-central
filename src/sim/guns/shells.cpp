@@ -12,16 +12,16 @@
 #include "object.h"
 #include "simdrive.h"
 #include "simmover.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/MissileEndMsg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/missileendmsg.h"
 #include "campbase.h"
 #include "otwdrive.h"
 #include "sfx.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "fakerand.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/rviewpnt.h"
 #include "feature.h"
 #include "acmi/src/include/acmirec.h"
 #include "playerop.h"
@@ -31,7 +31,7 @@
 #include "camp2sim.h"
 #include "campbase.h"
 
-#include "Ground.h" // 2002-03-12 S.G.
+#include "ground.h" // 2002-03-12 S.G.
 
 extern float g_fBiasFactorForFlaks; // 2002-03-12 S.G.
 extern bool g_bUseSkillForFlaks;
@@ -40,8 +40,7 @@ extern bool g_bUseSkillForFlaks;
 ** Name: IsShell
 ** Returns TRUE if the guns is shell type
 */
-BOOL
-GunClass::IsShell(void)
+BOOL GunClass::IsShell(void)
 {
     if (typeOfGun == GUN_SHELL)
         return TRUE;
@@ -53,8 +52,7 @@ GunClass::IsShell(void)
 ** Name: IsTracer
 ** Returns TRUE if the guns is tracer type
 */
-BOOL
-GunClass::IsTracer(void)
+BOOL GunClass::IsTracer(void)
 {
     if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         return TRUE;
@@ -66,8 +64,7 @@ GunClass::IsTracer(void)
 ** Name: ReadyToFire
 ** Returns TRUE if the guns is ready to fire
 */
-BOOL
-GunClass::ReadyToFire(void)
+BOOL GunClass::ReadyToFire(void)
 {
     // tracers are always ready
     if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
@@ -92,8 +89,7 @@ GunClass::ReadyToFire(void)
 */
 // VP_changes Nov 7, 2002
 // This functiin should be modified
-float
-GunClass::GetDamageAssessment(SimBaseClass *target, float range)
+float GunClass::GetDamageAssessment(SimBaseClass *target, float range)
 {
     float zpos, zdelta;
 
@@ -105,7 +101,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
     {
         if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
         {
-            if ( not target->OnGround())
+            if (not target->OnGround())
             {
                 // disallow tracers above 6000ft
                 zpos = target->ZPos();
@@ -120,7 +116,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
         }
         else
         {
-            if ( not target->OnGround())
+            if (not target->OnGround())
             {
                 // disallow shells below 1000ft?
                 // target z in 1.5 secs
@@ -182,8 +178,7 @@ GunClass::GetDamageAssessment(SimBaseClass *target, float range)
 ** Reference the target and calc the time to detonate.
 ** If target is NULL, deref any existing target
 */
-void
-GunClass::FireShell(SimObjectType *newTarget)
+void GunClass::FireShell(SimObjectType *newTarget)
 {
     if (newTarget == shellTargetPtr)
         return;
@@ -206,7 +201,8 @@ GunClass::FireShell(SimObjectType *newTarget)
     newTarget->Reference();
     shellTargetPtr = newTarget;
     // hack the time in now.
-    shellDetonateTime = SimLibElapsedTime + 1500; //MI this is how long from shot till explosion
+    shellDetonateTime =
+        SimLibElapsedTime + 1500; //MI this is how long from shot till explosion
 }
 
 /*
@@ -214,11 +210,10 @@ GunClass::FireShell(SimObjectType *newTarget)
 ** Determines when its time to detonate.  Rolls dice.  And
 ** Sends messages as needed for effects and damage.
 */
-void
-GunClass::UpdateShell(void)
+void GunClass::UpdateShell(void)
 {
     float rangeSquare;
-    FalconMissileEndMessage* endMessage;
+    FalconMissileEndMessage *endMessage;
     SimBaseClass *t;
     BOOL hitSomething = FALSE;
     float blastRange;
@@ -243,9 +238,7 @@ GunClass::UpdateShell(void)
             if ((rand() bitand 0x7) == 0x7)
             {
                 hitSomething = TRUE;
-                SendDamageMessage(t,
-                                  0.0f,
-                                  FalconDamageType::BulletDamage);
+                SendDamageMessage(t, 0.0f, FalconDamageType::BulletDamage);
             }
         }
         // 2000-08-30 MODIFIED BY S.G. TO ACCOMODATE FOR ALTITUDE AND SPEED.
@@ -253,12 +246,15 @@ GunClass::UpdateShell(void)
         // else if ( (rand() bitand 0x1F ) == 0x1F )
         // Marco Edit - tried to return back to 1.08i2 + RP4 values
         // else if (40.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / 100000.0f) < 0.040625f)
-        else if (31.0f * (float)rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks) < 0.0325f)
+        else if (31.0f * (float)rand() / 32767.0f *
+                     (float)sqrt(shellTargetPtr->localData->range *
+                                 ((SimMoverClass *)shellTargetPtr->BaseData())
+                                     ->GetKias() /
+                                 g_fBiasFactorForFlaks) <
+                 0.0325f)
         {
             hitSomething = TRUE;
-            SendDamageMessage(t,
-                              0.0f,
-                              FalconDamageType::BulletDamage);
+            SendDamageMessage(t, 0.0f, FalconDamageType::BulletDamage);
         }
         else
         {
@@ -278,15 +274,19 @@ GunClass::UpdateShell(void)
             // 2000-08-30 MODIFIED BY S.G. TO ACCOMODATE FOR ALTITUDE AND SPEED. 1.08i2 ALSO USES rand INSTEAD OF PRANDFloatPos
             // 2000-09-06 CHANGED AGAIN TO A NEW EQUATION (sqrt(speed / 100) * sqrt(range / 1000))
             // rangeSquare *= 40.0f * PRANDFloatPos();
-            rangeSquare *= 40.0f * rand() / 32767.0f * (float)sqrt(shellTargetPtr->localData->range * ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() / g_fBiasFactorForFlaks);
+            rangeSquare *=
+                40.0f * rand() / 32767.0f *
+                (float)sqrt(
+                    shellTargetPtr->localData->range *
+                    ((SimMoverClass *)shellTargetPtr->BaseData())->GetKias() /
+                    g_fBiasFactorForFlaks);
 
             // 2002-03-12 ADDED BY S.G. Use the ground troop skill if requested
             if (g_bUseSkillForFlaks and parent and parent->IsGroundVehicle())
             {
-                GroundClass *gc = static_cast<GroundClass*>(parent.get());
+                GroundClass *gc = static_cast<GroundClass *>(parent.get());
                 rangeSquare *= static_cast<float>(
-                                   7.0f / (4 + gc->gai->skillLevel * gc->gai->skillLevel)
-                               );
+                    7.0f / (4 + gc->gai->skillLevel * gc->gai->skillLevel));
             }
         }
 
@@ -294,8 +294,7 @@ GunClass::UpdateShell(void)
         {
             hitSomething = TRUE;
             rangeSquare *= rangeSquare;
-            SendDamageMessage(t,
-                              rangeSquare,
+            SendDamageMessage(t, rangeSquare,
                               FalconDamageType::ProximityDamage);
         }
     }
@@ -303,48 +302,47 @@ GunClass::UpdateShell(void)
 
     // missile end message
     endMessage = new FalconMissileEndMessage(Id(), FalconLocalGame);
-    endMessage->dataBlock.fEntityID  = parent->Id();
-    endMessage->dataBlock.fPilotID   = ((SimMoverClass*)parent.get())->pilotSlot;
-    endMessage->dataBlock.fIndex     = parent->Type();
-    endMessage->dataBlock.fCampID    = parent->GetCampID();
-    endMessage->dataBlock.fSide      = parent->GetCountry();
+    endMessage->dataBlock.fEntityID = parent->Id();
+    endMessage->dataBlock.fPilotID = ((SimMoverClass *)parent.get())->pilotSlot;
+    endMessage->dataBlock.fIndex = parent->Type();
+    endMessage->dataBlock.fCampID = parent->GetCampID();
+    endMessage->dataBlock.fSide = parent->GetCountry();
 
-    endMessage->dataBlock.dEntityID  = t->Id();
-    endMessage->dataBlock.dCampID    = t->GetCampID();
-    endMessage->dataBlock.dSide      = t->GetCountry();
+    endMessage->dataBlock.dEntityID = t->Id();
+    endMessage->dataBlock.dCampID = t->GetCampID();
+    endMessage->dataBlock.dSide = t->GetCountry();
 
     if (t->IsSim())
     {
-        endMessage->dataBlock.dPilotID   = ((SimMoverClass*)t)->pilotSlot;
-        endMessage->dataBlock.dCampSlot  = (char)((SimMoverClass*)t)->GetSlot();
+        endMessage->dataBlock.dPilotID = ((SimMoverClass *)t)->pilotSlot;
+        endMessage->dataBlock.dCampSlot = (char)((SimMoverClass *)t)->GetSlot();
     }
     else
     {
-        endMessage->dataBlock.dPilotID   = 255;
-        endMessage->dataBlock.dCampSlot  = 0;
+        endMessage->dataBlock.dPilotID = 255;
+        endMessage->dataBlock.dCampSlot = 0;
     }
 
-    endMessage->dataBlock.dIndex     = t->Type();
+    endMessage->dataBlock.dIndex = t->Type();
     endMessage->dataBlock.fWeaponUID = Id();
-    endMessage->dataBlock.wIndex   = Type();
+    endMessage->dataBlock.wIndex = Type();
 
     if (hitSomething)
-        endMessage->dataBlock.endCode    = FalconMissileEndMessage::MissileKill;
+        endMessage->dataBlock.endCode = FalconMissileEndMessage::MissileKill;
     else
-        endMessage->dataBlock.endCode    = FalconMissileEndMessage::Missed;
+        endMessage->dataBlock.endCode = FalconMissileEndMessage::Missed;
 
-    endMessage->dataBlock.xDelta    = 0.0f;
-    endMessage->dataBlock.yDelta    = 0.0f;
-    endMessage->dataBlock.zDelta    = 0.0f;
+    endMessage->dataBlock.xDelta = 0.0f;
+    endMessage->dataBlock.yDelta = 0.0f;
+    endMessage->dataBlock.zDelta = 0.0f;
 
     if (t->OnGround())
     {
-        endMessage->dataBlock.x    = t->XPos() + blastRange * PRANDFloat();
-        endMessage->dataBlock.y    = t->YPos() + blastRange * PRANDFloat();
-        endMessage->dataBlock.z    = t->ZPos();
-        endMessage->dataBlock.groundType    =
-            (char)OTWDriver.GetGroundType(endMessage->dataBlock.x,
-                                          endMessage->dataBlock.y);
+        endMessage->dataBlock.x = t->XPos() + blastRange * PRANDFloat();
+        endMessage->dataBlock.y = t->YPos() + blastRange * PRANDFloat();
+        endMessage->dataBlock.z = t->ZPos();
+        endMessage->dataBlock.groundType = (char)OTWDriver.GetGroundType(
+            endMessage->dataBlock.x, endMessage->dataBlock.y);
     }
     else
     {
@@ -353,14 +351,17 @@ GunClass::UpdateShell(void)
         // effect is 2 secs out from target's current position
         if (blastRange == 0.0f)
         {
-            endMessage->dataBlock.x    = t->XPos() + t->XDelta() * SimLibMajorFrameTime;
-            endMessage->dataBlock.y    = t->YPos() + t->YDelta() * SimLibMajorFrameTime;
-            endMessage->dataBlock.z    = t->ZPos() + t->ZDelta() * SimLibMajorFrameTime;
+            endMessage->dataBlock.x =
+                t->XPos() + t->XDelta() * SimLibMajorFrameTime;
+            endMessage->dataBlock.y =
+                t->YPos() + t->YDelta() * SimLibMajorFrameTime;
+            endMessage->dataBlock.z =
+                t->ZPos() + t->ZDelta() * SimLibMajorFrameTime;
         }
         else
         {
-            endMessage->dataBlock.x    = t->XPos() + t->XDelta() * 2.0F;
-            endMessage->dataBlock.y    = t->YPos() + t->YDelta() * 2.0F;
+            endMessage->dataBlock.x = t->XPos() + t->XDelta() * 2.0F;
+            endMessage->dataBlock.y = t->YPos() + t->YDelta() * 2.0F;
 
             //MI make it delayed a little
             //update our ZPosition every 3 seconds.
@@ -382,7 +383,7 @@ GunClass::UpdateShell(void)
             endMessage->dataBlock.z = TargetAlt;
         }
 
-        endMessage->dataBlock.groundType    = -1;
+        endMessage->dataBlock.groundType = -1;
     }
 
     FalconSendMessage(endMessage, FALSE);
@@ -400,4 +401,3 @@ WeaponDomain GunClass::GetSMSDomain(void)
 {
     return gunDomain;
 }
-

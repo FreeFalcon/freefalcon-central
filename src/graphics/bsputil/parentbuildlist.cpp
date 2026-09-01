@@ -8,21 +8,21 @@
 \***************************************************************************/
 #include <io.h>
 #include <fcntl.h>
-#include <SYS/STAT.H>
-#include <MgAPIall.h>
-#include "ObjectParent.h"
-#include "FLTreader.h"
-#include "ColorBuildList.h"
-#include "PalBuildList.h"
-#include "TexBuildList.h"
-#include "LODBuildList.h"
-#include "ParentBuildList.h"
+#include <sys/stat.h>
+#include <mgapiall.h>
+#include "objectparent.h"
+#include "fltreader.h"
+#include "colorbuildlist.h"
+#include "palbuildlist.h"
+#include "texbuildlist.h"
+#include "lodbuildlist.h"
+#include "parentbuildlist.h"
 
 
 BuildTimeParentList TheParentBuildList;
 
-#define MAX_ACCUMULATE( dst, src ) ((dst) = max( (dst), (src) ))
-#define MIN_ACCUMULATE( dst, src ) ((dst) = min( (dst), (src) ))
+#define MAX_ACCUMULATE(dst, src) ((dst) = max((dst), (src)))
+#define MIN_ACCUMULATE(dst, src) ((dst) = min((dst), (src)))
 
 
 void BuildTimeParentList::AddItem(int id, char *filename)
@@ -104,16 +104,17 @@ BOOL BuildTimeParentList::BuildParentTable()
     }
 
     // Create the contiguous array of parent objects
-    if (TheObjectList != NULL)   // we're appending
+    if (TheObjectList != NULL) // we're appending
     {
         ShiAssert(TheObjectListLength < maxID);
         ObjectParent *temp = TheObjectList;
         TheObjectList = new ObjectParent[maxID + 1];
         ShiAssert(TheObjectList != NULL);
-        memset(TheObjectList, 0, (maxID + 1)*sizeof(*TheObjectList));
-        memcpy(TheObjectList, temp, TheObjectListLength * sizeof(*TheObjectList));
+        memset(TheObjectList, 0, (maxID + 1) * sizeof(*TheObjectList));
+        memcpy(TheObjectList, temp,
+               TheObjectListLength * sizeof(*TheObjectList));
         TheObjectListLength = maxID + 1;
-        delete []temp;
+        delete[] temp;
     }
     else
     {
@@ -135,7 +136,7 @@ BOOL BuildTimeParentList::BuildParentTable()
 
     while (entry)
     {
-        if (entry -> bflags == 0)
+        if (entry->bflags == 0)
         {
             // Read the parent FLT file (this will add to TheLODBuildList for each child encountered)
             printf("Parent %s\n", entry->filename);
@@ -190,7 +191,8 @@ BOOL BuildTimeParentList::BuildParentTable()
         for (i = objParent->nLODs - 1; i >= 0; i--)
         {
             ShiAssert(entry->pBuildLODs[i] != NULL);
-            objParent->pLODs[i].objLOD = &TheObjectLODs[ entry->pBuildLODs[i]->index ];
+            objParent->pLODs[i].objLOD =
+                &TheObjectLODs[entry->pBuildLODs[i]->index];
 
             MAX_ACCUMULATE(objParent->radius, entry->pBuildLODs[i]->radius);
             MAX_ACCUMULATE(objParent->maxX, entry->pBuildLODs[i]->maxX);
@@ -200,23 +202,31 @@ BOOL BuildTimeParentList::BuildParentTable()
             MIN_ACCUMULATE(objParent->minY, entry->pBuildLODs[i]->minY);
             MIN_ACCUMULATE(objParent->minZ, entry->pBuildLODs[i]->minZ);
 
-            MAX_ACCUMULATE(objParent->nSwitches, entry->pBuildLODs[i]->nSwitches,);
+            MAX_ACCUMULATE(objParent->nSwitches,
+                           entry->pBuildLODs[i]->nSwitches, );
             MAX_ACCUMULATE(objParent->nDOFs, entry->pBuildLODs[i]->nDOFs);
             MAX_ACCUMULATE(objParent->nSlots, entry->pBuildLODs[i]->nSlots);
-            MAX_ACCUMULATE(objParent->nDynamicCoords, entry->pBuildLODs[i]->nDynamicCoords);
+            MAX_ACCUMULATE(objParent->nDynamicCoords,
+                           entry->pBuildLODs[i]->nDynamicCoords);
 
             if (entry->pBuildLODs[i]->nTextureSets != objParent->nTextureSets)
             {
                 if (objParent->nTextureSets)
                 {
                     char string[256];
-                    sprintf(string, "ERROR: %s LOD %0d has a different texture set count (this %0d, lower %0d, ).", entry->filename, i, objParent->nTextureSets, entry->pBuildLODs[i]->nTextureSets);
+                    sprintf(string,
+                            "ERROR: %s LOD %0d has a different texture set "
+                            "count (this %0d, lower %0d, ).",
+                            entry->filename, i, objParent->nTextureSets,
+                            entry->pBuildLODs[i]->nTextureSets);
                     printf("%s\n", string);
-                    MIN_ACCUMULATE(objParent->nTextureSets, entry->pBuildLODs[i]->nTextureSets);
+                    MIN_ACCUMULATE(objParent->nTextureSets,
+                                   entry->pBuildLODs[i]->nTextureSets);
                 }
                 else
                 {
-                    objParent->nTextureSets = entry->pBuildLODs[i]->nTextureSets;
+                    objParent->nTextureSets =
+                        entry->pBuildLODs[i]->nTextureSets;
                 }
             }
         }
@@ -230,14 +240,19 @@ BOOL BuildTimeParentList::BuildParentTable()
         // Create the postion array and load it from the highest LOD
         if (objParent->nSlots + objParent->nDynamicCoords)
         {
-            objParent->pSlotAndDynamicPositions = new Ppoint[objParent->nSlots + objParent->nDynamicCoords];
+            objParent->pSlotAndDynamicPositions =
+                new Ppoint[objParent->nSlots + objParent->nDynamicCoords];
             memset(objParent->pSlotAndDynamicPositions, 0,
-                   sizeof(*objParent->pSlotAndDynamicPositions) * (objParent->nSlots + objParent->nDynamicCoords));
+                   sizeof(*objParent->pSlotAndDynamicPositions) *
+                       (objParent->nSlots + objParent->nDynamicCoords));
 
             // Get the positions from the highest detail LOD.  All others _assumed_ to be the same.
-            for (i = 0; i < entry->pBuildLODs[0]->nSlots + entry->pBuildLODs[0]->nDynamicCoords; i++)
+            for (i = 0; i < entry->pBuildLODs[0]->nSlots +
+                                entry->pBuildLODs[0]->nDynamicCoords;
+                 i++)
             {
-                objParent->pSlotAndDynamicPositions[i] = entry->pBuildLODs[0]->pSlotAndDynamicPositions[i];
+                objParent->pSlotAndDynamicPositions[i] =
+                    entry->pBuildLODs[0]->pSlotAndDynamicPositions[i];
             }
         }
         else
@@ -307,7 +322,8 @@ void BuildTimeParentList::WriteParentTable(int file)
 
 
     // Now write the elements of the parent array
-    result = write(file, TheObjectList, sizeof(*TheObjectList) * TheObjectListLength);
+    result = write(file, TheObjectList,
+                   sizeof(*TheObjectList) * TheObjectListLength);
 
     if (result < 0)
     {
@@ -328,7 +344,7 @@ void BuildTimeParentList::WriteParentTable(int file)
             printf("ID %0d is empty.\n", objIdx);
 
             if (objIdx < startpoint - 1)
-                entry = entry -> next;
+                entry = entry->next;
 
             continue;
         }
@@ -336,16 +352,17 @@ void BuildTimeParentList::WriteParentTable(int file)
         // Detect any problems -- could avoid this requirement by sorting the entry list...
         if (entry->id != objIdx)
         {
-            printf("IDS.TXT must currently be sorted in ID order! %d != %d\n", entry->id, objIdx);
+            printf("IDS.TXT must currently be sorted in ID order! %d != %d\n",
+                   entry->id, objIdx);
             ShiError("IDS.TXT must currently be sorted in ID order!");
         }
 
         // Process the slot and dynamic position array
         if (objParent->nSlots)
         {
-            result = write(file,
-                           objParent->pSlotAndDynamicPositions,
-                           (objParent->nSlots + objParent->nDynamicCoords) * sizeof(*objParent->pSlotAndDynamicPositions));
+            result = write(file, objParent->pSlotAndDynamicPositions,
+                           (objParent->nSlots + objParent->nDynamicCoords) *
+                               sizeof(*objParent->pSlotAndDynamicPositions));
         }
 
         // Process each LOD reference in this parent object
@@ -358,7 +375,7 @@ void BuildTimeParentList::WriteParentTable(int file)
             // Replace the pointer with the offset of the LOD in TheObjectLOD array.
             // NOTE:  We're shifting the offset left 1 bit and setting the bottom bit
             // to distinguish it from a legal pointer (which would be 4 byte aligned).
-            *((DWORD*)&p.objLOD) = (entry->pBuildLODs[i]->index << 1) | 1;
+            *((DWORD *)&p.objLOD) = (entry->pBuildLODs[i]->index << 1) | 1;
 
             // Write this reference record
             result = write(file, &p, sizeof(p));
@@ -390,7 +407,7 @@ void BuildTimeParentList::AddExisiting(ObjectParent *op, int id)
     entry->id = id;
     entry->bflags = 1;
     //ShiAssert(op->nLODs > 0);
-    entry->pBuildLODs = new BuildTimeLODEntry*[op->nLODs];
+    entry->pBuildLODs = new BuildTimeLODEntry *[op->nLODs];
 
     for (int i = 0; i < op->nLODs; i++)
         entry->pBuildLODs[i] =

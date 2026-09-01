@@ -14,23 +14,23 @@
 #define Prof_CALL_HISTORY
 
 // number of frames of history to keep
-#define NUM_FRAME_SLOTS                    128
+#define NUM_FRAME_SLOTS 128
 
 
 // number of unique zones allowed in the entire application
 // @TODO: remove MAX_PROFILING_ZONES and make it dynamic
-#define MAX_PROFILING_ZONES                512
+#define MAX_PROFILING_ZONES 512
 
 ////////////////////////////////////////////////////////////////////////
 
 // the number of moving averages
-#define NUM_PROFILE_TRACKER_HISTORY_SLOTS  3
+#define NUM_PROFILE_TRACKER_HISTORY_SLOTS 3
 
 // the number of frames to ignore before starting the moving averages
-#define NUM_THROWAWAY_UPDATES              3
+#define NUM_THROWAWAY_UPDATES 3
 
 // threshhold for a moving average of an integer to be at zero
-#define INT_ZERO_THRESHHOLD                0.25
+#define INT_ZERO_THRESHHOLD 0.25
 
 Prof_Zone *Prof_zones[MAX_PROFILING_ZONES];
 
@@ -44,7 +44,7 @@ typedef struct
     double values[NUM_PROFILE_TRACKER_HISTORY_SLOTS];
     double variances[NUM_PROFILE_TRACKER_HISTORY_SLOTS];
 #ifdef Prof_CALL_HISTORY
-    float  history[NUM_FRAME_SLOTS];
+    float history[NUM_FRAME_SLOTS];
 #endif
 } History_Scalar;
 
@@ -58,15 +58,15 @@ typedef struct
 
 static History_Scalar frame_time;
 
-static double  times_to_reach_90_percent[NUM_PROFILE_TRACKER_HISTORY_SLOTS];
-static double  precomputed_factors      [NUM_PROFILE_TRACKER_HISTORY_SLOTS];
+static double times_to_reach_90_percent[NUM_PROFILE_TRACKER_HISTORY_SLOTS];
+static double precomputed_factors[NUM_PROFILE_TRACKER_HISTORY_SLOTS];
 
-static int        num_active_zones;
-static int        update_index;     // 2^31 at 100fps = 280 days
-static double     last_update_time;
+static int num_active_zones;
+static int update_index;     // 2^31 at 100fps = 280 days
+static double last_update_time;
 static Prof_Report_Mode displayed_quantity;
 
-#define FRAME_TIME_INITIAL          0.001
+#define FRAME_TIME_INITIAL 0.001
 
 static int history_index;
 static int display_frame;
@@ -102,7 +102,7 @@ static void update(History_Scalar *s, double new_value, double *k_array)
     }
 
 #ifdef Prof_CALL_HISTORY
-    s->history[history_index] = (float) new_value;
+    s->history[history_index] = (float)new_value;
 #endif
 }
 
@@ -124,7 +124,7 @@ static void eternity_set(History_Scalar *s, double new_value)
     }
 
 #ifdef Prof_CALL_HISTORY
-    s->history[history_index] = (float) new_value;
+    s->history[history_index] = (float)new_value;
 #endif
 }
 
@@ -139,7 +139,8 @@ static double get_value(History_Scalar *s)
 
     if (display_frame)
     {
-        return s->history[(history_index - display_frame + NUM_FRAME_SLOTS) % NUM_FRAME_SLOTS];
+        return s->history[(history_index - display_frame + NUM_FRAME_SLOTS) %
+                          NUM_FRAME_SLOTS];
     }
 
 #endif
@@ -191,7 +192,7 @@ Prof_extern_C void Prof_set_report_mode(Prof_Report_Mode desired)
 
 #define NUM_VALUES 4
 #define NUM_TITLE 2
-#define NUM_HEADER (NUM_VALUES+1)
+#define NUM_HEADER (NUM_VALUES + 1)
 
 //컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴컴
 //Procedure Prof_dumpFile
@@ -203,11 +204,11 @@ Prof_extern_C void Prof_set_report_mode(Prof_Report_Mode desired)
 // DumpOverlay should be called.
 // When in doubt, use the dumpOverlay since this isn큧 very refined
 //------------------------------------------------------------------------------
-Prof_extern_C void  Prof_dumpFile()
+Prof_extern_C void Prof_dumpFile()
 {
 #ifdef Prof_ENABLED
-    FILE* fp = fopen("report.txt", "at");
-    Prof_Report* pob = Prof_create_report();
+    FILE *fp = fopen("report.txt", "at");
+    Prof_Report *pob = Prof_create_report();
 
     int i, j;
     int max_records = 500;
@@ -266,15 +267,17 @@ Prof_extern_C void  Prof_dumpFile()
 //Desc Assembles a report (char**) and returns it. The calling function
 // has to take care of deleting it again.
 //------------------------------------------------------------------------------
-Prof_extern_C char** Prof_dumpOverlay()
+Prof_extern_C char **Prof_dumpOverlay()
 {
 #ifdef Prof_ENABLED
-    Prof_Report* pob = Prof_create_report();
+    Prof_Report *pob = Prof_create_report();
 
 #define MAX_LINE_NUM 35
 #define MAX_LINE_LENGTH 100
 
-    char** line = (char**)calloc((MAX_LINE_NUM * 4) + 2, sizeof(char*)); // the '+2' is for the 2 title char*
+    char **line =
+        (char **)calloc((MAX_LINE_NUM * 4) + 2,
+                        sizeof(char *)); // the '+2' is for the 2 title char*
 
     int i = 0;
     int j;
@@ -302,11 +305,11 @@ Prof_extern_C char** Prof_dumpOverlay()
     {
         if (pob->title[index])
         {
-            line[linecount] = (char*)malloc(MAX_LINE_LENGTH);
+            line[linecount] = (char *)malloc(MAX_LINE_LENGTH);
             strcpy(line[linecount], pob->title[index]);
         }
         else
-            line[linecount] = (char*)0;
+            line[linecount] = (char *)0;
 
         linecount++;
     }
@@ -324,7 +327,7 @@ Prof_extern_C char** Prof_dumpOverlay()
         }
 
         // first we create a char* with the name of the scope
-        line[linecount] = (char*)malloc(MAX_LINE_LENGTH);
+        line[linecount] = (char *)malloc(MAX_LINE_LENGTH);
 
         if (r->indent > 0)
         {
@@ -361,7 +364,7 @@ Prof_extern_C char** Prof_dumpOverlay()
             {
                 char tmp[80];
                 sprintf(tmp, "%.6f", r->values[j]);
-                line[linecount] = (char*)malloc(MAX_LINE_LENGTH);
+                line[linecount] = (char *)malloc(MAX_LINE_LENGTH);
                 strcpy(line[linecount], tmp);
                 linecount++;
             }
@@ -392,7 +395,7 @@ static void propogate_stack(Prof_Zone_Stack *c)
 
     while (p->zone)
     {
-        if ( not p->zone->visited)
+        if (not p->zone->visited)
         {
             p->total_hier_ticks += c->total_self_ticks;
             p->zone->visited = 1;
@@ -433,13 +436,14 @@ static void update_history(Prof_Zone_Stack *c)
 {
     double self_time, hier_time, entry_count;
 
-    Profile_Tracker_Data_Record *record = (Profile_Tracker_Data_Record *) c->highlevel;
+    Profile_Tracker_Data_Record *record =
+        (Profile_Tracker_Data_Record *)c->highlevel;
     Prof_Zone *z = c->zone;
 
     if (record == NULL)
     {
-        record = (Profile_Tracker_Data_Record *) malloc(sizeof(*record));
-        c->highlevel = (void *) record;
+        record = (Profile_Tracker_Data_Record *)malloc(sizeof(*record));
+        c->highlevel = (void *)record;
         clear(&record->entry_count);
         clear(&record->self_time);
         clear(&record->hierarchical_time);
@@ -467,7 +471,7 @@ static void update_history(Prof_Zone_Stack *c)
     }
 
 #ifdef Prof_ZONE_HISTORY
-    * ((float *) z->highlevel) += (float) self_time;
+    *((float *)z->highlevel) += (float)self_time;
 #endif
 }
 
@@ -484,7 +488,7 @@ Prof_extern_C void Prof_update(int record_data)
 #ifdef Prof_ENABLED
     Prof_Begin(iprof_update)
 
-    static History_Scalar integer_timestamps_per_second;
+        static History_Scalar integer_timestamps_per_second;
     static Prof_Int64 last_integer_timestamp;
     static Prof_Int64 current_integer_timestamp;
 
@@ -509,7 +513,8 @@ Prof_extern_C void Prof_update(int record_data)
     {
         dt = now - last_update_time;
 
-        if (dt == 0) dt = FRAME_TIME_INITIAL;
+        if (dt == 0)
+            dt = FRAME_TIME_INITIAL;
     }
 
     last_update_time = now;
@@ -528,19 +533,21 @@ Prof_extern_C void Prof_update(int record_data)
         sum = 0;
         Prof_traverse(sum_times);
 
-        if (sum == 0) sum = 1;
+        if (sum == 0)
+            sum = 1;
 
-        timestamp_delta = (Prof_Int64) sum;
+        timestamp_delta = (Prof_Int64)sum;
     }
     else
     {
         timestamp_delta = current_integer_timestamp - last_integer_timestamp;
 
-        if (timestamp_delta == 0) timestamp_delta = 1;
+        if (timestamp_delta == 0)
+            timestamp_delta = 1;
     }
 
     last_integer_timestamp = current_integer_timestamp;
-    timestamps_per_second = (double) timestamp_delta / dt;
+    timestamps_per_second = (double)timestamp_delta / dt;
 
     if (update_index < NUM_THROWAWAY_UPDATES)
     {
@@ -548,7 +555,8 @@ Prof_extern_C void Prof_update(int record_data)
     }
     else
     {
-        update(&integer_timestamps_per_second, timestamps_per_second, precomputed_factors);
+        update(&integer_timestamps_per_second, timestamps_per_second,
+               precomputed_factors);
     }
 
     {
@@ -556,7 +564,8 @@ Prof_extern_C void Prof_update(int record_data)
         double ss_val, ss_variance, ss_stdev, ss_ratio;
 
         ss_val = integer_timestamps_per_second.values[ss_slot];
-        ss_variance = integer_timestamps_per_second.variances[ss_slot] - ss_val * ss_val;
+        ss_variance =
+            integer_timestamps_per_second.variances[ss_slot] - ss_val * ss_val;
         ss_stdev = sqrt(fabs(ss_variance));
         ss_ratio;
 
@@ -572,11 +581,10 @@ Prof_extern_C void Prof_update(int record_data)
         speedstep_warning = (ss_ratio > SPEEDSTEP_DETECTION_RATIO);
     }
 
-    if ( not record_data)
+    if (not record_data)
     {
         Prof_traverse(clear_stack);
-        Prof_End
-        return;
+        Prof_End return;
     }
 
     if (timestamps_per_second)
@@ -592,7 +600,7 @@ Prof_extern_C void Prof_update(int record_data)
 
     for (i = 0; i < Prof_num_zones; ++i)
     {
-        Prof_zones[i]->highlevel = (void *) &zone_history[i][history_index];
+        Prof_zones[i]->highlevel = (void *)&zone_history[i][history_index];
         zone_history[i][history_index] = 0;
     }
 
@@ -619,9 +627,10 @@ Prof_extern_C void Prof_update(int record_data)
 static Prof_Report *allocate_buffer(int n)
 {
     int i;
-    Prof_Report *pob = (Prof_Report *) malloc(sizeof(*pob));
+    Prof_Report *pob = (Prof_Report *)malloc(sizeof(*pob));
     pob->num_record = n;
-    pob->record = (Prof_Report_Record *) malloc(sizeof(*pob->record) * pob->num_record);
+    pob->record =
+        (Prof_Report_Record *)malloc(sizeof(*pob->record) * pob->num_record);
     pob->title[0] = pob->title[1] = NULL;
 
     for (i = 0; i < NUM_TITLE; ++i)
@@ -656,17 +665,18 @@ static Prof_Recursion_Mode recurse = Prof_FLATTEN_RECURSION;
 static void propogate_to_zone(Prof_Zone_Stack *c)
 {
     Prof_Zone *z = c->zone;
-    Profile_Tracker_Data_Record *d = (Profile_Tracker_Data_Record *) c->highlevel;
+    Profile_Tracker_Data_Record *d =
+        (Profile_Tracker_Data_Record *)c->highlevel;
     Prof_Report_Record *r;
 
 #if 1
-    r = (Prof_Report_Record *) z->highlevel;
+    r = (Prof_Report_Record *)z->highlevel;
 #else
 
     if (recurse == Prof_FLATTEN_RECURSION)
-        r = (Prof_Report_Record *) z->highlevel;
+        r = (Prof_Report_Record *)z->highlevel;
     else
-        r = ((Prof_Report_Record **) z->highlevel)[c->recursion_depth];
+        r = ((Prof_Report_Record **)z->highlevel)[c->recursion_depth];
 
 #endif
 
@@ -686,12 +696,14 @@ static void propogate_to_zone(Prof_Zone_Stack *c)
                 r->number = d->max_recursion;
 
             if (c->parent->zone)
-                ((Prof_Report_Record *) c->parent->zone->highlevel)->prefix = '+';
+                ((Prof_Report_Record *)c->parent->zone->highlevel)->prefix =
+                    '+';
         }
 
 #ifdef Prof_CALL_HISTORY
 
-        if (display_frame) return;  // no variances when examining history
+        if (display_frame)
+            return; // no variances when examining history
 
 #endif
 
@@ -724,7 +736,8 @@ static void propogate_to_zone(Prof_Zone_Stack *c)
 //------------------------------------------------------------------------------
 static void propogate_expanded(Prof_Zone_Stack *c)
 {
-    Profile_Tracker_Data_Record *d = (Profile_Tracker_Data_Record *) c->highlevel;
+    Profile_Tracker_Data_Record *d =
+        (Profile_Tracker_Data_Record *)c->highlevel;
 
     if (d == NULL)
     {
@@ -734,44 +747,47 @@ static void propogate_expanded(Prof_Zone_Stack *c)
 
     if (c->parent->zone and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
     {
-        ((Prof_Report_Record *) c->parent->zone->highlevel)[0].prefix = '+';
-        ((Prof_Report_Record *) c->parent->zone->highlevel)[1].prefix = '+';
-        ((Prof_Report_Record *) c->parent->zone->highlevel)[2].prefix = '+';
+        ((Prof_Report_Record *)c->parent->zone->highlevel)[0].prefix = '+';
+        ((Prof_Report_Record *)c->parent->zone->highlevel)[1].prefix = '+';
+        ((Prof_Report_Record *)c->parent->zone->highlevel)[2].prefix = '+';
     }
 
     if (c->zone == expand)
     {
-        Prof_Report_Record *r = (Prof_Report_Record *) expand->highlevel;
+        Prof_Report_Record *r = (Prof_Report_Record *)expand->highlevel;
         // accumulate this time to ourselves
         r[2].values[0] += 1000 * get_value(&d->self_time);
         r[2].values[1] += 1000 * get_value(&d->hierarchical_time);
         r[2].values[2] += get_value(&d->entry_count);
 
-        if (d->max_recursion > r[2].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+        if (d->max_recursion > r[2].number and
+            get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
             r[2].number = d->max_recursion;
 
         // propogate it to the parents
         if (c->parent->zone)
         {
-            r = (Prof_Report_Record *) c->parent->zone->highlevel;
+            r = (Prof_Report_Record *)c->parent->zone->highlevel;
             r[1].values[0] += 1000 * get_value(&d->self_time);
             r[1].values[1] += 1000 * get_value(&d->hierarchical_time);
             r[1].values[2] += get_value(&d->entry_count);
-            d = (Profile_Tracker_Data_Record *) c->parent->highlevel;
+            d = (Profile_Tracker_Data_Record *)c->parent->highlevel;
 
-            if (d->max_recursion > r[1].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+            if (d->max_recursion > r[1].number and
+                get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
                 r[1].number = d->max_recursion;
         }
     }
 
     if (c->parent->zone == expand)
     {
-        Prof_Report_Record *r = (Prof_Report_Record *) c->zone->highlevel;
+        Prof_Report_Record *r = (Prof_Report_Record *)c->zone->highlevel;
         r[0].values[0] += 1000 * get_value(&d->self_time);
         r[0].values[1] += 1000 * get_value(&d->hierarchical_time);
         r[0].values[2] += get_value(&d->entry_count);
 
-        if (d->max_recursion > r[0].number and get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
+        if (d->max_recursion > r[0].number and
+            get_value(&d->entry_count) > INT_ZERO_THRESHHOLD)
             r[0].number = d->max_recursion;
     }
 }
@@ -789,7 +805,8 @@ static double compute_heat(double variance, double value)
 
     variance = variance - value * value;
 
-    if (variance < 0) variance = 0;
+    if (variance < 0)
+        variance = 0;
 
     stdev = sqrt(variance);
 
@@ -802,9 +819,11 @@ static double compute_heat(double variance, double value)
         factor = (stdev / fabs_value) * (1.0f / VARIANCE_TOLERANCE_FACTOR);
     }
 
-    if (factor < 0) return 0;
+    if (factor < 0)
+        return 0;
 
-    if (factor > 1) return 1;
+    if (factor > 1)
+        return 1;
 
     return factor;
 }
@@ -816,8 +835,8 @@ static double compute_heat(double variance, double value)
 //------------------------------------------------------------------------------
 static int pob_compare(const void *p, const void *q)
 {
-    double a = ((Prof_Report_Record *) p)->values[0];
-    double b = ((Prof_Report_Record *) q)->values[0];
+    double a = ((Prof_Report_Record *)p)->values[0];
+    double b = ((Prof_Report_Record *)q)->values[0];
 
     return (b < a) ? -1 : (b > a);
 }
@@ -829,18 +848,22 @@ static int pob_compare(const void *p, const void *q)
 //------------------------------------------------------------------------------
 static int pob_expand_compare(const void *p, const void *q)
 {
-    Prof_Report_Record * a = (Prof_Report_Record *) p;
-    Prof_Report_Record * b = (Prof_Report_Record *) q;
+    Prof_Report_Record *a = (Prof_Report_Record *)p;
+    Prof_Report_Record *b = (Prof_Report_Record *)q;
 
     if (a->indent not_eq b->indent)
     {
-        if (a->indent == 5) return -1;
+        if (a->indent == 5)
+            return -1;
 
-        if (b->indent == 5) return 1;
+        if (b->indent == 5)
+            return 1;
 
-        if (a->indent == 3) return 1;
+        if (a->indent == 3)
+            return 1;
 
-        if (b->indent == 3) return -1;
+        if (b->indent == 3)
+            return -1;
 
         return 0;
     }
@@ -850,12 +873,14 @@ static int pob_expand_compare(const void *p, const void *q)
 
     if (a->values[1] < b->values[1])
     {
-        if (a->indent == 5) return -1;
+        if (a->indent == 5)
+            return -1;
 
         return 1;
     }
 
-    if (a->indent == 5) return 1;
+    if (a->indent == 5)
+        return 1;
 
     return -1;
 }
@@ -886,7 +911,7 @@ Prof_Report *Prof_create_report(void)
     {
         Prof_Zone *z = Prof_zones[i];
         Prof_Report_Record *r = &pob->record[i * s];
-        z->highlevel = (void *) r;
+        z->highlevel = (void *)r;
 
         if (displayed_quantity == Prof_CALL_GRAPH)
         {
@@ -897,14 +922,14 @@ Prof_Report *Prof_create_report(void)
             r[0].indent = 3;
             r[1].indent = 5;
             r[2].indent = 0;
-            r[0].zone = r[1].zone = r[2].zone = (void *) z;
+            r[0].zone = r[1].zone = r[2].zone = (void *)z;
             r[0].prefix = r[1].prefix = r[2].prefix = 0;
         }
         else
         {
             r->value_flag = 1 bitor 2 bitor 4;
             r->name = z->name;
-            r->zone = (void *) z;
+            r->zone = (void *)z;
             r->indent = 0;
             r->prefix = 0;
         }
@@ -912,7 +937,8 @@ Prof_Report *Prof_create_report(void)
 
     avg_frame_time = frame_time.values[slot];
 
-    if (avg_frame_time == 0) avg_frame_time = 0.01f;
+    if (avg_frame_time == 0)
+        avg_frame_time = 0.01f;
 
     fps = 1.0f / avg_frame_time;
 
@@ -920,22 +946,21 @@ Prof_Report *Prof_create_report(void)
 
     switch (displayed_quantity)
     {
-        case Prof_SELF_TIME:
-            displayed_quantity_name = "sort self";
-            break;
+    case Prof_SELF_TIME:
+        displayed_quantity_name = "sort self";
+        break;
 
-        case Prof_HIERARCHICAL_TIME:
-            displayed_quantity_name = "sort hier";
-            break;
+    case Prof_HIERARCHICAL_TIME:
+        displayed_quantity_name = "sort hier";
+        break;
 
-        case Prof_CALL_GRAPH:
-            displayed_quantity_name = "sort call graph";
-            break;
+    case Prof_CALL_GRAPH:
+        displayed_quantity_name = "sort call graph";
+        break;
     }
 
-    pob->title[0] = (char *)  malloc(BUFSIZ);
-    sprintf(pob->title[0],
-            "%3.3lf ms/frame (fps: %3.2lf)  %s",
+    pob->title[0] = (char *)malloc(BUFSIZ);
+    sprintf(pob->title[0], "%3.3lf ms/frame (fps: %3.2lf)  %s",
             avg_frame_time * 1000, fps, displayed_quantity_name);
 
 #ifdef Prof_CALL_HISTORY
@@ -953,11 +978,12 @@ Prof_Report *Prof_create_report(void)
 #endif
 
     if (speedstep_warning)
-        pob->title[1] = _strdup("WARNING: SpeedStep-like timer inconsistencies detected.  Results are unreliable");
+        pob->title[1] = _strdup("WARNING: SpeedStep-like timer inconsistencies "
+                                "detected.  Results are unreliable");
 
     if (displayed_quantity == Prof_CALL_GRAPH)
     {
-        Prof_Report_Record *r = (Prof_Report_Record *) expand->highlevel;
+        Prof_Report_Record *r = (Prof_Report_Record *)expand->highlevel;
         int j = 0;
 
         Prof_traverse(propogate_expanded);
@@ -966,7 +992,8 @@ Prof_Report *Prof_create_report(void)
 
         for (i = 0; i < pob->num_record; ++i)
         {
-            if (pob->record[i].values[0] or pob->record[i].values[1] or pob->record[i].values[2])
+            if (pob->record[i].values[0] or pob->record[i].values[1] or
+                pob->record[i].values[2])
             {
                 pob->record[j] = pob->record[i];
                 ++j;
@@ -975,7 +1002,8 @@ Prof_Report *Prof_create_report(void)
 
         pob->num_record = j;
 
-        qsort(pob->record, pob->num_record, sizeof(pob->record[0]), pob_expand_compare);
+        qsort(pob->record, pob->num_record, sizeof(pob->record[0]),
+              pob_expand_compare);
 
         for (i = 0; i < pob->num_record; ++i)
             if (pob->record[i].indent == 5)
@@ -996,11 +1024,12 @@ Prof_Report *Prof_create_report(void)
                 pob->record[i].values[1] = t;
             }
 
-            pob->record[i].heat = compute_heat(pob->record[i].heat, pob->record[i].values[0]);
+            pob->record[i].heat =
+                compute_heat(pob->record[i].heat, pob->record[i].values[0]);
         }
 
-        qsort(pob->record, pob->num_record, sizeof(pob->record[0]), pob_compare);
-
+        qsort(pob->record, pob->num_record, sizeof(pob->record[0]),
+              pob_compare);
     }
 
     if (update_cursor)
@@ -1032,9 +1061,11 @@ Prof_Report *Prof_create_report(void)
 
     pob->header[3] = _strdup("count");
 
-    if (cursor < 0) cursor = 0;
+    if (cursor < 0)
+        cursor = 0;
 
-    if (cursor >= pob->num_record) cursor = pob->num_record - 1;
+    if (cursor >= pob->num_record)
+        cursor = pob->num_record - 1;
 
     pob->hilight = cursor;
 
@@ -1107,7 +1138,7 @@ Prof_extern_C void Prof_select(void)
 
         if (z not_eq NULL)
         {
-            expand = (Prof_Zone *) z;
+            expand = (Prof_Zone *)z;
             displayed_quantity = Prof_CALL_GRAPH;
         }
     }
@@ -1124,16 +1155,18 @@ Prof_extern_C void Prof_select(void)
 Prof_extern_C void Prof_select_parent(void)
 {
     int i;
-    void *old = (void *) expand;
+    void *old = (void *)expand;
     Prof_Report *b = Prof_create_report();
 
     for (i = 0; i < b->num_record; ++i)
     {
-        if (b->record[i].indent == 0) break;
+        if (b->record[i].indent == 0)
+            break;
 
-        if (b->record[i].zone == old) continue;
+        if (b->record[i].zone == old)
+            continue;
 
-        expand = (Prof_Zone *) b->record[i].zone;
+        expand = (Prof_Zone *)b->record[i].zone;
     }
 
     Prof_free_report(b);
@@ -1147,9 +1180,11 @@ Prof_extern_C void Prof_select_parent(void)
 //------------------------------------------------------------------------------
 Prof_extern_C void Prof_set_frame(int num)
 {
-    if (num < 0) num = 0;
+    if (num < 0)
+        num = 0;
 
-    if (num >= NUM_FRAME_SLOTS) num = NUM_FRAME_SLOTS - 1;
+    if (num >= NUM_FRAME_SLOTS)
+        num = NUM_FRAME_SLOTS - 1;
 
     display_frame = num;
 }
@@ -1172,7 +1207,8 @@ Prof_extern_C void Prof_move_frame(int delta)
 //------------------------------------------------------------------------------
 Prof_extern_C void Prof_set_smoothing(int x)
 {
-    if (x <= 0) x = 0;
+    if (x <= 0)
+        x = 0;
 
     if (x >= NUM_PROFILE_TRACKER_HISTORY_SLOTS)
         x = NUM_PROFILE_TRACKER_HISTORY_SLOTS - 1;
@@ -1211,7 +1247,10 @@ static int id(Prof_Zone *z)
 //Author
 //Date
 //------------------------------------------------------------------------------
-void Prof_graph(int num_frames, void (*callback)(int id, int x0, int x1, float *values, void *data), void *data)
+void Prof_graph(int num_frames,
+                void (*callback)(int id, int x0, int x1, float *values,
+                                 void *data),
+                void *data)
 {
 #ifdef Prof_ZONE_HISTORY
     int i, h = history_index;
@@ -1223,23 +1262,26 @@ void Prof_graph(int num_frames, void (*callback)(int id, int x0, int x1, float *
     {
         if (h >= num_frames)
         {
-            callback(id(Prof_zones[i]), 0, num_frames, &zone_history[i][h - num_frames], data);
+            callback(id(Prof_zones[i]), 0, num_frames,
+                     &zone_history[i][h - num_frames], data);
         }
         else
         {
-            callback(id(Prof_zones[i]), num_frames - h, num_frames, &zone_history[i][0], data);
-            callback(id(Prof_zones[i]), 0, num_frames - h, &zone_history[i][NUM_FRAME_SLOTS - (num_frames - h)], data);
+            callback(id(Prof_zones[i]), num_frames - h, num_frames,
+                     &zone_history[i][0], data);
+            callback(id(Prof_zones[i]), 0, num_frames - h,
+                     &zone_history[i][NUM_FRAME_SLOTS - (num_frames - h)],
+                     data);
         }
     }
 
     // display frame "cursor"
     if (display_frame not_eq 0)
     {
-        float value[2] = { 2.0, 0 };
-        callback(0, NUM_FRAME_SLOTS - 1 - display_frame, NUM_FRAME_SLOTS - 1 - display_frame, value, data);
+        float value[2] = {2.0, 0};
+        callback(0, NUM_FRAME_SLOTS - 1 - display_frame,
+                 NUM_FRAME_SLOTS - 1 - display_frame, value, data);
     }
 
 #endif
 }
-
-

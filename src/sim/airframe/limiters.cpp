@@ -53,7 +53,7 @@ LimiterMgrClass::~LimiterMgrClass(void)
 
      }*/
 
-    delete [] limiterDatasets;
+    delete[] limiterDatasets;
     limiterDatasets = NULL;
 
 #ifdef USE_SH_POOLS
@@ -73,7 +73,7 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
     int numLimiters, i;
     char buf[160];
 
-    if ( not file or dataset < 0 or dataset > numDatasets)
+    if (not file or dataset < 0 or dataset > numDatasets)
         return FALSE;
 
     /*
@@ -94,7 +94,7 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
 
     numLimiters = atoi(file->GetNext());
 
-    if ( not numLimiters)
+    if (not numLimiters)
         return FALSE;
 
     for (i = 0; i < numLimiters; i++)
@@ -109,35 +109,37 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
         if (limiterDatasets[dataset * NumLimiterTypes + key])
         {
             delete limiterDatasets[dataset * numDatasets + key];
-            limiterDatasets[dataset * NumLimiterTypes + key]  = NULL;
+            limiterDatasets[dataset * NumLimiterTypes + key] = NULL;
         }
 
         switch (limiterType)
         {
-            case ltLine:
-                //limiterDatasets[dataset]->limiter = new LineLimiter;
-                limiterDatasets[dataset * NumLimiterTypes + key] = new LineLimiter;
-                break;
+        case ltLine:
+            //limiterDatasets[dataset]->limiter = new LineLimiter;
+            limiterDatasets[dataset * NumLimiterTypes + key] = new LineLimiter;
+            break;
 
-            case ltValue:
-                //limiterDatasets[dataset]->limiter = new ValueLimiter;
-                limiterDatasets[dataset * NumLimiterTypes + key] = new ValueLimiter;
-                break;
+        case ltValue:
+            //limiterDatasets[dataset]->limiter = new ValueLimiter;
+            limiterDatasets[dataset * NumLimiterTypes + key] = new ValueLimiter;
+            break;
 
-            case ltPercent:
-                //limiterDatasets[dataset]->limiter = new PercentLimiter;
-                limiterDatasets[dataset * NumLimiterTypes + key] = new PercentLimiter;
-                break;
+        case ltPercent:
+            //limiterDatasets[dataset]->limiter = new PercentLimiter;
+            limiterDatasets[dataset * NumLimiterTypes + key] =
+                new PercentLimiter;
+            break;
 
-            case ltThreePt:
-                //limiterDatasets[dataset]->limiter = new ThreePointLimiter;
-                limiterDatasets[dataset * NumLimiterTypes + key] = new ThreePointLimiter;
-                break;
+        case ltThreePt:
+            //limiterDatasets[dataset]->limiter = new ThreePointLimiter;
+            limiterDatasets[dataset * NumLimiterTypes + key] =
+                new ThreePointLimiter;
+            break;
 
-            case ltMinMax:
-                limiterDatasets[dataset * NumLimiterTypes + key] = new MinMaxLimiter;
-                break;
-
+        case ltMinMax:
+            limiterDatasets[dataset * NumLimiterTypes + key] =
+                new MinMaxLimiter;
+            break;
         }
 
         //limiterDatasets[dataset]->key = key;
@@ -148,7 +150,6 @@ int LimiterMgrClass::ReadLimiters(SimlibFileClass *file, int dataset)
          limiterDatasets[dataset]->limiter->Setup(buf);*/
         if (limiterDatasets[dataset * NumLimiterTypes + key])
             limiterDatasets[dataset * NumLimiterTypes + key]->Setup(buf);
-
     }
 
     return TRUE;
@@ -168,7 +169,8 @@ int LimiterMgrClass::HasLimiter(int key, int dataset)
 
      return FALSE;*/
 
-    if (dataset < 0 or dataset >= numDatasets or key < 0 or key >= NumLimiterTypes)   // Artscout - 2026: bound-check (see GetLimiter)
+    if (dataset < 0 or dataset >= numDatasets or key < 0 or
+        key >= NumLimiterTypes) // Artscout - 2026: bound-check (see GetLimiter)
         return 0;
 
     return limiterDatasets[dataset * NumLimiterTypes + key] ? 1 : 0;
@@ -192,7 +194,8 @@ Limiter *LimiterMgrClass::GetLimiter(int key, int dataset)
     // SimObjectType lifetime issue). The OOB read returned benign garbage in Debug but a -1 pointer in Release
     // -> CTD in AirframeClass::Roll (limiter->Limit on a bogus pointer, e.g. while AI dogfights hard). Every
     // caller null-checks the result, so returning NULL just means "no limiter for this axis" (graceful).
-    if (dataset < 0 or dataset >= numDatasets or key < 0 or key >= NumLimiterTypes)
+    if (dataset < 0 or dataset >= numDatasets or key < 0 or
+        key >= NumLimiterTypes)
         return NULL;
 
     return limiterDatasets[dataset * NumLimiterTypes + key];
@@ -204,7 +207,6 @@ Limiter *LimiterMgrClass::GetLimiter(int key, int dataset)
 
 Limiter::Limiter(LimiterType ltype) : type(ltype)
 {
-
 }
 
 float Limiter::Limit(float x)
@@ -216,7 +218,7 @@ float Limiter::Limit(float x)
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
-LineLimiter::LineLimiter(void): Limiter(ltLine)
+LineLimiter::LineLimiter(void) : Limiter(ltLine)
 {
     m = 0.0F;
     b = 0.0F;
@@ -253,7 +255,7 @@ float LineLimiter::Limit(float x)
 /////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////
 
-ThreePointLimiter::ThreePointLimiter(void): Limiter(ltThreePt)
+ThreePointLimiter::ThreePointLimiter(void) : Limiter(ltThreePt)
 {
     m1 = 0.0F;
     b1 = 0.0F;
@@ -269,7 +271,8 @@ void ThreePointLimiter::Setup(char *string)
 {
     float x[3], y[3];
 
-    if (sscanf(string, "%f %f %f %f %f %f", &x[0], &y[0], &x[1], &y[1], &x[2], &y[2]) == 6)
+    if (sscanf(string, "%f %f %f %f %f %f", &x[0], &y[0], &x[1], &y[1], &x[2],
+               &y[2]) == 6)
     {
         Setup(x, y);
     }
@@ -322,7 +325,7 @@ float ThreePointLimiter::Limit(float x)
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-ValueLimiter::ValueLimiter(void): Limiter(ltValue)
+ValueLimiter::ValueLimiter(void) : Limiter(ltValue)
 {
     value = 0.0F;
 }
@@ -349,7 +352,7 @@ float ValueLimiter::Limit(float)
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-MinMaxLimiter::MinMaxLimiter(void): Limiter(ltMinMax)
+MinMaxLimiter::MinMaxLimiter(void) : Limiter(ltMinMax)
 {
     minimum = 0.0F;
     maximum = 0.0F;
@@ -377,7 +380,7 @@ float MinMaxLimiter::Limit(float x)
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 
-PercentLimiter::PercentLimiter(void): Limiter(ltValue)
+PercentLimiter::PercentLimiter(void) : Limiter(ltValue)
 {
     percent = 1.0F;
 }

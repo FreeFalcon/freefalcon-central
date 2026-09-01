@@ -1,22 +1,15 @@
 #ifndef _VEC3D_TEMPLATE_H_
 #define _VEC3D_TEMPLATE_H_
 
-template<class RealType>
-class Vector_3D
+template <class RealType> class Vector_3D
 {
 private:
     RealType _cmp[3];
 
 public:
-
     // Constructors.
     Vector_3D();
-    Vector_3D
-    (
-        RealType i,
-        RealType j,
-        RealType k
-    );
+    Vector_3D(RealType i, RealType j, RealType k);
     Vector_3D(const Vector_3D<RealType> &copy_me);
     Vector_3D(const Tpoint &p);
 
@@ -40,11 +33,15 @@ public:
     void operator/=(RealType n);
 
     // Binary arithmetic.
-    friend Vector_3D<RealType> operator*(RealType n, const Vector_3D<RealType> &v);
-    friend Vector_3D<RealType> operator*(const Vector_3D<RealType> &v, RealType n);
+    friend Vector_3D<RealType> operator*(RealType n,
+                                         const Vector_3D<RealType> &v);
+    friend Vector_3D<RealType> operator*(const Vector_3D<RealType> &v,
+                                         RealType n);
 
-    friend Vector_3D<RealType> operator+(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2);
-    friend Vector_3D<RealType> operator-(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2);
+    friend Vector_3D<RealType> operator+(const Vector_3D<RealType> &v1,
+                                         const Vector_3D<RealType> &v2);
+    friend Vector_3D<RealType> operator-(const Vector_3D<RealType> &v1,
+                                         const Vector_3D<RealType> &v2);
 
     // Get access.
     RealType I() const;
@@ -70,7 +67,8 @@ public:
     void Invert();
 
     // Dot and cross products.
-    friend RealType Dot(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2);
+    friend RealType Dot(const Vector_3D<RealType> &v1,
+                        const Vector_3D<RealType> &v2);
     void Cross(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2);
 
     // Conversion methods.
@@ -79,7 +77,8 @@ public:
 
     // Unit vector methods.
     // Only use these if you know all vector parameters are unit vectors!
-    friend RealType AngleBetweenUnitVectors(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2);
+    friend RealType AngleBetweenUnitVectors(const Vector_3D<RealType> &v1,
+                                            const Vector_3D<RealType> &v2);
 
     // Get the heading from a direction vector.
     // If singularity, heading will be 0.
@@ -88,7 +87,8 @@ public:
     RealType Heading() const;
 
     // Get the angle
-    friend RealType AngleBetween(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2);
+    friend RealType AngleBetween(const Vector_3D<RealType> &v1,
+                                 const Vector_3D<RealType> &v2);
 };
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,8 +97,7 @@ public:
 //
 // Vector_3D inlines
 
-template<class RealType>
-inline Vector_3D<RealType>::Vector_3D()
+template <class RealType> inline Vector_3D<RealType>::Vector_3D()
 {
     _cmp[0] = (RealType)0.0;
     _cmp[1] = (RealType)0.0;
@@ -109,13 +108,8 @@ inline Vector_3D<RealType>::Vector_3D()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline Vector_3D<RealType>::Vector_3D
-(
-    RealType i,
-    RealType j,
-    RealType k
-)
+template <class RealType>
+inline Vector_3D<RealType>::Vector_3D(RealType i, RealType j, RealType k)
 {
     _cmp[0] = i;
     _cmp[1] = j;
@@ -126,7 +120,7 @@ inline Vector_3D<RealType>::Vector_3D
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline Vector_3D<RealType>::Vector_3D(const Vector_3D<RealType> &copy_me)
 {
     _cmp[0] = copy_me._cmp[0];
@@ -138,8 +132,7 @@ inline Vector_3D<RealType>::Vector_3D(const Vector_3D<RealType> &copy_me)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline Vector_3D<RealType>::Vector_3D(const Tpoint &p)
+template <class RealType> inline Vector_3D<RealType>::Vector_3D(const Tpoint &p)
 {
     _cmp[0] = p.x;
     _cmp[1] = p.y;
@@ -150,8 +143,7 @@ inline Vector_3D<RealType>::Vector_3D(const Tpoint &p)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline Vector_3D<RealType>::~Vector_3D()
+template <class RealType> inline Vector_3D<RealType>::~Vector_3D()
 {
 }
 
@@ -159,8 +151,9 @@ inline Vector_3D<RealType>::~Vector_3D()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline Vector_3D<RealType> &Vector_3D<RealType>::operator=(const Vector_3D<RealType> &v)
+template <class RealType>
+inline Vector_3D<RealType> &
+Vector_3D<RealType>::operator=(const Vector_3D<RealType> &v)
 {
     _cmp[0] = v._cmp[0];
     _cmp[1] = v._cmp[1];
@@ -173,7 +166,7 @@ inline Vector_3D<RealType> &Vector_3D<RealType>::operator=(const Vector_3D<RealT
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline RealType &Vector_3D<RealType>::operator[](int i)
 {
     return _cmp[i];
@@ -183,7 +176,7 @@ inline RealType &Vector_3D<RealType>::operator[](int i)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline const RealType &Vector_3D<RealType>::operator[](int i) const
 {
     return _cmp[i];
@@ -193,15 +186,10 @@ inline const RealType &Vector_3D<RealType>::operator[](int i) const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline Vector_3D<RealType> Vector_3D<RealType>::operator-()
 {
-    return Vector_3D<RealType>
-           (
-               -_cmp[0],
-               -_cmp[1],
-               -_cmp[2]
-           );
+    return Vector_3D<RealType>(-_cmp[0], -_cmp[1], -_cmp[2]);
 }
 
 
@@ -209,7 +197,7 @@ inline Vector_3D<RealType> Vector_3D<RealType>::operator-()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline void Vector_3D<RealType>::operator+=(const Vector_3D<RealType> &v)
 {
     _cmp[0] += v._cmp[0];
@@ -221,7 +209,7 @@ inline void Vector_3D<RealType>::operator+=(const Vector_3D<RealType> &v)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline void Vector_3D<RealType>::operator-=(const Vector_3D<RealType> &v)
 {
     _cmp[0] -= v._cmp[0];
@@ -233,7 +221,7 @@ inline void Vector_3D<RealType>::operator-=(const Vector_3D<RealType> &v)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline void Vector_3D<RealType>::operator*=(RealType n)
 {
     _cmp[0] *= n;
@@ -245,79 +233,61 @@ inline void Vector_3D<RealType>::operator*=(RealType n)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline void Vector_3D<RealType>::operator/=(RealType n)
 {
-    F4Assert(n != (RealType)0.0)
-    operator*=((RealType)1.0 / n);
+    F4Assert(n != (RealType)0.0) operator*=((RealType)1.0 / n);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline Vector_3D<RealType> operator*(RealType n, const Vector_3D<RealType> &v)
 {
-    return Vector_3D<RealType>
-           (
-               v._cmp[0] * n,
-               v._cmp[1] * n,
-               v._cmp[2] * n
-           );
+    return Vector_3D<RealType>(v._cmp[0] * n, v._cmp[1] * n, v._cmp[2] * n);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline Vector_3D<RealType> operator*(const Vector_3D<RealType> &v, RealType n)
 {
-    return Vector_3D<RealType>
-           (
-               v._cmp[0] * n,
-               v._cmp[1] * n,
-               v._cmp[2] * n
-           );
+    return Vector_3D<RealType>(v._cmp[0] * n, v._cmp[1] * n, v._cmp[2] * n);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline Vector_3D<RealType> operator+(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2)
+template <class RealType>
+inline Vector_3D<RealType> operator+(const Vector_3D<RealType> &v1,
+                                     const Vector_3D<RealType> &v2)
 {
-    return Vector_3D<RealType>
-           (
-               v1._cmp[0] + v2._cmp[0],
-               v1._cmp[1] + v2._cmp[1],
-               v1._cmp[2] + v2._cmp[2]
-           );
+    return Vector_3D<RealType>(v1._cmp[0] + v2._cmp[0], v1._cmp[1] + v2._cmp[1],
+                               v1._cmp[2] + v2._cmp[2]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline Vector_3D<RealType> operator-(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2)
+template <class RealType>
+inline Vector_3D<RealType> operator-(const Vector_3D<RealType> &v1,
+                                     const Vector_3D<RealType> &v2)
 {
-    return Vector_3D<RealType>
-           (
-               v1._cmp[0] - v2._cmp[0],
-               v1._cmp[1] - v2._cmp[1],
-               v1._cmp[2] - v2._cmp[2]
-           );
+    return Vector_3D<RealType>(v1._cmp[0] - v2._cmp[0], v1._cmp[1] - v2._cmp[1],
+                               v1._cmp[2] - v2._cmp[2]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType Vector_3D<RealType>::I() const
+template <class RealType> inline RealType Vector_3D<RealType>::I() const
 {
     return _cmp[0];
 }
@@ -326,8 +296,7 @@ inline RealType Vector_3D<RealType>::I() const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType Vector_3D<RealType>::J() const
+template <class RealType> inline RealType Vector_3D<RealType>::J() const
 {
     return _cmp[1];
 }
@@ -336,8 +305,7 @@ inline RealType Vector_3D<RealType>::J() const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType Vector_3D<RealType>::K() const
+template <class RealType> inline RealType Vector_3D<RealType>::K() const
 {
     return _cmp[2];
 }
@@ -346,8 +314,7 @@ inline RealType Vector_3D<RealType>::K() const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline void Vector_3D<RealType>::SetI(RealType i)
+template <class RealType> inline void Vector_3D<RealType>::SetI(RealType i)
 {
     _cmp[0] = i;
 }
@@ -357,8 +324,7 @@ inline void Vector_3D<RealType>::SetI(RealType i)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline void Vector_3D<RealType>::SetJ(RealType j)
+template <class RealType> inline void Vector_3D<RealType>::SetJ(RealType j)
 {
     _cmp[1] = j;
 }
@@ -367,8 +333,7 @@ inline void Vector_3D<RealType>::SetJ(RealType j)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline void Vector_3D<RealType>::SetK(RealType k)
+template <class RealType> inline void Vector_3D<RealType>::SetK(RealType k)
 {
     _cmp[2] = k;
 }
@@ -377,25 +342,19 @@ inline void Vector_3D<RealType>::SetK(RealType k)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline RealType Vector_3D<RealType>::MagnitudeSquared() const
 {
-    return
-        (
-            _cmp[0] * _cmp[0] +
-            _cmp[1] * _cmp[1] +
-            _cmp[2] * _cmp[2]
-        );
+    return (_cmp[0] * _cmp[0] + _cmp[1] * _cmp[1] + _cmp[2] * _cmp[2]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType Vector_3D<RealType>::Magnitude() const
+template <class RealType> inline RealType Vector_3D<RealType>::Magnitude() const
 {
-    return((float)sqrt(MagnitudeSquared()));
+    return ((float)sqrt(MagnitudeSquared()));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -406,22 +365,20 @@ inline RealType Vector_3D<RealType>::Magnitude() const
 // optimizing this later.
 // Actually, I'm not sure this optimization can be made with a template function, but what the
 // hell.
-template<class RealType>
+template <class RealType>
 inline RealType Vector_3D<RealType>::OOMagnitude() const
 {
-    RealType
-    mag;
+    RealType mag;
 
     mag = Magnitude();
-    return(mag == 0.0F ? 0.0F : 1.0F / mag);
+    return (mag == 0.0F ? 0.0F : 1.0F / mag);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline void Vector_3D<RealType>::Normalize()
+template <class RealType> inline void Vector_3D<RealType>::Normalize()
 {
     operator*=(OOMagnitude());
 }
@@ -430,8 +387,7 @@ inline void Vector_3D<RealType>::Normalize()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline void Vector_3D<RealType>::Invert()
+template <class RealType> inline void Vector_3D<RealType>::Invert()
 {
     _cmp[0] = -_cmp[0];
     _cmp[1] = -_cmp[1];
@@ -442,23 +398,21 @@ inline void Vector_3D<RealType>::Invert()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType Dot(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2)
+template <class RealType>
+inline RealType Dot(const Vector_3D<RealType> &v1,
+                    const Vector_3D<RealType> &v2)
 {
-    return
-        (
-            v1._cmp[0] * v2._cmp[0] +
-            v1._cmp[1] * v2._cmp[1] +
-            v1._cmp[2] * v2._cmp[2]
-        );
+    return (v1._cmp[0] * v2._cmp[0] + v1._cmp[1] * v2._cmp[1] +
+            v1._cmp[2] * v2._cmp[2]);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline void Vector_3D<RealType>::Cross(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2)
+template <class RealType>
+inline void Vector_3D<RealType>::Cross(const Vector_3D<RealType> &v1,
+                                       const Vector_3D<RealType> &v2)
 {
     _cmp[0] = v1._cmp[1] * v2._cmp[2] - v1._cmp[2] * v2._cmp[1];
     _cmp[1] = v1._cmp[2] * v2._cmp[0] - v1._cmp[0] * v2._cmp[2];
@@ -469,7 +423,7 @@ inline void Vector_3D<RealType>::Cross(const Vector_3D<RealType> &v1, const Vect
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline void Vector_3D<RealType>::GetTpoint(Tpoint &p) const
 {
     p.x = (float)_cmp[0];
@@ -481,16 +435,10 @@ inline void Vector_3D<RealType>::GetTpoint(Tpoint &p) const
 ///////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
+template <class RealType>
 inline void Vector_3D<RealType>::GetTrotation(Trotation &result) const
 {
-    float
-    cr,
-    sr,
-    cp,
-    sp,
-    cy,
-    sy;
+    float cr, sr, cp, sp, cy, sy;
 
     // Construct Roll matrix.
     cr = (float)cos((float)_cmp[0]);
@@ -521,8 +469,9 @@ inline void Vector_3D<RealType>::GetTrotation(Trotation &result) const
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType AngleBetweenUnitVectors(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2)
+template <class RealType>
+inline RealType AngleBetweenUnitVectors(const Vector_3D<RealType> &v1,
+                                        const Vector_3D<RealType> &v2)
 {
     return acos(Dot(v1, v2));
 }
@@ -531,8 +480,9 @@ inline RealType AngleBetweenUnitVectors(const Vector_3D<RealType> &v1, const Vec
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType AngleBetween(const Vector_3D<RealType> &v1, const Vector_3D<RealType> &v2)
+template <class RealType>
+inline RealType AngleBetween(const Vector_3D<RealType> &v1,
+                             const Vector_3D<RealType> &v2)
 {
     return acos(Dot(v1, v2) * v1.OOMagnitude() * v2.OOMagnitude());
 }
@@ -541,11 +491,9 @@ inline RealType AngleBetween(const Vector_3D<RealType> &v1, const Vector_3D<Real
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class RealType>
-inline RealType Vector_3D<RealType>::Heading() const
+template <class RealType> inline RealType Vector_3D<RealType>::Heading() const
 {
-    Vector_3D<RealType>
-    v1;
+    Vector_3D<RealType> v1;
 
     if (_cmp[1] == 0.0)
     {

@@ -3,16 +3,16 @@
 #include "persist.h"
 #include "otwdrive.h"
 #include "simdrive.h"
-#include "Graphics/Include/drawGrnd.h"
-#include "MsgInc/AddSFXMessage.h"
-#include "SFX.h"
-#include "Falcmesg.h"
-#include "CampLib.h"
+#include "graphics/include/drawgrnd.h"
+#include "msginc/addsfxmessage.h"
+#include "sfx.h"
+#include "falcmesg.h"
+#include "camplib.h"
 #include "falcsess.h"
-#include "Objectiv.h"
-#include "PtData.h"
-#include "ClassTbl.h"
-#include "InvalidBufferException.h"
+#include "objectiv.h"
+#include "ptdata.h"
+#include "classtbl.h"
+#include "invalidbufferexception.h"
 
 // =============================
 // Externals
@@ -20,8 +20,8 @@
 
 extern short SFXType;
 extern int gCampDataVersion;
-extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
-extern void CloseCampFile(FILE *fp);
+extern FILE* OpenCampFile(char* filename, char* ext, char* mode);
+extern void CloseCampFile(FILE* fp);
 extern float OffsetToMiddle;
 
 // =============================
@@ -55,7 +55,7 @@ SimPersistantClass::SimPersistantClass(void)
 
 SimPersistantClass::~SimPersistantClass(void)
 {
-    ShiAssert( not drawPointer);
+    ShiAssert(not drawPointer);
     // if (drawPointer)
     // OTWDriver.RemoveObject(drawPointer, TRUE);
     // drawPointer = NULL;
@@ -89,14 +89,11 @@ void SimPersistantClass::Load(VU_BYTE** stream)
 
 int SimPersistantClass::SaveSize()
 {
-    return sizeof(float)
-           + sizeof(float)
-           + sizeof(PackedVUIDClass)
-           + sizeof(short)
-           + sizeof(short);
+    return sizeof(float) + sizeof(float) + sizeof(PackedVUIDClass) +
+           sizeof(short) + sizeof(short);
 }
 
-int SimPersistantClass::Save(VU_BYTE **stream)
+int SimPersistantClass::Save(VU_BYTE** stream)
 {
     memcpy(*stream, &x, sizeof(float));
     *stream += sizeof(float);
@@ -111,7 +108,7 @@ int SimPersistantClass::Save(VU_BYTE **stream)
     return SaveSize();
 }
 
-int SimPersistantClass::Save(FILE *filePtr)
+int SimPersistantClass::Save(FILE* filePtr)
 {
     fwrite(&x, sizeof(float), 1, filePtr);
     fwrite(&y, sizeof(float), 1, filePtr);
@@ -134,11 +131,12 @@ void SimPersistantClass::Deaggregate()
     if (drawPointer)
         return;
 
-    Tpoint    simView;
-    simView.x     = x;
-    simView.y     = y;
-    simView.z     = 0;
-    drawPointer = new DrawableGroundVehicle(visType, &simView, 0.0F, OTWDriver.Scale());
+    Tpoint simView;
+    simView.x = x;
+    simView.y = y;
+    simView.z = 0;
+    drawPointer =
+        new DrawableGroundVehicle(visType, &simView, 0.0F, OTWDriver.Scale());
     OTWDriver.InsertObject(drawPointer);
 }
 
@@ -165,7 +163,7 @@ CampaignTime SimPersistantClass::RemovalTime(void)
         return unionData.removeTime;
 }
 
-FalconEntity *SimPersistantClass::GetCampObject(void)
+FalconEntity* SimPersistantClass::GetCampObject(void)
 {
     if (IsTimed())
         return NULL;
@@ -174,7 +172,7 @@ FalconEntity *SimPersistantClass::GetCampObject(void)
         VU_ID vuid;
         vuid.creator_ = unionData.campObject.creator_;
         vuid.creator_ = unionData.campObject.num_;
-        return (FalconEntity*) vuDatabase->Find(vuid);
+        return (FalconEntity*)vuDatabase->Find(vuid);
     }
 }
 
@@ -208,9 +206,11 @@ void CleanupPersistantDatabase(void)
 }
 
 // This is the correct way to add a timed persistant object
-void AddToTimedPersistantList(int vistype, CampaignTime removalTime, float x, float y)
+void AddToTimedPersistantList(int vistype, CampaignTime removalTime, float x,
+                              float y)
 {
-    FalconAddSFXMessage* msg = new FalconAddSFXMessage(FalconNullId, FalconLocalGame);
+    FalconAddSFXMessage* msg =
+        new FalconAddSFXMessage(FalconNullId, FalconLocalGame);
     msg->dataBlock.type = SFX_TIMED_PERSISTANT;
     msg->dataBlock.visType = (short)vistype;
     msg->dataBlock.xLoc = x;
@@ -221,11 +221,13 @@ void AddToTimedPersistantList(int vistype, CampaignTime removalTime, float x, fl
 }
 
 // This is the correct way to add a linked persistant object
-void AddToLinkedPersistantList(int vistype, FalconEntity *campObj, int campIdx, float x, float y)
+void AddToLinkedPersistantList(int vistype, FalconEntity* campObj, int campIdx,
+                               float x, float y)
 {
     ShiAssert(campObj);
 
-    FalconAddSFXMessage* msg = new FalconAddSFXMessage(campObj->Id(), FalconLocalGame);
+    FalconAddSFXMessage* msg =
+        new FalconAddSFXMessage(campObj->Id(), FalconLocalGame);
     msg->dataBlock.type = SFX_LINKED_PERSISTANT;
     msg->dataBlock.visType = (short)vistype;
     msg->dataBlock.xLoc = x;
@@ -235,7 +237,8 @@ void AddToLinkedPersistantList(int vistype, FalconEntity *campObj, int campIdx, 
     FalconSendMessage(msg, FALSE);
 }
 
-void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, float y)
+void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x,
+                              float y)
 {
     int i, ds, slot = -1;
 
@@ -250,7 +253,7 @@ void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, fl
 
     while (i not_eq persistantListTail and slot < 0)
     {
-        if ( not PersistantObjects[i].InUse())
+        if (not PersistantObjects[i].InUse())
             slot = i;
 
         i++;
@@ -268,7 +271,8 @@ void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, fl
     PersistantObjects[slot].flags = SPLF_IS_TIMED bitor SPLF_IN_USE;
 }
 
-void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float x, float y)
+void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx,
+                               float x, float y)
 {
     int i, ds, slot = -1;
 
@@ -283,7 +287,7 @@ void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float 
 
     while (i not_eq persistantListTail and slot < 0)
     {
-        if ( not PersistantObjects[i].InUse())
+        if (not PersistantObjects[i].InUse())
             slot = i;
 
         i++;
@@ -389,7 +393,7 @@ int EncodePersistantList(VU_BYTE** stream, int maxSize)
     return size;
 }
 
-void DecodePersistantList(VU_BYTE** stream, long *rem)
+void DecodePersistantList(VU_BYTE** stream, long* rem)
 {
     short i, count = 0;
 
@@ -403,7 +407,8 @@ void DecodePersistantList(VU_BYTE** stream, long *rem)
     if (count > MAX_PERSISTANT_OBJECTS)
     {
         char err[200];
-        sprintf(err, "%s %d: error decoding persistant, invalid count", __FILE__, __LINE__);
+        sprintf(err, "%s %d: error decoding persistant, invalid count",
+                __FILE__, __LINE__);
         throw InvalidBufferException(err);
     }
 
@@ -445,7 +450,8 @@ void CleanupPersistantList(void)
     persistantListTail = 0;
 }
 
-void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignTime now)
+void UpdatePersistantObjectsWakeState(float px, float py, float range,
+                                      CampaignTime now)
 {
     SimPersistantClass* persist;
     int i;
@@ -457,14 +463,17 @@ void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignT
         if (PersistantObjects[i].InUse())
         {
             persist = &PersistantObjects[i];
-            dsq = (px - persist->x) * (px - persist->x) + (py - persist->y) * (py - persist->y);
+            dsq = (px - persist->x) * (px - persist->x) +
+                  (py - persist->y) * (py - persist->y);
 
             if (dsq < rsq)
             {
-                if ( not persist->drawPointer)
+                if (not persist->drawPointer)
                     persist->Deaggregate();
             }
-            else if (persist->drawPointer and dsq > rsq * 1.2F) // Reaggregate 20% further than we deaggregate
+            else if (
+                persist->drawPointer and
+                dsq > rsq * 1.2F) // Reaggregate 20% further than we deaggregate
                 persist->Reaggregate();
             else if (persist->IsTimed() and now > persist->unionData.removeTime)
                 persist->Cleanup();
@@ -472,7 +481,8 @@ void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignT
     }
 }
 
-void CleanupLinkedPersistantObjects(FalconEntity *campObject, int index, int newVis, int ratio)
+void CleanupLinkedPersistantObjects(FalconEntity* campObject, int index,
+                                    int newVis, int ratio)
 {
     SimPersistantClass* persist;
     int i, converted = 0;
@@ -484,8 +494,8 @@ void CleanupLinkedPersistantObjects(FalconEntity *campObject, int index, int new
         {
             persist = &PersistantObjects[i];
 
-            if (persist->unionData.campObject.num_ == vuid.num_ and 
-                persist->unionData.campObject.creator_ == vuid.creator_ and 
+            if (persist->unionData.campObject.num_ == vuid.num_ and
+                persist->unionData.campObject.creator_ == vuid.creator_ and
                 persist->unionData.campObject.index_ == index)
             {
                 if (newVis)
@@ -524,7 +534,7 @@ void AddRunwayCraters(Objective o, int f, int craters)
     int i, tp, rp;
     float x1, y1, x, y, xd, yd, r;
     int rwindex, runway = 0;
-    ObjClassDataType *oc;
+    ObjClassDataType* oc;
 
     // Find the runway header this feature belongs to
     oc = o->GetObjectiveClassData();
@@ -545,7 +555,7 @@ void AddRunwayCraters(Objective o, int f, int craters)
     }
 
     // Check for valid runway (could be a runway number or something)
-    if ( not runway)
+    if (not runway)
         return;
 
     rp = GetFirstPt(runway);
@@ -570,7 +580,7 @@ void AddRunwayCraters(Objective o, int f, int craters)
     }
 }
 
-void AddMissCraters(FalconEntity *e, int craters)
+void AddMissCraters(FalconEntity* e, int craters)
 {
     // Add a few timed craters
     // NOTE: These need to be deterministically generated
@@ -579,20 +589,26 @@ void AddMissCraters(FalconEntity *e, int craters)
 
     for (int i = 0; i < craters; i++)
     {
-        NewTimedPersistantObject(MapVisId(VIS_CRATER2), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, e->XPos() + rand() % (int)(GRID_SIZE_FT) - OffsetToMiddle, e->YPos() + rand() % (int)(GRID_SIZE_FT) - OffsetToMiddle);
+        NewTimedPersistantObject(
+            MapVisId(VIS_CRATER2), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME,
+            e->XPos() + rand() % (int)(GRID_SIZE_FT)-OffsetToMiddle,
+            e->YPos() + rand() % (int)(GRID_SIZE_FT)-OffsetToMiddle);
 #ifdef DEBUG
         Persistant_Craters++;
 #endif
     }
 }
 
-void AddHulk(FalconEntity *e, int hulkVisId)
+void AddHulk(FalconEntity* e, int hulkVisId)
 {
     // Add a timed hulk
     // NOTE: This need to be deterministically generated
     // Seed the random number generator
     srand(e->Id().num_);
-    NewTimedPersistantObject(hulkVisId, Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, e->XPos() + rand() % (int)(GRID_SIZE_FT) - OffsetToMiddle, e->YPos() + rand() % (int)(GRID_SIZE_FT) - OffsetToMiddle);
+    NewTimedPersistantObject(
+        hulkVisId, Camp_GetCurrentTime() + CRATER_REMOVAL_TIME,
+        e->XPos() + rand() % (int)(GRID_SIZE_FT)-OffsetToMiddle,
+        e->YPos() + rand() % (int)(GRID_SIZE_FT)-OffsetToMiddle);
 #ifdef DEBUG
     Persistant_Hulks++;
 #endif
@@ -603,13 +619,13 @@ void AddHulk(FalconEntity *e, int hulkVisId)
 // Do later
 // ==================================================
 
-#include "Simbase.h"
+#include "simbase.h"
 
 void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
 {
     // Traverse the list of asleep detached objects and wake those in range
     float dsq, rsq = range * range;
-    SimBaseClass *object;
+    SimBaseClass* object;
     VuListIterator dit(SimDriver.ObjsWithNoCampaignParentList);
     object = (SimBaseClass*)dit.GetFirst();
 
@@ -618,7 +634,7 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
         if (object->IsLocal())
         {
             // All local objects should be awake (we need to manage them)
-            if ( not object->IsAwake())
+            if (not object->IsAwake())
             {
                 object->Wake();
             }
@@ -626,24 +642,23 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
         else
         {
             // Only wake remote objects which are within a reasonable range
-            dsq = (px - object->XPos()) * (px - object->XPos()) + (py - object->YPos()) * (py - object->YPos());
+            dsq = (px - object->XPos()) * (px - object->XPos()) +
+                  (py - object->YPos()) * (py - object->YPos());
 
             if (dsq < rsq)
             {
                 // KCK: Probably should remove objects from this list when they're dead -
                 // But I wasn't sure how ACMI uses the unset dead functionality
-                if ( not object->IsAwake() and not object->IsDead())
+                if (not object->IsAwake() and not object->IsDead())
                     object->Wake();
             }
             else if (dsq > rsq * 1.2F)
             {
-                if (object->IsAwake() and //me123 host needs to drive missiles and bombs
-                    (
- not vuLocalSessionEntity->Game()->IsLocal() or
-                        vuLocalSessionEntity->Game()->IsLocal() and 
- not object->IsBomb() and 
- not object->IsMissile())
-                   )
+                if (object
+                        ->IsAwake() and //me123 host needs to drive missiles and bombs
+                    (not vuLocalSessionEntity->Game()->IsLocal() or
+                     vuLocalSessionEntity->Game()->IsLocal() and
+                         not object->IsBomb() and not object->IsMissile()))
                 {
                     object->Sleep();
                 }
@@ -653,4 +668,3 @@ void UpdateNoCampaignParentObjectsWakeState(float px, float py, float range)
         object = (SimBaseClass*)dit.GetNext();
     }
 }
-

@@ -1,7 +1,7 @@
 #ifndef _RAIL_INFO_H_
 #define _RAIL_INFO_H_
 
-#include "sim/include/hardpnt.h" // MLR 2/25/2004 - 
+#include "sim/include/hardpnt.h" // MLR 2/25/2004 -
 
 class RailInfo // MLR 2/25/2004 - changed to class
 {

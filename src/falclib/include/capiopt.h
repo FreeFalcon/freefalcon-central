@@ -15,7 +15,7 @@
 //#define CAPI_NET_DEBUG_FEATURES
 
 // compression stuff
-#include "utils/Lzss.h"
+#include "utils/lzss.h"
 #define ComAPICompress LZSS_Compress
 #define ComAPIDecompress LZSS_Expand
 

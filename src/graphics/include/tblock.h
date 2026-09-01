@@ -11,10 +11,10 @@
 #ifndef _TBLOCK_H_
 #define _TBLOCK_H_
 
-#include "Ttypes.h"
-#include "Tpost.h"
-#include "TLevel.h"
-#include "TMap.h"
+#include "ttypes.h"
+#include "tpost.h"
+#include "tlevel.h"
+#include "tmap.h"
 
 
 class TBlock
@@ -29,7 +29,7 @@ public:
         ShiAssert(owners == 0);
     };
 
-    TLevel* Level()
+    TLevel *Level()
     {
         return level;
     };
@@ -54,13 +54,13 @@ public:
     };
 
     // Return a pointer to the South West post in this block (array element 0)
-    Tpost* Posts()
+    Tpost *Posts()
     {
         return posts;
     };
 
     // Return a pointer to the specified post (in local row/col coordinates)
-    Tpost* Post(UINT r, UINT c)
+    Tpost *Post(UINT r, UINT c)
     {
         ShiAssert(r < (UINT)POSTS_ACROSS_BLOCK);
         ShiAssert(c < (UINT)POSTS_ACROSS_BLOCK);
@@ -118,7 +118,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

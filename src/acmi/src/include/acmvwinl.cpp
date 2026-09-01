@@ -1,4 +1,4 @@
-#include "F4error.h"
+#include "f4error.h"
 #include "sim/include/misctemp.h"
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,7 @@ inline void ACMIView::IncrementCameraObject(int inc)
     {
         for (i = _currentCam + 1; i < numEnt; i++)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentCam = i;
                 return;
@@ -51,7 +51,7 @@ inline void ACMIView::IncrementCameraObject(int inc)
 
         for (i = 0; i < _currentCam; i++)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentCam = i;
                 return;
@@ -62,7 +62,7 @@ inline void ACMIView::IncrementCameraObject(int inc)
     {
         for (i = _currentCam - 1; i >= 0; i--)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentCam = i;
                 return;
@@ -71,14 +71,13 @@ inline void ACMIView::IncrementCameraObject(int inc)
 
         for (i = numEnt - 1; i > _currentCam; i--)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentCam = i;
                 return;
             }
         }
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -115,7 +114,7 @@ inline void ACMIView::IncrementTrackingObject(int inc)
     {
         for (i = _currentEntityCam + 1; i < numEnt; i++)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentEntityCam = i;
                 return;
@@ -124,7 +123,7 @@ inline void ACMIView::IncrementTrackingObject(int inc)
 
         for (i = 0; i < _currentEntityCam; i++)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentEntityCam = i;
                 return;
@@ -135,7 +134,7 @@ inline void ACMIView::IncrementTrackingObject(int inc)
     {
         for (i = _currentEntityCam - 1; i >= 0; i--)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentEntityCam = i;
                 return;
@@ -144,7 +143,7 @@ inline void ACMIView::IncrementTrackingObject(int inc)
 
         for (i = numEnt - 1; i > _currentEntityCam; i--)
         {
-            if (_entityUIMappings[ i ].listboxId != -1)
+            if (_entityUIMappings[i].listboxId != -1)
             {
                 _currentEntityCam = i;
                 return;
@@ -177,4 +176,3 @@ inline int ACMIView::TrackingObject()
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-

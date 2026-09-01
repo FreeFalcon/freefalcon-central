@@ -7,7 +7,7 @@
 #ifndef PTDATA_H
 #define PTDATA_H
 
-#include "Entity.h"
+#include "entity.h"
 
 // ==================================
 // Point Flags
@@ -15,7 +15,8 @@
 
 #define PT_FIRST 0x01 // Flag set if first in pt list
 #define PT_LAST 0x02 // Flag set if last in pt list
-#define PT_OCCUPIED 0x04 // 02JAN04 - FRB - Flag set if last Parking spot occupied
+#define PT_OCCUPIED                                                            \
+    0x04 // 02JAN04 - FRB - Flag set if last Parking spot occupied
 
 #define USAGE_LANDING 0 // Passed to FindRunways() as a usage type
 #define USAGE_TAKEOFF 1
@@ -37,27 +38,29 @@
 // Point Types
 // ==================================
 
-enum PointTypes { NoPt = 0,
-                    RunwayPt,
-                    TakeoffPt,
-                    TaxiPt,
-                    SAMPt,
-                    ArtilleryPt,
-                    AAAPt,
-                    RadarPt,
-                    RunwayDimPt,
-                    SupportPt,
-                    StaticRadarPt,
-                    SmallParkPt,
-                    LargeParkPt,
-                    SmallDockPt,
-                    LargeDockPt,
-                    TakeRunwayPt,
-                    HelicopterPt,
-                    FollowMePt,
-                    TrackPt,
-                    CritTaxiPt
-                };
+enum PointTypes
+{
+    NoPt = 0,
+    RunwayPt,
+    TakeoffPt,
+    TaxiPt,
+    SAMPt,
+    ArtilleryPt,
+    AAAPt,
+    RadarPt,
+    RunwayDimPt,
+    SupportPt,
+    StaticRadarPt,
+    SmallParkPt,
+    LargeParkPt,
+    SmallDockPt,
+    LargeDockPt,
+    TakeRunwayPt,
+    HelicopterPt,
+    FollowMePt,
+    TrackPt,
+    CritTaxiPt
+};
 
 enum PointListTypes
 {
@@ -107,7 +110,8 @@ extern int GetPrevPtCrit(int ptindex);
 
 extern void TranslatePointData(CampEntity e, int ptindex, float *x, float *y);
 
-extern int FindRunways(CampEntity airbase, int usage, int *rw1, int *rw2, int findall);
+extern int FindRunways(CampEntity airbase, int usage, int *rw1, int *rw2,
+                       int findall);
 
 extern int CheckHeaderStatus(CampEntity e, int index);
 

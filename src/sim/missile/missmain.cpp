@@ -1,8 +1,8 @@
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/rviewpnt.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/rviewpnt.h"
 #include "stdhdr.h"
-#include "Classtbl.h"
+#include "classtbl.h"
 #include "sensclas.h"
 #include "eyeball.h"
 #include "irst.h"
@@ -11,8 +11,8 @@
 #include "object.h"
 #include "falcmesg.h"
 #include "otwdrive.h"
-#include "MsgInc/DamageMsg.h"
-#include "campBase.h"
+#include "msginc/damagemsg.h"
+#include "campbase.h"
 #include "simdrive.h"
 #include "simveh.h"
 #include "sfx.h"
@@ -20,28 +20,28 @@
 #include "fsound.h"
 #include "soundfx.h"
 #include "fakerand.h"
-#include "radarMissile.h"
-#include "BeamRider.h"
+#include "radarmissile.h"
+#include "beamrider.h"
 #include "acmi/src/include/acmirec.h"
 #include "falcsess.h"
 #include "camp2sim.h"
 #include "playerop.h"
-#include "Graphics/Include/terrtex.h"
+#include "graphics/include/terrtex.h"
 #include "persist.h"
-#include "campList.h"
-#include "HarmSeeker.h"
+#include "camplist.h"
+#include "harmseeker.h"
 #include "ground.h"
 #include "battalion.h"
 #include "navunit.h"
 #include "missdata.h"
 #include "missile.h"
 #include "team.h"
-#include "profiler.h" // MLR 5/21/2004 - 
+#include "profiler.h" // MLR 5/21/2004 -
 
 // Marco Edit for AIM9s in Slave mode
 #include "aircrft.h"
 #include "fcc.h"
-#include "MsgInc/RadioChatterMsg.h"
+#include "msginc/radiochattermsg.h"
 #include "flight.h"
 
 // Gilman weapon count hack
@@ -113,7 +113,8 @@ MissileInFlightData::~MissileInFlightData()
 {
 }
 
-MissileClass::MissileClass(VU_BYTE** stream, long *rem) : SimWeaponClass(stream, rem)
+MissileClass::MissileClass(VU_BYTE** stream, long* rem)
+    : SimWeaponClass(stream, rem)
 {
     InitLocalData();
 }
@@ -259,7 +260,6 @@ void MissileClass::Init(void)
     // END OF ADDED SECTION
 
 
-
     // 2002-04-05 MN engineData was NULL once, causing a crash. So lets give all missiles on all machines their data, regardless if they're local or not...
     //   if (IsLocal())
     {
@@ -281,10 +281,14 @@ void MissileClass::Init(void)
         //    ReadInput(dataIdx);
 
 
-        aeroData =   missileDataset[min(dataIdx, numMissileDatasets - 1)].aeroData;
-        rangeData =  missileDataset[min(dataIdx, numMissileDatasets - 1)].rangeData;
-        engineData = missileDataset[min(dataIdx, numMissileDatasets - 1)].engineData;
-        auxData = missileDataset[min(dataIdx, numMissileDatasets - 1)].auxData; // JPO
+        aeroData =
+            missileDataset[min(dataIdx, numMissileDatasets - 1)].aeroData;
+        rangeData =
+            missileDataset[min(dataIdx, numMissileDatasets - 1)].rangeData;
+        engineData =
+            missileDataset[min(dataIdx, numMissileDatasets - 1)].engineData;
+        auxData =
+            missileDataset[min(dataIdx, numMissileDatasets - 1)].auxData; // JPO
 
         ShiAssert(aeroData);
         ShiAssert(rangeData);
@@ -299,61 +303,63 @@ void MissileClass::Init(void)
 
         switch (inputData->displayType)
         {
-            case DisplayBW:
-            case DisplayIR:
-                display = new MaverickDisplayClass(this);
-                break;
+        case DisplayBW:
+        case DisplayIR:
+            display = new MaverickDisplayClass(this);
+            break;
 
-            case DisplayHTS:
-                if (parent->IsCampaign())
-                    display = NULL;
-                else
-                    display = FindSensor((SimMoverClass*)parent.get(), SensorClass::HTS);
-
-                break;
-
-            case DisplayNone:
-            case DisplayColor:
-            default:
+        case DisplayHTS:
+            if (parent->IsCampaign())
                 display = NULL;
-                break;
+            else
+                display =
+                    FindSensor((SimMoverClass*)parent.get(), SensorClass::HTS);
+
+            break;
+
+        case DisplayNone:
+        case DisplayColor:
+        default:
+            display = NULL;
+            break;
         }
 
         // edg: total hack here.
-        if (((VuEntityType *)classPtr)->classInfo_[VU_STYPE] == STYPE_MISSILE_SURF_SURF)
+        if (((VuEntityType*)classPtr)->classInfo_[VU_STYPE] ==
+            STYPE_MISSILE_SURF_SURF)
         {
             inputData->seekerType = SensorClass::Visual;
             inputData->seekerVersion = 0;
             inputData->gimlim = 90.0f * DTR;
         }
 
-        SensorClass *snsr;
+        SensorClass* snsr;
 
         switch (inputData->seekerType)
         {
-            case SensorClass::IRST:
-                snsr = new IrstClass(inputData->seekerVersion, this);
-                break;
+        case SensorClass::IRST:
+            snsr = new IrstClass(inputData->seekerVersion, this);
+            break;
 
-            case SensorClass::Visual:
-                snsr = new EyeballClass(inputData->seekerVersion, this);
-                break;
+        case SensorClass::Visual:
+            snsr = new EyeballClass(inputData->seekerVersion, this);
+            break;
 
-            case SensorClass::Radar:
-                snsr = new BeamRiderClass(GetRadarType(), this);
-                break;
+        case SensorClass::Radar:
+            snsr = new BeamRiderClass(GetRadarType(), this);
+            break;
 
-            case SensorClass::RWR:
-                snsr = new HarmSeekerClass(inputData->seekerVersion, this);
-                break;
+        case SensorClass::RWR:
+            snsr = new HarmSeekerClass(inputData->seekerVersion, this);
+            break;
 
-            case SensorClass::RadarHoming:
-                snsr = new BeamRiderClass(inputData->seekerVersion, this);
-                break;
+        case SensorClass::RadarHoming:
+            snsr = new BeamRiderClass(inputData->seekerVersion, this);
+            break;
 
-            default:
-                snsr = NULL;
-                break;
+        default:
+            snsr = NULL;
+            break;
         }
 
         if (snsr)
@@ -376,7 +382,7 @@ void MissileClass::Init(void)
     }
 
     //   else // not local
-    if ( not IsLocal())
+    if (not IsLocal())
     {
         // 2002-04-05 MN not needed anymore...
         //      sensorArray = NULL;
@@ -406,14 +412,13 @@ void MissileClass::Init(void)
     if (drawPointer and ((DrawableBSP*)drawPointer)->GetNumSwitches() > 0)
     {
         if (ifd and ifd->stage2gone) // no 2nd stage
-            ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 0);
-        else  // draw 2nd stage
-            ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 1);
+            ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 0);
+        else // draw 2nd stage
+            ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 1);
     }
-
 }
 
-void MissileClass::Start(SimObjectType *tgt)
+void MissileClass::Start(SimObjectType* tgt)
 {
     // Make sure we have initialized the missile rotation properly
     F4Assert(initAz < 10.0F);
@@ -440,9 +445,12 @@ void MissileClass::Start(SimObjectType *tgt)
 
     // If the missile is boresight, it gets to ignore the passed in target and keep its own
     // Marco Edit - actually - if it's boresighted or uncaged
-    bool hasref = false; // JB 020109 CTD fix. Engage in safe referencing.  Shooting a breathing but unlocked Mav caused a CTD because DropTarget would delete the object that was later used.
+    bool hasref =
+        false; // JB 020109 CTD fix. Engage in safe referencing.  Shooting a breathing but unlocked Mav caused a CTD because DropTarget would delete the object that was later used.
 
-    if ( not isSlave or not isCaged or tgt == NULL)// and sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
+    if (not isSlave or not isCaged or
+        tgt ==
+            NULL) // and sensorArray[0]->Type() == SensorClass::IRST) //me123 make sure only ir's are unchaged for now
     {
         tgt = targetPtr;
 
@@ -464,7 +472,8 @@ void MissileClass::Start(SimObjectType *tgt)
     if (targetPtr)
     {
         if (GetSeekerType() == SensorClass::RadarHoming and sensorArray)
-            ((BeamRiderClass *)sensorArray[0])->SendTrackMsg(targetPtr, Track_Launch);
+            ((BeamRiderClass*)sensorArray[0])
+                ->SendTrackMsg(targetPtr, Track_Launch);
     }
 
     // END OF ADDED SECTION
@@ -481,9 +490,9 @@ void MissileClass::Start(SimObjectType *tgt)
     /*
     #ifndef MISSILE_TEST_PROG
     if (tgt)
-       MonoPrint ("Missile %d Launch at %8ld %4d -> %4d\n", Id().num_,SimLibElapsedTime, parent->Id().num_, targetPtr->BaseData()->Id().num_);
+       MonoPrint ("Missile %d Launch at %8u %4d -> %4d\n", Id().num_,SimLibElapsedTime, parent->Id().num_, targetPtr->BaseData()->Id().num_);
     else
-       MonoPrint ("Missile %d Launch at %8ld %4d -> No Target\n", Id().num_,SimLibElapsedTime, parent->Id().num_);
+       MonoPrint ("Missile %d Launch at %8u %4d -> No Target\n", Id().num_,SimLibElapsedTime, parent->Id().num_);
     #endif
        */
 
@@ -520,7 +529,7 @@ int MissileClass::Exec(void)
     {
         if (IsExploding())
         {
-            if ( not IsSetFlag(SHOW_EXPLOSION))
+            if (not IsSetFlag(SHOW_EXPLOSION))
             {
                 // edg note: all special effects moved to the MissileEndMessage
                 // Process member function
@@ -553,9 +562,11 @@ int MissileClass::Exec(void)
             CalcRelGeom(this, targetPtr, NULL, 1.0F / SimLibMajorFrameTime);
             //MonoPrint ("%8.2f %8.2f %8d\n", targetPtr->localData->az*57.29F, targetPtr->localData->el*57.29F, SimLibElapsedTime);
 
-            if (ifd)  // JB 010803
+            if (ifd) // JB 010803
             {
-                ifd->gimbal = min(max(targetPtr->localData->ata, -inputData->gimlim), inputData->gimlim);
+                ifd->gimbal =
+                    min(max(targetPtr->localData->ata, -inputData->gimlim),
+                        inputData->gimlim);
                 ataerr = targetPtr->localData->ata - ifd->gimbal;
             }
 
@@ -572,7 +583,8 @@ int MissileClass::Exec(void)
             }
 
             // JPO - is it time to jettison 2nd stage?
-            if (ifd and ifd->stage2gone == false and auxData and runTime > auxData->SecondStageTimer)
+            if (ifd and ifd->stage2gone == false and auxData and
+                runTime > auxData->SecondStageTimer)
             {
                 ifd->stage2gone = true;
             }
@@ -582,11 +594,11 @@ int MissileClass::Exec(void)
                 if (ifd and ifd->stage2gone)
                 {
                     // 2002-03-04 MN CTD fix
-                    ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 0);
+                    ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 0);
                 }
                 else
                 {
-                    ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 1);
+                    ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 1);
                 }
             }
 
@@ -599,7 +611,7 @@ int MissileClass::Exec(void)
                 {
                     if (((DrawableBSP*)drawPointer)->GetNumSwitches() > 0)
                     {
-                        ((DrawableBSP *)drawPointer)->SetSwitchMask(0, 1);
+                        ((DrawableBSP*)drawPointer)->SetSwitchMask(0, 1);
                     }
                 }
             }
@@ -628,11 +640,14 @@ int MissileClass::Exec(void)
             if (launchState == InFlight)
             {
                 // ACMI Output
-                if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x00000003) == 0)
+                if (gACMIRec.IsRecording() and
+                    (SimLibFrameCount bitand 0x00000003) == 0)
                 {
-                    misPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                    misPos.hdr.time =
+                        SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                     misPos.data.type = Type();
-                    misPos.data.uniqueID = ACMIIDTable->Add(Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
+                    misPos.data.uniqueID = ACMIIDTable->Add(
+                        Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
                     misPos.data.x = XPos();
                     misPos.data.y = YPos();
                     misPos.data.z = ZPos();
@@ -649,20 +664,19 @@ int MissileClass::Exec(void)
             // was a prob with the Mav's exploding almost immediately on launch
             // apparently they go quickly to a Missed status.  There may be another
             // problem there -- I'm just treating the symptom
-            // 2002-04-04 MN only do that if we did not yet have closest approach on the target 
+            // 2002-04-04 MN only do that if we did not yet have closest approach on the target
             // Hope this finally fixes floating missiles
-            if (
-                done == FalconMissileEndMessage::Missed and 
-                runTime < 15.0f and 
- not ((g_nMissileFix bitand 0x10) and (flags bitand ClosestApprch))
-            )
+            if (done == FalconMissileEndMessage::Missed and runTime < 15.0f and
+                not((g_nMissileFix bitand 0x10) and
+                    (flags bitand ClosestApprch)))
             {
 #ifndef MISSILE_TEST_PROG
                 done = FalconMissileEndMessage::NotDone;
 #endif
             }
 
-            if (done == FalconMissileEndMessage::Missed and ZPos() < groundZ - 10)   // MLR
+            if (done == FalconMissileEndMessage::Missed and
+                ZPos() < groundZ - 10) // MLR
             {
                 done = FalconMissileEndMessage::NotDone;
             }
@@ -694,11 +708,14 @@ int MissileClass::Exec(void)
         if (launchState == InFlight)
         {
             // ACMI Output
-            if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x00000003) == 0)
+            if (gACMIRec.IsRecording() and
+                (SimLibFrameCount bitand 0x00000003) == 0)
             {
-                misPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                misPos.hdr.time =
+                    SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 misPos.data.type = Type();
-                misPos.data.uniqueID = ACMIIDTable->Add(Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
+                misPos.data.uniqueID = ACMIIDTable->Add(
+                    Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
                 misPos.data.x = XPos();
                 misPos.data.y = YPos();
                 misPos.data.z = ZPos();
@@ -726,7 +743,8 @@ int MissileClass::Exec(void)
     {
         float LastMissileImpactTime = 0.0F;
         float MissileActiveTime = 0.0F;
-        FireControlComputer* theFCC = ((SimVehicleClass*)parent.get())->GetFCC();
+        FireControlComputer* theFCC =
+            ((SimVehicleClass*)parent.get())->GetFCC();
 
         if (theFCC)
         {
@@ -734,19 +752,20 @@ int MissileClass::Exec(void)
             MissileActiveTime = theFCC->missileActiveTime;
         }
 
-        if (LastMissileImpactTime > 0.0F and (LastMissileImpactTime < MissileActiveTime))
+        if (LastMissileImpactTime > 0.0F and
+            (LastMissileImpactTime < MissileActiveTime))
         {
-            AircraftClass *pa = static_cast<AircraftClass*>(parent.get());
+            AircraftClass* pa = static_cast<AircraftClass*>(parent.get());
             FalconRadioChatterMessage* radioMessage =
                 new FalconRadioChatterMessage(parent->Id(), FalconLocalSession);
             radioMessage->dataBlock.from = parent->Id();
             radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-            radioMessage->dataBlock.voice_id = ((FlightClass*)
-                                                (pa->GetCampaignObject()))->GetPilotVoiceID(
-                                                   pa->GetCampaignObject()->GetComponentIndex(pa)
-                                               )
-                                               ;
-            radioMessage->dataBlock.edata[0] = pa->GetCampaignObject()->GetComponentIndex(pa);
+            radioMessage->dataBlock.voice_id =
+                ((FlightClass*)(pa->GetCampaignObject()))
+                    ->GetPilotVoiceID(
+                        pa->GetCampaignObject()->GetComponentIndex(pa));
+            radioMessage->dataBlock.edata[0] =
+                pa->GetCampaignObject()->GetComponentIndex(pa);
             radioMessage->dataBlock.message = rcFIREAMRAAM;
             radioMessage->dataBlock.edata[1] = 6; // Pit Bull
             FalconSendMessage(radioMessage, TRUE);
@@ -781,14 +800,17 @@ void MissileClass::FlyMissile(void)
     runTime += SimLibMinorFrameTime;
 }
 
-float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float ataFrom)
+float MissileClass::GetRMax(float alt, float vt, float az, float targetVt,
+                            float ataFrom)
 {
 #if 1
     // JPO CTD checks
 
     ShiAssert(FALSE == F4IsBadReadPtr(rangeData, sizeof(rangeData)));
 
-    if ( not rangeData or F4IsBadReadPtr(rangeData, sizeof(rangeData)))   //Wombat778 3-23-04  Added CTD check
+    if (not rangeData or
+        F4IsBadReadPtr(rangeData,
+                       sizeof(rangeData))) //Wombat778 3-23-04  Added CTD check
         // MLR 5/2/2004 - this bug was caused by heli brains firing the new rocket code.
         return 0.0F;
 
@@ -801,19 +823,22 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
     // /wrong memory passed it and ThreedInterp then dereferenced a garbage altBreakpoints pointer
     // (AV). Counts are 0<n<100 by construction (see MissileRangeRead asserts). The result is
     // normally overwritten by weaponData->Range below anyway, so skipping is safe.
-    if (rangeData
-            and rangeData->altBreakpoints and rangeData->velBreakpoints
-            and rangeData->aspectBreakpoints and rangeData->data
-            and rangeData->numAltBreakpoints    > 0 and rangeData->numAltBreakpoints    < 100
-            and rangeData->numVelBreakpoints    > 0 and rangeData->numVelBreakpoints    < 100
-            and rangeData->numAspectBreakpoints > 0 and rangeData->numAspectBreakpoints < 100)
+    if (rangeData and rangeData->altBreakpoints and
+        rangeData->velBreakpoints and rangeData->aspectBreakpoints and
+        rangeData->data and rangeData->numAltBreakpoints > 0 and
+        rangeData->numAltBreakpoints < 100 and
+        rangeData->numVelBreakpoints > 0 and
+        rangeData->numVelBreakpoints < 100 and
+        rangeData->numAspectBreakpoints > 0 and
+        rangeData->numAspectBreakpoints < 100)
     {
         // FRB - CTD's
-        rmax = Math.ThreedInterp(alt, vt, ataFrom,
-                                 rangeData->altBreakpoints, rangeData->velBreakpoints,
-                                 rangeData->aspectBreakpoints, rangeData->data,
-                                 rangeData->numAltBreakpoints, rangeData->numVelBreakpoints,
-                                 rangeData->numAspectBreakpoints, &lastRmaxAlt, &lastRmaxVt, &lastRmaxAta);
+        rmax = Math.ThreedInterp(
+            alt, vt, ataFrom, rangeData->altBreakpoints,
+            rangeData->velBreakpoints, rangeData->aspectBreakpoints,
+            rangeData->data, rangeData->numAltBreakpoints,
+            rangeData->numVelBreakpoints, rangeData->numAspectBreakpoints,
+            &lastRmaxAlt, &lastRmaxVt, &lastRmaxAta);
     }
 
     //#else
@@ -821,7 +846,8 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
 
     if (classPtr)
     {
-        WeaponClassDataType* weaponData = (WeaponClassDataType*)classPtr->dataPtr;
+        WeaponClassDataType* weaponData =
+            (WeaponClassDataType*)classPtr->dataPtr;
 
         if (weaponData)
             rmax = weaponData->Range * KM_TO_FT;
@@ -839,27 +865,42 @@ float MissileClass::GetRMax(float alt, float vt, float az, float targetVt, float
 }
 
 // This is used for time of flight and other computations (unfortunatly)
-static const float MISSILE_SPEED = 1500.0f; //me123 ajusted from 2000 // Feet per second -- VERY WRONG, but easy... // JB 010215 changed from 1300 to 1500
-static const float MISSILE_ALTITUDE_BONUS = 23.0f; //me123 addet here and in fccmain.cpp // JB 010215 changed from 24 to 23
+static const float MISSILE_SPEED =
+    1500.0f; //me123 ajusted from 2000 // Feet per second -- VERY WRONG, but easy... // JB 010215 changed from 1300 to 1500
+static const float MISSILE_ALTITUDE_BONUS =
+    23.0f; //me123 addet here and in fccmain.cpp // JB 010215 changed from 24 to 23
 
 //float MissileClass::GetTOF (float alt, float vt, float ataFrom, float targetVt, float range)
 //me123 overtake needs to be calvulated the same way in Fccmain.cpp
-float MissileClass::GetTOF(float alt, float vt, float ataFrom, float targetVt, float range)
+float MissileClass::GetTOF(float alt, float vt, float ataFrom, float targetVt,
+                           float range)
 {
     // TODO:  Get this from a table like the max range stuff above...
-    float overtake = MISSILE_SPEED  + (alt / 1000.0f * MISSILE_ALTITUDE_BONUS) + targetVt * (float)cos(ataFrom); //me123 + vt taken out and "alt" addet due to aim120 tof problems
-    overtake += (vt * FTPSEC_TO_KNOTS - 150.0f) / 2 ; //me123 platform speed bonus // JB 010215 changed from 250 to 150
+    float overtake =
+        MISSILE_SPEED + (alt / 1000.0f * MISSILE_ALTITUDE_BONUS) +
+        targetVt *
+            (float)cos(
+                ataFrom); //me123 + vt taken out and "alt" addet due to aim120 tof problems
+    overtake +=
+        (vt * FTPSEC_TO_KNOTS - 150.0f) /
+        2; //me123 platform speed bonus // JB 010215 changed from 250 to 150
     float tof = range / overtake;
-    tof += -5.0f * (float) sin(.07 * tof); // JB 010215
+    tof += -5.0f * (float)sin(.07 * tof); // JB 010215
 
     return max(0.0F, tof); // Counting on silent failure of divid by 0.0 here...
 }
 //me123 overtake needs to be calvulated the same way in Fccmain.cpp
-float MissileClass::GetActiveRange(float alt, float vt, float ataFrom, float targetVt, float range)
+float MissileClass::GetActiveRange(float alt, float vt, float ataFrom,
+                                   float targetVt, float range)
 {
     // Well, I don't much like this, but it'll be consistent with the other bogus data...
-    float overtake = MISSILE_SPEED  + (alt / 1000.0f * MISSILE_ALTITUDE_BONUS) + targetVt * (float)cos(ataFrom); //me123 + vt taken out and "alt" addet due to aim120 tof problems
-    float rangeToGo = overtake * GetActiveTime(alt, vt, ataFrom, targetVt, range);
+    float overtake =
+        MISSILE_SPEED + (alt / 1000.0f * MISSILE_ALTITUDE_BONUS) +
+        targetVt *
+            (float)cos(
+                ataFrom); //me123 + vt taken out and "alt" addet due to aim120 tof problems
+    float rangeToGo =
+        overtake * GetActiveTime(alt, vt, ataFrom, targetVt, range);
     return rangeToGo; //me123 the missile goes active when there's a serden sec TOF left, not after a serden TOF // range - rangeToGo;
 }
 
@@ -870,7 +911,8 @@ float MissileClass::GetActiveTime(float, float, float, float, float)
     return inputData->mslActiveTtg;
 }
 
-float MissileClass::GetASE(float alt, float vt, float ataFrom, float targetVt, float range)
+float MissileClass::GetASE(float alt, float vt, float ataFrom, float targetVt,
+                           float range)
 {
     Falcon4EntityClassType* classPtr = (Falcon4EntityClassType*)EntityType();
     WeaponClassDataType* weaponData = (WeaponClassDataType*)classPtr->dataPtr;
@@ -894,16 +936,19 @@ int MissileClass::SetSeekerPos(float* az, float* el)
     int isLimited = FALSE;
 
 
-    ShiAssert(parent->IsSim()); // SCR 9/22/98:  I think this is only called on behalf of the player.
+    ShiAssert(
+        parent
+            ->IsSim()); // SCR 9/22/98:  I think this is only called on behalf of the player.
     ShiAssert(parent); // A missile should always have a parent
     // if (parent and parent->IsSim() )
     // {
     memcpy(dmx, ((SimBaseClass*)parent.get())->dmx, sizeof(TransformMatrix));
     // }
 
-    ShiAssert(sensorArray); // SCR 10/9/98:  Who's calling this on a missile with no seeker???
+    ShiAssert(
+        sensorArray); // SCR 10/9/98:  Who's calling this on a missile with no seeker???
 
-    if (sensorArray == NULL)   // VWF I'm hoping that this will help.
+    if (sensorArray == NULL) // VWF I'm hoping that this will help.
     {
         return FALSE;
     }
@@ -913,16 +958,16 @@ int MissileClass::SetSeekerPos(float* az, float* el)
     *az = sensorArray[0]->SeekerAz();
     *el = sensorArray[0]->SeekerEl();
 
-    if (fabs(*az) == inputData->gimlim or
-        fabs(*el) == inputData->gimlim)
+    if (fabs(*az) == inputData->gimlim or fabs(*el) == inputData->gimlim)
     {
         sensorArray[0]->SetSeekerPos(*az, *el);
         isLimited = TRUE;
 
         if (inputData->displayType not_eq DisplayHTS and display)
         {
-            ((MaverickDisplayClass*)display)->SetSeekerPos(*az / inputData->gimlim,
-                    *el / inputData->gimlim);
+            ((MaverickDisplayClass*)display)
+                ->SetSeekerPos(*az / inputData->gimlim,
+                               *el / inputData->gimlim);
         }
 
         return isLimited;
@@ -951,7 +996,7 @@ void MissileClass::UpdatePosition()
 {
     Tpoint newPos;
 
-    if ( not ifd)
+    if (not ifd)
         return; // JB 010803
 
     drawPointer->GetPosition(&newPos);
@@ -995,7 +1040,7 @@ int MissileClass::Sleep()
 {
     int retval = 0;
 
-    if ( not IsAwake())
+    if (not IsAwake())
     {
         return retval;
     }
@@ -1017,7 +1062,8 @@ int MissileClass::Sleep()
     {
         if (parent->IsGroundVehicle())
         {
-            CampBaseClass *campobj = ((GroundClass*)parent.get())->GetCampaignObject();
+            CampBaseClass* campobj =
+                ((GroundClass*)parent.get())->GetCampaignObject();
 
             if (campobj->IsBattalion())
             {
@@ -1045,7 +1091,8 @@ int MissileClass::Sleep()
 
 void MissileClass::ClearReferences()
 {
-    if (sensorArray and sensorArray[0] and sensorArray[0]->Type() == SensorClass::RadarHoming)
+    if (sensorArray and sensorArray[0] and
+        sensorArray[0]->Type() == SensorClass::RadarHoming)
     {
         ((BeamRiderClass*)sensorArray[0])->SetGuidancePlatform(NULL);
     }
@@ -1068,14 +1115,14 @@ int MissileClass::Wake()
         if (parent->IsGroundVehicle())
         {
             // JPO more checks please
-            GroundClass *pg = static_cast<GroundClass*>(parent.get());
-            CampBaseClass *campobj = pg->GetCampaignObject();
+            GroundClass* pg = static_cast<GroundClass*>(parent.get());
+            CampBaseClass* campobj = pg->GetCampaignObject();
 
-            if (campobj -> IsBattalion())
+            if (campobj->IsBattalion())
             {
                 ((BattalionClass*)campobj)->IncrementMissileCount();
             }
-            else if (campobj -> IsTaskForce())
+            else if (campobj->IsTaskForce())
             {
                 // add in naval stuff
                 ((TaskForceClass*)campobj)->IncrementMissileCount();
@@ -1085,7 +1132,7 @@ int MissileClass::Wake()
         {
             ((BattalionClass*)parent.get())->IncrementMissileCount();
         }
-        else if (parent->IsTaskForce())   // and again
+        else if (parent->IsTaskForce()) // and again
         {
             ((TaskForceClass*)parent.get())->IncrementMissileCount();
         }
@@ -1105,17 +1152,19 @@ void MissileClass::SetVuPosition()
 }
 
 
-void
-MissileClass::EndMissile(void)
+void MissileClass::EndMissile(void)
 {
     FalconMissileEndMessage* endMessage;
 
 
-    if (done not_eq FalconMissileEndMessage::MissileKill and 
-        done not_eq FalconMissileEndMessage::GroundImpact and 
-        done not_eq FalconMissileEndMessage::FeatureImpact and 
-        done not_eq FalconMissileEndMessage::BombImpact and // "bomb warhead" missiles hit SIM target
-        done not_eq FalconMissileEndMessage::ArmingDelay) // when the warhead is not yet armed, do nothing here
+    if (done not_eq FalconMissileEndMessage::MissileKill and
+        done not_eq FalconMissileEndMessage::GroundImpact and
+        done not_eq FalconMissileEndMessage::FeatureImpact and
+        done not_eq FalconMissileEndMessage::
+                        BombImpact and // "bomb warhead" missiles hit SIM target
+        done not_eq
+            FalconMissileEndMessage::
+                ArmingDelay) // when the warhead is not yet armed, do nothing here
     {
         if (flags bitand SensorLostLock)
             done = FalconMissileEndMessage::ExceedFOV;
@@ -1124,12 +1173,14 @@ MissileClass::EndMissile(void)
         if (targetPtr)
         {
             // First get the campaign object if it's still a sim entity
-            CampBaseClass *campBaseObj;
+            CampBaseClass* campBaseObj;
 
-            if (targetPtr->BaseData()->IsSim()) // If we're a SIM object, get our campaign object
-                campBaseObj = ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
+            if (targetPtr->BaseData()
+                    ->IsSim()) // If we're a SIM object, get our campaign object
+                campBaseObj =
+                    ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject();
             else
-                campBaseObj = (CampBaseClass *)targetPtr->BaseData();
+                campBaseObj = (CampBaseClass*)targetPtr->BaseData();
 
             // Now find out if our campaign object is aggregated
             if (campBaseObj and campBaseObj->IsAggregate())
@@ -1159,7 +1210,7 @@ MissileClass::EndMissile(void)
 
     ShiAssert(parent);
 
-    if ( not parent)
+    if (not parent)
         return;
 
     // SCR 11/29/98
@@ -1167,91 +1218,95 @@ MissileClass::EndMissile(void)
     // (cause it hit a building or something silly like that)
 
     // 2002-03-28 MN if end message is ArmingDelay, don't apply damage at all
-    if ( not (done == FalconMissileEndMessage::ArmingDelay) and inputData and (runTime > inputData->guidanceDelay or not parent->OnGround()))
+    if (not(done == FalconMissileEndMessage::ArmingDelay) and inputData and
+        (runTime > inputData->guidanceDelay or not parent->OnGround()))
         ApplyProximityDamage();
 
     endMessage = new FalconMissileEndMessage(Id(), FalconLocalGame);
     endMessage->RequestReliableTransmit();
     endMessage->RequestOutOfBandTransmit();
-    endMessage->dataBlock.fEntityID  = parent->Id();
-    endMessage->dataBlock.fCampID    = parent->GetCampID();
-    endMessage->dataBlock.fSide      = parent->GetCountry();
-    endMessage->dataBlock.fIndex     = parent->Type();
+    endMessage->dataBlock.fEntityID = parent->Id();
+    endMessage->dataBlock.fCampID = parent->GetCampID();
+    endMessage->dataBlock.fSide = parent->GetCountry();
+    endMessage->dataBlock.fIndex = parent->Type();
 
     if (parent->IsSim())
-        endMessage->dataBlock.fPilotID   = shooterPilotSlot;
+        endMessage->dataBlock.fPilotID = shooterPilotSlot;
     else
-        endMessage->dataBlock.fPilotID   = 0; // Flight leads get all kills for now...
+        endMessage->dataBlock.fPilotID =
+            0; // Flight leads get all kills for now...
 
     if (targetPtr)
     {
         if (targetPtr->BaseData()->IsSim())
         {
-            endMessage->dataBlock.dCampSlot  = (char)((SimBaseClass*)targetPtr->BaseData())->GetSlot();
+            endMessage->dataBlock.dCampSlot =
+                (char)((SimBaseClass*)targetPtr->BaseData())->GetSlot();
         }
         else
         {
-            endMessage->dataBlock.dCampSlot  = 0;
+            endMessage->dataBlock.dCampSlot = 0;
         }
 
-        endMessage->dataBlock.dEntityID  = targetPtr->BaseData()->Id();
-        endMessage->dataBlock.dCampID    = targetPtr->BaseData()->GetCampID();
-        endMessage->dataBlock.dSide      = targetPtr->BaseData()->GetCountry();
-        endMessage->dataBlock.dIndex     = targetPtr->BaseData()->Type();
-        endMessage->dataBlock.dPilotID   = 0;
+        endMessage->dataBlock.dEntityID = targetPtr->BaseData()->Id();
+        endMessage->dataBlock.dCampID = targetPtr->BaseData()->GetCampID();
+        endMessage->dataBlock.dSide = targetPtr->BaseData()->GetCountry();
+        endMessage->dataBlock.dIndex = targetPtr->BaseData()->Type();
+        endMessage->dataBlock.dPilotID = 0;
     }
     else
     {
-        endMessage->dataBlock.dEntityID  = FalconNullId;
-        endMessage->dataBlock.dCampID    = 0;
-        endMessage->dataBlock.dSide      = 0;
-        endMessage->dataBlock.dIndex     = 0;
-        endMessage->dataBlock.dPilotID   = 0;
+        endMessage->dataBlock.dEntityID = FalconNullId;
+        endMessage->dataBlock.dCampID = 0;
+        endMessage->dataBlock.dSide = 0;
+        endMessage->dataBlock.dIndex = 0;
+        endMessage->dataBlock.dPilotID = 0;
     }
 
     endMessage->dataBlock.fWeaponUID = Id();
     endMessage->dataBlock.wIndex = Type();
 
-    endMessage->dataBlock.endCode    = done;
-    endMessage->dataBlock.x    = XPos();
-    endMessage->dataBlock.y    = YPos();
-    endMessage->dataBlock.z    = ZPos();
-    endMessage->dataBlock.xDelta    = XDelta();
-    endMessage->dataBlock.yDelta    = YDelta();
-    endMessage->dataBlock.zDelta    = ZDelta();
-    endMessage->dataBlock.groundType    = -1;
+    endMessage->dataBlock.endCode = done;
+    endMessage->dataBlock.x = XPos();
+    endMessage->dataBlock.y = YPos();
+    endMessage->dataBlock.z = ZPos();
+    endMessage->dataBlock.xDelta = XDelta();
+    endMessage->dataBlock.yDelta = YDelta();
+    endMessage->dataBlock.zDelta = ZDelta();
+    endMessage->dataBlock.groundType = -1;
 
     if (done == FalconMissileEndMessage::GroundImpact or ZPos() > groundZ)
     {
-        endMessage->dataBlock.z  = groundZ;
-        endMessage->dataBlock.groundType = (char)OTWDriver.GetGroundType(XPos(), YPos());
+        endMessage->dataBlock.z = groundZ;
+        endMessage->dataBlock.groundType =
+            (char)OTWDriver.GetGroundType(XPos(), YPos());
     }
 
     switch (done) // particle effects
     {
-        case FalconMissileEndMessage::GroundImpact:
-            endMessage->SetParticleEffectName(auxData->psGroundImpact);
-            break;
+    case FalconMissileEndMessage::GroundImpact:
+        endMessage->SetParticleEffectName(auxData->psGroundImpact);
+        break;
 
-        case FalconMissileEndMessage::MissileKill:
-            endMessage->SetParticleEffectName(auxData->psMissileKill);
-            break;
+    case FalconMissileEndMessage::MissileKill:
+        endMessage->SetParticleEffectName(auxData->psMissileKill);
+        break;
 
-        case FalconMissileEndMessage::FeatureImpact:
-            endMessage->SetParticleEffectName(auxData->psFeatureImpact);
-            break;
+    case FalconMissileEndMessage::FeatureImpact:
+        endMessage->SetParticleEffectName(auxData->psFeatureImpact);
+        break;
 
-        case FalconMissileEndMessage::BombImpact:
-            endMessage->SetParticleEffectName(auxData->psBombImpact);
-            break;
+    case FalconMissileEndMessage::BombImpact:
+        endMessage->SetParticleEffectName(auxData->psBombImpact);
+        break;
 
-        case FalconMissileEndMessage::ArmingDelay:
-            endMessage->SetParticleEffectName(auxData->psArmingDelay);
-            break;
+    case FalconMissileEndMessage::ArmingDelay:
+        endMessage->SetParticleEffectName(auxData->psArmingDelay);
+        break;
 
-        case FalconMissileEndMessage::ExceedFOV:
-            endMessage->SetParticleEffectName(auxData->psExceedFOV);
-            break;
+    case FalconMissileEndMessage::ExceedFOV:
+        endMessage->SetParticleEffectName(auxData->psExceedFOV);
+        break;
     }
 
     // Can't send the end message until all the damage messages are gone.
@@ -1267,8 +1322,7 @@ MissileClass::EndMissile(void)
 ** a damage message to its target.  Otherwise, we look for any ground
 ** objects that may have been impacted by the missile exploding.
 */
-void
-MissileClass::ApplyProximityDamage(void)
+void MissileClass::ApplyProximityDamage(void)
 {
     float tmpX, tmpY, tmpZ;
     float rangeSquare;
@@ -1284,7 +1338,9 @@ MissileClass::ApplyProximityDamage(void)
 
     // 2002-03-28 MN added BombImpact for "bomb-like" missiles (JSOW...)
     // RV - Biker - For AGMs we use FeatureImpact also
-    if (done == FalconMissileEndMessage::MissileKill or done == FalconMissileEndMessage::BombImpact or done == FalconMissileEndMessage::FeatureImpact)
+    if (done == FalconMissileEndMessage::MissileKill or
+        done == FalconMissileEndMessage::BombImpact or
+        done == FalconMissileEndMessage::FeatureImpact)
     {
         //TJ_Changes .... how about we check for another object in the vicinity and apply damage to that ?
         //Instead of just attacking object you are targeting we will now loop through all aircraft ....
@@ -1302,7 +1358,8 @@ MissileClass::ApplyProximityDamage(void)
          //TJ_changes
          //Only check against planes ....
          //removed this -> dont check against plane that we already were targeting that is handled abouve ... for now .. this could become only check
-         if ( not (testObject->IsAirplane())/* or targetPtr and ( targetPtr->BaseData()->Id() == testObject->Id() ) */ /* ) {
+         if ( not (testObject->IsAirplane())/* or targetPtr and ( targetPtr->BaseData()->Id() == testObject->Id() ) */
+        /* ) {
  testObject = (SimBaseClass*) objectWalker.GetNext();
  continue;
  }
@@ -1323,10 +1380,14 @@ MissileClass::ApplyProximityDamage(void)
  testObject = (SimBaseClass*) objectWalker.GetNext();
  }
 }
-*/ if (targetPtr)
+*/
+        if (targetPtr)
         {
             // F4Assert(targetPtr->BaseData()->IsSim());
-            SendDamageMessage(targetPtr->BaseData(), 0, FalconDamageType::MissileDamage); // 2002-02-26 MODIFIED BY S.G. Removed '(SimBaseClass*)' from targetPtr->BaseData() since it can be a campaign object anyway (bad practice but no harm was done).
+            SendDamageMessage(
+                targetPtr->BaseData(), 0,
+                FalconDamageType::
+                    MissileDamage); // 2002-02-26 MODIFIED BY S.G. Removed '(SimBaseClass*)' from targetPtr->BaseData() since it can be a campaign object anyway (bad practice but no harm was done).
         }
     }
 
@@ -1337,15 +1398,18 @@ MissileClass::ApplyProximityDamage(void)
         // check for water b4 placing crater
         groundType = OTWDriver.GetGroundType(XPos(), YPos());
 
-        if ( not (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
+        if (not(groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
         {
-            AddToTimedPersistantList(VIS_CRATER2 + PRANDInt3(), Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos());
+            AddToTimedPersistantList(
+                VIS_CRATER2 + PRANDInt3(),
+                Camp_GetCurrentTime() + CRATER_REMOVAL_TIME, XPos(), YPos());
 
             // add crater to ACMI as special effect
             if (gACMIRec.IsRecording())
             {
 
-                acmiStatSfx.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                acmiStatSfx.hdr.time =
+                    SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 acmiStatSfx.data.type = SFX_CRATER2 + PRANDInt3();
                 acmiStatSfx.data.x = XPos();
                 acmiStatSfx.data.y = YPos();
@@ -1363,7 +1427,7 @@ MissileClass::ApplyProximityDamage(void)
         {
             VuListIterator objectWalker(SimDriver.combinedList);
             // Check vs vehicles
-            testObject = (FalconEntity*) objectWalker.GetFirst();
+            testObject = (FalconEntity*)objectWalker.GetFirst();
 
             while (testObject)
             {
@@ -1381,11 +1445,12 @@ MissileClass::ApplyProximityDamage(void)
 
                     if (rangeSquare < lethalRadiusSqrd)
                     {
-                        SendDamageMessage(testObject, rangeSquare, FalconDamageType::ProximityDamage);
+                        SendDamageMessage(testObject, rangeSquare,
+                                          FalconDamageType::ProximityDamage);
                     }
                 }
 
-                testObject = (FalconEntity*) objectWalker.GetNext();
+                testObject = (FalconEntity*)objectWalker.GetNext();
             }
         }
     }
@@ -1398,7 +1463,7 @@ MissileClass::ApplyProximityDamage(void)
     if (agl > -900.0f)
     {
         // get the 1st objective that contains the bomb
-        objective = (CampBaseClass*) gridIt.GetFirst();
+        objective = (CampBaseClass*)gridIt.GetFirst();
 
         // main loop through objectives
         while (objective)
@@ -1407,7 +1472,7 @@ MissileClass::ApplyProximityDamage(void)
             {
                 // loop thru each element in the objective
                 VuListIterator featureWalker(objective->GetComponents());
-                testObject = (FalconEntity*) featureWalker.GetFirst();
+                testObject = (FalconEntity*)featureWalker.GetFirst();
 
                 while (testObject)
                 {
@@ -1415,12 +1480,12 @@ MissileClass::ApplyProximityDamage(void)
                     // 2002-03-28 MN apply proximity damage if it IS the target,
                     // but we have got no missile kill or BombImpact -
                     // or the target can not be damaged by proximity damage
-                    if (
- not targetPtr or testObject not_eq targetPtr->BaseData() or
-                        (g_nMissileFix bitand 0x08) and testObject == targetPtr->BaseData() and 
-                        done not_eq FalconMissileEndMessage::MissileKill and 
-                        done not_eq FalconMissileEndMessage::BombImpact
-                    )
+                    if (not targetPtr or
+                        testObject not_eq targetPtr->BaseData() or
+                        (g_nMissileFix bitand 0x08) and
+                            testObject == targetPtr->BaseData() and
+                            done not_eq FalconMissileEndMessage::MissileKill and
+                            done not_eq FalconMissileEndMessage::BombImpact)
                     {
                         tmpX = testObject->XPos() - XPos();
                         tmpY = testObject->YPos() - YPos();
@@ -1428,10 +1493,12 @@ MissileClass::ApplyProximityDamage(void)
                         rangeSquare = tmpX * tmpX + tmpY * tmpY + agl * agl;
 
                         if (rangeSquare < lethalRadiusSqrd)
-                            SendDamageMessage(testObject, rangeSquare, FalconDamageType::ProximityDamage);
+                            SendDamageMessage(
+                                testObject, rangeSquare,
+                                FalconDamageType::ProximityDamage);
                     }
 
-                    testObject = (FalconEntity*) featureWalker.GetNext();
+                    testObject = (FalconEntity*)featureWalker.GetNext();
                 }
             }
             else
@@ -1443,11 +1510,12 @@ MissileClass::ApplyProximityDamage(void)
                 rangeSquare = tmpX * tmpX + tmpY * tmpY + agl * agl;
 
                 if (rangeSquare < lethalRadiusSqrd)
-                    SendDamageMessage(objective, rangeSquare, FalconDamageType::ProximityDamage);
+                    SendDamageMessage(objective, rangeSquare,
+                                      FalconDamageType::ProximityDamage);
             }
 
             // get the next objective that contains the bomb
-            objective = (CampBaseClass*) gridIt.GetNext();
+            objective = (CampBaseClass*)gridIt.GetNext();
 
         } // end objective loop
     }
@@ -1463,16 +1531,16 @@ MissileClass::ApplyProximityDamage(void)
 ** guidance isn't tested ) until it impacts ground.
 ** Returns TRUE if resolution found and sets impact x,y,z
 */
-BOOL
-MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impactZ, float *impactTime)
+BOOL MissileClass::FindRocketGroundImpact(float* impactX, float* impactY,
+                                          float* impactZ, float* impactTime)
 {
     //float saveMinorFrameTime; // FRB
     float lastx = x, lasty = y, lastz = z;
 
     // Cobra test
-    static FILE *fp = NULL;
+    static FILE* fp = NULL;
     //if (fp == NULL)
-    // fp = fopen("G:\\RocketImpact.txt", "w");
+    // fp = fopen("G:/RocketImpact.txt", "w");
 
     /*
      // edg: yuck.  Unfortuantely we have to do this
@@ -1559,8 +1627,10 @@ MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impa
 
     */
 
-    float rng = fabs((static_cast<SimVehicleClass*>(parent.get())->ZPos() - OTWDriver.GetGroundLevel(x, y))
-                     / (tan(static_cast<SimVehicleClass*>(parent.get())->Pitch() - 0.01f)));
+    float rng = fabs(
+        (static_cast<SimVehicleClass*>(parent.get())->ZPos() -
+         OTWDriver.GetGroundLevel(x, y)) /
+        (tan(static_cast<SimVehicleClass*>(parent.get())->Pitch() - 0.01f)));
     float dx = sin(static_cast<SimVehicleClass*>(parent.get())->Yaw()) * rng;
     float dy = cos(static_cast<SimVehicleClass*>(parent.get())->Yaw()) * rng;
     *impactX = dx + static_cast<SimVehicleClass*>(parent.get())->XPos();
@@ -1569,14 +1639,19 @@ MissileClass::FindRocketGroundImpact(float *impactX, float *impactY, float *impa
 
     if ((fp) and (rng < 11000.f))
     {
-        float dz = *impactZ - static_cast<SimVehicleClass*>(parent.get())->ZPos();
+        float dz =
+            *impactZ - static_cast<SimVehicleClass*>(parent.get())->ZPos();
         float pel = static_cast<SimVehicleClass*>(parent.get())->Pitch() * RTD;
         float paz = static_cast<SimVehicleClass*>(parent.get())->Yaw() * RTD;
         float PipAz = ((float)atan2(dx, dy) * RTD) - paz;
-        float PipEl = ((float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1F)) * RTD) - pel;
+        float PipEl =
+            ((float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1F)) * RTD) -
+            pel;
 
         //fprintf(fp,"**--** Rng %f Imp X %f Imp Y %f Imp Z %f Pitch %f Yaw %f pel %f paz %f PipEl %f PipAz %f dx %f dy %f dz %f \n",
-        fprintf(fp, "**--** Rng %f Imp X %f Imp Y %f Imp Z %f pel %f paz %f PipEl %f PipAz %f dx %f dy %f dz %f \n",
+        fprintf(fp,
+                "**--** Rng %f Imp X %f Imp Y %f Imp Z %f pel %f paz %f PipEl "
+                "%f PipAz %f dx %f dy %f dz %f \n",
                 rng, dx, dy, dz, pel, paz, PipEl, PipAz, dx, dy, dz);
         //rng, *impactX, *impactY, *impactZ, degtheta, degpsi, pel, paz, PipEl, PipAz, dx, dy, dz);
         fflush(fp);

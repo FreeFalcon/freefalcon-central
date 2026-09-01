@@ -57,7 +57,7 @@ void ChangeEndTimeCB(long ID, short hittype, C_Base *control);
 void ChangeCurrentTimeCB(long ID, short hittype, C_Base *control);
 void SetVCSortTypeCB(long ID, short hittype, C_Base *control);
 void TimeCompressionCB(long ID, short hittype, C_Base *control);
-BOOL VCSortCB(TREELIST*, TREELIST*);
+BOOL VCSortCB(TREELIST *, TREELIST *);
 void SelectToolTypeCB(long ID, short hittype, C_Base *control);
 void UpdateEventBlipsCB(long ID, short hittype, C_Base *control);
 void SelectMissionSortCB(long ID, short hittype, C_Base *control);
@@ -91,29 +91,24 @@ void CloseTEWin(long ID, short hittype, C_Base *base)
 
 void hookup_tactical_controls(long ID)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
-    C_Button
-    *ctrl;
+    C_Button *ctrl;
 
-    C_Clock
-    *clk;
+    C_Clock *clk;
 
-    C_ListBox
-    *lbox;
+    C_ListBox *lbox;
 
-    C_TreeList
-    *tree;
+    C_TreeList *tree;
 
     win = gMainHandler->FindWindow(ID);
 
-    if ( not win)
+    if (not win)
     {
         return;
     }
 
-    clk = (C_Clock *) win->FindControl(TIME_ID);
+    clk = (C_Clock *)win->FindControl(TIME_ID);
 
     if (clk)
     {
@@ -122,91 +117,91 @@ void hookup_tactical_controls(long ID)
         clk->Refresh();
     }
 
-    ctrl = (C_Button *) win->FindControl(TIME_EARLIER);
+    ctrl = (C_Button *)win->FindControl(TIME_EARLIER);
 
     if (ctrl)
     {
         ctrl->SetCallback(ChangeCurrentTimeCB);
     }
 
-    ctrl = (C_Button *) win->FindControl(TIME_LATER);
+    ctrl = (C_Button *)win->FindControl(TIME_LATER);
 
     if (ctrl)
     {
         ctrl->SetCallback(ChangeCurrentTimeCB);
     }
 
-    lbox = (C_ListBox *) win->FindControl(ACCELERATION);
+    lbox = (C_ListBox *)win->FindControl(ACCELERATION);
 
     if (lbox)
     {
         lbox->SetCallback(TimeCompressionCB);
     }
 
-    ctrl = (C_Button *) win->FindControl(CLOSE_WINDOW);
+    ctrl = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
     if (ctrl)
     {
         ctrl->SetCallback(CloseWindowCB);
     }
 
-    ctrl = (C_Button *) win->FindControl(ADD_PACKAGE_FLIGHT);
+    ctrl = (C_Button *)win->FindControl(ADD_PACKAGE_FLIGHT);
 
     if (ctrl)
     {
         ctrl->SetCallback(Open_Flight_WindowCB);
     }
 
-    ctrl = (C_Button *) win->FindControl(EDIT_PACKAGE_FLIGHT);
+    ctrl = (C_Button *)win->FindControl(EDIT_PACKAGE_FLIGHT);
 
     if (ctrl)
     {
         ctrl->SetCallback(EditFlightInPackage);
     }
 
-    ctrl = (C_Button *) win->FindControl(DELETE_PACKAGE_FLIGHT);
+    ctrl = (C_Button *)win->FindControl(DELETE_PACKAGE_FLIGHT);
 
     if (ctrl)
     {
         ctrl->SetCallback(DeleteFlightFromPackage);
     }
 
-    ctrl = (C_Button *) win->FindControl(CANCEL_PACK);
+    ctrl = (C_Button *)win->FindControl(CANCEL_PACK);
 
     if (ctrl)
     {
         ctrl->SetCallback(tactical_cancel_package);
     }
 
-    ctrl = (C_Button *) win->FindControl(OK_PACK);
+    ctrl = (C_Button *)win->FindControl(OK_PACK);
 
     if (ctrl)
     {
         ctrl->SetCallback(KeepPackage);
     }
 
-    ctrl = (C_Button *) win->FindControl(START_TIME_DEC);
+    ctrl = (C_Button *)win->FindControl(START_TIME_DEC);
 
     if (ctrl)
     {
         ctrl->SetCallback(ChangeStartTimeCB);
     }
 
-    ctrl = (C_Button *) win->FindControl(START_TIME_INC);
+    ctrl = (C_Button *)win->FindControl(START_TIME_INC);
 
     if (ctrl)
     {
         ctrl->SetCallback(ChangeStartTimeCB);
     }
 
-    ctrl = (C_Button *) win->FindControl(TIME_LIMIT_DEC);
+    ctrl = (C_Button *)win->FindControl(TIME_LIMIT_DEC);
 
     if (ctrl)
     {
         ctrl->SetCallback(ChangeEndTimeCB);
     }
 
-    ctrl = (C_Button *) win->FindControl(TIME_LIMIT_INC);
+    ctrl = (C_Button *)win->FindControl(TIME_LIMIT_INC);
 
     if (ctrl)
     {
@@ -260,7 +255,7 @@ void hookup_tactical_controls(long ID)
 
     hookup_main_buttons(win);
     // Help GUIDE thing
-    ctrl = (C_Button*)win->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)win->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
@@ -282,34 +277,34 @@ void hookup_tactical_controls(long ID)
         tree->SetSortCallback(VCSortCB);
     }
 
-    ctrl = (C_Button*)win->FindControl(SORT_VC_NUMBER);
+    ctrl = (C_Button *)win->FindControl(SORT_VC_NUMBER);
 
     if (ctrl)
         ctrl->SetCallback(SetVCSortTypeCB);
 
-    ctrl = (C_Button*)win->FindControl(SORT_VC_TEAM);
+    ctrl = (C_Button *)win->FindControl(SORT_VC_TEAM);
 
     if (ctrl)
         ctrl->SetCallback(SetVCSortTypeCB);
 
-    ctrl = (C_Button*)win->FindControl(SORT_VC_TYPE);
+    ctrl = (C_Button *)win->FindControl(SORT_VC_TYPE);
 
     if (ctrl)
         ctrl->SetCallback(SetVCSortTypeCB);
 
-    ctrl = (C_Button*)win->FindControl(SORT_VC_POINTS);
+    ctrl = (C_Button *)win->FindControl(SORT_VC_POINTS);
 
     if (ctrl)
         ctrl->SetCallback(SetVCSortTypeCB);
 
-    ctrl = (C_Button*)win->FindControl(TAC_DELETE);
+    ctrl = (C_Button *)win->FindControl(TAC_DELETE);
 
     if (ctrl)
         ctrl->SetCallback(TEDelVerifyCB);
 
     if (ID == TAC_HEADER_WIN)
     {
-        ctrl = (C_Button*)win->FindControl(CLOSE_WINDOW);
+        ctrl = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
         if (ctrl)
             ctrl->SetCallback(CloseTEWin);
@@ -328,7 +323,8 @@ void hookup_tactical_controls(long ID)
         for (i = 0; i < 8; i++)
         {
             for (j = 0; j < 8; j++)
-                blip->SetImage(BLIP_IDS[0][j], static_cast<uchar>(i), static_cast<uchar>(j));
+                blip->SetImage(BLIP_IDS[0][j], static_cast<uchar>(i),
+                               static_cast<uchar>(j));
         }
 
         blip->InitDrawer();
@@ -471,22 +467,22 @@ void hookup_main_buttons(C_Window *win)
 {
     C_Button *btn;
 
-    btn = (C_Button*)win->FindControl(BUILDER_MAIN_CTRL);
+    btn = (C_Button *)win->FindControl(BUILDER_MAIN_CTRL);
 
     if (btn)
         btn->SetCallback(OpenBuilderWindowCB);
 
-    btn = (C_Button*)win->FindControl(TEAMS_MAIN_CTRL);
+    btn = (C_Button *)win->FindControl(TEAMS_MAIN_CTRL);
 
     if (btn)
         btn->SetCallback(OpenTeamWindowCB);
 
-    btn = (C_Button*)win->FindControl(TAC_MISS_MAIN_CTRL);
+    btn = (C_Button *)win->FindControl(TAC_MISS_MAIN_CTRL);
 
     if (btn)
         btn->SetCallback(OpenMissionWindowCB);
 
-    btn = (C_Button*)win->FindControl(VC_MAIN_CTRL);
+    btn = (C_Button *)win->FindControl(VC_MAIN_CTRL);
 
     if (btn)
         btn->SetCallback(OpenVCWindowCB);
@@ -520,7 +516,7 @@ void ChangeStartTimeCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
+    clk = (C_Clock *)control->Parent_->FindControl(control->GetUserNumber(0));
 
     if (clk)
     {
@@ -542,7 +538,7 @@ void ChangeEndTimeCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
+    clk = (C_Clock *)control->Parent_->FindControl(control->GetUserNumber(0));
 
     if (clk)
     {
@@ -570,7 +566,7 @@ void ChangeCurrentTimeCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP and hittype not_eq C_TYPE_REPEAT)
         return;
 
-    clk = (C_Clock*)control->Parent_->FindControl(control->GetUserNumber(0));
+    clk = (C_Clock *)control->Parent_->FindControl(control->GetUserNumber(0));
 
     if (clk)
     {
@@ -619,13 +615,15 @@ static void TacSelectGameCB(long, short hittype, C_Base *control)
     SetCursor(gCursors[CRSR_WAIT]);
     item = ((C_TreeList *)control)->GetLastItem();
 
-    if (item == NULL) return;
+    if (item == NULL)
+        return;
 
-    if (item->Item_ == NULL) return;
+    if (item->Item_ == NULL)
+        return;
 
     if (item->Type_ == C_TYPE_MENU)
     {
-        if ( not item->Item_->GetState())
+        if (not item->Item_->GetState())
         {
             item->Item_->SetState(1);
             item->Item_->Refresh();
@@ -633,13 +631,14 @@ static void TacSelectGameCB(long, short hittype, C_Base *control)
 
             if (tmpID)
             {
-                game = (FalconGameEntity*) vuDatabase->Find(*tmpID);
+                game = (FalconGameEntity *)vuDatabase->Find(*tmpID);
                 gCommsMgr->LookAtGame(game);
 
                 if (game)
                 {
                     if (game->GetGameType() == game_TacticalEngagement)
-                        SendMessage(gMainHandler->GetAppWnd(), FM_JOIN_CAMPAIGN, JOIN_PRELOAD_ONLY, game_TacticalEngagement);
+                        SendMessage(gMainHandler->GetAppWnd(), FM_JOIN_CAMPAIGN,
+                                    JOIN_PRELOAD_ONLY, game_TacticalEngagement);
                 }
             }
         }
@@ -686,9 +685,9 @@ void adjust_all_taceng_unit_times(CampaignTime dt)
 
 int tactical_is_training(void)
 {
-    if (current_tactical_mission and current_tactical_mission->get_type() == tt_training)
+    if (current_tactical_mission and
+        current_tactical_mission->get_type() == tt_training)
         return TRUE;
 
     return FALSE;
 }
-

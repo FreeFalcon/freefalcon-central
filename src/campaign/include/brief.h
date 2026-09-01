@@ -54,12 +54,16 @@ extern void AddIndexedStringToBuffer(int sid, _TCHAR *buffer);
 
 extern void AddNumberToBuffer(int num, _TCHAR *buffer); // _tsprinf("%d",x);
 
-extern void AddNumberToBuffer(float num, int decimals, _TCHAR *buffer); // _tsprinf("%.df",x);
+extern void AddNumberToBuffer(float num, int decimals,
+                              _TCHAR *buffer); // _tsprinf("%.df",x);
 
-extern void AddTimeToBuffer(CampaignTime time, _TCHAR *buffer, int seconds = TRUE);
+extern void AddTimeToBuffer(CampaignTime time, _TCHAR *buffer,
+                            int seconds = TRUE);
 
-extern void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer);
+extern void AddLocationToBuffer(char type, GridIndex x, GridIndex y,
+                                _TCHAR *buffer);
 
-extern void ConstructOrderedSentence(short maxlen, _TCHAR *buffer, _TCHAR *format, ...);
+extern void ConstructOrderedSentence(short maxlen, _TCHAR *buffer,
+                                     _TCHAR *format, ...);
 
 #endif

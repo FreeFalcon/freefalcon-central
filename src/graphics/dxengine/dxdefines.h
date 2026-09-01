@@ -7,7 +7,7 @@
 //*******************************************************************************************************
 
 //#pragma once
-#include "../../FastMath.h"
+#include "../../fastmath.h"
 #include <d3dxmath.h>
 
 
@@ -15,28 +15,21 @@
 #define MODEL_VERSION 0x0002
 
 
-
 //******************************* MACROS ************************************
 //#define F_I32 (DWORD)
-#define F_TO_R(r) ((F_I32( r * 255.9f))<<16)
-#define F_TO_A(a) ((F_I32( a * 255.9f))<<24)
-#define F_TO_G(g) ((F_I32( g * 255.9f))<<8)
-#define F_TO_B(b) ((F_I32( b * 255.9f)))
-#define F_TO_RGB(r,g,b) ( F_TO_R(r) bitor F_TO_G(g) bitor F_TO_B(b))
-#define F_TO_ARGB(a,r,g,b) ( F_TO_A(a) bitor F_TO_RGB(r,g,b))
+#define F_TO_R(r) ((F_I32(r * 255.9f)) << 16)
+#define F_TO_A(a) ((F_I32(a * 255.9f)) << 24)
+#define F_TO_G(g) ((F_I32(g * 255.9f)) << 8)
+#define F_TO_B(b) ((F_I32(b * 255.9f)))
+#define F_TO_RGB(r, g, b) (F_TO_R(r) bitor F_TO_G(g) bitor F_TO_B(b))
+#define F_TO_ARGB(a, r, g, b) (F_TO_A(a) bitor F_TO_RGB(r, g, b))
 
-#define F_TO_UR(r) ((F_I32( r))<<16)
-#define F_TO_UA(a) ((F_I32( a))<<24)
-#define F_TO_UG(g) ((F_I32( g))<<8)
-#define F_TO_UB(b) ((F_I32( b)))
-#define F_TO_URGB(r,g,b) ( F_TO_UR(r) bitor F_TO_UG(g) bitor F_TO_UB(b))
-#define F_TO_UARGB(a,r,g,b) ( F_TO_UA(a) bitor F_TO_URGB(r,g,b))
-
-
-
-
-
-
+#define F_TO_UR(r) ((F_I32(r)) << 16)
+#define F_TO_UA(a) ((F_I32(a)) << 24)
+#define F_TO_UG(g) ((F_I32(g)) << 8)
+#define F_TO_UB(b) ((F_I32(b)))
+#define F_TO_URGB(r, g, b) (F_TO_UR(r) bitor F_TO_UG(g) bitor F_TO_UB(b))
+#define F_TO_UARGB(a, r, g, b) (F_TO_UA(a) bitor F_TO_URGB(r, g, b))
 
 
 //***************************************************************************
@@ -46,20 +39,48 @@
 #define OBJECTS_HEADER_NAME "KoreaObj.Dxh"
 #define OBJECTS_DATABASE_NAME "KoreaObj.Dxl"
 
-#define XDOF_NEGATE (1<<0)
-#define XDOF_MINMAX (1<<1)
-#define XDOF_SUBRANGE (1<<2)
-#define XDOF_ISDOF   (1<<31)
+#define XDOF_NEGATE (1 << 0)
+#define XDOF_MINMAX (1 << 1)
+#define XDOF_SUBRANGE (1 << 2)
+#define XDOF_ISDOF (1 << 31)
 
-#define RENDER_STATE_FLAGS 8 // RENDER STATE FLAGS Allocated in the following structure
+#define RENDER_STATE_FLAGS                                                     \
+    8 // RENDER STATE FLAGS Allocated in the following structure
 #define RENDER_USED_FLAGS 5 // RENDER STATE FLAGS effectively used
-#define MAX_RENDER_STATES (1<<RENDER_USED_FLAGS) // Max States
+#define MAX_RENDER_STATES (1 << RENDER_USED_FLAGS) // Max States
 
 #define MAX_SCRIPTS_X_MODEL 2 // number of scripts available for a model
 
-typedef enum { ROOT = 0, VERTEX, DOT, LINE, TRIANGLE, POLY, DOF, CLOSEDOF, SLOT, MODELEND } NodeType;
-typedef enum { NO_DOF = 0, ROTATE, XROTATE, TRANSLATE, SCALE, SWITCH, XSWITCH } DofType;
-typedef enum { STENCIL_OFF = 0, STENCIL_ON, STENCIL_WRITE, STENCIL_CHECK } StencilModeType;
+typedef enum
+{
+    ROOT = 0,
+    VERTEX,
+    DOT,
+    LINE,
+    TRIANGLE,
+    POLY,
+    DOF,
+    CLOSEDOF,
+    SLOT,
+    MODELEND
+} NodeType;
+typedef enum
+{
+    NO_DOF = 0,
+    ROTATE,
+    XROTATE,
+    TRANSLATE,
+    SCALE,
+    SWITCH,
+    XSWITCH
+} DofType;
+typedef enum
+{
+    STENCIL_OFF = 0,
+    STENCIL_ON,
+    STENCIL_WRITE,
+    STENCIL_CHECK
+} StencilModeType;
 
 typedef union
 {
@@ -87,10 +108,11 @@ typedef union
         //****************************************************************************************
         DWORD Spare : 8; // Spare Bytes
         //****************************************************************************************
-        DWORD SWLightOwner: 8; // The Static Light Owner for this surface... ignored in runtime/used in editing
+        DWORD SWLightOwner
+            : 8; // The Static Light Owner for this surface... ignored in runtime/used in editing
     } b;
     // *** WARNING *** THIS MUST BE THE BIT SIZE OF THE NUMEBR OF
-    // FLAGS DEFINING THE RENDERING STATE 
+    // FLAGS DEFINING THE RENDERING STATE
     char StateFlags;
     //***********************************************************
     DWORD w;
@@ -179,8 +201,10 @@ typedef struct
     DWORD dwzBias; // Surface zBias
     float SpecularIndex; // the Power for spcularity of the surface
     DWORD TexID[2]; // Texture used by the Surface
-    DWORD SwitchNumber, SwitchMask; // the Switch Number for switcvhable emissive surfaces and its Mask
-    DWORD DefaultSpecularity; // Switchable emissive surfaces, defines the specularity
+    DWORD SwitchNumber,
+        SwitchMask; // the Switch Number for switcvhable emissive surfaces and its Mask
+    DWORD
+    DefaultSpecularity; // Switchable emissive surfaces, defines the specularity
 } DxSurfaceType;
 
 
@@ -204,7 +228,6 @@ typedef struct
 } DxTextureType;
 
 
-
 //************************************************************************************
 
 // * DOF ITEM *
@@ -221,7 +244,7 @@ typedef struct
     float min, max, multiplier, future;
     union
     {
-        int  flags;
+        int flags;
         int SwitchBranch;
     };
     Ppoint scale;
@@ -257,17 +280,19 @@ typedef struct
 
 // The scripts constants
 // WARNING : Change of this must be done carefully, synced with scripts variables...
-typedef enum { SCRIPT_NONE = 0,
-                    SCRIPT_ANIMATE,
-                    SCRIPT_ROTATE,
-                    SCRIPT_HELY,
-                    SCRIPT_BEACON,
-                    SCRIPT_VASIF,
-                    SCRIPT_VASIN,
-                    SCRIPT_MEATBALL,
-                    SCRIPT_CHAFF,
-                    SCRIPT_CHUTEDIE,
-             } ScriptType;
+typedef enum
+{
+    SCRIPT_NONE = 0,
+    SCRIPT_ANIMATE,
+    SCRIPT_ROTATE,
+    SCRIPT_HELY,
+    SCRIPT_BEACON,
+    SCRIPT_VASIF,
+    SCRIPT_VASIN,
+    SCRIPT_MEATBALL,
+    SCRIPT_CHAFF,
+    SCRIPT_CHUTEDIE,
+} ScriptType;
 
 // * MODEL SCRIPTS MANAGEMENT *
 typedef struct
@@ -275,7 +300,6 @@ typedef struct
     ScriptType Script;
     DWORD Arguments[3];
 } DXScriptVariableType;
-
 
 
 // * DX Database Textures section *
@@ -304,7 +328,6 @@ typedef union
     };
     DWORD Word;
 } DrawBaseFlags;
-
 
 
 // A data structure compatible with vectors and XMM math
@@ -337,10 +360,10 @@ typedef union
 inline DWORD XMM_ARGB(XMMColor *Source)
 {
 #undef or
-	DWORD r;
+    DWORD r;
 #if defined(_M_IX86)
-	_asm
-	{
+    _asm
+    {
 		push eax
 			push edx
 			mov edx, DWORD PTR Source
@@ -362,21 +385,20 @@ inline DWORD XMM_ARGB(XMMColor *Source)
 			mov r, eax
 			pop edx
 			pop eax
-	}
-	return r;
+    }
+    return r;
 #else
-	// Artscout - 2026 (x64): same packing as the asm -- floats at byte offsets 0,4,8,16,
-	// rounded to int (fistp = round-to-nearest = lrintf), packed MSB->LSB.
-	const char *base = (const char *)Source;
-	r  = (DWORD)lrintf(*(const float *)(base + 0));
-	r  = (r << 8) | (DWORD)lrintf(*(const float *)(base + 4));
-	r  = (r << 8) | (DWORD)lrintf(*(const float *)(base + 8));
-	r  = (r << 8) | (DWORD)lrintf(*(const float *)(base + 16));
-	return r;
+    // Artscout - 2026 (x64): same packing as the asm -- floats at byte offsets 0,4,8,16,
+    // rounded to int (fistp = round-to-nearest = lrintf), packed MSB->LSB.
+    const char *base = (const char *)Source;
+    r = (DWORD)lrintf(*(const float *)(base + 0));
+    r = (r << 8) | (DWORD)lrintf(*(const float *)(base + 4));
+    r = (r << 8) | (DWORD)lrintf(*(const float *)(base + 8));
+    r = (r << 8) | (DWORD)lrintf(*(const float *)(base + 16));
+    return r;
 #endif
 #define or ||
 }
-
 
 
 //************************************************************************************
@@ -404,26 +426,6 @@ typedef struct
     DXLightFlagsType Flags;
     D3DLIGHT7 Light; // The light
 } DXLightType;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //////////////////////////////// OLD STRUCTURES FORE RELEASE AND CHANGED \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -478,7 +480,8 @@ typedef struct
     float SpecularIndex; // the Power for spcularity of the surface
     DWORD TexID[2]; // Texture used by the Surface
     DWORD SwitchNumber; // the Switch Number for switcvhable emissive surfaces
-    D3DCOLORVALUE DefaultSpecularity; // Switchable emissive surfaces, defines the specularity
+    D3DCOLORVALUE
+    DefaultSpecularity; // Switchable emissive surfaces, defines the specularity
 } DxSurfaceType_00;
 
 

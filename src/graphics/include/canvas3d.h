@@ -14,11 +14,11 @@
 #ifndef _CANVAS3D_H_
 #define _CANVAS3D_H_
 
-#include "Ttypes.h"
-#include "ImageBuf.h"
-#include "Context.h"
+#include "ttypes.h"
+#include "imagebuf.h"
+#include "context.h"
 #include "render3d.h"
-#include "Display.h"
+#include "display.h"
 
 
 class Canvas3D : public VirtualDisplay
@@ -35,18 +35,18 @@ public:
 
     // Setup and Cleanup need to have additions here, but still call the parent versions
     // virtual void Setup( ImageBuffer *imageBuffer );
-    virtual void Setup(Render3D * renderer);
+    virtual void Setup(Render3D *renderer);
     virtual void Cleanup(void);
 
-    void ResetTargetRenderer(Render3D * renderer)
+    void ResetTargetRenderer(Render3D *renderer)
     {
         r3d = renderer;
     };
 
     // we don't implement these for anything
-    virtual void StartDraw(void)  {} ;
-    virtual void ClearDraw(void)  {} ;
-    virtual void EndDraw(void) {} ;
+    virtual void StartDraw(void) {};
+    virtual void ClearDraw(void) {};
+    virtual void EndDraw(void) {};
     virtual void Render2DPoint(float x1, float y1);
     virtual void Render2DLine(float x1, float y1, float x2, float y2);
     virtual void Render2DTri(float, float, float, float, float, float) {};
@@ -87,14 +87,24 @@ public:
     // all args are in device independent coords ( -1.0 to 1.0 )
     virtual void Point(float x1, float y1);
     virtual void Line(float x1, float y1, float x2, float y2);
-    virtual void Tri(float x1, float y1, float x2, float y2, float x3, float y3);
-    virtual void ScreenText(float xLeft, float yTop, const char *string, int boxed) {}
-    virtual void TextLeft(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextRight(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextCenter(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextLeftVertical(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextRightVertical(float x1, float y1, const char *string, int boxed = 0);
-    virtual void TextCenterVertical(float x1, float y1, const char *string, int boxed = 0);
+    virtual void Tri(float x1, float y1, float x2, float y2, float x3,
+                     float y3);
+    virtual void ScreenText(float xLeft, float yTop, const char *string,
+                            int boxed)
+    {
+    }
+    virtual void TextLeft(float x1, float y1, const char *string,
+                          int boxed = 0);
+    virtual void TextRight(float x1, float y1, const char *string,
+                           int boxed = 0);
+    virtual void TextCenter(float x1, float y1, const char *string,
+                            int boxed = 0);
+    virtual void TextLeftVertical(float x1, float y1, const char *string,
+                                  int boxed = 0);
+    virtual void TextRightVertical(float x1, float y1, const char *string,
+                                   int boxed = 0);
+    virtual void TextCenterVertical(float x1, float y1, const char *string,
+                                    int boxed = 0);
     virtual void Circle(float x, float y, float xRadius);
     virtual void Arc(float x, float y, float xRadius, float start, float stop);
     virtual float NormalizedLineHeight(void);
@@ -112,7 +122,6 @@ protected:
 
     // the canvas *MUST* be associated with a 3d context found elsewhere
     Render3D *r3d;
-
 };
 
 #endif // _CANVAS3D_H_

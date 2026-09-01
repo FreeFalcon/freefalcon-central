@@ -4,7 +4,7 @@
 #include "airframe.h"
 #include "aircrft.h"
 #include "campwp.h"
-#include "MsgInc/WingmanMsg.h"
+#include "msginc/wingmanmsg.h"
 #include "wingorder.h"
 #include "simdrive.h"
 #include "ui/include/tac_class.h"
@@ -12,13 +12,10 @@
 /* S.G. */ #include "unit.h"
 /* S.G. */ #include "campbase.h"
 /* S.G. */ #include "flight.h"
-/* MN */   #include "MissEval.h"
+/* MN */ #include "misseval.h"
 
 float RangeAtTailChase(AircraftClass* tgt, SimObjectType* launcher);
 float TailChaseRMaxNe(AircraftClass* tgt, SimObjectType* launcher, int flag);
-
-
-
 
 
 void DigitalBrain::SeparateCheck(void)
@@ -34,13 +31,12 @@ void DigitalBrain::SeparateCheck(void)
     char damageAbort = FALSE;
 
 
-
     //Cobra test we want to stop AI from aborting in fictional dogfight scenario
     if (FalconLocalGame->GetGameType() == game_Dogfight)
         return;
 
     // Check for RTB
-    if (((SimDriver.RunningTactical() and current_tactical_mission and 
+    if (((SimDriver.RunningTactical() and current_tactical_mission and
           current_tactical_mission->get_type() == tt_training)))
     {
         inTraining = TRUE;
@@ -74,14 +70,14 @@ void DigitalBrain::SeparateCheck(void)
         campAbort = TRUE;
 
 
-
     if (self->pctStrength < 0.50F)
         damageAbort = TRUE;
 
     if ((aaAbort or agAbort or campAbort or damageAbort) and not inTraining)
     {
         // If pre IP go to landing, else step past target
-        if (curMode not_eq RTBMode and curMode not_eq LandingMode and curMode not_eq TakeoffMode)
+        if (curMode not_eq RTBMode and curMode not_eq LandingMode and
+            curMode not_eq TakeoffMode)
         {
             // Drop ground target if any
             if (groundTargetPtr)
@@ -91,8 +87,8 @@ void DigitalBrain::SeparateCheck(void)
 
             // 2001-05-13 MODIFIED BY S.G. TO MAKE IT SIMILAR TO THE ABOVE agAbort CODE
             // 2001-06-21 RESTATED BY S.G. BROUGHT BACK TO WHAT IS RELEASED
-            if ( not IsSetATC(ReachedIP))
-                //      if ( not missionComplete or not self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
+            if (not IsSetATC(ReachedIP))
+            //      if ( not missionComplete or not self->curWaypoint or self->curWaypoint->GetWPFlags() bitand WPF_TARGET)
             {
                 // Find the landing waypoint, and make it the current one
                 while (tmpWaypoint)
@@ -111,7 +107,7 @@ void DigitalBrain::SeparateCheck(void)
                     SetWaypointSpecificStuff();
                 }
 
-                if ( not IsSetATC(SaidRTB))
+                if (not IsSetATC(SaidRTB))
                 {
                     SetATCFlag(SaidRTB);
                     // Call going home
@@ -144,7 +140,7 @@ void DigitalBrain::SeparateCheck(void)
                     SetWaypointSpecificStuff();
                 }
 
-                if ( not IsSetATC(SaidRTB))
+                if (not IsSetATC(SaidRTB))
                 {
                     SetATCFlag(SaidRTB);
                     // Call going home
@@ -154,19 +150,19 @@ void DigitalBrain::SeparateCheck(void)
             }
         }
 
-        if ( not isWing)
+        if (not isWing)
         {
             AddMode(RTBMode);
         }
     }
 
-    if (( not isWing or IsSetATC(SaidBingo)) and curMode == RTBMode)
+    if ((not isWing or IsSetATC(SaidBingo)) and curMode == RTBMode)
         AddMode(RTBMode);
 
     if (isWing and mpActionFlags[AI_RTB])
         AddMode(RTBMode);
 
-    if ( not targetPtr)
+    if (not targetPtr)
         return;
 
     // If you can't be offensive, and you have a target/threat, run away
@@ -175,10 +171,10 @@ void DigitalBrain::SeparateCheck(void)
     *///me123
 
 
-
     // go no further unless separation is desired
-    if (IsSetATC(SaidBingo)  or
-        curMode == WVREngageMode and (aaAbort or agAbort or campAbort or damageAbort))
+    if (IsSetATC(SaidBingo) or
+        curMode == WVREngageMode and
+            (aaAbort or agAbort or campAbort or damageAbort))
     {
         // Entry
         if (curMode not_eq SeparateMode and targetData->range < 2.0f * NM_TO_FT)
@@ -189,8 +185,10 @@ void DigitalBrain::SeparateCheck(void)
             // Find missile Rmax for a tail chase
             // Final flag True = MRM, False = SRM
             // Skip the check if target has no missiles
-            if (targetPtr->BaseData()->IsSim() and 
-                (((SimBaseClass*)targetPtr->BaseData())->IsSetFlag(HAS_MISSILES) or targetPtr->localData->range > 2.0F * NM_TO_FT))
+            if (targetPtr->BaseData()->IsSim() and
+                (((SimBaseClass*)targetPtr->BaseData())
+                     ->IsSetFlag(HAS_MISSILES) or
+                 targetPtr->localData->range > 2.0F * NM_TO_FT))
                 rMaxNe = TailChaseRMaxNe(self, targetPtr, FALSE);
             else
                 rMaxNe = 6000.0F;
@@ -201,33 +199,35 @@ void DigitalBrain::SeparateCheck(void)
                 // If inside one turn radius threat needs to be ahead of 3/9 line
                 // else behind 3/9 line
                 gs = af->SustainedGs(TRUE);
-                turnRadius = self->GetVt() * self->GetVt() / ((float)sqrt(gs * gs - 1.0F) * GRAVITY);
+                turnRadius = self->GetVt() * self->GetVt() /
+                             ((float)sqrt(gs * gs - 1.0F) * GRAVITY);
 
                 if (targetData->range < turnRadius)
                 {
-                    if (targetData->ata < 90.0 * DTR) AddMode(SeparateMode);
+                    if (targetData->ata < 90.0 * DTR)
+                        AddMode(SeparateMode);
                 }
                 else
                 {
-                    if (targetData->ata > 90.0 * DTR) AddMode(SeparateMode);
+                    if (targetData->ata > 90.0 * DTR)
+                        AddMode(SeparateMode);
                 }
             }
         }
-        else if (targetData->range < 6.0f * NM_TO_FT and 
-                 targetPtr->localData->rangedot > 0.0f or
-                 targetData->range > 6000)// last mode was seperate
+        else if (targetData->range < 6.0f * NM_TO_FT and
+                     targetPtr->localData->rangedot > 0.0f or
+                 targetData->range > 6000) // last mode was seperate
         {
             AddMode(SeparateMode);
         }
-
-
     }
 
     //TJL 11/08/03 Bugout code courtesy of Jam/Mike
     // Is the AI deep six? ataFrom is from target nose.
-    if (targetData->ataFrom > 135.0F * DTR and FalconLocalGame->GetGameType() not_eq game_Dogfight)
+    if (targetData->ataFrom > 135.0F * DTR and
+        FalconLocalGame->GetGameType() not_eq game_Dogfight)
     {
-        if ( not bugoutTimer)
+        if (not bugoutTimer)
         {
             //Set 90 second timer
             bugoutTimer = SimLibElapsedTime + 90000;
@@ -249,7 +249,6 @@ void DigitalBrain::SeparateCheck(void)
         //reset our timer
         bugoutTimer = 0;
     }
-
 }
 
 float RangeAtTailChase(AircraftClass* target, SimObjectType* launcher)
@@ -298,7 +297,8 @@ float RangeAtTailChase(AircraftClass* target, SimObjectType* launcher)
 
     // Turn Radii (assume 5g turn)
     radiusLaunch = vLaunch * vLaunch / (5.0F * GRAVITY);
-    radiusTarget = vTarget * vTarget / (target->af->SustainedGs(TRUE) * GRAVITY);
+    radiusTarget =
+        vTarget * vTarget / (target->af->SustainedGs(TRUE) * GRAVITY);
 
     // Turn rate
     rateLaunch = vLaunch / radiusLaunch;
@@ -306,27 +306,31 @@ float RangeAtTailChase(AircraftClass* target, SimObjectType* launcher)
 
     // Go Left
     xLaunch1 = -radiusLaunch * (float)sin(aspectLaunch);
-    yLaunch1 =  radiusLaunch * (float)cos(aspectLaunch);
+    yLaunch1 = radiusLaunch * (float)cos(aspectLaunch);
 
-    xTarget1 =  initialRange + radiusTarget * (float)sin(aspectTarget);
+    xTarget1 = initialRange + radiusTarget * (float)sin(aspectTarget);
     yTarget1 = -radiusTarget * (float)cos(aspectTarget);
 
-    rc = (float)sqrt((xLaunch1 - xTarget1) * (xLaunch1 - xTarget1) + (yLaunch1 - yTarget1) * (yLaunch1 - yTarget1));
-    thetac1 = (float)asin(max(-1.0F, min(1.0F, (radiusTarget + radiusLaunch) / rc)));
+    rc = (float)sqrt((xLaunch1 - xTarget1) * (xLaunch1 - xTarget1) +
+                     (yLaunch1 - yTarget1) * (yLaunch1 - yTarget1));
+    thetac1 =
+        (float)asin(max(-1.0F, min(1.0F, (radiusTarget + radiusLaunch) / rc)));
     gammac1 = (float)asin(max(-1.0F, min(1.0F, (yTarget1 - yLaunch1) / rc)));
 
     thetaLaunch1 = -(aspectLaunch - gammac1 - thetac1);
     thetaTarget1 = aspectTarget - gammac1 - thetac1;
 
     // Go Right
-    xLaunch2 =  radiusLaunch * (float)sin(aspectLaunch);
+    xLaunch2 = radiusLaunch * (float)sin(aspectLaunch);
     yLaunch2 = -radiusLaunch * (float)cos(aspectLaunch);
 
-    xTarget2 =  initialRange + radiusTarget * (float)sin(aspectTarget);
+    xTarget2 = initialRange + radiusTarget * (float)sin(aspectTarget);
     yTarget2 = -radiusTarget * (float)cos(aspectTarget);
 
-    rc = (float)sqrt((xLaunch2 - xTarget2) * (xLaunch2 - xTarget2) + (yLaunch2 - yTarget2) * (yLaunch2 - yTarget2));
-    thetac2 = (float)asin(max(-1.0F, min(1.0F, (radiusTarget - radiusLaunch) / rc)));
+    rc = (float)sqrt((xLaunch2 - xTarget2) * (xLaunch2 - xTarget2) +
+                     (yLaunch2 - yTarget2) * (yLaunch2 - yTarget2));
+    thetac2 =
+        (float)asin(max(-1.0F, min(1.0F, (radiusTarget - radiusLaunch) / rc)));
     gammac2 = (float)asin(max(-1.0F, min(1.0F, (yTarget2 - yLaunch2) / rc)));
 
     thetaLaunch2 = aspectLaunch - gammac2 - thetac2;
@@ -350,37 +354,48 @@ float RangeAtTailChase(AircraftClass* target, SimObjectType* launcher)
 
     tMax = max(timeLaunch, timeTarget);
 
-    speedLaunch = vLaunch * (tMax - timeLaunch) +
-                  pSubSLaunch * GRAVITY * 0.5F * (tMax - timeLaunch) * (tMax - timeLaunch);
-    speedTarget = vTarget * (tMax - timeTarget) +
-                  pSubSTarget * GRAVITY * 0.5F * (tMax - timeTarget) * (tMax - timeTarget);
+    speedLaunch = vLaunch * (tMax - timeLaunch) + pSubSLaunch * GRAVITY * 0.5F *
+                                                      (tMax - timeLaunch) *
+                                                      (tMax - timeLaunch);
+    speedTarget = vTarget * (tMax - timeTarget) + pSubSTarget * GRAVITY * 0.5F *
+                                                      (tMax - timeTarget) *
+                                                      (tMax - timeTarget);
 
 
     // Find range when stern chase begins
     if (left)
     {
-        xLaunch = xLaunch1 + radiusLaunch * (float)sin(aspectLaunch + thetaLaunch1) +
+        xLaunch = xLaunch1 +
+                  radiusLaunch * (float)sin(aspectLaunch + thetaLaunch1) +
                   speedLaunch * (float)cos(aspectLaunch + thetaLaunch1);
-        yLaunch = yLaunch1 - radiusLaunch * (float)cos(aspectLaunch + thetaLaunch1) +
+        yLaunch = yLaunch1 -
+                  radiusLaunch * (float)cos(aspectLaunch + thetaLaunch1) +
                   speedLaunch * (float)sin(aspectLaunch + thetaLaunch1);
-        xTarget = xTarget1 - radiusTarget * (float)sin(aspectTarget - thetaTarget1) +
+        xTarget = xTarget1 -
+                  radiusTarget * (float)sin(aspectTarget - thetaTarget1) +
                   speedTarget * (float)cos(aspectTarget - thetaTarget1);
-        yTarget = yTarget1 + radiusTarget * (float)cos(aspectTarget - thetaTarget1) +
+        yTarget = yTarget1 +
+                  radiusTarget * (float)cos(aspectTarget - thetaTarget1) +
                   speedTarget * (float)sin(aspectTarget - thetaTarget1);
     }
     else
     {
-        xLaunch = xLaunch2 - radiusLaunch * (float)sin(aspectLaunch - thetaLaunch2) +
+        xLaunch = xLaunch2 -
+                  radiusLaunch * (float)sin(aspectLaunch - thetaLaunch2) +
                   speedLaunch * (float)cos(aspectLaunch - thetaLaunch2);
-        yLaunch = yLaunch2 + radiusLaunch * (float)cos(aspectLaunch - thetaLaunch2) +
+        yLaunch = yLaunch2 +
+                  radiusLaunch * (float)cos(aspectLaunch - thetaLaunch2) +
                   speedLaunch * (float)sin(aspectLaunch - thetaLaunch2);
-        xTarget = xTarget2 - radiusTarget * (float)sin(aspectTarget - thetaTarget2) +
+        xTarget = xTarget2 -
+                  radiusTarget * (float)sin(aspectTarget - thetaTarget2) +
                   speedTarget * (float)cos(aspectTarget - thetaTarget2);
-        yTarget = yTarget2 + radiusTarget * (float)cos(aspectTarget - thetaTarget2) +
+        yTarget = yTarget2 +
+                  radiusTarget * (float)cos(aspectTarget - thetaTarget2) +
                   speedTarget * (float)sin(aspectTarget - thetaTarget2);
     }
 
-    finalRange = (float)sqrt((xLaunch - xTarget) * (xLaunch - xTarget) + (yLaunch - yTarget) * (yLaunch - yTarget));
+    finalRange = (float)sqrt((xLaunch - xTarget) * (xLaunch - xTarget) +
+                             (yLaunch - yTarget) * (yLaunch - yTarget));
 
     return finalRange;
 }
@@ -431,12 +446,12 @@ void DigitalBrain::FuelCheck(void)
       */ //End of removed code
 
     //me123 arhh we don't want the wingmen to think :), just say the prebrefed fuelstate joker, bingo
-    fuelRemain = af->Fuel();//me123 hack addet
+    fuelRemain = af->Fuel(); //me123 hack addet
 
     // Check fuel state
-    if (fuelRemain < af->GetJoker())//me123 from 1000
+    if (fuelRemain < af->GetJoker()) //me123 from 1000
     {
-        if ( not IsSetATC(SaidJoker))
+        if (not IsSetATC(SaidJoker))
         {
             // Say Joker
             //            MonoPrint ("Digi joker fuel\n");
@@ -445,12 +460,13 @@ void DigitalBrain::FuelCheck(void)
         }
         else if (fuelRemain < af->GetBingo())
         {
-            if ( not IsSetATC(SaidBingo))
+            if (not IsSetATC(SaidBingo))
             {
                 // Say Bingo
                 //               MonoPrint ("Digi bingo fuel\n");
                 SetATCFlag(SaidBingo);
-                AiSendCommand(self, FalconWingmanMsg::WMBingoFuel, AiAllButSender);
+                AiSendCommand(self, FalconWingmanMsg::WMBingoFuel,
+                              AiAllButSender);
             }
             else if (fuelRemain < af->GetFumes() and not IsSetATC(SaidFumes))
             {
@@ -464,7 +480,8 @@ void DigitalBrain::FuelCheck(void)
                 // Say Flameout
                 //               MonoPrint ("Digi flameout\n");
                 SetATCFlag(SaidFlameout);
-                AiSendCommand(self, FalconWingmanMsg::WMFlameout, AiAllButSender);
+                AiSendCommand(self, FalconWingmanMsg::WMFlameout,
+                              AiAllButSender);
             }
         }
     }

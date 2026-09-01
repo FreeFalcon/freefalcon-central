@@ -12,7 +12,6 @@ extern MEM_POOL gCockMemPool;
 #endif
 
 
-
 typedef struct
 {
     float pan;
@@ -30,13 +29,14 @@ class CPChevron : public CPObject
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         return MemAllocPtr(gCockMemPool, size, FALSE);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
     struct ChevStruct
@@ -59,7 +59,6 @@ public:
     long mColor[2];
 
 public:
-
     CPChevron(ObjectInitStr*, ChevronInitStr*);
     virtual ~CPChevron();
     void Exec(SimBaseClass*) {};

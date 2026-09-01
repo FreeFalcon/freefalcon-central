@@ -22,7 +22,7 @@ typedef struct
     RECT ilsLimits;
     BYTE* pBackground;
     long color0, color1, color2, color3, color4;
-    BYTE *sourceadi; //Wombat778 3-24-04
+    BYTE* sourceadi; //Wombat778 3-24-04
 } ADIInitStr;
 
 
@@ -33,17 +33,17 @@ class CPAdi : public CPObject
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         return MemAllocPtr(gCockMemPool, size, FALSE);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================//
     // Aircraft Parameters
     //====================================================//
@@ -80,19 +80,19 @@ public:
     unsigned mpAircraftBar[NUM_AC_BAR_POINTS][2];
     float mpAircraftBarData[NUM_AC_BAR_POINTS][2]; //x, y
 
-    int       mTopLimit;
-    int       mLeftLimit;
-    int       mBottomLimit;
-    int       mRightLimit;
+    int mTopLimit;
+    int mLeftLimit;
+    int mBottomLimit;
+    int mRightLimit;
 
     float mHorizScale;
     float mVertScale;
 
-    int       mHorizCenter;
-    int       mVertCenter;
+    int mHorizCenter;
+    int mVertCenter;
 
-    int       mHorizBarPos;
-    int       mVertBarPos;
+    int mHorizBarPos;
+    int mVertBarPos;
 
     //MI
     int Persistant;
@@ -108,7 +108,8 @@ public:
     int* mpADICircle;
     GLubyte* mpSourceBuffer;
     ImageBuffer* mpSurfaceBuffer;
-    ImageBuffer* ADIBuffer; //Wombat778 10-06-2003 temporary buffer for ADI for use when scaling
+    ImageBuffer*
+        ADIBuffer; //Wombat778 10-06-2003 temporary buffer for ADI for use when scaling
 
 
     //====================================================//
@@ -116,8 +117,8 @@ public:
     //====================================================//
 
     virtual void Exec(SimBaseClass*);
-    void  ExecILS(void);
-    void  ExecILSNone(void);
+    void ExecILS(void);
+    void ExecILSNone(void);
     virtual void DisplayBlit(void);
     virtual void DisplayDraw(void);
     virtual void CreateLit(void);
@@ -132,7 +133,7 @@ public:
     // Constructors and Destructors
     //====================================================//
 
-    CPAdi(ObjectInitStr *, ADIInitStr *);
+    CPAdi(ObjectInitStr*, ADIInitStr*);
     virtual ~CPAdi();
 };
 

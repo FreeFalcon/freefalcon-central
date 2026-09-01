@@ -8,15 +8,15 @@
 #include "aircrft.h"
 #include "otwdrive.h"
 #include "fakerand.h"
-#include "Graphics/Include/tmap.h"
-#include "Graphics/Include/rviewpnt.h"  // to get ground type
+#include "graphics/include/tmap.h"
+#include "graphics/include/rviewpnt.h"  // to get ground type
 #include "vutypes.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "limiters.h"
 #include "fack.h"
 #include "falcsess.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/LandingMessage.h"
+#include "msginc/damagemsg.h"
+#include "msginc/landingmessage.h"
 #include "campbase.h"
 #include "fsound.h"
 #include "soundfx.h"
@@ -26,7 +26,7 @@
 #include "objectiv.h"
 #include "find.h"
 #include "atcbrain.h"
-#include "Graphics/Include/terrtex.h"
+#include "graphics/include/terrtex.h"
 #include "ffeedbk.h"
 
 // OW FIXME: this had to be added after installing the DX8 Beta 1 SDK
@@ -38,7 +38,7 @@
 #include "digi.h"
 #include "ptdata.h"
 #include "dofsnswitches.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "classtbl.h"
 //#include <crtdbg.h> // JPO debug
 
@@ -72,7 +72,8 @@ void AirframeClass::RunLandingGear(void)
             PtRelPos.y = GetAeroData(AeroDataSet::NosGearY + i * 4);
             PtRelPos.z = GetAeroData(AeroDataSet::NosGearZ + i * 4);
 
-            MatrixMult(&((DrawableBSP*)platform->drawPointer)->orientation, &PtRelPos, &PtWorldPos);
+            MatrixMult(&((DrawableBSP*)platform->drawPointer)->orientation,
+                       &PtRelPos, &PtWorldPos);
 
             PtWorldPos.x += x;
             PtWorldPos.y += y;
@@ -93,7 +94,8 @@ void AirframeClass::RunLandingGear(void)
                     gear[i].StrutExtension = -auxaeroData->animGearMaxComp[i];
                 }
 
-                gear[i].WheelRPS *= (1 - .4f * SimLibMajorFrameTime); // slows wheel down
+                gear[i].WheelRPS *=
+                    (1 - .4f * SimLibMajorFrameTime); // slows wheel down
 
                 if (gear[i].StrutExtension > auxaeroData->animGearMaxExt[i])
                 {
@@ -102,9 +104,11 @@ void AirframeClass::RunLandingGear(void)
                     // sfr: was in run gear function
                     // deaccel gear, since its not in touch with ground
                     // compute new angle
-                    gear[i].WheelAngle += gear[i].WheelRPS * SimLibMajorFrameTime;
+                    gear[i].WheelAngle +=
+                        gear[i].WheelRPS * SimLibMajorFrameTime;
                 }
-                else if (SimLibMajorFrameTime and auxaeroData->animWheelRadius[i])
+                else if (SimLibMajorFrameTime and
+                         auxaeroData->animWheelRadius[i])
                 {
                     // sfr: using plane speed now
                     // we need this for the case above,
@@ -116,7 +120,8 @@ void AirframeClass::RunLandingGear(void)
                 }
 
                 // can be more than 2pi
-                gear[i].WheelAngle = fmod(gear[i].WheelAngle, ((float)(M_PI)) * 2.0f);
+                gear[i].WheelAngle =
+                    fmod(gear[i].WheelAngle, ((float)(M_PI)) * 2.0f);
             }
         }
     }

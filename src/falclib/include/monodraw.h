@@ -2,7 +2,7 @@
 #define _MONODRAW_H
 
 #include "twoddraw.h"
-#include "Ttypes.h"
+#include "ttypes.h"
 
 class Mono2D : public TWODDRAW_CLASS
 {
@@ -16,7 +16,6 @@ private:
     int page;
 
 public:
-
     void Setup(void);
     void Cleanup(void);
     virtual void StartFrame(void);

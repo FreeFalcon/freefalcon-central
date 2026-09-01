@@ -1,0 +1,9 @@
+{
+  "name": "redviper",
+  "version-string": "7.0",
+  "description": "FreeFalcon/RedViper -- SDL3 window+input on both platforms; Vulkan comes from the LunarG SDK (not vcpkg). OpenAL added when the audio subsystem is ported.",
+  "dependencies": [
+    "sdl3"
+  ],
+  "builtin-baseline": "43643e1f5cf73db40d0d4bd610183348eb09b24e"
+}

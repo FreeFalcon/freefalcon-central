@@ -5,22 +5,22 @@
 
     Derived class to handle interaction with the BSP object library.
 \***************************************************************************/
-#include "StateStack.h"
-#include "PalBank.h"
-#include "Matrix.h"
-#include "TimeMgr.h"
-#include "TOD.h"
-#include "RenderOW.h"
-#include "DrawBSP.h"
-#include "DrawPNT.h"
-#include "FalcLib/include/PlayerOp.h"
-#include "FalcLib/include/dispopts.h"
+#include "statestack.h"
+#include "palbank.h"
+#include "matrix.h"
+#include "timemgr.h"
+#include "tod.h"
+#include "renderow.h"
+#include "drawbsp.h"
+#include "drawpnt.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
 
-#include "Graphics/DXEngine/DXTools.h"
-#include "Graphics/DXEngine/DXEngine.h"
+#include "graphics/dxengine/dxtools.h"
+#include "graphics/dxengine/dxengine.h"
 
 //JAM 09Dec03
-#include "RealWeather.h"
+#include "realweather.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawableBSP::pool;
@@ -35,11 +35,11 @@ extern bool g_bLabelShowDistance;
 extern BOOL renderACMI;
 
 
-
 /***************************************************************************\
     Initialize a container for a BSP object to be drawn
 \***************************************************************************/
-DrawableBSP::DrawableBSP(int ID, const Tpoint *pos, const Trotation *rot, float s)
+DrawableBSP::DrawableBSP(int ID, const Tpoint *pos, const Trotation *rot,
+                         float s)
     : DrawableObject(s), instance(ID)
 {
     // Initialize our member variables
@@ -60,7 +60,6 @@ DrawableBSP::DrawableBSP(int ID, const Tpoint *pos, const Trotation *rot, float 
 }
 
 
-
 /***************************************************************************\
     Remove an instance of a BSP object.
 \***************************************************************************/
@@ -85,7 +84,7 @@ void DrawableBSP::Update(const Tpoint *pos, const Trotation *rot)
 {
     ShiAssert(id >= 0);
 
-    ShiAssert( not _isnan(position.x));
+    ShiAssert(not _isnan(position.x));
     // Update the location of this object
     position.x = pos->x;
     position.y = pos->y;
@@ -106,15 +105,19 @@ void DrawableBSP::AttachChild(DrawableBSP *child, int slotNumber)
     ShiAssert(child);
     ShiAssert(slotNumber >= 0);
     ShiAssert(slotNumber < instance.ParentObject->nSlots);
-    ShiAssert((instance.SlotChildren) and (instance.SlotChildren[slotNumber] == NULL));
+    ShiAssert((instance.SlotChildren) and
+              (instance.SlotChildren[slotNumber] == NULL));
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE SLOTS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if ( not instance.SlotChildren) return;
+    if (not instance.SlotChildren)
+        return;
 
-    if (slotNumber >= instance.ParentObject->nSlots) return;
+    if (slotNumber >= instance.ParentObject->nSlots)
+        return;
 
-    if ( not child) return;
+    if (not child)
+        return;
 
     instance.SetSlotChild(slotNumber, &child->instance);
 }
@@ -131,7 +134,8 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
     ShiAssert(child);
     ShiAssert(slotNumber >= 0);
     ShiAssert(slotNumber < instance.ParentObject->nSlots);
-    ShiAssert((instance.SlotChildren) and (instance.SlotChildren[slotNumber] == &child->instance));
+    ShiAssert((instance.SlotChildren) and
+              (instance.SlotChildren[slotNumber] == &child->instance));
 
     Tpoint offset;
     Tpoint pos;
@@ -143,7 +147,8 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
         return;
     }
 
-    if (( not instance.SlotChildren) or (instance.SlotChildren[slotNumber] not_eq &child->instance))
+    if ((not instance.SlotChildren) or
+        (instance.SlotChildren[slotNumber] not_eq &child->instance))
     {
         //(*(int*)0) = 0;
         return;
@@ -153,9 +158,12 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
     GetChildOffset(slotNumber, &offset);
 
     // Rotate the offset into world space and add the parents position
-    pos.x = orientation.M11 * offset.x + orientation.M12 * offset.y + orientation.M13 * offset.z + position.x;
-    pos.y = orientation.M21 * offset.x + orientation.M22 * offset.y + orientation.M23 * offset.z + position.y;
-    pos.z = orientation.M31 * offset.x + orientation.M32 * offset.y + orientation.M33 * offset.z + position.z;
+    pos.x = orientation.M11 * offset.x + orientation.M12 * offset.y +
+            orientation.M13 * offset.z + position.x;
+    pos.y = orientation.M21 * offset.x + orientation.M22 * offset.y +
+            orientation.M23 * offset.z + position.y;
+    pos.z = orientation.M31 * offset.x + orientation.M32 * offset.y +
+            orientation.M33 * offset.z + position.z;
 
     // Update the child's location
     child->position = pos;
@@ -170,7 +178,6 @@ void DrawableBSP::DetachChild(DrawableBSP *child, int slotNumber)
 }
 
 
-
 /***************************************************************************
     Return the object space location of the slot connect point indicated
 ***************************************************************************/
@@ -182,7 +189,8 @@ void DrawableBSP::GetChildOffset(int slotNumber, Tpoint *offset)
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE SLOTS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (slotNumber >= instance.ParentObject->nSlots)  return;
+    if (slotNumber >= instance.ParentObject->nSlots)
+        return;
 
     *offset = instance.ParentObject->pSlotAndDynamicPositions[slotNumber];
     offset->x *= scale;
@@ -200,7 +208,8 @@ void DrawableBSP::SetDOFangle(int DOF, float radians)
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (DOF >= instance.ParentObject->nDOFs)  return;
+    if (DOF >= instance.ParentObject->nDOFs)
+        return;
 
     ShiAssert(DOF < instance.ParentObject->nDOFs);
     instance.DOFValues[DOF].rotation = radians;
@@ -211,7 +220,8 @@ float DrawableBSP::GetDOFangle(int DOF)
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (DOF >= instance.ParentObject->nDOFs)  return 0.0f;
+    if (DOF >= instance.ParentObject->nDOFs)
+        return 0.0f;
 
     ShiAssert(DOF < instance.ParentObject->nDOFs);
     return instance.DOFValues[DOF].rotation;
@@ -227,7 +237,8 @@ void DrawableBSP::SetDOFoffset(int DOF, float offset)
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (DOF >= instance.ParentObject->nDOFs)  return;
+    if (DOF >= instance.ParentObject->nDOFs)
+        return;
 
     ShiAssert(DOF < instance.ParentObject->nDOFs);
 
@@ -240,7 +251,8 @@ float DrawableBSP::GetDOFoffset(int DOF)
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (DOF >= instance.ParentObject->nDOFs)  return 0.0f;
+    if (DOF >= instance.ParentObject->nDOFs)
+        return 0.0f;
 
     ShiAssert(DOF < instance.ParentObject->nDOFs);
     return instance.DOFValues[DOF].translation;
@@ -254,7 +266,8 @@ void DrawableBSP::SetDynamicVertex(int vertID, float dx, float dy, float dz)
 {
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DYANAMIC VERTS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (vertID >= instance.ParentObject->nDynamicCoords)  return;
+    if (vertID >= instance.ParentObject->nDynamicCoords)
+        return;
 
     ShiAssert(vertID < instance.ParentObject->nDynamicCoords);
     instance.SetDynamicVertex(vertID, dx, dy, dz);
@@ -301,18 +314,21 @@ void DrawableBSP::SetSwitchMask(int switchNumber, UInt32 mask)
     // #47 UAF guard: this DrawableBSP can be freed while still in litObjectRoot (the destructor
     // does not unlink it; only feature/damage paths call RemoveFromLitList). instance.ParentObject
     // then holds 0xDDDDDDDD and ->nSwitches faults. Bail if the parent object isn't readable.
-    if (F4IsBadReadPtr(instance.ParentObject, sizeof(*instance.ParentObject))) return;
+    if (F4IsBadReadPtr(instance.ParentObject, sizeof(*instance.ParentObject)))
+        return;
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (switchNumber >= instance.ParentObject->nSwitches)  return;
+    if (switchNumber >= instance.ParentObject->nSwitches)
+        return;
 
     // Artscout - 2026: NULL-guard the switch array itself. nSwitches can be > 0 while SwitchValues is
     // still NULL (object built without its DOF/switch array, or partially torn down). Writing
     // SwitchValues[switchNumber] then faults at 0x0 -- seen as a CTD from UpdateOneLitObject after
     // clicking a 3D-cockpit switch (the click toggles object lights -> the lit-object update writes a
     // switch mask). Companion to the #47 ParentObject UAF guard above.
-    if (instance.SwitchValues == NULL) return;
+    if (instance.SwitchValues == NULL)
+        return;
 
     ShiAssert(switchNumber < instance.ParentObject->nSwitches);
 
@@ -324,20 +340,24 @@ UInt32 DrawableBSP::GetSwitchMask(int switchNumber)
     ShiAssert(id >= 0);
 
     // #47 UAF guard (see SetSwitchMask)
-    if (F4IsBadReadPtr(instance.ParentObject, sizeof(*instance.ParentObject))) return 0;
+    if (F4IsBadReadPtr(instance.ParentObject, sizeof(*instance.ParentObject)))
+        return 0;
 
     // THIS IS A HACK TO TOLERATE OBJECTS WHICH DON'T YET HAVE DOFS
     // THIS SHOULD BE REMOVED IN THE LATE BETA AND SHIPPING VERSIONS
-    if (switchNumber >= instance.ParentObject->nSwitches)  return 0;
+    if (switchNumber >= instance.ParentObject->nSwitches)
+        return 0;
 
     // Artscout - 2026: NULL-guard the switch array (see SetSwitchMask).
-    if (instance.SwitchValues == NULL) return 0;
+    if (instance.SwitchValues == NULL)
+        return 0;
 
     ShiAssert(switchNumber < instance.ParentObject->nSwitches);
 
     if (switchNumber < instance.ParentObject->nSwitches)
         return instance.SwitchValues[switchNumber];
-    else return 0;
+    else
+        return 0;
 }
 
 
@@ -361,13 +381,20 @@ void DrawableBSP::SetLabel(char *labelString, DWORD color)
 **  Return TRUE if so and the collision point.
 ** Algo from GGEms I
 \***************************************************************************/
-BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *collide, float boxScale)
+BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector,
+                            Tpoint *collide, float boxScale)
 {
     Tpoint origin = {0.0F}, vec = {0.0F};
     Tpoint pos = {0.0F};
     int i = 0;
-    float  *minBp = NULL, *maxBp = NULL, *orgp = NULL, *vecp = NULL, *collp = NULL;
-    enum {LEFT, RIGHT, MIDDLE} quadrant[3] = {LEFT};
+    float *minBp = NULL, *maxBp = NULL, *orgp = NULL, *vecp = NULL,
+          *collp = NULL;
+    enum
+    {
+        LEFT,
+        RIGHT,
+        MIDDLE
+    } quadrant[3] = {LEFT};
     float t = 0.0F, tMax = 0.0F;
     float minB[3] = {0.0F}, maxB[3] = {0.0F};
     float candidatePlane[3] = {0.0F};
@@ -378,12 +405,18 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     pos.x = from->x - position.x;
     pos.y = from->y - position.y;
     pos.z = from->z - position.z;
-    origin.x =  pos.x * orientation.M11 +     pos.y * orientation.M21 +     pos.z * orientation.M31;
-    origin.y =  pos.x * orientation.M12 +     pos.y * orientation.M22 +     pos.z * orientation.M32;
-    origin.z =  pos.x * orientation.M13 +     pos.y * orientation.M23 +     pos.z * orientation.M33;
-    vec.x = vector->x * orientation.M11 + vector->y * orientation.M21 + vector->z * orientation.M31;
-    vec.y = vector->x * orientation.M12 + vector->y * orientation.M22 + vector->z * orientation.M32;
-    vec.z = vector->x * orientation.M13 + vector->y * orientation.M23 + vector->z * orientation.M33;
+    origin.x = pos.x * orientation.M11 + pos.y * orientation.M21 +
+               pos.z * orientation.M31;
+    origin.y = pos.x * orientation.M12 + pos.y * orientation.M22 +
+               pos.z * orientation.M32;
+    origin.z = pos.x * orientation.M13 + pos.y * orientation.M23 +
+               pos.z * orientation.M33;
+    vec.x = vector->x * orientation.M11 + vector->y * orientation.M21 +
+            vector->z * orientation.M31;
+    vec.y = vector->x * orientation.M12 + vector->y * orientation.M22 +
+            vector->z * orientation.M32;
+    vec.z = vector->x * orientation.M13 + vector->y * orientation.M23 +
+            vector->z * orientation.M33;
 
     // Account for object scaling
     boxScale *= scale;
@@ -489,7 +522,7 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
         {
             *collp = *orgp + tMax * (*vecp);
 
-            if (*collp < minB[i] or  *collp > maxB[i])
+            if (*collp < minB[i] or *collp > maxB[i])
             {
                 // outside box
                 return FALSE;
@@ -502,16 +535,16 @@ BOOL DrawableBSP::GetRayHit(const Tpoint *from, const Tpoint *vector, Tpoint *co
     }
 
     // We must transform the collision point from object space back into world space
-    collide->x = pos.x * orientation.M11 + pos.y * orientation.M12 + pos.z * orientation.M13 + position.x;
-    collide->y = pos.x * orientation.M21 + pos.y * orientation.M22 + pos.z * orientation.M23 + position.y;
-    collide->z = pos.x * orientation.M31 + pos.y * orientation.M32 + pos.z * orientation.M33 + position.z;
+    collide->x = pos.x * orientation.M11 + pos.y * orientation.M12 +
+                 pos.z * orientation.M13 + position.x;
+    collide->y = pos.x * orientation.M21 + pos.y * orientation.M22 +
+                 pos.z * orientation.M23 + position.y;
+    collide->z = pos.x * orientation.M31 + pos.y * orientation.M32 +
+                 pos.z * orientation.M33 + position.z;
 
 
     return TRUE;
 };
-
-
-
 
 
 // This function setup  visibility stuff for a BSP
@@ -521,7 +554,8 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     float alpha, fog, z;
 
     // RED - Linear Fog - checvk if under visibility limit
-    if (position.z > realWeather->VisibleLimit()) return false;
+    if (position.z > realWeather->VisibleLimit())
+        return false;
 
 
     //////////////////////////////////// FOG / HAZE ///////////////////////////////////////////////////
@@ -529,34 +563,41 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     z = renderer->ZDistanceFromCamera(&position);
 
     // RED - Linear Fog, if inside the layer, modulate with Hze, we can not use linear fog there
-    if (realWeather->weatherCondition > FAIR and position.z > (realWeather->HiOvercast))
+    if (realWeather->weatherCondition > FAIR and
+        position.z > (realWeather->HiOvercast))
     {
-        alpha = 1.0f - (-realWeather->HiOvercast + position.z) / (realWeather->stratusDepth / 2.0f);
+        alpha = 1.0f - (-realWeather->HiOvercast + position.z) /
+                           (realWeather->stratusDepth / 2.0f);
         alpha *= alpha * alpha;
     }
     else
     {
-        if (z > renderer->haze_start + renderer->haze_depth) alpha = 0.f;
-        else if (z < renderer->PERSPECTIVE_RANGE) alpha = 1.f;
+        if (z > renderer->haze_start + renderer->haze_depth)
+            alpha = 0.f;
+        else if (z < renderer->PERSPECTIVE_RANGE)
+            alpha = 1.f;
         else
         {
             if (renderer->GetHazeMode())
             {
                 fog = min(renderer->GetValleyFog(z, position.z), .65f);
 
-                if (z < renderer->haze_start) alpha = 1.f - fog;
+                if (z < renderer->haze_start)
+                    alpha = 1.f - fog;
                 else
                 {
                     alpha = renderer->GetRangeOnlyFog(z);
 
-                    if (alpha < fog) alpha = fog;
+                    if (alpha < fog)
+                        alpha = fog;
 
                     alpha = 1.f - alpha;
                 }
             }
             else
             {
-                if (z < renderer->haze_start) alpha = 1.f;
+                if (z < renderer->haze_start)
+                    alpha = 1.f;
                 else
                 {
                     alpha = renderer->GetRangeOnlyFog(z);
@@ -567,12 +608,11 @@ bool DrawableBSP::SetupVisibility(RenderOTW *renderer)
     }
 
     // Set the Fog stuff...
-    TheStateStack.SetFog(alpha, (Pcolor*)renderer->GetFogColor());
+    TheStateStack.SetFog(alpha, (Pcolor *)renderer->GetFogColor());
 
 
     // OBJECT TO DRAW
     return true;
-
 }
 
 /***************************************************************************\
@@ -598,7 +638,8 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         return;
     }
 
-    if ( not SetupVisibility(renderer)) return;
+    if (not SetupVisibility(renderer))
+        return;
 
     // JB 010112
     float scalefactor = 1;
@@ -607,7 +648,9 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     {
         renderer->TransformPoint(&position, &labelPoint);
 
-        if (radius <= 150 and (GetClass() == Guys or GetClass() == GroundVehicle or GetClass() == BSP))
+        if (radius <= 150 and
+            (GetClass() == Guys or GetClass() == GroundVehicle or
+             GetClass() == BSP))
             scalefactor = (labelPoint.csZ - 1200) / 6076 + 1;
 
         if (scalefactor < 1)
@@ -637,16 +680,25 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
             {
                 if (realWeather->weatherCellArray[row][col].onScreen)
                 {
-                    float dx = pv.x - realWeather->weatherCellArray[row][col].shadowPos.x;
-                    float dy = pv.y - realWeather->weatherCellArray[row][col].shadowPos.y;
-                    float dz = pv.z - realWeather->weatherCellArray[row][col].shadowPos.z;
+                    float dx =
+                        pv.x -
+                        realWeather->weatherCellArray[row][col].shadowPos.x;
+                    float dy =
+                        pv.y -
+                        realWeather->weatherCellArray[row][col].shadowPos.y;
+                    float dz =
+                        pv.z -
+                        realWeather->weatherCellArray[row][col].shadowPos.z;
                     float range = FabsF(SqrtF(dx * dx + dy * dy + dz * dz));
 
                     if (range < realWeather->cloudRadius)
                     {
                         isShadow = TRUE;
 
-                        float interp = max(1.f - (realWeather->cloudRadius - range) / realWeather->cloudRadius, .5f);
+                        float interp =
+                            max(1.f - (realWeather->cloudRadius - range) /
+                                          realWeather->cloudRadius,
+                                .5f);
 
                         float r = interp * light.r;
                         float g = interp * light.g;
@@ -660,7 +712,9 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     }
 
     if (g_bSmartScaling or PlayerOptions.ObjectDynScalingOn())
-        TheStateStack.DrawObject(&instance, &orientation, &position, scale * scalefactor);  // JB 010112 added scalefactor
+        TheStateStack.DrawObject(
+            &instance, &orientation, &position,
+            scale * scalefactor); // JB 010112 added scalefactor
     else
         TheStateStack.DrawObject(&instance, &orientation, &position, scale);
 
@@ -695,7 +749,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
     // Now compute the starting location for our label text
     if (drawLabels and labelLen)
     {
-        if ( not g_bSmartScaling and not PlayerOptions.ObjectDynScalingOn())
+        if (not g_bSmartScaling and not PlayerOptions.ObjectDynScalingOn())
             renderer->TransformPoint(&position, &labelPoint);   // JB 010112
 
         // JB 000807 Add near label limit and labels that get brighter as they get closer
@@ -708,11 +762,13 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // } //-
 
         // RV - RED - If ACMI force Label Limit to 150 nMiles
-        long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8, limitcheck;
+        long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8,
+             limitcheck;
 
-        if ( not DrawablePoint::drawLabels)
+        if (not DrawablePoint::drawLabels)
             limitcheck = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8;
-        else limitcheck = 300 * 6076 + 8; //
+        else
+            limitcheck = 300 * 6076 + 8; //
 
         //dpc LabelRadialDistanceFix
         //First check if Z distance is below "limitcheck" and only if it is then do additional
@@ -720,7 +776,7 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
         // since labelPoint is local and .csZ is not used afterwards)
         // Besides no need to calculate radial distance is Z distance is already greater
         if (g_bLabelRadialFix)
-            if (labelPoint.clipFlag == ON_SCREEN and 
+            if (labelPoint.clipFlag == ON_SCREEN and
                 labelPoint.csZ < limitcheck) //Same condition as below
             {
                 float dx = position.x - renderer->X();
@@ -731,24 +787,26 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
         //end LabelRadialDistanceFix
 
-        if (labelPoint.clipFlag == ON_SCREEN and 
-            labelPoint.csZ < limitcheck)
+        if (labelPoint.clipFlag == ON_SCREEN and labelPoint.csZ < limitcheck)
         {
             int colorsub = int((labelPoint.csZ / (limit >> 3))) << 5;
 
-            if (colorsub > 180) // let's not reduce brightness too much, keep a glimpse of the original color
+            if (colorsub >
+                180) // let's not reduce brightness too much, keep a glimpse of the original color
                 colorsub = 180;
 
             int red = (labelColor bitand 0x000000ff);
             red -= min(red, colorsub);
             int green = (labelColor bitand 0x0000ff00) >> 8;
-            green -= min(green, colorsub + 30); // green would be too light -> +30
+            green -=
+                min(green, colorsub + 30); // green would be too light -> +30
             int blue = (labelColor bitand 0x00ff0000) >> 16;
             blue -= min(blue, colorsub);
 
             long newlabelColor = blue << 16 bitor green << 8 bitor red;
 
-            x = labelPoint.x - renderer->ScreenTextWidth(label) / 2; // Centers text
+            x = labelPoint.x -
+                renderer->ScreenTextWidth(label) / 2; // Centers text
             y = labelPoint.y - 12; // Place text above center of object
             renderer->SetColor(newlabelColor);
             renderer->ScreenText(x, y, label);
@@ -757,8 +815,10 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
             if (g_bLabelShowDistance)
             {
                 char label2[32];
-                sprintf(label2, "%4.1f nm", labelPoint.csZ / 6076); // convert from ft to nm
-                float x2 = labelPoint.x - renderer->ScreenTextWidth(label2) / 2; // Centers text
+                sprintf(label2, "%4.1f nm",
+                        labelPoint.csZ / 6076); // convert from ft to nm
+                float x2 = labelPoint.x - renderer->ScreenTextWidth(label2) /
+                                              2; // Centers text
                 float y2 = labelPoint.y + 4; // Distance below center object
                 renderer->ScreenText(x2, y2, label2);
             }
@@ -771,7 +831,8 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 
 #endif
 
-    if (g_bDrawBoundingBox) DrawBoundingBox(renderer);
+    if (g_bDrawBoundingBox)
+        DrawBoundingBox(renderer);
 
 #ifdef _DEBUG
     // TESTING CODE TO SHOW BOUNDING BOXES
@@ -780,7 +841,6 @@ void DrawableBSP::Draw(RenderOTW *renderer, int)
 }
 
 
-
 /***************************************************************************\
  This call is used for micellanious BSP object display.
 \***************************************************************************/
@@ -791,7 +851,7 @@ void DrawableBSP::Draw(Render3D *renderer)
 
     ShiAssert(id >= 0);
 
-    if ( not renderer)
+    if (not renderer)
         return;
 
     // RED - NOPE - must be similar to any object
@@ -837,7 +897,6 @@ void DrawableBSP::Draw(Render3D *renderer)
 }
 
 
-
 /***************************************************************************\
     Display the bounding box of the object.
 \***************************************************************************/
@@ -1082,7 +1141,6 @@ void DrawableBSP::DrawBoundingBox(Render3D *renderer)
 }
 
 
-
 /***************************************************************************\
     This function is called from the miscellanious texture loader function.
  It must be hardwired into that function.
@@ -1096,7 +1154,6 @@ void DrawableBSP::SetupTexturesOnDevice(DXContext *rc)
 }
 
 
-
 /***************************************************************************\
     This function is called from the miscellanious texture cleanup function.
  It must be hardwired into that function.
@@ -1109,7 +1166,6 @@ void DrawableBSP::ReleaseTexturesOnDevice(DXContext *rc)
 }
 
 
-
 /***************************************************************************\
     Update the light on the affected object texture palettes.
  NOTE:  Since the textures are static, this function can also

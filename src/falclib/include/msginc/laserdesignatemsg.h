@@ -1,12 +1,12 @@
 #ifndef _LASERDESIGNATEMSG_H
 #define _LASERDESIGNATEMSG_H
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Laser Designate Msg
@@ -14,7 +14,8 @@
 class FalconLaserDesignateMsg : public FalconEvent
 {
 public:
-    FalconLaserDesignateMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconLaserDesignateMsg(VU_ID entityId, VuTargetEntity *target,
+                            VU_BOOL loopback = TRUE);
     FalconLaserDesignateMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconLaserDesignateMsg(void);
     virtual int Size() const
@@ -51,6 +52,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

@@ -1,4 +1,4 @@
-#include "MsgInc/SendEvalMsg.h"
+#include "msginc/sendevalmsg.h"
 #include "mesg.h"
 #include "misseval.h"
 #include "falclib.h"
@@ -8,19 +8,24 @@
 #include "cmpclass.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-extern void UpdateEvaluators(FlightDataClass *flight_data, PilotDataClass *pilot_data);
+extern void UpdateEvaluators(FlightDataClass *flight_data,
+                             PilotDataClass *pilot_data);
 
 ulong gResendEvalRequestTime = 0;
 
-SendEvalMessage::SendEvalMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendEvalMsg, FalconEvent::SimThread, entityId, target, loopback)
+SendEvalMessage::SendEvalMessage(VU_ID entityId, VuTargetEntity *target,
+                                 VU_BOOL loopback)
+    : FalconEvent(SendEvalMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
 }
 
-SendEvalMessage::SendEvalMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendEvalMsg, FalconEvent::SimThread, senderid, target)
+SendEvalMessage::SendEvalMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
+    : FalconEvent(SendEvalMsg, FalconEvent::SimThread, senderid, target)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -36,7 +41,8 @@ SendEvalMessage::~SendEvalMessage()
 int SendEvalMessage::Size() const
 {
     ShiAssert(dataBlock.size >= 0);
-    return (FalconEvent::Size() + sizeof(int) + sizeof(ushort) + dataBlock.size);
+    return (FalconEvent::Size() + sizeof(int) + sizeof(ushort) +
+            dataBlock.size);
 }
 
 int SendEvalMessage::Decode(VU_BYTE **buf, long *rem)
@@ -92,109 +98,115 @@ int SendEvalMessage::Process(uchar autodisp)
 
     switch (dataBlock.message)
     {
-        case requestData:
+    case requestData:
             // Send all mission evaluation data owned by us.
-            SendAllEvalData();
-            break;
+        SendAllEvalData();
+        break;
 
-        case dogfightPilotData:
+    case dogfightPilotData:
             // Copy this data into the pilot_data, if we found it.
-            memcpy(&campid, bufptr, sizeof(short));
-            bufptr += sizeof(short);
-            memcpy(&slot, bufptr, sizeof(uchar));
+        memcpy(&campid, bufptr, sizeof(short));
+        bufptr += sizeof(short);
+        memcpy(&slot, bufptr, sizeof(uchar));
+        bufptr += sizeof(uchar);
+
+        pilot_data = TheCampaign.MissionEvaluator->FindPilotData(campid, slot);
+
+        if (pilot_data)
+        {
+            memcpy(&d1, bufptr, sizeof(uchar));
             bufptr += sizeof(uchar);
-
-            pilot_data = TheCampaign.MissionEvaluator->FindPilotData(campid, slot);
-
-            if (pilot_data)
-            {
-                memcpy(&d1, bufptr, sizeof(uchar));
-                bufptr += sizeof(uchar);
-                memcpy(&d2, bufptr, sizeof(short));
-                bufptr += sizeof(short);
-                memcpy(&d3, bufptr, sizeof(short));
-                bufptr += sizeof(short);
-                memcpy(&d4, bufptr, sizeof(short));
-                bufptr += sizeof(short);
-                MonoPrint("Got %d/%d/%d/%d, have %d/%d/%d/%d\n", d1, d2, d3, d4, pilot_data->aa_kills, pilot_data->deaths[VS_AI], pilot_data->deaths[VS_HUMAN], pilot_data->score);
-
-                if (d1 > pilot_data->aa_kills)
-                    pilot_data->aa_kills = d1;
-
-                if (d2 > pilot_data->deaths[VS_AI])
-                    pilot_data->deaths[VS_AI] = d2;
-
-                if (d3 > pilot_data->deaths[VS_HUMAN])
-                    pilot_data->deaths[VS_HUMAN] = d3;
-
-                if (d4 > pilot_data->score)
-                    pilot_data->score = d4;
-
-                // memcpy(&pilot_data->aa_kills, bufptr, sizeof(uchar)); bufptr += sizeof(uchar);
-                // memcpy(&pilot_data->deaths[VS_AI], bufptr, sizeof(short)); bufptr += sizeof(short);
-                // memcpy(&pilot_data->deaths[VS_HUMAN], bufptr, sizeof(short)); bufptr += sizeof(short);
-                // memcpy(&pilot_data->score, bufptr, sizeof(short)); bufptr += sizeof(short);
-                memcpy(d5, bufptr, sizeof(uchar) * MAX_DOGFIGHT_TEAMS);
-                MonoPrint("Got %d/%d/%d/%d, have %d/%d/%d/%d\n", d5[1], d5[2], d5[3], d5[4], TheCampaign.MissionEvaluator->rounds_won[1], TheCampaign.MissionEvaluator->rounds_won[2], TheCampaign.MissionEvaluator->rounds_won[3], TheCampaign.MissionEvaluator->rounds_won[4]);
-
-                for (t = 0; t < MAX_DOGFIGHT_TEAMS; t++)
-                {
-                    if (d5[t] > TheCampaign.MissionEvaluator->rounds_won[t])
-                        TheCampaign.MissionEvaluator->rounds_won[t] = d5[t];
-                }
-
-                bufptr += sizeof(uchar) * MAX_DOGFIGHT_TEAMS;
-            }
-            else
-            {
-                // Havn't "discovered" this player yet. Make sure to resend request
-                gResendEvalRequestTime = vuxRealTime + 1000;
-            }
-
-            break;
-
-        case dogfightFlightData:
-            ShiWarning("Unimplemented case");
-            break;
-
-        case campaignPilotData:
-            // Copy this data into the pilot_data, if we found it.
-            memcpy(&campid, bufptr, sizeof(short));
+            memcpy(&d2, bufptr, sizeof(short));
             bufptr += sizeof(short);
-            memcpy(&slot, bufptr, sizeof(uchar));
-            bufptr += sizeof(uchar);
+            memcpy(&d3, bufptr, sizeof(short));
+            bufptr += sizeof(short);
+            memcpy(&d4, bufptr, sizeof(short));
+            bufptr += sizeof(short);
+            MonoPrint("Got %d/%d/%d/%d, have %d/%d/%d/%d\n", d1, d2, d3, d4,
+                      pilot_data->aa_kills, pilot_data->deaths[VS_AI],
+                      pilot_data->deaths[VS_HUMAN], pilot_data->score);
 
-            pilot_data = TheCampaign.MissionEvaluator->FindPilotData(campid, slot);
+            if (d1 > pilot_data->aa_kills)
+                pilot_data->aa_kills = d1;
 
-            if (pilot_data)
+            if (d2 > pilot_data->deaths[VS_AI])
+                pilot_data->deaths[VS_AI] = d2;
+
+            if (d3 > pilot_data->deaths[VS_HUMAN])
+                pilot_data->deaths[VS_HUMAN] = d3;
+
+            if (d4 > pilot_data->score)
+                pilot_data->score = d4;
+
+            // memcpy(&pilot_data->aa_kills, bufptr, sizeof(uchar)); bufptr += sizeof(uchar);
+            // memcpy(&pilot_data->deaths[VS_AI], bufptr, sizeof(short)); bufptr += sizeof(short);
+            // memcpy(&pilot_data->deaths[VS_HUMAN], bufptr, sizeof(short)); bufptr += sizeof(short);
+            // memcpy(&pilot_data->score, bufptr, sizeof(short)); bufptr += sizeof(short);
+            memcpy(d5, bufptr, sizeof(uchar) * MAX_DOGFIGHT_TEAMS);
+            MonoPrint("Got %d/%d/%d/%d, have %d/%d/%d/%d\n", d5[1], d5[2],
+                      d5[3], d5[4], TheCampaign.MissionEvaluator->rounds_won[1],
+                      TheCampaign.MissionEvaluator->rounds_won[2],
+                      TheCampaign.MissionEvaluator->rounds_won[3],
+                      TheCampaign.MissionEvaluator->rounds_won[4]);
+
+            for (t = 0; t < MAX_DOGFIGHT_TEAMS; t++)
             {
-                memcpy(&pilot_data->aa_kills, bufptr, sizeof(uchar));
-                bufptr += sizeof(uchar);
-                memcpy(&pilot_data->ag_kills, bufptr, sizeof(uchar));
-                bufptr += sizeof(uchar);
-                memcpy(&pilot_data->an_kills, bufptr, sizeof(uchar));
-                bufptr += sizeof(uchar);
-                memcpy(&pilot_data->as_kills, bufptr, sizeof(uchar));
-                bufptr += sizeof(uchar);
-                memcpy(&pilot_data->deaths[VS_AI], bufptr, sizeof(short));
-                bufptr += sizeof(short);
-                memcpy(&pilot_data->deaths[VS_HUMAN], bufptr, sizeof(short));
-                bufptr += sizeof(short);
-                memcpy(&pilot_data->score, bufptr, sizeof(short));
-                bufptr += sizeof(short);
-                memcpy(&pilot_data->rating, bufptr, sizeof(uchar));
-                bufptr += sizeof(uchar);
+                if (d5[t] > TheCampaign.MissionEvaluator->rounds_won[t])
+                    TheCampaign.MissionEvaluator->rounds_won[t] = d5[t];
             }
 
-            break;
+            bufptr += sizeof(uchar) * MAX_DOGFIGHT_TEAMS;
+        }
+        else
+        {
+            // Havn't "discovered" this player yet. Make sure to resend request
+            gResendEvalRequestTime = vuxRealTime + 1000;
+        }
 
-        case campaignFlightData:
-            ShiWarning("Unimplemented case");
-            break;
+        break;
 
-        default:
-            ShiWarning("Unimplemented case");
-            break;
+    case dogfightFlightData:
+        ShiWarning("Unimplemented case");
+        break;
+
+    case campaignPilotData:
+        // Copy this data into the pilot_data, if we found it.
+        memcpy(&campid, bufptr, sizeof(short));
+        bufptr += sizeof(short);
+        memcpy(&slot, bufptr, sizeof(uchar));
+        bufptr += sizeof(uchar);
+
+        pilot_data = TheCampaign.MissionEvaluator->FindPilotData(campid, slot);
+
+        if (pilot_data)
+        {
+            memcpy(&pilot_data->aa_kills, bufptr, sizeof(uchar));
+            bufptr += sizeof(uchar);
+            memcpy(&pilot_data->ag_kills, bufptr, sizeof(uchar));
+            bufptr += sizeof(uchar);
+            memcpy(&pilot_data->an_kills, bufptr, sizeof(uchar));
+            bufptr += sizeof(uchar);
+            memcpy(&pilot_data->as_kills, bufptr, sizeof(uchar));
+            bufptr += sizeof(uchar);
+            memcpy(&pilot_data->deaths[VS_AI], bufptr, sizeof(short));
+            bufptr += sizeof(short);
+            memcpy(&pilot_data->deaths[VS_HUMAN], bufptr, sizeof(short));
+            bufptr += sizeof(short);
+            memcpy(&pilot_data->score, bufptr, sizeof(short));
+            bufptr += sizeof(short);
+            memcpy(&pilot_data->rating, bufptr, sizeof(uchar));
+            bufptr += sizeof(uchar);
+        }
+
+        break;
+
+    case campaignFlightData:
+        ShiWarning("Unimplemented case");
+        break;
+
+    default:
+        ShiWarning("Unimplemented case");
+        break;
     }
 
     return 0;
@@ -216,7 +228,8 @@ void SendEvalData(FlightDataClass *flight_data, PilotDataClass *pilot_data)
 {
     if (FalconLocalGame)
     {
-        SendEvalMessage *msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
+        SendEvalMessage *msg =
+            new SendEvalMessage(vuLocalSession, FalconLocalGame);
         int size = 0;
         uchar *bufptr;
 
@@ -243,7 +256,8 @@ void SendEvalData(FlightDataClass *flight_data, PilotDataClass *pilot_data)
             bufptr += sizeof(short);
             size += sizeof(short);
             // Send matchplay stuff too.
-            memcpy(bufptr, TheCampaign.MissionEvaluator->rounds_won, sizeof(uchar) * MAX_DOGFIGHT_TEAMS);
+            memcpy(bufptr, TheCampaign.MissionEvaluator->rounds_won,
+                   sizeof(uchar) * MAX_DOGFIGHT_TEAMS);
             bufptr += sizeof(uchar) * MAX_DOGFIGHT_TEAMS;
             size += sizeof(uchar) * MAX_DOGFIGHT_TEAMS;
         }
@@ -294,7 +308,8 @@ void SendEvalData(FlightDataClass *flight_data)
 
     if (FalconLocalGame)
     {
-        SendEvalMessage *msg = new SendEvalMessage(vuLocalSession, FalconLocalGame);
+        SendEvalMessage *msg =
+            new SendEvalMessage(vuLocalSession, FalconLocalGame);
         int size = 0;
         uchar *bufptr;
 
@@ -303,7 +318,8 @@ void SendEvalData(FlightDataClass *flight_data)
             msg->dataBlock.message = SendEvalMessage::dogfightFlightData;
             msg->dataBlock.data = bufptr = new uchar[50];
             // Send matchplay stuff too.
-            memcpy(bufptr, TheCampaign.MissionEvaluator->rounds_won, sizeof(uchar) * MAX_DOGFIGHT_TEAMS);
+            memcpy(bufptr, TheCampaign.MissionEvaluator->rounds_won,
+                   sizeof(uchar) * MAX_DOGFIGHT_TEAMS);
             bufptr += sizeof(uchar) * MAX_DOGFIGHT_TEAMS;
             size += sizeof(uchar) * MAX_DOGFIGHT_TEAMS;
         }

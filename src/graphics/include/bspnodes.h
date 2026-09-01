@@ -8,7 +8,7 @@
 #ifndef _BSPNODES_H_
 #define _BSPNODES_H_
 
-#include "PolyLib.h"
+#include "polylib.h"
 
 
 typedef enum
@@ -68,11 +68,12 @@ public:
     {
         return malloc(n);
     };
-    void operator delete(void *) { };
+    void operator delete(void *) {};
     // void operator delete(void *, void *) { };
 
     // Function to identify the type of an encoded node and call the appropriate constructor
-    static BNode* RestorePointers(BYTE *baseAddress, int offset, BNodeType **tagListPtr);
+    static BNode *RestorePointers(BYTE *baseAddress, int offset,
+                                  BNodeType **tagListPtr);
 
     BNode *sibling;
 
@@ -83,7 +84,7 @@ public:
     };
 };
 
-class BSubTree: public BNode
+class BSubTree : public BNode
 {
 public:
     BSubTree(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -115,7 +116,7 @@ public:
     };
 };
 
-class BRoot: public BSubTree
+class BRoot : public BSubTree
 {
 public:
     BRoot(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -141,7 +142,7 @@ public:
     };
 };
 
-class BSpecialXform: public BNode
+class BSpecialXform : public BNode
 {
 public:
     BSpecialXform(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -168,7 +169,7 @@ public:
     };
 };
 
-class BSlotNode: public BNode
+class BSlotNode : public BNode
 {
 public:
     BSlotNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -189,7 +190,7 @@ public:
     };
 };
 
-class BDofNode: public BSubTree
+class BDofNode : public BSubTree
 {
 public:
     BDofNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -211,7 +212,7 @@ public:
 };
 
 // MLR 2003-10-11 Extended DOF
-class BXDofNode: public BSubTree
+class BXDofNode : public BSubTree
 {
 public:
     BXDofNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -235,7 +236,7 @@ public:
 };
 
 // MLR 2003-10-06 translator node
-class BTransNode: public BSubTree
+class BTransNode : public BSubTree
 {
 public:
     BTransNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -247,7 +248,7 @@ public:
 
     int dofNumber;
     float min, max, multiplier, future;
-    int         flags;
+    int flags;
     Ppoint translation;
 
     virtual void Draw(void);
@@ -259,7 +260,7 @@ public:
 
 // MLR 2003-10-10 translator node
 
-class BScaleNode: public BSubTree
+class BScaleNode : public BSubTree
 {
 public:
     BScaleNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -271,7 +272,7 @@ public:
 
     int dofNumber;
     float min, max, multiplier, future;
-    int         flags;
+    int flags;
     Ppoint scale;
     Ppoint translation;
 
@@ -284,7 +285,7 @@ public:
 };
 
 
-class BSwitchNode: public BNode
+class BSwitchNode : public BNode
 {
 public:
     BSwitchNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -296,7 +297,8 @@ public:
     };
     virtual ~BSwitchNode()
     {
-        while (numChildren--) delete subTrees[numChildren];
+        while (numChildren--)
+            delete subTrees[numChildren];
     };
 
     int switchNumber;
@@ -310,7 +312,7 @@ public:
     };
 };
 
-class BXSwitchNode: public BNode
+class BXSwitchNode : public BNode
 {
 public:
     BXSwitchNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -322,11 +324,12 @@ public:
     };
     virtual ~BXSwitchNode()
     {
-        while (numChildren--) delete subTrees[numChildren];
+        while (numChildren--)
+            delete subTrees[numChildren];
     };
 
     int switchNumber;
-    int         flags;
+    int flags;
     int numChildren;
     BSubTree **subTrees;
 
@@ -337,7 +340,7 @@ public:
     };
 };
 
-class BSplitterNode: public BNode
+class BSplitterNode : public BNode
 {
 public:
     BSplitterNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -362,7 +365,7 @@ public:
     };
 };
 
-class BPrimitiveNode: public BNode
+class BPrimitiveNode : public BNode
 {
 public:
     BPrimitiveNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -381,7 +384,7 @@ public:
     };
 };
 
-class BLitPrimitiveNode: public BNode
+class BLitPrimitiveNode : public BNode
 {
 public:
     BLitPrimitiveNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -402,7 +405,7 @@ public:
     };
 };
 
-class BCulledPrimitiveNode: public BNode
+class BCulledPrimitiveNode : public BNode
 {
 public:
     BCulledPrimitiveNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -410,7 +413,7 @@ public:
     {
         poly = NULL;
     };
-    virtual~BCulledPrimitiveNode() {};
+    virtual ~BCulledPrimitiveNode() {};
 
     Poly *poly;
 
@@ -421,7 +424,7 @@ public:
     };
 };
 
-class BLightStringNode: public BPrimitiveNode
+class BLightStringNode : public BPrimitiveNode
 {
 public:
     BLightStringNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -431,7 +434,7 @@ public:
         rgbaBack = -1;
         A = B = C = D = 0.0f;
     };
-    virtual~BLightStringNode() {};
+    virtual ~BLightStringNode() {};
 
     // For directional lights
     float A, B, C, D;
@@ -446,7 +449,7 @@ public:
 };
 
 
-class BRenderControlNode: public BNode
+class BRenderControlNode : public BNode
 {
 public:
     BRenderControlNode(BYTE *baseAddress, BNodeType **tagListPtr);
@@ -467,10 +470,9 @@ public:
     };
 };
 
-extern bool ShadowBSPRendering; // COBRA - RED - this is to inform we r rendering a shadow,
+extern bool
+    ShadowBSPRendering; // COBRA - RED - this is to inform we r rendering a shadow,
 extern float ShadowAlphaLevel; // that may be affected by TOD Light level
 
 
 #endif //_BSPNODES_H_
-
-

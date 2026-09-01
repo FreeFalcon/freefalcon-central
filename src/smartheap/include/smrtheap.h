@@ -17,14 +17,14 @@
 #include <limits.h>
 #include <stddef.h>
 
-#if !defined(macintosh) && !defined(THINK_C) && !defined(__MWERKS__) \
-   && !defined(SHANSI) && UINT_MAX == 0xFFFFu \
-   && (defined(_Windows) || defined(_WINDOWS) || defined(__WINDOWS__))
+#if !defined(macintosh) && !defined(THINK_C) && !defined(__MWERKS__) &&        \
+    !defined(SHANSI) && UINT_MAX == 0xFFFFu &&                                 \
+    (defined(_Windows) || defined(_WINDOWS) || defined(__WINDOWS__))
 #define MEM_WIN16
 #endif
 
-#if (UINT_MAX == 0xFFFFu) && (defined(MEM_WIN16) \
- || defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__))
+#if (UINT_MAX == 0xFFFFu) && (defined(MEM_WIN16) || defined(MSDOS) ||          \
+                              defined(__MSDOS__) || defined(__DOS__))
 /* 16-bit X86 */
 #if defined(SYS_DLL)
 #if defined(_MSC_VER) && _MSC_VER <= 600
@@ -49,8 +49,8 @@
 
 #else  /* not 16-bit X86 */
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) \
-    || defined(__WIN32__) || defined(__NT__)
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) ||                   \
+    defined(__WIN32__) || defined(__NT__)
 #define MEM_WIN32
 #if defined(_MSC_VER)
 #if defined(_SHI_Pool) && defined(SYS_DLL)
@@ -100,9 +100,9 @@
 /* Watcom stack calling convention */
 #ifndef __OS2__
 #ifdef __WINDOWS_386__
-#pragma aux syscall "*_" parm routine [eax ebx ecx edx fs gs] modify [eax];
+#pragma aux syscall "*_" parm routine[eax ebx ecx edx fs gs] modify[eax];
 #else
-#pragma aux syscall "*_" parm routine [eax ebx ecx edx] modify [eax];
+#pragma aux syscall "*_" parm routine[eax ebx ecx edx] modify[eax];
 #endif
 #ifndef MEM_ENTRY
 #define MEM_ENTRY __syscall
@@ -154,7 +154,8 @@
 #endif
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     /*** Types ***/
@@ -232,7 +233,8 @@ extern "C" {
         MEM_WRONG_TASK,
         MEM_NOT_FIXED_SIZE,
         MEM_BAD_FLAGS,
-        MEM_ERROR_CODE_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_ERROR_CODE_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_ERROR_CODE;
 #endif /* MEM_ERROR_CODE_DEFINED */
 
@@ -248,13 +250,14 @@ extern "C" {
 #define MEM_ERROR_INFO_DEFINED
     typedef struct _MEM_ERROR_INFO
     {
-        MEM_ERROR_CODE errorCode; /* error code identifying type of error      */
-        MEM_POOL pool;            /* pool in which error occurred, if known    */
+        MEM_ERROR_CODE
+        errorCode; /* error code identifying type of error      */
+        MEM_POOL pool; /* pool in which error occurred, if known    */
     } MEM_ERROR_INFO;
 
     /* Error handling callback function */
-    typedef MEM_BOOL(MEM_ENTRY2 * MEM_ENTRY3 MEM_ERROR_FN)
-    (MEM_ERROR_INFO MEM_FAR *);
+    typedef MEM_BOOL(MEM_ENTRY2 *MEM_ENTRY3 MEM_ERROR_FN)(
+        MEM_ERROR_INFO MEM_FAR *);
 
 #endif /* MEM_ERROR_INFO_DEFINED */
 
@@ -268,11 +271,12 @@ extern "C" {
      */
     typedef enum
     {
-        MEM_FS_BLOCK               = 0x0001u,
-        MEM_VAR_MOVEABLE_BLOCK     = 0x0002u,
-        MEM_VAR_FIXED_BLOCK        = 0x0004u,
-        MEM_EXTERNAL_BLOCK         = 0x0008u,
-        MEM_BLOCK_TYPE_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_FS_BLOCK = 0x0001u,
+        MEM_VAR_MOVEABLE_BLOCK = 0x0002u,
+        MEM_VAR_FIXED_BLOCK = 0x0004u,
+        MEM_EXTERNAL_BLOCK = 0x0008u,
+        MEM_BLOCK_TYPE_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_BLOCK_TYPE;
 #endif /* MEM_BLOCK_TYPE_DEFINED */
 
@@ -297,11 +301,12 @@ extern "C" {
     /* Pool Status: returned by MemPoolWalk, MemPoolFirst, MemPoolNext */
     typedef enum
     {
-        MEM_POOL_OK            = 1,
-        MEM_POOL_CORRUPT       = -1,
+        MEM_POOL_OK = 1,
+        MEM_POOL_CORRUPT = -1,
         MEM_POOL_CORRUPT_FATAL = -2,
-        MEM_POOL_END           = 0,
-        MEM_POOL_STATUS_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_POOL_END = 0,
+        MEM_POOL_STATUS_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_POOL_STATUS;
 #endif /* MEM_POOL_STATUS_DEFINED */
 
@@ -310,10 +315,11 @@ extern "C" {
     /* Pointer Status: returned by MemCheckPtr */
     typedef enum
     {
-        MEM_POINTER_OK    = 1,
-        MEM_POINTER_WILD  = 0,
-        MEM_POINTER_FREE  = -1,
-        MEM_POINTER_STATUS_INT_MAX = INT_MAX /* to ensure enum is full int in size */
+        MEM_POINTER_OK = 1,
+        MEM_POINTER_WILD = 0,
+        MEM_POINTER_FREE = -1,
+        MEM_POINTER_STATUS_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_POINTER_STATUS;
 #endif /* MEM_POINTER_STATUS_DEFINED */
 
@@ -332,28 +338,28 @@ extern "C" {
     } MEM_POOL_INFO;
 
     /* Flags passed to MemAlloc, MemAllocPtr, MemReAlloc, MemReAllocPtr */
-#define MEM_FIXED           0x0000u /* fixed handle-based block            */
-#define MEM_ZEROINIT        0x0001u /* == TRUE for SH 1.5 compatibility    */
-#define MEM_MOVEABLE        0x0002u /* moveable handle-based block         */
-#define MEM_RESIZEABLE      0x0004u /* reserve space above block           */
+#define MEM_FIXED 0x0000u /* fixed handle-based block            */
+#define MEM_ZEROINIT 0x0001u /* == TRUE for SH 1.5 compatibility    */
+#define MEM_MOVEABLE 0x0002u /* moveable handle-based block         */
+#define MEM_RESIZEABLE 0x0004u /* reserve space above block           */
 #define MEM_RESIZE_IN_PLACE 0x0008u /* do not move block (realloc)         */
-#define MEM_NOGROW          0x0010u /* do not grow heap to satisfy request */
-#define MEM_NOEXTERNAL      0x0020u /* reserved for internal use           */
-#define MEM_NOCOMPACT       0x0040u /* do not compact to satisfy request   */
-#define MEM_NO_SERIALIZE    0x0080u /* do not serialize this request       */
-#define MEM_HANDLEBASED     0x4000u /* for internal use */
-#define MEM_RESERVED        0x8000u /* for internal use */
+#define MEM_NOGROW 0x0010u /* do not grow heap to satisfy request */
+#define MEM_NOEXTERNAL 0x0020u /* reserved for internal use           */
+#define MEM_NOCOMPACT 0x0040u /* do not compact to satisfy request   */
+#define MEM_NO_SERIALIZE 0x0080u /* do not serialize this request       */
+#define MEM_HANDLEBASED 0x4000u /* for internal use */
+#define MEM_RESERVED 0x8000u /* for internal use */
 
 #define MEM_UNLOCK_FAILED USHRT_MAX
 
     /* Flags passed to MemPoolInit, MemPoolInitFS */
 #ifndef MEM_POOL_SHARED
-#define MEM_POOL_SHARED       0x0001u /* == TRUE for SH 1.5 compatibility  */
-#define MEM_POOL_SERIALIZE    0x0002u /* pool used in more than one thread */
+#define MEM_POOL_SHARED 0x0001u /* == TRUE for SH 1.5 compatibility  */
+#define MEM_POOL_SERIALIZE 0x0002u /* pool used in more than one thread */
 #define MEM_POOL_VIRTUAL_LOCK 0x0004u /* pool is locked in physical memory */
-#define MEM_POOL_ZEROINIT     0x0008u /* malloc/new from pool zero-inits   */
-#define MEM_POOL_REGION       0x0010u /* store pool in user-supplied region*/
-#define MEM_POOL_DEFAULT      0x8000u /* pool with default characteristics */
+#define MEM_POOL_ZEROINIT 0x0008u /* malloc/new from pool zero-inits   */
+#define MEM_POOL_REGION 0x0010u /* store pool in user-supplied region*/
+#define MEM_POOL_DEFAULT 0x8000u /* pool with default characteristics */
 #endif /* MEM_POOL_SHARED */
 
     MEM_ENTRY4 MEM_POOL MemDefaultPool;
@@ -389,12 +395,13 @@ extern "C" {
 #define _SMARTHEAP_PROT
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifndef _shAPI
 #if defined(MEM_DEBUG) && !defined(SHI_NO_MEM_DEBUG)
-#define _shAPI(ret, name) MEM_ENTRY1 ret MEM_ENTRY _dbg ## name
+#define _shAPI(ret, name) MEM_ENTRY1 ret MEM_ENTRY _dbg##name
 #else
 #define _shAPI(ret, name) MEM_ENTRY1 ret MEM_ENTRY name
 #endif
@@ -433,14 +440,17 @@ extern "C" {
     _shAPI(MEM_POOL, MemPoolInit)(unsigned _dbgARGS);
     _shAPI(MEM_POOL, MemPoolInitFS)(MEM_USHORT, unsigned long,
                                     unsigned _dbgARGS);
-    _shAPI(MEM_POOL, MemPoolInitRegion)(void MEM_FAR *,
-                                        unsigned long size, unsigned _dbgARGS);
+    _shAPI(MEM_POOL, MemPoolInitRegion)(void MEM_FAR *, unsigned long size,
+                                        unsigned _dbgARGS);
     _shAPI(MEM_POOL, MemPoolInitNamedShared)(const char MEM_FAR *,
-            unsigned long size, unsigned _dbgARGS);
-    _shAPI(MEM_POOL, MemPoolInitNamedSharedEx)(void MEM_FAR *addr,
-            unsigned pidCount, unsigned long MEM_FAR *pids, void MEM_FAR *security,
-            const char MEM_FAR *name, unsigned long size, unsigned flags _dbgARGS);
-    _shAPI(MEM_POOL, MemPoolAttachShared)(MEM_POOL, const char MEM_FAR * _dbgARGS);
+                                             unsigned long size,
+                                             unsigned _dbgARGS);
+    _shAPI(MEM_POOL, MemPoolInitNamedSharedEx)(
+        void MEM_FAR *addr, unsigned pidCount, unsigned long MEM_FAR *pids,
+        void MEM_FAR *security, const char MEM_FAR *name, unsigned long size,
+        unsigned flags _dbgARGS);
+    _shAPI(MEM_POOL, MemPoolAttachShared)(MEM_POOL,
+                                          const char MEM_FAR *_dbgARGS);
     _shAPI(MEM_BOOL, MemPoolFree)(MEM_POOL _dbgARGS);
     MEM_POOL MEM_ENTRY MemInitDefaultPool(void);
     MEM_BOOL MEM_ENTRY MemFreeDefaultPool(void);
@@ -450,25 +460,28 @@ extern "C" {
     _shAPI(unsigned long, MemPoolSetFloor)(MEM_POOL, unsigned long _dbgARGS);
     _shAPI(unsigned long, MemPoolSetCeiling)(MEM_POOL, unsigned long _dbgARGS);
     _shAPI(unsigned long, MemPoolPreAllocate)(MEM_POOL, unsigned long,
-            MEM_BLOCK_TYPE _dbgARGS);
+                                              MEM_BLOCK_TYPE _dbgARGS);
     _shAPI(unsigned long, MemPoolPreAllocateHandles)(MEM_POOL,
-            unsigned long _dbgARGS);
+                                                     unsigned long _dbgARGS);
     _shAPI(unsigned long, MemPoolShrink)(MEM_POOL _dbgARGS);
     _shAPI(unsigned long, MemPoolSize)(MEM_POOL _dbgARGS);
     _shAPI(unsigned long, MemPoolCount)(MEM_POOL _dbgARGS);
     _shAPI(MEM_BOOL, MemPoolInfo)(MEM_POOL, void MEM_FAR *,
-                                  MEM_POOL_INFO MEM_FAR* _dbgARGS);
+                                  MEM_POOL_INFO MEM_FAR *_dbgARGS);
     _shAPI(MEM_POOL_STATUS, MemPoolFirst)(MEM_POOL_INFO MEM_FAR *,
                                           MEM_BOOL _dbgARGS);
-    _shAPI(MEM_POOL_STATUS, MemPoolNext)(MEM_POOL_INFO MEM_FAR*, MEM_BOOL _dbgARGS);
-    _shAPI(MEM_POOL_STATUS, MemPoolWalk)(MEM_POOL, MEM_POOL_ENTRY MEM_FAR*_dbgARGS);
+    _shAPI(MEM_POOL_STATUS, MemPoolNext)(MEM_POOL_INFO MEM_FAR *,
+                                         MEM_BOOL _dbgARGS);
+    _shAPI(MEM_POOL_STATUS, MemPoolWalk)(MEM_POOL,
+                                         MEM_POOL_ENTRY MEM_FAR *_dbgARGS);
     _shAPI(MEM_BOOL, MemPoolCheck)(MEM_POOL _dbgARGS);
     _shAPI(MEM_BOOL, MemPoolLock)(MEM_POOL _dbgARGS);
     _shAPI(MEM_BOOL, MemPoolUnlock)(MEM_POOL _dbgARGS);
 
     /* Handle-based API for moveable memory within heap. */
     _shAPI(MEM_HANDLE, MemAlloc)(MEM_POOL, unsigned, unsigned long _dbgARGS);
-    _shAPI(MEM_HANDLE, MemReAlloc)(MEM_HANDLE, unsigned long, unsigned _dbgARGS);
+    _shAPI(MEM_HANDLE, MemReAlloc)(MEM_HANDLE, unsigned long,
+                                   unsigned _dbgARGS);
     _shAPI(MEM_BOOL, MemFree)(MEM_HANDLE _dbgARGS);
     _shAPI(void MEM_FAR *, MemLock)(MEM_HANDLE _dbgARGS);
     _shAPI(unsigned, MemUnlock)(MEM_HANDLE _dbgARGS);
@@ -481,33 +494,34 @@ extern "C" {
     _shAPI(MEM_BOOL, MemIsMoveable)(MEM_HANDLE _dbgARGS);
     _shAPI(unsigned long, MemSize)(MEM_HANDLE _dbgARGS);
     _shAPI(unsigned long, MemSizeRequested)(MEM_HANDLE _dbgARGS);
-    _shAPI(MEM_HANDLE, MemHandle)(void MEM_FAR * _dbgARGS);
+    _shAPI(MEM_HANDLE, MemHandle)(void MEM_FAR *_dbgARGS);
 #ifndef MEM_REFERENCE
 #ifdef MEM_DEBUG
-    MEM_ENTRY1 void MEM_FAR * MEM_ENTRY _dbgMemReference(MEM_HANDLE,
-            const char MEM_FAR *, int);
-#define MEM_REFERENCE(handle) \
-         _dbgMemReference(handle, __FILE__, __LINE__)
+    MEM_ENTRY1 void MEM_FAR *
+        MEM_ENTRY _dbgMemReference(MEM_HANDLE, const char MEM_FAR *, int);
+#define MEM_REFERENCE(handle) _dbgMemReference(handle, __FILE__, __LINE__)
 #else
 #define MEM_REFERENCE(handle) (*(void MEM_FAR * MEM_FAR *)handle)
 #endif
 #endif
 
     /* General Heap Allocator (returns direct pointer to memory) */
-    _shAPI(void MEM_FAR*, MemAllocPtr)(MEM_POOL, unsigned long, unsigned _dbgARGS);
+    _shAPI(void MEM_FAR *, MemAllocPtr)(MEM_POOL, unsigned long,
+                                        unsigned _dbgARGS);
     _shAPI(void MEM_FAR *, MemReAllocPtr)(void MEM_FAR *, unsigned long,
                                           unsigned _dbgARGS);
-    _shAPI(MEM_BOOL, MemFreePtr)(void MEM_FAR * _dbgARGS);
-    _shAPI(unsigned long, MemSizePtr)(void MEM_FAR * _dbgARGS);
-    _shAPI(MEM_POINTER_STATUS, MemCheckPtr)(MEM_POOL, void MEM_FAR * _dbgARGS);
+    _shAPI(MEM_BOOL, MemFreePtr)(void MEM_FAR *_dbgARGS);
+    _shAPI(unsigned long, MemSizePtr)(void MEM_FAR *_dbgARGS);
+    _shAPI(MEM_POINTER_STATUS, MemCheckPtr)(MEM_POOL, void MEM_FAR *_dbgARGS);
 
     /* Fixed-Size Allocator */
     _shAPI(void MEM_FAR *, MemAllocFS)(MEM_POOL _dbgARGS);
-    _shAPI(MEM_BOOL, MemFreeFS)(void MEM_FAR * _dbgARGS);
+    _shAPI(MEM_BOOL, MemFreeFS)(void MEM_FAR *_dbgARGS);
 
     /* Error Handling Functions */
     MEM_ENTRY1 MEM_ERROR_FN MEM_ENTRY MemSetErrorHandler(MEM_ERROR_FN);
-    MEM_ENTRY1 MEM_BOOL MEM_ENTRY MemDefaultErrorHandler(MEM_ERROR_INFO MEM_FAR*);
+    MEM_ENTRY1 MEM_BOOL MEM_ENTRY
+    MemDefaultErrorHandler(MEM_ERROR_INFO MEM_FAR *);
     MEM_ENTRY1 void MEM_ENTRY MemErrorUnwind(void);
 
 #ifdef MEM_WIN32
@@ -541,59 +555,61 @@ extern "C" {
     /* Wrapper macros for debugging API */
 #ifndef _SHI_dbgMacros
 #ifdef MEM_DEBUG
-#define MemRegisterTask()        _dbgMemRegisterTask(__FILE__, __LINE__)
-#define MemUnregisterTask()      _dbgMemUnregisterTask(__FILE__, __LINE__)
-#define MemPoolInit(flags)       _dbgMemPoolInit(flags, __FILE__, __LINE__)
-#define MemPoolInitFS(bs, bc, f) _dbgMemPoolInitFS(bs,bc,f,__FILE__,__LINE__)
-#define MemPoolInitRegion(addr, sz, f) \
-     _dbgMemPoolInitRegion(addr, sz, f, __FILE__, __LINE__)
-#define MemPoolInitNamedShared(nm, sz, f) \
-     _dbgMemPoolInitNamedShared(nm, sz, f, __FILE__, __LINE__)
-#define MemPoolInitNamedSharedEx(a, c, p, sec, nm, sz, f) \
-     _dbgMemPoolInitNamedSharedEx(a, c, p, sec, nm, sz, f, __FILE__, __LINE__)
-#define MemPoolAttachShared(p, n) \
-     _dbgMemPoolAttachShared(p, n, __FILE__, __LINE__)
-#define MemPoolFree(pool)        _dbgMemPoolFree(pool, __FILE__, __LINE__)
-#define MemPoolSetPageSize(p, s) _dbgMemPoolSetPageSize(p,s,__FILE__,__LINE__)
-#define MemPoolSetBlockSizeFS(p, s) \
-     _dbgMemPoolSetBlockSizeFS(p, s, __FILE__, __LINE__)
-#define MemPoolSetSmallBlockSize(p, s) \
-     _dbgMemPoolSetSmallBlockSize(p, s, __FILE__, __LINE__)
-#define MemPoolSetFloor(p, f)    _dbgMemPoolSetFloor(p, f, __FILE__, __LINE__)
-#define MemPoolSetCeiling(p, c)  _dbgMemPoolSetCeiling(p,c,__FILE__, __LINE__)
-#define MemPoolPreAllocate(p,s,t) \
-     _dbgMemPoolPreAllocate(p,s,t,__FILE__, __LINE__)
-#define MemPoolPreAllocateHandles(p,h) \
-     _dbgMemPoolPreAllocateHandles(p,h,__FILE__, __LINE__)
-#define MemPoolShrink(p)         _dbgMemPoolShrink(p, __FILE__, __LINE__)
-#define MemPoolCheck(p)          _dbgMemPoolCheck(p, __FILE__, __LINE__)
-#define MemPoolWalk(p, e)        _dbgMemPoolWalk(p, e, __FILE__, __LINE__)
-#define MemPoolSize(p)           _dbgMemPoolSize(p, __FILE__, __LINE__)
-#define MemPoolCount(p)          _dbgMemPoolCount(p, __FILE__, __LINE__)
-#define MemPoolInfo(p,x,i)       _dbgMemPoolInfo(p,x,i, __FILE__, __LINE__)
-#define MemPoolFirst(i, b)       _dbgMemPoolFirst(i, b, __FILE__, __LINE__)
-#define MemPoolNext(i, b)        _dbgMemPoolNext(i, b, __FILE__, __LINE__)
-#define MemPoolLock(p)           _dbgMemPoolLock(p, __FILE__, __LINE__)
-#define MemPoolUnlock(p)         _dbgMemPoolUnlock(p, __FILE__, __LINE__)
-#define MemAlloc(p, f, s)        _dbgMemAlloc(p, f, s, __FILE__, __LINE__)
-#define MemReAlloc(h, s, f)      _dbgMemReAlloc(h, s, f, __FILE__, __LINE__)
-#define MemFree(h)               _dbgMemFree(h, __FILE__, __LINE__)
-#define MemLock(h)               _dbgMemLock(h, __FILE__, __LINE__)
-#define MemUnlock(h)             _dbgMemUnlock(h, __FILE__, __LINE__)
-#define MemFix(h)                _dbgMemFix(h, __FILE__, __LINE__)
-#define MemUnfix(h)              _dbgMemUnfix(h, __FILE__, __LINE__)
-#define MemSize(h)               _dbgMemSize(h, __FILE__, __LINE__)
-#define MemSizeRequested(h)      _dbgMemSizeRequested(h, __FILE__, __LINE__)
-#define MemLockCount(h)          _dbgMemLockCount(h, __FILE__, __LINE__)
-#define MemIsMoveable(h)         _dbgMemIsMoveable(h, __FILE__, __LINE__)
-#define MemHandle(p)             _dbgMemHandle(p, __FILE__, __LINE__)
-#define MemAllocPtr(p, s, f)     _dbgMemAllocPtr(p, s, f, __FILE__, __LINE__)
-#define MemReAllocPtr(p, s, f)   _dbgMemReAllocPtr(p, s, f, __FILE__,__LINE__)
-#define MemFreePtr(p)            _dbgMemFreePtr(p, __FILE__, __LINE__)
-#define MemSizePtr(p)            _dbgMemSizePtr(p, __FILE__, __LINE__)
-#define MemCheckPtr(p, x)        _dbgMemCheckPtr(p, x, __FILE__, __LINE__)
-#define MemAllocFS(p)            _dbgMemAllocFS(p, __FILE__, __LINE__)
-#define MemFreeFS(p)             _dbgMemFreeFS(p, __FILE__, __LINE__)
+#define MemRegisterTask() _dbgMemRegisterTask(__FILE__, __LINE__)
+#define MemUnregisterTask() _dbgMemUnregisterTask(__FILE__, __LINE__)
+#define MemPoolInit(flags) _dbgMemPoolInit(flags, __FILE__, __LINE__)
+#define MemPoolInitFS(bs, bc, f)                                               \
+    _dbgMemPoolInitFS(bs, bc, f, __FILE__, __LINE__)
+#define MemPoolInitRegion(addr, sz, f)                                         \
+    _dbgMemPoolInitRegion(addr, sz, f, __FILE__, __LINE__)
+#define MemPoolInitNamedShared(nm, sz, f)                                      \
+    _dbgMemPoolInitNamedShared(nm, sz, f, __FILE__, __LINE__)
+#define MemPoolInitNamedSharedEx(a, c, p, sec, nm, sz, f)                      \
+    _dbgMemPoolInitNamedSharedEx(a, c, p, sec, nm, sz, f, __FILE__, __LINE__)
+#define MemPoolAttachShared(p, n)                                              \
+    _dbgMemPoolAttachShared(p, n, __FILE__, __LINE__)
+#define MemPoolFree(pool) _dbgMemPoolFree(pool, __FILE__, __LINE__)
+#define MemPoolSetPageSize(p, s)                                               \
+    _dbgMemPoolSetPageSize(p, s, __FILE__, __LINE__)
+#define MemPoolSetBlockSizeFS(p, s)                                            \
+    _dbgMemPoolSetBlockSizeFS(p, s, __FILE__, __LINE__)
+#define MemPoolSetSmallBlockSize(p, s)                                         \
+    _dbgMemPoolSetSmallBlockSize(p, s, __FILE__, __LINE__)
+#define MemPoolSetFloor(p, f) _dbgMemPoolSetFloor(p, f, __FILE__, __LINE__)
+#define MemPoolSetCeiling(p, c) _dbgMemPoolSetCeiling(p, c, __FILE__, __LINE__)
+#define MemPoolPreAllocate(p, s, t)                                            \
+    _dbgMemPoolPreAllocate(p, s, t, __FILE__, __LINE__)
+#define MemPoolPreAllocateHandles(p, h)                                        \
+    _dbgMemPoolPreAllocateHandles(p, h, __FILE__, __LINE__)
+#define MemPoolShrink(p) _dbgMemPoolShrink(p, __FILE__, __LINE__)
+#define MemPoolCheck(p) _dbgMemPoolCheck(p, __FILE__, __LINE__)
+#define MemPoolWalk(p, e) _dbgMemPoolWalk(p, e, __FILE__, __LINE__)
+#define MemPoolSize(p) _dbgMemPoolSize(p, __FILE__, __LINE__)
+#define MemPoolCount(p) _dbgMemPoolCount(p, __FILE__, __LINE__)
+#define MemPoolInfo(p, x, i) _dbgMemPoolInfo(p, x, i, __FILE__, __LINE__)
+#define MemPoolFirst(i, b) _dbgMemPoolFirst(i, b, __FILE__, __LINE__)
+#define MemPoolNext(i, b) _dbgMemPoolNext(i, b, __FILE__, __LINE__)
+#define MemPoolLock(p) _dbgMemPoolLock(p, __FILE__, __LINE__)
+#define MemPoolUnlock(p) _dbgMemPoolUnlock(p, __FILE__, __LINE__)
+#define MemAlloc(p, f, s) _dbgMemAlloc(p, f, s, __FILE__, __LINE__)
+#define MemReAlloc(h, s, f) _dbgMemReAlloc(h, s, f, __FILE__, __LINE__)
+#define MemFree(h) _dbgMemFree(h, __FILE__, __LINE__)
+#define MemLock(h) _dbgMemLock(h, __FILE__, __LINE__)
+#define MemUnlock(h) _dbgMemUnlock(h, __FILE__, __LINE__)
+#define MemFix(h) _dbgMemFix(h, __FILE__, __LINE__)
+#define MemUnfix(h) _dbgMemUnfix(h, __FILE__, __LINE__)
+#define MemSize(h) _dbgMemSize(h, __FILE__, __LINE__)
+#define MemSizeRequested(h) _dbgMemSizeRequested(h, __FILE__, __LINE__)
+#define MemLockCount(h) _dbgMemLockCount(h, __FILE__, __LINE__)
+#define MemIsMoveable(h) _dbgMemIsMoveable(h, __FILE__, __LINE__)
+#define MemHandle(p) _dbgMemHandle(p, __FILE__, __LINE__)
+#define MemAllocPtr(p, s, f) _dbgMemAllocPtr(p, s, f, __FILE__, __LINE__)
+#define MemReAllocPtr(p, s, f) _dbgMemReAllocPtr(p, s, f, __FILE__, __LINE__)
+#define MemFreePtr(p) _dbgMemFreePtr(p, __FILE__, __LINE__)
+#define MemSizePtr(p) _dbgMemSizePtr(p, __FILE__, __LINE__)
+#define MemCheckPtr(p, x) _dbgMemCheckPtr(p, x, __FILE__, __LINE__)
+#define MemAllocFS(p) _dbgMemAllocFS(p, __FILE__, __LINE__)
+#define MemFreeFS(p) _dbgMemFreeFS(p, __FILE__, __LINE__)
 
 #else /* MEM_DEBUG */
 

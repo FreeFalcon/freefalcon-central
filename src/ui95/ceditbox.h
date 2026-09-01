@@ -14,7 +14,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -67,7 +68,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void SetMaxLen(short len);
     void SetText(_TCHAR *text);
@@ -90,11 +91,11 @@ public:
     }
     long GetMinInteger(void)
     {
-        return(MinInteger_);
+        return (MinInteger_);
     }
     BOOL TimerUpdate()
     {
-        return(FALSE);
+        return (FALSE);
     }
     void SetMaxInteger(long value)
     {
@@ -108,7 +109,7 @@ public:
     }
     long GetMaxInteger(void)
     {
-        return(MaxInteger_);
+        return (MaxInteger_);
     }
     void SetFloat(double value);
     void SetMinFloat(double value)
@@ -123,7 +124,7 @@ public:
     }
     double GetMinFloat(void)
     {
-        return(MinFloat_);
+        return (MinFloat_);
     }
     void SetMaxFloat(double value)
     {
@@ -137,24 +138,24 @@ public:
     }
     double GetMaxFloat(void)
     {
-        return(MaxFloat_);
+        return (MaxFloat_);
     }
     short GetDecimalPlaces()
     {
-        return(Decimal_);
+        return (Decimal_);
     }
     long GetInteger()
     {
-        return(Integer_);
+        return (Integer_);
     }
     double GetFloat()
     {
-        return(Float_);
+        return (Float_);
     }
     _TCHAR *GetText();
-    short  CursorOn()
+    short CursorOn()
     {
-        return(UseCursor_);
+        return (UseCursor_);
     }
     void SetBGImage(long ImageID);
     void SetCursorColor(COLORREF color)
@@ -171,7 +172,8 @@ public:
     long CheckHotSpots(long relX, long relY);
     BOOL CheckKeyDown(unsigned char key, unsigned char);
     BOOL CheckChar(unsigned char key);
-    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long);
+    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii,
+                       unsigned char ShiftStates, long);
     BOOL Process(long, short HitType);
     // BOOL MouseOver(long relX,long relY,C_Base *me);
     void Refresh();
@@ -184,10 +186,10 @@ public:
     void Deactivate();
     BOOL Dragable(long)
     {
-        return(TRUE);
+        return (TRUE);
     }
     BOOL Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *);
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *);
 #ifdef _UI95_PARSER_
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);

@@ -4,7 +4,7 @@
 #include "misslist.h"
 #include "bomb.h"
 #include "bombfunc.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "simsound.h"
@@ -12,17 +12,17 @@
 #include "sms.h"
 #include "fcc.h"
 #include "guns.h"
-#include "MsgInc/WeaponFireMsg.h"
+#include "msginc/weaponfiremsg.h"
 #include "campbase.h"
-#include "Simdrive.h"
-#include "Graphics/Include/drawsgmt.h"
+#include "simdrive.h"
+#include "graphics/include/drawsgmt.h"
 #include "otwdrive.h"
 #include "sfx.h"
 #include "falcsess.h"
 #include "fakerand.h"
 #include "camp2sim.h"
 #include "object.h"
-#include "Graphics/Include/drawparticlesys.h"
+#include "graphics/include/drawparticlesys.h"
 
 extern int tgtId;
 
@@ -44,7 +44,8 @@ void HelicopterClass::DoWeapons(void)
 #ifdef MLR_NEWSNDCODE
             SoundPos.Sfx(SFX_MCGUN);
 #else
-            F4SoundFXSetPos(SFX_MCGUN, 0, XPos(), YPos(), ZPos(), 1.0f , 0 , XDelta(), YDelta(), ZDelta());
+            F4SoundFXSetPos(SFX_MCGUN, 0, XPos(), YPos(), ZPos(), 1.0f, 0,
+                            XDelta(), YDelta(), ZDelta());
 #endif
 
             pos.x = XPos();
@@ -68,11 +69,10 @@ void HelicopterClass::DoWeapons(void)
              2.3f, // time to live
              2.0f ) ); // scale
              */
-            DrawableParticleSys::PS_AddParticleEx((SFX_GUN_SMOKE + 1),
-                                                  &pos,
+            DrawableParticleSys::PS_AddParticleEx((SFX_GUN_SMOKE + 1), &pos,
                                                   &vec);
 
-            if ( not IsFiring())
+            if (not IsFiring())
             {
                 // KCK: This has been moved to GunClass::Exec, since that's where we generate
                 // new bullets
@@ -102,7 +102,8 @@ void HelicopterClass::DoWeapons(void)
         {
             if (IsFiring())
             {
-                SendFireMessage((SimWeaponClass*)Guns, FalconWeaponsFire::GUN, FALSE, targetPtr);
+                SendFireMessage((SimWeaponClass *)Guns, FalconWeaponsFire::GUN,
+                                FALSE, targetPtr);
             }
 
             SetFiring(FALSE);

@@ -187,5 +187,7 @@
     <None Include="src\Falclib\Include\vdrag_rm.cur">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="packages.config" />
+    <None Include="$(OpenXRLoaderBinaryRoot)\bin\openxr_loader.dll" />
   </ItemGroup>
 </Project>

@@ -10,15 +10,15 @@
 #include "feature.h"
 #include "vehicle.h"
 #include "evtparse.h"
-#include "Mesg.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/LandingMessage.h"
-#include "MsgInc/EjectMsg.h"
-#include "MsgInc/PlayerStatusMsg.h"
-#include "PlayerOp.h"
+#include "mesg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/landingmessage.h"
+#include "msginc/ejectmsg.h"
+#include "msginc/playerstatusmsg.h"
+#include "playerop.h"
 #include "classtbl.h"
 #include "chandler.h"
 #include "ui95_ext.h"
@@ -27,11 +27,12 @@
 #include "events.h"
 #include "userids.h"
 #include "textids.h"
-#include "MissEval.h"
-#include "CampStr.h"
+#include "misseval.h"
+#include "campstr.h"
 
 // External function prototypes
-_TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width, BOOL *status);
+_TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width,
+                    BOOL *status);
 void DeleteGroupList(long ID);
 
 // ==================================
@@ -108,7 +109,8 @@ void ClearSortedEventList()
 // The thing which makes the list and adds to windows
 // ==================================================
 
-static void AddMessageToWindow(C_Window *win, long client, int *y, CampaignTime eventtime, _TCHAR *eventstr)
+static void AddMessageToWindow(C_Window *win, long client, int *y,
+                               CampaignTime eventtime, _TCHAR *eventstr)
 {
     C_Text *txt;
     _TCHAR time_str[80];
@@ -130,7 +132,8 @@ static void AddMessageToWindow(C_Window *win, long client, int *y, CampaignTime 
     win->AddControl(txt);
 
     // Do event string
-    wrap_w = win->ClientArea_[client].right - win->ClientArea_[client].left - 48;
+    wrap_w =
+        win->ClientArea_[client].right - win->ClientArea_[client].left - 48;
     txt = new C_Text;
     txt->Setup(C_DONT_CARE, C_TYPE_LEFT);
     txt->SetFixedWidth(_tcsclen(eventstr) + 1);
@@ -191,11 +194,11 @@ void ProcessEventList(C_Window *win, long client)
 // and add the messages to a window
 // This is called by ACMI Import which is also responible for
 // cleaning up the sorted list
-EventElement * ProcessEventListForACMI(void)
+EventElement *ProcessEventListForACMI(void)
 {
     FlightDataClass *flight_data;
     PilotDataClass *pilot_data;
-    int i;//,y=0;
+    int i; //,y=0;
 
     // Build an event list from the MissionEvaluator class
     flight_data = TheCampaign.MissionEvaluator->flight_data;
@@ -246,10 +249,10 @@ void ProcessEventArray(C_Window *win, void *events, int count)
     {
         cur = &evList[i];
 
-        if ( not F4IsBadReadPtr(cur->timeStr, sizeof(_TCHAR)))
+        if (not F4IsBadReadPtr(cur->timeStr, sizeof(_TCHAR)))
             Time_str = (_TCHAR *)cur->timeStr;
 
-        if ( not F4IsBadReadPtr(cur->msgStr, sizeof(_TCHAR)))
+        if (not F4IsBadReadPtr(cur->msgStr, sizeof(_TCHAR)))
             Message_str = (_TCHAR *)cur->msgStr;
 
         txt = new C_Text;
@@ -282,24 +285,6 @@ void ProcessEventArray(C_Window *win, void *events, int count)
     win->ScanClientArea(0);
     win->RefreshWindow();
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 // Everything below here is out of date
@@ -431,7 +416,7 @@ long BuildEvent(EventElement *theEvent, _TCHAR output[])
         case PlayerStatusMsg:
             psm.Decode(&(theEvent->eventData), 0);
             theEvent->eventData -= theEvent->idData.size;
-            _stprintf(output, "PSM: VU_ID(%1d) [%s] %1ld", psm.EntityId().num_, psm.dataBlock.callsign, psm.dataBlock.state);
+            _stprintf(output, "PSM: VU_ID(%1d) [%s] %1d", psm.EntityId().num_, psm.dataBlock.callsign, psm.dataBlock.state);
             return(1);
             break;
     }

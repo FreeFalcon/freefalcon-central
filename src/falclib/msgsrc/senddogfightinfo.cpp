@@ -1,24 +1,29 @@
-#include "MsgInc/SendDogfightInfo.h"
+#include "msginc/senddogfightinfo.h"
 #include "mesg.h"
-#include "Dispcfg.h"
-#include "Dogfight.h"
+#include "dispcfg.h"
+#include "dogfight.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
 #include "falcuser.h"
 #include "uicomms.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 extern UIComms *gCommsMgr;
 
-UI_SendDogfightInfo::UI_SendDogfightInfo(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendDogfightInfo, FalconEvent::SimThread, entityId, target, loopback)
+UI_SendDogfightInfo::UI_SendDogfightInfo(VU_ID entityId, VuTargetEntity *target,
+                                         VU_BOOL loopback)
+    : FalconEvent(SendDogfightInfo, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     RequestOutOfBandTransmit();
     RequestReliableTransmit();
 }
 
-UI_SendDogfightInfo::UI_SendDogfightInfo(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendDogfightInfo, FalconEvent::SimThread, senderid, target)
+UI_SendDogfightInfo::UI_SendDogfightInfo(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(SendDogfightInfo, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     RequestReliableTransmit();
@@ -38,7 +43,7 @@ int UI_SendDogfightInfo::Process(uchar autodisp)
 
     if (gCommsMgr not_eq NULL)
     {
-        VuGameEntity *game = (VuGameEntity*) vuDatabase->Find(dataBlock.game);
+        VuGameEntity *game = (VuGameEntity *)vuDatabase->Find(dataBlock.game);
         gCommsMgr->LookAtGame(game);
 
         if (dataBlock.from not_eq vuLocalSessionEntity->Id())
@@ -50,4 +55,3 @@ int UI_SendDogfightInfo::Process(uchar autodisp)
 
     return TRUE;
 }
-

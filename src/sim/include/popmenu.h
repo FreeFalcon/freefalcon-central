@@ -24,7 +24,6 @@ typedef struct MenuColorStruct
 } MenuColorStruct;
 
 
-
 BOOL FindMenuColorIndex(char*, int*);
 BOOL FindMenuColorValue(char*, ULONG*);
 
@@ -95,7 +94,6 @@ typedef struct MenuStruct
 class MenuManager
 {
 private:
-
     BOOL mIsActive;
     BOOL mIsPolling;
     int mNumMenus;
@@ -122,7 +120,7 @@ private:
     int mNumInFlight;
     int mExtent;
     int mNumItems;
-    PageStruct *mpPage;
+    PageStruct* mpPage;
     int mOnGround;
     int mAWACSavail;
     //
@@ -130,8 +128,10 @@ private:
     void ReadDataFile(char* pfileName);
     void ParseManagerInfo(char* plinePtr);
     void ParseMenuInfo(char* plinePtr, int* menuNumber, int* pageNumber);
-    void ParsePageInfo(char* plinePtr, int* menuNumber, int* pageNumber, int* itemNumber);
-    void ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber, int* itemNumber);
+    void ParsePageInfo(char* plinePtr, int* menuNumber, int* pageNumber,
+                       int* itemNumber);
+    void ParseItemInfo(char* plinePtr, int* menuNumber, int* pageNumber,
+                       int* itemNumber);
     void ParseResInfo(char* plinePtr, int resCount);
     void SelectItem(unsigned long, int);
     void SendMenuMsg(int, int, int, VU_ID);
@@ -142,7 +142,7 @@ private:
 public:
     BOOL IsActive()
     {
-        return mIsActive;    // ASSOCIATOR 1/12/03: Added to know when the menu is active
+        return mIsActive; // ASSOCIATOR 1/12/03: Added to know when the menu is active
     }
 
     void DisplayDraw(void);

@@ -1,40 +1,41 @@
 #include "stdhdr.h"
 #include "object.h"
 #include "laserpod.h"
-#include "Graphics/Include/renderir.h"
+#include "graphics/include/renderir.h"
 #include "simmover.h"
 #include "entity.h"
 #include "simmath.h"
 #include "otwdrive.h"
-#include "msginc/LaserDesignateMsg.h"
+#include "msginc/laserdesignatemsg.h"
 #include "falcmesg.h"
 #include "falcsess.h"
 #include "sms.h"
 #include "aircrft.h"
 #include "simdrive.h" //MI
 #include "fcc.h" //MI
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/dispopts.h"
 #include "airframe.h"
 
 /* 2001-09-07 S.G. */ extern bool g_bRP5Comp;
 
-#define LOCK_RING_MAX_SIZE     0.5F
-#define LOCK_RING_MIN_SIZE     0.25F
-#define LOCK_RING_TICK_SIZE    0.075F
+#define LOCK_RING_MAX_SIZE 0.5F
+#define LOCK_RING_MIN_SIZE 0.25F
+#define LOCK_RING_TICK_SIZE 0.075F
 //MI we only got 150�
 //#define LGB_GIMBAL_MAX         (160.0F * DTR)
-#define LGB_GIMBAL_MAX         (150.0F * DTR)
+#define LGB_GIMBAL_MAX (150.0F * DTR)
 extern bool g_bRealisticAvionics;
 extern bool g_bGreyMFD;
 extern bool g_bGreyScaleMFD;
 extern bool bNVGmode;
 
-LaserPodClass::LaserPodClass(int idx, SimMoverClass* self) : VisualClass(idx, self)
+LaserPodClass::LaserPodClass(int idx, SimMoverClass* self)
+    : VisualClass(idx, self)
 {
     visualType = TARGETINGPOD;
 
     //MI docs say it's different
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
         curFOV = 10.0F * DTR;
     else
         curFOV = 6.0F * DTR;
@@ -69,13 +70,13 @@ SimObjectType* LaserPodClass::Exec(SimObjectType*)
 
 void LaserPodClass::DisplayInit(ImageBuffer* image)
 {
-    if ( not g_bGreyScaleMFD)
+    if (not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
-    privateDisplay =  new RenderIR;
+    privateDisplay = new RenderIR;
     ((RenderTV*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xff00ff00);
@@ -90,7 +91,7 @@ void LaserPodClass::DisplayInit(ImageBuffer* image)
 void LaserPodClass::ToggleFOV(void)
 {
     //MI Doc's say it's different
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         if (curFOV > 3.0F * DTR)
             // JB 010120 Fixed FOV
@@ -117,7 +118,7 @@ void LaserPodClass::ToggleFOV(void)
 
 void LaserPodClass::Display(VirtualDisplay* newDisplay)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     display = newDisplay;
 
     // FRB - B&W display
@@ -132,38 +133,47 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         {
             display->EndDraw();
 
-            if (platform->IsAirplane() and ((AircraftClass*)platform)->Sms->MasterArm() not_eq SMSBaseClass::Safe)
+            if (platform->IsAirplane() and
+                ((AircraftClass*)platform)->Sms->MasterArm() not_eq
+                    SMSBaseClass::Safe)
             {
-                DrawTerrain();
+                // Artscout - 2026: same gate as the doA5 scene block below. DrawTerrain renders the
+                // sensor world through privateDisplay OUTSIDE the RTT atlas -- under a GPU backend it
+                // lands on the screen/eye (the "picture at the bottom of the screen"), not in the MFD.
+                extern bool g_bUseD3D12, g_bUseVulkan, g_bSensorSceneD3D12;
+                extern bool g_bSensorSceneVulkan;
+                if (!(g_bUseD3D12 or g_bUseVulkan) || g_bSensorSceneD3D12 ||
+                    (g_bUseVulkan and g_bSensorSceneVulkan))
+                    DrawTerrain();
             }
 
             display->StartDraw();
 
             // Artscout - 2026: display->EndDraw() above unbound the shared RTT atlas (BindBackBuffer) and
-            // display->StartDraw() does NOT rebind it. Re-bind so the TGP symbology drawn below (crosshair/
-            // FOV/box + OSB labels) lands in the atlas instead of leaking to the back buffer. Same fix as
-            // the GM radar / Maverick sub-render.
-            // Artscout - 2026 (D3D11 purge): the D3D11-only RTT re-bind was removed. Under D3D12 the TGP
-            // atlas is re-bound via ConfineObjectViewportToZone before DrawScene (see the D3D12 guards below).
+            // display->StartDraw() does NOT rebind it. With the sensor scene gated off under the GPU
+            // backends, NOTHING re-binds -- the whole TGP page (crosshair/FOV/box + OSB labels) leaked to
+            // the screen ("draws outside the MFD"). Re-bind explicitly; safe now that the Vulkan RTT
+            // re-bind PRESERVES the atlas (LOAD pass).
+            ((VirtualDisplay*)display)->ReBindRttTarget();
         }
 
         // Reset color after terrain
         display->SetColor(tmpColor);
 
         //MI looks different in real
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
             display->Line(0.0F, -1.0F, 0.0F, -0.1F);
-            display->Line(0.0F,  1.0F, 0.0F,  0.1F);
+            display->Line(0.0F, 1.0F, 0.0F, 0.1F);
             display->Line(-1.0F, 0.0F, -0.1F, 0.0F);
-            display->Line(1.0F, 0.0F,  0.1F, 0.0F);
+            display->Line(1.0F, 0.0F, 0.1F, 0.0F);
             display->Line(-0.1F, -0.2F, 0.1F, -0.2F);
             display->Line(-0.1F, -0.4F, 0.1F, -0.4F);
             display->Line(-0.1F, -0.6F, 0.1F, -0.6F);
         }
         else
         {
-            if ( not MenuMode)
+            if (not MenuMode)
             {
                 float begin = 0.1F;
                 float end = 0.3F;
@@ -177,12 +187,16 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         if (hasTarget == TargetLocked)
         {
             //MI
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
             {
-                display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE);
-                display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE);
-                display->Line(LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE);
-                display->Line(LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE,  LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE);
+                display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,
+                              -LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE);
+                display->Line(-LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE,
+                              LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE);
+                display->Line(LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE,
+                              -LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE);
+                display->Line(LOCK_RING_MIN_SIZE, LOCK_RING_MIN_SIZE,
+                              LOCK_RING_MIN_SIZE, -LOCK_RING_MIN_SIZE);
             }
             else
             {
@@ -194,11 +208,10 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC and playerAC->FCC and not playerAC->FCC
-                    ->preDesignate and not IsLocked())
+                if (playerAC and playerAC->FCC and
+                    not playerAC->FCC->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
-
         }
         else if (lockedTarget)
         {
@@ -211,12 +224,24 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
             offset *= LOCK_RING_MAX_SIZE - LOCK_RING_MIN_SIZE;
 
             //MI
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
             {
-                display->Line(-(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),   LOCK_RING_MIN_SIZE + offset);
-                display->Line(-(LOCK_RING_MIN_SIZE + offset), -(LOCK_RING_MIN_SIZE + offset),   LOCK_RING_MIN_SIZE + offset,  -(LOCK_RING_MIN_SIZE + offset));
-                display->Line(LOCK_RING_MIN_SIZE + offset,    LOCK_RING_MIN_SIZE + offset,  -(LOCK_RING_MIN_SIZE + offset),   LOCK_RING_MIN_SIZE + offset);
-                display->Line(LOCK_RING_MIN_SIZE + offset,    LOCK_RING_MIN_SIZE + offset,    LOCK_RING_MIN_SIZE + offset,  -(LOCK_RING_MIN_SIZE + offset));
+                display->Line(-(LOCK_RING_MIN_SIZE + offset),
+                              -(LOCK_RING_MIN_SIZE + offset),
+                              -(LOCK_RING_MIN_SIZE + offset),
+                              LOCK_RING_MIN_SIZE + offset);
+                display->Line(-(LOCK_RING_MIN_SIZE + offset),
+                              -(LOCK_RING_MIN_SIZE + offset),
+                              LOCK_RING_MIN_SIZE + offset,
+                              -(LOCK_RING_MIN_SIZE + offset));
+                display->Line(LOCK_RING_MIN_SIZE + offset,
+                              LOCK_RING_MIN_SIZE + offset,
+                              -(LOCK_RING_MIN_SIZE + offset),
+                              LOCK_RING_MIN_SIZE + offset);
+                display->Line(LOCK_RING_MIN_SIZE + offset,
+                              LOCK_RING_MIN_SIZE + offset,
+                              LOCK_RING_MIN_SIZE + offset,
+                              -(LOCK_RING_MIN_SIZE + offset));
             }
             else
             {
@@ -224,20 +249,24 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC and playerAC->FCC and not playerAC->FCC
-                    ->preDesignate and not IsLocked())
+                if (playerAC and playerAC->FCC and
+                    not playerAC->FCC->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
         }
         else
         {
             //MI
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
             {
-                display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE);
-                display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE);
-                display->Line(LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE);
-                display->Line(LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE,  LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE);
+                display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,
+                              -LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE);
+                display->Line(-LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE,
+                              LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE);
+                display->Line(LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE,
+                              -LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE);
+                display->Line(LOCK_RING_MAX_SIZE, LOCK_RING_MAX_SIZE,
+                              LOCK_RING_MAX_SIZE, -LOCK_RING_MAX_SIZE);
             }
             else
             {
@@ -249,13 +278,13 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 if (curFOV > 3.0F * DTR)
                     DrawFOV(display);
 
-                if (playerAC and playerAC->FCC and not playerAC->FCC
-                    ->preDesignate and not IsLocked())
+                if (playerAC and playerAC->FCC and
+                    not playerAC->FCC->preDesignate and not IsLocked())
                     display->TextCenter(0.0F, -0.4F, "AREA");
             }
         }
 
-        if ( not IsSOI())
+        if (not IsSOI())
         {
             if (g_bRealisticAvionics and not MenuMode)
             {
@@ -268,7 +297,7 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                 //Not here in real
                 //display->TextCenter(0.0F, 0.4F, "NOT SOI");
             }
-            else if ( not g_bRealisticAvionics)
+            else if (not g_bRealisticAvionics)
             {
                 display->SetColor(GetMfdColor(MFD_GREEN));
                 display->TextCenter(0.0F, 0.4F, "NOT SOI");
@@ -286,16 +315,18 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
         }
 
         //MI not here in real, according to docs and MFD vids from Kosovo bombings
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
         {
-            display->AdjustOriginInViewport(seekerAzCenter / LGB_GIMBAL_MAX, seekerElCenter / LGB_GIMBAL_MAX);
-            display->Line(0.0F,  0.2F,  0.0F, -0.2F);
-            display->Line(0.2F,  0.0F, -0.2F,  0.0F);
-            display->AdjustOriginInViewport(-seekerAzCenter / LGB_GIMBAL_MAX, -seekerElCenter / LGB_GIMBAL_MAX);
+            display->AdjustOriginInViewport(seekerAzCenter / LGB_GIMBAL_MAX,
+                                            seekerElCenter / LGB_GIMBAL_MAX);
+            display->Line(0.0F, 0.2F, 0.0F, -0.2F);
+            display->Line(0.2F, 0.0F, -0.2F, 0.0F);
+            display->AdjustOriginInViewport(-seekerAzCenter / LGB_GIMBAL_MAX,
+                                            -seekerElCenter / LGB_GIMBAL_MAX);
         }
         else //but instead, there's a small square
         {
-            if ( not MenuMode)
+            if (not MenuMode)
             {
                 // FRB - B&W display
                 if (g_bGreyMFD and not bNVGmode)
@@ -304,10 +335,14 @@ void LaserPodClass::Display(VirtualDisplay* newDisplay)
                     display->SetColor(GetMfdColor(MFD_GREEN));
 
                 static float size = 0.02F;
-                display->AdjustOriginInViewport(seekerAzCenter / LGB_GIMBAL_MAX, seekerElCenter / LGB_GIMBAL_MAX);
+                display->AdjustOriginInViewport(seekerAzCenter / LGB_GIMBAL_MAX,
+                                                seekerElCenter /
+                                                    LGB_GIMBAL_MAX);
                 display->Tri(-size, size, -size, -size, size, size);
                 display->Tri(size, size, size, -size, -size, -size);
-                display->AdjustOriginInViewport(-seekerAzCenter / LGB_GIMBAL_MAX, -seekerElCenter / LGB_GIMBAL_MAX);
+                display->AdjustOriginInViewport(
+                    -seekerAzCenter / LGB_GIMBAL_MAX,
+                    -seekerElCenter / LGB_GIMBAL_MAX);
             }
         }
 
@@ -407,21 +442,47 @@ void LaserPodClass::DrawTerrain(void)
     // flush every frame (those side-effects destabilised the frame -> DEVICE_HUNG). Symbology-only, stable.
     extern void FF_SetIRGrey(bool);
     extern void FF_SetTerrainRadiusCap(int);
-    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
+    // Artscout - 2026: Vulkan gated too -- its object path cannot target the RTT atlas (see lantirn.cpp doA5 note).
+    extern bool g_bUseVulkan, g_bSensorSceneVulkan;
+    const bool doA5 = !(g_bUseD3D12 or g_bUseVulkan) || g_bSensorSceneD3D12 ||
+        (g_bUseVulkan and g_bSensorSceneVulkan);
 
     ((RenderTV*)display)->StartDraw();
     if (doA5)
     {
-        ((VirtualDisplay*)display)->ReBindRttTarget();           // rebind the shared RTT atlas (StartDraw unbound it)
-        if (g_bUseD3D12) ((VirtualDisplay*)display)->ConfineObjectViewportToZone();  // zone the terrain BEFORE DrawScene
-        FF_SetIRGrey(true);                                      // grey the sensor scene (TV) -- luma in the PS
-        FF_SetTerrainRadiusCap(32);                              // #91: small GPU-terrain radius for the zoomed sensor
-        ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
+        ((VirtualDisplay*)display)
+            ->ReBindRttTarget(); // rebind the shared RTT atlas (StartDraw unbound it)
+        // Confine BEFORE DrawScene on BOTH backends. Vulkan used to skip this (the recorded zone VIEWPORT
+        // double-zoned the pre-zoned 2D spans -- the round-3 bug), but the renderer now asserts the viewport
+        // per draw (2D = full extent, objects = zone), so Confine's only lasting effect is REGISTERING the
+        // zone -- and it must be armed before DrawScene because the SKY flushes from inside it (DrawSun/
+        // DrawMoon force FlushPending): the horizon-split sky fill spans the full atlas metric, and without
+        // the zone scissor its above-horizon fill covered every atlas zone above the sensor's horizon --
+        // HUD/DED went blank aiming far and "slid back in" as the pod slewed down.
         ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
-        if (DisplayOptions.bZBuffering or g_bUseD3D12)
+        FF_SetIRGrey(true); // grey the sensor scene (TV) -- luma in the PS
+        FF_SetTerrainRadiusCap(
+            32); // #91: small GPU-terrain radius for the zoomed sensor
+        ((RenderTV*)display)->DrawScene(&cameraPos, &viewRotation);
+        // Confine again AFTER DrawScene: re-arms the zone in case a mid-scene re-bind cleared it, for the
+        // span flush (zone SCISSOR -- strays clipped, not splatted over HUD/DED) and the object flush
+        // (zone viewport).
+        ((VirtualDisplay*)display)->ConfineObjectViewportToZone();
+        // Flush the batched 2D spans INSIDE the RTT bracket -- a leftover VB tail otherwise flushes
+        // after FinishRtt and paints the sensor scene over the EYE ("scene on screen").
+        ((RenderTV*)display)->context.FlushPending();
+        if (DisplayOptions.bZBuffering or g_bUseD3D12 or g_bUseVulkan)
             ((RenderTV*)display)->context.FlushPolyLists();
-        FF_SetIRGrey(false);                                     // end grey before the MFD symbology
-        FF_SetTerrainRadiusCap(0);                               // restore full radius for the main world view
+        // Artscout - 2026 (sensor video): the sensor's OBJECTS queue into the MAIN renderer's
+        // poly lists (DrawableBSP draws through the object's renderer, not this display's), so
+        // flushing only the display context left them for the MAIN flush -> sensor-projected
+        // buildings painted into the EYE. Flush the main context INSIDE the RTT bracket: with
+        // the RTT bound they land in the MFD zone and the queue is empty for the eye pass.
+        if (g_bUseVulkan and OTWDriver.renderer)
+            OTWDriver.renderer->context.FlushPolyLists();
+        FF_SetIRGrey(false); // end grey before the MFD symbology
+        FF_SetTerrainRadiusCap(
+            0); // restore full radius for the main world view
         ((VirtualDisplay*)display)->ReBindRttTarget();
     }
 
@@ -430,7 +491,7 @@ void LaserPodClass::DrawTerrain(void)
 }
 
 
-void LaserPodClass::SetDesiredTarget(SimObjectType *newTarget)
+void LaserPodClass::SetDesiredTarget(SimObjectType* newTarget)
 {
     FalconLaserDesignateMsg* msg;
 
@@ -441,21 +502,22 @@ void LaserPodClass::SetDesiredTarget(SimObjectType *newTarget)
     if (lockedTarget and lockedTarget->BaseData()->IsSim())
     {
         msg = new FalconLaserDesignateMsg(platform->Id(), FalconLocalGame);
-        msg->dataBlock.source   = platform->Id();
-        msg->dataBlock.target   = lockedTarget->BaseData()->Id();
-        msg->dataBlock.state    = FALSE;
+        msg->dataBlock.source = platform->Id();
+        msg->dataBlock.target = lockedTarget->BaseData()->Id();
+        msg->dataBlock.state = FALSE;
         FalconSendMessage(msg, TRUE);
     }
 
-    if (newTarget and newTarget->BaseData()->IsSim() and CanSeeObject(newTarget) and CanDetectObject(newTarget))
+    if (newTarget and newTarget->BaseData()->IsSim() and
+        CanSeeObject(newTarget) and CanDetectObject(newTarget))
     {
         SetSensorTarget(newTarget);
 
         // Designate it
         msg = new FalconLaserDesignateMsg(platform->Id(), FalconLocalGame);
-        msg->dataBlock.source   = platform->Id();
-        msg->dataBlock.target   = lockedTarget->BaseData()->Id();
-        msg->dataBlock.state    = TRUE;
+        msg->dataBlock.source = platform->Id();
+        msg->dataBlock.target = lockedTarget->BaseData()->Id();
+        msg->dataBlock.state = TRUE;
         FalconSendMessage(msg, TRUE);
     }
     else
@@ -504,7 +566,7 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
 #endif
 
     // 2001-09-07 ADDED BY S.G. RP5 DEALS WITH THE LIMIT DIFFERENTLY
-    if ( not g_bRP5Comp)
+    if (not g_bRP5Comp)
     {
         // Looking down or left/right your total angle is limited to 150 Degrees
         if (*el < 35.0F * DTR or *az > 5.0F * DTR)
@@ -567,12 +629,11 @@ int LaserPodClass::SetDesiredSeekerPos(float* az, float* el)
                 *el = 0.0f * DTR;
                 retval = TRUE;
             }
-
         }
     }
 
     // Send the new values to the base class
-    if ( not retval)
+    if (not retval)
         SetSeekerPos(*az, *el);
 
     // Tell the caller if he hit the limits
@@ -598,18 +659,22 @@ SensorClass* FindLaserPod(SimMoverClass* theObject)
     ShiAssert(theObject);
     SensorClass* retval = NULL;
 
-    if ( not theObject) return retval;//me123 ctd
+    if (not theObject)
+        return retval; //me123 ctd
 
     for (i = 0; i < theObject->numSensors; i++)
     {
-        if (theObject->sensorArray and theObject->sensorArray[i] and theObject->sensorArray[i]->Type() == SensorClass::TargetingPod)
+        if (theObject->sensorArray and theObject->sensorArray[i] and
+            theObject->sensorArray[i]->Type() == SensorClass::TargetingPod)
         {
             retval = theObject->sensorArray[i];
             break;
         }
-        else if (theObject->sensorArray and theObject->sensorArray[i] and theObject->sensorArray[i]->Type() == SensorClass::Visual)
+        else if (theObject->sensorArray and theObject->sensorArray[i] and
+                 theObject->sensorArray[i]->Type() == SensorClass::Visual)
         {
-            if (((VisualClass*)theObject->sensorArray[i])->VisualType() == VisualClass::TARGETINGPOD)
+            if (((VisualClass*)theObject->sensorArray[i])->VisualType() ==
+                VisualClass::TARGETINGPOD)
             {
                 retval = theObject->sensorArray[i];
                 break;
@@ -644,7 +709,7 @@ void LaserPodClass::DrawFOV(VirtualDisplay* display)
     display->Line(value, -value, value, -value + Lenght);
     display->Line(-value, -value, -value, -value + Lenght);
     display->Line(value, value, value, value - Lenght);
-    display->Line(-value, value, -value,  value - Lenght);
+    display->Line(-value, value, -value, value - Lenght);
     display->Line(value, -value, value - Lenght, -value);
     display->Line(-value, -value, -value + Lenght, -value);
     display->Line(value, value, value - Lenght, value);

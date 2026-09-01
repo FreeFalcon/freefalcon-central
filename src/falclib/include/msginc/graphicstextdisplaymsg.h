@@ -1,12 +1,12 @@
 #ifndef _GRAPHICSTEXTDISPLAYMSG_H
 #define _GRAPHICSTEXTDISPLAYMSG_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Graphics Text Display
@@ -14,7 +14,8 @@
 class GraphicsTextDisplay : public FalconEvent
 {
 public:
-    GraphicsTextDisplay(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    GraphicsTextDisplay(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     GraphicsTextDisplay(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~GraphicsTextDisplay(void);
     virtual int Size() const
@@ -57,13 +58,13 @@ public:
     public:
         VU_ID target;
         int len;
-        char* msg;
+        char *msg;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

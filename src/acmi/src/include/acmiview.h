@@ -4,8 +4,8 @@
 #include <iso646.h>
 #include "f4thread.h"
 #include "f4vu.h"
-#include "AcmiCam.h"
-#include "Graphics/Include/Tex.h"
+#include "acmicam.h"
+#include "graphics/include/tex.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -39,11 +39,11 @@ class ACMITape;
 
 typedef struct DBLIST
 {
-    void * node;          /* pointer to node data */
-    void * user;          /* pointer to user data */
+    void *node; /* pointer to node data */
+    void *user; /* pointer to user data */
 
-    struct DBLIST * next;   /* next list node */
-    struct DBLIST * prev;   /* prev list node */
+    struct DBLIST *next; /* next list node */
+    struct DBLIST *prev; /* prev list node */
 } DBLIST;
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,7 +64,6 @@ typedef struct
 class ACMIView
 {
 public:
-
     // Constructors.
     ACMIView();
 
@@ -73,7 +72,7 @@ public:
 
     // Access.
     ACMITape *Tape();
-    RViewPoint* Viewpoint();
+    RViewPoint *Viewpoint();
 
     void ToggleScreenShot();
 
@@ -91,7 +90,7 @@ public:
     void ToggleWireFrame(int val);
     void TogglePoles(int val);
     void ToggleLockLines(int val);
-    void Togglelockrange(int val);//me123
+    void Togglelockrange(int val); //me123
 
     void InitGraphics(C_Window *win);
     int ExitGraphics();
@@ -99,9 +98,9 @@ public:
     void Exec();
     void Draw();
 
-    void GetObjectName(SimBaseClass* theObject, char *tmpStr);
+    void GetObjectName(SimBaseClass *theObject, char *tmpStr);
     // BING - 4/15/98
-    void SetObjectName(SimBaseClass* theObject, char *tmpStr);
+    void SetObjectName(SimBaseClass *theObject, char *tmpStr);
 
     void InitUIVector();
     void SetUIVector(Tpoint *tVect);
@@ -214,7 +213,7 @@ public:
 
     // Other random functions.
     void StopGraphicsLoop();
-    void InsertObjectIntoDrawList(SimBaseClass*);
+    void InsertObjectIntoDrawList(SimBaseClass *);
 
     // Take a screen shot.
     void TakeScreenShot();

@@ -60,7 +60,7 @@ void AirframeClass::TrimModel(void)
     /* set trim flag */
     /*---------------*/
     SetFlag(Trimming);
-    error  = 1.0e-04F;
+    error = 1.0e-04F;
 
     isTrimmed = FALSE;
 
@@ -69,27 +69,27 @@ void AirframeClass::TrimModel(void)
     /*---------------------------------------------------------*/
     do
     {
-        if ( not isTrimmed)
+        if (not isTrimmed)
         {
             /*-----------------*/
             /* initial guesses */
             /*-----------------*/
-            alpha  = 0.0F;
-            theta  = alpha * DTR;
+            alpha = 0.0F;
+            theta = alpha * DTR;
             throtl = 0.0F;
-            alph1  = alpha;
-            thr1   = throtl;
+            alph1 = alpha;
+            thr1 = throtl;
             Trigenometry();
             Aerodynamics();
             EngineModel(SimLibMinorFrameTime);
             accx1 = xsaero + xsprop;
             accz1 = zsaero + zsprop + GRAVITY;
 
-            alpha  = 5.0F;
-            theta  = alpha * DTR;
+            alpha = 5.0F;
+            theta = alpha * DTR;
             throtl = 1.5F;
-            alph2  = alpha;
-            thr2   = throtl;
+            alph2 = alpha;
+            thr2 = throtl;
             Trigenometry();
             Aerodynamics();
             EngineModel(SimLibMinorFrameTime);
@@ -105,7 +105,7 @@ void AirframeClass::TrimModel(void)
                 break;
             }
 
-            alpha  = Predictor(alph1, alph2, accz1, accz2);
+            alpha = Predictor(alph1, alph2, accz1, accz2);
             throtl = Predictor(thr1, thr2, accx1, accx2);
 
             if (alpha > 13.0F)
@@ -122,13 +122,13 @@ void AirframeClass::TrimModel(void)
             }
             else
             {
-                thr1   = thr2;
-                accx1  = accx2;
+                thr1 = thr2;
+                accx1 = accx2;
             }
 
-            theta  = alpha * DTR;
-            alph1  = alph2;
-            accz1  = accz2;
+            theta = alpha * DTR;
+            alph1 = alph2;
+            accz1 = accz2;
 
             Trigenometry();
             Aerodynamics();
@@ -137,13 +137,13 @@ void AirframeClass::TrimModel(void)
             accx2 = xsaero + xsprop;
             accz2 = zsaero + zsprop + GRAVITY;
             alph2 = alpha;
-            thr2  = throtl;
+            thr2 = throtl;
         }
 
         // Too slow for weight, make it faster
-        if ( not isTrimmed and (_isnan(accz2) or fabs(accz2) > error))
+        if (not isTrimmed and (_isnan(accz2) or fabs(accz2) > error))
         {
-            ii ++;
+            ii++;
 
             if (ii > 5)
                 isTrimmed = TRUE;
@@ -158,8 +158,7 @@ void AirframeClass::TrimModel(void)
             isTrimmed = TRUE;
         }
 
-    }
-    while ( not isTrimmed);
+    } while (not isTrimmed);
 
     //   F4Assert (i<50);
 

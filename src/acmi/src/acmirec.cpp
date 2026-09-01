@@ -6,7 +6,7 @@
 ** 13-oct-97 (edg)
 ** We go dancing in.....
 */
-#pragma optimize( "", off )
+#pragma optimize("", off)
 #include <windows.h>
 #include <conio.h>
 #include <stdio.h>
@@ -56,17 +56,17 @@ ACMIRecorder::ACMIRecorder(void)
     WIN32_FIND_DATA FindFileData;
     char path[MAX_PATH] = "";
 
-    handle = FindFirstFile("acmibin\\*.flt", &FindFileData);
+    handle = FindFirstFile("acmibin/*.flt", &FindFileData);
 
     if (handle not_eq INVALID_HANDLE_VALUE)
     {
-        strcpy(path, "acmibin\\");
+        strcpy(path, "acmibin/");
         strcat(path, FindFileData.cFileName);
         DeleteFile(path);
 
-        while (FindNextFile(handle,  &FindFileData))
+        while (FindNextFile(handle, &FindFileData))
         {
-            strcpy(path, "acmibin\\");
+            strcpy(path, "acmibin/");
             strcat(path, FindFileData.cFileName);
             DeleteFile(path);
         }
@@ -79,17 +79,17 @@ ACMIRecorder::ACMIRecorder(void)
     LPWIN32_FIND_DATA lpFindFileData = NULL;
     char path[MAX_PATH] = "";
 
-    handle = FindFirstFile("acmibin\\*.flt", lpFindFileData);
+    handle = FindFirstFile("acmibin/*.flt", lpFindFileData);
 
     if (handle not_eq INVALID_HANDLE_VALUE)
     {
-        strcpy(path, "acmibin\\");
+        strcpy(path, "acmibin/");
         strcat(path, lpFindFileData->cFileName);
         DeleteFile(path);
 
-        while (FindNextFile(handle,  lpFindFileData))
+        while (FindNextFile(handle, lpFindFileData))
         {
-            strcpy(path, "acmibin\\");
+            strcpy(path, "acmibin/");
             strcat(path, lpFindFileData->cFileName);
             DeleteFile(path);
         }
@@ -116,8 +116,7 @@ ACMIRecorder::~ACMIRecorder()
 /*
 ** StartRecording
 */
-void
-ACMIRecorder::StartRecording(void)
+void ACMIRecorder::StartRecording(void)
 {
     char fname[MAX_PATH];
     int y;
@@ -138,11 +137,11 @@ ACMIRecorder::StartRecording(void)
     // find a suitable name for flight file
     for (y = 0; y < 10000; y++)
     {
-        sprintf(fname, "acmibin\\acmi%04d.flt", y);
+        sprintf(fname, "acmibin/acmi%04d.flt", y);
 
         fp = fopen(fname, "r");
 
-        if ( not fp)
+        if (not fp)
         {
             break;
         }
@@ -172,19 +171,19 @@ ACMIRecorder::StartRecording(void)
 /*
 ** StopRecording
 */
-void
-ACMIRecorder::StopRecording(void)
+void ACMIRecorder::StopRecording(void)
 {
-    long i, count;
+    long i;
+    int32_t count;
     unsigned long idx;
     ACMI_HASHNODE *rec;
     ACMI_CallRec *list;
-    ACMIRecHeader  hdr;
+    ACMIRecHeader hdr;
 
 
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         _recording = FALSE;
         F4LeaveCriticalSection(_csect);
@@ -198,13 +197,13 @@ ACMIRecorder::StopRecording(void)
     if (count > 0)
     {
         list = new ACMI_CallRec[count];
-        memset(list, 0, sizeof(ACMI_CallRec)*count);
+        memset(list, 0, sizeof(ACMI_CallRec) * count);
 
         hdr.type = ACMICallsignList;
         hdr.time = 0.0f;
         fwrite(&hdr, sizeof(ACMIRecHeader), 1, _fd);
 
-        fwrite(&count, sizeof(long), 1, _fd);
+        fwrite(&count, sizeof(int32_t), 1, _fd);
 
         i = ACMIIDTable->GetFirst(&rec, &idx);
 
@@ -216,7 +215,7 @@ ACMIRecorder::StopRecording(void)
             i = ACMIIDTable->GetNext(&rec, &idx);
         }
 
-        fwrite(list, sizeof(ACMI_CallRec)*count, 1, _fd);
+        fwrite(list, sizeof(ACMI_CallRec) * count, 1, _fd);
     }
 
     fclose(_fd);
@@ -233,12 +232,11 @@ ACMIRecorder::StopRecording(void)
 /*
 ** Write a tracer start record
 */
-void
-ACMIRecorder::TracerRecord(ACMITracerStartRecord *recp)
+void ACMIRecorder::TracerRecord(ACMITracerStartRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -248,7 +246,7 @@ ACMIRecorder::TracerRecord(ACMITracerStartRecord *recp)
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
 
-    if ( not fwrite(recp, sizeof(ACMITracerStartRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMITracerStartRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -271,12 +269,11 @@ ACMIRecorder::TracerRecord(ACMITracerStartRecord *recp)
 /*
 ** Write a General Position record
 */
-void
-ACMIRecorder::GenPositionRecord(ACMIGenPositionRecord *recp)
+void ACMIRecorder::GenPositionRecord(ACMIGenPositionRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -287,7 +284,7 @@ ACMIRecorder::GenPositionRecord(ACMIGenPositionRecord *recp)
 
     // FIX *(recp->data.label) = NULL;
 
-    if ( not fwrite(recp, sizeof(ACMIGenPositionRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIGenPositionRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -310,12 +307,11 @@ ACMIRecorder::GenPositionRecord(ACMIGenPositionRecord *recp)
 /*
 ** Write a General Position record
 */
-void
-ACMIRecorder::FeaturePositionRecord(ACMIFeaturePositionRecord *recp)
+void ACMIRecorder::FeaturePositionRecord(ACMIFeaturePositionRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -324,7 +320,7 @@ ACMIRecorder::FeaturePositionRecord(ACMIFeaturePositionRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecFeaturePosition;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    if ( not fwrite(recp, sizeof(ACMIFeaturePositionRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIFeaturePositionRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -347,12 +343,11 @@ ACMIRecorder::FeaturePositionRecord(ACMIFeaturePositionRecord *recp)
 /*
 ** Write a Feature Status record
 */
-void
-ACMIRecorder::FeatureStatusRecord(ACMIFeatureStatusRecord *recp)
+void ACMIRecorder::FeatureStatusRecord(ACMIFeatureStatusRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -361,7 +356,7 @@ ACMIRecorder::FeatureStatusRecord(ACMIFeatureStatusRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecFeatureStatus;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    if ( not fwrite(recp, sizeof(ACMIFeatureStatusRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIFeatureStatusRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -385,12 +380,11 @@ ACMIRecorder::FeatureStatusRecord(ACMIFeatureStatusRecord *recp)
 /*
 ** Write a General Position record
 */
-void
-ACMIRecorder::MissilePositionRecord(ACMIMissilePositionRecord *recp)
+void ACMIRecorder::MissilePositionRecord(ACMIMissilePositionRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -401,7 +395,7 @@ ACMIRecorder::MissilePositionRecord(ACMIMissilePositionRecord *recp)
 
     // FIX *(recp->data.label) = NULL;
 
-    if ( not fwrite(recp, sizeof(ACMIMissilePositionRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIMissilePositionRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -425,12 +419,11 @@ ACMIRecorder::MissilePositionRecord(ACMIMissilePositionRecord *recp)
 /*
 ** Write a Stationary Sfx record
 */
-void
-ACMIRecorder::StationarySfxRecord(ACMIStationarySfxRecord *recp)
+void ACMIRecorder::StationarySfxRecord(ACMIStationarySfxRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -439,7 +432,7 @@ ACMIRecorder::StationarySfxRecord(ACMIStationarySfxRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecStationarySfx;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    if ( not fwrite(recp, sizeof(ACMIStationarySfxRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIStationarySfxRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -462,12 +455,11 @@ ACMIRecorder::StationarySfxRecord(ACMIStationarySfxRecord *recp)
 /*
 ** Write a Moving Sfx record
 */
-void
-ACMIRecorder::MovingSfxRecord(ACMIMovingSfxRecord *recp)
+void ACMIRecorder::MovingSfxRecord(ACMIMovingSfxRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -476,7 +468,7 @@ ACMIRecorder::MovingSfxRecord(ACMIMovingSfxRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecMovingSfx;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    if ( not fwrite(recp, sizeof(ACMIMovingSfxRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIMovingSfxRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -499,12 +491,11 @@ ACMIRecorder::MovingSfxRecord(ACMIMovingSfxRecord *recp)
 /*
 ** Write a switch data record
 */
-void
-ACMIRecorder::SwitchRecord(ACMISwitchRecord *recp)
+void ACMIRecorder::SwitchRecord(ACMISwitchRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -513,7 +504,7 @@ ACMIRecorder::SwitchRecord(ACMISwitchRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecSwitch;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    if ( not fwrite(recp, sizeof(ACMISwitchRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMISwitchRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -536,12 +527,11 @@ ACMIRecorder::SwitchRecord(ACMISwitchRecord *recp)
 /*
 ** Write a DOF data record
 */
-void
-ACMIRecorder::DOFRecord(ACMIDOFRecord *recp)
+void ACMIRecorder::DOFRecord(ACMIDOFRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -550,7 +540,7 @@ ACMIRecorder::DOFRecord(ACMIDOFRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecDOF;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    if ( not fwrite(recp, sizeof(ACMIDOFRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIDOFRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -574,12 +564,11 @@ ACMIRecorder::DOFRecord(ACMIDOFRecord *recp)
 /*
 ** Write a General Position record
 */
-void
-ACMIRecorder::AircraftPositionRecord(ACMIAircraftPositionRecord *recp)
+void ACMIRecorder::AircraftPositionRecord(ACMIAircraftPositionRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -588,7 +577,7 @@ ACMIRecorder::AircraftPositionRecord(ACMIAircraftPositionRecord *recp)
     recp->hdr.type = (BYTE)ACMIRecAircraftPosition;
     // recp->hdr.time = (float)(vuxGameTime/1000) + OTWDriver.todOffset;
 
-    if ( not fwrite(recp, sizeof(ACMIAircraftPositionRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIAircraftPositionRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -611,8 +600,7 @@ ACMIRecorder::AircraftPositionRecord(ACMIAircraftPositionRecord *recp)
 /*
 ** ToggleRecording
 */
-void
-ACMIRecorder::ToggleRecording(void)
+void ACMIRecorder::ToggleRecording(void)
 {
     F4EnterCriticalSection(_csect);
 
@@ -628,8 +616,7 @@ ACMIRecorder::ToggleRecording(void)
 ** PercentTapeFull
 ** Returns a number in the 0 - 10 range
 */
-int
-ACMIRecorder::PercentTapeFull(void)
+int ACMIRecorder::PercentTapeFull(void)
 {
     return (int)(10.0f * (_bytesWritten / _maxBytesToWrite));
 }
@@ -637,12 +624,11 @@ ACMIRecorder::PercentTapeFull(void)
 /*
 ** Write a General Position record
 */
-void
-ACMIRecorder::ChaffPositionRecord(ACMIChaffPositionRecord *recp)
+void ACMIRecorder::ChaffPositionRecord(ACMIChaffPositionRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -654,7 +640,7 @@ ACMIRecorder::ChaffPositionRecord(ACMIChaffPositionRecord *recp)
     // FIX *(recp->data.label) = NULL;
     // FIX recp->data.teamColor = 0x0;
 
-    if ( not fwrite(recp, sizeof(ACMIChaffPositionRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIChaffPositionRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -677,12 +663,11 @@ ACMIRecorder::ChaffPositionRecord(ACMIChaffPositionRecord *recp)
 /*
 ** Write a General Position record
 */
-void
-ACMIRecorder::FlarePositionRecord(ACMIFlarePositionRecord *recp)
+void ACMIRecorder::FlarePositionRecord(ACMIFlarePositionRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -694,7 +679,7 @@ ACMIRecorder::FlarePositionRecord(ACMIFlarePositionRecord *recp)
     // FIX *(recp->data.label) = NULL;
     // FIX recp->data.teamColor = 0x0;
 
-    if ( not fwrite(recp, sizeof(ACMIFlarePositionRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMIFlarePositionRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;
@@ -717,12 +702,11 @@ ACMIRecorder::FlarePositionRecord(ACMIFlarePositionRecord *recp)
 /*
 ** Write a General Position record
 */
-void
-ACMIRecorder::TodOffsetRecord(ACMITodOffsetRecord *recp)
+void ACMIRecorder::TodOffsetRecord(ACMITodOffsetRecord *recp)
 {
     F4EnterCriticalSection(_csect);
 
-    if ( not _fd)
+    if (not _fd)
     {
         F4LeaveCriticalSection(_csect);
         return;
@@ -730,7 +714,7 @@ ACMIRecorder::TodOffsetRecord(ACMITodOffsetRecord *recp)
 
     recp->hdr.type = (BYTE)ACMIRecTodOffset;
 
-    if ( not fwrite(recp, sizeof(ACMITodOffsetRecord), 1, _fd))
+    if (not fwrite(recp, sizeof(ACMITodOffsetRecord), 1, _fd))
     {
         StopRecording();
         gACMIRecError = TRUE;

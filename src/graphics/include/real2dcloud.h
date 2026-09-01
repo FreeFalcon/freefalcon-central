@@ -8,8 +8,8 @@
 #ifndef _REAL2DCLOUD_H_
 #define _REAL2DCLOUD_H_
 
-#include "ObjList.h"
-#include "DrawOVC.h"
+#include "objlist.h"
+#include "drawovc.h"
 
 class Real2DCloud
 {
@@ -20,7 +20,7 @@ public:
     void Cleanup();
 
 public:
-    Drawable2DCloud *drawable2DCloud;
+    Drawable2DCloud* drawable2DCloud;
 
 protected:
     static ObjectDisplayList* objMgr;

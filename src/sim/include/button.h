@@ -29,7 +29,6 @@ class ImageBuffer;
 #define CPBUTTON_ON 1
 
 
-
 //====================================================
 // Initialization Struct for:
 // CPButtonObject Class
@@ -57,8 +56,7 @@ typedef struct
     int delay;
     int sound1;
     int sound2;
-}
-ButtonObjectInitStr;
+} ButtonObjectInitStr;
 
 
 typedef struct
@@ -69,16 +67,14 @@ typedef struct
     int states;
     BOOL persistant;
     RECT destRect;
-    RECT* pSrcRect; // List of Rects
-    ImageBuffer* pOTWImage;
-    ImageBuffer* pTemplate;
+    RECT *pSrcRect; // List of Rects
+    ImageBuffer *pOTWImage;
+    ImageBuffer *pTemplate;
     // sfr: changed to 2 scale factors
     float hScale; //Wombat778 10-06-2003 Changes scale from int to float
     float vScale; //Wombat778 10-06-2003 Changes scale from int to float
     SourceButtonViewType *sourcebuttonview; //Wombat778 3-22-04
-}
-ButtonViewInitStr;
-
+} ButtonViewInitStr;
 
 
 //====================================================
@@ -124,9 +120,9 @@ class CPButtonObject
     //----------------------------------------------------
 
 #ifdef _CPBUTTON_USE_STL_CONTAINERS
-    std::vector<CPButtonView*> mpButtonView; //List of views
+    std::vector<CPButtonView *> mpButtonView; //List of views
 #else
-    CPButtonView** mpButtonView; //List of views
+    CPButtonView **mpButtonView; //List of views
 
     int mTotalViews;
     int mViewSlot; // Used only for adding views to button
@@ -139,7 +135,6 @@ class CPButtonObject
     int mCursorIndex;
 
 public:
-
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap pool
@@ -149,7 +144,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
@@ -176,11 +172,11 @@ public:
     }
     int GetCallbackId() const
     {
-        return mCallbackSlot;    //Wombat778 3-09-04 Necessary to expose mCallbackSlot
+        return mCallbackSlot; //Wombat778 3-09-04 Necessary to expose mCallbackSlot
     }
-    int             GetTotalStates() const
+    int GetTotalStates() const
     {
-        return mTotalStates;     // sfr: for dummy callbacks
+        return mTotalStates; // sfr: for dummy callbacks
     }
     int GetSound(int) const;
     void SetSound(int, int);
@@ -193,7 +189,7 @@ public:
     // Runtime Functions
     //----------------------------------------------------
 
-    void AddView(CPButtonView*);
+    void AddView(CPButtonView *);
     void NotifyViews(void);
     void HandleMouseEvent(int);
     void HandleEvent(int);
@@ -206,11 +202,9 @@ public:
     //----------------------------------------------------
 
 
-
-    CPButtonObject(ButtonObjectInitStr*);
+    CPButtonObject(ButtonObjectInitStr *);
     ~CPButtonObject();
 };
-
 
 
 //====================================================
@@ -255,7 +249,6 @@ class CPButtonView
     float mVScale;
 
 public:
-
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap pool
@@ -265,7 +258,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
@@ -274,7 +268,7 @@ public:
     //----------------------------------------------------
 
     void DisplayBlit(void);
-    BOOL HandleEvent(int*, int, int, int);
+    BOOL HandleEvent(int *, int, int, int);
     void SetDirtyFlag()
     {
         mDirtyFlag = TRUE;
@@ -282,9 +276,9 @@ public:
     int GetId();
     int GetTransparencyType(void);
     int GetParentButton(void);
-    void SetParentButtonPointer(CPButtonObject*);
-    void Translate(WORD*) {};
-    void Translate(DWORD*) {};
+    void SetParentButtonPointer(CPButtonObject *);
+    void Translate(WORD *) {};
+    void Translate(DWORD *) {};
     void UpdateView();
 
     int GetCallBackAndXY(int *x, int *y); //Wombat778 3-09-04
@@ -295,7 +289,7 @@ public:
     PaletteHandle *m_pPalette;
     virtual void CreateLit(void);
     virtual void DiscardLit(void);
-    void Translate3D(DWORD*);
+    void Translate3D(DWORD *);
 
     //Wombat778 End
 
@@ -303,7 +297,7 @@ public:
     // Constructors and Destructors
     //----------------------------------------------------
 
-    CPButtonView(ButtonViewInitStr*);
+    CPButtonView(ButtonViewInitStr *);
     ~CPButtonView();
 };
 

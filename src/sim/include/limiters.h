@@ -42,7 +42,6 @@ protected:
     LimiterType type;
 
 public:
-
     Limiter(LimiterType ltype);
     LimiterType Type(void)
     {
@@ -54,10 +53,9 @@ public:
     {
         ;
     }
-
 };
 
-class LineLimiter: public Limiter
+class LineLimiter : public Limiter
 {
 #ifdef USE_SH_POOLS
 public:
@@ -69,7 +67,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -86,6 +85,7 @@ protected:
     float lowerX;
     float m;
     float b;
+
 public:
     LineLimiter(void);
     virtual void Setup(char *string);
@@ -93,7 +93,7 @@ public:
     virtual float Limit(float x);
 };
 
-class ThreePointLimiter: public Limiter
+class ThreePointLimiter : public Limiter
 {
 #ifdef USE_SH_POOLS
 public:
@@ -105,7 +105,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -123,6 +124,7 @@ protected:
     float lowerX;
     float m1, m2;
     float b1, b2;
+
 public:
     ThreePointLimiter(void);
     virtual void Setup(char *string);
@@ -130,7 +132,7 @@ public:
     virtual float Limit(float x);
 };
 
-class ValueLimiter: public Limiter
+class ValueLimiter : public Limiter
 {
 #ifdef USE_SH_POOLS
 public:
@@ -142,7 +144,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -156,6 +159,7 @@ public:
 #endif
 protected:
     float value;
+
 public:
     ValueLimiter(void);
     virtual void Setup(char *string);
@@ -163,7 +167,7 @@ public:
     virtual float Limit(float x);
 };
 
-class MinMaxLimiter: public Limiter
+class MinMaxLimiter : public Limiter
 {
 #ifdef USE_SH_POOLS
 public:
@@ -175,7 +179,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -190,6 +195,7 @@ public:
 protected:
     float minimum;
     float maximum;
+
 public:
     MinMaxLimiter(void);
     virtual void Setup(char *string);
@@ -197,7 +203,7 @@ public:
     virtual float Limit(float x);
 };
 
-class PercentLimiter: public Limiter
+class PercentLimiter : public Limiter
 {
 #ifdef USE_SH_POOLS
 public:
@@ -209,7 +215,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -223,6 +230,7 @@ public:
 #endif
 protected:
     float percent;
+
 public:
     PercentLimiter(void);
     virtual void Setup(char *string);
@@ -242,6 +250,7 @@ class LimiterMgrClass
 protected:
     Limiter **limiterDatasets;
     int numDatasets;
+
 public:
     LimiterMgrClass(int numDatasets);
     ~LimiterMgrClass(void);

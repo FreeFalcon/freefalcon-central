@@ -10,9 +10,7 @@ void HeliBrain::GroundCheck(void)
     float groundAlt;
 
     // if we're landing do nothing....
-    if (onStation == Landing ||
-        onStation == Landed ||
-        onStation == DropOff ||
+    if (onStation == Landing || onStation == Landed || onStation == DropOff ||
         onStation == PickUp)
     {
         groundAvoidNeeded = FALSE;
@@ -27,14 +25,14 @@ void HeliBrain::GroundCheck(void)
     // at alts between 500 and 1500 ft
     if (self->ZPos() - groundAlt > -500.0f)
     {
-        groundAlt = groundAlt - 500.0f - (self->ZPos() - groundAlt + 500.0f) * 2.0f;
+        groundAlt =
+            groundAlt - 500.0f - (self->ZPos() - groundAlt + 500.0f) * 2.0f;
         AltitudeHold(groundAlt);
     }
     else if (self->ZPos() - groundAlt < -1500.0f)
     {
         AltitudeHold(groundAlt - 1500.0f);
     }
-
 }
 
 void HeliBrain::PullUp(void)

@@ -1,21 +1,26 @@
-#include "MsgInc/SendChatMessage.h"
+#include "msginc/sendchatmessage.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
 void ReceiveChatString(VU_ID from, _TCHAR *message); // from ui\src\ui_comms.cpp
 
-UI_SendChatMessage::UI_SendChatMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendChatMessage, FalconEvent::SimThread, entityId, target, loopback)
+UI_SendChatMessage::UI_SendChatMessage(VU_ID entityId, VuTargetEntity *target,
+                                       VU_BOOL loopback)
+    : FalconEvent(SendChatMessage, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     RequestOutOfBandTransmit();
     RequestReliableTransmit();
 }
 
-UI_SendChatMessage::UI_SendChatMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendChatMessage, FalconEvent::SimThread, senderid, target)
+UI_SendChatMessage::UI_SendChatMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                       VU_ID target)
+    : FalconEvent(SendChatMessage, FalconEvent::SimThread, senderid, target)
 {
     RequestOutOfBandTransmit();
     RequestReliableTransmit();
@@ -26,7 +31,7 @@ UI_SendChatMessage::UI_SendChatMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID t
 UI_SendChatMessage::~UI_SendChatMessage(void)
 {
     if (dataBlock.size > 0)
-        delete []dataBlock.message;
+        delete[] dataBlock.message;
 }
 
 int UI_SendChatMessage::Decode(VU_BYTE **buf, long *rem)

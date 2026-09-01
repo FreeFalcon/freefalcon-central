@@ -2,8 +2,8 @@
 #ifndef STRATEDI
 #define STRATEDI
 
-#include "GUI.h"
-#include "Strategy.h"
+#include "gui.h"
+#include "strategy.h"
 
 extern void DisplayStateClass(Window w, CampaignState s);
 

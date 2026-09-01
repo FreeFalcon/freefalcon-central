@@ -1,12 +1,12 @@
 #ifndef _AWACSMSG_H
 #define _AWACSMSG_H
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type AWACSMsg
@@ -51,7 +51,8 @@ public:
         VectorToCarrier
     }; // M.N.
 
-    FalconAWACSMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconAWACSMessage(VU_ID entityId, VuTargetEntity *target,
+                       VU_BOOL loopback = TRUE);
     FalconAWACSMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconAWACSMessage(void);
     virtual int Size() const
@@ -81,7 +82,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID caller;
         unsigned int type;
     } dataBlock;
@@ -89,6 +89,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

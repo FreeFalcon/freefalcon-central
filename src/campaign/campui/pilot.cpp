@@ -1,5 +1,5 @@
 // OW - Cowboy bug (weird optimizer problem, reevaluate with new compiler)
-#pragma optimize( "", off )
+#pragma optimize("", off)
 
 //
 // Campaign Pilot and callsign information routines
@@ -8,16 +8,16 @@
 #include <stdlib.h>
 #include <string.h>
 #include <tchar.h>
-#include "ClassTbl.h"
-#include "CampStr.h"
-#include "Pilot.h"
-#include "AIInput.h"
-#include "F4Find.h"
-#include "Campaign.h"
-#include "Find.h"
-#include "Flight.h"
-#include "CmpClass.h"
-#include "MissEval.h"
+#include "classtbl.h"
+#include "campstr.h"
+#include "pilot.h"
+#include "aiinput.h"
+#include "f4find.h"
+#include "campaign.h"
+#include "find.h"
+#include "flight.h"
+#include "cmpclass.h"
+#include "misseval.h"
 #include "falcsnd/voicemapper.h"
 
 // ===========================
@@ -66,8 +66,12 @@ void PilotClass::ResetStats(uchar airExperience)
     // MODIFIED BY S.G. SO PILOT SKILL ARE NOT JUST VETERAN AND ACE BUT BASED ON THE SQUADRON SKILL +-1
     // pilot_skill_and_rating = 0x03 bitor (rand()%PILOT_SKILL_RANGE);
     airExperience -= 60; // From 60 to 100 (recruit to ace) down to 0 to 40
-    airExperience /= 10; // Now from 0 to 4 like 'pilot_skill_and_rating' likes it
-    pilot_skill_and_rating = 0x30 bitor ((rand() % 3 - 1) + airExperience); // pilot_skill_and_rating will have +-1 from 'airExperience' base level
+    airExperience /=
+        10; // Now from 0 to 4 like 'pilot_skill_and_rating' likes it
+    pilot_skill_and_rating =
+        0x30 bitor
+        ((rand() % 3 - 1) +
+         airExperience); // pilot_skill_and_rating will have +-1 from 'airExperience' base level
     // END OF MODIFIED SECTION
     aa_kills = 0;
     ag_kills = 0;
@@ -117,7 +121,8 @@ void PilotInfoClass::ResetStats(void)
 void PilotInfoClass::AssignVoice(int owner)
 {
     voice_id = g_voicemap.PickVoice(VoiceMapper::VOICE_PILOT, owner);
-    photo_id = AssignUIImageID(voice_id); // UI will check if this is male or female (& keep track of images)
+    photo_id = AssignUIImageID(
+        voice_id); // UI will check if this is male or female (& keep track of images)
 }
 
 // =======================
@@ -146,12 +151,12 @@ void NewPilotInfo(void)
     PilotInfo[255].usage = 32000;
     NumCallsigns = NUM_CALLSIGNS;
     CallsignData = new unsigned char[NumCallsigns];
-    memset(CallsignData, 0, sizeof(uchar)*NumCallsigns);
+    memset(CallsignData, 0, sizeof(uchar) * NumCallsigns);
 }
 
 int LoadPilotInfo(char* scenario)
 {
-    char /* *data,*/ *data_ptr;
+    char /* *data,*/* data_ptr;
     short max;
 
     if (gCampDataVersion < 60)
@@ -170,11 +175,11 @@ int LoadPilotInfo(char* scenario)
     data_ptr = cd.data;
 
     // Pilot Data
-    max = *((short *) data_ptr);
+    max = *((short*)data_ptr);
     data_ptr += sizeof(short);
 
     if (PilotInfo)
-        delete [] PilotInfo;
+        delete[] PilotInfo;
 
     NumPilots = max;
     PilotInfo = new PilotInfoClass[NumPilots];
@@ -183,11 +188,11 @@ int LoadPilotInfo(char* scenario)
     data_ptr += sizeof(PilotInfoClass) * max;
 
     // Callsign Data
-    max = *((short *) data_ptr);
+    max = *((short*)data_ptr);
     data_ptr += sizeof(short);
 
     if (CallsignData)
-        delete [] CallsignData;
+        delete[] CallsignData;
 
     NumCallsigns = max;
 
@@ -201,7 +206,7 @@ int LoadPilotInfo(char* scenario)
 
 void SavePilotInfo(char* scenario)
 {
-    FILE *fp;
+    FILE* fp;
 
     if ((fp = OpenCampFile(scenario, "plt", "wb")) == NULL)
         return;
@@ -222,7 +227,7 @@ void DisposePilotInfo(void)
     NumPilots = 0;
 
     if (CallsignData)
-        delete [] CallsignData;
+        delete[] CallsignData;
 
     CallsignData = NULL;
     NumCallsigns = 0;
@@ -307,9 +312,10 @@ void GetCallsignID(uchar* id, uchar* num, int range)
 
     for (j = 1; j < 9; j++)
     {
-        for (i = (int) * id; i < (int)*id + range; i++)
+        for (i = (int)*id; i < (int)*id + range; i++)
         {
-            if (i < NumCallsigns and not ((CallsignData[i] >> (j - 1)) bitand 0x01))
+            if (i < NumCallsigns and
+                not((CallsignData[i] >> (j - 1)) bitand 0x01))
             {
                 *id = (uchar)i;
                 *num = (uchar)j;
@@ -321,9 +327,9 @@ void GetCallsignID(uchar* id, uchar* num, int range)
     // KCK: No callsigns left, pick one of the available ones with a '9'
     *num = 9;
 
-    for (i = (int) * id; i < (int)*id + range; i++)
+    for (i = (int)*id; i < (int)*id + range; i++)
     {
-        if (i < NumCallsigns and not (rand() % range))
+        if (i < NumCallsigns and not(rand() % range))
         {
             *id = (uchar)i;
             return;
@@ -371,7 +377,7 @@ void GetCallsign(Flight fl, _TCHAR* callsign)
     }
     else
     {
-        VehicleClassDataType *vc;
+        VehicleClassDataType* vc;
         vc = GetVehicleClassData(fl->GetVehicleID(0));
         _stprintf(callsign, vc->Name);
     }
@@ -387,7 +393,8 @@ void GetDogfightCallsign(Flight flight)
         {
             checkid = calltable[flight->GetTeam()][i];
 
-            if (checkid < NumCallsigns and not ((CallsignData[checkid] >> (num - 1)) bitand 0x01))
+            if (checkid < NumCallsigns and
+                not((CallsignData[checkid] >> (num - 1)) bitand 0x01))
             {
                 flight->callsign_id = (uchar)checkid;
                 flight->callsign_num = (uchar)num;

@@ -1,20 +1,25 @@
-#include "MsgInc/SimDataToggle.h"
+#include "msginc/simdatatoggle.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
 #include "simmover.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-FalconSimDataToggle::FalconSimDataToggle(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SimDataToggle, FalconEvent::SimThread, entityId, target, loopback)
+FalconSimDataToggle::FalconSimDataToggle(VU_ID entityId, VuTargetEntity* target,
+                                         VU_BOOL loopback)
+    : FalconEvent(SimDataToggle, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
     RequestReliableTransmit();
     RequestOutOfBandTransmit();
 }
 
-FalconSimDataToggle::FalconSimDataToggle(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SimDataToggle, FalconEvent::SimThread, senderid, target)
+FalconSimDataToggle::FalconSimDataToggle(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(SimDataToggle, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -41,4 +46,3 @@ int FalconSimDataToggle::Process(uchar autodisp)
 
     return TRUE;
 }
-

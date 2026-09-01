@@ -15,7 +15,6 @@ public:
 };
 
 
-
 class BombAuxData
 {
 public:
@@ -27,26 +26,25 @@ public:
 
     ~BombAuxData()
     {
-        if (psFeatureImpact) free(psFeatureImpact);
+        if (psFeatureImpact)
+            free(psFeatureImpact);
 
-        if (psBombImpact) free(psBombImpact);
+        if (psBombImpact)
+            free(psBombImpact);
     }
     // which strength algorithm to use 0 for old, 1 for new.
-    int   cbuStrengthModel;
+    int cbuStrengthModel;
 
     // new strength model parameters
-    float cbuLethalHeight,
-          cbuIneffectiveHeight,
-          cbuDamageDiameterBAMult,
-          cbuMaxDamageDiameter, cbuBlastMultiplier;
+    float cbuLethalHeight, cbuIneffectiveHeight, cbuDamageDiameterBAMult,
+        cbuMaxDamageDiameter, cbuBlastMultiplier;
 
     // LAU/Gun pod launch angle
-    float lauElevation,
-          lauAzimuth;
-    int   lauSalvoSize;
-    int   lauRounds;
-    int   lauWeaponId;
-    int   lauRippleTime;
+    float lauElevation, lauAzimuth;
+    int lauSalvoSize;
+    int lauRounds;
+    int lauWeaponId;
+    int lauRippleTime;
 
     // Cobra - JDAM
     float JDAMLift;
@@ -56,9 +54,8 @@ public:
     char *psBombImpact;
 
     // unused as of yet
-    int   sndFlightSFX;
+    int sndFlightSFX;
 };
-
 
 
 class BombDataSetClass
@@ -70,16 +67,14 @@ public:
     BombAuxData *auxData;
 };
 
-extern BombDataSetClass* BombDataset;
+extern BombDataSetClass *BombDataset;
 extern int numBombDatasets;
 
 void ReadAllBombData(void);
 void BombOpenFiles(char *bombname);
-BombAuxData *BombAuxAeroRead(SimlibFileClass* inputFile);
+BombAuxData *BombAuxAeroRead(SimlibFileClass *inputFile);
 
 /******************************************************/
 
 
-
 #endif
-

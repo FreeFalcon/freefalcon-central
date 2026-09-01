@@ -37,7 +37,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -57,18 +58,18 @@ private:
 
     char name_[MAX_PATH];
     FILE *OpenResFile(const char *name, const char *sfx, const char *mode);
-public:
 
+public:
     C_Resmgr();
     ~C_Resmgr();
 
     long GetID()
     {
-        return(ID_);
+        return (ID_);
     }
     long GetType()
     {
-        return(Type_);
+        return (Type_);
     }
 
     // User callable functions
@@ -78,14 +79,15 @@ public:
 
     long Status()
     {
-        if ( not Data_)
+        if (not Data_)
         {
-            if (Index_) return(0x01);
+            if (Index_)
+                return (0x01);
 
-            return(0);
+            return (0);
         }
 
-        return(0x03);
+        return (0x03);
     }
 
     void SetColorKey(WORD Key)
@@ -102,34 +104,38 @@ public:
     }
     void LoadIndex();
     void AddIndex(long ID, IMAGE_RSC *resheader);
-    void AddIndex(long, SOUND_RSC*) {}
+    void AddIndex(long, SOUND_RSC *)
+    {
+    }
     void SetData(char *data)
     {
-        if (Data_) delete Data_;
+        if (Data_)
+            delete Data_;
 
         Data_ = data;
     }
     char *GetData()
     {
-        return(Data_);
+        return (Data_);
     }
     void LoadData();
     void UnloadData();
     void *Find(long ID)
     {
-        if (Index_) return(Index_->Find(ID));
+        if (Index_)
+            return (Index_->Find(ID));
 
-        return(NULL);
+        return (NULL);
     }
 
     char *ResName()
     {
-        return(name_);
+        return (name_);
     }
 
     C_Hash *GetIDList()
     {
-        return(Index_);
+        return (Index_);
     }
 };
 

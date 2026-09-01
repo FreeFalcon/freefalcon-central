@@ -6,14 +6,15 @@
 #define _CRASHHANDLER_H
 
 #ifndef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif  //__cplusplus
 
     /*//////////////////////////////////////////////////////////////////////
                                 Type Definitions
     //////////////////////////////////////////////////////////////////////*/
     // The type for the filter function called by the Crash Handler API.
-    typedef LONG(__stdcall *PFNCHFILTFN)(EXCEPTION_POINTERS * pExPtrs) ;
+    typedef LONG(__stdcall *PFNCHFILTFN)(EXCEPTION_POINTERS *pExPtrs);
 
     /*//////////////////////////////////////////////////////////////////////
                        Crash Handler Function Definitions
@@ -34,8 +35,7 @@ extern "C" {
         1 - The crash handler was properly set.
         0 - There was a problem.
     ----------------------------------------------------------------------*/
-    BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    SetCrashHandlerFilter(PFNCHFILTFN pFn) ;
+    BOOL BUGSUTIL_DLLINTERFACE __stdcall SetCrashHandlerFilter(PFNCHFILTFN pFn);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   AddCrashHandlerLimitModule
@@ -51,7 +51,7 @@ extern "C" {
         0 - There was a problem.
     ----------------------------------------------------------------------*/
     BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    AddCrashHandlerLimitModule(HMODULE hMod) ;
+    AddCrashHandlerLimitModule(HMODULE hMod);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   GetLimitModuleCount
@@ -63,7 +63,7 @@ extern "C" {
         The item count.  This can be zero if not limiting modules have been
     added.
     ----------------------------------------------------------------------*/
-    UINT BUGSUTIL_DLLINTERFACE __stdcall GetLimitModuleCount(void) ;
+    UINT BUGSUTIL_DLLINTERFACE __stdcall GetLimitModuleCount(void);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   GetLimitModulesArray
@@ -81,12 +81,12 @@ extern "C" {
                               values.
         GLMA_FAILURE        - There was a major problem.
     ----------------------------------------------------------------------*/
-#define GLMA_SUCCESS        1
-#define GLMA_BADPARAM       -1
-#define GLMA_BUFFTOOSMALL   -2
-#define GLMA_FAILURE        0
-    int BUGSUTIL_DLLINTERFACE __stdcall
-    GetLimitModulesArray(HMODULE * pahMod , UINT uiSize) ;
+#define GLMA_SUCCESS 1
+#define GLMA_BADPARAM -1
+#define GLMA_BUFFTOOSMALL -2
+#define GLMA_FAILURE 0
+    int BUGSUTIL_DLLINTERFACE __stdcall GetLimitModulesArray(HMODULE *pahMod,
+                                                             UINT uiSize);
 
     /*//////////////////////////////////////////////////////////////////////
               EXCEPTION_POINTER Translation Functions Declarations
@@ -106,7 +106,7 @@ extern "C" {
         NULL  - There was a problem translating the string.
     ----------------------------------------------------------------------*/
     LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall
-    GetFaultReason(EXCEPTION_POINTERS * pExPtrs) ;
+    GetFaultReason(EXCEPTION_POINTERS *pExPtrs);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   GetFaultReasonVB
@@ -122,9 +122,7 @@ extern "C" {
         FALSE - There was a problem.
     ----------------------------------------------------------------------*/
     BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    GetFaultReasonVB(EXCEPTION_POINTERS * pExPtrs ,
-                     LPTSTR               szBuff  ,
-                     UINT                 uiSize);
+    GetFaultReasonVB(EXCEPTION_POINTERS *pExPtrs, LPTSTR szBuff, UINT uiSize);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   GetFirstStackTraceString
@@ -150,16 +148,14 @@ extern "C" {
  not NULL - The requested stack trace string.
         NULL  - There was a problem.
     ----------------------------------------------------------------------*/
-#define GSTSO_PARAMS    0x01
-#define GSTSO_MODULE    0x02
-#define GSTSO_SYMBOL    0x04
-#define GSTSO_SRCLINE   0x08
+#define GSTSO_PARAMS 0x01
+#define GSTSO_MODULE 0x02
+#define GSTSO_SYMBOL 0x04
+#define GSTSO_SRCLINE 0x08
     LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall
-    GetFirstStackTraceString(DWORD                dwOpts  ,
-                             EXCEPTION_POINTERS * pExPtrs);
+    GetFirstStackTraceString(DWORD dwOpts, EXCEPTION_POINTERS *pExPtrs);
     LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall
-    GetNextStackTraceString(DWORD                dwOpts  ,
-                            EXCEPTION_POINTERS * pExPtrs) ;
+    GetNextStackTraceString(DWORD dwOpts, EXCEPTION_POINTERS *pExPtrs);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   GetFirstStackTraceStringVB
@@ -186,15 +182,11 @@ extern "C" {
         FALSE - There was a problem.
     ----------------------------------------------------------------------*/
     BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    GetFirstStackTraceStringVB(DWORD                dwOpts  ,
-                               EXCEPTION_POINTERS * pExPtrs ,
-                               LPTSTR               szBuff  ,
-                               UINT                 uiSize);
+    GetFirstStackTraceStringVB(DWORD dwOpts, EXCEPTION_POINTERS *pExPtrs,
+                               LPTSTR szBuff, UINT uiSize);
     BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    GetNextStackTraceStringVB(DWORD                dwOpts  ,
-                              EXCEPTION_POINTERS * pExPtrs ,
-                              LPTSTR               szBuff  ,
-                              UINT                 uiSize);
+    GetNextStackTraceStringVB(DWORD dwOpts, EXCEPTION_POINTERS *pExPtrs,
+                              LPTSTR szBuff, UINT uiSize);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   GetRegisterString
@@ -209,7 +201,7 @@ extern "C" {
         NULL  - There was a problem.
     ----------------------------------------------------------------------*/
     LPCTSTR BUGSUTIL_DLLINTERFACE __stdcall
-    GetRegisterString(EXCEPTION_POINTERS * pExPtrs) ;
+    GetRegisterString(EXCEPTION_POINTERS *pExPtrs);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   GetRegisterStringVB
@@ -225,14 +217,11 @@ extern "C" {
         FALSE - There was a problem.
     ----------------------------------------------------------------------*/
     BOOL BUGSUTIL_DLLINTERFACE __stdcall
-    GetRegisterStringVB(EXCEPTION_POINTERS * pExPtrs ,
-                        LPTSTR               szBuff  ,
-                        UINT                 uiSize) ;
+    GetRegisterStringVB(EXCEPTION_POINTERS *pExPtrs, LPTSTR szBuff,
+                        UINT uiSize);
 
 #ifndef __cplusplus
 }
-#endif  //__cplusplus
+#endif //__cplusplus
 
-#endif  // _CRASHHANDLER_H
-
-
+#endif // _CRASHHANDLER_H

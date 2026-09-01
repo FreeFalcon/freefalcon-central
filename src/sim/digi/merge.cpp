@@ -23,7 +23,8 @@ void DigitalBrain::MergeCheck(void)
     /*-------*/
     if (curMode not_eq MergeMode)
     {
-        if (-self->ZPos() > 3000 and targetData->range <= (1000) and targetData->ata < 45.0f * DTR and fabs(self->Pitch()) < 45.0F * DTR)
+        if (-self->ZPos() > 3000 and targetData->range <= (1000) and
+            targetData->ata < 45.0f * DTR and fabs(self->Pitch()) < 45.0F * DTR)
         {
             float dx, dy;
 
@@ -31,11 +32,13 @@ void DigitalBrain::MergeCheck(void)
             dy = targetPtr->BaseData()->YPos() - self->YPos();
 
             // Max range when on target nose, 0 if a stern chase
-            breakRange = ((targetPtr->BaseData()->GetKias() * self->GetKias())) * //me123
-                         (1.0F - targetData->ataFrom / (180.0F * DTR)) *
-                         (1.0F - targetData->ataFrom / (180.0F * DTR));
+            breakRange =
+                ((targetPtr->BaseData()->GetKias() * self->GetKias())) * //me123
+                (1.0F - targetData->ataFrom / (180.0F * DTR)) *
+                (1.0F - targetData->ataFrom / (180.0F * DTR));
 
-            if (dx * dx + dy * dy < breakRange and targetData->ataFrom < 45.0F * DTR)
+            if (dx * dx + dy * dy < breakRange and
+                targetData->ataFrom < 45.0F * DTR)
                 AddMode(MergeMode);
         }
     }
@@ -70,177 +73,194 @@ void DigitalBrain::MergeManeuver(void)
     {
         // Mil power except for Vertical;
 
-        mergeTimer = SimLibElapsedTime + 3 * SEC_TO_MSEC;//me123 from 5
+        mergeTimer = SimLibElapsedTime + 3 * SEC_TO_MSEC; //me123 from 5
         mnverFlags = maneuverClassData[self->CombatClass()].flags;
 
-        switch (mnverFlags bitand (CanLevelTurn bitor CanSlice bitor CanUseVertical))
+        switch (mnverFlags bitand
+                (CanLevelTurn bitor CanSlice bitor CanUseVertical))
         {
-            case CanLevelTurn:
-                if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))//me123
+        case CanLevelTurn:
+            if ((mnverFlags bitand CanOneCircle) and
+                (self->GetKias() < cornerSpeed)) //me123
+            {
+                // One Circle, turn away from the target
+                newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
+                MachHold(cornerSpeed, self->GetKias(), FALSE);
+            }
+            else
+            {
+                // Two Circle, turn towards the target
+                newroll = (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
+                MachHold(cornerSpeed, self->GetKias(), TRUE);
+            }
+
+            break;
+
+        case CanSlice:
+            if (curRoll > 0.0F)
+            {
+                newroll = 135.0F * DTR;
+                MachHold(cornerSpeed, self->GetKias(), FALSE); //me123
+            }
+            else
+            {
+                newroll = -135.0F * DTR;
+                MachHold(cornerSpeed, self->GetKias(), FALSE); //me123
+            }
+
+            break;
+
+        case CanUseVertical:
+            newroll = 0.0F;
+            MachHold(cornerSpeed, self->GetKias(), TRUE);
+            // Full burner for the pull
+            break;
+
+        case CanLevelTurn bitor CanSlice:
+
+            // level turn or slice?
+            if ((self->GetKias() > cornerSpeed) and
+                -self->ZPos() > 3000.0f) //me123
+            {
+                // Level Turn
+                if ((mnverFlags bitand CanOneCircle) and
+                    (self->GetKias() < cornerSpeed))
                 {
                     // One Circle, turn away from the target
-                    newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
-                    MachHold(cornerSpeed, self->GetKias(), FALSE);
+                    newroll =
+                        (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
+                    MachHold(0.7f * cornerSpeed, self->GetKias(),
+                             FALSE); //me123 addet *0.4
                 }
                 else
                 {
                     // Two Circle, turn towards the target
-                    newroll = (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
+                    newroll =
+                        (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
                     MachHold(cornerSpeed, self->GetKias(), TRUE);
                 }
-
-                break;
-
-            case CanSlice:
+            }
+            else
+            {
                 if (curRoll > 0.0F)
                 {
                     newroll = 135.0F * DTR;
-                    MachHold(cornerSpeed, self->GetKias(), FALSE); //me123
+                    MachHold(cornerSpeed, self->GetKias(), FALSE);
                 }
                 else
                 {
                     newroll = -135.0F * DTR;
-                    MachHold(cornerSpeed, self->GetKias(), FALSE); //me123
+                    MachHold(cornerSpeed, self->GetKias(), FALSE);
                 }
+            }
 
-                break;
+            break;
 
-            case CanUseVertical:
+        case CanLevelTurn bitor CanUseVertical:
+
+            // level turn or vertical?
+            if (self->GetKias() < cornerSpeed * 1.2) //me123
+            {
+                // Level Turn
+                if ((mnverFlags bitand CanOneCircle) and
+                    (self->GetKias() < cornerSpeed))
+                {
+                    // One Circle, turn away from the target
+                    newroll =
+                        (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
+                    MachHold(0.7f * cornerSpeed, self->GetKias(), FALSE);
+                }
+                else
+                {
+                    // Two Circle, turn towards the target
+                    newroll =
+                        (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
+                    MachHold(cornerSpeed, self->GetKias(), TRUE);
+                }
+            }
+            else
+            {
                 newroll = 0.0F;
                 MachHold(cornerSpeed, self->GetKias(), TRUE);
                 // Full burner for the pull
-                break;
+            }
 
-            case CanLevelTurn bitor CanSlice:
+            break;
 
-                // level turn or slice?
-                if ((self->GetKias() > cornerSpeed) and -self->ZPos() > 3000.0f)//me123
+        case CanSlice bitor CanUseVertical:
+
+            // slice or vertical?
+            if ((self->GetKias() < cornerSpeed) and
+                -self->ZPos() > 3000.0f) //me123
+            {
+                if (curRoll > 0.0F)
                 {
-                    // Level Turn
-                    if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))
-                    {
-                        // One Circle, turn away from the target
-                        newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
-                        MachHold(0.7f * cornerSpeed, self->GetKias(), FALSE);//me123 addet *0.4
-                    }
-                    else
-                    {
-                        // Two Circle, turn towards the target
-                        newroll = (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
-                        MachHold(cornerSpeed, self->GetKias(), TRUE);
-                    }
+                    newroll = 135.0F * DTR;
+                    MachHold(cornerSpeed, self->GetKias(), FALSE);
                 }
                 else
                 {
-                    if (curRoll > 0.0F)
-                    {
-                        newroll = 135.0F * DTR;
-                        MachHold(cornerSpeed, self->GetKias(), FALSE);
-                    }
-                    else
-                    {
-                        newroll = -135.0F * DTR;
-                        MachHold(cornerSpeed, self->GetKias(), FALSE);
-                    }
+                    newroll = -135.0F * DTR;
+                    MachHold(cornerSpeed, self->GetKias(), FALSE);
                 }
+            }
+            else
+            {
+                newroll = 0.0F;
+                MachHold(cornerSpeed, self->GetKias(), TRUE);
+                // Full burner for the pull
+            }
 
-                break;
+            break;
 
-            case CanLevelTurn bitor CanUseVertical:
+        case CanLevelTurn bitor CanSlice bitor CanUseVertical:
 
-                // level turn or vertical?
-                if (self->GetKias() < cornerSpeed * 1.2) //me123
+            // slice, level turn, or vertical?
+            if ((self->GetKias() < cornerSpeed * 0.7) and
+                -self->ZPos() > 3000.0f) //me123
+            {
+                if ((mnverFlags bitand CanOneCircle))
                 {
-                    // Level Turn
-                    if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))
-                    {
-                        // One Circle, turn away from the target
-                        newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
-                        MachHold(0.7f * cornerSpeed, self->GetKias(), FALSE);
-                    }
-                    else
-                    {
-                        // Two Circle, turn towards the target
-                        newroll = (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
-                        MachHold(cornerSpeed, self->GetKias(), TRUE);
-                    }
+                    // One Circle, turn away from the target
+                    newroll =
+                        (targetData->az > 0.0F ? -135.0F * DTR : 135.0F * DTR);
+                    MachHold(0.7f * cornerSpeed, self->GetKias(), FALSE);
                 }
                 else
                 {
-                    newroll = 0.0F;
+                    // Two Circle, turn towards the target
+                    newroll =
+                        (targetData->az > 0.0F ? 135.0F * DTR : -135.0F * DTR);
                     MachHold(cornerSpeed, self->GetKias(), TRUE);
-                    // Full burner for the pull
                 }
-
-                break;
-
-            case CanSlice bitor CanUseVertical:
-
-                // slice or vertical?
-                if ((self->GetKias() < cornerSpeed) and -self->ZPos() > 3000.0f) //me123
+            }
+            else if ((self->GetKias() < cornerSpeed * 1.2)) //me123
+            {
+                // Level Turn
+                if ((mnverFlags bitand CanOneCircle) and
+                    (self->GetKias() < cornerSpeed))
                 {
-                    if (curRoll > 0.0F)
-                    {
-                        newroll = 135.0F * DTR;
-                        MachHold(cornerSpeed, self->GetKias(), FALSE);
-                    }
-                    else
-                    {
-                        newroll = -135.0F * DTR;
-                        MachHold(cornerSpeed, self->GetKias(), FALSE);
-                    }
+                    // One Circle, turn away from the target
+                    newroll =
+                        (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
+                    MachHold(0.7f * cornerSpeed, self->GetKias(), FALSE);
                 }
                 else
                 {
-                    newroll = 0.0F;
+                    // Two Circle, turn towards the target
+                    newroll =
+                        (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
                     MachHold(cornerSpeed, self->GetKias(), TRUE);
-                    // Full burner for the pull
                 }
+            }
+            else
+            {
+                newroll = 0.0F;
+                MachHold(cornerSpeed * 1.2f, self->GetKias(), TRUE);
+                // Full burner for the pull
+            }
 
-                break;
-
-            case CanLevelTurn bitor CanSlice bitor CanUseVertical:
-
-                // slice, level turn, or vertical?
-                if ((self->GetKias() < cornerSpeed * 0.7) and -self->ZPos() > 3000.0f) //me123
-                {
-                    if ((mnverFlags bitand CanOneCircle))
-                    {
-                        // One Circle, turn away from the target
-                        newroll = (targetData->az > 0.0F ? -135.0F * DTR : 135.0F * DTR);
-                        MachHold(0.7f * cornerSpeed, self->GetKias(), FALSE);
-                    }
-                    else
-                    {
-                        // Two Circle, turn towards the target
-                        newroll = (targetData->az > 0.0F ? 135.0F * DTR : -135.0F * DTR);
-                        MachHold(cornerSpeed, self->GetKias(), TRUE);
-                    }
-                }
-                else if ((self->GetKias() < cornerSpeed * 1.2))//me123
-                {
-                    // Level Turn
-                    if ((mnverFlags bitand CanOneCircle) and (self->GetKias() < cornerSpeed))
-                    {
-                        // One Circle, turn away from the target
-                        newroll = (targetData->az > 0.0F ? -90.0F * DTR : 90.0F * DTR);
-                        MachHold(0.7f * cornerSpeed, self->GetKias(), FALSE);
-                    }
-                    else
-                    {
-                        // Two Circle, turn towards the target
-                        newroll = (targetData->az > 0.0F ? 90.0F * DTR : -90.0F * DTR);
-                        MachHold(cornerSpeed, self->GetKias(), TRUE);
-                    }
-                }
-                else
-                {
-                    newroll = 0.0F;
-                    MachHold(cornerSpeed * 1.2f, self->GetKias(), TRUE);
-                    // Full burner for the pull
-                }
-
-                break;
+            break;
         }
     }
 
@@ -250,22 +270,25 @@ void DigitalBrain::MergeManeuver(void)
     SetPstick(maxGs, maxGs, AirframeClass::GCommand);
     SetMaxRoll(newroll * RTD);
     SetMaxRollDelta(eDroll * RTD);
-
 }
 
 void DigitalBrain::AccelCheck(void)
 {
     //Leon, if you are in waypoint mode, or loiter mode, it may be desired to fly at less than corner speed
     //this is only important in combat
-    if (nextMode >= MergeMode and nextMode <= BVREngageMode and nextMode not_eq GroundAvoidMode)
+    if (nextMode >= MergeMode and nextMode <= BVREngageMode and
+        nextMode not_eq GroundAvoidMode)
     {
-        if ((self->Pitch() > 50.0F * DTR and self->GetKias() < cornerSpeed * 0.4F) or//me123 150kias
-            (self->Pitch() > 0.0F * DTR and self->GetKias() < cornerSpeed * 0.35F))//me123 100 GetKias
+        if ((self->Pitch() > 50.0F * DTR and
+             self->GetKias() < cornerSpeed * 0.4F) or //me123 150kias
+            (self->Pitch() > 0.0F * DTR and
+             self->GetKias() < cornerSpeed * 0.35F)) //me123 100 GetKias
         {
             AddMode(AccelMode);
         }
-        else if (curMode == AccelMode and self->GetKias() < cornerSpeed * 0.447F and 
-                 self->Pitch() > 0.0F * DTR and self->GetKias())//me123 180kias
+        else if (curMode == AccelMode and
+                 self->GetKias() < cornerSpeed * 0.447F and
+                 self->Pitch() > 0.0F * DTR and self->GetKias()) //me123 180kias
         {
             AddMode(AccelMode);
         }

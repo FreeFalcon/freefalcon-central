@@ -1,7 +1,7 @@
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
 #include "fileio.h"
-#include "GraphicsRes.h"
+#include "graphicsres.h"
 #include "xmmintrin.h"
 
 
@@ -20,8 +20,10 @@ GLint CFileIO::openwrite(const char *filename, GLint binary)
 
     int mode = O_RDWR bitor O_CREAT bitor O_TRUNC;
 
-    if (binary) mode or_eq O_BINARY;
-    else mode or_eq O_TEXT;
+    if (binary)
+        mode or_eq O_BINARY;
+    else
+        mode or_eq O_TEXT;
 
     file = GR_OPEN(filename, mode);
 
@@ -75,7 +77,8 @@ GLint CFileIO::eof()
 
 GLint CFileIO::writedata(void *buf, GLint len)
 {
-    if (len == 0) len = strlen((char *) buf);
+    if (len == 0)
+        len = strlen((char *)buf);
 
     return GR_WRITE(file, buf, len);
 }
@@ -133,7 +136,5 @@ void CFileIO::read_string(char *string)
     {
         GR_READ(file, &data, 1);
         *string++ = data;
-    }
-    while (data);
+    } while (data);
 }
-

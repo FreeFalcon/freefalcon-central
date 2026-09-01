@@ -27,14 +27,15 @@ class HeliBrain
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(HeliBrain));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -49,12 +50,33 @@ public:
 public:
     enum DigiMode
     {
-        GroundAvoidMode, CollisionAvoidMode, GunsJinkMode, MissileDefeatMode, DefensiveModes,
-        AirGroundBomb, AirGroundGuns, AirGroundMissile, GunsEngageMode, MissileEngageMode,
-        RoopMode, OverBMode, WVREngageMode, BVREngageMode, AccelerateMode, OvershootMode,
-        RunAwayMode, LoiterMode, SeparateMode, RTBMode, FollowOrdersMode,
-        WingyMode, WaypointMode, LandingMode, GroundMnvrMode,
-        LastValidMode, NoMode
+        GroundAvoidMode,
+        CollisionAvoidMode,
+        GunsJinkMode,
+        MissileDefeatMode,
+        DefensiveModes,
+        AirGroundBomb,
+        AirGroundGuns,
+        AirGroundMissile,
+        GunsEngageMode,
+        MissileEngageMode,
+        RoopMode,
+        OverBMode,
+        WVREngageMode,
+        BVREngageMode,
+        AccelerateMode,
+        OvershootMode,
+        RunAwayMode,
+        LoiterMode,
+        SeparateMode,
+        RTBMode,
+        FollowOrdersMode,
+        WingyMode,
+        WaypointMode,
+        LandingMode,
+        GroundMnvrMode,
+        LastValidMode,
+        NoMode
     };
     enum
     {
@@ -117,7 +139,7 @@ public:
     float newroll, pastAta, pastPstick, pastPipperAta;
 
     // Maneuvers
-    int  fCount;
+    int fCount;
     float trackX, trackY, trackZ;
 
     float wpAlt;
@@ -134,10 +156,10 @@ public:
     void ResolveModeConflicts(void);
     void AddMode(DigiMode);
     void PrtMode(void);
-    void PrintOnline(char *str);
+    void PrintOnline(char* str);
 
-    int  MissileEvade(void);
-    int  MissileBeamManeuver(void);
+    int MissileEvade(void);
+    int MissileBeamManeuver(void);
     void MachHold(float, float, int);
     // RV - Biker - No need for PullUp
     // void PullUp (void);
@@ -169,9 +191,9 @@ public:
     void CleanupLanding(void);
 
     float GunsAutoTrack(float targetX, float targetY, float targetZ,
-                        float *elerr, float maxGs);
-    void FineGunsTrack(float speed, float *lagAngle);
-    void CoarseGunsTrack(float speed, float leadTof, float *newata);
+                        float* elerr, float maxGs);
+    void FineGunsTrack(float speed, float* lagAngle);
+    void CoarseGunsTrack(float speed, float leadTof, float* newata);
 
     // Wingman Stuff
     int underOrders;
@@ -210,7 +232,7 @@ public:
     void JoinFlight(void);
     void SetLead(int flag);
     void FrameExec(SimObjectType*, SimObjectType*);
-    HeliBrain(SimVehicleClass *myPlatform);
+    HeliBrain(SimVehicleClass* myPlatform);
     virtual ~HeliBrain(void);
 
     // formerly in BaseBrain
@@ -226,7 +248,7 @@ public:
         ClearTarget();
     };
     void SetTarget(SimObjectType* newTarget);
-    void SetTargetEntity(FalconEntity *obj);
+    void SetTargetEntity(FalconEntity* obj);
     void ClearTarget(void);
     void SetFlag(int val)
     {
@@ -242,9 +264,10 @@ public:
     };
 
     // 2001-11-29 ADDED BY S.G. HELP FUNCTION TO SEARCH FOR A GROUND TARGET
-    SimBaseClass *FindSimGroundTarget(CampBaseClass *targetGroup, int targetNumComponents, int startPos);
+    SimBaseClass* FindSimGroundTarget(CampBaseClass* targetGroup,
+                                      int targetNumComponents, int startPos);
     // 2001-08-31 ADDED BY S.G. NEED TO KNOW THE LAST TWO GROUND TARGET AN AI TARGETED SO OTHER AI IN THE FLIGHT CAN SKIP THEM
-    SimBaseClass *targetHistory[2];
+    SimBaseClass* targetHistory[2];
     float nextTargetUpdate;
 
     // RV - Biker - Integrator for altitude PI-controler

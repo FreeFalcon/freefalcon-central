@@ -6,8 +6,8 @@
     This handles writing the disk representation of the run time BSP trees.
 \***************************************************************************/
 #include <io.h>
-#include "PolyWriter.h"
-#include "BSPnodeWriter.h"
+#include "polywriter.h"
+#include "bspnodewriter.h"
 
 
 // Global storage used to build the packed node store prior to writing it
@@ -16,9 +16,9 @@ static const int MAX_NODE_STORE_SIZE = 256 * 1024; // Bytes (arbitrary)
 static const int MAX_NODE_STORE_COUNT = 10000; // Nodes (arbitrary)
 
 static BYTE NodeStoreBuffer[MAX_NODE_STORE_SIZE];
-static void *NodeStore;
+static void* NodeStore;
 static BNodeType TagListBuffer[MAX_NODE_STORE_COUNT];
-static BNodeType *TagList;
+static BNodeType* TagList;
 static int MaxTagListLength = -1;
 
 
@@ -58,7 +58,7 @@ void WriteNodeStore(int file)
 
 
 // Publicly called exploder function.
-int StoreBNode(BNode *node)
+int StoreBNode(BNode* node)
 {
     int offset;
     int siblingOffset;
@@ -82,53 +82,53 @@ int StoreBNode(BNode *node)
     // Do our type specific handling
     switch (node->Type())
     {
-        case tagBSubTree:
-            offset = StoreBSubTree((BSubTree*)node);
-            break;
+    case tagBSubTree:
+        offset = StoreBSubTree((BSubTree*)node);
+        break;
 
-        case tagBRoot:
-            offset = StoreBRoot((BRoot*)node);
-            break;
+    case tagBRoot:
+        offset = StoreBRoot((BRoot*)node);
+        break;
 
-        case tagBSpecialXform:
-            offset = StoreBSpecialXform((BSpecialXform*)node);
-            break;
+    case tagBSpecialXform:
+        offset = StoreBSpecialXform((BSpecialXform*)node);
+        break;
 
-        case tagBSlotNode:
-            offset = StoreBSlotNode((BSlotNode*)node);
-            break;
+    case tagBSlotNode:
+        offset = StoreBSlotNode((BSlotNode*)node);
+        break;
 
-        case tagBDofNode:
-            offset = StoreBDofNode((BDofNode*)node);
-            break;
+    case tagBDofNode:
+        offset = StoreBDofNode((BDofNode*)node);
+        break;
 
-        case tagBSwitchNode:
-            offset = StoreBSwitchNode((BSwitchNode*)node);
-            break;
+    case tagBSwitchNode:
+        offset = StoreBSwitchNode((BSwitchNode*)node);
+        break;
 
-        case tagBSplitterNode:
-            offset = StoreBSplitterNode((BSplitterNode*)node);
-            break;
+    case tagBSplitterNode:
+        offset = StoreBSplitterNode((BSplitterNode*)node);
+        break;
 
-        case tagBPrimitiveNode:
-            offset = StoreBPrimitiveNode((BPrimitiveNode*)node);
-            break;
+    case tagBPrimitiveNode:
+        offset = StoreBPrimitiveNode((BPrimitiveNode*)node);
+        break;
 
-        case tagBLitPrimitiveNode:
-            offset = StoreBLitPrimitiveNode((BLitPrimitiveNode*)node);
-            break;
+    case tagBLitPrimitiveNode:
+        offset = StoreBLitPrimitiveNode((BLitPrimitiveNode*)node);
+        break;
 
-        case tagBCulledPrimitiveNode:
-            offset = StoreBCulledPrimitiveNode((BCulledPrimitiveNode*)node);
-            break;
+    case tagBCulledPrimitiveNode:
+        offset = StoreBCulledPrimitiveNode((BCulledPrimitiveNode*)node);
+        break;
 
-        case tagBLightStringNode:
-            offset = StoreBLightStringNode((BLightStringNode*)node);
-            break;
+    case tagBLightStringNode:
+        offset = StoreBLightStringNode((BLightStringNode*)node);
+        break;
 
-        default:
-            printf("ERROR:  Unrecognized node type.\n");
-            ShiError("Unrecognized node type.");
+    default:
+        printf("ERROR:  Unrecognized node type.\n");
+        ShiError("Unrecognized node type.");
     }
 
     // Store our sibling's offset
@@ -141,7 +141,7 @@ int StoreBNode(BNode *node)
 
 
 // Worker sub-functions
-int StoreBSubTree(BSubTree *node)
+int StoreBSubTree(BSubTree* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -151,14 +151,16 @@ int StoreBSubTree(BSubTree *node)
     node->subTree = (BNode*)StoreBNode(node->subTree);
 
     // Store our tables
-    node->pCoords  = (Ppoint*)Store(node->pCoords,  node->nCoords * sizeof(*node->pCoords));
-    node->pNormals = (Pnormal*)Store(node->pNormals, node->nNormals * sizeof(*node->pCoords));
+    node->pCoords =
+        (Ppoint*)Store(node->pCoords, node->nCoords * sizeof(*node->pCoords));
+    node->pNormals = (Pnormal*)Store(node->pNormals,
+                                     node->nNormals * sizeof(*node->pCoords));
 
     return offset;
 }
 
 
-int StoreBRoot(BRoot *node)
+int StoreBRoot(BRoot* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -168,15 +170,18 @@ int StoreBRoot(BRoot *node)
     node->subTree = (BNode*)StoreBNode(node->subTree);
 
     // Store our tables
-    node->pCoords  = (Ppoint*)Store(node->pCoords,  node->nCoords * sizeof(*node->pCoords));
-    node->pNormals = (Pnormal*)Store(node->pNormals, node->nNormals * sizeof(*node->pCoords));
-    node->pTexIDs  = (int*)Store(node->pTexIDs,  node->nTexIDs * sizeof(*node->pCoords));
+    node->pCoords =
+        (Ppoint*)Store(node->pCoords, node->nCoords * sizeof(*node->pCoords));
+    node->pNormals = (Pnormal*)Store(node->pNormals,
+                                     node->nNormals * sizeof(*node->pCoords));
+    node->pTexIDs =
+        (int*)Store(node->pTexIDs, node->nTexIDs * sizeof(*node->pCoords));
 
     return offset;
 }
 
 
-int StoreBSpecialXform(BSpecialXform *node)
+int StoreBSpecialXform(BSpecialXform* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -186,13 +191,14 @@ int StoreBSpecialXform(BSpecialXform *node)
     node->subTree = (BNode*)StoreBNode(node->subTree);
 
     // Store our tables
-    node->pCoords  = (Ppoint*)Store(node->pCoords,  node->nCoords * sizeof(*node->pCoords));
+    node->pCoords =
+        (Ppoint*)Store(node->pCoords, node->nCoords * sizeof(*node->pCoords));
 
     return offset;
 }
 
 
-int StoreBSlotNode(BSlotNode *node)
+int StoreBSlotNode(BSlotNode* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -202,7 +208,7 @@ int StoreBSlotNode(BSlotNode *node)
 }
 
 
-int StoreBDofNode(BDofNode *node)
+int StoreBDofNode(BDofNode* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -212,24 +218,27 @@ int StoreBDofNode(BDofNode *node)
     node->subTree = (BNode*)StoreBNode(node->subTree);
 
     // Store our tables
-    node->pCoords  = (Ppoint*)Store(node->pCoords,  node->nCoords * sizeof(*node->pCoords));
-    node->pNormals = (Pnormal*)Store(node->pNormals, node->nNormals * sizeof(*node->pNormals));
+    node->pCoords =
+        (Ppoint*)Store(node->pCoords, node->nCoords * sizeof(*node->pCoords));
+    node->pNormals = (Pnormal*)Store(node->pNormals,
+                                     node->nNormals * sizeof(*node->pNormals));
 
     return offset;
 }
 
 
-int StoreBSwitchNode(BSwitchNode *node)
+int StoreBSwitchNode(BSwitchNode* node)
 {
     int subTreesOffset;
-    BSubTree **subTrees;
+    BSubTree** subTrees;
 
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
     node = (BSwitchNode*)PtrFromOffset(offset);
 
     // Store our table of children
-    subTreesOffset = Store(node->subTrees, node->numChildren * sizeof(*node->subTrees));
+    subTreesOffset =
+        Store(node->subTrees, node->numChildren * sizeof(*node->subTrees));
     node->subTrees = (BSubTree**)subTreesOffset;
     subTrees = (BSubTree**)PtrFromOffset(subTreesOffset);
 
@@ -243,7 +252,7 @@ int StoreBSwitchNode(BSwitchNode *node)
 }
 
 
-int StoreBSplitterNode(BSplitterNode *node)
+int StoreBSplitterNode(BSplitterNode* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -257,7 +266,7 @@ int StoreBSplitterNode(BSplitterNode *node)
 }
 
 
-int StoreBPrimitiveNode(BPrimitiveNode *node)
+int StoreBPrimitiveNode(BPrimitiveNode* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -270,7 +279,7 @@ int StoreBPrimitiveNode(BPrimitiveNode *node)
 }
 
 
-int StoreBLitPrimitiveNode(BLitPrimitiveNode *node)
+int StoreBLitPrimitiveNode(BLitPrimitiveNode* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -284,7 +293,7 @@ int StoreBLitPrimitiveNode(BLitPrimitiveNode *node)
 }
 
 
-int StoreBCulledPrimitiveNode(BCulledPrimitiveNode *node)
+int StoreBCulledPrimitiveNode(BCulledPrimitiveNode* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -297,7 +306,7 @@ int StoreBCulledPrimitiveNode(BCulledPrimitiveNode *node)
 }
 
 
-int StoreBLightStringNode(BLightStringNode *node)
+int StoreBLightStringNode(BLightStringNode* node)
 {
     // Copy ourselves into storage, then point to the new copy for pointer updates
     int offset = Store(node, sizeof(*node));
@@ -310,9 +319,9 @@ int StoreBLightStringNode(BLightStringNode *node)
 }
 
 
-int Store(void *src, int size)
+int Store(void* src, int size)
 {
-    void *p = NodeStore;
+    void* p = NodeStore;
 
     if (((BYTE*)NodeStore) + size > NodeStoreBuffer + MAX_NODE_STORE_SIZE)
     {
@@ -348,7 +357,7 @@ void* PtrFromOffset(int offset)
 }
 
 
-int OffsetFromPtr(void *ptr)
+int OffsetFromPtr(void* ptr)
 {
     return (BYTE*)ptr - NodeStoreBuffer;
 }

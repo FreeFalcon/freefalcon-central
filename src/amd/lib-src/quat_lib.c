@@ -34,7 +34,7 @@
 #include "quat.h"
 
 #define M_PI 3.1415927f
-#define HALF_PI (M_PI*0.5f)
+#define HALF_PI (M_PI * 0.5f)
 #define DEG2RAD (M_PI / (360.0f / 2.0f))
 #define RAD2DEG ((360.0f / 2.0f) / M_PI)
 
@@ -71,8 +71,8 @@ void sub_quat(Quat dest, const Quat a, const Quat b)
 void mat2quat(const float m[4][4], Quat quat)
 {
     static int nxt[3] = {1, 2, 0};
-    float  tr, s, q[4];
-    int    i, j, k;
+    float tr, s, q[4];
+    int i, j, k;
 
     tr = m[0][0] + m[1][1] + m[2][2];
 
@@ -91,9 +91,11 @@ void mat2quat(const float m[4][4], Quat quat)
         // diagonal is negative
         i = 0;
 
-        if (m[1][1] > m[0][0]) i = 1;
+        if (m[1][1] > m[0][0])
+            i = 1;
 
-        if (m[2][2] > m[i][i]) i = 2;
+        if (m[2][2] > m[i][i])
+            i = 2;
 
         j = nxt[i];
         k = nxt[j];
@@ -152,9 +154,7 @@ void quat2mat(const Quat quat, float m[4][4])
     m[2][1] = yz + wx;
     m[2][2] = 1.0f - (xx + yy);
     m[2][3] = 0.0f;
-    m[3][0] =
-        m[3][1] =
-            m[3][2] = 0.0f;
+    m[3][0] = m[3][1] = m[3][2] = 0.0f;
     m[3][3] = 1.0f;
 }
 
@@ -185,14 +185,10 @@ void mult_quat(Quat dst, const Quat q1, const Quat q2)
  */
 void norm_quat(Quat dst, const Quat quat)
 {
-    const float quatx = quat[0],
-                quaty = quat[1],
-                quatz = quat[2],
+    const float quatx = quat[0], quaty = quat[1], quatz = quat[2],
                 quatw = quat[3];
-    const float magnitude = 1.0f / ((quatx * quatx) +
-                                    (quaty * quaty) +
-                                    (quatz * quatz) +
-                                    (quatw * quatw));
+    const float magnitude = 1.0f / ((quatx * quatx) + (quaty * quaty) +
+                                    (quatz * quatz) + (quatw * quatw));
 
     dst[0] = quatx * magnitude;
     dst[1] = quaty * magnitude;
@@ -414,9 +410,7 @@ void slerp_quat(const Quat quat1, const Quat quat2, float slerp, Quat result)
     float q2x, q2y, q2z, q2w;
 
     // DOT the quats to get the cosine of the angle between them
-    cosom = quat1[0] * quat2[0] +
-            quat1[1] * quat2[1] +
-            quat1[2] * quat2[2] +
+    cosom = quat1[0] * quat2[0] + quat1[1] * quat2[1] + quat1[2] * quat2[2] +
             quat1[3] * quat2[3];
 
     // Two special cases:
@@ -483,7 +477,7 @@ void trans_quat(float *result, const Quat q, const float *v)
     // c = 2q.w
     float w = q[3]; // just a convenience name
     float a = w * w - (q[0] * q[0] + q[1] * q[1] + q[2] * q[2]);
-    float   b = 2.0f * (q[0] * v[0] + q[1] * v[1] + q[2] * v[2]);
+    float b = 2.0f * (q[0] * v[0] + q[1] * v[1] + q[2] * v[2]);
     float c = 2.0f * w;
 
     // Must store this, because result may alias v

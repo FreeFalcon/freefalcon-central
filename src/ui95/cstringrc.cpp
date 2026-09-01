@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "debuggr.h"
-#include "UI/Include/targa.h"
+#include "ui/include/targa.h"
 #include "chandler.h"
 
 #ifdef _UI95_PARSER_
@@ -11,8 +11,7 @@ enum
     CSTR_ADDTEXT,
 };
 
-char *C_Str_Tokens[] =
-{
+char *C_Str_Tokens[] = {
     "[NOTHING]",
     "[ADDTEXT]",
     0,
@@ -49,11 +48,12 @@ void C_String::Setup(long NumIDs)
     {
         IDSize_ = NumIDs;
 #ifdef USE_SH_POOLS
-        IDTable_ = (long*)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(long) * (IDSize_), FALSE);
+        IDTable_ = (long *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL],
+                                       sizeof(long) * (IDSize_), FALSE);
 #else
         IDTable_ = new long[IDSize_];
 #endif
-        memset(IDTable_, -1, sizeof(long)*IDSize_);
+        memset(IDTable_, -1, sizeof(long) * IDSize_);
     }
 }
 
@@ -84,46 +84,47 @@ BOOL C_String::AddString(long ID, _TCHAR *str)
     long HashID;
 
     if (str == NULL)
-        return(FALSE);
+        return (FALSE);
 
     HashID = Root_->AddText(str);
 
     if (HashID < 0)
-        return(FALSE);
+        return (FALSE);
 
     if (ID < IDSize_)
         IDTable_[ID] = HashID bitor 0x40000000;
 
-    return(TRUE);
+    return (TRUE);
 }
 
 _TCHAR *C_String::GetString(long ID)
 {
-    if (ID < 1) return(NULL);
+    if (ID < 1)
+        return (NULL);
 
     if (ID < IDSize_)
     {
         if (IDTable_[ID] >= 0)
-            return(Root_->FindText(IDTable_[ID] bitand 0x3fffffff));
+            return (Root_->FindText(IDTable_[ID] bitand 0x3fffffff));
     }
     else if (ID > 0)
-        return(Root_->FindText(ID bitand 0x3fffffff));
+        return (Root_->FindText(ID bitand 0x3fffffff));
 
-    return(NULL);
+    return (NULL);
 }
 
 
 long C_String::AddText(const _TCHAR *str)
 {
-    return(Root_->AddText(str) bitor 0x40000000);
+    return (Root_->AddText(str) bitor 0x40000000);
 }
 
 _TCHAR *C_String::GetText(long ID)
 {
     if (ID > 0)
-        return(Root_->FindText(ID bitand 0x3fffffff));
+        return (Root_->FindText(ID bitand 0x3fffffff));
 
-    return(NULL);
+    return (NULL);
 }
 
 #ifdef _UI95_PARSER_
@@ -135,27 +136,27 @@ short C_String::LocalFind(char *token)
     while (C_Str_Tokens[i])
     {
         if (strnicmp(token, C_Str_Tokens[i], strlen(C_Str_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_String::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
 {
     switch (ID)
     {
-        case CSTR_ADDTEXT:
-            LastID_ = -1;
+    case CSTR_ADDTEXT:
+        LastID_ = -1;
 
-            if (P[0] < 0)
-                LastID_ = AddText(str);
-            else
-                AddString(P[0], str);
+        if (P[0] < 0)
+            LastID_ = AddText(str);
+        else
+            AddString(P[0], str);
 
-            break;
+        break;
     }
 }
 

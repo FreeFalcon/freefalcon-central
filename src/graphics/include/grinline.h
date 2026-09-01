@@ -8,7 +8,7 @@
 #include <string.h>
 #include <math.h>
 #include "mathlib/math.h"
-#include "shi/ConvFtoI.h"
+#include "shi/convftoi.h"
 #include "define.h"
 
 #ifdef USE_SH_POOLS
@@ -26,7 +26,8 @@ inline void *glAllocateMemory(int totalbytes, GLint clearit = 1)
     char *buf = new char[totalbytes];
 #endif
 
-    if (buf and clearit) memset(buf, 0, totalbytes);
+    if (buf and clearit)
+        memset(buf, 0, totalbytes);
 
     return buf;
 }
@@ -66,7 +67,7 @@ inline void glReleaseMemory(void *memptr)
 */
 inline GLfloat glConvertToRadian(GLFixed0_14 deg)
 {
-    return (deg * (GLfloat) 0.000383495197f);
+    return (deg * (GLfloat)0.000383495197f);
 } /* glConvertToRadian */
 
 /*
@@ -129,7 +130,6 @@ inline GLFixed0_14 glConvertFromRadian(GLfloat deg)
 } /* glConvertFromRadian */
 
 
-
 inline void glGetFileExtension(const char *file, char *ext)
 {
 #if 0
@@ -142,9 +142,9 @@ inline void glGetFileExtension(const char *file, char *ext)
         currchar = *file++;
         nextchar = *file;
 
-        if (currchar == '.' and 
-            ((prevchar not_eq '.' and prevchar not_eq '\\') or
-             (nextchar not_eq '.' and nextchar not_eq '\\'))) break;
+        if (currchar == '.' and
+            ((prevchar not_eq '.' and prevchar not_eq '\\' and prevchar not_eq '/') or
+             (nextchar not_eq '.' and nextchar not_eq '\\' and nextchar not_eq '/'))) break;
 
         prevchar = currchar;
     }
@@ -172,7 +172,8 @@ inline void glGetFileExtension(const char *file, char *ext)
 
 #endif
 
-    while (*file) *ext++ = *file++;
+    while (*file)
+        *ext++ = *file++;
 
     *ext = 0;
 }

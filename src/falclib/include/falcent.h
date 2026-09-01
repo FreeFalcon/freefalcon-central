@@ -11,20 +11,23 @@
 // Data types and defines
 // ================================
 
-typedef enum { NoMove = 0,
-                Foot,
-                Wheeled,
-                Tracked,
-                LowAir,
-                Air,
-                Naval,
-                Rail,
-                MOVEMENT_TYPES
-             } MoveType;
+typedef enum
+{
+    NoMove = 0,
+    Foot,
+    Wheeled,
+    Tracked,
+    LowAir,
+    Air,
+    Naval,
+    Rail,
+    MOVEMENT_TYPES
+} MoveType;
 
 // Radar Modes
 #define FEC_RADAR_OFF 0x00     // Radar always off
-#define FEC_RADAR_SEARCH_100 0x01     // Search Radar - 100 % of the time (always on)
+#define FEC_RADAR_SEARCH_100                                                   \
+    0x01     // Search Radar - 100 % of the time (always on)
 #define FEC_RADAR_SEARCH_1 0x02     // Search Sequence #1
 #define FEC_RADAR_SEARCH_2 0x03     // Search Sequence #2
 #define FEC_RADAR_SEARCH_3 0x04     // Search Sequence #3
@@ -36,14 +39,19 @@ typedef enum { NoMove = 0,
 #define FEC_PLAYERONLY 0x02 // This entity is only valid if under player control
 #define FEC_HASPLAYERS 0x04 // One or more player is attached to this entity
 #define FEC_REGENERATING 0x08 // This entity is undead.
-#define FEC_PLAYER_ENTERING 0x10 // A player is soon to attach to this aircraft/flight
+#define FEC_PLAYER_ENTERING                                                    \
+    0x10 // A player is soon to attach to this aircraft/flight
 #define FEC_INVULNERABLE 0x20 // This thing can't be destroyed
 
 // localFlags
-#define FELF_ON_PLAYERS_GM_CONTACT_LIST      0x1 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
-#define FELF_ON_PLAYERS_GMT_CONTACT_LIST     0x2 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
-#define FELF_UPDATE_TARGET_LIST_TEMP         0x4 // temporary marker for UpdateTargetList()      
-#define FELF_ADDED_DURING_SIMDRIVER_CYCLE  0x8 // Object was created during SimDriver::Cycle() and did missed having EntityDriver() called (due to hash table)
+#define FELF_ON_PLAYERS_GM_CONTACT_LIST                                        \
+    0x1 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
+#define FELF_ON_PLAYERS_GMT_CONTACT_LIST                                       \
+    0x2 // This object is listed in the players Ground Radar target list // MLR 4/19/2004 - new
+#define FELF_UPDATE_TARGET_LIST_TEMP                                           \
+    0x4 // temporary marker for UpdateTargetList()
+#define FELF_ADDED_DURING_SIMDRIVER_CYCLE                                      \
+    0x8 // Object was created during SimDriver::Cycle() and did missed having EntityDriver() called (due to hash table)
 
 // ================================
 // FalcEntity class
@@ -70,12 +78,15 @@ protected:
     char falconType;
 
 public:
-
-    enum {FalconCampaignEntity = 0x1, FalconSimEntity = 0x2,
-          FalconPersistantEntity = 0x8, FalconSimObjective = 0x20
-         };
+    enum
+    {
+        FalconCampaignEntity = 0x1,
+        FalconSimEntity = 0x2,
+        FalconPersistantEntity = 0x8,
+        FalconSimObjective = 0x20
+    };
     FalconEntity(ushort type, VU_ID_NUMBER eid);
-    FalconEntity(VU_BYTE** stream, long *rem);
+    FalconEntity(VU_BYTE** stream, long* rem);
     FalconEntity(FILE* filePtr);
     int Save(VU_BYTE** stream);
     int Save(FILE* filePtr);
@@ -96,8 +107,8 @@ private:
     void InitLocalData();
     /** cleans up only the local data */
     void CleanupLocalData();
-public:
 
+public:
     virtual bool IsSimBase()
     {
         return false;
@@ -132,7 +143,7 @@ public:
     };
     void SetFalcFlag(int flag)
     {
-        if ( not (falconFlags bitand flag))
+        if (not(falconFlags bitand flag))
         {
             falconFlags or_eq flag;
             MakeFlagsDirty();
@@ -157,30 +168,33 @@ public:
 
     virtual int Wake(void) = 0;
     virtual int Sleep(void) = 0;
-    virtual short GetCampID(void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
-    virtual uchar GetTeam(void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
-    virtual uchar GetCountry(void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
+    virtual short GetCampID(
+        void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
+    virtual uchar GetTeam(
+        void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
+    virtual uchar GetCountry(
+        void) = 0; // { ShiWarning( "Illegal use of FalconEntity" ); return 0; };
     virtual uchar GetDomain(void);
     virtual int GetRadarMode(void)
     {
         return FEC_RADAR_OFF;
     }
     // sfr: modified to uchar
-    virtual void SetRadarMode(uchar) {};
+    virtual void SetRadarMode(uchar){};
     virtual void ReturnToSearch(void) {};
     // sfr: modified to uchar
-    virtual void SetSearchMode(uchar) {};
+    virtual void SetSearchMode(uchar){};
     virtual int CombatClass(void)
     {
-        return 999;    // 2002-02-25 ADDED BY S.G. No combat class for non flight or non aircraft class
+        return 999; // 2002-02-25 ADDED BY S.G. No combat class for non flight or non aircraft class
     }
     virtual int OnGround(void)
     {
         return FALSE;
     }
-    virtual int HasEntity(VuEntity *e) const
+    virtual int HasEntity(VuEntity* e) const
     {
-        return this == e;    // sfr: added for new driver
+        return this == e; // sfr: added for new driver
     }
     virtual int IsMissile(void)
     {
@@ -188,7 +202,7 @@ public:
     }
     virtual int IsLauncher(void)
     {
-        return FALSE;    // MLR 3/4/2004 - rocket pods
+        return FALSE; // MLR 3/4/2004 - rocket pods
     }
     virtual int IsBomb(void)
     {
@@ -333,8 +347,8 @@ public:
     {
         return dirty_score;
     }
-    int EncodeDirty(unsigned char **stream);
-    void DecodeDirty(VU_BYTE **stream, long *size);
+    int EncodeDirty(unsigned char** stream);
+    void DecodeDirty(VU_BYTE** stream, long* size);
 
     // sfr: changed to receive realtime (so we know when to compute)
     // realTime is in ms
@@ -347,10 +361,10 @@ public:
     void MakeFalconEntityDirty(Dirty_Falcon_Entity bits, Dirtyness score);
 
     // 2002-03-22 ADDED BY S.G. Needs them outside of battalion class
-    virtual void SetAQUIREtimer(VU_TIME newTime) { };
-    virtual void SetSEARCHtimer(VU_TIME newTime) { };
+    virtual void SetAQUIREtimer(VU_TIME newTime) {};
+    virtual void SetSEARCHtimer(VU_TIME newTime) {};
     // sfr: modified to uchar
-    virtual void SetStepSearchMode(uchar) { };
+    virtual void SetStepSearchMode(uchar){};
     virtual VU_TIME GetAQUIREtimer(void)
     {
         return 0;
@@ -387,7 +401,7 @@ class SpotEntity : public FalconEntity
 {
 public:
     SpotEntity(ushort type);
-    SpotEntity(VU_BYTE **, long *);
+    SpotEntity(VU_BYTE**, long*);
     virtual float GetVt() const
     {
         return 0;

@@ -6,7 +6,7 @@
 
 enum SFX_TYPES
 {
-    SFX_NOTHING = 0 ,
+    SFX_NOTHING = 0,
     SFX_BIGGUN1,
     SFX_BIGGUN2,
     SFX_BOMBDROP,
@@ -242,25 +242,23 @@ enum SFX_TYPES
 typedef struct SfxDef
 {
     char fileName[64];
-    int   offset;
-    int   length;
-    int   handle;
+    int offset;
+    int length;
+    int handle;
     float maxDistSq;
     float maxVol;
     float minVol;
     float distSq;         // MLR 12/2/2003 - unused
-    int   override;
+    int override;
     unsigned int lastFrameUpdated; // MLR 12/2/2003 - unused
     unsigned int flags;
     float pitchScale;     // MLR 12/2/2003 - unused
     float curPitchScale;  // MLR 12/2/2003 - unused
-    int   soundGroup;
+    int soundGroup;
     //int   majorSymbol, minorSymbol;
-    int   LinkedSoundID, Unused;
+    int LinkedSoundID, Unused;
     float min3ddist;
-    float coneInsideAngle,
-          coneOutsideAngle,
-          coneOutsideVol;
+    float coneInsideAngle, coneOutsideAngle, coneOutsideVol;
 } SFX_DEF_ENTRY;
 
 extern SFX_DEF_ENTRY BuiltinSFX[];
@@ -271,21 +269,28 @@ extern const char *FALCONSNDTABLE;
 
 enum SFX_FLAGS
 {
-    SFX_POSITIONAL   = 0x00000001, // obsolete
-    SFX_POS_LOOPED   = 0x00000002,
-    SFX_POS_EXTERN   = 0x00000004, // external sound that is always attenuated, also attenuated further when heard from inside closed pit
-    SFX_FLAGS_VMS  = 0x00000008, // part of the betty system.
-    SFX_FLAGS_3D  = 0x00000010, // 3d Sound
-    SFX_FLAGS_FREQ  = 0x00000020, // may change frequency
-    SFX_FLAGS_PAN  = 0x00000040, // obsolete // may do panning
-    SFX_FLAGS_HIGH  = 0x00000080, // high priority - assign first
-    SFX_FLAGS_LOW  = 0x00000100, // obsolete // low priority - software only maybe // MLR was same as HIGH?
-    SFX_FLAGS_REVDOP = 0x00000200, // reverses doppler effect - i think this will make the AB soune more realistic
-    SFX_POS_SELF     = 0x00000400, // external sound that originates from self, can be heard at full volume inside, and externally attenuated
-    SFX_POS_INSIDE   = 0x00000800, // sound can only be heard when it originates from self while inside the pit.
-    SFX_FLAGS_CONE   = 0x00001000, // sound has a sound cone - not implemented yet
-    SFX_POS_EXTONLY  = 0x00002000, // external sound is ONLY played when the viewer is outside the pit, or canopy is open
-    SFX_POS_EXTINT   = 0x00004000, // external sound that is ONLY played while in the pit. This, in combination with the above,
+    SFX_POSITIONAL = 0x00000001, // obsolete
+    SFX_POS_LOOPED = 0x00000002,
+    SFX_POS_EXTERN =
+        0x00000004, // external sound that is always attenuated, also attenuated further when heard from inside closed pit
+    SFX_FLAGS_VMS = 0x00000008, // part of the betty system.
+    SFX_FLAGS_3D = 0x00000010, // 3d Sound
+    SFX_FLAGS_FREQ = 0x00000020, // may change frequency
+    SFX_FLAGS_PAN = 0x00000040, // obsolete // may do panning
+    SFX_FLAGS_HIGH = 0x00000080, // high priority - assign first
+    SFX_FLAGS_LOW =
+        0x00000100, // obsolete // low priority - software only maybe // MLR was same as HIGH?
+    SFX_FLAGS_REVDOP =
+        0x00000200, // reverses doppler effect - i think this will make the AB soune more realistic
+    SFX_POS_SELF =
+        0x00000400, // external sound that originates from self, can be heard at full volume inside, and externally attenuated
+    SFX_POS_INSIDE =
+        0x00000800, // sound can only be heard when it originates from self while inside the pit.
+    SFX_FLAGS_CONE = 0x00001000, // sound has a sound cone - not implemented yet
+    SFX_POS_EXTONLY =
+        0x00002000, // external sound is ONLY played when the viewer is outside the pit, or canopy is open
+    SFX_POS_EXTINT =
+        0x00004000, // external sound that is ONLY played while in the pit. This, in combination with the above,
     // will be usefull when a sound needs to be 3d, and sound differently while in the pit.
 };
 

@@ -9,6 +9,9 @@ REM GAMEDIR supplies only the BUILD OUTPUTS / runtime files: FFViper.exe, ffvipe
 REM and the ST80 voice tools (st80conv.exe, st80w.dll). Build a fresh Release first and copy
 REM FFViper.exe there. (FFEmu.hlsl is NOT shipped -- it is baked into the exe as an RCDATA
 REM resource and compiled at runtime, so no external shader file is packaged.)
+REM #DX12 п.5: dxcompiler.dll (DirectX Shader Compiler) must ALSO be in GAMEDIR -- it compiles the
+REM SM6.1 view-instancing shaders at runtime (get it from the Windows SDK bin\x64 or the
+REM Microsoft.Direct3D.DXC NuGet). Absent -> view instancing stays off (per-eye VR still works).
 REM All hand-edited DATA assets (art\setup, art\fonts, art\uiskin, art\ckptart, art\main,
 REM config\) now ship from this installer's own res\ tree -- the MSI is self-contained for
 REM data and does NOT depend on the game dir for those (only GAMEDIR for the exe/cfg/st80).

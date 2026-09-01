@@ -11,19 +11,19 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-#include "CmpGlobl.h"
-#include "ListADT.h"
+#include "cmpglobl.h"
+#include "listadt.h"
 #include "vutypes.h"
-#include "Objectiv.h"
+#include "objectiv.h"
 //#include "Relation.h" JAM 19Sep03 - Does not exist?
-#include "Find.h"
-#include "F4Vu.h"
+#include "find.h"
+#include "f4vu.h"
 #include "strategy.h"
-#include "Path.h"
-#include "ASearch.h"
-#include "Campaign.h"
-#include "Update.h"
-#include "CampList.h"
+#include "path.h"
+#include "asearch.h"
+#include "campaign.h"
+#include "update.h"
+#include "camplist.h"
 #include "squadron.h"
 #include "classtbl.h"
 #include "vu2.h"
@@ -76,8 +76,7 @@ int CompressCampaignUntilTakeoff(Flight flight);
 
 void hookup_toolbar_buttons(C_Window *winme)
 {
-    C_Button
-    *ctrl;
+    C_Button *ctrl;
 
     // Hook up Fly Button
     ctrl = (C_Button *)winme->FindControl(SINGLE_FLY_CTRL);
@@ -91,7 +90,7 @@ void hookup_toolbar_buttons(C_Window *winme)
         ctrl->SetCallback(CampaignButtonCB);
 
     // VC Button
-    ctrl = (C_Button *) winme->FindControl(VC_BUTTON);
+    ctrl = (C_Button *)winme->FindControl(VC_BUTTON);
 
     if (ctrl not_eq NULL)
     {
@@ -99,7 +98,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     }
 
     // ATO Button
-    ctrl = (C_Button *) winme->FindControl(ATO_BUTTON);
+    ctrl = (C_Button *)winme->FindControl(ATO_BUTTON);
 
     if (ctrl)
     {
@@ -107,7 +106,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     }
 
     // OOB Button
-    ctrl = (C_Button *) winme->FindControl(OOB_BUTTON);
+    ctrl = (C_Button *)winme->FindControl(OOB_BUTTON);
 
     if (ctrl)
     {
@@ -115,7 +114,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     }
 
     // Flight Plan Button
-    ctrl = (C_Button *) winme->FindControl(FLIGHT_PLAN_BUTTON);
+    ctrl = (C_Button *)winme->FindControl(FLIGHT_PLAN_BUTTON);
 
     if (ctrl)
     {
@@ -123,7 +122,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     }
 
     // Munitions Button
-    ctrl = (C_Button *) winme->FindControl(MUNITIONS_BUTTON);
+    ctrl = (C_Button *)winme->FindControl(MUNITIONS_BUTTON);
 
     if (ctrl)
     {
@@ -131,7 +130,7 @@ void hookup_toolbar_buttons(C_Window *winme)
     }
 
     // Briefing
-    ctrl = (C_Button *) winme->FindControl(BRIEF_BUTTON);
+    ctrl = (C_Button *)winme->FindControl(BRIEF_BUTTON);
 
     if (ctrl not_eq NULL)
     {
@@ -139,13 +138,12 @@ void hookup_toolbar_buttons(C_Window *winme)
     }
 
     // TacRef
-    ctrl = (C_Button *) winme->FindControl(TACREF_CTRL);
+    ctrl = (C_Button *)winme->FindControl(TACREF_CTRL);
 
     if (ctrl not_eq NULL)
     {
         ctrl->SetCallback(OpenTacticalReferenceCB);
     }
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -240,23 +238,18 @@ static void tactical_oob_button(long, short hittype, C_Base *)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-extern VU_ID
-gSelectedFlightID,
-gActiveFlightID,
-gCurrentFlightID;
+extern VU_ID gSelectedFlightID, gActiveFlightID, gCurrentFlightID;
 
-void UpdateWaypointWindowInfo(C_Window *win, WayPoint wp, int wpnum, int flag = TRUE);
+void UpdateWaypointWindowInfo(C_Window *win, WayPoint wp, int wpnum,
+                              int flag = TRUE);
 
 static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
-    WayPoint
-    wp;
+    WayPoint wp;
 
-    Flight
-    flt;
+    Flight flt;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
     {
@@ -265,7 +258,7 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 
     flt = (Flight)vuDatabase->Find(gCurrentFlightID);
 
-    if ( not flt)
+    if (not flt)
     {
         return;
     }
@@ -274,7 +267,8 @@ static void tactical_flight_plan_button(long, short hittype, C_Base *ctrl)
 
     if (win)
     {
-        if ( not (gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) bitand C_BIT_ENABLED))
+        if (not(gMainHandler->GetWindowFlags(FLIGHT_PLAN_WIN) bitand
+                C_BIT_ENABLED))
         {
             gActiveFlightID = gSelectedFlightID;
 
@@ -317,16 +311,17 @@ static void tactical_briefing_button(long, short hittype, C_Base *ctrl)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    flight = (Flight) vuDatabase->Find(gSelectedFlightID);
+    flight = (Flight)vuDatabase->Find(gSelectedFlightID);
 
-    if ( not flight or not flight->IsFlight())
+    if (not flight or not flight->IsFlight())
         return;
 
     // KCK: This should only need to be called upon selecting a flight -
     // but in edit mode there seems to be close to a zillion ways to select
     // a flight, so I'm just going to redo it every time we look at the briefing -
     // and before flying.
-    TheCampaign.MissionEvaluator->PreMissionEval(flight, FalconLocalSession->GetPilotSlot());
+    TheCampaign.MissionEvaluator->PreMissionEval(
+        flight, FalconLocalSession->GetPilotSlot());
 
     do_tactical_briefing(ctrl);
 }
@@ -427,8 +422,7 @@ int SendStringToPrinter(_TCHAR *str, _TCHAR *title);
 
 void do_tactical_briefing(C_Base *control)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
     win = gMainHandler->FindWindow(BRIEF_WIN);
 
@@ -437,7 +431,7 @@ void do_tactical_briefing(C_Base *control)
         BuildCampBrief(win);
         gMainHandler->EnableWindowGroup(control->GetGroup());
         // JPO - attempt to add handlers for these
-        C_Button *ctrl = (C_Button*)win->FindControl(BRIEF_PRINT);
+        C_Button *ctrl = (C_Button *)win->FindControl(BRIEF_PRINT);
 
         if (ctrl)
             ctrl->SetCallback(tactical_briefing_print);
@@ -451,7 +445,11 @@ static void tactical_briefing_print(long, short hittype, C_Base *ctrl)
 
     _TCHAR string[8192];
     BuildCampBrief(string);
-    SendStringToPrinter(string, "Briefing");
+#ifdef _WIN32
+    SendStringToPrinter(
+        string,
+        "Briefing"); // COM printing (printer.cpp) -- Windows desktop only
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -470,8 +468,7 @@ extern int inMission;
 
 void do_tactical_debrief(void)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
     if (current_tactical_mission->get_type() not_eq tt_training)
     {
@@ -479,19 +476,24 @@ void do_tactical_debrief(void)
 
         // KCK: Added the check for a pilot list so that we don't debrief after a
         // discarded mission
-        if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data and TheCampaign.MissionEvaluator->flight_data->mission not_eq AMIS_TRAINING)
+        if (win and TheCampaign.MissionEvaluator and
+            TheCampaign.MissionEvaluator->flight_data and
+            TheCampaign.MissionEvaluator->flight_data->mission not_eq
+                AMIS_TRAINING)
         {
             BuildCampDebrief(win);
             gMainHandler->EnableWindowGroup(win->GetGroup());
             // JPO - attempt to add handlers for these
-            C_Button *ctrl = (C_Button*)win->FindControl(BRIEF_PRINT);
+            C_Button *ctrl = (C_Button *)win->FindControl(BRIEF_PRINT);
 
             if (ctrl)
                 ctrl->SetCallback(tactical_debriefing_print);
         }
 
 #ifdef FUNKY_KEVIN_DEBUG_STUFF
-        else inMission = 0; // JPO allow training missions to finish in debug mode
+        else
+            inMission =
+                0; // JPO allow training missions to finish in debug mode
 
 #endif
     }
@@ -509,7 +511,11 @@ static void tactical_debriefing_print(long, short hittype, C_Base *ctrl)
 
     _TCHAR string[8192];
     BuildCampDebrief(string);
-    SendStringToPrinter(string, "DeBriefing");
+#ifdef _WIN32
+    SendStringToPrinter(
+        string,
+        "DeBriefing"); // COM printing (printer.cpp) -- Windows desktop only
+#endif
 }
 
 ///////////////////////////////////////////////////////////////////////////////

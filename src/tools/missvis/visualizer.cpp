@@ -1,21 +1,20 @@
 #include <windows.h>
 #include <math.h>
 #include <float.h>
-#include "Utils/Setup.h"
-#include "Utils/TimeMgr.h"
-#include "DDstuff/DevMgr.h"
-#include "Terrain/Tmap.h"
-#include "Weather/WXmap.h"
-#include "Renderer/RViewPnt.h"
-#include "Renderer/RenderWire.h"
-#include "Objects/DrawBSP.h"
-#include "Objects/DrawSgmt.h"
-#include "Texture/TerrTex.h"
-#include "Utils/GraphicsRes.h"
-#include "LineList.h"
-#include "Sim.h"
-#include "DataBase.h"
-
+#include "utils/setup.h"
+#include "utils/timemgr.h"
+#include "ddstuff/devmgr.h"
+#include "terrain/tmap.h"
+#include "weather/wxmap.h"
+#include "renderer/rviewpnt.h"
+#include "renderer/renderwire.h"
+#include "objects/drawbsp.h"
+#include "objects/drawsgmt.h"
+#include "texture/terrtex.h"
+#include "utils/graphicsres.h"
+#include "linelist.h"
+#include "sim.h"
+#include "database.h"
 
 
 /*
@@ -39,17 +38,17 @@ void DrawCallback(DataPoint *dp)
     // Color code with "hasTarget"
     switch (dp->targetState)
     {
-        case 0:
-            TheLineList.AddLine(&p1, &p2, 0xFF004000);
-            break;
+    case 0:
+        TheLineList.AddLine(&p1, &p2, 0xFF004000);
+        break;
 
-        case 1:
-            TheLineList.AddLine(&p1, &p2, 0xFF008000);
-            break;
+    case 1:
+        TheLineList.AddLine(&p1, &p2, 0xFF008000);
+        break;
 
-        case 2:
-            TheLineList.AddLine(&p1, &p2, 0xFF00FF00);
-            break;
+    case 2:
+        TheLineList.AddLine(&p1, &p2, 0xFF00FF00);
+        break;
     }
 
 #if 0
@@ -85,7 +84,8 @@ void Redraw(unsigned startAt, unsigned endBefore)
 /*
  * Initialization, message loop
  */
-int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdshow)
+int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline,
+                   int cmdshow)
 
 {
     MSG msg;
@@ -123,49 +123,55 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
 
     // Get the missile test data
-    TheDataBase.ReadData("C:\\temp\\MissileTrack.bin");
-
+    TheDataBase.ReadData("C:/temp/MissileTrack.bin");
 
 
     /*
     * Read some default info from the registry, then confirm it with the user
     */
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MicroProse\\Falcon\\4.0",
-                 0, KEY_ALL_ACCESS, &theKey);
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MicroProse\\Falcon\\4.0", 0,
+                 KEY_ALL_ACCESS, &theKey);
 
     size = sizeof(terrDir);
 
-    if (RegQueryValueEx(theKey, "FlyerTheaterDir", 0, &type, (LPBYTE)terrDir, &size) != ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "FlyerTheaterDir", 0, &type, (LPBYTE)terrDir,
+                        &size) != ERROR_SUCCESS)
     {
-        if (RegQueryValueEx(theKey, "theaterDir", 0, &type, (LPBYTE)terrDir, &size) != ERROR_SUCCESS)
+        if (RegQueryValueEx(theKey, "theaterDir", 0, &type, (LPBYTE)terrDir,
+                            &size) != ERROR_SUCCESS)
         {
-            strcpy(terrDir, "j:\\terrdata\\Korea3");
+            strcpy(terrDir, "j:/terrdata/Korea3");
         }
     }
 
     size = sizeof(objDir);
 
-    if (RegQueryValueEx(theKey, "FlyerObjectDir", 0, &type, (LPBYTE)objDir, &size) != ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "FlyerObjectDir", 0, &type, (LPBYTE)objDir,
+                        &size) != ERROR_SUCCESS)
     {
-        if (RegQueryValueEx(theKey, "objectDir", 0, &type, (LPBYTE)objDir, &size) != ERROR_SUCCESS)
+        if (RegQueryValueEx(theKey, "objectDir", 0, &type, (LPBYTE)objDir,
+                            &size) != ERROR_SUCCESS)
         {
-            strcpy(objDir, "j:\\terrdata\\ObjectsDummy");
+            strcpy(objDir, "j:/terrdata/ObjectsDummy");
         }
     }
 
     size = sizeof(misctexDir);
 
-    if (RegQueryValueEx(theKey, "FlyerMisctexDir", 0, &type, (LPBYTE)misctexDir, &size) != ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "FlyerMisctexDir", 0, &type, (LPBYTE)misctexDir,
+                        &size) != ERROR_SUCCESS)
     {
-        if (RegQueryValueEx(theKey, "misctexDir", 0, &type, (LPBYTE)misctexDir, &size) != ERROR_SUCCESS)
+        if (RegQueryValueEx(theKey, "misctexDir", 0, &type, (LPBYTE)misctexDir,
+                            &size) != ERROR_SUCCESS)
         {
-            strcpy(misctexDir, "j:\\terrdata\\MiscTex");
+            strcpy(misctexDir, "j:/terrdata/MiscTex");
         }
     }
 
     size = sizeof(screenWidth);
 
-    if (RegQueryValueEx(theKey, "FlyerScreenWidth", 0, &type, (LPBYTE)&screenWidth, &size) != ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "FlyerScreenWidth", 0, &type,
+                        (LPBYTE)&screenWidth, &size) != ERROR_SUCCESS)
     {
         screenWidth = 640;
     }
@@ -175,7 +181,7 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
     // Get the path of the map the user wants to fly over
     OPENFILENAME dialogInfo;
-    sprintf(filename, "%s\\terrain\\Theater", terrDir);
+    sprintf(filename, "%s/terrain/Theater", terrDir);
     dialogInfo.lStructSize = sizeof(dialogInfo);
     dialogInfo.hwndOwner = NULL;
     dialogInfo.hInstance = NULL;
@@ -200,7 +206,7 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
     // Extract the path to the directory two above the one containing the selected file
     // (the "root" of the data tree)
-    char *p = &filename[ strlen(filename) - 1 ];
+    char *p = &filename[strlen(filename) - 1];
 
     while ((*p != ':') && (*p != '\\') && (p != filename))
     {
@@ -224,14 +230,15 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
     *p = '\0';
 
 
-
     /*
     * Initialization and setup
     */
 #if defined(_MSC_VER)
     // Set the FPU to 24 bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
     _controlfp(_RC_CHOP, MCW_RC);
 #endif
@@ -260,14 +267,15 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
     BOOL fullscreen = FALSE;
 #endif
     devmgr.ChooseDevice(&DriverNumber, &DeviceNumber, &screenWidth);
-    device.Setup(DriverNumber, DeviceNumber, screenWidth, screenWidth * 3 / 4, fullscreen);
+    device.Setup(DriverNumber, DeviceNumber, screenWidth, screenWidth * 3 / 4,
+                 fullscreen);
     win = device.GetAppWin();
     image = device.GetImageBuffer();
 
 
     // Setup the terrain, environment, and graphics libraries
     DeviceDependentGraphicsSetup(&device);
-    sprintf(filename, "%s\\weather\\Weather.RAW", terrDir);
+    sprintf(filename, "%s/weather/Weather.RAW", terrDir);
     TheWeather->Load(filename, 1);
 
     // Update the time of day (apply our adjustable skew factor)
@@ -322,87 +330,87 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
             switch (msg.message)
             {
-                case WM_CHAR:
-                    switch (msg.wParam)
+            case WM_CHAR:
+                switch (msg.wParam)
+                {
+                case 'q':
+                    PostQuitMessage(0);
+                    break;
+
+                case 'u':
+                    if (-Sim.position.z > 8000.0f)
                     {
-                        case 'q':
-                            PostQuitMessage(0);
-                            break;
-
-                        case 'u':
-                            if (-Sim.position.z > 8000.0f)
-                            {
-                                Sim.Up(500.0f);
-                            }
-                            else
-                            {
-                                Sim.Up(250.0f);
-                            }
-
-                            break;
-
-                        case 'd':
-                            if (-Sim.position.z > 8000.0f)
-                            {
-                                Sim.Down(500.0f);
-                            }
-                            else
-                            {
-                                Sim.Down(250.0f);
-                            }
-
-                            break;
-
-                        case 'f': // 3D rendererpoint forward (along the ground)
-                            Sim.Forward(3200.0f);
-                            break;
-
-                        case 'b': // 3D rendererpoint backward (along the ground)
-                            Sim.Backward(3200.0f);
-                            break;
-
-                        case 'r': // 3D rendererpoint right (along the ground)
-                            Sim.Rightward(3200.0f);
-                            break;
-
-                        case 'l': // 3D rendererpoint left (along the ground)
-                            Sim.Leftward(3200.0f);
-                            break;
-
-                        case 'L': // Turn text labels on/off
-                            DrawableBSP::drawLabels = !DrawableBSP::drawLabels;
-                            break;
-
-                        case 'S': // Save the Sim state to disk
-                            Sim.Save("SimSave.DAT");
-                            break;
-
-                        case 's': // Restore the Sim state from disk
-                            Sim.Restore("SimSave.DAT");
-                            break;
+                        Sim.Up(500.0f);
+                    }
+                    else
+                    {
+                        Sim.Up(250.0f);
                     }
 
                     break;
 
-                case WM_MOVE:
-                {
-                    RECT rect;
-                    POINT clientOrigin = { 0, 0 };
+                case 'd':
+                    if (-Sim.position.z > 8000.0f)
+                    {
+                        Sim.Down(500.0f);
+                    }
+                    else
+                    {
+                        Sim.Down(250.0f);
+                    }
 
-                    ClientToScreen(win, &clientOrigin);
+                    break;
 
-                    rect.left = clientOrigin.x;
-                    rect.top = clientOrigin.y;
-                    rect.right = rect.left + image->targetXres();
-                    rect.bottom = rect.top + image->targetYres();
+                case 'f': // 3D rendererpoint forward (along the ground)
+                    Sim.Forward(3200.0f);
+                    break;
 
-                    image->UpdateFrontWindowRect(&rect);
+                case 'b': // 3D rendererpoint backward (along the ground)
+                    Sim.Backward(3200.0f);
+                    break;
+
+                case 'r': // 3D rendererpoint right (along the ground)
+                    Sim.Rightward(3200.0f);
+                    break;
+
+                case 'l': // 3D rendererpoint left (along the ground)
+                    Sim.Leftward(3200.0f);
+                    break;
+
+                case 'L': // Turn text labels on/off
+                    DrawableBSP::drawLabels = !DrawableBSP::drawLabels;
+                    break;
+
+                case 'S': // Save the Sim state to disk
+                    Sim.Save("SimSave.DAT");
+                    break;
+
+                case 's': // Restore the Sim state from disk
+                    Sim.Restore("SimSave.DAT");
+                    break;
                 }
+
                 break;
 
-                case WM_QUIT:
-                    done = TRUE;
-                    break;
+            case WM_MOVE:
+            {
+                RECT rect;
+                POINT clientOrigin = {0, 0};
+
+                ClientToScreen(win, &clientOrigin);
+
+                rect.left = clientOrigin.x;
+                rect.top = clientOrigin.y;
+                rect.right = rect.left + image->targetXres();
+                rect.bottom = rect.top + image->targetYres();
+
+                image->UpdateFrontWindowRect(&rect);
+            }
+            break;
+
+            case WM_QUIT:
+                done = TRUE;
+                break;
             }
 
             TranslateMessage(&msg);
@@ -447,11 +455,13 @@ int PASCAL WinMain(HANDLE this_inst, HANDLE prev_inst, LPSTR cmdline, int cmdsho
 
             renderer->SetColor(0xFFFFFFFF);
 
-            sprintf(message, "Range %0.0f  groundZ %0.0f  targetZ %0.0f  missileZ %0.0f",
+            sprintf(message,
+                    "Range %0.0f  groundZ %0.0f  targetZ %0.0f  missileZ %0.0f",
                     record.range, record.groundZ, record.targetZ, record.z);
             renderer->ScreenText(10.0f, 10.0f, message);
 
-            sprintf(message, "yawCmd %0.0f  pitchCmd %0.0f", record.yawCmd, record.pitchCmd);
+            sprintf(message, "yawCmd %0.0f  pitchCmd %0.0f", record.yawCmd,
+                    record.pitchCmd);
             renderer->ScreenText(10.0f, 20.0f, message);
         }
 

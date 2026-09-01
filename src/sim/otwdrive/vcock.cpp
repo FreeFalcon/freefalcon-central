@@ -1,10 +1,10 @@
-#include "Graphics/Include/canvas3d.h"
-#include "Graphics/DXEngine/OpenXRBackend.h"   // VR: HMD head-tracking (independent of TrackIR)
-#include "Graphics/DXEngine/D3D12Backend.h"     // #DX12 A2: neutral eye size (SceneW/H) for the VR hit-test under D3D12
-#include "Graphics/DXEngine/common/IRenderer.h"  // #DX12 A3: neutral g_pRenderer (IRenderer) + full ScreenVertex for the controller model
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/texbank.h"   // PHASE 5: TheTextureBank.WaitUpdates() for synchronous loading of cockpit textures
+#include "graphics/include/canvas3d.h"
+#include "graphics/dxengine/openxrbackend.h" // VR: HMD head-tracking (independent of TrackIR)
+#include "graphics/dxengine/d3d12backend.h" // #DX12 A2: neutral eye size (SceneW/H) for the VR hit-test under D3D12
+#include "graphics/dxengine/common/irenderer.h" // #DX12 A3: neutral g_pRenderer (IRenderer) + full ScreenVertex for the controller model
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/texbank.h" // PHASE 5: TheTextureBank.WaitUpdates() for synchronous loading of cockpit textures
 #include "stdhdr.h"
 #include "soundfx.h"
 #include "fsound.h"
@@ -18,19 +18,19 @@
 #include "mfd.h"
 #include "airframe.h"
 #include "otwdrive.h"
-#include "Graphics/Include/tod.h"
-#include "flightData.h"
+#include "graphics/include/tod.h"
+#include "flightdata.h"
 #include "vdial.h"
 #include "fack.h"
 #include "dofsnswitches.h"
 #include "sinput.h" //Wombat778 10-10-2003  Added for 3d clickable cockpit
 #include "commands.h" //Wombat778 10-10-2003  Added for 3d clickable cockpit
-#include "FakeRand.h"
+#include "fakerand.h"
 #include "cphsi.h"
 
 extern bool g_bUse_DX_Engine; // COBRA - RED
 
-#include "TrackIR.h" // Retro 24Dez2004
+#include "trackir.h" // Retro 24Dez2004
 extern bool g_bEnableTrackIR; // Retro 24Dez2004
 extern bool g_bTrackIRon; // Retro 24Dez2004
 extern bool g_bUse6DOFTir; // Retro 24Dez2004
@@ -38,8 +38,8 @@ extern TrackIR theTrackIRObject; // Retro 24Dez2004
 extern float g_fTIRMinimumFOV; // Cobra
 extern float g_fTIRMaximumFOV; // Cobra
 extern int g_n6DOFTIR; // Cobra
-extern float g_fDefaultFOV;  //Wombat778 10-31-2003
-extern float g_fNarrowFOV;  //Wombat778 2-21-2004
+extern float g_fDefaultFOV; //Wombat778 10-31-2003
+extern float g_fNarrowFOV; //Wombat778 2-21-2004
 extern int narrowFOV;
 
 extern DWORD p3DpitHilite; // Cobra - 3D pit high night lighting color
@@ -50,7 +50,7 @@ extern int curColorIdx;
 #include "missile.h"
 
 //MI for ICP stuff
-extern bool g_bRealisticAvionics ;
+extern bool g_bRealisticAvionics;
 #include "navsystem.h"
 
 //Wombat778 3D Cockpit variables
@@ -62,7 +62,8 @@ extern int FindBestResolution(void); //Wombat778 4-03-04
 // RV - Biker - Theater switching stuff
 extern char FalconCockpitThrDirectory[];
 
-void CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton); //Wombat778 03-06-04
+void CallFunc(InputFunctionType theFunc, unsigned long val, int state,
+              void* pButton); //Wombat778 03-06-04
 
 float resScale = 0.66667f;
 // #7 AA RTT font: display-text size multiplier for the enlarged RTT atlas (1024).
@@ -92,7 +93,8 @@ extern float g_fDyn_Head_TiltGRateMul;
 extern float g_fDyn_Head_RollRate;
 extern float g_fDyn_Head_PanRate;
 
-extern int gameCompressionRatio; //added to know if sim is paused to not do MoveByRate stuff
+extern int
+    gameCompressionRatio; //added to know if sim is paused to not do MoveByRate stuff
 
 extern bool g_bUseNew3dpit;
 extern bool g_bINS;
@@ -116,7 +118,7 @@ static float hILS = -1.1F;
 static float vILS = -1.1F;
 static float hILSneedle = -1.0F;
 static float vILSneedle = -1.0F;
-static long  prevILStime = vuxGameTime;
+static long prevILStime = vuxGameTime;
 
 //HSI To/From flags - evalueated in OTWLOOP.CPP
 extern int HSITOFROM3d;
@@ -129,7 +131,7 @@ float BobbingTilt = 0.0f;
 float BobbingPan = 0.0f;
 //ATARIBABY disabled now - fwd/back lean cause normals problems and i not know solution yet
 //float BobbingAccel = 0.0f;
-static long  BobbingPreviousTime = vuxGameTime;
+static long BobbingPreviousTime = vuxGameTime;
 //ATARIBABY end
 
 // JB 010802
@@ -154,13 +156,14 @@ extern int g_n3DHeadTiltRange; //Wombat778 2-21-2004
 extern void* gSharedMemPtr;
 
 using namespace std;
-extern string RemoveInvalidChars(const string &instr);
+extern string RemoveInvalidChars(const string& instr);
 
 void OTWDriverClass::VCock_CheckStopStates(float dT)
 {
     if (stopState == STOP_STATE0)
     {
-        if ((azDir > 0.0F and eyePan <= PAN_LIMIT * DTR) or (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F and eyePan <= PAN_LIMIT * DTR) or
+            (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
         {
 
             stopState = STOP_STATE1;
@@ -174,7 +177,8 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
     }
     else if (stopState == STOP_STATE1)
     {
-        if ((azDir > 0.0F and eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F and eyePan <= -PAN_LIMIT * DTR) or
+            (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
         {
             stopState = STOP_STATE1;
         }
@@ -189,7 +193,8 @@ void OTWDriverClass::VCock_CheckStopStates(float dT)
     }
     else if (stopState == STOP_STATE2)
     {
-        if ((azDir > 0.0F and eyePan <= -PAN_LIMIT * DTR) or (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
+        if ((azDir > 0.0F and eyePan <= -PAN_LIMIT * DTR) or
+            (azDir < 0.0F and eyePan >= PAN_LIMIT * DTR))
         {
             headMotion = HEAD_TRANSISTION1;
             initialTilt = eyeTilt;
@@ -228,7 +233,7 @@ void OTWDriverClass::VCock_RunNormalMotion(float dT)
 {
     stopState = STOP_STATE0;
 
-    if ( not mUseHeadTracking)
+    if (not mUseHeadTracking)
     {
         eyePan -= azDir * slewRate * 4.0F * dT;
         eyeTilt += elDir * slewRate * 4.0F * dT;
@@ -249,63 +254,71 @@ void OTWDriverClass::VCock_RunNormalMotion(float dT)
         // to be selected as more complete 3d pits get built in the future
         switch (g_n3DHeadPanRange)
         {
-            case 0: //MPS default pan stops
-                eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
-                break;
+        case 0: //MPS default pan stops
+            eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+            break;
 
-            case 1: //Stops removed.  +-180degrees
-                eyePan = min(max(eyePan, -180.0f * DTR), 180.0f * DTR);
-                break;
+        case 1: //Stops removed.  +-180degrees
+            eyePan = min(max(eyePan, -180.0f * DTR), 180.0f * DTR);
+            break;
 
-            case 2: //Wraparound left/right
-                if (eyePan > 180.0f * DTR) eyePan -= 360.0f * DTR;
-                else if (eyePan < -180.0f * DTR) eyePan += 360.0f * DTR;
+        case 2: //Wraparound left/right
+            if (eyePan > 180.0f * DTR)
+                eyePan -= 360.0f * DTR;
+            else if (eyePan < -180.0f * DTR)
+                eyePan += 360.0f * DTR;
 
-                break;
+            break;
 
-            default:
-                eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
-                break;
+        default:
+            eyePan = min(max(eyePan, -PAN_LIMIT * DTR), PAN_LIMIT * DTR);
+            break;
         }
 
         switch (g_n3DHeadTiltRange)
         {
 
-            case 0: //MPS default tilt
-                eyeTilt = min(max(eyeTilt, -140.0F * DTR), 25.0F * DTR);
-                break;
+        case 0: //MPS default tilt
+            eyeTilt = min(max(eyeTilt, -140.0F * DTR), 25.0F * DTR);
+            break;
 
-            case 1: //BMS default tilt.  Takes FOV into account
-                if (GetFOV() < 60.0F * DTR) //Wombat778 10-23-2003  Dont do anything with FOV if it is greater than 60
-                    eyeTilt = min(max(eyeTilt, -140.0F * DTR), (35.0F + ((60.0F - (GetFOV() * RTD))) *
-                                      0.395F) * DTR);
-                else
-                    eyeTilt = min(max(eyeTilt, -140.0F * DTR), 40.0F * DTR);
+        case 1: //BMS default tilt.  Takes FOV into account
+            if (GetFOV() <
+                60.0F *
+                    DTR) //Wombat778 10-23-2003  Dont do anything with FOV if it is greater than 60
+                eyeTilt =
+                    min(max(eyeTilt, -140.0F * DTR),
+                        (35.0F + ((60.0F - (GetFOV() * RTD))) * 0.395F) * DTR);
+            else
+                eyeTilt = min(max(eyeTilt, -140.0F * DTR), 40.0F * DTR);
 
-                break;
+            break;
 
-            case 2: //Significantly expanded tilt range.  Can look 90 degrees down
-                eyeTilt = min(max(eyeTilt, -140.0F * DTR), 90.0F * DTR);
-                break;
+        case 2: //Significantly expanded tilt range.  Can look 90 degrees down
+            eyeTilt = min(max(eyeTilt, -140.0F * DTR), 90.0F * DTR);
+            break;
 
-            case 3: //Full vertical range +- 180 degrees
-                eyeTilt = min(max(eyeTilt, -180.0F * DTR), 180.0F * DTR);
-                break;
+        case 3: //Full vertical range +- 180 degrees
+            eyeTilt = min(max(eyeTilt, -180.0F * DTR), 180.0F * DTR);
+            break;
 
-            case 4: //Wraparound tilt
-                if (eyeTilt > 180.0f * DTR) eyeTilt -= 360.0f * DTR;
-                else if (eyeTilt < -180.0f * DTR) eyeTilt += 360.0f * DTR;
+        case 4: //Wraparound tilt
+            if (eyeTilt > 180.0f * DTR)
+                eyeTilt -= 360.0f * DTR;
+            else if (eyeTilt < -180.0f * DTR)
+                eyeTilt += 360.0f * DTR;
 
-                break;
+            break;
 
-            default:
-                if (GetFOV() < 60.0F * DTR)
-                    eyeTilt = min(max(eyeTilt, -110.0F * DTR),
-                                      (35.0F + ((60.0F - (GetFOV() * RTD))) * 0.395F) * DTR);
-                else
-                    eyeTilt = min(max(eyeTilt, -110.0F * DTR), 35.0F * DTR);
+        default:
+            if (GetFOV() < 60.0F * DTR)
+                eyeTilt =
+                    min(max(eyeTilt, -110.0F * DTR),
+                        (35.0F + ((60.0F - (GetFOV() * RTD))) * 0.395F) * DTR);
+            else
+                eyeTilt = min(max(eyeTilt, -110.0F * DTR), 35.0F * DTR);
 
-                break;
+            break;
         }
 
 
@@ -316,11 +329,18 @@ void OTWDriverClass::VCock_RunNormalMotion(float dT)
         //ATARIBABY added BobbingTilt change to tilt angle checks and branched for look up/down
 
         if (eyeTilt + BobbingTilt < -90.0F * DTR)
-            BuildHeadMatrix(TRUE, YAW_PITCH, (eyePan + 180.0F * DTR) + BobbingPan, -(eyeTilt + 180.0F * DTR) + BobbingTilt, BobbingRollRate);  //ATARIBABY dynamic head added
+            BuildHeadMatrix(TRUE, YAW_PITCH,
+                            (eyePan + 180.0F * DTR) + BobbingPan,
+                            -(eyeTilt + 180.0F * DTR) + BobbingTilt,
+                            BobbingRollRate); //ATARIBABY dynamic head added
         else if (fabs(eyeTilt + BobbingTilt) > 90.0F * DTR)
-            BuildHeadMatrix(TRUE, YAW_PITCH, eyePan + BobbingPan, eyeTilt + BobbingTilt, BobbingRollRate); //ATARIBABY dynamic head added
+            BuildHeadMatrix(TRUE, YAW_PITCH, eyePan + BobbingPan,
+                            eyeTilt + BobbingTilt,
+                            BobbingRollRate); //ATARIBABY dynamic head added
         else
-            BuildHeadMatrix(FALSE, YAW_PITCH, eyePan + BobbingPan, eyeTilt + BobbingTilt, BobbingRollRate); //ATARIBABY dynamic head added
+            BuildHeadMatrix(FALSE, YAW_PITCH, eyePan + BobbingPan,
+                            eyeTilt + BobbingTilt,
+                            BobbingRollRate); //ATARIBABY dynamic head added
 
         //    }
     }
@@ -339,51 +359,53 @@ void OTWDriverClass::VCock_RunNormalMotion(float dT)
 }
 
 
-
 void OTWDriverClass::VCock_Glance(float dT)
 {
     // No glances when using a head tracker
     if (mUseHeadTracking)
         return;
 
-    if (padlockGlance == GlanceNose)   // if player glances forward
+    if (padlockGlance == GlanceNose) // if player glances forward
     {
 
-        if ( not mIsSlewInit)
+        if (not mIsSlewInit)
         {
             mIsSlewInit = TRUE;
             mSlewPStart = eyePan;
             mSlewTStart = eyeTilt;
         }
 
-        PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 5.0F, 0.001F, dT);
+        PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 0.0F, 0.0F, 5.0F, 0.001F,
+                             dT);
     }
-    else if (padlockGlance == GlanceTail)   // if player glances back
+    else if (padlockGlance == GlanceTail) // if player glances back
     {
 
         if (eyePan < 0.0F)
         {
 
-            if ( not mIsSlewInit)
+            if (not mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
                 mSlewPStart = eyePan;
                 mSlewTStart = eyeTilt;
             }
 
-            PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, -180.0F * DTR,  0.0F, 5.0F, 0.001F, dT);
+            PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, -180.0F * DTR, 0.0F,
+                                 5.0F, 0.001F, dT);
         }
         else if (eyePan > 0.0F)
         {
 
-            if ( not mIsSlewInit)
+            if (not mIsSlewInit)
             {
                 mIsSlewInit = TRUE;
                 mSlewPStart = eyePan;
                 mSlewTStart = eyeTilt;
             }
 
-            PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 180.0F * DTR, 0.0F, 5.0F, 0.001F, dT);
+            PadlockF3_SlewCamera(mSlewPStart, mSlewTStart, 180.0F * DTR, 0.0F,
+                                 5.0F, 0.001F, dT);
         }
         else
         {
@@ -395,7 +417,6 @@ void OTWDriverClass::VCock_Glance(float dT)
         padlockGlance = GlanceNone;
     }
 }
-
 
 
 void OTWDriverClass::VCock_GiveGilmanHead(float dT)
@@ -410,7 +431,7 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
     {
         if (headMotion == YAW_PITCH)
         {
-            if (eyePan <= -PAN_LIMIT * DTR or  eyePan >= PAN_LIMIT * DTR)
+            if (eyePan <= -PAN_LIMIT * DTR or eyePan >= PAN_LIMIT * DTR)
             {
                 VCock_CheckStopStates(dT);
             }
@@ -455,7 +476,8 @@ void OTWDriverClass::VCock_GiveGilmanHead(float dT)
         {
 
 
-            if ((snapDir == RTOL or snapDir == LTOR) and ((eyePan >= PAN_LIMIT * DTR) or (eyePan <= -PAN_LIMIT * DTR)))
+            if ((snapDir == RTOL or snapDir == LTOR) and
+                ((eyePan >= PAN_LIMIT * DTR) or (eyePan <= -PAN_LIMIT * DTR)))
             {
                 eyePan -= snapDir * slewRate * 10.0F * dT;
 
@@ -562,39 +584,38 @@ int tBpp = 32;
 //int txRes = 512;
 //int tyRes = 512;
 
-Tpoint vHUDul = { 20.063f , -2.75f, -0.456f };
-Tpoint vHUDur = { 20.063f ,  2.75f, -0.456f };
-Tpoint vHUDll = { 20.063f , -2.75f, 4.633f };
+Tpoint vHUDul = {20.063f, -2.75f, -0.456f};
+Tpoint vHUDur = {20.063f, 2.75f, -0.456f};
+Tpoint vHUDll = {20.063f, -2.75f, 4.633f};
 int tHUDleft = 1; // ASSO:
 int tHUDtop = 1;
 int tHUDright = 430;
 int tHUDbottom = 430;
 
-Tpoint vRWRul = { 18.780f , -4.368f, 5.147f };
-Tpoint vRWRur = { 18.779f , -2.486f, 5.147f };
-Tpoint vRWRll = { 18.676f , -4.368f, 7.018f };
+Tpoint vRWRul = {18.780f, -4.368f, 5.147f};
+Tpoint vRWRur = {18.779f, -2.486f, 5.147f};
+Tpoint vRWRll = {18.676f, -4.368f, 7.018f};
 int tRWRleft = 250; // ASSO:
 int tRWRtop = 500;
 int tRWRright = 430;
 int tRWRbottom = 680;
 
-Tpoint vMACHul = { 21.178f , -1.853f, 8.934f };
-Tpoint vMACHur = { 21.178f , -0.053f, 8.934f };
-Tpoint vMACHll = { 21.085f , -1.853f, 10.732f };
+Tpoint vMACHul = {21.178f, -1.853f, 8.934f};
+Tpoint vMACHur = {21.178f, -0.053f, 8.934f};
+Tpoint vMACHll = {21.085f, -1.853f, 10.732f};
 
 
-
-Tpoint vDEDul = { 18.637f ,  2.577f, 5.180f };
-Tpoint vDEDur = { 18.637f ,  6.777f, 5.180f };
-Tpoint vDEDll = { 18.474f ,  2.577f, 6.165f };
+Tpoint vDEDul = {18.637f, 2.577f, 5.180f};
+Tpoint vDEDur = {18.637f, 6.777f, 5.180f};
+Tpoint vDEDll = {18.474f, 2.577f, 6.165f};
 int tDEDleft = 1; // ASSO:
 int tDEDtop = 500;
 int tDEDright = 200;
 int tDEDbottom = 580;
 
-Tpoint vPFLul = { 18.637f ,  6.577f, 5.180f };
-Tpoint vPFLur = { 18.637f ,  10.777f, 5.180f };
-Tpoint vPFLll = { 18.474f ,  6.577f, 6.165f };
+Tpoint vPFLul = {18.637f, 6.577f, 5.180f};
+Tpoint vPFLur = {18.637f, 10.777f, 5.180f};
+Tpoint vPFLll = {18.474f, 6.577f, 6.165f};
 int tPFLleft = 1; // ASSO:
 int tPFLtop = 600;
 int tPFLright = 200;
@@ -637,41 +658,41 @@ char string16[60] = "";
 
 
 //-------------------------------------------------
-Tpoint vOILul = { 17.990f ,  7.976f, 8.823f };
-Tpoint vOILur = { 17.990f ,  8.676f, 8.823f };
-Tpoint vOILll = { 17.870f ,  7.976f, 9.512f };
+Tpoint vOILul = {17.990f, 7.976f, 8.823f};
+Tpoint vOILur = {17.990f, 8.676f, 8.823f};
+Tpoint vOILll = {17.870f, 7.976f, 9.512f};
 
 int vOILepts = 3;
 float vOILvals[3] = {0.0f, 100.0f, 103.3f};
-float vOILpts[3] = { -0.646f, 0.723f, 0.513f};
+float vOILpts[3] = {-0.646f, 0.723f, 0.513f};
 //-------------------------------------------------
-Tpoint vNOZul = { 17.800f ,  8.076f, 9.906f };
-Tpoint vNOZur = { 17.800f ,  9.076f, 9.906f };
-Tpoint vNOZll = { 17.627f ,  8.076f, 10.891f };
+Tpoint vNOZul = {17.800f, 8.076f, 9.906f};
+Tpoint vNOZur = {17.800f, 9.076f, 9.906f};
+Tpoint vNOZll = {17.627f, 8.076f, 10.891f};
 
 int vNOZepts = 2;
 float vNOZvals[2] = {0.0F, 100.0F};
 float vNOZpts[2] = {0.944F, 2.269F};
 //-------------------------------------------------
-Tpoint vRPMul = { 17.575f ,  8.076f, 11.186f };
-Tpoint vRPMur = { 17.575f ,  9.376f, 11.186f };
-Tpoint vRPMll = { 17.349f ,  8.076f, 12.467f };
+Tpoint vRPMul = {17.575f, 8.076f, 11.186f};
+Tpoint vRPMur = {17.575f, 9.376f, 11.186f};
+Tpoint vRPMll = {17.349f, 8.076f, 12.467f};
 
 int vRPMepts = 4;
 float vRPMvals[4] = {0.0F, 60.0F, 100.0F, 110.0F};
 float vRPMpts[4] = {1.571F, 0.0F, 3.142F, 2.307F};
 //-------------------------------------------------
-Tpoint vFTITul = { 17.226f ,  8.675f, 13.156f };
-Tpoint vFTITur = { 17.226f ,  9.875f, 13.156f };
-Tpoint vFTITll = { 17.017f ,  8.675f, 14.338f };
+Tpoint vFTITul = {17.226f, 8.675f, 13.156f};
+Tpoint vFTITur = {17.226f, 9.875f, 13.156f};
+Tpoint vFTITll = {17.017f, 8.675f, 14.338f};
 
 int vFTITepts = 6;
 float vFTITvals[6] = {2.0F, 6.0F, 8.0F, 9.0F, 10.0F, 12.0F};
-float vFTITpts[6] = { -0.319F, -1.445F, -2.808F, 2.412F, 1.208F, 0.621F};
+float vFTITpts[6] = {-0.319F, -1.445F, -2.808F, 2.412F, 1.208F, 0.621F};
 //-------------------------------------------------
-Tpoint vALTul = { 21.178f ,  0.247f, 8.934f };
-Tpoint vALTur = { 21.178f ,  2.047f, 8.934f };
-Tpoint vALTll = { 21.085f ,  0.239f, 10.732f };
+Tpoint vALTul = {21.178f, 0.247f, 8.934f};
+Tpoint vALTur = {21.178f, 2.047f, 8.934f};
+Tpoint vALTll = {21.085f, 0.239f, 10.732f};
 
 int vALTepts = 2;
 float vALTvals[2] = {0.0F, 1000.0F};
@@ -682,7 +703,8 @@ float vALTpts[2] = {1.57F, 1.571F};
 #include "cpres.h"
 
 // ASSO: new RTT canvas
-bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, int dev)
+bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp,
+                                        int dev)
 {
     Tpoint ul, ur, ll;
     int tLeft, tTop, tRight, tBottom;
@@ -692,7 +714,7 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
     extern bool bRTTTarget;
 
     // Missing rttTarget line in 3dckpit.dat?
-    if ( not bRTTTarget)
+    if (not bRTTTarget)
     {
         // Cobra - Lower screen resolutions need a smaller canvas (font is too small)
         // PHASE: 1024 instead of 512 = ~1:1 RTT atlas (shared by ALL displays:
@@ -701,7 +723,7 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
         // pixels -> DrawRttQuad (bilinear) downscales = antialiasing on all displays.
         // #7 SSAA: a single multiplier for atlas/zones/font (see g_rttSS). Without a gate by
         // resolution -- always supersample. Zone base = 768 (zones are hardcoded for it).
-        resScale       = g_rttSS;
+        resScale = g_rttSS;
         g_rttFontScale = g_rttSS;
         txRes = (int)(768.0f * g_rttSS);
         tyRes = (int)(768.0f * g_rttSS);
@@ -732,46 +754,44 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
     }
     else
     {
-        char *ptoken = FindToken(plinePtr, "=;\n");
+        char* ptoken = FindToken(plinePtr, "=;\n");
 
         if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f %d %d %d %d %c %f",
-                   &ul.x, &ul.y, &ul.z,
-                   &ur.x, &ur.y, &ur.z,
-                   &ll.x, &ll.y, &ll.z,
-                   &tLeft, &tTop, &tRight, &tBottom,
-                   &cBlend, &cAlpha) == 9)
+                   &ul.x, &ul.y, &ul.z, &ur.x, &ur.y, &ur.z, &ll.x, &ll.y,
+                   &ll.z, &tLeft, &tTop, &tRight, &tBottom, &cBlend,
+                   &cAlpha) == 9)
         {
             // no RTT canvas data. Use default.
             switch (dev)
             {
-                case 1: // hud
-                    tLeft = tHUDleft;
-                    tTop = tHUDtop;
-                    tRight = tHUDright;
-                    tBottom = tHUDbottom;
-                    break;
+            case 1: // hud
+                tLeft = tHUDleft;
+                tTop = tHUDtop;
+                tRight = tHUDright;
+                tBottom = tHUDbottom;
+                break;
 
-                case 2: // rwr
-                    tLeft = tRWRleft;
-                    tTop = tRWRtop;
-                    tRight = tRWRright;
-                    tBottom = tRWRbottom;
-                    break;
+            case 2: // rwr
+                tLeft = tRWRleft;
+                tTop = tRWRtop;
+                tRight = tRWRright;
+                tBottom = tRWRbottom;
+                break;
 
-                case 3: // ded
-                    tLeft = tDEDleft;
-                    tTop = tDEDtop;
-                    tRight = tDEDright;
-                    tBottom = tDEDbottom;
-                    break;
+            case 3: // ded
+                tLeft = tDEDleft;
+                tTop = tDEDtop;
+                tRight = tDEDright;
+                tBottom = tDEDbottom;
+                break;
 
-                case 4: // pfl
-                    tLeft = tPFLleft;
-                    tTop = tPFLtop;
-                    tRight = tPFLright;
-                    tBottom = tPFLbottom;
-                    hasPFL = false;
-                    break;
+            case 4: // pfl
+                tLeft = tPFLleft;
+                tTop = tPFLtop;
+                tRight = tPFLright;
+                tBottom = tPFLbottom;
+                hasPFL = false;
+                break;
             }
         }
         else
@@ -805,13 +825,18 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
         // FOV(horizontal) = half-width(Y) / distance(X); FOV(vertical) = half-height(Z) / distance(X).
         // So scale ONLY the Y/Z extents around the glass center, keep X (distance) -> the half-angle
         // grows cleanly by the factor. (Scaling X too would move the glass instead of widening the FOV.)
-        Tpoint lr; lr.y = ur.y + (ll.y - ul.y); lr.z = ur.z + (ll.z - ul.z);
+        Tpoint lr;
+        lr.y = ur.y + (ll.y - ul.y);
+        lr.z = ur.z + (ll.z - ul.z);
         const float cy = (ul.y + ur.y + ll.y + lr.y) * 0.25f;
         const float cz = (ul.z + ur.z + ll.z + lr.z) * 0.25f;
         const float s = g_fHudCanvasScale;
-        ul.y = cy + (ul.y - cy) * s; ul.z = cz + (ul.z - cz) * s;
-        ur.y = cy + (ur.y - cy) * s; ur.z = cz + (ur.z - cz) * s;
-        ll.y = cy + (ll.y - cy) * s; ll.z = cz + (ll.z - cz) * s;
+        ul.y = cy + (ul.y - cy) * s;
+        ul.z = cz + (ul.z - cz) * s;
+        ur.y = cy + (ur.y - cy) * s;
+        ur.z = cz + (ur.z - cz) * s;
+        ll.y = cy + (ll.y - cy) * s;
+        ll.z = cz + (ll.z - cz) * s;
     }
 
     *canvaspp = canvas = new Render2D;
@@ -823,18 +848,16 @@ bool OTWDriverClass::VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, in
 
 
 // ASSO: old canvas
-bool OTWDriverClass::VCock_SetCanvas(char **plinePtr, Canvas3D **canvaspp)
+bool OTWDriverClass::VCock_SetCanvas(char** plinePtr, Canvas3D** canvaspp)
 {
     Tpoint ul, ur, ll;
-    Canvas3D *canvas;
-    char *ptoken = FindToken(plinePtr, "=;\n");
+    Canvas3D* canvas;
+    char* ptoken = FindToken(plinePtr, "=;\n");
 
-    if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f",
-               &ul.x, &ul.y, &ul.z,
-               &ur.x, &ur.y, &ur.z,
-               &ll.x, &ll.y, &ll.z) not_eq 9)
+    if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f", &ul.x, &ul.y, &ul.z, &ur.x,
+               &ur.y, &ur.z, &ll.x, &ll.y, &ll.z) not_eq 9)
     {
-        ShiAssert( not "Failed to parse canvas");
+        ShiAssert(not "Failed to parse canvas");
         *canvaspp = NULL;
         return false;
     }
@@ -842,16 +865,16 @@ bool OTWDriverClass::VCock_SetCanvas(char **plinePtr, Canvas3D **canvaspp)
     *canvaspp = canvas = new Canvas3D;
     canvas->Setup(renderer);
     canvas->SetCanvas(&ul, &ur, &ll);
-    canvas->Update(&Origin, (struct Trotation *)&IMatrix);
+    canvas->Update(&Origin, (struct Trotation*)&IMatrix);
 
     return true;
 }
 
-void
-OTWDriverClass::VCock_ParseVDial(FILE *fp)
+void OTWDriverClass::VCock_ParseVDial(FILE* fp)
 {
     VDialInitStr vdialInitStr;
-    static const char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
+    static const char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b,
+                                       0x0d, 0x0a, 0x09, 0x00};
     int valuesIndex = 0;
     int pointsIndex = 0;
     char plineBuffer[MAX_LINE_BUFFER];
@@ -867,17 +890,21 @@ OTWDriverClass::VCock_ParseVDial(FILE *fp)
     vdialInitStr.ppoints = NULL;
     vdialInitStr.pvalues = NULL;
 
-    while (strcmpi(ptoken, END_MARKER))
+    while (
+        ptoken != NULL and
+        strcmpi(
+            ptoken,
+            END_MARKER)) // #104: NULL token (blank/CRLF line, EOF) ends the block instead of SIGSEGV
     {
 
-        if ( not strcmpi(ptoken, PROP_NUMENDPOINTS_STR))
+        if (not strcmpi(ptoken, PROP_NUMENDPOINTS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &vdialInitStr.endPoints);
             vdialInitStr.ppoints = new float[vdialInitStr.endPoints];
             vdialInitStr.pvalues = new float[vdialInitStr.endPoints];
         }
-        else if ( not strcmpi(ptoken, PROP_POINTS_STR))
+        else if (not strcmpi(ptoken, PROP_POINTS_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
 
@@ -889,7 +916,7 @@ OTWDriverClass::VCock_ParseVDial(FILE *fp)
                 pointsIndex++;
             }
         }
-        else if ( not strcmpi(ptoken, PROP_VALUES_STR))
+        else if (not strcmpi(ptoken, PROP_VALUES_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
 
@@ -901,29 +928,27 @@ OTWDriverClass::VCock_ParseVDial(FILE *fp)
                 valuesIndex++;
             }
         }
-        else if ( not strcmpi(ptoken, PROP_RADIUS0_STR))
+        else if (not strcmpi(ptoken, PROP_RADIUS0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &vdialInitStr.radius);
         }
-        else if ( not strcmpi(ptoken, PROP_COLOR0_STR))
+        else if (not strcmpi(ptoken, PROP_COLOR0_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &vdialInitStr.color);
         }
-        else if ( not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
+        else if (not strcmpi(ptoken, PROP_CALLBACKSLOT_STR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &vdialInitStr.callback);
         }
-        else if ( not strcmpi(ptoken, PROP_DESTLOC_STR))
+        else if (not strcmpi(ptoken, PROP_DESTLOC_STR))
         {
             ptoken = FindToken(&plinePtr, "=;\n");
 
-            if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f",
-                       &ul.x, &ul.y, &ul.z,
-                       &ur.x, &ur.y, &ur.z,
-                       &ll.x, &ll.y, &ll.z) == 9)
+            if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f", &ul.x, &ul.y,
+                       &ul.z, &ur.x, &ur.y, &ur.z, &ll.x, &ll.y, &ll.z) == 9)
             {
                 vdialInitStr.pUL = &ul;
                 vdialInitStr.pUR = &ur;
@@ -932,7 +957,7 @@ OTWDriverClass::VCock_ParseVDial(FILE *fp)
         }
         else
         {
-            F4Assert( not "Unknown Line in dial defn");
+            F4Assert(not "Unknown Line in dial defn");
         }
 
         fgets(plineBuffer, sizeof plineBuffer, fp);
@@ -941,31 +966,34 @@ OTWDriverClass::VCock_ParseVDial(FILE *fp)
     }
 
     vdialInitStr.pRender = renderer;
-    VDial *vdial = new VDial(&vdialInitStr);
+    VDial* vdial = new VDial(&vdialInitStr);
     mpVDials.push_back(vdial);
-    delete [] vdialInitStr.ppoints;
-    delete [] vdialInitStr.pvalues;
+    delete[] vdialInitStr.ppoints;
+    delete[] vdialInitStr.pvalues;
 }
 
-bool
-OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
+bool OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName,
+                                TCHAR* eCPNameNCTR)
 {
     char strCPFile[MAX_PATH];
-    static const TCHAR *pCPFile = "3dckpit.dat";
+    static const TCHAR* pCPFile = "3dckpit.dat";
     CP_HANDLE* pcockpitDataFile;
-    static const char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
+    static const char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b,
+                                       0x0d, 0x0a, 0x09, 0x00};
     extern Tpoint lMFDul, lMFDur, lMFDll;
     extern int ltMFDleft, ltMFDtop, ltMFDright, ltMFDbottom; // ASSO:
     extern char lcMFDblend;
     extern float lcMFDalpha;
     extern Tpoint rMFDul, rMFDur, rMFDll;
-    extern int rtMFDleft, rtMFDtop, rtMFDright, rtMFDbottom; //, txRes, tyRes, tBpp; // ASSO:
+    extern int rtMFDleft, rtMFDtop, rtMFDright,
+        rtMFDbottom; //, txRes, tyRes, tBpp; // ASSO:
     extern char rcMFDblend;
     extern float rcMFDalpha;
     extern bool bRTTTarget;
     int DebugLineNum;
     bool quitFlag = false;
-    g_bUseNew3dpit = false; //Use new 3dpit code - needs new 3d pit model - assume not
+    g_bUseNew3dpit =
+        false; //Use new 3dpit code - needs new 3d pit model - assume not
     bRTTTarget = false; // RTT needs RTT dimensions in 3dckpit.dat
 
     // RV - RED - Init to default value
@@ -976,19 +1004,21 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
 
     // RV - Biker - Use fallback for cockpit path
     //FindCockpit(pCPFile, (Vis_Types)eCPVisType, eCPName, eCPNameNCTR, strCPFile);
-    FindCockpit(pCPFile, (Vis_Types)eCPVisType, eCPName, eCPNameNCTR, strCPFile, TRUE);
+    FindCockpit(pCPFile, (Vis_Types)eCPVisType, eCPName, eCPNameNCTR, strCPFile,
+                TRUE);
 
     pcockpitDataFile = CP_OPEN(strCPFile, "r");
 
     F4Assert(pcockpitDataFile); //Error: Couldn't open file
     DebugLineNum = 0;
 
-    while ( not quitFlag)
+    while (not quitFlag)
     {
         char plineBuffer[MAX_LINE_BUFFER];
         char *plinePtr, *ptoken;
-        char *presult = fgets(plineBuffer, sizeof plineBuffer, pcockpitDataFile);
-        DebugLineNum ++;
+        char* presult =
+            fgets(plineBuffer, sizeof plineBuffer, pcockpitDataFile);
+        DebugLineNum++;
         quitFlag = (presult == NULL);
 
         if (quitFlag or *plineBuffer == '/' or *plineBuffer == '\n')
@@ -997,13 +1027,18 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
         plinePtr = plineBuffer;
         ptoken = FindToken(&plinePtr, pseparators);
 
+        // #104 (Linux): FindToken returns NULL for a line that is empty or all separators. 3dckpit.dat
+        // is CRLF, and the blank-line skip above only tests '\n' (not '\r'), so a bare "\r\n" line fell
+        // through here with ptoken == NULL -> strcmpi(NULL, ...) SIGSEGV. Skip any tokenless line.
+        if (ptoken == NULL)
+            continue;
+
         // ASSO:
-        if ( not strcmpi(ptoken, PROP_3D_RTTTARGET))    // the rttTarget :
+        if (not strcmpi(ptoken, PROP_3D_RTTTARGET)) // the rttTarget :
         {
             ptoken = FindToken(&plinePtr, "=;\n");
 
-            if (sscanf(ptoken, "%d %d %d",
-                       &txRes, &tyRes, &tBpp) >= 2)
+            if (sscanf(ptoken, "%d %d %d", &txRes, &tyRes, &tBpp) >= 2)
             {
                 // Cobra - Lower screen resolutions need a smaller canvas (font is too small)
                 // PHASE: 1024 = RTT atlas ~1:1 (antialiasing of all displays), see
@@ -1016,7 +1051,7 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
                 // #7 SSAA (variant 2): supersample the atlas by a single multiplier g_rttSS, as in
                 // VCock_SetRttCanvas. Zone base = 768; atlas = 768*SS; zones/font *SS. All three
                 // consistent -> apparent size preserved, AA via the bilinear downscale of DrawRttQuad.
-                resScale       = g_rttSS;
+                resScale = g_rttSS;
                 g_rttFontScale = g_rttSS;
                 txRes = (int)(768.0f * g_rttSS);
                 tyRes = (int)(768.0f * g_rttSS);
@@ -1025,48 +1060,48 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
                 bRTTTarget = true;
             }
         }
-        else if ( not strcmpi(ptoken, PROP_HUD_STR))   // the hud
+        else if (not strcmpi(ptoken, PROP_HUD_STR)) // the hud
         {
-            if ( not VCock_SetRttCanvas(&plinePtr, &vHUDrenderer, 1))    // ASSO:
+            if (not VCock_SetRttCanvas(&plinePtr, &vHUDrenderer, 1)) // ASSO:
             {
 
                 plinePtr = plinePtr; // Release mode compile warning
                 F4Assert("Bad HUD description");
             }
         }
-        else if ( not strcmpi(ptoken, PROP_RWR_STR))   //  the rwr
+        else if (not strcmpi(ptoken, PROP_RWR_STR)) //  the rwr
         {
-            if ( not VCock_SetRttCanvas(&plinePtr, &vRWRrenderer, 2))   // ASSO:
+            if (not VCock_SetRttCanvas(&plinePtr, &vRWRrenderer, 2)) // ASSO:
             {
                 plinePtr = plinePtr; // Release mode compile warning
                 F4Assert("Bad RWR description");
             }
         }
-        else if ( not strcmpi(ptoken, TYPE_DED_STR))   //  the ded
+        else if (not strcmpi(ptoken, TYPE_DED_STR)) //  the ded
         {
-            if ( not VCock_SetRttCanvas(&plinePtr, &vDEDrenderer, 3))   // ASSO:
+            if (not VCock_SetRttCanvas(&plinePtr, &vDEDrenderer, 3)) // ASSO:
             {
                 plinePtr = plinePtr; // Release mode compile warning
                 F4Assert("Bad DED description");
             }
         }
-        else if ( not strcmpi(ptoken, PROP_DED_PFL))   //  the pfl
+        else if (not strcmpi(ptoken, PROP_DED_PFL)) //  the pfl
         {
-            if ( not VCock_SetRttCanvas(&plinePtr, &vPFLrenderer, 4))   // ASSO:
+            if (not VCock_SetRttCanvas(&plinePtr, &vPFLrenderer, 4)) // ASSO:
             {
                 plinePtr = plinePtr; // Release mode compile warning
                 F4Assert("Bad PFL description");
             }
         }
-        else if ( not strcmpi(ptoken, TYPE_MACHASI_STR))   //  the rwr
+        else if (not strcmpi(ptoken, TYPE_MACHASI_STR)) //  the rwr
         {
-            if ( not VCock_SetCanvas(&plinePtr, &vcInfo.vMACHrenderer))
+            if (not VCock_SetCanvas(&plinePtr, &vcInfo.vMACHrenderer))
             {
                 plinePtr = plinePtr; // Release mode compile warning
                 F4Assert("Bad MACH description");
             }
         }
-        else if ( not strcmpi(ptoken, PROP_MFDLEFT_STR))  // left MFD
+        else if (not strcmpi(ptoken, PROP_MFDLEFT_STR)) // left MFD
         {
             Tpoint ul, ur, ll;
             int tLeft, tTop, tRight, tBottom; // ASSO:
@@ -1075,11 +1110,9 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
             ptoken = FindToken(&plinePtr, "=;\n");
 
             if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f %d %d %d %d %c %f",
-                       &ul.x, &ul.y, &ul.z,
-                       &ur.x, &ur.y, &ur.z,
-                       &ll.x, &ll.y, &ll.z,
-                       &tLeft, &tTop, &tRight, &tBottom,
-                       &cBlend, &cAlpha) == 9)
+                       &ul.x, &ul.y, &ul.z, &ur.x, &ur.y, &ur.z, &ll.x, &ll.y,
+                       &ll.z, &tLeft, &tTop, &tRight, &tBottom, &cBlend,
+                       &cAlpha) == 9)
             {
                 tLeft = tlMFDleft;
                 tTop = tlMFDtop;
@@ -1110,7 +1143,7 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
             lcMFDblend = cBlend;
             lcMFDalpha = cAlpha;
         }
-        else if ( not strcmpi(ptoken, PROP_MFDRIGHT_STR))  // right MFD
+        else if (not strcmpi(ptoken, PROP_MFDRIGHT_STR)) // right MFD
         {
             Tpoint ul, ur, ll;
             int tLeft, tTop, tRight, tBottom; // ASSO:
@@ -1119,11 +1152,9 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
             ptoken = FindToken(&plinePtr, "=;\n");
 
             if (sscanf(ptoken, "%f %f %f %f %f %f %f %f %f %d %d %d %d %c %f",
-                       &ul.x, &ul.y, &ul.z,
-                       &ur.x, &ur.y, &ur.z,
-                       &ll.x, &ll.y, &ll.z,
-                       &tLeft, &tTop, &tRight, &tBottom,
-                       &cBlend, &cAlpha) == 9)
+                       &ul.x, &ul.y, &ul.z, &ur.x, &ur.y, &ur.z, &ll.x, &ll.y,
+                       &ll.z, &tLeft, &tTop, &tRight, &tBottom, &cBlend,
+                       &cAlpha) == 9)
             {
                 tLeft = trMFDleft;
                 tTop = trMFDtop;
@@ -1154,111 +1185,111 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
             rcMFDblend = cBlend;
             rcMFDalpha = cAlpha;
         }
-        else if ( not strcmpi(ptoken, TYPE_DIAL_STR))
+        else if (not strcmpi(ptoken, TYPE_DIAL_STR))
         {
             VCock_ParseVDial(pcockpitDataFile);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_PADBACKGROUND))
+        else if (not strcmpi(ptoken, PROP_3D_PADBACKGROUND))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][0]);
             pVColors[1][0] = CalculateNVGColor(pVColors[0][0]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_PADLIFTLINE))
+        else if (not strcmpi(ptoken, PROP_3D_PADLIFTLINE))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][1]);
             pVColors[1][1] = CalculateNVGColor(pVColors[0][1]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_PADBOXSIDE))
+        else if (not strcmpi(ptoken, PROP_3D_PADBOXSIDE))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][2]);
             pVColors[1][2] = CalculateNVGColor(pVColors[0][2]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_PADBOXTOP))
+        else if (not strcmpi(ptoken, PROP_3D_PADBOXTOP))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][3]);
             pVColors[1][3] = CalculateNVGColor(pVColors[0][3]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_PADTICK))
+        else if (not strcmpi(ptoken, PROP_3D_PADTICK))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][4]);
             pVColors[1][4] = CalculateNVGColor(pVColors[0][4]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_NEEDLE0))
+        else if (not strcmpi(ptoken, PROP_3D_NEEDLE0))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][5]);
             pVColors[1][5] = CalculateNVGColor(pVColors[0][5]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_NEEDLE1))
+        else if (not strcmpi(ptoken, PROP_3D_NEEDLE1))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][6]);
             pVColors[1][6] = CalculateNVGColor(pVColors[0][6]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_DED))
+        else if (not strcmpi(ptoken, PROP_3D_DED))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][7]);
             pVColors[1][7] = CalculateNVGColor(pVColors[0][7]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_RWR))
+        else if (not strcmpi(ptoken, PROP_3D_RWR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &pVColors[0][8]);
             pVColors[1][8] = CalculateNVGColor(pVColors[0][8]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_HILIGHT))
+        else if (not strcmpi(ptoken, PROP_3D_HILIGHT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &p3DpitHilite);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_LOLIGHT))
+        else if (not strcmpi(ptoken, PROP_3D_LOLIGHT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &p3DpitLolite);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_COCKPIT))
+        else if (not strcmpi(ptoken, PROP_3D_COCKPIT))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &vrCockpitModel[0]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_COCKPITDF))
+        else if (not strcmpi(ptoken, PROP_3D_COCKPITDF))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &vrCockpitModel[1]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_MAINMODEL))
+        else if (not strcmpi(ptoken, PROP_3D_MAINMODEL))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &vrCockpitModel[2]);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_DAMAGEDMODEL))
+        else if (not strcmpi(ptoken, PROP_3D_DAMAGEDMODEL))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &vrCockpitModel[3]);
         }
         //JAM 10May04
-        else if ( not strcmpi(ptoken, PROP_3D_ZBUFFERING))
+        else if (not strcmpi(ptoken, PROP_3D_ZBUFFERING))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%d", &bVCockZBuffering);
         }
-        else if ( not strcmpi(ptoken, PROP_LIFT_LINE_COLOR))
+        else if (not strcmpi(ptoken, PROP_LIFT_LINE_COLOR))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%lx", &liftlinecolor);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_BORESIGHT_Y))
+        else if (not strcmpi(ptoken, PROP_3D_BORESIGHT_Y))
         {
             ptoken = FindToken(&plinePtr, pseparators);
             sscanf(ptoken, "%f", &vBoresightY);
         }
-        else if ( not strcmpi(ptoken, PROP_3D_USE_NEW_3DPIT))
+        else if (not strcmpi(ptoken, PROP_3D_USE_NEW_3DPIT))
         {
             int bset = 0;
             ptoken = FindToken(&plinePtr, pseparators);
@@ -1268,18 +1299,17 @@ OTWDriverClass::VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
                 g_bUseNew3dpit = true;
             else
                 g_bUseNew3dpit = false;
-
         }
         else
         {
-            F4Assert( not "Unknown Line in 3dfile");
+            F4Assert(not "Unknown Line in 3dfile");
         }
     }
 
     // Check for missing PFL RTT data
-    if ( not vPFLrenderer)
+    if (not vPFLrenderer)
     {
-        if ( not VCock_SetRttCanvas(NULL, &vPFLrenderer, 6))
+        if (not VCock_SetRttCanvas(NULL, &vPFLrenderer, 6))
         {
             // ASSO:
             F4Assert("Bad PFL description");
@@ -1419,7 +1449,8 @@ float OTWDriverClass::MoveByRate(float oldval, float newval, float rate)
     float changeval;
     float value = oldval;
 
-    if (value == newval or not gameCompressionRatio) return value; // all done
+    if (value == newval or not gameCompressionRatio)
+        return value; // all done
 
     changeval = rate * DTR * SimLibMajorFrameTime;
 
@@ -1446,7 +1477,6 @@ float OTWDriverClass::MoveByRate(float oldval, float newval, float rate)
 }
 
 
-
 // COBRA DX - Red - Head is calculated once for all
 void OTWDriverClass::VCock_HeadCalc(void)
 {
@@ -1457,7 +1487,8 @@ void OTWDriverClass::VCock_HeadCalc(void)
         if (g_n6DOFTIR == 1)
         {
             Tpoint Pan;
-            Pan.x = theTrackIRObject.getZ() / 16383.0f * -1.25f; // Cobra - changed from +/-4' to +/-1.75'
+            Pan.x = theTrackIRObject.getZ() / 16383.0f *
+                    -1.25f; // Cobra - changed from +/-4' to +/-1.75'
             Pan.y = theTrackIRObject.getX() / 16383.0f * -0.50f;
             Pan.z = theTrackIRObject.getY() / 16383.0f * -0.75f;
 
@@ -1467,7 +1498,8 @@ void OTWDriverClass::VCock_HeadCalc(void)
                 MatrixMult(&headMatrix, &Pan, &headPan);
                 MatrixMult(&OTWDriver.ownshipRot, &headPan, &headOrigin);
             }
-            else headOrigin = headPan;
+            else
+                headOrigin = headPan;
         }
         else // g_n6DOFTIR = 2 - Hold Viewpoint at 0,0,0 and use FOV zoom for forward/back movement - Cobra
         {
@@ -1498,7 +1530,8 @@ void OTWDriverClass::VCock_HeadCalc(void)
         //ATARIBABY start new dynamic head movement more like old DID EF2000 days :-)
         if (g_b3dDynamicPilotHead)
         {
-            float actualtilt = 0.0f;	// FIX: assigned only when dt!=0, else RTC uninitialized
+            float actualtilt =
+                0.0f; // FIX: assigned only when dt!=0, else RTC uninitialized
             float actualrollrate = 0.0f;
             float actualpan = 0.0f;
             //ATARIBABY disabled now - fwd/back lean cause normals problems and i not know solution yet
@@ -1516,13 +1549,15 @@ void OTWDriverClass::VCock_HeadCalc(void)
                 //actualaccel = -SimDriver.GetPlayerAircraft()->af->nxcgb;
 
                 //compute actual tilt change
-                actualtilt = ((cockpitFlightData.gs - 1.0F) * 0.015F) * g_fDyn_Head_TiltMul;
+                actualtilt = ((cockpitFlightData.gs - 1.0F) * 0.015F) *
+                             g_fDyn_Head_TiltMul;
                 // with higher Gs add more random shaking
                 int gs = (int)cockpitFlightData.gs;
                 gs = gs - 1;
 
                 if (gs not_eq 0)
-                    actualtilt = actualtilt + (((rand() % gs) / 2000.0F) * g_fDyn_Head_TiltRndGMul);
+                    actualtilt = actualtilt + (((rand() % gs) / 2000.0F) *
+                                               g_fDyn_Head_TiltRndGMul);
                 else
                     actualtilt = 0;
 
@@ -1530,18 +1565,22 @@ void OTWDriverClass::VCock_HeadCalc(void)
                 actualrollrate = cockpitFlightData.roll - BobbingPreviousRoll;
 
                 if (actualrollrate > PI)
-                    actualrollrate = -(PI - cockpitFlightData.roll + PI + BobbingPreviousRoll);
+                    actualrollrate = -(PI - cockpitFlightData.roll + PI +
+                                       BobbingPreviousRoll);
                 else if (actualrollrate < -PI)
-                    actualrollrate = PI + cockpitFlightData.roll + PI - BobbingPreviousRoll;
+                    actualrollrate =
+                        PI + cockpitFlightData.roll + PI - BobbingPreviousRoll;
 
                 actualrollrate = (actualrollrate * 0.15F) * g_fDyn_Head_RollMul;
                 //compute actual pan
                 actualpan = cockpitFlightData.yaw - BobbingPreviousPan;
 
                 if (actualpan > PI)
-                    actualpan = -(PI - cockpitFlightData.yaw + PI + BobbingPreviousPan);
+                    actualpan =
+                        -(PI - cockpitFlightData.yaw + PI + BobbingPreviousPan);
                 else if (actualpan < -PI)
-                    actualpan = PI + cockpitFlightData.yaw + PI - BobbingPreviousPan;
+                    actualpan =
+                        PI + cockpitFlightData.yaw + PI - BobbingPreviousPan;
 
                 actualpan = actualpan * g_fDyn_Head_PanMul;
 
@@ -1569,11 +1608,19 @@ void OTWDriverClass::VCock_HeadCalc(void)
             BobbingPreviousPan = cockpitFlightData.yaw;
 
             //better execution
-            BobbingTilt = MoveByRate(BobbingTilt, actualtilt, ((abs(cockpitFlightData.gs) + 1.0F) * g_fDyn_Head_TiltGRateMul) * g_fDyn_Head_TiltRateMul); //tilt rate is G's sensitive
+            BobbingTilt = MoveByRate(
+                BobbingTilt, actualtilt,
+                ((abs(cockpitFlightData.gs) + 1.0F) *
+                 g_fDyn_Head_TiltGRateMul) *
+                    g_fDyn_Head_TiltRateMul); //tilt rate is G's sensitive
             BobbingTilt = max(-0.13F, min(0.13f, BobbingTilt));
-            BobbingRollRate = MoveByRate(BobbingRollRate, actualrollrate, g_fDyn_Head_RollRate); //change this to alter roll speed
+            BobbingRollRate = MoveByRate(
+                BobbingRollRate, actualrollrate,
+                g_fDyn_Head_RollRate); //change this to alter roll speed
             BobbingRollRate = max(-0.08F, min(0.08f, BobbingRollRate));
-            BobbingPan = MoveByRate(BobbingPan, actualpan, g_fDyn_Head_PanRate); //change this to alter pan speed
+            BobbingPan = MoveByRate(
+                BobbingPan, actualpan,
+                g_fDyn_Head_PanRate); //change this to alter pan speed
             BobbingPan = max(-0.10F, min(0.10f, BobbingPan));
             //ATARIBABY disabled now - fwd/back lean cause normals problems and i not know solution yet
             //BobbingAccel = MoveByRate(BobbingAccel,actualaccel, 30.0f); //change this to alter accel speed
@@ -1596,7 +1643,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
 
 
     // COBRA - RED - Introduced Airframe Vibrations
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC)
     {
@@ -1651,9 +1698,15 @@ void OTWDriverClass::VCock_HeadCalc(void)
             bool gotBasis = g_pOpenXRBackend->GetHeadBasis(hAt, hRt, hUp);
             if (gotBasis)
             {
-                headMatrix.M11 = hAt[0]; headMatrix.M21 = hAt[1]; headMatrix.M31 = hAt[2];
-                headMatrix.M12 = hRt[0]; headMatrix.M22 = hRt[1]; headMatrix.M32 = hRt[2];
-                headMatrix.M13 = hUp[0]; headMatrix.M23 = hUp[1]; headMatrix.M33 = hUp[2];
+                headMatrix.M11 = hAt[0];
+                headMatrix.M21 = hAt[1];
+                headMatrix.M31 = hAt[2];
+                headMatrix.M12 = hRt[0];
+                headMatrix.M22 = hRt[1];
+                headMatrix.M32 = hRt[2];
+                headMatrix.M13 = hUp[0];
+                headMatrix.M23 = hUp[1];
+                headMatrix.M33 = hUp[2];
             }
             else
                 BuildHeadMatrix(FALSE, YAW_PITCH, eyePan, eyeTilt, eyeHeadRoll);
@@ -1673,14 +1726,27 @@ void OTWDriverClass::VCock_HeadCalc(void)
             // panels already comes from the camera eyepoint (headOrigin gets the IPD). So: head lean ->
             // headPan + headOrigin (displays follow lean); IPD -> headOrigin ONLY (camera parallax, no
             // 10x display divergence).
-            Tpoint posHead; posHead.x = posHead.y = posHead.z = 0.0f;   // head translation (lean)
+            Tpoint posHead;
+            posHead.x = posHead.y = posHead.z = 0.0f; // head translation (lean)
             float hpf, hpr, hpd;
-            if (g_pOpenXRBackend->GetHeadPosFeet(&hpf, &hpr, &hpd)) { posHead.x += hpf; posHead.y += hpr; posHead.z += hpd; }
-            Tpoint posCam = posHead;                                    // camera also gets the IPD
-            if (xeye >= 0) posCam.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(xeye);  // IPD on body right axis
-            headPan.x += posHead.x; headPan.y += posHead.y; headPan.z += posHead.z;       // displays: lean only
-            Tpoint posW; MatrixMult(&OTWDriver.ownshipRot, &posCam, &posW);
-            headOrigin.x += posW.x; headOrigin.y += posW.y; headOrigin.z += posW.z;        // camera: lean + IPD
+            if (g_pOpenXRBackend->GetHeadPosFeet(&hpf, &hpr, &hpd))
+            {
+                posHead.x += hpf;
+                posHead.y += hpr;
+                posHead.z += hpd;
+            }
+            Tpoint posCam = posHead; // camera also gets the IPD
+            if (xeye >= 0)
+                posCam.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(
+                    xeye); // IPD on body right axis
+            headPan.x += posHead.x;
+            headPan.y += posHead.y;
+            headPan.z += posHead.z; // displays: lean only
+            Tpoint posW;
+            MatrixMult(&OTWDriver.ownshipRot, &posCam, &posW);
+            headOrigin.x += posW.x;
+            headOrigin.y += posW.y;
+            headOrigin.z += posW.z; // camera: lean + IPD
         }
     }
 }
@@ -1689,7 +1755,7 @@ void OTWDriverClass::VCock_HeadCalc(void)
 void OTWDriverClass::CockAttachWeapons(void)
 {
     int stationNum;
-    SMSClass *sms = SimDriver.GetPlayerAircraft()->Sms;
+    SMSClass* sms = SimDriver.GetPlayerAircraft()->Sms;
     DrawableBSP* child;
 
     for (stationNum = 1; stationNum < sms->NumHardpoints(); stationNum++)
@@ -1697,7 +1763,8 @@ void OTWDriverClass::CockAttachWeapons(void)
         // MLR 2/20/2004 - new rack code, compatible with SP3 still
         child = sms->hardPoint[stationNum]->GetTopDrawable();
 
-        if (child) vrCockpit->AttachChild(child, stationNum - 1);
+        if (child)
+            vrCockpit->AttachChild(child, stationNum - 1);
     }
 }
 
@@ -1705,7 +1772,7 @@ void OTWDriverClass::CockAttachWeapons(void)
 void OTWDriverClass::CockDetachWeapons(void)
 {
     int stationNum;
-    SMSClass *sms = SimDriver.GetPlayerAircraft()->Sms;
+    SMSClass* sms = SimDriver.GetPlayerAircraft()->Sms;
     DrawableBSP* child;
 
     for (stationNum = 1; stationNum < sms->NumHardpoints(); stationNum++)
@@ -1713,7 +1780,8 @@ void OTWDriverClass::CockDetachWeapons(void)
         // MLR 2/20/2004 - new rack code, compatible with SP3 still
         child = sms->hardPoint[stationNum]->GetTopDrawable();
 
-        if (child) vrCockpit->DetachChild(child, stationNum - 1);
+        if (child)
+            vrCockpit->DetachChild(child, stationNum - 1);
     }
 }
 
@@ -1736,7 +1804,6 @@ void OTWDriverClass::VCock_DrawThePit(void)
 }
 
 
-
 /*
 ** DoVirtualCockpit
 */
@@ -1757,18 +1824,18 @@ float CXX = 1.0f, CXY = 1.0f;
 // feet), so we anchor to a KNOWN button position instead of unprojecting the mouse at a guessed depth.
 // This same primitive (ray -> nearest button -> 3D point) will drive Touch-controller aiming later,
 // fed by the controller aim pose instead of the mouse ray.
-Tpoint g_vrCursorAnchor = { 0.0f, 0.0f, 0.0f };
-bool   g_vrCursorAnchorValid = false;
+Tpoint g_vrCursorAnchor = {0.0f, 0.0f, 0.0f};
+bool g_vrCursorAnchorValid = false;
 // Artscout - 2026 (VR mouse): true when the anchor is SNAPPED to a real button (exact depth) vs a FREE
 // cursor at a guessed panel depth. The free cursor is only safe in the full-FOV periphery views; in the
 // zoomed gaze/focus views its depth-guess stereo error is magnified (jumps, eye mismatch), so otwloop
 // draws the free cursor in periphery only and the snapped cursor (correct depth) in all views.
-bool   g_vrCursorAnchorSnapped = false;
+bool g_vrCursorAnchorSnapped = false;
 // Artscout - 2026 (VR mouse): index of the button the cursor is magnetically snapped to (the GREEN one).
 // On click we fire THIS button directly instead of re-projecting in the click loop -- the click happens
 // while the mouse is still, a frame or two after the last hover, by which time the gaze/camera has moved
 // and a fresh projection lands elsewhere (ey way off). Firing the snapped button = clicking what you see.
-int    g_vrCursorAnchorButton = -1;
+int g_vrCursorAnchorButton = -1;
 
 // Artscout - 2026: multi-position rotary switch groups. Each F-16 selector (MASTER ARM, MAIN PWR, RF, INS,
 // the HUD display-mode wafers, etc.) is authored in 3dbuttons.dat as one setter function per position, each at
@@ -1777,62 +1844,99 @@ int    g_vrCursorAnchorButton = -1;
 // physical rotary order below. Names must match 3dbuttons.dat exactly; unresolved names are skipped. Runtime cfg
 // "VrSwitchGroups" (g_bVrSwitchGroups) turns the whole thing off (each position stays its own spot). Defined here
 // (above VCock_Exec) so both the click handler and Button3D_Init can see the table.
-struct VrSwitchGroupDef { const char* name; const char* funcs[6]; int count; };
-static const VrSwitchGroupDef s_switchGroupDefs[] =
+struct VrSwitchGroupDef
 {
-    { "MasterArm",   { "SimSafeMasterArm", "SimArmMasterArm", "SimSimMasterArm" }, 3 },
-    { "RF",          { "SimRFNorm", "SimRFQuiet", "SimRFSilent" }, 3 },
-    { "HSIMode",     { "SimHSIIlsTcn", "SimHSITcn", "SimHSINav", "SimHSIIlsNav" }, 4 },
-    { "FuelSel",     { "SimFuelSwitchTest", "SimFuelSwitchNorm", "SimFuelSwitchResv", "SimFuelSwitchWingInt", "SimFuelSwitchWingExt", "SimFuelSwitchCenterExt" }, 6 },
-    { "RightAP",     { "SimRightAPUp", "SimRightAPMid", "SimRightAPDown" }, 3 },
-    { "LeftAP",      { "SimLeftAPUp", "SimLeftAPMid", "SimLeftAPDown" }, 3 },
-    { "EWSMode",     { "SimEWSModeOff", "SimEWSModeStby", "SimEWSModeMan", "SimEWSModeSemi", "SimEWSModeAuto" }, 5 },
-    { "EWSProg",     { "SimEWSProgOne", "SimEWSProgTwo", "SimEWSProgThree", "SimEWSProgFour" }, 4 },
-    { "AVTR",        { "SimAVTRSwitchOff", "SimAVTRSwitchAuto", "SimAVTRSwitchOn" }, 3 },
-    { "MainPower",   { "SimMainPowerOff", "SimMainPowerBatt", "SimMainPowerMain" }, 3 },
-    { "Epu",         { "SimEpuOff", "SimEpuAuto", "SimEpuOn" }, 3 },
-    { "FuelPump",    { "SimFuelPumpOff", "SimFuelPumpNorm", "SimFuelPumpAft", "SimFuelPumpFwd" }, 4 },
-    { "RALT",        { "SimRALTOFF", "SimRALTSTDBY", "SimRALTON" }, 3 },
-    { "Scales",      { "SimScalesOff", "SimScalesVAH", "SimScalesVVVAH" }, 3 },
-    { "PitchLadder", { "SimPitchLadderOff", "SimPitchLadderFPM", "SimPitchLadderATTFPM" }, 3 },
-    { "HUDDED",      { "SimHUDDEDOff", "SimHUDDEDPFL", "SimHUDDEDDED" }, 3 },
-    { "Reticle",     { "SimReticleOff", "SimReticleStby", "SimReticlePri" }, 3 },
-    { "HUDVel",      { "SimHUDVelocityCAS", "SimHUDVelocityTAS", "SimHUDVelocityGND" }, 3 },
-    { "HUDAlt",      { "SimHUDAltRadar", "SimHUDAltBaro", "SimHUDAltAuto" }, 3 },
-    { "HUDBrt",      { "SimHUDBrtDay", "SimHUDBrtAuto", "SimHUDBrtNight" }, 3 },
-    { "AirSource",   { "SimAirSourceOff", "SimAirSourceNorm", "SimAirSourceDump", "SimAirSourceRam" }, 4 },
-    { "INS",         { "SimINSOff", "SimINSNorm", "SimINSNav", "SimINSInFlt" }, 4 },
+    const char* name;
+    const char* funcs[6];
+    int count;
 };
-static const int s_numSwitchGroups = (int)(sizeof(s_switchGroupDefs) / sizeof(s_switchGroupDefs[0]));
-int  g_vrSwitchGroupCur[64];              // current position index per group (state; cycled on click)
-static int  s_switchGroupMember[64][6];   // Button3DList index of each resolved position (-1 = missing)
+static const VrSwitchGroupDef s_switchGroupDefs[] = {
+    {"MasterArm",
+     {"SimSafeMasterArm", "SimArmMasterArm", "SimSimMasterArm"},
+     3},
+    {"RF", {"SimRFNorm", "SimRFQuiet", "SimRFSilent"}, 3},
+    {"HSIMode", {"SimHSIIlsTcn", "SimHSITcn", "SimHSINav", "SimHSIIlsNav"}, 4},
+    {"FuelSel",
+     {"SimFuelSwitchTest", "SimFuelSwitchNorm", "SimFuelSwitchResv",
+      "SimFuelSwitchWingInt", "SimFuelSwitchWingExt", "SimFuelSwitchCenterExt"},
+     6},
+    {"RightAP", {"SimRightAPUp", "SimRightAPMid", "SimRightAPDown"}, 3},
+    {"LeftAP", {"SimLeftAPUp", "SimLeftAPMid", "SimLeftAPDown"}, 3},
+    {"EWSMode",
+     {"SimEWSModeOff", "SimEWSModeStby", "SimEWSModeMan", "SimEWSModeSemi",
+      "SimEWSModeAuto"},
+     5},
+    {"EWSProg",
+     {"SimEWSProgOne", "SimEWSProgTwo", "SimEWSProgThree", "SimEWSProgFour"},
+     4},
+    {"AVTR", {"SimAVTRSwitchOff", "SimAVTRSwitchAuto", "SimAVTRSwitchOn"}, 3},
+    {"MainPower",
+     {"SimMainPowerOff", "SimMainPowerBatt", "SimMainPowerMain"},
+     3},
+    {"Epu", {"SimEpuOff", "SimEpuAuto", "SimEpuOn"}, 3},
+    {"FuelPump",
+     {"SimFuelPumpOff", "SimFuelPumpNorm", "SimFuelPumpAft", "SimFuelPumpFwd"},
+     4},
+    {"RALT", {"SimRALTOFF", "SimRALTSTDBY", "SimRALTON"}, 3},
+    {"Scales", {"SimScalesOff", "SimScalesVAH", "SimScalesVVVAH"}, 3},
+    {"PitchLadder",
+     {"SimPitchLadderOff", "SimPitchLadderFPM", "SimPitchLadderATTFPM"},
+     3},
+    {"HUDDED", {"SimHUDDEDOff", "SimHUDDEDPFL", "SimHUDDEDDED"}, 3},
+    {"Reticle", {"SimReticleOff", "SimReticleStby", "SimReticlePri"}, 3},
+    {"HUDVel",
+     {"SimHUDVelocityCAS", "SimHUDVelocityTAS", "SimHUDVelocityGND"},
+     3},
+    {"HUDAlt", {"SimHUDAltRadar", "SimHUDAltBaro", "SimHUDAltAuto"}, 3},
+    {"HUDBrt", {"SimHUDBrtDay", "SimHUDBrtAuto", "SimHUDBrtNight"}, 3},
+    {"AirSource",
+     {"SimAirSourceOff", "SimAirSourceNorm", "SimAirSourceDump",
+      "SimAirSourceRam"},
+     4},
+    {"INS", {"SimINSOff", "SimINSNorm", "SimINSNav", "SimINSInFlt"}, 4},
+};
+static const int s_numSwitchGroups =
+    (int)(sizeof(s_switchGroupDefs) / sizeof(s_switchGroupDefs[0]));
+int g_vrSwitchGroupCur
+    [64]; // current position index per group (state; cycled on click)
+static int s_switchGroupMember
+    [64][6]; // Button3DList index of each resolved position (-1 = missing)
 
 // Artscout - 2026 (VR controllers): laser-ray state. g_vrRayOrigin -> g_vrCursorAnchor is the green line
 // (drawn per-eye next to the cursor). g_vrCtrlRayActive tells the mouse hover/anchor blocks to stand down
 // this frame (the controller drives the pick). g_bVrZoomActive = A-button toggle (zoom behaviour TBD).
-Tpoint g_vrRayOrigin = { 0.0f, 0.0f, 0.0f };
-Tpoint g_vrRayDir    = { 0.0f, 0.0f, 1.0f };   // aim direction (body, unit) -- forward axis of the controller model
-Tpoint g_vrGripPoint = { 0.0f, 0.0f, 0.0f };   // controller grip position (marker), body button-units
-bool   g_vrGripValid = false;
-bool   g_vrRayActive = false;
+Tpoint g_vrRayOrigin = {0.0f, 0.0f, 0.0f};
+Tpoint g_vrRayDir = {
+    0.0f, 0.0f,
+    1.0f}; // aim direction (body, unit) -- forward axis of the controller model
+Tpoint g_vrGripPoint = {
+    0.0f, 0.0f, 0.0f}; // controller grip position (marker), body button-units
+bool g_vrGripValid = false;
+bool g_vrRayActive = false;
 // Artscout - 2026 (VR controllers): the ACTUAL selected-button center (headPan-adjusted, button units),
 // captured in the view-0 pick. When a button is under the ray we draw a RING at THIS point (the switch that
 // will be clicked) instead of a cross at the ray's free endpoint -- so the highlight sits on the real switch
 // (kills the "beam-end vs detected-button" mismatch), and shows a CROSS at the free endpoint otherwise.
-Tpoint g_vrHitPoint = { 0.0f, 0.0f, 0.0f };
-bool   g_vrHitValid = false;
-bool   g_vrCtrlRayActive = false;
-bool   g_bVrZoomActive = false;
+Tpoint g_vrHitPoint = {0.0f, 0.0f, 0.0f};
+bool g_vrHitValid = false;
+bool g_vrCtrlRayActive = false;
+bool g_bVrZoomActive = false;
 
 // Artscout - 2026 (VR hands): pointing-gesture state. Default = hand relaxed, NO ray (the mouse still drives
 // the pick, which is fine). Squeeze the grip -> the hand curls into a fist with the index extended and the ray
 // switches on, leaving the fingertip. Touch grip = HOLD (comfortable button); Index/Knuckles grip is a
 // capacitive force sensor that is tiring to hold, so there it TOGGLES (short squeeze on/off). g_nVrRayToggle
 // overrides: -1 auto-by-profile, 0 always hold, 1 always toggle. t = clench morph 0(open)..1(fist), eased.
-struct VrHandAnim { bool active; float t; };
-VrHandAnim g_vrHandAnim[2] = { { false, 0.0f }, { false, 0.0f } };
-int   g_vrActiveHand = -1;              // hand currently pointing (drives the ray); -1 = none -> mouse fallback
-static float g_vrHandAnimTime = -1.0f;  // last update time (vuxRealTime) for dt-based easing
+struct VrHandAnim
+{
+    bool active;
+    float t;
+};
+VrHandAnim g_vrHandAnim[2] = {{false, 0.0f}, {false, 0.0f}};
+int g_vrActiveHand =
+    -1; // hand currently pointing (drives the ray); -1 = none -> mouse fallback
+static float g_vrHandAnimTime =
+    -1.0f; // last update time (vuxRealTime) for dt-based easing
 
 // ===================== VR controller MODEL (v1: shaded solid OBJ, no texture) =====================
 // Artscout - 2026: draw the real controller mesh (SteamVR/Oculus render models, bundled as OBJ under
@@ -1842,24 +1946,46 @@ static float g_vrHandAnimTime = -1.0f;  // last update time (vuxRealTime) for dt
 #include <vector>
 #include <algorithm>
 #include <string.h>
-struct VrTri { float p[3][3]; float n[3]; float uv[3][2]; };   // 3 verts (local) + face normal + UVs
-struct VrModelCache { bool tried; bool ok; char key[64]; char tex[128]; bool srvTried; void* srv; std::vector<VrTri> tris; std::vector<VrTri> tris2; };  // tris2 = POINT/fist pose (hand morph target; empty = no morph)
-static VrModelCache s_vrModel[2];                      // per hand (L/R meshes differ)
+struct VrTri
+{
+    float p[3][3];
+    float n[3];
+    float uv[3][2];
+}; // 3 verts (local) + face normal + UVs
+struct VrModelCache
+{
+    bool tried;
+    bool ok;
+    char key[64];
+    char tex[128];
+    bool srvTried;
+    void* srv;
+    std::vector<VrTri> tris;
+    std::vector<VrTri> tris2;
+}; // tris2 = POINT/fist pose (hand morph target; empty = no morph)
+static VrModelCache s_vrModel[2]; // per hand (L/R meshes differ)
 
 // Parse an OBJ's .mtl for the map_Kd diffuse texture BASENAME (into out). Empty if none. (v2 textures.)
 static void VrParseMtlTex(const char* mtlName, char* out, int cap)
 {
     out[0] = 0;
-    char path[256]; sprintf(path, "%scontrollers\\%s", COCKPIT_DIR, mtlName);
-    FILE* f = fopen(path, "r"); if (!f) return;
+    char path[256];
+    sprintf(path, "%scontrollers/%s", COCKPIT_DIR, mtlName);
+    FILE* f = fopen(path, "r");
+    if (!f)
+        return;
     char line[512];
     while (fgets(line, sizeof(line), f))
     {
         char tok[256];
         if (sscanf(line, " map_Kd %255s", tok) == 1)
         {
-            char* b = tok; for (char* p = tok; *p; ++p) if (*p == '/' or *p == '\\') b = p + 1;   // strip path
-            strncpy(out, b, cap - 1); out[cap - 1] = 0;
+            char* b = tok;
+            for (char* p = tok; *p; ++p)
+                if (*p == '/' or *p == '\\')
+                    b = p + 1; // strip path
+            strncpy(out, b, cap - 1);
+            out[cap - 1] = 0;
             break;
         }
     }
@@ -1869,32 +1995,45 @@ static void VrParseMtlTex(const char* mtlName, char* out, int cap)
 // Parse one OBJ into 'out' (v/vt/f, quads fan-triangulated, per-vertex UV, per-face geometry normal). If
 // texOut != NULL, the mtllib's map_Kd basename is written there. Positions/UVs are model-local. Returns false
 // if the file is missing or empty.
-static bool VrParseObjTris(const char* baseName, std::vector<VrTri>& out, char* texOut, int texcap)
+static bool VrParseObjTris(const char* baseName, std::vector<VrTri>& out,
+                           char* texOut, int texcap)
 {
     out.clear();
     char path[256];
-    sprintf(path, "%scontrollers\\%s.obj", COCKPIT_DIR, baseName);
+    sprintf(path, "%scontrollers/%s.obj", COCKPIT_DIR, baseName);
     FILE* f = fopen(path, "r");
-    if (!f) return false;   // missing mesh -> caller falls back (hands/model simply don't draw)
+    if (!f)
+        return false; // missing mesh -> caller falls back (hands/model simply don't draw)
 
-    std::vector<float> vp;   // positions x,y,z
-    std::vector<float> vt;   // texcoords u,v
+    std::vector<float> vp; // positions x,y,z
+    std::vector<float> vt; // texcoords u,v
     char line[512];
     while (fgets(line, sizeof(line), f))
     {
         if (line[0] == 'v' and line[1] == ' ')
         {
             float x, y, z;
-            if (sscanf(line + 2, "%f %f %f", &x, &y, &z) == 3) { vp.push_back(x); vp.push_back(y); vp.push_back(z); }
+            if (sscanf(line + 2, "%f %f %f", &x, &y, &z) == 3)
+            {
+                vp.push_back(x);
+                vp.push_back(y);
+                vp.push_back(z);
+            }
         }
         else if (line[0] == 'v' and line[1] == 't')
         {
             float u = 0.0f, v = 0.0f;
-            if (sscanf(line + 3, "%f %f", &u, &v) >= 1) { vt.push_back(u); vt.push_back(v); }
+            if (sscanf(line + 3, "%f %f", &u, &v) >= 1)
+            {
+                vt.push_back(u);
+                vt.push_back(v);
+            }
         }
         else if (texOut and strncmp(line, "mtllib", 6) == 0)
         {
-            char mn[128]; if (sscanf(line + 6, " %127s", mn) == 1) VrParseMtlTex(mn, texOut, texcap);
+            char mn[128];
+            if (sscanf(line + 6, " %127s", mn) == 1)
+                VrParseMtlTex(mn, texOut, texcap);
         }
         else if (line[0] == 'f' and line[1] == ' ')
         {
@@ -1903,30 +2042,65 @@ static bool VrParseObjTris(const char* baseName, std::vector<VrTri>& out, char* 
             while (tok and cnt < 16)
             {
                 int pi = 0, ti = 0;
-                if (sscanf(tok, "%d/%d", &pi, &ti) >= 1 and pi != 0) { pidx[cnt] = pi; tidx[cnt] = ti; cnt++; }
+                if (sscanf(tok, "%d/%d", &pi, &ti) >= 1 and pi != 0)
+                {
+                    pidx[cnt] = pi;
+                    tidx[cnt] = ti;
+                    cnt++;
+                }
                 tok = strtok(NULL, " \t\r\n");
             }
             int nv = (int)(vp.size() / 3);
             int nt = (int)(vt.size() / 2);
-            for (int i = 1; i + 1 < cnt; ++i)               // fan-triangulate the face
+            for (int i = 1; i + 1 < cnt; ++i) // fan-triangulate the face
             {
-                const int fa[3] = { 0, i, i + 1 };
-                VrTri tr; bool bad = false;
+                const int fa[3] = {0, i, i + 1};
+                VrTri tr;
+                bool bad = false;
                 for (int k = 0; k < 3; ++k)
                 {
-                    int a = pidx[fa[k]]; a = (a > 0) ? a - 1 : nv + a;
-                    if (a < 0 or a >= nv) { bad = true; break; }
-                    tr.p[k][0] = vp[a*3]; tr.p[k][1] = vp[a*3+1]; tr.p[k][2] = vp[a*3+2];
-                    int t = tidx[fa[k]]; t = (t > 0) ? t - 1 : (t < 0 ? nt + t : -1);
-                    if (t >= 0 and t < nt) { tr.uv[k][0] = vt[t*2]; tr.uv[k][1] = 1.0f - vt[t*2+1]; }   // OBJ V -> D3D V (flip)
-                    else { tr.uv[k][0] = 0.0f; tr.uv[k][1] = 0.0f; }
+                    int a = pidx[fa[k]];
+                    a = (a > 0) ? a - 1 : nv + a;
+                    if (a < 0 or a >= nv)
+                    {
+                        bad = true;
+                        break;
+                    }
+                    tr.p[k][0] = vp[a * 3];
+                    tr.p[k][1] = vp[a * 3 + 1];
+                    tr.p[k][2] = vp[a * 3 + 2];
+                    int t = tidx[fa[k]];
+                    t = (t > 0) ? t - 1 : (t < 0 ? nt + t : -1);
+                    if (t >= 0 and t < nt)
+                    {
+                        tr.uv[k][0] = vt[t * 2];
+                        tr.uv[k][1] = 1.0f - vt[t * 2 + 1];
+                    } // OBJ V -> D3D V (flip)
+                    else
+                    {
+                        tr.uv[k][0] = 0.0f;
+                        tr.uv[k][1] = 0.0f;
+                    }
                 }
-                if (bad) continue;
-                float ux = tr.p[1][0]-tr.p[0][0], uy = tr.p[1][1]-tr.p[0][1], uz = tr.p[1][2]-tr.p[0][2];
-                float wx = tr.p[2][0]-tr.p[0][0], wy = tr.p[2][1]-tr.p[0][1], wz = tr.p[2][2]-tr.p[0][2];
-                tr.n[0] = uy*wz - uz*wy; tr.n[1] = uz*wx - ux*wz; tr.n[2] = ux*wy - uy*wx;
-                float ln = sqrtf(tr.n[0]*tr.n[0] + tr.n[1]*tr.n[1] + tr.n[2]*tr.n[2]);
-                if (ln > 1e-9f) { tr.n[0]/=ln; tr.n[1]/=ln; tr.n[2]/=ln; }
+                if (bad)
+                    continue;
+                float ux = tr.p[1][0] - tr.p[0][0],
+                      uy = tr.p[1][1] - tr.p[0][1],
+                      uz = tr.p[1][2] - tr.p[0][2];
+                float wx = tr.p[2][0] - tr.p[0][0],
+                      wy = tr.p[2][1] - tr.p[0][1],
+                      wz = tr.p[2][2] - tr.p[0][2];
+                tr.n[0] = uy * wz - uz * wy;
+                tr.n[1] = uz * wx - ux * wz;
+                tr.n[2] = ux * wy - uy * wx;
+                float ln = sqrtf(tr.n[0] * tr.n[0] + tr.n[1] * tr.n[1] +
+                                 tr.n[2] * tr.n[2]);
+                if (ln > 1e-9f)
+                {
+                    tr.n[0] /= ln;
+                    tr.n[1] /= ln;
+                    tr.n[2] /= ln;
+                }
                 out.push_back(tr);
             }
         }
@@ -1938,26 +2112,278 @@ static bool VrParseObjTris(const char* baseName, std::vector<VrTri>& out, char* 
 // Load + cache a single-pose OBJ (controllers). No morph target.
 static bool VrLoadCtrlObj(VrModelCache* m, const char* baseName)
 {
-    if (m->tried and strcmp(m->key, baseName) == 0) return m->ok;   // already resolved this model
-    m->tried = true; m->ok = false; m->tex[0] = 0; m->srvTried = false; m->srv = 0; m->tris2.clear();
-    strncpy(m->key, baseName, sizeof(m->key) - 1); m->key[sizeof(m->key) - 1] = 0;
+    if (m->tried and strcmp(m->key, baseName) == 0)
+        return m->ok; // already resolved this model
+    m->tried = true;
+    m->ok = false;
+    m->tex[0] = 0;
+    m->srvTried = false;
+    m->srv = 0;
+    m->tris2.clear();
+    strncpy(m->key, baseName, sizeof(m->key) - 1);
+    m->key[sizeof(m->key) - 1] = 0;
     m->ok = VrParseObjTris(baseName, m->tris, m->tex, sizeof(m->tex));
     return m->ok;
 }
 
 // Load + cache the HAND morph pair: openBase (rest, drives tex + UV) and pointBase (fist/index pose) into
 // tris2. Topology is identical (same baker output) so the render can lerp tris[i].p <-> tris2[i].p per frame.
-static bool VrLoadHandMorph(VrModelCache* m, const char* openBase, const char* pointBase)
+static bool VrLoadHandMorph(VrModelCache* m, const char* openBase,
+                            const char* pointBase)
 {
-    if (m->tried and strcmp(m->key, openBase) == 0) return m->ok;
-    m->tried = true; m->ok = false; m->tex[0] = 0; m->srvTried = false; m->srv = 0;
-    strncpy(m->key, openBase, sizeof(m->key) - 1); m->key[sizeof(m->key) - 1] = 0;
-    bool okO = VrParseObjTris(openBase,  m->tris,  m->tex, sizeof(m->tex));
+    if (m->tried and strcmp(m->key, openBase) == 0)
+        return m->ok;
+    m->tried = true;
+    m->ok = false;
+    m->tex[0] = 0;
+    m->srvTried = false;
+    m->srv = 0;
+    strncpy(m->key, openBase, sizeof(m->key) - 1);
+    m->key[sizeof(m->key) - 1] = 0;
+    bool okO = VrParseObjTris(openBase, m->tris, m->tex, sizeof(m->tex));
     bool okP = VrParseObjTris(pointBase, m->tris2, NULL, 0);
-    if (okP and m->tris2.size() != m->tris.size()) m->tris2.clear();   // topology mismatch -> no morph (static open)
+    if (okP and m->tris2.size() != m->tris.size())
+        m->tris2.clear(); // topology mismatch -> no morph (static open)
     m->ok = okO;
     return m->ok;
 }
+
+// ===== Artscout - 2026 (VR hands, SKELETAL): XR_EXT_hand_tracking driven skinned gloves =============
+// A SEPARATE model + path from the controller-driven OPEN<->POINT morph pair above (which stays intact).
+// v2 ORIENTATION RETARGET (replaces the position-only frame reconstruction, which was unstable -- thumb
+// sank into the palm, the hand clenched when the palm rotated; a reference renderer showed the SAME
+// tracking data with correct open hands, proving the data is good and the method was the limit).
+// The .ffskin (bake_hands_skin.py) carries, per bone: the XR joint that drives it + the model INVERSE-BIND
+// (flat open pose) global. Runtime:
+//   BIND CAPTURE (once, refreshed toward the flattest open pose seen): Vbind_body[v] = sum_k w * Gxr[xr_k]
+//     * invBind_k * Vmodel[v]  -- rebinds the mesh onto the CURRENT XR skeleton; store Gxr_bind^-1 per joint.
+//   PER FRAME: M[j] = Gxr[j] * Gxr_bind[j]^-1 (a pure XR-space delta -> convention-free), skinned[v] =
+//     sum_k w * M[xr_k] * Vbind_body[v]. Exact skeletal deformation from the joint ORIENTATIONS.
+struct VrSkinVert
+{
+    float p[3], n[3], uv[2];
+    unsigned char j[4];
+    float w[4];
+};
+struct VrSkinModel
+{
+    bool tried = false, ok = false;
+    std::vector<VrSkinVert> verts;
+    std::vector<unsigned short> idx;
+    std::vector<int> boneXr;    // per bone: the XR joint (0..25) that drives it
+    float Fm[12];               // model WRIST frame (3x4, feet) -- rigid placement reference
+    float modelSpan = 1.0f;     // model wrist->middle-tip length (feet); scale mesh to the tracked hand
+    bool srvTried = false;
+    void* srv = 0;
+    // orientation-retarget bind capture
+    bool haveBind = false;
+    float bindOpen = 0.0f;      // openness metric of the captured bind (grows toward the flattest pose)
+    float capYaw = 0, capPitch = 0, capRoll = 0; // correction knobs used at capture (re-capture if changed)
+    float gxrBindInv[26][12];   // Gxr_bind(joint)^-1, 3x4, per XR joint
+    std::vector<float> vBind;   // rebound vertex positions (nv*3), body frame feet
+};
+static VrSkinModel s_vrSkin[2];
+
+static bool VrLoadSkin(VrSkinModel* m, const char* name)
+{
+    if (m->tried)
+        return m->ok;
+    m->tried = true;
+    m->ok = false;
+    char path[256];
+    sprintf(path, "%scontrollers/%s", COCKPIT_DIR, name);
+    FILE* f = fopen(path, "rb");
+    if (not f)
+        return false;
+    char magic[4];
+    unsigned ver = 0, nv = 0, ni = 0, nb = 0;
+    if (fread(magic, 1, 4, f) != 4 or memcmp(magic, "FFSK", 4) != 0 or
+        fread(&ver, 4, 1, f) != 1 or ver != 4 or fread(&nv, 4, 1, f) != 1 or
+        fread(&ni, 4, 1, f) != 1 or fread(&nb, 4, 1, f) != 1 or nv == 0 or
+        ni == 0 or nb == 0 or nv > 65535 or nb > 64)
+    {
+        fclose(f);
+        return false;
+    }
+    m->boneXr.resize(nb);
+    m->verts.resize(nv);
+    m->idx.resize(ni);
+    bool ok = fread(m->Fm, 4, 12, f) == 12; // model wrist frame (3x4)
+    ok = ok && fread(&m->modelSpan, 4, 1, f) == 1; // wrist->middle-tip span
+    for (unsigned b = 0; b < nb and ok; ++b)
+        ok = fread(&m->boneXr[b], 4, 1, f) == 1; // int xrJoint
+    for (unsigned i = 0; i < nv and ok; ++i)
+        ok = fread(&m->verts[i], 8 * 4 + 4 + 4 * 4, 1, f) == 1;
+    if (ok)
+        ok = fread(m->idx.data(), 2, ni, f) == ni;
+    fclose(f);
+    m->ok = ok;
+    return ok;
+}
+
+// ---- 3x4 affine helpers (row-major: [r00 r01 r02 px | r10.. | r20..]) for the orientation retarget ----
+static inline void Mat34Point(const float M[12], const float p[3], float o[3])
+{
+    o[0] = M[0] * p[0] + M[1] * p[1] + M[2] * p[2] + M[3];
+    o[1] = M[4] * p[0] + M[5] * p[1] + M[6] * p[2] + M[7];
+    o[2] = M[8] * p[0] + M[9] * p[1] + M[10] * p[2] + M[11];
+}
+static inline void Mat34Dir(const float M[12], const float v[3], float o[3])
+{
+    o[0] = M[0] * v[0] + M[1] * v[1] + M[2] * v[2];
+    o[1] = M[4] * v[0] + M[5] * v[1] + M[6] * v[2];
+    o[2] = M[8] * v[0] + M[9] * v[1] + M[10] * v[2];
+}
+// C = A * B (both 3x4 affine, implicit last row 0001).
+static void Mat34Mul(const float A[12], const float B[12], float C[12])
+{
+    for (int r = 0; r < 3; ++r)
+    {
+        C[r * 4 + 0] =
+            A[r * 4 + 0] * B[0] + A[r * 4 + 1] * B[4] + A[r * 4 + 2] * B[8];
+        C[r * 4 + 1] =
+            A[r * 4 + 0] * B[1] + A[r * 4 + 1] * B[5] + A[r * 4 + 2] * B[9];
+        C[r * 4 + 2] =
+            A[r * 4 + 0] * B[2] + A[r * 4 + 1] * B[6] + A[r * 4 + 2] * B[10];
+        C[r * 4 + 3] = A[r * 4 + 0] * B[3] + A[r * 4 + 1] * B[7] +
+                       A[r * 4 + 2] * B[11] + A[r * 4 + 3];
+    }
+}
+// Inverse of a 3x4 affine (general 3x3 inverse + translation). Robust to the small non-orthogonality
+// that a scaled/permuted body frame can carry.
+static bool Mat34Inv(const float M[12], float O[12])
+{
+    const float a = M[0], b = M[1], c = M[2], d = M[4], e = M[5], f = M[6],
+                g = M[8], h = M[9], i = M[10];
+    float det = a * (e * i - f * h) - b * (d * i - f * g) + c * (d * h - e * g);
+    if (fabsf(det) < 1e-20f)
+        return false;
+    float id = 1.0f / det;
+    float r00 = (e * i - f * h) * id, r01 = (c * h - b * i) * id,
+          r02 = (b * f - c * e) * id;
+    float r10 = (f * g - d * i) * id, r11 = (a * i - c * g) * id,
+          r12 = (c * d - a * f) * id;
+    float r20 = (d * h - e * g) * id, r21 = (b * g - a * h) * id,
+          r22 = (a * e - b * d) * id;
+    const float tx = M[3], ty = M[7], tz = M[11];
+    O[0] = r00; O[1] = r01; O[2] = r02; O[3] = -(r00 * tx + r01 * ty + r02 * tz);
+    O[4] = r10; O[5] = r11; O[6] = r12; O[7] = -(r10 * tx + r11 * ty + r12 * tz);
+    O[8] = r20; O[9] = r21; O[10] = r22;
+    O[11] = -(r20 * tx + r21 * ty + r22 * tz);
+    return true;
+}
+// Openness metric: sum of finger tip-to-proximal distances (XR joints). A flat open hand maximizes it;
+// used to capture/refresh the bind on the flattest pose seen so far.
+static float VrHandOpenness(const float G[26][12])
+{
+    static const int tipProx[5][2] = {
+        {10, 7}, {15, 12}, {20, 17}, {25, 22}, {5, 3}}; // idx,mid,rng,lit,thumb
+    float s = 0.0f;
+    for (int fng = 0; fng < 5; ++fng)
+    {
+        const float* a = &G[tipProx[fng][0]][0];
+        const float* b = &G[tipProx[fng][1]][0];
+        float dx = a[3] - b[3], dy = a[7] - b[7], dz = a[11] - b[11];
+        s += sqrtf(dx * dx + dy * dy + dz * dz);
+    }
+    return s;
+}
+// Position-based orthonormal frame (3x4): f=norm(fwd); u=norm(cross(side,f)); s=cross(f,u); cols (s,u,f)+o.
+// MUST match frame_from in bake_hands_skin.py (used to build Fm there and the matching Fx here).
+static void VrFrameFromPos(const float o[3], const float fwd[3],
+                           const float side[3], float M[12])
+{
+    float fl = sqrtf(fwd[0] * fwd[0] + fwd[1] * fwd[1] + fwd[2] * fwd[2]);
+    if (fl < 1e-9f)
+        fl = 1.0f;
+    float f0 = fwd[0] / fl, f1 = fwd[1] / fl, f2 = fwd[2] / fl;
+    float u0 = side[1] * f2 - side[2] * f1, u1 = side[2] * f0 - side[0] * f2,
+          u2 = side[0] * f1 - side[1] * f0;
+    float ul = sqrtf(u0 * u0 + u1 * u1 + u2 * u2);
+    if (ul < 1e-9f)
+        ul = 1.0f;
+    u0 /= ul; u1 /= ul; u2 /= ul;
+    float s0 = f1 * u2 - f2 * u1, s1 = f2 * u0 - f0 * u2, s2 = f0 * u1 - f1 * u0;
+    M[0] = s0; M[1] = u0; M[2] = f0; M[3] = o[0];
+    M[4] = s1; M[5] = u1; M[6] = f1; M[7] = o[1];
+    M[8] = s2; M[9] = u2; M[10] = f2; M[11] = o[2];
+}
+
+// Capture / refresh the bind. RIGID placement: build the XR wrist frame Fx the SAME position-based way the
+// bake built the model wrist frame Fm, then place the WHOLE mesh with one rigid A = Fx*Fm^-1 (undistorted --
+// no per-joint model<->XR bone-axis convention to bake in). Also store Gxr_bind^-1 per joint for the
+// per-frame delta M[j]=Gxr[j]*Gxr_bind[j]^-1.
+static void VrSkinCaptureBind(VrSkinModel* m, const float G[26][12])
+{
+    // XR wrist frame from joint POSITIONS: wrist(1), fwd = wrist->middle-metacarpal(11), side = little
+    // proximal(22) - index proximal(7). Matches Fm's wrist->hub / pinky-index construction in the bake.
+    float wo[3] = {G[1][3], G[1][7], G[1][11]};
+    float fwd[3] = {G[11][3] - G[1][3], G[11][7] - G[1][7], G[11][11] - G[1][11]};
+    float side[3] = {G[22][3] - G[7][3], G[22][7] - G[7][7],
+                     G[22][11] - G[7][11]};
+    float Fx[12], FmInv[12], A[12];
+    VrFrameFromPos(wo, fwd, side, Fx);
+    // Wrist-orientation correction (degrees) for the residual model<->XR convention twist -- the XR
+    // wrist->metacarpal / knuckle landmarks don't land at exactly the model's, leaving a small constant
+    // rotation of the whole hand (e.g. palm-up reads ~15deg off). Applied in the wrist-LOCAL frame:
+    // yaw about the palm normal (u, "left/right"), pitch about the knuckle line (s), roll about the finger
+    // axis (f). Tune live (set g_fVrHandYaw/Pitch/Roll) then bake the value into the default.
+    extern float g_fVrHandYaw, g_fVrHandPitch, g_fVrHandRoll;
+    if (g_fVrHandYaw != 0.0f || g_fVrHandPitch != 0.0f || g_fVrHandRoll != 0.0f)
+    {
+        const float d2r = 3.14159265f / 180.0f;
+        float cy = cosf(g_fVrHandYaw * d2r), sy = sinf(g_fVrHandYaw * d2r);
+        float cp = cosf(g_fVrHandPitch * d2r), sp = sinf(g_fVrHandPitch * d2r);
+        float cr = cosf(g_fVrHandRoll * d2r), sr = sinf(g_fVrHandRoll * d2r);
+        // R = Ryaw(about y=up) * Rpitch(about x=side) * Rroll(about z=fwd), row-major 3x4, no translation.
+        float Ry[12] = {cy, 0, sy, 0, 0, 1, 0, 0, -sy, 0, cy, 0};
+        float Rp[12] = {1, 0, 0, 0, 0, cp, -sp, 0, 0, sp, cp, 0};
+        float Rr[12] = {cr, -sr, 0, 0, sr, cr, 0, 0, 0, 0, 1, 0};
+        float Rt[12], Rc[12], Fx2[12];
+        Mat34Mul(Ry, Rp, Rt);
+        Mat34Mul(Rt, Rr, Rc);
+        Mat34Mul(Fx, Rc, Fx2); // correction in the wrist-local axes
+        for (int k = 0; k < 12; ++k)
+            Fx[k] = Fx2[k];
+    }
+    if (!Mat34Inv(m->Fm, FmInv))
+        return;
+    Mat34Mul(Fx, FmInv, A); // model -> body rigid placement
+
+    // Size the mesh to the TRACKED hand: scale about the wrist so the model wrist->middle-tip span matches
+    // the XR one. A fixed shrink made the mesh smaller than the tracked skeleton, so the fingers (curling
+    // about the real-sized XR joints) overshot INTO the palm on a fist. s makes the mesh the user's size.
+    float mt[3] = {G[15][3] - G[1][3], G[15][7] - G[1][7], G[15][11] - G[1][11]};
+    float xrSpan = sqrtf(mt[0] * mt[0] + mt[1] * mt[1] + mt[2] * mt[2]);
+    float s = (m->modelSpan > 1e-6f) ? (xrSpan / m->modelSpan) : 1.0f;
+    if (s < 0.3f || s > 3.0f)
+        s = 1.0f; // guard against a bad-frame span
+    const float wpx = G[1][3], wpy = G[1][7], wpz = G[1][11];
+
+    const int nv = (int)m->verts.size();
+    m->vBind.resize((size_t)nv * 3);
+    for (int i = 0; i < nv; ++i)
+    {
+        float p[3];
+        Mat34Point(A, m->verts[i].p, p);
+        m->vBind[(size_t)i * 3 + 0] = wpx + (p[0] - wpx) * s;
+        m->vBind[(size_t)i * 3 + 1] = wpy + (p[1] - wpy) * s;
+        m->vBind[(size_t)i * 3 + 2] = wpz + (p[2] - wpz) * s;
+    }
+
+    for (int j = 0; j < 26; ++j)
+        if (!Mat34Inv(G[j], m->gxrBindInv[j]))
+            for (int k = 0; k < 12; ++k)
+                m->gxrBindInv[j][k] =
+                    (k == 0 || k == 5 || k == 10) ? 1.0f : 0.0f;
+    m->haveBind = true;
+    m->bindOpen = VrHandOpenness(G);
+    extern float g_fVrHandYaw, g_fVrHandPitch, g_fVrHandRoll;
+    m->capYaw = g_fVrHandYaw;
+    m->capPitch = g_fVrHandPitch;
+    m->capRoll = g_fVrHandRoll;
+}
+
 
 // Artscout - 2026 (VR controller model): draw the controller mesh into the cockpit polygon list. Called from
 // VCock_DrawThePit (per eye), BEFORE otwloop's FlushPolyLists, so DrawTriangle's queued polys flush with the
@@ -1965,118 +2391,373 @@ static bool VrLoadHandMorph(VrModelCache* m, const char* openBase, const char* p
 // drew). Grip pose/basis fetched fresh (VCock_Exec's pick hasn't run yet). Index/Oculus by interaction profile.
 void OTWDriverClass::VCock_DrawControllerModel(void)
 {
-    extern bool  g_bVrControllerModel, g_bVrRayFlipH, g_bVrRayFlipV;
+    extern bool g_bVrControllerModel, g_bVrRayFlipH, g_bVrRayFlipV;
     extern float g_fVrModelScale, g_fVrRayIpd;
-    if (not g_bVrControllerModel or g_pOpenXRBackend == NULL or not g_pOpenXRBackend->ControllerActive()) return;
+    if (not g_bVrControllerModel or g_pOpenXRBackend == NULL or
+        not g_pOpenXRBackend->ControllerActive())
+        return;
 
-    extern bool  g_bVrUseHands, g_bVrModelOpaque;
+    extern bool g_bVrUseHands, g_bVrModelOpaque;
     extern float g_fVrModelCull;
     const float sc = B3D_POSITION_SCALING;
 
-    int curEye = g_pOpenXRBackend->CurrentEye(); if (curEye < 0) curEye = 0;
-    float ipdY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(curEye) * sc * g_fVrRayIpd;
-    const float M2B = 3.28084f * sc * g_fVrModelScale;          // metres -> button units
-    float Lx = 0.3f, Ly = -0.5f, Lz = -0.8f; float Ll = sqrtf(Lx*Lx + Ly*Ly + Lz*Lz); Lx/=Ll; Ly/=Ll; Lz/=Ll;
+    int curEye = g_pOpenXRBackend->CurrentEye();
+    if (curEye < 0)
+        curEye = 0;
+    float ipdY =
+        g_pOpenXRBackend->GetEyeLateralOffsetFeet(curEye) * sc * g_fVrRayIpd;
+    const float M2B = 3.28084f * sc * g_fVrModelScale; // metres -> button units
+    float Lx = 0.3f, Ly = -0.5f, Lz = -0.8f;
+    float Ll = sqrtf(Lx * Lx + Ly * Ly + Lz * Lz);
+    Lx /= Ll;
+    Ly /= Ll;
+    Lz /= Ll;
 
     // Runtime mesh orientation (VrModelYaw/Pitch/Roll, deg): rotate the model in its OWN frame so any asset
     // (controller/hands) aligns to the grip pose without a rebuild. R = Ry(yaw)*Rx(pitch)*Rz(roll), applied
     // to every local vertex + normal below.
     extern float g_fVrModelYaw, g_fVrModelPitch, g_fVrModelRoll;
-    float cy = (float)cos(g_fVrModelYaw*DTR),  sy = (float)sin(g_fVrModelYaw*DTR);
-    float cp = (float)cos(g_fVrModelPitch*DTR), sp = (float)sin(g_fVrModelPitch*DTR);
-    float cr = (float)cos(g_fVrModelRoll*DTR),  sr = (float)sin(g_fVrModelRoll*DTR);
-    float R00 = cy*cr + sy*sp*sr, R01 = -cy*sr + sy*sp*cr, R02 = sy*cp;
-    float R10 = cp*sr,            R11 = cp*cr,             R12 = -sp;
-    float R20 = -sy*cr + cy*sp*sr, R21 = sy*sr + cy*sp*cr, R22 = cy*cp;
+    float cy = (float)cos(g_fVrModelYaw * DTR),
+          sy = (float)sin(g_fVrModelYaw * DTR);
+    float cp = (float)cos(g_fVrModelPitch * DTR),
+          sp = (float)sin(g_fVrModelPitch * DTR);
+    float cr = (float)cos(g_fVrModelRoll * DTR),
+          sr = (float)sin(g_fVrModelRoll * DTR);
+    float R00 = cy * cr + sy * sp * sr, R01 = -cy * sr + sy * sp * cr,
+          R02 = sy * cp;
+    float R10 = cp * sr, R11 = cp * cr, R12 = -sp;
+    float R20 = -sy * cr + cy * sp * sr, R21 = sy * sr + cy * sp * cr,
+          R22 = cy * cp;
 
     // Draw BOTH hands, each with its OWN mesh (left->*_left, right->*_right) at its OWN grip pose. The ray/
     // cursor is NOT tied to the model -- it stays on the active hand (GetActiveHand, switched by grip squeeze)
     // in the pick block. A hand whose controller isn't tracked this frame is simply skipped.
     static std::vector<VrTriVtx> sv;
     // Painter's-algorithm scratch (hands only -- see the sort below). Kept static: reused every frame/eye.
-    struct VrSortTri { float z; VrTriVtx v[3]; };
+    struct VrSortTri
+    {
+        float z;
+        VrTriVtx v[3];
+    };
     static std::vector<VrSortTri> st;
     const bool paint = g_bVrUseHands;
-    for (int hnd = 0; hnd < 2; ++hnd)   // 0 = left, 1 = right
+    for (int hnd = 0; hnd < 2; ++hnd) // 0 = left, 1 = right
     {
-        float go[3], bf[3], br[3], bu[3];
-        if (not g_pOpenXRBackend->GetControllerGripBody(hnd, go))  continue;   // this hand not tracked
-        if (not g_pOpenXRBackend->GetControllerGripBasis(hnd, bf, br, bu)) continue;
-        if (g_bVrRayFlipH) { go[1] = -go[1]; bf[1] = -bf[1]; br[1] = -br[1]; bu[1] = -bu[1]; }
-        if (g_bVrRayFlipV) { go[2] = -go[2]; bf[2] = -bf[2]; br[2] = -br[2]; bu[2] = -bu[2]; }
-        Tpoint gp; gp.x = go[0] * sc; gp.y = go[1] * sc; gp.z = go[2] * sc;
+        // ---- SKELETAL hand-tracking gloves (separate path; the controller-driven morph pair below is
+        // untouched). Active only when the runtime reports live 26-joint hands for THIS hand: bare-hand
+        // tracking (Quest/Pimax) or synthesized skeletons. Falls through to the controller path otherwise.
+        extern bool g_bVrHandTracking, g_bVrSkinSwapHands;
+        if (g_bVrUseHands and g_bVrHandTracking and g_pOpenXRBackend and
+            g_pOpenXRBackend->HandJointsValid(hnd))
+        {
+            float G[26][12]; // per-joint FULL pose (3x4) in the body frame (feet)
+            bool jok[26];
+            if (g_pOpenXRBackend->GetHandJointsBodyPose(hnd, G, jok))
+            {
+                // Each hand wears its OWN chirality mesh; the body-frame flip (a reflection of the OUTPUT
+                // positions, below) is what makes it appear as the correct hand -- same convention the
+                // controller/pit path uses. SwapHands overrides if the runtime maps hands the other way.
+                bool leftMesh = (hnd == 0);
+                if (g_bVrSkinSwapHands)
+                    leftMesh = !leftMesh;
+                VrSkinModel* sm = &s_vrSkin[leftMesh ? 0 : 1];
+                if (VrLoadSkin(sm, leftMesh ? "glove_skin_left.ffskin" :
+                                              "glove_skin_right.ffskin"))
+                {
+                    // ORIENTATION RETARGET: capture/refresh the bind on the flattest open pose seen (the
+                    // model bind is a flat open hand, so this makes M=I an open hand), then skin by the
+                    // per-joint XR-space delta M[j] = Gxr[j] * Gxr_bind[j]^-1 -- convention-free, no frame
+                    // reconstruction, so no thumb-sink / clench-on-rotate.
+                    float openNow = VrHandOpenness(G);
+                    // Re-capture on a flatter pose OR when the correction knobs were tuned live.
+                    extern float g_fVrHandYaw, g_fVrHandPitch, g_fVrHandRoll;
+                    if (not sm->haveBind or openNow > sm->bindOpen * 1.02f or
+                        sm->capYaw != g_fVrHandYaw or
+                        sm->capPitch != g_fVrHandPitch or
+                        sm->capRoll != g_fVrHandRoll)
+                        VrSkinCaptureBind(sm, G);
+                    static float Mj[26][12];
+                    for (int j = 0; j < 26; ++j)
+                        Mat34Mul(G[j], sm->gxrBindInv[j], Mj[j]);
+                    // CPU-skin + project + painter-sort (same overlay contract as the morph path below).
+                    static std::vector<float> sp; // skinned positions (feet, body frame)
+                    const int nvv = (int)sm->verts.size();
+                    sp.resize((size_t)nvv * 3);
+                    // NB: the mesh is already sized to the tracked hand at capture (vBind scaled by the
+                    // wrist->middle-tip span ratio), so NO g_fVrModelScale pivot here -- that fixed shrink
+                    // made the mesh smaller than the skeleton it curls around and the fingers overshot into
+                    // the palm on a fist. Only the body-frame flip (reflection) is applied to the output.
+                    for (int i = 0; i < nvv; ++i)
+                    {
+                        const VrSkinVert& V = sm->verts[i];
+                        const float* vb = &sm->vBind[(size_t)i * 3];
+                        float ax = 0, ay = 0, az = 0;
+                        for (int k = 0; k < 4; ++k)
+                        {
+                            float w = V.w[k];
+                            if (w <= 0.0f)
+                                continue;
+                            int xj = sm->boneXr[V.j[k]];
+                            if (xj < 0 || xj >= 26)
+                                xj = 1;
+                            float o[3];
+                            Mat34Point(Mj[xj], vb, o);
+                            ax += w * o[0]; ay += w * o[1]; az += w * o[2];
+                        }
+                        if (g_bVrRayFlipH)
+                            ay = -ay;
+                        if (g_bVrRayFlipV)
+                            az = -az;
+                        sp[(size_t)i * 3 + 0] = ax;
+                        sp[(size_t)i * 3 + 1] = ay;
+                        sp[(size_t)i * 3 + 2] = az;
+                    }
+                    st.clear();
+                    const int nT = (int)sm->idx.size() / 3;
+                    for (int ti = 0; ti < nT; ++ti)
+                    {
+                        ThreeDVertex vv[3];
+                        bool okv = true;
+                        const unsigned short* ix = &sm->idx[(size_t)ti * 3];
+                        for (int k = 0; k < 3 and okv; ++k)
+                        {
+                            const float* pp = &sp[(size_t)ix[k] * 3];
+                            Tpoint wp;
+                            wp.x = pp[0] * sc;
+                            wp.y = pp[1] * sc + ipdY;
+                            wp.z = pp[2] * sc;
+                            renderer->TransformCameraCentricPoint(&wp, &vv[k]);
+                            if (vv[k].csZ >= -1.0f)
+                                okv = false;
+                        }
+                        if (not okv)
+                            continue;
+                        // flat shade from the face normal (skinned normals are close enough face-wise)
+                        const float* a = &sp[(size_t)ix[0] * 3];
+                        const float* b2 = &sp[(size_t)ix[1] * 3];
+                        const float* c2 = &sp[(size_t)ix[2] * 3];
+                        float ux = b2[0] - a[0], uy = b2[1] - a[1],
+                              uz = b2[2] - a[2];
+                        float wx = c2[0] - a[0], wy = c2[1] - a[1],
+                              wz = c2[2] - a[2];
+                        float nx = uy * wz - uz * wy, ny = uz * wx - ux * wz,
+                              nz = ux * wy - uy * wx;
+                        float ln =
+                            sqrtf(nx * nx + ny * ny + nz * nz);
+                        if (ln > 1e-9f)
+                        {
+                            nx /= ln;
+                            ny /= ln;
+                            nz /= ln;
+                        }
+                        float dd = nx * Lx + ny * Ly + nz * Lz;
+                        if (dd < 0)
+                            dd = -dd;
+                        float sh = 0.55f + 0.45f * dd;
+                        if (sh > 1.0f)
+                            sh = 1.0f;
+                        unsigned rr = (unsigned)(0.62f * sh * 255.0f),
+                                 gg = (unsigned)(0.64f * sh * 255.0f),
+                                 bb = (unsigned)(0.68f * sh * 255.0f);
+                        unsigned col = 0xFF000000u | (rr << 16) | (gg << 8) | bb;
+                        VrSortTri sT;
+                        sT.z = (vv[0].csZ + vv[1].csZ + vv[2].csZ) *
+                               (1.0f / 3.0f);
+                        for (int k = 0; k < 3; ++k)
+                        {
+                            const VrSkinVert& V = sm->verts[ix[k]];
+                            sT.v[k].x = vv[k].x;
+                            sT.v[k].y = vv[k].y;
+                            sT.v[k].color = col;
+                            sT.v[k].u = V.uv[0];
+                            sT.v[k].v = 1.0f - V.uv[1]; // glTF V -> D3D V
+                        }
+                        st.push_back(sT);
+                    }
+                    std::sort(st.begin(), st.end(),
+                              [](const VrSortTri& x, const VrSortTri& y)
+                              { return x.z < y.z; });
+                    sv.clear();
+                    sv.reserve(st.size() * 3);
+                    for (size_t i = 0; i < st.size(); ++i)
+                    {
+                        sv.push_back(st[i].v[0]);
+                        sv.push_back(st[i].v[1]);
+                        sv.push_back(st[i].v[2]);
+                    }
+                    if (not sm->srvTried)
+                    {
+                        sm->srvTried = true;
+                        extern IRenderer* g_pRenderer;
+                        if (g_pRenderer)
+                        {
+                            char tp[256];
+                            sprintf(tp, "%scontrollers/hands_baseColor.png",
+                                    COCKPIT_DIR);
+                            sm->srv = (void*)g_pRenderer->LoadTextureFile(tp);
+                        }
+                    }
+                    extern IRenderer* g_pRenderer;
+                    if (g_pRenderer and not sv.empty())
+                    {
+                        static std::vector<ScreenVertex> tl2;
+                        tl2.resize(sv.size());
+                        for (size_t i = 0; i < sv.size(); ++i)
+                        {
+                            tl2[i].sx = sv[i].x;
+                            tl2[i].sy = sv[i].y;
+                            tl2[i].sz = 0.0f;
+                            tl2[i].rhw = 1.0f;
+                            tl2[i].color = sv[i].color;
+                            tl2[i].specular = 0;
+                            tl2[i].tu0 = sv[i].u;
+                            tl2[i].tv0 = sv[i].v;
+                            tl2[i].tu1 = sv[i].u;
+                            tl2[i].tv1 = sv[i].v;
+                        }
+                        g_pRenderer->DrawColorTrisScreen(
+                            tl2.data(), (int)sv.size(),
+                            (ID3D11ShaderResourceView*)sm->srv,
+                            g_bVrModelOpaque ? 1 : 0, 0 /*two-sided: sorted*/);
+                    }
+                    continue; // skeletal glove drawn -> next hand
+                }
+            }
+        }
 
-        if (g_bVrUseHands)                       // hand/glove meshes with the OPEN<->POINT morph pair
+        float go[3], bf[3], br[3], bu[3];
+        if (not g_pOpenXRBackend->GetControllerGripBody(hnd, go))
+            continue; // this hand not tracked
+        if (not g_pOpenXRBackend->GetControllerGripBasis(hnd, bf, br, bu))
+            continue;
+        if (g_bVrRayFlipH)
+        {
+            go[1] = -go[1];
+            bf[1] = -bf[1];
+            br[1] = -br[1];
+            bu[1] = -bu[1];
+        }
+        if (g_bVrRayFlipV)
+        {
+            go[2] = -go[2];
+            bf[2] = -bf[2];
+            br[2] = -br[2];
+            bu[2] = -bu[2];
+        }
+        Tpoint gp;
+        gp.x = go[0] * sc;
+        gp.y = go[1] * sc;
+        gp.z = go[2] * sc;
+
+        if (g_bVrUseHands) // hand/glove meshes with the OPEN<->POINT morph pair
         {
             // hnd 0 = OpenXR LEFT controller. The meshes came out swapped in-headset, so hand 0 wears the
             // RIGHT glove and hand 1 the LEFT (mirror of the naive mapping). The index-tip X sign in the pick
             // block follows the SAME rule so the laser leaves the correct fingertip.
-            const char* op = (hnd == 0) ? "glove_right_open"  : "glove_left_open";
-            const char* pp = (hnd == 0) ? "glove_right_point" : "glove_left_point";
-            if (not VrLoadHandMorph(&s_vrModel[hnd], op, pp) or s_vrModel[hnd].tris.empty()) continue;
+            const char* op =
+                (hnd == 0) ? "glove_right_open" : "glove_left_open";
+            const char* pp =
+                (hnd == 0) ? "glove_right_point" : "glove_left_point";
+            if (not VrLoadHandMorph(&s_vrModel[hnd], op, pp) or
+                s_vrModel[hnd].tris.empty())
+                continue;
         }
         else
         {
             char prof[128] = "";
             g_pOpenXRBackend->GetInteractionProfile(hnd, prof, sizeof(prof));
-            bool isIndex = (prof[0] == 0) or (strstr(prof, "index") != NULL) or (strstr(prof, "knuckles") != NULL);
-            const char* base = (hnd == 0)
-                ? (isIndex ? "valve_controller_knu_1_0_left"  : "oculus_cv1_controller_left")
-                : (isIndex ? "valve_controller_knu_1_0_right" : "oculus_cv1_controller_right");
-            if (not VrLoadCtrlObj(&s_vrModel[hnd], base) or s_vrModel[hnd].tris.empty()) continue;
+            bool isIndex = (prof[0] == 0) or (strstr(prof, "index") != NULL) or
+                           (strstr(prof, "knuckles") != NULL);
+            const char* base = (hnd == 0) ?
+                                   (isIndex ? "valve_controller_knu_1_0_left" :
+                                              "oculus_cv1_controller_left") :
+                                   (isIndex ? "valve_controller_knu_1_0_right" :
+                                              "oculus_cv1_controller_right");
+            if (not VrLoadCtrlObj(&s_vrModel[hnd], base) or
+                s_vrModel[hnd].tris.empty())
+                continue;
         }
 
         // Clench morph amount for THIS hand (0 = open, 1 = fist/point). Only hands have a morph target.
-        const float mt = (not s_vrModel[hnd].tris2.empty()) ? g_vrHandAnim[hnd].t : 0.0f;
-        const VrTri* T2 = s_vrModel[hnd].tris2.empty() ? NULL : &s_vrModel[hnd].tris2[0];
+        const float mt =
+            (not s_vrModel[hnd].tris2.empty()) ? g_vrHandAnim[hnd].t : 0.0f;
+        const VrTri* T2 =
+            s_vrModel[hnd].tris2.empty() ? NULL : &s_vrModel[hnd].tris2[0];
 
         // Build a screen-space TRIANGLE LIST (CPU-projected, flat-shaded) and hand it to the D3D11 renderer's
         // direct colour-tri path -- straight into the current eye RTV, depth-off overlay. This bypasses the legacy
         // poly-list / 2D-immediate paths that never reached the eye for our mesh.
-        sv.clear(); st.clear();
+        sv.clear();
+        st.clear();
         const VrTri* T = &s_vrModel[hnd].tris[0];
-        const int    nT = (int)s_vrModel[hnd].tris.size();
+        const int nT = (int)s_vrModel[hnd].tris.size();
         for (int ti = 0; ti < nT; ++ti)
         {
             const VrTri& tr = T[ti];
-            const VrTri* tp = T2 ? &T2[ti] : NULL;   // point-pose positions (same topology) for the morph
-            ThreeDVertex vv[3]; bool ok = true;
+            const VrTri* tp =
+                T2 ? &T2[ti] :
+                     NULL; // point-pose positions (same topology) for the morph
+            ThreeDVertex vv[3];
+            bool ok = true;
             for (int k = 0; k < 3; ++k)
             {
                 float lx = tr.p[k][0], ly = tr.p[k][1], lz = tr.p[k][2];
-                if (tp and mt > 0.0f)                // lerp OPEN -> POINT by the clench amount
+                if (tp and mt > 0.0f) // lerp OPEN -> POINT by the clench amount
                 {
-                    lx += (tp->p[k][0] - lx) * mt; ly += (tp->p[k][1] - ly) * mt; lz += (tp->p[k][2] - lz) * mt;
+                    lx += (tp->p[k][0] - lx) * mt;
+                    ly += (tp->p[k][1] - ly) * mt;
+                    lz += (tp->p[k][2] - lz) * mt;
                 }
-                float mx = R00*lx + R01*ly + R02*lz, my = R10*lx + R11*ly + R12*lz, mz = R20*lx + R21*ly + R22*lz;
+                float mx = R00 * lx + R01 * ly + R02 * lz,
+                      my = R10 * lx + R11 * ly + R12 * lz,
+                      mz = R20 * lx + R21 * ly + R22 * lz;
                 Tpoint wp;
-                wp.x = gp.x + (br[0]*mx + bu[0]*my + bf[0]*mz) * M2B;
-                wp.y = gp.y + (br[1]*mx + bu[1]*my + bf[1]*mz) * M2B + ipdY;
-                wp.z = gp.z + (br[2]*mx + bu[2]*my + bf[2]*mz) * M2B;
+                wp.x = gp.x + (br[0] * mx + bu[0] * my + bf[0] * mz) * M2B;
+                wp.y =
+                    gp.y + (br[1] * mx + bu[1] * my + bf[1] * mz) * M2B + ipdY;
+                wp.z = gp.z + (br[2] * mx + bu[2] * my + bf[2] * mz) * M2B;
                 renderer->TransformCameraCentricPoint(&wp, &vv[k]);
-                if (vv[k].csZ >= -1.0f) ok = false;   // behind the eye
+                if (vv[k].csZ >= -1.0f)
+                    ok = false; // behind the eye
             }
-            if (not ok) continue;
-            float nmx = R00*tr.n[0] + R01*tr.n[1] + R02*tr.n[2];
-            float nmy = R10*tr.n[0] + R11*tr.n[1] + R12*tr.n[2];
-            float nmz = R20*tr.n[0] + R21*tr.n[1] + R22*tr.n[2];
-            float nwx = br[0]*nmx + bu[0]*nmy + bf[0]*nmz;
-            float nwy = br[1]*nmx + bu[1]*nmy + bf[1]*nmz;
-            float nwz = br[2]*nmx + bu[2]*nmy + bf[2]*nmz;
-            float d = nwx*Lx + nwy*Ly + nwz*Lz; if (d < 0) d = -d;
-            float sh = 0.55f + 0.45f*d; if (sh > 1.0f) sh = 1.0f;   // brighter floor so the textured hands aren't too dark
-            unsigned rr = (unsigned)(0.62f*sh*255.0f), gg = (unsigned)(0.64f*sh*255.0f), bb = (unsigned)(0.68f*sh*255.0f);
-            unsigned col = 0xFF000000u | (rr << 16) | (gg << 8) | bb;   // ARGB, opaque
-            VrTriVtx t0 = { vv[0].x, vv[0].y, col, tr.uv[0][0], tr.uv[0][1] };
-            VrTriVtx t1 = { vv[1].x, vv[1].y, col, tr.uv[1][0], tr.uv[1][1] };
-            VrTriVtx t2 = { vv[2].x, vv[2].y, col, tr.uv[2][0], tr.uv[2][1] };
-            if (paint)   // painter's: keep the tri with its depth, emit sorted below
+            if (not ok)
+                continue;
+            float nmx = R00 * tr.n[0] + R01 * tr.n[1] + R02 * tr.n[2];
+            float nmy = R10 * tr.n[0] + R11 * tr.n[1] + R12 * tr.n[2];
+            float nmz = R20 * tr.n[0] + R21 * tr.n[1] + R22 * tr.n[2];
+            float nwx = br[0] * nmx + bu[0] * nmy + bf[0] * nmz;
+            float nwy = br[1] * nmx + bu[1] * nmy + bf[1] * nmz;
+            float nwz = br[2] * nmx + bu[2] * nmy + bf[2] * nmz;
+            float d = nwx * Lx + nwy * Ly + nwz * Lz;
+            if (d < 0)
+                d = -d;
+            float sh = 0.55f + 0.45f * d;
+            if (sh > 1.0f)
+                sh =
+                    1.0f; // brighter floor so the textured hands aren't too dark
+            unsigned rr = (unsigned)(0.62f * sh * 255.0f),
+                     gg = (unsigned)(0.64f * sh * 255.0f),
+                     bb = (unsigned)(0.68f * sh * 255.0f);
+            unsigned col =
+                0xFF000000u | (rr << 16) | (gg << 8) | bb; // ARGB, opaque
+            VrTriVtx t0 = {vv[0].x, vv[0].y, col, tr.uv[0][0], tr.uv[0][1]};
+            VrTriVtx t1 = {vv[1].x, vv[1].y, col, tr.uv[1][0], tr.uv[1][1]};
+            VrTriVtx t2 = {vv[2].x, vv[2].y, col, tr.uv[2][0], tr.uv[2][1]};
+            if (paint) // painter's: keep the tri with its depth, emit sorted below
             {
-                VrSortTri s; s.z = (vv[0].csZ + vv[1].csZ + vv[2].csZ) * (1.0f/3.0f);
-                s.v[0] = t0; s.v[1] = t1; s.v[2] = t2;
+                VrSortTri s;
+                s.z = (vv[0].csZ + vv[1].csZ + vv[2].csZ) * (1.0f / 3.0f);
+                s.v[0] = t0;
+                s.v[1] = t1;
+                s.v[2] = t2;
                 st.push_back(s);
             }
-            else { sv.push_back(t0); sv.push_back(t1); sv.push_back(t2); }
+            else
+            {
+                sv.push_back(t0);
+                sv.push_back(t1);
+                sv.push_back(t2);
+            }
         }
         // PAINTER'S ALGORITHM (hands): this is an overlay with NO depth buffer (verts carry sz=0), so neither
         // single- nor double-sided is correct on its own -- backface culling punches see-through holes wherever
@@ -2086,9 +2767,17 @@ void OTWDriverClass::VCock_DrawControllerModel(void)
         // surface is drawn last (no wrong overdraw). csZ is negative in front, so ascending = farthest first.
         if (paint)
         {
-            std::sort(st.begin(), st.end(), [](const VrSortTri& a, const VrSortTri& b) { return a.z < b.z; });
-            sv.clear(); sv.reserve(st.size() * 3);
-            for (size_t i = 0; i < st.size(); ++i) { sv.push_back(st[i].v[0]); sv.push_back(st[i].v[1]); sv.push_back(st[i].v[2]); }
+            std::sort(st.begin(), st.end(),
+                      [](const VrSortTri& a, const VrSortTri& b)
+                      { return a.z < b.z; });
+            sv.clear();
+            sv.reserve(st.size() * 3);
+            for (size_t i = 0; i < st.size(); ++i)
+            {
+                sv.push_back(st[i].v[0]);
+                sv.push_back(st[i].v[1]);
+                sv.push_back(st[i].v[2]);
+            }
         }
         // Lazy-load the diffuse texture (once) from the OBJ's mtllib map_Kd; NULL -> flat vertex-colour (v1 look).
         VrModelCache* mc = &s_vrModel[hnd];
@@ -2099,24 +2788,38 @@ void OTWDriverClass::VCock_DrawControllerModel(void)
             // LoadTextureFile/DrawColorTrisScreen). The old g_pD3D11Backend wrappers were NULL under D3D12 so the
             // hands never drew. Convert VrTriVtx -> TLVERTEX inline (same as the old D3D11Backend::DrawVrModelTris).
             extern IRenderer* g_pRenderer;
-            if (mc->tex[0] and g_pRenderer) { char tp[256]; sprintf(tp, "%scontrollers\\%s", COCKPIT_DIR, mc->tex); mc->srv = (void*)g_pRenderer->LoadTextureFile(tp); }
+            if (mc->tex[0] and g_pRenderer)
+            {
+                char tp[256];
+                sprintf(tp, "%scontrollers/%s", COCKPIT_DIR, mc->tex);
+                mc->srv = (void*)g_pRenderer->LoadTextureFile(tp);
+            }
         }
         extern IRenderer* g_pRenderer;
         if (g_pRenderer and not sv.empty())
         {
-            static std::vector<ScreenVertex> tl; tl.resize(sv.size());
+            static std::vector<ScreenVertex> tl;
+            tl.resize(sv.size());
             for (size_t i = 0; i < sv.size(); ++i)
             {
-                tl[i].sx = sv[i].x; tl[i].sy = sv[i].y; tl[i].sz = 0.0f; tl[i].rhw = 1.0f;
-                tl[i].color = sv[i].color; tl[i].specular = 0;
-                tl[i].tu0 = sv[i].u; tl[i].tv0 = sv[i].v; tl[i].tu1 = sv[i].u; tl[i].tv1 = sv[i].v;
+                tl[i].sx = sv[i].x;
+                tl[i].sy = sv[i].y;
+                tl[i].sz = 0.0f;
+                tl[i].rhw = 1.0f;
+                tl[i].color = sv[i].color;
+                tl[i].specular = 0;
+                tl[i].tu0 = sv[i].u;
+                tl[i].tv0 = sv[i].v;
+                tl[i].tu1 = sv[i].u;
+                tl[i].tv1 = sv[i].v;
             }
             // Hands: TWO-SIDED (cull 0) because the triangles are already sorted far-to-near above -- nothing is
             // culled (no see-through holes) and the nearest surface lands last (no wrong overdraw). Controllers
             // are rigid and keep the cheaper single-sided VrModelCull path.
             int cullMode = paint ? 0 : (int)g_fVrModelCull;
-            g_pRenderer->DrawColorTrisScreen(tl.data(), (int)sv.size(), (ID3D11ShaderResourceView*)mc->srv,
-                                             g_bVrModelOpaque ? 1 : 0, cullMode);
+            g_pRenderer->DrawColorTrisScreen(
+                tl.data(), (int)sv.size(), (ID3D11ShaderResourceView*)mc->srv,
+                g_bVrModelOpaque ? 1 : 0, cullMode);
         }
     }
 }
@@ -2127,58 +2830,95 @@ void OTWDriverClass::VCock_DrawControllerModel(void)
 // g_vrActiveHand = the pointing hand (right wins if both) -> the pick block uses it; -1 = mouse fallback.
 static void VrUpdateHandAnim(void)
 {
-    extern int   g_nVrRayToggle;
+    extern int g_nVrRayToggle;
     extern float g_fVrGripThresh, g_fVrClenchSpeed;
-    if (g_pOpenXRBackend == NULL) { g_vrActiveHand = -1; return; }
+    if (g_pOpenXRBackend == NULL)
+    {
+        g_vrActiveHand = -1;
+        return;
+    }
 
     float now = (float)vuxRealTime;
-    float dt  = (g_vrHandAnimTime < 0.0f) ? 0.016f : (now - g_vrHandAnimTime);
-    if (dt < 0.0f) dt = 0.0f; if (dt > 0.1f) dt = 0.1f;
+    float dt = (g_vrHandAnimTime < 0.0f) ? 0.016f : (now - g_vrHandAnimTime);
+    if (dt < 0.0f)
+        dt = 0.0f;
+    if (dt > 0.1f)
+        dt = 0.1f;
     g_vrHandAnimTime = now;
-    float step = g_fVrClenchSpeed * dt; if (step < 0.0f) step = 0.0f;
+    float step = g_fVrClenchSpeed * dt;
+    if (step < 0.0f)
+        step = 0.0f;
 
-    static bool s_prevSq[2] = { false, false };
+    static bool s_prevSq[2] = {false, false};
     for (int h = 0; h < 2; ++h)
     {
         OpenXRBackend::ControllerState cs;
-        bool has  = g_pOpenXRBackend->GetControllerState(h, &cs);
+        bool has = g_pOpenXRBackend->GetControllerState(h, &cs);
         bool sqOn = has and (cs.squeeze > g_fVrGripThresh or cs.squeezeDown);
 
         bool toggle;
-        if (g_nVrRayToggle == 0)      toggle = false;   // force hold
-        else if (g_nVrRayToggle == 1) toggle = true;    // force toggle
-        else { char prof[128] = ""; g_pOpenXRBackend->GetInteractionProfile(h, prof, sizeof(prof));   // auto by profile
-               toggle = (strstr(prof, "index") != NULL) or (strstr(prof, "knuckles") != NULL); }
+        if (g_nVrRayToggle == 0)
+            toggle = false; // force hold
+        else if (g_nVrRayToggle == 1)
+            toggle = true; // force toggle
+        else
+        {
+            char prof[128] = "";
+            g_pOpenXRBackend->GetInteractionProfile(
+                h, prof, sizeof(prof)); // auto by profile
+            toggle = (strstr(prof, "index") != NULL) or
+                     (strstr(prof, "knuckles") != NULL);
+        }
 
-        if (not has)      g_vrHandAnim[h].active = false;
-        else if (toggle){ if (sqOn and not s_prevSq[h]) g_vrHandAnim[h].active = not g_vrHandAnim[h].active; }
-        else              g_vrHandAnim[h].active = sqOn;
+        if (not has)
+            g_vrHandAnim[h].active = false;
+        else if (toggle)
+        {
+            if (sqOn and not s_prevSq[h])
+                g_vrHandAnim[h].active = not g_vrHandAnim[h].active;
+        }
+        else
+            g_vrHandAnim[h].active = sqOn;
         s_prevSq[h] = sqOn;
 
         float tgt = g_vrHandAnim[h].active ? 1.0f : 0.0f;
-        if      (g_vrHandAnim[h].t < tgt) { g_vrHandAnim[h].t += step; if (g_vrHandAnim[h].t > tgt) g_vrHandAnim[h].t = tgt; }
-        else if (g_vrHandAnim[h].t > tgt) { g_vrHandAnim[h].t -= step; if (g_vrHandAnim[h].t < tgt) g_vrHandAnim[h].t = tgt; }
+        if (g_vrHandAnim[h].t < tgt)
+        {
+            g_vrHandAnim[h].t += step;
+            if (g_vrHandAnim[h].t > tgt)
+                g_vrHandAnim[h].t = tgt;
+        }
+        else if (g_vrHandAnim[h].t > tgt)
+        {
+            g_vrHandAnim[h].t -= step;
+            if (g_vrHandAnim[h].t < tgt)
+                g_vrHandAnim[h].t = tgt;
+        }
     }
-    g_vrActiveHand = g_vrHandAnim[1].active ? 1 : (g_vrHandAnim[0].active ? 0 : -1);   // right wins if both
+    g_vrActiveHand =
+        g_vrHandAnim[1].active ?
+            1 :
+            (g_vrHandAnim[0].active ? 0 : -1); // right wins if both
 }
 
 void OTWDriverClass::VCock_Exec(void)
 {
 #if 1
-    renderer->ChangeFontSet(&VirtualDisplay::Font3D);   // ASFO:
+    renderer->ChangeFontSet(&VirtualDisplay::Font3D); // ASFO:
 
     int i;
-    PlayerRwrClass *rwr;
+    PlayerRwrClass* rwr;
     float x1, y1, x2, y2;
     mlTrig trig;
-    SMSClass *sms = SimDriver.GetPlayerAircraft()->Sms;
+    SMSClass* sms = SimDriver.GetPlayerAircraft()->Sms;
     int oldFont = VirtualDisplay::CurFont();
 
     // Make sure we don't get in here when we shouldn't
     ShiAssert(otwPlatform);
     ShiAssert(otwPlatform->IsSetFlag(MOTION_OWNSHIP));
     //ShiAssert( otwPlatform == SimDriver.GetPlayerAircraft() );
-    ShiAssert(sms); // If we legally might not have one, then we'd have to skip the ordinance...
+    ShiAssert(
+        sms); // If we legally might not have one, then we'd have to skip the ordinance...
 
     /*
     ** Render the 3d cockpit object
@@ -2186,7 +2926,7 @@ void OTWDriverClass::VCock_Exec(void)
 
     ShiAssert(vrCockpit);
 
-    if ( not vrCockpit) // CTD fix
+    if (not vrCockpit) // CTD fix
         return;
 
 
@@ -2201,7 +2941,8 @@ void OTWDriverClass::VCock_Exec(void)
 
     {
         // MLR 2003-10-05 This needs to be moved so it only runs once
-        DrawableBSP *bsp = (DrawableBSP*)SimDriver.GetPlayerAircraft()->drawPointer;
+        DrawableBSP* bsp =
+            (DrawableBSP*)SimDriver.GetPlayerAircraft()->drawPointer;
         int t = bsp->GetTextureSet();
         vrCockpit->SetTextureSet(t % vrCockpit->GetNTextureSet());
 
@@ -2214,7 +2955,6 @@ void OTWDriverClass::VCock_Exec(void)
     }
 
 
-
     // master caution light
     /*ATARIBABY Master Caution Light fix - not updated in virtual cockpit
     Use cockpitFlightData.IsSet(FlightData::MasterCaution) instead of pCockpitManager->mMiscStates.GetMasterCautionLight()
@@ -2223,7 +2963,9 @@ void OTWDriverClass::VCock_Exec(void)
     // sfr: will test this using callbacks
 #if 1
 
-    if (cockpitFlightData.IsSet(FlightData::MasterCaution) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+    if (cockpitFlightData.IsSet(FlightData::MasterCaution) and
+        not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
         vrCockpit->SetSwitchMask(2, 1);
     else
         vrCockpit->SetSwitchMask(2, 0);
@@ -2239,68 +2981,92 @@ void OTWDriverClass::VCock_Exec(void)
         //******************************************
 
         // AR/RDY light
-        if (cockpitFlightData.IsSet(FlightData::RefuelRDY) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelRDY) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARRDY_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARRDY_LIGHT, 0);
 
         // AR/NWS light
-        if (cockpitFlightData.IsSet(FlightData::RefuelAR) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelAR) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARNWS_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARNWS_LIGHT, 0);
 
         // AR/DISC light
-        if (cockpitFlightData.IsSet(FlightData::RefuelDSC) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::RefuelDSC) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARDISC_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ARDISC_LIGHT, 0);
 
         // AOA BELOW light
-        if (cockpitFlightData.IsSet(FlightData::AOABelow) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOABelow) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOABELOW_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOABELOW_LIGHT, 0);
 
         // AOA ON light
-        if (cockpitFlightData.IsSet(FlightData::AOAOn) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOAOn) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAON_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAON_LIGHT, 0);
 
         // AOA ABOVE light
-        if (cockpitFlightData.IsSet(FlightData::AOAAbove) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::AOAAbove) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAABOVE_LIGHT, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AOAABOVE_LIGHT, 0);
 
         //EYEBROW CAUTION lights
         //ENG FIRE
-        if (cockpitFlightData.IsSet(FlightData::ENG_FIRE) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::ENG_FIRE) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGFIRE, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGFIRE, 0);
 
         //ENGINE
-        if (cockpitFlightData.IsSet(FlightData::EngineFault) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::EngineFault) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGINE, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_ENGINE, 0);
 
         //HYD/OIL
-        if ((cockpitFlightData.IsSet(FlightData::HYD) or cockpitFlightData.IsSet(FlightData::OIL)) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::HYD) or
+             cockpitFlightData.IsSet(FlightData::OIL)) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_HYDOIL, 0);
 
         //FLCS
-        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) or cockpitFlightData.IsSet(FlightData::DUAL)) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::FltControlSys) or
+             cockpitFlightData.IsSet(FlightData::DUAL)) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_FLCS, 0);
 
         //TO/LDG config
-        if (cockpitFlightData.IsSet(FlightData::T_L_CFG) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::T_L_CFG) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TOLDG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TOLDG, 0);
@@ -2309,17 +3075,24 @@ void OTWDriverClass::VCock_Exec(void)
         int canopyopen;
 
         if (SimDriver.GetPlayerAircraft()->IsComplex())
-            canopyopen = SimDriver.GetPlayerAircraft()->GetDOFValue(COMP_CANOPY_DOF) > 0;
+            canopyopen =
+                SimDriver.GetPlayerAircraft()->GetDOFValue(COMP_CANOPY_DOF) > 0;
         else
-            canopyopen = SimDriver.GetPlayerAircraft()->GetDOFValue(SIMP_CANOPY_DOF) > 0;
+            canopyopen =
+                SimDriver.GetPlayerAircraft()->GetDOFValue(SIMP_CANOPY_DOF) > 0;
 
-        if ((cockpitFlightData.IsSet(FlightData::CAN) or cockpitFlightData.IsSet(FlightData::OXY_LOW) or canopyopen) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((cockpitFlightData.IsSet(FlightData::CAN) or
+             cockpitFlightData.IsSet(FlightData::OXY_LOW) or canopyopen) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_CANOPY, 0);
 
         //TF-FAIL
-        if (cockpitFlightData.IsSet(FlightData::TF) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (cockpitFlightData.IsSet(FlightData::TF) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TFFAIL, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EYEBROW_TFFAIL, 0);
@@ -2329,18 +3102,24 @@ void OTWDriverClass::VCock_Exec(void)
         if (SimDriver.GetPlayerAircraft()->GetInteriorLight())
         {
             vrCockpit->SetSwitchMask(COMP_3DPIT_INTERIOR_LIGHTS, 1);
-            SimDriver.GetPlayerAircraft()->SetSwitch(COMP_3DPIT_INTERIOR_LIGHTS, 1);
-            SimDriver.GetPlayerAircraft()->SetAcStatusBits(AircraftClass::ACSTATUS_PITLIGHT);
+            SimDriver.GetPlayerAircraft()->SetSwitch(COMP_3DPIT_INTERIOR_LIGHTS,
+                                                     1);
+            SimDriver.GetPlayerAircraft()->SetAcStatusBits(
+                AircraftClass::ACSTATUS_PITLIGHT);
         }
         else
         {
             vrCockpit->SetSwitchMask(COMP_3DPIT_INTERIOR_LIGHTS, 0);
-            SimDriver.GetPlayerAircraft()->SetSwitch(COMP_3DPIT_INTERIOR_LIGHTS, 0);
-            SimDriver.GetPlayerAircraft()->ClearAcStatusBits(AircraftClass::ACSTATUS_PITLIGHT);
+            SimDriver.GetPlayerAircraft()->SetSwitch(COMP_3DPIT_INTERIOR_LIGHTS,
+                                                     0);
+            SimDriver.GetPlayerAircraft()->ClearAcStatusBits(
+                AircraftClass::ACSTATUS_PITLIGHT);
         }
 
         //Instrument lights
-        if ((SimDriver.GetPlayerAircraft()->GetInstrumentLight()) and not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if ((SimDriver.GetPlayerAircraft()->GetInstrumentLight()) and
+            not SimDriver.GetPlayerAircraft()->mainPower ==
+                AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_INSTRUMENT_LIGHTS, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_INSTRUMENT_LIGHTS, 0);
@@ -2349,149 +3128,313 @@ void OTWDriverClass::VCock_Exec(void)
         // New 3D cockpit Lights
         //******************************************
         // Caution Panel lights
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_1, SimDriver.GetPlayerAircraft()->mFaults->GetFault(flt_cont_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_1,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    flt_cont_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_2, SimDriver.GetPlayerAircraft()->mFaults->GetFault(elec_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_2,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(elec_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_3, SimDriver.GetPlayerAircraft()->mFaults->GetFault(probeheat_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_3,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    probeheat_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_4, SimDriver.GetPlayerAircraft()->mFaults->GetFault(lef_fault));  // LEF sub'ed for C ADC ????
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_4,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    lef_fault)); // LEF sub'ed for C ADC ????
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_5, SimDriver.GetPlayerAircraft()->mFaults->GetFault(stores_config_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_5,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    stores_config_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_6, SimDriver.GetPlayerAircraft()->mFaults->GetFault(lastFault));  // no act sub'ed for AFT NOT ENGAGED ???
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_6,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    lastFault)); // no act sub'ed for AFT NOT ENGAGED ???
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_7, SimDriver.GetPlayerAircraft()->mFaults->GetFault(fwd_fuel_low_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_7,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    fwd_fuel_low_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL1_8, SimDriver.GetPlayerAircraft()->mFaults->GetFault(aft_fuel_low_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL1_8,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    aft_fuel_low_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_1, cockpitFlightData.IsSet(FlightData::EngineFault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_1,
+                cockpitFlightData.IsSet(FlightData::EngineFault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_2, SimDriver.GetPlayerAircraft()->mFaults->GetFault(sec_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_2,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(sec_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_3, SimDriver.GetPlayerAircraft()->mFaults->GetFault(fueloil_hot_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_3,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    fueloil_hot_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_4, SimDriver.GetPlayerAircraft()->mFaults->GetFault(le_flaps_fault));  // Flaps fault sub'ed for INLET ICING ???
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_4,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    le_flaps_fault)); // Flaps fault sub'ed for INLET ICING ???
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_5, SimDriver.GetPlayerAircraft()->mFaults->GetFault(overheat_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_5,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    overheat_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_6, SimDriver.GetPlayerAircraft()->mFaults->GetFault(ecm_fault));  // ecm fault sub'ed for ECC ???
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_6,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    ecm_fault)); // ecm fault sub'ed for ECC ???
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_7, SimDriver.GetPlayerAircraft()->mFaults->GetFault(buc_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_7,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(buc_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL2_8, SimDriver.GetPlayerAircraft()->mFaults->GetFault(fuel_low_fault));  // Fuel Low fault sub'ed for blank
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL2_8,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    fuel_low_fault)); // Fuel Low fault sub'ed for blank
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_1, SimDriver.GetPlayerAircraft()->mFaults->GetFault(avionics_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_1,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    avionics_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_2, SimDriver.GetPlayerAircraft()->mFaults->GetFault(equip_host_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_2,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    equip_host_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_3, SimDriver.GetPlayerAircraft()->mFaults->GetFault(radar_alt_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_3,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    radar_alt_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_4, SimDriver.GetPlayerAircraft()->mFaults->GetFault(iff_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_4,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(iff_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_5, SimDriver.GetPlayerAircraft()->mFaults->GetFault(lastFault));  // no act sub'ed for NUCLEAR ???
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_5,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    lastFault)); // no act sub'ed for NUCLEAR ???
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_6, SimDriver.GetPlayerAircraft()->mFaults->GetFault(fuel_trapped));  // Fuel trapped fault sub'ed for ECC ???
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_6,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    fuel_trapped)); // Fuel trapped fault sub'ed for ECC ???
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_7, SimDriver.GetPlayerAircraft()->mFaults->GetFault(fuel_home));  // Fuel "Bingo" fault sub'ed for blank
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_7,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    fuel_home)); // Fuel "Bingo" fault sub'ed for blank
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL3_8, SimDriver.GetPlayerAircraft()->mFaults->GetFault(lastFault));  // blank
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL3_8,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    lastFault)); // blank
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_1, SimDriver.GetPlayerAircraft()->mFaults->GetFault(seat_notarmed_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_1,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    seat_notarmed_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_2, SimDriver.GetPlayerAircraft()->mFaults->GetFault(nws_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_2,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(nws_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_3, SimDriver.GetPlayerAircraft()->mFaults->GetFault(anti_skid_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_3,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    anti_skid_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_4, SimDriver.GetPlayerAircraft()->mFaults->GetFault(hook_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_4,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(hook_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_5, SimDriver.GetPlayerAircraft()->mFaults->GetFault(oxy_low_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_5,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    oxy_low_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_6, SimDriver.GetPlayerAircraft()->mFaults->GetFault(cabin_press_fault));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_6,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    cabin_press_fault));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_7, SimDriver.GetPlayerAircraft()->mFaults->GetFault(lastFault));  // blank
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_7,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    lastFault)); // blank
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_FAULT_COL4_8, SimDriver.GetPlayerAircraft()->mFaults->GetFault(lastFault));  // blank
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_FAULT_COL4_8,
+                SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                    lastFault)); // blank
 
         // Indicator lights
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_TFR_STBY, cockpitFlightData.IsSet(FlightData::TFR_STBY));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_TFR_STBY,
+                cockpitFlightData.IsSet(FlightData::TFR_STBY));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_ECM_PWR, cockpitFlightData.IsSet(FlightData::EcmPwr));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_ECM_PWR,
+                cockpitFlightData.IsSet(FlightData::EcmPwr));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_ECM_FAIL, cockpitFlightData.IsSet(FlightData::EcmFail));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_ECM_FAIL,
+                cockpitFlightData.IsSet(FlightData::EcmFail));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_EPU_ON, cockpitFlightData.IsSet(FlightData::EPUOn));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_EPU_ON, cockpitFlightData.IsSet(FlightData::EPUOn));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_JFS_ON, cockpitFlightData.IsSet(FlightData::JFSOn));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_JFS_ON, cockpitFlightData.IsSet(FlightData::JFSOn));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_EPU_HYD, cockpitFlightData.IsSet(FlightData::Hydrazine));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_EPU_HYD,
+                cockpitFlightData.IsSet(FlightData::Hydrazine));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_EPU_AIR, cockpitFlightData.IsSet(FlightData::Air));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(COMP_3DPIT_EPU_AIR,
+                                     cockpitFlightData.IsSet(FlightData::Air));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_FLCSPGM, cockpitFlightData.IsSet(FlightData::FlcsPmg));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_FLCSPGM,
+                cockpitFlightData.IsSet(FlightData::FlcsPmg));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_MAINGEN, cockpitFlightData.IsSet(FlightData::MainGen));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_MAINGEN,
+                cockpitFlightData.IsSet(FlightData::MainGen));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_STBYGEN, cockpitFlightData.IsSet(FlightData::StbyGen));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_STBYGEN,
+                cockpitFlightData.IsSet(FlightData::StbyGen));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_EPUGEN, cockpitFlightData.IsSet(FlightData::EpuGen));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_EPUGEN,
+                cockpitFlightData.IsSet(FlightData::EpuGen));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_EPUPMG, cockpitFlightData.IsSet(FlightData::EpuPmg));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_EPUPMG,
+                cockpitFlightData.IsSet(FlightData::EpuPmg));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_TOFLCS, cockpitFlightData.IsSet(FlightData::ToFlcs));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_TOFLCS,
+                cockpitFlightData.IsSet(FlightData::ToFlcs));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_FLCSRLY, cockpitFlightData.IsSet(FlightData::FlcsRly));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_FLCSRLY,
+                cockpitFlightData.IsSet(FlightData::FlcsRly));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_PWR_BATFAIL, cockpitFlightData.IsSet(FlightData::BatFail));
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
+            vrCockpit->SetSwitchMask(
+                COMP_3DPIT_PWR_BATFAIL,
+                cockpitFlightData.IsSet(FlightData::BatFail));
 
-        if ( not SimDriver.GetPlayerAircraft()->mainPower == AircraftClass::MainPowerOff)
+        if (not SimDriver.GetPlayerAircraft()->mainPower ==
+            AircraftClass::MainPowerOff)
             vrCockpit->SetSwitchMask(COMP_3DPIT_AVTR_ON, SimDriver.AVTROn());
 
         //******************************************
@@ -2501,7 +3444,8 @@ void OTWDriverClass::VCock_Exec(void)
         //ADI and BACKUP ADI stuff
         if (g_bRealisticAvionics and g_bINS)
         {
-            if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::BUP_ADI_OFF_IN))
+            if (SimDriver.GetPlayerAircraft()->INSState(
+                    AircraftClass::BUP_ADI_OFF_IN))
             {
                 //make a check for the BUP ADI energy here when ready
                 BUPADIPitch3d = cockpitFlightData.pitch;
@@ -2521,7 +3465,8 @@ void OTWDriverClass::VCock_Exec(void)
                 vrCockpit->SetSwitchMask(COMP_3DPIT_BACKUP_ADI_OFFMARK, 1);
             }
 
-            if ( not SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_ADI_OFF_IN))
+            if (not SimDriver.GetPlayerAircraft()->INSState(
+                    AircraftClass::INS_ADI_OFF_IN))
             {
                 //stay where you currently are
                 ADIPitch3d = LastMainADIPitch3d;
@@ -2534,7 +3479,6 @@ void OTWDriverClass::VCock_Exec(void)
                 LastMainADIPitch3d = ADIPitch3d;
                 LastMainADIRoll3d = ADIRoll3d;
             }
-
         }
         else
         {
@@ -2551,25 +3495,31 @@ void OTWDriverClass::VCock_Exec(void)
         vrCockpit->SetDOFangle(COMP_3DPIT_ADI_PITCH, -ADIPitch3d);
 
         //MAIN ADI OFF flag
-        if ( not SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_ADI_OFF_IN))
+        if (not SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::INS_ADI_OFF_IN))
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_OFF_FLAG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_OFF_FLAG, 0);
 
         //MAIN ADI AUX flag
-        if ( not SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_ADI_AUX_IN))
+        if (not SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::INS_ADI_AUX_IN))
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_AUX_FLAG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_AUX_FLAG, 0);
 
         //MAIN ADI LOC flag
-        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->LOCValid == FALSE or
+            SimDriver.GetPlayerAircraft()->currentPower ==
+                AircraftClass::PowerNone)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_LOC_FLAG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_LOC_FLAG, 0);
 
         //MAIN ADI GS flag
-        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE or SimDriver.GetPlayerAircraft()->currentPower == AircraftClass::PowerNone)
+        if (SimDriver.GetPlayerAircraft()->GSValid == FALSE or
+            SimDriver.GetPlayerAircraft()->currentPower ==
+                AircraftClass::PowerNone)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_GS_FLAG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ADI_GS_FLAG, 0);
@@ -2595,20 +3545,24 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetDOFangle(COMP_3DPIT_ILSH_NEEDLE, -hILSneedle / 10.0F);
 
             //i use this timer for other needles as well
-            if (SimDriver.GetPlayerAircraft()->af->HydraulicA() and HYDA3d < 3.64F)
+            if (SimDriver.GetPlayerAircraft()->af->HydraulicA() and
+                HYDA3d < 3.64F)
             {
                 HYDA3d = HYDA3d + 0.1F;
             }
-            else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicA() and HYDA3d > 0.0F)
+            else if (not SimDriver.GetPlayerAircraft()->af->HydraulicA() and
+                     HYDA3d > 0.0F)
             {
                 HYDA3d = HYDA3d - 0.1F;
             }
 
-            if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and HYDB3d < 3.64F)
+            if (SimDriver.GetPlayerAircraft()->af->HydraulicB() and
+                HYDB3d < 3.64F)
             {
                 HYDB3d = HYDB3d + 0.1F;
             }
-            else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicB() and HYDB3d > 0.0F)
+            else if (not SimDriver.GetPlayerAircraft()->af->HydraulicB() and
+                     HYDB3d > 0.0F)
             {
                 HYDB3d = HYDB3d - 0.1F;
             }
@@ -2618,13 +3572,18 @@ void OTWDriverClass::VCock_Exec(void)
 
         if (gNavigationSys)
         {
-            if ((gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_TACAN or
-                 gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV) and 
-                gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hILS))
+            if ((gNavigationSys->GetInstrumentMode() ==
+                     NavigationSystem::ILS_TACAN or
+                 gNavigationSys->GetInstrumentMode() ==
+                     NavigationSystem::ILS_NAV) and
+                gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV,
+                                                &hILS))
             {
 
-                gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV, &hILS);
-                gNavigationSys->GetILSAttribute(NavigationSystem::GS_DEV, &vILS);
+                gNavigationSys->GetILSAttribute(NavigationSystem::GP_DEV,
+                                                &hILS);
+                gNavigationSys->GetILSAttribute(NavigationSystem::GS_DEV,
+                                                &vILS);
                 hILS *= RTD;
                 vILS *= RTD;
                 hILS = min(max(hILS, -3.75F), 3.75F) / 3.75F;
@@ -2659,13 +3618,19 @@ void OTWDriverClass::VCock_Exec(void)
 
         //HSI
         //current heading
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_HDG, -cockpitFlightData.currentHeading * 0.017453292F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_HDG,
+                               -cockpitFlightData.currentHeading *
+                                   0.017453292F);
         //desired course
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS, cockpitFlightData.desiredCourse * 0.017453292F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS,
+                               cockpitFlightData.desiredCourse * 0.017453292F);
         //desired heading
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DHDG, cockpitFlightData.desiredHeading * 0.017453292F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DHDG,
+                               cockpitFlightData.desiredHeading * 0.017453292F);
         //beacon course
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_BCN, cockpitFlightData.bearingToBeacon * 0.017453292F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_BCN,
+                               cockpitFlightData.bearingToBeacon *
+                                   0.017453292F);
 
         //HSI TO/FROM flags
         BOOL crsToTrueFlag = HSITOFROM3d;
@@ -2674,22 +3639,23 @@ void OTWDriverClass::VCock_Exec(void)
         {
             if (gNavigationSys)
             {
-                if (gNavigationSys->GetInstrumentMode() == NavigationSystem::NAV)
+                if (gNavigationSys->GetInstrumentMode() ==
+                    NavigationSystem::NAV)
                     crsToTrueFlag = FALSE;
             }
         }
 
-        if (crsToTrueFlag == TRUE)   // to
+        if (crsToTrueFlag == TRUE) // to
         {
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_TO_FLAG, 1);
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_FROM_FLAG, 0);
         }
-        else if (crsToTrueFlag == 2)   // from
+        else if (crsToTrueFlag == 2) // from
         {
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_TO_FLAG, 0);
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_FROM_FLAG, 1);
         }
-        else   // to/from both off
+        else // to/from both off
         {
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_TO_FLAG, 0);
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_FROM_FLAG, 0);
@@ -2698,14 +3664,17 @@ void OTWDriverClass::VCock_Exec(void)
         //HSI course deviation needle
         float hsidev = cockpitFlightData.courseDeviation;
 
-        if (hsidev > 90) hsidev = 180 - hsidev;
+        if (hsidev > 90)
+            hsidev = 180 - hsidev;
 
-        if (hsidev < -90) hsidev = - (180 + hsidev);
+        if (hsidev < -90)
+            hsidev = -(180 + hsidev);
 
         vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRSDEV, hsidev);
 
         //HSI OFF flag
-        if ( not SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_HSI_OFF_IN))
+        if (not SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::INS_HSI_OFF_IN))
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_OFF_FLAG, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_OFF_FLAG, 0);
@@ -2724,22 +3693,31 @@ void OTWDriverClass::VCock_Exec(void)
 
         //HSI distance to beacon digital readout
         float hsidist = cockpitFlightData.distanceToBeacon;
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DIST_DIGIT3, ExtractDigit(hsidist, 0) * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DIST_DIGIT2, ExtractDigit(hsidist, 1) * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DIST_DIGIT1, ExtractDigit(hsidist, 2) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DIST_DIGIT3,
+                               ExtractDigit(hsidist, 0) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DIST_DIGIT2,
+                               ExtractDigit(hsidist, 1) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_DIST_DIGIT1,
+                               ExtractDigit(hsidist, 2) * 0.6283F);
 
         //HSI course digital readout
         float hsicrs = cockpitFlightData.desiredCourse;
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS_DIGIT3, ExtractDigit(hsicrs, 0) * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS_DIGIT2, ExtractDigit(hsicrs, 1) * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS_DIGIT1, ExtractDigit(hsicrs, 2) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS_DIGIT3,
+                               ExtractDigit(hsicrs, 0) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS_DIGIT2,
+                               ExtractDigit(hsicrs, 1) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_HSI_CRS_DIGIT1,
+                               ExtractDigit(hsicrs, 2) * 0.6283F);
 
         //fuel flow digital readout
         float fuelflow = cockpitFlightData.fuelFlow;
-        float fuelflowdigit3 = (((long) fuelflow) % 1000) / 1000.0F;
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFLOW_DIGIT3, fuelflowdigit3 * (2 * PI));
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFLOW_DIGIT2, ExtractDigit(fuelflow, 3) * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFLOW_DIGIT1, ExtractDigit(fuelflow, 4) * 0.6283F);
+        float fuelflowdigit3 = (((long)fuelflow) % 1000) / 1000.0F;
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFLOW_DIGIT3,
+                               fuelflowdigit3 * (2 * PI));
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFLOW_DIGIT2,
+                               ExtractDigit(fuelflow, 3) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFLOW_DIGIT1,
+                               ExtractDigit(fuelflow, 4) * 0.6283F);
 
 
         //******************************************
@@ -2747,7 +3725,8 @@ void OTWDriverClass::VCock_Exec(void)
         //******************************************
 
         //G-Meter needle
-        vrCockpit->SetDOFangle(COMP_3DPIT_G_NEEDLE, (float) cockpitFlightData.gs);
+        vrCockpit->SetDOFangle(COMP_3DPIT_G_NEEDLE,
+                               (float)cockpitFlightData.gs);
 
         //ASI needle
         float value = cockpitFlightData.kias;
@@ -2759,37 +3738,45 @@ void OTWDriverClass::VCock_Exec(void)
 
         value = value / 100.0F;
         //ASI Instrument has a Log10 scale.
-        vrCockpit->SetDOFangle(COMP_3DPIT_ASI_NEEDLE, (float)((log10(value) * 5.8F) + 0.6F));
+        vrCockpit->SetDOFangle(COMP_3DPIT_ASI_NEEDLE,
+                               (float)((log10(value) * 5.8F) + 0.6F));
 
         //ASI mach digital readout
         float machNumber;
         int machfirstDigit;
         int machsecondDigit;
         machNumber = cockpitFlightData.mach;
-        machfirstDigit = (int) machNumber;
-        machsecondDigit = (int)(10.0F * (machNumber - ((float) machfirstDigit)));
+        machfirstDigit = (int)machNumber;
+        machsecondDigit = (int)(10.0F * (machNumber - ((float)machfirstDigit)));
 
-        vrCockpit->SetDOFangle(COMP_3DPIT_ASIMACH_DIGIT1, (float) machfirstDigit * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_ASIMACH_DIGIT2, (float) machsecondDigit * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_ASIMACH_DIGIT1,
+                               (float)machfirstDigit * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_ASIMACH_DIGIT2,
+                               (float)machsecondDigit * 0.6283F);
 
         //ALTIMETER needle
-        float altneedle = (((long) - cockpitFlightData.z) % 1000) / 1000.0F;
-        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_NEEDLE, (float) altneedle * (2 * PI));
+        float altneedle = (((long)-cockpitFlightData.z) % 1000) / 1000.0F;
+        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_NEEDLE,
+                               (float)altneedle * (2 * PI));
 
         //ALTIMETER digital readout
         float alt;
         int altfirstDigit;
         int altsecondDigit;
         alt = -cockpitFlightData.z;
-        altfirstDigit = (int) alt / 10000;
-        altsecondDigit = (int)(((alt / 10000) - altfirstDigit) * 10.0F) ;
+        altfirstDigit = (int)alt / 10000;
+        altsecondDigit = (int)(((alt / 10000) - altfirstDigit) * 10.0F);
 
-        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_DIGIT1, (float) altfirstDigit * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_DIGIT2, (float) altsecondDigit * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_DIGIT3, (float) altneedle * (2 * PI));
+        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_DIGIT1,
+                               (float)altfirstDigit * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_DIGIT2,
+                               (float)altsecondDigit * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_ALT_DIGIT3,
+                               (float)altneedle * (2 * PI));
 
         //ALTIMETER PNEU flag - if main generator not running then PNEU flag apears
-        if ( not SimDriver.GetPlayerAircraft()->af->GeneratorRunning(AirframeClass::GenMain))
+        if (not SimDriver.GetPlayerAircraft()->af->GeneratorRunning(
+                AirframeClass::GenMain))
         {
             vrCockpit->SetSwitchMask(COMP_3DPIT_ALTPNEU_FLAG, 1);
         }
@@ -2801,20 +3788,30 @@ void OTWDriverClass::VCock_Exec(void)
         //total fuel digital readout
         vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT5, 0);
         vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT4, 0);
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT3, ExtractDigit(cockpitFlightData.total, 2) * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT2, ExtractDigit(cockpitFlightData.total, 3) * 0.6283F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT1, ExtractDigit(cockpitFlightData.total, 4) * 0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT3,
+                               ExtractDigit(cockpitFlightData.total, 2) *
+                                   0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT2,
+                               ExtractDigit(cockpitFlightData.total, 3) *
+                                   0.6283F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUEL_DIGIT1,
+                               ExtractDigit(cockpitFlightData.total, 4) *
+                                   0.6283F);
 
         //FUEL FWD needle
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFWD_NEEDLE, (float) cockpitFlightData.fwd * 0.00010F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUELFWD_NEEDLE,
+                               (float)cockpitFlightData.fwd * 0.00010F);
         //FUEL AFT needle
-        vrCockpit->SetDOFangle(COMP_3DPIT_FUELAFT_NEEDLE, (float) cockpitFlightData.aft * 0.00010F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_FUELAFT_NEEDLE,
+                               (float)cockpitFlightData.aft * 0.00010F);
 
         //OIL press
-        vrCockpit->SetDOFangle(COMP_3DPIT_OIL_NEEDLE, (float) cockpitFlightData.oilPressure * 0.057F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_OIL_NEEDLE,
+                               (float)cockpitFlightData.oilPressure * 0.057F);
 
         //NOZZLE pos
-        vrCockpit->SetDOFangle(COMP_3DPIT_NOZ_NEEDLE, (float) cockpitFlightData.nozzlePos * 0.042F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_NOZ_NEEDLE,
+                               (float)cockpitFlightData.nozzlePos * 0.042F);
 
         float rpm = cockpitFlightData.rpm;
         float needle;
@@ -2859,7 +3856,8 @@ void OTWDriverClass::VCock_Exec(void)
         }
         else
         {
-            ftit = 7.6F + (rpm - 1.0F) / 0.53F * 0.4F; // 0.53 is full afterburner
+            ftit =
+                7.6F + (rpm - 1.0F) / 0.53F * 0.4F; // 0.53 is full afterburner
         }
 
         if (ftit > 12.0F)
@@ -2892,7 +3890,8 @@ void OTWDriverClass::VCock_Exec(void)
         {
             HYDA3d = MoveByRate(HYDA3d, 3.64F, 200);
         }
-        else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicA() and HYDA3d > 0.0F)
+        else if (not SimDriver.GetPlayerAircraft()->af->HydraulicA() and
+                 HYDA3d > 0.0F)
         {
             HYDA3d = MoveByRate(HYDA3d, 0.0F, 200);
         }
@@ -2901,7 +3900,8 @@ void OTWDriverClass::VCock_Exec(void)
         {
             HYDB3d = MoveByRate(HYDB3d, 3.64F, 200);
         }
-        else if ( not SimDriver.GetPlayerAircraft()->af->HydraulicB() and HYDB3d > 0.0F)
+        else if (not SimDriver.GetPlayerAircraft()->af->HydraulicB() and
+                 HYDB3d > 0.0F)
         {
             HYDB3d = MoveByRate(HYDB3d, 0.0F, 200);
         }
@@ -2913,7 +3913,8 @@ void OTWDriverClass::VCock_Exec(void)
         vrCockpit->SetDOFangle(COMP_3DPIT_HYDB_NEEDLE, HYDB3d);
 
         //EPU fuel
-        vrCockpit->SetDOFangle(COMP_3DPIT_EPU_NEEDLE, cockpitFlightData.epuFuel * 0.04241F);
+        vrCockpit->SetDOFangle(COMP_3DPIT_EPU_NEEDLE,
+                               cockpitFlightData.epuFuel * 0.04241F);
 
         //AOA tape
         if (cockpitFlightData.IsSetHsi(FlightData::AOA))
@@ -2988,11 +3989,15 @@ void OTWDriverClass::VCock_Exec(void)
         float Seconds = (float)seconds;
         Hours += (Minutes * 0.01667F); // minutes * 1/60
         Minutes += (Seconds * 0.01667F);
-        vrCockpit->SetDOFangle(COMP_3DPIT_CLOCK_HRS, Hours * 30.0F * DTR); // degrees per hour
-        vrCockpit->SetDOFangle(COMP_3DPIT_CLOCK_MINS, Minutes * 6.0F * DTR); // degrees per minute
-        vrCockpit->SetDOFangle(COMP_3DPIT_CLOCK_SECS, Seconds * 6.0F * DTR); // degrees per second
+        vrCockpit->SetDOFangle(COMP_3DPIT_CLOCK_HRS,
+                               Hours * 30.0F * DTR); // degrees per hour
+        vrCockpit->SetDOFangle(COMP_3DPIT_CLOCK_MINS,
+                               Minutes * 6.0F * DTR); // degrees per minute
+        vrCockpit->SetDOFangle(COMP_3DPIT_CLOCK_SECS,
+                               Seconds * 6.0F * DTR); // degrees per second
 
-        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(SimDriver.GetPlayerAircraft(), SensorClass::RWR);
+        PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(
+            SimDriver.GetPlayerAircraft(), SensorClass::RWR);
 
         // RWR Launch warning light
         if (theRwr)
@@ -3033,34 +4038,41 @@ void OTWDriverClass::VCock_Exec(void)
             else
                 vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_SEARCH, 1);
 
-            vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_HNDOFF, 1);  // Momentary Sw
+            vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_HNDOFF, 1); // Momentary Sw
         }
 
         // Master Arm switch
-        if (SimDriver.GetPlayerAircraft()->Sms->MasterArm() == SMSBaseClass::Arm)
+        if (SimDriver.GetPlayerAircraft()->Sms->MasterArm() ==
+            SMSBaseClass::Arm)
             vrCockpit->SetSwitchMask(COMP_3DPIT_MASTER_ARM, 2);
-        else if (SimDriver.GetPlayerAircraft()->Sms->MasterArm() ==  SMSBaseClass::Sim)
+        else if (SimDriver.GetPlayerAircraft()->Sms->MasterArm() ==
+                 SMSBaseClass::Sim)
             vrCockpit->SetSwitchMask(COMP_3DPIT_MASTER_ARM, 4);
         else // safe
             vrCockpit->SetSwitchMask(COMP_3DPIT_MASTER_ARM, 1);
 
         // HUD Scale switch
         if (TheHud->GetScalesSwitch() < 3)
-            vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_VAH, 1 << (2 - TheHud->GetScalesSwitch()));
+            vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_VAH,
+                                     1 << (2 - TheHud->GetScalesSwitch()));
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_VAH, 1);
 
         // HUD Pitch ladder switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_FPM_LADD, 1 << TheHud->GetFPMSwitch());
+        vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_FPM_LADD,
+                                 1 << TheHud->GetFPMSwitch());
         // HUD Color wheel
         vrCockpit->SetSwitchMask(COMP_3DPIT_ICP_BRT_WHEEL, 1 << curColorIdx);
         // HUD Contrast wheel
-        vrCockpit->SetSwitchMask(COMP_3DPIT_ICP_BRT_WHEEL, 1 << ((int)(TheHud->ContWheelPos * 10)));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_ICP_BRT_WHEEL,
+                                 1 << ((int)(TheHud->ContWheelPos * 10)));
         // ICP DriftCo switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_ICP_DRIFTCO, 1 << TheHud->GetDriftCOSwitch());
+        vrCockpit->SetSwitchMask(COMP_3DPIT_ICP_DRIFTCO,
+                                 1 << TheHud->GetDriftCOSwitch());
 
         // Cat I/III switch
-        if (SimDriver.GetPlayerAircraft()->af->IsSet(AirframeClass::CATLimiterIII))
+        if (SimDriver.GetPlayerAircraft()->af->IsSet(
+                AirframeClass::CATLimiterIII))
             vrCockpit->SetSwitchMask(COMP_3DPIT_STORES_CAT, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_STORES_CAT, 1);
@@ -3072,10 +4084,14 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_REV_THRUSTER, 2);
 
         // HSI Course knob
-        int val = 1 << ((int)(OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS) / 36.0f));
+        int val = 1 << ((int)(OTWDriver.pCockpitManager->mpHsi->GetValue(
+                                  CPHsi::HSI_VAL_DESIRED_CRS) /
+                              36.0f));
         vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_COURSE, val);
         // HSI Heading knob
-        val = 1 << ((int)(OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_HEADING) / 36.0f));
+        val = 1 << ((int)(OTWDriver.pCockpitManager->mpHsi->GetValue(
+                              CPHsi::HSI_VAL_DESIRED_HEADING) /
+                          36.0f));
         vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_HEADING, val);
 
         //
@@ -3086,7 +4102,8 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_MPO, 2);
 
         // Silence the horn
-        if (SimDriver.GetPlayerAircraft()->af->IsSet(AirframeClass::HornSilenced))
+        if (SimDriver.GetPlayerAircraft()->af->IsSet(
+                AirframeClass::HornSilenced))
             vrCockpit->SetSwitchMask(COMP_3DPIT_SILENCE_HORN, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_SILENCE_HORN, 1);
@@ -3098,7 +4115,8 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_MODE, 2);
         else if (gNavigationSys->GetInstrumentMode() == NavigationSystem::NAV)
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_MODE, 4);
-        else if (gNavigationSys->GetInstrumentMode() == NavigationSystem::ILS_NAV)
+        else if (gNavigationSys->GetInstrumentMode() ==
+                 NavigationSystem::ILS_NAV)
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_MODE, 8);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_HSI_MODE, 1);
@@ -3128,24 +4146,37 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_RAL_BARO, 1);
 
         // HUD brightness switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_DAY_NITE, 1 << TheHud->GetBrightnessSwitch());
+        vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_DAY_NITE,
+                                 1 << TheHud->GetBrightnessSwitch());
 
         // Chaff Remaining units digit
-        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->HasPower(AircraftClass::ChaffFlareCount))
+        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))
+                ->HasPower(AircraftClass::ChaffFlareCount))
         {
-            val = ((AircraftClass*)(SimDriver.GetPlayerEntity()))->counterMeasureStation[CHAFF_STATION].weaponCount;
-            vrCockpit->SetDOFangle(COMP_3DPIT_CHAFF_DIGIT1, ExtractDigit((float)val, 0) * 0.6283F);
-            vrCockpit->SetDOFangle(COMP_3DPIT_CHAFF_DIGIT2, ExtractDigit((float)val, 1) * 0.6283F);
-            vrCockpit->SetDOFangle(COMP_3DPIT_CHAFF_DIGIT3, ExtractDigit((float)val, 2) * 0.6283F);
+            val = ((AircraftClass*)(SimDriver.GetPlayerEntity()))
+                      ->counterMeasureStation[CHAFF_STATION]
+                      .weaponCount;
+            vrCockpit->SetDOFangle(COMP_3DPIT_CHAFF_DIGIT1,
+                                   ExtractDigit((float)val, 0) * 0.6283F);
+            vrCockpit->SetDOFangle(COMP_3DPIT_CHAFF_DIGIT2,
+                                   ExtractDigit((float)val, 1) * 0.6283F);
+            vrCockpit->SetDOFangle(COMP_3DPIT_CHAFF_DIGIT3,
+                                   ExtractDigit((float)val, 2) * 0.6283F);
         }
 
         // Flare Remaining units digit
-        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->HasPower(AircraftClass::ChaffFlareCount))
+        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))
+                ->HasPower(AircraftClass::ChaffFlareCount))
         {
-            val = ((AircraftClass*)(SimDriver.GetPlayerEntity()))->counterMeasureStation[FLARE_STATION].weaponCount;
-            vrCockpit->SetDOFangle(COMP_3DPIT_FLARE_DIGIT1, ExtractDigit((float)val, 0) * 0.6283F);
-            vrCockpit->SetDOFangle(COMP_3DPIT_FLARE_DIGIT2, ExtractDigit((float)val, 1) * 0.6283F);
-            vrCockpit->SetDOFangle(COMP_3DPIT_FLARE_DIGIT3, ExtractDigit((float)val, 2) * 0.6283F);
+            val = ((AircraftClass*)(SimDriver.GetPlayerEntity()))
+                      ->counterMeasureStation[FLARE_STATION]
+                      .weaponCount;
+            vrCockpit->SetDOFangle(COMP_3DPIT_FLARE_DIGIT1,
+                                   ExtractDigit((float)val, 0) * 0.6283F);
+            vrCockpit->SetDOFangle(COMP_3DPIT_FLARE_DIGIT2,
+                                   ExtractDigit((float)val, 1) * 0.6283F);
+            vrCockpit->SetDOFangle(COMP_3DPIT_FLARE_DIGIT3,
+                                   ExtractDigit((float)val, 2) * 0.6283F);
         }
 
         // Aux Comm Tacan channel left digit
@@ -3159,7 +4190,8 @@ void OTWDriverClass::VCock_Exec(void)
         vrCockpit->SetDOFangle(COMP_3DPIT_TACAN_RIGHT, val * 0.6283F);
 
         // Aux Comm Tacan channel band (X/Y)
-        if (gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) == TacanList::X)
+        if (gNavigationSys->GetTacanBand(NavigationSystem::AUXCOMM) ==
+            TacanList::X)
             vrCockpit->SetSwitchMask(COMP_3DPIT_TACAN_BAND, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_TACAN_BAND, 2);
@@ -3184,56 +4216,89 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_ALT_GEAR, 1);
 
         // HUD Radar altitude switch
-        if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::ROFF)
+        if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus ==
+            AircraftClass::ROFF)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 1);
-        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::RON)
+        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus ==
+                 AircraftClass::RON)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 4);
-        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus == AircraftClass::RSTANDBY)
+        else if (SimDriver.GetPlayerAircraft()->af->platform->RALTStatus ==
+                 AircraftClass::RSTANDBY)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_RALT_PWR, 1);
 
         // JSF start switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_JSF_START, SimDriver.GetPlayerAircraft()->af->IsSet(AirframeClass::JfsStart + 1));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_JSF_START,
+                                 SimDriver.GetPlayerAircraft()->af->IsSet(
+                                     AirframeClass::JfsStart + 1));
         // SMS power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_SMS_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::SMSPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_SMS_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::SMSPower));
         // FCC power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_FCC_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::FCCPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_FCC_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::FCCPower));
         // MFD power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_MFD_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::MFDPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_MFD_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::MFDPower));
         // UFC power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_UFC_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_UFC_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::UFCPower));
         // GPS power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_GPS_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::GPSPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_GPS_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::GPSPower));
         // DL power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_DL_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::DLPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_DL_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::DLPower));
         // MAP power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_MAP_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::MAPPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_MAP_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::MAPPower));
         // Right hardpoints power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_RIGHT_HPT_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::RightHptPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_RIGHT_HPT_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::RightHptPower));
         // Left hardpoints power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_LEFT_HPT_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::LeftHptPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_LEFT_HPT_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::LeftHptPower));
         // HUD power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::HUDPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::HUDPower));
         // FCR power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_FCR_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::FCRPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_FCR_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::FCRPower));
         // Fuel Control switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_FUEL_QTY, 1 << (SimDriver.GetPlayerAircraft()->af->GetFuelSwitch()));
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_FUEL_QTY,
+            1 << (SimDriver.GetPlayerAircraft()->af->GetFuelSwitch()));
         // Fuel pump switch
         val = SimDriver.GetPlayerAircraft()->af->GetFuelPump() + 1;
         vrCockpit->SetSwitchMask(COMP_3DPIT_REFUEL_PUMP, val);
 
         // Refuel master switch
-        if (SimDriver.GetPlayerAircraft()->af->IsEngineFlag(AirframeClass::MasterFuelOff))
+        if (SimDriver.GetPlayerAircraft()->af->IsEngineFlag(
+                AirframeClass::MasterFuelOff))
             vrCockpit->SetSwitchMask(COMP_3DPIT_REFUEL_MSTR, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_REFUEL_MSTR, 2);
 
         // Air source switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_AIR_SOURCE, 1 << SimDriver.GetPlayerAircraft()->af->GetAirSource());
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_AIR_SOURCE,
+            1 << SimDriver.GetPlayerAircraft()->af->GetAirSource());
 
         // Landing lights switch
-        if (SimDriver.GetPlayerAircraft()->IsAcStatusBitsSet(AircraftClass::ACSTATUS_EXT_LANDINGLIGHT))
+        if (SimDriver.GetPlayerAircraft()->IsAcStatusBitsSet(
+                AircraftClass::ACSTATUS_EXT_LANDINGLIGHT))
             vrCockpit->SetSwitchMask(COMP_3DPIT_LAND_LIGHT, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_LAND_LIGHT, 1);
@@ -3257,7 +4322,8 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_LASER_ARM, 1);
 
         // Refuel door switch
-        if (SimDriver.GetPlayerAircraft()->af->IsEngineFlag(AirframeClass::FuelDoorOpen))
+        if (SimDriver.GetPlayerAircraft()->af->IsEngineFlag(
+                AirframeClass::FuelDoorOpen))
             vrCockpit->SetSwitchMask(COMP_3DPIT_REFUEL_DOOR, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_REFUEL_DOOR, 1);
@@ -3295,25 +4361,43 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_HUD_RETICLE, 1);
 
         // Interior light switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_INTERIOR_LITE, 1 << SimDriver.GetPlayerAircraft()->GetInteriorLight());
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_INTERIOR_LITE,
+            1 << SimDriver.GetPlayerAircraft()->GetInteriorLight());
         // Instrument light switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_INSTR_LITE, 1 << SimDriver.GetPlayerAircraft()->GetInstrumentLight());
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_INSTR_LITE,
+            1 << SimDriver.GetPlayerAircraft()->GetInstrumentLight());
         // Spot light switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_SPOT_LITE, 1 << SimDriver.GetPlayerAircraft()->GetSpotLight());
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_SPOT_LITE,
+            1 << SimDriver.GetPlayerAircraft()->GetSpotLight());
         // EWS RWR power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_RWR_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSRWRPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_RWR_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::EWSRWRPower));
         // EWS jammer power
-        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_JMR_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSJammerPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_JMR_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::EWSJammerPower));
         // EWS chaff power
-        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_CHAFF_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSChaffPower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_CHAFF_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::EWSChaffPower));
         // EWS flares
-        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_FLARE_PWR, 1 << SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::EWSFlarePower));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_FLARE_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->HasPower(
+                                     AircraftClass::EWSFlarePower));
         // EWS PGM switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_MODE, 1 << SimDriver.GetPlayerAircraft()->EWSPGM());
+        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_MODE,
+                                 1 << SimDriver.GetPlayerAircraft()->EWSPGM());
         // EWS Program switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_EWS_PROG, 1 << SimDriver.GetPlayerAircraft()->EWSProgNum);
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_EWS_PROG,
+            1 << SimDriver.GetPlayerAircraft()->EWSProgNum);
         // Main power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_MAIN_PWR, 1 << SimDriver.GetPlayerAircraft()->mainPower);
+        vrCockpit->SetSwitchMask(COMP_3DPIT_MAIN_PWR,
+                                 1 << SimDriver.GetPlayerAircraft()->mainPower);
 
         // Silence Betty (VMS)
         if (SimDriver.GetPlayerAircraft()->playBetty)
@@ -3324,10 +4408,12 @@ void OTWDriverClass::VCock_Exec(void)
         // RF emissions switch
         if (SimDriver.GetPlayerAircraft()->RFState == 0) //NORM
             vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 2);
-        else if (SimDriver.GetPlayerAircraft()->RFState == 2)  //SILENT --> No CARA, no TFR, no Radar
+        else if (SimDriver.GetPlayerAircraft()->RFState ==
+                 2) //SILENT --> No CARA, no TFR, no Radar
             vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 4);
         else
-            vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET, 1); //QUIET --> no Radar
+            vrCockpit->SetSwitchMask(COMP_3DPIT_RF_QUIET,
+                                     1); //QUIET --> no Radar
 
         // RWR power switch
         if (theRwr and theRwr->IsOn())
@@ -3336,13 +4422,15 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_RWR_PWR, 1);
 
         // External light power switch
-        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::Extl_Main_Power))
+        if (SimDriver.GetPlayerAircraft()->ExtlState(
+                AircraftClass::Extl_Main_Power))
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_LITE_MSTR, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_LITE_MSTR, 1);
 
         // External collision light switch
-        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::Extl_Anti_Coll))
+        if (SimDriver.GetPlayerAircraft()->ExtlState(
+                AircraftClass::Extl_Anti_Coll))
             vrCockpit->SetSwitchMask(COMP_3DPIT_ANTI_COLL, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_ANTI_COLL, 1);
@@ -3354,7 +4442,8 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_FLASH, 1);
 
         // External collision wing/tail switch
-        if (SimDriver.GetPlayerAircraft()->ExtlState(AircraftClass::Extl_Wing_Tail))
+        if (SimDriver.GetPlayerAircraft()->ExtlState(
+                AircraftClass::Extl_Wing_Tail))
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_WING, 2);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_EXT_WING, 1);
@@ -3362,22 +4451,29 @@ void OTWDriverClass::VCock_Exec(void)
         // AVTR SWITCH
         if (SimDriver.GetPlayerAircraft()->AVTRState(AircraftClass::AVTR_AUTO))
             vrCockpit->SetSwitchMask(COMP_3DPIT_AVTR_SW, 2);
-        else if (SimDriver.GetPlayerAircraft()->AVTRState(AircraftClass::AVTR_ON))
+        else if (SimDriver.GetPlayerAircraft()->AVTRState(
+                     AircraftClass::AVTR_ON))
             vrCockpit->SetSwitchMask(COMP_3DPIT_AVTR_SW, 4);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_AVTR_SW, 1);
 
         // IFF power switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_IFF_PWR, SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::IFFPower) + 1);
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_IFF_PWR,
+            SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::IFFPower) +
+                1);
         // IFF query switch
         vrCockpit->SetSwitchMask(COMP_3DPIT_IFF_QUERY, 1);
 
         // INS switch COMP_3DPIT_IFF_PWR
-        if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_AlignNorm))
+        if (SimDriver.GetPlayerAircraft()->INSState(
+                AircraftClass::INS_AlignNorm))
             vrCockpit->SetSwitchMask(COMP_3DPIT_INS_MODE, 2);
-        else if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_Nav))
+        else if (SimDriver.GetPlayerAircraft()->INSState(
+                     AircraftClass::INS_Nav))
             vrCockpit->SetSwitchMask(COMP_3DPIT_INS_MODE, 4);
-        else if (SimDriver.GetPlayerAircraft()->INSState(AircraftClass::INS_AlignFlight))
+        else if (SimDriver.GetPlayerAircraft()->INSState(
+                     AircraftClass::INS_AlignFlight))
             vrCockpit->SetSwitchMask(COMP_3DPIT_INS_MODE, 8);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_INS_MODE, 1);
@@ -3401,17 +4497,21 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_TRIM_AP, 1);
 
         // Pitch trim
-        vrCockpit->SetDOFangle(COMP_3DPIT_TRIM_PITCH, cockpitFlightData.TrimPitch);
+        vrCockpit->SetDOFangle(COMP_3DPIT_TRIM_PITCH,
+                               cockpitFlightData.TrimPitch);
         val = (int)(5.0f + (cockpitFlightData.TrimPitch * 10.0f)); // 5 + (+/-5)
         vrCockpit->SetSwitchMask(COMP_3DPIT_TRIM_PITCH_SW, val);
         // Yaw trim
         vrCockpit->SetDOFangle(COMP_3DPIT_TRIM_YAW, cockpitFlightData.TrimYaw);
         val = (int)(5.0f + (cockpitFlightData.TrimYaw * 10.0f)); // 5 + (+/-5)
-        vrCockpit->SetSwitchMask(COMP_3DPIT_TRIM_YAW_SW, (int)(cockpitFlightData.TrimYaw));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_TRIM_YAW_SW,
+                                 (int)(cockpitFlightData.TrimYaw));
         // Roll trim
-        vrCockpit->SetDOFangle(COMP_3DPIT_TRIM_ROLL, cockpitFlightData.TrimRoll);
+        vrCockpit->SetDOFangle(COMP_3DPIT_TRIM_ROLL,
+                               cockpitFlightData.TrimRoll);
         val = (int)(5.0f + (cockpitFlightData.TrimRoll * 10.0f)); // 5 + (+/-5)
-        vrCockpit->SetSwitchMask(COMP_3DPIT_TRIM_ROLL_SW, (int)(cockpitFlightData.TrimRoll));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_TRIM_ROLL_SW,
+                                 (int)(cockpitFlightData.TrimRoll));
         // Comm - Missile volume
         val = 1 << (8 - SimDriver.GetPlayerAircraft()->MissileVolume);
         vrCockpit->SetSwitchMask(COMP_3DPIT_MISSILE_VOL, val);
@@ -3425,9 +4525,13 @@ void OTWDriverClass::VCock_Exec(void)
         val = 1 << (8 - OTWDriver.pCockpitManager->mpIcp->Comm2Volume);
         vrCockpit->SetSwitchMask(COMP_3DPIT_COMM2_VOL, val);
         // Fuel transfer switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_FUEL_EXT_TRANS, 1 << SimDriver.GetPlayerAircraft()->af->IsEngineFlag(AirframeClass::WingFirst));
+        vrCockpit->SetSwitchMask(
+            COMP_3DPIT_FUEL_EXT_TRANS,
+            1 << SimDriver.GetPlayerAircraft()->af->IsEngineFlag(
+                AirframeClass::WingFirst));
         // Sym wheel switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_ICP_SYM_WHEEL, 1 << ((int)(TheHud->SymWheelPos * 10.0f)));
+        vrCockpit->SetSwitchMask(COMP_3DPIT_ICP_SYM_WHEEL,
+                                 1 << ((int)(TheHud->SymWheelPos * 10.0f)));
 
         // Canopy switch
         if (SimDriver.GetPlayerAircraft()->af->canopyState == true)
@@ -3436,7 +4540,8 @@ void OTWDriverClass::VCock_Exec(void)
             vrCockpit->SetSwitchMask(COMP_3DPIT_CANOPY, 1);
 
         // Drag chute switch
-        if (SimDriver.GetPlayerAircraft()->af->dragChute == AirframeClass::DRAGC_STOWED)
+        if (SimDriver.GetPlayerAircraft()->af->dragChute ==
+            AirframeClass::DRAGC_STOWED)
             vrCockpit->SetSwitchMask(COMP_3DPIT_DRAGCHUTE, 1);
         else
             vrCockpit->SetSwitchMask(COMP_3DPIT_DRAGCHUTE, 2);
@@ -3453,7 +4558,8 @@ void OTWDriverClass::VCock_Exec(void)
         val = gNavigationSys->GetTacanChannel(NavigationSystem::AUXCOMM, 0);
         vrCockpit->SetDOFangle(COMP_3DPIT_TACAN_RIGHT, val * 0.6283F);
         // Ejection Seat Arm switch
-        vrCockpit->SetSwitchMask(COMP_3DPIT_SEAT_ARM, SimDriver.GetPlayerAircraft()->SeatArmed + 1);
+        vrCockpit->SetSwitchMask(COMP_3DPIT_SEAT_ARM,
+                                 SimDriver.GetPlayerAircraft()->SeatArmed + 1);
 
         // end New 3D pit switch/knob animation
     } //ATARIBABY new 3dpit end
@@ -3469,10 +4575,14 @@ void OTWDriverClass::VCock_Exec(void)
     // camera); the displays render from Pan, so inject the IPD here on the body-right axis (Pan.y).
     // Sign/magnitude tunable (g_fVrDisplayIpd) -- verify with the desktop mirror.
     {
-        extern float g_fVrDisplayIpd; extern bool g_bVrFrameActive;
-        int dxeye = (g_bVrFrameActive and g_pOpenXRBackend) ? g_pOpenXRBackend->CurrentEye() : -1;
+        extern float g_fVrDisplayIpd;
+        extern bool g_bVrFrameActive;
+        int dxeye = (g_bVrFrameActive and g_pOpenXRBackend) ?
+                        g_pOpenXRBackend->CurrentEye() :
+                        -1;
         if (dxeye >= 0)
-            Pan.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(dxeye) * g_fVrDisplayIpd;
+            Pan.y += g_pOpenXRBackend->GetEyeLateralOffsetFeet(dxeye) *
+                     g_fVrDisplayIpd;
     }
     // Artscout - 2026 (VR #61): world-frame RTT panels. Draw the RTT quads with the SAME camera as the
     // BSP cockpit (headOrigin) and let DrawRttQuad map the canvas into the real cockpit world
@@ -3485,11 +4595,14 @@ void OTWDriverClass::VCock_Exec(void)
     const bool rttWorldCam = g_bVrRttWorldCam or g_bHud3DGlass;
     if (rttWorldCam)
     {
-        extern Trotation g_rttWorldRot; extern float g_rttWorldScale;
-        g_rttWorldRot   = OTWDriver.ownshipRot;
+        extern Trotation g_rttWorldRot;
+        extern float g_rttWorldScale;
+        g_rttWorldRot = OTWDriver.ownshipRot;
         g_rttWorldScale = 1.0f / RTT_POSITION_SCALING;
-        // World camera (cameraRot = ownshipRot*headMatrix) because the canvas is mapped into WORLD
-        // (ownshipRot*canvas). Using headMatrix (body) here rotated the panels off by the heading.
+        // World camera (cameraRot = ownshipRot*headMatrix) because the canvas is mapped into WORLD (ownshipRot*canvas).
+        // This gives the panels their correct STEREO DEPTH (fixed on the physical screen) -- the flat path (Pan,
+        // headMatrix) draws them head-locked, so in VR they hang IN FRONT of the screen. The residual head-coupled drift
+        // is the open item (parallax-frame reconciliation vs the cockpit BSP -- a pre-existing #61 world-cam issue).
         renderer->SetCamera(&headOrigin, &cameraRot);
     }
     else
@@ -3561,9 +4674,9 @@ void OTWDriverClass::VCock_Exec(void)
             // collimation only shifts with 6DOF head TRANSLATION (TrackIR/VR/bobbing); with no head
             // movement the offset is 0 and the HUD sits on the glass (correct -- no parallax). Scale
             // exaggerates the shift to see/verify the effect; HudCollimate 0 disables it for compare.
-            extern bool  g_bHudCollimate;
+            extern bool g_bHudCollimate;
             extern float g_fHudCollimateScale;
-            extern bool  g_bHud3DGlass, g_bVrRttWorldCam;
+            extern bool g_bHud3DGlass, g_bVrRttWorldCam;
             float XOffset = 0.0f, YOffset = 0.0f;
 
             // Artscout - 2026: the fake 2D collimation (origin shift) is REPLACED by true optical
@@ -3575,12 +4688,15 @@ void OTWDriverClass::VCock_Exec(void)
             // so the fake-collimation fallback wrongly ran alongside the real glass collimation). CurrentEye()>=0
             // works on both backends -- matches the hudGlass gate below.
             extern bool g_bVrFrameActive;
-            const bool hudGlassActive = g_bHud3DGlass and g_bVrFrameActive
-                and g_pOpenXRBackend and g_pOpenXRBackend->CurrentEye() >= 0;
+            const bool hudGlassActive = g_bHud3DGlass and g_bVrFrameActive and
+                                        g_pOpenXRBackend and
+                                        g_pOpenXRBackend->CurrentEye() >= 0;
             if (g_bHudCollimate and not hudGlassActive)
             {
-                XOffset = g_fHudCollimateScale * 12.0f * headPan.y / (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
-                YOffset = g_fHudCollimateScale * 12.0f * headPan.z / (pt[0].z - pt[2].z) * tanf(DTR * 60.0f);
+                XOffset = g_fHudCollimateScale * 12.0f * headPan.y /
+                          (pt[1].y - pt[0].y) * tanf(DTR * 60.0f);
+                YOffset = g_fHudCollimateScale * 12.0f * headPan.z /
+                          (pt[0].z - pt[2].z) * tanf(DTR * 60.0f);
             }
 
             vHUDrenderer->AdjustOriginInViewport(XOffset, YOffset);
@@ -3590,17 +4706,18 @@ void OTWDriverClass::VCock_Exec(void)
             VirtualDisplay::SetFont(oldFont);
             renderer->SetColor(0xff00ff00);
             // restore hud half angle
-            TheHud->SetHalfAngle((float)atan(0.25 * (float)tan(30.0F * DTR)) * RTD);
+            TheHud->SetHalfAngle((float)atan(0.25 * (float)tan(30.0F * DTR)) *
+                                 RTD);
             // hack  restore borsight height to 0.60.  sigh.
             hudWinY[BORESIGHT_CROSS_WINDOW] = 0.60f;
-
         }
 
 
         //
         // Do RWR
         //
-        rwr = (PlayerRwrClass*)FindSensor((SimMoverClass *)otwPlatform.get(), SensorClass::RWR);
+        rwr = (PlayerRwrClass*)FindSensor((SimMoverClass*)otwPlatform.get(),
+                                          SensorClass::RWR);
 
         if (vRWRrenderer and rwr)
         {
@@ -3616,7 +4733,8 @@ void OTWDriverClass::VCock_Exec(void)
                 vRWRrenderer->Line(0.995F, 0.995F, 0.995F, -0.995F);
             }
 
-            vRWRrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][8]);
+            vRWRrenderer->SetColor(
+                pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][8]);
             rwr->SetGridVisible(FALSE);
             vHUDrenderer->SetFont(pCockpitManager->MFDFont());
             rwr->Display(vRWRrenderer);
@@ -3647,20 +4765,23 @@ void OTWDriverClass::VCock_Exec(void)
                 vDEDrenderer->Line(0.995F, 0.995F, 0.995F, -0.995F);
             }
 
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
             {
                 pCockpitManager->mpIcp->Exec();
                 //MI changed for ICP Stuff
-                pCockpitManager->mpIcp->GetDEDStrings(dedStr1, dedStr2, dedStr3);
+                pCockpitManager->mpIcp->GetDEDStrings(dedStr1, dedStr2,
+                                                      dedStr3);
 
                 // Check for DED/Avionics failure
                 F4Assert(SimDriver.GetPlayerAircraft());
                 F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                 // DED is orange :)
-                vDEDrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
+                vDEDrenderer->SetColor(
+                    pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
 
-                if ( not SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault))
+                if (not SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                        FaultClass::ufc_fault))
                 {
                     vDEDrenderer->TextLeft(-0.90F, 0.99F, dedStr1, FALSE);
                     vDEDrenderer->TextLeft(-0.90F, 0.33F, dedStr2, FALSE);
@@ -3670,8 +4791,10 @@ void OTWDriverClass::VCock_Exec(void)
             else
             {
                 //MI modified for ICP Stuff
-                if ( not SimDriver.GetPlayerAircraft()->mFaults->GetFault(FaultClass::ufc_fault) and 
-                    SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::UFCPower))
+                if (not SimDriver.GetPlayerAircraft()->mFaults->GetFault(
+                        FaultClass::ufc_fault) and
+                    SimDriver.GetPlayerAircraft()->HasPower(
+                        AircraftClass::UFCPower))
                 {
                     pCockpitManager->mpIcp->Exec();
 
@@ -3680,7 +4803,9 @@ void OTWDriverClass::VCock_Exec(void)
                     F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                     // DED is orange :)
-                    vDEDrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
+                    vDEDrenderer->SetColor(
+                        pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0]
+                                [7]);
 
                     //ATARIBABY
                     float stepx;
@@ -3700,10 +4825,15 @@ void OTWDriverClass::VCock_Exec(void)
                             buf[0] = pCockpitManager->mpIcp->DEDLines[j][i];
                             buf[1] = '\0';
 
-                            if (buf[0] not_eq ' ' and pCockpitManager->mpIcp->Invert[j][i] == 0)
-                                vDEDrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->Invert[j][i]);
+                            if (buf[0] not_eq ' ' and
+                                pCockpitManager->mpIcp->Invert[j][i] == 0)
+                                vDEDrenderer->TextLeft(
+                                    x, y, buf,
+                                    pCockpitManager->mpIcp->Invert[j][i]);
                             else if (pCockpitManager->mpIcp->Invert[j][i] == 2)
-                                vDEDrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->Invert[j][i]);
+                                vDEDrenderer->TextLeft(
+                                    x, y, buf,
+                                    pCockpitManager->mpIcp->Invert[j][i]);
 
                             x += stepx;
                         }
@@ -3715,7 +4845,8 @@ void OTWDriverClass::VCock_Exec(void)
                 }
             }
 
-            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][6]);
+            renderer->SetColor(
+                pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][6]);
             VirtualDisplay::SetFont(oldFont); // ASSO:
         }
 
@@ -3738,18 +4869,20 @@ void OTWDriverClass::VCock_Exec(void)
                 vPFLrenderer->Line(0.995F, 0.995F, 0.995F, -0.995F);
             }
 
-            if ( not g_bRealisticAvionics)
+            if (not g_bRealisticAvionics)
             {
                 pCockpitManager->mpIcp->Exec();
                 //MI changed for ICP Stuff
-                pCockpitManager->mpIcp->GetDEDStrings(dedStr1, dedStr2, dedStr3);
+                pCockpitManager->mpIcp->GetDEDStrings(dedStr1, dedStr2,
+                                                      dedStr3);
 
                 // Check for DED/Avionics failure
                 F4Assert(SimDriver.GetPlayerAircraft());
                 F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                 // DED is orange :)
-                vPFLrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
+                vPFLrenderer->SetColor(
+                    pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
 
                 {
                     vPFLrenderer->TextLeft(-0.90F, 0.99F, dedStr1, FALSE);
@@ -3759,16 +4892,20 @@ void OTWDriverClass::VCock_Exec(void)
             }
             else
             {
-                if (SimDriver.GetPlayerAircraft()->HasPower(AircraftClass::PFDPower))
+                if (SimDriver.GetPlayerAircraft()->HasPower(
+                        AircraftClass::PFDPower))
                 {
-                    pCockpitManager->mpIcp->ExecPfl(); //ATARIBABY ExecPfl() instead Exec() is needed
+                    pCockpitManager->mpIcp
+                        ->ExecPfl(); //ATARIBABY ExecPfl() instead Exec() is needed
 
                     // Check for DED/Avionics failure
                     F4Assert(SimDriver.GetPlayerAircraft());
                     F4Assert(SimDriver.GetPlayerAircraft()->mFaults);
 
                     // PFL is orange :)
-                    vPFLrenderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][7]);
+                    vPFLrenderer->SetColor(
+                        pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0]
+                                [7]);
 
                     //ATARIBABY
                     float stepx;
@@ -3788,10 +4925,16 @@ void OTWDriverClass::VCock_Exec(void)
                             buf[0] = pCockpitManager->mpIcp->PFLLines[j][i];
                             buf[1] = '\0';
 
-                            if (buf[0] not_eq ' ' and pCockpitManager->mpIcp->PFLInvert[j][i] == 0)
-                                vPFLrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->PFLInvert[j][i]);
-                            else if (pCockpitManager->mpIcp->PFLInvert[j][i] == 2)
-                                vPFLrenderer->TextLeft(x, y, buf, pCockpitManager->mpIcp->PFLInvert[j][i]);
+                            if (buf[0] not_eq ' ' and
+                                pCockpitManager->mpIcp->PFLInvert[j][i] == 0)
+                                vPFLrenderer->TextLeft(
+                                    x, y, buf,
+                                    pCockpitManager->mpIcp->PFLInvert[j][i]);
+                            else if (pCockpitManager->mpIcp->PFLInvert[j][i] ==
+                                     2)
+                                vPFLrenderer->TextLeft(
+                                    x, y, buf,
+                                    pCockpitManager->mpIcp->PFLInvert[j][i]);
 
                             x += stepx;
                         }
@@ -3805,7 +4948,8 @@ void OTWDriverClass::VCock_Exec(void)
                 }
             }
 
-            renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][6]);
+            renderer->SetColor(
+                pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][6]);
         }
 
 
@@ -3822,7 +4966,7 @@ void OTWDriverClass::VCock_Exec(void)
         if (g_b3dMFDLeft)
         {
             //MfdDisplay[0]->SetImageBuffer(OTWImage, viewportBounds.left, viewportBounds.top, viewportBounds.right, viewportBounds.bottom);
-            VirtualDisplay::SetFont(0);//pCockpitManager->MFDFont());
+            VirtualDisplay::SetFont(0); //pCockpitManager->MFDFont());
             MfdDisplay[0]->Exec(FALSE, TRUE); // ASSO:
             VirtualDisplay::SetFont(oldFont);
         }
@@ -3830,7 +4974,7 @@ void OTWDriverClass::VCock_Exec(void)
         if (g_b3dMFDRight)
         {
             //MfdDisplay[1]->SetImageBuffer(OTWImage, viewportBounds.left, viewportBounds.top, viewportBounds.right, viewportBounds.bottom);
-            VirtualDisplay::SetFont(0);//pCockpitManager->MFDFont());
+            VirtualDisplay::SetFont(0); //pCockpitManager->MFDFont());
             MfdDisplay[1]->Exec(FALSE, TRUE); // ASSO:
             VirtualDisplay::SetFont(oldFont);
         }
@@ -3851,13 +4995,15 @@ void OTWDriverClass::VCock_Exec(void)
         extern bool g_bVrFrameActive;
         if (g_pOpenXRBackend && g_bVrFrameActive)
         {
-            int ew = g_pOpenXRBackend->CurEyeW(), eh = g_pOpenXRBackend->CurEyeH();
+            int ew = g_pOpenXRBackend->CurEyeW(),
+                eh = g_pOpenXRBackend->CurEyeH();
             if (ew > 0 && eh > 0)
             {
                 renderer->VR_SetRes(ew, eh);
                 renderer->SetViewport(-1.0f, 1.0f, 1.0f, -1.0f);
                 extern IRenderer* g_pRenderer;
-                if (g_pRenderer) g_pRenderer->SetViewportSize(ew, eh);
+                if (g_pRenderer)
+                    g_pRenderer->SetViewportSize(ew, eh);
             }
         }
 
@@ -3875,8 +5021,9 @@ void OTWDriverClass::VCock_Exec(void)
         // while the world-cam (rttWorldCam, set above regardless of backend) still mapped the canvas into the
         // world -> mismatch -> the HUD flew off ("up in the sky"). CurrentEye()>=0 works on both backends.
         extern bool g_bVrFrameActive;
-        const bool hudGlass = g_bHud3DGlass and g_bVrFrameActive
-            and g_pOpenXRBackend and g_pOpenXRBackend->CurrentEye() >= 0;
+        const bool hudGlass = g_bHud3DGlass and g_bVrFrameActive and
+                              g_pOpenXRBackend and
+                              g_pOpenXRBackend->CurrentEye() >= 0;
         if (hudGlass)
         {
             // Arm the aperture stencil clip BEFORE the glass plate: the plate (drawn at the PHYSICAL glass
@@ -3893,14 +5040,24 @@ void OTWDriverClass::VCock_Exec(void)
                 // Fresnel: the glass shows MORE at grazing view angles. headMatrix.M11 = cos(angle between
                 // the head look and the boresight/glass normal) -- 1 head-on, <1 when looking from above/
                 // the side. Boost the tint alpha as it falls off so the pane "lights up" edge-on like glass.
-                float c = headMatrix.M11; if (c < 0.0f) c = 0.0f; if (c > 1.0f) c = 1.0f;
-                float ga = g_fHud3DGlassTint * (1.0f + g_fHud3DGlassFresnel * (1.0f - c) * (1.0f - c));
-                if (ga > 0.9f) ga = 0.9f;
-                vHUDrenderer->DrawGlassPlate(0.30f, 0.55f, 0.40f, ga);   // subtle green tint, Fresnel-boosted
+                float c = headMatrix.M11;
+                if (c < 0.0f)
+                    c = 0.0f;
+                if (c > 1.0f)
+                    c = 1.0f;
+                float ga =
+                    g_fHud3DGlassTint *
+                    (1.0f + g_fHud3DGlassFresnel * (1.0f - c) * (1.0f - c));
+                if (ga > 0.9f)
+                    ga = 0.9f;
+                vHUDrenderer->DrawGlassPlate(
+                    0.30f, 0.55f, 0.40f,
+                    ga); // subtle green tint, Fresnel-boosted
             }
 
             extern Tpoint g_rttWorldOfs;
-            g_rttWorldOfs = headOrigin;   // collimate the symbology (eye offset cancels in projection)
+            g_rttWorldOfs =
+                headOrigin; // collimate the symbology (eye offset cancels in projection)
         }
 
         if (vHUDrenderer)
@@ -3909,9 +5066,10 @@ void OTWDriverClass::VCock_Exec(void)
         if (hudGlass)
         {
             extern Tpoint g_rttWorldOfs;
-            g_rttWorldOfs.x = g_rttWorldOfs.y = g_rttWorldOfs.z = 0.0f;   // panels stay fixed on the cockpit
+            g_rttWorldOfs.x = g_rttWorldOfs.y = g_rttWorldOfs.z =
+                0.0f; // panels stay fixed on the cockpit
             extern bool g_bRttHudClip;
-            g_bRttHudClip = false;                                        // panels composite without Z-test
+            g_bRttHudClip = false; // panels composite without Z-test
         }
 
         if (vRWRrenderer)
@@ -3941,7 +5099,8 @@ void OTWDriverClass::VCock_Exec(void)
             // Artscout - 2026: composite via MFDClass so THIS MFD's atlas zone/3D-panel canvas are
             // re-applied first (the display may be SHARED via mavDisplay between both MFDs -> the other
             // MFD otherwise composited the wrong zone = WPN black when SMS also showed the Maverick).
-            if (MfdDisplay[0]->GetDrawable() and MfdDisplay[0]->GetDrawable()->GetDisplay())
+            if (MfdDisplay[0]->GetDrawable() and
+                MfdDisplay[0]->GetDrawable()->GetDisplay())
             {
                 MfdDisplay[0]->DrawRttComposite();
             }
@@ -3949,12 +5108,14 @@ void OTWDriverClass::VCock_Exec(void)
 
         if (g_b3dMFDRight)
         {
-            if (MfdDisplay[1]->GetDrawable() and MfdDisplay[1]->GetDrawable()->GetDisplay())
+            if (MfdDisplay[1]->GetDrawable() and
+                MfdDisplay[1]->GetDrawable()->GetDisplay())
             {
                 MfdDisplay[1]->DrawRttComposite();
             }
         }
-        g_rttCanvasFwd = 0.0f;   // Artscout - 2026 (VR DX12 quad): reset the DED/PFL/MFD forward-push
+        g_rttCanvasFwd =
+            0.0f; // Artscout - 2026 (VR DX12 quad): reset the DED/PFL/MFD forward-push
 
         // DIAG (RTT): raw atlas overlay -- DISABLED again (diagnosis: the atlas HAS content, the display render
         // works; the regression was the #615 drop, fixed by SetDepthTargetBound). Re-enable only to re-check.
@@ -3964,12 +5125,12 @@ void OTWDriverClass::VCock_Exec(void)
     // ASSO: END
 
 
-    if ( not g_bUseNew3dpit) //ATARIBABY start Disabled if using new 3dpit code
+    if (not g_bUseNew3dpit) //ATARIBABY start Disabled if using new 3dpit code
     {
         if (vcInfo.vMACHrenderer)
         {
             /* Do MACH indictator */
-            float GetKias = ((AircraftClass *)otwPlatform.get())->af->vcas;
+            float GetKias = ((AircraftClass*)otwPlatform.get())->af->vcas;
 
             GetKias = (float)fmod(GetKias, 1000.0f);
             GetKias = GetKias * 0.001f * 2.0F * PI;
@@ -3983,7 +5144,8 @@ void OTWDriverClass::VCock_Exec(void)
             vcInfo.vMACHrenderer->Line(x1, y1, x2, y2);
         }
 
-        renderer->SetColor(pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][5]);
+        renderer->SetColor(
+            pVColors[OTWDriver.renderer->GetGreenMode() not_eq 0][5]);
 
         for (i = 0; static_cast<unsigned int>(i) < mpVDials.size(); i++)
             mpVDials[i]->Exec(SimDriver.GetPlayerAircraft());
@@ -4009,30 +5171,37 @@ void OTWDriverClass::VCock_Exec(void)
     // #DX12 A2: backend-neutral VR-pick gate. Was g_pD3D11Backend->XrEyeActive()/XrEyeW() (NULL/false under
     // D3D12 -> the VR mouse hit-test fell back to the flat path in the headset). CurrentEye()>=0 = in a real
     // stereo eye pass on either backend; the eye size is read neutrally below (SceneW/H under D3D12).
-    const bool xrPick   = g_bVrFrameActive and g_pOpenXRBackend and g_pOpenXRBackend->CurrentEye() >= 0;
+    const bool xrPick = g_bVrFrameActive and g_pOpenXRBackend and
+                        g_pOpenXRBackend->CurrentEye() >= 0;
     // Artscout - 2026 (#58/#60): branch off the ACTUAL session view config (IsQuadViews), not the
     // g_bUseQuadViews option -- the session is created once and not recreated on an in-game toggle, so the
     // option can disagree with reality until restart. Reality keeps the mouse calibration matched to the render.
     const bool sessionQuad = xrPick and g_pOpenXRBackend->IsQuadViews();
-    const bool xrQuad   = sessionQuad;
+    const bool xrQuad = sessionQuad;
     const bool xrStereo = xrPick and not sessionQuad;
-    const bool xrView0  = (not xrPick) or (g_pOpenXRBackend->CurrentEye() <= 0);
+    const bool xrView0 = (not xrPick) or (g_pOpenXRBackend->CurrentEye() <= 0);
     (void)xrQuad;
 
     // Artscout - 2026 (#58 VR mouse): pick the clickable-cockpit calibration set for the active VR mode.
     // Quad-views was tuned against the focus view's narrow gaze FOV; plain stereo projects through the full
     // eye FOV, so it needs its own residual-bias / snap-radius / IPD scale. xrStereo -> *Stereo variants
     // (default == quad values), else the quad set. Flat path never reads these (xrPick false).
-    extern float g_fVrCursorMagnet, g_fVrDetectBiasX, g_fVrDetectBiasY, g_fVrCursorIpd;
-    extern float g_fVrCursorMagnetStereo, g_fVrDetectBiasXStereo, g_fVrDetectBiasYStereo, g_fVrCursorIpdStereo;
+    extern float g_fVrCursorMagnet, g_fVrDetectBiasX, g_fVrDetectBiasY,
+        g_fVrCursorIpd;
+    extern float g_fVrCursorMagnetStereo, g_fVrDetectBiasXStereo,
+        g_fVrDetectBiasYStereo, g_fVrCursorIpdStereo;
     // Artscout - 2026 (VR DX12): the D3D12 stereo eye maps the cursor ~65px differently from D3D11, so the
     // horizontal detect bias that lines the hit-test up with the DRAWN cursor differs per backend (D3D11 -245,
     // D3D12 -180, both tuned in-headset). Use the D3D12 variant on the D3D12 path; D3D11 keeps its value.
-    extern float g_fVrDetectBiasXStereoDx12; extern bool g_bUseD3D12;
-    const float vrMagnet  = xrStereo ? g_fVrCursorMagnetStereo : g_fVrCursorMagnet;
-    const float vrBiasX   = xrStereo ? (g_bUseD3D12 ? g_fVrDetectBiasXStereoDx12 : g_fVrDetectBiasXStereo) : g_fVrDetectBiasX;
-    const float vrBiasY   = xrStereo ? g_fVrDetectBiasYStereo  : g_fVrDetectBiasY;
-    const float vrCursIpd = xrStereo ? g_fVrCursorIpdStereo    : g_fVrCursorIpd;
+    extern float g_fVrDetectBiasXStereoDx12;
+    extern bool g_bUseD3D12;
+    const float vrMagnet =
+        xrStereo ? g_fVrCursorMagnetStereo : g_fVrCursorMagnet;
+    const float vrBiasX = xrStereo ? (g_bUseD3D12 ? g_fVrDetectBiasXStereoDx12 :
+                                                    g_fVrDetectBiasXStereo) :
+                                     g_fVrDetectBiasX;
+    const float vrBiasY = xrStereo ? g_fVrDetectBiasYStereo : g_fVrDetectBiasY;
+    const float vrCursIpd = xrStereo ? g_fVrCursorIpdStereo : g_fVrCursorIpd;
 
     // Artscout - 2026 (VR mouse): per-eye IPD parallax in BUTTON units (body-right axis). Added to each
     // button's Pos.y below, exactly like headPan, so TransformCameraCentricPoint (which drops the camera
@@ -4041,13 +5210,15 @@ void OTWDriverClass::VCock_Exec(void)
     float vrIpdButtonY = 0.0f;
     if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0)
     {
-        vrIpdButtonY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(0) * B3D_POSITION_SCALING * vrCursIpd;
+        vrIpdButtonY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(0) *
+                       B3D_POSITION_SCALING * vrCursIpd;
     }
     // Artscout - 2026 (VR): reset the cursor color ONLY in view 0 (where the hover/green test runs).
     // VCock_Exec runs once per view; resetting it every pass let the LAST pass (view 3, hover gated off)
     // leave it at the default GREEN -> cursor always green even pointing at the sky. View 0 owns the color.
     if (xrView0)
-        gSelectedCursor = 9; //Wombat778 10-11-2003 set the cursor to the default green cursor
+        gSelectedCursor =
+            9; //Wombat778 10-11-2003 set the cursor to the default green cursor
 
     // Artscout - 2026 (VR mouse): project the buttons with the EXACT projection the 3D cockpit BSP is
     // drawn with -- SetVRFrustum(view 0 angles) + SetCamera(headOrigin, headMatrix) (see the per-eye loop
@@ -4096,100 +5267,195 @@ void OTWDriverClass::VCock_Exec(void)
     // A = zoom toggle, B = recenter. Falls back to the mouse when no controller (g_vrCtrlRayActive stays
     // false, the mouse hover/anchor blocks below run as before). View 0 only, like the mouse.
     g_vrCtrlRayActive = false;
-    if (xrView0) { g_vrRayActive = false; g_vrGripValid = false; g_vrHitValid = false; }   // reset once/frame (view 0); persists for other eyes
-    if (xrView0) VrUpdateHandAnim();   // Artscout - 2026 (VR hands): once/frame pointing-gesture + clench update
+    if (xrView0)
     {
-        extern bool  g_bVrControllers, g_bVrRayFlipH, g_bVrRayFlipV;
-        extern float g_fVrRayRadius, g_fVrRayReach, g_fVrThumbThresh, g_fVrKnobRepeatMs, g_fVrRayOriginOfs;
+        g_vrRayActive = false;
+        g_vrGripValid = false;
+        g_vrHitValid = false;
+    } // reset once/frame (view 0); persists for other eyes
+    if (xrView0)
+        VrUpdateHandAnim(); // Artscout - 2026 (VR hands): once/frame pointing-gesture + clench update
+    {
+        extern bool g_bVrControllers, g_bVrRayFlipH, g_bVrRayFlipV;
+        extern float g_fVrRayRadius, g_fVrRayReach, g_fVrThumbThresh,
+            g_fVrKnobRepeatMs, g_fVrRayOriginOfs;
         // Ray only when a hand is POINTING (grip-activated); otherwise g_vrActiveHand < 0 -> the mouse block
         // (else-if below) drives the pick, which is the intended "hand relaxed = mouse" fallback.
         float go[3], gbf[3], gbr[3], gbu[3];
-        if (xrPick and xrView0 and g_bVrControllers and g_vrActiveHand >= 0
-            and g_pOpenXRBackend->GetControllerGripBody(g_vrActiveHand, go)
-            and g_pOpenXRBackend->GetControllerGripBasis(g_vrActiveHand, gbf, gbr, gbu))
+        if (xrPick and xrView0 and g_bVrControllers and g_vrActiveHand >= 0 and
+            g_pOpenXRBackend->GetControllerGripBody(g_vrActiveHand, go) and
+            g_pOpenXRBackend->GetControllerGripBasis(g_vrActiveHand, gbf, gbr,
+                                                     gbu))
         {
             int hnd = g_vrActiveHand;
             {
                 g_vrCtrlRayActive = true;
-                extern bool  g_bVrUseHands;
-                extern float g_fVrModelScale, g_fVrModelYaw, g_fVrModelPitch, g_fVrModelRoll;
-                extern float g_fVrIndexTipX, g_fVrIndexTipY, g_fVrIndexTipZ, g_fVrIndexDirX, g_fVrIndexDirY, g_fVrIndexDirZ;
-                extern float g_fVrRayPitch, g_fVrRayYaw, g_fVrRayOriginUp, g_fVrRayOriginRight;
+                extern bool g_bVrUseHands;
+                extern float g_fVrModelScale, g_fVrModelYaw, g_fVrModelPitch,
+                    g_fVrModelRoll;
+                extern float g_fVrIndexTipX, g_fVrIndexTipY, g_fVrIndexTipZ,
+                    g_fVrIndexDirX, g_fVrIndexDirY, g_fVrIndexDirZ;
+                extern float g_fVrRayPitch, g_fVrRayYaw, g_fVrRayOriginUp,
+                    g_fVrRayOriginRight;
                 const float sc = B3D_POSITION_SCALING;
                 // Same flips as the drawn model, so the ray leaves EXACTLY where the fingertip is rendered.
-                if (g_bVrRayFlipH) { go[1] = -go[1]; gbf[1] = -gbf[1]; gbr[1] = -gbr[1]; gbu[1] = -gbu[1]; }
-                if (g_bVrRayFlipV) { go[2] = -go[2]; gbf[2] = -gbf[2]; gbr[2] = -gbr[2]; gbu[2] = -gbu[2]; }
-                Tpoint gp = { go[0]*sc, go[1]*sc, go[2]*sc };
+                if (g_bVrRayFlipH)
+                {
+                    go[1] = -go[1];
+                    gbf[1] = -gbf[1];
+                    gbr[1] = -gbr[1];
+                    gbu[1] = -gbu[1];
+                }
+                if (g_bVrRayFlipV)
+                {
+                    go[2] = -go[2];
+                    gbf[2] = -gbf[2];
+                    gbr[2] = -gbr[2];
+                    gbu[2] = -gbu[2];
+                }
+                Tpoint gp = {go[0] * sc, go[1] * sc, go[2] * sc};
                 const float M2B = 3.28084f * sc * g_fVrModelScale;
                 // Model-orient matrix R (VrModelYaw/Pitch/Roll) -- IDENTICAL to VCock_DrawControllerModel.
-                float cy = (float)cos(g_fVrModelYaw*DTR),  sy = (float)sin(g_fVrModelYaw*DTR);
-                float cp = (float)cos(g_fVrModelPitch*DTR), sp = (float)sin(g_fVrModelPitch*DTR);
-                float cr = (float)cos(g_fVrModelRoll*DTR),  sr = (float)sin(g_fVrModelRoll*DTR);
-                float R00 = cy*cr + sy*sp*sr, R01 = -cy*sr + sy*sp*cr, R02 = sy*cp;
-                float R10 = cp*sr,            R11 = cp*cr,             R12 = -sp;
-                float R20 = -sy*cr + cy*sp*sr, R21 = sy*sr + cy*sp*cr, R22 = cy*cp;
+                float cy = (float)cos(g_fVrModelYaw * DTR),
+                      sy = (float)sin(g_fVrModelYaw * DTR);
+                float cp = (float)cos(g_fVrModelPitch * DTR),
+                      sp = (float)sin(g_fVrModelPitch * DTR);
+                float cr = (float)cos(g_fVrModelRoll * DTR),
+                      sr = (float)sin(g_fVrModelRoll * DTR);
+                float R00 = cy * cr + sy * sp * sr,
+                      R01 = -cy * sr + sy * sp * cr, R02 = sy * cp;
+                float R10 = cp * sr, R11 = cp * cr, R12 = -sp;
+                float R20 = -sy * cr + cy * sp * sr,
+                      R21 = sy * sr + cy * sp * cr, R22 = cy * cp;
                 // Index fingertip + "continue-the-finger" direction (model-local metres, from the baker). The
                 // X sign mirrors per hand (left = -X). Only used for hands; for controllers it points near the
                 // grip forward which the origin knobs still correct.
                 // hand 0 wears the RIGHT glove (+X) after the swap, hand 1 the LEFT (-X) -- match the mesh.
-                float tlx = (hnd == 0 ? g_fVrIndexTipX : -g_fVrIndexTipX), tly = g_fVrIndexTipY, tlz = g_fVrIndexTipZ;
-                float dlx = (hnd == 0 ? g_fVrIndexDirX : -g_fVrIndexDirX), dly = g_fVrIndexDirY, dlz = g_fVrIndexDirZ;
-                if (not g_bVrUseHands) { tlx = tly = tlz = 0.0f; dlx = 0.0f; dly = 0.0f; dlz = 1.0f; }   // controllers: grip origin + forward
+                float tlx = (hnd == 0 ? g_fVrIndexTipX : -g_fVrIndexTipX),
+                      tly = g_fVrIndexTipY, tlz = g_fVrIndexTipZ;
+                float dlx = (hnd == 0 ? g_fVrIndexDirX : -g_fVrIndexDirX),
+                      dly = g_fVrIndexDirY, dlz = g_fVrIndexDirZ;
+                if (not g_bVrUseHands)
+                {
+                    tlx = tly = tlz = 0.0f;
+                    dlx = 0.0f;
+                    dly = 0.0f;
+                    dlz = 1.0f;
+                } // controllers: grip origin + forward
                 // tip -> world (button units): R*local, then grip basis * M2B + grip position (mirror of the mesh transform)
-                float tmx = R00*tlx + R01*tly + R02*tlz, tmy = R10*tlx + R11*tly + R12*tlz, tmz = R20*tlx + R21*tly + R22*tlz;
+                float tmx = R00 * tlx + R01 * tly + R02 * tlz,
+                      tmy = R10 * tlx + R11 * tly + R12 * tlz,
+                      tmz = R20 * tlx + R21 * tly + R22 * tlz;
                 Tpoint rO;
-                rO.x = gp.x + (gbr[0]*tmx + gbu[0]*tmy + gbf[0]*tmz) * M2B;
-                rO.y = gp.y + (gbr[1]*tmx + gbu[1]*tmy + gbf[1]*tmz) * M2B;
-                rO.z = gp.z + (gbr[2]*tmx + gbu[2]*tmy + gbf[2]*tmz) * M2B;
+                rO.x =
+                    gp.x + (gbr[0] * tmx + gbu[0] * tmy + gbf[0] * tmz) * M2B;
+                rO.y =
+                    gp.y + (gbr[1] * tmx + gbu[1] * tmy + gbf[1] * tmz) * M2B;
+                rO.z =
+                    gp.z + (gbr[2] * tmx + gbu[2] * tmy + gbf[2] * tmz) * M2B;
                 // dir -> world (unit): R*local, then grip basis
-                float dmx = R00*dlx + R01*dly + R02*dlz, dmy = R10*dlx + R11*dly + R12*dlz, dmz = R20*dlx + R21*dly + R22*dlz;
+                float dmx = R00 * dlx + R01 * dly + R02 * dlz,
+                      dmy = R10 * dlx + R11 * dly + R12 * dlz,
+                      dmz = R20 * dlx + R21 * dly + R22 * dlz;
                 Tpoint rD;
-                rD.x = gbr[0]*dmx + gbu[0]*dmy + gbf[0]*dmz;
-                rD.y = gbr[1]*dmx + gbu[1]*dmy + gbf[1]*dmz;
-                rD.z = gbr[2]*dmx + gbu[2]*dmy + gbf[2]*dmz;
-                float dl0 = sqrtf(rD.x*rD.x + rD.y*rD.y + rD.z*rD.z); if (dl0 > 1e-6f) { rD.x/=dl0; rD.y/=dl0; rD.z/=dl0; }
+                rD.x = gbr[0] * dmx + gbu[0] * dmy + gbf[0] * dmz;
+                rD.y = gbr[1] * dmx + gbu[1] * dmy + gbf[1] * dmz;
+                rD.z = gbr[2] * dmx + gbu[2] * dmy + gbf[2] * dmz;
+                float dl0 = sqrtf(rD.x * rD.x + rD.y * rD.y + rD.z * rD.z);
+                if (dl0 > 1e-6f)
+                {
+                    rD.x /= dl0;
+                    rD.y /= dl0;
+                    rD.z /= dl0;
+                }
                 // Fine-tune knobs (default 0): tilt dir (VrRayPitch/Yaw) + shift origin (VrRayOriginOfs/Up/Right)
                 // in the ROLL-AWARE grip frame, so any residual can be dialed in the headset without a rebuild.
-                Tpoint rRt = { gbr[0], gbr[1], gbr[2] }, rUp = { gbu[0], gbu[1], gbu[2] };
-                float yw = g_fVrRayYaw*(float)DTR, pt = g_fVrRayPitch*(float)DTR;
-                Tpoint rd1 = { rD.x*cosf(yw)+rRt.x*sinf(yw), rD.y*cosf(yw)+rRt.y*sinf(yw), rD.z*cosf(yw)+rRt.z*sinf(yw) };
-                Tpoint rd2 = { rd1.x*cosf(pt)+rUp.x*sinf(pt), rd1.y*cosf(pt)+rUp.y*sinf(pt), rd1.z*cosf(pt)+rUp.z*sinf(pt) };
-                float dl = sqrtf(rd2.x*rd2.x + rd2.y*rd2.y + rd2.z*rd2.z); if (dl > 1e-6f) { rd2.x/=dl; rd2.y/=dl; rd2.z/=dl; }
+                Tpoint rRt = {gbr[0], gbr[1], gbr[2]},
+                       rUp = {gbu[0], gbu[1], gbu[2]};
+                float yw = g_fVrRayYaw * (float)DTR,
+                      pt = g_fVrRayPitch * (float)DTR;
+                Tpoint rd1 = {rD.x * cosf(yw) + rRt.x * sinf(yw),
+                              rD.y * cosf(yw) + rRt.y * sinf(yw),
+                              rD.z * cosf(yw) + rRt.z * sinf(yw)};
+                Tpoint rd2 = {rd1.x * cosf(pt) + rUp.x * sinf(pt),
+                              rd1.y * cosf(pt) + rUp.y * sinf(pt),
+                              rd1.z * cosf(pt) + rUp.z * sinf(pt)};
+                float dl = sqrtf(rd2.x * rd2.x + rd2.y * rd2.y + rd2.z * rd2.z);
+                if (dl > 1e-6f)
+                {
+                    rd2.x /= dl;
+                    rd2.y /= dl;
+                    rd2.z /= dl;
+                }
                 rD = rd2;
-                rO.x += rD.x*g_fVrRayOriginOfs + rRt.x*g_fVrRayOriginRight + rUp.x*g_fVrRayOriginUp;
-                rO.y += rD.y*g_fVrRayOriginOfs + rRt.y*g_fVrRayOriginRight + rUp.y*g_fVrRayOriginUp;
-                rO.z += rD.z*g_fVrRayOriginOfs + rRt.z*g_fVrRayOriginRight + rUp.z*g_fVrRayOriginUp;
-                g_vrRayOrigin = rO; g_vrRayDir = rD; g_vrRayActive = true;
+                rO.x += rD.x * g_fVrRayOriginOfs + rRt.x * g_fVrRayOriginRight +
+                        rUp.x * g_fVrRayOriginUp;
+                rO.y += rD.y * g_fVrRayOriginOfs + rRt.y * g_fVrRayOriginRight +
+                        rUp.y * g_fVrRayOriginUp;
+                rO.z += rD.z * g_fVrRayOriginOfs + rRt.z * g_fVrRayOriginRight +
+                        rUp.z * g_fVrRayOriginUp;
+                g_vrRayOrigin = rO;
+                g_vrRayDir = rD;
+                g_vrRayActive = true;
                 // Controller marker position (grip pose), already flipped above.
-                g_vrGripPoint = gp; g_vrGripValid = true;
+                g_vrGripPoint = gp;
+                g_vrGripValid = true;
 
                 // Read inputs first so the single pick loop can also resolve the fire-button (left/right variant).
-                OpenXRBackend::ControllerState cs; cs.triggerDown = false;
-                int fireMb = 0;   // 1 = left (increment/press), 2 = right (decrement)
+                OpenXRBackend::ControllerState cs;
+                cs.triggerDown = false;
+                int fireMb =
+                    0; // 1 = left (increment/press), 2 = right (decrement)
                 if (g_pOpenXRBackend->GetControllerState(hnd, &cs))
                 {
                     static bool s_prevTrig = false, s_prevA = false;
-                    static int  s_thumbDir = 0, s_holdFrames = 0;
-                    if (cs.triggerDown and not s_prevTrig) fireMb = 1;
+                    static int s_thumbDir = 0, s_holdFrames = 0;
+                    if (cs.triggerDown and not s_prevTrig)
+                        fireMb = 1;
                     s_prevTrig = cs.triggerDown;
 
                     int dir = 0;
-                    if (fabs(cs.thumbY) >= fabs(cs.thumbX)) { if (cs.thumbY > g_fVrThumbThresh) dir = 1; else if (cs.thumbY < -g_fVrThumbThresh) dir = -1; }
-                    else                                    { if (cs.thumbX > g_fVrThumbThresh) dir = 1; else if (cs.thumbX < -g_fVrThumbThresh) dir = -1; }
-                    int repFrames = (int)(g_fVrKnobRepeatMs * 0.09f); if (repFrames < 1) repFrames = 1;  // ms->frames @~90fps
+                    if (fabs(cs.thumbY) >= fabs(cs.thumbX))
+                    {
+                        if (cs.thumbY > g_fVrThumbThresh)
+                            dir = 1;
+                        else if (cs.thumbY < -g_fVrThumbThresh)
+                            dir = -1;
+                    }
+                    else
+                    {
+                        if (cs.thumbX > g_fVrThumbThresh)
+                            dir = 1;
+                        else if (cs.thumbX < -g_fVrThumbThresh)
+                            dir = -1;
+                    }
+                    int repFrames = (int)(g_fVrKnobRepeatMs * 0.09f);
+                    if (repFrames < 1)
+                        repFrames = 1; // ms->frames @~90fps
                     if (dir != 0)
                     {
                         bool rep = false;
-                        if (dir != s_thumbDir) { rep = true; s_holdFrames = 0; }
-                        else if (++s_holdFrames >= repFrames) { rep = true; s_holdFrames = 0; }
-                        if (rep and fireMb == 0) fireMb = (dir > 0) ? 1 : 2;
+                        if (dir != s_thumbDir)
+                        {
+                            rep = true;
+                            s_holdFrames = 0;
+                        }
+                        else if (++s_holdFrames >= repFrames)
+                        {
+                            rep = true;
+                            s_holdFrames = 0;
+                        }
+                        if (rep and fireMb == 0)
+                            fireMb = (dir > 0) ? 1 : 2;
                     }
                     s_thumbDir = dir;
 
                     // NOTE recenter is NOT handled here any more: this whole block only runs while a hand is
                     // ACTIVE, which meant B did nothing until you woke the hand with the grip. It now lives in
                     // OpenXRBackend::SyncControllers (every frame, both hands, no gate) -- see #67.
-                    if (cs.buttonA and not s_prevA) g_bVrZoomActive = not g_bVrZoomActive;  // zoom application TBD
+                    if (cs.buttonA and not s_prevA)
+                        g_bVrZoomActive =
+                            not g_bVrZoomActive; // zoom application TBD
                     s_prevA = cs.buttonA;
                 }
 
@@ -4200,21 +5466,48 @@ void OTWDriverClass::VCock_Exec(void)
                 // the selected switch changes by DIRECTION, range-independent. The absolute radius gate stays as
                 // a coarse "the ray passes within the switch's (scaled) hotspot" filter. bestFire = same, matched
                 // to the fire mousebutton (2-way toggle left/right variant on one loc).
-                int    bestAny = -1;  float bestAnyAng = 1.0e30f; float bestAnyT = 0.0f; Tpoint anyPos = { 0, 0, 0 };
-                int    bestFire = -1; float bestFireAng = 1.0e30f; float bestFireT = 0.0f; Tpoint firePos = { 0, 0, 0 };
+                int bestAny = -1;
+                float bestAnyAng = 1.0e30f;
+                float bestAnyT = 0.0f;
+                Tpoint anyPos = {0, 0, 0};
+                int bestFire = -1;
+                float bestFireAng = 1.0e30f;
+                float bestFireT = 0.0f;
+                Tpoint firePos = {0, 0, 0};
                 for (i = 0; i < Button3DList.numbuttons; i++)
                 {
                     Tpoint P = Button3DList.buttons[i].loc;
-                    P.x += headPan.x * sc; P.y += headPan.y * sc; P.z += headPan.z * sc;
+                    P.x += headPan.x * sc;
+                    P.y += headPan.y * sc;
+                    P.z += headPan.z * sc;
                     float wx = P.x - rO.x, wy = P.y - rO.y, wz = P.z - rO.z;
-                    float t  = wx * rD.x + wy * rD.y + wz * rD.z;
-                    if (t <= 1.0f) continue;                       // behind / on top of the controller
-                    float qx = wx - t * rD.x, qy = wy - t * rD.y, qz = wz - t * rD.z;
+                    float t = wx * rD.x + wy * rD.y + wz * rD.z;
+                    if (t <= 1.0f)
+                        continue; // behind / on top of the controller
+                    float qx = wx - t * rD.x, qy = wy - t * rD.y,
+                          qz = wz - t * rD.z;
                     float perp = sqrtf(qx * qx + qy * qy + qz * qz);
-                    if (perp >= Button3DList.buttons[i].dist * g_fVrRayRadius) continue;
-                    float ang = perp / t;                          // ~tan(angle off the ray) -> how directly aimed
-                    if (ang < bestAnyAng) { bestAnyAng = ang; bestAnyT = t; bestAny = i; anyPos = P; }
-                    if (fireMb and Button3DList.buttons[i].mousebutton == fireMb and ang < bestFireAng) { bestFireAng = ang; bestFireT = t; bestFire = i; firePos = P; }
+                    if (perp >= Button3DList.buttons[i].dist * g_fVrRayRadius)
+                        continue;
+                    float ang =
+                        perp /
+                        t; // ~tan(angle off the ray) -> how directly aimed
+                    if (ang < bestAnyAng)
+                    {
+                        bestAnyAng = ang;
+                        bestAnyT = t;
+                        bestAny = i;
+                        anyPos = P;
+                    }
+                    if (fireMb and
+                        Button3DList.buttons[i].mousebutton == fireMb and
+                        ang < bestFireAng)
+                    {
+                        bestFireAng = ang;
+                        bestFireT = t;
+                        bestFire = i;
+                        firePos = P;
+                    }
                 }
 
                 // NO snapping (it only got in the way): the cursor stays ON THE BEAM -- at the hit depth when a
@@ -4223,13 +5516,14 @@ void OTWDriverClass::VCock_Exec(void)
                 g_vrCursorAnchor.x = rO.x + rD.x * anchorT;
                 g_vrCursorAnchor.y = rO.y + rD.y * anchorT;
                 g_vrCursorAnchor.z = rO.z + rD.z * anchorT;
-                g_vrCursorAnchorValid   = true;
-                g_vrCursorAnchorButton  = bestAny;
+                g_vrCursorAnchorValid = true;
+                g_vrCursorAnchorButton = bestAny;
                 g_vrCursorAnchorSnapped = (bestAny >= 0);
                 if (bestAny >= 0)
                 {
-                    gSelectedCursor = 9;                          // green: a button is under the beam
-                    g_vrHitPoint = anyPos;                        // the real switch center (headPan-adjusted) -> ring it
+                    gSelectedCursor = 9; // green: a button is under the beam
+                    g_vrHitPoint =
+                        anyPos; // the real switch center (headPan-adjusted) -> ring it
                     g_vrHitValid = true;
                 }
 
@@ -4237,9 +5531,9 @@ void OTWDriverClass::VCock_Exec(void)
                 // button. Only the click target changes -- the visible cursor stays on the beam.
                 if (fireMb and bestFire >= 0)
                 {
-                    g_vrCursorAnchorButton  = bestFire;
+                    g_vrCursorAnchorButton = bestFire;
                     g_vrCursorAnchorSnapped = true;
-                    Button3DList.clicked    = fireMb;
+                    Button3DList.clicked = fireMb;
                 }
 
                 // Visible cursor + laser line. Project the 3D anchor to the DISPLAY pixel (SetVRFrustum is set
@@ -4263,8 +5557,10 @@ void OTWDriverClass::VCock_Exec(void)
         else if (xrPick and xrView0)
         {
             extern int gxPos, gyPos;
-            extern float g_fVrRayReach, g_fVrMouseRayX, g_fVrMouseRayY, g_fVrMouseRayRadius;
-            const float dw = (float)DisplayOptions.DispWidth, dh = (float)DisplayOptions.DispHeight;
+            extern float g_fVrRayReach, g_fVrMouseRayX, g_fVrMouseRayY,
+                g_fVrMouseRayRadius;
+            const float dw = (float)DisplayOptions.DispWidth,
+                        dh = (float)DisplayOptions.DispHeight;
             if (dw > 0.0f and dh > 0.0f)
             {
                 const float sc = B3D_POSITION_SCALING;
@@ -4272,34 +5568,70 @@ void OTWDriverClass::VCock_Exec(void)
                 // uses cameraRot + the eye FOV that SetVRFrustum(view0)+SetCamera set above, exactly the transform
                 // the buttons are projected with). NDC = 2*px/DispSize-1 -> resolution-independent. (The earlier
                 // hand-built head-basis ray was in the wrong frame -> t<0, all buttons "behind" -> no hit.)
-                float ndcx = ((2.0f * (float)gxPos / dw) - 1.0f) * g_fVrMouseRayX;
-                float ndcy = ((2.0f * (float)gyPos / dh) - 1.0f) * g_fVrMouseRayY;
-                Tpoint rD; renderer->UnprojectNdc(ndcx, ndcy, &rD);
+                float ndcx =
+                    ((2.0f * (float)gxPos / dw) - 1.0f) * g_fVrMouseRayX;
+                float ndcy =
+                    ((2.0f * (float)gyPos / dh) - 1.0f) * g_fVrMouseRayY;
+                Tpoint rD;
+                renderer->UnprojectNdc(ndcx, ndcy, &rD);
                 // DIAG confirmed: the Button3DList frame's forward is -x vs the unproject's +x (engine looks down
                 // -Z; UnTransformPoint's sz=+1 comes out reversed for our button compare). Negate so t>0.
-                rD.x = -rD.x; rD.y = -rD.y; rD.z = -rD.z;
-                Tpoint rO = { 0.0f, 0.0f, 0.0f };   // eye at origin (camera-centric frame)
-                int fireMb = Button3DList.clicked;  // OS mouse click (1=left, 2=right); 0 = hover only
+                rD.x = -rD.x;
+                rD.y = -rD.y;
+                rD.z = -rD.z;
+                Tpoint rO = {0.0f, 0.0f,
+                             0.0f}; // eye at origin (camera-centric frame)
+                int fireMb =
+                    Button3DList
+                        .clicked; // OS mouse click (1=left, 2=right); 0 = hover only
 
-                int bestAny = -1; float bestAnyAng = 1.0e30f; float bestAnyT = 0.0f; Tpoint anyPos = { 0, 0, 0 };
-                int bestFire = -1; float bestFireAng = 1.0e30f;
+                int bestAny = -1;
+                float bestAnyAng = 1.0e30f;
+                float bestAnyT = 0.0f;
+                Tpoint anyPos = {0, 0, 0};
+                int bestFire = -1;
+                float bestFireAng = 1.0e30f;
                 // Also track the absolute nearest-perp button (ignoring the t/radius gate) -- its depth dPt seats
                 // the FREE cursor at the panel plane so it fuses (see the anchor depth below).
-                int   dPi = -1; float dPperp = 1.0e30f, dPt = 0.0f;
+                int dPi = -1;
+                float dPperp = 1.0e30f, dPt = 0.0f;
                 for (i = 0; i < Button3DList.numbuttons; i++)
                 {
                     Tpoint P = Button3DList.buttons[i].loc;
-                    P.x += headPan.x * sc; P.y += headPan.y * sc; P.z += headPan.z * sc;
+                    P.x += headPan.x * sc;
+                    P.y += headPan.y * sc;
+                    P.z += headPan.z * sc;
                     float wx = P.x - rO.x, wy = P.y - rO.y, wz = P.z - rO.z;
-                    float t  = wx * rD.x + wy * rD.y + wz * rD.z;
-                    float qx = wx - t * rD.x, qy = wy - t * rD.y, qz = wz - t * rD.z;
+                    float t = wx * rD.x + wy * rD.y + wz * rD.z;
+                    float qx = wx - t * rD.x, qy = wy - t * rD.y,
+                          qz = wz - t * rD.z;
                     float perp = sqrtf(qx * qx + qy * qy + qz * qz);
-                    if (t > 1.0f and perp < dPperp) { dPperp = perp; dPi = i; dPt = t; }
-                    if (t <= 1.0f) continue;
-                    if (perp >= Button3DList.buttons[i].dist * g_fVrMouseRayRadius) continue;
+                    if (t > 1.0f and perp < dPperp)
+                    {
+                        dPperp = perp;
+                        dPi = i;
+                        dPt = t;
+                    }
+                    if (t <= 1.0f)
+                        continue;
+                    if (perp >=
+                        Button3DList.buttons[i].dist * g_fVrMouseRayRadius)
+                        continue;
                     float ang = perp / t;
-                    if (ang < bestAnyAng) { bestAnyAng = ang; bestAnyT = t; bestAny = i; anyPos = P; }
-                    if (fireMb and Button3DList.buttons[i].mousebutton == fireMb and ang < bestFireAng) { bestFireAng = ang; bestFire = i; }
+                    if (ang < bestAnyAng)
+                    {
+                        bestAnyAng = ang;
+                        bestAnyT = t;
+                        bestAny = i;
+                        anyPos = P;
+                    }
+                    if (fireMb and
+                        Button3DList.buttons[i].mousebutton == fireMb and
+                        ang < bestFireAng)
+                    {
+                        bestFireAng = ang;
+                        bestFire = i;
+                    }
                 }
 
                 // Cursor depth along the ray: on a hit -> the button depth; free-aim -> the NEAREST button's
@@ -4307,17 +5639,32 @@ void OTWDriverClass::VCock_Exec(void)
                 // free cursor CLOSER than the panel -> the two eyes saw it at different positions (per-eye
                 // disparity for the wrong depth) so it "doubled" until it snapped onto a button. Reach is only
                 // the fallback when no button is anywhere near the ray.
-                float anchorT = (bestAny >= 0) ? bestAnyT : ((dPi >= 0 and dPt > 1.0f) ? dPt : g_fVrRayReach);
+                float anchorT =
+                    (bestAny >= 0) ?
+                        bestAnyT :
+                        ((dPi >= 0 and dPt > 1.0f) ? dPt : g_fVrRayReach);
                 g_vrCursorAnchor.x = rO.x + rD.x * anchorT;
                 g_vrCursorAnchor.y = rO.y + rD.y * anchorT;
                 g_vrCursorAnchor.z = rO.z + rD.z * anchorT;
-                g_vrCursorAnchorValid   = true;
-                g_vrCursorAnchorButton  = bestAny;
+                g_vrCursorAnchorValid = true;
+                g_vrCursorAnchorButton = bestAny;
                 g_vrCursorAnchorSnapped = (bestAny >= 0);
-                g_vrRayOrigin = rO; g_vrRayDir = rD; g_vrRayActive = true;
-                g_vrCtrlRayActive = true;   // stand down the old 2D VR pick (the 3D ray drives it now)
-                if (bestAny >= 0) { gSelectedCursor = 9; g_vrHitPoint = anyPos; g_vrHitValid = true; }
-                if (fireMb and bestFire >= 0) { g_vrCursorAnchorButton = bestFire; g_vrCursorAnchorSnapped = true; }
+                g_vrRayOrigin = rO;
+                g_vrRayDir = rD;
+                g_vrRayActive = true;
+                g_vrCtrlRayActive =
+                    true; // stand down the old 2D VR pick (the 3D ray drives it now)
+                if (bestAny >= 0)
+                {
+                    gSelectedCursor = 9;
+                    g_vrHitPoint = anyPos;
+                    g_vrHitValid = true;
+                }
+                if (fireMb and bestFire >= 0)
+                {
+                    g_vrCursorAnchorButton = bestFire;
+                    g_vrCursorAnchorSnapped = true;
+                }
                 gTimeLastMouseMove = vuxRealTime;
             }
         }
@@ -4354,9 +5701,14 @@ void OTWDriverClass::VCock_Exec(void)
             else
             {
                 float hh = (efr - efl) * 0.5f;
-                int   ew = g_pD3D12Backend->SceneW();
-                int   eh = g_pD3D12Backend->SceneH();
-                float vhalf = (ew > 0) ? (float)atan(tan(hh) * (double)eh / (double)ew) : hh;
+                // Artscout - 2026 (#104): the ACTIVE backend's eye size, not D3D12's -- and null-checked. This read
+                // g_pD3D12Backend->SceneW() unguarded, which is a null dereference the moment a non-D3D12 backend
+                // drives VR. Unreachable today (there is no OpenXR-Vulkan session yet), but it is a trap laid for it.
+                int ew = g_pRenderBackend ? g_pRenderBackend->SceneW() : 0;
+                int eh = g_pRenderBackend ? g_pRenderBackend->SceneH() : 0;
+                float vhalf =
+                    (ew > 0) ? (float)atan(tan(hh) * (double)eh / (double)ew) :
+                               hh;
                 renderer->SetVRFrustum(-hh, hh, vhalf, -vhalf);
             }
         }
@@ -4371,29 +5723,38 @@ void OTWDriverClass::VCock_Exec(void)
     // sensitive to something vanishing. Quality there is irrelevant; continuity is not.
     if (xrPick and g_pOpenXRBackend)
     {
-        int curEye = g_pOpenXRBackend->CurrentEye(); if (curEye < 0) curEye = 0;
+        int curEye = g_pOpenXRBackend->CurrentEye();
+        if (curEye < 0)
+            curEye = 0;
         VrSetEyeCam(curEye);
         VCock_DrawControllerModel();
     }
 
-    if (g_vrRayActive and g_vrCursorAnchorValid and xrPick and g_pOpenXRBackend
-        and not (g_pOpenXRBackend->IsQuadViews() and g_pOpenXRBackend->CurrentEye() < 2))
+    if (g_vrRayActive and g_vrCursorAnchorValid and xrPick and
+        g_pOpenXRBackend and
+        not(g_pOpenXRBackend->IsQuadViews() and
+            g_pOpenXRBackend->CurrentEye() < 2))
     {
-        int curEye = g_pOpenXRBackend->CurrentEye(); if (curEye < 0) curEye = 0;
+        int curEye = g_pOpenXRBackend->CurrentEye();
+        if (curEye < 0)
+            curEye = 0;
         // This eye's IPD parallax in button units (body-right axis), the piece TransformCameraCentricPoint
         // drops -> the beam/cross stereo disparity. Scaled by VrRayIpd (its OWN knob, independent of the
         // mouse cursor's VrCursorIpd): raise/lower until the ring sits AT the switch depth; <0 flips the eye
         // sign, 0 = mono/flat. The other eye's GetEyeLateralOffsetFeet flips sign -> the stereo separation.
         extern float g_fVrRayIpd;
-        float ipdY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(curEye) * B3D_POSITION_SCALING * g_fVrRayIpd;
+        float ipdY = g_pOpenXRBackend->GetEyeLateralOffsetFeet(curEye) *
+                     B3D_POSITION_SCALING * g_fVrRayIpd;
 
         // Endpoint: ALWAYS the point ON THE BEAM (rO + rD*t) -- no snapping to the button centre. The
         // hand-placed clickable hotspots are often offset from the visible switch art, so jumping the cursor
         // onto them reads as "stuck / off" ("прилипание"); keeping it on the beam shows exactly where the
         // controller points. g_vrCursorAnchor already sits at the hit depth when over a button (bestAnyT),
         // else at the free reach. g_vrHitValid only picks the glyph (ring = a clickable is under the beam).
-        Tpoint aE = g_vrCursorAnchor; aE.y += ipdY;
-        Tpoint oE = g_vrRayOrigin;    oE.y += ipdY;
+        Tpoint aE = g_vrCursorAnchor;
+        aE.y += ipdY;
+        Tpoint oE = g_vrRayOrigin;
+        oE.y += ipdY;
         ThreeDVertex tA, tO;
         renderer->TransformCameraCentricPoint(&aE, &tA);
         if (tA.csZ < -30.0f)
@@ -4403,25 +5764,31 @@ void OTWDriverClass::VCock_Exec(void)
             renderer->SetColor(g_vrHitValid ? 0x0000FF00 : 0x0000A5FF);
             renderer->TransformCameraCentricPoint(&oE, &tO);
             if (tO.csZ < -30.0f)
-                renderer->Render2DLine(tO.x, tO.y, tA.x, tA.y);   // the beam
+                renderer->Render2DLine(tO.x, tO.y, tA.x, tA.y); // the beam
+            // #TODO ring size differs per eye in DX12 stereo: the 2D pixel->NDC map uses gScreenSize (VS_Screen),
+            // which is the eye size in one eye and the desktop size in the other at ring-draw time -> a fixed 7.5px is
+            // a different fraction per eye. Correct fix = normalize by the CURRENT gScreenWidth (needs a renderer
+            // getter). Scaling by VR_GetResX (xRes) was WRONG (xRes != gScreenSize) and inverted the mismatch.
             if (g_vrHitValid)
             {
                 // RING at the beam end -> "a clickable switch is under the ray" (glyph only, on beam). 1.5x size.
                 const float rr = 7.5f;
-                const int   segs = 12;
-                float pX = tA.x + rr, pY = tA.y;   // s = 0
+                const int segs = 12;
+                float pX = tA.x + rr, pY = tA.y; // s = 0
                 for (int s = 1; s <= segs; ++s)
                 {
-                    float a  = (float)s * (2.0f * PI / (float)segs);
+                    float a = (float)s * (2.0f * PI / (float)segs);
                     float nX = tA.x + rr * (float)cos(a);
                     float nY = tA.y + rr * (float)sin(a);
                     renderer->Render2DLine(pX, pY, nX, nY);
-                    pX = nX; pY = nY;
+                    pX = nX;
+                    pY = nY;
                 }
             }
             else
             {
-                const float cx = 7.5f;            // free-aim cross (pointing at nothing clickable), 1.5x size
+                const float cx =
+                    7.5f; // free-aim cross (pointing at nothing clickable), 1.5x size
                 renderer->Render2DLine(tA.x - cx, tA.y, tA.x + cx, tA.y);
                 renderer->Render2DLine(tA.x, tA.y - cx, tA.x, tA.y + cx);
             }
@@ -4432,47 +5799,67 @@ void OTWDriverClass::VCock_Exec(void)
             // back to the wireframe when its skeleton is absent, so you always see the pointer.
             const int VR_HAND_JOINTS = 26;
             static const int handBones[24][2] = {
-                {1,2},{1,6},{1,11},{1,16},{1,21},            // wrist -> finger metacarpals
-                {2,3},{3,4},{4,5},                            // thumb
-                {6,7},{7,8},{8,9},{9,10},                     // index
-                {11,12},{12,13},{13,14},{14,15},             // middle
-                {16,17},{17,18},{18,19},{19,20},             // ring
-                {21,22},{22,23},{23,24},{24,25}              // little
+                {1, 2},   {1, 6},   {1, 11},  {1, 16},
+                {1, 21}, // wrist -> finger metacarpals
+                {2, 3},   {3, 4},   {4, 5}, // thumb
+                {6, 7},   {7, 8},   {8, 9},   {9, 10}, // index
+                {11, 12}, {12, 13}, {13, 14}, {14, 15}, // middle
+                {16, 17}, {17, 18}, {18, 19}, {19, 20}, // ring
+                {21, 22}, {22, 23}, {23, 24}, {24, 25} // little
             };
             extern bool g_bVrRayFlipH, g_bVrRayFlipV;
-            const int   activeHnd = g_pOpenXRBackend->GetActiveHand();
+            extern bool
+                g_bVrHandSkeleton; // Artscout - 2026 (#11): finger-skeleton overlay OFF by default (solid hands only)
+            const int activeHnd = g_pOpenXRBackend->GetActiveHand();
             bool drewActiveHand = false;
-            for (int hnd2 = 0; hnd2 < 2; ++hnd2)
-            {
-                float jb[26][3]; bool jv[26];
-                if (!g_pOpenXRBackend->GetHandJointsBody(hnd2, jb, jv)) continue;   // hand not tracked this frame
-                ThreeDVertex jp[26]; bool jok[26];
-                for (int i = 0; i < VR_HAND_JOINTS; ++i)
+            // Artscout - 2026 (#11): skip the 26-joint skeleton entirely when disabled. drewActiveHand stays false, but
+            // the wireframe fallback below only fires when the solid controller MODEL is also off, so with the mesh on
+            // nothing extra draws -- exactly the desired "solid textured hands, no skeleton clutter".
+            if (g_bVrHandSkeleton)
+                for (int hnd2 = 0; hnd2 < 2; ++hnd2)
                 {
-                    if (!jv[i]) { jok[i] = false; continue; }
-                    float by = jb[i][1], bz = jb[i][2];
-                    if (g_bVrRayFlipH) by = -by;         // same axis flips as the ray/grip
-                    if (g_bVrRayFlipV) bz = -bz;
-                    Tpoint pj;
-                    pj.x = jb[i][0] * B3D_POSITION_SCALING;
-                    pj.y = by * B3D_POSITION_SCALING + ipdY;
-                    pj.z = bz * B3D_POSITION_SCALING;
-                    renderer->TransformCameraCentricPoint(&pj, &jp[i]);
-                    jok[i] = (jp[i].csZ < -30.0f);
+                    float jb[26][3];
+                    bool jv[26];
+                    if (!g_pOpenXRBackend->GetHandJointsBody(hnd2, jb, jv))
+                        continue; // hand not tracked this frame
+                    ThreeDVertex jp[26];
+                    bool jok[26];
+                    for (int i = 0; i < VR_HAND_JOINTS; ++i)
+                    {
+                        if (!jv[i])
+                        {
+                            jok[i] = false;
+                            continue;
+                        }
+                        float by = jb[i][1], bz = jb[i][2];
+                        if (g_bVrRayFlipH)
+                            by = -by; // same axis flips as the ray/grip
+                        if (g_bVrRayFlipV)
+                            bz = -bz;
+                        Tpoint pj;
+                        pj.x = jb[i][0] * B3D_POSITION_SCALING;
+                        pj.y = by * B3D_POSITION_SCALING + ipdY;
+                        pj.z = bz * B3D_POSITION_SCALING;
+                        renderer->TransformCameraCentricPoint(&pj, &jp[i]);
+                        jok[i] = (jp[i].csZ < -30.0f);
+                    }
+                    for (int b = 0; b < 24; ++b)
+                    {
+                        int a0 = handBones[b][0], a1 = handBones[b][1];
+                        if (jok[a0] and jok[a1])
+                            renderer->Render2DLine(jp[a0].x, jp[a0].y, jp[a1].x,
+                                                   jp[a1].y);
+                    }
+                    if (hnd2 == activeHnd)
+                        drewActiveHand = true;
                 }
-                for (int b = 0; b < 24; ++b)
-                {
-                    int a0 = handBones[b][0], a1 = handBones[b][1];
-                    if (jok[a0] and jok[a1]) renderer->Render2DLine(jp[a0].x, jp[a0].y, jp[a1].x, jp[a1].y);
-                }
-                if (hnd2 == activeHnd) drewActiveHand = true;
-            }
 
             // Artscout - 2026 (VR controller model): the solid controller mesh is now drawn in
             // VCock_DrawThePit (poly-list); what remains here is the wireframe fallback used only
             // when the mesh MODEL is OFF (grip pose from the aim direction).
             extern bool g_bVrControllerModel;
-            if (!drewActiveHand and not g_bVrControllerModel and g_vrGripValid)   // wireframe fallback only when the mesh MODEL is OFF
+            if (!drewActiveHand and not g_bVrControllerModel and
+                g_vrGripValid) // wireframe fallback only when the mesh MODEL is OFF
             {
                 // Orthonormal basis from the CALIBRATED aim direction -> the model points exactly where the ray
                 // does, so no separate axis calibration is needed. up = body-up (-z) orthogonalised to forward;
@@ -4480,76 +5867,111 @@ void OTWDriverClass::VCock_Exec(void)
                 // the flat square placeholder with a hand-oriented controller so you can see where you point.
                 Tpoint f = g_vrRayDir;
                 float fl2 = sqrtf(f.x * f.x + f.y * f.y + f.z * f.z);
-                if (fl2 > 1e-4f) { f.x /= fl2; f.y /= fl2; f.z /= fl2; }
-                Tpoint wu = { 0.0f, 0.0f, -1.0f };                          // body up = -z (z is down)
-                Tpoint r = { f.y * wu.z - f.z * wu.y, f.z * wu.x - f.x * wu.z, f.x * wu.y - f.y * wu.x };
+                if (fl2 > 1e-4f)
+                {
+                    f.x /= fl2;
+                    f.y /= fl2;
+                    f.z /= fl2;
+                }
+                Tpoint wu = {0.0f, 0.0f, -1.0f}; // body up = -z (z is down)
+                Tpoint r = {f.y * wu.z - f.z * wu.y, f.z * wu.x - f.x * wu.z,
+                            f.x * wu.y - f.y * wu.x};
                 float rl = sqrtf(r.x * r.x + r.y * r.y + r.z * r.z);
-                if (rl < 1e-3f) { r.x = 0.0f; r.y = 1.0f; r.z = 0.0f; rl = 1.0f; }   // aim near vertical
-                r.x /= rl; r.y /= rl; r.z /= rl;
-                Tpoint u = { r.y * f.z - r.z * f.y, r.z * f.x - r.x * f.z, r.x * f.y - r.y * f.x };
+                if (rl < 1e-3f)
+                {
+                    r.x = 0.0f;
+                    r.y = 1.0f;
+                    r.z = 0.0f;
+                    rl = 1.0f;
+                } // aim near vertical
+                r.x /= rl;
+                r.y /= rl;
+                r.z /= rl;
+                Tpoint u = {r.y * f.z - r.z * f.y, r.z * f.x - r.x * f.z,
+                            r.x * f.y - r.y * f.x};
                 // Body box: barrel a bit ahead of the grip, handle extending back into the hand (button units).
                 const float FR = 40.0f, BK = -180.0f, HW = 26.0f, HH = 20.0f;
-                const float slong[2] = { FR, BK }, swide[2] = { HW, -HW }, shigh[2] = { HH, -HH };
-                ThreeDVertex cv[8]; bool cok[8]; int ci = 0;
-                for (int a = 0; a < 2; ++a) for (int b = 0; b < 2; ++b) for (int c = 0; c < 2; ++c)
-                {
-                    Tpoint p;
-                    p.x = g_vrGripPoint.x + f.x * slong[a] + r.x * swide[b] + u.x * shigh[c];
-                    p.y = g_vrGripPoint.y + f.y * slong[a] + r.y * swide[b] + u.y * shigh[c] + ipdY;
-                    p.z = g_vrGripPoint.z + f.z * slong[a] + r.z * swide[b] + u.z * shigh[c];
-                    renderer->TransformCameraCentricPoint(&p, &cv[ci]);
-                    cok[ci] = (cv[ci].csZ < -30.0f);
-                    ci++;
-                }
+                const float slong[2] = {FR, BK}, swide[2] = {HW, -HW},
+                            shigh[2] = {HH, -HH};
+                ThreeDVertex cv[8];
+                bool cok[8];
+                int ci = 0;
+                for (int a = 0; a < 2; ++a)
+                    for (int b = 0; b < 2; ++b)
+                        for (int c = 0; c < 2; ++c)
+                        {
+                            Tpoint p;
+                            p.x = g_vrGripPoint.x + f.x * slong[a] +
+                                  r.x * swide[b] + u.x * shigh[c];
+                            p.y = g_vrGripPoint.y + f.y * slong[a] +
+                                  r.y * swide[b] + u.y * shigh[c] + ipdY;
+                            p.z = g_vrGripPoint.z + f.z * slong[a] +
+                                  r.z * swide[b] + u.z * shigh[c];
+                            renderer->TransformCameraCentricPoint(&p, &cv[ci]);
+                            cok[ci] = (cv[ci].csZ < -30.0f);
+                            ci++;
+                        }
                 // corner index = a*4 + b*2 + c (a: front/back, b: +/-width, c: +/-height)
                 static const int edges[12][2] = {
-                    {0,1},{1,3},{3,2},{2,0},   // front face
-                    {4,5},{5,7},{7,6},{6,4},   // back face
-                    {0,4},{1,5},{2,6},{3,7}    // connectors
+                    {0, 1}, {1, 3}, {3, 2}, {2, 0}, // front face
+                    {4, 5}, {5, 7}, {7, 6}, {6, 4}, // back face
+                    {0, 4}, {1, 5}, {2, 6}, {3, 7} // connectors
                 };
                 for (int e = 0; e < 12; ++e)
                 {
                     int i0 = edges[e][0], i1 = edges[e][1];
                     if (cok[i0] and cok[i1])
-                        renderer->Render2DLine(cv[i0].x, cv[i0].y, cv[i1].x, cv[i1].y);
+                        renderer->Render2DLine(cv[i0].x, cv[i0].y, cv[i1].x,
+                                               cv[i1].y);
                 }
             }
         }
     }
 
-    if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) and not InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
+    if ((vuxRealTime - gTimeLastMouseMove < SI_MOUSE_TIME_DELTA) and
+        not InExitMenu()) //Wombat778 10-15-2003 added so mouse cursor would disappear after a few seconds standing still. Also dont want two cursors when exit menu is up
     {
         //Wombat778 10-15-2003 Added the following so that mouse cursor could be drawn in green if over a button, red otherwise
         // Artscout - 2026 (VR): run the hover (green) hit-test ONLY in view 0 (periphery). VCock_Exec runs
         // once per view (4x in quad), and the focus passes (2/3) project buttons with the zoomed gaze
         // camera but compare to the periphery mouse gxPos -> garbage, and the LAST pass (view 3) would
         // overwrite view 0's correct green with a miss. Gate to view 0, like the magnetic anchor below.
-        if (g_b3DClickableCursorChange and xrView0 and not g_vrCtrlRayActive)   // Artscout - 2026: controller ray owns the pick when active
+        if (g_b3DClickableCursorChange and xrView0 and
+            not g_vrCtrlRayActive) // Artscout - 2026: controller ray owns the pick when active
         {
             gSelectedCursor = 0;
 
-            for (i = 0 ; i < Button3DList.numbuttons ; i++)
+            for (i = 0; i < Button3DList.numbuttons; i++)
             {
                 Tpoint Pos = Button3DList.buttons[i].loc;
                 Pos.x += headPan.x * B3D_POSITION_SCALING;
                 Pos.y += headPan.y * B3D_POSITION_SCALING;
                 Pos.z += headPan.z * B3D_POSITION_SCALING;
-                Pos.y += vrIpdButtonY;   // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
+                Pos.y +=
+                    vrIpdButtonY; // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
 
                 renderer->TransformCameraCentricPoint(&Pos, &t1);
-                if (t1.csZ >= 0.0f) continue;   // Artscout - 2026 (VR): skip buttons behind the camera
+                if (t1.csZ >= 0.0f)
+                    continue; // Artscout - 2026 (VR): skip buttons behind the camera
 
                 // Artscout - 2026 (VR): t1 is ALREADY in DISPLAY pixel space (renderer xRes/yRes == DispWidth
                 // /DispHeight during VCock_Exec), the same space as gxPos/gyPos and the drawn cursor -- so
                 // compare directly, no eye->display rescale (a former *dw/ew double-scaled the buttons).
-                float hoverTd = (float)(DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
+                float hoverTd =
+                    (float)(DisplayOptions.DispWidth / 1600.0f) *
+                    (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
                 if (xrPick)
                 {
-                    t1.x += vrBiasX; t1.y += vrBiasY;   // VR only: zero the small IPD/off-axis residual (mode-specific)
-                    hoverTd *= vrMagnet;   // headset can't aim to the tight stock radius
+                    t1.x += vrBiasX;
+                    t1.y +=
+                        vrBiasY; // VR only: zero the small IPD/off-axis residual (mode-specific)
+                    hoverTd *=
+                        vrMagnet; // headset can't aim to the tight stock radius
                 }
 
-                if (sqrt(((gxPos - t1.x) * (gxPos - t1.x)) + ((gyPos - t1.y) * (gyPos - t1.y)))  < hoverTd) //Wombat778 10-15-2003 changes changex with gxPos
+                if (sqrt(((gxPos - t1.x) * (gxPos - t1.x)) +
+                         ((gyPos - t1.y) * (gyPos - t1.y))) <
+                    hoverTd) //Wombat778 10-15-2003 changes changex with gxPos
                 {
                     gSelectedCursor = 9;
                     break;
@@ -4564,38 +5986,54 @@ void OTWDriverClass::VCock_Exec(void)
         // pass only -- view 0). Uses the SAME criterion as the click loop below (nearest within the per-
         // button hit radius, in DispWidth space), so the cursor snaps onto exactly the button that would
         // be clicked. otwloop projects g_vrCursorAnchor into each eye for a stereo-correct 3D cursor.
-        if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0 and not g_vrCtrlRayActive)   // Artscout - 2026: skip when the controller ray drives the anchor
+        if (xrPick and g_pOpenXRBackend->CurrentEye() <= 0 and
+            not g_vrCtrlRayActive) // Artscout - 2026: skip when the controller ray drives the anchor
         {
             g_vrCursorAnchorValid = false;
             g_vrCursorAnchorButton = -1;
-            bool  snapped = false;
+            bool snapped = false;
             float bestD = 1.0e30f;
-            float nearDist = 1.0e30f, freeDepth = 0.0f;   // depth of the button nearest the mouse (for the free cursor)
-            for (i = 0 ; i < Button3DList.numbuttons ; i++)
+            float
+                nearDist = 1.0e30f,
+                freeDepth =
+                    0.0f; // depth of the button nearest the mouse (for the free cursor)
+            for (i = 0; i < Button3DList.numbuttons; i++)
             {
                 Tpoint Pos = Button3DList.buttons[i].loc;
                 Pos.x += headPan.x * B3D_POSITION_SCALING;
                 Pos.y += headPan.y * B3D_POSITION_SCALING;
                 Pos.z += headPan.z * B3D_POSITION_SCALING;
-                Pos.y += vrIpdButtonY;   // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
+                Pos.y +=
+                    vrIpdButtonY; // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
 
                 ThreeDVertex tp;
                 renderer->TransformCameraCentricPoint(&Pos, &tp);
-                if (tp.csZ >= 0.0f) continue;   // Artscout - 2026 (VR): skip buttons behind the camera (1/z flip -> false far snap)
+                if (tp.csZ >= 0.0f)
+                    continue; // Artscout - 2026 (VR): skip buttons behind the camera (1/z flip -> false far snap)
                 // Artscout - 2026 (VR): tp is already in DISPLAY pixel space (xRes/yRes == DispWidth during
                 // VCock_Exec), the same space as gxPos/gyPos -- compare directly, no eye->display rescale.
                 // g_fVrDetectBias* zeroes the small residual (IPD parallax / off-axis fold mismatch).
                 float ex = tp.x + vrBiasX;
                 float ey = tp.y + vrBiasY;
-                float d  = (gxPos - ex) * (gxPos - ex) + (gyPos - ey) * (gyPos - ey);
-                float td = (float)(DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV())) * vrMagnet;
-                if (d < nearDist) { nearDist = d; freeDepth = sqrtf(Pos.x * Pos.x + Pos.y * Pos.y + Pos.z * Pos.z); }
+                float d =
+                    (gxPos - ex) * (gxPos - ex) + (gyPos - ey) * (gyPos - ey);
+                float td =
+                    (float)(DisplayOptions.DispWidth / 1600.0f) *
+                    (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV())) *
+                    vrMagnet;
+                if (d < nearDist)
+                {
+                    nearDist = d;
+                    freeDepth =
+                        sqrtf(Pos.x * Pos.x + Pos.y * Pos.y + Pos.z * Pos.z);
+                }
                 if (d < td * td and d < bestD)
                 {
                     bestD = d;
                     g_vrCursorAnchor = Pos;
                     g_vrCursorAnchorValid = true;
-                    g_vrCursorAnchorButton = i;   // remember WHICH button -> click it directly
+                    g_vrCursorAnchorButton =
+                        i; // remember WHICH button -> click it directly
                     snapped = true;
                 }
             }
@@ -4609,19 +6047,22 @@ void OTWDriverClass::VCock_Exec(void)
             if (not snapped)
             {
                 Tpoint pix, ray;
-                pix.x = (float)gxPos;   // DISPLAY pixel space (renderer xRes == DispWidth here), no eye rescale
+                pix.x = (float)
+                    gxPos; // DISPLAY pixel space (renderer xRes == DispWidth here), no eye rescale
                 pix.y = (float)gyPos;
                 pix.z = 0.0f;
-                renderer->UnTransformPoint(&pix, &ray);   // normalized world-space ray from the camera
-                if (freeDepth <= 1.0f) freeDepth = 100.0f;
+                renderer->UnTransformPoint(
+                    &pix, &ray); // normalized world-space ray from the camera
+                if (freeDepth <= 1.0f)
+                    freeDepth = 100.0f;
                 g_vrCursorAnchor.x = ray.x * freeDepth;
                 g_vrCursorAnchor.y = ray.y * freeDepth;
                 g_vrCursorAnchor.z = ray.z * freeDepth;
-                g_vrCursorAnchorValid = true;   // always draw a 3D cursor in VR (free or snapped)
+                g_vrCursorAnchorValid =
+                    true; // always draw a 3D cursor in VR (free or snapped)
             }
             g_vrCursorAnchorSnapped = snapped;
         }
-
     }
 
 
@@ -4629,44 +6070,60 @@ void OTWDriverClass::VCock_Exec(void)
     // runs once per view; if a focus pass (2/3, zoomed gaze camera) consumed the click, buttons projected
     // to wild vertical coords (ey far off-screen) -> no match / wrong button. Gating to view 0 makes the
     // click use the same periphery camera as the visible cursor and the hover/snap test.
-    if (Button3DList.clicked and xrView0) //Wombat778 10-11-2003 check if the mouse button has been clicked while in the 3d cockpit (xrView0: FLAT always, VR periphery only)
+    if (Button3DList.clicked and
+        xrView0) //Wombat778 10-11-2003 check if the mouse button has been clicked while in the 3d cockpit (xrView0: FLAT always, VR periphery only)
     {
-        float closestdistance = 9999; //set these variables to a high value so that we know when it is uninitialized (there is a button 0)
+        float closestdistance =
+            9999; //set these variables to a high value so that we know when it is uninitialized (there is a button 0)
         float tempdistance = 9999;
         int closestbutton = 9999;
 
-        for (i = 0 ; i < Button3DList.numbuttons ; i++)
+        for (i = 0; i < Button3DList.numbuttons; i++)
         {
 
-            if (Button3DList.buttons[i].mousebutton == Button3DList.clicked) //Wombat778 11-07-2003 Added so that the left and right mouse button can be differentiated
+            if (Button3DList.buttons[i].mousebutton ==
+                Button3DList
+                    .clicked) //Wombat778 11-07-2003 Added so that the left and right mouse button can be differentiated
             {
                 Tpoint Pos = Button3DList.buttons[i].loc;
                 Pos.x += headPan.x * B3D_POSITION_SCALING;
                 Pos.y += headPan.y * B3D_POSITION_SCALING;
                 Pos.z += headPan.z * B3D_POSITION_SCALING;
-                Pos.y += vrIpdButtonY;   // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
+                Pos.y +=
+                    vrIpdButtonY; // Artscout - 2026 (VR): left-eye IPD parallax (depth-correct detect)
 
                 renderer->TransformCameraCentricPoint(&Pos, &t1);
 
-                if (t1.csZ >= 0.0f) continue;   // Artscout - 2026 (VR): skip buttons BEHIND the camera --
-                                                // their 1/z flips the projection to wild coords and false-
-                                                // matches near gxPos (the "snap flies off far" bug).
+                if (t1.csZ >= 0.0f)
+                    continue; // Artscout - 2026 (VR): skip buttons BEHIND the camera --
+                // their 1/z flips the projection to wild coords and false-
+                // matches near gxPos (the "snap flies off far" bug).
 
                 // Artscout - 2026 (VR): t1 is already in DISPLAY pixel space (xRes/yRes == DispWidth during
                 // VCock_Exec), the same space as gxPos/gyPos -- compare directly, no eye->display rescale.
                 // g_fVrDetectBias* zeroes the small residual (IPD parallax / off-axis fold mismatch).
                 bool vrHit = xrPick;
-                if (vrHit) { t1.x += vrBiasX; t1.y += vrBiasY; }
+                if (vrHit)
+                {
+                    t1.x += vrBiasX;
+                    t1.y += vrBiasY;
+                }
 
-                tempdistance = sqrt(((gxPos - t1.x) * (gxPos - t1.x)) + ((gyPos - t1.y) * (gyPos - t1.y)));
+                tempdistance = sqrt(((gxPos - t1.x) * (gxPos - t1.x)) +
+                                    ((gyPos - t1.y) * (gyPos - t1.y)));
 
                 //Normalize the distance so it is affected by the FOV and by the resolution
                 //Todo: add something about the SA bar.  Currently, the dist increases too much when it is active
-                float td = ((float) DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
-                if (vrHit) td *= vrMagnet;   // Artscout - 2026 (VR): match the enlarged hover/anchor snap radius (mode-specific)
+                float td =
+                    ((float)DisplayOptions.DispWidth / 1600.0f) *
+                    (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
+                if (vrHit)
+                    td *=
+                        vrMagnet; // Artscout - 2026 (VR): match the enlarged hover/anchor snap radius (mode-specific)
 
                 if (tempdistance < td)
-                    if (tempdistance < closestdistance) //if the cursor is near more than 1 button, find the closest one
+                    if (tempdistance <
+                        closestdistance) //if the cursor is near more than 1 button, find the closest one
                     {
                         closestdistance = tempdistance;
                         closestbutton = i;
@@ -4677,9 +6134,11 @@ void OTWDriverClass::VCock_Exec(void)
         // Artscout - 2026 (VR mouse): prefer the magnetically-snapped (GREEN) button. That is the button
         // the cursor is visibly sitting on; re-projecting here lands elsewhere because the click fires a
         // frame or two after the last hover (gaze/camera moved). Fire what the user sees.
-        if (g_pOpenXRBackend and g_vrCursorAnchorSnapped and g_vrCursorAnchorButton >= 0
-            and g_vrCursorAnchorButton < Button3DList.numbuttons
-            and Button3DList.buttons[g_vrCursorAnchorButton].mousebutton == Button3DList.clicked)
+        if (g_pOpenXRBackend and g_vrCursorAnchorSnapped and
+            g_vrCursorAnchorButton >= 0 and
+            g_vrCursorAnchorButton < Button3DList.numbuttons and
+            Button3DList.buttons[g_vrCursorAnchorButton].mousebutton ==
+                Button3DList.clicked)
             closestbutton = g_vrCursorAnchorButton;
 
         // Artscout - 2026: if the hit button belongs to a multi-position rotary group, don't fire it directly --
@@ -4695,9 +6154,15 @@ void OTWDriverClass::VCock_Exec(void)
                 int dir = (Button3DList.clicked == 2) ? -1 : 1;
                 int cnt = s_switchGroupDefs[grp].count;
                 int nxt = g_vrSwitchGroupCur[grp];
-                for (int step = 0; step < cnt; step++) { nxt = (nxt + dir + cnt) % cnt; if (s_switchGroupMember[grp][nxt] >= 0) break; }
+                for (int step = 0; step < cnt; step++)
+                {
+                    nxt = (nxt + dir + cnt) % cnt;
+                    if (s_switchGroupMember[grp][nxt] >= 0)
+                        break;
+                }
                 g_vrSwitchGroupCur[grp] = nxt;
-                if (s_switchGroupMember[grp][nxt] >= 0) firebutton = s_switchGroupMember[grp][nxt];
+                if (s_switchGroupMember[grp][nxt] >= 0)
+                    firebutton = s_switchGroupMember[grp][nxt];
             }
         }
 
@@ -4707,12 +6172,17 @@ void OTWDriverClass::VCock_Exec(void)
                 //Wombat778 03-06-04 Send the buttonid of the function, which should stop a ctd in not-realistic avionics
                 if (Button3DList.buttons[firebutton].buttonId < 0)
                     //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
-                    CallFunc(Button3DList.buttons[firebutton].function, 1, KEY_DOWN, NULL);
+                    CallFunc(Button3DList.buttons[firebutton].function, 1,
+                             KEY_DOWN, NULL);
                 else
                     //Wombat778 03-06-04 Use callfunc instead of directly calling funcs, so they can be captured
-                    CallFunc(Button3DList.buttons[firebutton].function, 1, KEY_DOWN, OTWDriver.pCockpitManager->GetButtonPointer(Button3DList.buttons[firebutton].buttonId));
+                    CallFunc(Button3DList.buttons[firebutton].function, 1,
+                             KEY_DOWN,
+                             OTWDriver.pCockpitManager->GetButtonPointer(
+                                 Button3DList.buttons[firebutton].buttonId));
 
-                F4SoundFXSetDist(Button3DList.buttons[firebutton].sound, FALSE, 0.0f, 1.0f);
+                F4SoundFXSetDist(Button3DList.buttons[firebutton].sound, FALSE,
+                                 0.0f, 1.0f);
             }
 
         Button3DList.clicked = 0;
@@ -4723,7 +6193,7 @@ void OTWDriverClass::VCock_Exec(void)
         //Wombat778 10-10-2003 Draw Locations of the 3d buttons when Debug mode is enabled
 
 
-        for (i = 0 ; i < Button3DList.numbuttons ; i++)
+        for (i = 0; i < Button3DList.numbuttons; i++)
         {
 
             // if (i==Button3DList.debugbutton)
@@ -4737,11 +6207,11 @@ void OTWDriverClass::VCock_Exec(void)
 
             renderer->TransformCameraCentricPoint(&Pos, &t1);
 
-            if (t1.csZ < 0)   //Wombat778 10-11-2003 Only show those points in front of us. Why it does this is beyond me.
+            if (t1.csZ <
+                0) //Wombat778 10-11-2003 Only show those points in front of us. Why it does this is beyond me.
             {
 
                 renderer->SetColor(0x000000FF); //RED
-
 
 
                 renderer->Render2DPoint(t1.x, t1.y);
@@ -4759,18 +6229,17 @@ void OTWDriverClass::VCock_Exec(void)
 
                 //Normalize the distance so it is affected by the FOV and by the resolution
                 //Todo: add something about the SA bar.  Currently, the dist increases too much when it is active
-                float td = ((float) DisplayOptions.DispWidth / 1600.0f) * (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
+                float td =
+                    ((float)DisplayOptions.DispWidth / 1600.0f) *
+                    (Button3DList.buttons[i].dist / (1.5f * (float)GetFOV()));
 
                 renderer->Render2DPoint(t1.x - td, t1.y);
                 renderer->Render2DPoint(t1.x + td, t1.y);
                 renderer->Render2DPoint(t1.x, t1.y + td);
                 renderer->Render2DPoint(t1.x, t1.y - td);
-
             }
 
             //Button3DList.buttons[i].dist);
-
-
         }
 
         renderer->SetColor(pVColors[TheTimeOfDay.GetNVGmode() not_eq 0][5]);
@@ -4841,12 +6310,16 @@ void OTWDriverClass::VCock_Exec(void)
 #endif
 
     // 2001-01-31 ADDED BY S.G. SO HMS EQUIPPED PLANE HAS TWO GREEN CONCENTRIC CIRCLE IN PADLOCK VIEW
-    VehicleClassDataType *vc = (VehicleClassDataType *)Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE].dataPtr;
+    VehicleClassDataType* vc =
+        (VehicleClassDataType*)
+            Falcon4ClassTable[otwPlatform->Type() - VU_LAST_ENTITY_TYPE]
+                .dataPtr;
 
     if (vc and vc->Flags bitand 0x20000000)
     {
         MissileClass* theMissile;
-        theMissile = (MissileClass*)(SimDriver.GetPlayerAircraft()->Sms->GetCurrentWeapon());
+        theMissile = (MissileClass*)(SimDriver.GetPlayerAircraft()
+                                         ->Sms->GetCurrentWeapon());
 
         // First, make sure we have a Aim9 in uncage mode selected...
         if (SimDriver.GetPlayerAircraft()->Sms->curWeaponType == wtAim9)
@@ -4855,7 +6328,9 @@ void OTWDriverClass::VCock_Exec(void)
             {
                 theMissile->RunSeeker();
 
-                if ( not theMissile->targetPtr or vuxRealTime bitand 0x100)  // JB 010712 Flash when we have a target locked up
+                if (not theMissile->targetPtr or
+                    vuxRealTime bitand
+                        0x100) // JB 010712 Flash when we have a target locked up
                 {
                     float xDiff, left, right, top, bottom;
 
@@ -4885,8 +6360,7 @@ void OTWDriverClass::VCock_Exec(void)
 /*
 ** CleanupVirtualCockpit
 */
-void
-OTWDriverClass::VCock_Cleanup(void)
+void OTWDriverClass::VCock_Cleanup(void)
 {
     // int i;
 
@@ -4973,21 +6447,24 @@ static void BuildSwitchGroups(Button3DListType* L)
     {
         g_vrSwitchGroupCur[g] = 0;
         const VrSwitchGroupDef& D = s_switchGroupDefs[g];
-        int   found = 0;
+        int found = 0;
         float cx = 0.0f, cy = 0.0f, cz = 0.0f;
         for (int p = 0; p < D.count; p++)
         {
             s_switchGroupMember[g][p] = -1;
             InputFunctionType f = FindFunctionFromString((char*)D.funcs[p]);
-            if (not f) continue;
+            if (not f)
+                continue;
             for (int b = 0; b < L->numbuttons; b++)
             {
                 if (L->buttons[b].function == f and L->buttons[b].groupId < 0)
                 {
                     s_switchGroupMember[g][p] = b;
-                    L->buttons[b].groupId  = g;
+                    L->buttons[b].groupId = g;
                     L->buttons[b].groupPos = p;
-                    cx += L->buttons[b].loc.x; cy += L->buttons[b].loc.y; cz += L->buttons[b].loc.z;
+                    cx += L->buttons[b].loc.x;
+                    cy += L->buttons[b].loc.y;
+                    cz += L->buttons[b].loc.z;
                     found++;
                     break;
                 }
@@ -4995,30 +6472,43 @@ static void BuildSwitchGroups(Button3DListType* L)
         }
         if (found >= 2)
         {
-            cx /= found; cy /= found; cz /= found;
+            cx /= found;
+            cy /= found;
+            cz /= found;
             for (int p = 0; p < D.count; p++)
             {
                 int b = s_switchGroupMember[g][p];
-                if (b < 0) continue;
-                L->buttons[b].loc.x = cx; L->buttons[b].loc.y = cy; L->buttons[b].loc.z = cz;   // one shared hotspot
-                L->buttons[b].mousebutton = (p == 1) ? 2 : 1;   // >=1 left + >=1 right member so both dirs pick here
+                if (b < 0)
+                    continue;
+                L->buttons[b].loc.x = cx;
+                L->buttons[b].loc.y = cy;
+                L->buttons[b].loc.z = cz; // one shared hotspot
+                L->buttons[b].mousebutton =
+                    (p == 1) ?
+                        2 :
+                        1; // >=1 left + >=1 right member so both dirs pick here
             }
         }
         else
         {
-            for (int p = 0; p < D.count; p++) { int b = s_switchGroupMember[g][p]; if (b >= 0) L->buttons[b].groupId = -1; }
+            for (int p = 0; p < D.count; p++)
+            {
+                int b = s_switchGroupMember[g][p];
+                if (b >= 0)
+                    L->buttons[b].groupId = -1;
+            }
         }
     }
 }
 
 //Wombat778 10-10-2003 Load 3d buttons
 
-bool
-OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR)
+bool OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName,
+                                   TCHAR* eCPNameNCTR)
 {
     char strCPFile[MAX_PATH];
-    static const TCHAR *buttonfile = "3dbuttons.dat";
-    static const TCHAR *vcockfile = "3dckpit.dat"; //Wombat778 10-15-2003
+    static const TCHAR* buttonfile = "3dbuttons.dat";
+    static const TCHAR* vcockfile = "3dckpit.dat"; //Wombat778 10-15-2003
     FILE* Button3DDataFile;
     char templine[256];
     char tempfunction[256];
@@ -5031,57 +6521,71 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
     if (eCPVisType == MapVisId(VIS_F16C))
         // RV - Biker
         //sprintf(strCPFile, "%s%s", FalconCockpitThrDirectory, buttonfile);
-        sprintf(strCPFile, "%s\\%s", FalconCockpitThrDirectory, buttonfile);
+        sprintf(strCPFile, "%s/%s", FalconCockpitThrDirectory, buttonfile);
     else
     {
         // RV - Biker
-        //sprintf(strCPFile, "%s%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), vcockfile);
-        sprintf(strCPFile, "%s\\%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), vcockfile);
+        //sprintf(strCPFile, "%s%d/%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), vcockfile);
+        sprintf(strCPFile, "%s/%d/%s", FalconCockpitThrDirectory,
+                MapVisId(eCPVisType), vcockfile);
 
         // RV - Biker - No more res manager
         //if(ResExistFile(strCPFile))
         if (FileExists(strCPFile))
             // RV - Biker
-            //sprintf(strCPFile, "%s%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), buttonfile);
-            sprintf(strCPFile, "%s\\%d\\%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), buttonfile);
+            //sprintf(strCPFile, "%s%d/%s", FalconCockpitThrDirectory, MapVisId(eCPVisType), buttonfile);
+            sprintf(strCPFile, "%s/%d/%s", FalconCockpitThrDirectory,
+                    MapVisId(eCPVisType), buttonfile);
         else
         {
             std::string name = RemoveInvalidChars(string(eCPName, 15));
 
             // RV - Biker
-            //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, name.c_str(), vcockfile);
-            sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, name.c_str(), vcockfile);
+            //sprintf(strCPFile, "%s%s/%s", FalconCockpitThrDirectory, name.c_str(), vcockfile);
+            sprintf(strCPFile, "%s/%s/%s", FalconCockpitThrDirectory,
+                    name.c_str(), vcockfile);
 
             // RV - Biker - No more res manager
             //if(ResExistFile(strCPFile))
             if (FileExists(strCPFile))
                 // RV - Biker
-                //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, name.c_str(), buttonfile);
-                sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, name.c_str(), buttonfile);
+                //sprintf(strCPFile, "%s%s/%s", FalconCockpitThrDirectory, name.c_str(), buttonfile);
+                sprintf(strCPFile, "%s/%s/%s", FalconCockpitThrDirectory,
+                        name.c_str(), buttonfile);
             else
             {
-                std::string nameNCTR = RemoveInvalidChars(string(eCPNameNCTR, 5));
+                std::string nameNCTR =
+                    RemoveInvalidChars(string(eCPNameNCTR, 5));
                 // RV - Biker
-                //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), vcockfile);
-                sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), vcockfile);
+                //sprintf(strCPFile, "%s%s/%s", FalconCockpitThrDirectory, nameNCTR.c_str(), vcockfile);
+                sprintf(strCPFile, "%s/%s/%s", FalconCockpitThrDirectory,
+                        nameNCTR.c_str(), vcockfile);
 
                 // RV - Biker - No more res manager
                 //if(ResExistFile(strCPFile))
                 if (FileExists(strCPFile))
                     // RV - Biker
-                    //sprintf(strCPFile, "%s%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), buttonfile);
-                    sprintf(strCPFile, "%s\\%s\\%s", FalconCockpitThrDirectory, nameNCTR.c_str(), buttonfile);
+                    //sprintf(strCPFile, "%s%s/%s", FalconCockpitThrDirectory, nameNCTR.c_str(), buttonfile);
+                    sprintf(strCPFile, "%s/%s/%s", FalconCockpitThrDirectory,
+                            nameNCTR.c_str(), buttonfile);
                 else
                 {
                     // F16C fallback
                     // RV - Biker - Here read from default cockpit dir
                     //sprintf(strCPFile, "%s%s", FalconCockpitThrDirectory, buttonfile);
-                    sprintf(strCPFile, "%s\\%s", COCKPIT_DIR, buttonfile);
+                    sprintf(strCPFile, "%s/%s", COCKPIT_DIR, buttonfile);
                 }
             }
         }
     }
 
+    // #104 cross-platform path fix: strCPFile is assembled from mixed sources -- COCKPIT_DIR is "art\\ckptart\\"
+    // (backslashes) while the sprintf join adds '/', producing e.g. "art\ckptart\/3dbuttons.dat". fopen rejects that
+    // -> the 3D clickable cockpit loaded ZERO buttons (mouse hit-test never matched). Normalise every separator to
+    // '/', which BOTH Windows and Linux accept.
+    for (char* p = strCPFile; *p; ++p)
+        if (*p == '\\')
+            *p = '/';
     Button3DDataFile = fopen(strCPFile, "r");
 
 
@@ -5091,35 +6595,44 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
 
     if (Button3DDataFile)
     {
-        if ( not feof(Button3DDataFile))
-            fgets(templine, 256, Button3DDataFile); //Just read a dummy line for comments etc..
+        if (not feof(Button3DDataFile))
+            fgets(templine, 256,
+                  Button3DDataFile); //Just read a dummy line for comments etc..
 
-        while ( not feof(Button3DDataFile))
+        while (not feof(Button3DDataFile))
         {
             fgets(templine, 256, Button3DDataFile);
-            int matchedfields = sscanf(templine, "%s %f %f %f %f %d %d", tempfunction, //Wombat778 11-08-2003
-                                       &Button3DList.buttons[Button3DList.numbuttons].loc.x,
-                                       &Button3DList.buttons[Button3DList.numbuttons].loc.y,
-                                       &Button3DList.buttons[Button3DList.numbuttons].loc.z,
-                                       &Button3DList.buttons[Button3DList.numbuttons].dist,
-                                       &Button3DList.buttons[Button3DList.numbuttons].sound,
-                                       &Button3DList.buttons[Button3DList.numbuttons].mousebutton);
+            int matchedfields = sscanf(
+                templine, "%s %f %f %f %f %d %d",
+                tempfunction, //Wombat778 11-08-2003
+                &Button3DList.buttons[Button3DList.numbuttons].loc.x,
+                &Button3DList.buttons[Button3DList.numbuttons].loc.y,
+                &Button3DList.buttons[Button3DList.numbuttons].loc.z,
+                &Button3DList.buttons[Button3DList.numbuttons].dist,
+                &Button3DList.buttons[Button3DList.numbuttons].sound,
+                &Button3DList.buttons[Button3DList.numbuttons].mousebutton);
 
 
             if (matchedfields == 6)
-                Button3DList.buttons[Button3DList.numbuttons].mousebutton = 1; //Wombat778 11-08-2003 Added so there will still be compatibility with old files. Default to left mouse button.
+                Button3DList.buttons[Button3DList.numbuttons].mousebutton =
+                    1; //Wombat778 11-08-2003 Added so there will still be compatibility with old files. Default to left mouse button.
 
-            if (matchedfields >= 6) //Wombat778 11-08-2003 changed to allow compatibility with old files 11-7-2003 added mousebutton field to allow LMB/RMB usage.
+            if (matchedfields >=
+                6) //Wombat778 11-08-2003 changed to allow compatibility with old files 11-7-2003 added mousebutton field to allow LMB/RMB usage.
             {
                 InputFunctionType tempfunc;
                 tempfunc = FindFunctionFromString(tempfunction);
                 //Wombat778 03-06-04 Find and store the buttonid of the function, which should stop a ctd in not-realistic avionics.
-                Button3DList.buttons[Button3DList.numbuttons].function = tempfunc;
-                Button3DList.buttons[Button3DList.numbuttons].groupId  = -1;   // Artscout - 2026: assigned by BuildSwitchGroups
+                Button3DList.buttons[Button3DList.numbuttons].function =
+                    tempfunc;
+                Button3DList.buttons[Button3DList.numbuttons].groupId =
+                    -1; // Artscout - 2026: assigned by BuildSwitchGroups
                 Button3DList.buttons[Button3DList.numbuttons].groupPos = 0;
 
                 if (tempfunc)
-                    Button3DList.buttons[Button3DList.numbuttons].buttonId = UserFunctionTable.GetButtonId(tempfunc); //GetButtonId is a terribly slow function because it has to traverse a hash table.
+                    Button3DList.buttons[Button3DList.numbuttons]
+                        .buttonId = UserFunctionTable.GetButtonId(
+                        tempfunc); //GetButtonId is a terribly slow function because it has to traverse a hash table.
 
                 Button3DList.numbuttons++;
             }
@@ -5129,13 +6642,11 @@ OTWDriverClass::Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR
 
         // Artscout - 2026: collapse multi-position rotaries to one cyclable hotspot (unless disabled via cfg).
         extern bool g_bVrSwitchGroups;
-        if (g_bVrSwitchGroups) BuildSwitchGroups(&Button3DList);
+        if (g_bVrSwitchGroups)
+            BuildSwitchGroups(&Button3DList);
 
         return true;
     }
 
     return false;
 }
-
-
-

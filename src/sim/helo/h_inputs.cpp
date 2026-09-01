@@ -1,6 +1,6 @@
 #include "stdhdr.h"
 #include "helo.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "hdigi.h"
 #include "helimm.h"
 #include "fcc.h"
@@ -14,7 +14,7 @@ void HelicopterClass::GatherInputs(void)
     else
         FCC->releaseConsent = FALSE;
 
-    fireGun     = hBrain->IsSetFlag(BaseBrain::GunFireFlag);
+    fireGun = hBrain->IsSetFlag(BaseBrain::GunFireFlag);
 
     // adjust for damage effects
     // if pctStrength is below zero we're just plane (sic) dying....

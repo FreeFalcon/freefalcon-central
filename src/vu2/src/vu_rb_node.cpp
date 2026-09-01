@@ -10,12 +10,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 VuRBNode::VuRBNode(VuLinkNode* link, VU_KEY key)
-    : parent_(0),
-      left_(0),
-      right_(0),
-      next_(0),
-      key_(key),
-      color_(BLACK)
+    : parent_(0), left_(0), right_(0), next_(0), key_(key), color_(BLACK)
 {
     link->next_ = vuTailNode;
     head_ = link;
@@ -26,12 +21,7 @@ VuRBNode::VuRBNode(VuLinkNode* link, VU_KEY key)
 ///////////////////////////////////////////////////////////////////////////////
 
 VuRBNode::VuRBNode(VuEntity* ent, VU_KEY key)
-    : parent_(0),
-      left_(0),
-      right_(0),
-      next_(0),
-      key_(key),
-      color_(BLACK)
+    : parent_(0), left_(0), right_(0), next_(0), key_(key), color_(BLACK)
 {
     head_ = new VuLinkNode(ent, vuTailNode);
 }
@@ -40,44 +30,10 @@ VuRBNode::VuRBNode(VuEntity* ent, VU_KEY key)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode::VuRBNode(VuEntity* ent,
-                   VU_KEY    key,
-                   VuRBNode* parent,
-                   int       side)
-    : parent_(parent),
-      left_(0),
-      right_(0),
-      next_(0),
-      key_(key),
-      color_(RED)
+VuRBNode::VuRBNode(VuEntity* ent, VU_KEY key, VuRBNode* parent, int side)
+    : parent_(parent), left_(0), right_(0), next_(0), key_(key), color_(RED)
 {
     head_ = new VuLinkNode(ent, vuTailNode);
-
-    if (side == LEFT)
-        parent->left_  = this;
-    else
-        parent->right_ = this;
-
-    next_ = SuccessorViaWalk();
-    VuRBNode* prevNode = Predecessor();
-
-    if (prevNode) prevNode->next_ = this;
-}
-
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-VuRBNode::VuRBNode(VuLinkNode* link, VU_KEY key, VuRBNode* parent, int side)
-    : parent_(parent),
-      left_(0),
-      right_(0),
-      next_(0),
-      key_(key),
-      color_(RED)
-{
-    link->next_ = vuTailNode;
-    head_       = link;
 
     if (side == LEFT)
         parent->left_ = this;
@@ -87,7 +43,30 @@ VuRBNode::VuRBNode(VuLinkNode* link, VU_KEY key, VuRBNode* parent, int side)
     next_ = SuccessorViaWalk();
     VuRBNode* prevNode = Predecessor();
 
-    if (prevNode) prevNode->next_ = this;
+    if (prevNode)
+        prevNode->next_ = this;
+}
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+VuRBNode::VuRBNode(VuLinkNode* link, VU_KEY key, VuRBNode* parent, int side)
+    : parent_(parent), left_(0), right_(0), next_(0), key_(key), color_(RED)
+{
+    link->next_ = vuTailNode;
+    head_ = link;
+
+    if (side == LEFT)
+        parent->left_ = this;
+    else
+        parent->right_ = this;
+
+    next_ = SuccessorViaWalk();
+    VuRBNode* prevNode = Predecessor();
+
+    if (prevNode)
+        prevNode->next_ = this;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -103,8 +82,7 @@ VuRBNode::~VuRBNode()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode *
-VuRBNode::SuccessorViaWalk()
+VuRBNode* VuRBNode::SuccessorViaWalk()
 {
     if (right_ != NULL)
     {
@@ -112,8 +90,8 @@ VuRBNode::SuccessorViaWalk()
     }
     else
     {
-        VuRBNode *x = this;
-        VuRBNode *y = parent_;
+        VuRBNode* x = this;
+        VuRBNode* y = parent_;
 
         while (y != NULL && x == y->right_)
         {
@@ -129,8 +107,7 @@ VuRBNode::SuccessorViaWalk()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode *
-VuRBNode::Predecessor()
+VuRBNode* VuRBNode::Predecessor()
 {
     if (left_)
     {
@@ -138,7 +115,7 @@ VuRBNode::Predecessor()
     }
     else
     {
-        VuRBNode *x = this;
+        VuRBNode* x = this;
 
         while (x->parent_)
         {
@@ -158,8 +135,7 @@ VuRBNode::Predecessor()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode *
-VuRBNode::Find(VU_KEY key)
+VuRBNode* VuRBNode::Find(VU_KEY key)
 {
     VuRBNode* x = this;
 
@@ -178,8 +154,7 @@ VuRBNode::Find(VU_KEY key)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode *
-VuRBNode::TreeMinimum()
+VuRBNode* VuRBNode::TreeMinimum()
 {
     VuRBNode* x = this;
 
@@ -193,8 +168,7 @@ VuRBNode::TreeMinimum()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode *
-VuRBNode::TreeMaximum()
+VuRBNode* VuRBNode::TreeMaximum()
 {
     VuRBNode* x = this;
 
@@ -208,13 +182,13 @@ VuRBNode::TreeMaximum()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode*
-VuRBNode::LowerBound(VU_KEY key)
+VuRBNode* VuRBNode::LowerBound(VU_KEY key)
 {
     VuRBNode* x = this;
     VuRBNode* retval = 0;
 
-    if (x->key_ == key) return x;
+    if (x->key_ == key)
+        return x;
 
     while (x != NULL && key != x->key_)
     {
@@ -243,13 +217,13 @@ VuRBNode::LowerBound(VU_KEY key)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuRBNode *
-VuRBNode::UpperBound(VU_KEY key)
+VuRBNode* VuRBNode::UpperBound(VU_KEY key)
 {
     VuRBNode* x = this;
     VuRBNode* retval = 0;
 
-    if (x->key_ == key) return x;
+    if (x->key_ == key)
+        return x;
 
     while (x != NULL && key != x->key_)
     {

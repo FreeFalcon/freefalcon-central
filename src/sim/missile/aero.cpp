@@ -11,7 +11,7 @@ void MissileClass::Aerodynamics(void)
     float cy;            /* Raw side force from table lookup */
     float cz;            /* Raw normal force from table lookup */
 
-    abeta  = (float)fabs(beta);
+    abeta = (float)fabs(beta);
 
     if (alpha < 0.0F)
         signa = -1.0F;
@@ -24,29 +24,28 @@ void MissileClass::Aerodynamics(void)
         signb = 1.0F;
 
     // JPO -- CTD checks
-    ShiAssert(FALSE == F4IsBadReadPtr(aeroData, sizeof * aeroData));
-    ShiAssert(FALSE == F4IsBadReadPtr(ifd, sizeof * ifd));
+    ShiAssert(FALSE == F4IsBadReadPtr(aeroData, sizeof *aeroData));
+    ShiAssert(FALSE == F4IsBadReadPtr(ifd, sizeof *ifd));
 
-    if ( not aeroData or not ifd)
+    if (not aeroData or not ifd)
         return; // JB 010803
 
     /*--------------------------*/
     /* aero coefficient lookups */
     /*--------------------------*/
-    cx = Math.TwodInterp(mach, alphat, aeroData->mach,
-                         aeroData->alpha, aeroData->cx,
-                         aeroData->numMach, aeroData->numAlpha,
+    cx = Math.TwodInterp(mach, alphat, aeroData->mach, aeroData->alpha,
+                         aeroData->cx, aeroData->numMach, aeroData->numAlpha,
                          &ifd->lastmach, &ifd->lastalpha);
 
-    cy = Math.TwodInterp(mach, abeta, aeroData->mach,
-                         aeroData->alpha, aeroData->cz,
-                         aeroData->numMach, aeroData->numAlpha,
-                         &ifd->lastmach, &ifd->lastalpha) * signb;
+    cy = Math.TwodInterp(mach, abeta, aeroData->mach, aeroData->alpha,
+                         aeroData->cz, aeroData->numMach, aeroData->numAlpha,
+                         &ifd->lastmach, &ifd->lastalpha) *
+         signb;
 
-    cz = Math.TwodInterp(mach, alphat, aeroData->mach,
-                         aeroData->alpha, aeroData->cz,
-                         aeroData->numMach, aeroData->numAlpha,
-                         &ifd->lastmach, &ifd->lastalpha) * signa;
+    cz = Math.TwodInterp(mach, alphat, aeroData->mach, aeroData->alpha,
+                         aeroData->cz, aeroData->numMach, aeroData->numAlpha,
+                         &ifd->lastmach, &ifd->lastalpha) *
+         signa;
 
     /*------------------*/
     /* body axis accels */
@@ -58,14 +57,18 @@ void MissileClass::Aerodynamics(void)
     /*-----------------------*/
     /* stability axis accels */
     /*-----------------------*/
-    ifd->xsaero = ifd->xaero * ifd->geomData.cosalp + ifd->zaero * ifd->geomData.sinalp;
+    ifd->xsaero =
+        ifd->xaero * ifd->geomData.cosalp + ifd->zaero * ifd->geomData.sinalp;
     ifd->ysaero = ifd->yaero;
-    ifd->zsaero = ifd->zaero * ifd->geomData.cosalp - ifd->xaero * ifd->geomData.sinalp;
+    ifd->zsaero =
+        ifd->zaero * ifd->geomData.cosalp - ifd->xaero * ifd->geomData.sinalp;
 
     /*------------------*/
     /* wind axis accels */
     /*------------------*/
-    ifd->xwaero =  ifd->xsaero * ifd->geomData.cosbet + ifd->ysaero * ifd->geomData.sinbet;
-    ifd->ywaero = -ifd->xsaero * ifd->geomData.sinbet + ifd->ysaero * ifd->geomData.cosbet;
-    ifd->zwaero =  ifd->zsaero;
+    ifd->xwaero =
+        ifd->xsaero * ifd->geomData.cosbet + ifd->ysaero * ifd->geomData.sinbet;
+    ifd->ywaero = -ifd->xsaero * ifd->geomData.sinbet +
+                  ifd->ysaero * ifd->geomData.cosbet;
+    ifd->zwaero = ifd->zsaero;
 }

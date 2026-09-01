@@ -13,15 +13,8 @@ enum
     CCUR_SETPERCENTAGE,
 };
 
-char *C_Cur_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[RANGES]",
-    "[COLOR]",
-    "[BOXCOLOR]",
-    "[PERCENT]",
-    0,
+char *C_Cur_Tokens[] = {
+    "[NOTHING]", "[SETUP]", "[RANGES]", "[COLOR]", "[BOXCOLOR]", "[PERCENT]", 0,
 };
 
 #endif
@@ -53,7 +46,7 @@ C_Cursor::~C_Cursor()
 
 long C_Cursor::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Cursor::Setup(long ID, short Type)
@@ -70,17 +63,18 @@ void C_Cursor::Cleanup()
 
 void C_Cursor::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(MinX_, MinY_, MaxX_ + 2, MaxY_ + 2, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(MinX_, MinY_, MaxX_ + 2, MaxY_ + 2, GetFlags(),
+                           GetClient());
 }
 
 void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT s, rect;
 
-    if ( not Ready())
+    if (not Ready())
         return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE or not Parent_)
@@ -95,35 +89,46 @@ void C_Cursor::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.bottom = rect.top + GetH() + 2;
         s = rect; // just so its set to something JPO
 
-        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
+        if (not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
-        Parent_->BlitTranslucent(surface, BoxColor_, Percent_, &rect, Flags_, Client_);
+        Parent_->BlitTranslucent(surface, BoxColor_, Percent_, &rect, Flags_,
+                                 Client_);
     }
     else
     {
-        Parent_->DrawHLine(surface, BoxColor_, GetX(), GetY(), GetW() + 1, GetFlags(), GetClient(), cliprect);
-        Parent_->DrawHLine(surface, BoxColor_, GetX(), GetY() + GetH(), GetW() + 1, GetFlags(), GetClient(), cliprect);
-        Parent_->DrawVLine(surface, BoxColor_, GetX(), GetY(), GetH() + 1, GetFlags(), GetClient(), cliprect);
-        Parent_->DrawVLine(surface, BoxColor_, GetX() + GetW(), GetY(), GetH() + 1, GetFlags(), GetClient(), cliprect);
+        Parent_->DrawHLine(surface, BoxColor_, GetX(), GetY(), GetW() + 1,
+                           GetFlags(), GetClient(), cliprect);
+        Parent_->DrawHLine(surface, BoxColor_, GetX(), GetY() + GetH(),
+                           GetW() + 1, GetFlags(), GetClient(), cliprect);
+        Parent_->DrawVLine(surface, BoxColor_, GetX(), GetY(), GetH() + 1,
+                           GetFlags(), GetClient(), cliprect);
+        Parent_->DrawVLine(surface, BoxColor_, GetX() + GetW(), GetY(),
+                           GetH() + 1, GetFlags(), GetClient(), cliprect);
     }
 
-    Parent_->DrawHLine(surface, Color_, GetX() + GetW() / 2 - 2, GetY() + GetH() / 2, 5, GetFlags(), GetClient(), cliprect);
-    Parent_->DrawVLine(surface, Color_, GetX() + GetW() / 2, GetY() + GetH() / 2 - 2, 5, GetFlags(), GetClient(), cliprect);
+    Parent_->DrawHLine(surface, Color_, GetX() + GetW() / 2 - 2,
+                       GetY() + GetH() / 2, 5, GetFlags(), GetClient(),
+                       cliprect);
+    Parent_->DrawVLine(surface, Color_, GetX() + GetW() / 2,
+                       GetY() + GetH() / 2 - 2, 5, GetFlags(), GetClient(),
+                       cliprect);
 }
 
 long C_Cursor::CheckHotSpots(long relx, long rely)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED))
+        return (0);
 
-    if (relx >= (GetX()) and rely >= (GetY()) and relx <= (GetX() + GetW()) and rely <= (GetY() + GetH()))
+    if (relx >= (GetX()) and rely >= (GetY()) and relx <= (GetX() + GetW()) and
+        rely <= (GetY() + GetH()))
     {
         SetRelXY(relx - GetX(), rely - GetY());
-        return(GetID());
+        return (GetID());
     }
 
-    return(0);
+    return (0);
 };
 
 BOOL C_Cursor::Process(long, short HitType)
@@ -133,28 +138,34 @@ BOOL C_Cursor::Process(long, short HitType)
     if (Callback_)
         (*Callback_)(GetID(), HitType, this);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_Cursor::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 {
     long x, y;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not (GetFlags() bitand C_BIT_DRAGABLE))
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or
+        not(GetFlags() bitand C_BIT_DRAGABLE))
+        return (FALSE);
 
     Leave = UI_Enter(Parent_);
     x = Drag->ItemX_ + (MouseX - Drag->StartX_);
     y = Drag->ItemY_ + (MouseY - Drag->StartY_);
 
-    if (x < MinX_) x = MinX_;
+    if (x < MinX_)
+        x = MinX_;
 
-    if ((x + GetW()) > MaxX_) x = MaxX_ - GetW();
+    if ((x + GetW()) > MaxX_)
+        x = MaxX_ - GetW();
 
-    if (y < MinY_) y = MinY_;
+    if (y < MinY_)
+        y = MinY_;
 
-    if ((y + GetH()) > MaxY_) y = MaxY_ - GetH();
+    if ((y + GetH()) > MaxY_)
+        y = MaxY_ - GetH();
 
     Refresh();
     SetXY(x, y);
@@ -164,7 +175,7 @@ BOOL C_Cursor::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
     if (Callback_)
         (*Callback_)(GetID(), C_TYPE_MOUSEMOVE, this);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 #ifdef _UI95_PARSER_
@@ -176,37 +187,37 @@ short C_Cursor::LocalFind(char *token)
     while (C_Cur_Tokens[i])
     {
         if (strnicmp(token, C_Cur_Tokens[i], strlen(C_Cur_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Cursor::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CCUR_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CCUR_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CCUR_SETRANGES:
-            SetRanges((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CCUR_SETRANGES:
+        SetRanges((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
 
-        case CCUR_SETCOLOR:
-            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CCUR_SETCOLOR:
+        SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CCUR_SETBOXCOLOR:
-            SetBoxColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CCUR_SETBOXCOLOR:
+        SetBoxColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CCUR_SETPERCENTAGE:
-            SetPercentage((short)P[0]);
-            break;
+    case CCUR_SETPERCENTAGE:
+        SetPercentage((short)P[0]);
+        break;
     }
 }
 

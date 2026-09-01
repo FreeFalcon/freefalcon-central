@@ -1,13 +1,13 @@
 #include "stdhdr.h"
 #include "aircrft.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "digi.h"
 #include "airframe.h"
 #include "fcc.h"
 #include "sms.h"
 #include "simio.h"
-#include "playerOp.h"
-#include "Object.h"
+#include "playerop.h"
+#include "object.h"
 #include "fakerand.h"
 #include "camp2sim.h"
 #include "fack.h"
@@ -21,7 +21,7 @@
 #include "dofsnswitches.h"
 #include "lantirn.h"
 
-#include "flightData.h"  // MD -- 20031110: fixes for ATT HLD autopilot
+#include "flightdata.h"  // MD -- 20031110: fixes for ATT HLD autopilot
 
 extern int narrowFOV;
 extern BOOL playerFlightModelHack;
@@ -39,7 +39,7 @@ extern bool g_bINS; //MI
 
 #define DEBUGLABEL
 #ifdef DEBUGLABEL
-#include "Graphics/include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 extern int g_nShowDebugLabels;
 #endif
 
@@ -48,7 +48,7 @@ extern bool g_bTFRFixes;
 
 void AircraftClass::GatherInputs(void)
 {
-    if ( not HasPilot() or strength < 0.0F)
+    if (not HasPilot() or strength < 0.0F)
     {
         // Let it down
         af->SetSimpleMode(SIMPLE_MODE_OFF);
@@ -75,76 +75,69 @@ void AircraftClass::GatherInputs(void)
     else if (autopilotType not_eq APOff)
     {
         // No autopilot for ownship if broken
-        if (
- not IsSetFlag(MOTION_OWNSHIP) or
- not (mFaults and mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p)
-        )
+        if (not IsSetFlag(MOTION_OWNSHIP) or
+            not(mFaults and
+                mFaults->GetFault(FaultClass::flcs_fault) == FaultClass::a_p))
         {
             switch (autopilotType)
             {
-                case LantirnAP: // JPO - lantirn style autopilot
+            case LantirnAP: // JPO - lantirn style autopilot
 
                     //MI no TFR for RF SILENT
-                    if (theLantirn and theLantirn->GetTFRMode() == LantirnClass::TFR_STBY and g_bTFRFixes)
-                    {
-                        theLantirn->PID_MX = 0.0F;
-                        theLantirn->PID_lastErr = 0.0F;
-                    }
+                if (theLantirn and
+                    theLantirn->GetTFRMode() == LantirnClass::TFR_STBY and
+                    g_bTFRFixes)
+                {
+                    theLantirn->PID_MX = 0.0F;
+                    theLantirn->PID_lastErr = 0.0F;
+                }
 
-                    if (g_bRealisticAvionics)
+                if (g_bRealisticAvionics)
+                {
+                    if (this == FalconLocalSession->GetPlayerEntity())
                     {
-                        if (this == FalconLocalSession->GetPlayerEntity())
+                        if (RFState == 2 or
+                            not HasPower(AircraftClass::APPower))
                         {
-                            if (RFState == 2 or not HasPower(AircraftClass::APPower))
+                            //SILENT or no power
+                            SetAutopilot(AircraftClass::APOff);
+                            ClearAPFlag(AircraftClass::AttHold);
+                            ClearAPFlag(AircraftClass::AltHold);
+                        }
+                        else
+                        {
+                            if (g_bINS)
                             {
-                                //SILENT or no power
-                                SetAutopilot(AircraftClass::APOff);
-                                ClearAPFlag(AircraftClass::AttHold);
-                                ClearAPFlag(AircraftClass::AltHold);
-                            }
-                            else
-                            {
-                                if (g_bINS)
+                                if (INSState(AircraftClass::INS_HUD_FPM))
                                 {
-                                    if (INSState(AircraftClass::INS_HUD_FPM))
-                                    {
-                                        //No AP if INS not aligned and in NAV)
-                                        DBrain()->LantirnAP();
+                                    //No AP if INS not aligned and in NAV)
+                                    DBrain()->LantirnAP();
 
-                                        //TJL 02/27/04 Fix for TFR no throttle
-                                        if (af->auxaeroData->nEngines == 2)
-                                        {
-                                            theBrain->throtl = UserStickInputs.engineThrottle[
-                                                                   PilotInputs::Left_Engine
-                                                               ];
-                                        }
-                                        else
-                                        {
-                                            theBrain->throtl = UserStickInputs.throttle;
-                                        }
+                                    //TJL 02/27/04 Fix for TFR no throttle
+                                    if (af->auxaeroData->nEngines == 2)
+                                    {
+                                        theBrain->throtl =
+                                            UserStickInputs.engineThrottle
+                                                [PilotInputs::Left_Engine];
                                     }
                                     else
                                     {
-                                        SetAutopilot(AircraftClass::APOff);
-                                        ClearAPFlag(AircraftClass::AttHold);
-                                        ClearAPFlag(AircraftClass::AltHold);
+                                        theBrain->throtl =
+                                            UserStickInputs.throttle;
                                     }
                                 }
                                 else
                                 {
-                                    DBrain()->RealisticAP();
-                                    theBrain->throtl = UserStickInputs.throttle;
+                                    SetAutopilot(AircraftClass::APOff);
+                                    ClearAPFlag(AircraftClass::AttHold);
+                                    ClearAPFlag(AircraftClass::AltHold);
                                 }
                             }
-                        }
-                        else
-                        {
-                            DBrain()->LantirnAP();
-
-                            if (this == FalconLocalSession->GetPlayerEntity())
-                                theBrain->throtl = UserStickInputs.throttle;
                             else
-                                theBrain->throtl = 0.0F;
+                            {
+                                DBrain()->RealisticAP();
+                                theBrain->throtl = UserStickInputs.throttle;
+                            }
                         }
                     }
                     else
@@ -152,85 +145,82 @@ void AircraftClass::GatherInputs(void)
                         DBrain()->LantirnAP();
 
                         if (this == FalconLocalSession->GetPlayerEntity())
-                        {
                             theBrain->throtl = UserStickInputs.throttle;
-                        }
                         else
-                        {
                             theBrain->throtl = 0.0F;
-                        }
                     }
+                }
+                else
+                {
+                    DBrain()->LantirnAP();
 
-                    break;
-
-                case ThreeAxisAP:
-                    if (g_bRealisticAvionics)
+                    if (this == FalconLocalSession->GetPlayerEntity())
                     {
-                        if (this == FalconLocalSession->GetPlayerEntity())
+                        theBrain->throtl = UserStickInputs.throttle;
+                    }
+                    else
+                    {
+                        theBrain->throtl = 0.0F;
+                    }
+                }
+
+                break;
+
+            case ThreeAxisAP:
+                if (g_bRealisticAvionics)
+                {
+                    if (this == FalconLocalSession->GetPlayerEntity())
+                    {
+                        //no AP if gearhandle down or FLCS fault or fuel door open
+                        // MD -- 20031108: and a few more conditions besides.  Enough to
+                        // turn this into a function in the DigitalBrain class to go
+                        // with the other AP related functions.
+
+                        if (not DBrain()->APAutoDisconnect())
                         {
-                            //no AP if gearhandle down or FLCS fault or fuel door open
-                            // MD -- 20031108: and a few more conditions besides.  Enough to
-                            // turn this into a function in the DigitalBrain class to go
-                            // with the other AP related functions.
-
-                            if ( not DBrain()->APAutoDisconnect())
+                            if (g_bINS)
                             {
-                                if (g_bINS)
+                                if (INSState(AircraftClass::INS_HUD_FPM))
                                 {
-                                    if (INSState(AircraftClass::INS_HUD_FPM))
-                                    {
-                                        //No AP if INS not aligned and in NAV)
-                                        DBrain()->RealisticAP();
+                                    //No AP if INS not aligned and in NAV)
+                                    DBrain()->RealisticAP();
 
-                                        //TJL 02/27/04 Fix for 3 Axis no throttle
-                                        if (af->auxaeroData->nEngines == 2)
-                                        {
-                                            theBrain->throtl = UserStickInputs.engineThrottle[
-                                                                   PilotInputs::Left_Engine
-                                                               ];
-                                        }
-                                        else
-                                        {
-                                            theBrain->throtl = UserStickInputs.throttle;
-                                        }
+                                    //TJL 02/27/04 Fix for 3 Axis no throttle
+                                    if (af->auxaeroData->nEngines == 2)
+                                    {
+                                        theBrain->throtl =
+                                            UserStickInputs.engineThrottle
+                                                [PilotInputs::Left_Engine];
                                     }
                                     else
                                     {
-                                        SetAutopilot(AircraftClass::APOff);
-                                        ClearAPFlag(AircraftClass::AttHold);
-                                        ClearAPFlag(AircraftClass::AltHold);
+                                        theBrain->throtl =
+                                            UserStickInputs.throttle;
                                     }
                                 }
                                 else
                                 {
-                                    DBrain()->RealisticAP();
-                                    theBrain->throtl = UserStickInputs.throttle;
+                                    SetAutopilot(AircraftClass::APOff);
+                                    ClearAPFlag(AircraftClass::AttHold);
+                                    ClearAPFlag(AircraftClass::AltHold);
                                 }
                             }
                             else
                             {
-                                //me123 said the switches reset themselves. So here we go....
-                                SetAutopilot(AircraftClass::APOff);
-                                ClearAPFlag(AircraftClass::AttHold);
-                                ClearAPFlag(AircraftClass::AltHold);
-                                /*theBrain->rStick = UserStickInputs.rstick;
-                                theBrain->pStick = UserStickInputs.pstick;
-                                theBrain->yPedal = UserStickInputs.rudder;
-                                theBrain->throtl = UserStickInputs.throttle;*/
+                                DBrain()->RealisticAP();
+                                theBrain->throtl = UserStickInputs.throttle;
                             }
                         }
                         else
                         {
-                            DBrain()->ThreeAxisAP();
-
-                            if (this == FalconLocalSession->GetPlayerEntity())
-                            {
-                                theBrain->throtl = UserStickInputs.throttle;
-                            }
-                            else
-                            {
-                                theBrain->throtl = 0.0F;
-                            }
+                            //me123 said the switches reset themselves. So here we go....
+                            SetAutopilot(AircraftClass::APOff);
+                            ClearAPFlag(AircraftClass::AttHold);
+                            ClearAPFlag(AircraftClass::AltHold);
+                            /*theBrain->rStick = UserStickInputs.rstick;
+                                theBrain->pStick = UserStickInputs.pstick;
+                                theBrain->yPedal = UserStickInputs.rudder;
+                                theBrain->throtl = UserStickInputs.throttle;*/
                         }
                     }
                     else
@@ -246,16 +236,30 @@ void AircraftClass::GatherInputs(void)
                             theBrain->throtl = 0.0F;
                         }
                     }
+                }
+                else
+                {
+                    DBrain()->ThreeAxisAP();
 
-                    break;
+                    if (this == FalconLocalSession->GetPlayerEntity())
+                    {
+                        theBrain->throtl = UserStickInputs.throttle;
+                    }
+                    else
+                    {
+                        theBrain->throtl = 0.0F;
+                    }
+                }
 
-                case WaypointAP:
-                    DBrain()->WaypointAP();
-                    break;
+                break;
 
-                case CombatAP:
-                    theBrain->FrameExec(targetList, targetPtr);
-                    break;
+            case WaypointAP:
+                DBrain()->WaypointAP();
+                break;
+
+            case CombatAP:
+                theBrain->FrameExec(targetList, targetPtr);
+                break;
             } // switch
 
             // Use the brain's target...
@@ -316,7 +320,8 @@ void AircraftClass::GatherInputs(void)
                 af->ypedal = 0.25F * af->ypedal + 0.75F * theBrain->yPedal;
             }
 
-            af->throtl = 0.6F; // would we stay in afterburner when GLOC-ing ? surely not..
+            af->throtl =
+                0.6F; // would we stay in afterburner when GLOC-ing ? surely not..
 
             if (glocFactor < 0.2F)
             {
@@ -387,9 +392,12 @@ void AircraftClass::GatherInputs(void)
                 }
                 else
                 {
-                    af->pstick = 0.5F * af->pstick + 0.5F * UserStickInputs.pstick;
-                    af->rstick = 0.5F * af->rstick + 0.5F * UserStickInputs.rstick;
-                    af->ypedal = 0.5F * af->ypedal + 0.5F * UserStickInputs.rudder;
+                    af->pstick =
+                        0.5F * af->pstick + 0.5F * UserStickInputs.pstick;
+                    af->rstick =
+                        0.5F * af->rstick + 0.5F * UserStickInputs.rstick;
+                    af->ypedal =
+                        0.5F * af->ypedal + 0.5F * UserStickInputs.rudder;
                 }
 
                 if (glocFactor < 0.1F and fabs(UserStickInputs.pstick) < 0.1F)
@@ -414,8 +422,10 @@ void AircraftClass::GatherInputs(void)
             af->ytrmcmd = UserStickInputs.ytrim;
             af->throtl = UserStickInputs.throttle;
             //TJL 01/13/04 Multi-Engine stuff
-            af->engine1Throttle = UserStickInputs.engineThrottle[PilotInputs::Left_Engine];
-            af->engine2Throttle = UserStickInputs.engineThrottle[PilotInputs::Right_Engine];
+            af->engine1Throttle =
+                UserStickInputs.engineThrottle[PilotInputs::Left_Engine];
+            af->engine2Throttle =
+                UserStickInputs.engineThrottle[PilotInputs::Right_Engine];
 
             if (DBrain()->RefuelStatus() == DigitalBrain::refRefueling)
             {
@@ -449,7 +459,8 @@ void AircraftClass::GatherInputs(void)
     if (g_nShowDebugLabels bitand 0x80)
     {
         char label[40];
-        sprintf(label, "P%1.3f R%1.3f T%1.3f Y%1.3f", af->pstick, af->rstick, af->throtl, af->ypedal);
+        sprintf(label, "P%1.3f R%1.3f T%1.3f Y%1.3f", af->pstick, af->rstick,
+                af->throtl, af->ypedal);
 
         if (g_nShowDebugLabels bitand 0x8000)
         {
@@ -465,10 +476,13 @@ void AircraftClass::GatherInputs(void)
 
         if (drawPointer)
         {
-            ((DrawableBSP*)drawPointer)->SetLabel(label, ((DrawableBSP*)drawPointer)->LabelColor());
+            ((DrawableBSP*)drawPointer)
+                ->SetLabel(label, ((DrawableBSP*)drawPointer)->LabelColor());
         }
     }
-    else if ((g_nShowDebugLabels bitand 0x100 or g_nShowDebugLabels bitand g_nMaxDebugLabel) and DBrain())
+    else if ((g_nShowDebugLabels bitand 0x100 or
+              g_nShowDebugLabels bitand g_nMaxDebugLabel) and
+             DBrain())
     {
         DBrain()->ReSetLabel(this);
     }
@@ -542,31 +556,36 @@ void AircraftClass::GatherInputs(void)
         float maxSpeed = 1.0F;
 
         // JB 000815 change == comparison to &
-        if (mFaults and mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dual)
+        if (mFaults and
+            mFaults->GetFault(FaultClass::flcs_fault) bitand FaultClass::dual)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::efire)
+        if (mFaults and
+            mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::efire)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::hydr)
+        if (mFaults and
+            mFaults->GetFault(FaultClass::eng_fault) bitand FaultClass::hydr)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) bitand FaultClass::all)
+        if (mFaults and
+            mFaults->GetFault(FaultClass::isa_fault) bitand FaultClass::all)
         {
             maxSpeed -= 0.05F;
             perturb = TRUE;
         }
 
-        if (mFaults and mFaults->GetFault(FaultClass::isa_fault) bitand FaultClass::rudr)
+        if (mFaults and
+            mFaults->GetFault(FaultClass::isa_fault) bitand FaultClass::rudr)
         {
             af->ypedal = 0.0F;
         }
@@ -574,7 +593,7 @@ void AircraftClass::GatherInputs(void)
         // JB 000815 change == comparison to &
 
         // JPO - total hydraulic failure - no control.
-        if (af->HydraulicA() == 0 and af -> HydraulicB() == 0)
+        if (af->HydraulicA() == 0 and af->HydraulicB() == 0)
         {
             af->rstick = 0.0f;
             af->pstick = 0.0f;
@@ -602,7 +621,8 @@ void AircraftClass::GatherInputs(void)
     // JB 000814
 
     //MI asynchronous lift
-    if (g_bRealisticAvionics and g_bNewDamageEffects and autopilotType not_eq CombatAP and not isDigital)
+    if (g_bRealisticAvionics and g_bNewDamageEffects and
+        autopilotType not_eq CombatAP and not isDigital)
     {
         //produce asynchronous "lift"
         if (LEFState(LEFSASYNCH))
@@ -681,23 +701,22 @@ void AircraftClass::ToggleAutopilot(void)
 
         switch (PlayerOptions.GetAutopilotMode())
         {
-            case APIntelligent:
-                SetAutopilot(CombatAP);
-                break;
+        case APIntelligent:
+            SetAutopilot(CombatAP);
+            break;
 
-            case APEnhanced:
-                SetAutopilot(WaypointAP);
-                break;
+        case APEnhanced:
+            SetAutopilot(WaypointAP);
+            break;
 
-            case APNormal:
-                SetAutopilot(ThreeAxisAP);
-                break;
+        case APNormal:
+            SetAutopilot(ThreeAxisAP);
+            break;
         }
     }
     else
     {
         SetAutopilot(APOff);
-
     }
 }
 
@@ -708,102 +727,107 @@ void AircraftClass::SetAutopilot(AutoPilotType flag)
 
     switch (flag)
     {
-        case APOff:
+    case APOff:
 
-            // sfr: this should happen for player only, careful folks
-            // Reset weapons for combat AP
-            if ((this == vuLocalSessionEntity) and (lastType == CombatAP))
+        // sfr: this should happen for player only, careful folks
+        // Reset weapons for combat AP
+        if ((this == vuLocalSessionEntity) and (lastType == CombatAP))
+        {
+            FCC->SetMasterMode(playerLastMasterMode);
+            FCC->SetSubMode(playerLastSubMode);
+            Sms->SetWeaponType(playerLastWeaponType);
+            Sms->FindWeaponClass(playerLastWeaponClass);
+            DBrain()->ClearCurrentMissile();
+        }
+
+        af->SetMaxRoll(190.0F);
+        af->ClearFlag(AirframeClass::WheelBrakes);
+        af->SetFlag(AirframeClass::AutoCommand);
+        af->ClearFlag(AirframeClass::GCommand);
+        af->ClearFlag(AirframeClass::AlphaCommand);
+
+        if (IsSetFlag(ON_GROUND))
+        {
+            if (IO.AnalogIsUsed(AXIS_THROTTLE))
             {
-                FCC->SetMasterMode(playerLastMasterMode);
-                FCC->SetSubMode(playerLastSubMode);
-                Sms->SetWeaponType(playerLastWeaponType);
-                Sms->FindWeaponClass(playerLastWeaponClass);
-                DBrain()->ClearCurrentMissile();
+                // Retro 31Dec2003 - #32: pwrlev/throtl already seeded from the physical throttle
+                // (ReadThrottle) so the throttle-check baseline is the real position, not idle.
+                af->SetFlag(AirframeClass::EngineOff);
+                af->SetFlag(
+                    AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+                af->SetFlag(AirframeClass::ThrottleCheck);
+                af->pwrlev = af->throtl = DBrain()->throtl =
+                    UserStickInputs.throttle = ReadThrottle();
+            }
+            else
+            {
+                af->ClearFlag(AirframeClass::EngineOff);
+                af->ClearFlag(
+                    AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+                af->ClearFlag(AirframeClass::ThrottleCheck);
+                UserStickInputs.Reset();
             }
 
-            af->SetMaxRoll(190.0F);
-            af->ClearFlag(AirframeClass::WheelBrakes);
-            af->SetFlag(AirframeClass::AutoCommand);
-            af->ClearFlag(AirframeClass::GCommand);
-            af->ClearFlag(AirframeClass::AlphaCommand);
+            DBrain()->ResetTaxiState();
+        }
 
-            if (IsSetFlag(ON_GROUND))
-            {
-                if (IO.AnalogIsUsed(AXIS_THROTTLE))
-                {
-                    // Retro 31Dec2003 - #32: pwrlev/throtl already seeded from the physical throttle
-                    // (ReadThrottle) so the throttle-check baseline is the real position, not idle.
-                    af->SetFlag(AirframeClass::EngineOff);
-                    af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-                    af->SetFlag(AirframeClass::ThrottleCheck);
-                    af->pwrlev = af->throtl = DBrain()->throtl = UserStickInputs.throttle = ReadThrottle();
-                }
-                else
-                {
-                    af->ClearFlag(AirframeClass::EngineOff);
-                    af->ClearFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-                    af->ClearFlag(AirframeClass::ThrottleCheck);
-                    UserStickInputs.Reset();
-                }
+        break;
 
-                DBrain()->ResetTaxiState();
-            }
-
-            break;
-
-            // JPO - lantirn specific stuff... bit like ThreeAxis
-        case LantirnAP:
-            //MI only those who have it
+        // JPO - lantirn specific stuff... bit like ThreeAxis
+    case LantirnAP:
+        //MI only those who have it
 #ifndef _DEBUG
-            if ( not af->HasTFR())
-            {
-                SetAutopilot(AircraftClass::APOff);
-                return;
-            }
+        if (not af->HasTFR())
+        {
+            SetAutopilot(AircraftClass::APOff);
+            return;
+        }
 
 #endif
-            ((DigitalBrain*)theBrain)->SetHoldAltitude(-ZPos() - -OTWDriver.GetGroundLevel(XPos(), YPos()));
-            ((DigitalBrain*)theBrain)->SetHoldHeading(Yaw());
-            af->ClearFlag(AirframeClass::EngineOff);
-            af->ClearFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-            af->ClearFlag(AirframeClass::ThrottleCheck);
-            playerLastWeaponType = Sms->curWeaponType;
-            playerLastWeaponClass = Sms->curWeaponClass;
-            playerLastMasterMode = FCC->GetMasterMode();
-            playerLastSubMode = FCC->GetSubMode();
+        ((DigitalBrain*)theBrain)
+            ->SetHoldAltitude(-ZPos() -
+                              -OTWDriver.GetGroundLevel(XPos(), YPos()));
+        ((DigitalBrain*)theBrain)->SetHoldHeading(Yaw());
+        af->ClearFlag(AirframeClass::EngineOff);
+        af->ClearFlag(AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+        af->ClearFlag(AirframeClass::ThrottleCheck);
+        playerLastWeaponType = Sms->curWeaponType;
+        playerLastWeaponClass = Sms->curWeaponClass;
+        playerLastMasterMode = FCC->GetMasterMode();
+        playerLastSubMode = FCC->GetSubMode();
 
-            if (g_bTFRFixes and theLantirn)
-            {
-                theLantirn->PID_MX = 0.0F;
-                theLantirn->PID_lastErr = 0.0F;
-            }
+        if (g_bTFRFixes and theLantirn)
+        {
+            theLantirn->PID_MX = 0.0F;
+            theLantirn->PID_lastErr = 0.0F;
+        }
 
-            break;
+        break;
 
-        case ThreeAxisAP:
-            ((DigitalBrain*)theBrain)->SetHoldAltitude(-ZPos());
-            ((DigitalBrain*)theBrain)->SetHoldHeading(Yaw());
+    case ThreeAxisAP:
+        ((DigitalBrain*)theBrain)->SetHoldAltitude(-ZPos());
+        ((DigitalBrain*)theBrain)->SetHoldHeading(Yaw());
 
-        case WaypointAP:
-            af->ClearFlag(AirframeClass::EngineOff);
-            af->ClearFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-            af->ClearFlag(AirframeClass::ThrottleCheck);
-            playerLastWeaponType = Sms->curWeaponType;
-            playerLastWeaponClass = Sms->curWeaponClass;
-            playerLastMasterMode = FCC->GetMasterMode();
-            playerLastSubMode = FCC->GetSubMode();
-            break;
+    case WaypointAP:
+        af->ClearFlag(AirframeClass::EngineOff);
+        af->ClearFlag(AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+        af->ClearFlag(AirframeClass::ThrottleCheck);
+        playerLastWeaponType = Sms->curWeaponType;
+        playerLastWeaponClass = Sms->curWeaponClass;
+        playerLastMasterMode = FCC->GetMasterMode();
+        playerLastSubMode = FCC->GetSubMode();
+        break;
 
-        case CombatAP:
-            af->ClearFlag(AirframeClass::EngineOff);
-            af->ClearFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-            af->ClearFlag(AirframeClass::ThrottleCheck);
-            playerLastWeaponType = Sms->curWeaponType;
-            playerLastWeaponClass = Sms->curWeaponClass;
-            playerLastMasterMode = FCC->GetMasterMode();
-            playerLastSubMode = FCC->GetSubMode();
-            DBrain()->ResetTaxiState();
-            break;
+    case CombatAP:
+        af->ClearFlag(AirframeClass::EngineOff);
+        af->ClearFlag(AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+        af->ClearFlag(AirframeClass::ThrottleCheck);
+        playerLastWeaponType = Sms->curWeaponType;
+        playerLastWeaponClass = Sms->curWeaponClass;
+        playerLastMasterMode = FCC->GetMasterMode();
+        playerLastSubMode = FCC->GetSubMode();
+        DBrain()->ResetTaxiState();
+        break;
     }
 }
 void AircraftClass::SetAPParameters(void)
@@ -815,7 +839,6 @@ void AircraftClass::SetAPParameters(void)
     }
     else
         autopilotType = APOff;
-
 }
 void AircraftClass::SetNewRoll(void)
 {
@@ -835,10 +858,8 @@ void AircraftClass::SetNewPitch(void)
     // this should get you something more like what you expected.
     //((DigitalBrain*)theBrain)->destPitch = Pitch() * RTD;
     ((DigitalBrain*)theBrain)->destPitch = cockpitFlightData.gamma * RTD;
-
 }
 void AircraftClass::SetNewAlt(void)
 {
     ((DigitalBrain*)theBrain)->currAlt = -ZPos();
 }
-

@@ -34,7 +34,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -44,7 +45,8 @@ private:
     long Opaque_;
     long MenuIconID_;
     long CheckIconID_;
-    COLORREF NormalColor_, SelColor_, DisColor_, BarColor_, BgColor_, BorderColor_;
+    COLORREF NormalColor_, SelColor_, DisColor_, BarColor_, BgColor_,
+        BorderColor_;
     short WinType_;
     short Direction_;
 
@@ -59,7 +61,7 @@ private:
     void GetSize(short *width, short *height);
 
 public:
-    void (*OpenCallback_)(C_Base *, C_Base*);
+    void (*OpenCallback_)(C_Base *, C_Base *);
     C_PopupList();
     C_PopupList(char **stream);
     C_PopupList(FILE *fp);
@@ -124,7 +126,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void ClearRadioGroup(long GroupID);
     void SetItemState(long ID, short val);
@@ -136,7 +138,7 @@ public:
     _TCHAR *GetItemLabel(long ID);
     C_Window *GetWindow()
     {
-        return(Window_);
+        return (Window_);
     }
     void SetOpenCallback(void (*cb)(C_Base *menu, C_Base *caller))
     {
@@ -144,21 +146,22 @@ public:
     }
     void *GetOpenCallback()
     {
-        return(OpenCallback_);
+        return (OpenCallback_);
     }
 
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
 
     void GetWindowSize(short *width, short *height);
     // Query Functions
     BOOL Opened()
     {
-        if (Window_ not_eq NULL) return(TRUE);
+        if (Window_ not_eq NULL)
+            return (TRUE);
 
-        return(FALSE);
+        return (FALSE);
     }
     void CloseSubMenus();
 

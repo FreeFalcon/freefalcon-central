@@ -7,7 +7,7 @@
 \***************************************************************************/
 #include <stdio.h>
 #include <math.h>
-#include "Sim.h"
+#include "sim.h"
 
 
 #define SIM_SPEED 10000.0f // Feet per second
@@ -15,7 +15,7 @@
 #define HEAD_ANG_RATE 1.0f // Radians per second
 #define PI 3.14159265359f
 
-
+
 /***************************************************************************\
  Prepare the simulation for running by intialize required state and other
  modules.
@@ -74,7 +74,6 @@ void SimClass::Setup(void)
 }
 
 
-
 /***************************************************************************\
  Clean up when the simulation loop is no longer needed.
 \***************************************************************************/
@@ -87,7 +86,6 @@ void SimClass::Cleanup(void)
 }
 
 
-
 /***************************************************************************\
  Do the computations for one time step in the simulation.  Call the
  various other modules to get input and generate output.  Return TRUE
@@ -128,11 +126,11 @@ UInt32 SimClass::Update(UInt32 time)
 #endif
 #if 1
     // Positive roll is "right" roll (ie: clockwise)
-    rollRate  = ((int)joyInfoEx.dwXpos - 32768) / 32768.0f * SIM_ANG_RATE;
+    rollRate = ((int)joyInfoEx.dwXpos - 32768) / 32768.0f * SIM_ANG_RATE;
 #endif
 #if 1
     // Positive yaw is "right"
-    yawRate  = ((int)joyInfoEx.dwRpos - 32768) / 32768.0f * SIM_ANG_RATE;
+    yawRate = ((int)joyInfoEx.dwRpos - 32768) / 32768.0f * SIM_ANG_RATE;
 
     if (!(joyCaps.wCaps & JOYCAPS_HASR))
     {
@@ -142,9 +140,10 @@ UInt32 SimClass::Update(UInt32 time)
 #endif
 #if 1
     // Positive Z is decrease in throttle
-    speed  = (65535 - (int)joyInfoEx.dwZpos) / 65535.0f;
-    speed  = speed * speed * speed; // Use a polynomial curve to get better low end response
-    speed  *= SIM_SPEED; // Scale from 0:1 to 0:SIM_SPEED
+    speed = (65535 - (int)joyInfoEx.dwZpos) / 65535.0f;
+    speed = speed * speed *
+            speed; // Use a polynomial curve to get better low end response
+    speed *= SIM_SPEED; // Scale from 0:1 to 0:SIM_SPEED
 
     if (!(joyCaps.wCaps & JOYCAPS_HASZ))
     {
@@ -165,7 +164,8 @@ UInt32 SimClass::Update(UInt32 time)
     {
 
         // Update the viewing rotation
-        UpdateRotation(rollRate * deltaTime, pitchRate * deltaTime, yawRate * deltaTime);
+        UpdateRotation(rollRate * deltaTime, pitchRate * deltaTime,
+                       yawRate * deltaTime);
 
 
         // Move along the DOV
@@ -178,7 +178,8 @@ UInt32 SimClass::Update(UInt32 time)
     }
 
     // Update the view direction if the joystick provides POV information
-    if ((joyCaps.wCaps & JOYCAPS_HASPOV) && (joyInfoEx.dwPOV != JOY_POVCENTERED))
+    if ((joyCaps.wCaps & JOYCAPS_HASPOV) &&
+        (joyInfoEx.dwPOV != JOY_POVCENTERED))
     {
 
         // Extract the head motion from the POV data
@@ -241,11 +242,11 @@ UInt32 SimClass::Update(UInt32 time)
 }
 
 
-
 /***************************************************************************\
  Update the rotation matrix to account for the user's control inputs.
 \***************************************************************************/
-void SimClass::UpdateRotation(float rollChange, float pitchChange, float yawChange)
+void SimClass::UpdateRotation(float rollChange, float pitchChange,
+                              float yawChange)
 {
     float e1dot, e2dot, e3dot, e4dot;
     float enorm;
@@ -297,7 +298,6 @@ void SimClass::UpdateRotation(float rollChange, float pitchChange, float yawChan
 }
 
 
-
 /***************************************************************************\
  Update the rotation matrix to account for the user's control inputs.
 \***************************************************************************/
@@ -307,7 +307,8 @@ void SimClass::Save(char *filename)
     UInt32 bytes;
 
     // Create a new data file
-    fileID = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    fileID = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                        FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (fileID == INVALID_HANDLE_VALUE)
     {
@@ -318,7 +319,8 @@ void SimClass::Save(char *filename)
     }
 
     // Write ourselves to disk
-    if (!WriteFile(fileID, this, sizeof(*this), &bytes, NULL))  bytes = 0xFFFFFFFF;
+    if (!WriteFile(fileID, this, sizeof(*this), &bytes, NULL))
+        bytes = 0xFFFFFFFF;
 
     if (bytes != sizeof(*this))
     {
@@ -333,7 +335,6 @@ void SimClass::Save(char *filename)
 }
 
 
-
 /***************************************************************************\
  Update the rotation matrix to account for the user's control inputs.
 \***************************************************************************/
@@ -344,7 +345,8 @@ void SimClass::Restore(char *filename)
     UInt32 result;
 
     // Create a new data file
-    fileID = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    fileID = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                        OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (fileID == INVALID_HANDLE_VALUE)
     {
@@ -369,4 +371,3 @@ void SimClass::Restore(char *filename)
     // Close the output file
     CloseHandle(fileID);
 }
-

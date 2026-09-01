@@ -4,9 +4,7 @@
 class CampaignComms
 {
 private:
-
 public:
-
     CampaignComms();
     ~CampaignComms();
 

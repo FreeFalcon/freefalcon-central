@@ -28,15 +28,16 @@ void OnSimKeyboardInput()
     // stuck-down and reported Alt as HELD forever -> ESC read as Alt+ESC. GetAsyncKeyState reflects the true
     // OS state, so once Alt is physically up the count is 0 immediately -- and doing it at the TOP (not the
     // end of the pass) fixes the "first ESC ignored, second works" one-frame lag.
-    ShiftCount = ((GetAsyncKeyState(VK_LSHIFT)   bitand 0x8000) ? 1 : 0)
-               + ((GetAsyncKeyState(VK_RSHIFT)   bitand 0x8000) ? 1 : 0);
-    CtrlCount  = ((GetAsyncKeyState(VK_LCONTROL) bitand 0x8000) ? 1 : 0)
-               + ((GetAsyncKeyState(VK_RCONTROL) bitand 0x8000) ? 1 : 0);
-    AltCount   = ((GetAsyncKeyState(VK_LMENU)    bitand 0x8000) ? 1 : 0)
-               + ((GetAsyncKeyState(VK_RMENU)    bitand 0x8000) ? 1 : 0);
+    ShiftCount = ((GetAsyncKeyState(VK_LSHIFT) bitand 0x8000) ? 1 : 0) +
+                 ((GetAsyncKeyState(VK_RSHIFT) bitand 0x8000) ? 1 : 0);
+    CtrlCount = ((GetAsyncKeyState(VK_LCONTROL) bitand 0x8000) ? 1 : 0) +
+                ((GetAsyncKeyState(VK_RCONTROL) bitand 0x8000) ? 1 : 0);
+    AltCount = ((GetAsyncKeyState(VK_LMENU) bitand 0x8000) ? 1 : 0) +
+               ((GetAsyncKeyState(VK_RMENU) bitand 0x8000) ? 1 : 0);
 
     dwElements = DKEYBOARD_BUFFERSIZE;
-    hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
+    hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(
+        sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
 
     // PHASE 5 (fix 'keyboard dead after Alt+Tab'): on focus loss the device
     // becomes INPUTLOST/NOTACQUIRED. Previously the code just marked FALSE and didn't reclaim
@@ -47,7 +48,8 @@ void OnSimKeyboardInput()
         {
             gpDeviceAcquired[SIM_KEYBOARD] = TRUE;
             dwElements = DKEYBOARD_BUFFERSIZE;
-            hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
+            hResult = gpDIDevice[SIM_KEYBOARD]->GetDeviceData(
+                sizeof(DIDEVICEOBJECTDATA), ObjData, &dwElements, 0);
         }
         else
         {
@@ -78,57 +80,57 @@ void OnSimKeyboardInput()
                 // key is down
                 switch (ObjData[i].dwOfs)
                 {
-                    case DIK_LSHIFT:
-                    case DIK_RSHIFT:
-                    {
-                        ShiftCount ++;
-                    }
+                case DIK_LSHIFT:
+                case DIK_RSHIFT:
+                {
+                    ShiftCount++;
+                }
+                break;
+
+                case DIK_LCONTROL:
+                case DIK_RCONTROL:
+                    CtrlCount++;
                     break;
 
-                    case DIK_LCONTROL:
-                    case DIK_RCONTROL:
-                        CtrlCount ++;
-                        break;
+                case DIK_LMENU:
+                case DIK_RMENU:
+                    AltCount++;
+                    break;
 
-                    case DIK_LMENU:
-                    case DIK_RMENU:
-                        AltCount ++;
-                        break;
-
-                    default:
-                        state  = KEY_DOWN;
-                        state or_eq (ShiftCount > 0 ? SHIFT_KEY : 0);
-                        state or_eq (CtrlCount > 0 ? CTRL_KEY : 0);
-                        state or_eq (AltCount > 0 ? ALT_KEY : 0);
-                        CallInputFunction(ObjData[i].dwOfs, state);
-                        break;
+                default:
+                    state = KEY_DOWN;
+                    state or_eq (ShiftCount > 0 ? SHIFT_KEY : 0);
+                    state or_eq (CtrlCount > 0 ? CTRL_KEY : 0);
+                    state or_eq (AltCount > 0 ? ALT_KEY : 0);
+                    CallInputFunction(ObjData[i].dwOfs, state);
+                    break;
                 }
             }
             else
             {
                 switch (ObjData[i].dwOfs)
                 {
-                    case DIK_LSHIFT:
-                    case DIK_RSHIFT:
-                        ShiftCount --;
-                        break;
+                case DIK_LSHIFT:
+                case DIK_RSHIFT:
+                    ShiftCount--;
+                    break;
 
-                    case DIK_LCONTROL:
-                    case DIK_RCONTROL:
-                        CtrlCount --;
-                        break;
+                case DIK_LCONTROL:
+                case DIK_RCONTROL:
+                    CtrlCount--;
+                    break;
 
-                    case DIK_LMENU:
-                    case DIK_RMENU:
-                        AltCount --;
-                        break;
+                case DIK_LMENU:
+                case DIK_RMENU:
+                    AltCount--;
+                    break;
 
-                    default:
-                        state = (ShiftCount > 0 ? SHIFT_KEY : 0);
-                        state or_eq (CtrlCount > 0 ? CTRL_KEY : 0);
-                        state or_eq (AltCount > 0 ? ALT_KEY : 0);
-                        CallInputFunction(ObjData[i].dwOfs, state);
-                        break;
+                default:
+                    state = (ShiftCount > 0 ? SHIFT_KEY : 0);
+                    state or_eq (CtrlCount > 0 ? CTRL_KEY : 0);
+                    state or_eq (AltCount > 0 ? ALT_KEY : 0);
+                    CallInputFunction(ObjData[i].dwOfs, state);
+                    break;
                 }
             }
         }
@@ -139,11 +141,11 @@ void OnSimKeyboardInput()
         // DI keyboard is (re)acquiring -> DI's GetDeviceState reported Alt as HELD forever -> ESC read as
         // Alt+ESC until a real Alt-up (Alt+F4). GetAsyncKeyState reflects the true OS state, so the instant
         // Alt is physically released the count self-corrects to 0 -- independent of the lost DI up-event.
-        ShiftCount = ((GetAsyncKeyState(VK_LSHIFT)   bitand 0x8000) ? 1 : 0)
-                   + ((GetAsyncKeyState(VK_RSHIFT)   bitand 0x8000) ? 1 : 0);
-        CtrlCount  = ((GetAsyncKeyState(VK_LCONTROL) bitand 0x8000) ? 1 : 0)
-                   + ((GetAsyncKeyState(VK_RCONTROL) bitand 0x8000) ? 1 : 0);
-        AltCount   = ((GetAsyncKeyState(VK_LMENU)    bitand 0x8000) ? 1 : 0)
-                   + ((GetAsyncKeyState(VK_RMENU)    bitand 0x8000) ? 1 : 0);
+        ShiftCount = ((GetAsyncKeyState(VK_LSHIFT) bitand 0x8000) ? 1 : 0) +
+                     ((GetAsyncKeyState(VK_RSHIFT) bitand 0x8000) ? 1 : 0);
+        CtrlCount = ((GetAsyncKeyState(VK_LCONTROL) bitand 0x8000) ? 1 : 0) +
+                    ((GetAsyncKeyState(VK_RCONTROL) bitand 0x8000) ? 1 : 0);
+        AltCount = ((GetAsyncKeyState(VK_LMENU) bitand 0x8000) ? 1 : 0) +
+                   ((GetAsyncKeyState(VK_RMENU) bitand 0x8000) ? 1 : 0);
     }
 }

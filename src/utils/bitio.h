@@ -29,22 +29,21 @@ typedef struct
     unsigned char mask;
     int rack;
     long bufferSize;
-    long bytesRead;      /* bytesRead in relation to uncompressed file size */
-    long fileLength;     /* uncompressed file size, not actual file size */
+    long bytesRead; /* bytesRead in relation to uncompressed file size */
+    long fileLength; /* uncompressed file size, not actual file size */
     long compFileLength; /* compressed file size */
     unsigned char *fill_level; /* last place in the buffer to be filled */
 } compression_buf_t;
 
-BIT_FILE     *OpenInputBitFile(char *name);
-BIT_FILE     *OpenOutputBitFile(char *name);
-void          OutputBit(BIT_FILE *bit_file, int bit);
-void          OutputBits(BIT_FILE *bit_file,
-                         unsigned long code, int count);
-int           InputBit(BIT_FILE *bit_file);
+BIT_FILE *OpenInputBitFile(char *name);
+BIT_FILE *OpenOutputBitFile(char *name);
+void OutputBit(BIT_FILE *bit_file, int bit);
+void OutputBits(BIT_FILE *bit_file, unsigned long code, int count);
+int InputBit(BIT_FILE *bit_file);
 unsigned long InputBits(BIT_FILE *bit_file, int bit_count);
-void          CloseInputBitFile(BIT_FILE *bit_file);
-void          CloseOutputBitFile(BIT_FILE *bit_file);
-void          FilePrintBinary(FILE *file, unsigned int code, int bits);
+void CloseInputBitFile(BIT_FILE *bit_file);
+void CloseOutputBitFile(BIT_FILE *bit_file);
+void FilePrintBinary(FILE *file, unsigned int code, int bits);
 
 /* Bitio on buffers */
 BIT_FILE *openTalkFile(char *name);
@@ -52,7 +51,6 @@ unsigned long InputCompBits(compression_buf_t *compbuf, int bit_count);
 void initSegment(BIT_FILE *bit_file);
 compression_buf_t *FillCompressionBuffer(BIT_FILE *bit_file);
 
-#endif  /* _BITIO_H */
+#endif /* _BITIO_H */
 
 /*************************** End of BITIO.H **************************/
-

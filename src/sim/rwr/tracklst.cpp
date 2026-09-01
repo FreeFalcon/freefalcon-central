@@ -7,7 +7,7 @@
 #include "simmover.h"
 #include "simdrive.h"
 #include "object.h"
-#include "radarData.h"
+#include "radardata.h"
 
 VehRwrClass::DetectListElement* VehRwrClass::IsTracked(FalconEntity* object)
 {
@@ -26,10 +26,11 @@ VehRwrClass::DetectListElement* VehRwrClass::IsTracked(FalconEntity* object)
     return retval;
 }
 
-VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, float lethality)
+VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object,
+                                                      float lethality)
 {
     int i, j;
-    DetectListElement *retval = NULL;
+    DetectListElement* retval = NULL;
     SimObjectType* tmpPtr;
 
     for (i = 0; i < numContacts; i++) // JB 010727
@@ -41,7 +42,8 @@ VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, floa
         // JB 010718
         //We bump the lethality of things by 10% already in the list
         //to keep from putting things in and out all the time
-        if (detectionList[i].lethality * 1.1f < lethality) // 1.1f and < instead of <= (RP5)
+        if (detectionList[i].lethality * 1.1f <
+            lethality) // 1.1f and < instead of <= (RP5)
         {
             break;
         }
@@ -59,7 +61,8 @@ VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, floa
         // Shift everything down to make room for the new entry
         for (j = min(numContacts, MaxRWRTracks - 1); j > i; j--)
         {
-            detectionList[j] = detectionList[j - 1]; //ME123 this loop was fucked up. fixed.
+            detectionList[j] =
+                detectionList[j - 1]; //ME123 this loop was fucked up. fixed.
         }
 
         ShiAssert(j <= i);
@@ -69,7 +72,7 @@ VehRwrClass::DetectListElement* VehRwrClass::AddTrack(FalconEntity* object, floa
         detectionList[i].radarData = &RadarDataTable[object->GetRadarType()];
         detectionList[i].lastPlayed = 0;
         detectionList[i].isLocked = 0;
-        detectionList[i].isAGLocked = 0;//Cobra TJL
+        detectionList[i].isAGLocked = 0; //Cobra TJL
         detectionList[i].missileActivity = 0;
         detectionList[i].missileLaunch = 0;
         // JB 010727 RP5 RWR
@@ -139,7 +142,7 @@ void VehRwrClass::SortDetectionList(void)
                 detectionList[j] = detectionList[j - 1];
                 j--;
 
-                if ( not j)
+                if (not j)
                 {
                     //check to prevent going off top of array
                     if (detectionList[1].selected)
@@ -176,7 +179,7 @@ void VehRwrClass::ResortList(VehRwrClass::DetectListElement* theElement)
             thisId = i;
         }
 
-        if (detectionList[i].lethality >= thisLethality)//me123 addet =
+        if (detectionList[i].lethality >= thisLethality) //me123 addet =
             newId = i;
     }
 
@@ -267,7 +270,7 @@ void VehRwrClass::DropTrack(int trackNum)
             detectionList[i].lastHit = 0;
             detectionList[i].lethality = 0.0F;
             detectionList[i].isLocked = 0;
-            detectionList[i].isAGLocked = 0;//Cobra TJL
+            detectionList[i].isAGLocked = 0; //Cobra TJL
             detectionList[i].missileActivity = 0;
             detectionList[i].missileLaunch = 0;
             detectionList[i].selected = 0;

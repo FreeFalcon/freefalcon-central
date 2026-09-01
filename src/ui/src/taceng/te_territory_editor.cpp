@@ -36,14 +36,14 @@ extern GlobalPositioningSystem *gGps;
 
 enum
 {
-    SMFLGS_USA  = 52012,
-    SMFLGS_NKOREA  = 52013,
-    SMFLGS_CHINA  = 52014,
-    SMFLGS_FRANCE  = 52015,
-    SMFLGS_CIS  = 52016,
-    SMFLGS_SKOREA   = 52017,
-    SMFLGS_JAPAN  = 52018,
-    SMFLGS_GERMAN  = 52019,
+    SMFLGS_USA = 52012,
+    SMFLGS_NKOREA = 52013,
+    SMFLGS_CHINA = 52014,
+    SMFLGS_FRANCE = 52015,
+    SMFLGS_CIS = 52016,
+    SMFLGS_SKOREA = 52017,
+    SMFLGS_JAPAN = 52018,
+    SMFLGS_GERMAN = 52019,
 };
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -114,7 +114,8 @@ void tactical_territory_editor_restore(long, short hittype, C_Base *)
 
     if ((TheCampaign.CampMapData) and (te_restore_map))
     {
-        memcpy(TheCampaign.CampMapData, te_restore_map, TheCampaign.CampMapSize);
+        memcpy(TheCampaign.CampMapData, te_restore_map,
+               TheCampaign.CampMapSize);
         UpdateOccupationMap();
     }
 }
@@ -141,16 +142,14 @@ void tactical_set_erasemode(long, short hittype, C_Base *)
 
 static int get_group_cover(int x, int y)
 {
-    int
-    dx,
-    dy,
-    cover;
+    int dx, dy, cover;
 
-    for (dx = 0; dx < MAP_RATIO; dx ++)
+    for (dx = 0; dx < MAP_RATIO; dx++)
     {
-        for (dy = 0; dy < MAP_RATIO; dy ++)
+        for (dy = 0; dy < MAP_RATIO; dy++)
         {
-            cover = GetCover(static_cast<short>(x + dx), static_cast<short>(y + dy));
+            cover = GetCover(static_cast<short>(x + dx),
+                             static_cast<short>(y + dy));
 
             if (cover not_eq Water)
             {
@@ -166,21 +165,15 @@ static int get_group_cover(int x, int y)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static int
-fill_width,
-fill_height,
-fill_team;
+static int fill_width, fill_height, fill_team;
 
-static unsigned char
-*fill_src;
+static unsigned char *fill_src;
 
 static void flood_fill_team(int x, int y)
 {
-    int
-    old_team;
+    int old_team;
 
-    unsigned char
-    cover;
+    unsigned char cover;
 
     if (x < 0 or y < 0 or x >= fill_width or y >= fill_height)
         return;
@@ -207,7 +200,7 @@ static void flood_fill_team(int x, int y)
         if (x bitand 1)
         {
             fill_src[(y * fill_width + x) / 2] and_eq 0x0f;
-            fill_src[(y * fill_width + x) / 2] or_eq gDrawTeam  << 4;
+            fill_src[(y * fill_width + x) / 2] or_eq gDrawTeam << 4;
 
             flood_fill_team(x + 0, y - 1);
             flood_fill_team(x - 1, y + 0);
@@ -217,7 +210,7 @@ static void flood_fill_team(int x, int y)
         else
         {
             fill_src[(y * fill_width + x) / 2] and_eq 0xf0;
-            fill_src[(y * fill_width + x) / 2] or_eq gDrawTeam ;
+            fill_src[(y * fill_width + x) / 2] or_eq gDrawTeam;
 
             flood_fill_team(x + 0, y - 1);
             flood_fill_team(x - 1, y + 0);
@@ -233,19 +226,9 @@ static void flood_fill_team(int x, int y)
 
 void tactical_territory_map_edit(long, short hittype, C_Base *control)
 {
-    long
-    width,
-    height,
-    px,
-    py,
-    lx,
-    ly,
-    x,
-    y;
+    long width, height, px, py, lx, ly, x, y;
 
-    uchar
-    cover,
-    *src;
+    uchar cover, *src;
 
     if (hittype == C_TYPE_RMOUSEDOWN)
     {
@@ -273,7 +256,8 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
 
             if (x bitand 1)
             {
-                fill_team = (fill_src[(y * fill_width + x) / 2] bitand 0xf0) >> 4;
+                fill_team =
+                    (fill_src[(y * fill_width + x) / 2] bitand 0xf0) >> 4;
             }
             else
             {
@@ -308,17 +292,19 @@ void tactical_territory_map_edit(long, short hittype, C_Base *control)
 
         if (src)
         {
-            for (lx = 0; lx < MAP_RATIO; lx ++)
+            for (lx = 0; lx < MAP_RATIO; lx++)
             {
                 px = x + lx;
 
-                for (ly = 0; ly < MAP_RATIO; ly ++)
+                for (ly = 0; ly < MAP_RATIO; ly++)
                 {
                     py = y + ly;
 
-                    if ((px >= 0) and (px < width) and (py >= 0) and (py < height))
+                    if ((px >= 0) and (px < width) and (py >= 0) and
+                        (py < height))
                     {
-                        cover = static_cast<uchar>(get_group_cover(px * MAP_RATIO, py * MAP_RATIO));
+                        cover = static_cast<uchar>(
+                            get_group_cover(px * MAP_RATIO, py * MAP_RATIO));
 
                         if (cover not_eq Water)
                         {
@@ -362,10 +348,14 @@ void SetupOccupationMap(void)
     C_Button *but;
     C_Bitmap *bmp;
 
-    if (gOccupationMap == NULL and (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY and TheCampaign.CampMapData))
+    if (gOccupationMap == NULL and
+        (TheCampaign.TheaterSizeX and TheCampaign.TheaterSizeY and
+         TheCampaign.CampMapData))
     {
         // Create Occupation map...
-        gOccupationMap = CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO, TheCampaign.TheaterSizeY / MAP_RATIO, 16);
+        gOccupationMap =
+            CreateOccupationMap(1, TheCampaign.TheaterSizeX / MAP_RATIO,
+                                TheCampaign.TheaterSizeY / MAP_RATIO, 16);
     }
 
     if (gOccupationMap)
@@ -389,7 +379,7 @@ void SetupOccupationMap(void)
 
     if (win)
     {
-        bmp = (C_Bitmap*)win->FindControl(TAC_OVERLAY);
+        bmp = (C_Bitmap *)win->FindControl(TAC_OVERLAY);
 
         if (bmp)
         {
@@ -403,7 +393,7 @@ void SetupOccupationMap(void)
 
     if (win)
     {
-        bmp = (C_Bitmap*)win->FindControl(TAC_OVERLAY);
+        bmp = (C_Bitmap *)win->FindControl(TAC_OVERLAY);
 
         if (bmp)
         {
@@ -420,7 +410,7 @@ void UpdateOccupationMap(void)
     C_Button *but;
     C_Bitmap *bmp;
 
-    if ( not gOccupationMap)
+    if (not gOccupationMap)
         return;
 
     MakeOccupationMap(gOccupationMap);
@@ -441,7 +431,7 @@ void UpdateOccupationMap(void)
 
     if (win)
     {
-        bmp = (C_Bitmap*)win->FindControl(TAC_OVERLAY);
+        bmp = (C_Bitmap *)win->FindControl(TAC_OVERLAY);
 
         if (bmp)
         {
@@ -466,12 +456,13 @@ void save_territory_editor(void)
 {
     if (TheCampaign.CampMapData)
     {
-        if ( not te_restore_map)
+        if (not te_restore_map)
             te_restore_map = new uchar[TheCampaign.CampMapSize];
 
         if (te_restore_map)
         {
-            memcpy(te_restore_map, TheCampaign.CampMapData, TheCampaign.CampMapSize);
+            memcpy(te_restore_map, TheCampaign.CampMapData,
+                   TheCampaign.CampMapSize);
         }
     }
 }
@@ -480,8 +471,10 @@ void save_territory_editor(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-int tryx[20] = { 1, -1, 0, 0, 1, 1, -1, -1, 2, -2, 0, 0, 2, 2, -2, -2, 1, -1, 1, -1 };
-int tryy[20] = { 0, 0, 1, -1, 1, -1, 1, -1, 0, 0, 2, -2, 1, -1, 1, -1, 2, 2, -2, -2 };
+int tryx[20] = {1, -1, 0, 0, 1,  1,  -1, -1, 2, -2,
+                0, 0,  2, 2, -2, -2, 1,  -1, 1, -1};
+int tryy[20] = {0, 0,  1, -1, 1, -1, 1, -1, 0,  0,
+                2, -2, 1, -1, 1, -1, 2, 2,  -2, -2};
 
 short GetMapTeam(short x, short y)
 {
@@ -489,8 +482,8 @@ short GetMapTeam(short x, short y)
     uchar pixel;
     int width;
 
-    if ( not TheCampaign.CampMapData)
-        return(0);
+    if (not TheCampaign.CampMapData)
+        return (0);
 
     width = MRX >> 1;
     x = static_cast<short>(x / MAP_RATIO);
@@ -498,10 +491,10 @@ short GetMapTeam(short x, short y)
     bit = x bitand 1;
     x >>= 1;
     pixel = TheCampaign.CampMapData[y * width + x];
-    pixel = static_cast<uchar>((pixel >>(bit * 4)) bitand 0x0f);
+    pixel = static_cast<uchar>((pixel >> (bit * 4)) bitand 0x0f);
 
     if (pixel > 0 and pixel < NUM_TEAMS)
-        return(pixel);
+        return (pixel);
 
     // KCK: Added this to try and avoid accidental painting of team 0 stuff
     // Basically, I'm going to look around until I find a non-water area
@@ -512,24 +505,24 @@ short GetMapTeam(short x, short y)
         if (indx >= 0 and indx < TheCampaign.CampMapSize)
         {
             pixel = TheCampaign.CampMapData[indx];
-            pixel = static_cast<uchar>((pixel >>(bit * 4)) bitand 0x0f);
+            pixel = static_cast<uchar>((pixel >> (bit * 4)) bitand 0x0f);
 
             if (pixel > 0 and pixel < NUM_TEAMS)
-                return(pixel);
+                return (pixel);
         }
     }
 
-    return(0);
+    return (0);
 }
 
 void UpdateObjectiveOwnership()
 {
     VuListIterator myit(AllObjList);
     Objective obj;
-    GridIndex   x, y;
+    GridIndex x, y;
     Team team;
 
-    obj = (Objective) myit.GetFirst();
+    obj = (Objective)myit.GetFirst();
 
     while (obj not_eq NULL)
     {
@@ -554,7 +547,7 @@ void UpdateObjectiveOwnership()
                 obj->SetObjectiveOldown(0);
         }
 
-        obj = (Objective) myit.GetNext();
+        obj = (Objective)myit.GetNext();
     }
 
     // 2001-10-31 M.N. rebuild FLOTlist for Distance calculation

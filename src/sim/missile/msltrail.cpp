@@ -1,17 +1,17 @@
 #include "stdhdr.h"
 #include "f4error.h"
 #include "f4vu.h"
-#include "DrawParticleSys.h"
+#include "drawparticlesys.h"
 #include "missile.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/draw2d.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/draw2d.h"
 #include "otwdrive.h"
 #include "classtbl.h"
 #include "sfx.h"
-#include "Entity.h"
+#include "entity.h"
 #include "weather.h"
-#include "FakeRand.h"
+#include "fakerand.h"
 
 
 extern int g_nmissiletrial;
@@ -24,8 +24,8 @@ void MissileClass::InitTrail(void)
     Tpoint delta;
     float distSq;
     Trotation rot;
-    Falcon4EntityClassType *classPtr;
-    WeaponClassDataType *wc;
+    Falcon4EntityClassType* classPtr;
+    WeaponClassDataType* wc;
 
     newPoint.x = XPos();
     newPoint.y = YPos();
@@ -68,8 +68,6 @@ void MissileClass::InitTrail(void)
     }
 
 
-
-
     classPtr = (Falcon4EntityClassType*)EntityType();
     // 2002-03-28 MN if we need the engine to model "lift", don't display trails or engine glows...
     wc = (WeaponClassDataType*)classPtr->dataPtr;
@@ -89,7 +87,8 @@ void MissileClass::InitTrail(void)
     }
 
 
-    if (mistrail == 0 and misengGlow == 0 and misengGlowBSP == 0 and misgroundGlow == 0)
+    if (mistrail == 0 and misengGlow == 0 and misengGlowBSP == 0 and
+        misgroundGlow == 0)
     {
         // differentiate trails and missile types
         if (g_nmissiletrial)
@@ -98,7 +97,8 @@ void MissileClass::InitTrail(void)
             TrailId = g_nmissiletrial;
 
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 5.0, &newPoint);
-            engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_L), &newPoint, &rot, 1.0f);
+            engGlowBSP1 =
+                new DrawableBSP(MapVisId(VIS_MFLAME_L), &newPoint, &rot, 1.0f);
         }
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET)
         {
@@ -106,7 +106,8 @@ void MissileClass::InitTrail(void)
             TrailId = TRAIL_ROCKET;
 
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 2.0, &newPoint);
-            engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
+            engGlowBSP1 =
+                new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
         }
         else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9M or
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM9P or
@@ -116,19 +117,20 @@ void MissileClass::InitTrail(void)
             //trail = new DrawableTrail( TRAIL_IR_MISSILE );
             TrailId = TRAIL_IR_MISSILE;
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 5.0, &newPoint);
-            engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
+            engGlowBSP1 =
+                new DrawableBSP(MapVisId(VIS_MFLAME_S), &newPoint, &rot, 1.0f);
         }
         else if (classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AIM120 or
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA12 or
                  classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA11 or
-                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA10C
-                )
+                 classPtr->vuClassData.classInfo_[VU_SPTYPE] == SPTYPE_AA10C)
         {
 
             //trail = new DrawableTrail( TRAIL_IR_MISSILE ); // MLR 12/14/2003 -
             TrailId = TRAIL_IR_MISSILE;
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 5.0, &newPoint);
-            engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_L), &newPoint, &rot, 1.0f);
+            engGlowBSP1 =
+                new DrawableBSP(MapVisId(VIS_MFLAME_L), &newPoint, &rot, 1.0f);
         }
         else
         {
@@ -136,7 +138,8 @@ void MissileClass::InitTrail(void)
             //trail = new DrawableTrail( TRAIL_IR_MISSILE ); // MLR 12/14/2003 -
             TrailId = TRAIL_IR_MISSILE;
             engGlow = new Drawable2D(DRAW2D_MISSILE_GLOW, 5.0, &newPoint);
-            engGlowBSP1 = new DrawableBSP(MapVisId(VIS_MFLAME_L), &newPoint, &rot, 1.0f);
+            engGlowBSP1 =
+                new DrawableBSP(MapVisId(VIS_MFLAME_L), &newPoint, &rot, 1.0f);
         }
 
         //RV - I-Hawk - disabling old ground glow stuff...
@@ -147,7 +150,8 @@ void MissileClass::InitTrail(void)
         //trail = new DrawableTrail( mistrail );
         TrailId = mistrail;
         engGlow = new Drawable2D(misengGlow, 5.0, &newPoint);
-        engGlowBSP1 = new DrawableBSP(MapVisId(misengGlowBSP), &newPoint, &rot, 1.0f);
+        engGlowBSP1 =
+            new DrawableBSP(MapVisId(misengGlowBSP), &newPoint, &rot, 1.0f);
         //RV - I-Hawk - disabling old ground glow stuff...
         /*
         if (misgroundGlow not_eq -1)
@@ -167,7 +171,7 @@ void MissileClass::UpdateTrail(void)
     Trotation rot = IMatrix;
     float radius;
     float agl;
-    Falcon4EntityClassType *classPtr;
+    Falcon4EntityClassType* classPtr;
 
     if (drawPointer)
         radius = drawPointer->Radius();
@@ -199,13 +203,23 @@ void MissileClass::UpdateTrail(void)
             rot.M33 = dmx[2][2];
 
             // MLR 2003-10-11 Fix for poorly placed engine glows
-            if (auxData->misengLocation.x) // if .x=0, then just use the old method
+            if (auxData->misengLocation
+                    .x) // if .x=0, then just use the old method
             {
                 // COBRA - RED - Add a little jittering on X Axis for Burner
                 float RndOffset = PRANDFloatPos() * 0.3f;
-                newPoint.x += dmx[0][0] * (auxData->misengLocation.x - RndOffset) + dmx[1][0] * auxData->misengLocation.y + dmx[2][0] * auxData->misengLocation.z;
-                newPoint.y += dmx[0][1] * (auxData->misengLocation.x - RndOffset) + dmx[1][1] * auxData->misengLocation.y + dmx[2][1] * auxData->misengLocation.z;
-                newPoint.z += dmx[0][2] * (auxData->misengLocation.x - RndOffset) + dmx[1][2] * auxData->misengLocation.y + dmx[2][2] * auxData->misengLocation.z;
+                newPoint.x +=
+                    dmx[0][0] * (auxData->misengLocation.x - RndOffset) +
+                    dmx[1][0] * auxData->misengLocation.y +
+                    dmx[2][0] * auxData->misengLocation.z;
+                newPoint.y +=
+                    dmx[0][1] * (auxData->misengLocation.x - RndOffset) +
+                    dmx[1][1] * auxData->misengLocation.y +
+                    dmx[2][1] * auxData->misengLocation.z;
+                newPoint.z +=
+                    dmx[0][2] * (auxData->misengLocation.x - RndOffset) +
+                    dmx[1][2] * auxData->misengLocation.y +
+                    dmx[2][2] * auxData->misengLocation.z;
             }
             else
             {
@@ -229,7 +243,7 @@ void MissileClass::UpdateTrail(void)
             bool contrail = false;
 
             //JAM 24Nov03
-            if (objAlt > ((WeatherClass*)realWeather)->contrailLow and 
+            if (objAlt > ((WeatherClass*)realWeather)->contrailLow and
                 objAlt < ((WeatherClass*)realWeather)->contrailHigh)
                 contrail = true;
 
@@ -249,16 +263,22 @@ void MissileClass::UpdateTrail(void)
 
             if (-ZPos() < 25000.0f)
             {
-                MissileTrailAlpha = ((15000.0f - (-ZPos())) / 15000.0f) * 0.25f + 1;
-                MissileTrailSize = ((15000.0f - (-ZPos())) / 15000.0f) * 0.25f + 1;
+                MissileTrailAlpha =
+                    ((15000.0f - (-ZPos())) / 15000.0f) * 0.25f + 1;
+                MissileTrailSize =
+                    ((15000.0f - (-ZPos())) / 15000.0f) * 0.25f + 1;
             }
             else
             {
-                MissileTrailAlpha = ((15000.0f - (25000.0f)) / 15000.0f) * 0.4f + 1;
-                MissileTrailSize = ((15000.0f - (25000.0f)) / 15000.0f) * 0.25f + 1;
+                MissileTrailAlpha =
+                    ((15000.0f - (25000.0f)) / 15000.0f) * 0.4f + 1;
+                MissileTrailSize =
+                    ((15000.0f - (25000.0f)) / 15000.0f) * 0.25f + 1;
             }
 
-            Trail = DrawableParticleSys::PS_EmitTrail(Trail, TrailId, newPoint.x, newPoint.y, newPoint.z, MissileTrailAlpha, MissileTrailSize);
+            Trail = DrawableParticleSys::PS_EmitTrail(
+                Trail, TrailId, newPoint.x, newPoint.y, newPoint.z,
+                MissileTrailAlpha, MissileTrailSize);
 
             // do the ground glow if near to ground
             agl = max(0.0f, groundZ - ZPos());
@@ -284,7 +304,7 @@ void MissileClass::UpdateTrail(void)
             }
             */
         }
-        else// if (trail->GetHead()) // MLR 12/11/2003 - commented out for new smoke trails
+        else // if (trail->GetHead()) // MLR 12/11/2003 - commented out for new smoke trails
         {
 
             if (engGlow and engGlow->InDisplayList())
@@ -303,13 +323,14 @@ void MissileClass::UpdateTrail(void)
             }
         }
     }
-    else if ( not IsExploding())
+    else if (not IsExploding())
     {
         InitTrail();
 
         //if (trail)
         //OTWDriver.InsertObject(trail);
-        if (engGlow and not g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
+        if (engGlow and
+            not g_bDisableMissleEngGlow) // MLR 2003-10-11 Disble the star
             OTWDriver.InsertObject(engGlow);
 
         if (engGlowBSP1)

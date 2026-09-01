@@ -11,7 +11,7 @@ char Search2[] = "ereHseoGedoCterceS";
 
 char EncriptCode[18];
 
-char Mask[] =   "Falcon 4.0 is Cool";
+char Mask[] = "Falcon 4.0 is Cool";
 
 void main(int argc, char **argv)
 {
@@ -22,7 +22,9 @@ void main(int argc, char **argv)
 
     if (argc != 4)
     {
-        printf("Usage <filename> <output path> ""string""\n");
+        printf("Usage <filename> <output path> "
+               "string"
+               "\n");
         printf("  make sure you put the string inside double quotes!!!!\n");
         return;
     }
@@ -54,7 +56,8 @@ void main(int argc, char **argv)
 
     if (Exe == NULL)
     {
-        printf("Can't allocate %1ld bytes to load (%s) into\b", length, argv[1]);
+        printf("Can't allocate %1ld bytes to load (%s) into\b", length,
+               argv[1]);
         close(fp);
         return;
     }
@@ -107,10 +110,3 @@ void main(int argc, char **argv)
 
     return;
 }
-
-
-
-
-
-
-

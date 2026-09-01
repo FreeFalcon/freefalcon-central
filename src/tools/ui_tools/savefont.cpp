@@ -23,25 +23,18 @@ C_Fontmgr *CreatedFont = NULL;
 
 void ChooseFontCB(long ID, short hittype, C_Base *control);
 
-static long LF_TRUE_FALSE[] =
-{
+static long LF_TRUE_FALSE[] = {
     0,
     0,
     1,
     -5551212,
 };
 
-static long LF_CHARSET[] =
-{
-    0,
-    ANSI_CHARSET,
-    OEM_CHARSET,
-    SYMBOL_CHARSET,
-    -5551212,
+static long LF_CHARSET[] = {
+    0, ANSI_CHARSET, OEM_CHARSET, SYMBOL_CHARSET, -5551212,
 };
 
-static long LF_OUT_PRECISION[] =
-{
+static long LF_OUT_PRECISION[] = {
     0,
     OUT_CHARACTER_PRECIS,
     OUT_DEFAULT_PRECIS,
@@ -50,43 +43,21 @@ static long LF_OUT_PRECISION[] =
     -5551212,
 };
 
-static long LF_CLIP_PRECISION[] =
-{
-    0,
-    CLIP_CHARACTER_PRECIS,
-    CLIP_DEFAULT_PRECIS,
-    CLIP_STROKE_PRECIS,
-    -5551212,
+static long LF_CLIP_PRECISION[] = {
+    0, CLIP_CHARACTER_PRECIS, CLIP_DEFAULT_PRECIS, CLIP_STROKE_PRECIS, -5551212,
 };
 
-static long LF_QUALITY[] =
-{
-    0,
-    DEFAULT_QUALITY,
-    DRAFT_QUALITY,
-    PROOF_QUALITY,
-    -5551212,
+static long LF_QUALITY[] = {
+    0, DEFAULT_QUALITY, DRAFT_QUALITY, PROOF_QUALITY, -5551212,
 };
 
-static long LF_PITCH[] =
-{
-    0,
-    DEFAULT_PITCH,
-    FIXED_PITCH,
-    VARIABLE_PITCH,
-    -5551212,
+static long LF_PITCH[] = {
+    0, DEFAULT_PITCH, FIXED_PITCH, VARIABLE_PITCH, -5551212,
 };
 
-static long LF_FAMILY[] =
-{
-    0,
-    FF_DECORATIVE,
-    FF_DONTCARE,
-    FF_MODERN,
-    FF_ROMAN,
-    FF_SCRIPT,
-    FF_SWISS,
-    -5551212,
+static long LF_FAMILY[] = {
+    0,        FF_DECORATIVE, FF_DONTCARE, FF_MODERN,
+    FF_ROMAN, FF_SCRIPT,     FF_SWISS,    -5551212,
 };
 
 long SearchList(long val, long list[])
@@ -95,9 +66,9 @@ long SearchList(long val, long list[])
 
     for (i = 1; list[i] not_eq -5551212; i++)
         if (list[i] == val)
-            return(i);
+            return (i);
 
-    return(0);
+    return (0);
 }
 
 void SetWindowLOGFONT(LOGFONT *log)
@@ -106,112 +77,114 @@ void SetWindowLOGFONT(LOGFONT *log)
     C_EditBox *ebox;
     C_ListBox *lbox;
 
-    if ( not log)
+    if (not log)
         return;
 
     win = gMainHandler->FindWindow(LOGFONT_WIN);
 
     if (win)
     {
-        ebox = (C_EditBox*)win->FindControl(EB_HEIGHT);
+        ebox = (C_EditBox *)win->FindControl(EB_HEIGHT);
 
         if (ebox)
         {
             ebox->SetInteger(log->lfHeight);
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_WIDTH);
+        ebox = (C_EditBox *)win->FindControl(EB_WIDTH);
 
         if (ebox)
         {
             ebox->SetInteger(log->lfWidth);
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_ESCAPEMENT);
+        ebox = (C_EditBox *)win->FindControl(EB_ESCAPEMENT);
 
         if (ebox)
         {
             ebox->SetInteger(log->lfEscapement);
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_ORIENTATION);
+        ebox = (C_EditBox *)win->FindControl(EB_ORIENTATION);
 
         if (ebox)
         {
             ebox->SetInteger(log->lfOrientation);
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_WEIGHT);
+        ebox = (C_EditBox *)win->FindControl(EB_WEIGHT);
 
         if (ebox)
         {
             ebox->SetInteger(log->lfWeight);
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_ITALIC);
+        lbox = (C_ListBox *)win->FindControl(LB_ITALIC);
 
         if (lbox)
         {
             lbox->SetValue(SearchList(log->lfItalic, LF_TRUE_FALSE));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_UNDERLINE);
+        lbox = (C_ListBox *)win->FindControl(LB_UNDERLINE);
 
         if (lbox)
         {
             lbox->SetValue(SearchList(log->lfUnderline, LF_TRUE_FALSE));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_STRIKEOUT);
+        lbox = (C_ListBox *)win->FindControl(LB_STRIKEOUT);
 
         if (lbox)
         {
             lbox->SetValue(SearchList(log->lfStrikeOut, LF_TRUE_FALSE));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_CHARSET);
+        lbox = (C_ListBox *)win->FindControl(LB_CHARSET);
 
         if (lbox)
         {
             lbox->SetValue(SearchList(log->lfCharSet, LF_CHARSET));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_OUTPRECISION);
+        lbox = (C_ListBox *)win->FindControl(LB_OUTPRECISION);
 
         if (lbox)
         {
             lbox->SetValue(SearchList(log->lfOutPrecision, LF_OUT_PRECISION));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_CLIPPRECISION);
+        lbox = (C_ListBox *)win->FindControl(LB_CLIPPRECISION);
 
         if (lbox)
         {
             lbox->SetValue(SearchList(log->lfClipPrecision, LF_OUT_PRECISION));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_QUALITY);
+        lbox = (C_ListBox *)win->FindControl(LB_QUALITY);
 
         if (lbox)
         {
             lbox->SetValue(SearchList(log->lfQuality, LF_QUALITY));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_PITCH);
+        lbox = (C_ListBox *)win->FindControl(LB_PITCH);
 
         if (lbox)
         {
-            lbox->SetValue(SearchList(log->lfPitchAndFamily bitand 3, LF_PITCH));
+            lbox->SetValue(
+                SearchList(log->lfPitchAndFamily bitand 3, LF_PITCH));
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_FAMILY);
+        lbox = (C_ListBox *)win->FindControl(LB_FAMILY);
 
         if (lbox)
         {
-            lbox->SetValue(SearchList(log->lfPitchAndFamily bitand 0xfc, LF_FAMILY));
+            lbox->SetValue(
+                SearchList(log->lfPitchAndFamily bitand 0xfc, LF_FAMILY));
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_FACENAME);
+        ebox = (C_EditBox *)win->FindControl(EB_FACENAME);
 
         if (ebox)
         {
@@ -229,91 +202,95 @@ void GetWindowLOGFONT(LOGFONT *log)
     C_EditBox *ebox;
     C_ListBox *lbox;
 
-    if ( not log)
+    if (not log)
         return;
 
     win = gMainHandler->FindWindow(LOGFONT_WIN);
 
     if (win)
     {
-        ebox = (C_EditBox*)win->FindControl(EB_HEIGHT);
+        ebox = (C_EditBox *)win->FindControl(EB_HEIGHT);
 
         if (ebox)
         {
             log->lfHeight = ebox->GetInteger();
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_WIDTH);
+        ebox = (C_EditBox *)win->FindControl(EB_WIDTH);
 
         if (ebox)
         {
             log->lfWidth = ebox->GetInteger();
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_ESCAPEMENT);
+        ebox = (C_EditBox *)win->FindControl(EB_ESCAPEMENT);
 
         if (ebox)
         {
             log->lfEscapement = ebox->GetInteger();
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_ORIENTATION);
+        ebox = (C_EditBox *)win->FindControl(EB_ORIENTATION);
 
         if (ebox)
         {
             log->lfOrientation = ebox->GetInteger();
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_WEIGHT);
+        ebox = (C_EditBox *)win->FindControl(EB_WEIGHT);
 
         if (ebox)
         {
             log->lfWeight = ebox->GetInteger();
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_ITALIC);
+        lbox = (C_ListBox *)win->FindControl(LB_ITALIC);
 
         if (lbox)
         {
             log->lfItalic = static_cast<BYTE>(LF_TRUE_FALSE[lbox->GetTextID()]);
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_UNDERLINE);
+        lbox = (C_ListBox *)win->FindControl(LB_UNDERLINE);
 
         if (lbox)
         {
-            log->lfUnderline = static_cast<BYTE>(LF_TRUE_FALSE[lbox->GetTextID()]);
+            log->lfUnderline =
+                static_cast<BYTE>(LF_TRUE_FALSE[lbox->GetTextID()]);
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_STRIKEOUT);
+        lbox = (C_ListBox *)win->FindControl(LB_STRIKEOUT);
 
         if (lbox)
         {
-            log->lfStrikeOut = static_cast<BYTE>(LF_TRUE_FALSE[lbox->GetTextID()]);
+            log->lfStrikeOut =
+                static_cast<BYTE>(LF_TRUE_FALSE[lbox->GetTextID()]);
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_CHARSET);
+        lbox = (C_ListBox *)win->FindControl(LB_CHARSET);
 
         if (lbox)
         {
             log->lfCharSet = static_cast<BYTE>(LF_CHARSET[lbox->GetTextID()]);
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_OUTPRECISION);
+        lbox = (C_ListBox *)win->FindControl(LB_OUTPRECISION);
 
         if (lbox)
         {
-            log->lfOutPrecision = static_cast<BYTE>(LF_OUT_PRECISION[lbox->GetTextID()]);
+            log->lfOutPrecision =
+                static_cast<BYTE>(LF_OUT_PRECISION[lbox->GetTextID()]);
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_CLIPPRECISION);
+        lbox = (C_ListBox *)win->FindControl(LB_CLIPPRECISION);
 
         if (lbox)
         {
-            log->lfClipPrecision = static_cast<BYTE>(LF_CLIP_PRECISION[lbox->GetTextID()]);
+            log->lfClipPrecision =
+                static_cast<BYTE>(LF_CLIP_PRECISION[lbox->GetTextID()]);
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_QUALITY);
+        lbox = (C_ListBox *)win->FindControl(LB_QUALITY);
 
         if (lbox)
         {
@@ -321,21 +298,21 @@ void GetWindowLOGFONT(LOGFONT *log)
         }
 
         log->lfPitchAndFamily = 0;
-        lbox = (C_ListBox*)win->FindControl(LB_PITCH);
+        lbox = (C_ListBox *)win->FindControl(LB_PITCH);
 
         if (lbox)
         {
             log->lfPitchAndFamily or_eq LF_PITCH[lbox->GetTextID()];
         }
 
-        lbox = (C_ListBox*)win->FindControl(LB_FAMILY);
+        lbox = (C_ListBox *)win->FindControl(LB_FAMILY);
 
         if (lbox)
         {
             log->lfPitchAndFamily or_eq LF_FAMILY[lbox->GetTextID()];
         }
 
-        ebox = (C_EditBox*)win->FindControl(EB_FACENAME);
+        ebox = (C_EditBox *)win->FindControl(EB_FACENAME);
 
         if (ebox)
         {
@@ -345,7 +322,8 @@ void GetWindowLOGFONT(LOGFONT *log)
 }
 
 // Enumerated fonts
-int CALLBACK testme(CONST LOGFONTA *logfnt, CONST TEXTMETRICA *metrics, DWORD, LPARAM)
+int CALLBACK testme(CONST LOGFONTA *logfnt, CONST TEXTMETRICA *metrics, DWORD,
+                    LPARAM)
 {
     if (ItemID < 200)
     {
@@ -357,7 +335,7 @@ int CALLBACK testme(CONST LOGFONTA *logfnt, CONST TEXTMETRICA *metrics, DWORD, L
         }
     }
 
-    return(1);
+    return (1);
 }
 
 void GetAllFonts(HDC hdc, char *facename)
@@ -401,7 +379,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
     if (font->Font_ == NULL)
     {
         delete font;
-        return(NULL);
+        return (NULL);
     }
 
     font->ID_ = ID;
@@ -419,14 +397,15 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
     hdc = GetDC(mywin);
     SelectObject(hdc, font->Font_);
     KernSize = GetKerningPairs(hdc, 65536, kerns);
-    GetCharABCWidths(hdc, font->Metrics_.tmFirstChar, font->Metrics_.tmLastChar, ABCList);
+    GetCharABCWidths(hdc, font->Metrics_.tmFirstChar, font->Metrics_.tmLastChar,
+                     ABCList);
     ReleaseDC(mywin, hdc);
 
     for (i = 0; i < KernSize; i++)
     {
-        mykerns[i].first  = kerns[i].wFirst;
+        mykerns[i].first = kerns[i].wFirst;
         mykerns[i].second = kerns[i].wSecond;
-        mykerns[i].add    = static_cast<short>(kerns[i].iKernAmount);
+        mykerns[i].add = static_cast<short>(kerns[i].iKernAmount);
     }
 
     delete kerns;
@@ -437,7 +416,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
     numchars = lastchar - firstchar + 1;
 
     MyChars = new CharStr[numchars];
-    memset(MyChars, 0, sizeof(CharStr)*numchars);
+    memset(MyChars, 0, sizeof(CharStr) * numchars);
 
     // Check All Kerning
     for (j = 0; j < KernSize; j++)
@@ -467,7 +446,8 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
     newfont->SetRange(firstchar, lastchar);
     newfont->SetTable(numchars, MyChars);
     newfont->SetKerning(KernSize, mykerns);
-    CharData = new unsigned char[bytesperline * font->Metrics_.tmHeight * numchars];
+    CharData =
+        new unsigned char[bytesperline * font->Metrics_.tmHeight * numchars];
     DataSize = numchars * font->Metrics_.tmHeight * bytesperline;
     newfont->SetData(DataSize, (char *)CharData);
     memset(CharData, 0, DataSize);
@@ -494,7 +474,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
 
         buffer[0] = static_cast<char>(firstchar + i);
 
-        if ( not TextOut(hdc, xoff, yoff, buffer, 1))
+        if (not TextOut(hdc, xoff, yoff, buffer, 1))
             MonoPrint("Failed to display character (%1d)\n", buffer[0]);
 
         xoff += MyChars[i].lead;
@@ -516,7 +496,7 @@ C_Fontmgr *FontToBFT(long ID, LOGFONT *logfont)
 
     ReleaseDC(mywin, hdc);
 
-    return(newfont);
+    return (newfont);
 }
 
 void ChoosePairCB(long, short hittype, C_Base *control)
@@ -538,13 +518,14 @@ void PrintPairs(C_Window *win, long FontID)
 
     curfont = gFontList->Find(FontID);
 
-    if ( not curfont)
+    if (not curfont)
         return;
 
     startchar = curfont->First();
     numchars = curfont->Last() - startchar;
     charw = curfont->Width("M");
-    numperline = (win->ClientArea_[2].right - win->ClientArea_[2].left) / (charw * 4);
+    numperline =
+        (win->ClientArea_[2].right - win->ClientArea_[2].left) / (charw * 4);
 
     x = 5;
     y = 5;
@@ -566,8 +547,10 @@ void PrintPairs(C_Window *win, long FontID)
         btn->Setup(btnid + i, C_TYPE_RADIO, x, y);
         btn->SetGroup(-100);
         btn->SetFont(FontID);
-        btn->SetText(C_STATE_0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
-        btn->SetText(C_STATE_1, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+        btn->SetText(C_STATE_0,
+                     gStringMgr->GetText(gStringMgr->AddText(buffer)));
+        btn->SetText(C_STATE_1,
+                     gStringMgr->GetText(gStringMgr->AddText(buffer)));
         btn->SetColor(C_STATE_0, 0xcccccc);
         btn->SetColor(C_STATE_1, 0x00ff00);
         btn->SetClient(2);
@@ -604,7 +587,7 @@ void IncreaseLead(long, short hittype, C_Base *control)
     {
         if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_1);
 
             if (txt)
             {
@@ -621,7 +604,7 @@ void IncreaseLead(long, short hittype, C_Base *control)
     }
 }
 
-void DecreaseLead(long , short hittype, C_Base *control)
+void DecreaseLead(long, short hittype, C_Base *control)
 {
     C_Fontmgr *cur;
     CharStr *chr;
@@ -637,7 +620,7 @@ void DecreaseLead(long , short hittype, C_Base *control)
     {
         if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_1);
 
             if (txt)
             {
@@ -670,7 +653,7 @@ void IncreaseTrail(long, short hittype, C_Base *control)
     {
         if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_3);
 
             if (txt)
             {
@@ -703,7 +686,7 @@ void DecreaseTrail(long, short hittype, C_Base *control)
     {
         if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_3);
 
             if (txt)
             {
@@ -736,7 +719,7 @@ void IncreaseWidth(long, short hittype, C_Base *control)
     {
         if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_2);
 
             if (txt)
             {
@@ -769,7 +752,7 @@ void DecreaseWidth(long, short hittype, C_Base *control)
     {
         if (CurrentChar >= cur->First() and CurrentChar <= cur->Last())
         {
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_2);
 
             if (txt)
             {
@@ -801,7 +784,7 @@ void DecreaseKern(long, short hittype, C_Base *)
 void ChooseCharCB(long ID, short hittype, C_Base *control)
 {
     C_Fontmgr *fnt;
-    CharStr   *chr;
+    CharStr *chr;
     C_Text *txt;
     char buffer[10];
 
@@ -813,14 +796,14 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
     control->Refresh();
     fnt = gFontList->Find(CurrentFontID);
 
-    if (fnt and CurrentChar  > 0)
+    if (fnt and CurrentChar > 0)
     {
         chr = fnt->GetChar(static_cast<short>(CurrentChar));
 
         if (chr)
         {
             sprintf(buffer, "%1d", chr->lead);
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_1);
 
             if (txt)
             {
@@ -829,7 +812,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
             }
 
             sprintf(buffer, "%1d", chr->w);
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_2);
 
             if (txt)
             {
@@ -838,7 +821,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
             }
 
             sprintf(buffer, "%1d", chr->trail);
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_3);
 
             if (txt)
             {
@@ -848,7 +831,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
         }
         else
         {
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_1);
 
             if (txt)
             {
@@ -856,7 +839,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_2);
 
             if (txt)
             {
@@ -864,7 +847,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-            txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
+            txt = (C_Text *)control->Parent_->FindControl(REFUEL_3);
 
             if (txt)
             {
@@ -875,7 +858,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
     }
     else
     {
-        txt = (C_Text*)control->Parent_->FindControl(REFUEL_1);
+        txt = (C_Text *)control->Parent_->FindControl(REFUEL_1);
 
         if (txt)
         {
@@ -883,7 +866,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
             txt->Refresh();
         }
 
-        txt = (C_Text*)control->Parent_->FindControl(REFUEL_2);
+        txt = (C_Text *)control->Parent_->FindControl(REFUEL_2);
 
         if (txt)
             if (txt)
@@ -892,7 +875,7 @@ void ChooseCharCB(long ID, short hittype, C_Base *control)
                 txt->Refresh();
             }
 
-        txt = (C_Text*)control->Parent_->FindControl(REFUEL_3);
+        txt = (C_Text *)control->Parent_->FindControl(REFUEL_3);
 
         if (txt)
             if (txt)
@@ -920,17 +903,17 @@ void MakeFontList(long FontID)
 
     win = gMainHandler->FindWindow(FONT_ED_WIN);
 
-    if ( not win or not FontID)
+    if (not win or not FontID)
         return;
 
     curfont = gFontList->Find(FontID);
 
-    if ( not curfont)
+    if (not curfont)
         return;
 
     Leave = UI_Enter(win);
 
-    ebox = (C_EditBox*)win->FindControl(FONT_NAME_BOX);
+    ebox = (C_EditBox *)win->FindControl(FONT_NAME_BOX);
 
     if (ebox)
         ebox->SetFont(FontID);
@@ -938,7 +921,8 @@ void MakeFontList(long FontID)
     DeleteGroupList(FONT_ED_WIN);
 
     charw = curfont->Width("M");
-    numperline = (win->ClientArea_[1].right - win->ClientArea_[1].left) / (charw + 60);
+    numperline =
+        (win->ClientArea_[1].right - win->ClientArea_[1].left) / (charw + 60);
     startchar = curfont->First();
     numchars = curfont->Last() - startchar;
 
@@ -948,7 +932,7 @@ void MakeFontList(long FontID)
     if (CurrentChar >= (startchar - numchars))
         CurrentChar = startchar;
 
-    txt = (C_Text*)win->FindControl(FONT_NAME);
+    txt = (C_Text *)win->FindControl(FONT_NAME);
 
     if (txt)
     {
@@ -957,7 +941,7 @@ void MakeFontList(long FontID)
     }
 
     _stprintf(buffer, "%1ld", curfont->Height());
-    txt = (C_Text*)win->FindControl(PITCH_SIZE);
+    txt = (C_Text *)win->FindControl(PITCH_SIZE);
 
     if (txt)
     {
@@ -981,8 +965,10 @@ void MakeFontList(long FontID)
         btn->Setup(btnid + i, C_TYPE_RADIO, x, y);
         btn->SetGroup(-100);
         btn->SetFont(FontID);
-        btn->SetText(C_STATE_0, gStringMgr->GetText(gStringMgr->AddText(buffer)));
-        btn->SetText(C_STATE_1, gStringMgr->GetText(gStringMgr->AddText(buffer)));
+        btn->SetText(C_STATE_0,
+                     gStringMgr->GetText(gStringMgr->AddText(buffer)));
+        btn->SetText(C_STATE_1,
+                     gStringMgr->GetText(gStringMgr->AddText(buffer)));
         sprintf(buffer, "[%1ld]", startchar + i);
         btn->SetAllLabel(gStringMgr->GetText(gStringMgr->AddText(buffer)));
         btn->SetLabelOffset(C_STATE_0, charw + 5, 0);
@@ -1058,7 +1044,7 @@ void SaveFontCB(long, short hittype, C_Base *control)
 
     if (win)
     {
-        ebox = (C_EditBox*)win->FindControl(FONT_NAME_BOX);
+        ebox = (C_EditBox *)win->FindControl(FONT_NAME_BOX);
 
         if (ebox)
         {
@@ -1077,7 +1063,7 @@ void ChooseFontCB(long ID, short hittype, C_Base *control)
 
     if (control)
     {
-        lbox = (C_ListBox*)control;
+        lbox = (C_ListBox *)control;
         CurrentFontID = lbox->GetTextID();
     }
     else
@@ -1093,7 +1079,7 @@ void ChooseAvailableFontCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    idx = ((C_ListBox*)control)->GetTextID();
+    idx = ((C_ListBox *)control)->GetTextID();
     memcpy(&CreatedLogFont, &fontlog[idx], sizeof(LOGFONT));
     SetWindowLOGFONT(&CreatedLogFont);
 }
@@ -1120,16 +1106,9 @@ void InitFontTool()
     myclass.hIconSm = LoadIcon(NULL, IDI_APPLICATION);
 
     RegisterClassEx(&myclass);
-    mywin = CreateWindow(FontWinName, "Font Window",
-                         WS_OVERLAPPEDWINDOW,
-                         300,
-                         300,
-                         SCREEN_SIZE,
-                         SCREEN_SIZE,
-                         NULL,
-                         NULL,
-                         hInst,
-                         NULL);
+    mywin =
+        CreateWindow(FontWinName, "Font Window", WS_OVERLAPPEDWINDOW, 300, 300,
+                     SCREEN_SIZE, SCREEN_SIZE, NULL, NULL, hInst, NULL);
 
     ShowWindow(mywin, 0);
     UpdateWindow(mywin);

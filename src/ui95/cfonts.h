@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -38,7 +39,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -61,7 +63,7 @@ public:
 
     // Setup functions
     void Setup(C_Handler *handler);
-    BOOL AddFont(long , LOGFONT *);
+    BOOL AddFont(long, LOGFONT *);
     void RemoveFont(long)
     {
         ;
@@ -79,7 +81,7 @@ public:
 
     C_Hash *GetHash()
     {
-        return(Fonts_);
+        return (Fonts_);
     }
 
     // Cleanup Functions
@@ -88,7 +90,8 @@ public:
 #ifdef _UI95_PARSER_
 
     short FontFind(char *token);
-    void FontFunction(short ID, long P[], _TCHAR *str, LOGFONT *lgfnt, long *NewID);
+    void FontFunction(short ID, long P[], _TCHAR *str, LOGFONT *lgfnt,
+                      long *NewID);
     void SaveText(HANDLE, C_Parser *)
     {
         ;

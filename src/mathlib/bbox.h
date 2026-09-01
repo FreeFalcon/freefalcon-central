@@ -14,12 +14,12 @@ public:
     /// clip codes
     enum
     {
-        ClipLeft   = (1 << 0),
-        ClipRight  = (1 << 1),
+        ClipLeft = (1 << 0),
+        ClipRight = (1 << 1),
         ClipBottom = (1 << 2),
-        ClipTop    = (1 << 3),
-        ClipNear   = (1 << 4),
-        ClipFar    = (1 << 5),
+        ClipTop = (1 << 3),
+        ClipNear = (1 << 4),
+        ClipFar = (1 << 5),
     };
     /// clip status
     enum ClipStatus
@@ -31,11 +31,11 @@ public:
 
     enum
     {
-        OUTSIDE     = 0,
-        ISEQUAL     = (1 << 0),
+        OUTSIDE = 0,
+        ISEQUAL = (1 << 0),
         ISCONTAINED = (1 << 1),
-        CONTAINS    = (1 << 2),
-        CLIPS       = (1 << 3),
+        CONTAINS = (1 << 2),
+        CLIPS = (1 << 3),
     };
 
     /// constructor 1
@@ -139,18 +139,27 @@ public:
     // point in polygon check for sides with constant x,y and z
     bool pip_const_x(const vector3& p) const
     {
-        if ((p.y >= vmin.y) && (p.y <= vmax.y) && (p.z >= vmin.z) && (p.z <= vmax.z)) return true;
-        else return false;
+        if ((p.y >= vmin.y) && (p.y <= vmax.y) && (p.z >= vmin.z) &&
+            (p.z <= vmax.z))
+            return true;
+        else
+            return false;
     }
     bool pip_const_y(const vector3& p) const
     {
-        if ((p.x >= vmin.x) && (p.x <= vmax.x) && (p.z >= vmin.z) && (p.z <= vmax.z)) return true;
-        else return false;
+        if ((p.x >= vmin.x) && (p.x <= vmax.x) && (p.z >= vmin.z) &&
+            (p.z <= vmax.z))
+            return true;
+        else
+            return false;
     }
     bool pip_const_z(const vector3& p) const
     {
-        if ((p.x >= vmin.x) && (p.x <= vmax.x) && (p.y >= vmin.y) && (p.y <= vmax.y)) return true;
-        else return false;
+        if ((p.x >= vmin.x) && (p.x <= vmax.x) && (p.y >= vmin.y) &&
+            (p.y <= vmax.y))
+            return true;
+        else
+            return false;
     }
 
     vector3 vmin;
@@ -160,8 +169,7 @@ public:
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bbox3::bbox3()
+inline bbox3::bbox3()
 {
     // empty
 }
@@ -169,8 +177,7 @@ bbox3::bbox3()
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bbox3::bbox3(const vector3& center, const vector3& extents)
+inline bbox3::bbox3(const vector3& center, const vector3& extents)
 {
     vmin = center - extents;
     vmax = center + extents;
@@ -182,9 +189,7 @@ bbox3::bbox3(const vector3& center, const vector3& extents)
     defines the center point, and the x,y,z vectors of the matrix
     define the extents.
 */
-inline
-void
-bbox3::set(const matrix44& m)
+inline void bbox3::set(const matrix44& m)
 {
     // get extents
     float xExtent = _max(_max(_abs(m.M11), _abs(m.M21)), _abs(m.M31));
@@ -199,8 +204,7 @@ bbox3::set(const matrix44& m)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bbox3::bbox3(const matrix44& m)
+inline bbox3::bbox3(const matrix44& m)
 {
     this->set(m);
 }
@@ -208,9 +212,7 @@ bbox3::bbox3(const matrix44& m)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-vector3
-bbox3::center() const
+inline vector3 bbox3::center() const
 {
     return vector3((vmin + vmax) * 0.5f);
 }
@@ -218,9 +220,7 @@ bbox3::center() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-vector3
-bbox3::extents() const
+inline vector3 bbox3::extents() const
 {
     return vector3((vmax - vmin) * 0.5f);
 }
@@ -228,9 +228,7 @@ bbox3::extents() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-bbox3::set(const vector3& center, const vector3& extents)
+inline void bbox3::set(const vector3& center, const vector3& extents)
 {
     vmin = center - extents;
     vmax = center + extents;
@@ -239,9 +237,7 @@ bbox3::set(const vector3& center, const vector3& extents)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-bbox3::begin_extend()
+inline void bbox3::begin_extend()
 {
     vmin.set(+1000000.0f, +1000000.0f, +1000000.0f);
     vmax.set(-1000000.0f, -1000000.0f, -1000000.0f);
@@ -250,61 +246,73 @@ bbox3::begin_extend()
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-bbox3::extend(const vector3& v)
+inline void bbox3::extend(const vector3& v)
 {
-    if (v.x < vmin.x) vmin.x = v.x;
+    if (v.x < vmin.x)
+        vmin.x = v.x;
 
-    if (v.x > vmax.x) vmax.x = v.x;
+    if (v.x > vmax.x)
+        vmax.x = v.x;
 
-    if (v.y < vmin.y) vmin.y = v.y;
+    if (v.y < vmin.y)
+        vmin.y = v.y;
 
-    if (v.y > vmax.y) vmax.y = v.y;
+    if (v.y > vmax.y)
+        vmax.y = v.y;
 
-    if (v.z < vmin.z) vmin.z = v.z;
+    if (v.z < vmin.z)
+        vmin.z = v.z;
 
-    if (v.z > vmax.z) vmax.z = v.z;
+    if (v.z > vmax.z)
+        vmax.z = v.z;
 }
 
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-bbox3::extend(float x, float y, float z)
+inline void bbox3::extend(float x, float y, float z)
 {
-    if (x < vmin.x) vmin.x = x;
+    if (x < vmin.x)
+        vmin.x = x;
 
-    if (x > vmax.x) vmax.x = x;
+    if (x > vmax.x)
+        vmax.x = x;
 
-    if (y < vmin.y) vmin.y = y;
+    if (y < vmin.y)
+        vmin.y = y;
 
-    if (y > vmax.y) vmax.y = y;
+    if (y > vmax.y)
+        vmax.y = y;
 
-    if (z < vmin.z) vmin.z = z;
+    if (z < vmin.z)
+        vmin.z = z;
 
-    if (z > vmax.z) vmax.z = z;
+    if (z > vmax.z)
+        vmax.z = z;
 }
 
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-bbox3::extend(const bbox3& box)
+inline void bbox3::extend(const bbox3& box)
 {
-    if (box.vmin.x < vmin.x) vmin.x = box.vmin.x;
+    if (box.vmin.x < vmin.x)
+        vmin.x = box.vmin.x;
 
-    if (box.vmin.y < vmin.y) vmin.y = box.vmin.y;
+    if (box.vmin.y < vmin.y)
+        vmin.y = box.vmin.y;
 
-    if (box.vmin.z < vmin.z) vmin.z = box.vmin.z;
+    if (box.vmin.z < vmin.z)
+        vmin.z = box.vmin.z;
 
-    if (box.vmax.x > vmax.x) vmax.x = box.vmax.x;
+    if (box.vmax.x > vmax.x)
+        vmax.x = box.vmax.x;
 
-    if (box.vmax.y > vmax.y) vmax.y = box.vmax.y;
+    if (box.vmax.y > vmax.y)
+        vmax.y = box.vmax.y;
 
-    if (box.vmax.z > vmax.z) vmax.z = box.vmax.z;
+    if (box.vmax.z > vmax.z)
+        vmax.z = box.vmax.z;
 }
 
 //------------------------------------------------------------------------------
@@ -320,13 +328,11 @@ bbox3::extend(const bbox3& box)
 
     would transform the bounding box into view space.
 */
-inline
-void
-bbox3::transform(const matrix44& m)
+inline void bbox3::transform(const matrix44& m)
 {
     // get own extents vector
     vector3 extents = this->extents();
-    vector3 center  = this->center();
+    vector3 center = this->center();
 
     // Extent the matrix' (x,y,z) components by our own extent
     // vector.
@@ -334,7 +340,7 @@ bbox3::transform(const matrix44& m)
         m.M11 * extents.x, m.M12 * extents.x, m.M13 * extents.x, 0.0f,
         m.M21 * extents.y, m.M22 * extents.y, m.M23 * extents.y, 0.0f,
         m.M31 * extents.z, m.M32 * extents.z, m.M33 * extents.z, 0.0f,
-        m.M41 + center.x,  m.M42 + center.y,  m.M43 + center.z,  1.0f);
+        m.M41 + center.x, m.M42 + center.y, m.M43 + center.z, 1.0f);
 
     this->set(extentMatrix);
 }
@@ -344,16 +350,11 @@ bbox3::transform(const matrix44& m)
     Check for intersection of 2 axis aligned bounding boxes. The
     bounding boxes must live in the same coordinate space.
 */
-inline
-bool
-bbox3::intersects(const bbox3& box) const
+inline bool bbox3::intersects(const bbox3& box) const
 {
-    if ((this->vmax.x < box.vmin.x) ||
-        (this->vmin.x > box.vmax.x) ||
-        (this->vmax.y < box.vmin.y) ||
-        (this->vmin.y > box.vmax.y) ||
-        (this->vmax.z < box.vmin.z) ||
-        (this->vmin.z > box.vmax.z))
+    if ((this->vmax.x < box.vmin.x) || (this->vmin.x > box.vmax.x) ||
+        (this->vmax.y < box.vmin.y) || (this->vmin.y > box.vmax.y) ||
+        (this->vmax.z < box.vmin.z) || (this->vmin.z > box.vmax.z))
     {
         return false;
     }
@@ -366,9 +367,7 @@ bbox3::intersects(const bbox3& box) const
     Check if the parameter bounding box is completely contained in this
     bounding box.
 */
-inline
-bool
-bbox3::contains(const bbox3& box) const
+inline bool bbox3::contains(const bbox3& box) const
 {
     if ((this->vmin.x < box.vmin.x) && (this->vmax.x >= box.vmax.x) &&
         (this->vmin.y < box.vmin.y) && (this->vmax.y >= box.vmax.y) &&
@@ -384,13 +383,10 @@ bbox3::contains(const bbox3& box) const
 /**
     Check if position is inside bounding box.
 */
-inline
-bool
-bbox3::contains(const vector3& v) const
+inline bool bbox3::contains(const vector3& v) const
 {
-    if ((this->vmin.x < v.x) && (this->vmax.x >= v.x) &&
-        (this->vmin.y < v.y) && (this->vmax.y >= v.y) &&
-        (this->vmin.z < v.z) && (this->vmax.z >= v.z))
+    if ((this->vmin.x < v.x) && (this->vmax.x >= v.x) && (this->vmin.y < v.y) &&
+        (this->vmax.y >= v.y) && (this->vmin.z < v.z) && (this->vmax.z >= v.z))
     {
         return true;
     }
@@ -402,9 +398,7 @@ bbox3::contains(const vector3& v) const
 /**
     Return box/box clip status.
 */
-inline
-bbox3::ClipStatus
-bbox3::clipstatus(const bbox3& other) const
+inline bbox3::ClipStatus bbox3::clipstatus(const bbox3& other) const
 {
     if (this->contains(other))
     {
@@ -425,12 +419,10 @@ bbox3::clipstatus(const bbox3& other) const
     Check for intersection with a view volume defined by a view-projection
     matrix.
 */
-inline
-bbox3::ClipStatus
-bbox3::clipstatus(const matrix44& viewProjection) const
+inline bbox3::ClipStatus bbox3::clipstatus(const matrix44& viewProjection) const
 {
     int andFlags = 0xffff;
-    int orFlags  = 0;
+    int orFlags = 0;
     int i;
     static vector4 v0;
     static vector4 v1;
@@ -440,33 +432,48 @@ bbox3::clipstatus(const matrix44& viewProjection) const
         int clip = 0;
         v0.w = 1.0f;
 
-        if (i & 1) v0.x = this->vmin.x;
-        else       v0.x = this->vmax.x;
+        if (i & 1)
+            v0.x = this->vmin.x;
+        else
+            v0.x = this->vmax.x;
 
-        if (i & 2) v0.y = this->vmin.y;
-        else       v0.y = this->vmax.y;
+        if (i & 2)
+            v0.y = this->vmin.y;
+        else
+            v0.y = this->vmax.y;
 
-        if (i & 4) v0.z = this->vmin.z;
-        else       v0.z = this->vmax.z;
+        if (i & 4)
+            v0.z = this->vmin.z;
+        else
+            v0.z = this->vmax.z;
 
         v1 = viewProjection * v0;
 
-        if (v1.x < -v1.w)       clip |= ClipLeft;
-        else if (v1.x > v1.w)   clip |= ClipRight;
+        if (v1.x < -v1.w)
+            clip |= ClipLeft;
+        else if (v1.x > v1.w)
+            clip |= ClipRight;
 
-        if (v1.y < -v1.w)       clip |= ClipBottom;
-        else if (v1.y > v1.w)   clip |= ClipTop;
+        if (v1.y < -v1.w)
+            clip |= ClipBottom;
+        else if (v1.y > v1.w)
+            clip |= ClipTop;
 
-        if (v1.z < -v1.w)       clip |= ClipFar;
-        else if (v1.z > v1.w)   clip |= ClipNear;
+        if (v1.z < -v1.w)
+            clip |= ClipFar;
+        else if (v1.z > v1.w)
+            clip |= ClipNear;
 
         andFlags &= clip;
-        orFlags  |= clip;
+        orFlags |= clip;
     }
 
-    if (0 == orFlags)       return Inside;
-    else if (0 != andFlags) return Outside;
-    else                    return Clipped;
+    if (0 == orFlags)
+        return Inside;
+    else if (0 != andFlags)
+        return Outside;
+    else
+        return Clipped;
 }
 
 //------------------------------------------------------------------------------
@@ -490,48 +497,60 @@ inline bool bbox3::intersect(const line3& line, vector3& ipos) const
     // Order planes to check, closest three only
     int plane[3];
 
-    if (line.m.x > 0) plane[0] = 0;
-    else              plane[0] = 1;
+    if (line.m.x > 0)
+        plane[0] = 0;
+    else
+        plane[0] = 1;
 
-    if (line.m.y > 0) plane[1] = 2;
-    else              plane[1] = 3;
+    if (line.m.y > 0)
+        plane[1] = 2;
+    else
+        plane[1] = 3;
 
-    if (line.m.z > 0) plane[2] = 4;
-    else              plane[2] = 5;
+    if (line.m.z > 0)
+        plane[2] = 4;
+    else
+        plane[2] = 5;
 
     for (int i = 0; i < 3; ++i)
     {
         switch (plane[i])
         {
-            case 0:
-                if (isect_const_x(vmin.x, line, ipos) && pip_const_x(ipos)) return true;
+        case 0:
+            if (isect_const_x(vmin.x, line, ipos) && pip_const_x(ipos))
+                return true;
 
-                break;
+            break;
 
-            case 1:
-                if (isect_const_x(vmax.x, line, ipos) && pip_const_x(ipos)) return true;
+        case 1:
+            if (isect_const_x(vmax.x, line, ipos) && pip_const_x(ipos))
+                return true;
 
-                break;
+            break;
 
-            case 2:
-                if (isect_const_y(vmin.y, line, ipos) && pip_const_y(ipos)) return true;
+        case 2:
+            if (isect_const_y(vmin.y, line, ipos) && pip_const_y(ipos))
+                return true;
 
-                break;
+            break;
 
-            case 3:
-                if (isect_const_y(vmax.y, line, ipos) && pip_const_y(ipos)) return true;
+        case 3:
+            if (isect_const_y(vmax.y, line, ipos) && pip_const_y(ipos))
+                return true;
 
-                break;
+            break;
 
-            case 4:
-                if (isect_const_z(vmin.z, line, ipos) && pip_const_z(ipos)) return true;
+        case 4:
+            if (isect_const_z(vmin.z, line, ipos) && pip_const_z(ipos))
+                return true;
 
-                break;
+            break;
 
-            case 5:
-                if (isect_const_z(vmax.z, line, ipos) && pip_const_z(ipos)) return true;
+        case 5:
+            if (isect_const_z(vmax.z, line, ipos) && pip_const_z(ipos))
+                return true;
 
-                break;
+            break;
         }
     }
 
@@ -544,22 +563,25 @@ inline bool bbox3::intersect(const line3& line, vector3& ipos) const
     by doing 3 projection tests for each dimension, if all 3 test
     return true, then the 2 boxes intersect
 */
-inline
-int bbox3::line_test(float v0, float v1, float w0, float w1)
+inline int bbox3::line_test(float v0, float v1, float w0, float w1)
 {
     // quick rejection test
-    if ((v1 < w0) || (v0 > w1)) return OUTSIDE;
-    else if ((v0 == w0) && (v1 == w1)) return ISEQUAL;
-    else if ((v0 >= w0) && (v1 <= w1)) return ISCONTAINED;
-    else if ((v0 <= w0) && (v1 >= w1)) return CONTAINS;
-    else return CLIPS;
+    if ((v1 < w0) || (v0 > w1))
+        return OUTSIDE;
+    else if ((v0 == w0) && (v1 == w1))
+        return ISEQUAL;
+    else if ((v0 >= w0) && (v1 <= w1))
+        return ISCONTAINED;
+    else if ((v0 <= w0) && (v1 >= w1))
+        return CONTAINS;
+    else
+        return CLIPS;
 }
 
-inline
-int bbox3::intersect(bbox3 box)
+inline int bbox3::intersect(bbox3 box)
 {
     int and_code = 0xffff;
-    int or_code  = 0;
+    int or_code = 0;
     int cx, cy, cz;
     cx = line_test(vmin.x, vmax.x, box.vmin.x, box.vmax.x);
     and_code &= cx;
@@ -571,7 +593,8 @@ int bbox3::intersect(bbox3 box)
     and_code &= cz;
     or_code |= cz;
 
-    if (or_code == 0) return OUTSIDE;
+    if (or_code == 0)
+        return OUTSIDE;
     else if (and_code != 0)
     {
         return and_code;
@@ -580,8 +603,10 @@ int bbox3::intersect(bbox3 box)
     {
         // only if all test produced a non-outside result,
         // an intersection has occured
-        if (cx && cy && cz) return CLIPS;
-        else                return OUTSIDE;
+        if (cx && cy && cz)
+            return CLIPS;
+        else
+            return OUTSIDE;
     }
 }
 //------------------------------------------------------------------------------

@@ -9,7 +9,8 @@
 #include "capi.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     /** set up UDP ports. Send will be random
@@ -19,11 +20,13 @@ extern "C" {
 
     com_API_handle ComUDPOpen(
         char *name, // name of this comm, usuallly callsign UDP
-        int buffersize,
-        char *gamename,
-        unsigned short localUdpPort, // port where we receive data from this entity
-        unsigned short remoteUdpPort,  // port where this entity receives udp data
-        unsigned long IPaddress, // peer ip, if == CAPI_DANGLING_IP, this is a receive only comm
+        int buffersize, char *gamename,
+        unsigned short
+            localUdpPort, // port where we receive data from this entity
+        unsigned short
+            remoteUdpPort,  // port where this entity receives udp data
+        unsigned long
+            IPaddress, // peer ip, if == CAPI_DANGLING_IP, this is a receive only comm
         unsigned long id // id of the owner
     );
 

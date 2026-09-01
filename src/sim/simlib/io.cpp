@@ -51,7 +51,7 @@ AxisCalibration AxisShapes;
 /*----------------------------------------------------*/
 /* Memory Allocation for externals declared elsewhere */
 /*----------------------------------------------------*/
-SIMLIB_IO_CLASS   IO;
+SIMLIB_IO_CLASS IO;
 
 /*****************************************************************************/
 /* constructor, by Retro */
@@ -100,7 +100,7 @@ SIM_INT SIMLIB_IO_CLASS::Init(char*)
     // ..the original code checked (through mmsystem.h - ugh) if a stick was connected..
     for (int i = 0; i < AXIS_MAX; i++)
     {
-        analog[i].engrValue  = 0;
+        analog[i].engrValue = 0;
         analog[i].ioVal = 0;
     }
 
@@ -185,20 +185,20 @@ int SIMLIB_IO_CLASS::ReadFile(void)
     char path[_MAX_PATH];
     long size;
     SIMLIB_ANALOG_TYPE temp[SIMLIB_MAX_ANALOG];
-    FILE *fp;
+    FILE* fp;
 
-    sprintf(path, "%s\\config\\joystick.cal", FalconDataDirectory);
+    sprintf(path, "%s/config/joystick.cal", FalconDataDirectory);
 
     fp = fopen(path, "rb");
 
-    if ( not fp)
+    if (not fp)
         return FALSE;
 
     fseek(fp, 0, SEEK_END);
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    if (size not_eq sizeof(SIMLIB_ANALOG_TYPE)*SIMLIB_MAX_ANALOG)
+    if (size not_eq sizeof(SIMLIB_ANALOG_TYPE) * SIMLIB_MAX_ANALOG)
         return FALSE;
 
     success = fread(temp, sizeof(SIMLIB_ANALOG_TYPE), SIMLIB_MAX_ANALOG, fp);
@@ -228,13 +228,13 @@ int SIMLIB_IO_CLASS::SaveFile(void)
 {
     size_t success = 0;
     char path[_MAX_PATH];
-    FILE *fp;
+    FILE* fp;
 
-    sprintf(path, "%s\\config\\joystick.cal", FalconDataDirectory);
+    sprintf(path, "%s/config/joystick.cal", FalconDataDirectory);
 
     fp = fopen(path, "wb");
 
-    if ( not fp)
+    if (not fp)
         return FALSE;
 
     success = fwrite(analog, sizeof(SIMLIB_ANALOG_TYPE), SIMLIB_MAX_ANALOG, fp);
@@ -259,11 +259,11 @@ int SIMLIB_IO_CLASS::ReadAxisMappingFile()
     FILE* fp;
 
     char path[_MAX_PATH];
-    sprintf(path, "%s\\config\\axismapping.dat", FalconDataDirectory);
+    sprintf(path, "%s/config/axismapping.dat", FalconDataDirectory);
 
     fp = fopen(path, "rb");
 
-    if ( not fp)
+    if (not fp)
         return FALSE;
 
     fseek(fp, 0, SEEK_END);
@@ -292,13 +292,13 @@ int SIMLIB_IO_CLASS::WriteAxisMappingFile()
 {
     size_t success = 0;
     char path[_MAX_PATH];
-    FILE *fp;
+    FILE* fp;
 
-    sprintf(path, "%s\\config\\axismapping.dat", FalconDataDirectory);
+    sprintf(path, "%s/config/axismapping.dat", FalconDataDirectory);
 
     fp = fopen(path, "wb");
 
-    if ( not fp)
+    if (not fp)
         return FALSE;
 
     SaveGUIDAndCount();
@@ -369,7 +369,7 @@ void SIMLIB_IO_CLASS::Reset()
 
     ResetAllInputs();
 }
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 /*****************************************************************************/
 // Should reset all axis values / button presses / POV presses
 /*****************************************************************************/
@@ -385,7 +385,8 @@ void SIMLIB_IO_CLASS::ResetAllInputs()
         digital[i] = false;
 
     for (int i = 0; i < SIMLIB_MAX_POV; i++)
-        povHatAngle[i] = (unsigned long) - 1; // Retro 10Jan2004 - looks daft but serves
+        povHatAngle[i] =
+            (unsigned long)-1; // Retro 10Jan2004 - looks daft but serves
 
     // a purpose: 0xFFFF is 'center' for the POV
 
@@ -423,7 +424,7 @@ void SIMLIB_IO_CLASS::SaveGUIDAndCount()
 // Returns the device's current index, or -1 if the device is currently absent.
 static int RemapDeviceIndexByGUID_(int savedIdx, const GUID* savedGUIDs)
 {
-    if (savedIdx < SIM_JOYSTICK1)        // keyboard/mouse/unset -- index is fixed
+    if (savedIdx < SIM_JOYSTICK1) // keyboard/mouse/unset -- index is fixed
         return savedIdx;
 
     if (savedIdx >= SIM_NUMDEVICES)
@@ -432,7 +433,7 @@ static int RemapDeviceIndexByGUID_(int savedIdx, const GUID* savedGUIDs)
     static const GUID zeroGUID = {0};
     GUID g = savedGUIDs[savedIdx];
 
-    if (memcmp(&g, &zeroGUID, sizeof(GUID)) == 0)   // no saved GUID for the slot
+    if (memcmp(&g, &zeroGUID, sizeof(GUID)) == 0) // no saved GUID for the slot
         return -1;
 
     for (int i = SIM_JOYSTICK1; i < SIM_NUMDEVICES; ++i)
@@ -441,15 +442,15 @@ static int RemapDeviceIndexByGUID_(int savedIdx, const GUID* savedGUIDs)
             return i;
     }
 
-    return -1;   // device is not connected right now
+    return -1; // device is not connected right now
 }
 
 static void RemapAxis_(DeviceAxis* da, const GUID* savedGUIDs)
 {
-    if ( not da)
+    if (not da)
         return;
 
-    if (da->Device < SIM_JOYSTICK1)      // keyboard/mouse/unset
+    if (da->Device < SIM_JOYSTICK1) // keyboard/mouse/unset
         return;
 
     int n = RemapDeviceIndexByGUID_(da->Device, savedGUIDs);
@@ -480,7 +481,7 @@ void SIMLIB_IO_CLASS::RemapAxisMappingByGUID()
         }
     }
 
-    if ( not hasGUIDs)
+    if (not hasGUIDs)
         return;
 
     RemapAxis_(&AxisMap.Pitch, sg);
@@ -525,11 +526,11 @@ int SIMLIB_IO_CLASS::LoadAxisCalibrationFile()
     FILE* fp;
 
     char path[_MAX_PATH];
-    sprintf(path, "%s\\config\\axiscurves.cal", FalconDataDirectory);
+    sprintf(path, "%s/config/axiscurves.cal", FalconDataDirectory);
 
     fp = fopen(path, "rb");
 
-    if ( not fp)
+    if (not fp)
         return FALSE;
 
     fseek(fp, 0, SEEK_END);
@@ -551,32 +552,53 @@ int SIMLIB_IO_CLASS::LoadAxisCalibrationFile()
 }
 
 // this global array glues all properties of a real axis to an in-game axis
-// THE ORDERING IN THIS ARRAY HAS TO BE THE SAME AS IN THE GameAxis_t ENUM 
-GameAxisSetup_t AxisSetup[AXIS_MAX] =
-{
+// THE ORDERING IN THIS ARRAY HAS TO BE THE SAME AS IN THE GameAxis_t ENUM
+GameAxisSetup_t AxisSetup[AXIS_MAX] = {
     // device axis deadzone saturation unipolar?
-    { &AxisMap.Pitch.Device, &AxisMap.Pitch.Axis, &AxisMap.Pitch.Deadzone, &AxisMap.Pitch.Saturation, false},
-    { &AxisMap.Bank.Device, &AxisMap.Bank.Axis, &AxisMap.Bank.Deadzone, &AxisMap.Bank.Saturation, false},
-    { &AxisMap.Yaw.Device, &AxisMap.Yaw.Axis, &AxisMap.Yaw.Deadzone, &AxisMap.Yaw.Saturation, false},
-    { &AxisMap.Throttle.Device, &AxisMap.Throttle.Axis, 0, &AxisMap.Throttle.Saturation,  true},
-    { &AxisMap.Throttle2.Device, &AxisMap.Throttle2.Axis, 0, &AxisMap.Throttle2.Saturation, true},
-    { &AxisMap.PitchTrim.Device, &AxisMap.PitchTrim.Axis, &AxisMap.PitchTrim.Deadzone, &AxisMap.PitchTrim.Saturation,  false},
-    { &AxisMap.YawTrim.Device, &AxisMap.YawTrim.Axis, &AxisMap.YawTrim.Deadzone, &AxisMap.YawTrim.Saturation, false},
-    { &AxisMap.BankTrim.Device, &AxisMap.BankTrim.Axis, &AxisMap.BankTrim.Deadzone, &AxisMap.BankTrim.Saturation,  false},
-    { &AxisMap.BrakeLeft.Device, &AxisMap.BrakeLeft.Axis, 0, &AxisMap.BrakeLeft.Saturation, true},
-    { &AxisMap.FOV.Device, &AxisMap.FOV.Axis, 0, &AxisMap.FOV.Saturation, true},
-    { &AxisMap.AntElev.Device, &AxisMap.AntElev.Axis, &AxisMap.AntElev.Deadzone, &AxisMap.AntElev.Saturation, false},
-    { &AxisMap.CursorX.Device, &AxisMap.CursorX.Axis, &AxisMap.CursorX.Deadzone, &AxisMap.CursorX.Saturation, false},
-    { &AxisMap.CursorY.Device, &AxisMap.CursorY.Axis, &AxisMap.CursorY.Deadzone, &AxisMap.CursorY.Saturation, false},
-    { &AxisMap.RngKnob.Device, &AxisMap.RngKnob.Axis, &AxisMap.RngKnob.Deadzone, &AxisMap.RngKnob.Saturation, false},
-    { &AxisMap.Comm1Vol.Device, &AxisMap.Comm1Vol.Axis, 0, &AxisMap.Comm1Vol.Saturation, true},
-    { &AxisMap.Comm2Vol.Device, &AxisMap.Comm2Vol.Axis, 0, &AxisMap.Comm2Vol.Saturation, true},
-    { &AxisMap.MSLVol.Device, &AxisMap.MSLVol.Axis, 0, &AxisMap.MSLVol.Saturation, true},
-    { &AxisMap.ThreatVol.Device, &AxisMap.ThreatVol.Axis, 0, &AxisMap.ThreatVol.Saturation, true},
-    { &AxisMap.HudBrt.Device, &AxisMap.HudBrt.Axis, 0, &AxisMap.HudBrt.Saturation, true},
-    { &AxisMap.RetDepr.Device, &AxisMap.RetDepr.Axis, 0, &AxisMap.RetDepr.Saturation, true},
-    { &AxisMap.Zoom.Device, &AxisMap.Zoom.Axis, 0, &AxisMap.Zoom.Saturation, true},
-    { &AxisMap.InterComVol.Device, &AxisMap.InterComVol.Axis, 0, &AxisMap.InterComVol.Saturation, true},
+    {&AxisMap.Pitch.Device, &AxisMap.Pitch.Axis, &AxisMap.Pitch.Deadzone,
+     &AxisMap.Pitch.Saturation, false},
+    {&AxisMap.Bank.Device, &AxisMap.Bank.Axis, &AxisMap.Bank.Deadzone,
+     &AxisMap.Bank.Saturation, false},
+    {&AxisMap.Yaw.Device, &AxisMap.Yaw.Axis, &AxisMap.Yaw.Deadzone,
+     &AxisMap.Yaw.Saturation, false},
+    {&AxisMap.Throttle.Device, &AxisMap.Throttle.Axis, 0,
+     &AxisMap.Throttle.Saturation, true},
+    {&AxisMap.Throttle2.Device, &AxisMap.Throttle2.Axis, 0,
+     &AxisMap.Throttle2.Saturation, true},
+    {&AxisMap.PitchTrim.Device, &AxisMap.PitchTrim.Axis,
+     &AxisMap.PitchTrim.Deadzone, &AxisMap.PitchTrim.Saturation, false},
+    {&AxisMap.YawTrim.Device, &AxisMap.YawTrim.Axis, &AxisMap.YawTrim.Deadzone,
+     &AxisMap.YawTrim.Saturation, false},
+    {&AxisMap.BankTrim.Device, &AxisMap.BankTrim.Axis,
+     &AxisMap.BankTrim.Deadzone, &AxisMap.BankTrim.Saturation, false},
+    {&AxisMap.BrakeLeft.Device, &AxisMap.BrakeLeft.Axis, 0,
+     &AxisMap.BrakeLeft.Saturation, true},
+    {&AxisMap.FOV.Device, &AxisMap.FOV.Axis, 0, &AxisMap.FOV.Saturation, true},
+    {&AxisMap.AntElev.Device, &AxisMap.AntElev.Axis, &AxisMap.AntElev.Deadzone,
+     &AxisMap.AntElev.Saturation, false},
+    {&AxisMap.CursorX.Device, &AxisMap.CursorX.Axis, &AxisMap.CursorX.Deadzone,
+     &AxisMap.CursorX.Saturation, false},
+    {&AxisMap.CursorY.Device, &AxisMap.CursorY.Axis, &AxisMap.CursorY.Deadzone,
+     &AxisMap.CursorY.Saturation, false},
+    {&AxisMap.RngKnob.Device, &AxisMap.RngKnob.Axis, &AxisMap.RngKnob.Deadzone,
+     &AxisMap.RngKnob.Saturation, false},
+    {&AxisMap.Comm1Vol.Device, &AxisMap.Comm1Vol.Axis, 0,
+     &AxisMap.Comm1Vol.Saturation, true},
+    {&AxisMap.Comm2Vol.Device, &AxisMap.Comm2Vol.Axis, 0,
+     &AxisMap.Comm2Vol.Saturation, true},
+    {&AxisMap.MSLVol.Device, &AxisMap.MSLVol.Axis, 0,
+     &AxisMap.MSLVol.Saturation, true},
+    {&AxisMap.ThreatVol.Device, &AxisMap.ThreatVol.Axis, 0,
+     &AxisMap.ThreatVol.Saturation, true},
+    {&AxisMap.HudBrt.Device, &AxisMap.HudBrt.Axis, 0,
+     &AxisMap.HudBrt.Saturation, true},
+    {&AxisMap.RetDepr.Device, &AxisMap.RetDepr.Axis, 0,
+     &AxisMap.RetDepr.Saturation, true},
+    {&AxisMap.Zoom.Device, &AxisMap.Zoom.Axis, 0, &AxisMap.Zoom.Saturation,
+     true},
+    {&AxisMap.InterComVol.Device, &AxisMap.InterComVol.Axis, 0,
+     &AxisMap.InterComVol.Saturation, true},
     // AXIS_BRAKE_RIGHT (last, matching the enum) - right toe brake for differential braking
-    { &AxisMap.BrakeRight.Device, &AxisMap.BrakeRight.Axis, 0, &AxisMap.BrakeRight.Saturation, true},
+    {&AxisMap.BrakeRight.Device, &AxisMap.BrakeRight.Axis, 0,
+     &AxisMap.BrakeRight.Saturation, true},
 };

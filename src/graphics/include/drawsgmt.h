@@ -11,17 +11,17 @@
 #ifndef _DRAWSGMT_H_
 #define _DRAWSGMT_H_
 
-#include "DrawObj.h"
-#include "RenderOW.h"
+#include "drawobj.h"
+#include "renderow.h"
 
 #include "context.h"
-#include "Tex.h"
+#include "tex.h"
 #include "falclib/include/alist.h"
-#include "TimeMgr.h"
+#include "timemgr.h"
 
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.h"
+#include "smartheap/include/smrtheap.h"
 #endif
 
 #include "context.h"
@@ -85,7 +85,7 @@ enum TrailType
     TRAIL_MISSILEHIT_FIRE, // 28    Old trail, not in use
     TRAIL_BURNING_SMOKE, // 29 AC damaged trail
     TRAIL_BURNING_SMOKE2, // 30     Old trail, not in use
-    TRAIL_BURNING_FIRE,  // 31      Old trail, not in use
+    TRAIL_BURNING_FIRE, // 31      Old trail, not in use
     TRAIL_ENGINE_SMOKE_SHARED, //32 Engien trail
     TRAIL_GROUND_EXP_SMOKE, //33    Old trail, not in use
     TRAIL_DUSTCLOUD, // 34 Stirred up dust when A/C close to ground
@@ -126,7 +126,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -149,15 +150,15 @@ public:
     {
         keepStaleSegs = val;
     };
-    void    SetType(int trailType);
+    void SetType(int trailType);
 
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
     static void SetGreenMode(BOOL state);
     static void SetCloudColor(Tcolor *color);
 
-    void    SetHeadVelocity(Tpoint *FPS);
-    void    ReleaseToSfx(void);
+    void SetHeadVelocity(Tpoint *FPS);
+    void ReleaseToSfx(void);
     int IsTrailEmpty(void);
 
 protected:
@@ -170,17 +171,17 @@ protected:
     int type;
     BOOL keepStaleSegs; // for ACMI
 private:
-    void   DrawNode(class RenderOTW *renderer, int LOD, class TrailNode *);
-    void   DrawSegment(class RenderOTW *renderer, int LOD, class TrailNode *start, class TrailNode *end);
+    void DrawNode(class RenderOTW *renderer, int LOD, class TrailNode *);
+    void DrawSegment(class RenderOTW *renderer, int LOD, class TrailNode *start,
+                     class TrailNode *end);
     struct TrailTypeEntry *Type;
-    int  Something;
-    class  DrawableTrail *Link;
+    int Something;
+    class DrawableTrail *Link;
     Tpoint headFPS;
     ThreeDVertex v0, v1, v2, v3; // so we can precompute the colors
 public:
     static void SetupTexturesOnDevice(DXContext *rc);
     static void ReleaseTexturesOnDevice(DXContext *rc);
-
 };
 
 #endif // _DRAWSGMT_H_
@@ -196,11 +197,11 @@ public:
 #ifndef _DRAWSGMT_H_
 #define _DRAWSGMT_H_
 
-#include "DrawObj.h"
-#include "Falclib/Include/IsBad.h"
+#include "drawobj.h"
+#include "falclib/include/isbad.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.h"
+#include "smartheap/include/smrtheap.h"
 #endif
 
 #include "context.h"
@@ -218,7 +219,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -238,7 +240,7 @@ public:
     };
     ~TrailElement()
     {
-        if ( not F4IsBadWritePtr(next, sizeof(TrailElement))) // JB 010304 CTD
+        if (not F4IsBadWritePtr(next, sizeof(TrailElement))) // JB 010304 CTD
         {
             delete next;
             next = NULL;
@@ -288,7 +290,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -314,7 +317,7 @@ public:
 
     virtual void Draw(class RenderOTW *renderer, int LOD);
 
-    TrailElement* GetHead()
+    TrailElement *GetHead()
     {
         return head;
     };
@@ -325,9 +328,9 @@ protected:
     BOOL keepStaleSegs; // for ACMI
 
 protected:
-    void ConstructSegmentEnd(RenderOTW *renderer,
-                             Tpoint *start, Tpoint *end,
-                             struct ThreeDVertex *xformLeft, ThreeDVertex *xformRight);
+    void ConstructSegmentEnd(RenderOTW *renderer, Tpoint *start, Tpoint *end,
+                             struct ThreeDVertex *xformLeft,
+                             ThreeDVertex *xformRight);
 
     // Handle time of day notifications
     static void TimeUpdateCallback(void *unused);

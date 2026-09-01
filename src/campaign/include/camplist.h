@@ -8,9 +8,9 @@
 #define CAMPLIST_H
 
 #include <list>
-#include "CampBase.h"
+#include "campbase.h"
 #include "listadt.h"
-#include "F4Vu.h"
+#include "f4vu.h"
 
 // ==================================
 // Unit specific filters
@@ -26,7 +26,9 @@ public:
 
 public:
     UnitFilter(uchar p, uchar r, ushort h, uchar a);
-    virtual ~UnitFilter(void) {}
+    virtual ~UnitFilter(void)
+    {
+    }
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -49,7 +51,9 @@ public:
 
 public:
     AirUnitFilter(uchar p, uchar r, ushort h);
-    virtual ~AirUnitFilter(void) {}
+    virtual ~AirUnitFilter(void)
+    {
+    }
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -72,7 +76,9 @@ public:
 
 public:
     GroundUnitFilter(uchar p, uchar r, ushort h);
-    virtual ~GroundUnitFilter(void) {}
+    virtual ~GroundUnitFilter(void)
+    {
+    }
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -95,7 +101,9 @@ public:
 
 public:
     NavalUnitFilter(uchar p, uchar r, ushort h);
-    virtual ~NavalUnitFilter(void) {}
+    virtual ~NavalUnitFilter(void)
+    {
+    }
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -126,9 +134,15 @@ class UnitProxFilter : public VuBiKeyFilter
 public:
 #if GRID_CORRECTION
     /** filter that converts from max to res. Used in grids. */
-    UnitProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max) {}
-    UnitProxFilter(const UnitProxFilter &other) : VuBiKeyFilter(other) {}
-    virtual ~UnitProxFilter() {}
+    UnitProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max)
+    {
+    }
+    UnitProxFilter(const UnitProxFilter &other) : VuBiKeyFilter(other)
+    {
+    }
+    virtual ~UnitProxFilter()
+    {
+    }
     virtual VuFilter *Copy()
     {
         return new UnitProxFilter(*this);
@@ -146,8 +160,8 @@ public:
     virtual VU_BOOL RemoveTest(VuEntity *ent);
 };
 
-extern UnitProxFilter* AllUnitProxFilter;
-extern UnitProxFilter* RealUnitProxFilter;
+extern UnitProxFilter *AllUnitProxFilter;
+extern UnitProxFilter *RealUnitProxFilter;
 
 // ==============================
 // Manager Filters
@@ -168,7 +182,9 @@ public:
 
 public:
     ObjFilter(ushort h);
-    virtual ~ObjFilter(void) {}
+    virtual ~ObjFilter(void)
+    {
+    }
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -182,7 +198,7 @@ public:
     }
 };
 
-extern ObjFilter  AllObjFilter;
+extern ObjFilter AllObjFilter;
 
 // Objective Proximity filter
 class ObjProxFilter : public VuBiKeyFilter
@@ -190,9 +206,15 @@ class ObjProxFilter : public VuBiKeyFilter
 public:
 #if GRID_CORRECTION
     /** creates a filter which converts from max to res. Used in grids. */
-    ObjProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max) {}
-    ObjProxFilter(const ObjProxFilter &other) : VuBiKeyFilter(other) {}
-    virtual ~ObjProxFilter() {}
+    ObjProxFilter(unsigned int res, BIG_SCALAR max) : VuBiKeyFilter(res, max)
+    {
+    }
+    ObjProxFilter(const ObjProxFilter &other) : VuBiKeyFilter(other)
+    {
+    }
+    virtual ~ObjProxFilter()
+    {
+    }
     virtual VuFilter *Copy()
     {
         return new ObjProxFilter(*this);
@@ -210,7 +232,7 @@ public:
     virtual VU_BOOL RemoveTest(VuEntity *ent);
 };
 
-extern ObjProxFilter* AllObjProxFilter;
+extern ObjProxFilter *AllObjProxFilter;
 
 // ==============================
 // General Filters
@@ -219,10 +241,13 @@ extern ObjProxFilter* AllObjProxFilter;
 class CampBaseFilter : public VuFilter
 {
 public:
-
 public:
-    CampBaseFilter(void) {}
-    virtual ~CampBaseFilter(void) {}
+    CampBaseFilter(void)
+    {
+    }
+    virtual ~CampBaseFilter(void)
+    {
+    }
 
     virtual VU_BOOL Test(VuEntity *ent);
     virtual VU_BOOL RemoveTest(VuEntity *ent);
@@ -243,13 +268,13 @@ extern CampBaseFilter CampFilter;
 // ==============================
 
 #if VU_ALL_FILTERED
-extern VuLinkedList* AllUnitList; // All units
-extern VuLinkedList* AllAirList; // All air units
-extern VuLinkedList* AllParentList; // All parent units
-extern VuLinkedList* AllRealList; // All real units
-extern VuLinkedList* AllObjList; // All objectives
-extern VuLinkedList* AllCampList; // All campaign entities
-extern VuLinkedList* InactiveList; // Inactive units (reinforcements)
+extern VuLinkedList *AllUnitList; // All units
+extern VuLinkedList *AllAirList; // All air units
+extern VuLinkedList *AllParentList; // All parent units
+extern VuLinkedList *AllRealList; // All real units
+extern VuLinkedList *AllObjList; // All objectives
+extern VuLinkedList *AllCampList; // All campaign entities
+extern VuLinkedList *InactiveList; // Inactive units (reinforcements)
 #else
 extern VuFilteredList *AllUnitList; // All units
 extern VuFilteredList *AllAirList; // All air units
@@ -310,6 +335,7 @@ public:
     {
         return mutex;
     }
+
 private:
     F4CSECTIONHANDLE *mutex;
 };
@@ -333,8 +359,8 @@ extern List FLOTList;
 // Proximity Lists
 // ==============================
 
-extern VuGridTree* ObjProxList; // Proximity list of all objectives
-extern VuGridTree* RealUnitProxList; // Proximity list of all real units
+extern VuGridTree *ObjProxList; // Proximity list of all objectives
+extern VuGridTree *RealUnitProxList; // Proximity list of all real units
 
 // ==============================
 // Global Iterators

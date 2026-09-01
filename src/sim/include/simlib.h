@@ -38,21 +38,21 @@
 /*-----------------------------------*/
 /* Defined constants used throughout */
 /*-----------------------------------*/
-#define SIMLIB_OK                      0
-#define SIMLIB_ERR                     -1
-#define SIMLIB_NULL                    0
+#define SIMLIB_OK 0
+#define SIMLIB_ERR -1
+#define SIMLIB_NULL 0
 
 /*---------------------------------------------------------------------*/
 /* These types are defined for use in all interfaces external to       */
 /* a module. Inside a given module these types do not need to be used. */
 /*---------------------------------------------------------------------*/
-typedef int    SIM_INT;
-typedef unsigned int    SIM_UINT;
+typedef int SIM_INT;
+typedef unsigned int SIM_UINT;
 typedef unsigned long SIM_ULONG;
-typedef long   SIM_LONG;
-typedef void   SIM_VOID;
-typedef float  SIM_FLOAT;
-typedef short  SIM_SHORT;
+typedef long SIM_LONG;
+typedef void SIM_VOID;
+typedef float SIM_FLOAT;
+typedef short SIM_SHORT;
 typedef double SIM_DOUBLE;
 
 /*-----------------------------------*/
@@ -64,25 +64,29 @@ SIM_INT SimLibPrintMessage(char *fmt, ...);
 /*---------*/
 /* Globals */
 /*---------*/
-extern float  SimLibMinorFrameTime;
-extern float  SimLibMinorFrameRate;
-extern float  SimLibMajorFrameTime;
-extern float  SimLibMajorFrameRate;
-extern float  SimLibTimeOfDay;
-extern VU_TIME  SimLibElapsedTime;
-extern unsigned int   SimLibFrameCount;
-extern int    SimLibMinorPerMajor;
+extern float SimLibMinorFrameTime;
+extern float SimLibMinorFrameRate;
+extern float SimLibMajorFrameTime;
+extern float SimLibMajorFrameRate;
+extern float SimLibTimeOfDay;
+extern VU_TIME SimLibElapsedTime;
+extern unsigned int SimLibFrameCount;
+extern int SimLibMinorPerMajor;
 extern char debstr[10][120];
-extern float  SimLibElapsedSeconds; // COBRA - RED - Added Variable of Elapsed Simulation Seconds
-extern float  SimLibFrameElapsed, SimLibLastFrameTime; // COBRA - RED - Added Variable of Elapsed Frame Time
+extern float
+    SimLibElapsedSeconds; // COBRA - RED - Added Variable of Elapsed Simulation Seconds
+extern float SimLibFrameElapsed,
+    SimLibLastFrameTime; // COBRA - RED - Added Variable of Elapsed Frame Time
 
 #define SIM_ELAPSED_MSEC SimLibElapsedTime
 #define SIM_ELAPSED_SEC SimLibElapsedSeconds
 #define SIM_FRAME_ELAPSED SimLibFrameElapsed
-#define UPDATE_SIM_ELAPSED_SECONDS { SIM_ELAPSED_SEC = (float)SIM_ELAPSED_MSEC / SEC_TO_MSEC;\
-   SIM_FRAME_ELAPSED = SIM_ELAPSED_SEC - SimLibLastFrameTime;\
-   SimLibLastFrameTime=SIM_ELAPSED_SEC;}
-
+#define UPDATE_SIM_ELAPSED_SECONDS                                             \
+    {                                                                          \
+        SIM_ELAPSED_SEC = (float)SIM_ELAPSED_MSEC / SEC_TO_MSEC;               \
+        SIM_FRAME_ELAPSED = SIM_ELAPSED_SEC - SimLibLastFrameTime;             \
+        SimLibLastFrameTime = SIM_ELAPSED_SEC;                                 \
+    }
 
 
 #endif

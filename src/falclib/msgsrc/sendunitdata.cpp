@@ -1,16 +1,16 @@
 #include <algorithm>
 
-#include "MsgInc/SendUnitData.h"
+#include "msginc/sendunitdata.h"
 #include "mesg.h"
-#include "F4Comms.h"
+#include "f4comms.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
-#include "Campbase.h"
+#include "invalidbufferexception.h"
+#include "campbase.h"
 #include "cmpclass.h"
-#include "CampList.h"
+#include "camplist.h"
 #include "falcuser.h"
 #include "unit.h"
 #include "ui95/chandler.h"
@@ -30,14 +30,19 @@ extern uchar gCampJoinTries;
 // I wait and calculate it the first chance I get.
 ulong gUnitBlockSize = 0;
 
-FalconSendUnitData::FalconSendUnitData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendUnitData, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconSendUnitData::FalconSendUnitData(VU_ID entityId, VuTargetEntity *target,
+                                       VU_BOOL loopback)
+    : FalconEvent(SendUnitData, FalconEvent::CampaignThread, entityId, target,
+                  loopback)
 {
     RequestReliableTransmit();
     dataBlock.unitData = NULL;
     dataBlock.size = 0;
 }
 
-FalconSendUnitData::FalconSendUnitData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendUnitData, FalconEvent::CampaignThread, senderid, target)
+FalconSendUnitData::FalconSendUnitData(VU_MSG_TYPE type, VU_ID senderid,
+                                       VU_ID target)
+    : FalconEvent(SendUnitData, FalconEvent::CampaignThread, senderid, target)
 {
     dataBlock.unitData = NULL;
     dataBlock.size = 0;
@@ -88,15 +93,13 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
     CampaignJoinKeepAlive();
 
     uchar *bufptr;
-    FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(dataBlock.owner);
+    FalconSessionEntity *session =
+        (FalconSessionEntity *)vuDatabase->Find(dataBlock.owner);
 
-    MonoPrint("RecvUnitData %08x:%08x %d %d %d\n",
-              dataBlock.owner,
-              dataBlock.set,
-              dataBlock.block,
-              dataBlock.size);
+    MonoPrint("RecvUnitData %08x:%08x %d %d %d\n", dataBlock.owner,
+              dataBlock.set, dataBlock.block, dataBlock.size);
 
-    if ( not TheCampaign.IsPreLoaded() or not session)
+    if (not TheCampaign.IsPreLoaded() or not session)
     {
         return (init - *rem);
     }
@@ -113,7 +116,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
             memset(session->unitDataReceived, 0, FS_MAXBLK / 8);
         }
 
-        if ( not session->unitDataReceiveBuffer)
+        if (not session->unitDataReceiveBuffer)
         {
             session->unitDataReceiveBuffer = new uchar[dataBlock.totalSize];
         }
@@ -139,13 +142,14 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         gCampJoinTries = 0;
 
         // Mark this block as being received.
-        session->unitDataReceived[dataBlock.block / 8] or_eq (1 << (dataBlock.block % 8));
+        session->unitDataReceived[dataBlock.block / 8] or_eq
+            (1 << (dataBlock.block % 8));
 
         // Check if we've gotten all our blocks
         for (int i = 0; i < dataBlock.totalBlocks; i++)
         {
             // if ( not StillNeeded(dataBlock.block, session->unitDataReceived))
-            if ( not (session->unitDataReceived[i / 8] bitand (1 << (i % 8))))
+            if (not(session->unitDataReceived[i / 8] bitand (1 << (i % 8))))
             {
                 //return size;
                 return init - *rem;
@@ -159,7 +163,7 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         long lsize = dataBlock.totalSize;
 
         CampEnterCriticalSection();
-        DecodeUnitData((VU_BYTE**) &bufptr, &lsize, session);
+        DecodeUnitData((VU_BYTE **)&bufptr, &lsize, session);
         CampLeaveCriticalSection();
 
         session->unitDataReceiveBuffer = NULL;
@@ -168,7 +172,8 @@ int FalconSendUnitData::Decode(VU_BYTE **buf, long *rem)
         // Let the UI know we've received some data
         if (gMainHandler)
         {
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_UNIT_DATA, 0);
+            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA,
+                        CAMP_NEED_UNIT_DATA, 0);
         }
     }
 
@@ -204,7 +209,8 @@ int FalconSendUnitData::Process(uchar autodisp)
 // Global functions
 // =========================================
 
-void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, uchar *blocksNeeded)
+void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target,
+                          uchar *blocksNeeded)
 {
     int blocks, curBlock = 0, blocksize;
     ulong sizeleft;
@@ -212,24 +218,25 @@ void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, 
     FalconSendUnitData *msg;
     //CampBaseClass *ent;
 
-    if ( not blocksNeeded)
+    if (not blocksNeeded)
     {
         int set = rand();
 
-        if ( not set)
+        if (not set)
             set++;
 
         if (session->unitDataSendBuffer)
             delete session->unitDataSendBuffer;
 
         // Encode the unit data
-        session->unitDataSendSize = EncodeUnitData((VU_BYTE**)&buffer, FalconLocalSession);
+        session->unitDataSendSize =
+            EncodeUnitData((VU_BYTE **)&buffer, FalconLocalSession);
         session->unitDataSendBuffer = buffer;
         session->unitDataSendSet = (short)set;
     }
 
     // Find the block size, if we havn't already
-    if ( not gUnitBlockSize)
+    if (not gUnitBlockSize)
     {
         // This is a temporary message, purely for sizing purposes
         FalconSendUnitData tmpmsg(session->Id(), target);
@@ -275,11 +282,10 @@ void SendCampaignUnitData(FalconSessionEntity *session, VuTargetEntity *target, 
 #if USE_VU_COLL_FOR_CAMPAIGN
         VuHashIterator deagIt(deaggregatedEntities);
 
-        for (
-            CampBaseClass *ent = static_cast<CampBaseClass*>(deagIt.GetFirst());
-            ent not_eq NULL;
-            ent = static_cast<CampBaseClass*>(deagIt.GetNext())
-        )
+        for (CampBaseClass *ent =
+                 static_cast<CampBaseClass *>(deagIt.GetFirst());
+             ent not_eq NULL;
+             ent = static_cast<CampBaseClass *>(deagIt.GetNext()))
         {
             ent->SendDeaggregateData(target);
         }
@@ -353,4 +359,3 @@ MonoPrint("\n");
 #endif
 }
  */
-

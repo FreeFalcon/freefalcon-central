@@ -4,7 +4,7 @@
 #include "sms.h"
 #include "simdrive.h"
 #include "camp2sim.h"
-#include "Graphics/Include/render2d.h"
+#include "graphics/include/render2d.h"
 #include "otwdrive.h" //MI
 #include "cpmanager.h" //MI
 #include "icp.h" //MI
@@ -19,10 +19,11 @@ void BlankMfdDrawable::Display(VirtualDisplay* newDisplay)
 {
     //MI
     float cX, cY = 0;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
+    RadarDopplerClass* theRadar =
+        (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
-    if ( not theRadar)
+    if (not theRadar)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar");
         return;
@@ -44,7 +45,7 @@ void BlankMfdDrawable::Display(VirtualDisplay* newDisplay)
         display->SetFont(ofont);
 
         //MI changed
-        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
+        if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and
             OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
         {
             DrawBullseyeCircle(display, cX, cY);
@@ -80,31 +81,31 @@ void BlankMfdDrawable::PushButton(int whichButton, int whichMFD)
 
         switch (whichButton)
         {
-            case 1:
-                nextMode = MFDClass::FCCMode;
-                break;
+        case 1:
+            nextMode = MFDClass::FCCMode;
+            break;
 
-            case 2:
-                nextMode = MFDClass::FCRMode;
-                break;
+        case 2:
+            nextMode = MFDClass::FCRMode;
+            break;
 
-            case 3:
-                nextMode = MFDClass::SMSMode;
-                break;
+        case 3:
+            nextMode = MFDClass::SMSMode;
+            break;
 
-            case 11:
-                nextMode = MFDClass::RWRMode;
-                break;
+        case 11:
+            nextMode = MFDClass::RWRMode;
+            break;
 
-            case 12:
+        case 12:
                 //nextMode = MFDClass::HUDMode;
-                nextMode = MFDClass::HADMode; // RV - I-Hawk
-                break;
-
+            nextMode = MFDClass::HADMode; // RV - I-Hawk
+            break;
         }
 
         // Check other MFD if needed;
-        if (nextMode not_eq MFDClass::MfdOff and (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
+        if (nextMode not_eq MFDClass::MfdOff and
+            (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
             MfdDisplay[whichMFD]->SetNewMode(nextMode);
     }
 }

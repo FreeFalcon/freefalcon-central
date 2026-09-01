@@ -1,4 +1,4 @@
-#include "AList.h"
+#include "alist.h"
 #include "f4thread.h"
 
 AList::AList()
@@ -20,10 +20,10 @@ void *AList::RemHead()
     {
         ANode *n = _Head._Succ;
 
-        return(n->Remove());
+        return (n->Remove());
     }
 
-    return(0);
+    return (0);
 }
 
 void *AList::RemTail()
@@ -32,10 +32,10 @@ void *AList::RemTail()
     {
         ANode *n = _Tail._Pred;
 
-        return(n->Remove());
+        return (n->Remove());
     }
 
-    return(0);
+    return (0);
 }
 
 void AList::AddHead(ANode *n)
@@ -52,21 +52,20 @@ void *AList::GetHead(void)
 {
     if (_Head._Succ->_Succ)
     {
-        return((void *)_Head._Succ);
+        return ((void *)_Head._Succ);
     }
 
-    return(0);
+    return (0);
 }
 
 void *AList::GetTail(void)
 {
     if (_Tail._Pred->_Pred)
     {
-        return((void *)_Tail._Pred);
+        return ((void *)_Tail._Pred);
     }
 
-    return(0);
-
+    return (0);
 }
 
 void AList::AddSorted(ANode *n)
@@ -105,7 +104,7 @@ void *ANode::GetSucc()
     if (_Succ->_Succ)
         return ((void *)_Succ);
 
-    return(0);
+    return (0);
 }
 
 void *ANode::GetPred()
@@ -113,10 +112,8 @@ void *ANode::GetPred()
     if (_Pred->_Pred)
         return ((void *)_Pred);
 
-    return(0);
-
+    return (0);
 }
-
 
 
 void *ANode::Remove(void)
@@ -127,7 +124,7 @@ void *ANode::Remove(void)
 
     _Pred = _Succ = 0;
 
-    return(this);
+    return (this);
 }
 
 void ANode::InsertAfter(ANode *n)
@@ -138,7 +135,6 @@ void ANode::InsertAfter(ANode *n)
 
     _Succ->_Pred = this;
     _Pred->_Succ = this;
-
 }
 
 void ANode::InsertBefore(ANode *n)
@@ -149,7 +145,6 @@ void ANode::InsertBefore(ANode *n)
 
     _Succ->_Pred = this;
     _Pred->_Succ = this;
-
 }
 
 ProtectedAList::ProtectedAList()

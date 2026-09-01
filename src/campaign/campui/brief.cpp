@@ -7,30 +7,30 @@
 #include <string.h>
 #include <windows.h>
 #include <tchar.h>
-#include "Debuggr.h"
-#include "CampStr.h"
-#include "CampLib.h"
-#include "Find.h"
-#include "Flight.h"
-#include "Brief.h"
-#include "Name.h"
-#include "Package.h"
+#include "debuggr.h"
+#include "campstr.h"
+#include "camplib.h"
+#include "find.h"
+#include "flight.h"
+#include "brief.h"
+#include "name.h"
+#include "package.h"
 #include "feature.h"
-#include "Team.h"
-#include "MissEval.h"
-#include "CmpClass.h"
-#include "Campaign.h"
-#include "WinGraph.h"
+#include "team.h"
+#include "misseval.h"
+#include "cmpclass.h"
+#include "campaign.h"
+#include "wingraph.h"
 #include "classtbl.h"
-#include "ui95/CHandler.h"
+#include "ui95/chandler.h"
 #include "../ui/include/tac_class.h"
 #include "../ui/include/te_defs.h"
-#include "Weather.h"
+#include "weather.h"
 #include "atm.h"
-#include "FalcSess.h"
+#include "falcsess.h"
 #include "userids.h"
-#include "ui95/CWindow.h"
-#include "F4Version.h"
+#include "ui95/cwindow.h"
+#include "f4version.h"
 
 #ifdef DEBUG
 #define FUNKY_KEVIN_DEBUG_STUFF 1
@@ -65,8 +65,8 @@ static WayPoint CWayPoint; // Current waypoint
 static WayPoint LWayPoint; // Last waypoint
 static CampEntity CEntity; // Current entity
 static Unit ESquad; // Enemy active squadron
-static _TCHAR* CTextPtr;
-static _TCHAR* CCurrentLine;
+static _TCHAR *CTextPtr;
+static _TCHAR *CCurrentLine;
 static PilotDataClass *CPilotData; // Static pointer to relevant pilot data
 
 #ifdef DEBUG
@@ -80,7 +80,9 @@ int testDebrief = 0;
 // Main Brief builders
 int BuildBriefString(C_Window *win, _TCHAR *brief);
 int BuildDebriefString(C_Window *win, _TCHAR *brief);
-int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _TCHAR *brief, MissionEvaluationClass* mec, FlightDataClass *flight_data);
+int ReadScriptedBriefFile(char *filename, _TCHAR *current_line, C_Window *win,
+                          _TCHAR *brief, MissionEvaluationClass *mec,
+                          FlightDataClass *flight_data);
 
 // These add controls to a window or a string. Either window or output should be non null, but not both.
 void AddHorizontalLineToBrief(C_Window *window);
@@ -90,15 +92,22 @@ void AddTabToDebrief(int tab, _TCHAR *buffer, C_Window *window, _TCHAR *output);
 
 void AddEOLToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output);
 // This will return the current X bitand Y location in a window or string
-void GetCurrentBriefXY(int *x, int *y, _TCHAR *buffer, C_Window *window, _TCHAR *output);
+void GetCurrentBriefXY(int *x, int *y, _TCHAR *buffer, C_Window *window,
+                       _TCHAR *output);
 
-extern BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
-extern void AddHorizontalLineToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, long Client = 0);
+extern BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y,
+                                    short startcol, short endcol,
+                                    COLORREF color, _TCHAR *str,
+                                    long Client = 0);
+extern void AddHorizontalLineToWindow(C_Window *win, short *x, short *y,
+                                      short startcol, short endcol,
+                                      COLORREF color, long Client = 0);
 
 extern float get_air_speed(float, int);
 extern int determine_tactical_rating(void);
 
-extern int ConvertTeamToStringIndex(int team, int gender = 0, int usage = 0, int plural = 0);
+extern int ConvertTeamToStringIndex(int team, int gender = 0, int usage = 0,
+                                    int plural = 0);
 
 static void GetWpActionToBuffer(WayPoint wp, _TCHAR *cline);
 static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline);
@@ -108,7 +117,8 @@ static int GetWpAlt(WayPoint wp, WayPoint lwp, _TCHAR *cline);
 static void GetWpHeading(WayPoint wp, WayPoint lwp, _TCHAR *cline);
 static void GetWpDescription(WayPoint wp, _TCHAR *cline);
 
-extern bool g_bBriefHTML; //THW 2003-12-07 Don't ignore <tags> when parsing the .b layout files
+extern bool
+    g_bBriefHTML; //THW 2003-12-07 Don't ignore <tags> when parsing the .b layout files
 
 // ============================
 // Main brief builder functions
@@ -117,7 +127,7 @@ extern bool g_bBriefHTML; //THW 2003-12-07 Don't ignore <tags> when parsing the 
 void BuildCampBrief(C_Window *win)
 {
     CBX = CBY = CLineStart = 0;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
 #ifdef DEBUG
 
@@ -153,7 +163,7 @@ void BuildCampBrief(_TCHAR *brief_string)
 void BuildCampDebrief(C_Window *win)
 {
     CBX = CBY = CLineStart = 0;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     Leave = UI_Enter(win);
     DeleteGroupList(DEBRIEF_WIN);
@@ -191,47 +201,56 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
     CampEnterCriticalSection();
     ESquad = NULL;
     flight_data = TheCampaign.MissionEvaluator->player_element;
-    ReadScriptedBriefFile("Header.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("Header.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("Situate.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("Situate.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     // Check for mission diverts here
     flight_ptr = TheCampaign.MissionEvaluator->flight_data;
 
     while (flight_ptr)
     {
-        ReadScriptedBriefFile("divert.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_ptr);
+        ReadScriptedBriefFile("divert.b", current_line, win, brief,
+                              TheCampaign.MissionEvaluator, flight_ptr);
         flight_ptr = flight_ptr->next_flight;
     }
 
-    if (g_bBriefHTML and ( not win))
+    if (g_bBriefHTML and (not win))
         AddStringToBuffer("</table>", current_line);
 
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("PackHead.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("PackHead.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     flight_ptr = TheCampaign.MissionEvaluator->flight_data;
 
     while (flight_ptr)
     {
-        ReadScriptedBriefFile("Element.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_ptr);
+        ReadScriptedBriefFile("Element.b", current_line, win, brief,
+                              TheCampaign.MissionEvaluator, flight_ptr);
         flight_ptr = flight_ptr->next_flight;
     }
 
-    if (g_bBriefHTML and ( not win))
+    if (g_bBriefHTML and (not win))
         AddStringToBuffer("</table>", current_line);
 
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("Threats.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("Threats.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
 
-    if ((TheCampaign.MissionEvaluator) and (TheCampaign.MissionEvaluator->player_element))
+    if ((TheCampaign.MissionEvaluator) and
+        (TheCampaign.MissionEvaluator->player_element))
     {
         Flight fl;
 
-        fl = (Flight)FindUnit(TheCampaign.MissionEvaluator->player_element->flight_id);
+        fl = (Flight)FindUnit(
+            TheCampaign.MissionEvaluator->player_element->flight_id);
 
         if (fl)
         {
-            ReadScriptedBriefFile("SteerPtH.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+            ReadScriptedBriefFile("SteerPtH.b", current_line, win, brief,
+                                  TheCampaign.MissionEvaluator, flight_data);
             CWayPoint = fl->GetFirstUnitWP();
             LWayPoint = NULL;
             TheCampaign.MissionEvaluator->curr_data = 1;
@@ -240,16 +259,18 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
 
     while (CWayPoint)
     {
-        ReadScriptedBriefFile("SteerPt.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+        ReadScriptedBriefFile("SteerPt.b", current_line, win, brief,
+                              TheCampaign.MissionEvaluator, flight_data);
         LWayPoint = CWayPoint;
         CWayPoint = CWayPoint->GetNextWP();
     }
 
-    if (g_bBriefHTML and ( not win))
+    if (g_bBriefHTML and (not win))
         AddStringToBuffer("</table>", current_line);
 
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("Loadouth.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("Loadouth.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     // List the various ordinances of component flights
     flight_ptr = TheCampaign.MissionEvaluator->flight_data;
 
@@ -264,41 +285,50 @@ int BuildBriefString(C_Window *win, _TCHAR *brief)
             if (TheCampaign.MissionEvaluator->curr_pilot->weapon_types > weaps)
                 weaps = TheCampaign.MissionEvaluator->curr_pilot->weapon_types;
 
-            TheCampaign.MissionEvaluator->curr_pilot = TheCampaign.MissionEvaluator->curr_pilot->next_pilot;
+            TheCampaign.MissionEvaluator->curr_pilot =
+                TheCampaign.MissionEvaluator->curr_pilot->next_pilot;
         }
 
-        for (TheCampaign.MissionEvaluator->curr_data = 0; TheCampaign.MissionEvaluator->curr_data < pilots; TheCampaign.MissionEvaluator->curr_data += 2)
+        for (TheCampaign.MissionEvaluator->curr_data = 0;
+             TheCampaign.MissionEvaluator->curr_data < pilots;
+             TheCampaign.MissionEvaluator->curr_data += 2)
         {
             for (j = 0; j < weaps or not j; j++)
             {
                 TheCampaign.MissionEvaluator->curr_pilot = NULL;
                 TheCampaign.MissionEvaluator->curr_weapon = j;
-                ReadScriptedBriefFile("Loadout.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_ptr);
+                ReadScriptedBriefFile("Loadout.b", current_line, win, brief,
+                                      TheCampaign.MissionEvaluator, flight_ptr);
             }
         }
 
         flight_ptr = flight_ptr->next_flight;
     }
 
-    if (g_bBriefHTML and ( not win))
+    if (g_bBriefHTML and (not win))
         AddStringToBuffer("</table>", current_line);
 
     TheCampaign.MissionEvaluator->curr_pilot = NULL;
     TheCampaign.MissionEvaluator->curr_data = 0;
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("Weather.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("Weather.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
 
-    if (g_bBriefHTML and ( not win))
+    if (g_bBriefHTML and (not win))
         AddStringToBuffer("</table>", current_line);
 
-    ReadScriptedBriefFile("Support.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("Support.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("RoE.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("RoE.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("Emerganc.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("Emerganc.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("End.b", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("End.b", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     CampLeaveCriticalSection();
     return 1;
 }
@@ -313,10 +343,10 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
 
     CampEnterCriticalSection();
     flight_data = TheCampaign.MissionEvaluator->player_element;
-    ShiAssert(flight_data);//Cobra 10/31/04 TJL
+    ShiAssert(flight_data); //Cobra 10/31/04 TJL
 
-    if ( not TheCampaign.MissionEvaluator->player_element or // MLR 3/25/2004 -
- not TheCampaign.MissionEvaluator->player_pilot)
+    if (not TheCampaign.MissionEvaluator->player_element or // MLR 3/25/2004 -
+        not TheCampaign.MissionEvaluator->player_pilot)
     {
         // this prevents a CTD, but makes the debried window empty
         return 0;
@@ -325,15 +355,19 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
     ShiAssert(flight_data->mission not_eq AMIS_TRAINING);
     ShiAssert(TheCampaign.MissionEvaluator->player_pilot);
 
-    TheCampaign.MissionEvaluator->curr_pilot = TheCampaign.MissionEvaluator->player_pilot;
-    ReadScriptedBriefFile("header.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    TheCampaign.MissionEvaluator->curr_pilot =
+        TheCampaign.MissionEvaluator->player_pilot;
+    ReadScriptedBriefFile("header.db", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("pheader.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("pheader.db", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     flight_ptr = TheCampaign.MissionEvaluator->flight_data;
 
     while (flight_ptr)
     {
-        ReadScriptedBriefFile("element.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_ptr);
+        ReadScriptedBriefFile("element.db", current_line, win, brief,
+                              TheCampaign.MissionEvaluator, flight_ptr);
         // Do Relevent events here
         GetCurrentBriefXY(&x, &y, current_line, win, brief);
         inbox = width = 0;
@@ -343,7 +377,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
         {
             if (win)
             {
-                if ( not inbox)
+                if (not inbox)
                 {
                     _TCHAR tmp[40] = "";
                     eventListBox = new C_ListBox;
@@ -359,15 +393,20 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                     eventListBox->SetParent(win);
                     eventListBox->SetClient(0);
                     eventListBox->SetFlagBitOn(C_BIT_USEBGFILL);
-                    eventListBox->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-                    eventListBox->AddScrollBar(BID_SCROLLCAP_TOP_OFF, BID_SCROLLCAP_TOP_ON, BID_SCROLLCAP_BOTTOM_OFF, BID_SCROLLCAP_BOTTOM_ON, BID_SCROLL);
+                    eventListBox->SetUserNumber(_UI95_DELGROUP_SLOT_,
+                                                _UI95_DELGROUP_ID_);
+                    eventListBox->AddScrollBar(
+                        BID_SCROLLCAP_TOP_OFF, BID_SCROLLCAP_TOP_ON,
+                        BID_SCROLLCAP_BOTTOM_OFF, BID_SCROLLCAP_BOTTOM_ON,
+                        BID_SCROLL);
                     inbox++;
                     AddIndexedStringToBuffer(151, tmp);
                     eventListBox->AddItem(inbox, C_TYPE_ITEM, tmp);
                 }
 
                 inbox++;
-                eventListBox->AddItem(inbox, C_TYPE_ITEM, theEvent->eventString);
+                eventListBox->AddItem(inbox, C_TYPE_ITEM,
+                                      theEvent->eventString);
                 w = gFontList->StrWidth(win->Font_, theEvent->eventString) + 10;
 
                 if (w > width)
@@ -376,7 +415,9 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
             else
             {
                 CTextPtr = theEvent->eventString;
-                ReadScriptedBriefFile("FlEvent.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+                ReadScriptedBriefFile("FlEvent.db", current_line, win, brief,
+                                      TheCampaign.MissionEvaluator,
+                                      flight_data);
             }
 
             theEvent = theEvent->next;
@@ -404,23 +445,31 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
     }
 
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("flight.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("flight.db", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     pn = 0;
-    TheCampaign.MissionEvaluator->curr_pilot = TheCampaign.MissionEvaluator->FindPilotDataFromAC(flight_data, pn);
+    TheCampaign.MissionEvaluator->curr_pilot =
+        TheCampaign.MissionEvaluator->FindPilotDataFromAC(flight_data, pn);
 
     while (pn < PILOTS_PER_FLIGHT)
     {
         if (TheCampaign.MissionEvaluator->curr_pilot)
         {
             // Total ordinance fired by type - build and traverse table
-            for (j = 0; j < TheCampaign.MissionEvaluator->curr_pilot->weapon_types; j++)
+            for (j = 0;
+                 j < TheCampaign.MissionEvaluator->curr_pilot->weapon_types;
+                 j++)
             {
                 TheCampaign.MissionEvaluator->curr_weapon = j;
-                ReadScriptedBriefFile("FOrdnce.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+                ReadScriptedBriefFile("FOrdnce.db", current_line, win, brief,
+                                      TheCampaign.MissionEvaluator,
+                                      flight_data);
                 // Do Relevent events here
                 GetCurrentBriefXY(&x, &y, current_line, win, brief);
                 inbox = width = 0;
-                theEvent = TheCampaign.MissionEvaluator->curr_pilot->weapon_data[j].root_event;
+                theEvent =
+                    TheCampaign.MissionEvaluator->curr_pilot->weapon_data[j]
+                        .root_event;
 
                 while (theEvent)
                 {
@@ -429,12 +478,14 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                         _TCHAR event_str[256] = {0};
                         _TCHAR temp_line[256] = {0};
 
-                        if ( not inbox)
+                        if (not inbox)
                         {
                             AddEOLToBrief(current_line, win, brief);
                             CCurrentLine = 0;
                             CBX = CLineStart = 0;
-                            ReadScriptedBriefFile("FOrdWeap.db", temp_line, NULL, event_str, TheCampaign.MissionEvaluator, flight_data);
+                            ReadScriptedBriefFile(
+                                "FOrdWeap.db", temp_line, NULL, event_str,
+                                TheCampaign.MissionEvaluator, flight_data);
                             eventListBox = new C_ListBox;
                             eventListBox->Setup(C_DONT_CARE, 0, gMainHandler);
                             eventListBox->SetFont(win->Font_);
@@ -448,11 +499,17 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                             eventListBox->SetParent(win);
                             eventListBox->SetClient(0);
                             eventListBox->SetFlagBitOn(C_BIT_USEBGFILL);
-                            eventListBox->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
-                            eventListBox->AddScrollBar(BID_SCROLLCAP_TOP_OFF, BID_SCROLLCAP_TOP_ON, BID_SCROLLCAP_BOTTOM_OFF, BID_SCROLLCAP_BOTTOM_ON, BID_SCROLL);
+                            eventListBox->SetUserNumber(_UI95_DELGROUP_SLOT_,
+                                                        _UI95_DELGROUP_ID_);
+                            eventListBox->AddScrollBar(
+                                BID_SCROLLCAP_TOP_OFF, BID_SCROLLCAP_TOP_ON,
+                                BID_SCROLLCAP_BOTTOM_OFF,
+                                BID_SCROLLCAP_BOTTOM_ON, BID_SCROLL);
                             inbox++;
-                            eventListBox->AddItem(inbox, C_TYPE_ITEM, event_str);
-                            width = gFontList->StrWidth(win->Font_, event_str) + 30;
+                            eventListBox->AddItem(inbox, C_TYPE_ITEM,
+                                                  event_str);
+                            width =
+                                gFontList->StrWidth(win->Font_, event_str) + 30;
                             event_str[0] = 0;
                         }
 
@@ -460,7 +517,9 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                         CTextPtr = theEvent->eventString;
                         CCurrentLine = 0;
                         CBX = CLineStart = 0;
-                        ReadScriptedBriefFile("FOrdEvt.db", temp_line, NULL, event_str, TheCampaign.MissionEvaluator, flight_data);
+                        ReadScriptedBriefFile(
+                            "FOrdEvt.db", temp_line, NULL, event_str,
+                            TheCampaign.MissionEvaluator, flight_data);
                         AddTabToBrief(x, current_line, win, brief);
                         eventListBox->AddItem(inbox, C_TYPE_ITEM, event_str);
                         w = gFontList->StrWidth(win->Font_, event_str) + 10;
@@ -471,14 +530,18 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                     }
                     else
                     {
-                        if ( not inbox)
+                        if (not inbox)
                         {
-                            ReadScriptedBriefFile("FOrdWeap.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+                            ReadScriptedBriefFile(
+                                "FOrdWeap.db", current_line, win, brief,
+                                TheCampaign.MissionEvaluator, flight_data);
                             _tcscat(brief, "\n");
                         }
 
                         CTextPtr = theEvent->eventString;
-                        ReadScriptedBriefFile("FOrdEvt.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+                        ReadScriptedBriefFile(
+                            "FOrdEvt.db", current_line, win, brief,
+                            TheCampaign.MissionEvaluator, flight_data);
                         AddEOLToBrief(current_line, NULL, brief);
                     }
 
@@ -488,28 +551,33 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                 if (eventListBox)
                 {
                     C_Box *box = new C_Box;
-                    eventListBox->SetWH(width, gFontList->GetHeight(win->Font_));
+                    eventListBox->SetWH(width,
+                                        gFontList->GetHeight(win->Font_));
                     eventListBox->SetFlagBitOn(C_BIT_ENABLED);
                     win->AddControl(eventListBox);
                     eventListBox = NULL;
                     box->Setup(C_DONT_CARE, C_TYPE_VERTICAL);
-                    box->SetXYWH(x - 6, y, width + 1, gFontList->GetHeight(win->Font_));
+                    box->SetXYWH(x - 6, y, width + 1,
+                                 gFontList->GetHeight(win->Font_));
                     box->SetColor(0);
                     box->SetParent(win);
                     box->SetClient(0);
-                    box->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
+                    box->SetUserNumber(_UI95_DELGROUP_SLOT_,
+                                       _UI95_DELGROUP_ID_);
                     win->AddControl(box);
                 }
             }
         }
 
         pn++;
-        TheCampaign.MissionEvaluator->curr_pilot = TheCampaign.MissionEvaluator->FindPilotDataFromAC(flight_data, pn);
+        TheCampaign.MissionEvaluator->curr_pilot =
+            TheCampaign.MissionEvaluator->FindPilotDataFromAC(flight_data, pn);
     }
 
     TheCampaign.MissionEvaluator->curr_pilot = NULL;
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("pilot.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("pilot.db", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     flight_ptr = TheCampaign.MissionEvaluator->flight_data;
 
     while (flight_ptr)
@@ -525,7 +593,8 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
             pilot_data = flight_ptr->pilot_list;
 
             // Fast forward over AI pilots and collect the AI pilot_data for this aircraft.
-            while (pilot_data and pilot_data->pilot_slot == pilot_data->aircraft_slot)
+            while (pilot_data and
+                   pilot_data->pilot_slot == pilot_data->aircraft_slot)
             {
                 if (pilot_data->pilot_slot == i)
                     ai_data = pilot_data;
@@ -534,7 +603,7 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
             }
 
             // Find all players who were in this AC first
-            while ( not done)
+            while (not done)
             {
                 while (pilot_data and pilot_data->aircraft_slot not_eq i)
                     pilot_data = pilot_data->next_pilot;
@@ -544,7 +613,9 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
                     // This is a player pilot
                     CPilotData = ai_data;
                     TheCampaign.MissionEvaluator->curr_pilot = pilot_data;
-                    ReadScriptedBriefFile("PElement.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_ptr);
+                    ReadScriptedBriefFile("PElement.db", current_line, win,
+                                          brief, TheCampaign.MissionEvaluator,
+                                          flight_ptr);
                     players++;
                     pilot_data = pilot_data->next_pilot;
                 }
@@ -553,10 +624,11 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
             }
 
             // Now check if a player's been added, and if not do the AI's stats
-            if ( not players and ai_data)
+            if (not players and ai_data)
             {
                 TheCampaign.MissionEvaluator->curr_pilot = ai_data;
-                ReadScriptedBriefFile("PElement.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_ptr);
+                ReadScriptedBriefFile("PElement.db", current_line, win, brief,
+                                      TheCampaign.MissionEvaluator, flight_ptr);
             }
         }
 
@@ -565,9 +637,11 @@ int BuildDebriefString(C_Window *win, _TCHAR *brief)
     }
 
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("results.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("results.db", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     AddHorizontalLineToBrief(win);
-    ReadScriptedBriefFile("related.db", current_line, win, brief, TheCampaign.MissionEvaluator, flight_data);
+    ReadScriptedBriefFile("related.db", current_line, win, brief,
+                          TheCampaign.MissionEvaluator, flight_data);
     CampLeaveCriticalSection();
 
     return 1;
@@ -588,125 +662,143 @@ int GetBriefingData(int query, int data, _TCHAR *buffer, int len)
 
     switch (query)
     {
-        case GBD_PLAYER_ELEMENT:
-            if ( not TheCampaign.MissionEvaluator->player_element)
-                return -1;
+    case GBD_PLAYER_ELEMENT:
+        if (not TheCampaign.MissionEvaluator->player_element)
+            return -1;
 
-            if ( not TheCampaign.MissionEvaluator->player_pilot)
-                return -1;
+        if (not TheCampaign.MissionEvaluator->player_pilot)
+            return -1;
 
-            AddStringToBuffer(TheCampaign.MissionEvaluator->player_element->name, buffer);
-            AddNumberToBuffer(TheCampaign.MissionEvaluator->player_pilot->aircraft_slot + 1, buffer);
-            break;
-
-        case GBD_PLAYER_TASK:
-            if ( not TheCampaign.MissionEvaluator->player_element)
-                return -1;
-
-            ReadScriptedBriefFile("task.gbd", current_line, NULL, buffer, TheCampaign.MissionEvaluator, TheCampaign.MissionEvaluator->player_element);
-            break;
-
-        case GBD_PACKAGE_LABEL:
-            AddIndexedStringToBuffer(107, buffer);
-            break;
-
-        case GBD_PACKAGE_MISSION:
-            if ( not TheCampaign.MissionEvaluator->package_element)
-                return -1;
-
-            ReadScriptedBriefFile("mission.gbd", current_line, NULL, buffer, TheCampaign.MissionEvaluator, TheCampaign.MissionEvaluator->package_element);
-            break;
-
-        case GBD_PACKAGE_ELEMENT_NAME:
-            flight_ptr = TheCampaign.MissionEvaluator->flight_data;
-
-            while (flight_ptr and data)
-            {
-                flight_ptr = flight_ptr->next_flight;
-                data--;
-            }
-
-            if (flight_ptr)
-                AddStringToBuffer(flight_ptr->name, buffer);
-            else
-                return -1;
-
-            break;
-
-        case GBD_PACKAGE_ELEMENT_TASK:
-            flight_ptr = TheCampaign.MissionEvaluator->flight_data;
-
-            while (flight_ptr and data)
-            {
-                flight_ptr = flight_ptr->next_flight;
-                data--;
-            }
-
-            if (flight_ptr)
-                AddIndexedStringToBuffer(300 + flight_ptr->mission, buffer);
-            else
-                return -1;
-
-            break;
-
-        case GBD_PACKAGE_STPTHDR:
-            sprintf(buffer, "%3s %8s %3s %3s %4s %4s %s %s",
-                    "Wpt", "Time", "Hdg", "Spd", "Alt", "Dist", "", "");
-            break;
-
-        case GBD_PACKAGE_STPT:
-        {
-            int wpno = 1;
-            //JPO extra checks.
-            ShiAssert(FALSE == F4IsBadReadPtr(TheCampaign.MissionEvaluator, sizeof * TheCampaign.MissionEvaluator));
-            ShiAssert(FALSE == F4IsBadReadPtr(TheCampaign.MissionEvaluator->player_element, sizeof * TheCampaign.MissionEvaluator->player_element));
-
-            fl = NULL;
-
-            if (TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->player_element)
-                fl = (Flight)FindUnit(TheCampaign.MissionEvaluator->player_element->flight_id);
-
-            if (fl)
-            {
-                CWayPoint = fl->GetFirstUnitWP();
-                LWayPoint = NULL;
-                TheCampaign.MissionEvaluator->curr_data = 1;
-            }
-
-            while (CWayPoint and data > 0)
-            {
-                data --;
-                wpno ++;
-                LWayPoint = CWayPoint;
-                CWayPoint = CWayPoint->GetNextWP();
-            }
-
-            if (CWayPoint)
-            {
-                _TCHAR time[32], action[32], distance[32], hdg[32], spd[32], alt[32], desc[32];
-                time[0] = action[0] = distance[0] = hdg[0] = spd[0] = alt[0] = desc[0] = 0;
-                GetWpActionToBuffer(CWayPoint, action);
-                GetWpTimeToBuffer(CWayPoint, time);
-                GetWptDist(CWayPoint, LWayPoint, distance);
-                GetWptSpeed(CWayPoint, LWayPoint, spd);
-                GetWpAlt(CWayPoint, LWayPoint, alt);
-                GetWpHeading(CWayPoint, LWayPoint, hdg);
-                GetWpDescription(CWayPoint, desc);
-
-                if (action[0] == '-') action[0] = 0;
-
-                if (desc[0] == '-') desc[0] = 0;
-
-                sprintf(buffer, "%3d %8s %3s %3s %5s %4s %s %s",
-                        wpno, time, hdg, spd, alt, distance, action, desc);
-            }
-            else
-                return -1;
-        }
+        AddStringToBuffer(TheCampaign.MissionEvaluator->player_element->name,
+                          buffer);
+        AddNumberToBuffer(
+            TheCampaign.MissionEvaluator->player_pilot->aircraft_slot + 1,
+            buffer);
         break;
 
-        default:
-            break;
+    case GBD_PLAYER_TASK:
+        if (not TheCampaign.MissionEvaluator->player_element)
+            return -1;
+
+        ReadScriptedBriefFile("task.gbd", current_line, NULL, buffer,
+                              TheCampaign.MissionEvaluator,
+                              TheCampaign.MissionEvaluator->player_element);
+        break;
+
+    case GBD_PACKAGE_LABEL:
+        AddIndexedStringToBuffer(107, buffer);
+        break;
+
+    case GBD_PACKAGE_MISSION:
+        if (not TheCampaign.MissionEvaluator->package_element)
+            return -1;
+
+        ReadScriptedBriefFile("mission.gbd", current_line, NULL, buffer,
+                              TheCampaign.MissionEvaluator,
+                              TheCampaign.MissionEvaluator->package_element);
+        break;
+
+    case GBD_PACKAGE_ELEMENT_NAME:
+        flight_ptr = TheCampaign.MissionEvaluator->flight_data;
+
+        while (flight_ptr and data)
+        {
+            flight_ptr = flight_ptr->next_flight;
+            data--;
+        }
+
+        if (flight_ptr)
+            AddStringToBuffer(flight_ptr->name, buffer);
+        else
+            return -1;
+
+        break;
+
+    case GBD_PACKAGE_ELEMENT_TASK:
+        flight_ptr = TheCampaign.MissionEvaluator->flight_data;
+
+        while (flight_ptr and data)
+        {
+            flight_ptr = flight_ptr->next_flight;
+            data--;
+        }
+
+        if (flight_ptr)
+            AddIndexedStringToBuffer(300 + flight_ptr->mission, buffer);
+        else
+            return -1;
+
+        break;
+
+    case GBD_PACKAGE_STPTHDR:
+        sprintf(buffer, "%3s %8s %3s %3s %4s %4s %s %s", "Wpt", "Time", "Hdg",
+                "Spd", "Alt", "Dist", "", "");
+        break;
+
+    case GBD_PACKAGE_STPT:
+    {
+        int wpno = 1;
+        //JPO extra checks.
+        ShiAssert(FALSE ==
+                  F4IsBadReadPtr(TheCampaign.MissionEvaluator,
+                                 sizeof *TheCampaign.MissionEvaluator));
+        ShiAssert(FALSE ==
+                  F4IsBadReadPtr(
+                      TheCampaign.MissionEvaluator->player_element,
+                      sizeof *TheCampaign.MissionEvaluator->player_element));
+
+        fl = NULL;
+
+        if (TheCampaign.MissionEvaluator and
+            TheCampaign.MissionEvaluator->player_element)
+            fl = (Flight)FindUnit(
+                TheCampaign.MissionEvaluator->player_element->flight_id);
+
+        if (fl)
+        {
+            CWayPoint = fl->GetFirstUnitWP();
+            LWayPoint = NULL;
+            TheCampaign.MissionEvaluator->curr_data = 1;
+        }
+
+        while (CWayPoint and data > 0)
+        {
+            data--;
+            wpno++;
+            LWayPoint = CWayPoint;
+            CWayPoint = CWayPoint->GetNextWP();
+        }
+
+        if (CWayPoint)
+        {
+            _TCHAR time[32], action[32], distance[32], hdg[32], spd[32],
+                alt[32], desc[32];
+            time[0] = action[0] = distance[0] = hdg[0] = spd[0] = alt[0] =
+                desc[0] = 0;
+            GetWpActionToBuffer(CWayPoint, action);
+            GetWpTimeToBuffer(CWayPoint, time);
+            GetWptDist(CWayPoint, LWayPoint, distance);
+            GetWptSpeed(CWayPoint, LWayPoint, spd);
+            GetWpAlt(CWayPoint, LWayPoint, alt);
+            GetWpHeading(CWayPoint, LWayPoint, hdg);
+            GetWpDescription(CWayPoint, desc);
+
+            if (action[0] == '-')
+                action[0] = 0;
+
+            if (desc[0] == '-')
+                desc[0] = 0;
+
+            sprintf(buffer, "%3d %8s %3s %3s %5s %4s %s %s", wpno, time, hdg,
+                    spd, alt, distance, action, desc);
+        }
+        else
+            return -1;
+    }
+    break;
+
+    default:
+        break;
     }
 
     buffer[len - 1] = 0;
@@ -763,12 +855,13 @@ static void GetWpTimeToBuffer(WayPoint wp, _TCHAR *cline)
 
 static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and not (wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and
+        not(wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex lx, ly, cx, cy;
         lwp->GetWPLocation(&lx, &ly);
         wp->GetWPLocation(&cx, &cy);
-        AddNumberToBuffer(Distance(lx, ly, cx, cy)*KM_TO_NM, 1, cline);
+        AddNumberToBuffer(Distance(lx, ly, cx, cy) * KM_TO_NM, 1, cline);
     }
     else
         AddIndexedStringToBuffer(1650, cline);
@@ -776,7 +869,8 @@ static void GetWptDist(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 
 static void GetWptSpeed(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and not (wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and
+        not(wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         /*
         GridIndex cx,cy,lx,ly;
@@ -795,9 +889,11 @@ static void GetWptSpeed(WayPoint wp, WayPoint lwp, _TCHAR *cline)
         int ispeed;
 
         if (wp->GetWPFlags() bitand WPF_HOLDCURRENT)
-            speed = get_air_speed(wp->GetWPSpeed() * KM_TO_NM, lwp->GetWPAltitude());
+            speed = get_air_speed(wp->GetWPSpeed() * KM_TO_NM,
+                                  lwp->GetWPAltitude());
         else
-            speed = get_air_speed(wp->GetWPSpeed() * KM_TO_NM, wp->GetWPAltitude());
+            speed =
+                get_air_speed(wp->GetWPSpeed() * KM_TO_NM, wp->GetWPAltitude());
 
         ispeed = FloatToInt32((speed + 2.5F) / 5.0F) * 5;
         AddNumberToBuffer(ispeed, cline);
@@ -836,7 +932,8 @@ static void GetWpDescription(WayPoint wp, _TCHAR *cline)
 
 static void GetWpHeading(WayPoint wp, WayPoint lwp, _TCHAR *cline)
 {
-    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and not (wp->GetWPFlags() bitand WPF_ALTERNATE))
+    if (wp and lwp and wp->GetWPAction() not_eq WP_REFUEL and
+        not(wp->GetWPFlags() bitand WPF_ALTERNATE))
     {
         GridIndex cx, cy, lx, ly;
         float heading;
@@ -861,28 +958,31 @@ void AddHorizontalLineToBrief(C_Window *window)
     {
         short CBYtemp = CBY + gFontList->GetHeight(window->Font_) / 2;
         short CBXtemp = 0;
-        AddHorizontalLineToWindow(window , &CBXtemp, &CBYtemp,
-                                  0, static_cast<short>(window->ClientArea_[0].right - window->ClientArea_[0].left - 10),
-                                  CBColor);
+        AddHorizontalLineToWindow(
+            window, &CBXtemp, &CBYtemp, 0,
+            static_cast<short>(window->ClientArea_[0].right -
+                               window->ClientArea_[0].left - 10),
+            CBColor);
     }
 }
 
 void AddStringToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output)
 {
-    if ( not buffer[0])
+    if (not buffer[0])
         return;
 
     if (window)
-        AddWordWrapTextToWindow(window, &CBX, &CBY,
-                                static_cast<short>(CLineStart),
-                                static_cast<short>(window->ClientArea_[0].right - window->ClientArea_[0].left - 10),
-                                CBColor, buffer);
+        AddWordWrapTextToWindow(
+            window, &CBX, &CBY, static_cast<short>(CLineStart),
+            static_cast<short>(window->ClientArea_[0].right -
+                               window->ClientArea_[0].left - 10),
+            CBColor, buffer);
     else
     {
         ShiAssert(output not_eq buffer);
         _tcscat(output, buffer);
 
-        if ( not CCurrentLine)
+        if (not CCurrentLine)
             CCurrentLine = output;
 
 #if 0 // this isn't helping the print out.
@@ -891,13 +991,14 @@ void AddStringToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output)
             CBX = CLineStart + gFontList->StrWidth(BDefaultFont, CCurrentLine);
         else
 #endif
-            CBX = CLineStart + strlen(CCurrentLine);
+        CBX = CLineStart + strlen(CCurrentLine);
     }
 
     buffer[0] = 0;
 }
 
-void GetCurrentBriefXY(int *x, int *y, _TCHAR *buffer, C_Window *window, _TCHAR *output)
+void GetCurrentBriefXY(int *x, int *y, _TCHAR *buffer, C_Window *window,
+                       _TCHAR *output)
 {
     // KCK: The only way we can REALLY know current x bitand y position is to have the UI add it for us
     // (and therefore do all appropriate wrapping, compression of spaces, etc, etc)
@@ -974,7 +1075,9 @@ void AddEOLToBrief(_TCHAR *buffer, C_Window *window, _TCHAR *output)
     CLineStart = 0;
 }
 
-void AddRightJustifiedStringToBrief(_TCHAR *string, int field_width, _TCHAR *buffer, C_Window *window, _TCHAR *output)
+void AddRightJustifiedStringToBrief(_TCHAR *string, int field_width,
+                                    _TCHAR *buffer, C_Window *window,
+                                    _TCHAR *output)
 {
     int width, x, y;
 
@@ -986,7 +1089,8 @@ void AddRightJustifiedStringToBrief(_TCHAR *string, int field_width, _TCHAR *buf
         width = gFontList->StrWidth(BDefaultFont, string);
 
 #endif
-    else width = strlen(string);
+    else
+        width = strlen(string);
 
     GetCurrentBriefXY(&x, &y, buffer, window, output);
 
@@ -996,7 +1100,8 @@ void AddRightJustifiedStringToBrief(_TCHAR *string, int field_width, _TCHAR *buf
     AddStringToBrief(string, window, output);
 }
 
-void AddFontTextToBrief(_TCHAR *buffer, int font, C_Window *window, _TCHAR *output)
+void AddFontTextToBrief(_TCHAR *buffer, int font, C_Window *window,
+                        _TCHAR *output)
 {
     if (window)
     {
@@ -1056,18 +1161,18 @@ void AddNumberToBuffer(float num, int decimals, _TCHAR *buffer)
     // Hackish way to do this.. but..
     switch (decimals)
     {
-        case 0:
-            _stprintf(string, _T("%.0f"), num);
-            break;
+    case 0:
+        _stprintf(string, _T("%.0f"), num);
+        break;
 
-        case 1:
-        default:
-            _stprintf(string, _T("%.1f"), num);
-            break;
+    case 1:
+    default:
+        _stprintf(string, _T("%.1f"), num);
+        break;
 
-        case 2:
-            _stprintf(string, _T("%.2f"), num);
-            break;
+    case 2:
+        _stprintf(string, _T("%.2f"), num);
+        break;
     }
 
     _tcscat(buffer, string);
@@ -1123,57 +1228,70 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
         else
             h = DirectionTo(ox, oy, x, y);
 
-        if (h < Here or type == 'T' or type == 't' or type == 'E' or type == 'e')
+        if (h < Here or type == 'T' or type == 't' or type == 'E' or
+            type == 'e')
         {
             ReadIndexedString(30 + h, wdstr, 40);
 
             switch (type)
             {
-                case 'N':
-                case 'n':
+            case 'N':
+            case 'n':
 
-                    // Say 'direction of name'
-                    if (gLangIDNum == F4LANG_FRENCH and (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
-                        ReadIndexedString(3993, format, MAX_STRLEN_PER_TOKEN);
-                    else
-                        ReadIndexedString(53, format, MAX_STRLEN_PER_TOKEN);
+                // Say 'direction of name'
+                if (gLangIDNum == F4LANG_FRENCH and
+                    (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or
+                     name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or
+                     name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or
+                     name[0] == 'u'))
+                    ReadIndexedString(3993, format, MAX_STRLEN_PER_TOKEN);
+                else
+                    ReadIndexedString(53, format, MAX_STRLEN_PER_TOKEN);
 
-                    ConstructOrderedSentence(40, wtmp, format, wdstr, name);
-                    break;
+                ConstructOrderedSentence(40, wtmp, format, wdstr, name);
+                break;
 
-                case 'T':
-                case 't':
-                case 'e':
-                case 'E':
-                    // Say 'name'
-                    _stprintf(wtmp, name);
-                    break;
+            case 'T':
+            case 't':
+            case 'e':
+            case 'E':
+                // Say 'name'
+                _stprintf(wtmp, name);
+                break;
 
-                case 'g':
-                case 's':
-                    // Say 'x nm direction of name'
-                    bd = bd * GRID_SIZE_FT * FT_TO_NM;
-                    _stprintf(dist, "%d", FloatToInt32(bd));
+            case 'g':
+            case 's':
+                // Say 'x nm direction of name'
+                bd = bd * GRID_SIZE_FT * FT_TO_NM;
+                _stprintf(dist, "%d", FloatToInt32(bd));
 
-                    if (gLangIDNum == F4LANG_FRENCH and (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
-                        ReadIndexedString(3992, format, MAX_STRLEN_PER_TOKEN);
-                    else
-                        ReadIndexedString(52, format, MAX_STRLEN_PER_TOKEN);
+                if (gLangIDNum == F4LANG_FRENCH and
+                    (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or
+                     name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or
+                     name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or
+                     name[0] == 'u'))
+                    ReadIndexedString(3992, format, MAX_STRLEN_PER_TOKEN);
+                else
+                    ReadIndexedString(52, format, MAX_STRLEN_PER_TOKEN);
 
-                    ConstructOrderedSentence(40, wtmp,  format, dist, wdstr, name);
-                    break;
+                ConstructOrderedSentence(40, wtmp, format, dist, wdstr, name);
+                break;
 
-                default:
-                    // Say 'x km direction of name'
-                    _stprintf(dist, "%d", FloatToInt32(bd));
+            default:
+                // Say 'x km direction of name'
+                _stprintf(dist, "%d", FloatToInt32(bd));
 
-                    if (gLangIDNum == F4LANG_FRENCH and (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
-                        ReadIndexedString(3991, format, MAX_STRLEN_PER_TOKEN);
-                    else
-                        ReadIndexedString(51, format, MAX_STRLEN_PER_TOKEN);
+                if (gLangIDNum == F4LANG_FRENCH and
+                    (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or
+                     name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or
+                     name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or
+                     name[0] == 'u'))
+                    ReadIndexedString(3991, format, MAX_STRLEN_PER_TOKEN);
+                else
+                    ReadIndexedString(51, format, MAX_STRLEN_PER_TOKEN);
 
-                    ConstructOrderedSentence(40, wtmp, format, dist, wdstr, name);
-                    break;
+                ConstructOrderedSentence(40, wtmp, format, dist, wdstr, name);
+                break;
             }
         }
         else if (bpo->GetType() == TYPE_CITY or bpo->GetType() == TYPE_TOWN)
@@ -1194,7 +1312,11 @@ void AddLocationToBuffer(char type, GridIndex x, GridIndex y, _TCHAR *buffer)
         else
         {
             // Just say 'near x'
-            if (gLangIDNum == F4LANG_FRENCH and (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or name[0] == 'u'))
+            if (gLangIDNum == F4LANG_FRENCH and
+                (name[0] == 'A' or name[0] == 'a' or name[0] == 'E' or
+                 name[0] == 'e' or name[0] == 'I' or name[0] == 'i' or
+                 name[0] == 'O' or name[0] == 'o' or name[0] == 'U' or
+                 name[0] == 'u'))
                 ReadIndexedString(3994, format, MAX_STRLEN_PER_TOKEN);
             else
                 ReadIndexedString(54, format, MAX_STRLEN_PER_TOKEN);
@@ -1215,7 +1337,7 @@ void GetEntityName(CampEntity e, _TCHAR *name, char name_type, char objchar)
     if (objchar == 'O')
         object = TRUE;
 
-    if ( not e)
+    if (not e)
         ReadIndexedString(168, name, 80);
     else if (e->IsObjective())
         e->GetName(name, 80, object);
@@ -1225,36 +1347,36 @@ void GetEntityName(CampEntity e, _TCHAR *name, char name_type, char objchar)
 
         switch (name_type)
         {
-            case 'D':
-                ((Unit)e)->GetDivisionName(name, 80, object);
-                break;
+        case 'D':
+            ((Unit)e)->GetDivisionName(name, 80, object);
+            break;
 
-            case 'P':
-                // KCK: This is dangerous to do. Look into fixing this so we don't need to do it.
-                parent_unit = ((Unit)e)->GetUnitParent();
+        case 'P':
+            // KCK: This is dangerous to do. Look into fixing this so we don't need to do it.
+            parent_unit = ((Unit)e)->GetUnitParent();
 
-                if (parent_unit)
-                    ((Unit)parent_unit)->GetName(name, 80, object);
-                else
-                    ((Unit)e)->GetName(name, 80, object);
-
-                break;
-
-            case 'F':
-                ((Unit)e)->GetFullName(name, 80, object);
-                break;
-
-            case 'U':
-            default:
+            if (parent_unit)
+                ((Unit)parent_unit)->GetName(name, 80, object);
+            else
                 ((Unit)e)->GetName(name, 80, object);
-                break;
+
+            break;
+
+        case 'F':
+            ((Unit)e)->GetFullName(name, 80, object);
+            break;
+
+        case 'U':
+        default:
+            ((Unit)e)->GetName(name, 80, object);
+            break;
         }
     }
 }
 
 void GetEntityDestination(CampEntity e, _TCHAR *name)
 {
-    if ( not e)
+    if (not e)
         ReadIndexedString(38, name, 80);
     else if (e->IsUnit())
     {
@@ -1273,7 +1395,7 @@ void GetEntityDestination(CampEntity e, _TCHAR *name)
             WayPoint w = ((Unit)e)->GetFirstUnitWP();
             CampEntity t;
 
-            while (w and not (w->GetWPFlags() bitand WPF_TARGET))
+            while (w and not(w->GetWPFlags() bitand WPF_TARGET))
                 w = w->GetNextWP();
 
             if (w)
@@ -1289,7 +1411,7 @@ void GetEntityDestination(CampEntity e, _TCHAR *name)
         GetEntityName(e, name, ' ', ' ');
 }
 
-void ReadComments(FILE* fh)
+void ReadComments(FILE *fh)
 {
     int c;
 
@@ -1312,7 +1434,7 @@ void ReadComments(FILE* fh)
     ungetc(c, fh);
 }
 
-char* ReadToken(FILE *fp, char name[], int len)
+char *ReadToken(FILE *fp, char name[], int len)
 {
     char buffer[256];
     char *sptr;
@@ -1328,21 +1450,28 @@ char* ReadToken(FILE *fp, char name[], int len)
     if (sptr)
         *sptr = '\0';
 
+    // #104 (Linux): the campaign data files are Windows-authored (CRLF). Windows fopen("r") strips the '\r' in
+    // text mode; Linux has no text translation, so a bare "\n" strip leaves a trailing '\r' on every token. That
+    // broke exact matches like strcmp(token, "#ENDINIT") -> the .tri read loop never terminated (campaign entry
+    // hung, main thread spinning in ReadComments/fgetc). Strip a trailing CR too.
+    sptr = strchr(name, '\r');
+
+    if (sptr)
+        *sptr = '\0';
+
     return name;
 }
 
-char* ReadMemToken(char **ptr, char name[], int len)
+char *ReadMemToken(char **ptr, char name[], int len)
 {
-    char
-    *src,
-    *dst;
+    char *src, *dst;
 
     src = *ptr;
     dst = name;
 
     while ((*src == '\n') or (*src == '\r'))
     {
-        *src ++;
+        *src++;
     }
 
     while ((len) and (*src))
@@ -1352,9 +1481,9 @@ char* ReadMemToken(char **ptr, char name[], int len)
             break;
         }
 
-        *dst ++ = *src ++;
+        *dst++ = *src++;
 
-        len --;
+        len--;
     }
 
     *dst = 0;
@@ -1362,7 +1491,8 @@ char* ReadMemToken(char **ptr, char name[], int len)
     return name;
 }
 
-void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...)
+void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format,
+                              ...)
 {
     int done = 0, count = 0, index = 0, size;
     va_list params;
@@ -1378,11 +1508,20 @@ void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...
             // read and add the numbered argument
             index++;
             count = format[index] - '0'; // arg #
-            va_start(params, format);       // Initialize variable arguments.
+            va_start(params, format); // Initialize variable arguments.
 
             while (count >= 0)
             {
-                { _TCHAR *_a = va_arg(params, _TCHAR*); if (_a) { _tcsncpy(argstring, _a, MAX_STRLEN_PER_TOKEN-1); argstring[MAX_STRLEN_PER_TOKEN-1]=0; } else argstring[0]=0; }
+                {
+                    _TCHAR *_a = va_arg(params, _TCHAR *);
+                    if (_a)
+                    {
+                        _tcsncpy(argstring, _a, MAX_STRLEN_PER_TOKEN - 1);
+                        argstring[MAX_STRLEN_PER_TOKEN - 1] = 0;
+                    }
+                    else
+                        argstring[0] = 0;
+                }
                 count--;
             }
 
@@ -1412,10 +1551,10 @@ void ConstructOrderedSentence(short maxsize, _TCHAR *string, _TCHAR *format, ...
 int GetGender(CampEntity entity, int div)
 {
     // Gender is hardcoded for now- no data exists
-    if ( not entity or gLangIDNum < F4LANG_GERMAN)
+    if (not entity or gLangIDNum < F4LANG_GERMAN)
         return F4LANG_MASCULINE;
 
-    if (div and ( not entity->IsUnit() or not ((Unit)entity)->GetUnitDivision()))
+    if (div and (not entity->IsUnit() or not((Unit)entity)->GetUnitDivision()))
         div = 0;
 
     if (gLangIDNum == F4LANG_GERMAN)
@@ -1433,7 +1572,8 @@ int GetGender(CampEntity entity, int div)
     {
         if (div)
             return F4LANG_FEMININE;
-        else if (entity->IsBattalion() or entity->IsSquadron() or entity->IsTaskForce())
+        else if (entity->IsBattalion() or entity->IsSquadron() or
+                 entity->IsTaskForce())
             return F4LANG_MASCULINE;
         else
             return F4LANG_FEMININE;
@@ -1451,7 +1591,8 @@ int GetGender(CampEntity entity, int div)
     {
         if (div)
             return F4LANG_FEMININE;
-        else if (entity->IsBattalion() or entity->IsFlight() or entity->IsSquadron())
+        else if (entity->IsBattalion() or entity->IsFlight() or
+                 entity->IsSquadron())
             return F4LANG_MASCULINE;
         else
             return F4LANG_FEMININE;
@@ -1460,7 +1601,8 @@ int GetGender(CampEntity entity, int div)
     {
         if (div)
             return F4LANG_FEMININE;
-        else if (entity->IsBattalion() or entity->IsPackage() or entity->IsSquadron())
+        else if (entity->IsBattalion() or entity->IsPackage() or
+                 entity->IsSquadron())
             return F4LANG_MASCULINE;
         else
             return F4LANG_FEMININE;
@@ -1469,7 +1611,8 @@ int GetGender(CampEntity entity, int div)
     return F4LANG_MASCULINE;
 }
 
-void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataClass *data, ...)
+void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string,
+                                      EventDataClass *data, ...)
 {
     _TCHAR argstring[MAX_STRLEN_PER_TOKEN], addchar[2];
     _TCHAR format[1024];
@@ -1547,7 +1690,8 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 {
                     // Find the entity
                     ShiAssert(format[index] == '0' or format[index] == '1');
-                    entity = (CampEntity) vuDatabase->Find(data->vuIds[format[index] - '0']);
+                    entity = (CampEntity)vuDatabase->Find(
+                        data->vuIds[format[index] - '0']);
                     // Check for force to division
                     _TCHAR *sptr = strstr(format, "#DD");
                     int div = 0;
@@ -1615,7 +1759,8 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 {
                     // Find the entity
                     ShiAssert(format[index] == '0' or format[index] == '1');
-                    entity = (CampEntity) vuDatabase->Find(data->vuIds[format[index] - '0']);
+                    entity = (CampEntity)vuDatabase->Find(
+                        data->vuIds[format[index] - '0']);
                     // Check for force to division
                     _TCHAR *sptr = strstr(format, "#DD");
                     int div = 0;
@@ -1631,7 +1776,8 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
 
                 ShiAssert(format[index] == '0' or format[index] == '1');
                 // Find the adjective
-                stridx = ConvertTeamToStringIndex(data->owners[format[index] - '0'], gender, usage, plural);
+                stridx = ConvertTeamToStringIndex(
+                    data->owners[format[index] - '0'], gender, usage, plural);
                 // stridx = 3820 + 20*data->owners[format[index] - '0'] + 6*usage + 3*plural + gender;
                 AddIndexedStringToBuffer(stridx, argstring);
 
@@ -1642,7 +1788,8 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
             {
                 index++;
                 // Check for description type
-                ShiAssert(format[index] == 'D' or format[index] == 'F' or format[index] == 'B');
+                ShiAssert(format[index] == 'D' or format[index] == 'F' or
+                          format[index] == 'B');
                 mode = format[index];
                 index++;
 
@@ -1660,36 +1807,40 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
 
                 // Find the entity
                 ShiAssert(format[index] == '0' or format[index] == '1');
-                entity = (CampEntity) vuDatabase->Find(data->vuIds[format[index] - '0']);
+                entity = (CampEntity)vuDatabase->Find(
+                    data->vuIds[format[index] - '0']);
 
                 if (entity)
                 {
                     switch (mode)
                     {
-                        case 'D':
-                            entity->GetDivisionName(argstring, MAX_STRLEN_PER_TOKEN, usage);
-                            break;
+                    case 'D':
+                        entity->GetDivisionName(argstring, MAX_STRLEN_PER_TOKEN,
+                                                usage);
+                        break;
 
-                        case 'F':
-                            entity->GetFullName(argstring, MAX_STRLEN_PER_TOKEN, usage);
-                            break;
+                    case 'F':
+                        entity->GetFullName(argstring, MAX_STRLEN_PER_TOKEN,
+                                            usage);
+                        break;
 
-                        case 'P':
-                            entity->GetName(argstring, MAX_STRLEN_PER_TOKEN, usage);
+                    case 'P':
+                        entity->GetName(argstring, MAX_STRLEN_PER_TOKEN, usage);
 
-                            if (entity->IsUnit())
-                            {
-                                entity = ((Unit)entity)->GetUnitParent();
+                        if (entity->IsUnit())
+                        {
+                            entity = ((Unit)entity)->GetUnitParent();
 
-                                if (entity)
-                                    entity->GetName(argstring, MAX_STRLEN_PER_TOKEN, usage);
-                            }
+                            if (entity)
+                                entity->GetName(argstring, MAX_STRLEN_PER_TOKEN,
+                                                usage);
+                        }
 
-                            break;
+                        break;
 
-                        default:
-                            entity->GetName(argstring, MAX_STRLEN_PER_TOKEN, usage);
-                            break;
+                    default:
+                        entity->GetName(argstring, MAX_STRLEN_PER_TOKEN, usage);
+                        break;
                     }
                 }
 
@@ -1701,8 +1852,13 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
             {
                 // add a location
                 index++;
-                ShiAssert(format[index] == 'N' or format[index] == 'T' or format[index] == 'S' or format[index] == 'G' or format[index] == 'n' or format[index] == 't' or format[index] == 's' or format[index] == 'g' or format[index] == 'E' or format[index] == 'e');
-                AddLocationToBuffer(format[index], data->xLoc, data->yLoc, argstring);
+                ShiAssert(format[index] == 'N' or format[index] == 'T' or
+                          format[index] == 'S' or format[index] == 'G' or
+                          format[index] == 'n' or format[index] == 't' or
+                          format[index] == 's' or format[index] == 'g' or
+                          format[index] == 'E' or format[index] == 'e');
+                AddLocationToBuffer(format[index], data->xLoc, data->yLoc,
+                                    argstring);
             }
             else if (format[index] == 'I')
             {
@@ -1712,7 +1868,8 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
                 if (data->textIds[format[index] - '0'] < 0)
                 {
                     VehicleClassDataType *vc;
-                    vc = GetVehicleClassData(-1 * data->textIds[format[index] - '0']);
+                    vc = GetVehicleClassData(
+                        -1 * data->textIds[format[index] - '0']);
                     ShiAssert(vc not_eq NULL);
                     _stprintf(argstring, vc ? vc->Name : "<unk>");
                 }
@@ -1731,7 +1888,16 @@ void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataCl
 
                 while (argnum >= 0)
                 {
-                    { _TCHAR *_a = va_arg(params, _TCHAR*); if (_a) { _tcsncpy(argstring, _a, MAX_STRLEN_PER_TOKEN-1); argstring[MAX_STRLEN_PER_TOKEN-1]=0; } else argstring[0]=0; }
+                    {
+                        _TCHAR *_a = va_arg(params, _TCHAR *);
+                        if (_a)
+                        {
+                            _tcsncpy(argstring, _a, MAX_STRLEN_PER_TOKEN - 1);
+                            argstring[MAX_STRLEN_PER_TOKEN - 1] = 0;
+                        }
+                        else
+                            argstring[0] = 0;
+                    }
                     argnum--;
                 }
 
@@ -1765,27 +1931,32 @@ class ScriptClass
 private:
     int stack_active[MAX_STACK];
     int cstack;
-    MissionEvaluationClass* mec;
+    MissionEvaluationClass *mec;
     FlightDataClass *flight_data;
     CampEntity target, ptarget;
     C_Window *win;
     _TCHAR *buffer;
     int len;
+
 public:
-    ScriptClass(MissionEvaluationClass* mec, FlightDataClass *flight_data, C_Window *win);
-    ScriptClass(MissionEvaluationClass* mec, FlightDataClass *flight_data, _TCHAR *buffer);
+    ScriptClass(MissionEvaluationClass *mec, FlightDataClass *flight_data,
+                C_Window *win);
+    ScriptClass(MissionEvaluationClass *mec, FlightDataClass *flight_data,
+                _TCHAR *buffer);
     ~ScriptClass();
 };
 
-int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _TCHAR *brief, MissionEvaluationClass* mec, FlightDataClass *flight_data)
+int ReadScriptedBriefFile(char *filename, _TCHAR *current_line, C_Window *win,
+                          _TCHAR *brief, MissionEvaluationClass *mec,
+                          FlightDataClass *flight_data)
 {
-    FILE* fp;
-    int i, font = 0, done = 0, curr_stack = 0, stack_active[MAX_STACK] = { 1 };
+    FILE *fp;
+    int i, font = 0, done = 0, curr_stack = 0, stack_active[MAX_STACK] = {1};
     char token[128], *sptr;
-    _TCHAR eol[2] = { '\n', 0 };
+    _TCHAR eol[2] = {'\n', 0};
     CampEntity target, ptarget;
 
-    if ( not mec or not mec->flight_data or not mec->flight_data->camp_id)
+    if (not mec or not mec->flight_data or not mec->flight_data->camp_id)
         return 0;
 
     if ((fp = OpenCampFile(filename, "", "r")) == NULL)
@@ -1797,12 +1968,12 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
     target = FindEntity(flight_data->target_id);
     ptarget = FindEntity(mec->package_target_id);
 
-    while ( not done)
+    while (not done)
     {
         ReadComments(fp);
         ReadToken(fp, token, 120);
 
-        if ( not token[0])
+        if (not token[0])
             continue;
 
         // Handle standard tokens
@@ -1810,7 +1981,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
         {
             curr_stack++;
 
-            if ( not stack_active[curr_stack - 1])
+            if (not stack_active[curr_stack - 1])
                 stack_active[curr_stack] = 0;
             else
                 stack_active[curr_stack] = 1;
@@ -1824,7 +1995,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
         }
         else if (strcmp(token, "#ENDIF") == 0)
         {
-            if ( not curr_stack)
+            if (not curr_stack)
                 MonoPrint("<Brief reading Error - unmatched #ENDIF>\n");
             else
                 curr_stack--;
@@ -1845,7 +2016,9 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             {
                 if (curr_stack >= MAX_STACK)
                 {
-                    MonoPrint("<Brief Reading Error - stack overflow. Max stacks = %d", MAX_STACK);
+                    MonoPrint("<Brief Reading Error - stack overflow. Max "
+                              "stacks = %d",
+                              MAX_STACK);
                     CloseCampFile(fp);
                     return 0;
                 }
@@ -1853,21 +2026,22 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 // Add all our if conditions here
                 if (strcmp(token, "#IF_HAVE_TARGET") == 0)
                 {
-                    if ( not target)
+                    if (not target)
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;
                 }
                 else if (strcmp(token, "#IF_HAVE_PACKAGE_TARGET") == 0)
                 {
-                    if ( not ptarget)
+                    if (not ptarget)
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;
                 }
                 else if (strcmp(token, "#IF_HAVE_TARGET_BUILDING") == 0)
                 {
-                    if (target and flight_data->target_building < FEATURES_PER_OBJ)
+                    if (target and
+                        flight_data->target_building < FEATURES_PER_OBJ)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2009,7 +2183,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_PLAYER_PLANE") == 0)
                 {
-                    if (mec->player_element == flight_data and mec->player_pilot == mec->curr_pilot)
+                    if (mec->player_element == flight_data and
+                        mec->player_pilot == mec->curr_pilot)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2034,7 +2209,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     for (i = 0, eaa = 0; i < NUM_TEAMS; i++)
                     {
-                        if (TeamInfo[i] and TeamInfo[i]->atm and GetTTRelations(i, mec->team) == War)
+                        if (TeamInfo[i] and TeamInfo[i]->atm and
+                            GetTTRelations(i, mec->team) == War)
                             eaa += TeamInfo[i]->atm->averageCAMissions;
                     }
 
@@ -2091,16 +2267,17 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_HAVE_PILOT") == 0)
                 {
-                    if ( not mec->curr_pilot)
+                    if (not mec->curr_pilot)
                         stack_active[curr_stack] = 0;
                     else
                         stack_active[curr_stack] = 1;
                 }
                 else if (strcmp(token, "#IF_HAVE_WEAPON") == 0)
                 {
-                    if ( not mec->curr_pilot)
+                    if (not mec->curr_pilot)
                         stack_active[curr_stack] = 0;
-                    else if (mec->curr_pilot->weapon_data[mec->curr_weapon].weapon_id)
+                    else if (mec->curr_pilot->weapon_data[mec->curr_weapon]
+                                 .weapon_id)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2147,7 +2324,9 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     while (sptr and (atoi(sptr) or *sptr == '0'))
                     {
-                        if (atoi(sptr) == mec->curr_pilot->weapon_data[mec->curr_weapon].missed)
+                        if (atoi(sptr) ==
+                            mec->curr_pilot->weapon_data[mec->curr_weapon]
+                                .missed)
                             stack_active[curr_stack] = 1;
 
                         sptr = strchr(sptr, ' ');
@@ -2167,7 +2346,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     while (sptr and (atoi(sptr) or *sptr == '0'))
                     {
-                        if (atoi(sptr) == mec->curr_pilot->weapon_data[mec->curr_weapon].hit)
+                        if (atoi(sptr) ==
+                            mec->curr_pilot->weapon_data[mec->curr_weapon].hit)
                             stack_active[curr_stack] = 1;
 
                         sptr = strchr(sptr, ' ');
@@ -2179,9 +2359,16 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 else if (strcmp(token, "#IF_THREAT_IS_MISSILE") == 0)
                 {
                     int wid;
-                    wid = GetBestVehicleWeapon(mec->threat_ids[mec->curr_data], DefaultDamageMods, LowAir, 0, &i);
+                    wid =
+                        GetBestVehicleWeapon(mec->threat_ids[mec->curr_data],
+                                             DefaultDamageMods, LowAir, 0, &i);
 
-                    if (Falcon4ClassTable[WeaponDataTable[wid].Index].vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE and Falcon4ClassTable[WeaponDataTable[wid].Index].vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE)
+                    if (Falcon4ClassTable[WeaponDataTable[wid].Index]
+                                .vuClassData.classInfo_[VU_TYPE] ==
+                            TYPE_MISSILE and
+                        Falcon4ClassTable[WeaponDataTable[wid].Index]
+                                .vuClassData.classInfo_[VU_CLASS] ==
+                            CLASS_VEHICLE)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2193,15 +2380,22 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                     if (ptarget and ptarget->IsUnit())
                     {
-                        wid = GetBestVehicleWeapon(((Unit)ptarget)->GetVehicleID(0), DefaultDamageMods, LowAir, 0, &i);
+                        wid = GetBestVehicleWeapon(
+                            ((Unit)ptarget)->GetVehicleID(0), DefaultDamageMods,
+                            LowAir, 0, &i);
 
-                        if (Falcon4ClassTable[WeaponDataTable[wid].Index].vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE and Falcon4ClassTable[WeaponDataTable[wid].Index].vuClassData.classInfo_[VU_CLASS] == CLASS_VEHICLE)
+                        if (Falcon4ClassTable[WeaponDataTable[wid].Index]
+                                    .vuClassData.classInfo_[VU_TYPE] ==
+                                TYPE_MISSILE and
+                            Falcon4ClassTable[WeaponDataTable[wid].Index]
+                                    .vuClassData.classInfo_[VU_CLASS] ==
+                                CLASS_VEHICLE)
                             stack_active[curr_stack] = 1;
                     }
                 }
                 else if (strcmp(token, "#IF_AWACS") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->awacs_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->awacs_id);
 
                     if (flight)
                         stack_active[curr_stack] = 1;
@@ -2210,7 +2404,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_JSTAR") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->jstar_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->jstar_id);
 
                     if (flight)
                         stack_active[curr_stack] = 1;
@@ -2219,7 +2413,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_TANKER") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->tanker_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->tanker_id);
 
                     if (flight)
                         stack_active[curr_stack] = 1;
@@ -2228,7 +2422,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_ECM") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->ecm_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->ecm_id);
 
                     if (flight)
                         stack_active[curr_stack] = 1;
@@ -2281,25 +2475,35 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_OFFENSIVE_PLANNED") == 0)
                 {
-                    if (TeamInfo[mec->team]->GetGroundAction()->actionType >= GACTION_MINOROFFENSIVE)
+                    if (TeamInfo[mec->team]->GetGroundAction()->actionType >=
+                        GACTION_MINOROFFENSIVE)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
                 }
                 else if (strcmp(token, "#IF_DEFENSIVE_PLANNED") == 0)
                 {
-                    if (TeamInfo[mec->team]->GetGroundAction()->actionType == GACTION_DEFENSIVE and TheCampaign.CurrentTime + 30 * CampaignMinutes > TeamInfo[mec->team]->GetGroundAction()->actionTime)
+                    if (TeamInfo[mec->team]->GetGroundAction()->actionType ==
+                            GACTION_DEFENSIVE and
+                        TheCampaign.CurrentTime + 30 * CampaignMinutes >
+                            TeamInfo[mec->team]->GetGroundAction()->actionTime)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
                 }
                 else if (strcmp(token, "#IF_CLEAR_WEATHER") == 0)
                 {
-                    int cc = (((WeatherClass*)realWeather)->GetCloudCover(mec->tx, mec->ty) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx - 1, mec->ty) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx, mec->ty - 1) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx + 1, mec->ty) +
-                                     ((WeatherClass*)realWeather)->GetCloudCover(mec->tx, mec->ty + 1)) / 5;
+                    int cc = (((WeatherClass *)realWeather)
+                                  ->GetCloudCover(mec->tx, mec->ty) +
+                              ((WeatherClass *)realWeather)
+                                  ->GetCloudCover(mec->tx - 1, mec->ty) +
+                              ((WeatherClass *)realWeather)
+                                  ->GetCloudCover(mec->tx, mec->ty - 1) +
+                              ((WeatherClass *)realWeather)
+                                  ->GetCloudCover(mec->tx + 1, mec->ty) +
+                              ((WeatherClass *)realWeather)
+                                  ->GetCloudCover(mec->tx, mec->ty + 1)) /
+                             5;
 
                     if (cc < 2)
                         stack_active[curr_stack] = 1;
@@ -2308,7 +2512,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else if (strcmp(token, "#IF_TACTICAL_ENGAGEMENT") == 0)
                 {
-                    if (FalconLocalGame and FalconLocalGame->GetGameType() == game_TacticalEngagement)
+                    if (FalconLocalGame and FalconLocalGame->GetGameType() ==
+                                                game_TacticalEngagement)
                         stack_active[curr_stack] = 1;
                     else
                         stack_active[curr_stack] = 0;
@@ -2322,7 +2527,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             // special tokens
             if (strcmp(token, "#EOL") == 0)
             {
-                if (g_bBriefHTML and ( not win))
+                if (g_bBriefHTML and (not win))
                     AddStringToBuffer("<p>", current_line);
 
                 AddEOLToBrief(current_line, win, brief);
@@ -2330,7 +2535,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "#SPACE") == 0)
             {
-                if (g_bBriefHTML and ( not win))
+                if (g_bBriefHTML and (not win))
                     AddStringToBuffer("&nbsp;", current_line);
                 else
                     AddStringToBuffer(" ", current_line);
@@ -2347,7 +2552,9 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 sptr = token + 4;
                 i = atoi(sptr);
 
-                if ((strncmp(filename, "FOrdWeap.db", 11) == 0) or (strncmp(filename, "FOrdEvt.db", 10) == 0))  //THW Kludge to remove tab tags from debrief
+                if ((strncmp(filename, "FOrdWeap.db", 11) == 0) or
+                    (strncmp(filename, "FOrdEvt.db", 10) ==
+                     0)) //THW Kludge to remove tab tags from debrief
                     AddTabToDebrief(i, current_line, NULL, brief);
                 else
                     AddTabToBrief(i, current_line, win, brief);
@@ -2364,17 +2571,17 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 {
                     switch (i)
                     {
-                        case 1:
-                            CBColor = win->ReverseText;
-                            break;
+                    case 1:
+                        CBColor = win->ReverseText;
+                        break;
 
-                        case 2:
-                            CBColor = win->DisabledText;
-                            break;
+                    case 2:
+                        CBColor = win->DisabledText;
+                        break;
 
-                        default:
-                            CBColor = win->NormalText;
-                            break;
+                    default:
+                        CBColor = win->NormalText;
+                        break;
                     }
                 }
 
@@ -2410,9 +2617,10 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     else
                         slot = 0;
 
-                    while ( not mec->curr_pilot and slot < PILOTS_PER_FLIGHT)
+                    while (not mec->curr_pilot and slot < PILOTS_PER_FLIGHT)
                     {
-                        mec->curr_pilot = mec->FindPilotDataFromAC(flight_data, slot);
+                        mec->curr_pilot =
+                            mec->FindPilotDataFromAC(flight_data, slot);
                         slot++;
                     }
                 }
@@ -2435,12 +2643,15 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             else if (strcmp(token, "PLANE_NAME") == 0)
             {
                 AddStringToBuffer(flight_data->name, current_line);
-                AddNumberToBuffer(mec->curr_pilot->aircraft_slot + 1, current_line);
+                AddNumberToBuffer(mec->curr_pilot->aircraft_slot + 1,
+                                  current_line);
             }
             else if (strcmp(token, "MISSION_NAME") == 0)
-                AddIndexedStringToBuffer(300 + flight_data->mission, current_line);
+                AddIndexedStringToBuffer(300 + flight_data->mission,
+                                         current_line);
             else if (strcmp(token, "OLD_MISSION_NAME") == 0)
-                AddIndexedStringToBuffer(300 + flight_data->old_mission, current_line);
+                AddIndexedStringToBuffer(300 + flight_data->old_mission,
+                                         current_line);
             else if (strncmp(token, "MISSION_DESCRIPTION", 19) == 0)
             {
                 sptr = token + 19;
@@ -2451,21 +2662,25 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     sptr++;
 
                 if (sptr[i] == 'O')
-                    AddIndexedStringToBuffer(400 + i * 50 + flight_data->old_mission, current_line);
+                    AddIndexedStringToBuffer(
+                        400 + i * 50 + flight_data->old_mission, current_line);
                 else
-                    AddIndexedStringToBuffer(400 + i * 50 + flight_data->mission, current_line);
+                    AddIndexedStringToBuffer(
+                        400 + i * 50 + flight_data->mission, current_line);
             }
             else if (strncmp(token, "OLD_MISSION_DESCRIPTION", 23) == 0)
             {
                 sptr = token + 23;
                 i = sptr[0] - '1';
-                AddIndexedStringToBuffer(400 + i * 50 + flight_data->old_mission, current_line);
+                AddIndexedStringToBuffer(
+                    400 + i * 50 + flight_data->old_mission, current_line);
             }
             else if (strncmp(token, "PACKAGE_MISSION_DESCRIPTION", 27) == 0)
             {
                 sptr = token + 27;
                 i = sptr[0] - '1';
-                AddIndexedStringToBuffer(900 + i * 50 + mec->package_mission, current_line);
+                AddIndexedStringToBuffer(900 + i * 50 + mec->package_mission,
+                                         current_line);
             }
             else if (strncmp(token, "PACKAGE_TARGET_NAME", 19) == 0)
             {
@@ -2494,14 +2709,16 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 if (ptarget and ptarget->IsUnit())
                 {
-                    Unit u = (UnitClass*) ptarget;
+                    Unit u = (UnitClass *)ptarget;
 
                     if (u->Father())
                         u = u->GetFirstUnitElement();
 
                     if (u)
                     {
-                        vc = (VehicleClassDataType*) Falcon4ClassTable[u->GetVehicleID(0)].dataPtr;
+                        vc = (VehicleClassDataType *)
+                                 Falcon4ClassTable[u->GetVehicleID(0)]
+                                     .dataPtr;
                         AddStringToBuffer(vc->Name, current_line);
                     }
                 }
@@ -2512,29 +2729,41 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 if (ptarget)
                 {
                     if (gLangIDNum == F4LANG_GERMAN)
-                        AddIndexedStringToBuffer(ConvertTeamToStringIndex(ptarget->GetOwner(), F4LANG_FEMININE), current_line);
+                        AddIndexedStringToBuffer(
+                            ConvertTeamToStringIndex(ptarget->GetOwner(),
+                                                     F4LANG_FEMININE),
+                            current_line);
                     // AddIndexedStringToBuffer(3821 + 20*ptarget->GetOwner(), current_line);
                     else
-                        AddIndexedStringToBuffer(ConvertTeamToStringIndex(ptarget->GetOwner()), current_line);
+                        AddIndexedStringToBuffer(
+                            ConvertTeamToStringIndex(ptarget->GetOwner()),
+                            current_line);
 
                     // AddIndexedStringToBuffer(3820 + 20*ptarget->GetOwner(), current_line);
                 }
             }
             else if (strcmp(token, "PACKAGE_TARGET_BUILDING") == 0)
             {
-                if (ptarget and ptarget->GetClass() == CLASS_OBJECTIVE and mec->package_element->target_building < FEATURES_PER_OBJ)
+                if (ptarget and ptarget->GetClass() == CLASS_OBJECTIVE and
+                    mec->package_element->target_building < FEATURES_PER_OBJ)
                 {
                     FeatureClassDataType *fc;
-                    fc = GetFeatureClassData(((Objective)ptarget)->GetFeatureID(mec->package_element->target_building));
+                    fc = GetFeatureClassData(
+                        ((Objective)ptarget)
+                            ->GetFeatureID(
+                                mec->package_element->target_building));
                     AddStringToBuffer(fc->Name, current_line);
                 }
             }
             else if (strcmp(token, "TARGET_BUILDING") == 0)
             {
-                if (target and target->GetClass() == CLASS_OBJECTIVE and flight_data->target_building < FEATURES_PER_OBJ)
+                if (target and target->GetClass() == CLASS_OBJECTIVE and
+                    flight_data->target_building < FEATURES_PER_OBJ)
                 {
                     FeatureClassDataType *fc;
-                    fc = GetFeatureClassData(((Objective)target)->GetFeatureID(flight_data->target_building));
+                    fc = GetFeatureClassData(
+                        ((Objective)target)
+                            ->GetFeatureID(flight_data->target_building));
                     AddStringToBuffer(fc->Name, current_line);
                 }
             }
@@ -2632,30 +2861,40 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 ent = FindEntity(mec->intercepting_ent);
 
-                if ( not ent)
+                if (not ent)
                     ent = ESquad; // Special case for fighters at airbases
 
                 if (ent and ent->GetClass() == CLASS_UNIT)
                 {
-                    VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[((Unit)ent)->GetVehicleID(0)].dataPtr;
+                    VehicleClassDataType *vc =
+                        (VehicleClassDataType *)
+                            Falcon4ClassTable[((Unit)ent)->GetVehicleID(0)]
+                                .dataPtr;
 
                     if (gLangIDNum >= F4LANG_SPANISH)
                     {
                         AddStringToBuffer(vc->Name, current_line);
                         AddStringToBuffer(" ", current_line);
-                        AddIndexedStringToBuffer(ConvertTeamToStringIndex(ent->GetOwner()), current_line);
+                        AddIndexedStringToBuffer(
+                            ConvertTeamToStringIndex(ent->GetOwner()),
+                            current_line);
                         // AddIndexedStringToBuffer(3820 + 20*ent->GetOwner(), current_line);
                     }
                     else if (gLangIDNum == F4LANG_GERMAN)
                     {
-                        AddIndexedStringToBuffer(ConvertTeamToStringIndex(ent->GetOwner(), F4LANG_FEMININE), current_line);
+                        AddIndexedStringToBuffer(
+                            ConvertTeamToStringIndex(ent->GetOwner(),
+                                                     F4LANG_FEMININE),
+                            current_line);
                         // AddIndexedStringToBuffer(3821 + 20*ent->GetOwner(), current_line);
                         AddStringToBuffer(" ", current_line);
                         AddStringToBuffer(vc->Name, current_line);
                     }
                     else
                     {
-                        AddIndexedStringToBuffer(ConvertTeamToStringIndex(ent->GetOwner()), current_line);
+                        AddIndexedStringToBuffer(
+                            ConvertTeamToStringIndex(ent->GetOwner()),
+                            current_line);
                         // AddIndexedStringToBuffer(3820 + 20*ent->GetOwner(), current_line);
                         AddStringToBuffer(" ", current_line);
                         AddStringToBuffer(vc->Name, current_line);
@@ -2664,12 +2903,15 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "AWACS_NAME") == 0)
             {
-                Flight awacs = (Flight) vuDatabase->Find(mec->awacs_id);
+                Flight awacs = (Flight)vuDatabase->Find(mec->awacs_id);
                 _TCHAR name[128];
 
                 if (awacs and not awacs->IsDead())
                 {
-                    VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[awacs->GetVehicleID(0)].dataPtr;
+                    VehicleClassDataType *vc =
+                        (VehicleClassDataType *)
+                            Falcon4ClassTable[awacs->GetVehicleID(0)]
+                                .dataPtr;
                     GetCallsign(awacs->callsign_id, awacs->callsign_num, name);
                     AddStringToBuffer(name, current_line);
                     AddStringToBuffer(" ", current_line);
@@ -2682,12 +2924,15 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "JSTAR_NAME") == 0)
             {
-                Flight jstar = (Flight) vuDatabase->Find(mec->jstar_id);
+                Flight jstar = (Flight)vuDatabase->Find(mec->jstar_id);
                 _TCHAR name[128];
 
                 if (jstar and not jstar->IsDead())
                 {
-                    VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[jstar->GetVehicleID(0)].dataPtr;
+                    VehicleClassDataType *vc =
+                        (VehicleClassDataType *)
+                            Falcon4ClassTable[jstar->GetVehicleID(0)]
+                                .dataPtr;
                     GetCallsign(jstar->callsign_id, jstar->callsign_num, name);
                     AddStringToBuffer(name, current_line);
                     AddStringToBuffer(" ", current_line);
@@ -2700,13 +2945,17 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "TANKER_NAME") == 0)
             {
-                Flight tanker = (Flight) vuDatabase->Find(mec->tanker_id);
+                Flight tanker = (Flight)vuDatabase->Find(mec->tanker_id);
                 _TCHAR name[128];
 
                 if (tanker and not tanker->IsDead())
                 {
-                    VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[tanker->GetVehicleID(0)].dataPtr;
-                    GetCallsign(tanker->callsign_id, tanker->callsign_num, name);
+                    VehicleClassDataType *vc =
+                        (VehicleClassDataType *)
+                            Falcon4ClassTable[tanker->GetVehicleID(0)]
+                                .dataPtr;
+                    GetCallsign(tanker->callsign_id, tanker->callsign_num,
+                                name);
                     AddStringToBuffer(name, current_line);
                     AddStringToBuffer(" ", current_line);
                     AddIndexedStringToBuffer(222, current_line);
@@ -2718,12 +2967,15 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "ECM_NAME") == 0)
             {
-                Flight ecm = (Flight) vuDatabase->Find(mec->ecm_id);
+                Flight ecm = (Flight)vuDatabase->Find(mec->ecm_id);
                 _TCHAR name[128];
 
                 if (ecm and not ecm->IsDead())
                 {
-                    VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[ecm->GetVehicleID(0)].dataPtr;
+                    VehicleClassDataType *vc =
+                        (VehicleClassDataType *)
+                            Falcon4ClassTable[ecm->GetVehicleID(0)]
+                                .dataPtr;
                     GetCallsign(ecm->callsign_id, ecm->callsign_num, name);
                     AddStringToBuffer(name, current_line);
                     AddStringToBuffer(" ", current_line);
@@ -2737,9 +2989,9 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             else if (strncmp(token, "CONTEXT_STR", 11) == 0)
             {
                 int strCount = 0, mission_context = 0;
-                _TCHAR str[5][256] = { 0 }, context[1024];
+                _TCHAR str[5][256] = {0}, context[1024];
                 CampEntity tar, re;
-                EventDataClass  data;
+                EventDataClass data;
                 FlightDataClass *fptr;
 
                 // Point to beginning of argument list
@@ -2788,58 +3040,66 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 {
                     switch (*sptr)
                     {
-                        case '2':
-                            data.formatId = 800 + mission_context;
-                            break;
+                    case '2':
+                        data.formatId = 800 + mission_context;
+                        break;
 
-                        case 'R':
-                            // Requesting Entity Destination/Vehicle
-                            sptr++;
+                    case 'R':
+                        // Requesting Entity Destination/Vehicle
+                        sptr++;
 
-                            if (*sptr == 'D')
-                                GetEntityDestination(re, str[strCount]);
+                        if (*sptr == 'D')
+                            GetEntityDestination(re, str[strCount]);
+                        else
+                        {
+                            if (re and re->IsPackage())
+                                re = ((Package)re)->GetFirstUnitElement();
+
+                            if (re and re->IsUnit())
+                            {
+                                VehicleClassDataType *vc =
+                                    (VehicleClassDataType *)
+                                        Falcon4ClassTable[((Unit)re)
+                                                              ->GetVehicleID(0)]
+                                            .dataPtr;
+                                _tcscpy(str[strCount], vc->Name);
+                            }
                             else
-                            {
-                                if (re and re->IsPackage())
-                                    re = ((Package)re)->GetFirstUnitElement();
+                                AddIndexedStringToBuffer(256, str[strCount]);
+                        }
 
-                                if (re and re->IsUnit())
-                                {
-                                    VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[((Unit)re)->GetVehicleID(0)].dataPtr;
-                                    _tcscpy(str[strCount], vc->Name);
-                                }
-                                else
-                                    AddIndexedStringToBuffer(256, str[strCount]);
-                            }
+                        strCount++;
+                        break;
 
+                    case 't':
+                        // Time on target
+                        AddTimeToBuffer(mec->assigned_tot, str[strCount]);
+                        strCount++;
+                        break;
+
+                    case 'O':
+                        sptr++;
+
+                        if (*sptr == 'S') // Operation String
+                        {
+                            ReadIndexedString(854 + mec->action_type,
+                                              str[strCount], 256);
                             strCount++;
-                            break;
-
-                        case 't':
-                            // Time on target
-                            AddTimeToBuffer(mec->assigned_tot, str[strCount]);
+                        }
+                        else // Operation Objective
+                        {
+                            CampEntity ot = (CampEntity)vuDatabase->Find(
+                                TeamInfo[mec->team]
+                                    ->GetOffensiveAirAction()
+                                    ->actionObjective);
+                            ot->GetName(str[strCount], 80, FALSE);
                             strCount++;
-                            break;
+                        }
 
-                        case 'O':
-                            sptr++;
+                        break;
 
-                            if (*sptr == 'S') // Operation String
-                            {
-                                ReadIndexedString(854 + mec->action_type, str[strCount], 256);
-                                strCount++;
-                            }
-                            else // Operation Objective
-                            {
-                                CampEntity ot = (CampEntity) vuDatabase->Find(TeamInfo[mec->team]->GetOffensiveAirAction()->actionObjective);
-                                ot->GetName(str[strCount], 80, FALSE);
-                                strCount++;
-                            }
-
-                            break;
-
-                        default:
-                            break;
+                    default:
+                        break;
                     }
 
                     sptr++;
@@ -2849,15 +3109,17 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
 
                 // Build the sentance
-                ConstructOrderedGenderedSentence(1024, context, &data, str[0], str[1], str[2], str[3], str[4]);
+                ConstructOrderedGenderedSentence(1024, context, &data, str[0],
+                                                 str[1], str[2], str[3],
+                                                 str[4]);
                 AddStringToBuffer(context, current_line);
             }
             else if (strncmp(token, "RESULT_STR", 10) == 0)
             {
                 int strCount = 0, success, losses, mission_context;
-                _TCHAR str[5][256] = { 0 }, result[1024];
+                _TCHAR str[5][256] = {0}, result[1024];
                 CampEntity tar, re;
-                EventDataClass  data;
+                EventDataClass data;
                 FlightDataClass *fptr;
 
                 // Point to beginning of argument list
@@ -2905,7 +3167,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 success = fptr->mission_success;
 
                 // 2002-02-13 MN added AWACSAbort
-                if (success not_eq Incomplete /* and success not_eq AWACSAbort*/)
+                if (success not_eq
+                    Incomplete /* and success not_eq AWACSAbort*/)
                 {
                     // Determine losses, if necessary
                     losses = fptr->target_status;
@@ -2913,7 +3176,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     if (tar and tar->IsObjective())
                         losses = 100 - ((Objective)tar)->GetObjectiveStatus();
                     else if (tar and tar->IsUnit())
-                        losses = fptr->target_status - ((Unit)tar)->GetTotalVehicles();
+                        losses = fptr->target_status -
+                                 ((Unit)tar)->GetTotalVehicles();
 
                     // Parse the arguments
                     sptr = token + 11;
@@ -2922,30 +3186,35 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     {
                         switch (*sptr)
                         {
-                            case 'L':
-                                // Losses
-                                _stprintf(str[strCount], _T("%d"), losses);
-                                strCount++;
-                                break;
+                        case 'L':
+                            // Losses
+                            _stprintf(str[strCount], _T("%d"), losses);
+                            strCount++;
+                            break;
 
-                            case 'S':
+                        case 'S':
 
-                                // % strength
-                                if (tar and tar->IsObjective())
-                                    _stprintf(str[strCount], _T("%d"), ((Objective)tar)->GetObjectiveStatus());
-                                else if (tar and tar->IsUnit())
-                                    _stprintf(str[strCount], _T("%d"), (((Unit)tar)->GetTotalVehicles() * 100) / ((Unit)tar)->GetFullstrengthVehicles());
+                            // % strength
+                            if (tar and tar->IsObjective())
+                                _stprintf(
+                                    str[strCount], _T("%d"),
+                                    ((Objective)tar)->GetObjectiveStatus());
+                            else if (tar and tar->IsUnit())
+                                _stprintf(
+                                    str[strCount], _T("%d"),
+                                    (((Unit)tar)->GetTotalVehicles() * 100) /
+                                        ((Unit)tar)->GetFullstrengthVehicles());
 
-                                strCount++;
+                            strCount++;
 
-                            case 'C':
-                                // Critical Entity Name (in case it doesn't still exist)
-                                _tcscpy(str[strCount], fptr->context_entity_name);
-                                strCount++;
-                                break;
+                        case 'C':
+                            // Critical Entity Name (in case it doesn't still exist)
+                            _tcscpy(str[strCount], fptr->context_entity_name);
+                            strCount++;
+                            break;
 
-                            default:
-                                break;
+                        default:
+                            break;
                         }
 
                         sptr++;
@@ -2955,23 +3224,30 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     }
 
                     // Now choose which format to use
-                    if ( not tar or (tar->IsUnit() and (((Unit)tar)->Broken() or ((Unit)tar)->IsDead()))
-                        or (tar->IsObjective() and ((Objective)tar)->GetObjectiveStatus() < 10))
+                    if (not tar or
+                        (tar->IsUnit() and
+                         (((Unit)tar)->Broken() or ((Unit)tar)->IsDead())) or
+                        (tar->IsObjective() and
+                         ((Objective)tar)->GetObjectiveStatus() < 10))
                     {
                         // Target is completely broken or destroyed
-                        if (success == Success or success == PartSuccess or success == AWACSAbort)
+                        if (success == Success or success == PartSuccess or
+                            success == AWACSAbort)
                             data.formatId = 1200 + mission_context;
                         else
                             data.formatId = 1400 + mission_context;
                     }
-                    else if ((tar->IsUnit() and (float)losses / (float)fptr->target_status > 0.01F)
-                             or (tar->IsObjective() and losses > 0))
-                        // KCK: Needed to use this one until we have strings entered for
-                        // posibility of partial destruction and successfull mission
-                        // or (tar->IsObjective() and losses > 10))
+                    else if ((tar->IsUnit() and
+                              (float) losses / (float)fptr->target_status >
+                                  0.01F) or
+                             (tar->IsObjective() and losses > 0))
+                    // KCK: Needed to use this one until we have strings entered for
+                    // posibility of partial destruction and successfull mission
+                    // or (tar->IsObjective() and losses > 10))
                     {
                         // Target is partially broken or destroyed
-                        if (success == Success or success == PartSuccess or success == AWACSAbort)
+                        if (success == Success or success == PartSuccess or
+                            success == AWACSAbort)
                             data.formatId = 1200 + mission_context;
                         else
                             data.formatId = 1400 + mission_context;
@@ -2979,12 +3255,12 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     else
                     {
                         // Target took little or no damage
-                        if (success == Success or success == PartSuccess or success == AWACSAbort)
+                        if (success == Success or success == PartSuccess or
+                            success == AWACSAbort)
                             data.formatId = 1300 + mission_context;
                         else
                             data.formatId = 1500 + mission_context;
                     }
-
                 }
 
                 /* else if (success == AWACSAbort)
@@ -2992,11 +3268,14 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                  // MNLOOK AWACSABort stuff, needs new strings.wch entry
                  }*/
                 // Now build the string
-                ConstructOrderedGenderedSentence(1024, result, &data, str[0], str[1], str[2], str[3], str[4]);
+                ConstructOrderedGenderedSentence(1024, result, &data, str[0],
+                                                 str[1], str[2], str[3],
+                                                 str[4]);
                 AddStringToBuffer(result, current_line);
             }
             else if (strcmp(token, "TE_SUCCESS") == 0)
-                AddIndexedStringToBuffer(1150 + determine_tactical_rating(), current_line);
+                AddIndexedStringToBuffer(1150 + determine_tactical_rating(),
+                                         current_line);
             else if (strcmp(token, "NUM_AIRCRAFT") == 0)
             {
                 i = flight_data->start_aircraft;
@@ -3004,7 +3283,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "AIRCRAFT_TYPE") == 0)
                 AddStringToBuffer(flight_data->aircraft_name, current_line);
-            else if (strcmp(token, "TIME_ON_TARGET") == 0 or strcmp(token, "TIME_ON_STATION_LABEL") == 0)
+            else if (strcmp(token, "TIME_ON_TARGET") == 0 or
+                     strcmp(token, "TIME_ON_STATION_LABEL") == 0)
             {
                 AddTimeToBuffer(mec->assigned_tot, current_line);
             }
@@ -3017,7 +3297,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 else
                 {
                     AddTimeToBuffer(mec->actual_tot, current_line);
-                    seconds_off = (int)(mec->actual_tot - mec->assigned_tot) / CampaignSeconds;
+                    seconds_off = (int)(mec->actual_tot - mec->assigned_tot) /
+                                  CampaignSeconds;
 
                     if (seconds_off > 10)
                     {
@@ -3025,7 +3306,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                         if (seconds_off > 500)
                         {
-                            AddNumberToBuffer(int(seconds_off / 60), current_line);
+                            AddNumberToBuffer(int(seconds_off / 60),
+                                              current_line);
                             AddIndexedStringToBuffer(251, current_line);
                         }
                         else
@@ -3042,7 +3324,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                         if (seconds_off < -500)
                         {
-                            AddNumberToBuffer((int)(seconds_off / -60), current_line);
+                            AddNumberToBuffer((int)(seconds_off / -60),
+                                              current_line);
                             AddIndexedStringToBuffer(252, current_line);
                         }
                         else
@@ -3069,7 +3352,10 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     AddStringToBuffer(name, current_line);
                 }
             }
-            else if (strncmp(token, "GENERAL_LOCATION", 16) == 0 or strncmp(token, "SPECIFIC_LOCATION", 17) == 0 or strncmp(token, "NEAREST_LOCATION", 16) == 0 or strncmp(token, "THE_LOCATION", 12) == 0)
+            else if (strncmp(token, "GENERAL_LOCATION", 16) == 0 or
+                     strncmp(token, "SPECIFIC_LOCATION", 17) == 0 or
+                     strncmp(token, "NEAREST_LOCATION", 16) == 0 or
+                     strncmp(token, "THE_LOCATION", 12) == 0)
             {
                 GridIndex x = 0, y = 0;
 
@@ -3089,28 +3375,28 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 if (strcmp(sptr, "AWACS") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->awacs_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->awacs_id);
                     Package pack = flight->GetUnitPackage();
                     pack->GetUnitDestination(&x, &y);
                 }
 
                 if (strcmp(sptr, "JSTAR") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->jstar_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->jstar_id);
                     Package pack = flight->GetUnitPackage();
                     pack->GetUnitDestination(&x, &y);
                 }
 
                 if (strcmp(sptr, "TANKER") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->tanker_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->tanker_id);
                     Package pack = flight->GetUnitPackage();
                     pack->GetUnitDestination(&x, &y);
                 }
 
                 if (strcmp(sptr, "ECM") == 0)
                 {
-                    Flight flight = (Flight) vuDatabase->Find(mec->ecm_id);
+                    Flight flight = (Flight)vuDatabase->Find(mec->ecm_id);
                     Package pack = flight->GetUnitPackage();
                     pack->GetUnitDestination(&x, &y);
                 }
@@ -3145,22 +3431,28 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 if (mec->player_element) // JB 010121
                     // 2002-02-16 MN modified, now from index 19 for the addition of AWACSAbort success condition
                     // AddIndexedStringToBuffer(20+mec->player_element->mission_success, current_line);
-                    AddIndexedStringToBuffer(19 + mec->player_element->mission_success, current_line);
+                    AddIndexedStringToBuffer(
+                        19 + mec->player_element->mission_success,
+                        current_line);
             }
             else if (strcmp(token, "PILOT_RATING") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddIndexedStringToBuffer(10 + mec->curr_pilot->rating, current_line);
+                    AddIndexedStringToBuffer(10 + mec->curr_pilot->rating,
+                                             current_line);
             }
             else if (strcmp(token, "PILOT_NAME") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddStringToBuffer(mec->curr_pilot->pilot_name, current_line);
+                    AddStringToBuffer(mec->curr_pilot->pilot_name,
+                                      current_line);
             }
             else if (strcmp(token, "PILOT_STATUS") == 0)
             {
-                ShiAssert(mec->curr_pilot->pilot_status >= 0 and mec->curr_pilot->pilot_status <= 4);
-                AddIndexedStringToBuffer(95 + mec->curr_pilot->pilot_status, current_line);
+                ShiAssert(mec->curr_pilot->pilot_status >= 0 and
+                          mec->curr_pilot->pilot_status <= 4);
+                AddIndexedStringToBuffer(95 + mec->curr_pilot->pilot_status,
+                                         current_line);
             }
             else if (strcmp(token, "AA_KILLS") == 0)
             {
@@ -3170,7 +3462,10 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             else if (strcmp(token, "AG_KILLS") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddNumberToBuffer(mec->curr_pilot->ag_kills + mec->curr_pilot->as_kills + mec->curr_pilot->an_kills, current_line);
+                    AddNumberToBuffer(mec->curr_pilot->ag_kills +
+                                          mec->curr_pilot->as_kills +
+                                          mec->curr_pilot->an_kills,
+                                      current_line);
             }
             else if (strcmp(token, "AI_AA_KILLS") == 0)
             {
@@ -3178,7 +3473,9 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             }
             else if (strcmp(token, "AI_AG_KILLS") == 0)
             {
-                AddNumberToBuffer(CPilotData->ag_kills + CPilotData->as_kills + CPilotData->an_kills, current_line);
+                AddNumberToBuffer(CPilotData->ag_kills + CPilotData->as_kills +
+                                      CPilotData->an_kills,
+                                  current_line);
             }
             else if (strcmp(token, "FRIENDLY_LOSSES") == 0)
             {
@@ -3189,15 +3486,18 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 _TCHAR tstring[80], wstring[80];
 
                 // 2002-02-17 MN changed from 25+flight_data... to 4000+flight_data, new entries in strings.wch
-                AddIndexedStringToBuffer(4000 + flight_data->mission_success, current_line);
-                ReadIndexedString(1000 + flight_data->failure_code, wstring, 80);
+                AddIndexedStringToBuffer(4000 + flight_data->mission_success,
+                                         current_line);
+                ReadIndexedString(1000 + flight_data->failure_code, wstring,
+                                  80);
                 _stprintf(tstring, wstring, flight_data->failure_data);
                 AddStringToBuffer(tstring, current_line);
             }
             else if (strcmp(token, "PLANE_STATUS") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddIndexedStringToBuffer(90 + mec->curr_pilot->aircraft_status, current_line);
+                    AddIndexedStringToBuffer(
+                        90 + mec->curr_pilot->aircraft_status, current_line);
             }
             else if (strcmp(token, "SHOW_THREATS") == 0)
             {
@@ -3206,46 +3506,64 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     if (mec->threat_ids[i])
                     {
                         mec->curr_data = i;
-                        ReadScriptedBriefFile("threat.b", current_line, win, brief, mec, mec->package_element);
+                        ReadScriptedBriefFile("threat.b", current_line, win,
+                                              brief, mec, mec->package_element);
                     }
                 }
             }
             else if (strcmp(token, "THREAT_VEHICLE_NAME") == 0)
             {
-                VehicleClassDataType *vc = (VehicleClassDataType*) Falcon4ClassTable[mec->threat_ids[mec->curr_data]].dataPtr;
+                VehicleClassDataType *vc =
+                    (VehicleClassDataType *)
+                        Falcon4ClassTable[mec->threat_ids[mec->curr_data]]
+                            .dataPtr;
                 AddStringToBuffer(vc->Name, current_line);
             }
             else if (strcmp(token, "WEAPON_LOAD") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddNumberToBuffer(mec->curr_pilot->weapon_data[mec->curr_weapon].starting_load, current_line);
+                    AddNumberToBuffer(
+                        mec->curr_pilot->weapon_data[mec->curr_weapon]
+                            .starting_load,
+                        current_line);
             }
             else if (strcmp(token, "WEAPON_NAME") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddStringToBuffer(mec->curr_pilot->weapon_data[mec->curr_weapon].weapon_name, current_line);
+                    AddStringToBuffer(
+                        mec->curr_pilot->weapon_data[mec->curr_weapon]
+                            .weapon_name,
+                        current_line);
             }
             else if (strcmp(token, "WEAPON_FIRED") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddNumberToBuffer(mec->curr_pilot->weapon_data[mec->curr_weapon].fired, current_line);
+                    AddNumberToBuffer(
+                        mec->curr_pilot->weapon_data[mec->curr_weapon].fired,
+                        current_line);
             }
             else if (strcmp(token, "WEAPON_HIT") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddNumberToBuffer(mec->curr_pilot->weapon_data[mec->curr_weapon].hit, current_line);
+                    AddNumberToBuffer(
+                        mec->curr_pilot->weapon_data[mec->curr_weapon].hit,
+                        current_line);
             }
             else if (strcmp(token, "WEAPON_MISSED") == 0)
             {
                 if (mec->curr_pilot) // JB 010121
-                    AddNumberToBuffer(mec->curr_pilot->weapon_data[mec->curr_weapon].missed, current_line);
+                    AddNumberToBuffer(
+                        mec->curr_pilot->weapon_data[mec->curr_weapon].missed,
+                        current_line);
             }
             else if (strcmp(token, "WEAPON_HIT_RATIO") == 0)
             {
                 // JB 010121
                 if (mec->curr_pilot) // JB 010121
                 {
-                    i = (100 * mec->curr_pilot->weapon_data[mec->curr_weapon].hit) / mec->curr_pilot->weapon_data[mec->curr_weapon].fired;
+                    i = (100 *
+                         mec->curr_pilot->weapon_data[mec->curr_weapon].hit) /
+                        mec->curr_pilot->weapon_data[mec->curr_weapon].fired;
                     AddNumberToBuffer(i, current_line);
                 }
             }
@@ -3270,22 +3588,30 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             //dpc - reversed wind heading to show correctly and consistent with DED
             // if (strcmp(token,"WIND_HEADING")==0)
             //   AddNumberToBuffer(FloatToInt32(((WeatherClass*)realWeather)->WindHeading*RTD),current_line);
-            float reversedWindHeading = ((WeatherClass*)realWeather)->windHeading * RTD + 180.0F;
+            float reversedWindHeading =
+                ((WeatherClass *)realWeather)->windHeading * RTD + 180.0F;
 
-            if (reversedWindHeading > 360.0F) reversedWindHeading -= 360.0F;
+            if (reversedWindHeading > 360.0F)
+                reversedWindHeading -= 360.0F;
 
             if (strcmp(token, "WIND_HEADING") == 0)
-                AddNumberToBuffer(FloatToInt32(reversedWindHeading), current_line);
+                AddNumberToBuffer(FloatToInt32(reversedWindHeading),
+                                  current_line);
             //end fix
             else if (strcmp(token, "WIND_SPEED") == 0)
                 //AddNumberToBuffer(FloatToInt32(((WeatherClass*)realWeather)->WindSpeed),current_line);
                 //MI fix to show Knots/H instead of KM/H
-                AddNumberToBuffer(FloatToInt32((((WeatherClass*)realWeather)->windSpeed + 0.5F) *
-                                               KPH_TO_FPS * FTPSEC_TO_KNOTS), current_line);
+                AddNumberToBuffer(
+                    FloatToInt32(
+                        (((WeatherClass *)realWeather)->windSpeed + 0.5F) *
+                        KPH_TO_FPS * FTPSEC_TO_KNOTS),
+                    current_line);
             else if (strcmp(token, "TEMPERATURE") == 0)
-                AddNumberToBuffer(FloatToInt32(((WeatherClass*)realWeather)->temperature), current_line);
+                AddNumberToBuffer(
+                    FloatToInt32(((WeatherClass *)realWeather)->temperature),
+                    current_line);
             else if (strcmp(token, "CLOUD_TYPE") == 0)
-                //JAM 17Nov03
+            //JAM 17Nov03
             {
                 char szTemp[256];
 
@@ -3333,12 +3659,19 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 //sprintf(szTemp,"Clouds:           %d",-realWeather->stratusZ/1000);
                 //_tcscat(current_line,szTemp);
-                AddNumberToBuffer(FloatToInt32(-((WeatherClass*)realWeather)->stratusZ / 1000.0f + 0.5f), current_line);
-
+                AddNumberToBuffer(
+                    FloatToInt32(-((WeatherClass *)realWeather)->stratusZ /
+                                     1000.0f +
+                                 0.5f),
+                    current_line);
             }
             else if (strcmp(token, "CON_LAYER") == 0)
                 // AddNumberToBuffer(((WeatherClass*)realWeather)->contrailLow/1000.f,current_line); // Cobra - contrail not in 100's of feet anymore
-                AddNumberToBuffer(FloatToInt32(-((WeatherClass*)realWeather)->stratus2Z / 1000.0f + 0.5f), current_line);
+                AddNumberToBuffer(
+                    FloatToInt32(-((WeatherClass *)realWeather)->stratus2Z /
+                                     1000.0f +
+                                 0.5f),
+                    current_line);
             else if (strcmp(token, "WAYPOINT_NUM") == 0)
                 AddNumberToBuffer(mec->curr_data, current_line);
             else if (strcmp(token, "WAYPOINT_ACTION") == 0)
@@ -3349,21 +3682,24 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             {
                 _TCHAR string[32] = {0};
                 GetWptDist(CWayPoint, LWayPoint, string);
-                AddRightJustifiedStringToBrief(string, 40, current_line, win, brief);
+                AddRightJustifiedStringToBrief(string, 40, current_line, win,
+                                               brief);
             }
             else if (strcmp(token, "WAYPOINT_HEADING") == 0)
             {
                 _TCHAR string[32] = {0};
                 GetWpHeading(CWayPoint, LWayPoint, string);
 
-                AddRightJustifiedStringToBrief(string, 40, current_line, win, brief);
+                AddRightJustifiedStringToBrief(string, 40, current_line, win,
+                                               brief);
             }
             else if (strcmp(token, "WAYPOINT_SPEED") == 0)
             {
                 _TCHAR string[32] = {0};
                 GetWptSpeed(CWayPoint, LWayPoint, string);
 
-                AddRightJustifiedStringToBrief(string, 40, current_line, win, brief);
+                AddRightJustifiedStringToBrief(string, 40, current_line, win,
+                                               brief);
             }
             else if (strcmp(token, "WAYPOINT_ALT") == 0)
             {
@@ -3372,7 +3708,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 if (alt > 0)
                 {
-                    AddRightJustifiedStringToBrief(string, 40, current_line, win, brief);
+                    AddRightJustifiedStringToBrief(string, 40, current_line,
+                                                   win, brief);
 
                     if (alt < MINIMUM_ASL_ALTITUDE)
                         AddIndexedStringToBuffer(1606, current_line);
@@ -3381,22 +3718,26 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 }
                 else
                 {
-                    AddRightJustifiedStringToBrief(string, 40, current_line, win, brief);
+                    AddRightJustifiedStringToBrief(string, 40, current_line,
+                                                   win, brief);
                 }
             }
             else if (strcmp(token, "WAYPOINT_CLIMB") == 0)
             {
                 WayPoint nw = NULL;
 
-                if (CWayPoint and CWayPoint->GetWPAction() not_eq WP_LAND and CWayPoint->GetWPAction() not_eq WP_REFUEL)
+                if (CWayPoint and CWayPoint->GetWPAction() not_eq WP_LAND and
+                    CWayPoint->GetWPAction() not_eq WP_REFUEL)
                     nw = CWayPoint->GetNextWP();
 
-                if (CWayPoint and nw and nw->GetWPAltitude() not_eq CWayPoint->GetWPAltitude())
+                if (CWayPoint and nw and
+                    nw->GetWPAltitude() not_eq CWayPoint->GetWPAltitude())
                 {
                     if (CWayPoint->GetWPFlags() bitand WPF_HOLDCURRENT)
                     {
                         AddIndexedStringToBuffer(1600, current_line);
-                        AddNumberToBuffer(CWayPoint->GetWPAltitude(), current_line);
+                        AddNumberToBuffer(CWayPoint->GetWPAltitude(),
+                                          current_line);
                     }
                     else
                     {
@@ -3423,30 +3764,35 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                 {
                     VuListIterator myit(AllAirList);
-                    u = (Unit) myit.GetFirst();
+                    u = (Unit)myit.GetFirst();
 
                     while (u)
                     {
                         u->GetLocation(&x, &y);
 
-                        if (x == mec->tx and y == mec->ty and u->GetType() == TYPE_SQUADRON)
+                        if (x == mec->tx and y == mec->ty and
+                            u->GetType() == TYPE_SQUADRON)
                         {
                             CEntity = u;
-                            ReadScriptedBriefFile("Squad.b", current_line, win, brief, mec, mec->package_element);
+                            ReadScriptedBriefFile("Squad.b", current_line, win,
+                                                  brief, mec,
+                                                  mec->package_element);
 
-                            if (u->GetSType() == STYPE_UNIT_FIGHTER or u->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)
+                            if (u->GetSType() == STYPE_UNIT_FIGHTER or
+                                u->GetSType() == STYPE_UNIT_FIGHTER_BOMBER)
                                 ESquad = u;
 
                             got++;
                         }
 
-                        u = (Unit) myit.GetNext();
+                        u = (Unit)myit.GetNext();
                     }
                 }
 
-                if ( not got)
+                if (not got)
                 {
-                    ReadScriptedBriefFile("NoSquad.b", current_line, win, brief, mec, mec->package_element);
+                    ReadScriptedBriefFile("NoSquad.b", current_line, win, brief,
+                                          mec, mec->package_element);
                 }
             }
             else if (strncmp(token, "ENTITY_NAME", 11) == 0)
@@ -3461,7 +3807,10 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 if (CEntity and CEntity->IsObjective())
                 {
                     FeatureClassDataType *fc;
-                    fc = (FeatureClassDataType*) Falcon4ClassTable[((Objective)CEntity)->GetFeatureID(mec->curr_data)].dataPtr;
+                    fc =
+                        (FeatureClassDataType *)Falcon4ClassTable
+                            [((Objective)CEntity)->GetFeatureID(mec->curr_data)]
+                                .dataPtr;
                     AddStringToBuffer(fc->Name, current_line);
                 }
                 else if (CEntity and CEntity->IsUnit())
@@ -3469,7 +3818,9 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     VehicleClassDataType *vc;
                     UnitClassDataType *uc;
                     uc = ((Unit)CEntity)->GetUnitClassData();
-                    vc = (VehicleClassDataType*) Falcon4ClassTable[uc->VehicleType[mec->curr_data]].dataPtr;
+                    vc = (VehicleClassDataType *)
+                             Falcon4ClassTable[uc->VehicleType[mec->curr_data]]
+                                 .dataPtr;
                     AddStringToBuffer(vc->Name, current_line);
                 }
             }
@@ -3478,10 +3829,13 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 int oper;
 
                 if (CEntity->IsObjective())
-                    AddNumberToBuffer(((Objective)CEntity)->GetObjectiveStatus(), current_line);
+                    AddNumberToBuffer(
+                        ((Objective)CEntity)->GetObjectiveStatus(),
+                        current_line);
                 else if (CEntity->IsUnit())
                 {
-                    oper = 100 * ((Unit)CEntity)->GetTotalVehicles() / ((Unit)CEntity)->GetFullstrengthVehicles();
+                    oper = 100 * ((Unit)CEntity)->GetTotalVehicles() /
+                           ((Unit)CEntity)->GetFullstrengthVehicles();
                     AddNumberToBuffer(oper, current_line);
                 }
             }
@@ -3490,7 +3844,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                 int i, j, f, skip;
                 _TCHAR names[MAX_TARGET_FEATURES][30];
 
-                if ( not ptarget or not ptarget->IsObjective())
+                if (not ptarget or not ptarget->IsObjective())
                     continue;
 
                 for (i = 0; i < MAX_TARGET_FEATURES; i++)
@@ -3501,7 +3855,10 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     {
                         // KCK: Don't show identical names (i.e. "Runway") twice.
                         FeatureClassDataType *fc;
-                        fc = (FeatureClassDataType*) Falcon4ClassTable[((Objective)ptarget)->GetFeatureID(f)].dataPtr;
+                        fc = (FeatureClassDataType *)
+                                 Falcon4ClassTable[((Objective)ptarget)
+                                                       ->GetFeatureID(f)]
+                                     .dataPtr;
 
                         for (j = 0, skip = 0; j < i; j++)
                         {
@@ -3511,11 +3868,13 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
 
                         _tcscpy(names[i], fc->Name);
 
-                        if ( not skip)
+                        if (not skip)
                         {
                             CEntity = ptarget;
                             mec->curr_data = f;
-                            ReadScriptedBriefFile("Feature.b", current_line, win, brief, mec, mec->package_element);
+                            ReadScriptedBriefFile("Feature.b", current_line,
+                                                  win, brief, mec,
+                                                  mec->package_element);
                         }
                     }
                 }
@@ -3532,7 +3891,8 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
                     if (o)
                     {
                         CEntity = o;
-                        ReadScriptedBriefFile("Objectiv.b", current_line, win, brief, mec, mec->package_element);
+                        ReadScriptedBriefFile("Objectiv.b", current_line, win,
+                                              brief, mec, mec->package_element);
                     }
                 }
             }
@@ -3554,20 +3914,24 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             else if (strcmp(token, "SHOW_PLANNED_OFFENSIVE") == 0)
             {
                 _TCHAR format[256], time[40] = {0}, objective[40], total[512];
-                Objective o = (Objective) vuDatabase->Find(TeamInfo[mec->team]->GetGroundAction()->actionObjective);
+                Objective o = (Objective)vuDatabase->Find(
+                    TeamInfo[mec->team]->GetGroundAction()->actionObjective);
                 ReadIndexedString(890, format, 255);
                 GetEntityName(o, objective, 'O', ' ');
-                AddTimeToBuffer(TeamInfo[mec->team]->GetGroundAction()->actionTime, time);
+                AddTimeToBuffer(
+                    TeamInfo[mec->team]->GetGroundAction()->actionTime, time);
                 ConstructOrderedSentence(512, total, format, time, objective);
                 AddStringToBuffer(total, current_line);
             }
             else if (strcmp(token, "SHOW_PLANNED_DEFENSIVE") == 0)
             {
                 _TCHAR format[256], time[40] = {0}, objective[40], total[512];
-                Objective o = (Objective) vuDatabase->Find(TeamInfo[mec->team]->GetGroundAction()->actionObjective);
+                Objective o = (Objective)vuDatabase->Find(
+                    TeamInfo[mec->team]->GetGroundAction()->actionObjective);
                 ReadIndexedString(891, format, 255);
                 GetEntityName(o, objective, 'O', ' ');
-                AddTimeToBuffer(TeamInfo[mec->team]->GetGroundAction()->actionTime, time);
+                AddTimeToBuffer(
+                    TeamInfo[mec->team]->GetGroundAction()->actionTime, time);
                 ConstructOrderedSentence(512, total, format, time, objective);
                 AddStringToBuffer(total, current_line);
             }
@@ -3575,7 +3939,7 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
             else if (strncmp(token, "<", 1) == 0)
             {
                 //if ((g_bBriefHTML) and (filename not_eq ""))
-                if ((g_bBriefHTML) and ( not win))
+                if ((g_bBriefHTML) and (not win))
                     AddStringToBuffer(token, current_line);
             }
 
@@ -3588,4 +3952,3 @@ int ReadScriptedBriefFile(char* filename, _TCHAR *current_line, C_Window *win, _
     CloseCampFile(fp);
     return 1;
 }
-

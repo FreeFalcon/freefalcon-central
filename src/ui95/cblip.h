@@ -12,14 +12,15 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
     short x, y;
     uchar side;
     uchar state;
-    long  time;
+    long time;
     BLIP *Next;
 };
 
@@ -34,7 +35,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -44,7 +46,7 @@ private:
     BLIP *Last_;
 
     IMAGE_RSC *BlipImg_[8][8];
-    O_Output  *Drawer_;
+    O_Output *Drawer_;
 
 public:
     C_Blip();
@@ -80,7 +82,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void Refresh(BLIP *blip);
     void Refresh();

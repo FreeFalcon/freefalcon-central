@@ -1,13 +1,13 @@
 #ifndef _ACMIDRIVE_H
 #define _ACMIDRIVE_H
 
-#include "Utils/matrix.h"
+#include "utils/matrix.h"
 #include "f4thread.h"
 #include "simmath.h"
 #include "f4vu.h"
 #include "renderer/render2d.h"
-#include "AcmiView.h"
-#include "AcmiCam.h"
+#include "acmiview.h"
+#include "acmicam.h"
 
 #define EXTERNAL 0
 #define CHASE 1
@@ -36,11 +36,11 @@ typedef struct
 
 typedef struct DBLIST
 {
-    void * node;          /* pointer to node data */
-    void * user;          /* pointer to user data */
+    void *node;          /* pointer to node data */
+    void *user;          /* pointer to user data */
 
-    struct DBLIST * next;   /* next list node */
-    struct DBLIST * prev;   /* prev list node */
+    struct DBLIST *next;   /* next list node */
+    struct DBLIST *prev;   /* prev list node */
 } DBLIST;
 
 class ACMIManagerClass
@@ -68,36 +68,36 @@ public:
 
     DBLIST *ACMICamListAppend(DBLIST *list, void *node);
     void ACMICamListDestroy(DBLIST *list);
-    int ACMIListCount(DBLIST * list);
+    int ACMIListCount(DBLIST *list);
     DBLIST *ACMIListSearch(DBLIST *list, void *node, int searchType);
     DBLIST *ACMIListNth(DBLIST *list, int n);
     DBLIST *ACMIListSort(DBLIST **list, int sortType);
     int ACMICamListCheckFrameNum(void *node_a, void *node_b);
     int ACMICamListSortFrameNumInc(DBLIST *parent_a, DBLIST *parent_b);
     int ACMICamListSortFrameNumDec(DBLIST *parent_a, DBLIST *parent_b);
-    void ACMIDeleteCamCameraNode(rCamStruct* cameraNode);
+    void ACMIDeleteCamCameraNode(rCamStruct *cameraNode);
     void ACMISetCurrCamCorder(void);
 
     int ExitGraphics(void);
     float GetGroundLevel(float x, float y);
     float GetApproxGroundLevel(float x, float y);
-    int   GetGroundIntersection(euler* dir, vector* point);
+    int GetGroundIntersection(euler *dir, vector *point);
     ACMIManagerClass(void);
     ~ACMIManagerClass(void);
     void InitAcmiGraphics(void);
     void StopGraphicsLoop(void);
-    void ObjectSetData(SimBaseClass*, Tpoint*, Trotation*);
-    void InsertObjectIntoDrawList(SimBaseClass*);
-    ImageBuffer* ACMIImage;
+    void ObjectSetData(SimBaseClass *, Tpoint *, Trotation *);
+    void InsertObjectIntoDrawList(SimBaseClass *);
+    ImageBuffer *ACMIImage;
     HWND ACMIWin;
-    RViewPoint* GetViewpoint(void)
+    RViewPoint *GetViewpoint(void)
     {
         return viewPoint;
     };
 
     void InitAcmi(IDirectDrawSurface *surface);
     void SetACMIFileName(char *fname);
-    void GetObjectName(SimBaseClass* theObject, char *tmpStr);
+    void GetObjectName(SimBaseClass *theObject, char *tmpStr);
     void InitUIVector(void);
     void SetUIVector(Tpoint *tVect);
     void SwitchACMICamera(int cameraSwitch);
@@ -114,11 +114,11 @@ public:
     long GetAcmiListBoxID(int objectNum, long filter);
     void AcmiCameraSelect(long camSel);
 
-    int  NumACMIFrames(void)
+    int NumACMIFrames(void)
     {
         return (acmiObjectData->numACMIFrames);
     };
-    int  CurrACMIFrames(void)
+    int CurrACMIFrames(void)
     {
         return (acmiObjectData->currACMIFrames);
     };
@@ -158,9 +158,9 @@ public:
     {
         acmiObjectData->FastForwardACMI();
     };
-    int  UIDirectionACMI(void)
+    int UIDirectionACMI(void)
     {
-        return(acmiObjectData->playDir);
+        return (acmiObjectData->playDir);
     };
     void ACMITrackingObject(void)
     {
@@ -206,7 +206,7 @@ public:
     {
         acmiCam->SetRotateACMICameraType(type);
     };
-    int  GetACMICameraType(void)
+    int GetACMICameraType(void)
     {
         return (acmiCam->GetACMICameraType());
     };
@@ -218,7 +218,7 @@ public:
     {
         acmiCam->SetAcmiCameraAction(currentAction, az, el);
     };
-    int  ACMIGetEntityCount(void)
+    int ACMIGetEntityCount(void)
     {
         return (acmiObjectData->MAX_ENTITY_CAMS);
     };
@@ -239,22 +239,22 @@ public:
     void AcmiZoomOutCamera(void);
     void CleanupACMIFileData(void);
     void InitAcmiFile(void);
-    void RemoveObjectFromDrawList(SimBaseClass*);
+    void RemoveObjectFromDrawList(SimBaseClass *);
 
 private:
     typedef struct displayList
     {
-        DrawableObject* object;
-        DrawableObject* object1;
+        DrawableObject *object;
+        DrawableObject *object1;
         float x, y, z;
         int data1;
-        displayList* next;
+        displayList *next;
     };
 
     float objectScale;
     void RescaleAllObjects(void);
     void DrawEFOV(void);
-    void DrawEFOVBox(SimObjectType*);
+    void DrawEFOVBox(SimObjectType *);
     void ClearRemoveList(void);
     void AddInsertList(void);
     void DoAttachList(void);
@@ -267,7 +267,7 @@ private:
     void DrawIDTags(void);
     void GetUserPosition(void);
     void ShowVersionString(void);
-    RViewPoint* viewPoint;
+    RViewPoint *viewPoint;
     RenderOTW *renderer;
     int AcmiDrawing;
     int AcmiDrawingFinished;
@@ -285,20 +285,22 @@ private:
     int getNewCameraPos;
     int eyeFly;
     unsigned int chatterCount;
-    enum {chatterLen = 255};
+    enum
+    {
+        chatterLen = 255
+    };
     char chatterStr[chatterLen + 1];
     void DrawTracers(void);
 
-    SimBaseClass* AcmiPlatform;
-    SimBaseClass* padlockPriority;
-    VuOrderedList* AcmiDrawList;
-    VuOrderedList* featureList;
+    SimBaseClass *AcmiPlatform;
+    SimBaseClass *padlockPriority;
+    VuOrderedList *AcmiDrawList;
+    VuOrderedList *featureList;
     // VuEntity* flyingEye;
     LIST *simEntityList;
-    VuThread* vuThread;
+    VuThread *vuThread;
 
     ACMIClass *acmiObjectData;
-
 };
 
 extern ACMIManagerClass ACMIDriver;

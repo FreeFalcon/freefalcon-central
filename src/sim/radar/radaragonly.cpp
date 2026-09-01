@@ -1,15 +1,17 @@
 #include "stdhdr.h"
-#include "Object.h"
+#include "object.h"
 #include "simmover.h"
 #include "camp2sim.h"
 #include "team.h"
-#include "MsgInc/TrackMsg.h"
-#include "RadarAGOnly.h"
+#include "msginc/trackmsg.h"
+#include "radaragonly.h"
 #include "campbase.h"
 
-void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMatrix vmat, float elapsedTimeInverse);
+void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList,
+                 TransformMatrix vmat, float elapsedTimeInverse);
 
-RadarAGOnlyClass::RadarAGOnlyClass(int type, SimMoverClass* parentPlatform) : RadarDigiClass(type, parentPlatform)
+RadarAGOnlyClass::RadarAGOnlyClass(int type, SimMoverClass* parentPlatform)
+    : RadarDigiClass(type, parentPlatform)
 {
     mode = GM;
     NewRange(20.0f);
@@ -30,7 +32,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     CheckLockedTarget();
 
     // If we don't have a locked target, we don't have anything to do.
-    if ( not lockedTarget)
+    if (not lockedTarget)
     {
         return NULL;
     }
@@ -42,7 +44,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     canSee = TRUE;
 
     // Can't hold a lock while we're off
-    if ( not isEmitting)
+    if (not isEmitting)
     {
         canSee = FALSE;
     }
@@ -54,7 +56,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     }
 
     // Only track object in the correct domain (air/land)
-    if ( not lockedTarget->BaseData()->OnGround())
+    if (not lockedTarget->BaseData()->OnGround())
     {
         canSee = FALSE;
     }
@@ -63,7 +65,8 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     if (ReturnStrength(lockedTarget) < 1.0f)
     {
         // He's faded.  How long has he been hiding?
-        if (SimLibElapsedTime - lockedTarget->localData->rdrLastHit > radarData->CoastTime)
+        if (SimLibElapsedTime - lockedTarget->localData->rdrLastHit >
+            radarData->CoastTime)
         {
             // Give up and drop lock
             canSee = FALSE;
@@ -72,7 +75,7 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
 
 
     // If we can't see the target, drop lock
-    if ( not canSee)
+    if (not canSee)
     {
         SetDesiredTarget(NULL);
     }
@@ -81,7 +84,8 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
     // Tell the base class and the rest of the world where we're looking
     if (lockedTarget)
     {
-        SetSeekerPos(TargetAz(platform, lockedTarget), TargetEl(platform, lockedTarget));
+        SetSeekerPos(TargetAz(platform, lockedTarget),
+                     TargetEl(platform, lockedTarget));
         platform->SetRdrAz(radarData->BeamHalfAngle);
         platform->SetRdrEl(radarData->BeamHalfAngle);
         platform->SetRdrCycleTime(0.0F);
@@ -114,6 +118,6 @@ SimObjectType* RadarAGOnlyClass::Exec(SimObjectType*)
 void RadarAGOnlyClass::SetDesiredTarget(SimObjectType* newTarget)
 {
     // Only accept ground targets
-    if ( not newTarget or newTarget->BaseData()->OnGround())
+    if (not newTarget or newTarget->BaseData()->OnGround())
         RadarClass::SetDesiredTarget(newTarget);
 }

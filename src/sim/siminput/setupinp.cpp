@@ -1,13 +1,13 @@
 #include "stdhdr.h"
 #include "commands.h"
-#include "inpFunc.h"
+#include "inpfunc.h"
 #include "controlsxml.h"   // #53: XML function catalog (name -> BMS label)
 #include "otwdrive.h"
 #include "cpmanager.h"
 #include "falclib/include/f4find.h"
 #include "simfile.h"
 #include "f4find.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "aircrft.h"
 #include "simdrive.h"
 #include "camp2sim.h"
@@ -57,7 +57,8 @@ InputFunctionHashTable::InputFunctionHashTable(void)
 
     if (gInputMemPool == NULL)
     {
-        gInputMemPool = MemPoolInitFS(sizeof(struct FunctionPtrListEntry), 20, 0);
+        gInputMemPool =
+            MemPoolInitFS(sizeof(struct FunctionPtrListEntry), 20, 0);
     }
 
 #endif
@@ -81,8 +82,6 @@ InputFunctionHashTable::InputFunctionHashTable(void)
             POVTable[i].cpButtonID[j] = -1;
         }
     }
-
-
 }
 
 InputFunctionHashTable::~InputFunctionHashTable(void)
@@ -135,7 +134,9 @@ void InputFunctionHashTable::ClearTable(void)
     }
 }
 
-void InputFunctionHashTable::AddFunction(int key, int flags, int buttonId, int mouseSide, InputFunctionType funcPtr)
+void InputFunctionHashTable::AddFunction(int key, int flags, int buttonId,
+                                         int mouseSide,
+                                         InputFunctionType funcPtr)
 {
     struct FunctionPtrListEntry* tmpEntry;
 
@@ -156,7 +157,7 @@ void InputFunctionHashTable::AddFunction(int key, int flags, int buttonId, int m
     // F4Assert (tmpEntry == NULL);
 
 #ifdef USE_SH_POOLS
-    tmpEntry = (FunctionPtrListEntry *)MemAllocFS(gInputMemPool);
+    tmpEntry = (FunctionPtrListEntry*)MemAllocFS(gInputMemPool);
 #else
     tmpEntry = new struct FunctionPtrListEntry;
 #endif
@@ -203,7 +204,9 @@ void InputFunctionHashTable::RemoveFunction(int key, int flags)
     }
 }
 
-InputFunctionType InputFunctionHashTable::GetFunction(int key, int flags, int* pbuttonId, int* pmouseSide)
+InputFunctionType InputFunctionHashTable::GetFunction(int key, int flags,
+                                                      int* pbuttonId,
+                                                      int* pmouseSide)
 {
     struct FunctionPtrListEntry* tmpEntry;
     InputFunctionType retval = NULL;
@@ -238,7 +241,9 @@ int InputFunctionHashTable::GetButtonId(InputFunctionType funcPtr)
 {
     struct FunctionPtrListEntry* tmpEntry;
 
-    for (int i = 0; i < NumHashEntries; i++) //Wombat778 2-05-04 I will burn in hell for doing this to a hash table
+    for (
+        int i = 0; i < NumHashEntries;
+        i++) //Wombat778 2-05-04 I will burn in hell for doing this to a hash table
     {
         tmpEntry = functionTable[i];
 
@@ -249,7 +254,6 @@ int InputFunctionHashTable::GetButtonId(InputFunctionType funcPtr)
 
             tmpEntry = tmpEntry->next;
         }
-
     }
 
     return 0;
@@ -309,7 +313,9 @@ BOOL InputFunctionHashTable::SetControl(int key, int flags, long control)
     return retval;
 }
 
-BOOL InputFunctionHashTable::SetButtonFunction(int buttonID, InputFunctionType theFunc, int CPbuttonId)
+BOOL InputFunctionHashTable::SetButtonFunction(int buttonID,
+                                               InputFunctionType theFunc,
+                                               int CPbuttonId)
 {
     if (buttonID < 0 or buttonID >= NumButtons)
         return FALSE;
@@ -319,7 +325,8 @@ BOOL InputFunctionHashTable::SetButtonFunction(int buttonID, InputFunctionType t
     return TRUE;
 }
 
-InputFunctionType InputFunctionHashTable::GetButtonFunction(int buttonID, int *cpButtonID)
+InputFunctionType InputFunctionHashTable::GetButtonFunction(int buttonID,
+                                                            int* cpButtonID)
 {
     if (buttonID < 0 or buttonID >= NumButtons)
     {
@@ -335,7 +342,9 @@ InputFunctionType InputFunctionHashTable::GetButtonFunction(int buttonID, int *c
     return buttonTable[buttonID].func;
 }
 
-BOOL InputFunctionHashTable::SetPOVFunction(int POV, int dir, InputFunctionType theFunc, int cpButtonID)
+BOOL InputFunctionHashTable::SetPOVFunction(int POV, int dir,
+                                            InputFunctionType theFunc,
+                                            int cpButtonID)
 {
     if (POV < 0 or POV >= NumPOVs)
         return FALSE;
@@ -348,7 +357,8 @@ BOOL InputFunctionHashTable::SetPOVFunction(int POV, int dir, InputFunctionType 
     return TRUE;
 }
 
-InputFunctionType InputFunctionHashTable::GetPOVFunction(int POV, int dir, int* cpButtonID)
+InputFunctionType InputFunctionHashTable::GetPOVFunction(int POV, int dir,
+                                                         int* cpButtonID)
 {
     if (POV < 0 or POV >= NumPOVs or dir < 0 or dir >= MAX_POV_DIR)
     {
@@ -377,8 +387,8 @@ void CleanupInputFunctions(void)
 }
 
 //Wombat778 03-06-04 Call this instead of the input function directly. It allows capturing/blocking of keystrokes
-void
-CallFunc(InputFunctionType theFunc, unsigned long val, int state, void* pButton)
+void CallFunc(InputFunctionType theFunc, unsigned long val, int state,
+              void* pButton)
 {
     // if ( not TrainingScript->IsBlocked(theFunc,NULL)) //Wombat778 3-09-04 Check if this function is being blocked by the training script
     // {
@@ -408,7 +418,7 @@ void CallInputFunction(unsigned long val, int state)
         if (keyDown)
         {
             //dangling else - JPO
-            if ( not (state bitand 0x6) and DIK_IsAscii(val, state))
+            if (not(state bitand 0x6) and DIK_IsAscii(val, state))
             {
                 StandardAsciiInput(val, state);
             }
@@ -427,12 +437,11 @@ void CallInputFunction(unsigned long val, int state)
     }
     else
     {
-        flags =
-            (state bitand MODS_MASK) +
-            (CommandsKeyCombo << SECOND_KEY_SHIFT) +
-            (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT)
-            ;
-        theFunc = UserFunctionTable.GetFunction(val, flags, &buttonId, &mouseSide);
+        flags = (state bitand MODS_MASK) +
+                (CommandsKeyCombo << SECOND_KEY_SHIFT) +
+                (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT);
+        theFunc =
+            UserFunctionTable.GetFunction(val, flags, &buttonId, &mouseSide);
 
         /* // ASSOCIATOR: Commented this out so that Comms menu will not deactivate while pressing other keys
         // Cancel the combo, whether it is handled or not
@@ -448,11 +457,10 @@ void CallInputFunction(unsigned long val, int state)
 
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
-        if (
-            CommandsKeyComboMod and CommandsKeyCombo and keyDown and 
-            theFunc not_eq ScreenShot and theFunc not_eq RadioMessageSend and theFunc not_eq OTWRadioMenuStep and 
-            theFunc not_eq OTWRadioMenuStepBack
-        )
+        if (CommandsKeyComboMod and CommandsKeyCombo and keyDown and
+            theFunc not_eq ScreenShot and theFunc not_eq RadioMessageSend and
+            theFunc not_eq OTWRadioMenuStep and
+            theFunc not_eq OTWRadioMenuStepBack)
         {
             CommandsKeyCombo = 0;
             CommandsKeyComboMod = 0;
@@ -460,7 +468,8 @@ void CallInputFunction(unsigned long val, int state)
         }
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
-        if (OTWDriver.pMenuManager->IsActive() and val >= DIK_1 and val <= DIK_9)
+        if (OTWDriver.pMenuManager->IsActive() and val >= DIK_1 and
+            val <= DIK_9)
         {
             theFunc = RadioMessageSend;
         }
@@ -468,7 +477,7 @@ void CallInputFunction(unsigned long val, int state)
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
         if (OTWDriver.pMenuManager->IsActive() and val == DIK_ESCAPE)
         {
-            CommandsKeyCombo    = 0;
+            CommandsKeyCombo = 0;
             CommandsKeyComboMod = 0;
             OTWDriver.pMenuManager->DeActivate();
         }
@@ -478,24 +487,21 @@ void CallInputFunction(unsigned long val, int state)
         int tempComboMod = 0;
 
         // ASSOCIATOR: Added so that other keys can be pressed while in Comms menus
-        if (
-            CommandsKeyCombo and theFunc not_eq ScreenShot and 
-            theFunc not_eq RadioMessageSend and 
-            theFunc not_eq OTWRadioMenuStep and 
-            theFunc not_eq OTWRadioMenuStepBack
-        )
+        if (CommandsKeyCombo and theFunc not_eq ScreenShot and
+            theFunc not_eq RadioMessageSend and
+            theFunc not_eq OTWRadioMenuStep and
+            theFunc not_eq OTWRadioMenuStepBack)
         {
             tempCombo = CommandsKeyCombo;
             tempComboMod = CommandsKeyComboMod;
             CommandsKeyCombo = 0;
             CommandsKeyComboMod = 0;
-            flags =
-                (state bitand MODS_MASK) +
-                (CommandsKeyCombo << SECOND_KEY_SHIFT) +
-                (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT)
-                ;
-            theFunc = UserFunctionTable.GetFunction(val, flags, &buttonId, &mouseSide);
-            CommandsKeyCombo    = tempCombo;
+            flags = (state bitand MODS_MASK) +
+                    (CommandsKeyCombo << SECOND_KEY_SHIFT) +
+                    (CommandsKeyComboMod << SECOND_KEY_MOD_SHIFT);
+            theFunc = UserFunctionTable.GetFunction(val, flags, &buttonId,
+                                                    &mouseSide);
+            CommandsKeyCombo = tempCombo;
             CommandsKeyComboMod = tempComboMod;
         }
 
@@ -511,11 +517,13 @@ void CallInputFunction(unsigned long val, int state)
             else
             {
                 //theFunc(val, state, OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
-                CallFunc(theFunc, val, state, OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
+                CallFunc(theFunc, val, state,
+                         OTWDriver.pCockpitManager->GetButtonPointer(buttonId));
 
-                if (SimDriver.GetPlayerAircraft() and 
-                    SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and 
- not ((AircraftClass*)SimDriver.GetPlayerAircraft())->ejectTriggered)
+                if (SimDriver.GetPlayerAircraft() and
+                    SimDriver.GetPlayerAircraft()->IsSetFlag(MOTION_OWNSHIP) and
+                    not((AircraftClass*)SimDriver.GetPlayerAircraft())
+                           ->ejectTriggered)
                 {
                     OTWDriver.pCockpitManager->Dispatch(buttonId, mouseSide);
                 }
@@ -543,7 +551,7 @@ static int RemapJoyButtonIdByGUID(int savedButtonId, const GUID& savedGUID)
             return (i - SIM_JOYSTICK1) * SIMLIB_MAX_DIGITAL + local;
     }
 
-    return savedButtonId;   // device is not connected right now
+    return savedButtonId; // device is not connected right now
 }
 
 // #20: extract "GUID=<32 hex>" from a .key line. Returns true and writes 16 bytes to out.
@@ -551,7 +559,7 @@ static bool ParseLineDeviceGUID(const char* line, GUID* out)
 {
     const char* gp = strstr(line, "GUID=");
 
-    if ( not gp)
+    if (not gp)
         return false;
 
     gp += 5;
@@ -570,7 +578,7 @@ static bool ParseLineDeviceGUID(const char* line, GUID* out)
     return true;
 }
 
-void LoadFunctionTables(_TCHAR *fname)
+void LoadFunctionTables(_TCHAR* fname)
 {
     // #53: bindings are loaded from the active profile's XML (config\profiles\<active>\...)
     // instead of keystrokes.key. fname is ignored (the profile comes from profiles.xml).
@@ -588,15 +596,17 @@ void LoadFunctionTables(_TCHAR *fname)
     for (int i = 0; i < nkb; i++)
     {
         if (kb[i].k2 < 0)
-            continue;   // entry without a key
+            continue; // entry without a key
 
         InputFunctionType f = FindFunctionFromString(kb[i].func);
 
         if (not f)
             continue;
 
-        int flags = kb[i].m2 + (kb[i].k1 << SECOND_KEY_SHIFT) + (kb[i].m1 << SECOND_KEY_MOD_SHIFT);
-        UserFunctionTable.AddFunction(kb[i].k2, flags, kb[i].cpbtn, kb[i].mouse, f);
+        int flags = kb[i].m2 + (kb[i].k1 << SECOND_KEY_SHIFT) +
+                    (kb[i].m1 << SECOND_KEY_MOD_SHIFT);
+        UserFunctionTable.AddFunction(kb[i].k2, flags, kb[i].cpbtn, kb[i].mouse,
+                                      f);
     }
 
     // --- devices: <GUID>.xml ONLY for those found during enumeration (gDIDevButtons>0) ---
@@ -612,7 +622,7 @@ void LoadFunctionTables(_TCHAR *fname)
         if (memcmp(&gDIDevGUIDs[dev], &zeroGuid, sizeof(GUID)) == 0)
             continue;
 
-        const unsigned char *gbytes = (const unsigned char *)&gDIDevGUIDs[dev];
+        const unsigned char* gbytes = (const unsigned char*)&gDIDevGUIDs[dev];
 
         for (int k = 0; k < (int)sizeof(GUID); k++)
             sprintf(guidStr + k * 2, "%02X", gbytes[k]);
@@ -631,12 +641,14 @@ void LoadFunctionTables(_TCHAR *fname)
 
             if (bb[i].isPov)
             {
-                UserFunctionTable.SetPOVFunction(bb[i].id, bb[i].dir, f, bb[i].cpbtn);
+                UserFunctionTable.SetPOVFunction(bb[i].id, bb[i].dir, f,
+                                                 bb[i].cpbtn);
             }
             else
             {
                 // per-GUID file: remap to the current device slot (local button + slot offset)
-                int newId = slotOff * SIMLIB_MAX_DIGITAL + (bb[i].id % SIMLIB_MAX_DIGITAL);
+                int newId = slotOff * SIMLIB_MAX_DIGITAL +
+                            (bb[i].id % SIMLIB_MAX_DIGITAL);
                 UserFunctionTable.SetButtonFunction(newId, f, bb[i].cpbtn);
             }
         }
@@ -656,107 +668,111 @@ void InputBuildString(unsigned long i)
 {
     switch (i)
     {
-        case DIK_RETURN: // Enter
-        case DIK_NUMPADENTER:
-            CommandsKeyCombo = 0;
-            CommandsKeyComboMod = 0;
-            break;
+    case DIK_RETURN: // Enter
+    case DIK_NUMPADENTER:
+        CommandsKeyCombo = 0;
+        CommandsKeyComboMod = 0;
+        break;
 
-        case DIK_BACK:
-            memmove(&chatterStr[chatterCount - 1], &chatterStr[chatterCount],
-                    MAX_CHAT_LENGTH - chatterCount);
-            chatterCount --;
-            break;
+    case DIK_BACK:
+        memmove(&chatterStr[chatterCount - 1], &chatterStr[chatterCount],
+                MAX_CHAT_LENGTH - chatterCount);
+        chatterCount--;
+        break;
 
-        case DIK_DELETE:
-            memmove(&chatterStr[chatterCount], &chatterStr[chatterCount + 1],
-                    MAX_CHAT_LENGTH - chatterCount - 1);
-            chatterCount --;
-            break;
+    case DIK_DELETE:
+        memmove(&chatterStr[chatterCount], &chatterStr[chatterCount + 1],
+                MAX_CHAT_LENGTH - chatterCount - 1);
+        chatterCount--;
+        break;
 
-        case DIK_LEFT:
-            if (chatterCount)
-                chatterCount --;
+    case DIK_LEFT:
+        if (chatterCount)
+            chatterCount--;
 
-            break;
+        break;
 
-        case DIK_RIGHT:
-            if (chatterCount < strlen(chatterStr))
-                chatterCount ++;
+    case DIK_RIGHT:
+        if (chatterCount < strlen(chatterStr))
+            chatterCount++;
 
-            break;
+        break;
 
-        case DIK_INSERT:
-            insertMode = 1 - insertMode;
-            break;
+    case DIK_INSERT:
+        insertMode = 1 - insertMode;
+        break;
 
-        case DIK_1:
-        case DIK_2:
-        case DIK_3:
-        case DIK_4:
-        case DIK_5:
-        case DIK_6:
-        case DIK_7:
-        case DIK_8:
-        case DIK_9:
-            if (chatterCount < MAX_CHAT_LENGTH)
+    case DIK_1:
+    case DIK_2:
+    case DIK_3:
+    case DIK_4:
+    case DIK_5:
+    case DIK_6:
+    case DIK_7:
+    case DIK_8:
+    case DIK_9:
+        if (chatterCount < MAX_CHAT_LENGTH)
+        {
+            if (insertMode)
             {
-                if (insertMode)
-                {
-                    memmove(&chatterStr[chatterCount + 1], &chatterStr[chatterCount],
-                            MAX_CHAT_LENGTH - chatterCount - 1);
-                }
-
-                chatterStr[chatterCount] = (char)(i - DIK_1 + '1');
-                chatterCount ++;
+                memmove(&chatterStr[chatterCount + 1],
+                        &chatterStr[chatterCount],
+                        MAX_CHAT_LENGTH - chatterCount - 1);
             }
 
-            break;
+            chatterStr[chatterCount] = (char)(i - DIK_1 + '1');
+            chatterCount++;
+        }
 
-        case DIK_0:
-            if (chatterCount < MAX_CHAT_LENGTH)
+        break;
+
+    case DIK_0:
+        if (chatterCount < MAX_CHAT_LENGTH)
+        {
+            if (insertMode)
             {
-                if (insertMode)
-                {
-                    memmove(&chatterStr[chatterCount + 1], &chatterStr[chatterCount],
-                            MAX_CHAT_LENGTH - chatterCount - 1);
-                }
-
-                chatterStr[chatterCount] = '0';
-                chatterCount ++;
+                memmove(&chatterStr[chatterCount + 1],
+                        &chatterStr[chatterCount],
+                        MAX_CHAT_LENGTH - chatterCount - 1);
             }
 
-            break;
+            chatterStr[chatterCount] = '0';
+            chatterCount++;
+        }
 
-        case DIK_PERIOD:
-            if (chatterCount < MAX_CHAT_LENGTH)
+        break;
+
+    case DIK_PERIOD:
+        if (chatterCount < MAX_CHAT_LENGTH)
+        {
+            if (insertMode)
             {
-                if (insertMode)
-                {
-                    memmove(&chatterStr[chatterCount + 1], &chatterStr[chatterCount],
-                            MAX_CHAT_LENGTH - chatterCount - 1);
-                }
-
-                chatterStr[chatterCount] = '.';
-                chatterCount ++;
+                memmove(&chatterStr[chatterCount + 1],
+                        &chatterStr[chatterCount],
+                        MAX_CHAT_LENGTH - chatterCount - 1);
             }
 
-            break;
+            chatterStr[chatterCount] = '.';
+            chatterCount++;
+        }
 
-        case DIK_MINUS:
-            if (chatterCount < MAX_CHAT_LENGTH)
+        break;
+
+    case DIK_MINUS:
+        if (chatterCount < MAX_CHAT_LENGTH)
+        {
+            if (insertMode)
             {
-                if (insertMode)
-                {
-                    memmove(&chatterStr[chatterCount + 1], &chatterStr[chatterCount],
-                            MAX_CHAT_LENGTH - chatterCount - 1);
-                }
-
-                chatterStr[chatterCount] = '-';
-                chatterCount ++;
+                memmove(&chatterStr[chatterCount + 1],
+                        &chatterStr[chatterCount],
+                        MAX_CHAT_LENGTH - chatterCount - 1);
             }
 
-            break;
+            chatterStr[chatterCount] = '-';
+            chatterCount++;
+        }
+
+        break;
     }
 }
 
@@ -770,17 +786,18 @@ void StandardAsciiInput(unsigned long key, int state)
 
     switch (AsciiAllowed)
     {
-        case 1: // Integers
-            if ( not DIK_IsDigit(key, state) and asciival not_eq '-')
-                return;
+    case 1: // Integers
+        if (not DIK_IsDigit(key, state) and asciival not_eq '-')
+            return;
 
-            break;
+        break;
 
-        case 2: // Floats
-            if ( not DIK_IsDigit(key, state) and asciival not_eq '-' and asciival not_eq '.')
-                return;
+    case 2: // Floats
+        if (not DIK_IsDigit(key, state) and asciival not_eq '-' and
+            asciival not_eq '.')
+            return;
 
-            break;
+        break;
     }
 
     if (chatterCount < MaxInputLength)
@@ -794,7 +811,7 @@ void StandardAsciiInput(unsigned long key, int state)
             chatterStr[MaxInputLength] = 0;
         }
 
-        if ( not chatterStr[chatterCount])
+        if (not chatterStr[chatterCount])
             chatterStr[chatterCount + 1] = 0;
 
         chatterStr[chatterCount] = asciival;
@@ -810,108 +827,110 @@ void ExtendedKeyInput(unsigned long key, int)
 
     switch (key)
     {
-        case DIK_NUMPAD6:
-            if (chatterCount < MaxInputLength and chatterStr[chatterCount])
+    case DIK_NUMPAD6:
+        if (chatterCount < MaxInputLength and chatterStr[chatterCount])
+        {
+            chatterCount++;
+        }
+
+        break;
+
+    case DIK_NUMPAD4:
+        if (chatterCount > 0)
+        {
+            chatterCount--;
+        }
+
+        break;
+
+    case DIK_NUMPAD0:
+        // insert mode
+        break;
+
+    case DIK_NUMPAD7:
+        if (chatterCount > 0)
+        {
+            chatterCount = 0;
+        }
+
+        break;
+
+    case DIK_INSERT:
+        insertMode xor_eq 1;
+        break;
+
+    case DIK_NUMPAD1:
+        while (chatterStr[chatterCount] and chatterCount < (MaxInputLength - 1))
+            chatterCount++;
+
+        break;
+
+    case DIK_DECIMAL:
+        if (chatterCount >= (MaxInputLength))
+            break;
+
+        if (chatterStr[chatterCount])
+        {
+            i = chatterCount + 1;
+
+            if (i < MaxInputLength)
             {
-                chatterCount++;
-            }
-
-            break;
-
-        case DIK_NUMPAD4:
-            if (chatterCount > 0)
-            {
-                chatterCount--;
-            }
-
-            break;
-
-        case DIK_NUMPAD0:
-            // insert mode
-            break;
-
-        case DIK_NUMPAD7:
-            if (chatterCount > 0)
-            {
-                chatterCount = 0;
-            }
-
-            break;
-
-        case DIK_INSERT:
-            insertMode xor_eq 1;
-            break;
-
-        case DIK_NUMPAD1:
-            while (chatterStr[chatterCount] and chatterCount < (MaxInputLength - 1))
-                chatterCount++;
-
-            break;
-
-        case DIK_DECIMAL:
-            if (chatterCount >= (MaxInputLength))
-                break;
-
-            if (chatterStr[chatterCount])
-            {
-                i = chatterCount + 1;
-
-                if (i < MaxInputLength)
+                while (chatterStr[i] and i < MaxInputLength)
                 {
-                    while (chatterStr[i] and i < MaxInputLength)
-                    {
-                        chatterStr[i - 1] = chatterStr[i];
-                        i++;
-                    }
-
-                    chatterStr[i - 1] = 0;
+                    chatterStr[i - 1] = chatterStr[i];
+                    i++;
                 }
+
+                chatterStr[i - 1] = 0;
             }
+        }
 
-            break;
+        break;
 
-        case DIK_BACK:
-            if (chatterCount > 0)
-            {
-                chatterCount--;
+    case DIK_BACK:
+        if (chatterCount > 0)
+        {
+            chatterCount--;
 
-                for (i = chatterCount; i < MaxInputLength; i++)
-                    chatterStr[i] = chatterStr[i + 1];
+            for (i = chatterCount; i < MaxInputLength; i++)
+                chatterStr[i] = chatterStr[i + 1];
 
-                chatterStr[MaxInputLength] = 0;
-            }
+            chatterStr[MaxInputLength] = 0;
+        }
 
-            break;
+        break;
 
-        case DIK_RETURN:
+    case DIK_RETURN:
 
-            // Use it
-            if (UseInputFn)
-                (*UseInputFn)();
+        // Use it
+        if (UseInputFn)
+            (*UseInputFn)();
 
-            chatterCount = 0;
-            CommandsKeyCombo = 0;
-            CommandsKeyComboMod = 0;
-            memset(chatterStr, 0, sizeof(chatterStr));
-            UseInputFn = NULL;
-            DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_CHATBOX);
-            break;
+        chatterCount = 0;
+        CommandsKeyCombo = 0;
+        CommandsKeyComboMod = 0;
+        memset(chatterStr, 0, sizeof(chatterStr));
+        UseInputFn = NULL;
+        DiscardInputFn = NULL;
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand
+                                    compl SHOW_CHATBOX);
+        break;
 
-        case DIK_ESCAPE:
+    case DIK_ESCAPE:
 
-            // Discard it
-            if (DiscardInputFn)
-                (*DiscardInputFn)();
+        // Discard it
+        if (DiscardInputFn)
+            (*DiscardInputFn)();
 
-            chatterCount = 0;
-            CommandsKeyCombo = 0;
-            CommandsKeyComboMod = 0;
-            memset(chatterStr, 0, sizeof(chatterStr));
-            UseInputFn = NULL;
-            DiscardInputFn = NULL;
-            OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand compl SHOW_CHATBOX);
-            break;
+        chatterCount = 0;
+        CommandsKeyCombo = 0;
+        CommandsKeyComboMod = 0;
+        memset(chatterStr, 0, sizeof(chatterStr));
+        UseInputFn = NULL;
+        DiscardInputFn = NULL;
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitand
+                                    compl SHOW_CHATBOX);
+        break;
     }
 }
 

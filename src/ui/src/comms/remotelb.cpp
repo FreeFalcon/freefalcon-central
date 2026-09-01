@@ -10,7 +10,7 @@ void RemoteLBCleanupCB(void *rec)
 {
     RemoteLB *lb;
 
-    lb = (RemoteLB*)rec;
+    lb = (RemoteLB *)rec;
     lb->Cleanup();
     delete lb;
 }
@@ -38,7 +38,8 @@ void RemoteLB::Cleanup()
         delete Patch_;
 
     Patch_ = NULL;
-    flags_ and_eq compl (PHOTO_CLEANUP bitor PATCH_CLEANUP bitor PHOTO_READY bitor PATCH_READY);
+    flags_ and_eq compl(PHOTO_CLEANUP bitor PATCH_CLEANUP bitor
+                        PHOTO_READY bitor PATCH_READY);
 }
 
 void RemoteLB::SetPilotData(LB_PILOT *data)
@@ -47,19 +48,20 @@ void RemoteLB::SetPilotData(LB_PILOT *data)
     flags_ or_eq PILOT_READY;
 }
 
-RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length, long offset, long size, uchar *data)
+RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length,
+                               long offset, long size, uchar *data)
 {
     RemoteImage *remotedata;
     short i;
 
     remotedata = Image;
 
-    if ( not remotedata)
+    if (not remotedata)
     {
         remotedata = new RemoteImage;
 
-        if ( not remotedata)
-            return(NULL);
+        if (not remotedata)
+            return (NULL);
 
         remotedata->flags = 0;
         remotedata->Size = size;
@@ -71,13 +73,14 @@ RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length,
 
     if (offset < size)
     {
-        memcpy(remotedata->ImageData + offset, data, min(length, size - offset));
+        memcpy(remotedata->ImageData + offset, data,
+               min(length, size - offset));
         remotedata->blockflag[packetno] = 1;
         i = 0;
 
         while (i < remotedata->numblocks)
         {
-            if ( not remotedata->blockflag[i])
+            if (not remotedata->blockflag[i])
                 i = static_cast<short>(remotedata->numblocks + 1);
             else
                 i++;
@@ -87,39 +90,38 @@ RemoteImage *RemoteLB::Receive(RemoteImage *Image, short packetno, short length,
             remotedata->flags or_eq IMAGE_READY;
     }
 
-    return(remotedata);
+    return (remotedata);
 }
 
-void RemoteLB::ReceiveImage(uchar ID, short packetno, short length, long offset, long size, uchar *data)
+void RemoteLB::ReceiveImage(uchar ID, short packetno, short length, long offset,
+                            long size, uchar *data)
 {
     switch (ID)
     {
-        case PILOT_IMAGE:
-            Photo_ = Receive(Photo_, packetno, length, offset, size, data);
+    case PILOT_IMAGE:
+        Photo_ = Receive(Photo_, packetno, length, offset, size, data);
 
-            if (Photo_)
-            {
-                if (Photo_->flags bitand IMAGE_READY)
-                    flags_ or_eq PHOTO_READY;
+        if (Photo_)
+        {
+            if (Photo_->flags bitand IMAGE_READY)
+                flags_ or_eq PHOTO_READY;
 
-                flags_ or_eq PHOTO_CLEANUP;
-            }
+            flags_ or_eq PHOTO_CLEANUP;
+        }
 
-            break;
+        break;
 
-        case PATCH_IMAGE:
-            Patch_ = Receive(Patch_, packetno, length, offset, size, data);
+    case PATCH_IMAGE:
+        Patch_ = Receive(Patch_, packetno, length, offset, size, data);
 
-            if (Patch_)
-            {
-                if (Patch_->flags bitand IMAGE_READY)
-                    flags_ or_eq PATCH_READY;
+        if (Patch_)
+        {
+            if (Patch_->flags bitand IMAGE_READY)
+                flags_ or_eq PATCH_READY;
 
-                flags_ or_eq PATCH_CLEANUP;
-            }
+            flags_ or_eq PATCH_CLEANUP;
+        }
 
-            break;
+        break;
     }
 }
-
-

@@ -1,8 +1,8 @@
 #include "stdhdr.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "simio.h"
 #include "simmath.h"
-#include "Sim/Include/Fcc.h"
+#include "sim/include/fcc.h"
 
 PilotInputs UserStickInputs;
 extern int UseKeyboardThrottle;
@@ -73,10 +73,9 @@ PilotInputs::~PilotInputs(void)
 {
 }
 
-#include "SimDrive.h"  // Retro 31Dec2003 - needed for TrimAPDisc stuff
+#include "simdrive.h"  // Retro 31Dec2003 - needed for TrimAPDisc stuff
 #include "aircrft.h"  // Retro 31Dec2003 - ditto
 #include "airframe.h"  // Retro 7Feb2004
-
 
 
 void PilotInputs::Update()
@@ -86,7 +85,8 @@ void PilotInputs::Update()
     // Retro 31Dec2003
     if (IO.AnalogIsUsed(AXIS_PITCH))
     {
-        pstick = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) * 1.05F;  // Retro 31Dec2003
+        pstick = Math.DeadBand(IO.ReadAnalog(AXIS_PITCH), -0.05F, 0.05F) *
+                 1.05F;  // Retro 31Dec2003
     }
     else
     {
@@ -145,7 +145,7 @@ void PilotInputs::Update()
     // operations so that we don�t have to introduce 6.23*10^23 new keypresses
     //
     // Access functions to get the current controlled axis and to set it are provided
-    // insider the pilotinput class. The enum is within the class scope 
+    // insider the pilotinput class. The enum is within the class scope
     /*******************************************************************************/
     if (playerAC)
     {
@@ -154,16 +154,17 @@ void PilotInputs::Update()
         if ((af) and (af->GetNumberEngines() == 2))
         {
             /*******************************************************************************/
-            // keyboard only, right engine axis is not even evalutated 
+            // keyboard only, right engine axis is not even evalutated
             /*******************************************************************************/
-            if (( not IO.AnalogIsUsed(AXIS_THROTTLE)) or (UseKeyboardThrottle))
+            if ((not IO.AnalogIsUsed(AXIS_THROTTLE)) or (UseKeyboardThrottle))
             {
                 throttleOffset += throttleOffsetRate;
                 throttleOffset = max(min(throttleOffset, 1.5F), 0.0F);
 
                 if (currentlyActiveEngine == Both_Engines)
                 {
-                    engineThrottle[Left_Engine] = engineThrottle[Right_Engine] = throttleOffset;
+                    engineThrottle[Left_Engine] = engineThrottle[Right_Engine] =
+                        throttleOffset;
                 }
                 else
                 {
@@ -174,7 +175,8 @@ void PilotInputs::Update()
             // both axis mapped. state of 3-way variable not important
             // keyboard not considered
             /*******************************************************************************/
-            else if ((IO.AnalogIsUsed(AXIS_THROTTLE2)) and (IO.AnalogIsUsed(AXIS_THROTTLE)))
+            else if ((IO.AnalogIsUsed(AXIS_THROTTLE2)) and
+                     (IO.AnalogIsUsed(AXIS_THROTTLE)))
             {
                 engineThrottle[Left_Engine] = IO.ReadAnalog(AXIS_THROTTLE);
                 engineThrottle[Right_Engine] = IO.ReadAnalog(AXIS_THROTTLE2);
@@ -187,25 +189,30 @@ void PilotInputs::Update()
             {
                 if (currentlyActiveEngine == Both_Engines)
                 {
-                    engineThrottle[Left_Engine] = engineThrottle[Right_Engine] = IO.ReadAnalog(AXIS_THROTTLE);
+                    engineThrottle[Left_Engine] = engineThrottle[Right_Engine] =
+                        IO.ReadAnalog(AXIS_THROTTLE);
                 }
                 else
                 {
-                    engineThrottle[currentlyActiveEngine] = IO.ReadAnalog(AXIS_THROTTLE);
+                    engineThrottle[currentlyActiveEngine] =
+                        IO.ReadAnalog(AXIS_THROTTLE);
                 }
             }
 
             // keep them values sane..
-            engineThrottle[Left_Engine] = max(min(engineThrottle[0], 1.5F), 0.0F);
-            engineThrottle[Right_Engine] = max(min(engineThrottle[1], 1.5F), 0.0F);
+            engineThrottle[Left_Engine] =
+                max(min(engineThrottle[0], 1.5F), 0.0F);
+            engineThrottle[Right_Engine] =
+                max(min(engineThrottle[1], 1.5F), 0.0F);
 
             //TJL 01/17/04 Adding this to get the old engine/throttle code to work
             // Retro 7Feb2004 - a bit cleaner but still not really happy about that..
             throttle = engineThrottle[currentlyActiveEngine];
         }
-        else   // end Retro 12Jan2004 (this is the old, single-engine code)
+        else // end Retro 12Jan2004 (this is the old, single-engine code)
         {
-            if (IO.AnalogIsUsed(AXIS_THROTTLE) and not UseKeyboardThrottle)  // Retro 31Dec2003
+            if (IO.AnalogIsUsed(AXIS_THROTTLE) and
+                not UseKeyboardThrottle) // Retro 31Dec2003
             {
                 //throttle = 1.5F - (IO.ReadAnalog(2) * 1.05F + 1.0F) * 0.75F;
                 throttle = IO.ReadAnalog(AXIS_THROTTLE); // Retro 31Dec2003
@@ -217,7 +224,8 @@ void PilotInputs::Update()
                 throttle = throttleOffset;
             }
 
-            engineThrottle[Left_Engine] = engineThrottle[Right_Engine] = 0; // Retro 7Feb2004
+            engineThrottle[Left_Engine] = engineThrottle[Right_Engine] =
+                0; // Retro 7Feb2004
             throttle = max(min(throttle, 1.5F), 0.0F);
         }
     } // Retro 12Jan2004
@@ -253,7 +261,8 @@ void PilotInputs::Update()
     /*******************************************************************************/
     extern bool g_bRealisticAvionics;
 
-    if (IO.AnalogIsUsed(AXIS_TRIM_PITCH) == false)  // trimming with keyboard (as before)
+    if (IO.AnalogIsUsed(AXIS_TRIM_PITCH) ==
+        false) // trimming with keyboard (as before)
     {
         ptrim += pitchElevatorTrimRate * SimLibMajorFrameTime;
         ptrim += pitchManualTrim * SimLibMajorFrameTime; //MI
@@ -262,10 +271,8 @@ void PilotInputs::Update()
     }
     else
     {
-        if (
-            ( not g_bRealisticAvionics) or
-            ((playerAC) and ( not playerAC->TrimAPDisc))
-        )
+        if ((not g_bRealisticAvionics) or
+            ((playerAC) and (not playerAC->TrimAPDisc)))
         {
             ptrim += pitchElevatorTrimRate * SimLibMajorFrameTime;
         }
@@ -274,7 +281,8 @@ void PilotInputs::Update()
         ptrim = max(min(ptrim, 0.5f), -0.5f);
     }
 
-    if (IO.AnalogIsUsed(AXIS_TRIM_ROLL) == false)  // trimming with keyboard (as before)
+    if (IO.AnalogIsUsed(AXIS_TRIM_ROLL) ==
+        false) // trimming with keyboard (as before)
     {
         rtrim += pitchAileronTrimRate * SimLibMajorFrameTime;
         rtrim += rollManualTrim * SimLibMajorFrameTime; //MI
@@ -283,10 +291,8 @@ void PilotInputs::Update()
     }
     else
     {
-        if (
-            ( not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
-            ((playerAC) and ( not playerAC->TrimAPDisc))
-        )
+        if ((not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
+            ((playerAC) and (not playerAC->TrimAPDisc)))
         {
             rtrim += pitchAileronTrimRate * SimLibMajorFrameTime;
         }
@@ -295,7 +301,8 @@ void PilotInputs::Update()
         rtrim = max(min(rtrim, 0.5f), -0.5f);
     }
 
-    if (IO.AnalogIsUsed(AXIS_TRIM_YAW) == false)  // trimming with keyboard (as before)
+    if (IO.AnalogIsUsed(AXIS_TRIM_YAW) ==
+        false) // trimming with keyboard (as before)
     {
         ytrim += pitchRudderTrimRate * SimLibMajorFrameTime;
         ytrim += yawManualTrim * SimLibMajorFrameTime; //MI
@@ -304,10 +311,8 @@ void PilotInputs::Update()
     }
     else
     {
-        if (
-            ( not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
-            ((playerAC) and ( not playerAC->TrimAPDisc))
-        )
+        if ((not g_bRealisticAvionics) or // TrimAPDisc only works in realistic avionics..
+            ((playerAC) and (not playerAC->TrimAPDisc)))
         {
             ytrim += pitchRudderTrimRate * SimLibMajorFrameTime;
         }
@@ -333,13 +338,16 @@ void PilotInputs::Update()
 
         // COBRA - RED - The Pickle Stuff
         // RV - I-Hawk - Added a check to allow ARH "Maddog" launch only in boresight mode
-        if ((SimDriver.GetPlayerEntity()) and (SimDriver.GetPlayerEntity()->IsAirplane()))
+        if ((SimDriver.GetPlayerEntity()) and
+            (SimDriver.GetPlayerEntity()->IsAirplane()))
         {
-            if (keyboardPickleOverride)   // #53 the joystick PickleOverride is removed (see above)
+            if (keyboardPickleOverride) // #53 the joystick PickleOverride is removed (see above)
             {
-                if ( not PickleTime) PickleTime = SimLibElapsedTime;
-                else if ((SimLibElapsedTime - PickleTime) > playerAC->FCC->GetPickleTime() and pickleButton == Off and 
-                         playerAC->FCC->AllowMaddog())
+                if (not PickleTime)
+                    PickleTime = SimLibElapsedTime;
+                else if ((SimLibElapsedTime - PickleTime) >
+                             playerAC->FCC->GetPickleTime() and
+                         pickleButton == Off and playerAC->FCC->AllowMaddog())
                     pickleButton = On;
             }
             else
@@ -391,24 +399,25 @@ void PilotInputs::Reset(void)
 /*******************************************************************************/
 void PilotInputs::cycleCurrentEngine()
 {
-    if ((SimDriver.GetPlayerEntity())/* and (SimDriver.GetPlayerEntity()->acFlags bitand hasTwoEngines)*/)
+    if ((SimDriver
+             .GetPlayerEntity()) /* and (SimDriver.GetPlayerEntity()->acFlags bitand hasTwoEngines)*/)
     {
         switch (currentlyActiveEngine)
         {
-            case Left_Engine:
-                currentlyActiveEngine = Right_Engine;
-                break;
+        case Left_Engine:
+            currentlyActiveEngine = Right_Engine;
+            break;
 
-            case Right_Engine:
-                currentlyActiveEngine = Both_Engines;
-                break;
+        case Right_Engine:
+            currentlyActiveEngine = Both_Engines;
+            break;
 
-            case Both_Engines:
-                currentlyActiveEngine = Left_Engine;
-                break;
+        case Both_Engines:
+            currentlyActiveEngine = Left_Engine;
+            break;
 
-            default:
-                ShiAssert(false);
+        default:
+            ShiAssert(false);
         }
     }
 }

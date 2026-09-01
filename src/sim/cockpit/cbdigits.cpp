@@ -18,60 +18,70 @@
 //MI
 extern bool g_bRealisticAvionics;
 
-void CBEChaffCount(void * pObject)
+void CBEChaffCount(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
 
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->HasPower(AircraftClass::ChaffFlareCount))
+        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))
+                ->HasPower(AircraftClass::ChaffFlareCount))
             pCPDigits->active = TRUE;
         else
             pCPDigits->active = FALSE;
     }
 
-    pCPDigits->SetDigitValues(((AircraftClass*)(pCPDigits->mpCPManager->mpOwnship))->counterMeasureStation[CHAFF_STATION].weaponCount);
+    pCPDigits->SetDigitValues(
+        ((AircraftClass*)(pCPDigits->mpCPManager->mpOwnship))
+            ->counterMeasureStation[CHAFF_STATION]
+            .weaponCount);
 }
 
 
-void CBEFlareCount(void * pObject)
+void CBEFlareCount(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
 
     if (g_bRealisticAvionics)
     {
-        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))->HasPower(AircraftClass::ChaffFlareCount))
+        if (((AircraftClass*)(SimDriver.GetPlayerEntity()))
+                ->HasPower(AircraftClass::ChaffFlareCount))
             pCPDigits->active = TRUE;
         else
             pCPDigits->active = FALSE;
     }
 
-    pCPDigits->SetDigitValues(((AircraftClass*)(pCPDigits->mpCPManager->mpOwnship))->counterMeasureStation[FLARE_STATION].weaponCount);
+    pCPDigits->SetDigitValues(
+        ((AircraftClass*)(pCPDigits->mpCPManager->mpOwnship))
+            ->counterMeasureStation[FLARE_STATION]
+            .weaponCount);
 }
 
-void CBEHSIRange(void * pObject)
+void CBEHSIRange(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
 
-    pCPDigits->SetDigitValues((long)(OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DISTANCE_TO_BEACON)));
+    pCPDigits->SetDigitValues((long)(OTWDriver.pCockpitManager->mpHsi->GetValue(
+        CPHsi::HSI_VAL_DISTANCE_TO_BEACON)));
 }
 
-void CBEHSISelectedCourse(void * pObject)
+void CBEHSISelectedCourse(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
 
-    pCPDigits->SetDigitValues((long)(OTWDriver.pCockpitManager->mpHsi->GetValue(CPHsi::HSI_VAL_DESIRED_CRS)));
+    pCPDigits->SetDigitValues((long)(OTWDriver.pCockpitManager->mpHsi->GetValue(
+        CPHsi::HSI_VAL_DESIRED_CRS)));
 }
 
 
-void CBETotalFuel(void * pObject)
+void CBETotalFuel(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
 #if 0
     float totalFuel;
 
@@ -87,24 +97,24 @@ void CBETotalFuel(void * pObject)
     }
 
 #else // JPO get new fuel values.
-    float  fwd, aft, total;
-    ((AircraftClass *)pCPDigits->mpOwnship)->af->GetFuel(&fwd, &aft, &total);
+    float fwd, aft, total;
+    ((AircraftClass*)pCPDigits->mpOwnship)->af->GetFuel(&fwd, &aft, &total);
     //MI extracting
     // MD -- 20021011: Moved to otwloop.cpp to make sure the updates are done to shared memory even
     // when the player isn't looking directly at the gauge
     // ((AircraftClass *)pCPDigits->mpOwnship)->af->GetFuel(&cockpitFlightData.fwd,
     // &cockpitFlightData.aft, &cockpitFlightData.total);
-    pCPDigits->SetDigitValues((long) total);
+    pCPDigits->SetDigitValues((long)total);
 #endif
 }
 
 
 // MD -- 20031122: This display should only ever show the UHF channel number.
 
-void CBEUHFDigit(void * pObject)
+void CBEUHFDigit(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
     long channel;
     long filter;
 
@@ -142,18 +152,19 @@ void CBEUHFDigit(void * pObject)
     else
         filter = 0;
 
-    channel = 20;  // UHF channels are modeled as 20-27
+    channel = 20; // UHF channels are modeled as 20-27
 #endif
     pCPDigits->SetDigitValues(channel + filter);
 }
 //TJL 09/16/04 //Cobra 10/31/04 TJL
-void CBERoundsRemainingDigits(void * pObject)
+void CBERoundsRemainingDigits(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
     float rounds;
 
-    rounds = (float)(((AircraftClass *)pCPDigits->mpOwnship)->Guns->numRoundsRemaining);
+    rounds = (float)(((AircraftClass*)pCPDigits->mpOwnship)
+                         ->Guns->numRoundsRemaining);
 
     if (rounds > 9999)
     {
@@ -161,7 +172,6 @@ void CBERoundsRemainingDigits(void * pObject)
     }
     else
     {
-        pCPDigits->SetDigitValues((long) rounds);
+        pCPDigits->SetDigitValues((long)rounds);
     }
-
 }

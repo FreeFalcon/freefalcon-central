@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -41,9 +42,10 @@ public:
     void SetImage(IMAGE_RSC *image);
     IMAGE_RSC *GetImage(void)
     {
-        if (Image_) return(Image_->GetImage());
+        if (Image_)
+            return (Image_->GetImage());
 
-        return(NULL);
+        return (NULL);
     }
     // Free Function
     void Cleanup(void);
@@ -53,7 +55,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void SetFlags(long flags);
 
@@ -64,7 +66,7 @@ public:
 
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

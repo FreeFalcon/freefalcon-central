@@ -5,11 +5,13 @@
 #include <winsock2.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 
-    int FindProtocols(LPWSAPROTOCOL_INFO *InstalledProtocols, int *NumProtocols);
+    int FindProtocols(LPWSAPROTOCOL_INFO *InstalledProtocols,
+                      int *NumProtocols);
 
 
 #ifdef __cplusplus

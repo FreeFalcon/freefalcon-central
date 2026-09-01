@@ -7,13 +7,13 @@
 /*
 
 //sfr: took this out, not used!!
-#include "MsgInc/RequestPersistantList.h"
+#include "msginc/requestpersistantlist.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 //sfr: added here for checks
 using std::memcpychk;

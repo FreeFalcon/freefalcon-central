@@ -21,6 +21,13 @@
 #include "alloc.h"
 #include "../../mathlib/color.h"
 
+// Artscout - 2026: forward-declare the GLOBAL _D3DX_SURFACEFORMAT (fixed underlying type, matching its full
+// definition in d3dxcore.h) at FILE scope so TextureHandle::m_eSurfFmt below is that global enum. Declaring it
+// inside the class instead created a distinct nested TextureHandle::_D3DX_SURFACEFORMAT and broke assignments
+// from the global D3DX_SF_* values on MSVC (C2440). Same decl as tex.h; the ": int" keeps it usable as a member
+// even where d3dxcore.h is not yet included.
+enum _D3DX_SURFACEFORMAT : int;
+
 // Artscout - 2026: ODR/layout guard. ContextMPR contains 8-byte-aligned members (__int64 in
 // the nested Stats struct), so its size/alignment depend on the active struct packing. Many
 // legacy headers use the old "#pragma pack(1) ... #pragma pack()" style; when such a header is
@@ -32,24 +39,36 @@
 // only, because Debug shared a consistent layout). Pin packing to 8 here so every TU agrees.
 #pragma pack(push, 8)
 
-#ifdef  __cplusplus
-extern  "C" {
+#ifdef __cplusplus
+extern "C"
+{
 #endif
 
 #ifndef _SHI__INT_H_
-    typedef unsigned int        UInt;
-    typedef unsigned char       UInt8;
-    typedef unsigned short      UInt16;
-    typedef unsigned long       UInt32;
+    typedef unsigned int UInt;
+    typedef unsigned char UInt8;
+    typedef unsigned short UInt16;
 
-    typedef signed   int        Int;
-    typedef signed   char       Int8;
-    typedef signed   short      Int16;
-    typedef signed   long       Int32;
+    typedef signed int Int;
+    typedef signed char Int8;
+    typedef signed short Int16;
+
+/* Same reasoning as mint.h's copy of these: `long` is 32 bits only under the Win32/Win64 data models, so on Linux
+ * LP64 it produced a "32" type that was really 64 bits and no longer matched the 32-bit DWORD. Windows deliberately
+ * keeps `long`, because MSVC's DWORD IS `unsigned long` and the two pointer types are not interchangeable there.
+ * This block is only the fallback (it yields to shi/int.h), but it is kept in step so the two cannot disagree. */
+#if defined(_WIN32)
+    typedef unsigned long UInt32;
+    typedef signed long Int32;
+#else
+#include <stdint.h>
+    typedef uint32_t UInt32;
+    typedef int32_t Int32;
+#endif
 #endif
 
-    typedef UInt(*DWProc_t)();
-    typedef UInt  MPRHandle_t;
+    typedef UInt (*DWProc_t)();
+    typedef UInt MPRHandle_t;
     typedef float Float_t;
 
     //NOTE: Care is needed when mucking with these structures. Some of the asm code ASSumes groupings and alignments.
@@ -78,8 +97,9 @@ extern  "C" {
 
     typedef enum MPRSurfaceType
     {
-        SystemMem, VideoMem, // Valid for front or back buffer specifier
-        Primary,  // Valid for front buffer specifier only
+        SystemMem,
+        VideoMem, // Valid for front or back buffer specifier
+        Primary, // Valid for front buffer specifier only
         Flip, // Valid for back buffer specifier only
         None,
         LocalVideoMem, // True local video memory
@@ -119,28 +139,28 @@ extern  "C" {
 
     typedef enum
     {
-        MPR_PKT_POINTS = 1,           /* MUST BE SAME AS HOOK_POINTS    */
-        MPR_PKT_LINES,                /* MUST BE SAME AS HOOK_LINES          */
-        MPR_PKT_POLYLINE,             /* MUST BE SAME AS HOOK_POLYLINE       */
-        MPR_PKT_TRIANGLES,            /* MUST BE SAME AS HOOK_TRIANGLES      */
-        MPR_PKT_TRISTRIP,             /* MUST BE SAME AS HOOK_TRISTRIP       */
-        MPR_PKT_TRIFAN,               /* MUST BE SAME AS HOOK_TRIFAN         */
+        MPR_PKT_POINTS = 1, /* MUST BE SAME AS HOOK_POINTS    */
+        MPR_PKT_LINES, /* MUST BE SAME AS HOOK_LINES          */
+        MPR_PKT_POLYLINE, /* MUST BE SAME AS HOOK_POLYLINE       */
+        MPR_PKT_TRIANGLES, /* MUST BE SAME AS HOOK_TRIANGLES      */
+        MPR_PKT_TRISTRIP, /* MUST BE SAME AS HOOK_TRISTRIP       */
+        MPR_PKT_TRIFAN, /* MUST BE SAME AS HOOK_TRIFAN         */
 
-        MPR_PKT_ID_COUNT,             /* MUST BE LAST */
+        MPR_PKT_ID_COUNT, /* MUST BE LAST */
     } MPRPacketID;
 
 #define MPR_PRM_POINTS MPR_PKT_POINTS
-#define MPR_PRM_LINES           MPR_PKT_LINES
-#define MPR_PRM_POLYLINE        MPR_PKT_POLYLINE
-#define MPR_PRM_TRIANGLES       MPR_PKT_TRIANGLES
-#define MPR_PRM_TRISTRIP        MPR_PKT_TRISTRIP
-#define MPR_PRM_TRIFAN          MPR_PKT_TRIFAN
+#define MPR_PRM_LINES MPR_PKT_LINES
+#define MPR_PRM_POLYLINE MPR_PKT_POLYLINE
+#define MPR_PRM_TRIANGLES MPR_PKT_TRIANGLES
+#define MPR_PRM_TRISTRIP MPR_PKT_TRISTRIP
+#define MPR_PRM_TRIFAN MPR_PKT_TRIFAN
 
     enum
     {
         MPR_STA_NONE,
-        MPR_STA_ENABLES,              // MPR_SE
-        MPR_STA_DISABLES,             // MPR_SE
+        MPR_STA_ENABLES, // MPR_SE
+        MPR_STA_DISABLES, // MPR_SE
 
         MPR_STA_SRC_BLEND_FUNCTION, // MPR_BF
         MPR_STA_DST_BLEND_FUNCTION, // MPR_BF
@@ -149,19 +169,19 @@ extern  "C" {
 
         MPR_STA_TEXTURE_FACTOR, // DWORD RGBA
 
-        MPR_STA_TEX_FILTER,           // MPR_TX
+        MPR_STA_TEX_FILTER, // MPR_TX
 
-        MPR_STA_FG_COLOR,             // Long, RGBA or index
-        MPR_STA_BG_COLOR,             // Long, RGBA or index
+        MPR_STA_FG_COLOR, // Long, RGBA or index
+        MPR_STA_BG_COLOR, // Long, RGBA or index
 
-        MPR_STA_TEX_ID,               // Handle
+        MPR_STA_TEX_ID, // Handle
 
-        MPR_STA_FOG_COLOR,            // Long, RGBA
+        MPR_STA_FOG_COLOR, // Long, RGBA
 
         MPR_STA_SCISSOR_LEFT,
         MPR_STA_SCISSOR_TOP,
-        MPR_STA_SCISSOR_RIGHT,        // Right, bottom, not inclusive
-        MPR_STA_SCISSOR_BOTTOM,       // Validity check done here
+        MPR_STA_SCISSOR_RIGHT, // Right, bottom, not inclusive
+        MPR_STA_SCISSOR_BOTTOM, // Validity check done here
     };
 
     typedef enum
@@ -201,10 +221,10 @@ extern  "C" {
 #define MPR_SE_CHROMA 0x00000080L
 #define MPR_SE_FILTERING 0x00000100L
 #define MPR_SE_Z_WRITE 0x00000200L
-#define MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE  0x00000400L
+#define MPR_SE_NON_PERSPECTIVE_CORRECTION_MODE 0x00000400L
 
-#define MPR_SE_CHROMA2  0x00000800L  // ASSO
-#define MPR_SE_CHROMA_ALPHATEST   0x00001000L // Wombat
+#define MPR_SE_CHROMA2 0x00000800L // ASSO
+#define MPR_SE_CHROMA_ALPHATEST 0x00001000L // Wombat
 #define MPR_SE_LIGHTING 0x00002000L
 
     // Possible values for: MPR_STA_SRC_BLEND_FUNCTION bitand MPR_STA_DST_BLEND_FUNCTION
@@ -212,14 +232,14 @@ extern  "C" {
     {
         MPR_BF_ZERO = 1,
         MPR_BF_ONE,
-        MPR_BF_SRC,                    // Only MPR_STA_DST_BLEND_FUNCTION
-        MPR_BF_SRC_INV,                // Only MPR_STA_DST_BLEND_FUNCTION
+        MPR_BF_SRC, // Only MPR_STA_DST_BLEND_FUNCTION
+        MPR_BF_SRC_INV, // Only MPR_STA_DST_BLEND_FUNCTION
         MPR_BF_SRC_ALPHA,
         MPR_BF_SRC_ALPHA_INV,
         MPR_BF_DST_ALPHA,
         MPR_BF_DST_ALPHA_INV,
-        MPR_BF_DST,                    // Only MPR_STA_SRC_BLEND_FUNCTION
-        MPR_BF_DST_INV,                // Only MPR_STA_SRC_BLEND_FUNCTION
+        MPR_BF_DST, // Only MPR_STA_SRC_BLEND_FUNCTION
+        MPR_BF_DST_INV, // Only MPR_STA_SRC_BLEND_FUNCTION
     };
 
     // Possible values for: MPR_STA_ALPHA_OP_FUNCTION and MPR_STA_TEXTURE_OP_FUNCTION
@@ -256,29 +276,29 @@ extern  "C" {
     enum
     {
         MPR_TX_NONE,
-        MPR_TX_BILINEAR,              // interpolate 4 pixels
-        MPR_TX_DITHER,                // Dither the colors
-        MPR_TX_MIPMAP_NEAREST = 10,   // nearest mipmap
-        MPR_TX_MIPMAP_LINEAR,         // interpolate between mipmaps
-        MPR_TX_MIPMAP_BILINEAR,       // interpolate 4x within mipmap
-        MPR_TX_MIPMAP_TRILINEAR,      // interpolate mipmaps,4 pixels
-        MPR_TX_BILINEAR_NOCLAMP,      // interpolate 4 pixels, dont set clamp mode
+        MPR_TX_BILINEAR, // interpolate 4 pixels
+        MPR_TX_DITHER, // Dither the colors
+        MPR_TX_MIPMAP_NEAREST = 10, // nearest mipmap
+        MPR_TX_MIPMAP_LINEAR, // interpolate between mipmaps
+        MPR_TX_MIPMAP_BILINEAR, // interpolate 4x within mipmap
+        MPR_TX_MIPMAP_TRILINEAR, // interpolate mipmaps,4 pixels
+        MPR_TX_BILINEAR_NOCLAMP, // interpolate 4 pixels, dont set clamp mode
     };
 
     // Possible values for : VtxInfo in the MPRPrimitive() prototype below
-#define MPR_VI_COLOR                0x0002
-#define MPR_VI_TEXTURE              0x0004
+#define MPR_VI_COLOR 0x0002
+#define MPR_VI_TEXTURE 0x0004
 
     // Possible values for: ClearInfo in the MPRClearBuffers() prototype below
-#define MPR_CI_DRAW_BUFFER          0x0001
-#define MPR_CI_ZBUFFER              0x0004
+#define MPR_CI_DRAW_BUFFER 0x0001
+#define MPR_CI_ZBUFFER 0x0004
 
     // Possible values for: TexInfo in the MPRNewTexture() prototype below.
-#define MPR_TI_DEFAULT              0x000000
-#define MPR_TI_MIPMAP               0x000001
-#define MPR_TI_CHROMAKEY            0x000020
-#define MPR_TI_ALPHA             0x000040
-#define MPR_TI_PALETTE              0x000080
+#define MPR_TI_DEFAULT 0x000000
+#define MPR_TI_MIPMAP 0x000001
+#define MPR_TI_CHROMAKEY 0x000020
+#define MPR_TI_ALPHA 0x000040
+#define MPR_TI_PALETTE 0x000080
 #define MPR_TI_DDS 0x000100
 #define MPR_TI_DXT1 0x000200
 #define MPR_TI_DXT3 0x000400
@@ -340,7 +360,8 @@ extern  "C" {
         struct tagDDDEVICEIDENTIFIER2 *m_pDevID;
 
     public:
-        bool Init(HWND hWnd, int nWidth, int nHeight, int nDepth, bool bFullscreen);
+        bool Init(HWND hWnd, int nWidth, int nHeight, int nDepth,
+                  bool bFullscreen);
         bool SetRenderTarget(IDirectDrawSurface7 *pRenderTarget);
         void Shutdown();
         bool ValidateD3DDevice();
@@ -356,14 +377,17 @@ extern  "C" {
         {
             int rc = --refcount;
 
-            if (refcount <= 0) delete this;
+            if (refcount <= 0)
+                delete this;
 
             return rc;
         };
 
     protected:
         void EnumZBufferFormats(void *parr);
-        static HRESULT _stdcall CALLBACK EnumZBufferFormatsCallback(struct _DDPIXELFORMAT *lpDDPixFmt, LPVOID lpContext);
+        static HRESULT _stdcall CALLBACK
+        EnumZBufferFormatsCallback(struct _DDPIXELFORMAT *lpDDPixFmt,
+                                   LPVOID lpContext);
         void AttachDepthBuffer(IDirectDrawSurface7 *p);
         void CheckCaps();
         int refcount;
@@ -378,7 +402,8 @@ extern  "C" {
         ~TextureHandle();
 
         IDirectDrawSurface7 *m_pDDS;
-        enum _D3DX_SURFACEFORMAT m_eSurfFmt;
+        enum _D3DX_SURFACEFORMAT
+            m_eSurfFmt; // the GLOBAL enum (fwd-declared at file scope near the top)
         int m_nWidth;
         int m_nHeight;
         int m_nActualWidth;
@@ -386,10 +411,12 @@ extern  "C" {
         DWORD m_dwFlags;
         DWORD m_dwChromaKey;
         PaletteHandle *m_pPalAttach;
-        BYTE *m_pImageData; // Copy if palettized src image data if the device doesnt not support palettized textures
+        BYTE *
+            m_pImageData; // Copy if palettized src image data if the device doesnt not support palettized textures
         bool m_bImageDataOwned; // self allocated or not
         int m_nImageDataStride;
-        void *m_pGpuTex; // the backend texture object (D3D12Texture* under D3D12); m_pDDS holds the SRV handle
+        void *
+            m_pGpuTex; // the backend texture object (D3D12Texture* under D3D12); m_pDDS holds the SRV handle
 
         enum _TextureHandleFlags
         {
@@ -398,7 +425,8 @@ extern  "C" {
             FLAG_NOTMANAGED = 0x4, // dont use the texture manager
             FLAG_INLOCALVIDMEM = 0x8, // put it in videomemory
             FLAG_RENDERTARGET = 0x10, // can be used as 3d render target
-            FLAG_MATCHPRIMARY = 0x20, // use same pixel format as primary surface
+            FLAG_MATCHPRIMARY =
+                0x20, // use same pixel format as primary surface
         };
 
     protected:
@@ -418,7 +446,7 @@ extern  "C" {
             BOOL bUsePalette;
             BOOL bFoundGoodFormat;
 
-            struct _DDPIXELFORMAT* pddpf;
+            struct _DDPIXELFORMAT *pddpf;
         };
 
         static _DDPIXELFORMAT m_arrPF[TEX_CAT_MAX];
@@ -432,15 +460,19 @@ extern  "C" {
     public:
         static DWORD m_dwNumHandles; // Number of instances
         static DWORD m_dwBitmapBytes; // Bytes allocated for bitmap copies
-        static DWORD m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
+        static DWORD
+            m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
 
     protected:
         std::string m_strName;
 #endif
 
     public:
-        bool Create(char *strName, UInt32 info, UInt16 bits, UInt16 width, UInt16 height, DWORD dwFlags = 0);
-        bool Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer, bool bDoNotLoadBits = false, bool bDoNotCopyBits = false, int nImageDataStride = - 1);
+        bool Create(char *strName, UInt32 info, UInt16 bits, UInt16 width,
+                    UInt16 height, DWORD dwFlags = 0);
+        bool Load(UInt16 mip, UInt chroma, UInt8 *TexBuffer,
+                  bool bDoNotLoadBits = false, bool bDoNotCopyBits = false,
+                  int nImageDataStride = -1);
         bool Reload();
         IDirectDrawSurface7 *GetDDSurface()
         {
@@ -456,7 +488,8 @@ extern  "C" {
     protected:
         void ReportTextureLoadError(HRESULT hr, bool bDuringLoad = false);
         void ReportTextureLoadError(char *strReason);
-        static HRESULT CALLBACK TextureSearchCallback(struct _DDPIXELFORMAT* pddpf, VOID* param);
+        static HRESULT CALLBACK
+        TextureSearchCallback(struct _DDPIXELFORMAT *pddpf, VOID *param);
 
 #ifdef _DEBUG
     public:
@@ -471,7 +504,8 @@ extern  "C" {
     class PaletteHandle
     {
     public:
-        PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 PalNumEntries);
+        PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry,
+                      UInt16 PalNumEntries);
         ~PaletteHandle();
 
         IDirectDrawPalette *m_pIDDP;
@@ -481,20 +515,23 @@ extern  "C" {
         // PHASE 5 (D3D11): cache of the last baked palette - re-bake attached textures only
         // when it actually changes (Translate3D is called every frame).
         DWORD m_arrBaked[256];
-        bool  m_bBakedValid;
+        bool m_bBakedValid;
 
 #ifdef _DEBUG
     public:
         static DWORD m_dwNumHandles; // Number of instances
-        static DWORD m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
+        static DWORD
+            m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
-        void Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt16 entries, UInt8 *PalBuffer);
+        void Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index,
+                  UInt16 entries, UInt8 *PalBuffer);
         void AttachToTexture(TextureHandle *pTex);
         void DetachFromTexture(TextureHandle *pTex);
 
     protected:
-        std::vector<TextureHandle *>::iterator GetAttachedTextureIndex(TextureHandle *pTex);
+        std::vector<TextureHandle *>::iterator
+        GetAttachedTextureIndex(TextureHandle *pTex);
 
 #ifdef _DEBUG
     public:
@@ -528,72 +565,16 @@ extern  "C" {
     // values for SetupMPRState flag argument
 #define CHECK_PREVIOUS_STATE 0x01
 
-    enum
-    {
-        //SOLID (plainPolys)
-        STATE_SOLID = 0,
-        STATE_LIT,
-        STATE_GOURAUD,
-
-        //TEXTURED (texturedPolys)
-        STATE_TEXTURE,
-        STATE_TEXTURE_PERSPECTIVE,
-        STATE_TEXTURE_LIT,
-        STATE_TEXTURE_LIT_PERSPECTIVE,
-        STATE_TEXTURE_SMOOTH,
-        STATE_TEXTURE_SMOOTH_PERSPECTIVE,
-        STATE_TEXTURE_GOURAUD,
-        STATE_TEXTURE_GOURAUD_PERSPECTIVE,
-
-        STATE_TEXTURE_NOFILTER,
-        STATE_TEXTURE_NOFILTER_PERSPECTIVE,
-
-        STATE_TEXTURE_TEXT,
-
-        STATE_LANDSCAPE_LIT,
-        STATE_LANDSCAPE_GOURAUD,
-
-        //TRANSLUCENT (translucentPolys)
-        STATE_ALPHA_SOLID,
-        STATE_ALPHA_LIT,
-        STATE_ALPHA_GOURAUD,
-
-        STATE_CHROMA_TEXTURE,
-        STATE_CHROMA_TEXTURE_PERSPECTIVE,
-        STATE_CHROMA_TEXTURE_LIT,
-        STATE_CHROMA_TEXTURE_LIT_PERSPECTIVE,
-        STATE_CHROMA_TEXTURE_GOURAUD,
-        STATE_CHROMA_TEXTURE_GOURAUD_PERSPECTIVE,
-        STATE_CHROMA_TEXTURE_GOURAUD2, // ASSO: new color blending state for 3D pit HUD
-        STATE_ALPHA_TEXTURE,
-        STATE_ALPHA_TEXTURE_PERSPECTIVE,
-        STATE_ALPHA_TEXTURE_LIT,
-        STATE_ALPHA_TEXTURE_LIT_PERSPECTIVE,
-        STATE_ALPHA_TEXTURE_SMOOTH,
-        STATE_ALPHA_TEXTURE_SMOOTH_PERSPECTIVE,
-        STATE_ALPHA_TEXTURE_GOURAUD,
-        STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE,
-
-        STATE_ALPHA_TEXTURE_NOFILTER,
-        STATE_ALPHA_TEXTURE_NOFILTER_PERSPECTIVE,
-
-        STATE_ALPHA_TEXTURE_PERSPECTIVE_CLAMP,
-
-        //DOUBLE-TEXTURED (texturedPolys)
-        STATE_MULTITEXTURE,
-        STATE_MULTITEXTURE_ALPHA,
-
-        STATE_RTT_SOFT, // #7 AA-RTT: soft composite of the displays atlas (D3D11/MSAA only)
-
-        STATE_WATER, // #12: animated water terrain tile (D3D11 only)
-
-        //
-        MAXIMUM_MPR_STATE = 41
-    };
+    // Artscout - 2026 (#104): the STATE_* enum now lives in ffstates.h so ffstatemap.{h,cpp} can translate the legacy
+    // states without pulling this header (and windows.h/d3d7compat.h with it) into the Vulkan backend, which also
+    // builds standalone on Linux. Included here, at the same scope, so every existing user is unaffected. NOTE the
+    // enclosing extern "C" only affects linkage, not name scope -- these were always global names.
+#include "ffstates.h"
 
 
 #if (MAXIMUM_MPR_STATE >= 64)
-#error "Can have at most 64 prestored states (#define'd inside MPR) bitand we need one free"
+#error                                                                         \
+    "Can have at most 64 prestored states (#define'd inside MPR) bitand we need one free"
 #endif
 
     // Transformed + Lit Vertex
@@ -638,18 +619,20 @@ extern  "C" {
     {
     public:
         SPolygon *pNext;
-        TLVERTEX *pVertexList; // Cobra - RED - Unuseful to use a new class for same vertex type, no more sVertex
+        TLVERTEX *
+            pVertexList; // Cobra - RED - Unuseful to use a new class for same vertex type, no more sVertex
 
 
         DWORD numVertices;
         int renderState;
-        DWORD_PTR textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
+        DWORD_PTR
+        textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
         DWORD_PTR textureID1;
         DWORD zBuffer;
 
     public:
         void CalcPolyZ(float);
-        TLVERTEX* CopyToVertexBuffer(TLVERTEX *bufferPos);
+        TLVERTEX *CopyToVertexBuffer(TLVERTEX *bufferPos);
     };
 
     // UnTransformed + Lit Vertex
@@ -692,7 +675,8 @@ extern  "C" {
 
         DWORD numVertices;
         int renderState;
-        DWORD_PTR textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
+        DWORD_PTR
+        textureID0; // Artscout - 2026 (x64): caches SRV pointer (currentTexture1/2)
         DWORD_PTR textureID1;
         DWORD zBuffer;
 
@@ -700,7 +684,7 @@ extern  "C" {
 
     public:
         void CalcPolyZ();
-        TLVERTEX* CopyToVertexBuffer(TLVERTEX *bufferPos);
+        TLVERTEX *CopyToVertexBuffer(TLVERTEX *bufferPos);
     };
 
     class ContextMPR
@@ -737,7 +721,9 @@ extern  "C" {
         void SetupMPRState(GLint flag = 0);
         void SelectForegroundColor(GLint color);
         void SelectBackgroundColor(GLint color);
-        void SelectTexture1(DWORD_PTR texID); // Artscout - 2026 (x64): pointer-sized texture handle/SRV
+        void SelectTexture1(
+            DWORD_PTR
+                texID); // Artscout - 2026 (x64): pointer-sized texture handle/SRV
         void SelectTexture2(DWORD_PTR texID);
         void SetTexture1(DWORD_PTR texID);
         void SetTexture2(DWORD_PTR texID);
@@ -753,7 +739,8 @@ extern  "C" {
         void setGlobalZBias(float zBias);
         void InvalidateState()
         {
-            currentTexture1 = currentTexture2 = lastTexture1 = lastTexture2 = -1;
+            currentTexture1 = currentTexture2 = lastTexture1 = lastTexture2 =
+                -1;
             m_colFG_Raw = 0x00ffffff;
             currentState = lastState = -1;
         };
@@ -761,7 +748,8 @@ extern  "C" {
         {
             return m_colFG_Raw;
         };
-        void Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h, int totalWidth, DWORD *source, bool Fit = false);
+        void Render2DBitmap(int sX, int sY, int dX, int dY, int w, int h,
+                            int totalWidth, DWORD *source, bool Fit = false);
         inline void ZCX_Calculate(void);
         void TexColorDiffuse(void);
 
@@ -879,7 +867,8 @@ extern  "C" {
         short m_nCurPrimType;
         LVERTEX *m_pLVtx;
         TLVERTEX *m_pTLVtx;
-        TLVERTEX *m_pVBCpu;	// PHASE 4: CPU vertex backing for the D3D11 screen path (replaces m_pVB->Lock)
+        TLVERTEX *
+            m_pVBCpu; // PHASE 4: CPU vertex backing for the D3D11 screen path (replaces m_pVB->Lock)
         int mIdx;
         DWORD plainPolyVCnt, texturedPolyVCnt, translucentPolyVCnt;
         SPolygon *plainPolys, *texturedPolys, *translucentPolys;
@@ -890,7 +879,8 @@ extern  "C" {
 #endif
 
         IDirectDrawSurface7 *m_pDDSP;
-        bool m_bNoD3DStatsAvail; // D3D Texture management stats (dx debug runtime only)
+        bool
+            m_bNoD3DStatsAvail; // D3D Texture management stats (dx debug runtime only)
         bool m_bRenderTargetHasZBuffer;
         bool m_bViewportLocked;
 
@@ -951,22 +941,31 @@ extern  "C" {
         inline bool LockVB(int nVtxCount, void **p);
         inline void UnlockVB();
         inline void FlushVB();
-        static HRESULT WINAPI EnumSurfacesCB2(IDirectDrawSurface7 *lpDDSurface, struct _DDSURFACEDESC2 *lpDDSurfaceDesc, LPVOID lpContext);
+        static HRESULT WINAPI EnumSurfacesCB2(
+            IDirectDrawSurface7 *lpDDSurface,
+            struct _DDSURFACEDESC2 *lpDDSurfaceDesc, LPVOID lpContext);
         void Stats();
 
     public:
         // PHASE 5 (RTT): public wrapper over FlushVB - so FinishRtt flushes the displays'
         // pending content into the renderTexture BEFORE switching to the backbuffer.
-        void FlushPending() { FlushVB(); }
-        void DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr, int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor = false);
+        void FlushPending()
+        {
+            FlushVB();
+        }
+        void DrawPoly(DWORD opFlag, Poly *poly, int *xyzIdxPtr, int *rgbaIdxPtr,
+                      int *IIdxPtr, Ptexcoord *uv, bool bUseFGColor = false);
         void Draw2DPoint(Tpoint *v0);
         void Draw2DPoint(float x, float y);
         void Draw2DLine(Tpoint *v0, Tpoint *v1);
         void Draw2DLine(float x0, float y0, float x1, float y1);
         void DrawPrimitive2D(int type, int nVerts, int *xyzIdxPtr);
-        void DrawPrimitive(int type, WORD VtxInfo, WORD Count, MPRVtx_t *data, WORD Stride);
-        void DrawPrimitive(int type, WORD VtxInfo, WORD Count, MPRVtxTexClr_t *data, WORD Stride);
-        void DrawPrimitive(int type, WORD VtxInfo, WORD Count, MPRVtxTexClr_t **data, bool terrain = false);
+        void DrawPrimitive(int type, WORD VtxInfo, WORD Count, MPRVtx_t *data,
+                           WORD Stride);
+        void DrawPrimitive(int type, WORD VtxInfo, WORD Count,
+                           MPRVtxTexClr_t *data, WORD Stride);
+        void DrawPrimitive(int type, WORD VtxInfo, WORD Count,
+                           MPRVtxTexClr_t **data, bool terrain = false);
         void TextOut(short x, short y, DWORD col, LPSTR str);
         void SetViewportAbs(int nLeft, int nTop, int nRight, int nBottom);
         void LockViewport();
@@ -984,10 +983,11 @@ extern  "C" {
         void ZeroViewport();
     };
 
-#ifdef  __cplusplus
+#ifdef __cplusplus
 };
 #endif
 
-#pragma pack(pop)	// Artscout - 2026: end ODR/layout packing guard (see top of file)
+#pragma pack(                                                                  \
+    pop) // Artscout - 2026: end ODR/layout packing guard (see top of file)
 
 #endif // _3DEJ_CONTEXT_H_

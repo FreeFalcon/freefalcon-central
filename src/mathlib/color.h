@@ -10,8 +10,8 @@ color.h
 
 #include "math.h"
 
-#define MAKERGB(r,g,b) ((r<<16)+(g<<8)+b)
-#define MAKEARGB(a,r,g,b) ((a<<24)+(r<<16)+(g<<8)+b)
+#define MAKERGB(r, g, b) ((r << 16) + (g << 8) + b)
+#define MAKEARGB(a, r, g, b) ((a << 24) + (r << 16) + (g << 8) + b)
 
 #define SMALL_NUMBER (1.e-8)
 #define KINDA_SMALL_NUMBER (1.e-4)
@@ -61,16 +61,16 @@ struct color
     void XYZtoRGB()
     {
         //CIE XYZ tristimulus to Rec. 709 (D65 Whitepoint) RGB
-        r =  3.240479f * X - 1.537150f * Y - 0.498535f * Z;
+        r = 3.240479f * X - 1.537150f * Y - 0.498535f * Z;
         g = -0.969256f * X + 1.875991f * Y + 0.041556f * Z;
-        b =  0.055648f * X - 0.204043f * Y + 1.057311f * Z;
+        b = 0.055648f * X - 0.204043f * Y + 1.057311f * Z;
     }
 
     void RGBtoXYZ()
     {
-        X =  0.412453f * r + 0.357580f * g + 0.180423f * b;
-        Y =  0.212671f * r + 0.715160f * g + 0.072169f * b;
-        Z =  0.019334f * r + 0.119193f * g + 0.950227f * b;
+        X = 0.412453f * r + 0.357580f * g + 0.180423f * b;
+        Y = 0.212671f * r + 0.715160f * g + 0.072169f * b;
+        Z = 0.019334f * r + 0.119193f * g + 0.950227f * b;
     }
 
     void RGBtoHSV()
@@ -80,7 +80,8 @@ struct color
         v = max;
         s = (v != 0.f) ? ((max - min) / max) : 0.f;
 
-        if (s == 0.f) h = 0.f;
+        if (s == 0.f)
+            h = 0.f;
         else
         {
             float delta = max - min;
@@ -94,7 +95,8 @@ struct color
 
             h *= 60;
 
-            if (h < 0.f) h += 360.f;
+            if (h < 0.f)
+                h += 360.f;
 
             h /= 360.f;
         }
@@ -118,42 +120,41 @@ struct color
 
         switch (i)
         {
-            case 0:
-                r = v;
-                g = t;
-                b = p;
-                break;
+        case 0:
+            r = v;
+            g = t;
+            b = p;
+            break;
 
-            case 1:
-                r = q;
-                g = v;
-                b = p;
-                break;
+        case 1:
+            r = q;
+            g = v;
+            b = p;
+            break;
 
-            case 2:
-                r = p;
-                g = v;
-                b = t;
-                break;
+        case 2:
+            r = p;
+            g = v;
+            b = t;
+            break;
 
-            case 3:
-                r = p;
-                g = q;
-                b = v;
-                break;
+        case 3:
+            r = p;
+            g = q;
+            b = v;
+            break;
 
-            case 4:
-                r = t;
-                g = p;
-                b = v;
-                break;
+        case 4:
+            r = t;
+            g = p;
+            b = v;
+            break;
 
-            default:
-                r = v;
-                g = p;
-                b = q;
+        default:
+            r = v;
+            g = p;
+            b = q;
         }
-
     }
 
     void xyLtoXYZ()
@@ -228,61 +229,62 @@ struct color
             b *= scale;
             return 1;
         }
-        else return 0;
+        else
+            return 0;
     }
 
-    friend color operator *(float Scale, const color& V)
+    friend color operator*(float Scale, const color& V)
     {
         return color(V.r * Scale, V.g * Scale, V.b * Scale);
     }
 
-    color operator +(const color& V) const
+    color operator+(const color& V) const
     {
         return color(r + V.r, g + V.g, b + V.b);
     }
 
-    color operator -(const color& V) const
+    color operator-(const color& V) const
     {
         return color(r - V.r, g - V.g, b - V.b);
     }
 
-    color operator *(float Scale) const
+    color operator*(float Scale) const
     {
         return color(r * Scale, g * Scale, b * Scale);
     }
 
-    color operator /(float Scale) const
+    color operator/(float Scale) const
     {
         float RScale = 1.f / Scale;
         return color(r * RScale, g * RScale, b * RScale);
     }
 
-    color operator *(const color& V) const
+    color operator*(const color& V) const
     {
         return color(r * V.r, g * V.g, b * V.b);
     }
 
-    color operator /(const color& V) const
+    color operator/(const color& V) const
     {
         return color(r / V.r, g / V.g, b / V.b);
     }
 
-    bool operator ==(const color& V) const
+    bool operator==(const color& V) const
     {
         return r == V.r && g == V.g && b == V.b;
     }
 
-    bool operator !=(const color& V) const
+    bool operator!=(const color& V) const
     {
         return r != V.r || g != V.g || b != V.b;
     }
 
-    color operator -() const
+    color operator-() const
     {
         return color(-r, -g, -b);
     }
 
-    color operator +=(const color& V)
+    color operator+=(const color& V)
     {
         r += V.r;
         g += V.g;
@@ -290,7 +292,7 @@ struct color
         return *this;
     }
 
-    color operator -=(const color& V)
+    color operator-=(const color& V)
     {
         r -= V.r;
         g -= V.g;
@@ -298,7 +300,7 @@ struct color
         return *this;
     }
 
-    color operator *=(float Scale)
+    color operator*=(float Scale)
     {
         r *= Scale;
         g *= Scale;
@@ -306,7 +308,7 @@ struct color
         return *this;
     }
 
-    color operator /=(float V)
+    color operator/=(float V)
     {
         float RV = 1.f / V;
         r *= RV;
@@ -315,7 +317,7 @@ struct color
         return *this;
     }
 
-    color operator *=(const color& V)
+    color operator*=(const color& V)
     {
         r *= V.r;
         g *= V.g;
@@ -323,7 +325,7 @@ struct color
         return *this;
     }
 
-    color operator /=(const color& V)
+    color operator/=(const color& V)
     {
         r /= V.r;
         g /= V.g;

@@ -11,11 +11,11 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Sim Timing
@@ -61,6 +61,6 @@ class FalconSimTiming : public FalconEvent
       int Process(uchar autodisp);
 };
 */
-#pragma pack ()
+#pragma pack()
 
 #endif

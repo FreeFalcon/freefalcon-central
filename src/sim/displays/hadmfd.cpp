@@ -7,10 +7,10 @@
 #include "sms.h"
 #include "simdrive.h"
 #include "camp2sim.h"
-#include "Graphics/Include/render2d.h"
-#include "Graphics/Include/canvas3d.h"
-#include "Graphics/Include/tviewpnt.h"
-#include "Graphics/Include/renderir.h"
+#include "graphics/include/render2d.h"
+#include "graphics/include/canvas3d.h"
+#include "graphics/include/tviewpnt.h"
+#include "graphics/include/renderir.h"
 #include "otwdrive.h"
 #include "cpmanager.h"
 #include "icp.h"
@@ -39,29 +39,33 @@ HadMfdDrawable::HadMfdDrawable()
 
 void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     display = newDisplay;
     self = ((AircraftClass*)playerAC);
     theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
     pFCC = playerAC->Sms->Ownship()->GetFCC();
     Sms = playerAC->Sms;
-    HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
+    HarmTargetingPod* harmPod =
+        (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if ( not theRadar or not pFCC or not self or not Sms)
+    if (not theRadar or not pFCC or not self or not Sms)
     {
         return;
     }
 
-    if ( not harmPod or not self->af->GetIsHtsAble())  // offMode if no HTS pod or equivalent system on board
+    if (not harmPod or
+        not self->af
+                ->GetIsHtsAble()) // offMode if no HTS pod or equivalent system on board
     {
         OffMode(display);
         return;
     }
 
     // This makes sure we are in the correct FCC and Harmpod submodes
-    if (pFCC->GetSubMode() not_eq FireControlComputer::HTS or (harmPod->GetSubMode() not_eq HarmTargetingPod::FilterMode and 
-            harmPod->GetSubMode() not_eq HarmTargetingPod::HAD))
+    if (pFCC->GetSubMode() not_eq FireControlComputer::HTS or
+        (harmPod->GetSubMode() not_eq HarmTargetingPod::FilterMode and
+         harmPod->GetSubMode() not_eq HarmTargetingPod::HAD))
     {
         if (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON)
         {
@@ -89,7 +93,8 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and
+            (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -99,7 +104,7 @@ void HadMfdDrawable::Display(VirtualDisplay* newDisplay)
 
 void HadMfdDrawable::DrawDLZ(VirtualDisplay* display)
 {
-    if ( not pFCC)
+    if (not pFCC)
     {
         return;
     }
@@ -113,8 +118,8 @@ void HadMfdDrawable::DrawDLZ(VirtualDisplay* display)
     if (pFCC->missileTarget)
     {
         // Range Carat / Closure
-        rMax   = pFCC->missileRMax;
-        rMin   = pFCC->missileRMin;
+        rMax = pFCC->missileRMax;
+        rMin = pFCC->missileRMin;
 
         // get range to ground designaate point
         dx = Sms->Ownship()->XPos() - pFCC->groundDesignateX;
@@ -135,7 +140,7 @@ void HadMfdDrawable::DrawDLZ(VirtualDisplay* display)
 
         // Rmin/Rmax
         display->Line(0.9F, -0.8F + rMin * 1.6F, 0.95F, -0.8F + rMin * 1.6F);
-        display->Line(0.9F, -0.8F + rMin * 1.6F, 0.9F,  -0.8F + rMax * 1.6F);
+        display->Line(0.9F, -0.8F + rMin * 1.6F, 0.9F, -0.8F + rMax * 1.6F);
         display->Line(0.9F, -0.8F + rMax * 1.6F, 0.95F, -0.8F + rMax * 1.6F);
 
         // Range Caret
@@ -148,92 +153,95 @@ void HadMfdDrawable::DrawDLZ(VirtualDisplay* display)
 
 void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     FireControlComputer* pFCC = playerAC->Sms->Ownship()->GetFCC();
-    HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
+    HarmTargetingPod* harmPod =
+        (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
     if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
     {
         switch (whichButton)
         {
-            case 0:
-                harmPod->SetSubMode(HarmTargetingPod::HAD);   // Return right back to HAD
-                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                break;
+        case 0:
+            harmPod->SetSubMode(
+                HarmTargetingPod::HAD); // Return right back to HAD
+            playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+            break;
 
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-                MfdDrawable::PushButton(whichButton, whichMFD);
-                break;
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+            MfdDrawable::PushButton(whichButton, whichMFD);
+            break;
 
-                // Eache of this buttons sets a different filtering mode and getting back to HAS
-            case 19:
-                harmPod->SetFilterMode(HarmTargetingPod::ALL);
-                harmPod->SetSubMode(HarmTargetingPod::HAD);
-                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                break;
+            // Eache of this buttons sets a different filtering mode and getting back to HAS
+        case 19:
+            harmPod->SetFilterMode(HarmTargetingPod::ALL);
+            harmPod->SetSubMode(HarmTargetingPod::HAD);
+            playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+            break;
 
-            case 18:
-                harmPod->SetFilterMode(HarmTargetingPod::HP);
-                harmPod->SetSubMode(HarmTargetingPod::HAD);
-                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                break;
+        case 18:
+            harmPod->SetFilterMode(HarmTargetingPod::HP);
+            harmPod->SetSubMode(HarmTargetingPod::HAD);
+            playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+            break;
 
-            case 17:
-                harmPod->SetFilterMode(HarmTargetingPod::HA);
-                harmPod->SetSubMode(HarmTargetingPod::HAD);
-                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                break;
+        case 17:
+            harmPod->SetFilterMode(HarmTargetingPod::HA);
+            harmPod->SetSubMode(HarmTargetingPod::HAD);
+            playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+            break;
 
-            case 16:
-                harmPod->SetFilterMode(HarmTargetingPod::LA);
-                harmPod->SetSubMode(HarmTargetingPod::HAD);
-                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                break;
+        case 16:
+            harmPod->SetFilterMode(HarmTargetingPod::LA);
+            harmPod->SetSubMode(HarmTargetingPod::HAD);
+            playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+            break;
         }
     }
 
-    else if (harmPod and harmPod->GetSubMode() == HarmTargetingPod::HAD)   // HAD screen
+    else if (harmPod and
+             harmPod->GetSubMode() == HarmTargetingPod::HAD) // HAD screen
     {
         switch (whichButton)
         {
-            case 2:
-                harmPod->ToggleHADZoomMode();
-                harmPod->ResetCursor();
-                break;
+        case 2:
+            harmPod->ToggleHADZoomMode();
+            harmPod->ResetCursor();
+            break;
 
-            case 3:
-                // Go to the threats filtering screen
-                harmPod->SetSubMode(HarmTargetingPod::FilterMode);
-                //harmPod->SetLastSubMode( HarmTargetingPod::HAD );
-                break;
+        case 3:
+            // Go to the threats filtering screen
+            harmPod->SetSubMode(HarmTargetingPod::FilterMode);
+            //harmPod->SetLastSubMode( HarmTargetingPod::HAD );
+            break;
 
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-                MfdDrawable::PushButton(whichButton, whichMFD);
-                break;
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+            MfdDrawable::PushButton(whichButton, whichMFD);
+            break;
 
-            case 18:
-                if (harmPod->GetHADZoomMode() == HarmTargetingPod::NORM)
-                {
-                    harmPod->DecreaseRange();
-                }
+        case 18:
+            if (harmPod->GetHADZoomMode() == HarmTargetingPod::NORM)
+            {
+                harmPod->DecreaseRange();
+            }
 
-                break;
+            break;
 
-            case 19:
-                if (harmPod->GetHADZoomMode() == HarmTargetingPod::NORM)
-                {
-                    harmPod->IncreaseRange();
-                }
+        case 19:
+            if (harmPod->GetHADZoomMode() == HarmTargetingPod::NORM)
+            {
+                harmPod->IncreaseRange();
+            }
 
-                break;
+            break;
         }
     }
 
@@ -241,28 +249,31 @@ void HadMfdDrawable::PushButton(int whichButton, int whichMFD)
     {
         switch (whichButton)
         {
-            case 10:
-            case 11:
-            case 12:
-            case 13:
-            case 14:
-                MfdDrawable::PushButton(whichButton, whichMFD);
-                break;
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+            MfdDrawable::PushButton(whichButton, whichMFD);
+            break;
         }
     }
 }
 
 void HadMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
-       and self->af->platform->RaltReady() and 
-        TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
+    if (TheHud and
+        not(self->mFaults and
+            self->mFaults->GetFault(FaultClass::ralt_fault)) and
+        self->af->platform->RaltReady() and
+        TheHud->FindRollAngle(-TheHud->hat) and
+        TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
         GetButtonPos(5, &x, &y);
         y += display->TextHeight();
         x -= 0.05F;
-        int RALT = (int) - TheHud->hat;
+        int RALT = (int)-TheHud->hat;
         char tempstr[10] = "";
 
         if (RALT > 9990)
@@ -285,7 +296,8 @@ void HadMfdDrawable::DrawHDPT(VirtualDisplay* display, SMSClass* Sms)
     {
         char c = HdptStationSym(i, Sms);
 
-        if (c == ' ') continue; // Don't bother drawing blanks.
+        if (c == ' ')
+            continue; // Don't bother drawing blanks.
 
         Str[0] = c;
         Str[1] = '\0';
@@ -293,23 +305,28 @@ void HadMfdDrawable::DrawHDPT(VirtualDisplay* display, SMSClass* Sms)
         if (i < 6)
         {
             leftEdge = -x + width * (i - 1);
-            display->TextLeft(leftEdge, y, Str, (Sms->CurHardpoint() == i ? 2 : 0));
+            display->TextLeft(leftEdge, y, Str,
+                              (Sms->CurHardpoint() == i ? 2 : 0));
         }
         else
         {
             leftEdge = x - width * (Sms->NumHardpoints() - i - 1);
             // Box the current station
-            display->TextRight(leftEdge, y, Str, (Sms->CurHardpoint() == i ? 2 : 0));
+            display->TextRight(leftEdge, y, Str,
+                               (Sms->CurHardpoint() == i ? 2 : 0));
         }
     }
 }
 char HadMfdDrawable::HdptStationSym(int n, SMSClass* Sms) // JPO new routine
 {
-    if (Sms->hardPoint[n] == NULL) return ' '; // empty hp
+    if (Sms->hardPoint[n] == NULL)
+        return ' '; // empty hp
 
-    if (Sms->hardPoint[n]->weaponCount <= 0) return ' '; //MI don't bother drawing empty hardpoints
+    if (Sms->hardPoint[n]->weaponCount <= 0)
+        return ' '; //MI don't bother drawing empty hardpoints
 
-    if (Sms->StationOK(n) == FALSE) return 'F'; // malfunction on  HP
+    if (Sms->StationOK(n) == FALSE)
+        return 'F'; // malfunction on  HP
 
     if (Sms->hardPoint[n]->GetWeaponType() == Sms->curWeaponType)
         return '0' + n; // exact match for weapon
@@ -322,11 +339,12 @@ char HadMfdDrawable::HdptStationSym(int n, SMSClass* Sms) // JPO new routine
 
 void HadMfdDrawable::HARMWpnMode()
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     pFCC = playerAC->Sms->Ownship()->GetFCC();
     Sms = playerAC->Sms;
-    HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
+    HarmTargetingPod* harmPod =
+        (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
     if (harmPod->GetSubMode() == HarmTargetingPod::FilterMode)
     {
@@ -349,7 +367,7 @@ void HadMfdDrawable::HARMWpnMode()
 
         BottomRow();
 
-        if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+        if (not(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
         {
             DWORD tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -366,56 +384,56 @@ void HadMfdDrawable::HARMWpnMode()
 
         switch (harmPod->GetHADZoomMode())
         {
-            case HarmTargetingPod::NORM:
-            default:
-                harmPod->HADDisplay(display);
-                break;
+        case HarmTargetingPod::NORM:
+        default:
+            harmPod->HADDisplay(display);
+            break;
 
-            case HarmTargetingPod::EXP1:
-            case HarmTargetingPod::EXP2:
-                harmPod->HADExpDisplay(display);
-                break;
+        case HarmTargetingPod::EXP1:
+        case HarmTargetingPod::EXP2:
+            harmPod->HADExpDisplay(display);
+            break;
         }
 
-        LabelButton(0,  "TDDA");
+        LabelButton(0, "TDDA");
 
         switch (harmPod->GetHADZoomMode())
         {
-            case HarmTargetingPod::NORM:
-            default:
-                LabelButton(2, "NORM");
-                break;
+        case HarmTargetingPod::NORM:
+        default:
+            LabelButton(2, "NORM");
+            break;
 
-            case HarmTargetingPod::EXP1:
-                float x, y;
-                int boxed;
-                boxed = flash ? 2 : 0;
-                GetButtonPos(2, &x, &y);
-                display->TextCenter(x, y, "EXP1", boxed);
-                break;
+        case HarmTargetingPod::EXP1:
+            float x, y;
+            int boxed;
+            boxed = flash ? 2 : 0;
+            GetButtonPos(2, &x, &y);
+            display->TextCenter(x, y, "EXP1", boxed);
+            break;
 
-            case HarmTargetingPod::EXP2:
-                boxed = flash ? 2 : 0;
-                GetButtonPos(2, &x, &y);
+        case HarmTargetingPod::EXP2:
+            boxed = flash ? 2 : 0;
+            GetButtonPos(2, &x, &y);
 
-                if (flash)
-                {
-                    display->TextCenter(x, y, "EXP2", boxed);
-                }
+            if (flash)
+            {
+                display->TextCenter(x, y, "EXP2", boxed);
+            }
 
-                break;
+            break;
         }
 
-        LabelButton(3,  "THRT");
-        LabelButton(4,  "CNTL");
-        LabelButton(7,  "FR", "ON");
-        LabelButton(8,  "GS", "OF");
-        LabelButton(9,  "T", "I");
-        LabelButton(15,  "MEM");
-        LabelButton(16,  "TD", "TM");
+        LabelButton(3, "THRT");
+        LabelButton(4, "CNTL");
+        LabelButton(7, "FR", "ON");
+        LabelButton(8, "GS", "OF");
+        LabelButton(9, "T", "I");
+        LabelButton(15, "MEM");
+        LabelButton(16, "TD", "TM");
         BottomRow();
 
-        if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+        if (not(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
         {
             DWORD tempColor = display->Color();
             display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
@@ -435,7 +453,9 @@ void HadMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and
+        OTWDriver.pCockpitManager
+            ->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         DrawBullseyeCircle(display, cX, cY);

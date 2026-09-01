@@ -3,16 +3,16 @@
 */
 #include "falclib.h"
 #include "entity.h"
-#include "ClassTbl.h"
+#include "classtbl.h"
 #include "feature.h"
 #include "vehicle.h"
 #include "f4find.h"
-#include "WeapList.h"
+#include "weaplist.h"
 #include "rdrackdata.h"
-#include "sim/include/visualData.h"
-#include "sim/include/irstData.h"
-#include "sim/include/rwrData.h"
-#include "sim/include/radarData.h"
+#include "sim/include/visualdata.h"
+#include "sim/include/irstdata.h"
+#include "sim/include/rwrdata.h"
+#include "sim/include/radardata.h"
 #include "falclib/include/alist.h"
 #include "falclib/include/token.h"
 
@@ -32,22 +32,22 @@ extern int g_nMiniDump;//Cobra
 // Globals
 //
 // VP_changes the segment is important for creation og ClassTable
-UnitClassDataType* UnitDataTable = NULL;
-ObjClassDataType* ObjDataTable = NULL;
-FeatureEntry* FeatureEntryDataTable = NULL;
-WeaponClassDataType* WeaponDataTable = NULL;
-FeatureClassDataType* FeatureDataTable = NULL;
-VehicleClassDataType* VehicleDataTable = NULL;
-WeaponListDataType* WeaponListDataTable = NULL;
-SquadronStoresDataType* SquadronStoresDataTable = NULL;
-PtHeaderDataType* PtHeaderDataTable = NULL;
-PtDataType* PtDataTable = NULL;
-SimWeaponDataType* SimWeaponDataTable = NULL;
-SimACDefType*           SimACDefTable;
-RocketClassDataType* RocketDataTable = NULL; // 2001-11-05 Added by M.N.
-DirtyDataClassType* DDP = NULL; // 2002-04-20 Added by M.N.
+UnitClassDataType *UnitDataTable = NULL;
+ObjClassDataType *ObjDataTable = NULL;
+FeatureEntry *FeatureEntryDataTable = NULL;
+WeaponClassDataType *WeaponDataTable = NULL;
+FeatureClassDataType *FeatureDataTable = NULL;
+VehicleClassDataType *VehicleDataTable = NULL;
+WeaponListDataType *WeaponListDataTable = NULL;
+SquadronStoresDataType *SquadronStoresDataTable = NULL;
+PtHeaderDataType *PtHeaderDataTable = NULL;
+PtDataType *PtDataTable = NULL;
+SimWeaponDataType *SimWeaponDataTable = NULL;
+SimACDefType *SimACDefTable;
+RocketClassDataType *RocketDataTable = NULL; // 2001-11-05 Added by M.N.
+DirtyDataClassType *DDP = NULL; // 2002-04-20 Added by M.N.
 
-RackGroup *RackGroupTable ;
+RackGroup *RackGroupTable;
 RackObject *RackObjectTable;
 
 short NumUnitEntries;
@@ -99,11 +99,11 @@ void UpdateFeatureCombatStatistics(void);
 void UpdateUnitCombatStatistics(void);
 void UpdateObjectiveCombatStatistics(void);
 int LoadFeatureEntryData(char *filename);
-int LoadACDefData(char*);
+int LoadACDefData(char *);
 int LoadSquadronStoresData(char *filename);
 extern int FileVerify(void);
 
-extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+extern FILE *OpenCampFile(char *filename, char *ext, char *mode);
 void WriteClassTable();
 void ReadClassTable();
 void LoadVisIdMap();
@@ -143,7 +143,7 @@ int LoadClassTable(char *filename)
     ErrorFH = 0L;
 
     if (g_bCheckFeatureIndex)
-        ErrorFH = fopen("C:\\Objective-Errors.txt", "w"); // MLR 5/15/2004 -
+        ErrorFH = fopen("C:/Objective-Errors.txt", "w"); // MLR 5/15/2004 -
 
 #if 0 // not required JPO?
     HKEY theKey;
@@ -155,13 +155,13 @@ int LoadClassTable(char *filename)
     RegQueryValueEx(theKey, "objectdir", 0, &type, (LPBYTE)FalconObjectDataDir, &size);
     RegCloseKey(theKey);
 #endif
-    objSet = newstr = strchr(FalconObjectDataDir, '\\');
-
-    while (newstr)
-    {
-        objSet = newstr + 1;
-        newstr = strchr(objSet, '\\');
-    }
+    // Take the last path component of FalconObjectDataDir (the object-set dir name, e.g. "objects"/"ObjectSet0708").
+    // #104: accept BOTH separators -- the path is '\'-built on Windows but '/'-built on Linux, so a '\'-only scan
+    // would return NULL on Linux and feed a null objSet into InitClassTableAndData -> stricmp(NULL) crash.
+    objSet = FalconObjectDataDir;
+    for (char *p = FalconObjectDataDir; *p; p++)
+        if (*p == '\\' or *p == '/')
+            objSet = p + 1;
 
     // Check file integrity
     // FileVerify();
@@ -172,41 +172,59 @@ int LoadClassTable(char *filename)
 #ifndef ACMI
 #ifndef IACONVERT
 
-    if ( not LoadUnitData(filename)) ShiError("Failed to load unit data");
+    if (not LoadUnitData(filename))
+        ShiError("Failed to load unit data");
 
-    if ( not LoadFeatureEntryData(filename)) ShiError("Failed to load feature entries");
+    if (not LoadFeatureEntryData(filename))
+        ShiError("Failed to load feature entries");
 
-    if ( not LoadObjectiveData(filename)) ShiError("Failed to load objective data");
+    if (not LoadObjectiveData(filename))
+        ShiError("Failed to load objective data");
 
-    if ( not LoadWeaponData(filename)) ShiError("Failed to load weapon data");
+    if (not LoadWeaponData(filename))
+        ShiError("Failed to load weapon data");
 
-    if ( not LoadFeatureData(filename)) ShiError("Failed to load feature data");
+    if (not LoadFeatureData(filename))
+        ShiError("Failed to load feature data");
 
-    if ( not LoadVehicleData(filename)) ShiError("Failed to load vehicle data");
+    if (not LoadVehicleData(filename))
+        ShiError("Failed to load vehicle data");
 
-    if ( not LoadWeaponListData(filename)) ShiError("Failed to load weapon list");
+    if (not LoadWeaponListData(filename))
+        ShiError("Failed to load weapon list");
 
-    if ( not LoadPtHeaderData(filename)) ShiError("Failed to load point headers");
+    if (not LoadPtHeaderData(filename))
+        ShiError("Failed to load point headers");
 
-    if ( not LoadPtData(filename)) ShiError("Failed to load point data");
+    if (not LoadPtData(filename))
+        ShiError("Failed to load point data");
 
-    if ( not LoadRadarData(filename)) ShiError("Failed to load radar data");
+    if (not LoadRadarData(filename))
+        ShiError("Failed to load radar data");
 
-    if ( not LoadIRSTData(filename)) ShiError("Failed to load IRST data");
+    if (not LoadIRSTData(filename))
+        ShiError("Failed to load IRST data");
 
-    if ( not LoadRwrData(filename)) ShiError("Failed to load Rwr data");
+    if (not LoadRwrData(filename))
+        ShiError("Failed to load Rwr data");
 
-    if ( not LoadVisualData(filename)) ShiError("Failed to load Visual data");
+    if (not LoadVisualData(filename))
+        ShiError("Failed to load Visual data");
 
-    if ( not LoadSimWeaponData(filename)) ShiError("Failed to load SimWeapon data");
+    if (not LoadSimWeaponData(filename))
+        ShiError("Failed to load SimWeapon data");
 
-    if ( not LoadACDefData(filename)) ShiError("Failed to load AC Definition data");
+    if (not LoadACDefData(filename))
+        ShiError("Failed to load AC Definition data");
 
-    if ( not LoadSquadronStoresData(filename)) ShiError("Failed to load Squadron stores data");
+    if (not LoadSquadronStoresData(filename))
+        ShiError("Failed to load Squadron stores data");
 
-    if ( not LoadRocketData(filename)) ShiError("Failed to load Rocket data"); // added by M.N.
+    if (not LoadRocketData(filename))
+        ShiError("Failed to load Rocket data"); // added by M.N.
 
-    if ( not LoadDirtyData(filename)) ShiError("Failed to load Dirty data priorities");   // added by M.N.
+    if (not LoadDirtyData(filename))
+        ShiError("Failed to load Dirty data priorities"); // added by M.N.
 
     LoadMissionData();
     LoadVisIdMap();
@@ -227,34 +245,46 @@ int LoadClassTable(char *filename)
                 // NumSquadTypes++;
                 ShiAssert((int)Falcon4ClassTable[i].dataPtr < NumUnitEntries);
                 UnitDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
-                Falcon4ClassTable[i].dataPtr = (void*) &UnitDataTable[(int)Falcon4ClassTable[i].dataPtr];
+                Falcon4ClassTable[i].dataPtr =
+                    (void *)&UnitDataTable[(int)Falcon4ClassTable[i].dataPtr];
             }
             else if (Falcon4ClassTable[i].dataType == DTYPE_OBJECTIVE)
             {
-                if (Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE] >= NumObjectiveTypes)
-                    NumObjectiveTypes = Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE];
+                if (Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE] >=
+                    NumObjectiveTypes)
+                    NumObjectiveTypes =
+                        Falcon4ClassTable[i].vuClassData.classInfo_[VU_TYPE];
 
-                ShiAssert((int)Falcon4ClassTable[i].dataPtr < NumObjectiveEntries);
+                ShiAssert((int)Falcon4ClassTable[i].dataPtr <
+                          NumObjectiveEntries);
                 ObjDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
-                Falcon4ClassTable[i].dataPtr = (void*) &ObjDataTable[(int)Falcon4ClassTable[i].dataPtr];
+                Falcon4ClassTable[i].dataPtr =
+                    (void *)&ObjDataTable[(int)Falcon4ClassTable[i].dataPtr];
             }
             else if (Falcon4ClassTable[i].dataType == DTYPE_WEAPON)
             {
                 ShiAssert((int)Falcon4ClassTable[i].dataPtr < NumWeaponTypes);
                 WeaponDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
-                Falcon4ClassTable[i].dataPtr = (void*) &WeaponDataTable[(int)Falcon4ClassTable[i].dataPtr];
+                Falcon4ClassTable[i].dataPtr =
+                    (void *)&WeaponDataTable[(int)Falcon4ClassTable[i].dataPtr];
             }
             else if (Falcon4ClassTable[i].dataType == DTYPE_FEATURE)
             {
-                ShiAssert((int)Falcon4ClassTable[i].dataPtr < NumFeatureEntries);
+                ShiAssert((int)Falcon4ClassTable[i].dataPtr <
+                          NumFeatureEntries);
                 FeatureDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
-                Falcon4ClassTable[i].dataPtr = (void*) &FeatureDataTable[(int)Falcon4ClassTable[i].dataPtr];
+                Falcon4ClassTable[i].dataPtr =
+                    (void
+                         *)&FeatureDataTable[(int)Falcon4ClassTable[i].dataPtr];
             }
             else if (Falcon4ClassTable[i].dataType == DTYPE_VEHICLE)
             {
-                ShiAssert((int)Falcon4ClassTable[i].dataPtr < NumVehicleEntries);
+                ShiAssert((int)Falcon4ClassTable[i].dataPtr <
+                          NumVehicleEntries);
                 VehicleDataTable[(int)Falcon4ClassTable[i].dataPtr].Index = i;
-                Falcon4ClassTable[i].dataPtr = (void*) &VehicleDataTable[(int)Falcon4ClassTable[i].dataPtr];
+                Falcon4ClassTable[i].dataPtr =
+                    (void
+                         *)&VehicleDataTable[(int)Falcon4ClassTable[i].dataPtr];
             }
             else
                 Falcon4ClassTable[i].dataPtr = NULL;
@@ -269,69 +299,110 @@ int LoadClassTable(char *filename)
     // UpdateUnitCombatStatistics();
     // UpdateObjectiveCombatStatistics();
     // Set our special indices;
-    SFXType = GetClassID(DOMAIN_ABSTRACT, CLASS_SFX, TYPE_ANY, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
-    F4SessionType = GetClassID(DOMAIN_ABSTRACT, CLASS_SESSION, TYPE_ANY, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
-    F4GroupType = GetClassID(DOMAIN_ABSTRACT, CLASS_GROUP, TYPE_ANY, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
-    F4GameType = GetClassID(DOMAIN_ABSTRACT, CLASS_GAME, TYPE_ANY, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
-    F4FlyingEyeType = GetClassID(DOMAIN_ABSTRACT, CLASS_ABSTRACT, TYPE_FLYING_EYE, STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
-    F4GenericTruckType = GetClassID(DOMAIN_LAND, CLASS_VEHICLE, TYPE_WHEELED, STYPE_WHEELED_TRANSPORT, SPTYPE_KrAz255B, VU_ANY, VU_ANY, VU_ANY);
+    SFXType = GetClassID(DOMAIN_ABSTRACT, CLASS_SFX, TYPE_ANY, STYPE_ANY,
+                         SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
+    F4SessionType = GetClassID(DOMAIN_ABSTRACT, CLASS_SESSION, TYPE_ANY,
+                               STYPE_ANY, SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
+    F4GroupType = GetClassID(DOMAIN_ABSTRACT, CLASS_GROUP, TYPE_ANY, STYPE_ANY,
+                             SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
+    F4GameType = GetClassID(DOMAIN_ABSTRACT, CLASS_GAME, TYPE_ANY, STYPE_ANY,
+                            SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
+    F4FlyingEyeType =
+        GetClassID(DOMAIN_ABSTRACT, CLASS_ABSTRACT, TYPE_FLYING_EYE, STYPE_ANY,
+                   SPTYPE_ANY, VU_ANY, VU_ANY, VU_ANY);
+    F4GenericTruckType = GetClassID(DOMAIN_LAND, CLASS_VEHICLE, TYPE_WHEELED,
+                                    STYPE_WHEELED_TRANSPORT, SPTYPE_KrAz255B,
+                                    VU_ANY, VU_ANY, VU_ANY);
     // KCK: Temporary until the classtable gets rebuilt - then replace with the commented out line
     // F4GenericUSTruckType = GetClassID(DOMAIN_LAND,CLASS_VEHICLE,TYPE_WHEELED,STYPE_WHEELED_TRANSPORT,SPTYPE_HUMMVCARGO,VU_ANY,VU_ANY,VU_ANY);
     F4GenericUSTruckType = 534;
     // F4GenericCrewType = GetClassID(DOMAIN_LAND,CLASS_VEHICLE,TYPE_FOOT,STYPE_FOOT_SQUAD,SPTYPE_DPRKARTSQD,VU_ANY,VU_ANY,VU_ANY);
     // Set our special rack Ids
-    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_SINGLE, VU_ANY, VU_ANY, VU_ANY);
-    gRackId_Single_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
-    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_TRIPLE, VU_ANY, VU_ANY, VU_ANY);
-    gRackId_Triple_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
-    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_QUAD, VU_ANY, VU_ANY, VU_ANY);
-    gRackId_Quad_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
-    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_SIX, VU_ANY, VU_ANY, VU_ANY);
-    gRackId_Six_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
-    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_2RAIL, VU_ANY, VU_ANY, VU_ANY);
-    gRackId_Two_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
-    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_SINGLE_AA, VU_ANY, VU_ANY, VU_ANY);
-    gRackId_Single_AA_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
-    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK, SPTYPE_MAVRACK, VU_ANY, VU_ANY, VU_ANY);
-    gRackId_Mav_Rack = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK,
+                   SPTYPE_SINGLE, VU_ANY, VU_ANY, VU_ANY);
+    gRackId_Single_Rack =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK,
+                   SPTYPE_TRIPLE, VU_ANY, VU_ANY, VU_ANY);
+    gRackId_Triple_Rack =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK,
+                   SPTYPE_QUAD, VU_ANY, VU_ANY, VU_ANY);
+    gRackId_Quad_Rack =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK,
+                   SPTYPE_SIX, VU_ANY, VU_ANY, VU_ANY);
+    gRackId_Six_Rack =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK,
+                   SPTYPE_2RAIL, VU_ANY, VU_ANY, VU_ANY);
+    gRackId_Two_Rack =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK,
+                   SPTYPE_SINGLE_AA, VU_ANY, VU_ANY, VU_ANY);
+    gRackId_Single_AA_Rack =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_ABSTRACT, CLASS_WEAPON, TYPE_RACK, STYPE_RACK,
+                   SPTYPE_MAVRACK, VU_ANY, VU_ANY, VU_ANY);
+    gRackId_Mav_Rack =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
     // Find our "Rocket Type". That is, the rocket all aircraft rocket pods will fire.
-    i = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_ROCKET, STYPE_ROCKET, SPTYPE_2_75mm, VU_ANY, VU_ANY, VU_ANY);
-    gRocketId = (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType));
+    i = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_ROCKET, STYPE_ROCKET,
+                   SPTYPE_2_75mm, VU_ANY, VU_ANY, VU_ANY);
+    gRocketId =
+        (short)(((int)Falcon4ClassTable[i].dataPtr - (int)WeaponDataTable) /
+                sizeof(WeaponClassDataType));
     // Special hardcoded class data for sessions/groups/games
     WriteClassTable();
-    Falcon4ClassTable[F4SessionType].vuClassData.managementDomain_ = VU_GLOBAL_DOMAIN;
+    Falcon4ClassTable[F4SessionType].vuClassData.managementDomain_ =
+        VU_GLOBAL_DOMAIN;
     Falcon4ClassTable[F4SessionType].vuClassData.global_ = TRUE;
     Falcon4ClassTable[F4SessionType].vuClassData.persistent_ = TRUE;
 
     // KCK: High disconnect time for comms debugging
     if (F4SessionAliveTimeout)
     {
-        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ = F4SessionAliveTimeout * 1000;
+        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ =
+            F4SessionAliveTimeout * 1000;
     }
     else
     {
 #ifdef DEBUG
-        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ = 30000; // MS before a session times out
+        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ =
+            30000; // MS before a session times out
 #else
-        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ = g_nSessionTimeout * 1000; // MS before a session times out
+        Falcon4ClassTable[F4SessionType].vuClassData.updateTolerance_ =
+            g_nSessionTimeout * 1000; // MS before a session times out
 #endif
     }
 
     if (F4SessionUpdateTime)
     {
-        Falcon4ClassTable[F4SessionType].vuClassData.updateRate_ = F4SessionUpdateTime * 1000;
+        Falcon4ClassTable[F4SessionType].vuClassData.updateRate_ =
+            F4SessionUpdateTime * 1000;
     }
     else
     {
-        Falcon4ClassTable[F4SessionType].vuClassData.updateRate_ = g_nSessionUpdateRate * 1000; // MS before a session update
+        Falcon4ClassTable[F4SessionType].vuClassData.updateRate_ =
+            g_nSessionUpdateRate * 1000; // MS before a session update
     }
 
-    Falcon4ClassTable[F4GroupType].vuClassData.updateRate_ = Falcon4ClassTable[F4SessionType].vuClassData.updateRate_;
+    Falcon4ClassTable[F4GroupType].vuClassData.updateRate_ =
+        Falcon4ClassTable[F4SessionType].vuClassData.updateRate_;
 
-    Falcon4ClassTable[F4GroupType].vuClassData.managementDomain_ = VU_GLOBAL_DOMAIN;
+    Falcon4ClassTable[F4GroupType].vuClassData.managementDomain_ =
+        VU_GLOBAL_DOMAIN;
     Falcon4ClassTable[F4GroupType].vuClassData.global_ = TRUE;
     Falcon4ClassTable[F4GroupType].vuClassData.persistent_ = FALSE;
-    Falcon4ClassTable[F4GameType].vuClassData.managementDomain_ = VU_GLOBAL_DOMAIN;
+    Falcon4ClassTable[F4GameType].vuClassData.managementDomain_ =
+        VU_GLOBAL_DOMAIN;
     Falcon4ClassTable[F4GameType].vuClassData.global_ = TRUE;
     Falcon4ClassTable[F4GameType].vuClassData.persistent_ = FALSE;
 
@@ -349,27 +420,27 @@ int LoadClassTable(char *filename)
 
 int UnloadClassTable(void)
 {
-    delete [] UnitDataTable;
-    delete [] ObjDataTable;
-    delete [] WeaponDataTable;
-    delete [] FeatureDataTable;
-    delete [] VehicleDataTable;
-    delete [] WeaponListDataTable;
-    delete [] SquadronStoresDataTable;
-    delete [] Falcon4ClassTable;
-    delete [] PtHeaderDataTable;
-    delete [] PtDataTable;
-    delete [] FeatureEntryDataTable;
-    delete [] RadarDataTable;
-    delete [] IRSTDataTable;
-    delete [] RwrDataTable;
-    delete [] VisualDataTable;
-    delete [] SimWeaponDataTable;
-    delete [] SimACDefTable;
-    delete [] RocketDataTable; // Added by M.N.
-    delete [] DDP; // Added by M.N.
-    delete [] RackGroupTable;
-    delete [] RackObjectTable;
+    delete[] UnitDataTable;
+    delete[] ObjDataTable;
+    delete[] WeaponDataTable;
+    delete[] FeatureDataTable;
+    delete[] VehicleDataTable;
+    delete[] WeaponListDataTable;
+    delete[] SquadronStoresDataTable;
+    delete[] Falcon4ClassTable;
+    delete[] PtHeaderDataTable;
+    delete[] PtDataTable;
+    delete[] FeatureEntryDataTable;
+    delete[] RadarDataTable;
+    delete[] IRSTDataTable;
+    delete[] RwrDataTable;
+    delete[] VisualDataTable;
+    delete[] SimWeaponDataTable;
+    delete[] SimACDefTable;
+    delete[] RocketDataTable; // Added by M.N.
+    delete[] DDP; // Added by M.N.
+    delete[] RackGroupTable;
+    delete[] RackObjectTable;
     MaxRackObjects = 0;
     MaxRackGroups = 0;
     RDUnloadRackData();
@@ -381,7 +452,7 @@ int UnloadClassTable(void)
 #ifndef IACONVERT
 int LoadUnitData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
 
     if ((fp = OpenCampFile(filename, "UCD", "rb")) == NULL)
@@ -433,11 +504,10 @@ int LoadUnitData(char *filename)
 
 int LoadObjectiveData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     // int i,j,fid;
     short entries;
     //char fname[64];
-
 
 
     //strcpy (fname, filename); // M.N. switch between objectives with and without trees
@@ -451,7 +521,8 @@ int LoadObjectiveData(char *filename)
     // ShiError( "Failed to load objective data" );
     // return 0;
     // }
-    if ((fp = OpenCampFile(filename, "OCD", "rb")) == NULL) // if we have no "tree" version, just load the standard one
+    if ((fp = OpenCampFile(filename, "OCD", "rb")) ==
+        NULL) // if we have no "tree" version, just load the standard one
         return 0;
 
     //}
@@ -514,7 +585,7 @@ int LoadObjectiveData(char *filename)
 
 int LoadWeaponData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
 
     if ((fp = OpenCampFile(filename, "WCD", "rb")) == NULL)
@@ -565,7 +636,7 @@ int LoadWeaponData(char *filename)
 
 int LoadRocketData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
 
     if ((fp = OpenCampFile(filename, "RKT", "rb")) == NULL)
@@ -618,7 +689,7 @@ int LoadRocketData(char *filename)
 
 int LoadDirtyData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
 
     if ((fp = OpenCampFile(filename, "DDP", "rb")) == NULL)
@@ -668,11 +739,9 @@ int LoadDirtyData(char *filename)
 // END of added section
 
 
-
-
 int LoadFeatureData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
 
     if ((fp = OpenCampFile(filename, "FCD", "rb")) == NULL)
@@ -721,7 +790,7 @@ int LoadFeatureData(char *filename)
 
 int LoadVehicleData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
 
     if ((fp = OpenCampFile(filename, "VCD", "rb")) == NULL)
@@ -770,7 +839,7 @@ int LoadVehicleData(char *filename)
 
 int LoadWeaponListData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
 
     if ((fp = OpenCampFile(filename, "WLD", "rb")) == NULL)
@@ -818,7 +887,7 @@ int LoadWeaponListData(char *filename)
 
 int LoadPtHeaderData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "PHD", "rb")) == NULL)
     {
@@ -852,15 +921,20 @@ int LoadPtHeaderData(char *filename)
         {
             if (PtHeaderDataTable[l].objID < NumObjectiveEntries)
             {
-                int featureCount = ObjDataTable[PtHeaderDataTable[l].objID].Features;
+                int featureCount =
+                    ObjDataTable[PtHeaderDataTable[l].objID].Features;
 
                 for (t = 0; t < MAX_FEAT_DEPEND; t++)
                 {
-                    if (PtHeaderDataTable[l].features[t] not_eq 255 and PtHeaderDataTable[l].features[t] >= featureCount)
+                    if (PtHeaderDataTable[l].features[t] not_eq 255 and
+                        PtHeaderDataTable[l].features[t] >= featureCount)
                     {
                         if (ErrorFH)
-                            fprintf(ErrorFH, "PtHeaderDataTable[%d].features[%d]=%d >= Objective[%d]'s Features %d\n",
-                                    l, t, PtHeaderDataTable[l].features[t], PtHeaderDataTable[l].objID, featureCount);
+                            fprintf(ErrorFH,
+                                    "PtHeaderDataTable[%d].features[%d]=%d >= "
+                                    "Objective[%d]'s Features %d\n",
+                                    l, t, PtHeaderDataTable[l].features[t],
+                                    PtHeaderDataTable[l].objID, featureCount);
 
                         PtHeaderDataTable[l].features[t] = 255;
                     }
@@ -869,7 +943,9 @@ int LoadPtHeaderData(char *filename)
             else
             {
                 if (ErrorFH)
-                    fprintf(ErrorFH, "PtHeaderDataTable[%d].objId=%d >= NumObjectiveEntries=%d\n",
+                    fprintf(ErrorFH,
+                            "PtHeaderDataTable[%d].objId=%d >= "
+                            "NumObjectiveEntries=%d\n",
                             l, PtHeaderDataTable[l].objID, NumObjectiveEntries);
             }
         }
@@ -880,10 +956,13 @@ int LoadPtHeaderData(char *filename)
 
     for (l = 0; l < NumObjectiveEntries; l++)
     {
-        if ((ObjDataTable[l].PtDataIndex >= NumPtHeaders) or (ObjDataTable[l].PtDataIndex < 0))
+        if ((ObjDataTable[l].PtDataIndex >= NumPtHeaders) or
+            (ObjDataTable[l].PtDataIndex < 0))
         {
             if (ErrorFH)
-                fprintf(ErrorFH, "ObjDataTable[%d].PtDataIndex >= NumPtHeaders = %d or < 0\n",
+                fprintf(ErrorFH,
+                        "ObjDataTable[%d].PtDataIndex >= NumPtHeaders = %d or "
+                        "< 0\n",
                         l, ObjDataTable[l].PtDataIndex, NumPtHeaders);
 
             ObjDataTable[l].PtDataIndex = 0;
@@ -895,7 +974,7 @@ int LoadPtHeaderData(char *filename)
 
 int LoadPtData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "PD", "rb")) == NULL)
     {
@@ -924,11 +1003,12 @@ int LoadPtData(char *filename)
 
 int LoadFeatureEntryData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     char fname[64];
 
     fedtree = false;
-    strcpy(fname, filename); // M.N. switch between objectives with and without trees
+    strcpy(fname,
+           filename); // M.N. switch between objectives with and without trees
 
     if (g_bDisplayTrees)
     {
@@ -940,7 +1020,8 @@ int LoadFeatureEntryData(char *filename)
     {
         fedtree = false;
 
-        if ((fp = OpenCampFile(filename, "FED", "rb")) == NULL) // if we have no "tree" version, just load the standard one
+        if ((fp = OpenCampFile(filename, "FED", "rb")) ==
+            NULL) // if we have no "tree" version, just load the standard one
             return 0;
     }
 
@@ -986,7 +1067,7 @@ int LoadFeatureEntryData(char *filename)
 
 int LoadRadarData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "RCD", "rb")) == NULL)
         return 0;
@@ -1034,7 +1115,7 @@ int LoadRadarData(char *filename)
 
 int LoadIRSTData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "ICD", "rb")) == NULL)
         return 0;
@@ -1082,7 +1163,7 @@ int LoadIRSTData(char *filename)
 
 int LoadRwrData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "rwd", "rb")) == NULL)
         return 0;
@@ -1130,7 +1211,7 @@ int LoadRwrData(char *filename)
 
 int LoadVisualData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "vsd", "rb")) == NULL)
         return 0;
@@ -1178,7 +1259,7 @@ int LoadVisualData(char *filename)
 
 int LoadSimWeaponData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "SWD", "rb")) == NULL)
         return 0;
@@ -1219,14 +1300,15 @@ int LoadSimWeaponData(char *filename)
     // return 0;
     SimWeaponDataTable = new SimWeaponDataType[NumSimWeaponEntries];
     ShiAssert(SimWeaponDataTable);
-    fread(SimWeaponDataTable, sizeof(SimWeaponDataType), NumSimWeaponEntries, fp);
+    fread(SimWeaponDataTable, sizeof(SimWeaponDataType), NumSimWeaponEntries,
+          fp);
     fclose(fp);
     return 1;
 }
 
 int LoadACDefData(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
 
     if ((fp = OpenCampFile(filename, "ACD", "rb")) == NULL)
         return 0;
@@ -1319,7 +1401,8 @@ int LoadSquadronStoresData(char *filename)
 
     SquadronStoresDataTable = new SquadronStoresDataType[NumSquadTypes];
     ShiAssert(SquadronStoresDataTable);
-    fread(SquadronStoresDataTable, sizeof(SquadronStoresDataType), NumSquadTypes, fp);
+    fread(SquadronStoresDataTable, sizeof(SquadronStoresDataType),
+          NumSquadTypes, fp);
     fclose(fp);
     return 1;
 }
@@ -1598,8 +1681,7 @@ void UpdateObjectiveCombatStatistics(void)
 
 int CheckClassEntry(int id, uchar filter[CLASS_NUM_BYTES])
 {
-    int
-    i;
+    int i;
 
     /* compare class bytes */
     for (i = 0; i < CLASS_NUM_BYTES; i++)
@@ -1612,7 +1694,8 @@ int CheckClassEntry(int id, uchar filter[CLASS_NUM_BYTES])
         {
             if (filter[i] not_eq VU_FILTERANY)
             {
-                if (filter[i] not_eq Falcon4ClassTable[id].vuClassData.classInfo_[i])
+                if (filter[i] not_eq
+                    Falcon4ClassTable[id].vuClassData.classInfo_[i])
                 {
                     return 0;
                 }
@@ -1623,7 +1706,8 @@ int CheckClassEntry(int id, uchar filter[CLASS_NUM_BYTES])
     return 1;
 }
 
-int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype, uchar sp, uchar owner, uchar c6, uchar c7)
+int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype, uchar sp,
+               uchar owner, uchar c6, uchar c7)
 {
     int id;
     uchar filter[CLASS_NUM_BYTES];
@@ -1650,8 +1734,7 @@ int GetClassID(uchar domain, uchar eclass, uchar type, uchar stype, uchar sp, uc
 
 char *GetClassName(int ID)
 {
-    int
-    type;
+    int type;
 
     union
     {
@@ -1661,8 +1744,7 @@ char *GetClassName(int ID)
         UnitClassDataType *uc;
         VehicleClassDataType *vc;
         WeaponClassDataType *wc;
-    }
-    ptr;
+    } ptr;
 
     type = Falcon4ClassTable[ID].dataType;
 
@@ -1712,8 +1794,8 @@ void LoadVisIdMap()
         if (buffer[0] == '/' or buffer[0] == '\n' or buffer[0] == '\r')
             continue;
 
-        if (sscanf(buffer, "%d => %d", &id1, &id2) == 2 and 
-            id1 >= 0 and id1 < MAXMAPID)
+        if (sscanf(buffer, "%d => %d", &id1, &id2) == 2 and id1 >= 0 and
+            id1 < MAXMAPID)
             idmap[id1] = id2;
     }
 
@@ -1736,9 +1818,10 @@ void LoadRackTables()
 
     if ((fp = OpenCampFile("Rack", "dat", "rt")) == NULL)
     {
-        sprintf(buffer, "%s\\%s", FalconObjectDataDir, "Rack.dat");
+        sprintf(buffer, "%s/%s", FalconObjectDataDir, "Rack.dat");
 
-        if ((fp = fopen(buffer, "rt")) == NULL) return;
+        if ((fp = fopen(buffer, "rt")) == NULL)
+            return;
     }
 
     while (fgets(buffer, sizeof buffer, fp))
@@ -1779,29 +1862,35 @@ void LoadRackTables()
         cp += 5;
         ShiAssert(grp < MaxRackGroups); // well it should be
 
-        while (isdigit(*cp)) cp++;
+        while (isdigit(*cp))
+            cp++;
 
-        while (isspace(*cp)) cp++;
+        while (isspace(*cp))
+            cp++;
 
         ngrp = atoi(cp);
         ShiAssert(ngrp >= 0 and ngrp < 1000); // arbitrary 1000
         RackGroupTable[grp].nentries = ngrp;
-        RackGroupTable[grp].entries = new int [ngrp];
+        RackGroupTable[grp].entries = new int[ngrp];
 
-        while (isdigit(*cp)) cp++;
+        while (isdigit(*cp))
+            cp++;
 
-        while (isspace(*cp)) cp++;
+        while (isspace(*cp))
+            cp++;
 
         for (int i = 0; *cp and i < ngrp; i++)
         {
             RackGroupTable[grp].entries[i] = atoi(cp);
 
-            while (isdigit(*cp)) cp++;
+            while (isdigit(*cp))
+                cp++;
 
-            while (isspace(*cp)) cp++;
+            while (isspace(*cp))
+                cp++;
         }
 
-        rg ++;
+        rg++;
     }
 
     // now read in the entries
@@ -1856,7 +1945,7 @@ int FindBestRackID(int rackgroup, int count)
     {
         int rack = RackGroupTable[rackgroup].entries[i];
 
-        if (rack > 0 and rack < MaxRackObjects and 
+        if (rack > 0 and rack < MaxRackObjects and
             RackObjectTable[rack].maxoccupancy >= count)
             return rack;
     }
@@ -1866,8 +1955,8 @@ int FindBestRackID(int rackgroup, int count)
 
 int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count)
 {
-    if (planerg < 0 or planerg >= MaxRackGroups or
-        weaponrg < 0 or weaponrg >= MaxRackGroups)
+    if (planerg < 0 or planerg >= MaxRackGroups or weaponrg < 0 or
+        weaponrg >= MaxRackGroups)
         return -1;
 
     // first find a rackgroup in common
@@ -1877,8 +1966,8 @@ int FindBestRackIDByPlaneAndWeapon(int planerg, int weaponrg, int count)
         {
             int rack = RackGroupTable[planerg].entries[i];
 
-            if (rack == RackGroupTable[weaponrg].entries[j] and 
-                rack > 0 and rack < MaxRackObjects and 
+            if (rack == RackGroupTable[weaponrg].entries[j] and rack > 0 and
+                rack < MaxRackObjects and
                 RackObjectTable[rack].maxoccupancy >= count)
                 return rack;
         }
@@ -1962,7 +2051,7 @@ RDRackNode::RDRackNode()
     any = 0;
     wClassCount = 0;
     wClass = 0;
-    flags = RDF_EMERGENCY_JETT_RACK   bitor RDF_SELECTIVE_JETT_RACK  |
+    flags = RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK |
             RDF_EMERGENCY_JETT_WEAPON bitor RDF_SELECTIVE_JETT_WEAPON;
 }
 
@@ -1977,7 +2066,7 @@ RDRackNode::~RDRackNode()
 
     RDLoadOrderNode *ron;
 
-    while (ron = (RDLoadOrderNode*)loadOrder.RemHead())
+    while (ron = (RDLoadOrderNode *)loadOrder.RemHead())
     {
         delete ron;
     }
@@ -2044,7 +2133,7 @@ void RDLoadRackData(void)
 
     if ((fp = OpenCampFile("BMSRack", "dat", "rt")) == NULL)
     {
-        sprintf(buffer, "%s\\%s", FalconObjectDataDir, "BMSRack.dat");
+        sprintf(buffer, "%s/%s", FalconObjectDataDir, "BMSRack.dat");
 
         if ((fp = fopen(buffer, "rt")) == NULL)
             return;
@@ -2064,10 +2153,10 @@ void RDLoadRackData(void)
         /* kludge so that arg is the current string being parsed */
         SetTokenString(arg);
 
-        if ( not com)
+        if (not com)
             continue;
 
-#define On(s) if(stricmp(com,s)==0)
+#define On(s) if (stricmp(com, s) == 0)
 
         On("definerack")
         {
@@ -2100,20 +2189,21 @@ void RDLoadRackData(void)
             On("rackjettmodes")
             {
                 int i;
-                rn->flags and_eq compl (RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK); // clear flags
+                rn->flags and_eq compl(RDF_EMERGENCY_JETT_RACK bitor
+                                       RDF_SELECTIVE_JETT_RACK); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
                 while (-1 not_eq (i = TokenEnum(enums, -1)))
                 {
                     switch (i)
                     {
-                        case 0:
-                            rn->flags or_eq RDF_EMERGENCY_JETT_RACK;
-                            break;
+                    case 0:
+                        rn->flags or_eq RDF_EMERGENCY_JETT_RACK;
+                        break;
 
-                        case 1:
-                            rn->flags or_eq RDF_SELECTIVE_JETT_RACK;
-                            break;
+                    case 1:
+                        rn->flags or_eq RDF_SELECTIVE_JETT_RACK;
+                        break;
                     }
                 }
             }
@@ -2121,20 +2211,22 @@ void RDLoadRackData(void)
             On("weapjettmodes")
             {
                 int i;
-                rn->flags and_eq compl (RDF_EMERGENCY_JETT_WEAPON bitor RDF_SELECTIVE_JETT_WEAPON); // clear flags
+                rn->flags and_eq
+                    compl(RDF_EMERGENCY_JETT_WEAPON bitor
+                          RDF_SELECTIVE_JETT_WEAPON); // clear flags
                 char *enums[] = {"emergency", "selective", 0};
 
                 while (-1 not_eq (i = TokenEnum(enums, -1)))
                 {
                     switch (i)
                     {
-                        case 0:
-                            rn->flags or_eq RDF_EMERGENCY_JETT_WEAPON;
-                            break;
+                    case 0:
+                        rn->flags or_eq RDF_EMERGENCY_JETT_WEAPON;
+                        break;
 
-                        case 1:
-                            rn->flags or_eq RDF_SELECTIVE_JETT_WEAPON;
-                            break;
+                    case 1:
+                        rn->flags or_eq RDF_SELECTIVE_JETT_WEAPON;
+                        break;
                     }
                 }
             }
@@ -2227,7 +2319,9 @@ void RDLoadRackData(void)
 
             On("addwclass")
             {
-                char *enums[] = { "aim", "rocket", "bomb", "gun", "ecm", "tank", "agm", "harm", "sam", "gbu", "camera", 0 };
+                char *enums[] = {"aim", "rocket", "bomb",   "gun",
+                                 "ecm", "tank",   "agm",    "harm",
+                                 "sam", "gbu",    "camera", 0};
                 int l = 0;
                 int i[100];
                 int ok = 1;
@@ -2309,20 +2403,22 @@ void RDLoadRackData(void)
                 On("pylonjettmodes")
                 {
                     int i;
-                    pn->flags and_eq compl (RDF_EMERGENCY_JETT_PYLON bitor RDF_SELECTIVE_JETT_PYLON); // clear flags
+                    pn->flags and_eq
+                        compl(RDF_EMERGENCY_JETT_PYLON bitor
+                              RDF_SELECTIVE_JETT_PYLON); // clear flags
                     char *enums[] = {"emergency", "selective", 0};
 
                     while (-1 not_eq (i = TokenEnum(enums, -1)))
                     {
                         switch (i)
                         {
-                            case 0:
-                                pn->flags or_eq RDF_EMERGENCY_JETT_PYLON;
-                                break;
+                        case 0:
+                            pn->flags or_eq RDF_EMERGENCY_JETT_PYLON;
+                            break;
 
-                            case 1:
-                                pn->flags or_eq RDF_SELECTIVE_JETT_PYLON;
-                                break;
+                        case 1:
+                            pn->flags or_eq RDF_SELECTIVE_JETT_PYLON;
+                            break;
                         }
                     }
                 }
@@ -2341,25 +2437,30 @@ void RDUnloadRackData(void)
     {
         delete hpn;
     }
-
 }
 
-int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRackData *rd);
+int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount,
+                         struct RDRackData *rd);
 
 
-int RDFindBestRack(int GroupId, int WeaponId, int WeaponCount, struct RDRackData *rd)
+int RDFindBestRack(int GroupId, int WeaponId, int WeaponCount,
+                   struct RDRackData *rd)
 {
     if (WeaponId)
     {
         if (RDFindBestRackWID(GroupId, WeaponId, WeaponCount, rd))
             return 1;
 
-        int wclass = SimWeaponDataTable[Falcon4ClassTable[WeaponDataTable[WeaponId].Index].vehicleDataIndex].weaponClass;
+        int wclass = SimWeaponDataTable
+                         [Falcon4ClassTable[WeaponDataTable[WeaponId].Index]
+                              .vehicleDataIndex]
+                             .weaponClass;
 
         if (RDFindBestRackWClass(GroupId, wclass, WeaponCount, rd))
             return 1;
 
-        if (RDFindBestRackSWD(GroupId, WeaponDataTable[WeaponId].SimweapIndex, WeaponCount, rd))
+        if (RDFindBestRackSWD(GroupId, WeaponDataTable[WeaponId].SimweapIndex,
+                              WeaponCount, rd))
             return 1;
     }
 
@@ -2368,13 +2469,13 @@ int RDFindBestRack(int GroupId, int WeaponId, int WeaponCount, struct RDRackData
 
 void RDCopyRackData(int count, RDPylonNode *pn, RDRackNode *rn, RDRackData *rd)
 {
-    rd->rackCT   = rn->rackCT;
-    rd->pylonCT   = pn->pylonCT;
-    rd->rackStations  = rn->stations;
-    rd->flags         = pn->flags bitor rn->flags bitor RDF_BMSDEFINITION;
+    rd->rackCT = rn->rackCT;
+    rd->pylonCT = pn->pylonCT;
+    rd->rackStations = rn->stations;
+    rd->flags = pn->flags bitor rn->flags bitor RDF_BMSDEFINITION;
     rd->pylonmnemonic = pn->mnemonic;
-    rd->rackmnemonic  = rn->mnemonic;
-    rd->count         = count;
+    rd->rackmnemonic = rn->mnemonic;
+    rd->count = count;
 
     RDLoadOrderNode *lon;
 
@@ -2391,11 +2492,11 @@ void RDCopyRackData(int count, RDPylonNode *pn, RDRackNode *rn, RDRackData *rd)
         else
             lon = (RDLoadOrderNode *)lon->GetSucc();
     }
-
 }
 
 
-int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackData *rd)
+int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount,
+                      struct RDRackData *rd)
 {
     RDHardpointNode *hpn;
     RDPylonNode *pn;
@@ -2421,7 +2522,7 @@ int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackD
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2435,7 +2536,6 @@ int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackD
                                     return 1;
                                 }
                             }
-
                         }
 
                         rn = (RDRackNode *)rn->GetSucc();
@@ -2455,7 +2555,8 @@ int RDFindBestRackWID(int GroupId, int WeaponId, int WeaponCount, struct RDRackD
     return 0;
 }
 
-int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRackData *rd)
+int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount,
+                         struct RDRackData *rd)
 {
     RDHardpointNode *hpn;
     RDPylonNode *pn;
@@ -2480,7 +2581,7 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2494,7 +2595,6 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
                                     return 1;
                                 }
                             }
-
                         }
 
                         rn = (RDRackNode *)rn->GetSucc();
@@ -2508,7 +2608,6 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
         }
 
         hpn = (RDHardpointNode *)hpn->GetSucc();
-
     }
 
     rd->pylonCT = rd->rackCT = 0;
@@ -2516,9 +2615,8 @@ int RDFindBestRackWClass(int GroupId, int wClass, int WeaponCount, struct RDRack
 }
 
 
-
-
-int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *rd)
+int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount,
+                      struct RDRackData *rd)
 {
     RDHardpointNode *hpn;
     RDPylonNode *pn;
@@ -2543,7 +2641,7 @@ int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *
 
                     while (rn)
                     {
-                        if (stricmp(rn->rackName, rnn->rackName) == 0 and 
+                        if (stricmp(rn->rackName, rnn->rackName) == 0 and
                             rn->stations >= WeaponCount)
                         {
                             int l;
@@ -2563,7 +2661,6 @@ int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *
                                     return 1;
                                 }
                             }
-
                         }
 
                         rn = (RDRackNode *)rn->GetSucc();
@@ -2577,11 +2674,8 @@ int RDFindBestRackSWD(int GroupId, int SWD, int WeaponCount, struct RDRackData *
         }
 
         hpn = (RDHardpointNode *)hpn->GetSucc();
-
     }
 
     rd->pylonCT = rd->rackCT = 0;
     return 0;
 }
-
-

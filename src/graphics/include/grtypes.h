@@ -17,17 +17,17 @@
 
 // Convienient values to have arround
 
-#include "../../codelib/include/shi/ConvFtoI.h"
+#include "../../codelib/include/shi/convftoi.h"
 
 //#include "shi/ConvFtoI.h"
-#include "../../codelib/include/shi/ShiError.h"
+#include "../../codelib/include/shi/shierror.h"
 
 #ifdef USE_SMART_HEAP
 #include <stdlib.h>
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
-#include "Constant.h"
+#include "constant.h"
 
 
 #if 0 // I don't think these are used anymore....
@@ -72,21 +72,27 @@ typedef struct Tcolor
     // Pack Functions
     inline unsigned int Pack()
     {
-        return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) | (((long)((g) * 255)) << 8) | (long)((b) * 255);
+        return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) |
+               (((long)((g) * 255)) << 8) | (long)((b) * 255);
     }
     inline unsigned int Pack(float fScale)
     {
-        return (((long)((1.0f) * 255)) << 24) | (((long)((r * fScale) * 255)) << 16) | (((long)((g * fScale) * 255)) << 8) | (long)((b * fScale) * 255);
+        return (((long)((1.0f) * 255)) << 24) |
+               (((long)((r * fScale) * 255)) << 16) |
+               (((long)((g * fScale) * 255)) << 8) | (long)((b * fScale) * 255);
     }
 
     // Static Pack Functions
     static unsigned int PackRGBA(float r, float g, float b, float)
     {
-        return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) | (((long)((g) * 255)) << 8) | (long)((b) * 255);
+        return (((long)((1.0f) * 255)) << 24) | (((long)((r) * 255)) << 16) |
+               (((long)((g) * 255)) << 8) | (long)((b) * 255);
     }
     static unsigned int PackRGBA(float r, float g, float b, float, float fScale)
     {
-        return (((long)((1.0f) * 255)) << 24) | (((long)((r * fScale) * 255)) << 16) | (((long)((g * fScale) * 255)) << 8) | (long)((b * fScale) * 255);
+        return (((long)((1.0f) * 255)) << 24) |
+               (((long)((r * fScale) * 255)) << 16) |
+               (((long)((g * fScale) * 255)) << 8) | (long)((b * fScale) * 255);
     }
 
 } Tcolor;

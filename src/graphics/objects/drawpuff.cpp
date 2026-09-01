@@ -6,14 +6,14 @@
     Subclass for drawing puffy clouds.
 \***************************************************************************/
 #include <math.h>
-#include "Matrix.h"
-#include "DrawPuff.h"
+#include "matrix.h"
+#include "drawpuff.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawablePuff::pool;
 #endif
 
-
+
 /***************************************************************************\
     Do what little extra setup work we require.
 \***************************************************************************/
@@ -27,7 +27,6 @@ DrawablePuff::DrawablePuff(int ID, int texSetNum, Tpoint *pos)
 }
 
 
-
 /***************************************************************************\
     Update the position of this overcast tile (called periodically to
  account for wind).

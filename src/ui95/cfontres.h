@@ -19,13 +19,14 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
     short first;
     short second;
-    short  add;
+    short add;
 };
 
 class CharStr
@@ -39,7 +40,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -63,7 +65,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -86,7 +89,6 @@ private:
     short last_;
 
 public:
-
     C_Fontmgr();
     ~C_Fontmgr();
 
@@ -95,20 +97,20 @@ public:
 
     long GetID()
     {
-        return(ID_);
+        return (ID_);
     }
 
     short First()
     {
-        return(first_);
+        return (first_);
     }
     short Last()
     {
-        return(last_);
+        return (last_);
     }
     long ByteWidth()
     {
-        return(bytesperline_);
+        return (bytesperline_);
     }
 
     long Width(_TCHAR *str);
@@ -117,38 +119,50 @@ public:
     CharStr *GetChar(short ID);
     char *GetData()
     {
-        return(fontData_);
+        return (fontData_);
     }
     char *GetName()
     {
-        return(name_);
+        return (name_);
     }
 
     // no cliping version (except for screen)
     void Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y);
-    void Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y);
+    void Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x,
+              long y);
     //void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y);
-    void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y);
-    void _DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
-    void _DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD color, DWORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
+    void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                   WORD bgcolor, long x, long y);
+    void _DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                      WORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
+    void _DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD color,
+                      DWORD bgcolor, long x, long y, UI95_RECT *cliprect); //XX
     //void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y);
-    void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y);
+    void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor,
+                   long x, long y);
 
     // clipping version (use cliprect)
-    void Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y, UI95_RECT *cliprect);
-    void Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect);
-    void _Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect); //XX
-    void _Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor, long x, long y, UI95_RECT *cliprect); //XX
+    void Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y,
+              UI95_RECT *cliprect);
+    void Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x,
+              long y, UI95_RECT *cliprect);
+    void _Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x,
+                 long y, UI95_RECT *cliprect); //XX
+    void _Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor,
+                 long x, long y, UI95_RECT *cliprect); //XX
 
     // GDI path for characters outside the bitmap font (Cyrillic CP1251): render the string
     // with a system TTF (RUSSIAN_CHARSET) + alpha-composite onto SCREEN. cliprect is optional.
     bool NeedGDI(_TCHAR *str, long length);
-    void DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect);
+    void DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, long x,
+                 long y, UI95_RECT *cliprect);
 
     //void Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect);
-    void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect);
+    void DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                   WORD bgcolor, long x, long y, UI95_RECT *cliprect);
     //void DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y,UI95_RECT *cliprect);
-    void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect);
+    void DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor,
+                   long x, long y, UI95_RECT *cliprect);
 
     // Font creation Functions (for converting winders fonts to my BFT format)
     void SetID(long ID)
@@ -157,8 +171,10 @@ public:
     }
     void SetName(char *name)
     {
-        if (name) strcpy(name_, name);
-        else memset(name, 0, 32);
+        if (name)
+            strcpy(name_, name);
+        else
+            memset(name, 0, 32);
     }
     void SetHeight(long height)
     {
@@ -177,22 +193,28 @@ public:
     {
         fNumChars_ = count;
 
-        if (count) fontTable_ = table;
-        else fontTable_ = NULL;
+        if (count)
+            fontTable_ = table;
+        else
+            fontTable_ = NULL;
     }
     void SetData(long size, char *data)
     {
         dSize_ = size;
 
-        if (size) fontData_ = data;
-        else fontData_ = NULL;
+        if (size)
+            fontData_ = data;
+        else
+            fontData_ = NULL;
     }
     void SetKerning(long count, KerningStr *kernlist)
     {
         kNumKerns_ = count;
 
-        if (count) kernList_ = kernlist;
-        else kernList_ = NULL;
+        if (count)
+            kernList_ = kernlist;
+        else
+            kernList_ = NULL;
     }
     void Save(char *filename);
 };

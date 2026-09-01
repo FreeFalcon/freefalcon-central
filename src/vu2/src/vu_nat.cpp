@@ -1,6 +1,6 @@
 // Sfr: vu address part which needs commapi
 #include "vutypes.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 #include "comms/capi.h"
 
 ///////////////
@@ -15,7 +15,7 @@ void VU_ADDRESS::Decode(VU_BYTE **stream, long *rem)
 {
     memcpychk(&recvPort, stream, sizeof(unsigned short), rem);
     memcpychk(&reliableRecvPort, stream, sizeof(unsigned short), rem);
-    memcpychk(&ip, stream, sizeof(unsigned long), rem);
+    memcpychk_u32(&ip, stream, rem); // #104: on-wire 32-bit ip
 }
 
 int VU_ADDRESS::Encode(VU_BYTE **stream)
@@ -25,9 +25,7 @@ int VU_ADDRESS::Encode(VU_BYTE **stream)
     *stream += sizeof(unsigned short);
     memcpy(*stream, &reliableRecvPort, sizeof(unsigned short));
     *stream += sizeof(unsigned short);
-    memcpy(*stream, &ip, sizeof(unsigned long));
-    *stream += sizeof(unsigned long);
+    memcpy_u32(stream, &ip); // #104: on-wire 32-bit ip
     // how much we wrote
     return *stream - init;
 }
-

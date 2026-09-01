@@ -4,19 +4,19 @@
 #include "hdigi.h"
 #include "simveh.h"
 #include "object.h"
-#include "Entity.h"
+#include "entity.h"
 
 #define GS_LIMIT 9.0F
 
 void HeliBrain::CollisionCheck(void)
 {
     float relAz, relEl, range, reactTime;
-    float hRange    = 200.0F; /* range to miss a hostile tgt / fireball */
+    float hRange = 200.0F; /* range to miss a hostile tgt / fireball */
     float hRangeSq = 40000.0F; /* square of hRange */
     //float reactFact = 0.75F; /* fudge factor for reaction time */
     float timeToImpact, rngSq, dt, pastRngSq;
     float ox, oy, oz, tx, ty, tz;
-    int    collision;
+    int collision;
     SimObjectType* obj;
     Falcon4EntityClassType* classPtr;
     SimObjectLocalData* localData;
@@ -68,7 +68,8 @@ void HeliBrain::CollisionCheck(void)
                 ty = obj->BaseData()->YPos() + obj->BaseData()->YDelta() * dt;
                 tz = obj->BaseData()->ZPos() + obj->BaseData()->ZDelta() * dt;
 
-                rngSq = (ox - tx) * (ox - tx) + (oy - ty) * (oy - ty) + (oz - tz) * (oz - tz);
+                rngSq = (ox - tx) * (ox - tx) + (oy - ty) * (oy - ty) +
+                        (oz - tz) * (oz - tz);
 
                 // collision possible if within hRange of target
                 if (rngSq <= hRangeSq)
@@ -105,7 +106,7 @@ void HeliBrain::CollisionCheck(void)
                     relAz = 90.0F * DTR;
                 }
 
-                range  = 4000.0F;
+                range = 4000.0F;
 
                 GetXYZ(self, relAz, relEl, range, &trackX, &trackY, &trackZ);
 
@@ -141,7 +142,8 @@ void HeliBrain::CollisionAvoid(void)
     // rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) * (trackY - self->YPos());
 
     // Heading error for current waypoint
-    desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) - self->Yaw();
+    desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) -
+                 self->Yaw();
 
     if (desHeading > 180.0F * DTR)
         desHeading -= 360.0F * DTR;

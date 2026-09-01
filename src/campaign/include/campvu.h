@@ -8,7 +8,8 @@
 #include "objective.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #define U_AVAILABLE 0x1

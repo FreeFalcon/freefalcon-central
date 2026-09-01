@@ -7,11 +7,11 @@
 #include "simbase.h"
 #include "airframe.h"
 #include "aircrft.h"
-#include "Graphics/Include/tmap.h"
-/* S.G. NEED TO KNOW WHICH WEAPON WE FIRED */#include "Missile.h"
-/* S.G. NEED TO KNOW WHICH WEAPON WE FIRED */#include "vehrwr.h"
-/* S.G. 2001-06-29 */#include "CampBase.h"
-/* S.G. 2001-06-29 */#include "WingOrder.h"
+#include "graphics/include/tmap.h"
+/* S.G. NEED TO KNOW WHICH WEAPON WE FIRED */ #include "missile.h"
+/* S.G. NEED TO KNOW WHICH WEAPON WE FIRED */ #include "vehrwr.h"
+/* S.G. 2001-06-29 */ #include "campbase.h"
+/* S.G. 2001-06-29 */ #include "wingorder.h"
 #include "sms.h" // S.G. 2002-01-02
 #include "flight.h" // MN 2002-03-27
 #include "visual.h"//Cobra for the eyeball ;)
@@ -20,17 +20,17 @@
 /* last ditch maneuver time */
 /*--------------------------*/
 
-#define LD_TIME  1.0
+#define LD_TIME 1.0
 
 
-#define MISSILE_LETHAL_CONE    45.0F
+#define MISSILE_LETHAL_CONE 45.0F
 
 extern float g_fAIDropStoreLauncherRange;
 
 void DigitalBrain::MissileDefeatCheck(void)
 {
     short edata[6];
-    int   response;
+    int response;
 
     //Cobra Moved here before jump out of function code.
     if (targetPtr) //me123 defensive flare
@@ -38,7 +38,8 @@ void DigitalBrain::MissileDefeatCheck(void)
         int looks_scarry = 0;
 
         //me123 status test. let's drop a flare if we are threatened, even with no missile in the air. better safe then sory
-        if (targetData->ataFrom < MISSILE_LETHAL_CONE * DTR and targetData->range < 2.0f * 6000.0f)
+        if (targetData->ataFrom < MISSILE_LETHAL_CONE * DTR and
+            targetData->range < 2.0f * 6000.0f)
         {
             //me123 status test. we are inside 2nm, somebody is pointing at us and they look like they can fire a missile.
             if (targetData->ata < 30.0f * DTR)
@@ -46,27 +47,33 @@ void DigitalBrain::MissileDefeatCheck(void)
                 looks_scarry = FALSE;
             }
 
-            else if (targetData->ata > 30.0f * DTR and targetData->ata < 60.0f * DTR and targetData->range > 5000.0f)
+            else if (targetData->ata > 30.0f * DTR and
+                     targetData->ata < 60.0f * DTR and
+                     targetData->range > 5000.0f)
             {
                 looks_scarry = TRUE;
             }
 
-            else if (targetData->ata > 60.0f * DTR and targetData->ata < 120.0f * DTR and targetData->range > 4000.0f)
+            else if (targetData->ata > 60.0f * DTR and
+                     targetData->ata < 120.0f * DTR and
+                     targetData->range > 4000.0f)
             {
                 looks_scarry = TRUE;
             }
 
-            else if (targetData->ata > 120.0f * DTR and targetData->range > 3000.0f)
+            else if (targetData->ata > 120.0f * DTR and
+                     targetData->range > 3000.0f)
             {
                 looks_scarry = TRUE;
             }
 
             if (looks_scarry == TRUE)
             {
-                if (SimLibElapsedTime > self->FlareExpireTime() + 4 * SEC_TO_MSEC)
+                if (SimLibElapsedTime >
+                    self->FlareExpireTime() + 4 * SEC_TO_MSEC)
                 {
                     //let's pump a flare if none is in the air.
-                    ((AircraftClass*)self)->dropFlareCmd = TRUE;
+                    ((AircraftClass *)self)->dropFlareCmd = TRUE;
                 }
             }
         }
@@ -86,7 +93,7 @@ void DigitalBrain::MissileDefeatCheck(void)
 
     // 2000-09-03 ADDED BY S.G. WE NEED TO STOP EVADING IF THE MISSILE IS NO LONGER TARGETING.
     // ALSO, SINCE THE CHECK FOR self->incomingMissile[0] EXISTING IS BEING DONE IN BOTH IF AND ELSE CLAUSE, IT WILL BE MOVED HERE
-    if ( not self->incomingMissile[0])
+    if (not self->incomingMissile[0])
         return;
 
     if (self->incomingMissile[0]->IsDead())
@@ -96,7 +103,8 @@ void DigitalBrain::MissileDefeatCheck(void)
     }
 
     // RV - Biker - Allow to shoot them back
-    if (((MissileClass *)self->incomingMissile[0])->parent and not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (((MissileClass *)self->incomingMissile[0])->parent and
+        not((MissileClass *)self->incomingMissile[0])->parent->OnGround())
         missileShotTimer = 0;
 
     // 2000-09-05 this will make the range not target base but from us to the missile
@@ -108,16 +116,20 @@ void DigitalBrain::MissileDefeatCheck(void)
     missileRange = (float)sqrt(dx * dx + dy * dy + dz * dz);
 
     // If the missile's range is more than the previous missile range (that we kept), the missile has passed by us.
-    if (missileRange > self->incomingMissileRange and self->incomingMissileRange)
+    if (missileRange > self->incomingMissileRange and
+        self->incomingMissileRange)
     {
-        if (self->incomingMissileEvadeTimer + (6 - SkillLevel()) * SEC_TO_MSEC < SimLibElapsedTime)
+        if (self->incomingMissileEvadeTimer + (6 - SkillLevel()) * SEC_TO_MSEC <
+            SimLibElapsedTime)
         {
             //We have spoofed the missile, now forget about it
             // Cobra - Destroy the missile
             if (missileFiredEntity)
             {
-                ((SimWeaponClass *)missileFiredEntity)->SetFlag(MissileClass::SensorLostLock);
-                ((SimWeaponClass *)missileFiredEntity)->SetFlag(MissileClass::ClosestApprch);
+                ((SimWeaponClass *)missileFiredEntity)
+                    ->SetFlag(MissileClass::SensorLostLock);
+                ((SimWeaponClass *)missileFiredEntity)
+                    ->SetFlag(MissileClass::ClosestApprch);
                 ((SimWeaponClass *)missileFiredEntity)->SetExploding(TRUE);
                 ((SimWeaponClass *)missileFiredEntity)->SetDead(TRUE);
             }
@@ -175,21 +187,30 @@ void DigitalBrain::MissileDefeatCheck(void)
         //Is "seeing" the missile
 
         //Cobra Test this Radar Detect stuff
-        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST)
+        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq
+            SensorClass::IRST)
         {
             if (rwrSensor = FindSensor(self, SensorClass::RWR))
             {
-                if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming)
+                if (((MissileClass *)self->incomingMissile[0])
+                        ->GetSeekerType() == SensorClass::RadarHoming)
                 {
                     int testme = 1;
                 }
 
-                if (((MissileClass *)self->incomingMissile[0])->sensorArray and ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
+                if (((MissileClass *)self->incomingMissile[0])->sensorArray and
+                    ((MissileClass *)self->incomingMissile[0])
+                            ->sensorArray[0]
+                            ->Type() == SensorClass::Radar)
                 {
                     int testme = 1;
                 }
 
-                if (( not ((MissileClass *)self->incomingMissile[0])->sensorArray) and (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) and rwrElement->missileLaunch)
+                if ((not((MissileClass *)self->incomingMissile[0])
+                            ->sensorArray) and
+                    (rwrElement = ((VehRwrClass *)rwrSensor)
+                                      ->IsTracked(self->incomingMissile[0])) and
+                    rwrElement->missileLaunch)
                 {
                     int testme = 1;
                 }
@@ -199,55 +220,74 @@ void DigitalBrain::MissileDefeatCheck(void)
 
         //end
 
-        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq SensorClass::IRST
-           and (rwrSensor = FindSensor(self, SensorClass::RWR))
-            and 
-            (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::RadarHoming
-             or (((MissileClass *)self->incomingMissile[0])->sensorArray and ((MissileClass *)self->incomingMissile[0])->sensorArray[0]->Type() == SensorClass::Radar)
-             or ( not ((MissileClass *)self->incomingMissile[0])->sensorArray and (rwrElement = ((VehRwrClass *)rwrSensor)->IsTracked(self->incomingMissile[0])) and rwrElement->missileLaunch)))
+        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() not_eq
+                SensorClass::IRST and
+            (rwrSensor = FindSensor(self, SensorClass::RWR)) and
+            (((MissileClass *)self->incomingMissile[0])->GetSeekerType() ==
+                 SensorClass::RadarHoming or
+             (((MissileClass *)self->incomingMissile[0])->sensorArray and
+              ((MissileClass *)self->incomingMissile[0])
+                      ->sensorArray[0]
+                      ->Type() == SensorClass::Radar) or
+             (not((MissileClass *)self->incomingMissile[0])->sensorArray and
+              (rwrElement = ((VehRwrClass *)rwrSensor)
+                                ->IsTracked(self->incomingMissile[0])) and
+              rwrElement->missileLaunch)))
         {
             int donothing = 1;
         }
-        else if (missileRange < (10.0f * NM_TO_FT) and SimLibElapsedTime > visDetectTimer)
+        else if (missileRange < (10.0f * NM_TO_FT) and
+                 SimLibElapsedTime > visDetectTimer)
         {
             int donothing1 = 1;
-            VisualClass *eyeball = (VisualClass*)FindSensor((SimMoverClass *)self, SensorClass::Visual);
+            VisualClass *eyeball = (VisualClass *)FindSensor(
+                (SimMoverClass *)self, SensorClass::Visual);
             float az, el, ata, ataFrom, droll;
             int canSee = 0;
 
             if (eyeball)
             {
-                CalcRelValues((SimBaseClass *)self, (MissileClass*)self->incomingMissile[0], &az, &el, &ata, &ataFrom, &droll);
+                CalcRelValues((SimBaseClass *)self,
+                              (MissileClass *)self->incomingMissile[0], &az,
+                              &el, &ata, &ataFrom, &droll);
                 canSee = eyeball->CanSeeObject(az, el);
 
-                if ( not canSee)
+                if (not canSee)
                 {
                     return;
                 }
                 else
                 {
-                    if (missileRange > (8.0f * NM_TO_FT) and SimLibElapsedTime > visDetectTimer
-                       and rand() % 100 < 3)
+                    if (missileRange > (8.0f * NM_TO_FT) and
+                        SimLibElapsedTime > visDetectTimer and rand() % 100 < 3)
                     {
                         int testme = 0;
                     }
-                    else if (missileRange > (6.0f * NM_TO_FT) and missileRange < (8.0f * NM_TO_FT)
-                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 10)
+                    else if (missileRange > (6.0f * NM_TO_FT) and
+                             missileRange < (8.0f * NM_TO_FT) and
+                             SimLibElapsedTime > visDetectTimer and
+                             rand() % 100 < 10)
                     {
                         int testme = 0;
                     }
-                    else if (missileRange > (4.0f * NM_TO_FT) and missileRange < (6.0f * NM_TO_FT)
-                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 25)
+                    else if (missileRange > (4.0f * NM_TO_FT) and
+                             missileRange < (6.0f * NM_TO_FT) and
+                             SimLibElapsedTime > visDetectTimer and
+                             rand() % 100 < 25)
                     {
                         int testme = 0;
                     }
-                    else if (missileRange > (2.0f * NM_TO_FT) and missileRange < (4.0f * NM_TO_FT)
-                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 40)
+                    else if (missileRange > (2.0f * NM_TO_FT) and
+                             missileRange < (4.0f * NM_TO_FT) and
+                             SimLibElapsedTime > visDetectTimer and
+                             rand() % 100 < 40)
                     {
                         int testme = 0;
                     }
-                    else if (missileRange > (0.5f * NM_TO_FT) and missileRange < (2.0f * NM_TO_FT)
-                            and SimLibElapsedTime > visDetectTimer and rand() % 100 < 65)
+                    else if (missileRange > (0.5f * NM_TO_FT) and
+                             missileRange < (2.0f * NM_TO_FT) and
+                             SimLibElapsedTime > visDetectTimer and
+                             rand() % 100 < 65)
                     {
                         int testme = 0;
                     }
@@ -270,7 +310,10 @@ void DigitalBrain::MissileDefeatCheck(void)
         {
             // No need to check if its dead, we did that above already...
             // If we are providing radar guidance to hit (SARH), see if we should wait before defeating the incoming missile
-            if (((SimWeaponClass *)missileFiredEntity)->sensorArray and ((SimWeaponClass *)missileFiredEntity)->sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (((SimWeaponClass *)missileFiredEntity)->sensorArray and
+                ((SimWeaponClass *)missileFiredEntity)
+                        ->sensorArray[0]
+                        ->Type() == SensorClass::RadarHoming)
             {
                 // Check if we are in our 'count down'. First bit will be 1 if so
                 if (missileFiredTime bitand 0x1)
@@ -281,7 +324,8 @@ void DigitalBrain::MissileDefeatCheck(void)
                     // So it is over, start evading
                     else
                     {
-                        VuDeReferenceEntity((SimWeaponClass *)missileFiredEntity);
+                        VuDeReferenceEntity(
+                            (SimWeaponClass *)missileFiredEntity);
                         missileFiredEntity = NULL;
                     }
                 }
@@ -289,16 +333,24 @@ void DigitalBrain::MissileDefeatCheck(void)
                 else
                 {
                     //  So check how long ago the our missile was fired
-                    if (missileFiredTime  + SEC_TO_MSEC * (SkillLevel() + 1) <= SimLibElapsedTime)
+                    if (missileFiredTime + SEC_TO_MSEC * (SkillLevel() + 1) <=
+                        SimLibElapsedTime)
                     {
                         // It was launched not long ago (skill dependant), Evade
-                        VuDeReferenceEntity((SimWeaponClass *)missileFiredEntity);
+                        VuDeReferenceEntity(
+                            (SimWeaponClass *)missileFiredEntity);
                         missileFiredEntity = NULL;
                     }
                     // It's in the air long enough, give us a count down timer, skill based. Also set the first bit to say we're in count down
                     else
                     {
-                        missileFiredTime = (SimLibElapsedTime + rand() % (((SimLibElapsedTime - missileFiredTime) - SEC_TO_MSEC * SkillLevel()) + 1) + SEC_TO_MSEC * (SkillLevel() + 1)) bitor 0x1;  // 2002-01-28 MODIFIED BY S.G. Added '+ 1' in the '%' section to prevent a rare divide by 0 CTD.
+                        missileFiredTime =
+                            (SimLibElapsedTime +
+                             rand() % (((SimLibElapsedTime - missileFiredTime) -
+                                        SEC_TO_MSEC * SkillLevel()) +
+                                       1) +
+                             SEC_TO_MSEC * (SkillLevel() + 1)) bitor
+                            0x1; // 2002-01-28 MODIFIED BY S.G. Added '+ 1' in the '%' section to prevent a rare divide by 0 CTD.
                         // Don't go in MissileDefeatMode.
                         return;
                     }
@@ -377,11 +429,13 @@ void DigitalBrain::MissileDefeat()
     }
 
     // RV - Biker - Allow to shoot them back
-    if (((MissileClass *)self->incomingMissile[0])->parent and not ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (((MissileClass *)self->incomingMissile[0])->parent and
+        not((MissileClass *)self->incomingMissile[0])->parent->OnGround())
         missileShotTimer = 0;
 
     // RV - Biker - Maybe check some extra conditions later
-    if ( not self->Sms->DidEmergencyJettison() and self->incomingMissileRange < 10.0f * NM_TO_FT)
+    if (not self->Sms->DidEmergencyJettison() and
+        self->incomingMissileRange < 10.0f * NM_TO_FT)
     {
         if (self->CombatClass() not_eq MnvrClassBomber)
         {
@@ -399,38 +453,53 @@ void DigitalBrain::MissileDefeat()
     }
 
     // 2001-06-29 ADDED BY S.G. I WANT LEAD TO ASK WINGS TO ATTACK IF HE IS ENGAGED OTHERWISE HE WON'T...
-    if (/* not isWing and */ ((MissileClass *)self->incomingMissile[0])->parent and ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
+    if (/* not isWing and */ ((MissileClass *)self->incomingMissile[0])
+            ->parent and
+        ((MissileClass *)self->incomingMissile[0])->parent->OnGround())
     {
         // Have we given the attack yet? Oh yeah, do we have some AG weapons and do we have someone to direct?
-        if (sentWingAGAttack not_eq AG_ORDER_ATTACK and IsSetATC(HasAGWeapon) and self->GetCampaignObject()->NumberOfComponents() > 1)
+        if (sentWingAGAttack not_eq AG_ORDER_ATTACK and
+            IsSetATC(HasAGWeapon) and
+            self->GetCampaignObject()->NumberOfComponents() > 1)
         {
             VU_ID targetId = FalconNullId;
 
             // Only SEADS on target of opportunity changes to the target shooting at me...
             // Cobra - changed to NOT ( not ) IsNotMainTargetSEAD() (double negatives :^( )
-            if ( not IsNotMainTargetSEAD())
+            if (not IsNotMainTargetSEAD())
             {
                 if (((MissileClass *)self->incomingMissile[0])->parent->IsSim())
-                    targetId = ((SimBaseClass *)((MissileClass *)self->incomingMissile[0])->parent.get())->GetCampaignObject()->Id();
+                    targetId = ((SimBaseClass *)((MissileClass *)
+                                                     self->incomingMissile[0])
+                                    ->parent.get())
+                                   ->GetCampaignObject()
+                                   ->Id();
                 else
-                    targetId = ((MissileClass *)self->incomingMissile[0])->parent->Id();
+                    targetId = ((MissileClass *)self->incomingMissile[0])
+                                   ->parent->Id();
             }
             // Otherwise, tell them to engage our current target if they can (and we have one) while we ditch the missile
             else if (groundTargetPtr)
             {
                 if (groundTargetPtr->BaseData()->IsSim())
-                    targetId = ((SimBaseClass *)groundTargetPtr->BaseData())->GetCampaignObject()->Id();
+                    targetId = ((SimBaseClass *)groundTargetPtr->BaseData())
+                                   ->GetCampaignObject()
+                                   ->Id();
                 else
                     targetId = groundTargetPtr->BaseData()->Id();
             }
 
             if (targetId not_eq FalconNullId)
             {
-                SetGroundTargetPtr(NULL); // First clean our ground target so we can release the radar if we were targeting it
-                gndTargetHistory[0] = NULL; // Then remove our hold on the target so it can be retargeted
+                SetGroundTargetPtr(
+                    NULL); // First clean our ground target so we can release the radar if we were targeting it
+                gndTargetHistory[0] =
+                    NULL; // Then remove our hold on the target so it can be retargeted
 
-                AiSendCommand(self, FalconWingmanMsg::WMAssignTarget, AiFlight, targetId);
-                AiSendCommand(self, FalconWingmanMsg::WMShooterMode, AiFlight, targetId);
+                AiSendCommand(self, FalconWingmanMsg::WMAssignTarget, AiFlight,
+                              targetId);
+                AiSendCommand(self, FalconWingmanMsg::WMShooterMode, AiFlight,
+                              targetId);
                 sentWingAGAttack = AG_ORDER_ATTACK;
                 // 2002-01-20 ADDED BY S.G. Added the new nextAttackCommandToSend variable check to force the lead to reissue an attack in case wings went back into formation (can we say HACK?)
                 nextAttackCommandToSend = SimLibElapsedTime + 60 * SEC_TO_MSEC;
@@ -445,10 +514,10 @@ void DigitalBrain::MissileDefeat()
     /*------------------------------*/
     if (missileDefeatTtgo < 0.0F)
     {
-        missileDefeatTtgo    = 1000.0F;
-        missileFindDragPt    = TRUE;
-        missileFinishedBeam  = FALSE;
-        missileShouldDrag    = FALSE;
+        missileDefeatTtgo = 1000.0F;
+        missileFindDragPt = TRUE;
+        missileFinishedBeam = FALSE;
+        missileShouldDrag = FALSE;
     }
 
     // calc approx threat time
@@ -481,7 +550,7 @@ void DigitalBrain::MissileDefeat()
     /*--------------------*/
     if (missileDefeatTtgo > LD_TIME)
     {
-        ((AircraftClass*)self)->DropProgramed();
+        ((AircraftClass *)self)->DropProgramed();
 
         /*if (((MissileClass *)self->incomingMissile[0])->targetPtr)
          if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > ((float)(6.0f - SkillLevel()) * NM_TO_FT) and 
@@ -498,8 +567,9 @@ void DigitalBrain::MissileDefeat()
 
         if (((MissileClass *)self->incomingMissile[0])->targetPtr)
         {
-            if (((MissileClass *)self->incomingMissile[0])->targetPtr->localData->range > 2.0f * NM_TO_FT
-                or closure < 400.0f)
+            if (((MissileClass *)self->incomingMissile[0])
+                        ->targetPtr->localData->range > 2.0f * NM_TO_FT or
+                closure < 400.0f)
             {
                 MissileDragManeuver();
             }
@@ -511,16 +581,16 @@ void DigitalBrain::MissileDefeat()
 
         // 2000-09-08 ADDED BY S.G. SO WE DON'T GO IN AFTER BURNER WHEN AN IR MISSILE IS LAUNCHED AT US UNTIL WE TRY TO DITCH IT IF WE ARE VETERANS OR ACES
         // WE DO THIS AFTER THE MANEUVERS SO WE OVERIDE THE THROTTLE SETTING BY THESE MANEUVERS
-        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() == SensorClass::IRST and SkillLevel() > 2)
+        if (((MissileClass *)self->incomingMissile[0])->GetSeekerType() ==
+                SensorClass::IRST and
+            SkillLevel() > 2)
             //     throtl = min (throtl, 0.0f);//me123 from 1.0 to 0 (we wanna go idle // S.G. RP4 COMPABILITY
             throtl = min(throtl, 0.99f);
 
         // END OF ADDED SECTION
-
     }
     else
         MissileLastDitch(dx, dy, dz);
-
 }
 
 int DigitalBrain::MissileBeamManeuver()
@@ -559,7 +629,8 @@ int DigitalBrain::MissileBeamManeuver()
     /*------------------------------------*/
     mlSinCos(&trig, az);
     // Cobra - Use local max elevation to try and keep AI from lawndarting
-    float tz = TheMap.GetMEA(((AircraftClass*) self)->XPos(), ((AircraftClass*) self)->YPos());
+    float tz = TheMap.GetMEA(((AircraftClass *)self)->XPos(),
+                             ((AircraftClass *)self)->YPos());
 
     //Cobra
     if (self->ZPos() < -20000.0f)
@@ -571,11 +642,8 @@ int DigitalBrain::MissileBeamManeuver()
         tz += -2000.0f;
     }
 
-    SetTrackPoint(
-        self->XPos() + 0.5F * NM_TO_FT * trig.cos,
-        self->YPos() + 0.5F * NM_TO_FT * trig.sin,
-        tz
-    );
+    SetTrackPoint(self->XPos() + 0.5F * NM_TO_FT * trig.cos,
+                  self->YPos() + 0.5F * NM_TO_FT * trig.sin, tz);
 
 
     /*----------------------------------------------------------*/
@@ -595,7 +663,7 @@ void DigitalBrain::MissileDragManeuver(void)
 {
     float az;
     mlTrig trig;
-    az = self->incomingMissile[0]->Yaw();//Cobra
+    az = self->incomingMissile[0]->Yaw(); //Cobra
 
     if (missileFindDragPt)
     {
@@ -611,7 +679,8 @@ void DigitalBrain::MissileDragManeuver(void)
         mlSinCos(&trig, az);
 
         // Cobra - Use local max elevation to try and keep AI from lawndarting
-        float tz = TheMap.GetMEA(((AircraftClass*) self)->XPos(), ((AircraftClass*) self)->YPos());
+        float tz = TheMap.GetMEA(((AircraftClass *)self)->XPos(),
+                                 ((AircraftClass *)self)->YPos());
 
         //Cobra
         if (self->ZPos() < -20000.0f)
@@ -623,7 +692,8 @@ void DigitalBrain::MissileDragManeuver(void)
             tz += -2000.0f;
         }
 
-        SetTrackPoint(self->XPos() + 20.0F * NM_TO_FT * trig.cos, self->YPos() + 20.0F * NM_TO_FT * trig.sin, tz);
+        SetTrackPoint(self->XPos() + 20.0F * NM_TO_FT * trig.cos,
+                      self->YPos() + 20.0F * NM_TO_FT * trig.sin, tz);
         missileFindDragPt = FALSE;
     }
 
@@ -709,17 +779,18 @@ void DigitalBrain::MissileLastDitch(float xft, float yft, float zft)
     /*------*/
 
 
-    if (missileDefeatTtgo > LD_TIME * 0.25F and missileDefeatTtgo < LD_TIME * 0.8F and 
-        ((AircraftClass*)self)->HasPilot())
+    if (missileDefeatTtgo > LD_TIME * 0.25F and
+        missileDefeatTtgo < LD_TIME * 0.8F and
+        ((AircraftClass *)self)->HasPilot())
     {
         if (SimLibElapsedTime > self->ChaffExpireTime())
         {
-            ((AircraftClass*)self)->dropChaffCmd = TRUE;
+            ((AircraftClass *)self)->dropChaffCmd = TRUE;
         }
 
         if (SimLibElapsedTime > self->FlareExpireTime())
         {
-            ((AircraftClass*)self)->dropFlareCmd = TRUE;
+            ((AircraftClass *)self)->dropFlareCmd = TRUE;
         }
     }
 }
@@ -728,5 +799,3 @@ int DigitalBrain::MissileEvade(void)
 {
     return TRUE;
 }
-
-

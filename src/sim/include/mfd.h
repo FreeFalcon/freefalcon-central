@@ -5,7 +5,7 @@
 #include <windows.h>
 #endif
 #include "drawable.h"
-#include "Graphics/Include/grtypes.h"
+#include "graphics/include/grtypes.h"
 
 // Forward Class declarations
 
@@ -41,8 +41,11 @@ extern bool g_bRealisticAvionics;
 class MFDClass
 {
 public:
-    enum { MAXMM = 5};
-    MFDClass(int count, Render3D *r3d);
+    enum
+    {
+        MAXMM = 5
+    };
+    MFDClass(int count, Render3D* r3d);
     ~MFDClass(void);
 
     int id;
@@ -51,12 +54,23 @@ public:
     // RV - I-Hawk - Removed HUD mode, inserted HAD mode instead for HTS targeting
     enum MfdMode
     {
-        MfdOff = 0, MfdMenu = 1,
-        TFRMode = 2, FLIRMode = 3,
-        TestMode = 4, DTEMode = 5, FLCSMode = 6, WPNMode = 7,
-        TGPMode = 8, MaxPrivMode = 9,
-        FCCMode = 9, FCRMode, SMSMode,
-        RWRMode, HADMode, /*HUDMode,*/ InputMode, MAXMODES
+        MfdOff = 0,
+        MfdMenu = 1,
+        TFRMode = 2,
+        FLIRMode = 3,
+        TestMode = 4,
+        DTEMode = 5,
+        FLCSMode = 6,
+        WPNMode = 7,
+        TGPMode = 8,
+        MaxPrivMode = 9,
+        FCCMode = 9,
+        FCRMode,
+        SMSMode,
+        RWRMode,
+        HADMode,
+        /*HUDMode,*/ InputMode,
+        MAXMODES
     };
     MfdMode mode;
     MfdMode newMode;
@@ -79,30 +93,31 @@ public:
     void StealMode(MfdMode mode);
     void SetNewMasterMode(int n); // new master mode entered.
     void SetNewModeAndPos(int n, MfdMode m);
-    static char *ModeName(int n);
+    static char* ModeName(int n);
     static void CreateDrawables(void);
     static void DestroyDrawables(void);
     void ButtonPushed(int, int);
     void NextMode(void);
     void SetMode(MfdMode);
-    void SetOwnship(AircraftClass *newOwnship);
-    AircraftClass *GetOwnShip()
+    void SetOwnship(AircraftClass* newOwnship);
+    AircraftClass* GetOwnShip()
     {
         return ownship;
     };
     void SetPosition(int xPos, int yPos);
-    void SetNewRenderer(Render3D *r3d);
+    void SetNewRenderer(Render3D* r3d);
     void SetNewMode(MfdMode); //VWF 8/12/97
     void Exec(int, int); //VWF 4/5/97
-    void DrawRttComposite(void);   // Artscout - 2026: composite THIS MFD's atlas zone onto its 3D panel
+    void DrawRttComposite(
+        void); // Artscout - 2026: composite THIS MFD's atlas zone onto its 3D panel
     void Exit(void);
-    void UpdateVirtualPosition(const Tpoint *pos, const Trotation *rot);
+    void UpdateVirtualPosition(const Tpoint* pos, const Trotation* rot);
     void SetImageBuffer(ImageBuffer*, float, float, float, float);
-    DrawableClass *GetDrawable() const
+    DrawableClass* GetDrawable() const
     {
         return const_cast<DrawableClass*>(drawable);
     }
-    void SetDrawable(DrawableClass *newDisplay)
+    void SetDrawable(DrawableClass* newDisplay)
     {
         drawable = newDisplay;
     }
@@ -119,14 +134,16 @@ public:
 
     ImageBuffer* image;
     ImageBuffer* privateImage;
+
 private:
     // sfr: going private (as it should be)
-    DrawableClass *drawable;
+    DrawableClass* drawable;
     int TGPWarning; // RV - I-Hawk - The TGP warning
 public:
-    Canvas3D *virtMFD;
-    static DrawableClass *mfdDraw[MaxPrivMode];
-    static DrawableClass *HadDrawable; // RV - I-Hawk - Added for HAD mode instead of HUDMode
+    Canvas3D* virtMFD;
+    static DrawableClass* mfdDraw[MaxPrivMode];
+    static DrawableClass*
+        HadDrawable; // RV - I-Hawk - Added for HAD mode instead of HUDMode
     int Color(void);
     unsigned int GetIntensity(void);
     void IncreaseBrightness(void);
@@ -140,8 +157,8 @@ public:
     };
 
 private:
-    AircraftClass *ownship;
-    RViewPoint *viewPoint;
+    AircraftClass* ownship;
+    RViewPoint* viewPoint;
     float vTop, vLeft, vBottom, vRight;
     Tpoint cUL, cUR, cLL; // ASSO:
     int tLeft, tTop, tRight, tBottom; // ASSO:
@@ -149,7 +166,7 @@ private:
     float cAlpha; // ASSO:
     int color;
     int intensity;
-    static char *ModeNames[];
+    static char* ModeNames[];
 
 private:
     void FreeDrawable(void);
@@ -161,14 +178,14 @@ public:
     MfdDrawable() {};
     virtual ~MfdDrawable(void);
     virtual void DisplayInit(ImageBuffer*);
-    virtual void Display(VirtualDisplay*vd)
+    virtual void Display(VirtualDisplay* vd)
     {
         display = vd;
     };
     virtual void PushButton(int, int);
     void BottomRow(void);
     void DefaultLabel(int button);
-    void DrawReference(AircraftClass *self);
+    void DrawReference(AircraftClass* self);
     void DrawRedBreak(VirtualDisplay* display);
     void TGPAttitudeWarning(VirtualDisplay* display); // RV - I-Hawk
 };
@@ -187,6 +204,7 @@ public:
         curmode = cm;
     };
     MFDClass::MfdMode curmode;
+
 private:
     int mfdpage;
 };
@@ -199,6 +217,7 @@ public:
     virtual void DisplayInit(ImageBuffer*);
     virtual void Display(VirtualDisplay*);
     void PushButton(int, int);
+
 private:
     void DrawRadarArrows();
     void DrawAzimuthScan();
@@ -215,6 +234,7 @@ public:
     ~TestMfdDrawable(void) {};
     virtual void Display(VirtualDisplay*);
     void PushButton(int, int);
+
 private:
     int bitpage;
     VU_TIME timer;
@@ -228,6 +248,7 @@ public:
     ~BlankMfdDrawable(void) {};
     virtual void Display(VirtualDisplay*);
     void PushButton(int, int);
+
 private:
 };
 
@@ -238,6 +259,7 @@ public:
     ~DteMfdDrawable(void) {};
     virtual void Display(VirtualDisplay*);
     void PushButton(int, int);
+
 private:
 };
 
@@ -248,6 +270,7 @@ public:
     ~FlcsMfdDrawable(void) {};
     virtual void Display(VirtualDisplay*);
     void PushButton(int, int);
+
 private:
 };
 
@@ -258,6 +281,7 @@ public:
     ~FlirMfdDrawable(void) {};
     virtual void Display(VirtualDisplay*);
     void PushButton(int, int);
+
 private:
 };
 
@@ -270,12 +294,13 @@ public:
     virtual void DisplayInit(ImageBuffer*);
     VirtualDisplay* GetDisplay(void);
     void HARMWpnMode(void);
+
 private:
-    AircraftClass *self;
-    FireControlComputer *pFCC;
+    AircraftClass* self;
+    FireControlComputer* pFCC;
     MaverickDisplayClass* mavDisplay;
-    SMSClass *Sms;
-    RadarDopplerClass *theRadar;
+    SMSClass* Sms;
+    RadarDopplerClass* theRadar;
     char Str[50];
     void OffMode(VirtualDisplay* display);
     void PushButton(int, int);
@@ -294,12 +319,13 @@ public:
     virtual void DisplayInit(ImageBuffer*);
     virtual void Display(VirtualDisplay*);
     VirtualDisplay* GetDisplay(void);
+
 private:
-    AircraftClass *self;
-    LaserPodClass *laserPod;
-    FireControlComputer *pFCC;
-    SMSClass *Sms;
-    RadarDopplerClass *theRadar;
+    AircraftClass* self;
+    LaserPodClass* laserPod;
+    FireControlComputer* pFCC;
+    SMSClass* Sms;
+    RadarDopplerClass* theRadar;
     bool StbyMode, MenuMode, SP;
     static int flash;
     char Str[50];
@@ -324,11 +350,12 @@ public:
     ~HadMfdDrawable(void) {};
     virtual void Display(VirtualDisplay*);
     void HARMWpnMode(void);
+
 private:
-    AircraftClass *self;
-    FireControlComputer *pFCC;
-    SMSClass *Sms;
-    RadarDopplerClass *theRadar;
+    AircraftClass* self;
+    FireControlComputer* pFCC;
+    SMSClass* Sms;
+    RadarDopplerClass* theRadar;
     char Str[50];
     int flash;
     void OffMode(VirtualDisplay* display);
@@ -339,8 +366,8 @@ private:
     void DrawDLZ(VirtualDisplay* display);
 };
 
-#define NUM_MFDS      4
-#define MFD_SIZE      154
+#define NUM_MFDS 4
+#define MFD_SIZE 154
 
 extern MFDClass* MfdDisplay[NUM_MFDS];
 void MFDSwapDisplays(void);

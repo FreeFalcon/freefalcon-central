@@ -16,11 +16,12 @@
 #define VU_SESSION_NULL_CONNECTION vuNullId
 #define VU_SESSION_NULL_GROUP vuNullId
 
-#define VU_DEFAULT_PLAYER_NAME  "anonymous"
-#define VU_GAME_GROUP_NAME         "Vu2 Game"
+#define VU_DEFAULT_PLAYER_NAME "anonymous"
+#define VU_GAME_GROUP_NAME "Vu2 Game"
 #define VU_PLAYER_POOL_GROUP_NAME "Player Pool"
 
-#define PACKET_HDR_SIZE (vuKnownConnectionId ? 0 : sizeof(VU_SESSION_ID) + sizeof(VU_ID_NUMBER))
+#define PACKET_HDR_SIZE                                                        \
+    (vuKnownConnectionId ? 0 : sizeof(VU_SESSION_ID) + sizeof(VU_ID_NUMBER))
 #define MIN_MSG_HDR_SIZE (2)     // 1 for type, 1 for min length
 #define MAX_MSG_HDR_SIZE (MIN_MSG_HDR_SIZE + 1)
 #define MSG_HDR_SIZE (MAX_MSG_HDR_SIZE) // assume larger
@@ -51,29 +52,29 @@ enum VuCommsConnectStatus
 
 struct VuCommsContext
 {
-    com_API_handle          handle_;
-    VuCommsConnectStatus  status_;
-    VU_BOOL               reliable_;
-    int                   maxMsgSize_;
+    com_API_handle handle_;
+    VuCommsConnectStatus status_;
+    VU_BOOL reliable_;
+    int maxMsgSize_;
     int maxPackSize_;
     // outgoing data
-    VU_BYTE               *normalSendPacket_;
-    VU_BYTE               *normalSendPacketPtr_;
-    VU_ID                 normalPendingSenderId_;
-    VU_ID                 normalPendingSendTargetId_;
+    VU_BYTE *normalSendPacket_;
+    VU_BYTE *normalSendPacketPtr_;
+    VU_ID normalPendingSenderId_;
+    VU_ID normalPendingSendTargetId_;
     // outgoing data
-    VU_BYTE               *lowSendPacket_;
-    VU_BYTE               *lowSendPacketPtr_;
-    VU_ID                 lowPendingSenderId_;
-    VU_ID                 lowPendingSendTargetId_;
+    VU_BYTE *lowSendPacket_;
+    VU_BYTE *lowSendPacketPtr_;
+    VU_ID lowPendingSenderId_;
+    VU_ID lowPendingSendTargetId_;
     // incoming data
-    VU_BYTE               *recBuffer_;
+    VU_BYTE *recBuffer_;
     // incoming message portion
-    VU_MSG_TYPE           type_;
-    int                   length_;
-    ushort                msgid_;
-    VU_ID                 targetId_;
-    VU_TIME               timestamp_;
+    VU_MSG_TYPE type_;
+    int length_;
+    ushort msgid_;
+    VU_ID targetId_;
+    VU_TIME timestamp_;
     // ping data
     int ping;
 };
@@ -96,7 +97,8 @@ public:
     virtual VU_BOOL IsTarget(); // returns TRUE
 
     virtual VU_BOOL HasTarget(VU_ID id) = 0; // TRUE --> id contains (or is) ent
-    virtual VU_BOOL InTarget(VU_ID id) = 0; // TRUE --> ent contained by (or is) id
+    virtual VU_BOOL
+    InTarget(VU_ID id) = 0; // TRUE --> ent contained by (or is) id
 
     virtual VuTargetEntity *ForwardingTarget(VuMessage *msg = 0);
 
@@ -137,7 +139,8 @@ public:
     {
         reliableComms_.status_ = cs;
     }
-    void SetReliableCommsHandle(com_API_handle ch, int bufSize = 0, int packSize = 0);
+    void SetReliableCommsHandle(com_API_handle ch, int bufSize = 0,
+                                int packSize = 0);
 
     int BytesPending();
     int MaxPacketSize();
@@ -159,7 +162,7 @@ protected:
     VuTargetEntity(FILE *file);
 
 private:
-    int LocalSize();                      // returns local bytes written
+    int LocalSize(); // returns local bytes written
 
     //data
 protected:
@@ -185,6 +188,7 @@ enum VU_GAME_ACTION
 class VuSessionEntity : public VuTargetEntity
 {
     friend class VuMainThread;
+
 public:
     // constructors bitand destructor
     VuSessionEntity(ulong domainMask, const char *callsign);
@@ -240,10 +244,10 @@ public:
     {
         loadMetric_ = newMetric;
     }
-    VU_ERRCODE JoinGroup(VuGroupEntity *newgroup);  //  < 0 retval ==> failure
+    VU_ERRCODE JoinGroup(VuGroupEntity *newgroup); //  < 0 retval ==> failure
     VU_ERRCODE LeaveGroup(VuGroupEntity *group);
     VU_ERRCODE LeaveAllGroups();
-    VU_ERRCODE JoinGame(VuGameEntity *newgame);  //  < 0 retval ==> failure
+    VU_ERRCODE JoinGame(VuGameEntity *newgame); //  < 0 retval ==> failure
     VU_GAME_ACTION GameAction()
     {
         return action_;
@@ -289,8 +293,8 @@ public:
     // Special VU type getters
     virtual VU_BOOL IsSession(); // returns TRUE
 
-    virtual VU_BOOL HasTarget(VU_ID id);  // TRUE --> id contains (or is) ent
-    virtual VU_BOOL InTarget(VU_ID id);   // TRUE --> ent contained by (or is) id
+    virtual VU_BOOL HasTarget(VU_ID id); // TRUE --> id contains (or is) ent
+    virtual VU_BOOL InTarget(VU_ID id); // TRUE --> ent contained by (or is) id
 
     VU_ERRCODE AddGroup(VU_ID gid);
     VU_ERRCODE RemoveGroup(VU_ID gid);
@@ -317,7 +321,8 @@ public:
     void EnqueueOobPositionUpdate(VuEntity *entity);
 
     /** send best enqeued position updates and discards the rest*/
-    void SendBestEnqueuedPositionUpdatesAndClear(unsigned int qty, VU_TIME timestamp);
+    void SendBestEnqueuedPositionUpdatesAndClear(unsigned int qty,
+                                                 VU_TIME timestamp);
 
     // event Handlers
     virtual VU_ERRCODE Handle(VuEvent *event);
@@ -336,7 +341,7 @@ protected:
     virtual VU_ERRCODE RemovalCallback();
 
 private:
-    int LocalSize();                      // returns local bytes written
+    int LocalSize(); // returns local bytes written
 
     // DATA
 protected:
@@ -369,12 +374,12 @@ protected:
 #endif //VU_TRACK_LATENCY
     // msg tracking
     int lastMsgRecvd_;
-    typedef std::vector< VuBin<VuEntity> > VuEntityVector;
+    typedef std::vector<VuBin<VuEntity> > VuEntityVector;
     typedef VuEntityVector::iterator VuEntityVectorIterator;
     VuEntityVector cameras_;
 
 #if SESSION_USES_LIST_FOR_PU
-    typedef std::pair<SM_SCALAR, VuEntity*> ScoreEntityPair;
+    typedef std::pair<SM_SCALAR, VuEntity *> ScoreEntityPair;
     class ScoreEntityPairSort
     {
     public:
@@ -383,11 +388,12 @@ protected:
             return s1.first < s2.first;
         }
     };
-    typedef std::list< ScoreEntityPair > VuPositionUpdateQ;
+    typedef std::list<ScoreEntityPair> VuPositionUpdateQ;
 #else
-    typedef std::multimap< SM_SCALAR, VuEntity* > VuPositionUpdateQ;;
+    typedef std::multimap<SM_SCALAR, VuEntity *> VuPositionUpdateQ;
+    ;
 #endif
-    typedef std::list< VuEntity * > VuOobPositionUpdateQ;
+    typedef std::list<VuEntity *> VuOobPositionUpdateQ;
     // sfr: position update queue to be sent for this session
     VuPositionUpdateQ positionUpdateQ_;
     VuOobPositionUpdateQ oobPositionUpdateQ_;
@@ -457,7 +463,7 @@ protected:
     virtual VU_ERRCODE RemovalCallback();
 
 private:
-    int LocalSize();                      // returns local bytes written
+    int LocalSize(); // returns local bytes written
 
     // DATA
 protected:
@@ -526,7 +532,7 @@ protected:
     virtual VU_ERRCODE RemovalCallback();
 
 private:
-    int LocalSize();                      // returns local bytes written
+    int LocalSize(); // returns local bytes written
 
     // DATA
 protected:
@@ -575,7 +581,7 @@ public:
     virtual int Save(VU_BYTE **stream);
     virtual int Save(FILE *file);
 
-    virtual VU_BOOL HasTarget(VU_ID id);          // always returns TRUE
+    virtual VU_BOOL HasTarget(VU_ID id); // always returns TRUE
     VU_BOOL Connected()
     {
         return connected_;

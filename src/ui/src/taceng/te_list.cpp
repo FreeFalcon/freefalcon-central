@@ -14,12 +14,12 @@
 #include <windows.h>
 #include "unit.h"
 #include "team.h"
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Listadt.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "listadt.h"
 #include "objectiv.h"
-#include "Campaign.h"
+#include "campaign.h"
 #include "campmap.h"
 #include "campwp.h"
 #include "campstr.h"
@@ -33,7 +33,7 @@
 #include "ui95_dd.h"
 #include "chandler.h"
 #include "ui95_ext.h"
-#include "AirUnit.h"
+#include "airunit.h"
 #include "uicomms.h"
 #include "userids.h"
 #include "classtbl.h"
@@ -68,14 +68,16 @@ _TCHAR gLastTEFile[MAX_PATH]; // without path
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void SetDeleteCallback(void (*cb)(long, short, C_Base*));
+void SetDeleteCallback(void (*cb)(long, short, C_Base *));
 void tactical_select_training(long, short, C_Base *);
 static void update_sua_load_list(void);
 static void update_pua_list(void);
 void tactical_edit_mission(tactical_mission *);
 void ActivateTacMissionBuilder();
-BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[], _TCHAR *extension);
-void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
+BOOL CheckExclude(_TCHAR *filename, _TCHAR *directory, _TCHAR *ExcludeList[],
+                  _TCHAR *extension);
+void VerifyDelete(long TitleID, void (*YesCB)(long, short, C_Base *),
+                  void (*NoCB)(long, short, C_Base *));
 int tactical_is_training(void);
 void SetupOccupationMap(void);
 
@@ -88,8 +90,10 @@ void GetMissionTarget(Package curpackage, Flight curflight, _TCHAR Buffer[]);
 void TacEngListCB(void);
 void RefreshMapEventList(long winID, long client);
 void CleanupTacticalEngagementUI(void);
-_TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width, BOOL *status);
-void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[], long group, BOOL cutext, long UseMenu);
+_TCHAR *UI_WordWrap(C_Window *win, _TCHAR *str, long fontid, short width,
+                    BOOL *status);
+void GetFileListTree(C_TreeList *tree, _TCHAR *fspec, _TCHAR *excludelist[],
+                     long group, BOOL cutext, long UseMenu);
 BOOL FileNameSortCB(TREELIST *list, TREELIST *newitem);
 void EnableScenarioInfo(long ID);
 void DisableScenarioInfo();
@@ -102,8 +106,7 @@ void DelTGAFileCB(long ID, short hittype, C_Base *control);
 void DelVHSFileCB(long ID, short hittype, C_Base *control);
 void DelKeyFileCB(long ID, short hittype, C_Base *control);
 
-_TCHAR *TEExcludeList[] =
-{
+_TCHAR *TEExcludeList[] = {
     "te_new",
     NULL,
 };
@@ -112,16 +115,14 @@ _TCHAR *TEExcludeList[] =
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-tactical_mission
-*current_tactical_mission = NULL;
+tactical_mission *current_tactical_mission = NULL;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 extern VU_ID gCurrentFlightID;
-extern C_Map
-*gMapMgr;
+extern C_Map *gMapMgr;
 
 extern long TeamBtnIDs[NUM_TEAMS];
 extern long TeamLineIDs[NUM_TEAMS];
@@ -159,7 +160,6 @@ static void tactical_mission_selection(int hack_training)
 #ifdef _DEBUG
     PostMessage(mainAppWnd, FM_GIVE_FOCUS, NULL, NULL);
 #endif
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -170,13 +170,13 @@ void TE_LoadMissionCB(long, short hittype, C_Base *control)
 {
     C_TreeList *tree;
     TREELIST *item;
-    C_Button   *btn;
+    C_Button *btn;
     _TCHAR buffer[MAX_PATH];
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)control;
+    tree = (C_TreeList *)control;
 
     if (tree)
     {
@@ -184,7 +184,7 @@ void TE_LoadMissionCB(long, short hittype, C_Base *control)
 
         if (item)
         {
-            btn = (C_Button*)item->Item_;
+            btn = (C_Button *)item->Item_;
 
             if (btn)
             {
@@ -193,7 +193,7 @@ void TE_LoadMissionCB(long, short hittype, C_Base *control)
                 tree->Refresh();
 
                 strcpy(buffer, FalconCampaignSaveDirectory);
-                strcat(buffer, "\\");
+                strcat(buffer, "/");
                 strcat(buffer, btn->GetText(0));
                 strcat(buffer, ".tac");
 
@@ -217,13 +217,13 @@ void TE_LoadTrainingMissionCB(long, short hittype, C_Base *control)
 {
     C_TreeList *tree;
     TREELIST *item;
-    C_Button   *btn;
+    C_Button *btn;
     _TCHAR buffer[MAX_PATH];
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)control;
+    tree = (C_TreeList *)control;
 
     if (tree)
     {
@@ -231,7 +231,7 @@ void TE_LoadTrainingMissionCB(long, short hittype, C_Base *control)
 
         if (item)
         {
-            btn = (C_Button*)item->Item_;
+            btn = (C_Button *)item->Item_;
 
             if (btn)
             {
@@ -240,7 +240,7 @@ void TE_LoadTrainingMissionCB(long, short hittype, C_Base *control)
                 tree->Refresh();
 
                 strcpy(buffer, FalconCampaignSaveDirectory);
-                strcat(buffer, "\\");
+                strcat(buffer, "/");
                 strcat(buffer, btn->GetText(0));
                 strcat(buffer, ".trn");
 
@@ -276,7 +276,7 @@ void GetTrainingFileList()
             tree->SetSortCallback(FileNameSortCB);
             tree->SetCallback(TE_LoadTrainingMissionCB);
             char path[_MAX_PATH];
-            sprintf(path, "%s\\*.TRN", FalconCampaignSaveDirectory);
+            sprintf(path, "%s/*.TRN", FalconCampaignSaveDirectory);
 
             GetFileListTree(tree, path, NULL, C_TYPE_ITEM, TRUE, 0);
             tree->RecalcSize();
@@ -308,7 +308,7 @@ void GetTacticalFileList()
             tree->SetSortCallback(FileNameSortCB);
             tree->SetCallback(TE_LoadMissionCB);
             char path[_MAX_PATH];
-            sprintf(path, "%s\\*.TAC", FalconCampaignSaveDirectory);
+            sprintf(path, "%s/*.TAC", FalconCampaignSaveDirectory);
 
             GetFileListTree(tree, path, TEExcludeList, C_TYPE_ITEM, TRUE, 0);
             tree->RecalcSize();
@@ -328,7 +328,8 @@ void TEDelFileCB(long, short hittype, C_Base *control)
 
     gMainHandler->HideWindow(control->Parent_); // Close Verify Window
 
-    if ( not CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory, TEExcludeList, "tac"))
+    if (not CheckExclude(gLastTEFilename, FalconCampUserSaveDirectory,
+                         TEExcludeList, "tac"))
         DeleteFile(gLastTEFilename);
 
     gLastTEFilename[0] = 0;
@@ -375,7 +376,7 @@ void tac_flag_btn_cb(long, short hittype, C_Base *ctrl)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void choose_eng_type_cb(long , short hittype, C_Base *ctrl)
+void choose_eng_type_cb(long, short hittype, C_Base *ctrl)
 {
     if (hittype not_eq C_TYPE_SELECT)
         return;
@@ -385,17 +386,17 @@ void choose_eng_type_cb(long , short hittype, C_Base *ctrl)
     switch (type)
     {
             //need to set engagement type appropriately
-        case TYPE_CONTINUOUS:
-            current_tactical_mission->set_type(tt_engagement);
-            break;
+    case TYPE_CONTINUOUS:
+        current_tactical_mission->set_type(tt_engagement);
+        break;
 
-        case TYPE_SINGLE:
-            current_tactical_mission->set_type(tt_single);
-            break;
+    case TYPE_SINGLE:
+        current_tactical_mission->set_type(tt_single);
+        break;
 
-        case TYPE_TRAINING:
-            current_tactical_mission->set_type(tt_training);
-            break;
+    case TYPE_TRAINING:
+        current_tactical_mission->set_type(tt_training);
+        break;
     }
 }
 
@@ -406,7 +407,7 @@ void choose_eng_type_cb(long , short hittype, C_Base *ctrl)
 
 void hookup_edit_controls(C_Window *win)
 {
-    if ( not win)
+    if (not win)
         return;
 
     C_Button *btn;
@@ -458,11 +459,10 @@ void hookup_edit_controls(C_Window *win)
 
 void hookup_list_buttons(C_Window *winme)
 {
-    C_Button
-    *ctrl;
+    C_Button *ctrl;
 
     // Training Button
-    ctrl = (C_Button *) winme->FindControl(TAC_TRAIN_CTRL);
+    ctrl = (C_Button *)winme->FindControl(TAC_TRAIN_CTRL);
 
     if (ctrl)
     {
@@ -471,7 +471,7 @@ void hookup_list_buttons(C_Window *winme)
     }
 
     // Load Button
-    ctrl = (C_Button *) winme->FindControl(TAC_LOAD_CTRL);
+    ctrl = (C_Button *)winme->FindControl(TAC_LOAD_CTRL);
 
     if (ctrl)
     {
@@ -480,7 +480,7 @@ void hookup_list_buttons(C_Window *winme)
     }
 
     // Join Button
-    ctrl = (C_Button *) winme->FindControl(TAC_JOIN_CTRL);
+    ctrl = (C_Button *)winme->FindControl(TAC_JOIN_CTRL);
 
     if (ctrl)
     {
@@ -698,10 +698,7 @@ static void update_sua_load_list(void)
     C_Button *but;
     C_Line *line;
 
-    int
-    id,
-    loop,
-    MaxTeams;
+    int id, loop, MaxTeams;
 
     // ONLY show Team 1 if a training mission
     if (current_tactical_mission->get_type() == tt_training)
@@ -722,13 +719,17 @@ static void update_sua_load_list(void)
         {
             if (TheCampaign.team_flags[loop])
             {
-                but = (C_Button*)win->FindControl(TeamBtnIDs[id]);
+                but = (C_Button *)win->FindControl(TeamBtnIDs[id]);
 
                 if (but)
                 {
-                    but->SetImage(0, FlagImageID[TheCampaign.team_flags[loop]][SMALL_HORIZ]);
-                    but->SetImage(1, FlagImageID[TheCampaign.team_flags[loop]][SMALL_HORIZ]);
-                    but->SetAllLabel((_TCHAR*)TheCampaign.team_name[loop]);
+                    but->SetImage(
+                        0,
+                        FlagImageID[TheCampaign.team_flags[loop]][SMALL_HORIZ]);
+                    but->SetImage(
+                        1,
+                        FlagImageID[TheCampaign.team_flags[loop]][SMALL_HORIZ]);
+                    but->SetAllLabel((_TCHAR *)TheCampaign.team_name[loop]);
                     but->SetCallback(JoinTacTeamCB);
                     but->SetUserNumber(0, loop);
                     but->SetUserNumber(1, id);
@@ -737,13 +738,15 @@ static void update_sua_load_list(void)
                         gSelectedTeam = static_cast<uchar>(loop);
                 }
 
-                line = (C_Line*)win->FindControl(TeamLineIDs[id]);
+                line = (C_Line *)win->FindControl(TeamLineIDs[id]);
 
                 if (line)
                 {
                     if (TheCampaign.team_flags[loop])
                     {
-                        line->SetColor(TeamColorList[TheCampaign.team_colour[loop]]);;
+                        line->SetColor(
+                            TeamColorList[TheCampaign.team_colour[loop]]);
+                        ;
                     }
                 }
 
@@ -770,24 +773,19 @@ static void update_sua_load_list(void)
 
 static void update_pua_list(void)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
-    C_Text
-    *txt;
+    C_Text *txt;
 
-    C_Button
-    *btn;
+    C_Button *btn;
 
-    char
-    buffer[100],
-           *text;
+    char buffer[100], *text;
 
     win = gMainHandler->FindWindow(TAC_PUA_WIN);
 
     if (current_tactical_mission)
     {
-        txt = (C_Text *) win->FindControl(MISSION_NAME);
+        txt = (C_Text *)win->FindControl(MISSION_NAME);
 
         if (txt)
         {
@@ -805,65 +803,56 @@ static void update_pua_list(void)
             txt->Refresh();
         }
 
-        txt = (C_Text *) win->FindControl(TAC_TEAMS);
+        txt = (C_Text *)win->FindControl(TAC_TEAMS);
 
         if (txt)
         {
-            sprintf
-            (
-                buffer, "%d",
-                current_tactical_mission->get_number_of_teams()
-            );
+            sprintf(buffer, "%d",
+                    current_tactical_mission->get_number_of_teams());
 
             txt->SetText(buffer);
         }
 
 
-        txt = (C_Text *) win->FindControl(TAC_F16S);
+        txt = (C_Text *)win->FindControl(TAC_F16S);
 
         if (txt)
         {
-            sprintf
-            (
+            sprintf(
                 buffer, "%d",
-                current_tactical_mission->get_number_of_f16s(gSelectedTeam)
-            );
+                current_tactical_mission->get_number_of_f16s(gSelectedTeam));
 
             txt->SetText(buffer);
         }
 
 
-        txt = (C_Text *) win->FindControl(TAC_AIRCRAFT);
+        txt = (C_Text *)win->FindControl(TAC_AIRCRAFT);
 
         if (txt)
         {
-            sprintf
-            (
-                buffer, "%d",
-                current_tactical_mission->get_number_of_aircraft(gSelectedTeam)
-            );
+            sprintf(buffer, "%d",
+                    current_tactical_mission->get_number_of_aircraft(
+                        gSelectedTeam));
 
             txt->SetText(buffer);
         }
 
-        txt = (C_Text *) win->FindControl(TAC_PLAYERS);
+        txt = (C_Text *)win->FindControl(TAC_PLAYERS);
 
         if (txt)
         {
-            sprintf
-            (
+            sprintf(
                 buffer, "%d",
-                current_tactical_mission->get_number_of_players(gSelectedTeam)
-            );
+                current_tactical_mission->get_number_of_players(gSelectedTeam));
 
             txt->SetText(buffer);
         }
 
-        txt = (C_Text *) win->FindControl(TAC_TEAM_NAME);
+        txt = (C_Text *)win->FindControl(TAC_TEAM_NAME);
 
         if (txt)
         {
-            txt->SetText((_TCHAR*)TheCampaign.team_name[gSelectedTeam]);
+            txt->SetText((_TCHAR *)TheCampaign.team_name[gSelectedTeam]);
             txt->Refresh();
         }
 
@@ -871,74 +860,77 @@ static void update_pua_list(void)
 
         if (btn)
         {
-            btn->SetImage(0, FlagImageID[TheCampaign.team_flags[gSelectedTeam]][BIG_HORIZ]);
+            btn->SetImage(
+                0,
+                FlagImageID[TheCampaign.team_flags[gSelectedTeam]][BIG_HORIZ]);
             btn->Refresh();
         }
 
-        txt = (C_Text*)win->FindControl(UNIT_MOTTO);
+        txt = (C_Text *)win->FindControl(UNIT_MOTTO);
 
         if (txt)
         {
             if (tactical_is_training())
             {
-                long textid = TRN_MISSION_01 + atol(current_tactical_mission->get_title()) - 1;
+                long textid = TRN_MISSION_01 +
+                              atol(current_tactical_mission->get_title()) - 1;
 
                 if (textid >= TRN_MISSION_01 and textid <= TRN_MISSION_31)
                     txt->SetText(textid);
                 else
-                    txt->SetText((char*)TheCampaign.team_motto[gSelectedTeam]);
+                    txt->SetText((char *)TheCampaign.team_motto[gSelectedTeam]);
             }
             else
             {
-                txt->SetText((char*)TheCampaign.team_motto[gSelectedTeam]);
+                txt->SetText((char *)TheCampaign.team_motto[gSelectedTeam]);
             }
         }
     }
     else
     {
-        txt = (C_Text *) win->FindControl(MISSION_NAME);
+        txt = (C_Text *)win->FindControl(MISSION_NAME);
 
         if (txt)
         {
             txt->SetText("No Mission");
         }
 
-        txt = (C_Text *) win->FindControl(TAC_TEAMS);
+        txt = (C_Text *)win->FindControl(TAC_TEAMS);
 
         if (txt)
         {
             txt->SetText("0");
         }
 
-        txt = (C_Text *) win->FindControl(TAC_F16S);
+        txt = (C_Text *)win->FindControl(TAC_F16S);
 
         if (txt)
         {
             txt->SetText("0");
         }
 
-        txt = (C_Text *) win->FindControl(TAC_AIRCRAFT);
+        txt = (C_Text *)win->FindControl(TAC_AIRCRAFT);
 
         if (txt)
         {
             txt->SetText("0");
         }
 
-        txt = (C_Text *) win->FindControl(TAC_PLAYERS);
+        txt = (C_Text *)win->FindControl(TAC_PLAYERS);
 
         if (txt)
         {
             txt->SetText("0");
         }
 
-        txt = (C_Text *) win->FindControl(TAC_TEAM_NAME);
+        txt = (C_Text *)win->FindControl(TAC_TEAM_NAME);
 
         if (txt)
         {
             txt->SetText(" ");
         }
 
-        txt = (C_Text *) win->FindControl(TAC_TEAM_NAME2);
+        txt = (C_Text *)win->FindControl(TAC_TEAM_NAME2);
 
         if (txt)
         {
@@ -973,7 +965,7 @@ void update_missions_details(long winID)
 
     C_Window *win = gMainHandler->FindWindow(winID);
 
-    if ( not win)
+    if (not win)
         return;
 
     if (winID == TAC_AIRCRAFT)
@@ -999,7 +991,8 @@ void update_missions_details(long winID)
             text->Refresh();
 
             if (current_tactical_mission)
-                text->SetText(current_tactical_mission->get_team_name(current_tactical_mission->get_team()));
+                text->SetText(current_tactical_mission->get_team_name(
+                    current_tactical_mission->get_team()));
             else
                 text->SetText("No Mission");//should NEVER happen
 
@@ -1067,8 +1060,6 @@ void update_missions_details(long winID)
     }
 
 
-
-
     text = (C_Text *)win->FindControl(MISSION_FIELD);
 
     if (text)
@@ -1103,8 +1094,7 @@ void update_missions_details(long winID)
 
 void tactical_select_join(long, short hittype, C_Base *ctrl)
 {
-    C_Window
-    *win;
+    C_Window *win;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
     {
@@ -1113,14 +1103,14 @@ void tactical_select_join(long, short hittype, C_Base *ctrl)
 
     DisableScenarioInfo();
 
-    if ( not gCommsMgr->Online())
+    if (not gCommsMgr->Online())
         gMainHandler->EnableWindowGroup(6001);
 
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(1));
     ctrl->Parent_->HideCluster(ctrl->GetUserNumber(2));
     ctrl->Parent_->UnHideCluster(ctrl->GetUserNumber(0));
 
-    if ( not gCommsMgr->Online())
+    if (not gCommsMgr->Online())
     {
         win = gMainHandler->FindWindow(PB_WIN);
 
@@ -1173,4 +1163,3 @@ void tactical_select_training(long, short hittype, C_Base *ctrl)
 
     GetTrainingFileList();
 }
-

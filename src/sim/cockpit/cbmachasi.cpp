@@ -2,7 +2,7 @@
 #include <windows.h>
 
 #include "stdhdr.h"
-#include "flightData.h"
+#include "flightdata.h"
 
 #include "cpcb.h"
 #include "cpdigits.h"
@@ -11,22 +11,22 @@
 #include "aircrft.h"
 
 
-
 //MI
 extern bool g_bRealisticAvionics;
 extern bool g_bMachAsiDial; //Wombat778 7-9-04
 
-void CBEMachAsi(void * pObject)
+void CBEMachAsi(void* pObject)
 {
-    if ( not pObject) return;
+    if (not pObject)
+        return;
 
     //Wombat778 7-09-04 treat machasi as a dial
 
-    if ( not g_bMachAsiDial)
+    if (not g_bMachAsiDial)
     {
 
         CPMachAsi* pCPMachAsi;
-        pCPMachAsi = (CPMachAsi*) pObject;
+        pCPMachAsi = (CPMachAsi*)pObject;
 
         //MI
         if (g_bRealisticAvionics)
@@ -48,17 +48,20 @@ void CBEMachAsi(void * pObject)
     {
         CPDial* pCPDial;
 
-        pCPDial = (CPDial*) pObject;
+        pCPDial = (CPDial*)pObject;
 
-        if ( not pCPDial or not pCPDial->mpOwnship) return;
+        if (not pCPDial or not pCPDial->mpOwnship)
+            return;
 
-        if (F4IsBadReadPtr(pCPDial->mpOwnship, sizeof(pCPDial->mpOwnship))) return;
+        if (F4IsBadReadPtr(pCPDial->mpOwnship, sizeof(pCPDial->mpOwnship)))
+            return;
 
         //MI
         if (g_bRealisticAvionics)
         {
             //limited between 80 and 850 kts, according to -1
-            float value = ((AircraftClass *)pCPDial->mpOwnship)->GetKias() / 100.0F;
+            float value =
+                ((AircraftClass*)pCPDial->mpOwnship)->GetKias() / 100.0F;
 
             if (value < 80.0f / 100.0f)
                 value = 0.0f;
@@ -68,23 +71,24 @@ void CBEMachAsi(void * pObject)
             pCPDial->mDialValue = value;
         }
         else
-            pCPDial->mDialValue = ((AircraftClass *)pCPDial->mpOwnship)->GetKias() / 100.0F;
+            pCPDial->mDialValue =
+                ((AircraftClass*)pCPDial->mpOwnship)->GetKias() / 100.0F;
     }
 }
 
 
-void CBEMach(void * pObject)
+void CBEMach(void* pObject)
 {
 
-    CPDigits* pCPDigits = (CPDigits*) pObject;
+    CPDigits* pCPDigits = (CPDigits*)pObject;
     float machNumber;
     int firstDigit;
     int secondDigit;
 
     machNumber = cockpitFlightData.mach;
 
-    firstDigit = (int) machNumber;
-    secondDigit = (int)(10.0F * (machNumber - ((float) firstDigit)));
+    firstDigit = (int)machNumber;
+    secondDigit = (int)(10.0F * (machNumber - ((float)firstDigit)));
 
     //MI
     if (g_bRealisticAvionics)

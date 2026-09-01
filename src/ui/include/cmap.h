@@ -11,7 +11,8 @@
 
 enum // Draw Flags
 {
-    _MAP_TEAM_0 = 0x00000001, // Calculation= (1 << i) (where i>=0 and i < _MAX_TEAMS_)
+    _MAP_TEAM_0 =
+        0x00000001, // Calculation= (1 << i) (where i>=0 and i < _MAX_TEAMS_)
     _MAP_TEAM_1 = 0x00000002,
     _MAP_TEAM_2 = 0x00000004,
     _MAP_TEAM_3 = 0x00000008,
@@ -75,11 +76,11 @@ typedef struct
 
 typedef struct
 {
-    THR_LIST  *Threats; // These are used to create an overlay
-    AIR_LIST  *AirUnits;
-    GND_LIST  *Units;
-    NAV_LIST  *NavalUnits;
-    OBJ_LIST  *Objectives;
+    THR_LIST *Threats; // These are used to create an overlay
+    AIR_LIST *AirUnits;
+    GND_LIST *Units;
+    NAV_LIST *NavalUnits;
+    OBJ_LIST *Objectives;
     C_Waypoint *Waypoints;
 } MAPICONS;
 
@@ -93,10 +94,14 @@ typedef FlightClass *Flight;
 class C_Map
 {
 private:
-    long AirIconIDs_[_MAX_TEAMS_][_MAX_DIRECTIONS_][2]; // [Team 0-7][Heading][0 = Not Selected,1 = Selected]
-    long ArmyIconIDs_[_MAX_TEAMS_][2]; // [Team 0-7][0 = Not Selected,1 = Selected]
-    long NavyIconIDs_[_MAX_TEAMS_][2]; // [Team 0-7][0 = Not Selected,1 = Selected]
-    long ObjIconIDs_[_MAX_TEAMS_][2]; // [Team 0-7][0 = Not Selected,1 = Selected]
+    long AirIconIDs_[_MAX_TEAMS_][_MAX_DIRECTIONS_]
+                    [2]; // [Team 0-7][Heading][0 = Not Selected,1 = Selected]
+    long ArmyIconIDs_[_MAX_TEAMS_]
+                     [2]; // [Team 0-7][0 = Not Selected,1 = Selected]
+    long NavyIconIDs_[_MAX_TEAMS_]
+                     [2]; // [Team 0-7][0 = Not Selected,1 = Selected]
+    long ObjIconIDs_[_MAX_TEAMS_]
+                    [2]; // [Team 0-7][0 = Not Selected,1 = Selected]
     float CenterX_, CenterY_;
     long ZoomLevel_;
     long MinZoomLevel_;
@@ -109,8 +114,10 @@ private:
 
     float BullsEyeX_, BullsEyeY_;
 
-    float LogMinX_, LogMinY_, LogMaxX_, LogMaxY_; // Min/Max ranges for WaypointZs
-    float StrtMinX_, StrtMinY_, StrtMaxX_, StrtMaxY_; // Min/Max ranges for WaypointZs
+    float LogMinX_, LogMinY_, LogMaxX_,
+        LogMaxY_; // Min/Max ranges for WaypointZs
+    float StrtMinX_, StrtMinY_, StrtMaxX_,
+        StrtMaxY_; // Min/Max ranges for WaypointZs
 
     long ObjectiveMask_; // masks for displaying map icons
     long UnitMask_;
@@ -126,12 +133,13 @@ private:
     MAPICONS Team_[_MAX_TEAMS_];
     COLORREF TeamColor_[_MAX_TEAMS_];
 
-    VU_ID WPUnitID_;  // Flight ID of current waypoints
+    VU_ID WPUnitID_; // Flight ID of current waypoints
     C_Waypoint *CurWP_; // Currently selected WP list
     C_Waypoint *CurWPZ_; // Currently selected WP list (altitudes only)
     RECT CurWPArea_; // Needs to be RECT not UI95_RECT
 
-    C_DrawList *CurIcons_; // current icons for targets bitand airbases (will always be on when CurWP_ is displayed)
+    C_DrawList *
+        CurIcons_; // current icons for targets bitand airbases (will always be on when CurWP_ is displayed)
 
     C_Cursor *SmallMapCtrl_; // Keeps small map up to date :)
     C_Window *DrawWindow_, *WPZWindow_;
@@ -151,20 +159,19 @@ private:
     void ScaleMap();
 
 public:
-
     C_Map();
     ~C_Map();
 
     void SetLogRanges(float minx, float miny, float maxx, float maxy)
     {
-        LogMinX_ = minx;    // Min/Max ranges for WaypointZs
+        LogMinX_ = minx; // Min/Max ranges for WaypointZs
         LogMinY_ = miny;
         LogMaxX_ = maxx;
         LogMaxY_ = maxy;
     }
     void SetStrtRanges(float minx, float miny, float maxx, float maxy)
     {
-        StrtMinX_ = minx;    // Min/Max ranges for WaypointZs
+        StrtMinX_ = minx; // Min/Max ranges for WaypointZs
         StrtMinY_ = miny;
         StrtMaxX_ = maxx;
         StrtMaxY_ = maxy;
@@ -192,56 +199,60 @@ public:
 
     MAPICONS GetTeam(int i)
     {
-        return Team_[i];    // 2002-02-23 ADDED BY S.G. Need to exteriorize Team_
+        return Team_[i]; // 2002-02-23 ADDED BY S.G. Need to exteriorize Team_
     }
     void SetupOverlay();
     void Cleanup();
     void SetMapImage(long ID);
     C_Base *GetMapControl()
     {
-        return(Map_);
+        return (Map_);
     }
     void SetWindow(C_Window *win);
     C_Window *GetWindow()
     {
-        return(DrawWindow_);
+        return (DrawWindow_);
     }
     C_Window *GetZWindow()
     {
-        return(WPZWindow_);
+        return (WPZWindow_);
     }
     C_Waypoint *GetCurWP()
     {
-        return(CurWP_);
+        return (CurWP_);
     }
     C_Waypoint *GetCurWPZ()
     {
-        return(CurWPZ_);
+        return (CurWPZ_);
     }
     VU_ID GetCurWPID()
     {
-        return(WPUnitID_);
+        return (WPUnitID_);
     }
     void SetWPZWindow(C_Window *win);
     void SetTeamFlags(long TeamID, long flags)
     {
-        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) TeamFlags_[TeamID] = flags;
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_)
+            TeamFlags_[TeamID] = flags;
     }
     long GetTeamFlags(long TeamID)
     {
-        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) return(TeamFlags_[TeamID]);
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_)
+            return (TeamFlags_[TeamID]);
 
-        return(0);
+        return (0);
     }
     void SetTeamColor(long TeamID, COLORREF color)
     {
-        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) TeamColor_[TeamID] = color;
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_)
+            TeamColor_[TeamID] = color;
     }
     COLORREF GetTeamColor(long TeamID)
     {
-        if (TeamID >= 0 and TeamID < _MAX_TEAMS_) return(TeamColor_[TeamID]);
+        if (TeamID >= 0 and TeamID < _MAX_TEAMS_)
+            return (TeamColor_[TeamID]);
 
-        return(0);
+        return (0);
     }
     void FitFlightPlan();
     void SetZoomLevel(short zoom);
@@ -258,7 +269,7 @@ public:
     void SetBullsEye(float x, float y);
     long GetZoomLevel()
     {
-        return(ZoomLevel_);
+        return (ZoomLevel_);
     }
     void SetUnitLevel(long level);
     void ShowObjectiveType(long mask);
@@ -276,11 +287,11 @@ public:
     void MoveCenter(long x, long y);
     long GetMapCenterX()
     {
-        return(FloatToInt32(CenterX_));
+        return (FloatToInt32(CenterX_));
     }
     long GetMapCenterY()
     {
-        return(FloatToInt32(CenterY_));
+        return (FloatToInt32(CenterY_));
     }
     void SetSmallMap(C_Cursor *smap)
     {
@@ -288,11 +299,11 @@ public:
     }
     float GetMaxY()
     {
-        return(maxy);
+        return (maxy);
     }
     float GetMapScale()
     {
-        return(scale_);
+        return (scale_);
     }
     BOOL SetWaypointList(VU_ID UnitID);
     BOOL SetCurrentWaypointList(VU_ID UnitID);
@@ -324,23 +335,27 @@ public:
     void TurnOnBullseye();
     void TurnOffBullseye();
     void DrawMap();
-    void SetAllObjCallbacks(void (*cb)(long, short, C_Base*));
-    void SetAllAirUnitCallbacks(void (*cb)(long, short, C_Base*));
-    void SetAllGroundUnitCallbacks(void (*cb)(long, short, C_Base*));
-    void SetAllNavalUnitCallbacks(void (*cb)(long, short, C_Base*));
-    void SetObjCallbacks(long type, void (*cb)(long, short, C_Base*));
-    void SetAirUnitCallbacks(long type, void (*cb)(long, short, C_Base*));
-    void SetGroundUnitCallbacks(long level, long type, void (*cb)(long, short, C_Base*));
-    void SetNavalUnitCallbacks(long type, void (*cb)(long, short, C_Base*));
-    void SetUnitCallbacks(long level, long type, void (*cb)(long, short, C_Base*));
+    void SetAllObjCallbacks(void (*cb)(long, short, C_Base *));
+    void SetAllAirUnitCallbacks(void (*cb)(long, short, C_Base *));
+    void SetAllGroundUnitCallbacks(void (*cb)(long, short, C_Base *));
+    void SetAllNavalUnitCallbacks(void (*cb)(long, short, C_Base *));
+    void SetObjCallbacks(long type, void (*cb)(long, short, C_Base *));
+    void SetAirUnitCallbacks(long type, void (*cb)(long, short, C_Base *));
+    void SetGroundUnitCallbacks(long level, long type,
+                                void (*cb)(long, short, C_Base *));
+    void SetNavalUnitCallbacks(long type, void (*cb)(long, short, C_Base *));
+    void SetUnitCallbacks(long level, long type,
+                          void (*cb)(long, short, C_Base *));
     C_MapIcon *GetObjIconList(long team, long type);
     void RecalcWaypointZs(long scaletype); // 1=Log, 2=straight
     void GetMapRelativeXY(short *x, short *y)
     {
         if (DrawWindow_)
         {
-            *x = static_cast<short>(*x - DrawWindow_->GetX() - DrawWindow_->VX_[0]);
-            *y = static_cast<short>(*y - DrawWindow_->GetY() - DrawWindow_->VY_[0]);
+            *x = static_cast<short>(*x - DrawWindow_->GetX() -
+                                    DrawWindow_->VX_[0]);
+            *y = static_cast<short>(*y - DrawWindow_->GetY() -
+                                    DrawWindow_->VY_[0]);
         }
     }
 

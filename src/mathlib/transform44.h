@@ -50,10 +50,7 @@ private:
 //------------------------------------------------------------------------------
 /**
 */
-inline
-transform44::transform44() :
-    scale(1.0f, 1.0f, 1.0f),
-    flags(0)
+inline transform44::transform44() : scale(1.0f, 1.0f, 1.0f), flags(0)
 {
     // empty
 }
@@ -61,9 +58,7 @@ transform44::transform44() :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform44::settranslation(const vector3& v)
+inline void transform44::settranslation(const vector3& v)
 {
     this->translation = v;
     this->flags |= Dirty;
@@ -72,9 +67,7 @@ transform44::settranslation(const vector3& v)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const vector3&
-transform44::gettranslation() const
+inline const vector3& transform44::gettranslation() const
 {
     return this->translation;
 }
@@ -82,9 +75,7 @@ transform44::gettranslation() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform44::seteulerrotation(const vector3& v)
+inline void transform44::seteulerrotation(const vector3& v)
 {
     this->euler = v;
     this->flags |= (Dirty | UseEuler);
@@ -93,9 +84,7 @@ transform44::seteulerrotation(const vector3& v)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const vector3&
-transform44::geteulerrotation() const
+inline const vector3& transform44::geteulerrotation() const
 {
     return this->euler;
 }
@@ -103,9 +92,7 @@ transform44::geteulerrotation() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform44::setquatrotation(const quaternion& q)
+inline void transform44::setquatrotation(const quaternion& q)
 {
     this->quat = q;
     this->flags |= Dirty;
@@ -115,9 +102,7 @@ transform44::setquatrotation(const quaternion& q)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const quaternion&
-transform44::getquatrotation() const
+inline const quaternion& transform44::getquatrotation() const
 {
     return this->quat;
 }
@@ -125,9 +110,7 @@ transform44::getquatrotation() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform44::setscale(const vector3& v)
+inline void transform44::setscale(const vector3& v)
 {
     this->scale = v;
     this->flags |= Dirty;
@@ -136,9 +119,7 @@ transform44::setscale(const vector3& v)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const vector3&
-transform44::getscale() const
+inline const vector3& transform44::getscale() const
 {
     return this->scale;
 }
@@ -146,9 +127,7 @@ transform44::getscale() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const matrix44&
-transform44::getmatrix()
+inline const matrix44& transform44::getmatrix()
 {
     if (this->flags & Dirty)
     {
@@ -178,9 +157,7 @@ transform44::getmatrix()
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bool
-transform44::iseulerrotation() const
+inline bool transform44::iseulerrotation() const
 {
     return (0 != (this->flags & UseEuler));
 }
@@ -188,14 +165,10 @@ transform44::iseulerrotation() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bool
-transform44::isdirty() const
+inline bool transform44::isdirty() const
 {
     return (0 != (this->flags & Dirty));
 }
 
 //------------------------------------------------------------------------------
 #endif
-
-

@@ -25,11 +25,13 @@ class SpotDriver : public VuMaster
     SM_SCALAR lx;
     SM_SCALAR ly;
     SM_SCALAR lz;
+
 public:
     SpotDriver(VuEntity *entity);
     virtual void Exec(VU_TIME timestamp);
     virtual VU_BOOL ExecModel(VU_TIME timestamp);
-    virtual VuMaster::SEND_SCORE SendScore(const VuSessionEntity *vs, VU_TIME timeDelta)
+    virtual VuMaster::SEND_SCORE SendScore(const VuSessionEntity *vs,
+                                           VU_TIME timeDelta)
     {
         return SEND_SCORE(DONT_SEND, 0.0f);
     }
@@ -40,16 +42,16 @@ public:
 class SimVuDriver : public VuMaster
 {
 public:
-
     // constructors and destructors
-    SimVuDriver(VuEntity* theEnt) : VuMaster(theEnt) {};
+    SimVuDriver(VuEntity *theEnt) : VuMaster(theEnt) {};
     ~SimVuDriver(void) {};
 
     /** this calls the AI model. Base Exec calls this */
     virtual VU_BOOL ExecModel(VU_TIME timestamp);
 
     /** determines if and how unit update will be sent to other clients. Pure virtual in base class */
-    virtual VuMaster::SEND_SCORE SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME timeDelta);
+    virtual VuMaster::SEND_SCORE
+    SimVuDriver::SendScore(const VuSessionEntity *vs, VU_TIME timeDelta);
 };
 
 /** Slave driver. Any unit which is driver by a non-local session has a slave driver.

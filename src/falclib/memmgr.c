@@ -56,41 +56,42 @@
 
 #include "memmgr.h"
 
-#if( LIB_COMPILER == COMPILER_WATCOM )
-#  include <dos.h>
-#  define DPMI_INT        0x31
+#if (LIB_COMPILER == COMPILER_WATCOM)
+#include <dos.h>
+#define DPMI_INT 0x31
 #endif
 #define USE_LAZY_MALLOC_MACRO 1
-#if( USE_LAZY_MALLOC_MACRO )    /* in case of precompiled header problems (paired at end-of-file) */
-#  ifdef malloc
-#     undef malloc
-#  endif
-#  ifdef calloc
-#     undef calloc
-#  endif
-#  ifdef free
-#     undef free
-#  endif
+#if (                                                                          \
+    USE_LAZY_MALLOC_MACRO) /* in case of precompiled header problems (paired at end-of-file) */
+#ifdef malloc
+#undef malloc
+#endif
+#ifdef calloc
+#undef calloc
+#endif
+#ifdef free
+#undef free
+#endif
 #endif
 
 #ifdef MEMMalloc
-#  undef MEMMalloc
+#undef MEMMalloc
 #endif
 
 #ifdef MEMFree
-#  undef MEMFree
+#undef MEMFree
 #endif
 
 #ifdef new
-#  undef new
+#undef new
 #endif
 
 #ifdef delete
-#  undef delete
+#undef delete
 #endif
 
-#if(!COOKIE_COUNT_HEAD || !COOKIE_COUNT_TAIL)
-#  error There must be at least one magic cookie at head & tail! (memmgr.h)
+#if (!COOKIE_COUNT_HEAD || !COOKIE_COUNT_TAIL)
+#error There must be at least one magic cookie at head & tail! (memmgr.h)
 #endif
 
 /* USE_DEBUG_MONO and USE_DEBUG_WIN are defined in debug.h */
@@ -99,65 +100,83 @@ typedef struct MEMCHECK
 {
     struct MEMCHECK *nextptr;
     struct MEMCHECK *prevptr;
-    char  name[16];
-    char  file[16];
-    long  time;
+    char name[16];
+    char file[16];
+    long time;
     size_t size;
     void *ptr;
-    long  sentinel[COOKIE_COUNT_HEAD];
+    long sentinel[COOKIE_COUNT_HEAD];
 } MEMCHECK;
 
 
+#define CHECK_COOKIE_HEAD(a, b)                                                \
+    {                                                                          \
+        int kZi;                                                               \
+        b = TRUE;                                                              \
+        for (kZi = 0; kZi < COOKIE_COUNT_HEAD; kZi++)                          \
+        {                                                                      \
+            if (a[kZi] != MAGIC_COOKIE_HEAD)                                   \
+            {                                                                  \
+                b = FALSE;                                                     \
+                break;                                                         \
+            }                                                                  \
+        }                                                                      \
+    }
 
-#define CHECK_COOKIE_HEAD(a,b)  { int kZi; b=TRUE;\
-                                    for( kZi=0; kZi<COOKIE_COUNT_HEAD; kZi++ ) { \
-                                       if( a[kZi] != MAGIC_COOKIE_HEAD ) {\
-                                          b=FALSE;\
-                                          break;\
-                                       }\
-                                    }\
-                                 }
+#define CHECK_COOKIE_TAIL(a, b)                                                \
+    {                                                                          \
+        int kZi;                                                               \
+        b = TRUE;                                                              \
+        for (kZi = 0; kZi < COOKIE_COUNT_TAIL; kZi++)                          \
+        {                                                                      \
+            if (a[kZi] != MAGIC_COOKIE_TAIL)                                   \
+            {                                                                  \
+                b = FALSE;                                                     \
+                break;                                                         \
+            }                                                                  \
+        }                                                                      \
+    }
 
-#define CHECK_COOKIE_TAIL(a,b)  { int kZi; b=TRUE;\
-                                    for( kZi=0; kZi<COOKIE_COUNT_TAIL; kZi++ ) { \
-                                       if( a[kZi] != MAGIC_COOKIE_TAIL ) {\
-                                          b=FALSE;\
-                                          break;\
-                                       }\
-                                    }\
-                                 }
+#define SET_COOKIE_HEAD(a)                                                     \
+    {                                                                          \
+        int kZi;                                                               \
+        for (kZi = 0; kZi < COOKIE_COUNT_HEAD; kZi++)                          \
+            a[kZi] = MAGIC_COOKIE_HEAD;                                        \
+    }
 
-#define SET_COOKIE_HEAD(a)  { int kZi;\
-                                for( kZi=0; kZi<COOKIE_COUNT_HEAD; kZi++ )\
-                                   a[kZi] = MAGIC_COOKIE_HEAD;\
-                            }
-
-#define SET_COOKIE_TAIL(a)  { int kZi;\
-                                for( kZi=0; kZi<COOKIE_COUNT_TAIL; kZi++ )\
-                                   a[kZi] = MAGIC_COOKIE_TAIL;\
-                            }
-
-
-#define RESET_COOKIE_HEAD(a)  { int kZi;\
-                                    for( kZi=0; kZi<COOKIE_COUNT_HEAD; kZi++ ) { \
-                                       if( a[kZi] == MAGIC_COOKIE_HEAD )\
-                                          a[kZi] = MAGIC_COOKIE_FREE;\
-                                    }\
-                              }
-
-
-#define RESET_COOKIE_TAIL(a)  { int kZi;\
-                                    for( kZi=0; kZi<COOKIE_COUNT_TAIL; kZi++ ) { \
-                                       if( a[kZi] == MAGIC_COOKIE_TAIL )\
-                                          a[kZi] = MAGIC_COOKIE_FREE;\
-                                    }\
-                              }
-
-void  PrintMemHeading(void),
-      PrintMemLine(int i, MEMCHECK * newptr);
+#define SET_COOKIE_TAIL(a)                                                     \
+    {                                                                          \
+        int kZi;                                                               \
+        for (kZi = 0; kZi < COOKIE_COUNT_TAIL; kZi++)                          \
+            a[kZi] = MAGIC_COOKIE_TAIL;                                        \
+    }
 
 
-#if( LIB_COMPILER == COMPILE_WATCOM )
+#define RESET_COOKIE_HEAD(a)                                                   \
+    {                                                                          \
+        int kZi;                                                               \
+        for (kZi = 0; kZi < COOKIE_COUNT_HEAD; kZi++)                          \
+        {                                                                      \
+            if (a[kZi] == MAGIC_COOKIE_HEAD)                                   \
+                a[kZi] = MAGIC_COOKIE_FREE;                                    \
+        }                                                                      \
+    }
+
+
+#define RESET_COOKIE_TAIL(a)                                                   \
+    {                                                                          \
+        int kZi;                                                               \
+        for (kZi = 0; kZi < COOKIE_COUNT_TAIL; kZi++)                          \
+        {                                                                      \
+            if (a[kZi] == MAGIC_COOKIE_TAIL)                                   \
+                a[kZi] = MAGIC_COOKIE_FREE;                                    \
+        }                                                                      \
+    }
+
+void PrintMemHeading(void), PrintMemLine(int i, MEMCHECK *newptr);
+
+
+#if (LIB_COMPILER == COMPILE_WATCOM)
 
 struct meminfo
 {
@@ -177,41 +196,49 @@ struct meminfo
 #endif /* COMPILE_WATCOM */
 
 
-#define  MEM_MARK_CHARACTER   0xDD  /* same as msvc runtime lib */
+#define MEM_MARK_CHARACTER 0xDD /* same as msvc runtime lib */
 
 
-static
-MEMCHECK
-* MEMCHECK_LIST = NULL;
+static MEMCHECK *MEMCHECK_LIST = NULL;
 
-long
-MEM_TOTAL_ALLOC = 0;
+long MEM_TOTAL_ALLOC = 0;
 
-long
-MEM_TOTAL_MIN = 0,
-MEM_TOTAL_MAX = 0;
+long MEM_TOTAL_MIN = 0, MEM_TOTAL_MAX = 0;
 
 
-#if( USE_THREAD_SAFE )
+#if (USE_THREAD_SAFE)
 
-HANDLE MEMORY_MUTEX = 0;   /* If you want to bypass microsoft's very heavy
+HANDLE MEMORY_MUTEX = 0; /* If you want to bypass microsoft's very heavy
                                  mutex implementation, do so here. */
 
-#  define WAIT_FOR_LOCK(a)     {if(a) WaitForSingleObject( a, INFINITE );}
-#  define RELEASE_LOCK(a)      {if(a) ReleaseMutex( a );}
-#  define CREATE_LOCK(a)       {if(!a) { a = CreateMutex( NULL, FALSE, NULL ); \
-                                if(!a) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }}
+#define WAIT_FOR_LOCK(a)                                                       \
+    {                                                                          \
+        if (a)                                                                 \
+            WaitForSingleObject(a, INFINITE);                                  \
+    }
+#define RELEASE_LOCK(a)                                                        \
+    {                                                                          \
+        if (a)                                                                 \
+            ReleaseMutex(a);                                                   \
+    }
+#define CREATE_LOCK(a)                                                         \
+    {                                                                          \
+        if (!a)                                                                \
+        {                                                                      \
+            a = CreateMutex(NULL, FALSE, NULL);                                \
+            if (!a)                                                            \
+                KEVS_FATAL_ERROR("Could not get mutex lock.");                 \
+        }                                                                      \
+    }
 #else
-#  define WAIT_FOR_LOCK(a)
-#  define RELEASE_LOCK(a)
-#  define CREATE_LOCK(a)
+#define WAIT_FOR_LOCK(a)
+#define RELEASE_LOCK(a)
+#define CREATE_LOCK(a)
 #endif
 
 
 int memmgr_linenum;
 int memmgr_filename;
-
-
 
 
 /*===================================================
@@ -231,7 +258,8 @@ int memmgr_filename;
 
   ===================================================*/
 
-MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linenum)
+MEM_EXPORT void *MEMMalloc(long req_size, char *name, char *filename,
+                           int linenum)
 {
     void *ptr;
     long *tailptr;
@@ -250,10 +278,10 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
         DBG(PF("FILE: %s\nLINE: %d\n", filename, linenum));
 
         DBG(if (filename))
-            DBG(PF("File: %s  Line: %d \n", filename, linenum));
+        DBG(PF("File: %s  Line: %d \n", filename, linenum));
     }
 
-#if( ALIGN_ALLOCATION )
+#if (ALIGN_ALLOCATION)
 
     req_size = ALIGN_SIZE(req_size);
 
@@ -261,13 +289,14 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
 
     req = req_size + sizeof(MEMCHECK) + (sizeof(long) * COOKIE_COUNT_TAIL);
 
-#if( LIB_COMPILER == COMPILER_MSVC )
+#if (LIB_COMPILER == COMPILER_MSVC)
     ptr = (char *)calloc(req, sizeof(char));
     //    ptr = (char *)__calloc_dbg(req, sizeof(char), _CRT_BLOCK, filename, linenum);
 #else
 
     if ((ptr = (char *)malloc(req)) != NULL)
-        memset(ptr, 0, req);    /* calloc was creating spurious results under watcom 9.5 */
+        memset(ptr, 0,
+               req); /* calloc was creating spurious results under watcom 9.5 */
 
 #endif
 
@@ -283,7 +312,7 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
 
     MEM_TOTAL_ALLOC += req_size;
 
-    newptr = (MEMCHECK *) ptr;
+    newptr = (MEMCHECK *)ptr;
 
     SET_COOKIE_HEAD(newptr->sentinel);
 
@@ -291,7 +320,7 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
     newptr->time = (long)linenum;
 
     /* cast the pointer to BYTE so our arithmetic works */
-    newptr->ptr = (memBYTE *) ptr + sizeof(MEMCHECK);
+    newptr->ptr = (memBYTE *)ptr + sizeof(MEMCHECK);
 
     if (strlen(filename) > 15)
     {
@@ -301,7 +330,7 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
 
         for (i = length; i > 0; i--)
         {
-            if (filename[i] == '\\')
+            if (filename[i] == '\\' || filename[i] == '/')
             {
                 if (i < length)
                     i++;
@@ -318,10 +347,10 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
     }
 
     (void)strncpy(newptr->name, name, 15);
-    newptr -> name[15] = '\0';
+    newptr->name[15] = '\0';
 
     (void)strncpy(newptr->file, filename, 15);
-    newptr -> file[15] = '\0';
+    newptr->file[15] = '\0';
 
     if (MEMCHECK_LIST)
     {
@@ -357,7 +386,6 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
 }
 
 
-
 /*===================================================
 
    MEMFree :  Free a chunk of previously allocated
@@ -379,11 +407,10 @@ MEM_EXPORT void * MEMMalloc(long req_size, char *name, char *filename, int linen
 
 MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
 {
-    MEMCHECK * newptr;
-    long     * tailptr;
+    MEMCHECK *newptr;
+    long *tailptr;
     memBOOL freed;
-    memBOOL check_head,
-            check_tail;
+    memBOOL check_head, check_tail;
 
     static memBOOL ok = TRUE;
 
@@ -398,10 +425,10 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
         DBG(PF("Empty list!\n"));
 
         DBG(if (filename))
-            DBG(PF("file: %s ", filename));
+        DBG(PF("file: %s ", filename));
 
         DBG(if (linenum))
-            DBG(PF("line: %d ", linenum));
+        DBG(PF("line: %d ", linenum));
 
         DBG(PF("\n"));
 
@@ -434,9 +461,7 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
     {
         if (ok)
         {
-            for (newptr = MEMCHECK_LIST;
-                 newptr;
-                 newptr = newptr->nextptr)
+            for (newptr = MEMCHECK_LIST; newptr; newptr = newptr->nextptr)
             {
                 if (newptr->ptr == ptr)
                 {
@@ -451,10 +476,10 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
                         DBG(PF("Offending block -> %s\n", newptr->name));
 
                         DBG(if (filename))
-                            DBG(PF("file: %s ", filename));
+                        DBG(PF("file: %s ", filename));
 
                         DBG(if (linenum))
-                            DBG(PF("line: %d ", linenum));
+                        DBG(PF("line: %d ", linenum));
 
                         DBG(PF("\n"));
                     }
@@ -498,7 +523,8 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
 
                     MEM_TOTAL_ALLOC -= newptr->size;
 
-#if( !(LIB_COMPILER == COMPILE_MSVC) )        /* since msvc runtime library overwrites anyway ... */
+#if (!(LIB_COMPILER ==                                                         \
+       COMPILE_MSVC)) /* since msvc runtime library overwrites anyway ... */
                     MEMMark(newptr);
 #endif
 
@@ -515,10 +541,10 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
                 DBG(PF("Couldn't find pointer in list! loc:%X \n", ptr));
 
                 DBG(if (filename))
-                    DBG(PF("file: %s ", filename));
+                DBG(PF("file: %s ", filename));
 
                 DBG(if (linenum))
-                    DBG(PF("line: %d ", linenum));
+                DBG(PF("line: %d ", linenum));
 
                 DBG(PF("\n"));
 
@@ -528,7 +554,8 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
 
                     if (newptr->sentinel[0] == MAGIC_COOKIE_HEAD)
                     {
-                        DBG(PF("Assuming it's my lost sheep. Freeing block!\n"));
+                        DBG(PF(
+                            "Assuming it's my lost sheep. Freeing block!\n"));
                         free(newptr);
                     }
                     else
@@ -540,7 +567,8 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
                         }
                         else
                         {
-                            DBG(PF("Doesn't look like one of mine, freeing blind!\n"));
+                            DBG(PF("Doesn't look like one of mine, freeing "
+                                   "blind!\n"));
                             free(ptr);
                         }
                     }
@@ -569,7 +597,6 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
 }
 
 
-
 /* ------------------------------------------------------
    PURPOSE:  Since the sdtlib function strdup does its
    own allocation, we need to overload it as
@@ -583,7 +610,7 @@ MEM_EXPORT unsigned char MEMFree(void *ptr, char *filename, int linenum)
 
    -------------------------------------------------------- */
 
-MEM_EXPORT char * MEMStrDup(const char *src_string, char *filename, int linenum)
+MEM_EXPORT char *MEMStrDup(const char *src_string, char *filename, int linenum)
 {
     char *dst_string;
     size_t size;
@@ -596,8 +623,6 @@ MEM_EXPORT char * MEMStrDup(const char *src_string, char *filename, int linenum)
 
     return (dst_string);
 }
-
-
 
 
 #ifdef __cplusplus
@@ -686,11 +711,12 @@ MEM_EXPORT char * MEMStrDup(const char *src_string, char *filename, int linenum)
 
    ------------------------------------------------------------- */
 
-MEM_EXPORT void * operator new(size_t size
+MEM_EXPORT void *operator new(size_t size
 #if !defined(_MSC_VER)
-                               , char * memmgr_filename, int memmgr_linenum
+                              ,
+                              char *memmgr_filename, int memmgr_linenum
 #endif
-                              )
+)
 {
     memANY_PTR any_ptr;
     unsigned int i;
@@ -703,29 +729,29 @@ MEM_EXPORT void * operator new(size_t size
         memmgr_filename = &memmgr_filename[strlen(memmgr_filename) - 12];
 
         for (i = 0; i < strlen(memmgr_filename); i++)
-            if (memmgr_filename[i] == '\\' /* backslash 0x5C */)
+            if (memmgr_filename[i] == '\\' ||
+                memmgr_filename[i] == '/') /* either path separator */
                 memmgr_filename = &memmgr_filename[i + 1];
     }
 
-    any_ptr = (memANY_PTR) MEMMalloc(size, memmgr_filename, "new()", memmgr_linenum);
+    any_ptr =
+        (memANY_PTR)MEMMalloc(size, memmgr_filename, "new()", memmgr_linenum);
 
     if (!any_ptr)
     {
         DBG(PF("new failed!"));
 
         DBG(if (memmgr_filename))
-            DBG(PF("  file: %s", memmgr_filename));
+        DBG(PF("  file: %s", memmgr_filename));
 
         DBG(if (memmgr_linenum))
-            DBG(PF("  line: %d", memmgr_linenum));
+        DBG(PF("  line: %d", memmgr_linenum));
 
         DBG(PF("\n"));
     }
 
     return ((memANY_PTR)(any_ptr));
 }
-
-
 
 
 MEM_EXPORT void operator delete(memANY_PTR ptr)
@@ -736,7 +762,7 @@ MEM_EXPORT void operator delete(memANY_PTR ptr)
 
     ok = FALSE;
 
-    if (ptr)                    /* we don't want to test the low end cookie on a null delete */
+    if (ptr) /* we don't want to test the low end cookie on a null delete */
     {
         cookie = (long *)ptr;
 
@@ -757,13 +783,13 @@ MEM_EXPORT void operator delete(memANY_PTR ptr)
             /* we found a cookie, so assume that there is one of our
                memcheck structures immediate preceding this pointer */
 
-            memcheck = (MEMCHECK *)((memBYTE *) ptr - sizeof(MEMCHECK));
+            memcheck = (MEMCHECK *)((memBYTE *)ptr - sizeof(MEMCHECK));
 
             cookie = (long *)((memBYTE *)(memcheck->ptr) + memcheck->size);
 
             if (*cookie == MAGIC_COOKIE_TAIL)
             {
-                ok = TRUE;      /* both cookies are present! yipee! */
+                ok = TRUE; /* both cookies are present! yipee! */
             }
         }
     }
@@ -792,7 +818,7 @@ MEM_EXPORT void operator delete(memANY_PTR ptr)
 
    ---------------------------------------------------- */
 
-#if( MEM_ARRAY_EXTENSION )
+#if (MEM_ARRAY_EXTENSION)
 
 MEM_EXPORT void *operator new[](size_t size, char *filename, int linenum)
 {
@@ -806,17 +832,17 @@ MEM_EXPORT void *operator new[](size_t size, char *filename, int linenum)
         filename = &filename[strlen(filename) - 11];
     }
 
-    any_ptr = (memANY_PTR) MEMMalloc(size, filename, "new[]", linenum);
+    any_ptr = (memANY_PTR)MEMMalloc(size, filename, "new[]", linenum);
 
     if (!any_ptr)
     {
         DBG(PF("new failed!"));
 
         DBG(if (filename))
-            DBG(PF("  file: %s", filename));
+        DBG(PF("  file: %s", filename));
 
         DBG(if (linenum))
-            DBG(PF("  line: %d", linenum));
+        DBG(PF("  line: %d", linenum));
 
         DBG(PF("\n"));
     }
@@ -833,7 +859,7 @@ MEM_EXPORT void operator delete[](memANY_PTR ptr)
 
     ok = FALSE;
 
-    if (ptr)                    /* we don't want to test the low end cookie on a null delete */
+    if (ptr) /* we don't want to test the low end cookie on a null delete */
     {
         cookie = (long *)ptr;
 
@@ -854,13 +880,13 @@ MEM_EXPORT void operator delete[](memANY_PTR ptr)
             /* we found a cookie, so assume that there is one of our
                memcheck structures immediate preceding this pointer */
 
-            memcheck = (MEMCHECK *)((memBYTE *) ptr - sizeof(MEMCHECK));
+            memcheck = (MEMCHECK *)((memBYTE *)ptr - sizeof(MEMCHECK));
 
-            cookie = (long *)((memBYTE *) memcheck->ptr + memcheck->size);
+            cookie = (long *)((memBYTE *)memcheck->ptr + memcheck->size);
 
             if (*cookie == MAGIC_COOKIE_TAIL)
             {
-                ok = TRUE;      /* both cookies are present! yipee! */
+                ok = TRUE; /* both cookies are present! yipee! */
             }
         }
     }
@@ -877,7 +903,6 @@ MEM_EXPORT void operator delete[](memANY_PTR ptr)
 #endif /* MEM_ARRAY_EXTENSION */
 
 #endif /* __cplusplus */
-
 
 
 /*===================================================
@@ -901,14 +926,13 @@ MEM_EXPORT void operator delete[](memANY_PTR ptr)
 
   ===================================================*/
 
-MEM_EXPORT int MEMCheckPointer(char * ptr)
+MEM_EXPORT int MEMCheckPointer(char *ptr)
 {
     long *tailptr;
     MEMCHECK *newptr;
-    memBOOL check_head,
-            check_tail;
+    memBOOL check_head, check_tail;
 
-    newptr = (MEMCHECK *)((memBYTE *) ptr - sizeof(MEMCHECK));
+    newptr = (MEMCHECK *)((memBYTE *)ptr - sizeof(MEMCHECK));
 
     CHECK_COOKIE_HEAD(newptr->sentinel, check_head);
 
@@ -920,13 +944,12 @@ MEM_EXPORT int MEMCheckPointer(char * ptr)
         return (TRUE);
 
     DBG(if (newptr->sentinel[0] == MAGIC_COOKIE_FREE))
-        DBG(PF("Pointer has previously been freed.\n"));
+    DBG(PF("Pointer has previously been freed.\n"));
 
     DBG(PF("MEMCheckPointer FAILED!\n"));
 
     return (FALSE);
 }
-
 
 
 /*===================================================
@@ -943,13 +966,11 @@ MEM_EXPORT int MEMCheckPointer(char * ptr)
 MEM_EXPORT int MEMFindCount(void)
 {
     MEMCHECK *newptr;
-    int   count = 0;
+    int count = 0;
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr; newptr = newptr->nextptr)
         count++;
 
     RELEASE_LOCK(MEMORY_MUTEX);
@@ -968,15 +989,13 @@ MEM_EXPORT int MEMFindCount(void)
 
   ===================================================*/
 
-MEM_EXPORT long MEMFindSize(void * ptr)
+MEM_EXPORT long MEMFindSize(void *ptr)
 {
     MEMCHECK *newptr;
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr; newptr = newptr->nextptr)
     {
         if (newptr->ptr == ptr)
         {
@@ -989,8 +1008,6 @@ MEM_EXPORT long MEMFindSize(void * ptr)
 
     return (-1);
 }
-
-
 
 
 /*===================================================
@@ -1007,10 +1024,10 @@ MEM_EXPORT long MEMFindSize(void * ptr)
 MEM_EXPORT void MEMDump(void)
 {
     MEMCHECK *newptr;
-    int   i;
+    int i;
 
 
-    long  total_size = 0;
+    long total_size = 0;
 
     DBG(PF("Total Memory Allocations\n\n"));
 
@@ -1022,9 +1039,7 @@ MEM_EXPORT void MEMDump(void)
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr != NULL;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr != NULL; newptr = newptr->nextptr)
     {
         ++i;
 
@@ -1039,9 +1054,8 @@ MEM_EXPORT void MEMDump(void)
     RELEASE_LOCK(MEMORY_MUTEX);
 
     DBG(if (!i))
-        DBG(PF("No allocations (all freed)\n"));
+    DBG(PF("No allocations (all freed)\n"));
 }
-
 
 
 /*===================================================
@@ -1067,7 +1081,7 @@ MEM_EXPORT void MEMFindLevels(void)
 }
 
 
-#if( LIB_COMPILER == COMPILER_WATCOM )
+#if (LIB_COMPILER == COMPILER_WATCOM)
 MEM_EXPORT unsigned long MEMAvail(void)
 {
     union REGS regs;
@@ -1080,15 +1094,24 @@ MEM_EXPORT unsigned long MEMAvail(void)
 
     int386x(DPMI_INT, &regs, &regs, &sregs);
 
-    DBG(PF("Largest available block (in bytes):     %lu\n", MemInfo.LargestBlockAvail));
-    DBG(PF("Maximum unlocked page allocation:       %lu\n", MemInfo.MaxUnlockedPage));
-    DBG(PF("Pages that can be allocated and locked: %lu\n", MemInfo.LargestLockablePage));
-    DBG(PF("Total linear address space:             %lu\n", MemInfo.LinAddrSpace));
-    DBG(PF("Number of free pages available:         %lu\n", MemInfo.NumFreePagesAvail));
-    DBG(PF("Number of physical pages not in use:    %lu\n", MemInfo.NumPhysicalPagesFree));
-    DBG(PF("Total physical pages managed by host:   %lu\n", MemInfo.TotalPhysicalPages));
-    DBG(PF("Free linear address space (pages):      %lu\n", MemInfo.FreeLinAddrSpace));
-    DBG(PF("Size of paging/file partition (pages):  %lu\n", MemInfo.SizeOfPageFile));
+    DBG(PF("Largest available block (in bytes):     %lu\n",
+           MemInfo.LargestBlockAvail));
+    DBG(PF("Maximum unlocked page allocation:       %lu\n",
+           MemInfo.MaxUnlockedPage));
+    DBG(PF("Pages that can be allocated and locked: %lu\n",
+           MemInfo.LargestLockablePage));
+    DBG(PF("Total linear address space:             %lu\n",
+           MemInfo.LinAddrSpace));
+    DBG(PF("Number of free pages available:         %lu\n",
+           MemInfo.NumFreePagesAvail));
+    DBG(PF("Number of physical pages not in use:    %lu\n",
+           MemInfo.NumPhysicalPagesFree));
+    DBG(PF("Total physical pages managed by host:   %lu\n",
+           MemInfo.TotalPhysicalPages));
+    DBG(PF("Free linear address space (pages):      %lu\n",
+           MemInfo.FreeLinAddrSpace));
+    DBG(PF("Size of paging/file partition (pages):  %lu\n",
+           MemInfo.SizeOfPageFile));
 
     return (MemInfo.MaxUnlockedPage * 4);
 }
@@ -1108,9 +1131,6 @@ MEM_EXPORT void MEMCheckVMM(void)
 #endif /* COMPILER_WATCOM */
 
 
-
-
-
 /*===================================================
 
    MEMFindEqual :  Display statistics of all
@@ -1126,9 +1146,9 @@ MEM_EXPORT void MEMCheckVMM(void)
 MEM_EXPORT void MEMFindEqual(size_t size)
 {
     MEMCHECK *newptr;
-    int   i;
+    int i;
 
-    long  total_size = 0;
+    long total_size = 0;
 
     DBG(PF("Memory Allocations for blocks of size %ld\n\n", size));
 
@@ -1138,9 +1158,7 @@ MEM_EXPORT void MEMFindEqual(size_t size)
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr != NULL;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr != NULL; newptr = newptr->nextptr)
     {
         if (newptr->size == size)
         {
@@ -1172,9 +1190,9 @@ MEM_EXPORT void MEMFindEqual(size_t size)
 MEM_EXPORT void MEMFindMin(size_t size)
 {
     MEMCHECK *newptr;
-    int   i;
+    int i;
 
-    long  total_size = 0;
+    long total_size = 0;
 
     DBG(PF("Memory Allocations for blocks of size %ld\n\n", size));
 
@@ -1184,9 +1202,7 @@ MEM_EXPORT void MEMFindMin(size_t size)
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr != NULL;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr != NULL; newptr = newptr->nextptr)
     {
         if (newptr->size <= size)
         {
@@ -1201,7 +1217,6 @@ MEM_EXPORT void MEMFindMin(size_t size)
     DBG(PF("Total size : %ld \n", total_size));
     DBG(PF("Total items: %d \n", i));
 }
-
 
 
 /*===================================================
@@ -1219,9 +1234,9 @@ MEM_EXPORT void MEMFindMin(size_t size)
 MEM_EXPORT void MEMFindMax(size_t size)
 {
     MEMCHECK *newptr;
-    int   i;
+    int i;
 
-    long  total_size = 0;
+    long total_size = 0;
 
     DBG(PF("Memory Allocations for blocks of size %ld\n\n", size));
 
@@ -1231,11 +1246,9 @@ MEM_EXPORT void MEMFindMax(size_t size)
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr != NULL;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr != NULL; newptr = newptr->nextptr)
     {
-        if ((size_t) newptr->size >= size)
+        if ((size_t)newptr->size >= size)
         {
             ++i;
             PrintMemLine(i, newptr);
@@ -1248,7 +1261,6 @@ MEM_EXPORT void MEMFindMax(size_t size)
     DBG(PF("Total size : %ld \n", total_size));
     DBG(PF("Total items: %d \n", i));
 }
-
 
 
 /*===================================================
@@ -1267,16 +1279,14 @@ MEM_EXPORT void MEMFindUsage(void)
 {
     MEMCHECK *newptr;
 
-    long  total_size = 0;
+    long total_size = 0;
 
     DBG(PF("Total Memory Allocations = "));
 
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr != NULL;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr != NULL; newptr = newptr->nextptr)
     {
         total_size += newptr->size;
     }
@@ -1287,7 +1297,6 @@ MEM_EXPORT void MEMFindUsage(void)
 
     DBG(PF("%ld \n", total_size));
 }
-
 
 
 /*===================================================
@@ -1303,18 +1312,18 @@ MEM_EXPORT void MEMFindUsage(void)
 
   ===================================================*/
 
-MEM_EXPORT int MEMFindName(char * string)
+MEM_EXPORT int MEMFindName(char *string)
 {
     MEMCHECK *newptr;
-    int   i;
-    long  total_size = 0;
+    int i;
+    long total_size = 0;
 
     i = strlen(string);
 
     if ((i == 0) || (i >= 16))
     {
         DBG(PF("Bad string in MEMFindName() \n"));
-        return(0);
+        return (0);
     }
 
     DBG(PF("Memory Allocations for blocks named %s\n\n", string));
@@ -1325,9 +1334,7 @@ MEM_EXPORT int MEMFindName(char * string)
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
-    for (newptr = MEMCHECK_LIST;
-         newptr != NULL;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr != NULL; newptr = newptr->nextptr)
     {
         if (!strcmp(string, newptr->name))
         {
@@ -1342,7 +1349,7 @@ MEM_EXPORT int MEMFindName(char * string)
     DBG(PF("Total size : %ld \n", total_size));
     DBG(PF("Total items: %d \n", i));
 
-    return(i);
+    return (i);
 }
 
 
@@ -1360,24 +1367,21 @@ MEM_EXPORT int MEMFindName(char * string)
 MEM_EXPORT int MEMSanity(void)
 {
     MEMCHECK *newptr;
-    int   i;
+    int i;
     long *tailptr;
-    memBOOL check_head,
-            check_tail;
-    int   retval = TRUE;
+    memBOOL check_head, check_tail;
+    int retval = TRUE;
 
-    long  total_size = 0;
+    long total_size = 0;
 
     i = 0;
 
     WAIT_FOR_LOCK(MEMORY_MUTEX);
 
     DBG(if (!MEMCHECK_LIST))
-        DBG(PF("Empty list!\n"));
+    DBG(PF("Empty list!\n"));
 
-    for (newptr = MEMCHECK_LIST;
-         newptr != NULL;
-         newptr = newptr->nextptr)
+    for (newptr = MEMCHECK_LIST; newptr != NULL; newptr = newptr->nextptr)
     {
         ++i;
 
@@ -1396,7 +1400,7 @@ MEM_EXPORT int MEMSanity(void)
 
     RELEASE_LOCK(MEMORY_MUTEX);
 
-    return(retval);
+    return (retval);
 }
 
 
@@ -1410,9 +1414,9 @@ MEM_EXPORT int MEMSanity(void)
 
   ===================================================*/
 
-MEM_EXPORT void MEMMark(void * ptr)
+MEM_EXPORT void MEMMark(void *ptr)
 {
-    long  size;
+    long size;
 
     size = MEMFindSize(ptr);
 
@@ -1421,31 +1425,30 @@ MEM_EXPORT void MEMMark(void * ptr)
 }
 
 
-
 /* ----------------------------------------
    printing utility function
    ---------------------------------------- */
 
 MEM_EXPORT void PrintMemHeading(void)
 {
-#if( USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF )
-#  if( USE_DEBUG_MONO )
+#if (USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF)
+#if (USE_DEBUG_MONO)
     MonoColor(MONO_REVERSE | MONO_INTENSE);
-#  endif
+#endif
 
-#  if( MEM_DEBUG_PRINTF )
+#if (MEM_DEBUG_PRINTF)
     DBG(PF("\n"));
-#  endif
+#endif
 
     DBG(PF(" BLOCK LOCATION   SIZE  COOKIES     NAME            LINE  FILE  "));
 
-#  if( MEM_DEBUG_PRINTF )
+#if (MEM_DEBUG_PRINTF)
     DBG(PF("\n"));
-#  endif
+#endif
 
-#  if( USE_DEBUG_MONO )
+#if (USE_DEBUG_MONO)
     MonoColor(MONO_NORMAL);
-#  endif
+#endif
 #endif
 }
 
@@ -1454,13 +1457,12 @@ MEM_EXPORT void PrintMemHeading(void)
    printing utility function
    ---------------------------------------- */
 
-MEM_EXPORT void PrintMemLine(int i, MEMCHECK * newptr)
+MEM_EXPORT void PrintMemLine(int i, MEMCHECK *newptr)
 {
-    long    * tailptr;
-    memBOOL check_head,
-            check_tail;
+    long *tailptr;
+    memBOOL check_head, check_tail;
 
-#if( USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF )
+#if (USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF)
     DBG(PF("%4d %9X %7ld ", i, (long)newptr->ptr, (long)newptr->size));
 #endif
 
@@ -1475,14 +1477,14 @@ MEM_EXPORT void PrintMemLine(int i, MEMCHECK * newptr)
     }
     else
     {
-#if( USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF )
-#if( USE_DEBUG_MONO )
+#if (USE_DEBUG_WIN || USE_DEBUG_MONO || MEM_DEBUG_PRINTF)
+#if (USE_DEBUG_MONO)
         MonoColor(MONO_NORMAL | MONO_BLINK);
 #endif
 
         DBG(PF("FAILED "));
 
-#if( USE_DEBUG_MONO )
+#if (USE_DEBUG_MONO)
         dbgPause();
         MonoColor(MONO_NORMAL);
 #endif
@@ -1495,7 +1497,7 @@ MEM_EXPORT void PrintMemLine(int i, MEMCHECK * newptr)
     /* if you are using monowindows (the monochrome monitor debugging windowing library) these
        lines should be used */
 
-#if( USE_DEBUG_MONO )
+#if (USE_DEBUG_MONO)
     /* stdio window is a simple console output onto the mono monitor, otherwise, full windows
        are used on the mono monitor. */
 

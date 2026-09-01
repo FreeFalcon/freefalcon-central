@@ -7,16 +7,16 @@
 #include "hardpnt.h"
 #include "entity.h"
 #include "classtbl.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "playerop.h"
-#include "SimDrive.h"
+#include "simdrive.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "fack.h"
 #include "playerrwr.h"
 #include "falcsess.h"
 
-/* ADDED BY S.G. FOR 'GetVehicleClassData' */#include "vehicle.h"
+/* ADDED BY S.G. FOR 'GetVehicleClassData' */ #include "vehicle.h"
 //MI for EWS stuff
 #include "icp.h"
 #include "cpmanager.h"
@@ -24,21 +24,21 @@
 #include "find.h"
 #include "commands.h"
 #include "airframe.h" // JPO
-#include "IvibeData.h"
+#include "ivibedata.h"
 
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 
 extern bool g_bRealisticAvionics;
 
 //extern VuAntiDatabase *vuAntiDB;
 
 
-static long ChaffTime            = 2 * SEC_TO_MSEC;
-static long FlareTime            = 1 * SEC_TO_MSEC;
-static long ProgramDropDuration  = 5 * SEC_TO_MSEC;
+static long ChaffTime = 2 * SEC_TO_MSEC;
+static long FlareTime = 1 * SEC_TO_MSEC;
+static long ProgramDropDuration = 5 * SEC_TO_MSEC;
 // 2000-11-17 MODIFIED BY S.G. MEEDS TO BE TWO SECONDS AND NOT HALF A SECOND (TOO FAST)
 // static long AutoProgramTiming    = SEC_TO_MSEC / 2;
-static long AutoProgramTiming    = SEC_TO_MSEC * 2;
+static long AutoProgramTiming = SEC_TO_MSEC * 2;
 
 //MI
 extern bool g_bMLU;
@@ -48,12 +48,9 @@ void AircraftClass::InitCountermeasures(void)
     //int type = GetClassID (
     //DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_BOMB_IRON, SPTYPE_MK82, VU_ANY, VU_ANY, VU_ANY) +
     //VU_LAST_ENTITY_TYPE; // JB 010220
-    int type =
-        GetClassID(
-            DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_CHAFF, SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY
-        ) +
-        VU_LAST_ENTITY_TYPE
-        ; // JB 010220
+    int type = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_CHAFF,
+                          SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY) +
+               VU_LAST_ENTITY_TYPE; // JB 010220
 
     // Add Chaff and flares
     // NOTE:  Since chaff and flares are created upon deployment, the use of a full hardpoint
@@ -72,19 +69,23 @@ void AircraftClass::InitCountermeasures(void)
 void AircraftClass::DoCountermeasures(void)
 {
     // 2000-11-17 ADDED BY S.G. SO AIRCRAFT HAVE A FLAG TELLING IF THEY CARRY CHAFFS/FLARES OR NOT
-    if ( not (GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags bitand 0x40000000))
+    if (not(GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE)->Flags bitand
+            0x40000000))
         return;
 
     // END OF ADDED SECTION
 
-    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
+    if (mFaults and
+        (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
-    if ( not IsSetFlag(ON_GROUND))
+    if (not IsSetFlag(ON_GROUND))
     {
         if (dropFlareCmd)
         {
-            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::flar)))
+            if (not(mFaults and
+                    (mFaults->GetFault(FaultClass::cmds_fault) bitand
+                     FaultClass::flar)))
             {
                 DropFlare();
             }
@@ -93,7 +94,9 @@ void AircraftClass::DoCountermeasures(void)
         }
         else if (dropChaffCmd)
         {
-            if ( not (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::chaf)))
+            if (not(mFaults and
+                    (mFaults->GetFault(FaultClass::cmds_fault) bitand
+                     FaultClass::chaf)))
             {
                 DropChaff();
             }
@@ -107,30 +110,30 @@ void AircraftClass::DoCountermeasures(void)
             // IS A float LESS THAN 1.0 NO WONDER IT'S NOT WORKING! ONLY USE int FOR NOW ON
             //if (dropProgrammedTimer > SimLibMajorFrameTime)
             if (dropProgrammedTimer + AutoProgramTiming < SimLibElapsedTime)
-                // {
-                // // Not time yet.  Just keep counting down
-                // dropProgrammedTimer -= FloatToInt32(SimLibMajorFrameTime);
-                // }
-                // else
+            // {
+            // // Not time yet.  Just keep counting down
+            // dropProgrammedTimer -= FloatToInt32(SimLibMajorFrameTime);
+            // }
+            // else
             {
                 // Time to do something
                 switch (dropProgrammedStep)
                 {
-                    case 3:
-                        dropChaffCmd = TRUE;
-                        break;
+                case 3:
+                    dropChaffCmd = TRUE;
+                    break;
 
-                    case 2:
-                        dropFlareCmd = TRUE;
-                        break;
+                case 2:
+                    dropFlareCmd = TRUE;
+                    break;
 
-                    case 1:
-                        dropChaffCmd = TRUE;
-                        break;
+                case 1:
+                    dropChaffCmd = TRUE;
+                    break;
 
-                    default:
-                        ShiWarning("Bad counter measures program step");
-                        dropProgrammedStep = 1;
+                default:
+                    ShiWarning("Bad counter measures program step");
+                    dropProgrammedStep = 1;
                 }
 
                 // Set the next state
@@ -159,7 +162,7 @@ void AircraftClass::DropChaff(void)
 {
     vector pos, posDelta;
     int type;
-	BombClass* weapon = NULL;
+    BombClass* weapon = NULL;
 
     if (counterMeasureStation[CHAFF_STATION].weaponCount > 0)
     {
@@ -185,16 +188,20 @@ void AircraftClass::DropChaff(void)
 
         int i;
 
-        for (i = 0; i < NumToLaunch and counterMeasureStation[CHAFF_STATION].weaponCount > 0; i++)
+        for (i = 0; i < NumToLaunch and
+                    counterMeasureStation[CHAFF_STATION].weaponCount > 0;
+             i++)
         {
             counterMeasureStation[CHAFF_STATION].weaponCount--;
             Tpoint work;
-            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation, &af->auxaeroData->Chaff.Pos[chaffDispenser], &work);
+            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation,
+                       &af->auxaeroData->Chaff.Pos[chaffDispenser], &work);
             pos.x = work.x + XPos();
             pos.y = work.y + YPos();
             pos.z = work.z + ZPos();
 
-            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation, &af->auxaeroData->Chaff.Vec[chaffDispenser], &work);
+            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation,
+                       &af->auxaeroData->Chaff.Vec[chaffDispenser], &work);
             posDelta.x = work.x + XDelta();
             posDelta.y = work.y + YDelta();
             posDelta.z = work.z + ZDelta();
@@ -202,41 +209,43 @@ void AircraftClass::DropChaff(void)
 
             switch (af->auxaeroData->Chaff.Sequence)
             {
-                case 0: // alternate dispensers;
-                case 2:
+            case 0: // alternate dispensers;
+            case 2:
+                chaffDispenser++;
+
+                if (chaffDispenser >= af->auxaeroData->Chaff.Count)
+                    chaffDispenser = 0;
+
+                break;
+
+            case 1: // use 1 dispenser, then move to the next
+            default:
+                chaffUsed++;
+
+                if (chaffUsed >= af->auxaeroData->Chaff.Decoys[chaffDispenser])
+                {
+                    chaffUsed = 0;
                     chaffDispenser++;
 
                     if (chaffDispenser >= af->auxaeroData->Chaff.Count)
                         chaffDispenser = 0;
+                }
 
-                    break;
-
-                case 1: // use 1 dispenser, then move to the next
-                default:
-                    chaffUsed++;
-
-                    if (chaffUsed >= af->auxaeroData->Chaff.Decoys[chaffDispenser])
-                    {
-                        chaffUsed = 0;
-                        chaffDispenser++;
-
-                        if (chaffDispenser >= af->auxaeroData->Chaff.Count)
-                            chaffDispenser = 0;
-                    }
-
-                    break;
+                break;
             }
 
 
             // TODO:  Use a different (much higher drag) type for the chaff
             //type = GetClassID (DOMAIN_AIR, CLASS_SFX, TYPE_CHAFF, STYPE_CHAFF, SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE; // JB 010220
-            type = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_CHAFF, SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;  // JB 010220
+            type = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_CHAFF,
+                              SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY) +
+                   VU_LAST_ENTITY_TYPE; // JB 010220
 
             weapon = new ChaffClass(type);
             weapon->Init();
             weapon->SetParent(this);
             weapon->Start(&pos, &posDelta, 0.2f);
-            vuDatabase->/*Quick*/Insert(weapon);
+            vuDatabase->/*Quick*/ Insert(weapon);
             weapon->Wake();
         }
 
@@ -253,7 +262,8 @@ void AircraftClass::DropChaff(void)
             //make sure we don't get here again, no sounds from now on
             counterMeasureStation[CHAFF_STATION].weaponCount--;
         }
-        else if (OTWDriver.pCockpitManager->mpIcp->ChaffBingo == counterMeasureStation[CHAFF_STATION].weaponCount)
+        else if (OTWDriver.pCockpitManager->mpIcp->ChaffBingo ==
+                 counterMeasureStation[CHAFF_STATION].weaponCount)
         {
             if (OTWDriver.pCockpitManager->mpIcp->EWS_BINGO_ON)
                 SoundPos.Sfx(af->auxaeroData->sndBBChaffFlareLow);
@@ -268,7 +278,8 @@ void AircraftClass::DropChaff(void)
     // If this is the player and they want unlimited chaff, let 'em have it.
     // #21: Instant Action is ALWAYS unlimited, independent of the UnlimitedChaff option
     // (RunningInstantAction() keeps this scoped to IA so other modes are unaffected).
-    if (IsSetFlag(MOTION_OWNSHIP) and (PlayerOptions.UnlimitedChaff() or SimDriver.RunningInstantAction()))
+    if (IsSetFlag(MOTION_OWNSHIP) and
+        (PlayerOptions.UnlimitedChaff() or SimDriver.RunningInstantAction()))
         counterMeasureStation[CHAFF_STATION].weaponCount++;
 }
 
@@ -276,7 +287,7 @@ void AircraftClass::DropFlare(void)
 {
     vector pos, posDelta;
     int type;
-	BombClass* weapon = NULL;
+    BombClass* weapon = NULL;
 
     if (counterMeasureStation[FLARE_STATION].weaponCount > 0)
     {
@@ -284,7 +295,8 @@ void AircraftClass::DropFlare(void)
             g_intellivibeData.FlareDropped++;
 
         {
-            static int chaffsid = 0; // just need a fake id so multiple chaffs can play at once.
+            static int chaffsid =
+                0; // just need a fake id so multiple chaffs can play at once.
             chaffsid = (chaffsid + 1) bitand 0xf;
             SoundPos.Sfx(af->auxaeroData->sndBBFlare, chaffsid);
         }
@@ -307,17 +319,21 @@ void AircraftClass::DropFlare(void)
 
         int i;
 
-        for (i = 0; i < NumToLaunch and counterMeasureStation[FLARE_STATION].weaponCount > 0; i++)
+        for (i = 0; i < NumToLaunch and
+                    counterMeasureStation[FLARE_STATION].weaponCount > 0;
+             i++)
         {
             counterMeasureStation[FLARE_STATION].weaponCount--;
 
             Tpoint work;
-            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation, &af->auxaeroData->Flare.Pos[flareDispenser], &work);
+            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation,
+                       &af->auxaeroData->Flare.Pos[flareDispenser], &work);
             pos.x = work.x + XPos();
             pos.y = work.y + YPos();
             pos.z = work.z + ZPos();
 
-            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation, &af->auxaeroData->Flare.Vec[flareDispenser], &work);
+            MatrixMult(&((DrawableBSP*)af->platform->drawPointer)->orientation,
+                       &af->auxaeroData->Flare.Vec[flareDispenser], &work);
             posDelta.x = work.x + XDelta();
             posDelta.y = work.y + YDelta();
             posDelta.z = work.z + ZDelta();
@@ -325,39 +341,42 @@ void AircraftClass::DropFlare(void)
 
             switch (af->auxaeroData->Flare.Sequence)
             {
-                case 0: // alternate dispensers;
-                case 2:
+            case 0: // alternate dispensers;
+            case 2:
+                flareDispenser++;
+
+                if (flareDispenser >= af->auxaeroData->Flare.Count)
+                    flareDispenser = 0;
+
+                break;
+
+            case 1: // use 1 dispenser, then move to the next
+            default:
+                flareUsed++;
+
+                if (flareUsed >= af->auxaeroData->Flare.Decoys[flareDispenser])
+                {
+                    flareUsed = 0;
                     flareDispenser++;
 
                     if (flareDispenser >= af->auxaeroData->Flare.Count)
                         flareDispenser = 0;
+                }
 
-                    break;
-
-                case 1: // use 1 dispenser, then move to the next
-                default:
-                    flareUsed++;
-
-                    if (flareUsed >= af->auxaeroData->Flare.Decoys[flareDispenser])
-                    {
-                        flareUsed = 0;
-                        flareDispenser++;
-
-                        if (flareDispenser >= af->auxaeroData->Flare.Count)
-                            flareDispenser = 0;
-                    }
-
-                    break;
+                break;
             }
 
             //type = GetClassID (DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_BOMB_IRON, SPTYPE_MK82, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE; // JB 010220
-            type = GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_FLARE1, SPTYPE_CHAFF1 + 1, VU_ANY, VU_ANY, VU_ANY) + VU_LAST_ENTITY_TYPE;  // JB 010220
+            type =
+                GetClassID(DOMAIN_AIR, CLASS_VEHICLE, TYPE_BOMB, STYPE_FLARE1,
+                           SPTYPE_CHAFF1 + 1, VU_ANY, VU_ANY, VU_ANY) +
+                VU_LAST_ENTITY_TYPE; // JB 010220
 
             weapon = new FlareClass(type);
             weapon->Init();
             weapon->SetParent(this);
             weapon->Start(&pos, &posDelta, 0.2f);
-            vuDatabase->/*Quick*/Insert(weapon);
+            vuDatabase->/*Quick*/ Insert(weapon);
             weapon->Wake();
         }
 
@@ -375,7 +394,8 @@ void AircraftClass::DropFlare(void)
             //make sure we don't get here again, no sounds from now on
             counterMeasureStation[FLARE_STATION].weaponCount--;
         }
-        else if (OTWDriver.pCockpitManager->mpIcp->FlareBingo == counterMeasureStation[FLARE_STATION].weaponCount)
+        else if (OTWDriver.pCockpitManager->mpIcp->FlareBingo ==
+                 counterMeasureStation[FLARE_STATION].weaponCount)
         {
             if (OTWDriver.pCockpitManager->mpIcp->EWS_BINGO_ON)
                 SoundPos.Sfx(af->auxaeroData->sndBBChaffFlareLow);
@@ -391,7 +411,8 @@ void AircraftClass::DropFlare(void)
     // If this is the player and they want unlimited flares, let 'em have it.
     // #21: Instant Action is ALWAYS unlimited, independent of the UnlimitedChaff option
     // (RunningInstantAction() keeps this scoped to IA so other modes are unaffected).
-    if (IsSetFlag(MOTION_OWNSHIP) and (PlayerOptions.UnlimitedChaff() or SimDriver.RunningInstantAction()))
+    if (IsSetFlag(MOTION_OWNSHIP) and
+        (PlayerOptions.UnlimitedChaff() or SimDriver.RunningInstantAction()))
         counterMeasureStation[FLARE_STATION].weaponCount++;
 }
 
@@ -403,9 +424,9 @@ void AircraftClass::CleanupCountermeasures(void)
 
 void AircraftClass::DropProgramed(void)
 {
-    if ( not dropProgrammedStep)
+    if (not dropProgrammedStep)
     {
-        dropProgrammedStep  = 3;
+        dropProgrammedStep = 3;
         dropProgrammedTimer = 0;
     }
 }
@@ -417,82 +438,105 @@ void AircraftClass::DropEWS()
 
     //make noise
     if ((counterMeasureStation[FLARE_STATION].weaponCount > 0 or
-         counterMeasureStation[CHAFF_STATION].weaponCount > 0) and 
+         counterMeasureStation[CHAFF_STATION].weaponCount > 0) and
         (EWSPGM() == Man or EWSPGM() == Semi or EWSPGM() == Auto))
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlare, FALSE, 0.0f, 1.0f);
-        if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))
+        if (not SoundPos.IsPlaying(af->auxaeroData->sndBBChaffFlare))
         {
             SoundPos.Sfx(af->auxaeroData->sndBBChaffFlare); // MLR 5/16/2004 -
         }
     }
-    else if (counterMeasureStation[FLARE_STATION].weaponCount <= 0 and 
+    else if (counterMeasureStation[FLARE_STATION].weaponCount <= 0 and
              counterMeasureStation[CHAFF_STATION].weaponCount <= 0)
     {
         //F4SoundFXSetDist(af->auxaeroData->sndBBChaffFlareOut, TRUE, 0.0f, 1.0f);
         SoundPos.Sfx(af->auxaeroData->sndBBChaffFlareOut); // MLR 5/16/2004 -
     }
 
-    ChaffBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fCHAFF_BI[EWSProgNum] * CampaignSeconds));
-    FlareBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fFLARE_BI[EWSProgNum] * CampaignSeconds));
-    FlareSalvoCount = OTWDriver.pCockpitManager->mpIcp->iFLARE_SQ[EWSProgNum] - 1;
-    ChaffSalvoCount = OTWDriver.pCockpitManager->mpIcp->iCHAFF_SQ[EWSProgNum] - 1;
+    ChaffBurstInterval = static_cast<VU_TIME>(
+        SimLibElapsedTime +
+        (OTWDriver.pCockpitManager->mpIcp->fCHAFF_BI[EWSProgNum] *
+         CampaignSeconds));
+    FlareBurstInterval = static_cast<VU_TIME>(
+        SimLibElapsedTime +
+        (OTWDriver.pCockpitManager->mpIcp->fFLARE_BI[EWSProgNum] *
+         CampaignSeconds));
+    FlareSalvoCount =
+        OTWDriver.pCockpitManager->mpIcp->iFLARE_SQ[EWSProgNum] - 1;
+    ChaffSalvoCount =
+        OTWDriver.pCockpitManager->mpIcp->iCHAFF_SQ[EWSProgNum] - 1;
 }
 void AircraftClass::EWSChaffBurst(void)
 {
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
+    if (mFaults and
+        (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
     if (theRwr)
     {
         //RWR not on, no spikes
-        if ( not theRwr->IsOn() or not HasPower(AircraftClass::EWSChaffPower))
+        if (not theRwr->IsOn() or not HasPower(AircraftClass::EWSChaffPower))
             return;
     }
     else //no RWR, return anyway
         return;
 
     //Set our next release time
-    ChaffBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fCHAFF_BI[EWSProgNum] * CampaignSeconds));
+    ChaffBurstInterval = static_cast<VU_TIME>(
+        SimLibElapsedTime +
+        (OTWDriver.pCockpitManager->mpIcp->fCHAFF_BI[EWSProgNum] *
+         CampaignSeconds));
     //Drop one right now
     ChaffCount++;
     DropChaff();
 }
 void AircraftClass::EWSFlareBurst(void)
 {
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if (mFaults and (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
+    if (mFaults and
+        (mFaults->GetFault(FaultClass::cmds_fault) bitand FaultClass::bus))
         return;
 
     if (theRwr)
     {
-        if ( not theRwr->IsOn() or not HasPower(AircraftClass::EWSFlarePower))
+        if (not theRwr->IsOn() or not HasPower(AircraftClass::EWSFlarePower))
             return;
     }
     else //no RWR, return anyway
         return;
 
     //set our next release time
-    FlareBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fFLARE_BI[EWSProgNum] * CampaignSeconds));
+    FlareBurstInterval = static_cast<VU_TIME>(
+        SimLibElapsedTime +
+        (OTWDriver.pCockpitManager->mpIcp->fFLARE_BI[EWSProgNum] *
+         CampaignSeconds));
     //Drop one right now
     FlareCount++;
     DropFlare();
 }
 void AircraftClass::ReleaseManualProgram(void)
 {
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
-    if ( not theRwr)
+    if (not theRwr)
         return;
 
-    if (static_cast<unsigned int>(ChaffCount) >= OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] and 
+    if (static_cast<unsigned int>(ChaffCount) >=
+            OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] and
         ChaffSalvoCount not_eq 0 and not theRwr->ChaffCheck)
     {
         //Set our timer
-        ChaffBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fCHAFF_SI[EWSProgNum] * CampaignSeconds));
+        ChaffBurstInterval = static_cast<VU_TIME>(
+            SimLibElapsedTime +
+            (OTWDriver.pCockpitManager->mpIcp->fCHAFF_SI[EWSProgNum] *
+             CampaignSeconds));
         //Reset our count
         ChaffCount = 0;
         //Mark us with one less to go
@@ -501,11 +545,15 @@ void AircraftClass::ReleaseManualProgram(void)
         theRwr->ChaffCheck = TRUE;
     }
 
-    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] and 
+    if (FlareCount ==
+            OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] and
         FlareSalvoCount not_eq 0 and not theRwr->FlareCheck)
     {
         //Set our timer
-        FlareBurstInterval = static_cast<VU_TIME>(SimLibElapsedTime + (OTWDriver.pCockpitManager->mpIcp->fFLARE_SI[EWSProgNum] * CampaignSeconds));
+        FlareBurstInterval = static_cast<VU_TIME>(
+            SimLibElapsedTime +
+            (OTWDriver.pCockpitManager->mpIcp->fFLARE_SI[EWSProgNum] *
+             CampaignSeconds));
         //Reset our count
         FlareCount = 0;
         //Mark us with one less to go
@@ -514,25 +562,28 @@ void AircraftClass::ReleaseManualProgram(void)
         theRwr->FlareCheck = TRUE;
     }
 
-    if (SimLibElapsedTime >= ChaffBurstInterval and 
-        (static_cast<unsigned int>(ChaffCount) < OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]))
+    if (SimLibElapsedTime >= ChaffBurstInterval and
+        (static_cast<unsigned int>(ChaffCount) <
+         OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum]))
     {
         EWSChaffBurst();
         theRwr->ChaffCheck = FALSE;
     }
 
-    if (SimLibElapsedTime >= FlareBurstInterval and 
-        (static_cast<VU_TIME>(FlareCount) < OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum]))
+    if (SimLibElapsedTime >= FlareBurstInterval and
+        (static_cast<VU_TIME>(FlareCount) <
+         OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum]))
     {
         EWSFlareBurst();
         theRwr->FlareCheck = FALSE;
     }
 
-    if (FlareCount == OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] and 
-        ChaffCount == OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] and 
+    if (FlareCount ==
+            OTWDriver.pCockpitManager->mpIcp->iFLARE_BQ[EWSProgNum] and
+        ChaffCount ==
+            OTWDriver.pCockpitManager->mpIcp->iCHAFF_BQ[EWSProgNum] and
         ChaffSalvoCount <= 0 and FlareSalvoCount <= 0)
     {
         theRwr->ReleaseManual = FALSE;
     }
-
 }

@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "cpdial.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
 #include "otwdrive.h"
 
-#include "Graphics/Include/grinline.h" //Wombat778 3-26-04
+#include "graphics/include/grinline.h" //Wombat778 3-26-04
 extern bool g_bFilter2DPit; //Wombat778 3-30-04
 
-CPDial::CPDial(ObjectInitStr *pobjectInitStr, DialInitStr* pdialInitStr) : CPObject(pobjectInitStr)
+CPDial::CPDial(ObjectInitStr *pobjectInitStr, DialInitStr *pdialInitStr)
+    : CPObject(pobjectInitStr)
 {
     int i;
     mlTrig trig;
@@ -34,8 +35,10 @@ CPDial::CPDial(ObjectInitStr *pobjectInitStr, DialInitStr* pdialInitStr) : CPObj
     mDialValue = 0.0F;
 
 #ifdef USE_SH_POOLS
-    mpCosPoints = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
-    mpSinPoints = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
+    mpCosPoints =
+        (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
+    mpSinPoints =
+        (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
 #else
     mpCosPoints = new float[mEndPoints];
     mpSinPoints = new float[mEndPoints];
@@ -73,18 +76,18 @@ CPDial::CPDial(ObjectInitStr *pobjectInitStr, DialInitStr* pdialInitStr) : CPObj
 
 CPDial::~CPDial()
 {
-    delete [] mpValues;
-    delete [] mpPoints;
-    delete [] mpSinPoints;
-    delete [] mpCosPoints;
+    delete[] mpValues;
+    delete[] mpPoints;
+    delete[] mpSinPoints;
+    delete[] mpCosPoints;
 
     if (IsRendered and DisplayOptions.bRender2DCockpit)
     {
-        glReleaseMemory((char*) mpSourceBuffer);
+        glReleaseMemory((char *)mpSourceBuffer);
     }
 }
 
-void CPDial::Exec(SimBaseClass* pOwnship)
+void CPDial::Exec(SimBaseClass *pOwnship)
 {
     BOOL found = FALSE;
     int i = 0;
@@ -103,7 +106,7 @@ void CPDial::Exec(SimBaseClass* pOwnship)
     float sinDeflection = 0.0F;
     float cosSecondDeflection = 0.0F;
     float sinSecondDeflection = 0.0F;
-    mlTrig  trig;
+    mlTrig trig;
 
     mpOwnship = pOwnship;
 
@@ -164,7 +167,8 @@ void CPDial::Exec(SimBaseClass* pOwnship)
             delta = mpPoints[i + 1] - mpPoints[i];
 
             // sfr: removing this makes it possible to have CW and CCW rotation
-            if ((mpCPManager->GetMajorVersion() == 0) and ((mpCPManager->GetMinorVersion() == 0)))
+            if ((mpCPManager->GetMajorVersion() == 0) and
+                ((mpCPManager->GetMinorVersion() == 0)))
             {
                 if (delta > 0.0F)
                 {
@@ -174,7 +178,8 @@ void CPDial::Exec(SimBaseClass* pOwnship)
 
 
             slope = delta / (mpValues[i + 1] - mpValues[i]);
-            deflection = (float)(mpPoints[i] + (slope * (mDialValue - mpValues[i])));
+            deflection =
+                (float)(mpPoints[i] + (slope * (mDialValue - mpValues[i])));
             //Wombat778 3-26-04  Make a copy of the angle to be used when using rendered needles
             angle = deflection;
 
@@ -227,8 +232,7 @@ void CPDial::Exec(SimBaseClass* pOwnship)
         {
             i++;
         }
-    }
-    while (( not found) and (i < mEndPoints));
+    } while ((not found) and (i < mEndPoints));
 
     SetDirtyFlag(); //VWF FOR NOW
 }
@@ -238,7 +242,7 @@ void CPDial::DisplayDraw()
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag)
+    if (not mDirtyFlag)
     {
         return;
     }
@@ -260,26 +264,27 @@ void CPDial::DisplayDraw()
     }
 
     OTWDriver.renderer->SetColor(color[1]);
-    OTWDriver.renderer->Render2DTri(
-        (float)mxPos0, (float)myPos0, (float)mxPos1,
-        (float)myPos1, (float)mxPos2, (float)myPos2
-    );
+    OTWDriver.renderer->Render2DTri((float)mxPos0, (float)myPos0, (float)mxPos1,
+                                    (float)myPos1, (float)mxPos2,
+                                    (float)myPos2);
     OTWDriver.renderer->SetColor(color[2]);
-    OTWDriver.renderer->Render2DTri(
-        (float)mxPos0, (float)myPos0, (float)mxPos1,
-        (float)myPos1, (float)mxPos3, (float)myPos3
-    );
+    OTWDriver.renderer->Render2DTri((float)mxPos0, (float)myPos0, (float)mxPos1,
+                                    (float)myPos1, (float)mxPos3,
+                                    (float)myPos3);
     mDirtyFlag = FALSE;
 }
 
 
 //Wombat778 3-26-04 Additional functions for rendering the image
 //Wombat778 3-22-04 helper function to keep the displayblit3d tidy.
-void RenderNeedlePoly(TextureHandle *pTex, tagRECT *destrect, GLint alpha, float angle)
+void RenderNeedlePoly(TextureHandle *pTex, tagRECT *destrect, GLint alpha,
+                      float angle)
 {
 
-    float x = destrect->left + ((float)(destrect->right - destrect->left) / 2.0f);
-    float y = destrect->top + ((float)(destrect->bottom - destrect->top) / 2.0f);
+    float x =
+        destrect->left + ((float)(destrect->right - destrect->left) / 2.0f);
+    float y =
+        destrect->top + ((float)(destrect->bottom - destrect->top) / 2.0f);
 
     const float angsin = sin(angle);
     const float angcos = cos(angle);
@@ -289,10 +294,10 @@ void RenderNeedlePoly(TextureHandle *pTex, tagRECT *destrect, GLint alpha, float
 
     // Setup vertices
     float fStartU = 0;
-    float fMaxU = (float) pTex->m_nWidth / (float) pTex->m_nActualWidth;
+    float fMaxU = (float)pTex->m_nWidth / (float)pTex->m_nActualWidth;
     fMaxU -= fStartU;
     float fStartV = 0;
-    float fMaxV = (float) pTex->m_nHeight / (float) pTex->m_nActualHeight;
+    float fMaxV = (float)pTex->m_nHeight / (float)pTex->m_nActualHeight;
     fMaxV -= fStartV;
 
     TwoDVertex pVtx[4];
@@ -325,7 +330,8 @@ void RenderNeedlePoly(TextureHandle *pTex, tagRECT *destrect, GLint alpha, float
     for (int i = 0; i < 4; i++)
     {
         float tempx = pVtx[i].x;
-        pVtx[i].x = x + (angcos * (pVtx[i].x - x)) + (-angsin * (pVtx[i].y - y));
+        pVtx[i].x =
+            x + (angcos * (pVtx[i].x - x)) + (-angsin * (pVtx[i].y - y));
         pVtx[i].y = y + (angsin * (tempx - x)) + (angcos * (pVtx[i].y - y));
     }
 
@@ -333,8 +339,10 @@ void RenderNeedlePoly(TextureHandle *pTex, tagRECT *destrect, GLint alpha, float
     OTWDriver.pCockpitManager->AddTurbulence(pVtx);
 
     OTWDriver.renderer->context.RestoreState(alpha);
-    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
-    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+    OTWDriver.renderer->context.SelectTexture1((DWORD_PTR)pTex);
+    OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN,
+                                              MPR_VI_COLOR bitor MPR_VI_TEXTURE,
+                                              4, pVtx, sizeof(pVtx[0]));
 }
 
 
@@ -343,12 +351,12 @@ void CPDial::DisplayBlit3D()
 
     mDirtyFlag = TRUE;
 
-    if ( not mDirtyFlag)
+    if (not mDirtyFlag)
     {
         return;
     }
 
-    if ( not IsRendered or not DisplayOptions.bRender2DCockpit)
+    if (not IsRendered or not DisplayOptions.bRender2DCockpit)
     {
         return;
     }
@@ -357,12 +365,14 @@ void CPDial::DisplayBlit3D()
     {
         //Wombat778 3-30-04 Add option to filter
         //adjust the angle so that a needle pointing up corresponds to up on the template
-        RenderNeedlePoly(m_arrTex[0], &mDestRect, STATE_CHROMA_TEXTURE, -(angle - (0.5f * PI)));
+        RenderNeedlePoly(m_arrTex[0], &mDestRect, STATE_CHROMA_TEXTURE,
+                         -(angle - (0.5f * PI)));
     }
     else
     {
         //adjust the angle so that a needle pointing up corresponds to up on the template
-        RenderNeedlePoly(m_arrTex[0], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER, -(angle - (0.5f * PI)));
+        RenderNeedlePoly(m_arrTex[0], &mDestRect, STATE_ALPHA_TEXTURE_NOFILTER,
+                         -(angle - (0.5f * PI)));
     }
 
     mDirtyFlag = FALSE;
@@ -376,42 +386,44 @@ void CPDial::CreateLit(void)
         try
         {
             const DWORD dwMaxTextureWidth =
-                mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
             const DWORD dwMaxTextureHeight =
-                mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
-            m_pPalette =
-                new PaletteHandle(mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
+                mpOTWImage->GetDisplayDevice()
+                    ->GetDefaultRC()
+                    ->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
+            m_pPalette = new PaletteHandle(
+                mpOTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
 
-            if ( not m_pPalette)
+            if (not m_pPalette)
             {
                 throw _com_error(E_OUTOFMEMORY);
             }
 
             // Check if we can use a single texture
-            if (
-                ((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left) and 
-                ((int)dwMaxTextureHeight >= mSrcRect.bottom - mSrcRect.top)
-            )
+            if (((int)dwMaxTextureWidth >= mSrcRect.right - mSrcRect.left) and
+                ((int)dwMaxTextureHeight >= mSrcRect.bottom - mSrcRect.top))
             {
                 TextureHandle *pTex = new TextureHandle;
 
-                if ( not pTex)
+                if (not pTex)
                 {
                     throw _com_error(E_OUTOFMEMORY);
                 }
 
                 m_pPalette->AttachToTexture(pTex);
 
-                if (
- not pTex->Create("CPDial", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
-                                  (int)(mSrcRect.right - mSrcRect.left),
-                                  (int)(mSrcRect.bottom - mSrcRect.top))
-                )
+                if (not pTex->Create("CPDial",
+                                     MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
+                                     (int)(mSrcRect.right - mSrcRect.left),
+                                     (int)(mSrcRect.bottom - mSrcRect.top)))
                 {
                     throw _com_error(E_FAIL);
                 }
 
-                if ( not pTex->Load(0, 0xFFFF0000, (BYTE*)mpSourceBuffer, true, true))
+                if (not pTex->Load(0, 0xFFFF0000, (BYTE *)mpSourceBuffer, true,
+                                   true))
                 {
                     // soon to be re-loaded by CPSurface::Translate3D
                     throw _com_error(E_FAIL);
@@ -422,7 +434,8 @@ void CPDial::CreateLit(void)
         }
         catch (const _com_error &e)
         {
-            MonoPrint("CPDial::CreateLit - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
+            MonoPrint("CPDial::CreateLit - Error 0x%X (%s)\n", e.Error(),
+                      e.ErrorMessage());
             DiscardLit();
         }
     }

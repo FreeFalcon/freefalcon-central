@@ -11,11 +11,11 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Request Campaign Data
@@ -23,7 +23,8 @@
 class FalconRequestCampaignData : public FalconEvent
 {
 public:
-    FalconRequestCampaignData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconRequestCampaignData(VU_ID entityId, VuTargetEntity *target,
+                              VU_BOOL loopback = TRUE);
     FalconRequestCampaignData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconRequestCampaignData(void);
     virtual int Size() const;
@@ -34,7 +35,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID who;
         ulong dataNeeded;
         uchar size;
@@ -46,6 +46,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

@@ -58,14 +58,19 @@ typedef enum type_CSubSystem
 
 typedef enum type_TWSubSystem
 {
-    handoff, missile_launch,
-    pri_mode, sys_test,
-    tgt_t, unk,
-    search, activate_power,
-    system_power, low_altitude
+    handoff,
+    missile_launch,
+    pri_mode,
+    sys_test,
+    tgt_t,
+    unk,
+    search,
+    activate_power,
+    system_power,
+    low_altitude
 };
 
-#define BITS_PER_VECTOR    32
+#define BITS_PER_VECTOR 32
 
 const int NumVectors = (lastFault / BITS_PER_VECTOR) + 1;
 
@@ -85,7 +90,6 @@ class CautionClass
     BOOL GetCaution(int);
 
 public:
-
     BOOL IsFlagSet();
     void ClearFlag();
 

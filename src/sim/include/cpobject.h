@@ -24,9 +24,9 @@ typedef struct
     RECT bsrcRect;
     RECT bdestRect;
     RECT destRect;
-    ImageBuffer* pOTWImage;
-    ImageBuffer* pTemplate;
-    CockpitManager* pCPManager;
+    ImageBuffer *pOTWImage;
+    ImageBuffer *pTemplate;
+    CockpitManager *pCPManager;
     // sfr: 2 scale factors
     float hScale; //Wombat778 10-06-2003 Changes scale from int to float
     float vScale; //Wombat778 10-06-2003 Changes scale from int to float
@@ -48,11 +48,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================//
     // Identification Tag and Callback Ids
     //====================================================//
@@ -108,7 +108,7 @@ public:
     // Runtime Member Functions
     //====================================================//
     void Exec(void) {};
-    virtual void Exec(SimBaseClass*) {};
+    virtual void Exec(SimBaseClass *) {};
     virtual void DisplayBlit(void) {};
     virtual void DisplayDraw(void) {};
 
@@ -117,19 +117,19 @@ public:
     {
         mDirtyFlag = TRUE;
     };
-    virtual void  CreateLit(void) {};
+    virtual void CreateLit(void) {};
     virtual void DiscardLit(void);
-    virtual void Translate(WORD*) {};
-    virtual void Translate(DWORD*) {}; // OW added for 32 Bit rendering
+    virtual void Translate(WORD *) {};
+    virtual void Translate(DWORD *) {}; // OW added for 32 Bit rendering
 
     // OW
-    virtual void DisplayBlit3D() { };
-    void Translate3D(DWORD*);
+    virtual void DisplayBlit3D() {};
+    void Translate3D(DWORD *);
 
     //====================================================//
     // Constructors and Destructors
     //====================================================//
-    CPObject(const ObjectInitStr*);
+    CPObject(const ObjectInitStr *);
     virtual ~CPObject();
 };
 

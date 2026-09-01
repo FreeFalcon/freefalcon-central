@@ -19,9 +19,21 @@
 #undef _inp
 #undef _inpw
 
-#define _outp(port, v)   ( (int)(v) )                 // byte write -- no-op, returns the value
-#define _outpw(port, v)  ( (unsigned short)(v) )      // word write -- no-op, returns the value
-#define _inp(port)       ( 0 )                          // byte read -- always 0
-#define _inpw(port)      ( (unsigned short)0 )          // word read -- always 0
+#define _outp(port, v) ((int)(v)) // byte write -- no-op, returns the value
+#define _outpw(port, v)                                                        \
+    ((unsigned short)(v)) // word write -- no-op, returns the value
+#define _inp(port) (0) // byte read -- always 0
+#define _inpw(port) ((unsigned short)0) // word read -- always 0
+
+// Non-_MSC_VER compilers (clang on the Linux build) take the un-prefixed <conio.h> spellings (outp/outpw/inp/inpw,
+// e.g. Mono2d.cpp's `#else` branch). Those names are not clang intrinsics, so map them to the same no-ops.
+#undef outp
+#undef outpw
+#undef inp
+#undef inpw
+#define outp(port, v) ((int)(v))
+#define outpw(port, v) ((unsigned short)(v))
+#define inp(port) (0)
+#define inpw(port) ((unsigned short)0)
 
 #endif // PORTIO_COMPAT_H

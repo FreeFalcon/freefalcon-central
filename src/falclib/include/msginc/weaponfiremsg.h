@@ -11,14 +11,14 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
 
 //sfr: chks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Weapon Fire
@@ -39,7 +39,8 @@ public:
         Recon
     };
 
-    FalconWeaponsFire(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconWeaponsFire(VU_ID entityId, VuTargetEntity *target,
+                      VU_BOOL loopback = TRUE);
     FalconWeaponsFire(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconWeaponsFire(void);
     virtual int Size() const
@@ -68,7 +69,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         unsigned int weaponType;
         VU_ID fEntityID;
         ushort fCampID;
@@ -87,6 +87,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

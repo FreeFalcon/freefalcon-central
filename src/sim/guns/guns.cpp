@@ -5,15 +5,15 @@
 #include "object.h"
 #include "simdrive.h"
 #include "simmover.h"
-#include "MsgInc/DamageMsg.h"
+#include "msginc/damagemsg.h"
 #include "campbase.h"
 #include "otwdrive.h"
 #include "sfx.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "fakerand.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/rviewpnt.h"
 #include "feature.h"
 #include "acmi/src/include/acmirec.h"
 #include "playerop.h"
@@ -22,18 +22,19 @@
 #include "camplib.h"
 #include "campweap.h"
 #include "camp2sim.h"
-#include "Graphics/Include/terrtex.h"
+#include "graphics/include/terrtex.h"
 #include "camplist.h"
 #include "aircrft.h"
-#include "IvibeData.h"
-#include "DrawParticleSys.h" // RV - I-Hawk - added to support RV new trails code
+#include "ivibedata.h"
+#include "drawparticlesys.h" // RV - I-Hawk - added to support RV new trails code
 
 
 #ifdef USE_SH_POOLS
 MEM_POOL GunClass::pool;
 #endif
 
-float BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact);
+float BulletSphereHit(vector* sp, vector* ep, vector* tc, float r,
+                      vector* impact);
 #define NUM_BULLETS 11
 
 ACMITracerStartRecord acmiTracer;
@@ -58,7 +59,8 @@ void GunClass::Init(float muzzleVel, int numRounds)
     // ANY REFERENCE TO initBulletVelocity IN THIS FUNCTION HAS BEEN COMMENTED OUT AS WELL
     // We'll use an unused field in the WCD file.
     //The LAST 5 bits will be used and the value will range from 256 to 8192 ft/sec.
-    initBulletVelocity = (float)(((((unsigned char *)wcPtr)[45] >> 3) + 1) * 256);
+    initBulletVelocity =
+        (float)(((((unsigned char*)wcPtr)[45] >> 3) + 1) * 256);
 
     if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
     {
@@ -82,7 +84,7 @@ void GunClass::Init(float muzzleVel, int numRounds)
         // Original setting - remmed out
         // roundsPerSecond = 100.0F;
         //roundsPerSecond = (float) (wcPtr->MaxAlt)[2] ;
-        roundsPerSecond = (float)((((unsigned char *)wcPtr)[59]));
+        roundsPerSecond = (float)((((unsigned char*)wcPtr)[59]));
 
         if (roundsPerSecond == 0.0)
             roundsPerSecond = 100.0;
@@ -108,7 +110,7 @@ void GunClass::Init(float muzzleVel, int numRounds)
         numTracers = 0;
     }
 
-    dragFactor  = 0.5F * RHOASL * 0.0055F * 0.15F / 0.03F;
+    dragFactor = 0.5F * RHOASL * 0.0055F * 0.15F / 0.03F;
     status = Ready;
     //RV - I-Hawk - RV new trails call changes
     //smokeTrail = NULL;
@@ -136,7 +138,7 @@ void GunClass::InitLocalData(int type)
     // get the weapon class data
     type -= VU_LAST_ENTITY_TYPE;
 
-    wcPtr = (WeaponClassDataType *)Falcon4ClassTable[type].dataPtr;
+    wcPtr = (WeaponClassDataType*)Falcon4ClassTable[type].dataPtr;
 
     // hack at the moment for class tbl problem with flak
     if (strcmp("30mm AAA HE", wcPtr->Name) == 0)
@@ -145,7 +147,8 @@ void GunClass::InitLocalData(int type)
     }
     else if (wcPtr->Flags bitand WEAP_TRACER)
     {
-        Falcon4EntityClassType* classPtr = (Falcon4EntityClassType*)EntityType();
+        Falcon4EntityClassType* classPtr =
+            (Falcon4EntityClassType*)EntityType();
 
         if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_AAA_GUN)
         {
@@ -180,17 +183,16 @@ void GunClass::InitLocalData(int type)
 
     // ok, try and figure out what the domain is from the
     // weapon hit chance table
-    if (
-        wcPtr->HitChance[ NoMove ] > 0 or wcPtr->HitChance[ Foot ] > 0 or wcPtr->HitChance[ Wheeled ] > 0 or
-        wcPtr->HitChance[ Tracked ] > 0 or wcPtr->HitChance[ Naval ] > 0 or wcPtr->HitChance[ Rail ] > 0
-    )
+    if (wcPtr->HitChance[NoMove] > 0 or wcPtr->HitChance[Foot] > 0 or
+        wcPtr->HitChance[Wheeled] > 0 or wcPtr->HitChance[Tracked] > 0 or
+        wcPtr->HitChance[Naval] > 0 or wcPtr->HitChance[Rail] > 0)
     {
         domain = (int)wdGround;
     }
 
-    if (wcPtr->HitChance[ Air ] > 0 or wcPtr->HitChance[ LowAir ] > 0)
+    if (wcPtr->HitChance[Air] > 0 or wcPtr->HitChance[LowAir] > 0)
     {
-        domain or_eq (int)wdAir;
+        domain or_eq (int) wdAir;
     }
 
     gunDomain = (WeaponDomain)domain;
@@ -216,7 +218,7 @@ void GunClass::CleanupLocalData()
 {
     if (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL)
     {
-        delete [] bullet;
+        delete[] bullet;
         bullet = NULL;
 
         if (smokeTrail)
@@ -237,7 +239,8 @@ void GunClass::CleanupData()
 }
 
 
-void GunClass::SetPosition(float xOffset, float yOffset, float zOffset, float p, float y)
+void GunClass::SetPosition(float xOffset, float yOffset, float zOffset, float p,
+                           float y)
 {
     xPos = xOffset;
     // edg NOTE: the cockpit (virtual anyways) is 2x scale.  In order that
@@ -249,12 +252,11 @@ void GunClass::SetPosition(float xOffset, float yOffset, float zOffset, float p,
     yPos = yOffset;
     zPos = zOffset;
     pitch = p;
-    yaw   = y;
+    yaw = y;
 }
 
-int GunClass::Exec(
-    int* fire, TransformMatrix dmx, ObjectGeometry *geomData, SimObjectType* targetList, BOOL isOwnship
-)
+int GunClass::Exec(int* fire, TransformMatrix dmx, ObjectGeometry* geomData,
+                   SimObjectType* targetList, BOOL isOwnship)
 {
 
     int i;
@@ -268,7 +270,7 @@ int GunClass::Exec(
     BOOL gotGround = FALSE;
     BOOL hitGround = FALSE;
     BOOL advanceQueue = FALSE;
-    GunTracerType *bulptr;
+    GunTracerType* bulptr;
     CampBaseClass* objective;
     int whatWasHit = TRACER_HIT_NOTHING;
     float yOffset;
@@ -288,7 +290,8 @@ int GunClass::Exec(
     if (unlimitedAmmo)
     {
         // Could make numRoundsRemaining a float, but this changed less code...
-        fractionalRoundsRemaining += 0.1f * roundsPerSecond * SimLibMajorFrameTime;
+        fractionalRoundsRemaining +=
+            0.1f * roundsPerSecond * SimLibMajorFrameTime;
 
         if (fractionalRoundsRemaining > 1.0f)
         {
@@ -296,7 +299,8 @@ int GunClass::Exec(
             numRoundsRemaining = min(initialRounds, numRoundsRemaining + inc);
             fractionalRoundsRemaining -= (float)inc;
 
-            if (*fire and this->parent.get() == FalconLocalSession->GetPlayerEntity())
+            if (*fire and
+                this->parent.get() == FalconLocalSession->GetPlayerEntity())
             {
                 g_intellivibeData.BulletsFired++;
             }
@@ -317,7 +321,7 @@ int GunClass::Exec(
 
     // TOTAL HACK HERE  We observe that sometimes bullet is NULL here (why?)
     // SCR 5-9-97
-    if ( not bullet)
+    if (not bullet)
     {
         return whatWasHit;
     }
@@ -327,7 +331,7 @@ int GunClass::Exec(
     // edg: why go thru this exec stuff every time if there's no bullets
     // flying or the fire button isn't pressed?   Added numFlying counter
     // to determine bullets in air
-    if ( not (*fire) and not numFlying)
+    if (not(*fire) and not numFlying)
         return whatWasHit;
 
 
@@ -351,7 +355,8 @@ int GunClass::Exec(
     // 2000-10-17 MODIFIED BY S.G. SO BULLETS STAY IN THE AIR LONGER (WE'LL USE AN UNUSED FIELD IN THE WCD FILE)
     // This var will take the first 3 bits of that field and use it for 1 to 8 seconds.
     // if ( qTimer >= SimLibMajorFrameTime * 4.0f )
-    if (qTimer >= SimLibMajorFrameTime * (float)(((((unsigned char *)wcPtr)[45] bitand 7) + 1) * 2))
+    if (qTimer >= SimLibMajorFrameTime *
+                      (float)(((((unsigned char*)wcPtr)[45] bitand 7) + 1) * 2))
     {
         advanceQueue = TRUE;
         qTimer = 0.0f;
@@ -405,12 +410,12 @@ int GunClass::Exec(
             {
                 // if it's the player's plane that's firing, test ground
                 // on every bullet by never setting gotGround to TRUE
-                if ( not isOwnship)
+                if (not isOwnship)
                     gotGround = TRUE;
 
                 groundZ = OTWDriver.GetApproxGroundLevel(p1.x, p1.y);
 
-                if (p1.z - groundZ  > -1000.0f)
+                if (p1.z - groundZ > -1000.0f)
                     groundZ = OTWDriver.GetGroundLevel(p1.x, p1.y);
             }
 
@@ -418,9 +423,11 @@ int GunClass::Exec(
             if (gridIt == NULL)
             {
 #ifdef VU_GRID_TREE_Y_MAJOR
-                gridIt = new VuGridIterator(ObjProxList, parent->YPos(), parent->XPos(), 2.5F * NM_TO_FT);
+                gridIt = new VuGridIterator(ObjProxList, parent->YPos(),
+                                            parent->XPos(), 2.5F * NM_TO_FT);
 #else
-                gridIt = new VuGridIterator(ObjProxList, parent->XPos(), parent->YPos(), 2.5F * NM_TO_FT);
+                gridIt = new VuGridIterator(ObjProxList, parent->XPos(),
+                                            parent->YPos(), 2.5F * NM_TO_FT);
 #endif
             }
 
@@ -452,7 +459,7 @@ int GunClass::Exec(
 
             while (objective)
             {
-                if ( not objective->GetComponents())
+                if (not objective->GetComponents())
                 {
                     objective = (CampBaseClass*)gridIt->GetNext();
                     continue;
@@ -460,38 +467,40 @@ int GunClass::Exec(
 
                 // loop thru each element in the objective
                 VuListIterator featureWalker(objective->GetComponents());
-                testFeature = (SimBaseClass*) featureWalker.GetFirst();
+                testFeature = (SimBaseClass*)featureWalker.GetFirst();
 
                 while (testFeature)
                 {
-                    if ( not testFeature->drawPointer)
+                    if (not testFeature->drawPointer)
                     {
-                        testFeature = (SimBaseClass*) featureWalker.GetNext();
+                        testFeature = (SimBaseClass*)featureWalker.GetNext();
                         continue;
                     }
 
                     if (testFeature->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
                     {
-                        testFeature = (SimBaseClass*) featureWalker.GetNext();
+                        testFeature = (SimBaseClass*)featureWalker.GetNext();
                         continue;
                     }
 
                     // get feature's radius -- store in vt to save another stack var
                     // 2000-11-17 MODIFIED BY S.G. NEED TO ADD THE SIZE OF THE 'blastRadius' TO THIS
                     //vt = testFeature->drawPointer->Radius();
-                    vt = testFeature->drawPointer->Radius() + wcPtr->BlastRadius;
+                    vt =
+                        testFeature->drawPointer->Radius() + wcPtr->BlastRadius;
                     // END OF MODIFIED SECTION
                     testFeature->drawPointer->GetPosition(&fpos);
 
-                    if (fabs(p1.x - fpos.x) < vt + p3.x and 
-                        fabs(p1.y - fpos.y) < vt + p3.y and 
+                    if (fabs(p1.x - fpos.x) < vt + p3.x and
+                        fabs(p1.y - fpos.y) < vt + p3.y and
                         fabs(p1.z - fpos.z) < vt + p3.z)
                     {
                         org.x = p2.x;
                         org.y = p2.y;
                         org.z = p2.z;
 
-                        if (testFeature->drawPointer->GetRayHit(&org, &vec, &pos, 1.0f))
+                        if (testFeature->drawPointer->GetRayHit(&org, &vec,
+                                                                &pos, 1.0f))
                         {
 
                             // "back up" the hit point on features.  We want to
@@ -592,23 +601,30 @@ int GunClass::Exec(
                             //}
 
                             // VuTargetEntity* target= (VuTargetEntity*) vuDatabase->Find(testFeature->OwnerId());
-                            message = new FalconDamageMessage(testFeature->Id(), FalconLocalGame);
-                            message->dataBlock.fEntityID  = parent->Id();
-                            message->dataBlock.fCampID    = parent->GetCampID();
-                            message->dataBlock.fSide      = parent->GetCountry();
-                            message->dataBlock.fPilotID   = ((SimMoverClass*)parent.get())->pilotSlot;
-                            message->dataBlock.fIndex     = parent->Type();
-                            message->dataBlock.fWeaponID  = Type();
-                            message->dataBlock.fWeaponUID.num_ = GetCurrentBurst();
+                            message = new FalconDamageMessage(testFeature->Id(),
+                                                              FalconLocalGame);
+                            message->dataBlock.fEntityID = parent->Id();
+                            message->dataBlock.fCampID = parent->GetCampID();
+                            message->dataBlock.fSide = parent->GetCountry();
+                            message->dataBlock.fPilotID =
+                                ((SimMoverClass*)parent.get())->pilotSlot;
+                            message->dataBlock.fIndex = parent->Type();
+                            message->dataBlock.fWeaponID = Type();
+                            message->dataBlock.fWeaponUID.num_ =
+                                GetCurrentBurst();
 
-                            message->dataBlock.dEntityID  = testFeature->Id();
-                            message->dataBlock.dCampID    = testFeature->GetCampID();
-                            message->dataBlock.dSide      = testFeature->GetCountry();
-                            message->dataBlock.dPilotID   = 255;
-                            message->dataBlock.dIndex     = testFeature->Type();
-                            message->dataBlock.damageType = FalconDamageType::BulletDamage;
+                            message->dataBlock.dEntityID = testFeature->Id();
+                            message->dataBlock.dCampID =
+                                testFeature->GetCampID();
+                            message->dataBlock.dSide =
+                                testFeature->GetCountry();
+                            message->dataBlock.dPilotID = 255;
+                            message->dataBlock.dIndex = testFeature->Type();
+                            message->dataBlock.damageType =
+                                FalconDamageType::BulletDamage;
                             message->dataBlock.damageStrength = 0;
-                            message->dataBlock.damageRandomFact = PRANDFloatPos();
+                            message->dataBlock.damageRandomFact =
+                                PRANDFloatPos();
                             message->RequestOutOfBandTransmit();
                             FalconSendMessage(message, TRUE);
 
@@ -618,7 +634,7 @@ int GunClass::Exec(
                         }
                     }
 
-                    testFeature = (SimBaseClass*) featureWalker.GetNext();
+                    testFeature = (SimBaseClass*)featureWalker.GetNext();
                 }
 
                 objective = (CampBaseClass*)gridIt->GetNext();
@@ -626,7 +642,7 @@ int GunClass::Exec(
 
         FinishedFeatureTest:
 
-            if ( not bulptr->flying)
+            if (not bulptr->flying)
             {
                 whatWasHit or_eq TRACER_HIT_FEATURE;
                 numFlying--;
@@ -638,23 +654,31 @@ int GunClass::Exec(
 
             while (testObject)
             {
-                if
-                (
-                    testObject->BaseData() and testObject->BaseData()->IsSim() and 
-                    ( not testObject->BaseData()->IsWeapon() or testObject->BaseData()->IsEject()) and 
- not ((SimBaseClass*)testObject->BaseData())->IsExploding() and 
-                    testObject->localData and testObject->localData->range < initBulletVelocity * (2.5F) and 
-                    ((SimBaseClass*)testObject->BaseData())->drawPointer not_eq NULL
-                )
+                if (testObject->BaseData() and
+                    testObject->BaseData()->IsSim() and
+                    (not testObject->BaseData()->IsWeapon() or
+                     testObject->BaseData()->IsEject()) and
+                    not((SimBaseClass*)testObject->BaseData())
+                           ->IsExploding() and
+                    testObject->localData and
+                    testObject->localData->range <
+                        initBulletVelocity * (2.5F) and
+                    ((SimBaseClass*)testObject->BaseData())->drawPointer not_eq
+                        NULL)
                 {
                     // get feature's radius -- store in vt to save another stack var
                     // 2000-11-17 MODIFIED BY S.G. NEED TO ADD THE SIZE OF THE 'blastRadius' TO THIS
                     //    vt = ((SimBaseClass*)testObject->BaseData())->drawPointer->Radius();
-                    vt = ((SimBaseClass*)testObject->BaseData())->drawPointer->Radius() + wcPtr->BlastRadius;
+                    vt = ((SimBaseClass*)testObject->BaseData())
+                             ->drawPointer->Radius() +
+                         wcPtr->BlastRadius;
                     // END OF MODIFIED SECTION
-                    ((SimBaseClass*)testObject->BaseData())->drawPointer->GetPosition(&fpos);
+                    ((SimBaseClass*)testObject->BaseData())
+                        ->drawPointer->GetPosition(&fpos);
 
-                    if (fabs(p1.x - fpos.x) < vt + p3.x and fabs(p1.y - fpos.y) < vt + p3.y and fabs(p1.z - fpos.z) < vt + p3.z)
+                    if (fabs(p1.x - fpos.x) < vt + p3.x and
+                        fabs(p1.y - fpos.y) < vt + p3.y and
+                        fabs(p1.z - fpos.z) < vt + p3.z)
                     {
                         // Back up 1/2 of the vector traveled.
                         org.x = p2.x - 0.5F * vec.x;
@@ -666,10 +690,12 @@ int GunClass::Exec(
 
                         // scale the bounding box by how close the object is -- the
                         // closer the smaller the box
-                        vt = testObject->localData->range / (initBulletVelocity * 1.5f);
+                        vt = testObject->localData->range /
+                             (initBulletVelocity * 1.5f);
                         vt = max(1.0f, vt);
 
-                        if (((SimBaseClass*)testObject->BaseData())->drawPointer->GetRayHit(&org, &vec, &pos, vt))
+                        if (((SimBaseClass*)testObject->BaseData())
+                                ->drawPointer->GetRayHit(&org, &vec, &pos, vt))
                         {
                             // add bullet effect...
                             // pos.x = p4.x;
@@ -710,21 +736,32 @@ int GunClass::Exec(
 
 
                             // VuTargetEntity* target= (VuTargetEntity*) vuDatabase->Find(testObject->BaseData()->OwnerId());
-                            message = new FalconDamageMessage(testObject->BaseData()->Id(), FalconLocalGame);
-                            message->dataBlock.fEntityID  = parent->Id();
-                            message->dataBlock.fCampID    = parent->GetCampID();
-                            message->dataBlock.fSide      = parent->GetCountry();
-                            message->dataBlock.fPilotID   = ((SimMoverClass*)parent.get())->pilotSlot;
-                            message->dataBlock.fIndex     = parent->Type();
-                            message->dataBlock.fWeaponID  = Type();
-                            message->dataBlock.fWeaponUID.num_ = GetCurrentBurst();
-                            message->dataBlock.dEntityID  = testObject->BaseData()->Id();
-                            message->dataBlock.dCampID    = testObject->BaseData()->GetCampID();
-                            message->dataBlock.dSide      = testObject->BaseData()->GetCountry();
-                            message->dataBlock.dPilotID   = ((SimMoverClass*)testObject->BaseData())->pilotSlot;
-                            message->dataBlock.dIndex     = testObject->BaseData()->Type();
-                            message->dataBlock.damageType = FalconDamageType::BulletDamage;
-                            message->dataBlock.damageRandomFact = PRANDFloatPos();
+                            message = new FalconDamageMessage(
+                                testObject->BaseData()->Id(), FalconLocalGame);
+                            message->dataBlock.fEntityID = parent->Id();
+                            message->dataBlock.fCampID = parent->GetCampID();
+                            message->dataBlock.fSide = parent->GetCountry();
+                            message->dataBlock.fPilotID =
+                                ((SimMoverClass*)parent.get())->pilotSlot;
+                            message->dataBlock.fIndex = parent->Type();
+                            message->dataBlock.fWeaponID = Type();
+                            message->dataBlock.fWeaponUID.num_ =
+                                GetCurrentBurst();
+                            message->dataBlock.dEntityID =
+                                testObject->BaseData()->Id();
+                            message->dataBlock.dCampID =
+                                testObject->BaseData()->GetCampID();
+                            message->dataBlock.dSide =
+                                testObject->BaseData()->GetCountry();
+                            message->dataBlock.dPilotID =
+                                ((SimMoverClass*)testObject->BaseData())
+                                    ->pilotSlot;
+                            message->dataBlock.dIndex =
+                                testObject->BaseData()->Type();
+                            message->dataBlock.damageType =
+                                FalconDamageType::BulletDamage;
+                            message->dataBlock.damageRandomFact =
+                                PRANDFloatPos();
                             message->dataBlock.damageStrength = 0;
                             message->RequestOutOfBandTransmit();
                             FalconSendMessage(message, TRUE);
@@ -736,7 +773,7 @@ int GunClass::Exec(
                 testObject = testObject->next;
             }
 
-            if ( not bulptr->flying)
+            if (not bulptr->flying)
             {
                 whatWasHit or_eq TRACER_HIT_UNIT;
                 numFlying--;
@@ -745,16 +782,16 @@ int GunClass::Exec(
 
             // Apply Drag;
 #ifndef NODRAG
-            vt     = (float)sqrt(bulptr->xdot * bulptr->xdot +
-                                 bulptr->ydot * bulptr->ydot +
-                                 bulptr->zdot * bulptr->zdot);
-            vt1    = (float)sqrt(bulptr->xdot * bulptr->xdot +
-                                 bulptr->ydot * bulptr->ydot);
+            vt = (float)sqrt(bulptr->xdot * bulptr->xdot +
+                             bulptr->ydot * bulptr->ydot +
+                             bulptr->zdot * bulptr->zdot);
+            vt1 = (float)sqrt(bulptr->xdot * bulptr->xdot +
+                              bulptr->ydot * bulptr->ydot);
             singam = -bulptr->zdot / vt;
             cosgam = vt1 / vt;
-            cosmu  = bulptr->xdot / vt1;
-            sinmu  = bulptr->ydot / vt1;
-            alpha  = dragFactor * vt * vt;
+            cosmu = bulptr->xdot / vt1;
+            sinmu = bulptr->ydot / vt1;
+            alpha = dragFactor * vt * vt;
             dragDelta = alpha * cosgam * SimLibMajorFrameTime;
 
             bulptr->xdot -= dragDelta * cosmu;
@@ -767,7 +804,9 @@ int GunClass::Exec(
             // see if bullet is within 1 time step of impacting the //
             // ground and linearly extrapolate to get impact point. //
             //------------------------------------------------------//
-            if (parent->OnGround() and bulptr->z + bulptr->zdot * SimLibMajorFrameTime >= groundZ + 1500.0f)
+            if (parent->OnGround() and
+                bulptr->z + bulptr->zdot * SimLibMajorFrameTime >=
+                    groundZ + 1500.0f)
             {
                 // in this case the firing object is a ground vehicle.  We don't
                 // really do any ground detect for them since they're too close
@@ -776,14 +815,17 @@ int GunClass::Exec(
                 bulptr->flying = FALSE;
                 numFlying--;
             }
-            else if ( not parent->OnGround() and bulptr->z + bulptr->zdot * SimLibMajorFrameTime >= groundZ)
+            else if (not parent->OnGround() and
+                     bulptr->z + bulptr->zdot * SimLibMajorFrameTime >= groundZ)
             {
                 // check to see if bullet already below ground
                 if (bulptr->z > groundZ)
                 {
                     // back up the bullet 1/2 frame as a guess
-                    bulptr->x = bulptr->x - bulptr->xdot * SimLibMajorFrameTime * 0.5f;
-                    bulptr->y = bulptr->y - bulptr->ydot * SimLibMajorFrameTime * 0.5f;
+                    bulptr->x =
+                        bulptr->x - bulptr->xdot * SimLibMajorFrameTime * 0.5f;
+                    bulptr->y =
+                        bulptr->y - bulptr->ydot * SimLibMajorFrameTime * 0.5f;
                 }
                 else
                 {
@@ -802,7 +844,7 @@ int GunClass::Exec(
                 // for some reason -- don't place craters
                 if (hitGround == FALSE and not parent->OnGround())
                 {
-                    if ( not isOwnship)
+                    if (not isOwnship)
                         hitGround = TRUE;
 
                     pos.x = bulptr->x + PRANDFloat() * 8.0f;
@@ -815,8 +857,8 @@ int GunClass::Exec(
 
                     int groundType = OTWDriver.GetGroundType(pos.x, pos.y);
 
-                    if ( not (groundType == COVERAGE_WATER or
-                          groundType == COVERAGE_RIVER))
+                    if (not(groundType == COVERAGE_WATER or
+                            groundType == COVERAGE_RIVER))
                     {
                         // MLR this effect creates the other effects by default
                         // but allows easy replacement with a particle object
@@ -876,7 +918,6 @@ int GunClass::Exec(
                         // &PSvec);
                         // }
                         //}
-
                     }
                     else // water
                     {
@@ -927,7 +968,7 @@ int GunClass::Exec(
 
     // set position of muzzle tracers if we're firing -- only when alpha
     // blending is on
-    if (*fire)  // and PlayerOptions.AlphaOn() )
+    if (*fire) // and PlayerOptions.AlphaOn() )
     {
         float stagger;
         float ystagger;
@@ -951,8 +992,8 @@ int GunClass::Exec(
             }
             else
             {
-                stagger =  NRANDPOS * 25.0f;
-                xsize =  0.08f + NRANDPOS * 0.08f;
+                stagger = NRANDPOS * 25.0f;
+                xsize = 0.08f + NRANDPOS * 0.08f;
 
                 ystagger = NRAND * 0.40f;
 
@@ -1008,27 +1049,36 @@ int GunClass::Exec(
             muzzleLoc[i].y = parent->YPos();
             muzzleLoc[i].z = parent->ZPos();
 
-            muzzleLoc[i].x += dmx[0][0] * xPos * stagger + dmx[1][0] * ystagger + dmx[2][0] * zstagger;
-            muzzleLoc[i].y += dmx[0][1] * xPos * stagger + dmx[1][1] * ystagger + dmx[2][1] * zstagger;
-            muzzleLoc[i].z += dmx[0][2] * xPos * stagger + dmx[1][2] * ystagger + dmx[2][2] * zstagger;
+            muzzleLoc[i].x += dmx[0][0] * xPos * stagger +
+                              dmx[1][0] * ystagger + dmx[2][0] * zstagger;
+            muzzleLoc[i].y += dmx[0][1] * xPos * stagger +
+                              dmx[1][1] * ystagger + dmx[2][1] * zstagger;
+            muzzleLoc[i].z += dmx[0][2] * xPos * stagger +
+                              dmx[1][2] * ystagger + dmx[2][2] * zstagger;
 
-            muzzleEnd[i].x = dmx[0][0] * initBulletVelocity + dmx[1][0] * ystagger + dmx[2][0] * zstagger;
-            muzzleEnd[i].y = dmx[0][1] * initBulletVelocity + dmx[1][1] * ystagger + dmx[2][1] * zstagger;
-            muzzleEnd[i].z = dmx[0][2] * initBulletVelocity + dmx[1][2] * ystagger + dmx[2][2] * zstagger;
+            muzzleEnd[i].x = dmx[0][0] * initBulletVelocity +
+                             dmx[1][0] * ystagger + dmx[2][0] * zstagger;
+            muzzleEnd[i].y = dmx[0][1] * initBulletVelocity +
+                             dmx[1][1] * ystagger + dmx[2][1] * zstagger;
+            muzzleEnd[i].z = dmx[0][2] * initBulletVelocity +
+                             dmx[1][2] * ystagger + dmx[2][2] * zstagger;
 
             // Artscout - 2026: muzzle tracer (the short flash at the barrel) is the SECOND tracer rendering
             // alongside the flying-bullet streaks. Its length was velocity*SimLibMajorFrameTime*xsize -> it grew
             // with frame time too, so at low FPS (load / MRM<->DF master-mode switches) it bloated like the flying
             // streaks. Use a FIXED nominal frame time so this streak is FPS-independent (matches tracers.cpp).
-            const float kMuzzleNominalFrameTime = 0.0166f;   // ~60 FPS reference
-            muzzleEnd[i].x = muzzleLoc[i].x + muzzleEnd[i].x * kMuzzleNominalFrameTime * xsize;
-            muzzleEnd[i].y = muzzleLoc[i].y + muzzleEnd[i].y * kMuzzleNominalFrameTime * xsize;
-            muzzleEnd[i].z = muzzleLoc[i].z + muzzleEnd[i].z * kMuzzleNominalFrameTime * xsize;
+            const float kMuzzleNominalFrameTime = 0.0166f; // ~60 FPS reference
+            muzzleEnd[i].x = muzzleLoc[i].x +
+                             muzzleEnd[i].x * kMuzzleNominalFrameTime * xsize;
+            muzzleEnd[i].y = muzzleLoc[i].y +
+                             muzzleEnd[i].y * kMuzzleNominalFrameTime * xsize;
+            muzzleEnd[i].z = muzzleLoc[i].z +
+                             muzzleEnd[i].z * kMuzzleNominalFrameTime * xsize;
         }
     }
 
     // if firing, insert an new round into the queue at 1st position
-    if (*fire and ( not bulptr->flying or advanceQueue))
+    if (*fire and (not bulptr->flying or advanceQueue))
     {
         bulptr->x = parent->XPos();
         bulptr->y = parent->YPos();
@@ -1047,7 +1097,7 @@ int GunClass::Exec(
         {
             //RV - I-Hawk - RV new trails call changes
             //if ( not smokeTrail )
-            if ( not TrailIdNew)
+            if (not TrailIdNew)
             {
                 //smokeTrail = new DrawableTrail(trailID);
                 TrailIdNew = trailID;
@@ -1058,7 +1108,8 @@ int GunClass::Exec(
             pos.y += dmx[0][1] * xPos + dmx[1][1] * yOffset + dmx[2][1] * zPos;
             pos.z += dmx[0][2] * xPos + dmx[1][2] * yOffset + dmx[2][2] * zPos;
             //OTWDriver.AddTrailHead( smokeTrail, pos.x, pos.y, pos.z );
-            Trail = DrawableParticleSys::PS_EmitTrail(Trail, TrailIdNew, pos.x, pos.y, pos.z);
+            Trail = DrawableParticleSys::PS_EmitTrail(Trail, TrailIdNew, pos.x,
+                                                      pos.y, pos.z);
 
             //RV - I-Hawk - Add a gunfire PS at the gun location
             Tpoint gunPSvec;
@@ -1067,16 +1118,13 @@ int GunClass::Exec(
             gunPSvec.y = parent->YDelta();
             gunPSvec.z = parent->ZDelta();
 
-            DrawableParticleSys::PS_AddParticleEx((SFX_GUNFIRE + 1),
-                                                  &pos,
+            DrawableParticleSys::PS_AddParticleEx((SFX_GUNFIRE + 1), &pos,
                                                   &gunPSvec);
-
-
         }
 
-        if ( not bullet[1].flying)
+        if (not bullet[1].flying)
         {
-            fireCount ++;
+            fireCount++;
             muzzleStart = 0;
         }
 
@@ -1084,9 +1132,12 @@ int GunClass::Exec(
         numFlying++;
 
 
-        bulptr->x += dmx[0][0] * xPos * 30.0f + dmx[1][0] * yOffset + dmx[2][0] * zPos;
-        bulptr->y += dmx[0][1] * xPos * 30.0f + dmx[1][1] * yOffset + dmx[2][1] * zPos;
-        bulptr->z += dmx[0][2] * xPos * 30.0f + dmx[1][2] * yOffset + dmx[2][2] * zPos;
+        bulptr->x +=
+            dmx[0][0] * xPos * 30.0f + dmx[1][0] * yOffset + dmx[2][0] * zPos;
+        bulptr->y +=
+            dmx[0][1] * xPos * 30.0f + dmx[1][1] * yOffset + dmx[2][1] * zPos;
+        bulptr->z +=
+            dmx[0][2] * xPos * 30.0f + dmx[1][2] * yOffset + dmx[2][2] * zPos;
 
         // muzzleLoc.x = bulptr->x;
         // muzzleLoc.y = bulptr->y;
@@ -1100,12 +1151,15 @@ int GunClass::Exec(
         // edg: it is observed that geomData for ground vehicles is (sometimes?)
         // invalid.  Since they don't move all that fast anyway, just use
         // bullet velocity for dot vals
-        if ( not parent->OnGround() and parent->IsAirplane())
+        if (not parent->OnGround() and parent->IsAirplane())
         {
             vt = parent->GetVt();
-            bulptr->xdot = vt * geomData->cosgam * geomData->cossig + initBulletVelocity * dmx[0][0];
-            bulptr->ydot = vt * geomData->cosgam * geomData->sinsig + initBulletVelocity * dmx[0][1];
-            bulptr->zdot = -vt * geomData->singam + initBulletVelocity * dmx[0][2];
+            bulptr->xdot = vt * geomData->cosgam * geomData->cossig +
+                           initBulletVelocity * dmx[0][0];
+            bulptr->ydot = vt * geomData->cosgam * geomData->sinsig +
+                           initBulletVelocity * dmx[0][1];
+            bulptr->zdot =
+                -vt * geomData->singam + initBulletVelocity * dmx[0][2];
         }
         else
         {
@@ -1120,7 +1174,8 @@ int GunClass::Exec(
 
         if (gACMIRec.IsRecording())
         {
-            acmiTracer.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            acmiTracer.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             acmiTracer.data.x = bulptr->x;
             acmiTracer.data.y = bulptr->y;
             acmiTracer.data.z = bulptr->z;
@@ -1128,7 +1183,6 @@ int GunClass::Exec(
             acmiTracer.data.dy = bulptr->ydot;
             acmiTracer.data.dz = bulptr->zdot;
             gACMIRec.TracerRecord(&acmiTracer);
-
         }
 
         // just testing
@@ -1167,7 +1221,8 @@ int GunClass::Exec(
             numRoundsRemaining = max(0, numRoundsRemaining + inc);
             fractionalRoundsRemaining -= (float)inc;
 
-            if (*fire and this->parent.get() == FalconLocalSession->GetPlayerEntity())
+            if (*fire and
+                this->parent.get() == FalconLocalSession->GetPlayerEntity())
             {
                 g_intellivibeData.BulletsFired++;
             }
@@ -1184,27 +1239,32 @@ int GunClass::Exec(
         // muzzleLoc.y = bulptr->y - bulptr->ydot * rtmp;
         // muzzleLoc.z = bulptr->z - bulptr->zdot * rtmp;
 
-        if ( not unlimitedAmmo)
+        if (not unlimitedAmmo)
         {
-            numRoundsRemaining =
-                (int)(max(numRoundsRemaining - roundsPerSecond * SimLibMajorFrameTime, 0.0F));
+            numRoundsRemaining = (int)(max(
+                numRoundsRemaining - roundsPerSecond * SimLibMajorFrameTime,
+                0.0F));
         }
 
         //RV - I-Hawk - RV new trails call changes
         //if (smokeTrail)
         if (TrailIdNew)
         {
-            pos.x = parent->XPos() + dmx[0][0] * xPos + dmx[1][0] * yOffset + dmx[2][0] * zPos;
-            pos.y = parent->YPos() + dmx[0][1] * xPos + dmx[1][1] * yOffset + dmx[2][1] * zPos;
-            pos.z = parent->ZPos() + dmx[0][2] * xPos + dmx[1][2] * yOffset + dmx[2][2] * zPos;
+            pos.x = parent->XPos() + dmx[0][0] * xPos + dmx[1][0] * yOffset +
+                    dmx[2][0] * zPos;
+            pos.y = parent->YPos() + dmx[0][1] * xPos + dmx[1][1] * yOffset +
+                    dmx[2][1] * zPos;
+            pos.z = parent->ZPos() + dmx[0][2] * xPos + dmx[1][2] * yOffset +
+                    dmx[2][2] * zPos;
             /*OTWDriver.AddTrailHead( smokeTrail,
                pos.x,
                pos.y,
                pos.z );*/
-            Trail = DrawableParticleSys::PS_EmitTrail(Trail, TrailIdNew, pos.x, pos.y, pos.z);
+            Trail = DrawableParticleSys::PS_EmitTrail(Trail, TrailIdNew, pos.x,
+                                                      pos.y, pos.z);
         }
     }
-    else if ( not (*fire))
+    else if (not(*fire))
     {
         if (advanceQueue)
             bulptr->flying = FALSE;
@@ -1255,8 +1315,8 @@ int GunClass::Exec(
 **  ray hits sphere, less than 0 if not.
 ** The formula was gotten from Graphics Gems Vol1 - ray-sphere interset
 */
-float
-BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
+float BulletSphereHit(vector* sp, vector* ep, vector* tc, float r,
+                      vector* impact)
 {
     float dotp1, dotp2, d_squared, newdist;
     vector s_to_t;
@@ -1280,8 +1340,7 @@ BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
     /*
     ** dot the 2 vectors
     */
-    dotp1 = (ray.x * s_to_t.x) + (ray.y * s_to_t.y) +
-            (ray.z * s_to_t.z);
+    dotp1 = (ray.x * s_to_t.x) + (ray.y * s_to_t.y) + (ray.z * s_to_t.z);
 
     /*
     ** If the dot product of the source to target vector with the
@@ -1289,19 +1348,19 @@ BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
     ** in opposite directions.  We can quit right here.
     */
     if (dotp1 < 0.0)
-        return(-1.0f);
+        return (-1.0f);
 
     // normalize dotp1 with length of ray
     length = (float)sqrt(ray.x * ray.x + ray.y * ray.y + ray.z * ray.z);
     dotp1 /= length;
 
-    dotp2 = (s_to_t.x * s_to_t.x) + (s_to_t.y * s_to_t.y) +
-            (s_to_t.z * s_to_t.z);
+    dotp2 =
+        (s_to_t.x * s_to_t.x) + (s_to_t.y * s_to_t.y) + (s_to_t.z * s_to_t.z);
 
     d_squared = (r * r) - (dotp2 - (dotp1 * dotp1));
 
     if (d_squared < 0.0)
-        return(-1.0f);
+        return (-1.0f);
 
     /*
     ** We should use the square root of d squared for the below calculation,
@@ -1316,7 +1375,7 @@ BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
         newdist = 0.5;
 
     if (length < newdist)
-        return(-1.0f);
+        return (-1.0f);
 
     /*
     ** That's it, a hit
@@ -1339,4 +1398,3 @@ BulletSphereHit(vector *sp, vector *ep, vector *tc, float r, vector *impact)
 **  TRUE or FALSE if hit .
 ** The formula was gotten from Graphics Gems Vol1 - ray-box interset
 */
-

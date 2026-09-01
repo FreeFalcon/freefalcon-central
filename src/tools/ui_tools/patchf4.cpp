@@ -25,7 +25,8 @@ void main(int argc, char **argv)
     if (fp == -1)
     {
         printf("Can't find falcon4.exe\n");
-        printf("Make sure you run this patch in the directory where you installed falcon 4.0\n");
+        printf("Make sure you run this patch in the directory where you "
+               "installed falcon 4.0\n");
         return;
     }
 
@@ -35,7 +36,8 @@ void main(int argc, char **argv)
 
     if (Exe == NULL)
     {
-        printf("Can't allocate %1ld bytes to load (%s) into\b", length, "falcon4.exe");
+        printf("Can't allocate %1ld bytes to load (%s) into\b", length,
+               "falcon4.exe");
         close(fp);
         return;
     }
@@ -77,7 +79,8 @@ void main(int argc, char **argv)
     if (fp == -1)
     {
         printf("Can't find falcon4.exe\n");
-        printf("Make sure you run this patch in the directory where you installed falcon 4.0\n");
+        printf("Make sure you run this patch in the directory where you "
+               "installed falcon 4.0\n");
         return;
     }
 
@@ -87,7 +90,8 @@ void main(int argc, char **argv)
 
     if (Exe == NULL)
     {
-        printf("Can't allocate %1ld bytes to load (%s) into\b", length, "falcdebg.exe");
+        printf("Can't allocate %1ld bytes to load (%s) into\b", length,
+               "falcdebg.exe");
         close(fp);
         return;
     }
@@ -124,10 +128,3 @@ void main(int argc, char **argv)
     free(Exe);
     return;
 }
-
-
-
-
-
-
-

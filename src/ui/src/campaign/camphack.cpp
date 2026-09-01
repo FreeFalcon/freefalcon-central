@@ -6,21 +6,23 @@
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "userids.h"
-#include "Find.h"
-#include "Flight.h"
-#include "FalcSess.h"
-#include "MissEval.h"
-#include "Resource.h"
-#include "Dispcfg.h"
+#include "find.h"
+#include "flight.h"
+#include "falcsess.h"
+#include "misseval.h"
+#include "resource.h"
+#include "dispcfg.h"
 #include "division.h"
-#include "Cmap.h"
-#include "Gps.h"
-#include "Brief.h"
+#include "cmap.h"
+#include "gps.h"
+#include "brief.h"
 
 extern C_Handler *gMainHandler;
 extern VU_ID gCurrentFlight; // ID of current flight in mission list
-extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-extern BOOL WINAPI CheatTool(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam,
+                             LPARAM lParam);
+extern BOOL WINAPI CheatTool(HWND hDlg, UINT message, WPARAM wParam,
+                             LPARAM lParam);
 extern void BuildCampDebrief(C_Window *win);
 extern void DeleteGroupList(long ID);
 
@@ -34,7 +36,10 @@ void CampHackButton1CB(long, short hittype, C_Base *)
         return;
 
     // Button 1 is Fist Of God tool
-    DialogBox(hInst, MAKEINTRESOURCE(IDD_FISTOFGOD), FalconDisplay.appWin, (DLGPROC)FistOfGod);
+#ifdef _WIN32
+    DialogBox(hInst, MAKEINTRESOURCE(IDD_FISTOFGOD), FalconDisplay.appWin,
+              (DLGPROC)FistOfGod); // USER32 modal dialog (unported on Linux)
+#endif
 }
 
 void CampHackButton2CB(long, short hittype, C_Base *)
@@ -43,7 +48,10 @@ void CampHackButton2CB(long, short hittype, C_Base *)
         return;
 
     // Button 1 is Cheat tool
-    DialogBox(hInst, MAKEINTRESOURCE(IDD_PLAYERCHEAT), FalconDisplay.appWin, (DLGPROC)CheatTool);
+#ifdef _WIN32
+    DialogBox(hInst, MAKEINTRESOURCE(IDD_PLAYERCHEAT), FalconDisplay.appWin,
+              (DLGPROC)CheatTool); // USER32 modal dialog (unported on Linux)
+#endif
 }
 
 void CampHackButton3CB(long, short hittype, C_Base *)
@@ -73,7 +81,7 @@ void CampHackButton4CB(long, short hittype, C_Base *)
     GetBriefingData(GBD_PACKAGE_LABEL, 0, buffer, 80);
     GetBriefingData(GBD_PACKAGE_MISSION, 0, buffer, 80);
 
-    while ( not done)
+    while (not done)
     {
         if (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, i, buffer, 80) < 0)
             done = 1;
@@ -96,7 +104,8 @@ void CampHackButton5CB(long, short hittype, C_Base *)
 
     // KCK: Added the check for a pilot list so that we don't debrief after a
     // discarded mission
-    if (win and TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
+    if (win and TheCampaign.MissionEvaluator and
+        TheCampaign.MissionEvaluator->flight_data)
     {
         // TheCampaign.MissionEvaluator->PostMissionEval();
         BuildCampDebrief(win);

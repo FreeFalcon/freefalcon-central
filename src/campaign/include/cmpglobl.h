@@ -7,8 +7,8 @@
 
 //#include "shi/shi.h"
 #include "sim/include/stdhdr.h"
-#include "Camplib.h"
-#include "Graphics/Include/Ttypes.h"
+#include "camplib.h"
+#include "graphics/include/ttypes.h"
 
 // ----------------
 // Type Definitions
@@ -17,7 +17,7 @@
 // sfr: number or rows or columns of the trees holding grid units (campaign)
 #define TREE_RES 100
 
-#define GRID_SIZE_FT    FEET_PER_KM // Grid size, in feet (standard sim unit)
+#define GRID_SIZE_FT FEET_PER_KM // Grid size, in feet (standard sim unit)
 #define GRID_SIZE_KM 1.0F // Grid size, in km (standard campaign unit)
 
 #define DEG_TO_RADIANS 0.017453F // PI / 180
@@ -44,26 +44,40 @@
 
 extern CampaignTime ReconLossTime[MOVEMENT_TYPES];
 
-typedef enum { StatuteMiles, NauticalMiles, Kilometers } DistanceUnitType;
+typedef enum
+{
+    StatuteMiles,
+    NauticalMiles,
+    Kilometers
+} DistanceUnitType;
 
 // Define these as needed depending on compiler and machine
-typedef short int       twobyte;
-typedef long  int       fourbyte;
-typedef double          eightbyte;
+typedef short int twobyte;
+// #104 (Linux LP64): 'long int' is 8 bytes on LP64, but 'fourbyte' must stay exactly 4 bytes so the
+// on-disk / on-wire campaign format (and the Unit struct layout) matches the 32-bit Windows build.
+typedef int fourbyte;
+typedef double eightbyte;
 
-typedef enum { GroundAltitude, LowAltitude, MediumAltitude, HighAltitude, VeryHighAltitude } AltitudeLevelType;
+typedef enum
+{
+    GroundAltitude,
+    LowAltitude,
+    MediumAltitude,
+    HighAltitude,
+    VeryHighAltitude
+} AltitudeLevelType;
 #define ALT_LEVELS 5
 
 typedef struct
 {
-    unsigned char EastOfGreenwich;    // East Longitude is "Negative"
-    unsigned char SouthOfEquator;     // South Latitude is "Negative"
-    char    DegreesOfLatitude;  // 0 to 90
-    char    MinutesOfLatitude;  // 0 to 60
-    char    SecondsOfLatitude;  // 0 to 60
-    char    DegreesOfLongitude; // 0 to 180
-    char    MinutesOfLongitude; // 0 to 60
-    char    SecondsOfLongitude; // 0 to 60
+    unsigned char EastOfGreenwich; // East Longitude is "Negative"
+    unsigned char SouthOfEquator; // South Latitude is "Negative"
+    char DegreesOfLatitude; // 0 to 90
+    char MinutesOfLatitude; // 0 to 60
+    char SecondsOfLatitude; // 0 to 60
+    char DegreesOfLongitude; // 0 to 180
+    char MinutesOfLongitude; // 0 to 60
+    char SecondsOfLongitude; // 0 to 60
 } LatLong;
 
 typedef char CampaignSaveKey;
@@ -77,24 +91,26 @@ typedef uchar UnitSize;
 typedef uchar ObjectiveType;
 typedef uchar CampaignOrders;
 
-typedef enum { NoRelations,
-                Allied,
-                Friendly,
-                Neutral,
-                Hostile,
-                War
-             } RelType;
+typedef enum
+{
+    NoRelations,
+    Allied,
+    Friendly,
+    Neutral,
+    Hostile,
+    War
+} RelType;
 
-#define MOVE_GROUND(X) ((X)==Foot || (X)==Wheeled || (X)==Tracked)
-#define MOVE_AIR(X)    ((X)==Air || (X)==LowAir)
-#define MOVE_NAVAL(X)  ((X)==Naval)
-#define MOVE_NONE(X)   ((X)==NoMove)
+#define MOVE_GROUND(X) ((X) == Foot || (X) == Wheeled || (X) == Tracked)
+#define MOVE_AIR(X) ((X) == Air || (X) == LowAir)
+#define MOVE_NAVAL(X) ((X) == Naval)
+#define MOVE_NONE(X) ((X) == NoMove)
 
 #ifndef MAX
-#  define MAX(a,b)                      ((a)>(b) ? (a) : (b))
+#define MAX(a, b) ((a) > (b) ? (a) : (b))
 #endif
 #ifndef MIN
-#  define MIN(a,b)                      ((a)<(b) ? (a) : (b))
+#define MIN(a, b) ((a) < (b) ? (a) : (b))
 #endif
 
 #define North 0
@@ -111,37 +127,45 @@ typedef uchar CampaignHeading;
 
 typedef char PriorityLevel;
 
-typedef enum { NullStatus,
-                Operational,
-                Damaged,
-                Destroyed
-             } ObjectiveStatus;
+typedef enum
+{
+    NullStatus,
+    Operational,
+    Damaged,
+    Destroyed
+} ObjectiveStatus;
 
-typedef enum { OnGround,
-                LowAlt,
-                MediumAlt,
-                HighAlt
-             } AltitudeType;
+typedef enum
+{
+    OnGround,
+    LowAlt,
+    MediumAlt,
+    HighAlt
+} AltitudeType;
 
-typedef enum { Flat,
-                Rough,
-                Hills,
-                Mountains
-             } ReliefType;
-#define RELIEF_TYPES    4
+typedef enum
+{
+    Flat,
+    Rough,
+    Hills,
+    Mountains
+} ReliefType;
+#define RELIEF_TYPES 4
 
-typedef enum { Water,                           // Cover types
-                Bog,
-                Barren,
-                Plain,
-                Brush,
-                LightForest,
-                HeavyForest,
-                Urban
-             } CoverType;
-#define COVER_TYPES     8
+typedef enum
+{
+    Water, // Cover types
+    Bog,
+    Barren,
+    Plain,
+    Brush,
+    LightForest,
+    HeavyForest,
+    Urban
+} CoverType;
+#define COVER_TYPES 8
 
-#include "CampCell.h"
-#include "CampTerr.h"
+#include "campcell.h"
+#include "campterr.h"
 
 #endif

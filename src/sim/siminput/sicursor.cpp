@@ -1,10 +1,10 @@
 #include <stdio.h>
 
 #include "stdhdr.h"
-#include "Graphics/Include/device.h"
-#include "Graphics/Include/Filemem.h"
-#include "Graphics/Include/Image.h"
-#include "Graphics/Include/render2d.h"
+#include "graphics/include/device.h"
+#include "graphics/include/filemem.h"
+#include "graphics/include/image.h"
+#include "graphics/include/render2d.h"
 #include "f4thread.h"
 #include "f4find.h"
 #include "otwdrive.h"
@@ -22,11 +22,11 @@
 #ifndef _SI_USE_RES_MGR_ // DON'T USE RESMGR
 
 #define SI_HANDLE FILE
-#define SI_OPEN   fopen
-#define SI_READ   fread
-#define SI_CLOSE  fclose
-#define SI_SEEK   fseek
-#define SI_TELL   ftell
+#define SI_OPEN fopen
+#define SI_READ fread
+#define SI_CLOSE fclose
+#define SI_SEEK fseek
+#define SI_TELL ftell
 
 #else // USE RESMGR
 
@@ -37,11 +37,11 @@ extern "C"
 }
 
 #define SI_HANDLE FILE
-#define SI_OPEN   RES_FOPEN
-#define SI_READ   RES_FREAD
-#define SI_CLOSE  RES_FCLOSE
-#define SI_SEEK   RES_FSEEK
-#define SI_TELL   RES_FTELL
+#define SI_OPEN RES_FOPEN
+#define SI_READ RES_FREAD
+#define SI_CLOSE RES_FCLOSE
+#define SI_SEEK RES_FSEEK
+#define SI_TELL RES_FTELL
 
 #endif
 
@@ -49,6 +49,160 @@ extern "C"
 
 SimCursor* gpSimCursors;
 int gTotalCursors;
+
+#ifdef _WIN32
+// Declared OUT here on purpose: inside the anonymous namespace an extern picks
+// up internal linkage and never resolves to the f4config definition.
+extern bool g_bVrWindowsCursor;
+
+// Artscout - 2026: mirror the LIVE Windows cursor into a texture. In VR the OS
+// never composites its cursor into the headset, so the menu drew the theater's
+// own bitmap (a crosshair) where the desktop shows an arrow.
+namespace
+{
+struct WinCursorCopy
+{
+    HCURSOR src;
+    TextureHandle* tex;
+    int w, h, hotX, hotY;
+};
+
+WinCursorCopy s_winCursor = {NULL, NULL, 0, 0, 0, 0};
+
+// Rebuilds the copy whenever the OS cursor changes shape (arrow/hand/wait).
+bool UpdateWindowsCursorCopy()
+{
+    if (not g_bVrWindowsCursor)
+        return false;
+
+    CURSORINFO ci;
+    ci.cbSize = sizeof(ci);
+    if (not GetCursorInfo(&ci) or ci.hCursor == NULL)
+        return false;
+    if (ci.hCursor == s_winCursor.src and s_winCursor.tex)
+        return true; // unchanged -- keep the cached texture
+
+    ICONINFO ii;
+    ZeroMemory(&ii, sizeof(ii));
+    if (not GetIconInfo(ci.hCursor, &ii))
+        return false;
+
+    BITMAP bm;
+    const HBITMAP hbmShape = ii.hbmColor ? ii.hbmColor : ii.hbmMask;
+    bool ok = false;
+
+    if (GetObject(hbmShape, sizeof(bm), &bm) and bm.bmWidth > 0)
+    {
+        // A monochrome cursor packs AND over XOR in one mask of double height.
+        const int w = bm.bmWidth;
+        const int h = ii.hbmColor ? bm.bmHeight : (bm.bmHeight / 2);
+        const int maskRows = bm.bmHeight;
+
+        std::vector<DWORD> colorPix((size_t)w * h, 0);
+        std::vector<DWORD> maskPix((size_t)w * maskRows, 0);
+
+        BITMAPINFO bi;
+        ZeroMemory(&bi, sizeof(bi));
+        bi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        bi.bmiHeader.biWidth = w;
+        bi.bmiHeader.biPlanes = 1;
+        bi.bmiHeader.biBitCount = 32;
+        bi.bmiHeader.biCompression = BI_RGB;
+
+        HDC dc = GetDC(NULL);
+
+        if (dc)
+        {
+            if (ii.hbmColor)
+            {
+                bi.bmiHeader.biHeight = -h; // negative = top-down rows
+                GetDIBits(dc, ii.hbmColor, 0, h, &colorPix[0], &bi,
+                          DIB_RGB_COLORS);
+            }
+
+            bi.bmiHeader.biHeight = -maskRows;
+            GetDIBits(dc, ii.hbmMask, 0, maskRows, &maskPix[0], &bi,
+                      DIB_RGB_COLORS);
+            ReleaseDC(NULL, dc);
+
+            // A modern cursor carries its own alpha; the legacy ones leave it
+            // zero and the AND mask decides (bit set = transparent).
+            bool hasAlpha = false;
+
+            if (ii.hbmColor)
+            {
+                for (size_t k = 0; k < colorPix.size(); ++k)
+                {
+                    if ((colorPix[k] bitand 0xFF000000u) != 0)
+                    {
+                        hasAlpha = true;
+                        break;
+                    }
+                }
+            }
+
+            std::vector<DWORD> out((size_t)w * h, 0);
+
+            for (int r = 0; r < h; ++r)
+            {
+                for (int c = 0; c < w; ++c)
+                {
+                    const size_t k = (size_t)r * w + c;
+                    const bool andSet = (maskPix[k] bitand 0x00FFFFFFu) != 0;
+                    DWORD px;
+
+                    if (ii.hbmColor)
+                    {
+                        px = colorPix[k];
+
+                        if (not hasAlpha)
+                            px = andSet ? 0u : (px bitor 0xFF000000u);
+                    }
+                    else
+                    {
+                        // The XOR half carries the colour, AND the coverage.
+                        const DWORD xorPx =
+                            maskPix[(size_t)(r + h) * w + c] bitand 0x00FFFFFFu;
+                        px = andSet ? 0u : (xorPx bitor 0xFF000000u);
+                    }
+
+                    out[k] = px;
+                }
+            }
+
+            TextureHandle* pTex = new TextureHandle;
+
+            if (pTex and
+                pTex->Create("WinCursor", MPR_TI_ARGB32, 32, (UInt16)w,
+                             (UInt16)h) and
+                pTex->Load(0, 0, (BYTE*)&out[0]))
+            {
+                delete s_winCursor.tex;
+                s_winCursor.tex = pTex;
+                s_winCursor.src = ci.hCursor;
+                s_winCursor.w = w;
+                s_winCursor.h = h;
+                s_winCursor.hotX = (int)ii.xHotspot;
+                s_winCursor.hotY = (int)ii.yHotspot;
+                ok = true;
+            }
+            else
+            {
+                delete pTex;
+            }
+        }
+    }
+
+    if (ii.hbmColor)
+        DeleteObject(ii.hbmColor);
+
+    if (ii.hbmMask)
+        DeleteObject(ii.hbmMask);
+
+    return ok;
+}
+} // namespace
+#endif // _WIN32
 
 
 BOOL CreateSimCursors()
@@ -59,7 +213,8 @@ BOOL CreateSimCursors()
     BOOL Result = TRUE;
     int i;
 
-    sprintf(pFilePath, "%s%s%s", FalconDataDirectory, SIM_CURSOR_DIR, SIM_CURSOR_FILE);
+    sprintf(pFilePath, "%s%s%s", FalconDataDirectory, SIM_CURSOR_DIR,
+            SIM_CURSOR_FILE);
     pCursorFile = SI_OPEN(pFilePath, "r");
 
     if (pCursorFile == NULL)
@@ -69,7 +224,7 @@ BOOL CreateSimCursors()
 
     if (fscanf(pCursorFile, "%d", &gTotalCursors) not_eq 1)
     {
-        return(FALSE);
+        return (FALSE);
     }
 
     gpSimCursors = new SimCursor[gTotalCursors];
@@ -77,27 +232,32 @@ BOOL CreateSimCursors()
     for (i = 0; i < gTotalCursors; i++)
     {
         // Note, the %hu is to read in unsigned shorts instead of unsigned ints
-        if (fscanf(pCursorFile, "\t%hu %hu %hu %hu %s\n", &gpSimCursors[i].Width, &gpSimCursors[i].Height,
-                   &gpSimCursors[i].xHotspot, &gpSimCursors[i].yHotspot, pFileName) not_eq NUM_FIELDS)
+        if (fscanf(pCursorFile, "\t%hu %hu %hu %hu %s\n",
+                   &gpSimCursors[i].Width, &gpSimCursors[i].Height,
+                   &gpSimCursors[i].xHotspot, &gpSimCursors[i].yHotspot,
+                   pFileName) not_eq NUM_FIELDS)
         {
-            return(FALSE);
+            return (FALSE);
         }
 
         gpSimCursors[i].CursorBuffer = new ImageBuffer;
 
-        sprintf(pFilePath, "%s%s%s", FalconDataDirectory, SIM_CURSOR_DIR, pFileName);
+        sprintf(pFilePath, "%s%s%s", FalconDataDirectory, SIM_CURSOR_DIR,
+                pFileName);
 
-        gpSimCursors[i].CursorBuffer->Setup(&FalconDisplay.theDisplayDevice, gpSimCursors[i].Width, gpSimCursors[i].Height, SystemMem, None);
+        gpSimCursors[i].CursorBuffer->Setup(
+            &FalconDisplay.theDisplayDevice, gpSimCursors[i].Width,
+            gpSimCursors[i].Height, SystemMem, None);
         gpSimCursors[i].CursorBuffer->SetChromaKey(0xFFFF0000);
 
         // OW FIXME: fix it :)
 #if 1 // This avoids using MPR since the bitmap function is broken at the moment...  SCR 5/14/98
         int r, c;
-        BYTE *p;
-        void *imgPtr;
+        BYTE* p;
+        void* imgPtr;
 
         int result;
-        CImageFileMemory  texFile;
+        CImageFileMemory texFile;
 
         // Make sure we recognize this file type
         texFile.imageType = CheckImageType(pFilePath);
@@ -126,34 +286,38 @@ BOOL CreateSimCursors()
 
         switch (gpSimCursors[i].CursorBuffer->PixelSize())
         {
-            case 2:
+        case 2:
+        {
+            for (r = 0; r < gpSimCursors[i].Height; r++)
             {
-                for (r = 0; r < gpSimCursors[i].Height; r++)
+                for (c = 0; c < gpSimCursors[i].Width; c++)
                 {
-                    for (c = 0; c < gpSimCursors[i].Width; c++)
-                    {
-                        *(WORD*)gpSimCursors[i].CursorBuffer->Pixel(imgPtr, r, c) = gpSimCursors[i].CursorBuffer->Pixel32toPixel16(texFile.image.palette[*p++]);
-                    }
+                    *(WORD*)gpSimCursors[i].CursorBuffer->Pixel(imgPtr, r, c) =
+                        gpSimCursors[i].CursorBuffer->Pixel32toPixel16(
+                            texFile.image.palette[*p++]);
                 }
-
-                break;
             }
 
-            case 4:
-            {
-                for (r = 0; r < gpSimCursors[i].Height; r++)
-                {
-                    for (c = 0; c < gpSimCursors[i].Width; c++)
-                    {
-                        *(DWORD*)gpSimCursors[i].CursorBuffer->Pixel(imgPtr, r, c) = gpSimCursors[i].CursorBuffer->Pixel32toPixel32(texFile.image.palette[*p++]);
-                    }
-                }
+            break;
+        }
 
-                break;
+        case 4:
+        {
+            for (r = 0; r < gpSimCursors[i].Height; r++)
+            {
+                for (c = 0; c < gpSimCursors[i].Width; c++)
+                {
+                    *(DWORD*)gpSimCursors[i].CursorBuffer->Pixel(imgPtr, r, c) =
+                        gpSimCursors[i].CursorBuffer->Pixel32toPixel32(
+                            texFile.image.palette[*p++]);
+                }
             }
 
-            default:
-                ShiAssert(false);
+            break;
+        }
+
+        default:
+            ShiAssert(false);
         }
 
         gpSimCursors[i].CursorBuffer->Unlock();
@@ -169,40 +333,57 @@ BOOL CreateSimCursors()
 
             try
             {
-                const DWORD dwMaxTextureWidth = OTWDriver.OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
-                const DWORD dwMaxTextureHeight = OTWDriver.OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
-                gpSimCursors[i].CursorRenderPalette = new PaletteHandle(OTWDriver.OTWImage->GetDisplayDevice()->GetDefaultRC()->m_pDD, 32, 256);
+                const DWORD dwMaxTextureWidth =
+                    OTWDriver.OTWImage->GetDisplayDevice()
+                        ->GetDefaultRC()
+                        ->m_pD3DHWDeviceDesc->dwMaxTextureWidth;
+                const DWORD dwMaxTextureHeight =
+                    OTWDriver.OTWImage->GetDisplayDevice()
+                        ->GetDefaultRC()
+                        ->m_pD3DHWDeviceDesc->dwMaxTextureHeight;
+                gpSimCursors[i].CursorRenderPalette =
+                    new PaletteHandle(OTWDriver.OTWImage->GetDisplayDevice()
+                                          ->GetDefaultRC()
+                                          ->m_pDD,
+                                      32, 256);
 
-                if ( not gpSimCursors[i].CursorRenderPalette)
+                if (not gpSimCursors[i].CursorRenderPalette)
                     throw _com_error(E_OUTOFMEMORY);
 
                 // Check if we can use a single texture
-                if (dwMaxTextureWidth >= gpSimCursors[i].Width and dwMaxTextureHeight >= gpSimCursors[i].Height)
+                if (dwMaxTextureWidth >= gpSimCursors[i].Width and
+                    dwMaxTextureHeight >= gpSimCursors[i].Height)
                 {
-                    TextureHandle *pTex = new TextureHandle;
+                    TextureHandle* pTex = new TextureHandle;
 
-                    if ( not pTex)
+                    if (not pTex)
                         throw _com_error(E_OUTOFMEMORY);
 
                     gpSimCursors[i].CursorRenderPalette->AttachToTexture(pTex);
 
-                    if ( not pTex->Create("CPHsi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8, gpSimCursors[i].Width, gpSimCursors[i].Height))
+                    if (not pTex->Create(
+                            "CPHsi", MPR_TI_PALETTE bitor MPR_TI_CHROMAKEY, 8,
+                            gpSimCursors[i].Width, gpSimCursors[i].Height))
                         throw _com_error(E_FAIL);
 
-                    if ( not pTex->Load(0, 0xFFFF0000, (BYTE*) gpSimCursors[i].CursorRenderBuffer, true, true)) // soon to be re-loaded by CPSurface::Translate3D
+                    if (not pTex->Load(
+                            0, 0xFFFF0000,
+                            (BYTE*)gpSimCursors[i].CursorRenderBuffer, true,
+                            true)) // soon to be re-loaded by CPSurface::Translate3D
                         throw _com_error(E_FAIL);
 
                     gpSimCursors[i].CursorRenderTexture.push_back(pTex);
 
-                    gpSimCursors[i].CursorRenderPalette->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*) texFile.image.palette);
+                    gpSimCursors[i].CursorRenderPalette->Load(
+                        MPR_TI_PALETTE, 32, 0, 256,
+                        (BYTE*)texFile.image.palette);
                 }
-
             }
-            catch (const _com_error &e)
+            catch (const _com_error& e)
             {
-                MonoPrint("CreateSimCursors - Error 0x%X (%s)\n", e.Error(), e.ErrorMessage());
+                MonoPrint("CreateSimCursors - Error 0x%X (%s)\n", e.Error(),
+                          e.ErrorMessage());
             }
-
         }
         // Release the raw image data
         else
@@ -216,20 +397,18 @@ BOOL CreateSimCursors()
         CursorRenderer.Setup(gpSimCursors[i].CursorBuffer);
         CursorRenderer.StartFrame();
         CursorRenderer.ClearFrame();
-        CursorRenderer.Render2DBitmap(0, 0, 0, 0, gpSimCursors[i].Width, gpSimCursors[i].Height, pFilePath);
+        CursorRenderer.Render2DBitmap(0, 0, 0, 0, gpSimCursors[i].Width,
+                                      gpSimCursors[i].Height, pFilePath);
         CursorRenderer.FinishFrame();
         CursorRenderer.SetColor(0xff00ff00);
         CursorRenderer.Cleanup();
 #endif
-
-
-
     }
 
 
     SI_CLOSE(pCursorFile);
 
-    return(Result);
+    return (Result);
 }
 
 
@@ -242,7 +421,7 @@ void CleanupSimCursors()
         if (gpSimCursors[i].CursorBuffer)
         {
             gpSimCursors[i].CursorBuffer->Cleanup();
-            delete(gpSimCursors[i].CursorBuffer);
+            delete (gpSimCursors[i].CursorBuffer);
         }
 
         gpSimCursors[i].CursorBuffer = NULL;
@@ -250,12 +429,15 @@ void CleanupSimCursors()
         //Wombat778 3-24-04 if the rendered cursor has been used, delete it
         if (DisplayOptions.bRender2DCockpit)
         {
-            for (unsigned int i2 = 0; i2 < gpSimCursors[i].CursorRenderTexture.size(); i2++) delete gpSimCursors[i].CursorRenderTexture[i2];
+            for (unsigned int i2 = 0;
+                 i2 < gpSimCursors[i].CursorRenderTexture.size(); i2++)
+                delete gpSimCursors[i].CursorRenderTexture[i2];
 
             gpSimCursors[i].CursorRenderTexture.clear();
             glReleaseMemory(gpSimCursors[i].CursorRenderBuffer);
 
-            if (gpSimCursors[i].CursorRenderPalette) //Wombat78 5-14-04 avoid a possible ctd
+            if (gpSimCursors[i]
+                    .CursorRenderPalette) //Wombat78 5-14-04 avoid a possible ctd
                 delete gpSimCursors[i].CursorRenderPalette;
 
             gpSimCursors[i].CursorRenderBuffer = NULL;
@@ -263,7 +445,7 @@ void CleanupSimCursors()
         }
     }
 
-    delete [] gpSimCursors;
+    delete[] gpSimCursors;
     gTotalCursors = 0;
 }
 
@@ -284,16 +466,33 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         return;
     }
 
+    // #VR: prefer a copy of the live desktop cursor over the theater bitmap.
+    int srcW = gpSimCursors[gSelectedCursor].Width;
+    int srcH = gpSimCursors[gSelectedCursor].Height;
+    int srcHotX = gpSimCursors[gSelectedCursor].xHotspot;
+    int srcHotY = gpSimCursors[gSelectedCursor].yHotspot;
+    TextureHandle* pWinTex = NULL;
+#ifdef _WIN32
+    if (UpdateWindowsCursorCopy())
+    {
+        pWinTex = s_winCursor.tex;
+        srcW = s_winCursor.w;
+        srcH = s_winCursor.h;
+        srcHotX = s_winCursor.hotX;
+        srcHotY = s_winCursor.hotY;
+    }
+#endif
+
     const float cs = g_vrCursorDrawScale;
-    const int curW = (int)(gpSimCursors[gSelectedCursor].Width  * cs);
-    const int curH = (int)(gpSimCursors[gSelectedCursor].Height * cs);
-    const int curHX = (int)(gpSimCursors[gSelectedCursor].xHotspot * cs);
-    const int curHY = (int)(gpSimCursors[gSelectedCursor].yHotspot * cs);
+    const int curW = (int)(srcW * cs);
+    const int curH = (int)(srcH * cs);
+    const int curHX = (int)(srcHotX * cs);
+    const int curHY = (int)(srcHotY * cs);
 
     CursorSrc.top = 0;
     CursorSrc.left = 0;
-    CursorSrc.bottom = gpSimCursors[gSelectedCursor].Height;
-    CursorSrc.right = gpSimCursors[gSelectedCursor].Width;
+    CursorSrc.bottom = srcH;
+    CursorSrc.right = srcW;
 
     CursorDest.top = gyPos - curHY;
     CursorDest.left = gxPos - curHX;
@@ -332,12 +531,22 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
     // NULL under D3D11 -> null deref crash, confirmed). Take it ONLY under D3D7. Under D3D11 always use
     // the rendered-cursor path below, regardless of bRender2DCockpit (it can be off and would otherwise
     // route here and crash).
-    extern bool g_bUseGpu;   // Artscout - 2026: #DX12 -- ComposeTransparent is dead DDraw7 (m_pBltTarget NULL in BOTH GPU modes -> null deref); take it ONLY under legacy DDraw
-    if ( not DisplayOptions.bRender2DCockpit and not g_bUseGpu)
-        OTWDriver.OTWImage->ComposeTransparent(gpSimCursors[gSelectedCursor].CursorBuffer, &CursorSrc, &CursorDest);
+    extern bool
+        g_bUseGpu; // Artscout - 2026: #DX12 -- ComposeTransparent is dead DDraw7 (m_pBltTarget NULL in BOTH GPU modes -> null deref); take it ONLY under legacy DDraw
+    if (not DisplayOptions.bRender2DCockpit and not g_bUseGpu)
+        OTWDriver.OTWImage->ComposeTransparent(
+            gpSimCursors[gSelectedCursor].CursorBuffer, &CursorSrc,
+            &CursorDest);
     else
     {
         //Wombat778 3-24-04  If rendered cursor is enabled, dont blit, but render it instead
+
+        // #104 (Linux): the cursor's render texture is created in a try/catch during cursor setup; if that
+        // failed (e.g. TextureHandle::Create/Load threw on the Vulkan path) CursorRenderTexture stays empty
+        // and CursorRenderTexture[0] below was an out-of-bounds vector access (hardened libstdc++ abort).
+        if (not pWinTex and
+            gpSimCursors[gSelectedCursor].CursorRenderTexture.empty())
+            return;
 
         OTWDriver.renderer->StartDraw();
 
@@ -351,13 +560,15 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
         // screen-path (sky gradient, HUD, MFD) mapped off-screen permanently after one mouse
         // move (clouds/world/cockpit use the object path and were unaffected). Dropped.
 
-        TextureHandle *pTex = gpSimCursors[gSelectedCursor].CursorRenderTexture[0];
+        TextureHandle* pTex =
+            pWinTex ? pWinTex
+                    : gpSimCursors[gSelectedCursor].CursorRenderTexture[0];
         // Setup vertices
         float fStartU = 0;
-        float fMaxU = (float) pTex->m_nWidth / (float) pTex->m_nActualWidth;
+        float fMaxU = (float)pTex->m_nWidth / (float)pTex->m_nActualWidth;
         fMaxU -= fStartU;
         float fStartV = 0;
-        float fMaxV = (float) pTex->m_nHeight / (float) pTex->m_nActualHeight;
+        float fMaxV = (float)pTex->m_nHeight / (float)pTex->m_nActualHeight;
         fMaxV -= fStartV;
 
         TwoDVertex pVtx[4];
@@ -386,8 +597,10 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
 
 
         OTWDriver.renderer->context.RestoreState(STATE_ALPHA_TEXTURE_NOFILTER);
-        OTWDriver.renderer->context.SelectTexture1((DWORD_PTR) pTex);
-        OTWDriver.renderer->context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx, sizeof(pVtx[0]));
+        OTWDriver.renderer->context.SelectTexture1((DWORD_PTR)pTex);
+        OTWDriver.renderer->context.DrawPrimitive(
+            MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE, 4, pVtx,
+            sizeof(pVtx[0]));
         OTWDriver.renderer->EndDraw();
 
         // Artscout - 2026: the cursor binds its texture to stage 0, which leaves the renderer's
@@ -400,5 +613,4 @@ void ClipAndDrawCursor(int displayWidth, int displayHeight)
 
         //Wombat778 3-24-04 end
     }
-
 }

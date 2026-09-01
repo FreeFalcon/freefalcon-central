@@ -11,10 +11,10 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Flight Plan Message
@@ -22,9 +22,15 @@
 class FalconFlightPlanMessage : public FalconEvent
 {
 public:
-    enum { waypointData, loadoutData, squadronStores };
+    enum
+    {
+        waypointData,
+        loadoutData,
+        squadronStores
+    };
 
-    FalconFlightPlanMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconFlightPlanMessage(VU_ID entityId, VuTargetEntity *target,
+                            VU_BOOL loopback = TRUE);
     FalconFlightPlanMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconFlightPlanMessage(void);
     virtual int Size() const;
@@ -38,12 +44,12 @@ public:
     public:
         uchar type;
         long size;
-        uchar* data;
+        uchar *data;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

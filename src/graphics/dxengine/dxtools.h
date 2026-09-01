@@ -11,4 +11,4 @@ void AssignD3DXMATRIXToPmatrix(Pmatrix *d, D3DXMATRIX *s);
 
 
 // The Scripts Pointer Array
-extern bool (*DXScriptArray[])(D3DVECTOR *pos, ObjectInstance*, DWORD*);
+extern bool (*DXScriptArray[])(D3DVECTOR *pos, ObjectInstance *, DWORD *);

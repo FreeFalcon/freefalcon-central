@@ -11,11 +11,11 @@
 ** 3-nov-97 (edg)
 ** We go marching in.....
 */
-#include <cISO646>
+#include <ciso646>
 #include <math.h>
 #include <stdio.h>
 #include <windows.h>
-#include "Matrix.h"
+#include "matrix.h"
 #include "canvas3d.h"
 
 // PHASE 5 (RTT): during the RTT batch (StartRtt..FinishRtt) HUD/MFD (Canvas3D) draw into
@@ -69,7 +69,6 @@ void Canvas3D::Setup(Render3D *renderer)
 }
 
 
-
 /*
 ** Cleanup
 ** Just calls parent's cleanup.
@@ -110,9 +109,9 @@ void Canvas3D::SetCanvas(Tpoint *ul, Tpoint *ur, Tpoint *ll)
     canObjDown.y = ll->y - ul->y;
     canObjDown.z = ll->z - ul->z;
 
-    canScaleY = (float)sqrt(canObjDown.x * canObjDown.x +
-                            canObjDown.y * canObjDown.y +
-                            canObjDown.z * canObjDown.z);
+    canScaleY =
+        (float)sqrt(canObjDown.x * canObjDown.x + canObjDown.y * canObjDown.y +
+                    canObjDown.z * canObjDown.z);
 
     // normalize
     canObjDown.x /= canScaleY;
@@ -144,13 +143,19 @@ void Canvas3D::Update(const Tpoint *loc, const Trotation *rot)
     canWorldPos.z = canObjPos.z + loc->z;
 
     // reorient the down and right vectors
-    canWorldDown.x = canObjDown.x * rot->M11 + canObjDown.y * rot->M12 + canObjDown.z * rot->M13;
-    canWorldDown.y = canObjDown.x * rot->M21 + canObjDown.y * rot->M22 + canObjDown.z * rot->M23;
-    canWorldDown.z = canObjDown.x * rot->M31 + canObjDown.y * rot->M32 + canObjDown.z * rot->M33;
+    canWorldDown.x = canObjDown.x * rot->M11 + canObjDown.y * rot->M12 +
+                     canObjDown.z * rot->M13;
+    canWorldDown.y = canObjDown.x * rot->M21 + canObjDown.y * rot->M22 +
+                     canObjDown.z * rot->M23;
+    canWorldDown.z = canObjDown.x * rot->M31 + canObjDown.y * rot->M32 +
+                     canObjDown.z * rot->M33;
 
-    canWorldRight.x = canObjRight.x * rot->M11 + canObjRight.y * rot->M12 + canObjRight.z * rot->M13;
-    canWorldRight.y = canObjRight.x * rot->M21 + canObjRight.y * rot->M22 + canObjRight.z * rot->M23;
-    canWorldRight.z = canObjRight.x * rot->M31 + canObjRight.y * rot->M32 + canObjRight.z * rot->M33;
+    canWorldRight.x = canObjRight.x * rot->M11 + canObjRight.y * rot->M12 +
+                      canObjRight.z * rot->M13;
+    canWorldRight.y = canObjRight.x * rot->M21 + canObjRight.y * rot->M22 +
+                      canObjRight.z * rot->M23;
+    canWorldRight.z = canObjRight.x * rot->M31 + canObjRight.y * rot->M32 +
+                      canObjRight.z * rot->M33;
 }
 
 /***************************************************************************\
@@ -158,19 +163,25 @@ void Canvas3D::Update(const Tpoint *loc, const Trotation *rot)
 \***************************************************************************/
 void Canvas3D::Point(float x1, float y1)
 {
-    if (g_rttBatchActive) { VirtualDisplay::Point(x1, y1); return; }	// RTT: flat
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::Point(x1, y1);
+        return;
+    } // RTT: flat
 
     float x, y;
     Tpoint p;
     float xres, yres;
 
     // no 3d context, do dice...
-    if ( not r3d)
+    if (not r3d)
         return;
 
     // Rotation and translate this point based on the current settings
-    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+        dmatrix.translationY;
 
     // Clipping
     if ((x >= -1.0f) and (x <= 1.0f) and (y <= 1.0f) and (y >= -1.0f))
@@ -187,30 +198,37 @@ void Canvas3D::Point(float x1, float y1)
 }
 
 
-
 /***************************************************************************\
  Put a one pixel wide line on the display
 \***************************************************************************/
 void Canvas3D::Line(float x1, float y1, float x2, float y2)
 {
-    if (g_rttBatchActive) { VirtualDisplay::Line(x1, y1, x2, y2); return; }	// RTT: flat
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::Line(x1, y1, x2, y2);
+        return;
+    } // RTT: flat
 
     float x;
     int clipFlag;
-    Tpoint  p1, p2;
-    float   xres, yres;
+    Tpoint p1, p2;
+    float xres, yres;
 
     // no 3d context, do dice...
-    if ( not r3d)
+    if (not r3d)
         return;
 
     // Rotation and translate this point based on the current settings
-    x  = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x1 = x;
 
-    x  = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 + dmatrix.translationX;
-    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x2 = x;
 
 
@@ -249,14 +267,16 @@ void Canvas3D::Line(float x1, float y1, float x2, float y2)
         y2 = y1 + (y2 - y1) * ((x1 + 1.0f) / (x1 - x2));
         x2 = -1.0f;
 
-        if (clipFlag bitand CLIP_LEFT)  return;
+        if (clipFlag bitand CLIP_LEFT)
+            return;
     }
     else if (x2 > 1.0f)
     {
         y2 = y1 + (y2 - y1) * ((x1 - 1.0f) / (x1 - x2));
         x2 = 1.0f;
 
-        if (clipFlag bitand CLIP_RIGHT)  return;
+        if (clipFlag bitand CLIP_RIGHT)
+            return;
     }
 
     if (y2 < -1.0f)
@@ -264,14 +284,16 @@ void Canvas3D::Line(float x1, float y1, float x2, float y2)
         x2 = x1 + (x2 - x1) * ((y1 + 1.0f) / (y1 - y2));
         y2 = -1.0f;
 
-        if (clipFlag bitand CLIP_BOTTOM)  return;
+        if (clipFlag bitand CLIP_BOTTOM)
+            return;
     }
     else if (y2 > 1.0f)
     {
         x2 = x1 + (x2 - x1) * ((y1 - 1.0f) / (y1 - y2));
         y2 = 1.0f;
 
-        if (clipFlag bitand CLIP_TOP)  return;
+        if (clipFlag bitand CLIP_TOP)
+            return;
     }
 
     xres = canScaleX * x1;
@@ -293,20 +315,23 @@ void Canvas3D::Line(float x1, float y1, float x2, float y2)
 }
 
 
-
 /***************************************************************************\
  Put a triangle on the display.  It is not filled (for now at least)
 \***************************************************************************/
 void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 {
-    if (g_rttBatchActive) { VirtualDisplay::Tri(x1, y1, x2, y2, x3, y3); return; }	// RTT: flat
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::Tri(x1, y1, x2, y2, x3, y3);
+        return;
+    } // RTT: flat
 
     float x;
-    Tpoint  p1, p2, p3;
-    float   xres, yres;
+    Tpoint p1, p2, p3;
+    float xres, yres;
 
     // no 3d context, do dice...
-    if ( not r3d)
+    if (not r3d)
         return;
 
 
@@ -316,47 +341,53 @@ void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 
 
     // Rotation and translate this point based on the current settings
-    x  = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y1 = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x1 = x;
 
-    x  = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 + dmatrix.translationX;
-    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x2 * dmatrix.rotation00 + y2 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y2 = x2 * dmatrix.rotation10 + y2 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x2 = x;
 
-    x  = x3 * dmatrix.rotation00 + y3 * dmatrix.rotation01 + dmatrix.translationX;
-    y3 = x3 * dmatrix.rotation10 + y3 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x3 * dmatrix.rotation00 + y3 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y3 = x3 * dmatrix.rotation10 + y3 * dmatrix.rotation11 +
+         dmatrix.translationY;
     x3 = x;
 
     // stoopid clip at the moment
     if (x1 < -1.0f)
         x1 = -1.0f;
-    else if (x1 >  1.0f)
+    else if (x1 > 1.0f)
         x1 = 1.0f;
 
     if (x2 < -1.0f)
         x2 = -1.0f;
-    else if (x2 >  1.0f)
+    else if (x2 > 1.0f)
         x2 = 1.0f;
 
     if (x3 < -1.0f)
         x3 = -1.0f;
-    else if (x3 >  1.0f)
+    else if (x3 > 1.0f)
         x3 = 1.0f;
 
     if (y1 < -1.0f)
         y1 = -1.0f;
-    else if (y1 >  1.0f)
+    else if (y1 > 1.0f)
         y1 = 1.0f;
 
     if (y2 < -1.0f)
         y2 = -1.0f;
-    else if (y2 >  1.0f)
+    else if (y2 > 1.0f)
         y2 = 1.0f;
 
     if (y3 < -1.0f)
         y3 = -1.0f;
-    else if (y3 >  1.0f)
+    else if (y3 > 1.0f)
         y3 = 1.0f;
 
     xres = canScaleX * x1;
@@ -390,7 +421,6 @@ void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 
     /*
     */
-
 }
 
 
@@ -400,7 +430,11 @@ void Canvas3D::Tri(float x1, float y1, float x2, float y2, float x3, float y3)
 \***************************************************************************/
 void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
 {
-    if (g_rttBatchActive) { VirtualDisplay::TextLeft(x1, y1, string, boxed); return; }	// RTT: flat
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::TextLeft(x1, y1, string, boxed);
+        return;
+    } // RTT: flat
 
     float x, y;
     ThreeDVertex ps1, ps2;
@@ -409,14 +443,16 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
     float xStart, yStart;
     int height;
 
-    if ( not *string)
+    if (not *string)
         return;
 
     r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
 
     // Rotation and translate this point based on the current settings
-    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 + dmatrix.translationX;
-    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 + dmatrix.translationY;
+    x = x1 * dmatrix.rotation00 + y1 * dmatrix.rotation01 +
+        dmatrix.translationX;
+    y = x1 * dmatrix.rotation10 + y1 * dmatrix.rotation11 +
+        dmatrix.translationY;
 
     // Clipping
     if ((x >= -1.0f) and (x <= 1.0f) and (y <= 1.0f) and (y >= -1.0f))
@@ -431,7 +467,8 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
         // Transform the point from world space to window space
         r3d->TransformPoint(&p1, &ps1);
 
-        if (ps1.clipFlag not_eq ON_SCREEN)  return;
+        if (ps1.clipFlag not_eq ON_SCREEN)
+            return;
 
         // make sure the text won't go off the edge of our canvas
         // assumption: the canvas doesn't roll so that text travels in the
@@ -502,7 +539,8 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
             Render2DLine(ps1.x, ps1.y, ps1.x, ps1.y + height);
 
             Render2DLine(xStart, yStart, xStart - 5, yStart + height / 2);
-            Render2DLine(xStart, yStart + height, xStart - 5, yStart + height / 2);
+            Render2DLine(xStart, yStart + height, xStart - 5,
+                         yStart + height / 2);
         }
         else if (boxed == 8) // Right Arrow
         {
@@ -517,10 +555,15 @@ void Canvas3D::TextLeft(float x1, float y1, const char *string, int boxed)
     }
 }
 
-void Canvas3D::TextLeftVertical(float x1, float y1, const char *string, int boxed)
+void Canvas3D::TextLeftVertical(float x1, float y1, const char *string,
+                                int boxed)
 {
-    if (g_rttBatchActive) { VirtualDisplay::TextLeftVertical(x1, y1, string, boxed); return; }	// RTT: flat
-    if ( not *string)
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::TextLeftVertical(x1, y1, string, boxed);
+        return;
+    } // RTT: flat
+    if (not *string)
         return;
 
     y1 += r3d->ScreenTextHeight() / ((float)yRes) * canScaleY;
@@ -536,8 +579,12 @@ void Canvas3D::TextLeftVertical(float x1, float y1, const char *string, int boxe
 \***************************************************************************/
 void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
 {
-    if (g_rttBatchActive) { VirtualDisplay::TextRight(x1, y1, string, boxed); return; }	// RTT: flat
-    if ( not *string)
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::TextRight(x1, y1, string, boxed);
+        return;
+    } // RTT: flat
+    if (not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * 2.0F * canScaleX;
@@ -550,10 +597,15 @@ void Canvas3D::TextRight(float x1, float y1, const char *string, int boxed)
  Put a mono-colored string of text on the display.
  (The location given is used as the lower right corner of the text)
 \***************************************************************************/
-void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int boxed)
+void Canvas3D::TextRightVertical(float x1, float y1, const char *string,
+                                 int boxed)
 {
-    if (g_rttBatchActive) { VirtualDisplay::TextRightVertical(x1, y1, string, boxed); return; }	// RTT: flat
-    if ( not *string)
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::TextRightVertical(x1, y1, string, boxed);
+        return;
+    } // RTT: flat
+    if (not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * 2.0F * canScaleX;
@@ -571,8 +623,12 @@ void Canvas3D::TextRightVertical(float x1, float y1, const char *string, int box
 \***************************************************************************/
 void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
 {
-    if (g_rttBatchActive) { VirtualDisplay::TextCenter(x1, y1, string, boxed); return; }	// RTT: flat
-    if ( not *string)
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::TextCenter(x1, y1, string, boxed);
+        return;
+    } // RTT: flat
+    if (not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * canScaleX;
@@ -581,10 +637,15 @@ void Canvas3D::TextCenter(float x1, float y1, const char *string, int boxed)
     TextLeft(x1, y1, string, boxed);
 }
 
-void Canvas3D::TextCenterVertical(float x1, float y1, const char *string, int boxed)
+void Canvas3D::TextCenterVertical(float x1, float y1, const char *string,
+                                  int boxed)
 {
-    if (g_rttBatchActive) { VirtualDisplay::TextCenterVertical(x1, y1, string, boxed); return; }	// RTT: flat
-    if ( not *string)
+    if (g_rttBatchActive)
+    {
+        VirtualDisplay::TextCenterVertical(x1, y1, string, boxed);
+        return;
+    } // RTT: flat
+    if (not *string)
         return;
 
     x1 -= r3d->ScreenTextWidth(string) / ((float)xRes) * canScaleX;
@@ -594,7 +655,7 @@ void Canvas3D::TextCenterVertical(float x1, float y1, const char *string, int bo
     TextLeft(x1, y1, string, boxed);
 }
 
-
+
 /***************************************************************************\
  Draw a circle in the viewport.  The radius given is in
  the X direction.  The Y direction will be scaled to account for the
@@ -632,7 +693,6 @@ void Canvas3D::Circle(float x, float y, float xRadius)
 }
 
 
-
 /***************************************************************************\
  Draw a portion of a circle in the viewport.  The radius given is in
  the X direction.  The Y direction will be scaled to account for the
@@ -642,14 +702,14 @@ void Canvas3D::Circle(float x, float y, float xRadius)
 void Canvas3D::Arc(float x, float y, float xRadius, float start, float stop)
 {
     int entry, startEntry, stopEntry;
-    float  yRadius;
+    float yRadius;
 
     r3d->ForceAlpha = ForceAlpha; // COBRA - RED -Forced Alpha
     yRadius = xRadius * canScaleX / canScaleY;
 
     // Find the first and last segment end point of interest
     startEntry = (int)(fmod(start, 2.0f * PI) / PI * 180.0) / CircleStep;
-    stopEntry = (int)(fmod(stop,  2.0f * PI) / PI * 180.0) / CircleStep;
+    stopEntry = (int)(fmod(stop, 2.0f * PI) / PI * 180.0) / CircleStep;
 
     // Make sure we aren't overrunning the precomputed array
     ShiAssert(startEntry >= 0);
@@ -661,22 +721,25 @@ void Canvas3D::Arc(float x, float y, float xRadius, float start, float stop)
     {
         for (entry = startEntry; entry < stopEntry; entry++)
         {
-            Line(x + xRadius * CircleX[entry],   y + yRadius * CircleY[entry],
-                 x + xRadius * CircleX[entry + 1], y + yRadius * CircleY[entry + 1]);
+            Line(x + xRadius * CircleX[entry], y + yRadius * CircleY[entry],
+                 x + xRadius * CircleX[entry + 1],
+                 y + yRadius * CircleY[entry + 1]);
         }
     }
     else
     {
         for (entry = startEntry; entry < CircleSegments - 1; entry++)
         {
-            Line(x + xRadius * CircleX[entry],   y + yRadius * CircleY[entry],
-                 x + xRadius * CircleX[entry + 1], y + yRadius * CircleY[entry + 1]);
+            Line(x + xRadius * CircleX[entry], y + yRadius * CircleY[entry],
+                 x + xRadius * CircleX[entry + 1],
+                 y + yRadius * CircleY[entry + 1]);
         }
 
         for (entry = 0; entry < stopEntry; entry++)
         {
-            Line(x + xRadius * CircleX[entry],   y + yRadius * CircleY[entry],
-                 x + xRadius * CircleX[entry + 1], y + yRadius * CircleY[entry + 1]);
+            Line(x + xRadius * CircleX[entry], y + yRadius * CircleY[entry],
+                 x + xRadius * CircleX[entry + 1],
+                 y + yRadius * CircleY[entry + 1]);
         }
     }
 }

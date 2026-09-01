@@ -1,6 +1,6 @@
 #include "lookuptable.h"
 #include "token.h"
-#include <cISO646>
+#include <ciso646>
 
 LookupTable::LookupTable()
 {
@@ -15,26 +15,28 @@ float LookupTable::Lookup(float In)
 {
     if (In < table[0].input)
     {
-        return(table[0].output);
+        return (table[0].output);
     }
 
     int l, l1;
 
-    for (l = 0 ; l < (pairs - 1) ; l++)
+    for (l = 0; l < (pairs - 1); l++)
     {
         l1 = l + 1;
 
         if (In < table[l1].input)
         {
-#define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
-            return(RESCALE(In, table[l].input, table[l1].input, table[l].output, table[l1].output));
+#define RESCALE(in, inmin, inmax, outmin, outmax)                              \
+    (((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) +   \
+     (outmin))
+            return (RESCALE(In, table[l].input, table[l1].input,
+                            table[l].output, table[l1].output));
         }
     }
 
     // assume we fell thru
-    return(table[pairs - 1].output);
+    return (table[pairs - 1].output);
 }
-
 
 
 TwoDimensionTable::TwoDimensionTable()
@@ -57,11 +59,11 @@ TwoDimensionTable::~TwoDimensionTable()
     for (l = 0; l < 2; l++)
     {
         if (axis[l].breakPoint)
-            delete [] axis[l].breakPoint;
+            delete[] axis[l].breakPoint;
     }
 
     if (data)
-        delete [] data;
+        delete[] data;
 }
 
 void TwoDimensionTable::Parse(char *inputStr)
@@ -103,7 +105,8 @@ float TwoDimensionTable::Lookup(float a, float b)
 {
     float arg[2];
 
-    if ( not data) return 0;
+    if (not data)
+        return 0;
 
     arg[0] = a;
     arg[1] = b;
@@ -133,12 +136,13 @@ float TwoDimensionTable::Lookup(float a, float b)
 
                 for (t = 0; t < axis[l].breakPointCount - 1; t++)
                 {
-                    if (arg[l] >  axis[l].breakPoint[t] and 
+                    if (arg[l] > axis[l].breakPoint[t] and
                         arg[l] <= axis[l].breakPoint[t + 1])
                     {
-                        index1[l]   = t;
-                        index2[l]   = t + 1;
-                        fraction[l] = RESCALE(arg[l], axis[l].breakPoint[t], axis[l].breakPoint[t], 0, 1);
+                        index1[l] = t;
+                        index2[l] = t + 1;
+                        fraction[l] = RESCALE(arg[l], axis[l].breakPoint[t],
+                                              axis[l].breakPoint[t], 0, 1);
                     }
                 }
             }
@@ -147,10 +151,10 @@ float TwoDimensionTable::Lookup(float a, float b)
 
     float d, e;
 
-    d = RESCALE(fraction[0], 0, 1, Data(index1[0], index1[1]), Data(index2[0], index1[1]));
-    e = RESCALE(fraction[0], 0, 1, Data(index1[0], index2[1]), Data(index2[0], index2[1]));
+    d = RESCALE(fraction[0], 0, 1, Data(index1[0], index1[1]),
+                Data(index2[0], index1[1]));
+    e = RESCALE(fraction[0], 0, 1, Data(index1[0], index2[1]),
+                Data(index2[0], index2[1]));
 
     return RESCALE(fraction[1], 0, 1, d, e);
-
-
 }

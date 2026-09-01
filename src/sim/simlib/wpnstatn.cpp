@@ -1,10 +1,10 @@
 #include "stdhdr.h"
 #include "hardpnt.h"
 #include "otwdrive.h"
-#include "SimWeapn.h"
-#include "SimVeh.h"
+#include "simweapn.h"
+#include "simveh.h"
 #include "drawbsp.h"
-#include "Classtbl.h"
+#include "classtbl.h"
 #include "entity.h"
 #include "sms.h"
 #include "grtypes.h"
@@ -22,7 +22,6 @@ extern short gRackId_Two_Rack;
 extern short gRackId_Single_AA_Rack;
 extern short gRackId_Mav_Rack;
 extern short gRocketId;
-
 
 
 // ========================================
@@ -45,10 +44,10 @@ BasicWeaponStation::~BasicWeaponStation()
 {
 }
 
-GunClass* BasicWeaponStation::GetGun(void)
+GunClass *BasicWeaponStation::GetGun(void)
 {
     if (weaponPointer and weaponPointer->IsGun())
-        return (GunClass*) weaponPointer.get();
+        return (GunClass *)weaponPointer.get();
     else
         return NULL;
 }
@@ -62,11 +61,11 @@ AdvancedWeaponStation::AdvancedWeaponStation(void)
     xPos = 0.0F;
     yPos = 0.0F;
     zPos = 0.0F;
-    az   = 0.0F;
-    el   = 0.0F;
-    xSub  = NULL;
-    ySub  = NULL;
-    zSub  = NULL;
+    az = 0.0F;
+    el = 0.0F;
+    xSub = NULL;
+    ySub = NULL;
+    zSub = NULL;
     azSub = NULL;
     elSub = NULL;
     aGun = NULL;
@@ -98,19 +97,19 @@ void AdvancedWeaponStation::Cleanup(void)
     if (xSub not_eq &xPos and numPoints not_eq 1)
     {
         if (xSub)
-            delete [] xSub;
+            delete[] xSub;
 
         if (ySub)
-            delete [] ySub;
+            delete[] ySub;
 
         if (zSub)
-            delete [] zSub;
+            delete[] zSub;
 
         if (azSub)
-            delete [] azSub;
+            delete[] azSub;
 
         if (elSub)
-            delete [] elSub;
+            delete[] elSub;
     }
 }
 
@@ -121,9 +120,9 @@ void AdvancedWeaponStation::SetupPoints(int num)
 
     if (numPoints == 1)
     {
-        xSub  = &xPos;
-        ySub  = &yPos;
-        zSub  = &zPos;
+        xSub = &xPos;
+        ySub = &yPos;
+        zSub = &zPos;
         azSub = &az;
         elSub = &el;
 
@@ -131,9 +130,9 @@ void AdvancedWeaponStation::SetupPoints(int num)
     }
     else
     {
-        xSub  = new float[numPoints];
-        ySub  = new float[numPoints];
-        zSub  = new float[numPoints];
+        xSub = new float[numPoints];
+        ySub = new float[numPoints];
+        zSub = new float[numPoints];
         azSub = new float[numPoints];
         elSub = new float[numPoints];
 
@@ -151,7 +150,7 @@ void AdvancedWeaponStation::SetupPoints(int num)
 }
 
 
-DrawableBSP* AdvancedWeaponStation::GetTopDrawable(void)
+DrawableBSP *AdvancedWeaponStation::GetTopDrawable(void)
 {
     if (thePylon)
         return thePylon;
@@ -166,7 +165,7 @@ DrawableBSP* AdvancedWeaponStation::GetTopDrawable(void)
 }
 
 // MLR 2/20/2004 - Get the lowest storage object
-DrawableBSP* AdvancedWeaponStation::GetRackOrPylon(void)
+DrawableBSP *AdvancedWeaponStation::GetRackOrPylon(void)
 {
     if (theRack)
         return theRack;
@@ -184,12 +183,12 @@ void AdvancedWeaponStation::SetSMS(SMSClass *Sms)
 
 
 // note, it's important to set the hpId 1st
-void BasicWeaponStation::SetParentDrawPtr(DrawableBSP* Parent)
+void BasicWeaponStation::SetParentDrawPtr(DrawableBSP *Parent)
 {
     theParent = Parent;
 }
 
-void AdvancedWeaponStation::SetParentDrawPtr(DrawableBSP* Parent)
+void AdvancedWeaponStation::SetParentDrawPtr(DrawableBSP *Parent)
 {
     ShiAssert(hpId > 0);
     theParent = Parent;
@@ -223,16 +222,12 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
     }
 
 
-    if (theParent and 
- not thePylon and 
-        pylonId > 0 and 
-        pylonId < NumWeaponTypes and 
-        WeaponDataTable[pylonId].Index >= 0)
+    if (theParent and not thePylon and pylonId > 0 and
+        pylonId < NumWeaponTypes and WeaponDataTable[pylonId].Index >= 0)
     {
-        thePylon = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[pylonId].Index].visType[0],
-                                   &hpPos,
-                                   &viewRot,
-                                   OTWDriver.Scale());
+        thePylon = new DrawableBSP(
+            Falcon4ClassTable[WeaponDataTable[pylonId].Index].visType[0],
+            &hpPos, &viewRot, OTWDriver.Scale());
 
 
         if (thePylon)
@@ -243,7 +238,6 @@ void AdvancedWeaponStation::AttachPylonBSP(void)
             yPos += hpPos.y;
             zPos += hpPos.z;
         }
-
     }
 
 
@@ -275,16 +269,12 @@ void AdvancedWeaponStation::AttachRackBSP(void)
         zPos += hpPos.z;
     }
 
-    if (theParent and 
- not theRack and 
-        rackId > 0 and 
-        rackId < NumWeaponTypes and 
+    if (theParent and not theRack and rackId > 0 and rackId < NumWeaponTypes and
         WeaponDataTable[rackId].Index >= 0)
     {
-        theRack = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[rackId].Index].visType[0],
-                                  &hpPos,
-                                  &viewRot,
-                                  OTWDriver.Scale());
+        theRack = new DrawableBSP(
+            Falcon4ClassTable[WeaponDataTable[rackId].Index].visType[0], &hpPos,
+            &viewRot, OTWDriver.Scale());
 
 
         if (theRack)
@@ -297,7 +287,6 @@ void AdvancedWeaponStation::AttachRackBSP(void)
                 zSub[l] = hpPos.z + zPos;
             }
         }
-
     }
 
 
@@ -338,7 +327,7 @@ void AdvancedWeaponStation::DeletePylonBSP(void)
 
 DrawableBSP *AdvancedWeaponStation::DetachPylonBSP(void)
 {
-    if ( not thePylon)
+    if (not thePylon)
         return NULL;
 
     if (theParent and thePylon)
@@ -379,7 +368,7 @@ void AdvancedWeaponStation::DeleteRackBSP(void)
 
 DrawableBSP *AdvancedWeaponStation::DetachRackBSP(void)
 {
-    if ( not theRack)
+    if (not theRack)
         return NULL;
 
     if (thePylon)
@@ -402,12 +391,17 @@ DrawableBSP *AdvancedWeaponStation::DetachRackBSP(void)
 
     if (thePylon)
     {
-        memcpy(&pos, &thePylon->instance.ParentObject->pSlotAndDynamicPositions[0], sizeof(Tpoint));
+        memcpy(&pos,
+               &thePylon->instance.ParentObject->pSlotAndDynamicPositions[0],
+               sizeof(Tpoint));
     }
 
     if (theParent)
     {
-        memcpy(&p, &theParent->instance.ParentObject->pSlotAndDynamicPositions[hpId - 1], sizeof(Tpoint));
+        memcpy(&p,
+               &theParent->instance.ParentObject
+                    ->pSlotAndDynamicPositions[hpId - 1],
+               sizeof(Tpoint));
         pos.x += p.x;
         pos.y += p.y;
         pos.z += p.z;
@@ -418,16 +412,18 @@ DrawableBSP *AdvancedWeaponStation::DetachRackBSP(void)
 
             if (ownship)
             {
-                p.x = ownship->XPos() + ownship->dmx[0][0] * pos.x + ownship->dmx[1][0] * pos.y + ownship->dmx[2][0] * pos.z;
-                p.y = ownship->YPos() + ownship->dmx[0][1] * pos.x + ownship->dmx[1][1] * pos.y + ownship->dmx[2][1] * pos.z;
-                p.z = ownship->ZPos() + ownship->dmx[0][2] * pos.x + ownship->dmx[1][2] * pos.y + ownship->dmx[2][2] * pos.z;
+                p.x = ownship->XPos() + ownship->dmx[0][0] * pos.x +
+                      ownship->dmx[1][0] * pos.y + ownship->dmx[2][0] * pos.z;
+                p.y = ownship->YPos() + ownship->dmx[0][1] * pos.x +
+                      ownship->dmx[1][1] * pos.y + ownship->dmx[2][1] * pos.z;
+                p.z = ownship->ZPos() + ownship->dmx[0][2] * pos.x +
+                      ownship->dmx[1][2] * pos.y + ownship->dmx[2][2] * pos.z;
             }
         }
 
         theRack->SetPosition(&p);
         theRack->orientation = theParent->orientation;
     }
-
 
 
     //rackmnemonic = 0; // clears from SMS page
@@ -485,12 +481,12 @@ void AdvancedWeaponStation::AttachAllWeaponBSP(void)
 
 void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if ( not weapPtr or weapPtr not_eq weaponPointer) // only attach 1st weapon
+    if (not weapPtr or weapPtr not_eq weaponPointer) // only attach 1st weapon
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if ( not weapBSP)
+    if (not weapBSP)
     {
         Tpoint hpPos;
         Trotation viewRot = IMatrix;
@@ -503,14 +499,12 @@ void BasicWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
         {
             OTWDriver.CreateVisualObject(weapPtr);
             weapBSP = (DrawableBSP *)weapPtr->drawPointer;
-
         }
         else
         {
-            weapBSP = new DrawableBSP(Falcon4ClassTable[WeaponDataTable[wid].Index].visType[0],
-                                      &hpPos,
-                                      &viewRot,
-                                      OTWDriver.Scale());
+            weapBSP = new DrawableBSP(
+                Falcon4ClassTable[WeaponDataTable[wid].Index].visType[0],
+                &hpPos, &viewRot, OTWDriver.Scale());
 
             weapPtr->drawPointer = (DrawableObject *)weapBSP;
         }
@@ -529,7 +523,7 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 {
     int weapslot;
 
-    if ( not weapPtr)
+    if (not weapPtr)
         return;
 
     weapslot = weapPtr->GetRackSlot();
@@ -564,7 +558,7 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if ( not weapBSP)
+    if (not weapBSP)
     {
         Tpoint hpPos;
         Trotation viewRot = IMatrix;
@@ -582,8 +576,7 @@ void AdvancedWeaponStation::AttachWeaponBSP(SimWeaponClass *weapPtr)
         {
             weapBSP = new DrawableBSP(
                 Falcon4ClassTable[WeaponDataTable[wid].Index].visType[0],
-                &hpPos, &viewRot, OTWDriver.Scale()
-            );
+                &hpPos, &viewRot, OTWDriver.Scale());
             weapPtr->drawPointer = (DrawableObject *)weapBSP;
         }
 
@@ -743,15 +736,14 @@ void AdvancedWeaponStation::DeleteAllWeaponBSP(void)
 }
 
 
-
 void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if ( not weapPtr or weapPtr not_eq weaponPointer)
+    if (not weapPtr or weapPtr not_eq weaponPointer)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if ( not weapBSP)
+    if (not weapBSP)
         return;
 
 
@@ -764,12 +756,12 @@ void BasicWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 
 void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 {
-    if ( not weapPtr)
+    if (not weapPtr)
         return;
 
     DrawableBSP *weapBSP = (DrawableBSP *)weapPtr->drawPointer;
 
-    if ( not weapBSP)
+    if (not weapBSP)
         return;
 
     if (theRack)
@@ -826,9 +818,12 @@ void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
 
         //if(ownship)
         {
-            p.x = ownship->XPos() + ownship->dmx[0][0] * pos.x + ownship->dmx[1][0] * pos.y + ownship->dmx[2][0] * pos.z;
-            p.y = ownship->YPos() + ownship->dmx[0][1] * pos.x + ownship->dmx[1][1] * pos.y + ownship->dmx[2][1] * pos.z;
-            p.z = ownship->ZPos() + ownship->dmx[0][2] * pos.x + ownship->dmx[1][2] * pos.y + ownship->dmx[2][2] * pos.z;
+            p.x = ownship->XPos() + ownship->dmx[0][0] * pos.x +
+                  ownship->dmx[1][0] * pos.y + ownship->dmx[2][0] * pos.z;
+            p.y = ownship->YPos() + ownship->dmx[0][1] * pos.x +
+                  ownship->dmx[1][1] * pos.y + ownship->dmx[2][1] * pos.z;
+            p.z = ownship->ZPos() + ownship->dmx[0][2] * pos.x +
+                  ownship->dmx[1][2] * pos.y + ownship->dmx[2][2] * pos.z;
         }
     }
 
@@ -837,7 +832,8 @@ void AdvancedWeaponStation::DetachWeaponBSP(SimWeaponClass *weapPtr)
     // }
 }
 
-int BasicWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int WeaponCount)
+int BasicWeaponStation::DetermineRackData(int HPGroup, int WeaponId,
+                                          int WeaponCount)
 {
     weaponId = WeaponId;
     weaponCount = WeaponCount;
@@ -845,7 +841,8 @@ int BasicWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int WeaponC
 }
 
 
-int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int WeaponCount)
+int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId,
+                                             int WeaponCount)
 {
     RDRackData rd;
     weaponId = WeaponId;
@@ -854,9 +851,9 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
     rackId = 0;
     pylonId = 0;
 
-    WeaponClassDataType* wc;
-    Falcon4EntityClassType* classPtr;
-    SimWeaponDataType* wpnDefinition;
+    WeaponClassDataType *wc;
+    Falcon4EntityClassType *classPtr;
+    SimWeaponDataType *wpnDefinition;
 
     wc = &WeaponDataTable[weaponId];
     classPtr = &(Falcon4ClassTable[wc->Index]);
@@ -873,22 +870,22 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
 
             rackDataFlags = rd.flags;
             pylonmnemonic = rd.pylonmnemonic;
-            rackmnemonic  = rd.rackmnemonic;
-            loadOrder     = rd.loadOrder;
+            rackmnemonic = rd.rackmnemonic;
+            loadOrder = rd.loadOrder;
 
             if (rd.rackCT)
             {
-                int w = (short)(
-                            ((int)Falcon4ClassTable[rd.rackCT].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType)
-                        );
+                int w = (short)(((int)Falcon4ClassTable[rd.rackCT].dataPtr -
+                                 (int)WeaponDataTable) /
+                                sizeof(WeaponClassDataType));
                 SetRackId(w);
             }
 
             if (rd.pylonCT)
             {
-                int w = (short)(
-                            ((int)Falcon4ClassTable[rd.pylonCT].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType)
-                        );
+                int w = (short)(((int)Falcon4ClassTable[rd.pylonCT].dataPtr -
+                                 (int)WeaponDataTable) /
+                                sizeof(WeaponClassDataType));
                 SetPylonId(w);
             }
 
@@ -898,29 +895,35 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
         }
     }
 
-    int wclass = SimWeaponDataTable[Falcon4ClassTable[WeaponDataTable[WeaponId].Index].vehicleDataIndex].weaponClass;
+    int wclass =
+        SimWeaponDataTable[Falcon4ClassTable[WeaponDataTable[WeaponId].Index]
+                               .vehicleDataIndex]
+            .weaponClass;
 
     switch (wclass)
     {
-        case wcCamera:
-        case wcECM:
+    case wcCamera:
+    case wcECM:
 
-            // rackDataFlags = RDF_SELECTIVE_JETT_RACK bitor RDF_SELECTIVE_JETT_WEAPON;
-            // break;
-        case wcAimWpn:
-            rackDataFlags = 0;
-            break;
+        // rackDataFlags = RDF_SELECTIVE_JETT_RACK bitor RDF_SELECTIVE_JETT_WEAPON;
+        // break;
+    case wcAimWpn:
+        rackDataFlags = 0;
+        break;
 
-        default:
-            rackDataFlags = RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK;
+    default:
+        rackDataFlags = RDF_EMERGENCY_JETT_RACK bitor RDF_SELECTIVE_JETT_RACK;
     }
 
     // SP3 data
     if (g_bNewRackData)
     {
         // JPO new scheme
-        int rack = FindBestRackIDByPlaneAndWeapon(HPGroup, WeaponDataTable[weaponId].SimweapIndex, WeaponCount);
-        ShiAssert(rack < MaxRackObjects); // -1 means nothing defined currently fallback to old scheme
+        int rack = FindBestRackIDByPlaneAndWeapon(
+            HPGroup, WeaponDataTable[weaponId].SimweapIndex, WeaponCount);
+        ShiAssert(
+            rack <
+            MaxRackObjects); // -1 means nothing defined currently fallback to old scheme
 
         if (rack > 0 and rack < MaxRackObjects)
         {
@@ -929,9 +932,10 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
 
             if ((wc->Flags bitand WEAP_ALWAYSRACK) == 0)
             {
-                int rackid = (short)(((int)
-                                      Falcon4ClassTable[rackp->ctind].dataPtr - (int)WeaponDataTable) / sizeof(WeaponClassDataType)
-                                    );
+                int rackid =
+                    (short)(((int)Falcon4ClassTable[rackp->ctind].dataPtr -
+                             (int)WeaponDataTable) /
+                            sizeof(WeaponClassDataType));
                 SetRackId(rackid);
             }
 
@@ -990,7 +994,8 @@ int AdvancedWeaponStation::DetermineRackData(int HPGroup, int WeaponId, int Weap
         SetRackId(gRackId_Six_Rack);
     }
 
-    MonoPrint("MPS Rack HP:%d - PylonId:%d  RackId:%d\n", hpId, pylonId, rackId);
+    MonoPrint("MPS Rack HP:%d - PylonId:%d  RackId:%d\n", hpId, pylonId,
+              rackId);
 
 
     return 1;

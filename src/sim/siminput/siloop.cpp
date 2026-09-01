@@ -1,6 +1,21 @@
 #include "falclib.h"
 #include "dispcfg.h"
 #include "f4thread.h"
+#include <stdarg.h>
+#include <stdio.h>
+
+// Artscout - 2026: input bring-up trace, on the debugger stream (MonoPrint in
+// FF never reaches the log). Only fires while the devices are being set up.
+static void SiLog(const char* fmt, ...)
+{
+    char buf[256];
+    va_list ap;
+    va_start(ap, fmt);
+    _vsnprintf(buf, sizeof(buf) - 1, fmt, ap);
+    va_end(ap);
+    buf[sizeof(buf) - 1] = 0;
+    OutputDebugStringA(buf);
+}
 
 #include "sinput.h"
 #include "cpmanager.h"
@@ -14,12 +29,14 @@
 
 #include "mouselook.h" // Retro 18Jan2004
 
-#pragma warning(push,4)
+#pragma warning(push, 4)
 
 #ifdef USE_DINPUT_8 // Retro 15Jan2004
-#pragma message("______________Compiling with DirectInputVersion 0x0800 ______________________")
+#pragma message(                                                               \
+    "______________Compiling with DirectInputVersion 0x0800 ______________________")
 #else
-#pragma message("______________Compiling with DirectInputVersion 0x0700 ______________________")
+#pragma message(                                                               \
+    "______________Compiling with DirectInputVersion 0x0700 ______________________")
 #endif
 
 // sfr: removed
@@ -57,7 +74,9 @@ extern unsigned int NumberOfPOVs; // Retro 26Dec2003
 // Retro 31Dec2003
 extern AxisMapping AxisMap;
 extern GameAxisSetup_t AxisSetup[AXIS_MAX];
-extern AxisIDStuff DIAxisNames[SIM_NUMDEVICES * 8]; /* '8' is defined by dinput: 8 axis maximum per device */
+extern AxisIDStuff
+    DIAxisNames[SIM_NUMDEVICES *
+                8]; /* '8' is defined by dinput: 8 axis maximum per device */
 
 //*******************************************
 // void InputCycle()
@@ -80,12 +99,12 @@ void InputCycle(void)
     //AcquireDeviceInput(gCurController, TRUE);
     // sfr: commented here
     //AcquireDeviceInput(SIM_MOUSE, TRUE);
-    if ( not CheckDeviceAcquisition(SIM_KEYBOARD))
+    if (not CheckDeviceAcquisition(SIM_KEYBOARD))
     {
         AcquireDeviceInput(SIM_KEYBOARD, TRUE);
     }
 
-    if ( not CheckDeviceAcquisition(SIM_MOUSE))
+    if (not CheckDeviceAcquisition(SIM_MOUSE))
     {
         AcquireDeviceInput(SIM_MOUSE, TRUE);
     }
@@ -97,6 +116,7 @@ void InputCycle(void)
     // each time, instead of one or the other
     //dw = MsgWaitForMultipleObjects(SIM_NUMDEVICES - 1, gphDeviceEvent, 0, 0, QS_ALLINPUT); //VWF Kludge until DINPUT supports joysticks
 
+#ifdef _WIN32
     dw = WaitForSingleObject(gphDeviceEvent[SIM_MOUSE], 0);
 
     if (dw == WAIT_OBJECT_0)
@@ -110,6 +130,15 @@ void InputCycle(void)
     {
         OnSimKeyboardInput();
     }
+#else
+    // Linux/SDL: the DirectInput shim serves keyboard/mouse straight from SDL_GetKeyboardState on demand
+    // (GetDeviceData is diff-based and cheap), and its SetEventNotification is a no-op, so gphDeviceEvent is
+    // never signaled -- the WaitForSingleObject gate used on Windows would never open and 3D would see no
+    // input at all. Poll both devices unconditionally each cycle instead.
+    (void)dw;
+    OnSimMouseInput(FalconDisplay.appWin);
+    OnSimKeyboardInput();
+#endif
 
     //We need to simply read the joystick every time through
     //using a minimum read interval for faster computers
@@ -117,7 +146,7 @@ void InputCycle(void)
     {
         GetJoystickInput();
         ProcessJoyButtonAndPOVHat();
-        nextJoyRead = GetTickCount() +  minJoyReadInterval;
+        nextJoyRead = GetTickCount() + minJoyReadInterval;
     }
 }
 
@@ -165,7 +194,7 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
     BOOL KeyboardSetupResult;
     BOOL CursorSetupResult;
 
-    if ( not gDIEnabled)
+    if (not gDIEnabled)
     {
         ShiAssert(gDIEnabled not_eq FALSE);
         return FALSE;
@@ -181,15 +210,21 @@ BOOL SetupDIMouseAndKeyboard(HINSTANCE, HWND hWnd)
 
     // Register with DirectInput and get an IDirectInput to play with
 
-    DIPROPDWORD dipdw = {{sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE}, DINPUT_BUFFERSIZE};
+    DIPROPDWORD dipdw = {
+        {sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE},
+        DINPUT_BUFFERSIZE};
 
     //sfr: mouse grab
     // we use exlusive only if touch buddy disabled
-    MouseSetupResult = SetupDIDevice(hWnd, (PlayerOptions.GetTouchBuddy() == false), SIM_MOUSE, GUID_SysMouse, &c_dfDIMouse, &dipdw); // Mouse
+    MouseSetupResult =
+        SetupDIDevice(hWnd, (PlayerOptions.GetTouchBuddy() == false), SIM_MOUSE,
+                      GUID_SysMouse, &c_dfDIMouse, &dipdw); // Mouse
     // KeyboardSetupResult = SetupDIDevice(hWnd, FALSE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
     // Retro 25 Nov 2003 - this forces foreground/exclusive for the keyboard and makes it possible to use the keyboard while
     // FreeFalcon is running in a background window
-    KeyboardSetupResult = SetupDIDevice(hWnd, TRUE, SIM_KEYBOARD, GUID_SysKeyboard, &c_dfDIKeyboard, &dipdw); // Keyboard
+    KeyboardSetupResult =
+        SetupDIDevice(hWnd, TRUE, SIM_KEYBOARD, GUID_SysKeyboard,
+                      &c_dfDIKeyboard, &dipdw); // Keyboard
 
 
     CursorSetupResult = CreateSimCursors();
@@ -252,21 +287,16 @@ void SetupGameAxis()
 
     devobj.dwSize = sizeof(DIDEVICEOBJECTINSTANCE);
 
-    int AxisOffsets[] = { DIJOFS_X,
-                            DIJOFS_Y,
-                            DIJOFS_Z,
-                            DIJOFS_RX,
-                            DIJOFS_RY,
-                            DIJOFS_RZ,
-                            DIJOFS_SLIDER(0),
-                            DIJOFS_SLIDER(1)
-                        };
+    int AxisOffsets[] = {DIJOFS_X,         DIJOFS_Y,        DIJOFS_Z,
+                         DIJOFS_RX,        DIJOFS_RY,       DIJOFS_RZ,
+                         DIJOFS_SLIDER(0), DIJOFS_SLIDER(1)};
 
     for (int i = AXIS_START; i < AXIS_MAX; i++)
         IO.SetAnalogIsUsed((GameAxis_t)i, false);
 
     // loop through all enumerated DEVICES
-    for (int DeviceIndex = SIM_JOYSTICK1; DeviceIndex < gTotalJoy + SIM_JOYSTICK1; DeviceIndex++)
+    for (int DeviceIndex = SIM_JOYSTICK1;
+         DeviceIndex < gTotalJoy + SIM_JOYSTICK1; DeviceIndex++)
     {
         // loop through all our game-axis that have to be mapped..
         for (int GameAxisIndex = 0; GameAxisIndex < AXIS_MAX; GameAxisIndex++)
@@ -275,34 +305,43 @@ void SetupGameAxis()
             if (*AxisSetup[GameAxisIndex].device == DeviceIndex)
             {
                 // look what axis on that real device is mapped to that game axis..
-                if ((*AxisSetup[GameAxisIndex].axis not_eq -1) and (*AxisSetup[GameAxisIndex].axis < 8)) // 8 is again the max DX axiscount..
+                if ((*AxisSetup[GameAxisIndex].axis not_eq -1) and
+                    (*AxisSetup[GameAxisIndex].axis <
+                     8)) // 8 is again the max DX axiscount..
                 {
                     // ok there�s one mapped. now see if it is indeed located on the device..
-                    if (gpDIDevice[DeviceIndex]->GetObjectInfo(&devobj, AxisOffsets[*AxisSetup[GameAxisIndex].axis], DIPH_BYOFFSET) == DI_OK)
+                    if (gpDIDevice[DeviceIndex]->GetObjectInfo(
+                            &devobj,
+                            AxisOffsets[*AxisSetup[GameAxisIndex].axis],
+                            DIPH_BYOFFSET) == DI_OK)
                     {
                         // found it :) now set it up..
 
                         // apply range. bipolar is -10000...10000, unipolar is 0...15000
                         DIPROPRANGE diprg;
-                        diprg.diph.dwSize       = sizeof(diprg);
+                        diprg.diph.dwSize = sizeof(diprg);
                         diprg.diph.dwHeaderSize = sizeof(diprg.diph);
-                        diprg.diph.dwObj        = AxisOffsets[*AxisSetup[GameAxisIndex].axis];
-                        diprg.diph.dwHow        = DIPH_BYOFFSET;
+                        diprg.diph.dwObj =
+                            AxisOffsets[*AxisSetup[GameAxisIndex].axis];
+                        diprg.diph.dwHow = DIPH_BYOFFSET;
 
                         if (AxisSetup[GameAxisIndex].isUniPolar == false)
                         {
-                            diprg.lMin              = -10000;
-                            diprg.lMax              = +10000;
+                            diprg.lMin = -10000;
+                            diprg.lMax = +10000;
                         }
                         else
                         {
-                            diprg.lMin              = 0;
-                            diprg.lMax              = 15000;
+                            diprg.lMin = 0;
+                            diprg.lMax = 15000;
                         }
 
-                        hres = gpDIDevice[DeviceIndex]->Unacquire(); // Retro 31Dec2003 - have to unacquire in order to change props
+                        hres =
+                            gpDIDevice[DeviceIndex]
+                                ->Unacquire(); // Retro 31Dec2003 - have to unacquire in order to change props
 
-                        hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_RANGE, &diprg.diph);
+                        hres = gpDIDevice[DeviceIndex]->SetProperty(
+                            DIPROP_RANGE, &diprg.diph);
                         ShiAssert(hres == DI_OK);
 
 
@@ -311,7 +350,8 @@ void SetupGameAxis()
                         // Custom axis shaping.. setting the CPOINTS correctly is done by the outside
                         // program.
                         /*****************************************************************************/
-                        if ((PlayerOptions.GetAxisShaping() == true) and (AxisShapes.active[GameAxisIndex] == true))
+                        if ((PlayerOptions.GetAxisShaping() == true) and
+                            (AxisShapes.active[GameAxisIndex] == true))
                         {
                             DIPROPCPOINTS dipcp;
 
@@ -320,26 +360,37 @@ void SetupGameAxis()
                             // not trusting this struct, I fill in the rest by myself..
                             dipcp.diph.dwSize = sizeof(DIPROPCPOINTS);
                             dipcp.diph.dwHeaderSize = sizeof(DIPROPHEADER);
-                            dipcp.diph.dwObj = AxisOffsets[*AxisSetup[GameAxisIndex].axis];
+                            dipcp.diph.dwObj =
+                                AxisOffsets[*AxisSetup[GameAxisIndex].axis];
                             dipcp.diph.dwHow = DIPH_BYOFFSET;
-                            ShiAssert(dipcp.dwCPointsNum); // if this is 0 nothing happens 
+                            ShiAssert(
+                                dipcp
+                                    .dwCPointsNum); // if this is 0 nothing happens
 
-                            hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_CPOINTS, &dipcp.diph);
+                            hres = gpDIDevice[DeviceIndex]->SetProperty(
+                                DIPROP_CPOINTS, &dipcp.diph);
                             ShiAssert(hres == DI_OK);
                         }
                         else // not using custom axis shaping, standard deadzone/saturation zones apply
                         {
                             // if a deadzone is defined, apply it.. values are from 10000 (100%) to 0 (0%) of
                             // physical range to both sides of the '0' point. Default to 100 (1%)
-                            // unipolar axis don�t have a deadzone 
-                            if ((AxisSetup[GameAxisIndex].deadzone) and (*AxisSetup[GameAxisIndex].deadzone))
+                            // unipolar axis don�t have a deadzone
+                            if ((AxisSetup[GameAxisIndex].deadzone) and
+                                (*AxisSetup[GameAxisIndex].deadzone))
                             {
-                                DIPROPDWORD dipdw = {{sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE}, DJOYSTICK_BUFFERSIZE};
-                                dipdw.dwData = *AxisSetup[GameAxisIndex].deadzone;
-                                dipdw.diph.dwObj = AxisOffsets[*AxisSetup[GameAxisIndex].axis];
+                                DIPROPDWORD dipdw = {{sizeof(DIPROPDWORD),
+                                                      sizeof(DIPROPHEADER), 0,
+                                                      DIPH_DEVICE},
+                                                     DJOYSTICK_BUFFERSIZE};
+                                dipdw.dwData =
+                                    *AxisSetup[GameAxisIndex].deadzone;
+                                dipdw.diph.dwObj =
+                                    AxisOffsets[*AxisSetup[GameAxisIndex].axis];
                                 dipdw.diph.dwHow = DIPH_BYOFFSET;
 
-                                hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
+                                hres = gpDIDevice[DeviceIndex]->SetProperty(
+                                    DIPROP_DEADZONE, &dipdw.diph);
                                 ShiAssert(hres == DI_OK);
                             }
 
@@ -348,12 +399,18 @@ void SetupGameAxis()
                             // that for some reason can not reach their extreme values.
                             if (*AxisSetup[GameAxisIndex].saturation not_eq -1)
                             {
-                                DIPROPDWORD dipdw = {{sizeof(DIPROPDWORD), sizeof(DIPROPHEADER), 0, DIPH_DEVICE}, DJOYSTICK_BUFFERSIZE};
-                                dipdw.dwData = *AxisSetup[GameAxisIndex].saturation;
-                                dipdw.diph.dwObj = AxisOffsets[*AxisSetup[GameAxisIndex].axis];
+                                DIPROPDWORD dipdw = {{sizeof(DIPROPDWORD),
+                                                      sizeof(DIPROPHEADER), 0,
+                                                      DIPH_DEVICE},
+                                                     DJOYSTICK_BUFFERSIZE};
+                                dipdw.dwData =
+                                    *AxisSetup[GameAxisIndex].saturation;
+                                dipdw.diph.dwObj =
+                                    AxisOffsets[*AxisSetup[GameAxisIndex].axis];
                                 dipdw.diph.dwHow = DIPH_BYOFFSET;
 
-                                hres = gpDIDevice[DeviceIndex]->SetProperty(DIPROP_SATURATION, &dipdw.diph);
+                                hres = gpDIDevice[DeviceIndex]->SetProperty(
+                                    DIPROP_SATURATION, &dipdw.diph);
                                 ShiAssert(hres == DI_OK);
                             }
                         } // no custom axis shaping
@@ -363,18 +420,21 @@ void SetupGameAxis()
                         IO.SetAnalogIsUsed((GameAxis_t)GameAxisIndex, true);
                     }
 
-#pragma warning(disable:4127) // Getting rid of "conditional expression is constant"
+#pragma warning(disable                                                        \
+                : 4127) // Getting rid of "conditional expression is constant"
                     else
                     {
-                        ShiAssert(false); // did not find a specified axis on the specified device
+                        ShiAssert(
+                            false); // did not find a specified axis on the specified device
                     }
                 }
                 else
                 {
-                    ShiAssert(false); // out-of-array  DI only specifies 8 axis (0-7) 
+                    ShiAssert(
+                        false); // out-of-array  DI only specifies 8 axis (0-7)
                 }
 
-#pragma warning(default:4127)
+#pragma warning(default : 4127)
             }
         }
     }
@@ -411,91 +471,91 @@ bool CheckDeviceArray()
     bool retval = true;
 
     if (AxisMap.Pitch.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Pitch.Device])
+        if (not gpDIDevice[AxisMap.Pitch.Device])
             retval = false;
 
     if (AxisMap.Bank.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Bank.Device])
+        if (not gpDIDevice[AxisMap.Bank.Device])
             retval = false;
 
     if (AxisMap.Yaw.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Yaw.Device])
+        if (not gpDIDevice[AxisMap.Yaw.Device])
             retval = false;
 
     if (AxisMap.Throttle.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Throttle.Device])
+        if (not gpDIDevice[AxisMap.Throttle.Device])
             retval = false;
 
     if (AxisMap.Throttle2.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Throttle2.Device])
+        if (not gpDIDevice[AxisMap.Throttle2.Device])
             retval = false;
 
     if (AxisMap.BrakeLeft.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.BrakeLeft.Device])
+        if (not gpDIDevice[AxisMap.BrakeLeft.Device])
             retval = false;
 
     if (AxisMap.BrakeRight.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.BrakeRight.Device])
+        if (not gpDIDevice[AxisMap.BrakeRight.Device])
             retval = false;
 
     if (AxisMap.FOV.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.FOV.Device])
+        if (not gpDIDevice[AxisMap.FOV.Device])
             retval = false;
 
     if (AxisMap.PitchTrim.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.PitchTrim.Device])
+        if (not gpDIDevice[AxisMap.PitchTrim.Device])
             retval = false;
 
     if (AxisMap.YawTrim.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.YawTrim.Device])
+        if (not gpDIDevice[AxisMap.YawTrim.Device])
             retval = false;
 
     if (AxisMap.BankTrim.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.BankTrim.Device])
+        if (not gpDIDevice[AxisMap.BankTrim.Device])
             retval = false;
 
     if (AxisMap.AntElev.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.AntElev.Device])
+        if (not gpDIDevice[AxisMap.AntElev.Device])
             retval = false;
 
     if (AxisMap.RngKnob.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.RngKnob.Device])
+        if (not gpDIDevice[AxisMap.RngKnob.Device])
             retval = false;
 
     if (AxisMap.CursorX.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.CursorX.Device])
+        if (not gpDIDevice[AxisMap.CursorX.Device])
             retval = false;
 
     if (AxisMap.CursorY.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.CursorY.Device])
+        if (not gpDIDevice[AxisMap.CursorY.Device])
             retval = false;
 
     if (AxisMap.Comm1Vol.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Comm1Vol.Device])
+        if (not gpDIDevice[AxisMap.Comm1Vol.Device])
             retval = false;
 
     if (AxisMap.Comm2Vol.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Comm2Vol.Device])
+        if (not gpDIDevice[AxisMap.Comm2Vol.Device])
             retval = false;
 
     if (AxisMap.MSLVol.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.MSLVol.Device])
+        if (not gpDIDevice[AxisMap.MSLVol.Device])
             retval = false;
 
     if (AxisMap.ThreatVol.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.ThreatVol.Device])
+        if (not gpDIDevice[AxisMap.ThreatVol.Device])
             retval = false;
 
     if (AxisMap.HudBrt.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.HudBrt.Device])
+        if (not gpDIDevice[AxisMap.HudBrt.Device])
             retval = false;
 
     if (AxisMap.RetDepr.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.RetDepr.Device])
+        if (not gpDIDevice[AxisMap.RetDepr.Device])
             retval = false;
 
     if (AxisMap.Zoom.Device not_eq -1)
-        if ( not gpDIDevice[AxisMap.Zoom.Device])
+        if (not gpDIDevice[AxisMap.Zoom.Device])
             retval = false;
 
     return retval;
@@ -528,13 +588,16 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
     // Create our interface to DInput7/8..
     /*******************************************************************************/
 #ifndef USE_DINPUT_8 // Retro 15Jan2004
-    gDIEnabled = VerifyResult(DirectInputCreateEx(hInst, DIRECTINPUT_VERSION, IID_IDirectInput7, (void **) &gpDIObject, NULL));
+    gDIEnabled = VerifyResult(DirectInputCreateEx(hInst, DIRECTINPUT_VERSION,
+                                                  IID_IDirectInput7,
+                                                  (void **)&gpDIObject, NULL));
 #else
-    hres = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION, IID_IDirectInput8, (void **)&gpDIObject, NULL);
+    hres = DirectInput8Create(GetModuleHandle(NULL), DIRECTINPUT_VERSION,
+                              IID_IDirectInput8, (void **)&gpDIObject, NULL);
     gDIEnabled = (hres == DI_OK) ? TRUE : FALSE;
 #endif
 
-    if ( not gDIEnabled)
+    if (not gDIEnabled)
         return gDIEnabled;
 
     /*******************************************************************************/
@@ -542,9 +605,11 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
     // also calls up all kinds of stuff..
     /*******************************************************************************/
 #ifndef USE_DINPUT_8 // Retro 15Jan2004
-    hres = gpDIObject->EnumDevices(DIDEVTYPE_JOYSTICK, InitJoystick, &hWnd, DIEDFL_ATTACHEDONLY);
+    hres = gpDIObject->EnumDevices(DIDEVTYPE_JOYSTICK, InitJoystick, &hWnd,
+                                   DIEDFL_ATTACHEDONLY);
 #else
-    hres = gpDIObject->EnumDevices(DI8DEVCLASS_GAMECTRL, InitJoystick, &hWnd, DIEDFL_ATTACHEDONLY);
+    hres = gpDIObject->EnumDevices(DI8DEVCLASS_GAMECTRL, InitJoystick, &hWnd,
+                                   DIEDFL_ATTACHEDONLY);
 #endif
 
     // #19: devices enumerated (gDIDevGUIDs filled) -- remap the Device indices
@@ -569,50 +634,74 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
         // configure them. Else everything is set to keyboard and the user has to
         // reconfigure.
         /*******************************************************************************/
-        if ((AxisMap.totalDeviceCount == gTotalJoy) and (AxisMap.FlightControlDevice not_eq -1)/* and (CheckDeviceArray() == true)*/)
+        // #104 (Linux / multi-device): the old check REQUIRED a single FlightControlDevice (!= -1), else it nuked
+        // ALL axes via IO.Reset(). But a modern multi-device layout (pitch/roll on the stick, yaw on pedals,
+        // throttle on a throttle base) legitimately has FlightControlDevice == -1 -- #24 reads each axis from its
+        // OWN device, and FlightControlDevice is only the optional POV/FFB device. With 4 sticks and FCD=-1 the
+        // valid per-axis bindings (e.g. Pitch on device 2) were being wiped, so the sim saw no axes in 3D while the
+        // setup screen (which binds separately) still showed live data. Fix: reset only when the DEVICE COUNT
+        // changed; when it is stable, keep the bindings and just re-run SetupGameAxis. Validate the flight-control
+        // GUID only when one is actually assigned; POV/FFB are read only from that (optional) device.
+        if (AxisMap.totalDeviceCount == gTotalJoy)
         {
-            DIDEVICEINSTANCE devinst;
-            devinst.dwSize = sizeof(DIDEVICEINSTANCE);
+            bool guidOk = true;
+            const int fcd = AxisMap.FlightControlDevice;
+            const bool haveFcd =
+                (fcd >= SIM_JOYSTICK1 && fcd < SIM_NUMDEVICES &&
+                 gpDIDevice[fcd] != NULL);
 
-            hres = gpDIDevice[AxisMap.FlightControlDevice]->GetDeviceInfo(&devinst);
-
-            if ( not memcmp(&AxisMap.FlightControllerGUID , &devinst.guidInstance, sizeof(GUID)))
+            if (haveFcd)
             {
-                BOOL result;
-                // #57 soft axis properties (center/ABDetent, cutoff, isReversed, smoothing) are now
-                // loaded from axismapping.xml by ControlsXml_ReadAxes() above; the old binary
-                // joystick.cal (IO.ReadFile) is gone.
+                DIDEVICEINSTANCE devinst;
+                devinst.dwSize = sizeof(DIDEVICEINSTANCE);
+                gpDIDevice[fcd]->GetDeviceInfo(&devinst);
+                guidOk = (memcmp(&AxisMap.FlightControllerGUID,
+                                 &devinst.guidInstance, sizeof(GUID)) == 0);
+            }
 
+            if (guidOk)
+            {
+                // #57 soft axis properties now come from axismapping.xml (ControlsXml_ReadAxes above); joystick.cal is gone.
                 if (PlayerOptions.GetAxisShaping() == true)
                 {
-                    result = IO.LoadAxisCalibrationFile();
-                    ShiAssert(result == TRUE);
-
-                    if (result == FALSE)
+                    if (IO.LoadAxisCalibrationFile() == FALSE)
                         PlayerOptions.SetAxisShaping(false);
                 }
 
-                SetupGameAxis(); // set axis properties according to saves values
+                SetupGameAxis(); // bind the per-axis device/axis mappings for the sim
 
-                DIDEVCAPS CurJoyCaps; // Retro 26Dec2003
-                CurJoyCaps.dwSize = sizeof(DIDEVCAPS); // Retro 26Dec2003
-
-                hres = gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&CurJoyCaps);
-
-                //NumberOfPOVs = (CurJoyCaps.dwPOVs>0)?1:0; // Retro 26Dec2003 - either 0 or 1 POV hat
-                NumberOfPOVs = CurJoyCaps.dwPOVs; // Wombat778 4-27-04 Dont limit to 1 POV
+                if (haveFcd) // POV/FFB come from the optional lead flight-control device only
+                {
+                    DIDEVCAPS CurJoyCaps;
+                    CurJoyCaps.dwSize = sizeof(DIDEVCAPS);
+                    gpDIDevice[fcd]->GetCapabilities(&CurJoyCaps);
+                    NumberOfPOVs = CurJoyCaps.dwPOVs;
+                }
             }
             else
             {
-                IO.Reset(); // Retro 11Jan2004 - nuke the axismaps struct
+                IO.Reset(); // the assigned flight-control device changed -> can't trust the map
                 PlayerOptions.SetFFB(false);
             }
         }
         else
         {
-            // nothing happens, as obviously the number/nature of enumerated devices has changed.
-            IO.Reset(); // Retro 11Jan2004 - nuke the axismaps struct
-            PlayerOptions.SetFFB(false);
+            // Artscout - 2026: a changed device COUNT used to wipe every axis.
+            // RemapAxisMappingByGUID above already re-pointed each axis by its
+            // device GUID, so unplugging one stick must not unbind the rest.
+            SiLog("[input] device count %d != saved %d -> keeping GUID-matched "
+                  "axes\n",
+                  gTotalJoy, AxisMap.totalDeviceCount);
+            AxisMap.totalDeviceCount = gTotalJoy;
+            SetupGameAxis();
+
+            // FFB lives on the lead device; drop it only if that one is gone.
+            const int fcd = AxisMap.FlightControlDevice;
+            if (not(fcd >= SIM_JOYSTICK1 and fcd < SIM_NUMDEVICES and
+                    gpDIDevice[fcd] != NULL))
+            {
+                PlayerOptions.SetFFB(false);
+            }
         }
 
         /* however we still acquire everything we�ve got in order to poll it in the setup screen.. */
@@ -620,7 +709,14 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
         {
             JoystickSetupResult = VerifyResult(gpDIDevice[i]->Acquire());
             gpDeviceAcquired[i] = JoystickSetupResult;
+            SiLog("[input] joy%d acquire=%d\n", i - SIM_JOYSTICK1,
+                  (int)JoystickSetupResult);
         }
+        SiLog("[input] setup: joys=%d fcd=%d pitch=(dev %d ax %d) roll=(dev %d "
+              "ax %d) throttle=(dev %d ax %d)\n",
+              gTotalJoy, AxisMap.FlightControlDevice, AxisMap.Pitch.Device,
+              AxisMap.Pitch.Axis, AxisMap.Bank.Device, AxisMap.Bank.Axis,
+              AxisMap.Throttle.Device, AxisMap.Throttle.Axis);
     }
     else
     {
@@ -630,7 +726,6 @@ BOOL SetupDIJoystick(HINSTANCE, HWND hWnd)
     gDIEnabled = TRUE;
 
     return gDIEnabled;
-
 }
 
 //**********************************************************
@@ -655,7 +750,7 @@ BOOL CleanupDIMouseAndKeyboard()
     // ShowCursor(TRUE);
 
     //CleanupInputFunctions();
-    return(CleanupResult);
+    return (CleanupResult);
 }
 
 //**********************************************************
@@ -672,7 +767,8 @@ BOOL CleanupDIJoystick(void)
         DIDEVCAPS devcaps;
         devcaps.dwSize = sizeof(DIDEVCAPS);
 
-        HRESULT hr = gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&devcaps);
+        HRESULT hr =
+            gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&devcaps);
 
         if (devcaps.dwFlags bitand DIDC_FORCEFEEDBACK)
         {
@@ -690,7 +786,8 @@ BOOL CleanupDIJoystick(void)
             DIPropAutoCenter.diph.dwHow = DIPH_DEVICE;
             DIPropAutoCenter.dwData = DIPROPAUTOCENTER_ON;
 
-            hr = gpDIDevice[AxisMap.FlightControlDevice]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph);
+            hr = gpDIDevice[AxisMap.FlightControlDevice]->SetProperty(
+                DIPROP_AUTOCENTER, &DIPropAutoCenter.diph);
         }
     }
 
@@ -698,7 +795,8 @@ BOOL CleanupDIJoystick(void)
 
     while (gTotalJoy > 0)
     {
-        CleanupResult = CleanupResult and CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
+        CleanupResult =
+            CleanupResult and CleanupDIDevice(SIM_JOYSTICK1 + gTotalJoy - 1);
         delete gDIDevNames[SIM_JOYSTICK1 + gTotalJoy - 1];
         gDIDevNames[SIM_JOYSTICK1 + gTotalJoy - 1] = NULL;
         gTotalJoy--;
@@ -707,7 +805,7 @@ BOOL CleanupDIJoystick(void)
     gOccupiedBySim = FALSE;
     gSimInputEnabled = FALSE;
 
-    return(CleanupResult);
+    return (CleanupResult);
 }
 
 //**********************************************************
@@ -724,9 +822,12 @@ BOOL CleanupDIJoystickMk2(void)
         DIDEVCAPS devcaps;
         devcaps.dwSize = sizeof(DIDEVCAPS);
 
-        if (gpDIDevice[AxisMap.FlightControlDevice] not_eq NULL) // Retro 7May2004
+        if (gpDIDevice[AxisMap.FlightControlDevice] not_eq
+            NULL) // Retro 7May2004
         {
-            HRESULT hr = gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(&devcaps);
+            HRESULT hr =
+                gpDIDevice[AxisMap.FlightControlDevice]->GetCapabilities(
+                    &devcaps);
 
             if (devcaps.dwFlags bitand DIDC_FORCEFEEDBACK)
             {
@@ -744,7 +845,8 @@ BOOL CleanupDIJoystickMk2(void)
                 DIPropAutoCenter.diph.dwHow = DIPH_DEVICE;
                 DIPropAutoCenter.dwData = DIPROPAUTOCENTER_ON;
 
-                hr = gpDIDevice[AxisMap.FlightControlDevice]->SetProperty(DIPROP_AUTOCENTER, &DIPropAutoCenter.diph);
+                hr = gpDIDevice[AxisMap.FlightControlDevice]->SetProperty(
+                    DIPROP_AUTOCENTER, &DIPropAutoCenter.diph);
             }
         }
     }
@@ -769,7 +871,7 @@ BOOL CleanupDIJoystickMk2(void)
     gOccupiedBySim = FALSE;
     gSimInputEnabled = FALSE;
 
-    return(CleanupResult);
+    return (CleanupResult);
 }
 
 /*****************************************************************************/

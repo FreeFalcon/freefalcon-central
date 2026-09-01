@@ -9,17 +9,17 @@
 #include "simveh.h"
 #include "missile.h"
 #include "object.h"
-#include "Entity.h"
+#include "entity.h"
 
 #define NO_ID 0
-#define EID   1
-#define VID   2
+#define EID 1
+#define VID 2
 
 void HeliBrain::SensorFusion(void)
 {
     SimObjectType* obj = targetList;
     float turnTime, timeToRmax, rmax, tof, totV;
-    Falcon4EntityClassType *classPtr;
+    Falcon4EntityClassType* classPtr;
     SimObjectLocalData* localData;
     int pcId;
 
@@ -29,23 +29,26 @@ void HeliBrain::SensorFusion(void)
     while (obj)
     {
         localData = obj->localData;
-        classPtr = (Falcon4EntityClassType*) obj->BaseData()->EntityType();
+        classPtr = (Falcon4EntityClassType*)obj->BaseData()->EntityType();
 
-        if ( not obj->BaseData()->IsSim() or ((SimBaseClass*)obj->BaseData())->IsExploding())
+        if (not obj->BaseData()->IsSim() or
+            ((SimBaseClass*)obj->BaseData())->IsExploding())
         {
             obj = obj->next;
             continue;
         }
 
         /* using truth data */
-        localData->sensorState[SensorClass::Visual]   = SensorClass::SensorTrack;
+        localData->sensorState[SensorClass::Visual] = SensorClass::SensorTrack;
 
         /*--------------------------------------------------*/
         /* Sensor id state                                  */
         /* RWR ids coming form RWR_INTERP can be incorrect. */
         /* Visual identification is 100% correct.           */
         /*--------------------------------------------------*/
-        if (localData->sensorState[SensorClass::Visual] or localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
+        if (localData->sensorState[SensorClass::Visual] or
+            localData->sensorState[SensorClass::RWR] >=
+                SensorClass::SensorTrack)
         {
             if (obj->BaseData()->IsMissile())
             {
@@ -92,10 +95,13 @@ void HeliBrain::SensorFusion(void)
                 }
                 else
                 {
-                    if (localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
-                        localData->threatTime = localData->range / AVE_AIM120_VEL;
+                    if (localData->sensorState[SensorClass::RWR] >=
+                        SensorClass::SensorTrack)
+                        localData->threatTime =
+                            localData->range / AVE_AIM120_VEL;
                     else
-                        localData->threatTime = localData->range / AVE_AIM9L_VEL;
+                        localData->threatTime =
+                            localData->range / AVE_AIM9L_VEL;
                 }
             }
             else
@@ -111,7 +117,8 @@ void HeliBrain::SensorFusion(void)
             /*-------------------------*/
             //TJL 11/15/03 Radian conversion error
             //turnTime = localData->ataFrom / FIVE_G_TURN_RATE;
-            turnTime = localData->ataFrom * RTD / FIVE_G_TURN_RATE; // 15.9f degrees per second
+            turnTime = localData->ataFrom * RTD /
+                       FIVE_G_TURN_RATE; // 15.9f degrees per second
 
 
             /*------------------*/
@@ -119,12 +126,13 @@ void HeliBrain::SensorFusion(void)
             /*------------------*/
             //TJL 11/15/03 Cos takes Radians, thus  no *DTR
             //totV = ((SimBaseClass*)obj->BaseData())->GetVt() + self->GetVt()*(float)cos(localData->ata*DTR);
-            totV = ((SimBaseClass*)obj->BaseData())->GetVt() + self->GetVt() * (float)cos(localData->ata);
+            totV = ((SimBaseClass*)obj->BaseData())->GetVt() +
+                   self->GetVt() * (float)cos(localData->ata);
 
             /*------------*/
             /* 10 NM rmax */
             /*------------*/
-            rmax = 60762.11F;   /* 10 NM */
+            rmax = 60762.11F; /* 10 NM */
 
             /*-------------------------------------------*/
             /* calculate time to rmax and time of flight */
@@ -157,7 +165,7 @@ void HeliBrain::SensorFusion(void)
         /*----------------------------------------------------*/
         localData->targetTime = 2.0F * MAX_TARGET_TIME;
 
-        if ( not obj->BaseData()->IsMissile() and pcId < ID_NEUTRAL)
+        if (not obj->BaseData()->IsMissile() and pcId < ID_NEUTRAL)
         {
             /*------------------*/
             /* closing velocity */
@@ -165,14 +173,17 @@ void HeliBrain::SensorFusion(void)
             //TJL 11/15/03 Cos takes radians, thus no DTR conversion.
 
             //totV     = ((SimBaseClass*)obj->BaseData())->GetVt()*(float)cos(localData->ataFrom*DTR) + self->GetVt();
-            totV     = ((SimBaseClass*)obj->BaseData())->GetVt() * (float)cos(localData->ataFrom) + self->GetVt();
+            totV = ((SimBaseClass*)obj->BaseData())->GetVt() *
+                       (float)cos(localData->ataFrom) +
+                   self->GetVt();
 
             /*------------------------*/
             /* time to turn on target */
             /*------------------------*/
             //TJL 11/15/03 Radian converion error.
             //turnTime = localData->ata / FIVE_G_TURN_RATE;
-            turnTime = localData->ataFrom * RTD / FIVE_G_TURN_RATE; // 15.9f degrees per second
+            turnTime = localData->ataFrom * RTD /
+                       FIVE_G_TURN_RATE; // 15.9f degrees per second
 
             /*-------------------*/
             /* digi has missiles */

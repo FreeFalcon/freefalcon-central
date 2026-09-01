@@ -1,23 +1,23 @@
 #include "stdhdr.h"
 #include "hdigi.h"
 #include "otwdrive.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "campwp.h"
 #include "simveh.h"
 #include "fcc.h"
 #include "unit.h"
 #include "helimm.h"
-#include "Graphics/Include/drawBSP.h"
+#include "graphics/include/drawbsp.h"
 
 // Brain Choices
-#define GENERIC_BRAIN     0
-#define SEAD_BRAIN        1
-#define STRIKE_BRAIN      2
-#define INTERCEPT_BRAIN   3
-#define AIR_CAP_BRAIN     4
-#define AIR_SWEEP_BRAIN   5
-#define ESCORT_BRAIN      6
-#define WAYPOINTER_BRAIN  7
+#define GENERIC_BRAIN 0
+#define SEAD_BRAIN 1
+#define STRIKE_BRAIN 2
+#define INTERCEPT_BRAIN 3
+#define AIR_CAP_BRAIN 4
+#define AIR_SWEEP_BRAIN 5
+#define ESCORT_BRAIN 6
+#define WAYPOINTER_BRAIN 7
 
 void HeliBrain::FollowWaypoints(void)
 {
@@ -65,9 +65,10 @@ void HeliBrain::GoToCurrentWaypoint(void)
     unit = (Unit)self->GetCampaignObject();
 
     // RV - Biker - If we did miss our pickup do it now
-    if (self->curWaypoint->GetWPAction() == WP_AIRDROP and not unit->GetCargo() and onStation == NotThereYet)
+    if (self->curWaypoint->GetWPAction() == WP_AIRDROP and
+        not unit->GetCargo() and onStation == NotThereYet)
     {
-        cargo = (Unit) self->curWaypoint->GetWPTarget();
+        cargo = (Unit)self->curWaypoint->GetWPTarget();
 
         if (cargo and unit)
         {
@@ -78,9 +79,10 @@ void HeliBrain::GoToCurrentWaypoint(void)
         }
     }
 
-    if (self->curWaypoint->GetWPAction() == WP_PICKUP and onStation == NotThereYet)
+    if (self->curWaypoint->GetWPAction() == WP_PICKUP and
+        onStation == NotThereYet)
     {
-        cargo = (Unit) self->curWaypoint->GetWPTarget();
+        cargo = (Unit)self->curWaypoint->GetWPTarget();
 
         if (cargo)
         {
@@ -99,8 +101,8 @@ void HeliBrain::GoToCurrentWaypoint(void)
     }
 
     // If we are at starting WP stay on ground
-    if (self->curWaypoint->GetWPFlags() bitand WPF_TAKEOFF  and 
-        self->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime and 
+    if (self->curWaypoint->GetWPFlags() bitand WPF_TAKEOFF and
+        self->curWaypoint->GetWPDepartureTime() > SimLibElapsedTime and
         self->curWaypoint->GetPrevWP() == NULL)
     {
         LevelTurn(0.0f, 0.0f, TRUE);
@@ -162,22 +164,23 @@ void HeliBrain::GoToCurrentWaypoint(void)
 
     // Reached the next waypoint?
     // RV - Biker - Never skip waypoints
-    if (rng < (600.0F * 600.0F) or (onStation not_eq NotThereYet) /*or SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
+    if (rng < (600.0F * 600.0F) or
+        (onStation not_eq
+         NotThereYet) /*or SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()*/)
     {
         if (onStation == NotThereYet)
         {
             onStation = Arrived;
         }
-        else if (onStation == OnStation and SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
+        else if (onStation == OnStation and
+                 SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
         {
             SelectNextWaypoint();
         }
     }
 
     // landing?
-    if (onStation == Landing or
-        onStation == DropOff or
-        onStation == Landed or
+    if (onStation == Landing or onStation == DropOff or onStation == Landed or
         onStation == PickUp)
     {
         LandMe();
@@ -207,7 +210,9 @@ void HeliBrain::GoToCurrentWaypoint(void)
         rng = (float)sqrt(rng);
 
         if (self->curWaypoint->GetWPArrivalTime() > SimLibElapsedTime)
-            time = (float)(self->curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) / SEC_TO_MSEC;
+            time = (float)(self->curWaypoint->GetWPArrivalTime() -
+                           SimLibElapsedTime) /
+                   SEC_TO_MSEC;
         else
             time = -1.0f;
 
@@ -243,21 +248,21 @@ void HeliBrain::SelectNextWaypoint(void)
 {
     WayPointClass* tmpWaypoint = self->curWaypoint;
     WayPointClass* wlist = self->waypoint;
-    UnitClass *campUnit = NULL;
-    WayPointClass *campCurWP = NULL;
+    UnitClass* campUnit = NULL;
+    WayPointClass* campCurWP = NULL;
     int waypointIndex, i;
 
     // first get our current waypoint index in the list
-    for (waypointIndex = 0;
-         wlist and wlist not_eq tmpWaypoint;
-         wlist = wlist->GetNextWP(), waypointIndex++);
+    for (waypointIndex = 0; wlist and wlist not_eq tmpWaypoint;
+         wlist = wlist->GetNextWP(), waypointIndex++)
+        ;
 
     // see if we're running in tactical or campaign.  If so, we want to
     // synch the campaign's waypoints with ours
     // if ( SimDriver.RunningCampaignOrTactical() )
     {
         // get the pointer to our campaign unit
-        campUnit = (UnitClass *)self->GetCampaignObject();
+        campUnit = (UnitClass*)self->GetCampaignObject();
 
         if (campUnit)
         {
@@ -289,7 +294,7 @@ void HeliBrain::SelectNextWaypoint(void)
 
     waypointMode = 0;
 
-    if ( not self->curWaypoint)
+    if (not self->curWaypoint)
     {
         // go back to the beginning
         self->curWaypoint = self->waypoint;
@@ -310,57 +315,57 @@ void HeliBrain::ChooseBrain(void)
     {
         switch (self->curWaypoint->GetWPAction())
         {
-            case WP_NOTHING:
-            case WP_TAKEOFF:
-            case WP_ASSEMBLE:
-            case WP_POSTASSEMBLE:
-            case WP_REFUEL:
-            case WP_REARM:
-            case WP_LAND:
-            case WP_ELINT:
-            case WP_RECON:
-            case WP_RESCUE:
-            case WP_ASW:
-            case WP_TANKER:
-            case WP_AIRDROP:
-            case WP_JAM:
-            case WP_PICKUP:
-                // MonoPrint ("Helo Digi Chose Waypoint BRAIN\n");
-                // modeData = digitalBrains->brainData[AIR_SWEEP_BRAIN];
-                break;
+        case WP_NOTHING:
+        case WP_TAKEOFF:
+        case WP_ASSEMBLE:
+        case WP_POSTASSEMBLE:
+        case WP_REFUEL:
+        case WP_REARM:
+        case WP_LAND:
+        case WP_ELINT:
+        case WP_RECON:
+        case WP_RESCUE:
+        case WP_ASW:
+        case WP_TANKER:
+        case WP_AIRDROP:
+        case WP_JAM:
+        case WP_PICKUP:
+            // MonoPrint ("Helo Digi Chose Waypoint BRAIN\n");
+            // modeData = digitalBrains->brainData[AIR_SWEEP_BRAIN];
+            break;
 
-            case WP_ESCORT:
-                // MonoPrint ("Helo Digi Chose ESCORT BRAIN\n");
-                break;
+        case WP_ESCORT:
+            // MonoPrint ("Helo Digi Chose ESCORT BRAIN\n");
+            break;
 
-            case WP_CA:
-                // MonoPrint ("Helo Digi Chose AIR SWEEP BRAIN\n");
-                break;
+        case WP_CA:
+            // MonoPrint ("Helo Digi Chose AIR SWEEP BRAIN\n");
+            break;
 
-            case WP_CAP:
-                // MonoPrint ("Helo Digi Chose AIR CAP BRAIN\n");
-                break;
+        case WP_CAP:
+            // MonoPrint ("Helo Digi Chose AIR CAP BRAIN\n");
+            break;
 
-            case WP_INTERCEPT:
-                // MonoPrint ("Helo Digi Chose AIR INTERCEPT BRAIN\n");
-                break;
+        case WP_INTERCEPT:
+            // MonoPrint ("Helo Digi Chose AIR INTERCEPT BRAIN\n");
+            break;
 
-            case WP_GNDSTRIKE:
-            case WP_NAVSTRIKE:
-            case WP_STRIKE:
-            case WP_BOMB:
-            case WP_SAD:
-                // MonoPrint ("Helo Digi Chose STRIKE BRAIN\n");
-                break;
+        case WP_GNDSTRIKE:
+        case WP_NAVSTRIKE:
+        case WP_STRIKE:
+        case WP_BOMB:
+        case WP_SAD:
+            // MonoPrint ("Helo Digi Chose STRIKE BRAIN\n");
+            break;
 
-            case WP_SEAD:
-                // MonoPrint ("Helo Digi Chose SEAD BRAIN\n");
-                break;
+        case WP_SEAD:
+            // MonoPrint ("Helo Digi Chose SEAD BRAIN\n");
+            break;
 
-            default:
-                // MonoPrint ("Why am I here (Helo Digi GetBrain)\n");
-                // MonoPrint ("===>Waypoint action %d\n", self->curWaypoint->GetWPAction());
-                break;
+        default:
+            // MonoPrint ("Why am I here (Helo Digi GetBrain)\n");
+            // MonoPrint ("===>Waypoint action %d\n", self->curWaypoint->GetWPAction());
+            break;
         }
     }
 }

@@ -5,21 +5,27 @@
  * Generated from file EVENTS.XLS by Leon Rosenshein
  */
 
-#include "MsgInc/GraphicsTextDisplayMsg.h"
+#include "msginc/graphicstextdisplaymsg.h"
 #include "mesg.h"
 #include "otwdrive.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-GraphicsTextDisplay::GraphicsTextDisplay(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(GraphicsTextDisplayMsg, FalconEvent::SimThread, entityId, target, loopback)
+GraphicsTextDisplay::GraphicsTextDisplay(VU_ID entityId, VuTargetEntity *target,
+                                         VU_BOOL loopback)
+    : FalconEvent(GraphicsTextDisplayMsg, FalconEvent::SimThread, entityId,
+                  target, loopback)
 {
     // Your Code Goes Here
 }
 
-GraphicsTextDisplay::GraphicsTextDisplay(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(GraphicsTextDisplayMsg, FalconEvent::SimThread, senderid, target)
+GraphicsTextDisplay::GraphicsTextDisplay(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(GraphicsTextDisplayMsg, FalconEvent::SimThread, senderid,
+                  target)
 {
     // Your Code Goes Here
     type;
@@ -39,4 +45,3 @@ int GraphicsTextDisplay::Process(uchar autodisp)
 
     return 1;
 }
-

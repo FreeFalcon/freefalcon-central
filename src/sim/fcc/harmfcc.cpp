@@ -6,7 +6,7 @@
 #include "object.h"
 #include "geometry.h"
 #include "simveh.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "otwdrive.h"
 #include "radar.h"
 
@@ -19,14 +19,15 @@ void FireControlComputer::HarmMode(void)
     HarmTargetingPod *theHTS;
     Tpoint pos;
 
-    theHTS = (HarmTargetingPod*)FindSensor(platform, SensorClass::HTS);
+    theHTS = (HarmTargetingPod *)FindSensor(platform, SensorClass::HTS);
     theMissile = (MissileClass *)(Sms->GetCurrentWeapon());
 
     if (theHTS)
     {
-        if ( not (platform->IsPlayer()))
+        if (not(platform->IsPlayer()))
         {
-            theHTS->SetRange(FloatToInt32(HSDRange)); // RV - I-Hawk - HTS controls range on its own
+            theHTS->SetRange(FloatToInt32(
+                HSDRange)); // RV - I-Hawk - HTS controls range on its own
         }
         else
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);  // FRB - Test
@@ -34,7 +35,8 @@ void FireControlComputer::HarmMode(void)
         if (designateCmd and not lastDesignate)
         {
             // In POS mode the Lock is done via WPN OSBs
-            if (theHTS->GetSubMode() == HarmTargetingPod::HAS or theHTS->GetSubMode() == HarmTargetingPod::HAD)
+            if (theHTS->GetSubMode() == HarmTargetingPod::HAS or
+                theHTS->GetSubMode() == HarmTargetingPod::HAD)
             {
                 theHTS->LockTargetUnderCursor();
             }
@@ -51,12 +53,13 @@ void FireControlComputer::HarmMode(void)
         }
 
         //MI why is this here??
-        if ( not g_bRealisticAvionics)
+        if (not g_bRealisticAvionics)
             platform->SOIManager(SimVehicleClass::SOI_WEAPON);
 
         if (theHTS->CurrentTarget())
         {
-            if ( not targetPtr or targetPtr->BaseData() not_eq theHTS->CurrentTarget()->BaseData())
+            if (not targetPtr or targetPtr->BaseData() not_eq
+                                     theHTS->CurrentTarget()->BaseData())
             {
                 SetTarget(theHTS->CurrentTarget());
             }
@@ -96,16 +99,21 @@ void FireControlComputer::HarmMode(void)
 
                 theMissile->SetTargetPosition(pos.x, pos.y, pos.z);
 
-                CalcRelGeom(platform, targetPtr, NULL, 1.0F / SimLibMajorFrameTime);
-                missileRMax   = theMissile->GetRMax(-platform->ZPos(), platform->GetVt(), targetPtr->localData->az, 0.0f, 0.0f);
+                CalcRelGeom(platform, targetPtr, NULL,
+                            1.0F / SimLibMajorFrameTime);
+                missileRMax =
+                    theMissile->GetRMax(-platform->ZPos(), platform->GetVt(),
+                                        targetPtr->localData->az, 0.0f, 0.0f);
                 missileActiveRange = 0.0f;
-                missileActiveTime  = -1.0f;
+                missileActiveTime = -1.0f;
 
                 //LRKLUDGE
-                missileRMin   = 0.075F * missileRMax;
+                missileRMin = 0.075F * missileRMax;
                 missileRneMax = 0.8F * missileRMax;
                 missileRneMin = 0.2F * missileRMax;
-                missileTOF    = theMissile->GetTOF(-platform->ZPos(), platform->GetVt(), 0.0f, 0.0f, targetPtr->localData->range);
+                missileTOF =
+                    theMissile->GetTOF(-platform->ZPos(), platform->GetVt(),
+                                       0.0f, 0.0f, targetPtr->localData->range);
                 missileSeekerAz = targetPtr->localData->az;
                 missileSeekerEl = targetPtr->localData->el;
 
@@ -155,7 +163,7 @@ void FireControlComputer::HarmMode(void)
         missileTarget = FALSE;
     }
 
-    if ( not releaseConsent)
+    if (not releaseConsent)
     {
         postDrop = FALSE;
     }

@@ -35,10 +35,9 @@ public:
 
     void AddPatch(char *name, float alpha, float r, float g, float b);
     void AddPatch(char *name, float alpha);
-    AlphaPatchRecord* GetPatch(char *name);
+    AlphaPatchRecord *GetPatch(char *name);
 
     AlphaPatchRecord *PatchList;
 };
 
 #endif // _ALPHAPATCH_H_
-

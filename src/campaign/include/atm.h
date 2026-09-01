@@ -10,9 +10,9 @@
 #include "unit.h"
 #include "objectiv.h"
 #include "team.h"
-#include "CampList.h"
-#include "Manager.h"
-#include "AirUnit.h"
+#include "camplist.h"
+#include "manager.h"
+#include "airunit.h"
 
 #define ATM_STEALTH_AVAIL 0x01 // We've got stealth aircraft to use
 #define ATM_NEW_PLANES 0x04 // We've got more planes to play with
@@ -31,6 +31,7 @@ public:
     uchar schedule[ATM_MAX_CYCLES];
     uchar usage;
     ATMAirbaseClass *next;
+
 public:
     ATMAirbaseClass(void);
     ATMAirbaseClass(CampEntity ent);
@@ -55,7 +56,8 @@ public:
     short squadrons; // Number of available friendly squadrons
     short averageCAStrength; // Rolling average CA strength of CA missions
     short averageCAMissions; // Average # of CA missions being flow per hour
-    uchar currentCAMissions; // # of CA missions planned so far during current cycle
+    uchar
+        currentCAMissions; // # of CA missions planned so far during current cycle
     uchar sampleCycles; // # of cycles we've averaged missions over
     // Anything below here doesn't get transmitted
     int missionsToFill; // Amount of missions above to actually task.
@@ -64,7 +66,8 @@ public:
     List tankerList; // List of tanker track locations
     List ecmList; // List of standoff jammer locations
     List requestList; // List of mission requests yet to be processed.
-    List delayedList; // List of mission requests already handled, but not filled
+    List
+        delayedList; // List of mission requests already handled, but not filled
     F4PFList squadronList; // List of this team's squadrons
     F4PFList packageList; // List of all active packages
     ATMAirbaseClass *airbaseList; // List of active airbases
@@ -95,13 +98,14 @@ public:
     void ProcessRequest(MissionRequest request);
     Squadron FindBestAir(MissionRequest mis, GridIndex bx, GridIndex by);
     Flight FindBestAirFlight(MissionRequest mis);
-    void SendATMMessage(VU_ID from, Team to, short msg, short d1, short d2, void* d3, int flags);
+    void SendATMMessage(VU_ID from, Team to, short msg, short d1, short d2,
+                        void *d3, int flags);
     int FindTakeoffSlot(VU_ID abid, WayPoint w);
     void ScheduleAircraft(VU_ID abid, WayPoint wp, int aircraft);
     void ZapAirbase(VU_ID abid);
     void ZapSchedule(int rw, ATMAirbaseClass *airbase, int tilblock);
-    ATMAirbaseClass* FindATMAirbase(VU_ID abid);
-    ATMAirbaseClass* AddToAirbaseList(CampEntity airbase);
+    ATMAirbaseClass *FindATMAirbase(VU_ID abid);
+    ATMAirbaseClass *AddToAirbaseList(CampEntity airbase);
     int FindNearestActiveTanker(GridIndex *x, GridIndex *y, CampaignTime *time);
     int FindNearestActiveJammer(GridIndex *x, GridIndex *y, CampaignTime *time);
 };
@@ -113,26 +117,28 @@ typedef AirTaskingManagerClass *ATM;
 // Global functions
 // ==========================================
 
-enum RequIntHint   // 2001-10-27 ADDED BY S.G. Tells the RequestIntercept function not to ignore anything
+enum RequIntHint // 2001-10-27 ADDED BY S.G. Tells the RequestIntercept function not to ignore anything
 {
-    RI_NORMAL, RI_HELP
+    RI_NORMAL,
+    RI_HELP
 };
 
 extern void InitATM(void);
 
 extern void EndATM(void);
 
-extern int LoadMissionLists(char* scenario);
+extern int LoadMissionLists(char *scenario);
 
-extern int SaveMissionLists(char* scenario);
+extern int SaveMissionLists(char *scenario);
 
-extern int RequestSARMission(FlightClass* flight);
+extern int RequestSARMission(FlightClass *flight);
 
-extern void RequestIntercept(FlightClass* enemy, int who, RequIntHint hint = RI_NORMAL);
+extern void RequestIntercept(FlightClass *enemy, int who,
+                             RequIntHint hint = RI_NORMAL);
 
-extern int TargetAllSites(Objective po, int action, int team, CampaignTime startTime);
+extern int TargetAllSites(Objective po, int action, int team,
+                          CampaignTime startTime);
 
 //extern void TargetAdditionalSites (void);
 
 #endif
-

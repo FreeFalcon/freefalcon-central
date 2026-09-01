@@ -17,21 +17,21 @@
 #endif
 
 // Routine to Convert a Windows error number into a string
-#define PutErrorString(buf)  FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, \
-                                           NULL, GetLastError(),        \
-                                           MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), \
-                                           buf, sizeof(buf), NULL)
+#define PutErrorString(buf)                                                    \
+    FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, NULL, GetLastError(),            \
+                  MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT), buf, sizeof(buf), \
+                  NULL)
 
 
 // ShiError is always kills the program even when not in debug mode.
-#define ShiError( string )                                             \
-{    \
- char buffer[580];    \
-    \
- sprintf( buffer, "Error:  %0d  %s  %s", __LINE__, __FILE__, __DATE__ ); \
- MessageBox(NULL, buffer, string, MB_OK); \
- exit(-1);    \
-}
+#define ShiError(string)                                                       \
+    {                                                                          \
+        char buffer[580];                                                      \
+                                                                               \
+        sprintf(buffer, "Error:  %0d  %s  %s", __LINE__, __FILE__, __DATE__);  \
+        MessageBox(NULL, buffer, string, MB_OK);                               \
+        exit(-1);                                                              \
+    }
 
 // ShiAssert compiles to code only when in debug mode.  Otherwise, the expression is not evaluated.
 #ifdef _DEBUG
@@ -39,67 +39,81 @@
 // JB 010325
 extern int shiAssertsOn, shiWarningsOn, shiHardCrashOn;
 
-#define ShiAssert( expr ) \
- if (shiAssertsOn && !(expr)) { \
-     static int skipThisOne = FALSE; \
- \
- if (!skipThisOne) { \
- char buffer[580];    \
- int choice = IDRETRY; \
- \
- if (shiHardCrashOn) \
- *((unsigned int *) 0x00) = 0; \
- else { \
- sprintf( buffer, "Assertion at %0d  %s  %s\n", __LINE__, __FILE__, __DATE__ );\
- OutputDebugString(buffer);\
- if(strlen(buffer)) buffer[strlen(buffer) -1] = '\0';\
- choice = MessageBox(NULL, buffer, "Failed:  " #expr,   \
- MB_ICONERROR | MB_ABORTRETRYIGNORE | MB_TASKMODAL); \
- if (choice == IDABORT) { \
- exit(-1); \
- } else if (choice == IDRETRY) { \
- /*DebugBreak();*/ \
- } else if (choice == IDIGNORE) { \
- skipThisOne = TRUE; \
- } \
- } \
- } \
- }
+#define ShiAssert(expr)                                                        \
+    if (shiAssertsOn && !(expr))                                               \
+    {                                                                          \
+        static int skipThisOne = FALSE;                                        \
+                                                                               \
+        if (!skipThisOne)                                                      \
+        {                                                                      \
+            char buffer[580];                                                  \
+            int choice = IDRETRY;                                              \
+                                                                               \
+            if (shiHardCrashOn)                                                \
+                *((unsigned int *)0x00) = 0;                                   \
+            else                                                               \
+            {                                                                  \
+                sprintf(buffer, "Assertion at %0d  %s  %s\n", __LINE__,        \
+                        __FILE__, __DATE__);                                   \
+                OutputDebugString(buffer);                                     \
+                if (strlen(buffer))                                            \
+                    buffer[strlen(buffer) - 1] = '\0';                         \
+                choice = MessageBox(NULL, buffer, "Failed:  " #expr,           \
+                                    MB_ICONERROR | MB_ABORTRETRYIGNORE |       \
+                                        MB_TASKMODAL);                         \
+                if (choice == IDABORT)                                         \
+                {                                                              \
+                    exit(-1);                                                  \
+                }                                                              \
+                else if (choice == IDRETRY)                                    \
+                {                                                              \
+                    /*DebugBreak();*/                                          \
+                }                                                              \
+                else if (choice == IDIGNORE)                                   \
+                {                                                              \
+                    skipThisOne = TRUE;                                        \
+                }                                                              \
+            }                                                                  \
+        }                                                                      \
+    }
 
-#define ShiWarning( string )                                             \
-{    \
-  if (shiWarningsOn) { \
-                                            \
- char buffer[580];    \
-    \
- sprintf( buffer, "Error:  line %0d, %s on %s", __LINE__, __FILE__, __DATE__ ); \
- MessageBox(NULL, buffer, string, MB_OK); } \
-}
+#define ShiWarning(string)                                                     \
+    {                                                                          \
+        if (shiWarningsOn)                                                     \
+        {                                                                      \
+                                                                               \
+            char buffer[580];                                                  \
+                                                                               \
+            sprintf(buffer, "Error:  line %0d, %s on %s", __LINE__, __FILE__,  \
+                    __DATE__);                                                 \
+            MessageBox(NULL, buffer, string, MB_OK);                           \
+        }                                                                      \
+    }
 
-#define ShiSetAsserts( expr ) \
-{ \
- shiAssertsOn = expr; \
-}
+#define ShiSetAsserts(expr)                                                    \
+    {                                                                          \
+        shiAssertsOn = expr;                                                   \
+    }
 
 // JB 010325
-#define ShiSetWarnings( expr ) \
-{ \
- shiWarningsOn = expr; \
-}
+#define ShiSetWarnings(expr)                                                   \
+    {                                                                          \
+        shiWarningsOn = expr;                                                  \
+    }
 
-#define ShiSetHardCrash( expr ) \
-{ \
- shiHardCrashOn = expr; \
-} \
- 
+#define ShiSetHardCrash(expr)                                                  \
+    {                                                                          \
+        shiHardCrashOn = expr;                                                 \
+    }
+
 #else
-#define ShiAssert( expr )
+#define ShiAssert(expr)
 
-#define ShiWarning( string )
+#define ShiWarning(string)
 
-#define ShiSetAsserts( expr )
+#define ShiSetAsserts(expr)
 
-#define ShiSetHardCrash( expr )
+#define ShiSetHardCrash(expr)
 
 #endif
 

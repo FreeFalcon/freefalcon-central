@@ -1,15 +1,15 @@
-#ifndef  _AVIMEM_
-#define  _AVIMEM_
+#ifndef _AVIMEM_
+#define _AVIMEM_
 
-#ifdef   __cplusplus
-extern   "C"
+#ifdef __cplusplus
+extern "C"
 {
 #endif
 
-#define  AVI_MALLOC(a)     malloc(a)
-#define  AVI_FREE(a)       free(a)
+#define AVI_MALLOC(a) malloc(a)
+#define AVI_FREE(a) free(a)
 
-#ifdef   __cplusplus
+#ifdef __cplusplus
 }
 #endif
 

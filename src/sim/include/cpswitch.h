@@ -56,11 +56,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================//
     // State Information
     //====================================================//
@@ -78,16 +78,15 @@ public:
     // Runtime Member Functions
     //====================================================//
 
-    void Exec(SimBaseClass*);
+    void Exec(SimBaseClass *);
     void Display(void);
 
     //====================================================//
     // Constructors and Destructors
     //====================================================//
 
-    CPLight(ObjectInitStr*, LightInitStr*);
+    CPLight(ObjectInitStr *, LightInitStr *);
     virtual ~CPLight();
 };
 
 #endif
-

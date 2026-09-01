@@ -6,12 +6,12 @@
  *
  **********************/
 
-#include "Graphics/Include/TimeMgr.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/render3d.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/timemgr.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/render3d.h"
+#include "graphics/include/drawbsp.h"
 #include "vu2.h"
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "cmpclass.h"
 #include "campstr.h"
 #include "squadron.h"
@@ -29,8 +29,8 @@
 #include "userids.h"
 #include "textids.h"
 #include "classtbl.h"
-#include "MsgInc/FalconFlightPlanMsg.h"
-#include "Campaign.h"
+#include "msginc/falconflightplanmsg.h"
+#include "campaign.h"
 #include "railinfo.h"
 #include "sim/include/airframe.h"
 #include "sim/include/simweapn.h"
@@ -39,98 +39,98 @@
 
 enum
 {
-    POD_EMPTY             = 200001,
-    POD_FULL              = 200002,
-    POD_DIS               = 200003,
-    POD_DIFF              = 200004,
-    LAU3_EMPTY            = 200005,
-    LAU3_FULL             = 200006,
-    LAU3_DIS              = 200007,
-    LAU3_DIFF             = 200008,
-    LAU2R_EMPTY           = 200009,
-    LAU2R_FULL            = 200010,
-    LAU2R_DIS             = 200011,
-    LAU2R_DIFF            = 200012,
-    LAU2L_EMPTY           = 200013,
-    LAU2L_FULL            = 200014,
-    LAU2L_DIS             = 200015,
-    LAU2L_DIFF            = 200016,
-    SINGLE_EMPTY          = 200017,
-    SINGLE_FULL           = 200018,
-    SINGLE_DIS            = 200019,
-    SINGLE_DIFF           = 200020,
-    LAU2C_EMPTY           = 200021,
-    LAU2C_FULL            = 200022,
-    LAU2C_DIS             = 200023,
-    LAU2C_DIFF            = 200024,
-    TER_EMPTY             = 200025,
-    TER_FULL              = 200026,
-    TER_DIS               = 200027,
-    TER_DIFF              = 200028,
-    DOUBLE_TER_EMPTY      = 200029,
-    DOUBLE_TER_FULL       = 200030,
-    DOUBLE_TER_DIS        = 200031,
-    DOUBLE_TER_DIFF       = 200032,
-    TER2R_EMPTY           = 200033,
-    TER2R_FULL            = 200034,
-    TER2R_DIS             = 200035,
-    TER2R_DIFF            = 200036,
-    POD_EMPTY_DIFF        = 200037,
-    LAU3_EMPTY_DIFF       = 200038,
-    LAU2R_EMPTY_DIFF      = 200039,
-    LAU2L_EMPTY_DIFF      = 200040,
-    SINGLE_EMPTY_DIFF     = 200041,
-    LAU2C_EMPTY_DIFF      = 200042,
-    TER_EMPTY_DIFF        = 200043,
+    POD_EMPTY = 200001,
+    POD_FULL = 200002,
+    POD_DIS = 200003,
+    POD_DIFF = 200004,
+    LAU3_EMPTY = 200005,
+    LAU3_FULL = 200006,
+    LAU3_DIS = 200007,
+    LAU3_DIFF = 200008,
+    LAU2R_EMPTY = 200009,
+    LAU2R_FULL = 200010,
+    LAU2R_DIS = 200011,
+    LAU2R_DIFF = 200012,
+    LAU2L_EMPTY = 200013,
+    LAU2L_FULL = 200014,
+    LAU2L_DIS = 200015,
+    LAU2L_DIFF = 200016,
+    SINGLE_EMPTY = 200017,
+    SINGLE_FULL = 200018,
+    SINGLE_DIS = 200019,
+    SINGLE_DIFF = 200020,
+    LAU2C_EMPTY = 200021,
+    LAU2C_FULL = 200022,
+    LAU2C_DIS = 200023,
+    LAU2C_DIFF = 200024,
+    TER_EMPTY = 200025,
+    TER_FULL = 200026,
+    TER_DIS = 200027,
+    TER_DIFF = 200028,
+    DOUBLE_TER_EMPTY = 200029,
+    DOUBLE_TER_FULL = 200030,
+    DOUBLE_TER_DIS = 200031,
+    DOUBLE_TER_DIFF = 200032,
+    TER2R_EMPTY = 200033,
+    TER2R_FULL = 200034,
+    TER2R_DIS = 200035,
+    TER2R_DIFF = 200036,
+    POD_EMPTY_DIFF = 200037,
+    LAU3_EMPTY_DIFF = 200038,
+    LAU2R_EMPTY_DIFF = 200039,
+    LAU2L_EMPTY_DIFF = 200040,
+    SINGLE_EMPTY_DIFF = 200041,
+    LAU2C_EMPTY_DIFF = 200042,
+    TER_EMPTY_DIFF = 200043,
     DOUBLE_TER_EMPTY_DIFF = 200044,
-    TER2R_EMPTY_DIFF      = 200045,
-    LAU1_FULL             = 200046,
-    LAU1_FULL_DIFF        = 200047,
-    TER2L_EMPTY           = 200048,
-    TER2L_EMPTY_DIFF      = 200049,
-    TER2L_FULL            = 200050,
-    TER2L_DIS             = 200051,
-    TER2L_DIFF            = 200052,
-    DOUBLE_TER_4_DIFF     = 200053,
-    DOUBLE_TER_4   = 200054,
-    DOUBLE_TER_5L_DIFF    = 200055,
-    DOUBLE_TER_5L   = 200056,
-    DOUBLE_TER_5R_DIFF    = 200057,
-    DOUBLE_TER_5R   = 200058,
-    QUAD_EMPTY   = 200059,
-    QUAD_FULL   = 200060,
-    QUAD_DIS   = 200061,
-    QUAD_DIFF   = 200062,
-    QUAD_EMPTY_DIFF       = 200063,
-    QUAD1L   = 200064,
-    QUAD1L_DIS   = 200065,
-    QUAD1L_DIFF       = 200066,
-    QUAD1R   = 200067,
-    QUAD1R_DIS   = 200068,
-    QUAD1R_DIFF       = 200069,
-    QUAD2L   = 200070,
-    QUAD2L_DIS   = 200071,
-    QUAD2L_DIFF       = 200072,
-    QUAD2R   = 200073,
-    QUAD2R_DIS   = 200074,
-    QUAD2R_DIFF       = 200075,
-    QUAD3L   = 200076,
-    QUAD3L_DIS   = 200078,
-    QUAD3L_DIFF       = 200079,
-    QUAD3R   = 200080,
-    QUAD3R_DIS   = 200081,
-    QUAD3R_DIFF       = 200082,
-    INT_EMPTY             = 200083,
-    INT_FULL              = 200084,
-    INT_DIS               = 200085,
-    INT_DIFF              = 200086,
+    TER2R_EMPTY_DIFF = 200045,
+    LAU1_FULL = 200046,
+    LAU1_FULL_DIFF = 200047,
+    TER2L_EMPTY = 200048,
+    TER2L_EMPTY_DIFF = 200049,
+    TER2L_FULL = 200050,
+    TER2L_DIS = 200051,
+    TER2L_DIFF = 200052,
+    DOUBLE_TER_4_DIFF = 200053,
+    DOUBLE_TER_4 = 200054,
+    DOUBLE_TER_5L_DIFF = 200055,
+    DOUBLE_TER_5L = 200056,
+    DOUBLE_TER_5R_DIFF = 200057,
+    DOUBLE_TER_5R = 200058,
+    QUAD_EMPTY = 200059,
+    QUAD_FULL = 200060,
+    QUAD_DIS = 200061,
+    QUAD_DIFF = 200062,
+    QUAD_EMPTY_DIFF = 200063,
+    QUAD1L = 200064,
+    QUAD1L_DIS = 200065,
+    QUAD1L_DIFF = 200066,
+    QUAD1R = 200067,
+    QUAD1R_DIS = 200068,
+    QUAD1R_DIFF = 200069,
+    QUAD2L = 200070,
+    QUAD2L_DIS = 200071,
+    QUAD2L_DIFF = 200072,
+    QUAD2R = 200073,
+    QUAD2R_DIS = 200074,
+    QUAD2R_DIFF = 200075,
+    QUAD3L = 200076,
+    QUAD3L_DIS = 200078,
+    QUAD3L_DIFF = 200079,
+    QUAD3R = 200080,
+    QUAD3R_DIS = 200081,
+    QUAD3R_DIFF = 200082,
+    INT_EMPTY = 200083,
+    INT_FULL = 200084,
+    INT_DIS = 200085,
+    INT_DIFF = 200086,
 };
 
 extern int g_nLoadoutTimeLimit; // JB 010729
 extern bool g_bNewRackData; // JPO
 
 #define _WPN_MAX_ 6
-#define STRING_BUFFER_SIZE    10
+#define STRING_BUFFER_SIZE 10
 
 void DeleteGroupList(long ID);
 short GetFlightStatusID(Flight element);
@@ -150,12 +150,16 @@ extern short FlightStatusID[];
 OBJECTINFO Object;
 
 // Loaded stores values
-LoadoutStruct gCurStores[5]; // Last slot is the Starting list for the flight (set by kevin)
-LoadoutStruct gOriginalStores[5]; // Last slot is the Starting list for the flight (set by kevin)
-RailList      gCurRails[4]; // per AC... four max
+LoadoutStruct gCurStores
+    [5]; // Last slot is the Starting list for the flight (set by kevin)
+LoadoutStruct gOriginalStores
+    [5]; // Last slot is the Starting list for the flight (set by kevin)
+RailList gCurRails[4]; // per AC... four max
 
 long HardPoints; // number of valid hardpoints
-static long Quantity     [4][2][HARDPOINT_MAX]; // Totals [Aircraft][0=Weapon ID,1=qty][#slots for different types (can't have more types than hardpoints)]
+static long Quantity
+    [4][2]
+    [HARDPOINT_MAX]; // Totals [Aircraft][0=Weapon ID,1=qty][#slots for different types (can't have more types than hardpoints)]
 static long QuantityCount[4]; // # of Quantity slots used
 long PlaneEditList[4]; // Planes to modify when selecting stores
 long FirstPlane = 0; // 1st plane to edit
@@ -164,14 +168,14 @@ long PlaneCount = 4;
 int prevtext1 = 0;
 extern int set3DTexture;
 
-static long  _MAX_WEIGHT_[4];
-static long  _CLEAN_WEIGHT_[4];
+static long _MAX_WEIGHT_[4];
+static long _CLEAN_WEIGHT_[4];
 static float _DRAG_FACTOR_[4];
-static long  _MUNITIONS_WEIGHT_[4];
-static long  _FUEL_WEIGHT_[4];
-static long  _CURRENT_WEIGHT_[4];
-static long  RackFlag = -1;
-static long  VisFlag = -1;
+static long _MUNITIONS_WEIGHT_[4];
+static long _FUEL_WEIGHT_[4];
+static long _CURRENT_WEIGHT_[4];
+static long RackFlag = -1;
+static long VisFlag = -1;
 long gFlightOverloaded = 0;
 
 VehicleClassDataType *gVCPtr = NULL;
@@ -179,8 +183,8 @@ int gVehID = 0;
 
 static Tpoint objPos;
 static Trotation objRot;
-void PositandOrientSetData(float x, float y, float z, float pitch, float roll, float yaw,
-                           Tpoint* simView, Trotation* viewRotation);
+void PositandOrientSetData(float x, float y, float z, float pitch, float roll,
+                           float yaw, Tpoint *simView, Trotation *viewRotation);
 
 void TallyStores()
 {
@@ -217,7 +221,6 @@ void TallyStores()
             }
 
             Quantity[i][1][wid] += gCurStores[i].WeaponCount[j];
-
         }
     }
 }
@@ -270,10 +273,10 @@ short TotalAvailable(short weaponID)
                     onboard += Quantity[i][1][j];
             }
 
-        return(static_cast<short>(max(avail - onboard, 0)));
+        return (static_cast<short>(max(avail - onboard, 0)));
     }
 
-    return(0);
+    return (0);
 }
 
 void PlaceLoadedWeapons(LoadoutStruct *loadout)
@@ -320,25 +323,9 @@ void PlaceLoadedWeapons(LoadoutStruct *loadout)
 
 static short LastCount[4][HARDPOINT_MAX];
 
-ushort AttachBits[] =
-{
-    0x0000,
-    0x0001,
-    0x0003,
-    0x0007,
-    0x000f,
-    0x001f,
-    0x003f,
-    0x007f,
-    0x00ff,
-    0x01ff,
-    0x03ff,
-    0x07ff,
-    0x0fff,
-    0x1fff,
-    0x3fff,
-    0x7fff,
-    0xffff,
+ushort AttachBits[] = {
+    0x0000, 0x0001, 0x0003, 0x0007, 0x000f, 0x001f, 0x003f, 0x007f, 0x00ff,
+    0x01ff, 0x03ff, 0x07ff, 0x0fff, 0x1fff, 0x3fff, 0x7fff, 0xffff,
 };
 
 
@@ -346,17 +333,17 @@ ushort AttachBits[] =
 // experimental rack mappings
 
 
-BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPtr,
-                       short WeaponIndex, short count, short hardpoint,
-                       RailInfo *rail)
+BOOL GetJRackAndWeapon(VehicleClassDataType *vc,
+                       Falcon4EntityClassType *classPtr, short WeaponIndex,
+                       short count, short hardpoint, RailInfo *rail)
 {
     Falcon4EntityClassType *weapClassPtr;
     long bitflag;
     //Falcon4EntityClassType* rackClassPtr;
 
     //memset(rail,0,sizeof(RailInfo)); // kills the hardpoint object
-    if ( not count)
-        return(FALSE);
+    if (not count)
+        return (FALSE);
 
     weapClassPtr = &Falcon4ClassTable[WeaponDataTable[WeaponIndex].Index];
     int weaponrg = WeaponDataTable[WeaponIndex].SimweapIndex;
@@ -367,11 +354,11 @@ BOOL GetJRackAndWeapon(VehicleClassDataType* vc, Falcon4EntityClassType *classPt
 
     bitflag = 1 << hardpoint;
 
-    if ( not vc or not classPtr or not weapClassPtr)
-        return(FALSE);
+    if (not vc or not classPtr or not weapClassPtr)
+        return (FALSE);
 
-    if ( not (vc->VisibleFlags bitand bitflag))
-        return(FALSE);
+    if (not(vc->VisibleFlags bitand bitflag))
+        return (FALSE);
 
     /*
     int rackno = FindBestRackIDByPlaneAndWeapon(planerg, weaponrg, count);
@@ -418,78 +405,73 @@ struct RackData
 };
 
 // Consists of... NO_RACK,
-RackData HeliRacks[] =
-{
-    { 0, 0, 0 }, // No Rack
-    { VIS_HONERACK, VIS_HONERACK, VIS_HONERACK }, // Single
-    { VIS_HBIRACK, VIS_HBIRACK, VIS_HBIRACK }, // Double
-    { VIS_HTRIRACK, VIS_HTRIRACK, VIS_HTRIRACK }, // Tripple
-    { VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK }, // Quad
-    { VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK }, // Fiver
-    { VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK }, // Sixer
+RackData HeliRacks[] = {
+    {0, 0, 0}, // No Rack
+    {VIS_HONERACK, VIS_HONERACK, VIS_HONERACK}, // Single
+    {VIS_HBIRACK, VIS_HBIRACK, VIS_HBIRACK}, // Double
+    {VIS_HTRIRACK, VIS_HTRIRACK, VIS_HTRIRACK}, // Tripple
+    {VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK}, // Quad
+    {VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK}, // Fiver
+    {VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK}, // Sixer
 };
 
-RackData ACRacks[] =
-{
-    { 0, 0, 0 }, // No Rack
-    { VIS_SINGLE_RACK, VIS_SINGLE_RACK, VIS_SINGLE_RACK }, // Single
-    { VIS_TRIPLE_RACK, VIS_BIRACK, VIS_RTRIRACK }, // Double
-    { VIS_TRIPLE_RACK, VIS_TRIPLE_RACK, VIS_RTRIRACK }, // Tripple
-    { VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK }, // Quad
-    { VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK }, // Fiver
-    { VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK }, // Sixer
+RackData ACRacks[] = {
+    {0, 0, 0}, // No Rack
+    {VIS_SINGLE_RACK, VIS_SINGLE_RACK, VIS_SINGLE_RACK}, // Single
+    {VIS_TRIPLE_RACK, VIS_BIRACK, VIS_RTRIRACK}, // Double
+    {VIS_TRIPLE_RACK, VIS_TRIPLE_RACK, VIS_RTRIRACK}, // Tripple
+    {VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK}, // Quad
+    {VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK}, // Fiver
+    {VIS_SIX_RACK, VIS_SIX_RACK, VIS_SIX_RACK}, // Sixer
 };
 
-RackData RocketRack[] =
-{
-    { 0, 0, 0 }, // No Rack
-    { VIS_ONELAU3A, VIS_ONELAU3A, VIS_ONELAU3A }, // Single
-    { VIS_BILAU3A, VIS_BILAU3A, VIS_BILAU3A }, // Double
-    { VIS_TRILAU3A, VIS_TRILAU3A, VIS_TRILAU3A }, // Tripple
-    { 0, 0, 0 }, // Quad
-    { 0, 0, 0 }, // Fiver
-    { 0, 0, 0 }, // Sixer
+RackData RocketRack[] = {
+    {0, 0, 0}, // No Rack
+    {VIS_ONELAU3A, VIS_ONELAU3A, VIS_ONELAU3A}, // Single
+    {VIS_BILAU3A, VIS_BILAU3A, VIS_BILAU3A}, // Double
+    {VIS_TRILAU3A, VIS_TRILAU3A, VIS_TRILAU3A}, // Tripple
+    {0, 0, 0}, // Quad
+    {0, 0, 0}, // Fiver
+    {0, 0, 0}, // Sixer
 };
 
-RackData Hellfires[] =
-{
-    { 0, 0, 0 }, // No Rack
-    { VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK }, // Single
-    { VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK }, // Double
-    { VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK }, // Tripple
-    { VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK }, // Quad
-    { 0, 0, 0 }, // Fiver
-    { 0, 0, 0 }, // Sixer
+RackData Hellfires[] = {
+    {0, 0, 0}, // No Rack
+    {VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK}, // Single
+    {VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK}, // Double
+    {VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK}, // Tripple
+    {VIS_QUAD_RACK, VIS_QUAD_RACK, VIS_QUAD_RACK}, // Quad
+    {0, 0, 0}, // Fiver
+    {0, 0, 0}, // Sixer
 };
 
-RackData Maverick[] =
-{
-    { 0, 0, 0 }, // No Rack
-    { VIS_MAVRACK, VIS_MAVRACK, VIS_MAVRACK }, // Single
-    { VIS_MAVRACK, VIS_MAVRACK, VIS_MAVRACK }, // Double
-    { VIS_MAVRACK, VIS_MAVRACK, VIS_MAVRACK }, // Tripple
-    { 0, 0, 0 }, // Quad
-    { 0, 0, 0 }, // Fiver
-    { 0, 0, 0 }, // Sixer
+RackData Maverick[] = {
+    {0, 0, 0}, // No Rack
+    {VIS_MAVRACK, VIS_MAVRACK, VIS_MAVRACK}, // Single
+    {VIS_MAVRACK, VIS_MAVRACK, VIS_MAVRACK}, // Double
+    {VIS_MAVRACK, VIS_MAVRACK, VIS_MAVRACK}, // Tripple
+    {0, 0, 0}, // Quad
+    {0, 0, 0}, // Fiver
+    {0, 0, 0}, // Sixer
 };
 
 short FindRackIndex(short visID)
 {
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     int index;
 
-    if ( not visID)
-        return(0);
+    if (not visID)
+        return (0);
 
     for (index = 0; index < NumEntities; index++)
     {
         classPtr = &Falcon4ClassTable[index];
 
         if (classPtr->visType[0] == visID)
-            return(index);
+            return (index);
     }
 
-    return(0);
+    return (0);
 }
 void ConvertToIndex(RackData Rack[])
 {
@@ -600,8 +582,6 @@ BOOL GetRackAndWeapon(VehicleClassDataType* vc, short VehID, short WeaponIndex, 
     return(TRUE);
 }
 #endif
-
-
 
 
 void ClearHardPoint(long plane, long hardpoint, long, RailInfo *rail)
@@ -725,7 +705,7 @@ void Check_HTS_Tirn(DrawableBSP *plane, LoadoutStruc *stores)
 }
 #endif
 
-SimWeaponClass* InitABomb(FalconEntity* parent, ushort type, int slot);
+SimWeaponClass *InitABomb(FalconEntity *parent, ushort type, int slot);
 
 void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
 {
@@ -734,11 +714,12 @@ void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
     DrawableBSP *PlaneBSP;
     // BSPLIST *Rack;
     // BSPLIST *Weapon;
-    short /*bits,*/i;
+    short /*bits,*/ i;
 
     Plane = gUIViewer->Find((plane << 24));
 
-    if (Plane == NULL) return;
+    if (Plane == NULL)
+        return;
 
     PlaneBSP = (DrawableBSP *)Plane->object;
 
@@ -754,7 +735,9 @@ void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
     {
         // Load from back of rack to front (ie, 2 missiles on a tri-rack will
         // load into slot 1 and 2, not 0 and 1)
-        weapPtr.reset(new SimWeaponClass(WeaponDataTable[rail->hardPoint.weaponId].Index + VU_LAST_ENTITY_TYPE));
+        weapPtr.reset(
+            new SimWeaponClass(WeaponDataTable[rail->hardPoint.weaponId].Index +
+                               VU_LAST_ENTITY_TYPE));
 
         if (weapPtr)
         {
@@ -828,7 +811,7 @@ void LoadHardPoint(long plane, long hardpoint, long, RailInfo *rail)
 
 void LoadHardPoint(long plane, long num, long center)
 {
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     BSPLIST *Plane;
     BSPLIST *Rack;
     BSPLIST *Weapon;
@@ -836,9 +819,11 @@ void LoadHardPoint(long plane, long num, long center)
 
     Plane = gUIViewer->Find((plane << 24));
 
-    if (Plane == NULL) return;
+    if (Plane == NULL)
+        return;
 
-    if ( not (VisFlag bitand (1 << num))) return;
+    if (not(VisFlag bitand (1 << num)))
+        return;
 
     Rack = gUIViewer->Find((plane << 24) + (num << 16));
 
@@ -852,22 +837,28 @@ void LoadHardPoint(long plane, long num, long center)
             {
                 if (num > center)
                 {
-                    if ( not i)
-                        ((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object), i + 2);
+                    if (not i)
+                        ((DrawableBSP *)Rack->object)
+                            ->DetachChild(((DrawableBSP *)Weapon->object),
+                                          i + 2);
                     else
-                        ((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object), i);
+                        ((DrawableBSP *)Rack->object)
+                            ->DetachChild(((DrawableBSP *)Weapon->object), i);
                 }
                 else
-                    ((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object), i);
+                    ((DrawableBSP *)Rack->object)
+                        ->DetachChild(((DrawableBSP *)Weapon->object), i);
             }
             else
-                ((DrawableBSP*)Rack->object)->DetachChild(((DrawableBSP*)Weapon->object), i);
+                ((DrawableBSP *)Rack->object)
+                    ->DetachChild(((DrawableBSP *)Weapon->object), i);
 
             gUIViewer->Remove((plane << 24) + (num << 16) + i + 1);
         }
         else if (Weapon)
         {
-            ((DrawableBSP*)Plane->object)->DetachChild(((DrawableBSP*)Weapon->object), num - 1);
+            ((DrawableBSP *)Plane->object)
+                ->DetachChild(((DrawableBSP *)Weapon->object), num - 1);
             gUIViewer->Remove((plane << 24) + (num << 16) + i + 1);
         }
 
@@ -876,7 +867,8 @@ void LoadHardPoint(long plane, long num, long center)
 
     if (Rack)
     {
-        ((DrawableBSP*)Plane->object)->DetachChild(((DrawableBSP*)Rack->object), num - 1);
+        ((DrawableBSP *)Plane->object)
+            ->DetachChild(((DrawableBSP *)Rack->object), num - 1);
         gUIViewer->Remove((plane << 24) + (num << 16));
         Rack = NULL;
     }
@@ -884,21 +876,28 @@ void LoadHardPoint(long plane, long num, long center)
     if (RackFlag bitand (1 << num))
     {
         if (gCurStores[plane].WeaponCount[num] == 1)
-            Rack = gUIViewer->LoadBSP((plane << 24) + (num << 16), VIS_SINGLE_RACK);
+            Rack = gUIViewer->LoadBSP((plane << 24) + (num << 16),
+                                      VIS_SINGLE_RACK);
         else if (gCurStores[plane].WeaponCount[num] > 1)
-            Rack = gUIViewer->LoadBSP((plane << 24) + (num << 16), VIS_TRIPLE_RACK);
+            Rack = gUIViewer->LoadBSP((plane << 24) + (num << 16),
+                                      VIS_TRIPLE_RACK);
 
         if (Rack)
-            ((DrawableBSP*)Plane->object)->AttachChild(((DrawableBSP*)Rack->object), num - 1);
+            ((DrawableBSP *)Plane->object)
+                ->AttachChild(((DrawableBSP *)Rack->object), num - 1);
     }
 
-    classPtr = &Falcon4ClassTable[WeaponDataTable[gCurStores[plane].WeaponID[num]].Index];
+    classPtr =
+        &Falcon4ClassTable[WeaponDataTable[gCurStores[plane].WeaponID[num]]
+                               .Index];
 
     if (classPtr)
     {
-        for (i = 0; i < gCurStores[plane].WeaponCount[num] and i < _WPN_MAX_; i++)
+        for (i = 0; i < gCurStores[plane].WeaponCount[num] and i < _WPN_MAX_;
+             i++)
         {
-            Weapon = gUIViewer->LoadBSP((plane << 24) + (num << 16) + i + 1, classPtr->visType[0]);
+            Weapon = gUIViewer->LoadBSP((plane << 24) + (num << 16) + i + 1,
+                                        classPtr->visType[0]);
 
             if (Weapon)
             {
@@ -908,19 +907,27 @@ void LoadHardPoint(long plane, long num, long center)
                     {
                         if (num > center)
                         {
-                            if ( not i)
-                                ((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object), i + 2);
+                            if (not i)
+                                ((DrawableBSP *)Rack->object)
+                                    ->AttachChild(
+                                        ((DrawableBSP *)Weapon->object), i + 2);
                             else
-                                ((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object), i);
+                                ((DrawableBSP *)Rack->object)
+                                    ->AttachChild(
+                                        ((DrawableBSP *)Weapon->object), i);
                         }
                         else
-                            ((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object), i);
+                            ((DrawableBSP *)Rack->object)
+                                ->AttachChild(((DrawableBSP *)Weapon->object),
+                                              i);
                     }
                     else
-                        ((DrawableBSP*)Rack->object)->AttachChild(((DrawableBSP*)Weapon->object), i);
+                        ((DrawableBSP *)Rack->object)
+                            ->AttachChild(((DrawableBSP *)Weapon->object), i);
                 }
                 else
-                    ((DrawableBSP*)Plane->object)->AttachChild(((DrawableBSP*)Weapon->object), num - 1);
+                    ((DrawableBSP *)Plane->object)
+                        ->AttachChild(((DrawableBSP *)Weapon->object), num - 1);
             }
         }
 
@@ -931,8 +938,8 @@ void LoadHardPoint(long plane, long num, long center)
 void LoadFlight(VU_ID flightID)
 {
     Flight flt;
-    VehicleClassDataType* vc;
-    Falcon4EntityClassType* classPtr;
+    VehicleClassDataType *vc;
+    Falcon4EntityClassType *classPtr;
     BSPLIST *obj;
     int vid, v, i, j, ac, loads;
 
@@ -948,7 +955,8 @@ void LoadFlight(VU_ID flightID)
 
     flt = (Flight)FindUnit(flightID);
 
-    if (flt == NULL) return;
+    if (flt == NULL)
+        return;
 
     for (i = 0; i < 5; i++)
     {
@@ -974,7 +982,7 @@ void LoadFlight(VU_ID flightID)
     }
 
     if (i >= 0)
-        i ++;
+        i++;
     else
         i = 0;
 
@@ -1009,19 +1017,20 @@ void LoadFlight(VU_ID flightID)
 
         ShiAssert(obj);
 
-        if ( not i)
+        if (not i)
             Object.PosZ = 0;
 
         if (classPtr->visType[0] == MapVisId(VIS_F16C) or
-            (((DrawableBSP*)obj->object)->instance.ParentObject->nSwitches >= 10 and 
-             ((DrawableBSP*)obj->object)->instance.ParentObject->nDOFs >= 24))
+            (((DrawableBSP *)obj->object)->instance.ParentObject->nSwitches >=
+                 10 and
+             ((DrawableBSP *)obj->object)->instance.ParentObject->nDOFs >= 24))
         {
             // F16 switches/DOFS
 
             // MLR 12/26/2003 - fix loadout LOD - now the gear is closed up
-            ((DrawableBSP*)obj->object)->SetSwitchMask(5, 1);
-            ((DrawableBSP*)obj->object)->SetSwitchMask(10, 1);
-            ((DrawableBSP*)obj->object)->SetSwitchMask(31, 1);
+            ((DrawableBSP *)obj->object)->SetSwitchMask(5, 1);
+            ((DrawableBSP *)obj->object)->SetSwitchMask(10, 1);
+            ((DrawableBSP *)obj->object)->SetSwitchMask(31, 1);
 
             /* // MLR 12/26/2003 - I commented all this out.
             ((DrawableBSP*)obj->object)->SetSwitchMask(1, 1); // Landing Gear stuff
@@ -1044,9 +1053,9 @@ void LoadFlight(VU_ID flightID)
         }
         else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_HELICOPTER)
         {
-            ((DrawableBSP*)obj->object)->SetSwitchMask(0, 2); // Turn on rotors
+            ((DrawableBSP *)obj->object)->SetSwitchMask(0, 2); // Turn on rotors
 
-            if ( not i)
+            if (not i)
                 Object.PosZ = -5;
 
 
@@ -1055,7 +1064,7 @@ void LoadFlight(VU_ID flightID)
             //if(classPtr->visType[0] == MapVisId(VIS_UH60L))
             //((DrawableBSP*)obj->object)->SetSwitchMask(2, 1); // Landing Gear
             if (HardPoints > 1)
-                ((DrawableBSP*)obj->object)->SetSwitchMask(24, 1);
+                ((DrawableBSP *)obj->object)->SetSwitchMask(24, 1);
         }
         else
         {
@@ -1069,14 +1078,16 @@ void LoadFlight(VU_ID flightID)
         //Since set3DTexture is a global, it stays sets during the same session.
         //This makes sure the same texture is displayed when returning from the 3D world as well.
         if (set3DTexture not_eq -1)
-            ((DrawableBSP*)obj->object)->SetTextureSet(set3DTexture);
+            ((DrawableBSP *)obj->object)->SetTextureSet(set3DTexture);
 
         // Figure out the weapons
 
         for (j = 1; j < HardPoints; j++)
         {
             //if (g_bNewRackData)
-            GetJRackAndWeapon(vc, classPtr, gCurStores[i].WeaponID[j], gCurStores[i].WeaponCount[j], static_cast<short>(j), &gCurRails[i].rail[j]);
+            GetJRackAndWeapon(vc, classPtr, gCurStores[i].WeaponID[j],
+                              gCurStores[i].WeaponCount[j],
+                              static_cast<short>(j), &gCurRails[i].rail[j]);
             //else
             //GetRackAndWeapon(vc,static_cast<short>(vid),gCurStores[i].WeaponID[j],gCurStores[i].WeaponCount[j],static_cast<short>(j),static_cast<short>(HardPoints/2),&gCurRails[i].rail[j]);
         }
@@ -1086,15 +1097,15 @@ void LoadFlight(VU_ID flightID)
             LoadHardPoint(i, j, HardPoints / 2, &gCurRails[i].rail[j]);
         }
 
-        if ( not i)
+        if (not i)
         {
             Object.Heading = 180.0f;
             Object.Pitch = -10.0f;
-            Object.Distance = ((DrawableBSP*)obj->object)->Radius() * 3;
+            Object.Distance = ((DrawableBSP *)obj->object)->Radius() * 3;
             Object.Direction = 0.0f;
 
-            Object.MinDistance = ((DrawableBSP*)obj->object)->Radius() + 20;
-            Object.MaxDistance = ((DrawableBSP*)obj->object)->Radius() * 10;
+            Object.MinDistance = ((DrawableBSP *)obj->object)->Radius() + 20;
+            Object.MaxDistance = ((DrawableBSP *)obj->object)->Radius() * 10;
             Object.MinPitch = 0;
             Object.MaxPitch = 0;
             Object.CheckPitch = FALSE;
@@ -1103,8 +1114,9 @@ void LoadFlight(VU_ID flightID)
             Object.PosY = 0;
         }
 
-        PositandOrientSetData(Object.PosX, Object.PosY, Object.PosZ, 0.0f, 0.0f, 0.0f, &objPos, &objRot);
-        ((DrawableBSP*)obj->object)->Update(&objPos, &objRot);
+        PositandOrientSetData(Object.PosX, Object.PosY, Object.PosZ, 0.0f, 0.0f,
+                              0.0f, &objPos, &objRot);
+        ((DrawableBSP *)obj->object)->Update(&objPos, &objRot);
     }
 
     TallyStores();
@@ -1114,7 +1126,7 @@ void LoadFlight(VU_ID flightID)
 //TJL 01/02/04 Change Skin Function
 void ChangeSkin()
 {
-	BSPLIST* obj = NULL;
+    BSPLIST *obj = NULL;
     long plane = 0;
     int i;
 
@@ -1126,7 +1138,7 @@ void ChangeSkin()
     if (obj)
     {
         int newtext;
-        newtext = ((DrawableBSP*)obj->object)->GetNTextureSet() - 1;
+        newtext = ((DrawableBSP *)obj->object)->GetNTextureSet() - 1;
 
         if (newtext >= prevtext1)
         {
@@ -1144,10 +1156,9 @@ void ChangeSkin()
     for (i = 0; i < PlaneCount; i++)
     {
         obj = gUIViewer->Find((i << 24));
-        ((DrawableBSP*)obj->object)->SetTextureSet(prevtext1);
+        ((DrawableBSP *)obj->object)->SetTextureSet(prevtext1);
         set3DTexture = prevtext1;
     }
-
 }
 //end
 
@@ -1174,11 +1185,11 @@ BOOL MuniTimeCB(C_Base *control)
     _TCHAR buf[200];
 
     if ((vuxGameTime - control->GetUserNumber(0)) < VU_TICS_PER_SECOND)
-        return(FALSE);
+        return (FALSE);
 
     control->SetUserNumber(0, vuxGameTime);
 
-    txt = (C_Text*)control;
+    txt = (C_Text *)control;
 
     if (txt)
     {
@@ -1189,7 +1200,7 @@ BOOL MuniTimeCB(C_Base *control)
             // update weapon loadout if things have changed
             int numac = flt->GetTotalVehicles();
             int loads = flt->GetNumberOfLoadouts();
-            bool ref  = false;
+            bool ref = false;
 
             for (int aci = 0; aci < numac; aci++)
             {
@@ -1197,18 +1208,25 @@ BOOL MuniTimeCB(C_Base *control)
                 {
                     LoadoutStruct flightLOS;
 
-                    memcpy(&flightLOS, flt->GetLoadout(aci), sizeof(LoadoutStruct));
+                    memcpy(&flightLOS, flt->GetLoadout(aci),
+                           sizeof(LoadoutStruct));
 
-                    for (int hpi = 0; hpi < HARDPOINT_MAX ; ++hpi)
+                    for (int hpi = 0; hpi < HARDPOINT_MAX; ++hpi)
                     {
-                        if ((gOriginalStores[aci].WeaponID[hpi] not_eq flightLOS.WeaponID[hpi]) or
-                            (gOriginalStores[aci].WeaponCount[hpi] not_eq flightLOS.WeaponCount[hpi]))
+                        if ((gOriginalStores[aci].WeaponID[hpi] not_eq
+                             flightLOS.WeaponID[hpi]) or
+                            (gOriginalStores[aci].WeaponCount[hpi] not_eq
+                             flightLOS.WeaponCount[hpi]))
                         {
                             // update the info for the loadout
-                            gOriginalStores[aci].WeaponID[hpi] = flightLOS.WeaponID[hpi];
-                            gOriginalStores[aci].WeaponCount[hpi] = flightLOS.WeaponCount[hpi];
-                            gCurStores[aci].WeaponID[hpi] = flightLOS.WeaponID[hpi];
-                            gCurStores[aci].WeaponCount[hpi] = flightLOS.WeaponCount[hpi];
+                            gOriginalStores[aci].WeaponID[hpi] =
+                                flightLOS.WeaponID[hpi];
+                            gOriginalStores[aci].WeaponCount[hpi] =
+                                flightLOS.WeaponCount[hpi];
+                            gCurStores[aci].WeaponID[hpi] =
+                                flightLOS.WeaponID[hpi];
+                            gCurStores[aci].WeaponCount[hpi] =
+                                flightLOS.WeaponCount[hpi];
 
                             ref = true;
                         }
@@ -1223,7 +1241,8 @@ BOOL MuniTimeCB(C_Base *control)
             }
             else
             {
-                takeoff = (flt->GetFirstUnitWP()->GetWPDepartureTime() - vuxGameTime);
+                takeoff =
+                    (flt->GetFirstUnitWP()->GetWPDepartureTime() - vuxGameTime);
             }
 
             // 2001-10-23 MODIFIED BY S.G. Now either the original code or we are in Tac edit can go in and don't use takeoff but do just like in 'SetupMunitionsWindow' to get the time
@@ -1232,13 +1251,15 @@ BOOL MuniTimeCB(C_Base *control)
             // GetTimeString(takeoff,buf);
             // txt->Refresh();
             // txt->SetText(buf);
-            if ((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit or (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)) // JB 010729
+            if ((takeoff / VU_TICS_PER_SECOND) > g_nLoadoutTimeLimit or
+                (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)) // JB 010729
             {
                 txt->Refresh();
 
                 if (flt->GetFirstUnitWP())
                 {
-                    GetTimeString(flt->GetFirstUnitWP()->GetWPDepartureTime(), buf);
+                    GetTimeString(flt->GetFirstUnitWP()->GetWPDepartureTime(),
+                                  buf);
                     txt->SetText(buf);
                 }
                 else
@@ -1294,21 +1315,21 @@ BOOL MuniTimeCB(C_Base *control)
         }
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void DetermineWeight(VU_ID FlightID)
 {
     VehicleClassDataType *vc;
     Falcon4EntityClassType *rackPtr, *weapPtr;
-    WeaponClassDataType  *wc;
+    WeaponClassDataType *wc;
     STORESLIST *store;
     Flight flt;
-    long i, j, vid, PlaneCount/*,count,bitflag*/;
+    long i, j, vid, PlaneCount /*,count,bitflag*/;
 
     flt = (Flight)FindUnit(FlightID);
 
-    if ( not flt)
+    if (not flt)
     {
         for (i = 0; i < 4; i++)
         {
@@ -1365,7 +1386,8 @@ void DetermineWeight(VU_ID FlightID)
 
                 if (pylonid and gCurRails[i].rail[j].weaponCount)
                 {
-                    rackPtr = &Falcon4ClassTable[WeaponDataTable[pylonid].Index]; // MLR 2/29/2004 -
+                    rackPtr = &Falcon4ClassTable[WeaponDataTable[pylonid]
+                                                     .Index]; // MLR 2/29/2004 -
 
                     if (rackPtr)
                     {
@@ -1375,7 +1397,8 @@ void DetermineWeight(VU_ID FlightID)
                         {
                             _MUNITIONS_WEIGHT_[i] += (wc->Weight);
 
-                            if (vc->VisibleFlags bitand (1 << j)) // only do drag if it's visible
+                            if (vc->VisibleFlags bitand
+                                (1 << j)) // only do drag if it's visible
                                 _DRAG_FACTOR_[i] += wc->DragIndex;
                         }
                     }
@@ -1386,7 +1409,8 @@ void DetermineWeight(VU_ID FlightID)
 
                 if (rackid and gCurRails[i].rail[j].weaponCount)
                 {
-                    rackPtr = &Falcon4ClassTable[WeaponDataTable[rackid].Index]; // MLR 2/29/2004 -
+                    rackPtr = &Falcon4ClassTable[WeaponDataTable[rackid]
+                                                     .Index]; // MLR 2/29/2004 -
 
                     if (rackPtr)
                     {
@@ -1396,7 +1420,8 @@ void DetermineWeight(VU_ID FlightID)
                         {
                             _MUNITIONS_WEIGHT_[i] += (wc->Weight);
 
-                            if (vc->VisibleFlags bitand (1 << j)) // only do drag if it's visible
+                            if (vc->VisibleFlags bitand
+                                (1 << j)) // only do drag if it's visible
                                 _DRAG_FACTOR_[i] += wc->DragIndex;
                         }
                     }
@@ -1416,10 +1441,14 @@ void DetermineWeight(VU_ID FlightID)
                         if (wc)
                         {
 
-                            _MUNITIONS_WEIGHT_[i] += wc->Weight * gCurRails[i].rail[j].weaponCount;
+                            _MUNITIONS_WEIGHT_[i] +=
+                                wc->Weight * gCurRails[i].rail[j].weaponCount;
 
-                            if (vc->VisibleFlags bitand (1 << j)) // only do drag if it's visible
-                                _DRAG_FACTOR_[i] += wc->DragIndex * gCurRails[i].rail[j].weaponCount;
+                            if (vc->VisibleFlags bitand
+                                (1 << j)) // only do drag if it's visible
+                                _DRAG_FACTOR_[i] +=
+                                    wc->DragIndex *
+                                    gCurRails[i].rail[j].weaponCount;
                         }
                     }
                 }
@@ -1509,7 +1538,8 @@ void DetermineWeight(VU_ID FlightID)
 #endif
         }
 
-        _CURRENT_WEIGHT_[i] = _CLEAN_WEIGHT_[i] + _MUNITIONS_WEIGHT_[i] + _FUEL_WEIGHT_[i];
+        _CURRENT_WEIGHT_[i] =
+            _CLEAN_WEIGHT_[i] + _MUNITIONS_WEIGHT_[i] + _FUEL_WEIGHT_[i];
 
         if (_CURRENT_WEIGHT_[i] > _MAX_WEIGHT_[i])
         {
@@ -1544,12 +1574,12 @@ void SetupMunitionsWindow(VU_ID FlightID)
 
     if (flt == NULL)
     {
-        txt = (C_Text*)win->FindControl(FLIGHT_CALLSIGN);
+        txt = (C_Text *)win->FindControl(FLIGHT_CALLSIGN);
 
         if (txt)
             txt->SetText(" ");
 
-        txt = (C_Text*)win->FindControl(STATUS_FIELD);
+        txt = (C_Text *)win->FindControl(STATUS_FIELD);
 
         if (txt)
             txt->SetText(" ");
@@ -1605,7 +1635,7 @@ void SetupMunitionsWindow(VU_ID FlightID)
         return;
     }
 
-    txt = (C_Text*)win->FindControl(FLIGHT_CALLSIGN);
+    txt = (C_Text *)win->FindControl(FLIGHT_CALLSIGN);
 
     if (txt)
     {
@@ -1614,22 +1644,25 @@ void SetupMunitionsWindow(VU_ID FlightID)
     }
 
     status = 0;
-    txt = (C_Text*)win->FindControl(STATUS_FIELD);
+    txt = (C_Text *)win->FindControl(STATUS_FIELD);
 
     if (txt)
     {
         txt->SetTimerCallback(MuniTimeCB);
 
-        if (( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)) and ( not (TheCampaign.Flags bitand CAMP_LIGHT)))
+        if ((not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT)) and
+            (not(TheCampaign.Flags bitand CAMP_LIGHT)))
         {
             status = GetFlightStatusID(flt);
 
-            if ( not status)
+            if (not status)
             {
-                takeoff = flt->GetFirstUnitWP()->GetWPDepartureTime() - vuxGameTime;
+                takeoff =
+                    flt->GetFirstUnitWP()->GetWPDepartureTime() - vuxGameTime;
 
                 //if(takeoff < 120)
-                if ((takeoff / VU_TICS_PER_SECOND) < g_nLoadoutTimeLimit) // JB 010729
+                if ((takeoff / VU_TICS_PER_SECOND) <
+                    g_nLoadoutTimeLimit) // JB 010729
                     status = 1;
             }
         }
@@ -1669,7 +1702,7 @@ void SetupMunitionsWindow(VU_ID FlightID)
         }
     }
 
-    txt = (C_Text*)win->FindControl(FLIGHT_STATUS);
+    txt = (C_Text *)win->FindControl(FLIGHT_STATUS);
 
     if (txt)
     {
@@ -1696,21 +1729,21 @@ void SetupMunitionsWindow(VU_ID FlightID)
         {
             switch (i)
             {
-                case 0:
-                    btn = (C_Button *)win->FindControl(AIR_1);
-                    break;
+            case 0:
+                btn = (C_Button *)win->FindControl(AIR_1);
+                break;
 
-                case 1:
-                    btn = (C_Button *)win->FindControl(AIR_2);
-                    break;
+            case 1:
+                btn = (C_Button *)win->FindControl(AIR_2);
+                break;
 
-                case 2:
-                    btn = (C_Button *)win->FindControl(AIR_3);
-                    break;
+            case 2:
+                btn = (C_Button *)win->FindControl(AIR_3);
+                break;
 
-                case 3:
-                    btn = (C_Button *)win->FindControl(AIR_4);
-                    break;
+            case 3:
+                btn = (C_Button *)win->FindControl(AIR_4);
+                break;
             }
 
             if (btn)
@@ -1718,7 +1751,8 @@ void SetupMunitionsWindow(VU_ID FlightID)
                 btn->Refresh();
                 btn->SetState(1);
                 btn->SetFlagBitOn(C_BIT_ENABLED);
-                session = gCommsMgr->FindCampaignPlayer(flt->Id(), static_cast<uchar>(i));
+                session = gCommsMgr->FindCampaignPlayer(flt->Id(),
+                                                        static_cast<uchar>(i));
 
                 if (session)
                 {
@@ -1730,7 +1764,7 @@ void SetupMunitionsWindow(VU_ID FlightID)
                 }
 
                 btn->SetAllLabel(buf);
-                btn->Refresh();  //@ mark here:  Set pilots
+                btn->Refresh(); //@ mark here:  Set pilots
             }
 
             SetPlaneToArm(i, TRUE);
@@ -1739,21 +1773,21 @@ void SetupMunitionsWindow(VU_ID FlightID)
         {
             switch (i)
             {
-                case 0:
-                    btn = (C_Button *)win->FindControl(AIR_1);
-                    break;
+            case 0:
+                btn = (C_Button *)win->FindControl(AIR_1);
+                break;
 
-                case 1:
-                    btn = (C_Button *)win->FindControl(AIR_2);
-                    break;
+            case 1:
+                btn = (C_Button *)win->FindControl(AIR_2);
+                break;
 
-                case 2:
-                    btn = (C_Button *)win->FindControl(AIR_3);
-                    break;
+            case 2:
+                btn = (C_Button *)win->FindControl(AIR_3);
+                break;
 
-                case 3:
-                    btn = (C_Button *)win->FindControl(AIR_4);
-                    break;
+            case 3:
+                btn = (C_Button *)win->FindControl(AIR_4);
+                break;
             }
 
             if (btn)
@@ -1790,9 +1824,10 @@ void UpdateStoresTally(C_Window *win)
         if ((cur->Control_->GetID() bitand 0xff000000) == (1 << 25))
         {
             cur->Control_->Refresh();
-            avail = TotalAvailable(static_cast<short>(cur->Control_->GetID() bitand 0x0000ffff));
+            avail = TotalAvailable(
+                static_cast<short>(cur->Control_->GetID() bitand 0x0000ffff));
 
-            if ( not avail)
+            if (not avail)
             {
                 availID = TXT_SUPPLY_OUT;
                 color = 0x0000ff;
@@ -1813,8 +1848,8 @@ void UpdateStoresTally(C_Window *win)
                 color = 0x00ff00;
             }
 
-            ((C_Text*)cur->Control_)->SetText(availID);
-            ((C_Text*)cur->Control_)->SetFGColor(color);
+            ((C_Text *)cur->Control_)->SetText(availID);
+            ((C_Text *)cur->Control_)->SetFGColor(color);
             cur->Control_->Refresh();
         }
 
@@ -1823,13 +1858,14 @@ void UpdateStoresTally(C_Window *win)
         {
             cur->Control_->Refresh();
             _tcscpy(buf, " ");
-            ((C_Text*)cur->Control_)->SetText(buf);
+            ((C_Text *)cur->Control_)->SetText(buf);
 
             wid = -1;
 
             for (i = 0; i < QuantityCount[FirstPlane]; i++)
             {
-                if (Quantity[FirstPlane][0][i] == (cur->Control_->GetID() bitand 0x00ffffff))
+                if (Quantity[FirstPlane][0][i] ==
+                    (cur->Control_->GetID() bitand 0x00ffffff))
                 {
                     wid = i;
                     break;
@@ -1840,7 +1876,7 @@ void UpdateStoresTally(C_Window *win)
                 if (Quantity[FirstPlane][1][wid])
                 {
                     _stprintf(buf, "%1d", Quantity[FirstPlane][1][wid]);
-                    ((C_Text*)cur->Control_)->SetText(buf);
+                    ((C_Text *)cur->Control_)->SetText(buf);
                 }
 
             cur->Control_->Refresh();
@@ -1851,7 +1887,7 @@ void UpdateStoresTally(C_Window *win)
 
     DetermineWeight(gLoadoutFlightID);
 
-    txt = (C_Text*)win->FindControl(MAX_WEIGHT);
+    txt = (C_Text *)win->FindControl(MAX_WEIGHT);
 
     if (txt)
     {
@@ -1860,7 +1896,7 @@ void UpdateStoresTally(C_Window *win)
         txt->Refresh();
     }
 
-    txt = (C_Text*)win->FindControl(CURRENT_WEIGHT);
+    txt = (C_Text *)win->FindControl(CURRENT_WEIGHT);
 
     if (txt)
     {
@@ -1874,7 +1910,7 @@ void UpdateStoresTally(C_Window *win)
         txt->Refresh();
     }
 
-    txt = (C_Text*)win->FindControl(CLEAN_WEIGHT);
+    txt = (C_Text *)win->FindControl(CLEAN_WEIGHT);
 
     if (txt)
     {
@@ -1883,7 +1919,7 @@ void UpdateStoresTally(C_Window *win)
         txt->Refresh();
     }
 
-    txt = (C_Text*)win->FindControl(DRAG_FACTOR);
+    txt = (C_Text *)win->FindControl(DRAG_FACTOR);
 
     if (txt)
     {
@@ -1893,7 +1929,7 @@ void UpdateStoresTally(C_Window *win)
         txt->Refresh();
     }
 
-    txt = (C_Text*)win->FindControl(MUNITIONS_WEIGHT);
+    txt = (C_Text *)win->FindControl(MUNITIONS_WEIGHT);
 
     if (txt)
     {
@@ -1902,7 +1938,7 @@ void UpdateStoresTally(C_Window *win)
         txt->Refresh();
     }
 
-    txt = (C_Text*)win->FindControl(FUEL_WEIGHT);
+    txt = (C_Text *)win->FindControl(FUEL_WEIGHT);
 
     if (txt)
     {
@@ -1950,7 +1986,7 @@ void InternalArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count and not TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
-    if ( not count and count == startcount) //None available
+    if (not count and count == startcount) //None available
     {
         return;
     }
@@ -2035,7 +2071,7 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
     if (count and not TotalAvailable(static_cast<short>(weaponID)))
         count--;
 
-    if ( not count and count == startcount) //None available
+    if (not count and count == startcount) //None available
     {
         return;
     }
@@ -2085,8 +2121,11 @@ void ArmPlaneCB(long ID, short hittype, C_Base *control)
             gCurStores[i].WeaponCount[hp] = static_cast<uchar>(count);
             ClearHardPoint(i, hp, HardPoints / 2, &gCurRails[i].rail[hp]);
             //if (g_bNewRackData) {
-            Falcon4EntityClassType* classPtr = &Falcon4ClassTable[gVehID];
-            ok = GetJRackAndWeapon(gVCPtr, classPtr, gCurStores[i].WeaponID[hp], gCurStores[i].WeaponCount[hp], static_cast<short>(hp), &gCurRails[i].rail[hp]);
+            Falcon4EntityClassType *classPtr = &Falcon4ClassTable[gVehID];
+            ok = GetJRackAndWeapon(gVCPtr, classPtr, gCurStores[i].WeaponID[hp],
+                                   gCurStores[i].WeaponCount[hp],
+                                   static_cast<short>(hp),
+                                   &gCurRails[i].rail[hp]);
             //}
             //else
             // ok = GetRackAndWeapon(gVCPtr,static_cast<short>(gVehID),gCurStores[i].WeaponID[hp],gCurStores[i].WeaponCount[hp],static_cast<short>(hp),static_cast<short>(HardPoints/2),&gCurRails[i].rail[hp]);
@@ -2124,18 +2163,25 @@ void SetCurrentLoadout()
         {
             if (cur->Control_->GetGroup() == j)
             {
-                if (cur->Control_->GetID() == ((j << 16) bitor gCurStores[FirstPlane].WeaponID[j]))
+                if (cur->Control_->GetID() ==
+                    ((j << 16) bitor gCurStores[FirstPlane].WeaponID[j]))
                 {
                     Diff = 0;
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] and (gCurStores[FirstPlane].WeaponID[j] not_eq gCurStores[i].WeaponID[j] or gCurStores[FirstPlane].WeaponCount[j] not_eq gCurStores[i].WeaponCount[j]))
+                        if (PlaneEditList[i] and
+                            (gCurStores[FirstPlane].WeaponID[j] not_eq
+                                 gCurStores[i].WeaponID[j] or
+                             gCurStores[FirstPlane].WeaponCount[j] not_eq
+                                 gCurStores[i].WeaponCount[j]))
                             Diff = 1;
                     }
 
-                    cur->Control_->SetUserNumber(0, gCurStores[FirstPlane].WeaponCount[j]);
-                    short state = (gCurStores[FirstPlane].WeaponCount[j] << 1) + Diff;
+                    cur->Control_->SetUserNumber(
+                        0, gCurStores[FirstPlane].WeaponCount[j]);
+                    short state =
+                        (gCurStores[FirstPlane].WeaponCount[j] << 1) + Diff;
 
                     if (state > C_STATE_20)
                     {
@@ -2150,7 +2196,10 @@ void SetCurrentLoadout()
 
                     for (i = 0; i < 4; i++)
                     {
-                        if (PlaneEditList[i] and (cur->Control_->GetID() == ((j << 16) bitor gCurStores[i].WeaponID[j]) and i not_eq FirstPlane))
+                        if (PlaneEditList[i] and
+                            (cur->Control_->GetID() ==
+                                 ((j << 16) bitor gCurStores[i].WeaponID[j]) and
+                             i not_eq FirstPlane))
                             Diff = 1;
                     }
 
@@ -2178,26 +2227,26 @@ void SetupLoadoutDisplay()
     Flight flt;
     Squadron sqd;
     VehicleClassDataType *vc;
-    WeaponClassDataType  *wc;
-    Falcon4EntityClassType* classPtr;
+    WeaponClassDataType *wc;
+    Falcon4EntityClassType *classPtr;
     int vid, i, j, slist = -1, wtype;
     long fuel, avail;
     STORESLIST *wpn;
 
     flt = (Flight)vuDatabase->Find(gLoadoutFlightID);
 
-    if ( not flt)
+    if (not flt)
         return;
 
     sqd = (Squadron)flt->GetUnitSquadron();
 
-    if ( not sqd)
+    if (not sqd)
         return;
 
     vid = flt->GetVehicleID(0);
     vc = GetVehicleClassData(vid);
 
-    if ( not vc)
+    if (not vc)
         return;
 
     for (i = 1; i < HardPoints; i++)
@@ -2212,7 +2261,8 @@ void SetupLoadoutDisplay()
 
                     if (GetListEntryWeapon(vc->Weapon[i], j) and gStores)
                     {
-                        wpn = gStores->Find(GetListEntryWeapon(vc->Weapon[i], j));
+                        wpn =
+                            gStores->Find(GetListEntryWeapon(vc->Weapon[i], j));
 
                         if (wpn == NULL)
                         {
@@ -2220,36 +2270,41 @@ void SetupLoadoutDisplay()
                                 avail = 2000;
                             else
                             {
-                                avail = sqd->GetAvailableStores(GetListEntryWeapon(vc->Weapon[i], j));
+                                avail = sqd->GetAvailableStores(
+                                    GetListEntryWeapon(vc->Weapon[i], j));
 
                                 switch (avail)
                                 {
-                                    case 0:
-                                        break;
+                                case 0:
+                                    break;
 
-                                    case 1:
-                                        avail = 500;
-                                        break;
+                                case 1:
+                                    avail = 500;
+                                    break;
 
-                                    case 2:
-                                        avail = 1000;
-                                        break;
+                                case 2:
+                                    avail = 1000;
+                                    break;
 
-                                    default:
-                                        avail = 2000;
-                                        break;
+                                default:
+                                    avail = 2000;
+                                    break;
                                 }
                             }
 
                             fuel = 0;
-                            wc = &WeaponDataTable[GetListEntryWeapon(vc->Weapon[i], j)];
+                            wc = &WeaponDataTable[GetListEntryWeapon(
+                                vc->Weapon[i], j)];
                             classPtr = &Falcon4ClassTable[wc->Index];
 
                             if (classPtr)
                             {
-                                if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
+                                if (classPtr->vuClassData.classInfo_[VU_TYPE] ==
+                                    TYPE_MISSILE)
                                 {
-                                    if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_MISSILE_AIR_AIR)
+                                    if (classPtr->vuClassData
+                                            .classInfo_[VU_STYPE] ==
+                                        STYPE_MISSILE_AIR_AIR)
                                     {
                                         wtype = StoresList::_TYPE_MISSILE_;
                                         slist = StoresList::_AIR_TO_AIR_;
@@ -2260,23 +2315,31 @@ void SetupLoadoutDisplay()
                                         slist = StoresList::_AIR_TO_GROUND_;
                                     }
                                 }
-                                else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET or
-                                         classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER)
+                                else if (classPtr->vuClassData
+                                                 .classInfo_[VU_TYPE] ==
+                                             TYPE_ROCKET or
+                                         classPtr->vuClassData
+                                                 .classInfo_[VU_TYPE] ==
+                                             TYPE_LAUNCHER)
                                 {
                                     wtype = StoresList::_TYPE_ROCKET_;
                                     slist = StoresList::_AIR_TO_GROUND_;
                                 }
-                                else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
+                                else if (classPtr->vuClassData
+                                             .classInfo_[VU_TYPE] == TYPE_BOMB)
                                 {
                                     wtype = StoresList::_TYPE_BOMB_;
                                     slist = StoresList::_AIR_TO_GROUND_;
                                 }
-                                else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_GUN)
+                                else if (classPtr->vuClassData
+                                             .classInfo_[VU_TYPE] == TYPE_GUN)
                                 {
                                     wtype = StoresList::_TYPE_GUN_;
                                     slist = StoresList::_AIR_TO_GROUND_;
                                 }
-                                else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK)
+                                else if (classPtr->vuClassData
+                                             .classInfo_[VU_TYPE] ==
+                                         TYPE_FUEL_TANK)
                                 {
                                     wtype = StoresList::_TYPE_FUEL_;
                                     slist = StoresList::_OTHER_;
@@ -2288,17 +2351,30 @@ void SetupLoadoutDisplay()
                                     slist = StoresList::_OTHER_;
                                 }
 
-                                wpn = gStores->Create(GetListEntryWeapon(vc->Weapon[i], static_cast<short>(j)), wc->Name, wtype, wc->Weight, fuel, wc->DragIndex, static_cast<short>(avail)); // add stores wgt,drag factor
+                                wpn = gStores->Create(
+                                    GetListEntryWeapon(vc->Weapon[i],
+                                                       static_cast<short>(j)),
+                                    wc->Name, wtype, wc->Weight, fuel,
+                                    wc->DragIndex,
+                                    static_cast<short>(
+                                        avail)); // add stores wgt,drag factor
                             }
                             else
                             {
-                                wpn = gStores->Create(GetListEntryWeapon(vc->Weapon[i], static_cast<short>(j)), wc->Name, StoresList::_TYPE_OTHER_, wc->Weight, fuel, wc->DragIndex, static_cast<short>(avail)); // add stores wgt,drag factor
+                                wpn = gStores->Create(
+                                    GetListEntryWeapon(vc->Weapon[i],
+                                                       static_cast<short>(j)),
+                                    wc->Name, StoresList::_TYPE_OTHER_,
+                                    wc->Weight, fuel, wc->DragIndex,
+                                    static_cast<short>(
+                                        avail)); // add stores wgt,drag factor
                             }
 
                             gStores->Add(wpn, slist);
                         }
 
-                        wpn->HardPoint[i] = static_cast<short>(GetListEntryWeapons(vc->Weapon[i], j));
+                        wpn->HardPoint[i] = static_cast<short>(
+                            GetListEntryWeapons(vc->Weapon[i], j));
                     }
                 }
             }
@@ -2320,20 +2396,20 @@ void SetupLoadoutDisplay()
 
                         switch (avail)
                         {
-                            case 0:
-                                break;
+                        case 0:
+                            break;
 
-                            case 1:
-                                avail = 500;
-                                break;
+                        case 1:
+                            avail = 500;
+                            break;
 
-                            case 2:
-                                avail = 1000;
-                                break;
+                        case 2:
+                            avail = 1000;
+                            break;
 
-                            default:
-                                avail = 2000;
-                                break;
+                        default:
+                            avail = 2000;
+                            break;
                         }
                     }
 
@@ -2343,9 +2419,11 @@ void SetupLoadoutDisplay()
 
                     if (classPtr)
                     {
-                        if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_MISSILE)
+                        if (classPtr->vuClassData.classInfo_[VU_TYPE] ==
+                            TYPE_MISSILE)
                         {
-                            if (classPtr->vuClassData.classInfo_[VU_STYPE] == STYPE_MISSILE_AIR_AIR)
+                            if (classPtr->vuClassData.classInfo_[VU_STYPE] ==
+                                STYPE_MISSILE_AIR_AIR)
                             {
                                 wtype = StoresList::_TYPE_MISSILE_;
                                 slist = StoresList::_AIR_TO_AIR_;
@@ -2356,18 +2434,22 @@ void SetupLoadoutDisplay()
                                 slist = StoresList::_AIR_TO_GROUND_;
                             }
                         }
-                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_ROCKET or
-                                 classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_LAUNCHER)
+                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] ==
+                                     TYPE_ROCKET or
+                                 classPtr->vuClassData.classInfo_[VU_TYPE] ==
+                                     TYPE_LAUNCHER)
                         {
                             wtype = StoresList::_TYPE_ROCKET_;
                             slist = StoresList::_AIR_TO_GROUND_;
                         }
-                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_BOMB)
+                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] ==
+                                 TYPE_BOMB)
                         {
                             wtype = StoresList::_TYPE_BOMB_;
                             slist = StoresList::_AIR_TO_GROUND_;
                         }
-                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_FUEL_TANK)
+                        else if (classPtr->vuClassData.classInfo_[VU_TYPE] ==
+                                 TYPE_FUEL_TANK)
                         {
                             wtype = StoresList::_TYPE_FUEL_;
                             slist = StoresList::_OTHER_;
@@ -2379,12 +2461,20 @@ void SetupLoadoutDisplay()
                             slist = StoresList::_OTHER_;
                         }
 
-                        wpn = gStores->Create(vc->Weapon[i], wc->Name, wtype, wc->Weight, fuel, wc->DragIndex, static_cast<short>(avail)); // add stores wgt,drag factor
+                        wpn = gStores->Create(
+                            vc->Weapon[i], wc->Name, wtype, wc->Weight, fuel,
+                            wc->DragIndex,
+                            static_cast<short>(
+                                avail)); // add stores wgt,drag factor
                     }
                     else
                     {
                         slist = StoresList::_OTHER_;
-                        wpn = gStores->Create(vc->Weapon[i], wc->Name, StoresList::_TYPE_OTHER_, wc->Weight, fuel, wc->DragIndex, static_cast<short>(avail)); // add stores wgt,drag factor
+                        wpn = gStores->Create(
+                            vc->Weapon[i], wc->Name, StoresList::_TYPE_OTHER_,
+                            wc->Weight, fuel, wc->DragIndex,
+                            static_cast<short>(
+                                avail)); // add stores wgt,drag factor
                     }
 
                     gStores->Add(wpn, slist);
@@ -2422,31 +2512,31 @@ void MakeStoresList(C_Window *win, long client)
     DeleteGroupList(win->GetID());
     win->ScanClientArea(client);
 
-    lbox = (C_ListBox*)win->FindControl(WEAPON_LIST_CTRL);
+    lbox = (C_ListBox *)win->FindControl(WEAPON_LIST_CTRL);
 
     if (lbox)
     {
         switch (lbox->GetTextID())
         {
-            case SHOW_LOADOUT:
-                GetType = StoresList::_ALL_;
-                ShowLoadedOnly = TRUE;
-                break;
+        case SHOW_LOADOUT:
+            GetType = StoresList::_ALL_;
+            ShowLoadedOnly = TRUE;
+            break;
 
-            case SHOW_AA:
-                GetType = StoresList::_AIR_TO_AIR_;
-                break;
+        case SHOW_AA:
+            GetType = StoresList::_AIR_TO_AIR_;
+            break;
 
-            case SHOW_AG:
-                GetType = StoresList::_AIR_TO_GROUND_;
-                break;
+        case SHOW_AG:
+            GetType = StoresList::_AIR_TO_GROUND_;
+            break;
 
-            case SHOW_OTHER:
-                GetType = StoresList::_OTHER_;
-                break;
+        case SHOW_OTHER:
+            GetType = StoresList::_OTHER_;
+            break;
 
-            default:
-                GetType = StoresList::_ALL_;
+        default:
+            GetType = StoresList::_ALL_;
         }
     }
     else
@@ -2510,7 +2600,8 @@ void MakeStoresList(C_Window *win, long client)
             // JB 020219 Limit munition planecount to less than five otherwise we overwrite memory.
             for (i = 0; i < PlaneCount and Drawit == FALSE and i < 4; i++)
                 for (j = 1; j < HardPoints and Drawit == FALSE; j++)
-                    if (cur->ID == gCurStores[i].WeaponID[j] and gCurStores[i].WeaponCount[j])
+                    if (cur->ID == gCurStores[i].WeaponID[j] and
+                        gCurStores[i].WeaponCount[j])
                         Drawit = TRUE;
         }
         else
@@ -2532,7 +2623,7 @@ void MakeStoresList(C_Window *win, long client)
             // # in stock
             avail = TotalAvailable(static_cast<short>(cur->ID));
 
-            if ( not avail)
+            if (not avail)
             {
                 availID = TXT_SUPPLY_OUT;
                 color = 0x0000ff;
@@ -2583,11 +2674,12 @@ void MakeStoresList(C_Window *win, long client)
                 if (cur->HardPoint[i])
                 {
                     btn = new C_Button;
-                    btn->Setup(i << 16 bitor cur->ID, C_TYPE_CUSTOM, x + ((HardPoints - i) - 1) * 30 + 1, y + 4);
+                    btn->Setup(i << 16 bitor cur->ID, C_TYPE_CUSTOM,
+                               x + ((HardPoints - i) - 1) * 30 + 1, y + 4);
                     btn->SetUserNumber(1, cur->HardPoint[i]);
                     btn->SetUserNumber(2, 1);
 
-                    if ( not (VisFlag bitand (1 << (i)))) // Internal stores
+                    if (not(VisFlag bitand (1 << (i)))) // Internal stores
                     {
                         btn->SetBackImage(INT_EMPTY);
                         btn->SetImage(C_STATE_0, INT_EMPTY);
@@ -2600,196 +2692,159 @@ void MakeStoresList(C_Window *win, long client)
                     {
                         btn->SetBackImage(SINGLE_EMPTY);
                         btn->SetImage(C_STATE_0, SINGLE_EMPTY);
-                        btn->SetImage(C_STATE_1, SINGLE_EMPTY_DIFF); // should be diff
+                        btn->SetImage(C_STATE_1,
+                                      SINGLE_EMPTY_DIFF); // should be diff
                         btn->SetImage(C_STATE_2, SINGLE_FULL);
                         btn->SetImage(C_STATE_3, SINGLE_DIFF);
                         btn->SetImage(C_STATE_DISABLED, SINGLE_DIS);
                         btn->SetUserNumber(1, 1);
                         btn->SetUserNumber(2, cur->HardPoint[i]);
                     }
-                    else switch (cur->HardPoint[i])
+                    else
+                        switch (cur->HardPoint[i])
                         {
-                            case 1:
-                                switch (cur->Type)
-                                {
-                                    case StoresList::_TYPE_FUEL_:
-                                        btn->SetBackImage(POD_EMPTY);
-                                        btn->SetImage(C_STATE_0, POD_EMPTY);
-                                        btn->SetImage(C_STATE_1, POD_EMPTY_DIFF); // should be diff
-                                        btn->SetImage(C_STATE_2, POD_FULL);
-                                        btn->SetImage(C_STATE_3, POD_DIFF);
-                                        btn->SetImage(C_STATE_DISABLED, POD_DIS);
-                                        break;
-
-                                    default:
-                                        btn->SetBackImage(SINGLE_EMPTY);
-                                        btn->SetImage(C_STATE_0, SINGLE_EMPTY);
-                                        btn->SetImage(C_STATE_1, SINGLE_EMPTY_DIFF); // should be diff
-                                        btn->SetImage(C_STATE_2, SINGLE_FULL);
-                                        btn->SetImage(C_STATE_3, SINGLE_DIFF);
-                                        btn->SetImage(C_STATE_DISABLED, SINGLE_DIS);
-                                        break;
-                                }
-
+                        case 1:
+                            switch (cur->Type)
+                            {
+                            case StoresList::_TYPE_FUEL_:
+                                btn->SetBackImage(POD_EMPTY);
+                                btn->SetImage(C_STATE_0, POD_EMPTY);
+                                btn->SetImage(C_STATE_1,
+                                              POD_EMPTY_DIFF); // should be diff
+                                btn->SetImage(C_STATE_2, POD_FULL);
+                                btn->SetImage(C_STATE_3, POD_DIFF);
+                                btn->SetImage(C_STATE_DISABLED, POD_DIS);
                                 break;
 
-                            case 2:
-                                switch (cur->Type)
-                                {
-                                    case StoresList::_TYPE_MISSILE_:
-                                        btn->SetImage(C_STATE_2, LAU1_FULL);
-                                        btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
-
-                                        if (i > (HardPoints / 2))
-                                        {
-                                            btn->SetBackImage(LAU2L_EMPTY);
-                                            btn->SetImage(C_STATE_0, LAU2L_EMPTY);
-                                            btn->SetImage(C_STATE_1, LAU2L_EMPTY_DIFF); // should be diff
-                                            btn->SetImage(C_STATE_4, LAU2L_FULL);
-                                            btn->SetImage(C_STATE_5, LAU2L_DIFF);
-                                            btn->SetImage(C_STATE_DISABLED, LAU2L_DIS);
-                                        }
-                                        else if (i == (HardPoints / 2) and not (HardPoints bitand 1))
-                                        {
-                                            btn->SetBackImage(LAU2C_EMPTY);
-                                            btn->SetImage(C_STATE_0, LAU2C_EMPTY);
-                                            btn->SetImage(C_STATE_1, LAU2C_EMPTY_DIFF); // should be diff
-                                            btn->SetImage(C_STATE_4, LAU2C_FULL);
-                                            btn->SetImage(C_STATE_5, LAU2C_DIFF);
-                                            btn->SetImage(C_STATE_DISABLED, LAU2C_DIS);
-                                        }
-                                        else
-                                        {
-                                            btn->SetBackImage(LAU2R_EMPTY);
-                                            btn->SetImage(C_STATE_0, LAU2R_EMPTY);
-                                            btn->SetImage(C_STATE_1, LAU2R_EMPTY_DIFF); // should be diff
-                                            btn->SetImage(C_STATE_4, LAU2R_FULL);
-                                            btn->SetImage(C_STATE_5, LAU2R_DIFF);
-                                            btn->SetImage(C_STATE_DISABLED, LAU2R_DIS);
-                                        }
-
-                                        break;
-
-                                    default:
-                                        btn->SetImage(C_STATE_2, LAU1_FULL);
-                                        btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
-
-                                        if (i > (HardPoints / 2))
-                                        {
-                                            btn->SetBackImage(TER2L_EMPTY);
-                                            btn->SetImage(C_STATE_0, TER2L_EMPTY);
-                                            btn->SetImage(C_STATE_1, TER2L_EMPTY_DIFF); // should be diff
-                                            btn->SetImage(C_STATE_4, TER2L_FULL);
-                                            btn->SetImage(C_STATE_5, TER2L_DIFF);
-                                            btn->SetImage(C_STATE_DISABLED, TER2L_DIS);
-                                        }
-                                        else
-                                        {
-                                            btn->SetBackImage(TER2R_EMPTY);
-                                            btn->SetImage(C_STATE_0, TER2R_EMPTY);
-                                            btn->SetImage(C_STATE_1, TER2R_EMPTY_DIFF); // should be diff
-                                            btn->SetImage(C_STATE_4, TER2R_FULL);
-                                            btn->SetImage(C_STATE_5, TER2R_DIFF);
-                                            btn->SetImage(C_STATE_DISABLED, TER2R_DIS);
-                                        }
-
-                                        break;
-                                }
-
+                            default:
+                                btn->SetBackImage(SINGLE_EMPTY);
+                                btn->SetImage(C_STATE_0, SINGLE_EMPTY);
+                                btn->SetImage(
+                                    C_STATE_1,
+                                    SINGLE_EMPTY_DIFF); // should be diff
+                                btn->SetImage(C_STATE_2, SINGLE_FULL);
+                                btn->SetImage(C_STATE_3, SINGLE_DIFF);
+                                btn->SetImage(C_STATE_DISABLED, SINGLE_DIS);
                                 break;
+                            }
 
-                            case 3:
-                                switch (cur->Type)
-                                {
-                                    case StoresList::_TYPE_MISSILE_:
-                                        btn->SetBackImage(LAU3_EMPTY);
-                                        btn->SetImage(C_STATE_0, LAU3_EMPTY);
-                                        btn->SetImage(C_STATE_1, LAU3_EMPTY_DIFF); // should be diff
-                                        btn->SetImage(C_STATE_2, LAU1_FULL);
-                                        btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
+                            break;
 
-                                        if (i > (HardPoints / 2))
-                                        {
-                                            btn->SetImage(C_STATE_4, LAU2L_FULL);
-                                            btn->SetImage(C_STATE_5, LAU2L_DIFF);
-                                        }
-                                        else if (i == (HardPoints / 2) and not (HardPoints bitand 1))
-                                        {
-                                            btn->SetImage(C_STATE_4, LAU2C_FULL);
-                                            btn->SetImage(C_STATE_5, LAU2C_DIFF);
-                                        }
-                                        else
-                                        {
-                                            btn->SetImage(C_STATE_4, LAU2R_FULL);
-                                            btn->SetImage(C_STATE_5, LAU2R_DIFF);
-                                        }
-
-                                        btn->SetImage(C_STATE_6, LAU3_FULL);
-                                        btn->SetImage(C_STATE_7, LAU3_DIFF);
-                                        btn->SetImage(C_STATE_DISABLED, LAU3_DIS);
-                                        break;
-
-                                    default:
-                                        btn->SetBackImage(TER_EMPTY);
-                                        btn->SetImage(C_STATE_0, TER_EMPTY);
-                                        btn->SetImage(C_STATE_1, TER_EMPTY_DIFF); // should be diff
-                                        btn->SetImage(C_STATE_2, LAU1_FULL);
-                                        btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
-
-                                        if (i > (HardPoints / 2))
-                                        {
-                                            btn->SetImage(C_STATE_4, TER2L_FULL);
-                                            btn->SetImage(C_STATE_5, TER2L_DIFF);
-                                        }
-                                        else
-                                        {
-                                            btn->SetImage(C_STATE_4, TER2R_FULL);
-                                            btn->SetImage(C_STATE_5, TER2R_DIFF);
-                                        }
-
-                                        btn->SetImage(C_STATE_6, TER_FULL);
-                                        btn->SetImage(C_STATE_7, TER_DIFF);
-                                        btn->SetImage(C_STATE_DISABLED, TER_DIS);
-                                        break;
-                                }
-
-                                break;
-
-                            case 4:
-                                btn->SetBackImage(QUAD_EMPTY);
-                                btn->SetImage(C_STATE_0, QUAD_EMPTY);
-                                btn->SetImage(C_STATE_1, QUAD_EMPTY_DIFF); // should be diff
+                        case 2:
+                            switch (cur->Type)
+                            {
+                            case StoresList::_TYPE_MISSILE_:
+                                btn->SetImage(C_STATE_2, LAU1_FULL);
+                                btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
 
                                 if (i > (HardPoints / 2))
                                 {
-                                    btn->SetImage(C_STATE_2, QUAD1L);
-                                    btn->SetImage(C_STATE_3, QUAD1L_DIFF);
-                                    btn->SetImage(C_STATE_4, QUAD2L);
-                                    btn->SetImage(C_STATE_5, QUAD2L_DIFF);
-                                    btn->SetImage(C_STATE_6, QUAD3L);
-                                    btn->SetImage(C_STATE_7, QUAD3L_DIFF);
+                                    btn->SetBackImage(LAU2L_EMPTY);
+                                    btn->SetImage(C_STATE_0, LAU2L_EMPTY);
+                                    btn->SetImage(
+                                        C_STATE_1,
+                                        LAU2L_EMPTY_DIFF); // should be diff
+                                    btn->SetImage(C_STATE_4, LAU2L_FULL);
+                                    btn->SetImage(C_STATE_5, LAU2L_DIFF);
+                                    btn->SetImage(C_STATE_DISABLED, LAU2L_DIS);
+                                }
+                                else if (i == (HardPoints / 2) and
+                                         not(HardPoints bitand 1))
+                                {
+                                    btn->SetBackImage(LAU2C_EMPTY);
+                                    btn->SetImage(C_STATE_0, LAU2C_EMPTY);
+                                    btn->SetImage(
+                                        C_STATE_1,
+                                        LAU2C_EMPTY_DIFF); // should be diff
+                                    btn->SetImage(C_STATE_4, LAU2C_FULL);
+                                    btn->SetImage(C_STATE_5, LAU2C_DIFF);
+                                    btn->SetImage(C_STATE_DISABLED, LAU2C_DIS);
                                 }
                                 else
                                 {
-                                    btn->SetImage(C_STATE_2, QUAD1R);
-                                    btn->SetImage(C_STATE_3, QUAD1R_DIFF);
-                                    btn->SetImage(C_STATE_4, QUAD2R);
-                                    btn->SetImage(C_STATE_5, QUAD2R_DIFF);
-                                    btn->SetImage(C_STATE_6, QUAD3R);
-                                    btn->SetImage(C_STATE_7, QUAD3R_DIFF);
+                                    btn->SetBackImage(LAU2R_EMPTY);
+                                    btn->SetImage(C_STATE_0, LAU2R_EMPTY);
+                                    btn->SetImage(
+                                        C_STATE_1,
+                                        LAU2R_EMPTY_DIFF); // should be diff
+                                    btn->SetImage(C_STATE_4, LAU2R_FULL);
+                                    btn->SetImage(C_STATE_5, LAU2R_DIFF);
+                                    btn->SetImage(C_STATE_DISABLED, LAU2R_DIS);
                                 }
 
-                                btn->SetImage(C_STATE_8, QUAD_FULL);
-                                btn->SetImage(C_STATE_9, QUAD_DIFF);
-                                btn->SetImage(C_STATE_DISABLED, QUAD_DIS);
                                 break;
 
-                            case 5:
-                            case 6:
-                            default: // JPO - best of a bad lot, for > 6, we at least get some feedback
-                                btn->SetBackImage(DOUBLE_TER_EMPTY);
-                                btn->SetImage(C_STATE_0, DOUBLE_TER_EMPTY);
-                                btn->SetImage(C_STATE_1, DOUBLE_TER_DIFF); // should be diff
+                            default:
+                                btn->SetImage(C_STATE_2, LAU1_FULL);
+                                btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
+
+                                if (i > (HardPoints / 2))
+                                {
+                                    btn->SetBackImage(TER2L_EMPTY);
+                                    btn->SetImage(C_STATE_0, TER2L_EMPTY);
+                                    btn->SetImage(
+                                        C_STATE_1,
+                                        TER2L_EMPTY_DIFF); // should be diff
+                                    btn->SetImage(C_STATE_4, TER2L_FULL);
+                                    btn->SetImage(C_STATE_5, TER2L_DIFF);
+                                    btn->SetImage(C_STATE_DISABLED, TER2L_DIS);
+                                }
+                                else
+                                {
+                                    btn->SetBackImage(TER2R_EMPTY);
+                                    btn->SetImage(C_STATE_0, TER2R_EMPTY);
+                                    btn->SetImage(
+                                        C_STATE_1,
+                                        TER2R_EMPTY_DIFF); // should be diff
+                                    btn->SetImage(C_STATE_4, TER2R_FULL);
+                                    btn->SetImage(C_STATE_5, TER2R_DIFF);
+                                    btn->SetImage(C_STATE_DISABLED, TER2R_DIS);
+                                }
+
+                                break;
+                            }
+
+                            break;
+
+                        case 3:
+                            switch (cur->Type)
+                            {
+                            case StoresList::_TYPE_MISSILE_:
+                                btn->SetBackImage(LAU3_EMPTY);
+                                btn->SetImage(C_STATE_0, LAU3_EMPTY);
+                                btn->SetImage(
+                                    C_STATE_1,
+                                    LAU3_EMPTY_DIFF); // should be diff
+                                btn->SetImage(C_STATE_2, LAU1_FULL);
+                                btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
+
+                                if (i > (HardPoints / 2))
+                                {
+                                    btn->SetImage(C_STATE_4, LAU2L_FULL);
+                                    btn->SetImage(C_STATE_5, LAU2L_DIFF);
+                                }
+                                else if (i == (HardPoints / 2) and
+                                         not(HardPoints bitand 1))
+                                {
+                                    btn->SetImage(C_STATE_4, LAU2C_FULL);
+                                    btn->SetImage(C_STATE_5, LAU2C_DIFF);
+                                }
+                                else
+                                {
+                                    btn->SetImage(C_STATE_4, LAU2R_FULL);
+                                    btn->SetImage(C_STATE_5, LAU2R_DIFF);
+                                }
+
+                                btn->SetImage(C_STATE_6, LAU3_FULL);
+                                btn->SetImage(C_STATE_7, LAU3_DIFF);
+                                btn->SetImage(C_STATE_DISABLED, LAU3_DIS);
+                                break;
+
+                            default:
+                                btn->SetBackImage(TER_EMPTY);
+                                btn->SetImage(C_STATE_0, TER_EMPTY);
+                                btn->SetImage(C_STATE_1,
+                                              TER_EMPTY_DIFF); // should be diff
                                 btn->SetImage(C_STATE_2, LAU1_FULL);
                                 btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
 
@@ -2797,56 +2852,117 @@ void MakeStoresList(C_Window *win, long client)
                                 {
                                     btn->SetImage(C_STATE_4, TER2L_FULL);
                                     btn->SetImage(C_STATE_5, TER2L_DIFF);
-                                    btn->SetImage(C_STATE_10, DOUBLE_TER_5L);
-                                    btn->SetImage(C_STATE_11, DOUBLE_TER_5L_DIFF);
                                 }
                                 else
                                 {
                                     btn->SetImage(C_STATE_4, TER2R_FULL);
                                     btn->SetImage(C_STATE_5, TER2R_DIFF);
-                                    btn->SetImage(C_STATE_10, DOUBLE_TER_5R);
-                                    btn->SetImage(C_STATE_11, DOUBLE_TER_5R_DIFF);
                                 }
 
                                 btn->SetImage(C_STATE_6, TER_FULL);
                                 btn->SetImage(C_STATE_7, TER_DIFF);
-                                btn->SetImage(C_STATE_8, DOUBLE_TER_4);
-                                btn->SetImage(C_STATE_9, DOUBLE_TER_4_DIFF);
-                                btn->SetImage(C_STATE_12, DOUBLE_TER_FULL);
-                                btn->SetImage(C_STATE_13, DOUBLE_TER_DIFF);
-                                btn->SetImage(C_STATE_14, DOUBLE_TER_FULL);
-                                btn->SetImage(C_STATE_15, DOUBLE_TER_DIFF);
-                                btn->SetImage(C_STATE_16, DOUBLE_TER_FULL);
-                                btn->SetImage(C_STATE_17, DOUBLE_TER_DIFF);
-                                btn->SetImage(C_STATE_18, DOUBLE_TER_FULL);
-                                btn->SetImage(C_STATE_19, DOUBLE_TER_DIFF);
-                                btn->SetImage(C_STATE_20, DOUBLE_TER_FULL);
-                                btn->SetImage(C_STATE_DISABLED, DOUBLE_TER_DIS);
+                                btn->SetImage(C_STATE_DISABLED, TER_DIS);
                                 break;
+                            }
 
-                                // JPO - from default, to 0. Move default up to 5/6 case
-                                // this will only handle the no weapon case now I think,
-                                // which may not even exist.
-                            case 0: //marked
-                                btn->SetBackImage(POD_EMPTY);
-                                btn->SetImage(C_STATE_0, POD_EMPTY);
-                                btn->SetImage(C_STATE_1, POD_EMPTY_DIFF); // should be diff
-                                btn->SetImage(C_STATE_2, POD_FULL);
-                                btn->SetImage(C_STATE_3, POD_DIFF);
-                                btn->SetImage(C_STATE_DISABLED, POD_DIS);
-                                break;
+                            break;
+
+                        case 4:
+                            btn->SetBackImage(QUAD_EMPTY);
+                            btn->SetImage(C_STATE_0, QUAD_EMPTY);
+                            btn->SetImage(C_STATE_1,
+                                          QUAD_EMPTY_DIFF); // should be diff
+
+                            if (i > (HardPoints / 2))
+                            {
+                                btn->SetImage(C_STATE_2, QUAD1L);
+                                btn->SetImage(C_STATE_3, QUAD1L_DIFF);
+                                btn->SetImage(C_STATE_4, QUAD2L);
+                                btn->SetImage(C_STATE_5, QUAD2L_DIFF);
+                                btn->SetImage(C_STATE_6, QUAD3L);
+                                btn->SetImage(C_STATE_7, QUAD3L_DIFF);
+                            }
+                            else
+                            {
+                                btn->SetImage(C_STATE_2, QUAD1R);
+                                btn->SetImage(C_STATE_3, QUAD1R_DIFF);
+                                btn->SetImage(C_STATE_4, QUAD2R);
+                                btn->SetImage(C_STATE_5, QUAD2R_DIFF);
+                                btn->SetImage(C_STATE_6, QUAD3R);
+                                btn->SetImage(C_STATE_7, QUAD3R_DIFF);
+                            }
+
+                            btn->SetImage(C_STATE_8, QUAD_FULL);
+                            btn->SetImage(C_STATE_9, QUAD_DIFF);
+                            btn->SetImage(C_STATE_DISABLED, QUAD_DIS);
+                            break;
+
+                        case 5:
+                        case 6:
+                        default: // JPO - best of a bad lot, for > 6, we at least get some feedback
+                            btn->SetBackImage(DOUBLE_TER_EMPTY);
+                            btn->SetImage(C_STATE_0, DOUBLE_TER_EMPTY);
+                            btn->SetImage(C_STATE_1,
+                                          DOUBLE_TER_DIFF); // should be diff
+                            btn->SetImage(C_STATE_2, LAU1_FULL);
+                            btn->SetImage(C_STATE_3, LAU1_FULL_DIFF);
+
+                            if (i > (HardPoints / 2))
+                            {
+                                btn->SetImage(C_STATE_4, TER2L_FULL);
+                                btn->SetImage(C_STATE_5, TER2L_DIFF);
+                                btn->SetImage(C_STATE_10, DOUBLE_TER_5L);
+                                btn->SetImage(C_STATE_11, DOUBLE_TER_5L_DIFF);
+                            }
+                            else
+                            {
+                                btn->SetImage(C_STATE_4, TER2R_FULL);
+                                btn->SetImage(C_STATE_5, TER2R_DIFF);
+                                btn->SetImage(C_STATE_10, DOUBLE_TER_5R);
+                                btn->SetImage(C_STATE_11, DOUBLE_TER_5R_DIFF);
+                            }
+
+                            btn->SetImage(C_STATE_6, TER_FULL);
+                            btn->SetImage(C_STATE_7, TER_DIFF);
+                            btn->SetImage(C_STATE_8, DOUBLE_TER_4);
+                            btn->SetImage(C_STATE_9, DOUBLE_TER_4_DIFF);
+                            btn->SetImage(C_STATE_12, DOUBLE_TER_FULL);
+                            btn->SetImage(C_STATE_13, DOUBLE_TER_DIFF);
+                            btn->SetImage(C_STATE_14, DOUBLE_TER_FULL);
+                            btn->SetImage(C_STATE_15, DOUBLE_TER_DIFF);
+                            btn->SetImage(C_STATE_16, DOUBLE_TER_FULL);
+                            btn->SetImage(C_STATE_17, DOUBLE_TER_DIFF);
+                            btn->SetImage(C_STATE_18, DOUBLE_TER_FULL);
+                            btn->SetImage(C_STATE_19, DOUBLE_TER_DIFF);
+                            btn->SetImage(C_STATE_20, DOUBLE_TER_FULL);
+                            btn->SetImage(C_STATE_DISABLED, DOUBLE_TER_DIS);
+                            break;
+
+                            // JPO - from default, to 0. Move default up to 5/6 case
+                            // this will only handle the no weapon case now I think,
+                            // which may not even exist.
+                        case 0: //marked
+                            btn->SetBackImage(POD_EMPTY);
+                            btn->SetImage(C_STATE_0, POD_EMPTY);
+                            btn->SetImage(C_STATE_1,
+                                          POD_EMPTY_DIFF); // should be diff
+                            btn->SetImage(C_STATE_2, POD_FULL);
+                            btn->SetImage(C_STATE_3, POD_DIFF);
+                            btn->SetImage(C_STATE_DISABLED, POD_DIS);
+                            break;
                         }
 
                     btn->SetClient(static_cast<short>(client));
                     btn->SetFont(win->Font_);
                     btn->SetGroup(i);
 
-                    if ( not (VisFlag bitand (1 << (i)))) // Internal stores
+                    if (not(VisFlag bitand (1 << (i)))) // Internal stores
                         btn->SetCallback(InternalArmPlaneCB);
                     else
                         btn->SetCallback(ArmPlaneCB);
 
-                    btn->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
+                    btn->SetUserNumber(_UI95_DELGROUP_SLOT_,
+                                       _UI95_DELGROUP_ID_);
                     win->AddControl(btn);
                 }
             }
@@ -2854,7 +2970,8 @@ void MakeStoresList(C_Window *win, long client)
             line = new C_Line;
             line->Setup(C_DONT_CARE, C_TYPE_HORIZONTAL);
             line->SetXY(0, y + 25);
-            line->SetWH(win->ClientArea_[1].right - win->ClientArea_[1].left + 1, 1);
+            line->SetWH(
+                win->ClientArea_[1].right - win->ClientArea_[1].left + 1, 1);
             line->SetColor(0xad8041);
             line->SetClient(static_cast<short>(client));
             line->SetUserNumber(_UI95_DELGROUP_SLOT_, _UI95_DELGROUP_ID_);
@@ -2905,8 +3022,11 @@ void RestoreStores(C_Window *win)
                 int ok;
                 ClearHardPoint(i, j, HardPoints / 2, &gCurRails[i].rail[j]);
                 //if (g_bNewRackData) {
-                Falcon4EntityClassType* classPtr = &Falcon4ClassTable[gVehID];
-                ok = GetJRackAndWeapon(gVCPtr, classPtr, gCurStores[i].WeaponID[j], gCurStores[i].WeaponCount[j], static_cast<short>(j), &gCurRails[i].rail[j]);
+                Falcon4EntityClassType *classPtr = &Falcon4ClassTable[gVehID];
+                ok = GetJRackAndWeapon(
+                    gVCPtr, classPtr, gCurStores[i].WeaponID[j],
+                    gCurStores[i].WeaponCount[j], static_cast<short>(j),
+                    &gCurRails[i].rail[j]);
 
                 //}
                 //else
@@ -2961,9 +3081,9 @@ void UseStores()
     if (flt == NULL)
         return;
 
-    sq = (Squadron) flt->GetUnitSquadron();
+    sq = (Squadron)flt->GetUnitSquadron();
 
-    if ( not sq)
+    if (not sq)
         return;
 
     ac = flt->GetTotalVehicles();
@@ -2978,7 +3098,7 @@ void UseStores()
     {
         for (hp = 0; hp < HARDPOINT_MAX; hp++)
         {
-            if ( not gCurStores[i].WeaponCount[hp])
+            if (not gCurStores[i].WeaponCount[hp])
                 gCurStores[i].WeaponID[hp] = 0;
         }
     }
@@ -2987,16 +3107,19 @@ void UseStores()
 
     // Notify the squadron that we're returning some weapons
     if (loads < ac)
-        sq->UpdateSquadronStores(loadout[0].WeaponID, loadout[0].WeaponCount, 0, -ac);
+        sq->UpdateSquadronStores(loadout[0].WeaponID, loadout[0].WeaponCount, 0,
+                                 -ac);
     else
     {
         for (i = 0; i < loads; i++)
-            sq->UpdateSquadronStores(loadout[i].WeaponID, loadout[i].WeaponCount, 0, -1);
+            sq->UpdateSquadronStores(loadout[i].WeaponID,
+                                     loadout[i].WeaponCount, 0, -1);
     }
 
     // Notify the squadron that we've used some weapons
     for (i = 0; i < ac; i++)
-        sq->UpdateSquadronStores(gCurStores[i].WeaponID, gCurStores[i].WeaponCount, 0, 1);
+        sq->UpdateSquadronStores(gCurStores[i].WeaponID,
+                                 gCurStores[i].WeaponCount, 0, 1);
 
     // KCK: Gilman wanted weapons used by the player to have a larger effect.. This isn't exactly very easy to
     // do, because if they then change this loadout later, they won't be put back...
@@ -3030,5 +3153,6 @@ void UseStores()
 
     // Update the mission evaluator
     if (gLoadoutFlightID == FalconLocalSession->GetPlayerFlightID())
-        TheCampaign.MissionEvaluator->PreMissionEval(flt, FalconLocalSession->GetPilotSlot());
+        TheCampaign.MissionEvaluator->PreMissionEval(
+            flt, FalconLocalSession->GetPilotSlot());
 }

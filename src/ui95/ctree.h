@@ -16,14 +16,15 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
     long ID_;
     long Type_; // Menu,Info,Button... (Menu gets (+/-) in front of it)
-    long  x_, y_; // programatically set as items are open/closed
-    long  state_; // Open/Closed
+    long x_, y_; // programatically set as items are open/closed
+    long state_; // Open/Closed
     C_Base *Item_;
     TREELIST *Prev, *Next; // Icons on same level as this one
     TREELIST *Child, *Parent; // Subgroup to this list
@@ -48,7 +49,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 protected:
@@ -72,8 +74,10 @@ protected:
     IMAGE_RSC *ChildImage_[3];
 
     void (*DelCallback_)(TREELIST *);
-    BOOL (*SortCB_)(TREELIST*, TREELIST*);
-    BOOL (*SearchCB_)(TREELIST *); // used with SearchWithCB() - Kludge search engine so I can have non unique IDs
+    BOOL (*SortCB_)(TREELIST *, TREELIST *);
+    BOOL (*SearchCB_)(
+        TREELIST
+            *); // used with SearchWithCB() - Kludge search engine so I can have non unique IDs
     //
     // routines
     long CalculateTreePositions(TREELIST *top, long offx, long offy);
@@ -82,8 +86,13 @@ protected:
     TREELIST *FindItemWithCB(TREELIST *me);
     void SetControlParents(TREELIST *me);
 
-    void Add(TREELIST *loc, TREELIST *item); // Dispense with error checking (& adding to hash table)
-    void AddChild(TREELIST *loc, TREELIST *item); // Dispense with error checking (& adding to hash table)
+    void Add(TREELIST *loc,
+             TREELIST *
+                 item); // Dispense with error checking (& adding to hash table)
+    void
+    AddChild(TREELIST *loc,
+             TREELIST *
+                 item); // Dispense with error checking (& adding to hash table)
 
 public:
     C_TreeList();
@@ -126,11 +135,11 @@ public:
     void DeleteItem(long cID);
     void DeleteItem(TREELIST *item);
     void DeleteBranch(TREELIST *top);
-    void SetSearchCB(BOOL (*cb)(TREELIST*))
+    void SetSearchCB(BOOL (*cb)(TREELIST *))
     {
         SearchCB_ = cb;
     }
-    void SetSortCallback(BOOL (*cb)(TREELIST*, TREELIST*))
+    void SetSortCallback(BOOL (*cb)(TREELIST *, TREELIST *))
     {
         SortCB_ = cb;
     }
@@ -145,7 +154,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     void SetFont(long ID)
@@ -154,7 +163,7 @@ public:
     }
     long GetFont()
     {
-        return(Font_);
+        return (Font_);
     }
 
     void RemoveOldBranch(long UserSlot, long Age, TREELIST *me);
@@ -168,25 +177,27 @@ public:
     TREELIST *FindOpen(long cID);
     TREELIST *GetRoot()
     {
-        return(Root_);
+        return (Root_);
     }
     TREELIST *GetLastItem()
     {
-        return(LastFound_);
+        return (LastFound_);
     }
     TREELIST *GetNextBranch(TREELIST *me);
     TREELIST *GetChild(TREELIST *me);
     TREELIST *SearchWithCB(TREELIST *me)
     {
-        if (SearchCB_ not_eq NULL) return(FindItemWithCB(me));
+        if (SearchCB_ not_eq NULL)
+            return (FindItemWithCB(me));
 
-        return(NULL);
+        return (NULL);
     }
     void SetItemState(long cID, short newstate);
     void ToggleItemState(long cID);
     void ToggleItemState(TREELIST *item)
     {
-        if (item not_eq NULL) item->state_ = 1 - item->state_;
+        if (item not_eq NULL)
+            item->state_ = 1 - item->state_;
     }
     void SetAllBranches(long Mask, short newstate, TREELIST *me);
     void ClearAllStates(long Mask);
@@ -195,7 +206,7 @@ public:
     BOOL Process(long cID, short ButtonHitType);
     BOOL Dragable(long)
     {
-        return(GetFlags() bitand C_BIT_DRAGABLE);
+        return (GetFlags() bitand C_BIT_DRAGABLE);
     }
     void RecalcSize();
     void Refresh();
@@ -205,20 +216,25 @@ public:
     void SetSubParents(C_Window *);
     void HighLite(SCREEN *surface, UI95_RECT *cliprect);
 
-    void ReorderBranch(TREELIST *branch); // Don't DO THIS unless you really need to
+    void
+    ReorderBranch(TREELIST *branch); // Don't DO THIS unless you really need to
     void Activate();
     void Deactivate();
     C_Base *GetMe();
-    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount);
+    BOOL CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii,
+                       unsigned char ShiftStates, long RepeatCount);
 
     // Making tree branches
-    void AddTextItem(long ID, long Type, long ParentID, long TextID, long color);
+    void AddTextItem(long ID, long Type, long ParentID, long TextID,
+                     long color);
     void AddTextItem(long ID, long Type, long ParentID, char *Text, long color);
-    void AddWordWrapItem(long ID, long Type, long ParentID, long TextID, long w, long color);
+    void AddWordWrapItem(long ID, long Type, long ParentID, long TextID, long w,
+                         long color);
     void AddBitmapItem(long ID, long Type, long ParentID, long ImageID);
     void AddHelpItem(long ID, long Type, long ParentID);
     void SetHelpItemImage(long ID, long ImageID, long x, long y);
-    void SetHelpItemText(long ID, long TextID, long x, long y, long w, long color);
+    void SetHelpItemText(long ID, long TextID, long x, long y, long w,
+                         long color);
     void SetHelpFlagOn(long ID, long Flag);
     void SetHelpFlagOff(long ID, long Flag);
     void SetHelpItemFont(long ID, long FontID);
@@ -226,7 +242,7 @@ public:
 #ifdef _UI95_PARSER_
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

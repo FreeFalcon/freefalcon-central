@@ -3,9 +3,9 @@
 #include "object.h"
 #include "simveh.h"
 
-#define CONTROL_POINT_DISTANCE      2750.0F
-#define CONTROL_POINT_ELEVATION         25.0F
-#define MAGIC_NUMBER                     5.0F
+#define CONTROL_POINT_DISTANCE 2750.0F
+#define CONTROL_POINT_ELEVATION 25.0F
+#define MAGIC_NUMBER 5.0F
 
 void HeliBrain::RollAndPull(void)
 {
@@ -67,12 +67,14 @@ void HeliBrain::RollAndPull(void)
         /*-----------------------------*/
         /* inside of the control point */
         /*-----------------------------*/
-        if (targetData->range < CONTROL_POINT_DISTANCE and 
-            targetData->ataFrom > 90.0 * DTR) PullToCollisionPoint();
+        if (targetData->range < CONTROL_POINT_DISTANCE and
+            targetData->ataFrom > 90.0 * DTR)
+            PullToCollisionPoint();
         /*-----------*/
         /* otherwise */
         /*-----------*/
-        else PullToControlPoint();
+        else
+            PullToControlPoint();
     }
 }
 
@@ -159,14 +161,16 @@ void HeliBrain::MaintainClosure(void)
     /* mach hold command */
     /*-------------------*/
     if (closure - rngdot > 0.0)
-        MachHold((self->GetKias() + (closure - rngdot)), self->GetWPalt(), TRUE);
+        MachHold((self->GetKias() + (closure - rngdot)), self->GetWPalt(),
+                 TRUE);
     else
-        MachHold((self->GetKias() + (closure - rngdot)), self->GetWPalt(), FALSE);
+        MachHold((self->GetKias() + (closure - rngdot)), self->GetWPalt(),
+                 FALSE);
 }
 
 float HeliBrain::CollisionTime(void)
 {
-    return(targetData->range / -rangedot);
+    return (targetData->range / -rangedot);
 }
 
 int HeliBrain::Stagnated(void)

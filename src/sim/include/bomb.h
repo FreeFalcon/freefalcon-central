@@ -25,7 +25,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -39,27 +40,33 @@ public:
 #endif
 
 public:
-    enum BombType  { None, Chaff, Flare, Debris };
+    enum BombType
+    {
+        None,
+        Chaff,
+        Flare,
+        Debris
+    };
 
     enum
     {
-        FirstFrame =  0x00000001,
-        NeedTrail =  0x00000002,
-        IsChaff =  0x00000004,
-        IsDebris =  0x00000008,
-        IsFlare =  0x00000010,
-        IsLGB =    0x00000020,
-        IsDurandal =    0x00000040,
-        FireDurandal =  0x00000080,
-        IsGPS =         0x00000100, //MI GPS
-        IsJSOW =        0x00000200, //Cobra GPS-JSOW
+        FirstFrame = 0x00000001,
+        NeedTrail = 0x00000002,
+        IsChaff = 0x00000004,
+        IsDebris = 0x00000008,
+        IsFlare = 0x00000010,
+        IsLGB = 0x00000020,
+        IsDurandal = 0x00000040,
+        FireDurandal = 0x00000080,
+        IsGPS = 0x00000100, //MI GPS
+        IsJSOW = 0x00000200, //Cobra GPS-JSOW
     };
-#define GUIDED_BOMB ( IsLGB bitor IsGPS bitor IsJSOW ) // RED 
+#define GUIDED_BOMB (IsLGB bitor IsGPS bitor IsJSOW) // RED
 
     static float dragConstant;
 
 protected:
-    GuidanceClass* guidance;
+    GuidanceClass *guidance;
     int displayIndex;
     int bombType;
     virtual void UpdateTrail(void);
@@ -77,17 +84,20 @@ protected:
     float dragCoeff;
     SimBaseClass *hitObj;
     int flags;
+
 public:
     //sfr: added rem
-    BombClass(VU_BYTE** stream, long *rem);
-    BombClass(FILE* filePtr);
+    BombClass(VU_BYTE **stream, long *rem);
+    BombClass(FILE *filePtr);
     BombClass(int type, BombType = None);
     virtual ~BombClass(void);
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData(BombType bt);
     void CleanupLocalData();
+
 public:
     virtual int SaveSize();
     virtual int Save(VU_BYTE **stream); // returns bytes written
@@ -102,12 +112,13 @@ public:
     Tpoint JSOWtgtPos; // Cobra - JSOW target feature Index
     int isJSOW;
     float psi, theta, phi;
-    virtual void Start(vector* pos, vector* rate, float cd, SimObjectType *targetPtr = NULL);
+    virtual void Start(vector *pos, vector *rate, float cd,
+                       SimObjectType *targetPtr = NULL);
     void Init(void);
-    virtual void Init(SimInitDataClass* initData);
+    virtual void Init(SimInitDataClass *initData);
     int Exec(void);
     void GetTransform(TransformMatrix vmat);
-    void SetTarget(SimObjectType* newTarget);
+    void SetTarget(SimObjectType *newTarget);
     virtual void SetVuPosition(void);
     void SetBurstHeight(float newHeight)
     {
@@ -142,17 +153,18 @@ public:
     // MLR 3/4/2004 - Rocket/Weapon Pods
     virtual int IsLauncher(void);
     void LauInit(void);
-    int  LauGetSalvoSize(void);
+    int LauGetSalvoSize(void);
     void LauGetAttitude(float &elevation, float &azimuth);
-    int  LauGetRoundsRemaining(void);
+    int LauGetRoundsRemaining(void);
     void LauSetRoundsRemaining(int r);
     void LauAddRounds(int count);
-    int  LauGetMaxRounds(void);
-    int  LauGetWeaponId(void);
-    int  LauCheckTimer(void);
+    int LauGetMaxRounds(void);
+    int LauGetWeaponId(void);
+    int LauCheckTimer(void);
     void LauFireSalvo(void);
-    int  LauIsFiring(void);
+    int LauIsFiring(void);
     void LauRemFiredRound(void);
+
 private:
     int lauRounds; // MLR 3/4/2004 - rounds remaining in the pod
     int lauMaxRounds;
@@ -165,7 +177,6 @@ private:
     BombInputData *inputData;
     BombAuxData *auxData;
 };
-
 
 
 #endif

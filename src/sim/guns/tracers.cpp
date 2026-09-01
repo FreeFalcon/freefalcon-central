@@ -1,12 +1,12 @@
 #include "stdhdr.h"
 #include "otwdrive.h"
 #include "guns.h"
-#include "Graphics/Include/DrawTrcr.h"
-#include "Graphics/Include/Draw2d.h"
-#include "Graphics/Include/drawsgmt.h"
+#include "graphics/include/drawtrcr.h"
+#include "graphics/include/draw2d.h"
+#include "graphics/include/drawsgmt.h"
 #include "fakerand.h"
 #include "playerop.h"
-#include "DrawParticleSys.h" // RV - I-Hawk - added to support RV new trails code
+#include "drawparticlesys.h" // RV - I-Hawk - added to support RV new trails code
 
 extern bool g_bUse_DX_Engine;
 
@@ -16,7 +16,7 @@ void GunClass::InitTracers()
     float rgbScale;
     // Tpoint pos;
 
-    if ( not (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
+    if (not(typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
         return;
 
     // Tracers
@@ -42,9 +42,10 @@ void GunClass::InitTracers()
         // trail and the muzzle flash (firstTracer below) now share one warm family so they read consistently;
         // the muzzle flash is just a touch redder/brighter. rgbScale (1 at the lead tracer -> 0 down the
         // stream) keeps the head warmest and the tail a deeper orange.
-        tracers[i]->SetRGB(0.90f + rgbScale * 0.10f,   // R: ~0.90-1.00 (always warm)
-                           0.40f + rgbScale * 0.25f,   // G: ~0.40-0.65 (amber)
-                           0.0f + rgbScale * 0.05f);   // B: ~0 (no cold cast)
+        tracers[i]->SetRGB(0.90f +
+                               rgbScale * 0.10f, // R: ~0.90-1.00 (always warm)
+                           0.40f + rgbScale * 0.25f, // G: ~0.40-0.65 (amber)
+                           0.0f + rgbScale * 0.05f); // B: ~0 (no cold cast)
 
         // just test
         if (typeOfGun == GUN_TRACER_BALL)
@@ -53,25 +54,28 @@ void GunClass::InitTracers()
         trailState[i] = 0;
     }
 
-    firstTracer =  new DrawableTracer*[numFirstTracers];
+    firstTracer = new DrawableTracer*[numFirstTracers];
 
     for (i = 0; i < numFirstTracers; i++)
     {
-        firstTracer[i] = new DrawableTracer(0.5f + (float)((float)i * 0.15f)); // Artscout - 2026: reverted #31 over-wide radius (see above)
+        firstTracer[i] = new DrawableTracer(
+            0.5f +
+            (float)((float)i *
+                    0.15f)); // Artscout - 2026: reverted #31 over-wide radius (see above)
         firstTracer[i]->SetAlpha(0.7f + (float)((float)i * 0.1f));
     }
 
-    muzzleLoc = new Tpoint[ numFirstTracers ];
-    muzzleEnd = new Tpoint[ numFirstTracers ];
-    muzzleWidth = new float[ numFirstTracers ];
-    muzzleAlpha = new float[ numFirstTracers ];
+    muzzleLoc = new Tpoint[numFirstTracers];
+    muzzleEnd = new Tpoint[numFirstTracers];
+    muzzleWidth = new float[numFirstTracers];
+    muzzleAlpha = new float[numFirstTracers];
 }
 
 void GunClass::UpdateTracers(int firing)
 {
     int i;
     Tpoint pos, end;
-    GunTracerType *bulptr;
+    GunTracerType* bulptr;
 
     // JB 010108 Update is being called without init
     if (tracers == NULL or trailState == NULL)
@@ -86,7 +90,7 @@ void GunClass::UpdateTracers(int firing)
     {
         for (i = 0; i < numFirstTracers; i++)
         {
-            if ( not firstTracer[i]->InDisplayList())
+            if (not firstTracer[i]->InDisplayList())
             {
                 OTWDriver.InsertObject(firstTracer[i]);
                 firstTracer[i]->SetAlpha(0.0f);
@@ -98,9 +102,11 @@ void GunClass::UpdateTracers(int firing)
             // just brighter/redder so it still reads as a flash rather than the old red(1,0.2,0)+yellow(1,1,0.2)
             // mismatch that looked disconnected from the normalized tracers.
             if (i bitand 1)
-                firstTracer[i]->SetRGB(1.0f, 0.35f, 0.0f);   // hotter core of the flash (orange-red)
+                firstTracer[i]->SetRGB(
+                    1.0f, 0.35f, 0.0f); // hotter core of the flash (orange-red)
             else
-                firstTracer[i]->SetRGB(1.0f, 0.55f, 0.05f);  // warm amber, matches the trail
+                firstTracer[i]->SetRGB(1.0f, 0.55f,
+                                       0.05f); // warm amber, matches the trail
 
             firstTracer[i]->SetWidth(max(0.10f, muzzleWidth[i] * 0.6f));
             firstTracer[i]->Update(&muzzleEnd[i], &muzzleLoc[i]);
@@ -147,9 +153,16 @@ void GunClass::UpdateTracers(int firing)
             // frame rate: during load and master-mode (MRM<->DF) transitions the FPS drops, frameTime grows, and whole
             // bursts come out as giant lasers until the FPS settles. Decouple it -> a FIXED nominal frame time, so the
             // streak is a constant length regardless of FPS / mode switches (matches the old 60 FPS look on the flat path).
-            extern bool g_bUseOpenXR; extern float g_fTracerStreak; extern float g_fVrTracerStreak;
-            const float kNominalFrameTime = 0.0166f;   // ~60 FPS reference (FPS-independent streak length)
-            float rtmp = kNominalFrameTime * (g_bUseOpenXR ? g_fVrTracerStreak : g_fTracerStreak);   // #31 long trail (flat); VR shortens
+            extern bool g_bUseOpenXR;
+            extern float g_fTracerStreak;
+            extern float g_fVrTracerStreak;
+            const float kNominalFrameTime =
+                0.0166f; // ~60 FPS reference (FPS-independent streak length)
+            float rtmp =
+                kNominalFrameTime *
+                (g_bUseOpenXR ?
+                     g_fVrTracerStreak :
+                     g_fTracerStreak); // #31 long trail (flat); VR shortens
             end.x = bulptr->x - bulptr->xdot * rtmp;
             end.y = bulptr->y - bulptr->ydot * rtmp;
             end.z = bulptr->z - bulptr->zdot * rtmp;
@@ -180,7 +193,7 @@ void GunClass::CleanupTracers()
 {
     int i;
 
-    if ( not (typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
+    if (not(typeOfGun == GUN_TRACER or typeOfGun == GUN_TRACER_BALL))
     {
         FireShell(NULL);
         return;
@@ -204,12 +217,12 @@ void GunClass::CleanupTracers()
     // delete [] bullets;
     if (tracers)
     {
-        delete [] tracers;
+        delete[] tracers;
     }
 
     if (trailState)
     {
-        delete [] trailState;
+        delete[] trailState;
     }
 
     tracers = NULL;
@@ -229,22 +242,22 @@ void GunClass::CleanupTracers()
 
     if (muzzleLoc)
     {
-        delete [] muzzleLoc;
+        delete[] muzzleLoc;
     }
 
     if (muzzleEnd)
     {
-        delete [] muzzleEnd;
+        delete[] muzzleEnd;
     }
 
     if (muzzleWidth)
     {
-        delete [] muzzleWidth;
+        delete[] muzzleWidth;
     }
 
     if (muzzleAlpha)
     {
-        delete [] muzzleAlpha;
+        delete[] muzzleAlpha;
     }
 
     muzzleLoc = NULL;
@@ -264,7 +277,7 @@ void GunClass::CleanupTracers()
             firstTracer[i] = NULL;
         }
 
-        delete [] firstTracer;
+        delete[] firstTracer;
         firstTracer = NULL;
     }
 }

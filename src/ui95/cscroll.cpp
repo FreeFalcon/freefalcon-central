@@ -16,18 +16,10 @@ enum
     CSCR_SETBGLINE,
 };
 
-char *C_Scr_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[BGIMAGE]",
-    "[SLIDERIMAGE]",
-    "[SLIDERRECT]",
-    "[COLORS]",
-    "[BUTTONIMAGES]",
-    "[INCREMENT]",
-    "[BGLINE]",
-    0,
+char *C_Scr_Tokens[] = {
+    "[NOTHING]",    "[SETUP]",  "[BGIMAGE]",      "[SLIDERIMAGE]",
+    "[SLIDERRECT]", "[COLORS]", "[BUTTONIMAGES]", "[INCREMENT]",
+    "[BGLINE]",     0,
 };
 
 #endif
@@ -64,7 +56,8 @@ C_ScrollBar::C_ScrollBar() : C_Control()
     SliderRect_.right = 0;
     SliderRect_.bottom = 0;
 
-    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor
+                    C_BIT_SELECTABLE bitor C_BIT_MOUSEOVER;
 }
 
 C_ScrollBar::C_ScrollBar(char **stream) : C_Control(stream)
@@ -81,7 +74,7 @@ C_ScrollBar::~C_ScrollBar()
 
 long C_ScrollBar::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_ScrollBar::Setup(long ID, short Type)
@@ -139,7 +132,7 @@ void C_ScrollBar::Cleanup()
 
 void C_ScrollBar::SetBgImage(long ImageID)
 {
-    if ( not BgImage_)
+    if (not BgImage_)
     {
         BgImage_ = new O_Output;
         BgImage_->SetOwner(this);
@@ -176,7 +169,8 @@ void C_ScrollBar::SetColors(COLORREF lite, COLORREF medium, COLORREF dark)
     dark_ = dark;
 }
 
-void C_ScrollBar::SetButtonImages(long MinusUp, long MinusDown, long PlusUp, long PlusDown)
+void C_ScrollBar::SetButtonImages(long MinusUp, long MinusDown, long PlusUp,
+                                  long PlusDown)
 {
     IMAGE_RSC *tmp;
 
@@ -242,9 +236,11 @@ void C_ScrollBar::SetButtonImages(long MinusUp, long MinusDown, long PlusUp, lon
         Plus_->SetFlags(GetFlags());
 
         if (GetType() == C_TYPE_VERTICAL)
-            Plus_->SetXY(GetX() + GetW() / 2 - Plus_->GetW() / 2, GetY() + GetH() - (tmp->Header->h));
+            Plus_->SetXY(GetX() + GetW() / 2 - Plus_->GetW() / 2,
+                         GetY() + GetH() - (tmp->Header->h));
         else if (GetType() == C_TYPE_HORIZONTAL)
-            Plus_->SetXY(GetX() + GetW() - (tmp->Header->w), GetY() + GetH() / 2 - Plus_->GetH() / 2);
+            Plus_->SetXY(GetX() + GetW() - (tmp->Header->w),
+                         GetY() + GetH() / 2 - Plus_->GetH() / 2);
     }
     else
     {
@@ -255,9 +251,11 @@ void C_ScrollBar::SetButtonImages(long MinusUp, long MinusDown, long PlusUp, lon
         Plus_->SetFlags(GetFlags());
 
         if (GetType() == C_TYPE_VERTICAL)
-            Plus_->SetXY(GetX() + GetW() / 2 - Plus_->GetW() / 2, GetY() + GetH() - (tmp->Header->h));
+            Plus_->SetXY(GetX() + GetW() / 2 - Plus_->GetW() / 2,
+                         GetY() + GetH() - (tmp->Header->h));
         else if (GetType() == C_TYPE_HORIZONTAL)
-            Plus_->SetXY(GetX() + GetW() - (tmp->Header->w), GetY() + GetH() / 2 - Plus_->GetH() / 2);
+            Plus_->SetXY(GetX() + GetW() - (tmp->Header->w),
+                         GetY() + GetH() / 2 - Plus_->GetH() / 2);
     }
 }
 
@@ -272,81 +270,80 @@ void C_ScrollBar::CalcRanges()
 
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            if (Minus_)
-                rect.top += Minus_->GetH();
+    case C_TYPE_VERTICAL:
+        if (Minus_)
+            rect.top += Minus_->GetH();
 
-            if (Plus_)
-                rect.bottom -= Plus_->GetH();
+        if (Plus_)
+            rect.bottom -= Plus_->GetH();
 
-            MinPos_ = rect.top;
-            MaxPos_ = rect.bottom;
+        MinPos_ = rect.top;
+        MaxPos_ = rect.bottom;
 
-            if (Slider_)
-                MaxPos_ -= Slider_->Header->h;
-            else
-            {
-                SliderRect_.left = 0;
-                SliderRect_.right = GetW();
-                SliderRect_.top = 0;
-                SliderRect_.bottom = GetW();
-                MaxPos_ -= GetW();
-            }
+        if (Slider_)
+            MaxPos_ -= Slider_->Header->h;
+        else
+        {
+            SliderRect_.left = 0;
+            SliderRect_.right = GetW();
+            SliderRect_.top = 0;
+            SliderRect_.bottom = GetW();
+            MaxPos_ -= GetW();
+        }
 
-            if (SY_ < MinPos_)
-                SY_ = MinPos_;
+        if (SY_ < MinPos_)
+            SY_ = MinPos_;
 
-            if (SY_ > MaxPos_)
-                SY_ = MaxPos_;
+        if (SY_ > MaxPos_)
+            SY_ = MaxPos_;
 
-            if (GetFlags() bitand C_BIT_USELINE)
-            {
-                BGX_ = GetW() / 2;
-                BGY_ = rect.top;
-                BGW_ = 1;
-                BGH_ = rect.bottom - rect.top;
-            }
+        if (GetFlags() bitand C_BIT_USELINE)
+        {
+            BGX_ = GetW() / 2;
+            BGY_ = rect.top;
+            BGW_ = 1;
+            BGH_ = rect.bottom - rect.top;
+        }
 
-            break;
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            if (Minus_)
-                rect.left += Minus_->GetH();
+    case C_TYPE_HORIZONTAL:
+        if (Minus_)
+            rect.left += Minus_->GetH();
 
-            if (Plus_)
-                rect.right -= Plus_->GetH();
+        if (Plus_)
+            rect.right -= Plus_->GetH();
 
-            MinPos_ = rect.left;
-            MaxPos_ = rect.right;
+        MinPos_ = rect.left;
+        MaxPos_ = rect.right;
 
-            if (Slider_)
-                MaxPos_ -= Slider_->Header->w;
-            else
-            {
-                SliderRect_.left = 0;
-                SliderRect_.right = GetH();
-                SliderRect_.top = 0;
-                SliderRect_.bottom = GetH();
-                MaxPos_ -= GetH();
-            }
+        if (Slider_)
+            MaxPos_ -= Slider_->Header->w;
+        else
+        {
+            SliderRect_.left = 0;
+            SliderRect_.right = GetH();
+            SliderRect_.top = 0;
+            SliderRect_.bottom = GetH();
+            MaxPos_ -= GetH();
+        }
 
-            if (SX_ < MinPos_)
-                SX_ = MinPos_;
+        if (SX_ < MinPos_)
+            SX_ = MinPos_;
 
-            if (SX_ > MaxPos_)
-                SX_ = MaxPos_;
+        if (SX_ > MaxPos_)
+            SX_ = MaxPos_;
 
-            if (GetFlags() bitand C_BIT_USELINE)
-            {
-                BGY_ = rect.left;
-                BGX_ = GetH() / 2;
-                BGW_ = rect.right - rect.left;
-                BGH_ = 1;
-            }
+        if (GetFlags() bitand C_BIT_USELINE)
+        {
+            BGY_ = rect.left;
+            BGX_ = GetH() / 2;
+            BGW_ = rect.right - rect.left;
+            BGH_ = 1;
+        }
 
-            break;
+        break;
     }
-
 }
 
 void C_ScrollBar::UpdatePosition()
@@ -355,11 +352,16 @@ void C_ScrollBar::UpdatePosition()
 
     if (GetType() == C_TYPE_VERTICAL)
     {
-        vl = (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top);
+        vl = (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom -
+              Parent_->ClientArea_[GetClient()].top);
 
-        if ( not vl) vl = 1;
+        if (not vl)
+            vl = 1;
 
-        SY_ = ((Parent_->VY_[GetClient()] - Parent_->ClientArea_[GetClient()].top) * (MaxPos_ - MinPos_) / vl) + MinPos_;
+        SY_ = ((Parent_->VY_[GetClient()] -
+                Parent_->ClientArea_[GetClient()].top) *
+               (MaxPos_ - MinPos_) / vl) +
+              MinPos_;
 
         if (SY_ < MinPos_)
             SY_ = MinPos_;
@@ -369,11 +371,16 @@ void C_ScrollBar::UpdatePosition()
     }
     else if (GetType() == C_TYPE_HORIZONTAL)
     {
-        vl = (VirtualW_ + Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left);
+        vl = (VirtualW_ + Parent_->ClientArea_[GetClient()].right -
+              Parent_->ClientArea_[GetClient()].left);
 
-        if ( not vl) vl = 1;
+        if (not vl)
+            vl = 1;
 
-        SX_ = ((Parent_->VX_[GetClient()] - Parent_->ClientArea_[GetClient()].left) * (MaxPos_ - MinPos_) / vl) + MinPos_;
+        SX_ = ((Parent_->VX_[GetClient()] -
+                Parent_->ClientArea_[GetClient()].left) *
+               (MaxPos_ - MinPos_) / vl) +
+              MinPos_;
 
         if (SX_ < MinPos_)
             SX_ = MinPos_;
@@ -385,279 +392,339 @@ void C_ScrollBar::UpdatePosition()
 
 long C_ScrollBar::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready())
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready())
+        return (0);
 
-    if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))
-        return(0);
+    if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or
+        relY > (GetY() + GetH()))
+        return (0);
 
     if (Minus_)
     {
-        ControlPressed_ = static_cast<short>(Minus_->CheckHotSpots(relX, relY)); 
+        ControlPressed_ = static_cast<short>(Minus_->CheckHotSpots(relX, relY));
 
         if (ControlPressed_)
         {
             SetRelXY(relX - GetX(), relY - GetY());
-            return(GetID());
+            return (GetID());
         }
     }
 
     if (Plus_)
     {
-        ControlPressed_ = static_cast<short>(Plus_->CheckHotSpots(relX, relY)); 
+        ControlPressed_ = static_cast<short>(Plus_->CheckHotSpots(relX, relY));
 
         if (ControlPressed_)
         {
             SetRelXY(relX - GetX(), relY - GetY());
-            return(GetID());
+            return (GetID());
         }
     }
 
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            if (Slider_)
-            {
-                if (relY < (GetY() + SY_)) //+MinPos_))
-                    ControlPressed_ = 1;
-                else if (relY > (GetY() + SY_ + (Slider_->Header->h))) //+MinPos_))
-                    ControlPressed_ = 2;
-                else
-                    ControlPressed_ = 3;
-            }
+    case C_TYPE_VERTICAL:
+        if (Slider_)
+        {
+            if (relY < (GetY() + SY_)) //+MinPos_))
+                ControlPressed_ = 1;
+            else if (relY > (GetY() + SY_ + (Slider_->Header->h))) //+MinPos_))
+                ControlPressed_ = 2;
             else
-            {
-                if (relY < (GetY() + SY_)) //+MinPos_))
-                    ControlPressed_ = 1;
-                else if (relY > (GetY() + SY_ + (SliderRect_.bottom - SliderRect_.top))) //+MinPos_))
-                    ControlPressed_ = 2;
-                else
-                    ControlPressed_ = 3;
-            }
-
-            SetRelXY(relX - GetX(), relY - GetY());
-            return(GetID());
-            break;
-
-        case C_TYPE_HORIZONTAL:
-            if (Slider_)
-            {
-                if (relX < (GetX() + SX_ + MinPos_))
-                    ControlPressed_ = 1;
-                else if (relX > (GetX() + SX_ + (Slider_->Header->w) + MinPos_))
-                    ControlPressed_ = 2;
-                else
-                    ControlPressed_ = 3;
-            }
+                ControlPressed_ = 3;
+        }
+        else
+        {
+            if (relY < (GetY() + SY_)) //+MinPos_))
+                ControlPressed_ = 1;
+            else if (relY >
+                     (GetY() + SY_ +
+                      (SliderRect_.bottom - SliderRect_.top))) //+MinPos_))
+                ControlPressed_ = 2;
             else
-            {
-                if (relX < (GetX() + SX_ + MinPos_))
-                    ControlPressed_ = 1;
-                else if (relX > (GetX() + SX_ + (SliderRect_.right - SliderRect_.left) + MinPos_))
-                    ControlPressed_ = 2;
-                else
-                    ControlPressed_ = 3;
-            }
+                ControlPressed_ = 3;
+        }
 
-            SetRelXY(relX - GetX(), relY - GetY());
-            return(GetID());
-            break;
+        SetRelXY(relX - GetX(), relY - GetY());
+        return (GetID());
+        break;
+
+    case C_TYPE_HORIZONTAL:
+        if (Slider_)
+        {
+            if (relX < (GetX() + SX_ + MinPos_))
+                ControlPressed_ = 1;
+            else if (relX > (GetX() + SX_ + (Slider_->Header->w) + MinPos_))
+                ControlPressed_ = 2;
+            else
+                ControlPressed_ = 3;
+        }
+        else
+        {
+            if (relX < (GetX() + SX_ + MinPos_))
+                ControlPressed_ = 1;
+            else if (relX > (GetX() + SX_ +
+                             (SliderRect_.right - SliderRect_.left) + MinPos_))
+                ControlPressed_ = 2;
+            else
+                ControlPressed_ = 3;
+        }
+
+        SetRelXY(relX - GetX(), relY - GetY());
+        return (GetID());
+        break;
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_ScrollBar::Process(long, short HitType)
 {
-    if ( not Ready()) return(FALSE);
+    if (not Ready())
+        return (FALSE);
 
     gSoundMgr->PlaySound(GetSound(HitType));
 
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            if (-VirtualH_ < (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top))
-                return(FALSE);
+    case C_TYPE_VERTICAL:
+        if (-VirtualH_ < (Parent_->ClientArea_[GetClient()].bottom -
+                          Parent_->ClientArea_[GetClient()].top))
+            return (FALSE);
 
-            break;
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            if (-VirtualW_ < (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left))
-                return(FALSE);
+    case C_TYPE_HORIZONTAL:
+        if (-VirtualW_ < (Parent_->ClientArea_[GetClient()].right -
+                          Parent_->ClientArea_[GetClient()].left))
+            return (FALSE);
 
-            break;
+        break;
     }
 
     switch (ControlPressed_)
     {
-        case 1: // Bar Minus side
-            if (HitType not_eq C_TYPE_LMOUSEUP)
-                break;
-
-            switch (GetType())
-            {
-                case C_TYPE_VERTICAL:
-                    Parent_->VY_[GetClient()] += (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top);
-
-                    if (Parent_->VY_[GetClient()] > Parent_->ClientArea_[GetClient()].top)
-                        Parent_->VY_[GetClient()] = Parent_->ClientArea_[GetClient()].top;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-
-                case C_TYPE_HORIZONTAL:
-                    Parent_->VX_[GetClient()] += (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left);
-
-                    if (Parent_->VX_[GetClient()] > Parent_->ClientArea_[GetClient()].left)
-                        Parent_->VX_[GetClient()] = Parent_->ClientArea_[GetClient()].left;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-            }
-
+    case 1: // Bar Minus side
+        if (HitType not_eq C_TYPE_LMOUSEUP)
             break;
 
-        case 2: // Bar Plus Side
-            if (HitType not_eq C_TYPE_LMOUSEUP)
-                break;
+        switch (GetType())
+        {
+        case C_TYPE_VERTICAL:
+            Parent_->VY_[GetClient()] +=
+                (Parent_->ClientArea_[GetClient()].bottom -
+                 Parent_->ClientArea_[GetClient()].top);
 
-            switch (GetType())
-            {
-                case C_TYPE_VERTICAL:
-                    Parent_->VY_[GetClient()] -= (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top);
+            if (Parent_->VY_[GetClient()] >
+                Parent_->ClientArea_[GetClient()].top)
+                Parent_->VY_[GetClient()] =
+                    Parent_->ClientArea_[GetClient()].top;
 
-                    if (Parent_->VY_[GetClient()] < (VirtualH_ + (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top) + Parent_->ClientArea_[GetClient()].top))
-                        Parent_->VY_[GetClient()] = VirtualH_ + (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top) + Parent_->ClientArea_[GetClient()].top;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-
-                case C_TYPE_HORIZONTAL:
-                    Parent_->VX_[GetClient()] -= (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left);
-
-                    if (Parent_->VX_[GetClient()] < (VirtualW_ + (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left) + Parent_->ClientArea_[GetClient()].left))
-                        Parent_->VX_[GetClient()] = VirtualW_ + (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left) + Parent_->ClientArea_[GetClient()].left;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-            }
-
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
             break;
 
-        case 3: // Slider knob
+        case C_TYPE_HORIZONTAL:
+            Parent_->VX_[GetClient()] +=
+                (Parent_->ClientArea_[GetClient()].right -
+                 Parent_->ClientArea_[GetClient()].left);
+
+            if (Parent_->VX_[GetClient()] >
+                Parent_->ClientArea_[GetClient()].left)
+                Parent_->VX_[GetClient()] =
+                    Parent_->ClientArea_[GetClient()].left;
+
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
+            break;
+        }
+
+        break;
+
+    case 2: // Bar Plus Side
+        if (HitType not_eq C_TYPE_LMOUSEUP)
             break;
 
-        case 4: // Minus Button
-            Minus_->Process(4, HitType);
+        switch (GetType())
+        {
+        case C_TYPE_VERTICAL:
+            Parent_->VY_[GetClient()] -=
+                (Parent_->ClientArea_[GetClient()].bottom -
+                 Parent_->ClientArea_[GetClient()].top);
 
-            if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
-                break;
+            if (Parent_->VY_[GetClient()] <
+                (VirtualH_ +
+                 (Parent_->ClientArea_[GetClient()].bottom -
+                  Parent_->ClientArea_[GetClient()].top) +
+                 Parent_->ClientArea_[GetClient()].top))
+                Parent_->VY_[GetClient()] =
+                    VirtualH_ +
+                    (Parent_->ClientArea_[GetClient()].bottom -
+                     Parent_->ClientArea_[GetClient()].top) +
+                    Parent_->ClientArea_[GetClient()].top;
 
-            switch (GetType())
-            {
-                case C_TYPE_VERTICAL:
-                    Parent_->VY_[GetClient()] += Distance_;
-
-                    if (Parent_->VY_[GetClient()] > Parent_->ClientArea_[GetClient()].top)
-                        Parent_->VY_[GetClient()] = Parent_->ClientArea_[GetClient()].top;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-
-                case C_TYPE_HORIZONTAL:
-                    Parent_->VX_[GetClient()] += Distance_;
-
-                    if (Parent_->VX_[GetClient()] > Parent_->ClientArea_[GetClient()].left)
-                        Parent_->VX_[GetClient()] = Parent_->ClientArea_[GetClient()].left;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-            }
-
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
             break;
 
-        case 5: // Plus Button
-            Plus_->Process(5, HitType);
+        case C_TYPE_HORIZONTAL:
+            Parent_->VX_[GetClient()] -=
+                (Parent_->ClientArea_[GetClient()].right -
+                 Parent_->ClientArea_[GetClient()].left);
 
-            if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
-                break;
+            if (Parent_->VX_[GetClient()] <
+                (VirtualW_ +
+                 (Parent_->ClientArea_[GetClient()].right -
+                  Parent_->ClientArea_[GetClient()].left) +
+                 Parent_->ClientArea_[GetClient()].left))
+                Parent_->VX_[GetClient()] =
+                    VirtualW_ +
+                    (Parent_->ClientArea_[GetClient()].right -
+                     Parent_->ClientArea_[GetClient()].left) +
+                    Parent_->ClientArea_[GetClient()].left;
 
-            switch (GetType())
-            {
-                case C_TYPE_VERTICAL:
-                    Parent_->VY_[GetClient()] -= Distance_;
-
-                    if (Parent_->VY_[GetClient()] < (VirtualH_ + (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top) + Parent_->ClientArea_[GetClient()].top))
-                        Parent_->VY_[GetClient()] = VirtualH_ + (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top) + Parent_->ClientArea_[GetClient()].top;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-
-                case C_TYPE_HORIZONTAL:
-                    Parent_->VX_[GetClient()] -= Distance_;
-
-                    if (Parent_->VX_[GetClient()] < (VirtualW_ + (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left) + Parent_->ClientArea_[GetClient()].left))
-                        Parent_->VX_[GetClient()] = VirtualW_ + (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left) + Parent_->ClientArea_[GetClient()].left;
-
-                    UpdatePosition();
-                    Refresh();
-                    Parent_->RefreshClient(GetClient());
-                    break;
-            }
-
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
             break;
+        }
+
+        break;
+
+    case 3: // Slider knob
+        break;
+
+    case 4: // Minus Button
+        Minus_->Process(4, HitType);
+
+        if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
+            break;
+
+        switch (GetType())
+        {
+        case C_TYPE_VERTICAL:
+            Parent_->VY_[GetClient()] += Distance_;
+
+            if (Parent_->VY_[GetClient()] >
+                Parent_->ClientArea_[GetClient()].top)
+                Parent_->VY_[GetClient()] =
+                    Parent_->ClientArea_[GetClient()].top;
+
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
+            break;
+
+        case C_TYPE_HORIZONTAL:
+            Parent_->VX_[GetClient()] += Distance_;
+
+            if (Parent_->VX_[GetClient()] >
+                Parent_->ClientArea_[GetClient()].left)
+                Parent_->VX_[GetClient()] =
+                    Parent_->ClientArea_[GetClient()].left;
+
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
+            break;
+        }
+
+        break;
+
+    case 5: // Plus Button
+        Plus_->Process(5, HitType);
+
+        if (HitType not_eq C_TYPE_LMOUSEUP and HitType not_eq C_TYPE_REPEAT)
+            break;
+
+        switch (GetType())
+        {
+        case C_TYPE_VERTICAL:
+            Parent_->VY_[GetClient()] -= Distance_;
+
+            if (Parent_->VY_[GetClient()] <
+                (VirtualH_ +
+                 (Parent_->ClientArea_[GetClient()].bottom -
+                  Parent_->ClientArea_[GetClient()].top) +
+                 Parent_->ClientArea_[GetClient()].top))
+                Parent_->VY_[GetClient()] =
+                    VirtualH_ +
+                    (Parent_->ClientArea_[GetClient()].bottom -
+                     Parent_->ClientArea_[GetClient()].top) +
+                    Parent_->ClientArea_[GetClient()].top;
+
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
+            break;
+
+        case C_TYPE_HORIZONTAL:
+            Parent_->VX_[GetClient()] -= Distance_;
+
+            if (Parent_->VX_[GetClient()] <
+                (VirtualW_ +
+                 (Parent_->ClientArea_[GetClient()].right -
+                  Parent_->ClientArea_[GetClient()].left) +
+                 Parent_->ClientArea_[GetClient()].left))
+                Parent_->VX_[GetClient()] =
+                    VirtualW_ +
+                    (Parent_->ClientArea_[GetClient()].right -
+                     Parent_->ClientArea_[GetClient()].left) +
+                    Parent_->ClientArea_[GetClient()].left;
+
+            UpdatePosition();
+            Refresh();
+            Parent_->RefreshClient(GetClient());
+            break;
+        }
+
+        break;
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_ScrollBar::Dragable(long)
 {
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            if (-VirtualH_ < (Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top))
-                return(FALSE);
+    case C_TYPE_VERTICAL:
+        if (-VirtualH_ < (Parent_->ClientArea_[GetClient()].bottom -
+                          Parent_->ClientArea_[GetClient()].top))
+            return (FALSE);
 
-            break;
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            if (-VirtualW_ < (Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left))
-                return(FALSE);
+    case C_TYPE_HORIZONTAL:
+        if (-VirtualW_ < (Parent_->ClientArea_[GetClient()].right -
+                          Parent_->ClientArea_[GetClient()].left))
+            return (FALSE);
 
-            break;
+        break;
     }
 
-    return(ControlPressed_ == 3);
+    return (ControlPressed_ == 3);
 }
 
 void C_ScrollBar::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
 }
 
 void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     UI95_RECT s, rect;
 
-    if ( not Ready()) return;
+    if (not Ready())
+        return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
@@ -668,10 +735,13 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (GetFlags() bitand C_BIT_USELINE)
     {
         if (GetType() == C_TYPE_HORIZONTAL)
-            Parent_->DrawHLine(surface, LineColor_, GetX() + BGX_, GetY() + BGY_, BGW_, C_BIT_ABSOLUTE, 0, cliprect);
+            Parent_->DrawHLine(surface, LineColor_, GetX() + BGX_,
+                               GetY() + BGY_, BGW_, C_BIT_ABSOLUTE, 0,
+                               cliprect);
         else
-            Parent_->DrawVLine(surface, LineColor_, GetX() + BGX_, GetY() + BGY_, BGH_, C_BIT_ABSOLUTE, 0, cliprect);
-
+            Parent_->DrawVLine(surface, LineColor_, GetX() + BGX_,
+                               GetY() + BGY_, BGH_, C_BIT_ABSOLUTE, 0,
+                               cliprect);
     }
 
     if (Minus_)
@@ -692,10 +762,10 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.right = rect.left + Slider_->Header->w;
         rect.bottom = rect.top + Slider_->Header->h;
 
-        if ( not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
+        if (not Parent_->ClipToArea(&s, &rect, &Parent_->Area_))
             return;
 
-        if ( not Parent_->ClipToArea(&s, &rect, cliprect))
+        if (not Parent_->ClipToArea(&s, &rect, cliprect))
             return;
 
         rect.left += Parent_->GetX();
@@ -703,7 +773,8 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
         rect.right += Parent_->GetX();
         rect.bottom += Parent_->GetY();
 
-        Slider_->Blit(surface, s.left, s.top, s.right - s.left, s.bottom - s.top, rect.left, rect.top);
+        Slider_->Blit(surface, s.left, s.top, s.right - s.left,
+                      s.bottom - s.top, rect.left, rect.top);
     }
 
     if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
@@ -713,11 +784,11 @@ void C_ScrollBar::Draw(SCREEN *surface, UI95_RECT *cliprect)
 BOOL C_ScrollBar::Wheel(int increment, WORD MouseX, WORD MouseY)
 {
     // long x,y;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
     {
-        return(FALSE);
+        return (FALSE);
     }
 
     Leave = UI_Enter(Parent_);
@@ -726,53 +797,63 @@ BOOL C_ScrollBar::Wheel(int increment, WORD MouseX, WORD MouseY)
     // get position
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            SY_ += increment;
+    case C_TYPE_VERTICAL:
+        SY_ += increment;
 
-            if (SY_ < MinPos_)
-            {
-                SY_ = MinPos_;
-            }
+        if (SY_ < MinPos_)
+        {
+            SY_ = MinPos_;
+        }
 
-            if (SY_ > MaxPos_)
-            {
-                SY_ = MaxPos_;
-            }
+        if (SY_ > MaxPos_)
+        {
+            SY_ = MaxPos_;
+        }
 
-            Parent_->VY_[GetClient()] = (SY_ - MinPos_) * (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top) / (MaxPos_ - MinPos_) + Parent_->ClientArea_[GetClient()].top;
-            Parent_->RefreshClient(GetClient());
-            break;
+        Parent_->VY_[GetClient()] =
+            (SY_ - MinPos_) *
+                (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom -
+                 Parent_->ClientArea_[GetClient()].top) /
+                (MaxPos_ - MinPos_) +
+            Parent_->ClientArea_[GetClient()].top;
+        Parent_->RefreshClient(GetClient());
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            SX_ += increment;
+    case C_TYPE_HORIZONTAL:
+        SX_ += increment;
 
-            if (SX_ < MinPos_)
-            {
-                SX_ = MinPos_;
-            }
+        if (SX_ < MinPos_)
+        {
+            SX_ = MinPos_;
+        }
 
-            if (SX_ > MaxPos_)
-            {
-                SX_ = MaxPos_;
-            }
+        if (SX_ > MaxPos_)
+        {
+            SX_ = MaxPos_;
+        }
 
-            Parent_->VX_[GetClient()] = (SX_ - MinPos_) * (VirtualW_ + Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left) / (MaxPos_ - MinPos_) + Parent_->ClientArea_[GetClient()].left;
-            Parent_->RefreshClient(GetClient());
-            break;
+        Parent_->VX_[GetClient()] =
+            (SX_ - MinPos_) *
+                (VirtualW_ + Parent_->ClientArea_[GetClient()].right -
+                 Parent_->ClientArea_[GetClient()].left) /
+                (MaxPos_ - MinPos_) +
+            Parent_->ClientArea_[GetClient()].left;
+        Parent_->RefreshClient(GetClient());
+        break;
     }
 
     Refresh();
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_ScrollBar::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 {
     long x, y;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
-        return(FALSE);
+        return (FALSE);
 
     Leave = UI_Enter(Parent_);
     Refresh();
@@ -781,40 +862,50 @@ BOOL C_ScrollBar::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 
     switch (GetType())
     {
-        case C_TYPE_VERTICAL:
-            SY_ = y;
+    case C_TYPE_VERTICAL:
+        SY_ = y;
 
-            if (SY_ < MinPos_)
-                SY_ = MinPos_;
+        if (SY_ < MinPos_)
+            SY_ = MinPos_;
 
-            if (SY_ > MaxPos_)
-                SY_ = MaxPos_;
+        if (SY_ > MaxPos_)
+            SY_ = MaxPos_;
 
-            Parent_->VY_[GetClient()] = (SY_ - MinPos_) * (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom - Parent_->ClientArea_[GetClient()].top) / (MaxPos_ - MinPos_) + Parent_->ClientArea_[GetClient()].top;
-            Parent_->RefreshClient(GetClient());
-            break;
+        Parent_->VY_[GetClient()] =
+            (SY_ - MinPos_) *
+                (VirtualH_ + Parent_->ClientArea_[GetClient()].bottom -
+                 Parent_->ClientArea_[GetClient()].top) /
+                (MaxPos_ - MinPos_) +
+            Parent_->ClientArea_[GetClient()].top;
+        Parent_->RefreshClient(GetClient());
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            SX_ = x;
+    case C_TYPE_HORIZONTAL:
+        SX_ = x;
 
-            if (SX_ < MinPos_)
-                SX_ = MinPos_;
+        if (SX_ < MinPos_)
+            SX_ = MinPos_;
 
-            if (SX_ > MaxPos_)
-                SX_ = MaxPos_;
+        if (SX_ > MaxPos_)
+            SX_ = MaxPos_;
 
-            Parent_->VX_[GetClient()] = (SX_ - MinPos_) * (VirtualW_ + Parent_->ClientArea_[GetClient()].right - Parent_->ClientArea_[GetClient()].left) / (MaxPos_ - MinPos_) + Parent_->ClientArea_[GetClient()].left;
-            Parent_->RefreshClient(GetClient());
-            break;
+        Parent_->VX_[GetClient()] =
+            (SX_ - MinPos_) *
+                (VirtualW_ + Parent_->ClientArea_[GetClient()].right -
+                 Parent_->ClientArea_[GetClient()].left) /
+                (MaxPos_ - MinPos_) +
+            Parent_->ClientArea_[GetClient()].left;
+        Parent_->RefreshClient(GetClient());
+        break;
     }
 
     Refresh();
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 
-void C_ScrollBar::GetItemXY(long , long *x, long *y)
+void C_ScrollBar::GetItemXY(long, long *x, long *y)
 {
     *x = SX_;
     *y = SY_;
@@ -865,52 +956,54 @@ short C_ScrollBar::LocalFind(char *token)
     while (C_Scr_Tokens[i])
     {
         if (strnicmp(token, C_Scr_Tokens[i], strlen(C_Scr_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_ScrollBar::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CSCR_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CSCR_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CSCR_SETBGIMAGE:
-            SetBgImage(P[0]);
-            break;
+    case CSCR_SETBGIMAGE:
+        SetBgImage(P[0]);
+        break;
 
-        case CSCR_SETSLIDERIMAGE:
-            SetSliderImage(P[0]);
-            break;
+    case CSCR_SETSLIDERIMAGE:
+        SetSliderImage(P[0]);
+        break;
 
-        case CSCR_SETSLIDERRECT:
-            SetSliderRect((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CSCR_SETSLIDERRECT:
+        SetSliderRect((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
 
-        case CSCR_SETCOLORS:
-            SetColors(P[0] bitor (P[1] << 8) bitor (P[2] << 16), P[3] bitor (P[4] << 8) bitor (P[5] << 16), P[6] bitor (P[7] << 8) bitor (P[8] << 16));
-            break;
+    case CSCR_SETCOLORS:
+        SetColors(P[0] bitor (P[1] << 8) bitor (P[2] << 16),
+                  P[3] bitor (P[4] << 8) bitor (P[5] << 16),
+                  P[6] bitor (P[7] << 8) bitor (P[8] << 16));
+        break;
 
-        case CSCR_SETBUTTONIMAGES:
-            SetButtonImages(P[0], P[1], P[2], P[3]);
-            break;
+    case CSCR_SETBUTTONIMAGES:
+        SetButtonImages(P[0], P[1], P[2], P[3]);
+        break;
 
-        case CSCR_SETDISTANCE:
-            if (P[0] >= 1 and P[0] < 50)
-                SetDistance(P[0]);
+    case CSCR_SETDISTANCE:
+        if (P[0] >= 1 and P[0] < 50)
+            SetDistance(P[0]);
 
-            break;
+        break;
 
-        case CSCR_SETBGLINE:
-            SetLineColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            SetFlagBitOn(C_BIT_USELINE);
-            break;
+    case CSCR_SETBGLINE:
+        SetLineColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        SetFlagBitOn(C_BIT_USELINE);
+        break;
     }
 }
 

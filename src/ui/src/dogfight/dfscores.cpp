@@ -6,14 +6,14 @@
 
 #include <windows.h>
 #include "entity.h"
-#include "Mesg.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/LandingMessage.h"
-#include "MsgInc/EjectMsg.h"
-#include "MsgInc/PlayerStatusMsg.h"
+#include "mesg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/landingmessage.h"
+#include "msginc/ejectmsg.h"
+#include "msginc/playerstatusmsg.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "evtparse.h"
@@ -24,7 +24,7 @@
 #include "textids.h"
 #include "events.h"
 #include "dogfight.h"
-#include "MissEval.h"
+#include "misseval.h"
 
 short TeamTotals[MAX_DOGFIGHT_TEAMS][3]; // Kills=0,Deaths=1,Total=2
 short TeamUsed[MAX_DOGFIGHT_TEAMS];
@@ -48,29 +48,24 @@ enum
     _MOST_DEATHS_ = 0x0080,
 };
 
-long DFTeamNameStrIDs[] =
-{
-    0,
-    TXT_CRIMSONFLIGHT,
-    TXT_SHARKFLIGHT,
-    TXT_VIPREFLIGHT,
-    TXT_TIGERFLIGHT,
+long DFTeamNameStrIDs[] = {
+    0, TXT_CRIMSONFLIGHT, TXT_SHARKFLIGHT, TXT_VIPREFLIGHT, TXT_TIGERFLIGHT,
 };
 
 COLORREF DFTeamColors[] = // COLORREF format is BGR)
-{
+    {
     // Neutral Team
-    0x00ffffff, // (RGB 255,255,255)
+        0x00ffffff, // (RGB 255,255,255)
     // Crimson Team
-    0x002303c1, // (RGB 193,3,35)
+        0x002303c1, // (RGB 193,3,35)
     // Shark Team
-    0x00918316, // (RGB 22,131,151)
+        0x00918316, // (RGB 22,131,151)
     // USA Team
-    0x00ffffff, // (RGB 255,255,255)
+        0x00ffffff, // (RGB 255,255,255)
     // // Viper Team
     // 0x00179f05, // (RGB 5,159,23)
     // Tiger Team
-    0x0003c0e8, // (RGB 232,192,3)
+        0x0003c0e8, // (RGB 232,192,3)
 };
 
 void TallyTeamKills(void)
@@ -80,8 +75,8 @@ void TallyTeamKills(void)
     short deaths[MAX_DOGFIGHT_TEAMS];
     short score[MAX_DOGFIGHT_TEAMS];
 
-    memset(TeamTotals, 0, sizeof(short)*MAX_DOGFIGHT_TEAMS * 3);
-    memset(TeamUsed, 0, sizeof(short)*MAX_DOGFIGHT_TEAMS);
+    memset(TeamTotals, 0, sizeof(short) * MAX_DOGFIGHT_TEAMS * 3);
+    memset(TeamUsed, 0, sizeof(short) * MAX_DOGFIGHT_TEAMS);
 
     TheCampaign.MissionEvaluator->GetTeamKills(kills);
     TheCampaign.MissionEvaluator->GetTeamDeaths(deaths);
@@ -145,7 +140,8 @@ long FigureOutHowIDid()
     short place = 0, playerrank = 0;
     int team = 0, kills = 0;
     int MostKills = 0, LeastKills = 0, MostDeaths = 0, MostFrags = 0;
-    PilotSortClass *cur = NULL, *player = NULL, *MKills = NULL, *LKills = NULL, *MDeaths = NULL, *MFrags = NULL;
+    PilotSortClass *cur = NULL, *player = NULL, *MKills = NULL, *LKills = NULL,
+                   *MDeaths = NULL, *MFrags = NULL;
 
     team = FalconLocalSession->GetCountry();
 
@@ -197,10 +193,12 @@ long FigureOutHowIDid()
          MostFrags = cur->pilot_data->kills[cur->team][VS_AI] + cur->pilot_data->kills[cur->team][VS_HUMAN];
          }
         */
-        if ((cur->pilot_data->deaths[VS_AI] + cur->pilot_data->deaths[VS_HUMAN]) > MostDeaths)
+        if ((cur->pilot_data->deaths[VS_AI] +
+             cur->pilot_data->deaths[VS_HUMAN]) > MostDeaths)
         {
             MDeaths = cur;
-            MostDeaths = cur->pilot_data->deaths[VS_AI] + cur->pilot_data->deaths[VS_HUMAN];
+            MostDeaths = cur->pilot_data->deaths[VS_AI] +
+                         cur->pilot_data->deaths[VS_HUMAN];
         }
 
         cur = cur->next;
@@ -245,7 +243,7 @@ long FigureOutHowIDid()
             place = _LAST_PLACE_;
         else
         {
-            if ( not playerrank)
+            if (not playerrank)
                 HowIDid or_eq _FIRST_PLACE_;
 
             if (playerrank == 1)
@@ -256,7 +254,7 @@ long FigureOutHowIDid()
         }
     }
 
-    return(HowIDid);
+    return (HowIDid);
 }
 
 void PlayDogfightBite()
@@ -266,7 +264,8 @@ void PlayDogfightBite()
 
     HowIDid = FigureOutHowIDid();
 
-    if (HowIDid bitand (_FIRST_PLACE_ bitor _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
+    if (HowIDid bitand (_FIRST_PLACE_ bitor _MOST_KILLS_) and
+        SimDogfight.GetGameType() not_eq dog_Furball)
     {
         SoundID = gDogfightBites->Pick(DF5);
 
@@ -280,7 +279,8 @@ void PlayDogfightBite()
         if (SoundID)
             gSoundMgr->PlaySound(SoundID);
     }
-    else if ((HowIDid bitand _MOST_KILLS_) and SimDogfight.GetGameType() not_eq dog_Furball)
+    else if ((HowIDid bitand _MOST_KILLS_) and
+             SimDogfight.GetGameType() not_eq dog_Furball)
     {
         SoundID = gDogfightBites->Pick(DF6);
 
@@ -383,7 +383,8 @@ void DisplayDogfightResults()
 
             while (pilot_data)
             {
-                if ( not human_only or pilot_data->pilot_flags bitand PFLAG_PLAYER_CONTROLLED)
+                if (not human_only or
+                    pilot_data->pilot_flags bitand PFLAG_PLAYER_CONTROLLED)
                 {
                     AddtoSortedList(pilot_data, flight_data->flight_team);
                     TeamUsed[flight_data->flight_team] = 1;
@@ -408,7 +409,8 @@ void DisplayDogfightResults()
                 {
                     txt = new C_Text;
                     txt->Setup(C_DONT_CARE, C_TYPE_LEFT);
-                    txt->SetText(gStringMgr->GetString(DFTeamNameStrIDs[TeamRank[i]]));
+                    txt->SetText(
+                        gStringMgr->GetString(DFTeamNameStrIDs[TeamRank[i]]));
                     txt->SetXY(0, Y);
                     txt->SetFGColor(DFTeamColors[TeamRank[i]]);
                     txt->SetFont(win->Font_);
@@ -429,7 +431,8 @@ void DisplayDogfightResults()
                     txt->SetFlagBitOn(C_BIT_RIGHT);
                     win->AddControl(txt);
 
-                    _stprintf(buffer, "%1d/%1d", TeamTotals[TeamRank[i]][0], TeamTotals[TeamRank[i]][1]);
+                    _stprintf(buffer, "%1d/%1d", TeamTotals[TeamRank[i]][0],
+                              TeamTotals[TeamRank[i]][1]);
 
                     txt = new C_Text;
                     txt->Setup(C_DONT_CARE, C_TYPE_CENTER);
@@ -488,7 +491,9 @@ void DisplayDogfightResults()
             // for (i=0,kills=0;i<MAX_DOGFIGHT_TEAMS;i++)
             // kills += cur->pilot_data->kills[i][VS_AI] + cur->pilot_data->kills[i][VS_HUMAN];
 
-            _stprintf(buffer, "%1d/%1d", kills, cur->pilot_data->deaths[VS_AI] + cur->pilot_data->deaths[VS_HUMAN]);
+            _stprintf(buffer, "%1d/%1d", kills,
+                      cur->pilot_data->deaths[VS_AI] +
+                          cur->pilot_data->deaths[VS_HUMAN]);
 
             txt = new C_Text;
             txt->Setup(C_DONT_CARE, C_TYPE_CENTER);

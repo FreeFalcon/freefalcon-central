@@ -10,10 +10,10 @@
 #include "otwdrive.h"
 #include "simdrive.h"
 #include "camp2sim.h"
-#include "Graphics/Include/tmap.h"
-#include "Graphics/Include/rviewpnt.h"  // to get ground type
-#include "MsgInc/DamageMsg.h"
-#include "Graphics/Include/terrtex.h"
+#include "graphics/include/tmap.h"
+#include "graphics/include/rviewpnt.h"  // to get ground type
+#include "msginc/damagemsg.h"
+#include "graphics/include/terrtex.h"
 #include "fack.h"
 #include "fsound.h"
 #include "soundfx.h"
@@ -35,23 +35,22 @@ extern bool g_bTankerFMFix;
 extern AeroDataSet *aeroDataset;
 
 // for SIMPLE model
-#define MAX_AF_PITCH ( DTR * 89.0f )
-#define MAX_AF_ROLL ( DTR * 89.0f )
-#define MAX_AF_YAWRATE ( DTR * 20.0f )
-#define MAX_AF_FPS ( 450.0f * KNOTS_TO_FTPSEC )
+#define MAX_AF_PITCH (DTR * 89.0f)
+#define MAX_AF_ROLL (DTR * 89.0f)
+#define MAX_AF_YAWRATE (DTR * 20.0f)
+#define MAX_AF_FPS (450.0f * KNOTS_TO_FTPSEC)
 
-#define A1   (1.5F) // integration constant
-#define A2   (0.5F) // integration constant
-#define B1   (1.0F - 1.5F) // integration constant
-#define B2   (1.0F - 0.5F) // integration constant
+#define A1 (1.5F) // integration constant
+#define A2 (0.5F) // integration constant
+#define B1 (1.0F - 1.5F) // integration constant
+#define B2 (1.0F - 0.5F) // integration constant
 
 /*
 ** SetSimpleMode
 ** Description:
 ** Tell af to use simple mode
 */
-void
-AirframeClass::SetSimpleMode(int mode)
+void AirframeClass::SetSimpleMode(int mode)
 {
     if (mode == simpleMode)
         return;
@@ -71,8 +70,7 @@ AirframeClass::SetSimpleMode(int mode)
 ** A very simple flight model for aircraft that the AI and autopilot
 ** will fly
 */
-void
-AirframeClass::SimpleModel(void)
+void AirframeClass::SimpleModel(void)
 {
     float tmp;
 
@@ -96,7 +94,6 @@ AirframeClass::SimpleModel(void)
     ctlroll = rstick;
 
 
-
     dT = SimLibMajorFrameTime;
 
 
@@ -117,9 +114,10 @@ AirframeClass::SimpleModel(void)
 
         // pitch rate
         // Modify pitch rate if going really slow
-        if (qsom * cnalpha < 1.5F and not (playerFlightModelHack and 
-                                       platform == SimDriver.GetPlayerEntity() and 
-                                       platform->AutopilotType() == AircraftClass::APOff))
+        if (qsom * cnalpha < 1.5F and
+            not(playerFlightModelHack and
+                platform == SimDriver.GetPlayerEntity() and
+                platform->AutopilotType() == AircraftClass::APOff))
         {
             gmmaDes = (1.0F - qsom * cnalpha / 1.5F) * -45.0F * DTR;
         }
@@ -131,7 +129,9 @@ AirframeClass::SimpleModel(void)
         if (ctlpitch)
         {
             // pitch where we want to be
-            maxTheta = min(MAX_AF_PITCH, aeroDataset[vehicleIndex].inputData[AeroDataSet::ThetaMax]);
+            maxTheta =
+                min(MAX_AF_PITCH,
+                    aeroDataset[vehicleIndex].inputData[AeroDataSet::ThetaMax]);
             tmp = ctlpitch * MAX_AF_PITCH;
             q = (tmp - gmma + gmmaDes) * kPitch;
         }
@@ -147,11 +147,18 @@ AirframeClass::SimpleModel(void)
         if (ctlroll)
         {
             //it looks like we're sliding around the turns, need to be rolled more
-            maxBank = min(MAX_AF_ROLL, aeroDataset[vehicleIndex].inputData[AeroDataSet::MaxRoll]);
+            maxBank =
+                min(MAX_AF_ROLL,
+                    aeroDataset[vehicleIndex].inputData[AeroDataSet::MaxRoll]);
 
             //me123 dont bank more then you can keep the nose up with your max gs availeble
-            if (g_bSimpleFMUpdates and gearPos < 0.7F and platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::LandingMode and platform->DBrain()->GetCurrentMode() not_eq DigitalBrain::RefuelingMode)
-                maxBank = min(maxBank, acos(1 / (max(min(curMaxGs, gsAvail), 1.5f))));
+            if (g_bSimpleFMUpdates and gearPos < 0.7F and
+                platform->DBrain()->GetCurrentMode() not_eq
+                    DigitalBrain::LandingMode and
+                platform->DBrain()->GetCurrentMode() not_eq
+                    DigitalBrain::RefuelingMode)
+                maxBank =
+                    min(maxBank, acos(1 / (max(min(curMaxGs, gsAvail), 1.5f))));
 
             tmp = ctlroll * maxBank * 1.2F;
             p = (tmp - mu) * kRoll;
@@ -193,12 +200,15 @@ AirframeClass::SimpleModel(void)
                 r = 0.0F;
         }
 
-        if ( not (playerFlightModelHack and 
-              platform == SimDriver.GetPlayerEntity() and 
-              platform->AutopilotType() == AircraftClass::APOff))
+        if (not(playerFlightModelHack and
+                platform == SimDriver.GetPlayerEntity() and
+                platform->AutopilotType() == AircraftClass::APOff))
         {
 
-            q -= max(1.0F - (qsom * cnalpha / 0.8F), 0.0F) * (float)atan(platform->platformAngles.cosmu * platform->platformAngles.cosgam * GRAVITY / max(vt, 4.0F));
+            q -= max(1.0F - (qsom * cnalpha / 0.8F), 0.0F) *
+                 (float)atan(platform->platformAngles.cosmu *
+                             platform->platformAngles.cosgam * GRAVITY /
+                             max(vt, 4.0F));
         }
     }
     // handle body rates -- on ground with nose planted
@@ -216,16 +226,17 @@ AirframeClass::SimpleModel(void)
         //note: we want to make sure the plane takes off, so even if we couldn't
         //get off the ground, we lift off
         //if ( ctlpitch > 0.0f and (-zaero > GRAVITY or oldp03[2] == 13.0F) ) Cobra old rotation code
-        float cltakeoff = Math.TwodInterp(mach, 12.0f, aeroData->mach, aeroData->alpha,
-                                          aeroData->clift, aeroData->numMach,
-                                          aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
-                          aeroData->clFactor;
+        float cltakeoff =
+            Math.TwodInterp(mach, 12.0f, aeroData->mach, aeroData->alpha,
+                            aeroData->clift, aeroData->numMach,
+                            aeroData->numAlpha, &curMachBreak, &curAlphaBreak) *
+            aeroData->clFactor;
         cltakeoff *= (1 + tefFactor * auxaeroData->CLtefFactor);
         rotate = 17.16f * sqrt((weight / area) / fabs(cltakeoff)); //cobra
         ctlpitch += 0.1f;
         int tstatusf = platform->DBrain()->ATCStatus();
 
-        if (vcas > rotate and tstatusf > tTaxi)  //cobra
+        if (vcas > rotate and tstatusf > tTaxi) //cobra
         {
             // pitch where we want to be
             tmp = ctlpitch * MAX_AF_PITCH;
@@ -278,7 +289,7 @@ AirframeClass::SimpleModel(void)
     // Assume 1 G for wings level, max at 7 gs at +/- 90 degrees roll
     float desiredGs = 1.0F;
 
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
     {
         //nzcgs = nzcgb = max(0.0F, (15.0F - weight/liftO_alp)*0.25F);
         if (ctlpitch > 0.0F)
@@ -307,8 +318,7 @@ AirframeClass::SimpleModel(void)
     // edg: my mr steen mode to allow hovering
     // speed is directly based on throtl
     // speed up yawrate
-    if (playerFlightModelHack and 
-        platform == SimDriver.GetPlayerEntity() and 
+    if (playerFlightModelHack and platform == SimDriver.GetPlayerEntity() and
         platform->AutopilotType() == AircraftClass::APOff)
     {
         float oldvt;
@@ -340,14 +350,13 @@ AirframeClass::SimpleModel(void)
     }
 
 
-
-    if (vt and not (playerFlightModelHack and 
-                platform == SimDriver.GetPlayerEntity() and 
-                platform->AutopilotType() == AircraftClass::APOff))
+    if (vt and not(playerFlightModelHack and
+                   platform == SimDriver.GetPlayerEntity() and
+                   platform->AutopilotType() == AircraftClass::APOff))
     {
         Gains();
 
-        if ( not IsSet(InAir))
+        if (not IsSet(InAir))
         {
             if (desiredGs)
                 tmp = CalcDesAlpha(desiredGs);
@@ -382,14 +391,14 @@ AirframeClass::SimpleModel(void)
     // get delta x y and z entirely based on the direction we're pointing
     if (vt > 0.00001F)
     {
-        xdot =  vt * platform->platformAngles.cosgam *
-                platform->platformAngles.cossig;
-        ydot =   vt * platform->platformAngles.cosgam *
-                 platform->platformAngles.sinsig;
-        zdot =  -vt * platform->platformAngles.singam;
-        ShiAssert( not _isnan(xdot));
-        ShiAssert( not _isnan(ydot));
-        ShiAssert( not _isnan(zdot));
+        xdot = vt * platform->platformAngles.cosgam *
+               platform->platformAngles.cossig;
+        ydot = vt * platform->platformAngles.cosgam *
+               platform->platformAngles.sinsig;
+        zdot = -vt * platform->platformAngles.singam;
+        ShiAssert(not _isnan(xdot));
+        ShiAssert(not _isnan(ydot));
+        ShiAssert(not _isnan(zdot));
     }
     else
     {
@@ -401,15 +410,13 @@ AirframeClass::SimpleModel(void)
 
     //RunLandingGear(); // MLR 2003-10-15
 
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
     {
         groundDeltaX += dT * xdot * gSpeedyGonzales;
         groundDeltaY += dT * ydot * gSpeedyGonzales;
         x = groundAnchorX + groundDeltaX;
         y = groundAnchorY + groundDeltaY;
         z = z + dT * zdot * gSpeedyGonzales;
-
-
     }
     else
     {
@@ -422,13 +429,14 @@ AirframeClass::SimpleModel(void)
         groundDeltaY = 0.0f;
     }
 
-    ShiAssert( not _isnan(x));
-    ShiAssert( not _isnan(y));
-    ShiAssert( not _isnan(z));
+    ShiAssert(not _isnan(x));
+    ShiAssert(not _isnan(y));
+    ShiAssert(not _isnan(z));
 
     groundZ = OTWDriver.GetGroundLevel(x, y, &gndNormal);
     // Normalize terrain normal
-    tmp = (float)sqrt(gndNormal.x * gndNormal.x + gndNormal.y * gndNormal.y + gndNormal.z * gndNormal.z);
+    tmp = (float)sqrt(gndNormal.x * gndNormal.x + gndNormal.y * gndNormal.y +
+                      gndNormal.z * gndNormal.z);
     gndNormal.x /= tmp;
     gndNormal.y /= tmp;
     gndNormal.z /= tmp;
@@ -436,7 +444,7 @@ AirframeClass::SimpleModel(void)
     /*----------------------*/
     /* set flight status
     /*----------------------*/
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
     {
         float gndGmma, relMu;
 
@@ -473,4 +481,3 @@ AirframeClass::SimpleModel(void)
         CheckGroundImpact(dT);
     }
 }
-

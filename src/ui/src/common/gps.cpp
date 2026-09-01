@@ -14,9 +14,9 @@
 #include "debuggr.h"
 #include "userids.h"
 #include "campaign.h"
-#include "Falclib/Include/IsBad.h"
+#include "falclib/include/isbad.h"
 
-extern C_Handler *gMainHandler;
+extern C_Handler* gMainHandler;
 
 extern BOOL gMoviePlaying;
 
@@ -24,11 +24,11 @@ extern VU_ID gSelectedFlightID; // Last flight Selected (in ATO,Mission)
 extern VU_ID gSelectedPackage; // Current Package Selected (ATO)
 extern VU_ID gSelectedEntity; // Current Entity (Squadron/Unit/Objective) in OOB
 
-void RemoveMissionCB(TREELIST *item);
+void RemoveMissionCB(TREELIST* item);
 
-void GPS_RemoveCB(void *rec)
+void GPS_RemoveCB(void* rec)
 {
-    UI_Refresher *record = (UI_Refresher*)rec;
+    UI_Refresher* record = (UI_Refresher*)rec;
 
     if (record)
         record->Remove();
@@ -37,7 +37,7 @@ void GPS_RemoveCB(void *rec)
 }
 
 // Returns TRUE if I want to insert newitem before list item
-static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
+static BOOL GPSTreeSortCB(TREELIST* list, TREELIST* newitem)
 {
     _TCHAR *first, *second;
     long fval, sval;
@@ -62,8 +62,8 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
         else
             second = NULL;
 
-        if ( not first or not second)
-            return(FALSE);
+        if (not first or not second)
+            return (FALSE);
 
         if (isdigit(*first) and isdigit(*second))
         {
@@ -71,100 +71,113 @@ static BOOL GPSTreeSortCB(TREELIST *list, TREELIST *newitem)
             sval = atol(second);
 
             if (sval < fval)
-                return(TRUE);
+                return (TRUE);
             else if (fval < sval)
-                return(FALSE);
+                return (FALSE);
 
             // if(fval bitand sval are equal... let strcmp figure it out
         }
         else if (isdigit(*first))
-            return(FALSE);
+            return (FALSE);
         else if (isdigit(*second))
-            return(TRUE);
+            return (TRUE);
 
         if (_tcsicmp(second, first) < 0)
-            return(TRUE);
+            return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 // Returns TRUE if I want to insert newitem before list item
-static BOOL GPSMissionSortPriorityCB(TREELIST *list, TREELIST *newitem)
+static BOOL GPSMissionSortPriorityCB(TREELIST* list, TREELIST* newitem)
 {
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
-    if (((C_Mission*)newitem->Item_)->GetPriorityID() < ((C_Mission*)list->Item_)->GetPriorityID())
-        return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetPriorityID() == ((C_Mission*)list->Item_)->GetPriorityID() and 
-             ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
-        return(TRUE);
+    if (((C_Mission*)newitem->Item_)->GetPriorityID() <
+        ((C_Mission*)list->Item_)->GetPriorityID())
+        return (TRUE);
+    else if (((C_Mission*)newitem->Item_)->GetPriorityID() ==
+                 ((C_Mission*)list->Item_)->GetPriorityID() and
+             ((C_Mission*)newitem->Item_)->GetTakeOffTime() <
+                 ((C_Mission*)list->Item_)->GetTakeOffTime())
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 // Returns TRUE if I want to insert newitem before list item
-static BOOL GPSMissionSortTimeCB(TREELIST *list, TREELIST *newitem)
+static BOOL GPSMissionSortTimeCB(TREELIST* list, TREELIST* newitem)
 {
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
-    if (((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
-        return(TRUE);
+    if (((C_Mission*)newitem->Item_)->GetTakeOffTime() <
+        ((C_Mission*)list->Item_)->GetTakeOffTime())
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 // Returns TRUE if I want to insert newitem before list item
-static BOOL GPSMissionSortMissionCB(TREELIST *list, TREELIST *newitem)
+static BOOL GPSMissionSortMissionCB(TREELIST* list, TREELIST* newitem)
 {
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
-    if (_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) < 0)
-        return(TRUE);
-    else if ( not _tcsicmp(((C_Mission*)newitem->Item_)->GetMission(), ((C_Mission*)list->Item_)->GetMission()) and 
-             ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
-        return(TRUE);
+    if (_tcsicmp(((C_Mission*)newitem->Item_)->GetMission(),
+                 ((C_Mission*)list->Item_)->GetMission()) < 0)
+        return (TRUE);
+    else if (not _tcsicmp(((C_Mission*)newitem->Item_)->GetMission(),
+                          ((C_Mission*)list->Item_)->GetMission()) and
+             ((C_Mission*)newitem->Item_)->GetTakeOffTime() <
+                 ((C_Mission*)list->Item_)->GetTakeOffTime())
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 // Returns TRUE if I want to insert newitem before list item
-static BOOL GPSMissionSortStatusCB(TREELIST *list, TREELIST *newitem)
+static BOOL GPSMissionSortStatusCB(TREELIST* list, TREELIST* newitem)
 {
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
-    if (((C_Mission*)newitem->Item_)->GetStatusID() < ((C_Mission*)list->Item_)->GetStatusID())
-        return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetStatusID() == ((C_Mission*)list->Item_)->GetStatusID() and 
-             ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
-        return(TRUE);
+    if (((C_Mission*)newitem->Item_)->GetStatusID() <
+        ((C_Mission*)list->Item_)->GetStatusID())
+        return (TRUE);
+    else if (((C_Mission*)newitem->Item_)->GetStatusID() ==
+                 ((C_Mission*)list->Item_)->GetStatusID() and
+             ((C_Mission*)newitem->Item_)->GetTakeOffTime() <
+                 ((C_Mission*)list->Item_)->GetTakeOffTime())
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 // Returns TRUE if I want to insert newitem before list item
-static BOOL GPSMissionSortPackageCB(TREELIST *list, TREELIST *newitem)
+static BOOL GPSMissionSortPackageCB(TREELIST* list, TREELIST* newitem)
 {
-    if ( not list or not newitem)
-        return(FALSE);
+    if (not list or not newitem)
+        return (FALSE);
 
-    if (((C_Mission*)newitem->Item_)->GetPackageID() < ((C_Mission*)list->Item_)->GetPackageID())
-        return(TRUE);
-    else if (((C_Mission*)newitem->Item_)->GetPackageID() == ((C_Mission*)list->Item_)->GetPackageID() and 
-             ((C_Mission*)newitem->Item_)->GetTakeOffTime() < ((C_Mission*)list->Item_)->GetTakeOffTime())
-        return(TRUE);
+    if (((C_Mission*)newitem->Item_)->GetPackageID() <
+        ((C_Mission*)list->Item_)->GetPackageID())
+        return (TRUE);
+    else if (((C_Mission*)newitem->Item_)->GetPackageID() ==
+                 ((C_Mission*)list->Item_)->GetPackageID() and
+             ((C_Mission*)newitem->Item_)->GetTakeOffTime() <
+                 ((C_Mission*)list->Item_)->GetTakeOffTime())
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
-void SelectMissionSortCB(long ID, short hittype, C_Base *control)
+void SelectMissionSortCB(long ID, short hittype, C_Base* control)
 {
-    C_TreeList *tree;
-    F4CSECTIONHANDLE *Leave;
+    C_TreeList* tree;
+    F4CSECTIONHANDLE* Leave;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -177,26 +190,26 @@ void SelectMissionSortCB(long ID, short hittype, C_Base *control)
 
         switch (ID)
         {
-            case SORT_PRIORITY:
-                tree->SetSortCallback(GPSMissionSortPriorityCB);
-                break;
+        case SORT_PRIORITY:
+            tree->SetSortCallback(GPSMissionSortPriorityCB);
+            break;
 
-            case SORT_STATUS:
-                tree->SetSortCallback(GPSMissionSortStatusCB);
-                break;
+        case SORT_STATUS:
+            tree->SetSortCallback(GPSMissionSortStatusCB);
+            break;
 
-            case SORT_ROLE:
-                tree->SetSortCallback(GPSMissionSortMissionCB);
-                break;
+        case SORT_ROLE:
+            tree->SetSortCallback(GPSMissionSortMissionCB);
+            break;
 
-            case SORT_PACKAGE:
-                tree->SetSortCallback(GPSMissionSortPackageCB);
-                break;
+        case SORT_PACKAGE:
+            tree->SetSortCallback(GPSMissionSortPackageCB);
+            break;
 
-            case SORT_TAKEOFF:
-            default:
-                tree->SetSortCallback(GPSMissionSortTimeCB);
-                break;
+        case SORT_TAKEOFF:
+        default:
+            tree->SetSortCallback(GPSMissionSortTimeCB);
+            break;
         }
 
         tree->ReorderBranch(tree->GetRoot());
@@ -264,7 +277,7 @@ void GlobalPositioningSystem::Clear()
     Setup();
 }
 
-void GlobalPositioningSystem::SetMissionTree(C_TreeList *tree)
+void GlobalPositioningSystem::SetMissionTree(C_TreeList* tree)
 {
     MisTree_ = tree;
     MisTree_->SetSortType(TREE_SORT_CALLBACK);
@@ -272,12 +285,12 @@ void GlobalPositioningSystem::SetMissionTree(C_TreeList *tree)
     MisTree_->SetDelCallback(RemoveMissionCB);
 }
 
-void GlobalPositioningSystem::SetATOTree(C_TreeList *tree)
+void GlobalPositioningSystem::SetATOTree(C_TreeList* tree)
 {
     AtoTree_ = tree;
 }
 
-void GlobalPositioningSystem::SetOOBTree(C_TreeList *tree)
+void GlobalPositioningSystem::SetOOBTree(C_TreeList* tree)
 {
     OOBTree_ = tree;
     OOBTree_->SetSortCallback(GPSTreeSortCB);
@@ -286,7 +299,7 @@ void GlobalPositioningSystem::SetOOBTree(C_TreeList *tree)
 
 void GlobalPositioningSystem::UpdateDivisions()
 {
-    UI_Refresher *cur;
+    UI_Refresher* cur;
     Division div;
     Unit u;
     int t;
@@ -301,9 +314,10 @@ void GlobalPositioningSystem::UpdateDivisions()
 
             if (u)
             {
-                cur = (UI_Refresher*)GPS_Hash->Find(u->GetCampID() bitor UR_DIVISION);
+                cur = (UI_Refresher*)GPS_Hash->Find(u->GetCampID() bitor
+                                                    UR_DIVISION);
 
-                if ( not cur)
+                if (not cur)
                 {
                     // create a new one
                     cur = new UI_Refresher;
@@ -312,7 +326,8 @@ void GlobalPositioningSystem::UpdateDivisions()
                     {
                         cur->Setup(div, this, Allowed_);
                         //GPS_Hash->Add(div->nid bitor UR_DIVISION,cur); // this looks wrong
-                        GPS_Hash->Add(u->GetCampID() bitor UR_DIVISION, cur); // JPO - hope this is better.
+                        GPS_Hash->Add(u->GetCampID() bitor UR_DIVISION,
+                                      cur); // JPO - hope this is better.
                     }
                 }
                 else
@@ -337,7 +352,7 @@ void GlobalPositioningSystem::Update()
 
     VuListIterator iter(AllCampList);
     CampEntity entity;
-    UI_Refresher *cur;
+    UI_Refresher* cur;
 
     GPS_Hash->SetCheck(GPS_Hash->GetCheck() xor 1);
 
@@ -351,11 +366,11 @@ void GlobalPositioningSystem::Update()
         if (F4IsBadReadPtr(entity, sizeof(CampEntity)))
             continue;
 
-        if ( not entity->IsDead())
+        if (not entity->IsDead())
         {
             cur = (UI_Refresher*)GPS_Hash->Find(entity->GetCampID());
 
-            if ( not cur)
+            if (not cur)
             {
                 if (entity->IsUnit() and ((Unit)entity)->Inactive())
                 {
@@ -441,23 +456,23 @@ void GlobalPositioningSystem::Update()
     gMainHandler->LeaveCritical();
 }
 
-void *GlobalPositioningSystem::Find(long ID)
+void* GlobalPositioningSystem::Find(long ID)
 {
-    return(GPS_Hash->Find(ID));
+    return (GPS_Hash->Find(ID));
 }
 
-void *GlobalPositioningSystem::GetFirst()
+void* GlobalPositioningSystem::GetFirst()
 {
     if (GPS_Hash)
-        return(GPS_Hash->GetFirst(&Cur_, &CurIdx_));
+        return (GPS_Hash->GetFirst(&Cur_, &CurIdx_));
 
-    return(NULL);
+    return (NULL);
 }
 
-void *GlobalPositioningSystem::GetNext()
+void* GlobalPositioningSystem::GetNext()
 {
     if (GPS_Hash)
-        return(GPS_Hash->GetNext(&Cur_, &CurIdx_));
+        return (GPS_Hash->GetNext(&Cur_, &CurIdx_));
 
-    return(NULL);
+    return (NULL);
 }

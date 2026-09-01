@@ -7,16 +7,17 @@
 \*******************************************************************************/
 #include <stdio.h>
 #include <math.h>
-#include "../../Terrain/Ttypes.h"
-#include "../../Terrain/TPost.h"
-#include "../../Terrain/TDskPost.h"
-#include "../../3Dlib/Image.h"
+#include "../../terrain/ttypes.h"
+#include "../../terrain/tpost.h"
+#include "../../terrain/tdskpost.h"
+#include "../../3dlib/image.h"
 
 
-#define  MAX_LEVELS 6 // How many levels of detail to generate
+#define MAX_LEVELS 6 // How many levels of detail to generate
 #define LAST_TEX_LEVEL 2 // What is the number of the last level to be textured
 
-const float altScale = 8.0f * FEET_PER_METER; // Must match units in *-E.RAW file
+const float altScale =
+    8.0f * FEET_PER_METER; // Must match units in *-E.RAW file
 
 float FeetPerPost = (FEET_PER_KM / 4.0f); // I've got 250m posts at the moment
 const int MEA_DOWNSAMPLE_SHIFT = 5; // From 250m to 8km
@@ -26,7 +27,7 @@ const float FeetToMEAcell = 1.0f / (FeetPerPost * (1 << MEA_DOWNSAMPLE_SHIFT));
 static const WORD INVALID_TEXID = 0xFFFF;
 
 
-int main(int argc, char* argv[])
+int main(int argc, char *argv[])
 {
 
     BYTE *ColorIndexBuffer = NULL;
@@ -119,7 +120,7 @@ int main(int argc, char* argv[])
         dialogInfo.nMaxFile = sizeof(filename);
         dialogInfo.lpstrFileTitle = NULL;
         dialogInfo.nMaxFileTitle = 0;
-        dialogInfo.lpstrInitialDir = "J:\\TerrData";
+        dialogInfo.lpstrInitialDir = "J:/TerrData";
         dialogInfo.lpstrTitle = "Select a base GIF file (*-C.GIF)";
         dialogInfo.Flags = OFN_FILEMUSTEXIST;
         dialogInfo.lpstrDefExt = "GIF";
@@ -133,11 +134,12 @@ int main(int argc, char* argv[])
 
     // Extract the path to the directory ONE above the one containing the selected file
     // (the "root" of the data tree)
-    char *p = &filename[ strlen(filename) - 1 ];
+    char *p = &filename[strlen(filename) - 1];
 
     while ((*p != ':') && (*p != '\\') && (p != filename))
     {
-        if (*p == '.')  *p = '\0';
+        if (*p == '.')
+            *p = '\0';
 
         p--;
     }
@@ -156,7 +158,7 @@ int main(int argc, char* argv[])
     strcpy(dataSet, base);
     dataSet[strlen(dataSet) - 2] = '\0'; // Get rid of the "-C"
     strcpy(texPath, dir);
-    strcat(texPath, "\\texture\\");
+    strcat(texPath, "/texture/");
 
 
     /************************************************************************************\
@@ -165,7 +167,7 @@ int main(int argc, char* argv[])
 
 
     // Open the color input file
-    sprintf(filename, "%s\\terrain\\%s-C.GIF", dataRootDir, dataSet);
+    sprintf(filename, "%s/terrain/%s-C.GIF", dataRootDir, dataSet);
     printf("Reading COLOR file %s\n", filename);
     colorFile.imageType = CheckImageType(filename);
     ShiAssert(colorFile.imageType != IMAGE_TYPE_UNKNOWN);
@@ -194,18 +196,19 @@ int main(int argc, char* argv[])
     bufferWidth = colorFile.image.width;
     bufferHeight = colorFile.image.height;
     ColorIndexBuffer = colorFile.image.image;
-    ColorPaletteBuffer = (DWORD*)colorFile.image.palette;
+    ColorPaletteBuffer = (DWORD *)colorFile.image.palette;
 
 
     // Allocate space for the elevation buffer
     ElevationBufferSize = bufferWidth * bufferHeight * sizeof(*ElevationBuffer);
-    ElevationBuffer = (BYTE*)malloc(ElevationBufferSize);
+    ElevationBuffer = (BYTE *)malloc(ElevationBufferSize);
     ShiAssert(ElevationBuffer);
 
     // Open the elevation information file
-    sprintf(filename, "%s\\terrain\\%s-E.RAW", dataRootDir, dataSet);
+    sprintf(filename, "%s/terrain/%s-E.RAW", dataRootDir, dataSet);
     printf("Reading ELEVATION file %s\n", filename);
-    elevationFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    elevationFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                               FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (elevationFile == INVALID_HANDLE_VALUE)
     {
@@ -216,7 +219,9 @@ int main(int argc, char* argv[])
     }
 
     // Read in the data
-    if (!ReadFile(elevationFile, ElevationBuffer, ElevationBufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
+    if (!ReadFile(elevationFile, ElevationBuffer, ElevationBufferSize, &bytes,
+                  NULL))
+        bytes = 0xFFFFFFFF;
 
     if (bytes != ElevationBufferSize)
     {
@@ -229,15 +234,15 @@ int main(int argc, char* argv[])
     CloseHandle(elevationFile);
 
 
-
     // Store the size of the MEA table we're going to build
-    MEAwidth = bufferWidth  >> MEA_DOWNSAMPLE_SHIFT;
+    MEAwidth = bufferWidth >> MEA_DOWNSAMPLE_SHIFT;
     MEAheight = bufferHeight >> MEA_DOWNSAMPLE_SHIFT;
 
     // Open the MEA table output file
-    sprintf(filename, "%s\\terrain\\Theater.MEA", dataRootDir);
+    sprintf(filename, "%s/terrain/Theater.MEA", dataRootDir);
     printf("Writing the MEA table %s\n", filename);
-    headerFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    headerFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                            FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (headerFile == INVALID_HANDLE_VALUE)
     {
@@ -267,27 +272,38 @@ int main(int argc, char* argv[])
                 for (c = left; c <= right; c++)
                 {
                     dataOffset = r * bufferWidth + c;
-                    MEAvalue = max(MEAvalue, (Int16)(ElevationBuffer[dataOffset] * altScale));
+                    MEAvalue =
+                        max(MEAvalue,
+                            (Int16)(ElevationBuffer[dataOffset] * altScale));
                 }
             }
 
             // Now we look one post outward (if we're not at an edge)
-            if ((row > 0) && (row < MEAheight - 1) && (col > 0) && (col < MEAwidth - 1))
+            if ((row > 0) && (row < MEAheight - 1) && (col > 0) &&
+                (col < MEAwidth - 1))
             {
                 for (c = left - 1; c <= right + 1; c++)
                 {
                     dataOffset = (top - 1) * bufferWidth + c;
-                    MEAvalue = max(MEAvalue, (Int16)(ElevationBuffer[dataOffset] * altScale));
+                    MEAvalue =
+                        max(MEAvalue,
+                            (Int16)(ElevationBuffer[dataOffset] * altScale));
                     dataOffset = (top + 1) * bufferWidth + c;
-                    MEAvalue = max(MEAvalue, (Int16)(ElevationBuffer[dataOffset] * altScale));
+                    MEAvalue =
+                        max(MEAvalue,
+                            (Int16)(ElevationBuffer[dataOffset] * altScale));
                 }
 
                 for (r = top; r <= bottom; r++)
                 {
                     dataOffset = r * bufferWidth + (left - 1);
-                    MEAvalue = max(MEAvalue, (Int16)(ElevationBuffer[dataOffset] * altScale));
+                    MEAvalue =
+                        max(MEAvalue,
+                            (Int16)(ElevationBuffer[dataOffset] * altScale));
                     dataOffset = r * bufferWidth + (left + 1);
-                    MEAvalue = max(MEAvalue, (Int16)(ElevationBuffer[dataOffset] * altScale));
+                    MEAvalue =
+                        max(MEAvalue,
+                            (Int16)(ElevationBuffer[dataOffset] * altScale));
                 }
             }
 
@@ -301,10 +317,9 @@ int main(int argc, char* argv[])
     CloseHandle(headerFile);
 
 
-
     // Allocate space for the surface normal buffer
     NormalBufferSize = bufferWidth * bufferHeight * sizeof(*NormalBuffer);
-    NormalBuffer = (WORD*)malloc(NormalBufferSize);
+    NormalBuffer = (WORD *)malloc(NormalBufferSize);
     ShiAssert(NormalBuffer);
 
     // Compute the normal at each post based on its neighbors
@@ -327,17 +342,21 @@ int main(int argc, char* argv[])
 
             // Start with the height changes (rise) in x direction and in the y direction
             // At the edges of the map, just use a normal pointing straight up for now.
-            if ((r == 0) || (c == 0) || (r == bufferHeight - 1) || (c == bufferWidth - 1))
+            if ((r == 0) || (c == 0) || (r == bufferHeight - 1) ||
+                (c == bufferWidth - 1))
             {
                 Nx = 0.0f;
                 Ny = 0.0f;
             }
             else
             {
-                ShiAssert(dataOffset + bufferWidth < (DWORD)bufferWidth * bufferHeight);
+                ShiAssert(dataOffset + bufferWidth <
+                          (DWORD)bufferWidth * bufferHeight);
                 ShiAssert(dataOffset - bufferWidth >= 0);
-                Nx = altScale * (ElevationBuffer[dataOffset + bufferWidth] - ElevationBuffer[dataOffset - bufferWidth]);
-                Ny = altScale * (ElevationBuffer[dataOffset - 1]           - ElevationBuffer[dataOffset + 1]);
+                Nx = altScale * (ElevationBuffer[dataOffset + bufferWidth] -
+                                 ElevationBuffer[dataOffset - bufferWidth]);
+                Ny = altScale * (ElevationBuffer[dataOffset - 1] -
+                                 ElevationBuffer[dataOffset + 1]);
             }
 
             Nz = GLOBAL_POST_TO_WORLD(2);
@@ -367,7 +386,7 @@ int main(int argc, char* argv[])
                 }
                 else
                 {
-                    theta =  PI / 2.0;
+                    theta = PI / 2.0;
                 }
             }
             else
@@ -375,7 +394,8 @@ int main(int argc, char* argv[])
                 theta = atan2(Ny, Nx);
             }
 
-            if (theta < 0.0)  theta += PI * 2.0;
+            if (theta < 0.0)
+                theta += PI * 2.0;
 
             ShiAssert(theta < PI * 2.0);
             ShiAssert(theta >= 0.0);
@@ -394,24 +414,27 @@ int main(int argc, char* argv[])
             static const double phiOutScale = 63.99;
             phi = phiOutScale * (phi - phiInStart) / phiInRange;
 
-            if (phi < 0.0)  phi = 0.0;
+            if (phi < 0.0)
+                phi = 0.0;
 
 
-            ShiAssert(theta <  256.0f);
-            ShiAssert(phi   <   64.0f);
-            ShiAssert(theta >=   0.0f);
-            ShiAssert(phi   >=   0.0f);
+            ShiAssert(theta < 256.0f);
+            ShiAssert(phi < 64.0f);
+            ShiAssert(theta >= 0.0f);
+            ShiAssert(phi >= 0.0f);
 
             // Store a compressed version of theta and phi for later use with this post
-            NormalBuffer[dataOffset] = (((BYTE)floor(phi)) << 8) | (BYTE)floor(theta);
+            NormalBuffer[dataOffset] =
+                (((BYTE)floor(phi)) << 8) | (BYTE)floor(theta);
         }
     }
 
 
     // Open a file to store the per-post normal information for use by the campaign engine
-    sprintf(filename, "%s\\terrain\\%s-N.RAW", dataRootDir, dataSet);
+    sprintf(filename, "%s/terrain/%s-N.RAW", dataRootDir, dataSet);
     printf("Writing the normal inspection file %s\n", filename);
-    headerFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    headerFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                            FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (headerFile == INVALID_HANDLE_VALUE)
     {
@@ -442,13 +465,14 @@ int main(int argc, char* argv[])
     texMapWidth = bufferWidth >> LAST_TEX_LEVEL;
     texMapHeight = bufferHeight >> LAST_TEX_LEVEL;
     TexIDBufferSize = texMapWidth * texMapHeight * sizeof(*TexIDBuffer);
-    TexIDBuffer = (WORD*)malloc(TexIDBufferSize);
+    TexIDBuffer = (WORD *)malloc(TexIDBufferSize);
     ShiAssert(TexIDBuffer);
 
     // Open the texture id layout file
-    sprintf(filename, "%s\\terrain\\%s-T.RAW", dataRootDir, dataSet);
+    sprintf(filename, "%s/terrain/%s-T.RAW", dataRootDir, dataSet);
     printf("Reading TEXTURE ID file %s\n", filename);
-    textureFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    textureFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                             FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (textureFile == INVALID_HANDLE_VALUE)
     {
@@ -459,7 +483,8 @@ int main(int argc, char* argv[])
     }
 
     // Read in the data
-    if (!ReadFile(textureFile, TexIDBuffer, TexIDBufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
+    if (!ReadFile(textureFile, TexIDBuffer, TexIDBufferSize, &bytes, NULL))
+        bytes = 0xFFFFFFFF;
 
     if (bytes != TexIDBufferSize)
     {
@@ -479,9 +504,10 @@ int main(int argc, char* argv[])
     {
 
         // Try to open the texture ID file for this LOD
-        sprintf(filename, "%s\\terrain\\FarTiles.%0d", dataRootDir, LOD);
+        sprintf(filename, "%s/terrain/FarTiles.%0d", dataRootDir, LOD);
         printf("Checking for far field file %s\n", filename);
-        farFieldFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        farFieldFile = CreateFile(filename, GENERIC_READ, 0, NULL,
+                                  OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
         if (farFieldFile != INVALID_HANDLE_VALUE)
         {
@@ -497,9 +523,10 @@ int main(int argc, char* argv[])
 
 
     // Open the map header file
-    sprintf(filename, "%s\\terrain\\Theater.MAP", dataRootDir);
+    sprintf(filename, "%s/terrain/Theater.MAP", dataRootDir);
     printf("Writing the map header file %s\n", filename);
-    headerFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    headerFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                            FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (headerFile == INVALID_HANDLE_VALUE)
     {
@@ -516,7 +543,7 @@ int main(int argc, char* argv[])
     ShiAssert(bytes == sizeof(FeetPerPost));
 
     // Write out the width and height of the MEA table
-    WriteFile(headerFile, &MEAwidth,  sizeof(MEAwidth),  &bytes, NULL);
+    WriteFile(headerFile, &MEAwidth, sizeof(MEAwidth), &bytes, NULL);
     ShiAssert(bytes == sizeof(MEAwidth));
     WriteFile(headerFile, &MEAheight, sizeof(MEAheight), &bytes, NULL);
     ShiAssert(bytes == sizeof(MEAheight));
@@ -539,17 +566,17 @@ int main(int argc, char* argv[])
     ShiAssert(bytes == sizeof(LOD));
 
     // Write the map's color table
-    WriteFile(headerFile, ColorPaletteBuffer, 256 * sizeof(*ColorPaletteBuffer), &bytes, NULL);
+    WriteFile(headerFile, ColorPaletteBuffer, 256 * sizeof(*ColorPaletteBuffer),
+              &bytes, NULL);
     ShiAssert(bytes == 256 * sizeof(*ColorPaletteBuffer));
 
 
     // Allocate the memory for each disk block as it is constructed
     postBufferSize = POSTS_PER_BLOCK * sizeof(*postBuffer);
-    postBuffer = (TdiskPost*)malloc(postBufferSize);
-    postBufferPrev = (TdiskPost*)malloc(postBufferSize);
+    postBuffer = (TdiskPost *)malloc(postBufferSize);
+    postBufferPrev = (TdiskPost *)malloc(postBufferSize);
     ShiAssert(postBuffer);
     ShiAssert(postBufferPrev);
-
 
 
     // Write the post data for each level
@@ -570,14 +597,15 @@ int main(int argc, char* argv[])
         {
             free(FarFieldBuffer);
             FarFieldBuffer = NULL;
-            sprintf(filename, "%s\\terrain\\FarTiles.%0d", dataRootDir, LOD);
-            farFieldFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+            sprintf(filename, "%s/terrain/FarTiles.%0d", dataRootDir, LOD);
+            farFieldFile =
+                CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                           FILE_ATTRIBUTE_NORMAL, NULL);
 
             if (farFieldFile == INVALID_HANDLE_VALUE)
             {
 
                 printf("Failed to open %s\n", filename);
-
             }
             else
             {
@@ -587,18 +615,22 @@ int main(int argc, char* argv[])
                 // Allocate space for the far field texture offset buffer
                 farMapWidth = bufferWidth >> LOD;
                 farMapHeight = bufferHeight >> LOD;
-                FarFieldBufferSize = farMapWidth * farMapHeight * sizeof(*FarFieldBuffer);
-                FarFieldBuffer = (WORD*)malloc(FarFieldBufferSize);
+                FarFieldBufferSize =
+                    farMapWidth * farMapHeight * sizeof(*FarFieldBuffer);
+                FarFieldBuffer = (WORD *)malloc(FarFieldBufferSize);
                 ShiAssert(FarFieldBuffer);
 
                 // Read in the data
-                if (!ReadFile(farFieldFile, FarFieldBuffer, FarFieldBufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
+                if (!ReadFile(farFieldFile, FarFieldBuffer, FarFieldBufferSize,
+                              &bytes, NULL))
+                    bytes = 0xFFFFFFFF;
 
                 if (bytes != FarFieldBufferSize)
                 {
                     char string[256];
                     PutErrorString(string);
-                    strcat(string, "Couldn't read far field texture offset data.");
+                    strcat(string,
+                           "Couldn't read far field texture offset data.");
                     ShiError(string);
                 }
 
@@ -608,9 +640,10 @@ int main(int argc, char* argv[])
 
 
         // Open this level's post file
-        sprintf(filename, "%s\\terrain\\Theater.L%0d", dataRootDir, LOD);
+        sprintf(filename, "%s/terrain/Theater.L%0d", dataRootDir, LOD);
         printf("Generating POST file %s\n", filename);
-        postFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        postFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                              FILE_ATTRIBUTE_NORMAL, NULL);
 
         if (postFile == INVALID_HANDLE_VALUE)
         {
@@ -621,8 +654,9 @@ int main(int argc, char* argv[])
         }
 
         // Open this level's block offset file
-        sprintf(filename, "%s\\terrain\\Theater.O%0d", dataRootDir, LOD);
-        offsetFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+        sprintf(filename, "%s/terrain/Theater.O%0d", dataRootDir, LOD);
+        offsetFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                                FILE_ATTRIBUTE_NORMAL, NULL);
 
         if (offsetFile == INVALID_HANDLE_VALUE)
         {
@@ -633,13 +667,15 @@ int main(int argc, char* argv[])
         }
 
         // For each row of blocks
-        for (blockStartRow = 0; blockStartRow + blockSpan <= bufferHeight; blockStartRow += blockSpan)
+        for (blockStartRow = 0; blockStartRow + blockSpan <= bufferHeight;
+             blockStartRow += blockSpan)
         {
 
             blockRow = blockStartRow / blockSpan;
 
             // For each colomn of blocks
-            for (blockStartCol = 0; blockStartCol + blockSpan <= bufferWidth; blockStartCol += blockSpan)
+            for (blockStartCol = 0; blockStartCol + blockSpan <= bufferWidth;
+                 blockStartCol += blockSpan)
             {
 
                 blockCol = blockStartCol / blockSpan;
@@ -655,12 +691,17 @@ int main(int argc, char* argv[])
                     for (col = 0; col < blockSpan; col += postStep)
                     {
 
-                        ShiAssert(post - postBuffer < (int)(postBufferSize / sizeof(*post)));
+                        ShiAssert(post - postBuffer <
+                                  (int)(postBufferSize / sizeof(*post)));
 
-                        dataOffset = ((bufferHeight - 1) - (row + blockStartRow)) * bufferWidth + (col + blockStartCol);
+                        dataOffset =
+                            ((bufferHeight - 1) - (row + blockStartRow)) *
+                                bufferWidth +
+                            (col + blockStartCol);
 
                         // Store this point's data into the post array
-                        post->z = (Int16)(ElevationBuffer[dataOffset] * altScale);
+                        post->z =
+                            (Int16)(ElevationBuffer[dataOffset] * altScale);
                         post->color = ColorIndexBuffer[dataOffset];
                         post->theta = NormalBuffer[dataOffset] & 0xFF;
                         post->phi = NormalBuffer[dataOffset] >> 8;
@@ -668,16 +709,23 @@ int main(int argc, char* argv[])
                         // Fill in appropriate texture information
                         if (LOD <= LAST_TEX_LEVEL)
                         {
-                            int texOffset = (((bufferHeight - 1) - (row + blockStartRow)) >> LAST_TEX_LEVEL) * texMapWidth +
-                                            ((col + blockStartCol) >> LAST_TEX_LEVEL);
+                            int texOffset =
+                                (((bufferHeight - 1) - (row + blockStartRow)) >>
+                                 LAST_TEX_LEVEL) *
+                                    texMapWidth +
+                                ((col + blockStartCol) >> LAST_TEX_LEVEL);
 
                             // Figure out the right texture ID (includes Mipmap effects)
-                            post->texID = TexIDBuffer[ texOffset ] | ((LAST_TEX_LEVEL - LOD) << 12);
+                            post->texID = TexIDBuffer[texOffset] |
+                                          ((LAST_TEX_LEVEL - LOD) << 12);
                         }
                         else
                         {
-                            int farFieldOffset = (((bufferHeight - 1) - (row + blockStartRow)) >> LOD) * farMapWidth +
-                                                 ((col + blockStartCol) >> LOD);
+                            int farFieldOffset =
+                                (((bufferHeight - 1) - (row + blockStartRow)) >>
+                                 LOD) *
+                                    farMapWidth +
+                                ((col + blockStartCol) >> LOD);
 
                             if (FarFieldBuffer)
                             {
@@ -691,44 +739,50 @@ int main(int argc, char* argv[])
 
                         // Move on to the next post
                         post++;
-
                     }
                 }
 
 
                 // See if we can reuse the previously written block
-                if ((fileOffset != 0xFFFFFFFF) && (memcmp(postBuffer, postBufferPrev, postBufferSize) == 0))
+                if ((fileOffset != 0xFFFFFFFF) &&
+                    (memcmp(postBuffer, postBufferPrev, postBufferSize) == 0))
                 {
                     // Write the file offset at which a duplicate of this block is already stored
-                    WriteFile(offsetFile, &fileOffset, sizeof(fileOffset), &bytes, NULL);
+                    WriteFile(offsetFile, &fileOffset, sizeof(fileOffset),
+                              &bytes, NULL);
 
                     if (bytes != sizeof(fileOffset))
                     {
                         char string[256];
                         PutErrorString(string);
-                        strcat(string, "Failed to write block offset information.");
+                        strcat(string,
+                               "Failed to write block offset information.");
                         ShiError(string);
                     }
                 }
                 else
                 {
                     // Get the file offset to which we're going to write the block
-                    fileOffset = SetFilePointer(postFile, 0, NULL, FILE_CURRENT);
+                    fileOffset =
+                        SetFilePointer(postFile, 0, NULL, FILE_CURRENT);
                     ShiAssert(fileOffset != 0xFFFFFFFF);
 
                     // Write the file offset at which this block will be stored
-                    WriteFile(offsetFile, &fileOffset, sizeof(fileOffset), &bytes, NULL);
+                    WriteFile(offsetFile, &fileOffset, sizeof(fileOffset),
+                              &bytes, NULL);
 
                     if (bytes != sizeof(fileOffset))
                     {
                         char string[256];
                         PutErrorString(string);
-                        strcat(string, "Failed to write block offset information.");
+                        strcat(string,
+                               "Failed to write block offset information.");
                         ShiError(string);
                     }
 
                     // Now write the full block worth of posts to the post file
-                    WriteFile(postFile, postBuffer, postBufferSize, &bytes, NULL);
+                    WriteFile(postFile, postBuffer, postBufferSize, &bytes,
+                              NULL);
 
                     if (bytes != postBufferSize)
                     {
@@ -753,7 +807,7 @@ int main(int argc, char* argv[])
         CloseHandle(offsetFile);
 
         // Write the dimensions of this level to the map header file
-        int blocksWide = (bufferWidth)  / (blockSpan);
+        int blocksWide = (bufferWidth) / (blockSpan);
         int blocksHigh = (bufferHeight) / (blockSpan);
 
         WriteFile(headerFile, &blocksWide, sizeof(blocksWide), &bytes, NULL);

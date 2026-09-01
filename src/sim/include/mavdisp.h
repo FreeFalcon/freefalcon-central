@@ -15,7 +15,12 @@ private:
     float seekerAz, seekerEl;
     float curFOV;
     void DrawDisplay(void);
-    enum {NoTarget, TargetDetected, TargetLocked};
+    enum
+    {
+        NoTarget,
+        TargetDetected,
+        TargetLocked
+    };
     int trackStatus;
 
 public:
@@ -23,7 +28,7 @@ public:
     virtual ~MaverickDisplayClass() {};
 
     virtual void DisplayInit(ImageBuffer*);
-    virtual void Display(VirtualDisplay *newDisplay);
+    virtual void Display(VirtualDisplay* newDisplay);
 
     int SeesTarget(void)
     {

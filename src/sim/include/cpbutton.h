@@ -28,7 +28,7 @@ extern MEM_POOL gCockMemPool;
 #define CPBUTTON_MOMENTARY 1
 #define CPBUTTON_TOGGLE 2
 
-#define MAX_MOMENTARY_COUNT 1  // i.e. momentary buttons stay down for two frames
+#define MAX_MOMENTARY_COUNT 1 // i.e. momentary buttons stay down for two frames
 
 //====================================================//
 // CPLight Class Definition
@@ -45,11 +45,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================//
     // State Information
     //====================================================//
@@ -78,15 +78,14 @@ public:
     //====================================================//
 
     void DisplayBlit(void);
-    BOOL HandleEvent(int*, int, int, int);
+    BOOL HandleEvent(int *, int, int, int);
 
     //====================================================//
     // Constructors and Destructors
     //====================================================//
 
-    CPButton(ObjectInitStr*, LightButtonInitStr*);
+    CPButton(ObjectInitStr *, LightButtonInitStr *);
     virtual ~CPButton();
 };
 
 #endif
-

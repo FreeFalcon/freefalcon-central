@@ -26,8 +26,7 @@ public:
         float ix = float((n >> 10) & 31);
         float iy = float((n >> 5) & 31);
         float iz = float(n & 31);
-        vector3 v((((ix / r) * 2.0f) - 1.0f),
-                  (((iy / r) * 2.0f) - 1.0f),
+        vector3 v((((ix / r) * 2.0f) - 1.0f), (((iy / r) * 2.0f) - 1.0f),
                   (((iz / r) * 2.0f) - 1.0f));
         return v;
     };

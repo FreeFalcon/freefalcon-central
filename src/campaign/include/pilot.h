@@ -89,7 +89,7 @@ extern int NumCallsigns;
 // ================
 
 class FlightClass;
-typedef FlightClass *Flight;
+typedef FlightClass* Flight;
 
 extern void NewPilotInfo(void);
 

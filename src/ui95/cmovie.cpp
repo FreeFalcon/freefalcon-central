@@ -12,8 +12,7 @@ enum
     CMOV_ADDSUBTITLE,
 };
 
-char *C_Mov_Tokens[] =
-{
+char *C_Mov_Tokens[] = {
     "[NOTHING]",
     "[MOVIE]",
     "[SUBTITLE]",
@@ -70,12 +69,12 @@ BOOL C_Movie::AddMovie(long ID, char *fname)
     MOVIE_RES *newentry, *cur;
 
     if (fname == NULL)
-        return(FALSE);
+        return (FALSE);
 
     if (GetMovie(ID))
     {
         //MonoPrint("[ID %1ld] Already used (AddImage)\n",ID);
-        return(FALSE);
+        return (FALSE);
     }
 
     newentry = new MOVIE_RES;
@@ -87,7 +86,7 @@ BOOL C_Movie::AddMovie(long ID, char *fname)
     if (Root_ == NULL)
     {
         Root_ = newentry;
-        return(TRUE);
+        return (TRUE);
     }
     else
     {
@@ -97,10 +96,10 @@ BOOL C_Movie::AddMovie(long ID, char *fname)
             cur = cur->Next;
 
         cur->Next = newentry;
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Movie::AddSubTitle(long ID, char *fname)
@@ -108,17 +107,17 @@ BOOL C_Movie::AddSubTitle(long ID, char *fname)
     MOVIE_RES *cur;
 
     if (fname == NULL)
-        return(FALSE);
+        return (FALSE);
 
     cur = GetMovie(ID);
 
     if (cur)
     {
         _tcscpy(cur->SubTitle, fname);
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 MOVIE_RES *C_Movie::GetMovie(long ID)
@@ -130,12 +129,12 @@ MOVIE_RES *C_Movie::GetMovie(long ID)
     while (cur)
     {
         if (cur->ID == ID)
-            return(cur);
+            return (cur);
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 BOOL C_Movie::RemoveMovie(long ID)
@@ -143,14 +142,14 @@ BOOL C_Movie::RemoveMovie(long ID)
     MOVIE_RES *cur, *prev;
 
     if (Root_ == NULL)
-        return(FALSE);
+        return (FALSE);
 
     if (Root_->ID == ID)
     {
         cur = Root_;
         Root_ = Root_->Next;
         delete cur;
-        return(TRUE);
+        return (TRUE);
     }
     else
     {
@@ -168,10 +167,10 @@ BOOL C_Movie::RemoveMovie(long ID)
             cur = cur->Next;
         }
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Movie::Play(long ID)
@@ -182,11 +181,12 @@ BOOL C_Movie::Play(long ID)
 
     if (cur)
     {
-        PlayMovie(cur->Movie, x_, y_, 0, 0, gMainHandler->GetPrimary()->frontSurface());
-        return(TRUE);
+        PlayMovie(cur->Movie, x_, y_, 0, 0,
+                  gMainHandler->GetPrimary()->frontSurface());
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 #ifdef _UI95_PARSER_
@@ -197,25 +197,25 @@ short C_Movie::LocalFind(char *token)
     while (C_Mov_Tokens[i])
     {
         if (strnicmp(token, C_Mov_Tokens[i], strlen(C_Mov_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Movie::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
 {
     switch (ID)
     {
-        case CMOV_ADDMOVIE:
-            AddMovie(P[0], str);
-            break;
+    case CMOV_ADDMOVIE:
+        AddMovie(P[0], str);
+        break;
 
-        case CMOV_ADDSUBTITLE:
-            AddSubTitle(P[0], str);
-            break;
+    case CMOV_ADDSUBTITLE:
+        AddSubTitle(P[0], str);
+        break;
     }
 }
 

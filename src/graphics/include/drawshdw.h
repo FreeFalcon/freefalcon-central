@@ -7,7 +7,7 @@
 #ifndef _DRAWSHDW_H_
 #define _DRAWSHDW_H_
 
-#include "DrawBSP.h"
+#include "drawbsp.h"
 
 
 class DrawableShadowed : public DrawableBSP
@@ -22,7 +22,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -35,7 +36,8 @@ public:
     static MEM_POOL pool;
 #endif
 public:
-    DrawableShadowed(int ID, const Tpoint *pos, const Trotation *rot, float s, int ShadowID);
+    DrawableShadowed(int ID, const Tpoint *pos, const Trotation *rot, float s,
+                     int ShadowID);
     virtual ~DrawableShadowed() {};
 
     virtual void Draw(class RenderOTW *renderer, int LOD);

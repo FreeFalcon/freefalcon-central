@@ -1,16 +1,16 @@
 #include "falclib.h"
-#include "Graphics/Include/grtypes.h"
+#include "graphics/include/grtypes.h"
 #include "vdial.h"
 #include "cpmanager.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/Canvas3d.h"
-#include "Graphics/Include/tod.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/canvas3d.h"
+#include "graphics/include/tod.h"
 
-VDial::VDial(VDialInitStr* pInit)
+VDial::VDial(VDialInitStr *pInit)
 {
 
     int i;
-    mlTrig   trig;
+    mlTrig trig;
 
     mCallback = pInit->callback;
     mRadius = pInit->radius;
@@ -32,8 +32,10 @@ VDial::VDial(VDialInitStr* pInit)
 
 
 #ifdef USE_SH_POOLS
-    mpCosPoints = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
-    mpSinPoints = (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
+    mpCosPoints =
+        (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
+    mpSinPoints =
+        (float *)MemAllocPtr(gCockMemPool, sizeof(float) * mEndPoints, FALSE);
 #else
     mpCosPoints = new float[mEndPoints];
     mpSinPoints = new float[mEndPoints];
@@ -63,14 +65,14 @@ VDial::~VDial()
 {
     delete mpCanvas;
 
-    delete [] mpSinPoints;
-    delete [] mpCosPoints;
-    delete [] mpValues;
-    delete [] mpPoints;
+    delete[] mpSinPoints;
+    delete[] mpCosPoints;
+    delete[] mpValues;
+    delete[] mpPoints;
 }
 
 
-void VDial::Exec(SimBaseClass* pOwnship)
+void VDial::Exec(SimBaseClass *pOwnship)
 {
     BOOL found = FALSE;
     int i = 0;
@@ -126,7 +128,8 @@ void VDial::Exec(SimBaseClass* pOwnship)
             }
 
             slope = delta / (mpValues[i + 1] - mpValues[i]);
-            deflection = (float)(mpPoints[i] + (slope * (mDialValue - mpValues[i])));
+            deflection =
+                (float)(mpPoints[i] + (slope * (mDialValue - mpValues[i])));
 
             if (deflection < -PI)
             {
@@ -154,6 +157,5 @@ void VDial::Exec(SimBaseClass* pOwnship)
             i++;
         }
 
-    }
-    while (( not found) and (i < mEndPoints));
+    } while ((not found) and (i < mEndPoints));
 }

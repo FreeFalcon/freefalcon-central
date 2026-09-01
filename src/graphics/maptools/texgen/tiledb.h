@@ -29,7 +29,7 @@ typedef struct PathRecord
 } PathRecord;
 
 
-#pragma pack( push, 1 )
+#pragma pack(push, 1)
 
 typedef struct PointRecord
 {
@@ -97,7 +97,7 @@ typedef struct HeaderRecord
     TileRecord *tiles;
 } HeaderRecord;
 
-#pragma pack( pop )
+#pragma pack(pop)
 
 
 class TileDatabase
@@ -113,18 +113,24 @@ public:
 
     BYTE GetTerrainType(TileRecord *pTile)
     {
-        if (pTile) return pTile->type;
-        else return 0;
+        if (pTile)
+            return pTile->type;
+        else
+            return 0;
     };
-    int  GetNAreas(TileRecord *pTile)
+    int GetNAreas(TileRecord *pTile)
     {
-        if (pTile) return pTile->nareas;
-        else return 0;
+        if (pTile)
+            return pTile->nareas;
+        else
+            return 0;
     };
-    int  GetNPaths(TileRecord *pTile)
+    int GetNPaths(TileRecord *pTile)
     {
-        if (pTile) return pTile->npaths;
-        else return 0;
+        if (pTile)
+            return pTile->npaths;
+        else
+            return 0;
     };
 
     AreaRecord *GetArea(TileRecord *pTile, int area);
@@ -141,7 +147,4 @@ protected:
 };
 
 
-
-
 #endif // _TILEDB_H_
-

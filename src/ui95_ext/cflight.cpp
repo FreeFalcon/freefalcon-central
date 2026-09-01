@@ -55,7 +55,7 @@ C_ATO_Flight::~C_ATO_Flight()
 
 long C_ATO_Flight::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_ATO_Flight::Setup(long ID, short Type)
@@ -194,17 +194,18 @@ void C_ATO_Flight::SetSubParents(C_Window *)
 
 long C_ATO_Flight::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and
+        relY <= (GetY() + GetH()))
     {
         if (Task_->CheckHotSpots(relX, relY))
             Section_ = 1;
         else
             Section_ = 0;
 
-        return(GetID());
+        return (GetID());
     }
 
-    return(0);
+    return (0);
 }
 
 void C_ATO_Flight::SetDefaultFlags()
@@ -214,7 +215,7 @@ void C_ATO_Flight::SetDefaultFlags()
 
 long C_ATO_Flight::GetDefaultFlags()
 {
-    return(Defaultflags_);
+    return (Defaultflags_);
 }
 
 BOOL C_ATO_Flight::Process(long ID, short HitType)
@@ -227,26 +228,32 @@ BOOL C_ATO_Flight::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_ATO_Flight::Refresh()
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           Flags_, GetClient());
 }
 
 void C_ATO_Flight::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->BlitFill(surface, IconBgColor_[State_ bitand 1], GetX() + IconBg_.left, GetY() + IconBg_.top, IconBg_.right, IconBg_.bottom, Flags_, Client_, cliprect);
+    Parent_->BlitFill(surface, IconBgColor_[State_ bitand 1],
+                      GetX() + IconBg_.left, GetY() + IconBg_.top,
+                      IconBg_.right, IconBg_.bottom, Flags_, Client_, cliprect);
 
     if (State_)
-        Parent_->BlitFill(surface, FlightBgColor_[State_ bitand 1], GetX() + FlightBg_.left, GetY() + FlightBg_.top, FlightBg_.right, FlightBg_.bottom, Flags_, Client_, cliprect);
+        Parent_->BlitFill(surface, FlightBgColor_[State_ bitand 1],
+                          GetX() + FlightBg_.left, GetY() + FlightBg_.top,
+                          FlightBg_.right, FlightBg_.bottom, Flags_, Client_,
+                          cliprect);
 
     if (Icon_)
         Icon_->Draw(surface, cliprect);

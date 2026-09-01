@@ -8,7 +8,6 @@ class HSIClass;
 class NAVClass
 {
 private:
-
     float m_courseDeviation;
     float m_desiredCourse;
     float m_distanceToWayPoint;
@@ -27,4 +26,3 @@ public:
         m_desiredCourse = l_desiredCourse;
     }
 };
-

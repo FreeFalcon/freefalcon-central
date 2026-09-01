@@ -3,7 +3,7 @@
 #include "aircrft.h"
 #include "navsystem.h"
 #include "flightdata.h"
-#include "Phyconst.h"
+#include "phyconst.h"
 #include "fcc.h"
 #include "hud.h"
 #include "cpmanager.h"
@@ -45,9 +45,9 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
     //Bingo Page
     else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON)
     {
-        if ( not Manual_Input)
+        if (not Manual_Input)
         {
-            level = (long)((AircraftClass*)(playerAC))->GetBingoFuel();
+            level = (long)((AircraftClass *)(playerAC))->GetBingoFuel();
 
             if (level < 10000)
                 sprintf(InputString, " %dLBS", level);
@@ -90,7 +90,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
     }
     else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON)
     {
-        if ( not Manual_Input)
+        if (not Manual_Input)
         {
             if (EDITMSLFLOOR)
                 sprintf(InputString, "%dFT", TheHud->MSLFloor);
@@ -98,8 +98,10 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 sprintf(InputString, "%dFT", TheHud->TFAdv);
             else
             {
-                if (EDITMSLFLOOR);
-                else if (TFADV);
+                if (EDITMSLFLOOR)
+                    ;
+                else if (TFADV)
+                    ;
                 else
                 {
                     long alt;
@@ -107,8 +109,8 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                     char tmpstr[5] = "";
                     alt = (long)TheHud->lowAltWarning;
 
-                    alt1 = (int) alt / 1000;
-                    alt2 = (int) alt % 1000;
+                    alt1 = (int)alt / 1000;
+                    alt2 = (int)alt % 1000;
 
                     if (alt1)
                     {
@@ -162,7 +164,8 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 InputString[0] = ' ';
         }
     }
-    else if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) and Manual_Input)
+    else if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) and
+             Manual_Input)
     {
         InputString[10] = '\0';
         InputString[9] = '\'';
@@ -233,13 +236,13 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
                 InputString[0] = '0' + Input_Digit5;
             else
                 InputString[0] = ' ';
-
         }
         else
             sprintf(InputString, "%3.0fFT", ManualWSpan);
     }
     //INS page
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON and Manual_Input)
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == SIX_BUTTON and Manual_Input)
     {
         if (INSLine == 0)
         {
@@ -425,7 +428,8 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         else
             sprintf(InputString, "%d", FlareBingo);
     }
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EIGHT_BUTTON)
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == EIGHT_BUTTON)
     {
         if (IN_AA)
         {
@@ -703,7 +707,8 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         }
     }
     //VIP and VRP
-    else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON  or
+    else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == THREE_BUTTON or
              IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON)
     {
         if (Manual_Input)
@@ -810,7 +815,6 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
 
                 InputString[8] = '\0';
             }
-
         }
         else
         {
@@ -961,7 +965,7 @@ void ICPClass::ScratchPad(int Line, int Start, int End)
         FillDEDMatrix(Line, Start, "\x02", 2);
         FillDEDMatrix(Line, End, "\x02", 2);
 
-        if (Manual_Input or  IsSelected)
+        if (Manual_Input or IsSelected)
         {
             MakeInverted(Line, Start, End);
         }

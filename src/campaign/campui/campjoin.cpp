@@ -1,27 +1,29 @@
 
-#include "Mesg.h"
+#include "mesg.h"
 #include "find.h"
 #include "cmpclass.h"
-#include "MsgInc/RequestAircraftSlot.h"
+#include "msginc/requestaircraftslot.h"
 #include "uicomms.h"
 #include "ui_cmpgn.h"
-#include "FalcSess.h"
-#include "DispCfg.h"
-#include "Flight.h"
-#include "CampJoin.h"
-#include "ui95/CHandler.h"
+#include "falcsess.h"
+#include "dispcfg.h"
+#include "flight.h"
+#include "campjoin.h"
+#include "ui95/chandler.h"
 #include "userids.h"
-#include "Options.h"
-#include "Dogfight.h"
-#include "TimerThread.h"
-#include "MissEval.h"
-#include "Team.h"
-#include "Gtm.h"
-#include "Ntm.h"
+#include "options.h"
+#include "dogfight.h"
+#include "timerthread.h"
+#include "misseval.h"
+#include "team.h"
+#include "gtm.h"
+#include "ntm.h"
 
 // JB 010731
 #include "textids.h"
-extern void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+extern void CommsErrorDialog(long TitleID, long MessageID,
+                             void (*OKCB)(long, short, C_Base *),
+                             void (*CancelCB)(long, short, C_Base *));
 extern char gUI_CampaignFile[];
 
 // MN 020121
@@ -61,10 +63,13 @@ extern void ChooseBullseye(void); // 2002-04-18 MN
 // ============================
 
 int gCampJoinStatus = 0; // This stores what stage of loading we're currently in
-ulong gCampJoinLastData = 0; // Last vuxRealtime we received data about this game
-ulong gCampJoinTimeout = 0; // How long we're willing to wait for the next set of data
+ulong gCampJoinLastData =
+    0; // Last vuxRealtime we received data about this game
+ulong gCampJoinTimeout =
+    0; // How long we're willing to wait for the next set of data
 uchar gCampJoinTries = 0; // How many times we've re-requested campaign data
-int gCampJoinGameType = 0; // Type of game we're joining (Campaign/TacEng/Dogfight)
+int gCampJoinGameType =
+    0; // Type of game we're joining (Campaign/TacEng/Dogfight)
 
 // ============================
 // Prototypes
@@ -99,14 +104,14 @@ void StartCampaignGame(int local, int game_type)
         _tcscpy(TheCampaign.SaveFile, gUI_ScenarioName);
 
         GetSystemTime(&time);
-        timestamp  = time.wYear - 1998;
-        timestamp  = time.wMonth + (timestamp * 12);
-        timestamp  = time.wDay + (timestamp * 31);
-        timestamp  = time.wHour + (timestamp * 24);
-        timestamp  = time.wMinute + (timestamp * 60);
-        timestamp  = time.wSecond + (timestamp * 60);
+        timestamp = time.wYear - 1998;
+        timestamp = time.wMonth + (timestamp * 12);
+        timestamp = time.wDay + (timestamp * 31);
+        timestamp = time.wHour + (timestamp * 24);
+        timestamp = time.wMinute + (timestamp * 60);
+        timestamp = time.wSecond + (timestamp * 60);
 
-        if ( not TheCampaign.GetCreationIter())
+        if (not TheCampaign.GetCreationIter())
         {
             TheCampaign.SetCreatorIP(FalconLocalSessionId.creator_);
             TheCampaign.SetCreationTime(timestamp);
@@ -127,42 +132,45 @@ void StartCampaignGame(int local, int game_type)
 
         switch (FalconConnectionDescription)
         {
-            case FCT_NoConnection:
-            default:
-                gCampJoinTimeout = 0;
-                break;
+        case FCT_NoConnection:
+        default:
+            gCampJoinTimeout = 0;
+            break;
 
-            case FCT_ModemToModem:
-            case FCT_NullModem:
-                gCampJoinTimeout = 1000;
-                break;
+        case FCT_ModemToModem:
+        case FCT_NullModem:
+            gCampJoinTimeout = 1000;
+            break;
 
-            case FCT_LAN:
-                gCampJoinTimeout = 1000;
-                break;
+        case FCT_LAN:
+            gCampJoinTimeout = 1000;
+            break;
 
-            case FCT_WAN:
-            case FCT_Server:
-            case FCT_TEN:
-            case FCT_JetNet:
-                gCampJoinTimeout = 1000;
-                break;
+        case FCT_WAN:
+        case FCT_Server:
+        case FCT_TEN:
+        case FCT_JetNet:
+            gCampJoinTimeout = 1000;
+            break;
         }
 
         // Set up our timeout callback
         gMainHandler->AddUserCallback(CampaignConnectionTimer);
-        SendMessage(FalconDisplay.appWin, FM_JOIN_CAMPAIGN, JOIN_REQUEST_ALL_DATA, game_type);
+        SendMessage(FalconDisplay.appWin, FM_JOIN_CAMPAIGN,
+                    JOIN_REQUEST_ALL_DATA, game_type);
     }
 }
 
 // This is called any time we've received Campaign Scenario Status data (preload data)
 void CampaignPreloadSuccess(int remote_game)
 {
-    if (remote_game and not TheCampaign.IsLoaded() and gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
+    if (remote_game and not TheCampaign.IsLoaded() and
+        gCampJoinStatus == JOIN_REQUEST_ALL_DATA)
     {
         // We want the rest of the data too.
         gCampJoinStatus = JOIN_CAMP_DATA_ONLY;
-        PostMessage(FalconDisplay.appWin, FM_JOIN_CAMPAIGN, JOIN_CAMP_DATA_ONLY, gCampJoinGameType);
+        PostMessage(FalconDisplay.appWin, FM_JOIN_CAMPAIGN, JOIN_CAMP_DATA_ONLY,
+                    gCampJoinGameType);
     }
 }
 
@@ -200,13 +208,13 @@ void CampaignJoinSuccess(void)
     {
         tactical_mission_loaded = TRUE;
 
-        if ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
+        if (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT))
         {
             tactical_play_setup();
 
             gCommsMgr->SetCampaignFlag(game_TacticalEngagement);
 
-            if ( not FalconLocalGame->IsLocal())
+            if (not FalconLocalGame->IsLocal())
                 TheCampaign.StartRemoteCampaign(FalconLocalGame);
 
             gCommsMgr->LoadStats();
@@ -221,7 +229,7 @@ void CampaignJoinSuccess(void)
         C_EditBox *ebox;
         CampEntity ps;
 
-        ps = (CampEntity) FindUnit(gPlayerSquadronId);
+        ps = (CampEntity)FindUnit(gPlayerSquadronId);
 
         if (ps and ps->IsSquadron())
             FalconLocalSession->SetPlayerSquadron((Squadron)ps);
@@ -230,7 +238,7 @@ void CampaignJoinSuccess(void)
         {
             CopyinTempSettings();
 
-            if ( not CampSelMode)
+            if (not CampSelMode)
                 AdjustCampaignOptions();
             else
                 AdjustExperienceLevels();
@@ -242,19 +250,21 @@ void CampaignJoinSuccess(void)
                 ebox = (C_EditBox *)win->FindControl(TITLE_LABEL);
 
                 if (ebox)
-                    _tcsnccpy(TheCampaign.SaveFile, ebox->GetText(), CAMP_NAME_SIZE - 1);
+                    _tcsnccpy(TheCampaign.SaveFile, ebox->GetText(),
+                              CAMP_NAME_SIZE - 1);
 
                 TheCampaign.SaveFile[CAMP_NAME_SIZE - 1] = 0;
             }
 
-            if ( not FalconLocalGame->IsLocal())
+            if (not FalconLocalGame->IsLocal())
                 TheCampaign.StartRemoteCampaign(FalconLocalGame);
 
             // 2002-04-18 MN redo bullseye selection once more after we have the theaters reference point from the .tri file
             ChooseBullseye();
 
             CampaignSetup();
-            campaignStart = false; // next time CampaignSetup() is called, don't stop the clock.
+            campaignStart =
+                false; // next time CampaignSetup() is called, don't stop the clock.
             gMainHandler->EnterCritical();
 
             if (MainLastGroup)
@@ -268,8 +278,10 @@ void CampaignJoinSuccess(void)
 
             // 2002-01-03 M.N.
             // If we started a new campaign, make some first task manager calculations and pop up the priority windows
-            if (FalconLocalGame->IsLocal() and 
-                (strcmp(gUI_CampaignFile, "save0") == 0 or strcmp(gUI_CampaignFile, "save1") == 0 or strcmp(gUI_CampaignFile, "save2") == 0))
+            if (FalconLocalGame->IsLocal() and
+                (strcmp(gUI_CampaignFile, "save0") == 0 or
+                 strcmp(gUI_CampaignFile, "save1") == 0 or
+                 strcmp(gUI_CampaignFile, "save2") == 0))
             {
                 C_Window *winme = NULL;
                 C_Button *ctrl = NULL;
@@ -299,7 +311,7 @@ void CampaignJoinSuccess(void)
 
                 if (winme)
                 {
-                    ctrl = (C_Button*)winme->FindControl(SET_PRIORITIES);
+                    ctrl = (C_Button *)winme->FindControl(SET_PRIORITIES);
                     OpenPriorityCB(0, C_TYPE_LMOUSEUP, ctrl);
                 }
             }
@@ -328,8 +340,7 @@ void CampaignJoinFail(void)
     // PETER TODO: Pop up a 'Failed to get data' message
 
     // JB 010731
-    C_Window
-    *win;
+    C_Window *win;
 
     win = gMainHandler->FindWindow(COMMLINK_WIN);
 
@@ -384,4 +395,3 @@ void CampaignConnectionTimer(void)
         */
     }
 }
-

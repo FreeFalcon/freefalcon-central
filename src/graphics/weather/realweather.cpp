@@ -7,38 +7,40 @@
 \***************************************************************************/
 #include "d3d7compat.h"
 #include "polylib.h"
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
-#include "TimeMgr.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
+#include "timemgr.h"
 #include "simdrive.h"
 #include "aircrft.h"
 #include "airframe.h"
 #include "otwdrive.h"
-#include "Rviewpnt.h"
-#include "RenderOW.h"
-#include "ObjList.h"
-#include "TOD.h"
-#include "TMap.h"
+#include "rviewpnt.h"
+#include "renderow.h"
+#include "objlist.h"
+#include "tod.h"
+#include "tmap.h"
 #include "radix.h"
-#include "SoundFX.h"
-#include "FakeRand.h"
+#include "soundfx.h"
+#include "fakerand.h"
 #include "grinline.h"
-#include "TimerThread.h"
-#include "RealWeather.h"
-#include "Real2DCloud.h"
-#include "Real3DCloud.h"
+#include "timerthread.h"
+#include "realweather.h"
+#include "real2dcloud.h"
+#include "real3dcloud.h"
 #include "drawsgmt.h"
-#include "CmpClass.h"
+#include "cmpclass.h"
 //#include "weather.h"
 #include "dispopts.h"
-#include "Urlmon.h"//Cobra added this so FreeFalcon connects to the net
+#ifdef _WIN32
+#include "urlmon.h"//Cobra added this so FreeFalcon connects to the net
 //works with urlmon.lib which needs to be present for project to build.
+#endif // the only URLDownloadToFile calls are commented out; on Linux the online-weather fetch is unported
 #include "xmmintrin.h"
 
 extern int g_nGfxFix;
 extern int TimeOfDayGeneral();
 extern bool g_bHearThunder;
-Tcolor RealWeather::litCloudColor = { 0 };
+Tcolor RealWeather::litCloudColor = {0};
 float RealWeather::WeatherQuality, RealWeather::WeatherQualityRate;
 DWORD RealWeather::WeatherQualityStep, RealWeather::WeatherQualityElapsed;
 //extern Weather *TheWeather;
@@ -54,53 +56,156 @@ DWORD RealWeather::WeatherQualityStep, RealWeather::WeatherQualityElapsed;
 #define FIRST_CIRCUM_INDEX 4
 
 // COBRA - DX- These are the coordibnates for a 4x4 items Texture
-const float UVCoords4X4[16][4][2] =
-{
+const float UVCoords4X4[16][4][2] = {
 
-    {{  0.00f,  0.00f, }, { 0.25f, 0.00f }, { 0.25f, 0.25f}, {0.00f, 0.25f}},
-    {{  0.25f,  0.00f, }, { 0.50f, 0.00f }, { 0.50f, 0.25f}, {0.25f, 0.25f}},
-    {{  0.50f,  0.00f, }, { 0.75f, 0.00f }, { 0.75f, 0.25f}, {0.50f, 0.25f}},
-    {{  0.75f,  0.00f, }, { 1.00f, 0.00f }, { 1.00f, 0.25f}, {0.75f, 0.25f}},
+    {{
+         0.00f,
+         0.00f,
+     },
+     {0.25f, 0.00f},
+     {0.25f, 0.25f},
+     {0.00f, 0.25f}},
+    {{
+         0.25f,
+         0.00f,
+     },
+     {0.50f, 0.00f},
+     {0.50f, 0.25f},
+     {0.25f, 0.25f}},
+    {{
+         0.50f,
+         0.00f,
+     },
+     {0.75f, 0.00f},
+     {0.75f, 0.25f},
+     {0.50f, 0.25f}},
+    {{
+         0.75f,
+         0.00f,
+     },
+     {1.00f, 0.00f},
+     {1.00f, 0.25f},
+     {0.75f, 0.25f}},
 
-    {{  0.00f,  0.25f, }, { 0.25f, 0.25f }, { 0.25f, 0.50f}, {0.00f, 0.50f}},
-    {{  0.25f,  0.25f, }, { 0.50f, 0.25f }, { 0.50f, 0.50f}, {0.25f, 0.50f}},
-    {{  0.50f,  0.25f, }, { 0.75f, 0.25f }, { 0.75f, 0.50f}, {0.50f, 0.50f}},
-    {{  0.75f,  0.25f, }, { 1.00f, 0.25f }, { 1.00f, 0.50f}, {0.75f, 0.50f}},
+    {{
+         0.00f,
+         0.25f,
+     },
+     {0.25f, 0.25f},
+     {0.25f, 0.50f},
+     {0.00f, 0.50f}},
+    {{
+         0.25f,
+         0.25f,
+     },
+     {0.50f, 0.25f},
+     {0.50f, 0.50f},
+     {0.25f, 0.50f}},
+    {{
+         0.50f,
+         0.25f,
+     },
+     {0.75f, 0.25f},
+     {0.75f, 0.50f},
+     {0.50f, 0.50f}},
+    {{
+         0.75f,
+         0.25f,
+     },
+     {1.00f, 0.25f},
+     {1.00f, 0.50f},
+     {0.75f, 0.50f}},
 
-    {{  0.00f,  0.50f, }, { 0.25f, 0.50f }, { 0.25f, 0.75f}, {0.00f, 0.75f}},
-    {{  0.25f,  0.50f, }, { 0.50f, 0.50f }, { 0.50f, 0.75f}, {0.25f, 0.75f}},
-    {{  0.50f,  0.50f, }, { 0.75f, 0.50f }, { 0.75f, 0.75f}, {0.50f, 0.75f}},
-    {{  0.75f,  0.50f, }, { 1.00f, 0.50f }, { 1.00f, 0.75f}, {0.75f, 0.75f}},
+    {{
+         0.00f,
+         0.50f,
+     },
+     {0.25f, 0.50f},
+     {0.25f, 0.75f},
+     {0.00f, 0.75f}},
+    {{
+         0.25f,
+         0.50f,
+     },
+     {0.50f, 0.50f},
+     {0.50f, 0.75f},
+     {0.25f, 0.75f}},
+    {{
+         0.50f,
+         0.50f,
+     },
+     {0.75f, 0.50f},
+     {0.75f, 0.75f},
+     {0.50f, 0.75f}},
+    {{
+         0.75f,
+         0.50f,
+     },
+     {1.00f, 0.50f},
+     {1.00f, 0.75f},
+     {0.75f, 0.75f}},
 
-    {{  0.00f,  0.75f, }, { 0.25f, 0.75f }, { 0.25f, 1.00f}, {0.00f, 1.00f}},
-    {{  0.25f,  0.75f, }, { 0.50f, 0.75f }, { 0.50f, 1.00f}, {0.25f, 1.00f}},
-    {{  0.50f,  0.75f, }, { 0.75f, 0.75f }, { 0.75f, 1.00f}, {0.50f, 1.00f}},
-    {{  0.75f,  0.75f, }, { 1.00f, 0.75f }, { 1.00f, 1.00f}, {0.75f, 1.00f}}
-};
+    {{
+         0.00f,
+         0.75f,
+     },
+     {0.25f, 0.75f},
+     {0.25f, 1.00f},
+     {0.00f, 1.00f}},
+    {{
+         0.25f,
+         0.75f,
+     },
+     {0.50f, 0.75f},
+     {0.50f, 1.00f},
+     {0.25f, 1.00f}},
+    {{
+         0.50f,
+         0.75f,
+     },
+     {0.75f, 0.75f},
+     {0.75f, 1.00f},
+     {0.50f, 1.00f}},
+    {{
+         0.75f,
+         0.75f,
+     },
+     {1.00f, 0.75f},
+     {1.00f, 1.00f},
+     {0.75f, 1.00f}}};
 
 
 inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
 {
-    if (weatherCondition == SUNNY) return;
+    if (weatherCondition == SUNNY)
+        return;
 
     // Bad Weather and inside overcast
-    if (InsideOvercast()) return;
+    if (InsideOvercast())
+        return;
 
     // COBRA - DX - Setup the Squares in the 2D DX Engine for clouds
     TheDXEngine.DX2D_SetupSquareCx(1.0f, 1.0f);
     // the Cloud vertices
     D3DDYNVERTEX Quad[4];
 
-    if (realWeather->weatherCondition < FAIR) txtIndex += FIRST_CIRRUS_INDEX;
-    else if ((realWeather->weatherCondition == FAIR) and (ShadingFactor < 5)) txtIndex += FIRST_CIRCUM_INDEX;
+    if (realWeather->weatherCondition < FAIR)
+        txtIndex += FIRST_CIRRUS_INDEX;
+    else if ((realWeather->weatherCondition == FAIR) and (ShadingFactor < 5))
+        txtIndex += FIRST_CIRCUM_INDEX;
 
     // Assign textures Coord
-    if (realWeather->weatherCondition < FAIR or ((realWeather->weatherCondition == FAIR) and (ShadingFactor < 5)))
+    if (realWeather->weatherCondition < FAIR or
+        ((realWeather->weatherCondition == FAIR) and (ShadingFactor < 5)))
     {
-        Quad[0].tu = UVCoords4X4[txtIndex][0][0], Quad[0].tv = UVCoords4X4[txtIndex][0][1];
-        Quad[1].tu = UVCoords4X4[txtIndex][1][0], Quad[1].tv = UVCoords4X4[txtIndex][1][1];
-        Quad[2].tu = UVCoords4X4[txtIndex][2][0], Quad[2].tv = UVCoords4X4[txtIndex][2][1];
-        Quad[3].tu = UVCoords4X4[txtIndex][3][0], Quad[3].tv = UVCoords4X4[txtIndex][3][1];
+        Quad[0].tu = UVCoords4X4[txtIndex][0][0],
+        Quad[0].tv = UVCoords4X4[txtIndex][0][1];
+        Quad[1].tu = UVCoords4X4[txtIndex][1][0],
+        Quad[1].tv = UVCoords4X4[txtIndex][1][1];
+        Quad[2].tu = UVCoords4X4[txtIndex][2][0],
+        Quad[2].tv = UVCoords4X4[txtIndex][2][1];
+        Quad[3].tu = UVCoords4X4[txtIndex][3][0],
+        Quad[3].tv = UVCoords4X4[txtIndex][3][1];
     }
     else
     {
@@ -117,26 +222,37 @@ inline void RealWeather::DrawStratus(Tpoint *position, int txtIndex)
     Quad[2].dwColour = Stratus1Color, Quad[2].dwSpecular = 0x000000;
     Quad[3].dwColour = Stratus1Color, Quad[3].dwSpecular = 0x000000;
 
-    Quad[0].pos.x = -stratusRadius, Quad[0].pos.y = stratusRadius, Quad[0].pos.z = 0;
-    Quad[1].pos.x = stratusRadius, Quad[1].pos.y = stratusRadius, Quad[1].pos.z = 0;
-    Quad[2].pos.x = stratusRadius, Quad[2].pos.y = -stratusRadius, Quad[2].pos.z = 0;
-    Quad[3].pos.x = -stratusRadius, Quad[3].pos.y = -stratusRadius, Quad[3].pos.z = 0;
+    Quad[0].pos.x = -stratusRadius, Quad[0].pos.y = stratusRadius,
+    Quad[0].pos.z = 0;
+    Quad[1].pos.x = stratusRadius, Quad[1].pos.y = stratusRadius,
+    Quad[1].pos.z = 0;
+    Quad[2].pos.x = stratusRadius, Quad[2].pos.y = -stratusRadius,
+    Quad[2].pos.z = 0;
+    Quad[3].pos.x = -stratusRadius, Quad[3].pos.y = -stratusRadius,
+    Quad[3].pos.z = 0;
 
     // Draw the Square
-    if (realWeather->weatherCondition < FAIR or ((realWeather->weatherCondition == FAIR) and (ShadingFactor < 5)))
-        TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, CirrusCumTextures.TexHandle());
+    if (realWeather->weatherCondition < FAIR or
+        ((realWeather->weatherCondition == FAIR) and (ShadingFactor < 5)))
+        TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3 *)position,
+                                 Quad, stratusRadius,
+                                 CirrusCumTextures.TexHandle());
     else
-        TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, overcastTexture.TexHandle());
+        TheDXEngine.DX2D_AddQuad(LAYER_STRATUS1, 0, (D3DXVECTOR3 *)position,
+                                 Quad, stratusRadius,
+                                 overcastTexture.TexHandle());
 }
 
 inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
 {
 
 
-    if (UnderOvercast()) return;
+    if (UnderOvercast())
+        return;
 
     // if stratus invisible, do not draw it
-    if ( not (Stratus2Color bitand 0xff000000) or ShadingFactor < 2.0f) return;
+    if (not(Stratus2Color bitand 0xff000000) or ShadingFactor < 2.0f)
+        return;
 
     // COBRA - DX - Setup the Squares in the 2D DX Engine for clouds
     TheDXEngine.DX2D_SetupSquareCx(1.0f, 1.0f);
@@ -148,30 +264,40 @@ inline void RealWeather::DrawStratus2(Tpoint *position, int txtIndex)
     txtIndex += FIRST_CIRCUM_INDEX;
 
     // Assign textures Coord
-    Quad[0].tu = UVCoords4X4[txtIndex][0][0], Quad[0].tv = UVCoords4X4[txtIndex][0][1];
-    Quad[1].tu = UVCoords4X4[txtIndex][1][0], Quad[1].tv = UVCoords4X4[txtIndex][1][1];
-    Quad[2].tu = UVCoords4X4[txtIndex][2][0], Quad[2].tv = UVCoords4X4[txtIndex][2][1];
-    Quad[3].tu = UVCoords4X4[txtIndex][3][0], Quad[3].tv = UVCoords4X4[txtIndex][3][1];
+    Quad[0].tu = UVCoords4X4[txtIndex][0][0],
+    Quad[0].tv = UVCoords4X4[txtIndex][0][1];
+    Quad[1].tu = UVCoords4X4[txtIndex][1][0],
+    Quad[1].tv = UVCoords4X4[txtIndex][1][1];
+    Quad[2].tu = UVCoords4X4[txtIndex][2][0],
+    Quad[2].tv = UVCoords4X4[txtIndex][2][1];
+    Quad[3].tu = UVCoords4X4[txtIndex][3][0],
+    Quad[3].tv = UVCoords4X4[txtIndex][3][1];
 
     Quad[0].dwColour = Stratus2Color, Quad[0].dwSpecular = 0x000000;
     Quad[1].dwColour = Stratus2Color, Quad[1].dwSpecular = 0x000000;
     Quad[2].dwColour = Stratus2Color, Quad[2].dwSpecular = 0x000000;
     Quad[3].dwColour = Stratus2Color, Quad[3].dwSpecular = 0x000000;
 
-    Quad[0].pos.x = -stratusRadius, Quad[0].pos.y = stratusRadius, Quad[0].pos.z = 0;
-    Quad[1].pos.x = stratusRadius, Quad[1].pos.y = stratusRadius, Quad[1].pos.z = 0;
-    Quad[2].pos.x = stratusRadius, Quad[2].pos.y = -stratusRadius, Quad[2].pos.z = 0;
-    Quad[3].pos.x = -stratusRadius, Quad[3].pos.y = -stratusRadius, Quad[3].pos.z = 0;
+    Quad[0].pos.x = -stratusRadius, Quad[0].pos.y = stratusRadius,
+    Quad[0].pos.z = 0;
+    Quad[1].pos.x = stratusRadius, Quad[1].pos.y = stratusRadius,
+    Quad[1].pos.z = 0;
+    Quad[2].pos.x = stratusRadius, Quad[2].pos.y = -stratusRadius,
+    Quad[2].pos.z = 0;
+    Quad[3].pos.x = -stratusRadius, Quad[3].pos.y = -stratusRadius,
+    Quad[3].pos.z = 0;
 
     // Draw the Cloud
-    TheDXEngine.DX2D_AddQuad(LAYER_STRATUS2, 0, (D3DXVECTOR3*)position, Quad, stratusRadius, CirrusCumTextures.TexHandle());
+    TheDXEngine.DX2D_AddQuad(LAYER_STRATUS2, 0, (D3DXVECTOR3 *)position, Quad,
+                             stratusRadius, CirrusCumTextures.TexHandle());
 }
 
 
-
-inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radius)
+inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex,
+                                     float Radius)
 {
-    if (weatherCondition not_eq FAIR) return;
+    if (weatherCondition not_eq FAIR)
+        return;
 
     float minFog = 0.2f;
 
@@ -192,10 +318,14 @@ inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radiu
     D3DDYNVERTEX Quad[4];
 
     // Assign textures Coord
-    Quad[0].tu = UVCoords4X4[txtIndex][0][0], Quad[0].tv = UVCoords4X4[txtIndex][0][1];
-    Quad[1].tu = UVCoords4X4[txtIndex][1][0], Quad[1].tv = UVCoords4X4[txtIndex][1][1];
-    Quad[2].tu = UVCoords4X4[txtIndex][2][0], Quad[2].tv = UVCoords4X4[txtIndex][2][1];
-    Quad[3].tu = UVCoords4X4[txtIndex][3][0], Quad[3].tv = UVCoords4X4[txtIndex][3][1];
+    Quad[0].tu = UVCoords4X4[txtIndex][0][0],
+    Quad[0].tv = UVCoords4X4[txtIndex][0][1];
+    Quad[1].tu = UVCoords4X4[txtIndex][1][0],
+    Quad[1].tv = UVCoords4X4[txtIndex][1][1];
+    Quad[2].tu = UVCoords4X4[txtIndex][2][0],
+    Quad[2].tv = UVCoords4X4[txtIndex][2][1];
+    Quad[3].tu = UVCoords4X4[txtIndex][3][0],
+    Quad[3].tv = UVCoords4X4[txtIndex][3][1];
     // Assign Colors
     Quad[0].dwColour = CloudHiColor, Quad[0].dwSpecular = 0x000000;
     Quad[1].dwColour = CloudHiColor, Quad[1].dwSpecular = 0x000000;
@@ -206,22 +336,31 @@ inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radiu
 
 #if CLOUDS_FIX
 
-    Quad[0].pos.y = -puffRadius * 2.0f, Quad[0].pos.z = -puffRadius * 2.0f, Quad[0].pos.x = 0;
-    Quad[1].pos.y = puffRadius * 2.0f, Quad[1].pos.z = -puffRadius * 2.0f, Quad[1].pos.x = 0;
-    Quad[2].pos.y = puffRadius * 2.0f, Quad[2].pos.z = puffRadius * 2.0f, Quad[2].pos.x = 0;
-    Quad[3].pos.y = -puffRadius * 2.0f, Quad[3].pos.z = puffRadius * 2.0f, Quad[3].pos.x = 0;
+    Quad[0].pos.y = -puffRadius * 2.0f, Quad[0].pos.z = -puffRadius * 2.0f,
+    Quad[0].pos.x = 0;
+    Quad[1].pos.y = puffRadius * 2.0f, Quad[1].pos.z = -puffRadius * 2.0f,
+    Quad[1].pos.x = 0;
+    Quad[2].pos.y = puffRadius * 2.0f, Quad[2].pos.z = puffRadius * 2.0f,
+    Quad[2].pos.x = 0;
+    Quad[3].pos.y = -puffRadius * 2.0f, Quad[3].pos.z = puffRadius * 2.0f,
+    Quad[3].pos.x = 0;
 
 #else
 
-    Quad[0].pos.y = -Radius * 3.0f, Quad[0].pos.z = -Radius * 1.5f, Quad[0].pos.x = 0;
-    Quad[1].pos.y = Radius * 3.0f, Quad[1].pos.z = -Radius * 1.5f, Quad[1].pos.x = 0;
-    Quad[2].pos.y = Radius * 3.0f, Quad[2].pos.z = Radius * 1.5f, Quad[2].pos.x = 0;
-    Quad[3].pos.y = -Radius * 3.0f, Quad[3].pos.z = Radius * 1.5f, Quad[3].pos.x = 0;
+    Quad[0].pos.y = -Radius * 3.0f, Quad[0].pos.z = -Radius * 1.5f,
+    Quad[0].pos.x = 0;
+    Quad[1].pos.y = Radius * 3.0f, Quad[1].pos.z = -Radius * 1.5f,
+    Quad[1].pos.x = 0;
+    Quad[2].pos.y = Radius * 3.0f, Quad[2].pos.z = Radius * 1.5f,
+    Quad[2].pos.x = 0;
+    Quad[3].pos.y = -Radius * 3.0f, Quad[3].pos.z = Radius * 1.5f,
+    Quad[3].pos.x = 0;
 
 #endif
 
     // Draw the Cloud
-    TheDXEngine.DX2D_AddQuad(LAYER_GROUND, POLY_BB , (D3DXVECTOR3*)position, Quad, Radius, CumulusTextures.TexHandle());
+    TheDXEngine.DX2D_AddQuad(LAYER_GROUND, POLY_BB, (D3DXVECTOR3 *)position,
+                             Quad, Radius, CumulusTextures.TexHandle());
 }
 
 
@@ -231,13 +370,14 @@ inline void RealWeather::DrawCumulus(Tpoint *position, int txtIndex, float Radiu
 // HI     = Stratus 2 < Z
 DWORD RealWeather::GetObserverOrder(float ZPosition)
 {
-    if (ZPosition >= stratusZ) return OBSERVER_LOW;
+    if (ZPosition >= stratusZ)
+        return OBSERVER_LOW;
 
-    if (ZPosition >= stratus2Z) return OBSERVER_MIDDLE;
+    if (ZPosition >= stratus2Z)
+        return OBSERVER_MIDDLE;
 
     return OBSERVER_HI;
 }
-
 
 
 ///////////////////////////////////////////////// VIEW ORDER TABLES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -245,18 +385,20 @@ DWORD RealWeather::GetObserverOrder(float ZPosition)
 // WARNING  LAYER_TOP are the overall objects, IT CLOSES THE DRAWING, so MUST BE ALWAYS PRESENT
 
 // * SUNNY VIEW ORDER *
-const DWORD SunnyDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] =
-{
-    {LAYER_ROOF, LAYER_STRATUS2, LAYER_MIDDLE, LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP}, // LOW
-    {LAYER_ROOF, LAYER_STRATUS2, LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_TOP}, // MIDDLE
-    {LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF, LAYER_TOP}, // HI
+const DWORD SunnyDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] = {
+    {LAYER_ROOF, LAYER_STRATUS2, LAYER_MIDDLE, LAYER_STRATUS1, LAYER_GROUND,
+     LAYER_TOP}, // LOW
+    {LAYER_ROOF, LAYER_STRATUS2, LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE,
+     LAYER_TOP}, // MIDDLE
+    {LAYER_GROUND, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF,
+     LAYER_TOP}, // HI
 };
 
 // * POOR VIEW ORDER *
-const DWORD PoorDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] =
-{
+const DWORD PoorDrawOrder[MAX_OBSERVER_POSITIONS][MAX_2D_LAYERS] = {
     {LAYER_STRATUS1, LAYER_GROUND, LAYER_TOP}, // LOW
-    {LAYER_ROOF, LAYER_STRATUS2, LAYER_STRATUS1, LAYER_MIDDLE, LAYER_TOP}, // MIDDLE
+    {LAYER_ROOF, LAYER_STRATUS2, LAYER_STRATUS1, LAYER_MIDDLE,
+     LAYER_TOP}, // MIDDLE
     {LAYER_STRATUS1, LAYER_MIDDLE, LAYER_STRATUS2, LAYER_ROOF, LAYER_TOP}, // HI
 };
 
@@ -271,21 +413,17 @@ void RealWeather::SetDrawingOrder(float ZPosition)
     switch (weatherCondition)
     {
 
-            // Fair or good weather
-        case SUNNY : // SUNNY AND FAIR USE SAME WEATHER TABLE
-        case FAIR :
-            TheDXEngine.DX2D_SetDrawOrder((DWORD*)&SunnyDrawOrder[Observer]);
-            break;
+        // Fair or good weather
+    case SUNNY: // SUNNY AND FAIR USE SAME WEATHER TABLE
+    case FAIR:
+        TheDXEngine.DX2D_SetDrawOrder((DWORD *)&SunnyDrawOrder[Observer]);
+        break;
 
-        case POOR : // POOR / INCLEMENT USE SAME TABLE
-        case INCLEMENT :
-            TheDXEngine.DX2D_SetDrawOrder((DWORD*)&PoorDrawOrder[Observer]);
-            break;
-
-
+    case POOR: // POOR / INCLEMENT USE SAME TABLE
+    case INCLEMENT:
+        TheDXEngine.DX2D_SetDrawOrder((DWORD *)&PoorDrawOrder[Observer]);
+        break;
     }
-
-
 }
 
 
@@ -318,14 +456,15 @@ RealWeather::~RealWeather()
         delete metar;
 }
 
-void RealWeather::Setup(ObjectDisplayList* cumulusList, ObjectDisplayList* stratusList)
+void RealWeather::Setup(ObjectDisplayList *cumulusList,
+                        ObjectDisplayList *stratusList)
 {
     if (bSetup == TRUE)
     {
         return;
     }
 
-    if ( not DisplayOptions.bZBuffering)
+    if (not DisplayOptions.bZBuffering)
     {
         int i;
 
@@ -378,9 +517,11 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
         // RED - default to inside Overcast, the check for conditions
         InsideOVCST = true, OverOVCST = false, UnderOVCST = false;
 
-        if (viewerZ <= HiOvercast) InsideOVCST = UnderOVCST = false, OverOVCST = true;
+        if (viewerZ <= HiOvercast)
+            InsideOVCST = UnderOVCST = false, OverOVCST = true;
 
-        if (viewerZ >= LoOvercast) InsideOVCST = OverOVCST = false, UnderOVCST = true;
+        if (viewerZ >= LoOvercast)
+            InsideOVCST = OverOVCST = false, UnderOVCST = true;
     }
     else
     {
@@ -401,7 +542,9 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
         // if inside overcast
         if (InsideOvercast())
         {
-            TheTimeOfDay.SetScaleFactor(OvercastShading - ((LoOvercast -  viewerZ) / stratusDepth) * OvercastShading);
+            TheTimeOfDay.SetScaleFactor(
+                OvercastShading -
+                ((LoOvercast - viewerZ) / stratusDepth) * OvercastShading);
         }
     }
     else
@@ -420,23 +563,27 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     //REPORT_VALUE("Shading Factor :", (ShadingFactor));
     UpdateCells();
 
-    if ( not DisplayOptions.bZBuffering)
+    if (not DisplayOptions.bZBuffering)
         UpdateDrawables();
 
     // Wather quality moving on every second
     if (TheTimeManager.GetClockTime() - WeatherQualityElapsed >= 1000)
     {
         // if Local game, update data
-        if ( not vuLocalGame or vuLocalGame->IsLocal())
+        if (not vuLocalGame or vuLocalGame->IsLocal())
         {
-            if (WeatherQualityStep) WeatherQualityStep--;
-            else UpdateWeatherQuality();
+            if (WeatherQualityStep)
+                WeatherQualityStep--;
+            else
+                UpdateWeatherQuality();
 
             WeatherQuality += WeatherQualityRate;
 
-            if (WeatherQuality > 1.0f) WeatherQuality = 1.0f;
+            if (WeatherQuality > 1.0f)
+                WeatherQuality = 1.0f;
 
-            if (WeatherQuality < 0.0f) WeatherQuality = 0.0f;
+            if (WeatherQuality < 0.0f)
+                WeatherQuality = 0.0f;
         }
 
         WeatherQualityElapsed = TheTimeManager.GetClockTime();
@@ -446,44 +593,53 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     // RED  - Update visible height if an overcasting is prsent
     // used by DrawableBSP to update its own visibility
     // if under the overcast layer
-    if (weatherCondition > FAIR and viewerZ < stratusZ) VisibleHeight = stratusZ;
+    if (weatherCondition > FAIR and viewerZ < stratusZ)
+        VisibleHeight = stratusZ;
     // if weather fine or Viever under the overcast, give a default positive value ( negative is higher )
     // so that positive makes ALWAYS VISIBLE
-    else VisibleHeight = 10000.0f;
+    else
+        VisibleHeight = 10000.0f;
 
     // Setup Overcast parameters
     float StratusHalf = stratusDepth / 2.0f;
 
     // Update fog evolution with weather
-    if (weatherCondition == POOR) LinearFogLimit = -stratusZ * 4.0f;
+    if (weatherCondition == POOR)
+        LinearFogLimit = -stratusZ * 4.0f;
 
     if (weatherCondition == INCLEMENT)
     {
         stratusZ = -15000.0f * WeatherQuality - 5000.0f;
-        float sDistance = -stratusZ - (stratusDepth / 2.0f) ;
-        LinearFogLimit = sDistance * sDistance / 5000.0f + 500.0f, ShadingFactor = 10.0f - 10.0f * WeatherQuality;
+        float sDistance = -stratusZ - (stratusDepth / 2.0f);
+        LinearFogLimit = sDistance * sDistance / 5000.0f + 500.0f,
+        ShadingFactor = 10.0f - 10.0f * WeatherQuality;
     }
 
     // this creates the randomic fog intensisty effect on movement
     if (LinearFogStatus)
     {
         // get the viewer Delta distance
-        float dx = viewerX - LastViewPos.x, dy = viewerY - LastViewPos.y, dz = viewerZ - LastViewPos.z;
+        float dx = viewerX - LastViewPos.x, dy = viewerY - LastViewPos.y,
+              dz = viewerZ - LastViewPos.z;
         float Distance = sqrtf(dx * dx + dy * dy + dz * dz);
-        float ElapsedTime = (float)(TheTimeManager.GetClockTime() - LastTime) * .001f;
+        float ElapsedTime =
+            (float)(TheTimeManager.GetClockTime() - LastTime) * .001f;
 
         // fog varies based on travelled distace / 1000 ( arbitrary ) + a little offset
-        LinearFogDelta += PRANDFloat() * (Distance / 10.0f + 0.1f) * ElapsedTime;
+        LinearFogDelta +=
+            PRANDFloat() * (Distance / 10.0f + 0.1f) * ElapsedTime;
 
         // consistency check
-        if (LinearFogDelta > 1.0f)  LinearFogDelta = 1.0f;
+        if (LinearFogDelta > 1.0f)
+            LinearFogDelta = 1.0f;
 
-        if (LinearFogDelta < 0.0f) LinearFogDelta = 0.0f;
+        if (LinearFogDelta < 0.0f)
+            LinearFogDelta = 0.0f;
 
         // update fields
         LastTime = TheTimeManager.GetClockTime();
-        LastViewPos.x = viewerX, LastViewPos.y = viewerY, LastViewPos.z = viewerZ;
-
+        LastViewPos.x = viewerX, LastViewPos.y = viewerY,
+        LastViewPos.z = viewerZ;
     }
 
     // Check for Fogdensity, if INSIDE Overcast Layer, the Fog range is lowered to
@@ -498,8 +654,6 @@ void RealWeather::RefreshWeather(RenderOTW *Renderer)
     }
     else
         LinearFogUsed = LinearFogLimit, LinearFogDelta = 0.9f;
-
-
 }
 
 void RealWeather::UpdateLighting()
@@ -516,7 +670,8 @@ void RealWeather::UpdateLighting()
     sunAngle = Atan(opp, adj);
     sunYaw = glConvertToRadian(TheTimeOfDay.GetSunYaw()) + PI;
 
-    if (sunYaw > 2.f * PI) sunYaw -= 2.f * PI;
+    if (sunYaw > 2.f * PI)
+        sunYaw -= 2.f * PI;
 }
 
 // COBRA - DX - this function generates a cloud
@@ -524,8 +679,10 @@ void RealWeather::GenerateCloud(DWORD row, DWORD col)
 {
     DWORD i;
 
-    weatherCellArray[row][col].cloudPosX = (float)(row * cellSize + rand() % cellSize);
-    weatherCellArray[row][col].cloudPosY = (float)(col * cellSize + rand() % cellSize);
+    weatherCellArray[row][col].cloudPosX =
+        (float)(row * cellSize + rand() % cellSize);
+    weatherCellArray[row][col].cloudPosY =
+        (float)(col * cellSize + rand() % cellSize);
 
     weatherCellArray[row][col].sTxtIndex = rand() % NUM_STRATUS_TEXTURES;
 
@@ -540,29 +697,32 @@ void RealWeather::GenerateCloud(DWORD row, DWORD col)
 
 #if CLOUDS_FIX
 
-    weatherCellArray[row][col].Radius = 10000.f + 1000.f * PRANDFloatPos() * (float)ShadingFactor;
+    weatherCellArray[row][col].Radius =
+        10000.f + 1000.f * PRANDFloatPos() * (float)ShadingFactor;
 
 #else
 
-    weatherCellArray[row][col].Radius = 3000.f + 300.f * PRANDFloatPos() * (float)ShadingFactor;
+    weatherCellArray[row][col].Radius =
+        3000.f + 300.f * PRANDFloatPos() * (float)ShadingFactor;
 
 #endif
-
 }
 
 void RealWeather::GenerateClouds(bool bRandom)
 {
-    cloudRadius = 20000.f; // 10000.f; // Cobra - FRB - need larger radius due to z-fighting fix
+    cloudRadius =
+        20000.f; // 10000.f; // Cobra - FRB - need larger radius due to z-fighting fix
     stratusRadius = 55000.f;
 
     // TODO - RED - Setup something for MP gaming
-    if ( not bRandom)
+    if (not bRandom)
     {
         FILE *fp;
-        char fname[] = "campaign\\save\\mpwcells.bin";
+        char fname[] = "campaign/save/mpwcells.bin";
 
         fp = fopen(fname, "rb");
-        fread(&weatherCellArray, sizeof(WeatherCell)*MAX_NUM_CELLS * MAX_NUM_CELLS, 1, fp);
+        fread(&weatherCellArray,
+              sizeof(WeatherCell) * MAX_NUM_CELLS * MAX_NUM_CELLS, 1, fp);
         fclose(fp);
     }
     else
@@ -596,23 +756,23 @@ void RealWeather::GenerateClouds(bool bRandom)
         weatherShiftX = (int)viewerX - vpShift + halfSize;
         weatherShiftY = (int)viewerY - vpShift + halfSize;
 
-        ZeroMemory(weatherCellArray, sizeof(WeatherCell)*MAX_NUM_CELLS * MAX_NUM_CELLS);
+        ZeroMemory(weatherCellArray,
+                   sizeof(WeatherCell) * MAX_NUM_CELLS * MAX_NUM_CELLS);
 
         for (row = 0; row < numCells; row++)
         {
-            for (col = 0; col < numCells; col++) GenerateCloud(row, col);
+            for (col = 0; col < numCells; col++)
+                GenerateCloud(row, col);
         }
 
         UpdateCondition();
         // RED - ENABLE IT TO SAVE AN MP SESSION WEATHER
         /*FILE *fp;
-        char fname[] = "campaign\\save\\mpwcells.bin";
+        char fname[] = "campaign/save/mpwcells.bin";
 
         fp = fopen(fname,"wb");
         fwrite(&weatherCellArray,sizeof(WeatherCell)*MAX_NUM_CELLS*MAX_NUM_CELLS,1,fp);
         fclose(fp);*/
-
-
     }
 }
 
@@ -621,10 +781,12 @@ void RealWeather::GenerateClouds(bool bRandom)
 void RealWeather::UpdateCondition(void)
 {
     // SUNNY
-    if (weatherCondition < FAIR) ShadingFactor = PRANDFloatPos() * 3.0f;
+    if (weatherCondition < FAIR)
+        ShadingFactor = PRANDFloatPos() * 3.0f;
 
     // FAIR OR WORST
-    if (weatherCondition == FAIR) ShadingFactor = PRANDFloatPos() * 9.0f;
+    if (weatherCondition == FAIR)
+        ShadingFactor = PRANDFloatPos() * 9.0f;
 
     // FAIR OR WORST
     if (weatherCondition > FAIR)
@@ -639,14 +801,16 @@ void RealWeather::UpdateCondition(void)
         //WeatherQuality = PRANDFloatPos();
         //WeatherQuality = (stratusZ + 5000.0f) / -15000.0f;
         //I-Hawk - more randomized weatherQuality factor
-        WeatherQuality = (((stratusZ + 5000.0f) / -15000.0f) + PRANDFloatPos()) * 0.5f  ;
+        WeatherQuality =
+            (((stratusZ + 5000.0f) / -15000.0f) + PRANDFloatPos()) * 0.5f;
 
-        if (WeatherQuality > 1.0f) WeatherQuality = 1.0f;
+        if (WeatherQuality > 1.0f)
+            WeatherQuality = 1.0f;
 
-        if (WeatherQuality < 0.0f) WeatherQuality = 0.0f;
+        if (WeatherQuality < 0.0f)
+            WeatherQuality = 0.0f;
 
         WeatherQualityElapsed = TheTimeManager.GetClockTime();
-
     }
     else
     {
@@ -657,14 +821,15 @@ void RealWeather::UpdateCondition(void)
 
 void RealWeather::UpdateCells()
 {
-    if ( not renderer) return;
+    if (not renderer)
+        return;
 
 
     //START_PROFILE("Clouds");
 
     DWORD timeMS;
     int row, col;
-    Tpoint ep = { 0 };
+    Tpoint ep = {0};
 
     if (oldTimeMS)
     {
@@ -696,7 +861,8 @@ void RealWeather::UpdateCells()
             }
         }
 
-        for (row = 0; row < numCells; row++) GenerateCloud(row, col);
+        for (row = 0; row < numCells; row++)
+            GenerateCloud(row, col);
 
         weatherShiftY += cellSize;
     }
@@ -712,7 +878,8 @@ void RealWeather::UpdateCells()
             }
         }
 
-        for (row = 0; row < numCells; row++)  GenerateCloud(row, col);
+        for (row = 0; row < numCells; row++)
+            GenerateCloud(row, col);
 
         weatherShiftY -= cellSize;
     }
@@ -728,7 +895,8 @@ void RealWeather::UpdateCells()
             }
         }
 
-        for (col = 0; col < numCells; col++)  GenerateCloud(row, col);
+        for (col = 0; col < numCells; col++)
+            GenerateCloud(row, col);
 
         weatherShiftX += cellSize;
     }
@@ -745,7 +913,8 @@ void RealWeather::UpdateCells()
             }
         }
 
-        for (col = 0; col < numCells; col++)  GenerateCloud(row, col);
+        for (col = 0; col < numCells; col++)
+            GenerateCloud(row, col);
 
         weatherShiftX -= cellSize;
     }
@@ -758,7 +927,8 @@ void RealWeather::UpdateDrawables()
 {
     bool DrawTheRain = false;
 
-    if ( not renderer) return;
+    if (not renderer)
+        return;
 
     //START_PROFILE("Clouds");
 
@@ -771,8 +941,10 @@ void RealWeather::UpdateDrawables()
     if (weatherCondition > FAIR)
     {
         // Stratus 1 is mover lower or upper based on observer position
-        if (ObserverPos == OBSERVER_LOW) Stratus1Z += stratusDepth / 2.0f;
-        else Stratus1Z -= stratusDepth / 2.0f;
+        if (ObserverPos == OBSERVER_LOW)
+            Stratus1Z += stratusDepth / 2.0f;
+        else
+            Stratus1Z -= stratusDepth / 2.0f;
     }
 
 
@@ -782,7 +954,8 @@ void RealWeather::UpdateDrawables()
 #if CLOUDS_FIX
 
     float CloudShading = 1.0f - 0.025f * (float)ShadingFactor;
-    float CloudAlpha =  0.9f + (float)ShadingFactor * 0.01f; //1.0f - (float)ShadingFactor * 0.02f;
+    float CloudAlpha = 0.9f + (float)ShadingFactor *
+                                  0.01f; //1.0f - (float)ShadingFactor * 0.02f;
 
 #else
 
@@ -802,30 +975,42 @@ void RealWeather::UpdateDrawables()
     if (weatherCondition <= FAIR)
     {
         // Stratus 1 Alpha, depends on ShadingFactor and illumination
-        Stratus1Alpha = max(0.0f, 1.0f - 0.4f * stratusShadingFactor - Ambient * 0.4f);
+        Stratus1Alpha =
+            max(0.0f, 1.0f - 0.4f * stratusShadingFactor - Ambient * 0.4f);
         StratusShading = 1.0f - 0.02f * (float)ShadingFactor;
     }
     else
     {
         // if Bad weather, Stratus1 more dense and darker...
         Stratus1Alpha = 0.7f + 0.02f * ShadingFactor;
-        StratusShading = (ObserverPos == OBSERVER_LOW) ? 0.7f - 0.03f * (float)ShadingFactor : 0.9f;
+        StratusShading = (ObserverPos == OBSERVER_LOW) ?
+                             0.7f - 0.03f * (float)ShadingFactor :
+                             0.9f;
     }
 
     // Stratus 2 Alpha, Depends on Shading and Sun pitch
-    float   SunPitch = (float)TheTimeOfDay.GetSunPitch();
+    float SunPitch = (float)TheTimeOfDay.GetSunPitch();
 
-    if (SunPitch < 10.0f) SunPitch = 10.0f;
+    if (SunPitch < 10.0f)
+        SunPitch = 10.0f;
 
-    float Stratus2Alpha = max(0.0f, 1.0f - 0.3f * stratusShadingFactor - SunPitch / 4000.0f);
+    float Stratus2Alpha =
+        max(0.0f, 1.0f - 0.3f * stratusShadingFactor - SunPitch / 4000.0f);
 
-    if (weatherCondition > FAIR) Stratus2Alpha /= 4.0f;
+    if (weatherCondition > FAIR)
+        Stratus2Alpha /= 4.0f;
 
-    CloudHiColor = F_TO_ARGB(CloudAlpha, litCloudColor.r, litCloudColor.g, litCloudColor.b);
-    CloudLoColor = F_TO_ARGB(CloudAlpha, litCloudColor.r * CloudShading, litCloudColor.g * CloudShading, litCloudColor.b * CloudShading);
+    CloudHiColor = F_TO_ARGB(CloudAlpha, litCloudColor.r, litCloudColor.g,
+                             litCloudColor.b);
+    CloudLoColor = F_TO_ARGB(CloudAlpha, litCloudColor.r * CloudShading,
+                             litCloudColor.g * CloudShading,
+                             litCloudColor.b * CloudShading);
 
-    Stratus2Color = F_TO_ARGB(Stratus2Alpha, litCloudColor.r, litCloudColor.g, litCloudColor.b);
-    Stratus1Color = F_TO_ARGB(Stratus1Alpha, litCloudColor.r * StratusShading, litCloudColor.g * StratusShading, litCloudColor.b * StratusShading);
+    Stratus2Color = F_TO_ARGB(Stratus2Alpha, litCloudColor.r, litCloudColor.g,
+                              litCloudColor.b);
+    Stratus1Color = F_TO_ARGB(Stratus1Alpha, litCloudColor.r * StratusShading,
+                              litCloudColor.g * StratusShading,
+                              litCloudColor.b * StratusShading);
 
     DWORD clipFlag[4];
     Tpoint wp, vp[4], cumulusPos, stratusPos, shadowPos;
@@ -849,7 +1034,8 @@ void RealWeather::UpdateDrawables()
             stratusPos.z = stratus2Z;
             DrawStratus2(&stratusPos, sTxtIndex);
 
-            if (weatherCondition == FAIR or (weatherCondition > FAIR and InsideOvercast()))
+            if (weatherCondition == FAIR or
+                (weatherCondition > FAIR and InsideOvercast()))
             {
                 for (i = 0; i < NUM_3DCLOUD_POLYS; i++)
                 {
@@ -877,47 +1063,71 @@ void RealWeather::UpdateDrawables()
 
                         // The regulare drawing, but with less space between the puffs
                         // make the clouds more 3D
-                        cumulusPos.x = (stratusPos.x + (float)(i - 2) * /*puffRadius*/ weatherCellArray[row][col].Radius * 0.075f * sideRandFactor);
-                        cumulusPos.y = (stratusPos.y + (float)(i - 2) * /*puffRadius*/ weatherCellArray[row][col].Radius * 0.075f * sideRandFactor);
+                        cumulusPos.x = (stratusPos.x +
+                                        (float)(i - 2) *
+                                            /*puffRadius*/
+                                            weatherCellArray[row][col].Radius *
+                                            0.075f * sideRandFactor);
+                        cumulusPos.y = (stratusPos.y +
+                                        (float)(i - 2) *
+                                            /*puffRadius*/
+                                            weatherCellArray[row][col].Radius *
+                                            0.075f * sideRandFactor);
                         cumulusPos.z = cumulusZ + 500.0f * ZRandFactor - 5000;
                     }
 
                     else
                     {
                         // The old-style BMS drawing method
-                        cumulusPos.x = stratusPos.x + ((cloudPntList[cPntIndex][0] * 1.8f) / 30.f);
-                        cumulusPos.y = stratusPos.y + ((cloudPntList[cPntIndex][2] * 1.8f) / 30.f);
-                        cumulusPos.z = cumulusZ - ((cloudPntList[cPntIndex][1] * 1.8f) / 30.f) - 5000;
+                        cumulusPos.x =
+                            stratusPos.x +
+                            ((cloudPntList[cPntIndex][0] * 1.8f) / 30.f);
+                        cumulusPos.y =
+                            stratusPos.y +
+                            ((cloudPntList[cPntIndex][2] * 1.8f) / 30.f);
+                        cumulusPos.z =
+                            cumulusZ -
+                            ((cloudPntList[cPntIndex][1] * 1.8f) / 30.f) - 5000;
                     }
 
 #else
 
-                    cumulusPos.x = (stratusPos.x + (float)(i - 2) * weatherCellArray[row][col].Radius * 2.3f);
-                    cumulusPos.y = (stratusPos.y + (float)(i - 2) * weatherCellArray[row][col].Radius * 2.3f);
+                    cumulusPos.x =
+                        (stratusPos.x + (float)(i - 2) *
+                                            weatherCellArray[row][col].Radius *
+                                            2.3f);
+                    cumulusPos.y =
+                        (stratusPos.y + (float)(i - 2) *
+                                            weatherCellArray[row][col].Radius *
+                                            2.3f);
                     cumulusPos.z = cumulusZ - 3000.0f;
 
 #endif
 
 
-                    if (cumulusPos.z <  stratusZ) cumulusPos.z = (stratusZ + 1500.f);
+                    if (cumulusPos.z < stratusZ)
+                        cumulusPos.z = (stratusZ + 1500.f);
 
                     if (DisplayOptions.bZBuffering)
-                        DrawCumulus(&cumulusPos, cTxtIndex, weatherCellArray[row][col].Radius);
+                        DrawCumulus(&cumulusPos, cTxtIndex,
+                                    weatherCellArray[row][col].Radius);
                     else
-                        real3DClouds[q].drawable3DClouds[r++].Update(&cumulusPos, cTxtIndex);
+                        real3DClouds[q].drawable3DClouds[r++].Update(
+                            &cumulusPos, cTxtIndex);
 
                     // Cobra - Raining under dark cummulus clouds
-                    if ((weatherCondition == FAIR) and (ShadingFactor >= 5) and (viewerZ > cumulusPos.z))
+                    if ((weatherCondition == FAIR) and (ShadingFactor >= 5) and
+                        (viewerZ > cumulusPos.z))
                     {
                         float dx = viewerX - cumulusPos.x;
                         float dy = viewerY - cumulusPos.y;
                         float range = FabsF(SqrtF(dx * dx + dy * dy));
 
                         // Flag that rain is to be drawn
-                        if (range < weatherCellArray[row][col].Radius * 0.6f) DrawTheRain = true;
+                        if (range < weatherCellArray[row][col].Radius * 0.6f)
+                            DrawTheRain = true;
                     }
                 }
-
             }
 
 
@@ -925,19 +1135,23 @@ void RealWeather::UpdateDrawables()
             q++;
             r = 0;
 
-            if (PlayerOptions.ShadowsOn()
-               and row >= shadowCell and row < numCells - shadowCell
-               and col >= shadowCell and col < numCells - shadowCell)
+            if (PlayerOptions.ShadowsOn() and row >= shadowCell and
+                row < numCells - shadowCell and col >= shadowCell and
+                col < numCells - shadowCell)
             {
                 shadowPos.x = sunMag;
                 shadowPos.y = shadowPos.z = 0;
                 RotatePoint(&shadowPos, 0, 0, sunYaw);
                 // COBRA - RED - Restored to CloudRadius... too much large causes bad effects on ground...
                 float Radius = cloudRadius; //weatherCellArray[row][col].Radius;
-                shadowPos.x += weatherCellArray[row][col].cloudPosX + weatherShiftX;
-                shadowPos.y += weatherCellArray[row][col].cloudPosY + weatherShiftY;
-                shadowPos.z = renderer->viewpoint->GetGroundLevel(shadowPos.x, shadowPos.y);
-                renderer->TransformPointToViewSwapped(&shadowPos, &weatherCellArray[row][col].shadowPos);
+                shadowPos.x +=
+                    weatherCellArray[row][col].cloudPosX + weatherShiftX;
+                shadowPos.y +=
+                    weatherCellArray[row][col].cloudPosY + weatherShiftY;
+                shadowPos.z = renderer->viewpoint->GetGroundLevel(shadowPos.x,
+                                                                  shadowPos.y);
+                renderer->TransformPointToViewSwapped(
+                    &shadowPos, &weatherCellArray[row][col].shadowPos);
 
                 wp.x = shadowPos.x + Radius;
                 wp.y = shadowPos.y - Radius;
@@ -961,16 +1175,19 @@ void RealWeather::UpdateDrawables()
 
                 for (i = 0; i < 4; i++)
                 {
-                    clipFlag[i]  = GetRangeClipFlags(vp[i].z, 0);
+                    clipFlag[i] = GetRangeClipFlags(vp[i].z, 0);
                     clipFlag[i] or_eq GetHorizontalClipFlags(vp[i].x, vp[i].z);
                     clipFlag[i] or_eq GetVerticalClipFlags(vp[i].y, vp[i].z);
                 }
 
-                weatherCellArray[row][col].onScreen = ( not clipFlag[0] or not clipFlag[1] or not clipFlag[2] or not clipFlag[3]);
+                weatherCellArray[row][col].onScreen =
+                    (not clipFlag[0] or not clipFlag[1] or not clipFlag[2] or
+                     not clipFlag[3]);
 
-                if ( not weatherCellArray[row][col].onScreen
-                   and row >= shadowCell + 1 and row < numCells - shadowCell - 1
-                   and col >= shadowCell + 1 and col < numCells - shadowCell - 1)
+                if (not weatherCellArray[row][col].onScreen and
+                    row >= shadowCell + 1 and
+                    row < numCells - shadowCell - 1 and
+                    col >= shadowCell + 1 and col < numCells - shadowCell - 1)
                 {
                     float dx = viewerX - shadowPos.x;
                     float dy = viewerY - shadowPos.y;
@@ -986,7 +1203,8 @@ void RealWeather::UpdateDrawables()
     }
 
     // if Flagged that rain is to be drawn, draw it
-    if (DrawTheRain) DrawRain();
+    if (DrawTheRain)
+        DrawRain();
 
     //STOP_PROFILE("Clouds");
 }
@@ -995,21 +1213,25 @@ void RealWeather::UpdateDrawables()
 void RealWeather::Draw()
 {
     // Update all clouds
-    if (DisplayOptions.bZBuffering) UpdateDrawables();
+    if (DisplayOptions.bZBuffering)
+        UpdateDrawables();
 
     // Weather quality check under overcast
     if (weatherCondition == INCLEMENT and UnderOvercast())
     {
         // if worst than just lighting, rain
-        if (WeatherQuality >= 0.1f) DrawRain(); // RV - I-Hawk - was 0.75
+        if (WeatherQuality >= 0.1f)
+            DrawRain(); // RV - I-Hawk - was 0.75
 
         // just before rain, lightning
         if (WeatherQuality >= 0.1f) // was 0.65
         {
-            if ( not didOnce)
+            if (not didOnce)
             {
-                if ((SimLibElapsedTime - startMS) > intervalMS) didOnce = TRUE;
-                else return;
+                if ((SimLibElapsedTime - startMS) > intervalMS)
+                    didOnce = TRUE;
+                else
+                    return;
             }
             else
                 DoLightning();
@@ -1117,7 +1339,7 @@ void RealWeather::DoLightning()
     Tpoint pv, p0, p1, p2, p3, lp, lp0, lp2;
     float dx, dy, dz, adj, yoff, zoff, angle, sR, cR, distance;
 
-    if ( not drawLightning)
+    if (not drawLightning)
     {
         intervalMS = max(((rand() % 30) + 20) * SEC_TO_MSEC, 50 * SEC_TO_MSEC);
 
@@ -1176,11 +1398,11 @@ void RealWeather::DoLightning()
                 {
                     lp0.x = 0.f;
                     lp0.y = -lightningPosList[i][0] * 100.f;
-                    lp0.z =  lightningPosList[i][1] * lZM;
+                    lp0.z = lightningPosList[i][1] * lZM;
 
                     lp2.x = 0.f;
                     lp2.y = -lightningPosList[i + 1][0] * 100.f;
-                    lp2.z =  lightningPosList[i + 1][1] * lZM;
+                    lp2.z = lightningPosList[i + 1][1] * lZM;
 
                     adj = (-lp0.z) - (-lp2.z);
 
@@ -1214,10 +1436,14 @@ void RealWeather::DoLightning()
                     renderer->TransformBillboardPoint(&p2, &pv, &v2);
                     renderer->TransformBillboardPoint(&p3, &pv, &v3);
 
-                    v0.u = TEX_UV_MIN, v0.v = TEX_UV_MIN, v0.q = v0.csZ * Q_SCALE;
-                    v1.u = TEX_UV_MAX, v1.v = TEX_UV_MIN, v1.q = v1.csZ * Q_SCALE;
-                    v2.u = TEX_UV_MAX, v2.v = TEX_UV_MAX, v2.q = v2.csZ * Q_SCALE;
-                    v3.u = TEX_UV_MIN, v3.v = TEX_UV_MAX, v3.q = v3.csZ * Q_SCALE;
+                    v0.u = TEX_UV_MIN, v0.v = TEX_UV_MIN,
+                    v0.q = v0.csZ * Q_SCALE;
+                    v1.u = TEX_UV_MAX, v1.v = TEX_UV_MIN,
+                    v1.q = v1.csZ * Q_SCALE;
+                    v2.u = TEX_UV_MAX, v2.v = TEX_UV_MAX,
+                    v2.q = v2.csZ * Q_SCALE;
+                    v3.u = TEX_UV_MIN, v3.v = TEX_UV_MAX,
+                    v3.q = v3.csZ * Q_SCALE;
 
                     if (greenMode)
                     {
@@ -1235,12 +1461,16 @@ void RealWeather::DoLightning()
                     v0.a = v1.a = v2.a = v3.a = 1.f;
 
                     if (v0.csZ > 50.f)
-                        renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD);
+                        renderer->context.RestoreState(
+                            STATE_ALPHA_TEXTURE_GOURAUD);
                     else
-                        renderer->context.RestoreState(STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
+                        renderer->context.RestoreState(
+                            STATE_ALPHA_TEXTURE_GOURAUD_PERSPECTIVE);
 
-                    renderer->context.SelectTexture1(lightningTexture.TexHandle());
-                    renderer->DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL, (g_nGfxFix > 0));
+                    renderer->context.SelectTexture1(
+                        lightningTexture.TexHandle());
+                    renderer->DrawSquare(&v0, &v1, &v2, &v3, CULL_ALLOW_ALL,
+                                         (g_nGfxFix > 0));
                 }
 
                 memcpy(&lp, &lightningPos, sizeof(Tpoint));
@@ -1254,7 +1484,8 @@ void RealWeather::DoLightning()
             if (isLightning and g_bHearThunder)
             {
                 static int uid = 0;
-                F4SoundFXSetPos(SFX_THUNDER, TRUE, lightningPos.x, lightningPos.y, lightningPos.z, 1, 0, uid);
+                F4SoundFXSetPos(SFX_THUNDER, TRUE, lightningPos.x,
+                                lightningPos.y, lightningPos.z, 1, 0, uid);
                 // 7-11-04 version F4SoundFXSetPos(SFX_THUNDER,FALSE,lightningPos.x,lightningPos.y,lightningPos.z,1,0,0,0,0,uid,0);
                 uid++;
 
@@ -1311,7 +1542,7 @@ void RealWeather::Cleanup()
 {
     int i;
 
-    if ( not DisplayOptions.bZBuffering)
+    if (not DisplayOptions.bZBuffering)
     {
         for (i = 0; i < MAX_NUM_DRAWABLES; i++)
         {
@@ -1353,19 +1584,20 @@ void RealWeather::UpdateWeatherQuality(void)
     WeatherQualityStep = F_I32(PRANDFloatPos() * MAX_WEATHER_Q_STEPS);
     WeatherQualityRate = PRANDFloat() * MIN_WEATHER_Q_STEP;
 
-    if (fabs(WeatherQualityRate) < (MIN_WEATHER_Q_STEP / 10.0f)) realWeather->WeatherQualityRate = fabs(WeatherQualityRate) / WeatherQualityRate * MIN_WEATHER_Q_STEP;
+    if (fabs(WeatherQualityRate) < (MIN_WEATHER_Q_STEP / 10.0f))
+        realWeather->WeatherQualityRate =
+            fabs(WeatherQualityRate) / WeatherQualityRate * MIN_WEATHER_Q_STEP;
 }
 
 void RealWeather::TimeUpdateCallback(void *)
 {
     realWeather->UpdateLighting();
-
 }
 //Cobra
 bool RealWeather::ReadWeather(void)
 {
 
-    FILE* fp;
+    FILE *fp;
     int i = 0;
     int cnt = 0;
     char file[1024];
@@ -1373,12 +1605,12 @@ bool RealWeather::ReadWeather(void)
     //char tmpChar[10];
     int tmp = 0;
     //char netFile[1024];
-    //URLDownloadToFile(NULL, "http://weather.flightgear.org/~curt/WX/METAR.rwx", "c:\\metar.txt", 0, NULL);
-    //int testthis = URLDownloadToFile(NULL, "http://www.microsoft.com/ms.htm", "c:\\ms.htm", 0, 0);
+    //URLDownloadToFile(NULL, "http://weather.flightgear.org/~curt/WX/METAR.rwx", "c:/metar.txt", 0, NULL);
+    //int testthis = URLDownloadToFile(NULL, "http://www.microsoft.com/ms.htm", "c:/ms.htm", 0, 0);
 
-    sprintf(file, "C:\\metar.txt");
+    sprintf(file, "C:/metar.txt");
 
-    if ( not (fp = fopen(file, "rt")))
+    if (not(fp = fopen(file, "rt")))
         return FALSE;
 
     //Count
@@ -1388,7 +1620,8 @@ bool RealWeather::ReadWeather(void)
 
     while (fgets(file, 1024, fp))
     {
-        if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or file[0] == '\n')
+        if (file[0] == '\r' or file[0] == '#' or file[0] == ';' or
+            file[0] == '\n')
         {
             t++;
             continue;
@@ -1427,15 +1660,16 @@ bool RealWeather::ReadWeather(void)
     //KJKL 300705Z AUTO 00000KT 1 1/2SM +RA BR SCT003 OVC017 14/13 A2973
     if (specMETAR)
     {
-        char * pch;
+        char *pch;
 
         pch = strtok(specMETAR, " ");
 
         while (pch not_eq NULL)
         {
             //Identify things by length
-            if (strlen(pch) == 2 or (strlen(pch) == 3 and strncmp(pch, "-", 1))
-                or (strlen(pch) == 3 and strncmp(pch, "+", 1)))
+            if (strlen(pch) == 2 or
+                (strlen(pch) == 3 and strncmp(pch, "-", 1)) or
+                (strlen(pch) == 3 and strncmp(pch, "+", 1)))
             {
                 if (strlen(pch) == 3) //strip it down to two
                 {
@@ -1446,29 +1680,32 @@ bool RealWeather::ReadWeather(void)
                     strcpy(cpy, pch);
                 }
 
-                if (strcmp(cpy, "RA") == 0 or strcmp(cpy, "DZ") == 0 or strcmp(cpy, "SN") == 0 or
-                    strcmp(cpy, "GR") == 0 or strcmp(cpy, "GS") == 0 or strcmp(cpy, "PL") == 0 or
-                    strcmp(cpy, "SG") == 0 or strcmp(cpy, "IC") == 0 or strcmp(cpy, "UP") == 0) //0/8
+                if (strcmp(cpy, "RA") == 0 or strcmp(cpy, "DZ") == 0 or
+                    strcmp(cpy, "SN") == 0 or strcmp(cpy, "GR") == 0 or
+                    strcmp(cpy, "GS") == 0 or strcmp(cpy, "PL") == 0 or
+                    strcmp(cpy, "SG") == 0 or strcmp(cpy, "IC") == 0 or
+                    strcmp(cpy, "UP") == 0) //0/8
                 {
                     //Some form of precip present
                     tm = 1;
                     memset(&cpy, 0, sizeof(cpy));
                 }
 
-                if (strcmp(cpy, "FG") == 0 or strcmp(cpy, "HZ") == 0 or strcmp(cpy, "FU") == 0 or
-                    strcmp(cpy, "PY") == 0 or strcmp(cpy, "BR") == 0 or strcmp(cpy, "SA") == 0 or
+                if (strcmp(cpy, "FG") == 0 or strcmp(cpy, "HZ") == 0 or
+                    strcmp(cpy, "FU") == 0 or strcmp(cpy, "PY") == 0 or
+                    strcmp(cpy, "BR") == 0 or strcmp(cpy, "SA") == 0 or
                     strcmp(cpy, "DU") == 0 or strcmp(cpy, "VA") == 0) //0/8
                 {
                     //Some form of visibility obstruction
                     tm = 1;
                     memset(&cpy, 0, sizeof(cpy));
                 }
-
             }
             else if (strlen(pch) == 3)
             {
                 //
-                if (strcmp(pch, "CLR") == 0 or strcmp(pch, "NSC") == 0 or strcmp(pch, "SKC") == 0) //0/8
+                if (strcmp(pch, "CLR") == 0 or strcmp(pch, "NSC") == 0 or
+                    strcmp(pch, "SKC") == 0) //0/8
                 {
                     tm = 1;
                 }
@@ -1493,8 +1730,9 @@ bool RealWeather::ReadWeather(void)
                     tm = 1;
                 }
             }
-            else if (strlen(pch) == 4 or (strlen(pch) == 5 and strncmp(pch, "-", 1) == 0)
-                     or (strlen(pch) == 5 and strncmp(pch, "+", 1) == 0))
+            else if (strlen(pch) == 4 or
+                     (strlen(pch) == 5 and strncmp(pch, "-", 1) == 0) or
+                     (strlen(pch) == 5 and strncmp(pch, "+", 1) == 0))
             {
                 if (strlen(pch) == 5) //strip it down to four
                 {
@@ -1526,7 +1764,6 @@ bool RealWeather::ReadWeather(void)
                     //Clear vis
                     memset(&cpy, 0, sizeof(cpy));
                 }
-
             }
             else if (strlen(pch) == 5)
             {
@@ -1555,11 +1792,10 @@ bool RealWeather::ReadWeather(void)
                 {
                     tm = 1;
                 }
-
-
             }
-            else if (strlen(pch) == 6 or (strlen(pch) == 8 and (strncmp(pch + 6, "CB", 2) == 0))
-                     or (strlen(pch) == 9 and (strncmp(pch + 6, "TCU", 3) == 0)))
+            else if (strlen(pch) == 6 or
+                     (strlen(pch) == 8 and (strncmp(pch + 6, "CB", 2) == 0)) or
+                     (strlen(pch) == 9 and (strncmp(pch + 6, "TCU", 3) == 0)))
             {
                 //XYZ000
                 if (strncmp(pch + 6, "CB", 2) == 0)
@@ -1601,7 +1837,6 @@ bool RealWeather::ReadWeather(void)
                     cntLyr = atoi(cpy) * 100;
                     memset(&cpy, 0, sizeof(cpy));
                 }
-
             }
             else if (strlen(pch) == 7 or strlen(pch) == 10)
             {
@@ -1614,7 +1849,8 @@ bool RealWeather::ReadWeather(void)
                     time = atoi(cpy);
                     memset(&cpy, 0, sizeof(cpy));
                 }
-                else if (strcmp(pch + 5, "KT") == 0) //Grab wind direction and speed
+                else if (strcmp(pch + 5, "KT") ==
+                         0) //Grab wind direction and speed
                 {
                     if (strncmp(pch, "VRB", 3) == 0) //catch variable wind
                     {
@@ -1641,7 +1877,6 @@ bool RealWeather::ReadWeather(void)
                     memset(&cpy1, 0, sizeof(cpy1));
                     //Add variable for gusts
                 }
-
             }
             else if (strlen(pch) == 9)
             {
@@ -1650,7 +1885,6 @@ bool RealWeather::ReadWeather(void)
                     //We have TCU
                     tm = 1;
                 }
-
             }
 
             MonoPrint("%s\n", pch);
@@ -1659,11 +1893,8 @@ bool RealWeather::ReadWeather(void)
     }
 
 
-
-
-
     //This reads a file from weather folder (manual weather)
-    /*sprintf(file,"%s\\weather\\RKSS.txt",FalconTerrainDataDir);
+    /*sprintf(file,"%s/weather/RKSS.txt",FalconTerrainDataDir);
 
     if( not (fp=fopen(file,"rt")))
      {

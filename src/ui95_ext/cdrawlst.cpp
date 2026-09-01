@@ -24,7 +24,7 @@ C_DrawList::~C_DrawList()
 
 long C_DrawList::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_DrawList::Setup(long ID, short Type)
@@ -49,7 +49,7 @@ void C_DrawList::Cleanup(void)
 
 void C_DrawList::Add(MAPICONLIST *item)
 {
-    if ( not Root_)
+    if (not Root_)
         return;
 
     if (Root_->Find(item->ID))
@@ -60,7 +60,7 @@ void C_DrawList::Add(MAPICONLIST *item)
 
 void C_DrawList::Remove(long ID)
 {
-    if ( not Root_)
+    if (not Root_)
         return;
 
     Root_->Remove(ID);
@@ -74,15 +74,16 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
     long x, y, w, h;
 
     if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
-        return(0);
+        return (0);
 
     Last_ = NULL;
 
-    item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
+    item = (MAPICONLIST *)Root_->GetFirst(&me, &curidx);
 
     while (item)
     {
-        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
+        if (not(item->Flags bitand C_BIT_INVISIBLE) and
+            item->Flags bitand C_BIT_ENABLED)
         {
             x = item->x + item->Icon->GetX();
             y = item->y + item->Icon->GetY();
@@ -96,13 +97,13 @@ long C_DrawList::CheckHotSpots(long relX, long relY)
             }
         }
 
-        item = (MAPICONLIST*)Root_->GetNext(&me, &curidx);
+        item = (MAPICONLIST *)Root_->GetNext(&me, &curidx);
     }
 
     if (Last_)
-        return(GetID());
+        return (GetID());
 
-    return(0);
+    return (0);
 }
 
 BOOL C_DrawList::Process(long ID, short HitType)
@@ -110,9 +111,9 @@ BOOL C_DrawList::Process(long ID, short HitType)
     gSoundMgr->PlaySound(GetSound(HitType));
 
     if (Last_ and Last_->Owner)
-        return(Last_->Owner->Process(ID, HitType));
+        return (Last_->Owner->Process(ID, HitType));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_DrawList::Refresh()
@@ -124,18 +125,19 @@ void C_DrawList::Refresh()
     if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
+    item = (MAPICONLIST *)Root_->GetFirst(&me, &curidx);
 
     while (item)
     {
-        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
+        if (not(item->Flags bitand C_BIT_INVISIBLE) and
+            item->Flags bitand C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Refresh();
 
-                if ( not (GetFlags() bitand C_BIT_NOLABEL))
+                if (not(GetFlags() bitand C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Refresh();
@@ -152,7 +154,7 @@ void C_DrawList::Refresh()
             }
         }
 
-        item = (MAPICONLIST*)Root_->GetNext(&me, &curidx);
+        item = (MAPICONLIST *)Root_->GetNext(&me, &curidx);
     }
 }
 
@@ -165,18 +167,19 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    item = (MAPICONLIST*)Root_->GetFirst(&me, &curidx);
+    item = (MAPICONLIST *)Root_->GetFirst(&me, &curidx);
 
     while (item)
     {
-        if ( not (item->Flags bitand C_BIT_INVISIBLE) and item->Flags bitand C_BIT_ENABLED)
+        if (not(item->Flags bitand C_BIT_INVISIBLE) and
+            item->Flags bitand C_BIT_ENABLED)
         {
             if (item->Icon)
             {
                 item->Owner->SetXY(item->x, item->y);
                 item->Icon->Draw(surface, cliprect);
 
-                if ( not (GetFlags() bitand C_BIT_NOLABEL))
+                if (not(GetFlags() bitand C_BIT_NOLABEL))
                 {
                     if (item->Div)
                         item->Div->Draw(surface, cliprect);
@@ -187,12 +190,13 @@ void C_DrawList::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (item->Bat)
                         item->Bat->Draw(surface, cliprect);
 
-                    if (item->Label and not item->Div and not item->Brig and not item->Bat)
+                    if (item->Label and not item->Div and not item->Brig and
+                        not item->Bat)
                         item->Label->Draw(surface, cliprect);
                 }
             }
         }
 
-        item = (MAPICONLIST*)Root_->GetNext(&me, &curidx);
+        item = (MAPICONLIST *)Root_->GetNext(&me, &curidx);
     }
 }

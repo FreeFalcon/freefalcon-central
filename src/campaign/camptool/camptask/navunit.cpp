@@ -6,29 +6,29 @@
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
-#include "CmpGlobl.h"
-#include "ListADT.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "ASearch.h"
-#include "Path.h"
-#include "Find.h"
-#include "APITypes.h"
-#include "Campaign.h"
-#include "ATM.h"
+#include "cmpglobl.h"
+#include "listadt.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "asearch.h"
+#include "path.h"
+#include "find.h"
+#include "apitypes.h"
+#include "campaign.h"
+#include "atm.h"
 #include "f4vu.h"
-#include "CampList.h"
+#include "camplist.h"
 #include "campwp.h"
 #include "update.h"
 #include "loadout.h"
 #include "navunit.h"
 #include "tactics.h"
-#include "Tacan.h"
-#include "ClassTbl.h"
-#include "Graphics/Include/TMap.h"
-#include "PtData.h"
-#include "Camp2Sim.h"
-#include "Aircrft.h"
+#include "tacan.h"
+#include "classtbl.h"
+#include "graphics/include/tmap.h"
+#include "ptdata.h"
+#include "camp2sim.h"
+#include "aircrft.h"
 #include "radar.h"
 #include "debuggr.h"
 
@@ -47,7 +47,7 @@ WayPoint DoWPAction(TaskForce tf, WayPoint w);
 // Externals
 // ============================================
 
-extern unsigned char        SHOWSTATS;
+extern unsigned char SHOWSTATS;
 
 extern CampaignHeading WithdrawUnit(Unit u);
 
@@ -58,13 +58,9 @@ extern VU_ID_NUMBER lastNonVolitileId;
 extern VU_ID_NUMBER lastLowVolitileId;
 extern VU_ID_NUMBER lastVolitileId;
 
-extern FILE
-*save_log,
-*load_log;
+extern FILE *save_log, *load_log;
 
-extern int
-start_save_stream,
-start_load_stream;
+extern int start_save_stream, start_load_stream;
 
 #ifdef DEBUG
 extern int gCheckConstructFunction;
@@ -83,7 +79,7 @@ MEM_POOL TaskForceClass::pool;
 // ============================================
 
 // KCK: ALL TASK FORCE CONSTRUCTION SHOULD USE THIS FUNCTION!
-TaskForceClass* NewTaskForce(int type)
+TaskForceClass *NewTaskForce(int type)
 {
     TaskForceClass *new_taskforce;
 #ifdef DEBUG
@@ -157,9 +153,7 @@ TaskForceClass::~TaskForceClass(void)
 
 int TaskForceClass::SaveSize(void)
 {
-    return UnitClass::SaveSize()
-           + sizeof(uchar)
-           + sizeof(Percentage);
+    return UnitClass::SaveSize() + sizeof(uchar) + sizeof(Percentage);
 }
 
 int TaskForceClass::Save(VU_BYTE **stream)
@@ -183,7 +177,7 @@ int TaskForceClass::Save(VU_BYTE **stream)
 int TaskForceClass::Handle(VuFullUpdateEvent *event)
 {
     // copy data from temp entity to current entity
-    TaskForceClass* tmp_ent = (TaskForceClass*)(event->expandedData_);
+    TaskForceClass *tmp_ent = (TaskForceClass *)(event->expandedData_);
 
     orders = tmp_ent->orders;
     supply = tmp_ent->supply;
@@ -256,26 +250,34 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 
             // Find the center point and direction point for this ship
             simdata->ptIndex = GetDeaggregationPoint(simdata->campSlot, &ent);
-            ptIndexAt        = GetDeaggregationPoint(simdata->campSlot, &ent);
+            ptIndexAt = GetDeaggregationPoint(simdata->campSlot, &ent);
 
             if (!ptIndexAt)
             {
-                ShiAssert(!simdata->ptIndex); // We should always have an even number of points
+                ShiAssert(
+                    !simdata
+                         ->ptIndex); // We should always have an even number of points
 
                 // Reuse the old points, but with an offset
                 ent = NULL;
                 GetDeaggregationPoint(simdata->campSlot, &ent); // Reset
-                simdata->ptIndex = GetDeaggregationPoint(simdata->campSlot, &ent);
-                ptIndexAt        = GetDeaggregationPoint(simdata->campSlot, &ent);
+                simdata->ptIndex =
+                    GetDeaggregationPoint(simdata->campSlot, &ent);
+                ptIndexAt = GetDeaggregationPoint(simdata->campSlot, &ent);
                 round++;
             }
 
-            ShiAssert(ptIndexAt); // We must have at least two points (center and toward)
+            ShiAssert(
+                ptIndexAt); // We must have at least two points (center and toward)
             TranslatePointData(ent, simdata->ptIndex, &simdata->x, &simdata->y);
 
             // Face toward the "at" point
-            dx = PtDataTable[ptIndexAt].yOffset - PtDataTable[simdata->ptIndex].yOffset; // KCK NOTE: axis' are reversed
-            dy = PtDataTable[ptIndexAt].xOffset - PtDataTable[simdata->ptIndex].xOffset; // KCK NOTE: axis' are reversed
+            dx = PtDataTable[ptIndexAt].yOffset -
+                 PtDataTable[simdata->ptIndex]
+                     .yOffset; // KCK NOTE: axis' are reversed
+            dy = PtDataTable[ptIndexAt].xOffset -
+                 PtDataTable[simdata->ptIndex]
+                     .xOffset; // KCK NOTE: axis' are reversed
             simdata->heading = (float)atan2(dx, dy);
 
             // If we reused a point, shift our center point along the at vector
@@ -289,26 +291,26 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
 
             switch ((simdata->vehicleInUnit - 1) & 0x3)
             {
-                case 0:
-                    simdata->x = XPos() - 1500.0f - 1500.0f * dist;
-                    simdata->y = YPos() - 1500.0f - 1500.0f * dist;
-                    break;
+            case 0:
+                simdata->x = XPos() - 1500.0f - 1500.0f * dist;
+                simdata->y = YPos() - 1500.0f - 1500.0f * dist;
+                break;
 
-                case 1:
-                    simdata->x = XPos() + 1500.0f + 1500.0f * dist;
-                    simdata->y = YPos() - 1500.0f - 1500.0f * dist;
-                    break;
+            case 1:
+                simdata->x = XPos() + 1500.0f + 1500.0f * dist;
+                simdata->y = YPos() - 1500.0f - 1500.0f * dist;
+                break;
 
-                case 2:
-                    simdata->x = XPos() + 1500.0f + 1500.0f * dist;
-                    simdata->y = YPos() + 1500.0f + 1500.0f * dist;
-                    break;
+            case 2:
+                simdata->x = XPos() + 1500.0f + 1500.0f * dist;
+                simdata->y = YPos() + 1500.0f + 1500.0f * dist;
+                break;
 
-                case 3:
-                default:
-                    simdata->x = XPos() - 1500.0f - 1500.0f * dist;
-                    simdata->y = YPos() + 1500.0f + 1500.0f * dist;
-                    break;
+            case 3:
+            default:
+                simdata->x = XPos() - 1500.0f - 1500.0f * dist;
+                simdata->y = YPos() + 1500.0f + 1500.0f * dist;
+                break;
             }
         }
     }
@@ -317,7 +319,8 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
     simdata->z = 0.0f;
 
     // Determine skill (Sim only uses it for anti-air stuff right now, so bow to expedience
-    simdata->skill = ((TeamInfo[GetOwner()]->airDefenseExperience - 60) / 10) + rand() % 3 - 1;
+    simdata->skill = ((TeamInfo[GetOwner()]->airDefenseExperience - 60) / 10) +
+                     rand() % 3 - 1;
     // simdata->skill = ((TeamInfo[GetOwner()]->navalExperience - 60) / 10) + rand()%3 - 1;
 
     // Clamp it to legal sim side values
@@ -341,7 +344,7 @@ int TaskForceClass::GetVehicleDeagData(SimInitDataClass *simdata, int remote)
     simdata->playerSlot = NO_PILOT;
     simdata->waypointList = CloneWPToList(GetFirstUnitWP(), NULL);
 
-    return  MOTION_GND_AI;
+    return MOTION_GND_AI;
 }
 
 
@@ -390,7 +393,8 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
                 {
                     char name[80];
                     o->GetName(name, 79, FALSE);
-                    fprintf(fp, "Obj %s @ %d,%d: No header list of type %d.\n", name, x, y, DockListType);
+                    fprintf(fp, "Obj %s @ %d,%d: No header list of type %d.\n",
+                            name, x, y, DockListType);
                     fclose(fp);
                 }
 
@@ -427,7 +431,10 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
                     GridIndex x, y;
                     (*installation)->GetName(name, 79, FALSE);
                     (*installation)->GetLocation(&x, &y);
-                    fprintf(fp, "HeaderList %d (Obj %s @ %d,%d): Insufficient points of type %d.\n", index, name, x, y, type);
+                    fprintf(fp,
+                            "HeaderList %d (Obj %s @ %d,%d): Insufficient "
+                            "points of type %d.\n",
+                            index, name, x, y, type);
                     fclose(fp);
                 }
             }
@@ -459,7 +466,9 @@ int TaskForceClass::GetDeaggregationPoint(int slot, CampEntity *installation)
             GridIndex x, y;
             (*installation)->GetName(name, 79, FALSE);
             (*installation)->GetLocation(&x, &y);
-            fprintf(fp, "HeaderList %d (Obj %s @ %d,%d): No points of type %d.\n", index, name, x, y, type);
+            fprintf(fp,
+                    "HeaderList %d (Obj %s @ %d,%d): No points of type %d.\n",
+                    index, name, x, y, type);
             fclose(fp);
         }
 
@@ -502,13 +511,16 @@ int TaskForceClass::MoveUnit(CampaignTime time)
         //MI we need to set a flag for each WP
         w->SetWPFlags(WPF_REPEAT);
         // 'There'
-        w = AddUnitWP(x, y + 20, 0, 60, TheCampaign.CurrentTime + 20 * CampaignMinutes, 0, 0);
+        w = AddUnitWP(x, y + 20, 0, 60,
+                      TheCampaign.CurrentTime + 20 * CampaignMinutes, 0, 0);
         //MI we need to set a flag for each WP
         w->SetWPFlags(WPF_REPEAT);
         // 'Here' again
         //MI this aint no Racetrack!
         //w = AddUnitWP(x, y+20, 0, 60, TheCampaign.CurrentTime + 40*CampaignMinutes, 0xffffffff, 0);
-        w = AddUnitWP(x, y, 0, 60, TheCampaign.CurrentTime + 40 * CampaignMinutes, 0xffffffff, 0);
+        w = AddUnitWP(x, y, 0, 60,
+                      TheCampaign.CurrentTime + 40 * CampaignMinutes,
+                      0xffffffff, 0);
         w->SetWPFlags(WPF_REPEAT);
         SetCurrentWaypoint(1);
         w = GetCurrentUnitWP();
@@ -691,7 +703,8 @@ int TaskForceClass::DoCombat(void)
             combat = ::DoCombat(this, a);
 
             if (combat < 0)
-                SetAirTarget(NULL); // Clear targeting data so we can look for another
+                SetAirTarget(
+                    NULL); // Clear targeting data so we can look for another
         }
     }
 
@@ -704,7 +717,8 @@ int TaskForceClass::Reaction(CampEntity e, int knowledge, float range)
     CampEntity et = NULL;
     MoveType tmt, omt;
 
-    if (!e) return 0;
+    if (!e)
+        return 0;
 
     // Some basic info on us.
     omt = GetMovementType();
@@ -763,7 +777,8 @@ int TaskForceClass::DetectVs (AircraftClass *ac, float *d, int *combat, int *spo
 extern int CheckValidType(CampEntity u, CampEntity e);
 extern int CanItIdentify(CampEntity us, CampEntity them, float d, int mt);
 
-int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot)
+int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat,
+                             int *spot)
 {
     int react, det = Detected(this, ac, d);
     CampEntity e;
@@ -795,9 +810,14 @@ int TaskForceClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) || (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() && CheckValidType(e, this)) ||
+            (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
         {
-            SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, CanItIdentify(this, e, *d, e->GetMovementType())); // 2002-02-11 MODIFIED BY S.G. Added 'CanItIdentify' which query if the target can be identified
+            SetSpotted(
+                e->GetTeam(), TheCampaign.CurrentTime,
+                CanItIdentify(
+                    this, e, *d,
+                    e->GetMovementType())); // 2002-02-11 MODIFIED BY S.G. Added 'CanItIdentify' which query if the target can be identified
             *spot = 1;
         }
     }
@@ -853,7 +873,11 @@ int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
     if (det & ENEMY_DETECTED)
     {
         if (IsAggregate() && CheckValidType(this, e))
-            e->SetSpotted(GetTeam(), TheCampaign.CurrentTime, (CanItIdentify(this, e, *d, e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it has the hability to identify
+            e->SetSpotted(
+                GetTeam(), TheCampaign.CurrentTime,
+                (CanItIdentify(
+                    this, e, *d,
+                    e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it has the hability to identify
     }
 
     if (det & ENEMY_IN_RANGE && react)
@@ -862,9 +886,12 @@ int TaskForceClass::DetectVs(CampEntity e, float *d, int *combat, int *spot)
     if (det & FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() && CheckValidType(e, this)) || (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() && CheckValidType(e, this)) ||
+            (e->IsFlight() && e->GetSType() == STYPE_UNIT_AWACS))
         {
-            SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, 1); // 2002-02-11 Modified by S.G. Ground units are always identified (doesn't change a thing)
+            SetSpotted(
+                e->GetTeam(), TheCampaign.CurrentTime,
+                1); // 2002-02-11 Modified by S.G. Ground units are always identified (doesn't change a thing)
             *spot = 1;
         }
     }
@@ -896,7 +923,8 @@ CampaignTime TaskForceClass::GetMoveTime(void)
 void TaskForceClass::GetRealPosition(float *x, float *y, float *z)
 {
     // This will use the last move time to determine the real x,y & z of the unit
-    float movetime = (float)(SimLibElapsedTime - last_move) / VU_TICS_PER_SECOND;
+    float movetime =
+        (float)(SimLibElapsedTime - last_move) / VU_TICS_PER_SECOND;
     float speed;
     float heading;
     float dist;
@@ -911,7 +939,7 @@ void TaskForceClass::GetRealPosition(float *x, float *y, float *z)
         return;
     }
 
-    speed = (float) GetUnitSpeed() * KPH_TO_FPS;
+    speed = (float)GetUnitSpeed() * KPH_TO_FPS;
     dist = speed * movetime;
     heading = h * 45.0F * DTR;
     mlSinCos(&sincos, heading);
@@ -1009,7 +1037,9 @@ int TaskForceClass::CanShootWeapon(int wid)
         return FALSE;
 
     // Check for radar guidance, and make adjustments if necessary
-    if (!(WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) || GetRadarMode() == FEC_RADAR_GUIDE || GetRadarMode() == FEC_RADAR_SEARCH_100)
+    if (!(WeaponDataTable[wid].GuidanceFlags & WEAP_RADAR) ||
+        GetRadarMode() == FEC_RADAR_GUIDE ||
+        GetRadarMode() == FEC_RADAR_SEARCH_100)
         return TRUE;
 
     return FALSE;
@@ -1028,14 +1058,17 @@ void TaskForceClass::ReturnToSearch(void)
         radar_mode = FEC_RADAR_OFF;
 }
 
-int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take tracking/detection parameter
+int TaskForceClass::StepRadar(
+    int t, int d,
+    float range) //me123 modifyed to take tracking/detection parameter
 {
     int radMode = GetRadarMode();
 
     if (IsAggregate())
     {
         // Check if we still have any radar vehicles
-        if (class_data->RadarVehicle == 255 || !GetNumVehicles(class_data->RadarVehicle))
+        if (class_data->RadarVehicle == 255 ||
+            !GetNumVehicles(class_data->RadarVehicle))
             return FEC_RADAR_OFF;
 
         // Check if we're already in our fire state
@@ -1053,7 +1086,9 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
             SetRadarMode(FEC_RADAR_AQUIRE);
 
             // KCK: Good operators could shoot before going to guide mode. Check skill and return TRUE
-            if (GetRadarMode() == FEC_RADAR_AQUIRE && rand() % 100 < TeamInfo[GetOwner()]->airDefenseExperience - MINIMUM_EXP_TO_FIRE_PREGUIDE)
+            if (GetRadarMode() == FEC_RADAR_AQUIRE &&
+                rand() % 100 < TeamInfo[GetOwner()]->airDefenseExperience -
+                                   MINIMUM_EXP_TO_FIRE_PREGUIDE)
                 SetRadarMode(FEC_RADAR_GUIDE);
 
             return GetRadarMode();
@@ -1072,11 +1107,17 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
 
 
     // Check if we still have any radar vehicles
-    if (class_data->RadarVehicle == 255 || !GetNumVehicles(class_data->RadarVehicle))
+    if (class_data->RadarVehicle == 255 ||
+        !GetNumVehicles(class_data->RadarVehicle))
         return FEC_RADAR_OFF;
 
     assert(radarDatFileTable != NULL);
-    RadarDataSet* radarData = &radarDatFileTable[((VehicleClassDataType *)Falcon4ClassTable[class_data->VehicleType[class_data->RadarVehicle]].dataPtr)->RadarType];
+    RadarDataSet *radarData =
+        &radarDatFileTable
+            [((VehicleClassDataType *)Falcon4ClassTable
+                  [class_data->VehicleType[class_data->RadarVehicle]]
+                      .dataPtr)
+                 ->RadarType];
 
 
     // Check if we're already in our fire state
@@ -1084,121 +1125,136 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
         return radMode;
 
     // Check for switch over to guide
-    float skill = TeamInfo[GetOwner()]->airDefenseExperience / 30.0f * 1000; // from 1 - 3
+    float skill =
+        TeamInfo[GetOwner()]->airDefenseExperience / 30.0f * 1000; // from 1 - 3
     skill *= (float)radarData->Timeskillfactor;
     skill /= 100.0f;
-    float timetosearch ;
-    float timetoaquire ;
+    float timetosearch;
+    float timetoaquire;
 
-    if (!d && !t) SetRadarMode(search_mode);
+    if (!d && !t)
+        SetRadarMode(search_mode);
 
-    if (GetRadarMode() == FEC_RADAR_CHANGEMODE && search_mode >= FEC_RADAR_SEARCH_1)
-        SetRadarMode(search_mode);// we are changing mode.. realy not off
+    if (GetRadarMode() == FEC_RADAR_CHANGEMODE &&
+        search_mode >= FEC_RADAR_SEARCH_1)
+        SetRadarMode(search_mode); // we are changing mode.. realy not off
 
     switch (GetRadarMode())
     {
-        case FEC_RADAR_OFF:
-            timetosearch = radarData->Timetosearch1 - skill;
+    case FEC_RADAR_OFF:
+        timetosearch = radarData->Timetosearch1 - skill;
 
-            if (range <= radarData->Rangetosearch1 && !SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
-            else if (range >= radarData->Rangetosearch1 || SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)SEARCHtimer = 0;
-
-            if (range <= radarData->Rangetosearch1 && SEARCHtimer && SimLibElapsedTime - SEARCHtimer > timetosearch)
-            {
-                SEARCHtimer = SimLibElapsedTime;
-                search_mode = FEC_RADAR_SEARCH_1 ;
-                SetRadarMode(FEC_RADAR_SEARCH_1);
-            }
-
-            break;
-
-        case FEC_RADAR_SEARCH_1:
-            AQUIREtimer = SimLibElapsedTime;
-
-            if (!SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
-
-            timetosearch = radarData->Timetosearch1 - skill;
-
-            if (d && range <= radarData->Rangetosearch2 && SimLibElapsedTime - SEARCHtimer >= timetosearch)
-            {
-                SetRadarMode(FEC_RADAR_CHANGEMODE);
-                search_mode = FEC_RADAR_SEARCH_2;
-                SEARCHtimer = SimLibElapsedTime;
-            }
-
-            break;
-
-        case FEC_RADAR_SEARCH_2:
-            AQUIREtimer = SimLibElapsedTime;
-            timetosearch = radarData->Timetosearch2 - skill;
-
-            if (!SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
-
-            if (d && range <= radarData->Rangetosearch3 &&  SimLibElapsedTime - SEARCHtimer >= timetosearch)
-            {
-                search_mode = FEC_RADAR_SEARCH_3;
-                SetRadarMode(FEC_RADAR_CHANGEMODE);
-                SEARCHtimer = SimLibElapsedTime;
-            }
-            else if (!d)// no detection step search down
-            {
-                SetRadarMode(FEC_RADAR_CHANGEMODE);
-                search_mode = FEC_RADAR_SEARCH_1 ;
-                SEARCHtimer = SimLibElapsedTime;
-            }
-
-            break;
-
-        case FEC_RADAR_SEARCH_3:
-            AQUIREtimer = SimLibElapsedTime;
-            timetosearch = radarData->Timetosearch3 - skill;
-
-            if (!SEARCHtimer) SEARCHtimer = SimLibElapsedTime;
-
-            // goto aquire ?
-            if (d && range <= radarData->Rangetoacuire && SimLibElapsedTime - SEARCHtimer >= timetosearch)
-            {
-                search_mode = FEC_RADAR_AQUIRE;
-                SetRadarMode(FEC_RADAR_CHANGEMODE);
-                AQUIREtimer = SimLibElapsedTime;
-            }
-            else if (!d) //  no detection step search down
-            {
-                SetRadarMode(FEC_RADAR_CHANGEMODE);
-                search_mode = FEC_RADAR_SEARCH_2 ;
-                SEARCHtimer = SimLibElapsedTime;
-            }
-
-            break;
-
-        case FEC_RADAR_AQUIRE:
+        if (range <= radarData->Rangetosearch1 && !SEARCHtimer)
+            SEARCHtimer = SimLibElapsedTime;
+        else if (range >= radarData->Rangetosearch1 ||
+                 SimLibElapsedTime - SEARCHtimer > timetosearch + 6000.0f)
             SEARCHtimer = 0;
-            timetoaquire = radarData->Timetoacuire - skill;
 
-            // only allow to be in aquire for the coast amount of time
-            if (!t && !d && SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
-            {
-                SetRadarMode(FEC_RADAR_CHANGEMODE);
-                search_mode = FEC_RADAR_SEARCH_3 ;
-            }
-            else if (t && range <= radarData->Rangetoguide && SimLibElapsedTime - AQUIREtimer >= timetoaquire)
-            {
-                search_mode = FEC_RADAR_GUIDE;
-                SetRadarMode(FEC_RADAR_CHANGEMODE);
-                return FEC_RADAR_GUIDE;
-            }
+        if (range <= radarData->Rangetosearch1 && SEARCHtimer &&
+            SimLibElapsedTime - SEARCHtimer > timetosearch)
+        {
+            SEARCHtimer = SimLibElapsedTime;
+            search_mode = FEC_RADAR_SEARCH_1;
+            SetRadarMode(FEC_RADAR_SEARCH_1);
+        }
 
-            break;
+        break;
 
-        case FEC_RADAR_GUIDE:
-            AQUIREtimer = SimLibElapsedTime;
+    case FEC_RADAR_SEARCH_1:
+        AQUIREtimer = SimLibElapsedTime;
+
+        if (!SEARCHtimer)
+            SEARCHtimer = SimLibElapsedTime;
+
+        timetosearch = radarData->Timetosearch1 - skill;
+
+        if (d && range <= radarData->Rangetosearch2 &&
+            SimLibElapsedTime - SEARCHtimer >= timetosearch)
+        {
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+            search_mode = FEC_RADAR_SEARCH_2;
+            SEARCHtimer = SimLibElapsedTime;
+        }
+
+        break;
+
+    case FEC_RADAR_SEARCH_2:
+        AQUIREtimer = SimLibElapsedTime;
+        timetosearch = radarData->Timetosearch2 - skill;
+
+        if (!SEARCHtimer)
+            SEARCHtimer = SimLibElapsedTime;
+
+        if (d && range <= radarData->Rangetosearch3 &&
+            SimLibElapsedTime - SEARCHtimer >= timetosearch)
+        {
+            search_mode = FEC_RADAR_SEARCH_3;
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+            SEARCHtimer = SimLibElapsedTime;
+        }
+        else if (!d) // no detection step search down
+        {
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+            search_mode = FEC_RADAR_SEARCH_1;
+            SEARCHtimer = SimLibElapsedTime;
+        }
+
+        break;
+
+    case FEC_RADAR_SEARCH_3:
+        AQUIREtimer = SimLibElapsedTime;
+        timetosearch = radarData->Timetosearch3 - skill;
+
+        if (!SEARCHtimer)
+            SEARCHtimer = SimLibElapsedTime;
+
+        // goto aquire ?
+        if (d && range <= radarData->Rangetoacuire &&
+            SimLibElapsedTime - SEARCHtimer >= timetosearch)
+        {
             search_mode = FEC_RADAR_AQUIRE;
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+            AQUIREtimer = SimLibElapsedTime;
+        }
+        else if (!d) //  no detection step search down
+        {
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+            search_mode = FEC_RADAR_SEARCH_2;
+            SEARCHtimer = SimLibElapsedTime;
+        }
 
-            if (!t) SetRadarMode(FEC_RADAR_CHANGEMODE);
+        break;
 
-            break;
+    case FEC_RADAR_AQUIRE:
+        SEARCHtimer = 0;
+        timetoaquire = radarData->Timetoacuire - skill;
+
+        // only allow to be in aquire for the coast amount of time
+        if (!t && !d &&
+            SimLibElapsedTime - AQUIREtimer >= (unsigned)radarData->Timetocoast)
+        {
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+            search_mode = FEC_RADAR_SEARCH_3;
+        }
+        else if (t && range <= radarData->Rangetoguide &&
+                 SimLibElapsedTime - AQUIREtimer >= timetoaquire)
+        {
+            search_mode = FEC_RADAR_GUIDE;
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+            return FEC_RADAR_GUIDE;
+        }
+
+        break;
+
+    case FEC_RADAR_GUIDE:
+        AQUIREtimer = SimLibElapsedTime;
+        search_mode = FEC_RADAR_AQUIRE;
+
+        if (!t)
+            SetRadarMode(FEC_RADAR_CHANGEMODE);
+
+        break;
     }
-
 
 
     /* else if (SimLibElapsedTime - AQUIREtimer > timetoaquire)
@@ -1213,7 +1269,8 @@ int TaskForceClass::StepRadar(int t, int d, float range)//me123 modifyed to take
     */
     int out = GetRadarMode();
 
-    if (out == FEC_RADAR_OFF) out = search_mode;
+    if (out == FEC_RADAR_OFF)
+        out = search_mode;
 
     return out;
 }
@@ -1223,7 +1280,8 @@ int TaskForceClass::ChooseTarget(void)
     FalconEntity *artTarget, *react_against = NULL, *air_react_against = NULL;
     CampEntity e;
     float d, react_distance, air_react_distance;
-    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0, pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
+    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0,
+               pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
     int search_dist;
     Team who;
 
@@ -1253,9 +1311,11 @@ int TaskForceClass::ChooseTarget(void)
         search_dist = MAX_GROUND_SEARCH;
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator detit(RealUnitProxList, YPos(), XPos(), (BIG_SCALAR)GridToSim(search_dist));
+    VuGridIterator detit(RealUnitProxList, YPos(), XPos(),
+                         (BIG_SCALAR)GridToSim(search_dist));
 #else
-    VuGridIterator detit(RealUnitProxList, XPos(), YPos(), (BIG_SCALAR)GridToSim(search_dist));
+    VuGridIterator detit(RealUnitProxList, XPos(), YPos(),
+                         (BIG_SCALAR)GridToSim(search_dist));
 #endif
     //  CalculateSOJ(detit); 2002-02-19 REMOVED BY S.G. eFalcon 1.10 SOJ code removed
 
@@ -1277,7 +1337,8 @@ int TaskForceClass::ChooseTarget(void)
                 SetEngaged(1);
                 SetCombat(combat);
             }
-            else if (e->IsFlight() && react >= best_air_react && d < air_react_distance)
+            else if (e->IsFlight() && react >= best_air_react &&
+                     d < air_react_distance)
             {
                 // React vs an air target -
                 best_air_react = react;
@@ -1299,7 +1360,8 @@ int TaskForceClass::ChooseTarget(void)
 
                         while (fe)
                         {
-                            rsq = DistSqu(XPos(), YPos(), fe->XPos(), fe->YPos());
+                            rsq =
+                                DistSqu(XPos(), YPos(), fe->XPos(), fe->YPos());
 
                             if (rsq < brsq)
                             {
@@ -1316,7 +1378,8 @@ int TaskForceClass::ChooseTarget(void)
                 }
 
                 // Make sure our radar is on (if we have one)
-                if (!IsEmitting() && class_data->RadarVehicle < 255 && GetNumVehicles(class_data->RadarVehicle))
+                if (!IsEmitting() && class_data->RadarVehicle < 255 &&
+                    GetNumVehicles(class_data->RadarVehicle))
                     SetEmitting(1);
 
                 SetEngaged(1);
@@ -1344,7 +1407,9 @@ int TaskForceClass::ChooseTarget(void)
         SetTargeted(0);
         retval = 1;
     }
-    else if (artTarget && (!artTarget->IsUnit() || ((Unit)artTarget)->Engaged()) && orders == GORD_SUPPORT)
+    else if (artTarget &&
+             (!artTarget->IsUnit() || ((Unit)artTarget)->Engaged()) &&
+             orders == GORD_SUPPORT)
     {
         // Keep blowing away this target until the target gets out of range, disengages, or we get new orders
         // (Target will get reset after a null DoCombat result)

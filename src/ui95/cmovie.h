@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -33,7 +34,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -75,11 +77,11 @@ public:
     }
     long GetX()
     {
-        return(x_);
+        return (x_);
     }
     long GetY()
     {
-        return(y_);
+        return (y_);
     }
     BOOL AddMovie(long ID, char *fname);
     BOOL AddSubTitle(long ID, char *fname);
@@ -90,14 +92,14 @@ public:
     }
     long GetFlags()
     {
-        return(flags_);
+        return (flags_);
     }
     BOOL Play(long ID);
     BOOL RemoveMovie(long ID);
 #ifdef _UI95_PARSER_
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

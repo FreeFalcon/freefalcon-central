@@ -22,7 +22,8 @@ enum
 
     UR_ALL = 0xffffffff, // Enable ALL
 
-    UR_DIVISION = 0x00010000, // Special Case THING for Divisions (NOT related to flags above)
+    UR_DIVISION =
+        0x00010000, // Special Case THING for Divisions (NOT related to flags above)
 };
 
 class GlobalPositioningSystem
@@ -92,7 +93,7 @@ public:
     }
     long GetFlags()
     {
-        return(Flags);
+        return (Flags);
     }
     void SetAllowed(long sections)
     {
@@ -100,7 +101,7 @@ public:
     }
     long GetAllowed()
     {
-        return(Allowed_);
+        return (Allowed_);
     }
 
     void SetTeamNo(long ID)
@@ -109,7 +110,7 @@ public:
     }
     long GetTeamNo()
     {
-        return(TeamNo_);
+        return (TeamNo_);
     }
 
     void UpdateDivisions();

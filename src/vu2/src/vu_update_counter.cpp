@@ -4,9 +4,9 @@
  */
 
 #include "vutypes.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-int VU_UPDATE_COUNTER::Decode(VU_BYTE** buf, long *rem)
+int VU_UPDATE_COUNTER::Decode(VU_BYTE **buf, long *rem)
 {
     std::memcpychk(&counter, buf, SerialSize(), rem);
     return SerialSize();

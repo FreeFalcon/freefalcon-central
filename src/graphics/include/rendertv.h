@@ -8,8 +8,7 @@
 #ifndef _RENDERTV_H_
 #define _RENDERTV_H_
 
-#include "RenderOW.h"
-
+#include "renderow.h"
 
 
 class RenderTV : public RenderOTW
@@ -32,7 +31,8 @@ protected:
     virtual void ComputeHorizonEffect(HorizonRecord *pHorizon);
 
     virtual void ProcessColor(Tcolor *color);
-    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x, float y);
+    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post,
+                                    float distance, float x, float y);
 };
 
 

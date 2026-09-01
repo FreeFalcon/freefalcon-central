@@ -1,7 +1,7 @@
 #include "stdhdr.h"
 #include "digi.h"
 #include "otwdrive.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "campwp.h"
 #include "simveh.h"
 #include "fcc.h"
@@ -9,10 +9,10 @@
 #include "facbrain.h"
 #include "mission.h"
 #include "object.h"
-#include "MsgInc/FACMsg.h"
-#include "MsgInc/ATCMsg.h"
-#include "MsgInc/RadioChatterMsg.h"
-#include "MsgInc/TankerMsg.h"
+#include "msginc/facmsg.h"
+#include "msginc/atcmsg.h"
+#include "msginc/radiochattermsg.h"
+#include "msginc/tankermsg.h"
 #include "falcmesg.h"
 #include "falcsess.h"
 #include "aircrft.h"
@@ -27,14 +27,14 @@
 #include "wingorder.h"
 
 // Brain Choices
-#define GENERIC_BRAIN     0
-#define SEAD_BRAIN        1
-#define STRIKE_BRAIN      2
-#define INTERCEPT_BRAIN   3
-#define AIR_CAP_BRAIN     4
-#define AIR_SWEEP_BRAIN   5
-#define ESCORT_BRAIN      6
-#define WAYPOINTER_BRAIN  7
+#define GENERIC_BRAIN 0
+#define SEAD_BRAIN 1
+#define STRIKE_BRAIN 2
+#define INTERCEPT_BRAIN 3
+#define AIR_CAP_BRAIN 4
+#define AIR_SWEEP_BRAIN 5
+#define ESCORT_BRAIN 6
+#define WAYPOINTER_BRAIN 7
 
 float get_air_speed(float speed, int altitude);
 
@@ -46,10 +46,13 @@ extern float g_fAIMinWPAlt; // Cobra - Min alt AI will fly Nav WP
 void DigitalBrain::FollowWaypoints(void)
 {
     // edg double check groundAvoidNeeded if set -- could be stuck there
-    if (groundAvoidNeeded and agApproach not_eq AGA_DIVE)  // Cobra - Let rocket and strafing attacks take care of avoidance
+    if (groundAvoidNeeded and
+        agApproach not_eq
+            AGA_DIVE) // Cobra - Let rocket and strafing attacks take care of avoidance
         GroundCheck();
 
-    if (self->curWaypoint == NULL and self->FCC->GetStptMode() == FireControlComputer::FCCMarkpoint)
+    if (self->curWaypoint == NULL and
+        self->FCC->GetStptMode() == FireControlComputer::FCCMarkpoint)
     {
         //   self->af->SetSimpleMode(SIMPLE_MODE_AF);
         self->SetAutopilot(AircraftClass::ThreeAxisAP);
@@ -82,10 +85,13 @@ void DigitalBrain::FollowWaypoints(void)
         mpActionFlags[AI_FOLLOW_FORMATION] = FALSE; // don't follow formation
         mLeaderTookOff = FALSE; // reset leader take off flag
 
-        if (self->curWaypoint->GetWPAction() == WP_ASSEMBLE and (onStation == Arrived or onStation == Stabalizing or onStation == OnStation))
+        if (self->curWaypoint->GetWPAction() == WP_ASSEMBLE and
+            (onStation == Arrived or onStation == Stabalizing or
+             onStation == OnStation))
         {
             // if we are at the assemble point
-            if (SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime() + 300000)
+            if (SimLibElapsedTime <
+                self->curWaypoint->GetWPDepartureTime() + 300000)
             {
                 // if we have time to kill
                 AddMode(LoiterMode); // hang out for a while
@@ -95,7 +101,8 @@ void DigitalBrain::FollowWaypoints(void)
     else if (isWing and mLeaderTookOff == FALSE)
     {
         // if i'm a wing and we think that the leader hasn't taken off
-        mLeaderTookOff = TRUE; // tell ourselves that the leader tookoff.  to get here the leader must have taken off.
+        mLeaderTookOff =
+            TRUE; // tell ourselves that the leader tookoff.  to get here the leader must have taken off.
         mpActionFlags[AI_FOLLOW_FORMATION] = TRUE; // follow the leader
     }
 
@@ -103,27 +110,32 @@ void DigitalBrain::FollowWaypoints(void)
     // if we are, see if the next waypoint is a ground attack type.
     // if it is, setup a GA profile for the attack
 
-    if (((self->curWaypoint->GetWPFlags() bitand WPF_IP) or (GetTargetWPIndex() >= 0 and GetWaypointIndex() == GetTargetWPIndex() - 1)) and 
+    if (((self->curWaypoint->GetWPFlags() bitand WPF_IP) or
+         (GetTargetWPIndex() >= 0 and
+          GetWaypointIndex() == GetTargetWPIndex() - 1)) and
         agDoctrine == AGD_NONE)
     {
-        AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+        AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
-        if ((self not_eq playerAC or (self->IsPlayer() and self->AutopilotType() == AircraftClass::CombatAP)) or playerAC->FCC->GetStptMode() == FireControlComputer::FCCWaypoint)
+        if ((self not_eq playerAC or
+             (self->IsPlayer() and
+              self->AutopilotType() == AircraftClass::CombatAP)) or
+            playerAC->FCC->GetStptMode() == FireControlComputer::FCCWaypoint)
         {
             // VWF 5/25/98 for E3
             // get next Waypoint action
             switch (self->curWaypoint->GetNextWP()->GetWPAction())
             {
-                case WP_GNDSTRIKE:
-                case WP_NAVSTRIKE:
-                case WP_STRIKE:
-                case WP_BOMB:
-                case WP_SAD:
-                case WP_SEAD:
-                case WP_CASCP:
-                case WP_RECON:
-                    SetupAGMode(self->curWaypoint, self->curWaypoint->GetNextWP());
-                    break;
+            case WP_GNDSTRIKE:
+            case WP_NAVSTRIKE:
+            case WP_STRIKE:
+            case WP_BOMB:
+            case WP_SAD:
+            case WP_SEAD:
+            case WP_CASCP:
+            case WP_RECON:
+                SetupAGMode(self->curWaypoint, self->curWaypoint->GetNextWP());
+                break;
             }
         }
     }
@@ -131,7 +143,8 @@ void DigitalBrain::FollowWaypoints(void)
     // check for on-the-fly ground attack
     // 2001-06-02 MODIFIED BY S.G. DON'T DO IT IF WE'RE IN WEAPON HOLD (EXCEPT FOR THE LAST SECOND)
     // else if ( agDoctrine not_eq AGD_NONE  )
-    else if (agDoctrine not_eq AGD_NONE and SimLibElapsedTime + 1000 >= missileShotTimer)
+    else if (agDoctrine not_eq AGD_NONE and
+             SimLibElapsedTime + 1000 >= missileShotTimer)
     {
         if (groundTargetPtr)
         {
@@ -146,24 +159,42 @@ void DigitalBrain::FollowWaypoints(void)
 
     // 2001-06-28 MODIFIED BY S.G. DO BOTH WPAction AND WPRouteAction IF NO SPECIFIC WAYPOINT ACTION
     // switch (self->curWaypoint->GetWPAction())
-    switch (self->curWaypoint->GetWPAction() == WP_NOTHING ? self->curWaypoint->GetWPRouteAction() : self->curWaypoint->GetWPAction())
+    switch (self->curWaypoint->GetWPAction() == WP_NOTHING ?
+                self->curWaypoint->GetWPRouteAction() :
+                self->curWaypoint->GetWPAction())
     {
-        case WP_GNDSTRIKE:
-        case WP_NAVSTRIKE:
-        case WP_STRIKE:
-        case WP_BOMB:
-        case WP_SAD:
-        case WP_SEAD:
-        case WP_CASCP:
-        case WP_RECON:
+    case WP_GNDSTRIKE:
+    case WP_NAVSTRIKE:
+    case WP_STRIKE:
+    case WP_BOMB:
+    case WP_SAD:
+    case WP_SEAD:
+    case WP_CASCP:
+    case WP_RECON:
 
-            // check to see if we've already got a profile
-            // 2001-06-02 ADDED BY S.G. DON'T DO IT IF WE'RE IN WEAPON HOLD (EXCEPT FOR THE LAST SECOND)
-            if (SimLibElapsedTime + 1000 < missileShotTimer)
+        // check to see if we've already got a profile
+        // 2001-06-02 ADDED BY S.G. DON'T DO IT IF WE'RE IN WEAPON HOLD (EXCEPT FOR THE LAST SECOND)
+        if (SimLibElapsedTime + 1000 < missileShotTimer)
+        {
+            self->theInputs->pickleButton = PilotInputs::Off;
+
+            if (((AircraftClass*)self)->af->GetSimpleMode())
             {
-                self->theInputs->pickleButton = PilotInputs::Off;
+                SimpleGoToCurrentWaypoint();
+            }
+            else
+            {
+                GoToCurrentWaypoint();
+            }
+        }
+        // END OF ADDED SECTION EXCEPT FOR THE LINE INDENTS
+        else
+        {
+            if (agDoctrine == AGD_NONE and onStation not_eq Downwind)
+            {
+                SetupAGMode(self->curWaypoint, self->curWaypoint);
 
-                if (((AircraftClass*) self)->af->GetSimpleMode())
+                if (((AircraftClass*)self)->af->GetSimpleMode())
                 {
                     SimpleGoToCurrentWaypoint();
                 }
@@ -172,114 +203,100 @@ void DigitalBrain::FollowWaypoints(void)
                     GoToCurrentWaypoint();
                 }
             }
-            // END OF ADDED SECTION EXCEPT FOR THE LINE INDENTS
             else
             {
-                if (agDoctrine == AGD_NONE and onStation not_eq Downwind)
-                {
-                    SetupAGMode(self->curWaypoint, self->curWaypoint);
-
-                    if (((AircraftClass*) self)->af->GetSimpleMode())
-                    {
-                        SimpleGoToCurrentWaypoint();
-                    }
-                    else
-                    {
-                        GoToCurrentWaypoint();
-                    }
-                }
-                else
-                {
-                    // fly the ground attack profile
-                    GroundAttackMode();
-                }
+                // fly the ground attack profile
+                GroundAttackMode();
             }
+        }
 
-            break;
-
-
-        case WP_LAND:
-            Land();
-            break;
+        break;
 
 
-        case WP_PICKUP:
-        case WP_AIRDROP:
-            DoPickupAirdrop();
-            break;
+    case WP_LAND:
+        Land();
+        break;
 
 
-        case WP_TAKEOFF:
-            AddMode(TakeoffMode);
-            TakeOff();
-            break;
+    case WP_PICKUP:
+    case WP_AIRDROP:
+        DoPickupAirdrop();
+        break;
 
 
-        case WP_REFUEL:
-            self->theInputs->pickleButton = PilotInputs::Off;
+    case WP_TAKEOFF:
+        AddMode(TakeoffMode);
+        TakeOff();
+        break;
 
-            if (((AircraftClass*) self)->af->GetSimpleMode())
-            {
-                SimpleGoToCurrentWaypoint();
-            }
+
+    case WP_REFUEL:
+        self->theInputs->pickleButton = PilotInputs::Off;
+
+        if (((AircraftClass*)self)->af->GetSimpleMode())
+        {
+            SimpleGoToCurrentWaypoint();
+        }
+        else
+        {
+            GoToCurrentWaypoint();
+        }
+
+        // If close, set Refuel Mode
+        if (fabs(trackX - self->XPos()) < g_fAIRefuelRange * NM_TO_FT and
+            fabs(trackY - self->YPos()) < g_fAIRefuelRange * NM_TO_FT and
+            onStation == NotThereYet)
+        {
+            VU_ID TankerId = vuNullId;
+            AircraftClass* theTanker = NULL;
+            FalconTankerMessage* TankerMsg;
+            FlightClass* flight;
+
+            onStation = Arrived;
+
+            if (TankerId == FalconNullId)
+                flight = SimDriver.FindTanker(self);
             else
             {
-                GoToCurrentWaypoint();
-            }
+                flight = (Flight)vuDatabase->Find(TankerId);
 
-            // If close, set Refuel Mode
-            if (fabs(trackX - self->XPos()) < g_fAIRefuelRange * NM_TO_FT and 
-                fabs(trackY - self->YPos()) < g_fAIRefuelRange * NM_TO_FT and 
-                onStation == NotThereYet)
-            {
-                VU_ID TankerId = vuNullId;
-                AircraftClass *theTanker = NULL;
-                FalconTankerMessage *TankerMsg;
-                FlightClass *flight;
-
-                onStation = Arrived;
-
-                if (TankerId == FalconNullId)
-                    flight = SimDriver.FindTanker(self);
-                else
+                if (not flight->IsFlight())
                 {
-                    flight = (Flight)vuDatabase->Find(TankerId);
-
-                    if ( not flight->IsFlight())
-                    {
-                        flight = SimDriver.FindTanker(SimDriver.GetPlayerEntity());
-                    }
+                    flight = SimDriver.FindTanker(SimDriver.GetPlayerEntity());
                 }
-
-                if (flight)
-                    theTanker = (AircraftClass*) flight->GetComponentLead();
-
-                if (theTanker)
-                    TankerMsg = new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
-                else
-                    TankerMsg = new FalconTankerMessage(FalconNullId, FalconLocalGame);
-
-                TankerMsg->dataBlock.type = FalconTankerMessage::RequestFuel;
-                TankerMsg->dataBlock.data1  = 1;
-                TankerMsg->dataBlock.caller = self->Id();
-                FalconSendMessage(TankerMsg);
             }
 
-            break;
+            if (flight)
+                theTanker = (AircraftClass*)flight->GetComponentLead();
 
-        default:
-            self->theInputs->pickleButton = PilotInputs::Off;
-
-            if (((AircraftClass*) self)->af->GetSimpleMode())
-            {
-                SimpleGoToCurrentWaypoint();
-            }
+            if (theTanker)
+                TankerMsg =
+                    new FalconTankerMessage(theTanker->Id(), FalconLocalGame);
             else
-            {
-                GoToCurrentWaypoint();
-            }
+                TankerMsg =
+                    new FalconTankerMessage(FalconNullId, FalconLocalGame);
 
-            break;
+            TankerMsg->dataBlock.type = FalconTankerMessage::RequestFuel;
+            TankerMsg->dataBlock.data1 = 1;
+            TankerMsg->dataBlock.caller = self->Id();
+            FalconSendMessage(TankerMsg);
+        }
+
+        break;
+
+    default:
+        self->theInputs->pickleButton = PilotInputs::Off;
+
+        if (((AircraftClass*)self)->af->GetSimpleMode())
+        {
+            SimpleGoToCurrentWaypoint();
+        }
+        else
+        {
+            GoToCurrentWaypoint();
+        }
+
+        break;
     }
 }
 
@@ -295,7 +312,7 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     float gainCtrl;
     int vehInFlight;
     int flightIdx;
-    ACFormationData::PositionData *curPosition;
+    ACFormationData::PositionData* curPosition;
     float rangeFactor;
     //int thisWP;
     //int nextWP;
@@ -319,14 +336,18 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
         SetTrackPoint(tx, ty, tz);
 
         // Adjust position to avoid collision near waypoint
-        vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-        flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+        vehInFlight =
+            ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+        flightIdx =
+            ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
         if (flightIdx not_eq 0)
         {
             if (flightIdx == AiFirstWing and vehInFlight == 2)
             {
-                curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
+                curPosition = &(
+                    acFormationData->twoposData
+                        [mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
             }
             else if (flightIdx == AiSecondWing and mSplitFlight)
             {
@@ -334,13 +355,16 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             }
             else
             {
-                curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
+                curPosition =
+                    &(acFormationData->positionData[mFormation][flightIdx - 1]);
             }
 
             rangeFactor = curPosition->range * (2.0F * mFormLateralSpaceFactor);
 
-            trackX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + self->Yaw());
-            trackY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + self->Yaw());
+            trackX += rangeFactor *
+                      (float)cos(curPosition->relAz * mFormSide + self->Yaw());
+            trackY += rangeFactor *
+                      (float)sin(curPosition->relAz * mFormSide + self->Yaw());
 
             if (curPosition->relEl)
             {
@@ -371,7 +395,8 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
         // into steeper slopes
         if (self->ZPos() - trackZ > -g_fAIMinWPAlt)
         {
-            trackZ = trackZ - g_fAIMinWPAlt - (self->ZPos() - trackZ + g_fAIMinWPAlt) * 2.0f;
+            trackZ = trackZ - g_fAIMinWPAlt -
+                     (self->ZPos() - trackZ + g_fAIMinWPAlt) * 2.0f;
             gainCtrl = 1.5f;
         }
         else
@@ -408,31 +433,41 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     /*---------------------------*/
     // Cobra - Change rng to 2 nm (was 1 nm) to give AI a little more leeway in hitting the WP.
     // Cobra - Added loitering timer check (agmergeTimer)
-    if (rng < 2.0f or (onStation not_eq NotThereYet) or (SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()))
+    if (rng < 2.0f or (onStation not_eq NotThereYet) or
+        (SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime()))
     {
         // Should we repeat?
-        if (self and self->curWaypoint and self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT bitor WPF_REPEAT_CONTINUOUS))
+        if (self and self->curWaypoint and
+            self->curWaypoint->GetWPFlags() bitand
+                (WPF_REPEAT bitor WPF_REPEAT_CONTINUOUS))
         {
-            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) or
+            if ((self->curWaypoint->GetWPFlags() bitand
+                 WPF_REPEAT_CONTINUOUS) or
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())
             {
                 // Find prev waypoint
                 tmpWaypoint = self->curWaypoint->GetPrevWP();
 
                 // Get travel time between points
-                timeDelta = self->curWaypoint->GetWPArrivalTime() - tmpWaypoint->GetWPDepartureTime();
+                timeDelta = self->curWaypoint->GetWPArrivalTime() -
+                            tmpWaypoint->GetWPDepartureTime();
 
                 // Reset arrival and departure points for first waypoint
-                tmpWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() + timeDelta);
-                tmpWaypoint->SetWPDepartTime(self->curWaypoint->GetWPArrivalTime() + timeDelta);
+                tmpWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() +
+                                         timeDelta);
+                tmpWaypoint->SetWPDepartTime(
+                    self->curWaypoint->GetWPArrivalTime() + timeDelta);
 
                 // reset arrival time for end waypoint
-                self->curWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
+                self->curWaypoint->SetWPArrive(
+                    self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
 
                 // If continuous, reset current departure time
-                if (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS)
+                if (self->curWaypoint->GetWPFlags() bitand
+                    WPF_REPEAT_CONTINUOUS)
                 {
-                    self->curWaypoint->SetWPDepartTime(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
+                    self->curWaypoint->SetWPDepartTime(
+                        self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
                 }
 
                 // set current waypoint to prev
@@ -455,7 +490,8 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
         }
         else if (rng < 2.0F and onStation == Arrived)
         {
-            if (GetTargetWPIndex() >= 0 and GetWaypointIndex() <= GetTargetWPIndex())
+            if (GetTargetWPIndex() >= 0 and
+                GetWaypointIndex() <= GetTargetWPIndex())
             {
                 SelectNextWaypoint();
                 SimpleTrack(SimpleTrackDist, 0.0F);
@@ -467,7 +503,8 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             }
         }
         // edg: if we're within 30 secs just go to next ....
-        else if (SimLibElapsedTime + g_nSkipWaypointTime > self->curWaypoint->GetWPDepartureTime())
+        else if (SimLibElapsedTime + g_nSkipWaypointTime >
+                 self->curWaypoint->GetWPDepartureTime())
         {
             /* 2002-04-05 MN
             We have a problem here. With the new code that also allows AG missions to engage BVR/WVR, and the new flightmodels,
@@ -481,17 +518,22 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
             // Cobra - Sead AI wouldn't move on when no targets left or exceeded loitering timer
             //Adding in onStation == Crosswind; if we make it here, we are past our waypoint time
             //already so this shouldn't be a problem?
-            if (((onStation == Crosswind or (onStation == NotThereYet and missionComplete)) and 
-                 groundTargetPtr == NULL) or onStation == OnStation or not (g_bAGTargetWPFix and 
-                         self->curWaypoint->GetWPFlags() bitand WPF_TARGET and not missionComplete and missionClass == AGMission and 
-                         curMode not_eq RTBMode and curMode not_eq LandingMode))
+            if (((onStation == Crosswind or
+                  (onStation == NotThereYet and missionComplete)) and
+                 groundTargetPtr == NULL) or
+                onStation == OnStation or
+                not(g_bAGTargetWPFix and
+                    self->curWaypoint->GetWPFlags() bitand WPF_TARGET and
+                    not missionComplete and missionClass == AGMission and
+                    curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
                 // 2002-04-08 MN removed again - this stops AI from going to landing mode at all...
                 // JB 020315 Don't skip to the last waypoint unless we're OnStation. Otherwise we may go into landing mode too early.
                 // if (onStation == OnStation or self->curWaypoint->GetNextWP() and self->curWaypoint->GetNextWP()->GetWPAction() not_eq WP_LAND)
 
                 // Cobra - Don't skip the WP after target WP
-                if (GetTargetWPIndex() >= 0 and GetWaypointIndex() <= GetTargetWPIndex())
+                if (GetTargetWPIndex() >= 0 and
+                    GetWaypointIndex() <= GetTargetWPIndex())
                     SelectNextWaypoint();
             }
 
@@ -506,7 +548,8 @@ void DigitalBrain::SimpleGoToCurrentWaypoint(void)
     {
         // Time left to target
         if (self and self->curWaypoint)
-            ttg = (self->curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) / (float)SEC_TO_MSEC;
+            ttg = (self->curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) /
+                  (float)SEC_TO_MSEC;
 
         //TJL 11/09/03 Make speed aircraft friendly. What about the A-10, it's not seeing 700.0f
         // Changed to from 700.0F to 1.3 of corner
@@ -557,11 +600,12 @@ void DigitalBrain::GoToCurrentWaypoint(void)
     float wpX, wpY, wpZ;
     WayPointClass* tmpWaypoint;
     long timeDelta;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
-    if (self == playerAC and playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint)
+    if (self == playerAC and
+        playerAC->FCC->GetStptMode() not_eq FireControlComputer::FCCWaypoint)
     {
-        return;  // VWF 5/25/98 for E3
+        return; // VWF 5/25/98 for E3
     }
 
     self->curWaypoint->GetLocation(&wpX, &wpY, &wpZ);
@@ -577,12 +621,14 @@ void DigitalBrain::GoToCurrentWaypoint(void)
     /*---------------------------*/
     /* Range to current waypoint */
     /*---------------------------*/
-    rng = (wpX - self->XPos()) * (wpX - self->XPos()) + (wpY - self->YPos()) * (wpY - self->YPos());
+    rng = (wpX - self->XPos()) * (wpX - self->XPos()) +
+          (wpY - self->YPos()) * (wpY - self->YPos());
 
     /*------------------------------------*/
     /* Heading error for current waypoint */
     /*------------------------------------*/
-    desHeading = (float)atan2(wpY - self->YPos(), wpX - self->XPos()) - af->sigma;
+    desHeading =
+        (float)atan2(wpY - self->YPos(), wpX - self->XPos()) - af->sigma;
 
     if (desHeading > 180.0F * DTR)
         desHeading -= 360.0F * DTR;
@@ -610,28 +656,36 @@ void DigitalBrain::GoToCurrentWaypoint(void)
         SimLibElapsedTime > self->curWaypoint->GetWPDepartureTime())
     {
         // Should we repeat?
-        if (self->curWaypoint->GetWPFlags() bitand (WPF_REPEAT bitor WPF_REPEAT_CONTINUOUS))
+        if (self->curWaypoint->GetWPFlags() bitand
+            (WPF_REPEAT bitor WPF_REPEAT_CONTINUOUS))
         {
-            if ((self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS) or
+            if ((self->curWaypoint->GetWPFlags() bitand
+                 WPF_REPEAT_CONTINUOUS) or
                 SimLibElapsedTime < self->curWaypoint->GetWPDepartureTime())
             {
                 // Find prev waypoint
                 tmpWaypoint = self->curWaypoint->GetPrevWP();
 
                 // Get travel time between points
-                timeDelta = self->curWaypoint->GetWPArrivalTime() - tmpWaypoint->GetWPDepartureTime();
+                timeDelta = self->curWaypoint->GetWPArrivalTime() -
+                            tmpWaypoint->GetWPDepartureTime();
 
                 // Reset arrival and departure points for first waypoint
-                tmpWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() + timeDelta);
-                tmpWaypoint->SetWPDepartTime(self->curWaypoint->GetWPArrivalTime() + timeDelta);
+                tmpWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() +
+                                         timeDelta);
+                tmpWaypoint->SetWPDepartTime(
+                    self->curWaypoint->GetWPArrivalTime() + timeDelta);
 
                 // reset arrival time for end waypoint
-                self->curWaypoint->SetWPArrive(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
+                self->curWaypoint->SetWPArrive(
+                    self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
 
                 // If continuous, reset current departure time
-                if (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT_CONTINUOUS)
+                if (self->curWaypoint->GetWPFlags() bitand
+                    WPF_REPEAT_CONTINUOUS)
                 {
-                    self->curWaypoint->SetWPDepartTime(self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
+                    self->curWaypoint->SetWPDepartTime(
+                        self->curWaypoint->GetWPArrivalTime() + 2 * timeDelta);
                 }
 
                 // set current waypoint to prev
@@ -651,24 +705,30 @@ void DigitalBrain::GoToCurrentWaypoint(void)
             gammaHoldIError = 0.0F;
             onStation = Arrived;
         }
-        else if (SimLibElapsedTime + g_nSkipWaypointTime > self->curWaypoint->GetWPDepartureTime())
+        else if (SimLibElapsedTime + g_nSkipWaypointTime >
+                 self->curWaypoint->GetWPDepartureTime())
         {
             /* 2002-04-05 MN
             We have a problem here. With the new code that also allows AG missions to engage BVR/WVR, and the new flightmodels,
             it can easily happen that a flight is too late at its target, especially for AG missions. So if we're on an AG mission,
             have not yet completed the mission, are not in RTB mode or landing mode, don't skip the target waypoint. */
 
-            // mind the  check here 
-            if (onStation == OnStation or not (g_bAGTargetWPFix and 
-                                            self->curWaypoint->GetWPFlags() bitand WPF_TARGET and 
- not missionComplete and missionClass == AGMission and 
-                                            curMode not_eq RTBMode and curMode not_eq LandingMode))
+            // mind the  check here
+            if (onStation == OnStation or
+                not(g_bAGTargetWPFix and
+                    self->curWaypoint->GetWPFlags() bitand WPF_TARGET and
+                    not missionComplete and missionClass == AGMission and
+                    curMode not_eq RTBMode and curMode not_eq LandingMode))
             {
                 // JB 020315 Don't skip to the last waypoint unless we're OnStation. Otherwise we may go into landing mode too early.
-                if (onStation == OnStation or self->curWaypoint->GetNextWP() and self->curWaypoint->GetNextWP()->GetWPAction() not_eq WP_LAND)
+                if (onStation == OnStation or
+                    self->curWaypoint->GetNextWP() and
+                        self->curWaypoint->GetNextWP()->GetWPAction() not_eq
+                            WP_LAND)
                 {
                     // Cobra - Don't skip the WP after target WP
-                    if (GetTargetWPIndex() >= 0 and GetWaypointIndex() <= GetTargetWPIndex())
+                    if (GetTargetWPIndex() >= 0 and
+                        GetWaypointIndex() <= GetTargetWPIndex())
                         SelectNextWaypoint();
                 }
             }
@@ -685,7 +745,8 @@ void DigitalBrain::GoToCurrentWaypoint(void)
         /*---------------------*/
         /* Time left to target */
         /*---------------------*/
-        ttg = (self->curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) / (float)SEC_TO_MSEC;
+        ttg = (self->curWaypoint->GetWPArrivalTime() - SimLibElapsedTime) /
+              (float)SEC_TO_MSEC;
 
         if (ttg < 0.0)
             // TJL 11/09/03 2.0? changed to something reasonable 1.3.  Should help stop AI flameouts if late.
@@ -779,25 +840,25 @@ void DigitalBrain::SelectNextWaypoint(void)
 {
     WayPointClass* tmpWaypoint = self->curWaypoint;
     WayPointClass* wlist = self->waypoint;
-    UnitClass *campUnit = NULL;
-    WayPointClass *campCurWP = NULL;
+    UnitClass* campUnit = NULL;
+    WayPointClass* campCurWP = NULL;
     int waypointIndex, i;
 
-    ShiAssert( not self->OnGround());
+    ShiAssert(not self->OnGround());
 
     // first get our current waypoint index in the list
-    for (waypointIndex = 0;
-         wlist and wlist not_eq tmpWaypoint;
-         wlist = wlist->GetNextWP(), waypointIndex++);
+    for (waypointIndex = 0; wlist and wlist not_eq tmpWaypoint;
+         wlist = wlist->GetNextWP(), waypointIndex++)
+        ;
 
     // see if we're running in tactical or campaign.  If so, we want to
     // synch the campaign's waypoints with ours
     // if ( SimDriver.RunningCampaignOrTactical() )
     {
         // get the pointer to our campaign unit
-        campUnit = (UnitClass *)self->GetCampaignObject();
+        campUnit = (UnitClass*)self->GetCampaignObject();
 
-        if (campUnit)   // sanity check
+        if (campUnit) // sanity check
         {
             campCurWP = campUnit->GetFirstUnitWP();
 
@@ -805,7 +866,7 @@ void DigitalBrain::SelectNextWaypoint(void)
             // list by index
             for (i = 0; i <= waypointIndex; i++)
             {
-                if (campCurWP)   // sanity check
+                if (campCurWP) // sanity check
                     campCurWP = campCurWP->GetNextWP();
             }
         }
@@ -827,7 +888,7 @@ void DigitalBrain::SelectNextWaypoint(void)
 
     waypointMode = 0;
 
-    if ( not self->curWaypoint)
+    if (not self->curWaypoint)
     {
         // No current waypoint, so go home
 
@@ -845,16 +906,16 @@ void DigitalBrain::SelectNextWaypoint(void)
                 break;
             }
 
-            waypointIndex ++;
+            waypointIndex++;
             wlist = wlist->GetNextWP();
         }
 
         if (wlist)
         {
             // get the pointer to our campaign unit
-            campUnit = (UnitClass *)self->GetCampaignObject();
+            campUnit = (UnitClass*)self->GetCampaignObject();
 
-            if (campUnit)   // sanity check
+            if (campUnit) // sanity check
             {
                 campCurWP = campUnit->GetFirstUnitWP();
 
@@ -862,7 +923,7 @@ void DigitalBrain::SelectNextWaypoint(void)
                 // list by index
                 for (i = 0; i <= waypointIndex; i++)
                 {
-                    if (campCurWP)   // sanity check
+                    if (campCurWP) // sanity check
                         campCurWP = campCurWP->GetNextWP();
                 }
             }
@@ -876,7 +937,7 @@ void DigitalBrain::SelectNextWaypoint(void)
             campUnit->SetCurrentUnitWP(campUnit->GetFirstUnitWP());
         }
     }
-    else if ( not (tmpWaypoint->GetWPFlags() bitand WPF_REPEAT) and 
+    else if (not(tmpWaypoint->GetWPFlags() bitand WPF_REPEAT) and
              (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT))
     {
         if (self->curWaypoint->GetWPFlags() bitand WPF_IP)
@@ -884,65 +945,75 @@ void DigitalBrain::SelectNextWaypoint(void)
             SetATCFlag(ReachedIP);
         }
 
-        if ( not (moreFlags bitand SaidSunrise)) // only say sunrise once and only insert once into FAC list
+        if (not(moreFlags bitand
+                SaidSunrise)) // only say sunrise once and only insert once into FAC list
         {
             moreFlags or_eq SaidSunrise;
 
             switch (tmpWaypoint->GetWPAction())
             {
-                case WP_FAC:
-                    SimDriver.facList->ForcedInsert(self);
-                    break;
-
-                case WP_ELINT:
-                    FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
-                    radioMessage->dataBlock.from = self->Id();
-                    radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-                    radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
-                    radioMessage->dataBlock.message = rcAWACSON;
-                    radioMessage->dataBlock.edata[0] = -1;
-                    radioMessage->dataBlock.edata[1] = -1;
-                    radioMessage->dataBlock.edata[2] = self->GetCallsignIdx();
-                    radioMessage->dataBlock.edata[3] = self->vehicleInUnit + 1;
-                    FalconSendMessage(radioMessage, FALSE);
-                    // PlayRadioMessage (rcAWACSON)
-                    // self is a pointer to the AC that is going on-line
-                    break;
-            }
-        }
-    }
-    else if ((tmpWaypoint->GetWPFlags() bitand WPF_REPEAT) and 
- not (self->curWaypoint->GetWPFlags() bitand WPF_REPEAT))
-    {
-        switch (tmpWaypoint->GetWPAction())
-        {
             case WP_FAC:
-                SimDriver.facList->Remove(self);
+                SimDriver.facList->ForcedInsert(self);
                 break;
 
             case WP_ELINT:
-                if (((Flight)self->GetCampaignObject())->GetFlightLeadSlot() == self->vehicleInUnit)
-                {
-                    FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
-                    radioMessage->dataBlock.from = self->Id();
-                    radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-                    radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
-                    radioMessage->dataBlock.message = rcAWACSOFF;
-                    radioMessage->dataBlock.edata[0] = -1;
-                    radioMessage->dataBlock.edata[1] = -1;
-                    radioMessage->dataBlock.edata[2] = self->GetCallsignIdx();
-                    radioMessage->dataBlock.edata[3] = self->vehicleInUnit + 1;
-                    FalconSendMessage(radioMessage, FALSE);
-                }
-
-                // PlayRadioMessage (rcAWACSOFF)
+                FalconRadioChatterMessage* radioMessage =
+                    new FalconRadioChatterMessage(self->Id(),
+                                                  FalconLocalSession);
+                radioMessage->dataBlock.from = self->Id();
+                radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
+                radioMessage->dataBlock.voice_id =
+                    ((Flight)(self->GetCampaignObject()))
+                        ->GetPilotVoiceID(self->vehicleInUnit);
+                radioMessage->dataBlock.message = rcAWACSON;
+                radioMessage->dataBlock.edata[0] = -1;
+                radioMessage->dataBlock.edata[1] = -1;
+                radioMessage->dataBlock.edata[2] = self->GetCallsignIdx();
+                radioMessage->dataBlock.edata[3] = self->vehicleInUnit + 1;
+                FalconSendMessage(radioMessage, FALSE);
+                // PlayRadioMessage (rcAWACSON)
                 // self is a pointer to the AC that is going on-line
                 break;
+            }
+        }
+    }
+    else if ((tmpWaypoint->GetWPFlags() bitand WPF_REPEAT) and
+             not(self->curWaypoint->GetWPFlags() bitand WPF_REPEAT))
+    {
+        switch (tmpWaypoint->GetWPAction())
+        {
+        case WP_FAC:
+            SimDriver.facList->Remove(self);
+            break;
+
+        case WP_ELINT:
+            if (((Flight)self->GetCampaignObject())->GetFlightLeadSlot() ==
+                self->vehicleInUnit)
+            {
+                FalconRadioChatterMessage* radioMessage =
+                    new FalconRadioChatterMessage(self->Id(),
+                                                  FalconLocalSession);
+                radioMessage->dataBlock.from = self->Id();
+                radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
+                radioMessage->dataBlock.voice_id =
+                    ((Flight)(self->GetCampaignObject()))
+                        ->GetPilotVoiceID(self->vehicleInUnit);
+                radioMessage->dataBlock.message = rcAWACSOFF;
+                radioMessage->dataBlock.edata[0] = -1;
+                radioMessage->dataBlock.edata[1] = -1;
+                radioMessage->dataBlock.edata[2] = self->GetCallsignIdx();
+                radioMessage->dataBlock.edata[3] = self->vehicleInUnit + 1;
+                FalconSendMessage(radioMessage, FALSE);
+            }
+
+            // PlayRadioMessage (rcAWACSOFF)
+            // self is a pointer to the AC that is going on-line
+            break;
         }
     }
 
     // 2001-07-04 ADDED BY S.G. RE_EVALUATE YOUR GROUND WEAPONS WHEN SWITCHING WAYPOINT...
-    if ( not IsSetATC(HasAGWeapon) and (missionClass == AGMission))
+    if (not IsSetATC(HasAGWeapon) and (missionClass == AGMission))
     {
         MissionClassEnum tmpMission = missionClass;
         //missionClass = AAMission; // Without this, SelectGroundWeapon might call SelectNextWaypoint which will result in a stack overflow
@@ -961,109 +1032,118 @@ void DigitalBrain::SetWaypointSpecificStuff(void)
     int waypointIndex;
 
 
-
     if (self->curWaypoint)
     {
         switch (self->curWaypoint->GetWPAction())
         {
-            case WP_AIRDROP:
-                if (RuleMode not_eq rINSTANT_ACTION and RuleMode not_eq rDOGFIGHT)
+        case WP_AIRDROP:
+            if (RuleMode not_eq rINSTANT_ACTION and RuleMode not_eq rDOGFIGHT)
+            {
+                if (((Flight)self->GetCampaignObject())->GetFlightLeadSlot() ==
+                    self->vehicleInUnit)
                 {
-                    if (((Flight)self->GetCampaignObject())->GetFlightLeadSlot() == self->vehicleInUnit)
-                    {
-                        FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
-                        radioMessage->dataBlock.from = self->Id();
-                        radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-                        radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
-                        radioMessage->dataBlock.message = rcAIRDROPAPPROACH;
-                        radioMessage->dataBlock.edata[0] = self->GetCallsignIdx();
-                        radioMessage->dataBlock.edata[1] = self->vehicleInUnit + 1;
-                        FalconSendMessage(radioMessage, FALSE);
-                    }
+                    FalconRadioChatterMessage* radioMessage =
+                        new FalconRadioChatterMessage(self->Id(),
+                                                      FalconLocalSession);
+                    radioMessage->dataBlock.from = self->Id();
+                    radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
+                    radioMessage->dataBlock.voice_id =
+                        ((Flight)(self->GetCampaignObject()))
+                            ->GetPilotVoiceID(self->vehicleInUnit);
+                    radioMessage->dataBlock.message = rcAIRDROPAPPROACH;
+                    radioMessage->dataBlock.edata[0] = self->GetCallsignIdx();
+                    radioMessage->dataBlock.edata[1] = self->vehicleInUnit + 1;
+                    FalconSendMessage(radioMessage, FALSE);
                 }
+            }
 
-                // PlayRadioMessage (rcAIRDROPDONE)
-                // self is a pointer to the AC that has dropped troops/cargo
-                break;
+            // PlayRadioMessage (rcAIRDROPDONE)
+            // self is a pointer to the AC that has dropped troops/cargo
+            break;
 
-            case WP_ELINT:
-            case WP_NOTHING:
-            case WP_TAKEOFF:
-            case WP_ASSEMBLE:
+        case WP_ELINT:
+        case WP_NOTHING:
+        case WP_TAKEOFF:
+        case WP_ASSEMBLE:
 
-                //TJL 11/10/03 Adding sounds?
+            //TJL 11/10/03 Adding sounds?
 
-            case WP_POSTASSEMBLE:
-            case WP_REFUEL:
-            case WP_REARM:
-            case WP_LAND:
-            case WP_RECON:
-            case WP_RESCUE:
-            case WP_ASW:
-            case WP_TANKER:
-            case WP_JAM:
-            case WP_FAC:
-                break;
+        case WP_POSTASSEMBLE:
+        case WP_REFUEL:
+        case WP_REARM:
+        case WP_LAND:
+        case WP_RECON:
+        case WP_RESCUE:
+        case WP_ASW:
+        case WP_TANKER:
+        case WP_JAM:
+        case WP_FAC:
+            break;
 
-            case WP_ESCORT:
-                break;
+        case WP_ESCORT:
+            break;
 
-            case WP_CA:
-                break;
+        case WP_CA:
+            break;
 
-            case WP_CAP:
-                break;
+        case WP_CAP:
+            break;
 
-            case WP_INTERCEPT:
-                break;
+        case WP_INTERCEPT:
+            break;
 
-            case WP_GNDSTRIKE:
-            case WP_NAVSTRIKE:
-            case WP_STRIKE:
-            case WP_BOMB:
-            case WP_SAD:
-                //TJL 11/10/03 Sounds?
+        case WP_GNDSTRIKE:
+        case WP_NAVSTRIKE:
+        case WP_STRIKE:
+        case WP_BOMB:
+        case WP_SAD:
+            //TJL 11/10/03 Sounds?
 #if 0 // Retro 20May2004 - fixed logic
                 if (missionType == (AMIS_OCASTRIKE or AMIS_INTSTRIKE or AMIS_STRIKE or AMIS_DEEPSTRIKE or AMIS_STSTRIKE or AMIS_STRATBOMB))
 #else
-                if ((missionType == AMIS_OCASTRIKE) or
-                    (missionType == AMIS_INTSTRIKE) or
-                    (missionType == AMIS_STRIKE) or
-                    (missionType == AMIS_DEEPSTRIKE) or
-                    (missionType == AMIS_STSTRIKE) or
-                    (missionType == AMIS_STRATBOMB))
+            if ((missionType == AMIS_OCASTRIKE) or
+                (missionType == AMIS_INTSTRIKE) or
+                (missionType == AMIS_STRIKE) or
+                (missionType == AMIS_DEEPSTRIKE) or
+                (missionType == AMIS_STSTRIKE) or
+                (missionType == AMIS_STRATBOMB))
 #endif // Retro 20May2004 - end
-                {
-                    FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
-                    radioMessage->dataBlock.from = self->Id();
-                    radioMessage->dataBlock.to = MESSAGE_FOR_PACKAGE;
-                    radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
-                    radioMessage->dataBlock.message = rcFLIGHTIN;
-                    radioMessage->dataBlock.edata[0] = ((Flight)this)->callsign_id;
-                    radioMessage->dataBlock.edata[1] = ((Flight)this)->GetFlightLeadCallNumber();
-                    radioMessage->dataBlock.edata[2] = rand() % 12;
-                }
+            {
+                FalconRadioChatterMessage* radioMessage =
+                    new FalconRadioChatterMessage(self->Id(),
+                                                  FalconLocalSession);
+                radioMessage->dataBlock.from = self->Id();
+                radioMessage->dataBlock.to = MESSAGE_FOR_PACKAGE;
+                radioMessage->dataBlock.voice_id =
+                    ((Flight)(self->GetCampaignObject()))
+                        ->GetPilotVoiceID(self->vehicleInUnit);
+                radioMessage->dataBlock.message = rcFLIGHTIN;
+                radioMessage->dataBlock.edata[0] = ((Flight)this)->callsign_id;
+                radioMessage->dataBlock.edata[1] =
+                    ((Flight)this)->GetFlightLeadCallNumber();
+                radioMessage->dataBlock.edata[2] = rand() % 12;
+            }
 
-                //End
+            //End
 
 
-                if (missionType == AMIS_CAS)
-                {
-                    FalconFACMessage* facMsg;
+            if (missionType == AMIS_CAS)
+            {
+                FalconFACMessage* facMsg;
 
-                    facMsg = new FalconFACMessage(self->Id(), FalconLocalGame);
-                    facMsg->dataBlock.type = FalconFACMessage::CheckIn;
-                    FalconSendMessage(facMsg, FALSE);
-                }
+                facMsg = new FalconFACMessage(self->Id(), FalconLocalGame);
+                facMsg->dataBlock.type = FalconFACMessage::CheckIn;
+                FalconSendMessage(facMsg, FALSE);
+            }
 
-                break;
+            break;
 
-            case WP_SEAD:
-                break;
+        case WP_SEAD:
+            break;
 
-            default:
-                //            MonoPrint ("Why am I here (Digi GetBrain)\n");
-                break;
+        default:
+            //            MonoPrint ("Why am I here (Digi GetBrain)\n");
+            break;
         }
     }
     else
@@ -1075,15 +1155,17 @@ void DigitalBrain::SetWaypointSpecificStuff(void)
     {
         for (waypointIndex = 0, wlist = self->waypoint;
              wlist and wlist not_eq self->curWaypoint;
-             wlist = wlist->GetNextWP(), waypointIndex++);
+             wlist = wlist->GetNextWP(), waypointIndex++)
+            ;
 
         self->FCC->SetWaypointNum(waypointIndex);
     }
 
     // Marco edit - set Formation depending on waypoint selected
-    if (SimDriver.GetPlayerEntity() not_eq self and not isWing and self->curWaypoint->GetWPFormation() not_eq mCurFormation)
+    if (SimDriver.GetPlayerEntity() not_eq self and not isWing and
+        self->curWaypoint->GetWPFormation() not_eq mCurFormation)
     {
-        mCurFormation = self->curWaypoint->GetWPFormation() ;
+        mCurFormation = self->curWaypoint->GetWPFormation();
         AiSendCommand(self, mCurFormation, AiFlight, FalconNullId);
     }
 
@@ -1098,9 +1180,9 @@ int DigitalBrain::GetWaypointIndex(void)
     int waypointIndex;
 
     // get our current waypoint index in the list
-    for (waypointIndex = 0;
-         wlist and wlist not_eq tmpWaypoint;
-         wlist = wlist->GetNextWP(), waypointIndex++);
+    for (waypointIndex = 0; wlist and wlist not_eq tmpWaypoint;
+         wlist = wlist->GetNextWP(), waypointIndex++)
+        ;
 
     return waypointIndex;
 }
@@ -1118,7 +1200,7 @@ int DigitalBrain::GetTargetWPIndex(void)
             break;
 
         wlist = wlist->GetNextWP();
-        waypointIndex++ ;
+        waypointIndex++;
     }
 
     if (wlist)
@@ -1133,8 +1215,7 @@ int DigitalBrain::GetTargetWPIndex(void)
 ** up or airdropped.  Given time constraints we're just going to fly in
 ** low and slow and pick them up or drop them off with the campaign calls.
 */
-void
-DigitalBrain::DoPickupAirdrop(void)
+void DigitalBrain::DoPickupAirdrop(void)
 {
     float xerr, yerr;
     float rng;
@@ -1160,7 +1241,7 @@ DigitalBrain::DoPickupAirdrop(void)
     // if we're still far away just use the regular waypoint stuff
     if (rng > 10000.0f * 10000.0f)
     {
-        if (((AircraftClass*) self)->af->GetSimpleMode())
+        if (((AircraftClass*)self)->af->GetSimpleMode())
         {
             SimpleGoToCurrentWaypoint();
         }
@@ -1204,7 +1285,7 @@ DigitalBrain::DoPickupAirdrop(void)
         if (self->curWaypoint->GetWPAction() == WP_PICKUP)
         {
             // Load the airborne battalion.
-            cargo = (Unit) self->curWaypoint->GetWPTarget();
+            cargo = (Unit)self->curWaypoint->GetWPTarget();
             unit = (Unit)self->GetCampaignObject();
 
             if (cargo and unit)
@@ -1214,17 +1295,26 @@ DigitalBrain::DoPickupAirdrop(void)
                 cargo->SetInactive(1);
                 unit->LoadUnit(cargo);
 
-                if (RuleMode not_eq rINSTANT_ACTION and RuleMode not_eq rDOGFIGHT)
+                if (RuleMode not_eq rINSTANT_ACTION and
+                    RuleMode not_eq rDOGFIGHT)
                 {
-                    if (((Flight)self->GetCampaignObject())->GetFlightLeadSlot() == self->vehicleInUnit)
+                    if (((Flight)self->GetCampaignObject())
+                            ->GetFlightLeadSlot() == self->vehicleInUnit)
                     {
-                        FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
+                        FalconRadioChatterMessage* radioMessage =
+                            new FalconRadioChatterMessage(self->Id(),
+                                                          FalconLocalSession);
                         radioMessage->dataBlock.from = self->Id();
                         radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-                        radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
-                        radioMessage->dataBlock.message = rcPACKJOINED; // best I can find - JPO
-                        radioMessage->dataBlock.edata[0] = self->GetCallsignIdx();
-                        radioMessage->dataBlock.edata[1] = self->vehicleInUnit + 1;
+                        radioMessage->dataBlock.voice_id =
+                            ((Flight)(self->GetCampaignObject()))
+                                ->GetPilotVoiceID(self->vehicleInUnit);
+                        radioMessage->dataBlock.message =
+                            rcPACKJOINED; // best I can find - JPO
+                        radioMessage->dataBlock.edata[0] =
+                            self->GetCallsignIdx();
+                        radioMessage->dataBlock.edata[1] =
+                            self->vehicleInUnit + 1;
                         FalconSendMessage(radioMessage, FALSE);
                     }
                 }
@@ -1233,7 +1323,7 @@ DigitalBrain::DoPickupAirdrop(void)
         else if (self->curWaypoint->GetWPAction() == WP_AIRDROP)
         {
             // Load the airborne battalion.
-            cargo = (Unit) self->curWaypoint->GetWPTarget();
+            cargo = (Unit)self->curWaypoint->GetWPTarget();
             unit = (Unit)self->GetCampaignObject();
 
             if (cargo and unit and unit->Cargo())
@@ -1244,17 +1334,25 @@ DigitalBrain::DoPickupAirdrop(void)
                 self->curWaypoint->GetWPLocation(&x, &y);
                 cargo->SetLocation(x, y);
 
-                if (RuleMode not_eq rINSTANT_ACTION and RuleMode not_eq rDOGFIGHT)
+                if (RuleMode not_eq rINSTANT_ACTION and
+                    RuleMode not_eq rDOGFIGHT)
                 {
-                    if (((Flight)self->GetCampaignObject())->GetFlightLeadSlot() == self->vehicleInUnit)
+                    if (((Flight)self->GetCampaignObject())
+                            ->GetFlightLeadSlot() == self->vehicleInUnit)
                     {
-                        FalconRadioChatterMessage* radioMessage = new FalconRadioChatterMessage(self->Id(), FalconLocalSession);
+                        FalconRadioChatterMessage* radioMessage =
+                            new FalconRadioChatterMessage(self->Id(),
+                                                          FalconLocalSession);
                         radioMessage->dataBlock.from = self->Id();
                         radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
-                        radioMessage->dataBlock.voice_id = ((Flight)(self->GetCampaignObject()))->GetPilotVoiceID(self->vehicleInUnit);
+                        radioMessage->dataBlock.voice_id =
+                            ((Flight)(self->GetCampaignObject()))
+                                ->GetPilotVoiceID(self->vehicleInUnit);
                         radioMessage->dataBlock.message = rcAIRDROPDONE;
-                        radioMessage->dataBlock.edata[0] = self->GetCallsignIdx();
-                        radioMessage->dataBlock.edata[1] = self->vehicleInUnit + 1;
+                        radioMessage->dataBlock.edata[0] =
+                            self->GetCallsignIdx();
+                        radioMessage->dataBlock.edata[1] =
+                            self->vehicleInUnit + 1;
                         FalconSendMessage(radioMessage, FALSE);
                     }
                 }
@@ -1272,4 +1370,3 @@ DigitalBrain::DoPickupAirdrop(void)
     pStick *= gainCtrl;
     // rStick *= gainCtrl;
 }
-

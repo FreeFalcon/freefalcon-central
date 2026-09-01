@@ -42,28 +42,14 @@ long gDrawTeam = 1;
 
 extern C_Map *gMapMgr;
 
-long TeamBtnIDs[NUM_TEAMS] =
-{
-    GROUP1_FLAG,
-    GROUP2_FLAG,
-    GROUP3_FLAG,
-    GROUP4_FLAG,
-    GROUP5_FLAG,
-    GROUP6_FLAG,
-    GROUP7_FLAG,
-    GROUP8_FLAG,
+long TeamBtnIDs[NUM_TEAMS] = {
+    GROUP1_FLAG, GROUP2_FLAG, GROUP3_FLAG, GROUP4_FLAG,
+    GROUP5_FLAG, GROUP6_FLAG, GROUP7_FLAG, GROUP8_FLAG,
 };
 
-long TeamLineIDs[NUM_TEAMS] =
-{
-    GROUP1_COLOR,
-    GROUP2_COLOR,
-    GROUP3_COLOR,
-    GROUP4_COLOR,
-    GROUP5_COLOR,
-    GROUP6_COLOR,
-    GROUP7_COLOR,
-    GROUP8_COLOR,
+long TeamLineIDs[NUM_TEAMS] = {
+    GROUP1_COLOR, GROUP2_COLOR, GROUP3_COLOR, GROUP4_COLOR,
+    GROUP5_COLOR, GROUP6_COLOR, GROUP7_COLOR, GROUP8_COLOR,
 };
 
 // JPO - helper routine to map experience to a label
@@ -71,20 +57,20 @@ static long Experience2Id(uchar exp)
 {
     switch ((exp - 60) / 10)
     {
-        case 1:
-            return CADET_LEVEL;
+    case 1:
+        return CADET_LEVEL;
 
-        case 2:
-            return ROOKIE_LEVEL;
+    case 2:
+        return ROOKIE_LEVEL;
 
-        case 3:
-            return VETERAN_LEVEL;
+    case 3:
+        return VETERAN_LEVEL;
 
-        case 4:
-            return ACE_LEVEL;
+    case 4:
+        return ACE_LEVEL;
 
-        default:
-            return RECRUIT_LEVEL;
+    default:
+        return RECRUIT_LEVEL;
     }
 }
 
@@ -105,13 +91,13 @@ static uchar GetUnusedFlag()
 
     while (i < TOTAL_FLAGS)
     {
-        if ( not FlagImageID[i][FLAG_STATUS])
-            return(static_cast<uchar>(i));
+        if (not FlagImageID[i][FLAG_STATUS])
+            return (static_cast<uchar>(i));
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 static uchar GetUnusedColor()
@@ -120,13 +106,13 @@ static uchar GetUnusedColor()
 
     while (i < NUM_TEAMS)
     {
-        if ( not TeamColorUse[i])
-            return(static_cast<uchar>(i));
+        if (not TeamColorUse[i])
+            return (static_cast<uchar>(i));
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void SetupTeamFlags()
@@ -138,17 +124,17 @@ void SetupTeamFlags()
     win = gMainHandler->FindWindow(TAC_EDIT_WIN);
 
     if (win)
-        EditMap = (C_Button*)win->FindControl(TEAM_SELECTOR);
+        EditMap = (C_Button *)win->FindControl(TEAM_SELECTOR);
 
     win = gMainHandler->FindWindow(TAC_PUA_MAP);
 
     if (win)
-        SmallMap = (C_Button*)win->FindControl(TEAM_SELECTOR);
+        SmallMap = (C_Button *)win->FindControl(TEAM_SELECTOR);
 
     win = gMainHandler->FindWindow(TAC_FULLMAP_WIN);
 
     if (win)
-        BigMap = (C_Button*)win->FindControl(TEAM_SELECTOR);
+        BigMap = (C_Button *)win->FindControl(TEAM_SELECTOR);
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
@@ -156,13 +142,16 @@ void SetupTeamFlags()
         if (TeamInfo[i] and (TeamInfo[i]->flags bitand TEAM_ACTIVE))
         {
             if (EditMap)
-                EditMap->SetImage(i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
+                EditMap->SetImage(
+                    i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
 
             if (SmallMap)
-                SmallMap->SetImage(i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
+                SmallMap->SetImage(
+                    i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
 
             if (BigMap)
-                BigMap->SetImage(i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
+                BigMap->SetImage(
+                    i, FlagImageID[TeamInfo[i]->GetFlag()][SMALL_HORIZ]);
         }
     }
 
@@ -190,7 +179,7 @@ void SetupTeamColors()
 {
     // Set ATO bitand OOB bitand Camp Map
     C_Window *win;
-    C_Line   *line;
+    C_Line *line;
 
     gDrawTeam = gSelectedTeam;
 
@@ -198,13 +187,14 @@ void SetupTeamColors()
 
     if (win)
     {
-        line = (C_Line*)win->FindControl(TEAM_COLOR);
+        line = (C_Line *)win->FindControl(TEAM_COLOR);
 
         if (line)
         {
             if (TeamInfo[gSelectedTeam])
             {
-                line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
+                line->SetColor(
+                    TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
             }
 
             line->Refresh();
@@ -215,13 +205,14 @@ void SetupTeamColors()
 
     if (win)
     {
-        line = (C_Line*)win->FindControl(TEAM_COLOR);
+        line = (C_Line *)win->FindControl(TEAM_COLOR);
 
         if (line)
         {
             if (TeamInfo[gSelectedTeam])
             {
-                line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
+                line->SetColor(
+                    TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
             }
 
             line->Refresh();
@@ -232,13 +223,14 @@ void SetupTeamColors()
 
     if (win)
     {
-        line = (C_Line*)win->FindControl(TEAM_COLOR);
+        line = (C_Line *)win->FindControl(TEAM_COLOR);
 
         if (line)
         {
             if (TeamInfo[gSelectedTeam])
             {
-                line->SetColor(TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
+                line->SetColor(
+                    TeamColorList[TeamInfo[gSelectedTeam]->GetColor()]);
             }
 
             line->Refresh();
@@ -277,12 +269,16 @@ void UpdateBigMapColors(long team)
 
     for (j = 0; j < 8; j++)
     {
-        gMapMgr->SetAirIcons(team, j, TeamFlightColorIconIDs[idx][j][0], TeamFlightColorIconIDs[idx][j][1]);
+        gMapMgr->SetAirIcons(team, j, TeamFlightColorIconIDs[idx][j][0],
+                             TeamFlightColorIconIDs[idx][j][1]);
     }
 
-    gMapMgr->SetArmyIcons(team, TeamColorIconIDs[idx][0], TeamColorIconIDs[idx][1]);
-    gMapMgr->SetNavyIcons(team, TeamColorIconIDs[idx][0], TeamColorIconIDs[idx][1]);
-    gMapMgr->SetObjectiveIcons(team, TeamColorIconIDs[idx][0], TeamColorIconIDs[idx][1]);
+    gMapMgr->SetArmyIcons(team, TeamColorIconIDs[idx][0],
+                          TeamColorIconIDs[idx][1]);
+    gMapMgr->SetNavyIcons(team, TeamColorIconIDs[idx][0],
+                          TeamColorIconIDs[idx][1]);
+    gMapMgr->SetObjectiveIcons(team, TeamColorIconIDs[idx][0],
+                               TeamColorIconIDs[idx][1]);
     gMapMgr->RemapTeamColors(team);
 }
 
@@ -310,7 +306,7 @@ void SetupTeamListValues()
                     TeamInfo[i]->SetFlag(GetUnusedFlag());
 
                 FlagImageID[TeamInfo[i]->GetFlag()][FLAG_STATUS] = 1;
-                btn = (C_Button*)win->FindControl(TeamBtnIDs[btnidx]);
+                btn = (C_Button *)win->FindControl(TeamBtnIDs[btnidx]);
 
                 if (btn)
                 {
@@ -319,8 +315,10 @@ void SetupTeamListValues()
                     else
                         btn->SetState(0);
 
-                    btn->SetImage(0, FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT_DARK]);
-                    btn->SetImage(1, FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT]);
+                    btn->SetImage(
+                        0, FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT_DARK]);
+                    btn->SetImage(
+                        1, FlagImageID[TeamInfo[i]->GetFlag()][BIG_VERT]);
                     btn->SetFlagBitOff(C_BIT_INVISIBLE);
                     btn->Refresh();
                     btn->SetUserNumber(0, i);
@@ -330,7 +328,7 @@ void SetupTeamListValues()
                     TeamInfo[i]->SetColor(GetUnusedColor());
 
                 TeamColorUse[TeamInfo[i]->GetColor()] = 1;
-                line = (C_Line*)win->FindControl(TeamLineIDs[btnidx]);
+                line = (C_Line *)win->FindControl(TeamLineIDs[btnidx]);
 
                 if (line)
                 {
@@ -345,7 +343,7 @@ void SetupTeamListValues()
 
         while (btnidx < NUM_TEAMS)
         {
-            btn = (C_Button*)win->FindControl(TeamBtnIDs[btnidx]);
+            btn = (C_Button *)win->FindControl(TeamBtnIDs[btnidx]);
 
             if (btn)
             {
@@ -354,7 +352,7 @@ void SetupTeamListValues()
                 btn->SetUserNumber(0, 0);
             }
 
-            line = (C_Line*)win->FindControl(TeamLineIDs[btnidx]);
+            line = (C_Line *)win->FindControl(TeamLineIDs[btnidx]);
 
             if (line)
             {
@@ -382,14 +380,14 @@ void SetupCurrentTeamValues(long team)
     if (team >= NUM_TEAMS) // Out of range
         return;
 
-    if ( not TeamInfo[team]) // Team undefined
+    if (not TeamInfo[team]) // Team undefined
         return;
 
     win = gMainHandler->FindWindow(TAC_TEAM_WIN);
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(CURRENT_FLAG);
+        btn = (C_Button *)win->FindControl(CURRENT_FLAG);
 
         if (btn)
         {
@@ -397,7 +395,7 @@ void SetupCurrentTeamValues(long team)
             btn->Refresh();
         }
 
-        box = (C_Box*)win->FindControl(CURRENT_COLOR);
+        box = (C_Box *)win->FindControl(CURRENT_COLOR);
 
         if (box)
         {
@@ -405,7 +403,7 @@ void SetupCurrentTeamValues(long team)
             box->Refresh();
         }
 
-        lbox = (C_ListBox*)win->FindControl(PILOT_SKILL);
+        lbox = (C_ListBox *)win->FindControl(PILOT_SKILL);
 
         if (lbox)
         {
@@ -413,7 +411,7 @@ void SetupCurrentTeamValues(long team)
             lbox->Refresh();
         }
 
-        lbox = (C_ListBox*)win->FindControl(SAM_SKILL);
+        lbox = (C_ListBox *)win->FindControl(SAM_SKILL);
 
         if (lbox)
         {
@@ -421,7 +419,7 @@ void SetupCurrentTeamValues(long team)
             lbox->Refresh();
         }
 
-        ebox = (C_EditBox*)win->FindControl(CURRENT_NAME);
+        ebox = (C_EditBox *)win->FindControl(CURRENT_NAME);
 
         if (ebox)
         {
@@ -429,7 +427,7 @@ void SetupCurrentTeamValues(long team)
             ebox->Refresh();
         }
 
-        ebox = (C_EditBox*)win->FindControl(MISSION_STATEMENT);
+        ebox = (C_EditBox *)win->FindControl(MISSION_STATEMENT);
 
         if (ebox)
         {
@@ -466,7 +464,8 @@ void MakeNewTeamCB(long, short hittype, C_Base *)
             FlagImageID[TeamInfo[gSelectedTeam]->GetFlag()][FLAG_STATUS] = 1;
             TeamInfo[gSelectedTeam]->SetColor(GetUnusedColor());
             TeamColorUse[TeamInfo[gSelectedTeam]->GetColor()] = 1;
-            _stprintf(buffer, "%s #%1ld", gStringMgr->GetString(TXT_TEAM), gSelectedTeam);
+            _stprintf(buffer, "%s #%1d", gStringMgr->GetString(TXT_TEAM),
+                      gSelectedTeam);
             TeamInfo[gSelectedTeam]->SetName(buffer);
             _stprintf(buffer, " ");
             TeamInfo[gSelectedTeam]->SetMotto(buffer);
@@ -527,7 +526,7 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
         TeamCount = gSelectedTeam;
         i = 0;
 
-        while ( not i)
+        while (not i)
         {
             gSelectedTeam--;
 
@@ -557,20 +556,22 @@ static void RemoveTeamCB(long, short hittype, C_Base *)
     }
 
     // Pick a team to give all our stuff to.
-    for (i = 7; i < NUM_TEAMS and not TeamInfo[i]; i--);
+    for (i = 7; i < NUM_TEAMS and not TeamInfo[i]; i--)
+        ;
 
     new_owner = i;
 
-    entity = (CampBaseClass*) eit.GetFirst();
+    entity = (CampBaseClass *)eit.GetFirst();
 
     while (entity)
     {
         entity->SetOwner(static_cast<uchar>(new_owner));
 
         if (entity->IsObjective())
-            ((Objective)entity)->SetObjectiveOldown(static_cast<uchar>(new_owner));
+            ((Objective)entity)
+                ->SetObjectiveOldown(static_cast<uchar>(new_owner));
 
-        entity = (CampBaseClass*) eit.GetNext();
+        entity = (CampBaseClass *)eit.GetNext();
     }
 }
 
@@ -586,14 +587,14 @@ static void ChoosePrevFlag(long, short hittype, C_Base *)
 
     done = 0;
 
-    while ( not done)
+    while (not done)
     {
         newflag--;
 
         if (newflag < 1)
             newflag += TOTAL_FLAGS;
 
-        if ( not FlagImageID[newflag][FLAG_STATUS])
+        if (not FlagImageID[newflag][FLAG_STATUS])
             done = 1;
     }
 
@@ -618,14 +619,14 @@ static void ChooseNextFlag(long, short hittype, C_Base *)
 
     done = 0;
 
-    while ( not done)
+    while (not done)
     {
         newflag++;
 
         if (newflag >= TOTAL_FLAGS)
             newflag = 1;
 
-        if ( not FlagImageID[newflag][FLAG_STATUS])
+        if (not FlagImageID[newflag][FLAG_STATUS])
             done = 1;
     }
 
@@ -649,14 +650,14 @@ static void ChoosePrevColor(long, short hittype, C_Base *)
 
     done = 0;
 
-    while ( not done)
+    while (not done)
     {
         newcolor--;
 
         if (newcolor < 1)
             newcolor = NUM_TEAMS - 1;
 
-        if ( not TeamColorUse[newcolor])
+        if (not TeamColorUse[newcolor])
             done = 1;
     }
 
@@ -681,14 +682,14 @@ static void ChooseNextColor(long, short hittype, C_Base *)
 
     done = 0;
 
-    while ( not done)
+    while (not done)
     {
         newcolor++;
 
         if (newcolor >= NUM_TEAMS)
             newcolor = 1;
 
-        if ( not TeamColorUse[newcolor])
+        if (not TeamColorUse[newcolor])
             done = 1;
     }
 
@@ -705,7 +706,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
 {
     C_Window *win;
     C_Button *btn;
-    C_Line   *line;
+    C_Line *line;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -726,7 +727,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(TEAM_SELECTOR);
+        btn = (C_Button *)win->FindControl(TEAM_SELECTOR);
 
         if (btn)
         {
@@ -734,7 +735,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
             btn->Refresh();
         }
 
-        line = (C_Line*)win->FindControl(TEAM_COLOR);
+        line = (C_Line *)win->FindControl(TEAM_COLOR);
 
         if (line)
         {
@@ -747,7 +748,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(TEAM_SELECTOR);
+        btn = (C_Button *)win->FindControl(TEAM_SELECTOR);
 
         if (btn)
         {
@@ -755,7 +756,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
             btn->Refresh();
         }
 
-        line = (C_Line*)win->FindControl(TEAM_COLOR);
+        line = (C_Line *)win->FindControl(TEAM_COLOR);
 
         if (line)
         {
@@ -768,7 +769,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(TEAM_SELECTOR);
+        btn = (C_Button *)win->FindControl(TEAM_SELECTOR);
 
         if (btn)
         {
@@ -776,7 +777,7 @@ void ChooseTeamCB(long, short hittype, C_Base *base)
             btn->Refresh();
         }
 
-        line = (C_Line*)win->FindControl(TEAM_COLOR);
+        line = (C_Line *)win->FindControl(TEAM_COLOR);
 
         if (line)
         {
@@ -793,7 +794,7 @@ static void SetTeamNameCB(long, short hittype, C_Base *base)
     if (hittype not_eq DIK_RETURN and hittype)
         return;
 
-    ebox = (C_EditBox*)base;
+    ebox = (C_EditBox *)base;
 
     if (ebox and TeamInfo[gSelectedTeam])
         TeamInfo[gSelectedTeam]->SetName(ebox->GetText());
@@ -809,7 +810,7 @@ static void SetTeamStatementCB(long, short hittype, C_Base *base)
     if (hittype not_eq DIK_RETURN)
         return;
 
-    ebox = (C_EditBox*)base;
+    ebox = (C_EditBox *)base;
 
     if (ebox and TeamInfo[gSelectedTeam])
         TeamInfo[gSelectedTeam]->SetMotto(ebox->GetText());
@@ -823,32 +824,32 @@ static void SetTeamExperience(long ID, short hittype, C_Base *base)
     if (hittype not_eq DIK_RETURN)
         return;
 
-    lbox = (C_ListBox*)base;
+    lbox = (C_ListBox *)base;
     int value = 0;
 
     if (lbox and TeamInfo[gSelectedTeam])
     {
         switch (lbox->GetTextID())
         {
-            case CADET_LEVEL:
-                value = 1;
-                break;
+        case CADET_LEVEL:
+            value = 1;
+            break;
 
-            case ROOKIE_LEVEL:
-                value = 2;
-                break;
+        case ROOKIE_LEVEL:
+            value = 2;
+            break;
 
-            case VETERAN_LEVEL:
-                value = 3;
-                break;
+        case VETERAN_LEVEL:
+            value = 3;
+            break;
 
-            case ACE_LEVEL:
-                value = 4;
-                break;
+        case ACE_LEVEL:
+            value = 4;
+            break;
 
-            default:
-                value = 0;
-                break;
+        default:
+            value = 0;
+            break;
         }
     }
 
@@ -856,7 +857,6 @@ static void SetTeamExperience(long ID, short hittype, C_Base *base)
         TeamInfo[gSelectedTeam]->airExperience = 60 + 10 * value;
     else if (ID == SAM_SKILL)
         TeamInfo[gSelectedTeam]->airDefenseExperience = 60 + 10 * value;
-
 }
 
 void Hookup_Team_Win(C_Window *win)

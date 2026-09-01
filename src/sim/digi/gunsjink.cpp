@@ -8,7 +8,7 @@
 #include "aircrft.h"
 #include "sms.h"
 
-#define INIT_GUN_VEL  4500.0f //me123 changed from 3500.0F
+#define INIT_GUN_VEL 4500.0f //me123 changed from 3500.0F
 extern float SimLibLastMajorFrameTime;
 
 
@@ -33,13 +33,16 @@ void DigitalBrain::GunsJinkCheck(void)
         if (obj == NULL)
             return;
 
-        if (obj->BaseData()->IsSim() and 
+        if (obj->BaseData()->IsSim() and
             (((SimBaseClass*)obj->BaseData())->IsFiring() or
-             TeamInfo[self->GetTeam()]->TStance(obj->BaseData()->GetTeam()) == War))
+             TeamInfo[self->GetTeam()]->TStance(obj->BaseData()->GetTeam()) ==
+                 War))
         {
             localData = obj->localData;
 
-            if ((localData->range > 0.0f) and (localData->range < 6000.0f))//localData->rangedot > -240.0f * FTPSEC_TO_KNOTS )//me123 don't jink if he's got a high closure, he probaly woun't shoot a low Pk shot
+            if ((localData->range > 0.0f) and
+                (localData->range <
+                 6000.0f)) //localData->rangedot > -240.0f * FTPSEC_TO_KNOTS )//me123 don't jink if he's got a high closure, he probaly woun't shoot a low Pk shot
             {
                 if (localData->range < INIT_GUN_VEL)
                 {
@@ -50,18 +53,25 @@ void DigitalBrain::GunsJinkCheck(void)
                     jinkTime = -1;
                     z = localData->range / INIT_GUN_VEL;
 
-                    if (localData->azFrom > -15.0F * DTR and localData->azFrom < (15.0F * DTR)) //me123 status test. changed from 2.0 to 5.0 multible places here becourse we are not always in plane when gunning
+                    if (localData->azFrom > -15.0F * DTR and
+                        localData->azFrom <
+                            (15.0F *
+                             DTR)) //me123 status test. changed from 2.0 to 5.0 multible places here becourse we are not always in plane when gunning
                     {
                         twoSeconds = TRUE;
                     }
-                    else if (localData->azFrom > (5.0F * DTR) and localData->azFromdot < 0.0F)
+                    else if (localData->azFrom > (5.0F * DTR) and
+                             localData->azFromdot < 0.0F)
                     {
-                        if (localData->azFrom + z * localData->azFromdot < (5.0F * DTR))
+                        if (localData->azFrom + z * localData->azFromdot <
+                            (5.0F * DTR))
                             twoSeconds = TRUE;
                     }
-                    else if (localData->azFrom < (-5.0F * DTR) and localData->azFromdot > 0.0F)
+                    else if (localData->azFrom < (-5.0F * DTR) and
+                             localData->azFromdot > 0.0F)
                     {
-                        if (localData->azFrom + z * localData->azFromdot > (-5.0F * DTR))
+                        if (localData->azFrom + z * localData->azFromdot >
+                            (-5.0F * DTR))
                             twoSeconds = TRUE;
                     }
 
@@ -69,7 +79,9 @@ void DigitalBrain::GunsJinkCheck(void)
                     {
                         twoSeconds = FALSE;
 
-                        if (localData->elFrom < (4.0F * DTR) and localData->elFrom > (-10.0F * DTR)) //me123 status test. changed all
+                        if (localData->elFrom < (4.0F * DTR) and
+                            localData->elFrom >
+                                (-10.0F * DTR)) //me123 status test. changed all
                         {
                             twoSeconds = TRUE;
                         }
@@ -98,25 +110,30 @@ void DigitalBrain::GunsJinkCheck(void)
                         /*-----------*/
                         /* him -> me */
                         /*-----------*/
-                        tgt_time = ((localData->ataFrom / localData->ataFromdot) * timeDelta);
+                        tgt_time =
+                            ((localData->ataFrom / localData->ataFromdot) *
+                             timeDelta);
 
                         //  if (tgt_time < 0.0F)//me123 status test,
                         //  tgt_time = 99.0F;//me123 status test,
-                        if (localData->ataFrom > -13.0f * DTR and localData->ataFrom < 13.0f * DTR)
+                        if (localData->ataFrom > -13.0f * DTR and
+                            localData->ataFrom < 13.0f * DTR)
                         {
-                            tgt_time = 0.0f;   //me123 status test,
+                            tgt_time = 0.0f; //me123 status test,
                         }
 
                         /*-----------*/
                         /* me -> him */
                         /*-----------*/
-                        att_time = (localData->ata / localData->atadot) * timeDelta;
+                        att_time =
+                            (localData->ata / localData->atadot) * timeDelta;
 
                         // if (att_time < 0.0F)//me123 status test,
                         //  att_time = 99.0F;//me123 status test,
-                        if (localData->ata > -13.0f * DTR and localData->ata < 13.0f * DTR)
+                        if (localData->ata > -13.0f * DTR and
+                            localData->ata < 13.0f * DTR)
                         {
-                            att_time = 0.0f;   //me123 status test,
+                            att_time = 0.0f; //me123 status test,
                         }
                     }
 
@@ -195,11 +212,13 @@ void DigitalBrain::GunsJink(void)
         /* aspect >= 60 degrees           */
         /* put plane of wings on attacker */
         /*--------------------------------*/
-        if (aspect >= 90.0F * DTR)//me123 changed from 60
+        if (aspect >= 90.0F * DTR) //me123 changed from 60
         {
             /* offset required to put wings on attacker */
-            if (gunsJinkData->droll >= 0.0F) roll_offset = gunsJinkData->droll - 90.0F * DTR;
-            else roll_offset = gunsJinkData->droll + 90.0F * DTR;
+            if (gunsJinkData->droll >= 0.0F)
+                roll_offset = gunsJinkData->droll - 90.0F * DTR;
+            else
+                roll_offset = gunsJinkData->droll + 90.0F * DTR;
 
             /* generate new phi angle */
             newroll = self->Roll() + roll_offset;
@@ -211,9 +230,11 @@ void DigitalBrain::GunsJink(void)
         else
         {
             /* special in-plane crossing case, go the opposite direction */
-            if (targetPtr and ((targetPtr->BaseData()->Yaw()   - self->Yaw() < 15.0F * DTR) and 
-                              (targetPtr->BaseData()->Pitch() - self->Pitch() < 15.0F * DTR) and 
-                              (targetPtr->BaseData()->Roll()  - self->Roll() < 15.0F * DTR)))
+            if (targetPtr and
+                ((targetPtr->BaseData()->Yaw() - self->Yaw() < 15.0F * DTR) and
+                 (targetPtr->BaseData()->Pitch() - self->Pitch() <
+                  15.0F * DTR) and
+                 (targetPtr->BaseData()->Roll() - self->Roll() < 15.0F * DTR)))
             {
                 if (gunsJinkData->droll >= 0.0F and gunsJinkData->az > 0.0F)
                 {
@@ -223,32 +244,39 @@ void DigitalBrain::GunsJink(void)
                 {
                     newroll = self->Roll() - 90.0F * DTR;
                 }
-                else      /* fall out, normal case */
+                else /* fall out, normal case */
                 {
                     if (gunsJinkData->droll > 0.0F)
-                        newroll = self->Roll() - 70.0F * DTR; //me123 status test changed from 90
+                        newroll =
+                            self->Roll() -
+                            70.0F * DTR; //me123 status test changed from 90
                     else
-                        newroll = self->Roll() + 70.0F * DTR;//me123 status test changed from 90
+                        newroll =
+                            self->Roll() +
+                            70.0F * DTR; //me123 status test changed from 90
                 }
             }
             /* normal jink */
             else
             {
                 if (gunsJinkData->droll > 0.0F)
-                    newroll = self->Roll() - 70.0F * DTR;//me123 status test changed from 90
+                    newroll = self->Roll() -
+                              70.0F * DTR; //me123 status test changed from 90
                 else
-                    newroll = self->Roll() + 70.0F * DTR;//me123 status test changed from 90
+                    newroll = self->Roll() +
+                              70.0F * DTR; //me123 status test changed from 90
             }
 
             /*--------------------------------------------*/
             /* roll down if speed <= 60% of corner speed  */
             /*--------------------------------------------*/
-            if (self->GetKias() <= 0.8F * cornerSpeed)//me123 status test. changed from 0.6
+            if (self->GetKias() <=
+                0.8F * cornerSpeed) //me123 status test. changed from 0.6
             {
                 if (newroll >= 0.0F and newroll <= 45.0F * DTR)
-                    newroll += 30.0F * DTR;//me123 status test changed from 20
+                    newroll += 30.0F * DTR; //me123 status test changed from 20
                 else if (newroll <= 0.0F and newroll >= -45.0F * DTR)
-                    newroll -= 30.0F * DTR;//me123 status test changed from 20
+                    newroll -= 30.0F * DTR; //me123 status test changed from 20
             }
         }
 
@@ -297,10 +325,10 @@ void DigitalBrain::GunsJink(void)
         /*-----------------------*/
         /* stop rolling and pull */
         /*-----------------------*/
-        if (fabs(eroll) < 5.0F * DTR)//me123 status test, from 5
+        if (fabs(eroll) < 5.0F * DTR) //me123 status test, from 5
         {
             jinkTime = 1;
-            SetRstick(0.5F);  //me123 status test, from 0
+            SetRstick(0.5F); //me123 status test, from 0
         }
     }
 
@@ -312,7 +340,9 @@ void DigitalBrain::GunsJink(void)
         maxPull = max(0.8F * af->MaxGs(), maxGs);
         SetPstick(maxPull, af->MaxGs(), AirframeClass::GCommand);
 
-        if (jinkTime++ > SimLibMajorFrameRate * 2.0F + 1.0F) //me123 status test, pull for 5sec instead of 2
+        if (jinkTime++ >
+            SimLibMajorFrameRate * 2.0F +
+                1.0F) //me123 status test, pull for 5sec instead of 2
         {
             ResetMaxRoll();
             jinkTime = -1;

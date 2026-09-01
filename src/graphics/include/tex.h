@@ -9,12 +9,12 @@
 #define _TEX_H_
 
 #include "grtypes.h"
-#include "Context.h"
-#include "Palette.h"
+#include "context.h"
+#include "palette.h"
 
 struct IDirectDrawSurface7;
 struct IDirect3DDevice7;
-enum _D3DX_SURFACEFORMAT;
+enum _D3DX_SURFACEFORMAT : int; // Artscout - 2026 (Linux Ф1): fixed underlying type -> usable as a member type
 class PaletteHandle;
 
 
@@ -41,7 +41,8 @@ public:
 #ifdef _DEBUG
     static DWORD m_dwNumHandles; // Number of instances
     static DWORD m_dwBitmapBytes; // Bytes allocated for bitmap copies
-    static DWORD m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
+    static DWORD
+        m_dwTotalBytes; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
 protected:
@@ -53,24 +54,27 @@ public:
     static void SetupForDevice(DXContext *texRC, char *path);
     static void CleanupForDevice(DXContext *texRC);
     static bool IsSetup();
-    BOOL LoadImage(char *filename, DWORD newFlags = 0, BOOL addDefaultPath = TRUE);
+    BOOL LoadImage(char *filename, DWORD newFlags = 0,
+                   BOOL addDefaultPath = TRUE);
     BOOL LoadAndCreate(char *filename, DWORD newFlags = 0);
     bool CreateTexture(char *strName = NULL);
     bool UpdateMPR(char *strName = NULL);
     //sfr: moved to cpp
-    void FreeAll();// { FreeTexture(); FreeImage(); FreePalette(); };
+    void FreeAll(); // { FreeTexture(); FreeImage(); FreePalette(); };
     void FreeImage();
     void FreeTexture();
     void FreePalette();
     void RestoreAll();
-    DWORD_PTR TexHandle() // Artscout - 2026 (x64): pointer-sized; (DWORD) truncated the handle
+    DWORD_PTR
+    TexHandle() // Artscout - 2026 (x64): pointer-sized; (DWORD) truncated the handle
     {
-        return (DWORD_PTR) texHandle;
+        return (DWORD_PTR)texHandle;
     };
-    bool DumpImageToFile(char*, int palID = 0);
+    bool DumpImageToFile(char *, int palID = 0);
 
 protected:
-    bool SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions, DWORD flags);
+    bool SaveDDS_DXTn(const char *szFileName, BYTE *pDst, int dimensions,
+                      DWORD flags);
 
 #ifdef _DEBUG
 public:

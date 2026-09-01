@@ -8,7 +8,7 @@
 #include "classtbl.h"
 #include "hardpnt.h"
 #include "guns.h"
-#include "Find.h"
+#include "find.h"
 #include "vehicle.h"
 #include "ground.h"
 
@@ -31,17 +31,17 @@ void GroundClass::SelectWeapon(int gun_only)
 {
     Falcon4EntityClassType* classPtr;
     VehicleClassDataType* vd;
-    uchar *dam;
+    uchar* dam;
     MoveType mt;
     int range;
 
     // KCK: This section rewritten on 6/22.
     // I'm going to use campaign statisics in order to choose the 'best' weapon
-    classPtr = (Falcon4EntityClassType*) targetPtr->BaseData()->EntityType();
+    classPtr = (Falcon4EntityClassType*)targetPtr->BaseData()->EntityType();
 
     if (targetPtr->BaseData()->IsSim())
     {
-        vd = (VehicleClassDataType*) classPtr->dataPtr;
+        vd = (VehicleClassDataType*)classPtr->dataPtr;
         ShiAssert(vd);
         dam = vd->DamageMod;
 
@@ -56,27 +56,27 @@ void GroundClass::SelectWeapon(int gun_only)
                 mt = Air;
             }
         }
-        else if (
- not targetPtr->BaseData()->IsStatic() and 
-            ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject()
-        )
+        else if (not targetPtr->BaseData()->IsStatic() and
+                 ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject())
         {
-            UnitClassDataType *ud;
-            classPtr = (Falcon4EntityClassType*)
-                       ((SimBaseClass*)targetPtr->BaseData())->GetCampaignObject()->EntityType()
-                       ;
-            ud = (UnitClassDataType*) classPtr->dataPtr;
+            UnitClassDataType* ud;
+            classPtr =
+                (Falcon4EntityClassType*)((SimBaseClass*)targetPtr->BaseData())
+                    ->GetCampaignObject()
+                    ->EntityType();
+            ud = (UnitClassDataType*)classPtr->dataPtr;
             mt = ud->MovementType;
         }
         else
         {
-            mt = NoMove; // Choose NoMove for a generic ground vehicle hitchance (probably not good)
+            mt =
+                NoMove; // Choose NoMove for a generic ground vehicle hitchance (probably not good)
         }
     }
     else if (targetPtr->BaseData()->IsUnit())
     {
-        UnitClassDataType *ud;
-        ud = (UnitClassDataType*) classPtr->dataPtr;
+        UnitClassDataType* ud;
+        ud = (UnitClassDataType*)classPtr->dataPtr;
         ShiAssert(ud);
         dam = ud->DamageMod;
 
@@ -91,8 +91,8 @@ void GroundClass::SelectWeapon(int gun_only)
     }
     else if (targetPtr->BaseData()->IsObjective())
     {
-        ObjClassDataType *od;
-        od = (ObjClassDataType*) classPtr->dataPtr;
+        ObjClassDataType* od;
+        od = (ObjClassDataType*)classPtr->dataPtr;
         ShiAssert(od);
         dam = od->DamageMod;
         mt = NoMove;
@@ -109,7 +109,8 @@ void GroundClass::SelectWeapon(int gun_only)
     dx = XPos() - targetPtr->BaseData()->XPos();
     dy = YPos() - targetPtr->BaseData()->YPos();
     dz = ZPos() - targetPtr->BaseData()->ZPos();
-    range = FloatToInt32((float)sqrt(dx * dx + dy * dy + dz * dz) * FT_TO_KM + 0.5F);
+    range = FloatToInt32((float)sqrt(dx * dx + dy * dy + dz * dz) * FT_TO_KM +
+                         0.5F);
     // 2002-03-09 MODIDIED BY S.G. Passed dz to the function so weapon
     // is chosen depending on its altitude capacity as well (dz is positive if we are below targetPtr)
     Sms->SelectBestWeapon(dam, mt, range, gun_only, (int)dz);

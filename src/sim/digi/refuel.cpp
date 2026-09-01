@@ -4,7 +4,7 @@
 #include "simveh.h"
 #include "flight.h"
 #include "camp2sim.h"
-#include "Aircrft.h"
+#include "aircrft.h"
 #include "msginc/radiochattermsg.h"
 #include "otwdrive.h"
 #include "tankbrn.h"
@@ -12,14 +12,14 @@
 #include "msginc/tankermsg.h"
 #include "airframe.h"
 #include "playerop.h"
-#include "PilotInputs.h"
-#include "Graphics/Include/matrix.h"
+#include "pilotinputs.h"
+#include "graphics/include/matrix.h"
 
 // #define FOLLOW_RATE 10.0F //-> externalised for each aircraft (auxaerodata)
 Objective FindNearestFriendlyRunway(Team who, GridIndex X, GridIndex Y);
 float get_air_speed(float, int);
 
-#include "Graphics/include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 
 extern bool g_bNewRefuelHelp;
 extern int g_nShowDebugLabels;
@@ -32,7 +32,7 @@ extern float SimLibLastMajorFrameTime;
 
 void DigitalBrain::AiRefuel(void)
 {
-    AircraftClass *tanker = NULL;
+    AircraftClass* tanker = NULL;
 
     //for now
     if (tankerId not_eq FalconNullId)
@@ -54,7 +54,8 @@ void DigitalBrain::AiRefuel(void)
 
             if (self->drawPointer)
                 rad = self->drawPointer->Radius();
-            else rad = 50;
+            else
+                rad = 50;
 
             ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);
 
@@ -63,96 +64,114 @@ void DigitalBrain::AiRefuel(void)
 
             switch (refuelstatus)
             {
-                default:
-                case refNoTanker:
-                case refWaiting:
-                    trackZ += rad * tnkposition;
+            default:
+            case refNoTanker:
+            case refWaiting:
+                trackZ += rad * tnkposition;
 
-                    if (tnkposition <= self->vehicleInUnit)
-                    {
-                        // Set track point 1.0NM ahead of desired location
-                        trackX += (-0.05F * NM_TO_FT + rad * tnkposition) * tanker->platformAngles.cossig;
-                        trackY += (-0.05F * NM_TO_FT + rad * tnkposition) * tanker->platformAngles.sinsig;
-                    }
-                    else
-                    {
-                        // Set track point 1.0NM ahead of desired location
-                        trackX += (-0.25F * NM_TO_FT + rad * tnkposition) * tanker->platformAngles.cossig;
-                        trackY += (-0.25F * NM_TO_FT + rad * tnkposition) * tanker->platformAngles.sinsig;
-                    }
+                if (tnkposition <= self->vehicleInUnit)
+                {
+                    // Set track point 1.0NM ahead of desired location
+                    trackX += (-0.05F * NM_TO_FT + rad * tnkposition) *
+                              tanker->platformAngles.cossig;
+                    trackY += (-0.05F * NM_TO_FT + rad * tnkposition) *
+                              tanker->platformAngles.sinsig;
+                }
+                else
+                {
+                    // Set track point 1.0NM ahead of desired location
+                    trackX += (-0.25F * NM_TO_FT + rad * tnkposition) *
+                              tanker->platformAngles.cossig;
+                    trackY += (-0.25F * NM_TO_FT + rad * tnkposition) *
+                              tanker->platformAngles.sinsig;
+                }
+
+                //offset trackpoint according to our position in line
+                trackX += 200.0F * -tanker->platformAngles.sinsig * tnkposition;
+                trackY += 200.0F * tanker->platformAngles.cossig * tnkposition;
+                break;
+
+            case refRefueling:
+                break;
+
+            case refDone:
+                trackZ += rad * tnkposition;
+
+                if (tnkposition >= 0)
+                {
+                    // Set track point 1.0NM ahead of desired location
+                    trackX += (-0.05F * NM_TO_FT + rad * tnkposition) *
+                              tanker->platformAngles.cossig;
+                    trackY += (-0.05F * NM_TO_FT + rad * tnkposition) *
+                              tanker->platformAngles.sinsig;
 
                     //offset trackpoint according to our position in line
-                    trackX += 200.0F * -tanker->platformAngles.sinsig * tnkposition;
-                    trackY += 200.0F * tanker->platformAngles.cossig * tnkposition;
-                    break;
+                    trackX -= 200.0F * -tanker->platformAngles.sinsig *
+                              (4 - tnkposition);
+                    trackY -= 200.0F * tanker->platformAngles.cossig *
+                              (4 - tnkposition);
+                }
+                else
+                {
+                    dx = trackX - af->x;
+                    dy = trackY - af->y;
+                    dz = trackZ - af->z;
 
-                case refRefueling:
-                    break;
-
-                case refDone:
-                    trackZ += rad * tnkposition;
-
-                    if (tnkposition >= 0)
+                    if (dx * dx + dy * dy > 0.01 * NM_TO_FT * NM_TO_FT)
                     {
-                        // Set track point 1.0NM ahead of desired location
-                        trackX += (-0.05F * NM_TO_FT + rad * tnkposition) * tanker->platformAngles.cossig;
-                        trackY += (-0.05F * NM_TO_FT + rad * tnkposition) * tanker->platformAngles.sinsig;
+                        ClearATCFlag(NeedToRefuel);
+                        tankerId = FalconNullId;
 
-                        //offset trackpoint according to our position in line
-                        trackX -= 200.0F * -tanker->platformAngles.sinsig * (4 - tnkposition);
-                        trackY -= 200.0F * tanker->platformAngles.cossig * (4 - tnkposition);
+                        // 02DEC03 - FRB
+                        if (self->IsDigital())
+                        {
+                            self->af->ResetFuel();
+
+                            if (self->drawPointer)
+                            {
+                                ((DrawableBSP*)self->drawPointer)
+                                    ->SetSwitchMask(
+                                        13,
+                                        0); // 29NOV03 - FRB - Close refueling door/ Hide probe
+                                ((DrawableBSP*)self->drawPointer)
+                                    ->SetDOFangle(
+                                        41,
+                                        0); // 29NOV03 - FRB - Close refueling door/ Retract probe
+                            }
+                        }
+
+                        // end FRB
+                        Package package;
+                        Flight flight;
+
+                        flight = (Flight)self->GetCampaignObject();
+
+                        if (flight)
+                        {
+                            package = flight->GetUnitPackage();
+
+                            if (package)
+                            {
+                                tankerId = package->GetTanker();
+                            }
+                        }
                     }
                     else
                     {
-                        dx = trackX - af->x;
-                        dy = trackY - af->y;
-                        dz = trackZ - af->z;
+                        trackX -=
+                            0.5F * NM_TO_FT * tanker->platformAngles.cossig;
+                        trackY -=
+                            0.5F * NM_TO_FT * tanker->platformAngles.sinsig;
 
-                        if (dx * dx + dy * dy > 0.01 * NM_TO_FT * NM_TO_FT)
-                        {
-                            ClearATCFlag(NeedToRefuel);
-                            tankerId = FalconNullId;
-
-                            // 02DEC03 - FRB
-                            if (self->IsDigital())
-                            {
-                                self->af->ResetFuel();
-
-                                if (self->drawPointer)
-                                {
-                                    ((DrawableBSP*)self->drawPointer)->SetSwitchMask(13, 0);  // 29NOV03 - FRB - Close refueling door/ Hide probe
-                                    ((DrawableBSP*)self->drawPointer)->SetDOFangle(41, 0);  // 29NOV03 - FRB - Close refueling door/ Retract probe
-                                }
-                            }
-
-                            // end FRB
-                            Package package;
-                            Flight flight;
-
-                            flight = (Flight)self->GetCampaignObject();
-
-                            if (flight)
-                            {
-                                package = flight->GetUnitPackage();
-
-                                if (package)
-                                {
-                                    tankerId = package->GetTanker();
-                                }
-                            }
-                        }
-                        else
-                        {
-                            trackX -= 0.5F * NM_TO_FT * tanker->platformAngles.cossig;
-                            trackY -= 0.5F * NM_TO_FT * tanker->platformAngles.sinsig;
-
-                            //offset trackpoint according to our position in line
-                            trackX -= 200.0F * -tanker->platformAngles.sinsig * (4.0F - self->vehicleInUnit);
-                            trackY -= 200.0F * tanker->platformAngles.cossig * (4.0F - self->vehicleInUnit);
-                        }
+                        //offset trackpoint according to our position in line
+                        trackX -= 200.0F * -tanker->platformAngles.sinsig *
+                                  (4.0F - self->vehicleInUnit);
+                        trackY -= 200.0F * tanker->platformAngles.cossig *
+                                  (4.0F - self->vehicleInUnit);
                     }
+                }
 
-                    break;
+                break;
             }
 
             // Calculate relative positions
@@ -200,9 +219,9 @@ void DigitalBrain::AiRefuel(void)
                 af->z = trackZ;
             }
 
-            ShiAssert( not _isnan(af->x));
-            ShiAssert( not _isnan(af->y));
-            ShiAssert( not _isnan(af->z));
+            ShiAssert(not _isnan(af->x));
+            ShiAssert(not _isnan(af->y));
+            ShiAssert(not _isnan(af->z));
 
             // 12DEC03 - FRB - update distance to refueling position
             dx = trackX - af->x;
@@ -216,18 +235,22 @@ void DigitalBrain::AiRefuel(void)
 
             // 2002-03-28 MN Hack to make AI refueling working in each and every situation: if they are really close, just put them on the boom. Period ;-)
             // this also helps them in a tanker turn, which really can only do a human ;-)
-            if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling)
+            if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and
+                refuelstatus == refRefueling)
             {
                 // 26NOV03 - FRB - Get a more recent position
                 ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);
                 af->x = targetPos.x;
                 af->y = targetPos.y;
                 af->z = targetPos.z;
-                self->SetYPR(tanker->Yaw(), 0.0F, 0.0F); // change current heading to that of the tanker
+                self->SetYPR(
+                    tanker->Yaw(), 0.0F,
+                    0.0F); // change current heading to that of the tanker
 
-                if ( not ReadySet)
+                if (not ReadySet)
                 {
-                    ((TankerBrain*)tanker->Brain())->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
+                    ((TankerBrain*)tanker->Brain())
+                        ->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
                     ReadySet = 1;
                 }
             }
@@ -242,7 +265,8 @@ void DigitalBrain::AiRefuel(void)
 
             if (rx > deceldistance)
             {
-                rStick = SimpleTrackAzimuth(rx * 0.5F, ry, self->GetVt()) * 0.5F;
+                rStick =
+                    SimpleTrackAzimuth(rx * 0.5F, ry, self->GetVt()) * 0.5F;
                 pStick = SimpleTrackElevation(zft, 5000.0F);
                 // Set track point 1.0NM ahead of desired location
                 trackX += 1.0F * NM_TO_FT * tanker->platformAngles.cossig;
@@ -253,15 +277,26 @@ void DigitalBrain::AiRefuel(void)
             {
                 decelerating = true;
 
-                if ((self->drawPointer) and not ((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
+                if ((self->drawPointer) and
+                    not((DrawableBSP*)self->drawPointer)->GetDOFangle(41))
                 {
-                    ((DrawableBSP*)self->drawPointer)->SetSwitchMask(13, 1);  // 29NOV03 - FRB - Open refueling door/ Display probe
-                    ((DrawableBSP*)self->drawPointer)->SetDOFangle(41, self->af->GetRefuelAngle()*DTR);  // 29NOV03 - FRB - Open refueling door/ Extend probe
+                    ((DrawableBSP*)self->drawPointer)
+                        ->SetSwitchMask(
+                            13,
+                            1); // 29NOV03 - FRB - Open refueling door/ Display probe
+                    ((DrawableBSP*)self->drawPointer)
+                        ->SetDOFangle(
+                            41,
+                            self->af->GetRefuelAngle() *
+                                DTR); // 29NOV03 - FRB - Open refueling door/ Extend probe
                 }
 
                 // MN we want to close our trackpoint with the tankers location, so reduce trackpoint distance by distance to tanker
                 a = rx / deceldistance + 0.25f;
-                a = min(1.0f, max(0.45f, a)); // minimum distance of trackpoint = 0.45nm in front of the tanker
+                a = min(
+                    1.0f,
+                    max(0.45f,
+                        a)); // minimum distance of trackpoint = 0.45nm in front of the tanker
                 trackX += a * NM_TO_FT * tanker->platformAngles.cossig;
                 trackY += a * NM_TO_FT * tanker->platformAngles.sinsig;
                 CalculateRelativePos(&xft, &yft, &zft, &rx, &ry, &rz);
@@ -313,12 +348,16 @@ void DigitalBrain::AiRefuel(void)
             followWVector.y = fy;
             followWVector.z = fz;
 
-            MatrixMultTranspose(&((DrawableBSP*)self->drawPointer)->orientation, &followWVector, &followVector);
+            MatrixMultTranspose(&((DrawableBSP*)self->drawPointer)->orientation,
+                                &followWVector, &followVector);
 
-            desiredClosure = 200.0F * rx / (af->GetDesiredClosureFactor() * NM_TO_FT) - 200.0F;
+            desiredClosure =
+                200.0F * rx / (af->GetDesiredClosureFactor() * NM_TO_FT) -
+                200.0F;
 
             // get actual closure
-            actualClosure = - (rx - velocitySlope + followVector.x) / SimLibLastMajorFrameTime;
+            actualClosure = -(rx - velocitySlope + followVector.x) /
+                            SimLibLastMajorFrameTime;
 
             float eProp, thr;
             eProp = desiredClosure - actualClosure;
@@ -365,16 +404,22 @@ void DigitalBrain::AiRefuel(void)
 
             if (fabs(eProp) < 200.0F)
             {
-                if (refuelstatus == refRefueling)//af->IsSet(AirframeClass::Refueling))
+                if (refuelstatus ==
+                    refRefueling) //af->IsSet(AirframeClass::Refueling))
                 {
-                    SimpleTrack(SimpleTrackSpd, tanker->TBrain()->GetDesSpeed()); // track the exact tanker speed
+                    SimpleTrack(
+                        SimpleTrackSpd,
+                        tanker->TBrain()
+                            ->GetDesSpeed()); // track the exact tanker speed
 
                     if (tanker->af->vcas > af->vcas + 10.0f)
-                        thr += 0.15f; // speed somewhat up, we're at least 10 knots behind tanker speed
+                        thr +=
+                            0.15f; // speed somewhat up, we're at least 10 knots behind tanker speed
                     else if (tanker->af->vcas > af->vcas + 5.0f)
                         thr += 0.1f; // speed a bit up, we're falling behind
                     else if (af->vcas > tanker->af->vcas + 10.0f)
-                        thr -= 0.15f; // we're at least 10 knots too fast, go even slower
+                        thr -=
+                            0.15f; // we're at least 10 knots too fast, go even slower
                     else if (af->vcas > tanker->af->vcas + 5.0f)
                         thr -= 0.1f; // we're a bit too fast, go slower
                 }
@@ -398,15 +443,20 @@ void DigitalBrain::AiRefuel(void)
                 char tmpchr[32];
 
                 if (decelerating)
-                    sprintf(tmpchr, "D %3.2f %5.1f %6.1f", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
+                    sprintf(tmpchr, "D %3.2f %5.1f %6.1f", af->vcas, oldrx,
+                            af->Fuel() + af->ExternalFuel());
                 else
-                    sprintf(tmpchr, "%3.2f %5.1f %6.1f", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
+                    sprintf(tmpchr, "%3.2f %5.1f %6.1f", af->vcas, oldrx,
+                            af->Fuel() + af->ExternalFuel());
 
                 if (tractor)
                     strcat(tmpchr, " TRCT");
 
                 if (self->drawPointer)
-                    ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());
+                    ((DrawableBSP*)self->drawPointer)
+                        ->SetLabel(
+                            tmpchr,
+                            ((DrawableBSP*)self->drawPointer)->LabelColor());
             }
 
             if (g_nShowDebugLabels bitand 0x20000)
@@ -425,7 +475,10 @@ void DigitalBrain::AiRefuel(void)
                 sprintf(tmpchr, "dX %3.4f dY %3.4f dZ %3.4f", fx, fy, fz);
 
                 if (self->drawPointer)
-                    ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());
+                    ((DrawableBSP*)self->drawPointer)
+                        ->SetLabel(
+                            tmpchr,
+                            ((DrawableBSP*)self->drawPointer)->LabelColor());
             }
 
 
@@ -449,7 +502,7 @@ void DigitalBrain::AiRefuel(void)
 //////////////////////////////////////
 //HelpRefuel
 
-void DigitalBrain::HelpRefuel(AircraftClass *tanker)
+void DigitalBrain::HelpRefuel(AircraftClass* tanker)
 {
 
     float desiredClosure, actualClosure;
@@ -511,9 +564,9 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         }
     }
 
-    ShiAssert( not _isnan(af->x));
-    ShiAssert( not _isnan(af->y));
-    ShiAssert( not _isnan(af->z));
+    ShiAssert(not _isnan(af->x));
+    ShiAssert(not _isnan(af->y));
+    ShiAssert(not _isnan(af->z));
 
     refuelMode = PlayerOptions.GetRefuelingMode() - 1;
 
@@ -521,11 +574,14 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
     // 2002-02-28 MN refuel fixes, help the player somewhat more. Simplistic = full AI control
 #ifndef DEBUG
 
-    if (dist < refuelMode * 100.0F and 
-        fabs(tanker->Yaw() - self->Yaw()) < 3.0F * DTR * refuelMode and 
-        fabs(tanker->GetVt() - self->GetVt())*FTPSEC_TO_KNOTS < (5.0F + 45.0F * (refuelMode /* S.G. NO refuelMode is ALREADY -1 - 1 */)) and 
-        fabs(self->Pitch()*DTR) < 8.0F * refuelMode and 
-        fabs(self->Roll()*DTR) < 8.0F * refuelMode)
+    if (dist < refuelMode * 100.0F and
+        fabs(tanker->Yaw() - self->Yaw()) < 3.0F * DTR * refuelMode and
+        fabs(tanker->GetVt() - self->GetVt()) * FTPSEC_TO_KNOTS <
+            (5.0F +
+             45.0F *
+                 (refuelMode /* S.G. NO refuelMode is ALREADY -1 - 1 */)) and
+        fabs(self->Pitch() * DTR) < 8.0F * refuelMode and
+        fabs(self->Roll() * DTR) < 8.0F * refuelMode)
 #endif
     {
         //when helping we'll use simple mode, as it is the only practical way to fly formation
@@ -540,9 +596,12 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
         dist = max(dist, 0.001F);
 
-        fx = dx / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
-        fy = dy / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
-        fz = dz / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime * (refuelMode + 1);
+        fx = dx / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime *
+             (refuelMode + 1);
+        fy = dy / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime *
+             (refuelMode + 1);
+        fz = dz / dist * af->GetRefuelFollowRate() * SimLibLastMajorFrameTime *
+             (refuelMode + 1);
 
         if (fabs(dx) > fabs(fx))
             af->x = af->x + fx;
@@ -571,25 +630,30 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         float a, oldrx, deceldistance;
         bool decelerating = false;
 
-        ShiAssert( not _isnan(af->x));
-        ShiAssert( not _isnan(af->y));
-        ShiAssert( not _isnan(af->z));
+        ShiAssert(not _isnan(af->x));
+        ShiAssert(not _isnan(af->y));
+        ShiAssert(not _isnan(af->z));
 
         // 2002-03-28 MN Hack to make full AI refueling control working in each and every situation:
         // if we are really close, just put us on the boom. Period ;-)
-        if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and refuelstatus == refRefueling and 
-            (PlayerOptions.GetRefuelingMode() == ARSimplistic or PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling)))
+        if (dist < af->GetAIBoomDistance() and g_bPutAIToBoom and
+            refuelstatus == refRefueling and
+            (PlayerOptions.GetRefuelingMode() == ARSimplistic or
+             PlayerOptions.GetRefuelingMode() == ARModerated and
+                 af->IsSet(AirframeClass::Refueling)))
         {
             // 26NOV03 - FRB - Get a more recent position
             ((TankerBrain*)tanker->Brain())->OptTankingPosition(&targetPos);
             af->x = targetPos.x;
             af->y = targetPos.y;
             af->z = targetPos.z;
-            self->SetYPR(tanker->Yaw(), 0.0F, 0.0F); // change current heading to that of the tanker
+            self->SetYPR(tanker->Yaw(), 0.0F,
+                         0.0F); // change current heading to that of the tanker
 
-            if ( not ReadySet)
+            if (not ReadySet)
             {
-                ((TankerBrain*)tanker->Brain())->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
+                ((TankerBrain*)tanker->Brain())
+                    ->AIReady(); // 28NOV03 - FRB - tell th tanker I'm in position
                 ReadySet = 1;
             }
         }
@@ -615,7 +679,10 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
             // MN we want to close our trackpoint with the tankers location, so reduce trackpoint distance by distance to tanker
             a = rx / deceldistance + 0.1f;
-            a = min(1.0f, max(0.35f, a)); // minimum distance of trackpoint = 0.35nm in front of the tanker
+            a = min(
+                1.0f,
+                max(0.35f,
+                    a)); // minimum distance of trackpoint = 0.35nm in front of the tanker
             trackX += a * NM_TO_FT * tanker->platformAngles.cossig;
             trackY += a * NM_TO_FT * tanker->platformAngles.sinsig;
             CalculateRelativePos(&xft, &yft, &zft, &rx, &ry, &rz);
@@ -668,14 +735,17 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         followWVector.y = fy;
         followWVector.z = fz;
 
-        MatrixMultTranspose(&((DrawableBSP*)self->drawPointer)->orientation, &followWVector, &followVector);
+        MatrixMultTranspose(&((DrawableBSP*)self->drawPointer)->orientation,
+                            &followWVector, &followVector);
 
-        desiredClosure = 200.0F * rx / (af->GetDesiredClosureFactor() * NM_TO_FT) - 200.0F;
+        desiredClosure =
+            200.0F * rx / (af->GetDesiredClosureFactor() * NM_TO_FT) - 200.0F;
 
         // get actual closure
-        actualClosure = - (rx - velocitySlope + followVector.x) / SimLibLastMajorFrameTime;
+        actualClosure =
+            -(rx - velocitySlope + followVector.x) / SimLibLastMajorFrameTime;
 
-        eProp  = desiredClosure - actualClosure;
+        eProp = desiredClosure - actualClosure;
 
         // 27NOV03 - FRB - Slow down to get behind tanker
         if (oldrx < 0.0F) // we're in front of the tanker...
@@ -725,16 +795,22 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
         // in position, if not, try to be faster
         if (fabs(eProp) < 200.0F)
         {
-            if (refuelstatus == refRefueling)//af->IsSet(AirframeClass::Refueling))
+            if (refuelstatus ==
+                refRefueling) //af->IsSet(AirframeClass::Refueling))
             {
-                SimpleTrack(SimpleTrackSpd, tanker->TBrain()->GetDesSpeed()); // track the exact tanker speed
+                SimpleTrack(
+                    SimpleTrackSpd,
+                    tanker->TBrain()
+                        ->GetDesSpeed()); // track the exact tanker speed
 
                 if (tanker->af->vcas > af->vcas + 10.0f)
-                    throtl += 0.15f; // speed somewhat up, we're at least 10 knots behind tanker speed
+                    throtl +=
+                        0.15f; // speed somewhat up, we're at least 10 knots behind tanker speed
                 else if (tanker->af->vcas > af->vcas + 5.0f)
                     throtl += 0.1f; // speed a bit up, we're falling behind
                 else if (af->vcas > tanker->af->vcas + 10.0f)
-                    throtl -= 0.15f; // we're at least 10 knots too fast, go even slower
+                    throtl -=
+                        0.15f; // we're at least 10 knots too fast, go even slower
                 else if (af->vcas > tanker->af->vcas + 5.0f)
                     throtl -= 0.1f; // we're a bit too fast, go slower
             }
@@ -758,41 +834,54 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
             char tmpchr[32];
 
             if (decelerating)
-                sprintf(tmpchr, "D %3.2f %5.1f %6.1", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
+                sprintf(tmpchr, "D %3.2f %5.1f %6.1", af->vcas, oldrx,
+                        af->Fuel() + af->ExternalFuel());
             else
-                sprintf(tmpchr, "%3.2f %5.1f %6.1", af->vcas, oldrx, af->Fuel() + af->ExternalFuel());
+                sprintf(tmpchr, "%3.2f %5.1f %6.1", af->vcas, oldrx,
+                        af->Fuel() + af->ExternalFuel());
 
             if (self->drawPointer)
-                ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());
+                ((DrawableBSP*)self->drawPointer)
+                    ->SetLabel(tmpchr,
+                               ((DrawableBSP*)self->drawPointer)->LabelColor());
         }
 
 
         if (g_bNewRefuelHelp)
         {
             // 2002-03-06 MN in moderated mode (Simplified), once we're stuck to the boom, no stick input needed anymore
-            if (PlayerOptions.GetRefuelingMode() == ARModerated and not af->IsSet(AirframeClass::Refueling))
+            if (PlayerOptions.GetRefuelingMode() == ARModerated and
+                not af->IsSet(AirframeClass::Refueling))
             {
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.3F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.3F + rStick;
-                af->ypedal = (UserStickInputs.rudder);  // yPedal is not modified by this function
-                af->throtl = (UserStickInputs.throttle - throtl) * 0.6F + throtl;
+                af->ypedal =
+                    (UserStickInputs
+                         .rudder); // yPedal is not modified by this function
+                af->throtl =
+                    (UserStickInputs.throttle - throtl) * 0.6F + throtl;
             }
             // Easy means no player input needed at all, also in Simplified when connected to the boom
             else if (PlayerOptions.GetRefuelingMode() == ARSimplistic or
-                     PlayerOptions.GetRefuelingMode() == ARModerated and af->IsSet(AirframeClass::Refueling))
+                     PlayerOptions.GetRefuelingMode() == ARModerated and
+                         af->IsSet(AirframeClass::Refueling))
             {
-                af->pstick =  pStick;
-                af->rstick =  rStick;
-                af->ypedal = (UserStickInputs.rudder);  // yPedal is not modified by this function
-                af->throtl = (UserStickInputs.throttle - throtl) * 0.7F + throtl;
+                af->pstick = pStick;
+                af->rstick = rStick;
+                af->ypedal =
+                    (UserStickInputs
+                         .rudder); // yPedal is not modified by this function
+                af->throtl =
+                    (UserStickInputs.throttle - throtl) * 0.7F + throtl;
             }
             else
-                // let's give realistic refueling also some help (realistic is just too hard in FF according to Keith Rosenkrantz)
+            // let's give realistic refueling also some help (realistic is just too hard in FF according to Keith Rosenkrantz)
             {
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.75F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.75F + rStick;
                 af->ypedal = (UserStickInputs.rudder);
-                af->throtl = (UserStickInputs.throttle - throtl) * 0.7F + throtl;
+                af->throtl =
+                    (UserStickInputs.throttle - throtl) * 0.7F + throtl;
             }
         }
         else
@@ -802,19 +891,20 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.6F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.6F + rStick;
                 af->ypedal = (UserStickInputs.rudder);
-                af->throtl = (UserStickInputs.throttle - throtl) * 0.7F + throtl;
+                af->throtl =
+                    (UserStickInputs.throttle - throtl) * 0.7F + throtl;
             }
             else if (PlayerOptions.GetRefuelingMode() == ARSimplistic)
             {
                 af->pstick = (UserStickInputs.pstick - pStick) * 0.3F + pStick;
                 af->rstick = (UserStickInputs.rstick - rStick) * 0.3F + rStick;
                 af->ypedal = (UserStickInputs.rudder);
-                af->throtl = (UserStickInputs.throttle - throtl) * 0.6F + throtl;
+                af->throtl =
+                    (UserStickInputs.throttle - throtl) * 0.6F + throtl;
             }
         }
 
         af->throtl = max(0.0F, min(af->throtl, 1.5F));
-
     }
 }
 
@@ -823,7 +913,7 @@ void DigitalBrain::HelpRefuel(AircraftClass *tanker)
 
 void DigitalBrain::StartRefueling(void)
 {
-    VuEntity *theTanker = NULL;
+    VuEntity* theTanker = NULL;
 
     theTanker = vuDatabase->Find(tankerId);
 
@@ -849,8 +939,14 @@ void DigitalBrain::DoneRefueling(void)
 
         if (self->drawPointer)
         {
-            ((DrawableBSP*)self->drawPointer)->SetSwitchMask(13, 0);  // 29NOV03 - FRB - Open refueling door/ Display probe
-            ((DrawableBSP*)self->drawPointer)->SetDOFangle(41, 0);  // 29NOV03 - FRB - Close refueling door/ Retract probe
+            ((DrawableBSP*)self->drawPointer)
+                ->SetSwitchMask(
+                    13,
+                    0); // 29NOV03 - FRB - Open refueling door/ Display probe
+            ((DrawableBSP*)self->drawPointer)
+                ->SetDOFangle(
+                    41,
+                    0); // 29NOV03 - FRB - Close refueling door/ Retract probe
         }
     }
 
@@ -879,29 +975,30 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
     {
         switch (state)
         {
-            case SaidJoker:
-                rangeAvail = 100.0F * NM_TO_FT;
-                break;
+        case SaidJoker:
+            rangeAvail = 100.0F * NM_TO_FT;
+            break;
 
-            case SaidBingo:
-                rangeAvail =  65.0F * NM_TO_FT;
-                break;
+        case SaidBingo:
+            rangeAvail = 65.0F * NM_TO_FT;
+            break;
 
-            case SaidFumes:
-                rangeAvail =  25.0F * NM_TO_FT;
-                break;
+        case SaidFumes:
+            rangeAvail = 25.0F * NM_TO_FT;
+            break;
 
-            case SaidFlameout:
-                rangeAvail = 0.0F;
-                break;
+        case SaidFlameout:
+            rangeAvail = 0.0F;
+            break;
 
-            default:
-                rangeAvail = 50.0F * NM_TO_FT;
-                break;
+        default:
+            rangeAvail = 50.0F * NM_TO_FT;
+            break;
         }
 
         // Look for tanker w/in range
-        tankerFlight = ((FlightClass*)self->GetCampaignObject())->GetTankerFlight();
+        tankerFlight =
+            ((FlightClass*)self->GetCampaignObject())->GetTankerFlight();
 
         if (tankerFlight)
         {
@@ -923,10 +1020,8 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
                 yPos = tankerFlight->YPos();
                 zPos = tankerFlight->ZPos();
 
-                if (
-                    fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail and 
-                    fabs(self->YPos() - tankerFlight->YPos()) < rangeAvail
-                )
+                if (fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail and
+                    fabs(self->YPos() - tankerFlight->YPos()) < rangeAvail)
                 {
                     self->curWaypoint = tmpWaypoint;
                     SetWaypointSpecificStuff();
@@ -937,7 +1032,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
         }
 
         // Check alternate field
-        if ( not foundSomething)
+        if (not foundSomething)
         {
             // Find the alternate field
             tmpWaypoint = self->waypoint;
@@ -957,7 +1052,7 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
             {
                 tmpWaypoint->GetLocation(&xPos, &yPos, &zPos);
 
-                if (fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail and 
+                if (fabs(self->XPos() - tankerFlight->XPos()) < rangeAvail and
                     fabs(self->YPos() - tankerFlight->YPos()) < rangeAvail)
                 {
                     self->curWaypoint = tmpWaypoint;
@@ -969,20 +1064,23 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
         }
 
         // Find nearest ?
-        if ( not foundSomething)
+        if (not foundSomething)
         {
             ObjectiveClass* nearest = FindNearestFriendlyRunway(
-                                          self->GetTeam(), SimToGrid(self->XPos()), SimToGrid(self->YPos())
-                                      );
+                self->GetTeam(), SimToGrid(self->XPos()),
+                SimToGrid(self->YPos()));
 
             // Head for it in any case, it's our best bet
             if (nearest)
             {
                 newWaypoint = new WayPointClass;
-                newWaypoint->SetLocation(nearest->XPos(), nearest->YPos(), -20000);
+                newWaypoint->SetLocation(nearest->XPos(), nearest->YPos(),
+                                         -20000);
                 time = SimLibElapsedTime;
-                time += FloatToInt32((Distance(self->XPos(), self->YPos(), nearest->XPos(), nearest->YPos())) /
-                                     get_air_speed(300.0F, 20000) * 1000.0F);
+                time +=
+                    FloatToInt32((Distance(self->XPos(), self->YPos(),
+                                           nearest->XPos(), nearest->YPos())) /
+                                 get_air_speed(300.0F, 20000) * 1000.0F);
 
                 newWaypoint->SetWPArrive(time);
                 newWaypoint->SetWPDepartTime(time);
@@ -996,15 +1094,15 @@ void DigitalBrain::FlightMemberWantsFuel(int state)
                     // Is this waypoint close to one we have?
                     tmpWaypoint->GetLocation(&xPos, &yPos, &zPos);
 
-                    if (tmpWaypoint->GetWPAction() == WP_LAND and 
-                        fabs(nearest->XPos() - xPos) < 2.0F * NM_TO_FT and 
+                    if (tmpWaypoint->GetWPAction() == WP_LAND and
+                        fabs(nearest->XPos() - xPos) < 2.0F * NM_TO_FT and
                         fabs(nearest->YPos() - yPos) < 2.0F * NM_TO_FT)
                     {
                         foundSomething = TRUE;
                         break;
                     }
 
-                    if ( not tmpWaypoint->GetNextWP())
+                    if (not tmpWaypoint->GetNextWP())
                     {
                         break;
                     }

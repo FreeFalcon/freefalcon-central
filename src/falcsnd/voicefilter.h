@@ -1,7 +1,7 @@
 #ifndef _VOICE_FILTER_H_
 #define _VOICE_FILTER_H_
 
-#include "FileMemMap.h"
+#include "filememmap.h"
 
 #define SLOT_IN_USE 1
 #define VOICE_INITIALIZE -1
@@ -76,14 +76,15 @@ typedef struct
 {
     short fragHdrNbr;
     short totalSpeakers;
-    long fragOffset;
+    int fragOffset; // on-disk 32-bit field: must be int, not long. long is 8 bytes on LP64 (Linux) and
+    // would shift the mmap'd layout so fragOffset/record-stride are misread (LP64 bug).
 } FRAG_FILE_INFO;
 
 typedef struct
 {
     short evalHdrNbr;
     short numEvals;
-    long evalOffset;
+    int evalOffset; // on-disk 32-bit field: int, not long (see FRAG_FILE_INFO -- LP64 layout).
 } EVAL_FILE_INFO;
 
 typedef struct
@@ -113,9 +114,20 @@ typedef struct
     short bullseye;
     unsigned char totalElements;
     unsigned char totalEvals;
-    long commOffset;
+    int commOffset; // on-disk 32-bit field: int, not long. With long (8 bytes on LP64) the record grows
+    // 14->18 bytes and commOffset reads garbage -> GetCommInd() returns NULL -> crash in
+    // PlayRadioMessage on the first radio chatter. The .bin files store a 4-byte offset.
 } COMM_FILE_INFO;
 #pragma pack()
+
+// The frag/eval/comm .bin files are memory-mapped and overlaid with the structs above, so their sizes must
+// match the on-disk (32-bit, Win32-authored) layout on every platform. Lock it at compile time.
+static_assert(sizeof(COMM_FILE_INFO) == 14,
+              "COMM_FILE_INFO must stay 14 bytes to match commFile.bin");
+static_assert(sizeof(FRAG_FILE_INFO) == 8,
+              "FRAG_FILE_INFO must stay 8 bytes to match fragFile.bin");
+static_assert(sizeof(EVAL_FILE_INFO) == 8,
+              "EVAL_FILE_INFO must stay 8 bytes to match evalFile.bin");
 
 typedef struct
 {
@@ -134,6 +146,7 @@ class FragFile : public FileMemMap
 {
     int maxfrags;
     int maxvoices;
+
 public:
     FragFile() : maxfrags(-1), maxvoices(-1) {};
     void Initialise()
@@ -152,17 +165,20 @@ public:
     };
     FRAG_FILE_INFO *GetFragInfo(int fragid)
     {
-        return (FRAG_FILE_INFO*)GetData(sizeof(FRAG_FILE_INFO) * fragid, sizeof(FRAG_FILE_INFO));
+        return (FRAG_FILE_INFO *)GetData(sizeof(FRAG_FILE_INFO) * fragid,
+                                         sizeof(FRAG_FILE_INFO));
     };
     SPEAKER_TO_FILE *GetSpeaker(FRAG_FILE_INFO *ff)
     {
-        return (SPEAKER_TO_FILE *)GetData(ff->fragOffset, sizeof(SPEAKER_TO_FILE) * ff->totalSpeakers);
+        return (SPEAKER_TO_FILE *)GetData(
+            ff->fragOffset, sizeof(SPEAKER_TO_FILE) * ff->totalSpeakers);
     };
 };
 
 class EvalFile : public FileMemMap
 {
     int maxevals;
+
 public:
     EvalFile() : maxevals(-1) {};
     void Initialise()
@@ -176,23 +192,26 @@ public:
     };
     EVAL_FILE_INFO *GetEval(int eindex)
     {
-        return (EVAL_FILE_INFO*)GetData(eindex * sizeof(EVAL_FILE_INFO), sizeof(EVAL_FILE_INFO));
+        return (EVAL_FILE_INFO *)GetData(eindex * sizeof(EVAL_FILE_INFO),
+                                         sizeof(EVAL_FILE_INFO));
     };
     EVAL_ELEM *GetEvalElem(EVAL_FILE_INFO *efi)
     {
-        return (EVAL_ELEM*) GetData(efi->evalOffset, sizeof(EVAL_ELEM) * efi->numEvals);
+        return (EVAL_ELEM *)GetData(efi->evalOffset,
+                                    sizeof(EVAL_ELEM) * efi->numEvals);
     };
 };
 
 class CommFile : public FileMemMap
 {
     int maxcomms;
+
 public:
     CommFile() : maxcomms(-1) {};
     void Initialise()
     {
         COMM_FILE_INFO *c0 = GetComm(0);
-        maxcomms = c0->commOffset / sizeof * c0;
+        maxcomms = c0->commOffset / sizeof *c0;
     };
     int MaxComms()
     {
@@ -200,20 +219,23 @@ public:
     };
     COMM_FILE_INFO *GetComm(int commid)
     {
-        return (COMM_FILE_INFO*)GetData(commid * sizeof(COMM_FILE_INFO), sizeof(COMM_FILE_INFO));
+        return (COMM_FILE_INFO *)GetData(commid * sizeof(COMM_FILE_INFO),
+                                         sizeof(COMM_FILE_INFO));
     };
     int GetWarp(int commid)
     {
         COMM_FILE_INFO *cp = GetComm(commid);
         ShiAssert(cp not_eq NULL);
 
-        if (cp) return cp->warp;
+        if (cp)
+            return cp->warp;
 
         return 0;
     };
     short *GetCommInd(COMM_FILE_INFO *cid)
     {
-        return (short *)GetData(cid->commOffset, sizeof(short) * cid->totalElements);
+        return (short *)GetData(cid->commOffset,
+                                sizeof(short) * cid->totalElements);
     };
 };
 
@@ -235,8 +257,13 @@ public:
     void SilenceVoices();
     void SetUpVoiceFilter(void);
     void CleanUpVoiceFilter(void);
-    void PlayRadioMessage(char talker, short msgid, short *data = NULL, VU_TIME playTime = vuxGameTime, char radiofilter = TO_TEAM, char channel = 0, VU_ID from = FalconNullId, int evalby = EVAL_BY_VALUE, VU_ID to = FalconNullId);
-    char CanUserHearThisMessage(const char radiofilter, const VU_ID, const VU_ID); // Retro 21Dec2003
+    void PlayRadioMessage(char talker, short msgid, short *data = NULL,
+                          VU_TIME playTime = vuxGameTime,
+                          char radiofilter = TO_TEAM, char channel = 0,
+                          VU_ID from = FalconNullId, int evalby = EVAL_BY_VALUE,
+                          VU_ID to = FalconNullId);
+    char CanUserHearThisMessage(const char radiofilter, const VU_ID,
+                                const VU_ID); // Retro 21Dec2003
     int GetBullseyeComm(int *mesgID, short *data);
     int GetWarp(int mesgID);
     short IndexElement(short evalHdrNumber, short evalElement);
@@ -270,7 +297,8 @@ private:
     friend void IncDecFragToPlay(int delta);
     friend void PlayRandomMessage(int channel);
     friend int PlayToolMessage(HWND hwnd);
-    friend LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam);
+    friend LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message,
+                                           WPARAM wParam, LPARAM lParam);
     friend int InitSoundManager(HWND hWnd, int, char *falconDataDir);
 };
 #endif

@@ -114,7 +114,8 @@ void ICPClass::ExecCOMM1Mode(void)
     else
     {
         //Line1
-        FillDEDMatrix(0, 10, "UHF  BOTH"); // MD -- 20031121: oops, fixed UFH typo
+        FillDEDMatrix(0, 10,
+                      "UHF  BOTH"); // MD -- 20031121: oops, fixed UFH typo
         //Line2
         sprintf(tempstr, "%d", CommChannel);
         FillDEDMatrix(1, 9, tempstr);
@@ -276,7 +277,7 @@ void ICPClass::ExecCOMM2Mode(void)
 }
 void ICPClass::PNUpdateCOMMMode(int button, int)
 {
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI Original Code
         if (button == PREV_BUTTON)
@@ -338,6 +339,4 @@ void ICPClass::PNUpdateCOMMMode(int button, int)
 }
 void ICPClass::ENTRUpdateCOMMMode()
 {
-
 }
-

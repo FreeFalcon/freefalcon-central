@@ -22,7 +22,8 @@ VuAssociationFilter::VuAssociationFilter(VU_ID association) : VuFilter()
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuAssociationFilter::VuAssociationFilter(VuAssociationFilter* other) : VuFilter(other)
+VuAssociationFilter::VuAssociationFilter(VuAssociationFilter* other)
+    : VuFilter(other)
 {
     if (other)
     {
@@ -45,7 +46,8 @@ VuAssociationFilter::~VuAssociationFilter()
 
 VU_BOOL VuAssociationFilter::Test(VuEntity* ent)
 {
-    return static_cast<VU_BOOL>((ent->Association() == association_) ? TRUE : FALSE);
+    return static_cast<VU_BOOL>((ent->Association() == association_) ? TRUE :
+                                                                       FALSE);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -61,7 +63,7 @@ int VuAssociationFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuFilter *VuAssociationFilter::Copy()
+VuFilter* VuAssociationFilter::Copy()
 {
     return new VuAssociationFilter(this);
 }

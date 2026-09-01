@@ -9,15 +9,16 @@
 #include "unit.h"
 #include "objectiv.h"
 #include "team.h"
-#include "CampList.h"
-#include "Manager.h"
-#include "Division.h"
-#include "GtmObj.h"
-#include "GndUnit.h"
+#include "camplist.h"
+#include "manager.h"
+#include "division.h"
+#include "gtmobj.h"
+#include "gndunit.h"
 
 struct GroundDoctrineType
 {
-    uchar stance[NUM_COUNS]; // Our air stance towards them: allied/friendly/neutral/alert/hostile/war
+    uchar stance
+        [NUM_COUNS]; // Our air stance towards them: allied/friendly/neutral/alert/hostile/war
     uchar loss_ratio; // Acceptable loss ratio
     uchar loss_score; // Score loss for each friendly air loss
 };
@@ -28,8 +29,10 @@ private:
 public:
     short flags;
     // These don't need to be transmitted
-    GODNode objList[GORD_LAST]; // Sorted lists of objectives we want to assign to
-    USNode canidateList[GORD_LAST]; // List of all possible canidate units for each order
+    GODNode
+        objList[GORD_LAST]; // Sorted lists of objectives we want to assign to
+    USNode canidateList
+        [GORD_LAST]; // List of all possible canidate units for each order
     short topPriority; // Highest PO priority (for scaling)
     short priorityObj; // CampID of highest priority objective
 public:
@@ -68,13 +71,13 @@ public:
     void FinalizeOrders(void);
 
     // core functions
-    void SendGTMMessage(VU_ID from, short message, short data1, short data2, VU_ID data3);
+    void SendGTMMessage(VU_ID from, short message, short data1, short data2,
+                        VU_ID data3);
 
     // Private message handling functions (Called by Process())
     void RequestSupport(VU_ID enemy, int division);
     void RequestEngineer(Objective o, int division);
     void RequestAirDefense(Objective o, int division);
-
 };
 
 typedef GroundTaskingManagerClass *GroundTaskingManager;
@@ -92,8 +95,8 @@ extern void DecodePrimaryObjectiveList(uchar *datahead, FalconEntity *fe);
 
 extern void SendPrimaryObjectiveList(uchar teammask);
 
-extern void SavePrimaryObjectiveList(char* scenario);
+extern void SavePrimaryObjectiveList(char *scenario);
 
-extern int LoadPrimaryObjectiveList(char* scenario);
+extern int LoadPrimaryObjectiveList(char *scenario);
 
 #endif

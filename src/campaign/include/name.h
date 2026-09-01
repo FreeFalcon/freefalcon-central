@@ -16,11 +16,11 @@ extern int SaveNames(char* filename);
 
 extern void FreeNames(void);
 
-extern _TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len);
+extern _TCHAR* ReadNameString(int sid, _TCHAR* wstr, unsigned int len);
 
-extern int AddName(_TCHAR *name);
+extern int AddName(_TCHAR* name);
 
-extern int SetName(int nameid, _TCHAR *name);
+extern int SetName(int nameid, _TCHAR* name);
 
 extern int FindName(_TCHAR* name);
 

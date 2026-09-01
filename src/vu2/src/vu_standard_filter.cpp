@@ -13,7 +13,8 @@
 // VuStandardFilter
 //-----------------------------------------------------------------------------
 
-VuStandardFilter::VuStandardFilter(VuFlagBits mask, VU_TRI_STATE localSession) : VuFilter()
+VuStandardFilter::VuStandardFilter(VuFlagBits mask, VU_TRI_STATE localSession)
+    : VuFilter()
 {
     localSession_ = localSession;
     idmask_.breakdown_ = mask;
@@ -23,7 +24,8 @@ VuStandardFilter::VuStandardFilter(VuFlagBits mask, VU_TRI_STATE localSession) :
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuStandardFilter::VuStandardFilter(ushort mask, VU_TRI_STATE localSession) : VuFilter()
+VuStandardFilter::VuStandardFilter(ushort mask, VU_TRI_STATE localSession)
+    : VuFilter()
 {
     localSession_ = localSession;
     idmask_.val_ = mask;
@@ -61,7 +63,8 @@ VuStandardFilter::~VuStandardFilter()
 VU_BOOL
 VuStandardFilter::Notice(VuMessage* event)
 {
-    if ((localSession_ not_eq DONT_CARE) and ((event->Type() == VU_TRANSFER_EVENT)))
+    if ((localSession_ not_eq DONT_CARE) and
+        ((event->Type() == VU_TRANSFER_EVENT)))
     {
         return TRUE;
     }
@@ -75,15 +78,10 @@ VuStandardFilter::Notice(VuMessage* event)
 
 VU_BOOL VuStandardFilter::Test(VuEntity* ent)
 {
-    if
-    (
-        ((ushort)(ent->FlagValue()) bitand idmask_.val_) and 
-        (
-            (localSession_ == DONT_CARE) or
-            ((localSession_ == TRUE) and (ent->IsLocal())) or
-            ((localSession_ == FALSE) and ( not ent->IsLocal()))
-        )
-    )
+    if (((ushort)(ent->FlagValue()) bitand idmask_.val_) and
+        ((localSession_ == DONT_CARE) or
+         ((localSession_ == TRUE) and (ent->IsLocal())) or
+         ((localSession_ == FALSE) and (not ent->IsLocal()))))
     {
         return TRUE;
     }
@@ -106,7 +104,7 @@ int VuStandardFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-VuFilter *VuStandardFilter::Copy()
+VuFilter* VuStandardFilter::Copy()
 {
     return new VuStandardFilter(this);
 }

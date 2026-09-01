@@ -28,23 +28,21 @@
 
 ****************************************************************************/
 
-void surfaceGetPointer(LPVOID surface,
-                       SURFACEACCESS *sa)
+void surfaceGetPointer(LPVOID surface, SURFACEACCESS *sa)
 {
-    HRESULT        ddVal;
-    DDSURFACEDESC  ddsd;
+    HRESULT ddVal;
+    DDSURFACEDESC ddsd;
 
     ddsd.dwSize = sizeof(DDSURFACEDESC);
 
     while (TRUE)
     {
-        ddVal = IDirectDrawSurface_Lock((LPDIRECTDRAWSURFACE) surface,
-                                        NULL,
+        ddVal = IDirectDrawSurface_Lock((LPDIRECTDRAWSURFACE)surface, NULL,
                                         &ddsd, DDLOCK_SURFACEMEMORYPTR, NULL);
 
         if (ddVal == DDERR_SURFACELOST)
         {
-            IDirectDrawSurface_Restore((LPDIRECTDRAWSURFACE) surface);
+            IDirectDrawSurface_Restore((LPDIRECTDRAWSURFACE)surface);
         }
         else if (ddVal != DDERR_WASSTILLDRAWING)
             break;
@@ -67,11 +65,9 @@ void surfaceGetPointer(LPVOID surface,
 
 ****************************************************************************/
 
-void surfaceReleasePointer(LPVOID surface,
-                           SURFACEACCESS *sa)
+void surfaceReleasePointer(LPVOID surface, SURFACEACCESS *sa)
 {
-    IDirectDrawSurface_Unlock((LPDIRECTDRAWSURFACE) surface,
-                              sa->surfacePtr);
+    IDirectDrawSurface_Unlock((LPDIRECTDRAWSURFACE)surface, sa->surfacePtr);
 }
 
 /****************************************************************************
@@ -87,14 +83,12 @@ void surfaceReleasePointer(LPVOID surface,
 
 ****************************************************************************/
 
-void surfaceGetDescription(LPVOID surface,
-                           SURFACEDESCRIPTION *sd)
+void surfaceGetDescription(LPVOID surface, SURFACEDESCRIPTION *sd)
 {
-    DDSURFACEDESC  ddsd;
+    DDSURFACEDESC ddsd;
 
     ddsd.dwSize = sizeof(ddsd);
-    IDirectDrawSurface_GetSurfaceDesc((LPDIRECTDRAWSURFACE) surface,
-                                      &ddsd);
+    IDirectDrawSurface_GetSurfaceDesc((LPDIRECTDRAWSURFACE)surface, &ddsd);
 
     sd->dwWidth = ddsd.dwWidth;
     sd->dwHeight = ddsd.dwHeight;
@@ -122,20 +116,19 @@ void surfaceGetDescription(LPVOID surface,
 
 LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
 {
-    DDSURFACEDESC  ddsd;
-    LPVOID         surface;
-    HRESULT        ddVal;
+    DDSURFACEDESC ddsd;
+    LPVOID surface;
+    HRESULT ddVal;
 
     memset(&ddsd, 0, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
     ddsd.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-    ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN |
-                          DDSCAPS_SYSTEMMEMORY;
+    ddsd.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN | DDSCAPS_SYSTEMMEMORY;
     ddsd.dwWidth = dibWidth;
     ddsd.dwHeight = dibHeight;
 
-    ddVal = IDirectDraw_CreateSurface((LPDIRECTDRAW) ddPointer, &ddsd,
-                                      (LPDIRECTDRAWSURFACE *) &surface, NULL);
+    ddVal = IDirectDraw_CreateSurface((LPDIRECTDRAW)ddPointer, &ddsd,
+                                      (LPDIRECTDRAWSURFACE *)&surface, NULL);
 
     if (ddVal == DD_OK)
         return surface;
@@ -157,7 +150,7 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
 
 void surfaceRelease(LPVOID surface)
 {
-    IDirectDrawSurface_Release((LPDIRECTDRAWSURFACE) surface);
+    IDirectDrawSurface_Release((LPDIRECTDRAWSURFACE)surface);
 }
 
 /****************************************************************************
@@ -181,10 +174,10 @@ void surfaceRelease(LPVOID surface)
 int surfaceBlit(LPVOID dstSurface, int x, int y, LPVOID srcSurface,
                 int srcWidth, int srcHeight, int mode)
 {
-    int      dstHeight;
-    RECT     srcRectangle, dstRectangle;
-    DDBLTFX  ddbltfx;
-    HRESULT  ddVal;
+    int dstHeight;
+    RECT srcRectangle, dstRectangle;
+    DDBLTFX ddbltfx;
+    HRESULT ddVal;
 
     if (mode == BLIT_MODE_NORMAL)
         dstHeight = srcHeight;
@@ -204,9 +197,9 @@ int surfaceBlit(LPVOID dstSurface, int x, int y, LPVOID srcSurface,
     ddbltfx.dwSize = sizeof(ddbltfx);
     ddbltfx.dwROP = SRCCOPY;
 
-    ddVal = IDirectDrawSurface_Blt((LPDIRECTDRAWSURFACE) dstSurface,
-                                   &dstRectangle, (LPDIRECTDRAWSURFACE) srcSurface,
-                                   &srcRectangle, DDBLT_ROP, &ddbltfx);
+    ddVal = IDirectDrawSurface_Blt(
+        (LPDIRECTDRAWSURFACE)dstSurface, &dstRectangle,
+        (LPDIRECTDRAWSURFACE)srcSurface, &srcRectangle, DDBLT_ROP, &ddbltfx);
 
     if (ddVal == DD_OK)
         return 0;

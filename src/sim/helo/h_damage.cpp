@@ -1,26 +1,26 @@
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawpuff.h"
-#include "Graphics/Include/drawparticlesys.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawpuff.h"
+#include "graphics/include/drawparticlesys.h"
 #include "stdhdr.h"
 #include "falcmesg.h"
 #include "helo.h"
 #include "fsound.h"
 #include "soundfx.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/DeathMessage.h"
+#include "msginc/damagemsg.h"
+#include "msginc/deathmessage.h"
 #include "campbase.h"
 #include "simdrive.h"
 #include "hardpnt.h"
 #include "camp2sim.h"
 #include "digi.h"
-#include "MsgInc/WingmanMsg.h"
+#include "msginc/wingmanmsg.h"
 #include "airframe.h"
 #include "otwdrive.h"
 #include "sms.h"
 #include "sfx.h"
 #include "fakerand.h"
-#include "Sim/Include/Simstatc.h"
+#include "sim/include/simstatc.h"
 
 void CalcTransformMatrix(SimBaseClass* theObject);
 void DecomposeMatrix(Trotation* matrix, float* pitch, float* roll, float* yaw);
@@ -136,9 +136,9 @@ void HelicopterClass::InitDamageStation(void)
 void HelicopterClass::RunExplosion(void)
 {
     int i;
-    Tpoint    pos;
-    Falcon4EntityClassType *classPtr;
-    SimBaseClass *tmpSimBase;
+    Tpoint pos;
+    Falcon4EntityClassType* classPtr;
+    SimBaseClass* tmpSimBase;
     Tpoint tp = Origin;
     Trotation tr = IMatrix;
 
@@ -167,8 +167,7 @@ void HelicopterClass::RunExplosion(void)
          1.2f, // time to live
          100.0f ) ); // scale
          */
-        DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_EXPLOSION + 1),
-                                              &pos,
+        DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_EXPLOSION + 1), &pos,
                                               &PSvec);
     }
     else
@@ -180,8 +179,7 @@ void HelicopterClass::RunExplosion(void)
          2.0f, // time to live
          200.0f + 200 * PRANDFloatPos() ) ); // scale
          */
-        DrawableParticleSys::PS_AddParticleEx((SFX_AC_AIR_EXPLOSION + 1),
-                                              &pos,
+        DrawableParticleSys::PS_AddParticleEx((SFX_AC_AIR_EXPLOSION + 1), &pos,
                                               &PSvec);
     }
 
@@ -191,17 +189,18 @@ void HelicopterClass::RunExplosion(void)
     // Recoded by KCK on 6/23 to remove damage station BS
     for (i = 0; i < 4; i++)
     {
-        tmpSimBase = new SimStaticClass(Type());//SimBaseClass(Type());
+        tmpSimBase = new SimStaticClass(Type()); //SimBaseClass(Type());
         CalcTransformMatrix(tmpSimBase);
-        OTWDriver.CreateVisualObject(tmpSimBase, classPtr->visType[i + 2], &tp, &tr, OTWDriver.Scale());
+        OTWDriver.CreateVisualObject(tmpSimBase, classPtr->visType[i + 2], &tp,
+                                     &tr, OTWDriver.Scale());
         tmpSimBase->SetPosition(pos.x, pos.y, pos.z);
 
-        if ( not i)
+        if (not i)
         {
             tmpSimBase->SetDelta(XDelta(), YDelta(), ZDelta());
         }
 
-        if ( not OnGround())
+        if (not OnGround())
         {
             tmpSimBase->SetDelta(XDelta() + 50.0f * PRANDFloat(),
                                  YDelta() + 50.0f * PRANDFloat(),
@@ -216,10 +215,11 @@ void HelicopterClass::RunExplosion(void)
 
         tmpSimBase->SetYPR(Yaw(), Pitch(), Roll());
 
-        if ( not i)
+        if (not i)
         {
             // First peice is more steady and is flaming
-            tmpSimBase->SetYPRDelta(0.0F, 0.0F, 10.0F + PRANDFloat() * 30.0F * DTR);
+            tmpSimBase->SetYPRDelta(0.0F, 0.0F,
+                                    10.0F + PRANDFloat() * 30.0F * DTR);
 
             /*
             OTWDriver.AddSfxRequest(
@@ -233,11 +233,8 @@ void HelicopterClass::RunExplosion(void)
             pos.y = YPos();
             pos.z = ZPos();
 
-            DrawableParticleSys::PS_AddParticleEx((SFX_FLAMING_PART + 1),
-                                                  &pos,
+            DrawableParticleSys::PS_AddParticleEx((SFX_FLAMING_PART + 1), &pos,
                                                   &PSvec);
-
-
         }
         else
         {
@@ -257,8 +254,7 @@ void HelicopterClass::RunExplosion(void)
             pos.y = YPos();
             pos.z = ZPos();
 
-            DrawableParticleSys::PS_AddParticleEx((SFX_SMOKING_PART + 1),
-                                                  &pos,
+            DrawableParticleSys::PS_AddParticleEx((SFX_SMOKING_PART + 1), &pos,
                                                   &PSvec);
         }
     }
@@ -290,10 +286,8 @@ void HelicopterClass::ShowDamage(void)
              2.5f, // time to live
              10.5f + (1.0F-pctStrength)*30.0f ) ); // scale
              */
-            DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
-                                                  &pos,
+            DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1), &pos,
                                                   &vec);
-
         }
     }
 }

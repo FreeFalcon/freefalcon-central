@@ -33,10 +33,10 @@
 /******************************************************************************/
 #include "stdhdr.h"
 #include "airframe.h"
-#include "Simbase.h"
+#include "simbase.h"
 #include "limiters.h"
 #include "aircrft.h"
-#include "simdrive.h"//TJL 01/14/04
+#include "simdrive.h" //TJL 01/14/04
 #include "fmath.h" //TJL 01/24/04
 
 /********************************************************************/
@@ -67,7 +67,7 @@ void AirframeClass::Yaw(void)
     Limiter *limiter = NULL;
 
     //if( IsSet(Planted) or (IsSet(NoseSteerOn) and not (gear[0].flags bitand GearData::GearStuck)) )
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
         return;
 
     if (platform->IsF16())
@@ -93,7 +93,8 @@ void AirframeClass::Yaw(void)
         if (limiter)
             nycmd *= limiter->Limit(alpha - alphaError);
 
-        limiter = gLimiterMgr->GetLimiter(CatIIIYawRollRateLimiter, vehicleIndex);
+        limiter =
+            gLimiterMgr->GetLimiter(CatIIIYawRollRateLimiter, vehicleIndex);
 
         if (limiter)
             nycmd *= limiter->Limit(p * RTD);
@@ -130,13 +131,12 @@ void AirframeClass::Yaw(void)
     else
         error1 = (nycmd + nycgs) * 0.8F;
 
-    error  = error1 * ky05;
-    eprop  = ky02 * error;
+    error = error1 * ky05;
+    eprop = ky02 * error;
     eintg1 = ky03 * error;
 
     //eintg  = Math.FITust(eintg1,SimLibMinorFrameTime,oldy01);
-    eintg  = Math.FIAdamsBash(eintg1, SimLibMinorFrameTime, oldy01);
-
+    eintg = Math.FIAdamsBash(eintg1, SimLibMinorFrameTime, oldy01);
 
 
     /*--------------*/
@@ -144,18 +144,18 @@ void AirframeClass::Yaw(void)
     /*--------------*/
     if (eintg > betmax)
     {
-        oldy01[0]    = betmax;
-        oldy01[1]    = betmax;
-        oldy01[2]    = 0.0;
-        oldy01[3]    = 0.0;
+        oldy01[0] = betmax;
+        oldy01[1] = betmax;
+        oldy01[2] = 0.0;
+        oldy01[3] = 0.0;
     }
 
     if (eintg < betmin)
     {
-        oldy01[0]    = betmin;
-        oldy01[1]    = betmin;
-        oldy01[2]    = 0.0;
-        oldy01[3]    = 0.0;
+        oldy01[0] = betmin;
+        oldy01[1] = betmin;
+        oldy01[2] = 0.0;
+        oldy01[3] = 0.0;
     }
 
     betcmd = max(min(eprop + eintg, betmax), betmin);
@@ -186,13 +186,12 @@ void AirframeClass::Yaw(void)
             ypedal = asymmYpedal + ypedal;
             yshape = ypedal * ypedal;
         }
-
     }
 
 
     YawIt(betcmd, SimLibMinorFrameTime);
 
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
     {
         oldy03[0] *= 0.8F;
         oldy03[1] *= 0.8F;
@@ -200,13 +199,12 @@ void AirframeClass::Yaw(void)
         oldy03[3] *= 0.8F;
         beta *= 0.8F;
     }
-
 }
 
 void AirframeClass::YawIt(float betcmd, float dt)
 {
     // JB 010714 mult by the momentum
-    beta   = Math.FLTust(betcmd , ty02 * auxaeroData->yawMomentum, dt, oldy03);
+    beta = Math.FLTust(betcmd, ty02 * auxaeroData->yawMomentum, dt, oldy03);
 
     if (beta < -180.0F)
     {
@@ -224,5 +222,5 @@ void AirframeClass::YawIt(float betcmd, float dt)
     }
 
 
-    ShiAssert( not _isnan(beta));
+    ShiAssert(not _isnan(beta));
 }

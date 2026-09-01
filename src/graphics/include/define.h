@@ -8,12 +8,12 @@
 #ifndef _3DEJ_DEFINE_H_
 #define _3DEJ_DEFINE_H_
 
-#include "../../codelib//include/shi/SHIerror.h"
+#include "../../codelib//include/shi/shierror.h"
 #include "d3d7compat.h"
 
 #ifdef USE_SMART_HEAP
 #include <stdlib.h>
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
 
@@ -24,8 +24,21 @@ typedef signed short GLshort;
 typedef unsigned short GLushort;
 typedef signed int GLint;
 typedef unsigned int GLuint;
+// Artscout - 2026 (Linux port): GL 32-bit integer types. The width must be 32-bit on both platforms (a palette is
+// 256 4-byte entries), but the TYPE must also stay assignment-compatible with DWORD, because palette pointers are
+// passed around as both GLulong* and DWORD* (e.g. cpkneeview.cpp). On Win32 DWORD is `unsigned long` (32-bit), so
+// GLulong must be `unsigned long` there -- `unsigned int` is the same width but a DIFFERENT type, and `unsigned
+// int*` will not convert to `DWORD*` (C2440). Under LP64-Linux `long` is 64-bit, so there GLulong must be `unsigned
+// int` to stay 32-bit; the Linux DWORD shim is uint32_t, so they match. Hence the split.
+#ifdef _WIN32
 typedef signed long GLlong;
-typedef unsigned long GLulong;
+typedef unsigned long
+    GLulong; // == DWORD on Win32 (32-bit); keeps GLulong* assignable to DWORD*
+#else
+typedef signed int
+    GLlong; // 32-bit under LP64 (Linux `long` is 64-bit; DWORD shim is uint32_t == unsigned int)
+typedef unsigned int GLulong;
+#endif
 typedef float GLfloat;
 typedef double GLdouble;
 typedef signed char GLbyte;
@@ -50,8 +63,8 @@ typedef signed int GLFixed0_14;
 
 struct GLImageInfo
 {
-    GLint   width;
-    GLint   height;
+    GLint width;
+    GLint height;
     GLulong *palette;
     GLubyte *image;
     DDSURFACEDESC2 ddsd;

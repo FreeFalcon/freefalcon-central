@@ -22,7 +22,7 @@
 #pragma pack(push, 1)
 struct DDSDiskHeader
 {
-    DWORD dwSize;               // 124
+    DWORD dwSize; // 124
     DWORD dwFlags;
     DWORD dwHeight;
     DWORD dwWidth;
@@ -31,7 +31,7 @@ struct DDSDiskHeader
     DWORD dwMipMapCount;
     DWORD dwReserved1[11];
     // DDS_PIXELFORMAT (32 bytes)
-    DWORD pfSize;              // 32
+    DWORD pfSize; // 32
     DWORD pfFlags;
     DWORD pfFourCC;
     DWORD pfRGBBitCount;
@@ -54,23 +54,23 @@ struct DDSDiskHeader
 inline void DDSDiskToDesc(const DDSDiskHeader &h, DDSURFACEDESC2 &d)
 {
     ZeroMemory(&d, sizeof(d));
-    d.dwSize        = sizeof(DDSURFACEDESC2);
-    d.dwFlags       = h.dwFlags;
-    d.dwHeight      = h.dwHeight;
-    d.dwWidth       = h.dwWidth;
-    d.dwLinearSize  = h.dwPitchOrLinearSize; // union with lPitch
+    d.dwSize = sizeof(DDSURFACEDESC2);
+    d.dwFlags = h.dwFlags;
+    d.dwHeight = h.dwHeight;
+    d.dwWidth = h.dwWidth;
+    d.dwLinearSize = h.dwPitchOrLinearSize; // union with lPitch
     d.dwMipMapCount = h.dwMipMapCount;
 
-    d.ddpfPixelFormat.dwSize            = h.pfSize;
-    d.ddpfPixelFormat.dwFlags           = h.pfFlags;
-    d.ddpfPixelFormat.dwFourCC          = h.pfFourCC;
-    d.ddpfPixelFormat.dwRGBBitCount     = h.pfRGBBitCount;
-    d.ddpfPixelFormat.dwRBitMask        = h.pfRBitMask;
-    d.ddpfPixelFormat.dwGBitMask        = h.pfGBitMask;
-    d.ddpfPixelFormat.dwBBitMask        = h.pfBBitMask;
+    d.ddpfPixelFormat.dwSize = h.pfSize;
+    d.ddpfPixelFormat.dwFlags = h.pfFlags;
+    d.ddpfPixelFormat.dwFourCC = h.pfFourCC;
+    d.ddpfPixelFormat.dwRGBBitCount = h.pfRGBBitCount;
+    d.ddpfPixelFormat.dwRBitMask = h.pfRBitMask;
+    d.ddpfPixelFormat.dwGBitMask = h.pfGBitMask;
+    d.ddpfPixelFormat.dwBBitMask = h.pfBBitMask;
     d.ddpfPixelFormat.dwRGBAlphaBitMask = h.pfABitMask;
 
-    d.ddsCaps.dwCaps  = h.dwCaps;
+    d.ddsCaps.dwCaps = h.dwCaps;
     d.ddsCaps.dwCaps2 = h.dwCaps2;
 }
 

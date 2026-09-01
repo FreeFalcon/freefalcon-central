@@ -6,7 +6,7 @@
 
 class RadarDigiClass : public RadarClass
 {
-public :
+public:
     RadarDigiClass(int index, SimMoverClass* parentPlatform);
     virtual ~RadarDigiClass() {};
 
@@ -27,8 +27,9 @@ public :
         mode = GM;
     }; // Enter AG mode
     virtual void SetMode(RadarMode cmd);
-    virtual int   IsAG(void); // Is radar in A/G mode
-    virtual void  GetAGCenter(float* x, float* y); // Center of radar ground search
+    virtual int IsAG(void); // Is radar in A/G mode
+    virtual void GetAGCenter(float* x,
+                             float* y); // Center of radar ground search
 
 protected:
     float rangeNM; // How far are we looking in NM

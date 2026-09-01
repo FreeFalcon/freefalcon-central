@@ -79,7 +79,7 @@ void WinAmpFrontEnd::InitWinAmp()
 /*****************************************************************************/
 void WinAmpFrontEnd::StopAndFadeout()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return;
 
     copyCurTitle();
@@ -90,7 +90,7 @@ void WinAmpFrontEnd::StopAndFadeout()
 /*****************************************************************************/
 void WinAmpFrontEnd::Previous()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return;
 
     copyCurTitle();
@@ -101,7 +101,7 @@ void WinAmpFrontEnd::Previous()
 /*****************************************************************************/
 void WinAmpFrontEnd::Start()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return;
 
     copyCurTitle();
@@ -112,7 +112,7 @@ void WinAmpFrontEnd::Start()
 /*****************************************************************************/
 void WinAmpFrontEnd::Stop()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return;
 
     copyCurTitle();
@@ -123,7 +123,7 @@ void WinAmpFrontEnd::Stop()
 /*****************************************************************************/
 void WinAmpFrontEnd::Next()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return;
 
     copyCurTitle();
@@ -157,21 +157,21 @@ void WinAmpFrontEnd::VolDown()
 /*****************************************************************************/
 void WinAmpFrontEnd::TogglePlayback()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return;
 
     int ret = SendMessage(winamp_win, WM_USER, 0, 104);
 
     switch (ret)
     {
-        case 1:
-            Stop();
-            break;
+    case 1:
+        Stop();
+        break;
 
-        default:
-        case 3:
-            Start();
-            break; // actually, 3 is the 'paused' status.. but whatever..
+    default:
+    case 3:
+        Start();
+        break; // actually, 3 is the 'paused' status.. but whatever..
     }
 
     copyCurTitle();
@@ -189,7 +189,7 @@ void WinAmpFrontEnd::TogglePlayback()
 /*****************************************************************************/
 void WinAmpFrontEnd::copyCurTitle()
 {
-    if ( not ampexists) // should really not be necessary..
+    if (not ampexists) // should really not be necessary..
         return;
 
     if (currentTrackTitle)
@@ -210,7 +210,7 @@ void WinAmpFrontEnd::copyCurTitle()
 
     while (p >= this_title)
     {
-        if ( not strnicmp(p, "- Winamp", 8))
+        if (not strnicmp(p, "- Winamp", 8))
         {
             break;
         }
@@ -242,7 +242,8 @@ void WinAmpFrontEnd::copyCurTitle()
     // ..if the title is longer, fill the rest in to DEDString 2
     if (strlen(this_title) > MY_MAX_DED_LEN - 1)
     {
-        strncpy(&DEDString[1][0], &this_title[MY_MAX_DED_LEN - 1], MY_MAX_DED_LEN - 1);
+        strncpy(&DEDString[1][0], &this_title[MY_MAX_DED_LEN - 1],
+                MY_MAX_DED_LEN - 1);
         DEDString[1][MY_MAX_DED_LEN - 1] = '\0';
     }
     else // else don´t print it
@@ -256,7 +257,7 @@ void WinAmpFrontEnd::copyCurTitle()
 /*****************************************************************************/
 char* WinAmpFrontEnd::getCurTitle()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return "No WinAMP 2.xx window found ";
 
     return currentTrackTitle;
@@ -270,7 +271,7 @@ char* WinAmpFrontEnd::getCurTitle()
 /*****************************************************************************/
 char* WinAmpFrontEnd::getDEDTitle(const int theLine)
 {
-    if ( not ampexists)
+    if (not ampexists)
         return "No WinAMP window found ";
 
     if ((theLine not_eq 0) and (theLine not_eq 1))
@@ -283,7 +284,7 @@ char* WinAmpFrontEnd::getDEDTitle(const int theLine)
 /*****************************************************************************/
 int WinAmpFrontEnd::getVolume()
 {
-    if ( not ampexists)
+    if (not ampexists)
         return 0;
 
     return volume;
@@ -295,7 +296,7 @@ int WinAmpFrontEnd::getVolume()
 /*****************************************************************************/
 void WinAmpFrontEnd::Refresh(unsigned long timer)
 {
-    if ( not ampexists)
+    if (not ampexists)
         return;
 
     if (timer > myTimer)

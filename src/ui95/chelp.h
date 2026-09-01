@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -61,9 +62,9 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
-    long CheckHotSpots(long , long);
+    long CheckHotSpots(long, long);
     BOOL Process(long ID, short hittype);
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);

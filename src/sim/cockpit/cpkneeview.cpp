@@ -6,8 +6,8 @@
 #include "otwdrive.h"
 #include "simdrive.h" //MI
 #include "navsystem.h" //MI
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/TMap.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/tmap.h"
 #include "brief.h"
 #include "flight.h"
 #include "aircrft.h"
@@ -19,21 +19,26 @@ extern bool g_bINS; //MI
 
 static const UInt32 WP_COLOR = 0xFF0000FF; // The color of the waypoint marks
 static const float WP_SIZE = 0.03f; // The radius of the waypoint marker symbol
-static const float  ORIDE_WP_SIZE = 0.08f; // The size of the override waypoint marker
-static const UInt32 AC_COLOR = 0xFF00FFFF; // The color of the aircraft location marker
-static const float AC_SIZE = 0.06f; // The radius of the aircraft location marker
-static const float BORDER_PERCENT = 0.05f; // How much map to display outside the bounding box of the waypoints
-static const float KNEEBOARD_SMALLEST_MAP_FRACTION = 4.0f; // What is the smallest fraction of the map we'll zoom to
+static const float ORIDE_WP_SIZE =
+    0.08f; // The size of the override waypoint marker
+static const UInt32 AC_COLOR =
+    0xFF00FFFF; // The color of the aircraft location marker
+static const float AC_SIZE =
+    0.06f; // The radius of the aircraft location marker
+static const float BORDER_PERCENT =
+    0.05f; // How much map to display outside the bounding box of the waypoints
+static const float KNEEBOARD_SMALLEST_MAP_FRACTION =
+    4.0f; // What is the smallest fraction of the map we'll zoom to
 
 
-CPKneeView::CPKneeView(ObjectInitStr *pobjectInitStr, KneeBoard *pboard) : CPObject(pobjectInitStr)
+CPKneeView::CPKneeView(ObjectInitStr *pobjectInitStr, KneeBoard *pboard)
+    : CPObject(pobjectInitStr)
 {
     mapImageBuffer = NULL;
     mpKneeBoard = pboard;
 
-    Setup(
-        &FalconDisplay.theDisplayDevice, mDestRect.top, mDestRect.left, mDestRect.bottom, mDestRect.right
-    );
+    Setup(&FalconDisplay.theDisplayDevice, mDestRect.top, mDestRect.left,
+          mDestRect.bottom, mDestRect.right);
 }
 
 CPKneeView::~CPKneeView()
@@ -41,7 +46,8 @@ CPKneeView::~CPKneeView()
     Cleanup();
 }
 
-void CPKneeView::Setup(DisplayDevice *device, int top, int left, int bottom, int right)
+void CPKneeView::Setup(DisplayDevice *device, int top, int left, int bottom,
+                       int right)
 {
     mpKneeBoard->Setup();
     dstRect.top = top;
@@ -55,7 +61,8 @@ void CPKneeView::Setup(DisplayDevice *device, int top, int left, int bottom, int
     srcRect.right = right - left;
 
     // Setup our off screen map buffer and renderer
-    MPRSurfaceType front = FalconDisplay.theDisplayDevice.IsHardware() ? VideoMem : SystemMem;
+    MPRSurfaceType front =
+        FalconDisplay.theDisplayDevice.IsHardware() ? VideoMem : SystemMem;
     mapImageBuffer = new ImageBuffer;
     mapImageBuffer->Setup(device, srcRect.right, srcRect.bottom, front, None);
     Render2D::Setup(mapImageBuffer);
@@ -79,10 +86,10 @@ void CPKneeView::Refresh(SimVehicleClass *platform)
     RenderMap(platform);
 }
 
-void CPKneeView::Exec(SimBaseClass* pOwnship)
+void CPKneeView::Exec(SimBaseClass *pOwnship)
 {
     mpOwnship = pOwnship;
-    RenderMap((SimVehicleClass*)mpOwnship);
+    RenderMap((SimVehicleClass *)mpOwnship);
 }
 
 void CPKneeView::DisplayBlit(void)
@@ -99,24 +106,25 @@ void CPKneeView::DisplayDraw(void)
     // Set the viewport to the active region of our display
     RenderOTW *renderer = OTWDriver.renderer;
     renderer->SetViewport(
-        (float)dstRect.left  / mpOTWImage->targetXres() * (2.0f) - 1.0f,
-        (float)dstRect.top   / mpOTWImage->targetYres() * (-2.0f) + 1.0f,
+        (float)dstRect.left / mpOTWImage->targetXres() * (2.0f) - 1.0f,
+        (float)dstRect.top / mpOTWImage->targetYres() * (-2.0f) + 1.0f,
         (float)dstRect.right / mpOTWImage->targetXres() * (2.0f) - 1.0f,
-        (float)dstRect.bottom / mpOTWImage->targetYres() * (-2.0f) + 1.0f
-    );
+        (float)dstRect.bottom / mpOTWImage->targetYres() * (-2.0f) + 1.0f);
 
     if (mpKneeBoard->GetPage() == KneeBoard::MAP)
     {
         // If we're not in Realistic mode, draw the current position marker
         // M.N. Added Full realism mode
-        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
+        if (PlayerOptions.GetAvionicsType() not_eq ATRealistic and
+            PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
         {
-            DrawCurrentPosition(mpOTWImage, renderer, (SimVehicleClass*)mpOwnship);
+            DrawCurrentPosition(mpOTWImage, renderer,
+                                (SimVehicleClass *)mpOwnship);
         }
     }
     else
     {
-        DrawMissionText(renderer, (SimVehicleClass*)mpOwnship);
+        DrawMissionText(renderer, (SimVehicleClass *)mpOwnship);
     }
 }
 
@@ -134,7 +142,7 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
     int lines;
     float v = 0.80f;
     int oldFont = VirtualDisplay::CurFont();
-    DWORD iColor = OTWDriver.pCockpitManager->ApplyLighting(0xFF000000 , false);
+    DWORD iColor = OTWDriver.pCockpitManager->ApplyLighting(0xFF000000, false);
     renderer->SetColor(iColor); // Black (ink color)
 
     VirtualDisplay::SetFont(OTWDriver.pCockpitManager->KneeFont());
@@ -142,17 +150,21 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
     // Display the players call sign and assignment
     char string[1024];
 
-    if (mpKneeBoard->GetPage() == KneeBoard::STEERPOINT)   // JPO new kneeboard page
+    if (mpKneeBoard->GetPage() ==
+        KneeBoard::STEERPOINT) // JPO new kneeboard page
     {
         v = 0.95f - LINE_HEIGHT;
 
-        if (GetBriefingData(GBD_PACKAGE_STPTHDR, 0, string, sizeof(string)) not_eq -1)
+        if (GetBriefingData(GBD_PACKAGE_STPTHDR, 0, string,
+                            sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.95f, v, string);
             v -= LINE_HEIGHT;
         }
 
-        for (lines = 0; GetBriefingData(GBD_PACKAGE_STPT, lines, string, sizeof(string)) not_eq -1; ++lines)
+        for (lines = 0; GetBriefingData(GBD_PACKAGE_STPT, lines, string,
+                                        sizeof(string)) not_eq -1;
+             ++lines)
         {
             renderer->TextLeft(-0.95f, v, string);
             v -= LINE_HEIGHT;
@@ -163,14 +175,20 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
         {
             v -= 2 * LINE_HEIGHT;
 
-            if (((AircraftClass*)SimDriver.GetPlayerEntity()) and ((AircraftClass*)SimDriver.GetPlayerEntity())->OnGround())
+            if (((AircraftClass *)SimDriver.GetPlayerEntity()) and
+                ((AircraftClass *)SimDriver.GetPlayerEntity())->OnGround())
             {
                 char latStr[20] = "";
                 char longStr[20] = "";
                 char tempstr[10] = "";
-                float latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+                float latitude =
+                    (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) /
+                    EARTH_RADIUS_FT;
                 float cosLatitude = (float)cos(latitude);
-                float longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
+                float longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT *
+                                    cosLatitude) +
+                                   cockpitFlightData.y) /
+                                  (EARTH_RADIUS_FT * cosLatitude);
 
                 latitude *= RTD;
                 longitude *= RTD;
@@ -184,7 +202,8 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
                 // format lat/long here
                 if (latMin < 10.0F)
                 {
-                    sprintf(latStr, "LAT  N %3d\x03 0%2.2f\'\n", latDeg, latMin);
+                    sprintf(latStr, "LAT  N %3d\x03 0%2.2f\'\n", latDeg,
+                            latMin);
                 }
                 else
                 {
@@ -193,44 +212,50 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
 
                 if (longMin < 10.0F)
                 {
-                    sprintf(longStr, "LNG  E %3d\x03 0%2.2f\'\n", longDeg, longMin);
+                    sprintf(longStr, "LNG  E %3d\x03 0%2.2f\'\n", longDeg,
+                            longMin);
                 }
                 else
                 {
-                    sprintf(longStr, "LNG  E %3d\x03 %2.2f\'\n", longDeg, longMin);
+                    sprintf(longStr, "LNG  E %3d\x03 %2.2f\'\n", longDeg,
+                            longMin);
                 }
 
                 renderer->TextLeft(-0.95F, v, latStr);
                 v -= LINE_HEIGHT;
                 renderer->TextLeft(-0.95F, v, longStr);
                 v -= LINE_HEIGHT;
-                sprintf(tempstr, "SALT %dFT", (long) - cockpitFlightData.z);
+                sprintf(tempstr, "SALT %dFT", (long)-cockpitFlightData.z);
                 renderer->TextLeft(-0.95F, v, tempstr);
             }
         }
     }
     else
     {
-        if (GetBriefingData(GBD_PLAYER_ELEMENT, 0, string, sizeof(string)) not_eq -1)
+        if (GetBriefingData(GBD_PLAYER_ELEMENT, 0, string,
+                            sizeof(string)) not_eq -1)
         {
             renderer->TextLeft(-0.9f, v, string);
             v -= LINE_HEIGHT;
         }
 
-        if (GetBriefingData(GBD_PLAYER_TASK,    0, string, sizeof(string)) not_eq -1)
+        if (GetBriefingData(GBD_PLAYER_TASK, 0, string, sizeof(string)) not_eq
+            -1)
         {
             lines = renderer->TextWrap(-0.8f, v, string, LINE_HEIGHT, 1.7f);
             v -= (lines + 1) * LINE_HEIGHT;
         }
 
         // Display the package info (if we are part of a package)
-        if (GetBriefingData(GBD_PACKAGE_LABEL, 0, string, sizeof(string)) not_eq -1)
+        if (GetBriefingData(GBD_PACKAGE_LABEL, 0, string, sizeof(string)) not_eq
+            -1)
         {
             renderer->TextLeft(-0.9f, v, string);
             v -= LINE_HEIGHT;
 
             // Package mission statement
-            if (GetBriefingData(GBD_PACKAGE_MISSION, 0, string, sizeof(string)) not_eq -1)
+            if (GetBriefingData(GBD_PACKAGE_MISSION, 0, string,
+                                sizeof(string)) not_eq -1)
             {
                 lines = renderer->TextWrap(-0.8f, v, string, LINE_HEIGHT, 1.7f);
                 v -= lines * LINE_HEIGHT;
@@ -239,14 +264,16 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
             // List the flights in the package
             lines = 0;
 
-            while (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, lines, string, sizeof(string)) not_eq -1)
+            while (GetBriefingData(GBD_PACKAGE_ELEMENT_NAME, lines, string,
+                                   sizeof(string)) not_eq -1)
             {
                 renderer->TextLeft(-0.8f, v, string);
 
-                if (GetBriefingData(GBD_PACKAGE_ELEMENT_TASK, lines, string, sizeof(string)) not_eq -1)
+                if (GetBriefingData(GBD_PACKAGE_ELEMENT_TASK, lines, string,
+                                    sizeof(string)) not_eq -1)
                     renderer->TextLeft(-0.1f, v, string);
 
-                lines ++;
+                lines++;
                 v -= LINE_HEIGHT;
             }
         }
@@ -258,7 +285,7 @@ void CPKneeView::DrawMissionText(Render2D *renderer, SimVehicleClass *platform)
 void CPKneeView::UpdateMapDimensions(SimVehicleClass *platform)
 {
 
-    WayPointClass* wp;
+    WayPointClass *wp;
     float x, y, z;
     float left, right, top, bottom;
 
@@ -269,8 +296,8 @@ void CPKneeView::UpdateMapDimensions(SimVehicleClass *platform)
     m_pixel2nmY /= mapImageFile.image.height;
     m_pixel2nmX /= mapImageFile.image.width;
     // Start with our current location
-    top   = bottom  = platform->XPos();
-    right = left    = platform->YPos();
+    top = bottom = platform->XPos();
+    right = left = platform->YPos();
 
     // Walk the waypoints and get min/max info
     for (wp = platform->waypoint; wp; wp = wp->GetNextWP())
@@ -286,7 +313,7 @@ void CPKneeView::UpdateMapDimensions(SimVehicleClass *platform)
     // Add the position of the override waypoint (if any)
     ShiAssert(platform->GetCampaignObject());
     ShiAssert(platform->GetCampaignObject()->IsFlight());
-    wp = ((FlightClass*)platform->GetCampaignObject())->GetOverrideWP();
+    wp = ((FlightClass *)platform->GetCampaignObject())->GetOverrideWP();
 
     if (wp)
     {
@@ -308,26 +335,30 @@ void CPKneeView::UpdateMapDimensions(SimVehicleClass *platform)
 
     if (wsHsize >= TheMap.EastEdge() - TheMap.WestEdge())
     {
-        wsHsize = TheMap.EastEdge() - TheMap.WestEdge() - 1.0f; // -1 is for rounding safety...
+        wsHsize = TheMap.EastEdge() - TheMap.WestEdge() -
+                  1.0f; // -1 is for rounding safety...
     }
 
     if (wsVsize >= TheMap.NorthEdge() - TheMap.SouthEdge())
     {
-        wsVsize = TheMap.NorthEdge() - TheMap.SouthEdge() - 1.0f; // -1 is for rounding safety...
+        wsVsize = TheMap.NorthEdge() - TheMap.SouthEdge() -
+                  1.0f; // -1 is for rounding safety...
     }
 
     // See how many source pixels we're talking about and round down to an even divisor of the dest pixels
     float hSourcePixels = wsHsize * 2.0f * FT_TO_KM / m_pixel2nmX;
     float vSourcePixels = wsVsize * 2.0f * FT_TO_KM / m_pixel2nmY;
 
-    float hPixelMag = srcRect.right  / hSourcePixels;
+    float hPixelMag = srcRect.right / hSourcePixels;
     float vPixelMag = srcRect.bottom / vSourcePixels;
 
     // Cap the pixel magnification at a reasonable level
-    float mapPixels = (TheMap.NorthEdge() - TheMap.SouthEdge()) * FT_TO_KM / m_pixel2nmY;
+    float mapPixels =
+        (TheMap.NorthEdge() - TheMap.SouthEdge()) * FT_TO_KM / m_pixel2nmY;
     float drawPixels = (float)srcRect.bottom;
     float maxMag = drawPixels / mapPixels * KNEEBOARD_SMALLEST_MAP_FRACTION;
-    pixelMag = FloatToInt32((float)floor(min(min(hPixelMag, vPixelMag), maxMag)));
+    pixelMag =
+        FloatToInt32((float)floor(min(min(hPixelMag, vPixelMag), maxMag)));
 
     // Detect the case where the whole desired image won't fit on screen
     if (pixelMag < 1)
@@ -340,28 +371,32 @@ void CPKneeView::UpdateMapDimensions(SimVehicleClass *platform)
     }
 
     // Now readjust our world space dimensions to reflect what we'll actually draw
-    wsHsize = 0.5f * srcRect.right  / (float)pixelMag * m_pixel2nmX * KM_TO_FT;
+    wsHsize = 0.5f * srcRect.right / (float)pixelMag * m_pixel2nmX * KM_TO_FT;
     wsVsize = 0.5f * srcRect.bottom / (float)pixelMag * m_pixel2nmY * KM_TO_FT;
 
     // Finally shift the center point as necessary to ensure we won't try to draw off the edge
     if (wsHcenter - wsHsize <= TheMap.WestEdge())
     {
-        wsHcenter = TheMap.WestEdge() + wsHsize + 0.5f; // +1/2 is for rounding safety...
+        wsHcenter = TheMap.WestEdge() + wsHsize +
+                    0.5f; // +1/2 is for rounding safety...
     }
 
     if (wsHcenter + wsHsize >= TheMap.EastEdge())
     {
-        wsHcenter = TheMap.EastEdge() - wsHsize - 0.5f; // -1/2 is for rounding safety...
+        wsHcenter = TheMap.EastEdge() - wsHsize -
+                    0.5f; // -1/2 is for rounding safety...
     }
 
     if (wsVcenter - wsVsize <= TheMap.SouthEdge())
     {
-        wsVcenter = TheMap.SouthEdge() + wsVsize + 0.5f; // +1/2 is for rounding safety...
+        wsVcenter = TheMap.SouthEdge() + wsVsize +
+                    0.5f; // +1/2 is for rounding safety...
     }
 
     if (wsVcenter + wsVsize >= TheMap.NorthEdge())
     {
-        wsVcenter = TheMap.NorthEdge() - wsVsize - 0.5f; // -1/2 is for rounding safety...
+        wsVcenter = TheMap.NorthEdge() - wsVsize -
+                    0.5f; // -1/2 is for rounding safety...
     }
 }
 
@@ -375,9 +410,10 @@ void CPKneeView::RenderMap(SimVehicleClass *platform)
     DrawMap();
 
     // OW FIXME: the following StartFrame() call will result in a call to IDirect3DDevice7::SetRenderTarget. We can't do this on the Voodoo 1 bitand 2 ;(
-    DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
+    DeviceManager::DDDriverInfo *pDI =
+        FalconDisplay.devmgr.GetDriver(DisplayOptions.DispVideoDriver);
 
-    if ( not pDI->SupportsSRT())
+    if (not pDI->SupportsSRT())
         return;
 
     // Draw in the waypoints
@@ -413,15 +449,17 @@ void CPKneeView::DrawMap()
     int h = mapImageFile.image.height;
 
     // Decide where to start in the source image
-    int srcRowInitOffset = (int)((TheMap.NorthEdge() - (wsVsize + wsVcenter)) * FT_TO_KM / m_pixel2nmX);
-    int srcColInitOffset = (int)((wsHcenter - wsHsize)                        * FT_TO_KM / m_pixel2nmY);
+    int srcRowInitOffset = (int)((TheMap.NorthEdge() - (wsVsize + wsVcenter)) *
+                                 FT_TO_KM / m_pixel2nmX);
+    int srcColInitOffset =
+        (int)((wsHcenter - wsHsize) * FT_TO_KM / m_pixel2nmY);
 
     // Lock the back buffer
-    DWORD *ptr = (DWORD*)mapImageBuffer->Lock();
+    DWORD *ptr = (DWORD *)mapImageBuffer->Lock();
 
     //here we get a pointer to the initial position of the map(0,0)
     UInt8 *mapFirstPointer = mapImageFile.image.image;
-    mapFirstPointer += 0;//srcRowInitOffset*w + srcColInitOffset;
+    mapFirstPointer += 0; //srcRowInitOffset*w + srcColInitOffset;
 
     //some auxiliary variables
     int dstWidth = dstRect.right - dstRect.left;
@@ -431,17 +469,21 @@ void CPKneeView::DrawMap()
     for (int dstRow = 0; dstRow < (dstRect.bottom - dstRect.top); dstRow++)
     {
         //find the first pointer of that row in the map
-        UInt8 *rowFirstPointer = mapFirstPointer + (dstRow + srcRowInitOffset) * w + srcColInitOffset;
+        UInt8 *rowFirstPointer = mapFirstPointer +
+                                 (dstRow + srcRowInitOffset) * w +
+                                 srcColInitOffset;
         //first destination pointer
-        DWORD *dst = (DWORD*)mapImageBuffer->Pixel(ptr, dstRow, 0);
+        DWORD *dst = (DWORD *)mapImageBuffer->Pixel(ptr, dstRow, 0);
 
         for (int dstCol = 0; dstCol < (dstRect.right - dstRect.left); dstCol++)
         {
             //this points to the pixel
             UInt8 *pixelPointer = rowFirstPointer + dstCol;
 
-            if (((srcRowInitOffset + dstRow) >= h) or ((srcRowInitOffset + dstRow) < 0) or
-                ((srcColInitOffset + dstCol) >= w) or ((srcColInitOffset + dstCol) < 0))
+            if (((srcRowInitOffset + dstRow) >= h) or
+                ((srcRowInitOffset + dstRow) < 0) or
+                ((srcColInitOffset + dstCol) >= w) or
+                ((srcColInitOffset + dstCol) < 0))
             {
                 //we use a transparent pixel...
                 dst[0] = 0xff000000;
@@ -463,12 +505,12 @@ void CPKneeView::DrawMap()
 
 void CPKneeView::DrawWaypoints(SimVehicleClass *platform)
 {
-    WayPointClass* wp = NULL;
+    WayPointClass *wp = NULL;
     BOOL isFirst = TRUE;
     float x1 = 0.0F, y1 = 0.0F, x2 = 0.0F, y2 = 0.0F;
 
 
-    DWORD color =  OTWDriver.pCockpitManager->ApplyLighting(WP_COLOR, false);
+    DWORD color = OTWDriver.pCockpitManager->ApplyLighting(WP_COLOR, false);
     //OTWDriver.renderer->SetColor(color);
     SetColor(color);
 
@@ -482,7 +524,7 @@ void CPKneeView::DrawWaypoints(SimVehicleClass *platform)
         // Draw the waypoint marker and the connecting line if this isn't the first one
         Circle(x1, y1, WP_SIZE);
 
-        if ( not isFirst)
+        if (not isFirst)
         {
             Line(x1, y1, x2, y2);
         }
@@ -496,7 +538,7 @@ void CPKneeView::DrawWaypoints(SimVehicleClass *platform)
     // Draw the override waypoint marker (if any)
     ShiAssert(platform->GetCampaignObject());
     ShiAssert(platform->GetCampaignObject()->IsFlight());
-    wp = ((FlightClass*)platform->GetCampaignObject())->GetOverrideWP();
+    wp = ((FlightClass *)platform->GetCampaignObject())->GetOverrideWP();
 
     if (wp)
     {
@@ -517,7 +559,9 @@ void CPKneeView::DrawWaypoints(SimVehicleClass *platform)
 }
 
 
-void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *renderer, SimVehicleClass *platform)
+void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer,
+                                     Render2D *renderer,
+                                     SimVehicleClass *platform)
 {
     const float aspect = (float)srcRect.right / (float)srcRect.bottom;
     float h, v;
@@ -525,15 +569,14 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
     static const struct
     {
         float x, y;
-    } pos[] =
-    {
-        0.0f,   1.0f, // nose
+    } pos[] = {
+        0.0f,  1.0f, // nose
         0.0f,  -1.0f, // tail
-        -1.0f,  -0.4f, // left wing tip
+        -1.0f, -0.4f, // left wing tip
         1.0f,  -0.4f, // right wing tip
-        0.0f,   0.3f, // leading edge at fuselage
-        -0.5f,  -1.0f, // left stab
-        -0.5f,  -1.0f, // right stab
+        0.0f,  0.3f, // leading edge at fuselage
+        -0.5f, -1.0f, // left stab
+        -0.5f, -1.0f, // right stab
     };
     static const int numPoints = sizeof(pos) / sizeof(pos[0]);
     float x[numPoints];
@@ -547,7 +590,7 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
     {
         if (v > 0.95f)
         {
-            v =  0.95f;
+            v = 0.95f;
         }
         else
         {
@@ -565,7 +608,7 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
     {
         if (h > 0.95f)
         {
-            h =  0.95f;
+            h = 0.95f;
         }
         else
         {
@@ -608,7 +651,8 @@ void CPKneeView::DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *render
 }
 
 
-void CPKneeView::MapWaypointToDisplay(WayPointClass *pwaypoint, float *h, float *v)
+void CPKneeView::MapWaypointToDisplay(WayPointClass *pwaypoint, float *h,
+                                      float *v)
 {
     float wpX;
     float wpY;

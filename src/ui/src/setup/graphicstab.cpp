@@ -1,32 +1,32 @@
 #include "falclib.h"
 #include "chandler.h"
 #include "userids.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include <mmsystem.h>
 #include "sim/include/stdhdr.h"
 #include "sim/include/simio.h"
-#include "Graphics/Include/render3d.h"
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/drawBSP.h"
-#include "Graphics/Include/matrix.h"
-#include "Graphics/Include/loader.h"
+#include "graphics/include/render3d.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/matrix.h"
+#include "graphics/include/loader.h"
 #include "objectiv.h"
 #include "cbsplist.h"
 #include "c3dview.h"
 #include "ui_setup.h"
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/rviewpnt.h"
 #include "dispcfg.h"
 #include "f4find.h"
-#include "Graphics/Include/draw2d.h"
-#include "Graphics/Include/devmgr.h"
+#include "graphics/include/draw2d.h"
+#include "graphics/include/devmgr.h"
 #include "dispopts.h"
 #include "sim/include/sinput.h"
 #include "classtbl.h"
-#include "Campaign/include/Cmpclass.h"
-#include "TimeMgr.h"
+#include "campaign/include/cmpclass.h"
+#include "timemgr.h"
 
 //JAM 18Nov03
-#include "Weather.h"
+#include "weather.h"
 
 #pragma warning(disable : 4706) // assignment within conditional expression
 extern C_Handler *gMainHandler;
@@ -39,7 +39,8 @@ extern int HighResolutionHackFlag; // Used in WinMain.CPP
 //extern SkyColorDataType* skycolor;
 
 extern int MainLastGroup;
-extern bool g_bAlwaysAnisotropic; // to always turn on Anisotropic label (workaround for the GF 3)
+extern bool
+    g_bAlwaysAnisotropic; // to always turn on Anisotropic label (workaround for the GF 3)
 extern bool g_bForceDXMultiThreadedCoopLevel;
 extern bool g_bEnableNonPersistentTextures;
 extern bool g_bEnableStaticTerrainTextures;
@@ -67,8 +68,8 @@ void ChangeViewpointCB(long ID, short hittype, C_Base *control);
 
 
 //defined in another file
-void PositandOrientSetData(float x, float y, float z, float pitch, float roll, float yaw,
-                           Tpoint* simView, Trotation* viewRotation);
+void PositandOrientSetData(float x, float y, float z, float pitch, float roll,
+                           float yaw, Tpoint *simView, Trotation *viewRotation);
 void STPSetupControls(void);
 
 const int SMOKE = 1000;
@@ -92,7 +93,7 @@ void STPMoveRendererCB(C_Window *win)
 {
     if (SetupViewer)
         SetupViewer->Viewport(win, 2);
-}//MoveRendererCB
+} //MoveRendererCB
 
 void STPViewTimerCB(long, short, C_Base *control)
 {
@@ -104,7 +105,7 @@ void STPViewTimerCB(long, short, C_Base *control)
     }
     else
         control->Parent_->RefreshClient(control->GetClient());
-}//ViewTimerCB
+} //ViewTimerCB
 
 
 void STPDisplayCB(long, short, C_Base *)
@@ -115,7 +116,7 @@ void STPDisplayCB(long, short, C_Base *)
         SetupViewer->ViewOTW();
 
     F4LeaveCriticalSection(SetupCritSection);
-}//DisplayCB
+} //DisplayCB
 
 void InitializeViewer(C_Window *win, RenderOTW *renderer)
 {
@@ -126,7 +127,10 @@ void InitializeViewer(C_Window *win, RenderOTW *renderer)
 
     if (slider not_eq NULL)
     {
-        renderer->SetObjectDetail((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f + 0.5f);
+        renderer->SetObjectDetail(
+            (float)slider->GetSliderPos() /
+                (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f +
+            0.5f);
     }
 
     /* slider=(C_Slider *)win->FindControl(TEXTURE_DISTANCE);
@@ -198,7 +202,7 @@ void InsertSmokeCloud()
     FILE *fp;
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\config\\viewer.dat", FalconDataDirectory);
+    sprintf(filename, "%s/config/viewer.dat", FalconDataDirectory);
     fp = fopen(filename, "rb");
 
     if (fp)
@@ -215,7 +219,8 @@ void InsertSmokeCloud()
 
         VP = SetupViewer->GetVP();
 
-        PositandOrientSetData(View.Xpos * FEET_PER_KM + 300, View.Ypos * FEET_PER_KM - 100,
+        PositandOrientSetData(View.Xpos * FEET_PER_KM + 300,
+                              View.Ypos * FEET_PER_KM - 100,
                               View.CamZ + View.Zpos + 100, 0, 0, 0, &pos, &rot);
 
         Smoke = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
@@ -224,7 +229,7 @@ void InsertSmokeCloud()
     }
 }
 
-void LoadObjects(ViewPos &View , C_Window *win)
+void LoadObjects(ViewPos &View, C_Window *win)
 {
     FILE *fp;
     BSPLIST *list;
@@ -235,7 +240,7 @@ void LoadObjects(ViewPos &View , C_Window *win)
     float scale = 1.0F;
     C_Slider *slider;
 
-    sprintf(filename, "%s\\config\\viewer.dat", FalconDataDirectory);
+    sprintf(filename, "%s/config/viewer.dat", FalconDataDirectory);
     fp = fopen(filename, "rb");
 
     if (fp)
@@ -245,7 +250,7 @@ void LoadObjects(ViewPos &View , C_Window *win)
         fread(&Temp, sizeof(float), 1, fp);
 
         if (Objects)
-            delete [] Objects;
+            delete[] Objects;
 
         NumObjects = static_cast<short>(FloatToInt32(Temp));
 
@@ -256,7 +261,7 @@ void LoadObjects(ViewPos &View , C_Window *win)
         fread(&Temp, sizeof(float), 1, fp);
 
         if (Features)
-            delete [] Features;
+            delete[] Features;
 
         NumFeatures = static_cast<short>(FloatToInt32(Temp));
 
@@ -272,20 +277,28 @@ void LoadObjects(ViewPos &View , C_Window *win)
 
         if (slider not_eq NULL)
         {
-            scale = ((float)slider->GetSliderPos() / (float)(slider->GetSliderMax() - slider->GetSliderMin()) * 4.0F + 1.0F);
+            scale =
+                ((float)slider->GetSliderPos() /
+                     (float)(slider->GetSliderMax() - slider->GetSliderMin()) *
+                     4.0F +
+                 1.0F);
         }
 
         if (NumObjects)
         {
             for (int i = 0; i < NumObjects; i++)
             {
-                PositandOrientSetData(View.Xpos * FEET_PER_KM + Objects[i].Xpos , View.Ypos * FEET_PER_KM + Objects[i].Ypos,
-                                      Objects[i].Zpos, Objects[i].Pitch, Objects[i].Roll, Objects[i].Yaw, &pos, &rot);
-                list = SetupViewer->LoadBSP(i, FloatToInt32(Objects[i].VisID), TRUE);
-                ((DrawableBSP*)list->object)->Update(&pos, &rot);
+                PositandOrientSetData(View.Xpos * FEET_PER_KM + Objects[i].Xpos,
+                                      View.Ypos * FEET_PER_KM + Objects[i].Ypos,
+                                      Objects[i].Zpos, Objects[i].Pitch,
+                                      Objects[i].Roll, Objects[i].Yaw, &pos,
+                                      &rot);
+                list = SetupViewer->LoadBSP(i, FloatToInt32(Objects[i].VisID),
+                                            TRUE);
+                ((DrawableBSP *)list->object)->Update(&pos, &rot);
 
                 if (Objects[i].VisID == MapVisId(VIS_F16C))
-                    ((DrawableBSP*)list->object)->SetSwitchMask(10, TRUE);
+                    ((DrawableBSP *)list->object)->SetSwitchMask(10, TRUE);
 
                 list->object->SetScale(scale);
             }
@@ -295,13 +308,16 @@ void LoadObjects(ViewPos &View , C_Window *win)
         {
             for (int i = 0; i < NumFeatures; i++)
             {
-                PositandOrientSetData(View.Xpos * FEET_PER_KM + Features[i].Xpos , View.Ypos * FEET_PER_KM + Features[i].Ypos,
-                                      Features[i].Zpos, 0.0f, 0.0f, Features[i].Facing, &pos, &rot);
-                list = SetupViewer->LoadBuilding(i + 100, FloatToInt32(Features[i].VisID), &pos, 0.0f);
-                ((DrawableBSP*)list->object)->Update(&pos, &rot);
+                PositandOrientSetData(
+                    View.Xpos * FEET_PER_KM + Features[i].Xpos,
+                    View.Ypos * FEET_PER_KM + Features[i].Ypos,
+                    Features[i].Zpos, 0.0f, 0.0f, Features[i].Facing, &pos,
+                    &rot);
+                list = SetupViewer->LoadBuilding(
+                    i + 100, FloatToInt32(Features[i].VisID), &pos, 0.0f);
+                ((DrawableBSP *)list->object)->Update(&pos, &rot);
             }
         }
-
     }
 }
 
@@ -325,7 +341,8 @@ void STPRender(C_Base *control)
 
         SetupViewer = new C_3dViewer;
         SetupViewer->Setup();
-        SetupViewer->Viewport(control->Parent_, 2); // use client 2 for this window
+        SetupViewer->Viewport(control->Parent_,
+                              2); // use client 2 for this window
 
         short terrlvl = 0;
         float terrdist = 40.0F;
@@ -339,13 +356,15 @@ void STPRender(C_Base *control)
 
             if (slider->GetSliderPos() > mid)
             {
-                terrdist = (40.0f + ((float)slider->GetSliderPos() - mid) / mid * 40.0f);
+                terrdist = (40.0f + ((float)slider->GetSliderPos() - mid) /
+                                        mid * 40.0f);
                 terrlvl = 0;
             }
             else
             {
                 terrdist = 40.0f;
-                terrlvl = static_cast<short>(FloatToInt32(2 - ((float)slider->GetSliderPos() / mid * 2)));
+                terrlvl = static_cast<short>(FloatToInt32(
+                    2 - ((float)slider->GetSliderPos() / mid * 2)));
             }
         }
 
@@ -354,8 +373,10 @@ void STPRender(C_Base *control)
 
 
         LoadObjects(View, control->Parent_);
-        SetupViewer->SetPosition(View.Xpos * FEET_PER_KM, View.Ypos * FEET_PER_KM, View.Zpos);
-        SetupViewer->SetCamera(View.CamX, View.CamY, View.CamZ, View.CamYaw, View.CamPitch, View.CamRoll);
+        SetupViewer->SetPosition(View.Xpos * FEET_PER_KM,
+                                 View.Ypos * FEET_PER_KM, View.Zpos);
+        SetupViewer->SetCamera(View.CamX, View.CamY, View.CamZ, View.CamYaw,
+                               View.CamPitch, View.CamRoll);
         SetupViewer->InitOTW(30.0f, FALSE);
 
         viewpt = SetupViewer->GetVP();
@@ -368,7 +389,10 @@ void STPRender(C_Base *control)
 
         if (slider not_eq NULL)
         {
-            objdetail = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 5 + 0.5F);
+            objdetail = FloatToInt32(
+                (float)slider->GetSliderPos() /
+                    (slider->GetSliderMax() - slider->GetSliderMin()) * 5 +
+                0.5F);
         }
 
         if (NumObjects)
@@ -395,7 +419,6 @@ void STPRender(C_Base *control)
         F4LeaveCriticalSection(SetupCritSection);
 
 
-
         text = (C_Text *)control->Parent_->FindControl(LOADING);
 
         if (text)
@@ -404,10 +427,11 @@ void STPRender(C_Base *control)
             text->Refresh();
         }
 
-        if ( not tmpVpoint)
+        if (not tmpVpoint)
         {
             tmpVpoint = new RViewPoint;
-            tmpVpoint->Setup(80.0f * FEET_PER_KM, 0, 4, DisplayOptions.bZBuffering);
+            tmpVpoint->Setup(80.0f * FEET_PER_KM, 0, 4,
+                             DisplayOptions.bZBuffering);
             tmpVpoint->Update(&pos);
         }
 
@@ -415,7 +439,7 @@ void STPRender(C_Base *control)
         control->Parent_->RefreshClient(2);
         ready = TRUE;
     }
-}//STPRender
+} //STPRender
 
 void RenderViewCB(long, short hittype, C_Base *control)
 {
@@ -436,13 +460,14 @@ void RenderViewCB(long, short hittype, C_Base *control)
 
         //Sleep(100);
         //STPRender(control);
-        PostMessage(gMainHandler->GetAppWnd(), FM_STP_START_RENDER, 0, (LPARAM)control);
+        PostMessage(gMainHandler->GetAppWnd(), FM_STP_START_RENDER, 0,
+                    (LPARAM)control);
     }
     else
     {
         if (SetupViewer)
         {
-            if ( not ready)
+            if (not ready)
             {
                 ((C_Button *)control)->SetState(C_STATE_1);
                 ((C_Button *)control)->Refresh();
@@ -467,7 +492,6 @@ void RenderViewCB(long, short hittype, C_Base *control)
         }
     }
 }
-
 
 
 void ChangeViewpointCB(long, short, C_Base *)
@@ -498,7 +522,6 @@ void ChangeViewpointCB(long, short, C_Base *)
                 }
 
 
-
                 float pitchChg = 0.0f, yawChg = 0.0f;
                 float altChg = 0.0f;
                 float newPitch = 0.0f, newYaw = 0.0f, newAlt;
@@ -508,13 +531,18 @@ void ChangeViewpointCB(long, short, C_Base *)
                 extern AxisMapping AxisMap;
 
                 if (AxisMap.FlightControlDevice not_eq -1)
-                    if (IO.digital[(AxisMap.FlightControlDevice - SIM_JOYSTICK1)*SIMLIB_MAX_DIGITAL])
+                    if (IO.digital[(AxisMap.FlightControlDevice -
+                                    SIM_JOYSTICK1) *
+                                   SIMLIB_MAX_DIGITAL])
                     {
                         pitchChg = IO.analog[AXIS_PITCH].engrValue * PITCH_CHG;
                         yawChg = IO.analog[AXIS_ROLL].engrValue * YAW_CHG;
                         altChg = 1.0f - IO.analog[AXIS_THROTTLE].engrValue;
 
-                        if (IO.digital[((AxisMap.FlightControlDevice - SIM_JOYSTICK1)*SIMLIB_MAX_DIGITAL) + 1])
+                        if (IO.digital[((AxisMap.FlightControlDevice -
+                                         SIM_JOYSTICK1) *
+                                        SIMLIB_MAX_DIGITAL) +
+                                       1])
                         {
                             altChg = altChg * altChg * ALT_CHG;
                         }
@@ -550,20 +578,20 @@ void ChangeViewpointCB(long, short, C_Base *)
                     newAlt = MAX_ALT;
 
 
-                SetupViewer->SetCamera(SetupViewer->GetCameraX(), SetupViewer->GetCameraY(),
-                                       newAlt, newYaw, newPitch, 0.0f);
+                SetupViewer->SetCamera(SetupViewer->GetCameraX(),
+                                       SetupViewer->GetCameraY(), newAlt,
+                                       newYaw, newPitch, 0.0f);
 
                 //win->RefreshClient(2);
                 F4LeaveCriticalSection(SetupCritSection);
                 //UI_Leave(Leave);
                 win->RefreshWindow();
             }
-
         }
 
         count++;
     }
-}//ChangeViewpointCB
+} //ChangeViewpointCB
 
 void ScalingCB(long, short hittype, C_Base *)
 {
@@ -594,7 +622,7 @@ void GouraudCB(long, short hittype, C_Base *control)
      control->Parent_->RefreshClient(2);
      //have the rendered view update with new settings
     */
-}//GouraudCB
+} //GouraudCB
 
 void HazingCB(long, short hittype, C_Base *control)
 {
@@ -617,7 +645,7 @@ void HazingCB(long, short hittype, C_Base *control)
 
     //have the rendered view update with new settings
 
-}//HazingCB
+} //HazingCB
 
 //JAM 07Dec03
 void RealWeatherShadowsCB(long, short hittype, C_Base *control)
@@ -661,7 +689,7 @@ void BilinearFilterCB(long, short hittype, C_Base *control)
 
     //have the rendered view update with new settings
 
-}//BilinearFilterCB
+} //BilinearFilterCB
 
 
 /*void ObjectTextureCB(long,short hittype,C_Base *control)
@@ -690,14 +718,15 @@ void BilinearFilterCB(long, short hittype, C_Base *control)
 void RemoveObjFromView(int objID)
 {
     C_BSPList *bsplist;
-    BSPLIST   *list;
+    BSPLIST *list;
 
     F4EnterCriticalSection(SetupCritSection);
 
     bsplist = SetupViewer->GetBSPList();
 
     // I don't think this will happen, but time is short so lets be safe...
-    if ( not bsplist) return;
+    if (not bsplist)
+        return;
 
     list = bsplist->Root_;
 
@@ -719,7 +748,6 @@ void RemoveObjFromView(int objID)
     }
 
     F4LeaveCriticalSection(SetupCritSection);
-
 }
 void BuildingDetailCB(long, short hittype, C_Base *control)
 {
@@ -731,7 +759,10 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
         return;
 
     slider = (C_Slider *)control;
-    objdetail = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 5 + 0.5F);
+    objdetail =
+        FloatToInt32((float)slider->GetSliderPos() /
+                         (slider->GetSliderMax() - slider->GetSliderMin()) * 5 +
+                     0.5F);
 
     C_EditBox *ebox;
     ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
@@ -759,7 +790,8 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
             {
                 for (int i = 0; i < NumFeatures; i++)
                 {
-                    if ((Features[i].Priority <= objdetail) and (Features[i].Priority > prevdetail))
+                    if ((Features[i].Priority <= objdetail) and
+                        (Features[i].Priority > prevdetail))
                         SetupViewer->AddToView(i + 100);
                 }
             }
@@ -768,7 +800,8 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
         {
             for (int i = 0; i < NumFeatures; i++)
             {
-                if ((Features[i].Priority > objdetail) and (Features[i].Priority <= prevdetail))
+                if ((Features[i].Priority > objdetail) and
+                    (Features[i].Priority <= prevdetail))
                     RemoveObjFromView(i + 100);
             }
         }
@@ -779,14 +812,14 @@ void BuildingDetailCB(long, short hittype, C_Base *control)
     control->Parent_->RefreshWindow();
     F4LeaveCriticalSection(SetupCritSection);
 
-}//BuildingDetailCB
+} //BuildingDetailCB
 
 void PlayerBubbleCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_MOUSEMOVE)
         return;
 
-    C_Slider    *slider;
+    C_Slider *slider;
     slider = (C_Slider *)control;
 
     C_EditBox *ebox;
@@ -794,7 +827,11 @@ void PlayerBubbleCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMult + 1.5f));
+        ebox->SetInteger(
+            FloatToInt32((float)slider->GetSliderPos() /
+                             (slider->GetSliderMax() - slider->GetSliderMin()) *
+                             6 * GraphicSettingMult +
+                         1.5f));
         ebox->Refresh();
     }
 }
@@ -806,7 +843,7 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
         return;
 
     float detail;
-    C_Slider    *slider;
+    C_Slider *slider;
     slider = (C_Slider *)control;
 
     C_EditBox *ebox;
@@ -814,7 +851,11 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6 * GraphicSettingMult + 1.5f));
+        ebox->SetInteger(
+            FloatToInt32((float)slider->GetSliderPos() /
+                             (slider->GetSliderMax() - slider->GetSliderMin()) *
+                             6 * GraphicSettingMult +
+                         1.5f));
         ebox->Refresh();
     }
 
@@ -823,13 +864,15 @@ void ObjectDetailCB(long, short hittype, C_Base *control)
 
     RenderOTW *renderer;
     renderer = SetupViewer->GetRendOTW();
-    detail = ((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f * GraphicSettingMult);
+    detail = ((float)slider->GetSliderPos() /
+              (slider->GetSliderMax() - slider->GetSliderMin()) * 1.5f *
+              GraphicSettingMult);
     renderer->SetObjectDetail(detail);
 
     //have the rendered view update with new settings
     control->Parent_->RefreshWindow();
 
-}//VehicleDetailCB
+} //VehicleDetailCB
 
 void VehicleSizeCB(long, short hittype, C_Base *control)
 {
@@ -841,7 +884,10 @@ void VehicleSizeCB(long, short hittype, C_Base *control)
     int scale;
 
     slider = (C_Slider *)control;
-    scale = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4 + 1);
+    scale =
+        FloatToInt32((float)slider->GetSliderPos() /
+                         (slider->GetSliderMax() - slider->GetSliderMin()) * 4 +
+                     1);
 
     C_EditBox *ebox;
     ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
@@ -878,8 +924,7 @@ void VehicleSizeCB(long, short hittype, C_Base *control)
     control->Parent_->RefreshWindow();
 
 
-
-}//VehicleSizeCB
+} //VehicleSizeCB
 
 void TerrainDetailCB(long, short hittype, C_Base *control)
 {
@@ -896,7 +941,11 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
     if (ebox)
     {
-        ebox->SetInteger(FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 6.0F * GraphicSettingMult  + 1.5F));
+        ebox->SetInteger(
+            FloatToInt32((float)slider->GetSliderPos() /
+                             (slider->GetSliderMax() - slider->GetSliderMin()) *
+                             6.0F * GraphicSettingMult +
+                         1.5F));
         ebox->Refresh();
     }
 
@@ -904,7 +953,8 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
         return;
 
     int step;
-    step = (slider->GetSliderMax() - slider->GetSliderMin()) / (6 * GraphicSettingMult);
+    step = (slider->GetSliderMax() - slider->GetSliderMin()) /
+           (6 * GraphicSettingMult);
 
     if (abs(slider->GetSliderPos() - prevpos) > step - 1)
     {
@@ -923,13 +973,15 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
         if (slider->GetSliderPos() > 2 * step)
         {
-            terrdist = 40.0f + ((float)slider->GetSliderPos() / step - 2) * 10.0f;
+            terrdist =
+                40.0f + ((float)slider->GetSliderPos() / step - 2) * 10.0f;
             terrlvl = 0;
         }
         else
         {
             terrdist = 40.0f;
-            terrlvl = static_cast<short>(FloatToInt32(2.0F - ((float)slider->GetSliderPos() / step)));
+            terrlvl = static_cast<short>(
+                FloatToInt32(2.0F - ((float)slider->GetSliderPos() / step)));
         }
 
         F4EnterCriticalSection(SetupCritSection);
@@ -950,7 +1002,7 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
             while (cur)
             {
-                if (((DrawableBSP*)cur->object)->InDisplayList())
+                if (((DrawableBSP *)cur->object)->InDisplayList())
                     viewpt->RemoveObject(cur->object);
 
                 cur = cur->Next;
@@ -961,7 +1013,8 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
             Smoke = NULL;
             viewpt->Cleanup();
             //viewpt = new RViewPoint;
-            viewpt->Setup(terrdist * FEET_PER_KM, terrlvl, 4, DisplayOptions.bZBuffering);
+            viewpt->Setup(terrdist * FEET_PER_KM, terrlvl, 4,
+                          DisplayOptions.bZBuffering);
             viewpt->Update(&pos);
 
             renderer->Cleanup();
@@ -973,7 +1026,11 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
             if (tslider)
             {
-                renderer->SetObjectDetail((float)tslider->GetSliderPos() / (tslider->GetSliderMax() - tslider->GetSliderMin()) * 1.5f + 0.5f);
+                renderer->SetObjectDetail(
+                    (float)tslider->GetSliderPos() /
+                        (tslider->GetSliderMax() - tslider->GetSliderMin()) *
+                        1.5f +
+                    0.5f);
             }
 
             /* tslider = (C_Slider *)control->Parent_->FindControl(TEXTURE_DISTANCE);
@@ -1038,7 +1095,10 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
 
             if (slider not_eq NULL)
             {
-                disagglvl = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 5 + 0.5F);
+                disagglvl = FloatToInt32(
+                    (float)slider->GetSliderPos() /
+                        (slider->GetSliderMax() - slider->GetSliderMin()) * 5 +
+                    0.5F);
 
                 if (NumFeatures)
                 {
@@ -1064,7 +1124,6 @@ void TerrainDetailCB(long, short hittype, C_Base *control)
         }
 
         F4LeaveCriticalSection(SetupCritSection);
-
 
 
         control->Parent_->RefreshWindow();
@@ -1117,7 +1176,9 @@ void SfxLevelCB(long, short hittype, C_Base *control)
     C_Slider *slider;
     slider = (C_Slider *)control;
     int pos;
-    pos = FloatToInt32((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin()) * 4.0f);
+    pos =
+        FloatToInt32((float)slider->GetSliderPos() /
+                     (slider->GetSliderMax() - slider->GetSliderMin()) * 4.0f);
 
     C_EditBox *ebox;
     ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
@@ -1129,7 +1190,7 @@ void SfxLevelCB(long, short hittype, C_Base *control)
     }
 
 
-}//SfxLevelCB
+} //SfxLevelCB
 
 
 void BuildVideoCardList(C_ListBox *lbox)
@@ -1140,14 +1201,17 @@ void BuildVideoCardList(C_ListBox *lbox)
     char buf2[256];
     long value;
 
-    C_ListBox *VidCardList = (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_DRIVER);
+    C_ListBox *VidCardList =
+        (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_DRIVER);
     Driver = VidCardList->GetTextID() - 1;
 
     // Artscout - 2026: D3D11/D3D12 -- the DDraw device enum is bypassed. Populate the card combo from the
     // real DXGI adapters (GPU names) so the selector actually lets you pick a GPU; resolutions come from
-    // g_d3d11Modes (adapter-independent). Falls back to one synthetic entry if enumeration fails.
+    // g_DisplayModes (adapter-independent). Falls back to one synthetic entry if enumeration fails.
     extern bool g_bUseD3D12;
-    if (g_bUseD3D12)
+    extern bool
+        g_bUseGpu; // #104: adapter list is populated on any GPU backend (D3D12/Vulkan)
+    if (g_bUseGpu)
     {
         value = lbox->GetTextID();
         lbox->RemoveAllItems();
@@ -1163,7 +1227,9 @@ void BuildVideoCardList(C_ListBox *lbox)
         }
         else
         {
-            lbox->AddItem(1, C_TYPE_ITEM, g_bUseD3D12 ? "Direct3D 12 Device" : "Direct3D 11 Device");
+            lbox->AddItem(1, C_TYPE_ITEM,
+                          (char *)(g_bUseD3D12 ? "Direct3D 12 Device" :
+                                                 "Direct3D 11 Device"));
         }
         lbox->SetValue(value ? value : 1);
         lbox->Refresh();
@@ -1172,17 +1238,19 @@ void BuildVideoCardList(C_ListBox *lbox)
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if ( not pDI) return;
+    if (not pDI)
+        return;
 
     value = lbox->GetTextID();
     lbox->RemoveAllItems();
 
     while (buf = FalconDisplay.devmgr.GetDeviceName(Driver, i))
     {
-        if ( not g_bEnumSoftwareDevices)
+        if (not g_bEnumSoftwareDevices)
         {
             // check for software device
-            DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI->GetDevice(i);
+            DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI =
+                pDI->GetDevice(i);
 
             if (pD3DDI and not pD3DDI->IsHardware())
             {
@@ -1213,12 +1281,24 @@ void BuildVideoDriverList(C_ListBox *lbox)
 
     // Artscout - 2026: under D3D11 the DDraw driver enum is bypassed (devmgr empty) -> the combo stayed
     // blank and the resolution list (keyed off the driver index) never built. Show one synthetic
-    // adapter (index -> id 1 -> Driver 0) so the UI populates; the actual modes come from g_d3d11Modes.
-    extern bool g_bUseD3D12;
-    if (g_bUseD3D12)
+    // adapter (index -> id 1 -> Driver 0) so the UI populates; the actual modes come from g_DisplayModes.
+    extern bool g_bUseGpu;
+    if (g_bUseGpu) // #104: the backend selector list builds on any GPU backend (D3D12/Vulkan)
     {
-        lbox->AddItem(1, C_TYPE_ITEM, g_bUseD3D12 ? "Direct3D 12" : "Direct3D 11");
-        lbox->SetValue(1);
+        // Artscout - 2026 (#104): the legacy DDraw "driver" list is repurposed as the render-backend selector.
+        // Under the modern engine the driver index is meaningless (one synthetic adapter), so this list picks
+        // DirectX 12 vs Vulkan; item id maps to DisplayOptions.nRenderer (id 1 -> 0 = DX12, id 2 -> 1 = Vulkan)
+        // which is applied to g_bUseVulkan on Apply/startup. DispVideoDriver stays 0 (modes come from the backend).
+        lbox->AddItem(1, C_TYPE_ITEM, "DirectX 12");
+        lbox->AddItem(2, C_TYPE_ITEM, "Vulkan");
+        // Artscout - 2026: the dropdown MUST reflect the LIVE backend. g_bUseVulkan is the truth (set at startup from
+        // nRenderer), but DisplayOptions.nRenderer can be stale (0) by the time this tab opens -> "OK" then silently
+        // rewrote the renderer to DX12 (id 1) even though the session is running Vulkan. Re-sync before selecting.
+        {
+            extern bool g_bUseVulkan;
+            DisplayOptions.nRenderer = g_bUseVulkan ? 1 : 0;
+        }
+        lbox->SetValue(DisplayOptions.nRenderer + 1);
         lbox->Refresh();
         return;
     }
@@ -1248,10 +1328,12 @@ void BuildResolutionList(C_ListBox *lbox)
     int isel = -1;
     int nNumItems = 0;
 
-    C_ListBox *VidDriverList = (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_DRIVER);
+    C_ListBox *VidDriverList =
+        (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_DRIVER);
     Driver = VidDriverList->GetTextID() - 1;
 
-    C_ListBox *VidCardList = (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_CARD);
+    C_ListBox *VidCardList =
+        (C_ListBox *)lbox->Parent_->FindControl(SET_VIDEO_CARD);
     Card = VidCardList->GetTextID() - 1;
 
     value = lbox->GetTextID();
@@ -1260,23 +1342,28 @@ void BuildResolutionList(C_ListBox *lbox)
     // Artscout - 2026: under D3D11 the DDraw driver/device enumeration is bypassed (DevMgr), so
     // GetDriver/GetDevice return NULL -> the old early-returns left the resolution list empty (only the
     // default 640x480) and the adapter/driver combos blank. The D3D11 mode list comes from GetMode's
-    // curated g_d3d11Modes table (driver/card-independent), so DON'T bail under D3D11 -- pDI/pD3DDI are
+    // curated g_DisplayModes table (driver/card-independent), so DON'T bail under D3D11 -- pDI/pD3DDI are
     // only used by the DDraw depth filter in the !g_bUseD3D11 branch below.
-    extern bool g_bUseD3D12;
-    const bool bModernApi = g_bUseD3D12;
+    extern bool g_bUseGpu;
+    const bool bModernApi =
+        g_bUseGpu; // #104: modern GPU mode list (D3D12/Vulkan), not dead DDraw enum
 
     DeviceManager::DDDriverInfo *pDI = FalconDisplay.devmgr.GetDriver(Driver);
 
-    if ( not pDI and not bModernApi) return;
+    if (not pDI and not bModernApi)
+        return;
 
-    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI = pDI ? pDI->GetDevice(Card) : NULL;
+    DeviceManager::DDDriverInfo::D3DDeviceInfo *pD3DDI =
+        pDI ? pDI->GetDevice(Card) : NULL;
 
-    if ( not pD3DDI and not bModernApi) return;
+    if (not pD3DDI and not bModernApi)
+        return;
 
     // OW
 #if 1
 
-    while (FalconDisplay.devmgr.GetMode(Driver, Card, i++, &width, &height, &depth))
+    while (FalconDisplay.devmgr.GetMode(Driver, Card, i++, &width, &height,
+                                        &depth))
     {
         // PHASE 5: under D3D11/D3D12 GetMode returns an already-curated list (incl. widescreen),
         // the 4:3 filter and DDraw depth checks are not needed -- take the mode as is.
@@ -1285,7 +1372,9 @@ void BuildResolutionList(C_ListBox *lbox)
             sprintf(buf2, "%0dx%0d - %d Bit", width, height, depth);
             lbox->AddItem(i - 1, C_TYPE_ITEM, buf2);
 
-            if (width == DisplayOptions.DispWidth and height == DisplayOptions.DispHeight and depth == DisplayOptions.DispDepth)
+            if (width == DisplayOptions.DispWidth and
+                height == DisplayOptions.DispHeight and
+                depth == DisplayOptions.DispDepth)
                 isel = i - 1;
 
             nNumItems++;
@@ -1295,7 +1384,8 @@ void BuildResolutionList(C_ListBox *lbox)
         // For now we only allow 640x480, 800x600, 1280x960, 1600x1200
         // (MPR already does the 4:3 aspect ratio check for us)
         if (height > 400 and ((width == 640 or width == 800 or width == 1024 or
-                              (width == 1280 and height == 960) or width == 1600 or HighResolutionHackFlag)))
+                               (width == 1280 and height == 960) or
+                               width == 1600 or HighResolutionHackFlag)))
         {
             if (depth == 8 or depth == 24)
                 continue;
@@ -1303,14 +1393,18 @@ void BuildResolutionList(C_ListBox *lbox)
             // if(depth == 16 and not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_16))
             if (depth == 16)
                 continue;
-            else if (depth == 32 and not (pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand DDBD_32))
+            else if (depth == 32 and
+                     not(pD3DDI->m_devDesc.dwDeviceRenderBitDepth bitand
+                         DDBD_32))
                 continue;
 
             sprintf(buf2, "%0dx%0d - %d Bit", width, height, depth);
             lbox->AddItem(i - 1, C_TYPE_ITEM, buf2);
 
             // remember index for current mode
-            if (width == DisplayOptions.DispWidth and height == DisplayOptions.DispHeight and depth == DisplayOptions.DispDepth)
+            if (width == DisplayOptions.DispWidth and
+                height == DisplayOptions.DispHeight and
+                depth == DisplayOptions.DispDepth)
                 isel = i - 1;
 
             nNumItems++;
@@ -1319,8 +1413,10 @@ void BuildResolutionList(C_ListBox *lbox)
 
     ShiAssert(i > 0);
 
-    if (isel not_eq -1) lbox->SetValue(isel);
-    else lbox->SetValue(value);
+    if (isel not_eq -1)
+        lbox->SetValue(isel);
+    else
+        lbox->SetValue(value);
 
     lbox->Refresh();
 #else
@@ -1343,10 +1439,9 @@ void BuildResolutionList(C_ListBox *lbox)
 
 void DisableEnableDrivers(C_ListBox *)
 {
-
 }
 
-void DisableEnableResolutions(C_ListBox*)
+void DisableEnableResolutions(C_ListBox *)
 {
 }
 
@@ -1359,22 +1454,30 @@ void VrResScaleSliderCB(long, short, C_Base *control)
     C_Slider *slider = (C_Slider *)control;
     long roId = slider->GetUserNumber(0);
 
-    if ( not roId or not control->Parent_) return;
+    if (not roId or not control->Parent_)
+        return;
 
     C_EditBox *ebox = (C_EditBox *)control->Parent_->FindControl(roId);
 
-    if ( not ebox) return;
+    if (not ebox)
+        return;
 
     // Artscout - 2026: map via the STEP INDEX (0..5), not the raw pixel ratio. The slider snaps to span/5
     // pixel stops (integer division), and FloatToInt32 truncates -> a direct pos->percent gave 50/59/69/79/89/100.
     // Rounding to the nearest step first, then percent = 50 + step*10, lands exactly on 50/60/70/80/90/100.
     int span = slider->GetSliderMax() - slider->GetSliderMin();
-    int step = (span > 0) ? FloatToInt32((float)slider->GetSliderPos() / (float)span * 5.0F + 0.5F) : 0;
+    int step =
+        (span > 0) ?
+            FloatToInt32((float)slider->GetSliderPos() / (float)span * 5.0F +
+                         0.5F) :
+            0;
 
-    if (step < 0) step = 0;
-    if (step > 5) step = 5;
+    if (step < 0)
+        step = 0;
+    if (step > 5)
+        step = 5;
 
-    int val = 50 + step * 10;   // 50,60,70,80,90,100
+    int val = 50 + step * 10; // 50,60,70,80,90,100
 
     ebox->SetInteger(val);
     ebox->Refresh();
@@ -1392,14 +1495,21 @@ void MsaaSamplesCB(long, short hittype, C_Base *control)
     // Artscout - 2026: round to the nearest STEP INDEX (0..7) first -- the pixel stops (span/7, integer) and
     // FloatToInt32's truncation otherwise lose a step (e.g. requested 2 read back as 1). samples = 1 + step.
     int span = slider->GetSliderMax() - slider->GetSliderMin();
-    int step = (span > 0) ? FloatToInt32((float)slider->GetSliderPos() / (float)span * 7.0F + 0.5F) : 0;
+    int step =
+        (span > 0) ?
+            FloatToInt32((float)slider->GetSliderPos() / (float)span * 7.0F +
+                         0.5F) :
+            0;
 
-    if (step < 0) step = 0;
-    if (step > 7) step = 7;
+    if (step < 0)
+        step = 0;
+    if (step > 7)
+        step = 7;
 
-    int samples = 1 + step;   // 1..8
+    int samples = 1 + step; // 1..8
 
-    C_EditBox *ebox = (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
+    C_EditBox *ebox =
+        (C_EditBox *)control->Parent_->FindControl(slider->GetUserNumber(0));
 
     if (ebox)
     {
@@ -1416,7 +1526,8 @@ void SetAdvanced()
 
     win = gMainHandler->FindWindow(SETUP_WIN);
 
-    if (win == NULL) return;
+    if (win == NULL)
+        return;
 
     // Artscout - 2026: the device-info lookup is needed ONLY for the Render-To-Texture SupportsSRT() check
     // below. Under D3D11 the legacy DDraw device manager enumerates nothing, so GetDriver/GetDevice return
@@ -1435,7 +1546,8 @@ void SetAdvanced()
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     //========================================
     // FRB - Force Z-Buffering
@@ -1447,37 +1559,50 @@ void SetAdvanced()
     //========================================
 
     //JAM 12Oct03
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_ANISOTROPIC_FILTERING);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_ANISOTROPIC_FILTERING);
 
-    if (button) button->SetState(DisplayOptions.bAnisotropicFiltering ? C_STATE_1 : C_STATE_0);
+    if (button)
+        button->SetState(DisplayOptions.bAnisotropicFiltering ? C_STATE_1 :
+                                                                C_STATE_0);
 
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_LINEAR_MIPMAP_FILTERING);
+    button =
+        (C_Button *)win->FindControl(SETUP_ADVANCED_LINEAR_MIPMAP_FILTERING);
 
-    if (button) button->SetState(DisplayOptions.bLinearMipFiltering ? C_STATE_1 : C_STATE_0);
+    if (button)
+        button->SetState(DisplayOptions.bLinearMipFiltering ? C_STATE_1 :
+                                                              C_STATE_0);
 
     // Artscout - 2026: VR controls (Advanced page) <- DisplayOptions. These replaced the removed
     // "Rendered 2D Cockpit" checkbox (forced TRUE under D3D11 anyway). OpenXR + QuadViews + res-scale slider.
     {
-        C_Slider  *slider;
+        C_Slider *slider;
         C_EditBox *ebox;
 
-        button = (C_Button *) win->FindControl(SETUP_ADVANCED_OPENXR);
+        button = (C_Button *)win->FindControl(SETUP_ADVANCED_OPENXR);
 
-        if (button) button->SetState(DisplayOptions.bUseOpenXR ? C_STATE_1 : C_STATE_0);
+        if (button)
+            button->SetState(DisplayOptions.bUseOpenXR ? C_STATE_1 : C_STATE_0);
 
-        button = (C_Button *) win->FindControl(SETUP_ADVANCED_QUADVIEWS);
+        button = (C_Button *)win->FindControl(SETUP_ADVANCED_QUADVIEWS);
 
-        if (button) button->SetState(DisplayOptions.bUseQuadViews ? C_STATE_1 : C_STATE_0);
+        if (button)
+            button->SetState(DisplayOptions.bUseQuadViews ? C_STATE_1 :
+                                                            C_STATE_0);
 
-        slider = (C_Slider *) win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
+        slider = (C_Slider *)win->FindControl(SETUP_ADVANCED_VR_RESSCALE);
 
         if (slider not_eq NULL)
         {
             int scl = DisplayOptions.nVrResolutionScale;
-            if (scl < 50)  scl = 50;
-            if (scl > 100) scl = 100;
-            slider->SetSliderPos(FloatToInt32((float)(slider->GetSliderMax() - slider->GetSliderMin()) * (scl - 50) / 50.0F));
-            ebox = (C_EditBox *) win->FindControl(SETUP_ADVANCED_VR_RESSCALE_READOUT);
+            if (scl < 50)
+                scl = 50;
+            if (scl > 100)
+                scl = 100;
+            slider->SetSliderPos(FloatToInt32(
+                (float)(slider->GetSliderMax() - slider->GetSliderMin()) *
+                (scl - 50) / 50.0F));
+            ebox = (C_EditBox *)win->FindControl(
+                SETUP_ADVANCED_VR_RESSCALE_READOUT);
 
             if (ebox)
             {
@@ -1486,37 +1611,45 @@ void SetAdvanced()
                 slider->SetUserNumber(0, SETUP_ADVANCED_VR_RESSCALE_READOUT);
             }
 
-            slider->SetCallback(VrResScaleSliderCB);   // Artscout - 2026: live readout on drag
+            slider->SetCallback(
+                VrResScaleSliderCB); // Artscout - 2026: live readout on drag
         }
     }
 
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_SCREEN_COORD_BIAS_FIX);
 
-    if (button) button->SetState(DisplayOptions.bScreenCoordinateBiasFix ? C_STATE_1 : C_STATE_0); //Wombat778 4-01-04
+    if (button)
+        button->SetState(DisplayOptions.bScreenCoordinateBiasFix ?
+                             C_STATE_1 :
+                             C_STATE_0); //Wombat778 4-01-04
 
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_MIPMAPPING);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_MIPMAPPING);
 
-    if (button) button->SetState(DisplayOptions.bMipmapping ? C_STATE_1 : C_STATE_0);
+    if (button)
+        button->SetState(DisplayOptions.bMipmapping ? C_STATE_1 : C_STATE_0);
 
     // #33: windowed/fullscreen toggle for the 3D session
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_WINDOWED);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_WINDOWED);
 
-    if (button) button->SetState(DisplayOptions.bWindowed ? C_STATE_1 : C_STATE_0);
+    if (button)
+        button->SetState(DisplayOptions.bWindowed ? C_STATE_1 : C_STATE_0);
 
-    button = (C_Button *) win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
+    button = (C_Button *)win->FindControl(SETUP_ADVANCED_RENDER_TO_TEXTURE);
 
     if (button)
     {
         // Artscout - 2026: pDI may be NULL under D3D11 (no DDraw enumeration). Treat unknown as "supported"
         // so the button stays usable -- D3D11 always renders to texture anyway (forced in dispopts.cpp).
-        if ( not pDI or pDI->SupportsSRT()) button->SetFlagBitOn(C_BIT_ENABLED);
+        if (not pDI or pDI->SupportsSRT())
+            button->SetFlagBitOn(C_BIT_ENABLED);
         else
         {
             button->SetFlagBitOff(C_BIT_ENABLED);
             DisplayOptions.bRender2Texture = false;
         }
 
-        button->SetState(DisplayOptions.bRender2Texture ? C_STATE_1 : C_STATE_0);
+        button->SetState(DisplayOptions.bRender2Texture ? C_STATE_1 :
+                                                          C_STATE_0);
     }
 
     //  lbox = (C_ListBox *)win->FindControl(SETUP_ADVANCED_TEXTURE_MODE);
@@ -1536,7 +1669,6 @@ static void LoadBitmap(long ID, C_Button *btn, char filename[])
     btn->Refresh();
     btn->SetImage(0, ID);
     btn->Refresh();
-
 }
 
 //M.N.
@@ -1645,7 +1777,8 @@ void VideoDriverCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_SELECT)
         return;
 
-    C_ListBox *lbox = (C_ListBox *)control->Parent_->FindControl(SET_VIDEO_CARD);
+    C_ListBox *lbox =
+        (C_ListBox *)control->Parent_->FindControl(SET_VIDEO_CARD);
 
     if (lbox)
         BuildVideoCardList(lbox);
@@ -1704,14 +1837,17 @@ void ResolutionCB(long, short hittype, C_Base *)
 //JAM 21Nov03
 void RealWeatherCB(long, short hittype, C_Base *control)
 {
-    if (hittype not_eq C_TYPE_SELECT) return;
+    if (hittype not_eq C_TYPE_SELECT)
+        return;
 
-    C_ListBox *lbox = (C_ListBox*)control;
+    C_ListBox *lbox = (C_ListBox *)control;
 
-    if (TheCampaign.InMainUI or not ((WeatherClass *)realWeather)->lockedCondition)
+    if (TheCampaign.InMainUI or
+        not((WeatherClass *)realWeather)->lockedCondition)
     {
         PlayerOptions.weatherCondition = lbox->GetTextID() - 70207;
-        ((WeatherClass *)realWeather)->UpdateCondition(PlayerOptions.weatherCondition, true);
+        ((WeatherClass *)realWeather)
+            ->UpdateCondition(PlayerOptions.weatherCondition, true);
         ((WeatherClass *)realWeather)->Init(true);
     }
     else if (((WeatherClass *)realWeather)->unlockableCondition == 0)
@@ -1751,9 +1887,10 @@ void RealWeatherCB(long, short hittype, C_Base *control)
 //THW 2004-01-17
 void SeasonCB(long, short hittype, C_Base *control)
 {
-    if (hittype not_eq C_TYPE_SELECT) return;
+    if (hittype not_eq C_TYPE_SELECT)
+        return;
 
-    C_ListBox *lbox = (C_ListBox*)control;
+    C_ListBox *lbox = (C_ListBox *)control;
     PlayerOptions.Season = lbox->GetTextID() - 70313;
     //lbox->AddItem(70313,C_TYPE_ITEM,"Summer");
     //lbox->AddItem(70314,C_TYPE_ITEM,"Fall");
@@ -1794,7 +1931,12 @@ void SetupGraphicsControls(void)
         BuildVideoDriverList(lbox);
 
         DisableEnableDrivers(lbox);
-        lbox->SetValue(DisplayOptions.DispVideoDriver + 1);
+        // Artscout - 2026 (#104): render BACKEND selector (id 1 = DX12, 2 = Vulkan) -- select by the LIVE backend, not
+        // DispVideoDriver (forced 0 -> pinned DX12). Same fix as ui_setup.cpp SET_VIDEO_DRIVER.
+        {
+            extern bool g_bUseVulkan;
+            lbox->SetValue((g_bUseVulkan ? 1 : 0) + 1);
+        }
         lbox->Refresh();
     }
 
@@ -1887,12 +2029,15 @@ void SetupGraphicsControls(void)
 
         if (ebox)
         {
-            ebox->SetInteger(FloatToInt32(PlayerOptions.ObjDetailLevel * 4.0F - 1.0F));
+            ebox->SetInteger(
+                FloatToInt32(PlayerOptions.ObjDetailLevel * 4.0F - 1.0F));
             ebox->Refresh();
             slider->SetUserNumber(0, OBJECT_DETAIL_READOUT);
         }
 
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjDetailLevel - 0.5f) / 1.5f));
+        slider->SetSliderPos(
+            FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) *
+                         (PlayerOptions.ObjDetailLevel - 0.5f) / 1.5f));
         slider->Refresh();
     }
 
@@ -1911,7 +2056,8 @@ void SetupGraphicsControls(void)
             slider->SetUserNumber(0, DISAGG_LEVEL_READOUT);
         }
 
-        slider->SetSliderPos((slider->GetSliderMax() - slider->GetSliderMin())*PlayerOptions.ObjDeaggLevel / 100);
+        slider->SetSliderPos((slider->GetSliderMax() - slider->GetSliderMin()) *
+                             PlayerOptions.ObjDeaggLevel / 100);
         slider->Refresh();
     }
 
@@ -1921,7 +2067,9 @@ void SetupGraphicsControls(void)
     if (slider not_eq NULL)
     {
         slider->Refresh();
-        slider->SetSliderPos(FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) * (PlayerOptions.ObjMagnification - 1.0F) / 4.0F));
+        slider->SetSliderPos(
+            FloatToInt32((slider->GetSliderMax() - slider->GetSliderMin()) *
+                         (PlayerOptions.ObjMagnification - 1.0F) / 4.0F));
         ebox = (C_EditBox *)win->FindControl(VEHICLE_SIZE_READOUT);
 
         if (ebox)
@@ -1959,9 +2107,11 @@ void SetupGraphicsControls(void)
         slider->Refresh();
 
         if (PlayerOptions.DispTerrainDist > 40)
-            slider->SetSliderPos(FloatToInt32(step * (2 + (PlayerOptions.DispTerrainDist - 40.0F) / 10.0F)));
+            slider->SetSliderPos(FloatToInt32(
+                step * (2 + (PlayerOptions.DispTerrainDist - 40.0F) / 10.0F)));
         else
-            slider->SetSliderPos((2 - PlayerOptions.DispMaxTerrainLevel)*step);
+            slider->SetSliderPos((2 - PlayerOptions.DispMaxTerrainLevel) *
+                                 step);
 
         slider->Refresh();
 
@@ -1969,7 +2119,11 @@ void SetupGraphicsControls(void)
 
         if (ebox)
         {
-            ebox->SetInteger(FloatToInt32(((float)slider->GetSliderPos() / (slider->GetSliderMax() - slider->GetSliderMin())) * 6.0F + 1.5F));
+            ebox->SetInteger(FloatToInt32(
+                ((float)slider->GetSliderPos() /
+                 (slider->GetSliderMax() - slider->GetSliderMin())) *
+                    6.0F +
+                1.5F));
             ebox->Refresh();
             slider->SetUserNumber(0, TEX_DETAIL_READOUT);
         }
@@ -1977,7 +2131,8 @@ void SetupGraphicsControls(void)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     // M.N. SkyColor stuff
     // win = gMainHandler->FindWindow(SETUP_SKY_WIN);
@@ -2004,6 +2159,9 @@ void GraphicsDefaultsCB(long, short hittype, C_Base *)
         DisplayOptions.DispDepth = Display.DispDepth; // OW
         DisplayOptions.DispVideoCard = Display.DispVideoCard;
         DisplayOptions.DispVideoDriver = Display.DispVideoDriver;
+        DisplayOptions.nRenderer =
+            Display
+                .nRenderer; // #104: keep the render-backend choice with the other display fields
         DisplayOptions.DispDepth = 32; // Cobra - Always use 32-bit
     }
     else
@@ -2013,6 +2171,7 @@ void GraphicsDefaultsCB(long, short hittype, C_Base *)
         DisplayOptions.DispDepth = 32; // Cobra - Always use 32-bit
         DisplayOptions.DispVideoCard = 0;
         DisplayOptions.DispVideoDriver = 0;
+        DisplayOptions.nRenderer = 0; // #104: default DirectX 12
     }
 
     if (Player.LoadOptions("default"))
@@ -2055,7 +2214,8 @@ void AdvancedCB(long ID, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SETUP_ADVANCED_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
@@ -2069,9 +2229,11 @@ void AdvancedGameCB(long ID, short hittype, C_Base *control)
 
     C_Window *win;
 
-    win = gMainHandler->FindWindow(ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
+    win = gMainHandler->FindWindow(
+        ADVANCED_GAME_OPTIONS_WIN); // JPOLOOK - not finished yet
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
@@ -2087,7 +2249,8 @@ void SkyColorCB(long ID, short hittype, C_Base *control)
 
     win = gMainHandler->FindWindow(SETUP_SKY_WIN);
 
-    if ( not win) return;
+    if (not win)
+        return;
 
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);

@@ -3,11 +3,11 @@
 
 #include "f4vu.h"
 #include "geometry.h"
-#include "Graphics/Include/drawBsp.h"
-#include "CampLib.h"
+#include "graphics/include/drawbsp.h"
+#include "camplib.h"
 
 class ObjectiveClass;
-typedef ObjectiveClass* Objective;
+typedef ObjectiveClass *Objective;
 
 // =============================
 // Defines and Flags
@@ -48,11 +48,13 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
-        pool = MemPoolInitFS(sizeof(SimPersistantClass), MAX_PERSISTANT_OBJECTS, 0);
+        pool = MemPoolInitFS(sizeof(SimPersistantClass), MAX_PERSISTANT_OBJECTS,
+                             0);
     };
     static void ReleaseStorage()
     {
@@ -63,7 +65,7 @@ public:
 
 public:
     float x, y;
-    DrawableBSP* drawPointer;
+    DrawableBSP *drawPointer;
     union
     {
         CampaignTime removeTime;
@@ -78,8 +80,8 @@ public:
     ~SimPersistantClass(void);
 
     // serialization functions
-    void Load(VU_BYTE** stream);
-    void Load(FILE* filePtr);
+    void Load(VU_BYTE **stream);
+    void Load(FILE *filePtr);
     int SaveSize();
     int Save(VU_BYTE **stream); // returns bytes written
     int Save(FILE *file); // returns bytes written
@@ -122,29 +124,35 @@ void InitPersistantDatabase(void);
 void CleanupPersistantDatabase(void);
 
 // These two functions will create a persistant object and broadcast to all remote machines
-void AddToTimedPersistantList(int vistype, CampaignTime removalTime, float x, float y);
-void AddToLinkedPersistantList(int vistype, FalconEntity *campObj, int campIdx, float x, float y);
+void AddToTimedPersistantList(int vistype, CampaignTime removalTime, float x,
+                              float y);
+void AddToLinkedPersistantList(int vistype, FalconEntity *campObj, int campIdx,
+                               float x, float y);
 
 // These two functions will create a persistant object LOCALLY ONLY
-void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x, float y);
-void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx, float x, float y);
+void NewTimedPersistantObject(int vistype, CampaignTime removalTime, float x,
+                              float y);
+void NewLinkedPersistantObject(int vistype, VU_ID campObjID, int campIdx,
+                               float x, float y);
 
-void SavePersistantList(char* scenario);
+void SavePersistantList(char *scenario);
 
-void LoadPersistantList(char* scenario);
+void LoadPersistantList(char *scenario);
 
-int EncodePersistantList(VU_BYTE** stream, int maxSize);
+int EncodePersistantList(VU_BYTE **stream, int maxSize);
 
 //sfr: added rem
-void DecodePersistantList(VU_BYTE** stream, long *rem);
+void DecodePersistantList(VU_BYTE **stream, long *rem);
 
 int SizePersistantList(int maxSize);
 
 void CleanupPersistantList(void);
 
-void UpdatePersistantObjectsWakeState(float px, float py, float range, CampaignTime now);
+void UpdatePersistantObjectsWakeState(float px, float py, float range,
+                                      CampaignTime now);
 
-void CleanupLinkedPersistantObjects(FalconEntity *campObject, int index, int newVis, int ratio);
+void CleanupLinkedPersistantObjects(FalconEntity *campObject, int index,
+                                    int newVis, int ratio);
 
 // These functions were designed to allow the campaign to create local copies of persistant
 // entities upon receiving a damage message

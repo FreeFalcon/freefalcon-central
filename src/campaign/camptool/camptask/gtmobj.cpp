@@ -10,9 +10,9 @@
 #include "cmpglobl.h"
 #include "gtm.h"
 #include "objectiv.h"
-#include "CampList.h"
+#include "camplist.h"
 #include "gtmobj.h"
-#include "Find.h"
+#include "find.h"
 
 // ===============================
 // Global current element pointers
@@ -36,12 +36,13 @@ void CleanupObjList(void)
     VuListIterator poit(POList);
 
     // Eliminate objectives no longer in list
-    lp = PODataList->GetFirstElement();;
+    lp = PODataList->GetFirstElement();
+    ;
 
     while (lp)
     {
         np = lp->GetNext();
-        pod = (POData) lp->GetUserData();
+        pod = (POData)lp->GetUserData();
         o = FindObjective(pod->objective);
 
         if (!o || !o->IsPrimary())
@@ -103,7 +104,7 @@ POData GetPOData(Objective po)
 
     while (lp)
     {
-        pd = (POData) lp->GetUserData();
+        pd = (POData)lp->GetUserData();
 
         if (pd->objective == po->Id())
             return pd;
@@ -124,7 +125,7 @@ void ResetObjectiveAssignmentScores(void)
 
     while (lp)
     {
-        pod = (POData) lp->GetUserData();
+        pod = (POData)lp->GetUserData();
 
         for (i = 0; i < NUM_TEAMS; i++)
             pod->ground_assigned[i] = 0;
@@ -609,7 +610,3 @@ int GetOptions(int score)
 
     return 0;
 }
-
-
-
-

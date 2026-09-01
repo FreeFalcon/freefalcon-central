@@ -1,7 +1,7 @@
 #include "stdhdr.h"
 #include "f4vu.h"
 #include "simobj.h"
-#include "ClassTbl.h"
+#include "classtbl.h"
 #include "camp2sim.h"
 #include "otwdrive.h"
 #include "aircrft.h"
@@ -16,11 +16,11 @@
 #include "f4error.h"
 #include "simfiltr.h"
 #include "entity.h"
-#include "FalcSess.h"
-#include "PlayerOp.h"
+#include "falcsess.h"
+#include "playerop.h"
 #include "acmi/src/include/acmirec.h"
-#include "CampBase.h"
-#include "Pilot.h"
+#include "campbase.h"
+#include "pilot.h"
 #include "object.h"
 #include "radar.h"
 #include "airunit.h"
@@ -30,8 +30,9 @@
 
 ACMIFeaturePositionRecord featPos;
 
-static SimBaseClass* AddFeatureToSim(SimInitDataClass *initData);
-static SimBaseClass* AddVehicleToSim(SimInitDataClass *initData, int motionType);
+static SimBaseClass* AddFeatureToSim(SimInitDataClass* initData);
+static SimBaseClass* AddVehicleToSim(SimInitDataClass* initData,
+                                     int motionType);
 static int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self);
 void CalcTransformMatrix(SimBaseClass* theObject);
 
@@ -44,11 +45,11 @@ MEM_POOL SimObjectLocalData::pool;
 #define COUNT_SIMOBJECTTYPE 0
 #if COUNT_SIMOBJECTTYPE
 DWORD SimObjects = 0;
-F4CSECTIONHANDLE *som = F4CreateCriticalSection("sim object count");
+F4CSECTIONHANDLE* som = F4CreateCriticalSection("sim object count");
 #endif
 
-SimObjectType::SimObjectType(FalconEntity* baseObj) :
-    baseData(baseObj), mutex(F4CreateCriticalSection("simobj")), refCount(0)
+SimObjectType::SimObjectType(FalconEntity* baseObj)
+    : baseData(baseObj), mutex(F4CreateCriticalSection("simobj")), refCount(0)
 {
 #if COUNT_SIMOBJECTTYPE
     {
@@ -101,7 +102,7 @@ void SimObjectType::Release(void)
 
 SimObjectType* SimObjectType::Copy(void)
 {
-    SimObjectType *theCopy = new SimObjectType(baseData.get());
+    SimObjectType* theCopy = new SimObjectType(baseData.get());
     *theCopy->localData = *localData;
     // sfr: temp test for leak
     //theCopy->next = NULL;
@@ -120,9 +121,9 @@ BOOL SimObjectType::IsReferenced(void)
 }
 
 
-SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
+SimBaseClass* AddObjectToSim(SimInitDataClass* initData, int motionType)
 {
-    SimBaseClass* retval, *leadObject;
+    SimBaseClass *retval, *leadObject;
 
     // LRKLUDGE
     if (initData->flags < 0)
@@ -136,7 +137,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
 
         if (gACMIRec.IsRecording() and retval)
         {
-            featPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            featPos.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             featPos.data.type = retval->Type();
             featPos.data.uniqueID = (retval->Id());//.num_;
             featPos.data.x = retval->XPos();
@@ -174,13 +176,13 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
     {
         switch (initData->createType)
         {
-            case SimInitDataClass::CampaignVehicle:
-            case SimInitDataClass::CampaignFeature:
-                retval->SetTypeFlag(FalconEntity::FalconSimEntity);
-                break;
+        case SimInitDataClass::CampaignVehicle:
+        case SimInitDataClass::CampaignFeature:
+            retval->SetTypeFlag(FalconEntity::FalconSimEntity);
+            break;
 
-            default:
-                ShiWarning("Unknown sim object initiater.\n");
+        default:
+            ShiWarning("Unknown sim object initiater.\n");
         }
 
         if (initData->createFlags bitand SIDC_REMOTE_OWNER)
@@ -190,30 +192,27 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
 
         // Inherit certain attributes from campaign parent
         // HACK HACK HACK HACK HACK
-        if (FalconLocalGame->GetGameType() == game_Dogfight and initData->campBase->IsUnit())
-            //    if ((initData->campUnit and initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) or
-            //    (initData->campObj and initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
-            // END HACK
+        if (FalconLocalGame->GetGameType() == game_Dogfight and
+            initData->campBase->IsUnit())
+        //    if ((initData->campUnit and initData->campUnit->IsSetFalcFlag(FEC_REGENERATING)) or
+        //    (initData->campObj and initData->campObj->IsSetFalcFlag(FEC_REGENERATING)))
+        // END HACK
         {
             retval->SetFalcFlag(FEC_REGENERATING);
             retval->reinitData = new SimInitDataClass;
             *retval->reinitData = *initData;
         }
 
-        if (
-            initData->playerSlot not_eq NO_PILOT and 
-            initData->campBase->IsUnit() and 
-            initData->campBase->IsSetFalcFlag(FEC_PLAYERONLY)
-        )
+        if (initData->playerSlot not_eq NO_PILOT and
+            initData->campBase->IsUnit() and
+            initData->campBase->IsSetFalcFlag(FEC_PLAYERONLY))
         {
             retval->SetFalcFlag(FEC_PLAYERONLY);
         }
 
-        if (
-            initData->playerSlot not_eq NO_PILOT and 
-            initData->campBase->IsUnit() and 
-            initData->campBase->IsSetFalcFlag(FEC_HOLDSHORT)
-        )
+        if (initData->playerSlot not_eq NO_PILOT and
+            initData->campBase->IsUnit() and
+            initData->campBase->IsSetFalcFlag(FEC_HOLDSHORT))
         {
             retval->SetFalcFlag(FEC_HOLDSHORT);
         }
@@ -229,8 +228,8 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
         vuDatabase->Insert(retval);
 
         retval->SetTransmissionTime(
-            vuxRealTime + (unsigned long)((float)rand() / RAND_MAX * retval->UpdateRate())
-        );
+            vuxRealTime +
+            (unsigned long)((float)rand() / RAND_MAX * retval->UpdateRate()));
     }
 
     return (retval);
@@ -238,12 +237,13 @@ SimBaseClass* AddObjectToSim(SimInitDataClass *initData, int motionType)
 
 
 // sfr: temp test
-void *debugPtr = NULL;
+void* debugPtr = NULL;
 
-SimBaseClass* AddVehicleToSim(SimInitDataClass *initData, int motionType)
+SimBaseClass* AddVehicleToSim(SimInitDataClass* initData, int motionType)
 {
     SimBaseClass* theVehicle = NULL;
-    Falcon4EntityClassType* classPtr = &Falcon4ClassTable[initData->descriptionIndex - VU_LAST_ENTITY_TYPE];
+    Falcon4EntityClassType* classPtr =
+        &Falcon4ClassTable[initData->descriptionIndex - VU_LAST_ENTITY_TYPE];
 
     if (classPtr->vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_LAND)
     {
@@ -290,7 +290,7 @@ SimBaseClass* AddVehicleToSim(SimInitDataClass *initData, int motionType)
 }
 
 
-SimBaseClass* AddFeatureToSim(SimInitDataClass *initData)
+SimBaseClass* AddFeatureToSim(SimInitDataClass* initData)
 {
     SimFeatureClass* theFeature;
 
@@ -307,12 +307,13 @@ SimBaseClass* AddFeatureToSim(SimInitDataClass *initData)
 /* Update targe list is a little out of place here, but here goes..
 /*=================================================================*/
 
-SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, FalconPrivateOrderedList* thisObjectList)
+SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self,
+                                FalconPrivateOrderedList* thisObjectList)
 {
     VuListIterator updateWalker(thisObjectList);
     // sfr: how can you be so sure this is a SimBaseClass???
     //SimBaseClass* curUpdate;
-    FalconEntity *curUpdate;
+    FalconEntity* curUpdate;
     SimObjectType* curInUse;
     SimObjectType* tmpInUse;
     SimObjectType* lastInUse = NULL;
@@ -335,47 +336,15 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
         {
             switch (SimCompare(curInUse->BaseData(), curUpdate))
             {
-                case 0: // curUpdate == curInUse -- Means the current entry is still active
-                    if ( not curUpdate->IsExploding() and CheckForConcern(curUpdate, self))
-                    {
-                        lastInUse = curInUse;
-                        curInUse = curInUse->next;
-                    }
-                    else
-                    {
-                        //Remove from In Use List
-                        if (curInUse->prev == NULL)
-                        {
-                            headOfNewList = curInUse->next;
-                        }
-                        else
-                        {
-                            curInUse->prev->next = curInUse->next;
-                        }
-
-                        if (curInUse->next)
-                        {
-                            curInUse->next->prev = curInUse->prev;
-                        }
-
-                        //edg: Fix bAAAAADDDDD bug
-                        lastInUse = curInUse->prev;
-
-                        tmpInUse = curInUse;
-                        curInUse = curInUse->next;
-                        // This node will either die or be pointed to by radar->lockedTarget;
-                        tmpInUse->prev = NULL;
-                        tmpInUse->next = NULL;
-                        tmpInUse->Release();
-                        tmpInUse = NULL;
-                    }
-
-                    //curUpdate = (SimBaseClass*)updateWalker.GetNext();
-                    curUpdate = (FalconEntity*)updateWalker.GetNext();
-                    break;
-
-                case 1: // curUpdate > curInUse -- Means the current entry should be removed
-
+            case 0: // curUpdate == curInUse -- Means the current entry is still active
+                if (not curUpdate->IsExploding() and
+                    CheckForConcern(curUpdate, self))
+                {
+                    lastInUse = curInUse;
+                    curInUse = curInUse->next;
+                }
+                else
+                {
                     //Remove from In Use List
                     if (curInUse->prev == NULL)
                     {
@@ -391,7 +360,7 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
                         curInUse->next->prev = curInUse->prev;
                     }
 
-                    // edg: fix baaaad bug
+                    //edg: Fix bAAAAADDDDD bug
                     lastInUse = curInUse->prev;
 
                     tmpInUse = curInUse;
@@ -401,38 +370,73 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
                     tmpInUse->next = NULL;
                     tmpInUse->Release();
                     tmpInUse = NULL;
-                    break;
+                }
 
-                case -1: // curUpdate < curInUse -- Insert into the list
-                    if ( not curUpdate->IsDead() and CheckForConcern(curUpdate, self))
+                //curUpdate = (SimBaseClass*)updateWalker.GetNext();
+                curUpdate = (FalconEntity*)updateWalker.GetNext();
+                break;
+
+            case 1: // curUpdate > curInUse -- Means the current entry should be removed
+
+                //Remove from In Use List
+                if (curInUse->prev == NULL)
+                {
+                    headOfNewList = curInUse->next;
+                }
+                else
+                {
+                    curInUse->prev->next = curInUse->next;
+                }
+
+                if (curInUse->next)
+                {
+                    curInUse->next->prev = curInUse->prev;
+                }
+
+                // edg: fix baaaad bug
+                lastInUse = curInUse->prev;
+
+                tmpInUse = curInUse;
+                curInUse = curInUse->next;
+                // This node will either die or be pointed to by radar->lockedTarget;
+                tmpInUse->prev = NULL;
+                tmpInUse->next = NULL;
+                tmpInUse->Release();
+                tmpInUse = NULL;
+                break;
+
+            case -1: // curUpdate < curInUse -- Insert into the list
+                if (not curUpdate->IsDead() and
+                    CheckForConcern(curUpdate, self))
+                {
+                    // Add before curInUse
+                    tmpInUse = new SimObjectType(curUpdate);
+                    tmpInUse->Reference();
+                    memset(tmpInUse->localData->sensorLoopCount, 0,
+                           SensorClass::NumSensorTypes * sizeof(int));
+                    tmpInUse->localData->range = 0.0F;
+                    tmpInUse->localData->ataFrom = 180.0F * DTR;
+                    tmpInUse->localData->aspect = 0.0F;
+                    CalcRelGeom(self, tmpInUse, NULL, 1.0F);
+                    tmpInUse->next = curInUse;
+                    tmpInUse->prev = curInUse->prev;
+
+                    if (curInUse->prev == NULL)
                     {
-                        // Add before curInUse
-                        tmpInUse = new SimObjectType(curUpdate);
-                        tmpInUse->Reference();
-                        memset(tmpInUse->localData->sensorLoopCount, 0, SensorClass::NumSensorTypes * sizeof(int));
-                        tmpInUse->localData->range = 0.0F;
-                        tmpInUse->localData->ataFrom = 180.0F * DTR;
-                        tmpInUse->localData->aspect = 0.0F;
-                        CalcRelGeom(self, tmpInUse, NULL, 1.0F);
-                        tmpInUse->next = curInUse;
-                        tmpInUse->prev = curInUse->prev;
-
-                        if (curInUse->prev == NULL)
-                        {
-                            headOfNewList = tmpInUse;
-                        }
-                        else
-                        {
-                            curInUse->prev->next = tmpInUse;
-                        }
-
-                        curInUse->prev = tmpInUse;
-                        lastInUse = curInUse;
+                        headOfNewList = tmpInUse;
+                    }
+                    else
+                    {
+                        curInUse->prev->next = tmpInUse;
                     }
 
-                    //curUpdate = (SimBaseClass*)updateWalker.GetNext();
-                    curUpdate = (FalconEntity*)updateWalker.GetNext();
-                    break;
+                    curInUse->prev = tmpInUse;
+                    lastInUse = curInUse;
+                }
+
+                //curUpdate = (SimBaseClass*)updateWalker.GetNext();
+                curUpdate = (FalconEntity*)updateWalker.GetNext();
+                break;
             }
         } // inUse
         else
@@ -440,16 +444,16 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self, F
             // Check and add to the end of the list if needed
             // sfr: removed JB hack
             if (
-                // not F4IsBadReadPtr(curUpdate, sizeof(SimBaseClass)) and 
- not curUpdate->IsDead() and CheckForConcern(curUpdate, self)
-            )
+                // not F4IsBadReadPtr(curUpdate, sizeof(SimBaseClass)) and
+                not curUpdate->IsDead() and CheckForConcern(curUpdate, self))
             {
                 // Add after lastInUse
                 tmpInUse = new SimObjectType(curUpdate);
                 tmpInUse->Reference();
                 tmpInUse->localData->range = 0.0F;
                 tmpInUse->localData->ataFrom = 180.0F * DTR;
-                memset(tmpInUse->localData->sensorLoopCount, 0, SensorClass::NumSensorTypes * sizeof(int));
+                memset(tmpInUse->localData->sensorLoopCount, 0,
+                       SensorClass::NumSensorTypes * sizeof(int));
                 tmpInUse->localData->aspect = 0.0F;
                 CalcRelGeom(self, tmpInUse, NULL, 1.0F);
                 tmpInUse->prev = lastInUse;
@@ -514,7 +518,6 @@ void ReleaseTargetList(SimObjectType* InUseList)
 }
 
 
-
 int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
 {
     float rangeSqr, airRange, gndRange;
@@ -540,7 +543,8 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
 
     // edg: I'm going to try this out -- don't put anything into target
     // lists that are hidden (should only affect helos and grnd vehicles)
-    if (curUpdate->IsSim() and ((SimBaseClass*)curUpdate)->IsSetLocalFlag(IS_HIDDEN))
+    if (curUpdate->IsSim() and
+        ((SimBaseClass*)curUpdate)->IsSetLocalFlag(IS_HIDDEN))
     {
         return FALSE;
     }
@@ -550,7 +554,8 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     // can be shot and collided with  Missile logic may have to be changed...
     // to reduce possible crashes and other anomalies I'm doing this only
     // for player vehicle
-    if (curUpdate->EntityType()->classInfo_[VU_TYPE] == TYPE_EJECT and self not_eq SimDriver.GetPlayerEntity())
+    if (curUpdate->EntityType()->classInfo_[VU_TYPE] == TYPE_EJECT and
+        self not_eq SimDriver.GetPlayerEntity())
     {
         return FALSE;
     }
@@ -562,7 +567,8 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
 
         if (self->IsAirplane())
         {
-            RadarClass *radar = ((RadarClass*)FindSensor(self, SensorClass::Radar));
+            RadarClass* radar =
+                ((RadarClass*)FindSensor(self, SensorClass::Radar));
 
             if (radar)
             {
@@ -570,18 +576,21 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
 
                 if (radar->IsAG())
                 {
-                    gndRange = max(20.0F * NM_TO_FT * 20.0F * NM_TO_FT, tmpRng * NM_TO_FT * tmpRng * NM_TO_FT);
+                    gndRange = max(20.0F * NM_TO_FT * 20.0F * NM_TO_FT,
+                                   tmpRng * NM_TO_FT * tmpRng * NM_TO_FT);
                     airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
                 }
                 else
                 {
                     gndRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
-                    airRange = max(20.0F * NM_TO_FT * 20.0F * NM_TO_FT, tmpRng * NM_TO_FT * tmpRng * NM_TO_FT);
+                    airRange = max(20.0F * NM_TO_FT * 20.0F * NM_TO_FT,
+                                   tmpRng * NM_TO_FT * tmpRng * NM_TO_FT);
                 }
             }
 
             // 2001-03-02 ADDED BY S.G. SO RWR CONTACTS ARE MAINTAINED IN THE *PLAYERS* TARGET LIST, OTHERWISE, RWR WILL DO FUNNY STUFF WITH THESE
-            VehRwrClass *rwr = ((VehRwrClass *)FindSensor(self, SensorClass::RWR));
+            VehRwrClass* rwr =
+                ((VehRwrClass*)FindSensor(self, SensorClass::RWR));
 
             if (rwr)
             {
@@ -596,7 +605,9 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     {
         return FALSE;
     }
-    else if (self->IsAirplane() and (self->OnGround() /*or curUpdate->IsHelicopter()*/)) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
+    else if (
+        self->IsAirplane() and
+        (self->OnGround() /*or curUpdate->IsHelicopter()*/)) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
     {
         return FALSE;
     }
@@ -604,25 +615,35 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     {
         return FALSE;
     }
-    else if (self->IsAirplane() and (curUpdate->IsAirplane() or curUpdate->IsFlight() or curUpdate->IsHelicopter())) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
+    else if (
+        self->IsAirplane() and
+        (curUpdate->IsAirplane() or curUpdate->IsFlight() or
+         curUpdate
+             ->IsHelicopter())) // 2002-03-05 MODIFIED BY S.G. Choppers are fare game now under some condition so don't screen them out
     {
         if (self->GetTeam() == curUpdate->GetTeam())
             airRange = 100.0F * 100.0F;
-        else if (curUpdate->IsSim() and 
-                 (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER or
-                  ((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER_BOMBER or
-                  // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
-                  //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
-                  ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
+        else if (
+            curUpdate->IsSim() and
+            (((AircraftClass*)curUpdate)->GetSType() == STYPE_AIR_FIGHTER or
+             ((AircraftClass*)curUpdate)->GetSType() ==
+                 STYPE_AIR_FIGHTER_BOMBER or
+             // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
+             //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
+             ((AircraftClass*)self)->DBrain()->MissionClass() ==
+                 DigitalBrain::AAMission))
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         }
-        else if (curUpdate->IsCampaign() and 
-                 (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER or
-                  ((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER_BOMBER or
-                  // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
-                  //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
-                  ((AircraftClass*)self)->DBrain()->MissionClass() == DigitalBrain::AAMission))
+        else if (
+            curUpdate->IsCampaign() and
+            (((AirUnitClass*)curUpdate)->GetSType() == STYPE_UNIT_FIGHTER or
+             ((AirUnitClass*)curUpdate)->GetSType() ==
+                 STYPE_UNIT_FIGHTER_BOMBER or
+             // 2002-03-05 MODIFIED BY S.G. Duh, it's missionClass, not missionType that holds AAMission
+             //   ((AircraftClass*)self)->DBrain()->MissionType() == DigitalBrain::AAMission) )
+             ((AircraftClass*)self)->DBrain()->MissionClass() ==
+                 DigitalBrain::AAMission))
         {
             airRange = 20.0F * NM_TO_FT * 20.0F * NM_TO_FT;
         }
@@ -658,8 +679,10 @@ int CheckForConcern(FalconEntity* curUpdate, SimMoverClass* self)
     }
 
 
-    rangeSqr = (curUpdate->XPos() - self->XPos()) * (curUpdate->XPos() - self->XPos()) +
-               (curUpdate->YPos() - self->YPos()) * (curUpdate->YPos() - self->YPos());
+    rangeSqr =
+        (curUpdate->XPos() - self->XPos()) *
+            (curUpdate->XPos() - self->XPos()) +
+        (curUpdate->YPos() - self->YPos()) * (curUpdate->YPos() - self->YPos());
 
     if (curUpdate->OnGround())
     {
@@ -695,7 +718,7 @@ float CalcKIAS(float vt, float alt)
     }
 
     mach = vt / ((float)sqrt(ttheta) * AASL);
-    pa   = ttheta * rsigma * PASL;
+    pa = ttheta * rsigma * PASL;
 
     /*-------------------------------*/
     /* calculate calibrated airspeed */
@@ -703,16 +726,21 @@ float CalcKIAS(float vt, float alt)
     if (mach <= 1.0F)
         qc = ((float)pow((1.0F + 0.2F * mach * mach), 3.5F) - 1.0F) * pa;
     else
-        qc = ((166.9F * mach * mach) / (float)(pow((7.0F - 1.0F / (mach * mach)), 2.5F)) - 1.0F) * pa;
+        qc = ((166.9F * mach * mach) /
+                  (float)(pow((7.0F - 1.0F / (mach * mach)), 2.5F)) -
+              1.0F) *
+             pa;
 
     qpasl1 = qc / PASL + 1.0F;
     vcas = 1479.12F * (float)sqrt(pow(qpasl1, 0.285714F) - 1.0F);
 
     if (qc > 1889.64F)
     {
-        oper = qpasl1 * (float)pow((7.0F - AASLK * AASLK / (vcas * vcas)), 2.5F);
+        oper =
+            qpasl1 * (float)pow((7.0F - AASLK * AASLK / (vcas * vcas)), 2.5F);
 
-        if (oper < 0.0F) oper = 0.1F;
+        if (oper < 0.0F)
+            oper = 0.1F;
 
         vcas = 51.1987F * (float)sqrt(oper);
     }

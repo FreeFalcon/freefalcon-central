@@ -4,30 +4,30 @@
 #include <fcntl.h>
 #include <io.h>
 #include <math.h>
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "F4Find.h"
-#include "Entity.h"
-#include "ASearch.h"
-#include "Campaign.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "f4find.h"
+#include "entity.h"
+#include "asearch.h"
+#include "campaign.h"
 //sfr: checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 #ifdef DEBUG
-#include "CmpClass.h"
+#include "cmpclass.h"
 #endif
 
 // =============================================
 // Campaign Terrain ADT - Private Implementation
 // =============================================
 
-CellDataType  *TheaterCells = NULL;
+CellDataType *TheaterCells = NULL;
 unsigned char EastLongitude;
 unsigned char SouthLatitude;
-float     Latitude;
-float     Longitude;
-float     CellSizeInKilometers;
+float Latitude;
+float Longitude;
+float CellSizeInKilometers;
 
 short Map_Max_X = 0;
 short Map_Max_Y = 0;
@@ -50,18 +50,18 @@ void InitTheaterTerrain(void)
         FreeTheaterTerrain();
 
     TheaterCells = new CellDataType[Map_Max_X * Map_Max_Y];
-    memset(TheaterCells, 0, sizeof(CellDataType)*Map_Max_X * Map_Max_Y);
+    memset(TheaterCells, 0, sizeof(CellDataType) * Map_Max_X * Map_Max_Y);
 }
 
 void FreeTheaterTerrain(void)
 {
     if (TheaterCells)
-        delete [] TheaterCells;
+        delete[] TheaterCells;
 
     TheaterCells = NULL;
 }
 
-int LoadTheaterTerrain(char* name)
+int LoadTheaterTerrain(char *name)
 {
     //char *data, *data_ptr;
 
@@ -75,7 +75,7 @@ int LoadTheaterTerrain(char* name)
     }
 
     long rem = cd.dataSize;
-    VU_BYTE *data_ptr = (VU_BYTE*)cd.data;
+    VU_BYTE *data_ptr = (VU_BYTE *)cd.data;
 
     memcpychk(&Map_Max_X, &data_ptr, sizeof(short), &rem);
     memcpychk(&Map_Max_Y, &data_ptr, sizeof(short), &rem);
@@ -87,14 +87,15 @@ int LoadTheaterTerrain(char* name)
 
     InitTheaterTerrain();
 
-    memcpychk(TheaterCells, &data_ptr, sizeof(CellDataType) * Map_Max_X * Map_Max_Y, &rem);
+    memcpychk(TheaterCells, &data_ptr,
+              sizeof(CellDataType) * Map_Max_X * Map_Max_Y, &rem);
 
     delete cd.data;
 
     return 1;
 }
 
-int LoadTheaterTerrainLight(char* name)
+int LoadTheaterTerrainLight(char *name)
 {
     FILE *fp;
 
@@ -109,11 +110,11 @@ int LoadTheaterTerrainLight(char* name)
     return 1;
 }
 
-int SaveTheaterTerrain(char* name)
+int SaveTheaterTerrain(char *name)
 {
     FILE *fp;
 
-    if ( not TheaterCells)
+    if (not TheaterCells)
         return 0;
 
     if ((fp = OpenCampFile(name, "thr", "wb")) == NULL)
@@ -135,27 +136,30 @@ CellData GetCell(GridIndex x, GridIndex y)
 ReliefType GetRelief(GridIndex x, GridIndex y)
 {
     ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
-    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] bitand ReliefMask) >> ReliefShift);
+    return (ReliefType)((TheaterCells[x * Map_Max_Y + y] bitand ReliefMask) >>
+                        ReliefShift);
 }
 
 CoverType GetCover(GridIndex x, GridIndex y)
 {
     if ((x < 0) or (x >= Map_Max_X) or (y < 0) or (y >= Map_Max_Y))
-        return (CoverType) Water;
+        return (CoverType)Water;
     else
-        return (CoverType)((TheaterCells[x * Map_Max_Y + y] bitand GroundCoverMask) >> GroundCoverShift);
+        return (CoverType)((TheaterCells[x * Map_Max_Y + y] bitand
+                            GroundCoverMask) >>
+                           GroundCoverShift);
 }
 
 char GetRoad(GridIndex x, GridIndex y)
 {
     ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
-    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RoadMask) >> RoadShift);
+    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RoadMask) >>
+                  RoadShift);
 }
 
 char GetRail(GridIndex x, GridIndex y)
 {
     ShiAssert(x >= 0 and x < Map_Max_X and y >= 0 and y < Map_Max_Y);
-    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RailMask) >> RailShift);
+    return (char)((TheaterCells[x * Map_Max_Y + y] bitand RailMask) >>
+                  RailShift);
 }
-
-

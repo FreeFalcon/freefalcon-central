@@ -5,7 +5,8 @@
 #include <winsock.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 

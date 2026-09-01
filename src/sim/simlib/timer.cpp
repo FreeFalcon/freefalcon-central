@@ -47,7 +47,7 @@ SIM_FLOAT SimLibMinorFrameRate = 50.0F;
 SIM_FLOAT SimLibMajorFrameTime = 0.06F;
 SIM_FLOAT SimLibMajorFrameRate = 16.667F;
 SIM_FLOAT SimLibTimeOfDay;
-SIM_ULONG SimLibElapsedTime;
+VU_TIME SimLibElapsedTime; // #104: match the VU_TIME (32-bit) header decl
 SIM_UINT SimLibFrameCount = 0;
 SIM_INT SimLibMinorPerMajor = 3;
 SIMLIB_TIMER_CLASS Timer;
@@ -79,8 +79,7 @@ SIMLIB_TIMER_CLASS Timer;
 /********************************************************************/
 SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::FindUnusedHandle(void)
 {
-    int
-    i;
+    int i;
 
     i = 0;
 
@@ -123,14 +122,14 @@ SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::FindUnusedHandle(void)
 /************************************************************************/
 void CountdownEventCleanup(SIMLIB_TIMER_INSTANCE_DATA *cleanupData)
 {
-    int
-    i;
+    int i;
 
     SIMLIB_TIMER_CLASS
     *pt;
 
     F4Assert(cleanupData != NULL);
-    F4Assert(cleanupData->_hTimer >= 0 && cleanupData->_hTimer < SIM_MAX_TIMERS);
+    F4Assert(cleanupData->_hTimer >= 0 &&
+             cleanupData->_hTimer < SIM_MAX_TIMERS);
     F4Assert(cleanupData->_pTimer != NULL);
 
     pt = cleanupData->_pTimer;
@@ -163,8 +162,7 @@ void CountdownEventCleanup(SIMLIB_TIMER_INSTANCE_DATA *cleanupData)
 /********************************************************************/
 SIMLIB_TIMER_CLASS::SIMLIB_TIMER_CLASS(void)
 {
-    int
-    i;
+    int i;
 
     for (i = 0; i < SIM_MAX_TIMERS; i++)
     {
@@ -195,8 +193,7 @@ SIMLIB_TIMER_CLASS::SIMLIB_TIMER_CLASS(void)
 /********************************************************************/
 SIMLIB_TIMER_CLASS::~SIMLIB_TIMER_CLASS(void)
 {
-    int
-    i;
+    int i;
 
     for (i = 0; i < SIM_MAX_TIMERS; i++)
     {
@@ -235,19 +232,14 @@ SIMLIB_TIMER_CLASS::~SIMLIB_TIMER_CLASS(void)
 // LPTIMECALLBACK funcPtr,
 // DWORD userData
 //)
-SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer
-(
-    SIM_INT period,
-    SIM_INT res,
-    LPTIMECALLBACK funcPtr,
-    DWORD userData
-)
+SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartTimer(SIM_INT period, SIM_INT res,
+                                                LPTIMECALLBACK funcPtr,
+                                                DWORD userData)
 {
     SIM_TIMER_HANDLE
     hTimer;
 
-    int
-    i;
+    int i;
 
     hTimer = FindUnusedHandle();
 
@@ -290,8 +282,7 @@ SIM_INT SIMLIB_TIMER_CLASS::StopTimer(SIM_TIMER_HANDLE hTimer)
     SIM_INT
     rVal = 0;
 
-    int
-    i;
+    int i;
 
     if (hTimer != NULL)
     {
@@ -367,19 +358,14 @@ SIM_INT SIMLIB_TIMER_CLASS::StopTimer(SIM_TIMER_HANDLE hTimer)
 // LPTIMECALLBACK funcPtr,
 // DWORD userData
 //)
-SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown
-(
-    SIM_INT delay,
-    SIM_INT res,
-    LPTIMECALLBACK funcPtr,
-    DWORD userData
-)
+SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown(SIM_INT delay, SIM_INT res,
+                                                    LPTIMECALLBACK funcPtr,
+                                                    DWORD userData)
 {
     SIM_TIMER_HANDLE
     hTimer;
 
-    int
-    i;
+    int i;
 
     hTimer = FindUnusedHandle();
 
@@ -396,15 +382,8 @@ SIM_TIMER_HANDLE SIMLIB_TIMER_CLASS::StartCountdown
             _timer[i].inst._pTimer = this;
             _timer[i].inst._userData = userData;
 
-            _timer[i].id =
-                timeSetEvent
-                (
-                    delay,
-                    res,
-                    funcPtr,
-                    (DWORD)&_timer[i].inst,
-                    TIME_ONESHOT
-                );
+            _timer[i].id = timeSetEvent(delay, res, funcPtr,
+                                        (DWORD)&_timer[i].inst, TIME_ONESHOT);
 
             if (_timer[i].id == NULL)
             {
@@ -460,4 +439,3 @@ SIM_INT SIMLIB_TIMER_CLASS::Wait(SIM_INT delay)
     else
         return (SIMLIB_ERR);
 }
-

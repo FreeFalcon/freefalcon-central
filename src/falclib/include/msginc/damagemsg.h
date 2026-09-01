@@ -11,15 +11,15 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "Falcmesg.h"
-#include "FalcDmg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
+#include "falcdmg.h"
 #include "mission.h"
 #include "falcsess.h"
 #include "sim/include/simveh.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * How close is close enough?
@@ -32,7 +32,8 @@
 class FalconDamageMessage : public FalconEvent
 {
 public:
-    FalconDamageMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconDamageMessage(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     FalconDamageMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconDamageMessage(void);
     virtual int Size() const
@@ -82,9 +83,10 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
-FalconDamageMessage *CreateGroundCollisionMessage(SimVehicleClass* vehicle, int damage, VuTargetEntity *target = FalconLocalGame);
+FalconDamageMessage *
+CreateGroundCollisionMessage(SimVehicleClass *vehicle, int damage,
+                             VuTargetEntity *target = FalconLocalGame);
 
 #endif
-

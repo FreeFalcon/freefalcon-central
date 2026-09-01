@@ -1,12 +1,12 @@
 #ifndef _MISSIONREQUESTMSG_H
 #define _MISSIONREQUESTMSG_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 
 /*
  * Message Type Mission Request
@@ -14,7 +14,8 @@
 class FalconMissionRequestMessage : public FalconEvent
 {
 public:
-    FalconMissionRequestMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconMissionRequestMessage(VU_ID entityId, VuTargetEntity *target,
+                                VU_BOOL loopback = TRUE);
     FalconMissionRequestMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconMissionRequestMessage(void);
     virtual int Size() const
@@ -49,6 +50,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 #endif

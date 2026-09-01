@@ -10,8 +10,7 @@ enum
     CANM_DIRECTION,
 };
 
-char *C_Anm_Tokens[] =
-{
+char *C_Anm_Tokens[] = {
     "[NOTHING]",
     "[SETUP]",
     "[DIRECTION]",
@@ -42,7 +41,7 @@ C_Anim::~C_Anim()
 
 long C_Anim::Size()
 {
-    return(0);
+    return (0);
 }
 void C_Anim::Setup(long ID, short Type, long AnimID)
 {
@@ -119,57 +118,59 @@ void C_Anim::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
 BOOL C_Anim::TimerUpdate()
 {
-    if ( not (GetFlags() bitand C_BIT_ENABLED))
-        return(FALSE);
+    if (not(GetFlags() bitand C_BIT_ENABLED))
+        return (FALSE);
 
-    if ( not Ready()) return(FALSE);
+    if (not Ready())
+        return (FALSE);
 
     switch (GetType())
     {
-        case C_TYPE_LOOP:
-            Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
+    case C_TYPE_LOOP:
+        Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
 
-            if (Anim_->GetFrame() < 0)
-                Anim_->SetFrame(Anim_->GetAnim()->Anim->Frames - 1);
+        if (Anim_->GetFrame() < 0)
+            Anim_->SetFrame(Anim_->GetAnim()->Anim->Frames - 1);
 
-            if (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames)
-                Anim_->SetFrame(0);
+        if (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames)
+            Anim_->SetFrame(0);
 
-            return(TRUE);
-            break;
+        return (TRUE);
+        break;
 
-        case C_TYPE_STOPATEND:
-            Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
+    case C_TYPE_STOPATEND:
+        Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
 
-            if (Anim_->GetFrame() < 0)
-            {
-                Anim_->SetFrame(0);
-                return(FALSE);
-            }
+        if (Anim_->GetFrame() < 0)
+        {
+            Anim_->SetFrame(0);
+            return (FALSE);
+        }
 
-            if (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames)
-            {
-                Anim_->SetFrame(Anim_->GetAnim()->Anim->Frames - 1);
-                return(FALSE);
-            }
+        if (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames)
+        {
+            Anim_->SetFrame(Anim_->GetAnim()->Anim->Frames - 1);
+            return (FALSE);
+        }
 
-            return(TRUE);
-            break;
+        return (TRUE);
+        break;
 
-        case C_TYPE_PINGPONG:
-            Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
+    case C_TYPE_PINGPONG:
+        Anim_->SetFrame(Anim_->GetFrame() + Anim_->GetDirection());
 
-            if ((Anim_->GetFrame() < 0) or (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames))
-            {
-                Anim_->SetFrame(Anim_->GetFrame() - Anim_->GetDirection());
-                Anim_->SetDirection(-Anim_->GetDirection());
-            }
+        if ((Anim_->GetFrame() < 0) or
+            (Anim_->GetFrame() >= Anim_->GetAnim()->Anim->Frames))
+        {
+            Anim_->SetFrame(Anim_->GetFrame() - Anim_->GetDirection());
+            Anim_->SetDirection(-Anim_->GetDirection());
+        }
 
-            return(TRUE);
-            break;
+        return (TRUE);
+        break;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 #ifdef _UI95_PARSER_
@@ -180,12 +181,12 @@ short C_Anim::LocalFind(char *token)
     while (C_Anm_Tokens[i])
     {
         if (strnicmp(token, C_Anm_Tokens[i], strlen(C_Anm_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Anim::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
@@ -194,13 +195,13 @@ void C_Anim::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 
     switch (ID)
     {
-        case CANM_SETUP:
-            Setup(P[0], (short)P[1], P[2]);
-            break;
+    case CANM_SETUP:
+        Setup(P[0], (short)P[1], P[2]);
+        break;
 
-        case CANM_DIRECTION:
-            SetDirection((short)P[0]);
-            break;
+    case CANM_DIRECTION:
+        SetDirection((short)P[0]);
+        break;
     }
 }
 
@@ -209,4 +210,3 @@ extern char ParseCRLF[];
 
 
 #endif // PARSER
-

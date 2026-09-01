@@ -2,7 +2,6 @@
 #include "chandler.h"
 
 
-
 //XX
 extern DWORD RGB565toRGB8(WORD sc);
 
@@ -42,20 +41,29 @@ void C_Fontmgr::Setup(long ID, char *fontfile)
 
     fp = fopen(fontfile, "rb");
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint("FONT error: %s not opened\n", fontfile);
         return;
     }
 
+    // #104: the font header stores each of these as a 32-bit value (x86 `long`). On LP64 Linux `sizeof(long)`==8,
+    // so reading sizeof(long) over-consumed the file and corrupted every subsequent field -- fNumChars_/dSize_ came
+    // out huge and `new[]` threw std::bad_alloc. Zero the member (little-endian: high 4 bytes stay 0) and read the
+    // on-disk 4 bytes into its low half.
     fread(&name_, 32, 1, fp);
-    fread(&height_, sizeof(long), 1, fp);
+    height_ = 0;
+    fread(&height_, sizeof(int), 1, fp);
     fread(&first_, sizeof(short), 1, fp);
     fread(&last_, sizeof(short), 1, fp);
-    fread(&bytesperline_, sizeof(long), 1, fp);
-    fread(&fNumChars_, sizeof(long), 1, fp);
-    fread(&kNumKerns_, sizeof(long), 1, fp);
-    fread(&dSize_, sizeof(long), 1, fp);
+    bytesperline_ = 0;
+    fread(&bytesperline_, sizeof(int), 1, fp);
+    fNumChars_ = 0;
+    fread(&fNumChars_, sizeof(int), 1, fp);
+    kNumKerns_ = 0;
+    fread(&kNumKerns_, sizeof(int), 1, fp);
+    dSize_ = 0;
+    fread(&dSize_, sizeof(int), 1, fp);
 
     if (fNumChars_)
     {
@@ -72,7 +80,8 @@ void C_Fontmgr::Setup(long ID, char *fontfile)
     if (dSize_)
     {
 #ifdef USE_SH_POOLS
-        fontData_ = (char*)MemAllocPtr(UI_Pools[UI_GENERAL_POOL], sizeof(char) * (dSize_), FALSE);
+        fontData_ = (char *)MemAllocPtr(UI_Pools[UI_GENERAL_POOL],
+                                        sizeof(char) * (dSize_), FALSE);
 #else
         fontData_ = new char[dSize_];
 #endif
@@ -88,7 +97,7 @@ void C_Fontmgr::Save(char *filename)
 
     fp = fopen(filename, "wb");
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint("FONT error: can't create %s\n", filename);
         return;
@@ -163,27 +172,28 @@ long C_Fontmgr::Width(_TCHAR *str)
     long size;
     long thechar;
 
-    if ( not str)
-        return(0);
+    if (not str)
+        return (0);
 
     size = 0;
     i = 0;
 
     while (str[i])
-        //while( not F4IsBadReadPtr(&(str[i]), sizeof(_TCHAR)) and str[i]) // JB 010401 CTD (too much CPU)
+    //while( not F4IsBadReadPtr(&(str[i]), sizeof(_TCHAR)) and str[i]) // JB 010401 CTD (too much CPU)
     {
         thechar = str[i] bitand 0xff;
 
         if (thechar >= first_ and thechar <= last_)
         {
             thechar -= first_;
-            size += fontTable_[thechar].lead + fontTable_[thechar].w + fontTable_[thechar].trail;
+            size += fontTable_[thechar].lead + fontTable_[thechar].w +
+                    fontTable_[thechar].trail;
         }
 
         i++;
     }
 
-    return(size + 1);
+    return (size + 1);
 }
 
 long C_Fontmgr::Width(_TCHAR *str, long len)
@@ -192,8 +202,8 @@ long C_Fontmgr::Width(_TCHAR *str, long len)
     long size;
     long thechar;
 
-    if ( not str)
-        return(0);
+    if (not str)
+        return (0);
 
     size = 0;
     i = 0;
@@ -205,26 +215,27 @@ long C_Fontmgr::Width(_TCHAR *str, long len)
         if (thechar >= first_ and thechar <= last_)
         {
             thechar -= first_;
-            size += fontTable_[thechar].lead + fontTable_[thechar].w + fontTable_[thechar].trail;
+            size += fontTable_[thechar].lead + fontTable_[thechar].w +
+                    fontTable_[thechar].trail;
         }
 
         i++;
     }
 
-    return(size + 1);
+    return (size + 1);
 }
 
 long C_Fontmgr::Height()
 {
-    return(height_);
+    return (height_);
 }
 
 CharStr *C_Fontmgr::GetChar(short ID)
 {
     if (fontTable_ and ID >= first_ and ID <= last_)
-        return(&fontTable_[ID - first_]);
+        return (&fontTable_[ID - first_]);
 
-    return(NULL);
+    return (NULL);
 }
 
 
@@ -234,7 +245,7 @@ extern WORD RGB8toRGB565(DWORD); //XX (chandler.cpp)
 // (Cyrillic CP1251 0xC0-0xFF etc.) -- such text is drawn via GDI.
 bool C_Fontmgr::NeedGDI(_TCHAR *str, long length)
 {
-    if ( not str)
+    if (not str)
         return false;
 
     // Treat any byte >= 0x80 as non-Latin (Cyrillic CP1251 etc.) and route
@@ -252,21 +263,23 @@ bool C_Fontmgr::NeedGDI(_TCHAR *str, long length)
 // GDI path: render the whole string with a system TTF (RUSSIAN_CHARSET, Cyrillic)
 // into a 32-bit DIB (white text on black = a coverage mask), then alpha-composite
 // onto the SCREEN surface (16- or 32-bit). cliprect is optional.
-void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                        long x, long y, UI95_RECT *cliprect)
 {
-    if ( not surface or not str or length <= 0)
+    if (not surface or not str or length <= 0)
         return;
 
     int fh = (height_ > 2) ? (int)height_ : 12;
 
     HDC memDC = CreateCompatibleDC(NULL);
 
-    if ( not memDC)
+    if (not memDC)
         return;
 
-    HFONT hFont = CreateFontA(-(fh - 4), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
-                              RUSSIAN_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
-                              ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Tahoma");
+    HFONT hFont =
+        CreateFontA(-(fh - 4), 0, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE,
+                    RUSSIAN_CHARSET, OUT_TT_PRECIS, CLIP_DEFAULT_PRECIS,
+                    ANTIALIASED_QUALITY, DEFAULT_PITCH | FF_DONTCARE, "Tahoma");
     HGDIOBJ oldFont = SelectObject(memDC, hFont);
 
     SIZE sz;
@@ -294,7 +307,7 @@ void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, l
     void *bits = NULL;
     HBITMAP dib = CreateDIBSection(memDC, &bi, DIB_RGB_COLORS, &bits, NULL, 0);
 
-    if ( not dib)
+    if (not dib)
     {
         SelectObject(memDC, oldFont);
         DeleteObject(hFont);
@@ -306,7 +319,8 @@ void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 
     ZeroMemory(bits, (size_t)tw * th * 4); // black background
     SetBkMode(memDC, TRANSPARENT);
-    SetTextColor(memDC, RGB(255, 255, 255)); // white -> pixel intensity = coverage
+    SetTextColor(memDC,
+                 RGB(255, 255, 255)); // white -> pixel intensity = coverage
     TextOutA(memDC, 0, 0, (LPCSTR)str, (int)length);
     GdiFlush();
 
@@ -320,10 +334,14 @@ void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 
     if (cliprect)
     {
-        if (cliprect->left > clipL) clipL = cliprect->left;
-        if (cliprect->top > clipT) clipT = cliprect->top;
-        if (cliprect->right < clipR) clipR = cliprect->right;
-        if (cliprect->bottom < clipB) clipB = cliprect->bottom;
+        if (cliprect->left > clipL)
+            clipL = cliprect->left;
+        if (cliprect->top > clipT)
+            clipT = cliprect->top;
+        if (cliprect->right < clipR)
+            clipR = cliprect->right;
+        if (cliprect->bottom < clipB)
+            clipB = cliprect->bottom;
     }
 
     DWORD *srcpix = (DWORD *)bits;
@@ -339,7 +357,7 @@ void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, l
         {
             int a = (int)(srcpix[py * tw + px] & 0xFF); // coverage 0..255
 
-            if ( not a)
+            if (not a)
                 continue;
 
             long dx = x + px;
@@ -385,7 +403,8 @@ void C_Fontmgr::DrawGDI(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 }
 
 
-void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y)
+void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                     long x, long y)
 {
     if (NeedGDI(str, length))
     {
@@ -398,12 +417,12 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
     unsigned long thechar;
     unsigned char *sstart, *sptr, seg = 0;
     WORD *dstart, *dptr, *dendh, *dendv;
-    bool b32 = surface->bpp == 32;//XX
+    bool b32 = surface->bpp == 32; //XX
 
-    if ( not fontData_)
+    if (not fontData_)
         return;
 
-    if ( not str)
+    if (not str)
         return;
 
     idx = 0;
@@ -413,29 +432,38 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
     if (b32) //XX
         dendv = surface->mem + 2 * (surface->width * surface->height);
     else
-        dendv = surface->mem + surface->width * surface->height; // Make sure we don't go past the end of the surface
+        dendv =
+            surface->mem +
+            surface->width *
+                surface
+                    ->height; // Make sure we don't go past the end of the surface
 
 
     while (str[idx] and idx < length)
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) 
+        if (thechar >= (unsigned long)first_ and
+            thechar <= (unsigned long)last_)
         {
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
 
-            sstart = (unsigned char *)(fontData_ + (thechar * bytesperline_ * height_));
+            sstart = (unsigned char *)(fontData_ +
+                                       (thechar * bytesperline_ * height_));
 
             if (b32)
             {
-                dstart = surface->mem + 2 * ((yoffset * surface->width) + xoffset);
-                dendh = surface->mem + 2 * ((yoffset * surface->width) + surface->width);
+                dstart =
+                    surface->mem + 2 * ((yoffset * surface->width) + xoffset);
+                dendh = surface->mem +
+                        2 * ((yoffset * surface->width) + surface->width);
             }
             else
             {
                 dstart = surface->mem + (yoffset * surface->width) + xoffset;
-                dendh = surface->mem + (yoffset * surface->width) + surface->width;
+                dendh =
+                    surface->mem + (yoffset * surface->width) + surface->width;
             }
 
 
@@ -448,7 +476,7 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
                 {
                     if (dptr < dendh)
                     {
-                        if ( not (j bitand 0x7))
+                        if (not(j bitand 0x7))
                             seg = *sptr++;
 
                         //XX
@@ -460,7 +488,7 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
                         if (seg bitand 1)
                         {
                             if (b32)
-                                *((DWORD*)(dptr)) = RGB565toRGB8(color);
+                                *((DWORD *)(dptr)) = RGB565toRGB8(color);
                             else
                                 *dptr = color;
                         }
@@ -477,7 +505,7 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
                 dstart += surface->width;
                 dendh += surface->width;
 
-                if (b32)  //XX
+                if (b32) //XX
                 {
                     dstart += surface->width;
                     dendh += surface->width;
@@ -491,7 +519,8 @@ void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long
     }
 }
 
-void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y)
+void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                          WORD bgcolor, long x, long y)
 {
     long idx, i, j;
     long xoffset, yoffset;
@@ -499,13 +528,13 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
     unsigned char *sstart, *sptr, seg = 0;
     WORD *dstart, *dptr, *dendh, *dendv;
 
-    if ( not fontData_)
+    if (not fontData_)
         return;
 
-    if ( not str)
+    if (not str)
         return;
 
-    bool b32 = surface->bpp == 32;//XX
+    bool b32 = surface->bpp == 32; //XX
 
     idx = 0;
     xoffset = x;
@@ -514,27 +543,36 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
     if (b32) //XX
         dendv = surface->mem + 2 * (surface->width * surface->height);
     else
-        dendv = surface->mem + surface->width * surface->height; // Make sure we don't go past the end of the surface
+        dendv =
+            surface->mem +
+            surface->width *
+                surface
+                    ->height; // Make sure we don't go past the end of the surface
 
     while (str[idx] and idx < length)
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_) 
+        if (thechar >= (unsigned long)first_ and
+            thechar <= (unsigned long)last_)
         {
             thechar -= first_;
 
-            sstart = (unsigned char *)(fontData_ + (thechar * bytesperline_ * height_));
+            sstart = (unsigned char *)(fontData_ +
+                                       (thechar * bytesperline_ * height_));
 
             if (b32) //XX word->dword
             {
-                dstart = surface->mem + 2 * ((yoffset * surface->width) + xoffset);
-                dendh = surface->mem + 2 * ((yoffset * surface->width) + surface->width);
+                dstart =
+                    surface->mem + 2 * ((yoffset * surface->width) + xoffset);
+                dendh = surface->mem +
+                        2 * ((yoffset * surface->width) + surface->width);
             }
             else
             {
                 dstart = surface->mem + (yoffset * surface->width) + xoffset;
-                dendh = surface->mem + (yoffset * surface->width) + surface->width;
+                dendh =
+                    surface->mem + (yoffset * surface->width) + surface->width;
             }
 
             for (i = 0; i < height_ and dstart < dendv; i++)
@@ -547,7 +585,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
                     {
                         if (b32)
                         {
-                            *((DWORD*)(dptr)) = RGB565toRGB8(bgcolor);
+                            *((DWORD *)(dptr)) = RGB565toRGB8(bgcolor);
                             dptr += 2;
                         }
                         else
@@ -556,7 +594,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
 
                 for (j = 0; j < fontTable_[thechar].w; j++)
                 {
-                    if ( not (j bitand 0x7))
+                    if (not(j bitand 0x7))
                         seg = *sptr++;
 
                     if (dptr < dendh)
@@ -564,9 +602,9 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
                         if (b32) //XX
                         {
                             if (seg bitand 1)
-                                *((DWORD*)(dptr)) = RGB565toRGB8(color);
+                                *((DWORD *)(dptr)) = RGB565toRGB8(color);
                             else
-                                *((DWORD*)(dptr)) = RGB565toRGB8(bgcolor);
+                                *((DWORD *)(dptr)) = RGB565toRGB8(bgcolor);
 
                             dptr += 2;
                         }
@@ -587,7 +625,7 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
                     {
                         if (b32) //XX
                         {
-                            *((DWORD*)(dptr)) = RGB565toRGB8(bgcolor);
+                            *((DWORD *)(dptr)) = RGB565toRGB8(bgcolor);
                             dptr += 2;
                         }
                         else
@@ -605,7 +643,8 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
                 }
             }
 
-            xoffset += fontTable_[thechar].lead + fontTable_[thechar].w + fontTable_[thechar].trail;
+            xoffset += fontTable_[thechar].lead + fontTable_[thechar].w +
+                       fontTable_[thechar].trail;
         }
 
         idx++;
@@ -614,15 +653,19 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
 
 void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y)
 {
-    if (str) Draw(surface, str, _tcsclen(str), color, x, y);
+    if (str)
+        Draw(surface, str, _tcsclen(str), color, x, y);
 }
 
-void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y)
+void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, WORD color,
+                          WORD bgcolor, long x, long y)
 {
-    if (str) DrawSolid(surface, str, _tcsclen(str), color, bgcolor, x, y);
+    if (str)
+        DrawSolid(surface, str, _tcsclen(str), color, bgcolor, x, y);
 }
 
-void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                        long x, long y, UI95_RECT *cliprect)
 // not void C_Fontmgr::Draw(SCREEN *surface,_TCHAR *str,short length,WORD color,long x,long y,UI95_RECT *cliprect)
 {
     if (NeedGDI(str, length))
@@ -639,28 +682,33 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
     WORD *dendh, *dendv;
     WORD *dclipx, *dclipy;
 
-    if ( not fontData_)
+    if (not fontData_)
         return;
 
-    if ( not str)
+    if (not str)
         return;
 
     idx = 0;
     xoffset = x;
     yoffset = y;
     dclipy = surface->mem + (cliprect->top * surface->width);
-    dendv = surface->mem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
+    dendv =
+        surface->mem +
+        (cliprect->bottom *
+         surface->width); // Make sure we don't go past the end of the surface
 
     while (str[idx] and idx < length)
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and
+            thechar <= (unsigned long)last_)
         {
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
 
-            sstart = (unsigned char *)(fontData_ + (thechar * bytesperline_ * height_));
+            sstart = (unsigned char *)(fontData_ +
+                                       (thechar * bytesperline_ * height_));
             dstart = surface->mem + (yoffset * surface->width) + xoffset;
             dclipx = surface->mem + (yoffset * surface->width) + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);
@@ -674,11 +722,11 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
 
                     for (j = 0; j < fontTable_[thechar].w; j++)
                     {
-                        if ( not (j bitand 0x7))
+                        if (not(j bitand 0x7))
                         {
                             seg = *sptr++;
 
-                            if ( not seg)
+                            if (not seg)
                             {
                                 j += 7;
                                 dptr += 8;
@@ -716,7 +764,8 @@ void C_Fontmgr::_Draw16(SCREEN *surface, _TCHAR *str, long length, WORD color, l
     }
 }
 
-void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length,
+                        DWORD dwColor, long x, long y, UI95_RECT *cliprect)
 {
     if (NeedGDI(str, length))
     {
@@ -733,30 +782,35 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
     DWORD *dendh, *dendv;
     DWORD *dclipx, *dclipy;
 
-    if ( not fontData_)
+    if (not fontData_)
         return;
 
-    if ( not str)
+    if (not str)
         return;
 
-    DWORD *surfmem = (DWORD*) surface->mem;
+    DWORD *surfmem = (DWORD *)surface->mem;
 
     idx = 0;
     xoffset = x;
     yoffset = y;
     dclipy = surfmem + (cliprect->top * surface->width);
-    dendv = surfmem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
+    dendv =
+        surfmem +
+        (cliprect->bottom *
+         surface->width); // Make sure we don't go past the end of the surface
 
     while (str[idx] and idx < length)
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and
+            thechar <= (unsigned long)last_)
         {
             thechar -= first_;
             xoffset += fontTable_[thechar].lead;
 
-            sstart = (unsigned char *)(fontData_ + (thechar * bytesperline_ * height_));
+            sstart = (unsigned char *)(fontData_ +
+                                       (thechar * bytesperline_ * height_));
 
             dstart = surfmem + (yoffset * surface->width) + xoffset;
             dclipx = surfmem + (yoffset * surface->width) + cliprect->left;
@@ -771,11 +825,11 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
 
                     for (j = 0; j < fontTable_[thechar].w; j++)
                     {
-                        if ( not (j bitand 0x7))
+                        if (not(j bitand 0x7))
                         {
                             seg = *sptr++;
 
-                            if ( not seg)
+                            if (not seg)
                             {
                                 j += 7;
                                 dptr += 8;
@@ -814,7 +868,8 @@ void C_Fontmgr::_Draw32(SCREEN *surface, _TCHAR *str, long length, DWORD dwColor
 }
 
 //XX
-void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                          WORD bgcolor, long x, long y, UI95_RECT *cliprect)
 {
     if (NeedGDI(str, length))
     {
@@ -825,12 +880,15 @@ void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, long length, WORD color,
     }
 
     if (surface->bpp == 32)
-        _DrawSolid32(surface, str, length, RGB565toRGB8(color), RGB565toRGB8(bgcolor), x, y, cliprect);
+        _DrawSolid32(surface, str, length, RGB565toRGB8(color),
+                     RGB565toRGB8(bgcolor), x, y, cliprect);
     else
         _DrawSolid16(surface, str, length, color, bgcolor, x, y, cliprect);
 }
 //XX
-void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length,
+                             WORD color, WORD bgcolor, long x, long y,
+                             UI95_RECT *cliprect)
 // not void C_Fontmgr::DrawSolid(SCREEN *surface,_TCHAR *str,short length,WORD color,WORD bgcolor,long x,long y,UI95_RECT *cliprect)
 {
     long idx, i, j;
@@ -841,27 +899,32 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
     WORD *dendh, *dendv;
     WORD *dclipx, *dclipy;
 
-    if ( not fontData_)
+    if (not fontData_)
         return;
 
-    if ( not str)
+    if (not str)
         return;
 
     idx = 0;
     xoffset = x;
     yoffset = y;
     dclipy = surface->mem + (cliprect->top * surface->width);
-    dendv = surface->mem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
+    dendv =
+        surface->mem +
+        (cliprect->bottom *
+         surface->width); // Make sure we don't go past the end of the surface
 
     while (str[idx] and idx < length)
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and
+            thechar <= (unsigned long)last_)
         {
             thechar -= first_;
 
-            sstart = (unsigned char *)(fontData_ + (thechar * bytesperline_ * height_));
+            sstart = (unsigned char *)(fontData_ +
+                                       (thechar * bytesperline_ * height_));
             dstart = surface->mem + (yoffset * surface->width) + xoffset;
             dclipx = surface->mem + (yoffset * surface->width) + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);
@@ -888,7 +951,7 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
                     {
                         if (dptr < dendh)
                         {
-                            if ( not (j bitand 0x7))
+                            if (not(j bitand 0x7))
                                 seg = *sptr++;
 
                             if (dptr >= dclipx)
@@ -923,7 +986,8 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
                 dendh += surface->width;
             }
 
-            xoffset += fontTable_[thechar].lead + fontTable_[thechar].w + fontTable_[thechar].trail;
+            xoffset += fontTable_[thechar].lead + fontTable_[thechar].w +
+                       fontTable_[thechar].trail;
         }
 
         idx++;
@@ -931,7 +995,9 @@ void C_Fontmgr::_DrawSolid16(SCREEN *surface, _TCHAR *str, long length, WORD col
 }
 
 //XX
-void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD color, DWORD bgcolor, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length,
+                             DWORD color, DWORD bgcolor, long x, long y,
+                             UI95_RECT *cliprect)
 {
     long idx, i, j;
     long xoffset, yoffset;
@@ -941,29 +1007,34 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
     DWORD *dendh, *dendv;
     DWORD *dclipx, *dclipy;
 
-    if ( not fontData_)
+    if (not fontData_)
         return;
 
-    if ( not str)
+    if (not str)
         return;
 
-    DWORD *surfmem = (DWORD*)surface->mem;
+    DWORD *surfmem = (DWORD *)surface->mem;
 
     idx = 0;
     xoffset = x;
     yoffset = y;
     dclipy = surfmem + (cliprect->top * surface->width);
-    dendv = surfmem + (cliprect->bottom * surface->width); // Make sure we don't go past the end of the surface
+    dendv =
+        surfmem +
+        (cliprect->bottom *
+         surface->width); // Make sure we don't go past the end of the surface
 
     while (str[idx] and idx < length)
     {
         thechar = str[idx] bitand 0xff;
 
-        if (thechar >= (unsigned long)first_ and thechar <= (unsigned long)last_)
+        if (thechar >= (unsigned long)first_ and
+            thechar <= (unsigned long)last_)
         {
             thechar -= first_;
 
-            sstart = (unsigned char *)(fontData_ + (thechar * bytesperline_ * height_));
+            sstart = (unsigned char *)(fontData_ +
+                                       (thechar * bytesperline_ * height_));
             dstart = surfmem + (yoffset * surface->width) + xoffset;
             dclipx = surfmem + (yoffset * surface->width) + cliprect->left;
             dendh = dclipx + (cliprect->right - cliprect->left);
@@ -990,7 +1061,7 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
                     {
                         if (dptr < dendh)
                         {
-                            if ( not (j bitand 0x7))
+                            if (not(j bitand 0x7))
                                 seg = *sptr++;
 
                             if (dptr >= dclipx)
@@ -1025,7 +1096,8 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
                 dendh += surface->width;
             }
 
-            xoffset += fontTable_[thechar].lead + fontTable_[thechar].w + fontTable_[thechar].trail;
+            xoffset += fontTable_[thechar].lead + fontTable_[thechar].w +
+                       fontTable_[thechar].trail;
         }
 
         idx++;
@@ -1033,27 +1105,30 @@ void C_Fontmgr::_DrawSolid32(SCREEN *surface, _TCHAR *str, long length, DWORD co
 }
 
 
-
-void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, WORD color, long x, long y,
+                     UI95_RECT *cliprect)
 {
     if (str)
     {
         //XX
         if (surface->bpp == 32)
-            _Draw32(surface, str, _tcsclen(str), RGB565toRGB8(color), x, y, cliprect);
+            _Draw32(surface, str, _tcsclen(str), RGB565toRGB8(color), x, y,
+                    cliprect);
         else
             _Draw16(surface, str, _tcsclen(str), color, x, y, cliprect);
     }
 }
 
-void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, WORD color, WORD bgcolor, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::DrawSolid(SCREEN *surface, _TCHAR *str, WORD color,
+                          WORD bgcolor, long x, long y, UI95_RECT *cliprect)
 {
     if (str)
         DrawSolid(surface, str, _tcsclen(str), color, bgcolor, x, y, cliprect);
 }
 
 //XX
-void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color, long x, long y, UI95_RECT *cliprect)
+void C_Fontmgr::Draw(SCREEN *surface, _TCHAR *str, long length, WORD color,
+                     long x, long y, UI95_RECT *cliprect)
 {
     if (str)
     {

@@ -26,9 +26,9 @@ void MissileClass::Atmosphere(void)
     /* Density, Pressure, Temp, SOS */
     /*------------------------------*/
     pdelta = ttheta * rsigma;
-    sound  = AASL * (float)sqrt(ttheta);
-    rho    = RHOASL * rsigma;
-    ps     = PASL * pdelta;
+    sound = AASL * (float)sqrt(ttheta);
+    rho = RHOASL * rsigma;
+    ps = PASL * pdelta;
 
     /*-----------------------------*/
     /* calculate dynamic pressure  */
@@ -37,31 +37,32 @@ void MissileClass::Atmosphere(void)
     //I will do a sanity check on VT and subsequent code
     if (fabs(vt) > 1)
     {
-        mach   = vt / sound;
+        mach = vt / sound;
 
         if (ifd) // JB 010718 CTD
-            ifd->qbar   = 0.5F * rho * vt * vt;
+            ifd->qbar = 0.5F * rho * vt * vt;
 
         /*------------------------------------------------------------------*/
         /* calculate equivalent and calibrated airspeed and impact pressure */
         /*------------------------------------------------------------------*/
         vcas = FTPSEC_TO_KNOTS * vt * (float)sqrt(rsigma);
 
-        if ( not ifd) // JB 010718 CTD
+        if (not ifd) // JB 010718 CTD
             return;
 
         /*------------------------*/
         /* normalizing parameters */
         /*------------------------*/
-        if (mass and not F4IsBadReadPtr(inputData, sizeof(MissileInputData))) // JB 010317 CTD
+        if (mass and not F4IsBadReadPtr(
+                         inputData, sizeof(MissileInputData))) // JB 010317 CTD
             ifd->qsom = ifd->qbar * inputData->area / mass;
 
         ifd->qovt = ifd->qbar / vt;
 
-        if (_isnan(ifd->qovt))//Cobra
+        if (_isnan(ifd->qovt)) //Cobra
             int catchx = 0;
     }
-    else//cobra
+    else //cobra
     {
         mach = 0.001f;
         vcas = 0.001f;
@@ -73,4 +74,3 @@ void MissileClass::Atmosphere(void)
         }
     }
 }
-

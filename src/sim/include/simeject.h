@@ -92,13 +92,8 @@ struct EP_MODEL_DATA
     int chaseMode;
     EP_VECTOR focusOffset;
 
-    EP_MODEL_DATA
-    (
-        int bsp_,
-        int creationStage_,
-        int chaseMode_,
-        const EP_VECTOR &focusOffset_
-    );
+    EP_MODEL_DATA(int bsp_, int creationStage_, int chaseMode_,
+                  const EP_VECTOR &focusOffset_);
     ~EP_MODEL_DATA();
 };
 
@@ -122,17 +117,17 @@ class EjectedPilotClass : public SimMoverClass
 public:
     // Constructors.
     EjectedPilotClass(AircraftClass *ac, int mode, int no);
-    EjectedPilotClass(VU_BYTE** stream, long *rem);
+    EjectedPilotClass(VU_BYTE **stream, long *rem);
     virtual ~EjectedPilotClass();
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     // Right now, EM_F16_MODE1 is the only valid mode.
     void InitLocalData(AircraftClass *ac, int mode, int no);
     void CleanupLocalData();
+
 public:
-
-
     // Simulation methods.
     virtual void Init(SimInitDataClass *initData);
     virtual int Exec();
@@ -159,12 +154,7 @@ public:
     virtual void GetTransform(TransformMatrix vmat);
 
     // Where should the camera look if it is interested in me?
-    virtual void GetFocusPoint
-    (
-        BIG_SCALAR &x,
-        BIG_SCALAR &y,
-        BIG_SCALAR &z
-    );
+    virtual void GetFocusPoint(BIG_SCALAR &x, BIG_SCALAR &y, BIG_SCALAR &z);
 
     // Which aircraft did I eject from?
     AircraftClass *MyAircraft();
@@ -173,7 +163,7 @@ public:
     static int ClassType();
 
     // Get the parent aircraft
-    AircraftClass* GetParentAircraft(void);
+    AircraftClass *GetParentAircraft(void);
     // // Tell me when my aircraft has died.
     // void NotifyOfAircraftsDeath();
 

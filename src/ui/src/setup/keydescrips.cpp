@@ -2,7 +2,7 @@
 #include "chandler.h"
 #include "sim/include/ascii.h"
 #include "textids.h"
-#include "sim/include/inpFunc.h"
+#include "sim/include/inpfunc.h"
 
 struct kbstr
 {
@@ -10,79 +10,78 @@ struct kbstr
     long def_ID;
 };
 
-struct kbstr default_desc[] =
-{
-    { 0xDD, TXT_KBD_APPS_KEY },
-    { 0x91, TXT_KBD_PC98_AT },
-    { 0x96, TXT_KBD_JAPANAX },
-    { 0x0E, TXT_KBD_BACKSPACE },
-    { 0x3A, TXT_KBD_CAPSLOCK },
-    { 0x90, TXT_KBD_CIRCUMFLEX },
-    { 0x79, TXT_KBD_JPCONV },
-    { 0xD3, TXT_KBD_DELETE },
-    { 0xD0, TXT_KBD_DOWNARROW },
-    { 0xCF, TXT_KBD_END },
-    { 0x01, TXT_KBD_ESCAPE },
-    { 0x3B, TXT_KBD_F1 },
-    { 0x44, TXT_KBD_F10 },
-    { 0x57, TXT_KBD_F11 },
-    { 0x58, TXT_KBD_F12 },
-    { 0x64, TXT_KBD_F13 },
-    { 0x65, TXT_KBD_F14 },
-    { 0x66, TXT_KBD_F15 },
-    { 0x3C, TXT_KBD_F2 },
-    { 0x3D, TXT_KBD_F3 },
-    { 0x3E, TXT_KBD_F4 },
-    { 0x3F, TXT_KBD_F5 },
-    { 0x40, TXT_KBD_F6 },
-    { 0x41, TXT_KBD_F7 },
-    { 0x42, TXT_KBD_F8 },
-    { 0x43, TXT_KBD_F9 },
-    { 0x29, TXT_KBD_GRAVE },
-    { 0xC7, TXT_KBD_HOME },
-    { 0xD2, TXT_KBD_INSERT },
-    { 0x70, TXT_KBD_KANA },
-    { 0x94, TXT_KBD_KANJI },
-    { 0xCB, TXT_KBD_LEFTARROW },
-    { 0xDB, TXT_KBD_LEFTWIN },
-    { 0x7B, TXT_KBD_NOCONV },
+struct kbstr default_desc[] = {
+    {0xDD, TXT_KBD_APPS_KEY},
+    {0x91, TXT_KBD_PC98_AT},
+    {0x96, TXT_KBD_JAPANAX},
+    {0x0E, TXT_KBD_BACKSPACE},
+    {0x3A, TXT_KBD_CAPSLOCK},
+    {0x90, TXT_KBD_CIRCUMFLEX},
+    {0x79, TXT_KBD_JPCONV},
+    {0xD3, TXT_KBD_DELETE},
+    {0xD0, TXT_KBD_DOWNARROW},
+    {0xCF, TXT_KBD_END},
+    {0x01, TXT_KBD_ESCAPE},
+    {0x3B, TXT_KBD_F1},
+    {0x44, TXT_KBD_F10},
+    {0x57, TXT_KBD_F11},
+    {0x58, TXT_KBD_F12},
+    {0x64, TXT_KBD_F13},
+    {0x65, TXT_KBD_F14},
+    {0x66, TXT_KBD_F15},
+    {0x3C, TXT_KBD_F2},
+    {0x3D, TXT_KBD_F3},
+    {0x3E, TXT_KBD_F4},
+    {0x3F, TXT_KBD_F5},
+    {0x40, TXT_KBD_F6},
+    {0x41, TXT_KBD_F7},
+    {0x42, TXT_KBD_F8},
+    {0x43, TXT_KBD_F9},
+    {0x29, TXT_KBD_GRAVE},
+    {0xC7, TXT_KBD_HOME},
+    {0xD2, TXT_KBD_INSERT},
+    {0x70, TXT_KBD_KANA},
+    {0x94, TXT_KBD_KANJI},
+    {0xCB, TXT_KBD_LEFTARROW},
+    {0xDB, TXT_KBD_LEFTWIN},
+    {0x7B, TXT_KBD_NOCONV},
     //  // JB 011212 { 0x45,TXT_KBD_NUMLOCK },
-    { 0xC5, TXT_KBD_NUMLOCK },
-    { 0x52, TXT_KBD_NUM0 },
-    { 0x4F, TXT_KBD_NUM1 },
-    { 0x50, TXT_KBD_NUM2 },
-    { 0x51, TXT_KBD_NUM3 },
-    { 0x4B, TXT_KBD_NUM4 },
-    { 0x4C, TXT_KBD_NUM5 },
-    { 0x4D, TXT_KBD_NUM6 },
-    { 0x47, TXT_KBD_NUM7 },
-    { 0x48, TXT_KBD_NUM8 },
-    { 0x49, TXT_KBD_NUM9 },
-    { 0xB3, TXT_KBD_NUMCOMMA },
-    { 0x9C, TXT_KBD_NUMENTER },
-    { 0x8D, TXT_KBD_NUMEQUALS },
-    { 0x4A, TXT_KBD_NUMMINUS },
-    { 0x53, TXT_KBD_NUMPERIOD },
-    { 0x4E, TXT_KBD_NUMPLUS },
-    { 0xB5, TXT_KBD_NUMDIVIDE },
-    { 0x37, TXT_KBD_NUMTIMES },
-    { 0xD1, TXT_KBD_PAGEDOWN },
-    { 0xC9, TXT_KBD_PAGEUP },
-    { 0x1C, TXT_KBD_ENTER },
-    { 0xCD, TXT_KBD_RTARROW },
-    { 0xDC, TXT_KBD_RT_WIN },
-    { 0x46, TXT_KBD_SCROLLLOCK },
-    { 0x95, TXT_KBD_STOP },
-    { 0xB7, TXT_KBD_SYSREQ },
-    { 0x0F, TXT_KBD_TAB },
-    { 0x93, TXT_KBD_UNDERLINE },
-    { 0x97, TXT_KBD_UNLABELED },
-    { 0xC8, TXT_KBD_UPARROW },
-    { 0x7D, TXT_KBD_YEN },
-    { 0, 0 },
+    {0xC5, TXT_KBD_NUMLOCK},
+    {0x52, TXT_KBD_NUM0},
+    {0x4F, TXT_KBD_NUM1},
+    {0x50, TXT_KBD_NUM2},
+    {0x51, TXT_KBD_NUM3},
+    {0x4B, TXT_KBD_NUM4},
+    {0x4C, TXT_KBD_NUM5},
+    {0x4D, TXT_KBD_NUM6},
+    {0x47, TXT_KBD_NUM7},
+    {0x48, TXT_KBD_NUM8},
+    {0x49, TXT_KBD_NUM9},
+    {0xB3, TXT_KBD_NUMCOMMA},
+    {0x9C, TXT_KBD_NUMENTER},
+    {0x8D, TXT_KBD_NUMEQUALS},
+    {0x4A, TXT_KBD_NUMMINUS},
+    {0x53, TXT_KBD_NUMPERIOD},
+    {0x4E, TXT_KBD_NUMPLUS},
+    {0xB5, TXT_KBD_NUMDIVIDE},
+    {0x37, TXT_KBD_NUMTIMES},
+    {0xD1, TXT_KBD_PAGEDOWN},
+    {0xC9, TXT_KBD_PAGEUP},
+    {0x1C, TXT_KBD_ENTER},
+    {0xCD, TXT_KBD_RTARROW},
+    {0xDC, TXT_KBD_RT_WIN},
+    {0x46, TXT_KBD_SCROLLLOCK},
+    {0x95, TXT_KBD_STOP},
+    {0xB7, TXT_KBD_SYSREQ},
+    {0x0F, TXT_KBD_TAB},
+    {0x93, TXT_KBD_UNDERLINE},
+    {0x97, TXT_KBD_UNLABELED},
+    {0xC8, TXT_KBD_UPARROW},
+    {0x7D, TXT_KBD_YEN},
+    {0, 0},
 };
 
-#define KEY_DESCRIP_LEN    20
+#define KEY_DESCRIP_LEN 20
 
 char **KeyDescrips;
 
@@ -94,7 +93,7 @@ void InitKeyDescrips(void)
     char *temp;
     short i;
 
-    KeyDescrips = new char*[256];
+    KeyDescrips = new char *[256];
 
     memset(KeyDescrips, 0, sizeof(char *) * 256);
 
@@ -122,10 +121,11 @@ void InitKeyDescrips(void)
 
     while (default_desc[i].scancode)
     {
-        if ( not KeyDescrips[default_desc[i].scancode])
+        if (not KeyDescrips[default_desc[i].scancode])
         {
             temp = new char[KEY_DESCRIP_LEN];
-            strncpy(temp, gStringMgr->GetString(default_desc[i].def_ID), KEY_DESCRIP_LEN);
+            strncpy(temp, gStringMgr->GetString(default_desc[i].def_ID),
+                    KEY_DESCRIP_LEN);
             ShiAssert(temp[KEY_DESCRIP_LEN - 1] == 0);
             temp[KEY_DESCRIP_LEN - 1] = 0;
             KeyDescrips[default_desc[i].scancode] = temp;
@@ -210,7 +210,7 @@ void InitKeyDescrips(void)
     KeyDescrips[0x30] = temp;
 
     temp = new char[20];
-    strcpy(temp, "\\");
+    strcpy(temp, "/");
     KeyDescrips[0x2B] = temp;
 
     temp = new char[20];
@@ -643,6 +643,6 @@ void CleanupKeys(void)
         }
     }
 
-    delete [] KeyDescrips;
+    delete[] KeyDescrips;
     KeyDescrips = NULL;
 }

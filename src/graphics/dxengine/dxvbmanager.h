@@ -3,8 +3,8 @@
 #include "d3d7compat.h"
 #include <d3dxcore.h>
 #include <d3dxmath.h>
-#include "../include/ObjectInstance.h"
-#include "DxDefines.h"
+#include "../include/objectinstance.h"
+#include "dxdefines.h"
 
 // The only VB Manager
 extern class CDXVbManager TheVbManager;
@@ -31,7 +31,6 @@ struct ID3D11Buffer;
 #define MAX_VERTEX_BUFFERS 64
 
 
-
 // *** Number of VATs and DRAW ITEMs created at boot in their own Pools
 #define BASE_VATS 16384
 #define BASE_DRAWS 16384
@@ -44,7 +43,6 @@ struct ID3D11Buffer;
 #define VB_CLASS_FEATURES 0x0000001
 #define VB_CLASS_DOMAIN_GROUND 0x0000002
 #define VB_CLASS_DOMAIN_AIR 0x0000004
-
 
 
 // *New vertex type *
@@ -69,16 +67,15 @@ class CVbVAT
 
 
 public:
-    CVbVAT(CVbVAT *Parent, CVbVAT *Child, DWORD Id, DWORD Start, DWORD Size, DWORD VBFree);
+    CVbVAT(CVbVAT *Parent, CVbVAT *Child, DWORD Id, DWORD Start, DWORD Size,
+           DWORD VBFree);
     ~CVbVAT(void);
 
-    CVbVAT* Next, *Prev; // Pointers in the List
+    CVbVAT *Next, *Prev; // Pointers in the List
     DWORD ID; // Model Identifier
     DWORD VStart, VSize; // Start and end of this chunk
     DWORD Gap; // Gap to next VbVAT chunk
 };
-
-
 
 
 // *** Draw Item of an object Belonging to a VB
@@ -101,7 +98,6 @@ public:
 };
 
 
-
 typedef struct
 {
     DWORD Class; // CLass of Vertex Buffer
@@ -114,14 +110,15 @@ typedef struct
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned VB
     ID3D11Buffer *VbD3D11; // PHASE 4: D3D11 mirror of this VB
     void *VbD3D12; // #DX12 п.4: D3D12 mirror (ID3D12Resource*)
+    void *VbVulkan; // Artscout - 2026 (#104): Vulkan mirror (VulkanVb*)
 } VBufferListType;
-
-
 
 
 #define MAX_MANAGED_MODELS 0x4000
 // #34 C1: D3D7 m_pD3D removed
-#define D3DFVF_MANAGED (D3DFVF_XYZ|D3DFVF_NORMAL|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1)
+#define D3DFVF_MANAGED                                                         \
+    (D3DFVF_XYZ | D3DFVF_NORMAL | D3DFVF_DIFFUSE | D3DFVF_SPECULAR |           \
+     D3DFVF_TEX1)
 #define VERTEX_STRIDE sizeof(D3DVERTEXEX)
 
 
@@ -130,6 +127,7 @@ typedef struct
     LPDIRECT3DVERTEXBUFFER7 Vb; // Assigned VB address
     ID3D11Buffer *VbD3D11; // PHASE 4: D3D11 mirror
     void *VbD3D12; // #DX12 п.4: D3D12 mirror (ID3D12Resource*)
+    void *VbVulkan; // Artscout - 2026 (#104): Vulkan mirror (VulkanVb*)
     CVbVAT *pVAT; // The VB VAT assigned
     VBufferListType *pVbList; // Pointer to the VB List Item assigned
     DWORD NVertices; // Number Of Vertices composing the object
@@ -141,7 +139,6 @@ typedef struct
     BYTE *Root; // Root of the Model
     bool Valid; // Valid model
 } VBItemType;
-
 
 
 ///////////////////////////////////// DYNAMIC BUFFERS STUFFS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -156,7 +153,8 @@ typedef struct
     float tu;
     float tv;
 } D3DDYNVERTEX;
-#define D3DFVF_DYNAMIC (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1)
+#define D3DFVF_DYNAMIC                                                         \
+    (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
 
 
 // * Simple Items Point/Line Vertex type
@@ -168,13 +166,14 @@ typedef struct
     DWORD dwSpecular;
     float tu, tv;
 } D3DSIMPLEVERTEX;
-#define D3DFVF_SIMPLE (D3DFVF_XYZ|D3DFVF_DIFFUSE|D3DFVF_SPECULAR|D3DFVF_TEX1)
+#define D3DFVF_SIMPLE                                                          \
+    (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_SPECULAR | D3DFVF_TEX1)
 
 // The Base Item for a Dynamic Vertex Buffer, it may define a single vertex or a BillBoarded Square
 // 3D items are 'unioned' with XMM 128 bits variables, to be available to use with XMM math
 class CDrawBaseItem
 {
-public :
+public:
     float Distance;
     CDrawBaseItem *Next, *NextInPool;
     D3DDYNVERTEX Vtx[4];
@@ -188,7 +187,8 @@ public:
 
     CDynamicDraw *Next; // pointers to adiacent primitives in list
     DWORD TexID; // Texture ID
-    D3DXVECTOR3 CoordSize; // The Left Up Angle used to calculate sides proportions
+    D3DXVECTOR3
+    CoordSize; // The Left Up Angle used to calculate sides proportions
     CDrawBaseItem *StartItem, *LastItem; // The linked Draw Items List
 };
 
@@ -220,8 +220,10 @@ typedef struct
 #define MAX_QUADS 4095 // Number of Emitting Quads managed in a simple buffer
 
 #define POINTS_OFFSET 0 // Offset in the Simple Buffer form POINTS
-#define LINES_OFFSET (POINTS_OFFSET+MAX_POINTS) // Offset in the Simple Buffer form LINES
-#define QUADS_OFFSET (LINES_OFFSET+MAX_LINES*2) // Offset in the Simple Buffer form QUADS
+#define LINES_OFFSET                                                           \
+    (POINTS_OFFSET + MAX_POINTS) // Offset in the Simple Buffer form LINES
+#define QUADS_OFFSET                                                           \
+    (LINES_OFFSET + MAX_LINES * 2) // Offset in the Simple Buffer form QUADS
 
 class CDXVbManager
 {
@@ -235,21 +237,27 @@ public:
     {
         pVBuffers[ID].Valid = true;
     }
-    void Setup();   // #34 C1: D3D7 device arg removed
+    void Setup(); // #34 C1: D3D7 device arg removed
     void Release(void);
     void GetModelData(VBItemType &, DWORD);
     DWORD GetTextureID(DWORD ID, DWORD TexIdx);
-    void AddDrawRequest(ObjectInstance *objInst, DWORD ID, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel = 0);
-    void AddDrawItem(VBufferListType *pVBDesc, DWORD ID, ObjectInstance *objInst, D3DXMATRIX *Transformation, bool Lited, DWORD LightID, float FogLevel = 0);
+    void AddDrawRequest(ObjectInstance *objInst, DWORD ID,
+                        D3DXMATRIX *Transformation, bool Lited, DWORD LightID,
+                        float FogLevel = 0);
+    void AddDrawItem(VBufferListType *pVBDesc, DWORD ID,
+                     ObjectInstance *objInst, D3DXMATRIX *Transformation,
+                     bool Lited, DWORD LightID, float FogLevel = 0);
     void ResetDrawList(void);
-    bool GetDrawItem(ObjectInstance **objInst, DWORD *ID, D3DXMATRIX *Transformation, bool *Lited, DWORD *LightID, float *FogLevel);
+    bool GetDrawItem(ObjectInstance **objInst, DWORD *ID,
+                     D3DXMATRIX *Transformation, bool *Lited, DWORD *LightID,
+                     float *FogLevel);
     void ClearDrawList(void);
     void Encrypt(DWORD *);
     void Decrypt(DWORD *);
     bool CheckDataID(DWORD ID);
-    BYTE* GetModelRoot(DWORD ID)
+    BYTE *GetModelRoot(DWORD ID)
     {
-        return ((BYTE*)pVBuffers[ID].Root);
+        return ((BYTE *)pVBuffers[ID].Root);
     }
     DWORD *GetModelTextures(DWORD ID)
     {
@@ -264,7 +272,6 @@ public:
 
 
 protected:
-
     DWORD VBAddObject(VBufferListType *Vbl, DWORD nVertices, DWORD ID);
     bool VBCheckForBuffer(DWORD ID, DWORD Class, DWORD nVertices);
     void CreateVB(DWORD i, DWORD Class);
@@ -272,14 +279,16 @@ protected:
 
     VBItemType pVBuffers[MAX_MANAGED_MODELS];
     // #34 C1: D3D7 m_pD3D removed
-    VBufferListType pVbList[MAX_VERTEX_BUFFERS]; // List of managed vertex Buffers
+    VBufferListType
+        pVbList[MAX_VERTEX_BUFFERS]; // List of managed vertex Buffers
     VBufferListType PitList; // The Pit List
 
     CDrawItem *pVDrawItemPool, *pDrawPoolPtr; // Pool of Draw Items
     CDrawItem ThePitItem; // The 3D Pit Draw Item
 
     DWORD BufferToDraw; // VBuffer to go under Draw
-    CDrawItem *RootItemToDraw, *NextItemToDraw; // Root bitand Next Item to be Drawn
+    CDrawItem *RootItemToDraw,
+        *NextItemToDraw; // Root bitand Next Item to be Drawn
 
     DWORD DrawHits[MAX_MANAGED_MODELS]; // Cache Hits Used in drawing Models
     DWORD DrawPass; // Draw Cycle
@@ -298,12 +307,9 @@ public:
     void OpenSimpleBuffer(void);
 
 
-
 protected:
-    DynBufferType DynamicBuffer[MAX_DYNAMIC_BUFFERS]; // The NON STATIC Vertex Buffers
-
-
-
+    DynBufferType
+        DynamicBuffer[MAX_DYNAMIC_BUFFERS]; // The NON STATIC Vertex Buffers
 };
 
 

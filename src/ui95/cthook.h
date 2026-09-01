@@ -13,7 +13,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -45,17 +46,20 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
-    void SetUpdateCallback(void (*routine)(long ID, short hittype, C_Base *control))
+    void SetUpdateCallback(void (*routine)(long ID, short hittype,
+                                           C_Base *control))
     {
         UpdateCallback_ = routine;
     }
-    void SetRefreshCallback(void (*routine)(long ID, short hittype, C_Base *control))
+    void SetRefreshCallback(void (*routine)(long ID, short hittype,
+                                            C_Base *control))
     {
         RefreshCallback_ = routine;
     }
-    void SetDrawCallback(void (*routine)(long ID, short hittype, C_Base *control))
+    void SetDrawCallback(void (*routine)(long ID, short hittype,
+                                         C_Base *control))
     {
         DrawCallback_ = routine;
     }
@@ -67,11 +71,11 @@ public:
     {
         return 0;
     }
-    void LocalFunction(short , long, _TCHAR *, C_Handler *)
+    void LocalFunction(short, long, _TCHAR *, C_Handler *)
     {
         ;
     }
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

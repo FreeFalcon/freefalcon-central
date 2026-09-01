@@ -35,13 +35,13 @@
 #ifndef _ERROR_H
 #define _ERROR_H
 
-#define EMAX       1
-#define EACCESS    2
-#define ENOTFOUND  3
-#define EEOF       4
-#define EOUTPUT    5
-#define EINVALID   6
-#define ENOWINDOW  7
+#define EMAX 1
+#define EACCESS 2
+#define ENOTFOUND 3
+#define EEOF 4
+#define EOUTPUT 5
+#define EINVALID 6
+#define ENOWINDOW 7
 
 extern SIM_INT SimLibErrno;
 

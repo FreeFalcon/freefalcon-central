@@ -4,14 +4,13 @@
 #define MAX_SCRIPTFUNCS 70
 #define SCRIPTFUNC_SIZE 30
 
-#include "InpFunc.h"
+#include "inpfunc.h"
 
 class TrainingScriptClass;
 
 class ArgType
 {
 public:
-
     char *arg;
     int arglength;
     ArgType *next;
@@ -25,7 +24,6 @@ class LineType
 {
 
 public:
-
     int function;
 
     ArgType *startarg;
@@ -52,9 +50,6 @@ public:
     int localflash;
     int localtextboxed;
     int localtextorientation;
-
-
-
 };
 
 typedef bool (TrainingScriptClass::*ScriptFunctionType)(LineType *);
@@ -90,12 +85,10 @@ public:
 };
 
 
-
 class TrainingScriptClass
 {
 
 private:
-
     LineType *startline;
     LineType *endline;
     LineType *lastline;
@@ -210,8 +203,6 @@ private:
     bool AddFunction(char *funcname, ScriptFunctionType function);
 
 
-
-
 public:
     TrainingScriptClass(void);
     ~TrainingScriptClass(void);
@@ -225,12 +216,9 @@ public:
         return capturing;
     }
     bool IsBlocked(InputFunctionType theFunc, int callback);
-
-
 };
 
-extern TrainingScriptClass* TrainingScript;
-
+extern TrainingScriptClass *TrainingScript;
 
 
 #endif // TRAINING_SCRIPT_INCLUDED

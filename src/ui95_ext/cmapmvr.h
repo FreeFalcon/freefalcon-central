@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -43,7 +44,7 @@ public:
 
     long GetDraging()
     {
-        return(Draging_);
+        return (Draging_);
     }
     void SetDefaultFlags()
     {
@@ -51,12 +52,12 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     BOOL TimerUpdate()
     {
-        return(FALSE);
+        return (FALSE);
     }
     void SetDrawCallback(void (*routine)(long, short, C_Base *))
     {
@@ -72,21 +73,20 @@ public:
     void Draw(SCREEN *, UI95_RECT *);
     long GetHRange()
     {
-        return(SX_);
+        return (SX_);
     }
     long GetVRange()
     {
-        return(SY_);
+        return (SY_);
     }
     void GetItemXY(long, long *x, long *y);
     BOOL Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *)
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *)
     {
         return FALSE;
     }
     // sfr: mouse wheel
     BOOL Wheel(int increment, WORD MouseX, WORD MouseY);
-
 };
 
 #endif

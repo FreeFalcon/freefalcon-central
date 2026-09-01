@@ -7,11 +7,11 @@
 #ifndef _USE_RES_MGR_ // DON'T USE RESMGR
 
 #define UI_HANDLE FILE *
-#define UI_OPEN   fopen
-#define UI_READ   fread
-#define UI_CLOSE  fclose
-#define UI_SEEK   fseek
-#define UI_TELL   ftell
+#define UI_OPEN fopen
+#define UI_READ fread
+#define UI_CLOSE fclose
+#define UI_SEEK fseek
+#define UI_TELL ftell
 
 #else // USE RESMGR
 
@@ -22,11 +22,11 @@ extern "C"
 }
 
 #define UI_HANDLE FILE *
-#define UI_OPEN   RES_FOPEN
-#define UI_READ   RES_FREAD
-#define UI_CLOSE  RES_FCLOSE
-#define UI_SEEK   RES_FSEEK
-#define UI_TELL   RES_FTELL
+#define UI_OPEN RES_FOPEN
+#define UI_READ RES_FREAD
+#define UI_CLOSE RES_FCLOSE
+#define UI_SEEK RES_FSEEK
+#define UI_TELL RES_FTELL
 
 #endif
 
@@ -40,8 +40,7 @@ enum
     CANM_LOADANIM,
 };
 
-char *C_Anim_Tokens[] =
-{
+char *C_Anim_Tokens[] = {
     "[NOTHING]",
     "[LOADANIM]",
     0,
@@ -94,24 +93,24 @@ ANIM_RES *C_Animation::LoadAnim(long ID, char *filename)
     long size;
 
     if (GetAnim(ID))
-        return(NULL);
+        return (NULL);
 
     ifp = UI_OPEN(filename, "rb");
 
     if (ifp == NULL)
-        return(NULL);
+        return (NULL);
 
     size = UI_FILESIZE(ifp);
 
-    if ( not size)
+    if (not size)
     {
         UI_CLOSE(ifp);
-        return(FALSE);
+        return (FALSE);
     }
 
     NewAnim = new ANIM_RES;
     NewAnim->ID = ID;
-    NewAnim->Anim = (ANIMATION *)((void*)new char [size + 1]);
+    NewAnim->Anim = (ANIMATION *)((void *)new char[size + 1]);
     NewAnim->flags = 0;
     NewAnim->Next = NULL;
 
@@ -119,7 +118,7 @@ ANIM_RES *C_Animation::LoadAnim(long ID, char *filename)
     {
         delete NewAnim;
         UI_CLOSE(ifp);
-        return(NULL);
+        return (NULL);
     }
 
     if (UI_READ(NewAnim->Anim, size, 1, ifp) not_eq 1)
@@ -127,7 +126,7 @@ ANIM_RES *C_Animation::LoadAnim(long ID, char *filename)
         delete NewAnim->Anim;
         delete NewAnim;
         UI_CLOSE(ifp);
-        return(NULL);
+        return (NULL);
     }
 
     UI_CLOSE(ifp);
@@ -147,27 +146,27 @@ ANIM_RES *C_Animation::LoadAnim(long ID, char *filename)
         cur->Next = NewAnim;
     }
 
-    return(NewAnim);
+    return (NewAnim);
 }
 
 void C_Animation::ConvertAnim(ANIMATION *Data)
 {
     switch (Data->BytesPerPixel)
     {
-        case 2:
-            switch (Data->Compression)
-            {
-                case 0:
-                    Convert16Bit(Data);
-                    break;
+    case 2:
+        switch (Data->Compression)
+        {
+        case 0:
+            Convert16Bit(Data);
+            break;
 
-                case 1:
-                case 2:
-                case 3:
-                case 4:
-                    Convert16BitRLE(Data);
-                    break;
-            }
+        case 1:
+        case 2:
+        case 3:
+        case 4:
+            Convert16BitRLE(Data);
+            break;
+        }
     }
 }
 void C_Animation::Convert16BitRLE(ANIMATION *Data)
@@ -182,9 +181,9 @@ void C_Animation::Convert16BitRLE(ANIMATION *Data)
     {
         dptr = (WORD *)&AnimPtr->Data[0];
 
-        while ( not (*dptr bitand RLE_END))
+        while (not(*dptr bitand RLE_END))
         {
-            if ( not (*dptr bitand RLE_KEYMASK))
+            if (not(*dptr bitand RLE_KEYMASK))
             {
                 cnt = *dptr;
                 dptr++;
@@ -243,12 +242,12 @@ ANIM_RES *C_Animation::GetAnim(long ID)
     while (cur)
     {
         if (cur->ID == ID)
-            return(cur);
+            return (cur);
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_Animation::SetFlags(long ID, long flags)
@@ -268,9 +267,9 @@ long C_Animation::GetFlags(long ID)
     anim = GetAnim(ID);
 
     if (anim)
-        return(anim->flags);
+        return (anim->flags);
 
-    return(0);
+    return (0);
 }
 
 
@@ -279,7 +278,7 @@ BOOL C_Animation::RemoveAnim(long ID)
     ANIM_RES *cur, *prev;
 
     if (Root_ == NULL)
-        return(FALSE);
+        return (FALSE);
 
     if (Root_->ID == ID)
     {
@@ -287,7 +286,7 @@ BOOL C_Animation::RemoveAnim(long ID)
         Root_ = Root_->Next;
         delete cur->Anim;
         delete cur;
-        return(TRUE);
+        return (TRUE);
     }
     else
     {
@@ -306,10 +305,10 @@ BOOL C_Animation::RemoveAnim(long ID)
             cur = cur->Next;
         }
 
-        return(TRUE);
+        return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 #ifdef _UI95_PARSER_
@@ -320,21 +319,21 @@ short C_Animation::LocalFind(char *token)
     while (C_Anim_Tokens[i])
     {
         if (strnicmp(token, C_Anim_Tokens[i], strlen(C_Anim_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Animation::LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *)
 {
     switch (ID)
     {
-        case CANM_LOADANIM:
-            LoadAnim(P[0], str);
-            break;
+    case CANM_LOADANIM:
+        LoadAnim(P[0], str);
+        break;
     }
 }
 

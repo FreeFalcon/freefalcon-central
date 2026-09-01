@@ -11,9 +11,9 @@ class FlightClass;
 class SimBaseClass;
 class CampBaseClass;
 
-#define SIN_THREE_DEG_GLIDE    0.05233595624294F
-#define TAN_THREE_DEG_GLIDE   0.05240777928304F
-#define TAN_SIX_DEG_GLIDE  0.1051042352657F
+#define SIN_THREE_DEG_GLIDE 0.05233595624294F
+#define TAN_THREE_DEG_GLIDE 0.05240777928304F
+#define TAN_SIX_DEG_GLIDE 0.1051042352657F
 
 // ranges are the square of the distance (ie. twr range of 225 is really 15nm)
 enum
@@ -25,7 +25,7 @@ enum
     APPROACH_VOICE = 13,
     LAND_TIME_DELTA = 60000,
     TAKEOFF_TIME_DELTA = 10000, // FRB - was 15 secs
-    WINGMAN_WAIT_TIME = 15000,  // FRB - was 30 secs
+    WINGMAN_WAIT_TIME = 15000, // FRB - was 30 secs
     FINAL_TIME = 120000,
     BASE_TIME = 60000,
     SLOT_TIME = 10000, // FRB - was 15 secs
@@ -89,7 +89,8 @@ public:
     };
     ~runwayQueueStruct()
     {
-        ShiAssert( not "We don't want to do this while testing (except for shutdown)");
+        ShiAssert(
+            not "We don't want to do this while testing (except for shutdown)");
     };
 #else
 typedef struct runwayQueueStruct
@@ -120,7 +121,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
     static void InitializeStorage()
     {
@@ -145,7 +147,8 @@ typedef struct runwayStatsStruct
     float halfheight;
     float centerX;
     float centerY;
-    unsigned short state : 3; //VIS_DESTROYED, VIS_DAMAGED, VIS_NORMAL, VIS_REPAIRED
+    unsigned short state
+        : 3; //VIS_DESTROYED, VIS_DAMAGED, VIS_NORMAL, VIS_REPAIRED
     unsigned short numInQueue : 13; //how many are waiting to use this runway
     AircraftClass *rnwyInUse;
     VU_ID nextEmergency;
@@ -163,7 +166,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -180,7 +184,7 @@ public:
 private:
     uchar voice;
     short callsign;
-    ObjectiveClass* self;
+    ObjectiveClass *self;
     int numRwys;
     ulong minDeagTime;
     runwayStatsStruct *runwayStats;
@@ -196,19 +200,19 @@ private:
     void ReschedulePlanes(int queue);
     void RescheduleFlightTakeoff(int queue, FlightClass *flight);
     void ReorderFlight(int queue, FlightClass *flight, AtcStatusEnum status);
-    runwayQueueStruct* NextToTakeoff(int queue);
-    runwayQueueStruct*  NextToLand(int queue);
+    runwayQueueStruct *NextToTakeoff(int queue);
+    runwayQueueStruct *NextToLand(int queue);
     void CalcRunwayDimensions(int queue);
 
     //debug only
     void CheckList(runwayQueueStruct *list);
 
 public:
-    ATCBrain(ObjectiveClass* mySelf);
+    ATCBrain(ObjectiveClass *mySelf);
     ~ATCBrain(void);
     void Exec(void);
-    void SendCmdMessage(AircraftClass* aircraft, runwayQueueStruct* info);
-    ObjectiveClass* Self(void)
+    void SendCmdMessage(AircraftClass *aircraft, runwayQueueStruct *info);
+    ObjectiveClass *Self(void)
     {
         return self;
     }
@@ -217,11 +221,11 @@ public:
         return numRwys;
     }
     int NumOperableRunways(void);
-    runwayStatsStruct* GetRunwayStats(void)
+    runwayStatsStruct *GetRunwayStats(void)
     {
         return runwayStats;
     }
-    runwayQueueStruct* InList(VU_ID aircraftID);
+    runwayQueueStruct *InList(VU_ID aircraftID);
     uchar Voice(void)
     {
         return voice;
@@ -243,69 +247,87 @@ public:
         return minDeagTime;
     }
 
-    void RequestClearance(AircraftClass* aircraft, int addflight = FALSE);
-    void RequestEmerClearance(AircraftClass* aircraft);
-    void RequestTakeoff(AircraftClass* aircraft);
-    void RequestTaxi(AircraftClass* aircraft);
-    void AbortApproach(AircraftClass* aircraft);
+    void RequestClearance(AircraftClass *aircraft, int addflight = FALSE);
+    void RequestEmerClearance(AircraftClass *aircraft);
+    void RequestTakeoff(AircraftClass *aircraft);
+    void RequestTaxi(AircraftClass *aircraft);
+    void AbortApproach(AircraftClass *aircraft);
 
-    void AddInbound(AircraftClass* aircraft);
+    void AddInbound(AircraftClass *aircraft);
     void AddInboundFlight(FlightClass *flight);
-    runwayQueueStruct* AddTraffic(VU_ID aircraftID, AtcStatusEnum status, int rwindex, long schedTime);
-    runwayQueueStruct* AddToList(runwayQueueStruct* list, runwayQueueStruct* info);
+    runwayQueueStruct *AddTraffic(VU_ID aircraftID, AtcStatusEnum status,
+                                  int rwindex, long schedTime);
+    runwayQueueStruct *AddToList(runwayQueueStruct *list,
+                                 runwayQueueStruct *info);
     void RemoveTraffic(VU_ID aircraftID, int queue);
-    runwayQueueStruct* RemoveFromList(runwayQueueStruct* list, runwayQueueStruct* info);
-    void RemoveInbound(runwayQueueStruct* info);
+    runwayQueueStruct *RemoveFromList(runwayQueueStruct *list,
+                                      runwayQueueStruct *info);
+    void RemoveInbound(runwayQueueStruct *info);
     void RemoveFromAllOtherATCs(AircraftClass *aircraft);
     void RemoveFromAllATCs(AircraftClass *aircraft);
     ulong RemovePlaceHolders(VU_ID id);
     void SetEmergency(int queue);
 
     int GetRunwayTexture(int component);
-    int GetRunwayName(int rwindex); //this has a hack for the unexpected 23R\L and 05R\L
+    int GetRunwayName(
+        int rwindex); //this has a hack for the unexpected 23R\L and 05R\L
     short GetTextureIdFromHdg(int hdg, int ltrt);
     int GetOppositeRunway(int rwindex);
 
     void FindNextEmergency(int queue);
     ulong FindFlightTakeoffTime(FlightClass *flight, int queue);
     int FindBestTakeoffRunway(int checklist = FALSE);
-    int FindBestLandingRunway(FalconEntity* landing, int checklist = FALSE);
-    void FindEmergencyLandingRunway(int *queue, int *rwindex, FalconEntity* landing);
+    int FindBestLandingRunway(FalconEntity *landing, int checklist = FALSE);
+    void FindEmergencyLandingRunway(int *queue, int *rwindex,
+                                    FalconEntity *landing);
 
-    void FindAbortPt(AircraftClass* aircraft, float *x, float *y, float *z);
-    int FindTakeoffPt(FlightClass* flight, int vehicleInUnit, int rwindex, float *x, float *y);
-    int FindRunwayPt(FlightClass* flight, int vehicleInUnit, int rwindex, float *x, float *y);
-    void FindFinalPt(AircraftClass* approaching, int rwindex, float *x, float *y);
-    AtcStatusEnum FindBasePt(AircraftClass* approaching, int rwindex, float finalX, float finalY, float *x, float *y);
-    AtcStatusEnum FindFirstLegPt(AircraftClass* approaching, int rwindex, ulong schedTime, float baseX, float baseY, int usebase, float *x, float *y);
+    void FindAbortPt(AircraftClass *aircraft, float *x, float *y, float *z);
+    int FindTakeoffPt(FlightClass *flight, int vehicleInUnit, int rwindex,
+                      float *x, float *y);
+    int FindRunwayPt(FlightClass *flight, int vehicleInUnit, int rwindex,
+                     float *x, float *y);
+    void FindFinalPt(AircraftClass *approaching, int rwindex, float *x,
+                     float *y);
+    AtcStatusEnum FindBasePt(AircraftClass *approaching, int rwindex,
+                             float finalX, float finalY, float *x, float *y);
+    AtcStatusEnum FindFirstLegPt(AircraftClass *approaching, int rwindex,
+                                 ulong schedTime, float baseX, float baseY,
+                                 int usebase, float *x, float *y);
 
     ulong GetNextAvailRunwayTime(int queue, ulong rwTime, ulong delta);
-    float DetermineAngle(AircraftClass* approaching, int rwindex, AtcStatusEnum status);
-    float GetAltitude(AircraftClass* aircraft, AtcStatusEnum status);
-    void CalculateMinMaxTime(AircraftClass* aircraft, int rwindex, AtcStatusEnum status, ulong *min, ulong *max, float cosAngle);
-    int CalculateStandRateTurnToPt(AircraftClass *aircraft, float x, float y, float *finalHdg);
+    float DetermineAngle(AircraftClass *approaching, int rwindex,
+                         AtcStatusEnum status);
+    float GetAltitude(AircraftClass *aircraft, AtcStatusEnum status);
+    void CalculateMinMaxTime(AircraftClass *aircraft, int rwindex,
+                             AtcStatusEnum status, unsigned int *min,
+                             unsigned int *max,
+                             float cosAngle /* CampaignTime */);
+    int CalculateStandRateTurnToPt(AircraftClass *aircraft, float x, float y,
+                                   float *finalHdg);
 
     int IsOnRunway(float x, float y);
-    int IsOnRunway(AircraftClass* aircraft);
+    int IsOnRunway(AircraftClass *aircraft);
     int IsOnRunway(int taxipoint);
-    int IsOverRunway(AircraftClass* aircraft);
+    int IsOverRunway(AircraftClass *aircraft);
     int IsRunwayBlocked(int rwindex);
     int UseSectionTakeoff(FlightClass *flight, int rwindex);
 
     void MakeVectorCall(AircraftClass *aircraft, VuTargetEntity *target);
-    int GetLandingNumber(runwayQueueStruct* landInfo);
-    int GetTakeoffNumber(runwayQueueStruct* takeoffInfo);
+    int GetLandingNumber(runwayQueueStruct *landInfo);
+    int GetTakeoffNumber(runwayQueueStruct *takeoffInfo);
 
-    int CheckVector(AircraftClass *aircraft, runwayQueueStruct* info);
-    int CheckLanding(AircraftClass *aircraft, runwayQueueStruct* landInfo);
-    int CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct* info);
-    int CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct* info);
+    int CheckVector(AircraftClass *aircraft, runwayQueueStruct *info);
+    int CheckLanding(AircraftClass *aircraft, runwayQueueStruct *landInfo);
+    int CheckTakeoff(AircraftClass *aircraft, runwayQueueStruct *info);
+    int CheckIfBlockingRunway(AircraftClass *aircraft, runwayQueueStruct *info);
 
-    void GiveOrderToSection(AircraftClass *us, AtcStatusEnum status, int section);
+    void GiveOrderToSection(AircraftClass *us, AtcStatusEnum status,
+                            int section);
     void GiveOrderToWingman(AircraftClass *us, AtcStatusEnum status);
 
     // RAS - 16Jan04 - Find Nearest Traffic
-    void CheckForTraffic(AircraftClass *aircraft, runwayQueueStruct *playerInfo);
+    void CheckForTraffic(AircraftClass *aircraft,
+                         runwayQueueStruct *playerInfo);
     VU_TIME checkTrafficTime; // next time traffic should be checked
     VU_TIME lastTrafficCallTime; // last time any traffic called out
     SimBaseClass *pLastTraffic; // store traffic found
@@ -314,20 +336,19 @@ public:
     float trafficAltitude; // traffic altitude
     TrafficStatusEnum trafficCheck; // status of traffic found
     bool trafficInSightFlag; // flag when traffic is in sight
-
 };
 
 // this is the max dist squared we use for potential fields in functions below
 //#define MAX_RANGE_COLL  (180.0f)
-#define MAX_RANGE_COLL  (20.0f)
-#define MAX_RANGE_SQ  (MAX_RANGE_COLL * MAX_RANGE_COLL)
-#define AVOID_RANGE 10.0F  // FRB - was 20'
-#define MAX_AZ   (70.0f * DTR)  // FRB - was 90
-#define TAXI_CHECK_DIST 60.0F  // FRB - was 50'
+#define MAX_RANGE_COLL (20.0f)
+#define MAX_RANGE_SQ (MAX_RANGE_COLL * MAX_RANGE_COLL)
+#define AVOID_RANGE 10.0F // FRB - was 20'
+#define MAX_AZ (70.0f * DTR) // FRB - was 90
+#define TAXI_CHECK_DIST 60.0F // FRB - was 50'
 
 //I did this so I could have ONE function that is called from different places
-SimBaseClass* CheckPointGlobal(AircraftClass *self, float x, float y);
-SimBaseClass* CheckTaxiPointGlobal(AircraftClass *self, float x, float y);
-SimBaseClass* CheckPointGlobal(CampBaseClass *unit, float x, float y);
+SimBaseClass *CheckPointGlobal(AircraftClass *self, float x, float y);
+SimBaseClass *CheckTaxiPointGlobal(AircraftClass *self, float x, float y);
+SimBaseClass *CheckPointGlobal(CampBaseClass *unit, float x, float y);
 
 #endif

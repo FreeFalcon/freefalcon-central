@@ -10,9 +10,9 @@
 #include "cmpglobl.h"
 #include "gtm.h"
 #include "objectiv.h"
-#include "CampList.h"
+#include "camplist.h"
 #include "gtmobj.h"
-#include "Find.h"
+#include "find.h"
 
 // ===============================
 // Global current element pointers
@@ -35,15 +35,16 @@ void CleanupObjList(void)
     Objective o;
 
     // Eliminate objectives no longer in list
-    lp = PODataList->GetFirstElement();;
+    lp = PODataList->GetFirstElement();
+    ;
 
     while (lp)
     {
         np = lp->GetNext();
-        pod = (POData) lp->GetUserData();
+        pod = (POData)lp->GetUserData();
         o = FindObjective(pod->objective);
 
-        if ( not o or not o->IsPrimary())
+        if (not o or not o->IsPrimary())
             PODataList->Remove(lp);
 
         lp = np;
@@ -57,7 +58,7 @@ void CleanupObjList(void)
     {
         pod = GetPOData(o);
 
-        if ( not pod)
+        if (not pod)
             AddPODataEntry(o);
 
         o = GetNextObjective(&poit);
@@ -103,7 +104,7 @@ POData GetPOData(Objective po)
 
     while (lp)
     {
-        pd = (POData) lp->GetUserData();
+        pd = (POData)lp->GetUserData();
 
         if (pd->objective == po->Id())
             return pd;
@@ -124,7 +125,7 @@ void ResetObjectiveAssignmentScores(void)
 
     while (lp)
     {
-        pod = (POData) lp->GetUserData();
+        pod = (POData)lp->GetUserData();
 
         for (i = 0; i < NUM_TEAMS; i++)
             pod->ground_assigned[i] = 0;
@@ -352,7 +353,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             return to_insert;
         }
 
-        if ( not next or to_insert->priority_score > next->priority_score)
+        if (not next or to_insert->priority_score > next->priority_score)
         {
             to_insert->next = next;
             ShiAssert(next not_eq to_insert);
@@ -392,7 +393,7 @@ GODNode GndObjDataType::Insert(GODNode to_insert, int sort_by)
             return to_insert;
         }
 
-        if ( not next or to_insert->unit_options < next->unit_options)
+        if (not next or to_insert->unit_options < next->unit_options)
         {
             to_insert->next = next;
             ShiAssert(next not_eq to_insert);
@@ -446,7 +447,7 @@ GODNode GndObjDataType::Remove(GODNode to_remove)
         return temp;
     }
 
-    if ( not next)
+    if (not next)
         return this;
 
     temp = this;
@@ -477,7 +478,7 @@ GODNode GndObjDataType::Remove(Objective o)
         return temp;
     }
 
-    if ( not next)
+    if (not next)
         return this;
 
     temp = this;
@@ -556,7 +557,7 @@ void GndObjDataType::InsertUnit(Unit u, int s, int d)
     new_node->next = NULL;
     unit_options += GetOptions(new_node->distance);
 
-    if ( not unit_list)
+    if (not unit_list)
         unit_list = new_node;
 
     unit_list = unit_list->Insert(new_node, USN_SORT_BY_DISTANCE);
@@ -609,7 +610,3 @@ int GetOptions(int score)
 
     return 0;
 }
-
-
-
-

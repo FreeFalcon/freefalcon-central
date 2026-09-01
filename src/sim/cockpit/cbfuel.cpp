@@ -8,15 +8,16 @@
 #define FUEL_FLOW_DIGITS 5
 #define MAX_FUEL_FLOW_VAL 99999
 
-void CBFuelExec(void * pObject)
+void CBFuelExec(void* pObject)
 {
     CPGauge* pCPGauge;
 
-    pCPGauge = (CPGauge*) pObject;
-    pCPGauge->mCurrentVal = pCPGauge->mpCPManager->mpOTWPlatform->af->fuelFlow; //VWF KLUDGE 2/12/97
+    pCPGauge = (CPGauge*)pObject;
+    pCPGauge->mCurrentVal =
+        pCPGauge->mpCPManager->mpOTWPlatform->af->fuelFlow; //VWF KLUDGE 2/12/97
 }
 
-void CBFuelDisplay(void * pObject)
+void CBFuelDisplay(void* pObject)
 {
     static BOOL Init = FALSE;
     float Digit[FUEL_FLOW_DIGITS] = {0.0F, 0.0F, 0.0F, 0.0F, 0.0F};
@@ -29,7 +30,7 @@ void CBFuelDisplay(void * pObject)
     int Offset;
 
 
-    pCPGauge = (CPGauge*) pObject;
+    pCPGauge = (CPGauge*)pObject;
 
     // pCPGauge->mCurrentVal += 1.2F; //VWF KLUDGE 2/12/97 for testing
 
@@ -53,7 +54,7 @@ void CBFuelDisplay(void * pObject)
     }
     else
     {
-        sprintf(pFuelStr, "%5.1f", pCPGauge->mCurrentVal);//lbs/hr
+        sprintf(pFuelStr, "%5.1f", pCPGauge->mCurrentVal); //lbs/hr
 
         NumDigits = strlen(pFuelStr) - 2;
         Offset = FUEL_FLOW_DIGITS - NumDigits;
@@ -61,7 +62,8 @@ void CBFuelDisplay(void * pObject)
 
         for (i = 0; i < NumDigits; i++)
         {
-            Digit[i + Offset] = (pFuelStr[i] - 0x30) + ((pFuelStr[i + 1] - 0x30) / 10.0F);
+            Digit[i + Offset] =
+                (pFuelStr[i] - 0x30) + ((pFuelStr[i + 1] - 0x30) / 10.0F);
         }
     }
 

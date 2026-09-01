@@ -9,7 +9,7 @@
 #ifndef CAMPWP_H
 #define CAMPWP_H
 
-#include "Cmpglobl.h"
+#include "cmpglobl.h"
 
 extern bool g_bPrecisionWaypoints; //Wombat778 11-5-2003
 
@@ -21,8 +21,8 @@ typedef CampBaseClass* CampEntity;
 #define WP_TAKEOFF 1
 #define WP_ASSEMBLE 2
 #define WP_POSTASSEMBLE 3
-#define WP_REFUEL       4
-#define WP_REARM        5
+#define WP_REFUEL 4
+#define WP_REARM 5
 #define WP_PICKUP 6 // Pick up a unit
 #define WP_LAND 7
 #define WP_TIMING 8 // Just cruise around wasting time
@@ -31,12 +31,12 @@ typedef CampBaseClass* CampEntity;
 #define WP_ESCORT 10 // Engage engaging fighters
 #define WP_CA 11 // Engage all enemy aircraft
 #define WP_CAP 12 // Patrol area for enemy aircraft
-#define WP_INTERCEPT    13 // Engage specific enemy aircraft
+#define WP_INTERCEPT 13 // Engage specific enemy aircraft
 #define WP_GNDSTRIKE 14 // Engage enemy units at target
 #define WP_NAVSTRIKE 15 // Engage enemy shits at target
 #define WP_SAD 16 // Engage any enemy at target
 #define WP_STRIKE 17 // Destroy enemy installation at target
-#define WP_BOMB 18 // Strategic bomb enemy installation at target 
+#define WP_BOMB 18 // Strategic bomb enemy installation at target
 #define WP_SEAD 19 // Suppress enemy air defense at target
 #define WP_ELINT 20 // Electronic intellicence (AWACS, JSTAR, ECM)
 #define WP_RECON 21 // Photograph target location
@@ -78,7 +78,8 @@ typedef CampBaseClass* CampEntity;
 #define WPF_REPEAT 0x0040 // Return to previous WP until time is exceeded
 #define WPF_TAKEOFF 0x0080
 #define WPF_LAND 0x0100 // Suck aircraft back into squadron
-#define WPF_DIVERT 0x0200 // This is a divert WP (deleted upon completion of divert)
+#define WPF_DIVERT                                                             \
+    0x0200 // This is a divert WP (deleted upon completion of divert)
 #define WPF_ALTERNATE 0x0400 // Alternate landing site
 // Climb profile flags
 #define WPF_HOLDCURRENT 0x0800 // Stay at current altitude until last minute
@@ -86,20 +87,27 @@ typedef CampBaseClass* CampEntity;
 #define WPF_REPEAT_CONTINUOUS 0x1000 // Do this until the end of time
 #define WPF_IN_PACKAGE 0x2000 // This is a package-coordinated wp
 // Even better "Other Stuff"
-#define WPF_TIME_LOCKED 0x4000 // This waypoint will have an arrive time as given, and will not be changed
-#define WPF_SPEED_LOCKED 0x8000 // This waypoint will have a speed as given, and will not be changed.
-#define WPF_REFUEL_INFORMATION  0x10000 // This waypoint is only an informational waypoint, no mission waypoint
-#define WPF_REQHELP 0x20000 // This divert waypoint is one from a request help call
+#define WPF_TIME_LOCKED                                                        \
+    0x4000 // This waypoint will have an arrive time as given, and will not be changed
+#define WPF_SPEED_LOCKED                                                       \
+    0x8000 // This waypoint will have a speed as given, and will not be changed.
+#define WPF_REFUEL_INFORMATION                                                 \
+    0x10000 // This waypoint is only an informational waypoint, no mission waypoint
+#define WPF_REQHELP                                                            \
+    0x20000 // This divert waypoint is one from a request help call
 
-#define WPF_CRITICAL_MASK 0x07FF // If it's one of these, we can't skip this waypoint
+#define WPF_CRITICAL_MASK                                                      \
+    0x07FF // If it's one of these, we can't skip this waypoint
 
 // time recalculation flags
-#define WPTS_KEEP_DEPARTURE_TIMES 0x01 // Don't shift departure times when updating waypoint times
+#define WPTS_KEEP_DEPARTURE_TIMES                                              \
+    0x01 // Don't shift departure times when updating waypoint times
 #define WPTS_SET_ALTERNATE_TIMES 0x02 // Set wp times for alternate waypoints
 
 #define GRIDZ_SCALE_FACTOR 10 // How many feet per pt of Z.
 
-#define MINIMUM_ASL_ALTITUDE 5000 // Below this # of feet, the WP is considered AGL
+#define MINIMUM_ASL_ALTITUDE                                                   \
+    5000 // Below this # of feet, the WP is considered AGL
 
 // ============================================
 // WayPoint Class
@@ -113,14 +121,15 @@ class WayPointClass
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(WayPointClass));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -133,13 +142,14 @@ public:
     static MEM_POOL pool;
 #endif
 private:
-    GridIndex           GridX; // Waypoint's X,Y and Z coordinates (in km from southwest corner)
+    GridIndex
+        GridX; // Waypoint's X,Y and Z coordinates (in km from southwest corner)
     GridIndex GridY;
     short GridZ; // Z is in 10s of feet
-    CampaignTime       Arrive;
+    CampaignTime Arrive;
     CampaignTime Depart; // This is only used for loiter waypoints
     VU_ID TargetID;
-    uchar              Action;
+    uchar Action;
     uchar RouteAction;
     uchar Formation;
     uchar TargetBuilding;
@@ -158,14 +168,13 @@ private:
 
 public:
     WayPointClass();
-    WayPointClass(
-        GridIndex x, GridIndex y,
-        int alt, int speed, CampaignTime arr, CampaignTime station, uchar action, int flags
-    );
-    WayPointClass(VU_BYTE **stream, long *rem);
+    WayPointClass(GridIndex x, GridIndex y, int alt, int speed,
+                  CampaignTime arr, CampaignTime station, uchar action,
+                  int flags);
+    WayPointClass(VU_BYTE** stream, long* rem);
     WayPointClass(FILE* fp);
     int SaveSize(void);
-    int Save(VU_BYTE **stream);
+    int Save(VU_BYTE** stream);
     int Save(FILE* fp);
 
     // These functions are intended for general use
@@ -179,19 +188,19 @@ public:
     }
     void SetWPAction(int a)
     {
-        Action = (uchar) a;
+        Action = (uchar)a;
     }
     void SetWPRouteAction(int a)
     {
-        RouteAction = (uchar) a;
+        RouteAction = (uchar)a;
     }
     void SetWPFormation(int f)
     {
-        Formation = (uchar) f;
+        Formation = (uchar)f;
     }
     void SetWPFlags(ulong f)
     {
-        Flags = (ulong) f;
+        Flags = (ulong)f;
     }
     void SetWPFlag(ulong f)
     {
@@ -199,11 +208,11 @@ public:
     }
     void UnSetWPFlag(ulong f)
     {
-        Flags and_eq compl ((ulong)(f));
+        Flags and_eq compl((ulong)(f));
     }
     void SetWPTactic(int f)
     {
-        Tactic = (short) f;
+        Tactic = (short)f;
     }
     VU_ID GetWPTargetID(void)
     {
@@ -246,12 +255,12 @@ public:
         return PrevWP;
     }
 
-    void SetNextWP(WayPointClass *next);
-    void SetPrevWP(WayPointClass *prev);
+    void SetNextWP(WayPointClass* next);
+    void SetPrevWP(WayPointClass* prev);
     void UnlinkNextWP(void);
 
     void SplitWP(void);
-    void InsertWP(WayPointClass *);
+    void InsertWP(WayPointClass*);
     void DeleteWP(void);
 
     void CloneWP(WayPoint w);
@@ -259,8 +268,8 @@ public:
     float DistanceTo(WayPoint w);
 
     // These functions are intended for use by the campaign (They use Campaign Coordinates and times)
-    void SetWPAltitude(int alt);// { GridZ = (short)(alt/GRIDZ_SCALE_FACTOR); }
-    void SetWPAltitudeLevel(int alt);// { GridZ = (short)alt; }
+    void SetWPAltitude(int alt); // { GridZ = (short)(alt/GRIDZ_SCALE_FACTOR); }
+    void SetWPAltitudeLevel(int alt); // { GridZ = (short)alt; }
     void SetWPStationTime(CampaignTime t)
     {
         Depart = Arrive + t;
@@ -281,7 +290,7 @@ public:
     {
         return Speed;
     }
-    void SetWPLocation(GridIndex x, GridIndex y);//  { GridX = x; GridY = y; }
+    void SetWPLocation(GridIndex x, GridIndex y); //  { GridX = x; GridY = y; }
     int GetWPAltitude()
     {
         return (int)(GridZ * GRIDZ_SCALE_FACTOR);
@@ -328,13 +337,15 @@ public:
 extern void DeleteWPList(WayPoint w);
 
 // Sets a set of waypoint times to start at waypoint w at time start. Returns duration of mission
-extern CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed, int flags);
+extern CampaignTime SetWPTimes(WayPoint w, CampaignTime start, int speed,
+                               int flags);
 
 // Shifts a set of waypoints by time delta. Returns duration of mission
 extern CampaignTime SetWPTimes(WayPoint w, long delta, int flags);
 
 // Sets a set of waypoint times to start at waypoint w as soon as we can get there from x,y.
-extern CampaignTime SetWPTimes(WayPoint w, GridIndex x, GridIndex y, int speed, int flags);
+extern CampaignTime SetWPTimes(WayPoint w, GridIndex x, GridIndex y, int speed,
+                               int flags);
 
 extern WayPoint CloneWPList(WayPoint w);
 extern WayPoint CloneWPToList(WayPoint w, WayPoint stop);

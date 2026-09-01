@@ -1,7 +1,7 @@
 #include "vu2.h"
 #include "vu_priv.h"
 
-VuRBIterator::VuRBIterator(VuRedBlackTree* coll) : VuIterator(coll)
+VuRBIterator::VuRBIterator(VuRedBlackTree *coll) : VuIterator(coll)
 {
     if (coll == NULL)
     {
@@ -17,7 +17,7 @@ VuRBIterator::~VuRBIterator()
 
 VuEntity *VuRBIterator::GetFirst()
 {
-    if ( not collection_)
+    if (not collection_)
     {
         return NULL;
     }
@@ -38,7 +38,7 @@ VuEntity *VuRBIterator::GetFirst()
 
 VuEntity *VuRBIterator::GetFirst(VU_KEY low)
 {
-    if ( not collection_)
+    if (not collection_)
     {
         return NULL;
     }
@@ -66,7 +66,7 @@ VuEntity *VuRBIterator::GetFirst(VU_KEY low)
 VuEntity *VuRBIterator::GetNext()
 {
     VuEntity *ret = NULL;
-    if ( not collection_)
+    if (not collection_)
     {
         return NULL;
     }

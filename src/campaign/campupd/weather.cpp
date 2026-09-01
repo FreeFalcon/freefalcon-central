@@ -6,24 +6,24 @@
  - And then there was light
 \***************************************************************************/
 
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "Weather.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "weather.h"
 #include "math.h"
-#include "F4Find.h"
-#include "Entity.h"
-#include "Campaign.h"
-#include "Falcmesg.h"
-#include "AIInput.h"
-#include "F4Thread.h"
-#include "CmpClass.h"
-#include "MsgInc/WeatherMsg.h"
+#include "f4find.h"
+#include "entity.h"
+#include "campaign.h"
+#include "falcmesg.h"
+#include "aiinput.h"
+#include "f4thread.h"
+#include "cmpclass.h"
+#include "msginc/weathermsg.h"
 #include "falcsess.h"
-#include "F4Comms.h"
+#include "f4comms.h"
 #include "otwdrive.h"
 #include "tmap.h"
-#include "FakeRand.h"
+#include "fakerand.h"
 
 
 extern int gCurrentDataVersion;
@@ -35,12 +35,12 @@ WeatherClass::WeatherClass() : RealWeather()
     cumulusBase = stratusBase = stratus2Base = 0;
     temperature = windSpeed = windHeading = turbFactor = 0.f;
     weatherCondition = 1;
-    needsWeatherRefresh = updateLighting = lockedCondition = unlockableCondition = FALSE;
+    needsWeatherRefresh = updateLighting = lockedCondition =
+        unlockableCondition = FALSE;
 }
 
 WeatherClass::~WeatherClass()
 {
-
 }
 
 void WeatherClass::Init(bool instantAction)
@@ -50,7 +50,7 @@ void WeatherClass::Init(bool instantAction)
     weatherDay = TheCampaign.GetCurrentDay();
 
 
-    if ( not instantAction)
+    if (not instantAction)
     {
         lockedCondition = TRUE;
         // Cobra - no random weather
@@ -60,31 +60,32 @@ void WeatherClass::Init(bool instantAction)
 
     switch (TimeOfDayGeneral())
     {
-        case TOD_NIGHT:
-        {
-            windSpeed = (float)(windMin + (rand() % 5));
-            temperature = (float)(tempMin + (rand() % 3));
-            break;
-        }
+    case TOD_NIGHT:
+    {
+        windSpeed = (float)(windMin + (rand() % 5));
+        temperature = (float)(tempMin + (rand() % 3));
+        break;
+    }
 
-        case TOD_DAWNDUSK:
-        {
-            windSpeed = (float)(windMin + (rand() % 10));
-            temperature = (float)(tempMin + (rand() % 5));
-            break;
-        }
+    case TOD_DAWNDUSK:
+    {
+        windSpeed = (float)(windMin + (rand() % 10));
+        temperature = (float)(tempMin + (rand() % 5));
+        break;
+    }
 
-        default:
-        {
-            windSpeed = (float)(windMed + (rand() % 20));
-            temperature = (float)(min(tempMed + (rand() % 10), tempMax));
-        }
+    default:
+    {
+        windSpeed = (float)(windMed + (rand() % 20));
+        temperature = (float)(min(tempMed + (rand() % 10), tempMax));
+    }
     }
 
 
     windHeading = (rand() % 360) * DTR;
 
-    if (windHeading > 2.f * PI) windHeading -= 2.f * PI;
+    if (windHeading > 2.f * PI)
+        windHeading -= 2.f * PI;
 
     if (weatherCondition == INCLEMENT)
     {
@@ -93,26 +94,28 @@ void WeatherClass::Init(bool instantAction)
     }
 
     contrailLow = 100.f * (float)contrailBase + 100 * (rand() % 10);
-    contrailHigh = max(95000.f, (float)(2 + contrailLow + 1000 * (rand() % 8))); // FRB - For the SR-71
+    contrailHigh =
+        max(95000.f, (float)(2 + contrailLow +
+                             1000 * (rand() % 8))); // FRB - For the SR-71
     //contrailHigh = max(35000.f, (float)(2 + contrailLow + 1000 * (rand()%8)));
 
-    cumulusZ = (float) - (100 * cumulusBase + 100 * (rand() % 5));
+    cumulusZ = (float)-(100 * cumulusBase + 100 * (rand() % 5));
 
     if (weatherCondition > FAIR)
     {
-        stratusZ = (float) - (100 * stratusBase + 100 * (rand() % 20));
+        stratusZ = (float)-(100 * stratusBase + 100 * (rand() % 20));
 
         if (weatherCondition == INCLEMENT)
-            stratusZ = (float) - (5000 + 100 * (rand() % 150));
+            stratusZ = (float)-(5000 + 100 * (rand() % 150));
     }
     else
     {
-        stratusZ = (float) - (100 * stratusBase + 100 * (rand() % 30));
+        stratusZ = (float)-(100 * stratusBase + 100 * (rand() % 30));
     }
 
-    stratus2Z = (float) - (100 * stratus2Base + 100 * (rand() % 10));
+    stratus2Z = (float)-(100 * stratus2Base + 100 * (rand() % 10));
     stratusDepth = 1000.0f + 100 * (rand() % 30);
-    stratus2Z = (float) - stratus2Base * 100.0f;
+    stratus2Z = (float)-stratus2Base * 100.0f;
 
     ShadingFactor = 0;
 
@@ -130,84 +133,85 @@ void WeatherClass::UpdateCondition(int condition, bool bForce)
 
         switch (weatherCondition)
         {
-            case SUNNY:
-            {
-                tempMin = 12;
-                tempMed = 18;
-                tempMax = 30;
-                windMin = 0;
-                windMed = 5;
-                windMax = 10;
+        case SUNNY:
+        {
+            tempMin = 12;
+            tempMed = 18;
+            tempMax = 30;
+            windMin = 0;
+            windMed = 5;
+            windMax = 10;
 
-                wHdgThresh = 99;
-                stratusBase = 220;
-                stratus2Base = 350;
-                stratusDepth = 2000.0f;
-                contrailBase = 340;
-                turbFactor = 0.1f;
-                break;
-            }
+            wHdgThresh = 99;
+            stratusBase = 220;
+            stratus2Base = 350;
+            stratusDepth = 2000.0f;
+            contrailBase = 340;
+            turbFactor = 0.1f;
+            break;
+        }
 
-            case FAIR:
-            {
-                tempMin = 12;
-                tempMed = 18;
-                tempMax = 28;
-                windMin = 5;
-                windMed = 10;
-                windMax = 20;
+        case FAIR:
+        {
+            tempMin = 12;
+            tempMed = 18;
+            tempMax = 28;
+            windMin = 5;
+            windMed = 10;
+            windMax = 20;
 
-                wHdgThresh = 98;
-                stratusBase = 220;
-                stratus2Base = 350;
-                stratusDepth = 2000.0f;
-                cumulusBase = 80;
-                contrailBase = 280;
-                turbFactor = 0.2f;
-                break;
-            }
+            wHdgThresh = 98;
+            stratusBase = 220;
+            stratus2Base = 350;
+            stratusDepth = 2000.0f;
+            cumulusBase = 80;
+            contrailBase = 280;
+            turbFactor = 0.2f;
+            break;
+        }
 
-            case POOR:
-            {
-                tempMin = 10;
-                tempMed = 15;
-                tempMax = 25;
-                windMin = 10;
-                windMed = 15;
-                windMax = 25;
+        case POOR:
+        {
+            tempMin = 10;
+            tempMed = 15;
+            tempMax = 25;
+            windMin = 10;
+            windMed = 15;
+            windMax = 25;
 
-                wHdgThresh = 97;
-                stratusBase = 150;
-                stratus2Base = 350;
-                stratusDepth = 2000.0f;
-                contrailBase = 250;
-                turbFactor = 0.3f;
-                break;
-            }
+            wHdgThresh = 97;
+            stratusBase = 150;
+            stratus2Base = 350;
+            stratusDepth = 2000.0f;
+            contrailBase = 250;
+            turbFactor = 0.3f;
+            break;
+        }
 
-            case INCLEMENT:
-            {
-                tempMin = 9;
-                tempMed = 14;
-                tempMax = 22;
-                windMin = 15;
-                windMed = 25;
-                windMax = 35;
+        case INCLEMENT:
+        {
+            tempMin = 9;
+            tempMed = 14;
+            tempMax = 22;
+            windMin = 15;
+            windMed = 25;
+            windMax = 35;
 
-                wHdgThresh = 96;
-                stratusBase = 100;
-                stratus2Base = 350;
-                stratusDepth = 3000.0f;
-                contrailBase = 200;
-                turbFactor = 0.4f;
-            }
+            wHdgThresh = 96;
+            stratusBase = 100;
+            stratus2Base = 350;
+            stratusDepth = 3000.0f;
+            contrailBase = 200;
+            turbFactor = 0.4f;
+        }
         }
     }
 }
 
 void WeatherClass::UpdateWeather()
 {
-    if ( not TheCampaign.IsMaster()) return;
+    if (not TheCampaign.IsMaster())
+        return;
 
     float seed, delta;
     CampaignTime time, tDelta;
@@ -216,25 +220,25 @@ void WeatherClass::UpdateWeather()
     {
         switch (TimeOfDayGeneral())
         {
-            case TOD_NIGHT:
-            {
-                windSpeed = (float)(windMin + rand() % 5);
-                temperature = (float)(tempMin + rand() % 3);
-                break;
-            }
+        case TOD_NIGHT:
+        {
+            windSpeed = (float)(windMin + rand() % 5);
+            temperature = (float)(tempMin + rand() % 3);
+            break;
+        }
 
-            case TOD_DAWNDUSK:
-            {
-                windSpeed = (float)(windMin + rand() % 10);
-                temperature = (float)(tempMin + rand() % 5);
-                break;
-            }
+        case TOD_DAWNDUSK:
+        {
+            windSpeed = (float)(windMin + rand() % 10);
+            temperature = (float)(tempMin + rand() % 5);
+            break;
+        }
 
-            default:
-            {
-                windSpeed = (float)(windMed + rand() % 20);
-                temperature = (float)(min(tempMed + rand() % 10, tempMax));
-            }
+        default:
+        {
+            windSpeed = (float)(windMed + rand() % 20);
+            temperature = (float)(min(tempMed + rand() % 10, tempMax));
+        }
         }
 
         windHeading = (rand() % 360) * DTR;
@@ -243,17 +247,19 @@ void WeatherClass::UpdateWeather()
             windHeading -= (2.f * PI);
 
         contrailLow = 100.f * (float)(contrailBase + 100 * rand() % 10);
-        contrailHigh = max(95000.f, (float)(2 + contrailLow + 1000 * (rand() % 8))); // FRB - For the SR-71
+        contrailHigh =
+            max(95000.f, (float)(2 + contrailLow +
+                                 1000 * (rand() % 8))); // FRB - For the SR-71
         //contrailHigh = max(35000.f, (float)(2+contrailLow+1000*rand()%8));
 
-        cumulusZ = (float) - (100 * cumulusBase + 100 * rand() % 5);
+        cumulusZ = (float)-(100 * cumulusBase + 100 * rand() % 5);
 
         if (weatherCondition > FAIR)
-            stratusZ = (float) - (100 * stratusBase + 100 * rand() % 5);
+            stratusZ = (float)-(100 * stratusBase + 100 * rand() % 5);
         else
-            stratusZ = (float) - (100 * stratusBase + 100 * rand() % 10);
+            stratusZ = (float)-(100 * stratusBase + 100 * rand() % 10);
 
-        stratus2Z = (float) - (100 * stratus2Base + 100 * rand() % 10);
+        stratus2Z = (float)-(100 * stratus2Base + 100 * rand() % 10);
 
         weatherDay = TheCampaign.GetCurrentDay();
     }
@@ -264,9 +270,11 @@ void WeatherClass::UpdateWeather()
     {
         static int lastTOD = TOD_NIGHT;
         int h = FloatToInt32((windHeading - .5f * PI) * 3.f);
-        FalconWeatherMessage *message = new FalconWeatherMessage(vuLocalSessionEntity->Id(), FalconLocalGame);
+        FalconWeatherMessage *message = new FalconWeatherMessage(
+            vuLocalSessionEntity->Id(), FalconLocalGame);
 
-        tDelta = (CampaignTime)max(min((time - lastCheck), 2 * CampaignMinutes), 0.f);
+        tDelta = (CampaignTime)max(min((time - lastCheck), 2 * CampaignMinutes),
+                                   0.f);
         lastCheck = time;
 
         seed = (float)(rand() % 100) / 100.f;
@@ -274,67 +282,67 @@ void WeatherClass::UpdateWeather()
 
         switch (TimeOfDayGeneral())
         {
-            case TOD_NIGHT:
-            {
-                if (temperature > tempMin)
-                    temperature -= (float)delta * seed * 2.f;
-                else
-                    temperature += (float)delta * seed * 2.f;
+        case TOD_NIGHT:
+        {
+            if (temperature > tempMin)
+                temperature -= (float)delta * seed * 2.f;
+            else
+                temperature += (float)delta * seed * 2.f;
 
-                if (windSpeed > windMin)
+            if (windSpeed > windMin)
+                windSpeed -= (float)delta * seed * 4.f;
+            else
+                windSpeed += (float)delta * seed * 4.f;
+
+            lastTOD = TOD_NIGHT;
+            break;
+        }
+
+        case TOD_DAWNDUSK:
+        {
+            if (lastTOD == TOD_NIGHT)
+            {
+                if (temperature < tempMed - 2)
+                    temperature += (float)delta * seed * 4.f;
+                else
+                    temperature -= (float)delta * seed * 4.f;
+
+                if (windSpeed < windMed - 5)
+                    windSpeed += (float)delta * seed;
+                else
+                    windSpeed -= (float)delta * seed;
+            }
+            else
+            {
+                if (temperature > tempMin + 4)
+                    temperature -= (float)delta * seed * 4.f;
+                else
+                    temperature += (float)delta * seed * 4.f;
+
+                if (windSpeed > windMin + 5)
                     windSpeed -= (float)delta * seed * 4.f;
                 else
                     windSpeed += (float)delta * seed * 4.f;
-
-                lastTOD = TOD_NIGHT;
-                break;
             }
 
-            case TOD_DAWNDUSK:
-            {
-                if (lastTOD == TOD_NIGHT)
-                {
-                    if (temperature < tempMed - 2)
-                        temperature += (float)delta * seed * 4.f;
-                    else
-                        temperature -= (float)delta * seed * 4.f;
+            break;
+        }
 
-                    if (windSpeed < windMed - 5)
-                        windSpeed += (float)delta * seed;
-                    else
-                        windSpeed -= (float)delta * seed;
-                }
-                else
-                {
-                    if (temperature > tempMin + 4)
-                        temperature -= (float)delta * seed * 4.f;
-                    else
-                        temperature += (float)delta * seed * 4.f;
+        default:
+        {
+            if (temperature < tempMax)
+                temperature += (float)delta * seed * 2.f;
+            else
+                temperature -= (float)delta * seed * 2.f;
 
-                    if (windSpeed > windMin + 5)
-                        windSpeed -= (float)delta * seed * 4.f;
-                    else
-                        windSpeed += (float)delta * seed * 4.f;
-                }
-
-                break;
-            }
-
-            default:
-            {
-                if (temperature < tempMax)
-                    temperature += (float)delta * seed * 2.f;
-                else
-                    temperature -= (float)delta * seed * 2.f;
-
-                if (windSpeed < windMax)
-                    windSpeed += (float)delta * seed * 4.f;
-                else
-                    windSpeed -= (float)delta * seed * 4.f;
+            if (windSpeed < windMax)
+                windSpeed += (float)delta * seed * 4.f;
+            else
+                windSpeed -= (float)delta * seed * 4.f;
 
 
-                lastTOD = TOD_DAY;
-            }
+            lastTOD = TOD_DAY;
+        }
         }
 
         if (rand() % 100 > wHdgThresh or needsWeatherRefresh)
@@ -361,28 +369,28 @@ void WeatherClass::UpdateWeather()
 
             switch (weatherCondition)
             {
-                case SUNNY:
-                {
-                    UpdateCondition(weatherCondition + 1);
-                    break;
-                }
+            case SUNNY:
+            {
+                UpdateCondition(weatherCondition + 1);
+                break;
+            }
 
-                case FAIR:
-                {
-                    UpdateCondition(weatherCondition + direction);
-                    break;
-                }
+            case FAIR:
+            {
+                UpdateCondition(weatherCondition + direction);
+                break;
+            }
 
-                case POOR:
-                {
-                    UpdateCondition(weatherCondition + direction);
-                    break;
-                }
+            case POOR:
+            {
+                UpdateCondition(weatherCondition + direction);
+                break;
+            }
 
-                case INCLEMENT:
-                {
-                    UpdateCondition(weatherCondition - 1);
-                }
+            case INCLEMENT:
+            {
+                UpdateCondition(weatherCondition - 1);
+            }
             }
         }
 
@@ -439,7 +447,7 @@ void WeatherClass::SendWeather(VuTargetEntity *target)
     FalconSendMessage(message, TRUE);
 }
 
-void WeatherClass::ReceiveWeather(FalconWeatherMessage* message)
+void WeatherClass::ReceiveWeather(FalconWeatherMessage *message)
 {
     UpdateCondition(message->dataBlock.weatherCondition);
     lastCheck = message->dataBlock.lastCheck;
@@ -463,9 +471,9 @@ void WeatherClass::ReceiveWeather(FalconWeatherMessage* message)
     TheCampaign.GotJoinData();
 }
 
-int WeatherClass::CampLoad(char* name, int type)
+int WeatherClass::CampLoad(char *name, int type)
 {
-    char /* *data,*/*data_ptr;
+    char /* *data,*/ *data_ptr;
     BYTE utemp;
     float ftemp, ftemp1;
 
@@ -476,7 +484,8 @@ int WeatherClass::CampLoad(char* name, int type)
 
     CampaignData cd = ReadCampFile(name, "wth");
 
-    if (cd.dataSize == -1) return 0;
+    if (cd.dataSize == -1)
+        return 0;
 
     data_ptr = cd.data;
 
@@ -505,7 +514,7 @@ int WeatherClass::CampLoad(char* name, int type)
                 data_ptr += sizeof(float);
             }
             else
-                cumulusZ = (float) - (100 * cumulusBase + 100 * rand() % 50);
+                cumulusZ = (float)-(100 * cumulusBase + 100 * rand() % 50);
 
             stratusZ = *((float *)data_ptr);
             data_ptr += sizeof(float);
@@ -598,32 +607,31 @@ int WeatherClass::CampLoad(char* name, int type)
             else
             {
                 // SUNNY=1  FAIR =2 POOR=3 INCLEMENT=4
-                windHeading = *((float *) data_ptr);
+                windHeading = *((float *)data_ptr);
                 data_ptr += sizeof(float);
-                windSpeed = *((float *) data_ptr);
+                windSpeed = *((float *)data_ptr);
                 windSpeed = (float)windSpeed / (KPH_TO_FPS * FTPSEC_TO_KNOTS);
                 data_ptr += sizeof(float);
-                lastCheck = *((CampaignTime *)
-                              data_ptr);
+                lastCheck = *((CampaignTime *)data_ptr);
                 data_ptr += sizeof(CampaignTime);
-                temperature = *((float *) data_ptr);
+                temperature = *((float *)data_ptr);
                 data_ptr += sizeof(float);
                 // TodaysTemp = *((uchar *) data_ptr);
                 data_ptr += sizeof(uchar);
                 // TodaysWind = *((uchar *) data_ptr);
                 data_ptr += sizeof(uchar);
-                cumulusBase = (int) * ((uchar *) data_ptr);
+                cumulusBase = (int)*((uchar *)data_ptr);
 
                 if (cumulusBase < 100)
                     cumulusBase = 100;
 
                 cumulusZ = -(float)cumulusBase * 100.f;
                 data_ptr += sizeof(uchar);
-                contrailLow = (float) * ((uchar *) data_ptr);
+                contrailLow = (float)*((uchar *)data_ptr);
                 contrailLow *= 1000.0f;
                 contrailBase = (SLONG)(contrailLow / 100.0f);
                 data_ptr += sizeof(uchar);
-                contrailHigh = (float) * ((uchar *) data_ptr);
+                contrailHigh = (float)*((uchar *)data_ptr);
                 contrailHigh *= 1000.0f;
 
                 if (contrailHigh < 95000.f)
@@ -636,7 +644,8 @@ int WeatherClass::CampLoad(char* name, int type)
                 stratusZ = -22000.f;
                 stratus2Z = -35000.f;
 
-                if (PlayerOptions.weatherCondition < 1 or PlayerOptions.weatherCondition > 4)
+                if (PlayerOptions.weatherCondition < 1 or
+                    PlayerOptions.weatherCondition > 4)
                     PlayerOptions.weatherCondition = 1;
 
                 UpdateCondition(PlayerOptions.weatherCondition, false);
@@ -653,13 +662,14 @@ int WeatherClass::CampLoad(char* name, int type)
     return TRUE;
 }
 
-int WeatherClass::Save(char* name)
+int WeatherClass::Save(char *name)
 {
     FILE *fp;
     UINT nw = 0, nh = 0;
     unsigned int w = 0, h = 0;
 
-    if ((fp = OpenCampFile(name, "wth", "wb")) == NULL) return 0;
+    if ((fp = OpenCampFile(name, "wth", "wb")) == NULL)
+        return 0;
 
     if (gCurrentDataVersion >= 75)
     {

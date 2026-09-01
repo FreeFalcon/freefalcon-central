@@ -7,7 +7,7 @@
 #include "pilot.h"
 
 // Define to flag moving aircraft from reserve
-#define UMSG_FROM_RESERVE   255
+#define UMSG_FROM_RESERVE 255
 
 // Defines for types of stats update
 #define ASTAT_AAKILL 0
@@ -18,8 +18,10 @@
 #define ASTAT_PKILL 5 // Player kill
 
 #define SQUADRON_PT_FUEL 100 // How many lbs each point of fuel is worth
-#define SQUADRON_PT_SUPPLY 20 // How many weapon shots each point of supply is worth
-#define SQUADRON_MISSIONS_PER_HOUR 4 // How many missions we expect each plane to fly per hour
+#define SQUADRON_PT_SUPPLY                                                     \
+    20 // How many weapon shots each point of supply is worth
+#define SQUADRON_MISSIONS_PER_HOUR                                             \
+    4 // How many missions we expect each plane to fly per hour
 
 #define SQUADRON_SPECIALTY_AA 1 // Specialty values
 #define SQUADRON_SPECIALTY_AG 2
@@ -40,7 +42,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -73,11 +76,11 @@ private:
     uchar assigned; // Assigned to current package
     uchar squadron_patch; // ID of this squadron's patch art
     int dirty_squadron;
-    CampaignTime last_resupply_time; // Last time we received supply/reinforcements
+    CampaignTime
+        last_resupply_time; // Last time we received supply/reinforcements
     uchar last_resupply; // Number of aircraft we received
 
 public:
-
     // Access Functions
     uchar GetAvailableStores(int i);
     ulong GetSchedule(int i)
@@ -241,11 +244,11 @@ public:
     {
         return pilot_data[pilot].pilot_id;
     }
-    PilotClass* GetPilotData(int pilot)
+    PilotClass *GetPilotData(int pilot)
     {
         return &pilot_data[pilot];
     }
-    PilotInfoClass* GetPilotInfo(int pilot)
+    PilotInfoClass *GetPilotInfo(int pilot)
     {
         return &PilotInfo[pilot_data[pilot].pilot_id];
     }
@@ -263,28 +266,34 @@ public:
     void ScoreKill(int pilot, int killtype);
     void ScoreMission(short missions)
     {
-        missions_flown = static_cast<short>(missions_flown + missions);    // this looks silly but gets rid of warning, since changing the type could invalidate save files
+        missions_flown = static_cast<short>(
+            missions_flown +
+            missions); // this looks silly but gets rid of warning, since changing the type could invalidate save files
     }
     void ShiftSchedule(void);
     int FindAvailableAircraft(MissionRequest mis);
     void ScheduleAircraft(Flight fl, MissionRequest mis);
     int AssignPilots(Flight fl);
-    void UpdateSquadronStores(short weapon[HARDPOINT_MAX], uchar weapons[HARDPOINT_MAX], int lbsfuel, int planes);
+    void UpdateSquadronStores(short weapon[HARDPOINT_MAX],
+                              uchar weapons[HARDPOINT_MAX], int lbsfuel,
+                              int planes);
     // 2001-12-28 M.N.
-    void ResupplySquadronStores(short weapon[HARDPOINT_MAX], uchar weapons[HARDPOINT_MAX], int lbsfuel, int planes);
+    void ResupplySquadronStores(short weapon[HARDPOINT_MAX],
+                                uchar weapons[HARDPOINT_MAX], int lbsfuel,
+                                int planes);
     // 2001-07-05 ADDED BY S.G. NEED SOMETHING TO HOLD THE NEW VARIABLE FOR squadron RETASKING ONCE REALLOCATED
     CampaignTime squadronRetaskAt;
 };
 
-typedef SquadronClass* Squadron;
+typedef SquadronClass *Squadron;
 
 // ============================================
 // Supporting functions
 // ============================================
 
 class FlightClass;
-typedef FlightClass* Flight;
+typedef FlightClass *Flight;
 
-SquadronClass* NewSquadron(int type);
+SquadronClass *NewSquadron(int type);
 
 #endif

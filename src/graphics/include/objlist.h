@@ -11,7 +11,7 @@
 
 #define _NUM_OBJECT_LISTS_ (5)
 
-#include "DrawObj.h"
+#include "drawobj.h"
 
 
 // This structure is used in the viewpoint sorting to move objects directly to the list
@@ -25,7 +25,7 @@ struct TransportStr
 
 typedef struct UpdateCallBack
 {
-    void(*fn)(void*, long, const Tpoint*, TransportStr*);
+    void (*fn)(void *, long, const Tpoint *, TransportStr *);
     void *self;
     struct UpdateCallBack *prev;
     struct UpdateCallBack *next;
@@ -33,7 +33,7 @@ typedef struct UpdateCallBack
 
 typedef struct SortCallBack
 {
-    void(*fn)(void*);
+    void (*fn)(void *);
     void *self;
     struct SortCallBack *prev;
     struct SortCallBack *next;
@@ -51,10 +51,11 @@ public:
     void InsertObject(DrawableObject *object);
     void RemoveObject(DrawableObject *object);
 
-    void InsertUpdateCallbacks(UpdateCallBack*, SortCallBack*, void *self);
-    void RemoveUpdateCallbacks(UpdateCallBack*, SortCallBack*, void *self);
+    void InsertUpdateCallbacks(UpdateCallBack *, SortCallBack *, void *self);
+    void RemoveUpdateCallbacks(UpdateCallBack *, SortCallBack *, void *self);
 
-    void UpdateMetrics(const Tpoint *pos); // do update without moving around in lists
+    void UpdateMetrics(
+        const Tpoint *pos); // do update without moving around in lists
     void UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList);
     void SortForViewpoint(void);
 
@@ -64,25 +65,28 @@ public:
     };
     float GetNextDrawDistance(void)
     {
-        if (nextToDraw) return nextToDraw->distance;
-        else return -1.0f;
+        if (nextToDraw)
+            return nextToDraw->distance;
+        else
+            return -1.0f;
     };
     void DrawBeyond(float ringDistance, int LOD, RenderOTW *renderer);
     void DrawBeyond(float ringDistance, Render3D *renderer);
 
-    DrawableObject* GetNearest(void)
+    DrawableObject *GetNearest(void)
     {
         return tail;
     };
-    DrawableObject* GetNext(void)
+    DrawableObject *GetNext(void)
     {
         return nextToDraw;
     };
-    DrawableObject* GetNextAndAdvance(void)
+    DrawableObject *GetNextAndAdvance(void)
     {
         DrawableObject *p = nextToDraw;
 
-        if (nextToDraw) nextToDraw = nextToDraw->next;
+        if (nextToDraw)
+            nextToDraw = nextToDraw->next;
 
         return p;
     };
@@ -117,4 +121,3 @@ protected:
 };
 
 #endif // _OBJLIST_H_
-

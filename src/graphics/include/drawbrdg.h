@@ -8,9 +8,9 @@
 #ifndef _DRAWBRDG_H_
 #define _DRAWBRDG_H_
 
-#include "ObjList.h"
-#include "DrawRdbd.h"
-#include "DrawBldg.h"
+#include "objlist.h"
+#include "drawrdbd.h"
+#include "drawbldg.h"
 
 
 class DrawableBridge : public DrawableObject
@@ -42,7 +42,8 @@ protected:
     BOOL ObjectInside(DrawableObject *object);
     virtual void SetParentList(ObjectDisplayList *list);
 
-    static void UpdateMetrics(void *self, long listNo, const Tpoint *pos, TransportStr *transList);
+    static void UpdateMetrics(void *self, long listNo, const Tpoint *pos,
+                              TransportStr *transList);
     void UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList);
 
     static void SortForViewpoint(void *self);
@@ -58,7 +59,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

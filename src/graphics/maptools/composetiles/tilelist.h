@@ -29,9 +29,9 @@ public:
     void Setup(char *path);
     void Cleanup(void);
 
-    const char* GetFileName(WORD texCode);
-    const BYTE* GetImageData(WORD texCode);
-    const DWORD* GetSharedPalette(void)
+    const char *GetFileName(WORD texCode);
+    const BYTE *GetImageData(WORD texCode);
+    const DWORD *GetSharedPalette(void)
     {
         return palette;
     };

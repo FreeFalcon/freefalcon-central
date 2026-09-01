@@ -1,4 +1,4 @@
-#pragma optimize( "", off )
+#pragma optimize("", off)
 
 #include <windows.h>
 #include <conio.h>
@@ -8,33 +8,33 @@
 #include <direct.h>
 #include <tchar.h>
 
-#include "Graphics/Include/Setup.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawtrcr.h"
-#include "Graphics/Include/rViewpnt.h"
-#include "Graphics/Include/draw2d.h"
-#include "Graphics/Include/drawBSP.h"
-#include "Graphics/Include/drawpole.h"
-#include "Graphics/Include/drawplat.h"
-#include "Graphics/Include/drawbrdg.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/setup.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawtrcr.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/draw2d.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawpole.h"
+#include "graphics/include/drawplat.h"
+#include "graphics/include/drawbrdg.h"
+#include "graphics/include/renderow.h"
 #include "falclib.h"
 #include "fsound.h"
-#include "Graphics/Include/grTypes.h"
+#include "graphics/include/grtypes.h"
 
 #include "codelib/tools/lists/lists.h"
 #include "debuggr.h"
-#include "AcmiTape.h"
+#include "acmitape.h"
 #include "sim/include/misctemp.h" // for Clamp function.
 #include "sim/include/simbase.h"
 #include "sim/include/otwdrive.h"
 #include "sim/include/sfx.h"
 #include "acmirec.h"
 #include "sim/include/simfeat.h"
-#include "Campaign/include/CmpGlobl.h"
-#include "Campaign/include/evtparse.h"
-#include "ClassTbl.h"
-#include "Entity.h"
+#include "campaign/include/cmpglobl.h"
+#include "campaign/include/evtparse.h"
+#include "classtbl.h"
+#include "entity.h"
 #include "ui/include/events.h"
 #include "f4vu.h"
 #include "feature.h"
@@ -44,8 +44,8 @@
 
 //////////////////////////////////////////////////////////////////////////
 /// 3-23 BING
-#include "AcmiView.h"
-#include "AcmiUI.h"
+#include "acmiview.h"
+#include "acmiui.h"
 
 extern ACMIView *acmiView;
 
@@ -56,8 +56,8 @@ long tempTarget; // for missile lock.
 //////////////////////////////////////////////////////////////////////////
 
 
-void CalcTransformMatrix(SimBaseClass* theObject);
-void CreateDrawable(SimBaseClass* theObject, float objectScale);
+void CalcTransformMatrix(SimBaseClass *theObject);
+void CreateDrawable(SimBaseClass *theObject, float objectScale);
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -92,13 +92,13 @@ ACMIEventTrailer *importEventTrailerList;
 
 extern long TeamSimColorList[NUM_TEAMS];
 
-LIST * AppendToEndOfList(LIST * list, LIST **end, void * node);
-void DestroyTheList(LIST * list);
+LIST *AppendToEndOfList(LIST *list, LIST **end, void *node);
+void DestroyTheList(LIST *list);
 extern float CalcKIAS(float, float);
 
 ACMI_CallRec *ACMI_Callsigns = NULL;
 ACMI_CallRec *Import_Callsigns = NULL;
-long import_count = 0;
+int32_t import_count = 0;
 
 //extern GLOBAL_SPEED;
 //extern GLOBAL_ALTITUDE;
@@ -108,38 +108,24 @@ long import_count = 0;
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void DefaultForwardACMIGeneralEventCallback
-(
-    ACMITape *,
-    EventIdData eventId,
-    void *,
-    void *
-)
+void DefaultForwardACMIGeneralEventCallback(ACMITape *, EventIdData eventId,
+                                            void *, void *)
 {
-    MonoPrint
-    (
+    MonoPrint(
         "General event occured in forward ACMI Tape play --> event type: %d.\n",
-        eventId.type
-    );
+        eventId.type);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void DefaultReverseACMIGeneralEventCallback
-(
-    ACMITape *,
-    EventIdData eventId,
-    void *,
-    void *
-)
+void DefaultReverseACMIGeneralEventCallback(ACMITape *, EventIdData eventId,
+                                            void *, void *)
 {
-    MonoPrint
-    (
+    MonoPrint(
         "General event occured in reverse ACMI Tape play --> event type: %d.\n",
-        eventId.type
-    );
+        eventId.type);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -176,7 +162,7 @@ void DestroyACMIRawPositionDataList(LIST *list)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void DeleteACMIRawPositionData(ACMIRawPositionData* rawPositionData)
+void DeleteACMIRawPositionData(ACMIRawPositionData *rawPositionData)
 {
     delete rawPositionData;
 }
@@ -228,7 +214,7 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
     ACMIEntityData *e;
     long length = 0;
     char *callsigns = NULL;
-    long numcalls = 0;
+    int32_t numcalls = 0;
 
 
     // initialize storage for drawable poled objects
@@ -259,8 +245,8 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
     // edg note on hack: right now, ALWAYS do an import from the acmi.flt
     // file to convert to a tape file.  Later we'll probably want to import
     // right after an ACMIU record session to get into .vhs format
-    //strcpy( fullName, "campaign\\save\\fltfiles\\" );
-    strcpy(fullName, "acmibin\\");
+    //strcpy( fullName, "campaign/save/fltfiles/" );
+    strcpy(fullName, "acmibin/");
     strcat(fullName, name);
 
     // commented out if statement for quick testing....
@@ -277,13 +263,8 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
             for (i = 0; i < numEntities; i++)
             {
                 e = EntityData(i);
-                MonoPrint("Entity %d: Type = %d, Id = %d, Offset = %d\n",
-                          i,
-                          e->type,
-                          e->uniqueID,
-                          e->firstPositionDataOffset);
-
-
+                MonoPrint("Entity %d: Type = %d, Id = %d, Offset = %d\n", i,
+                          e->type, e->uniqueID, e->firstPositionDataOffset);
             }
 
             // CloseTapeFile();
@@ -298,12 +279,13 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
     if (IsLoaded())
     {
         // Setup Callsigns...
-        callsigns = (char*)GetCallsignList(&numcalls);
+        callsigns = (char *)GetCallsignList(&numcalls);
 
-        if (((char *)callsigns - (char *)_tape) < length and numcalls > 0) // there are callsigns...
+        if (((char *)callsigns - (char *)_tape) < length and
+            numcalls > 0) // there are callsigns...
         {
             ACMI_Callsigns = new ACMI_CallRec[numcalls];
-            memcpy(ACMI_Callsigns, callsigns, sizeof(ACMI_CallRec)*numcalls);
+            memcpy(ACMI_Callsigns, callsigns, sizeof(ACMI_CallRec) * numcalls);
         }
 
         numEntities = NumEntities();
@@ -321,18 +303,14 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
         }
 
         // Setup general event callbacks.
-        SetGeneralEventCallbacks
-        (
-            DefaultForwardACMIGeneralEventCallback,
-            DefaultReverseACMIGeneralEventCallback,
-            NULL
-        );
+        SetGeneralEventCallbacks(DefaultForwardACMIGeneralEventCallback,
+                                 DefaultReverseACMIGeneralEventCallback, NULL);
 
         // setup the sim tape entities
         SetupSimTapeEntities();
 
         // create an array of ActiveEvent pointers -- 1 for every event
-        _eventList = new ActiveEvent * [ _tapeHdr.numEvents ];
+        _eventList = new ActiveEvent *[_tapeHdr.numEvents];
         // make sure they're null
         memset(_eventList, 0, sizeof(ActiveEvent *) * _tapeHdr.numEvents);
 
@@ -344,7 +322,9 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
         }
         else
         {
-            _firstEventTrailer = (ACMIEventTrailer *)((char *)_tape + _tapeHdr.firstEventTrailerOffset);
+            _firstEventTrailer =
+                (ACMIEventTrailer *)((char *)_tape +
+                                     _tapeHdr.firstEventTrailerOffset);
             _lastEventTrailer = _firstEventTrailer + (_tapeHdr.numEvents - 1);
         }
 
@@ -357,7 +337,8 @@ ACMITape::ACMITape(char *name, RenderOTW *renderer, RViewPoint *viewPoint)
         }
         else
         {
-            _firstFeatEvent = (ACMIFeatEvent *)((char *)_tape + _tapeHdr.firstFeatEventOffset);
+            _firstFeatEvent = (ACMIFeatEvent *)((char *)_tape +
+                                                _tapeHdr.firstFeatEventOffset);
             _lastFeatEvent = _firstFeatEvent + (_tapeHdr.numFeatEvents - 1);
         }
 
@@ -394,7 +375,7 @@ void ACMITape::Init()
 
     if (_entityReadHeads)
     {
-        delete [] _entityReadHeads;
+        delete[] _entityReadHeads;
         _entityReadHeads = NULL;
     }
 
@@ -408,12 +389,7 @@ void ACMITape::Init()
         CleanupEventList();
     }
 
-    SetGeneralEventCallbacks
-    (
-        NULL,
-        NULL,
-        NULL
-    );
+    SetGeneralEventCallbacks(NULL, NULL, NULL);
 
     if (_tape)
     {
@@ -438,45 +414,30 @@ void ACMITape::Init()
     _generalEventReadHeadHeader = 0;
     _featEventReadHead = NULL;
     _generalEventReadHeadTrailer = NULL;
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-BOOL ReadRawACMIPositionData
-(
-    FILE *flightFile,
-    ACMIRawPositionData &rawPositionData
-)
+BOOL ReadRawACMIPositionData(FILE *flightFile,
+                             ACMIRawPositionData &rawPositionData)
 {
-    int
-    result;
+    int result;
 
-    fscanf
-    (
-        flightFile,
-        "%d %d",
-        &rawPositionData.type,
-        &rawPositionData.uniqueID
-    );
+    fscanf(flightFile, "%d %d", &rawPositionData.type,
+           &rawPositionData.uniqueID);
 
 
     // We don't need to check the status of our last two fscanf calls, because
     // if they fail, this one will too.
-    result = fscanf
-             (
-                 flightFile,
-                 "%f %f %f %f %f %f\n",
-                 &rawPositionData.entityPosData.posData.x,
-                 &rawPositionData.entityPosData.posData.y,
-                 &rawPositionData.entityPosData.posData.z,
-                 &rawPositionData.entityPosData.posData.pitch,
-                 &rawPositionData.entityPosData.posData.roll,
-                 &rawPositionData.entityPosData.posData.yaw
-             );
+    result = fscanf(flightFile, "%f %f %f %f %f %f\n",
+                    &rawPositionData.entityPosData.posData.x,
+                    &rawPositionData.entityPosData.posData.y,
+                    &rawPositionData.entityPosData.posData.z,
+                    &rawPositionData.entityPosData.posData.pitch,
+                    &rawPositionData.entityPosData.posData.roll,
+                    &rawPositionData.entityPosData.posData.yaw);
 
     // insure pitch roll and yaw are positive (edg:?)
     // or in 0 - 2PI range
@@ -489,18 +450,15 @@ BOOL ReadRawACMIPositionData
      rawPositionData.entityPosData.yaw += 2.0f * PI;
     */
 
-    return ( not result or result == EOF ? FALSE : TRUE);
+    return (not result or result == EOF ? FALSE : TRUE);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void CleanupACMIImportPositionData
-(
-    FILE *flightFile,
-    ACMIRawPositionData *rawPositionData
-)
+void CleanupACMIImportPositionData(FILE *flightFile,
+                                   ACMIRawPositionData *rawPositionData)
 {
     if (flightFile not_eq NULL)
     {
@@ -544,7 +502,7 @@ void CleanupACMIImportPositionData
 
     if (importEventTrailerList not_eq NULL)
     {
-        delete [] importEventTrailerList;
+        delete[] importEventTrailerList;
         importEventTrailerList = NULL;
     }
 
@@ -568,24 +526,18 @@ void CleanupACMIImportPositionData
 
 BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
 {
-    FILE
-    *flightFile;
+    FILE *flightFile;
 
-    ACMIRawPositionData
-    *rawPositionData = NULL;
+    ACMIRawPositionData *rawPositionData = NULL;
 
-    ACMIEventHeader
-    *ehdr = NULL;
+    ACMIEventHeader *ehdr = NULL;
 
-    ACMIFeatEventImportData
-    *fedata = NULL;
+    ACMIFeatEventImportData *fedata = NULL;
 
-    float
-    begTime,
-    endTime;
+    float begTime, endTime;
 
     ACMITapeHeader tapeHdr;
-    ACMIRecHeader  hdr;
+    ACMIRecHeader hdr;
     ACMIGenPositionData genpos;
     ACMIFeaturePositionData featpos;
     ACMITracerStartData tracer;
@@ -613,11 +565,11 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
     importEventTrailerList = NULL;
 
     // this value comes from tod type record
-    tapeHdr.todOffset =  0.0f;
+    tapeHdr.todOffset = 0.0f;
 
 
     // Load flight file for positional data.
-    //flightFile = fopen("campaign\\save\\fltfiles\\acmi.flt", "rb");
+    //flightFile = fopen("campaign/save/fltfiles/acmi.flt", "rb");
     flightFile = fopen(inFltFile, "rb");
 
     if (flightFile == NULL)
@@ -635,344 +587,355 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
         // now read in the rest of the record depending on type
         switch (hdr.type)
         {
-            case ACMIRecTodOffset:
-                tapeHdr.todOffset =  hdr.time;
-                break;
+        case ACMIRecTodOffset:
+            tapeHdr.todOffset = hdr.time;
+            break;
 
-            case ACMIRecGenPosition:
-            case ACMIRecMissilePosition:
-            case ACMIRecChaffPosition:
-            case ACMIRecFlarePosition:
-            case ACMIRecAircraftPosition:
+        case ACMIRecGenPosition:
+        case ACMIRecMissilePosition:
+        case ACMIRecChaffPosition:
+        case ACMIRecFlarePosition:
+        case ACMIRecAircraftPosition:
 
-                // Read the data
-                if ( not fread(&genpos, sizeof(ACMIGenPositionData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
+            // Read the data
+            if (not fread(&genpos, sizeof(ACMIGenPositionData), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
 
-                if (hdr.type == ACMIRecAircraftPosition)
-                    fread(&tempTarget, sizeof(tempTarget), 1, flightFile);
-                else
-                    tempTarget = -1;
+            if (hdr.type == ACMIRecAircraftPosition)
+                fread(&tempTarget, sizeof(tempTarget), 1, flightFile);
+            else
+                tempTarget = -1;
 
-                // Allocate a new data node.
-                F4Assert(rawPositionData == NULL);
-                rawPositionData = new ACMIRawPositionData;
-                F4Assert(rawPositionData not_eq NULL);
+            // Allocate a new data node.
+            F4Assert(rawPositionData == NULL);
+            rawPositionData = new ACMIRawPositionData;
+            F4Assert(rawPositionData not_eq NULL);
 
-                // fill in raw position data
-                rawPositionData->uniqueID = genpos.uniqueID;
-                rawPositionData->type = genpos.type;
+            // fill in raw position data
+            rawPositionData->uniqueID = genpos.uniqueID;
+            rawPositionData->type = genpos.type;
 
-                if (hdr.type == ACMIRecMissilePosition)
-                    rawPositionData->flags = ENTITY_FLAG_MISSILE;
-                else if (hdr.type == ACMIRecAircraftPosition)
-                    rawPositionData->flags = ENTITY_FLAG_AIRCRAFT;
-                else if (hdr.type == ACMIRecChaffPosition)
-                    rawPositionData->flags = ENTITY_FLAG_CHAFF;
-                else if (hdr.type == ACMIRecFlarePosition)
-                    rawPositionData->flags = ENTITY_FLAG_FLARE;
-                else
-                    rawPositionData->flags = 0;
-
-                rawPositionData->entityPosData.time = hdr.time;
-                rawPositionData->entityPosData.type = PosTypePos;
-                // remove rawPositionData->entityPosData.teamColor = genpos.teamColor;
-                // remove strcpy((char*)rawPositionData->entityPosData.label, (char*)genpos.label);
-                rawPositionData->entityPosData.posData.x = genpos.x;
-                rawPositionData->entityPosData.posData.y = genpos.y;
-                rawPositionData->entityPosData.posData.z = genpos.z;
-                rawPositionData->entityPosData.posData.roll = genpos.roll;
-                rawPositionData->entityPosData.posData.pitch = genpos.pitch;
-                rawPositionData->entityPosData.posData.yaw = genpos.yaw;
-                rawPositionData->entityPosData.posData.radarTarget = tempTarget;
-
-
-                // Append our new position data.
-                importPosList = AppendToEndOfList(importPosList, &importPosListEnd, rawPositionData);
-                rawPositionData = NULL;
-
-                // bump counter
-                importNumPos++;
-
-                break;
-
-            case ACMIRecTracerStart:
-
-                // Read the data
-                if ( not fread(&tracer, sizeof(ACMITracerStartData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
-
-                // Allocate a new data node.
-                F4Assert(ehdr == NULL);
-                ehdr = new ACMIEventHeader;
-                F4Assert(ehdr not_eq NULL);
-
-                // fill in data
-                ehdr->eventType = hdr.type;
-                ehdr->time = hdr.time;
-                ehdr->timeEnd = hdr.time + 2.5F;
-                ehdr->index = importNumEvents;
-                ehdr->x = tracer.x;
-                ehdr->y = tracer.y;
-                ehdr->z = tracer.z;
-                ehdr->dx = tracer.dx;
-                ehdr->dy = tracer.dy;
-                ehdr->dz = tracer.dz;
-
-
-                // Append our new data.
-                importEventList = AppendToEndOfList(importEventList, &importEventListEnd, ehdr);
-                ehdr = NULL;
-
-                // bump counter
-                importNumEvents++;
-                break;
-
-            case ACMIRecStationarySfx:
-
-                // Read the data
-                if ( not fread(&sfx, sizeof(ACMIStationarySfxData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
-
-                // Allocate a new data node.
-                F4Assert(ehdr == NULL);
-                ehdr = new ACMIEventHeader;
-                F4Assert(ehdr not_eq NULL);
-
-                // fill in data
-                ehdr->eventType = hdr.type;
-                ehdr->index = importNumEvents;
-                ehdr->time = hdr.time;
-                ehdr->timeEnd = hdr.time + sfx.timeToLive;
-                ehdr->x = sfx.x;
-                ehdr->y = sfx.y;
-                ehdr->z = sfx.z;
-                ehdr->type = sfx.type;
-                ehdr->scale = sfx.scale;
-
-
-                // Append our new data.
-                importEventList = AppendToEndOfList(importEventList, &importEventListEnd, ehdr);
-                ehdr = NULL;
-
-                // bump counter
-                importNumEvents++;
-                break;
-
-            case ACMIRecFeatureStatus:
-
-                // Read the data
-                if ( not fread(&fs, sizeof(ACMIFeatureStatusData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
-
-                // Allocate a new data node.
-                F4Assert(fedata == NULL);
-                fedata = new ACMIFeatEventImportData;
-                F4Assert(fedata not_eq NULL);
-
-                // fill in data
-                fedata->uniqueID = fs.uniqueID;
-                fedata->data.index = -1; // will be filled in later
-                fedata->data.time = hdr.time;
-                fedata->data.newStatus = fs.newStatus;
-                fedata->data.prevStatus = fs.prevStatus;
-
-
-                // Append our new data.
-                importFeatEventList = AppendToEndOfList(importFeatEventList, &importFeatEventListEnd, fedata);
-                fedata = NULL;
-
-                // bump counter
-                importNumFeatEvents++;
-                break;
-
-                // not ready for these yet
-            case ACMIRecMovingSfx:
-
-                // Read the data
-                if ( not fread(&msfx, sizeof(ACMIMovingSfxData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
-
-                // Allocate a new data node.
-                F4Assert(ehdr == NULL);
-                ehdr = new ACMIEventHeader;
-                F4Assert(ehdr not_eq NULL);
-
-                // fill in data
-                ehdr->eventType = hdr.type;
-                ehdr->index = importNumEvents;
-                ehdr->time = hdr.time;
-                ehdr->timeEnd = hdr.time + msfx.timeToLive;
-                ehdr->x = msfx.x;
-                ehdr->y = msfx.y;
-                ehdr->z = msfx.z;
-                ehdr->dx = msfx.dx;
-                ehdr->dy = msfx.dy;
-                ehdr->dz = msfx.dz;
-                ehdr->flags = msfx.flags;
-                ehdr->user = msfx.user;
-                ehdr->type = msfx.type;
-                ehdr->scale = msfx.scale;
-
-
-                // Append our new data.
-                importEventList = AppendToEndOfList(importEventList, &importEventListEnd, ehdr);
-                ehdr = NULL;
-
-                // bump counter
-                importNumEvents++;
-                break;
-
-            case ACMIRecSwitch:
-
-                // Read the data
-                if ( not fread(&sd, sizeof(ACMISwitchData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
-
-                // Allocate a new data node.
-                F4Assert(rawPositionData == NULL);
-                rawPositionData = new ACMIRawPositionData;
-                F4Assert(rawPositionData not_eq NULL);
-
-                // fill in raw position data
-                rawPositionData->uniqueID = sd.uniqueID;
-                rawPositionData->type = sd.type;
+            if (hdr.type == ACMIRecMissilePosition)
+                rawPositionData->flags = ENTITY_FLAG_MISSILE;
+            else if (hdr.type == ACMIRecAircraftPosition)
+                rawPositionData->flags = ENTITY_FLAG_AIRCRAFT;
+            else if (hdr.type == ACMIRecChaffPosition)
+                rawPositionData->flags = ENTITY_FLAG_CHAFF;
+            else if (hdr.type == ACMIRecFlarePosition)
+                rawPositionData->flags = ENTITY_FLAG_FLARE;
+            else
                 rawPositionData->flags = 0;
 
-
-                rawPositionData->entityPosData.time = hdr.time;
-                rawPositionData->entityPosData.type = PosTypeSwitch;
-                rawPositionData->entityPosData.switchData.switchNum = sd.switchNum;
-                rawPositionData->entityPosData.switchData.switchVal = sd.switchVal;
-                rawPositionData->entityPosData.switchData.prevSwitchVal = sd.prevSwitchVal;
-
-                // Append our new position data.
-                importEntEventList = AppendToEndOfList(importEntEventList, &importEntEventListEnd, rawPositionData);
-                rawPositionData = NULL;
-
-                // bump counter
-                importNumEntEvents++;
-
-                break;
-
-            case ACMIRecDOF:
-
-                // Read the data
-                if ( not fread(&dd, sizeof(ACMIDOFData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
-
-                // Allocate a new data node.
-                F4Assert(rawPositionData == NULL);
-                rawPositionData = new ACMIRawPositionData;
-                F4Assert(rawPositionData not_eq NULL);
-
-                // fill in raw position data
-                rawPositionData->uniqueID = dd.uniqueID;
-                rawPositionData->type = dd.type;
-                rawPositionData->flags = 0;
+            rawPositionData->entityPosData.time = hdr.time;
+            rawPositionData->entityPosData.type = PosTypePos;
+            // remove rawPositionData->entityPosData.teamColor = genpos.teamColor;
+            // remove strcpy((char*)rawPositionData->entityPosData.label, (char*)genpos.label);
+            rawPositionData->entityPosData.posData.x = genpos.x;
+            rawPositionData->entityPosData.posData.y = genpos.y;
+            rawPositionData->entityPosData.posData.z = genpos.z;
+            rawPositionData->entityPosData.posData.roll = genpos.roll;
+            rawPositionData->entityPosData.posData.pitch = genpos.pitch;
+            rawPositionData->entityPosData.posData.yaw = genpos.yaw;
+            rawPositionData->entityPosData.posData.radarTarget = tempTarget;
 
 
-                rawPositionData->entityPosData.time = hdr.time;
-                rawPositionData->entityPosData.type = PosTypeDOF;
-                rawPositionData->entityPosData.dofData.DOFNum = dd.DOFNum;
-                rawPositionData->entityPosData.dofData.DOFVal = dd.DOFVal;
-                rawPositionData->entityPosData.dofData.prevDOFVal = dd.prevDOFVal;
+            // Append our new position data.
+            importPosList = AppendToEndOfList(importPosList, &importPosListEnd,
+                                              rawPositionData);
+            rawPositionData = NULL;
 
-                // Append our new position data.
-                importEntEventList = AppendToEndOfList(importEntEventList, &importEntEventListEnd, rawPositionData);
-                rawPositionData = NULL;
+            // bump counter
+            importNumPos++;
 
-                // bump counter
-                importNumEntEvents++;
+            break;
 
-                break;
+        case ACMIRecTracerStart:
 
-            case ACMIRecFeaturePosition:
+            // Read the data
+            if (not fread(&tracer, sizeof(ACMITracerStartData), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
 
-                // Read the data
-                if ( not fread(&featpos, sizeof(ACMIFeaturePositionData), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
+            // Allocate a new data node.
+            F4Assert(ehdr == NULL);
+            ehdr = new ACMIEventHeader;
+            F4Assert(ehdr not_eq NULL);
 
-                // Allocate a new data node.
-                F4Assert(rawPositionData == NULL);
-                rawPositionData = new ACMIRawPositionData;
-                F4Assert(rawPositionData not_eq NULL);
+            // fill in data
+            ehdr->eventType = hdr.type;
+            ehdr->time = hdr.time;
+            ehdr->timeEnd = hdr.time + 2.5F;
+            ehdr->index = importNumEvents;
+            ehdr->x = tracer.x;
+            ehdr->y = tracer.y;
+            ehdr->z = tracer.z;
+            ehdr->dx = tracer.dx;
+            ehdr->dy = tracer.dy;
+            ehdr->dz = tracer.dz;
 
-                // fill in raw position data
-                rawPositionData->uniqueID = featpos.uniqueID;
-                rawPositionData->leadIndex = featpos.leadUniqueID;
-                rawPositionData->specialFlags = featpos.specialFlags;
-                rawPositionData->slot = featpos.slot;
-                rawPositionData->type = featpos.type;
-                rawPositionData->flags = ENTITY_FLAG_FEATURE;
 
-                rawPositionData->entityPosData.time = hdr.time;
-                rawPositionData->entityPosData.type = PosTypePos;
-                rawPositionData->entityPosData.posData.x = featpos.x;
-                rawPositionData->entityPosData.posData.y = featpos.y;
-                rawPositionData->entityPosData.posData.z = featpos.z;
-                rawPositionData->entityPosData.posData.roll = featpos.roll;
-                rawPositionData->entityPosData.posData.pitch = featpos.pitch;
-                rawPositionData->entityPosData.posData.yaw = featpos.yaw;
+            // Append our new data.
+            importEventList =
+                AppendToEndOfList(importEventList, &importEventListEnd, ehdr);
+            ehdr = NULL;
 
-                // Append our new position data.
-                importPosList = AppendToEndOfList(importPosList, &importPosListEnd, rawPositionData);
-                rawPositionData = NULL;
+            // bump counter
+            importNumEvents++;
+            break;
 
-                // bump counter
-                importNumPos++;
+        case ACMIRecStationarySfx:
 
-                break;
+            // Read the data
+            if (not fread(&sfx, sizeof(ACMIStationarySfxData), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
 
-            case ACMICallsignList:
+            // Allocate a new data node.
+            F4Assert(ehdr == NULL);
+            ehdr = new ACMIEventHeader;
+            F4Assert(ehdr not_eq NULL);
 
-                // Read the data
-                if ( not fread(&import_count, sizeof(long), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
+            // fill in data
+            ehdr->eventType = hdr.type;
+            ehdr->index = importNumEvents;
+            ehdr->time = hdr.time;
+            ehdr->timeEnd = hdr.time + sfx.timeToLive;
+            ehdr->x = sfx.x;
+            ehdr->y = sfx.y;
+            ehdr->z = sfx.z;
+            ehdr->type = sfx.type;
+            ehdr->scale = sfx.scale;
 
-                F4Assert(Import_Callsigns == NULL);
-                Import_Callsigns = new ACMI_CallRec[import_count];
-                F4Assert(Import_Callsigns not_eq NULL);
 
-                if ( not fread(Import_Callsigns, import_count * sizeof(ACMI_CallRec), 1, flightFile))
-                {
-                    CleanupACMIImportPositionData(flightFile, rawPositionData);
-                    return FALSE;
-                }
+            // Append our new data.
+            importEventList =
+                AppendToEndOfList(importEventList, &importEventListEnd, ehdr);
+            ehdr = NULL;
 
-                break;
+            // bump counter
+            importNumEvents++;
+            break;
 
-            default:
-                // KCK: I was hitting this repeatidly.. So I'm making it a ShiAssert (and therefore ignorable)
-                // ShiAssert(0);
-                break;
+        case ACMIRecFeatureStatus:
+
+            // Read the data
+            if (not fread(&fs, sizeof(ACMIFeatureStatusData), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
+
+            // Allocate a new data node.
+            F4Assert(fedata == NULL);
+            fedata = new ACMIFeatEventImportData;
+            F4Assert(fedata not_eq NULL);
+
+            // fill in data
+            fedata->uniqueID = fs.uniqueID;
+            fedata->data.index = -1; // will be filled in later
+            fedata->data.time = hdr.time;
+            fedata->data.newStatus = fs.newStatus;
+            fedata->data.prevStatus = fs.prevStatus;
+
+
+            // Append our new data.
+            importFeatEventList = AppendToEndOfList(
+                importFeatEventList, &importFeatEventListEnd, fedata);
+            fedata = NULL;
+
+            // bump counter
+            importNumFeatEvents++;
+            break;
+
+            // not ready for these yet
+        case ACMIRecMovingSfx:
+
+            // Read the data
+            if (not fread(&msfx, sizeof(ACMIMovingSfxData), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
+
+            // Allocate a new data node.
+            F4Assert(ehdr == NULL);
+            ehdr = new ACMIEventHeader;
+            F4Assert(ehdr not_eq NULL);
+
+            // fill in data
+            ehdr->eventType = hdr.type;
+            ehdr->index = importNumEvents;
+            ehdr->time = hdr.time;
+            ehdr->timeEnd = hdr.time + msfx.timeToLive;
+            ehdr->x = msfx.x;
+            ehdr->y = msfx.y;
+            ehdr->z = msfx.z;
+            ehdr->dx = msfx.dx;
+            ehdr->dy = msfx.dy;
+            ehdr->dz = msfx.dz;
+            ehdr->flags = msfx.flags;
+            ehdr->user = msfx.user;
+            ehdr->type = msfx.type;
+            ehdr->scale = msfx.scale;
+
+
+            // Append our new data.
+            importEventList =
+                AppendToEndOfList(importEventList, &importEventListEnd, ehdr);
+            ehdr = NULL;
+
+            // bump counter
+            importNumEvents++;
+            break;
+
+        case ACMIRecSwitch:
+
+            // Read the data
+            if (not fread(&sd, sizeof(ACMISwitchData), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
+
+            // Allocate a new data node.
+            F4Assert(rawPositionData == NULL);
+            rawPositionData = new ACMIRawPositionData;
+            F4Assert(rawPositionData not_eq NULL);
+
+            // fill in raw position data
+            rawPositionData->uniqueID = sd.uniqueID;
+            rawPositionData->type = sd.type;
+            rawPositionData->flags = 0;
+
+
+            rawPositionData->entityPosData.time = hdr.time;
+            rawPositionData->entityPosData.type = PosTypeSwitch;
+            rawPositionData->entityPosData.switchData.switchNum = sd.switchNum;
+            rawPositionData->entityPosData.switchData.switchVal = sd.switchVal;
+            rawPositionData->entityPosData.switchData.prevSwitchVal =
+                sd.prevSwitchVal;
+
+            // Append our new position data.
+            importEntEventList = AppendToEndOfList(
+                importEntEventList, &importEntEventListEnd, rawPositionData);
+            rawPositionData = NULL;
+
+            // bump counter
+            importNumEntEvents++;
+
+            break;
+
+        case ACMIRecDOF:
+
+            // Read the data
+            if (not fread(&dd, sizeof(ACMIDOFData), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
+
+            // Allocate a new data node.
+            F4Assert(rawPositionData == NULL);
+            rawPositionData = new ACMIRawPositionData;
+            F4Assert(rawPositionData not_eq NULL);
+
+            // fill in raw position data
+            rawPositionData->uniqueID = dd.uniqueID;
+            rawPositionData->type = dd.type;
+            rawPositionData->flags = 0;
+
+
+            rawPositionData->entityPosData.time = hdr.time;
+            rawPositionData->entityPosData.type = PosTypeDOF;
+            rawPositionData->entityPosData.dofData.DOFNum = dd.DOFNum;
+            rawPositionData->entityPosData.dofData.DOFVal = dd.DOFVal;
+            rawPositionData->entityPosData.dofData.prevDOFVal = dd.prevDOFVal;
+
+            // Append our new position data.
+            importEntEventList = AppendToEndOfList(
+                importEntEventList, &importEntEventListEnd, rawPositionData);
+            rawPositionData = NULL;
+
+            // bump counter
+            importNumEntEvents++;
+
+            break;
+
+        case ACMIRecFeaturePosition:
+
+            // Read the data
+            if (not fread(&featpos, sizeof(ACMIFeaturePositionData), 1,
+                          flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
+
+            // Allocate a new data node.
+            F4Assert(rawPositionData == NULL);
+            rawPositionData = new ACMIRawPositionData;
+            F4Assert(rawPositionData not_eq NULL);
+
+            // fill in raw position data
+            rawPositionData->uniqueID = featpos.uniqueID;
+            rawPositionData->leadIndex = featpos.leadUniqueID;
+            rawPositionData->specialFlags = featpos.specialFlags;
+            rawPositionData->slot = featpos.slot;
+            rawPositionData->type = featpos.type;
+            rawPositionData->flags = ENTITY_FLAG_FEATURE;
+
+            rawPositionData->entityPosData.time = hdr.time;
+            rawPositionData->entityPosData.type = PosTypePos;
+            rawPositionData->entityPosData.posData.x = featpos.x;
+            rawPositionData->entityPosData.posData.y = featpos.y;
+            rawPositionData->entityPosData.posData.z = featpos.z;
+            rawPositionData->entityPosData.posData.roll = featpos.roll;
+            rawPositionData->entityPosData.posData.pitch = featpos.pitch;
+            rawPositionData->entityPosData.posData.yaw = featpos.yaw;
+
+            // Append our new position data.
+            importPosList = AppendToEndOfList(importPosList, &importPosListEnd,
+                                              rawPositionData);
+            rawPositionData = NULL;
+
+            // bump counter
+            importNumPos++;
+
+            break;
+
+        case ACMICallsignList:
+
+            // Read the data
+            if (not fread(&import_count, sizeof(int32_t), 1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
+
+            F4Assert(Import_Callsigns == NULL);
+            Import_Callsigns = new ACMI_CallRec[import_count];
+            F4Assert(Import_Callsigns not_eq NULL);
+
+            if (not fread(Import_Callsigns, import_count * sizeof(ACMI_CallRec),
+                          1, flightFile))
+            {
+                CleanupACMIImportPositionData(flightFile, rawPositionData);
+                return FALSE;
+            }
+
+            break;
+
+        default:
+            // KCK: I was hitting this repeatidly.. So I'm making it a ShiAssert (and therefore ignorable)
+            // ShiAssert(0);
+            break;
         }
 
         // save begin and end times
@@ -995,14 +958,15 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
     tapeHdr.numEntities = importNumEnt;
     tapeHdr.numFeat = importNumFeat;
     tapeHdr.entityBlockOffset = sizeof(ACMITapeHeader);
-    tapeHdr.featBlockOffset = tapeHdr.entityBlockOffset +
-                              sizeof(ACMIEntityData) * importNumEnt;
-    tapeHdr.timelineBlockOffset = tapeHdr.featBlockOffset +
-                                  sizeof(ACMIEntityData) * importNumFeat;
+    tapeHdr.featBlockOffset =
+        tapeHdr.entityBlockOffset + sizeof(ACMIEntityData) * importNumEnt;
+    tapeHdr.timelineBlockOffset =
+        tapeHdr.featBlockOffset + sizeof(ACMIEntityData) * importNumFeat;
     tapeHdr.firstEntEventOffset = tapeHdr.timelineBlockOffset +
                                   sizeof(ACMIEntityPositionData) * importNumPos;
-    tapeHdr.firstGeneralEventOffset = tapeHdr.firstEntEventOffset +
-                                      sizeof(ACMIEntityPositionData) * importNumEntEvents;
+    tapeHdr.firstGeneralEventOffset =
+        tapeHdr.firstEntEventOffset +
+        sizeof(ACMIEntityPositionData) * importNumEntEvents;
     tapeHdr.firstEventTrailerOffset = tapeHdr.firstGeneralEventOffset +
                                       sizeof(ACMIEventHeader) * importNumEvents;
     tapeHdr.firstFeatEventOffset = tapeHdr.firstEventTrailerOffset +
@@ -1014,7 +978,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
     tapeHdr.numFeatEvents = importNumFeatEvents;
     tapeHdr.numEntEvents = importNumEntEvents;
     tapeHdr.totPlayTime = endTime - begTime;
-    tapeHdr.startTime =  begTime;
+    tapeHdr.startTime = begTime;
 
 
     // set up the chain offsets of entity positions
@@ -1042,7 +1006,7 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
     CleanupACMIImportPositionData(flightFile, rawPositionData);
 
     // now delete the acmi.flt file
-    //remove("campaign\\save\\fltfiles\\acmi.flt");
+    //remove("campaign/save/fltfiles/acmi.flt");
     remove(inFltFile);
 
     return TRUE;
@@ -1054,19 +1018,13 @@ BOOL ACMITape::Import(char *inFltFile, char *outTapeFileName)
 
 void ACMITape::ParseEntities(void)
 {
-    int
-    i = 0,
-    count = 0;
+    int i = 0, count = 0;
 
-    LIST
-    *entityPtr,
-    *rawList;
+    LIST *entityPtr, *rawList;
 
-    ACMIRawPositionData
-    *entityType;
+    ACMIRawPositionData *entityType;
 
-    ACMIEntityData
-    *importEntityInfo;
+    ACMIEntityData *importEntityInfo;
 
     importEntityList = NULL;
 
@@ -1108,7 +1066,8 @@ void ACMITape::ParseEntities(void)
                 importEntityInfo->leadIndex = entityType->leadIndex;
                 importEntityInfo->specialFlags = entityType->specialFlags;
                 importEntityInfo->slot = entityType->slot;
-                importFeatList = AppendToEndOfList(importFeatList, &importFeatListEnd, importEntityInfo);
+                importFeatList = AppendToEndOfList(
+                    importFeatList, &importFeatListEnd, importEntityInfo);
                 importNumFeat++;
             }
         }
@@ -1145,7 +1104,8 @@ void ACMITape::ParseEntities(void)
                 // remove importEntityInfo->teamColor = entityType->entityPosData.teamColor;
                 // remove strcpy((importEntityInfo->label), (char*) entityType->entityPosData.label);
 
-                importEntityList = AppendToEndOfList(importEntityList, &importEntityListEnd, importEntityInfo);
+                importEntityList = AppendToEndOfList(
+                    importEntityList, &importEntityListEnd, importEntityInfo);
                 importNumEnt++;
             }
         }
@@ -1154,15 +1114,15 @@ void ACMITape::ParseEntities(void)
     }
 
     // Count instances of each unique type
-    LIST* list1 = importEntityList;
-    LIST* list2;
-    ACMIEntityData* thing1;
-    ACMIEntityData* thing2;
+    LIST *list1 = importEntityList;
+    LIST *list2;
+    ACMIEntityData *thing1;
+    ACMIEntityData *thing2;
     int objCount;
 
     while (list1)
     {
-        thing1 = (ACMIEntityData*)list1->node;
+        thing1 = (ACMIEntityData *)list1->node;
 
         if (thing1->count == 0)
         {
@@ -1172,12 +1132,12 @@ void ACMITape::ParseEntities(void)
 
             while (list2)
             {
-                thing2 = (ACMIEntityData*)list2->node;
+                thing2 = (ACMIEntityData *)list2->node;
 
                 if (thing2->type == thing1->type and thing2->count == 0)
                 {
                     thing2->count = objCount;
-                    objCount ++;
+                    objCount++;
                 }
 
                 list2 = list2->next;
@@ -1186,9 +1146,6 @@ void ACMITape::ParseEntities(void)
 
         list1 = list1->next;
     }
-
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1376,7 +1333,6 @@ void ACMITape::ThreadEntityPositions(ACMITapeHeader *tapeHdr)
                         entityPtr->leadIndex = j;
                         break;
                     }
-
                 }
 
                 // next in list
@@ -1394,8 +1350,6 @@ void ACMITape::ThreadEntityPositions(ACMITapeHeader *tapeHdr)
 
         entityListPtr = entityListPtr->next;
     } // end for feature entity loop
-
-
 }
 
 /*
@@ -1480,8 +1434,6 @@ void ACMITape::ThreadEntityEvents(ACMITapeHeader *tapeHdr)
 
         entityListPtr = entityListPtr->next;
     } // end for entity loop
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1516,7 +1468,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
     // write the header
     ret = fwrite(tapeHdr, sizeof(ACMITapeHeader), 1, tapeFile);
 
-    if ( not ret)
+    if (not ret)
         goto error_exit;
 
 
@@ -1530,7 +1482,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(entityPtr, sizeof(ACMIEntityData), 1, tapeFile);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
         entityListPtr = entityListPtr->next;
@@ -1546,7 +1498,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(entityPtr, sizeof(ACMIEntityData), 1, tapeFile);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
         entityListPtr = entityListPtr->next;
@@ -1571,7 +1523,8 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
             {
                 entityPtr = (ACMIEntityData *)entityListPtr->node;
 
-                if (posPtr->entityPosData.posData.radarTarget == entityPtr->uniqueID)
+                if (posPtr->entityPosData.posData.radarTarget ==
+                    entityPtr->uniqueID)
                 {
                     posPtr->entityPosData.posData.radarTarget = j;
                     break;
@@ -1588,9 +1541,10 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
             }
         } // end if there's a radar target
 
-        ret = fwrite(&posPtr->entityPosData, sizeof(ACMIEntityPositionData), 1, tapeFile);
+        ret = fwrite(&posPtr->entityPosData, sizeof(ACMIEntityPositionData), 1,
+                     tapeFile);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
         posListPtr = posListPtr->next;
@@ -1604,9 +1558,10 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
         // posListPtr = LIST_NTH(importPosList, i);
         posPtr = (ACMIRawPositionData *)posListPtr->node;
 
-        ret = fwrite(&posPtr->entityPosData, sizeof(ACMIEntityPositionData), 1, tapeFile);
+        ret = fwrite(&posPtr->entityPosData, sizeof(ACMIEntityPositionData), 1,
+                     tapeFile);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
         posListPtr = posListPtr->next;
@@ -1631,7 +1586,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(eventPtr, sizeof(ACMIEventHeader), 1, tapeFile);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
         eventListPtr = eventListPtr->next;
@@ -1640,16 +1595,15 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
     // now sort the trailers in ascending order by endTime and
     // write them out
-    qsort(importEventTrailerList,
-          importNumEvents,
-          sizeof(ACMIEventTrailer),
+    qsort(importEventTrailerList, importNumEvents, sizeof(ACMIEventTrailer),
           CompareEventTrailer);
 
     for (i = 0; i < importNumEvents; i++)
     {
-        ret = fwrite(&importEventTrailerList[i], sizeof(ACMIEventTrailer), 1, tapeFile);
+        ret = fwrite(&importEventTrailerList[i], sizeof(ACMIEventTrailer), 1,
+                     tapeFile);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
     } // end for events loop
@@ -1664,7 +1618,7 @@ void ACMITape::WriteTapeFile(char *fname, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(&fePtr->data, sizeof(ACMIFeatEvent), 1, tapeFile);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
         posListPtr = posListPtr->next;
@@ -1694,30 +1648,17 @@ error_exit:
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-BOOL ACMITape::GetEntityPosition
-(
-    int index,
-    float &x,
-    float &y,
-    float &z,
-    float &yaw,
-    float &pitch,
-    float &roll,
-    float &speed,
-    float &turnrate,
-    float &turnradius
-)
+BOOL ACMITape::GetEntityPosition(int index, float &x, float &y, float &z,
+                                 float &yaw, float &pitch, float &roll,
+                                 float &speed, float &turnrate,
+                                 float &turnradius)
 {
-    float
-    deltaTime;
+    float deltaTime;
 
     float dx, dy, dz;
     float dx1, dy1, dz1;
 
-    ACMIEntityPositionData
-    *pos1,
-    *pos2,
-    *pos3;
+    ACMIEntityPositionData *pos1, *pos2, *pos3;
 
     // init speed to 0.0
     speed = 0.0f;
@@ -1765,33 +1706,22 @@ BOOL ACMITape::GetEntityPosition
         dz = pos2->posData.z - pos1->posData.z;
 
         // Interpolate.
-        deltaTime =
-            (
-                (_simTime - pos1->time) /
-                (pos2->time - pos1->time)
-            );
+        deltaTime = ((_simTime - pos1->time) / (pos2->time - pos1->time));
 
-        x =
-            (
-                pos1->posData.x + dx * deltaTime
-            );
+        x = (pos1->posData.x + dx * deltaTime);
 
-        y =
-            (
-                pos1->posData.y + dy * deltaTime
-            );
+        y = (pos1->posData.y + dy * deltaTime);
 
-        z =
-            (
-                pos1->posData.z + dz * deltaTime
-            );
+        z = (pos1->posData.z + dz * deltaTime);
 
         yaw = AngleInterp(pos1->posData.yaw, pos2->posData.yaw, deltaTime);
-        pitch = AngleInterp(pos1->posData.pitch, pos2->posData.pitch, deltaTime);
+        pitch =
+            AngleInterp(pos1->posData.pitch, pos2->posData.pitch, deltaTime);
         roll = AngleInterp(pos1->posData.roll, pos2->posData.roll, deltaTime);
 
         // get the average speed
-        speed = (float)sqrt(dx * dx + dy * dy + dz * dz) / (pos2->time - pos1->time);
+        speed = (float)sqrt(dx * dx + dy * dy + dz * dz) /
+                (pos2->time - pos1->time);
         float dAng = pos2->posData.yaw - pos1->posData.yaw;
 
         if (fabs(dAng) > 180.0f * DTR)
@@ -1800,7 +1730,6 @@ BOOL ACMITape::GetEntityPosition
                 dAng -= 360.0f * DTR;
             else
                 dAng += 360.0f * DTR;
-
         }
 
         if (pos3)
@@ -1810,8 +1739,10 @@ BOOL ACMITape::GetEntityPosition
             dz1 = pos1->posData.z - pos3->posData.z;
 
             // Turn rate = solid angle delta between velocity vectors
-            turnrate = (float)acos((dx * dx1 + dy * dy1 + dz * dz1) /
-                                   (float)sqrt((dx * dx + dy * dy + dz * dz) * (dx1 * dx1 + dy1 * dy1 + dz1 * dz1)));
+            turnrate =
+                (float)acos((dx * dx1 + dy * dy1 + dz * dz1) /
+                            (float)sqrt((dx * dx + dy * dy + dz * dz) *
+                                        (dx1 * dx1 + dy1 * dy1 + dz1 * dz1)));
             turnrate *= RTD / (pos2->time - pos1->time);
             //    turnrate = RTD * fabs( dAng ) / ( pos2->time - pos1->time );
 
@@ -1841,12 +1772,9 @@ BOOL ACMITape::GetEntityPosition
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void ACMITape::SetGeneralEventCallbacks
-(
+void ACMITape::SetGeneralEventCallbacks(
     ACMI_GENERAL_EVENT_CALLBACK forwardEventCallback,
-    ACMI_GENERAL_EVENT_CALLBACK reverseEventCallback,
-    void *userData
-)
+    ACMI_GENERAL_EVENT_CALLBACK reverseEventCallback, void *userData)
 {
     _generalEventCallbacks.forwardCallback = forwardEventCallback;
     _generalEventCallbacks.reverseCallback = reverseEventCallback;
@@ -1867,7 +1795,6 @@ void ACMITape::SetHeadPosition(float t)
     // run the update cycle until we've reached the new sim time
     while (_simTime not_eq newSimTime)
         Update(newSimTime);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1899,11 +1826,8 @@ float ACMITape::HeadPosition()
 
 void ACMITape::Update(float newSimTime)
 {
-    float
-    realTime,
-    deltaRealTime;
-    float
-    deltaLimit;
+    float realTime, deltaRealTime;
+    float deltaLimit;
 
     if (_screenCapturing)
         deltaLimit = 0.0625f;
@@ -1945,7 +1869,6 @@ void ACMITape::Update(float newSimTime)
 
         if (deltaRealTime > deltaLimit)
             deltaRealTime = deltaLimit;
-
     }
     else if (_unpause and _paused)
     {
@@ -1996,43 +1919,46 @@ void ACMITape::Update(float newSimTime)
 
 void ACMITape::AdvanceEntityPositionHead(int index)
 {
-    ACMIEntityPositionData
-    *curr,
-    *next,
-    *prev;
+    ACMIEntityPositionData *curr, *next, *prev;
 
     F4Assert(index >= 0 and index < NumEntities());
 
     // Backward.
     curr = CurrentEntityPositionHead(index);
 
-    if (curr == NULL) return;
+    if (curr == NULL)
+        return;
 
     while (_simTime < curr->time)
     {
         prev = HeadPrev(curr);
 
-        if (prev == NULL) return;
+        if (prev == NULL)
+            return;
 
         // Advance the head.
-        _entityReadHeads[index].positionDataOffset = curr->prevPositionUpdateOffset;
+        _entityReadHeads[index].positionDataOffset =
+            curr->prevPositionUpdateOffset;
         curr = prev;
     }
 
     // Forward.
     next = HeadNext(curr);
 
-    if (next == NULL) return;
+    if (next == NULL)
+        return;
 
     while (_simTime >= next->time)
     {
         // Advance the head.
-        _entityReadHeads[index].positionDataOffset = curr->nextPositionUpdateOffset;
+        _entityReadHeads[index].positionDataOffset =
+            curr->nextPositionUpdateOffset;
         curr = next;
 
         next = HeadNext(curr);
 
-        if (next == NULL) return;
+        if (next == NULL)
+            return;
     }
 }
 
@@ -2042,67 +1968,76 @@ void ACMITape::AdvanceEntityPositionHead(int index)
 
 void ACMITape::AdvanceEntityEventHead(int index)
 {
-    ACMIEntityPositionData
-    *curr,
-    *next,
-    *prev;
+    ACMIEntityPositionData *curr, *next, *prev;
     SimTapeEntity *e;
 
     F4Assert(index >= 0 and index < NumEntities());
 
     // get the entity if we need to change switch settings
-    e = &_simTapeEntities[ index ];
+    e = &_simTapeEntities[index];
 
     // Backward.
     curr = CurrentEntityEventHead(index);
 
-    if (curr == NULL) return;
+    if (curr == NULL)
+        return;
 
     while (_simTime < curr->time)
     {
         prev = HeadPrev(curr);
 
-        if (prev == NULL) return;
+        if (prev == NULL)
+            return;
 
         // handle switch settings
         if (curr->type == PosTypeSwitch)
         {
-            ((DrawableBSP *)e->objBase->drawPointer)->SetSwitchMask(curr->switchData.switchNum, curr->switchData.prevSwitchVal);
+            ((DrawableBSP *)e->objBase->drawPointer)
+                ->SetSwitchMask(curr->switchData.switchNum,
+                                curr->switchData.prevSwitchVal);
         }
         else if (curr->type == PosTypeDOF)
         {
-            ((DrawableBSP *)e->objBase->drawPointer)->SetDOFangle(curr->dofData.DOFNum, curr->dofData.prevDOFVal);
+            ((DrawableBSP *)e->objBase->drawPointer)
+                ->SetDOFangle(curr->dofData.DOFNum, curr->dofData.prevDOFVal);
         }
 
         // Advance the head.
-        _entityReadHeads[index].eventDataOffset = curr->prevPositionUpdateOffset;
+        _entityReadHeads[index].eventDataOffset =
+            curr->prevPositionUpdateOffset;
         curr = prev;
     }
 
     // Forward.
     next = HeadNext(curr);
 
-    if (next == NULL) return;
+    if (next == NULL)
+        return;
 
     while (_simTime >= next->time)
     {
         // Advance the head.
-        _entityReadHeads[index].eventDataOffset = curr->nextPositionUpdateOffset;
+        _entityReadHeads[index].eventDataOffset =
+            curr->nextPositionUpdateOffset;
 
         // handle switch settings
         if (curr->type == PosTypeSwitch)
         {
-            ((DrawableBSP *)e->objBase->drawPointer)->SetSwitchMask(curr->switchData.switchNum, curr->switchData.switchVal);
+            ((DrawableBSP *)e->objBase->drawPointer)
+                ->SetSwitchMask(curr->switchData.switchNum,
+                                curr->switchData.switchVal);
         }
         else if (curr->type == PosTypeDOF)
         {
-            ((DrawableBSP *)e->objBase->drawPointer)->SetDOFangle(curr->dofData.DOFNum, curr->dofData.DOFVal);
+            ((DrawableBSP *)e->objBase->drawPointer)
+                ->SetDOFangle(curr->dofData.DOFNum, curr->dofData.DOFVal);
         }
 
         curr = next;
         next = HeadNext(curr);
 
-        if (next == NULL) return;
+        if (next == NULL)
+            return;
     }
 }
 
@@ -2113,24 +2048,23 @@ void ACMITape::AdvanceEntityEventHead(int index)
 
 void ACMITape::AdvanceGeneralEventHeadHeader(void)
 {
-    ACMIEventHeader
-    *curr,
-    *next,
-    *prev;
+    ACMIEventHeader *curr, *next, *prev;
 
     // Reverse.
     curr = GeneralEventData();
 
-    if (curr == NULL) return;
+    if (curr == NULL)
+        return;
 
     while (_simTime < curr->time)
     {
         prev = Prev(curr);
 
-        if (prev == NULL) return;
+        if (prev == NULL)
+            return;
 
-        if (_eventList[ curr->index ])
-            RemoveActiveEvent(&_eventList[ curr->index ]);
+        if (_eventList[curr->index])
+            RemoveActiveEvent(&_eventList[curr->index]);
 
 
         // Advance the head.
@@ -2141,7 +2075,8 @@ void ACMITape::AdvanceGeneralEventHeadHeader(void)
     // Forward.
     next = Next(curr);
 
-    if (next == NULL) return;
+    if (next == NULL)
+        return;
 
     while (_simTime >= next->time)
     {
@@ -2150,15 +2085,17 @@ void ACMITape::AdvanceGeneralEventHeadHeader(void)
         curr = next;
         _generalEventReadHeadHeader = curr->index;
 
-        if ( not _eventList[ curr->index ])
+        if (not _eventList[curr->index])
         {
-            _eventList[curr->index] = InsertActiveEvent(curr, _simTime - curr->time);
+            _eventList[curr->index] =
+                InsertActiveEvent(curr, _simTime - curr->time);
         }
 
 
         next = Next(curr);
 
-        if (next == NULL) return;
+        if (next == NULL)
+            return;
     }
 }
 
@@ -2169,23 +2106,22 @@ void ACMITape::AdvanceGeneralEventHeadHeader(void)
 void ACMITape::AdvanceGeneralEventHeadTrailer(void)
 {
     ACMIEventHeader *e;
-    ACMIEventTrailer
-    *curr,
-    *next,
-    *prev;
+    ACMIEventTrailer *curr, *next, *prev;
 
     // Reverse.
     curr = GeneralEventTrailer();
 
-    if (curr == NULL) return;
+    if (curr == NULL)
+        return;
 
     while (_simTime < curr->timeEnd)
     {
         prev = Prev(curr);
 
-        if (prev == NULL) return;
+        if (prev == NULL)
+            return;
 
-        if ( not _eventList[ curr->index ])
+        if (not _eventList[curr->index])
         {
             e = GetGeneralEventData(curr->index);
             _eventList[curr->index] = InsertActiveEvent(e, _simTime - e->time);
@@ -2200,7 +2136,8 @@ void ACMITape::AdvanceGeneralEventHeadTrailer(void)
     // Forward.
     next = Next(curr);
 
-    if (next == NULL) return;
+    if (next == NULL)
+        return;
 
     while (_simTime >= next->timeEnd)
     {
@@ -2209,13 +2146,14 @@ void ACMITape::AdvanceGeneralEventHeadTrailer(void)
         curr = next;
         _generalEventReadHeadTrailer = curr;
 
-        if (_eventList[ curr->index ])
-            RemoveActiveEvent(&_eventList[ curr->index ]);
+        if (_eventList[curr->index])
+            RemoveActiveEvent(&_eventList[curr->index]);
 
 
         next = Next(curr);
 
-        if (next == NULL) return;
+        if (next == NULL)
+            return;
     }
 }
 
@@ -2225,22 +2163,21 @@ void ACMITape::AdvanceGeneralEventHeadTrailer(void)
 
 void ACMITape::AdvanceFeatEventHead(void)
 {
-    ACMIFeatEvent
-    *curr,
-    *next,
-    *prev;
+    ACMIFeatEvent *curr, *next, *prev;
     SimTapeEntity *feat;
 
     // Reverse.
     curr = CurrFeatEvent();
 
-    if (curr == NULL) return;
+    if (curr == NULL)
+        return;
 
     while (_simTime < curr->time)
     {
         prev = Prev(curr);
 
-        if (prev == NULL) return;
+        if (prev == NULL)
+            return;
 
         // do stuff
 
@@ -2248,7 +2185,7 @@ void ACMITape::AdvanceFeatEventHead(void)
         if (curr->index >= 0)
         {
             // get the feature entity
-            feat = &_simTapeFeatures[ curr->index ];
+            feat = &_simTapeFeatures[curr->index];
 
             // create the new drawable object
             // set new status
@@ -2300,7 +2237,8 @@ void ACMITape::AdvanceFeatEventHead(void)
     // Forward.
     next = Next(curr);
 
-    if (next == NULL) return;
+    if (next == NULL)
+        return;
 
     if (F4IsBadReadPtr(curr, sizeof(ACMIFeatEvent)))
         return;
@@ -2320,7 +2258,7 @@ void ACMITape::AdvanceFeatEventHead(void)
         if (curr->index >= 0)
         {
             // get the feature entity
-            feat = &_simTapeFeatures[ curr->index ];
+            feat = &_simTapeFeatures[curr->index];
 
             // create the new drawable object
             // set new status
@@ -2365,7 +2303,8 @@ void ACMITape::AdvanceFeatEventHead(void)
 
         next = Next(curr);
 
-        if (next == NULL) return;
+        if (next == NULL)
+            return;
     }
 }
 
@@ -2378,7 +2317,7 @@ void ACMITape::AdvanceFeatEventHead(void)
 ** Opens the passed in tape file name and sets up the memory mapped
 ** stuff
 */
-long ACMITape::OpenTapeFile(char *fname)
+int32_t ACMITape::OpenTapeFile(char *fname)
 {
     FILE *fd;
     long length = 0;
@@ -2389,15 +2328,15 @@ long ACMITape::OpenTapeFile(char *fname)
     if (fd == NULL)
     {
         MonoPrint("Unable to Open Tape File\n");
-        return(0);
+        return (0);
     }
 
     // read in the tape header
-    if ( not fread(&_tapeHdr, sizeof(ACMITapeHeader), 1, fd))
+    if (not fread(&_tapeHdr, sizeof(ACMITapeHeader), 1, fd))
     {
         MonoPrint("Unable to to read tape header\n");
         fclose(fd);
-        return(0);
+        return (0);
     }
 
     // close the file
@@ -2407,64 +2346,49 @@ long ACMITape::OpenTapeFile(char *fname)
     if (_tapeHdr.fileID not_eq 'TAPE')
     {
         MonoPrint("Invalid Tape File\n");
-        return(0);
+        return (0);
     }
 
     // Set up memory mapping
 
     // open the tape file
-    _tapeFileHandle = CreateFile(
-                          fname,
-                          GENERIC_READ bitor GENERIC_WRITE,
-                          FILE_SHARE_READ,
-                          NULL,
-                          OPEN_EXISTING,
-                          FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_RANDOM_ACCESS,
-                          NULL);
+    _tapeFileHandle =
+        CreateFile(fname, GENERIC_READ bitor GENERIC_WRITE, FILE_SHARE_READ,
+                   NULL, OPEN_EXISTING,
+                   FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_RANDOM_ACCESS, NULL);
 
     if (_tapeFileHandle == INVALID_HANDLE_VALUE)
     {
         MonoPrint("CreateFile failed on tape open\n");
-        return(0);
+        return (0);
     }
 
     length = GetFileSize(_tapeFileHandle, NULL);
 
     // create file mapping
-    _tapeMapHandle = CreateFileMapping(
-                         _tapeFileHandle,
-                         NULL,
-                         PAGE_READONLY,
-                         0,
-                         0,
-                         NULL);
+    _tapeMapHandle =
+        CreateFileMapping(_tapeFileHandle, NULL, PAGE_READONLY, 0, 0, NULL);
 
     if (_tapeMapHandle == NULL)
     {
         MonoPrint("CreateFileMapping failed on tape open\n");
         CloseHandle(_tapeFileHandle);
-        return(0);
+        return (0);
     }
 
     // map view of file
-    _tape = MapViewOfFile(
-                _tapeMapHandle,
-                FILE_MAP_READ,
-                0,
-                0,
-                0);
+    _tape = MapViewOfFile(_tapeMapHandle, FILE_MAP_READ, 0, 0, 0);
 
     if (_tape == NULL)
     {
         MonoPrint("MapViewOfFile failed on tape open\n");
         CloseHandle(_tapeMapHandle);
         CloseHandle(_tapeFileHandle);
-        return(0);
+        return (0);
     }
 
     // hunky dory
-    return(length);
-
+    return (length);
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -2527,9 +2451,7 @@ float ACMITape::AngleInterp(float begAng, float endAng, float dT)
 ////////////////////////////////////////////////////////////////////////////////
 void ACMITape::AdvanceAllHeads(void)
 {
-    int
-    i,
-    numEntities;
+    int i, numEntities;
 
     // Advance all entity read heads.
     numEntities = NumEntities();
@@ -2561,22 +2483,20 @@ void ACMITape::AdvanceAllHeads(void)
 */
 void ACMITape::SetupSimTapeEntities()
 {
-    int
-    i,
-    numEntities;
+    int i, numEntities;
     Tpoint pos;
     ACMIEntityData *e;
     ACMIEntityPositionData *p;
 
 
-    Tpoint origin = { 0.0f, 0.0f, 0.0f };
+    Tpoint origin = {0.0f, 0.0f, 0.0f};
 
     F4Assert(_simTapeEntities == NULL);
     F4Assert(_tape not_eq NULL);
 
     // create array of SimTapeEntity
     numEntities = NumEntities();
-    _simTapeEntities = new SimTapeEntity [numEntities];
+    _simTapeEntities = new SimTapeEntity[numEntities];
     F4Assert(_simTapeEntities not_eq NULL);
 
     // for each entity, create it's object stuff....
@@ -2602,22 +2522,21 @@ void ACMITape::SetupSimTapeEntities()
         else
         {
             // create the base class
-            _simTapeEntities[i].objBase = new SimStaticClass(EntityType(i));// new SimBaseClass(EntityType(i));
-            GetEntityPosition(i,
-                              _simTapeEntities[i].x,
-                              _simTapeEntities[i].y,
-                              _simTapeEntities[i].z,
-                              _simTapeEntities[i].yaw,
-                              _simTapeEntities[i].pitch,
-                              _simTapeEntities[i].roll,
-                              _simTapeEntities[i].aveSpeed,
-                              _simTapeEntities[i].aveTurnRate,
-                              _simTapeEntities[i].aveTurnRadius);
+            _simTapeEntities[i].objBase = new SimStaticClass(
+                EntityType(i)); // new SimBaseClass(EntityType(i));
+            GetEntityPosition(
+                i, _simTapeEntities[i].x, _simTapeEntities[i].y,
+                _simTapeEntities[i].z, _simTapeEntities[i].yaw,
+                _simTapeEntities[i].pitch, _simTapeEntities[i].roll,
+                _simTapeEntities[i].aveSpeed, _simTapeEntities[i].aveTurnRate,
+                _simTapeEntities[i].aveTurnRadius);
         }
 
         // set the matrix
-        _simTapeEntities[i].objBase->SetYPR(p->posData.yaw, p->posData.pitch, p->posData.roll);
-        _simTapeEntities[i].objBase->SetPosition(p->posData.x, p->posData.y, p->posData.z);
+        _simTapeEntities[i].objBase->SetYPR(p->posData.yaw, p->posData.pitch,
+                                            p->posData.roll);
+        _simTapeEntities[i].objBase->SetPosition(p->posData.x, p->posData.y,
+                                                 p->posData.z);
         CalcTransformMatrix(_simTapeEntities[i].objBase);
 
         // create thge drawable object
@@ -2629,7 +2548,8 @@ void ACMITape::SetupSimTapeEntities()
             pos.z = p->posData.z;
             _simTapeEntities[i].objBase->drawPointer =
                 new DrawableBSP(MapVisId(VIS_CHAFF), &pos, &IMatrix, 1.0f);
-            ((DrawableBSP *)_simTapeEntities[i].objBase->drawPointer)->SetLabel("", 0);
+            ((DrawableBSP *)_simTapeEntities[i].objBase->drawPointer)
+                ->SetLabel("", 0);
         }
         else if (e->flags bitand ENTITY_FLAG_FLARE)
         {
@@ -2647,25 +2567,34 @@ void ACMITape::SetupSimTapeEntities()
 
             SimBaseClass *theObject = _simTapeEntities[i].objBase;
             // get the class pointer
-            Falcon4EntityClassType* classPtr =
-                (Falcon4EntityClassType*)theObject->EntityType();
+            Falcon4EntityClassType *classPtr =
+                (Falcon4EntityClassType *)theObject->EntityType();
             pos.x = p->posData.x;
             pos.y = p->posData.y;
             pos.z = p->posData.z;
-            visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
-            theObject->drawPointer = new DrawablePoled(visType, &pos, &IMatrix, 1.0f);
+            visType =
+                classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
+            theObject->drawPointer =
+                new DrawablePoled(visType, &pos, &IMatrix, 1.0f);
 
             F4Assert(theObject->drawPointer not_eq NULL);
 
             if (ACMI_Callsigns) // we have callsigns
-                theObject->drawPointer->SetLabel(ACMI_Callsigns[e->uniqueID].label, TeamSimColorList[ACMI_Callsigns[e->uniqueID].teamColor]);
+                theObject->drawPointer->SetLabel(
+                    ACMI_Callsigns[e->uniqueID].label,
+                    TeamSimColorList[ACMI_Callsigns[e->uniqueID].teamColor]);
         }
         else
         {
             CreateDrawable(_simTapeEntities[i].objBase, 1.0F);
 
             if (ACMI_Callsigns)
-                ((DrawableBSP*)_simTapeEntities[i].objBase->drawPointer)->SetLabel(((DrawableBSP*)_simTapeEntities[i].objBase->drawPointer)->Label(), TeamSimColorList[ACMI_Callsigns[e->uniqueID].teamColor]);
+                ((DrawableBSP *)_simTapeEntities[i].objBase->drawPointer)
+                    ->SetLabel(((DrawableBSP *)_simTapeEntities[i]
+                                    .objBase->drawPointer)
+                                   ->Label(),
+                               TeamSimColorList[ACMI_Callsigns[e->uniqueID]
+                                                    .teamColor]);
         }
 
 
@@ -2676,17 +2605,20 @@ void ACMITape::SetupSimTapeEntities()
 
             SimBaseClass *theObject = _simTapeEntities[i].objBase;
             // get the class pointer
-            Falcon4EntityClassType* classPtr =
-                (Falcon4EntityClassType*)theObject->EntityType();
+            Falcon4EntityClassType *classPtr =
+                (Falcon4EntityClassType *)theObject->EntityType();
 
             if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_EJECT)
             {
                 pos.x = p->posData.x;
                 pos.y = p->posData.y;
                 pos.z = p->posData.z;
-                visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
-                theObject->drawPointer = new DrawableBSP(MapVisId(VIS_EJECT1), &pos, &IMatrix, 1.0f);
-                ((DrawableBSP *)theObject->drawPointer)->SetLabel("Ejected Pilot", 0x0000FF00);
+                visType =
+                    classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
+                theObject->drawPointer =
+                    new DrawableBSP(MapVisId(VIS_EJECT1), &pos, &IMatrix, 1.0f);
+                ((DrawableBSP *)theObject->drawPointer)
+                    ->SetLabel("Ejected Pilot", 0x0000FF00);
             }
 
             F4Assert(theObject->drawPointer not_eq NULL);
@@ -2716,10 +2648,14 @@ void ACMITape::SetupSimTapeEntities()
         if ((e->flags bitand ENTITY_FLAG_MISSILE))
         {
             _simTapeEntities[i].objTrail = new DrawableTrail(TRAIL_SAM);
-            _simTapeEntities[i].objBsp1 = new DrawableBSP(MapVisId(VIS_MFLAME_L), &origin, (struct Trotation *)&IMatrix, 1.0f);
+            _simTapeEntities[i].objBsp1 =
+                new DrawableBSP(MapVisId(VIS_MFLAME_L), &origin,
+                                (struct Trotation *)&IMatrix, 1.0f);
             _simTapeEntities[i].objTrail->KeepStaleSegs(TRUE);
             _simTapeEntities[i].trailStartTime = p->time;
-            _simTapeEntities[i].trailEndTime = p->time + 120.0F; //me123 to 30 we wanna see the trials in acmi// trail lasts 3 sec
+            _simTapeEntities[i].trailEndTime =
+                p->time +
+                120.0F; //me123 to 30 we wanna see the trials in acmi// trail lasts 3 sec
         }
         // a flare -- it needs drawable trail set up and a glow sphere
         else if ((e->flags bitand ENTITY_FLAG_FLARE))
@@ -2727,7 +2663,8 @@ void ACMITape::SetupSimTapeEntities()
             _simTapeEntities[i].objTrail = new DrawableTrail(TRAIL_SAM);
             _simTapeEntities[i].objTrail->KeepStaleSegs(TRUE);
             _simTapeEntities[i].trailStartTime = p->time;
-            _simTapeEntities[i].trailEndTime = p->time + 3.0F; // trail lasts 3 sec
+            _simTapeEntities[i].trailEndTime =
+                p->time + 3.0F; // trail lasts 3 sec
             _simTapeEntities[i].obj2d =
                 new Drawable2D(DRAW2D_EXPLCIRC_GLOW, 8.0f, &origin);
         }
@@ -2736,14 +2673,14 @@ void ACMITape::SetupSimTapeEntities()
         else if ((e->flags bitand ENTITY_FLAG_AIRCRAFT))
         {
             _simTapeEntities[i].wlTrail = new DrawableTrail(TRAIL_LWING);
-            _simTapeEntities[i].wlTrail->KeepStaleSegs(true);   // MLR 12/14/2003 -
+            _simTapeEntities[i].wlTrail->KeepStaleSegs(
+                true); // MLR 12/14/2003 -
             _simTapeEntities[i].wrTrail = new DrawableTrail(TRAIL_RWING);
-            _simTapeEntities[i].wrTrail->KeepStaleSegs(true);   // MLR 12/14/2003 -
+            _simTapeEntities[i].wrTrail->KeepStaleSegs(
+                true); // MLR 12/14/2003 -
             //_simTapeEntities[i].wlTrail = new DrawableTrail(TRAIL_AIM120);
             //_simTapeEntities[i].wrTrail = new DrawableTrail(TRAIL_MAVERICK);
-
         }
-
     }
 
     F4Assert(_simTapeFeatures == NULL);
@@ -2753,7 +2690,7 @@ void ACMITape::SetupSimTapeEntities()
     if (_tapeHdr.numFeat == 0)
         return;
 
-    _simTapeFeatures = new SimTapeEntity [_tapeHdr.numFeat];
+    _simTapeFeatures = new SimTapeEntity[_tapeHdr.numFeat];
     F4Assert(_simTapeFeatures not_eq NULL);
 
     // for each feature, create it's object stuff....
@@ -2782,18 +2719,20 @@ void ACMITape::SetupSimTapeEntities()
         F4Assert(_simTapeFeatures[i].objBase not_eq NULL);
         _simTapeFeatures[i].objBase->SetDelta(0.0f, 0.0f, 0.0f);
         _simTapeFeatures[i].objBase->SetYPRDelta(0.0f, 0.0f, 0.0f);
-        _simTapeFeatures[i].objBase->SetYPR(p->posData.yaw, p->posData.pitch, p->posData.roll);
-        _simTapeFeatures[i].objBase->SetPosition(p->posData.x, p->posData.y, p->posData.z);
-        ((SimFeatureClass *)_simTapeFeatures[i].objBase)->featureFlags = e->specialFlags;
+        _simTapeFeatures[i].objBase->SetYPR(p->posData.yaw, p->posData.pitch,
+                                            p->posData.roll);
+        _simTapeFeatures[i].objBase->SetPosition(p->posData.x, p->posData.y,
+                                                 p->posData.z);
+        ((SimFeatureClass *)_simTapeFeatures[i].objBase)->featureFlags =
+            e->specialFlags;
 
         // get the class pointer
-        Falcon4EntityClassType* classPtr =
-            (Falcon4EntityClassType*)_simTapeFeatures[i].objBase->EntityType();
+        Falcon4EntityClassType *classPtr =
+            (Falcon4EntityClassType *)_simTapeFeatures[i].objBase->EntityType();
         // get the feature class data
         FeatureClassDataType *fc = (FeatureClassDataType *)classPtr->dataPtr;
         _simTapeFeatures[i].objBase->SetCampaignFlag(fc->Flags);
         CalcTransformMatrix(_simTapeFeatures[i].objBase);
-
 
 
         // create other stuff as needed by the object
@@ -2802,7 +2741,6 @@ void ACMITape::SetupSimTapeEntities()
         _simTapeFeatures[i].objBsp1 = NULL;
         _simTapeFeatures[i].objBsp2 = NULL;
         _simTapeFeatures[i].obj2d = NULL;
-
     }
 
     // for each feature, create it's drawable object
@@ -2821,7 +2759,6 @@ void ACMITape::SetupSimTapeEntities()
         // features get put into draw list and positioned here.
         // _viewPoint->InsertObject( _simTapeFeatures[i].objBase->drawPointer );
     }
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2834,9 +2771,7 @@ void ACMITape::SetupSimTapeEntities()
 */
 void ACMITape::CleanupSimTapeEntities(void)
 {
-    int
-    i,
-    numEntities;
+    int i, numEntities;
     SimTapeEntity *ep;
 
     F4Assert(_simTapeEntities not_eq NULL);
@@ -2944,7 +2879,7 @@ void ACMITape::CleanupSimTapeEntities(void)
         }
     }
 
-    delete [] _simTapeEntities;
+    delete[] _simTapeEntities;
     _simTapeEntities = NULL;
 
     // for each feature, remove its object stuff
@@ -2966,7 +2901,6 @@ void ACMITape::CleanupSimTapeEntities(void)
             delete ep->objBase->drawPointer;
             ep->objBase->drawPointer = NULL;
         }
-
     }
 
     // 2nd pass delete baseObj pointer and objBase
@@ -2981,22 +2915,23 @@ void ACMITape::CleanupSimTapeEntities(void)
             // remove from display
             if (((SimFeatureClass *)ep->objBase)->baseObject)
             {
-                if (((SimFeatureClass *)ep->objBase)->baseObject->InDisplayList())
+                if (((SimFeatureClass *)ep->objBase)
+                        ->baseObject->InDisplayList())
                 {
-                    _viewPoint->RemoveObject(((SimFeatureClass*)ep->objBase)->baseObject);
+                    _viewPoint->RemoveObject(
+                        ((SimFeatureClass *)ep->objBase)->baseObject);
                 }
 
-                delete((SimFeatureClass *)ep->objBase)->baseObject;
+                delete ((SimFeatureClass *)ep->objBase)->baseObject;
                 ((SimFeatureClass *)ep->objBase)->baseObject = NULL;
             }
 
             delete ep->objBase;
             ep->objBase = NULL;
         }
-
     }
 
-    delete [] _simTapeFeatures;
+    delete[] _simTapeFeatures;
     _simTapeFeatures = NULL;
 }
 
@@ -3008,7 +2943,7 @@ void ACMITape::CleanupSimTapeEntities(void)
 ** Description:
 ** Access simtape entity by index
 */
-SimTapeEntity * ACMITape::GetSimTapeEntity(int index)
+SimTapeEntity *ACMITape::GetSimTapeEntity(int index)
 {
     F4Assert(_simTapeEntities not_eq NULL);
     F4Assert(index < NumEntities());
@@ -3025,9 +2960,7 @@ SimTapeEntity * ACMITape::GetSimTapeEntity(int index)
 */
 BOOL ACMITape::IsEntityInFrame(int index)
 {
-    ACMIEntityPositionData
-    *pos1,
-    *pos2;
+    ACMIEntityPositionData *pos1, *pos2;
 
     F4Assert(index >= 0 and index < NumEntities());
 
@@ -3061,9 +2994,7 @@ BOOL ACMITape::IsEntityInFrame(int index)
 */
 int ACMITape::GetEntityCurrentTarget(int index)
 {
-    ACMIEntityPositionData
-    *pos1,
-    *pos2;
+    ACMIEntityPositionData *pos1, *pos2;
 
     F4Assert(index >= 0 and index < NumEntities());
 
@@ -3117,7 +3048,7 @@ void ACMITape::RemoveEntityFromFrame(int index)
     F4Assert(_simTapeEntities not_eq NULL);
     F4Assert(index < NumEntities());
 
-    if ( not _simTapeEntities[index].objBase->drawPointer->InDisplayList())
+    if (not _simTapeEntities[index].objBase->drawPointer->InDisplayList())
         return;
 
     _viewPoint->RemoveObject(_simTapeEntities[index].objBase->drawPointer);
@@ -3133,9 +3064,7 @@ void ACMITape::RemoveEntityFromFrame(int index)
 */
 void ACMITape::UpdateSimTapeEntities(void)
 {
-    int
-    i,
-    numEntities;
+    int i, numEntities;
 
     SimTapeEntity *ep;
 
@@ -3143,8 +3072,6 @@ void ACMITape::UpdateSimTapeEntities(void)
     Tpoint wtpos;
     Trotation rot;
     Tpoint newPoint;
-
-
 
 
     F4Assert(_simTapeEntities not_eq NULL);
@@ -3160,7 +3087,9 @@ void ACMITape::UpdateSimTapeEntities(void)
         ep = &_simTapeEntities[i];
 
 
-        if (GetEntityPosition(i, ep->x, ep->y, ep->z, ep->yaw, ep->pitch, ep->roll, ep->aveSpeed, ep->aveTurnRate, ep->aveTurnRadius) == FALSE)
+        if (GetEntityPosition(i, ep->x, ep->y, ep->z, ep->yaw, ep->pitch,
+                              ep->roll, ep->aveSpeed, ep->aveTurnRate,
+                              ep->aveTurnRadius) == FALSE)
         {
             // make sure we remove from draw list
             if (ep->objBase->drawPointer->InDisplayList())
@@ -3168,20 +3097,23 @@ void ACMITape::UpdateSimTapeEntities(void)
                 _viewPoint->RemoveObject(ep->objBase->drawPointer);
 
                 // remove trail too
-                if (ep->objTrail and ep->objTrail->InDisplayList() and _simTime < ep->trailStartTime)
+                if (ep->objTrail and ep->objTrail->InDisplayList() and
+                    _simTime < ep->trailStartTime)
                 {
                     ep->objTrail->TrimTrail(0);
                     _viewPoint->RemoveObject(ep->objTrail);
                 }
 
                 // remove Bsp1 too
-                if (ep->objBsp1 and ep->objBsp1->InDisplayList() and _simTime < ep->trailStartTime)
+                if (ep->objBsp1 and ep->objBsp1->InDisplayList() and
+                    _simTime < ep->trailStartTime)
                 {
                     _viewPoint->RemoveObject(ep->objBsp1);
                 }
 
                 // remove Bsp2 too
-                if (ep->objBsp2 and ep->objBsp2->InDisplayList() and _simTime < ep->trailStartTime)
+                if (ep->objBsp2 and ep->objBsp2->InDisplayList() and
+                    _simTime < ep->trailStartTime)
                 {
                     _viewPoint->RemoveObject(ep->objBsp2);
                 }
@@ -3198,7 +3130,6 @@ void ACMITape::UpdateSimTapeEntities(void)
 
 
         ////////////////////////////////////////////////////////////////////////
-
 
 
         ////////////////////////////////////////////////////////////
@@ -3227,14 +3158,17 @@ void ACMITape::UpdateSimTapeEntities(void)
                 SimTapeEntity *targep = GetSimTapeEntity(tgt);
                 ep->objBase->drawPointer->GetPosition(&pos);
                 targep->objBase->drawPointer->GetPosition(&posb);
-                distance = (float)(FT_TO_NM * (float)sqrt(((pos.x - posb.x) * (pos.x - posb.x) + (pos.y - posb.y) * (pos.y - posb.y))));
+                distance =
+                    (float)(FT_TO_NM *
+                            (float)sqrt(((pos.x - posb.x) * (pos.x - posb.x) +
+                                         (pos.y - posb.y) * (pos.y - posb.y))));
             }
-            else distance = 0;
+            else
+                distance = 0;
 
             tmp = distance;
             sprintf(tmpstr, "%0.0f Rng", tmp);
             dp->SetDataLabel(DP_LABEL_LOCK_RANGE, tmpstr);
-
 
 
             {
@@ -3270,25 +3204,10 @@ void ACMITape::UpdateSimTapeEntities(void)
 
 
         // update object's position
-        ep->objBase->SetPosition
-        (
-            ep->x,
-            ep->y,
-            ep->z
-        );
-        ep->objBase->SetYPR
-        (
-            ep->yaw,
-            ep->pitch,
-            ep->roll
-        );
+        ep->objBase->SetPosition(ep->x, ep->y, ep->z);
+        ep->objBase->SetYPR(ep->yaw, ep->pitch, ep->roll);
         // just to make sure....
-        ep->objBase->SetYPRDelta
-        (
-            0.0f,
-            0.0f,
-            0.0f
-        );
+        ep->objBase->SetYPRDelta(0.0f, 0.0f, 0.0f);
 
         // set the matrix
         CalcTransformMatrix(ep->objBase);
@@ -3314,7 +3233,7 @@ void ACMITape::UpdateSimTapeEntities(void)
 
         // entity is in the frame .....
         // make sure we tell draw loop to draw it
-        if ( not ep->objBase->drawPointer->InDisplayList())
+        if (not ep->objBase->drawPointer->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objBase->drawPointer);
         }
@@ -3322,7 +3241,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         // likewise for 2d portion
         if (ep->obj2d)
         {
-            if ( not ep->obj2d->InDisplayList())
+            if (not ep->obj2d->InDisplayList())
                 _viewPoint->InsertObject(ep->obj2d);
 
             ep->obj2d->SetPosition(&pos);
@@ -3333,7 +3252,8 @@ void ACMITape::UpdateSimTapeEntities(void)
         // continue from dead pos to new position.  Since we don't have the
         // info to detect a regen, if we see that the airspeed is too high
         // trim the trails back to 0
-        if (_wingTrails and (ep->flags bitand ENTITY_FLAG_AIRCRAFT) and CalcKIAS(ep->aveSpeed, -ep->z) > 1100.0f)
+        if (_wingTrails and (ep->flags bitand ENTITY_FLAG_AIRCRAFT) and
+            CalcKIAS(ep->aveSpeed, -ep->z) > 1100.0f)
         {
             ep->wrTrail->TrimTrail(0);
             ep->wlTrail->TrimTrail(0);
@@ -3341,21 +3261,28 @@ void ACMITape::UpdateSimTapeEntities(void)
         }
         else if (_wingTrails and (ep->flags bitand ENTITY_FLAG_AIRCRAFT))
         {
-            if (_playVelocity < 0.0f and ( not _paused or _simulateOnly))
+            if (_playVelocity < 0.0f and (not _paused or _simulateOnly))
             {
-                ep->wtLength -= ep->wrTrail->RewindTrail((DWORD)(_simTime * 1000));
+                ep->wtLength -=
+                    ep->wrTrail->RewindTrail((DWORD)(_simTime * 1000));
                 ep->wlTrail->RewindTrail((DWORD)(_simTime * 1000));
             }
-            else if (_playVelocity > 0.0f and ( not _paused or _simulateOnly))
+            else if (_playVelocity > 0.0f and (not _paused or _simulateOnly))
             {
                 ep->wtLength++;
-                wtpos.x = ep->objBase->dmx[1][0] * -20.0f * _tapeObjScale + ep->x;
-                wtpos.y = ep->objBase->dmx[1][1] * -20.0f * _tapeObjScale + ep->y;
-                wtpos.z = ep->objBase->dmx[1][2] * -20.0f * _tapeObjScale + ep->z;
+                wtpos.x =
+                    ep->objBase->dmx[1][0] * -20.0f * _tapeObjScale + ep->x;
+                wtpos.y =
+                    ep->objBase->dmx[1][1] * -20.0f * _tapeObjScale + ep->y;
+                wtpos.z =
+                    ep->objBase->dmx[1][2] * -20.0f * _tapeObjScale + ep->z;
                 ep->wlTrail->AddPointAtHead(&wtpos, (DWORD)(_simTime * 1000));
-                wtpos.x = ep->objBase->dmx[1][0] * 20.0f * _tapeObjScale + ep->x;
-                wtpos.y = ep->objBase->dmx[1][1] * 20.0f * _tapeObjScale + ep->y;
-                wtpos.z = ep->objBase->dmx[1][2] * 20.0f * _tapeObjScale + ep->z;
+                wtpos.x =
+                    ep->objBase->dmx[1][0] * 20.0f * _tapeObjScale + ep->x;
+                wtpos.y =
+                    ep->objBase->dmx[1][1] * 20.0f * _tapeObjScale + ep->y;
+                wtpos.z =
+                    ep->objBase->dmx[1][2] * 20.0f * _tapeObjScale + ep->z;
                 ep->wrTrail->AddPointAtHead(&wtpos, (DWORD)(_simTime * 1000));
 
                 /* ep->wtLength++;
@@ -3368,31 +3295,33 @@ void ACMITape::UpdateSimTapeEntities(void)
                  wtpos.z = ep->objBase->dmx[1][2] * 40.0f + ep->z;
                  ep->wrTrail->AddPointAtHead( &wtpos, (DWORD)(_simTime * 1000) );
                 */
-
-
-
             }
             else if (_stepTrail < 0.0f)
             {
-                ep->wtLength -= ep->wrTrail->RewindTrail((DWORD)(_simTime * 1000));
+                ep->wtLength -=
+                    ep->wrTrail->RewindTrail((DWORD)(_simTime * 1000));
                 ep->wlTrail->RewindTrail((DWORD)(_simTime * 1000));
             }
             else if (_stepTrail > 0.0f)
             {
                 ep->wtLength++;
-                wtpos.x = ep->objBase->dmx[1][0] * -20.0f * _tapeObjScale + ep->x;
-                wtpos.y = ep->objBase->dmx[1][1] * -20.0f * _tapeObjScale + ep->y;
-                wtpos.z = ep->objBase->dmx[1][2] * -20.0f * _tapeObjScale + ep->z;
+                wtpos.x =
+                    ep->objBase->dmx[1][0] * -20.0f * _tapeObjScale + ep->x;
+                wtpos.y =
+                    ep->objBase->dmx[1][1] * -20.0f * _tapeObjScale + ep->y;
+                wtpos.z =
+                    ep->objBase->dmx[1][2] * -20.0f * _tapeObjScale + ep->z;
                 ep->wlTrail->AddPointAtHead(&wtpos, (DWORD)(_simTime * 1000));
-                wtpos.x = ep->objBase->dmx[1][0] * 20.0f * _tapeObjScale + ep->x;
-                wtpos.y = ep->objBase->dmx[1][1] * 20.0f * _tapeObjScale + ep->y;
-                wtpos.z = ep->objBase->dmx[1][2] * 20.0f * _tapeObjScale + ep->z;
+                wtpos.x =
+                    ep->objBase->dmx[1][0] * 20.0f * _tapeObjScale + ep->x;
+                wtpos.y =
+                    ep->objBase->dmx[1][1] * 20.0f * _tapeObjScale + ep->y;
+                wtpos.z =
+                    ep->objBase->dmx[1][2] * 20.0f * _tapeObjScale + ep->z;
                 ep->wrTrail->AddPointAtHead(&wtpos, (DWORD)(_simTime * 1000));
-
-
             }
 
-            if (ep->wtLength not_eq _wtMaxLength)   // MLR 12/14/2003 -
+            if (ep->wtLength not_eq _wtMaxLength) // MLR 12/14/2003 -
             {
                 ep->wrTrail->TrimTrail(_wtMaxLength);
                 ep->wlTrail->TrimTrail(_wtMaxLength);
@@ -3401,7 +3330,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         }
 
         // check for trail
-        if ( not ep->objTrail)
+        if (not ep->objTrail)
             continue;
 
         // we need to deal with the trail....
@@ -3453,7 +3382,7 @@ void ACMITape::UpdateSimTapeEntities(void)
         // we need need to determine if we're moving forwards or
         // backwards in time, if back we rewind the trail, otherwise
         // add a new point
-        if ( not ep->objTrail->InDisplayList())
+        if (not ep->objTrail->InDisplayList())
         {
             _viewPoint->InsertObject(ep->objTrail);
         }
@@ -3488,12 +3417,11 @@ void ACMITape::UpdateSimTapeEntities(void)
         newPoint.z += ep->objBase->dmx[0][2] * -30.0f;
 
 
-
-        if (_playVelocity < 0.0f and ( not _paused or _simulateOnly))
+        if (_playVelocity < 0.0f and (not _paused or _simulateOnly))
         {
             ep->objTrail->RewindTrail((DWORD)(_simTime * 1000));
         }
-        else if (_playVelocity > 0.0f and ( not _paused or _simulateOnly))
+        else if (_playVelocity > 0.0f and (not _paused or _simulateOnly))
         {
             ep->objTrail->AddPointAtHead(&newPoint, (DWORD)(_simTime * 1000));
         }
@@ -3505,8 +3433,6 @@ void ACMITape::UpdateSimTapeEntities(void)
         {
             ep->objTrail->AddPointAtHead(&newPoint, (DWORD)(_simTime * 1000));
         }
-
-
     }
 
     _stepTrail = 0.0;
@@ -3515,7 +3441,8 @@ void ACMITape::UpdateSimTapeEntities(void)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void ACMITape::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation *viewRotation)
+void ACMITape::ObjectSetData(SimBaseClass *obj, Tpoint *simView,
+                             Trotation *viewRotation)
 {
     viewRotation->M11 = obj->dmx[0][0];
     viewRotation->M21 = obj->dmx[0][1];
@@ -3530,10 +3457,9 @@ void ACMITape::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation *view
     viewRotation->M33 = obj->dmx[2][2];
 
     // Update object position
-    simView->x     = obj->XPos();
-    simView->y     = obj->YPos();
-    simView->z     = obj->ZPos();
-
+    simView->x = obj->XPos();
+    simView->y = obj->YPos();
+    simView->z = obj->ZPos();
 }
 
 /*
@@ -3553,7 +3479,7 @@ void ACMITape::CleanupEventList(void)
         }
     }
 
-    delete [] _eventList;
+    delete[] _eventList;
     _eventList = NULL;
 }
 
@@ -3563,8 +3489,7 @@ void ACMITape::CleanupEventList(void)
 ** into the display list(if needed) and chains it to the active list head
 ** dT should be the time delta between start time for event and read head
 */
-ActiveEvent *
-ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
+ActiveEvent *ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
 {
     ActiveEvent *event = NULL;
     TracerEventData *td = NULL;
@@ -3580,113 +3505,109 @@ ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
     // creation based on type
     switch (eh->eventType)
     {
-        case ACMIRecTracerStart:
-            // create new event record
-            event = new ActiveEvent;
-            F4Assert(event);
-            event->eventType = eh->eventType;
-            event->index = eh->index;
-            event->time = eh->time;
-            event->timeEnd = eh->timeEnd;
+    case ACMIRecTracerStart:
+        // create new event record
+        event = new ActiveEvent;
+        F4Assert(event);
+        event->eventType = eh->eventType;
+        event->index = eh->index;
+        event->time = eh->time;
+        event->timeEnd = eh->timeEnd;
 
-            // create new tracer event record
-            td = new TracerEventData;
-            F4Assert(td);
-            event->eventData = (void *)td;
+        // create new tracer event record
+        td = new TracerEventData;
+        F4Assert(td);
+        event->eventData = (void *)td;
 
-            // init tracer data
-            td->x = eh->x;
-            td->y = eh->y;
-            td->z = eh->z;
-            td->dx = eh->dx;
-            td->dy = eh->dy;
-            td->dz = eh->dz;
-            // create tracer
-            td->objTracer = new DrawableTracer(1.3f);
-            td->objTracer->SetAlpha(0.8f);
-            td->objTracer->SetRGB(1.0f, 1.0f, 0.2f);
+        // init tracer data
+        td->x = eh->x;
+        td->y = eh->y;
+        td->z = eh->z;
+        td->dx = eh->dx;
+        td->dy = eh->dy;
+        td->dz = eh->dz;
+        // create tracer
+        td->objTracer = new DrawableTracer(1.3f);
+        td->objTracer->SetAlpha(0.8f);
+        td->objTracer->SetRGB(1.0f, 1.0f, 0.2f);
 
-            UpdateTracerEvent(td, dT);
+        UpdateTracerEvent(td, dT);
 
-            // put it into the draw list
-            _viewPoint->InsertObject(td->objTracer);
+        // put it into the draw list
+        _viewPoint->InsertObject(td->objTracer);
 
-            break;
+        break;
 
-        case ACMIRecStationarySfx:
-            // create new event record
-            event = new ActiveEvent;
-            F4Assert(event);
-            event->eventType = eh->eventType;
-            event->index = eh->index;
-            event->time = eh->time;
-            event->timeEnd = eh->timeEnd;
+    case ACMIRecStationarySfx:
+        // create new event record
+        event = new ActiveEvent;
+        F4Assert(event);
+        event->eventType = eh->eventType;
+        event->index = eh->index;
+        event->time = eh->time;
+        event->timeEnd = eh->timeEnd;
 
-            pos.x = eh->x;
-            pos.y = eh->y;
-            pos.z = eh->z;
+        pos.x = eh->x;
+        pos.y = eh->y;
+        pos.z = eh->z;
 
-            // create new tracer event record
-            sfx = new SfxClass(eh->type,
-                               &pos,
-                               (float)(eh->timeEnd - eh->time),
-                               eh->scale);
+        // create new tracer event record
+        sfx = new SfxClass(eh->type, &pos, (float)(eh->timeEnd - eh->time),
+                           eh->scale);
 
-            F4Assert(sfx);
-            event->eventData = (void *)sfx;
+        F4Assert(sfx);
+        event->eventData = (void *)sfx;
 
-            sfx->ACMIStart(_viewPoint, event->time, _simTime);
+        sfx->ACMIStart(_viewPoint, event->time, _simTime);
 
-            break;
+        break;
 
-        case ACMIRecMovingSfx:
-            // create new event record
-            event = new ActiveEvent;
-            F4Assert(event);
-            event->eventType = eh->eventType;
-            event->index = eh->index;
-            event->time = eh->time;
-            event->timeEnd = eh->timeEnd;
+    case ACMIRecMovingSfx:
+        // create new event record
+        event = new ActiveEvent;
+        F4Assert(event);
+        event->eventType = eh->eventType;
+        event->index = eh->index;
+        event->time = eh->time;
+        event->timeEnd = eh->timeEnd;
 
-            pos.x = eh->x;
-            pos.y = eh->y;
-            pos.z = eh->z;
-            vec.x = eh->dx;
-            vec.y = eh->dy;
-            vec.z = eh->dz;
+        pos.x = eh->x;
+        pos.y = eh->y;
+        pos.z = eh->z;
+        vec.x = eh->dx;
+        vec.y = eh->dy;
+        vec.z = eh->dz;
 
-            // create new sfx
-            if (eh->user < 0)
-            {
-                sfx = new SfxClass(eh->type,
-                                   eh->flags,
-                                   &pos,
-                                   &vec,
-                                   (float)(eh->timeEnd - eh->time),
-                                   eh->scale);
-            }
-            else
-            {
-                // we need to build a base obj first
-                simBase = new SimStaticClass(0);// SimBaseClass( 0 );
-                simBase->drawPointer = new DrawableBSP(eh->user, &pos, &IMatrix, 1.0f);
-                simBase->SetPosition(pos.x, pos.y, pos.z);
-                simBase->SetDelta(vec.x, vec.y, vec.z);
-                simBase->SetYPR(0.0f, 0.0f, 0.0f);
-                simBase->SetYPRDelta(0.0f, 0.0f, 0.0f);
-                sfx = new SfxClass(eh->type, eh->flags, simBase, (float)(eh->timeEnd - eh->time), eh->scale);
-            }
+        // create new sfx
+        if (eh->user < 0)
+        {
+            sfx = new SfxClass(eh->type, eh->flags, &pos, &vec,
+                               (float)(eh->timeEnd - eh->time), eh->scale);
+        }
+        else
+        {
+            // we need to build a base obj first
+            simBase = new SimStaticClass(0); // SimBaseClass( 0 );
+            simBase->drawPointer =
+                new DrawableBSP(eh->user, &pos, &IMatrix, 1.0f);
+            simBase->SetPosition(pos.x, pos.y, pos.z);
+            simBase->SetDelta(vec.x, vec.y, vec.z);
+            simBase->SetYPR(0.0f, 0.0f, 0.0f);
+            simBase->SetYPRDelta(0.0f, 0.0f, 0.0f);
+            sfx = new SfxClass(eh->type, eh->flags, simBase,
+                               (float)(eh->timeEnd - eh->time), eh->scale);
+        }
 
-            F4Assert(sfx);
-            event->eventData = (void *)sfx;
+        F4Assert(sfx);
+        event->eventData = (void *)sfx;
 
-            sfx->ACMIStart(_viewPoint, event->time, _simTime);
+        sfx->ACMIStart(_viewPoint, event->time, _simTime);
 
-            break;
+        break;
 
-            // current don't handle anything else
-        default:
-            return NULL;
+        // current don't handle anything else
+    default:
+        return NULL;
     }
 
     // now insert it into the active list
@@ -3709,8 +3630,7 @@ ACMITape::InsertActiveEvent(ACMIEventHeader *eh, float dT)
 ** Frees memory for any objects.
 ** Frees memory for ActiveEvent and event data
 */
-void
-ACMITape::RemoveActiveEvent(ActiveEvent **eptrptr)
+void ACMITape::RemoveActiveEvent(ActiveEvent **eptrptr)
 {
     ActiveEvent *event = *eptrptr;
     TracerEventData *td = NULL;
@@ -3719,35 +3639,35 @@ ACMITape::RemoveActiveEvent(ActiveEvent **eptrptr)
     // deletion based on type
     switch (event->eventType)
     {
-        case ACMIRecTracerStart:
+    case ACMIRecTracerStart:
 
-            // cast eventData to appropriate type
-            td = (TracerEventData *)event->eventData;
+        // cast eventData to appropriate type
+        td = (TracerEventData *)event->eventData;
 
-            // remove from draw list
-            if (td->objTracer->InDisplayList())
-                _viewPoint->RemoveObject(td->objTracer);
+        // remove from draw list
+        if (td->objTracer->InDisplayList())
+            _viewPoint->RemoveObject(td->objTracer);
 
-            // free data memory
-            delete td->objTracer;
-            delete td;
+        // free data memory
+        delete td->objTracer;
+        delete td;
 
-            break;
+        break;
 
-        case ACMIRecMovingSfx:
-        case ACMIRecStationarySfx:
+    case ACMIRecMovingSfx:
+    case ACMIRecStationarySfx:
 
-            // cast eventData to appropriate type
-            sfx = (SfxClass *)event->eventData;
+        // cast eventData to appropriate type
+        sfx = (SfxClass *)event->eventData;
 
-            // free data memory
-            delete sfx;
+        // free data memory
+        delete sfx;
 
-            break;
+        break;
 
-            // current don't handle anything else
-        default:
-            return;
+        // current don't handle anything else
+    default:
+        return;
     }
 
     // take event out of active Event List
@@ -3767,8 +3687,7 @@ ACMITape::RemoveActiveEvent(ActiveEvent **eptrptr)
 /*
 ** Update tracer info based on delta Time
 */
-void
-ACMITape::UpdateTracerEvent(TracerEventData *td, float dT)
+void ACMITape::UpdateTracerEvent(TracerEventData *td, float dT)
 {
     Tpoint pos, end;
 
@@ -3787,8 +3706,7 @@ ACMITape::UpdateTracerEvent(TracerEventData *td, float dT)
 /*
 ** Run the update cycle for all active events
 */
-void
-ACMITape::UpdateActiveEvents(void)
+void ACMITape::UpdateActiveEvents(void)
 {
     ActiveEvent *event = NULL;
     TracerEventData *td = NULL;
@@ -3802,16 +3720,16 @@ ACMITape::UpdateActiveEvents(void)
         // handle based on type
         switch (event->eventType)
         {
-            case ACMIRecTracerStart:
+        case ACMIRecTracerStart:
 
-                // deref eventData
-                td = (TracerEventData *)event->eventData;
-                UpdateTracerEvent(td, _simTime - event->time);
+            // deref eventData
+            td = (TracerEventData *)event->eventData;
+            UpdateTracerEvent(td, _simTime - event->time);
 
-                // remove from display list if event no longer exists
-                // blech, this is a very less than optimal solution
-                // the active event list is going to bloat over time
-                /*
+            // remove from display list if event no longer exists
+            // blech, this is a very less than optimal solution
+            // the active event list is going to bloat over time
+            /*
                 if ( _simTime > event->timeEnd or event->time > _simTime )
                 {
                  if ( td->objTracer->InDisplayList() )
@@ -3825,20 +3743,20 @@ ACMITape::UpdateActiveEvents(void)
                  UpdateTracerEvent( td, _simTime - event->time );
                 }
                 */
-                break;
+            break;
 
-            case ACMIRecMovingSfx:
-            case ACMIRecStationarySfx:
+        case ACMIRecMovingSfx:
+        case ACMIRecStationarySfx:
 
-                // deref eventData
-                sfx = (SfxClass *)event->eventData;
-                sfx->ACMIExec(_simTime);
+            // deref eventData
+            sfx = (SfxClass *)event->eventData;
+            sfx->ACMIExec(_simTime);
 
-                break;
+            break;
 
-                // currently don't handle anything else
-            default:
-                break;
+            // currently don't handle anything else
+        default:
+            break;
         }
 
         event = event->next;
@@ -3854,9 +3772,7 @@ ACMITape::UpdateActiveEvents(void)
 */
 void ACMITape::SetWingTrails(BOOL turnOn)
 {
-    int
-    i,
-    numEntities;
+    int i, numEntities;
 
     SimTapeEntity *ep;
 
@@ -3875,7 +3791,7 @@ void ACMITape::SetWingTrails(BOOL turnOn)
         // get the tape entity data
         ep = &_simTapeEntities[i];
 
-        if ( not (ep->flags bitand ENTITY_FLAG_AIRCRAFT))
+        if (not(ep->flags bitand ENTITY_FLAG_AIRCRAFT))
         {
             continue;
         }
@@ -3883,10 +3799,10 @@ void ACMITape::SetWingTrails(BOOL turnOn)
         if (turnOn)
         {
             // turn trails on
-            if ( not ep->wrTrail->InDisplayList())
+            if (not ep->wrTrail->InDisplayList())
                 _viewPoint->InsertObject(ep->wrTrail);
 
-            if ( not ep->wlTrail->InDisplayList())
+            if (not ep->wlTrail->InDisplayList())
                 _viewPoint->InsertObject(ep->wlTrail);
         }
         else
@@ -3902,9 +3818,7 @@ void ACMITape::SetWingTrails(BOOL turnOn)
         ep->wrTrail->TrimTrail(0);
         ep->wlTrail->TrimTrail(0);
         ep->wtLength = 0;
-
     }
-
 }
 
 /*
@@ -3912,18 +3826,17 @@ void ACMITape::SetWingTrails(BOOL turnOn)
  * caller should cast returned value to appropriate type
  */
 
-LIST *
-AppendToEndOfList(LIST * list, LIST **end, void * node)
+LIST *AppendToEndOfList(LIST *list, LIST **end, void *node)
 {
-    LIST * newnode;
+    LIST *newnode;
 
     newnode = new LIST;
 
-    newnode -> node = node;
-    newnode -> next = NULL;
+    newnode->node = node;
+    newnode->next = NULL;
 
     /* list was null */
-    if ( not list)
+    if (not list)
     {
         list = newnode;
         *end = list;
@@ -3931,11 +3844,11 @@ AppendToEndOfList(LIST * list, LIST **end, void * node)
     else
     {
         /* chain in at end */
-        (*end) -> next = newnode;
+        (*end)->next = newnode;
         *end = newnode;
     }
 
-    return(list);
+    return (list);
 }
 
 
@@ -3945,17 +3858,15 @@ AppendToEndOfList(LIST * list, LIST **end, void * node)
  * If destructor is NULL, node data not affected, only list nodes get freed
  */
 
-void
-DestroyTheList(LIST * list)
+void DestroyTheList(LIST *list)
 {
-    LIST * prev,
-         * curr;
+    LIST *prev, *curr;
 
-    if ( not list)
+    if (not list)
         return;
 
     prev = list;
-    curr = list -> next;
+    curr = list->next;
 
     while (curr)
     {
@@ -3964,12 +3875,12 @@ DestroyTheList(LIST * list)
 
         delete prev->node;
 
-        prev -> next = NULL;
+        prev->next = NULL;
 
         delete prev;
 
         prev = curr;
-        curr = curr -> next;
+        curr = curr->next;
     }
 
     // if( destructor )
@@ -3977,7 +3888,7 @@ DestroyTheList(LIST * list)
 
     delete prev->node;
 
-    prev -> next = NULL;
+    prev->next = NULL;
 
     delete prev;
 
@@ -3992,8 +3903,7 @@ extern void ClearSortedEventList(void);
 ** Reads the event file and writes out associated text events with
 ** the tape.
 */
-void
-ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
+void ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
 {
     EventElement *cur;
     long ret;
@@ -4027,7 +3937,7 @@ ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
 
         ret = fwrite(&te, sizeof(ACMITextEvent), 1, fd);
 
-        if ( not ret)
+        if (not ret)
         {
             MonoPrint("Error writing TAPE event element\n");
             break;
@@ -4044,14 +3954,15 @@ ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
     // write callsign list
     if (Import_Callsigns)
     {
-        ret = fwrite(&import_count, sizeof(long), 1, fd);
+        ret = fwrite(&import_count, sizeof(int32_t), 1, fd);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
 
-        ret = fwrite(Import_Callsigns, import_count * sizeof(ACMI_CallRec), 1, fd);
+        ret = fwrite(Import_Callsigns, import_count * sizeof(ACMI_CallRec), 1,
+                     fd);
 
-        if ( not ret)
+        if (not ret)
             goto error_exit;
     }
 
@@ -4066,7 +3977,7 @@ ACMITape::ImportTextEventList(FILE *fd, ACMITapeHeader *tapeHdr)
 
     ret = fwrite(tapeHdr, sizeof(ACMITapeHeader), 1, fd);
 
-    if ( not ret)
+    if (not ret)
     {
         MonoPrint("Error writing TAPE header again\n");
     }
@@ -4075,7 +3986,6 @@ error_exit:
     // free up mem
     // DisposeEventList(evList);
     ClearSortedEventList();
-
 }
 
 
@@ -4084,8 +3994,7 @@ error_exit:
 ** returns pointer to 1st text event element and the count of
 ** elements
 */
-void *
-ACMITape::GetTextEvents(int *count)
+void *ACMITape::GetTextEvents(int *count)
 {
     if (_tapeHdr.numTextEvents > 1048576) // Sanity check
     {
@@ -4097,7 +4006,7 @@ ACMITape::GetTextEvents(int *count)
     return (void *)((char *)_tape + _tapeHdr.firstTextEventOffset);
 }
 
-void *ACMITape::GetCallsignList(long *count)
+void *ACMITape::GetCallsignList(int32_t *count)
 {
     if (_tapeHdr.numTextEvents > 1048576) // Sanity check
     {
@@ -4105,8 +4014,12 @@ void *ACMITape::GetCallsignList(long *count)
         return NULL;
     }
 
-    *count = (long)(*(long*)((char*)_tape + _tapeHdr.firstTextEventOffset + _tapeHdr.numTextEvents * sizeof(ACMITextEvent)));
-    return((void *)((char*)_tape + _tapeHdr.firstTextEventOffset + _tapeHdr.numTextEvents * sizeof(ACMITextEvent) + sizeof(long)));
+    *count =
+        (int32_t)(*(int32_t *)((char *)_tape + _tapeHdr.firstTextEventOffset +
+                               _tapeHdr.numTextEvents * sizeof(ACMITextEvent)));
+    return ((void *)((char *)_tape + _tapeHdr.firstTextEventOffset +
+                     _tapeHdr.numTextEvents * sizeof(ACMITextEvent) +
+                     sizeof(int32_t)));
 }
 
 /*
@@ -4120,16 +4033,17 @@ void *ACMITape::GetCallsignList(long *count)
 */
 void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
 {
-    short    visType = -1;
-    Tpoint    simView;
+    short visType = -1;
+    Tpoint simView;
     Trotation viewRotation;
-    SimBaseClass* baseObject;
-    DrawableObject* lastPointer = NULL;
+    SimBaseClass *baseObject;
+    DrawableObject *lastPointer = NULL;
 
 
     // get the object and pointer to its classtbl entry
-    SimBaseClass* theObject = feat->objBase;
-    Falcon4EntityClassType* classPtr = (Falcon4EntityClassType*)theObject->EntityType();
+    SimBaseClass *theObject = feat->objBase;
+    Falcon4EntityClassType *classPtr =
+        (Falcon4EntityClassType *)theObject->EntityType();
 
     // Set position and orientations
     viewRotation.M11 = theObject->dmx[0][0];
@@ -4145,9 +4059,9 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     viewRotation.M33 = theObject->dmx[2][2];
 
     // Update object position
-    simView.x     = theObject->XPos();
-    simView.y     = theObject->YPos();
-    simView.z     = theObject->ZPos();
+    simView.x = theObject->XPos();
+    simView.y = theObject->YPos();
+    simView.z = theObject->ZPos();
 
     visType = classPtr->visType[theObject->Status() bitand VIS_TYPE_MASK];
 
@@ -4160,21 +4074,23 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     SimBaseClass *prevObj = NULL, *nextObj = NULL;
 
     // In many cases, our visType should be modified by our neighbors.
-    if ((theObject->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and 
-        (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM or
-         ((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM))
+    if ((theObject->Status() bitand VIS_TYPE_MASK) not_eq VIS_DESTROYED and
+        (((SimFeatureClass *)theObject)->featureFlags bitand FEAT_NEXT_NORM or
+         ((SimFeatureClass *)theObject)->featureFlags bitand FEAT_PREV_NORM))
     {
         int idx = feat->slot;
 
         prevObj = FindComponentFeature(feat->leadIndex, idx - 1);
         nextObj = FindComponentFeature(feat->leadIndex, idx + 1);
 
-        if (prevObj and 
-            (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_PREV_NORM) and 
+        if (prevObj and
+            (((SimFeatureClass *)theObject)->featureFlags bitand
+             FEAT_PREV_NORM) and
             (prevObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
         {
-            if (nextObj and 
-                (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM) and 
+            if (nextObj and
+                (((SimFeatureClass *)theObject)->featureFlags bitand
+                 FEAT_NEXT_NORM) and
                 (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
             {
                 visType = classPtr->visType[VIS_BOTH_DEST];
@@ -4184,8 +4100,9 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
                 visType = classPtr->visType[VIS_LEFT_DEST];
             }
         }
-        else if (nextObj and 
-                 (((SimFeatureClass*)theObject)->featureFlags bitand FEAT_NEXT_NORM) and 
+        else if (nextObj and
+                 (((SimFeatureClass *)theObject)->featureFlags bitand
+                  FEAT_NEXT_NORM) and
                  (nextObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED)
         {
             visType = classPtr->visType[VIS_RIGHT_DEST];
@@ -4193,8 +4110,8 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     }
 
     // Check for change - and don't bother if there is none.
-    if (theObject->drawPointer and 
-        ((DrawableBSP*)theObject->drawPointer)->GetID() == visType)
+    if (theObject->drawPointer and
+        ((DrawableBSP *)theObject->drawPointer)->GetID() == visType)
         return;
 
     if (theObject->drawPointer and theObject->drawPointer->InDisplayList())
@@ -4209,22 +4126,24 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     // get the lead baseobject if any
     // otherwise set base object to ourself
     if (feat->leadIndex >= 0)
-        baseObject = _simTapeFeatures[ feat->leadIndex ].objBase;
+        baseObject = _simTapeFeatures[feat->leadIndex].objBase;
     else
         baseObject = theObject;
 
     // Some things require Base Objects (like bridges and airbases)
-    if ( not ((SimFeatureClass*)baseObject)->baseObject)
+    if (not((SimFeatureClass *)baseObject)->baseObject)
     {
         // Is this a bridge?
         if (theObject->IsSetCampaignFlag(FEAT_ELEV_CONTAINER))
         {
             // baseObject is the "container" object for all parts of the bridge
             // There is only one container for the entire bridge, stored in the lead element
-            ((SimFeatureClass*)baseObject)->baseObject = new DrawableBridge(1.0F);
+            ((SimFeatureClass *)baseObject)->baseObject =
+                new DrawableBridge(1.0F);
 
             // Insert only the bridge drawable.
-            _viewPoint->InsertObject(((SimFeatureClass*)baseObject)->baseObject);
+            _viewPoint->InsertObject(
+                ((SimFeatureClass *)baseObject)->baseObject);
         }
         // Is this a big flat thing with things on it (like an airbase?)
         else if (theObject->IsSetCampaignFlag(FEAT_FLAT_CONTAINER))
@@ -4232,10 +4151,12 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
             // baseObject is the "container" object for all parts of the platform
             // There is only one container for the entire platform, stored in the
             // lead element.
-            ((SimFeatureClass*)baseObject)->baseObject = new DrawablePlatform(1.0F);
+            ((SimFeatureClass *)baseObject)->baseObject =
+                new DrawablePlatform(1.0F);
 
             // Insert only the platform drawable.
-            _viewPoint->InsertObject(((SimFeatureClass*)baseObject)->baseObject);
+            _viewPoint->InsertObject(
+                ((SimFeatureClass *)baseObject)->baseObject);
         }
     }
 
@@ -4247,10 +4168,15 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         // Make the new BRIDGE object
         if (visType)
         {
-            if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) and theObject->Status() not_eq VIS_DESTROYED)
-                theObject->drawPointer = new DrawableRoadbed(visType, visType + 1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
+            if (theObject->IsSetCampaignFlag(FEAT_NEXT_IS_TOP) and
+                theObject->Status() not_eq VIS_DESTROYED)
+                theObject->drawPointer = new DrawableRoadbed(
+                    visType, visType + 1, &simView, theObject->Yaw(), 10.0f,
+                    (float)atan(20.0f / 280.0f));
             else
-                theObject->drawPointer = new DrawableRoadbed(visType, -1, &simView, theObject->Yaw(), 10.0f, (float)atan(20.0f / 280.0f));
+                theObject->drawPointer =
+                    new DrawableRoadbed(visType, -1, &simView, theObject->Yaw(),
+                                        10.0f, (float)atan(20.0f / 280.0f));
         }
         else
             theObject->drawPointer = NULL;
@@ -4259,13 +4185,18 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
         if (lastPointer)
         {
             ShiAssert(lastPointer->GetClass() == DrawableObject::Roadbed);
-            ShiAssert(theObject->drawPointer->GetClass() == DrawableObject::Roadbed);
-            ((DrawableBridge*)(((SimFeatureClass*)baseObject)->baseObject))->ReplacePiece((DrawableRoadbed*)(lastPointer), (DrawableRoadbed*)(theObject->drawPointer));
+            ShiAssert(theObject->drawPointer->GetClass() ==
+                      DrawableObject::Roadbed);
+            ((DrawableBridge *)(((SimFeatureClass *)baseObject)->baseObject))
+                ->ReplacePiece((DrawableRoadbed *)(lastPointer),
+                               (DrawableRoadbed *)(theObject->drawPointer));
         }
         else if (theObject->drawPointer)
         {
-            ShiAssert(theObject->drawPointer->GetClass() == DrawableObject::Roadbed);
-            ((DrawableBridge*)(((SimFeatureClass*)baseObject)->baseObject))->AddSegment((DrawableRoadbed*)(theObject->drawPointer));
+            ShiAssert(theObject->drawPointer->GetClass() ==
+                      DrawableObject::Roadbed);
+            ((DrawableBridge *)(((SimFeatureClass *)baseObject)->baseObject))
+                ->AddSegment((DrawableRoadbed *)(theObject->drawPointer));
         }
     }
     // Is the container a big flat thing (airbase)?
@@ -4273,22 +4204,28 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
     {
         // Everything on a platform is a Building
         // That means it sticks straight up the -Z axis
-        theObject->drawPointer = new DrawableBuilding(visType, &simView, theObject->Yaw(), 1.0F);
+        theObject->drawPointer =
+            new DrawableBuilding(visType, &simView, theObject->Yaw(), 1.0F);
 
         // Am I Flat (can things drive across it)?
-        if (theObject->IsSetCampaignFlag((FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER)))
-            ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticSurface(((DrawableBuilding*)theObject->drawPointer));
+        if (theObject->IsSetCampaignFlag(
+                (FEAT_FLAT_CONTAINER bitor FEAT_ELEV_CONTAINER)))
+            ((DrawablePlatform *)((SimFeatureClass *)baseObject)->baseObject)
+                ->InsertStaticSurface(
+                    ((DrawableBuilding *)theObject->drawPointer));
         else
-            ((DrawablePlatform*)((SimFeatureClass*)baseObject)->baseObject)->InsertStaticObject(theObject->drawPointer);
+            ((DrawablePlatform *)((SimFeatureClass *)baseObject)->baseObject)
+                ->InsertStaticObject(theObject->drawPointer);
     }
     else
     {
         // if we get here then this is just a loose collection of buildings, like a
         // village or city, with no big flat objects between them
-        theObject->drawPointer = new DrawableBuilding(visType, &simView, theObject->Yaw(), 1.0F);
+        theObject->drawPointer =
+            new DrawableBuilding(visType, &simView, theObject->Yaw(), 1.0F);
 
         // Insert the object
-        _viewPoint->InsertObject(((SimFeatureClass*)theObject)->drawPointer);
+        _viewPoint->InsertObject(((SimFeatureClass *)theObject)->drawPointer);
     }
 
     // KCK: Remove any previous drawable object
@@ -4307,7 +4244,7 @@ void ACMITape::CreateFeatureDrawable(SimTapeEntity *feat)
 ** Tries to find the feature with the leadindex and slot
 ** Passed in.
 */
-SimBaseClass *ACMITape::FindComponentFeature(long leadIndex, int slot)
+SimBaseClass *ACMITape::FindComponentFeature(int32_t leadIndex, int slot)
 {
     int i;
 
@@ -4316,7 +4253,7 @@ SimBaseClass *ACMITape::FindComponentFeature(long leadIndex, int slot)
 
     for (i = 0; i < _tapeHdr.numFeat; i++)
     {
-        if (_simTapeFeatures[i].leadIndex == leadIndex and 
+        if (_simTapeFeatures[i].leadIndex == leadIndex and
             _simTapeFeatures[i].slot == slot)
         {
             return _simTapeFeatures[i].objBase;

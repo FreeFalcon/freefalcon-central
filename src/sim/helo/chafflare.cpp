@@ -5,7 +5,7 @@
 #include "entity.h"
 #include "classtbl.h"
 #include "pilotinputs.h"
-#include "SimDrive.h"
+#include "simdrive.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "playerop.h"

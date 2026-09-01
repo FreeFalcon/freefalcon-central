@@ -7,11 +7,11 @@
  RGB data.  The memory allocated by the BMPread() call must be freed by a
  call to BMPfree().
 \***************************************************************************/
-#include "F4Error.h"
-#include "BMP.h"
+#include "f4error.h"
+#include "bmp.h"
 
 
-void  BMPfree(void *buffer)
+void BMPfree(void *buffer)
 {
     free(buffer);
 }
@@ -27,14 +27,16 @@ void *BMPread(const char *filename, BITMAPINFO *info, BOOL packLines)
 
 
     // Open the named file
-    file = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, 0, NULL);
+    file = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                      OPEN_EXISTING, 0, NULL);
 
     if (file == INVALID_HANDLE_VALUE)
     {
         char string[80];
         char message[120];
         PutErrorString(string);
-        sprintf(message, "%s:  Failed to open %s - disk error?", string, filename);
+        sprintf(message, "%s:  Failed to open %s - disk error?", string,
+                filename);
         F4Error(message);
     }
 
@@ -45,7 +47,8 @@ void *BMPread(const char *filename, BITMAPINFO *info, BOOL packLines)
         char string[80];
         char message[120];
         PutErrorString(string);
-        sprintf(message, "%s:  Failed to read BMP header - disk error?", string);
+        sprintf(message, "%s:  Failed to read BMP header - disk error?",
+                string);
         F4Error(message);
     }
 
@@ -56,12 +59,14 @@ void *BMPread(const char *filename, BITMAPINFO *info, BOOL packLines)
 
 
     // Read the bitmap header
-    if (!ReadFile(file, &info->bmiHeader, sizeof(info->bmiHeader), &bytesRead, NULL))
+    if (!ReadFile(file, &info->bmiHeader, sizeof(info->bmiHeader), &bytesRead,
+                  NULL))
     {
         char string[80];
         char message[120];
         PutErrorString(string);
-        sprintf(message, "%s:  Failed to read bitmap info - disk error?", string);
+        sprintf(message, "%s:  Failed to read bitmap info - disk error?",
+                string);
         F4Error(message);
     }
 
@@ -96,7 +101,7 @@ void *BMPread(const char *filename, BITMAPINFO *info, BOOL packLines)
 
 
     // Read in the BMP data a scan line at a time packing as we go
-    BYTE *bitPointer = (BYTE*)bitBuffer;
+    BYTE *bitPointer = (BYTE *)bitBuffer;
 
     for (int row = 0; row < info->bmiHeader.biHeight; row++)
     {
@@ -106,7 +111,8 @@ void *BMPread(const char *filename, BITMAPINFO *info, BOOL packLines)
             char string[80];
             char message[120];
             PutErrorString(string);
-            sprintf(message, "%s:  Failed to read bitmap pixels - disk error?", string);
+            sprintf(message, "%s:  Failed to read bitmap pixels - disk error?",
+                    string);
             F4Error(message);
         }
 

@@ -5,24 +5,23 @@
 #define INDEXED_MODE_ENGINE
 
 
-
 #include "d3d7compat.h"
 #include <d3dxcore.h>
 #include <d3dxmath.h>
-#include "../include/TexBank.h"
-#include "DxDefines.h"
-#include "DXVbManager.h"
-#include "DX2DEngine.h"
-#include "DXLightEngine.h"
+#include "../include/texbank.h"
+#include "dxdefines.h"
+#include "dxvbmanager.h"
+#include "dx2dengine.h"
+#include "dxlightengine.h"
 
 
 #define DEFAULT_ZBIAS 0 // Base zBias level
 #ifdef EDIT_ENGINE
-#define MAX_ALPHA_SURFACES 32*1024 // Max Stackable Alpha Suraces
-#define MAX_SOLID_SURFACES 32*1024 // Max Stackable Alpha Suraces
+#define MAX_ALPHA_SURFACES 32 * 1024 // Max Stackable Alpha Suraces
+#define MAX_SOLID_SURFACES 32 * 1024 // Max Stackable Alpha Suraces
 #else
-#define MAX_ALPHA_SURFACES 8*1024 // Max Stackable Alpha Suraces
-#define MAX_SOLID_SURFACES 32*1024 // Max Stackable Alpha Suraces
+#define MAX_ALPHA_SURFACES 8 * 1024 // Max Stackable Alpha Suraces
+#define MAX_SOLID_SURFACES 32 * 1024 // Max Stackable Alpha Suraces
 #endif
 
 #define NVG_T_FACTOR 0x0030A030
@@ -30,7 +29,13 @@
 
 
 // The DX Engine states
-typedef enum { DX_OTW = 0, DX_TV, DX_NVG, DX_DBS } DX_StateType;
+typedef enum
+{
+    DX_OTW = 0,
+    DX_TV,
+    DX_NVG,
+    DX_DBS
+} DX_StateType;
 
 // This is the structure used to save DX Engine status
 typedef struct
@@ -75,11 +80,13 @@ typedef struct
 {
     DWORD StackLevel, StackMax;
     SurfaceItemType *Stack;
-} SurfaceStackType ;
+} SurfaceStackType;
 
 #define SURFACE_STACK(name, max) static SurfaceStackType name;
-#define INIT_S_STACK(name, max) name.StackLevel=0; name.StackMax=max; name.Stack=(SurfaceItemType*)malloc(sizeof(SurfaceItemType)*max);
-
+#define INIT_S_STACK(name, max)                                                \
+    name.StackLevel = 0;                                                       \
+    name.StackMax = max;                                                       \
+    name.Stack = (SurfaceItemType *)malloc(sizeof(SurfaceItemType) * max);
 
 
 class CDXEngine
@@ -115,14 +122,20 @@ public:
 
     // Main Object drawing function
     void FlushBuffers(void);
-    void DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace = false, DWORD LightID = NULL);
-    void DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix, const Ppoint *Pos, const float sx, const float sy, const float sz, const float scale, bool CameraSpace);
+    void DrawObject(ObjectInstance *objInst, D3DXMATRIX *RotMatrix,
+                    const Ppoint *Pos, const float sx, const float sy,
+                    const float sz, const float scale, bool CameraSpace = false,
+                    DWORD LightID = NULL);
+    void DrawBlip(ObjectInstance *objInst, D3DXMATRIX *RotMatrix,
+                  const Ppoint *Pos, const float sx, const float sy,
+                  const float sz, const float scale, bool CameraSpace);
     void Setup();   // #34 C1: D3D7 device args removed
     void Release(void);
     void SetCamera(D3DXMATRIX *Settings, D3DVECTOR Pos, D3DXMATRIX *BB);
     void SetProjection(D3DXMATRIX *Settings)
     {
-        Projection = *Settings;   // #34 C1: D3D11 sets proj via the shader cbuffer
+        Projection =
+            *Settings;   // #34 C1: D3D11 sets proj via the shader cbuffer
     }
     void SetWorld(D3DXMATRIX *Settings)
     {
@@ -131,9 +144,18 @@ public:
     // Artscout - 2026: #78 GPU terrain reads the SAME object-path camera (world-space view/proj/pos) so the
     // ground lines up with objects and the cockpit. These statics are set per eye by SetCamera/SetProjection
     // BEFORE the scene is drawn, so they are valid when the terrain hook runs in RenderOTW::DrawScene.
-    static const D3DXMATRIX& GetObjProjection() { return Projection; }
-    static const D3DXMATRIX& GetObjView()       { return CameraView; }
-    static const D3DVECTOR&  GetObjCameraPos()  { return CameraPos; }
+    static const D3DXMATRIX &GetObjProjection()
+    {
+        return Projection;
+    }
+    static const D3DXMATRIX &GetObjView()
+    {
+        return CameraView;
+    }
+    static const D3DVECTOR &GetObjCameraPos()
+    {
+        return CameraPos;
+    }
     void SetViewport(DWORD l, DWORD t, DWORD r, DWORD b);
     void SetFogLevel(float FogLevel);
     void SetBlipIntensity(float Intensity)
@@ -260,26 +282,31 @@ private:
     void FlushInit(void);
     void FlushObjects(void);
     void FlushBlips(void);
-    inline void DrawNode(ObjectInstance *objInst, DWORD LightOwner, DWORD LodID);
+    inline void DrawNode(ObjectInstance *objInst, DWORD LightOwner,
+                         DWORD LodID);
     inline void DrawBlitNode(void);
 #ifdef EDIT_ENGINE
-    void DrawNodeEx(NodeScannerType *NODE, ObjectInstance *objInst, DWORD LightOwner, DWORD LodID);
-    void ModelInit(ObjectInstance *objInst, DxDbHeader* Header, DWORD *Textures, D3DXMATRIX *State, DWORD LightOwner, DWORD nTexsPerBank);
+    void DrawNodeEx(NodeScannerType *NODE, ObjectInstance *objInst,
+                    DWORD LightOwner, DWORD LodID);
+    void ModelInit(ObjectInstance *objInst, DxDbHeader *Header, DWORD *Textures,
+                   D3DXMATRIX *State, DWORD LightOwner, DWORD nTexsPerBank);
     bool m_FrameDrawMode, m_SkipSwitch, m_ScriptsOn;
     void SetScripts(bool state)
     {
         m_ScriptsOn = state;
     }
-    void DofManageEx(NodeScannerType *NODE, ObjectInstance *objInst, D3DXMATRIX *NewState);
+    void DofManageEx(NodeScannerType *NODE, ObjectInstance *objInst,
+                     D3DXMATRIX *NewState);
     DWORD m_DofLevel;
     void PushMatrixEx(D3DXMATRIX *p);
     void PopMatrixEx(D3DXMATRIX *p);
-    bool SwitchManageEx(NodeScannerType *NODE, ObjectInstance *objInst, D3DXMATRIX *NewState);
+    bool SwitchManageEx(NodeScannerType *NODE, ObjectInstance *objInst,
+                        D3DXMATRIX *NewState);
     bool m_EmitDefaultSpecularity;
 #endif
 
-    friend bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj, DWORD *Argument);
-
+    friend bool DXScript_Beacon(D3DVECTOR *pos, ObjectInstance *obj,
+                                DWORD *Argument);
 
 
     // The main D3DD used by the Engine
@@ -312,7 +339,8 @@ private:
     void SetNormalViewMode(void);
     void SetViewMode(void);
 
-    float Process_DOFRot(float dofrot, int dofNumber, int flags, float min, float max, float multiplier, float unused);
+    float Process_DOFRot(float dofrot, int dofNumber, int flags, float min,
+                         float max, float multiplier, float unused);
     void DOF(void);
     void AssignDOFRotation(D3DXMATRIX *R);
     void AssignDOFTranslation(D3DXMATRIX *T);
@@ -333,12 +361,16 @@ private:
     ///////////////////////////////// 2D ENGINE ITEMS ////////////////////////////////////////////////////////////////
 
 public:
-    void Draw3DPoint(D3DVECTOR *WorldPos, DWORD Color, bool Emissive = false, bool CameraSpace = false);
-    void Draw3DLine(D3DVECTOR *WorldStart, D3DVECTOR *WorldEnd, DWORD ColorStart, DWORD ColorEnd, bool Emissive = false,  bool CameraSpace = false);
+    void Draw3DPoint(D3DVECTOR *WorldPos, DWORD Color, bool Emissive = false,
+                     bool CameraSpace = false);
+    void Draw3DLine(D3DVECTOR *WorldStart, D3DVECTOR *WorldEnd,
+                    DWORD ColorStart, DWORD ColorEnd, bool Emissive = false,
+                    bool CameraSpace = false);
     float GetDetailLevel(D3DVECTOR *WorldPos, float MaxRange);
     void SetupTexturesOnDevice(void);
     void LoadTexture(char *FileName);
-    DWORD_PTR GetTextureHandle(char *TexName); // Artscout - 2026 (x64): pointer-sized
+    DWORD_PTR
+    GetTextureHandle(char *TexName); // Artscout - 2026 (x64): pointer-sized
     CTextureItem *DX2D_GetTextureItem(char *TexName);
     void DX2D_GetTextureCoords(CTextureItem *Ti, CDrawBaseItem *Item);
     void CleanUpTexturesOnDevice(void);
@@ -364,9 +396,12 @@ public:
     DWORD LastIndex; // position of last stored index in the index buffer
     DWORD DynamicItems; // Number of Dynamic Items present
     static _MM_ALIGN16 XMMVector vbb0, vbb1, vbb2, vbb3; // The Vertices
-    static _MM_ALIGN16 XMMVector BBvbb0, BBvbb1, BBvbb2, BBvbb3; // The Vertices used for BillBoarding
-    static _MM_ALIGN16 XMMVector XMMCamera; // the Camera position compatible with XMM Math
-    static _MM_ALIGN16 XMMVector BBCx[3]; // This are the XMM ordered Matrix CXes used to BB Stuff
+    static _MM_ALIGN16 XMMVector BBvbb0, BBvbb1, BBvbb2,
+        BBvbb3; // The Vertices used for BillBoarding
+    static _MM_ALIGN16 XMMVector
+        XMMCamera; // the Camera position compatible with XMM Math
+    static _MM_ALIGN16 XMMVector
+        BBCx[3]; // This are the XMM ordered Matrix CXes used to BB Stuff
 
     CDynamicDraw *DynamicDrawRoot;
     CDynamicPrimitive *DynPrimitiveList, *DynPrimitiveLast;
@@ -377,7 +412,8 @@ public:
     ///////////////////////////////////////////// 2D STUFF \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 public:
-    DWORD ComputeSphereVisibility(LPD3DVECTOR lpCenters, LPD3DVALUE  lpRadii, DWORD dwNumSpheres = 1);
+    DWORD ComputeSphereVisibility(LPD3DVECTOR lpCenters, LPD3DVALUE lpRadii,
+                                  DWORD dwNumSpheres = 1);
     bool DX2D_GetVisibility(D3DXVECTOR3 *Pos, float Radius, DWORD Flags = 0);
     float DX2D_GetDistance(D3DXVECTOR3 *Pos, float Radius, DWORD Flags = 0);
     float DX2D_GetDistance(D3DXVECTOR3 *Pos, DWORD Flags = 0);
@@ -389,26 +425,36 @@ public:
     };
     void DX2D_SetLayer(DWORD Layer = LAYER_NODRAW, DWORD Flags = 0)
     {
-        if (Layer == LAYER_NODRAW) return;
+        if (Layer == LAYER_NODRAW)
+            return;
 
         LayerSelected = Layer;
         Layers[LayerSelected].Flags = Flags;
     };
     void DX2D_Reset(void);
     void DX2D_InitLists(void);
-    void DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle);
-    void DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle);
-    void DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle);
-    void DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle);
-    void DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos, D3DDYNVERTEX *Poly, float Radius, DWORD Vertices, DWORD_PTR TexHandle);
+    void DX2D_AddQuad(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
+                      D3DDYNVERTEX *Quad, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddTri(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
+                     D3DDYNVERTEX *Tri, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddBi(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
+                    D3DDYNVERTEX *Segment, float Radius, DWORD_PTR TexHandle);
+    void DX2D_AddSingle(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
+                        D3DDYNVERTEX *Segment, float Radius,
+                        DWORD_PTR TexHandle);
+    void DX2D_AddPoly(DWORD Layer, DWORD Flags, D3DXVECTOR3 *Pos,
+                      D3DDYNVERTEX *Poly, float Radius, DWORD Vertices,
+                      DWORD_PTR TexHandle);
     void DX2D_SetDrawOrder(DWORD *Order);
     void DX2D_SetupSquareCx(float y, float z);
     // void DX2D_TransformBB(D3DXVECTOR3 *Pos, D3DDYNVERTEX *Coord, D3DDYNVERTEX *Dest, DWORD Nr=1);
-    void DX2D_TransformBB(XMMVector *Pos, XMMVector *Coord, D3DDYNVERTEX *Dest, DWORD Nr);
+    void DX2D_TransformBB(XMMVector *Pos, XMMVector *Coord, D3DDYNVERTEX *Dest,
+                          DWORD Nr);
     void DX2D_TransformBB(XMMVector *Pos, D3DDYNVERTEX *Vertex, DWORD Nr);
     void DX2D_MakeCameraSpace(D3DXVECTOR3 *Result, D3DXVECTOR3 *Pos);
     void DX2D_ForceDistance(float Distance);
-    void DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType *Stack, D3DXVECTOR3 *Pos);
+    void DX2D_AddObject(DWORD ID, DWORD Layer, SurfaceStackType *Stack,
+                        D3DXVECTOR3 *Pos);
     void DX2D_SetViewMode(void);
 
 private:
@@ -441,13 +487,12 @@ public:
 private:
     D3DLIGHT7 DXLightsList[MAX_DYNAMIC_LIGHTS]; // The Dynamic Lights List
     DWORD LightsNumber; // The number of Valid Lights in the List
-    void AddDynamicLight(D3DLIGHT7 *Light, D3DXMATRIX *RotMatrix, D3DVECTOR *Pos);
+    void AddDynamicLight(D3DLIGHT7 *Light, D3DXMATRIX *RotMatrix,
+                         D3DVECTOR *Pos);
     void RemoveDynamicLights(void);
     DWORD LightID;
     CTextureSurface *TexturesList;
-
 };
 
 extern CDXEngine TheDXEngine;
 extern bool g_Use_DX_Engine;
-

@@ -14,10 +14,12 @@ FeatureClassDataType* GetFeatureClassData(int index)
 {
     ShiAssert(Falcon4ClassTable[index].dataPtr);
 
-    if (Falcon4ClassTable[index].dataType <= DTYPE_MIN or Falcon4ClassTable[index].dataType >= DTYPE_MAX)  // JB 010106 CTD sanity check
+    if (Falcon4ClassTable[index].dataType <= DTYPE_MIN or
+        Falcon4ClassTable[index].dataType >=
+            DTYPE_MAX)  // JB 010106 CTD sanity check
         return NULL; // JB 010106 CTD sanity check
 
-    return (FeatureClassDataType*) Falcon4ClassTable[index].dataPtr;
+    return (FeatureClassDataType*)Falcon4ClassTable[index].dataPtr;
 }
 
 int GetFeatureRepairTime(int index)
@@ -26,7 +28,7 @@ int GetFeatureRepairTime(int index)
 
     fc = GetFeatureClassData(index);
 
-    if ( not fc)
+    if (not fc)
         return 0;
 
     return fc->RepairTime;
@@ -208,7 +210,7 @@ int GetFeatureDetectionRange(int id, int mt)
 
     fc = GetFeatureClassData(id);
 
-    if ( not fc)
+    if (not fc)
         return 0;
 
     return fc->Detection[mt];

@@ -47,10 +47,7 @@ private:
 //------------------------------------------------------------------------------
 /**
 */
-inline
-transform33::transform33() :
-    scale(1.0f, 1.0f),
-    flags(0)
+inline transform33::transform33() : scale(1.0f, 1.0f), flags(0)
 {
     // empty
 }
@@ -58,9 +55,7 @@ transform33::transform33() :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform33::settranslation(const vector2& v)
+inline void transform33::settranslation(const vector2& v)
 {
     this->translation = v;
     this->flags |= Dirty;
@@ -69,9 +64,7 @@ transform33::settranslation(const vector2& v)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const vector2&
-transform33::gettranslation() const
+inline const vector2& transform33::gettranslation() const
 {
     return this->translation;
 }
@@ -79,9 +72,7 @@ transform33::gettranslation() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform33::seteulerrotation(const vector2& v)
+inline void transform33::seteulerrotation(const vector2& v)
 {
     this->euler = v;
     this->flags |= Dirty;
@@ -90,9 +81,7 @@ transform33::seteulerrotation(const vector2& v)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const vector2&
-transform33::geteulerrotation() const
+inline const vector2& transform33::geteulerrotation() const
 {
     return this->euler;
 }
@@ -100,9 +89,7 @@ transform33::geteulerrotation() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform33::setscale(const vector2& v)
+inline void transform33::setscale(const vector2& v)
 {
     this->scale = v;
     this->flags |= Dirty;
@@ -111,9 +98,7 @@ transform33::setscale(const vector2& v)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const vector2&
-transform33::getscale() const
+inline const vector2& transform33::getscale() const
 {
     return this->scale;
 }
@@ -121,9 +106,7 @@ transform33::getscale() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform33::update()
+inline void transform33::update()
 {
     if (this->flags & Dirty)
     {
@@ -139,9 +122,7 @@ transform33::update()
 //------------------------------------------------------------------------------
 /**
 */
-inline
-const matrix33&
-transform33::getmatrix33()
+inline const matrix33& transform33::getmatrix33()
 {
     this->update();
     return this->matrix;
@@ -150,28 +131,22 @@ transform33::getmatrix33()
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-transform33::getmatrix44(matrix44& out)
+inline void transform33::getmatrix44(matrix44& out)
 {
     this->update();
     out.set(this->matrix.M11, this->matrix.M12, this->matrix.M13, 0.0f,
             this->matrix.M21, this->matrix.M22, this->matrix.M23, 0.0f,
-            this->matrix.M31, this->matrix.M32, this->matrix.M33, 0.0f,
-            0.0f,             0.0f,             0.0f,             1.0f);
+            this->matrix.M31, this->matrix.M32, this->matrix.M33, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f);
 }
 
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bool
-transform33::isdirty() const
+inline bool transform33::isdirty() const
 {
     return (0 != (this->flags & Dirty));
 }
 
 //------------------------------------------------------------------------------
 #endif
-
-

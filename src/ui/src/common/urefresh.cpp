@@ -62,11 +62,12 @@ UI_Refresher::~UI_Refresher()
 {
 }
 
-void UI_Refresher::Setup(CampEntity entity, GlobalPositioningSystem *own, long allow)
+void UI_Refresher::Setup(CampEntity entity, GlobalPositioningSystem *own,
+                         long allow)
 {
     Owner_ = own;
 
-    if ( not entity)
+    if (not entity)
         return;
 
     SetID(entity->Id());
@@ -123,14 +124,14 @@ void UI_Refresher::Update(CampEntity entity, long allow)
 
     if (Mission_)
         UpdateMission(entity);
-    else if ((allow bitand UR_MISSION) and not (Allowed_ bitand UR_MISSION))
+    else if ((allow bitand UR_MISSION) and not(Allowed_ bitand UR_MISSION))
         AddMission(entity);
     else if (entity->IsFlight())
         AddMission(entity);
 
     if (MapItem_)
         UpdateMapItem(entity);
-    else if ((allow bitand UR_MAP) and not (Allowed_ bitand UR_MAP))
+    else if ((allow bitand UR_MAP) and not(Allowed_ bitand UR_MAP))
         AddMapItem(entity);
     else if (entity->IsFlight())
         AddMapItem(entity);
@@ -142,7 +143,7 @@ void UI_Refresher::Update(CampEntity entity, long allow)
 
     if (OOB_)
         UpdateOOBItem(entity);
-    else if ((allow bitand UR_OOB) and not (Allowed_ bitand UR_OOB))
+    else if ((allow bitand UR_OOB) and not(Allowed_ bitand UR_OOB))
         AddOOBItem(entity);
 
     Allowed_ or_eq allow;
@@ -152,12 +153,12 @@ void UI_Refresher::Update(Division div, long allow)
 {
     if (MapItem_)
         UpdateMapItem(div);
-    else if ((allow bitand UR_MAP) and not (Allowed_ bitand UR_MAP))
+    else if ((allow bitand UR_MAP) and not(Allowed_ bitand UR_MAP))
         AddMapItem(div);
 
     if (OOB_)
         UpdateOOBItem(div);
-    else if ((allow bitand UR_OOB) and not (Allowed_ bitand UR_OOB))
+    else if ((allow bitand UR_OOB) and not(Allowed_ bitand UR_OOB))
         AddOOBItem(div);
 
     Allowed_ or_eq allow;
@@ -183,17 +184,17 @@ void UI_Refresher::Remove()
 
 void UI_Refresher::AddMission(CampEntity entity)
 {
-    if (entity->IsFlight() and ((FlightClass*)entity)->Final())
+    if (entity->IsFlight() and ((FlightClass *)entity)->Final())
     {
-        if (((FlightClass*)entity)->GetUnitMission() not_eq AMIS_ALERT)
+        if (((FlightClass *)entity)->GetUnitMission() not_eq AMIS_ALERT)
         {
-            VehicleClassDataType* vc;
-            Falcon4EntityClassType* classPtr;
+            VehicleClassDataType *vc;
+            Falcon4EntityClassType *classPtr;
             int vid;
 
             // KLUDGE... Make sure it's an F16
             // KCK LOOK HERE: Please make this work better
-            vid = ((FlightClass*)entity)->GetVehicleID(0);
+            vid = ((FlightClass *)entity)->GetVehicleID(0);
             vc = GetVehicleClassData(vid);
             classPtr = &Falcon4ClassTable[vid];
 
@@ -216,7 +217,7 @@ void UI_Refresher::AddMission(CampEntity entity)
 
 void UI_Refresher::UpdateMission(CampEntity entity)
 {
-    if ( not entity->IsDead())
+    if (not entity->IsDead())
     {
         if (GetFlightTime((Flight)entity) not_eq Mission_->GetTakeOffTime())
         {
@@ -227,7 +228,8 @@ void UI_Refresher::UpdateMission(CampEntity entity)
         if (GetFlightStatusID((Flight)entity) not_eq Mission_->GetStatusID())
             MissionUpdateStatus((Flight)entity, Mission_);
 
-        if (((Flight)entity)->Final() and ((Flight)entity)->GetUnitMission() not_eq AMIS_ALERT)
+        if (((Flight)entity)->Final() and
+            ((Flight)entity)->GetUnitMission() not_eq AMIS_ALERT)
             Mission_->SetFlagBitOff(C_BIT_INVISIBLE);
     }
     else
@@ -239,7 +241,7 @@ void UI_Refresher::RemoveMission()
     long ID;
     ID = Mission_->GetOwner()->ID_;
     Owner_->MisTree_->DeleteItem(Mission_->GetOwner());
-    ShiAssert( not Owner_->MisTree_->Find(ID));
+    ShiAssert(not Owner_->MisTree_->Find(ID));
     Mission_ = NULL;
     Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_MISSION_RESIZE_);
 }
@@ -248,7 +250,8 @@ void UI_Refresher::AddMapItem(CampEntity entity)
 {
     WayPoint wp;
 
-    if (entity->IsFlight() and ((Flight)entity)->Final() and not entity->IsDead())
+    if (entity->IsFlight() and ((Flight)entity)->Final() and
+        not entity->IsDead())
     {
         MapItem_ = Owner_->Map_->AddFlight((Flight)entity);
         wp = ((Flight)entity)->GetFirstUnitWP();
@@ -304,9 +307,11 @@ void UI_Refresher::AddMapItem(CampEntity entity)
             MapItem_->Flags or_eq C_BIT_INVISIBLE;
         }
 
-        if (entity->GetTeam() not_eq Owner_->TeamNo_ and Owner_->TeamNo_ >= 0 and not entity->IsSquadron())
+        if (entity->GetTeam() not_eq Owner_->TeamNo_ and
+            Owner_->TeamNo_ >= 0 and not entity->IsSquadron())
         {
-            if ( not entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
+            if (not entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and
+                entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags or_eq C_BIT_INVISIBLE;
 
@@ -345,65 +350,86 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
         curstr = ((Unit)entity)->GetTotalVehicles();
         totalstr = ((Unit)entity)->GetFullstrengthVehicles();
 
-        if (totalstr < 1) totalstr = 1;
+        if (totalstr < 1)
+            totalstr = 1;
 
         perc = (curstr * 100) / totalstr;
 
-        if (perc > 100) perc = 100;
+        if (perc > 100)
+            perc = 100;
 
         if (entity->IsFlight())
         {
-            if ( not entity->IsDead())
+            if (not entity->IsDead())
             {
                 // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified
                 //and not editing a TE, change the IconIndex of the unit to ICON_UKN
                 //and its label to 'Bandit'
-                if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_))
+                if (g_nUnidentifiedInUI and
+                    (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and
+                     MapItem_ and entity->GetTeam() not_eq Owner_->TeamNo_))
                 {
-                    if (entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_)))
+                    if (entity->GetIdentified(
+                            static_cast<uchar>(Owner_->TeamNo_)))
                     {
-                        ((MAPICONLIST *)MapItem_)->ImageID = ((UnitClass *)entity)->GetUnitClassData()->IconIndex;
+                        ((MAPICONLIST *)MapItem_)->ImageID =
+                            ((UnitClass *)entity)
+                                ->GetUnitClassData()
+                                ->IconIndex;
 
-                        if ( not g_bAWACSSupport)
+                        if (not g_bAWACSSupport)
                         {
                             int vid = ((Unit)entity)->GetVehicleID(0);
                             VehicleClassDataType *vc = GetVehicleClassData(vid);
-                            ((MAPICONLIST *)MapItem_)->Label->SetText(gStringMgr->GetText(gStringMgr->AddText(vc ? vc->Name : "<unk>")));
+                            ((MAPICONLIST *)MapItem_)
+                                ->Label->SetText(
+                                    gStringMgr->GetText(gStringMgr->AddText(
+                                        vc ? vc->Name : "<unk>")));
                         }
                     }
                     else
                     {
                         ((MAPICONLIST *)MapItem_)->ImageID = ICON_UKN;
 
-                        if ( not g_bAWACSSupport)
-                            ((MAPICONLIST *)MapItem_)->Label->SetText(gStringMgr->GetText(gStringMgr->AddText("Bandit")));
+                        if (not g_bAWACSSupport)
+                            ((MAPICONLIST *)MapItem_)
+                                ->Label->SetText(gStringMgr->GetText(
+                                    gStringMgr->AddText("Bandit")));
                     }
                 }
 
                 // END OF ADDED SECTION 2002-02-21
 
                 // KCK: Convert yaw to heading 0-7
-                heading = ((long)(((entity->Yaw() * RTD) + 360.0F + 22.5F) / 45.0F)) % 8;
+                heading =
+                    ((long)(((entity->Yaw() * RTD) + 360.0F + 22.5F) / 45.0F)) %
+                    8;
 
                 if (g_bAWACSSupport)
                 {
                     // ****** Marco/Julian Edit
 
-                    char name[40] ;
-                    char buffer[256] ;
-                    int bearing, range ;
-                    float x, y, z ;
+                    char name[40];
+                    char buffer[256];
+                    int bearing, range;
+                    float x, y, z;
                     extern GlobalPositioningSystem *gGps;
 
 
                     // Get pointer to flight entity
-                    Flight flt = (Flight)entity ;
+                    Flight flt = (Flight)entity;
 
                     // Grab callsign of flight (eg Cowboy 1-1)
                     if (gGps->GetTeamNo() == entity->GetTeam())
                         GetCallsign(flt, name);
                     // 2002-02-24 ADDED BY S.G. Don't give AWACS more info than it can get...
-                    else if (g_nUnidentifiedInUI and ( not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and MapItem_ and entity->IsFlight() and entity->GetTeam() not_eq Owner_->TeamNo_ and not entity->GetIdentified(static_cast<uchar>(Owner_->TeamNo_))))
+                    else if (g_nUnidentifiedInUI and
+                             (not(TheCampaign.Flags bitand
+                                  CAMP_TACTICAL_EDIT) and
+                              MapItem_ and entity->IsFlight() and
+                              entity->GetTeam() not_eq Owner_->TeamNo_ and
+                              not entity->GetIdentified(
+                                  static_cast<uchar>(Owner_->TeamNo_))))
                         strcpy(name, "Bandit");
                     else
                     {
@@ -416,32 +442,40 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
                     // Callsign, number, bullseye position, altitude
 
                     // Bullseye stuff
-                    flt->GetRealPosition(&x, &y, &z) ;
+                    flt->GetRealPosition(&x, &y, &z);
                     // Get Bearing/Distance from Bullseye
-                    bearing = 180 + TheCampaign.BearingToBullseyeDeg(x, y) ;
-                    range = (int)(TheCampaign.RangeToBullseyeFt(x, y) * FT_TO_NM);
+                    bearing = 180 + TheCampaign.BearingToBullseyeDeg(x, y);
+                    range =
+                        (int)(TheCampaign.RangeToBullseyeFt(x, y) * FT_TO_NM);
 
                     if (g_bAWACSFuel)
-                        sprintf(buffer, "%d*%s \n%03dx%d \nAlt %d \nSpd %d \nFuel %lu",
-                                flt->GetACCount(),  name, bearing, range,
-                                (int)(-flt->ZPos() / 1000.0), (int)flt->GetKias(), (long)flt->CalculateFuelAvailable(255));
+                        sprintf(buffer,
+                                "%d*%s \n%03dx%d \nAlt %d \nSpd %d \nFuel %lu",
+                                flt->GetACCount(), name, bearing, range,
+                                (int)(-flt->ZPos() / 1000.0),
+                                (int)flt->GetKias(),
+                                (long)flt->CalculateFuelAvailable(255));
                     else
                         sprintf(buffer, "%d*%s \n%03dx%d \nAlt %d \nSpd %d",
                                 // sprintf (buffer, "%d*%s@%03dx%d/A%d/V%d",
-                                flt->GetACCount(),  name, bearing, range,
-                                (int)(-flt->ZPos() / 1000.0), (int)flt->GetKias());
+                                flt->GetACCount(), name, bearing, range,
+                                (int)(-flt->ZPos() / 1000.0),
+                                (int)flt->GetKias());
 
                     // 2002-02-24 ADDED BY S.G. Needs to set a logical line lenght and wrap it
-                    MapItem_->Label->SetWordWrapWidth(72) ; // Avg for 12 chars
-                    MapItem_->Label->SetFlags(MapItem_->Label->GetFlags() bitor C_BIT_WORDWRAP) ;  // Add the 'word wrap flag to what's there already
+                    MapItem_->Label->SetWordWrapWidth(72); // Avg for 12 chars
+                    MapItem_->Label->SetFlags(
+                        MapItem_->Label->GetFlags() bitor
+                        C_BIT_WORDWRAP); // Add the 'word wrap flag to what's there already
                     // END OF ADDED SECTION 2002-02-24
 
-                    MapItem_->Label->SetText(gStringMgr->GetText(gStringMgr->AddText(buffer))) ;
+                    MapItem_->Label->SetText(
+                        gStringMgr->GetText(gStringMgr->AddText(buffer)));
                     // ****** Marco Edit End
                 }
 
                 // JPO end
-                if ( not (MapItem_->Flags bitand C_BIT_ENABLED))
+                if (not(MapItem_->Flags bitand C_BIT_ENABLED))
                 {
                     wp = ((Flight)entity)->GetFirstUnitWP();
 
@@ -458,7 +492,8 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
     {
         perc = ((Objective)entity)->GetObjectiveStatus();
 
-        if (perc > 100) perc = 100;
+        if (perc > 100)
+            perc = 100;
     }
 
     // sfr: entities are stored in sim coordinates which are xy inverted
@@ -495,7 +530,8 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
      }
      }
     */
-    if (MapItem_ and entity->IsUnit() and entity->GetTeam() not_eq Owner_->TeamNo_)
+    if (MapItem_ and entity->IsUnit() and
+        entity->GetTeam() not_eq Owner_->TeamNo_)
     {
         if (Owner_->TeamNo_ < 0)
         {
@@ -518,7 +554,8 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
         }
         else
         {
-            if ( not entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and entity->GetMovementType() not_eq NoMove)
+            if (not entity->GetSpotted(static_cast<uchar>(Owner_->TeamNo_)) and
+                entity->GetMovementType() not_eq NoMove)
             {
                 MapItem_->Flags or_eq C_BIT_INVISIBLE;
 
@@ -564,7 +601,8 @@ void UI_Refresher::UpdateMapItem(CampEntity entity)
         }
 
         // 2002-02-21 ADDED BY S.G. 'Fog of war code'. If an enemy flight and not identified, not editing a TE and 'showUnknown' isn't set, hide it
-        if (g_nUnidentifiedInUI and not gShowUnknown and MapItem_->ImageID == ICON_UKN)
+        if (g_nUnidentifiedInUI and not gShowUnknown and
+            MapItem_->ImageID == ICON_UKN)
             MapItem_->Flags or_eq C_BIT_INVISIBLE;
 
         // END OF ADDED SECTION 2002-02-21
@@ -729,7 +767,8 @@ void UI_Refresher::AddOOBItem(Division div)
 
 void UI_Refresher::UpdateOOBItem(CampEntity entity)
 {
-    if (entity->IsSquadron() or entity->IsTaskForce() or entity->IsBrigade() or entity->IsBattalion())
+    if (entity->IsSquadron() or entity->IsTaskForce() or entity->IsBrigade() or
+        entity->IsBattalion())
     {
     }
     else if (entity->IsObjective())
@@ -744,9 +783,9 @@ void UI_Refresher::UpdateOOBItem(Division)
 void UI_Refresher::RemoveOOBItem()
 {
     if (OOB_->_GetCType_() == _CNTL_ENTITY_)
-        Owner_->OOBTree_->DeleteItem(((C_Entity*)OOB_)->GetOwner());
+        Owner_->OOBTree_->DeleteItem(((C_Entity *)OOB_)->GetOwner());
     else if (OOB_->_GetCType_() == _CNTL_SQUAD_)
-        Owner_->OOBTree_->DeleteItem(((C_Squadron*)OOB_)->GetOwner());
+        Owner_->OOBTree_->DeleteItem(((C_Squadron *)OOB_)->GetOwner());
 
     OOB_ = NULL;
     Owner_->SetFlags(Owner_->GetFlags() bitor _GPS_OOB_RESIZE_);

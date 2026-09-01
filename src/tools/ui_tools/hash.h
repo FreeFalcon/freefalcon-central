@@ -32,7 +32,6 @@ private:
     C_HASHNODE *Current_;
 
 public:
-
     C_Hash();
     ~C_Hash();
 
@@ -45,7 +44,7 @@ public:
     }
     long GetFlags()
     {
-        return(flags_);
+        return (flags_);
     }
 
     void *Find(long ID);

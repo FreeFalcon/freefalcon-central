@@ -6,22 +6,22 @@
 
  Main UI screen stuff for FreeFalcon
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include <windows.h>
 #include "falclib.h"
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
 #include "targa.h"
-#include "Graphics/Include/imagebuf.h"
-#include "Graphics/Include/drawBSP.h"
+#include "graphics/include/imagebuf.h"
+#include "graphics/include/drawbsp.h"
 #include "dispcfg.h"
-#include "Graphics/Include/setup.h"
-#include "Graphics/Include/TexBank.h"
-#include "Graphics/Include/TerrTex.h"
-#include "Graphics/Include/FarTex.h"
+#include "graphics/include/setup.h"
+#include "graphics/include/texbank.h"
+#include "graphics/include/terrtex.h"
+#include "graphics/include/fartex.h"
 #include "chandler.h"
 #include "ui95_ext.h"
 #include "cmusic.h"
@@ -29,15 +29,15 @@
 #include "feature.h"
 #include "vehicle.h"
 #include "falcgame.h"
-#include "CmpClass.h"
+#include "cmpclass.h"
 #include "division.h"
 #include "evtparse.h"
-#include "Mesg.h"
-#include "MsgInc/DamageMsg.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/DeathMessage.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/LandingMessage.h"
+#include "mesg.h"
+#include "msginc/damagemsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/deathmessage.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/landingmessage.h"
 #include "find.h"
 #include "flight.h"
 #include "falcuser.h"
@@ -50,128 +50,124 @@
 #include "cmap.h"
 #include "userids.h"
 #include "textids.h"
-#include "Graphics/Include/matrix.h"
+#include "graphics/include/matrix.h"
 #include "cbsplist.h"
 #include "c3dview.h"
-#include "sim/include/inpFunc.h"
+#include "sim/include/inpfunc.h"
 #include "sim/include/ascii.h"
-#include "Falclib/Include/UI.h"
+#include "falclib/include/ui.h"
 #include "te_include.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "logbook.h"
 #include "campmiss.h"
 #include "resource.h"
 #include "rules.h"
 #include "teamdata.h"
-#include "MissEval.h"
-#include "sim/include/PilotInputs.h"
-#include "DispOpts.h"
+#include "misseval.h"
+#include "sim/include/pilotinputs.h"
+#include "dispopts.h"
 
-#include "sim/include/OTWDrive.h"
+#include "sim/include/otwdrive.h"
 
 extern OTWDriverClass OTWDriver; // JB 010615
 extern bool g_bHiResUI; // M.N. 2001-11-20
 
 //JAM 18Nov03
-#include "Weather.h"
+#include "weather.h"
 const int numWeatherConditions = INCLEMENT;
 
-#include "sim/include/IVibeData.h"
+#include "sim/include/ivibedata.h"
 extern IntellivibeData g_intellivibeData;
 extern void *gSharedIntellivibe;
 
-unsigned char TestString1[] =
-{
-    192, 193, 194, 195, 196, 197, 198, 199, 200, 201, 202, 203, 204, 205, 206, 207, 207, 209, 210, 211, 212, 213, 214, 0
-};
+unsigned char TestString1[] = {192, 193, 194, 195, 196, 197, 198, 199,
+                               200, 201, 202, 203, 204, 205, 206, 207,
+                               207, 209, 210, 211, 212, 213, 214, 0};
 
-unsigned char  TestString2[] =
-{
-    215, 216, 217, 218, 219, 220, 221, 222, 223, 224, 225, 226, 227, 228, 229, 230, 231, 232, 233, 234, 235, 236, 237, 0
-};
+unsigned char TestString2[] = {215, 216, 217, 218, 219, 220, 221, 222,
+                               223, 224, 225, 226, 227, 228, 229, 230,
+                               231, 232, 233, 234, 235, 236, 237, 0};
 
-unsigned char  TestString3[] =
-{
-    238, 239, 240, 241, 242, 243, 244, 245, 246, 247, 248, 249, 250, 251, 252, 253, 254, 255, 0
-};
+unsigned char TestString3[] = {238, 239, 240, 241, 242, 243, 244, 245, 246, 247,
+                               248, 249, 250, 251, 252, 253, 254, 255, 0};
 
 enum
 {
-    SND_PIECE_1   = 600001,
-    SND_PIECE_2   = 600002,
-    SND_PIECE_3   = 600003,
-    SND_PIECE_4   = 600004,
-    SND_PIECE_5   = 600005,
-    SND_PIECE_6   = 600006,
-    SND_PIECE_7   = 600007,
-    SND_PIECE_8   = 600008,
-    SND_PIECE_9   = 600009,
-    SND_PIECE_10  = 600010,
-    SND_PIECE_11  = 600011,
-    SND_PIECE_12  = 600012,
-    SND_PIECE_13  = 600013,
-    SND_PIECE_14  = 600014,
-    SND_PIECE_15  = 600015,
-    SND_PIECE_16  = 600016,
-    SND_PIECE_17  = 600017,
-    SND_PIECE_18  = 600018,
-    SND_PIECE_19  = 600019,
-    SND_PIECE_20  = 600020,
-    SND_PIECE_21  = 600021,
-    SND_PIECE_22  = 600022,
-    SND_PIECE_23  = 600023,
-    SND_PIECE_24  = 600024,
-    SND_PIECE_25  = 600025,
-    SND_PIECE_26  = 600026,
-    SND_PIECE_27  = 600027,
-    SND_PIECE_28  = 600028,
-    SND_PIECE_29  = 600029,
-    SND_PIECE_30  = 600030,
-    SND_PIECE_31  = 600031,
-    SND_PIECE_32  = 600032,
-    SND_PIECE_33  = 600033,
-    SND_PIECE_34  = 600034,
-    SND_PIECE_35  = 600035,
-    SND_PIECE_36  = 600036,
-    SND_PIECE_37  = 600037,
-    SND_PIECE_38  = 600038,
-    SND_PIECE_39  = 600039,
-    SND_PIECE_40  = 600040,
-    SND_PIECE_41  = 600041,
-    SND_PIECE_42  = 600042,
-    SND_PIECE_43  = 600043,
-    SND_PIECE_44  = 600044,
-    SND_PIECE_45  = 600045,
-    SND_PIECE_46  = 600046,
-    SND_PIECE_47  = 600047,
-    SND_PIECE_48  = 600048,
-    SND_PIECE_49  = 600049,
-    SND_PIECE_50  = 600050,
-    SND_PIECE_51  = 600051,
-    SND_PIECE_52  = 600052,
-    SND_PIECE_53  = 600053,
-    SND_PIECE_54  = 600054,
-    SND_PIECE_55  = 600055,
-    SND_PIECE_56  = 600056,
-    SND_PIECE_57  = 600057,
-    SND_PIECE_58  = 600058,
-    SND_PIECE_59  = 600059,
-    SND_PIECE_60  = 600060,
-    SND_PIECE_61  = 600061,
-    SND_PIECE_62  = 600062,
-    SND_PIECE_63  = 600063,
-    SND_PIECE_64  = 600064,
-    SND_PIECE_65  = 600065,
-    SND_PIECE_66  = 600066,
-    SND_PIECE_67  = 600067,
-    SND_PIECE_68  = 600068,
-    SND_PIECE_69  = 600069,
-    SND_PIECE_70  = 600070,
-    SND_PIECE_71  = 600071,
-    SND_PIECE_74  = 600074,
-    SND_PIECE_75  = 600075,
-    SND_PIECE_76  = 600076,
-    SND_PIECE_77  = 600077,
+    SND_PIECE_1 = 600001,
+    SND_PIECE_2 = 600002,
+    SND_PIECE_3 = 600003,
+    SND_PIECE_4 = 600004,
+    SND_PIECE_5 = 600005,
+    SND_PIECE_6 = 600006,
+    SND_PIECE_7 = 600007,
+    SND_PIECE_8 = 600008,
+    SND_PIECE_9 = 600009,
+    SND_PIECE_10 = 600010,
+    SND_PIECE_11 = 600011,
+    SND_PIECE_12 = 600012,
+    SND_PIECE_13 = 600013,
+    SND_PIECE_14 = 600014,
+    SND_PIECE_15 = 600015,
+    SND_PIECE_16 = 600016,
+    SND_PIECE_17 = 600017,
+    SND_PIECE_18 = 600018,
+    SND_PIECE_19 = 600019,
+    SND_PIECE_20 = 600020,
+    SND_PIECE_21 = 600021,
+    SND_PIECE_22 = 600022,
+    SND_PIECE_23 = 600023,
+    SND_PIECE_24 = 600024,
+    SND_PIECE_25 = 600025,
+    SND_PIECE_26 = 600026,
+    SND_PIECE_27 = 600027,
+    SND_PIECE_28 = 600028,
+    SND_PIECE_29 = 600029,
+    SND_PIECE_30 = 600030,
+    SND_PIECE_31 = 600031,
+    SND_PIECE_32 = 600032,
+    SND_PIECE_33 = 600033,
+    SND_PIECE_34 = 600034,
+    SND_PIECE_35 = 600035,
+    SND_PIECE_36 = 600036,
+    SND_PIECE_37 = 600037,
+    SND_PIECE_38 = 600038,
+    SND_PIECE_39 = 600039,
+    SND_PIECE_40 = 600040,
+    SND_PIECE_41 = 600041,
+    SND_PIECE_42 = 600042,
+    SND_PIECE_43 = 600043,
+    SND_PIECE_44 = 600044,
+    SND_PIECE_45 = 600045,
+    SND_PIECE_46 = 600046,
+    SND_PIECE_47 = 600047,
+    SND_PIECE_48 = 600048,
+    SND_PIECE_49 = 600049,
+    SND_PIECE_50 = 600050,
+    SND_PIECE_51 = 600051,
+    SND_PIECE_52 = 600052,
+    SND_PIECE_53 = 600053,
+    SND_PIECE_54 = 600054,
+    SND_PIECE_55 = 600055,
+    SND_PIECE_56 = 600056,
+    SND_PIECE_57 = 600057,
+    SND_PIECE_58 = 600058,
+    SND_PIECE_59 = 600059,
+    SND_PIECE_60 = 600060,
+    SND_PIECE_61 = 600061,
+    SND_PIECE_62 = 600062,
+    SND_PIECE_63 = 600063,
+    SND_PIECE_64 = 600064,
+    SND_PIECE_65 = 600065,
+    SND_PIECE_66 = 600066,
+    SND_PIECE_67 = 600067,
+    SND_PIECE_68 = 600068,
+    SND_PIECE_69 = 600069,
+    SND_PIECE_70 = 600070,
+    SND_PIECE_71 = 600071,
+    SND_PIECE_74 = 600074,
+    SND_PIECE_75 = 600075,
+    SND_PIECE_76 = 600076,
+    SND_PIECE_77 = 600077,
 };
 
 // HACK Structure for loading interactive music
@@ -182,84 +178,45 @@ typedef struct
     long MusicID;
 } INTER_MUSIC;
 
-INTER_MUSIC IntList[] =
-{
-    C_STATE_0, C_STATE_0, SND_PIECE_1,
-    C_STATE_0, C_STATE_0, SND_PIECE_2,
-    C_STATE_0, C_STATE_0, SND_PIECE_3,
-    C_STATE_0, C_STATE_0, SND_PIECE_4,
-    C_STATE_0, C_STATE_0, SND_PIECE_5,
-    C_STATE_0, C_STATE_0, SND_PIECE_6,
-    C_STATE_0, C_STATE_1, SND_PIECE_7,
-    C_STATE_0, C_STATE_1, SND_PIECE_8,
-    C_STATE_0, C_STATE_1, SND_PIECE_9,
-    C_STATE_0, C_STATE_1, SND_PIECE_10,
-    C_STATE_0, C_STATE_1, SND_PIECE_11,
-    C_STATE_0, C_STATE_1, SND_PIECE_12,
-    C_STATE_0, C_STATE_2, SND_PIECE_13,
-    C_STATE_0, C_STATE_2, SND_PIECE_14,
-    C_STATE_0, C_STATE_2, SND_PIECE_15,
-    C_STATE_0, C_STATE_2, SND_PIECE_16,
-    C_STATE_0, C_STATE_2, SND_PIECE_17,
-    C_STATE_0, C_STATE_2, SND_PIECE_18,
-    C_STATE_0, C_STATE_3, SND_PIECE_19,
-    C_STATE_0, C_STATE_3, SND_PIECE_20,
-    C_STATE_0, C_STATE_3, SND_PIECE_21,
-    C_STATE_0, C_STATE_3, SND_PIECE_22,
-    C_STATE_0, C_STATE_3, SND_PIECE_23,
-    C_STATE_0, C_STATE_3, SND_PIECE_24,
-    C_STATE_0, C_STATE_4, SND_PIECE_25,
-    C_STATE_0, C_STATE_4, SND_PIECE_26,
-    C_STATE_0, C_STATE_4, SND_PIECE_27,
-    C_STATE_0, C_STATE_4, SND_PIECE_28,
-    C_STATE_0, C_STATE_4, SND_PIECE_29,
-    C_STATE_0, C_STATE_4, SND_PIECE_30,
-    C_STATE_1, C_STATE_0, SND_PIECE_31,
-    C_STATE_1, C_STATE_0, SND_PIECE_32,
-    C_STATE_1, C_STATE_0, SND_PIECE_33,
-    C_STATE_1, C_STATE_0, SND_PIECE_34,
-    C_STATE_1, C_STATE_0, SND_PIECE_35,
-    C_STATE_1, C_STATE_0, SND_PIECE_36,
-    C_STATE_1, C_STATE_0, SND_PIECE_37,
-    C_STATE_1, C_STATE_0, SND_PIECE_38,
-    C_STATE_1, C_STATE_0, SND_PIECE_39,
-    C_STATE_1, C_STATE_0, SND_PIECE_40,
-    C_STATE_1, C_STATE_0, SND_PIECE_41,
-    C_STATE_1, C_STATE_0, SND_PIECE_42,
-    C_STATE_1, C_STATE_0, SND_PIECE_43,
-    C_STATE_1, C_STATE_0, SND_PIECE_44,
-    C_STATE_1, C_STATE_0, SND_PIECE_45,
-    C_STATE_1, C_STATE_0, SND_PIECE_46,
-    C_STATE_1, C_STATE_1, SND_PIECE_47,
-    C_STATE_1, C_STATE_1, SND_PIECE_48,
-    C_STATE_1, C_STATE_1, SND_PIECE_49,
-    C_STATE_1, C_STATE_1, SND_PIECE_50,
-    C_STATE_1, C_STATE_1, SND_PIECE_51,
-    C_STATE_1, C_STATE_1, SND_PIECE_52,
-    C_STATE_1, C_STATE_2, SND_PIECE_53,
-    C_STATE_1, C_STATE_2, SND_PIECE_54,
-    C_STATE_1, C_STATE_2, SND_PIECE_55,
-    C_STATE_1, C_STATE_2, SND_PIECE_56,
-    C_STATE_1, C_STATE_2, SND_PIECE_57,
-    C_STATE_1, C_STATE_2, SND_PIECE_58,
-    C_STATE_1, C_STATE_2, SND_PIECE_59,
-    C_STATE_1, C_STATE_2, SND_PIECE_60,
-    C_STATE_1, C_STATE_2, SND_PIECE_61,
-    C_STATE_1, C_STATE_2, SND_PIECE_62,
-    C_STATE_1, C_STATE_2, SND_PIECE_63,
-    C_STATE_1, C_STATE_2, SND_PIECE_64,
-    C_STATE_1, C_STATE_2, SND_PIECE_65,
-    C_STATE_1, C_STATE_3, SND_PIECE_66,
-    C_STATE_1, C_STATE_3, SND_PIECE_67,
-    C_STATE_1, C_STATE_3, SND_PIECE_68,
-    C_STATE_1, C_STATE_3, SND_PIECE_69,
-    C_STATE_1, C_STATE_3, SND_PIECE_70,
-    C_STATE_1, C_STATE_3, SND_PIECE_71,
-    C_STATE_1, C_STATE_4, SND_PIECE_74,
-    C_STATE_1, C_STATE_4, SND_PIECE_75,
-    C_STATE_1, C_STATE_4, SND_PIECE_76,
-    C_STATE_1, C_STATE_4, SND_PIECE_77,
-    0, 0, 0,
+INTER_MUSIC IntList[] = {
+    C_STATE_0, C_STATE_0, SND_PIECE_1,  C_STATE_0, C_STATE_0, SND_PIECE_2,
+    C_STATE_0, C_STATE_0, SND_PIECE_3,  C_STATE_0, C_STATE_0, SND_PIECE_4,
+    C_STATE_0, C_STATE_0, SND_PIECE_5,  C_STATE_0, C_STATE_0, SND_PIECE_6,
+    C_STATE_0, C_STATE_1, SND_PIECE_7,  C_STATE_0, C_STATE_1, SND_PIECE_8,
+    C_STATE_0, C_STATE_1, SND_PIECE_9,  C_STATE_0, C_STATE_1, SND_PIECE_10,
+    C_STATE_0, C_STATE_1, SND_PIECE_11, C_STATE_0, C_STATE_1, SND_PIECE_12,
+    C_STATE_0, C_STATE_2, SND_PIECE_13, C_STATE_0, C_STATE_2, SND_PIECE_14,
+    C_STATE_0, C_STATE_2, SND_PIECE_15, C_STATE_0, C_STATE_2, SND_PIECE_16,
+    C_STATE_0, C_STATE_2, SND_PIECE_17, C_STATE_0, C_STATE_2, SND_PIECE_18,
+    C_STATE_0, C_STATE_3, SND_PIECE_19, C_STATE_0, C_STATE_3, SND_PIECE_20,
+    C_STATE_0, C_STATE_3, SND_PIECE_21, C_STATE_0, C_STATE_3, SND_PIECE_22,
+    C_STATE_0, C_STATE_3, SND_PIECE_23, C_STATE_0, C_STATE_3, SND_PIECE_24,
+    C_STATE_0, C_STATE_4, SND_PIECE_25, C_STATE_0, C_STATE_4, SND_PIECE_26,
+    C_STATE_0, C_STATE_4, SND_PIECE_27, C_STATE_0, C_STATE_4, SND_PIECE_28,
+    C_STATE_0, C_STATE_4, SND_PIECE_29, C_STATE_0, C_STATE_4, SND_PIECE_30,
+    C_STATE_1, C_STATE_0, SND_PIECE_31, C_STATE_1, C_STATE_0, SND_PIECE_32,
+    C_STATE_1, C_STATE_0, SND_PIECE_33, C_STATE_1, C_STATE_0, SND_PIECE_34,
+    C_STATE_1, C_STATE_0, SND_PIECE_35, C_STATE_1, C_STATE_0, SND_PIECE_36,
+    C_STATE_1, C_STATE_0, SND_PIECE_37, C_STATE_1, C_STATE_0, SND_PIECE_38,
+    C_STATE_1, C_STATE_0, SND_PIECE_39, C_STATE_1, C_STATE_0, SND_PIECE_40,
+    C_STATE_1, C_STATE_0, SND_PIECE_41, C_STATE_1, C_STATE_0, SND_PIECE_42,
+    C_STATE_1, C_STATE_0, SND_PIECE_43, C_STATE_1, C_STATE_0, SND_PIECE_44,
+    C_STATE_1, C_STATE_0, SND_PIECE_45, C_STATE_1, C_STATE_0, SND_PIECE_46,
+    C_STATE_1, C_STATE_1, SND_PIECE_47, C_STATE_1, C_STATE_1, SND_PIECE_48,
+    C_STATE_1, C_STATE_1, SND_PIECE_49, C_STATE_1, C_STATE_1, SND_PIECE_50,
+    C_STATE_1, C_STATE_1, SND_PIECE_51, C_STATE_1, C_STATE_1, SND_PIECE_52,
+    C_STATE_1, C_STATE_2, SND_PIECE_53, C_STATE_1, C_STATE_2, SND_PIECE_54,
+    C_STATE_1, C_STATE_2, SND_PIECE_55, C_STATE_1, C_STATE_2, SND_PIECE_56,
+    C_STATE_1, C_STATE_2, SND_PIECE_57, C_STATE_1, C_STATE_2, SND_PIECE_58,
+    C_STATE_1, C_STATE_2, SND_PIECE_59, C_STATE_1, C_STATE_2, SND_PIECE_60,
+    C_STATE_1, C_STATE_2, SND_PIECE_61, C_STATE_1, C_STATE_2, SND_PIECE_62,
+    C_STATE_1, C_STATE_2, SND_PIECE_63, C_STATE_1, C_STATE_2, SND_PIECE_64,
+    C_STATE_1, C_STATE_2, SND_PIECE_65, C_STATE_1, C_STATE_3, SND_PIECE_66,
+    C_STATE_1, C_STATE_3, SND_PIECE_67, C_STATE_1, C_STATE_3, SND_PIECE_68,
+    C_STATE_1, C_STATE_3, SND_PIECE_69, C_STATE_1, C_STATE_3, SND_PIECE_70,
+    C_STATE_1, C_STATE_3, SND_PIECE_71, C_STATE_1, C_STATE_4, SND_PIECE_74,
+    C_STATE_1, C_STATE_4, SND_PIECE_75, C_STATE_1, C_STATE_4, SND_PIECE_76,
+    C_STATE_1, C_STATE_4, SND_PIECE_77, 0,         0,         0,
 };
 
 // Smart Heap Pools for the UI
@@ -340,9 +297,12 @@ void EndDogfightCB(long ID, short hittype, C_Base *control);
 void LeaveDogfight();
 void ChooseFontCB(long ID, short hittype, C_Base *control);
 void gMusicCallback(SOUNDSTREAM *Stream, int MessageID);
-void ExitVerify(long TitleID, void (*OkCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*));
+void ExitVerify(long TitleID, void (*OkCB)(long, short, C_Base *),
+                void (*CancelCB)(long, short, C_Base *));
 void CheckPasswordCB(long ID, short hittype, C_Base *control);
-void PasswordWindow(long TitleID, long MessageID, void (*YesCB)(long, short, C_Base*), void (*NoCB)(long, short, C_Base*));
+void PasswordWindow(long TitleID, long MessageID,
+                    void (*YesCB)(long, short, C_Base *),
+                    void (*NoCB)(long, short, C_Base *));
 void NoPasswordCB(long ID, short hittype, C_Base *control);
 void DoResultsWindows(void);
 int LoadAllRules(char *filename);
@@ -375,7 +335,7 @@ void TACREFCloseWindowCB(long ID, short hittype, C_Base *control);
 //void SaveLogBookCB(long ID,short hittype,C_Base *control);
 void OpenLogBookCB(long ID, short hittype, C_Base *control);
 BOOL gMoviePlaying = FALSE;
-#define DF_CLOSE_CTRL         21873
+#define DF_CLOSE_CTRL 21873
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -419,43 +379,36 @@ int HelpLoaded = 0;
 int TACSelLoaded = 0;
 enum
 {
-    SND_FLY   = 500003,
-    SND_SCREAM        = 500005,
-    SND_BAD1          = 500006,
-    SND_SECOND        = 500007,
-    SND_FIRST         = 500008,
-    SND_NICE          = 500009,
-    SND_BAD2          = 500010,
-    SND_YOUSUCK       = 500011,
-    SND_TAKEOFF   = 500023,
-    SND_CAMPAIGN   = 500024,
-    SND_LIBYA   = 500025,
-    SND_AMBIENT1   = 500051,
-    SND_AMBIENT2   = 500052,
+    SND_FLY = 500003,
+    SND_SCREAM = 500005,
+    SND_BAD1 = 500006,
+    SND_SECOND = 500007,
+    SND_FIRST = 500008,
+    SND_NICE = 500009,
+    SND_BAD2 = 500010,
+    SND_YOUSUCK = 500011,
+    SND_TAKEOFF = 500023,
+    SND_CAMPAIGN = 500024,
+    SND_LIBYA = 500025,
+    SND_AMBIENT1 = 500051,
+    SND_AMBIENT2 = 500052,
     SND_CAMPAIGN_GOOD = 500053,
     SND_CAMPAIGN_MEDIUM = 500054,
     SND_CAMPAIGN_BAD = 500055,
 };
 
-static char *List1[] =
-{
-    "peterw",
-    "charlesw",
-    "joes",
-    "leonr",
-    NULL,
+static char *List1[] = {
+    "peterw", "charlesw", "joes", "leonr", NULL,
 };
 
-static char *List2[] =
-{
+static char *List2[] = {
     "jakeh",
     "jacobh",
     "bills",
     NULL,
 };
 
-static char *List3[] =
-{
+static char *List3[] = {
     NULL,
 };
 
@@ -473,9 +426,10 @@ void CloseAllRenderers(long openID)
     {
         win = gMainHandler->FindWindow(RECON_WIN);
 
-        if (win and (gMainHandler->GetWindowFlags(RECON_WIN) bitand C_BIT_ENABLED))
+        if (win and
+            (gMainHandler->GetWindowFlags(RECON_WIN) bitand C_BIT_ENABLED))
         {
-            btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
+            btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
             if (btn)
                 CloseReconWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
@@ -483,9 +437,10 @@ void CloseAllRenderers(long openID)
 
         win = gMainHandler->FindWindow(RECON_LIST_WIN);
 
-        if (win and (gMainHandler->GetWindowFlags(RECON_LIST_WIN) bitand C_BIT_ENABLED))
+        if (win and
+            (gMainHandler->GetWindowFlags(RECON_LIST_WIN) bitand C_BIT_ENABLED))
         {
-            btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
+            btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
             if (btn)
                 CloseReconWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
@@ -494,9 +449,10 @@ void CloseAllRenderers(long openID)
 
     win = gMainHandler->FindWindow(MUNITIONS_WIN);
 
-    if (win and (gMainHandler->GetWindowFlags(MUNITIONS_WIN) bitand C_BIT_ENABLED))
+    if (win and
+        (gMainHandler->GetWindowFlags(MUNITIONS_WIN) bitand C_BIT_ENABLED))
     {
-        btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
+        btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
         if (btn)
             CloseMunitionsWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
@@ -506,7 +462,7 @@ void CloseAllRenderers(long openID)
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
+        btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
         if (btn)
             CloseSetupWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
@@ -516,7 +472,7 @@ void CloseAllRenderers(long openID)
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(CLOSE_WINDOW);
+        btn = (C_Button *)win->FindControl(CLOSE_WINDOW);
 
         if (btn)
             TACREFCloseWindowCB(CLOSE_WINDOW, C_TYPE_LMOUSEUP, btn);
@@ -534,22 +490,22 @@ void LeaveCurrentGame()
 
     switch (FalconLocalGame->GetGameType())
     {
-        case game_Dogfight:
-            SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
-            LeaveDogfight();
-            break;
+    case game_Dogfight:
+        SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
+        LeaveDogfight();
+        break;
 
-        case game_InstantAction:
-        case game_TacticalEngagement:
-        default:
-            SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
-            TheCampaign.Flags and_eq compl CAMP_TACTICAL;
-            TheCampaign.Flags and_eq compl CAMP_TACTICAL_EDIT;
-            break;
+    case game_InstantAction:
+    case game_TacticalEngagement:
+    default:
+        SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
+        TheCampaign.Flags and_eq compl CAMP_TACTICAL;
+        TheCampaign.Flags and_eq compl CAMP_TACTICAL_EDIT;
+        break;
 
-        case game_Campaign:
-            SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
-            break;
+    case game_Campaign:
+        SendMessage(FalconDisplay.appWin, FM_SHUTDOWN_CAMPAIGN, 0, 0);
+        break;
     }
 }
 
@@ -562,7 +518,7 @@ __forceinline void Encrypt(uchar startkey, uchar *buffer, long length)
     uchar *ptr;
     uchar nextkey;
 
-    if ( not buffer or length <= 0)
+    if (not buffer or length <= 0)
         return;
 
     idx = 0;
@@ -579,14 +535,13 @@ __forceinline void Encrypt(uchar startkey, uchar *buffer, long length)
     }
 }
 
-__forceinline
-void Decrypt(uchar startkey, uchar *buffer, long length)
+__forceinline void Decrypt(uchar startkey, uchar *buffer, long length)
 {
     long i, xrlen, idx;
     uchar *ptr;
     uchar nextkey;
 
-    if ( not buffer or length <= 0)
+    if (not buffer or length <= 0)
         return;
 
     idx = 0;
@@ -607,7 +562,8 @@ void LoadMainWindow()
 {
     long ID;
 
-    if (MainLoaded) return;
+    if (MainLoaded)
+        return;
 
     if (_LOAD_ART_RESOURCES_)
     {
@@ -615,11 +571,13 @@ void LoadMainWindow()
     }
     else
     {
-        gMainParser->LoadImageList("main_art.lst"); // these aren't loaded anymore
+        gMainParser->LoadImageList(
+            "main_art.lst"); // these aren't loaded anymore
     }
 
     gMainParser->LoadSoundList("main_snd.lst");
-    gMainParser->LoadWindowList("main_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "main_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -629,7 +587,7 @@ void LoadMainWindow()
         ID = gMainParser->GetNextWindowLoaded();
     }
 
-    gMainParser->LoadPopupMenuList("art\\pop_scf.lst");
+    gMainParser->LoadPopupMenuList("art/pop_scf.lst");
     HookupDogFightMenus();
     HookupCampaignMenus();
     LoadPeopleInfo(1); //VP_changes This should be modified
@@ -647,7 +605,7 @@ void LoadMainWindow()
     win->AddControl(txt);*/
 }
 
-static void ExitTheGameCB(long , short hittype, C_Base *)
+static void ExitTheGameCB(long, short hittype, C_Base *)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -669,13 +627,17 @@ static void ExitTheGameCB(long , short hittype, C_Base *)
 #endif
 
     g_intellivibeData.IsExitGame = true;
-    memcpy(gSharedIntellivibe, &g_intellivibeData, sizeof(g_intellivibeData));
+    if (gSharedIntellivibe)
+        memcpy(
+            gSharedIntellivibe, &g_intellivibeData,
+            sizeof(
+                g_intellivibeData)); // optional IntelliVibe export; NULL on Linux
 
     // PostMessage(gMainHandler->GetAppWnd(),FM_END_UI,0,0);
     PostMessage(gMainHandler->GetAppWnd(), FM_EXIT_GAME, 0, 0);
 }
 
-void ExitCloseWindowCB(long , short hittype, C_Base *control)
+void ExitCloseWindowCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -691,7 +653,7 @@ void ExitCloseWindowCB(long , short hittype, C_Base *control)
     }
 }
 
-static void ExitButtonCB(long , short hittype, C_Base *)
+static void ExitButtonCB(long, short hittype, C_Base *)
 {
     C_Window *win;
 
@@ -709,7 +671,7 @@ static void ExitButtonCB(long , short hittype, C_Base *)
     ExitVerify(TXT_EXIT_GAME, ExitTheGameCB, ExitCloseWindowCB);
 }
 
-void CloseWindowCB(long , short hittype, C_Base *control)
+void CloseWindowCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -721,10 +683,9 @@ void CloseWindowCB(long , short hittype, C_Base *control)
         if (MainLastGroup == control->GetGroup())
             MainLastGroup = 0;
     }
-
 }
 
-void GenericCloseWindowCB(long , short hittype, C_Base *control)
+void GenericCloseWindowCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -732,7 +693,7 @@ void GenericCloseWindowCB(long , short hittype, C_Base *control)
     gMainHandler->HideWindow(control->Parent_);
 }
 
-void MinMaxWindowCB(long , short hittype, C_Base *control)
+void MinMaxWindowCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -801,7 +762,7 @@ void DisableScenarioInfo()
 void EnableScenarioInfo(long ID)
 {
     C_Window *win;
-    C_Base*  ctrl;
+    C_Base *ctrl;
 
     gMainHandler->EnableWindowGroup(ID);
     win = gMainHandler->FindWindow(CS_TOOLBAR_WIN);
@@ -847,7 +808,7 @@ void EnableScenarioInfo(long ID)
     }
 }
 
-static void OpenInstantActionCB(long , short hittype, C_Base *control)
+static void OpenInstantActionCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -859,7 +820,7 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if ( not IALoaded)
+    if (not IALoaded)
         LoadInstantActionWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -876,7 +837,7 @@ static void OpenInstantActionCB(long , short hittype, C_Base *control)
     SetCursor(gCursors[CRSR_F16]);
 }
 
-static void OpenDogFightCB(long , short hittype, C_Base *control)
+static void OpenDogFightCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -888,7 +849,7 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if ( not DFLoaded)
+    if (not DFLoaded)
         LoadDogFightWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -906,7 +867,7 @@ static void OpenDogFightCB(long , short hittype, C_Base *control)
 }
 
 //VP_changes
-static void OpenTacticalCB(long , short hittype, C_Base *control)
+static void OpenTacticalCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -919,7 +880,7 @@ static void OpenTacticalCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if ( not TACSelLoaded)
+    if (not TACSelLoaded)
         LoadTacEngSelectWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -934,7 +895,7 @@ static void OpenTacticalCB(long , short hittype, C_Base *control)
     SetCursor(gCursors[CRSR_F16]);
 }
 
-void OpenMainCampaignCB(long , short hittype, C_Base *control)
+void OpenMainCampaignCB(long, short hittype, C_Base *control)
 {
     C_Button *btn;
     C_Window *win;
@@ -949,7 +910,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if ( not CPSelectLoaded)
+    if (not CPSelectLoaded)
         LoadCampaignSelectWindows();
 
     if (MainLastGroup not_eq 0 and MainLastGroup not_eq control->GetGroup())
@@ -961,7 +922,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
 
     if (win)
     {
-        btn = (C_Button*)win->FindControl(CS_NEW_CTRL);
+        btn = (C_Button *)win->FindControl(CS_NEW_CTRL);
 
         if (btn and btn->GetState())
         {
@@ -976,7 +937,7 @@ void OpenMainCampaignCB(long , short hittype, C_Base *control)
     SetCursor(gCursors[CRSR_F16]);
 }
 
-void OpenCommsCB(long , short hittype, C_Base *control)
+void OpenCommsCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
     {
@@ -985,7 +946,7 @@ void OpenCommsCB(long , short hittype, C_Base *control)
 
     control->SetFlagBitOff(C_BIT_FORCEMOUSEOVER);
 
-    if ( not gCommsMgr->Online())
+    if (not gCommsMgr->Online())
     {
         gMainHandler->EnableWindowGroup(control->GetUserNumber(1));
     }
@@ -1003,7 +964,7 @@ void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    if ( not TACREFLoaded)
+    if (not TACREFLoaded)
         LoadTacticalReferenceWindows();
 
     CloseAllRenderers(TAC_REF_WIN);
@@ -1016,7 +977,7 @@ void OpenTacticalReferenceCB(long nID, short hittype, C_Base *control)
     SetCursor(gCursors[CRSR_F16]);
 }
 
-void OpenSetupCB(long , short hittype, C_Base *control)
+void OpenSetupCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1031,59 +992,64 @@ void OpenSetupCB(long , short hittype, C_Base *control)
 }
 
 
-void OpenFontToolCB(long , short hittype, C_Base *)
+void OpenFontToolCB(long, short hittype, C_Base *)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    InitFontTool();
+#ifdef _WIN32
+    InitFontTool(); // GDI font-editor tool (savefont.cpp) -- Windows-only dev tool
+#endif
     gMainHandler->EnableWindowGroup(-100);
 }
 
 
-void GenericTimerCB(long , short , C_Base *control)
+void GenericTimerCB(long, short, C_Base *control)
 {
     if (control->GetUserNumber(_UI95_TIMER_COUNTER_) < 1)
     {
         control->SetReady(1);
-        control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_DELAY_));
+        control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                               control->GetUserNumber(_UI95_TIMER_DELAY_));
     }
 
-    control->SetUserNumber(_UI95_TIMER_COUNTER_, control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
+    control->SetUserNumber(_UI95_TIMER_COUNTER_,
+                           control->GetUserNumber(_UI95_TIMER_COUNTER_) - 1);
 }
 
-void InfoGroupCB(long , short hittype, C_Base *control)
+void InfoGroupCB(long, short hittype, C_Base *control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    F4CSECTIONHANDLE* Leave = UI_Enter(control->GetParent());
+    F4CSECTIONHANDLE *Leave = UI_Enter(control->GetParent());
     control->GetParent()->HideCluster(control->GetUserNumber(1));
     control->GetParent()->HideCluster(control->GetUserNumber(2));
     control->GetParent()->UnHideCluster(control->GetUserNumber(0));
     control->GetParent()->RefreshWindow();
     UI_Leave(Leave);
-
 }
 
 static void LoadArtwork()
 {
     if (_LOAD_ART_RESOURCES_)
-        gMainParser->LoadImageList("resimgs.lst");//DLP resimgs.lst DNE
+        gMainParser->LoadImageList("resimgs.lst"); //DLP resimgs.lst DNE
     else
-        gMainParser->LoadImageList("images.lst");//DLP images.lst DNE
+        gMainParser->LoadImageList("images.lst"); //DLP images.lst DNE
 }
 
 static void LoadSoundFiles()
 {
     gMainParser->LoadSoundList("sounds.lst");
-    gSoundMgr->SetFlags(SND_FLY, gSoundMgr->GetFlags(SND_FLY) xor SOUND_STOPONEXIT);
+    gSoundMgr->SetFlags(SND_FLY,
+                        gSoundMgr->GetFlags(SND_FLY) xor SOUND_STOPONEXIT);
 }
 
 static void LoadStringFiles()
 {
     gMainParser->LoadStringList("strings.lst");
-    gMainParser->LoadStringList("OIR Art\\Menus\\strings.lst");//DLP load strings for OIR menus
+    gMainParser->LoadStringList(
+        "OIR Art/Menus/strings.lst"); //DLP load strings for OIR menus
 }
 
 static void LoadMovieFiles()
@@ -1174,78 +1140,78 @@ void HookupControls(long ID)
         ctrl->SetCallback(EndDogfightCB);
 
 
-    ctrl = (C_Button*)winme->FindControl(SAVE_FONT_CTRL);
+    ctrl = (C_Button *)winme->FindControl(SAVE_FONT_CTRL);
 
     if (ctrl)
         ctrl->SetCallback(OpenFontToolCB);
 
-    lbox = (C_ListBox*)winme->FindControl(CUR_FONT);
+#ifdef _WIN32 // font-editor tool callbacks (GDI, savefont.cpp) -- Windows-only dev tool
+    lbox = (C_ListBox *)winme->FindControl(CUR_FONT);
 
     if (lbox)
         lbox->SetCallback(ChooseFontCB);
 
-    ctrl = (C_Button*)winme->FindControl(FONTED_CREATE);
+    ctrl = (C_Button *)winme->FindControl(FONTED_CREATE);
 
     if (ctrl)
         ctrl->SetCallback(CreateFontCB);
 
-    ctrl = (C_Button*)winme->FindControl(FONTED_EXPORT);
+    ctrl = (C_Button *)winme->FindControl(FONTED_EXPORT);
 
     if (ctrl)
         ctrl->SetCallback(CreateTheFontCB);
 
-    ctrl = (C_Button*)winme->FindControl(FONTED_SAVE);
+    ctrl = (C_Button *)winme->FindControl(FONTED_SAVE);
 
     if (ctrl)
         ctrl->SetCallback(SaveFontCB);
 
-    ctrl = (C_Button*)winme->FindControl(LEAD_MORE);
+    ctrl = (C_Button *)winme->FindControl(LEAD_MORE);
 
     if (ctrl)
         ctrl->SetCallback(IncreaseLead);
 
-    ctrl = (C_Button*)winme->FindControl(LEAD_LESS);
+    ctrl = (C_Button *)winme->FindControl(LEAD_LESS);
 
     if (ctrl)
         ctrl->SetCallback(DecreaseLead);
 
-    ctrl = (C_Button*)winme->FindControl(TRAIL_MORE);
+    ctrl = (C_Button *)winme->FindControl(TRAIL_MORE);
 
     if (ctrl)
         ctrl->SetCallback(IncreaseTrail);
 
-    ctrl = (C_Button*)winme->FindControl(TRAIL_LESS);
+    ctrl = (C_Button *)winme->FindControl(TRAIL_LESS);
 
     if (ctrl)
         ctrl->SetCallback(DecreaseTrail);
 
-    ctrl = (C_Button*)winme->FindControl(WIDTH_MORE);
+    ctrl = (C_Button *)winme->FindControl(WIDTH_MORE);
 
     if (ctrl)
         ctrl->SetCallback(IncreaseWidth);
 
-    ctrl = (C_Button*)winme->FindControl(WIDTH_LESS);
+    ctrl = (C_Button *)winme->FindControl(WIDTH_LESS);
 
     if (ctrl)
         ctrl->SetCallback(DecreaseWidth);
 
-    ctrl = (C_Button*)winme->FindControl(KERN_MORE);
+    ctrl = (C_Button *)winme->FindControl(KERN_MORE);
 
     if (ctrl)
         ctrl->SetCallback(IncreaseKern);
 
-    ctrl = (C_Button*)winme->FindControl(KERN_LESS);
+    ctrl = (C_Button *)winme->FindControl(KERN_LESS);
 
     if (ctrl)
         ctrl->SetCallback(DecreaseKern);
+#endif // _WIN32 (font-editor tool callbacks)
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
-
-
 }
 
 void GlobalSetup()
@@ -1303,7 +1269,7 @@ void GlobalSetup()
 
     SetCursor(gCursors[CRSR_WAIT]);
 
-    // fp=fopen("art\\main\\ascii.bin","rb");
+    // fp=fopen("art/main/ascii.bin","rb");
     // if(fp)
     // {
     // fread(Key_Chart,sizeof(Key_Chart),1,fp);
@@ -1338,7 +1304,8 @@ void GlobalSetup()
     gMovieMgr->Setup();
 
     gMainParser = new C_Parser;
-    gMainParser->Setup(gMainHandler, gImageMgr, gFontList, gSoundMgr, gPopupMgr, gAnimMgr, gStringMgr, gMovieMgr);
+    gMainParser->Setup(gMainHandler, gImageMgr, gFontList, gSoundMgr, gPopupMgr,
+                       gAnimMgr, gStringMgr, gMovieMgr);
 
     gMainParser->SetCheck(0); // Used to find which IDs are NOT used
 
@@ -1351,12 +1318,13 @@ void GlobalSetup()
 
     gMainParser->SetCheck(1); // Used to find which IDs are NOT used
 
-    gMainParser->ParseFont("art\\fonts\\fontrc.irc");
+    gMainParser->ParseFont("art/fonts/fontrc.irc");
 
 #ifdef DEBUG
 
     if (gMainParser->FindID("TXT_LAST_TEXT_ID") > TXT_LAST_TEXT_ID)
-        MessageBox(NULL, "String database Out of Date", "Update Art Directory - May crash in C_Hash", MB_OK);
+        MessageBox(NULL, "String database Out of Date",
+                   "Update Art Directory - May crash in C_Hash", MB_OK);
 
 #endif
 
@@ -1443,7 +1411,7 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 {
     // and play music accordingly
     // Team[MyTeam]... Initiative()  0->33 Bad 34->66 Medium 67->100 Good
-    if ( not TeamInfo[FalconLocalSession->GetTeam()])
+    if (not TeamInfo[FalconLocalSession->GetTeam()])
     {
         PlayUIMusic();
         return;
@@ -1466,7 +1434,7 @@ void PlayCampaignMusic() // This function should figure out whether we are happy
 
 void PlayThatFunkyMusicWhiteBoy()
 {
-    if ( not gMusic or not MusicStopped)
+    if (not gMusic or not MusicStopped)
         return;
 
     // if(GetCurrentTime() < (MusicStopped + 60000l))
@@ -1499,7 +1467,8 @@ void PlayUIMovie(long ID)
         gMusic->FadeOut_Pause();
         gMainHandler->ShowWindow(win);
         gMainHandler->WindowToFront(win);
-        gMovieMgr->SetXY(win->GetX() + win->ClientArea_[0].left, win->GetY() + win->ClientArea_[0].top);
+        gMovieMgr->SetXY(win->GetX() + win->ClientArea_[0].left,
+                         win->GetY() + win->ClientArea_[0].top);
         gMovieMgr->Play(ID);
         gMainHandler->HideWindow(win);
         gMusic->Resume();
@@ -1519,7 +1488,7 @@ void UI_LoadSkyWeatherData()
      _TCHAR name[50], filename[50], picname[50];
 
      // Skycolor data readin
-    // sprintf(file,"%s\\weather\\todtable.dat",FalconTerrainDataDir);
+    // sprintf(file,"%s/weather/todtable.dat",FalconTerrainDataDir);
 
      /* format:
      [NumberOfSkyColors]
@@ -1563,7 +1532,7 @@ void UI_LoadSkyWeatherData()
 
      prevskycol = PlayerOptions.skycol;
 
-     sprintf(file,"%s\\weather\\weathertable.dat",FalconTerrainDataDir);
+     sprintf(file,"%s/weather/weathertable.dat",FalconTerrainDataDir);
 
      if( not (fp=fopen(file,"rt")))
      return;
@@ -1596,7 +1565,8 @@ int UI_Startup()
 
     // OW
     //ShowCursor(TRUE);
-    while (ShowCursor(TRUE) < 0);
+    while (ShowCursor(TRUE) < 0)
+        ;
 
     // OW
     // SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
@@ -1609,25 +1579,27 @@ int UI_Startup()
     // M.N. Large UI
     if (g_bHiResUI)
     {
-        FalconDisplay.EnterMode(
-            FalconDisplayConfiguration::UILarge, DisplayOptions.DispVideoCard, DisplayOptions.DispVideoDriver
-        );
+        FalconDisplay.EnterMode(FalconDisplayConfiguration::UILarge,
+                                DisplayOptions.DispVideoCard,
+                                DisplayOptions.DispVideoDriver);
     }
     else
     {
-        FalconDisplay.EnterMode(
-            FalconDisplayConfiguration::UI, DisplayOptions.DispVideoCard, DisplayOptions.DispVideoDriver
-        );
+        FalconDisplay.EnterMode(FalconDisplayConfiguration::UI,
+                                DisplayOptions.DispVideoCard,
+                                DisplayOptions.DispVideoDriver);
     }
 
     Primary = FalconDisplay.GetImageBuffer();
 
     Primary->GetColorMasks(&r_mask, &g_mask, &b_mask);
-    UI95_SetScreenColorInfo(static_cast<DWORD>(r_mask), static_cast<DWORD>(g_mask), static_cast<DWORD>(b_mask));
+    UI95_SetScreenColorInfo(static_cast<DWORD>(r_mask),
+                            static_cast<DWORD>(g_mask),
+                            static_cast<DWORD>(b_mask));
 
     UIBuildColorTable();
 
-    if ( not gPlayerBook)
+    if (not gPlayerBook)
     {
         gPlayerBook = new PhoneBook;
         gPlayerBook->Setup();
@@ -1679,7 +1651,8 @@ int UI_Startup()
 
     while (IntList[i].MusicID)
     {
-        gMusic->AddInteractiveMusic(IntList[i].Section, IntList[i].Group, IntList[i].MusicID);
+        gMusic->AddInteractiveMusic(IntList[i].Section, IntList[i].Group,
+                                    IntList[i].MusicID);
         i++;
     }
 
@@ -1690,7 +1663,8 @@ int UI_Startup()
         // Returning from the sim - Post eval our flight
         // KCK: Added the check for a pilot list so that we don't post-eval after a
         // discarded mission
-        if (TheCampaign.MissionEvaluator and TheCampaign.MissionEvaluator->flight_data)
+        if (TheCampaign.MissionEvaluator and
+            TheCampaign.MissionEvaluator->flight_data)
             TheCampaign.MissionEvaluator->PostMissionEval();
 
         if (MainLastGroup == 1000)
@@ -1738,7 +1712,6 @@ int UI_Startup()
             else if(MissionResult bitand COURT_MARTIAL)
              CourtMartialWindow();
             */
-
         }
         else
         {
@@ -1767,7 +1740,7 @@ int UI_Startup()
 
     SetCursor(gCursors[CRSR_F16]);
 
-    if ( not (LogState bitand LB_LOADED_ONCE))
+    if (not(LogState bitand LB_LOADED_ONCE))
     {
         LogState or_eq LB_LOADED_ONCE;
         LogBook.Initialize();
@@ -1776,8 +1749,9 @@ int UI_Startup()
         DisplayOptions.Initialize();
     }
 
-    if ( not LogBook.CheckPassword(_T("")) and not (LogState bitand LB_CHECKED))
-        PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB, NoPasswordCB);
+    if (not LogBook.CheckPassword(_T("")) and not(LogState bitand LB_CHECKED))
+        PasswordWindow(TXT_LOG_IN, TXT_LOG_IN_MESSAGE, CheckPasswordCB,
+                       NoPasswordCB);
     else
     {
         FalconLocalSession->SetPlayerName(LogBook.NameWRank());
@@ -1789,7 +1763,7 @@ int UI_Startup()
     F4HearVoices();
     UserStickInputs.Reset();
 
-    return(0);
+    return (0);
 }
 
 void UI_Cleanup()
@@ -1806,7 +1780,9 @@ void UI_Cleanup()
 
     if (gCommsMgr)
         for (i = 0; i < game_MaxGameTypes; i++)
-            gCommsMgr->SetCallback(i, NULL); // Disable callbacks we don't care about when NOT in the UI
+            gCommsMgr->SetCallback(
+                i,
+                NULL); // Disable callbacks we don't care about when NOT in the UI
 
     // End Event Loop
     Sleep(10);
@@ -1832,7 +1808,16 @@ void UI_Cleanup()
     }
 
     OTWDriver.CleanViewpoint(); // JB 010615
-    DeviceDependentGraphicsCleanup(&FalconDisplay.theDisplayDevice);
+    // #104 (Linux): during the menu->sim handoff (EndUI) the sim thread has already taken over the shared
+    // display device and its device-dependent graphics (terrain texture DB TheTerrTextures, etc.). On
+    // Windows this UI teardown is serialized before the sim's re-Setup (SendMessage marshalling); on Linux
+    // FF_SendWindowMessage runs inline, so this tore TheTerrTextures down under the running sim -> distorted
+    // terrain + SIGSEGV in the flight model's GetGroundType/GetTerrainType. Skip it during the handoff.
+    {
+        extern bool g_bSkipDisplayHandoffCleanup;
+        if (!g_bSkipDisplayHandoffCleanup)
+            DeviceDependentGraphicsCleanup(&FalconDisplay.theDisplayDevice);
+    }
 
     if (gMusic)
     {
@@ -2052,14 +2037,15 @@ void UI_Cleanup()
 
     // OW
     //ShowCursor(FALSE);
-    while (ShowCursor(FALSE) >= 0);
+    while (ShowCursor(FALSE) >= 0)
+        ;
 
     // OW
     //    SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_NORMAL);
 }
 
 // theater specifc stuff
-#include "TheaterDef.h"
+#include "theaterdef.h"
 
 extern BOOL FileNameSortCB(TREELIST *list, TREELIST *newitem);
 static void SelectTheater(TheaterDef *td);
@@ -2075,7 +2061,7 @@ static void TheaterBackCB(long, short hittype, C_Base *control)
 
     C_Window *win = gMainHandler->FindWindow(UI_THEATER_WINDOW);
 
-    C_Button *btn = (C_Button*)win->FindControl(UI_THEATER_IMAGE);
+    C_Button *btn = (C_Button *)win->FindControl(UI_THEATER_IMAGE);
 
     if (btn)
     {
@@ -2108,12 +2094,12 @@ static void TheaterLoadCB(long ID, short hittype, C_Base *control)
 {
     C_TreeList *tree;
     TREELIST *item;
-    C_Button   *btn;
+    C_Button *btn;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    tree = (C_TreeList*)control;
+    tree = (C_TreeList *)control;
 
     if (tree)
     {
@@ -2121,7 +2107,7 @@ static void TheaterLoadCB(long ID, short hittype, C_Base *control)
 
         if (item)
         {
-            btn = (C_Button*)item->Item_;
+            btn = (C_Button *)item->Item_;
 
             tree->SetAllControlStates(0, tree->GetRoot());
             btn->SetState(1);
@@ -2139,7 +2125,7 @@ static void TheaterLoadCB(long ID, short hittype, C_Base *control)
 static void LoadTheaterWindows(C_Window *win)
 {
     C_Button *ctrl;
-    ctrl = (C_Button*)win->FindControl(UI_THEATER_BACK);
+    ctrl = (C_Button *)win->FindControl(UI_THEATER_BACK);
 
     if (ctrl)
         ctrl->SetCallback(TheaterCancelCB);
@@ -2153,7 +2139,6 @@ static void LoadTheaterWindows(C_Window *win)
 
     if (ctrl)
         ctrl->SetCallback(TheaterBackCB);
-
 }
 
 static void FillTheaterTree(C_TreeList *tree)
@@ -2163,7 +2148,7 @@ static void FillTheaterTree(C_TreeList *tree)
     TREELIST *item;
     TheaterDef *cthr = g_theaters.GetCurrentTheater();
 
-    if ( not UniqueID)
+    if (not UniqueID)
         UniqueID++;
 
     for (int i = 0; td = g_theaters.GetTheater(i); i++)
@@ -2200,23 +2185,23 @@ static void FillTheaterTree(C_TreeList *tree)
     }
 
     tree->SetUserNumber(0, UniqueID);
-
 }
 
 static void SelectTheater(TheaterDef *td)
 {
     C_Window *win = gMainHandler->FindWindow(UI_THEATER_WINDOW);
 
-    C_Text *txt = (C_Text*)win->FindControl(UI_THEATER_DESC);
+    C_Text *txt = (C_Text *)win->FindControl(UI_THEATER_DESC);
 
     if (txt)
     {
         if (td)
             txt->SetText(td->m_description);
-        else txt->SetText("");
+        else
+            txt->SetText("");
     }
 
-    C_Button *btn = (C_Button*)win->FindControl(UI_THEATER_IMAGE);
+    C_Button *btn = (C_Button *)win->FindControl(UI_THEATER_IMAGE);
 
     if (btn)
     {
@@ -2294,4 +2279,3 @@ void TheaterButtonCB(long ID, short hittype, C_Base *control)
     gMainHandler->ShowWindow(win);
     gMainHandler->WindowToFront(win);
 }
-

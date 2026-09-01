@@ -6,15 +6,16 @@
     This is a portion of the implemention for Render2D (see Render2D.h)
  These function provides 2D viewport clipping services.
 \***************************************************************************/
-#include <cISO646>
-#include "Render2D.h"
+#include <ciso646>
+#include "render2d.h"
 
 
 // The use of the global storage defined here introduces a requirement that only
 // one thread at a time do clipping.  If this requirment is unacceptable, this
 // storage should become a member of the Render2D class.  Not doing so now
 // saves us one pointer indirection per use of this storage (ie: this->)
-static const int MAX_VERT_LIST  = 32; // (2 x largest number of verts in input fan)
+static const int MAX_VERT_LIST =
+    32; // (2 x largest number of verts in input fan)
 static TwoDVertex extraVerts[MAX_VERT_LIST]; // Used to hold temporaty vertices
 static int extraVertCount; // created by clipping.
 
@@ -23,15 +24,19 @@ extern int g_nGfxFix; // MN
 /***************************************************************************\
  Set the clip flags for the given vertex.
 \***************************************************************************/
-void Render2D::SetClipFlags(TwoDVertex* vert)
+void Render2D::SetClipFlags(TwoDVertex *vert)
 {
     vert->clipFlag = ON_SCREEN;
 
-    if (vert->x < leftPixel) vert->clipFlag or_eq CLIP_LEFT;
-    else if (vert->x > rightPixel) vert->clipFlag or_eq CLIP_RIGHT;
+    if (vert->x < leftPixel)
+        vert->clipFlag or_eq CLIP_LEFT;
+    else if (vert->x > rightPixel)
+        vert->clipFlag or_eq CLIP_RIGHT;
 
-    if (vert->y < topPixel) vert->clipFlag or_eq CLIP_TOP;
-    else if (vert->y > bottomPixel) vert->clipFlag or_eq CLIP_BOTTOM;
+    if (vert->y < topPixel)
+        vert->clipFlag or_eq CLIP_TOP;
+    else if (vert->y > bottomPixel)
+        vert->clipFlag or_eq CLIP_BOTTOM;
 }
 
 /***************************************************************************
@@ -39,12 +44,15 @@ void Render2D::SetClipFlags(TwoDVertex* vert)
  top, bottom, left, right, and near planes.  Then draw the resultant
  polygon.
 ***************************************************************************/
-void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool gifPicture)
+void Render2D::ClipAndDraw2DFan(TwoDVertex **vertPointers, unsigned count,
+                                bool gifPicture)
 {
     TwoDVertex **v, **p, **lastIn, **nextOut;
     TwoDVertex **inList, **outList, **temp;
-    TwoDVertex *vertList1[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
-    TwoDVertex *vertList2[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    TwoDVertex
+        *vertList1[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    TwoDVertex
+        *vertList2[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
     DWORD clipTest = 0;
 
     ShiAssert(vertPointers);
@@ -70,7 +78,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
     // have to check all triangles instead of stopping after the second reject loop below.
     // If a new set of un-culled triangles was encountered, we'd have to make a new polygon
     // and resubmit it.
-    if (gifPicture /*or g_nGfxFix bitand 0x08*/)  // removed again, caused AG radar not to be displayed on Matrox G400
+    if (gifPicture /*or g_nGfxFix bitand 0x08*/) // removed again, caused AG radar not to be displayed on Matrox G400
     {
         temp = inList;
         inList = outList;
@@ -113,10 +121,9 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
         ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-        if (nextOut - outList <= 2)  return;
+        if (nextOut - outList <= 2)
+            return;
     }
-
-
 
 
     else // do the old code
@@ -147,7 +154,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_BOTTOM))
+                if (not((*v)->clipFlag bitand CLIP_BOTTOM))
                 {
                     *nextOut++ = *v;
                 }
@@ -157,7 +164,8 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
 
 
@@ -183,7 +191,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_TOP))
+                if (not((*v)->clipFlag bitand CLIP_TOP))
                 {
                     *nextOut++ = *v;
                 }
@@ -193,7 +201,8 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
 
 
@@ -219,7 +228,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_RIGHT))
+                if (not((*v)->clipFlag bitand CLIP_RIGHT))
                 {
                     *nextOut++ = *v;
                 }
@@ -229,7 +238,8 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
 
 
@@ -255,7 +265,7 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_LEFT))
+                if (not((*v)->clipFlag bitand CLIP_LEFT))
                 {
                     *nextOut++ = *v;
                 }
@@ -265,10 +275,9 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
-
-
     }
 
     // Finally draw the resultant polygon
@@ -285,12 +294,14 @@ void Render2D::ClipAndDraw2DFan(TwoDVertex** vertPointers, unsigned count, bool 
 
 #else
     context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE,
-                          (unsigned short)(nextOut - outList), (MPRVtxTexClr_t **) outList);
+                          (unsigned short)(nextOut - outList),
+                          (MPRVtxTexClr_t **)outList);
 #endif
 }
 
 
-inline void InterpolateColorAndTex(TwoDVertex *v1, TwoDVertex *v2, TwoDVertex *v, float t)
+inline void InterpolateColorAndTex(TwoDVertex *v1, TwoDVertex *v2,
+                                   TwoDVertex *v, float t)
 {
     // Compute the interpolated color and texture coordinates
     v->r = v1->r + t * (v2->r - v1->r);

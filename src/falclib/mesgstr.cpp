@@ -5,8 +5,7 @@
  * Generated from file EVENTS.XLS by MicroProse
  */
 
-char *TheEventStrings[] =
-{
+char *TheEventStrings[] = {
     "Bullet Damage",
     "Missile Damage",
     "Collision Damage",

@@ -65,13 +65,12 @@ void AirframeClass::Gains(void)
         return;
 
     cosphiLim = max(0.0F, platform->platformAngles.cosphi);
-    cosmuLim  = max(0.0F, platform->platformAngles.cosmu);
+    cosmuLim = max(0.0F, platform->platformAngles.cosmu);
 
     //landingGains = gearPos not_eq 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling);
     //TJL 10/20/03 Added TEFExtend. Per the F-16-1 ALT FLAPS sets Landing Gains
-    landingGains = gearPos not_eq 0 or IsEngineFlag(FuelDoorOpen) or IsSet(Refueling) or platform->TEFExtend;
-
-
+    landingGains = gearPos not_eq 0 or IsEngineFlag(FuelDoorOpen) or
+                   IsSet(Refueling) or platform->TEFExtend;
 
 
     /*---------------------------------*/
@@ -108,11 +107,12 @@ void AirframeClass::Gains(void)
                            cosmuLim / qsom + 0.1F * gearPos - clift0 * (1.0F + tefFactor * auxaeroData->CLtefFactor)) / clalph0 - tefFactor - lefFactor;
             else
 #endif
-                aoabias = (GRAVITY * platform->platformAngles.cosgam *
-                           cosmuLim / qsom +
-                           0.1F * gearPos -
-                           clift0 * (1.0F + tefFactor * auxaeroData->CLtefFactor)) /
-                          clalph0 - tefFactor + lefFactor;
+            aoabias =
+                (GRAVITY * platform->platformAngles.cosgam * cosmuLim / qsom +
+                 0.1F * gearPos -
+                 clift0 * (1.0F + tefFactor * auxaeroData->CLtefFactor)) /
+                    clalph0 -
+                tefFactor + lefFactor;
 
             if (g_bNewFm)
                 aoabias = max(0.0F, min(aoabias, aoamax / 3));
@@ -132,7 +132,8 @@ void AirframeClass::Gains(void)
 
         if (IsSet(CATLimiterIII) and limiter)
         {
-            if (alpha  < limiter->Limit(vcas) and ( not gearPos or IsSet(GearBroken)))
+            if (alpha < limiter->Limit(vcas) and
+                (not gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -143,12 +144,13 @@ void AirframeClass::Gains(void)
 
             if (limiter)
             {
-                if (alpha < limiter->Limit(alpha) and ( not gearPos or IsSet(GearBroken)))
+                if (alpha < limiter->Limit(alpha) and
+                    (not gearPos or IsSet(GearBroken)))
                     ClearFlag(AOACmdMode);
                 else
                     SetFlag(AOACmdMode);
             }
-            else if (gsAvail > maxGs and ( not gearPos or IsSet(GearBroken)))
+            else if (gsAvail > maxGs and (not gearPos or IsSet(GearBroken)))
                 ClearFlag(AOACmdMode);
             else
                 SetFlag(AOACmdMode);
@@ -181,10 +183,11 @@ void AirframeClass::Gains(void)
     tp01 = 0.200F;
     zp01 = 0.900F;
 
-    if ( not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
+    if (not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
     {
         //tp01 *= (1.0F + (loadingFraction - 1.3F) *0.1F);
-        zp01 *= (1.0F - 0.15F * (max(0.0F, 1.0F - qbar / 25.0F)) - zpdamp - max(0.0F, (loadingFraction - 1.3F) * 0.01F));
+        zp01 *= (1.0F - 0.15F * (max(0.0F, 1.0F - qbar / 25.0F)) - zpdamp -
+                 max(0.0F, (loadingFraction - 1.3F) * 0.01F));
         zp01 = max(0.5F, zp01);
     }
 
@@ -201,7 +204,7 @@ void AirframeClass::Gains(void)
 
     omegasp1 = 1.0F / (ttheta2 * 0.65F);
     omegasp1 = max(1.0F, omegasp1);
-    omegasp = omegasp1 ;
+    omegasp = omegasp1;
 
     if (stallMode > Recovering or not IsSet(InAir))
     {
@@ -220,11 +223,9 @@ void AirframeClass::Gains(void)
     /*----------------------------------------------*/
     /* calculate inner loop dynamics for pitch axis */
     /*----------------------------------------------*/
-    pcoef1 =  tp01 * wp01 * wp01 -
-              2.0F * zp01 * wp01 - kp03;
-    pcoef2 =  2.0F * zp01 * wp01 * kp03 -
-              kp03 * tp01 * wp01 * wp01;
-    pradcl =  max((pcoef1 * pcoef1 - 4.0F * pcoef2), 0.0F);
+    pcoef1 = tp01 * wp01 * wp01 - 2.0F * zp01 * wp01 - kp03;
+    pcoef2 = 2.0F * zp01 * wp01 * kp03 - kp03 * tp01 * wp01 * wp01;
+    pradcl = max((pcoef1 * pcoef1 - 4.0F * pcoef2), 0.0F);
 
     pfreq1 = ((float)sqrt(pradcl) - pcoef1) * 0.5F;
     pfreq2 = -pcoef1 - pfreq1;
@@ -232,32 +233,31 @@ void AirframeClass::Gains(void)
     /*------------------------------------------*/
     /* time constants for pitch axis inner loop */
     /*------------------------------------------*/
-    tp02   =  1 / pfreq1;
-    tp03   =  1 / pfreq2;
+    tp02 = 1 / pfreq1;
+    tp03 = 1 / pfreq2;
 
-    tp03   = max(tp03, 0.5F);
+    tp03 = max(tp03, 0.5F);
 
-    if (IsSet(AOACmdMode) or not (qsom * cnalpha))
+    if (IsSet(AOACmdMode) or not(qsom * cnalpha))
         kp05 = tp02 * tp03 * wp01 * wp01;
     else
-        kp05 = GRAVITY * tp02 * tp03 * wp01 * wp01 /
-               (qsom * cnalpha);
+        kp05 = GRAVITY * tp02 * tp03 * wp01 * wp01 / (qsom * cnalpha);
 
     if (landingGains)
         kp05 *= auxaeroData->pitchGearGain;
 
-    if ( not IsSet(InAir))
+    if (not IsSet(InAir))
     {
         kp05 *= max(0.0f, min(1.0F, (qbar - 20.0F) / 45.0F));
     }
 
-    F4Assert( not _isnan(kp05));
+    F4Assert(not _isnan(kp05));
 
     /*---------------------------------------*/
     /* roll axis gains and filter parameters */
     /*---------------------------------------*/
     if (qbar >= 250.0F)
-        tr01 =  0.25F;
+        tr01 = 0.25F;
     else
         tr01 = -0.001111F * (qbar - 100.0F) + 0.416F;
 
@@ -273,12 +273,12 @@ void AirframeClass::Gains(void)
     psmax = Math.TwodInterp(alpha, qbar, rollCmd->alpha, rollCmd->qbar,
                             rollCmd->roll, rollCmd->numAlpha, rollCmd->numQbar,
                             &curRollAlphaBreak, &curRollQbarBreak);
-    kr01  = psmax * DTR;
+    kr01 = psmax * DTR;
 
     if (landingGains)
         kr01 *= auxaeroData->rollGearGain;
 
-    kr02  = platform->platformAngles.cosalp;
+    kr02 = platform->platformAngles.cosalp;
 
     /*--------------------------------------*/
     /* yaw axis gains and filter parameters */
@@ -289,7 +289,7 @@ void AirframeClass::Gains(void)
     //wy01 = (0.8F/tr01);
     wy01 = (0.3F / tr01);
 
-    if ( not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
+    if (not IsSet(Simplified) and simpleMode not_eq SIMPLE_MODE_AF)
         wy01 *= (1.0F - loadingFraction * 0.1F);
 
     ky01 = 1.000F;
@@ -300,10 +300,11 @@ void AirframeClass::Gains(void)
     /* calculate inner loop dynamics for yaw axis */
     /*--------------------------------------------*/
     ycoef1 = -2.0F * zy01 * wy01 - ky03;
-    ycoef2 =  2.0F * zy01 * wy01 * ky03;
-    yradcl =  ycoef1 * ycoef1 - 4.0F * ycoef2;
+    ycoef2 = 2.0F * zy01 * wy01 * ky03;
+    yradcl = ycoef1 * ycoef1 - 4.0F * ycoef2;
 
-    if (yradcl < 0.0F) yradcl = 0.0F;
+    if (yradcl < 0.0F)
+        yradcl = 0.0F;
 
     yfreq1 = ((float)sqrt(yradcl) - ycoef1) * 0.5F;
     yfreq2 = -ycoef1 - yfreq1;
@@ -311,12 +312,12 @@ void AirframeClass::Gains(void)
     /*----------------------------------------*/
     /* time constants for yaw axis inner loop */
     /*----------------------------------------*/
-    ty01   =  1 / yfreq1;
-    ty02   =  1 / yfreq2;
+    ty01 = 1 / yfreq1;
+    ty02 = 1 / yfreq2;
 
     if (cy not_eq 0.0F)
     {
-        ky05   = -GRAVITY * wy01 * wy01 / (qsom * cy * yfreq1 * yfreq2);
+        ky05 = -GRAVITY * wy01 * wy01 / (qsom * cy * yfreq1 * yfreq2);
     }
 
     /*------------------------------------*/

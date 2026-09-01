@@ -3,7 +3,7 @@
 #define NAVUNIT_H
 
 #include "unit.h"
-#include "AIInput.h"
+#include "aiinput.h"
 
 // =========================
 // Naval Unit defines
@@ -40,7 +40,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -60,15 +61,16 @@ private:
     uchar last_direction; // Direction of last move
     Percentage supply; // Unit's supply
     SmallPathClass path;
-    VU_ID air_target; // The ID of any air target (in addition to regular target)
+    VU_ID
+    air_target; // The ID of any air target (in addition to regular target)
     uchar missiles_flying;
     uchar radar_mode; // Radar mode
     uchar search_mode; // Radar Search mode
-    VU_TIME SEARCHtimer ;
-    VU_TIME AQUIREtimer ;
-    uchar step_search_mode; // 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
+    VU_TIME SEARCHtimer;
+    VU_TIME AQUIREtimer;
+    uchar
+        step_search_mode; // 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
 public:
-
     uchar tacan_channel; // Support for carriers
     uchar tacan_band; // Support for carriers
 
@@ -111,14 +113,16 @@ public:
     {
         return air_target;
     }
-    virtual FalconEntity* GetAirTarget(void)
+    virtual FalconEntity *GetAirTarget(void)
     {
-        return (FalconEntity*)vuDatabase->Find(air_target);
+        return (FalconEntity *)vuDatabase->Find(air_target);
     }
     virtual void SetAirTarget(FalconEntity *t)
     {
-        if (t) air_target = t->Id();
-        else air_target = FalconNullId;
+        if (t)
+            air_target = t->Id();
+        else
+            air_target = FalconNullId;
     }
 #if HOTSPOT_FIX
     virtual CampaignTime MaxUpdateTime() const
@@ -205,7 +209,10 @@ public:
         search_mode = mode;
     }
     // virtual void SetSearchMode (int mode) { step_search_mode = search_mode = mode; } // 2002-03-22 MODIFIED BY S.G. Init our step_search_mode as well
-    virtual int StepRadar(int t, int d, float range); //me123 modifyed to take tracking/detection range parameter
+    virtual int StepRadar(
+        int t, int d,
+        float
+            range); //me123 modifyed to take tracking/detection range parameter
     virtual int ChooseTarget(void);
     virtual void IncrementTime(CampaignTime dt)
     {
@@ -227,13 +234,14 @@ public:
     {
         missiles_flying--;
 
-        if (missiles_flying == 0) ReturnToSearch();
+        if (missiles_flying == 0)
+            ReturnToSearch();
 
         ShiAssert(missiles_flying >= 0);
     }
     virtual int GetMissilesFlying(void)
     {
-        return missiles_flying;    // MLR 10/3/2004 - finishing what //me123 //Cobra 10/31/04 TJL
+        return missiles_flying; // MLR 10/3/2004 - finishing what //me123 //Cobra 10/31/04 TJL
     }
 
     // 2002-03-22 ADDED BY S.G. Needs them outside of nav unit class
@@ -261,6 +269,6 @@ public:
 
 typedef TaskForceClass *TaskForce;
 
-TaskForceClass* NewTaskForce(int type);
+TaskForceClass *NewTaskForce(int type);
 
 #endif

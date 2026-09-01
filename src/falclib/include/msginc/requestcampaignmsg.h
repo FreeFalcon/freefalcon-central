@@ -11,15 +11,15 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 //sfr: for chks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Request Campaign data
@@ -55,7 +55,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         ulong campTime;
         VU_ID requester_id;
         VU_ID requester_session;
@@ -64,6 +63,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

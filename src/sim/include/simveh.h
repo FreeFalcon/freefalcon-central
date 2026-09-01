@@ -52,13 +52,18 @@ public:
     VU_TIME geomCalcRate;
 
 public:
-    void SendFireMessage(
-        SimWeaponClass* curWeapon, int type, int startFlag, SimObjectType* targetPtr, VU_ID tgtId = FalconNullId
-    );
+    void SendFireMessage(SimWeaponClass* curWeapon, int type, int startFlag,
+                         SimObjectType* targetPtr, VU_ID tgtId = FalconNullId);
     // Avionics
     PilotInputs* theInputs;
-    void InitWeapons(ushort *type, ushort *num);
-    enum SOI {SOI_HUD, SOI_RADAR, SOI_WEAPON, SOI_FCC}; //MI added SOI_FCC for HSD
+    void InitWeapons(ushort* type, ushort* num);
+    enum SOI
+    {
+        SOI_HUD,
+        SOI_RADAR,
+        SOI_WEAPON,
+        SOI_FCC
+    }; //MI added SOI_FCC for HSD
     SOI curSOI;
     void SOIManager(SOI newSOI);
     SOI GetSOI(void)
@@ -75,28 +80,29 @@ public:
     //Steering Info
     WayPointClass* curWaypoint;
     WayPointClass* waypoint;
-    Int32  numWaypoints;
+    Int32 numWaypoints;
 
-    WayPointClass *GetWayPointNo(int n);
+    WayPointClass* GetWayPointNo(int n);
     virtual void ReceiveOrders(FalconEvent*) {};
 
     void ApplyProximityDamage(void);
 
     // for dying, we no longer send the death message as soon as
     // strength goes to 0, we delay until object explodes
-    FalconDeathMessage *deathMessage;
+    FalconDeathMessage* deathMessage;
 
     SimVehicleClass(int type);
-    SimVehicleClass(VU_BYTE** stream, long *rem);
+    SimVehicleClass(VU_BYTE** stream, long* rem);
     SimVehicleClass(FILE* filePtr);
     virtual ~SimVehicleClass(void);
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
-public:
 
+public:
     virtual void Init(SimInitDataClass* initData);
     virtual int Wake(void);
     virtual int Sleep(void);
@@ -104,7 +110,7 @@ public:
     virtual void MakeRemote(void);
     virtual int Exec(void);
     virtual void SetDead(int);
-    virtual void ApplyDamage(FalconDamageMessage *damageMessage);
+    virtual void ApplyDamage(FalconDamageMessage* damageMessage);
     virtual FireControlComputer* GetFCC(void)
     {
         return NULL;
@@ -143,13 +149,13 @@ public:
     // virtual function interface
     // serialization functions
     virtual int SaveSize();
-    virtual int Save(VU_BYTE **stream); // returns bytes written
-    virtual int Save(FILE *file); // returns bytes written
+    virtual int Save(VU_BYTE** stream); // returns bytes written
+    virtual int Save(FILE* file); // returns bytes written
 
     // event handlers
-    virtual int Handle(VuFullUpdateEvent *event);
-    virtual int Handle(VuPositionUpdateEvent *event);
-    virtual int Handle(VuTransferEvent *event);
+    virtual int Handle(VuFullUpdateEvent* event);
+    virtual int Handle(VuPositionUpdateEvent* event);
+    virtual int Handle(VuTransferEvent* event);
     virtual VU_ERRCODE InsertionCallback(void);
 };
 

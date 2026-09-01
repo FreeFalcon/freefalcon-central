@@ -5,20 +5,20 @@
 #include "hardpnt.h"
 #include "simveh.h"
 #include "otwdrive.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "falcsess.h"
 #include "entity.h"
 #include "vehicle.h"
 #include "aircrft.h"
 #include "fack.h"
-#include "MsgInc/WeaponFireMsg.h"
-#include "MsgInc/TrackMsg.h"
+#include "msginc/weaponfiremsg.h"
+#include "msginc/trackmsg.h"
 #include "fcc.h"
 #include "simdrive.h"
 #include "ivibedata.h"
 #include "digi.h" // 2002-02-26 S.G.
 #include "grtypes.h"
-#include "soundfx.h" // MLR 6/4/2004 - 
+#include "soundfx.h" // MLR 6/4/2004 -
 
 void CreateDrawable(SimBaseClass* theObject, float objectScale);
 
@@ -36,13 +36,13 @@ int SMSClass::DropBomb(int allowRipple)
     int visFlag;
     float dragCoeff = 0.0f;
     int slotId;
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
 
     // Check for SMS Failure or other reason not to drop
-    if ( not CurStationOK() or //Weapon Station failure
+    if (not CurStationOK() or //Weapon Station failure
         ownship->OnGround() or // Weight on wheels inhibit
- not curWeapon or // No Weapon
+        not curWeapon or // No Weapon
         ownship->GetNz() < 0.0F or // Negative Gs
         MasterArm() not_eq Arm) // Not in arm mode
     {
@@ -60,7 +60,8 @@ int SMSClass::DropBomb(int allowRipple)
         slotId = curHardpoint;
 
     // Verify curWeapon on curHardpoint
-    if (curHardpoint < 0 or hardPoint[curHardpoint]->weaponPointer.get() not_eq curWeapon)
+    if (curHardpoint < 0 or
+        hardPoint[curHardpoint]->weaponPointer.get() not_eq curWeapon)
     {
         for (i = 0; i < numHardpoints; i++)
         {
@@ -86,9 +87,9 @@ int SMSClass::DropBomb(int allowRipple)
     {
         F4Assert(curWeapon->IsBomb());
 
-        dragCoeff  = hardPoint[curHardpoint]->GetWeaponData()->cd;
+        dragCoeff = hardPoint[curHardpoint]->GetWeaponData()->cd;
 
-        theBomb.reset((BombClass *)curWeapon.get());
+        theBomb.reset((BombClass*)curWeapon.get());
 
         // edg: it's been observed that theBomb will be NULL at times?
         // leonr: This happens when you ask for too many release pulses.
@@ -98,46 +99,42 @@ int SMSClass::DropBomb(int allowRipple)
         }
 
         SetFlag(Firing);
-        hardPoint[curHardpoint]->GetSubPosition(curWpnNum, &initXloc, &initYloc, &initZloc);
+        hardPoint[curHardpoint]->GetSubPosition(curWpnNum, &initXloc, &initYloc,
+                                                &initZloc);
 
-        pos.x =
-            ownship->XPos() +
-            ownship->dmx[0][0] * initXloc + ownship->dmx[1][0] * initYloc + ownship->dmx[2][0] * initZloc
-            ;
-        pos.y =
-            ownship->YPos() +
-            ownship->dmx[0][1] * initXloc + ownship->dmx[1][1] * initYloc + ownship->dmx[2][1] * initZloc
-            ;
-        pos.z =
-            ownship->ZPos() +
-            ownship->dmx[0][2] * initXloc + ownship->dmx[1][2] * initYloc + ownship->dmx[2][2] * initZloc
-            ;
+        pos.x = ownship->XPos() + ownship->dmx[0][0] * initXloc +
+                ownship->dmx[1][0] * initYloc + ownship->dmx[2][0] * initZloc;
+        pos.y = ownship->YPos() + ownship->dmx[0][1] * initXloc +
+                ownship->dmx[1][1] * initYloc + ownship->dmx[2][1] * initZloc;
+        pos.z = ownship->ZPos() + ownship->dmx[0][2] * initXloc +
+                ownship->dmx[1][2] * initYloc + ownship->dmx[2][2] * initZloc;
 
         posDelta.x = ownship->XDelta();
         posDelta.y = ownship->YDelta();
         posDelta.z = ownship->ZDelta();
         theBomb->SetBurstHeight(burstHeight);
-        SimObjectType *tgt = NULL;
-        DigitalBrain *db = (DigitalBrain*)ownship->Brain();
+        SimObjectType* tgt = NULL;
+        DigitalBrain* db = (DigitalBrain*)ownship->Brain();
         tgt = db == NULL ? NULL : db->GetGroundTarget();
         theBomb->Start(&pos, &posDelta, dragCoeff, tgt);
         // 2002-02-26 MODIFIED BY S.G. Added the ownship...
         // in case the target is aggregated and an AI is bombing it
 
         //Wombat778 03-09-04 Copy the current ground designated point into the bomb
-        AircraftClass *self = ((AircraftClass*)playerAC);
+        AircraftClass* self = ((AircraftClass*)playerAC);
 
         //AircraftClass *self = ((AircraftClass*)ownship->DriveEntity);
         if (theBomb and ownship->GetFCC())
         {
             // Cobra - targets for all
-            if (theBomb->IsSetBombFlag(BombClass::IsGPS)
-                or theBomb->IsSetBombFlag(BombClass::IsJSOW))
+            if (theBomb->IsSetBombFlag(BombClass::IsGPS) or
+                theBomb->IsSetBombFlag(BombClass::IsJSOW))
             {
                 // Cobra - Dynamic select of target from list
                 //TOO mode  //Cobra - not JDAMsbc = PB aggregated - Temp CTD fix
-                if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
-                    or not (((AircraftClass*)ownship)->JDAMsbc))
+                if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting ==
+                        SMSBaseClass::TOO or
+                    not(((AircraftClass*)ownship)->JDAMsbc))
                 {
                     theBomb->gpsx = ownship->GetFCC()->groundDesignateX;
                     theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
@@ -149,7 +146,9 @@ int SMSClass::DropBomb(int allowRipple)
                     else
                         ((AircraftClass*)ownship)->JDAMStep = 0;
 
-                    ((AircraftClass*)ownship)->JDAMtgtnum = ((AircraftClass*)ownship)->GetJDAMPBTarget((AircraftClass*)ownship);
+                    ((AircraftClass*)ownship)->JDAMtgtnum =
+                        ((AircraftClass*)ownship)
+                            ->GetJDAMPBTarget((AircraftClass*)ownship);
                 }
                 else
                 {
@@ -164,7 +163,9 @@ int SMSClass::DropBomb(int allowRipple)
                     else
                         ((AircraftClass*)ownship)->JDAMStep = 0;
 
-                    ((AircraftClass*)ownship)->JDAMtgtnum = ((AircraftClass*)ownship)->GetJDAMPBTarget((AircraftClass*)ownship);
+                    ((AircraftClass*)ownship)->JDAMtgtnum =
+                        ((AircraftClass*)ownship)
+                            ->GetJDAMPBTarget((AircraftClass*)ownship);
                 }
             }
             else
@@ -173,7 +174,8 @@ int SMSClass::DropBomb(int allowRipple)
                 theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
             }
 
-            theBomb->gpsz = OTWDriver.GetGroundLevel(theBomb->gpsx, theBomb->gpsy);
+            theBomb->gpsz =
+                OTWDriver.GetGroundLevel(theBomb->gpsx, theBomb->gpsy);
         }
 
 
@@ -183,7 +185,8 @@ int SMSClass::DropBomb(int allowRipple)
         if (visFlag bitand (1 << curHardpoint) and theBomb->drawPointer)
         {
             // Detach visual from parent
-            hardPoint[curHardpoint]->DetachWeaponBSP(theBomb.get()); // MLR 2/21/2004 -
+            hardPoint[curHardpoint]->DetachWeaponBSP(
+                theBomb.get()); // MLR 2/21/2004 -
             /*
             if (hardPoint[curHardpoint]->GetRackOrPylon()) // MLR 2/20/2004 - added OrPylon
             {
@@ -204,9 +207,10 @@ int SMSClass::DropBomb(int allowRipple)
         else
         {
             DecrementStores(hardPoint[curHardpoint]->GetWeaponClass(), 1);
-            hardPoint[curHardpoint]->weaponCount --;
+            hardPoint[curHardpoint]->weaponCount--;
 
-            if (hardPoint[curHardpoint]->weaponCount >= hardPoint[curHardpoint]->NumPoints())
+            if (hardPoint[curHardpoint]->weaponCount >=
+                hardPoint[curHardpoint]->NumPoints())
             {
                 ReplaceBomb(curHardpoint, theBomb.get());
             }
@@ -216,7 +220,8 @@ int SMSClass::DropBomb(int allowRipple)
 
                 if (ownship->IsLocal())
                 {
-                    FalconTrackMessage* trackMsg = new FalconTrackMessage(1, ownship->Id(), FalconLocalGame);
+                    FalconTrackMessage* trackMsg = new FalconTrackMessage(
+                        1, ownship->Id(), FalconLocalGame);
                     trackMsg->dataBlock.trackType = Track_RemoveWeapon;
                     trackMsg->dataBlock.hardpoint = curHardpoint;
                     trackMsg->dataBlock.id = ownship->Id();
@@ -229,8 +234,8 @@ int SMSClass::DropBomb(int allowRipple)
         RemoveStore(curHardpoint, hardPoint[curHardpoint]->weaponId);
 
         // Make it live
-        vuDatabase->/*Quick*/Insert(theBomb.get());
-        ownship->SoundPos.Sfx(SFX_BOMBDROP, 0, 1, 0);  // MLR 6/4/2004 -
+        vuDatabase->/*Quick*/ Insert(theBomb.get());
+        ownship->SoundPos.Sfx(SFX_BOMBDROP, 0, 1, 0); // MLR 6/4/2004 -
 
         if (ownship == FalconLocalSession->GetPlayerEntity())
         {
@@ -240,7 +245,8 @@ int SMSClass::DropBomb(int allowRipple)
         // Note: The drawable for this object has already been created
         theBomb->Wake();
         // Record the drop
-        ownship->SendFireMessage(theBomb.get(), FalconWeaponsFire::BMB, TRUE, ownship->targetPtr);
+        ownship->SendFireMessage(theBomb.get(), FalconWeaponsFire::BMB, TRUE,
+                                 ownship->targetPtr);
 
         lastWeapon = curWeapon.get();
         matchingStation = curHardpoint;
@@ -255,22 +261,30 @@ int SMSClass::DropBomb(int allowRipple)
         //if (pair and allowRipple and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
         // Cobra -
         //if (GetAGBPair() and allowRipple and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
-        if (GetAGBPair() and (curHardpoint not_eq matchingStation or curHardpoint == (numHardpoints / 2 + 1)))
+        if (GetAGBPair() and (curHardpoint not_eq matchingStation or
+                              curHardpoint == (numHardpoints / 2 + 1)))
         {
-            theBomb.reset((BombClass *)curWeapon.get());
+            theBomb.reset((BombClass*)curWeapon.get());
 
             if (theBomb)
             {
-                hardPoint[curHardpoint]->GetSubPosition(curWpnNum, &initXloc, &initYloc, &initZloc);
-                pos.x = ownship->XPos() + ownship->dmx[0][0] * initXloc + ownship->dmx[1][0] * initYloc + ownship->dmx[2][0] * initZloc;
-                pos.y = ownship->YPos() + ownship->dmx[0][1] * initXloc + ownship->dmx[1][1] * initYloc + ownship->dmx[2][1] * initZloc;
-                pos.z = ownship->ZPos() + ownship->dmx[0][2] * initXloc + ownship->dmx[1][2] * initYloc + ownship->dmx[2][2] * initZloc;
+                hardPoint[curHardpoint]->GetSubPosition(curWpnNum, &initXloc,
+                                                        &initYloc, &initZloc);
+                pos.x = ownship->XPos() + ownship->dmx[0][0] * initXloc +
+                        ownship->dmx[1][0] * initYloc +
+                        ownship->dmx[2][0] * initZloc;
+                pos.y = ownship->YPos() + ownship->dmx[0][1] * initXloc +
+                        ownship->dmx[1][1] * initYloc +
+                        ownship->dmx[2][1] * initZloc;
+                pos.z = ownship->ZPos() + ownship->dmx[0][2] * initXloc +
+                        ownship->dmx[1][2] * initYloc +
+                        ownship->dmx[2][2] * initZloc;
                 posDelta.x = ownship->XDelta();
                 posDelta.y = ownship->YDelta();
                 posDelta.z = ownship->ZDelta();
                 theBomb->SetBurstHeight(burstHeight);
-                SimObjectType *tgt = NULL;
-                DigitalBrain *db = (DigitalBrain*)ownship->Brain();
+                SimObjectType* tgt = NULL;
+                DigitalBrain* db = (DigitalBrain*)ownship->Brain();
                 tgt = db == NULL ? NULL : db->GetGroundTarget();
                 theBomb->Start(&pos, &posDelta, dragCoeff, tgt);
                 // 2002-02-26 MODIFIED BY S.G. Added the ownship...
@@ -283,17 +297,22 @@ int SMSClass::DropBomb(int allowRipple)
                     //if (theBomb->IsSetBombFlag(BombClass::IsGPS))
                     //if (ownship->IsPlayer() and (theBomb->IsSetBombFlag(BombClass::IsGPS)
                     // FRB - for all
-                    if ((theBomb->IsSetBombFlag(BombClass::IsGPS) or theBomb->IsSetBombFlag(BombClass::IsJSOW)))
+                    if ((theBomb->IsSetBombFlag(BombClass::IsGPS) or
+                         theBomb->IsSetBombFlag(BombClass::IsJSOW)))
                     {
                         // Cobra - Dynamic select of target from list
-                        if (((AircraftClass*)ownship)->GetSMS()->JDAMtargeting == SMSBaseClass::TOO
-                            or not (((AircraftClass*)ownship)->JDAMsbc))
+                        if (((AircraftClass*)ownship)
+                                    ->GetSMS()
+                                    ->JDAMtargeting == SMSBaseClass::TOO or
+                            not(((AircraftClass*)ownship)->JDAMsbc))
                         {
                             //TOO mode  //Cobra - not JDAMsbc = PB aggregated - Temp CTD fix
                             theBomb->gpsx = ownship->GetFCC()->groundDesignateX;
                             theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
-                            theBomb->JSOWtgtID = ((AircraftClass*)ownship)->JDAMtgtnum;
-                            theBomb->JSOWtgtPos = ((AircraftClass*)ownship)->JDAMtgtPos;
+                            theBomb->JSOWtgtID =
+                                ((AircraftClass*)ownship)->JDAMtgtnum;
+                            theBomb->JSOWtgtPos =
+                                ((AircraftClass*)ownship)->JDAMtgtPos;
 
                             if (((AircraftClass*)ownship)->JDAMAllowAutoStep)
                             {
@@ -304,12 +323,16 @@ int SMSClass::DropBomb(int allowRipple)
                                 ((AircraftClass*)ownship)->JDAMStep = 0;
                             }
                         }
-                        else//PB mode
+                        else //PB mode
                         {
-                            theBomb->gpsx = ((AircraftClass*)ownship)->JDAMsbc->XPos();
-                            theBomb->gpsy = ((AircraftClass*)ownship)->JDAMsbc->YPos();
-                            theBomb->JSOWtgtID = ((AircraftClass*)ownship)->JDAMtgtnum;
-                            theBomb->JSOWtgtPos = ((AircraftClass*)ownship)->JDAMtgtPos;
+                            theBomb->gpsx =
+                                ((AircraftClass*)ownship)->JDAMsbc->XPos();
+                            theBomb->gpsy =
+                                ((AircraftClass*)ownship)->JDAMsbc->YPos();
+                            theBomb->JSOWtgtID =
+                                ((AircraftClass*)ownship)->JDAMtgtnum;
+                            theBomb->JSOWtgtPos =
+                                ((AircraftClass*)ownship)->JDAMtgtPos;
 
                             if (((AircraftClass*)ownship)->JDAMAllowAutoStep)
                             {
@@ -327,7 +350,8 @@ int SMSClass::DropBomb(int allowRipple)
                         theBomb->gpsy = ownship->GetFCC()->groundDesignateY;
                     }
 
-                    theBomb->gpsz = OTWDriver.GetGroundLevel(theBomb->gpsx, theBomb->gpsy);
+                    theBomb->gpsz =
+                        OTWDriver.GetGroundLevel(theBomb->gpsx, theBomb->gpsy);
                 }
 
                 if (IsSet(GunOnBoard))
@@ -336,7 +360,8 @@ int SMSClass::DropBomb(int allowRipple)
                     slotId = curHardpoint;
 
                 // Detach visual from parent
-                hardPoint[curHardpoint]->DetachWeaponBSP(theBomb.get()); // MLR 2/21/2004 -
+                hardPoint[curHardpoint]->DetachWeaponBSP(
+                    theBomb.get()); // MLR 2/21/2004 -
 
                 if (UnlimitedAmmo())
                 {
@@ -344,10 +369,12 @@ int SMSClass::DropBomb(int allowRipple)
                 }
                 else
                 {
-                    DecrementStores(hardPoint[curHardpoint]->GetWeaponClass(), 1);
-                    hardPoint[curHardpoint]->weaponCount --;
+                    DecrementStores(hardPoint[curHardpoint]->GetWeaponClass(),
+                                    1);
+                    hardPoint[curHardpoint]->weaponCount--;
 
-                    if (hardPoint[curHardpoint]->weaponCount >= hardPoint[curHardpoint]->NumPoints())
+                    if (hardPoint[curHardpoint]->weaponCount >=
+                        hardPoint[curHardpoint]->NumPoints())
                     {
                         ReplaceBomb(curHardpoint, theBomb.get());
                     }
@@ -357,7 +384,9 @@ int SMSClass::DropBomb(int allowRipple)
 
                         if (ownship->IsLocal())
                         {
-                            FalconTrackMessage* trackMsg = new FalconTrackMessage(1, ownship->Id(), FalconLocalGame);
+                            FalconTrackMessage* trackMsg =
+                                new FalconTrackMessage(1, ownship->Id(),
+                                                       FalconLocalGame);
                             trackMsg->dataBlock.trackType = Track_RemoveWeapon;
                             trackMsg->dataBlock.hardpoint = curHardpoint;
                             trackMsg->dataBlock.id = ownship->Id();
@@ -370,11 +399,12 @@ int SMSClass::DropBomb(int allowRipple)
                 RemoveStore(curHardpoint, hardPoint[curHardpoint]->weaponId);
 
                 // Make it live
-                vuDatabase->/*Quick*/Insert(theBomb.get());
+                vuDatabase->/*Quick*/ Insert(theBomb.get());
                 theBomb->Wake();
 
                 // Record the drop
-                ownship->SendFireMessage(theBomb.get(), FalconWeaponsFire::BMB, TRUE, ownship->targetPtr);
+                ownship->SendFireMessage(theBomb.get(), FalconWeaponsFire::BMB,
+                                         TRUE, ownship->targetPtr);
 
                 // Step again
                 lastWeapon = curWeapon.get();
@@ -389,18 +419,23 @@ int SMSClass::DropBomb(int allowRipple)
 
         retval = TRUE;
 
-        if ( not curRippleCount)
+        if (not curRippleCount)
         {
             // Can we do a ripple drop?
             if (allowRipple)
                 //curRippleCount = max (min (rippleCount, numCurrentWpn - 1), 0);
-                curRippleCount = max(min(GetAGBRippleCount(), numCurrentWpn - 1), 0);
+                curRippleCount =
+                    max(min(GetAGBRippleCount(), numCurrentWpn - 1), 0);
 
             //nextDrop = SimLibElapsedTime + FloatToInt32((rippleInterval)/
-            nextDrop = SimLibElapsedTime + FloatToInt32((GetAGBRippleInterval()) /
-                       (float)sqrt(ownship->XDelta() * ownship->XDelta() + ownship->YDelta() * ownship->YDelta()) * SEC_TO_MSEC);
+            nextDrop = SimLibElapsedTime +
+                       FloatToInt32(
+                           (GetAGBRippleInterval()) /
+                           (float)sqrt(ownship->XDelta() * ownship->XDelta() +
+                                       ownship->YDelta() * ownship->YDelta()) *
+                           SEC_TO_MSEC);
 
-            if ( not curRippleCount)
+            if (not curRippleCount)
             {
                 ClearFlag(Firing);
             }
@@ -418,13 +453,14 @@ int SMSClass::DropBomb(int allowRipple)
     return (retval);
 }
 
-void SMSBaseClass::ReplaceBomb(int station, BombClass *theBomb)
+void SMSBaseClass::ReplaceBomb(int station, BombClass* theBomb)
 {
     VehicleClassDataType* vc;
     int visFlag;
     VuBin<SimWeaponClass> weapPtr, newBomb, lastPtr;
 
-    newBomb.reset(InitABomb(ownship, hardPoint[station]->weaponId, theBomb->GetRackSlot()));
+    newBomb.reset(InitABomb(ownship, hardPoint[station]->weaponId,
+                            theBomb->GetRackSlot()));
     vc = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE);
     visFlag = vc->VisibleFlags;
 
@@ -469,4 +505,3 @@ void SMSBaseClass::ReplaceBomb(int station, BombClass *theBomb)
         weapPtr = weapPtr->nextOnRail;
     }
 }
-

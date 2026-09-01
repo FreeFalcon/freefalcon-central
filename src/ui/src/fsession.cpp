@@ -2,14 +2,14 @@
 #include "resource.h"
 #include "f4vu.h"
 #include "sim/include/stdhdr.h"
-#include "Falclib/Include/ui.h"
+#include "falclib/include/ui.h"
 
 static int F4SessionManagerOn = FALSE;
 
-#define SESSION_NAME_SIZE  20
-#define DEFAULT_GROUP_NAME     "Default Game"
-#define NEW_BOX_NAME       1
-#define NEW_BOX_GROUP      2
+#define SESSION_NAME_SIZE 20
+#define DEFAULT_GROUP_NAME "Default Game"
+#define NEW_BOX_NAME 1
+#define NEW_BOX_GROUP 2
 
 BOOL CreateNewGame(HWND hDlg);
 BOOL JoinGameProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -23,7 +23,7 @@ void F4SessionUpdateMemberList(HWND hDlg);
 static char F4SessionMemberName[SESSION_NAME_SIZE] = "";
 static char F4SessionGameName[SESSION_NAME_SIZE] = "";
 static char dialogReturnString[SESSION_NAME_SIZE] = "";
-static int  NewBoxType;
+static int NewBoxType;
 
 int InitSessionStuff(HWND hDlg);
 void EndSessionStuff(void);
@@ -36,13 +36,15 @@ BOOL CreateNewGame(HWND hDlg)
 {
     InitSessionStuff(hDlg);
     NewBoxType = NEW_BOX_GROUP;
-    DialogBox(hInst, MAKEINTRESOURCE(IDD_SESSION_NEW), hDlg, (DLGPROC)SessionNewProc);
+    DialogBox(hInst, MAKEINTRESOURCE(IDD_SESSION_NEW), hDlg,
+              (DLGPROC)SessionNewProc);
 
     if (dialogReturnString[0])
     {
         VuGameEntity* newGame;
 
-        newGame = new VuGameEntity(vuLocalSessionEntity->Domain(), dialogReturnString);
+        newGame = new VuGameEntity(vuLocalSessionEntity->Domain(),
+                                   dialogReturnString);
         vuDatabase->Insert(newGame);
     }
 
@@ -155,100 +157,103 @@ BOOL SessionManagerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_INITDIALOG:
-            SetDlgItemText(hDlg, IDC_SESSION_NAME, F4SessionMemberName);
-            SetDlgItemText(hDlg, IDC_SESSION_GROUP, F4SessionGameName);
-            CheckDlgButton(hDlg, IDC_SESSION_ENABLE, F4SessionManagerOn ? BST_CHECKED : BST_UNCHECKED);
-            F4SessionManagerOn = TRUE;
-            theTimer = SetTimer(hDlg, 1, 500, NULL);
+    case WM_INITDIALOG:
+        SetDlgItemText(hDlg, IDC_SESSION_NAME, F4SessionMemberName);
+        SetDlgItemText(hDlg, IDC_SESSION_GROUP, F4SessionGameName);
+        CheckDlgButton(hDlg, IDC_SESSION_ENABLE,
+                       F4SessionManagerOn ? BST_CHECKED : BST_UNCHECKED);
+        F4SessionManagerOn = TRUE;
+        theTimer = SetTimer(hDlg, 1, 500, NULL);
+        break;
+
+    case WM_TIMER:
+        F4SessionUpdateGameList(hDlg);
+        F4SessionUpdateMemberList(hDlg);
+        break;
+
+    case WM_COMMAND:                 /* message: received a command */
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+        case IDCANCEL:
+            EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
+            retval = TRUE;
+            KillTimer(hDlg, theTimer);
             break;
 
-        case WM_TIMER:
+        case IDC_SESSION_ENABLE:
+            if (IsDlgButtonChecked(hDlg, IDC_SESSION_ENABLE) == BST_CHECKED)
+            {
+                InitSessionStuff(hDlg);
+                F4SessionUpdateGameList(hDlg);
+                F4SessionUpdateMemberList(hDlg);
+                SetDlgItemText(hDlg, IDC_SESSION_NAME, F4SessionMemberName);
+                SetDlgItemText(hDlg, IDC_SESSION_GROUP, F4SessionGameName);
+            }
+            else
+                EndSessionStuff();
+
+            retval = TRUE;
+            break;
+
+        case IDC_SESSION_CREATE_GROUP:
+            retval = CreateNewGame(hDlg);
+            break;
+
+        case IDC_SESSION_CHANGE_NAME:
+            NewBoxType = NEW_BOX_NAME;
+            DialogBox(hInst, MAKEINTRESOURCE(IDD_SESSION_NEW), hDlg,
+                      (DLGPROC)SessionNewProc);
+
+            if (dialogReturnString[0])
+            {
+                vuLocalSessionEntity->SetPlayerCallsign(dialogReturnString);
+                InitSessionStuff(hDlg);
+            }
+
+            SetDlgItemText(hDlg, IDC_SESSION_NAME, F4SessionMemberName);
+            F4SessionUpdateMemberList(hDlg);
+            retval = TRUE;
+            break;
+
+        case IDC_SESSION_GROUP_LIST:
+            switch (HIWORD(wParam))
+            {
+            case LBN_SELCHANGE:
+            case LBN_DBLCLK:
+                selItem = SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST,
+                                             LB_GETCURSEL, 0, 0);
+                SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETTEXT,
+                                   selItem, (LPARAM)tmpName);
+                myGame = (VuGameEntity*)vuDatabase->Find(
+                    *((VU_ID*)SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST,
+                                                 LB_GETITEMDATA, selItem, 0)));
+
+                if ((HIWORD(wParam) == LBN_DBLCLK) && myGame)
+                {
+                    gMainThread->LeaveGame();
+                    gMainThread->JoinGame(myGame);
+                    InitSessionStuff(hDlg);
+                }
+
+                F4SessionUpdateMemberList(hDlg);
+                break;
+            }
+
+            retval = TRUE;
+            break;
+
+        case IDC_SESSION_EXIT:
+            if (vuLocalSessionEntity->Game() != vuPlayerPoolGroup)
+                gMainThread->LeaveGame();
+
+            InitSessionStuff(hDlg);
             F4SessionUpdateGameList(hDlg);
             F4SessionUpdateMemberList(hDlg);
             break;
+        }
 
-        case WM_COMMAND:                 /* message: received a command */
-            switch (LOWORD(wParam))
-            {
-                case IDOK:
-                case IDCANCEL:
-                    EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
-                    retval = TRUE;
-                    KillTimer(hDlg, theTimer);
-                    break;
-
-                case IDC_SESSION_ENABLE:
-                    if (IsDlgButtonChecked(hDlg, IDC_SESSION_ENABLE) == BST_CHECKED)
-                    {
-                        InitSessionStuff(hDlg);
-                        F4SessionUpdateGameList(hDlg);
-                        F4SessionUpdateMemberList(hDlg);
-                        SetDlgItemText(hDlg, IDC_SESSION_NAME, F4SessionMemberName);
-                        SetDlgItemText(hDlg, IDC_SESSION_GROUP, F4SessionGameName);
-                    }
-                    else
-                        EndSessionStuff();
-
-                    retval = TRUE;
-                    break;
-
-                case IDC_SESSION_CREATE_GROUP:
-                    retval = CreateNewGame(hDlg);
-                    break;
-
-                case IDC_SESSION_CHANGE_NAME:
-                    NewBoxType = NEW_BOX_NAME;
-                    DialogBox(hInst, MAKEINTRESOURCE(IDD_SESSION_NEW), hDlg, (DLGPROC)SessionNewProc);
-
-                    if (dialogReturnString[0])
-                    {
-                        vuLocalSessionEntity->SetPlayerCallsign(dialogReturnString);
-                        InitSessionStuff(hDlg);
-                    }
-
-                    SetDlgItemText(hDlg, IDC_SESSION_NAME, F4SessionMemberName);
-                    F4SessionUpdateMemberList(hDlg);
-                    retval = TRUE;
-                    break;
-
-                case IDC_SESSION_GROUP_LIST:
-                    switch (HIWORD(wParam))
-                    {
-                        case LBN_SELCHANGE:
-                        case LBN_DBLCLK:
-                            selItem = SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETCURSEL, 0, 0);
-                            SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETTEXT,
-                                               selItem, (LPARAM)tmpName);
-                            myGame = (VuGameEntity*)vuDatabase->Find(
-                                         *((VU_ID*)SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETITEMDATA,
-                                                 selItem, 0)));
-
-                            if ((HIWORD(wParam) == LBN_DBLCLK) && myGame)
-                            {
-                                gMainThread->LeaveGame();
-                                gMainThread->JoinGame(myGame);
-                                InitSessionStuff(hDlg);
-                            }
-
-                            F4SessionUpdateMemberList(hDlg);
-                            break;
-                    }
-
-                    retval = TRUE;
-                    break;
-
-                case IDC_SESSION_EXIT:
-                    if (vuLocalSessionEntity->Game() != vuPlayerPoolGroup)
-                        gMainThread->LeaveGame();
-
-                    InitSessionStuff(hDlg);
-                    F4SessionUpdateGameList(hDlg);
-                    F4SessionUpdateMemberList(hDlg);
-                    break;
-            }
-
-            break;
+        break;
     }
 
     lParam = wParam;
@@ -263,7 +268,8 @@ int InitSessionStuff(HWND hDlg)
     vuLocalSessionEntity->SetPlayerCallsign(F4SessionMemberName);
 
     if (vuLocalSessionEntity->Game())
-        sprintf(F4SessionGameName, "%s\0", vuLocalSessionEntity->Game()->GameName());
+        sprintf(F4SessionGameName, "%s\0",
+                vuLocalSessionEntity->Game()->GameName());
     else
         sprintf(F4SessionGameName, "%s\0", vuPlayerPoolGroup->GameName());
 
@@ -289,16 +295,19 @@ void F4SessionUpdateGameList(HWND hDlg)
     if (hDlg == NULL)
         return;
 
-    selItem = SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETCURSEL, 0, 0);
-    SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETTEXT, selItem, (LPARAM)tmpName);
+    selItem =
+        SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETCURSEL, 0, 0);
+    SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETTEXT, selItem,
+                       (LPARAM)tmpName);
 
     // Free Pointers
-    retval = SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETCOUNT, 0, 0);
+    retval =
+        SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETCOUNT, 0, 0);
 
     for (selItem = 0; selItem < retval; selItem++)
     {
-        delete((VU_ID*)SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETITEMDATA,
-                                          selItem, 0));
+        delete ((VU_ID*)SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST,
+                                           LB_GETITEMDATA, selItem, 0));
     }
 
     SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_RESETCONTENT, 0, 0);
@@ -312,8 +321,9 @@ void F4SessionUpdateGameList(HWND hDlg)
             tmpId = new VU_ID;
             *tmpId = curGame->Id();
 
-            retval = SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_ADDSTRING,
-                                        0, (LPARAM)curGame->GameName());
+            retval =
+                SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_ADDSTRING,
+                                   0, (LPARAM)curGame->GameName());
             SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_SETITEMDATA,
                                retval, (LPARAM)tmpId);
         }
@@ -322,7 +332,7 @@ void F4SessionUpdateGameList(HWND hDlg)
     }
 
     SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_SELECTSTRING,
-                       (WPARAM) - 1, (LPARAM)tmpName);
+                       (WPARAM)-1, (LPARAM)tmpName);
 }
 
 void F4SessionUpdateMemberList(HWND hDlg)
@@ -336,24 +346,27 @@ void F4SessionUpdateMemberList(HWND hDlg)
         return;
 
     // Get the selected game
-    selItem = SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETCURSEL, 0, 0);
+    selItem =
+        SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETCURSEL, 0, 0);
 
     if (selItem >= 0)
     {
-        myGame = (VuGameEntity*)vuDatabase->Find(
-                     *((VU_ID*)SendDlgItemMessage(hDlg, IDC_SESSION_GROUP_LIST, LB_GETITEMDATA, selItem, 0)));
+        myGame = (VuGameEntity*)vuDatabase->Find(*((VU_ID*)SendDlgItemMessage(
+            hDlg, IDC_SESSION_GROUP_LIST, LB_GETITEMDATA, selItem, 0)));
         VuSessionsIterator sessionWalker(myGame);
 
         // Free Pointers
-        retval = SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_GETCOUNT, 0, 0);
+        retval = SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_GETCOUNT,
+                                    0, 0);
 
         for (selItem = 0; selItem < retval; selItem++)
         {
-            delete((VU_ID*)SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_GETITEMDATA,
-                                              selItem, 0));
+            delete ((VU_ID*)SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST,
+                                               LB_GETITEMDATA, selItem, 0));
         }
 
-        SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_RESETCONTENT, 0, 0);
+        SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_RESETCONTENT, 0,
+                           0);
 
         curSession = (VuSessionEntity*)sessionWalker.GetFirst();
 
@@ -362,8 +375,9 @@ void F4SessionUpdateMemberList(HWND hDlg)
             tmpId = new VU_ID;
             *tmpId = curSession->Id();
 
-            retval = SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_ADDSTRING,
-                                        0, (LPARAM)curSession->Callsign());
+            retval =
+                SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_ADDSTRING,
+                                   0, (LPARAM)curSession->Callsign());
             SendDlgItemMessage(hDlg, IDC_SESSION_MEMBER_LIST, LB_SETITEMDATA,
                                retval, (LPARAM)tmpId);
             curSession = (VuSessionEntity*)sessionWalker.GetNext();
@@ -377,33 +391,36 @@ BOOL SessionNewProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_INITDIALOG:
-            if (NewBoxType == NEW_BOX_GROUP)
-            {
-                SetDlgItemText(hDlg, IDC_SESSION_NEW_NAME, vuLocalSessionEntity->Game()->GameName());
-                SetDlgItemText(hDlg, IDC_SESSION_NEW_PROMPT, "New Game :");
-            }
-            else if (NewBoxType == NEW_BOX_NAME)
-            {
-                SetDlgItemText(hDlg, IDC_SESSION_NEW_NAME, vuLocalSessionEntity->Callsign());
-                SetDlgItemText(hDlg, IDC_SESSION_NEW_PROMPT, "New Name :");
-            }
+    case WM_INITDIALOG:
+        if (NewBoxType == NEW_BOX_GROUP)
+        {
+            SetDlgItemText(hDlg, IDC_SESSION_NEW_NAME,
+                           vuLocalSessionEntity->Game()->GameName());
+            SetDlgItemText(hDlg, IDC_SESSION_NEW_PROMPT, "New Game :");
+        }
+        else if (NewBoxType == NEW_BOX_NAME)
+        {
+            SetDlgItemText(hDlg, IDC_SESSION_NEW_NAME,
+                           vuLocalSessionEntity->Callsign());
+            SetDlgItemText(hDlg, IDC_SESSION_NEW_PROMPT, "New Name :");
+        }
 
+        break;
+
+    case WM_COMMAND:                 /* message: received a command */
+        switch (LOWORD(wParam))
+        {
+        case IDOK:    /* "OK" box selected?        */
+            GetDlgItemText(hDlg, IDC_SESSION_NEW_NAME, dialogReturnString,
+                           SESSION_NAME_SIZE);
+
+        case IDCANCEL:
+            EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
+            retval = TRUE;
             break;
+        }
 
-        case WM_COMMAND:                 /* message: received a command */
-            switch (LOWORD(wParam))
-            {
-                case IDOK:    /* "OK" box selected?        */
-                    GetDlgItemText(hDlg, IDC_SESSION_NEW_NAME, dialogReturnString, SESSION_NAME_SIZE);
-
-                case IDCANCEL:
-                    EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
-                    retval = TRUE;
-                    break;
-            }
-
-            break;
+        break;
     }
 
     return (retval);

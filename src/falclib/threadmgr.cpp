@@ -1,9 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ThreadMgr.h"
+#include "threadmgr.h"
 #include "debuggr.h"
-#include "F4Thread.h"
-#include "Falclib.h"
+#include "f4thread.h"
+#include "falclib.h"
 
 int ThreadManager::initialized = FALSE;
 HANDLE ThreadManager::campaign_wait_event;
@@ -21,7 +21,8 @@ void ThreadManager::setup()
     initialized = TRUE;
 
     // security descriptor = NULL, manual reset = false, initial state = unsignaled, name
-    campaign_wait_event = CreateEvent(NULL, FALSE, FALSE, "campaign_wait_event");
+    campaign_wait_event =
+        CreateEvent(NULL, FALSE, FALSE, "campaign_wait_event");
     sim_wait_event = CreateEvent(NULL, FALSE, FALSE, "sim_wait_event");
     memset(&campaign_thread, 0, sizeof(campaign_thread));
     memset(&sim_thread, 0, sizeof(sim_thread));
@@ -33,14 +34,9 @@ void ThreadManager::start_campaign_thread(UFUNCTION function)
 
     campaign_thread.status or_eq THREAD_STATUS_ACTIVE;
 
-    campaign_thread.handle = (HANDLE) CreateThread(
-                                 NULL,
-                                 0,
-                                 (unsigned long(__stdcall *)(void*))function,
-                                 0,
-                                 0,
-                                 &campaign_thread.id
-                             );
+    campaign_thread.handle = (HANDLE)CreateThread(
+        NULL, 0, (unsigned long(__stdcall *)(void *))function, 0, 0,
+        &campaign_thread.id);
 
     ShiAssert(campaign_thread.handle);
 
@@ -53,7 +49,10 @@ bool ThreadManager::campaign_wait_for_sim(DWORD maxwait)
     ResetEvent(campaign_wait_event);
 #endif
 
-    return WaitForSingleObject(campaign_wait_event, maxwait) not_eq WAIT_TIMEOUT ? true : false;
+    return WaitForSingleObject(campaign_wait_event, maxwait) not_eq
+                   WAIT_TIMEOUT ?
+               true :
+               false;
 }
 
 
@@ -68,7 +67,9 @@ bool ThreadManager::sim_wait_for_campaign(DWORD maxwait)
     ResetEvent(sim_wait_event);
 #endif
 
-    return WaitForSingleObject(sim_wait_event, maxwait) not_eq WAIT_TIMEOUT ? true : false;
+    return WaitForSingleObject(sim_wait_event, maxwait) not_eq WAIT_TIMEOUT ?
+               true :
+               false;
 }
 
 
@@ -84,13 +85,8 @@ void ThreadManager::start_sim_thread(UFUNCTION function)
     sim_thread.status or_eq THREAD_STATUS_ACTIVE;
 
     sim_thread.handle = (HANDLE)CreateThread(
-                            NULL,
-                            0,
-                            (unsigned long(__stdcall *)(void*))function,
-                            0,
-                            0,
-                            &sim_thread.id
-                        );
+        NULL, 0, (unsigned long(__stdcall *)(void *))function, 0, 0,
+        &sim_thread.id);
 
     ShiAssert(sim_thread.handle);
 }

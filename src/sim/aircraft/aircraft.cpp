@@ -1,24 +1,24 @@
 #include "stdhdr.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/rviewpnt.h"
-#include "Graphics/Include/RenderOW.h"
-#include "DrawParticleSys.h" //RV - I-Hawk - Added to support RV new trails
-#include "ClassTbl.h"
-#include "Entity.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/renderow.h"
+#include "drawparticlesys.h" //RV - I-Hawk - Added to support RV new trails
+#include "classtbl.h"
+#include "entity.h"
 #include "simobj.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "hud.h"
 #include "fcc.h"
 #include "digi.h"
 #include "facbrain.h"
 #include "tankbrn.h"
 #include "radar.h"
-#include "radarAGOnly.h"
-#include "radarDigi.h"
+#include "radaragonly.h"
+#include "radardigi.h"
 #include "radar360.h"
-#include "radarSuper.h"
-#include "radarDoppler.h"
+#include "radarsuper.h"
+#include "radardoppler.h"
 #include "irst.h"
 #include "eyeball.h"
 #include "sms.h"
@@ -28,7 +28,7 @@
 #include "object.h"
 #include "aircrft.h"
 #include "fsound.h"
-#include "FalcSnd/voicemanager.h"  // MLR 1/29/2004 - 
+#include "falcsnd/voicemanager.h"  // MLR 1/29/2004 -
 #include "soundfx.h"
 #include "otwdrive.h"
 #include "simdrive.h"
@@ -47,50 +47,52 @@
 #include "sfx.h"
 #include "acdef.h"
 #include "simeject.h"
-#include "MsgInc/EjectMsg.h" // PJW 12/3/97
-#include "MsgInc/DamageMsg.h"
+#include "msginc/ejectmsg.h" // PJW 12/3/97
+#include "msginc/damagemsg.h"
 #include "acmi/src/include/acmirec.h"
 #include "fakerand.h"
 #include "navsystem.h"
 #include "dogfight.h"
 #include "falcsess.h"
-#include "Graphics/Include/terrtex.h"
+#include "graphics/include/terrtex.h"
 #include "laserpod.h"
 #include "ui/include/logbook.h"
-#include "MsgInc/TankerMsg.h"
-#include "MsgInc/RadioChatterMsg.h"
-#include "hardPnt.h"
+#include "msginc/tankermsg.h"
+#include "msginc/radiochattermsg.h"
+#include "hardpnt.h"
 #include "ptdata.h"
 #include "atcbrain.h"
 #include "ffeedbk.h"
-#include "easyHts.h"
-#include "VehRwr.h"
+#include "easyhts.h"
+#include "vehrwr.h"
 #include <mbstring.h>
 #include "codelib/tools/lists/lists.h"
 #include "acmi/src/include/acmitape.h"
 #include "dofsnswitches.h"
 #include "team.h"
-#include "Graphics/Include/drawgrnd.h"
-#include "Graphics/Include/matrix.h"
-#include "Graphics/Include/tod.h"
+#include "graphics/include/drawgrnd.h"
+#include "graphics/include/matrix.h"
+#include "graphics/include/tod.h"
 #include "objectiv.h"
 #include "lantirn.h"
 #include "flight.h" /* MN added */
-#include "Cmpclass.h" /* MN added */
-#include "MissEval.h" /* MN added */
-#include "profiler.h" // MLR 5/21/2004 - 
-#include "ACTurbulence.h" // MLR 9/12/2004 - 
+#include "cmpclass.h" /* MN added */
+#include "misseval.h" /* MN added */
+#include "profiler.h" // MLR 5/21/2004 -
+#include "acturbulence.h" // MLR 9/12/2004 -
 #include "dogfight.h" //TJL 08/01/04
 #include "feature.h" //Cobra
 #include "bomb.h"
 #include "simbase.h"
 // MD -- 20040110: added for analog cursor cupport
-#include "SimIO.h"
+#include "simio.h"
 #include "mavdisp.h"
 #include "laserpod.h"
-#include "HarmPod.h"
+#include "harmpod.h"
 
-#define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
+#define RESCALE(in, inmin, inmax, outmin, outmax)                              \
+    (((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) +   \
+     (outmin))
 
 
 extern SensorClass* FindLaserPod(SimMoverClass* theObject);
@@ -107,7 +109,7 @@ extern bool g_bMultiEngineSound;
 extern bool g_bAllHaveIFF; // Cobra - Give all aircraft IFF interrogator
 
 //MI
-#include "PlayerRWR.h"
+#include "playerrwr.h"
 #include "commands.h"
 extern bool g_bINS;
 extern bool g_bNewEngineSounds;
@@ -155,7 +157,8 @@ static ulong gWhole = 0;
 extern int gameCompressionRatio;
 #endif
 
-AircraftClass::AircraftClass(int flag, VU_BYTE** stream, long *rem) : SimVehicleClass(stream, rem)
+AircraftClass::AircraftClass(int flag, VU_BYTE** stream, long* rem)
+    : SimVehicleClass(stream, rem)
 {
     InitLocalData(flag);
 }
@@ -178,7 +181,7 @@ void AircraftClass::InitData()
 
 void AircraftClass::InitLocalData(int flag)
 {
-    turbulence = 0;// wake turb
+    turbulence = 0; // wake turb
     rVortex = 0; // wingtip turp
     lVortex = 0;
 
@@ -203,7 +206,7 @@ void AircraftClass::InitLocalData(int flag)
 
 #endif
 
-    dustTrail = 0;  // MLR 1/4/2004 - new dust trail object
+    dustTrail = 0; // MLR 1/4/2004 - new dust trail object
     dustConnect = FALSE; // MLR 1/4/2004 -
     //sfr: removed, using SetIsDigital
     //isDigital = flag;
@@ -212,7 +215,7 @@ void AircraftClass::InitLocalData(int flag)
     lastapType = ThreeAxisAP;
     theBrain = NULL;
     Guns = NULL;
-    dropProgrammedStep  = 0;
+    dropProgrammedStep = 0;
     dropProgrammedTimer = 0;
 
     // Init targeting
@@ -256,9 +259,9 @@ void AircraftClass::InitLocalData(int flag)
     //wingvapor=NULL;
 
     //RV I-Hawk - Damage trail locations are 0 before being set in AircraftClass::ShowDamage
-    damageTrailLocation0.x = damageTrailLocation1.x = 0.0f ;
-    damageTrailLocation0.y = damageTrailLocation1.y = 0.0f ;
-    damageTrailLocation0.z = damageTrailLocation1.z = 0.0f ;
+    damageTrailLocation0.x = damageTrailLocation1.x = 0.0f;
+    damageTrailLocation0.y = damageTrailLocation1.y = 0.0f;
+    damageTrailLocation0.z = damageTrailLocation1.z = 0.0f;
     damageTrailLocationSet = FALSE;
 
     colorContrail = TRAIL_CONTRAIL; //RV - I-Hawk
@@ -302,7 +305,9 @@ void AircraftClass::InitLocalData(int flag)
     if (isDigital)
     {
         geomCalcRate = FloatToInt32(0.5F * SEC_TO_MSEC);
-        targetUpdateRate = (5 * SEC_TO_MSEC);/*FloatToInt32((1.0f + 3.0f * (float)rand()/RAND_MAX) * SEC_TO_MSEC);*/
+        targetUpdateRate =
+            (5 *
+             SEC_TO_MSEC); /*FloatToInt32((1.0f + 3.0f * (float)rand()/RAND_MAX) * SEC_TO_MSEC);*/
     }
     else
     {
@@ -367,51 +372,51 @@ void AircraftClass::InitLocalData(int flag)
     {
         switch (i)
         {
-            case 0:
-                //Level one, 60 - 90kts tolerance
-                OverSpeedToleranceTanks[i] = 60 + rand() % 30;
-                OverSpeedToleranceBombs[i] = 60 + rand() % 30;
+        case 0:
+            //Level one, 60 - 90kts tolerance
+            OverSpeedToleranceTanks[i] = 60 + rand() % 30;
+            OverSpeedToleranceBombs[i] = 60 + rand() % 30;
 
-                //0.5-1G's tolerance
-                OverGToleranceTanks[i] = 5 + rand() % 5;
+            //0.5-1G's tolerance
+            OverGToleranceTanks[i] = 5 + rand() % 5;
 
-                //1.8 - 2.2 G tolerance, will be divided by 10
-                OverGToleranceBombs[i] = 18 + rand() % 4;
+            //1.8 - 2.2 G tolerance, will be divided by 10
+            OverGToleranceBombs[i] = 18 + rand() % 4;
 
-                //assign them
-                SpeedToleranceTanks = OverSpeedToleranceTanks[i];
-                SpeedToleranceBombs = OverSpeedToleranceBombs[i];
+            //assign them
+            SpeedToleranceTanks = OverSpeedToleranceTanks[i];
+            SpeedToleranceBombs = OverSpeedToleranceBombs[i];
 
-                GToleranceTanks = float(OverGToleranceTanks[i]) / 10.0f;
-                GToleranceBombs = float(OverGToleranceBombs[i]) / 10.0f;
-                break;
+            GToleranceTanks = float(OverGToleranceTanks[i]) / 10.0f;
+            GToleranceBombs = float(OverGToleranceBombs[i]) / 10.0f;
+            break;
 
-            case 1:
-                //level two,  90 - 120kts tolerance
-                OverSpeedToleranceTanks[i] = 91 + rand() % 30;
-                OverSpeedToleranceBombs[i] = 91 + rand() % 30;
+        case 1:
+            //level two,  90 - 120kts tolerance
+            OverSpeedToleranceTanks[i] = 91 + rand() % 30;
+            OverSpeedToleranceBombs[i] = 91 + rand() % 30;
 
-                //1.1 - 1.6G's tolerance, will be divided by 10
-                OverGToleranceTanks[i] = 11 + rand() % 5;
+            //1.1 - 1.6G's tolerance, will be divided by 10
+            OverGToleranceTanks[i] = 11 + rand() % 5;
 
-                //2.3 - 2.7 G tolerance
-                OverGToleranceBombs[i] = 23 + rand() % 4;
-                break;
+            //2.3 - 2.7 G tolerance
+            OverGToleranceBombs[i] = 23 + rand() % 4;
+            break;
 
-            case 2:
-                //level three, 120 - 150kts tolerance
-                OverSpeedToleranceTanks[i] = 122 + rand() % 30;
-                OverSpeedToleranceBombs[i] = 122 + rand() % 30;
+        case 2:
+            //level three, 120 - 150kts tolerance
+            OverSpeedToleranceTanks[i] = 122 + rand() % 30;
+            OverSpeedToleranceBombs[i] = 122 + rand() % 30;
 
-                //1.7 - 2.2G's tolerance, will be divided by 10
-                OverGToleranceTanks[i] = 17 + rand() % 5;
+            //1.7 - 2.2G's tolerance, will be divided by 10
+            OverGToleranceTanks[i] = 17 + rand() % 5;
 
-                //2.8 - 3.2 G tolerance
-                OverGToleranceBombs[i] = 28 + rand() % 4;
-                break;
+            //2.8 - 3.2 G tolerance
+            OverGToleranceBombs[i] = 28 + rand() % 4;
+            break;
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -432,7 +437,8 @@ void AircraftClass::InitLocalData(int flag)
     //Exterior lights init
     //ExteriorLights = 0;
     CockpitWingLight = FALSE;
-    CockpitWingLightFlash = FALSE; //martinv i have no idea about why these WERE residing under TGP cooling ??
+    CockpitWingLightFlash =
+        FALSE; //martinv i have no idea about why these WERE residing under TGP cooling ??
     CockpitStrobeLight = FALSE;
 
     //MI emergency Jettison
@@ -499,16 +505,16 @@ void AircraftClass::InitLocalData(int flag)
     chaffDispenser = 0;
     chaffUsed = 0;
 
-    brakePos = 0;//TJL 02/28/04
+    brakePos = 0; //TJL 02/28/04
     speedBrakeState = 0.0f;
     swingWingAngle = 0; // MLR 3/5/2004 -
     spawnpoint = 0; //RAS-11Nov01-for initial spawnpoint
     requestHotpitRefuel = FALSE; //TJL 08/16/04 //Cobra 10/30/04 TJL
-    iffEnabled = FALSE;//Cobra 11/20/04
+    iffEnabled = FALSE; //Cobra 11/20/04
     interrogating = FALSE; //Cobra 11/21/04 True when TMS Left is Held
-    runIFFInt = FALSE;//Cobra 11/21/04
-    iffModeTimer = (float)SimLibElapsedTime;//Cobra 11/21/04
-    iffModeChallenge = 99;//Cobra 11/21/04
+    runIFFInt = FALSE; //Cobra 11/21/04
+    iffModeTimer = (float)SimLibElapsedTime; //Cobra 11/21/04
+    iffModeChallenge = 99; //Cobra 11/21/04
     JDAMStep = 1; //Cobra - Start by finding a default target (for AI)
     JDAMtgtnum = -1; //Cobra
     JDAMsbc = NULL;
@@ -539,7 +545,7 @@ void AircraftClass::CleanupLocalData()
 {
     if (af)
     {
-        delete(af);
+        delete (af);
         af = NULL;
     }
 
@@ -549,7 +555,7 @@ void AircraftClass::CleanupLocalData()
         mFaults = NULL;
     }
 
-    if (SimDriver.GetPlayerEntity() == this)   //VWF
+    if (SimDriver.GetPlayerEntity() == this) //VWF
     {
         gNavigationSys->DeleteMissionTacans();
     }
@@ -587,7 +593,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
     if (initData)
     {
-        if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and GetSPType() == SPTYPE_F16C)
+        if (GetSType() == STYPE_AIR_FIGHTER_BOMBER and
+            GetSPType() == SPTYPE_F16C)
         {
             acFlags or_eq isF16 bitor isComplex;
             // Turn on the nozzle
@@ -595,7 +602,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
             if (gACMIRec.IsRecording())
             {
-                acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                acmiSwitch.hdr.time =
+                    SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 acmiSwitch.data.type = Type();
                 acmiSwitch.data.uniqueID = Id();
                 acmiSwitch.data.switchNum = COMP_EXH_NOZZLE;
@@ -628,7 +636,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
             // Unlimited fuel? #21: Instant Action ALWAYS gives the player unlimited fuel,
             // independent of the UnlimitedFuel option (the option still works in other
             // modes; the RunningInstantAction() check keeps this scoped to IA only).
-            if (PlayerOptions.UnlimitedFuel() or SimDriver.RunningInstantAction())
+            if (PlayerOptions.UnlimitedFuel() or
+                SimDriver.RunningInstantAction())
             {
                 af->SetFlag(AirframeClass::NoFuelBurn);
             }
@@ -640,9 +649,9 @@ void AircraftClass::Init(SimInitDataClass* initData)
             }
         }
 
-        af->initialX    = initData->x;
-        af->initialY    = initData->y;
-        af->initialZ    = initData->z;
+        af->initialX = initData->x;
+        af->initialY = initData->y;
+        af->initialZ = initData->z;
         af->initialFuel = (float)initData->fuel;
 
         //KCK Kludge
@@ -652,10 +661,10 @@ void AircraftClass::Init(SimInitDataClass* initData)
         //af->z = af->initialZ;
 
         // END Kludge
-        waypoint        = initData->waypointList;
-        numWaypoints    = initData->numWaypoints;
-        curWaypoint     = waypoint;
-        atWaypoint      = waypoint;
+        waypoint = initData->waypointList;
+        numWaypoints = initData->numWaypoints;
+        curWaypoint = waypoint;
+        atWaypoint = waypoint;
 
         for (i = 0; i < numWaypoints; i++)
         {
@@ -663,7 +672,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
             curWaypoint->GetLocation(&wp1X, &wp1Y, &wp1Z);
 
             if (wp1Z > (OTWDriver.GetGroundLevel(wp1X, wp1Y) - 500.0F))
-                curWaypoint->SetLocation(wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) + wp1Z);
+                curWaypoint->SetLocation(
+                    wp1X, wp1Y, OTWDriver.GetGroundLevel(wp1X, wp1Y) + wp1Z);
 
             curWaypoint = curWaypoint->GetNextWP();
         }
@@ -697,7 +707,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
             if (ent and ent->IsTaskForce() and initData->playerSlot == NO_PILOT)
                 allowGroundInit = false;
 
-            if (curWaypoint->GetWPAction() == WP_TAKEOFF and allowGroundInit == true)
+            if (curWaypoint->GetWPAction() == WP_TAKEOFF and
+                allowGroundInit == true)
             {
                 OnGroundInit(initData);
             }
@@ -706,8 +717,10 @@ void AircraftClass::Init(SimInitDataClass* initData)
                 // RV - Biker - AI start at carrier pos with higher alt
                 if (ent and ent->IsTaskForce())
                 {
-                    af->initialX = ent->XPos() + 1.0f * NM_TO_FT - rand() % 12000;
-                    af->initialY = ent->YPos() + 1.0f * NM_TO_FT - rand() % 12000;
+                    af->initialX =
+                        ent->XPos() + 1.0f * NM_TO_FT - rand() % 12000;
+                    af->initialY =
+                        ent->YPos() + 1.0f * NM_TO_FT - rand() % 12000;
                     af->initialZ = min(af->initialZ, -5000 - rand() % 2000);
                 }
 
@@ -734,12 +747,15 @@ void AircraftClass::Init(SimInitDataClass* initData)
                 {
                     curWaypoint->GetLocation(&wp2X, &wp2Y, &wp2Z);
                     af->initialPsi = (float)atan2(wp2Y - wp1Y, wp2X - wp1X);
-                    dt = curWaypoint->GetWPArrivalTime() - atWaypoint->GetWPDepartureTime();
+                    dt = curWaypoint->GetWPArrivalTime() -
+                         atWaypoint->GetWPDepartureTime();
 
                     if (dt > 10 * SEC_TO_MSEC)
                     {
-                        af->initialMach = (float)sqrt((wp2X - wp1X) * (wp2X - wp1X) + (wp2Y - wp1Y) * (wp2Y - wp1Y)) /
-                                          (dt / SEC_TO_MSEC);
+                        af->initialMach =
+                            (float)sqrt((wp2X - wp1X) * (wp2X - wp1X) +
+                                        (wp2Y - wp1Y) * (wp2Y - wp1Y)) /
+                            (dt / SEC_TO_MSEC);
                         af->initialMach = max(af->initialMach, 200.0F);
                     }
                     else
@@ -747,7 +763,6 @@ void AircraftClass::Init(SimInitDataClass* initData)
                         af->initialMach = 0.7F;
                     }
                 }
-
             }
         }
         else
@@ -812,12 +827,12 @@ void AircraftClass::Init(SimInitDataClass* initData)
         }
 
 
-
         // edg: I moved this check down here to make ABSOLUTELY sure
         // that if we're in the air (ie haven't gone thru OnGroundInit() as
         // a result of being at a takeoff point), that we're above the terrain.
         // also the original check was inadequate.
-        if ( not OnGround() and af->initialZ > OTWDriver.GetGroundLevel(af->x, af->y) - 500.0f)
+        if (not OnGround() and
+            af->initialZ > OTWDriver.GetGroundLevel(af->x, af->y) - 500.0f)
         {
             af->initialZ = OTWDriver.GetGroundLevel(af->x, af->y) - 500.0F;
             af->z = af->initialZ;
@@ -843,7 +858,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
         if (gACMIRec.IsRecording())
         {
-            acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            acmiSwitch.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             acmiSwitch.data.type = Type();
             acmiSwitch.data.uniqueID = Id();
             acmiSwitch.data.switchNum = COMP_CANOPY;
@@ -859,7 +875,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
             if (gACMIRec.IsRecording())
             {
-                acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                acmiSwitch.hdr.time =
+                    SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 acmiSwitch.data.type = Type();
                 acmiSwitch.data.uniqueID = Id();
                 acmiSwitch.data.switchNum = COMP_EXH_NOZZLE;
@@ -877,7 +894,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
                 if (gACMIRec.IsRecording())
                 {
-                    acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                    acmiSwitch.hdr.time =
+                        SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                     acmiSwitch.data.type = Type();
                     acmiSwitch.data.uniqueID = Id();
                     acmiSwitch.data.switchNum = COMP_HTS_POD;
@@ -896,7 +914,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
                 //switchChange[11] = TRUE;
                 if (gACMIRec.IsRecording())
                 {
-                    acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                    acmiSwitch.hdr.time =
+                        SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                     acmiSwitch.data.type = Type();
                     acmiSwitch.data.uniqueID = Id();
                     acmiSwitch.data.switchNum = COMP_TIRN_POD;
@@ -911,7 +930,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
         {
             float x, y, z;
             af->GetGunLocation(&x, &y, &z);
-            Guns->SetPosition(x, y, z, af->auxaeroData->gunElevation * DTR, af->auxaeroData->gunAzimuth * DTR);
+            Guns->SetPosition(x, y, z, af->auxaeroData->gunElevation * DTR,
+                              af->auxaeroData->gunAzimuth * DTR);
         }
 
         // Add Sensor
@@ -930,7 +950,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
                     numSensors++;
 
                     //KLudge until new class table for bombers
-                    if (SimACDefTable[classPtr->vehicleDataIndex].sensorType[i] == SensorClass::Radar)
+                    if (SimACDefTable[classPtr->vehicleDataIndex]
+                            .sensorType[i] == SensorClass::Radar)
                     {
                         needsRadar = FALSE;
                     }
@@ -946,41 +967,45 @@ void AircraftClass::Init(SimInitDataClass* initData)
 
             if (needsRadar)
             {
-                numSensors ++;
+                numSensors++;
             }
 
             sensorArray = new SensorClass*[numSensors];
 
             for (i = 0; i < numSensors - (hasHarm + hasLGB + needsRadar); i++)
             {
-                sensorType = SimACDefTable[classPtr->vehicleDataIndex].sensorType[i];
-                sensorIdx = SimACDefTable[classPtr->vehicleDataIndex].sensorIdx[i];
+                sensorType =
+                    SimACDefTable[classPtr->vehicleDataIndex].sensorType[i];
+                sensorIdx =
+                    SimACDefTable[classPtr->vehicleDataIndex].sensorIdx[i];
 
                 switch (sensorType)
                 {
-                    case SensorClass::Radar:
-                        if (RadarDataTable[GetRadarType()].LookDownPenalty < 0.0)
-                            sensorArray[i] = new RadarAGOnlyClass(GetRadarType(), this);
-                        else
-                            sensorArray[i] = new RadarDigiClass(GetRadarType(), this);
+                case SensorClass::Radar:
+                    if (RadarDataTable[GetRadarType()].LookDownPenalty < 0.0)
+                        sensorArray[i] =
+                            new RadarAGOnlyClass(GetRadarType(), this);
+                    else
+                        sensorArray[i] =
+                            new RadarDigiClass(GetRadarType(), this);
 
-                        break;
+                    break;
 
-                    case SensorClass::RWR:
-                        sensorArray[i] = new VehRwrClass(sensorIdx, this);
-                        break;
+                case SensorClass::RWR:
+                    sensorArray[i] = new VehRwrClass(sensorIdx, this);
+                    break;
 
-                    case SensorClass::IRST:
-                        sensorArray[i] = new IrstClass(sensorIdx, this);
-                        break;
+                case SensorClass::IRST:
+                    sensorArray[i] = new IrstClass(sensorIdx, this);
+                    break;
 
-                    case SensorClass::Visual:
-                        sensorArray[i] = new EyeballClass(sensorIdx, this);
-                        break;
+                case SensorClass::Visual:
+                    sensorArray[i] = new EyeballClass(sensorIdx, this);
+                    break;
 
-                    default:
-                        ShiWarning("Unhandled sensor type during Init");
-                        break;
+                default:
+                    ShiWarning("Unhandled sensor type during Init");
+                    break;
                 }
             }
 
@@ -1012,18 +1037,18 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // we need the waypoint data initialized before we build the brain
         switch (((UnitClass*)GetCampaignObject())->GetUnitMission())
         {
-            case AMIS_FAC:
-                theBrain = new FACBrain(this, af);
-                break;
+        case AMIS_FAC:
+            theBrain = new FACBrain(this, af);
+            break;
 
-            case AMIS_TANKER:
-                theBrain = new TankerBrain(this, af);
-                SetFlag(I_AM_A_TANKER);
-                break;
+        case AMIS_TANKER:
+            theBrain = new TankerBrain(this, af);
+            SetFlag(I_AM_A_TANKER);
+            break;
 
-            default:
-                theBrain = new DigitalBrain(this, af);
-                break;
+        default:
+            theBrain = new DigitalBrain(this, af);
+            break;
         }
 
         DBrain()->SetTaxiPoint(initData->ptIndex);
@@ -1032,7 +1057,9 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // Modify search time based on skill level
         // Rookies (level 0) has 9x ave time, top of the line has 1x
         geomCalcRate = geomCalcRate * ((4 - DBrain()->SkillLevel()) * 2 + 1);
-        targetUpdateRate = (5 * SEC_TO_MSEC);/*targetUpdateRate * ((4 - DBrain()->SkillLevel()) * 2 + 1);*/
+        targetUpdateRate =
+            (5 *
+             SEC_TO_MSEC); /*targetUpdateRate * ((4 - DBrain()->SkillLevel()) * 2 + 1);*/
 
         // DO NOT MOVE THIS CODE OR I WILL BREAK YOUR DAMN FINGERS, VWF 3/11/97
         if (isDigital)
@@ -1045,7 +1072,7 @@ void AircraftClass::Init(SimInitDataClass* initData)
         /*--------------------*/
         /* Update shared data */
         /*--------------------*/
-        if ( not OnGround())
+        if (not OnGround())
         {
             SetPosition(af->x, af->y, af->z);
         }
@@ -1060,7 +1087,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
             }
 
             DBrain()->SetTaxiPoint(pt);
-            SetPosition(af->x, af->y, OTWDriver.GetGroundLevel(af->x, af->y) - 5.0F);
+            SetPosition(af->x, af->y,
+                        OTWDriver.GetGroundLevel(af->x, af->y) - 5.0F);
             af->vt = 0.0f;
         }
 
@@ -1077,27 +1105,28 @@ void AircraftClass::Init(SimInitDataClass* initData)
         // END OF MODIFIED SECTION
 
         CalcTransformMatrix(this);
-        theInputs   = new PilotInputs;
+        theInputs = new PilotInputs;
 
         if (Sms->NumHardpoints() and isDigital)
         {
             // #21: in Instant Action ammo must stay unlimited (like fuel) -- do not clobber
             // the SetUnlimitedAmmo(TRUE) set in virtuals.cpp.
-            if ( not SimDriver.RunningInstantAction())
+            if (not SimDriver.RunningInstantAction())
                 Sms->SetUnlimitedAmmo(FALSE);
 
             FCC->SetMasterMode(FireControlComputer::Missile);
             FCC->SetSubMode(FireControlComputer::Aim9);
         }
 
-        if ( not g_bRealisticAvionics or not OnGround())  // JPO set up the systems
+        if (not g_bRealisticAvionics or
+            not OnGround()) // JPO set up the systems
         {
             PreFlight();
         }
     }
 
     // FRB - Open canopy before entering 3D
-    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY and 
+    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY and
         OnGround() /* and (af->GetParkType() not_eq LargeParkPt)*/) // FRB = BigBoys do things too.
     {
         af->canopyState = true;
@@ -1116,7 +1145,8 @@ void AircraftClass::Init(SimInitDataClass* initData)
     }
 
     // Check unlimited guns in dogfight
-    if (SimDriver.RunningDogfight() and SimDogfight.IsSetFlag(DF_UNLIMITED_GUNS))
+    if (SimDriver.RunningDogfight() and
+        SimDogfight.IsSetFlag(DF_UNLIMITED_GUNS))
     {
         Sms->SetUnlimitedGuns(TRUE);
     }
@@ -1188,51 +1218,52 @@ Tpoint AircraftClass::GetTurbulence(void)
     return TotalTurbulence;
 }
 
-void AircraftClass::SetPulseTurbulence(float RateX, float RateY, float RateZ, float Time)
+void AircraftClass::SetPulseTurbulence(float RateX, float RateY, float RateZ,
+                                       float Time)
 {
     PulseTurbulence.x += RateX;
     PulseTurbulence.y += RateY;
     PulseTurbulence.z += RateZ;
 
-    if (Time > PulseTurbulenceTime) PulseTurbulenceTime = Time;
+    if (Time > PulseTurbulenceTime)
+        PulseTurbulenceTime = Time;
 }
 
 
 namespace
 {
-    /** randomizes a burn location. Used below. */
-    void randomizeBurn(const AircraftClass &ac, unsigned int sfxType, Tpoint &pos, Tpoint &vec)
+/** randomizes a burn location. Used below. */
+void randomizeBurn(const AircraftClass& ac, unsigned int sfxType, Tpoint& pos,
+                   Tpoint& vec)
+{
+    Trotation orientation =
+        static_cast<DrawableBSP*>(ac.drawPointer)->orientation;
+
+    if (ac.burnEffectPosition)
     {
-        Trotation orientation = static_cast<DrawableBSP*>(ac.drawPointer)->orientation;
-
-        if (ac.burnEffectPosition)
-        {
-            pos.x = ac.XPos() + orientation.M11 * ac.damageTrailLocation0.x +
-                    orientation.M12 * ac.damageTrailLocation0.y +
-                    orientation.M13 * ac.damageTrailLocation0.z
-                    ;
-            pos.y = ac.YPos() + orientation.M21 * ac.damageTrailLocation0.x +
-                    orientation.M22 * ac.damageTrailLocation0.y +
-                    orientation.M23 * ac.damageTrailLocation0.z
-                    ;
-            pos.z = ac.ZPos() + orientation.M31 * ac.damageTrailLocation0.x +
-                    orientation.M32 * ac.damageTrailLocation0.y +
-                    orientation.M33 * ac.damageTrailLocation0.z
-                    ;
-        }
-        else
-        {
-            pos.x = ac.XPos();
-            pos.y = ac.YPos();
-            pos.z = ac.ZPos();
-        }
-
-        vec.x = ac.XDelta();
-        vec.y = ac.YDelta();
-        vec.z = ac.ZDelta();
-
-        DrawableParticleSys::PS_AddParticleEx((sfxType + 1), &pos, &vec);
+        pos.x = ac.XPos() + orientation.M11 * ac.damageTrailLocation0.x +
+                orientation.M12 * ac.damageTrailLocation0.y +
+                orientation.M13 * ac.damageTrailLocation0.z;
+        pos.y = ac.YPos() + orientation.M21 * ac.damageTrailLocation0.x +
+                orientation.M22 * ac.damageTrailLocation0.y +
+                orientation.M23 * ac.damageTrailLocation0.z;
+        pos.z = ac.ZPos() + orientation.M31 * ac.damageTrailLocation0.x +
+                orientation.M32 * ac.damageTrailLocation0.y +
+                orientation.M33 * ac.damageTrailLocation0.z;
     }
+    else
+    {
+        pos.x = ac.XPos();
+        pos.y = ac.YPos();
+        pos.z = ac.ZPos();
+    }
+
+    vec.x = ac.XDelta();
+    vec.y = ac.YDelta();
+    vec.z = ac.ZDelta();
+
+    DrawableParticleSys::PS_AddParticleEx((sfxType + 1), &pos, &vec);
+}
 }
 
 int AircraftClass::Exec(void)
@@ -1254,18 +1285,22 @@ int AircraftClass::Exec(void)
             float TempTurb = af->vcas / af->MaxVcas() - 0.7f;
 
             // if we r over 70% of Max Cas Apply Turbulence
-            if (TempTurb > 0.0f) Turb += 6.0f * (TempTurb * TempTurb);
+            if (TempTurb > 0.0f)
+                Turb += 6.0f * (TempTurb * TempTurb);
 
             // * SHOCK WAVE *
             // Calculate removing a 90%
-            TempTurb = sqrtf(XDelta() * XDelta() + ZDelta() * ZDelta() + YDelta() * YDelta());
+            TempTurb = sqrtf(XDelta() * XDelta() + ZDelta() * ZDelta() +
+                             YDelta() * YDelta());
             TempTurb = TempTurb / 1100 - 0.9f;
 
             // if we r over 90% of Mach Apply Turbulence
-            if (TempTurb > 0.0f and TempTurb <= 0.1f) Turb += 10.0f * (TempTurb * TempTurb);
+            if (TempTurb > 0.0f and TempTurb <= 0.1f)
+                Turb += 10.0f * (TempTurb * TempTurb);
 
             // if Passing Sonic Wave, Bang
-            if (TempTurb >= 0.1f and LastMach < 0.1f) SetPulseTurbulence(0.3f, 0.3f, 0.3f, 1.0f);
+            if (TempTurb >= 0.1f and LastMach < 0.1f)
+                SetPulseTurbulence(0.3f, 0.3f, 0.3f, 1.0f);
 
             LastMach = TempTurb;
 
@@ -1275,7 +1310,8 @@ int AircraftClass::Exec(void)
             TempTurb = af->nzcgs / af->MaxGs() - 0.7f;
 
             // if we r over 70% of Max Load Apply Turbulence
-            if (TempTurb > 0.0f) Turb += 5.0f * TempTurb * TempTurb;
+            if (TempTurb > 0.0f)
+                Turb += 5.0f * TempTurb * TempTurb;
 
             StaticTurbulence.x = StaticTurbulence.y = StaticTurbulence.z = Turb;
 
@@ -1289,12 +1325,14 @@ int AircraftClass::Exec(void)
                 PulseTurbulence.z -= PulseTurbulence.z / Div;
                 PulseTurbulenceTime -= SimLibMajorFrameTime;
 
-                if (PulseTurbulenceTime < 0.0f) PulseTurbulenceTime = 0.0f;
+                if (PulseTurbulenceTime < 0.0f)
+                    PulseTurbulenceTime = 0.0f;
             }
             else
             {
                 // No time, no Turbulence
-                PulseTurbulence.x = PulseTurbulence.y = PulseTurbulence.z = 0.0f;
+                PulseTurbulence.x = PulseTurbulence.y = PulseTurbulence.z =
+                    0.0f;
             }
 
             TotalTurbulence.x = (PulseTurbulence.x + StaticTurbulence.x);
@@ -1302,7 +1340,8 @@ int AircraftClass::Exec(void)
             TotalTurbulence.z = (PulseTurbulence.z + StaticTurbulence.z);
 
             // Setup the Value for sound stuff
-            Turb = max(TotalTurbulence.x, max(TotalTurbulence.y, TotalTurbulence.z));
+            Turb = max(TotalTurbulence.x,
+                       max(TotalTurbulence.y, TotalTurbulence.z));
             Turb = log(Turb) * 1000.0f;
 
             // The turbulence Noise
@@ -1314,9 +1353,10 @@ int AircraftClass::Exec(void)
 
                 v = -2000.0f;
 
-                v += (af->nzcgs - 5.5f) * 250.0f ;
+                v += (af->nzcgs - 5.5f) * 250.0f;
                 //F4SoundFXSetDist(af->auxaeroData->sndOverSpeed2, TRUE, v, ( (GetKias() - af->curMaxStoreSpeed)) / 25);
-                SoundPos.Sfx(af->auxaeroData->sndOverSpeed2, 0, 2 , v); // MLR 5/16/2004 -
+                SoundPos.Sfx(af->auxaeroData->sndOverSpeed2, 0, 2,
+                             v); // MLR 5/16/2004 -
             }
 
             //if (Turb) SoundPos.Sfx(af->auxaeroData->sndOverSpeed2, 0, 2, min( Turb , 0.0f));
@@ -1341,20 +1381,30 @@ int AircraftClass::Exec(void)
         //if(GetKias() > 50)
         if (af->IsSet(AirframeClass::InAir))
         {
-            Trotation *orientation = &((DrawableBSP*)drawPointer)->orientation;
+            Trotation* orientation = &((DrawableBSP*)drawPointer)->orientation;
 
             // place turb 20' behind jet
 
-            turb.x = XPos() + orientation->M11 * -20; //thrx + orientation->M12*thry + orientation->M13*thrz;
-            turb.y = YPos() + orientation->M21 * -20; //thrx + orientation->M22*thry + orientation->M23*thrz;
-            turb.z = ZPos() + orientation->M31 * -20; //thrx + orientation->M32*thry + orientation->M33*thrz;
+            turb.x =
+                XPos() +
+                orientation->M11 *
+                    -20; //thrx + orientation->M12*thry + orientation->M13*thrz;
+            turb.y =
+                YPos() +
+                orientation->M21 *
+                    -20; //thrx + orientation->M22*thry + orientation->M23*thrz;
+            turb.z =
+                ZPos() +
+                orientation->M31 *
+                    -20; //thrx + orientation->M32*thry + orientation->M33*thrz;
 
             float acweight = af->weight * 0.00001f;
             float acaoa = af->alpha * 0.1f;
             //float strength = 1; //af->weight * af->nxcgb;
             float strength = acweight * acaoa;
 
-            turbulence->RecordPosition(strength, turb.x, turb.y, turb.z); // TODO compute a strength value
+            turbulence->RecordPosition(strength, turb.x, turb.y,
+                                       turb.z); // TODO compute a strength value
 
             // the wingtip vortices are in Damage.cpp because the wingtip position is calculated there, and
             // it takes into account wing sweep and all that jazz.
@@ -1377,7 +1427,8 @@ int AircraftClass::Exec(void)
         {
             char tmpchr[1024];
             sprintf(tmpchr, "%f", af->Fuel() + af->ExternalFuel());
-            ((DrawableBSP*)drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)drawPointer)->LabelColor());
+            ((DrawableBSP*)drawPointer)
+                ->SetLabel(tmpchr, ((DrawableBSP*)drawPointer)->LabelColor());
         }
     }
 
@@ -1391,17 +1442,20 @@ int AircraftClass::Exec(void)
     {
         // When doing a QuickPreflight, it can happen that the HUD is not yet setup and
         // it stays dark when entering the simulation.
-        if (g_bDarkHudFix and TheHud and this == SimDriver.GetPlayerEntity() and 
-            DBrain() and not (DBrain()->moreFlags bitand DigitalBrain::HUDSetup) and 
+        if (g_bDarkHudFix and TheHud and this == SimDriver.GetPlayerEntity() and
+            DBrain() and
+            not(DBrain()->moreFlags bitand DigitalBrain::HUDSetup) and
             PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP)
         {
             TheHud->SymWheelPos = 1.0F;
             TheHud->SetLightLevel();
-            DBrain()->moreFlags or_eq DigitalBrain::HUDSetup; // set the flag so we don't go in here again
+            DBrain()->moreFlags or_eq DigitalBrain::
+                HUDSetup; // set the flag so we don't go in here again
         }
 
 
-        if (doEjectCountdown and not ejectTriggered and ejectCountdown < 0.0 and fabs(glocFactor) < 0.95F)
+        if (doEjectCountdown and not ejectTriggered and ejectCountdown < 0.0 and
+            fabs(glocFactor) < 0.95F)
         {
             ejectTriggered = TRUE;
             //Make sure the autopilot is off;
@@ -1414,28 +1468,14 @@ int AircraftClass::Exec(void)
         ejectCountdown -= SimLibMajorFrameTime;
 
         // ejection: use a small pctStrength damage window to trigger;
-        if
-        (
-            (
-                (
-                    pctStrength < -0.4f and pctStrength > -0.6f and 
-                    (
-                        dyingType == SimVehicleClass::DIE_INTERMITTENT_SMOKE or
-                        dyingType == SimVehicleClass::DIE_SHORT_FIREBALL or
-                        dyingType == 5 or
-                        dyingType == 6 or
-                        dyingType == SimVehicleClass::DIE_SMOKE
-                    ) and 
-                    isDigital
-                ) or
-                (
-                    ejectTriggered
-                )
-            ) and 
-            (
- not IsAcStatusBitsSet(ACSTATUS_PILOT_EJECTED)
-            )
-        )
+        if (((pctStrength < -0.4f and pctStrength > -0.6f and
+              (dyingType == SimVehicleClass::DIE_INTERMITTENT_SMOKE or
+               dyingType == SimVehicleClass::DIE_SHORT_FIREBALL or
+               dyingType == 5 or dyingType == 6 or
+               dyingType == SimVehicleClass::DIE_SMOKE) and
+              isDigital) or
+             (ejectTriggered)) and
+            (not IsAcStatusBitsSet(ACSTATUS_PILOT_EJECTED)))
         {
             Eject();
             ResetVoices();
@@ -1445,7 +1485,8 @@ int AircraftClass::Exec(void)
         //MI Emergency jettison
         if (g_bRealisticAvionics)
         {
-            if (doJettCountdown and not EmerJettTriggered and JettCountown < 0.0)
+            if (doJettCountdown and not EmerJettTriggered and
+                JettCountown < 0.0)
             {
                 EmerJettTriggered = TRUE;
             }
@@ -1455,7 +1496,8 @@ int AircraftClass::Exec(void)
             {
                 Sms->EmergencyJettison();
                 EmerJettTriggered = false;
-                doJettCountdown = false; // Unz and Saint -- This was missing causing MP flooding.
+                doJettCountdown =
+                    false; // Unz and Saint -- This was missing causing MP flooding.
             }
 
             JettCountown -= SimLibMajorFrameTime;
@@ -1481,7 +1523,8 @@ int AircraftClass::Exec(void)
                 if (MainPower() == MainPowerMain)
                 {
                     if (BUPADIEnergy < 540.0F) //9 minutes
-                        BUPADIEnergy += (SimLibMajorFrameTime * 9 * 2); //full in 1 min
+                        BUPADIEnergy +=
+                            (SimLibMajorFrameTime * 9 * 2); //full in 1 min
                 }
                 else if (BUPADIEnergy > 0.0F)
                     BUPADIEnergy -= SimLibMajorFrameTime;
@@ -1492,7 +1535,8 @@ int AircraftClass::Exec(void)
                     INSOff(BUP_ADI_OFF_IN); //visibile
 
                 //TargetingPod Cooling
-                if (HasPower(AircraftClass::RightHptPower) and PodCooling > -1.0F)
+                if (HasPower(AircraftClass::RightHptPower) and
+                    PodCooling > -1.0F)
                     PodCooling -= SimLibMajorFrameTime;
                 else //warm it up if we don't have power
                     PodCooling += SimLibMajorFrameTime;
@@ -1507,7 +1551,8 @@ int AircraftClass::Exec(void)
                 RALTStatus = RON;
             }
             //made this an else if, the rest is orig code.
-            else if (HasPower(RaltPower) and RALTCoolTime > -1.0F and RALTStatus not_eq ROFF)
+            else if (HasPower(RaltPower) and RALTCoolTime > -1.0F and
+                     RALTStatus not_eq ROFF)
                 RALTCoolTime -= SimLibMajorFrameTime;
             else
                 RALTCoolTime += SimLibMajorFrameTime;
@@ -1518,9 +1563,10 @@ int AircraftClass::Exec(void)
     // Base Class Exec
 
     //RV - I-Hawk - Removed the burning SFX stuff here as not handled in simveh.cpp anymore...
-    if (pctStrength <= 0.0f and not IsExploding() and (DrawableBSP*)drawPointer)
+    if (pctStrength <= 0.0f and not IsExploding() and
+        (DrawableBSP*) drawPointer)
     {
-        Trotation *orientation = &((DrawableBSP*)drawPointer)->orientation;
+        Trotation* orientation = &((DrawableBSP*)drawPointer)->orientation;
         Tpoint pos, vec;
 
         if (gSfxLOD >= 0.5f)
@@ -1532,9 +1578,9 @@ int AircraftClass::Exec(void)
             if (pctStrength > -0.07f)
             {
             }
-            else if (pctStrength > -0.3f)   // I-Hawk - was -0.5f before
+            else if (pctStrength > -0.3f) // I-Hawk - was -0.5f before
             {
-                if (dyingTimer > 0.3f)   //
+                if (dyingTimer > 0.3f) //
                 {
                     //RV - I-Hawk - Randomized burning position...
                     randomizeBurn(*this, PSFX_AC_EARLY_BURNING, pos, vec);
@@ -1546,73 +1592,73 @@ int AircraftClass::Exec(void)
                         vec.z = ZDelta() * 0.5f + PRANDFloat() * 20.0f;
 
                         DrawableParticleSys::PS_AddParticleEx(
-                            (SFX_AC_DEBRIS + 1), &pos, &vec
-                        );
+                            (SFX_AC_DEBRIS + 1), &pos, &vec);
                     }
 
                     // zero out
                     dyingTimer = 0.0f;
                 }
             }
-            else switch (dyingType)
+            else
+                switch (dyingType)
                 {
-                    case 5:
-                    case SimVehicleClass::DIE_SMOKE:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            // run stuff here....
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_1, pos, vec);
-                            dyingTimer = 0;
-                        }
+                case 5:
+                case SimVehicleClass::DIE_SMOKE:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        // run stuff here....
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_1, pos, vec);
+                        dyingTimer = 0;
+                    }
 
-                        break;
+                    break;
 
-                    case 6:
-                    case SimVehicleClass::DIE_SHORT_FIREBALL:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_3, pos, vec);
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                case 6:
+                case SimVehicleClass::DIE_SHORT_FIREBALL:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_3, pos, vec);
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
 
-                    case SimVehicleClass::DIE_INTERMITTENT_SMOKE:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_2, pos, vec);
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                case SimVehicleClass::DIE_INTERMITTENT_SMOKE:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_2, pos, vec);
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
 
-                    case SimVehicleClass::DIE_FIREBALL:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            // run stuff here....
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_4, pos, vec);
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                case SimVehicleClass::DIE_FIREBALL:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        // run stuff here....
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_4, pos, vec);
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
 
-                    case SimVehicleClass::DIE_INTERMITTENT_FIRE:
-                    default:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            randomizeBurn(*this, PSFX_AC_BURNING_6, pos, vec);
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                case SimVehicleClass::DIE_INTERMITTENT_FIRE:
+                default:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        randomizeBurn(*this, PSFX_AC_BURNING_6, pos, vec);
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
                 } // end switch
         } // end if LOD
     }
@@ -1622,7 +1668,7 @@ int AircraftClass::Exec(void)
 
     if (IsExploding())
     {
-        if ( not IsSetFlag(SHOW_EXPLOSION))
+        if (not IsSetFlag(SHOW_EXPLOSION))
         {
             RunExplosion();
             SetFlag(SHOW_EXPLOSION);
@@ -1637,13 +1683,14 @@ int AircraftClass::Exec(void)
 
         return TRUE;
     }
-    else if ( not IsDead())
+    else if (not IsDead())
     {
         // Sound effects....
         if (pctStrength > 0.0f)
         {
-            VehicleClassDataType *vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
-            ShiAssert(FALSE == F4IsBadReadPtr(vc, sizeof * vc));
+            VehicleClassDataType* vc =
+                GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
+            ShiAssert(FALSE == F4IsBadReadPtr(vc, sizeof *vc));
             int inckpt = OTWDriver.DisplayInCockpit(); // JPO save this
 
             // JPO - if special case...
@@ -1669,9 +1716,9 @@ int AircraftClass::Exec(void)
                         af->auxaeroData->sndInt = vc->EngineSound;
                     }
 
-                    if ( not IsLocal()) // MLR 2/29/2004 - for MP engine sounds
+                    if (not IsLocal()) // MLR 2/29/2004 - for MP engine sounds
                     {
-                        af->rpm  = specialData.powerOutput;
+                        af->rpm = specialData.powerOutput;
                         af->rpm2 = specialData.powerOutput2;
                     }
 
@@ -1707,40 +1754,67 @@ int AircraftClass::Exec(void)
                         {
                             p = pwr / .7f;
 
-                            if ( not isDigital and inckpt and IsLocal())
+                            if (not isDigital and inckpt and IsLocal())
                             {
                                 // internal sounds
-                                v = (1.0f - af->auxaeroData->sndIntChart.Lookup(pwr)) * -10000;
-                                p1 = af->auxaeroData->sndIntPitchChart.Lookup(pwr);
-                                SoundPos.Sfx(af->auxaeroData->sndInt, eng, p1, v);
+                                v = (1.0f -
+                                     af->auxaeroData->sndIntChart.Lookup(pwr)) *
+                                    -10000;
+                                p1 = af->auxaeroData->sndIntPitchChart.Lookup(
+                                    pwr);
+                                SoundPos.Sfx(af->auxaeroData->sndInt, eng, p1,
+                                             v);
 
                                 if (af->auxaeroData->sndAbInt)
                                 {
-                                    v = (1.0f - af->auxaeroData->sndAbIntChart.Lookup(pwr)) * -10000;
-                                    p1 = af->auxaeroData->sndAbIntPitchChart.Lookup(pwr);
-                                    SoundPos.Sfx(af->auxaeroData->sndAbInt, eng, p1, v);
+                                    v = (1.0f -
+                                         af->auxaeroData->sndAbIntChart.Lookup(
+                                             pwr)) *
+                                        -10000;
+                                    p1 = af->auxaeroData->sndAbIntPitchChart
+                                             .Lookup(pwr);
+                                    SoundPos.Sfx(af->auxaeroData->sndAbInt, eng,
+                                                 p1, v);
                                 }
 
                                 if (af->auxaeroData->sndInt2)
                                 {
-                                    v = (1.0f - af->auxaeroData->sndInt2Chart.Lookup(pwr)) * -10000;
-                                    p1 = af->auxaeroData->sndInt2PitchChart.Lookup(pwr);
-                                    SoundPos.Sfx(af->auxaeroData->sndInt2, eng, p1, v);
+                                    v = (1.0f -
+                                         af->auxaeroData->sndInt2Chart.Lookup(
+                                             pwr)) *
+                                        -10000;
+                                    p1 = af->auxaeroData->sndInt2PitchChart
+                                             .Lookup(pwr);
+                                    SoundPos.Sfx(af->auxaeroData->sndInt2, eng,
+                                                 p1, v);
                                 }
                             }
 
                             // external sounds
-                            v = (1.0f - af->auxaeroData->sndExtChart.Lookup(pwr)) * -10000;
+                            v = (1.0f -
+                                 af->auxaeroData->sndExtChart.Lookup(pwr)) *
+                                -10000;
                             p1 = af->auxaeroData->sndExtPitchChart.Lookup(pwr);
-                            SoundPos.SfxRel(af->auxaeroData->sndExt, eng, p1, v, af->auxaeroData->engineLocation[eng]);
+                            SoundPos.SfxRel(
+                                af->auxaeroData->sndExt, eng, p1, v,
+                                af->auxaeroData->engineLocation[eng]);
 
-                            v = (1.0f - af->auxaeroData->sndAbExtChart.Lookup(pwr)) * -10000;
-                            p1 = af->auxaeroData->sndAbExtPitchChart.Lookup(pwr);
-                            SoundPos.SfxRel(af->auxaeroData->sndAbExt, eng, p1, v, af->auxaeroData->engineLocation[eng]);
+                            v = (1.0f -
+                                 af->auxaeroData->sndAbExtChart.Lookup(pwr)) *
+                                -10000;
+                            p1 =
+                                af->auxaeroData->sndAbExtPitchChart.Lookup(pwr);
+                            SoundPos.SfxRel(
+                                af->auxaeroData->sndAbExt, eng, p1, v,
+                                af->auxaeroData->engineLocation[eng]);
 
-                            v = (1.0f - af->auxaeroData->sndExt2Chart.Lookup(pwr)) * -10000;
+                            v = (1.0f -
+                                 af->auxaeroData->sndExt2Chart.Lookup(pwr)) *
+                                -10000;
                             p1 = af->auxaeroData->sndExt2PitchChart.Lookup(pwr);
-                            SoundPos.SfxRel(af->auxaeroData->sndExt2, eng, p1, v, af->auxaeroData->engineLocation[eng]);
+                            SoundPos.SfxRel(
+                                af->auxaeroData->sndExt2, eng, p1, v,
+                                af->auxaeroData->engineLocation[eng]);
                         }
 
                         pwr = af->rpm2;
@@ -1748,9 +1822,12 @@ int AircraftClass::Exec(void)
 
                     for (t = 0; t < 4 and af->auxaeroData->sndAero[t]; t++)
                     {
-                        v = (af->auxaeroData->sndAeroAOAChart[t].Lookup(af->alpha) *
-                             af->auxaeroData->sndAeroSpeedChart[t].Lookup(af->mach) - 1.0f)
-                            * 10000;
+                        v = (af->auxaeroData->sndAeroAOAChart[t].Lookup(
+                                 af->alpha) *
+                                 af->auxaeroData->sndAeroSpeedChart[t].Lookup(
+                                     af->mach) -
+                             1.0f) *
+                            10000;
                         SoundPos.Sfx(af->auxaeroData->sndAero[t], t, 1, v);
                     }
 
@@ -1759,7 +1836,7 @@ int AircraftClass::Exec(void)
                     // properly
                     if (af->mach >= 0.55f)
                     {
-                        float breathingPitch = 0.0f * (af->nzcgs / 4.5f) ;
+                        float breathingPitch = 0.0f * (af->nzcgs / 4.5f);
 
                         float v;
 
@@ -1785,7 +1862,8 @@ int AircraftClass::Exec(void)
 
                         if (GetKias() > af->curMaxStoreSpeed)
                         {
-                            v += (((af->curMaxStoreSpeed - GetKias()) / 50.0f) * 1250.0f);
+                            v += (((af->curMaxStoreSpeed - GetKias()) / 50.0f) *
+                                  1250.0f);
                         }
 
 
@@ -1796,7 +1874,7 @@ int AircraftClass::Exec(void)
                 else
                 {
                     // old engine style
-                    if ( not isDigital and inckpt and IsLocal())
+                    if (not isDigital and inckpt and IsLocal())
                     {
                         // inside sounds
                         if (PowerOutput() > 0.01f)
@@ -1804,16 +1882,19 @@ int AircraftClass::Exec(void)
                             if (af->auxaeroData->sndInt > 0)
                             {
                                 // MLR 2003-11-10 internal engine sound
-                                SoundPos.Sfx(af->auxaeroData->sndInt, 0, 0.01f + PowerOutput() , 0);
+                                SoundPos.Sfx(af->auxaeroData->sndInt, 0,
+                                             0.01f + PowerOutput(), 0);
                             }
                             else
                             {
-                                SoundPos.Sfx(vc->EngineSound, 0, 0.01f + PowerOutput() , 0);
+                                SoundPos.Sfx(vc->EngineSound, 0,
+                                             0.01f + PowerOutput(), 0);
                             }
                         }
 
                         if (PowerOutput() > 1.0F)
-                            SoundPos.Sfx(af->auxaeroData->sndAbInt, 0, PowerOutput() - 0.25f , 0);
+                            SoundPos.Sfx(af->auxaeroData->sndAbInt, 0,
+                                         PowerOutput() - 0.25f, 0);
 
                         // wind noise
                         SoundPos.Sfx(SFX_ENGINEA, 0, GetKias() / 450.0f, 0);
@@ -1823,39 +1904,41 @@ int AircraftClass::Exec(void)
                     {
                         // outside sounds
                         if (PowerOutput() > 0.01f)
-                            SoundPos.Sfx(af->auxaeroData->sndExt, 0, 0.01f + PowerOutput() , 0);
+                            SoundPos.Sfx(af->auxaeroData->sndExt, 0,
+                                         0.01f + PowerOutput(), 0);
 
                         if (PowerOutput() > 1.0F)
-                            SoundPos.Sfx(af->auxaeroData->sndAbExt, 0, (PowerOutput() - 0.25f) , 0);
+                            SoundPos.Sfx(af->auxaeroData->sndAbExt, 0,
+                                         (PowerOutput() - 0.25f), 0);
                     }
                 }
 
                 // stored the original code at the end of file
             }
-
         }
         else
         {
             // plane is going down: strength < 0
-            SoundPos.Sfx(SFX_FIRELOOP, 0, 1.0f + pctStrength * 0.2f , 0);
+            SoundPos.Sfx(SFX_FIRELOOP, 0, 1.0f + pctStrength * 0.2f, 0);
 
             if (af)
                 af->SetSimpleMode(SIMPLE_MODE_OFF);
         }
 
         // COBRA - RED - Check for Lite Pool
-        if (
-            af->gearPos == 1.0F and not (af->gear[1].flags bitand GearData::GearBroken) and 
-            IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)
-        )
+        if (af->gearPos == 1.0F and
+            not(af->gear[1].flags bitand GearData::GearBroken) and
+            IsAcStatusBitsSet(ACSTATUS_EXT_LANDINGLIGHT) and
+            IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS))
         {
-            if ( not pLandLitePool)
+            if (not pLandLitePool)
             {
                 Tpoint pos;
                 pos.x = XPos();
                 pos.y = YPos();
                 pos.z = ZPos();
-                pLandLitePool = new DrawableGroundVehicle(MapVisId(VIS_LITEPOOL), &pos, Yaw());
+                pLandLitePool = new DrawableGroundVehicle(
+                    MapVisId(VIS_LITEPOOL), &pos, Yaw());
                 mInhibitLitePool = TRUE;
                 OTWDriver.InsertObject(pLandLitePool);
             }
@@ -1935,25 +2018,29 @@ int AircraftClass::Exec(void)
         }
 
         // ACMI Output
-        if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x0000000f) == 0)
+        if (gACMIRec.IsRecording() and
+            (SimLibFrameCount bitand 0x0000000f) == 0)
         {
-            airPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            airPos.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             airPos.data.type = Type();
             airPos.data.uniqueID = ACMIIDTable->Add(
-                                       Id(), (char *)((DrawableBSP*)drawPointer)->Label(), TeamInfo[GetTeam()]->GetColor()
-                                   );//.num_;
+                Id(), (char*)((DrawableBSP*)drawPointer)->Label(),
+                TeamInfo[GetTeam()]->GetColor()); //.num_;
             airPos.data.x = XPos();
             airPos.data.y = YPos();
             airPos.data.z = ZPos();
             airPos.data.roll = Roll();
             airPos.data.pitch = Pitch();
             airPos.data.yaw = Yaw();
-            RadarClass *radar = (RadarClass*)FindSensor(this, SensorClass::Radar);
+            RadarClass* radar =
+                (RadarClass*)FindSensor(this, SensorClass::Radar);
 #if NO_REMOTE_BUGGED_TARGET
 
             if (radar and radar->CurrentTarget())
             {
-                airPos.RadarTarget = ACMIIDTable->Add(radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
+                airPos.RadarTarget = ACMIIDTable->Add(
+                    radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
             }
 
 #else
@@ -1961,11 +2048,13 @@ int AircraftClass::Exec(void)
             if (radar and radar->RemoteBuggedTarget)
             {
                 //me123 add record for online targets
-                airPos.RadarTarget = ACMIIDTable->Add(radar->RemoteBuggedTarget->Id(), NULL, 0); //.num_;
+                airPos.RadarTarget = ACMIIDTable->Add(
+                    radar->RemoteBuggedTarget->Id(), NULL, 0); //.num_;
             }
             else if (radar and radar->CurrentTarget())
             {
-                airPos.RadarTarget = ACMIIDTable->Add(radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
+                airPos.RadarTarget = ACMIIDTable->Add(
+                    radar->CurrentTarget()->BaseData()->Id(), NULL, 0); //.num_;
             }
 
 #endif
@@ -1977,7 +2066,7 @@ int AircraftClass::Exec(void)
             gACMIRec.AircraftPositionRecord(&airPos);
         }
 
-        if ( not IsLocal())
+        if (not IsLocal())
         {
             ShowDamage();
             af->RemoteUpdate();
@@ -1986,7 +2075,7 @@ int AircraftClass::Exec(void)
 
         //START_PROFILE("AC_EXEC_5d1");
         // Increment the SendStatus Timer
-        requestCount ++;
+        requestCount++;
 
         // edg note: this seems to have no ill effects as far as I can
         // tell.  However I'm commenting it out for the time being until
@@ -1999,7 +2088,8 @@ int AircraftClass::Exec(void)
         //if ( IsSetFlag( MOTION_OWNSHIP ) )
         if (autopilotType not_eq CombatAP and HasPilot())
         {
-            targetList = UpdateTargetList(targetList, this, SimDriver.combinedList);
+            targetList =
+                UpdateTargetList(targetList, this, SimDriver.combinedList);
 
             // edg: all aircraft now get combined list
             CalcRelGeom(this, targetList, vmat, 1.0F / SimLibMajorFrameTime);
@@ -2023,15 +2113,16 @@ int AircraftClass::Exec(void)
         //STOP_PROFILE("AC_EXEC_5d1");
 
         if (OTWDriver.IsActive() // JPO - practice safe viewpoints people :-)
-           and not OTWDriver.IsShutdown()) // JB - come on, practice safer viewpoints ;-)
+            and
+            not OTWDriver
+                    .IsShutdown()) // JB - come on, practice safer viewpoints ;-)
         {
             // JB carrier start
             RViewPoint* viewp = OTWDriver.GetViewpoint();
 
-            if (
-                ZPos() > -g_fCarrierStartTolerance and 
-                af and af->vcas < .01 and viewp and viewp->GetGroundType(XPos(), YPos()) == COVERAGE_WATER
-            )
+            if (ZPos() > -g_fCarrierStartTolerance and af and af->vcas < .01 and
+                viewp and
+                viewp->GetGroundType(XPos(), YPos()) == COVERAGE_WATER)
             {
                 // We just started inside the carrier
                 if (isDigital)
@@ -2051,21 +2142,26 @@ int AircraftClass::Exec(void)
                 }
                 else
                 {
-                    targetList = UpdateTargetList(targetList, this, SimDriver.combinedList);
+                    targetList = UpdateTargetList(targetList, this,
+                                                  SimDriver.combinedList);
                 }
             }
             // JB carrier end
-            else if (isDigital and DBrain() and not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
+            else if (isDigital and DBrain() and
+                     not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
             {
                 //in multiplay this sometimes gets fucked up for the player flight
                 // JPO - changed > to < here --- otherwise everything start started up
-                if (curWaypoint and curWaypoint->GetWPArrivalTime() - 2 * CampaignMinutes < TheCampaign.CurrentTime)
+                if (curWaypoint and
+                    curWaypoint->GetWPArrivalTime() - 2 * CampaignMinutes <
+                        TheCampaign.CurrentTime)
                 {
                     //me123 this should never happen, but it does sometimes in MP
                     PreFlight();
 
                     //MI if we don't tell our brain that we've preflighted, we keep on looping in that function.....
-                    if (isDigital and DBrain() and not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
+                    if (isDigital and DBrain() and
+                        not DBrain()->IsSetATC(DigitalBrain::DonePreflight))
                     {
                         DBrain()->SetATCFlag(DigitalBrain::DonePreflight);
                     }
@@ -2075,7 +2171,8 @@ int AircraftClass::Exec(void)
 
                     if (gACMIRec.IsRecording())
                     {
-                        acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                        acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC +
+                                              OTWDriver.todOffset;
                         acmiSwitch.data.type = Type();
                         acmiSwitch.data.uniqueID = Id();
                         acmiSwitch.data.switchNum = COMP_CANOPY;
@@ -2093,7 +2190,7 @@ int AircraftClass::Exec(void)
         // this shouldn't really matter much, but it can be easily turned on
 
         //if ( not isDigital and PlayerOptions.CollisionsOn() ) // JB carrier
-        if ( not isDigital)
+        if (not isDigital)
         {
             // JB carrier
             CheckObjectCollision();
@@ -2112,7 +2209,7 @@ int AircraftClass::Exec(void)
                 tempSensorArray[i] = NULL;
             }
 
-            delete [] tempSensorArray;
+            delete[] tempSensorArray;
             tempSensorArray = NULL;
             tempNumSensors = 0;
         }
@@ -2124,7 +2221,7 @@ int AircraftClass::Exec(void)
         // RV - Biker - Don't blackout for AI -> they cannot handle atm
         if (SimDriver.GetPlayerEntity() == this /*or g_bAIGloc*/)
         {
-            if ( not PlayerOptions.BlackoutOn())
+            if (not PlayerOptions.BlackoutOn())
             {
                 glocFactor = 0.0F;
             }
@@ -2138,17 +2235,19 @@ int AircraftClass::Exec(void)
         // 2002-03-03 MN fix, only check strike mission flights
         flight = (Flight)GetCampaignObject();
 
-        if (flight and (flight->GetUnitMission() > AMIS_SEADESCORT and flight->GetUnitMission() < AMIS_FAC))
+        if (flight and (flight->GetUnitMission() > AMIS_SEADESCORT and
+                        flight->GetUnitMission() < AMIS_FAC))
         {
             flightIdx = flight->GetComponentIndex(this);
 
-            if ( not AWACSsaidAbort and not flightIdx) // only for flight leaders of course
+            if (not AWACSsaidAbort and
+                not flightIdx) // only for flight leaders of course
             {
                 WayPoint w = flight->GetFirstUnitWP();
 
                 while (w)
                 {
-                    if ( not (w->GetWPFlags() bitand WPF_TARGET))
+                    if (not(w->GetWPFlags() bitand WPF_TARGET))
                     {
                         w = w->GetNextWP();
                         continue;
@@ -2160,11 +2259,13 @@ int AircraftClass::Exec(void)
                     if (target and (target->GetTeam() == GetTeam()))
                     {
                         AWACSsaidAbort = true;
-                        FalconRadioChatterMessage *radioMessage;
-                        radioMessage = CreateCallFromAwacs(flight, rcAWACSTARGETOCCUPIED);
+                        FalconRadioChatterMessage* radioMessage;
+                        radioMessage =
+                            CreateCallFromAwacs(flight, rcAWACSTARGETOCCUPIED);
                         // let AWACS bring the message that we've occupied the target ;)
                         FalconSendMessage(radioMessage, FALSE);
-                        TheCampaign.MissionEvaluator->Register3DAWACSabort(flight);
+                        TheCampaign.MissionEvaluator->Register3DAWACSabort(
+                            flight);
                     }
 
                     break;
@@ -2174,12 +2275,16 @@ int AircraftClass::Exec(void)
 
         //Cobra AI JDAMs need a target.  Go through PB target list and select a target
         // Cobra - bypass HP = 0 (guns) and HP= -1 (CTD)
-        if ((isDigital or Sms->JDAMtargeting == SMSBaseClass::PB) and Sms->GetCurrentHardpoint() > 0)
+        if ((isDigital or Sms->JDAMtargeting == SMSBaseClass::PB) and
+            Sms->GetCurrentHardpoint() > 0)
         {
-            SimWeaponClass *sw = static_cast<BombClass*>(Sms->hardPoint[Sms->GetCurrentHardpoint()]->weaponPointer.get());
+            SimWeaponClass* sw = static_cast<BombClass*>(
+                Sms->hardPoint[Sms->GetCurrentHardpoint()]
+                    ->weaponPointer.get());
 
-            if (((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType() == wtGPS)
-                 or (sw and (((BombClass *)sw)->IsSetBombFlag(BombClass::IsJSOW)))))
+            if (((Sms->hardPoint[Sms->GetCurrentHardpoint()]->GetWeaponType() ==
+                  wtGPS) or
+                 (sw and (((BombClass*)sw)->IsSetBombFlag(BombClass::IsJSOW)))))
             {
                 if (this)
                     JDAMtgtnum = GetJDAMPBTarget((AircraftClass*)this);
@@ -2195,10 +2300,9 @@ int AircraftClass::Exec(void)
             if (DBrain()->targetSpotWing)
             {
                 // First See if the timer has elapsed or the target is died
-                if (
-                    SimLibElapsedTime > DBrain()->targetSpotWingTimer or
- not DBrain()->targetSpotWingTarget or DBrain()->targetSpotWingTarget->IsDead()
-                )
+                if (SimLibElapsedTime > DBrain()->targetSpotWingTimer or
+                    not DBrain()->targetSpotWingTarget or
+                    DBrain()->targetSpotWingTarget->IsDead())
                 {
                     // 2002-03-07 MODIFIDED BY S.G.
                     //Added 'or not DBrain()->targetSpotWingTarget' but should NOT be required
@@ -2231,8 +2335,7 @@ int AircraftClass::Exec(void)
                     DBrain()->targetSpotWing->SetPosition(
                         DBrain()->targetSpotWingTarget->XPos(),
                         DBrain()->targetSpotWingTarget->YPos(),
-                        DBrain()->targetSpotWingTarget->ZPos()
-                    );
+                        DBrain()->targetSpotWingTarget->ZPos());
                     DBrain()->targetSpotWing->EntityDriver()->Exec(vuxGameTime);
                 }
             }
@@ -2240,16 +2343,15 @@ int AircraftClass::Exec(void)
             if (DBrain()->targetSpotElement)
             {
                 // First See if the timer has elapsed or the target is died
-                if (
-                    SimLibElapsedTime > DBrain()->targetSpotElementTimer or
- not DBrain()->targetSpotElementTarget or
-                    DBrain()->targetSpotElementTarget->IsDead()
-                )
+                if (SimLibElapsedTime > DBrain()->targetSpotElementTimer or
+                    not DBrain()->targetSpotElementTarget or
+                    DBrain()->targetSpotElementTarget->IsDead())
                 {
                     // 2002-03-07 MODIFIDED BY S.G. Added 'or
                     // not DBrain()->targetSpotElementTarget' but should NOT be required
                     // sfr: cleanup camera mess
-                    FalconLocalSession->RemoveCamera(DBrain()->targetSpotElement);
+                    FalconLocalSession->RemoveCamera(
+                        DBrain()->targetSpotElement);
                     // If so, kill the camera and clear out everything associated with this targetSpot
                     //for (unsigned char i = 0; i < FalconLocalSession->CameraCount(); i++) {
                     // if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotElement) {
@@ -2276,9 +2378,9 @@ int AircraftClass::Exec(void)
                     DBrain()->targetSpotElement->SetPosition(
                         DBrain()->targetSpotElementTarget->XPos(),
                         DBrain()->targetSpotElementTarget->YPos(),
-                        DBrain()->targetSpotElementTarget->ZPos()
-                    );
-                    DBrain()->targetSpotElement->EntityDriver()->Exec(vuxGameTime);
+                        DBrain()->targetSpotElementTarget->ZPos());
+                    DBrain()->targetSpotElement->EntityDriver()->Exec(
+                        vuxGameTime);
                 }
             }
 
@@ -2286,15 +2388,15 @@ int AircraftClass::Exec(void)
             {
                 // First See if the timer has elapsed or the target is died
                 if (SimLibElapsedTime > DBrain()->targetSpotFlightTimer or
- not DBrain()->targetSpotFlightTarget or
-                    DBrain()->targetSpotFlightTarget->IsDead()
-                   )
+                    not DBrain()->targetSpotFlightTarget or
+                    DBrain()->targetSpotFlightTarget->IsDead())
                 {
                     // 2002-03-07 MODIFIDED BY S.G.
                     // Added 'or not DBrain()->targetSpotFlightTarget' but should NOT be required
                     // If so, kill the camera and clear out everything associated with this targetSpot
                     // sfr: cleanup camera mess
-                    FalconLocalSession->RemoveCamera(DBrain()->targetSpotFlight);
+                    FalconLocalSession->RemoveCamera(
+                        DBrain()->targetSpotFlight);
                     //for (int i = 0; i < FalconLocalSession->CameraCount(); i++) {
                     // if (FalconLocalSession->GetCameraEntity(i) == DBrain()->targetSpotFlight) {
                     // FalconLocalSession->RemoveCamera(DBrain()->targetSpotFlight);
@@ -2320,9 +2422,9 @@ int AircraftClass::Exec(void)
                     DBrain()->targetSpotFlight->SetPosition(
                         DBrain()->targetSpotFlightTarget->XPos(),
                         DBrain()->targetSpotFlightTarget->YPos(),
-                        DBrain()->targetSpotFlightTarget->ZPos()
-                    );
-                    DBrain()->targetSpotFlight->EntityDriver()->Exec(vuxGameTime);
+                        DBrain()->targetSpotFlightTarget->ZPos());
+                    DBrain()->targetSpotFlight->EntityDriver()->Exec(
+                        vuxGameTime);
                 }
             }
         }
@@ -2344,12 +2446,9 @@ int AircraftClass::Exec(void)
         // greater than 50ft AGL
         // descent rate > 960 fpm
         // landing gear up
-        if ( not isDigital and 
-            ZPos() - af->groundZ < -50.0f and 
-            af->gearPos <= 0.0f and 
-            af->zdot > 960.0f / 60.0f and 
-            Pitch() < 0.0f
-           )
+        if (not isDigital and ZPos() - af->groundZ < -50.0f and
+            af->gearPos <= 0.0f and af->zdot > 960.0f / 60.0f and
+            Pitch() < 0.0f)
         {
             float turnRadius, denom, gs, num, alt;
             float groundAlt;
@@ -2410,16 +2509,15 @@ int AircraftClass::Exec(void)
             }
             else
             {
-                if ( not SoundPos.IsPlaying(af->auxaeroData->sndBBPullup))
+                if (not SoundPos.IsPlaying(af->auxaeroData->sndBBPullup))
                 {
                     SoundPos.Sfx(af->auxaeroData->sndBBPullup);
                 }
 
                 mFaults->SetFault(alt_low);
-
             }
         }
-        else if ( not isDigital)
+        else if (not isDigital)
         {
             mFaults->ClearFault(alt_low);
         }
@@ -2428,7 +2526,8 @@ int AircraftClass::Exec(void)
         if (af->vt > 0.0f and not isDigital and PlayerOptions.CollisionsOn())
             GroundFeatureCheck(af->groundZ);
         else
-            FeatureCollision(af->groundZ);   //need onFlatFeature to be correct for landings
+            FeatureCollision(
+                af->groundZ); //need onFlatFeature to be correct for landings
 
         //onFlatFeature = TRUE;
 
@@ -2448,11 +2547,12 @@ int AircraftClass::Exec(void)
             }
 
             // Check for special IA end condition
-            if (SimDriver.RunningInstantAction() and this == SimDriver.GetPlayerEntity())
+            if (SimDriver.RunningInstantAction() and
+                this == SimDriver.GetPlayerEntity())
             {
                 if (af->vt < 5.0F and af->throtl < 0.1F)
                 {
-                    if ( not gPlayerExitMenuShown)
+                    if (not gPlayerExitMenuShown)
                     {
                         gPlayerExitMenuShown = TRUE;
                         OTWDriver.EndFlight();
@@ -2474,11 +2574,12 @@ int AircraftClass::Exec(void)
             int connected = 0;
 
             // MLR 1/3/2004 - this is a retarded effect.
-            if (ZPos() - af->groundZ >= -40.0f and 
+            if (ZPos() - af->groundZ >= -40.0f and
                 ZPos() - af->groundZ <= -10.0f)
             {
                 //if we are over a runway, we don't want to kick up dust
-                if ( not af->IsSet(AirframeClass::OverRunway) and af->gearPos <= 0.7F)
+                if (not af->IsSet(AirframeClass::OverRunway) and
+                    af->gearPos <= 0.7F)
                 {
                     int groundType;
                     // Check ground type
@@ -2514,7 +2615,8 @@ int AircraftClass::Exec(void)
                         //*/
 
                         //I-Hawk - Use PS for dust/mist effect
-                        if ( not (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
+                        if (not(groundType == COVERAGE_WATER or
+                                groundType == COVERAGE_RIVER))
                         {
                             theSFX = SFX_DUSTCLOUD;
                         }
@@ -2533,14 +2635,13 @@ int AircraftClass::Exec(void)
                          );
                          */
 
-                        DrawableParticleSys::PS_AddParticleEx(
-                            (theSFX + 1), &pos, &mvec);
-
+                        DrawableParticleSys::PS_AddParticleEx((theSFX + 1),
+                                                              &pos, &mvec);
                     }
                 }
             }
 
-            if ( not connected and dustConnect and dustTrail)
+            if (not connected and dustConnect and dustTrail)
             {
                 //dustTrail->TrimTrail(0);
                 dustConnect = FALSE;
@@ -2570,14 +2671,17 @@ int AircraftClass::Exec(void)
         SetSpeedBrake();
 
         // Spped brake sound
-        if (af->dbrake > 0.1f and this == SimDriver.GetPlayerEntity() and GetKias() > 100.0F)
+        if (af->dbrake > 0.1f and this == SimDriver.GetPlayerEntity() and
+            GetKias() > 100.0F)
         {
-            SoundPos.Sfx(af->auxaeroData->sndSpdBrakeWind, 0, GetKias() / 450.0f, (1.0F - af->speedBrake) * -100.0F);
+            SoundPos.Sfx(af->auxaeroData->sndSpdBrakeWind, 0,
+                         GetKias() / 450.0f, (1.0F - af->speedBrake) * -100.0F);
         }
 
-        if (af->IsSet(AirframeClass::Refueling) and DBrain() and not DBrain()->IsTanker())
+        if (af->IsSet(AirframeClass::Refueling) and DBrain() and
+            not DBrain()->IsTanker())
         {
-            AircraftClass *tanker = NULL;
+            AircraftClass* tanker = NULL;
             tanker = (AircraftClass*)vuDatabase->Find(DBrain()->Tanker());
             float refuelRate = af->GetRefuelRate();
             float refuelHelp = (float)PlayerOptions.GetRefuelingMode();
@@ -2585,24 +2689,26 @@ int AircraftClass::Exec(void)
             if (this not_eq SimDriver.GetPlayerEntity() and g_fAIRefuelSpeed)
                 refuelHelp = g_fAIRefuelSpeed;
 
-            if ( not tanker or not tanker->IsAirplane() or
- not af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp * refuelHelp)
-               )
+            if (not tanker or not tanker->IsAirplane() or
+                not af->AddFuel(refuelRate * SimLibMajorFrameTime * refuelHelp *
+                                refuelHelp))
             {
-                FalconTankerMessage *TankerMsg;
+                FalconTankerMessage* TankerMsg;
 
                 if (tanker)
                 {
-                    TankerMsg = new FalconTankerMessage(tanker->Id(), FalconLocalGame);
+                    TankerMsg =
+                        new FalconTankerMessage(tanker->Id(), FalconLocalGame);
                 }
                 else
                 {
-                    TankerMsg = new FalconTankerMessage(FalconNullId, FalconLocalGame);
+                    TankerMsg =
+                        new FalconTankerMessage(FalconNullId, FalconLocalGame);
                 }
 
                 TankerMsg->dataBlock.type = FalconTankerMessage::DoneRefueling;
                 TankerMsg->dataBlock.caller = Id();
-                TankerMsg->dataBlock.data1  = 0;
+                TankerMsg->dataBlock.data1 = 0;
                 FalconSendMessage(TankerMsg);
             }
         }
@@ -2636,11 +2742,14 @@ int AircraftClass::Exec(void)
             // digi's releasing bombs
             SimObjectType* tmpTarget = targetPtr;
 
-            if (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile and DBrain())
+            if (FCC->GetMasterMode() ==
+                    FireControlComputer::AirGroundMissile and
+                DBrain())
             {
                 tmpTarget = DBrain()->GetGroundTarget();
             }
-            else if (FCC->GetMasterMode() == FireControlComputer::AirGroundLaser)
+            else if (FCC->GetMasterMode() ==
+                     FireControlComputer::AirGroundLaser)
             {
                 tmpTarget = NULL;
             }
@@ -2669,9 +2778,10 @@ int AircraftClass::Exec(void)
         DoCountermeasures();
 
         // KCK: Really, this is the only safe way to set campaign positions -
-        UnitClass *campObj = (UnitClass*) GetCampaignObject();
+        UnitClass* campObj = (UnitClass*)GetCampaignObject();
 
-        if (campObj and campObj->IsLocal() and campObj->GetComponentLead() == this)
+        if (campObj and campObj->IsLocal() and
+            campObj->GetComponentLead() == this)
         {
             campObj->SimSetLocation(af->x, af->y, af->z);
 
@@ -2687,10 +2797,10 @@ int AircraftClass::Exec(void)
     //START_PROFILE("AC_EXEC_6");
 
     // If ownship update control surfaces
-    if ( not IsExploding())
+    if (not IsExploding())
         MoveSurfaces();
 
-    if ( not IsDead())
+    if (not IsDead())
         ShowDamage();
 
     //MI no parking brake while in Air
@@ -2701,10 +2811,9 @@ int AircraftClass::Exec(void)
     HotPitRefuel();
 
     //Cobra 11/20/04 IFF Do we have it? Is it on? Is it working?
-    if (
-        (af->auxaeroData->hasIFF == 1 or g_bAllHaveIFF) and 
-        HasPower(AircraftClass::IFFPower) and ( not mFaults->GetFault(FaultClass::iff_fault))
-    )
+    if ((af->auxaeroData->hasIFF == 1 or g_bAllHaveIFF) and
+        HasPower(AircraftClass::IFFPower) and
+        (not mFaults->GetFault(FaultClass::iff_fault)))
     {
         iffEnabled = TRUE;
     }
@@ -2721,9 +2830,10 @@ int AircraftClass::Exec(void)
             iffModeChallenge = 4;
             iffModeTimer = SimLibElapsedTime + 1000.0f;
         }
-        else if ((iffModeChallenge <= 4 and iffModeChallenge > 0) and (iffModeTimer < SimLibElapsedTime))
+        else if ((iffModeChallenge <= 4 and iffModeChallenge > 0) and
+                 (iffModeTimer < SimLibElapsedTime))
         {
-            iffModeChallenge --;
+            iffModeChallenge--;
             iffModeTimer = SimLibElapsedTime + 1000.0f;
         }
         else if (iffModeChallenge == 0)
@@ -2731,7 +2841,6 @@ int AircraftClass::Exec(void)
             interrogating = TRUE;
             runIFFInt = FALSE;
         }
-
     }
     else
     {
@@ -2745,10 +2854,9 @@ int AircraftClass::Exec(void)
     // sfr: TODO must go to initialization. fucking hack
     if (Sms)
     {
-        if (
-            (this == SimDriver.GetPlayerEntity()) and (autopilotType == CombatAP) and 
-            (Sms->MasterArm() == SMSBaseClass::Safe) and not OnGround()
-        )
+        if ((this == SimDriver.GetPlayerEntity()) and
+            (autopilotType == CombatAP) and
+            (Sms->MasterArm() == SMSBaseClass::Safe) and not OnGround())
         {
             Sms->SetMasterArm(SMSBaseClass::Arm);
         }
@@ -2762,18 +2870,17 @@ int AircraftClass::Exec(void)
     // sfr: check light stuff here
     if (isDigital and curWaypoint)
     {
-        if (
-            curWaypoint->GetWPAction() not_eq WP_TAKEOFF
-           and curWaypoint->GetWPAction() not_eq WP_LAND
-           and (IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS))
-        )
+        if (curWaypoint->GetWPAction() not_eq WP_TAKEOFF and
+            curWaypoint->GetWPAction() not_eq WP_LAND and
+            (IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)))
         {
             ExtlOff(Extl_Main_Power);
             ExtlOff(Extl_Anti_Coll);
             ExtlOff(Extl_Wing_Tail);
             ExtlOff(Extl_Flash);
         }
-        else if (curWaypoint->GetWPAction() == WP_LAND and not (IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)))
+        else if (curWaypoint->GetWPAction() == WP_LAND and
+                 not(IsAcStatusBitsSet(ACSTATUS_EXT_LIGHTS)))
         {
             ExtlOn(Extl_Main_Power);
             ExtlOn(Extl_Anti_Coll);
@@ -2790,17 +2897,19 @@ int AircraftClass::Exec(void)
 void AircraftClass::RunSensors(void)
 {
     SimObjectType* object;
-    SensorClass *sensor = NULL;
+    SensorClass* sensor = NULL;
     int i;
 
     // RV - MASTERFIX - if It's a player and there is no more the player entity, avoid all this stuff
-    if (( not isDigital) and ( not SimDriver.GetPlayerAircraft())) return;
+    if ((not isDigital) and (not SimDriver.GetPlayerAircraft()))
+        return;
 
     // MD -- 20040110: if player is using analog cursor controls, grab values now if player
     // is not using CombatAP.  Both X and Y must be mapped for analog to work at all.
-    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and
+        (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
     {
-        if ( not isDigital or autopilotType == CombatAP)
+        if (not isDigital or autopilotType == CombatAP)
         {
             SetCursorCmdsByAnalog();
         }
@@ -2821,7 +2930,7 @@ void AircraftClass::RunSensors(void)
 
         // Do player control processing
         //if ( not isDigital){
-        if ( not isDigital or autopilotType == CombatAP)
+        if (not isDigital or autopilotType == CombatAP)
         {
             sensor->ExecModes(FCC->designateCmd, FCC->dropTrackCmd);
             sensor->UpdateState(FCC->cursorXCmd, FCC->cursorYCmd);
@@ -2835,12 +2944,9 @@ void AircraftClass::RunSensors(void)
         // AI won't reacquire its lockedTarget once it can see it again...
         // If it cannot see it, it will be reset anyway...
         // TODO: Do we need to check if it's an AI? Will it affect the player's radar? Update: Nope
-        if (
-            autopilotType == CombatAP and 
-            sensor->CurrentTarget() == NULL and 
-            sensor->Type() not_eq SensorClass::TargetingPod and 
-            targetPtr not_eq NULL
-        )
+        if (autopilotType == CombatAP and sensor->CurrentTarget() == NULL and
+            sensor->Type() not_eq SensorClass::TargetingPod and
+            targetPtr not_eq NULL)
         {
             sensor->SetDesiredTarget(targetPtr);
         }
@@ -2851,7 +2957,8 @@ void AircraftClass::RunSensors(void)
         object = sensor->Exec(targetList);
 
         //Cobra for some reason Visdetect isn't setting target
-        if (object and sensor->Type() == SensorClass::Visual and sensor->Type() not_eq SensorClass::TargetingPod)
+        if (object and sensor->Type() == SensorClass::Visual and
+            sensor->Type() not_eq SensorClass::TargetingPod)
         {
             SetTarget(object);
         }
@@ -2861,17 +2968,21 @@ void AircraftClass::RunSensors(void)
         // target directly.  Sad but true...
         if (sensor->Type() == SensorClass::Radar)
         {
-            if (FCC->GetMasterMode() not_eq FireControlComputer::AirGroundBomb and 
-                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundRocket and // MLR 4/3/2004 -
-                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundMissile and 
-                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundLaser and 
-                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundHARM
-               )
+            if (FCC->GetMasterMode() not_eq
+                    FireControlComputer::AirGroundBomb and
+                FCC->GetMasterMode() not_eq
+                    FireControlComputer::AirGroundRocket and // MLR 4/3/2004 -
+                FCC->GetMasterMode() not_eq
+                    FireControlComputer::AirGroundMissile and
+                FCC->GetMasterMode() not_eq
+                    FireControlComputer::AirGroundLaser and
+                FCC->GetMasterMode() not_eq FireControlComputer::AirGroundHARM)
             {
                 // Our system target becomes our radar target
                 SetTarget(object);
             }
-            else if (PlayerOptions.GetAvionicsType() == ATEasy and FCC->GetSubMode() == FireControlComputer::CCIP)
+            else if (PlayerOptions.GetAvionicsType() == ATEasy and
+                     FCC->GetSubMode() == FireControlComputer::CCIP)
             {
                 // Let easy mode players get a TD box even in CCIP
                 SetTarget(object);
@@ -2897,10 +3008,10 @@ void AircraftClass::RemovePilot(void)
 void AircraftClass::Eject(void)
 {
     int i;
-    EjectedPilotClass *epc;
-    FalconEjectMessage *ejectMessage; // PJW... Yell at me for this :) 12/3/97
-    FalconDeathMessage *deathMessage; // SCR/KCK 12/10/98
-    FalconEntity *lastToHit;
+    EjectedPilotClass* epc;
+    FalconEjectMessage* ejectMessage; // PJW... Yell at me for this :) 12/3/97
+    FalconDeathMessage* deathMessage; // SCR/KCK 12/10/98
+    FalconEntity* lastToHit;
 
     if (IsSetFalcFlag(FEC_REGENERATING))
     {
@@ -2909,16 +3020,20 @@ void AircraftClass::Eject(void)
         ejectMessage = new FalconEjectMessage(Id(), FalconLocalGame);
         ShiAssert(ejectMessage);
         ejectMessage->dataBlock.ePlaneID = Id();
-        ejectMessage->dataBlock.eCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
+        ejectMessage->dataBlock.eCampID =
+            ((CampBaseClass*)GetCampaignObject())->GetCampID();
         ejectMessage->dataBlock.eFlightID = GetCampaignObject()->Id();
         ejectMessage->dataBlock.ePilotID = pilotSlot;
-        ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() not_eq FalconNullId);
+        ejectMessage->dataBlock.hadLastShooter =
+            (uchar)(LastShooter() not_eq FalconNullId);
         FalconSendMessage(ejectMessage, TRUE);
 
         deathMessage = new FalconDeathMessage(Id(), FalconLocalGame);
         deathMessage->dataBlock.dEntityID = Id();
-        deathMessage->dataBlock.dCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
-        deathMessage->dataBlock.dSide = ((CampBaseClass*)GetCampaignObject())->GetOwner();
+        deathMessage->dataBlock.dCampID =
+            ((CampBaseClass*)GetCampaignObject())->GetCampID();
+        deathMessage->dataBlock.dSide =
+            ((CampBaseClass*)GetCampaignObject())->GetOwner();
         deathMessage->dataBlock.dPilotID = pilotSlot;
         deathMessage->dataBlock.dIndex = Type();
         deathMessage->dataBlock.fWeaponID = Type();
@@ -2933,14 +3048,16 @@ void AircraftClass::Eject(void)
 
             if (lastToHit->IsSim())
             {
-                SimVehicleClass *lh = static_cast<SimVehicleClass*>(lastToHit);
+                SimVehicleClass* lh = static_cast<SimVehicleClass*>(lastToHit);
                 deathMessage->dataBlock.fPilotID = lh->pilotSlot;
-                deathMessage->dataBlock.fCampID = lh->GetCampaignObject()->GetCampID();
-                deathMessage->dataBlock.fSide = lh->GetCampaignObject()->GetOwner();
+                deathMessage->dataBlock.fCampID =
+                    lh->GetCampaignObject()->GetCampID();
+                deathMessage->dataBlock.fSide =
+                    lh->GetCampaignObject()->GetOwner();
             }
             else
             {
-                CampBaseClass *lh = static_cast<CampBaseClass*>(lastToHit);
+                CampBaseClass* lh = static_cast<CampBaseClass*>(lastToHit);
                 deathMessage->dataBlock.fPilotID = 0;
                 deathMessage->dataBlock.fCampID = lh->GetCampID();
                 deathMessage->dataBlock.fSide = lh->GetOwner();
@@ -2975,7 +3092,8 @@ void AircraftClass::Eject(void)
             af->SetSimpleMode(SIMPLE_MODE_OFF);
         }
 
-        VehicleClassDataType *vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
+        VehicleClassDataType* vc =
+            GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
 
         for (int pilotno = 0; pilotno < vc->NumberOfPilots; pilotno++)
         {
@@ -2986,75 +3104,94 @@ void AircraftClass::Eject(void)
             if (epc not_eq NULL)
             {
                 epc->SetSendCreate(VuEntity::VU_SC_SEND_OOB);
-                vuDatabase->/*Quick*/Insert(epc);
+                vuDatabase->/*Quick*/ Insert(epc);
                 epc->Wake();
                 // KCK: We should really Wake() this with an overloaded wake function,
                 // but the Insertion callback will do most of our waking stuff.
 
                 // Play with this.
                 epc->SetTransmissionTime(
-                    vuxRealTime + (unsigned long)((float)rand() / RAND_MAX * epc->UpdateRate())
-                );
+                    vuxRealTime + (unsigned long)((float)rand() / RAND_MAX *
+                                                  epc->UpdateRate()));
             }
 
             if ((pilotno == 0) and IsLocal())
             {
                 // PJW 12/3/97... added Eject message broadcast
-                ejectMessage = new FalconEjectMessage(epc->Id(), FalconLocalGame);
+                ejectMessage =
+                    new FalconEjectMessage(epc->Id(), FalconLocalGame);
 
                 if (ejectMessage not_eq NULL)
                 {
                     ejectMessage->dataBlock.ePlaneID = Id();
                     // ejectMessage->dataBlock.eEjectID = epc->Id();
-                    ejectMessage->dataBlock.eCampID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
-                    ejectMessage->dataBlock.eFlightID       = GetCampaignObject()->Id();
+                    ejectMessage->dataBlock.eCampID =
+                        ((CampBaseClass*)GetCampaignObject())->GetCampID();
+                    ejectMessage->dataBlock.eFlightID =
+                        GetCampaignObject()->Id();
                     // ejectMessage->dataBlock.eSide = ((CampBaseClass*)GetCampaignObject())->GetOwner();
                     ejectMessage->dataBlock.ePilotID = pilotSlot;
                     // ejectMessage->dataBlock.eIndex = Type();
-                    ejectMessage->dataBlock.hadLastShooter = (uchar)(LastShooter() not_eq FalconNullId);
+                    ejectMessage->dataBlock.hadLastShooter =
+                        (uchar)(LastShooter() not_eq FalconNullId);
                     FalconSendMessage(ejectMessage, TRUE);
                 }
 
                 // If there is a wingman that is not the player send the airman down message, and ask for sar
                 for (i = 0; i < GetCampaignObject()->NumberOfComponents(); i++)
                 {
-                    if (GetCampaignObject()->GetComponentEntity(i) not_eq this and 
- not ((SimBaseClass*)GetCampaignObject()->GetComponentEntity(i))->IsSetFlag(MOTION_OWNSHIP))
+                    if (GetCampaignObject()->GetComponentEntity(i) not_eq
+                            this and
+                        not((SimBaseClass*)GetCampaignObject()
+                                ->GetComponentEntity(i))
+                               ->IsSetFlag(MOTION_OWNSHIP))
                     {
-                        SimBaseClass* sender = GetCampaignObject()->GetComponentEntity(i);
+                        SimBaseClass* sender =
+                            GetCampaignObject()->GetComponentEntity(i);
                         FalconRadioChatterMessage* msg;
 
-                        msg = new FalconRadioChatterMessage(sender->Id(), FalconLocalGame);
+                        msg = new FalconRadioChatterMessage(sender->Id(),
+                                                            FalconLocalGame);
                         msg->dataBlock.message = rcAIRMANDOWNA;
                         msg->dataBlock.from = Id();
                         msg->dataBlock.to = MESSAGE_FOR_TEAM;
-                        msg->dataBlock.voice_id = (uchar)sender->GetPilotVoiceId();
-                        msg->dataBlock.edata[0] = (short)sender->GetCallsignIdx();
+                        msg->dataBlock.voice_id =
+                            (uchar)sender->GetPilotVoiceId();
+                        msg->dataBlock.edata[0] =
+                            (short)sender->GetCallsignIdx();
                         msg->dataBlock.edata[1] = (short)sender->GetSlot();
                         msg->dataBlock.time_to_play = 2 * CampaignSeconds;
                         FalconSendMessage(msg, FALSE);
                         // Another...
                         // was rcAIRMANDOWNE - totally wrong  Is now: "setup RESCAP"
-                        msg = new FalconRadioChatterMessage(sender->Id(), FalconLocalGame);
+                        msg = new FalconRadioChatterMessage(sender->Id(),
+                                                            FalconLocalGame);
                         msg->dataBlock.message = rcAIRMANDOWNF;
                         msg->dataBlock.from = sender->Id();
                         msg->dataBlock.to = MESSAGE_FOR_TEAM;
-                        msg->dataBlock.voice_id = (uchar)sender->GetPilotVoiceId();
+                        msg->dataBlock.voice_id =
+                            (uchar)sender->GetPilotVoiceId();
                         msg->dataBlock.time_to_play = 4 * CampaignSeconds;
                         msg->dataBlock.edata[0] = -1;
                         msg->dataBlock.edata[1] = -1;
                         // Using X and Y position doesn't work...we need bearing and distance...
                         //GetCampaignObject()->GetLocation(&msg->dataBlock.edata[0],&msg->dataBlock.edata[1]);
-                        FalconSendMessage(msg, FALSE); // Added - why not send when we've set it up ?
+                        FalconSendMessage(
+                            msg,
+                            FALSE); // Added - why not send when we've set it up ?
 
                         // RV - Biker - No SAR missions at all with this
                         // if ( not (rand()%5) and RequestSARMission ((FlightClass*)GetCampaignObject()))
-                        if (RequestSARMission((FlightClass*)GetCampaignObject()))
+                        if (RequestSARMission(
+                                (FlightClass*)GetCampaignObject()))
                         {
                             // Generate a SAR radio call from awacs
                             FalconRadioChatterMessage* radioMessage;
-                            radioMessage = CreateCallFromAwacs((FlightClass*)GetCampaignObject(), rcSARENROUTE);
-                            radioMessage->dataBlock.time_to_play = (5 + rand() % 5) * CampaignSeconds;
+                            radioMessage = CreateCallFromAwacs(
+                                (FlightClass*)GetCampaignObject(),
+                                rcSARENROUTE);
+                            radioMessage->dataBlock.time_to_play =
+                                (5 + rand() % 5) * CampaignSeconds;
                             FalconSendMessage(radioMessage, FALSE);
                         }
 
@@ -3144,7 +3281,9 @@ VU_ID AircraftClass::DivertAirbase(void)
 
 int AircraftClass::CombatClass(void)
 {
-    return SimACDefTable[((Falcon4EntityClassType*)EntityType())->vehicleDataIndex].combatClass;
+    return SimACDefTable[((Falcon4EntityClassType*)EntityType())
+                             ->vehicleDataIndex]
+        .combatClass;
 }
 
 float AircraftClass::Mass(void)
@@ -3183,8 +3322,10 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) or
- not value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
+        if ((diff < -g_nMPPowerXmitThreshold) or
+            (diff > g_nMPPowerXmitThreshold) or
+            not value and
+                specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
             //MonoPrint ("%08x SPO %f\n", this, powerOutput);
 
@@ -3228,8 +3369,10 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) or
- not value and specialData.powerOutputNet) // Xmit if RPM just changed to 0
+        if ((diff < -g_nMPPowerXmitThreshold) or
+            (diff > g_nMPPowerXmitThreshold) or
+            not value and
+                specialData.powerOutputNet) // Xmit if RPM just changed to 0
         {
 
             specialData.powerOutputNet = static_cast<uchar>(value);
@@ -3246,8 +3389,10 @@ void AircraftClass::SetPowerOutput(float)
 
         diff = specialData.powerOutputNet2 - value;
 
-        if ((diff < -g_nMPPowerXmitThreshold) or (diff > g_nMPPowerXmitThreshold) or
- not value and specialData.powerOutputNet2) // Xmit if RPM just changed to 0
+        if ((diff < -g_nMPPowerXmitThreshold) or
+            (diff > g_nMPPowerXmitThreshold) or
+            not value and
+                specialData.powerOutputNet2) // Xmit if RPM just changed to 0
         {
             specialData.powerOutputNet2 = static_cast<uchar>(value);
             MakeSimBaseDirty(DIRTY_SIM_POWER_OUTPUT2, DDP[162].priority);
@@ -3267,10 +3412,8 @@ void AircraftClass::PreFlight()
     af->SetAirSource(AirframeClass::AS_NORM);
 
     // Cobra - Start with canopy open if on parking spot
-    if (
-        PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY and 
-        OnGround() and (af->GetParkType() not_eq LargeParkPt)
-    )
+    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RUNWAY and
+        OnGround() and (af->GetParkType() not_eq LargeParkPt))
     {
         af->canopyState = true;
 
@@ -3322,9 +3465,11 @@ void AircraftClass::PreFlight()
     if (Sms)
     {
         if (this == SimDriver.GetPlayerEntity() and OnGround())
-            Sms->SetMasterArm(SMSBaseClass::Safe);   //if palyer and on ground then set it to safe
+            Sms->SetMasterArm(
+                SMSBaseClass::
+                    Safe); //if palyer and on ground then set it to safe
         else
-            Sms->SetMasterArm(SMSBaseClass::Arm);    //set it to arm
+            Sms->SetMasterArm(SMSBaseClass::Arm); //set it to arm
     }
 
     // RV - Biker - Only give power to data link if AC is capable
@@ -3349,7 +3494,7 @@ void AircraftClass::PreFlight()
     INSOff(INS_PowerOff);
     INSOff(INS_AlignNorm);
 
-    if ( not g_bINS)
+    if (not g_bINS)
     {
         INSOn(AircraftClass::INS_ADI_OFF_IN);
         INSOn(AircraftClass::BUP_ADI_OFF_IN);
@@ -3386,7 +3531,8 @@ void AircraftClass::PreFlight()
     //}
 
 
-    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP and OnGround())
+    if (PlayerOptions.GetStartFlag() not_eq PlayerOptionsClass::START_RAMP and
+        OnGround())
         af->SetFlag(AirframeClass::NoseSteerOn);
 
     //MI voice volume stuff
@@ -3431,9 +3577,6 @@ void AircraftClass::PreFlight()
     //
     //
     // }
-
-
-
 }
 void AircraftClass::StepSeatArm(void)
 {
@@ -3447,30 +3590,31 @@ void AircraftClass::IncMainPower()
 {
     switch (mainPower)
     {
-        case MainPowerOff:
-            mainPower = MainPowerBatt;
+    case MainPowerOff:
+        mainPower = MainPowerBatt;
 
-            //MI
-            if ( not g_bINS)
-            {
-                INSOn(AircraftClass::INS_ADI_OFF_IN);
-                INSOn(AircraftClass::INS_ADI_AUX_IN);;
-                INSOn(AircraftClass::INS_HUD_STUFF);
-                INSOn(AircraftClass::INS_HSI_OFF_IN);
-                INSOn(AircraftClass::INS_HSD_STUFF);
-                INSOn(AircraftClass::BUP_ADI_OFF_IN);
-                GSValid = TRUE;
-                LOCValid = TRUE;
-            }
+        //MI
+        if (not g_bINS)
+        {
+            INSOn(AircraftClass::INS_ADI_OFF_IN);
+            INSOn(AircraftClass::INS_ADI_AUX_IN);
+            ;
+            INSOn(AircraftClass::INS_HUD_STUFF);
+            INSOn(AircraftClass::INS_HSI_OFF_IN);
+            INSOn(AircraftClass::INS_HSD_STUFF);
+            INSOn(AircraftClass::BUP_ADI_OFF_IN);
+            GSValid = TRUE;
+            LOCValid = TRUE;
+        }
 
-            break;
+        break;
 
-        case MainPowerBatt:
-            mainPower = MainPowerMain;
-            break;
+    case MainPowerBatt:
+        mainPower = MainPowerMain;
+        break;
 
-        case MainPowerMain: // cant go any further
-            break;
+    case MainPowerMain: // cant go any further
+        break;
     }
 }
 
@@ -3478,122 +3622,126 @@ void AircraftClass::DecMainPower()
 {
     switch (mainPower)
     {
-        case MainPowerOff:
-            break;
+    case MainPowerOff:
+        break;
 
-        case MainPowerBatt:
-            mainPower = MainPowerOff;
+    case MainPowerBatt:
+        mainPower = MainPowerOff;
 
-            //MI
-            if ( not g_bINS)
-            {
-                INSOff(AircraftClass::INS_ADI_OFF_IN);
-                INSOff(AircraftClass::INS_ADI_AUX_IN);;
-                INSOff(AircraftClass::INS_HUD_STUFF);
-                INSOff(AircraftClass::INS_HSI_OFF_IN);
-                INSOff(AircraftClass::INS_HSD_STUFF);
-                INSOff(AircraftClass::BUP_ADI_OFF_IN);
-                GSValid = FALSE;
-                LOCValid = FALSE;
-            }
+        //MI
+        if (not g_bINS)
+        {
+            INSOff(AircraftClass::INS_ADI_OFF_IN);
+            INSOff(AircraftClass::INS_ADI_AUX_IN);
+            ;
+            INSOff(AircraftClass::INS_HUD_STUFF);
+            INSOff(AircraftClass::INS_HSI_OFF_IN);
+            INSOff(AircraftClass::INS_HSD_STUFF);
+            INSOff(AircraftClass::BUP_ADI_OFF_IN);
+            GSValid = FALSE;
+            LOCValid = FALSE;
+        }
 
-            break;
+        break;
 
-        case MainPowerMain:
-            mainPower = MainPowerBatt;
-            break;
+    case MainPowerMain:
+        mainPower = MainPowerBatt;
+        break;
     }
 }
 void AircraftClass::IncEWSPGM()
 {
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
     switch (EWSPgm)
     {
-        case Off:
-            EWSPgm = Stby;
+    case Off:
+        EWSPgm = Stby;
 
-            if (theRwr)
-            {
-                theRwr->InEWSLoop = FALSE;
-                theRwr->ReleaseManual = FALSE;
-            }
+        if (theRwr)
+        {
+            theRwr->InEWSLoop = FALSE;
+            theRwr->ReleaseManual = FALSE;
+        }
 
-            break;
+        break;
 
-        case Stby:
-            EWSPgm = Man;
+    case Stby:
+        EWSPgm = Man;
 
-            if (theRwr)
-            {
-                theRwr->InEWSLoop = FALSE;
-                theRwr->ReleaseManual = FALSE;
-            }
+        if (theRwr)
+        {
+            theRwr->InEWSLoop = FALSE;
+            theRwr->ReleaseManual = FALSE;
+        }
 
-            break;
+        break;
 
-        case Man:
-            EWSPgm = Semi;
-            break;
+    case Man:
+        EWSPgm = Semi;
+        break;
 
-        case Semi:
-            EWSPgm = Auto;
-            break;
+    case Semi:
+        EWSPgm = Auto;
+        break;
 
-        case Auto: // cant go any further
-            break;
+    case Auto: // cant go any further
+        break;
     }
 }
 
 void AircraftClass::DecEWSPGM()
 {
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
     switch (EWSPgm)
     {
-        case Off:
-            if (theRwr)
-            {
-                theRwr->InEWSLoop = FALSE;
-                theRwr->ReleaseManual = FALSE;
-            }
+    case Off:
+        if (theRwr)
+        {
+            theRwr->InEWSLoop = FALSE;
+            theRwr->ReleaseManual = FALSE;
+        }
 
-            break;
+        break;
 
-        case Auto:
-            EWSPgm = Semi;
-            break;
+    case Auto:
+        EWSPgm = Semi;
+        break;
 
-        case Semi:
-            EWSPgm = Man;
-            break;
+    case Semi:
+        EWSPgm = Man;
+        break;
 
-        case Man:
-            EWSPgm = Stby;
+    case Man:
+        EWSPgm = Stby;
 
-            if (theRwr)
-            {
-                theRwr->InEWSLoop = FALSE;
-                theRwr->ReleaseManual = FALSE;
-            }
+        if (theRwr)
+        {
+            theRwr->InEWSLoop = FALSE;
+            theRwr->ReleaseManual = FALSE;
+        }
 
-            break;
+        break;
 
-        case Stby:
-            EWSPgm = Off;
+    case Stby:
+        EWSPgm = Off;
 
-            if (theRwr)
-            {
-                theRwr->InEWSLoop = FALSE;
-                theRwr->ReleaseManual = FALSE;
-            }
+        if (theRwr)
+        {
+            theRwr->InEWSLoop = FALSE;
+            theRwr->ReleaseManual = FALSE;
+        }
 
-            break;
+        break;
     }
 }
 void AircraftClass::IncEWSProg()
 {
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
     if (theRwr)
     {
@@ -3607,7 +3755,8 @@ void AircraftClass::IncEWSProg()
 
 void AircraftClass::DecEWSProg()
 {
-    PlayerRwrClass* theRwr = (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
+    PlayerRwrClass* theRwr =
+        (PlayerRwrClass*)FindSensor(this, SensorClass::RWR);
 
     if (theRwr)
     {
@@ -3648,7 +3797,7 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
     int npt = 0;
     int rwindex = initData->rwIndex;
     //ulong takeoffTime;
-    runwayQueueStruct *info = 0;
+    runwayQueueStruct* info = 0;
 
     if (PlayerOptions.GetStartFlag() == PlayerOptionsClass::START_RUNWAY)
     {
@@ -3680,7 +3829,8 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
             pt = GetFirstPt(initData->rwIndex) + 1;
         }
 
-        pt = DBrain()->FindDesiredTaxiPoint(waypoint->GetWPDepartureTime(), (int) rwindex);
+        pt = DBrain()->FindDesiredTaxiPoint(waypoint->GetWPDepartureTime(),
+                                            (int)rwindex);
 
         if (pt)
         {
@@ -3690,7 +3840,8 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
             npt = GetPrevTaxiPt(pt); // this is next place to go to
             float x, y;
             TranslatePointData(obj, npt, &x, &y);
-            af->initialPsi = af->psi = af->sigma = (float)atan2((y - af->y), (x - af->x));
+            af->initialPsi = af->psi = af->sigma =
+                (float)atan2((y - af->y), (x - af->x));
             af->initialX = af->groundAnchorX = af->x;
             af->initialY = af->groundAnchorY = af->y;
             spawnpoint = pt; //RAS-11Nov04-store initial spawn point
@@ -3699,13 +3850,15 @@ int AircraftClass::FindBestSpawnPoint(Objective obj, SimInitDataClass* initData)
     }
     else
     {
-        PtDataTable[initData->ptIndex].flags or_eq PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+        PtDataTable[initData->ptIndex].flags or_eq
+            PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
         spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
         return initData->ptIndex;
     }
 
     spawnpoint = initData->ptIndex; //RAS-11Nov04-store initial spawn point
-    PtDataTable[initData->ptIndex].flags or_eq PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
+    PtDataTable[initData->ptIndex].flags or_eq
+        PT_OCCUPIED; // 02JAN04 - FRB - Reserve parking spot
     return initData->ptIndex;
 }
 
@@ -3719,13 +3872,14 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
     // of the microstick X/Y axis values.  The logic here is pretty much the same as that used in
     // the keyboard routine however.
 
-    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == false) or (IO.AnalogIsUsed(AXIS_CURSOR_Y) == false))
-        return;  // shouldn't be needed but this code only makes sense if both are mapped
+    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == false) or
+        (IO.AnalogIsUsed(AXIS_CURSOR_Y) == false))
+        return; // shouldn't be needed but this code only makes sense if both are mapped
 
     int xValue = IO.GetAxisValue(AXIS_CURSOR_X);
     int yValue = IO.GetAxisValue(AXIS_CURSOR_Y);
 
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC not_eq NULL and playerAC->IsSetFlag(MOTION_OWNSHIP))
     {
@@ -3735,19 +3889,29 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
             if (g_bRealisticAvionics)
             {
 
-                RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
-                LaserPodClass* laserPod = (LaserPodClass*)FindLaserPod(playerAC);
+                RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(
+                    playerAC, SensorClass::Radar);
+                LaserPodClass* laserPod =
+                    (LaserPodClass*)FindLaserPod(playerAC);
                 MaverickDisplayClass* mavDisplay = NULL;
-                HarmTargetingPod *theHTS = (HarmTargetingPod*)FindSensor(playerAC, SensorClass::HTS);
+                HarmTargetingPod* theHTS =
+                    (HarmTargetingPod*)FindSensor(playerAC, SensorClass::HTS);
 
-                if (playerAC->Sms->curWeaponType == wtAgm65 and playerAC->Sms->curWeapon)
+                if (playerAC->Sms->curWeaponType == wtAgm65 and
+                    playerAC->Sms->curWeapon)
                 {
-                    mavDisplay = (MaverickDisplayClass*)((MissileClass*)playerAC->Sms->GetCurrentWeapon())->display;
+                    mavDisplay =
+                        (MaverickDisplayClass*)((MissileClass*)playerAC->Sms
+                                                    ->GetCurrentWeapon())
+                            ->display;
                 }
 
-                if ((theRadar and theRadar->IsSOI()) or (mavDisplay and mavDisplay->IsSOI()) or
-                    (laserPod and laserPod->IsSOI()) or (TheHud and TheHud->IsSOI()) or
-                    (theHTS and playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+                if ((theRadar and theRadar->IsSOI()) or
+                    (mavDisplay and mavDisplay->IsSOI()) or
+                    (laserPod and laserPod->IsSOI()) or
+                    (TheHud and TheHud->IsSOI()) or
+                    (theHTS and
+                     playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
                 {
                     FCC->cursorXCmd = xValue;
                     FCC->cursorYCmd = yValue;
@@ -3765,7 +3929,7 @@ void AircraftClass::SetCursorCmdsByAnalog(void)
                 FCC->cursorYCmd = yValue;
             }
         }
-        else  // we're not moving
+        else // we're not moving
         {
             FCC->cursorXCmd = 0;
             FCC->cursorYCmd = 0;
@@ -3828,7 +3992,8 @@ float AircraftClass::GetA2GBombMissileAlt(void)
 void AircraftClass::SetSpeedBrake(void)
 {
     //F15A/B, C/D, E
-    if (af->auxaeroData->typeAC == 3 or af->auxaeroData->typeAC == 4 or af->auxaeroData->typeAC == 5)
+    if (af->auxaeroData->typeAC == 3 or af->auxaeroData->typeAC == 4 or
+        af->auxaeroData->typeAC == 5)
     {
         if (af->dbrake > 0 and (brakePos == 0 or brakePos == 3))
         {
@@ -3847,8 +4012,6 @@ void AircraftClass::SetSpeedBrake(void)
             af->speedBrake = 1.0f;
             brakePos = 1;
         }
-
-
     }
 
     //F14A-D Speedbrake retracts when MIL power or greater
@@ -3862,20 +4025,17 @@ void AircraftClass::SetSpeedBrake(void)
         {
             af->speedBrake = -1.0f;
         }
-
-
     }
 
     //F-18A-D if g +6, AOA 28, or tef/down and vcas < 250 retract
     if (af->auxaeroData->typeAC == 8 or af->auxaeroData->typeAC == 9)
     {
-        if (af->nzcgb > 6.0f or af->alpha > 28.0f or (af->gearPos > 0.5f and af->vcas < 250.0f))
+        if (af->nzcgb > 6.0f or af->alpha > 28.0f or
+            (af->gearPos > 0.5f and af->vcas < 250.0f))
         {
             af->speedBrake = -1.0f;
         }
-
     }
-
 }
 
 void AircraftClass::HotPitRefuel()
@@ -3885,17 +4045,17 @@ void AircraftClass::HotPitRefuel()
         float refuelRate = af->GetRefuelRate();
         af->AddFuel(refuelRate * SimLibMajorFrameTime);
     }
-    else if (af->vt <= 0.0f and OnGround() and not af->IsSet(AirframeClass::OverRunway))
+    else if (af->vt <= 0.0f and OnGround() and
+             not af->IsSet(AirframeClass::OverRunway))
     {
         // sfr: fixing xy order
         GridIndex gx, gy;
-        ::vector pos = { af->x, af->y };
+        ::vector pos = {af->x, af->y};
         ConvertSimToGrid(&pos, &gx, &gy);
-        ObjectiveClass* nearest = FindNearestFriendlyRunway(
-                                      FalconLocalSession->GetTeam(),
+        ObjectiveClass* nearest =
+            FindNearestFriendlyRunway(FalconLocalSession->GetTeam(),
                                       /*SimToGrid(af->y), SimToGrid(af->x),*/
-                                      gx, gy
-                                  );
+                                      gx, gy);
 
         if (nearest)
         {
@@ -3916,7 +4076,6 @@ void AircraftClass::HotPitRefuel()
                 }
             }
         }
-
     }
 }
 
@@ -3925,7 +4084,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
     Flight flight = NULL;
     int flightIdx = 0;
     float x, y, z, xx, yy, zz;
-    FalconEntity *wpTarget = NULL;
+    FalconEntity* wpTarget = NULL;
     ObjClassDataType* oc;
     uchar tgtnum1 = 0;
     flight = (Flight)GetCampaignObject();
@@ -3938,7 +4097,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
     while (w)
     {
-        if ( not (w->GetWPFlags() bitand WPF_TARGET))
+        if (not(w->GetWPFlags() bitand WPF_TARGET))
         {
             w = w->GetNextWP();
             continue;
@@ -3948,7 +4107,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
     }
 
     // FRB - Something is wrong
-    if ( not w)
+    if (not w)
         return -1;
 
     JDAMtarget = NULL;
@@ -3957,14 +4116,16 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
     if (JDAMtgtnum == -1) // Initialize target selection
     {
-        JDAMtgtnum = w->GetWPTargetBuilding() + flightIdx; // Cobra - different starting point for each element
+        JDAMtgtnum =
+            w->GetWPTargetBuilding() +
+            flightIdx; // Cobra - different starting point for each element
         JDAMStep = 1;
     }
 
     // RV - Biker, CTD Fix if target is not a possible objective
     if (JDAMtarget and JDAMtarget->IsObjective())
     {
-        FeatureClassDataType *fc = NULL;
+        FeatureClassDataType* fc = NULL;
         oc = ((Objective)JDAMtarget)->GetObjectiveClassData();
         int featnum = oc->Features;
         int Priority = 99;
@@ -3975,14 +4136,20 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             {
                 if (JDAMtgtnum + 1 < featnum)
                 {
-                    JDAMtgtnum ++;
+                    JDAMtgtnum++;
 
-                    if (((Objective)JDAMtarget)->GetFeatureStatus(JDAMtgtnum) == VIS_DESTROYED)
+                    if (((Objective)JDAMtarget)->GetFeatureStatus(JDAMtgtnum) ==
+                        VIS_DESTROYED)
                         continue;
 
-                    fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
+                    fc = GetFeatureClassData(
+                        ((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
 
-                    if (fc and not F4IsBadReadPtr(fc, sizeof(fc)))  // higher priority number = lower priority
+                    if (fc and
+                        not F4IsBadReadPtr(
+                            fc,
+                            sizeof(
+                                fc))) // higher priority number = lower priority
                         Priority = fc->Priority;
                 }
                 else
@@ -4003,14 +4170,20 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             {
                 if (JDAMtgtnum - 1 > 0)
                 {
-                    JDAMtgtnum --;
+                    JDAMtgtnum--;
 
-                    if (((Objective)JDAMtarget)->GetFeatureStatus(JDAMtgtnum) == VIS_DESTROYED)
+                    if (((Objective)JDAMtarget)->GetFeatureStatus(JDAMtgtnum) ==
+                        VIS_DESTROYED)
                         continue;
 
-                    fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
+                    fc = GetFeatureClassData(
+                        ((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
 
-                    if (fc and not F4IsBadReadPtr(fc, sizeof(fc)))  // higher priority number = lower priority
+                    if (fc and
+                        not F4IsBadReadPtr(
+                            fc,
+                            sizeof(
+                                fc))) // higher priority number = lower priority
                         Priority = fc->Priority;
                 }
                 else
@@ -4025,8 +4198,10 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             JDAMStep = 0;
         }
 
-        if ( not ((Objective)JDAMtarget)->IsAggregate() and isDigital and DBrain())
-            JDAMtgtnum = DBrain()->FindJDAMGroundTarget((CampBaseClass*)JDAMtarget, featnum, 0);
+        if (not((Objective)JDAMtarget)->IsAggregate() and isDigital and
+            DBrain())
+            JDAMtgtnum = DBrain()->FindJDAMGroundTarget(
+                (CampBaseClass*)JDAMtarget, featnum, 0);
 
         JDAMsbc = JDAMtarget->GetComponentEntity(JDAMtgtnum);
 
@@ -4043,15 +4218,19 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
         {
             //========================================================================
             // Not Deagg'ed, so calculate where the Feature is placed in the Objective
-            fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
+            fc = GetFeatureClassData(
+                ((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
 
-            if (fc and not F4IsBadReadPtr(fc, sizeof(fc)) and not (fc->Flags bitand FEAT_VIRTUAL))
+            if (fc and not F4IsBadReadPtr(fc, sizeof(fc)) and
+                not(fc->Flags bitand FEAT_VIRTUAL))
             {
-                ((Objective)JDAMtarget)->GetFeatureOffset(JDAMtgtnum, &yy, &xx, &zz);
+                ((Objective)JDAMtarget)
+                    ->GetFeatureOffset(JDAMtgtnum, &yy, &xx, &zz);
                 w->GetLocation(&x, &y, &z);
                 JDAMtgtPos.x = xx + x;
                 JDAMtgtPos.y = yy + y;
-                JDAMtgtPos.z = OTWDriver.GetGroundLevel(JDAMtgtPos.x, JDAMtgtPos.y);
+                JDAMtgtPos.z =
+                    OTWDriver.GetGroundLevel(JDAMtgtPos.x, JDAMtgtPos.y);
             }
 
             //========================================================================
@@ -4061,9 +4240,10 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
             JDAMsbc = NULL;
         }
 
-        if ( not fc)
+        if (not fc)
         {
-            fc = GetFeatureClassData(((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
+            fc = GetFeatureClassData(
+                ((Objective)JDAMtarget)->GetFeatureID(JDAMtgtnum));
         }
 
         if (fc and not F4IsBadReadPtr(fc, sizeof(fc)))
@@ -4073,7 +4253,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
         JDAMtarget->GetName(JDAMtargetName, 79, FALSE);
 
-        if ( not JDAMsbc) // Aggregated
+        if (not JDAMsbc) // Aggregated
             strcat(JDAMtargetName1, " >AGG");
     }
     else
@@ -4086,7 +4266,7 @@ int AircraftClass::GetJDAMPBTarget(AircraftClass* aircraft)
 
 void AircraftClass::MakeAircraftDirty(DirtyAircraft bits, Dirtyness score)
 {
-    if ( not IsLocal())
+    if (not IsLocal())
     {
         return;
     }
@@ -4095,7 +4275,7 @@ void AircraftClass::MakeAircraftDirty(DirtyAircraft bits, Dirtyness score)
     MakeDirty(DIRTY_AIRCRAFT, score);
 }
 
-void AircraftClass::ReadDirty(unsigned char **stream, long *rem)
+void AircraftClass::ReadDirty(unsigned char** stream, long* rem)
 {
     memcpychk(&dirty_aircraft, stream, sizeof(dirty_aircraft), rem);
 
@@ -4111,9 +4291,9 @@ void AircraftClass::ReadDirty(unsigned char **stream, long *rem)
     }
 }
 
-void AircraftClass::WriteDirty(unsigned char **sAdd)
+void AircraftClass::WriteDirty(unsigned char** sAdd)
 {
-    unsigned char *stream = *sAdd;
+    unsigned char* stream = *sAdd;
     memcpy(stream, &dirty_aircraft, sizeof(dirty_aircraft));
     stream += sizeof(dirty_aircraft);
 
@@ -4129,7 +4309,7 @@ void AircraftClass::WriteDirty(unsigned char **sAdd)
 
 void AircraftClass::SetAcStatusBits(int bits)
 {
-    if ( not IsAcStatusBitsSet(bits))
+    if (not IsAcStatusBitsSet(bits))
     {
         status_bits or_eq bits;
         MakeAircraftDirty(DIRTY_ACSTATUS_BITS, SEND_NOW);
@@ -4144,4 +4324,3 @@ void AircraftClass::ClearAcStatusBits(int bits)
         MakeAircraftDirty(DIRTY_ACSTATUS_BITS, SEND_NOW);
     }
 }
-

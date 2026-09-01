@@ -2,7 +2,7 @@
 #define _TANKBRAIN_H
 
 #include "digi.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "object.h"
 
 class TailInsertList;
@@ -42,8 +42,8 @@ public:
     };
 
 private:
-    TailInsertList *thirstyQ;
-    HeadInsertList *waitQ;
+    TailInsertList* thirstyQ;
+    HeadInsertList* waitQ;
     SimVehicleClass* curThirsty;
     int numBooms; // FRB - number of booms/boom service required
     int numDrogues;// FRB - number of drogues/drogue service required
@@ -68,9 +68,12 @@ private:
     float desSpeed; // MN
     vector TrackPoints[4]; // 2002-03-13 MN
     int currentTP; // 2002-03-13 MN
-    bool advancedirection; // if we go from TrackPoint 0->1->2->3 or 0->3->2->1 (latter is the case if tanker is outside min max tanker range envelope - would do a 180° turn in the other case)
-    bool reachedFirstTrackpoint; // when we reached the first trackpoint, we limit rStick and pStich in wingmnvers.cpp
-    float trackPointDistance; // contains closest distance at < 5 nm trackpoint distance
+    bool
+        advancedirection; // if we go from TrackPoint 0->1->2->3 or 0->3->2->1 (latter is the case if tanker is outside min max tanker range envelope - would do a 180° turn in the other case)
+    bool
+        reachedFirstTrackpoint; // when we reached the first trackpoint, we limit rStick and pStich in wingmnvers.cpp
+    float
+        trackPointDistance; // contains closest distance at < 5 nm trackpoint distance
 
     void CallNext(void);
     void DriveBoom(void);
@@ -78,11 +81,10 @@ private:
     void BreakAway(void);
     void TurnTo(float newHeading);
     void FollowThirsty(void);
-    void TurnToTrackPoint(int trackPoint);  // 2002-03-13 MN
+    void TurnToTrackPoint(int trackPoint); // 2002-03-13 MN
 
 
 public:
-
     enum TankerFlags
     {
         IsRefueling = 0x1,
@@ -93,12 +95,12 @@ public:
         ClearingPlane = 0x40,
         AIready = 0x80
     }; // 27NOV03 - FRB
-    TankerBrain(AircraftClass *myPlatform, AirframeClass* myAf);
+    TankerBrain(AircraftClass* myPlatform, AirframeClass* myAf);
     virtual ~TankerBrain(void);
     void FrameExec(SimObjectType*, SimObjectType*);
-    int  AddToQ(SimVehicleClass* thirstyOne);
+    int AddToQ(SimVehicleClass* thirstyOne);
     void RemoveFromQ(SimVehicleClass* thirstyOne);
-    void AIReady(void);  // 27NOV03 - FRB
+    void AIReady(void); // 27NOV03 - FRB
     int AddToWaitQ(SimVehicleClass* doneOne);
     void PurgeWaitQ(void);
     int TankingPosition(SimVehicleClass* thirstyOne);
@@ -112,10 +114,10 @@ public:
         return tankingPtr;
     }
 
-    void OptTankingPosition(Tpoint *pos);
-    void BoomWorldPosition(Tpoint *pos);
-    void ReceptorRelPosition(Tpoint *pos, SimVehicleClass *thirsty);
-    void BoomTipPosition(Tpoint *pos);
+    void OptTankingPosition(Tpoint* pos);
+    void BoomWorldPosition(Tpoint* pos);
+    void ReceptorRelPosition(Tpoint* pos, SimVehicleClass* thirsty);
+    void BoomTipPosition(Tpoint* pos);
     virtual int IsTanker(void)
     {
         return TRUE;
@@ -141,13 +143,14 @@ public:
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete because our parent class does (and assumes a fixed size)
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         return MemAllocPtr(pool, size, 0);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 };

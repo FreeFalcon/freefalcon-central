@@ -17,13 +17,14 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
     C_Hash *Root_;  // All strings here
-    long   *IDTable_; // All Userdefined IDs here (array points to Hash Table)
-    long    IDSize_;
+    long *IDTable_; // All Userdefined IDs here (array points to Hash Table)
+    long IDSize_;
     long LastID_;
 
 public:
@@ -54,7 +55,7 @@ public:
 
     long GetLastID()
     {
-        return(LastID_);
+        return (LastID_);
     }
 
 #ifdef _UI95_PARSER_

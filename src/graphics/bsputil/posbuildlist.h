@@ -9,10 +9,14 @@
 #ifndef _POSBUILDLIST_H_
 #define _POSBUILDLIST_H_
 
-#include "PolyLib.h"
+#include "polylib.h"
 
 
-typedef enum BuildTimePosType { Static, Dynamic };
+typedef enum BuildTimePosType
+{
+    Static,
+    Dynamic
+};
 
 typedef struct BuildTimePosReference
 {
@@ -47,12 +51,13 @@ public:
     BuildTimePosList();
     ~BuildTimePosList() {};
 
-    void AddReference(int *target, float x, float y, float z, BuildTimePosType type);
+    void AddReference(int *target, float x, float y, float z,
+                      BuildTimePosType type);
     void AddReference(int *target, int *source);
 
-    Ppoint* GetPosFromTarget(int *target);
+    Ppoint *GetPosFromTarget(int *target);
 
-    Ppoint* GetPool();
+    Ppoint *GetPool();
 
     int numTotal;
     int numStatic;

@@ -5,16 +5,16 @@
 
     This class provides the ground mapping radar terrain display.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include <math.h>
-#include "Tmap.h"
-#include "TViewPnt.h"
-#include "Tpost.h"
-#include "DrawBSP.h"
-#include "TerrTex.h"
-#include "GMRadar.h"
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "tmap.h"
+#include "tviewpnt.h"
+#include "tpost.h"
+#include "drawbsp.h"
+#include "terrtex.h"
+#include "gmradar.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
 
 #pragma warning(disable : 4127)
 #pragma warning(disable : 4706)
@@ -25,8 +25,7 @@
 // wooded area:  -7.4 dB
 // cities:   0.6 dB
 // I'm converting to a much more linear scale to make it "look right"
-static const float reflectivity[] =
-{
+static const float reflectivity[] = {
     0.0f, // UNUSED -- NO TYPE AVAILABLE
     0.1f, // COVERAGE_WATER
     0.1f, // COVERAGE_RIVER
@@ -182,7 +181,8 @@ void RenderGMRadar::TransformScene(void)
     }
 
     // Quit now if we don't have anything to draw
-    if (SkipDraw)  return;
+    if (SkipDraw)
+        return;
 
 
     // Figure out how long each row of points will be.
@@ -199,7 +199,7 @@ void RenderGMRadar::TransformScene(void)
 
 
     // Get space to store the sample points
-    xformBuff = new GroundMapVertex[ runLength * runLength ];
+    xformBuff = new GroundMapVertex[runLength * runLength];
     ShiAssert(xformBuff);
     vert = xformBuff;
 
@@ -292,7 +292,8 @@ void RenderGMRadar::DrawScene(void)
 
 
     // Quit now if we don't have anything to draw
-    if (SkipDraw)  return;
+    if (SkipDraw)
+        return;
 
     // Setup the drawing state
     context.RestoreState(STATE_GOURAUD);
@@ -312,13 +313,13 @@ void RenderGMRadar::DrawScene(void)
     for (r = boxCenterRow - drawRadius; r < boxCenterRow + drawRadius; r++)
     {
 
-        for (c = boxCenterCol - drawRadius; c < boxCenterCol + drawRadius; c++, vBot++, vTop++)
+        for (c = boxCenterCol - drawRadius; c < boxCenterCol + drawRadius;
+             c++, vBot++, vTop++)
         {
 
             // Draw each square separately for now
             // (could optimize to strips, but that makes clipping somewhat harder)
             DrawGMsquare(vBot, vTop, vTop + 1, vBot + 1);
-
         }
 
         // Skip the last vertex at the end of the row to get to the start of the next row
@@ -351,12 +352,14 @@ void RenderGMRadar::DrawFeatures(void)
 
 
     // Quit now if we don't have anything to draw
-    if (SkipDraw)  return;
+    if (SkipDraw)
+        return;
 
     // Quit now if we don't have detailed enough information
     levelDifference = TheMap.LastNearTexLOD() - LOD;
 
-    if (levelDifference < 0)  return;
+    if (levelDifference < 0)
+        return;
 
     // Use our entire available area when looking for features (parent posts may be off screen)
     drawRadius = viewpoint->GetAvailablePostRange(LOD);
@@ -371,12 +374,12 @@ void RenderGMRadar::DrawFeatures(void)
     SetColor(0xFF000000);
 
     // Construct the mask to test if a post falls on a texture boundry
-    mask = compl ((compl 0 >> levelDifference) << levelDifference);
+    mask = compl((compl 0 >> levelDifference) << levelDifference);
 
     // Load the display's 2D transformation matrix
     // Note that we're swapping x and y to get into the system VirtualDisplay expects
     dmatrix.rotation00 = ScaledSIN * dScaleX;
-    dmatrix.rotation01 =  ScaledCOS * dScaleX;
+    dmatrix.rotation01 = ScaledCOS * dScaleX;
     dmatrix.rotation10 = ScaledCOS * dScaleY;
     dmatrix.rotation11 = -ScaledSIN * dScaleY;
 
@@ -387,21 +390,25 @@ void RenderGMRadar::DrawFeatures(void)
     for (r = boxCenterRow - drawRadius; r < boxCenterRow + drawRadius; r++)
     {
 
-        if (r bitand mask)  continue; // Could take care of this in loop control
+        if (r bitand mask)
+            continue; // Could take care of this in loop control
 
         scene_x = LEVEL_POST_TO_WORLD(r, LOD) - centerPos.x;
 
         for (c = boxCenterCol - drawRadius; c < boxCenterCol + drawRadius; c++)
         {
 
-            if (c bitand mask)  continue; // Could take care of this in loop control
+            if (c bitand mask)
+                continue; // Could take care of this in loop control
 
             scene_y = LEVEL_POST_TO_WORLD(c, LOD) - centerPos.y;
 
             // Load the display's 2D translation vector
             // Note that we're swapping x and y to get into the system VirtualDisplay expects
-            dmatrix.translationX = (scene_x * ScaledSIN + scene_y * ScaledCOS + dCtrX) * dScaleX;
-            dmatrix.translationY = (scene_x * ScaledCOS - scene_y * ScaledSIN + dCtrY) * dScaleY;
+            dmatrix.translationX =
+                (scene_x * ScaledSIN + scene_y * ScaledCOS + dCtrX) * dScaleX;
+            dmatrix.translationY =
+                (scene_x * ScaledCOS - scene_y * ScaledSIN + dCtrY) * dScaleY;
 
             // Get the texture id of the post we're dealing with
             post = viewpoint->GetPost(r, c, LOD);
@@ -467,12 +474,12 @@ void RenderGMRadar::PrepareToDrawTargets(void)
 
     // Setup a downward looking matrix with the appropriate "roll"
     up.x = -ScaledCOS / worldToUnitScale;
-    up.y =  ScaledSIN / worldToUnitScale;
-    up.z =  0.0f;
+    up.y = ScaledSIN / worldToUnitScale;
+    up.z = 0.0f;
 
-    right.x =  up.y;
+    right.x = up.y;
     right.y = -up.x;
-    right.z =  0.0f;
+    right.z = 0.0f;
 
     down.M11 = 0.0f;
     down.M12 = right.x;
@@ -486,7 +493,8 @@ void RenderGMRadar::PrepareToDrawTargets(void)
 
     // SetFar( -2.0f * location.z );
     TheStateStack.SetContext(&context);
-    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX, scaleY, shiftX, shiftY);
+    TheStateStack.SetCameraProperties(oneOVERtanHFOV, oneOVERtanVFOV, scaleX,
+                                      scaleY, shiftX, shiftY);
     TheStateStack.SetLODBias(resRelativeScaler);
     TheStateStack.SetTextureState(FALSE);
     TheColorBank.SetColorMode(ColorBankClass::UnlitGreenMode);
@@ -506,11 +514,12 @@ void RenderGMRadar::FlushDrawnTargets(void)
 
 void RenderGMRadar::DrawBlip(float worldX, float worldY)
 {
-    float x,  y;
+    float x, y;
     float dx, dy;
 
     // Quit now if we don't have anything to draw
-    if (SkipDraw)  return;
+    if (SkipDraw)
+        return;
 
     // Compute the rotated and scaled location of the points
     // Note:  We're converting from FreeFalcon to normalized screen space
@@ -525,37 +534,38 @@ void RenderGMRadar::DrawBlip(float worldX, float worldY)
     y = viewportYtoPixel(y);
 
     //Clip test
-    if ((x + 1.0f <= rightPixel)  and 
-        (x      >= leftPixel)   and 
-        (y + 1.0f <= bottomPixel) and 
-        (y      >= topPixel))
+    if ((x + 1.0f <= rightPixel) and (x >= leftPixel) and
+        (y + 1.0f <= bottomPixel) and (y >= topPixel))
     {
         SetColor(0xFF00FF00);
-        Render2DPoint(x,      y);
-        Render2DPoint(x,      y + 1.0f);
+        Render2DPoint(x, y);
+        Render2DPoint(x, y + 1.0f);
         Render2DPoint(x + 1.0f, y);
         Render2DPoint(x + 1.0f, y + 1.0f);
     }
 }
 
 
-void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Shaped)
+void RenderGMRadar::DrawBlip(DrawableObject *drawable, float GainScale,
+                             bool Shaped)
 {
-    float x,  y;
+    float x, y;
     float dx, dy;
     float r;
 
     // Quit now if we don't have anything to draw
-    if (SkipDraw)  return;
+    if (SkipDraw)
+        return;
 
     // This is the radius of the objects footprint in pixels.
     if (drawable->GetRadarSign() == 0.0f)
         r = drawable->Radius() * worldToUnitScale * scaleX;
     else
-        r = drawable->GetRadarSign() * worldToUnitScale * scaleX; // +/-1 * scale to pixels
+        r = drawable->GetRadarSign() * worldToUnitScale *
+            scaleX; // +/-1 * scale to pixels
 
     // Decide if a spot will suffice or if we need to do a full render
-    if ( not Shaped or r < 2.0f)
+    if (not Shaped or r < 2.0f)
     {
 
         // Compute the rotated and scaled location of the points
@@ -571,27 +581,24 @@ void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Sha
         y = viewportYtoPixel(y);
 
         //Clip test
-        if (
-            (x + 1.0f >= rightPixel)  or
-            (x      <= leftPixel)   or
-            (y + 1.0f >= bottomPixel) or
-            (y      <= topPixel)
-        )
+        if ((x + 1.0f >= rightPixel) or (x <= leftPixel) or
+            (y + 1.0f >= bottomPixel) or (y <= topPixel))
             return;
 
         float BlitColor = r * 32.0f * gain * GainScale;
 
-        if (BlitColor > 255.0f) BlitColor = 255.0f;
+        if (BlitColor > 255.0f)
+            BlitColor = 255.0f;
 
         SetColor(0xFF000000 bitor (F_I32(BlitColor) << 8));
-        Render2DPoint(x,      y);
+        Render2DPoint(x, y);
 
         BlitColor /= 4.0f; //r * 64.0f * gain;
         SetColor(0xFF000000 bitor (F_I32(BlitColor) << 8));
 
         if (r > 1.0f)
         {
-            Render2DPoint(x,      y + 1.0f);
+            Render2DPoint(x, y + 1.0f);
             Render2DPoint(x + 1.0f, y);
             Render2DPoint(x + 1.0f, y + 1.0f);
         }
@@ -600,7 +607,8 @@ void RenderGMRadar::DrawBlip(DrawableObject* drawable, float GainScale, bool Sha
     {
         r *= gain * GainScale;
 
-        if (r > 255.0f) r = 255.0f;
+        if (r > 255.0f)
+            r = 255.0f;
 
         TheDXEngine.SetBlipIntensity(r);
         drawable->Draw(this);
@@ -612,7 +620,6 @@ void RenderGMRadar::FinishScene(void)
 {
     // Remove the viewport restriction
     ClearSubViewport();
-
 }
 
 
@@ -665,8 +672,8 @@ BOOL RenderGMRadar::SetRange(float newRange, int newLOD)
     ShiAssert((LOD not_eq newLOD) or (fabs(newRange - range) > 1.0f))
 
 
-    // Get us to a known starting state (constructed but uninitialized TViewPoint)
-    oldViewpoint = viewpoint;
+        // Get us to a known starting state (constructed but uninitialized TViewPoint)
+        oldViewpoint = viewpoint;
     viewpoint = new TViewPoint;
 
     // Store our new parameters
@@ -682,7 +689,8 @@ BOOL RenderGMRadar::SetRange(float newRange, int newLOD)
     float *fetchRanges;
     fetchRanges = new float[LOD + 1];
     ShiAssert(fetchRanges);
-    fetchRanges[LOD] = max(diagonalRange, LEVEL_POST_TO_WORLD(1, TheMap.LastNearTexLOD()));
+    fetchRanges[LOD] =
+        max(diagonalRange, LEVEL_POST_TO_WORLD(1, TheMap.LastNearTexLOD()));
 
     // Setup the viewpoint for the requested detail level
     ShiAssert(viewpoint);
@@ -714,7 +722,7 @@ void RenderGMRadar::ComputeLightAngles(Tpoint *from, Tpoint *at)
     dx = from->x - at->x;
     dy = from->y - at->y;
     dz = from->z - at->z;
-    r  = (float)sqrt(dx * dx + dy * dy);
+    r = (float)sqrt(dx * dx + dy * dy);
 
     lightTheta = (float)atan2(dy, dx);
     lightPhi = (float)atan2(-dz, r);
@@ -728,11 +736,12 @@ float RenderGMRadar::ComputeReflectedIntensity(Tpost *post)
     float cosAngle;
     float I;
 
-    if ( not post)
+    if (not post)
         return 0.0f;
 
     cosAngle = (float)sin(lightPhi) * (float)sin(post->phi);
-    cosAngle *= (float)cos(lightPhi) * (float)cos(post->phi) * (float)cos(lightTheta - post->theta);
+    cosAngle *= (float)cos(lightPhi) * (float)cos(post->phi) *
+                (float)cos(lightTheta - post->theta);
 
 
     // Use the type to lookup a reflectance value
@@ -775,10 +784,11 @@ float RenderGMRadar::ComputeReflectedIntensity(Tpost *post)
 }
 
 
-void RenderGMRadar::DrawGMsquare(GroundMapVertex *v0, GroundMapVertex *v1, GroundMapVertex *v2, GroundMapVertex *v3)
+void RenderGMRadar::DrawGMsquare(GroundMapVertex *v0, GroundMapVertex *v1,
+                                 GroundMapVertex *v2, GroundMapVertex *v3)
 {
     TwoDVertex vert[4];
-    TwoDVertex* vertPointers[4];
+    TwoDVertex *vertPointers[4];
 
     ShiAssert(v0);
     ShiAssert(v1);
@@ -791,7 +801,7 @@ void RenderGMRadar::DrawGMsquare(GroundMapVertex *v0, GroundMapVertex *v1, Groun
     // (XYZRHW) tolerated it, but the D3D11 screen VS recovers w from rhw and projected the verts
     // off-screen -> the GM ground map was entirely black. Set q=0 -> rhw=1 (2D, no perspective),
     // alpha=1 (was uninitialized). This is the GM-ground-black D3D11-port regression.
-    GroundMapVertex *src[4] = { v0, v1, v2, v3 };
+    GroundMapVertex *src[4] = {v0, v1, v2, v3};
 
     for (int i = 0; i < 4; i++)
     {
@@ -802,12 +812,13 @@ void RenderGMRadar::DrawGMsquare(GroundMapVertex *v0, GroundMapVertex *v1, Groun
         vert[i].g = src[i]->g;
         vert[i].a = 1.0f;
         vert[i].u = vert[i].v = 0.0f;
-        vert[i].q = 0.0f;            // 2D screen square -> rhw = 1 (no perspective)
+        vert[i].q = 0.0f; // 2D screen square -> rhw = 1 (no perspective)
         vertPointers[i] = &vert[i];
     }
 
     if (v0->clipFlag bitor v1->clipFlag bitor v2->clipFlag bitor v3->clipFlag)
         ClipAndDraw2DFan(vertPointers, 4);
     else
-        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR, 4, (MPRVtxTexClr_t **) vertPointers);
+        context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR, 4,
+                              (MPRVtxTexClr_t **)vertPointers);
 }

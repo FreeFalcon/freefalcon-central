@@ -6,14 +6,14 @@ MLR
 #ifndef _DRAWPARTICLESYS_H_
 #define _DRAWPARTICLESYS_H_
 
-#include "DrawObj.h"
+#include "drawobj.h"
 #include "context.h"
-#include "Tex.h"
+#include "tex.h"
 #include "falclib/include/alist.h"
-#include "Graphics/Include/Drawbsp.h"
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
-#include "FakeRand.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
+#include "fakerand.h"
 #include "falclib/include/fsound.h"
 
 #include "context.h"
@@ -36,12 +36,9 @@ extern bool g_bGpuParticles;
 #define LIGHT_SIZE_CX 15
 
 
-
 ////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 //                              COBRA - RED - THE PS REWRITING                                     \\
 ////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-
-
 
 
 
@@ -50,15 +47,17 @@ extern bool g_bGpuParticles;
 #define MAX_TRAIL_PARAMETERS 256 // The max Trails definitions supported
 #define PS_MAX_PARTICLES 32768 // The PARTICLES Supported
 #define PS_MAX_POLYS PS_MAX_PARTICLES // The Max POLY Subparts supported
-#define PS_MAX_EMITTERS PS_MAX_PARTICLES*4 // The EMITTERS Supported
+#define PS_MAX_EMITTERS PS_MAX_PARTICLES * 4 // The EMITTERS Supported
 #define PS_MAX_SOUNDS PS_MAX_PARTICLES // The Max SOUND Subparts supported
-#define PS_MAX_LIGHTS PS_MAX_PARTICLES/32 // The Max SOUND Subparts supported
-#define PS_MAX_CLUSTERS PS_MAX_PARTICLES/2 // The Max CLUSTERS supported
-#define PS_MAX_TRAILS 256 // The Max TRAILS supported * WARNING - MUST BE A POWER OF 2 FOR Handle calculations
+#define PS_MAX_LIGHTS PS_MAX_PARTICLES / 32 // The Max SOUND Subparts supported
+#define PS_MAX_CLUSTERS PS_MAX_PARTICLES / 2 // The Max CLUSTERS supported
+#define PS_MAX_TRAILS                                                          \
+    256 // The Max TRAILS supported * WARNING - MUST BE A POWER OF 2 FOR Handle calculations
 //#define PS_MAX_TRAILPARTS (PS_MAX_TRAILS * 128) // The Max TRAIL PARTS supported
 #define PS_PTR DWORD // the pointers size for PS stuff
 #define PS_NOPTR 0xffffffff // the null value for a PS PTR
-#define PS_RECALC_DELTA 300 // Delta position change of a particle to cause some parameters recalcs
+#define PS_RECALC_DELTA                                                        \
+    300 // Delta position change of a particle to cause some parameters recalcs
 #define PS_MAXQUADRNDLIST 1024 // Max precalculated Quads for use
 
 #define TRAIL_NODES_X_SEG 128 // Number of nodes for each segment trail
@@ -76,26 +75,61 @@ extern bool g_bGpuParticles;
 
 
 // The (0 / 2PI) normalized ASIN macro
-#define PS_NORM_ASIN(x) (ASinArray[min( ASIN_ARRAY_ITEMS - 1, F_I32(x * ASIN_ARRAY_ITEMS))])
+#define PS_NORM_ASIN(x)                                                        \
+    (ASinArray[min(ASIN_ARRAY_ITEMS - 1, F_I32(x * ASIN_ARRAY_ITEMS))])
 // The Lod Bias CX of the zoom, exagerates trails details with distance, this CX is used to reduce to
 // a reasonable value
-#define TRAIL_BIAS_CX    0.2F
+#define TRAIL_BIAS_CX 0.2F
 
 ///////////////////////////// ENUMS \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
 typedef DWORD TRAIL_HANDLE;
 
-typedef enum { PSEM_ONCE = 0, PSEM_PERSEC = 1, PSEM_IMPACT = 2, PSEM_EARTHIMPACT = 3, PSEM_WATERIMPACT = 4 } PSEmitterModeEnum;
+typedef enum
+{
+    PSEM_ONCE = 0,
+    PSEM_PERSEC = 1,
+    PSEM_IMPACT = 2,
+    PSEM_EARTHIMPACT = 3,
+    PSEM_WATERIMPACT = 4
+} PSEmitterModeEnum;
 
-typedef enum { PSD_SPHERE = 0, PSD_PLANE = 1, PSD_BOX = 2, PSD_BLOB = 3, PSD_CYLINDER = 4, PSD_CONE = 5, PSD_TRIANGLE = 6, PSD_RECTANGLE = 7,
-                PSD_DISC = 8, PSD_LINE = 9, PSD_POINT = 10
-             }  PSDomainEnum;
+typedef enum
+{
+    PSD_SPHERE = 0,
+    PSD_PLANE = 1,
+    PSD_BOX = 2,
+    PSD_BLOB = 3,
+    PSD_CYLINDER = 4,
+    PSD_CONE = 5,
+    PSD_TRIANGLE = 6,
+    PSD_RECTANGLE = 7,
+    PSD_DISC = 8,
+    PSD_LINE = 9,
+    PSD_POINT = 10
+} PSDomainEnum;
 
-typedef enum { PSDT_NONE = 0, PSDT_POLY  = 1, PSDT_POINT = 2, PSDT_LINE  = 3 } PSDrawType;
+typedef enum
+{
+    PSDT_NONE = 0,
+    PSDT_POLY = 1,
+    PSDT_POINT = 2,
+    PSDT_LINE = 3
+} PSDrawType;
 
-typedef enum { PSO_NONE = 0, PSO_MOVEMENT  = 1 } PSOrientation;
+typedef enum
+{
+    PSO_NONE = 0,
+    PSO_MOVEMENT = 1
+} PSOrientation;
 
-enum PSType { PST_NONE = 0, PST_SPARKS = 1, PST_EXPLOSION_SMALL = 2, PST_NAPALM = 3 };
+enum PSType
+{
+    PST_NONE = 0,
+    PST_SPARKS = 1,
+    PST_EXPLOSION_SMALL = 2,
+    PST_NAPALM = 3
+};
 
 
 ////////////////////// BASIC STRUCTURES \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -107,20 +141,20 @@ struct Point
 
 struct psRGBA
 {
-    float   r, g, b, a;
+    float r, g, b, a;
 };
 
 struct timedRGBA
 {
     bool LogMode;
-    float   time;
-    psRGBA  value;
+    float time;
+    psRGBA value;
     psRGBA K;
 };
 
 struct psRGB
 {
-    float   r, g, b;
+    float r, g, b;
 };
 
 
@@ -128,7 +162,7 @@ struct psRGB
 struct timedRGB
 {
     bool LogMode;
-    float   time;
+    float time;
     psRGB value;
     psRGB K;
 };
@@ -136,8 +170,8 @@ struct timedRGB
 struct timedFloat
 {
     bool LogMode;
-    float   time;
-    float   value;
+    float time;
+    float value;
     float K;
 };
 
@@ -159,11 +193,11 @@ struct TextureLink
 
 // The Cluster position... used to make a FOV Macro calculation of a PS cluster
 
-#pragma pack( push, Clusterpack, 16)
+#pragma pack(push, Clusterpack, 16)
 typedef struct
 {
 
-#pragma pack( push, ClusterData, 16)
+#pragma pack(push, ClusterData, 16)
     struct
     {
         PS_PTR NEXT; // the Next Cluster node
@@ -171,20 +205,21 @@ typedef struct
         struct
         {
             char Alive : 1; // Tells this cluster is used by some particle
-            char Out : 1; // Result of visibility check, Full Out of FOV or Out of Visibile Distance
+            char Out
+                : 1; // Result of visibility check, Full Out of FOV or Out of Visibile Distance
             char In : 1; // Result of visibility check, Full in FOV
             char LightIn : 1; // Within Light Range
-            char Static : 1; // 1 = Static Cluster, Dimension is from a Fixed Radius, position is TLF
+            char Static
+                : 1; // 1 = Static Cluster, Dimension is from a Fixed Radius, position is TLF
             // 0 = Dynamic Cluster, Radius calculated from  TLF - BRN points
         };
 
         float Radius;
     };
-#pragma pack( pop, ClusterData)
+#pragma pack(pop, ClusterData)
     XMMVector TLFpos, BRNpos; // Top/Left/Far and Bottom/Right/Near positions
 } ClusterPosType;
-#pragma pack( pop, Clusterpack)
-
+#pragma pack(pop, Clusterpack)
 
 
 // The Particle Node structure
@@ -206,7 +241,7 @@ typedef struct
     {
         char Alive : 1;
         char Cluster : 1;
-        char WindAffected: 1;
+        char WindAffected : 1;
     };
 
     float elapsedTime;
@@ -262,14 +297,14 @@ typedef struct
     // The Light
     PS_PTR LIGHT;
     // the rest from generation
-    float  rollover;
+    float rollover;
     // Time Stuff
-    float  RndTime, RndTimeCx;
+    float RndTime, RndTimeCx;
     // Generation stages
     int LastStage;
     // The Pointer to the PEP
     struct ParticleEmitterParam *PEP;
-}  EmitterPartType;
+} EmitterPartType;
 
 
 // This is a Light structure
@@ -291,8 +326,7 @@ typedef struct
     };
     // position
     Tpoint Pos;
-}  LightPartType;
-
+} LightPartType;
 
 
 typedef struct
@@ -313,8 +347,6 @@ typedef struct
     int VolumeStage, PitchStage, SoundId;
     F4SoundPos *SoundPos;
 } SoundSubPartType;
-
-
 
 
 typedef struct
@@ -340,14 +372,11 @@ typedef struct
 } TrailSubPartType;
 
 
-
-
 typedef struct
 {
     float RotRate;
     mlTrig RotCx;
 } QuadRndType;
-
 
 
 typedef struct
@@ -384,8 +413,6 @@ typedef struct
 } TrailEmitterType;
 
 
-
-
 // This is the item pointing to a PS List of objects
 typedef struct
 {
@@ -396,7 +423,6 @@ typedef struct
 } PS_ListType;
 
 #define PS_INIT_LIST(i, nr, type) PS_ListInit(i, nr, sizeof(type))
-
 
 
 // Used to draw segmented trails (like missile trails)
@@ -433,7 +459,7 @@ public:
     void GetRandomPosition(Tpoint *p);
     union
     {
-        float  param[9];
+        float param[9];
         struct
         {
             Point pos, size;
@@ -449,50 +475,46 @@ public:
         struct
         {
             Point pos, size;
-            float  deviation;
+            float deviation;
         } blob;
     };
     void Parse(void);
 };
 
-struct   ParticleEmitterParam
+struct ParticleEmitterParam
 {
-    PSEmitterModeEnum  mode;
-    ParticleDomain    domain;
-    ParticleDomain     target;
-    float    param[9];
-    int    id;
-    char    name[PS_NAMESIZE];
-    int    stages;
+    PSEmitterModeEnum mode;
+    ParticleDomain domain;
+    ParticleDomain target;
+    float param[9];
+    int id;
+    char name[PS_NAMESIZE];
+    int stages;
     timedFloat rate[10];
     float velocity, velVariation;
     float TimeVariation;
     bool Light;
 };
 
-#define PS_PEPType  ParticleEmitterParam
+#define PS_PEPType ParticleEmitterParam
 
 
 // The emitter structure
 typedef struct
 {
     ParticleEmitterParam *pep;
-    float  rollover;
-    float  RndTime, RndTimeCx;
+    float rollover;
+    float RndTime, RndTimeCx;
     int LastStage;
 } EmitterSubPartType;
-
-
-
-
 
 
 typedef struct
 {
     int id;
-    char    name[PS_NAMESIZE];
+    char name[PS_NAMESIZE];
 
-    int     particleType; // which paritcle class to use for particles????
+    int particleType; // which paritcle class to use for particles????
 
     float lifespan, lifespanvariation; // how long a particle lasts in seconds
     int flags;
@@ -509,15 +531,15 @@ typedef struct
     int alphaStages;
     timedFloat alpha[10];
     int gravityStages;
-    timedFloat  gravity[10]; // 0 floats, negative rises, positive sinks
-    int         accelStages;
-    timedFloat  accel[10];
+    timedFloat gravity[10]; // 0 floats, negative rises, positive sinks
+    int accelStages;
+    timedFloat accel[10];
     int sndId;
     int sndLooped;
     int sndPitchStages;
-    timedFloat  sndPitch[10];
+    timedFloat sndPitch[10];
     int sndVolStages;
-    timedFloat  sndVol[10];
+    timedFloat sndVol[10];
     char TrailName[PS_NAMESIZE];
     int trailId;
     float velInitial, velVariation, velInherit; // inherit from emitter
@@ -531,29 +553,29 @@ typedef struct
     ParticleEmitterParam emitter[PSMAX_EMITTERS];
     float ParticleEmitterMin[PSMAX_EMITTERS];
     float ParticleEmitterMax[PSMAX_EMITTERS];
-    float   bounce;
-    float   dieOnGround;
-    char     texFilename[PS_NAMESIZE];
+    float bounce;
+    float dieOnGround;
+    char texFilename[PS_NAMESIZE];
     ParticleTextureNode *Texture;
     // BSP particle data
     int bspCTID, bspVisType; // CT Number of BSP
     DrawableBSP *bspObj; // All particles can share 1 BSP.
     PSOrientation orientation;
     ParticleAnimationNode *Animation[2];
-    float RotationRateMin, RotationRateMax; // COBRA - RED - Minimum and maximum rotation for the particle, Units are in 2PI/Sec
+    float RotationRateMin,
+        RotationRateMax; // COBRA - RED - Minimum and maximum rotation for the particle, Units are in 2PI/Sec
     float ClusterMode; // the Cluster Mode
     struct
     {
         char ZPoly : 1;
         char EmitLight : 1;
         char LightRoot : 1;
-        char WindAffected: 1;
+        char WindAffected : 1;
     };
     float VelRnd;
-    float   WindFactor; // RV - I-Hawk - Multiplier wind factor for some effects
+    float WindFactor; // RV - I-Hawk - Multiplier wind factor for some effects
 
 } PS_PPType;
-
 
 
 // COBRA - RED - The Animations List pointer
@@ -567,8 +589,8 @@ public:
     void *Sequence; // pointer to the Frame List pointers in memory
     int Flags;
 
-    DWORD_PTR Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos, float &alpha); // Artscout - 2026 (x64): pointer-sized handle
-
+    DWORD_PTR Run(int &Frame, float &TimeRest, float Elapsed, Tpoint &pos,
+                  float &alpha); // Artscout - 2026 (x64): pointer-sized handle
 };
 
 #define ANIMATION_FLAGS "LUD" // COBRA - RED - Animations Flag
@@ -583,14 +605,14 @@ public:
 typedef struct
 {
     int Id;
-    char    Name[PS_NAMESIZE];
+    char Name[PS_NAMESIZE];
     float LifeSpan, Interval, LifeCx;
     float Size[2], SizeRate, VisibleDistance, IntegrateDistance;
     psRGBA Color[2], ColorRate;
     float Alpha, Weight;
     DWORD GroupFlags;
-    char    TexFilename[PS_NAMESIZE];
-    char    SideTexFilename[PS_NAMESIZE];
+    char TexFilename[PS_NAMESIZE];
+    char SideTexFilename[PS_NAMESIZE];
     float TexRate;
     float LineDistance, FragRadius;
     float RndLimit, RndStep, RndTime;
@@ -604,11 +626,11 @@ typedef struct
 
 typedef struct
 {
-    char    Name[PS_NAMESIZE];
+    char Name[PS_NAMESIZE];
     DWORD Id;
 } TrailRefsType;
 
-#define TRAILREF(trail) { "TRAIL_"#trail, TRAIL_##trail }
+#define TRAILREF(trail) {"TRAIL_" #trail, TRAIL_##trail}
 
 
 //*********************************************************************************************************
@@ -620,14 +642,15 @@ public:
     DrawableParticleSys(int ParticleSysType, float scale = 1.0f);
     virtual ~DrawableParticleSys();
 
-    void ReleaseToSfx(); // gives object to SfxClass object so that the parent object can be terminated whilst still leaving the effect running
+    void
+    ReleaseToSfx(); // gives object to SfxClass object so that the parent object can be terminated whilst still leaving the effect running
 
-    void AddParticle(int ID, Tpoint *p , Tpoint *v = 0);
+    void AddParticle(int ID, Tpoint *p, Tpoint *v = 0);
     void AddParticle(Tpoint *p, Tpoint *v = 0);
 
     void Exec(void);
     virtual void Draw(class RenderOTW *renderer, int LOD);
-    int  HasParticles(void);
+    int HasParticles(void);
 
     static bool LoadParameters(void);
     static void UnloadParameters(void);
@@ -640,20 +663,21 @@ public:
     static float FadeArray[FADE_ARRAY_ITEMS];
     static float ASinArray[ASIN_ARRAY_ITEMS];
     static float SizeArray[SIZE_ARRAY_ITEMS];
-    static void  PS_AddParticleEx(int ID, Tpoint *Pos, Tpoint *Vel);
+    static void PS_AddParticleEx(int ID, Tpoint *Pos, Tpoint *Vel);
 
 
-    void    SetHeadVelocity(Tpoint *FPS);
+    void SetHeadVelocity(Tpoint *FPS);
 
 protected:
     static BOOL greenMode;
     static Tcolor litCloudColor;
 
     int type;
+
 private:
     AList particleList;
     ParticleParam *param;
-    int  Something;
+    int Something;
     Tpoint headFPS;
     Tpoint position;
 
@@ -661,7 +685,8 @@ private:
     static AList dpsList;
     void ClearParticles(void);
 
-    static ProtectedAList paramList; // anytime we access the paramList (or a PPN) we must lock this list.
+    static ProtectedAList
+        paramList; // anytime we access the paramList (or a PPN) we must lock this list.
 
     static AList AnimationsList;
     static AList textureList;
@@ -670,7 +695,7 @@ private:
     static ParticleTextureNode *GetFramesList(char *fn, int Frames);
     static ParticleAnimationNode *FindAnimationNode(char *fn);
     static ParticleAnimationNode *GetAnimationNode(char *fn);
-    static ParticleGroupNode  *Groups, *LastGroup;
+    static ParticleGroupNode *Groups, *LastGroup;
     static ParticleGroupNode *FindGroupNode(char *fn);
 
     static QuadRndType PS_QuadRndList[PS_MAXQUADRNDLIST];
@@ -689,18 +714,27 @@ private:
     static void PS_ListsReset(void);
     static void PS_ListsRelease(void);
     static PS_PTR PS_AddItem(DWORD ListIdx);
-    static PS_PTR  PS_RemoveItem(DWORD ListIdx, PS_PTR Item, PS_PTR Prev);
+    static PS_PTR PS_RemoveItem(DWORD ListIdx, PS_PTR Item, PS_PTR Prev);
     static bool PS_LoadParameters(void);
 
-    static void PS_AddParticle(int ID, Tpoint *Pos, Tpoint *Vel = 0, Tpoint *Aim = 0, float fRotationRate = 0, PS_PTR Cluster = PS_NOPTR, PS_PTR LIGHT = PS_NOPTR);
+    static void PS_AddParticle(int ID, Tpoint *Pos, Tpoint *Vel = 0,
+                               Tpoint *Aim = 0, float fRotationRate = 0,
+                               PS_PTR Cluster = PS_NOPTR,
+                               PS_PTR LIGHT = PS_NOPTR);
     static void PS_ParticleRun(void);
 
-    static TRAIL_HANDLE PS_AddTrail(int ID, Tpoint *Pos, PS_PTR OWNER = PS_NOPTR, bool run = true, float AlphaCx = 1.0f, float SizeCx = 1.0f);
+    static TRAIL_HANDLE PS_AddTrail(int ID, Tpoint *Pos,
+                                    PS_PTR OWNER = PS_NOPTR, bool run = true,
+                                    float AlphaCx = 1.0f, float SizeCx = 1.0f);
     static void PS_TrailRun(void);
     static void PS_TrailsClear(void);
 
-    static void PS_AddSubTrail(TrailSubPartType &Part, int ID, float AlphaCx, float SizeCx, Tpoint *Pos, Tpoint *Wind, Tpoint *Offset, PS_PTR CLUSTER);
-    static void PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &Origin, DWORD &Entry, DWORD &Exit, DWORD Elements, PS_PTR tpn);
+    static void PS_AddSubTrail(TrailSubPartType &Part, int ID, float AlphaCx,
+                               float SizeCx, Tpoint *Pos, Tpoint *Wind,
+                               Tpoint *Offset, PS_PTR CLUSTER);
+    static void PS_SubTrailRun(TrailSubPartType *Trail, D3DXVECTOR3 &Origin,
+                               DWORD &Entry, DWORD &Exit, DWORD Elements,
+                               PS_PTR tpn);
     static void PS_SubTrailDraw(void);
 
     static void PS_AddSound(PS_PTR owner, PS_PTR ID);
@@ -716,12 +750,17 @@ private:
 
     static void PS_EmitterRun(void);
     static void PS_GenerateEmitters(PS_PTR owner, PS_PPType &PPN);
-    static void PS_AddEmitter(PS_PTR owner, ParticleEmitterParam *PEP, PS_PTR Light);
+    static void PS_AddEmitter(PS_PTR owner, ParticleEmitterParam *PEP,
+                              PS_PTR Light);
 
-    static float PS_EvalTimedLinLogFloat(float life, int &LastStage, int Count, timedFloat *input);
-    static float PS_EvalTimedFloat(float life,  int &LastStage, int Count, timedFloat *input);
-    static psRGBA PS_EvalTimedRGBA(float life, int &LastStage, int Count, timedRGBA  *input);
-    static psRGB PS_EvalTimedRGB(float life, int &LastStage, int Count, timedRGB   *input);
+    static float PS_EvalTimedLinLogFloat(float life, int &LastStage, int Count,
+                                         timedFloat *input);
+    static float PS_EvalTimedFloat(float life, int &LastStage, int Count,
+                                   timedFloat *input);
+    static psRGBA PS_EvalTimedRGBA(float life, int &LastStage, int Count,
+                                   timedRGBA *input);
+    static psRGB PS_EvalTimedRGB(float life, int &LastStage, int Count,
+                                 timedRGB *input);
 
     static float PS_ElapsedTime;
     static DWORD PS_RunTime;
@@ -741,16 +780,16 @@ public:
 
     static float groundLevel;
     static float cameraDistance;
-    static int   reloadParameters;
+    static int reloadParameters;
     static float winddx, winddy;
 
     // static PS_PTR PS_AddTrail(int TrailId, float x, float y, float z);
     static void PS_KillTrail(TRAIL_HANDLE Handle);
     // static void PS_UpdateTrail(PS_PTR Trail, float x, float y, float z);
-    static TRAIL_HANDLE PS_EmitTrail(TRAIL_HANDLE Handle, int TrailId, float x, float y, float z, float AlphaCx = 1.0f, float SizeCx = 1.0f);
-
+    static TRAIL_HANDLE PS_EmitTrail(TRAIL_HANDLE Handle, int TrailId, float x,
+                                     float y, float z, float AlphaCx = 1.0f,
+                                     float SizeCx = 1.0f);
 };
 
 
 #endif // _DRAWSGMT_H_
-

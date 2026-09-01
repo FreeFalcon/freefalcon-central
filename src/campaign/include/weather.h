@@ -9,11 +9,11 @@
 #ifndef WEATHER_H
 #define WEATHER_H
 
-#include "MsgInc/WeatherMsg.h"
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "RealWeather.h"
+#include "msginc/weathermsg.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "realweather.h"
 
 class WeatherClass : public RealWeather
 {
@@ -27,8 +27,8 @@ public:
     void UpdateWeather();
     int CampLoad(char *name, int type);
     int Save(char *name);
-    void SendWeather(VuTargetEntity* dest);
-    void ReceiveWeather(FalconWeatherMessage* message);
+    void SendWeather(VuTargetEntity *dest);
+    void ReceiveWeather(FalconWeatherMessage *message);
     int GetCloudCover(GridIndex x, GridIndex y);
     int GetCloudLevel(GridIndex x, GridIndex y);
     void SetCloudCover(GridIndex x, GridIndex y, int cov);
@@ -46,7 +46,8 @@ public:
 protected:
     BOOL sendClouds;
     SLONG contrailBase;
-    int tempMin, tempMed, tempMax, windMin, windMed, windMax, wHdgThresh, condCounter;
+    int tempMin, tempMed, tempMax, windMin, windMed, windMax, wHdgThresh,
+        condCounter;
 };
 
 #endif //WEATHER_H

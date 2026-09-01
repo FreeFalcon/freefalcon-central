@@ -5,11 +5,11 @@
 
  Provide a class to manage MPR palettes.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
-#include "TOD.h"
-#include "Palette.h"
-#include "Tex.h"
+#include "tod.h"
+#include "palette.h"
+#include "tex.h"
 
 
 static DXContext *rc = NULL;
@@ -57,6 +57,8 @@ void Palette::CleanupForDevice(DXContext *texRC)
 \***************************************************************************/
 void Palette::Setup32(DWORD *data32)
 {
+    if (not data32)
+        return; // #104: defensive -- never memcpy from a NULL palette (see Texture::LoadImage guard)
     ShiAssert(palHandle == NULL);
     ShiAssert(data32);
 
@@ -90,10 +92,10 @@ void Palette::Setup24(BYTE *data24)
 
     while (data24 < stop)
     {
-        *to = ((BYTE)(*(data24))) |
-              ((BYTE)(*(data24 + 1)) <<  8) |
-              ((BYTE)(*(data24 + 2)) << 16) |
-              ((BYTE)(*(data24)) << 24); // Repeat Red component for alpha channel
+        *to =
+            ((BYTE)(*(data24))) | ((BYTE)(*(data24 + 1)) << 8) |
+            ((BYTE)(*(data24 + 2)) << 16) |
+            ((BYTE)(*(data24)) << 24); // Repeat Red component for alpha channel
         to++;
         data24 += 3;
     }
@@ -108,7 +110,7 @@ void Palette::UpdateMPR(DWORD *pal)
     ShiAssert(rc not_eq NULL);
     ShiAssert(pal);
 
-    if ( not rc) // JB 010615 CTD
+    if (not rc) // JB 010615 CTD
         return;
 
     // OW FIXME Error checking
@@ -116,7 +118,7 @@ void Palette::UpdateMPR(DWORD *pal)
         palHandle = new PaletteHandle(rc->m_pDD, 32, 256);
 
     ShiAssert(palHandle);
-    palHandle->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE*)pal);
+    palHandle->Load(MPR_TI_PALETTE, 32, 0, 256, (BYTE *)pal);
 }
 
 
@@ -140,7 +142,7 @@ int Palette::Release(void)
     //JAM 30Sep03
     // ShiAssert( refCount > 0 );
 
-    if (refCount > 0) 
+    if (refCount > 0)
         refCount--;
 
     //JAM
@@ -177,7 +179,7 @@ void Palette::LightTexturePalette(Tcolor *light)
 
     // Set up the loop control
     to = pal + 1;
-    from = (BYTE*)(paletteData + 1);
+    from = (BYTE *)(paletteData + 1);
     stop = pal + 256;
 
     // We skip the first entry to allow for chroma keying
@@ -186,12 +188,12 @@ void Palette::LightTexturePalette(Tcolor *light)
     // Build the lite version of the palette in temporary storage
     while (to < stop)
     {
-        *to  = (FloatToInt32(*(from)   * r)) // Red
-               bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
-               bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
-               bitor ((*(from + 3)) << 24); // Alpha
+        *to = (FloatToInt32(*(from)*r)) // Red
+              bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+              bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+              bitor ((*(from + 3)) << 24); // Alpha
         from += 4;
-        to ++;
+        to++;
     }
 
     // Send the new lite palette to MPR
@@ -199,7 +201,6 @@ void Palette::LightTexturePalette(Tcolor *light)
 }
 
 
-
 /***************************************************************************\
     Update the light levels on our MPR palette without affecting our
  stored palette entries.
@@ -219,13 +220,13 @@ void Palette::LightTexturePaletteRange(Tcolor *light, int palStart, int palEnd)
 
     // Set up the loop control
     to = pal;
-    from = (BYTE*)(paletteData);
+    from = (BYTE *)(paletteData);
     stop = pal + palStart;
 
     // Just copy the entries until we reach the start index
     while (to < stop)
     {
-        *to++ = *(DWORD*)from;
+        *to++ = *(DWORD *)from;
         from += 4;
     }
 
@@ -234,10 +235,10 @@ void Palette::LightTexturePaletteRange(Tcolor *light, int palStart, int palEnd)
 
     while (to < stop)
     {
-        *to++  = (FloatToInt32(*(from)   * r)) // Red
-                 bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
-                 bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
-                 bitor ((*(from + 3)) << 24); // Alpha
+        *to++ = (FloatToInt32(*(from)*r)) // Red
+                bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+                bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+                bitor ((*(from + 3)) << 24); // Alpha
         from += 4;
     }
 
@@ -246,14 +247,13 @@ void Palette::LightTexturePaletteRange(Tcolor *light, int palStart, int palEnd)
 
     while (to < stop)
     {
-        *to++ = *(DWORD*)from;
+        *to++ = *(DWORD *)from;
         from += 4;
     }
 
     // Send the new lite palette to MPR
     UpdateMPR(pal);
 }
-
 
 
 /***************************************************************************\
@@ -282,7 +282,7 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
 
     // Set up the loop control
     to = pal + 1;
-    from = (BYTE*)(paletteData + 1);
+    from = (BYTE *)(paletteData + 1);
     stop = pal + 248;
 
     // We skip the first entry to allow for chroma keying
@@ -291,12 +291,12 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
     // Darken the "normal" palette entries
     while (to < stop)
     {
-        *to  = (FloatToInt32(*(from)   * r)) // Red
-               bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
-               bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
-               bitor ((*(from + 3)) << 24); // Alpha
+        *to = (FloatToInt32(*(from)*r)) // Red
+              bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+              bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+              bitor ((*(from + 3)) << 24); // Alpha
         from += 4;
-        to ++;
+        to++;
     }
 
     // Only turn on the lights if it is dark enough
@@ -306,12 +306,12 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
 
         while (to < stop)
         {
-            *to  = (FloatToInt32(*(from)   * r)) // Red
-                   bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
-                   bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
-                   bitor ((*(from + 3)) << 24); // Alpha
+            *to = (FloatToInt32(*(from)*r)) // Red
+                  bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+                  bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+                  bitor ((*(from + 3)) << 24); // Alpha
             from += 4;
-            to ++;
+            to++;
         }
     }
     else
@@ -362,7 +362,6 @@ void Palette::LightTexturePaletteBuilding(Tcolor *light)
 }
 
 
-
 /***************************************************************************\
     Update the light levels on our MPR palette without affecting our
  stored palette entries.
@@ -388,7 +387,7 @@ void Palette::LightTexturePaletteReflection(Tcolor *light)
 
     // Set up the loop control
     to = pal + 1;
-    from = (BYTE*)(paletteData + 1);
+    from = (BYTE *)(paletteData + 1);
     stop = pal + 256;
 
     // We skip the first entry to allow for chroma keying
@@ -397,12 +396,12 @@ void Palette::LightTexturePaletteReflection(Tcolor *light)
     // Build the lite version of the palette in temporary storage
     while (to < stop)
     {
-        *to  = (FloatToInt32(*(from)   * r)) // Red
-               bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
-               bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
-               bitor (0x26000000); // Alpha
+        *to = (FloatToInt32(*(from)*r)) // Red
+              bitor (FloatToInt32(*(from + 1) * g) << 8) // Green
+              bitor (FloatToInt32(*(from + 2) * b) << 16) // Blue
+              bitor (0x26000000); // Alpha
         from += 4;
-        to ++;
+        to++;
     }
 
     // Send the new lite palette to MPR
@@ -414,27 +413,33 @@ void Palette::LightTexturePaletteReflection(Tcolor *light)
 
 #ifdef _DEBUG
 DWORD PaletteHandle::m_dwNumHandles = 0; // Number of instances
-DWORD PaletteHandle::m_dwTotalBytes = 0; // Total number of bytes allocated (including bitmap copies and object size)
+DWORD PaletteHandle::m_dwTotalBytes =
+    0; // Total number of bytes allocated (including bitmap copies and object size)
 #endif
 
-PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry, UInt16 PalNumEntries)
+PaletteHandle::PaletteHandle(IDirectDraw7 *pDD, UInt16 PalBitsPerEntry,
+                             UInt16 PalNumEntries)
 {
     // Artscout - 2026: [DX7-PURGE] DDraw IDirectDrawPalette removed. The GPU path bakes the
     // palette on the CPU into m_pPalData; no DirectDraw palette object is created.
-    (void)pDD; (void)PalBitsPerEntry;
+    (void)pDD;
+    (void)PalBitsPerEntry;
     m_pIDDP = NULL;
     m_nNumEntries = PalNumEntries;
 
     m_pPalData = new DWORD[256];
     ShiAssert(m_pPalData);
-    if (m_pPalData) ZeroMemory(m_pPalData, sizeof(DWORD) * 256); // else the first bake under D3D11 reads garbage
+    if (m_pPalData)
+        ZeroMemory(m_pPalData,
+                   sizeof(DWORD) *
+                       256); // else the first bake under D3D11 reads garbage
 
     m_bBakedValid = false;
 
 #ifdef _DEBUG
-    InterlockedIncrement((long *) &m_dwNumHandles); // Number of instances
-    InterlockedExchangeAdd((long *) &m_dwTotalBytes, sizeof(*this));
-    InterlockedExchangeAdd((long *) &m_dwTotalBytes, sizeof(DWORD[256]) * 2);
+    InterlockedIncrement((long *)&m_dwNumHandles); // Number of instances
+    InterlockedExchangeAdd((long *)&m_dwTotalBytes, sizeof(*this));
+    InterlockedExchangeAdd((long *)&m_dwTotalBytes, sizeof(DWORD[256]) * 2);
 #endif
 }
 
@@ -448,7 +453,8 @@ PaletteHandle::~PaletteHandle()
 #endif
 
     // Detach from textures
-    for (int i = 0 ; (static_cast<unsigned int>(i) < m_arrAttachedTextures.size()) ; i++)
+    for (int i = 0;
+         (static_cast<unsigned int>(i) < m_arrAttachedTextures.size()); i++)
     {
         m_arrAttachedTextures[i]->PaletteDetach(this);
     }
@@ -456,20 +462,24 @@ PaletteHandle::~PaletteHandle()
     m_arrAttachedTextures.clear();
 
     // Artscout - 2026: [DX7-PURGE] no DDraw palette interface to release.
-    if (m_pPalData) delete[] m_pPalData;
+    if (m_pPalData)
+        delete[] m_pPalData;
 }
 
-void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt16 entries, UInt8 *PalBuffer)
+void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index,
+                         UInt16 entries, UInt8 *PalBuffer)
 {
     // D3D11 FIX: it was `if (not m_pIDDP or not m_pPalData) return;`. But m_pIDDP==NULL under D3D11
     // (no DDraw palette, see the constructor) -> Load returned immediately, m_pPalData was NEVER
     // filled -> the palette stayed 0xCDCDCDCD -> chroma + palettized textures (FONTS!)
     // drew as squares. Fill m_pPalData ALWAYS (read by the D3D11 palette-resolve in
     // tex.cpp); touch the hardware palette (m_pIDDP->SetEntries, D3D7) only if it exists.
-    if ( not m_pPalData) return;
-    if (entries > m_nNumEntries) entries = m_nNumEntries;
+    if (not m_pPalData)
+        return;
+    if (entries > m_nNumEntries)
+        entries = m_nNumEntries;
 
-    if ((DWORD *) PalBuffer not_eq m_pPalData)
+    if ((DWORD *)PalBuffer not_eq m_pPalData)
         memcpy(m_pPalData, PalBuffer, sizeof(DWORD) * entries);
 
     // Convert palette (R<->B into D3D order; m_dwChromaKey is swizzled the same way in tex.cpp ->
@@ -479,23 +489,28 @@ void PaletteHandle::Load(UInt16 info, UInt16 PalBitsPerEntry, UInt16 index, UInt
     for (int i = 0; i < m_nNumEntries; i++)
     {
         dwTmp = m_pPalData[i];
-        m_pPalData[i] = RGBA_MAKE(RGBA_GETBLUE(dwTmp), RGBA_GETGREEN(dwTmp), RGBA_GETRED(dwTmp), RGBA_GETALPHA(dwTmp));
+        m_pPalData[i] = RGBA_MAKE(RGBA_GETBLUE(dwTmp), RGBA_GETGREEN(dwTmp),
+                                  RGBA_GETRED(dwTmp), RGBA_GETALPHA(dwTmp));
     }
 
     // Artscout - 2026: [DX7-PURGE] the DDraw hardware palette (m_pIDDP->SetEntries) is gone;
     // the GPU path always rebakes bound textures from source indices for the new palette.
     {
-        (void)index; (void)PalBuffer;
+        (void)index;
+        (void)PalBuffer;
         // D3D11: no hardware palette -- rebake the bound textures from the source
         // indices for the new palette. Translate3D is called often (TOD timer), but the palette is almost
         // always the same, so rebake only on a REAL change (otherwise we'd create
         // dozens of textures every frame).
-        if ( not m_bBakedValid or memcmp(m_arrBaked, m_pPalData, sizeof(DWORD) * m_nNumEntries) not_eq 0)
+        if (not m_bBakedValid or memcmp(m_arrBaked, m_pPalData,
+                                        sizeof(DWORD) * m_nNumEntries) not_eq 0)
         {
             memcpy(m_arrBaked, m_pPalData, sizeof(DWORD) * m_nNumEntries);
             m_bBakedValid = true;
 
-            for (int i = 0 ; static_cast<unsigned int>(i) < m_arrAttachedTextures.size() ; i++)
+            for (int i = 0;
+                 static_cast<unsigned int>(i) < m_arrAttachedTextures.size();
+                 i++)
                 m_arrAttachedTextures[i]->Reload();
         }
     }
@@ -505,7 +520,8 @@ void PaletteHandle::AttachToTexture(TextureHandle *pTex)
 {
     ShiAssert(pTex);
 
-    if ( not pTex) return;
+    if (not pTex)
+        return;
 
     std::vector<TextureHandle *>::iterator it = GetAttachedTextureIndex(pTex);
 
@@ -518,7 +534,7 @@ void PaletteHandle::AttachToTexture(TextureHandle *pTex)
     pTex->PaletteAttach(this);
 
 #ifdef _DEBUG
-    InterlockedExchangeAdd((long *) &m_dwTotalBytes, sizeof(pTex));
+    InterlockedExchangeAdd((long *)&m_dwTotalBytes, sizeof(pTex));
 #endif
 }
 
@@ -526,7 +542,8 @@ void PaletteHandle::DetachFromTexture(TextureHandle *pTex)
 {
     ShiAssert(pTex);
 
-    if ( not pTex) return;
+    if (not pTex)
+        return;
 
     std::vector<TextureHandle *>::iterator it = GetAttachedTextureIndex(pTex);
     ShiAssert(it not_eq m_arrAttachedTextures.end()); // do not detach twice
@@ -542,12 +559,15 @@ void PaletteHandle::DetachFromTexture(TextureHandle *pTex)
 #endif
 }
 
-std::vector<TextureHandle *>::iterator PaletteHandle::GetAttachedTextureIndex(TextureHandle *pTex)
+std::vector<TextureHandle *>::iterator
+PaletteHandle::GetAttachedTextureIndex(TextureHandle *pTex)
 {
     std::vector<TextureHandle *>::iterator it;
 
-    for (it = m_arrAttachedTextures.begin(); it not_eq m_arrAttachedTextures.end(); it++)
-        if (*it == pTex) return it;
+    for (it = m_arrAttachedTextures.begin();
+         it not_eq m_arrAttachedTextures.end(); it++)
+        if (*it == pTex)
+            return it;
 
     return m_arrAttachedTextures.end();
 }

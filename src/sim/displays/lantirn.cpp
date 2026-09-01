@@ -1,9 +1,9 @@
 #include "stdhdr.h"
 #include <float.h>
 #include "lantirn.h"
-#include "Graphics/Include/renderir.h"
-#include "Graphics/Include/imagebuf.h" // Artscout - 2026: off-screen RTT for FLIR/TGP scene
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/renderir.h"
+#include "graphics/include/imagebuf.h" // Artscout - 2026: off-screen RTT for FLIR/TGP scene
+#include "graphics/include/rviewpnt.h"
 #include "otwdrive.h"
 #include "simdrive.h"
 #include "aircrft.h"
@@ -13,17 +13,19 @@
 #include "campbase.h"
 #include "camplist.h"
 #include "../../graphics/include/drawbsp.h"
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/dispopts.h"
 
 extern bool g_bTFRFixes;
 
 LantirnClass *theLantirn;
 
-LantirnClass::LantirnClass()  : DrawableClass()
+LantirnClass::LantirnClass() : DrawableClass()
 {
     display = NULL;
-    m_pRTT = NULL;       // Artscout - 2026: off-screen RTT for the FLIR/TGP scene (D3D11)
-    m_pMfdImage = NULL;  // Artscout - 2026: MFD 2D surface we read the scene back into
+    m_pRTT =
+        NULL; // Artscout - 2026: off-screen RTT for the FLIR/TGP scene (D3D11)
+    m_pMfdImage =
+        NULL; // Artscout - 2026: MFD 2D surface we read the scene back into
     m_flags = AVAILABLE;
     m_tfr_alt = 1000;
     m_tfr_ride = TFR_SOFT;
@@ -53,8 +55,8 @@ LantirnClass::LantirnClass()  : DrawableClass()
     SpeedUp = FALSE;
     roll = 0.0F;
     featureDistance = 0.0F;
-    featureDistance2  = 0.0F;
-    featureDistance3  = 0.0F;
+    featureDistance2 = 0.0F;
+    featureDistance3 = 0.0F;
     featureHeight = 0.0F;
     featureHeight2 = 0.0F;
     featureHeight3 = 0.0F;
@@ -76,9 +78,9 @@ LantirnClass::~LantirnClass()
     }
 }
 
-void LantirnClass::DisplayInit(ImageBuffer* image)
+void LantirnClass::DisplayInit(ImageBuffer *image)
 {
-    RenderIR *irrend = (RenderIR *) privateDisplay;
+    RenderIR *irrend = (RenderIR *)privateDisplay;
 
     // Already set up for this MFD surface?
     if (irrend and m_pMfdImage == image)
@@ -133,11 +135,21 @@ void LantirnClass::DrawTerrain()
     // DrawScene straight into the HUD viewport; under D3D12 it was NOT gated, so flying an AG pass at a target
     // airfield fed the airbase feature (a composite BSP) through the object path -> a building draw hung the
     // GPU (DEVICE_HUNG). Gate it off by default (FLIR shows no scene, same as the other sensors under D3D12).
-    const bool doA5 = !g_bUseD3D12 || g_bSensorSceneD3D12;
+    // Artscout - 2026: gate Vulkan off too. The Vulkan object/terrain path has no RTT routing at all
+    // (VkBeginScenePass routes to menu/tail/scene only), so a sensor DrawScene records the IR-grey world into
+    // the EYE's scene pass (black fill over the lower cockpit) and the ReBindRttTarget/SetViewportSize(atlas)
+    // pair leaks the 512x512 metric into the composite (whole shrunk atlas inside the MFD). Same class of
+    // breakage that hung D3D12; symbology-only until a real RTT object path exists.
+    extern bool g_bUseVulkan, g_bSensorSceneVulkan;
+    // Artscout - 2026: the HUD FLIR is NOT an RTT page -- it renders the forward world straight into
+    // the on-screen HUD viewport by design, which under VR is garbage in the eyes (upside-down airbase
+    // buildings, black fill). g_bSensorSceneVulkan does NOT enable it; only the explicit debug knob does.
+    const bool doA5 = !(g_bUseD3D12 or g_bUseVulkan) || g_bSensorSceneD3D12;
     bool useRtt = false;
-    RenderIR *pRender = useRtt ? (RenderIR *)privateDisplay : (RenderIR *)display;
+    RenderIR *pRender =
+        useRtt ? (RenderIR *)privateDisplay : (RenderIR *)display;
 
-    if ( not pRender)
+    if (not pRender)
         return;
 
     if (useRtt)
@@ -192,7 +204,7 @@ void LantirnClass::DrawTerrain()
     cameraPos.y = p.x * r->M21 + p.y * r->M22 + p.z * r->M23;
     cameraPos.z = p.x * r->M31 + p.y * r->M32 + p.z * r->M33;
 
-    if (doA5)   // #DX12 A5: skip the sensor 3D-scene under D3D12 (default) -> no airfield-object hang
+    if (doA5) // #DX12 A5: skip the sensor 3D-scene under D3D12 (default) -> no airfield-object hang
     {
         pRender->DrawScene(&cameraPos, &viewRotation);
 
@@ -212,7 +224,8 @@ void LantirnClass::DrawTerrain()
     // then restore the back buffer. (Munitions 3D-viewer readback pattern, BlitRttTo565.)
     if (useRtt)
     {
-        pRender->context.FinishFrame(NULL); // restores the back buffer as the active target
+        pRender->context.FinishFrame(
+            NULL); // restores the back buffer as the active target
 
         if (m_pMfdImage and m_pRTT)
         {
@@ -232,13 +245,13 @@ void LantirnClass::DrawTerrain()
 void LantirnClass::SetFOV(float fov)
 {
     if (privateDisplay)
-        ((Render3D*)privateDisplay)->SetFOV(fov * m_fscale);
+        ((Render3D *)privateDisplay)->SetFOV(fov * m_fscale);
 }
 
 float LantirnClass::GetFov()
 {
     if (privateDisplay)
-        return ((Render3D*)privateDisplay)->GetFOV() * m_fscale;
+        return ((Render3D *)privateDisplay)->GetFOV() * m_fscale;
 
     return 0;
 }
@@ -258,17 +271,17 @@ void LantirnClass::StepTFRRide()
 {
     switch (m_tfr_ride)
     {
-        case TFR_SOFT:
-            m_tfr_ride = TFR_MED;
-            break;
+    case TFR_SOFT:
+        m_tfr_ride = TFR_MED;
+        break;
 
-        case TFR_MED:
-            m_tfr_ride = TFR_HARD;
-            break;
+    case TFR_MED:
+        m_tfr_ride = TFR_HARD;
+        break;
 
-        case TFR_HARD:
-            m_tfr_ride = TFR_SOFT;
-            break;
+    case TFR_HARD:
+        m_tfr_ride = TFR_SOFT;
+        break;
     }
 }
 
@@ -276,26 +289,26 @@ void LantirnClass::StepTFRMode()
 {
     switch (m_tfrmode)
     {
-        case TFR_NORM:
-            m_tfrmode = TFR_LP1;
-            break;
+    case TFR_NORM:
+        m_tfrmode = TFR_LP1;
+        break;
 
-        case TFR_LP1:
-            m_tfrmode = TFR_STBY;
-            break;
+    case TFR_LP1:
+        m_tfrmode = TFR_STBY;
+        break;
 
-        case TFR_STBY:
-            m_tfrmode = TFR_WX;
-            break;
+    case TFR_STBY:
+        m_tfrmode = TFR_WX;
+        break;
 
-        case TFR_WX:
-            m_tfrmode = TFR_ECCM;
-            break;
+    case TFR_WX:
+        m_tfrmode = TFR_ECCM;
+        break;
 
-        case TFR_ECCM:
-        default:
-            m_tfrmode = TFR_NORM;
-            break;
+    case TFR_ECCM:
+    default:
+        m_tfrmode = TFR_NORM;
+        break;
     }
 }
 
@@ -317,9 +330,12 @@ void LantirnClass::GetCameraPos(Tpoint *pos)
 
     if (playerAC)
     {
-        pos->x = playerAC->af->GetLantirnCameraX() * OTWDriver.Scale(); //external variables in a/c .dat file
-        pos->y = playerAC->af->GetLantirnCameraY() * OTWDriver.Scale(); //that describe camera position for each
-        pos->z = playerAC->af->GetLantirnCameraZ() * OTWDriver.Scale(); //aircraft that has LANTIRN
+        pos->x = playerAC->af->GetLantirnCameraX() *
+                 OTWDriver.Scale(); //external variables in a/c .dat file
+        pos->y = playerAC->af->GetLantirnCameraY() *
+                 OTWDriver.Scale(); //that describe camera position for each
+        pos->z = playerAC->af->GetLantirnCameraZ() *
+                 OTWDriver.Scale(); //aircraft that has LANTIRN
     }
     else
     {
@@ -333,7 +349,7 @@ void LantirnClass::GetCameraPos(Tpoint *pos)
 }
 
 // JB 010325 Rewritten
-void LantirnClass::Exec(AircraftClass* self)
+void LantirnClass::Exec(AircraftClass *self)
 {
     if (g_bTFRFixes)
     {
@@ -349,7 +365,8 @@ void LantirnClass::Exec(AircraftClass* self)
         MoveBeam();
 
         //Flash SLOW warrning if we get too slow
-        if (self->GetKias() < self->af->GetTFR_Corner() * self->af->GetSlowPercent())
+        if (self->GetKias() <
+            self->af->GetTFR_Corner() * self->af->GetSlowPercent())
             SpeedUp = TRUE;
 
         float groundAlt = -self->af->groundZ;
@@ -375,9 +392,11 @@ void LantirnClass::Exec(AircraftClass* self)
         gAlt = -self->ZPos() + self->af->groundZ;
 
         if (gAlt > self->af->GetTFR_Clearance())
-            gdist = GetGroundDistance(self, self->af->GetTFR_Clearance(), self->Yaw(), self->af->gmma);
+            gdist = GetGroundDistance(self, self->af->GetTFR_Clearance(),
+                                      self->Yaw(), self->af->gmma);
         else
-            gdist = GetGroundDistance(self, gAlt / 2.0F, self->Yaw(), self->af->gmma);
+            gdist = GetGroundDistance(self, gAlt / 2.0F, self->Yaw(),
+                                      self->af->gmma);
 
         //get all the important distances to features.
         //Measure distance to feature we're about to collide with, consider all objectives within 5 miles,
@@ -385,53 +404,80 @@ void LantirnClass::Exec(AircraftClass* self)
         //Check 3 times, first at our position to see which feature our vector is pointing at.
         //Then also at TFR_Clearance below us to be sure we pass over it, and also to calculate inclination needed to overfly it.
         //And finally at current holdheight as a backup fallback to make sure we don't miss a feature under us.
-        featureDistance  = FeatureCollisionPrediction(self, 0.0F, FALSE, FALSE, self->af->GetTFR_Clearance(), 5.0F, 1.5F, &featureHeight);
-        featureDistance2 = FeatureCollisionPrediction(self, self->af->GetTFR_Clearance(),  TRUE,  TRUE, self->af->GetTFR_Clearance(), 5.0F, 1.5F, &featureHeight2);
-        featureDistance3 = FeatureCollisionPrediction(self, gAlt - m_tfr_alt,  TRUE, FALSE, self->af->GetTFR_Clearance(), 5.0F, 1.5F, &featureHeight3);
+        featureDistance = FeatureCollisionPrediction(
+            self, 0.0F, FALSE, FALSE, self->af->GetTFR_Clearance(), 5.0F, 1.5F,
+            &featureHeight);
+        featureDistance2 = FeatureCollisionPrediction(
+            self, self->af->GetTFR_Clearance(), TRUE, TRUE,
+            self->af->GetTFR_Clearance(), 5.0F, 1.5F, &featureHeight2);
+        featureDistance3 = FeatureCollisionPrediction(
+            self, gAlt - m_tfr_alt, TRUE, FALSE, self->af->GetTFR_Clearance(),
+            5.0F, 1.5F, &featureHeight3);
 
         featureAngle = featureAngle2 = featureAngle3 = 0.0F;
 
-        if (featureDistance  > 0)
-            featureAngle  = RTD * (float)atan2(featureHeight + self->af->GetTFR_Clearance() - gAlt, featureDistance);
+        if (featureDistance > 0)
+            featureAngle =
+                RTD * (float)atan2(featureHeight +
+                                       self->af->GetTFR_Clearance() - gAlt,
+                                   featureDistance);
 
         if (featureDistance2 > 0)
-            featureAngle2 = RTD * (float)atan2(featureHeight2 + self->af->GetTFR_Clearance() - gAlt, featureDistance2);
+            featureAngle2 =
+                RTD * (float)atan2(featureHeight2 +
+                                       self->af->GetTFR_Clearance() - gAlt,
+                                   featureDistance2);
 
         if (featureDistance3 > 0)
-            featureAngle3 = RTD * (float)atan2(featureHeight3 + self->af->GetTFR_Clearance() - gAlt, featureDistance3);
+            featureAngle3 =
+                RTD * (float)atan2(featureHeight3 +
+                                       self->af->GetTFR_Clearance() - gAlt,
+                                   featureDistance3);
 
         //Set new holdheight value to be the greatest of feature heights
         float featureHeightOffset = 0;
 
-        if (featureDistance  < 2.5 * min_Radius) // now would be a good time to start avoiding feature...
+        if (featureDistance <
+            2.5 *
+                min_Radius) // now would be a good time to start avoiding feature...
             featureHeightOffset = max(featureHeightOffset, featureHeight);
 
-        if (featureDistance2 < 2.5 * min_Radius) // now would be a good time to start avoiding feature...
+        if (featureDistance2 <
+            2.5 *
+                min_Radius) // now would be a good time to start avoiding feature...
             featureHeightOffset = max(featureHeightOffset, featureHeight2);
 
-        if (featureDistance3 < 2.5 * min_Radius) // now would be a good time to start avoiding feature...
+        if (featureDistance3 <
+            2.5 *
+                min_Radius) // now would be a good time to start avoiding feature...
             featureHeightOffset = max(featureHeightOffset, featureHeight3);
 
         holdheight += featureHeightOffset;
 
         //calculate ground inclination (gammaCorr)
-        lookingAngle = RTD * (float) atan2(gAlt, self->af->GetTFR_lookAhead());
-        gDist2 = GetGroundDistance(self, 0.0F, self->Yaw(), -lookingAngle * DTR);
+        lookingAngle = RTD * (float)atan2(gAlt, self->af->GetTFR_lookAhead());
+        gDist2 =
+            GetGroundDistance(self, 0.0F, self->Yaw(), -lookingAngle * DTR);
 
         //compare feature distance and ground distance
         //If distance to feature is closer then ground distance use feature distance instead
-        if (featureDistance > 0 and featureDistance < gdist and featureAngle > 0)
+        if (featureDistance > 0 and featureDistance < gdist and
+            featureAngle > 0)
             if (featureHeight > gAlt)
                 gdist = featureDistance;
 
         if (gDist2 > 0.0F)
-            gammaCorr = RTD * (float) atan2(gAlt - gDist2 * sin(lookingAngle * DTR), gDist2 * cos(lookingAngle * DTR));
+            gammaCorr =
+                RTD * (float)atan2(gAlt - gDist2 * sin(lookingAngle * DTR),
+                                   gDist2 * cos(lookingAngle * DTR));
         else
             gammaCorr = 0;
 
         //adjust gamma correction according to feature distance
         //Adjust gammaCorr for the angle to avoid feature if we are below it.
-        if ((featureDistance2 < 2.5 * min_Radius and featureDistance2 > 0 and featureAngle2 > 0) or featureAngle2 > 1.0F)
+        if ((featureDistance2 < 2.5 * min_Radius and featureDistance2 > 0 and
+             featureAngle2 > 0) or
+            featureAngle2 > 1.0F)
         {
             gammaCorr += featureAngle2 * 1.3F;
         }
@@ -443,7 +489,8 @@ void LantirnClass::Exec(AircraftClass* self)
             evasize = 0; // assume we're ok...
 
             //use the new GetEVAFactor() function
-            if (gdist < turnradius * GetEVAFactor(self, 1)) // coming up to something
+            if (gdist <
+                turnradius * GetEVAFactor(self, 1)) // coming up to something
                 evasize = 1;
 
             if (gdist < turnradius * GetEVAFactor(self, 2)) // danger danger
@@ -476,7 +523,8 @@ void LantirnClass::Exec(AircraftClass* self)
         gdist = -1.0f;
 
         int type = 0;
-        gdist = GetGroundIntersection(self, self->Yaw(), pitch - self->GetAlpha() * DTR, groundAlt, type);
+        gdist = GetGroundIntersection(
+            self, self->Yaw(), pitch - self->GetAlpha() * DTR, groundAlt, type);
 
         evasize = 0;
 
@@ -488,7 +536,8 @@ void LantirnClass::Exec(AircraftClass* self)
                 evasize = 2;
             else if (rangetopos - m_tfr_alt * 2 > turnradius)
                 evasize = 0;
-            else if (rangetopos < turnradius + m_tfr_alt) // coming up to something
+            else if (rangetopos <
+                     turnradius + m_tfr_alt) // coming up to something
                 evasize = 1;
         }
         else if (-self->ZPos() - groundAlt < m_tfr_alt)
@@ -498,9 +547,11 @@ void LantirnClass::Exec(AircraftClass* self)
 
 void LantirnClass::MoveBeam()
 {
-    if (scanpos > 1.0f) scandir = -1.0f;
+    if (scanpos > 1.0f)
+        scandir = -1.0f;
 
-    if (scanpos < -1.0f) scandir = 1.0f;
+    if (scanpos < -1.0f)
+        scandir = 1.0f;
 
     scanpos += scandir * scanrate * SimLibMajorFrameTime;
 }
@@ -515,37 +566,21 @@ float LantirnClass::GetGLimit()
         {
             switch (m_tfr_ride)
             {
-                case TFR_SOFT:
-                    return playerAC->af->GetTFR_SoftG();
+            case TFR_SOFT:
+                return playerAC->af->GetTFR_SoftG();
 
-                default:
-                case TFR_MED:
-                    return playerAC->af->GetTFR_MedG();
+            default:
+            case TFR_MED:
+                return playerAC->af->GetTFR_MedG();
 
-                case TFR_HARD:
-                    return playerAC->af->GetTFR_HardG();
+            case TFR_HARD:
+                return playerAC->af->GetTFR_HardG();
             }
         }
         else
         {
             switch (m_tfr_ride)
             {
-                case TFR_SOFT:
-                    return 2.0f;
-
-                default:
-                case TFR_MED:
-                    return 4.0f;
-
-                case TFR_HARD:
-                    return 6.0f;
-            }
-        }
-    }
-    else
-    {
-        switch (m_tfr_ride)
-        {
             case TFR_SOFT:
                 return 2.0f;
 
@@ -555,12 +590,29 @@ float LantirnClass::GetGLimit()
 
             case TFR_HARD:
                 return 6.0f;
+            }
+        }
+    }
+    else
+    {
+        switch (m_tfr_ride)
+        {
+        case TFR_SOFT:
+            return 2.0f;
+
+        default:
+        case TFR_MED:
+            return 4.0f;
+
+        case TFR_HARD:
+            return 6.0f;
         }
     }
 }
 
 // JB 010325 Rewritten
-float LantirnClass::GetGroundIntersection(AircraftClass* self, float yaw, float pitch, float galt, int &type)
+float LantirnClass::GetGroundIntersection(AircraftClass *self, float yaw,
+                                          float pitch, float galt, int &type)
 {
     type = 1;
     float dx;
@@ -574,7 +626,7 @@ float LantirnClass::GetGroundIntersection(AircraftClass* self, float yaw, float 
     airframepos.y = self->YPos();
     airframepos.z = self->ZPos();
 
-    RViewPoint* vpp;
+    RViewPoint *vpp;
     vpp = OTWDriver.GetViewpoint();
     vpp->Update(&airframepos);
 
@@ -582,11 +634,11 @@ float LantirnClass::GetGroundIntersection(AircraftClass* self, float yaw, float 
     Tpoint point;
     mlTrig trigYaw, trigPitch;
 
-    mlSinCos(&trigYaw,   yaw);
+    mlSinCos(&trigYaw, yaw);
     mlSinCos(&trigPitch, pitch);
 
-    tfrviewDir.x =  trigYaw.cos * trigPitch.cos;
-    tfrviewDir.y =  trigYaw.sin * trigPitch.cos;
+    tfrviewDir.x = trigYaw.cos * trigPitch.cos;
+    tfrviewDir.y = trigYaw.sin * trigPitch.cos;
     tfrviewDir.z = -trigPitch.sin;
 
     if (vpp->GroundIntersection(&tfrviewDir, &point))
@@ -607,15 +659,15 @@ float LantirnClass::GetGroundIntersection(AircraftClass* self, float yaw, float 
 
     mlSinCos(&trigPitch, pitch);
 
-    tfrviewDir.x =  trigYaw.cos * trigPitch.cos;
-    tfrviewDir.y =  trigYaw.sin * trigPitch.cos;
+    tfrviewDir.x = trigYaw.cos * trigPitch.cos;
+    tfrviewDir.y = trigYaw.sin * trigPitch.cos;
     tfrviewDir.z = -trigPitch.sin;
 
     airframepos.z += m_tfr_alt;
     vpp->Update(&airframepos);
     int res = vpp->GroundIntersection(&tfrviewDir, &point);
 
-    if ( not res)
+    if (not res)
     {
         type = 0;
         return gdist1;
@@ -632,7 +684,8 @@ float LantirnClass::GetGroundIntersection(AircraftClass* self, float yaw, float 
     return gdist2;
 }
 
-float LantirnClass::GetGroundDistance(AircraftClass* self, float zOffset, float yaw, float pitch)
+float LantirnClass::GetGroundDistance(AircraftClass *self, float zOffset,
+                                      float yaw, float pitch)
 {
     float dx;
     float dy;
@@ -644,7 +697,7 @@ float LantirnClass::GetGroundDistance(AircraftClass* self, float zOffset, float 
     airframepos.y = self->YPos();
     airframepos.z = self->ZPos() + zOffset;
 
-    RViewPoint* vpp;
+    RViewPoint *vpp;
     vpp = OTWDriver.GetViewpoint();
     vpp->Update(&airframepos);
 
@@ -652,11 +705,11 @@ float LantirnClass::GetGroundDistance(AircraftClass* self, float zOffset, float 
     Tpoint point;
     mlTrig trigYaw, trigPitch;
 
-    mlSinCos(&trigYaw,   yaw);
+    mlSinCos(&trigYaw, yaw);
     mlSinCos(&trigPitch, pitch);
 
-    tfrviewDir.x =  trigYaw.cos * trigPitch.cos;
-    tfrviewDir.y =  trigYaw.sin * trigPitch.cos;
+    tfrviewDir.x = trigYaw.cos * trigPitch.cos;
+    tfrviewDir.y = trigYaw.sin * trigPitch.cos;
     tfrviewDir.z = -trigPitch.sin;
 
     if (vpp->GroundIntersection(&tfrviewDir, &point))
@@ -669,16 +722,19 @@ float LantirnClass::GetGroundDistance(AircraftClass* self, float zOffset, float 
 
     return gdist;
 }
-float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffset, BOOL MeasureHorizontally,
-        BOOL GreatestAspect, float Clearance, float GridSizeNM,
-        float boxScale, float *featureHeight)
+float LantirnClass::FeatureCollisionPrediction(
+    AircraftClass *self, float zOffset, BOOL MeasureHorizontally,
+    BOOL GreatestAspect, float Clearance, float GridSizeNM, float boxScale,
+    float *featureHeight)
 {
-    CampBaseClass* objective;
+    CampBaseClass *objective;
     //get all objectives within GridSizeNM miles
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator gridIt(ObjProxList, self->YPos(), self->XPos(), GridSizeNM * NM_TO_FT);
+    VuGridIterator gridIt(ObjProxList, self->YPos(), self->XPos(),
+                          GridSizeNM * NM_TO_FT);
 #else
-    VuGridIterator gridIt(ObjProxList, self->XPos(), self->YPos(), GridSizeNM * NM_TO_FT);
+    VuGridIterator gridIt(ObjProxList, self->XPos(), self->YPos(),
+                          GridSizeNM * NM_TO_FT);
 #endif
     SimBaseClass *foundFeature = NULL;
     SimBaseClass *testFeature;
@@ -692,7 +748,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
 
     *featureHeight = 0.0F;
     // get the 1st objective and iterate through the list
-    objective = (CampBaseClass*)gridIt.GetFirst();
+    objective = (CampBaseClass *)gridIt.GetFirst();
 
     while (objective)
     {
@@ -706,7 +762,8 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
             vec.x = self->XDelta();
             vec.y = self->YDelta();
             vec.z = self->ZDelta();
-            move_vector = (float)sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+            move_vector =
+                (float)sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
             vec.x *= MaxDistance / move_vector;
             vec.y *= MaxDistance / move_vector;
             vec.z *= MaxDistance / move_vector;
@@ -720,7 +777,7 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
 
             // loop thru each element in the objective
             VuListIterator featureWalker(objective->GetComponents());
-            testFeature = (SimBaseClass*) featureWalker.GetFirst();
+            testFeature = (SimBaseClass *)featureWalker.GetFirst();
             firstFeature = TRUE;
 
             while (testFeature)
@@ -737,38 +794,50 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                     testFeature->drawPointer->GetPosition(&fpos);
 
                     // test with gross level bounds of object
-                    if (fabs(pos.x - fpos.x) < radius + p3.x and 
-                        fabs(pos.y - fpos.y) < radius + p3.y and 
+                    if (fabs(pos.x - fpos.x) < radius + p3.x and
+                        fabs(pos.y - fpos.y) < radius + p3.y and
                         fabs(pos.z - fpos.z) < radius + p3.z)
                     {
                         //Check for tall objects when doing horizontal check
                         float sizeX, sizeY, sizeZ;
-                        sizeX = ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxFront();
-                        sizeX -= ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxBack();
+                        sizeX = ((DrawableBSP *)(testFeature->drawPointer))
+                                    ->instance.BoxFront();
+                        sizeX -= ((DrawableBSP *)(testFeature->drawPointer))
+                                     ->instance.BoxBack();
                         sizeX = (float)(fabs)(sizeX);
-                        sizeY = ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxRight();
-                        sizeY -= ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxLeft();
+                        sizeY = ((DrawableBSP *)(testFeature->drawPointer))
+                                    ->instance.BoxRight();
+                        sizeY -= ((DrawableBSP *)(testFeature->drawPointer))
+                                     ->instance.BoxLeft();
                         sizeY = (float)(fabs)(sizeY);
-                        sizeZ = ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxTop();
-                        sizeZ -= ((DrawableBSP*)(testFeature->drawPointer))->instance.BoxBottom();
+                        sizeZ = ((DrawableBSP *)(testFeature->drawPointer))
+                                    ->instance.BoxTop();
+                        sizeZ -= ((DrawableBSP *)(testFeature->drawPointer))
+                                     ->instance.BoxBottom();
                         sizeZ = (float)(fabs)(sizeZ);
                         float groundRadius = max(sizeX, sizeY);
                         //only for horizontal checks
                         float NewBoxScale = boxScale;
 
-                        if ((groundRadius < 2.2F * Clearance) and MeasureHorizontally)
-                            NewBoxScale = boxScale * (2.2F * Clearance + groundRadius) / groundRadius;
+                        if ((groundRadius < 2.2F * Clearance) and
+                            MeasureHorizontally)
+                            NewBoxScale = boxScale *
+                                          (2.2F * Clearance + groundRadius) /
+                                          groundRadius;
 
                         //Check to see if out flight vector line intersects feature's box * boxScale (safety margin)
-                        if (testFeature->drawPointer->GetRayHit(&pos, &vec, &collide, NewBoxScale))
+                        if (testFeature->drawPointer->GetRayHit(
+                                &pos, &vec, &collide, NewBoxScale))
                         {
                             collide.x = (float)fabs(collide.x - pos.x);
                             collide.y = (float)fabs(collide.y - pos.y);
                             collide.z = (float)fabs(collide.z - pos.z);
-                            float Distance = (float)sqrt(collide.x * collide.x + collide.y * collide.y + collide.z * collide.z);
+                            float Distance = (float)sqrt(collide.x * collide.x +
+                                                         collide.y * collide.y +
+                                                         collide.z * collide.z);
 
                             //Remember this one, either closest one, or tallest one from our point of view.
-                            if ( not GreatestAspect)
+                            if (not GreatestAspect)
                             {
                                 if (Distance < ClosestDistance)
                                 {
@@ -778,9 +847,14 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                             }
                             else
                             {
-                                float newAspect = RTD * (float)atan2(sizeZ - (-self->ZPos() + self->af->groundZ), Distance);
+                                float newAspect =
+                                    RTD *
+                                    (float)atan2(sizeZ - (-self->ZPos() +
+                                                          self->af->groundZ),
+                                                 Distance);
 
-                                if (newAspect > Aspect and Distance < 2 * MaxDistance)
+                                if (newAspect > Aspect and
+                                    Distance < 2 * MaxDistance)
                                 {
                                     Aspect = newAspect;
                                     ClosestDistance = Distance;
@@ -791,12 +865,12 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
                     }
                 }
 
-                testFeature = (SimBaseClass*) featureWalker.GetNext();
+                testFeature = (SimBaseClass *)featureWalker.GetNext();
                 firstFeature = FALSE;
             }
         }
 
-        objective = (CampBaseClass*)gridIt.GetNext();
+        objective = (CampBaseClass *)gridIt.GetNext();
     }
 
     if (ClosestDistance < 2 * MaxDistance)
@@ -804,34 +878,34 @@ float LantirnClass::FeatureCollisionPrediction(AircraftClass* self, float zOffse
     else
         return -1.0F; //we ain't found sh*t...
 }
-float LantirnClass::GetEVAFactor(AircraftClass* self, int eva = 1)
+float LantirnClass::GetEVAFactor(AircraftClass *self, int eva = 1)
 {
     if (eva == 1)
     {
         switch (m_tfr_ride)
         {
-            case TFR_SOFT:
-                return self->af->GetEVA1_SoftFactor();
+        case TFR_SOFT:
+            return self->af->GetEVA1_SoftFactor();
 
-            case TFR_MED:
-                return self->af->GetEVA1_MedFactor();
+        case TFR_MED:
+            return self->af->GetEVA1_MedFactor();
 
-            case TFR_HARD:
-                return self->af->GetEVA1_HardFactor();
+        case TFR_HARD:
+            return self->af->GetEVA1_HardFactor();
         }
     }
     else if (eva == 2)
     {
         switch (m_tfr_ride)
         {
-            case TFR_SOFT:
-                return self->af->GetEVA2_SoftFactor();
+        case TFR_SOFT:
+            return self->af->GetEVA2_SoftFactor();
 
-            case TFR_MED:
-                return self->af->GetEVA2_MedFactor();
+        case TFR_MED:
+            return self->af->GetEVA2_MedFactor();
 
-            case TFR_HARD:
-                return self->af->GetEVA2_HardFactor();
+        case TFR_HARD:
+            return self->af->GetEVA2_HardFactor();
         }
     }
 

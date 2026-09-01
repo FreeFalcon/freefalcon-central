@@ -1,19 +1,19 @@
 #include "stdhdr.h"
 #include "classtbl.h"
 #include "entity.h"
-#include "Object.h"
+#include "object.h"
 #include "simdrive.h"
 #include "simmover.h"
 #include "otwdrive.h"
 #include "camp2sim.h"
 #include "team.h"
-#include "Graphics/Include/Display.h"
-#include "MsgInc/TrackMsg.h"
+#include "graphics/include/display.h"
+#include "msginc/trackmsg.h"
 #include "mfd.h"
-#include "Entity.h"
+#include "entity.h"
 #include "campbase.h"
 #include "cmpclass.h"
-#include "Radar360.h"
+#include "radar360.h"
 
 #include "simio.h"  // MD -- 20040111: added for analog cursor support
 
@@ -24,7 +24,8 @@ static const float COS_RADAR_CONE_ANGLE = (float)cos(RADAR_CONE_ANGLE);
 static const float TAN_RADAR_CONE_ANGLE = (float)tan(RADAR_CONE_ANGLE);
 
 
-Radar360Class::Radar360Class(int type, SimMoverClass* parentPlatform) : RadarClass(type, parentPlatform)
+Radar360Class::Radar360Class(int type, SimMoverClass* parentPlatform)
+    : RadarClass(type, parentPlatform)
 {
     wantMode = mode = AA;
     wantRange = 20.0f;
@@ -67,7 +68,7 @@ void Radar360Class::ExecModes(int newDesignate, int newDrop)
     {
         if ((wantRange >= 5.0f) and (wantRange <= max(40.0, maxRangeNM * 1.5)))
         {
-            if ( not (flags bitand CursorMoving))
+            if (not(flags bitand CursorMoving))
             {
                 cursorY = 0.0F;
             }
@@ -101,14 +102,16 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
     // Handle any requests for cursor movement
     if (cursorXCmd not_eq 0)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
-            cursorX += (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and
+            (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+            cursorX +=
+                (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorX += cursorXCmd * CursorRate * SimLibMajorFrameTime;
 
         cursorX = min(max(cursorX, -1.0F), 1.0F);
 
-        if ( not AWACSMode and fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
+        if (not AWACSMode and fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
         {
             cursorY = (float)fabs(cursorX) / TAN_RADAR_CONE_ANGLE;
         }
@@ -116,17 +119,19 @@ void Radar360Class::UpdateState(int cursorXCmd, int cursorYCmd)
 
     if (cursorYCmd not_eq 0)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
-            cursorY += (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and
+            (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+            cursorY +=
+                (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorY += cursorYCmd * CursorRate * SimLibMajorFrameTime;
 
-        if ( not AWACSMode)
-            cursorY = min(max(cursorY,  0.0F), 1.0F);
+        if (not AWACSMode)
+            cursorY = min(max(cursorY, 0.0F), 1.0F);
         else
-            cursorY = min(max(cursorY,  -1.0F), 1.0F);
+            cursorY = min(max(cursorY, -1.0F), 1.0F);
 
-        if ( not AWACSMode and fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
+        if (not AWACSMode and fabs(cursorX) > cursorY * TAN_RADAR_CONE_ANGLE)
         {
             if (cursorX >= 0.0f)
             {
@@ -153,7 +158,7 @@ SimObjectType* Radar360Class::Exec(SimObjectType*)
     CheckLockedTarget();
 
     // Quit now if we're turned off
-    if ( not isEmitting)
+    if (not isEmitting)
     {
         SetSensorTargetHack(NULL);
         return NULL;
@@ -224,7 +229,7 @@ void Radar360Class::ExecAA(void)
         bestSoFar = RADAR_CONE_ANGLE;
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)   // Want one further out
+    else if (lockCmd == NEXT) // Want one further out
     {
         if (lockedTarget)
         {
@@ -235,7 +240,7 @@ void Radar360Class::ExecAA(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)   // Want one closer in
+    else if (lockCmd == PREV) // Want one closer in
     {
         if (lockedTarget)
         {
@@ -277,8 +282,10 @@ void Radar360Class::ExecAA(void)
         // If we're looking for a lock or to check for under cursor, we'll need this stuff...
         dx = object->BaseData()->XPos() - platform->XPos();
         dy = object->BaseData()->YPos() - platform->YPos();
-        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
+        x = dy * scaledCosYaw -
+            dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw +
+            dx * scaledCosYaw; // and scale from feet into viewport space
         range = (float)sqrt(dx * dx + dy * dy);
 
         // Mark the thing under the cursor
@@ -291,13 +298,15 @@ void Radar360Class::ExecAA(void)
         }
 
         // We're done unless we need to lock something up
-        if (( not lockCmd) or (range > rangeFT))
+        if ((not lockCmd) or (range > rangeFT))
         {
             continue;
         }
 
         // Skip the object if it can't be locked
-        if ( not AWACSMode and not InAALockZone(object, x, y))   // M.N. in AWACS mode, allow 360° locking
+        if (not AWACSMode and
+            not InAALockZone(object, x,
+                             y)) // M.N. in AWACS mode, allow 360° locking
         {
             continue;
         }
@@ -307,73 +316,78 @@ void Radar360Class::ExecAA(void)
         switch (lockCmd)
         {
 
-            case AUTO:
+        case AUTO:
 
-                // If this is the nearest "threat" object in front of us, pick it
-                if (range <= bestSoFar)
+            // If this is the nearest "threat" object in front of us, pick it
+            if (range <= bestSoFar)
+            {
+                if (TeamInfo[platform->GetTeam()]->TStance(
+                        object->BaseData()->GetTeam()) == War)
                 {
-                    if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
+                    bestSoFar = range;
+                    newLock = object;
+                }
+            }
+
+            break;
+
+        case CURSOR:
+
+            // We've been asked to lock a specific target, so find which one...
+            if (object->BaseData()->Id() == targetUnderCursor)
+            {
+                newLock = object;
+            }
+
+            break;
+
+        case BORE:
+
+            // We've been asked to lock the target nearest our nose
+            if (object->localData->ata < bestSoFar)
+            {
+                bestSoFar = object->localData->ata;
+                newLock = object;
+            }
+
+            break;
+
+        case NEXT:
+            if (range < bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (range > lockedTarget->localData->range))
+                {
+                    if (TeamInfo[platform->GetTeam()]->TStance(
+                            object->BaseData()->GetTeam()) == War)
                     {
                         bestSoFar = range;
                         newLock = object;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case CURSOR:
-
-                // We've been asked to lock a specific target, so find which one...
-                if (object->BaseData()->Id() == targetUnderCursor)
+        case PREV:
+            if (range > bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (range < lockedTarget->localData->range))
                 {
-                    newLock = object;
-                }
-
-                break;
-
-            case BORE:
-
-                // We've been asked to lock the target nearest our nose
-                if (object->localData->ata < bestSoFar)
-                {
-                    bestSoFar = object->localData->ata;
-                    newLock = object;
-                }
-
-                break;
-
-            case NEXT:
-                if (range < bestSoFar)
-                {
-                    if (( not lockedTarget) or (range > lockedTarget->localData->range))
+                    if (TeamInfo[platform->GetTeam()]->TStance(
+                            object->BaseData()->GetTeam()) == War)
                     {
-                        if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
-                        {
-                            bestSoFar = range;
-                            newLock = object;
-                        }
+                        bestSoFar = range;
+                        newLock = object;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case PREV:
-                if (range > bestSoFar)
-                {
-                    if (( not lockedTarget) or (range < lockedTarget->localData->range))
-                    {
-                        if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
-                        {
-                            bestSoFar = range;
-                            newLock = object;
-                        }
-                    }
-                }
-
-                break;
-
-            default:
-                ShiWarning("Bad lock command");
+        default:
+            ShiWarning("Bad lock command");
         }
     } // End of our target list traversal loop
 
@@ -387,7 +401,8 @@ void Radar360Class::ExecAA(void)
     else
     {
         // See if it is time to send a "painted" list update
-        sendThisFrame = (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
+        sendThisFrame =
+            (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
     }
 
     // Tell our current target he's locked
@@ -401,7 +416,8 @@ void Radar360Class::ExecAA(void)
     // Update our seeker center of attention
     if (lockedTarget)
     {
-        SetSeekerPos(TargetAz(platform, lockedTarget), TargetEl(platform, lockedTarget));
+        SetSeekerPos(TargetAz(platform, lockedTarget),
+                     TargetEl(platform, lockedTarget));
     }
     else
     {
@@ -423,7 +439,7 @@ void Radar360Class::ExecAG(void)
     float range;
     float cosATA;
     float bestSoFar;
-    VuListIterator *walker;
+    VuListIterator* walker;
     mlTrig yaw;
     float cursorDelta = BLIP_SIZE * 2.0f;
     VU_ID cursorTgtID = FalconNullId;
@@ -460,7 +476,7 @@ void Radar360Class::ExecAG(void)
         bestSoFar = COS_RADAR_CONE_ANGLE;
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)   // Want one further out
+    else if (lockCmd == NEXT) // Want one further out
     {
         if (lockedTarget)
         {
@@ -471,7 +487,7 @@ void Radar360Class::ExecAG(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)   // Want one closer in
+    else if (lockCmd == PREV) // Want one closer in
     {
         if (lockedTarget)
         {
@@ -508,7 +524,7 @@ void Radar360Class::ExecAG(void)
     {
 
         // Skip air objects in AG mode
-        if ( not object->OnGround())
+        if (not object->OnGround())
         {
             goto NextObject;
         }
@@ -516,7 +532,7 @@ void Radar360Class::ExecAG(void)
         // Skip sleeping sim objects
         if (object->IsSim())
         {
-            if ( not ((SimBaseClass*)object)->IsAwake())
+            if (not((SimBaseClass*)object)->IsAwake())
             {
                 goto NextObject;
             }
@@ -534,9 +550,12 @@ void Radar360Class::ExecAG(void)
         dy = object->YPos() - platform->YPos();
         dz = object->ZPos() - platform->ZPos();
         range = (float)sqrt(dx * dx + dy * dy);
-        cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
-        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
+        cosATA = (atx * dx + aty * dy + atz * dz) /
+                 (float)sqrt(range * range + dz * dz);
+        x = dy * scaledCosYaw -
+            dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw +
+            dx * scaledCosYaw; // and scale from feet into viewport space
 
 
         // Mark the thing under the cursor
@@ -550,7 +569,7 @@ void Radar360Class::ExecAG(void)
 
 
         // We're done unless we need to lock something up
-        if ( not lockCmd)
+        if (not lockCmd)
         {
             goto NextObject;
         }
@@ -567,80 +586,85 @@ void Radar360Class::ExecAG(void)
         switch (lockCmd)
         {
 
-            case AUTO:
+        case AUTO:
 
-                // If this is the nearest "threat" object in front of us, pick it
-                if (range <= bestSoFar)
+            // If this is the nearest "threat" object in front of us, pick it
+            if (range <= bestSoFar)
+            {
+                if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) ==
+                    War)
                 {
-                    if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) == War)
+                    bestSoFar = range;
+                    newLock = object;
+                }
+            }
+
+            break;
+
+        case CURSOR:
+
+            // We've been asked to lock a specific target, so find which one...
+            if (object->Id() == targetUnderCursor)
+            {
+                newLock = object;
+            }
+
+            break;
+
+        case BORE:
+
+            // We've been asked to lock the target nearest our nose
+            if (cosATA > bestSoFar)
+            {
+                bestSoFar = cosATA;
+                newLock = object;
+            }
+
+            break;
+
+        case NEXT:
+            if (range < bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (range > lockedTarget->localData->range))
+                {
+                    if (TeamInfo[platform->GetTeam()]->TStance(
+                            object->GetTeam()) == War)
                     {
                         bestSoFar = range;
                         newLock = object;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case CURSOR:
-
-                // We've been asked to lock a specific target, so find which one...
-                if (object->Id() == targetUnderCursor)
+        case PREV:
+            if (range > bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (range < lockedTarget->localData->range))
                 {
-                    newLock = object;
-                }
-
-                break;
-
-            case BORE:
-
-                // We've been asked to lock the target nearest our nose
-                if (cosATA > bestSoFar)
-                {
-                    bestSoFar = cosATA;
-                    newLock = object;
-                }
-
-                break;
-
-            case NEXT:
-                if (range < bestSoFar)
-                {
-                    if (( not lockedTarget) or (range > lockedTarget->localData->range))
+                    if (TeamInfo[platform->GetTeam()]->TStance(
+                            object->GetTeam()) == War)
                     {
-                        if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) == War)
-                        {
-                            bestSoFar = range;
-                            newLock = object;
-                        }
+                        bestSoFar = range;
+                        newLock = object;
                     }
                 }
+            }
 
-                break;
+            break;
 
-            case PREV:
-                if (range > bestSoFar)
-                {
-                    if (( not lockedTarget) or (range < lockedTarget->localData->range))
-                    {
-                        if (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()) == War)
-                        {
-                            bestSoFar = range;
-                            newLock = object;
-                        }
-                    }
-                }
-
-                break;
-
-            default:
-                ShiWarning("Bad lock command");
+        default:
+            ShiWarning("Bad lock command");
         }
 
     NextObject:
         // Advance to the next object for consideration
         object = (FalconEntity*)walker->GetNext();
 
-        if (( not object) and (walker == &featureWalker))
+        if ((not object) and (walker == &featureWalker))
         {
             walker = &vehicleWalker;
             object = (FalconEntity*)vehicleWalker.GetFirst();
@@ -655,13 +679,12 @@ void Radar360Class::ExecAG(void)
     // Update our seeker center of attention
     if (lockedTarget)
     {
-        CalcRelValues(platform, lockedTarget->BaseData(),
-                      &lockedTarget->localData->az,
-                      &lockedTarget->localData->el,
-                      &lockedTarget->localData->ata,
-                      &lockedTarget->localData->ataFrom,
-                      &lockedTarget->localData->droll);
-        SetSeekerPos(TargetAz(platform, lockedTarget), TargetEl(platform, lockedTarget));
+        CalcRelValues(
+            platform, lockedTarget->BaseData(), &lockedTarget->localData->az,
+            &lockedTarget->localData->el, &lockedTarget->localData->ata,
+            &lockedTarget->localData->ataFrom, &lockedTarget->localData->droll);
+        SetSeekerPos(TargetAz(platform, lockedTarget),
+                     TargetEl(platform, lockedTarget));
     }
     else
     {
@@ -674,7 +697,9 @@ void Radar360Class::ExecAG(void)
         float y = (cursorY * yawTrig.sin + cursorX * yawTrig.cos) * rangeFT;
 
         // Get our height above the ground height at the cursor location
-        float z = platform->ZPos() - OTWDriver.GetGroundLevel(x + platform->XPos(), y + platform->YPos());
+        float z =
+            platform->ZPos() - OTWDriver.GetGroundLevel(x + platform->XPos(),
+                                                        y + platform->YPos());
 #if 0
         // Transform from world space into body space
         float rx = platform->dmx[0][0] * x + platform->dmx[0][1] * y + platform->dmx[0][2] * z;
@@ -697,7 +722,7 @@ void Radar360Class::ExecAG(void)
 }
 
 
-void Radar360Class::Display(VirtualDisplay *activeDisplay)
+void Radar360Class::Display(VirtualDisplay* activeDisplay)
 {
     float scaledCosYaw, scaledSinYaw;
     char string[24];
@@ -717,7 +742,7 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
 
 
     // Quit now if we're turned off
-    if ( not isEmitting)
+    if (not isEmitting)
     {
         return;
         display->TextCenter(0.0f, 0.0f, "RADAR OFF");
@@ -732,9 +757,9 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
     display->Circle(0.0f, 0.0f, 0.99f);
 
     // Draw the radar lock sector
-    if ( not AWACSMode) // JB 011213
+    if (not AWACSMode) // JB 011213
     {
-        display->Line(0.0f, 0.0f,  SIN_RADAR_CONE_ANGLE, COS_RADAR_CONE_ANGLE);
+        display->Line(0.0f, 0.0f, SIN_RADAR_CONE_ANGLE, COS_RADAR_CONE_ANGLE);
         display->Line(0.0f, 0.0f, -SIN_RADAR_CONE_ANGLE, COS_RADAR_CONE_ANGLE);
     }
 
@@ -781,13 +806,16 @@ void Radar360Class::Display(VirtualDisplay *activeDisplay)
     // Target ID (NCTR)
     if (lockedTarget)
     {
-        classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
+        classPtr =
+            (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-        if (lockedTarget->BaseData()->IsSim() and not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+        if (lockedTarget->BaseData()->IsSim() and
+            not((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
         {
             if (classPtr->dataType == DTYPE_VEHICLE)
             {
-                sprintf(string, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
+                sprintf(string, "%s",
+                        ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
             }
             else if (classPtr->dataType == DTYPE_FEATURE)
             {
@@ -855,9 +883,12 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         dy = object->BaseData()->YPos() - platform->YPos();
         dz = object->BaseData()->ZPos() - platform->ZPos();
         range = (float)sqrt(dx * dx + dy * dy);
-        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
-        sprintf(string, "%1.0f", -0.001f * dz); // Covert to 1000's of feet above
+        x = dy * scaledCosYaw -
+            dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw +
+            dx * scaledCosYaw; // and scale from feet into viewport space
+        sprintf(string, "%1.0f",
+                -0.001f * dz); // Covert to 1000's of feet above
         ShiAssert(strlen(string) < sizeof(string));
 
 
@@ -870,11 +901,13 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
 
 
         // Choose the appropriate target color
-        if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
+        if (TeamInfo[platform->GetTeam()]->TStance(
+                object->BaseData()->GetTeam()) == War)
         {
             color = 0x000000FF; // Red means at war
         }
-        else if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == Allied)
+        else if (TeamInfo[platform->GetTeam()]->TStance(
+                     object->BaseData()->GetTeam()) == Allied)
         {
             color = 0x00FF0000; // Blue means our team
         }
@@ -893,7 +926,8 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         display->SetColor(color);
         display->AdjustOriginInViewport(x, y);
         display->TextLeft(BLIP_SIZE * 2.5f, 0.0f, string);
-        display->AdjustRotationAboutOrigin(object->BaseData()->Yaw() - platform->Yaw());
+        display->AdjustRotationAboutOrigin(object->BaseData()->Yaw() -
+                                           platform->Yaw());
 
         if (object->BaseData()->IsMissile())
         {
@@ -903,7 +937,8 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
         else
         {
             // Aircraft are oriented triangles
-            display->Tri(-BLIP_SIZE, -BLIP_SIZE * 1.2f, 0.0f, BLIP_SIZE * 1.2f, BLIP_SIZE, -BLIP_SIZE * 1.2f);
+            display->Tri(-BLIP_SIZE, -BLIP_SIZE * 1.2f, 0.0f, BLIP_SIZE * 1.2f,
+                         BLIP_SIZE, -BLIP_SIZE * 1.2f);
         }
 
         display->ZeroRotationAboutOrigin();
@@ -914,7 +949,7 @@ void Radar360Class::DisplayAATargets(float scaledSinYaw, float scaledCosYaw)
 
 void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
 {
-    VuListIterator *walker;
+    VuListIterator* walker;
     FalconEntity* object;
     float dx, dy, dz; // World space deltas (x north)
     float x, y; // Screen space coordinates (x left/right)
@@ -944,7 +979,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
     {
 
         // Skip air objects in AG mode
-        if ( not object->OnGround())
+        if (not object->OnGround())
         {
             goto NextObject;
         }
@@ -952,7 +987,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         // Skip sleeping sim objects
         if (object->IsSim())
         {
-            if ( not ((SimBaseClass*)object)->IsAwake())
+            if (not((SimBaseClass*)object)->IsAwake())
             {
                 goto NextObject;
             }
@@ -963,8 +998,10 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         dx = object->XPos() - platform->XPos();
         dy = object->YPos() - platform->YPos();
         dz = object->ZPos() - platform->ZPos();
-        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
+        x = dy * scaledCosYaw -
+            dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw +
+            dx * scaledCosYaw; // and scale from feet into viewport space
 
         // Skip if the object is off screen
         if ((fabs(x) > 1.0f) or (fabs(y) > 1.0f))
@@ -975,17 +1012,17 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         // Choose the target's color based on their stance toward us
         switch (TeamInfo[platform->GetTeam()]->TStance(object->GetTeam()))
         {
-            case War:
-                color = 0x000000FF; // Red means at war
-                break;
+        case War:
+            color = 0x000000FF; // Red means at war
+            break;
 
-            case Allied:
-                color = 0x00FF0000; // Blue means our team
-                break;
+        case Allied:
+            color = 0x00FF0000; // Blue means our team
+            break;
 
-            default:
-                color = 0x0000FF00; // Green means everyone else
-                break;
+        default:
+            color = 0x0000FF00; // Green means everyone else
+            break;
         }
 
         // Desaturate and brighten the target under the cursor
@@ -997,15 +1034,17 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
         // Draw the target symbol
         display->SetColor(color);
         display->AdjustOriginInViewport(x, y);
-        display->Tri(-blipSize, -blipSize, blipSize, blipSize, blipSize, -blipSize);
-        display->Tri(-blipSize, -blipSize, blipSize, blipSize, -blipSize, blipSize);
+        display->Tri(-blipSize, -blipSize, blipSize, blipSize, blipSize,
+                     -blipSize);
+        display->Tri(-blipSize, -blipSize, blipSize, blipSize, -blipSize,
+                     blipSize);
         display->CenterOriginInViewport();
 
     NextObject:
         // Advance to the next object for consideration
         object = (FalconEntity*)walker->GetNext();
 
-        if (( not object) and (walker == &featureWalker))
+        if ((not object) and (walker == &featureWalker))
         {
             walker = &vehicleWalker;
             blipSize = BLIP_SIZE / 2.0f;
@@ -1016,7 +1055,7 @@ void Radar360Class::DisplayAGTargets(float scaledSinYaw, float scaledCosYaw)
 }
 
 
-BOOL Radar360Class::InAALockZone(SimObjectType *object, float x, float y)
+BOOL Radar360Class::InAALockZone(SimObjectType* object, float x, float y)
 {
     // Take a quick path if the object is in front of the aircraft
     if (object->localData->ata < RADAR_CONE_ANGLE)
@@ -1056,8 +1095,10 @@ void Radar360Class::DrawCursor(void)
 {
     const float delta = BLIP_SIZE * 2.0f;
 
-    display->Line(cursorX - delta, cursorY - delta, cursorX - delta, cursorY + delta);
-    display->Line(cursorX + delta, cursorY - delta, cursorX + delta, cursorY + delta);
+    display->Line(cursorX - delta, cursorY - delta, cursorX - delta,
+                  cursorY + delta);
+    display->Line(cursorX + delta, cursorY - delta, cursorX + delta,
+                  cursorY + delta);
 }
 
 
@@ -1081,7 +1122,8 @@ void Radar360Class::DrawBullseyeData(void)
 
     // Compute azmuth and range from bullseye point
     az = RTD * (float)atan2(cursY - bullseyeY, cursX - bullseyeX);
-    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) + (cursY - bullseyeY) * (cursY - bullseyeY));
+    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) +
+                        (cursY - bullseyeY) * (cursY - bullseyeY));
 
     if (az < -0.6f)
         az += 360.0f;
@@ -1124,29 +1166,29 @@ void Radar360Class::PushButton(int whichButton, int whichMFD)
 {
     switch (whichButton)
     {
-        case 3:
-            wantMode = AA;
-            break;
+    case 3:
+        wantMode = AA;
+        break;
 
-        case 4:
-            wantMode = GM;
-            break;
+    case 4:
+        wantMode = GM;
+        break;
 
-        case 13:
-            MfdDisplay[whichMFD]->SetNewMode(MFDClass::MfdMenu);
-            break;
+    case 13:
+        MfdDisplay[whichMFD]->SetNewMode(MFDClass::MfdMenu);
+        break;
 
-        case 14:
-            MFDSwapDisplays();
-            break;
+    case 14:
+        MFDSwapDisplays();
+        break;
 
-        case 18:
-            RangeStep(-1);
-            break;
+    case 18:
+        RangeStep(-1);
+        break;
 
-        case 19:
-            RangeStep(1);
-            break;
+    case 19:
+        RangeStep(1);
+        break;
     }
 }
 
@@ -1191,7 +1233,7 @@ void Radar360Class::ClearOverride(void)
     wantRange = prevRange;
 }
 
-void Radar360Class::GetAGCenter(float *x, float *y)
+void Radar360Class::GetAGCenter(float* x, float* y)
 {
     mlTrig yawTrig;
 

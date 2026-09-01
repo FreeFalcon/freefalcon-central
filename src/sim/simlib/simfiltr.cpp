@@ -13,7 +13,7 @@ extern int F4FlyingEyeType;
 // Usefull functions. Not sure why it's here
 // =========================================
 
-int SimCompare(VuEntity *ent1, VuEntity *ent2)
+int SimCompare(VuEntity* ent1, VuEntity* ent2)
 {
     int retval = 0;
 
@@ -46,15 +46,11 @@ VU_BOOL AllSimFilter::Test(VuEntity* ent1)
     {
         classPtr = ent1->EntityType();
 
-        if (
-            classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT and 
-            (
-                classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or
-                classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE
-            ) and 
-            (((FalconEntity*)ent1)->IsSim()) and 
- not (((FalconEntity*)ent1)->IsPersistant())
-        )
+        if (classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT and
+            (classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or
+             classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE) and
+            (((FalconEntity*)ent1)->IsSim()) and
+            not(((FalconEntity*)ent1)->IsPersistant()))
         {
             retval = TRUE;
         }
@@ -68,7 +64,7 @@ VU_BOOL AllSimFilter::RemoveTest(VuEntity* ent1)
     return Test(ent1);
 }
 
-int AllSimFilter::Compare(VuEntity *ent1, VuEntity *ent2)
+int AllSimFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
     return (SimCompare(ent1, ent2));
 }
@@ -107,7 +103,7 @@ VU_BOOL CombinedSimFilter::RemoveTest(VuEntity* ent1)
     return Test(ent1);
 }
 
-int CombinedSimFilter::Compare(VuEntity *ent1, VuEntity *ent2)
+int CombinedSimFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
     return (SimCompare(ent1, ent2));
 }
@@ -144,7 +140,8 @@ VU_BOOL SimFeatureFilter::Test(VuEntity* ent1)
  not (((FalconEntity*)ent1)->IsPersistant()) and 
  not (((SimFeatureClass*)ent1)->IsSetCampaignFlag(FEAT_CONTAINER_TOP)))
         */
-        if (classPtr->classInfo_[VU_DOMAIN] and classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
+        if (classPtr->classInfo_[VU_DOMAIN] and
+            classPtr->classInfo_[VU_CLASS] == CLASS_FEATURE)
         {
             retval = TRUE;
         }
@@ -158,7 +155,7 @@ VU_BOOL SimFeatureFilter::RemoveTest(VuEntity* ent1)
     return Test(ent1);
 }
 
-int SimFeatureFilter::Compare(VuEntity *ent1, VuEntity *ent2)
+int SimFeatureFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
     return (SimCompare(ent1, ent2));
 }
@@ -182,45 +179,33 @@ SimLocalFilter::~SimLocalFilter(void)
 
 VU_BOOL SimLocalFilter::Test(VuEntity* ent1)
 {
-    VuEntityType*
-    classPtr;
+    VuEntityType* classPtr;
 
     VU_BOOL
     retval = FALSE;
 
     classPtr = ent1->EntityType();
 
-    if ( not classPtr->classInfo_[VU_DOMAIN])
+    if (not classPtr->classInfo_[VU_DOMAIN])
         return retval;
 
     // edg: I'm not sure if this is the right way to test this, but
     // it was crashing in the next statement.   Look for flying eye
     // camera type
-    if (ent1->IsLocal() and 
+    if (ent1->IsLocal() and
         ent1->Type() == VU_LAST_ENTITY_TYPE + F4FlyingEyeType)
     {
         return TRUE;
     }
 
-    if
-    (
-        ent1->Type() > VU_LAST_ENTITY_TYPE and 
-        ent1->IsLocal() and 
-        ((FalconEntity*)ent1)->IsSim()
-    )
+    if (ent1->Type() > VU_LAST_ENTITY_TYPE and ent1->IsLocal() and
+        ((FalconEntity*)ent1)->IsSim())
     {
-        if
-        (
-            (
-                classPtr->classInfo_[VU_CLASS]  == CLASS_VEHICLE and 
-                classPtr->classInfo_[VU_DOMAIN] == DOMAIN_AIR
-            ) or
-            (
-                classPtr->classInfo_[VU_DOMAIN] == DOMAIN_AIR and 
-                classPtr->classInfo_[VU_CLASS] == CLASS_SFX and 
-                classPtr->classInfo_[VU_TYPE] == TYPE_EJECT
-            )
-        )
+        if ((classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE and
+             classPtr->classInfo_[VU_DOMAIN] == DOMAIN_AIR) or
+            (classPtr->classInfo_[VU_DOMAIN] == DOMAIN_AIR and
+             classPtr->classInfo_[VU_CLASS] == CLASS_SFX and
+             classPtr->classInfo_[VU_TYPE] == TYPE_EJECT))
         {
             retval = TRUE;
         }
@@ -235,7 +220,7 @@ VU_BOOL SimLocalFilter::RemoveTest(VuEntity*)
     return TRUE; // KCK NOTE: Until we can remove on ownership transfer
 }
 
-int SimLocalFilter::Compare(VuEntity *ent1, VuEntity *ent2)
+int SimLocalFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
     return (SimCompare(ent1, ent2));
 }
@@ -263,10 +248,14 @@ VU_BOOL SimObjectFilter::Test(VuEntity* ent1)
 
     classPtr = ent1->EntityType();
 
-    if (ent1->Type() > VU_LAST_ENTITY_TYPE and classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT)
+    if (ent1->Type() > VU_LAST_ENTITY_TYPE and
+        classPtr->classInfo_[VU_DOMAIN] > DOMAIN_ABSTRACT)
     {
-        if ((classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or classPtr->classInfo_[VU_CLASS] == CLASS_WEAPON) and ((FalconEntity*)ent1)->IsSim())
-            return TRUE;;
+        if ((classPtr->classInfo_[VU_CLASS] == CLASS_VEHICLE or
+             classPtr->classInfo_[VU_CLASS] == CLASS_WEAPON) and
+            ((FalconEntity*)ent1)->IsSim())
+            return TRUE;
+        ;
     }
 
     return FALSE;
@@ -277,7 +266,7 @@ VU_BOOL SimObjectFilter::RemoveTest(VuEntity* ent1)
     return Test(ent1);
 }
 
-int SimObjectFilter::Compare(VuEntity *ent1, VuEntity *ent2)
+int SimObjectFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
     return (SimCompare(ent1, ent2));
 }
@@ -350,7 +339,8 @@ SimAirfieldFilter::~SimAirfieldFilter(void)
 
 VU_BOOL SimAirfieldFilter::Test(VuEntity* e)
 {
-    if ( not (e->EntityType())->classInfo_[VU_DOMAIN] or (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
+    if (not(e->EntityType())->classInfo_[VU_DOMAIN] or
+        (e->EntityType())->classInfo_[VU_CLASS] not_eq CLASS_OBJECTIVE)
         return FALSE;
 
     if ((e->EntityType())->classInfo_[VU_TYPE] not_eq TYPE_AIRBASE)
@@ -364,7 +354,7 @@ VU_BOOL SimAirfieldFilter::RemoveTest(VuEntity* ent1)
     return Test(ent1);
 }
 
-int SimAirfieldFilter::Compare(VuEntity *ent1, VuEntity *ent2)
+int SimAirfieldFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
     return (SimCompare(ent1, ent2));
 }
@@ -373,7 +363,6 @@ VuFilter* SimAirfieldFilter::Copy(void)
 {
     return new SimAirfieldFilter;
 }
-
 
 
 // ==============================================
@@ -393,9 +382,9 @@ VU_BOOL SimDynamicTacanFilter::Test(VuEntity* e)
     VU_BOOL returnVal = FALSE;
     VuEntityType* type = e->EntityType();
 
-    if (type->classInfo_[VU_DOMAIN] == DOMAIN_AIR and 
-        type->classInfo_[VU_CLASS] == CLASS_UNIT and 
-        type->classInfo_[VU_TYPE] == TYPE_FLIGHT and 
+    if (type->classInfo_[VU_DOMAIN] == DOMAIN_AIR and
+        type->classInfo_[VU_CLASS] == CLASS_UNIT and
+        type->classInfo_[VU_TYPE] == TYPE_FLIGHT and
         type->classInfo_[VU_STYPE] == STYPE_UNIT_TANKER)
     {
         returnVal = TRUE;
@@ -409,9 +398,9 @@ VU_BOOL SimDynamicTacanFilter::RemoveTest(VuEntity* e)
     VU_BOOL returnVal = FALSE;
     VuEntityType* type = e->EntityType();
 
-    if (type->classInfo_[VU_DOMAIN] == DOMAIN_AIR and 
-        type->classInfo_[VU_CLASS] == CLASS_UNIT and 
-        type->classInfo_[VU_TYPE] == TYPE_FLIGHT and 
+    if (type->classInfo_[VU_DOMAIN] == DOMAIN_AIR and
+        type->classInfo_[VU_CLASS] == CLASS_UNIT and
+        type->classInfo_[VU_TYPE] == TYPE_FLIGHT and
         type->classInfo_[VU_STYPE] == STYPE_UNIT_TANKER)
     {
         returnVal = TRUE;
@@ -420,7 +409,7 @@ VU_BOOL SimDynamicTacanFilter::RemoveTest(VuEntity* e)
     return returnVal;
 }
 
-int SimDynamicTacanFilter::Compare(VuEntity *ent1, VuEntity *ent2)
+int SimDynamicTacanFilter::Compare(VuEntity* ent1, VuEntity* ent2)
 {
     return (SimCompare(ent1, ent2));
 }
@@ -429,7 +418,6 @@ VuFilter* SimDynamicTacanFilter::Copy(void)
 {
     return new SimDynamicTacanFilter;
 }
-
 
 
 /*

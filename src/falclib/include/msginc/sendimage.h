@@ -1,13 +1,14 @@
 #ifndef _SENDIMAGE_H
 #define _SENDIMAGE_H
+#include <cstdint>
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
 
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Image
@@ -15,20 +16,16 @@
 class UI_SendImage : public FalconEvent
 {
 public:
-    UI_SendImage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_SendImage(VU_ID entityId, VuTargetEntity *target,
+                 VU_BOOL loopback = TRUE);
     UI_SendImage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~UI_SendImage(void);
     int Size(void)
     {
         int size = FalconEvent::Size();
-        size += sizeof(VU_ID) +
-                sizeof(uchar) +
-                sizeof(short) +
-                sizeof(short) +
-                sizeof(long) +
-                sizeof(long) +
-                dataBlock.blockSize;
-        return(size);
+        size += sizeof(VU_ID) + sizeof(uchar) + sizeof(short) + sizeof(short) +
+                sizeof(int32_t) + sizeof(int32_t) + dataBlock.blockSize;
+        return (size);
     }
 
     //sfr: changed to long *
@@ -41,8 +38,8 @@ public:
         memcpychk(&dataBlock.typeID, buf, sizeof(uchar), rem);
         memcpychk(&dataBlock.blockNo, buf, sizeof(short), rem);
         memcpychk(&dataBlock.blockSize, buf, sizeof(short), rem);
-        memcpychk(&dataBlock.offset, buf, sizeof(long), rem);
-        memcpychk(&dataBlock.size, buf, sizeof(long), rem);
+        memcpychk(&dataBlock.offset, buf, sizeof(int32_t), rem);
+        memcpychk(&dataBlock.size, buf, sizeof(int32_t), rem);
         dataBlock.data = new uchar[dataBlock.blockSize];
         memcpychk(dataBlock.data, buf, dataBlock.blockSize, rem);
         return init - *rem;
@@ -64,12 +61,12 @@ public:
         memcpy(*buf, &dataBlock.blockSize, sizeof(short));
         *buf += sizeof(short);
         size += sizeof(short);
-        memcpy(*buf, &dataBlock.offset, sizeof(long));
-        *buf += sizeof(long);
-        size += sizeof(long);
-        memcpy(*buf, &dataBlock.size, sizeof(long));
-        *buf += sizeof(long);
-        size += sizeof(long);
+        memcpy(*buf, &dataBlock.offset, sizeof(int32_t));
+        *buf += sizeof(int32_t);
+        size += sizeof(int32_t);
+        memcpy(*buf, &dataBlock.size, sizeof(int32_t));
+        *buf += sizeof(int32_t);
+        size += sizeof(int32_t);
         memcpy(*buf, dataBlock.data, dataBlock.blockSize);
         *buf += dataBlock.blockSize;
         size += dataBlock.blockSize;
@@ -82,14 +79,14 @@ public:
         uchar typeID;
         short blockNo;
         short blockSize;
-        long  offset;
-        long  size;
+        int32_t offset;
+        int32_t size;
         uchar *data;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

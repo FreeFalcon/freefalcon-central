@@ -3,7 +3,7 @@
 
 
 #include <iso646.h>
-#include "simVeh.h"
+#include "simveh.h"
 #include "hardpnt.h"
 #include "fsound.h"
 #include "dofsnswitches.h"
@@ -60,7 +60,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -74,31 +75,48 @@ public:
 #endif
 
 public:
-    enum AutoPilotType {ThreeAxisAP, WaypointAP, CombatAP, LantirnAP, APOff};
+    enum AutoPilotType
+    {
+        ThreeAxisAP,
+        WaypointAP,
+        CombatAP,
+        LantirnAP,
+        APOff
+    };
     // this is extremely stupid, since it allows a plane to be both an A10 and an F16.
     // wrong way to do things.
     enum ACFLAGS
     {
-        isF16    = 0x01,     // is an F-16 - hopefully historic usage only soon
-        hasSwing = 0x02,     // has swing wing
-        isComplex = 0x04,    // has a complex model (lots of dofs and switches)
-        InRecovery = 0x08,   // recovering from gloc
-        isA10 = 0x10,        // TJL 01/11/04 In case we have to merge with OIR
+        isF16 = 0x01, // is an F-16 - hopefully historic usage only soon
+        hasSwing = 0x02, // has swing wing
+        isComplex = 0x04, // has a complex model (lots of dofs and switches)
+        InRecovery = 0x08, // recovering from gloc
+        isA10 = 0x10, // TJL 01/11/04 In case we have to merge with OIR
         hasTwoEngines = 0x20 // TJL 01/11/04
     };
     enum AvionicsPowerFlags
     {
         NoPower = 0,
-        SMSPower = 0x1, FCCPower = 0x2, MFDPower = 0x4, UFCPower = 0x8,
-        GPSPower = 0x10, DLPower = 0x20, MAPPower = 0x40,
-        LeftHptPower = 0x80, RightHptPower = 0x100,
-        TISLPower = 0x200, FCRPower = 0x400, HUDPower = 0x800,
+        SMSPower = 0x1,
+        FCCPower = 0x2,
+        MFDPower = 0x4,
+        UFCPower = 0x8,
+        GPSPower = 0x10,
+        DLPower = 0x20,
+        MAPPower = 0x40,
+        LeftHptPower = 0x80,
+        RightHptPower = 0x100,
+        TISLPower = 0x200,
+        FCRPower = 0x400,
+        HUDPower = 0x800,
         //MI
-        EWSRWRPower = 0x1000, EWSJammerPower = 0x2000, EWSChaffPower = 0x4000,
+        EWSRWRPower = 0x1000,
+        EWSJammerPower = 0x2000,
+        EWSChaffPower = 0x4000,
         EWSFlarePower = 0x8000,
         //MI
         RaltPower = 0x10000,
-        RwrPower  = 0x20000,
+        RwrPower = 0x20000,
         APPower = 0x40000,
         PFDPower = 0x80000,
         ChaffFlareCount = 0x100000,
@@ -107,21 +125,33 @@ public:
         // systems that don't have power normally.
         SpotLightPower = 0x20000000,
         InstrumentLightPower = 0x40000000,
-        InteriorLightPower   = 0x80000000, // start from the top down
+        InteriorLightPower = 0x80000000, // start from the top down
         AllPower = 0xffffff // all the systems have power normally.
     };
-    enum MainPowerType { MainPowerOff, MainPowerBatt, MainPowerMain };
+    enum MainPowerType
+    {
+        MainPowerOff,
+        MainPowerBatt,
+        MainPowerMain
+    };
     // start of the power state matrix,
     // will get filled in more when I know what I'm talking about a little.
-    enum PowerStates { PowerNone = 0,
-                       PowerFlcs,
-                       PowerBattery,
-                       PowerEmergencyBus,
-                       PowerEssentialBus,
-                       PowerNonEssentialBus,
-                       PowerMaxState,
-                     };
-    enum LightSwitch { LT_OFF, LT_LOW, LT_NORMAL };
+    enum PowerStates
+    {
+        PowerNone = 0,
+        PowerFlcs,
+        PowerBattery,
+        PowerEmergencyBus,
+        PowerEssentialBus,
+        PowerNonEssentialBus,
+        PowerMaxState,
+    };
+    enum LightSwitch
+    {
+        LT_OFF,
+        LT_LOW,
+        LT_NORMAL
+    };
     LightSwitch interiorLight, instrumentLight, spotLight;
     void SetInteriorLight(LightSwitch st)
     {
@@ -154,7 +184,14 @@ public:
     };
 
     //MI
-    enum EWSPGMSwitch { Off, Stby, Man, Semi, Auto };
+    enum EWSPGMSwitch
+    {
+        Off,
+        Stby,
+        Man,
+        Semi,
+        Auto
+    };
     //MI new OverG/Speed stuff
     void CheckForOverG(void);
     void CheckForOverSpeed(void);
@@ -195,15 +232,15 @@ public:
     enum AircraftStatusBit
     {
         //VIS_TYPE_MASK = 0x07,
-        ACSTATUS_PILOT_EJECTED       = 0x00000001,
-        ACSTATUS_GEAR_DOWN           = 0x00000002,
-        ACSTATUS_EXT_LIGHTS          = 0x00000004,
-        ACSTATUS_EXT_NAVLIGHTS       = 0x00000008,
-        ACSTATUS_EXT_TAILSTROBE      = 0x00000010,
-        ACSTATUS_EXT_LANDINGLIGHT    = 0x00000020,
-        ACSTATUS_EXT_NAVLIGHTSFLASH  = 0x00000040,
-        ACSTATUS_CANOPY              = 0x00000080,
-        ACSTATUS_PITLIGHT            = 0x00000100,
+        ACSTATUS_PILOT_EJECTED = 0x00000001,
+        ACSTATUS_GEAR_DOWN = 0x00000002,
+        ACSTATUS_EXT_LIGHTS = 0x00000004,
+        ACSTATUS_EXT_NAVLIGHTS = 0x00000008,
+        ACSTATUS_EXT_TAILSTROBE = 0x00000010,
+        ACSTATUS_EXT_LANDINGLIGHT = 0x00000020,
+        ACSTATUS_EXT_NAVLIGHTSFLASH = 0x00000040,
+        ACSTATUS_CANOPY = 0x00000080,
+        ACSTATUS_PITLIGHT = 0x00000100,
     };
     /** aircraft dirtyness */
     enum DirtyAircraft
@@ -221,12 +258,11 @@ public:
     {
         return (status_bits bitand bits) == bits;
     }
+
 private:
-    int status_bits;    ///< bitwise of DirtyAircraft
+    int status_bits; ///< bitwise of DirtyAircraft
     char dirty_aircraft; ///< aircraft dirtyness, bitwise of DirtyAircraft
 public:
-
-
     // sfr: removed. using base class status... avoid duplication
     //unsigned int ExteriorLights;
     enum ExtlLightFlags
@@ -394,57 +430,59 @@ public:
     //TJL 08/08/04 Hotpit Refueling //Cobra 10/30/04 TJL
     void HotPitRefuel(void);
     bool requestHotpitRefuel;
-    int iffEnabled;//Cobra 11/20/04
+    int iffEnabled; //Cobra 11/20/04
     virtual int GetiffEnabled(void)
     {
-        return iffEnabled;    //Cobra 11/20/04
+        return iffEnabled; //Cobra 11/20/04
     }
-    bool interrogating;//Cobra 11/21/04
-    bool runIFFInt;//Cobra 11/21/04
-    float iffModeTimer;//Cobra 11/21/04
-    int iffModeChallenge;//Cobra 11/21/04
+    bool interrogating; //Cobra 11/21/04
+    bool runIFFInt; //Cobra 11/21/04
+    float iffModeTimer; //Cobra 11/21/04
+    int iffModeChallenge; //Cobra 11/21/04
 
     //sfr: added rem
-    AircraftClass(int flag, VU_BYTE** stream, long *rem);
-    AircraftClass(int flag, FILE* filePtr);
+    AircraftClass(int flag, VU_BYTE **stream, long *rem);
+    AircraftClass(int flag, FILE *filePtr);
     AircraftClass(int flag, int type);
     virtual ~AircraftClass(void);
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData(int);
     void CleanupLocalData();
-public:
 
+public:
     float glocFactor;
     int fireGun, fireMissile, lastPickle;
-    FackClass* mFaults;
-    AirframeClass* af;
-    FireControlComputer* FCC;
-    SMSClass* Sms;
-    GunClass* Guns;
+    FackClass *mFaults;
+    AirframeClass *af;
+    FireControlComputer *FCC;
+    SMSClass *Sms;
+    GunClass *Guns;
 
-    virtual void Init(SimInitDataClass* initData);
-    virtual int    Wake(void);
+    virtual void Init(SimInitDataClass *initData);
+    virtual int Wake(void);
     //virtual int  Sleep(void);
     virtual int Exec(void);
     virtual void JoinFlight(void);
-    virtual int    CombatClass(void);  // 2002-02-25 MODIFIED BY S.G. virtual added in front since FlightClass also have one now...
-    void           SetAutopilot(AutoPilotType flag);
+    virtual int CombatClass(
+        void); // 2002-02-25 MODIFIED BY S.G. virtual added in front since FlightClass also have one now...
+    void SetAutopilot(AutoPilotType flag);
     AutoPilotType AutopilotType(void)
     {
         return autopilotType;
     };
-    VU_ID          HomeAirbase(void);
-    VU_ID          TakeoffAirbase(void);
-    VU_ID          LandingAirbase(void);
-    VU_ID          DivertAirbase(void);
-    void           DropProgramed(void);
-    int            IsF16(void)
+    VU_ID HomeAirbase(void);
+    VU_ID TakeoffAirbase(void);
+    VU_ID LandingAirbase(void);
+    VU_ID DivertAirbase(void);
+    void DropProgramed(void);
+    int IsF16(void)
     {
         return (acFlags bitand isF16 ? TRUE : FALSE);
     }
-    int            IsComplex(void)
+    int IsComplex(void)
     {
         return ((acFlags bitand isComplex) ? TRUE : FALSE);
     }
@@ -459,7 +497,7 @@ public:
     virtual void GetTransform(TransformMatrix vmat);
     virtual void ApplyDamage(FalconDamageMessage *damageMessage);
     virtual void SetLead(int flag);
-    virtual void ReceiveOrders(FalconEvent* newOrder);
+    virtual void ReceiveOrders(FalconEvent *newOrder);
     virtual float GetP(void);
     virtual float GetQ(void);
     virtual float GetR(void);
@@ -478,13 +516,13 @@ public:
     virtual void ConfigurePlayerAvionics(void);
     virtual void SetVuPosition(void);
     virtual void Regenerate(float x, float y, float z, float yaw);
-    virtual FireControlComputer* GetFCC(void)
+    virtual FireControlComputer *GetFCC(void)
     {
         return FCC;
     };
-    virtual SMSBaseClass* GetSMS(void)
+    virtual SMSBaseClass *GetSMS(void)
     {
-        return (SMSBaseClass*)Sms;
+        return (SMSBaseClass *)Sms;
     };
     virtual int HasSPJamming(void);
     virtual int HasAreaJamming(void);
@@ -516,11 +554,11 @@ public:
     BOOL MPOCmd;
     char dropChaffCmd;
     char dropFlareCmd;
-    int            acFlags;
+    int acFlags;
     AutoPilotType autopilotType;
     AutoPilotType lastapType;
 
-    VU_TIME        dropProgrammedTimer;
+    VU_TIME dropProgrammedTimer;
     unsigned short dropProgrammedStep;
 
     float bingoFuel;
@@ -528,11 +566,11 @@ public:
     float GetBingoFuel(void)
     {
         return bingoFuel;
-    };//me123
+    }; //me123
     void SetBingoFuel(float newbingo)
     {
         bingoFuel = newbingo;
-    };//me123
+    }; //me123
     void DamageSounds(void);
     unsigned int SpeedSoundsWFuel;
     unsigned int SpeedSoundsNFuel;
@@ -541,7 +579,12 @@ public:
     void WrongCAT(void);
     void CorrectCAT(void);
     //MI for RALT stuff
-    enum RaltStatus { ROFF, RSTANDBY, RON } RALTStatus;
+    enum RaltStatus
+    {
+        ROFF,
+        RSTANDBY,
+        RON
+    } RALTStatus;
     float RALTCoolTime; //Cooling is in progress
     int RaltReady()
     {
@@ -566,16 +609,19 @@ public:
     void ReleaseManualProgram(void);
     bool ManualECM;
     int FlareCount, ChaffCount, ChaffSalvoCount, FlareSalvoCount;
-    VU_TIME ChaffBurstInterval, FlareBurstInterval, ChaffSalvoInterval, FlareSalvoInterval;
+    VU_TIME ChaffBurstInterval, FlareBurstInterval, ChaffSalvoInterval,
+        FlareSalvoInterval;
     //MI Autopilot
-    enum APFlags {AltHold = 0x1, //Right switch up
-                     AttHold = 0x2, //Right Switch down
-                     StrgSel = 0x4, //Left switch down
-                     RollHold = 0x8, //Left switch middle
-                     HDGSel = 0x10, //Left switch up
-                     Override = 0x20, //Paddle switch
-                     StickStrng = 0x40
-                 };  // MD -- 20031115: AP fixes; this one is for when stick steering temporarily overrides AP pitch hold
+    enum APFlags
+    {
+        AltHold = 0x1, //Right switch up
+        AttHold = 0x2, //Right Switch down
+        StrgSel = 0x4, //Left switch down
+        RollHold = 0x8, //Left switch middle
+        HDGSel = 0x10, //Left switch up
+        Override = 0x20, //Paddle switch
+        StickStrng = 0x40
+    }; // MD -- 20031115: AP fixes; this one is for when stick steering temporarily overrides AP pitch hold
     unsigned int APFlag;
     int IsOn(APFlags flag)
     {
@@ -601,7 +647,7 @@ public:
     float gLoadSeconds;
     long lastStatus;
     BasicWeaponStation counterMeasureStation[3];
-    enum   // what trail is used for what
+    enum // what trail is used for what
     {
         TRAIL_DAMAGE = 0, // we've been hit
         TRAIL_ENGINE1,
@@ -616,41 +662,42 @@ public:
     //DrawableTrail   *wingvapor;
     //DrawableTrail   *dustTrail; // MLR 1/3/2004 - for the dumbass dust/mist trail effect
     // ********** NEW TRAIL STUFF *************
-    DWORD       smokeTrail[TRAIL_MAX];
-    DWORD       smokeTrail_trail[TRAIL_MAX];
-    DWORD       conTrails[MAXENGINES];
-    DWORD       conTrails_trail[MAXENGINES];
-    DWORD       colorConTrails[MAXENGINES];
-    DWORD       colorConTrails_trail[MAXENGINES];
-    DWORD       engineTrails[MAXENGINES];
-    DWORD       engineTrails_trail[MAXENGINES];
+    DWORD smokeTrail[TRAIL_MAX];
+    DWORD smokeTrail_trail[TRAIL_MAX];
+    DWORD conTrails[MAXENGINES];
+    DWORD conTrails_trail[MAXENGINES];
+    DWORD colorConTrails[MAXENGINES];
+    DWORD colorConTrails_trail[MAXENGINES];
+    DWORD engineTrails[MAXENGINES];
+    DWORD engineTrails_trail[MAXENGINES];
     DWORD lwingvortex;
     DWORD lwingvortex_trail;
     DWORD rwingvortex;
     DWORD rwingvortex_trail;
-    DWORD       lvortex1;
-    DWORD       lvortex1_trail;
-    DWORD       rvortex1;
-    DWORD       rvortex1_trail;
-    DWORD       lvortex2;
-    DWORD       lvortex2_trail;
-    DWORD       rvortex2;
-    DWORD       rvortex2_trail;
-    DWORD       dustTrail;
-    DWORD       dustTrail_trail;
+    DWORD lvortex1;
+    DWORD lvortex1_trail;
+    DWORD rvortex1;
+    DWORD rvortex1_trail;
+    DWORD lvortex2;
+    DWORD lvortex2_trail;
+    DWORD rvortex2;
+    DWORD rvortex2_trail;
+    DWORD dustTrail;
+    DWORD dustTrail_trail;
 
     Tpoint damageTrailLocation0;
     Tpoint damageTrailLocation1;
-    bool   damageTrailLocationSet; //RV I-Hawk - added as flag for if damage trail locations are set
+    bool
+        damageTrailLocationSet; //RV I-Hawk - added as flag for if damage trail locations are set
     bool burnEffectPosition;
 
     //RV I-Hawk - This variable decides the CTRL-S trail color, there are 5 different colors
     int colorContrail;
     void SetColorContrail(int color);
     // ****************************************
-    BOOL             dustConnect;  // MLR 1/4/2004 -
+    BOOL dustConnect; // MLR 1/4/2004 -
     BOOL playerSmokeOn;
-    DrawableGroundVehicle* pLandLitePool;
+    DrawableGroundVehicle *pLandLitePool;
     BOOL mInhibitLitePool;
     void CleanupLitePool(void);
     void AddEngineTrails(int ttype, DWORD *tlist, DWORD *tlist_trail);
@@ -676,7 +723,7 @@ public:
         return (powerFlags bitand fl) ? TRUE : FALSE;
     };
 
-    void PreFlight();  // JPO - do preflight checks.
+    void PreFlight(); // JPO - do preflight checks.
 
     // JPPO Main Power
     MainPowerType mainPower;
@@ -737,7 +784,8 @@ public:
     void IncEWSProg();
     void SetEWSProg(int num)
     {
-        if ((num >= 0) and (num <= 3)) EWSProgNum = num;    // MD: 4 position knob
+        if ((num >= 0) and (num <= 3))
+            EWSProgNum = num; // MD: 4 position knob
     }
     //Prog select switch
     unsigned int EWSProgNum;
@@ -773,7 +821,8 @@ public:
     void CleanupCountermeasures(void);
     void InitDamageStation(void);
     void CleanupDamageStation(void);
-    void    CleanupVortex(void);  //RV - I-Hawk - new function to clean up vortex and dust trails
+    void CleanupVortex(
+        void); //RV - I-Hawk - new function to clean up vortex and dust trails
     void DoCountermeasures(void);
     void DropChaff(void);
     void DropFlare(void);
@@ -791,23 +840,24 @@ public:
     void RunGearSurfaces(void);
 
     void ToggleAutopilot(void);
-    void OnGroundInit(SimInitDataClass* initData);
+    void OnGroundInit(SimInitDataClass *initData);
     void CheckObjectCollision(void);
     void CheckPersistantCollision(void);
     void CautionCheck(void);
-    void SetCursorCmdsByAnalog(void);   // MD -- 20040110: analog cursor control support
+    void SetCursorCmdsByAnalog(
+        void); // MD -- 20040110: analog cursor control support
     void SetSpeedBrake(void); //TJL 02/28/04
     int brakePos; //TJL 02/28/04
     float speedBrakeState; //TJL 02/28/04
-    CampBaseClass* JDAMtarget;//Cobra
-    SimBaseClass* JDAMsbc;//Cobra
-    char JDAMtargetName[80];//Cobra
-    char JDAMtargetName1[80];//Cobra
-    int  JDAMStep;//Cobra
-    int  JDAMtgtnum;//Cobra
+    CampBaseClass *JDAMtarget; //Cobra
+    SimBaseClass *JDAMsbc; //Cobra
+    char JDAMtargetName[80]; //Cobra
+    char JDAMtargetName1[80]; //Cobra
+    int JDAMStep; //Cobra
+    int JDAMtgtnum; //Cobra
     float JDAMtargetRange; //Cobra
     Tpoint JDAMtgtPos; // Cobra
-    int GetJDAMPBTarget(AircraftClass* aircraft); // Cobra
+    int GetJDAMPBTarget(AircraftClass *aircraft); // Cobra
     bool JDAMAllowAutoStep; // RV - I-Hawk
 
     int spawnpoint; //RAS-11Nov04-hold initial spawnpoint
@@ -855,7 +905,8 @@ public:
     //virtual float GetKias();
 
     // Public for debug
-    void AddFault(int failures, unsigned int failuresPossible, int numToBreak, int sourceOctant);
+    void AddFault(int failures, unsigned int failuresPossible, int numToBreak,
+                  int sourceOctant);
 
 
     float GetA2GJDAMAlt(void);
@@ -873,36 +924,41 @@ public:
 
 private:
     //used for safe deletion of sensor array when making a player vehicle
-    SensorClass** tempSensorArray;
+    SensorClass **tempSensorArray;
     int tempNumSensors;
 
 protected:
-    int SetDamageF16PieceType(DamageF16PieceStructure *piece, int type, int flag, int mask, float speed);
+    int SetDamageF16PieceType(DamageF16PieceStructure *piece, int type,
+                              int flag, int mask, float speed);
     int CreateDamageF16Piece(DamageF16PieceStructure *piece, int *mask);
     int CreateDamageF16Effects();
     void SetupDamageF16Effects(DamageF16PieceStructure *piece);
 
 public:
     VuEntity *attachedEntity; // JB carrier
-    bool AWACSsaidAbort; // MN when target got occupied, AWACS says something useful
+    bool
+        AWACSsaidAbort; // MN when target got occupied, AWACS says something useful
     //TJL 01/04/04 Moved it here from private to access it (per Jam)
-    void CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr1 , float &sl2, float &sr2);
+    void CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr1,
+                                  float &sl2, float &sr2);
     //TJL 01/04/04 added this variable to catch the wingsweep.
     float wingSweep;
 
 
 private:
-    void CalculateAileronAndFlap(float qf, float *al, float *ar, float *fl, float *fr);
+    void CalculateAileronAndFlap(float qf, float *al, float *ar, float *fl,
+                                 float *fr);
     //void CalculateSweepAndSpoiler(float &sweep, float &sl1, float &sr1 ,float &sl2, float &sr2);
     void CalculateLef(float qfactor);
     void CalculateStab(float qfactor, float *sl, float *sr);
     float CalculateRudder(float qfactor);
-    void MoveDof(int dof, float newvalue, float rate, int ssfx = -1, int lsfx = -1, int esfx = -1);
+    void MoveDof(int dof, float newvalue, float rate, int ssfx = -1,
+                 int lsfx = -1, int esfx = -1);
     void DeployDragChute(int n);
-    int FindBestSpawnPoint(ObjectiveClass *obj, SimInitDataClass* initData);
+    int FindBestSpawnPoint(ObjectiveClass *obj, SimInitDataClass *initData);
 
 private: // MLR's 2003-10
-    VU_TIME animStrobeTimer;  // at this time, the strobe changes on/off
+    VU_TIME animStrobeTimer; // at this time, the strobe changes on/off
     VU_TIME animWingFlashTimer; // do for the flashing winglight martinv
     VU_TIME MPWingFlashTimer;
     // MLR 2003-11-15 Decoy Dispenser related
@@ -910,7 +966,7 @@ private: // MLR's 2003-10
 
     float acmiTimer;
     float acmiDOFValue[COMP_MAX_DOF];
-    int   acmiSwitchValue[COMP_MAX_SWITCH];
+    int acmiSwitchValue[COMP_MAX_SWITCH];
 
     float swingWingAngle; // set in surface.cpp
     Tpoint swingWingTip; // MLR 3/5/2004 -
@@ -940,4 +996,3 @@ private:
 };
 
 #endif
-

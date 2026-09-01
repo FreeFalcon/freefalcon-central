@@ -6,33 +6,37 @@
 #include "missile.h"
 #include "object.h"
 #include "sensclas.h"
-#include "Entity.h"
+#include "entity.h"
 #include "team.h"
-#include "Aircrft.h"
-/* 2001-03-15 S.G. */#include "campbase.h"
-/* 2001-03-21 S.G. */#include "flight.h"
-/* 2001-03-21 S.G. */#include "atm.h"
+#include "aircrft.h"
+/* 2001-03-15 S.G. */ #include "campbase.h"
+/* 2001-03-21 S.G. */ #include "flight.h"
+/* 2001-03-21 S.G. */ #include "atm.h"
 
-#include "RWR.h" // 2002-02-11 S.G.
-#include "Radar.h" // 2002-02-11 S.G.
+#include "rwr.h" // 2002-02-11 S.G.
+#include "radar.h" // 2002-02-11 S.G.
 #include "simdrive.h" // 2002-02-17 S.G.
 
-#define MAX_NCTR_RANGE    (60.0F * NM_TO_FT) // 2002-02-12 S.G. See RadarDoppler.h
+#define MAX_NCTR_RANGE (60.0F * NM_TO_FT) // 2002-02-12 S.G. See RadarDoppler.h
 
 /* 2001-09-07 S.G. RP5 */ extern bool g_bRP5Comp;
-extern int g_nLowestSkillForGCI; // 2002-03-12 S.G. Replaces the hardcoded '3' for skill test
+extern int
+    g_nLowestSkillForGCI; // 2002-03-12 S.G. Replaces the hardcoded '3' for skill test
 extern bool g_bUseNewCanEnage; // 2002-03-11 S.G.
-int GuestimateCombatClass(AircraftClass *self, FalconEntity *baseObj); // 2002-03-11 S.G.
+int GuestimateCombatClass(AircraftClass *self,
+                          FalconEntity *baseObj); // 2002-03-11 S.G.
 
-FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *data = NULL); // 2002-02-10 S.G.
+FalconEntity *SpikeCheck(AircraftClass *self, FalconEntity *byHim = NULL,
+                         int *data = NULL); // 2002-02-10 S.G.
 
 void DigitalBrain::SensorFusion(void)
 {
-    SimObjectType* obj = targetList;
-    float turnTime = 0.0F, timeToRmax = 0.0F, rmax = 0.0F, tof = 0.0F, totV = 0.0F;
-    SimObjectLocalData* localData = NULL;
+    SimObjectType *obj = targetList;
+    float turnTime = 0.0F, timeToRmax = 0.0F, rmax = 0.0F, tof = 0.0F,
+          totV = 0.0F;
+    SimObjectLocalData *localData = NULL;
     int relation = 0, pcId = ID_NONE, canSee = FALSE, i = 0;
-    FalconEntity* baseObj = NULL;
+    FalconEntity *baseObj = NULL;
 
     // 2002-04-18 REINSTATED BY S.G. After putting back 'or' instead of ' and ' before "localData->sensorLoopCount[self->sensorArray[i]->Type()] > delayTime" below, this is no longer required
     // 2002-02-17 MODIFIED BY S.G. Sensor routines for AI runs less often than SensorFusion therefore the AI will time out his target after this delayTime as elapsed.
@@ -56,11 +60,12 @@ void DigitalBrain::SensorFusion(void)
         baseObj = obj->BaseData();
 
         //if (F4IsBadCodePtr((FARPROC) baseObj)) // JB 010223 CTD
-        if (F4IsBadCodePtr((FARPROC) baseObj) or F4IsBadReadPtr(baseObj, sizeof(FalconEntity))) // JB 010305 CTD
+        if (F4IsBadCodePtr((FARPROC)baseObj) or
+            F4IsBadReadPtr(baseObj, sizeof(FalconEntity))) // JB 010305 CTD
             break; // JB 010223 CTD
 
         // Check all sensors for contact
-        canSee = FALSE;//PUt to true for testing only
+        canSee = FALSE; //PUt to true for testing only
 
         //Cobra Begin rebuilding this function.
 
@@ -68,7 +73,7 @@ void DigitalBrain::SensorFusion(void)
         CampBaseClass *campBaseObj = (CampBaseClass *)baseObj;
 
         if (baseObj->IsSim())
-            campBaseObj = ((SimBaseClass*)baseObj)->GetCampaignObject();
+            campBaseObj = ((SimBaseClass *)baseObj)->GetCampaignObject();
 
         // If the object is a weapon, don't do GCI on it
         if (baseObj->IsWeapon())
@@ -80,7 +85,8 @@ void DigitalBrain::SensorFusion(void)
             if (campBaseObj->GetSpotted(self->GetTeam()))
                 canSee = TRUE;
 
-        if (localData->sensorState[SensorClass::RWR] >= SensorClass::SensorTrack)
+        if (localData->sensorState[SensorClass::RWR] >=
+            SensorClass::SensorTrack)
         {
             canSee = TRUE;
             detRWR = 1;
@@ -88,7 +94,8 @@ void DigitalBrain::SensorFusion(void)
         else
             detRWR = 0;
 
-        if (localData->sensorState[SensorClass::Radar] >= SensorClass::SensorTrack)
+        if (localData->sensorState[SensorClass::Radar] >=
+            SensorClass::SensorTrack)
         {
             canSee = TRUE;
             detRAD = 1;
@@ -96,7 +103,8 @@ void DigitalBrain::SensorFusion(void)
         else
             detRAD = 0;
 
-        if (localData->sensorState[SensorClass::Visual] >= SensorClass::SensorTrack)
+        if (localData->sensorState[SensorClass::Visual] >=
+            SensorClass::SensorTrack)
         {
             canSee = TRUE;
             detVIS = 1;
@@ -105,10 +113,7 @@ void DigitalBrain::SensorFusion(void)
             detVIS = 0;
 
 
-
         //End
-
-
 
 
         /* if ( not g_bRP5Comp) {
@@ -234,10 +239,11 @@ void DigitalBrain::SensorFusion(void)
 
             if (baseObj->IsSim())
             {
-                campBaseObj = ((SimBaseClass*)baseObj)->GetCampaignObject();
+                campBaseObj = ((SimBaseClass *)baseObj)->GetCampaignObject();
 
                 if (campBaseObj)
-                    campBaseObj->SetSpotted(self->GetTeam(), TheCampaign.CurrentTime, 1);
+                    campBaseObj->SetSpotted(self->GetTeam(),
+                                            TheCampaign.CurrentTime, 1);
             }
 
 
@@ -253,23 +259,24 @@ void DigitalBrain::SensorFusion(void)
             {
                 if (TeamInfo[self->GetTeam()]) // JB 010617 CTD
                 {
-                    relation = TeamInfo[self->GetTeam()]->TStance(obj->BaseData()->GetTeam());
+                    relation = TeamInfo[self->GetTeam()]->TStance(
+                        obj->BaseData()->GetTeam());
 
                     switch (relation)
                     {
-                        case Hostile:
-                        case War:
-                            pcId = ID_HOSTILE;
-                            break;
+                    case Hostile:
+                    case War:
+                        pcId = ID_HOSTILE;
+                        break;
 
-                        case Allied:
-                        case Friendly:
-                            pcId = ID_FRIENDLY;
-                            break;
+                    case Allied:
+                    case Friendly:
+                        pcId = ID_FRIENDLY;
+                        break;
 
-                        case Neutral:
-                            pcId = ID_NEUTRAL;
-                            break;
+                    case Neutral:
+                        pcId = ID_NEUTRAL;
+                        break;
                     }
                 }
             }
@@ -291,7 +298,7 @@ void DigitalBrain::SensorFusion(void)
                     isHelo = TRUE;
             }
 
-            if (pcId == ID_HOSTILE)//Something we can shoot at
+            if (pcId == ID_HOSTILE) //Something we can shoot at
             {
                 //Score combatclass
 
@@ -306,8 +313,9 @@ void DigitalBrain::SensorFusion(void)
                 if (localData->range < maxAAWpnRange)
                     totalThreat += 20;
 
-                if (missionType == AMIS_BARCAP or missionType == AMIS_BARCAP2 or missionComplete
-                    or (missionClass == AGMission and not IsSetATC(HasAGWeapon)))
+                if (missionType == AMIS_BARCAP or missionType == AMIS_BARCAP2 or
+                    missionComplete or
+                    (missionClass == AGMission and not IsSetATC(HasAGWeapon)))
                 {
                     if (isHelo or hisCombatClass >= 7)
                         totalThreat = 5;
@@ -324,14 +332,17 @@ void DigitalBrain::SensorFusion(void)
                 else
                     campObj = (CampBaseClass *)baseObj;
 
-                int isMissionTarget = campObj and (((FlightClass *)(self->GetCampaignObject()))-> GetUnitMissionTargetID() == campObj->Id() or
-                                                  ((FlightClass *)(self->GetCampaignObject()))->GetAssignedTarget() == campObj->Id());
+                int isMissionTarget =
+                    campObj and
+                    (((FlightClass *)(self->GetCampaignObject()))
+                             ->GetUnitMissionTargetID() == campObj->Id() or
+                     ((FlightClass *)(self->GetCampaignObject()))
+                             ->GetAssignedTarget() == campObj->Id());
 
                 if (isMissionTarget)
                     totalThreat += 10;
 
                 localData->threatScore = totalThreat;
-
             }
             else if (pcId == ID_MISSILE)
             {
@@ -343,13 +354,12 @@ void DigitalBrain::SensorFusion(void)
                 {
                     localData->threatScore = 90;
                 }
-
             }
             else
                 localData->threatScore = 0;
 
 
-        }//end cobra
+        } //end cobra
 
         /*----------------------------------------------------*/
         /* Threat determination                               */
@@ -441,7 +451,7 @@ void DigitalBrain::SensorFusion(void)
         // Have to be at war against us
         // Chopper must be our assigned or mission target or we must be on sweep (not a AMIS_SWEEP but still has OnSweep set)
         // Must be worth shooting at, unless it's our assigned or mission target (new addition so AI can go after an AWACS for example if it's their target...
-        //    if (canSee and baseObj->IsAirplane() and pcId < ID_NEUTRAL and 
+        //    if (canSee and baseObj->IsAirplane() and pcId < ID_NEUTRAL and
         //       (IsSetATC(OnSweep) or ((AircraftClass*)baseObj)->CombatClass() < MnvrClassA10))
         // 2002-03-11 MODIFIED BY S.G. Don't call CombatClass directly but through GuestimateCombatClass which doesn't assume you have an ID on the target
         // Since I'm going to check for this twice in the next if statement, do it once here but also do the 'canSee' test which is not CPU intensive and will prevent the test from being performed if can't see.
@@ -504,18 +514,18 @@ void DigitalBrain::SensorFusion(void)
 int GuestimateCombatClass(AircraftClass *self, FalconEntity *baseObj)
 {
     // Fail safe
-    if ( not baseObj)
+    if (not baseObj)
         return 8;
 
     // If asked to use the old code, then honor the request
-    if ( not g_bUseNewCanEnage)
+    if (not g_bUseNewCanEnage)
         return baseObj->CombatClass();
 
     // First I'll get the campaign object if it's for a sim since I use it at many places...
     CampBaseClass *campBaseObj;
 
     if (baseObj->IsSim())
-        campBaseObj = ((SimBaseClass*)baseObj)->GetCampaignObject();
+        campBaseObj = ((SimBaseClass *)baseObj)->GetCampaignObject();
     else
         campBaseObj = ((CampBaseClass *)baseObj);
 
@@ -524,7 +534,7 @@ int GuestimateCombatClass(AircraftClass *self, FalconEntity *baseObj)
         return 8;
 
     // If it doesn't have a campaign object or it's identified...
-    if ( not campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
+    if (not campBaseObj or campBaseObj->GetIdentified(self->GetTeam()))
     {
         // Yes, now you can get its combat class
         return baseObj->CombatClass();
@@ -532,20 +542,21 @@ int GuestimateCombatClass(AircraftClass *self, FalconEntity *baseObj)
     else
     {
         // No :-( Then guestimate it... (from RIK's BVR code)
-        if ((baseObj->GetVt() * FTPSEC_TO_KNOTS > 300.0f or baseObj->ZPos() < -10000.0f))
+        if ((baseObj->GetVt() * FTPSEC_TO_KNOTS > 300.0f or
+             baseObj->ZPos() < -10000.0f))
         {
             //this might be a combat jet.. asume the worst
-            return  4;
+            return 4;
         }
         else if (baseObj->GetVt() * FTPSEC_TO_KNOTS > 250.0f)
         {
             // this could be a a-a capable thingy, but if it's is it's low level so it's a-a long range shoot capabilitys are not great
-            return  1;
+            return 1;
         }
         else
         {
             // this must be something unthreatening...it's below 250 knots but it's still unidentified so...
-            return  0;
+            return 0;
         }
     }
 }

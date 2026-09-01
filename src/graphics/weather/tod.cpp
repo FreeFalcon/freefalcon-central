@@ -6,14 +6,14 @@
 #include <time.h>
 #include "grmath.h"
 #include "grinline.h"
-#include "PalBank.h"
-#include "TimeMgr.h"
-#include "RViewpnt.h"
-#include "RenderOW.h"
+#include "palbank.h"
+#include "timemgr.h"
+#include "rviewpnt.h"
+#include "renderow.h"
 #include "tod.h"
-#include "Falclib/include/PlayerOp.h"
-#include "Star.h"
-#include "RealWeather.h"
+#include "falclib/include/playerop.h"
+#include "star.h"
+#include "realweather.h"
 #include <fstream>
 #include <iostream>
 
@@ -27,7 +27,7 @@ CTimeOfDay TheTimeOfDay;
 extern float g_fLatitude; // JB 010804
 
 // but this compiled, strange.
-SkyColorDataType* skycolor;
+SkyColorDataType *skycolor;
 
 // size of sun glare area = 22.5 deg
 static const int SUN_GLARE_SIZE = 1024;
@@ -41,27 +41,33 @@ void CTimeOfDay::Setup(char *dataPath)
     char starfile[_MAX_PATH];
     FILE *in;
 
-    ShiAssert( not IsReady());
+    ShiAssert(not IsReady());
 
     // Construct the input filename we need
     if (skycolor)
-        sprintf(todfile, "%s\\tod\\%s", dataPath, skycolor[PlayerOptions.skycol - 1].todname);
+        sprintf(todfile, "%s/tod/%s", dataPath,
+                skycolor[PlayerOptions.skycol - 1].todname);
 
-    sprintf(starfile, "%s\\star.dat", dataPath);
+    sprintf(starfile, "%s/star.dat", dataPath);
 
-    if ( not skycolor or not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
+    if (not skycolor or
+        not(in =
+                fopen(todfile,
+                      "r"))) // Oops, the todfile is not there ? Use default one
     {
-        sprintf(todfile, "%s\\tod\\tod.lst.default", dataPath);
+        sprintf(todfile, "%s/tod/tod.lst.default", dataPath);
 
-        if ( not (in = fopen(todfile, "r"))) // Oops, the todfile is not there ? Use default one
-            sprintf(todfile, "%s\\tod.lst", dataPath);
+        if (not(in = fopen(
+                    todfile,
+                    "r"))) // Oops, the todfile is not there ? Use default one
+            sprintf(todfile, "%s/tod.lst", dataPath);
         else
             fclose(in);
     }
     else
         fclose(in);
 
-    sprintf(todfile, "%s\\tod.lst", dataPath);
+    sprintf(todfile, "%s/tod.lst", dataPath);
     in = fopen(todfile, "r");
 
     if (in == NULL)
@@ -76,7 +82,7 @@ void CTimeOfDay::Setup(char *dataPath)
     TimeOfDayStruct temptod;
     TotalTimeOfDay = ReadTODFile(in, &temptod, 1);
 
-    if ( not TotalTimeOfDay)
+    if (not TotalTimeOfDay)
     {
         fclose(in);
         char string[256];
@@ -86,7 +92,7 @@ void CTimeOfDay::Setup(char *dataPath)
 
     TimeOfDay = new TimeOfDayStruct[TotalTimeOfDay];
 
-    if ( not TimeOfDay)
+    if (not TimeOfDay)
     {
         fclose(in);
         ShiError("Failed TOD memory allocation");
@@ -110,14 +116,17 @@ void CTimeOfDay::Setup(char *dataPath)
     SetVar(TimeOfDay);
 
     ////////////////
-    if (TheStar.Setup(starfile, 11.0f))   // load all stars with magnitude less than 11
+    if (TheStar.Setup(starfile,
+                      11.0f)) // load all stars with magnitude less than 11
     {
         //ShiError ("Failed Loading Star");
         // We nead to exit cleanly?
     }
 
     TheStarData = TheStar.GetStarData();
-    TheStar.SetHorizon((float) degtorad(5), (float) degtorad(15)); // display stars with elevation > horizon
+    TheStar.SetHorizon(
+        (float)degtorad(5),
+        (float)degtorad(15)); // display stars with elevation > horizon
     // M.N. changed back from theater.map readout. It seems that the sun position is normalized to korean latitude,
     // so no need to change it at all...
     TheStar.SetLocation(g_fLatitude, 0.0f); // latitude, longitude
@@ -146,20 +155,24 @@ void CTimeOfDay::Setup(char *dataPath)
     {
         j = i + 1;
 
-        if (j >= TotalTimeOfDay) j = 0;
+        if (j >= TotalTimeOfDay)
+            j = 0;
 
-        if ( not (TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_SUN))
+        if (not(TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_SUN))
             TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_SUN;
 
-        if ( not (TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_MOON))
+        if (not(TimeOfDay[j].Flag bitand GL_TIME_OF_DAY_USE_MOON))
             TimeOfDay[i].Flag and_eq compl GL_TIME_OF_DAY_USE_MOON;
 
         int k = 0;
 
-        if (TimeOfDay[i].StarIntensity > 0.0f) k = 1;
-        else if (TimeOfDay[j].StarIntensity > 0.0f) k = 1;
+        if (TimeOfDay[i].StarIntensity > 0.0f)
+            k = 1;
+        else if (TimeOfDay[j].StarIntensity > 0.0f)
+            k = 1;
 
-        if (k) TimeOfDay[i].Flag or_eq GL_TIME_OF_DAY_USE_STAR;
+        if (k)
+            TimeOfDay[i].Flag or_eq GL_TIME_OF_DAY_USE_STAR;
     }
 
 
@@ -203,7 +216,7 @@ void CTimeOfDay::SetNVGmode(BOOL state)
 // Update the sky colors and sun/moon position based on the current time of day
 void CTimeOfDay::TimeUpdateCallback(void *self)
 {
-    ((CTimeOfDay*)self)->UpdateSkyProperties();
+    ((CTimeOfDay *)self)->UpdateSkyProperties();
 }
 
 void CTimeOfDay::UpdateSkyProperties()
@@ -221,7 +234,8 @@ void CTimeOfDay::UpdateSkyProperties()
 
     if (curtime)
     {
-        if (lastMoonTime == 0 or lastMoonTime > curtime or ((curtime - lastMoonTime) > 60 * 60 * 1000))
+        if (lastMoonTime == 0 or lastMoonTime > curtime or
+            ((curtime - lastMoonTime) > 60 * 60 * 1000))
         {
             lastMoonTime = curtime;
             MoonPhase = -1;
@@ -239,7 +253,8 @@ void CTimeOfDay::UpdateSkyProperties()
         c = TotalTimeOfDay - 1;
     else if (i >= TotalTimeOfDay)
         c = TotalTimeOfDay - 1;
-    else c = i - 1;
+    else
+        c = i - 1;
 
     // Identify the Next time step in the TOD table
     n = c + 1;
@@ -256,8 +271,8 @@ void CTimeOfDay::UpdateSkyProperties()
     ntod = &(TimeOfDay[n]);
 
     // No two table entries should have the same time stamp
-    c = tod -> Time;
-    n = ntod -> Time;
+    c = tod->Time;
+    n = ntod->Time;
     ShiAssert(c not_eq n);
 
     // Calculate the time between the two table entries
@@ -273,57 +288,60 @@ void CTimeOfDay::UpdateSkyProperties()
     c = now - c;
 
     // Calculate the interpolation control variable "t"
-    t = (float) c / (float) n;
+    t = (float)c / (float)n;
 
     // Set all our variable from the first record
     SetVar(tod);
 
     // Add in deltas toward the second record
-    m_SkyColor.r += t * (ntod -> SkyColor.r - m_SkyColor.r);
-    m_SkyColor.g += t * (ntod -> SkyColor.g - m_SkyColor.g);
-    m_SkyColor.b += t * (ntod -> SkyColor.b - m_SkyColor.b);
-    m_HazeSkyColor.r += t * (ntod -> HazeSkyColor.r - m_HazeSkyColor.r);
-    m_HazeSkyColor.g += t * (ntod -> HazeSkyColor.g - m_HazeSkyColor.g);
-    m_HazeSkyColor.b += t * (ntod -> HazeSkyColor.b - m_HazeSkyColor.b);
-    m_GroundColor.r += t * (ntod -> GroundColor.r - m_GroundColor.r);
-    m_GroundColor.g += t * (ntod -> GroundColor.g - m_GroundColor.g);
-    m_GroundColor.b += t * (ntod -> GroundColor.b - m_GroundColor.b);
-    m_HazeGroundColor.r += t * (ntod -> HazeGroundColor.r - m_HazeGroundColor.r);
-    m_HazeGroundColor.g += t * (ntod -> HazeGroundColor.g - m_HazeGroundColor.g);
-    m_HazeGroundColor.b += t * (ntod -> HazeGroundColor.b - m_HazeGroundColor.b);
-    m_TextureLighting.r += t * (ntod -> TextureLighting.r - m_TextureLighting.r);
-    m_TextureLighting.g += t * (ntod -> TextureLighting.g - m_TextureLighting.g);
-    m_TextureLighting.b += t * (ntod -> TextureLighting.b - m_TextureLighting.b);
+    m_SkyColor.r += t * (ntod->SkyColor.r - m_SkyColor.r);
+    m_SkyColor.g += t * (ntod->SkyColor.g - m_SkyColor.g);
+    m_SkyColor.b += t * (ntod->SkyColor.b - m_SkyColor.b);
+    m_HazeSkyColor.r += t * (ntod->HazeSkyColor.r - m_HazeSkyColor.r);
+    m_HazeSkyColor.g += t * (ntod->HazeSkyColor.g - m_HazeSkyColor.g);
+    m_HazeSkyColor.b += t * (ntod->HazeSkyColor.b - m_HazeSkyColor.b);
+    m_GroundColor.r += t * (ntod->GroundColor.r - m_GroundColor.r);
+    m_GroundColor.g += t * (ntod->GroundColor.g - m_GroundColor.g);
+    m_GroundColor.b += t * (ntod->GroundColor.b - m_GroundColor.b);
+    m_HazeGroundColor.r += t * (ntod->HazeGroundColor.r - m_HazeGroundColor.r);
+    m_HazeGroundColor.g += t * (ntod->HazeGroundColor.g - m_HazeGroundColor.g);
+    m_HazeGroundColor.b += t * (ntod->HazeGroundColor.b - m_HazeGroundColor.b);
+    m_TextureLighting.r += t * (ntod->TextureLighting.r - m_TextureLighting.r);
+    m_TextureLighting.g += t * (ntod->TextureLighting.g - m_TextureLighting.g);
+    m_TextureLighting.b += t * (ntod->TextureLighting.b - m_TextureLighting.b);
 
-    m_BadWeatherLighting.r += t * (ntod -> BadWeatherLighting.r - m_BadWeatherLighting.r);
-    m_BadWeatherLighting.g += t * (ntod -> BadWeatherLighting.g - m_BadWeatherLighting.g);
-    m_BadWeatherLighting.b += t * (ntod -> BadWeatherLighting.b - m_BadWeatherLighting.b);
+    m_BadWeatherLighting.r +=
+        t * (ntod->BadWeatherLighting.r - m_BadWeatherLighting.r);
+    m_BadWeatherLighting.g +=
+        t * (ntod->BadWeatherLighting.g - m_BadWeatherLighting.g);
+    m_BadWeatherLighting.b +=
+        t * (ntod->BadWeatherLighting.b - m_BadWeatherLighting.b);
 
-    m_VisColor.r += t * (ntod -> VisColor.r - m_VisColor.r);
-    m_VisColor.g += t * (ntod -> VisColor.g - m_VisColor.g);
-    m_VisColor.b += t * (ntod -> VisColor.b - m_VisColor.b);
+    m_VisColor.r += t * (ntod->VisColor.r - m_VisColor.r);
+    m_VisColor.g += t * (ntod->VisColor.g - m_VisColor.g);
+    m_VisColor.b += t * (ntod->VisColor.b - m_VisColor.b);
 
     Tcolor Color;
     Color = tod->RainColor;
-    Color.r += t * (ntod -> RainColor.r - tod->RainColor.r);
-    Color.g += t * (ntod -> RainColor.g - tod->RainColor.g);
-    Color.b += t * (ntod -> RainColor.b - tod->RainColor.b);
+    Color.r += t * (ntod->RainColor.r - tod->RainColor.r);
+    Color.g += t * (ntod->RainColor.g - tod->RainColor.g);
+    Color.b += t * (ntod->RainColor.b - tod->RainColor.b);
     RainColor = MakeColor(&Color);
 
     Color = tod->SnowColor;
-    Color.r += t * (ntod -> SnowColor.r - tod->SnowColor.r);
-    Color.g += t * (ntod -> SnowColor.g - tod->SnowColor.g);
-    Color.b += t * (ntod -> SnowColor.b - tod->SnowColor.b);
+    Color.r += t * (ntod->SnowColor.r - tod->SnowColor.r);
+    Color.g += t * (ntod->SnowColor.g - tod->SnowColor.g);
+    Color.b += t * (ntod->SnowColor.b - tod->SnowColor.b);
     SnowColor = MakeColor(&Color);
 
-    LightningColor.r += t * (ntod -> LightningColor.r - tod->LightningColor.r);
-    LightningColor.g += t * (ntod -> LightningColor.g - tod->LightningColor.g);
-    LightningColor.b += t * (ntod -> LightningColor.b - tod->LightningColor.b);
+    LightningColor.r += t * (ntod->LightningColor.r - tod->LightningColor.r);
+    LightningColor.g += t * (ntod->LightningColor.g - tod->LightningColor.g);
+    LightningColor.b += t * (ntod->LightningColor.b - tod->LightningColor.b);
 
-    m_Ambient += t * (ntod -> Ambient - m_Ambient);
-    m_Diffuse += t * (ntod -> Diffuse - m_Diffuse);
-    m_Specular += t * (ntod -> Specular - m_Specular);
-    m_MinVis += t * (ntod -> MinVis  - m_MinVis);
+    m_Ambient += t * (ntod->Ambient - m_Ambient);
+    m_Diffuse += t * (ntod->Diffuse - m_Diffuse);
+    m_Specular += t * (ntod->Specular - m_Specular);
+    m_MinVis += t * (ntod->MinVis - m_MinVis);
 
     float ra, dec, az, alt;
     TheStar.GetSunRaDec(&ra, &dec);
@@ -345,11 +363,12 @@ void CTimeOfDay::UpdateSkyProperties()
         // (original levels are assumed to have been for a full moon)
         // At new moon and/or moon rise/set, we darken by at most 1/2
         // (at little more, actually, since the SIN can become negative just as the moon sets/rises)
-        float t1 = (float) abs(NEW_MOON_PHASE - CalculateMoonPercent());
-        t1 = (t1 / NEW_MOON_PHASE) * (float)sin(alt);//angletorad(IMoonPitch));
+        float t1 = (float)abs(NEW_MOON_PHASE - CalculateMoonPercent());
+        t1 = (t1 / NEW_MOON_PHASE) * (float)sin(alt); //angletorad(IMoonPitch));
         t1 = (1.0f + t1) / 2.0f;
 
-        if (t1 < 0.45f) t1 = 0.45f; // limit the darkness level
+        if (t1 < 0.45f)
+            t1 = 0.45f; // limit the darkness level
 
         m_HazeGroundColor.r *= t1;
         m_HazeGroundColor.g *= t1;
@@ -368,7 +387,7 @@ void CTimeOfDay::UpdateSkyProperties()
     }
 
     // Update the positions and effects of the celstial objects
-    m_StarIntensity += t * (ntod -> StarIntensity - m_StarIntensity);
+    m_StarIntensity += t * (ntod->StarIntensity - m_StarIntensity);
     TheStar.UpdateStar();
     /*
      if(realWeather->weatherCondition > FAIR)
@@ -478,70 +497,98 @@ void CTimeOfDay::UpdateWeatherColors(DWORD weatherCondition)
         if (realWeather->InsideOvercast() or realWeather->UnderOvercast())
         {
 
-            if (realWeather->weatherCondition > POOR) Specular = 0.f;
-            else Specular *= 0.2f;
+            if (realWeather->weatherCondition > POOR)
+                Specular = 0.f;
+            else
+                Specular *= 0.2f;
 
             SkyColor.r = BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
             SkyColor.g = BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
             SkyColor.b = BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
 
-            HazeSkyColor.r = BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
-            HazeSkyColor.g = BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
-            HazeSkyColor.b = BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
+            HazeSkyColor.r =
+                BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
+            HazeSkyColor.g =
+                BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
+            HazeSkyColor.b =
+                BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
 
-            HazeGroundColor.r = BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
-            HazeGroundColor.g = BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
-            HazeGroundColor.b = BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
+            HazeGroundColor.r =
+                BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
+            HazeGroundColor.g =
+                BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
+            HazeGroundColor.b =
+                BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
 
-            GroundColor.r = BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
-            GroundColor.g = BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
-            GroundColor.b = BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
+            GroundColor.r =
+                BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
+            GroundColor.g =
+                BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
+            GroundColor.b =
+                BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
 
-            TextureLighting.r = BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
-            TextureLighting.g = BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
-            TextureLighting.b = BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
+            TextureLighting.r =
+                BadWeatherLighting.r / max((1.25f * scaleFactor), 1.f);
+            TextureLighting.g =
+                BadWeatherLighting.g / max((1.25f * scaleFactor), 1.f);
+            TextureLighting.b =
+                BadWeatherLighting.b / max((1.25f * scaleFactor), 1.f);
         }
         else
         {
-            SkyColor.r = (m_SkyColor.r * (1.f - scaleFactor)) + (BadWeatherLighting.r * scaleFactor);
-            SkyColor.g = (m_SkyColor.g * (1.f - scaleFactor)) + (BadWeatherLighting.g * scaleFactor);
-            SkyColor.b = (m_SkyColor.b * (1.f - scaleFactor)) + (BadWeatherLighting.b * scaleFactor);
+            SkyColor.r = (m_SkyColor.r * (1.f - scaleFactor)) +
+                         (BadWeatherLighting.r * scaleFactor);
+            SkyColor.g = (m_SkyColor.g * (1.f - scaleFactor)) +
+                         (BadWeatherLighting.g * scaleFactor);
+            SkyColor.b = (m_SkyColor.b * (1.f - scaleFactor)) +
+                         (BadWeatherLighting.b * scaleFactor);
 
-            HazeSkyColor.r = min(BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
-            HazeSkyColor.g = min(BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
-            HazeSkyColor.b = min(BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
+            HazeSkyColor.r = min(
+                BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
+            HazeSkyColor.g = min(
+                BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
+            HazeSkyColor.b = min(
+                BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
 
-            HazeGroundColor.r = min(BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
-            HazeGroundColor.g = min(BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
-            HazeGroundColor.b = min(BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
+            HazeGroundColor.r = min(
+                BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
+            HazeGroundColor.g = min(
+                BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
+            HazeGroundColor.b = min(
+                BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
 
-            GroundColor.r = min(BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
-            GroundColor.g = min(BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
-            GroundColor.b = min(BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
+            GroundColor.r = min(
+                BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
+            GroundColor.g = min(
+                BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
+            GroundColor.b = min(
+                BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
 
-            TextureLighting.r = min(BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
-            TextureLighting.g = min(BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
-            TextureLighting.b = min(BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
+            TextureLighting.r = min(
+                BadWeatherLighting.r / max((1.25f * scaleFactor), .67f), .9f);
+            TextureLighting.g = min(
+                BadWeatherLighting.g / max((1.25f * scaleFactor), .67f), .9f);
+            TextureLighting.b = min(
+                BadWeatherLighting.b / max((1.25f * scaleFactor), .67f), .9f);
         }
-
     }
 }
 
 
-
-
 void CTimeOfDay::CalculateSunGroundPos(Tpoint *pos)
 {
-    pos -> x = SunCoord.x;
-    pos -> y = SunCoord.y;
-    pos -> z = 0.0f;
+    pos->x = SunCoord.x;
+    pos->y = SunCoord.y;
+    pos->z = 0.0f;
 }
 
 // Return point on unit sphere at center of sun/moon
 void CTimeOfDay::CalculateSunMoonPos(Tpoint *pos, int ismoon)
 {
-    if (ismoon) *pos = MoonCoord;
-    else *pos = SunCoord;
+    if (ismoon)
+        *pos = MoonCoord;
+    else
+        *pos = SunCoord;
 }
 
 
@@ -580,17 +627,17 @@ void CTimeOfDay::GetLightDirection(Tpoint *LightDirection)
 
 void CTimeOfDay::SetVar(TimeOfDayStruct *tod)
 {
-    m_SkyColor = tod ->SkyColor;
-    m_HazeSkyColor = tod ->HazeSkyColor;
-    m_GroundColor = tod ->GroundColor;
-    m_HazeGroundColor = tod ->HazeGroundColor;
-    m_TextureLighting = tod ->TextureLighting;
-    m_BadWeatherLighting = tod ->BadWeatherLighting;
-    m_Ambient = tod ->Ambient;
-    m_Diffuse = tod ->Diffuse;
-    m_Specular = tod ->Specular;
-    Flag = tod -> Flag;
-    m_StarIntensity = tod -> StarIntensity;
+    m_SkyColor = tod->SkyColor;
+    m_HazeSkyColor = tod->HazeSkyColor;
+    m_GroundColor = tod->GroundColor;
+    m_HazeGroundColor = tod->HazeGroundColor;
+    m_TextureLighting = tod->TextureLighting;
+    m_BadWeatherLighting = tod->BadWeatherLighting;
+    m_Ambient = tod->Ambient;
+    m_Diffuse = tod->Diffuse;
+    m_Specular = tod->Specular;
+    Flag = tod->Flag;
+    m_StarIntensity = tod->StarIntensity;
     RainColor = MakeColor(&tod->RainColor);
     SnowColor = MakeColor(&tod->SnowColor);
     LightningColor = tod->LightningColor;
@@ -608,7 +655,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 {
     float fvar;
     int total;
-    char buffer[80] = { '\0' };
+    char buffer[80] = {'\0'};
 
     total = 0;
 
@@ -637,10 +684,13 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 
             ++total;
 
-            if ( not countflag)
+            if (not countflag)
                 ++tod;
 
-            fscanf(in, "%ld:%ld:%ld", &ivar1, &ivar2, &ivar3);
+            // ivar1/2/3 are DWORD (32-bit). "%ld" expects a 64-bit long* on LP64 (Linux) -> it overruns the DWORDs
+            // and the parse yields garbage/0 (every TOD entry got Time=0 -> the whole lighting table collapsed ->
+            // sun light -inf -> black scene). It worked on Windows only because there long==DWORD==32-bit. Use "%u".
+            fscanf(in, "%u:%u:%u", &ivar1, &ivar2, &ivar3);
             ivar1 *= 3600000;
             ivar2 *= 60000;
             ivar3 *= 1000;
@@ -665,26 +715,34 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
             IMoonTilt = glConvertFromDegree(fvar);
         }
         else if (stricmp(buffer, "HazeSunsetColor") == 0)
-            fscanf(in, "%f %f %f", &HazeSunsetColor.r, &HazeSunsetColor.g, &HazeSunsetColor.b);
+            fscanf(in, "%f %f %f", &HazeSunsetColor.r, &HazeSunsetColor.g,
+                   &HazeSunsetColor.b);
         else if (stricmp(buffer, "HazeSunriseColor") == 0)
-            fscanf(in, "%f %f %f", &HazeSunriseColor.r, &HazeSunriseColor.g, &HazeSunriseColor.b);
+            fscanf(in, "%f %f %f", &HazeSunriseColor.r, &HazeSunriseColor.g,
+                   &HazeSunriseColor.b);
         else if (stricmp(buffer, "SkyColor") == 0)
-            fscanf(in, "%f %f %f", &tod->SkyColor.r, &tod->SkyColor.g, &tod->SkyColor.b);
+            fscanf(in, "%f %f %f", &tod->SkyColor.r, &tod->SkyColor.g,
+                   &tod->SkyColor.b);
         else if (stricmp(buffer, "HazeSkyColor") == 0)
-            fscanf(in, "%f %f %f", &tod->HazeSkyColor.r, &tod->HazeSkyColor.g, &tod->HazeSkyColor.b);
+            fscanf(in, "%f %f %f", &tod->HazeSkyColor.r, &tod->HazeSkyColor.g,
+                   &tod->HazeSkyColor.b);
         else if (stricmp(buffer, "GroundColor") == 0)
-            fscanf(in, "%f %f %f", &tod->GroundColor.r, &tod->GroundColor.g, &tod->GroundColor.b);
+            fscanf(in, "%f %f %f", &tod->GroundColor.r, &tod->GroundColor.g,
+                   &tod->GroundColor.b);
         else if (stricmp(buffer, "HazeGroundColor") == 0)
         {
-            fscanf(in, "%f %f %f", &tod->HazeGroundColor.r, &tod->HazeGroundColor.g, &tod->HazeGroundColor.b);
+            fscanf(in, "%f %f %f", &tod->HazeGroundColor.r,
+                   &tod->HazeGroundColor.g, &tod->HazeGroundColor.b);
             tod->HazeGroundColor.r *= 0.7f;
             tod->HazeGroundColor.g *= 0.7f;
             tod->HazeGroundColor.b *= 0.7f;
         }
         else if (stricmp(buffer, "TextureLighting") == 0)
-            fscanf(in, "%f %f %f", &tod->TextureLighting.r, &tod->TextureLighting.g, &tod->TextureLighting.b);
+            fscanf(in, "%f %f %f", &tod->TextureLighting.r,
+                   &tod->TextureLighting.g, &tod->TextureLighting.b);
         else if (stricmp(buffer, "BadWeatherLighting") == 0)
-            fscanf(in, "%f %f %f", &tod->BadWeatherLighting.r, &tod->BadWeatherLighting.g, &tod->BadWeatherLighting.b);
+            fscanf(in, "%f %f %f", &tod->BadWeatherLighting.r,
+                   &tod->BadWeatherLighting.g, &tod->BadWeatherLighting.b);
         else if (stricmp(buffer, "Ambient") == 0)
             fscanf(in, "%f", &tod->Ambient);
         else if (stricmp(buffer, "Diffuse") == 0)
@@ -706,13 +764,16 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
         else if (stricmp(buffer, "Star") == 0)
             tod->StarIntensity = 1.0f;
         else if (stricmp(buffer, "RainColor") == 0)
-            fscanf(in, "%f %f %f", &tod->RainColor.r, &tod->RainColor.g, &tod->RainColor.b);
+            fscanf(in, "%f %f %f", &tod->RainColor.r, &tod->RainColor.g,
+                   &tod->RainColor.b);
         else if (stricmp(buffer, "SnowColor") == 0)
-            fscanf(in, "%f %f %f", &tod->SnowColor.r, &tod->SnowColor.g, &tod->SnowColor.b);
+            fscanf(in, "%f %f %f", &tod->SnowColor.r, &tod->SnowColor.g,
+                   &tod->SnowColor.b);
         else if (stricmp(buffer, "MinVisibility") == 0)
             fscanf(in, "%f", &tod->MinVis);
         else if (stricmp(buffer, "VisColor") == 0)
-            fscanf(in, "%f %f %f", &tod->VisColor.r, &tod->VisColor.g, &tod->VisColor.b);
+            fscanf(in, "%f %f %f", &tod->VisColor.r, &tod->VisColor.g,
+                   &tod->VisColor.b);
     }
 
     return total;
@@ -721,7 +782,7 @@ int CTimeOfDay::ReadTODFile(FILE *in, TimeOfDayStruct *tod, int countflag)
 // Angle must be between 0 and 90
 void CTimeOfDay::SetSunGlareAngle(int angle)
 {
-    SunGlareCosine = (float) glGetCosine(angle);
+    SunGlareCosine = (float)glGetCosine(angle);
     SunGlareFactor = 1.0f / (1.0f - SunGlareCosine);
 }
 
@@ -733,15 +794,17 @@ float CTimeOfDay::GetSunGlare(int yaw, int pitch)
     float sin1, sin2, cos1, cos2, cos3;
     glGetSinCos(&sin1, &cos1, pitch);
     glGetSinCos(&sin2, &cos2, pitch1);
-    cos3 = (float) glGetCosine(yaw - yaw1);
+    cos3 = (float)glGetCosine(yaw - yaw1);
     float alpha = sin1 * sin2 + cos1 * cos2 * cos3;
 
     alpha -= SunGlareCosine;
     alpha *= SunGlareFactor;
 
     // just to make sure, clamp value
-    if (alpha > 1.0f) alpha = 1.0f;
-    else if (alpha < 0.0f) alpha = 0.0f;
+    if (alpha > 1.0f)
+        alpha = 1.0f;
+    else if (alpha < 0.0f)
+        alpha = 0.0f;
 
     return alpha;
 }
@@ -749,7 +812,8 @@ float CTimeOfDay::GetSunGlare(int yaw, int pitch)
 // return 1 if don't need to blend moon, else return moon blend value
 float CTimeOfDay::CalculateMoonBlend(float glare)
 {
-    if (IMoonPitch < 0) return 1.0f;
+    if (IMoonPitch < 0)
+        return 1.0f;
 
     float alpha = 0.0f;
 
@@ -762,13 +826,15 @@ float CTimeOfDay::CalculateMoonBlend(float glare)
         float sin1, sin2, cos1, cos2, cos3;
         glGetSinCos(&sin1, &cos1, pitch);
         glGetSinCos(&sin2, &cos2, pitch1);
-        cos3 = (float) glGetCosine(yaw - yaw1);
+        cos3 = (float)glGetCosine(yaw - yaw1);
         alpha = sin1 * sin2 + cos1 * cos2 * cos3;
         alpha -= SunGlareCosine;
         alpha *= SunGlareFactor;
 
-        if (alpha > 1.0f) alpha = 1.0f;
-        else if (alpha < 0.0f) alpha = 0.0f;
+        if (alpha > 1.0f)
+            alpha = 1.0f;
+        else if (alpha < 0.0f)
+            alpha = 0.0f;
 
         if (sin2 > 0.0f)
         {
@@ -777,13 +843,17 @@ float CTimeOfDay::CalculateMoonBlend(float glare)
         }
     }
 
-    if (glare < 0.0f) glare = 0.0f;
-    else if (glare > 1.0f) glare = 1.0f;
+    if (glare < 0.0f)
+        glare = 0.0f;
+    else if (glare > 1.0f)
+        glare = 1.0f;
 
     alpha = 1.0f - (alpha + glare);
 
-    if (alpha < 0.0f) alpha = 0.0f;
-    else if (alpha > 1.0f) alpha = 1.0f;
+    if (alpha < 0.0f)
+        alpha = 0.0f;
+    else if (alpha > 1.0f)
+        alpha = 1.0f;
 
     return alpha;
 }
@@ -798,9 +868,9 @@ int CTimeOfDay::CalculateMoonPercent(void)
 
 void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
 {
-    if (phase == NEW_MOON_PHASE)  // new moon --> all moon dark
-        memset((void *) image, 0, 8 * 64);
-    else   // part of moon dark
+    if (phase == NEW_MOON_PHASE) // new moon --> all moon dark
+        memset((void *)image, 0, 8 * 64);
+    else // part of moon dark
     {
         int array[64];
 
@@ -818,11 +888,11 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
         int x = 0;
         int y = 32;
         int xpos = 32;
-        float aa = (float) sizex * sizex;
-        float bb = (float) 32 * 32;
+        float aa = (float)sizex * sizex;
+        float bb = (float)32 * 32;
         float d1 = bb - aa * 32 + aa / 4.0f;
 
-        while (aa * ((float) y - 0.5f) > bb * ((float) x + 1.0f))
+        while (aa * ((float)y - 0.5f) > bb * ((float)x + 1.0f))
         {
             if (d1 < 0.0f)
             {
@@ -838,7 +908,8 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
                     flag = 0;
                 }
 
-                d1 += bb * ((float)(x << 1) + 3.0f) + aa * ((float)(-y << 1) + 2.0f);
+                d1 += bb * ((float)(x << 1) + 3.0f) +
+                      aa * ((float)(-y << 1) + 2.0f);
                 x++;
                 xpos++;
                 y--;
@@ -846,8 +917,8 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
             }
         }
 
-        float x1 = (float) x + 0.5f;
-        float y1 = (float) y - 1.0f;
+        float x1 = (float)x + 0.5f;
+        float y1 = (float)y - 1.0f;
         float d2 = bb * x1 * x1 + aa * y1 * y1 - aa * bb;
 
         while (y > 0)
@@ -860,7 +931,8 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
                     flag = 0;
                 }
 
-                d2 += bb * ((float)(x << 1) + 2.0f) + aa * ((float)(-y << 1) + 3.0f);
+                d2 += bb * ((float)(x << 1) + 2.0f) +
+                      aa * ((float)(-y << 1) + 3.0f);
                 x++;
                 xpos++;
                 y--;
@@ -876,11 +948,13 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
 
         int j;
 
-        for (j = 0; j < 32; j++) array[63 - j] = array[j];
+        for (j = 0; j < 32; j++)
+            array[63 - j] = array[j];
 
         if (sizex < 0)
         {
-            for (j = 0; j < 64; j++) array[j] = 64 - array[j];
+            for (j = 0; j < 64; j++)
+                array[j] = 64 - array[j];
         }
 
         int row, col, col1;
@@ -910,7 +984,8 @@ void CTimeOfDay::CreateMoonPhaseMask(unsigned char *image, int phase)
                 {
                     c <<= 1;
 
-                    if ((col2 < start) or (col2 >= stop)) c or_eq 1;
+                    if ((col2 < start) or (col2 >= stop))
+                        c or_eq 1;
 
                     col2++;
                 }
@@ -969,7 +1044,8 @@ void CTimeOfDay::RotateMoonMask(int angle)
                     int l = (tv << 3) + (tu >> 3);
                     unsigned char c = (unsigned char)(1 << (7 - (tu bitand 7)));
 
-                    if (MoonPhaseMask[l] bitand c) c1 or_eq 1;
+                    if (MoonPhaseMask[l] bitand c)
+                        c1 or_eq 1;
                 }
             }
 
@@ -997,8 +1073,10 @@ void CTimeOfDay::CalculateMoonPhase()
         angle = 4096;
     }
 
-    if (dy < 0) angle -= 4096;
-    else angle += 4096;
+    if (dy < 0)
+        angle -= 4096;
+    else
+        angle += 4096;
 
     float dz = SunCoord.z - MoonCoord.z;
     angle += FloatToInt32(radtoangle((float)atan2(dz, dy)));
@@ -1032,11 +1110,13 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
                 unsigned char c1 = *src++;
 #ifdef USE_TRANSPARENT_MOON
 
-                if (c1 and not (c bitand 0x80)) c1 = 0;
+                if (c1 and not(c bitand 0x80))
+                    c1 = 0;
 
 #else
 
-                if (c1 and not (c bitand 0x80)) c1 += 48;
+                if (c1 and not(c bitand 0x80))
+                    c1 += 48;
 
 #endif
                 c <<= 1;
@@ -1048,9 +1128,7 @@ void CTimeOfDay::CreateMoonPhase(unsigned char *src, unsigned char *dest)
 
 DWORD CTimeOfDay::MakeColor(Tcolor *col)
 {
-    return
-        (FloatToInt32(col->r * 255.9f) bitand 0xFF) |
-        ((FloatToInt32(col->g * 255.9f) bitand 0xFF) <<  8) |
-        ((FloatToInt32(col->b * 255.9f) bitand 0xFF) << 16) |
-        0xff000000;
+    return (FloatToInt32(col->r * 255.9f) bitand 0xFF) |
+           ((FloatToInt32(col->g * 255.9f) bitand 0xFF) << 8) |
+           ((FloatToInt32(col->b * 255.9f) bitand 0xFF) << 16) | 0xff000000;
 }

@@ -4,8 +4,8 @@
 #include <map>
 
 #include "falclib/include/f4vu.h"
-#include "SimLoop.h"
-#include "FalcSess.h"
+#include "simloop.h"
+#include "falcsess.h"
 #include "aircrft.h"
 
 #include "objectiv.h" // RAS - 16Jan04 - include for traffic call code
@@ -89,29 +89,35 @@ public:
     void SetFrameDescription(int mSecPerFrame, int numMinorFrames);
 
     /** sets the player entity in simdriver. This will ref the entity and unref old one if any. */
-    void SetPlayerEntity(SimMoverClass* newObject);
+    void SetPlayerEntity(SimMoverClass *newObject);
     /** returns the player entity */
     SimMoverClass *GetPlayerEntity() const
     {
-        return const_cast<SimMoverClass*>(playerEntity);
+        return const_cast<SimMoverClass *>(playerEntity);
     }
     /** returns player entity aircraft IF it is an aircraft, otherwise return NULL */
     AircraftClass *GetPlayerAircraft() const;
 
-    void UpdateIAStats(SimBaseClass*);
+    void UpdateIAStats(SimBaseClass *);
 
     // find functions
-    SimBaseClass *FindNearestThreat(float*, float*, float*);
+    SimBaseClass *FindNearestThreat(float *, float *, float *);
     SimBaseClass *FindNearestThreat(short *x, short *y, float *alt);
-    SimBaseClass *FindNearestThreat(AircraftClass *aircraft, short *x, short *y, float *alt);
-    SimBaseClass *FindNearestEnemyPlane(AircraftClass *aircraft, short *x, short *y, float *alt);
-    CampBaseClass *FindNearestCampThreat(AircraftClass *aircraft, short *x, short *y, float *alt);
-    CampBaseClass *FindNearestCampEnemy(AircraftClass *aircraft, short *x, short *y, float *alt);
-    SimBaseClass *FindFac(SimBaseClass*);
-    FlightClass *FindTanker(SimBaseClass*);
+    SimBaseClass *FindNearestThreat(AircraftClass *aircraft, short *x, short *y,
+                                    float *alt);
+    SimBaseClass *FindNearestEnemyPlane(AircraftClass *aircraft, short *x,
+                                        short *y, float *alt);
+    CampBaseClass *FindNearestCampThreat(AircraftClass *aircraft, short *x,
+                                         short *y, float *alt);
+    CampBaseClass *FindNearestCampEnemy(AircraftClass *aircraft, short *x,
+                                        short *y, float *alt);
+    SimBaseClass *FindFac(SimBaseClass *);
+    FlightClass *FindTanker(SimBaseClass *);
     SimBaseClass *FindATC(VU_ID);
-    SimBaseClass *FindNearestTraffic(AircraftClass* aircraft, ObjectiveClass *self, float* altitude);
-    void FindTrafficConflict(SimBaseClass *traffic, AircraftClass *myaircraft, ObjectiveClass *self);
+    SimBaseClass *FindNearestTraffic(AircraftClass *aircraft,
+                                     ObjectiveClass *self, float *altitude);
+    void FindTrafficConflict(SimBaseClass *traffic, AircraftClass *myaircraft,
+                             ObjectiveClass *self);
 
     // ??
     void UpdateRemoteData();
@@ -134,18 +140,18 @@ public:
     };
 
     // add functions
-    void AddToFeatureList(VuEntity* theObject);
-    void AddToObjectList(VuEntity* theObject);
-    void AddToCampUnitList(VuEntity* theObject);
-    void AddToCampFeatList(VuEntity* theObject);
-    void AddToCombUnitList(VuEntity* theObject);
-    void AddToCombFeatList(VuEntity* theObject);
+    void AddToFeatureList(VuEntity *theObject);
+    void AddToObjectList(VuEntity *theObject);
+    void AddToCampUnitList(VuEntity *theObject);
+    void AddToCampFeatList(VuEntity *theObject);
+    void AddToCombUnitList(VuEntity *theObject);
+    void AddToCombFeatList(VuEntity *theObject);
 
     // remove functions
-    void RemoveFromFeatureList(VuEntity* theObject);
-    void RemoveFromObjectList(VuEntity* theObject);
-    void RemoveFromCampUnitList(VuEntity* theObject);
-    void RemoveFromCampFeatList(VuEntity* theObject);
+    void RemoveFromFeatureList(VuEntity *theObject);
+    void RemoveFromObjectList(VuEntity *theObject);
+    void RemoveFromCampUnitList(VuEntity *theObject);
+    void RemoveFromCampFeatList(VuEntity *theObject);
 
     // list access function, see list names for each meaning
     //FalconPrivateOrderedList * GetMoverList() const {
@@ -185,10 +191,11 @@ public:
     void InitializeSimMemoryPools();
     void ReleaseSimMemoryPools();
     void ShrinkSimMemoryPools();
-    void WakeCampaignBase(int ctype, CampBaseClass *baseEntity, TailInsertList *components);
-    void WakeObject(SimBaseClass* theObject);
+    void WakeCampaignBase(int ctype, CampBaseClass *baseEntity,
+                          TailInsertList *components);
+    void WakeObject(SimBaseClass *theObject);
     void SleepCampaignFlight(TailInsertList *flightList);
-    void SleepObject(SimBaseClass* theObject);
+    void SleepObject(SimBaseClass *theObject);
     void NotifyExit()
     {
         doExit = TRUE;
@@ -204,12 +211,16 @@ public:
     }
 
     /// sfr: @todo make private
-    FalconPrivateOrderedList* objectList; // List of locally deaggregated sim vehicles
-    FalconPrivateOrderedList* featureList; // List of locally deaggregated sim features
-    FalconPrivateOrderedList* campUnitList; // List of nearby aggregated campaign units
-    FalconPrivateOrderedList* campObjList; // List of nearby aggregated campaign objectives
-    FalconPrivateOrderedList* combinedList; // List of everything nearby
-    FalconPrivateOrderedList* combinedFeatureList; // List of everything nearby
+    FalconPrivateOrderedList
+        *objectList; // List of locally deaggregated sim vehicles
+    FalconPrivateOrderedList
+        *featureList; // List of locally deaggregated sim features
+    FalconPrivateOrderedList
+        *campUnitList; // List of nearby aggregated campaign units
+    FalconPrivateOrderedList
+        *campObjList; // List of nearby aggregated campaign objectives
+    FalconPrivateOrderedList *combinedList; // List of everything nearby
+    FalconPrivateOrderedList *combinedFeatureList; // List of everything nearby
     FalconPrivateList *ObjsWithNoCampaignParentList; // ??
     FalconPrivateList *facList; // ??
     VuFilteredList *atcList; // ??
@@ -224,7 +235,7 @@ public:
 private:
     // sfr: this is private now. I want more control of it
     // also, this is not an Aircraft (can be an ejected pilot)
-    SimMoverClass* playerEntity;
+    SimMoverClass *playerEntity;
 
     // SCR:  These used to be local to the loop function, but moved
     // here when the loop got broken out into a cycle per function call.
@@ -235,11 +246,11 @@ private:
     unsigned long last_elapsedTime;
     int lastFlyState;
     int curFlyState;
-    BOOL  doExit;
-    BOOL  doGraphicsExit;
+    BOOL doExit;
+    BOOL doGraphicsExit;
 
     /** responsible for getting vu messages directed to the simloop thread. */
-    VuThread* vuThread;
+    VuThread *vuThread;
     int curIALevel;
     char dataName[_MAX_PATH];
     int motionOn;
@@ -248,9 +259,8 @@ private:
 
     void UpdateEntityLists();
     void ReaggregateAllFlights();
-    SimBaseClass* FindNearest(SimBaseClass*, VuLinkedList*);
+    SimBaseClass *FindNearest(SimBaseClass *, VuLinkedList *);
     void UpdateATC(void);
-
 };
 
 // global declaration

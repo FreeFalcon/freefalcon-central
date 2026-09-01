@@ -8,7 +8,7 @@
 #ifndef MOUSELOOK_INCLUDE_INCLUDED
 #define MOUSELOOK_INCLUDE_INCLUDED
 
-#include "SimIO.h"
+#include "simio.h"
 
 /************************************************************************/
 //
@@ -30,6 +30,7 @@ public:
     void BumpViewLeft(float);
 
     void Compute(float, bool mouseMoved = false);
+
 private:
     float XTotal; // total travel values, clamped to a range..
     float YTotal;

@@ -5,12 +5,12 @@
  * Required Include Files
  */
 #include <tchar.h>
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * State defines
@@ -28,7 +28,8 @@
 class FalconPlayerStatusMessage : public FalconEvent
 {
 public:
-    FalconPlayerStatusMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconPlayerStatusMessage(VU_ID entityId, VuTargetEntity *target,
+                              VU_BOOL loopback = TRUE);
     FalconPlayerStatusMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconPlayerStatusMessage(void);
     virtual int Size() const
@@ -57,19 +58,19 @@ public:
     class DATA_BLOCK
     {
     public:
-        VU_ID  playerID;
-        VU_ID  oldID;
+        VU_ID playerID;
+        VU_ID oldID;
         _TCHAR callsign[20];
         ushort campID; // flight # in Dogfight
-        uchar  vehicleID;
-        uchar  pilotID; // Slot # in Dogfight
-        uchar  side;
-        int   state;
+        uchar vehicleID;
+        uchar pilotID; // Slot # in Dogfight
+        uchar side;
+        int state;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

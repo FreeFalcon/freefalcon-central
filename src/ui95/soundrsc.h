@@ -19,17 +19,19 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-    long  Type;
-    char  ID[32];
-    long  flags;
+    // #104: 32-bit -- cast over the on-disk .idx sound record (x86 4-byte long); see ImageHeader note.
+    int Type;
+    char ID[32];
+    int flags;
     short Channels;
     short SoundType;
-    long  offset;
-    long  headersize;
+    int offset;
+    int headersize;
 };
 
 class SOUND_RSC
@@ -43,7 +45,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:

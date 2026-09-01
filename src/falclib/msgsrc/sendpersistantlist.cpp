@@ -5,9 +5,9 @@
  * Generated from file EVENTS.XLS by Kevin Klemmick
  */
 
-#include "MsgInc/SendPersistantList.h"
-#include "CmpClass.h"
-#include "Persist.h"
+#include "msginc/sendpersistantlist.h"
+#include "cmpclass.h"
+#include "persist.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -15,18 +15,25 @@
 #include "falcsess.h"
 #include "falcuser.h"
 #include "ui95/chandler.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 extern C_Handler *gMainHandler;
 extern void CampaignJoinKeepAlive(void);
 
-FalconSendPersistantList::FalconSendPersistantList(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SendPersistantList, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconSendPersistantList::FalconSendPersistantList(VU_ID entityId,
+                                                   VuTargetEntity *target,
+                                                   VU_BOOL loopback)
+    : FalconEvent(SendPersistantList, FalconEvent::CampaignThread, entityId,
+                  target, loopback)
 {
     dataBlock.data = NULL;
     dataBlock.size = -1;
 }
 
-FalconSendPersistantList::FalconSendPersistantList(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SendPersistantList, FalconEvent::CampaignThread, senderid, target)
+FalconSendPersistantList::FalconSendPersistantList(VU_MSG_TYPE type,
+                                                   VU_ID senderid, VU_ID target)
+    : FalconEvent(SendPersistantList, FalconEvent::CampaignThread, senderid,
+                  target)
 {
     dataBlock.data = NULL;
     dataBlock.size = -1;
@@ -43,7 +50,7 @@ FalconSendPersistantList::~FalconSendPersistantList(void)
 
 int FalconSendPersistantList::Size() const
 {
-    ShiAssert(dataBlock.size  >= 0);
+    ShiAssert(dataBlock.size >= 0);
 
     return sizeof(short) + dataBlock.size + FalconEvent::Size();
 }
@@ -87,7 +94,7 @@ int FalconSendPersistantList::Encode(VU_BYTE **buf)
 //sfr: added rem
 int FalconSendPersistantList::Process(uchar autodisp)
 {
-    VU_BYTE* buf;
+    VU_BYTE *buf;
     long rem;
 
     if (autodisp or not TheCampaign.IsPreLoaded())
@@ -97,17 +104,17 @@ int FalconSendPersistantList::Process(uchar autodisp)
     {
         CampaignJoinKeepAlive();
 
-        buf = (VU_BYTE*) dataBlock.data;
+        buf = (VU_BYTE *)dataBlock.data;
         rem = dataBlock.size;
         DecodePersistantList(&buf, &rem);
         TheCampaign.Flags and_eq compl CAMP_NEED_PERSIST;
 
         if (gMainHandler)
-            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PERSIST, 0);
+            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA,
+                        CAMP_NEED_PERSIST, 0);
 
         TheCampaign.GotJoinData();
     }
 
     return 0;
 }
-

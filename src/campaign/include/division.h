@@ -17,7 +17,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -54,7 +55,7 @@ public:
     {
         return type;
     }
-    _TCHAR* GetName(_TCHAR* buffer, int size, int object);
+    _TCHAR *GetName(_TCHAR *buffer, int size, int object);
 
     Unit GetFirstUnitElement(void);
     Unit GetNextUnitElement(void);

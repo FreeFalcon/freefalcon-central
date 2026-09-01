@@ -36,7 +36,8 @@ public:
     /** calls eval function on all messages. If it returns true, replace message with an VuUnknownMessage.
     * @todo sfr: seems not used.
     */
-    int InvalidateQueueMessages(VU_BOOL(*evalFunc)(VuMessage*, void*), void *);
+    int InvalidateQueueMessages(VU_BOOL (*evalFunc)(VuMessage *, void *),
+                                void *);
 
     // static functions
 
@@ -61,11 +62,12 @@ protected:
     virtual VU_BOOL AddMessage(VuMessage *event);
 
 protected:
-    VuMessage **head_;     ///< queue head
-    VuMessage **read_;     ///< next to read
-    VuMessage **write_;    ///< place to write
-    VuMessage **tail_;     ///< last position for wrapping around
-    VuMessageFilter *filter_;  ///< determines which types of messages are accepted in queue
+    VuMessage **head_; ///< queue head
+    VuMessage **read_; ///< next to read
+    VuMessage **write_; ///< place to write
+    VuMessage **tail_; ///< last position for wrapping around
+    VuMessageFilter
+        *filter_; ///< determines which types of messages are accepted in queue
 
 private:
     /** registered queues. */
@@ -90,7 +92,8 @@ protected:
     /** if message is timer event, adds to time list (sorted from oldest mark to newest mark).
     * Otherwise, adds normally.
     */
-    virtual VU_BOOL AddMessage(VuMessage *event); // called only by PostVuMessage()
+    virtual VU_BOOL
+    AddMessage(VuMessage *event); // called only by PostVuMessage()
 
 protected:
     /** list of VuTimeEvents. */
@@ -101,6 +104,7 @@ protected:
 class VuPendingSendQueue : public VuMessageQueue
 {
     friend class VuMessageQueue;
+
 public:
     /** creates a pending send queue with 0 pending bytes. */
     VuPendingSendQueue(int queueSize);
@@ -128,5 +132,3 @@ protected:
 };
 
 #endif
-
-

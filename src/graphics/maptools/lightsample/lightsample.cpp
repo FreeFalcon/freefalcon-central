@@ -12,20 +12,22 @@
 #include <io.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-#include <shi/ShiError.h>
-#include "../../3Dlib/Image.h"
+#include <shi/shierror.h>
+#include "../../3dlib/image.h"
 
 
 #define NUM_LIGHT_COLORS 4
 
 
-void  ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD *height);
-void  WriteImage(char *filename, BYTE *image,  DWORD  *palette, WORD width,  WORD height);
-void  AddLights(BYTE *texImage, BYTE *lightImage, WORD texWidth, WORD texHeight);
-BYTE* DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight);
+void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width,
+               WORD *height);
+void WriteImage(char *filename, BYTE *image, DWORD *palette, WORD width,
+                WORD height);
+void AddLights(BYTE *texImage, BYTE *lightImage, WORD texWidth, WORD texHeight);
+BYTE *DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight);
 
 
-void main(int argc, char* argv[])
+void main(int argc, char *argv[])
 {
     char baseName[_MAX_PATH];
     char fileName[_MAX_PATH];
@@ -47,9 +49,11 @@ void main(int argc, char* argv[])
     if (argc != 3)
     {
         printf("Usage:  LightSample <name> <lightName>\n");
-        printf("    Reads <lightName>.pcx to get light positions.  Edits them into\n");
+        printf("    Reads <lightName>.pcx to get light positions.  Edits them "
+               "into\n");
         printf("    H<name>.pcx, M<name>.pcx, L<name>.pcx, and T<name>.pcx\n");
-        printf(" NOTE:  This tool requires that the input and output images be\n");
+        printf(
+            " NOTE:  This tool requires that the input and output images be\n");
         printf("        in the current working directory.\n");
         exit(-1);
     }
@@ -82,7 +86,7 @@ void main(int argc, char* argv[])
         ShiAssert(texPalette);
 
         // Call the light insertion function
-        ShiAssert(texWidth  == lightWidth);
+        ShiAssert(texWidth == lightWidth);
         ShiAssert(texHeight == lightHeight);
         AddLights(texImage, lightImage, texWidth, texHeight);
 
@@ -92,30 +96,30 @@ void main(int argc, char* argv[])
         // Decide on what the next texture prefix is to be
         switch (texPrefix)
         {
-            case 'H':
-                texPrefix = 'M';
-                lightImage = DownSampleLights(lightImage, lightWidth, lightHeight);
-                lightWidth  /= 2;
-                lightHeight /= 2;
-                break;
+        case 'H':
+            texPrefix = 'M';
+            lightImage = DownSampleLights(lightImage, lightWidth, lightHeight);
+            lightWidth /= 2;
+            lightHeight /= 2;
+            break;
 
-            case 'M':
-                texPrefix = 'L';
-                lightImage = DownSampleLights(lightImage, lightWidth, lightHeight);
-                lightWidth  /= 2;
-                lightHeight /= 2;
-                break;
+        case 'M':
+            texPrefix = 'L';
+            lightImage = DownSampleLights(lightImage, lightWidth, lightHeight);
+            lightWidth /= 2;
+            lightHeight /= 2;
+            break;
 
-            case 'L':
-                texPrefix = 'T';
-                lightImage = DownSampleLights(lightImage, lightWidth, lightHeight);
-                lightWidth  /= 2;
-                lightHeight /= 2;
-                break;
+        case 'L':
+            texPrefix = 'T';
+            lightImage = DownSampleLights(lightImage, lightWidth, lightHeight);
+            lightWidth /= 2;
+            lightHeight /= 2;
+            break;
 
-            default:
-                texPrefix = '\0';
-                break;
+        default:
+            texPrefix = '\0';
+            break;
         }
     }
 
@@ -128,9 +132,10 @@ void main(int argc, char* argv[])
 }
 
 
-void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD *height)
+void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width,
+               WORD *height)
 {
-    CImageFileMemory  texFile;
+    CImageFileMemory texFile;
     DWORD result;
 
     *image = NULL;
@@ -166,11 +171,12 @@ void ReadImage(char *filename, BYTE **image, DWORD **palette, WORD *width, WORD 
     ShiAssert(texFile.image.palette);
 
     *image = texFile.image.image;
-    *palette = (DWORD*)texFile.image.palette;
+    *palette = (DWORD *)texFile.image.palette;
 }
 
 
-void WriteImage(char *filename, BYTE *image,  DWORD  *palette, WORD width,  WORD height)
+void WriteImage(char *filename, BYTE *image, DWORD *palette, WORD width,
+                WORD height)
 {
     int fileHandle;
     GLImageInfo imageInfo;
@@ -182,11 +188,12 @@ void WriteImage(char *filename, BYTE *image,  DWORD  *palette, WORD width,  WORD
     imageInfo.width = width;
     imageInfo.height = height;
     imageInfo.image = image;
-    imageInfo.palette = (GLuint*)palette;
+    imageInfo.palette = (GLuint *)palette;
 
     // Create the output file
     printf("Opening output file %s\n", filename);
-    fileHandle = open(filename, _O_CREAT | _O_TRUNC | _O_WRONLY | _O_BINARY, _S_IREAD | _S_IWRITE);
+    fileHandle = open(filename, _O_CREAT | _O_TRUNC | _O_WRONLY | _O_BINARY,
+                      _S_IREAD | _S_IWRITE);
     ShiAssert(fileHandle != -1);
 
     // Write the data
@@ -216,7 +223,7 @@ void AddLights(BYTE *texImage, BYTE *lightImage, WORD texWidth, WORD texHeight)
 
 
 // Take the current image and reduce its size in x and y by a factor of two
-BYTE* DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight)
+BYTE *DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight)
 {
     int w;
     int h;
@@ -226,7 +233,7 @@ BYTE* DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight)
     BYTE *newImage;
 
     // Reduce the size of the light image by two in each dimension
-    w = lightWidth  / 2;
+    w = lightWidth / 2;
     h = lightHeight / 2;
 
     // Allocate space for the new image
@@ -239,8 +246,10 @@ BYTE* DownSampleLights(BYTE *lightImage, WORD lightWidth, WORD lightHeight)
         {
 
             // For now we pick the highest valued pixel as the new downsampled value.
-            val = max(max(lightImage[r * 2 * lightWidth + c * 2],     lightImage[(r * 2 + 1) * lightWidth + c * 2]),
-                      max(lightImage[r * 2 * lightWidth + (c * 2 + 1)], lightImage[(r * 2 + 1) * lightWidth + (c * 2 + 1)]));
+            val = max(max(lightImage[r * 2 * lightWidth + c * 2],
+                          lightImage[(r * 2 + 1) * lightWidth + c * 2]),
+                      max(lightImage[r * 2 * lightWidth + (c * 2 + 1)],
+                          lightImage[(r * 2 + 1) * lightWidth + (c * 2 + 1)]));
 
             newImage[r * w + c] = val;
         }

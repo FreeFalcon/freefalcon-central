@@ -1,18 +1,18 @@
-#include "Graphics/Include/Rviewpnt.h"
-#include "Graphics/Include/timemgr.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/draw2d.h"
-#include "Graphics/Include/DrawObj.h"
-#include "Graphics/Include/tod.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/timemgr.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/draw2d.h"
+#include "graphics/include/drawobj.h"
+#include "graphics/include/tod.h"
 #include "stdhdr.h"
 #include "simveh.h"
-#include "ClassTbl.h"
+#include "classtbl.h"
 #include "sfx.h"
 #include "otwdrive.h"
 
 
-void CalcTransformMatrix(SimBaseClass* theObject);
+void CalcTransformMatrix(SimBaseClass *theObject);
 
 #ifdef USE_SH_POOLS
 MEM_POOL sfxRequest::pool;
@@ -53,7 +53,7 @@ void OTWDriverClass::AddSfxRequest(SfxClass *sfxptr)
 {
     sfxRequest *tmpRequest;
 
-    if ( not IsActive())
+    if (not IsActive())
     {
         return;
     }
@@ -88,7 +88,6 @@ void OTWDriverClass::AddSfxRequest(SfxClass *sfxptr)
 #endif
     //DSP: with sim and graphics on same thread, the critical section is no longer needed
     // F4LeaveCriticalSection(objectCriticalSection);
-
 }
 
 /*
@@ -150,7 +149,7 @@ void OTWDriverClass::DoSfxActiveList(void)
         sfxptr = *sfxptrptr;
 
         // exec the request
-        if ( not sfxptr->sfx->Exec())
+        if (not sfxptr->sfx->Exec())
         {
             // effect finished
             // skip to the next effect and remove from chain
@@ -174,8 +173,7 @@ void OTWDriverClass::DoSfxActiveList(void)
 ** Description:
 **    Updates draw data for special effects
 */
-void
-OTWDriverClass::DoSfxDrawList(void)
+void OTWDriverClass::DoSfxDrawList(void)
 {
     /*
     ** edg: there's really no need for this function
@@ -209,8 +207,7 @@ OTWDriverClass::DoSfxDrawList(void)
 ** Description:
 ** Clears the active and request lists.  An exit call.
 */
-void
-OTWDriverClass::ClearSfxLists(void)
+void OTWDriverClass::ClearSfxLists(void)
 {
     sfxRequest **sfxptrptr;
     sfxRequest *sfxptr;
@@ -257,7 +254,8 @@ void OTWDriverClass::InsertObject(DrawableObject *dObj)
 {
     ShiAssert(GetCurrentThreadId() == gSimThreadID);
 
-    ShiAssert(dObj); // Could tolerate this by returning, but I don't think it happens.
+    ShiAssert(
+        dObj); // Could tolerate this by returning, but I don't think it happens.
 
     if (viewPoint and viewPoint->IsReady())
     {
@@ -280,7 +278,7 @@ void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 
     //if (dObj) // JB 010221 CTD
     // sfr: @todo remove JB check
-    if (dObj and not F4IsBadCodePtr((FARPROC) dObj))  // JB 010221 CTD
+    if (dObj and not F4IsBadCodePtr((FARPROC)dObj)) // JB 010221 CTD
     {
 #if NEW_DRAWABLE_DESTRUCTION
 
@@ -298,7 +296,8 @@ void OTWDriverClass::RemoveObject(DrawableObject *dObj, int deleteObject)
 
 #endif
 
-        if (deleteObject and not F4IsBadWritePtr(dObj, sizeof(DrawableObject)))  // JB 010221 CTD
+        if (deleteObject and
+            not F4IsBadWritePtr(dObj, sizeof(DrawableObject))) // JB 010221 CTD
         {
             delete dObj;
         }
@@ -326,7 +325,8 @@ void OTWDriverClass::TrimTrail(DrawableTrail *dTrail, int l)
     dTrail->TrimTrail(l);
 }
 
-void OTWDriverClass::AddTrailHead(DrawableTrail *dTrail, float x, float y, float z)
+void OTWDriverClass::AddTrailHead(DrawableTrail *dTrail, float x, float y,
+                                  float z)
 {
     Tpoint newPoint;
 
@@ -354,7 +354,7 @@ void OTWDriverClass::AddTrailTail(DrawableTrail *, float, float, float)
 }
 
 
-void OTWDriverClass::AddToLitList(DrawableBSP* bsp)
+void OTWDriverClass::AddToLitList(DrawableBSP *bsp)
 {
     drawPtrList *newEntry;
 
@@ -388,7 +388,7 @@ void OTWDriverClass::AddToLitList(DrawableBSP* bsp)
 }
 
 
-void OTWDriverClass::RemoveFromLitList(DrawableBSP* bsp)
+void OTWDriverClass::RemoveFromLitList(DrawableBSP *bsp)
 {
     drawPtrList *entry;
 
@@ -420,7 +420,7 @@ void OTWDriverClass::RemoveFromLitList(DrawableBSP* bsp)
 }
 
 
-void OTWDriverClass::AddToNearList(DrawableObject* drawPtr, float depth)
+void OTWDriverClass::AddToNearList(DrawableObject *drawPtr, float depth)
 {
     drawPtrList *after;
     drawPtrList *consider;

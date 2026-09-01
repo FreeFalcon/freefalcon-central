@@ -22,13 +22,22 @@ struct vector4
         W = (1 << 3),
     };
 
-    vector4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f) { }
+    vector4() : x(0.0f), y(0.0f), z(0.0f), w(0.0f)
+    {
+    }
 
-    vector4(const float _x, const float _y, const float _z, const float _w) : x(_x), y(_y), z(_z), w(_w) { }
+    vector4(const float _x, const float _y, const float _z, const float _w)
+        : x(_x), y(_y), z(_z), w(_w)
+    {
+    }
 
-    vector4(const vector4& v) : x(v.x), y(v.y), z(v.z), w(v.w) { }
+    vector4(const vector4& v) : x(v.x), y(v.y), z(v.z), w(v.w)
+    {
+    }
 
-    vector4(const vector3& v) : x(v.x), y(v.y), z(v.z), w(1.0f) { }
+    vector4(const vector3& v) : x(v.x), y(v.y), z(v.z), w(1.0f)
+    {
+    }
 
     void Set(const float _x, const float _y, const float _z, const float _w)
     {
@@ -73,27 +82,27 @@ struct vector4
         }
     }
 
-    friend vector4 operator +(const vector4& v0, const vector4& v1)
+    friend vector4 operator+(const vector4& v0, const vector4& v1)
     {
         return vector4(v0.x + v1.x, v0.y + v1.y, v0.z + v1.z, v0.w + v1.w);
     }
 
-    friend vector4 operator -(const vector4& v0, const vector4& v1)
+    friend vector4 operator-(const vector4& v0, const vector4& v1)
     {
         return vector4(v0.x - v1.x, v0.y - v1.y, v0.z - v1.z, v0.w - v1.w);
     }
 
-    friend vector4 operator *(const vector4& v0, const float& s)
+    friend vector4 operator*(const vector4& v0, const float& s)
     {
         return vector4(v0.x * s, v0.y * s, v0.z * s, v0.w * s);
     }
 
-    friend vector4 operator -(const vector4& v)
+    friend vector4 operator-(const vector4& v)
     {
         return vector4(-v.x, -v.y, -v.z, -v.w);
     }
 
-    void operator +=(const vector4& v)
+    void operator+=(const vector4& v)
     {
         x += v.x;
         y += v.y;
@@ -101,7 +110,7 @@ struct vector4
         w += v.w;
     }
 
-    void operator -=(const vector4& v)
+    void operator-=(const vector4& v)
     {
         x -= v.x;
         y -= v.y;
@@ -109,7 +118,7 @@ struct vector4
         w -= v.w;
     }
 
-    void operator *=(const float s)
+    void operator*=(const float s)
     {
         x *= s;
         y *= s;
@@ -125,71 +134,92 @@ struct vector4
 
     bool IsEqual(const vector4& v, float tol) const
     {
-        if (fabs(v.x - x) > tol)      return false;
-        else if (fabs(v.y - y) > tol) return false;
-        else if (fabs(v.z - z) > tol) return false;
-        else if (fabs(v.w - w) > tol) return false;
+        if (fabs(v.x - x) > tol)
+            return false;
+        else if (fabs(v.y - y) > tol)
+            return false;
+        else if (fabs(v.z - z) > tol)
+            return false;
+        else if (fabs(v.w - w) > tol)
+            return false;
 
         return true;
     }
 
     int Compare(const vector4& v, float tol) const
     {
-        if (fabs(v.x - x) > tol)      return (v.x > x) ? +1 : -1;
-        else if (fabs(v.y - y) > tol) return (v.y > y) ? +1 : -1;
-        else if (fabs(v.z - z) > tol) return (v.z > z) ? +1 : -1;
-        else if (fabs(v.w - w) > tol) return (v.w > w) ? +1 : -1;
-        else                         return 0;
+        if (fabs(v.x - x) > tol)
+            return (v.x > x) ? +1 : -1;
+        else if (fabs(v.y - y) > tol)
+            return (v.y > y) ? +1 : -1;
+        else if (fabs(v.z - z) > tol)
+            return (v.z > z) ? +1 : -1;
+        else if (fabs(v.w - w) > tol)
+            return (v.w > w) ? +1 : -1;
+        else
+            return 0;
     }
 
     void Minimum(const vector4& v)
     {
-        if (v.x < x) x = v.x;
+        if (v.x < x)
+            x = v.x;
 
-        if (v.y < y) y = v.y;
+        if (v.y < y)
+            y = v.y;
 
-        if (v.z < z) z = v.z;
+        if (v.z < z)
+            z = v.z;
 
-        if (v.w < w) w = v.w;
+        if (v.w < w)
+            w = v.w;
     }
 
     void Maximum(const vector4& v)
     {
-        if (v.x > x) x = v.x;
+        if (v.x > x)
+            x = v.x;
 
-        if (v.y > y) y = v.y;
+        if (v.y > y)
+            y = v.y;
 
-        if (v.z > z) z = v.z;
+        if (v.z > z)
+            z = v.z;
 
-        if (v.w > w) w = v.w;
+        if (v.w > w)
+            w = v.w;
     }
 
     void SetComp(float val, int mask)
     {
-        if (mask & X) x = val;
+        if (mask & X)
+            x = val;
 
-        if (mask & Y) y = val;
+        if (mask & Y)
+            y = val;
 
-        if (mask & Z) z = val;
+        if (mask & Z)
+            z = val;
 
-        if (mask & W) w = val;
+        if (mask & W)
+            w = val;
     }
 
     float GetComp(int mask)
     {
         switch (mask)
         {
-            case X:
-                return x;
+        case X:
+            return x;
 
-            case Y:
-                return y;
+        case Y:
+            return y;
 
-            case Z:
-                return z;
+        case Z:
+            return z;
 
-            default:
-                return w;
+        default:
+            return w;
         }
     }
 
@@ -201,19 +231,19 @@ struct vector4
         if (y < minVal)
         {
             minComp = Y;
-            minVal  = y;
+            minVal = y;
         }
 
         if (z < minVal)
         {
             minComp = Z;
-            minVal  = z;
+            minVal = z;
         }
 
         if (w < minVal)
         {
             minComp = W;
-            minVal  = w;
+            minVal = w;
         }
 
         return minComp;
@@ -248,4 +278,3 @@ struct vector4
 };
 
 #endif
-

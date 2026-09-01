@@ -45,7 +45,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -84,7 +85,8 @@ private:
     short responses; // What sort of reaction we've caused
     WayPoint ingress; // Ingress Route
     WayPoint egress; // Egress Route
-    MissionRequestClass mis_request; // The origional request (lot'so repeated data here, we could trim)
+    MissionRequestClass
+        mis_request; // The origional request (lot'so repeated data here, we could trim)
     // Not added to i/o functions
     short aa_strength; // The combined Air to Air strength of this package
     int dirty_package;
@@ -229,13 +231,13 @@ public:
     virtual void GetUnitAssemblyPoint(int type, GridIndex *x, GridIndex *y);
 };
 
-typedef PackageClass* Package;
+typedef PackageClass *Package;
 
 // ===================================================
 // Global functions
 // ===================================================
 
-PackageClass* NewPackage(int type);
+PackageClass *NewPackage(int type);
 
 Flight AttachFlight(MissionRequest mis, Package pack);
 

@@ -16,7 +16,7 @@
 #define PI_OVER_4 0.7853981633974f
 
 
-#define FEET_PER_KM  3279.98f
+#define FEET_PER_KM 3279.98f
 #define FEET_PER_METER 3.27998f
 
 

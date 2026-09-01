@@ -28,47 +28,47 @@ void ICPClass::PushedSame(int LastMode)
 
     switch (LastMode)
     {
-        case NONE_MODE:
-            mICPTertiaryMode = CNI_MODE;
-            SetICPFlag(ICPClass::MODE_CNI);
-            SetICPFlag(ICPClass::EDIT_STPT);
-            ExecCNIMode();
-            break;
+    case NONE_MODE:
+        mICPTertiaryMode = CNI_MODE;
+        SetICPFlag(ICPClass::MODE_CNI);
+        SetICPFlag(ICPClass::EDIT_STPT);
+        ExecCNIMode();
+        break;
 
-        case CNI_MODE:
-            mICPTertiaryMode = CNI_MODE;
-            SetICPFlag(ICPClass::MODE_CNI);
-            SetICPFlag(ICPClass::EDIT_STPT);
-            ExecCNIMode();
-            break;
+    case CNI_MODE:
+        mICPTertiaryMode = CNI_MODE;
+        SetICPFlag(ICPClass::MODE_CNI);
+        SetICPFlag(ICPClass::EDIT_STPT);
+        ExecCNIMode();
+        break;
 
-        case COMM1_MODE:
-            mICPTertiaryMode = COMM1_MODE;
-            SetICPFlag(ICPClass::MODE_COMM1);
-            ExecCOMM1Mode();
-            break;
+    case COMM1_MODE:
+        mICPTertiaryMode = COMM1_MODE;
+        SetICPFlag(ICPClass::MODE_COMM1);
+        ExecCOMM1Mode();
+        break;
 
-        case COMM2_MODE:
-            mICPTertiaryMode = COMM2_MODE;
-            SetICPFlag(ICPClass::MODE_COMM2);
-            ExecCOMM2Mode();
-            break;
+    case COMM2_MODE:
+        mICPTertiaryMode = COMM2_MODE;
+        SetICPFlag(ICPClass::MODE_COMM2);
+        ExecCOMM2Mode();
+        break;
 
-        case LIST_MODE:
-            mICPTertiaryMode = LIST_MODE;
-            SetICPFlag(ICPClass::MODE_LIST);
-            mICPSecondaryMode = 0;
-            ExecLISTMode();
-            break;
+    case LIST_MODE:
+        mICPTertiaryMode = LIST_MODE;
+        SetICPFlag(ICPClass::MODE_LIST);
+        mICPSecondaryMode = 0;
+        ExecLISTMode();
+        break;
 
-        case IFF_MODE:
-            mICPTertiaryMode = IFF_MODE;
-            SetICPFlag(ICPClass::MODE_IFF);
-            ExecIFFMode();
-            break;
+    case IFF_MODE:
+        mICPTertiaryMode = IFF_MODE;
+        SetICPFlag(ICPClass::MODE_IFF);
+        ExecIFFMode();
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 int ICPClass::ManualInput(void)
@@ -76,22 +76,24 @@ int ICPClass::ManualInput(void)
     if (Manual_Input)
         return TRUE;
 
-    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON and 
+    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON and
          ILSPageSel == 0) or
         (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON) or
         (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FOUR_BUTTON) or
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON) or
         (IsICPSet(ICPClass::EDIT_LAT)) or (IsICPSet(ICPClass::EDIT_LONG)) or
-        (IsICPSet(ICPClass::FLARE_BINGO)) or (IsICPSet(ICPClass::CHAFF_BINGO)) or
+        (IsICPSet(ICPClass::FLARE_BINGO)) or
+        (IsICPSet(ICPClass::CHAFF_BINGO)) or
         (BQ or BI or SQ or SI or OA1 or OA2) or
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON) or
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON) or
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON) or
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON) or
         (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or //INTG
-        (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON) or //INS
-        IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) and 
-                                         mICPSecondaryMode == FIFE_BUTTON))
+        (IsICPSet(ICPClass::MODE_LIST) and
+         mICPSecondaryMode == SIX_BUTTON) or //INS
+        IsICPSet(ICPClass::MODE_IFF) or
+        (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == FIFE_BUTTON))
     {
         if (OA1 and OA_BRG)
             tempvar1 = fOA_BRG;
@@ -129,27 +131,29 @@ int ICPClass::CheckMode(void)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON) and not IsICPSet(ICPClass::BLOCK_MODE))
+    if ((IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON) and
+        not IsICPSet(ICPClass::BLOCK_MODE))
     {
         StepCruise();
         return TRUE;
     }
 
-    if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE and not EWSMain)
+    if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE and
+        not EWSMain)
     {
         //you can only change progs if you're in STBY
-        if (playerAC and 
-            playerAC->EWSPGM() not_eq AircraftClass::Stby)
+        if (playerAC and playerAC->EWSPGM() not_eq AircraftClass::Stby)
             return TRUE;
     }
 
-    if ( not g_bIFF)
+    if (not g_bIFF)
     {
         //Don't do anything for now when in COMM (temporary)/IFF/DLINK/FACK/MARK/INTG mode
         if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) or
             IsICPSet(ICPClass::MODE_IFF) or IsICPSet(ICPClass::MODE_DLINK) or
             IsICPSet(ICPClass::MODE_FACK) or IsICPSet(ICPClass::BLOCK_MODE) or
-            (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100) or //INTG
+            (IsICPSet(ICPClass::MODE_LIST) and
+             mICPSecondaryMode == 100) or //INTG
             mICPSecondaryMode == MARK_MODE)
             return TRUE;
         else
@@ -160,8 +164,7 @@ int ICPClass::CheckMode(void)
         //Don't do anything for now when in COMM (temporary)/IFF/DLINK/FACK/MARK/INTG mode
         if (IsICPSet(ICPClass::MODE_COMM1) or IsICPSet(ICPClass::MODE_COMM2) or
             IsICPSet(ICPClass::MODE_DLINK) or IsICPSet(ICPClass::MODE_FACK) or
-            IsICPSet(ICPClass::BLOCK_MODE) or
-            mICPSecondaryMode == MARK_MODE)
+            IsICPSet(ICPClass::BLOCK_MODE) or mICPSecondaryMode == MARK_MODE)
             return TRUE;
         else
             return FALSE;
@@ -200,15 +203,23 @@ void ICPClass::HandleManualInput(int button)
     else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == ONE_BUTTON or
              IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON or
              (BQ or BI or SQ or SI or OA1 or OA2 or EDITMSLFLOOR) or
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON or
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == TWO_BUTTON or
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON or
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == FIFE_BUTTON or
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON or
-             IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == 100 or  //INTG
-             (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON) or //INS
-             IsICPSet(ICPClass::MODE_IFF) or (IsICPSet(ICPClass::MISC_MODE) and 
-                     mICPSecondaryMode == FIFE_BUTTON))
+             IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == ONE_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == TWO_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == THREE_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == FIFE_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == NINE_BUTTON or
+             IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == 100 or //INTG
+             (IsICPSet(ICPClass::MODE_LIST) and
+              mICPSecondaryMode == SIX_BUTTON) or //INS
+             IsICPSet(ICPClass::MODE_IFF) or
+             (IsICPSet(ICPClass::MISC_MODE) and
+              mICPSecondaryMode == FIFE_BUTTON))
     {
         Manual_Input = TRUE;
     }
@@ -233,61 +244,61 @@ void ICPClass::HandleManualInput(int button)
     else if (IsICPSet(ICPClass::FLARE_BINGO))
         Manual_Input = TRUE;
 
-    InputsMade ++;
+    InputsMade++;
 
     if (ClearCount > 0)
-        ClearCount --;
+        ClearCount--;
 
     switch (button)
     {
-        case ONE_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 1;
-            break;
+    case ONE_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 1;
+        break;
 
-        case TWO_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 2;
-            break;
+    case TWO_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 2;
+        break;
 
-        case THREE_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 3;
-            break;
+    case THREE_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 3;
+        break;
 
-        case FOUR_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 4;
-            break;
+    case FOUR_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 4;
+        break;
 
-        case FIFE_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 5;
-            break;
+    case FIFE_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 5;
+        break;
 
-        case SIX_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 6;
-            break;
+    case SIX_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 6;
+        break;
 
-        case SEVEN_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 7;
-            break;
+    case SEVEN_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 7;
+        break;
 
-        case EIGHT_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 8;
-            break;
+    case EIGHT_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 8;
+        break;
 
-        case NINE_BUTTON:
-            MadeInput = TRUE;
-            Input_Digit7 = 9;
-            break;
+    case NINE_BUTTON:
+        MadeInput = TRUE;
+        Input_Digit7 = 9;
+        break;
 
-        case ZERO_BUTTON:
-            Input_Digit7 = 0;
-            break;
+    case ZERO_BUTTON:
+        Input_Digit7 = 0;
+        break;
     }
 }
 void ICPClass::ClearFlags(void)
@@ -378,7 +389,7 @@ void ICPClass::ClearInput(void)
         return;
     }
 
-    ClearCount ++;
+    ClearCount++;
 
     if (ClearCount == 2 or InputsMade == 1)
     {
@@ -433,7 +444,7 @@ void ICPClass::ClearInput(void)
         Input_Digit4 = Input_Digit3;
         Input_Digit3 = Input_Digit2;
         Input_Digit2 = Input_Digit1;
-        InputsMade --;
+        InputsMade--;
     }
 }
 void ICPClass::FillDEDMatrix(int Line, int Pos, char *str, int Inverted)
@@ -455,7 +466,8 @@ void ICPClass::GetWind(void)
     pos.y = playerAC->YPos();
     pos.z = playerAC->ZPos();
 
-    heading = FloatToInt32(((WeatherClass*)realWeather)->WindHeadingAt(&pos) * RTD);
+    heading =
+        FloatToInt32(((WeatherClass *)realWeather)->WindHeadingAt(&pos) * RTD);
 
     if (heading <= 0)
         heading += 180;
@@ -466,8 +478,8 @@ void ICPClass::GetWind(void)
         heading = 360 + heading;
 
 
-    windSpeed = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos) * FTPSEC_TO_KNOTS;
-
+    windSpeed = ((WeatherClass *)realWeather)->WindSpeedInFeetPerSecond(&pos) *
+                FTPSEC_TO_KNOTS;
 }
 void ICPClass::AddSTPT(int Line, int Pos)
 {
@@ -500,14 +512,14 @@ void ICPClass::ClearInverted(int Line, int Start, int End)
         Invert[Line][i] = 0;
 }
 
-void ICPClass::FindEDR(long hours, char* timeStr)
+void ICPClass::FindEDR(long hours, char *timeStr)
 {
     long minutes, secs;
     char hoursStr[3] = "";
     char minutesStr[3] = "";
     char secsStr[3] = "";
     minutes = hours % S_IN_H; // generate hours column
-    hours = hours  / S_IN_H;
+    hours = hours / S_IN_H;
     secs = minutes % S_IN_M; // generate secs column
     minutes = minutes / S_IN_M; // generate minutes column
 
@@ -682,18 +694,20 @@ void ICPClass::CheckAutoSTPT(void)
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
     //no autostpt when in AG mode
-    if (playerAC and 
-        playerAC->FCC and 
-        playerAC->FCC->GetMasterMode() == FireControlComputer::AirGroundBomb) // MLR-NOTE Needs to consider Rockets???
+    if (playerAC and playerAC->FCC and
+        playerAC->FCC->GetMasterMode() ==
+            FireControlComputer::
+                AirGroundBomb) // MLR-NOTE Needs to consider Rockets???
         return;
 
-    if ( not playerAC or not playerAC->curWaypoint)
+    if (not playerAC or not playerAC->curWaypoint)
         return;
 
     playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
     float deltaX = xCurr - playerAC->XPos();
     float deltaY = yCurr - playerAC->YPos();
-    float distanceToSta = ((float)sqrt(deltaX * deltaX + deltaY * deltaY) * FT_TO_NM);
+    float distanceToSta =
+        ((float)sqrt(deltaX * deltaX + deltaY * deltaY) * FT_TO_NM);
 
     if (distanceToSta <= 2)
         PNUpdateSTPTMode(NEXT_BUTTON, 0);
@@ -1022,9 +1036,12 @@ float ICPClass::GetNumScans(void)
 //functions for INS only
 void ICPClass::GetINSInfo(void)
 {
-    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) / EARTH_RADIUS_FT;
+    latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + cockpitFlightData.x) /
+               EARTH_RADIUS_FT;
     cosLatitude = (float)cos(latitude);
-    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + cockpitFlightData.y) / (EARTH_RADIUS_FT * cosLatitude);
+    longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) +
+                 cockpitFlightData.y) /
+                (EARTH_RADIUS_FT * cosLatitude);
 
     latitude *= RTD;
     longitude *= RTD;
@@ -1048,7 +1065,7 @@ void ICPClass::GetINSInfo(void)
     else
         sprintf(INSLong, "%3d*%2.2f\'\n", longDeg, longMin);
 
-    sprintf(altStr, "%dFT", (long) - cockpitFlightData.z);
+    sprintf(altStr, "%dFT", (long)-cockpitFlightData.z);
 
     float yaw = cockpitFlightData.yaw;
 

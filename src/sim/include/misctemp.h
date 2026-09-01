@@ -10,38 +10,18 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class T>
-void Clamp(const T &min, T &val, const T &max)
+template <class T> void Clamp(const T &min, T &val, const T &max)
 {
-    val =
-        (
-            val < min ?
-            min :
-            (
-                val > max ?
-                max :
-                val
-            )
-        );
+    val = (val < min ? min : (val > max ? max : val));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-template<class T>
-void Wrap(const T &min, T &val, const T &max)
+template <class T> void Wrap(const T &min, T &val, const T &max)
 {
-    val =
-        (
-            val < min ?
-            max :
-            (
-                val > max ?
-                min :
-                val
-            )
-        );
+    val = (val < min ? max : (val > max ? min : val));
 }
 
 ////////////////////////////////////////////////////////////////////////////////

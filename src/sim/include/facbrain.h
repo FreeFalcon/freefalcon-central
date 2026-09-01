@@ -9,7 +9,7 @@ class CampBaseClass;
 class FACBrain : public DigitalBrain
 {
 private:
-    TailInsertList *fighterQ;
+    TailInsertList* fighterQ;
     int lastTarget;
     int numInTarget;
     SimBaseClass* controlledFighter;
@@ -30,20 +30,21 @@ public:
     void AddToQ(SimVehicleClass* theFighter);
     void RemoveFromQ(SimVehicleClass* theFighter);
     void FrameExec(SimObjectType*, SimObjectType*);
-    FACBrain(AircraftClass *myPlatform, AirframeClass* myAf);
+    FACBrain(AircraftClass* myPlatform, AirframeClass* myAf);
     ~FACBrain(void);
     virtual void PostInsert(void);
 
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete because our parent class does (and assumes a fixed size)
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         return MemAllocPtr(pool, size, 0);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 };

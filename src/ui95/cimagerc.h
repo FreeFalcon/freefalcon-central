@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -27,9 +28,9 @@ private:
     short red_shift_, green_shift_, blue_shift_;
 
 
-    long BuildColorTable(WORD *, long , long , long);
+    long BuildColorTable(WORD *, long, long, long);
     void MakePalette(WORD *, long);
-    void ConvertTo8Bit(WORD *, unsigned char *, long , long);
+    void ConvertTo8Bit(WORD *, unsigned char *, long, long);
     void CopyArea(WORD *src, WORD *dest, long w, long h);
 
 public:
@@ -47,7 +48,8 @@ public:
     }
 
     C_Resmgr *AddImage(long ID, long LastID, UI95_RECT *rect, short x, short y);
-    C_Resmgr *AddImage(long ID, long LastID, short x, short y, short w, short h, short cx, short cy);
+    C_Resmgr *AddImage(long ID, long LastID, short x, short y, short w, short h,
+                       short cx, short cy);
     C_Resmgr *LoadImage(long ID, char *file, short x, short y);
     C_Resmgr *LoadFile(long ID, char *file, short x, short y);
     C_Resmgr *LoadRes(long ID, char *file);
@@ -65,7 +67,7 @@ public:
 #ifdef _UI95_PARSER_
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

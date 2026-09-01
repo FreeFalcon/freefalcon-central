@@ -17,52 +17,57 @@
 
 #include "lists.h"
 #if MEM_ENABLED
-#    include "memmgr.h"
+#include "memmgr.h"
 #endif
 
-#define ALLOC_UNITS           512
-#define ALLOC_SAFETY          20
-#define ALLOC_USED_FLAG       0x53554445  /* 'U'S'E'D' */
-#define ALLOC_FREE_FLAG       0x52464545  /* 'F'R'E'E' */
-#define ALLOC_SWAP_SIZE       64
+#define ALLOC_UNITS 512
+#define ALLOC_SAFETY 20
+#define ALLOC_USED_FLAG 0x53554445  /* 'U'S'E'D' */
+#define ALLOC_FREE_FLAG 0x52464545  /* 'F'R'E'E' */
+#define ALLOC_SWAP_SIZE 64
 
 
 #ifdef USE_SH_POOLS
 #undef MemFree
 #undef MemFreePtr
 #undef MemMalloc
-#include "Smartheap/Include/smrtheap.h"
+#include "smartheap/include/smrtheap.h"
 extern MEM_POOL gResmgrMemPool;
-#  define LIST_ALLOC()  MemAllocPtr( gResmgrMemPool, sizeof(LIST), 0 )
-#  define LIST_FREE(a)  MemFreePtr(a)
+#define LIST_ALLOC() MemAllocPtr(gResmgrMemPool, sizeof(LIST), 0)
+#define LIST_FREE(a) MemFreePtr(a)
 #else
-#if( USE_LIST_ALLOCATION )
-#  define LIST_ALLOC()  ListAlloc()
-#  define LIST_FREE(a)  ListFree(a)
+#if (USE_LIST_ALLOCATION)
+#define LIST_ALLOC() ListAlloc()
+#define LIST_FREE(a) ListFree(a)
 #else
-#  define LIST_ALLOC()  MemMalloc( sizeof(LIST), "LIST" )
-#  define LIST_FREE(a)  MemFree(a)
+#define LIST_ALLOC() MemMalloc(sizeof(LIST), "LIST")
+#define LIST_FREE(a) MemFree(a)
 #endif
 #endif
 
 
-#if( USE_THREAD_SAFE )
+#if (USE_THREAD_SAFE)
 
 int LIST_MUTEX = 0;         /* If you want to bypass microsoft's very heavy
                                   mutex implementation, do so here. */
 
-#  define WAIT_FOR_LOCK(a)     WaitForSingleObject( a, INFINITE );
-#  define RELEASE_LOCK(a)      ReleaseMutex( a );
-#  define CREATE_LOCK(a)       { if( not a ) a = CreateMutex( NULL, FALSE, NULL ); \
-                                 if( not a ) KEVS_FATAL_ERROR( "Could not get mutex lock." ); }
+#define WAIT_FOR_LOCK(a) WaitForSingleObject(a, INFINITE);
+#define RELEASE_LOCK(a) ReleaseMutex(a);
+#define CREATE_LOCK(a)                                                         \
+    {                                                                          \
+        if (not a)                                                             \
+            a = CreateMutex(NULL, FALSE, NULL);                                \
+        if (not a)                                                             \
+            KEVS_FATAL_ERROR("Could not get mutex lock.");                     \
+    }
 #else
-#  define WAIT_FOR_LOCK(a)
-#  define RELEASE_LOCK(a)
-#  define CREATE_LOCK(a)
+#define WAIT_FOR_LOCK(a)
+#define RELEASE_LOCK(a)
+#define CREATE_LOCK(a)
 #endif
 
 
-#if( USE_LIST_ALLOCATION )
+#if (USE_LIST_ALLOCATION)
 
 
 /*
@@ -122,55 +127,48 @@ int LIST_MUTEX = 0;         /* If you want to bypass microsoft's very heavy
 
 typedef struct LIST_UNIT
 {
-    int     check;                   /* Has this unit been provided as a fulfillment ?   */
-    void  * ptr_a;                   /* node                                             */
-    void  * ptr_b;                   /* roger's lame o' hack                             */
-    void  * ptr_c;                   /* next                                             */
+    int check; /* Has this unit been provided as a fulfillment ?   */
+    void *ptr_a; /* node                                             */
+    void *ptr_b; /* roger's lame o' hack                             */
+    void *ptr_c; /* next                                             */
 
 } LIST_UNIT;
 
 typedef struct ALLOC_UNIT
 {
-    LIST_UNIT unit[ ALLOC_UNITS ];   /* The actual table of memory to dole out as LIST * */
+    LIST_UNIT unit
+        [ALLOC_UNITS]; /* The actual table of memory to dole out as LIST * */
 
-    int    index;                    /* Our current location in the table                */
-    int    avail;                    /* Number of unit[]'s available from the table      */
+    int index; /* Our current location in the table                */
+    int avail; /* Number of unit[]'s available from the table      */
 
-    int    sleeping;                 /* Has this block been relegated to hibernation     */
+    int sleeping; /* Has this block been relegated to hibernation     */
 
-    long   timer;                    /* Always nice to have a timer                      */
+    long timer; /* Always nice to have a timer                      */
 
-    void * min;                      /* Convenience for finding the correct block to     */
-    void * max;                      /* perform a free from.                             */
+    void *min; /* Convenience for finding the correct block to     */
+    void *max; /* perform a free from.                             */
 
-    ALLOC_UNIT * next;               /* Link the allocation blocks                       */
-    ALLOC_UNIT * prev;               /* Link the allocation blocks                       */
+    ALLOC_UNIT *next; /* Link the allocation blocks                       */
+    ALLOC_UNIT *prev; /* Link the allocation blocks                       */
 
 } ALLOC_UNIT;
 
 
 PRIVATE
-ALLOC_UNIT *
-GLOBAL_ALLOC_TABLE = NULL;
+ALLOC_UNIT *GLOBAL_ALLOC_TABLE = NULL;
 
 
 PRIVATE
-void
-ListGlobalPack(void),
-               ListGlobalAlloc(void);
+void ListGlobalPack(void), ListGlobalAlloc(void);
 
 PRIVATE
-void
-ListFree(void * unit);
+void ListFree(void *unit);
 
 PRIVATE
-void *
-ListAlloc(void);
+void *ListAlloc(void);
 
 #endif
-
-
-
 
 
 /* ---------------------------------------------------------------------
@@ -182,27 +180,26 @@ ListAlloc(void);
    --------------------------------------------------------------------- */
 
 
-#if( USE_LIST_ALLOCATION )
+#if (USE_LIST_ALLOCATION)
 
 PUBLIC
-void
-ListGlobalFree(void)
+void ListGlobalFree(void)
 {
-    ALLOC_UNIT * table, *tblptr;
+    ALLOC_UNIT *table, *tblptr;
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if ( not GLOBAL_ALLOC_TABLE)
+    if (not GLOBAL_ALLOC_TABLE)
         return;
 
     table = GLOBAL_ALLOC_TABLE;
 
-    while (table -> prev)
-        table = table -> prev;
+    while (table->prev)
+        table = table->prev;
 
-    for (; table ;)
+    for (; table;)
     {
-        tblptr = table -> next;
+        tblptr = table->next;
 #ifdef USE_SH_POOLS
         MemFreePtr(table);
 #else
@@ -218,55 +215,55 @@ ListGlobalFree(void)
 
 
 PRIVATE
-void
-ListGlobalAlloc(void)
+void ListGlobalAlloc(void)
 {
-    int   i;
+    int i;
 
-    ALLOC_UNIT * new_unit = NULL;
-    ALLOC_UNIT * old_unit = NULL;
+    ALLOC_UNIT *new_unit = NULL;
+    ALLOC_UNIT *old_unit = NULL;
 
     WAIT_FOR_LOCK(LIST_MUTEX, INFINITE);
 
 #ifdef USE_SH_POOLS
-    new_unit = (ALLOC_UNIT *)MemAllocPtr(gResmmgrMemPool, sizeof(ALLOC_UNIT), 0);
+    new_unit =
+        (ALLOC_UNIT *)MemAllocPtr(gResmmgrMemPool, sizeof(ALLOC_UNIT), 0);
 #else
     new_unit = (ALLOC_UNIT *)MemMalloc(sizeof(ALLOC_UNIT), "LIST_MEM");
 #endif
 
-    if ( not new_unit)
+    if (not new_unit)
         KEVS_FATAL_ERROR("No memory for list pool.");
 
     if (GLOBAL_ALLOC_TABLE)
     {
         old_unit = GLOBAL_ALLOC_TABLE;
 
-        while (old_unit -> next)
-            old_unit = old_unit -> next;
+        while (old_unit->next)
+            old_unit = old_unit->next;
 
-        old_unit -> next = new_unit;
-        new_unit -> prev = old_unit;
-        new_unit -> next = NULL;
+        old_unit->next = new_unit;
+        new_unit->prev = old_unit;
+        new_unit->next = NULL;
 
-        old_unit -> sleeping = TRUE;
+        old_unit->sleeping = TRUE;
     }
     else
     {
-        new_unit -> next = NULL;
-        new_unit -> prev = NULL;
+        new_unit->next = NULL;
+        new_unit->prev = NULL;
     }
 
-    new_unit -> sleeping = FALSE;
+    new_unit->sleeping = FALSE;
 
-    new_unit -> avail = ALLOC_UNITS;
-    new_unit -> index = 0;
-    new_unit -> timer = TIME_COUNT;
+    new_unit->avail = ALLOC_UNITS;
+    new_unit->index = 0;
+    new_unit->timer = TIME_COUNT;
 
-    new_unit -> min = &new_unit -> unit[0].ptr_a;
-    new_unit -> max = &new_unit -> unit[ALLOC_UNITS].ptr_a;
+    new_unit->min = &new_unit->unit[0].ptr_a;
+    new_unit->max = &new_unit->unit[ALLOC_UNITS].ptr_a;
 
     for (i = 0; i < ALLOC_UNITS; i++)
-        new_unit -> unit[i].check = ALLOC_FREE_FLAG;
+        new_unit->unit[i].check = ALLOC_FREE_FLAG;
 
     GLOBAL_ALLOC_TABLE = new_unit;
 
@@ -275,72 +272,70 @@ ListGlobalAlloc(void)
 
 
 PRIVATE
-void *
-ListAlloc(void)
+void *ListAlloc(void)
 {
-    LIST_UNIT * lu;
+    LIST_UNIT *lu;
 
     CREATE_LOCK(LIST_MUTEX);
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if ( not GLOBAL_ALLOC_TABLE)
+    if (not GLOBAL_ALLOC_TABLE)
         ListGlobalAlloc();
 
     do
     {
-        if ((GLOBAL_ALLOC_TABLE -> avail < ALLOC_SAFETY) or
-            (GLOBAL_ALLOC_TABLE -> index > (ALLOC_UNITS - ALLOC_SAFETY)))
+        if ((GLOBAL_ALLOC_TABLE->avail < ALLOC_SAFETY) or
+            (GLOBAL_ALLOC_TABLE->index > (ALLOC_UNITS - ALLOC_SAFETY)))
 
             ListGlobalPack();
 
-        lu = (LIST_UNIT *)(&GLOBAL_ALLOC_TABLE -> unit[ GLOBAL_ALLOC_TABLE -> index ]);
+        lu =
+            (LIST_UNIT *)(&GLOBAL_ALLOC_TABLE->unit[GLOBAL_ALLOC_TABLE->index]);
 
-        GLOBAL_ALLOC_TABLE -> index++;
+        GLOBAL_ALLOC_TABLE->index++;
 
-    }
-    while (lu -> check not_eq ALLOC_FREE_FLAG);
+    } while (lu->check not_eq ALLOC_FREE_FLAG);
 
-    lu -> check = ALLOC_USED_FLAG;
+    lu->check = ALLOC_USED_FLAG;
 
-    GLOBAL_ALLOC_TABLE -> timer = TIME_COUNT;
-    GLOBAL_ALLOC_TABLE -> avail--;
+    GLOBAL_ALLOC_TABLE->timer = TIME_COUNT;
+    GLOBAL_ALLOC_TABLE->avail--;
 
     RELEASE_LOCK(LIST_MUTEX);
 
-    return (&lu -> ptr_a);
+    return (&lu->ptr_a);
 }
 
 
 PUBLIC
-void
-ListValidate(void)
+void ListValidate(void)
 {
-    ALLOC_UNIT * tmp   = NULL;
-    ALLOC_UNIT * table = NULL;
+    ALLOC_UNIT *tmp = NULL;
+    ALLOC_UNIT *table = NULL;
 
     int i;
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    if ( not GLOBAL_ALLOC_TABLE)
+    if (not GLOBAL_ALLOC_TABLE)
         return;
 
-    for (tmp = GLOBAL_ALLOC_TABLE; tmp; tmp = (ALLOC_UNIT *)table -> prev)
+    for (tmp = GLOBAL_ALLOC_TABLE; tmp; tmp = (ALLOC_UNIT *)table->prev)
         table = tmp;
 
-    for (tmp = table; tmp; tmp = tmp -> next)
+    for (tmp = table; tmp; tmp = tmp->next)
         for (i = 0; i < ALLOC_UNITS; i++)
-            if ((tmp -> unit[i].check not_eq ALLOC_FREE_FLAG) and 
-                (tmp -> unit[i].check not_eq ALLOC_USED_FLAG))
+            if ((tmp->unit[i].check not_eq ALLOC_FREE_FLAG) and
+                (tmp->unit[i].check not_eq ALLOC_USED_FLAG))
             {
                 DBG(PF("ERROR: Possible overwrite in lists."));
 
-                DBG(PF("Unit Address: %x index: %d\n", &tmp -> unit[i]));
+                DBG(PF("Unit Address: %x index: %d\n", &tmp->unit[i]));
                 DBG(PF("------------------------------------------\n"));
-                DBG(PF("node: %x\n", tmp -> unit[i].ptr_a));
-                DBG(PF("user: %x\n", tmp -> unit[i].ptr_b));
-                DBG(PF("next: %x\n", tmp -> unit[i].ptr_c));
+                DBG(PF("node: %x\n", tmp->unit[i].ptr_a));
+                DBG(PF("user: %x\n", tmp->unit[i].ptr_b));
+                DBG(PF("next: %x\n", tmp->unit[i].ptr_c));
             }
 
     RELEASE_LOCK(LIST_MUTEX);
@@ -348,31 +343,30 @@ ListValidate(void)
 
 
 PRIVATE
-void
-ListFree(void * unit)
+void ListFree(void *unit)
 {
     int done = FALSE;
 
-    LIST_UNIT * lu;
+    LIST_UNIT *lu;
 
-    ALLOC_UNIT * t   = NULL;
-    ALLOC_UNIT * tbl = NULL;
+    ALLOC_UNIT *t = NULL;
+    ALLOC_UNIT *tbl = NULL;
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)tbl -> prev)
+    for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)tbl->prev)
         tbl = t;
 
-    if ( not tbl)
+    if (not tbl)
     {
         DBG(PF("Error freeing list structure.\n"));
         RELEASE_LOCK(LIST_MUTEX);
         return;
     }
 
-    lu = (LIST_UNIT *)((int) unit - sizeof(int));
+    lu = (LIST_UNIT *)((int)unit - sizeof(int));
 
-    if (lu -> check not_eq ALLOC_USED_FLAG)
+    if (lu->check not_eq ALLOC_USED_FLAG)
     {
         ERROR("Free of a corrupt list node from allocation table.");
         RELEASE_LOCK(LIST_MUTEX);
@@ -381,15 +375,15 @@ ListFree(void * unit)
 
     do
     {
-        if ((unit >= tbl -> min) and (unit < tbl -> max))
+        if ((unit >= tbl->min) and (unit < tbl->max))
         {
-            tbl -> avail++;
+            tbl->avail++;
 
-            lu -> check = ALLOC_FREE_FLAG;
+            lu->check = ALLOC_FREE_FLAG;
 
-            lu -> ptr_a = NULL;
-            lu -> ptr_b = NULL;
-            lu -> ptr_c = NULL;
+            lu->ptr_a = NULL;
+            lu->ptr_b = NULL;
+            lu->ptr_c = NULL;
 
             done = TRUE;
 
@@ -397,13 +391,12 @@ ListFree(void * unit)
         }
         else
         {
-            tbl = (ALLOC_UNIT *)tbl -> next;
+            tbl = (ALLOC_UNIT *)tbl->next;
         }
 
-    }
-    while (tbl and not done);
+    } while (tbl and not done);
 
-    if ( not done)
+    if (not done)
         ERROR("Couldn't find list in allocation table\n");
 
     RELEASE_LOCK(LIST_MUTEX);
@@ -411,46 +404,43 @@ ListFree(void * unit)
 
 
 PRIVATE
-void
-ListGlobalPack(void)
+void ListGlobalPack(void)
 {
-    int done  = FALSE;
+    int done = FALSE;
     int total = 0;
 
 
-    ALLOC_UNIT * t,
-               * tbl = NULL;
+    ALLOC_UNIT *t, *tbl = NULL;
 
     WAIT_FOR_LOCK(LIST_MUTEX);
 
-    for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)t -> prev)
+    for (t = GLOBAL_ALLOC_TABLE; t; t = (ALLOC_UNIT *)t->prev)
         tbl = t;
 
-    if ( not tbl)
+    if (not tbl)
     {
         ERROR("List allocation table empty -- cannot pack.");
-        GLOBAL_ALLOC_TABLE -> index = 0;
+        GLOBAL_ALLOC_TABLE->index = 0;
         RELEASE_LOCK(LIST_MUTEX);
         return;
     }
 
     do
     {
-        if ((tbl -> avail == ALLOC_UNITS) and 
-            (tbl -> sleeping))
+        if ((tbl->avail == ALLOC_UNITS) and (tbl->sleeping))
         {
-            if (tbl -> prev)
-                tbl -> prev -> next = tbl -> next;
+            if (tbl->prev)
+                tbl->prev->next = tbl->next;
 
-            if (tbl -> next)
-                tbl -> next -> prev = tbl -> prev;
+            if (tbl->next)
+                tbl->next->prev = tbl->prev;
 
-            total += (ALLOC_UNITS - tbl -> avail);
+            total += (ALLOC_UNITS - tbl->avail);
 
-            if (tbl -> prev)
-                t = tbl -> prev;
+            if (tbl->prev)
+                t = tbl->prev;
             else
-                t = tbl -> next;
+                t = tbl->next;
 
             if (GLOBAL_ALLOC_TABLE == tbl)
                 GLOBAL_ALLOC_TABLE = t;
@@ -464,33 +454,26 @@ ListGlobalPack(void)
         }
         else
         {
-            if (tbl -> avail > (GLOBAL_ALLOC_TABLE -> avail + ALLOC_SWAP_SIZE))
+            if (tbl->avail > (GLOBAL_ALLOC_TABLE->avail + ALLOC_SWAP_SIZE))
             {
                 GLOBAL_ALLOC_TABLE = tbl;
             }
 
-            total += (ALLOC_UNITS - tbl -> avail);
-            tbl = tbl -> next;
+            total += (ALLOC_UNITS - tbl->avail);
+            tbl = tbl->next;
         }
 
-    }
-    while (tbl);
+    } while (tbl);
 
-    if ( not GLOBAL_ALLOC_TABLE or (GLOBAL_ALLOC_TABLE -> avail < ALLOC_SWAP_SIZE))
+    if (not GLOBAL_ALLOC_TABLE or (GLOBAL_ALLOC_TABLE->avail < ALLOC_SWAP_SIZE))
         ListGlobalAlloc();
 
-    GLOBAL_ALLOC_TABLE -> index = 0;
+    GLOBAL_ALLOC_TABLE->index = 0;
 
     RELEASE_LOCK(LIST_MUTEX);
 }
 
 #endif /* USE_LIST_ALLOCATION */
-
-
-
-
-
-
 
 
 /* ------------------------------------------------------------------------------------
@@ -509,17 +492,16 @@ ListGlobalPack(void)
  */
 
 
-LST_EXPORT LIST *
-ListAppend(LIST * list, void * node)
+LST_EXPORT LIST *ListAppend(LIST *list, void *node)
 {
-    LIST * newnode;
+    LIST *newnode;
 
     newnode = (LIST *)LIST_ALLOC();
 
-    newnode -> node = node;
-    newnode -> next = list;
+    newnode->node = node;
+    newnode->next = list;
 
-    return(newnode);
+    return (newnode);
 }
 
 
@@ -528,32 +510,32 @@ ListAppend(LIST * list, void * node)
  * caller should cast returned value to appropriate type
  */
 
-LST_EXPORT LIST *
-ListAppendEnd(LIST * list, void * node)
+LST_EXPORT LIST *ListAppendEnd(LIST *list, void *node)
 {
-    LIST * newnode;
-    LIST * curr;
+    LIST *newnode;
+    LIST *curr;
 
     newnode = (LIST *)LIST_ALLOC();
 
-    newnode -> node = node;
-    newnode -> next = NULL;
+    newnode->node = node;
+    newnode->next = NULL;
 
     /* list was null */
-    if ( not list)
+    if (not list)
     {
         list = newnode;
     }
     else
     {
         /* find end of list */
-        for (curr = list ; curr -> next not_eq NULL ; curr = curr -> next) ;
+        for (curr = list; curr->next not_eq NULL; curr = curr->next)
+            ;
 
         /* chain in at end */
-        curr -> next = newnode;
+        curr->next = newnode;
     }
 
-    return(list);
+    return (list);
 }
 
 /*
@@ -563,22 +545,21 @@ ListAppendEnd(LIST * list, void * node)
  * the head of such lists.
  */
 
-LST_EXPORT LIST *
-ListAppendSecond(LIST * list, void * node)
+LST_EXPORT LIST *ListAppendSecond(LIST *list, void *node)
 {
-    LIST * newnode;
+    LIST *newnode;
 
     newnode = (LIST *)LIST_ALLOC();
 
-    newnode -> node = node;
+    newnode->node = node;
 
     /* chain in after first element */
-    newnode -> next = list -> next;
+    newnode->next = list->next;
 
-    list -> next = newnode;
+    list->next = newnode;
 
     /* return original head unchanged */
-    return(list);
+    return (list);
 }
 
 
@@ -586,22 +567,22 @@ ListAppendSecond(LIST * list, void * node)
  * join 2 lists, add l2 at end of l1
  */
 
-LST_EXPORT LIST *
-ListCatenate(LIST * l1, LIST * l2)
+LST_EXPORT LIST *ListCatenate(LIST *l1, LIST *l2)
 {
     LIST *curr;
 
-    if ( not l1)
+    if (not l1)
         return l2;
 
-    if ( not l2)
+    if (not l2)
         return l1;
 
     /* find last element of l1 */
-    for (curr = l1; curr -> next not_eq NULL; curr = curr -> next);
+    for (curr = l1; curr->next not_eq NULL; curr = curr->next)
+        ;
 
     /* catenate */
-    curr -> next = l2;
+    curr->next = l2;
 
     return l1;
 }
@@ -613,35 +594,33 @@ ListCatenate(LIST * l1, LIST * l2)
  * If destructor is NULL, node data not affected, only list nodes get freed
  */
 
-LST_EXPORT void
-ListDestroy(LIST * list, PFV destructor)
+LST_EXPORT void ListDestroy(LIST *list, PFV destructor)
 {
-    LIST * prev,
-         * curr;
+    LIST *prev, *curr;
 
-    if ( not list)
+    if (not list)
         return;
 
     prev = list;
-    curr = list -> next;
+    curr = list->next;
 
     while (curr)
     {
         if (destructor)
-            (*destructor)(prev -> node);
+            (*destructor)(prev->node);
 
-        prev -> next = NULL;
+        prev->next = NULL;
 
         LIST_FREE(prev);
 
         prev = curr;
-        curr = curr -> next;
+        curr = curr->next;
     }
 
     if (destructor)
-        (*destructor)(prev -> node);
+        (*destructor)(prev->node);
 
-    prev -> next = NULL;
+    prev->next = NULL;
 
     LIST_FREE(prev);
 
@@ -655,18 +634,17 @@ ListDestroy(LIST * list, PFV destructor)
  */
 
 
-LST_EXPORT LIST *
-ListNth(LIST * list, int n)
+LST_EXPORT LIST *ListNth(LIST *list, int n)
 {
-    int    i;
-    LIST * curr;
+    int i;
+    LIST *curr;
 
     curr = list;
 
-    for (i = 0 ; i < n and curr; i++)
-        curr = curr -> next;
+    for (i = 0; i < n and curr; i++)
+        curr = curr->next;
 
-    return(curr);
+    return (curr);
 }
 
 
@@ -674,16 +652,15 @@ ListNth(LIST * list, int n)
  * return Number of entries in list
  */
 
-LST_EXPORT int
-ListCount(LIST * list)
+LST_EXPORT int ListCount(LIST *list)
 {
-    LIST * curr;
+    LIST *curr;
     int i;
 
-    for (i = 0, curr = list; curr; i++, curr = curr  ->  next)
+    for (i = 0, curr = list; curr; i++, curr = curr->next)
         ;
 
-    return(i);
+    return (i);
 }
 
 
@@ -692,20 +669,19 @@ ListCount(LIST * list)
  * return -1 if not found
  */
 
-LST_EXPORT int
-ListWhere(LIST * list, void * node)
+LST_EXPORT int ListWhere(LIST *list, void *node)
 {
-    LIST * curr;
+    LIST *curr;
     int i;
 
-    for (i = 0, curr = list; curr; i++, curr = curr  ->  next)
+    for (i = 0, curr = list; curr; i++, curr = curr->next)
     {
-        if (curr -> node == node)
-            return(i);
+        if (curr->node == node)
+            return (i);
     }
 
     /* not found */
-    return(-1);
+    return (-1);
 }
 
 
@@ -714,39 +690,37 @@ ListWhere(LIST * list, void * node)
  * return shortened list
  */
 
-LST_EXPORT LIST *
-ListRemove(LIST * list, void * node)
+LST_EXPORT LIST *ListRemove(LIST *list, void *node)
 {
-    LIST * prev,
-         * curr;
+    LIST *prev, *curr;
 
-    if ( not list)
-        return(NULL);
+    if (not list)
+        return (NULL);
 
     prev = NULL;
     curr = list;
 
-    while (curr and (curr -> node not_eq node))
+    while (curr and (curr->node not_eq node))
     {
         prev = curr;
-        curr = curr -> next;
+        curr = curr->next;
     }
 
     /* not found, return list unmodified */
-    if ( not curr)
-        return(list);
+    if (not curr)
+        return (list);
 
     /* found at head */
-    if ( not prev)
-        list = list -> next;
+    if (not prev)
+        list = list->next;
     else
-        prev -> next = curr -> next;
+        prev->next = curr->next;
 
-    curr -> next = NULL;
+    curr->next = NULL;
 
     LIST_FREE(curr);
 
-    return(list);
+    return (list);
 }
 
 
@@ -754,85 +728,81 @@ ListRemove(LIST * list, void * node)
  * return pointer to list node if found, else NULL
  */
 
-LST_EXPORT LIST *
-ListFind(LIST * list, void * node)
+LST_EXPORT LIST *ListFind(LIST *list, void *node)
 {
-    LIST * curr;
+    LIST *curr;
 
-    for (curr = list; curr; curr = curr -> next)
+    for (curr = list; curr; curr = curr->next)
     {
-        if (curr -> node == node)
+        if (curr->node == node)
             return curr;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
-LST_EXPORT LIST *
-ListSearch(LIST * list, void * node, PFI func_ptr)
+LST_EXPORT LIST *ListSearch(LIST *list, void *node, PFI func_ptr)
 {
-    LIST * l;
+    LIST *l;
 
-    for (l =  list; list; list = list -> next)
-        if ( not ((*func_ptr)(list -> node, node)))
-            return(l);
+    for (l = list; list; list = list->next)
+        if (not((*func_ptr)(list->node, node)))
+            return (l);
 
-    return(NULL);
+    return (NULL);
 }
 
 
-LST_EXPORT LIST *
-ListDup(LIST * list)
+LST_EXPORT LIST *ListDup(LIST *list)
 {
-    LIST * newlist;
+    LIST *newlist;
 
     newlist = (LIST *)LIST_ALLOC();
 
-    newlist -> next = NULL;
-    newlist -> node = list -> node;
-    newlist -> user = list -> user;
+    newlist->next = NULL;
+    newlist->node = list->node;
+    newlist->user = list->user;
 
     return (newlist);
 }
 
 
-LST_EXPORT LIST *
-ListSort(LIST ** list, PFI func_ptr)
+LST_EXPORT LIST *ListSort(LIST **list, PFI func_ptr)
 {
     LIST **parent_a;
     LIST **parent_b;
 
-    for (parent_a = list; *parent_a; parent_a = &(*parent_a) -> next)
+    for (parent_a = list; *parent_a; parent_a = &(*parent_a)->next)
     {
-        for (parent_b = &(*parent_a) -> next; *parent_b; parent_b = &(*parent_b) -> next)
+        for (parent_b = &(*parent_a)->next; *parent_b;
+             parent_b = &(*parent_b)->next)
         {
             if (func_ptr(*parent_a, *parent_b) > 0)
             {
                 LIST *swap_a, *swap_a_child;
                 LIST *swap_b, *swap_b_child;
 
-                swap_a       = *parent_a;
-                swap_a_child = (*parent_a) -> next;
-                swap_b       = *parent_b;
-                swap_b_child = (*parent_b) -> next;
+                swap_a = *parent_a;
+                swap_a_child = (*parent_a)->next;
+                swap_b = *parent_b;
+                swap_b_child = (*parent_b)->next;
 
-                (*parent_a) -> next = swap_b_child;
-                (*parent_a)         = swap_b;
+                (*parent_a)->next = swap_b_child;
+                (*parent_a) = swap_b;
 
                 if (swap_b == swap_a_child)
                 {
-                    (*parent_a) -> next = swap_a;
-                    parent_b            = &(*parent_a) -> next;
+                    (*parent_a)->next = swap_a;
+                    parent_b = &(*parent_a)->next;
                 }
                 else
                 {
-                    (*parent_b) -> next = swap_a_child;
-                    (*parent_b)         = swap_a;
+                    (*parent_b)->next = swap_a_child;
+                    (*parent_b) = swap_a;
                 }
             }
-
         }
     }
 
-    return(*list);
+    return (*list);
 }

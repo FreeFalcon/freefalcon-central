@@ -8,8 +8,8 @@
 #ifndef _FLTERROR_H_
 #define _FLTERROR_H_
 
-#include <MgAPIall.h>
-#include "shi/ShiError.h"
+#include <mgapiall.h>
+#include "shi/shierror.h"
 
 inline void FLTwarning(mgrec *rec, char *message)
 {

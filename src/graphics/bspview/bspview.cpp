@@ -11,25 +11,25 @@
 #include <float.h>
 #include <windows.h>
 #include <commctrl.h>
-#include "shi/ShiError.h"
-#include "Matrix.h"
-#include "Loader.h"
-#include "TimeMgr.h"
-#include "DevMgr.h"
-#include "Render3d.h"
-#include "Tex.h"
-#include "ObjectInstance.h"
-#include "StateStack.h"
-#include "../BspUtil/ParentBuildList.h"
-#include "JoyInput.h"
+#include "shi/shierror.h"
+#include "matrix.h"
+#include "loader.h"
+#include "timemgr.h"
+#include "devmgr.h"
+#include "render3d.h"
+#include "tex.h"
+#include "objectinstance.h"
+#include "statestack.h"
+#include "../bsputil/parentbuildlist.h"
+#include "joyinput.h"
 #include "resource.h"
-#include "../BSPBuild/PlayerOp.h"
+#include "../bspbuild/playerop.h"
 #include "falclib/include/dispcfg.h"
 #include "debuggr.h"
 
-#define DTR  0.01745329F
-#include <Commdlg.h>
-#include "Weather.h"
+#define DTR 0.01745329F
+#include <commdlg.h>
+#include "weather.h"
 // OW - Todo:
 // - window resizing doesnt work
 // - add mouse control
@@ -40,7 +40,8 @@ char *FalconTerrainDataDir = "";
 char *FalconObjectDataDir = "";
 char *FalconMiscTexDataDir = "";
 char *Falcon3DDataDir = ""; // M.N.
-long __stdcall FalconMessageHandler(HWND hw, unsigned int msg, unsigned int wp, long lp);
+long __stdcall FalconMessageHandler(HWND hw, unsigned int msg, unsigned int wp,
+                                    long lp);
 char g_CardDetails[1024];
 
 int NumHats;
@@ -53,8 +54,12 @@ void ControlPanel(void);
 BOOL CALLBACK DialogProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam);
 void ConstructDeltaMatrix(float p, float r, float y, Trotation *T);
 
-void ResetLatLong(void) {}
-void SetLatLong(float, float) {}
+void ResetLatLong(void)
+{
+}
+void SetLatLong(float, float)
+{
+}
 float WeatherClass::WxAltShift = -2000.0f;
 // Globals shared by multiple functions
 //DeviceManager devmgr;
@@ -63,19 +68,26 @@ Render3D renderer;
 ImageBuffer *image = NULL;
 ObjectInstance *obj = NULL;
 BOOL run = FALSE;
-float     zoompos = 0.0f;
-float     roll = 0.0f, pitch = 0.0f, yaw = 0.0f;
+float zoompos = 0.0f;
+float roll = 0.0f, pitch = 0.0f, yaw = 0.0f;
 
 DWORD BACKGROUND_COLOR = 0xFFE5CCB2;
-enum {CAM_ORBIT, CAM_PAN, CAM_ORIGIN} cameraMode = CAM_ORBIT;
+enum
+{
+    CAM_ORBIT,
+    CAM_PAN,
+    CAM_ORIGIN
+} cameraMode = CAM_ORBIT;
 
-extern "C" {
+extern "C"
+{
     int movieInit(int numMovies, LPVOID lpDD)
     {
         return 0;
     }
     void movieUnInit(void)
-    {}
+    {
+    }
 }
 
 // Time stamp from utility library
@@ -87,8 +99,7 @@ int shiAssertsOn = 1, shiHardCrashOn = 0, shiWarningsOn = 1;
 #ifdef USE_SH_POOLS
 extern MEM_POOL gBSPLibMemPool, glMemPool;
 #endif
-static void
-Register()
+static void Register()
 {
     WNDCLASS wc;
     // set up and register window class
@@ -113,7 +124,7 @@ Register()
  */
 int main(int argc, char *argv[])
 {
-    char msgbuf [1024];
+    char msgbuf[1024];
     char filename[_MAX_PATH];
     char drive[_MAX_DRIVE];
     char path[_MAX_DIR];
@@ -125,10 +136,12 @@ int main(int argc, char *argv[])
     InitDebug(DEBUGGER_TEXT_MODE);
     // Set the FPU to 24 bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
     _controlfp(_RC_CHOP, MCW_RC);
-#ifdef  USE_SH_POOLS
+#ifdef USE_SH_POOLS
     glMemPool = MemPoolInit(0);
     Palette::InitializeStorage();
 #endif
@@ -143,7 +156,8 @@ int main(int argc, char *argv[])
 
 
     // Display are startup banner
-    printf("BSPview compiled %s.  FLT reader %s\n", __TIMESTAMP__, FLTtoGeometryTimeStamp);
+    printf("BSPview compiled %s.  FLT reader %s\n", __TIMESTAMP__,
+           FLTtoGeometryTimeStamp);
 
 
     // See if we got a filename on the command line
@@ -187,9 +201,8 @@ int main(int argc, char *argv[])
             printf("ERROR:  We got no objects to process.\n");
             exit(-1);
         }
-
     }
-    else  if (stricmp(ext, ".HDR") == 0)
+    else if (stricmp(ext, ".HDR") == 0)
     {
         // We've got a master object file, so load it
         strcpy(filename, drive);
@@ -200,7 +213,6 @@ int main(int argc, char *argv[])
 
         // Ask the user which object ID to display
         id = ChooseObjectID(2);
-
     }
     else
     {
@@ -208,7 +220,6 @@ int main(int argc, char *argv[])
         sprintf(message, "Unrecognized input file type %s", ext);
         ShiError(message);
     }
-
 
 
     /***********************************************************************************\
@@ -220,26 +231,29 @@ int main(int argc, char *argv[])
     DWORD type, size;
     HKEY theKey;
 
-    RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MicroProse\\Falcon\\BSPview",
-                 0, KEY_ALL_ACCESS, &theKey);
+    RegOpenKeyEx(HKEY_LOCAL_MACHINE, "Software\\MicroProse\\Falcon\\BSPview", 0,
+                 KEY_ALL_ACCESS, &theKey);
 
     size = sizeof(DriverNumber);
 
-    if (RegQueryValueEx(theKey, "DriverNumber", 0, &type, (LPBYTE)&DriverNumber, &size) != ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "DriverNumber", 0, &type, (LPBYTE)&DriverNumber,
+                        &size) != ERROR_SUCCESS)
     {
         DriverNumber = -1;
     }
 
     size = sizeof(DeviceNumber);
 
-    if (RegQueryValueEx(theKey, "DeviceNumber", 0, &type, (LPBYTE)&DeviceNumber, &size) != ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "DeviceNumber", 0, &type, (LPBYTE)&DeviceNumber,
+                        &size) != ERROR_SUCCESS)
     {
         DeviceNumber = -1;
     }
 
     size = sizeof(screenWidth);
 
-    if (RegQueryValueEx(theKey, "ScreenWidth", 0, &type, (LPBYTE)&screenWidth, &size) != ERROR_SUCCESS)
+    if (RegQueryValueEx(theKey, "ScreenWidth", 0, &type, (LPBYTE)&screenWidth,
+                        &size) != ERROR_SUCCESS)
     {
         screenWidth = 640;
     }
@@ -260,7 +274,8 @@ int main(int argc, char *argv[])
 
     if ((DriverNumber < 0) || (DeviceNumber < 0))
     {
-        FalconDisplay.devmgr.ChooseDevice(&DriverNumber, &DeviceNumber, &screenWidth);
+        FalconDisplay.devmgr.ChooseDevice(&DriverNumber, &DeviceNumber,
+                                          &screenWidth);
     }
 
     Register();
@@ -283,19 +298,19 @@ int main(int argc, char *argv[])
     rect.right = screenWidth;
     rect.bottom = screenWidth * 3 / 4;
     AdjustWindowRect(&rect, FalconDisplay.windowStyle, FALSE);
-    FalconDisplay.appWin = CreateWindow(
-                               "FalconDisplay", /* class */
-                               "3D Output", /* caption */
-                               FalconDisplay.windowStyle, /* style */
-                               40, /* init. x pos */
-                               40, /* init. y pos */
-                               rect.right - rect.left, /* init. x size */
-                               rect.bottom - rect.top, /* init. y size */
-                               NULL, /* parent window */
-                               NULL, /* menu handle */
-                               NULL, /* program handle */
-                               NULL /* create parms */
-                           );
+    FalconDisplay.appWin =
+        CreateWindow("FalconDisplay", /* class */
+                     "3D Output", /* caption */
+                     FalconDisplay.windowStyle, /* style */
+                     40, /* init. x pos */
+                     40, /* init. y pos */
+                     rect.right - rect.left, /* init. x size */
+                     rect.bottom - rect.top, /* init. y size */
+                     NULL, /* parent window */
+                     NULL, /* menu handle */
+                     NULL, /* program handle */
+                     NULL /* create parms */
+        );
 
     if (!FalconDisplay.appWin)
     {
@@ -308,8 +323,10 @@ int main(int argc, char *argv[])
     // Display the new rendering window
     ShowWindow(FalconDisplay.appWin, SW_SHOW);
 
-    DWORD err  = GetLastError();
-    FalconDisplay.theDisplayDevice.Setup(DriverNumber, DeviceNumber, screenWidth, screenWidth * 3 / 4, 16, FALSE, TRUE, FalconDisplay.appWin, TRUE);
+    DWORD err = GetLastError();
+    FalconDisplay.theDisplayDevice.Setup(
+        DriverNumber, DeviceNumber, screenWidth, screenWidth * 3 / 4, 16, FALSE,
+        TRUE, FalconDisplay.appWin, TRUE);
     image = FalconDisplay.theDisplayDevice.GetImageBuffer();
 
     TheLoader.Setup();
@@ -375,15 +392,15 @@ int main(int argc, char *argv[])
         {
             switch (_getch())
             {
-                case 'Q':
-                case 'q':
-                    run = FALSE;
-                    break;
+            case 'Q':
+            case 'q':
+                run = FALSE;
+                break;
 
-                case 'C':
-                case 'c':
-                    ControlPanel();
-                    break;
+            case 'C':
+            case 'c':
+                ControlPanel();
+                break;
             }
         }
 
@@ -430,7 +447,8 @@ int main(int argc, char *argv[])
 #endif
 
             // Update the camera position
-            camInput.x = -(obj->Radius() * 0.75f + TheJoystick.throttle * obj->Radius() * 300.f);
+            camInput.x = -(obj->Radius() * 0.75f +
+                           TheJoystick.throttle * obj->Radius() * 300.f);
         }
         else
         {
@@ -444,17 +462,17 @@ int main(int argc, char *argv[])
 
         switch (cameraMode)
         {
-            case CAM_ORBIT:
-                MatrixMult(&camRot, &camInput, &camPos);
-                break;
+        case CAM_ORBIT:
+            MatrixMult(&camRot, &camInput, &camPos);
+            break;
 
-            case CAM_PAN:
-                camPos = camInput;
-                break;
+        case CAM_PAN:
+            camPos = camInput;
+            break;
 
-            case CAM_ORIGIN:
-                camPos = Origin;
-                break;
+        case CAM_ORIGIN:
+            camPos = Origin;
+            break;
         }
 
         // Draw the frame
@@ -472,7 +490,9 @@ int main(int argc, char *argv[])
         // renderer.Render3DObject(id, &objPos, &objRot);
         TheStateStack.DrawObject(obj, &objRot, &objPos, Scale);
 
-        sprintf(msgbuf, "id %0d frame %0d rate %s fps  Range %1.0f ft Radius %1.1f ft", id, frameCnt, frameRate, -camInput.x, obj->Radius());
+        sprintf(msgbuf,
+                "id %0d frame %0d rate %s fps  Range %1.0f ft Radius %1.1f ft",
+                id, frameCnt, frameRate, -camInput.x, obj->Radius());
         renderer.SetColor(0xFF000000);
 
         // OW Render2D::ScreenText requires the font textures to be loaded which is nearly impossible without shipping bspview with the falcon data stuff
@@ -492,9 +512,11 @@ int main(int argc, char *argv[])
         {
 
             // image->SwapBuffers(renderer.context.rc);
-            if (now == start)  start -= 1;
+            if (now == start)
+                start -= 1;
 
-            sprintf(frameRate, "%0.1f", frameCnt * 1000.0f / (float)(now - start));
+            sprintf(frameRate, "%0.1f",
+                    frameCnt * 1000.0f / (float)(now - start));
             ShiAssert(strlen(frameRate) < sizeof(frameRate));
             start = now;
             frameCnt = 0;
@@ -521,7 +543,7 @@ int main(int argc, char *argv[])
     {
         if (obj->SlotChildren[i])
         {
-            delete(obj->SlotChildren[i]);
+            delete (obj->SlotChildren[i]);
         }
     }
 
@@ -540,7 +562,6 @@ int main(int argc, char *argv[])
 }
 
 
-
 /*
  * Get a filename from the user
  */
@@ -554,7 +575,8 @@ BOOL GetNameFromUser(char *target, int targetSize)
     dialogInfo.lStructSize = sizeof(dialogInfo);
     dialogInfo.hwndOwner = NULL;
     dialogInfo.hInstance = NULL;
-    dialogInfo.lpstrFilter = "MuliGen OpenFlight file\0*.FLT\0Falcon 4.0 BSP Library\0*.HDR\0\0";
+    dialogInfo.lpstrFilter =
+        "MuliGen OpenFlight file\0*.FLT\0Falcon 4.0 BSP Library\0*.HDR\0\0";
     dialogInfo.lpstrCustomFilter = NULL;
     dialogInfo.nMaxCustFilter = 0;
     dialogInfo.nFilterIndex = 1;
@@ -576,7 +598,6 @@ BOOL GetNameFromUser(char *target, int targetSize)
 }
 
 
-
 /*
  * Get an object ID from the user
  */
@@ -591,19 +612,18 @@ int ChooseObjectID(int defaultID)
     rect.right = 200;
     rect.bottom = 100;
     AdjustWindowRect(&rect, WS_OVERLAPPEDWINDOW, FALSE);
-    editWin = CreateWindow(
-                  "EDIT", /* class */
-                  "Enter Visual Object ID",/* caption */
-                  WS_OVERLAPPEDWINDOW, /* style */
-                  CW_USEDEFAULT, /* init. x pos */
-                  CW_USEDEFAULT, /* init. y pos */
-                  rect.right - rect.left, /* init. x size */
-                  rect.bottom - rect.top, /* init. y size */
-                  NULL, /* parent window */
-                  NULL, /* menu handle */
-                  NULL, /* program handle */
-                  NULL /* create parms */
-              );
+    editWin = CreateWindow("EDIT", /* class */
+                           "Enter Visual Object ID", /* caption */
+                           WS_OVERLAPPEDWINDOW, /* style */
+                           CW_USEDEFAULT, /* init. x pos */
+                           CW_USEDEFAULT, /* init. y pos */
+                           rect.right - rect.left, /* init. x size */
+                           rect.bottom - rect.top, /* init. y size */
+                           NULL, /* parent window */
+                           NULL, /* menu handle */
+                           NULL, /* program handle */
+                           NULL /* create parms */
+    );
 
     if (!editWin)
     {
@@ -638,22 +658,22 @@ void DrawGroundPlane(Render3D *renderer, Texture *tex)
     worldSpace.z = 0.0f;
 
     // South West
-    worldSpace.x = -HALF_KM,  worldSpace.y = -HALF_KM;
+    worldSpace.x = -HALF_KM, worldSpace.y = -HALF_KM;
     renderer->TransformPoint(&worldSpace, &v0);
     v0.u = 0.0f, v0.v = 1.0f, v0.q = v0.csZ * Q_SCALE;
 
     // North West
-    worldSpace.x =  HALF_KM,  worldSpace.y = -HALF_KM;
+    worldSpace.x = HALF_KM, worldSpace.y = -HALF_KM;
     renderer->TransformPoint(&worldSpace, &v1);
     v1.u = 0.0f, v1.v = 0.0f, v1.q = v1.csZ * Q_SCALE;
 
     // South East
-    worldSpace.x = -HALF_KM,  worldSpace.y =  HALF_KM;
+    worldSpace.x = -HALF_KM, worldSpace.y = HALF_KM;
     renderer->TransformPoint(&worldSpace, &v2);
     v2.u = 1.0f, v2.v = 1.0f, v2.q = v2.csZ * Q_SCALE;
 
     // North East
-    worldSpace.x =  HALF_KM,  worldSpace.y =  HALF_KM;
+    worldSpace.x = HALF_KM, worldSpace.y = HALF_KM;
     renderer->TransformPoint(&worldSpace, &v3);
     v3.u = 1.0f, v3.v = 0.0f, v3.q = v3.csZ * Q_SCALE;
 
@@ -684,7 +704,8 @@ void ControlPanel(void)
     hInstance = GetModuleHandle(NULL);
     ShiAssert(hInstance);
 
-    result = DialogBox(hInstance, MAKEINTRESOURCE(IDD_BSPVIEW_CONTROLS), NULL, (DLGPROC)DialogProc);
+    result = DialogBox(hInstance, MAKEINTRESOURCE(IDD_BSPVIEW_CONTROLS), NULL,
+                       (DLGPROC)DialogProc);
     ShiAssert(result != -1);
 }
 
@@ -701,11 +722,14 @@ void ApplyControlPanelChanges(HWND dlg)
 
 
     // Camera settings
-    if (IsDlgButtonChecked(dlg, IDC_CAM_ORBIT) == BST_CHECKED) cameraMode = CAM_ORBIT;
+    if (IsDlgButtonChecked(dlg, IDC_CAM_ORBIT) == BST_CHECKED)
+        cameraMode = CAM_ORBIT;
 
-    if (IsDlgButtonChecked(dlg, IDC_CAM_PAN) == BST_CHECKED) cameraMode = CAM_PAN;
+    if (IsDlgButtonChecked(dlg, IDC_CAM_PAN) == BST_CHECKED)
+        cameraMode = CAM_PAN;
 
-    if (IsDlgButtonChecked(dlg, IDC_CAM_ORIGIN) == BST_CHECKED) cameraMode = CAM_ORIGIN;
+    if (IsDlgButtonChecked(dlg, IDC_CAM_ORIGIN) == BST_CHECKED)
+        cameraMode = CAM_ORIGIN;
 
 
     // Background color
@@ -738,69 +762,101 @@ void ApplyControlPanelChanges(HWND dlg)
             id = SendMessage(control, LB_GETITEMDATA, listSlot, 0);
             DWORD mask = 0;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT0) == BST_CHECKED) mask |= 0x00000001;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT0) == BST_CHECKED)
+                mask |= 0x00000001;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT1) == BST_CHECKED) mask |= 0x00000002;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT1) == BST_CHECKED)
+                mask |= 0x00000002;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT2) == BST_CHECKED) mask |= 0x00000004;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT2) == BST_CHECKED)
+                mask |= 0x00000004;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT3) == BST_CHECKED) mask |= 0x00000008;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT3) == BST_CHECKED)
+                mask |= 0x00000008;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT4) == BST_CHECKED) mask |= 0x00000010;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT4) == BST_CHECKED)
+                mask |= 0x00000010;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT5) == BST_CHECKED) mask |= 0x00000020;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT5) == BST_CHECKED)
+                mask |= 0x00000020;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT6) == BST_CHECKED) mask |= 0x00000040;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT6) == BST_CHECKED)
+                mask |= 0x00000040;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT7) == BST_CHECKED) mask |= 0x00000080;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT7) == BST_CHECKED)
+                mask |= 0x00000080;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT8) == BST_CHECKED) mask |= 0x00000100;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT8) == BST_CHECKED)
+                mask |= 0x00000100;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT9) == BST_CHECKED) mask |= 0x00000200;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT9) == BST_CHECKED)
+                mask |= 0x00000200;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT10) == BST_CHECKED) mask |= 0x00000400;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT10) == BST_CHECKED)
+                mask |= 0x00000400;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT11) == BST_CHECKED) mask |= 0x00000800;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT11) == BST_CHECKED)
+                mask |= 0x00000800;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT12) == BST_CHECKED) mask |= 0x00001000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT12) == BST_CHECKED)
+                mask |= 0x00001000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT13) == BST_CHECKED) mask |= 0x00002000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT13) == BST_CHECKED)
+                mask |= 0x00002000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT14) == BST_CHECKED) mask |= 0x00004000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT14) == BST_CHECKED)
+                mask |= 0x00004000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT15) == BST_CHECKED) mask |= 0x00008000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT15) == BST_CHECKED)
+                mask |= 0x00008000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT16) == BST_CHECKED) mask |= 0x00010000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT16) == BST_CHECKED)
+                mask |= 0x00010000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT17) == BST_CHECKED) mask |= 0x00020000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT17) == BST_CHECKED)
+                mask |= 0x00020000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT18) == BST_CHECKED) mask |= 0x00040000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT18) == BST_CHECKED)
+                mask |= 0x00040000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT19) == BST_CHECKED) mask |= 0x00080000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT19) == BST_CHECKED)
+                mask |= 0x00080000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT20) == BST_CHECKED) mask |= 0x00100000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT20) == BST_CHECKED)
+                mask |= 0x00100000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT21) == BST_CHECKED) mask |= 0x00200000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT21) == BST_CHECKED)
+                mask |= 0x00200000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT22) == BST_CHECKED) mask |= 0x00400000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT22) == BST_CHECKED)
+                mask |= 0x00400000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT23) == BST_CHECKED) mask |= 0x00800000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT23) == BST_CHECKED)
+                mask |= 0x00800000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT24) == BST_CHECKED) mask |= 0x01000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT24) == BST_CHECKED)
+                mask |= 0x01000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT25) == BST_CHECKED) mask |= 0x02000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT25) == BST_CHECKED)
+                mask |= 0x02000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT26) == BST_CHECKED) mask |= 0x04000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT26) == BST_CHECKED)
+                mask |= 0x04000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT27) == BST_CHECKED) mask |= 0x08000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT27) == BST_CHECKED)
+                mask |= 0x08000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT28) == BST_CHECKED) mask |= 0x10000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT28) == BST_CHECKED)
+                mask |= 0x10000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT29) == BST_CHECKED) mask |= 0x20000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT29) == BST_CHECKED)
+                mask |= 0x20000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT30) == BST_CHECKED) mask |= 0x40000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT30) == BST_CHECKED)
+                mask |= 0x40000000;
 
-            if (IsDlgButtonChecked(dlg, IDC_SW_BIT31) == BST_CHECKED) mask |= 0x80000000;
+            if (IsDlgButtonChecked(dlg, IDC_SW_BIT31) == BST_CHECKED)
+                mask |= 0x80000000;
 
             obj->SetSwitch(id, mask);
         }
@@ -857,7 +913,7 @@ void ApplyControlPanelChanges(HWND dlg)
             {
                 if (obj->SlotChildren[id])
                 {
-                    delete(obj->SlotChildren[id]);
+                    delete (obj->SlotChildren[id]);
                 }
 
                 ObjectInstance *childObj = new ObjectInstance(childVisID);
@@ -878,182 +934,187 @@ BOOL CALLBACK DialogProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
 
     switch (msg)
     {
-        case WM_INITDIALOG:
-            switch (cameraMode)
-            {
-                case CAM_ORBIT:
-                    CheckRadioButton(dlg, IDC_CAM_ORBIT, IDC_CAM_ORIGIN, IDC_CAM_ORBIT);
-                    break;
-
-                case CAM_PAN:
-                    CheckRadioButton(dlg, IDC_CAM_ORBIT, IDC_CAM_ORIGIN, IDC_CAM_PAN);
-                    break;
-
-                case CAM_ORIGIN:
-                    CheckRadioButton(dlg, IDC_CAM_ORBIT, IDC_CAM_ORIGIN, IDC_CAM_ORIGIN);
-                    break;
-            }
-
-
-            // Background color stuff
-            // RED
-            control = GetDlgItem(dlg, IDC_SLIDER_BG_R);
-            SendMessage(control, TBM_SETRANGE, TRUE, (LPARAM)MAKELONG(0, 255));
-            SendMessage(control, TBM_SETPOS,   TRUE, BACKGROUND_COLOR & 0xFF);
-
-            // GREEN
-            control = GetDlgItem(dlg, IDC_SLIDER_BG_G);
-            SendMessage(control, TBM_SETRANGE, TRUE, (LPARAM)MAKELONG(0, 255));
-            SendMessage(control, TBM_SETPOS,   TRUE, (BACKGROUND_COLOR >> 8) & 0xFF);
-
-            // BLUE
-            control = GetDlgItem(dlg, IDC_SLIDER_BG_B);
-            SendMessage(control, TBM_SETRANGE, TRUE, (LPARAM)MAKELONG(0, 255));
-            SendMessage(control, TBM_SETPOS,   TRUE, (BACKGROUND_COLOR >> 16) & 0xFF);
-
-
-
-            control = GetDlgItem(dlg, IDC_SW_NUMBER);
-
-            for (i = 0; i < obj->ParentObject->nSwitches; i++)
-            {
-                listSlot = SendMessage(control, LB_ADDSTRING, 0, (LPARAM)_itoa(i, string, sizeof(string)));
-                SendMessage(control, LB_SETITEMDATA, listSlot, i);
-            }
-
-            if (i == 0)
-            {
-                EnableWindow(GetDlgItem(dlg, IDC_SW_ENABLE), FALSE);
-            }
-
-            control = GetDlgItem(dlg, IDC_DOFROT_NUMBER);
-
-            for (i = 0; i < obj->ParentObject->nDOFs; i++)
-            {
-                listSlot = SendMessage(control, LB_ADDSTRING, 0, (LPARAM)_itoa(i, string, sizeof(string)));
-                SendMessage(control, LB_SETITEMDATA, listSlot, i);
-            }
-
-            if (i == 0)
-            {
-                EnableWindow(GetDlgItem(dlg, IDC_DOFROT_ENABLE), FALSE);
-            }
-
-            control = GetDlgItem(dlg, IDC_DOFTRANS_NUMBER);
-
-            for (i = 0; i < obj->ParentObject->nDOFs; i++)
-            {
-                listSlot = SendMessage(control, LB_ADDSTRING, 0, (LPARAM)_itoa(i, string, sizeof(string)));
-                SendMessage(control, LB_SETITEMDATA, listSlot, i);
-            }
-
-            if (i == 0)
-            {
-                EnableWindow(GetDlgItem(dlg, IDC_DOFTRANS_ENABLE), FALSE);
-            }
-
-            control = GetDlgItem(dlg, IDC_SLOT_NUMBER);
-
-            for (i = 0; i < obj->ParentObject->nSlots; i++)
-            {
-                listSlot = SendMessage(control, LB_ADDSTRING, 0, (LPARAM)_itoa(i, string, sizeof(string)));
-                SendMessage(control, LB_SETITEMDATA, listSlot, i);
-            }
-
-            if (i == 0)
-            {
-                EnableWindow(GetDlgItem(dlg, IDC_SLOT_ENABLE), FALSE);
-            }
-
-            result = TRUE;
+    case WM_INITDIALOG:
+        switch (cameraMode)
+        {
+        case CAM_ORBIT:
+            CheckRadioButton(dlg, IDC_CAM_ORBIT, IDC_CAM_ORIGIN, IDC_CAM_ORBIT);
             break;
 
-        case WM_COMMAND:
-            switch (LOWORD(wParam))
+        case CAM_PAN:
+            CheckRadioButton(dlg, IDC_CAM_ORBIT, IDC_CAM_ORIGIN, IDC_CAM_PAN);
+            break;
+
+        case CAM_ORIGIN:
+            CheckRadioButton(dlg, IDC_CAM_ORBIT, IDC_CAM_ORIGIN,
+                             IDC_CAM_ORIGIN);
+            break;
+        }
+
+
+        // Background color stuff
+        // RED
+        control = GetDlgItem(dlg, IDC_SLIDER_BG_R);
+        SendMessage(control, TBM_SETRANGE, TRUE, (LPARAM)MAKELONG(0, 255));
+        SendMessage(control, TBM_SETPOS, TRUE, BACKGROUND_COLOR & 0xFF);
+
+        // GREEN
+        control = GetDlgItem(dlg, IDC_SLIDER_BG_G);
+        SendMessage(control, TBM_SETRANGE, TRUE, (LPARAM)MAKELONG(0, 255));
+        SendMessage(control, TBM_SETPOS, TRUE, (BACKGROUND_COLOR >> 8) & 0xFF);
+
+        // BLUE
+        control = GetDlgItem(dlg, IDC_SLIDER_BG_B);
+        SendMessage(control, TBM_SETRANGE, TRUE, (LPARAM)MAKELONG(0, 255));
+        SendMessage(control, TBM_SETPOS, TRUE, (BACKGROUND_COLOR >> 16) & 0xFF);
+
+
+        control = GetDlgItem(dlg, IDC_SW_NUMBER);
+
+        for (i = 0; i < obj->ParentObject->nSwitches; i++)
+        {
+            listSlot = SendMessage(control, LB_ADDSTRING, 0,
+                                   (LPARAM)_itoa(i, string, sizeof(string)));
+            SendMessage(control, LB_SETITEMDATA, listSlot, i);
+        }
+
+        if (i == 0)
+        {
+            EnableWindow(GetDlgItem(dlg, IDC_SW_ENABLE), FALSE);
+        }
+
+        control = GetDlgItem(dlg, IDC_DOFROT_NUMBER);
+
+        for (i = 0; i < obj->ParentObject->nDOFs; i++)
+        {
+            listSlot = SendMessage(control, LB_ADDSTRING, 0,
+                                   (LPARAM)_itoa(i, string, sizeof(string)));
+            SendMessage(control, LB_SETITEMDATA, listSlot, i);
+        }
+
+        if (i == 0)
+        {
+            EnableWindow(GetDlgItem(dlg, IDC_DOFROT_ENABLE), FALSE);
+        }
+
+        control = GetDlgItem(dlg, IDC_DOFTRANS_NUMBER);
+
+        for (i = 0; i < obj->ParentObject->nDOFs; i++)
+        {
+            listSlot = SendMessage(control, LB_ADDSTRING, 0,
+                                   (LPARAM)_itoa(i, string, sizeof(string)));
+            SendMessage(control, LB_SETITEMDATA, listSlot, i);
+        }
+
+        if (i == 0)
+        {
+            EnableWindow(GetDlgItem(dlg, IDC_DOFTRANS_ENABLE), FALSE);
+        }
+
+        control = GetDlgItem(dlg, IDC_SLOT_NUMBER);
+
+        for (i = 0; i < obj->ParentObject->nSlots; i++)
+        {
+            listSlot = SendMessage(control, LB_ADDSTRING, 0,
+                                   (LPARAM)_itoa(i, string, sizeof(string)));
+            SendMessage(control, LB_SETITEMDATA, listSlot, i);
+        }
+
+        if (i == 0)
+        {
+            EnableWindow(GetDlgItem(dlg, IDC_SLOT_ENABLE), FALSE);
+        }
+
+        result = TRUE;
+        break;
+
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDC_SW_ENABLE:
+            if (IsDlgButtonChecked(dlg, IDC_SW_ENABLE) == BST_CHECKED)
             {
-                case IDC_SW_ENABLE:
-                    if (IsDlgButtonChecked(dlg, IDC_SW_ENABLE) == BST_CHECKED)
-                    {
-                        EnableWindow(GetDlgItem(dlg, IDC_SW_NUMBER), TRUE);
-                    }
-                    else
-                    {
-                        control = GetDlgItem(dlg, IDC_SW_NUMBER);
-                        SendMessage(control, LB_SETCURSEL, (WPARAM) - 1, 0);
-                        EnableWindow(control, FALSE);
-                    }
-
-                    break;
-
-                case IDC_DOFROT_ENABLE:
-                    if (IsDlgButtonChecked(dlg, IDC_DOFROT_ENABLE) == BST_CHECKED)
-                    {
-                        EnableWindow(GetDlgItem(dlg, IDC_DOFROT_NUMBER), TRUE);
-                    }
-                    else
-                    {
-                        control = GetDlgItem(dlg, IDC_DOFROT_NUMBER);
-                        SendMessage(control, LB_SETCURSEL, (WPARAM) - 1, 0);
-                        EnableWindow(control, FALSE);
-                    }
-
-                    break;
-
-                case IDC_DOFTRANS_ENABLE:
-                    if (IsDlgButtonChecked(dlg, IDC_DOFTRANS_ENABLE) == BST_CHECKED)
-                    {
-                        EnableWindow(GetDlgItem(dlg, IDC_DOFTRANS_NUMBER), TRUE);
-                    }
-                    else
-                    {
-                        control = GetDlgItem(dlg, IDC_DOFTRANS_NUMBER);
-                        SendMessage(control, LB_SETCURSEL, (WPARAM) - 1, 0);
-                        EnableWindow(control, FALSE);
-                    }
-
-                    break;
-
-                case IDC_SLOT_ENABLE:
-                    if (IsDlgButtonChecked(dlg, IDC_SLOT_ENABLE) == BST_CHECKED)
-                    {
-                        EnableWindow(GetDlgItem(dlg, IDC_SLOT_NUMBER), TRUE);
-                    }
-                    else
-                    {
-                        control = GetDlgItem(dlg, IDC_SLOT_NUMBER);
-                        SendMessage(control, LB_SETCURSEL, (WPARAM) - 1, 0);
-                        EnableWindow(control, FALSE);
-                    }
-
-                    break;
-
-                case IDOK:
-                    ApplyControlPanelChanges(dlg);
-                    EndDialog(dlg, 0);
-                    break;
-
-                case IDCANCEL:
-                    EndDialog(dlg, 0);
-                    break;
-
-                case IDQUIT:
-                    run = FALSE;
-                    EndDialog(dlg, 0);
-                    break;
+                EnableWindow(GetDlgItem(dlg, IDC_SW_NUMBER), TRUE);
+            }
+            else
+            {
+                control = GetDlgItem(dlg, IDC_SW_NUMBER);
+                SendMessage(control, LB_SETCURSEL, (WPARAM)-1, 0);
+                EnableWindow(control, FALSE);
             }
 
             break;
 
-        default:
-            result = FALSE;
+        case IDC_DOFROT_ENABLE:
+            if (IsDlgButtonChecked(dlg, IDC_DOFROT_ENABLE) == BST_CHECKED)
+            {
+                EnableWindow(GetDlgItem(dlg, IDC_DOFROT_NUMBER), TRUE);
+            }
+            else
+            {
+                control = GetDlgItem(dlg, IDC_DOFROT_NUMBER);
+                SendMessage(control, LB_SETCURSEL, (WPARAM)-1, 0);
+                EnableWindow(control, FALSE);
+            }
+
             break;
+
+        case IDC_DOFTRANS_ENABLE:
+            if (IsDlgButtonChecked(dlg, IDC_DOFTRANS_ENABLE) == BST_CHECKED)
+            {
+                EnableWindow(GetDlgItem(dlg, IDC_DOFTRANS_NUMBER), TRUE);
+            }
+            else
+            {
+                control = GetDlgItem(dlg, IDC_DOFTRANS_NUMBER);
+                SendMessage(control, LB_SETCURSEL, (WPARAM)-1, 0);
+                EnableWindow(control, FALSE);
+            }
+
+            break;
+
+        case IDC_SLOT_ENABLE:
+            if (IsDlgButtonChecked(dlg, IDC_SLOT_ENABLE) == BST_CHECKED)
+            {
+                EnableWindow(GetDlgItem(dlg, IDC_SLOT_NUMBER), TRUE);
+            }
+            else
+            {
+                control = GetDlgItem(dlg, IDC_SLOT_NUMBER);
+                SendMessage(control, LB_SETCURSEL, (WPARAM)-1, 0);
+                EnableWindow(control, FALSE);
+            }
+
+            break;
+
+        case IDOK:
+            ApplyControlPanelChanges(dlg);
+            EndDialog(dlg, 0);
+            break;
+
+        case IDCANCEL:
+            EndDialog(dlg, 0);
+            break;
+
+        case IDQUIT:
+            run = FALSE;
+            EndDialog(dlg, 0);
+            break;
+        }
+
+        break;
+
+    default:
+        result = FALSE;
+        break;
     }
 
     return result;
 }
 
 
-LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam,
+                                      LPARAM lParam)
 {
     LRESULT retval = 0;
     static InTimer = 0;
@@ -1065,108 +1126,110 @@ LRESULT CALLBACK FalconMessageHandler(HWND hwnd, UINT message, WPARAM wParam, LP
 
     // Set the FPU to 24bit precision
 #if defined(_M_IX86)
-    _controlfp(_PC_24, MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
+    _controlfp(
+        _PC_24,
+        MCW_PC); // Artscout - 2026 (x64): x87 precision control (_PC_24) unsupported on SSE2 -> CRT assert
 #endif
 #endif
 
     switch (message)
     {
-        case WM_PAINT:
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        BeginPaint(FalconDisplay.appWin, &ps);
+        EndPaint(FalconDisplay.appWin, &ps);
+        retval = 0;
+        break;
+    }
+
+    case WM_CHAR:
+    {
+        switch (wParam)
         {
-            PAINTSTRUCT ps;
-            BeginPaint(FalconDisplay.appWin, &ps);
-            EndPaint(FalconDisplay.appWin, &ps);
-            retval = 0;
+        case 'Q':
+        case 'q':
+            run = FALSE;
             break;
-        }
 
-        case WM_CHAR:
-        {
-            switch (wParam)
-            {
-                case 'Q':
-                case 'q':
-                    run = FALSE;
-                    break;
-
-                case 'C':
-                case 'c':
-                    ControlPanel();
-                    break;
-
-                case 'z':
-                    zoompos -= 0.01f;
-                    break;
-
-                case 'Z':
-                    zoompos -= 0.1f;
-                    break;
-
-                case 'x':
-                    zoompos += 0.01f;
-                    break;
-
-                case 'X':
-                    zoompos += 0.1f;
-                    break;
-
-                case 'p':
-                    pitch += 1.0f * DTR;
-                    break;
-
-                case 'P':
-                    pitch -= 1.0f * DTR;
-                    break;
-
-                case 'r':
-                    roll += 1.0f * DTR;
-                    break;
-
-                case 'R':
-                    roll -= 1.0f * DTR;
-                    break;
-
-                case 'y':
-                    yaw += 1.0f * DTR;
-                    break;
-
-                case 'Y':
-                    yaw -= 1.0f * DTR;
-                    break;
-
-                case '0':
-                    yaw = pitch = roll = 0.0f;
-                    break;
-            }
-
-            retval = 0;
+        case 'C':
+        case 'c':
+            ControlPanel();
             break;
-        }
 
-        case WM_MOVE:
-        {
-            RECT dest;
-            GetClientRect(FalconDisplay.appWin, &dest);
-            ClientToScreen(FalconDisplay.appWin, (LPPOINT)&dest);
-            ClientToScreen(FalconDisplay.appWin, (LPPOINT)&dest + 1);
+        case 'z':
+            zoompos -= 0.01f;
+            break;
 
-            if (image && image->frontSurface())
-            {
-                image->UpdateFrontWindowRect(&dest);
-            }
+        case 'Z':
+            zoompos -= 0.1f;
+            break;
 
-            InvalidateRect(FalconDisplay.appWin, &dest, FALSE);
+        case 'x':
+            zoompos += 0.01f;
+            break;
+
+        case 'X':
+            zoompos += 0.1f;
+            break;
+
+        case 'p':
+            pitch += 1.0f * DTR;
+            break;
+
+        case 'P':
+            pitch -= 1.0f * DTR;
+            break;
+
+        case 'r':
+            roll += 1.0f * DTR;
+            break;
+
+        case 'R':
+            roll -= 1.0f * DTR;
+            break;
+
+        case 'y':
+            yaw += 1.0f * DTR;
+            break;
+
+        case 'Y':
+            yaw -= 1.0f * DTR;
+            break;
+
+        case '0':
+            yaw = pitch = roll = 0.0f;
+            break;
         }
 
         retval = 0;
         break;
+    }
 
-        case WM_QUIT:
-            run = FALSE;
-            break;
+    case WM_MOVE:
+    {
+        RECT dest;
+        GetClientRect(FalconDisplay.appWin, &dest);
+        ClientToScreen(FalconDisplay.appWin, (LPPOINT)&dest);
+        ClientToScreen(FalconDisplay.appWin, (LPPOINT)&dest + 1);
 
-        default:
-            return DefWindowProc(hwnd, message, wParam, lParam);
+        if (image && image->frontSurface())
+        {
+            image->UpdateFrontWindowRect(&dest);
+        }
+
+        InvalidateRect(FalconDisplay.appWin, &dest, FALSE);
+    }
+
+        retval = 0;
+        break;
+
+    case WM_QUIT:
+        run = FALSE;
+        break;
+
+    default:
+        return DefWindowProc(hwnd, message, wParam, lParam);
     }
 
     return retval;

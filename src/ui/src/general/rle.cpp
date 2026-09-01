@@ -1,4 +1,4 @@
-#include <cISO646>
+#include <ciso646>
 #include <windows.h>
 
 // Test Headers
@@ -121,7 +121,7 @@ long CompressRLE8Bit(uchar *Src, uchar *Dest, long srcsize)
         }
     }
 
-    return(Size);
+    return (Size);
 }
 
 long DecompressRLE8Bit(uchar *Src, uchar *Dest, long Size)
@@ -162,7 +162,7 @@ long DecompressRLE8Bit(uchar *Src, uchar *Dest, long Size)
         }
     }
 
-    return(OutSize);
+    return (OutSize);
 }
 
 
@@ -277,7 +277,7 @@ long CompressRLE16Bit(WORD *Src, WORD *Dest, long srcsize)
         }
     }
 
-    return(Size);
+    return (Size);
 }
 
 long DecompressRLE16Bit(WORD *Src, WORD *Dest, long Size)
@@ -317,7 +317,7 @@ long DecompressRLE16Bit(WORD *Src, WORD *Dest, long Size)
         }
     }
 
-    return(OutSize);
+    return (OutSize);
 }
 
 /* Test Code

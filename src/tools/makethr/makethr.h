@@ -9,4 +9,3 @@ struct TextureEntry
 };
 
 #endif
-

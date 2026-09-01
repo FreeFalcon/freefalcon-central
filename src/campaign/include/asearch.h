@@ -8,7 +8,7 @@
 #define AS_THREAD_SAFE 1
 
 #ifdef AS_THREAD_SAFE
-#include "F4Thread.h" // Insert your thread package here
+#include "f4thread.h" // Insert your thread package here
 #endif
 
 // ==========================================
@@ -16,8 +16,10 @@
 // ==========================================
 
 #define RETURN_EMPTY_ON_FAIL 0x00 // Return an empty path if search failed
-#define RETURN_PARTIAL_ON_FAIL 0x01 // Return a partial path if we failed to complete before timeout
-#define RETURN_PARTIAL_ON_MAX 0x02 // Return a partial path if we exceed our path length
+#define RETURN_PARTIAL_ON_FAIL                                                 \
+    0x01 // Return a partial path if we failed to complete before timeout
+#define RETURN_PARTIAL_ON_MAX                                                  \
+    0x02 // Return a partial path if we exceed our path length
 
 // ==========================================
 // A* Data types and defines
@@ -30,10 +32,11 @@
 // 8 should be divisible by this (i.e: 2,4 or 8)
 #define PATH_MASK 0xF // binary number, PATH_BITS wide, all 1s.
 
-#define PATH_ARRAY  ((MAX_DISTANCE*PATH_BITS)+7)/8 // # of array entries
-#define PATH_DIV (8/PATH_BITS)
+#define PATH_ARRAY ((MAX_DISTANCE * PATH_BITS) + 7) / 8 // # of array entries
+#define PATH_DIV (8 / PATH_BITS)
 
-#define SMALL_PATH_MAX_DISTANCE 8 // Maximum length of our special smaller version of the path class
+#define SMALL_PATH_MAX_DISTANCE                                                \
+    8 // Maximum length of our special smaller version of the path class
 
 typedef float costtype;
 
@@ -54,24 +57,26 @@ class BasePathClass
 {
     friend class SmallPathClass;
     friend class PathClass;
+
 private:
     costtype cost; // Cost of full path
     uchar length; // Length of the path
     uchar max_length; // Longest this path can get
     uchar current_location;
-    uchar *path; // The actual path bits
+    uchar* path; // The actual path bits
 
 public:
     BasePathClass(void);
     //sfr: added rem
     //BasePathClass (uchar **stream);
-    BasePathClass(uchar **stream, long *rem);
+    BasePathClass(uchar** stream, long* rem);
     ~BasePathClass();
-    int Save(uchar **stream);
+    int Save(uchar** stream);
     int SaveSize(void);
 
     int GetNextDirection(void); // Get the next direction in the path
-    int GetPreviousDirection(int num); // Get the numth direction before current direction
+    int GetPreviousDirection(
+        int num); // Get the numth direction before current direction
     int GetDirection(int num); // Get the numth direction in the path
     int GetCurrentPosition(void)
     {
@@ -109,7 +114,8 @@ public:
 class PathClass : public BasePathClass
 {
 private:
-    uchar path_pool[((MAX_DISTANCE*PATH_BITS) + 7) / 8]; // The actual path bits
+    uchar
+        path_pool[((MAX_DISTANCE * PATH_BITS) + 7) / 8]; // The actual path bits
 public:
     PathClass(void);
     int SaveSize(void);
@@ -118,12 +124,13 @@ public:
 class SmallPathClass : public BasePathClass
 {
 private:
-    uchar path_pool[((SMALL_PATH_MAX_DISTANCE*PATH_BITS) + 7) / 8]; // The actual path bits
+    uchar path_pool[((SMALL_PATH_MAX_DISTANCE * PATH_BITS) + 7) /
+                    8]; // The actual path bits
 public:
     SmallPathClass(void);
     // sfr: added serialization functions functions
-    SmallPathClass(uchar **stream, long *rem);
-    int Save(uchar **stream);
+    SmallPathClass(uchar** stream, long* rem);
+    int Save(uchar** stream);
     int SaveSize(void);
 };
 
@@ -172,10 +179,13 @@ public:
     // returns:  1 = Successfull search
     //  0 = Found partial path
     // -1 = Unable to find a path
-    int ASSearch(Path p, void* origin, void* target, void (*ex)(AS_DataClass* asd, void* o, void* t), int flags, int max_search, costtype max_cost);
+    int ASSearch(Path p, void* origin, void* target,
+                 void (*ex)(AS_DataClass* asd, void* o, void* t), int flags,
+                 int max_search, costtype max_cost);
 
     // This needs to be called per potential direction by the extend function
-    void ASFillNode(int node, costtype *cost, costtype *to_go, char dir, void* where);
+    void ASFillNode(int node, costtype* cost, costtype* to_go, char dir,
+                    void* where);
 
 private:
     void AS_dispose_queue(ASNode N);

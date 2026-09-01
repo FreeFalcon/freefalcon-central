@@ -9,46 +9,44 @@
 #include "simveh.h"
 #include "otwdrive.h"
 #include "classtbl.h"
-#include "Simdrive.h"
-#include "BeamRider.h"
+#include "simdrive.h"
+#include "beamrider.h"
 #include "fcc.h"
 #include "falcsess.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Vehicle.h"
+#include "graphics/include/drawbsp.h"
+#include "vehicle.h"
 #include "aircrft.h"
 #include "fack.h"
 #include "falcmesg.h"
-#include "MsgInc/TrackMsg.h"
-#include "Fsound.h" // MN
-#include "SoundFX.h" // MN
+#include "msginc/trackmsg.h"
+#include "fsound.h" // MN
+#include "soundfx.h" // MN
 
 extern short NumRocketTypes; // M.N.
 extern int g_nMissileFix; // MN
 
-void CreateDrawable(SimBaseClass* theObject, float objectScale);
+void CreateDrawable(SimBaseClass *theObject, float objectScale);
 
 int SMSClass::LaunchMissile(void)
 {
-    MissileClass* theMissile;
+    MissileClass *theMissile;
     int retval = FALSE;
-    SimBaseClass* lastWeapon;
+    SimBaseClass *lastWeapon;
     FireControlComputer *FCC = ownship->GetFCC();
-    SimObjectType* tmpTargetPtr;
+    SimObjectType *tmpTargetPtr;
     int isCaged, wpnStation, wpnNum, isSpot, isSlave, isTD;
     float x, y, z, az, el;
-    VehicleClassDataType* vc;
+    VehicleClassDataType *vc;
     int visFlag;
 
-    if ( not FCC)
+    if (not FCC)
     {
         ClearFlag(Firing);
         return retval;
     }
 
     // Check for SMS Failure or other reason not to launch
-    if ( not CurStationOK() or
- not curWeapon or
-        Ownship()->OnGround() or
+    if (not CurStationOK() or not curWeapon or Ownship()->OnGround() or
         MasterArm() not_eq Arm)
     {
         return retval;
@@ -69,11 +67,13 @@ int SMSClass::LaunchMissile(void)
         //M.N. don't need to uncage or power when in combat AP mode
         if (g_bRealisticAvionics)
         {
-            if ((curWeapon->parent and 
-                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and 
- not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP) and 
- not Powered) and curWeapon->GetType() == TYPE_MISSILE and 
-                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND and 
+            if ((curWeapon->parent and
+                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and
+                 not(((AircraftClass *)curWeapon->parent.get())
+                         ->AutopilotType() == AircraftClass::CombatAP) and
+                 not Powered) and
+                curWeapon->GetType() == TYPE_MISSILE and
+                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND and
                 (curWeapon->GetSPType() == SPTYPE_AGM65A or
                  curWeapon->GetSPType() == SPTYPE_AGM65B or
                  curWeapon->GetSPType() == SPTYPE_AGM65D or
@@ -84,11 +84,13 @@ int SMSClass::LaunchMissile(void)
         // RV - I-Hawk - Fire HARMs only if powered-up
         if (g_bRealisticAvionics)
         {
-            if ((curWeapon->parent and 
-                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and 
- not (((AircraftClass *)curWeapon->parent.get())->AutopilotType() == AircraftClass::CombatAP) and 
- not GetHARMPowerState()) and curWeapon->GetType() == TYPE_MISSILE and 
-                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND and 
+            if ((curWeapon->parent and
+                 ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and
+                 not(((AircraftClass *)curWeapon->parent.get())
+                         ->AutopilotType() == AircraftClass::CombatAP) and
+                 not GetHARMPowerState()) and
+                curWeapon->GetType() == TYPE_MISSILE and
+                curWeapon->GetSType() == STYPE_MISSILE_AIR_GROUND and
                 (curWeapon->GetSPType() == SPTYPE_AGM88))
             {
                 return FALSE;
@@ -97,16 +99,20 @@ int SMSClass::LaunchMissile(void)
 
         // JB 010109 CTD sanity check
         //if (theMissile->launchState == MissileClass::PreLaunch)
-        if (theMissile->launchState == MissileClass::PreLaunch and curHardpoint not_eq -1)
-            // JB 010109 CTD sanity check
+        if (theMissile->launchState == MissileClass::PreLaunch and
+            curHardpoint not_eq -1)
+        // JB 010109 CTD sanity check
         {
             // Set the missile position on the AC
             wpnNum = min(hardPoint[curHardpoint]->NumPoints() - 1, curWpnNum);
             hardPoint[curHardpoint]->GetSubPosition(wpnNum, &x, &y, &z);
             hardPoint[curHardpoint]->GetSubRotation(wpnNum, &az, &el);
 
-            MonoPrint("Platform %.4f %.4f %.4f\n", ownship->XPos(), ownship->YPos(), ownship->ZPos());
-            MonoPrint("Launching Missile xyz:%.4f %.4f %.4f  az:%.4f  el:%.4f\n", x, y, z, az, el);
+            MonoPrint("Platform %.4f %.4f %.4f\n", ownship->XPos(),
+                      ownship->YPos(), ownship->ZPos());
+            MonoPrint(
+                "Launching Missile xyz:%.4f %.4f %.4f  az:%.4f  el:%.4f\n", x,
+                y, z, az, el);
 
             // MLR 5/17/2004 - I was testing this addition below
             //theMissile->SetDelta(ownship->XDelta(), ownship->YDelta(), ownship->ZDelta());
@@ -115,16 +121,19 @@ int SMSClass::LaunchMissile(void)
             theMissile->SetLaunchRotation(az, el);
 
             // 2001-03-02 MOVED HERE BY S.G.
-            if (theMissile->sensorArray and theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
+            if (theMissile->sensorArray and
+                theMissile->sensorArray[0]->Type() == SensorClass::RadarHoming)
             {
                 // Have the missile use the launcher's radar for guidance
-                ((BeamRiderClass*)theMissile->sensorArray[0])->SetGuidancePlatform(ownship);
+                ((BeamRiderClass *)theMissile->sensorArray[0])
+                    ->SetGuidancePlatform(ownship);
             }
 
             // END OF MOVED SECTION
 
             // Don't hand off ground targets to radar guided air to air missiles
-            if (curWeaponType not_eq wtAim120 or (tmpTargetPtr and not tmpTargetPtr->BaseData()->OnGround()))
+            if (curWeaponType not_eq wtAim120 or
+                (tmpTargetPtr and not tmpTargetPtr->BaseData()->OnGround()))
             {
                 theMissile->Start(tmpTargetPtr);
             }
@@ -145,31 +154,37 @@ int SMSClass::LaunchMissile(void)
             // 2001-04-14 MN moved here from AircraftClass::DoWeapons - play bomb drop sound when flag is set and we are an AG missile
 
 
-
             // assume sounds are internal
             if (ownship)
             {
                 int sfxid = 0;
 
                 //RV - I-Hawk - Include all missiles types here, AA and AG
-                if (theMissile and theMissile->parent and FCC and (FCC->GetMasterMode() == FireControlComputer::AirGroundMissile or
-                        FCC->GetMasterMode() == FireControlComputer::AirGroundHARM or
-                        FCC->GetMasterMode() == FireControlComputer::Missile or
-                        FCC->GetMasterMode() == FireControlComputer::MissileOverride or
-                        FCC->GetMasterMode() == FireControlComputer::Dogfight))
+                if (theMissile and theMissile->parent and FCC and
+                    (FCC->GetMasterMode() ==
+                         FireControlComputer::AirGroundMissile or
+                     FCC->GetMasterMode() ==
+                         FireControlComputer::AirGroundHARM or
+                     FCC->GetMasterMode() == FireControlComputer::Missile or
+                     FCC->GetMasterMode() ==
+                         FireControlComputer::MissileOverride or
+                     FCC->GetMasterMode() == FireControlComputer::Dogfight))
                 {
                     if (g_nMissileFix bitand 0x80)
                     {
-                        Falcon4EntityClassType* classPtr;
-                        classPtr = (Falcon4EntityClassType*)theMissile->EntityType();
+                        Falcon4EntityClassType *classPtr;
+                        classPtr =
+                            (Falcon4EntityClassType *)theMissile->EntityType();
                         WeaponClassDataType *wc = NULL;
 
                         if (classPtr)
                         {
-                            wc = (WeaponClassDataType*)classPtr->dataPtr; // this is important
+                            wc = (WeaponClassDataType *)
+                                     classPtr->dataPtr; // this is important
                         }
 
-                        if (wc and (wc->Flags bitand WEAP_BOMBDROPSOUND)) // for JSOW, JDAM...
+                        if (wc and (wc->Flags bitand
+                                    WEAP_BOMBDROPSOUND)) // for JSOW, JDAM...
                         {
                             sfxid = SFX_BOMBDROP;
                         }
@@ -201,12 +216,11 @@ int SMSClass::LaunchMissile(void)
             }
 
 
-
             // Leonr moved here to avoid per frame database search
             // edg: moved insertion into vudatabse here.  I need
             // the missile to be retrievable from the db when
             // processing the weapon fire message
-            vuDatabase->/*Quick*/Insert(theMissile);
+            vuDatabase->/*Quick*/ Insert(theMissile);
             theMissile->Wake();
 
             FCC->lastMissileImpactTime = FCC->nextMissileImpactTime;
@@ -218,7 +232,7 @@ int SMSClass::LaunchMissile(void)
             isTD = theMissile->isTD; // Marco Edit - TD/BP Support
 
             wpnStation = curHardpoint;
-            wpnNum     = curWpnNum;
+            wpnNum = curWpnNum;
             WeaponStep(TRUE);
 
             if (lastWeapon == curWeapon)
@@ -230,10 +244,10 @@ int SMSClass::LaunchMissile(void)
                 //MI if we launch one uncaged, the next one's caged again
                 if (curWeapon)
                 {
-                    ((MissileClass*)curWeapon.get())->isCaged = TRUE;
-                    ((MissileClass*)curWeapon.get())->isSpot = isSpot;
-                    ((MissileClass*)curWeapon.get())->isSlave = isSlave;
-                    ((MissileClass*)curWeapon.get())->isTD = isTD;
+                    ((MissileClass *)curWeapon.get())->isCaged = TRUE;
+                    ((MissileClass *)curWeapon.get())->isSpot = isSpot;
+                    ((MissileClass *)curWeapon.get())->isSlave = isSlave;
+                    ((MissileClass *)curWeapon.get())->isTD = isTD;
                 }
             }
 
@@ -245,7 +259,8 @@ int SMSClass::LaunchMissile(void)
             if (visFlag bitand (1 << curHardpoint) and theMissile->drawPointer)
             {
                 // Detach visual from parent
-                hardPoint[wpnStation]->DetachWeaponBSP(theMissile); // MLR 2/21/2004 -
+                hardPoint[wpnStation]->DetachWeaponBSP(
+                    theMissile); // MLR 2/21/2004 -
                 /*
                 if (hardPoint[wpnStation]->GetRackOrPylon()) // MLR 2/20/2004 - added OrPylon
                 {
@@ -264,9 +279,10 @@ int SMSClass::LaunchMissile(void)
             {
                 DecrementStores(hardPoint[wpnStation]->GetWeaponClass(), 1);
                 RemoveStore(wpnStation, hardPoint[wpnStation]->weaponId);
-                hardPoint[wpnStation]->weaponCount --;
+                hardPoint[wpnStation]->weaponCount--;
 
-                if (hardPoint[wpnStation]->weaponCount >= hardPoint[wpnStation]->NumPoints())
+                if (hardPoint[wpnStation]->weaponCount >=
+                    hardPoint[wpnStation]->NumPoints())
                 {
                     ReplaceMissile(wpnStation, theMissile);
                 }
@@ -276,7 +292,8 @@ int SMSClass::LaunchMissile(void)
 
                     if (ownship->IsLocal())
                     {
-                        FalconTrackMessage* trackMsg = new FalconTrackMessage(1, ownship->Id(), FalconLocalGame);
+                        FalconTrackMessage *trackMsg = new FalconTrackMessage(
+                            1, ownship->Id(), FalconLocalGame);
                         trackMsg->dataBlock.trackType = Track_RemoveWeapon;
                         trackMsg->dataBlock.hardpoint = wpnStation;
                         trackMsg->dataBlock.id = ownship->Id();
@@ -294,8 +311,8 @@ int SMSClass::LaunchMissile(void)
     //MI SOI after firing Mav
     if (g_bRealisticAvionics)
     {
-        if (curWeapon and curWeapon->parent and 
-            ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and 
+        if (curWeapon and curWeapon->parent and
+            ((AircraftClass *)curWeapon->parent.get())->IsPlayer() and
             (curWeapon->GetSPType() == SPTYPE_AGM65A or
              curWeapon->GetSPType() == SPTYPE_AGM65B or
              curWeapon->GetSPType() == SPTYPE_AGM65D or
@@ -328,13 +345,15 @@ void SMSBaseClass::ReplaceMissile(int station, MissileClass *theMissile)
         slotId = station;
     }
 
-    newMissile.reset(InitAMissile(ownship, hardPoint[station]->weaponId, theMissile->GetRackSlot()));
-    MissileClass *nm = static_cast<MissileClass*>(newMissile.get());
+    newMissile.reset(InitAMissile(ownship, hardPoint[station]->weaponId,
+                                  theMissile->GetRackSlot()));
+    MissileClass *nm = static_cast<MissileClass *>(newMissile.get());
     nm->isCaged = TRUE;
     nm->isSpot = FALSE;
     nm->isSlave = TRUE;
     nm->isTD = FALSE;
-    visFlag = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE)->VisibleFlags;
+    visFlag = GetVehicleClassData(ownship->Type() - VU_LAST_ENTITY_TYPE)
+                  ->VisibleFlags;
 
     if (visFlag bitand (1 << station))
     {
@@ -343,7 +362,8 @@ void SMSBaseClass::ReplaceMissile(int station, MissileClass *theMissile)
         CreateDrawable(newMissile.get(), OTWDriver.Scale());
 
         // Fix up drawable parent/child relations
-        hardPoint[station]->AttachWeaponBSP(newMissile.get()); // MLR 2/21/2004 -
+        hardPoint[station]->AttachWeaponBSP(
+            newMissile.get()); // MLR 2/21/2004 -
 
         /*
         if (hardPoint[station]->GetRackOrPylon())// MLR 2/20/2004 - added OrPylon
@@ -621,7 +641,7 @@ int SMSClass::LaunchRocket(void)
 
     theLau = (BombClass *)curWeapon.get();
 
-    if ( not theLau)
+    if (not theLau)
     {
         WeaponStep(FALSE);
         theLau = (BombClass *)curWeapon.get();
@@ -651,7 +671,7 @@ int SMSClass::LaunchRocket(void)
 
             if (theLau->LauGetRoundsRemaining() == 0)
             {
-                if ( not UnlimitedAmmo() and hardPoint and (curHardpoint >= 0))
+                if (not UnlimitedAmmo() and hardPoint and (curHardpoint >= 0))
                 {
                     hardPoint[curHardpoint]->weaponCount--;
 
@@ -668,7 +688,7 @@ int SMSClass::LaunchRocket(void)
     runRockets = 1;
 
     // always stop firing now
-    return(1);
+    return (1);
 }
 
 void SMSClass::RunRockets(void)
@@ -681,7 +701,7 @@ void SMSClass::RunRockets(void)
 
         BombClass *theLau;
 
-        for (l = 1;  l < numHardpoints; l++)
+        for (l = 1; l < numHardpoints; l++)
         {
             theLau = (BombClass *)hardPoint[l]->weaponPointer.get();
 
@@ -709,7 +729,7 @@ void SMSClass::RunRockets(void)
 
 void SMSClass::FireRocket(int hpId, BombClass *theLau)
 {
-    MissileClass* theMissile;
+    MissileClass *theMissile;
     FireControlComputer *FCC = ownship->GetFCC();
     int wpnNum;
     float az, el, x, y, z;
@@ -717,7 +737,8 @@ void SMSClass::FireRocket(int hpId, BombClass *theLau)
     if (theLau->LauCheckTimer())
     {
         // create a new rocket/missile/whatever
-        theMissile = (MissileClass*)InitAMissile(ownship, theLau->LauGetWeaponId(), 0);
+        theMissile =
+            (MissileClass *)InitAMissile(ownship, theLau->LauGetWeaponId(), 0);
 
         theLau->LauRemFiredRound(); // update internal counters;
 
@@ -747,13 +768,11 @@ void SMSClass::FireRocket(int hpId, BombClass *theLau)
 
         theMissile->Start(FCC->TargetPtr());
 
-        vuDatabase->/*Quick*/Insert(theMissile);
+        vuDatabase->/*Quick*/ Insert(theMissile);
         theMissile->Wake();
 
         FCC->lastMissileImpactTime = FCC->nextMissileImpactTime;
     }
-
-
 }
 
 //////////////////////////////////////////

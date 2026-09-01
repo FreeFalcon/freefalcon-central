@@ -28,7 +28,7 @@ C_Level::~C_Level()
 
 long C_Level::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Level::Setup(long ID, short type)
@@ -93,7 +93,7 @@ void C_Level::AddPoint(short team, short value)
     else
         MaxValue_ = ((MaxValue_ + 9) / 10) * 10;
 
-    if ( not Root_[team])
+    if (not Root_[team])
     {
         Root_[team] = newval;
     }
@@ -116,13 +116,14 @@ void C_Level::CalcPositions()
     float yscale;
     LEVEL *cur;
 
-    if ( not Ready())
+    if (not Ready())
         return;
 
     if ((MaxValue_ - MinValue_) < 1)
         yscale = 0;
     else
-        yscale = (float)(DrawArea_.bottom - DrawArea_.top) / (float)(MaxValue_ - MinValue_) ;
+        yscale = (float)(DrawArea_.bottom - DrawArea_.top) /
+                 (float)(MaxValue_ - MinValue_);
 
     for (i = 0; i < _LEVEL_MAX_TEAMS_; i++)
     {
@@ -134,7 +135,9 @@ void C_Level::CalcPositions()
             if (cur->value < 0)
                 cur->y = -1;
             else
-                cur->y = static_cast<short>(DrawArea_.bottom - (short)((float)(cur->value - MinValue_) * yscale));
+                cur->y = static_cast<short>(
+                    DrawArea_.bottom -
+                    (short)((float)(cur->value - MinValue_) * yscale));
 
             cur = cur->Next;
         }
@@ -143,10 +146,12 @@ void C_Level::CalcPositions()
 
 void C_Level::Refresh()
 {
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or not Count_)
+    if (not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or
+        not Count_)
         return;
 
-    Parent_->SetUpdateRect(DrawArea_.left, DrawArea_.top, DrawArea_.right, DrawArea_.bottom, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(DrawArea_.left, DrawArea_.top, DrawArea_.right,
+                           DrawArea_.bottom, GetFlags(), GetClient());
 }
 
 void C_Level::Draw(SCREEN *surface, UI95_RECT *cliprect)
@@ -156,7 +161,8 @@ void C_Level::Draw(SCREEN *surface, UI95_RECT *cliprect)
     float levelx;
     float xstep;
 
-    if ( not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or not Count_)
+    if (not Ready() or (GetFlags() bitand C_BIT_INVISIBLE) or not Parent_ or
+        not Count_)
         return;
 
     if (Count_ < 2)
@@ -182,7 +188,10 @@ void C_Level::Draw(SCREEN *surface, UI95_RECT *cliprect)
             {
                 // KCK: A level of -1 means this team isn't active for the time period we're drawing
                 if (cur->y >= 0)
-                    Parent_->DrawLine(surface, Color_[i], FloatToInt32(levelx), prev->y, FloatToInt32(levelx + xstep), cur->y, GetFlags(), GetClient(), cliprect);
+                    Parent_->DrawLine(surface, Color_[i], FloatToInt32(levelx),
+                                      prev->y, FloatToInt32(levelx + xstep),
+                                      cur->y, GetFlags(), GetClient(),
+                                      cliprect);
 
                 levelx += xstep;
                 prev = cur;

@@ -5,18 +5,18 @@
 
     Provides structures and definitions for 3D objects.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
-#include "StateStack.h"
-#include "TexBank.h"
-#include "PalBank.h"
-#include "ColorBank.h"
-#include "ObjectParent.h"
-#include "falclib/include/IsBad.h"
+#include "statestack.h"
+#include "texbank.h"
+#include "palbank.h"
+#include "colorbank.h"
+#include "objectparent.h"
+#include "falclib/include/isbad.h"
 
-#include "Graphics/DXEngine/DXDefines.h"
+#include "graphics/dxengine/dxdefines.h"
 extern bool g_bUse_DX_Engine;
 unsigned long DXver = 0xFEEF;
 extern int nVer;
@@ -80,7 +80,10 @@ void ObjectParent::SetupTable(char *basename)
     // Open the master object file
     strcat(filename, ".DXH");
 
-    file = open(filename, _O_RDONLY bitor _O_BINARY bitor _O_SEQUENTIAL);
+    file = _open(
+        filename,
+        _O_RDONLY bitor _O_BINARY bitor
+            _O_SEQUENTIAL); // #104: _open (not bare open) so the Linux shim normalises '\'->'/' + case-folds the path
 
     if (file < 0)
     {
@@ -91,19 +94,14 @@ void ObjectParent::SetupTable(char *basename)
 
     // Read the format version
     VerifyVersion(file);
-
     // Read the Color Table from the master file
     TheColorBank.ReadPool(file);
-
     // Read the Palette Table from the master file
     ThePaletteBank.ReadPool(file);
-
     // Read the Texture Table from the master file
     TheTextureBank.ReadPool(file, basename);
-
     // Read the object LOD headers from the master file
     ObjectLOD::SetupTable(file, basename);
-
     // Read the parent object records from the master file
     ReadParentList(file);
 
@@ -146,7 +144,6 @@ void ObjectParent::CleanupTable(void)
 }
 
 
-
 // Serialization Function, reading the File of parents
 static int ReadParentRecord(ObjectParent &Obj, int file)
 {
@@ -155,7 +152,8 @@ static int ReadParentRecord(ObjectParent &Obj, int file)
     int result = read(file, &Record, sizeof(ParentFileRecord));
 
     // if any record, exit here
-    if (result < 0) return result;
+    if (result < 0)
+        return result;
 
     // Assign data
     Obj.radius = Record.radius;
@@ -191,7 +189,6 @@ static int ReadParentRecord(ObjectParent &Obj, int file)
 }
 
 
-
 void ObjectParent::ReadParentList(int file)
 {
     ObjectParent *objParent;
@@ -206,7 +203,8 @@ void ObjectParent::ReadParentList(int file)
 
     // Allocate memory for the parent object array
 #ifdef USE_SH_POOLS
-    TheObjectList = (ObjectParent *)MemAllocPtr(gBSPLibMemPool, sizeof(ObjectParent) * TheObjectListLength, 0);
+    TheObjectList = (ObjectParent *)MemAllocPtr(
+        gBSPLibMemPool, sizeof(ObjectParent) * TheObjectListLength, 0);
 #else
     TheObjectList = new ObjectParent[TheObjectListLength];
 #endif
@@ -248,7 +246,6 @@ void ObjectParent::ReadParentList(int file)
     }
 
 
-
     // Finally, read the reference arrays for each parent in order
     end = TheObjectList + TheObjectListLength;
 
@@ -266,22 +263,29 @@ void ObjectParent::ReadParentList(int file)
         {
 
 #ifdef USE_SH_POOLS
-            objParent->pSlotAndDynamicPositions = (Tpoint *)MemAllocPtr(gBSPLibMemPool, sizeof(Ppoint) * (objParent->nSlots + objParent->nDynamicCoords), 0);
+            objParent->pSlotAndDynamicPositions = (Tpoint *)MemAllocPtr(
+                gBSPLibMemPool,
+                sizeof(Ppoint) *
+                    (objParent->nSlots + objParent->nDynamicCoords),
+                0);
 #else
-            objParent->pSlotAndDynamicPositions = new Ppoint[objParent->nSlots + objParent->nDynamicCoords];
+            objParent->pSlotAndDynamicPositions =
+                new Ppoint[objParent->nSlots + objParent->nDynamicCoords];
 #endif
 
-            result = read(file,
-                          objParent->pSlotAndDynamicPositions,
-                          (objParent->nSlots + objParent->nDynamicCoords) * sizeof(*objParent->pSlotAndDynamicPositions));
+            result = read(file, objParent->pSlotAndDynamicPositions,
+                          (objParent->nSlots + objParent->nDynamicCoords) *
+                              sizeof(*objParent->pSlotAndDynamicPositions));
         }
         else
-            objParent->pSlotAndDynamicPositions = NULL; // JPO - jsut in case its wrong in the file
+            objParent->pSlotAndDynamicPositions =
+                NULL; // JPO - jsut in case its wrong in the file
 
         // Allocate memory for this parent's reference list
 
 #ifdef USE_SH_POOLS
-        objParent->pLODs = (LODrecord *)MemAllocPtr(gBSPLibMemPool, sizeof(LODrecord) * (objParent->nLODs), 0);
+        objParent->pLODs = (LODrecord *)MemAllocPtr(
+            gBSPLibMemPool, sizeof(LODrecord) * (objParent->nLODs), 0);
 #else
         objParent->pLODs = new LODrecord[objParent->nLODs];
 #endif
@@ -291,10 +295,12 @@ void ObjectParent::ReadParentList(int file)
 
         for (i = 0; i < objParent->nLODs; i++)
         {
-            if (g_bUse_DX_Engine) read(file, LODName, sizeof(LODName));
+            if (g_bUse_DX_Engine)
+                read(file, LODName, sizeof(LODName));
 
 #if defined(_M_IX86)
-            result = read(file, &objParent->pLODs[i], sizeof(*objParent->pLODs));
+            result =
+                read(file, &objParent->pLODs[i], sizeof(*objParent->pLODs));
 #else
             // Artscout - 2026: x64 serialization fix. LODrecord on disk uses the
             // 32-bit (x86) layout: a 4-byte objLOD offset + 4-byte maxRange. On x64
@@ -306,27 +312,32 @@ void ObjectParent::ReadParentList(int file)
 #pragma pack(push, 4)
                 struct DiskLODrecord
                 {
-                    UInt32 objLOD; // offset on disk (index << 1 with marker bit)
-                    float  maxRange;
+                    UInt32
+                        objLOD; // offset on disk (index << 1 with marker bit)
+                    float maxRange;
                 };
 #pragma pack(pop)
                 DiskLODrecord dlr;
                 result = read(file, &dlr, sizeof(dlr));
-                objParent->pLODs[i].objLOD   = (ObjectLOD *)(UINT_PTR)dlr.objLOD;
+                objParent->pLODs[i].objLOD = (ObjectLOD *)(UINT_PTR)dlr.objLOD;
                 objParent->pLODs[i].maxRange = dlr.maxRange;
             }
 #endif
 #ifdef DEBUG_LOD_ID
 
             // LOD ID DEBUG
-            if (g_bUse_DX_Engine) memcpy(&TheLODNames[((int)(objParent->pLODs[i].objLOD) >> 1)], LODName, sizeof(LODName));;
+            if (g_bUse_DX_Engine)
+                memcpy(&TheLODNames[((int)(objParent->pLODs[i].objLOD) >> 1)],
+                       LODName, sizeof(LODName));
+            ;
 
 #endif
 
             if (result < 0)
             {
                 char message[256];
-                sprintf(message, "Reading object reference list:  %s", strerror(errno));
+                sprintf(message, "Reading object reference list:  %s",
+                        strerror(errno));
                 ShiError(message);
             }
         }
@@ -340,7 +351,8 @@ void ObjectParent::ReadParentList(int file)
             // Replace the offset of the LOD with a pointer into TheObjectLOD array.
             // NOTE:  We're shifting the offset right one bit to clear our special
             // marker.
-            objParent->pLODs[i].objLOD = &TheObjectLODs[((int)(objParent->pLODs[i].objLOD) >> 1) ];
+            objParent->pLODs[i].objLOD =
+                &TheObjectLODs[((int)(objParent->pLODs[i].objLOD) >> 1)];
         }
     }
 }
@@ -360,12 +372,13 @@ void ObjectParent::VerifyVersion(int file)
     {
         //Beep( 2000, 500 );
         //Beep( 2000, 500 );
-        sprintf(message, "Got object format version 0x%08X, want 0x%08X", fileVersion, FORMAT_VERSION);
+        sprintf(message, "Got object format version 0x%08X, want 0x%08X",
+                fileVersion, FORMAT_VERSION);
         ShiError(message);
     }
 
     // New version of KO,dxh which uses UINT's for nSwitches and nDOFs to handle the increased number of Switch and DOF ID's.
-    if (nVer not_eq (int)DXver)
+    if (nVer not_eq (int) DXver)
         nVer = 0; // old KO.dxh version
 }
 
@@ -389,7 +402,8 @@ void ObjectParent::ReferenceTexSet(DWORD TexSet, DWORD MaxTexSet)
 
     while (record >= pLODs)
     {
-        record->objLOD->ReferenceTexSet(TexSet, (MaxTexSet) ? MaxTexSet : nTextureSets);
+        record->objLOD->ReferenceTexSet(TexSet,
+                                        (MaxTexSet) ? MaxTexSet : nTextureSets);
         record--;
     }
 }
@@ -397,13 +411,15 @@ void ObjectParent::ReferenceTexSet(DWORD TexSet, DWORD MaxTexSet)
 void ObjectParent::ReleaseTexSet(DWORD TexSet, DWORD MaxTexSet)
 {
     // RED - if object is locked, do not release
-    if (Locked) return;
+    if (Locked)
+        return;
 
     LODrecord *record = pLODs + nLODs - 1;
 
     while (record >= pLODs)
     {
-        record->objLOD->ReleaseTexSet(TexSet, (MaxTexSet) ? MaxTexSet : nTextureSets);
+        record->objLOD->ReleaseTexSet(TexSet,
+                                      (MaxTexSet) ? MaxTexSet : nTextureSets);
         record--;
     }
 }
@@ -412,7 +428,8 @@ void ObjectParent::ReleaseTexSet(DWORD TexSet, DWORD MaxTexSet)
 void ObjectParent::Reference(void)
 {
     // RED - Possible CTD Fix, if no LODs, exit
-    if ( not nLODs) return;
+    if (not nLODs)
+        return;
 
     if (refCount == 0)
     {
@@ -423,10 +440,14 @@ void ObjectParent::Reference(void)
 
         while (record >= pLODs)
         {
-            ShiAssert(FALSE == F4IsBadReadPtr(record, sizeof(*record)));  // JPO CTD check
+            ShiAssert(FALSE ==
+                      F4IsBadReadPtr(record, sizeof(*record))); // JPO CTD check
 
             //if (record and not F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and not F4IsBadCodePtr((FARPROC) record->objLOD)) // JB 010221 CTD
-            if (record and not F4IsBadReadPtr(record, sizeof(LODrecord)) and record->objLOD and not F4IsBadReadPtr(record->objLOD, sizeof(ObjectLOD))) // JB 010318 CTD
+            if (record and not F4IsBadReadPtr(record, sizeof(LODrecord)) and
+                record->objLOD and
+                not F4IsBadReadPtr(record->objLOD,
+                                   sizeof(ObjectLOD))) // JB 010318 CTD
                 record->objLOD->Reference();
 
             record--;
@@ -440,7 +461,8 @@ void ObjectParent::Reference(void)
 void ObjectParent::ReferenceWithFetch(void)
 {
     // RED - Possible CTD Fix, if no LODs, exit
-    if ( not nLODs) return;
+    if (not nLODs)
+        return;
 
     if (refCount == 0)
     {
@@ -452,7 +474,8 @@ void ObjectParent::ReferenceWithFetch(void)
 
         while (record >= pLODs)
         {
-            ShiAssert(FALSE == F4IsBadReadPtr(record, sizeof * record)); // JPO CTD check
+            ShiAssert(FALSE ==
+                      F4IsBadReadPtr(record, sizeof *record)); // JPO CTD check
             record->objLOD->Reference();
             record->objLOD->Fetch();
             record->objLOD->ReferenceTexSet(0, nTextureSets);
@@ -469,10 +492,10 @@ void ObjectParent::Release(bool Unlock)
     LODrecord *record = pLODs + nLODs - 1;
 
     // Now reduce our reference count
-    if (refCount) 
+    if (refCount)
         refCount--;
 
-    if (Unlock) 
+    if (Unlock)
         Locked = false;
 
     // RED - Release if count eraches 0, and OBJECT IS NOT LOCKED
@@ -490,7 +513,7 @@ void ObjectParent::Release(bool Unlock)
 
 // COBRA - RED - searching from Near to Far, inverse of before, so that a nearest object LOD
 // is found before in part compensating more complex graphic drawing time
-ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
+ObjectLOD *ObjectParent::ChooseLOD(float range, int *used, float *max_range)
 {
     LODrecord *record = NULL; // pLODs+nLODs-1;
     ObjectLOD *objLODptr = NULL;
@@ -498,9 +521,9 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
     int MaxLOD;
 
     // 2002-03-29 MN possible CTD fix
-    ShiAssert(FALSE == F4IsBadReadPtr(pLODs, sizeof * pLODs));
+    ShiAssert(FALSE == F4IsBadReadPtr(pLODs, sizeof *pLODs));
 
-    if ( not pLODs)
+    if (not pLODs)
         return NULL;
 
     MaxLOD = nLODs;
@@ -510,7 +533,8 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
     // COBRA - RED - Check each LOD from HIGHEST detail to LOWEST appropriate
     while (record and MaxLOD--)
     {
-        ShiAssert(FALSE == F4IsBadReadPtr(record, sizeof * record)); // JPO CTD check
+        ShiAssert(FALSE ==
+                  F4IsBadReadPtr(record, sizeof *record)); // JPO CTD check
 
         if (range < record->maxRange)
         {
@@ -524,9 +548,10 @@ ObjectLOD* ObjectParent::ChooseLOD(float range, int *used, float *max_range)
             break;
         }
 
-        LOD ++;
+        LOD++;
         record++;
-        ShiAssert(record == NULL or FALSE == F4IsBadReadPtr(record, sizeof * record));
+        ShiAssert(record == NULL or
+                  FALSE == F4IsBadReadPtr(record, sizeof *record));
     }
 
     // Return our final drawing candidate (if any)

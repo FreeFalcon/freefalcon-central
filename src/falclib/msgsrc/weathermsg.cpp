@@ -1,17 +1,21 @@
 //JAM 20Nov03
-#include "MsgInc/WeatherMsg.h"
+#include "msginc/weathermsg.h"
 #include "mesg.h"
-#include "CmpClass.h"
-#include "Weather.h"
-#include "InvalidBufferException.h"
+#include "cmpclass.h"
+#include "weather.h"
+#include "invalidbufferexception.h"
 
-FalconWeatherMessage::FalconWeatherMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback)
-    : FalconEvent(WeatherMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconWeatherMessage::FalconWeatherMessage(VU_ID entityId,
+                                           VuTargetEntity *target,
+                                           VU_BOOL loopback)
+    : FalconEvent(WeatherMsg, FalconEvent::CampaignThread, entityId, target,
+                  loopback)
 {
     dataBlock.weatherCondition = SUNNY;
 }
 
-FalconWeatherMessage::FalconWeatherMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
+FalconWeatherMessage::FalconWeatherMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                           VU_ID target)
     : FalconEvent(WeatherMsg, FalconEvent::CampaignThread, senderid, target)
 {
     dataBlock.weatherCondition = SUNNY;
@@ -30,7 +34,7 @@ int FalconWeatherMessage::Size(void) const
 int FalconWeatherMessage::Decode(VU_BYTE **buf, long *rem)
 {
     long init = *rem;
-    long start = (long) * buf;
+    long start = (long)*buf;
 
     memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
     FalconEvent::Decode(buf, rem);
@@ -57,7 +61,8 @@ int FalconWeatherMessage::Encode(VU_BYTE **buf)
 
 int FalconWeatherMessage::Process(uchar autodisp)
 {
-    if (autodisp or not TheCampaign.IsPreLoaded()) return -1;
+    if (autodisp or not TheCampaign.IsPreLoaded())
+        return -1;
 
     ((WeatherClass *)realWeather)->ReceiveWeather(this);
 

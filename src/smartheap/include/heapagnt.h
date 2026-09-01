@@ -17,19 +17,20 @@
 #include <stddef.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifndef _SMARTHEAP_H
 
-#if !defined(macintosh) && !defined(THINK_C) && !defined(__MWERKS__) \
-   && !defined(SHANSI) && UINT_MAX == 0xFFFFu \
-   && (defined(_Windows) || defined(_WINDOWS) || defined(__WINDOWS__))
+#if !defined(macintosh) && !defined(THINK_C) && !defined(__MWERKS__) &&        \
+    !defined(SHANSI) && UINT_MAX == 0xFFFFu &&                                 \
+    (defined(_Windows) || defined(_WINDOWS) || defined(__WINDOWS__))
 #define MEM_WIN16
 #endif
 
-#if (UINT_MAX == 0xFFFFu) && (defined(MEM_WIN16) \
- || defined(MSDOS) || defined(__MSDOS__) || defined(__DOS__))
+#if (UINT_MAX == 0xFFFFu) && (defined(MEM_WIN16) || defined(MSDOS) ||          \
+                              defined(__MSDOS__) || defined(__DOS__))
     /* 16-bit X86 */
 #if defined(SYS_DLL)
 #if defined(_MSC_VER) && _MSC_VER <= 600
@@ -54,8 +55,8 @@ extern "C" {
 
 #else  /* not 16-bit X86 */
 
-#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) \
-    || defined(__WIN32__) || defined(__NT__)
+#if defined(WIN32) || defined(_WIN32) || defined(__WIN32) ||                   \
+    defined(__WIN32__) || defined(__NT__)
 #if defined(_MSC_VER)
 #if defined(_SHI_Pool) && defined(SYS_DLL)
 #define MEM_ENTRY1 __declspec(dllexport)
@@ -104,9 +105,9 @@ extern "C" {
     /* Watcom stack calling convention */
 #ifndef __OS2__
 #ifdef __WINDOWS_386__
-#pragma aux syscall "*_" parm routine [eax ebx ecx edx fs gs] modify [eax];
+#pragma aux syscall "*_" parm routine[eax ebx ecx edx fs gs] modify[eax];
 #else
-#pragma aux syscall "*_" parm routine [eax ebx ecx edx] modify [eax];
+#pragma aux syscall "*_" parm routine[eax ebx ecx edx] modify[eax];
 #endif
 #ifndef MEM_ENTRY
 #define MEM_ENTRY __syscall
@@ -235,7 +236,8 @@ extern "C" {
         MEM_LASTOK,
         MEM_BREAKPOINT,
         MEM_ERROR_CODE_COUNT,
-        MEM_ERROR_CODE_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_ERROR_CODE_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_ERROR_CODE;
 #endif /* MEM_ERROR_CODE_DEFINED */
 
@@ -345,10 +347,10 @@ extern "C" {
         MEM_HEAPAGENT,
         MEM_USER_API,
         MEM_API_COUNT,
-        MEM_API_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_API_INT_MAX = INT_MAX /* to ensure enum is full int in size */
     } MEM_API;
 
-#define MEM_MAXCALLSTACK 16  /* maximum number of call stack frames recorded */
+#define MEM_MAXCALLSTACK 16 /* maximum number of call stack frames recorded */
 
     /* Error info, passed to error-handling callback routine */
 #ifndef MEM_ERROR_INFO_DEFINED
@@ -356,55 +358,60 @@ extern "C" {
 
     typedef struct _MEM_ERROR_INFO
     {
-        MEM_ERROR_CODE errorCode; /* error code identifying type of error      */
-        MEM_POOL pool;            /* pool in which error occurred, if known    */
+        MEM_ERROR_CODE
+        errorCode; /* error code identifying type of error      */
+        MEM_POOL pool; /* pool in which error occurred, if known    */
 
         /* all fields below this are valid only for debugging lib                 */
         /* the following seven fields identify the call where error detected   */
-        MEM_API errorAPI;         /* fn ID of entry-point where error detected */
-        MEM_POOL argPool;         /* memory pool parameter, if applicable      */
-        void MEM_FAR *argPtr;     /* memory pointer parameter, if applicable   */
-        void MEM_FAR *argBuf;     /* result buffer parameter, if applicable    */
-        MEM_HANDLE argHandle;     /* memory handle parameter, if applicable    */
-        unsigned long argSize;    /* size parameter, if applicable             */
-        unsigned long argCount;   /* count parameter, if applicable            */
-        unsigned argFlags;        /* flags parameter, if applicable            */
+        MEM_API errorAPI; /* fn ID of entry-point where error detected */
+        MEM_POOL argPool; /* memory pool parameter, if applicable      */
+        void MEM_FAR *argPtr; /* memory pointer parameter, if applicable   */
+        void MEM_FAR *argBuf; /* result buffer parameter, if applicable    */
+        MEM_HANDLE argHandle; /* memory handle parameter, if applicable    */
+        unsigned long argSize; /* size parameter, if applicable             */
+        unsigned long argCount; /* count parameter, if applicable            */
+        unsigned argFlags; /* flags parameter, if applicable            */
 
         /* the following two fields identify the app source file and line      */
-        const char MEM_FAR *file; /* app source file containing above call     */
-        int line;                 /* source line in above file                 */
+        const char MEM_FAR
+            *file; /* app source file containing above call     */
+        int line; /* source line in above file                 */
 
         /* the following two fields identify call instance of error detection  */
-        unsigned long allocCount; /* enumeration of allocation since 1st alloc */
-        unsigned long passCount;  /* enumeration of call at at above file/line */
-        unsigned checkpoint;      /* group with which call has been tagged     */
+        unsigned long
+            allocCount; /* enumeration of allocation since 1st alloc */
+        unsigned long passCount; /* enumeration of call at at above file/line */
+        unsigned checkpoint; /* group with which call has been tagged     */
 
         /* the following fields, if non-NULL, points to the address where an
            overwrite was detected and another MEM_ERROR_INFO structure
            identifying where the corrupted object was first created, if known  */
-        void MEM_FAR *errorAlloc;  /* ptr to beginning of alloc related to error */
+        void MEM_FAR
+            *errorAlloc; /* ptr to beginning of alloc related to error */
         void MEM_FAR *corruptAddr;
         struct _MEM_ERROR_INFO MEM_FAR *objectCreationInfo;
 
-        unsigned long threadID;    /* ID of thread where error detected */
-        unsigned long pid;         /* ID of process where error detected */
+        unsigned long threadID; /* ID of thread where error detected */
+        unsigned long pid; /* ID of process where error detected */
 
         void MEM_FAR *callStack[MEM_MAXCALLSTACK];
     } MEM_ERROR_INFO;
 
     /* Error handling callback function */
-    typedef MEM_BOOL(MEM_ENTRY2 * MEM_ENTRY3 MEM_ERROR_FN)
-    (MEM_ERROR_INFO MEM_FAR *);
+    typedef MEM_BOOL(MEM_ENTRY2 *MEM_ENTRY3 MEM_ERROR_FN)(
+        MEM_ERROR_INFO MEM_FAR *);
 
 #endif /* MEM_ERROR_INFO_DEFINED */
 
     /* Saftey Levels: parameter to dbgMemSetSafetyLevel */
     typedef enum
     {
-        MEM_SAFETY_SOME = 2,   /* fast: minimal debug performance degredation   */
-        MEM_SAFETY_FULL,       /* slower: recommended during development        */
-        MEM_SAFETY_DEBUG,      /* entire memory pool is checked each entrypoint */
-        MEM_SAFETY_LEVEL_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_SAFETY_SOME = 2, /* fast: minimal debug performance degredation   */
+        MEM_SAFETY_FULL, /* slower: recommended during development        */
+        MEM_SAFETY_DEBUG, /* entire memory pool is checked each entrypoint */
+        MEM_SAFETY_LEVEL_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_SAFETY_LEVEL;
 
 #ifndef _SMARTHEAP_H
@@ -420,11 +427,12 @@ extern "C" {
      */
     typedef enum
     {
-        MEM_FS_BLOCK               = 0x0001u,
-        MEM_VAR_MOVEABLE_BLOCK     = 0x0002u,
-        MEM_VAR_FIXED_BLOCK        = 0x0004u,
-        MEM_EXTERNAL_BLOCK         = 0x0008u,
-        MEM_BLOCK_TYPE_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_FS_BLOCK = 0x0001u,
+        MEM_VAR_MOVEABLE_BLOCK = 0x0002u,
+        MEM_VAR_FIXED_BLOCK = 0x0004u,
+        MEM_EXTERNAL_BLOCK = 0x0008u,
+        MEM_BLOCK_TYPE_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_BLOCK_TYPE;
 #endif /* MEM_BLOCK_TYPE_DEFINED */
 
@@ -449,11 +457,12 @@ extern "C" {
     /* Pool Status: returned by MemPoolWalk, MemPoolFirst, MemPoolNext */
     typedef enum
     {
-        MEM_POOL_OK            = 1,
-        MEM_POOL_CORRUPT       = -1,
+        MEM_POOL_OK = 1,
+        MEM_POOL_CORRUPT = -1,
         MEM_POOL_CORRUPT_FATAL = -2,
-        MEM_POOL_END           = 0,
-        MEM_POOL_STATUS_INT_MAX = INT_MAX  /* to ensure enum is full int in size */
+        MEM_POOL_END = 0,
+        MEM_POOL_STATUS_INT_MAX =
+            INT_MAX /* to ensure enum is full int in size */
     } MEM_POOL_STATUS;
 #endif /* MEM_POOL_STATUS_DEFINED */
 
@@ -489,12 +498,12 @@ extern "C" {
 
     /* Flags specifying heap properties */
 #ifndef MEM_POOL_SHARED
-#define MEM_POOL_SHARED       0x0001u /* == TRUE for SH 1.5 compatibility  */
-#define MEM_POOL_SERIALIZE    0x0002u /* pool used in more than one thread */
+#define MEM_POOL_SHARED 0x0001u /* == TRUE for SH 1.5 compatibility  */
+#define MEM_POOL_SERIALIZE 0x0002u /* pool used in more than one thread */
 #define MEM_POOL_VIRTUAL_LOCK 0x0004u /* pool is locked in physical memory */
-#define MEM_POOL_ZEROINIT     0x0008u /* malloc/new from pool zero-inits   */
-#define MEM_POOL_REGION       0x0010u /* store pool in user-supplied region*/
-#define MEM_POOL_DEFAULT      0x8000u /* pool with default characteristics */
+#define MEM_POOL_ZEROINIT 0x0008u /* malloc/new from pool zero-inits   */
+#define MEM_POOL_REGION 0x0010u /* store pool in user-supplied region*/
+#define MEM_POOL_DEFAULT 0x8000u /* pool with default characteristics */
 #endif /* MEM_POOL_SHARED */
 
     /* Debug Ptr Info: parameter to dbgMemPtrInfo */
@@ -526,7 +535,8 @@ extern "C" {
         DBGMEM_STACK_CHECK_NONE = 1,
         DBGMEM_STACK_CHECK_ENTRY,
         DBGMEM_STACK_CHECK_RETURN,
-        DBGMEM_STACK_CHECK_INT_MAX = INT_MAX  /* to ensure enum is full int size */
+        DBGMEM_STACK_CHECK_INT_MAX =
+            INT_MAX /* to ensure enum is full int size */
     } DBGMEM_STACK_CHECKING;
 
     /* Debug Settings Info: parameter to dbgMemSettingsInfo */
@@ -554,8 +564,8 @@ extern "C" {
 
     MEM_ENTRY4 MEM_POOL MemDefaultPool;
 
-    typedef void (MEM_ENTRY2 * MEM_ENTRY3 MEM_TRACE_FN)
-    (MEM_ERROR_INFO MEM_FAR *, unsigned long);
+    typedef void(MEM_ENTRY2 *MEM_ENTRY3 MEM_TRACE_FN)(MEM_ERROR_INFO MEM_FAR *,
+                                                      unsigned long);
 
     /* define and initialize these variables at file scope to change defaults */
     extern unsigned short MemDefaultPoolBlockSizeFS;
@@ -574,17 +584,16 @@ extern "C" {
     extern int SmartHeap_far_malloc;
     extern int SmartHeap_new;
 
-#define DBGMEM_PTR_NOPROTECTION    0x0000u
-#define DBGMEM_PTR_READONLY        0x0001u
-#define DBGMEM_PTR_NOFREE          0x0002u
-#define DBGMEM_PTR_NOREALLOC       0x0004u
+#define DBGMEM_PTR_NOPROTECTION 0x0000u
+#define DBGMEM_PTR_READONLY 0x0001u
+#define DBGMEM_PTR_NOFREE 0x0002u
+#define DBGMEM_PTR_NOREALLOC 0x0004u
 
-#define DBGMEM_OUTPUT_PROMPT       0x0001u
-#define DBGMEM_OUTPUT_CONSOLE      0x0002u
-#define DBGMEM_OUTPUT_BEEP         0x0004u
-#define DBGMEM_OUTPUT_FILE         0x0010u
-#define DBGMEM_OUTPUT_FILE_APPEND  0x0020u
-
+#define DBGMEM_OUTPUT_PROMPT 0x0001u
+#define DBGMEM_OUTPUT_CONSOLE 0x0002u
+#define DBGMEM_OUTPUT_BEEP 0x0004u
+#define DBGMEM_OUTPUT_FILE 0x0010u
+#define DBGMEM_OUTPUT_FILE_APPEND 0x0020u
 
 
     /*** Function Prototypes ***/
@@ -598,24 +607,32 @@ extern "C" {
 #endif /* WINDOWS */
 
     /* malloc, new, et al call these entry-point in debug lib */
-    MEM_ENTRY1 void MEM_FAR * MEM_ENTRY _dbgMemAllocPtr1(MEM_POOL, unsigned long,
-            unsigned, MEM_API, const char MEM_FAR *, int);
+    MEM_ENTRY1 void MEM_FAR *MEM_ENTRY _dbgMemAllocPtr1(MEM_POOL, unsigned long,
+                                                        unsigned, MEM_API,
+                                                        const char MEM_FAR *,
+                                                        int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemFreePtr1(void MEM_FAR *, MEM_API,
-            const char MEM_FAR *, int);
-    MEM_ENTRY1 void MEM_FAR * MEM_ENTRY _dbgMemReAllocPtr1(void MEM_FAR *,
-            unsigned long, unsigned, MEM_API, const char MEM_FAR *, int);
+                                                  const char MEM_FAR *, int);
+    MEM_ENTRY1 void MEM_FAR *MEM_ENTRY _dbgMemReAllocPtr1(void MEM_FAR *,
+                                                          unsigned long,
+                                                          unsigned, MEM_API,
+                                                          const char MEM_FAR *,
+                                                          int);
     MEM_ENTRY1 unsigned long MEM_ENTRY _dbgMemSizePtr1(void MEM_FAR *, MEM_API,
-            const char MEM_FAR *, int);
-    void MEM_FAR * MEM_ENTRY _dbgMEM_alloc(size_t, unsigned, MEM_API,
-                                           const char MEM_FAR *, int);
-    void MEM_FAR * MEM_ENTRY _dbgMEM_realloc(void MEM_FAR *, size_t,
-            const char MEM_FAR *, int);
+                                                       const char MEM_FAR *,
+                                                       int);
+    void MEM_FAR *MEM_ENTRY _dbgMEM_alloc(size_t, unsigned, MEM_API,
+                                          const char MEM_FAR *, int);
+    void MEM_FAR *MEM_ENTRY _dbgMEM_realloc(void MEM_FAR *, size_t,
+                                            const char MEM_FAR *, int);
     void MEM_ENTRY _dbgMEM_free(void MEM_FAR *, const char MEM_FAR *, int);
-    MEM_ENTRY1 void MEM_ENTRY _shi_deleteLoc(const char MEM_FAR *file, int line);
+    MEM_ENTRY1 void MEM_ENTRY _shi_deleteLoc(const char MEM_FAR *file,
+                                             int line);
 
 
     /* functions to control error detection */
-    MEM_ENTRY1 MEM_SAFETY_LEVEL MEM_ENTRY dbgMemSetSafetyLevel(MEM_SAFETY_LEVEL);
+    MEM_ENTRY1
+    MEM_SAFETY_LEVEL MEM_ENTRY dbgMemSetSafetyLevel(MEM_SAFETY_LEVEL);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemSetGuardSize(unsigned);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemSetGuardFill(MEM_UCHAR);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemSetFreeFill(MEM_UCHAR);
@@ -623,60 +640,75 @@ extern "C" {
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemSetCallstackChains(unsigned);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemSetStackChecking(DBGMEM_STACK_CHECKING);
     MEM_ENTRY1 unsigned MEM_ENTRY dbgMemSetCheckpoint(unsigned);
-    MEM_ENTRY1 unsigned MEM_ENTRY _dbgMemPoolSetCheckFrequency(MEM_POOL,
-            unsigned, const char MEM_FAR *, int);
+    MEM_ENTRY1 unsigned MEM_ENTRY
+    _dbgMemPoolSetCheckFrequency(MEM_POOL, unsigned, const char MEM_FAR *, int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemPoolDeferFreeing(MEM_POOL, int,
-            const char MEM_FAR *, int);
+                                                          const char MEM_FAR *,
+                                                          int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemPoolFreeDeferred(MEM_POOL,
-            const char MEM_FAR *, int);
+                                                          const char MEM_FAR *,
+                                                          int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemProtectPtr(void MEM_FAR *, unsigned,
-            const char MEM_FAR *, int);
+                                                    const char MEM_FAR *, int);
 
     /* functions to control error reporting */
-    MEM_ENTRY1 unsigned MEM_ENTRY dbgMemFormatErrorInfo(MEM_ERROR_INFO MEM_FAR *,
-            char MEM_FAR *, unsigned);
+    MEM_ENTRY1 unsigned MEM_ENTRY
+    dbgMemFormatErrorInfo(MEM_ERROR_INFO MEM_FAR *, char MEM_FAR *, unsigned);
     MEM_ENTRY1 unsigned MEM_ENTRY dbgMemFormatCall(MEM_ERROR_INFO MEM_FAR *,
-            char MEM_FAR *, unsigned);
-    MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemSetDefaultErrorOutput(unsigned flags,
-            const char MEM_FAR *file);
+                                                   char MEM_FAR *, unsigned);
+    MEM_ENTRY1 MEM_BOOL MEM_ENTRY
+    dbgMemSetDefaultErrorOutput(unsigned flags, const char MEM_FAR *file);
     MEM_ENTRY1 MEM_TRACE_FN MEM_ENTRY dbgMemSetEntryHandler(MEM_TRACE_FN);
     MEM_ENTRY1 MEM_TRACE_FN MEM_ENTRY dbgMemSetExitHandler(MEM_TRACE_FN);
-    MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemReportLeakage(MEM_POOL, unsigned, unsigned,
-            const char MEM_FAR *, unsigned);
+    MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemReportLeakage(MEM_POOL, unsigned,
+                                                       unsigned,
+                                                       const char MEM_FAR *,
+                                                       unsigned);
 
-    MEM_ENTRY1 unsigned long MEM_ENTRY _dbgMemTotalCount(const char MEM_FAR *, int);
-    MEM_ENTRY1 unsigned long MEM_ENTRY _dbgMemTotalSize(const char MEM_FAR *, int);
+    MEM_ENTRY1 unsigned long MEM_ENTRY _dbgMemTotalCount(const char MEM_FAR *,
+                                                         int);
+    MEM_ENTRY1 unsigned long MEM_ENTRY _dbgMemTotalSize(const char MEM_FAR *,
+                                                        int);
     MEM_ENTRY1 void MEM_ENTRY _dbgMemBreakpoint(const char MEM_FAR *, int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbg_MemPoolInfo(MEM_POOL,
-            DBGMEM_POOL_INFO MEM_FAR *, const char MEM_FAR *, int);
+                                                   DBGMEM_POOL_INFO MEM_FAR *,
+                                                   const char MEM_FAR *, int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemPtrInfo(void MEM_FAR *,
-            DBGMEM_PTR_INFO MEM_FAR *, const char MEM_FAR *, int);
+                                                 DBGMEM_PTR_INFO MEM_FAR *,
+                                                 const char MEM_FAR *, int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemSettingsInfo(
         DBGMEM_SETTINGS_INFO MEM_FAR *, const char MEM_FAR *, int);
     MEM_ENTRY1 unsigned MEM_ENTRY dbgMemSetCheckFrequency(unsigned);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemDeferFreeing(MEM_BOOL);
-    MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemFreeDeferred(const char MEM_FAR *, int);
+    MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemFreeDeferred(const char MEM_FAR *,
+                                                      int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemReallocMoves(MEM_BOOL);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemSuppressFreeFill(MEM_BOOL);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemReportWrongTaskRef(MEM_BOOL);
     MEM_ENTRY1 unsigned long MEM_ENTRY dbgMemSetDeferQueueLen(unsigned long);
-    MEM_ENTRY1 unsigned long MEM_ENTRY dbgMemSetDeferSizeThreshold(unsigned long);
+    MEM_ENTRY1 unsigned long MEM_ENTRY
+    dbgMemSetDeferSizeThreshold(unsigned long);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemPoolSetName(MEM_POOL,
-            const char MEM_FAR *, const char MEM_FAR *, int);
-    MEM_ENTRY1 unsigned long MEM_ENTRY _dbgMemPoolSetDeferQueueLen(MEM_POOL,
-            unsigned long, const char MEM_FAR *, int);
+                                                     const char MEM_FAR *,
+                                                     const char MEM_FAR *, int);
+    MEM_ENTRY1 unsigned long MEM_ENTRY _dbgMemPoolSetDeferQueueLen(
+        MEM_POOL, unsigned long, const char MEM_FAR *, int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbgMemCheckAll(const char MEM_FAR *, int);
-    MEM_POOL_STATUS MEM_ENTRY _dbgMemWalkHeap(
-        MEM_POOL_ENTRY MEM_FAR *, const char MEM_FAR *, int);
+    MEM_POOL_STATUS MEM_ENTRY _dbgMemWalkHeap(MEM_POOL_ENTRY MEM_FAR *,
+                                              const char MEM_FAR *, int);
     MEM_ENTRY1 MEM_BOOL MEM_ENTRY _dbg_MemCheckPtr(void MEM_FAR *,
-            MEM_POINTER_TYPE, unsigned long, const char MEM_FAR *, int);
-    MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemScheduleChecking(MEM_BOOL, int, unsigned);
+                                                   MEM_POINTER_TYPE,
+                                                   unsigned long,
+                                                   const char MEM_FAR *, int);
+    MEM_ENTRY1 MEM_BOOL MEM_ENTRY dbgMemScheduleChecking(MEM_BOOL, int,
+                                                         unsigned);
 #endif
 
 
     /* Error Handling Functions */
     MEM_ENTRY1 MEM_ERROR_FN MEM_ENTRY MemSetErrorHandler(MEM_ERROR_FN);
-    MEM_ENTRY1 MEM_BOOL MEM_ENTRY MemDefaultErrorHandler(MEM_ERROR_INFO MEM_FAR*);
+    MEM_ENTRY1 MEM_BOOL MEM_ENTRY
+    MemDefaultErrorHandler(MEM_ERROR_INFO MEM_FAR *);
     MEM_ENTRY1 void MEM_ENTRY MemErrorUnwind(void);
 
     /* internal routines */
@@ -690,8 +722,9 @@ extern "C" {
 #ifdef MEM_DEBUG
 #ifndef MALLOC_MACRO
 #define MEM_malloc(s_) _dbgMEM_alloc(s_, 0, MEM_MEM_MALLOC, __FILE__, __LINE__)
-#define MEM_calloc(s_, c_) _dbgMEM_alloc((s_)*(c_), 1 /*MEM_ZEROINIT*/, \
-   MEM_MEM_CALLOC, __FILE__, __LINE__)
+#define MEM_calloc(s_, c_)                                                     \
+    _dbgMEM_alloc((s_) * (c_), 1 /*MEM_ZEROINIT*/, MEM_MEM_CALLOC, __FILE__,   \
+                  __LINE__)
 #define MEM_realloc(p_, s_) _dbgMEM_realloc(p_, s_, __FILE__, __LINE__)
 #define MEM_free(p_) _dbgMEM_free(p_, __FILE__, __LINE__)
 #endif
@@ -714,14 +747,14 @@ extern "C" {
 #define free(p_) MEM_free(p_)
 #endif /* NO_MALLOC_MACRO */
 
-#define dbgMemPoolSetCheckFrequency(p, b) \
-     _dbgMemPoolSetCheckFrequency(p, b, __FILE__, __LINE__)
-#define dbgMemPoolDeferFreeing(p, b) \
-     _dbgMemPoolDeferFreeing(p, b, __FILE__, __LINE__)
-#define dbgMemPoolFreeDeferred(p) _dbgMemPoolFreeDeferred(p,__FILE__,__LINE__)
-#define dbgMemProtectPtr(p, b)    _dbgMemProtectPtr(p, b, __FILE__, __LINE__)
-#define dbgMemReportLeakage(p, c1, c2) \
-     _dbgMemReportLeakage(p, c1, c2, __FILE__, __LINE__)
+#define dbgMemPoolSetCheckFrequency(p, b)                                      \
+    _dbgMemPoolSetCheckFrequency(p, b, __FILE__, __LINE__)
+#define dbgMemPoolDeferFreeing(p, b)                                           \
+    _dbgMemPoolDeferFreeing(p, b, __FILE__, __LINE__)
+#define dbgMemPoolFreeDeferred(p) _dbgMemPoolFreeDeferred(p, __FILE__, __LINE__)
+#define dbgMemProtectPtr(p, b) _dbgMemProtectPtr(p, b, __FILE__, __LINE__)
+#define dbgMemReportLeakage(p, c1, c2)                                         \
+    _dbgMemReportLeakage(p, c1, c2, __FILE__, __LINE__)
 
 #define dbgMemTotalCount() _dbgMemTotalCount(__FILE__, __LINE__)
 #define dbgMemTotalSize() _dbgMemTotalSize(__FILE__, __LINE__)
@@ -729,8 +762,8 @@ extern "C" {
 #define dbgMemPtrInfo(p, b) _dbgMemPtrInfo(p, b, __FILE__, __LINE__)
 #define dbgMemSettingsInfo(b) _dbgMemSettingsInfo(b, __FILE__, __LINE__)
 #define dbgMemPoolSetName(p, n) _dbgMemPoolSetName(p, n, __FILE__, __LINE__)
-#define dbgMemPoolSetDeferQueueLen(p, l) \
-   _dbgMemPoolSetDeferQueueLen(p, l, __FILE__, __LINE__)
+#define dbgMemPoolSetDeferQueueLen(p, l)                                       \
+    _dbgMemPoolSetDeferQueueLen(p, l, __FILE__, __LINE__)
 #define dbgMemFreeDeferred() _dbgMemFreeDeferred(__FILE__, __LINE__)
 #define dbgMemWalkHeap(b) _dbgMemWalkHeap(b, __FILE__, __LINE__)
 #define dbgMemCheckAll() _dbgMemCheckAll(__FILE__, __LINE__)
@@ -800,8 +833,7 @@ extern "C" {
 #pragma aux dbgMemFreeFill "_*";
 #pragma aux dbgMemInUseFill "_*";
 #endif
-#endif  /* __WATCOMC__ */
-
+#endif /* __WATCOMC__ */
 
 
 #ifdef __cplusplus
@@ -825,9 +857,9 @@ extern "C++"
 #endif
 #include <new.h>
 
-#if ((defined(__BORLANDC__) && (__BORLANDC__ >= 0x450)) \
-   || (defined(__WATCOMC__) && __WATCOMC__ >= 1000) \
-   || (defined(__IBMCPP__) && __IBMCPP__ >= 250))
+#if ((defined(__BORLANDC__) && (__BORLANDC__ >= 0x450)) ||                     \
+     (defined(__WATCOMC__) && __WATCOMC__ >= 1000) ||                          \
+     (defined(__IBMCPP__) && __IBMCPP__ >= 250))
 #define SHI_ARRAY_NEW 1
 #endif
 
@@ -847,8 +879,8 @@ extern "C++"
      * to shi_New from inline versions of operator new in modules
      * that were not recompiled with MEM_DEBUG will resolve correctly
      */
-    void MEM_FAR * MEM_ENTRY_ANSI shi_New(unsigned long DBG_FORMAL, unsigned = 0,
-                                          MEM_POOL = 0);
+    void MEM_FAR *MEM_ENTRY_ANSI shi_New(unsigned long DBG_FORMAL, unsigned = 0,
+                                         MEM_POOL = 0);
 
     /* operator new variants: */
 
@@ -873,7 +905,7 @@ extern "C++"
 #ifndef MEM_HUGE
 #define MEM_HUGE 0x8000u
 #endif /* MEM_HUGE */
-    inline void __huge * operator new(unsigned long count, size_t sz DBG_FORMAL)
+    inline void __huge *operator new(unsigned long count, size_t sz DBG_FORMAL)
     {
         return (void __huge *)shi_New(count * sz DBG_ACTUAL, MEM_HUGE);
     }
@@ -937,15 +969,15 @@ extern "C++"
      *    void *y = new char[20];                // resume tracking file/line info
      */
 
-#if (!(defined(_AFX) && defined(_DEBUG)) \
-   && !(defined(_MSC_VER) && _MSC_VER >= 900))
+#if (!(defined(_AFX) && defined(_DEBUG)) &&                                    \
+     !(defined(_MSC_VER) && _MSC_VER >= 900))
     /* this must be defined out-of-line for _DEBUG MFC and MEM_DEBUG VC++/Win32 */
     inline void MEM_FAR *operator new(size_t sz DBG_FORMAL)
     {
         return shi_New(sz DBG_ACTUAL);
     }
 #else
-    void MEM_FAR * MEM_ENTRY_ANSI operator new(size_t sz DBG_FORMAL);
+    void MEM_FAR *MEM_ENTRY_ANSI operator new(size_t sz DBG_FORMAL);
 #endif
 #ifdef SHI_ARRAY_NEW
     inline void MEM_FAR *operator new[](size_t sz DBG_FORMAL)
@@ -957,16 +989,16 @@ extern "C++"
 #if !(defined(__IBMCPP__) && defined(__DEBUG_ALLOC__))
     /* debug new/delete built in for IBM Set C++ and Visual Age C++ */
 
-#define DEBUG_NEW new(__FILE__, __LINE__)
-#define DEBUG_NEW1(x_) new(__FILE__, __LINE__, x_)
-#define DEBUG_NEW2(x_, y_) new(__FILE__, __LINE__, x_, y_)
-#define DEBUG_NEW3(x_, y_, z_) new(__FILE__, __LINE__, x_, y_, z_)
+#define DEBUG_NEW new (__FILE__, __LINE__)
+#define DEBUG_NEW1(x_) new (__FILE__, __LINE__, x_)
+#define DEBUG_NEW2(x_, y_) new (__FILE__, __LINE__, x_, y_)
+#define DEBUG_NEW3(x_, y_, z_) new (__FILE__, __LINE__, x_, y_, z_)
 
 #define DEBUG_DELETE _shi_deleteLoc(__FILE__, __LINE__), delete
 
 #ifdef DEFINE_NEW_MACRO
-#ifdef macintosh  /* MPW C++ bug precludes new --> DEBUG_NEW --> new(...) */
-#define new new(__FILE__, __LINE__)
+#ifdef macintosh /* MPW C++ bug precludes new --> DEBUG_NEW --> new(...) */
+#define new new (__FILE__, __LINE__)
 #define delete _shi_deleteLoc(__FILE__, __LINE__), delete
 #else
 #define new DEBUG_NEW
@@ -983,9 +1015,9 @@ extern "C++"
 #define DBG_ACTUAL
 #endif
 #define DEBUG_NEW new
-#define DEBUG_NEW1(x_) new(x_)
-#define DEBUG_NEW2(x_, y_) new(x_, y_)
-#define DEBUG_NEW3(x_, y_, z_) new(x_, y_, z_)
+#define DEBUG_NEW1(x_) new (x_)
+#define DEBUG_NEW2(x_, y_) new (x_, y_)
+#define DEBUG_NEW3(x_, y_, z_) new (x_, y_, z_)
 #define DEBUG_DELETE delete
 
 #endif /* MEM_DEBUG */
@@ -1001,4 +1033,3 @@ extern "C++"
 #endif /* __cplusplus */
 
 #endif /* !defined(_HEAPAGNT_H) */
-

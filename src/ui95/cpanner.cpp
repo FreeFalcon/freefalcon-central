@@ -12,14 +12,8 @@ enum
     CPAN_SETDEADZONE,
 };
 
-char *C_Pan_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[BGIMAGE]",
-    "[PANIMAGE]",
-    "[DEADZONE]",
-    0,
+char *C_Pan_Tokens[] = {
+    "[NOTHING]", "[SETUP]", "[BGIMAGE]", "[PANIMAGE]", "[DEADZONE]", 0,
 };
 
 #endif
@@ -42,7 +36,8 @@ C_Panner::C_Panner() : C_Control()
     for (i = 0; i < PAN_MAX_IMAGES; i++)
         Image_[i] = NULL;
 
-    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor C_BIT_MOUSEOVER;
+    DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_DRAGABLE bitor
+                    C_BIT_MOUSEOVER;
 }
 
 C_Panner::C_Panner(char **stream) : C_Control(stream)
@@ -60,7 +55,7 @@ C_Panner::~C_Panner()
 
 long C_Panner::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Panner::Setup(long ID, short Type)
@@ -125,7 +120,7 @@ void C_Panner::SetImage(short state, long ImageID)
             //Image_[state]->SetXY(tmp->x,tmp->y);
         }
 
-        if ( not state and Image_[state])
+        if (not state and Image_[state])
             SetWH(Image_[state]->GetW(), Image_[state]->GetH());
 
         if (Image_[0]->Ready())
@@ -135,9 +130,10 @@ void C_Panner::SetImage(short state, long ImageID)
 
 long C_Panner::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Ready() or not Parent_)
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Ready() or not Parent_)
     {
-        return(0);
+        return (0);
     }
 
     // sfr: fixes CTD with the panner with only one image
@@ -161,18 +157,16 @@ long C_Panner::CheckHotSpots(long relX, long relY)
     }
 
     // check image hotspot
-    if (
-        relX >= (GetX() - image->GetX()) and 
-        relX <= (GetX() + GetW() - image->GetX()) and 
-        relY >= (GetY() - image->GetY()) and 
-        relY <= (GetY() + GetH() - image->GetY())
-    )
+    if (relX >= (GetX() - image->GetX()) and
+        relX <= (GetX() + GetW() - image->GetX()) and
+        relY >= (GetY() - image->GetY()) and
+        relY <= (GetY() + GetH() - image->GetY()))
     {
         SetRelXY(relX - GetX(), relY - GetY());
-        return(GetID());
+        return (GetID());
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Panner::Process(long, short HitType)
@@ -184,179 +178,51 @@ BOOL C_Panner::Process(long, short HitType)
 
     switch (HitType)
     {
-        case C_TYPE_LMOUSEDOWN:
-        case C_TYPE_REPEAT:
-            w = (Image_[0]->GetW());
-            h = (Image_[0]->GetH());
+    case C_TYPE_LMOUSEDOWN:
+    case C_TYPE_REPEAT:
+        w = (Image_[0]->GetW());
+        h = (Image_[0]->GetH());
 
-            SX_ = (GetRelX() - w / 2);
-            SY_ = (GetRelY() - h / 2);
+        SX_ = (GetRelX() - w / 2);
+        SY_ = (GetRelY() - h / 2);
 
-            if (SX_ < 0)
-            {
-                if (SX_ < (DeadW_ / 2))
-                    SX_ += DeadW_ / 2;
-                else
-                    SX_ = 0;
-            }
+        if (SX_ < 0)
+        {
+            if (SX_ < (DeadW_ / 2))
+                SX_ += DeadW_ / 2;
+            else
+                SX_ = 0;
+        }
 
-            if (SY_ < 0)
-            {
-                if (SY_ < (DeadH_ / 2))
-                    SY_ += DeadH_ / 2;
-                else
-                    SY_ = 0;
-            }
+        if (SY_ < 0)
+        {
+            if (SY_ < (DeadH_ / 2))
+                SY_ += DeadH_ / 2;
+            else
+                SY_ = 0;
+        }
 
-            if (SX_ > 0)
-            {
-                if (SX_ > (DeadW_ / 2))
-                    SX_ -= DeadW_ / 2;
-                else
-                    SX_ = 0;
-            }
+        if (SX_ > 0)
+        {
+            if (SX_ > (DeadW_ / 2))
+                SX_ -= DeadW_ / 2;
+            else
+                SX_ = 0;
+        }
 
-            if (SY_ > 0)
-            {
-                if (SY_ > (DeadH_ / 2))
-                    SY_ -= DeadH_ / 2;
-                else
-                    SY_ = 0;
-            }
+        if (SY_ > 0)
+        {
+            if (SY_ > (DeadH_ / 2))
+                SY_ -= DeadH_ / 2;
+            else
+                SY_ = 0;
+        }
 
-            SX_ /= 4;
-            SY_ /= 4;
+        SX_ /= 4;
+        SY_ /= 4;
 
-            switch (GetType())
-            {
-                case C_TYPE_DRAGX:
-                    state_ = 1;
-
-                    if (SX_ < 0)
-                        state_ = 2;
-                    else if (SX_ > 0)
-                        state_ = 3;
-
-                    break;
-
-                case C_TYPE_DRAGY:
-                    state_ = 1;
-
-                    if (SY_ < 0)
-                        state_ = 2;
-                    else if (SY_ > 0)
-                        state_ = 3;
-
-                    break;
-
-                case C_TYPE_DRAGXY:
-                    if (SX_ < 0 and SY_ < 0)
-                        state_ = 2;
-                    else if (SX_ == 0 and SY_ < 0)
-                        state_ = 3;
-                    else if (SX_ > 0 and SY_ < 0)
-                        state_ = 4;
-                    else if (SX_ < 0 and SY_ == 0)
-                        state_ = 5;
-                    else if (SX_ > 0 and SY_ == 0)
-                        state_ = 6;
-                    else if (SX_ < 0 and SY_ > 0)
-                        state_ = 7;
-                    else if (SX_ == 0 and SY_ > 0)
-                        state_ = 8;
-                    else if (SX_ > 0 and SY_ > 0)
-                        state_ = 9;
-                    else
-                        state_ = 1;
-
-                    break;
-            }
-
-            Refresh();
-            break;
-
-        case C_TYPE_LDROP:
-        case C_TYPE_LMOUSEDBLCLK:
-        case C_TYPE_RMOUSEDOWN:
-        case C_TYPE_RMOUSEUP:
-        case C_TYPE_LMOUSEUP:
-        case C_TYPE_RMOUSEDBLCLK:
-            state_ = 0;
-            SX_ = 0;
-            SY_ = 0;
-            Refresh();
-            break;
-    }
-
-    UI_Leave(Leave);
-    gSoundMgr->PlaySound(GetSound(HitType));
-
-    if (Callback_)
-        (*Callback_)(GetID(), HitType, this);
-
-    return(TRUE);
-}
-
-
-void C_Panner::Refresh()
-{
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
-        return;
-
-    if (BgImage_)
-        BgImage_->Refresh();
-
-    if (Image_[state_])
-        Image_[state_]->Refresh();
-}
-
-void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
-{
-    int i;
-
-    if ( not Ready()) return;
-
-    if (GetFlags() bitand C_BIT_INVISIBLE)
-        return;
-
-    if (BgImage_)
-        BgImage_->Draw(surface, cliprect);
-
-    i = state_;
-
-    if (Image_[i] == NULL) i = 0;
-
-    if (Image_[i])
-        Image_[i]->Draw(surface, cliprect);
-
-    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
-        HighLite(surface, cliprect);
-}
-
-BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
-{
-    int w, h;
-
-    return(FALSE);
-
-    F4CSECTIONHANDLE* Leave;
-
-    if (GetFlags() bitand C_BIT_INVISIBLE)
-        return(FALSE);
-
-    Leave = UI_Enter(Parent_);
-    w = (Image_[0]->GetW());
-    h = (Image_[0]->GetH());
-
-    SX_ = (short)(MouseX - Parent_->GetX() - GetX() - DeadX_); 
-    SY_ = (short)(MouseY - Parent_->GetY() - GetY() - DeadY_); 
-
-    if (SX_ > -DeadW_ and SX_ < DeadW_) SX_ = 0;
-
-    if (SY_ > -DeadH_ and SY_ < DeadH_) SY_ = 0;
-
-    switch (GetType())
-    {
+        switch (GetType())
+        {
         case C_TYPE_DRAGX:
             state_ = 1;
 
@@ -365,7 +231,6 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
             else if (SX_ > 0)
                 state_ = 3;
 
-            Refresh();
             break;
 
         case C_TYPE_DRAGY:
@@ -376,12 +241,9 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
             else if (SY_ > 0)
                 state_ = 3;
 
-            Refresh();
             break;
 
         case C_TYPE_DRAGXY:
-            state_ = 1;
-
             if (SX_ < 0 and SY_ < 0)
                 state_ = 2;
             else if (SX_ == 0 and SY_ < 0)
@@ -398,26 +260,162 @@ BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
                 state_ = 8;
             else if (SX_ > 0 and SY_ > 0)
                 state_ = 9;
+            else
+                state_ = 1;
 
-            Refresh();
             break;
+        }
+
+        Refresh();
+        break;
+
+    case C_TYPE_LDROP:
+    case C_TYPE_LMOUSEDBLCLK:
+    case C_TYPE_RMOUSEDOWN:
+    case C_TYPE_RMOUSEUP:
+    case C_TYPE_LMOUSEUP:
+    case C_TYPE_RMOUSEDBLCLK:
+        state_ = 0;
+        SX_ = 0;
+        SY_ = 0;
+        Refresh();
+        break;
+    }
+
+    UI_Leave(Leave);
+    gSoundMgr->PlaySound(GetSound(HitType));
+
+    if (Callback_)
+        (*Callback_)(GetID(), HitType, this);
+
+    return (TRUE);
+}
+
+
+void C_Panner::Refresh()
+{
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+        return;
+
+    if (BgImage_)
+        BgImage_->Refresh();
+
+    if (Image_[state_])
+        Image_[state_]->Refresh();
+}
+
+void C_Panner::Draw(SCREEN *surface, UI95_RECT *cliprect)
+{
+    int i;
+
+    if (not Ready())
+        return;
+
+    if (GetFlags() bitand C_BIT_INVISIBLE)
+        return;
+
+    if (BgImage_)
+        BgImage_->Draw(surface, cliprect);
+
+    i = state_;
+
+    if (Image_[i] == NULL)
+        i = 0;
+
+    if (Image_[i])
+        Image_[i]->Draw(surface, cliprect);
+
+    if (MouseOver_ or (GetFlags() bitand C_BIT_FORCEMOUSEOVER))
+        HighLite(surface, cliprect);
+}
+
+BOOL C_Panner::Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *)
+{
+    int w, h;
+
+    return (FALSE);
+
+    F4CSECTIONHANDLE *Leave;
+
+    if (GetFlags() bitand C_BIT_INVISIBLE)
+        return (FALSE);
+
+    Leave = UI_Enter(Parent_);
+    w = (Image_[0]->GetW());
+    h = (Image_[0]->GetH());
+
+    SX_ = (short)(MouseX - Parent_->GetX() - GetX() - DeadX_);
+    SY_ = (short)(MouseY - Parent_->GetY() - GetY() - DeadY_);
+
+    if (SX_ > -DeadW_ and SX_ < DeadW_)
+        SX_ = 0;
+
+    if (SY_ > -DeadH_ and SY_ < DeadH_)
+        SY_ = 0;
+
+    switch (GetType())
+    {
+    case C_TYPE_DRAGX:
+        state_ = 1;
+
+        if (SX_ < 0)
+            state_ = 2;
+        else if (SX_ > 0)
+            state_ = 3;
+
+        Refresh();
+        break;
+
+    case C_TYPE_DRAGY:
+        state_ = 1;
+
+        if (SY_ < 0)
+            state_ = 2;
+        else if (SY_ > 0)
+            state_ = 3;
+
+        Refresh();
+        break;
+
+    case C_TYPE_DRAGXY:
+        state_ = 1;
+
+        if (SX_ < 0 and SY_ < 0)
+            state_ = 2;
+        else if (SX_ == 0 and SY_ < 0)
+            state_ = 3;
+        else if (SX_ > 0 and SY_ < 0)
+            state_ = 4;
+        else if (SX_ < 0 and SY_ == 0)
+            state_ = 5;
+        else if (SX_ > 0 and SY_ == 0)
+            state_ = 6;
+        else if (SX_ < 0 and SY_ > 0)
+            state_ = 7;
+        else if (SX_ == 0 and SY_ > 0)
+            state_ = 8;
+        else if (SX_ > 0 and SY_ > 0)
+            state_ = 9;
+
+        Refresh();
+        break;
     }
 
     if (Callback_)
         (*Callback_)(GetID(), C_TYPE_MOUSEMOVE, this);
 
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
-BOOL C_Panner::Drop(GRABBER *, WORD , WORD , C_Window *)
+BOOL C_Panner::Drop(GRABBER *, WORD, WORD, C_Window *)
 {
     state_ = 0;
     Refresh();
-    return(FALSE);
+    return (FALSE);
 }
 
-void C_Panner::GetItemXY(long , long *x, long *y)
+void C_Panner::GetItemXY(long, long *x, long *y)
 {
     *x = 0;
     *y = 0;
@@ -443,33 +441,33 @@ short C_Panner::LocalFind(char *token)
     while (C_Pan_Tokens[i])
     {
         if (strnicmp(token, C_Pan_Tokens[i], strlen(C_Pan_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Panner::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CPAN_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CPAN_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CPAN_SETBGIMAGE:
-            SetBgImage(P[0]);
-            break;
+    case CPAN_SETBGIMAGE:
+        SetBgImage(P[0]);
+        break;
 
-        case CPAN_SETIMAGE:
-            SetImage((short)P[0], P[1]);
-            break;
+    case CPAN_SETIMAGE:
+        SetImage((short)P[0], P[1]);
+        break;
 
-        case CPAN_SETDEADZONE:
-            SetDeadZone((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CPAN_SETDEADZONE:
+        SetDeadZone((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
     }
 }
 

@@ -26,9 +26,10 @@ void ICPClass::ExecCNIMode()
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC) return;//me123 ctd fix
+    if (not playerAC)
+        return;//me123 ctd fix
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         int type;
         static int wpflags;
@@ -38,9 +39,6 @@ void ICPClass::ExecCNIMode()
         TacanList::StationSet set;
         int channel;
         VU_ID vuId;
-
-
-
 
 
         {
@@ -74,23 +72,34 @@ void ICPClass::ExecCNIMode()
 
             //Original code
             // Format Line 1: Waypoint Num, Waypoint Type
-            if (playerAC->FCC->GetStptMode() == FireControlComputer::FCCWaypoint)
+            if (playerAC->FCC->GetStptMode() ==
+                FireControlComputer::FCCWaypoint)
             {
-                sprintf(mpLine1, "COMM1 : %-12s STPT %-3d", (VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX"), mWPIndex + 1);
+                sprintf(mpLine1, "COMM1 : %-12s STPT %-3d",
+                        (VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX"),
+                        mWPIndex + 1);
             }
-            else if (playerAC->FCC->GetStptMode() == FireControlComputer::FCCDLinkpoint)
+            else if (playerAC->FCC->GetStptMode() ==
+                     FireControlComputer::FCCDLinkpoint)
             {
-                sprintf(mpLine1, "COMM1 : %-12s LINK %-3d", (VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX"), gNavigationSys->GetDLinkIndex() + 1);
+                sprintf(mpLine1, "COMM1 : %-12s LINK %-3d",
+                        (VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX"),
+                        gNavigationSys->GetDLinkIndex() + 1);
             }
-            else if (playerAC->FCC->GetStptMode() == FireControlComputer::FCCMarkpoint)
+            else if (playerAC->FCC->GetStptMode() ==
+                     FireControlComputer::FCCMarkpoint)
             {
-                sprintf(mpLine1, "COMM1 : %-12s MARK %-3d", (VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX"), gNavigationSys->GetMarkIndex() + 1);
+                sprintf(mpLine1, "COMM1 : %-12s MARK %-3d",
+                        (VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX"),
+                        gNavigationSys->GetMarkIndex() + 1);
             }
 
 
             // Format Line 2: Current Time
-            FormatTime(vuxGameTime / 1000, timeStr); // Get game time and convert to secs
-            sprintf(mpLine2, "COMM2 : %-12s %8s", (VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX"), timeStr);
+            FormatTime(vuxGameTime / 1000,
+                       timeStr); // Get game time and convert to secs
+            sprintf(mpLine2, "COMM2 : %-12s %8s",
+                    (VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX"), timeStr);
 
             if (mICPTertiaryMode == COMM1_MODE)
             {
@@ -99,7 +108,6 @@ void ICPClass::ExecCNIMode()
             else
             {
                 mpLine2[5] = '*';
-
             }
 
             // Format Line 3: Bogus IFF info, Tacan Channel
@@ -109,7 +117,8 @@ void ICPClass::ExecCNIMode()
 
                 if (vuId)
                 {
-                    gNavigationSys->GetTacanChannel(NavigationSystem::ICP, &channel, &set);
+                    gNavigationSys->GetTacanChannel(NavigationSystem::ICP,
+                                                    &channel, &set);
 
                     if (set == TacanList::X)
                     {
@@ -120,7 +129,8 @@ void ICPClass::ExecCNIMode()
                         band = 'Y';
                     }
 
-                    sprintf(mpLine3, "                    T%3d%c", channel, band);
+                    sprintf(mpLine3, "                    T%3d%c", channel,
+                            band);
                 }
                 else
                 {
@@ -175,10 +185,12 @@ void ICPClass::ExecCNIMode()
             else if (VM->radiofilter[0] == rcfAll)
                 sprintf(tempstr, "14");
             else
-                sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
+                sprintf(tempstr, "%s",
+                        VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
         }
         else
-            sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
+            sprintf(tempstr, "%s",
+                    VM ? RadioStrings[VM->GetRadioFreq(0)] : "XXXX");
 
         if (transmitingvoicecom1)
             FillDEDMatrix(0, 1, "UHF", 2);
@@ -211,7 +223,7 @@ void ICPClass::ExecCNIMode()
 
         //END COMM STUFF
         //WAYPOINT INFO
-        if ( not MAN) //Auto Waypoint
+        if (not MAN) //Auto Waypoint
         {
             if (IsICPSet(ICPClass::EDIT_STPT))
                 sprintf(tempstr, "\x01%2dA", mWPIndex + 1);
@@ -288,10 +300,12 @@ void ICPClass::ExecCNIMode()
             else if (VM->radiofilter[1] == rcfAll)
                 sprintf(tempstr, "14");
             else
-                sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
+                sprintf(tempstr, "%s",
+                        VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
         }
         else
-            sprintf(tempstr, "%s", VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
+            sprintf(tempstr, "%s",
+                    VM ? RadioStrings[VM->GetRadioFreq(1)] : "XXXX");
 
         if (transmitingvoicecom2)
             FillDEDMatrix(2, 1, "VHF", 2);

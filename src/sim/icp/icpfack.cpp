@@ -12,26 +12,27 @@ void ICPClass::ExecFACKMode(void)
 
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI original Code
 
         FaultClass::str_FNames faultNames;
         int faultCount;
 
-        if ( not playerAC)
+        if (not playerAC)
         {
             return;
         }
 
         faultCount = playerAC->mFaults->GetFFaultCount();
 
-        if (mUpdateFlags bitand FACK_UPDATE or ( not (mUpdateFlags bitand FACK_UPDATE) and faultCount))
+        if (mUpdateFlags bitand FACK_UPDATE or
+            (not(mUpdateFlags bitand FACK_UPDATE) and faultCount))
         {
 
             mUpdateFlags and_eq not FACK_UPDATE;
 
-            if ( not faultCount)
+            if (not faultCount)
             {
 
                 sprintf(mpLine1, "      NO FAULTS");
@@ -41,19 +42,21 @@ void ICPClass::ExecFACKMode(void)
             else
             {
 
-                playerAC->mFaults->GetFaultNames((FaultClass::type_FSubSystem)mFaultNum, mFaultFunc, &faultNames);
+                playerAC->mFaults->GetFaultNames(
+                    (FaultClass::type_FSubSystem)mFaultNum, mFaultFunc,
+                    &faultNames);
 
                 sprintf(mpLine1, "        FAULT");
                 sprintf(mpLine2, "");
-                sprintf(mpLine3, "   %4s %4s %4s", faultNames.elpFSubSystemNames,
-                        faultNames.elpFFunctionNames,
-                        faultNames.elpFSeverityNames);
+                sprintf(
+                    mpLine3, "   %4s %4s %4s", faultNames.elpFSubSystemNames,
+                    faultNames.elpFFunctionNames, faultNames.elpFSeverityNames);
             }
         }
     }
     else
     {
-        if ( not playerAC)
+        if (not playerAC)
         {
             return;
         }
@@ -64,7 +67,8 @@ void ICPClass::ExecFACKMode(void)
         }
         else
         {
-            PflFault((FaultClass::type_FSubSystem)mFaultNum, (FaultClass::type_FFunction)mFaultFunc);
+            PflFault((FaultClass::type_FSubSystem)mFaultNum,
+                     (FaultClass::type_FFunction)mFaultFunc);
         }
     }
 }
@@ -87,11 +91,12 @@ void ICPClass::ExecPfl()
     }
     else
     {
-        if (m_function == FaultClass::nofault) //Wombat778 10-20-2003 removed change because it seemed to break PFL in realistic modes.  Changed code in ICPclass instead.
+        if (m_function ==
+            FaultClass::
+                nofault) //Wombat778 10-20-2003 removed change because it seemed to break PFL in realistic modes.  Changed code in ICPclass instead.
             playerAC->mFaults->GetFirstFault(&m_subsystem, &m_function);
 
         PflFault(m_subsystem, m_function);
-
     }
 }
 
@@ -114,10 +119,8 @@ void ICPClass::PflFault(FaultClass::type_FSubSystem sys, int func)
     FillPFLMatrix(0, 12, "FAULT");
     //Line3
     //fix (better hack) to prevent strange stuff beeing written onto the PFL
-    sprintf(tempstr, "%4s %4s %4s",
-            faultNames.elpFSubSystemNames,
-            faultNames.elpFFunctionNames,
-            faultNames.elpFSeverityNames);
+    sprintf(tempstr, "%4s %4s %4s", faultNames.elpFSubSystemNames,
+            faultNames.elpFFunctionNames, faultNames.elpFSeverityNames);
 
     FillPFLMatrix(2, ((25 - strlen(tempstr)) / 2), tempstr);
 }
@@ -131,7 +134,7 @@ void ICPClass::PNUpdateFACKMode(int button, int)
     int testFunc;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC)
+    if (not playerAC)
     {
         return;
     }
@@ -140,7 +143,8 @@ void ICPClass::PNUpdateFACKMode(int button, int)
     {
 
         faultIdx = mFaultNum;
-        failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
+        failedFuncs =
+            playerAC->mFaults->GetFault((FaultClass::type_FSubSystem)faultIdx);
 
         // previous failures on the System?
         testFunc = mFaultFunc - 1;
@@ -152,9 +156,8 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
             while ((failedFuncs bitand funcIdx) == 0)
             {
-                mFaultFunc --;
+                mFaultFunc--;
                 funcIdx = funcIdx >> 1;
-
             }
         }
         else
@@ -169,9 +172,9 @@ void ICPClass::PNUpdateFACKMode(int button, int)
                     faultIdx = FaultClass::NumFaultListSubSystems - 1;
                 }
 
-                failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
-            }
-            while ( not failedFuncs and faultIdx not_eq mFaultNum);
+                failedFuncs = playerAC->mFaults->GetFault(
+                    (FaultClass::type_FSubSystem)faultIdx);
+            } while (not failedFuncs and faultIdx not_eq mFaultNum);
 
 
             // Find highest failed sub-system
@@ -180,28 +183,29 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
             while ((failedFuncs bitand funcIdx) == 0)
             {
-                mFaultFunc --;
+                mFaultFunc--;
                 funcIdx = funcIdx >> 1;
             }
         }
 
         mFaultNum = faultIdx;
-        mFaultFunc ++;
+        mFaultFunc++;
     }
     else if (button == NEXT_BUTTON and playerAC->mFaults->GetFFaultCount() >= 1)
     {
 
         faultIdx = mFaultNum;
-        failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
+        failedFuncs =
+            playerAC->mFaults->GetFault((FaultClass::type_FSubSystem)faultIdx);
 
         // next failures on the System?
-        if ((failedFuncs bitand compl ((1 << mFaultFunc) - 1)) > 0)
+        if ((failedFuncs bitand compl((1 << mFaultFunc) - 1)) > 0)
         {
             funcIdx = (1 << mFaultFunc);
 
             while ((failedFuncs bitand funcIdx) == 0)
             {
-                mFaultFunc ++;
+                mFaultFunc++;
                 funcIdx = funcIdx << 1;
             }
         }
@@ -216,9 +220,9 @@ void ICPClass::PNUpdateFACKMode(int button, int)
                     faultIdx = 0;
                 }
 
-                failedFuncs = playerAC->mFaults->GetFault((FaultClass::type_FSubSystem) faultIdx);
-            }
-            while ( not failedFuncs and faultIdx not_eq mFaultNum);
+                failedFuncs = playerAC->mFaults->GetFault(
+                    (FaultClass::type_FSubSystem)faultIdx);
+            } while (not failedFuncs and faultIdx not_eq mFaultNum);
 
             // Find lowest failed sub-system
             funcIdx = 1;
@@ -226,13 +230,13 @@ void ICPClass::PNUpdateFACKMode(int button, int)
 
             while ((failedFuncs bitand funcIdx) == 0)
             {
-                mFaultFunc ++;
+                mFaultFunc++;
                 funcIdx = funcIdx << 1;
             }
         }
 
         mFaultNum = faultIdx;
-        mFaultFunc ++;
+        mFaultFunc++;
     }
 
     mUpdateFlags or_eq FACK_UPDATE;

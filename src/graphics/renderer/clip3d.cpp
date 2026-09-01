@@ -8,13 +8,12 @@
  It is assumed that all 3D coordinates have been transformed such
  that the clipping volume is z >= 1 and -z <= x <= z and -z <= y <= z.
 \***************************************************************************/
-#include <cISO646>
-#include "Render3D.h"
+#include <ciso646>
+#include "render3d.h"
 
 
 //#define DO_NEAR_CLIP_ONLY // Can leave this defined as long as MPR is doing clipping
 #define DO_BACKFACE_CULLING
-
 
 
 // The use of the global storage defined here intorduces a requirement that only
@@ -23,7 +22,8 @@
 // saves us one pointer indirection per use of this storage (ie: this->)
 static const int MAX_VERT_LIST = 10; // (Input verts + num clip planes)
 static const int MAX_EXTRA_VERTS = 10; // (2 x Number of clip planes)
-static ThreeDVertex extraVerts[MAX_EXTRA_VERTS];// Used to hold temporaty vertices
+static ThreeDVertex
+    extraVerts[MAX_EXTRA_VERTS]; // Used to hold temporaty vertices
 static int extraVertCount; // created by clipping.
 
 
@@ -32,12 +32,16 @@ static int extraVertCount; // created by clipping.
  top, bottom, left, right, and near planes.  Then draw the resultant
  polygon.
 \***************************************************************************/
-void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int CullFlag, bool gifPicture, bool terrain, bool sort) //JAM 14Sep03
+void Render3D::ClipAndDraw3DFan(ThreeDVertex **vertPointers, unsigned count,
+                                int CullFlag, bool gifPicture, bool terrain,
+                                bool sort) //JAM 14Sep03
 {
     ThreeDVertex **v, **p, **lastIn, **nextOut;
     ThreeDVertex **inList, **outList, **temp;
-    ThreeDVertex *vertList1[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
-    ThreeDVertex *vertList2[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    ThreeDVertex
+        *vertList1[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
+    ThreeDVertex
+        *vertList2[MAX_VERT_LIST]; // Used to hold poly vert pointer lists
     DWORD clipTest = 0;
 
     ShiAssert(vertPointers);
@@ -82,7 +86,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
             }
 
             // If this vert isn't clipped, use it
-            if ( not ((*v)->clipFlag bitand CLIP_NEAR))
+            if (not((*v)->clipFlag bitand CLIP_NEAR))
             {
                 *nextOut++ = *v;
             }
@@ -92,7 +96,8 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
         ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-        if (nextOut - outList <= 2)  return;
+        if (nextOut - outList <= 2)
+            return;
 
         // NOTE:  We might get to this point and find a polygon is now marked totally clipped
         // since doing the near clip can change the flags and make a vertex appear to have
@@ -152,7 +157,8 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
         ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-        if (nextOut - outList <= 2)  return;
+        if (nextOut - outList <= 2)
+            return;
     }
 
 #endif
@@ -160,7 +166,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
     // 2002-04-06 MN if gifPicture is false, then do the other clippings (for terrain and stuff).
     // GifPicture is only locally set to true in the case we draw a celestial object.
     // Sun and Moon GIF's are displayed bad when being clipped by below code.
-    if ( not gifPicture)
+    if (not gifPicture)
     {
 #ifndef DO_NEAR_CLIP_ONLY
 
@@ -186,7 +192,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_BOTTOM))
+                if (not((*v)->clipFlag bitand CLIP_BOTTOM))
                 {
                     *nextOut++ = *v;
                 }
@@ -196,7 +202,8 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
 
 
@@ -222,7 +229,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_TOP))
+                if (not((*v)->clipFlag bitand CLIP_TOP))
                 {
                     *nextOut++ = *v;
                 }
@@ -232,7 +239,8 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
 
 
@@ -258,7 +266,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_RIGHT))
+                if (not((*v)->clipFlag bitand CLIP_RIGHT))
                 {
                     *nextOut++ = *v;
                 }
@@ -268,7 +276,8 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
 
 
@@ -294,7 +303,7 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
                 }
 
                 // If this vert isn't clipped, use it
-                if ( not ((*v)->clipFlag bitand CLIP_LEFT))
+                if (not((*v)->clipFlag bitand CLIP_LEFT))
                 {
                     *nextOut++ = *v;
                 }
@@ -304,7 +313,8 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
             ShiAssert(nextOut - outList <= MAX_VERT_LIST);
 
-            if (nextOut - outList <= 2)  return;
+            if (nextOut - outList <= 2)
+                return;
         }
 
 #endif // DO_NEAR_CLIP_ONLY
@@ -326,12 +336,14 @@ void Render3D::ClipAndDraw3DFan(ThreeDVertex** vertPointers, unsigned count, int
 
 #else
     context.DrawPrimitive(MPR_PRM_TRIFAN, MPR_VI_COLOR bitor MPR_VI_TEXTURE,
-                          (unsigned short)(nextOut - outList), (MPRVtxTexClr_t **)outList, terrain); //JAM 14Sep03
+                          (unsigned short)(nextOut - outList),
+                          (MPRVtxTexClr_t **)outList, terrain); //JAM 14Sep03
 #endif
 }
 
 
-inline void InterpolateColorAndTex(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v, float t)
+inline void InterpolateColorAndTex(ThreeDVertex *v1, ThreeDVertex *v2,
+                                   ThreeDVertex *v, float t)
 {
     // Compute the interpolated color and texture coordinates
     v->r = v1->r + t * (v2->r - v1->r);
@@ -347,7 +359,8 @@ inline void InterpolateColorAndTex(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVer
 
 // Intersect edge with z=near plane
 // This function is expected to be called first in the clipping chain
-void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
+void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2,
+                             ThreeDVertex *v)
 {
     float x, y, z, t;
 
@@ -365,7 +378,7 @@ void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
     InterpolateColorAndTex(v1, v2, v, t);
 
     // Now determine if the point is out to the sides
-    v->clipFlag  = GetHorizontalClipFlags(x, z);
+    v->clipFlag = GetHorizontalClipFlags(x, z);
     v->clipFlag or_eq GetVerticalClipFlags(y, z);
 
     // Compute the screen space coordinates of the new point
@@ -378,7 +391,8 @@ void Render3D::IntersectNear(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 // Intersect edge with y=z plane
 // This function is expected to be called second in the clipping chain
 // (ie: after near clip, but before all the others)
-void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
+void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2,
+                               ThreeDVertex *v)
 {
     float x, y, z, t;
     float dx, dy, dz;
@@ -392,15 +406,18 @@ void Render3D::IntersectBottom(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex 
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
+    v->csX = x =
+        v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y =
+        v1->csY +
+        t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates
     InterpolateColorAndTex(v1, v2, v, t);
 
     // Now determine if the point is out to the sides
-    v->clipFlag  = GetHorizontalClipFlags(x, z);
+    v->clipFlag = GetHorizontalClipFlags(x, z);
 
     // Compute the screen space coordinates of the new point
     register float OneOverZ = 1.0f / z;
@@ -426,15 +443,18 @@ void Render3D::IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
+    v->csX = x =
+        v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y =
+        v1->csY +
+        t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates
     InterpolateColorAndTex(v1, v2, v, t);
 
     // Now determine if the point is out to the sides
-    v->clipFlag  = GetHorizontalClipFlags(x, z);
+    v->clipFlag = GetHorizontalClipFlags(x, z);
 
     // Compute the screen space coordinates of the new point
     register float OneOverZ = 1.0f / z;
@@ -446,7 +466,8 @@ void Render3D::IntersectTop(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
 // Intersect edge with x=z plane
 // This function is expected to be called fourth in the clipping chain
 // (ie: after vertical clipping is complete, but before the other side is done)
-void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
+void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2,
+                              ThreeDVertex *v)
 {
     float x, y, z, t;
     float dx, dy, dz;
@@ -460,8 +481,11 @@ void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
+    v->csX = x =
+        v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y =
+        v1->csY +
+        t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates
@@ -482,7 +506,8 @@ void Render3D::IntersectRight(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *
 // Intersect edge with -x=z plane
 // This function is expected to be called fifth in the clipping chain
 // (ie: last)
-void Render3D::IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v)
+void Render3D::IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2,
+                             ThreeDVertex *v)
 {
     float x, y, z, t;
     float dx, dy, dz;
@@ -496,8 +521,11 @@ void Render3D::IntersectLeft(ThreeDVertex *v1, ThreeDVertex *v2, ThreeDVertex *v
 
     // Compute the camera space intersection point
     v->csZ = z = v1->csZ + t * (dz);
-    v->csX = x = v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
-    v->csY = y = v1->csY + t * (dy); // be avoided, but this way, the code is more standardized...
+    v->csX = x =
+        v1->csX + t * (dx); // Note: either dx or dy is used only once, so could
+    v->csY = y =
+        v1->csY +
+        t * (dy); // be avoided, but this way, the code is more standardized...
 
 
     // Compute the interpolated color and texture coordinates

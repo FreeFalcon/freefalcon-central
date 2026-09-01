@@ -5,15 +5,15 @@
  * Generated from file EVENTS.XLS by Kevin Klemmick
  */
 
-#include "MsgInc/DivertMsg.h"
-#include "MsgInc/RadioChatterMsg.h"
-#include "MsgInc/AWACSMsg.h"
+#include "msginc/divertmsg.h"
+#include "msginc/radiochattermsg.h"
+#include "msginc/awacsmsg.h"
 
 #include "simdrive.h"
 #include "falcuser.h"
 #include "mesg.h"
-#include "Mission.h"
-#include "CmpClass.h"
+#include "mission.h"
+#include "cmpclass.h"
 #include "aircrft.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -27,7 +27,7 @@
 
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 #define RESEND_DIVERT_TIME 25 // In seconds
 
@@ -51,7 +51,9 @@ static CampaignTime sNextRepost = 0;
 // Class Functions
 // ==============================
 
-FalconDivertMessage::FalconDivertMessage(void) : FalconEvent(DivertMsg, FalconEvent::CampaignThread, FalconNullId, NULL, FALSE)
+FalconDivertMessage::FalconDivertMessage(void)
+    : FalconEvent(DivertMsg, FalconEvent::CampaignThread, FalconNullId, NULL,
+                  FALSE)
 {
     dataBlock.tot = 0;
     dataBlock.flags = 0;
@@ -59,7 +61,10 @@ FalconDivertMessage::FalconDivertMessage(void) : FalconEvent(DivertMsg, FalconEv
     dataBlock.mission = 0;
 }
 
-FalconDivertMessage::FalconDivertMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(DivertMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconDivertMessage::FalconDivertMessage(VU_ID entityId, VuTargetEntity *target,
+                                         VU_BOOL loopback)
+    : FalconEvent(DivertMsg, FalconEvent::CampaignThread, entityId, target,
+                  loopback)
 {
     dataBlock.tot = 0;
     dataBlock.flags = 0;
@@ -67,7 +72,9 @@ FalconDivertMessage::FalconDivertMessage(VU_ID entityId, VuTargetEntity *target,
     dataBlock.mission = 0;
 }
 
-FalconDivertMessage::FalconDivertMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(DivertMsg, FalconEvent::CampaignThread, senderid, target)
+FalconDivertMessage::FalconDivertMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(DivertMsg, FalconEvent::CampaignThread, senderid, target)
 {
     dataBlock.tot = 0;
     dataBlock.flags = 0;
@@ -97,7 +104,9 @@ int FalconDivertMessage::Process(uchar autodisp)
         if (target and target->IsUnit() and ((Unit)target)->Father())
             target = ((Unit)target)->GetFirstUnitElement();
 
-        if (( not target or (target->IsUnit() and ((UnitClass*)target)->IsDead())) and dataBlock.mission > 0)
+        if ((not target or
+             (target->IsUnit() and ((UnitClass *)target)->IsDead())) and
+            dataBlock.mission > 0)
             return 0;
 
         // Set with new element's ID
@@ -109,15 +118,19 @@ int FalconDivertMessage::Process(uchar autodisp)
         // Return receipt
         if (flight->IsLocal() and (dataBlock.flags bitand REQF_NEEDRESPONSE))
         {
-            CampEntity e = (CampEntity) vuDatabase->Find(dataBlock.requesterID);
+            CampEntity e = (CampEntity)vuDatabase->Find(dataBlock.requesterID);
 
             if (e->IsUnit())
-                ((Unit)e)->SendUnitMessage(dataBlock.targetID, FalconUnitMessage::unitRequestMet, dataBlock.mission, flight->GetTeam(), 0);
+                ((Unit)e)->SendUnitMessage(
+                    dataBlock.targetID, FalconUnitMessage::unitRequestMet,
+                    dataBlock.mission, flight->GetTeam(), 0);
         }
 
         // KCK: This is kinda hackish - Basically, for player leads, keep reposting this message
         // (every few seconds) until the player replies.
-        if (flight->GetComponentLead() == FalconLocalSession->GetPlayerEntity() and flight == FalconLocalSession->GetPlayerFlight())
+        if (flight->GetComponentLead() ==
+                FalconLocalSession->GetPlayerEntity() and
+            flight == FalconLocalSession->GetPlayerFlight())
         {
             // Trying to track down a potential bug here.. It's hard enough to
             // get diverts I figure I'll let QA do the testing..
@@ -146,23 +159,24 @@ int FalconDivertMessage::Process(uchar autodisp)
 // Returns -1 if no divert was pending, 0 if divert is no longer valid, 1 if reply accepted
 int CheckDivertStatus(int reply)
 {
-    if ( not sNextRepost)
+    if (not sNextRepost)
         return -1;
     else if (sNextRepost < vuxGameTime or reply not_eq DIVERT_NO_DIVERT)
     {
-        Flight flight = (Flight) vuDatabase->Find(sDivertFlight);
+        Flight flight = (Flight)vuDatabase->Find(sDivertFlight);
         CampEntity target = NULL;
 
         // Clear repost time
         sNextRepost = 0;
 
-        if ( not flight)
+        if (not flight)
             return 0;
 
         // Check for target viability
         target = (CampEntity)vuDatabase->Find(sLastDivert.dataBlock.targetID);
 
-        if ( not target or (target->IsUnit() and (((Unit)target)->IsDead() or ((Unit)target)->Broken())))
+        if (not target or (target->IsUnit() and (((Unit)target)->IsDead() or
+                                                 ((Unit)target)->Broken())))
             return 0;
 
         if (flight not_eq FalconLocalSession->GetPlayerFlight())
@@ -187,11 +201,11 @@ int CheckDivertStatus(int reply)
         else
         {
             // Make radio call and repost
-            PlayDivertRadioCalls(target, sLastDivert.dataBlock.mission, flight, TRUE);
+            PlayDivertRadioCalls(target, sLastDivert.dataBlock.mission, flight,
+                                 TRUE);
             sNextRepost = vuxGameTime + RESEND_DIVERT_TIME * CampaignSeconds;
             // TJL 12/21/03 No need to keep setting Divert 0 when asking for a response to a divert call
             //flight->SetDiverted(0); // Unset diverted to allow re-diverts
-
         }
     }
 
@@ -232,7 +246,10 @@ void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 
     // Generate a scramble message dialog box if this is an intercept divert on one of the
     // player squadron's alert missions.
-    if (doUI and oldmission == AMIS_ALERT and fdm->dataBlock.mission == AMIS_INTERCEPT and flight->GetUnitSquadronID() == FalconLocalSession->GetPlayerSquadronID())
+    if (doUI and oldmission == AMIS_ALERT and
+        fdm->dataBlock.mission == AMIS_INTERCEPT and
+        flight->GetUnitSquadronID() ==
+            FalconLocalSession->GetPlayerSquadronID())
     {
         gInterceptersId = flight->Id();
         PostMessage(FalconDisplay.appWin, FM_ATTACK_WARNING, 0, 0);
@@ -240,7 +257,8 @@ void ApplyDivert(Flight flight, FalconDivertMessage *fdm)
 }
 
 
-void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int broadcast)
+void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight,
+                          int broadcast)
 {
     FalconRadioChatterMessage *msg;
     VuTargetEntity *to;
@@ -278,13 +296,14 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
         if (mission == DIVERT_DENIGNED)
             SendCallFromAwacs(flight, rcNOTASKING, to); // Divert denigned
         else if (mission == DIVERT_CANCLED)
-            SendCallFromAwacs(flight, rcENDDIVERTDIRECTIVE, to); // Divert canceled
+            SendCallFromAwacs(flight, rcENDDIVERTDIRECTIVE,
+                              to); // Divert canceled
         else if (mission == DIVERT_SUCCEEDED)
             SendCallFromAwacs(flight, rcENDDIVERTDIRECTIVE, to); // Divert over
 
         return;
     }
-    else if ( not newTarget)
+    else if (not newTarget)
     {
         // Just a position update
         if (target->GetDomain() == DOMAIN_AIR)
@@ -296,7 +315,8 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
             {
                 // Less than 5 km, call a mergeplot
                 msg = CreateCallFromAwacs(flight, rcMERGEPLOT, to);
-                msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 2);
+                msg->dataBlock.edata[4] =
+                    (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 2);
             }
             else
             {
@@ -304,7 +324,8 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
                 msg = CreateCallFromAwacs(flight, rcAIRTARGETBRA, to);
                 msg->dataBlock.edata[4] = x;
                 msg->dataBlock.edata[5] = y;
-                msg->dataBlock.edata[6] = (short)((Unit)target)->GetUnitAltitude();
+                msg->dataBlock.edata[6] =
+                    (short)((Unit)target)->GetUnitAltitude();
             }
         }
         else
@@ -324,13 +345,15 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
         GridIndex fx, fy;
         flight->GetLocation(&fx, &fy);
         msg = CreateCallFromAwacs(flight, rcENGAGEDIRECTIVE, to);
-        msg->dataBlock.edata[4] = (short)((((Unit)target)->GetUnitClassData()->VehicleType[0]) * 2);
+        msg->dataBlock.edata[4] =
+            (short)((((Unit)target)->GetUnitClassData()->VehicleType[0]) * 2);
         msg->dataBlock.edata[5] = (short)((Unit)target)->GetTotalVehicles();
         msg->dataBlock.edata[6] = x;
         msg->dataBlock.edata[7] = y;
 
         if (target->IsFlight())
-            msg->dataBlock.edata[8] = (short)(((Unit)target)->GetUnitAltitude() / 1000);
+            msg->dataBlock.edata[8] =
+                (short)(((Unit)target)->GetUnitAltitude() / 1000);
         else
             msg->dataBlock.edata[8] = 0;
 
@@ -340,10 +363,15 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     {
         msg = CreateCallFromAwacs(flight, rcATTACKMYTARGET, to);
 
-        if (target->IsUnit() and ((Unit)target)->GetUnitFormation() == GFORM_COLUMN)
-            msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 1); // "X column"
+        if (target->IsUnit() and
+            ((Unit)target)->GetUnitFormation() == GFORM_COLUMN)
+            msg->dataBlock.edata[4] =
+                (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 +
+                        1); // "X column"
         else
-            msg->dataBlock.edata[4] = (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 + 2); // "X unit"
+            msg->dataBlock.edata[4] =
+                (short)((target->Type() - VU_LAST_ENTITY_TYPE) * 6 +
+                        2); // "X unit"
 
         msg->dataBlock.edata[5] = x;
         msg->dataBlock.edata[6] = y;
@@ -356,7 +384,8 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
         msg->dataBlock.edata[5] = y;
 
         if (target->IsFlight())
-            msg->dataBlock.edata[6] = (short)(((Unit)target)->GetUnitAltitude() / 1000);
+            msg->dataBlock.edata[6] =
+                (short)(((Unit)target)->GetUnitAltitude() / 1000);
         else
             msg->dataBlock.edata[6] = 0;
 
@@ -371,7 +400,8 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
     }
 
     // This is the flight saying that they're diverting (should be delayed a little..)
-    if (SimDriver.GetPlayerEntity() and flight->GetComponentLead() not_eq SimDriver.GetPlayerEntity())
+    if (SimDriver.GetPlayerEntity() and
+        flight->GetComponentLead() not_eq SimDriver.GetPlayerEntity())
     {
         msg = CreateCallToAWACS(flight, rcAWACSDIVERT, to);
         msg->dataBlock.edata[0] = msg->dataBlock.edata[2];
@@ -380,5 +410,3 @@ void PlayDivertRadioCalls(CampEntity target, int mission, Flight flight, int bro
         FalconSendMessage(msg, FALSE);
     }
 }
-
-

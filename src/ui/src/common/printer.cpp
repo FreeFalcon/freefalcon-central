@@ -8,19 +8,20 @@
 
 extern int g_nPrintToFile;
 extern bool g_bAppendToBriefingFile;
-extern bool g_bBriefHTML; //THW 2003-12-07 Don't ignore <tags> when parsing the .b layout files
+extern bool
+    g_bBriefHTML; //THW 2003-12-07 Don't ignore <tags> when parsing the .b layout files
 
 
 int WriteBriefingToFile(_TCHAR *string, char *fname);
 
-int
-SendStringToPrinter(_TCHAR *string, _TCHAR *title)
+int SendStringToPrinter(_TCHAR *string, _TCHAR *title)
 {
     int retval = 1;
     ShiAssert(IsBadStringPtr(string, 8192) == 0);
     ShiAssert(IsBadStringPtr(title, 1024) == 0);
 
-    if ((g_nPrintToFile bitand 0x03) or g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
+    if ((g_nPrintToFile bitand 0x03) or
+        g_bBriefHTML) // 0x01 + 0x02 means write to file ...and to it anyway if html is wanted
     {
         char filename[_MAX_PATH];
 
@@ -35,7 +36,8 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
 
     // if ( not g_nPrintToFile or g_nPrintToFile bitand 0x02) // 0x00 + 0x02 means print out
     //THW 2004-04-12 Never print out if HTML-Briefings are enabled
-    if ( not g_bBriefHTML or not g_nPrintToFile or (g_nPrintToFile bitand 0x02)) // 0x00 + 0x02 means print out
+    if (not g_bBriefHTML or not g_nPrintToFile or
+        (g_nPrintToFile bitand 0x02)) // 0x00 + 0x02 means print out
     {
         CoInitialize(NULL);
         ComSup::RegisterServer("GMPrint.dll");
@@ -52,7 +54,8 @@ SendStringToPrinter(_TCHAR *string, _TCHAR *title)
         p_prt->title = SysAllocString(L"FreeFalcon-Cobra");
         p_prt->punch_margin = 0.5;
         p_prt->orientation = GMPRINTLib::GMP_LANDSCAPE;
-        p_prt->font_size = GMPRINTLib::GMP_FONT_12;  //or even 15 if needed (or when
+        p_prt->font_size =
+            GMPRINTLib::GMP_FONT_12; //or even 15 if needed (or when
 
 
         // now loop printing each line in turn.
@@ -97,19 +100,19 @@ void PrintTime(char *output, FILETIME TimeToPrint)
 {
     WORD Date, Time;
 
-    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) and 
+    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) and
         FileTimeToDosDateTime(&TimeToPrint, &Date, &Time))
     {
         // What a silly way to print out the file date/time. Oh well,
         // it works, and I'm not aware of a cleaner way to do it.
         if (g_bBriefHTML)
-            wsprintf(output, "%d-%02d-%02d_%02d%02d%02d",
-                     (Date / 512) + 1980, (Date / 32) bitand 15, Date bitand 31,
-                     (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
+            wsprintf(output, "%d-%02d-%02d_%02d%02d%02d", (Date / 512) + 1980,
+                     (Date / 32) bitand 15, Date bitand 31, (Time / 2048),
+                     (Time / 32) bitand 63, (Time bitand 31) * 2);
         else
-            wsprintf(output, "%d/%d/%d %02d:%02d:%02d",
-                     (Date / 32) bitand 15, Date bitand 31, (Date / 512) + 1980,
-                     (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
+            wsprintf(output, "%d/%d/%d %02d:%02d:%02d", (Date / 32) bitand 15,
+                     Date bitand 31, (Date / 512) + 1980, (Time / 2048),
+                     (Time / 32) bitand 63, (Time bitand 31) * 2);
     }
     else
         output[0] = 0;
@@ -132,17 +135,20 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     PrintTime(TimeBuffer, CurrentTime);
 
     if (g_bBriefHTML)
-        sprintf(fullname, "%s\\Briefings\\%s_%s", FalconDataDirectory, TimeBuffer, fname);
+        sprintf(fullname, "%s/Briefings/%s_%s", FalconDataDirectory, TimeBuffer,
+                fname);
     else
-        sprintf(fullname, "%s\\%s", FalconDataDirectory, fname);
+        sprintf(fullname, "%s/%s", FalconDataDirectory, fname);
 
     //It might be better for briefing processing programs to always have only one
     //briefing in the file...Make it configurable.
 
-    if (g_bAppendToBriefingFile and not g_bBriefHTML) //No sense in appending HTML briefings
+    if (g_bAppendToBriefingFile and
+        not g_bBriefHTML) //No sense in appending HTML briefings
     {
         fileID = CreateFile(fullname, GENERIC_WRITE, 0, NULL, OPEN_ALWAYS,
-                            FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH, NULL);
+                            FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH,
+                            NULL);
 
         if (fileID == INVALID_HANDLE_VALUE)
         {
@@ -165,13 +171,17 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
     }
 
     if (g_bBriefHTML)
-        strsize = sprintf(tmpString, "<html><head><title>FreeFalcon Mission Briefing</title><LINK REL=StyleSheet HREF='style.css' TYPE='text/css' MEDIA=screen></head><body>");
+        strsize = sprintf(
+            tmpString, "<html><head><title>FreeFalcon Mission "
+                       "Briefing</title><LINK REL=StyleSheet HREF='style.css' "
+                       "TYPE='text/css' MEDIA=screen></head><body>");
     else
-        strsize = sprintf(tmpString, "--------------------------------------------------------\r\nBRIEFING RECORD ");
+        strsize = sprintf(tmpString, "-----------------------------------------"
+                                     "---------------\r\nBRIEFING RECORD ");
 
     WriteFile(fileID, tmpString, strsize, &bytes, NULL);
 
-    if ( not g_bBriefHTML)
+    if (not g_bBriefHTML)
     {
         strsize = sprintf(tmpString, "generated at %s.\r\n", TimeBuffer);
         WriteFile(fileID, tmpString, strsize, &bytes, NULL);
@@ -195,7 +205,8 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
         }
 
         //Write to file and append "\r\n" sequence.
-        if ( not WriteFile(fileID, from, size, &bytes, NULL)) bytes = -1;
+        if (not WriteFile(fileID, from, size, &bytes, NULL))
+            bytes = -1;
 
         if (bytes not_eq size)
         {
@@ -220,4 +231,3 @@ int WriteBriefingToFile(_TCHAR *string, char *fname)
 
     return retval;
 }
-

@@ -3,7 +3,7 @@
 #include "bombfunc.h"
 #include "camp2sim.h"
 #include "initdata.h"
-#include "Entity.h"
+#include "entity.h"
 
 SimWeaponClass** InitBomb(FalconEntity* parent, ushort type, int num, int side)
 {
@@ -20,7 +20,7 @@ SimWeaponClass** InitBomb(FalconEntity* parent, ushort type, int num, int side)
             numSlots = 6;
         else if (num > 1)
             numSlots = 3;
-        else  if (num > 0)
+        else if (num > 0)
             numSlots = 1;
 
         bombPtr = new SimWeaponClass*[numSlots];
@@ -30,7 +30,8 @@ SimWeaponClass** InitBomb(FalconEntity* parent, ushort type, int num, int side)
             /*------------------------*/
             /* Add it to the database */
             /*------------------------*/
-            bombPtr[i] = new BombClass(WeaponDataTable[type].Index + VU_LAST_ENTITY_TYPE);
+            bombPtr[i] = new BombClass(WeaponDataTable[type].Index +
+                                       VU_LAST_ENTITY_TYPE);
             bombPtr[i]->SetParent(parent);
             bombPtr[i]->SetCountry(side);
             bombPtr[i]->SetFlag(MOTION_BMB_AI);
@@ -59,7 +60,7 @@ SimWeaponClass* InitABomb(FalconEntity* parent, ushort type, int slot)
     return (bombPtr);
 }
 
-void FreeRackBomb(SimBaseClass *railer)
+void FreeRackBomb(SimBaseClass* railer)
 {
     vuDatabase->Remove(railer);
 }

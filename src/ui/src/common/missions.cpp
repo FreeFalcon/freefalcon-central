@@ -21,7 +21,7 @@
 #include "textids.h"
 #include "classtbl.h"
 #include "ui_cmpgn.h"
-#include "ACSelect.h"
+#include "acselect.h"
 #include "gps.h"
 #include "urefresh.h"
 
@@ -43,30 +43,26 @@ extern bool g_bServer;
 extern C_Map *gMapMgr;
 extern GlobalPositioningSystem *gGps;
 
-static short FlightStatusID[] = // 1 to 1 correspondence with enum list in ui_cmpgn.h
-{
-    TXT_BRIEFING,
-    TXT_ENROUTE,
-    TXT_INGRESS,
-    TXT_PATROL,
-    TXT_EGRESS,
-    TXT_RETURNTOBASE,
-    TXT_LANDING,
+static short
+    FlightStatusID[] = // 1 to 1 correspondence with enum list in ui_cmpgn.h
+    {
+        TXT_BRIEFING, TXT_ENROUTE,      TXT_INGRESS, TXT_PATROL,
+        TXT_EGRESS,   TXT_RETURNTOBASE, TXT_LANDING,
 };
 
 long GetFlightTime(Flight element)
 {
     WayPoint wp;
 
-    if ( not element)
-        return(0);
+    if (not element)
+        return (0);
 
     wp = element->GetCurrentUnitWP();
 
     if (wp)
-        return(wp->GetWPDepartureTime());
+        return (wp->GetWPDepartureTime());
 
-    return(0);
+    return (0);
 }
 
 short GetFlightStatusID(Flight element)
@@ -75,8 +71,8 @@ short GetFlightStatusID(Flight element)
     int found = 0;
     short ID = 0;
 
-    if ( not element)
-        return(0);
+    if (not element)
+        return (0);
 
     wp = element->GetCurrentUnitWP();
 
@@ -111,15 +107,12 @@ short GetFlightStatusID(Flight element)
                 }
                 else if (wp->GetWPFlags() bitand WPF_TARGET)
                 {
-                    if
-                    (
-                        element->GetUnitMission() == AMIS_BARCAP or
+                    if (element->GetUnitMission() == AMIS_BARCAP or
                         element->GetUnitMission() == AMIS_BARCAP2 or
                         element->GetUnitMission() == AMIS_HAVCAP or
                         element->GetUnitMission() == AMIS_RESCAP or
                         element->GetUnitMission() == AMIS_TARCAP or
-                        element->GetUnitMission() == AMIS_AMBUSHCAP
-                    )
+                        element->GetUnitMission() == AMIS_AMBUSHCAP)
                     {
                         ID = _MIS_PATROL;
                     }
@@ -147,7 +140,7 @@ short GetFlightStatusID(Flight element)
             }
         }
 
-        if ((TheCampaign.Flags bitand CAMP_TACTICAL) and ( not found))
+        if ((TheCampaign.Flags bitand CAMP_TACTICAL) and (not found))
         {
             ID = _MIS_ENROUTE;
         }
@@ -157,7 +150,7 @@ short GetFlightStatusID(Flight element)
         ID = _MIS_RTB;
     }
 
-    return(ID);
+    return (ID);
 }
 
 void CheckCampaignFlyButton()
@@ -190,12 +183,15 @@ void CheckCampaignFlyButton()
             {
                 for (i = 0; i < 4 and dontEnable == 0; i++)
                 {
-                    if (FalconLocalSession->GetPlayerFlight()->plane_stats[i] == AIRCRAFT_AVAILABLE and FalconLocalSession->GetPlayerFlight()->pilots[i] == NO_PILOT)
+                    if (FalconLocalSession->GetPlayerFlight()->plane_stats[i] ==
+                            AIRCRAFT_AVAILABLE and
+                        FalconLocalSession->GetPlayerFlight()->pilots[i] ==
+                            NO_PILOT)
                         dontEnable = 1;
                 }
             }
 
-            if ( not dontEnable)
+            if (not dontEnable)
                 // END OF ADDED SECTION
                 Enabled = 1;
         }
@@ -281,7 +277,7 @@ static void MissionSelectCB(long, short hittype, C_Base *control)
 
     if (win)
     {
-        gCurrentFlightID = ((C_Mission*)control)->GetVUID();
+        gCurrentFlightID = ((C_Mission *)control)->GetVUID();
 
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
@@ -319,7 +315,7 @@ static void SelectMission(C_Base *control)
 
     if (win)
     {
-        gCurrentFlightID = ((C_Mission*)control)->GetVUID();
+        gCurrentFlightID = ((C_Mission *)control)->GetVUID();
 
         gSelectedFlightID = gCurrentFlightID;
         flight = (Flight)vuDatabase->Find(gCurrentFlightID);
@@ -357,11 +353,13 @@ void FindMissionInBriefing(long ID)
 
             while (cur)
             {
-                if (cur->Item_ and not (cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
+                if (cur->Item_ and
+                    not(cur->Item_->GetFlags() bitand C_BIT_INVISIBLE))
                 {
-                    if (((C_Mission*)cur->Item_)->GetStatusID() < _MIS_EGRESS)
+                    if (((C_Mission *)cur->Item_)->GetStatusID() < _MIS_EGRESS)
                     {
-                        flight = (Flight)vuDatabase->Find(((C_Mission*)cur->Item_)->GetVUID());
+                        flight = (Flight)vuDatabase->Find(
+                            ((C_Mission *)cur->Item_)->GetVUID());
 
                         if (flight)
                         {
@@ -369,15 +367,20 @@ void FindMissionInBriefing(long ID)
                             {
                                 cur->Item_->SetState(1);
 
-                                if ( not StopLookingforMission)
+                                if (not StopLookingforMission)
                                 {
-                                    MissionSelectCB(cur->ID_, C_TYPE_LMOUSEUP, cur->Item_);
+                                    MissionSelectCB(cur->ID_, C_TYPE_LMOUSEUP,
+                                                    cur->Item_);
 
                                     // KLUDGE: Throw player in 1st slot
                                     // KCK: This should be done regardless of online status
                                     // if( not gCommsMgr->Online())
                                     // { // Throw player in 1st slot
-                                    RequestACSlot(flight, 0, static_cast<uchar>(flight->GetAdjustedAircraftSlot(0)), 0, 0, 1);
+                                    RequestACSlot(
+                                        flight, 0,
+                                        static_cast<uchar>(
+                                            flight->GetAdjustedAircraftSlot(0)),
+                                        0, 0, 1);
                                     // }
                                     StopLookingforMission = 1;
                                 }
@@ -400,11 +403,12 @@ UI_Refresher *FindMissionItem(Flight flight)
 {
     UI_Refresher *urec;
 
-    urec = (UI_Refresher*)gGps->Find(flight->GetCampID());
+    urec = (UI_Refresher *)gGps->Find(flight->GetCampID());
 
     if (urec and urec->Mission_)
     {
-        MissionSelectCB(urec->Mission_->GetID(), C_TYPE_LMOUSEUP, urec->Mission_);
+        MissionSelectCB(urec->Mission_->GetID(), C_TYPE_LMOUSEUP,
+                        urec->Mission_);
         return urec;
     }
 
@@ -421,8 +425,8 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     Package package;
     WayPoint wp;
 
-    if ( not element->Final())
-        return(NULL);
+    if (not element->Final())
+        return (NULL);
 
     if (TheCampaign.Flags bitand CAMP_TACTICAL)
     {
@@ -433,36 +437,39 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     }
     else
     {
-        if (element->GetUnitSquadronID() not_eq FalconLocalSession->GetPlayerSquadronID())
-            return(NULL);
+        if (element->GetUnitSquadronID() not_eq
+            FalconLocalSession->GetPlayerSquadronID())
+            return (NULL);
     }
 
-    if ( not tree or not element or not element->GetUnitParent())
-        return(NULL);
+    if (not tree or not element or not element->GetUnitParent())
+        return (NULL);
 
     // Create new record
     mission = new C_Mission;
 
-    if ( not mission)
-        return(NULL);
+    if (not mission)
+        return (NULL);
 
     win = tree->GetParent();
 
-    if ( not win)
-        return(NULL);
+    if (not win)
+        return (NULL);
 
     mission->Setup(element->GetCampID(), 0); // ID=element->CampID;
     mission->SetFont(win->Font_);
     mission->SetClient(tree->GetClient());
-    mission->SetW(win->ClientArea_[tree->GetClient()].right - win->ClientArea_[tree->GetClient()].left);
+    mission->SetW(win->ClientArea_[tree->GetClient()].right -
+                  win->ClientArea_[tree->GetClient()].left);
     mission->SetH(gFontList->GetHeight(tree->GetFont()));
     // Set takeoff time string
     wp = element->GetFirstUnitWP();
 
-    if (wp)   // JPO CTD fix
+    if (wp) // JPO CTD fix
     {
         GetTimeString(wp->GetWPDepartureTime(), buffer);
-        mission->SetTakeOff(static_cast<short>(tree->GetUserNumber(C_STATE_0)), 0, buffer);
+        mission->SetTakeOff(static_cast<short>(tree->GetUserNumber(C_STATE_0)),
+                            0, buffer);
         mission->SetTakeOffTime(wp->GetWPDepartureTime());
     }
 
@@ -472,17 +479,21 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     if (ent_mission == AMIS_ALERT)
         ent_mission = AMIS_INTERCEPT;
 
-    mission->SetMission(static_cast<short>(tree->GetUserNumber(C_STATE_1)), 0, MissStr[ent_mission]);
+    mission->SetMission(static_cast<short>(tree->GetUserNumber(C_STATE_1)), 0,
+                        MissStr[ent_mission]);
     mission->SetMissionID(static_cast<short>(element->GetUnitMission()));
 
     // Set Package (campID of package)
     _stprintf(buffer, "%1d", element->GetUnitParent()->GetCampID());
-    mission->SetPackage(static_cast<short>(tree->GetUserNumber(C_STATE_2)), 0, buffer);
+    mission->SetPackage(static_cast<short>(tree->GetUserNumber(C_STATE_2)), 0,
+                        buffer);
     mission->SetPackageID(element->GetUnitParent()->GetCampID());
 
     // Set Mission Status String
     mission->SetStatusID(GetFlightStatusID(element));
-    mission->SetStatus(static_cast<short>(tree->GetUserNumber(C_STATE_3)), 0, gStringMgr->GetString(FlightStatusID[mission->GetStatusID()]));
+    mission->SetStatus(
+        static_cast<short>(tree->GetUserNumber(C_STATE_3)), 0,
+        gStringMgr->GetString(FlightStatusID[mission->GetStatusID()]));
 
     // Set Mission Priority String
     package = element->GetUnitPackage();
@@ -490,9 +501,12 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     // KCK: It seemed more logical to get the priority from the flight, not the package's request
     // PJW: Why Kevin you are sooo fucking wrong... and ASK when making changes butt fuck
     // buffer[0]=(255 - element->GetUnitPriority()) / 51 + _T('A');
-    buffer[0] = static_cast<char>((255 - package->GetMissionRequest()->priority) / 51 + _T('A'));
-    mission->SetPriority(static_cast<short>(tree->GetUserNumber(C_STATE_4)), 0, buffer);
-    mission->SetPriorityID(static_cast<short>(255 - package->GetMissionRequest()->priority));
+    buffer[0] = static_cast<char>(
+        (255 - package->GetMissionRequest()->priority) / 51 + _T('A'));
+    mission->SetPriority(static_cast<short>(tree->GetUserNumber(C_STATE_4)), 0,
+                         buffer);
+    mission->SetPriorityID(
+        static_cast<short>(255 - package->GetMissionRequest()->priority));
 
     // Set a callback incase someone actually wants to see this mission
     // if (TheCampaign.Flags bitand CAMP_TACTICAL)
@@ -508,10 +522,11 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     mission->SetVUID(element->Id());
     mission->SetUserNumber(C_STATE_0, element->GetTeam());
     mission->SetUserNumber(C_STATE_1, wp ? wp->GetWPDepartureTime() : 0);
-    mission->SetUserNumber(C_STATE_2, 1000 - element->GetUnitPriority()); // Priority
+    mission->SetUserNumber(C_STATE_2,
+                           1000 - element->GetUnitPriority()); // Priority
     mission->SetUserNumber(C_STATE_3, element->GetUnitMission());
 
-    if ( not element->Final() or element->GetUnitMission() == AMIS_ALERT)
+    if (not element->Final() or element->GetUnitMission() == AMIS_ALERT)
     {
         mission->SetFlagBitOn(C_BIT_INVISIBLE);
     }
@@ -521,19 +536,20 @@ C_Mission *MakeMissionItem(C_TreeList *tree, Flight element)
     mission->SetOwner(item);
 
     if (tree->AddItem(tree->GetRoot(), item))
-        return(mission);
+        return (mission);
 
     mission->Cleanup();
     delete mission;
     delete item;
-    return(NULL);
+    return (NULL);
 }
 
 void MissionUpdateStatus(Flight element, C_Mission *mission)
 {
     mission->Refresh();
     mission->SetStatusID(GetFlightStatusID(element));
-    mission->SetStatus(gStringMgr->GetString(FlightStatusID[mission->GetStatusID()]));
+    mission->SetStatus(
+        gStringMgr->GetString(FlightStatusID[mission->GetStatusID()]));
 
     if (gPlayerFlightID == element->Id())
     {
@@ -566,7 +582,7 @@ void MissionUpdateTime(Flight element, C_Mission *mission)
     mission->Refresh();
     WayPoint wp = element->GetFirstUnitWP();
 
-    if (wp)   // JPO CTD fix
+    if (wp) // JPO CTD fix
     {
         GetTimeString(wp->GetWPDepartureTime(), buffer);
         mission->SetTakeOff(buffer);
@@ -582,10 +598,10 @@ void RemoveMissionCB(TREELIST *item)
 {
     C_Mission *mis;
 
-    if ( not item)
+    if (not item)
         return;
 
-    mis = (C_Mission*)item->Item_;
+    mis = (C_Mission *)item->Item_;
 
     if (gPlayerFlightID == mis->GetVUID())
     {
@@ -594,12 +610,15 @@ void RemoveMissionCB(TREELIST *item)
     }
 
     if (gMapMgr)
-        gMapMgr->RemoveWaypoints(static_cast<short>(item->Item_->GetUserNumber(0)), item->Item_->GetID() << 8);
+        gMapMgr->RemoveWaypoints(
+            static_cast<short>(item->Item_->GetUserNumber(0)),
+            item->Item_->GetID() << 8);
 
     if (InCleanup)
         return;
 
-    if (gCurrentFlightID == mis->GetVUID()) // our mission is being removed... find the next mission in briefing
+    if (gCurrentFlightID ==
+        mis->GetVUID()) // our mission is being removed... find the next mission in briefing
     {
         if (TheCampaign.Flags bitand CAMP_TACTICAL)
         {
@@ -620,4 +639,3 @@ void RemoveMissionCB(TREELIST *item)
         }
     }
 }
-

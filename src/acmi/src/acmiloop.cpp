@@ -3,20 +3,20 @@
 ////////////////////////////////////////////////////////////////////////////////
 //
 // Includes.
-#pragma optimize( "", off )
+#pragma optimize("", off)
 
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <time.h>
 
-#include "Graphics/Include/grtypes.h"
-#include "Graphics/Include/RenderWire.h"
-#include "Graphics/Include/terrtex.h"
-#include "Graphics/Include/Drawpole.h"
-#include "Graphics/Include/TimeMgr.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/include/renderow.h"
+#include "graphics/include/grtypes.h"
+#include "graphics/include/renderwire.h"
+#include "graphics/include/terrtex.h"
+#include "graphics/include/drawpole.h"
+#include "graphics/include/timemgr.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/renderow.h"
 #include "codelib/tools/lists/lists.h"
 #include "ui95/chandler.h"
 #include "ui95/cthook.h"
@@ -25,11 +25,11 @@
 #include "sim/include/phyconst.h"
 #include "falcmesg.h"
 //#include "dispcfg.h"
-#include "acmiUI.h"
+#include "acmiui.h"
 #include "ui/include/textids.h"
 #include "acmitape.h"
-#include "AcmiView.h"
-#include "FalcLib/include/dispopts.h"
+#include "acmiview.h"
+#include "falclib/include/dispopts.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@
 //
 // References.
 
-void CalcTransformMatrix(SimBaseClass* theObject);
+void CalcTransformMatrix(SimBaseClass *theObject);
 extern float CalcKIAS(float, float);
 
 /*
@@ -69,38 +69,26 @@ extern char FalconDataDirectory[_MAX_PATH];
 extern char FalconPictureDirectory[_MAX_PATH]; // JB 010623
 extern bool g_bNewAcmiHud;
 
-extern C_Handler
-*gMainHandler;
+extern C_Handler *gMainHandler;
 
-extern BOOL
-acmiDraw;
+extern BOOL acmiDraw;
 
-extern RECT
-acmiSrcRect,
-acmiDestRect;
+extern RECT acmiSrcRect, acmiDestRect;
 
-extern ACMIView
-*acmiDrive;
+extern ACMIView *acmiDrive;
 
 extern int TESTBUTTONPUSH;
 
-static DWORD
-frameStart,
-lastFrame,
-frameTime,
-fcount;
+static DWORD frameStart, lastFrame, frameTime, fcount;
 
-BOOL
-camTrans = FALSE,
-frameAdvance = FALSE;
-
+BOOL camTrans = FALSE, frameAdvance = FALSE;
 
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void ACMIView::VectorTranslate(Tpoint*)
+void ACMIView::VectorTranslate(Tpoint *)
 {
     /*
     acmiCamPos.x +=
@@ -124,14 +112,13 @@ void ACMIView::VectorTranslate(Tpoint*)
      tVector->z * Camera()->Rotation().M33
     );
     */
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void ACMIView::VectorToVectorTranslation(Tpoint*, Tpoint*)
+void ACMIView::VectorToVectorTranslation(Tpoint *, Tpoint *)
 {
     /*
     offSetV->x +=
@@ -175,64 +162,63 @@ void ACMIView::SelectCamera(long camSel)
 
     switch (camSel)
     {
-        case INTERNAL_CAM: //internal
-            GLOBAL_WIRE_COCKPIT = 1;
-            _cameraState = INTERNAL_CAM;
-            break;
+    case INTERNAL_CAM: //internal
+        GLOBAL_WIRE_COCKPIT = 1;
+        _cameraState = INTERNAL_CAM;
+        break;
 
-        case EXTERNAL_CAM: // orbit
-            GLOBAL_WIRE_COCKPIT = 0;
-            _cameraState = EXTERNAL_CAM;
-            break;
+    case EXTERNAL_CAM: // orbit
+        GLOBAL_WIRE_COCKPIT = 0;
+        _cameraState = EXTERNAL_CAM;
+        break;
 
-        case TRACKING_CAM: // orbit
-            GLOBAL_WIRE_COCKPIT = 0;
-            _cameraState = TRACKING_CAM;
-            break;
+    case TRACKING_CAM: // orbit
+        GLOBAL_WIRE_COCKPIT = 0;
+        _cameraState = TRACKING_CAM;
+        break;
 
-        case CHASE_CAM: //Chase
-            GLOBAL_WIRE_COCKPIT = 0;
-            _cameraState = CHASE_CAM;
-            break;
+    case CHASE_CAM: //Chase
+        GLOBAL_WIRE_COCKPIT = 0;
+        _cameraState = CHASE_CAM;
+        break;
 
-        case SAT_CAM: // Satellite
-            GLOBAL_WIRE_COCKPIT = 0;
-            _cameraState = SAT_CAM;
+    case SAT_CAM: // Satellite
+        GLOBAL_WIRE_COCKPIT = 0;
+        _cameraState = SAT_CAM;
 
-            // default sat view to looking straight down at 5000ft
-            _camPitch = -90.0f * DTR;
-            _camRange = -15000.0f;
-            break;
+        // default sat view to looking straight down at 5000ft
+        _camPitch = -90.0f * DTR;
+        _camRange = -15000.0f;
+        break;
 
-        case ISO_CAM: // ISOMETRIC
-            GLOBAL_WIRE_COCKPIT = 0;
-            _cameraState = ISO_CAM;
-            _camRange = -15000.0f;
-            _camPitch = -25.0F * DTR;
-            break;
+    case ISO_CAM: // ISOMETRIC
+        GLOBAL_WIRE_COCKPIT = 0;
+        _cameraState = ISO_CAM;
+        _camRange = -15000.0f;
+        _camPitch = -25.0F * DTR;
+        break;
 
-        case FREE_CAM: // Free
-            GLOBAL_WIRE_COCKPIT = 0;
-            _cameraState = FREE_CAM;
+    case FREE_CAM: // Free
+        GLOBAL_WIRE_COCKPIT = 0;
+        _cameraState = FREE_CAM;
 
-            // default camera to last known position
-            _camWorldPos.x += _camPos.x;
-            _camWorldPos.y += _camPos.y;
-            _camWorldPos.z += _camPos.z;
+        // default camera to last known position
+        _camWorldPos.x += _camPos.x;
+        _camWorldPos.y += _camPos.y;
+        _camWorldPos.z += _camPos.z;
 
-            break;
+        break;
 
-        default:
-            GLOBAL_WIRE_COCKPIT = 0;
-            _cameraState = EXTERNAL_CAM;
-            break;
+    default:
+        GLOBAL_WIRE_COCKPIT = 0;
+        _cameraState = EXTERNAL_CAM;
+        break;
     };
 
     ResetPanner();
 }
 
 
-
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -241,7 +227,7 @@ void ACMIView::SelectCamera(long camSel)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void ACMIView::SetUIVector(Tpoint*)
+void ACMIView::SetUIVector(Tpoint *)
 {
 }
 
@@ -259,9 +245,7 @@ void ACMIView::InitUIVector()
 
 void ACMIView::SwitchCameraObject(long cameraObject)
 {
-    int
-    i,
-    numEntities;
+    int i, numEntities;
 
     F4Assert(Tape() not_eq NULL);
     F4Assert(_entityUIMappings not_eq NULL);
@@ -276,8 +260,6 @@ void ACMIView::SwitchCameraObject(long cameraObject)
             return;
         }
     }
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -286,12 +268,9 @@ void ACMIView::SwitchCameraObject(long cameraObject)
 
 void ACMIView::SwitchTrackingObject(long cameraObject)
 {
-    int
-    i,
-    numEntities;
+    int i, numEntities;
 
-    F4Assert(Tape() not_eq NULL)
-    F4Assert(_entityUIMappings not_eq NULL);
+    F4Assert(Tape() not_eq NULL) F4Assert(_entityUIMappings not_eq NULL);
 
     numEntities = Tape()->NumEntities();
 
@@ -313,7 +292,8 @@ void ACMIView::Exec()
 {
     Tpoint pos;
 
-    if ( not acmiDraw or not _tapeHasLoaded or Tape() == NULL or not Tape()->IsLoaded())
+    if (not acmiDraw or not _tapeHasLoaded or Tape() == NULL or
+        not Tape()->IsLoaded())
         return;
 
     if (fcount++ % 10 == 0)
@@ -349,7 +329,6 @@ void ACMIView::Exec()
 
     // ruurrr?
     TheTimeManager.SetTime(DWORD(Tape()->SimTime() * 1000));
-
 }
 
 
@@ -360,11 +339,9 @@ void ACMIView::Exec()
 void ACMIView::Draw()
 {
     static int lastButton = -1;
-    Tpoint
-    pos;
+    Tpoint pos;
 
-    Trotation
-    rot;
+    Trotation rot;
 
     int i, numEntities;
     SimTapeEntity *ep;
@@ -458,8 +435,9 @@ void ACMIView::Draw()
 
             // is it in existance at the moment?
             // also no poles or anything on chaff and flares
-            if ((ep->flags bitand (ENTITY_FLAG_CHAFF bitor ENTITY_FLAG_FLARE)) or
- not Tape()->IsEntityInFrame(i))
+            if ((ep->flags bitand
+                 (ENTITY_FLAG_CHAFF bitor ENTITY_FLAG_FLARE)) or
+                not Tape()->IsEntityInFrame(i))
             {
                 continue;
             }
@@ -481,7 +459,8 @@ void ACMIView::Draw()
                     ep->objBase->drawPointer->GetPosition(&pos);
                     targep->objBase->drawPointer->GetPosition(&posb);
 
-                    rot = ((DrawableBSP *)ep->objBase->drawPointer)->orientation;
+                    rot =
+                        ((DrawableBSP *)ep->objBase->drawPointer)->orientation;
 
                     // start line out in front of aircraft
                     pos.x += rot.M11 * ep->objBase->drawPointer->Radius();
@@ -490,26 +469,31 @@ void ACMIView::Draw()
 
 
                     // do target boxes and lines
-                    if (_cameraState not_eq FREE_CAM)  // and targindex == CameraObject() )//me123 we wanna see all lock lines
+                    if (_cameraState not_eq
+                        FREE_CAM) // and targindex == CameraObject() )//me123 we wanna see all lock lines
                     {
                         // current attached camera object is target
                         if (targep->flags bitand ENTITY_FLAG_AIRCRAFT)
                         {
-                            ((DrawablePoled *)targep->objBase->drawPointer)->SetTarget(TRUE);
-                            ((DrawablePoled *)targep->objBase->drawPointer)->SetTargetBoxColor(0xff00ffff);
+                            ((DrawablePoled *)targep->objBase->drawPointer)
+                                ->SetTarget(TRUE);
+                            ((DrawablePoled *)targep->objBase->drawPointer)
+                                ->SetTargetBoxColor(0xff00ffff);
                         }
 
                         _renderer->SetColor(0xff00ffff);
                         _renderer->Render3DLine(&pos, &posb);
-
                     }
-                    else if (_cameraState not_eq FREE_CAM and i == CameraObject())
+                    else if (_cameraState not_eq FREE_CAM and
+                             i == CameraObject())
                     {
                         // current attached camera object's target
                         if (targep->flags bitand ENTITY_FLAG_AIRCRAFT)
                         {
-                            ((DrawablePoled *)targep->objBase->drawPointer)->SetTarget(TRUE);
-                            ((DrawablePoled *)targep->objBase->drawPointer)->SetTargetBoxColor(0xffffffff);
+                            ((DrawablePoled *)targep->objBase->drawPointer)
+                                ->SetTarget(TRUE);
+                            ((DrawablePoled *)targep->objBase->drawPointer)
+                                ->SetTargetBoxColor(0xffffffff);
                         }
 
                         _renderer->SetColor(0xffffffff);
@@ -567,17 +551,28 @@ void ACMIView::Draw()
                         _renderer->TextLeft(-0.48f, 0, speedstring);
                         _renderer->TextRight(0.48f, 0, altitudestring);
                         _renderer->TextCenter(0, 0.48f, headingstring);
-                        _renderer->TextCenter(0, -0.45f, ((DrawableBSP*)ep->objBase->drawPointer)->Label());
+                        _renderer->TextCenter(
+                            0, -0.45f,
+                            ((DrawableBSP *)ep->objBase->drawPointer)->Label());
                         _renderer->SetFont(ofont);
                     }
                     else
                     {
-                        sprintf(speedstring, "%s: %0.0f", gStringMgr->GetString(TXT_AIRSPEED), mph);
-                        sprintf(altitudestring, "%s: %0.0f", gStringMgr->GetString(TXT_ALTITUDE), ACMI_altitude);
-                        sprintf(headingstring, "%s: %0.0f", gStringMgr->GetString(TXT_HEADING), ACMI_heading);
-                        _renderer->ScreenText(250.0f, 160.0f, ((DrawableBSP*)ep->objBase->drawPointer)->Label(), 0);
+                        sprintf(speedstring, "%s: %0.0f",
+                                gStringMgr->GetString(TXT_AIRSPEED), mph);
+                        sprintf(altitudestring, "%s: %0.0f",
+                                gStringMgr->GetString(TXT_ALTITUDE),
+                                ACMI_altitude);
+                        sprintf(headingstring, "%s: %0.0f",
+                                gStringMgr->GetString(TXT_HEADING),
+                                ACMI_heading);
+                        _renderer->ScreenText(
+                            250.0f, 160.0f,
+                            ((DrawableBSP *)ep->objBase->drawPointer)->Label(),
+                            0);
                         _renderer->ScreenText(250.0f, 170.0f, speedstring, 0);
-                        _renderer->ScreenText(250.0f, 180.0f, altitudestring, 0);
+                        _renderer->ScreenText(250.0f, 180.0f, altitudestring,
+                                              0);
                         _renderer->ScreenText(250.0f, 190.0f, headingstring, 0);
                     }
 
@@ -600,7 +595,6 @@ void ACMIView::Draw()
         // update the entities
         // MUST be done after render
         Tape()->UpdateSimTapeEntities();
-
     }
 }
 
@@ -610,34 +604,24 @@ void ACMIView::Draw()
 
 void ACMIView::TakeScreenShot()
 {
-    char
-    fileName[_MAX_PATH];
+    char fileName[_MAX_PATH];
 
-    char
-    tmpStr[_MAX_PATH];
+    char tmpStr[_MAX_PATH];
 
-    time_t
-    ltime;
+    time_t ltime;
 
-    struct tm*
-            today;
+    struct tm *today;
 
     time(&ltime);
     // _takeScreenShot = FALSE;
     today = localtime(&ltime);
 
-    strftime
-    (
-        tmpStr,
-        _MAX_PATH - 1,
-        "%m.%d.%Y-%H.%M.%S",
-        today
-    );
+    strftime(tmpStr, _MAX_PATH - 1, "%m.%d.%Y-%H.%M.%S", today);
 
 #if 0
-    sprintf(fileName, "%s\\%s", FalconDataDirectory, tmpStr);
+    sprintf(fileName, "%s/%s", FalconDataDirectory, tmpStr);
 #else
-    sprintf(fileName, "%s\\%s", FalconPictureDirectory, tmpStr);
+    sprintf(fileName, "%s/%s", FalconPictureDirectory, tmpStr);
 #endif
 
     gMainHandler->GetFront()->BackBufferToRAW(fileName);
@@ -685,153 +669,156 @@ void ACMIView::UpdateViewPosRot(void)
     //  get yaw pitch and roll for camera
     switch (_cameraState)
     {
-        case INTERNAL_CAM: //internal
-            _camYaw = camEnt->yaw;
-            _camPitch = camEnt->pitch;
-            _camRoll = camEnt->roll;
-            break;
+    case INTERNAL_CAM: //internal
+        _camYaw = camEnt->yaw;
+        _camPitch = camEnt->pitch;
+        _camRoll = camEnt->roll;
+        break;
 
-        case EXTERNAL_CAM: // orbit
-            _camYaw += _pannerAz;
-            _camPitch += _pannerEl;
-            _camRoll = 0.0f;
-            _camRange += _pannerX;
+    case EXTERNAL_CAM: // orbit
+        _camYaw += _pannerAz;
+        _camPitch += _pannerEl;
+        _camRoll = 0.0f;
+        _camRange += _pannerX;
 
-            if (_camRange > -50.0f)
-                _camRange = -50.0f;
+        if (_camRange > -50.0f)
+            _camRange = -50.0f;
 
-            break;
+        break;
 
-        case TRACKING_CAM: // tracking
-            _camYaw += _pannerAz;
-            _camPitch += _pannerEl;
-            _camRoll = 0.0f;
-            _camRange += _pannerX;
+    case TRACKING_CAM: // tracking
+        _camYaw += _pannerAz;
+        _camPitch += _pannerEl;
+        _camRoll = 0.0f;
+        _camRange += _pannerX;
 
-            if (_camRange > -50.0f)
-                _camRange = -50.0f;
+        if (_camRange > -50.0f)
+            _camRange = -50.0f;
 
-            break;
+        break;
 
-        case CHASE_CAM: //Chase
-            _camRange += _pannerX;
+    case CHASE_CAM: //Chase
+        _camRange += _pannerX;
 
-            if (_camRange > -50.0f)
-                _camRange = -50.0f;
+        if (_camRange > -50.0f)
+            _camRange = -50.0f;
 
-            // where we want camera to be
-            _chaseX = camEnt->objBase->dmx[0][0] * _camRange * objScale;
-            _chaseY = camEnt->objBase->dmx[0][1] * _camRange * objScale;
-            _chaseZ = camEnt->objBase->dmx[0][2] * _camRange * objScale;
+        // where we want camera to be
+        _chaseX = camEnt->objBase->dmx[0][0] * _camRange * objScale;
+        _chaseY = camEnt->objBase->dmx[0][1] * _camRange * objScale;
+        _chaseZ = camEnt->objBase->dmx[0][2] * _camRange * objScale;
 
-            dT = Tape()->GetDeltaSimTime();
+        dT = Tape()->GetDeltaSimTime();
 
-            if (dT <= 0.0f)
-                dT = 0.1f;
+        if (dT <= 0.0f)
+            dT = 0.1f;
 
-            // "spring" constants for camera roll and move
+        // "spring" constants for camera roll and move
 #define KMOVE 0.29f
 #define KROLL 0.30f
 
-            // convert frame loop time to secs from ms
-            // dT = (float)frameTime * 0.001;
+        // convert frame loop time to secs from ms
+        // dT = (float)frameTime * 0.001;
 
-            // get the diff between desired and current camera pos
-            dPos.x = _chaseX - _camPos.x;
-            dPos.y = _chaseY - _camPos.y;
-            dPos.z = _chaseZ - _camPos.z;
+        // get the diff between desired and current camera pos
+        dPos.x = _chaseX - _camPos.x;
+        dPos.y = _chaseY - _camPos.y;
+        dPos.z = _chaseZ - _camPos.z;
 
-            // send the camera thataway
-            _camPos.x += dPos.x * dT * KMOVE;
-            _camPos.y += dPos.y * dT * KMOVE;
-            _camPos.z += dPos.z * dT * KMOVE;
+        // send the camera thataway
+        _camPos.x += dPos.x * dT * KMOVE;
+        _camPos.y += dPos.y * dT * KMOVE;
+        _camPos.z += dPos.z * dT * KMOVE;
 
-            // "look at" vector
-            dPos.x = -_camPos.x;
-            dPos.y = -_camPos.y;
-            dPos.z = -_camPos.z;
+        // "look at" vector
+        dPos.x = -_camPos.x;
+        dPos.y = -_camPos.y;
+        dPos.z = -_camPos.z;
 
-            // get new camera roll
-            dRoll = camEnt->roll - _camRoll;
+        // get new camera roll
+        dRoll = camEnt->roll - _camRoll;
 
-            // roll in shortest direction
-            if (fabs(dRoll) > 180.0f * DTR)
-            {
-                if (dRoll < 0.0f)
-                    dRoll = 360.0f * DTR + camEnt->roll - _camRoll;
-                else
-                    dRoll = -360.0f * DTR + camEnt->roll - _camRoll;
-            }
+        // roll in shortest direction
+        if (fabs(dRoll) > 180.0f * DTR)
+        {
+            if (dRoll < 0.0f)
+                dRoll = 360.0f * DTR + camEnt->roll - _camRoll;
+            else
+                dRoll = -360.0f * DTR + camEnt->roll - _camRoll;
+        }
 
-            // apply roll
-            _camRoll += dRoll * dT * KROLL;
+        // apply roll
+        _camRoll += dRoll * dT * KROLL;
 
-            // keep chase cam roll with +/- 180
-            if (_camRoll > 1.0f * PI)
-                _camRoll -= 2.0f * PI;
-            else if (_camRoll < -1.0f * PI)
-                _camRoll += 2.0f * PI;
+        // keep chase cam roll with +/- 180
+        if (_camRoll > 1.0f * PI)
+            _camRoll -= 2.0f * PI;
+        else if (_camRoll < -1.0f * PI)
+            _camRoll += 2.0f * PI;
 
-            // now get yaw and pitch based on look at vector
-            dist = (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
-            _camPitch = (float) - asin(dPos.z / dist);
-            _camYaw = (float)atan2(dPos.y, dPos.x);
+        // now get yaw and pitch based on look at vector
+        dist = (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
+        _camPitch = (float)-asin(dPos.z / dist);
+        _camYaw = (float)atan2(dPos.y, dPos.x);
 
-            break;
+        break;
 
-        case SAT_CAM: // Satellite
-            _camYaw += _pannerAz;
-            _camPitch += _pannerEl;
+    case SAT_CAM: // Satellite
+        _camYaw += _pannerAz;
+        _camPitch += _pannerEl;
 
-            if (_camPitch > -45.0f * DTR)
-                _camPitch = -45.0f * DTR;
-            else if (_camPitch < -90.0f * DTR)
-                _camPitch = -90.0f * DTR;
+        if (_camPitch > -45.0f * DTR)
+            _camPitch = -45.0f * DTR;
+        else if (_camPitch < -90.0f * DTR)
+            _camPitch = -90.0f * DTR;
 
-            _camRoll = 0.0f;
-            _camRange += _pannerX * 100.0f;
+        _camRoll = 0.0f;
+        _camRange += _pannerX * 100.0f;
 
-            if (_camRange > -1000.0f)
-                _camRange = -1000.0f;
+        if (_camRange > -1000.0f)
+            _camRange = -1000.0f;
 
-            break;
+        break;
 
-        case ISO_CAM: // ISOMETRIC
-            _camYaw += _pannerAz;
-            _camPitch += _pannerEl;
+    case ISO_CAM: // ISOMETRIC
+        _camYaw += _pannerAz;
+        _camPitch += _pannerEl;
 
-            if (_camPitch > -15.0f * DTR)
-                _camPitch = -15.0f * DTR;
-            else if (_camPitch < -60.0f * DTR)
-                _camPitch = -60.0f * DTR;
+        if (_camPitch > -15.0f * DTR)
+            _camPitch = -15.0f * DTR;
+        else if (_camPitch < -60.0f * DTR)
+            _camPitch = -60.0f * DTR;
 
-            _camRoll = 0.0f;
-            _camRange += _pannerX * 100.0f;
+        _camRoll = 0.0f;
+        _camRange += _pannerX * 100.0f;
 
-            if (_camRange > -50.0f)
-                _camRange = -50.0f;
+        if (_camRange > -50.0f)
+            _camRange = -50.0f;
 
-            break;
+        break;
 
-        case FREE_CAM: // Free
-            _camYaw += _pannerAz;
-            _camPitch += _pannerEl;
-            _camRoll = 0.0f;
-            _pannerX *= 20.0f;
-            _pannerY *= 20.0f;
-            _pannerZ *= 20.0f;
-            // head in the direction we're currently facing (ie based on
-            // current cam rotation
-            _camWorldPos.x += _camRot.M11 * _pannerX + _camRot.M12 * _pannerY + _camRot.M13 * _pannerZ;
-            _camWorldPos.y += _camRot.M21 * _pannerX + _camRot.M22 * _pannerY + _camRot.M23 * _pannerZ;
-            _camWorldPos.z += _camRot.M31 * _pannerX + _camRot.M32 * _pannerY + _camRot.M33 * _pannerZ;
-            break;
+    case FREE_CAM: // Free
+        _camYaw += _pannerAz;
+        _camPitch += _pannerEl;
+        _camRoll = 0.0f;
+        _pannerX *= 20.0f;
+        _pannerY *= 20.0f;
+        _pannerZ *= 20.0f;
+        // head in the direction we're currently facing (ie based on
+        // current cam rotation
+        _camWorldPos.x += _camRot.M11 * _pannerX + _camRot.M12 * _pannerY +
+                          _camRot.M13 * _pannerZ;
+        _camWorldPos.y += _camRot.M21 * _pannerX + _camRot.M22 * _pannerY +
+                          _camRot.M23 * _pannerZ;
+        _camWorldPos.z += _camRot.M31 * _pannerX + _camRot.M32 * _pannerY +
+                          _camRot.M33 * _pannerZ;
+        break;
 
-        default:
-            _camYaw = camEnt->yaw;
-            _camPitch = camEnt->pitch;
-            _camRoll = camEnt->roll;
-            break;
+    default:
+        _camYaw = camEnt->yaw;
+        _camPitch = camEnt->pitch;
+        _camRoll = camEnt->roll;
+        break;
     };
 
     // second pass:
@@ -872,66 +859,67 @@ void ACMIView::UpdateViewPosRot(void)
     // Set the relative camera positiion
     switch (_cameraState)
     {
-        case INTERNAL_CAM: //internal
-            _camPos.x = 0.0f;
-            _camPos.y = 0.0f;
-            _camPos.z = 0.0f;
-            break;
+    case INTERNAL_CAM: //internal
+        _camPos.x = 0.0f;
+        _camPos.y = 0.0f;
+        _camPos.z = 0.0f;
+        break;
 
-        case EXTERNAL_CAM: // orbit
+    case EXTERNAL_CAM: // orbit
+        _camPos.x = _camRot.M11 * _camRange * objScale;
+        _camPos.y = _camRot.M21 * _camRange * objScale;
+        _camPos.z = _camRot.M31 * _camRange * objScale;
+        break;
+
+    case TRACKING_CAM: // orbit
+        if (camObj == trackObj)
+        {
             _camPos.x = _camRot.M11 * _camRange * objScale;
             _camPos.y = _camRot.M21 * _camRange * objScale;
             _camPos.z = _camRot.M31 * _camRange * objScale;
-            break;
+        }
+        else
+        {
+            // line up a vector between cam and track obj and place
+            // camera on the vector, slightly up
+            dPos.x = trackEnt->x - camEnt->x;
+            dPos.y = trackEnt->y - camEnt->y;
+            dPos.z = trackEnt->z - camEnt->z;
+            dist = 1.0F / (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y +
+                                      dPos.z * dPos.z);
+            _camPos.x = dPos.x * dist * _camRange * objScale;
+            _camPos.y = dPos.y * dist * _camRange * objScale;
+            _camPos.z = dPos.z * dist * _camRange * objScale + _camRange * 0.2f;
+        }
 
-        case TRACKING_CAM: // orbit
-            if (camObj == trackObj)
-            {
-                _camPos.x = _camRot.M11 * _camRange * objScale;
-                _camPos.y = _camRot.M21 * _camRange * objScale;
-                _camPos.z = _camRot.M31 * _camRange * objScale;
-            }
-            else
-            {
-                // line up a vector between cam and track obj and place
-                // camera on the vector, slightly up
-                dPos.x = trackEnt->x - camEnt->x;
-                dPos.y = trackEnt->y - camEnt->y;
-                dPos.z = trackEnt->z - camEnt->z;
-                dist = 1.0F / (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
-                _camPos.x = dPos.x * dist * _camRange * objScale;
-                _camPos.y = dPos.y * dist * _camRange * objScale;
-                _camPos.z = dPos.z * dist * _camRange * objScale + _camRange * 0.2f;
-            }
+        break;
 
-            break;
+    case CHASE_CAM: //Chase
+        break;
 
-        case CHASE_CAM: //Chase
-            break;
+    case SAT_CAM: // Satellite
+        _camPos.x = _camRot.M11 * _camRange;
+        _camPos.y = _camRot.M21 * _camRange;
+        _camPos.z = _camRot.M31 * _camRange;
+        break;
 
-        case SAT_CAM: // Satellite
-            _camPos.x = _camRot.M11 * _camRange;
-            _camPos.y = _camRot.M21 * _camRange;
-            _camPos.z = _camRot.M31 * _camRange;
-            break;
+    case ISO_CAM: // ISOMETRIC
+        _camPos.x = _camRot.M11 * _camRange;
+        _camPos.y = _camRot.M21 * _camRange;
+        _camPos.z = _camRot.M31 * _camRange;
+        break;
 
-        case ISO_CAM: // ISOMETRIC
-            _camPos.x = _camRot.M11 * _camRange;
-            _camPos.y = _camRot.M21 * _camRange;
-            _camPos.z = _camRot.M31 * _camRange;
-            break;
+    case FREE_CAM: // Free
+        _camPos.x = 0.0f;
+        _camPos.y = 0.0f;
+        _camPos.z = 0.0f;
+        break;
 
-        case FREE_CAM: // Free
-            _camPos.x = 0.0f;
-            _camPos.y = 0.0f;
-            _camPos.z = 0.0f;
-            break;
-
-        default:
-            _camPos.x = 0.0f;
-            _camPos.y = 0.0f;
-            _camPos.z = 0.0f;
-            break;
+    default:
+        _camPos.x = 0.0f;
+        _camPos.y = 0.0f;
+        _camPos.z = 0.0f;
+        break;
     };
 
     // fourth pass
@@ -948,7 +936,7 @@ void ACMIView::UpdateViewPosRot(void)
 
         // now get yaw and pitch based on look at vector
         dist = (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
-        float p = (float) - asin(dPos.z / dist);
+        float p = (float)-asin(dPos.z / dist);
         float y = (float)atan2(dPos.y, dPos.x);
 
         costha = (float)cos(p);
@@ -974,5 +962,4 @@ void ACMIView::UpdateViewPosRot(void)
 
     // reset panning
     ResetPanner();
-
 }

@@ -5,9 +5,9 @@
 #include "fsound.h"
 #include "resource.h"
 #include "conv.h"
-#include "VoiceManager.h"
-#include "F4Find.h"
-#include "sim/include/Phyconst.h"
+#include "voicemanager.h"
+#include "f4find.h"
+#include "sim/include/phyconst.h"
 #include "playerop.h"
 #include "campaign/include/cmpclass.h"
 #include "campaign/include/find.h"
@@ -34,25 +34,13 @@ extern char FalconSoundThrDirectory[];
 extern MEM_POOL gTextMemPool;
 #endif
 
-char *RadioStrings[16] =
-{
-    "OFF",
-    "FLIGHT1",//flight
-    "FLIGHT2",
-    "FLIGHT3",
-    "FLIGHT4",
-    "FLIGHT5",
-    "PACKAGE1",//pacage
-    "PACKAGE2",
-    "PACKAGE3",
-    "PACKAGE4",
-    "PACKAGE5",
-    "FROM PACKAGE",
-    "PROXIMITY",
-    "GUARD",
-    "BROADCAST",
-    "TOWER"
-};
+char *RadioStrings[16] = {"OFF",
+                          "FLIGHT1",//flight
+                          "FLIGHT2",      "FLIGHT3",   "FLIGHT4",  "FLIGHT5",
+                          "PACKAGE1",//pacage
+                          "PACKAGE2",     "PACKAGE3",  "PACKAGE4", "PACKAGE5",
+                          "FROM PACKAGE", "PROXIMITY", "GUARD",    "BROADCAST",
+                          "TOWER"};
 
 enum
 {
@@ -181,9 +169,7 @@ void VoiceFilter::CleanUpVoiceFilter(void)
     DisposeCommData();
     DisposeEvalData();
     DisposeFragData();
-
 }
-
 
 
 /****************************************************************************
@@ -201,7 +187,7 @@ void VoiceFilter::LoadCommFile(void)
 {
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\commFile.bin", FalconSoundThrDirectory);
+    sprintf(filename, "%s/commFile.bin", FalconSoundThrDirectory);
 
     // commData = (char *)map_file(filename);
 
@@ -244,7 +230,7 @@ void VoiceFilter::LoadEvalFile(void)
 {
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\evalFile.bin", FalconSoundThrDirectory);
+    sprintf(filename, "%s/evalFile.bin", FalconSoundThrDirectory);
 
     // evalData = (char *)map_file(filename);
 
@@ -288,7 +274,7 @@ void VoiceFilter::LoadFragFile(void)
     char filename[MAX_PATH];
 
 
-    sprintf(filename, "%s\\fragFile.bin", FalconSoundThrDirectory);
+    sprintf(filename, "%s/fragFile.bin", FalconSoundThrDirectory);
 
     //fragData = (char *)map_file(filename);
 
@@ -319,81 +305,92 @@ void VoiceFilter::DisposeFragData(void)
 // Retro 20Dec 2003 - pretty much ripped from somewhere else -
 // (Voicemanager.cpp - FilterMessage()) - and put into its own routine
 // used for the subtitles to determine over what readiochannel a specific message came
-char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID from, const VU_ID to)
+char VoiceFilter::CanUserHearThisMessage(const char radiofilter,
+                                         const VU_ID from, const VU_ID to)
 {
-    char retval[2] = { 0, 0 };
+    char retval[2] = {0, 0};
 
-    if ( not VM)
+    if (not VM)
         return false;
 
     for (int i = 0; i < 2; i++)
     {
         switch (VM->radiofilter[i])
         {
-            case rcfOff:
-                retval[i] = FALSE;
-                break;
+        case rcfOff:
+            retval[i] = FALSE;
+            break;
 
-            case rcfFlight5:
-            case rcfFlight1:
-            case rcfFlight2:
-            case rcfFlight3:
-            case rcfFlight4:
-                if (TOFROM_FLIGHT bitand radiofilter)
-                    retval[i] or_eq TOFROM_FLIGHT;
+        case rcfFlight5:
+        case rcfFlight1:
+        case rcfFlight2:
+        case rcfFlight3:
+        case rcfFlight4:
+            if (TOFROM_FLIGHT bitand radiofilter)
+                retval[i] or_eq TOFROM_FLIGHT;
 
-                break;
+            break;
 
-            case rcfPackage5:
-            case rcfPackage1:
-            case rcfPackage2:
-            case rcfPackage3:
-            case rcfPackage4:
-                if ((TO_PACKAGE bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT))
-                {
-                    retval[i] or_eq TO_PACKAGE;
-                }
+        case rcfPackage5:
+        case rcfPackage1:
+        case rcfPackage2:
+        case rcfPackage3:
+        case rcfPackage4:
+            if ((TO_PACKAGE bitand radiofilter) or
+                (radiofilter bitand TOFROM_FLIGHT))
+            {
+                retval[i] or_eq TO_PACKAGE;
+            }
 
-                break;
+            break;
 
-            case rcfFromPackage:
-                if ((TOFROM_PACKAGE bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT))
-                    retval[i] or_eq TOFROM_PACKAGE;
+        case rcfFromPackage:
+            if ((TOFROM_PACKAGE bitand radiofilter) or
+                (radiofilter bitand TOFROM_FLIGHT))
+                retval[i] or_eq TOFROM_PACKAGE;
 
-                break;
+            break;
 
-            case rcfProx:
-                if ((radiofilter bitand TOFROM_FLIGHT) or ((IN_PROXIMITY bitand radiofilter) and ((radiofilter bitand TO_TEAM) or (TO_PACKAGE bitand radiofilter))))
-                    retval[i] or_eq IN_PROXIMITY;
+        case rcfProx:
+            if ((radiofilter bitand TOFROM_FLIGHT) or
+                ((IN_PROXIMITY bitand radiofilter) and
+                 ((radiofilter bitand TO_TEAM) or
+                  (TO_PACKAGE bitand radiofilter))))
+                retval[i] or_eq IN_PROXIMITY;
 
-                break;
+            break;
 
-            case rcfTeam:
-                if ((TO_TEAM bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand radiofilter))
-                    retval[i] or_eq TO_TEAM;
+        case rcfTeam:
+            if ((TO_TEAM bitand radiofilter) or
+                (radiofilter bitand TOFROM_FLIGHT) or
+                (TOFROM_PACKAGE bitand radiofilter))
+                retval[i] or_eq TO_TEAM;
 
-                break;
+            break;
 
-            case rcfAll:
-                if ((TO_WORLD bitand radiofilter) or (radiofilter bitand TOFROM_FLIGHT) or (TOFROM_PACKAGE bitand radiofilter) or (TO_TEAM bitand radiofilter))
-                    retval[i] or_eq TO_WORLD;
+        case rcfAll:
+            if ((TO_WORLD bitand radiofilter) or
+                (radiofilter bitand TOFROM_FLIGHT) or
+                (TOFROM_PACKAGE bitand radiofilter) or
+                (TO_TEAM bitand radiofilter))
+                retval[i] or_eq TO_WORLD;
 
-                break;
+            break;
 
-            case rcfTower:
-                if (radiofilter bitand TOFROM_FLIGHT)
-                    retval[i] or_eq TOFROM_FLIGHT;
-                else if ((TOFROM_TOWER bitand radiofilter) and gNavigationSys)
-                {
-                    VU_ID ATCId;
-                    gNavigationSys->GetAirbase(&ATCId);
+        case rcfTower:
+            if (radiofilter bitand TOFROM_FLIGHT)
+                retval[i] or_eq TOFROM_FLIGHT;
+            else if ((TOFROM_TOWER bitand radiofilter) and gNavigationSys)
+            {
+                VU_ID ATCId;
+                gNavigationSys->GetAirbase(&ATCId);
 
-                    if (ATCId == from or ATCId == to)
-                        retval[i] or_eq TOFROM_TOWER;
-                }
+                if (ATCId == from or ATCId == to)
+                    retval[i] or_eq TOFROM_TOWER;
+            }
 
-            default:
-                break;
+        default:
+            break;
         }
     }
 
@@ -417,15 +414,15 @@ char VoiceFilter::CanUserHearThisMessage(const char radiofilter, const VU_ID fro
  Returns:
 
 ****************************************************************************/
-void VoiceFilter::PlayRadioMessage(
-    char talker, short msgid, short *data, VU_TIME playTime,
-    char radiofilter, char channel, VU_ID from, int evalby, VU_ID to
-)
+void VoiceFilter::PlayRadioMessage(char talker, short msgid, short *data,
+                                   VU_TIME playTime, char radiofilter,
+                                   char channel, VU_ID from, int evalby,
+                                   VU_ID to)
 {
     int i;
     short evalElement;
-    short fragNumber = 0, evalHdrNumber = 0;//, fileNumber;
-    COMM_FILE_INFO* commHdrInfo;
+    short fragNumber = 0, evalHdrNumber = 0; //, fileNumber;
+    COMM_FILE_INFO *commHdrInfo;
     // char *dcommPtr;
     short *commInfo;
     short *dfileNum;
@@ -438,16 +435,11 @@ void VoiceFilter::PlayRadioMessage(
 
     if (
         // sfr: JB code commented out
-        (
-            pEntity /* and not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/ and 
-            pEntity->IsEject()
-        ) or
-        (
-            VM /* and not F4IsBadReadPtr(VM, sizeof(VoiceManager))*/ and 
-            VM->falconVoices[channel].exitChannel
-        ) or
-        killThread
-    )
+        (pEntity /* and not F4IsBadReadPtr(SimDriver.GetPlayerEntity(), sizeof(AircraftClass))*/
+         and pEntity->IsEject()) or
+        (VM /* and not F4IsBadReadPtr(VM, sizeof(VoiceManager))*/ and
+         VM->falconVoices[channel].exitChannel) or
+        killThread)
     {
         int player = 0, exit = 0;
 
@@ -484,11 +476,13 @@ void VoiceFilter::PlayRadioMessage(
 
     //commHdrInfo = (COMM_FILE_INFO *)dcommPtr;
     commHdrInfo = commfile.GetComm(msgid);
-    ShiAssert(FALSE == F4IsBadReadPtr(commHdrInfo, sizeof * commHdrInfo));
+    ShiAssert(FALSE == F4IsBadReadPtr(commHdrInfo, sizeof *commHdrInfo));
     // use offset in  just aquired data to position pointer
     //dcommPtr = commData + commHdrInfo->commOffset;
     commInfo = commfile.GetCommInd(commHdrInfo);
-    ShiAssert(FALSE == F4IsBadReadPtr(commInfo, sizeof * commInfo * commHdrInfo->totalElements));
+    ShiAssert(FALSE ==
+              F4IsBadReadPtr(commInfo,
+                             sizeof *commInfo * commHdrInfo->totalElements));
     // setup message structure with appropriate values
     message.message = msgid;
     message.status = SLOT_IN_USE;
@@ -508,7 +502,8 @@ void VoiceFilter::PlayRadioMessage(
     message.filter = radiofilter;
     message.from = from;
     message.to = to;
-    message.sizeofConv = (char)(commHdrInfo->totalElements + 2); //need two extra spaces for pops
+    message.sizeofConv =
+        (char)(commHdrInfo->totalElements + 2); //need two extra spaces for pops
     message.interrupt = QUEUE_CONV;
     message.playTime = playTime; //when the message should be played
     message.priority = commHdrInfo->priority;
@@ -518,8 +513,7 @@ void VoiceFilter::PlayRadioMessage(
 
 #ifdef USE_SH_POOLS
     dfileNum = message.conversations = (short *)MemAllocPtr(
-                                           gTextMemPool,  sizeof(short) * (message.sizeofConv), FALSE
-                                       );
+        gTextMemPool, sizeof(short) * (message.sizeofConv), FALSE);
 #else
     dfileNum = message.conversations = new short[message.sizeofConv];
 #endif
@@ -538,7 +532,7 @@ void VoiceFilter::PlayRadioMessage(
 
     bool newMessage = true; // Retro 20Dec2003 for the RadioLabels
 
-    for (i = 0; i < commHdrInfo->totalElements; i ++)
+    for (i = 0; i < commHdrInfo->totalElements; i++)
     {
 
         //fragNumber = *((short *)dcommPtr);
@@ -565,7 +559,7 @@ void VoiceFilter::PlayRadioMessage(
                 if (evalElement == -1)
                 {
                     message.sizeofConv--;
-                    commInfo ++;
+                    commInfo++;
                     // dcommPtr += sizeof( short );
                     continue;
                 }
@@ -576,40 +570,40 @@ void VoiceFilter::PlayRadioMessage(
             {
                 switch (evalHdrNumber)
                 {
-                    case eBEARING:
-                    case eBEARINGLAST:
-                        evalElement = DegreesToElement(evalElement);
-                        break;
+                case eBEARING:
+                case eBEARINGLAST:
+                    evalElement = DegreesToElement(evalElement);
+                    break;
 
-                    case eANGELS:
-                        evalElement = FeetToAngel(evalElement);
-                        break;
+                case eANGELS:
+                    evalElement = FeetToAngel(evalElement);
+                    break;
 
-                    case eTHOUSANDS:
-                        evalElement = FeetToThousands(evalElement);
-                        break;
+                case eTHOUSANDS:
+                    evalElement = FeetToThousands(evalElement);
+                    break;
 
-                    case eFLIGHTSIZE:
-                        evalElement--;
-                        break;
+                case eFLIGHTSIZE:
+                    evalElement--;
+                    break;
 
-                    case eMAINTAINAIRSPEED:
-                        evalElement = KnotsToElement(evalElement);
-                        break;
+                case eMAINTAINAIRSPEED:
+                    evalElement = KnotsToElement(evalElement);
+                    break;
 
-                    case eREDUCEAIRSPEED:
-                    case eINCREASEAIRSPEED:
-                        evalElement = KnotsToReduceIncreaseToElement(evalElement);
-                        break;
+                case eREDUCEAIRSPEED:
+                case eINCREASEAIRSPEED:
+                    evalElement = KnotsToReduceIncreaseToElement(evalElement);
+                    break;
 
-                    case eRANGE:
-                    case eRANGELAST:
-                        evalElement = KilometersToNauticalMiles(evalElement);
-                        break;
+                case eRANGE:
+                case eRANGELAST:
+                    evalElement = KilometersToNauticalMiles(evalElement);
+                    break;
 
-                    case eCALLNUM:
-                    case eCALLNUM2:
-                        /*// KCK HACK: Convert to the correct eval.
+                case eCALLNUM:
+                case eCALLNUM2:
+                    /*// KCK HACK: Convert to the correct eval.
                         // This should become irrelevant once Joe gets his changes in
                         if (evalElement > VF_SHORTCALLSIGN_OFFSET)
                         {
@@ -622,7 +616,7 @@ void VoiceFilter::PlayRadioMessage(
                          evalHdrNumber = eFLIGHTNUMBER;
                         }
                         */
-                        break;
+                    break;
                 }
 
                 if (data)
@@ -630,10 +624,11 @@ void VoiceFilter::PlayRadioMessage(
                     eval++;
                 }
 
-                if (evalElement == -1 or evalElement == 32766)  // 32766 = airbase without ATC
+                if (evalElement == -1 or
+                    evalElement == 32766) // 32766 = airbase without ATC
                 {
                     message.sizeofConv--;
-                    commInfo ++;
+                    commInfo++;
                     //dcommPtr += sizeof( short );
                     continue;
                 }
@@ -645,14 +640,15 @@ void VoiceFilter::PlayRadioMessage(
         // Retro 20Dec2003 start
         if ((radioLabel) and (SimDriver.InSim()))
         {
-            // however there´s a prob as there are a few 'continues' up so maybe I´m missing some chunks here..
+            // however thereï¿½s a prob as there are a few 'continues' up so maybe Iï¿½m missing some chunks here..
             char theChannel = CanUserHearThisMessage(radiofilter, from, to);
 
             if (theChannel)
             {
                 if (newMessage)
                 {
-                    radioLabel->NewMessage(talker, fragNumber, playTime, theChannel);
+                    radioLabel->NewMessage(talker, fragNumber, playTime,
+                                           theChannel);
                     newMessage = false;
                 }
                 else
@@ -668,7 +664,7 @@ void VoiceFilter::PlayRadioMessage(
         ShiAssert(*dfileNum >= 0);
 
         dfileNum++;
-        commInfo ++;
+        commInfo++;
         //dcommPtr += sizeof( short );
     }
 
@@ -798,7 +794,6 @@ short VoiceFilter::FeetToThousands(int feet)
     if (index > 60)
     {
         index = 36 + index / 5;
-
     }
     else if (index > 40)
         index = 24 + 2 * (index / 5);
@@ -935,9 +930,10 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
     //  dEvalData = evalData + (evalHdrNumber * sizeof( EVAL_FILE_INFO ));
     ShiAssert(evalHdrNumber >= 0 and evalHdrNumber < evalfile.MaxEvals());
     eEvalData = evalfile.GetEval(evalHdrNumber);
-    ShiAssert(FALSE == F4IsBadReadPtr(eEvalData, sizeof * eEvalData));
+    ShiAssert(FALSE == F4IsBadReadPtr(eEvalData, sizeof *eEvalData));
 
-    if (eEvalData == NULL) return 0;
+    if (eEvalData == NULL)
+        return 0;
 
     //use binary search to find appropriate frag, the values
     //are in order but they are not necessarily consecutive
@@ -948,7 +944,8 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
 
     // 2001-09-22 M.N. random evalIndex (only for consecutive indexes) if evalElement == 32767 (max short+)
 
-    if (evalElement == 32767) // allows later addition of random fragments, if wanted
+    if (evalElement ==
+        32767) // allows later addition of random fragments, if wanted
         evalElement = rand() % (upper + 1); // => no hardcoded limits anymore
 
     // END of added section
@@ -956,9 +953,10 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
     //use offset to index into start of frags for this eval
     //  dEvalData = evalData + ((EVAL_FILE_INFO *)dEvalData)->evalOffset;
     eEvalElem = evalfile.GetEvalElem(eEvalData);
-    ShiAssert(FALSE == F4IsBadReadPtr(eEvalElem, sizeof * eEvalElem));
+    ShiAssert(FALSE == F4IsBadReadPtr(eEvalElem, sizeof *eEvalElem));
 
-    if (eEvalElem == NULL) return 0;
+    if (eEvalElem == NULL)
+        return 0;
 
     while (upper >= lower)
     {
@@ -981,7 +979,7 @@ short VoiceFilter::EvaluateElement(short evalHdrNumber, short evalElement)
     }
 
     //return the appropriate frag
-    return(fragHdrNbr);
+    return (fragHdrNbr);
 }
 
 /****************************************************************************
@@ -1011,27 +1009,28 @@ short VoiceFilter::IndexElement(short evalHdrNumber, short evalElement)
     //index into evaldata to get appropriate offset
     //  dEvalData = evalData + (evalHdrNumber * sizeof( EVAL_FILE_INFO ));
     eEvalData = evalfile.GetEval(evalHdrNumber);
-    ShiAssert(FALSE == F4IsBadReadPtr(eEvalData, sizeof * eEvalData));
+    ShiAssert(FALSE == F4IsBadReadPtr(eEvalData, sizeof *eEvalData));
 
-    if (eEvalData == NULL) return  0;
+    if (eEvalData == NULL)
+        return 0;
 
     if (evalElement < 0)
         evalElement = 0;
     //  else if(evalElement >  ((EVAL_FILE_INFO *)dEvalData)->numEvals - 1)
     //   evalElement = (short)(((EVAL_FILE_INFO *)dEvalData)->numEvals - 1);
-    else if (evalElement >  eEvalData->numEvals - 1)
+    else if (evalElement > eEvalData->numEvals - 1)
         evalElement = eEvalData->numEvals - 1;
 
 
     //use offset to index into start of frags for this eval
     //  dEvalData = evalData + ((EVAL_FILE_INFO *)dEvalData)->evalOffset + (sizeof(short)*2 *evalElement) + sizeof( short );
     eEvalElem = evalfile.GetEvalElem(eEvalData);
-    ShiAssert(FALSE == F4IsBadReadPtr(eEvalElem, sizeof * eEvalElem));
+    ShiAssert(FALSE == F4IsBadReadPtr(eEvalElem, sizeof *eEvalElem));
 
     //  fragHdrNbr = *((short *)dEvalData);
     fragHdrNbr = eEvalElem[evalElement].evalFrag;
     //return the appropriate frag
-    return(fragHdrNbr);
+    return (fragHdrNbr);
 }
 
 /****************************************************************************
@@ -1065,13 +1064,13 @@ short VoiceFilter::FragToFile(int talker, short fragNumber)
         return 0;
 
     fragHdrInfo = fragfile.GetFragInfo(fragNumber);
-    ShiAssert(FALSE == F4IsBadReadPtr(fragHdrInfo, sizeof * fragHdrInfo));
+    ShiAssert(FALSE == F4IsBadReadPtr(fragHdrInfo, sizeof *fragHdrInfo));
 
     //use offset from header to go to beginning of the data for each voice
     //  dFragData = (SPEAKER_TO_FILE*)(fragData + fragHdrInfo->fragOffset);
 
     dFragData = fragfile.GetSpeaker(fragHdrInfo);
-    ShiAssert(FALSE == F4IsBadReadPtr(dFragData, sizeof * dFragData));
+    ShiAssert(FALSE == F4IsBadReadPtr(dFragData, sizeof *dFragData));
     headerInfo = dFragData;
 
     //since all the frags no longer have all the voices, we need to search
@@ -1089,12 +1088,12 @@ short VoiceFilter::FragToFile(int talker, short fragNumber)
         }
 
         headerInfo++;
-        ShiAssert(FALSE == F4IsBadReadPtr(headerInfo, sizeof * dFragData));
+        ShiAssert(FALSE == F4IsBadReadPtr(headerInfo, sizeof *dFragData));
     }
 
 
     //return the file number used to get correct offset into .tlk file
-    return(fileNumber);
+    return (fileNumber);
 }
 
 
@@ -1118,7 +1117,8 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
     // commHdrInfo = (COMM_FILE_INFO *)dcommPtr;
     commHdrInfo = commfile.GetComm(*mesgID);
 
-    if ( not commHdrInfo or F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
+    if (not commHdrInfo or
+        F4IsBadReadPtr(commHdrInfo, sizeof(COMM_FILE_INFO))) // JB 010331 CTD
         return FALSE;
 
     float dist = 0;
@@ -1155,15 +1155,18 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
                 dist = abs(Distance(xs1, ys1, xs2, ys2));
         }
 
-        if (((commHdrInfo->bullseye > -1) and PlayerOptions.BullseyeOn()
-            and dist * FT_TO_NM > 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
-            ) or not SimDriver.InSim() or
-            (commHdrInfo->bullseye == *mesgID))
+        if (((commHdrInfo->bullseye > -1) and PlayerOptions.BullseyeOn() and
+             dist * FT_TO_NM >
+                 25 // JB 010121 if the dist is less than 25 miles don't use a bullseye call
+             ) or
+            not SimDriver.InSim() or (commHdrInfo->bullseye == *mesgID))
         {
             TheCampaign.GetBullseyeLocation(&x2, &y2);
             theta = (float)atan2((double)(x1 - x2), (double)(y1 - y2));
-            data[commHdrInfo->positionElement] = (short)FloatToInt32(theta * RTD);
-            data[commHdrInfo->positionElement + 1] = (short)FloatToInt32(Distance(x1, y1, x2, y2));
+            data[commHdrInfo->positionElement] =
+                (short)FloatToInt32(theta * RTD);
+            data[commHdrInfo->positionElement + 1] =
+                (short)FloatToInt32(Distance(x1, y1, x2, y2));
             *mesgID = commHdrInfo->bullseye;
         }
         else
@@ -1184,9 +1187,11 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
                 x2 = SimToGrid(FalconLocalSession->GetPlayerSquadron()->YPos());
             }
 
-            theta = (float)atan2((double)(x1 - x2) , (double)(y1 - y2));
-            data[commHdrInfo->positionElement] = (short)FloatToInt32(theta * RTD);
-            data[commHdrInfo->positionElement + 1] = (short)FloatToInt32(Distance(x1, y1, x2, y2));
+            theta = (float)atan2((double)(x1 - x2), (double)(y1 - y2));
+            data[commHdrInfo->positionElement] =
+                (short)FloatToInt32(theta * RTD);
+            data[commHdrInfo->positionElement + 1] =
+                (short)FloatToInt32(Distance(x1, y1, x2, y2));
         }
 
         if (SimDriver.InSim())
@@ -1211,7 +1216,8 @@ int VoiceFilter::GetBullseyeComm(int *mesgID, short *data)
              xs2 = FalconLocalSession->GetPlayerSquadron()->YPos();
              }
             JB 010121 */
-            if (DistSqu(xs1, ys1, xs2, ys2) < RADIO_PROX_RANGE * RADIO_PROX_RANGE)
+            if (DistSqu(xs1, ys1, xs2, ys2) <
+                RADIO_PROX_RANGE * RADIO_PROX_RANGE)
             {
                 return TRUE;
             }
@@ -1233,7 +1239,8 @@ int VoiceFilter::GetWarp(int mesgID)
 
 void InitDialogData(void)
 {
-    int n = voiceFilter->evalfile.MaxEvals() * voiceFilter->fragfile.MaxVoices();
+    int n =
+        voiceFilter->evalfile.MaxEvals() * voiceFilter->fragfile.MaxVoices();
     evalLastFrag = new short[n];
     memset(evalLastFrag, FALSE, n * sizeof(short));
     n = voiceFilter->fragfile.MaxVoices() * voiceFilter->fragfile.MaxFrags();
@@ -1243,7 +1250,7 @@ void InitDialogData(void)
 
 void SetupNewMsg(void)
 {
-    COMM_FILE_INFO* commHdrInfo;
+    COMM_FILE_INFO *commHdrInfo;
     // char *dcommPtr;
     short *commInfo;
     short evalHdrNumber = 0;
@@ -1264,7 +1271,7 @@ void SetupNewMsg(void)
     // dcommPtr = voiceFilter->commData + commHdrInfo->commOffset;
     commInfo = voiceFilter->commfile.GetCommInd(commHdrInfo);
 
-    for (i = 0; i < commHdrInfo->totalElements; i ++)
+    for (i = 0; i < commHdrInfo->totalElements; i++)
     {
         evalHdrNumber = *commInfo;
 
@@ -1282,7 +1289,7 @@ void SetupNewMsg(void)
             evalNum++;
         }
 
-        commInfo ++;
+        commInfo++;
     }
 
     for (i = commHdrInfo->totalElements; i < 15; i++)
@@ -1331,10 +1338,9 @@ void IncDecMsgToPlay(int delta)
     }
 
     SetupNewMsg();
-
 }
 
-#pragma warning (disable : 4244)
+#pragma warning(disable : 4244)
 void IncDecIndex(int index, int delta)
 {
     int i = 0;
@@ -1351,8 +1357,13 @@ void IncDecIndex(int index, int delta)
         {
             VToolMsgData.data[i] += delta;
 
-            if (VToolMsgData.data[i] >= evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker])
-                evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker] = VToolMsgData.data[i];
+            if (VToolMsgData.data[i] >=
+                evalLastFrag[VToolMsgData.eval[i] *
+                                 voiceFilter->fragfile.MaxVoices() +
+                             VToolMsgData.talker])
+                evalLastFrag[VToolMsgData.eval[i] *
+                                 voiceFilter->fragfile.MaxVoices() +
+                             VToolMsgData.talker] = VToolMsgData.data[i];
         }
     }
     else if (VToolMsgData.data[i] > -1)
@@ -1371,21 +1382,39 @@ void IncDecDataToPlay(int delta)
         {
             if (delta > 0)
             {
-                if (VToolMsgData.maxs[i] > evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker])
+                if (VToolMsgData.maxs[i] >
+                    evalLastFrag[VToolMsgData.eval[i] *
+                                     voiceFilter->fragfile.MaxVoices() +
+                                 VToolMsgData.talker])
                 {
                     int fragNumber = 0;
                     VToolMsgData.data[i] += delta;
-                    fragNumber = voiceFilter->IndexElement(VToolMsgData.eval[i], VToolMsgData.data[i]);
+                    fragNumber = voiceFilter->IndexElement(
+                        VToolMsgData.eval[i], VToolMsgData.data[i]);
 
-                    while (fragsPlayed[fragNumber + (VToolMsgData.talker * voiceFilter->fragfile.MaxFrags())] and (VToolMsgData.data[i] < VToolMsgData.maxs[i]))
+                    while (fragsPlayed[fragNumber +
+                                       (VToolMsgData.talker *
+                                        voiceFilter->fragfile.MaxFrags())] and
+                           (VToolMsgData.data[i] < VToolMsgData.maxs[i]))
                     {
-                        evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker] = VToolMsgData.data[i];
+                        evalLastFrag[VToolMsgData.eval[i] *
+                                         voiceFilter->fragfile.MaxVoices() +
+                                     VToolMsgData.talker] =
+                            VToolMsgData.data[i];
                         VToolMsgData.data[i] += delta;
-                        fragNumber = voiceFilter->IndexElement(VToolMsgData.eval[i], VToolMsgData.data[i]);
+                        fragNumber = voiceFilter->IndexElement(
+                            VToolMsgData.eval[i], VToolMsgData.data[i]);
                     }
 
-                    if (VToolMsgData.data[i] == evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker] + 1)
-                        evalLastFrag[VToolMsgData.eval[i] * voiceFilter->fragfile.MaxVoices() + VToolMsgData.talker] = VToolMsgData.data[i];
+                    if (VToolMsgData.data[i] ==
+                        evalLastFrag[VToolMsgData.eval[i] *
+                                         voiceFilter->fragfile.MaxVoices() +
+                                     VToolMsgData.talker] +
+                            1)
+                        evalLastFrag[VToolMsgData.eval[i] *
+                                         voiceFilter->fragfile.MaxVoices() +
+                                     VToolMsgData.talker] =
+                            VToolMsgData.data[i];
 
                     wasInc = TRUE;
 
@@ -1397,7 +1426,8 @@ void IncDecDataToPlay(int delta)
                     srand((unsigned)time(NULL));
 
                     if (VToolMsgData.maxs[i])
-                        VToolMsgData.data[i] = (short)(rand() % VToolMsgData.maxs[i]);
+                        VToolMsgData.data[i] =
+                            (short)(rand() % VToolMsgData.maxs[i]);
                 }
             }
             else if (VToolMsgData.data[i] > 0)
@@ -1407,7 +1437,7 @@ void IncDecDataToPlay(int delta)
             }
         }
 
-        if ( not wasInc)
+        if (not wasInc)
             IncDecMsgToPlay(delta);
     }
     else if (VToolMsgData.mode == PLAY_FRAG)
@@ -1440,7 +1470,6 @@ void IncDecTalkerToPlay(int delta)
         VToolMsgData.talker = 0;
     else if (VToolMsgData.talker > 11)
         VToolMsgData.talker = 11;
-
 }
 
 void PlayRandomMessage(int channel)
@@ -1462,11 +1491,15 @@ void PlayRandomMessage(int channel)
         VToolMsgData.talker = rand() % 2 + 12;
 
     if (voiceFilter)
-        voiceFilter->PlayRadioMessage((char)VToolMsgData.talker, (short)VToolMsgData.message, VToolMsgData.data, vuxGameTime, -1, (char)channel, vuNullId, EVAL_BY_INDEX);
+        voiceFilter->PlayRadioMessage((char)VToolMsgData.talker,
+                                      (short)VToolMsgData.message,
+                                      VToolMsgData.data, vuxGameTime, -1,
+                                      (char)channel, vuNullId, EVAL_BY_INDEX);
 
     SetEvent(VMWakeEventHandle);
 }
 
+#ifdef _WIN32
 int PlayToolMessage(HWND hwnd)
 {
     char buffer[MAX_PATH];
@@ -1476,7 +1509,10 @@ int PlayToolMessage(HWND hwnd)
         if (VToolMsgData.mode == PLAY_MESSAGE)
         {
             if (voiceFilter)
-                voiceFilter->PlayRadioMessage((char)VToolMsgData.talker, (short)VToolMsgData.message, VToolMsgData.data, vuxGameTime, -1, 0, vuNullId, EVAL_BY_INDEX);
+                voiceFilter->PlayRadioMessage((char)VToolMsgData.talker,
+                                              (short)VToolMsgData.message,
+                                              VToolMsgData.data, vuxGameTime,
+                                              -1, 0, vuNullId, EVAL_BY_INDEX);
 
             SetEvent(VMWakeEventHandle);
             PostMessage(FalconDisplay.appWin, FM_GIVE_FOCUS, NULL, NULL);
@@ -1485,13 +1521,14 @@ int PlayToolMessage(HWND hwnd)
             for (int i = IDC_DATA0; i < IDC_DATA0 + 15; i++)
             {
                 int fragNumber = 0;
-                GetWindowText(GetDlgItem(hwnd, i), (LPTSTR) buffer, MAX_PATH);
+                GetWindowText(GetDlgItem(hwnd, i), (LPTSTR)buffer, MAX_PATH);
 
                 fragNumber = atoi(buffer);
 
                 if (fragNumber >= 0)
-                    fragsPlayed[fragNumber + (VToolMsgData.talker * voiceFilter->fragfile.MaxFrags())] = TRUE;
-
+                    fragsPlayed[fragNumber +
+                                (VToolMsgData.talker *
+                                 voiceFilter->fragfile.MaxFrags())] = TRUE;
             }
 
             return TRUE;
@@ -1511,12 +1548,14 @@ int PlayToolMessage(HWND hwnd)
             message.convIndex = 0;
 
 #ifdef USE_SH_POOLS
-            message.conversations = (short *)MemAllocPtr(gTextMemPool,  sizeof(short), FALSE);
+            message.conversations =
+                (short *)MemAllocPtr(gTextMemPool, sizeof(short), FALSE);
 #else
             message.conversations = new short[1];
 #endif
 
-            message.conversations[0] = voiceFilter->FragToFile(VToolMsgData.talker, (short)VToolMsgData.frag);
+            message.conversations[0] = voiceFilter->FragToFile(
+                VToolMsgData.talker, (short)VToolMsgData.frag);
 
             VM->AddToConversationQueue(&message);
 
@@ -1534,7 +1573,7 @@ void UpdateVoiceDialog(HWND hwnd)
 {
     char buffer[MAX_PATH];
     int i = 0;
-    COMM_FILE_INFO* commHdrInfo;
+    COMM_FILE_INFO *commHdrInfo;
     //char *dcommPtr;
     short *commInfo;
     short fragNumber = 0, evalHdrNumber = 0;
@@ -1547,8 +1586,12 @@ void UpdateVoiceDialog(HWND hwnd)
     _itoa(VToolMsgData.frag, buffer, 10);
     Edit_SetText(GetDlgItem(hwnd, IDC_FRAG), buffer);
 
-    CheckDlgButton(hwnd, IDC_PLAY_MESSAGE, (VToolMsgData.mode == PLAY_MESSAGE) ? BST_CHECKED : BST_UNCHECKED);
-    CheckDlgButton(hwnd, IDC_PLAY_FRAG, (VToolMsgData.mode == PLAY_FRAG) ? BST_CHECKED : BST_UNCHECKED);
+    CheckDlgButton(hwnd, IDC_PLAY_MESSAGE,
+                   (VToolMsgData.mode == PLAY_MESSAGE) ? BST_CHECKED :
+                                                         BST_UNCHECKED);
+    CheckDlgButton(hwnd, IDC_PLAY_FRAG,
+                   (VToolMsgData.mode == PLAY_FRAG) ? BST_CHECKED :
+                                                      BST_UNCHECKED);
 
     commHdrInfo = voiceFilter->commfile.GetComm(0);
 
@@ -1560,7 +1603,7 @@ void UpdateVoiceDialog(HWND hwnd)
         //dcommPtr = voiceFilter->commData + commHdrInfo->commOffset;
         commInfo = voiceFilter->commfile.GetCommInd(commHdrInfo);
 
-        for (i = 0; i < commHdrInfo->totalElements; i ++)
+        for (i = 0; i < commHdrInfo->totalElements; i++)
         {
             fragNumber = 0;
             evalHdrNumber = *commInfo;
@@ -1569,7 +1612,8 @@ void UpdateVoiceDialog(HWND hwnd)
             {
                 evalHdrNumber *= -1;
 
-                fragNumber = voiceFilter->IndexElement(evalHdrNumber, VToolMsgData.data[evalNum]);
+                fragNumber = voiceFilter->IndexElement(
+                    evalHdrNumber, VToolMsgData.data[evalNum]);
 
                 VToolMsgData.eval[evalNum] = evalHdrNumber;
                 _itoa(evalHdrNumber, buffer, 10);
@@ -1590,7 +1634,7 @@ void UpdateVoiceDialog(HWND hwnd)
 
             _itoa(fragNumber, buffer, 10);
             Edit_SetText(GetDlgItem(hwnd, IDC_DATA0 + i), buffer);
-            commInfo ++;
+            commInfo++;
         }
     }
 
@@ -1609,9 +1653,9 @@ void GetDialogValues(HWND hwnd)
 {
     char buffer[MAX_PATH];
 
-    GetWindowText(GetDlgItem(hwnd, IDC_VOICE), (LPTSTR) buffer, MAX_PATH);
+    GetWindowText(GetDlgItem(hwnd, IDC_VOICE), (LPTSTR)buffer, MAX_PATH);
     VToolMsgData.talker = atoi(buffer);
-    GetWindowText(GetDlgItem(hwnd, IDC_MESSAGE), (LPTSTR) buffer, MAX_PATH);
+    GetWindowText(GetDlgItem(hwnd, IDC_MESSAGE), (LPTSTR)buffer, MAX_PATH);
 
     if (atoi(buffer) not_eq VToolMsgData.message)
     {
@@ -1619,7 +1663,7 @@ void GetDialogValues(HWND hwnd)
         SetupNewMsg();
     }
 
-    GetWindowText(GetDlgItem(hwnd, IDC_FRAG), (LPTSTR) buffer, MAX_PATH);
+    GetWindowText(GetDlgItem(hwnd, IDC_FRAG), (LPTSTR)buffer, MAX_PATH);
     VToolMsgData.frag = atoi(buffer);
 
     if (IsDlgButtonChecked(hwnd, IDC_PLAY_MESSAGE))
@@ -1642,7 +1686,7 @@ void GetDialogValues(HWND hwnd)
         if (j == 15)
             continue;
 
-        GetWindowText(GetDlgItem(hwnd, i), (LPTSTR) buffer, MAX_PATH);
+        GetWindowText(GetDlgItem(hwnd, i), (LPTSTR)buffer, MAX_PATH);
 
         if (atoi(buffer) < -1)
             VToolMsgData.data[j] = -1;
@@ -1653,7 +1697,8 @@ void GetDialogValues(HWND hwnd)
     }
 }
 
-LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam,
+                                LPARAM lParam)
 {
     char buffer[MAX_PATH];
     char *pBuf;
@@ -1666,195 +1711,212 @@ LRESULT CALLBACK PlayVoicesProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM l
 
     switch (message)
     {
-        case WM_INITDIALOG:
-            InitDialogData();
-            SetupNewMsg();
-            UpdateVoiceDialog(hwnd);
-            ShowWindow(hwnd, SW_SHOW);
-            return DefWindowProc(hwnd, message, wParam, lParam);
-            //DialogBox(hInst,MAKEINTRESOURCE(IDD_PLAYVOICES),hwnd,(DLGPROC)PlayVoicesProc);
+    case WM_INITDIALOG:
+        InitDialogData();
+        SetupNewMsg();
+        UpdateVoiceDialog(hwnd);
+        ShowWindow(hwnd, SW_SHOW);
+        return DefWindowProc(hwnd, message, wParam, lParam);
+        //DialogBox(hInst,MAKEINTRESOURCE(IDD_PLAYVOICES),hwnd,(DLGPROC)PlayVoicesProc);
+        break;
+
+    case WM_COMMAND: /* message: received command */
+        switch (LOWORD(wParam))
+        {
+        case IDOK: /* "OK" box selected. */
+        case IDCANCEL:
+            EndDialog(hwnd, TRUE); /* Exits the dialog box       */
+            return (TRUE);
             break;
 
-        case WM_COMMAND:                 /* message: received command */
-            switch (LOWORD(wParam))
+        case IDC_PLAY:
+            GetDialogValues(hwnd);
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_UPDATE:
+            GetDialogValues(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_CLOSE:
+            GetDialogValues(hwnd);
+            EndDialog(hwnd, TRUE);
+            break;
+
+        case IDC_INC_MESSAGE:
+            GetDialogValues(hwnd);
+            IncDecMsgToPlay(1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_DEC_MESSAGE:
+            GetDialogValues(hwnd);
+            IncDecMsgToPlay(-1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_INC_VOICE:
+            GetDialogValues(hwnd);
+            IncDecTalkerToPlay(1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_DEC_VOICE:
+            GetDialogValues(hwnd);
+            IncDecTalkerToPlay(-1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_INC_FRAG:
+            GetDialogValues(hwnd);
+            IncDecFragToPlay(1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_DEC_FRAG:
+            GetDialogValues(hwnd);
+            IncDecFragToPlay(-1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_INC_ALLINDEXES:
+            GetDialogValues(hwnd);
+            IncDecDataToPlay(1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_DEC_ALLINDEXES:
+            GetDialogValues(hwnd);
+            IncDecDataToPlay(-1);
+
+            PlayToolMessage(hwnd);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_RESET:
+            memset(evalLastFrag, 0,
+                   sizeof(short) * voiceFilter->evalfile.MaxEvals() *
+                       voiceFilter->fragfile.MaxVoices());
+            memset(fragsPlayed, 0,
+                   sizeof(char) * voiceFilter->fragfile.MaxFrags() *
+                       voiceFilter->fragfile.MaxVoices());
+            break;
+
+        case IDC_SAVE:
+            GetDialogValues(hwnd);
+            sprintf(buffer, "%s/VoiceTool.sav", FalconDataDirectory);
+            fp = fopen(buffer, "wb");
+
+            if (fp)
             {
-                case IDOK:    /* "OK" box selected. */
-                case IDCANCEL:
-                    EndDialog(hwnd, TRUE);     /* Exits the dialog box       */
-                    return (TRUE);
-                    break;
-
-                case IDC_PLAY:
-                    GetDialogValues(hwnd);
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_UPDATE:
-                    GetDialogValues(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_CLOSE:
-                    GetDialogValues(hwnd);
-                    EndDialog(hwnd, TRUE);
-                    break;
-
-                case IDC_INC_MESSAGE:
-                    GetDialogValues(hwnd);
-                    IncDecMsgToPlay(1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_DEC_MESSAGE:
-                    GetDialogValues(hwnd);
-                    IncDecMsgToPlay(-1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_INC_VOICE:
-                    GetDialogValues(hwnd);
-                    IncDecTalkerToPlay(1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_DEC_VOICE:
-                    GetDialogValues(hwnd);
-                    IncDecTalkerToPlay(-1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_INC_FRAG:
-                    GetDialogValues(hwnd);
-                    IncDecFragToPlay(1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_DEC_FRAG:
-                    GetDialogValues(hwnd);
-                    IncDecFragToPlay(-1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_INC_ALLINDEXES:
-                    GetDialogValues(hwnd);
-                    IncDecDataToPlay(1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_DEC_ALLINDEXES:
-                    GetDialogValues(hwnd);
-                    IncDecDataToPlay(-1);
-
-                    PlayToolMessage(hwnd);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_RESET:
-                    memset(evalLastFrag, 0, sizeof(short)*voiceFilter->evalfile.MaxEvals()*voiceFilter->fragfile.MaxVoices());
-                    memset(fragsPlayed, 0, sizeof(char)*voiceFilter->fragfile.MaxFrags()*voiceFilter->fragfile.MaxVoices());
-                    break;
-
-                case IDC_SAVE:
-                    GetDialogValues(hwnd);
-                    sprintf(buffer, "%s\\VoiceTool.sav", FalconDataDirectory);
-                    fp = fopen(buffer, "wb");
-
-                    if (fp)
-                    {
-                        fwrite(&VToolMsgData, sizeof(VoiceToolData), 1, fp);
-                        fwrite(evalLastFrag, sizeof(short), voiceFilter->evalfile.MaxEvals()*voiceFilter->fragfile.MaxVoices(), fp);
-                        fwrite(fragsPlayed, sizeof(char), voiceFilter->fragfile.MaxFrags()*voiceFilter->fragfile.MaxVoices(), fp);
-                        fclose(fp);
-                    }
-
-                    break;
-
-                case IDC_LOAD:
-                    sprintf(buffer, "%s\\VoiceTool.sav", FalconDataDirectory);
-                    fp = fopen(buffer, "rb");
-
-                    if (fp)
-                    {
-                        fread(&VToolMsgData, sizeof(VoiceToolData), 1, fp);
-                        fread(evalLastFrag, sizeof(short), voiceFilter->evalfile.MaxEvals()*voiceFilter->fragfile.MaxVoices(), fp);
-                        fread(fragsPlayed, sizeof(char), voiceFilter->fragfile.MaxFrags()*voiceFilter->fragfile.MaxVoices(), fp);
-                        fclose(fp);
-                        UpdateVoiceDialog(hwnd);
-                    }
-
-                    break;
-
-                case IDC_COMBOS:
-                    result = CalcCombinations();
-                    pBuf = _fcvt(result, 0, &dec, &sign);
-                    Edit_SetText(GetDlgItem(hwnd, IDC_COMBINATIONS), pBuf);
-                    break;
-
-                case IDC_DEC_INDEX1:
-                case IDC_DEC_INDEX2:
-                case IDC_DEC_INDEX3:
-                case IDC_DEC_INDEX4:
-                case IDC_DEC_INDEX5:
-                case IDC_DEC_INDEX6:
-                case IDC_DEC_INDEX7:
-                case IDC_DEC_INDEX8:
-                case IDC_DEC_INDEX9:
-                case IDC_DEC_INDEX10:
-                case IDC_DEC_INDEX11:
-                case IDC_DEC_INDEX12:
-                case IDC_DEC_INDEX13:
-                case IDC_DEC_INDEX14:
-                case IDC_DEC_INDEX15:
-                    index = (LOWORD(wParam) - IDC_DEC_INDEX1) / 2;
-                    IncDecIndex(index, -1);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                case IDC_INC_INDEX1:
-                case IDC_INC_INDEX2:
-                case IDC_INC_INDEX3:
-                case IDC_INC_INDEX4:
-                case IDC_INC_INDEX5:
-                case IDC_INC_INDEX6:
-                case IDC_INC_INDEX7:
-                case IDC_INC_INDEX8:
-                case IDC_INC_INDEX9:
-                case IDC_INC_INDEX10:
-                case IDC_INC_INDEX11:
-                case IDC_INC_INDEX12:
-                case IDC_INC_INDEX13:
-                case IDC_INC_INDEX14:
-                case IDC_INC_INDEX15:
-                    index = (LOWORD(wParam) - IDC_INC_INDEX1) / 2;
-                    IncDecIndex(index, 1);
-                    UpdateVoiceDialog(hwnd);
-                    break;
-
-                default:
-                    return DefWindowProc(hwnd, message, wParam, lParam);
+                fwrite(&VToolMsgData, sizeof(VoiceToolData), 1, fp);
+                fwrite(evalLastFrag, sizeof(short),
+                       voiceFilter->evalfile.MaxEvals() *
+                           voiceFilter->fragfile.MaxVoices(),
+                       fp);
+                fwrite(fragsPlayed, sizeof(char),
+                       voiceFilter->fragfile.MaxFrags() *
+                           voiceFilter->fragfile.MaxVoices(),
+                       fp);
+                fclose(fp);
             }
 
             break;
 
+        case IDC_LOAD:
+            sprintf(buffer, "%s/VoiceTool.sav", FalconDataDirectory);
+            fp = fopen(buffer, "rb");
+
+            if (fp)
+            {
+                fread(&VToolMsgData, sizeof(VoiceToolData), 1, fp);
+                fread(evalLastFrag, sizeof(short),
+                      voiceFilter->evalfile.MaxEvals() *
+                          voiceFilter->fragfile.MaxVoices(),
+                      fp);
+                fread(fragsPlayed, sizeof(char),
+                      voiceFilter->fragfile.MaxFrags() *
+                          voiceFilter->fragfile.MaxVoices(),
+                      fp);
+                fclose(fp);
+                UpdateVoiceDialog(hwnd);
+            }
+
+            break;
+
+        case IDC_COMBOS:
+            result = CalcCombinations();
+            pBuf = _fcvt(result, 0, &dec, &sign);
+            Edit_SetText(GetDlgItem(hwnd, IDC_COMBINATIONS), pBuf);
+            break;
+
+        case IDC_DEC_INDEX1:
+        case IDC_DEC_INDEX2:
+        case IDC_DEC_INDEX3:
+        case IDC_DEC_INDEX4:
+        case IDC_DEC_INDEX5:
+        case IDC_DEC_INDEX6:
+        case IDC_DEC_INDEX7:
+        case IDC_DEC_INDEX8:
+        case IDC_DEC_INDEX9:
+        case IDC_DEC_INDEX10:
+        case IDC_DEC_INDEX11:
+        case IDC_DEC_INDEX12:
+        case IDC_DEC_INDEX13:
+        case IDC_DEC_INDEX14:
+        case IDC_DEC_INDEX15:
+            index = (LOWORD(wParam) - IDC_DEC_INDEX1) / 2;
+            IncDecIndex(index, -1);
+            UpdateVoiceDialog(hwnd);
+            break;
+
+        case IDC_INC_INDEX1:
+        case IDC_INC_INDEX2:
+        case IDC_INC_INDEX3:
+        case IDC_INC_INDEX4:
+        case IDC_INC_INDEX5:
+        case IDC_INC_INDEX6:
+        case IDC_INC_INDEX7:
+        case IDC_INC_INDEX8:
+        case IDC_INC_INDEX9:
+        case IDC_INC_INDEX10:
+        case IDC_INC_INDEX11:
+        case IDC_INC_INDEX12:
+        case IDC_INC_INDEX13:
+        case IDC_INC_INDEX14:
+        case IDC_INC_INDEX15:
+            index = (LOWORD(wParam) - IDC_INC_INDEX1) / 2;
+            IncDecIndex(index, 1);
+            UpdateVoiceDialog(hwnd);
+            break;
+
         default:
             return DefWindowProc(hwnd, message, wParam, lParam);
+        }
+
+        break;
+
+    default:
+        return DefWindowProc(hwnd, message, wParam, lParam);
     }
 
     return TRUE;
 }
-#pragma warning (default : 4244)
+#endif // _WIN32: the Win32 voice-filter config dialog (PlayVoicesProc etc.); the voice logic above is portable
+#pragma warning(default : 4244)

@@ -15,45 +15,50 @@
 
 // Returns the FFEmu.hlsl source text (empty string on total failure). outPath is filled with the external
 // path probed; fromFile is true when the returned text came from that file (false = embedded resource).
-inline std::string LoadFFEmuShaderSource(const char* shaderDir, std::wstring& outPath, bool& fromFile)
+inline std::string LoadFFEmuShaderSource(const char* shaderDir,
+                                         std::wstring& outPath, bool& fromFile)
 {
-	std::wstring dir;
-	{
-		std::string s = shaderDir ? shaderDir : ".";
-		dir.assign(s.begin(), s.end());
-		if (!dir.empty() && dir.back() != L'\\' && dir.back() != L'/') dir += L'\\';
-	}
-	outPath = dir + L"FFEmu.hlsl";
-	fromFile = false;
+    std::wstring dir;
+    {
+        std::string s = shaderDir ? shaderDir : ".";
+        dir.assign(s.begin(), s.end());
+        if (!dir.empty() && dir.back() != L'\\' && dir.back() != L'/')
+            dir += L'\\';
+    }
+    outPath = dir + L"FFEmu.hlsl";
+    fromFile = false;
 
-	// 1) External file (runtime-tunable) -- read the whole thing into memory.
-	HANDLE h = CreateFileW(outPath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,
-	                       OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
-	if (h != INVALID_HANDLE_VALUE)
-	{
-		LARGE_INTEGER sz;
-		if (GetFileSizeEx(h, &sz) && sz.QuadPart > 0 && sz.QuadPart < (1 << 24))   // sane cap: 16 MB
-		{
-			std::string out((size_t)sz.QuadPart, '\0');
-			DWORD rd = 0;
-			if (ReadFile(h, &out[0], (DWORD)sz.QuadPart, &rd, NULL) && rd == (DWORD)sz.QuadPart)
-			{
-				CloseHandle(h);
-				fromFile = true;
-				return out;
-			}
-		}
-		CloseHandle(h);
-	}
+    // 1) External file (runtime-tunable) -- read the whole thing into memory.
+    HANDLE h = CreateFileW(outPath.c_str(), GENERIC_READ, FILE_SHARE_READ, NULL,
+                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    if (h != INVALID_HANDLE_VALUE)
+    {
+        LARGE_INTEGER sz;
+        if (GetFileSizeEx(h, &sz) && sz.QuadPart > 0 &&
+            sz.QuadPart < (1 << 24)) // sane cap: 16 MB
+        {
+            std::string out((size_t)sz.QuadPart, '\0');
+            DWORD rd = 0;
+            if (ReadFile(h, &out[0], (DWORD)sz.QuadPart, &rd, NULL) &&
+                rd == (DWORD)sz.QuadPart)
+            {
+                CloseHandle(h);
+                fromFile = true;
+                return out;
+            }
+        }
+        CloseHandle(h);
+    }
 
-	// 2) Embedded RCDATA fallback (baked into the exe by falcon4.rc).
-	HRSRC res = FindResourceA(NULL, "FFEMU_HLSL", (LPCSTR)RT_RCDATA);
-	if (res)
-	{
-		HGLOBAL g = LoadResource(NULL, res);
-		DWORD len = SizeofResource(NULL, res);
-		const void* p = g ? LockResource(g) : NULL;
-		if (p && len) return std::string((const char*)p, len);
-	}
-	return std::string();
+    // 2) Embedded RCDATA fallback (baked into the exe by falcon4.rc).
+    HRSRC res = FindResourceA(NULL, "FFEMU_HLSL", (LPCSTR)RT_RCDATA);
+    if (res)
+    {
+        HGLOBAL g = LoadResource(NULL, res);
+        DWORD len = SizeofResource(NULL, res);
+        const void* p = g ? LockResource(g) : NULL;
+        if (p && len)
+            return std::string((const char*)p, len);
+    }
+    return std::string();
 }

@@ -34,7 +34,8 @@ void AirframeClass::SuperSimpleFCS(void)
     else
         fullThrow = 4.0F;
 
-    nzcgs = nzcgb = platform->platformAngles.cosgam * cosphiLimit + pstick * fullThrow;
+    nzcgs = nzcgb =
+        platform->platformAngles.cosgam * cosphiLimit + pstick * fullThrow;
     alpha = nzcgb * GRAVITY / (qsom * cnalpha);
 
     if (alpha > aoamax)
@@ -64,17 +65,21 @@ float AirframeClass::FuelBurn(int maxAB)
 
     if (maxAB)
     {
-        th1 = Math.TwodInterp(mz, mach, engineData->alt,
-                              engineData->mach, engineData->thrust[2], engineData->numAlt,
-                              engineData->numMach, &curEngAltBreak, &curEngMachBreak);
-        flow = th1  * engineData->thrustFactor * auxaeroData->fuelFlowFactorAb / 3600.0F;
+        th1 = Math.TwodInterp(mz, mach, engineData->alt, engineData->mach,
+                              engineData->thrust[2], engineData->numAlt,
+                              engineData->numMach, &curEngAltBreak,
+                              &curEngMachBreak);
+        flow = th1 * engineData->thrustFactor * auxaeroData->fuelFlowFactorAb /
+               3600.0F;
     }
     else
     {
-        th1 = Math.TwodInterp(mz, mach, engineData->alt,
-                              engineData->mach, engineData->thrust[1], engineData->numAlt,
-                              engineData->numMach, &curEngAltBreak, &curEngMachBreak);
-        flow = th1  * engineData->thrustFactor * auxaeroData->fuelFlowFactorNormal / 3600.0F;
+        th1 = Math.TwodInterp(mz, mach, engineData->alt, engineData->mach,
+                              engineData->thrust[1], engineData->numAlt,
+                              engineData->numMach, &curEngAltBreak,
+                              &curEngMachBreak);
+        flow = th1 * engineData->thrustFactor *
+               auxaeroData->fuelFlowFactorNormal / 3600.0F;
     }
 
     return flow;
@@ -89,15 +94,17 @@ float AirframeClass::PsubS(int maxAB)
 
     if (maxAB)
     {
-        th1 = Math.TwodInterp(mz, mach, engineData->alt,
-                              engineData->mach, engineData->thrust[2], engineData->numAlt,
-                              engineData->numMach, &curEngAltBreak, &curEngMachBreak);
+        th1 = Math.TwodInterp(mz, mach, engineData->alt, engineData->mach,
+                              engineData->thrust[2], engineData->numAlt,
+                              engineData->numMach, &curEngAltBreak,
+                              &curEngMachBreak);
     }
     else
     {
-        th1 = Math.TwodInterp(mz, mach, engineData->alt,
-                              engineData->mach, engineData->thrust[1], engineData->numAlt,
-                              engineData->numMach, &curEngAltBreak, &curEngMachBreak);
+        th1 = Math.TwodInterp(mz, mach, engineData->alt, engineData->mach,
+                              engineData->thrust[1], engineData->numAlt,
+                              engineData->numMach, &curEngAltBreak,
+                              &curEngMachBreak);
     }
 
     // Thrust Scaling
@@ -120,15 +127,17 @@ float AirframeClass::SustainedGs(int maxAB)
     // Max sustained alpha when thrust = drag
     if (maxAB)
     {
-        th1 = Math.TwodInterp(mz, mach, engineData->alt,
-                              engineData->mach, engineData->thrust[2], engineData->numAlt,
-                              engineData->numMach, &curEngAltBreak, &curEngMachBreak);
+        th1 = Math.TwodInterp(mz, mach, engineData->alt, engineData->mach,
+                              engineData->thrust[2], engineData->numAlt,
+                              engineData->numMach, &curEngAltBreak,
+                              &curEngMachBreak);
     }
     else
     {
-        th1 = Math.TwodInterp(mz, mach, engineData->alt,
-                              engineData->mach, engineData->thrust[1], engineData->numAlt,
-                              engineData->numMach, &curEngAltBreak, &curEngMachBreak);
+        th1 = Math.TwodInterp(mz, mach, engineData->alt, engineData->mach,
+                              engineData->thrust[1], engineData->numAlt,
+                              engineData->numMach, &curEngAltBreak,
+                              &curEngMachBreak);
     }
 
     // Thrust Scaling
@@ -138,18 +147,21 @@ float AirframeClass::SustainedGs(int maxAB)
     desThrust /= (qbar * area);
 
     // factor gear/speed brake/stores
-    desThrust -= auxaeroData->CDSPDBFactor * dbrake + auxaeroData->CDLDGFactor * gearPos;
+    desThrust -=
+        auxaeroData->CDSPDBFactor * dbrake + auxaeroData->CDLDGFactor * gearPos;
 
     alphaMax = -0.5F;
 
     do
     {
         alphaMax += 0.5F;
-        curDrag = Math.TwodInterp(mach, alphaMax, aeroData->mach, aeroData->alpha,
-                                  aeroData->cdrag, aeroData->numMach, aeroData->numAlpha, &curMachBreak, &i) *
-                  aeroData->cdFactor;;
-    }
-    while (alphaMax < aoamax and curDrag < desThrust);
+        curDrag =
+            Math.TwodInterp(mach, alphaMax, aeroData->mach, aeroData->alpha,
+                            aeroData->cdrag, aeroData->numMach,
+                            aeroData->numAlpha, &curMachBreak, &i) *
+            aeroData->cdFactor;
+        ;
+    } while (alphaMax < aoamax and curDrag < desThrust);
 
     // Given alpha, find max gs
     retval = alphaMax * qsom * clalph0 / GRAVITY;

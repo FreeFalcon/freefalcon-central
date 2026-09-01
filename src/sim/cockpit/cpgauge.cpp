@@ -4,7 +4,9 @@
 #include "cpgauge.h"
 
 
-CPGauge::CPGauge(CPObjectInitStruct* BaseInitData, CPGaugeInitStruct *GaugeInitData) : CPObject(BaseInitData)
+CPGauge::CPGauge(CPObjectInitStruct *BaseInitData,
+                 CPGaugeInitStruct *GaugeInitData)
+    : CPObject(BaseInitData)
 {
 
     mWidthTapeBitmap = GaugeInitData->widthTapeBitmap;
@@ -41,7 +43,8 @@ void CPGauge::DrawTape(float Value, int x, int y, BOOL WrapAroundOn)
     int LowerDestBound;
 
     // Determine how many pixels represent a unit, (units/pixel)
-    PixelSlope = (mMaxValPosition - mMinValPosition) / (mMaxTapeValue - mMinTapeValue);
+    PixelSlope =
+        (mMaxValPosition - mMinValPosition) / (mMaxTapeValue - mMinTapeValue);
     PixelIntercept = mMaxValPosition - (PixelSlope * mMaxTapeValue);
 
     // Limit the current value
@@ -57,8 +60,8 @@ void CPGauge::DrawTape(float Value, int x, int y, BOOL WrapAroundOn)
     // Find the tape position
     TapePosition = (PixelSlope * Value) + PixelIntercept;
 
-    UpperSrcBound = (int) TapePosition - (mHeight / 2);
-    LowerSrcBound = (int) TapePosition + (mHeight / 2);
+    UpperSrcBound = (int)TapePosition - (mHeight / 2);
+    LowerSrcBound = (int)TapePosition + (mHeight / 2);
 
     // Determine where the blit should go
     if (UpperSrcBound < 0)
@@ -69,7 +72,7 @@ void CPGauge::DrawTape(float Value, int x, int y, BOOL WrapAroundOn)
     else if (LowerSrcBound > mHeightTapeBitmap)
     {
         LowerDestBound = mHeight - (LowerSrcBound - mHeightTapeBitmap);
-        LowerSrcBound  = mHeightTapeBitmap;
+        LowerSrcBound = mHeightTapeBitmap;
     }
     else
     {
@@ -78,7 +81,9 @@ void CPGauge::DrawTape(float Value, int x, int y, BOOL WrapAroundOn)
     }
 
     OTWDriver.renderer->StartFrame();
-    OTWDriver.renderer->Render2DBitmap(0, UpperSrcBound, x, y + mpParent->my, mWidthTapeBitmap, mHeight, mWidthTapeBitmap, mpTapeBitmapHandle);
+    OTWDriver.renderer->Render2DBitmap(0, UpperSrcBound, x, y + mpParent->my,
+                                       mWidthTapeBitmap, mHeight,
+                                       mWidthTapeBitmap, mpTapeBitmapHandle);
     OTWDriver.renderer->FinishFrame();
 }
 

@@ -1,10 +1,10 @@
-#include "stdafx.h"	// the project uses a PCH -- else C1010
+#include "stdafx.h" // the project uses a PCH -- else C1010
 /** @file CPMirror
 * 2d cockpit mirror implementation
 */
 #include "cpmirror.h"
-#include "Graphics/include/Render3d.h"
-#include "Sim/Include/Otwdrive.h"
+#include "graphics/include/render3d.h"
+#include "sim/include/otwdrive.h"
 #include "dispcfg.h"
 #include "renderow.h"
 
@@ -15,9 +15,7 @@ CPMirror::CPMirror(const ObjectInitStr &ois) : CPObject(&ois)
     mBuffer.reset(new ImageBuffer());
     mBuffer->Setup(&FalconDisplay.theDisplayDevice,
                    ois.destRect.right - ois.destRect.left + 1,
-                   ois.destRect.bottom - ois.destRect.top + 1,
-                   SystemMem, None
-                  );
+                   ois.destRect.bottom - ois.destRect.top + 1, SystemMem, None);
     mRend.reset(new Render2D());
     mRend->Setup(mBuffer.get());
 }
@@ -26,7 +24,8 @@ void CPMirror::Exec(SimBaseClass *simbase)
 {
     float xPos = 0.0F;
     float yPos = 0.6F;
-    RenderMirror((float)mDestRect.left, (float)mDestRect.top, (float)mDestRect.right, (float)mDestRect.bottom);
+    RenderMirror((float)mDestRect.left, (float)mDestRect.top,
+                 (float)mDestRect.right, (float)mDestRect.bottom);
 }
 
 // sfr: mirrors here. @TODO move to some place more appropriate
@@ -37,11 +36,7 @@ void CPMirror::RenderMirror(float left, float top, float right, float bottom)
     // white triagle pointing down
     float w = right - left - 1.0f;
     float h = bottom - top - 1.0f;
-    mRend->Render2DTri(
-        1.0f, 1.0f,
-        w / 2.0f, h,
-        w, 1.0f
-    );
+    mRend->Render2DTri(1.0f, 1.0f, w / 2.0f, h, w, 1.0f);
     mRend->EndDraw();
     mBuffer->SwapBuffers(false);
     return;
@@ -95,10 +90,11 @@ void CPMirror::RenderMirror(float left, float top, float right, float bottom)
 
 void CPMirror::DisplayBlit3D()
 {
-    DWORD *buf = static_cast<DWORD*>(mBuffer->Lock());
+    DWORD *buf = static_cast<DWORD *>(mBuffer->Lock());
     RenderOTW *r = OTWDriver.renderer;
     r->StartDraw();
-    int w = mDestRect.right - mDestRect.left + 1, h = mDestRect.bottom - mDestRect.top + 1;
+    int w = mDestRect.right - mDestRect.left + 1,
+        h = mDestRect.bottom - mDestRect.top + 1;
     r->Render2DBitmap(0, 0, mDestRect.left, mDestRect.top, w, h, w, buf);
     r->EndDraw();
     mBuffer->Unlock();
@@ -106,5 +102,3 @@ void CPMirror::DisplayBlit3D()
     //r->Render2DBitmap(0, 0, mDestRect.left, mDestRect.top, w, h, w, mBuffer->Ge
     //mRend->GetRttCanvas();
 }
-
-

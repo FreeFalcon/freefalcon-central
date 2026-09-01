@@ -9,10 +9,10 @@
 #define _JOYINPUT_H_
 
 #include <windows.h>
-#include <Mmsystem.h>
+#include <mmsystem.h>
 
-#include "grTypes.h"
-#include "Matrix.h"
+#include "grtypes.h"
+#include "matrix.h"
 
 
 extern class JoyInputClass TheJoystick;
@@ -28,7 +28,8 @@ public:
     };
     ~JoyInputClass()
     {
-        if (ready)  Cleanup();
+        if (ready)
+            Cleanup();
     };
 
 protected:

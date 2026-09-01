@@ -29,7 +29,7 @@
 #include <avector.h>
 
 #ifdef _MSC_VER
-#pragma warning(disable:4799)
+#pragma warning(disable : 4799)
 #endif
 
 /* _mag_vect - find the magnitude of a vector

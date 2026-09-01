@@ -1,4 +1,4 @@
-#pragma optimize( "", off )
+#pragma optimize("", off)
 /* ------------------------------------------------------------------------
 
     AcmiCam.cpp
@@ -12,7 +12,7 @@
 
    ------------------------------------------------------------------------ */
 
-#include <cISO646>
+#include <ciso646>
 #include <windows.h>
 #include <conio.h>
 #include <stdio.h>
@@ -21,10 +21,10 @@
 #include <direct.h>
 #include <math.h>
 
-#include "Graphics/Include/grTypes.h"
+#include "graphics/include/grtypes.h"
 #include "codelib/tools/lists/lists.h"
 #include "debuggr.h"
-#include "AcmiCam.h"
+#include "acmicam.h"
 
 #define TRACKING_OFFSET 0.15F
 //FILE *debugData = NULL;
@@ -37,7 +37,7 @@ ACMICamera::ACMICamera()
 {
     _pos.x = 0.0F;
     _pos.y = 0.0F;
-    _pos.z =  0.0F;
+    _pos.z = 0.0F;
 
     _rot.M11 = 1.0F;
     _rot.M12 = 0.0F;
@@ -84,17 +84,17 @@ void ACMICamera::SetType(int type)
 
     switch (_type)
     {
-        case ATTACHED_CAM:
-        {
-            _rotType = OBJECT_ROTATION;
-            break;
-        }
+    case ATTACHED_CAM:
+    {
+        _rotType = OBJECT_ROTATION;
+        break;
+    }
 
-        case DETTACHED_CAM:
-        {
-            _rotType = LOCAL_ROTATION;
-            break;
-        }
+    case DETTACHED_CAM:
+    {
+        _rotType = LOCAL_ROTATION;
+        break;
+    }
     }
 }
 
@@ -106,141 +106,141 @@ void ACMICamera::DoAction()
 {
     switch (_type)
     {
-        case ATTACHED_CAM:
+    case ATTACHED_CAM:
+    {
+        switch (_action)
         {
-            switch (_action)
-            {
-                case NO_ACTION:
-                {
-                    SetAzDir(0.0F);
-                    SetElDir(0.0F);
-                    SetRotateType(OBJECT_ROTATION);
-                    break;
-                }
-
-                case ZOOM_IN:
-                {
-                    SetObjectRange(0.0F, ZOOM_IN);
-                    break;
-                }
-
-                case ZOOM_OUT:
-                {
-                    SetObjectRange(10.0F, ZOOM_OUT);
-                    break;
-                }
-
-                case LOCAL_RIGHT_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetAzDir(1.0F);
-                    break;
-                }
-
-                case LOCAL_LEFT_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetAzDir(-1.0F);
-                    break;
-                }
-
-                case LOCAL_UP_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetElDir(1.0F);
-                    break;
-                }
-
-                case LOCAL_DOWN_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetElDir(-1.0F);
-                    break;
-                }
-
-                case OBJECT_RIGHT_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetAzDir(-1.0F);
-                    break;
-                }
-
-                case OBJECT_LEFT_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetAzDir(1.0F);
-                    break;
-                }
-
-                case OBJECT_UP_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetElDir(1.0F);
-                    break;
-                }
-
-                case OBJECT_DOWN_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetElDir(-1.0F);
-                    break;
-                }
-
-                case OBJECT_XRT_YUP_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetAzDir(-1.0F);
-                    SetElDir(1.0F);
-                    break;
-                }
-
-                case OBJECT_XLT_YDN_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetAzDir(1.0F);
-                    SetElDir(-1.0F);
-                    break;
-                }
-
-                case OBJECT_XRT_YDN_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetAzDir(-1.0F);
-                    SetElDir(-1.0F);
-                    break;
-                }
-
-                case OBJECT_XLT_YUP_ROT:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    SetAzDir(1.0F);
-                    SetElDir(1.0F);
-                    break;
-                }
-
-                case ACMI_PANNER:
-                {
-                    SetRotateType(OBJECT_ROTATION);
-                    break;
-                }
-            }
-
+        case NO_ACTION:
+        {
+            SetAzDir(0.0F);
+            SetElDir(0.0F);
+            SetRotateType(OBJECT_ROTATION);
             break;
         }
 
-        case DETTACHED_CAM:
+        case ZOOM_IN:
         {
-            switch (_action)
-            {
-                case NO_ACTION:
-                {
-                    SetAzDir(0.0F);
-                    SetElDir(0.0F);
-                    // SetRotateType(OBJECT_ROTATION);
-                    break;
-                }
+            SetObjectRange(0.0F, ZOOM_IN);
+            break;
+        }
 
-                /* case ZOOM_IN:
+        case ZOOM_OUT:
+        {
+            SetObjectRange(10.0F, ZOOM_OUT);
+            break;
+        }
+
+        case LOCAL_RIGHT_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetAzDir(1.0F);
+            break;
+        }
+
+        case LOCAL_LEFT_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetAzDir(-1.0F);
+            break;
+        }
+
+        case LOCAL_UP_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetElDir(1.0F);
+            break;
+        }
+
+        case LOCAL_DOWN_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetElDir(-1.0F);
+            break;
+        }
+
+        case OBJECT_RIGHT_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetAzDir(-1.0F);
+            break;
+        }
+
+        case OBJECT_LEFT_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetAzDir(1.0F);
+            break;
+        }
+
+        case OBJECT_UP_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetElDir(1.0F);
+            break;
+        }
+
+        case OBJECT_DOWN_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetElDir(-1.0F);
+            break;
+        }
+
+        case OBJECT_XRT_YUP_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetAzDir(-1.0F);
+            SetElDir(1.0F);
+            break;
+        }
+
+        case OBJECT_XLT_YDN_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetAzDir(1.0F);
+            SetElDir(-1.0F);
+            break;
+        }
+
+        case OBJECT_XRT_YDN_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetAzDir(-1.0F);
+            SetElDir(-1.0F);
+            break;
+        }
+
+        case OBJECT_XLT_YUP_ROT:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            SetAzDir(1.0F);
+            SetElDir(1.0F);
+            break;
+        }
+
+        case ACMI_PANNER:
+        {
+            SetRotateType(OBJECT_ROTATION);
+            break;
+        }
+        }
+
+        break;
+    }
+
+    case DETTACHED_CAM:
+    {
+        switch (_action)
+        {
+        case NO_ACTION:
+        {
+            SetAzDir(0.0F);
+            SetElDir(0.0F);
+            // SetRotateType(OBJECT_ROTATION);
+            break;
+        }
+
+        /* case ZOOM_IN:
                  {
                  // SetObjectRange(0.0F, ZOOM_IN);
                  SetRotateType(NO_ROTATION);
@@ -276,37 +276,37 @@ void ACMICamera::DoAction()
                  // SetElDir(-1.0F);
                  break;
                  } */
-                case OBJECT_RIGHT_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetAzDir(-1.0F);
-                    break;
-                }
-
-                case OBJECT_LEFT_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetAzDir(1.0F);
-                    break;
-                }
-
-                case OBJECT_UP_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetElDir(1.0F);
-                    break;
-                }
-
-                case OBJECT_DOWN_ROT:
-                {
-                    SetRotateType(LOCAL_ROTATION);
-                    SetElDir(-1.0F);
-                    break;
-                }
-            }
-
+        case OBJECT_RIGHT_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetAzDir(-1.0F);
             break;
         }
+
+        case OBJECT_LEFT_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetAzDir(1.0F);
+            break;
+        }
+
+        case OBJECT_UP_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetElDir(1.0F);
+            break;
+        }
+
+        case OBJECT_DOWN_ROT:
+        {
+            SetRotateType(LOCAL_ROTATION);
+            SetElDir(-1.0F);
+            break;
+        }
+        }
+
+        break;
+    }
     }
 }
 
@@ -336,13 +336,13 @@ void ACMICamera::UpdatePosition()
 
     // Be around ownship, looking at it
     Tilt(_objectEl, 0.0F, _objectAz, &tilt);
-    Translate(_objectRange * tilt.M11, _objectRange * tilt.M12, _objectRange * tilt.M13, &_pos);
+    Translate(_objectRange * tilt.M11, _objectRange * tilt.M12,
+              _objectRange * tilt.M13, &_pos);
 
     if (_tracking)
         Rotate(_localEl, 0.0F, _localAz, &_rot);
     else
         Rotate(_objectEl, _objectRoll, _objectAz, &_rot);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -351,14 +351,14 @@ void ACMICamera::UpdatePosition()
 
 void ACMICamera::UpdatePannerPosition()
 {
-    Trotation
-    tilt;
+    Trotation tilt;
 
     Rotate(_objectEl, 0.0F, _objectAz, &_rot);
 
     // Be around ownship, looking at it
     Tilt(_objectEl, 0.0F, _objectAz, &tilt);
-    Translate(_objectRange * tilt.M11, _objectRange * tilt.M12, _objectRange * tilt.M13, &_pos);
+    Translate(_objectRange * tilt.M11, _objectRange * tilt.M12,
+              _objectRange * tilt.M13, &_pos);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -385,7 +385,8 @@ void ACMICamera::Tilt(float pitch, float, float yaw, Trotation *tilt)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-void ACMICamera::Rotate(float pitch, float roll, float yaw, Trotation* viewRotation)
+void ACMICamera::Rotate(float pitch, float roll, float yaw,
+                        Trotation *viewRotation)
 {
     float costha, sintha, cosphi, sinphi, cospsi, sinpsi;
 
@@ -441,17 +442,17 @@ void ACMICamera::SetObjectRange(float diff, int instruction)
 {
     switch (instruction)
     {
-        case ZOOM_IN:
-            _objectRange = min(-50.0F, _objectRange + 50.0F);
-            break;
+    case ZOOM_IN:
+        _objectRange = min(-50.0F, _objectRange + 50.0F);
+        break;
 
-        case ZOOM_OUT:
-            _objectRange -= diff;
-            break;
+    case ZOOM_OUT:
+        _objectRange -= diff;
+        break;
 
-        case HOME:
-            _objectRange = diff;
-            break;
+    case HOME:
+        _objectRange = diff;
+        break;
     }
 
     SetRotateType(OBJECT_ROTATION);
@@ -463,15 +464,9 @@ void ACMICamera::SetObjectRange(float diff, int instruction)
 
 void ACMICamera::TrackPoint(const Tpoint &trackingPt)
 {
-    float
-    trackingAz,
-    trackingEl;
+    float trackingAz, trackingEl;
 
-    float
-    deltaX,
-    deltaY,
-    deltaZ,
-    deltaRange;
+    float deltaX, deltaY, deltaZ, deltaRange;
 
     if (_tracking == NO_TRACKING)
         return;
@@ -488,14 +483,7 @@ void ACMICamera::TrackPoint(const Tpoint &trackingPt)
 
 #if 1
     deltaRange =
-        (
-            (float)sqrt
-            (
-                deltaX * deltaX +
-                deltaY * deltaY +
-                deltaZ * deltaZ
-            )
-        );
+        ((float)sqrt(deltaX * deltaX + deltaY * deltaY + deltaZ * deltaZ));
 
     if (deltaRange not_eq 0.0F)
     {
@@ -617,10 +605,9 @@ void ACMICamera::UpdateChasePosition(float dT)
 
     // now get yaw and pitch based on look at vector
     dist = (float)sqrt(dPos.x * dPos.x + dPos.y * dPos.y + dPos.z * dPos.z);
-    _objectEl = (float) - asin(dPos.z / dist);
+    _objectEl = (float)-asin(dPos.z / dist);
     _objectAz = (float)atan2(dPos.y, dPos.x);
     Rotate(_objectEl, _chaseRoll, _objectAz, &_rot);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////

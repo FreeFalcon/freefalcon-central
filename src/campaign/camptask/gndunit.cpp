@@ -6,28 +6,28 @@
 #include <stdlib.h>
 #include <math.h>
 #include <float.h>
-#include "CmpGlobl.h"
-#include "ListADT.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "ASearch.h"
-#include "Path.h"
-#include "Find.h"
-#include "Campaign.h"
+#include "cmpglobl.h"
+#include "listadt.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "asearch.h"
+#include "path.h"
+#include "find.h"
+#include "campaign.h"
 #include "update.h"
 #include "loadout.h"
 #include "gndunit.h"
 #include "team.h"
-#include "GTM.h"
-#include "MsgInc/GndTaskingMsg.h"
-#include "AIInput.h"
-#include "Mission.h"
+#include "gtm.h"
+#include "msginc/gndtaskingmsg.h"
+#include "aiinput.h"
+#include "mission.h"
 #include "classtbl.h"
-#include "Aircrft.h"
-#include "FalcSess.h"
+#include "aircrft.h"
+#include "falcsess.h"
 
 //sfr: buffer checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
 // ============================================
@@ -35,12 +35,12 @@
 // ============================================
 
 extern int HDelta[7];
-extern MissionDataType MissionData [AMIS_OTHER];
+extern MissionDataType MissionData[AMIS_OTHER];
 extern int FriendlyTerritory(GridIndex x, GridIndex y, int team);
 extern int maxSearch;
 
 #ifdef DEBUG
-#include "CampStr.h"
+#include "campstr.h"
 extern DWORD gAverageBattalionDetectionTime;
 extern int gBattalionDetects;
 #define LOG_ERRORS
@@ -70,26 +70,23 @@ extern int haveWeaps;
 extern int ourRange;
 extern int theirDomain;
 
-extern FILE
-*save_log,
-*load_log;
+extern FILE *save_log, *load_log;
 
-extern int
-start_save_stream,
-start_load_stream;
+extern int start_save_stream, start_load_stream;
 
 // ============================================
 // Globals
 // ============================================
 
-int OrderPriority[GORD_LAST] = { 2, 10, 9, 8, 8, 7, 6, 4, 4, 4, 5, 3 };
+int OrderPriority[GORD_LAST] = {2, 10, 9, 8, 8, 7, 6, 4, 4, 4, 5, 3};
 
 // ============================================
 // Ground Unit class
 // ============================================
 
 // constructors
-GroundUnitClass::GroundUnitClass(ushort type, VU_ID_NUMBER id) : UnitClass(type, id)
+GroundUnitClass::GroundUnitClass(ushort type, VU_ID_NUMBER id)
+    : UnitClass(type, id)
 {
     orders = 0;
     division = 0;
@@ -99,7 +96,8 @@ GroundUnitClass::GroundUnitClass(ushort type, VU_ID_NUMBER id) : UnitClass(type,
     dirty_ground_unit = 0;
 }
 
-GroundUnitClass::GroundUnitClass(VU_BYTE **stream, long *rem) : UnitClass(stream, rem)
+GroundUnitClass::GroundUnitClass(VU_BYTE **stream, long *rem)
+    : UnitClass(stream, rem)
 {
     Objective o;
 
@@ -143,10 +141,8 @@ GroundUnitClass::~GroundUnitClass(void)
 
 int GroundUnitClass::SaveSize(void)
 {
-    return UnitClass::SaveSize()
-           + sizeof(uchar)
-           + sizeof(VU_ID)
-           + sizeof(short);
+    return UnitClass::SaveSize() + sizeof(uchar) + sizeof(VU_ID) +
+           sizeof(short);
 }
 
 int GroundUnitClass::Save(VU_BYTE **stream)
@@ -178,7 +174,7 @@ int GroundUnitClass::Save(VU_BYTE **stream)
 int GroundUnitClass::Handle(VuFullUpdateEvent *event)
 {
     // copy data from temp entity to current entity
-    GroundUnitClass* tmp_ent = (GroundUnitClass*)(event->expandedData_.get());
+    GroundUnitClass *tmp_ent = (GroundUnitClass *)(event->expandedData_.get());
 
     orders = tmp_ent->orders;
     aobj = tmp_ent->aobj;
@@ -189,7 +185,7 @@ int GroundUnitClass::Handle(VuFullUpdateEvent *event)
 
 MoveType GroundUnitClass::GetMovementType(void)
 {
-    UnitClassDataType* uc;
+    UnitClassDataType *uc;
 
     /* if (GetUnitTactic() == GTACTIC_MOVE_AIRBORNE)
      return LowAir;
@@ -207,15 +203,16 @@ MoveType GroundUnitClass::GetMovementType(void)
 MoveType GroundUnitClass::GetObjMovementType(Objective o, int n)
 {
     float cost, acost;
-    UnitClassDataType* uc;
+    UnitClassDataType *uc;
     MoveType amt;
 
-    if (GetSType() not_eq STYPE_UNIT_AIRMOBILE and GetSType() not_eq STYPE_UNIT_MARINE)
+    if (GetSType() not_eq STYPE_UNIT_AIRMOBILE and
+        GetSType() not_eq STYPE_UNIT_MARINE)
         return GetMovementType();
 
     uc = GetUnitClassData();
 
-    if ( not uc)
+    if (not uc)
         return Tracked;
 
     amt = uc->MovementType;
@@ -250,24 +247,33 @@ int GroundUnitClass::DetectOnMove(void)
     if (retval < 0)
         return -1;
 
-    // Check if our offensive has started yet
-    if (retval and GetUnitCurrentRole() == GRO_ATTACK and TheCampaign.CurrentTime < TeamInfo[GetTeam()]->GetGroundAction()->actionTime)
+    // Check if our offensive has started yet.
+    // Defense-in-depth: guard against a country that resolves to an unloaded team slot
+    // (TeamInfo[team] == NULL) instead of dereferencing a NULL team.
+    Team myTeam = GetTeam();
+
+    if (retval and GetUnitCurrentRole() == GRO_ATTACK and myTeam < NUM_TEAMS and
+        TeamInfo[myTeam] and
+        TheCampaign.CurrentTime <
+            TeamInfo[myTeam]->GetGroundAction()->actionTime)
         return -1;
 
     // Skip detection every third move until in enemy territory
     who = GetTeam();
     GetLocation(&x, &y);
 
-    if ( not (GetUnitMoved() % 3) and FriendlyTerritory(x, y, who))
+    if (not(GetUnitMoved() % 3) and FriendlyTerritory(x, y, who))
         return 0;
 
     // Now check vs enemy objectives for detection purposes
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator detit(ObjProxList, YPos(), XPos(), (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
+    VuGridIterator detit(ObjProxList, YPos(), XPos(),
+                         (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
 #else
-    VuGridIterator detit(ObjProxList, XPos(), YPos(), (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
+    VuGridIterator detit(ObjProxList, XPos(), YPos(),
+                         (BIG_SCALAR)GridToSim(MAX_GROUND_SEARCH));
 #endif
-    o = (Objective) detit.GetFirst();
+    o = (Objective)detit.GetFirst();
 
     while (o)
     {
@@ -283,7 +289,7 @@ int GroundUnitClass::DetectOnMove(void)
             {
                 CaptureObjective(o, GetOwner(), this);
 
-                if ( not Parent())
+                if (not Parent())
                 {
                     Unit parent = GetUnitParent();
                     ShiAssert(parent);
@@ -294,7 +300,7 @@ int GroundUnitClass::DetectOnMove(void)
             }
         }
 
-        o = (Objective) detit.GetNext();
+        o = (Objective)detit.GetNext();
     }
 
     return retval;
@@ -306,7 +312,8 @@ int GroundUnitClass::ChooseTarget(void)
     FalconEntity *artTarget, *react_against = NULL, *air_react_against = NULL;
     CampEntity e;
     float d, react_distance, air_react_distance;
-    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0, pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
+    int react, best_reaction = 1, best_air_react = 1, combat, retval = 0,
+               pass = 0, spot = 0, estr = 0, capture = 0, nomove = 0;
     int search_dist;
     Team who;
 
@@ -336,9 +343,11 @@ int GroundUnitClass::ChooseTarget(void)
         search_dist = MAX_GROUND_SEARCH;
 
 #ifdef VU_GRID_TREE_Y_MAJOR
-    VuGridIterator detit(RealUnitProxList, YPos(), XPos(), (BIG_SCALAR)GridToSim(search_dist));
+    VuGridIterator detit(RealUnitProxList, YPos(), XPos(),
+                         (BIG_SCALAR)GridToSim(search_dist));
 #else
-    VuGridIterator detit(RealUnitProxList, XPos(), YPos(), (BIG_SCALAR)GridToSim(search_dist));
+    VuGridIterator detit(RealUnitProxList, XPos(), YPos(),
+                         (BIG_SCALAR)GridToSim(search_dist));
 #endif
     // CalculateSOJ(detit); 2002-02-19 REMOVED BY S.G. eFalcon 1.10 SOJ code removed
 
@@ -351,7 +360,8 @@ int GroundUnitClass::ChooseTarget(void)
             combat = 0;
             react = DetectVs(e, &d, &combat, &spot, &capture, &nomove, &estr);
 
-            if ( not e->IsFlight() and react >= best_reaction and d < react_distance)
+            if (not e->IsFlight() and react >= best_reaction and
+                d < react_distance)
             {
                 // React vs a ground/Naval target
                 best_reaction = react;
@@ -360,14 +370,15 @@ int GroundUnitClass::ChooseTarget(void)
                 SetEngaged(1);
                 SetCombat(combat);
             }
-            else if (e->IsFlight() and react >= best_air_react and d < air_react_distance)
+            else if (e->IsFlight() and react >= best_air_react and
+                     d < air_react_distance)
             {
                 // React vs an air target -
                 best_air_react = react;
                 air_react_distance = d;
                 air_react_against = e;
 
-                if ( not e->IsAggregate())
+                if (not e->IsAggregate())
                 {
                     // Pick a specific aircraft in the flight if it's deaggregated
                     CampEnterCriticalSection();
@@ -382,7 +393,8 @@ int GroundUnitClass::ChooseTarget(void)
 
                         while (fe)
                         {
-                            rsq = DistSqu(XPos(), YPos(), fe->XPos(), fe->YPos());
+                            rsq =
+                                DistSqu(XPos(), YPos(), fe->XPos(), fe->YPos());
 
                             if (rsq < brsq)
                             {
@@ -399,12 +411,14 @@ int GroundUnitClass::ChooseTarget(void)
                 }
 
                 // Make sure our radar is on (if we have one)
-                if ( not IsEmitting() and class_data->RadarVehicle < 255 and GetNumVehicles(class_data->RadarVehicle))
+                if (not IsEmitting() and class_data->RadarVehicle < 255 and
+                    GetNumVehicles(class_data->RadarVehicle))
                 {
                     SetEmitting(1);
 
                     // 2002-03-22 ADDED BY S.G. Since someone else was searching for us (that's why we were off), make sure the next radar step will be FEC_RADAR_AQUIRE
-                    if (GetRadarMode() < FEC_RADAR_AQUIRE and GetRadarMode() not_eq FEC_RADAR_SEARCH_100)
+                    if (GetRadarMode() < FEC_RADAR_AQUIRE and
+                        GetRadarMode() not_eq FEC_RADAR_SEARCH_100)
                     {
                         SetStepSearchMode(FEC_RADAR_AQUIRE);
                         SetRadarMode(FEC_RADAR_CHANGEMODE);
@@ -451,12 +465,15 @@ int GroundUnitClass::ChooseTarget(void)
     }
      */
 
-    if ( not Parent() and best_reaction > 1)
+    if (not Parent() and best_reaction > 1)
         EngageParent(this, react_against);
 
 #ifdef DEBUG
     gBattalionDetects++;
-    gAverageBattalionDetectionTime = (gAverageBattalionDetectionTime * (gBattalionDetects - 1) + GetTickCount() - timec) / gBattalionDetects;
+    gAverageBattalionDetectionTime =
+        (gAverageBattalionDetectionTime * (gBattalionDetects - 1) +
+         GetTickCount() - timec) /
+        gBattalionDetects;
 #endif
 
     if (air_react_against)
@@ -473,7 +490,9 @@ int GroundUnitClass::ChooseTarget(void)
         SetTargeted(0);
         retval = 1;
     }
-    else if (artTarget and ( not artTarget->IsUnit() or ((Unit)artTarget)->Engaged()) and orders == GORD_SUPPORT)
+    else if (artTarget and
+             (not artTarget->IsUnit() or ((Unit)artTarget)->Engaged()) and
+             orders == GORD_SUPPORT)
     {
         // Keep blowing away this target until the target gets out of range, disengages, or we get new orders
         // (Target will get reset after a null DoCombat result)
@@ -515,7 +534,8 @@ int GroundUnitClass::ChooseTarget(void)
 extern int CheckValidType(CampEntity u, CampEntity e);
 extern int CanItIdentify(CampEntity us, CampEntity them, float d, int mt);
 
-int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spot, int *capture, int *nomove, int *estr)
+int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat,
+                              int *spot, int *capture, int *nomove, int *estr)
 {
     int react, det = Detected(this, ac, d);
     CampEntity e;
@@ -533,7 +553,7 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
     if (CheckValidType(e, this))
         detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
-    if ( not (detTmp bitand REACTION_MASK))
+    if (not(detTmp bitand REACTION_MASK))
         return 0;
 
     react = Reaction(e, detTmp, *d);
@@ -547,9 +567,14 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
     if (det bitand FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() and CheckValidType(e, this)) or
+            (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
         {
-            SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, CanItIdentify(this, e, *d, e->GetMovementType())); // 2002-02-11 MODIFIED BY S.G. Added 'CanItIdentify' which query if the target can be identified
+            SetSpotted(
+                e->GetTeam(), TheCampaign.CurrentTime,
+                CanItIdentify(
+                    this, e, *d,
+                    e->GetMovementType())); // 2002-02-11 MODIFIED BY S.G. Added 'CanItIdentify' which query if the target can be identified
             *spot = 1;
         }
     }
@@ -588,7 +613,8 @@ int GroundUnitClass::DetectVs(AircraftClass *ac, float *d, int *combat, int *spo
  return react;
  }
  */
-int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, int *capture, int *nomove, int *estr)
+int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot,
+                              int *capture, int *nomove, int *estr)
 {
     int react, det;
 
@@ -604,7 +630,7 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
     if (CheckValidType(e, this))
         detTmp or_eq GetSpotted(e->GetTeam()) ? FRIENDLY_DETECTED : 0;
 
-    if ( not (detTmp bitand REACTION_MASK))
+    if (not(detTmp bitand REACTION_MASK))
         return 0;
 
     react = Reaction(e, detTmp, *d);
@@ -613,7 +639,12 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
     if (det bitand ENEMY_DETECTED)
     {
         if (IsAggregate() and CheckValidType(this, e))
-            e->SetSpotted(GetTeam(), TheCampaign.CurrentTime, ( not e->IsFlight() or CanItIdentify(this, e, *d, e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it's not a flight or it has the hability to identify
+            e->SetSpotted(
+                GetTeam(), TheCampaign.CurrentTime,
+                (not e->IsFlight() or
+                 CanItIdentify(
+                     this, e, *d,
+                     e->GetMovementType()))); // 2002-02-11 MODIFIED BY S.G. Say 'identified if it's not a flight or it has the hability to identify
     }
 
     if (det bitand ENEMY_IN_RANGE and react)
@@ -622,9 +653,12 @@ int GroundUnitClass::DetectVs(CampEntity e, float *d, int *combat, int *spot, in
     if (det bitand FRIENDLY_DETECTED)
     {
         // Spotting will be set only if our enemy is aggregated or if he's an AWAC. SensorFusion or GroundClass::Exec will hanlde deaggregated vehicles.
-        if ((e->IsAggregate() and CheckValidType(e, this)) or (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
+        if ((e->IsAggregate() and CheckValidType(e, this)) or
+            (e->IsFlight() and e->GetSType() == STYPE_UNIT_AWACS))
         {
-            SetSpotted(e->GetTeam(), TheCampaign.CurrentTime, 1); // 2002-02-11 Modified by S.G. Ground units are always identified (doesn't change a thing)
+            SetSpotted(
+                e->GetTeam(), TheCampaign.CurrentTime,
+                1); // 2002-02-11 Modified by S.G. Ground units are always identified (doesn't change a thing)
             *spot = 1;
         }
     }
@@ -713,11 +747,11 @@ int GroundUnitClass::CheckForSurrender(void)
 
 int GroundUnitClass::GetUnitNormalRole(void)
 {
-    UnitClassDataType* uc;
+    UnitClassDataType *uc;
 
     uc = GetUnitClassData();
 
-    if ( not uc)
+    if (not uc)
         return 0;
 
     return uc->Role;
@@ -754,38 +788,42 @@ Unit BestElement(Unit u, int at, int role)
         {
             switch (role)
             {
-                case GRO_AIRDEFENSE:
-                case GRO_FIRESUPPORT:
-                case GRO_ENGINEER:
-                    if (uc->Role not_eq role)
-                        s = -1;
-                    else
-                        s = e->GetTotalVehicles() * uc->Scores[role];  // s = e->GetUnitGROScore(role)
+            case GRO_AIRDEFENSE:
+            case GRO_FIRESUPPORT:
+            case GRO_ENGINEER:
+                if (uc->Role not_eq role)
+                    s = -1;
+                else
+                    s = e->GetTotalVehicles() *
+                        uc->Scores[role]; // s = e->GetUnitGROScore(role)
 
-                    break;
+                break;
 
-                case GRO_RESERVE:
-                case GRO_ATTACK:
-                case GRO_DEFENSE:
-                case GRO_RECON:
-                default:
-                    if (uc->Role == GRO_AIRDEFENSE or uc->Role == GRO_FIRESUPPORT or uc->Role == GRO_ENGINEER)
-                        s = -1;
-                    else
-                        s = e->GetTotalVehicles() * uc->Scores[role];
+            case GRO_RESERVE:
+            case GRO_ATTACK:
+            case GRO_DEFENSE:
+            case GRO_RECON:
+            default:
+                if (uc->Role == GRO_AIRDEFENSE or uc->Role == GRO_FIRESUPPORT or
+                    uc->Role == GRO_ENGINEER)
+                    s = -1;
+                else
+                    s = e->GetTotalVehicles() * uc->Scores[role];
 
-                    break;
+                break;
             }
         }
         else
             s = 0;
 
-        s -= FloatToInt32(0.1F * s) * e->GetUnitElement(); // Keep elements from switching friviously
+        s -= FloatToInt32(0.1F * s) *
+             e->GetUnitElement(); // Keep elements from switching friviously
 
         if (e->Retreating())
             s /= 2;
 
-        if ( not e->Assigned() and s > bs and (role == GRO_RESERVE or not e->Broken()))
+        if (not e->Assigned() and s > bs and
+            (role == GRO_RESERVE or not e->Broken()))
         {
             be = e;
             bs = s;
@@ -804,29 +842,30 @@ int FindNextBest(int d, int pos[])
 {
     if (d % 2) // if diagonal
     {
-        if ( not pos[(d + 10) % 16])
+        if (not pos[(d + 10) % 16])
             return (d + 10) % 16;
 
-        if ( not pos[d + 8])
+        if (not pos[d + 8])
             return d + 8;
     }
 
-    if ( not pos[(d + 1) % 8])
+    if (not pos[(d + 1) % 8])
         return (d + 1) % 8;
 
-    if ( not pos[(d + 7) % 8])
+    if (not pos[(d + 7) % 8])
         return (d + 7) % 8;
 
-    if ( not pos[(d + 2) % 8])
+    if (not pos[(d + 2) % 8])
         return (d + 2) % 8;
 
-    if ( not pos[(d + 6) % 8])
+    if (not pos[(d + 6) % 8])
         return (d + 6) % 8;
 
     return Here;
 }
 
-int GetThisWPAction(Unit u, Objective o, Objective n, int d, Team us, float *cost)
+int GetThisWPAction(Unit u, Objective o, Objective n, int d, Team us,
+                    float *cost)
 {
     int action;
 
@@ -894,7 +933,8 @@ int BuildGroundWP(Unit u)
 
     us = u->GetTeam();
 
-    if (u->GetType() == TYPE_BATTALION and ((Battalion)u)->last_obj not_eq FalconNullId)
+    if (u->GetType() == TYPE_BATTALION and
+        ((Battalion)u)->last_obj not_eq FalconNullId)
         o = FindObjective(((Battalion)u)->last_obj);
     else
         o = FindNearestObjective(ux, uy, NULL);
@@ -914,7 +954,7 @@ int BuildGroundWP(Unit u)
 
     t = u->GetUnitObjective();
 
-    if ( not t)
+    if (not t)
         t = FindNearestObjective(tx, ty, NULL);
 
     if (o == t or dist < 1.0)
@@ -924,7 +964,7 @@ int BuildGroundWP(Unit u)
         return 1;
     }
 
-    if ( not o or not t)
+    if (not o or not t)
         return 0;
 
     if (u->GetUnitObjectivePath(&path, o, t) < 1) // Avoid enemy objectives
@@ -934,7 +974,7 @@ int BuildGroundWP(Unit u)
         char buffer[1280], name1[80], name2[80], name3[80], timestr[80];
         FILE *fp;
 
-        sprintf(buffer, "campaign\\save\\dump\\errors.log");
+        sprintf(buffer, "campaign/save/dump/errors.log");
         fp = fopen(buffer, "a");
 
         if (fp)
@@ -946,12 +986,17 @@ int BuildGroundWP(Unit u)
             o->GetLocation(&ox, &oy);
             t->GetLocation(&ex, &ey);
             GetTimeString(TheCampaign.CurrentTime, timestr);
-            sprintf(buffer, "%s (%d) %d,%d couldn't find obj path from %s (%d) %d,%d to %s (%d) %d,%d @ %s\n", name1, u->GetCampID(), ux, uy, name2, o->GetCampID(), ox, oy, name3, t->GetCampID(), ex, ey, timestr);
+            sprintf(buffer,
+                    "%s (%d) %d,%d couldn't find obj path from %s (%d) %d,%d "
+                    "to %s (%d) %d,%d @ %s\n",
+                    name1, u->GetCampID(), ux, uy, name2, o->GetCampID(), ox,
+                    oy, name3, t->GetCampID(), ex, ey, timestr);
             fprintf(fp, buffer);
 
-            if ( not ok)
+            if (not ok)
             {
-                sprintf(buffer, "%s (%d) %d,%d surrendered @ %s\n", name1, u->GetCampID(), ux, uy, timestr);
+                sprintf(buffer, "%s (%d) %d,%d surrendered @ %s\n", name1,
+                        u->GetCampID(), ux, uy, timestr);
                 fprintf(fp, buffer);
             }
 
@@ -983,7 +1028,8 @@ int BuildGroundWP(Unit u)
     if (u->GetUnitGridPath(&path2, ux, uy, ox, oy) > 0)
     {
         if (u->IsBattalion())
-            ((Battalion)u)->path->CopyPath(&path2); // Might as well use the path.
+            ((Battalion)u)
+                ->path->CopyPath(&path2); // Might as well use the path.
 
         cost = path2.GetCost();
         time += TimeToArrive(cost, (float)speed);
@@ -995,7 +1041,7 @@ int BuildGroundWP(Unit u)
         char buffer[1280], name1[80], name2[80], timestr[80];
         FILE *fp;
 
-        sprintf(buffer, "campaign\\save\\dump\\errors.log");
+        sprintf(buffer, "campaign/save/dump/errors.log");
         fp = fopen(buffer, "a");
 
         if (fp)
@@ -1003,13 +1049,17 @@ int BuildGroundWP(Unit u)
             u->GetName(name1, 79, FALSE);
             o->GetName(name2, 79, FALSE);
             GetTimeString(TheCampaign.CurrentTime, timestr);
-            sprintf(buffer, "%s (%d) couldn't move to %s (%d) %d,%d from %d,%d @ %s\n", name1, u->GetCampID(), name2, o->GetCampID(), ox, oy, ux, uy, timestr);
+            sprintf(buffer,
+                    "%s (%d) couldn't move to %s (%d) %d,%d from %d,%d @ %s\n",
+                    name1, u->GetCampID(), name2, o->GetCampID(), ox, oy, ux,
+                    uy, timestr);
             fprintf(fp, buffer);
             fclose(fp);
 
-            if ( not ok)
+            if (not ok)
             {
-                sprintf(buffer, "%s (%d) %d,%d surrendered @ %s\n", name1, u->GetCampID(), ux, uy, timestr);
+                sprintf(buffer, "%s (%d) %d,%d surrendered @ %s\n", name1,
+                        u->GetCampID(), ux, uy, timestr);
                 fprintf(fp, buffer);
             }
         }
@@ -1032,7 +1082,8 @@ int BuildGroundWP(Unit u)
         action = GetThisWPAction(u, o, n, d, us, &cost);
         time += TimeToArrive(cost, (float)speed);
 
-        if ( not didcas and (time - Camp_GetCurrentTime()) / CampaignMinutes < MissionData[AMIS_BAI].max_time)
+        if (not didcas and (time - Camp_GetCurrentTime()) / CampaignMinutes <
+                               MissionData[AMIS_BAI].max_time)
         {
             dist = DistanceToFront(ox, oy);
 
@@ -1046,15 +1097,21 @@ int BuildGroundWP(Unit u)
         }
 
         // Check to see if we're aproaching the enemy
-        if (n->IsFrontline() and GetRoE(us, n->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED)
+        if (n->IsFrontline() and
+            GetRoE(us, n->GetTeam(), ROE_GROUND_CAPTURE) == ROE_ALLOWED)
         {
-            // Set our time to our offensive time, if our offensive hasn't started yet
-            if (time < TeamInfo[us]->GetGroundAction()->actionTime)
+            // Set our time to our offensive time, if our offensive hasn't started yet.
+            // Defense-in-depth: a unit's country may resolve (via the GetTeam() fallback)
+            // to a team slot that was never loaded (TeamInfo[us] == NULL) for a sparse
+            // scenario; skip the team-specific offensive-timing adjustment rather than
+            // dereferencing a NULL team.
+            if (us >= 0 and us < NUM_TEAMS and TeamInfo[us] and
+                time < TeamInfo[us]->GetGroundAction()->actionTime)
             {
                 time = TeamInfo[us]->GetGroundAction()->actionTime;
             }
 
-            if ( not didcas)
+            if (not didcas)
             {
                 Unit enemy = FindNearestEnemyUnit(ox, oy, 10);
 
@@ -1064,7 +1121,9 @@ int BuildGroundWP(Unit u)
                     // M.N. Doesn't make sense to make two CASRequests vs us....
                     RequestOCCAS(/*u*/ enemy, ox, oy, time);
                     // Request CAS vs us as well
-                    RequestOCCAS(u, ox, oy, time); // added {} so that only cas against us if enemy unit was found
+                    RequestOCCAS(
+                        u, ox, oy,
+                        time); // added {} so that only cas against us if enemy unit was found
                 }
 
                 didcas = 1;
@@ -1076,8 +1135,9 @@ int BuildGroundWP(Unit u)
         //// Change them before then..
         //// Also - limit to first unit element if moving in brigade column,
         //// so we don't generate a request for every battalion in a brigade
-        if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes and 
-            ( not u->GetUnitElement() or u->GetUnitTactic() not_eq GTACTIC_MOVE_BRIGADE_COLUMN))
+        if (time - Camp_GetCurrentTime() < 60 * CampaignMinutes and
+            (not u->GetUnitElement() or
+             u->GetUnitTactic() not_eq GTACTIC_MOVE_BRIGADE_COLUMN))
         {
             // if (n->GetType() == TYPE_BRIDGE and (n->GetTeam() == us or TeamInfo[n->GetTeam()]->GetInitiative() < 40))
             // {
@@ -1141,7 +1201,7 @@ int BuildGroundWP(Unit u)
     }
 
     // Check for any BAI missions we can fly
-    if ( not didcas and bai_dist < MAX_BAI_DIST and dist > MAX_BAI_DIST / 5)
+    if (not didcas and bai_dist < MAX_BAI_DIST and dist > MAX_BAI_DIST / 5)
         RequestBAI(u, bx, by, bai_time);
 
     return 1;
@@ -1150,18 +1210,18 @@ int BuildGroundWP(Unit u)
 CampaignHeading GetAverageHeading(Path path)
 {
     CampaignHeading h, first;
-    int             total, cur, i = 0, bonus = 0, num = 1;
-    float           dir;
+    int total, cur, i = 0, bonus = 0, num = 1;
+    float dir;
 
     if (path == NULL)
         return Here;
 
-    first = (CampaignHeading) path->GetDirection(i);
-    total = (int) first;
+    first = (CampaignHeading)path->GetDirection(i);
+    total = (int)first;
 
     for (i = 1; i < 4; i++)
     {
-        cur = (int) path->GetDirection(i);
+        cur = (int)path->GetDirection(i);
 
         if (cur >= 0)
         {
@@ -1182,7 +1242,7 @@ CampaignHeading GetAverageHeading(Path path)
         }
     }
 
-    dir = (float) total / num;
+    dir = (float)total / num;
 
     if (bonus < 0)
         dir += 0.5F;
@@ -1193,7 +1253,7 @@ CampaignHeading GetAverageHeading(Path path)
     if (dir > 7)
         dir -= 8;
 
-    h = (CampaignHeading) dir;
+    h = (CampaignHeading)dir;
     return h;
 }
 
@@ -1243,7 +1303,8 @@ int CalculateOpposingStrength(Unit u, F4PFList list)
     {
         them = e->GetTeam();
 
-        if (GetRoE(us, them, ROE_GROUND_FIRE) and e->GetDomain() == DOMAIN_LAND and e->Combat())
+        if (GetRoE(us, them, ROE_GROUND_FIRE) and
+            e->GetDomain() == DOMAIN_LAND and e->Combat())
         {
             if (e->GetTargetID() == u->Id())
                 str += e->GetCombatStrength(Foot, 0);
@@ -1261,7 +1322,7 @@ int CheckReady(Unit u)
 {
     WayPoint w;
 
-    if ( not u->Detached())
+    if (not u->Detached())
     {
         w = u->GetCurrentUnitWP();
 
@@ -1335,29 +1396,29 @@ int GetActionFromOrders(int orders)
 {
     switch (orders)
     {
-        case GORD_CAPTURE:
-            return WP_DEFEND;
-            break;
+    case GORD_CAPTURE:
+        return WP_DEFEND;
+        break;
 
-        case GORD_DEFEND:
-            return WP_DEFEND;
-            break;
+    case GORD_DEFEND:
+        return WP_DEFEND;
+        break;
 
-        case GORD_SUPPORT:
-            return WP_FIRESUPPORT;
-            break;
+    case GORD_SUPPORT:
+        return WP_FIRESUPPORT;
+        break;
 
-        case GORD_REPAIR:
-            return WP_REPAIR;
-            break;
+    case GORD_REPAIR:
+        return WP_REPAIR;
+        break;
 
-        case GORD_AIRDEFENSE:
-            return WP_AIRDEFENSE;
-            break;
+    case GORD_AIRDEFENSE:
+        return WP_AIRDEFENSE;
+        break;
 
-        default:
-            return WP_RESERVE;
-            break;
+    default:
+        return WP_RESERVE;
+        break;
     }
 }
 
@@ -1384,16 +1445,17 @@ int PositionToSupportUnit(Battalion e)
         return 0;
 
     // Brigade elements only
-    brigade = (Brigade) e->GetUnitParent();
+    brigade = (Brigade)e->GetUnitParent();
 
-    if ( not brigade)
+    if (not brigade)
         return 0;
 
     me = brigade->GetFirstUnitElement();
 
     while (me)
     {
-        if (me->GetUnitOrders() not_eq GORD_SUPPORT and OrderPriority[me->GetUnitOrders()] > bp)
+        if (me->GetUnitOrders() not_eq GORD_SUPPORT and
+            OrderPriority[me->GetUnitOrders()] > bp)
         {
             bp = OrderPriority[me->GetUnitOrders()];
             bo = me->GetUnitObjective();
@@ -1402,7 +1464,7 @@ int PositionToSupportUnit(Battalion e)
         me = brigade->GetNextUnitElement();
     }
 
-    if ( not bo)
+    if (not bo)
         return 0;
 
     // Check tolerance
@@ -1421,7 +1483,7 @@ int PositionToSupportUnit(Battalion e)
         Objective o;
         o = FindRetreatPath(e, 3, 0);
 
-        if ( not o)
+        if (not o)
             return e->CheckForSurrender();
 
         o->GetLocation(&ox, &oy);
@@ -1457,7 +1519,8 @@ int PositionToSupportUnit(Battalion e)
     return 1;
 }
 
-int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridIndex x, GridIndex y, int owned_by_us)
+int ScorePosition(Unit battalion, int role, int role_score, Objective o,
+                  GridIndex x, GridIndex y, int owned_by_us)
 {
     int score, dist_from_front;
     GridIndex ox, oy;
@@ -1465,101 +1528,113 @@ int ScorePosition(Unit battalion, int role, int role_score, Objective o, GridInd
     o->GetLocation(&ox, &oy);
 
     // Check if this is a busted bridge
-    if (role not_eq GRO_ENGINEER and o->GetType() == TYPE_BRIDGE and not o->GetObjectiveStatus())
+    if (role not_eq GRO_ENGINEER and o->GetType() == TYPE_BRIDGE and
+        not o->GetObjectiveStatus())
         return -32000;
 
     switch (role)
     {
-        case GRO_ATTACK:
-            // Find a good offensive position
-            score = role_score / 3 - FloatToInt32(DistanceToFront(ox, oy)) - FloatToInt32(Distance(ox, oy, x, y)) - o->GetObjectiveScore() * 10;
+    case GRO_ATTACK:
+        // Find a good offensive position
+        score = role_score / 3 - FloatToInt32(DistanceToFront(ox, oy)) -
+                FloatToInt32(Distance(ox, oy, x, y)) -
+                o->GetObjectiveScore() * 10;
 
-            if (owned_by_us)
-                score = -32000; // Don't assign
-            else
-                score += 100;
+        if (owned_by_us)
+            score = -32000; // Don't assign
+        else
+            score += 100;
 
-            break;
+        break;
 
-        case GRO_DEFENSE:
-            // Find a good defensive position
-            score = role_score / 3 - FloatToInt32(DistanceToFront(ox, oy)) - FloatToInt32(Distance(ox, oy, x, y)) - o->GetObjectiveScore() * 4;
+    case GRO_DEFENSE:
+        // Find a good defensive position
+        score = role_score / 3 - FloatToInt32(DistanceToFront(ox, oy)) -
+                FloatToInt32(Distance(ox, oy, x, y)) -
+                o->GetObjectiveScore() * 4;
 
-            if ( not owned_by_us)
-                score = -32000; // Don't assign
-            else if (o->Abandoned())
-                score -= 800; // We're pulling out of here.
+        if (not owned_by_us)
+            score = -32000; // Don't assign
+        else if (o->Abandoned())
+            score -= 800; // We're pulling out of here.
 
-            break;
+        break;
 
-        case GRO_RESERVE:
-            // Assign to an objective out of the way
-            dist_from_front = FloatToInt32(DistanceToFront(ox, oy));
-            score = dist_from_front - FloatToInt32(Distance(ox, oy, x, y));
+    case GRO_RESERVE:
+        // Assign to an objective out of the way
+        dist_from_front = FloatToInt32(DistanceToFront(ox, oy));
+        score = dist_from_front - FloatToInt32(Distance(ox, oy, x, y));
 
-            if ( not owned_by_us)
-                score = -32000; // Don't assign
-            else if ( not dist_from_front)
-                score -= 200; // We want at least a second-line objective.
-            else if (battalion->Broken())
-                score += dist_from_front * 5;
+        if (not owned_by_us)
+            score = -32000; // Don't assign
+        else if (not dist_from_front)
+            score -= 200; // We want at least a second-line objective.
+        else if (battalion->Broken())
+            score += dist_from_front * 5;
 
-            // Try to prevent ping-pinging reserve units
-            if (score > -32000 and o->Id() == battalion->GetUnitObjectiveID())
-                score += 25;
+        // Try to prevent ping-pinging reserve units
+        if (score > -32000 and o->Id() == battalion->GetUnitObjectiveID())
+            score += 25;
 
-            break;
+        break;
 
-        case GRO_AIRDEFENSE:
-            // Assign to defend the primary objective, if possible
-            score = role_score / 3 + FloatToInt32(DistanceToFront(ox, oy)) - FloatToInt32(Distance(ox, oy, x, y)) - o->GetObjectiveScore() * 50;
+    case GRO_AIRDEFENSE:
+        // Assign to defend the primary objective, if possible
+        score = role_score / 3 + FloatToInt32(DistanceToFront(ox, oy)) -
+                FloatToInt32(Distance(ox, oy, x, y)) -
+                o->GetObjectiveScore() * 50;
 
-            if ( not owned_by_us)
-                score -= 500;
+        if (not owned_by_us)
+            score -= 500;
 
-            if (o->Abandoned())
-                score -= 500;
+        if (o->Abandoned())
+            score -= 500;
 
-            if (o->IsSecondary() or o->SamSite()) // KCK: Sam site? It'll double up pretty often.
-                score += 100;
+        if (o->IsSecondary() or
+            o->SamSite()) // KCK: Sam site? It'll double up pretty often.
+            score += 100;
 
-            break;
+        break;
 
-        case GRO_FIRESUPPORT:
-            // Assign to support a good frontline objective (enemy if available)
-            score = role_score / 3 - FloatToInt32(DistanceToFront(ox, oy)) - FloatToInt32(Distance(ox, oy, x, y)) - o->GetObjectiveScore() * 10;
+    case GRO_FIRESUPPORT:
+        // Assign to support a good frontline objective (enemy if available)
+        score = role_score / 3 - FloatToInt32(DistanceToFront(ox, oy)) -
+                FloatToInt32(Distance(ox, oy, x, y)) -
+                o->GetObjectiveScore() * 10;
 
-            if ( not owned_by_us)
-                score += 500;
+        if (not owned_by_us)
+            score += 500;
 
-            if (owned_by_us and o->Abandoned())
-                score -= 500;
+        if (owned_by_us and o->Abandoned())
+            score -= 500;
 
-            if (o->IsSecondary())
-                score += 100;
+        if (o->IsSecondary())
+            score += 100;
 
-            break;
+        break;
 
-        case GRO_ENGINEER:
+    case GRO_ENGINEER:
 
-            // Assign to any bridges we may want to cross, otherwise nothing
-            if (owned_by_us and o->GetType() == TYPE_BRIDGE and o->GetObjectiveStatus() < 50)
-                score = 1000; // Bonus for a damaged bridge
-            else
-                score = -32000;
-
-            break;
-
-        default:
-            // MonoPrint ("ScorePosition() Error: We should never get here\n");
+        // Assign to any bridges we may want to cross, otherwise nothing
+        if (owned_by_us and o->GetType() == TYPE_BRIDGE and
+            o->GetObjectiveStatus() < 50)
+            score = 1000; // Bonus for a damaged bridge
+        else
             score = -32000;
-            break;
+
+        break;
+
+    default:
+        // MonoPrint ("ScorePosition() Error: We should never get here\n");
+        score = -32000;
+        break;
     }
 
     return score;
 }
 
-Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList nearlist)
+Objective FindBestPosition(Unit battalion, Brigade brigade, int role,
+                           F4PFList nearlist)
 {
     int owned_by_us, score, bests = -32000, our_team, role_score;
     Objective o, no, p, besto = NULL;
@@ -1587,9 +1662,12 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
             owned_by_us = 0;
 
         // Check for invalid offensive objectives
-        if ( not owned_by_us)
+        if (not owned_by_us)
         {
-            if (brigade->GetUnitCurrentRole() not_eq GRO_ATTACK or not o->IsFrontline() or GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) not_eq ROE_ALLOWED)
+            if (brigade->GetUnitCurrentRole() not_eq GRO_ATTACK or
+                not o->IsFrontline() or
+                GetRoE(our_team, o->GetTeam(), ROE_GROUND_CAPTURE) not_eq
+                    ROE_ALLOWED)
             {
                 nearlist->Remove(o);
                 continue;
@@ -1597,7 +1675,9 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
 
             p = o->GetObjectiveParent();
 
-            if ( not o->IsSecondary() and ( not p or (p->Id() not_eq brigade->GetUnitObjectiveID() and p->GetTeam() not_eq our_team)))
+            if (not o->IsSecondary() and
+                (not p or (p->Id() not_eq brigade->GetUnitObjectiveID() and
+                           p->GetTeam() not_eq our_team)))
             {
                 nearlist->Remove(o);
                 continue;
@@ -1605,7 +1685,8 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
         }
 
         // Score this position
-        score = ScorePosition(battalion, role, role_score, o, x, y, owned_by_us);
+        score =
+            ScorePosition(battalion, role, role_score, o, x, y, owned_by_us);
 
         if (score <= bests)
             continue;
@@ -1613,22 +1694,29 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
         // Check if it's already assigned to another brigade member
         // If so, we'll replace them if our score is higher and reassign them
         // Fire support is allowed to double up on objectives with other non-fire support units
-        other_battalion = (Battalion) brigade->GetFirstUnitElement();
+        other_battalion = (Battalion)brigade->GetFirstUnitElement();
 
         while (other_battalion)
         {
-            if (other_battalion not_eq battalion and other_battalion->Assigned() and other_battalion->GetUnitObjectiveID() == o->Id())
+            if (other_battalion not_eq battalion and
+                other_battalion->Assigned() and
+                other_battalion->GetUnitObjectiveID() == o->Id())
             {
                 // This guy's already assigned - check his score
                 int other_role, other_role_score, other_score;
                 GridIndex oex, oey;
                 other_role = other_battalion->GetUnitCurrentRole();
-                other_role_score = other_battalion->GetUnitRoleScore(other_role, CALC_MAX, USE_VEH_COUNT);
+                other_role_score = other_battalion->GetUnitRoleScore(
+                    other_role, CALC_MAX, USE_VEH_COUNT);
                 other_battalion->GetLocation(&oex, &oey);
 
-                if ((role not_eq GRO_FIRESUPPORT and other_role not_eq GRO_FIRESUPPORT) or role == other_role)
+                if ((role not_eq GRO_FIRESUPPORT and
+                     other_role not_eq GRO_FIRESUPPORT) or
+                    role == other_role)
                 {
-                    other_score = ScorePosition(other_battalion, other_role, other_role_score, o, oex, oey, owned_by_us);
+                    other_score = ScorePosition(other_battalion, other_role,
+                                                other_role_score, o, oex, oey,
+                                                owned_by_us);
 
                     if (other_score >= score)
                         score = -32000;
@@ -1639,7 +1727,7 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
                 }
             }
 
-            other_battalion = (Battalion) brigade->GetNextUnitElement();
+            other_battalion = (Battalion)brigade->GetNextUnitElement();
         }
 
         if (score > bests)
@@ -1652,7 +1740,8 @@ Objective FindBestPosition(Unit battalion, Brigade brigade, int role, F4PFList n
     return besto;
 }
 
-void ClassifyUnitElements(Unit u, int *recon, int *combat, int *reserve, int *support)
+void ClassifyUnitElements(Unit u, int *recon, int *combat, int *reserve,
+                          int *support)
 {
     Unit e;
     int pos;
@@ -1691,14 +1780,14 @@ int GetPositionOrders(Unit e)
     {
         switch (e->GetUnitNormalRole())
         {
-            case GRO_FIRESUPPORT:
-                return GORD_SUPPORT;
+        case GRO_FIRESUPPORT:
+            return GORD_SUPPORT;
 
-            case GRO_AIRDEFENSE:
-                return GORD_AIRDEFENSE;
+        case GRO_AIRDEFENSE:
+            return GORD_AIRDEFENSE;
 
-            default:
-                return GORD_RESERVE;
+        default:
+            return GORD_RESERVE;
         }
     }
 
@@ -1716,19 +1805,23 @@ Unit RequestArtillerySupport(Unit req, Unit target)
     int score, best = 9999, team = req->GetTeam(), d;
     MoveType mt;
 
-    if ( not target)
+    if (not target)
         return NULL;
 
     target->GetLocation(&tx, &ty);
 #ifdef VU_GRID_TREE_Y_MAJOR
-    myit = new VuGridIterator(RealUnitProxList, target->YPos(), target->XPos(), (BIG_SCALAR)GridToSim((short)(MAX_GROUND_SEARCH)));
+    myit =
+        new VuGridIterator(RealUnitProxList, target->YPos(), target->XPos(),
+                           (BIG_SCALAR)GridToSim((short)(MAX_GROUND_SEARCH)));
 #else
-    myit = new VuGridIterator(RealUnitProxList, target->XPos(), target->YPos(), (BIG_SCALAR)GridToSim((short)(MAX_GROUND_SEARCH)));
+    myit =
+        new VuGridIterator(RealUnitProxList, target->XPos(), target->YPos(),
+                           (BIG_SCALAR)GridToSim((short)(MAX_GROUND_SEARCH)));
 #endif
     mt = target->GetMovementType();
 
     // Try to find an artillery unit
-    u = (Unit) myit->GetFirst();
+    u = (Unit)myit->GetFirst();
 
     while (u)
     {
@@ -1765,7 +1858,8 @@ Unit RequestArtillerySupport(Unit req, Unit target)
     if (art)
     {
         // We need to actually send this unit a message
-        art->SendUnitMessage(target->Id(), FalconUnitMessage::unitSupport, 0, 0, 0);
+        art->SendUnitMessage(target->Id(), FalconUnitMessage::unitSupport, 0, 0,
+                             0);
     }
 
     delete myit;
@@ -1779,22 +1873,25 @@ int RequestCAS(int team, Unit target)
     Unit u;
     GridIndex tx, ty;
 
-    if ( not target)
+    if (not target)
         return NULL;
 
     target->GetLocation(&tx, &ty);
 #ifdef VU_GRID_TREE_Y_MAJOR
-    myit = new VuGridIterator(RealUnitProxList, target->YPos(), target->XPos(), (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
+    myit = new VuGridIterator(RealUnitProxList, target->YPos(), target->XPos(),
+                              (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
 #else
-    myit = new VuGridIterator(RealUnitProxList, target->XPos(), target->YPos(), (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
+    myit = new VuGridIterator(RealUnitProxList, target->XPos(), target->YPos(),
+                              (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
 #endif
 
     // Try to find an available CAS flight
-    u = (Unit) myit->GetFirst();
+    u = (Unit)myit->GetFirst();
 
     while (u)
     {
-        if (u->GetDomain() == DOMAIN_AIR and u->GetTeam() == team and u->GetUnitCurrentRole() == ARO_GA and u->GetUnitPriority() == 0)
+        if (u->GetDomain() == DOMAIN_AIR and u->GetTeam() == team and
+            u->GetUnitCurrentRole() == ARO_GA and u->GetUnitPriority() == 0)
         {
             // This is a reasonable enough flight to meet a CAS request, so request the support and return 1.
             // The ATM will sort out the details of who actually gets it.
@@ -1839,23 +1936,27 @@ int RequestSupport(Unit req, Unit target)
     Int32 score, best = 9999, d, foundcas = 0, team = req->GetTeam();
     MoveType mt;
 
-    if ( not target)
+    if (not target)
         return NULL;
 
     target->GetLocation(&tx, &ty);
 #ifdef VU_GRID_TREE_Y_MAJOR
-    myit = new VuGridIterator(RealUnitProxList, target->YPos(), target->XPos(), (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
+    myit = new VuGridIterator(RealUnitProxList, target->YPos(), target->XPos(),
+                              (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
 #else
-    myit = new VuGridIterator(RealUnitProxList, target->XPos(), target->YPos(), (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
+    myit = new VuGridIterator(RealUnitProxList, target->XPos(), target->YPos(),
+                              (BIG_SCALAR)GridToSim((short)(MAX_AIR_SEARCH)));
 #endif
     mt = target->GetMovementType();
 
     // Try to find an available CAS flight or an artillery unit
-    u = (Unit) myit->GetFirst();
+    u = (Unit)myit->GetFirst();
 
     while (u)
     {
-        if ( not foundcas and u->GetDomain() == DOMAIN_AIR and u->GetTeam() == team and u->GetUnitCurrentRole() == ARO_GA and u->GetUnitPriority() == 0)
+        if (not foundcas and u->GetDomain() == DOMAIN_AIR and
+            u->GetTeam() == team and u->GetUnitCurrentRole() == ARO_GA and
+            u->GetUnitPriority() == 0)
         {
             // This is a reasonable enough flight to meet a CAS request, so request the support and stop looking
             // The ATM will sort out the details of who actually gets it.
@@ -1864,7 +1965,7 @@ int RequestSupport(Unit req, Unit target)
 
             mis.tot = Camp_GetCurrentTime();
             mis.vs = target->GetTeam();
-            mis.who = (uchar) team;
+            mis.who = (uchar)team;
             mis.tot_type = TYPE_NE;
             mis.flags = AMIS_IMMEDIATE;
             target->GetLocation(&mis.tx, &mis.ty);
@@ -1882,7 +1983,9 @@ int RequestSupport(Unit req, Unit target)
             mis.RequestMission();
             foundcas = 1;
         }
-        else if (u->GetDomain() == DOMAIN_LAND and u->GetUnitNormalRole() == GRO_FIRESUPPORT and u->GetTeam() == team)
+        else if (u->GetDomain() == DOMAIN_LAND and
+                 u->GetUnitNormalRole() == GRO_FIRESUPPORT and
+                 u->GetTeam() == team)
         {
             u->GetLocation(&x, &y);
             d = FloatToInt32(Distance(x, y, tx, ty));
@@ -1914,7 +2017,8 @@ int RequestSupport(Unit req, Unit target)
     if (art)
     {
         // We need to actually send this unit a message
-        art->SendUnitMessage(target->Id(), FalconUnitMessage::unitSupport, 0, 0, 0);
+        art->SendUnitMessage(target->Id(), FalconUnitMessage::unitSupport, 0, 0,
+                             0);
     }
 
     delete myit;
@@ -1930,11 +2034,12 @@ void RequestOCCAS(Unit u, GridIndex x, GridIndex y, CampaignTime time)
 {
     MissionRequestClass mis;
     int timeleft;
-    Brigade brig = (Brigade) u->GetUnitParent();
+    Brigade brig = (Brigade)u->GetUnitParent();
 
     timeleft = (int)((time - Camp_GetCurrentTime()) / CampaignMinutes);
 
-    if (timeleft < MissionData[AMIS_ONCALLCAS].min_time or timeleft > MissionData[AMIS_ONCALLCAS].max_time)
+    if (timeleft < MissionData[AMIS_ONCALLCAS].min_time or
+        timeleft > MissionData[AMIS_ONCALLCAS].max_time)
         return; // Not in required time parameters
 
     mis.tot = time;
@@ -1971,11 +2076,12 @@ void RequestBAI(Unit u, GridIndex x, GridIndex y, CampaignTime time)
 {
     MissionRequestClass mis;
     int timeleft;
-    Brigade brig = (Brigade) u->GetUnitParent();
+    Brigade brig = (Brigade)u->GetUnitParent();
 
     timeleft = (int)((time - Camp_GetCurrentTime()) / CampaignMinutes);
 
-    if (timeleft < MissionData[AMIS_BAI].min_time or timeleft > MissionData[AMIS_BAI].max_time)
+    if (timeleft < MissionData[AMIS_BAI].min_time or
+        timeleft > MissionData[AMIS_BAI].max_time)
         return; // Not in required time parameters
 
     mis.tot = time;
@@ -2052,22 +2158,61 @@ int RequestMarineTransport(Unit u)
 extern float ReliefCost[RELIEF_TYPES];
 extern float CoverValues[COVER_TYPES];
 
-uchar Offsets[8][6][3] = { { {0, 8, 8}, {0, 7, 8}, {0, 0, 8}, {0, 1, 8}, {8, 8, 8}, {8, 8, 8} }, // Heading 0
-    { {1, 8, 8}, {1, 0, 8}, {1, 2, 8}, {1, 1, 8}, {1, 0, 0}, {1, 2, 2} }, // Heading 1
-    { {2, 8, 8}, {2, 1, 8}, {2, 2, 8}, {2, 3, 8}, {8, 8, 8}, {8, 8, 8} }, // Heading 2
-    { {3, 8, 8}, {3, 2, 8}, {3, 4, 8}, {3, 3, 8}, {3, 2, 2}, {3, 4, 4} }, // Heading 3
-    { {4, 8, 8}, {4, 3, 8}, {4, 4, 8}, {4, 5, 8}, {8, 8, 8}, {8, 8, 8} }, // Heading 4
-    { {5, 8, 8}, {5, 4, 8}, {5, 6, 8}, {5, 5, 8}, {5, 4, 4}, {5, 6, 6} }, // Heading 5
-    { {6, 8, 8}, {6, 5, 8}, {6, 6, 8}, {6, 7, 8}, {8, 8, 8}, {8, 8, 8} }, // Heading 6
-    { {7, 8, 8}, {7, 8, 8}, {7, 0, 8}, {7, 7, 8}, {7, 6, 6}, {7, 0, 0} }
-}; // Heading 7
+uchar Offsets[8][6][3] = {{{0, 8, 8},
+                           {0, 7, 8},
+                           {0, 0, 8},
+                           {0, 1, 8},
+                           {8, 8, 8},
+                           {8, 8, 8}}, // Heading 0
+                          {{1, 8, 8},
+                           {1, 0, 8},
+                           {1, 2, 8},
+                           {1, 1, 8},
+                           {1, 0, 0},
+                           {1, 2, 2}}, // Heading 1
+                          {{2, 8, 8},
+                           {2, 1, 8},
+                           {2, 2, 8},
+                           {2, 3, 8},
+                           {8, 8, 8},
+                           {8, 8, 8}}, // Heading 2
+                          {{3, 8, 8},
+                           {3, 2, 8},
+                           {3, 4, 8},
+                           {3, 3, 8},
+                           {3, 2, 2},
+                           {3, 4, 4}}, // Heading 3
+                          {{4, 8, 8},
+                           {4, 3, 8},
+                           {4, 4, 8},
+                           {4, 5, 8},
+                           {8, 8, 8},
+                           {8, 8, 8}}, // Heading 4
+                          {{5, 8, 8},
+                           {5, 4, 8},
+                           {5, 6, 8},
+                           {5, 5, 8},
+                           {5, 4, 4},
+                           {5, 6, 6}}, // Heading 5
+                          {{6, 8, 8},
+                           {6, 5, 8},
+                           {6, 6, 8},
+                           {6, 7, 8},
+                           {8, 8, 8},
+                           {8, 8, 8}}, // Heading 6
+                          {{7, 8, 8},
+                           {7, 8, 8},
+                           {7, 0, 8},
+                           {7, 7, 8},
+                           {7, 6, 6},
+                           {7, 0, 0}}}; // Heading 7
 
 
 float CoverValue(GridIndex x, GridIndex y, int roadok)
 {
     float cov;
 
-    if ( not roadok and GetRoad(x, y))
+    if (not roadok and GetRoad(x, y))
         cov = 0.5F;
     else
         cov = CoverValues[GetCover(x, y)];
@@ -2076,7 +2221,8 @@ float CoverValue(GridIndex x, GridIndex y, int roadok)
 }
 
 // This function attempts to find the best place to station a ground unit direction h from x,y.
-void FindBestCover(GridIndex x, GridIndex y, CampaignHeading h, GridIndex *cx, GridIndex *cy, int roadok)
+void FindBestCover(GridIndex x, GridIndex y, CampaignHeading h, GridIndex *cx,
+                   GridIndex *cy, int roadok)
 {
     GridIndex tx, ty;
     float cov, bcov = 0.0F;
@@ -2092,8 +2238,10 @@ void FindBestCover(GridIndex x, GridIndex y, CampaignHeading h, GridIndex *cx, G
     // Traverse possible locations, adding up cover values (1/2 value for surrounding terrain)
     for (i = 0; i < 4 + 2 * (h % 2); i++)
     {
-        tx = x + dx[Offsets[h][i][0]] + dx[Offsets[h][i][1]] + dx[Offsets[h][i][2]];
-        ty = y + dy[Offsets[h][i][0]] + dy[Offsets[h][i][1]] + dy[Offsets[h][i][2]];
+        tx = x + dx[Offsets[h][i][0]] + dx[Offsets[h][i][1]] +
+             dx[Offsets[h][i][2]];
+        ty = y + dy[Offsets[h][i][0]] + dy[Offsets[h][i][1]] +
+             dy[Offsets[h][i][2]];
 
         if (GetMovementCost(tx, ty, Foot, 0, Here) > MAX_COST)
             continue;
@@ -2125,7 +2273,7 @@ Objective FindRetreatPath(Unit u, int depth, int flags)
     uchar team;
 
     // Reset search array
-    memset(CampSearch, 0, sizeof(uchar)*MAX_CAMP_ENTITIES);
+    memset(CampSearch, 0, sizeof(uchar) * MAX_CAMP_ENTITIES);
     u->GetLocation(&x, &y);
     team = u->GetTeam();
     sx = x;
@@ -2148,25 +2296,29 @@ Objective FindRetreatPath(Unit u, int depth, int flags)
         {
             CampSearch[s->GetCampID()] = 1;
             dist = lp->GetKey();
-            s = (Objective) lp->GetUserData();
+            s = (Objective)lp->GetUserData();
 
             // Add all our neighbors to the list
             for (n = 0; n < s->NumLinks(); n++)
             {
                 o = s->GetNeighbor(n);
 
-                if (o and not CampSearch[o->GetCampID()] and team == o->GetTeam())
+                if (o and not CampSearch[o->GetCampID()] and
+                    team == o->GetTeam())
                 {
                     o->GetLocation(&x, &y);
                     odist = dist + FloatToInt32(Distance(x, y, sx, sy));
                     looklist.InsertNewElement(odist, o, LADT_SORTED_LIST);
 
-                    if (flags bitand FIND_SECONDARYONLY and not o->IsSecondary())
+                    if (flags bitand FIND_SECONDARYONLY and
+                        not o->IsSecondary())
                         continue;
 
-                    if (depth > 2 and (o->IsFrontline() or o->IsSecondline() or o->IsThirdline()))
+                    if (depth > 2 and (o->IsFrontline() or o->IsSecondline() or
+                                       o->IsThirdline()))
                         continue;
-                    else if (depth == 2 and (o->IsFrontline() or o->IsSecondline()))
+                    else if (depth == 2 and
+                             (o->IsFrontline() or o->IsSecondline()))
                         continue;
                     else if (o->IsFrontline())
                         continue;
@@ -2250,7 +2402,7 @@ int MinAdjustLevel(Unit u)
         e = u->GetNextUnitElement();
     }
 
-    if ( not num)
+    if (not num)
         return 0;
 
     return adjt / num;
@@ -2258,14 +2410,15 @@ int MinAdjustLevel(Unit u)
 
 int FindUnitSupportRole(Unit u)
 {
-    UnitClassDataType* uc;
+    UnitClassDataType *uc;
 
     uc = u->GetUnitClassData();
 
-    if ( not uc)
+    if (not uc)
         return 0;
 
-    if (uc->Role == GRO_FIRESUPPORT or uc->Role == GRO_AIRDEFENSE or uc->Role == GRO_ENGINEER)
+    if (uc->Role == GRO_FIRESUPPORT or uc->Role == GRO_AIRDEFENSE or
+        uc->Role == GRO_ENGINEER)
         return uc->Role;
 
     return 0;
@@ -2277,51 +2430,51 @@ int GetGroundRole(int orders)
 
     switch (orders)
     {
-        case GORD_CAPTURE:
-        case GORD_SECURE:
-            role = GRO_ATTACK;
-            break;
+    case GORD_CAPTURE:
+    case GORD_SECURE:
+        role = GRO_ATTACK;
+        break;
 
-        case GORD_ASSAULT:
-            role = GRO_ATTACK;
-            // role = GRO_ASSAULT; // We need GRO_ASSAULT to do this, but the role is attack
-            break;
+    case GORD_ASSAULT:
+        role = GRO_ATTACK;
+        // role = GRO_ASSAULT; // We need GRO_ASSAULT to do this, but the role is attack
+        break;
 
-        case GORD_AIRBORNE:
-            role = GRO_ATTACK;
-            // role = GRO_AIRBORNE; // We need GRO_AIRBORNE to do this, but the role is attack
-            break;
+    case GORD_AIRBORNE:
+        role = GRO_ATTACK;
+        // role = GRO_AIRBORNE; // We need GRO_AIRBORNE to do this, but the role is attack
+        break;
 
-        case GORD_COMMANDO:
-            role = GRO_AIRDEFENSE;
-            // role = GRO_AIRBORNE; // We need GRO_AIRBORNE to do this, but the role is air defense
-            break;
+    case GORD_COMMANDO:
+        role = GRO_AIRDEFENSE;
+        // role = GRO_AIRBORNE; // We need GRO_AIRBORNE to do this, but the role is air defense
+        break;
 
-        case GORD_DEFEND:
-            role = GRO_DEFENSE;
-            break;
+    case GORD_DEFEND:
+        role = GRO_DEFENSE;
+        break;
 
-        case GORD_SUPPORT:
-            role = GRO_FIRESUPPORT;
-            break;
+    case GORD_SUPPORT:
+        role = GRO_FIRESUPPORT;
+        break;
 
-        case GORD_REPAIR:
-            role = GRO_ENGINEER;
-            break;
+    case GORD_REPAIR:
+        role = GRO_ENGINEER;
+        break;
 
-        case GORD_AIRDEFENSE:
-            role = GRO_AIRDEFENSE;
-            break;
+    case GORD_AIRDEFENSE:
+        role = GRO_AIRDEFENSE;
+        break;
 
-        case GORD_RADAR:
-        case GORD_RECON:
-            role = GRO_RECON;
-            break;
+    case GORD_RADAR:
+    case GORD_RECON:
+        role = GRO_RECON;
+        break;
 
-        case GORD_RESERVE:
-        default:
-            role = GRO_RESERVE;
-            break;
+    case GORD_RESERVE:
+    default:
+        role = GRO_RESERVE;
+        break;
     }
 
     return role;
@@ -2333,42 +2486,42 @@ int GetGroundOrders(int role)
 
     switch (role)
     {
-        case GRO_ATTACK:
-            return GORD_CAPTURE;
-            break;
+    case GRO_ATTACK:
+        return GORD_CAPTURE;
+        break;
 
-        case GRO_ASSAULT:
-            return GORD_ASSAULT;
-            break;
+    case GRO_ASSAULT:
+        return GORD_ASSAULT;
+        break;
 
-        case GRO_AIRBORNE:
-            return GORD_AIRBORNE;
-            break;
+    case GRO_AIRBORNE:
+        return GORD_AIRBORNE;
+        break;
 
-        case GRO_DEFENSE:
-            return GORD_DEFEND;
-            break;
+    case GRO_DEFENSE:
+        return GORD_DEFEND;
+        break;
 
-        case GRO_AIRDEFENSE:
-            return GORD_AIRDEFENSE;
-            break;
+    case GRO_AIRDEFENSE:
+        return GORD_AIRDEFENSE;
+        break;
 
-        case GRO_FIRESUPPORT:
-            return GORD_SUPPORT;
-            break;
+    case GRO_FIRESUPPORT:
+        return GORD_SUPPORT;
+        break;
 
-        case GRO_ENGINEER:
-            return GORD_REPAIR;
-            break;
+    case GRO_ENGINEER:
+        return GORD_REPAIR;
+        break;
 
-        case GRO_RECON:
-            return GORD_RADAR;
-            break;
+    case GRO_RECON:
+        return GORD_RADAR;
+        break;
 
-        case GRO_RESERVE:
-        default:
-            return GORD_RESERVE;
-            break;
+    case GRO_RESERVE:
+    default:
+        return GORD_RESERVE;
+        break;
     }
 
     return 0;
@@ -2440,12 +2593,12 @@ void GroundUnitClass::SetPObj(VU_ID id)
 
 void GroundUnitClass::MakeGndUnitDirty(Dirty_Ground_Unit bits, Dirtyness score)
 {
-    if (( not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
+    if ((not IsLocal()) or (VuState() not_eq VU_MEM_ACTIVE))
     {
         return;
     }
 
-    if ( not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
+    if (not IsAggregate() and (score not_eq SEND_RELIABLEANDOOB))
     {
         score = static_cast<Dirtyness>(score << 4);
     }
@@ -2461,44 +2614,43 @@ void GroundUnitClass::MakeGndUnitDirty(Dirty_Ground_Unit bits, Dirtyness score)
 
 void GroundUnitClass::WriteDirty(uchar **stream)
 {
-    unsigned char
-    *ptr;
+    unsigned char *ptr;
 
     ptr = *stream;
 
     MonoPrint("  GU %08x", dirty_ground_unit); //me123
 
     // Encode it up
-    *(uchar*)ptr = (uchar) dirty_ground_unit;
+    *(uchar *)ptr = (uchar)dirty_ground_unit;
     ptr += sizeof(uchar);
 
     if (dirty_ground_unit bitand DIRTY_ORDERS)
     {
-        *(uchar*)ptr = orders;
+        *(uchar *)ptr = orders;
         ptr += sizeof(uchar);
     }
 
     if (dirty_ground_unit bitand DIRTY_DIVISION)
     {
-        *(short*)ptr = division;
+        *(short *)ptr = division;
         ptr += sizeof(short);
     }
 
     if (dirty_ground_unit bitand DIRTY_AOBJ)
     {
-        *(VU_ID*)ptr = aobj;
+        *(VU_ID *)ptr = aobj;
         ptr += sizeof(VU_ID);
     }
 
     if (dirty_ground_unit bitand DIRTY_SOBJ)
     {
-        *(VU_ID*)ptr = sobj;
+        *(VU_ID *)ptr = sobj;
         ptr += sizeof(VU_ID);
     }
 
     if (dirty_ground_unit bitand DIRTY_POBJ)
     {
-        *(VU_ID*)ptr = pobj;
+        *(VU_ID *)ptr = pobj;
         ptr += sizeof(VU_ID);
     }
 

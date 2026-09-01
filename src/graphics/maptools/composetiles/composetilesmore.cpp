@@ -13,19 +13,19 @@
 #include <sys/stat.h>
 #include <math.h>
 #include <crtdbg.h>
-#include <shi/ShiError.h>
-#include "../../Terrain/Ttypes.h"
-#include "../../Terrain/TPost.h"
-#include "../../Terrain/TDskPost.h"
-#include "../../3Dlib/Image.h"
-#include "IDlist.h"
-#include "TileList.h"
+#include <shi/shierror.h>
+#include "../../terrain/ttypes.h"
+#include "../../terrain/tpost.h"
+#include "../../terrain/tdskpost.h"
+#include "../../3dlib/image.h"
+#include "idlist.h"
+#include "tilelist.h"
 
 
 static const unsigned LAST_TEX_LEVEL = 2;
 
 
-void main(int argc, char* argv[])
+void main(int argc, char *argv[])
 {
 
     int LOD;
@@ -69,10 +69,14 @@ void main(int argc, char* argv[])
     if ((argc < 2) || (argc > 3))
     {
         printf(" ComposeTilesMore  <LOD>  [colorFile.BMP]\n");
-        printf("This tool is used as the second stage of the far texture tile generation\n");
-        printf("process.  <LOD> is the number of the LOD to generate (must have already\n");
-        printf("generated all previous LODs, starting with the related ComposeTiles tool),\n");
-        printf("and [colorFile] is the name of the master color file for the terrain map.\n");
+        printf("This tool is used as the second stage of the far texture tile "
+               "generation\n");
+        printf("process.  <LOD> is the number of the LOD to generate (must "
+               "have already\n");
+        printf("generated all previous LODs, starting with the related "
+               "ComposeTiles tool),\n");
+        printf("and [colorFile] is the name of the master color file for the "
+               "terrain map.\n");
         printf("The color file is used only to get the map dimensions.\n");
         exit(1);
     }
@@ -83,8 +87,10 @@ void main(int argc, char* argv[])
 
     if (LOD <= LAST_TEX_LEVEL + 1)
     {
-        printf("LAST_TEX_LEVEL is 2, so the first LOD you can build with this tool is 4.\n");
-        printf("Before you do that, of couse, you must have build LOD 3 using ComposeTiles.\n");
+        printf("LAST_TEX_LEVEL is 2, so the first LOD you can build with this "
+               "tool is 4.\n");
+        printf("Before you do that, of couse, you must have build LOD 3 using "
+               "ComposeTiles.\n");
         exit(2);
     }
 
@@ -114,7 +120,7 @@ void main(int argc, char* argv[])
         dialogInfo.nMaxFile = sizeof(filename);
         dialogInfo.lpstrFileTitle = NULL;
         dialogInfo.nMaxFileTitle = 0;
-        dialogInfo.lpstrInitialDir = "J:\\TerrData";
+        dialogInfo.lpstrInitialDir = "J:/TerrData";
         dialogInfo.lpstrTitle = "Select a base BMP file (*-C.BMP)";
         dialogInfo.Flags = OFN_FILEMUSTEXIST;
         dialogInfo.lpstrDefExt = "BMP";
@@ -128,11 +134,12 @@ void main(int argc, char* argv[])
 
     // Extract the path to the directory ONE above the one containing the selected file
     // (the "root" of the data tree)
-    char *p = &filename[ strlen(filename) - 1 ];
+    char *p = &filename[strlen(filename) - 1];
 
     while ((*p != ':') && (*p != '\\') && (p != filename))
     {
-        if (*p == '.')  *p = '\0';
+        if (*p == '.')
+            *p = '\0';
 
         p--;
     }
@@ -151,7 +158,7 @@ void main(int argc, char* argv[])
     strcpy(dataSet, base);
     dataSet[strlen(dataSet) - 2] = '\0'; // Get rid of the "-C"
     strcpy(texPath, dir);
-    strcat(texPath, "\\texture\\");
+    strcat(texPath, "/texture/");
 
 
     /************************************************************************************\
@@ -159,9 +166,10 @@ void main(int argc, char* argv[])
     \************************************************************************************/
 
     // Open the color input file
-    sprintf(filename, "%s\\terrain\\%s-C.BMP", dataRootDir, dataSet);
+    sprintf(filename, "%s/terrain/%s-C.BMP", dataRootDir, dataSet);
     printf("Reading COLOR file %s\n", filename);
-    colorFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    colorFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                           FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (colorFile == INVALID_HANDLE_VALUE)
     {
@@ -173,15 +181,16 @@ void main(int argc, char* argv[])
 
 
     // Read the image header
-#pragma pack (1) // Force tightly packed structure to match the file format
+#pragma pack(1) // Force tightly packed structure to match the file format
     struct
     {
         BITMAPFILEHEADER header;
         BITMAPINFOHEADER info;
     } bm;
-#pragma pack () // Go back to the default structure alignment scheme
+#pragma pack() // Go back to the default structure alignment scheme
 
-    if (!ReadFile(colorFile, &bm, sizeof(bm), &bytes, NULL))  bytes = 0xFFFFFFFF;
+    if (!ReadFile(colorFile, &bm, sizeof(bm), &bytes, NULL))
+        bytes = 0xFFFFFFFF;
 
     if (bytes != sizeof(bm))
     {
@@ -191,10 +200,8 @@ void main(int argc, char* argv[])
         ShiError(string);
     }
 
-    if ((bm.header.bfType != 0x4D42) ||
-        (bm.info.biCompression != BI_RGB) ||
-        (bm.info.biPlanes != 1) ||
-        (bm.info.biBitCount != 24))
+    if ((bm.header.bfType != 0x4D42) || (bm.info.biCompression != BI_RGB) ||
+        (bm.info.biPlanes != 1) || (bm.info.biBitCount != 24))
     {
         ShiError("Invalid or unsupported BMP format");
     }
@@ -213,13 +220,14 @@ void main(int argc, char* argv[])
     texMapWidth = bufferWidth >> (LOD - 1);
     texMapHeight = bufferHeight >> (LOD - 1);
     TexIDBufferSize = texMapWidth * texMapHeight * sizeof(*TexIDBuffer);
-    TexIDBuffer = (WORD*)malloc(TexIDBufferSize);
+    TexIDBuffer = (WORD *)malloc(TexIDBufferSize);
     ShiAssert(TexIDBuffer);
 
     // Open the previous LOD's composite mapping file
-    sprintf(filename, "%s\\terrain\\FarTiles.%0d", dataRootDir, LOD - 1);
+    sprintf(filename, "%s/terrain/FarTiles.%0d", dataRootDir, LOD - 1);
     printf("Reading input offset file %s\n", filename);
-    textureFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    textureFile = CreateFile(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                             FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (textureFile == INVALID_HANDLE_VALUE)
     {
@@ -230,7 +238,8 @@ void main(int argc, char* argv[])
     }
 
     // Read in the data
-    if (!ReadFile(textureFile, TexIDBuffer, TexIDBufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
+    if (!ReadFile(textureFile, TexIDBuffer, TexIDBufferSize, &bytes, NULL))
+        bytes = 0xFFFFFFFF;
 
     if (bytes != TexIDBufferSize)
     {
@@ -248,13 +257,14 @@ void main(int argc, char* argv[])
     outMapWidth = texMapWidth >> 1;
     outMapHeight = texMapHeight >> 1;
     outBufferSize = outMapWidth * outMapHeight * sizeof(*outBuffer);
-    outBuffer = (WORD*)malloc(outBufferSize);
+    outBuffer = (WORD *)malloc(outBufferSize);
     ShiAssert(outBuffer);
 
     // Open the texture offset output file
-    sprintf(filename, "%s\\terrain\\FarTiles.%0d", dataRootDir, LOD);
+    sprintf(filename, "%s/terrain/FarTiles.%0d", dataRootDir, LOD);
     printf("Opening output offset file %s\n", filename);
-    textureFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    textureFile = CreateFile(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                             FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (textureFile == INVALID_HANDLE_VALUE)
     {
@@ -282,13 +292,15 @@ void main(int argc, char* argv[])
 
             texCornerOffset = (row << 1) * texMapWidth + (col << 1);
 
-            code  = ((__int64)TexIDBuffer[ texCornerOffset ]) << 48; // Top left
-            code |= ((__int64)TexIDBuffer[ texCornerOffset + 1 ]) << 32; // Top right
-            code |= ((__int64)TexIDBuffer[ texCornerOffset + texMapWidth ]) << 16; // Bottom left
-            code |= ((__int64)TexIDBuffer[ texCornerOffset + texMapWidth + 1 ]) <<  0; // Bottom right
+            code = ((__int64)TexIDBuffer[texCornerOffset]) << 48; // Top left
+            code |= ((__int64)TexIDBuffer[texCornerOffset + 1])
+                    << 32; // Top right
+            code |= ((__int64)TexIDBuffer[texCornerOffset + texMapWidth])
+                    << 16; // Bottom left
+            code |= ((__int64)TexIDBuffer[texCornerOffset + texMapWidth + 1])
+                    << 0; // Bottom right
 
             outBuffer[row * outMapWidth + col] = IDList.GetIDforCode(code);
-
         }
     }
 
@@ -300,7 +312,8 @@ void main(int argc, char* argv[])
     // Write out the tile offset map
     printf("Writing texture offset map.\n");
 
-    if (!WriteFile(textureFile, outBuffer, outBufferSize, &bytes, NULL))  bytes = 0xFFFFFFFF;
+    if (!WriteFile(textureFile, outBuffer, outBufferSize, &bytes, NULL))
+        bytes = 0xFFFFFFFF;
 
     if (bytes != outBufferSize)
     {
@@ -331,8 +344,7 @@ void main(int argc, char* argv[])
 
     // Report our results
     printf("Closing down after issueing %0d new IDs (%0d were possible)\n",
-           IDList.GetNumNewCodes(),
-           outMapWidth * outMapHeight);
+           IDList.GetNumNewCodes(), outMapWidth * outMapHeight);
     printf("We now have a total of %0d far textures.\n",
            IDList.GetNumTotalCodes());
 

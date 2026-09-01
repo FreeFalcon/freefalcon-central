@@ -6,11 +6,10 @@
     This module handles the conversion of camp to sim and sim to camp
  object when they cross the player bubble boundry.
 \***************************************************************************/
-#include "CampBase.h"
-#include "SimBase.h"
-#include "Object.h"
+#include "campbase.h"
+#include "simbase.h"
+#include "object.h"
 #include "handoff.h"
-
 
 
 // Pass in the currently held sim object.  (IT MUST ALREADY BE REFERENCED)
@@ -24,25 +23,25 @@
 // should Release his old target AFTER calling this function, but BEFORE clobbering
 // his pointer to it.  He must also Reference any new target returned by this
 // function.
-FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
+FalconEntity* SimCampHandoff(FalconEntity* current, HandOffType style)
 {
     // Quit now if we don't have a current object
-    if ( not current)
+    if (not current)
         return NULL;
 
     if (current->IsSim())
     {
         // Quit now if we still have our sim emitter
-        if ( not current->IsDead())
+        if (not current->IsDead())
         {
             // Its still just fine
             return current;
         }
 
         // See if it reaggregated
-        if (((SimBaseClass*)current)->GetCampaignObject() and 
-            ((SimBaseClass*)current)->GetCampaignObject()->IsAggregate() and 
- not ((SimBaseClass*)current)->GetCampaignObject()->IsDead())
+        if (((SimBaseClass*)current)->GetCampaignObject() and
+            ((SimBaseClass*)current)->GetCampaignObject()->IsAggregate() and
+            not((SimBaseClass*)current)->GetCampaignObject()->IsDead())
         {
             // Switch to the campaign unit
             return ((SimBaseClass*)current)->GetCampaignObject();
@@ -68,66 +67,68 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
         else
         {
             // Lets look for our sim children...
-            SimBaseClass *simobj;
+            SimBaseClass* simobj;
 
             switch (style)
             {
-                case HANDOFF_RADAR:
+            case HANDOFF_RADAR:
+            {
+                // If we're a HARM, we've got to find a radar vehicle
+                // Get the list of sim entities in our battalion
+                VuListIterator componentIterator(
+                    ((CampBaseClass*)current)->GetComponents());
+                simobj = (SimBaseClass*)componentIterator.GetFirst();
+                int campRadarType = current->GetRadarType();
+
+                // Make sure we didn't get asked to find a radar in a non-radar unit
+                ShiAssert(campRadarType);
+
+                // Search the list for a battalion radar vehicle
+                while (simobj)
                 {
-                    // If we're a HARM, we've got to find a radar vehicle
-                    // Get the list of sim entities in our battalion
-                    VuListIterator componentIterator(((CampBaseClass*)current)->GetComponents());
-                    simobj = (SimBaseClass*)componentIterator.GetFirst();
-                    int campRadarType = current->GetRadarType();
+                    ShiAssert(simobj->IsSim());
 
-                    // Make sure we didn't get asked to find a radar in a non-radar unit
-                    ShiAssert(campRadarType);
-
-                    // Search the list for a battalion radar vehicle
-                    while (simobj)
+                    if (simobj->GetRadarType() == campRadarType and
+                        not simobj->IsDead())
                     {
-                        ShiAssert(simobj->IsSim());
-
-                        if (simobj->GetRadarType() == campRadarType and not simobj->IsDead())
-                        {
-                            break;
-                        }
-
-                        simobj = (SimBaseClass*)componentIterator.GetNext();
+                        break;
                     }
+
+                    simobj = (SimBaseClass*)componentIterator.GetNext();
                 }
-                break;
+            }
+            break;
 
-                case HANDOFF_RANDOM:
+            case HANDOFF_RANDOM:
+            {
+                // Pick a random component of the campaign unit to try to hold lock upon
+                int vehs = ((CampBaseClass*)current)->NumberOfComponents();
+
+                if (vehs)
                 {
-                    // Pick a random component of the campaign unit to try to hold lock upon
-                    int vehs = ((CampBaseClass*)current)->NumberOfComponents();
+                    int i = rand() % vehs;
+                    simobj = ((CampBaseClass*)current)->GetComponentEntity(i);
 
-                    if (vehs)
+                    // Just in case a component vehicle died but the vehicle count hadn't been updated yet
+                    if (not simobj)
                     {
-                        int i = rand() % vehs;
-                        simobj = ((CampBaseClass*)current)->GetComponentEntity(i);
-
-                        // Just in case a component vehicle died but the vehicle count hadn't been updated yet
-                        if ( not simobj)
-                        {
-                            simobj = ((CampBaseClass*)current)->GetComponentLead();
-                        }
-
-                        if (simobj and simobj->IsDead())
-                            simobj = NULL;
+                        simobj = ((CampBaseClass*)current)->GetComponentLead();
                     }
-                    else
-                    {
-                        // Nothing to find
+
+                    if (simobj and simobj->IsDead())
                         simobj = NULL;
-                    }
                 }
-                break;
+                else
+                {
+                    // Nothing to find
+                    simobj = NULL;
+                }
+            }
+            break;
 
-                case HANDOFF_LEADER:
-                default:
-                    simobj = ((CampBaseClass*)current)->GetComponentLead();
+            case HANDOFF_LEADER:
+            default:
+                simobj = ((CampBaseClass*)current)->GetComponentLead();
             }
 
             // Return the component we found
@@ -135,7 +136,6 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
         }
     }
 }
-
 
 
 // Pass in the currently held sim object.  (IT MUST ALREADY BE REFERENCED)
@@ -149,11 +149,12 @@ FalconEntity* SimCampHandoff(FalconEntity *current, HandOffType style)
 // should Release his old target AFTER calling this function, but BEFORE clobbering
 // his pointer to it.  He must also Reference any new target returned by this
 // function.
-SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList, HandOffType style)
+SimObjectType* SimCampHandoff(SimObjectType* current, SimObjectType* targetList,
+                              HandOffType style)
 {
-    CampBaseClass *campobj;
-    SimBaseClass *simobj;
-    SimObjectType *t;
+    CampBaseClass* campobj;
+    SimBaseClass* simobj;
+    SimObjectType* t;
 
     // if no target, nothing to validate
     if (current == NULL)
@@ -165,18 +166,18 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
     if (current->BaseData()->IsSim())
     {
         // is the target still valid?
-        if ( not current->BaseData()->IsDead())
+        if (not current->BaseData()->IsDead())
         {
             return current;
         }
         else
         {
             // get its parent
-            campobj = ((SimBaseClass *)current->BaseData())->GetCampaignObject();
+            campobj = ((SimBaseClass*)current->BaseData())->GetCampaignObject();
 
             // is the parent in the sim lists?
             // if so we want to try and find a matching target in the target list
-            if ( not campobj or not campobj->IsAggregate() or campobj->IsDead())
+            if (not campobj or not campobj->IsAggregate() or campobj->IsDead())
             {
                 return NULL;
             }
@@ -186,7 +187,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
 
                 while (t)
                 {
-                    if (t->BaseData() == (FalconEntity *)campobj)
+                    if (t->BaseData() == (FalconEntity*)campobj)
                     {
                         // we found it
                         return t;
@@ -204,9 +205,9 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
     else
     {
         // get campaign object
-        campobj = (CampBaseClass *)current->BaseData();
+        campobj = (CampBaseClass*)current->BaseData();
 
-        if ( not campobj or F4IsBadCodePtr((FARPROC) campobj)) // JB 010220 CTD
+        if (not campobj or F4IsBadCodePtr((FARPROC)campobj)) // JB 010220 CTD
             return NULL; // JB 010220 CTD
 
         if (campobj->IsDead())
@@ -224,61 +225,62 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
             // Lets look for our sim children...
             switch (style)
             {
-                case HANDOFF_RADAR:
+            case HANDOFF_RADAR:
+            {
+                // If we're a HARM, we've got to find a radar vehicle
+                // Get the list of sim entities in our battalion
+                VuListIterator componentIterator(campobj->GetComponents());
+                simobj = (SimBaseClass*)componentIterator.GetFirst();
+                int campRadarType = campobj->GetRadarType();
+
+                // Make sure we didn't get asked to find a radar in a non-radar unit
+                ShiAssert(campRadarType);
+
+                // Search the list for a battalion radar vehicle
+                while (simobj)
                 {
-                    // If we're a HARM, we've got to find a radar vehicle
-                    // Get the list of sim entities in our battalion
-                    VuListIterator componentIterator(campobj->GetComponents());
-                    simobj = (SimBaseClass*)componentIterator.GetFirst();
-                    int campRadarType = campobj->GetRadarType();
-
-                    // Make sure we didn't get asked to find a radar in a non-radar unit
-                    ShiAssert(campRadarType);
-
-                    // Search the list for a battalion radar vehicle
-                    while (simobj)
+                    if (not simobj->IsDead() and simobj->IsAwake() and
+                        simobj->GetRadarType() == campRadarType)
                     {
-                        if ( not simobj->IsDead() and simobj->IsAwake() and simobj->GetRadarType() == campRadarType)
-                        {
-                            break;
-                        }
-
-                        simobj = (SimBaseClass*)componentIterator.GetNext();
+                        break;
                     }
+
+                    simobj = (SimBaseClass*)componentIterator.GetNext();
                 }
-                break;
+            }
+            break;
 
-                case HANDOFF_RANDOM:
+            case HANDOFF_RANDOM:
+            {
+                // Pick a random component of the campaign unit to try to hold lock upon
+                int vehs = campobj->NumberOfComponents();
+
+                if (vehs)
                 {
-                    // Pick a random component of the campaign unit to try to hold lock upon
-                    int vehs = campobj->NumberOfComponents();
+                    int i = rand() % vehs;
+                    simobj = campobj->GetComponentEntity(i);
 
-                    if (vehs)
+                    // Just in case a component vehicle died but the vehicle count hadn't been updated yet
+                    if (not simobj)
                     {
-                        int i = rand() % vehs;
-                        simobj = campobj->GetComponentEntity(i);
-
-                        // Just in case a component vehicle died but the vehicle count hadn't been updated yet
-                        if ( not simobj)
-                        {
-                            simobj = campobj->GetComponentLead();
-                        }
-
-                        if (simobj and (simobj->IsDead() or not simobj->IsAwake()))
-                        {
-                            return NULL;
-                        }
+                        simobj = campobj->GetComponentLead();
                     }
-                    else
+
+                    if (simobj and (simobj->IsDead() or not simobj->IsAwake()))
                     {
                         return NULL;
                     }
                 }
-                break;
+                else
+                {
+                    return NULL;
+                }
+            }
+            break;
 
-                case HANDOFF_LEADER:
-                default:
-                    simobj = campobj->GetComponentLead();
+            case HANDOFF_LEADER:
+            default:
+                simobj = campobj->GetComponentLead();
             }
         }
 
@@ -287,7 +289,7 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
 
         while (t)
         {
-            if (t->BaseData() == (FalconEntity *)simobj)
+            if (t->BaseData() == (FalconEntity*)simobj)
             {
                 // we found it, return it
                 return t;
@@ -311,4 +313,3 @@ SimObjectType* SimCampHandoff(SimObjectType *current, SimObjectType *targetList,
         }
     }
 }
-

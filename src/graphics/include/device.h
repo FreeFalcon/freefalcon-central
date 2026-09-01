@@ -9,7 +9,7 @@
 #define _DEVICE_H_
 
 #include <iso646.h>
-#include "ImageBuf.h"
+#include "imagebuf.h"
 
 class DisplayDevice
 {
@@ -17,7 +17,9 @@ public:
     DisplayDevice();
     ~DisplayDevice();
 
-    void Setup(int driverNum, int devNum, int width, int height, int nDepth, bool fullScreen, BOOL dblBuffer, HWND win, BOOL bWillCallSwapBuffer);
+    void Setup(int driverNum, int devNum, int width, int height, int nDepth,
+               bool fullScreen, BOOL dblBuffer, HWND win,
+               BOOL bWillCallSwapBuffer);
     void Cleanup(void);
 
     BOOL IsReady(void)
@@ -28,7 +30,8 @@ public:
     BOOL IsHardware(void)
     {
         ShiAssert(IsReady());
-        return m_DXCtx->m_eDeviceCategory > DXContext::D3DDeviceCategory_Software;
+        return m_DXCtx->m_eDeviceCategory >
+               DXContext::D3DDeviceCategory_Software;
     };
 
     HWND GetAppWin(void)
@@ -39,7 +42,7 @@ public:
     {
         return m_DXCtx->m_pDD;
     };
-    ImageBuffer* GetImageBuffer(void)
+    ImageBuffer *GetImageBuffer(void)
     {
         return &image;
     };

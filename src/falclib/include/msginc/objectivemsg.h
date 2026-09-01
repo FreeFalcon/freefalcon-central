@@ -11,14 +11,14 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 //sfr: for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Objective Message
@@ -33,7 +33,8 @@ public:
         objSetLosses
     };
 
-    FalconObjectiveMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconObjectiveMessage(VU_ID entityId, VuTargetEntity *target,
+                           VU_BOOL loopback = TRUE);
     FalconObjectiveMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconObjectiveMessage(void);
     virtual int Size() const
@@ -74,6 +75,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

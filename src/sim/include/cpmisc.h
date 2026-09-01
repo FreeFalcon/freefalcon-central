@@ -27,7 +27,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
@@ -36,8 +37,18 @@ public:
     CockpitManager *mpCPManager;
 
     // Chaff/Flare Buttons
-    typedef enum type_ChaffFlareMode {none, chaff_only, flare_only, both};
-    typedef enum type_ChaffFlareControl {automatic, manual};
+    typedef enum type_ChaffFlareMode
+    {
+        none,
+        chaff_only,
+        flare_only,
+        both
+    };
+    typedef enum type_ChaffFlareControl
+    {
+        automatic,
+        manual
+    };
 
     type_ChaffFlareMode mChaffFlareMode;
     type_ChaffFlareControl mChaffFlareControl;
@@ -58,7 +69,9 @@ public:
 
 
     // MFD Button States
-    int MFDButtonArray[MFD_BUTTONS][4]; //Wombat778 4-12-04 Changed from 2 to 4 to accomodate new MFDs
+    int MFDButtonArray
+        [MFD_BUTTONS]
+        [4]; //Wombat778 4-12-04 Changed from 2 to 4 to accomodate new MFDs
     int GetMFDButtonState(int, int);
     void SetMFDButtonState(int, int, int);
 

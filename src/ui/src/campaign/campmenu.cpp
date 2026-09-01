@@ -1,9 +1,9 @@
 // Campaign Menus
 
 #include <windows.h>
-#include "Graphics/Include/matrix.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/loader.h"
+#include "graphics/include/matrix.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/loader.h"
 #include "entity.h"
 #include "feature.h"
 #include "vehicle.h"
@@ -19,7 +19,7 @@
 #include "filters.h"
 #include "gps.h"
 #include "urefresh.h"
-#include "CampStr.h"
+#include "campstr.h"
 
 void DeleteGroupList(long ID);
 void AddObjectiveToTargetTree(Objective obj);
@@ -35,7 +35,7 @@ void ReconArea(float x, float y, float range);
 void BuildTargetList(float x, float y, float range);
 void BuildSpecificTargetList(VU_ID targetID);
 void set_waypoint_action(WayPoint wp, int action);
-void refresh_waypoint(WayPointClass * wp);
+void refresh_waypoint(WayPointClass *wp);
 void tactical_add_victory_condition(VU_ID id, C_Base *caller);
 void tactical_add_squadron(VU_ID id);
 void tactical_add_flight(VU_ID ID, C_Base *caller);
@@ -58,7 +58,8 @@ extern VU_ID gActiveFlightID, gCurrentFlightID;
 
 extern int g_nUnidentifiedInUI; // 2002-02-24 S.G.
 extern int gShowUnknown; // 2002-02-21 S.G.
-#define MID_UNITS_SQUAD_UNKNOWN 86051 // 2002-02-21 S.G. Until I add it to userids.h
+#define MID_UNITS_SQUAD_UNKNOWN                                                \
+    86051 // 2002-02-21 S.G. Until I add it to userids.h
 extern GlobalPositioningSystem *gGps; // 2002-02-21 S.G.
 
 // Used for enabling bitand disabling menus based on TE/Camp/Edit modes
@@ -73,65 +74,66 @@ static long EditMode;
 namespace FilterSaveStuff
 {
 
-    enum
-    {
-        // Legend stuff
-        LE_BULLSEYE = 0,
-        LE_LABELS,
-        // Objectives
-        OBJ_AIRFIELDS,
-        OBJ_AIRDEFENSE,
-        OBJ_ARMY,
-        OBJ_CCC,
-        OBJ_POLITICAL,
-        OBJ_INFRA,
-        OBJ_LOGISTICS,
-        OBJ_WARPRODUCTION,
-        OBJ_NAVIGATION,
-        OBJ_OTHER,
-        OBJ_NAVAL,
-        OBJ_VICTORYCOND,
-        // Units
-        UNITS_DIV,
-        UNITS_BRIG,
-        UNITS_BAT,
-        UNITS_COMBAT,
-        UNITS_AIR_DEFENSE,
-        UNITS_SUPPORT,
-        UNITS_SQUAD_SQUADRON,
-        UNITS_SQUAD_PACKAGE,
-        UNITS_SQUAD_FIGHTER,
-        // UNITS_SQUAD_FIGHTBOMB, // no idea what that is, isn´t used either..
-        UNITS_SQUAD_ATTACK,
-        UNITS_SQUAD_BOMBER,
-        UNITS_SQUAD_SUPPORT,
-        UNITS_HELICOPTER,
-        UNITS_SQUAD_UNKNOWN,
-        UNITS_NAVY_COMBAT,
-        UNITS_NAVY_SUPPORT,
-        // Sams/Radar
-        CIRCLE_SAM_LOW,
-        CIRCLE_SAM_HIGH,
-        CIRCLE_RADAR_LOW,
-        CIRCLE_RADAR_HIGH,
-        END_OF_ENUM__USED_FOR_SIZE = CIRCLE_RADAR_HIGH + 1
-    };
+enum
+{
+    // Legend stuff
+    LE_BULLSEYE = 0,
+    LE_LABELS,
+    // Objectives
+    OBJ_AIRFIELDS,
+    OBJ_AIRDEFENSE,
+    OBJ_ARMY,
+    OBJ_CCC,
+    OBJ_POLITICAL,
+    OBJ_INFRA,
+    OBJ_LOGISTICS,
+    OBJ_WARPRODUCTION,
+    OBJ_NAVIGATION,
+    OBJ_OTHER,
+    OBJ_NAVAL,
+    OBJ_VICTORYCOND,
+    // Units
+    UNITS_DIV,
+    UNITS_BRIG,
+    UNITS_BAT,
+    UNITS_COMBAT,
+    UNITS_AIR_DEFENSE,
+    UNITS_SUPPORT,
+    UNITS_SQUAD_SQUADRON,
+    UNITS_SQUAD_PACKAGE,
+    UNITS_SQUAD_FIGHTER,
+    // UNITS_SQUAD_FIGHTBOMB, // no idea what that is, isn´t used either..
+    UNITS_SQUAD_ATTACK,
+    UNITS_SQUAD_BOMBER,
+    UNITS_SQUAD_SUPPORT,
+    UNITS_HELICOPTER,
+    UNITS_SQUAD_UNKNOWN,
+    UNITS_NAVY_COMBAT,
+    UNITS_NAVY_SUPPORT,
+    // Sams/Radar
+    CIRCLE_SAM_LOW,
+    CIRCLE_SAM_HIGH,
+    CIRCLE_RADAR_LOW,
+    CIRCLE_RADAR_HIGH,
+    END_OF_ENUM__USED_FOR_SIZE = CIRCLE_RADAR_HIGH + 1
+};
 
-    // those can be preinitialized if the need arises..
-    bool filterState[END_OF_ENUM__USED_FOR_SIZE] =   // Legend stuff
+// those can be preinitialized if the need arises..
+bool filterState[END_OF_ENUM__USED_FOR_SIZE] = // Legend stuff
     {
         false, false,
         // Objectives
-        true, false, false, false, false, false,
-        false, false, false, false, false, false,
+        true, false, false, false, false, false, false, false, false, false,
+        false, false,
         // Units
-        false, false, false, // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
-        true, false, false, false, false, true,
-        false, false, false, false, true, false,
-        false,
+        false, false,
+        false, // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
+        true, false, false, false, false, true, false, false, false, false,
+        true, false, false,
         // Sams/Radar
-        false, false, false, false // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
-    }; // ..ugly, but whatever..
+        false, false, false,
+        false // this is a radiobutton, only 1 of them may be TRUE (all ot FALSE is ok)
+}; // ..ugly, but whatever..
 } // namespace FilterSaveStuff, end Retro 26/10/03
 
 void MenuToggleObjectiveCB(long ID, short, C_Base *control)
@@ -140,173 +142,173 @@ void MenuToggleObjectiveCB(long ID, short, C_Base *control)
 
     switch (ID)
     {
-        case MID_INST_AF:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_AIR_FIELDS);
-                filterState[OBJ_AIRFIELDS] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_AIR_FIELDS);
-                filterState[OBJ_AIRFIELDS] = false;
-            }
+    case MID_INST_AF:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_AIR_FIELDS);
+            filterState[OBJ_AIRFIELDS] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_AIR_FIELDS);
+            filterState[OBJ_AIRFIELDS] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_AD:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_AIR_DEFENSE);
-                filterState[OBJ_AIRDEFENSE] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_AIR_DEFENSE);
-                filterState[OBJ_AIRDEFENSE] = false;
-            }
+    case MID_INST_AD:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_AIR_DEFENSE);
+            filterState[OBJ_AIRDEFENSE] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_AIR_DEFENSE);
+            filterState[OBJ_AIRDEFENSE] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_ARMY:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_ARMY);
-                filterState[OBJ_ARMY] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_ARMY);
-                filterState[OBJ_ARMY] = false;
-            }
+    case MID_INST_ARMY:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_ARMY);
+            filterState[OBJ_ARMY] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_ARMY);
+            filterState[OBJ_ARMY] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_CCC:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_CCC);
-                filterState[OBJ_CCC] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_CCC);
-                filterState[OBJ_CCC] = false;
-            }
+    case MID_INST_CCC:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_CCC);
+            filterState[OBJ_CCC] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_CCC);
+            filterState[OBJ_CCC] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_POLITICAL:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_POLITICAL);
-                filterState[OBJ_POLITICAL] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_POLITICAL);
-                filterState[OBJ_POLITICAL] = false;
-            }
+    case MID_INST_POLITICAL:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_POLITICAL);
+            filterState[OBJ_POLITICAL] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_POLITICAL);
+            filterState[OBJ_POLITICAL] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_INFRA:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_INFRASTRUCTURE);
-                filterState[OBJ_INFRA] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_INFRASTRUCTURE);
-                filterState[OBJ_INFRA] = false;
-            }
+    case MID_INST_INFRA:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_INFRASTRUCTURE);
+            filterState[OBJ_INFRA] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_INFRASTRUCTURE);
+            filterState[OBJ_INFRA] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_LOG:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_LOGISTICS);
-                filterState[OBJ_LOGISTICS] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_LOGISTICS);
-                filterState[OBJ_LOGISTICS] = false;
-            }
+    case MID_INST_LOG:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_LOGISTICS);
+            filterState[OBJ_LOGISTICS] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_LOGISTICS);
+            filterState[OBJ_LOGISTICS] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_WARPROD:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_WAR_PRODUCTION);
-                filterState[OBJ_WARPRODUCTION] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_WAR_PRODUCTION);
-                filterState[OBJ_WARPRODUCTION] = false;
-            }
+    case MID_INST_WARPROD:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_WAR_PRODUCTION);
+            filterState[OBJ_WARPRODUCTION] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_WAR_PRODUCTION);
+            filterState[OBJ_WARPRODUCTION] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_NAV:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_NAVIGATION);
-                filterState[OBJ_NAVIGATION] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_NAVIGATION);
-                filterState[OBJ_NAVIGATION] = false;
-            }
+    case MID_INST_NAV:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_NAVIGATION);
+            filterState[OBJ_NAVIGATION] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_NAVIGATION);
+            filterState[OBJ_NAVIGATION] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_OTHER:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_OTHER);
-                filterState[OBJ_OTHER] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_OTHER);
-                filterState[OBJ_OTHER] = false;
-            }
+    case MID_INST_OTHER:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_OTHER);
+            filterState[OBJ_OTHER] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_OTHER);
+            filterState[OBJ_OTHER] = false;
+        }
 
-            break;
+        break;
 
-        case MID_INST_NAVAL:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_OBTV_NAVAL);
-                filterState[OBJ_NAVAL] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_OBTV_NAVAL);
-                filterState[OBJ_NAVAL] = false;
-            }
+    case MID_INST_NAVAL:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_OBTV_NAVAL);
+            filterState[OBJ_NAVAL] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_OBTV_NAVAL);
+            filterState[OBJ_NAVAL] = false;
+        }
 
-            break;
+        break;
 
-        case MID_SHOW_VC:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_VC_CONDITION_);
-                filterState[OBJ_VICTORYCOND] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_VC_CONDITION_);
-                filterState[OBJ_VICTORYCOND] = false;
-            }
+    case MID_SHOW_VC:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_VC_CONDITION_);
+            filterState[OBJ_VICTORYCOND] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_VC_CONDITION_);
+            filterState[OBJ_VICTORYCOND] = false;
+        }
 
-            break;
+        break;
     }
 
     gMapMgr->DrawMap();
@@ -318,210 +320,210 @@ void MenuToggleUnitCB(long ID, short, C_Base *control)
 
     switch (ID)
     {
-        case MID_UNITS_DIV:
-            gMapMgr->SetUnitLevel(0);
-            filterState[UNITS_DIV] = true;
-            filterState[UNITS_BRIG] = filterState[UNITS_BAT] = false;
-            break;
+    case MID_UNITS_DIV:
+        gMapMgr->SetUnitLevel(0);
+        filterState[UNITS_DIV] = true;
+        filterState[UNITS_BRIG] = filterState[UNITS_BAT] = false;
+        break;
 
-        case MID_UNITS_BRIG:
-            gMapMgr->SetUnitLevel(1);
-            filterState[UNITS_BRIG] = true;
-            filterState[UNITS_DIV] = filterState[UNITS_BAT] = false;
-            break;
+    case MID_UNITS_BRIG:
+        gMapMgr->SetUnitLevel(1);
+        filterState[UNITS_BRIG] = true;
+        filterState[UNITS_DIV] = filterState[UNITS_BAT] = false;
+        break;
 
-        case MID_UNITS_BAT:
-            gMapMgr->SetUnitLevel(2);
-            filterState[UNITS_BAT] = true;
-            filterState[UNITS_DIV] = filterState[UNITS_BRIG] = false;
-            break;
+    case MID_UNITS_BAT:
+        gMapMgr->SetUnitLevel(2);
+        filterState[UNITS_BAT] = true;
+        filterState[UNITS_DIV] = filterState[UNITS_BRIG] = false;
+        break;
 
-        case MID_UNITS_COMBAT:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowUnitType(_UNIT_COMBAT);
-                filterState[UNITS_COMBAT] = true;
-            }
-            else
-            {
-                gMapMgr->HideUnitType(_UNIT_COMBAT);
-                filterState[UNITS_COMBAT] = false;
-            }
+    case MID_UNITS_COMBAT:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowUnitType(_UNIT_COMBAT);
+            filterState[UNITS_COMBAT] = true;
+        }
+        else
+        {
+            gMapMgr->HideUnitType(_UNIT_COMBAT);
+            filterState[UNITS_COMBAT] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_AD:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowUnitType(_UNIT_AIR_DEFENSE);
-                filterState[UNITS_AIR_DEFENSE] = true;
-            }
-            else
-            {
-                gMapMgr->HideUnitType(_UNIT_AIR_DEFENSE);
-                filterState[UNITS_AIR_DEFENSE] = false;
-            }
+    case MID_UNITS_AD:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowUnitType(_UNIT_AIR_DEFENSE);
+            filterState[UNITS_AIR_DEFENSE] = true;
+        }
+        else
+        {
+            gMapMgr->HideUnitType(_UNIT_AIR_DEFENSE);
+            filterState[UNITS_AIR_DEFENSE] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SUPPORT:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowUnitType(_UNIT_SUPPORT);
-                filterState[UNITS_SUPPORT] = true;
-            }
-            else
-            {
-                gMapMgr->HideUnitType(_UNIT_SUPPORT);
-                filterState[UNITS_SUPPORT] = false;
-            }
+    case MID_UNITS_SUPPORT:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowUnitType(_UNIT_SUPPORT);
+            filterState[UNITS_SUPPORT] = true;
+        }
+        else
+        {
+            gMapMgr->HideUnitType(_UNIT_SUPPORT);
+            filterState[UNITS_SUPPORT] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SQUAD_SQUADRON:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_UNIT_SQUADRON);
-                filterState[UNITS_SQUAD_SQUADRON] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_UNIT_SQUADRON);
-                filterState[UNITS_SQUAD_SQUADRON] = false;
-            }
+    case MID_UNITS_SQUAD_SQUADRON:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_UNIT_SQUADRON);
+            filterState[UNITS_SQUAD_SQUADRON] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_UNIT_SQUADRON);
+            filterState[UNITS_SQUAD_SQUADRON] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SQUAD_PACKAGE:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowObjectiveType(_UNIT_PACKAGE);
-                filterState[UNITS_SQUAD_PACKAGE] = true;
-            }
-            else
-            {
-                gMapMgr->HideObjectiveType(_UNIT_PACKAGE);
-                filterState[UNITS_SQUAD_PACKAGE] = false;
-            }
+    case MID_UNITS_SQUAD_PACKAGE:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowObjectiveType(_UNIT_PACKAGE);
+            filterState[UNITS_SQUAD_PACKAGE] = true;
+        }
+        else
+        {
+            gMapMgr->HideObjectiveType(_UNIT_PACKAGE);
+            filterState[UNITS_SQUAD_PACKAGE] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SQUAD_FIGHTER:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowAirUnitType(_UNIT_FIGHTER);
-                filterState[UNITS_SQUAD_FIGHTER] = true;
-            }
-            else
-            {
-                gMapMgr->HideAirUnitType(_UNIT_FIGHTER);
-                filterState[UNITS_SQUAD_FIGHTER] = false;
-            }
+    case MID_UNITS_SQUAD_FIGHTER:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowAirUnitType(_UNIT_FIGHTER);
+            filterState[UNITS_SQUAD_FIGHTER] = true;
+        }
+        else
+        {
+            gMapMgr->HideAirUnitType(_UNIT_FIGHTER);
+            filterState[UNITS_SQUAD_FIGHTER] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SQUAD_ATTACK:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowAirUnitType(_UNIT_ATTACK);
-                filterState[UNITS_SQUAD_ATTACK] = true;
-            }
-            else
-            {
-                gMapMgr->HideAirUnitType(_UNIT_ATTACK);
-                filterState[UNITS_SQUAD_ATTACK] = false;
-            }
+    case MID_UNITS_SQUAD_ATTACK:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowAirUnitType(_UNIT_ATTACK);
+            filterState[UNITS_SQUAD_ATTACK] = true;
+        }
+        else
+        {
+            gMapMgr->HideAirUnitType(_UNIT_ATTACK);
+            filterState[UNITS_SQUAD_ATTACK] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SQUAD_BOMBER:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowAirUnitType(_UNIT_BOMBER);
-                filterState[UNITS_SQUAD_BOMBER] = true;
-            }
-            else
-            {
-                gMapMgr->HideAirUnitType(_UNIT_BOMBER);
-                filterState[UNITS_SQUAD_BOMBER] = false;
-            }
+    case MID_UNITS_SQUAD_BOMBER:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowAirUnitType(_UNIT_BOMBER);
+            filterState[UNITS_SQUAD_BOMBER] = true;
+        }
+        else
+        {
+            gMapMgr->HideAirUnitType(_UNIT_BOMBER);
+            filterState[UNITS_SQUAD_BOMBER] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SQUAD_SUPPORT:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowAirUnitType(_UNIT_SUPPORT);
-                filterState[UNITS_SQUAD_SUPPORT] = true;
-            }
-            else
-            {
-                gMapMgr->HideAirUnitType(_UNIT_SUPPORT);
-                filterState[UNITS_SQUAD_SUPPORT] = false;
-            }
+    case MID_UNITS_SQUAD_SUPPORT:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowAirUnitType(_UNIT_SUPPORT);
+            filterState[UNITS_SQUAD_SUPPORT] = true;
+        }
+        else
+        {
+            gMapMgr->HideAirUnitType(_UNIT_SUPPORT);
+            filterState[UNITS_SQUAD_SUPPORT] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_SQUAD_HELI:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowAirUnitType(_UNIT_HELICOPTER);
-                filterState[UNITS_HELICOPTER] = true;
-            }
-            else
-            {
-                gMapMgr->HideAirUnitType(_UNIT_HELICOPTER);
-                filterState[UNITS_HELICOPTER] = false;
-            }
+    case MID_UNITS_SQUAD_HELI:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowAirUnitType(_UNIT_HELICOPTER);
+            filterState[UNITS_HELICOPTER] = true;
+        }
+        else
+        {
+            gMapMgr->HideAirUnitType(_UNIT_HELICOPTER);
+            filterState[UNITS_HELICOPTER] = false;
+        }
 
-            break;
+        break;
 
-            // 2002-02-21 ADDED BY S.G. Our new 'Unknown' option to Flights page so we can display unknown type of flight as well as identified one
-        case MID_UNITS_SQUAD_UNKNOWN:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                filterState[UNITS_SQUAD_UNKNOWN] = true;
-                gShowUnknown = 1;
-            }
-            else
-            {
-                filterState[UNITS_SQUAD_UNKNOWN] = false;
-                gShowUnknown = 0;
-            }
+        // 2002-02-21 ADDED BY S.G. Our new 'Unknown' option to Flights page so we can display unknown type of flight as well as identified one
+    case MID_UNITS_SQUAD_UNKNOWN:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            filterState[UNITS_SQUAD_UNKNOWN] = true;
+            gShowUnknown = 1;
+        }
+        else
+        {
+            filterState[UNITS_SQUAD_UNKNOWN] = false;
+            gShowUnknown = 0;
+        }
 
-            if (gGps)
-                gGps->Update();
+        if (gGps)
+            gGps->Update();
 
-            gMapMgr->RefreshAllAirUnitType();
-            break;
+        gMapMgr->RefreshAllAirUnitType();
+        break;
 
-        case MID_UNITS_NAVY_COMBAT:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowNavalUnitType(_UNIT_COMBAT);
-                filterState[UNITS_NAVY_COMBAT] = true;
-            }
-            else
-            {
-                gMapMgr->HideNavalUnitType(_UNIT_COMBAT);
-                filterState[UNITS_NAVY_COMBAT] = false;
-            }
+    case MID_UNITS_NAVY_COMBAT:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowNavalUnitType(_UNIT_COMBAT);
+            filterState[UNITS_NAVY_COMBAT] = true;
+        }
+        else
+        {
+            gMapMgr->HideNavalUnitType(_UNIT_COMBAT);
+            filterState[UNITS_NAVY_COMBAT] = false;
+        }
 
-            break;
+        break;
 
-        case MID_UNITS_NAVY_SUPPLY:
-            if (((C_PopupList *)control)->GetItemState(ID))
-            {
-                gMapMgr->ShowNavalUnitType(_UNIT_SUPPORT);
-                filterState[UNITS_NAVY_SUPPORT] = true;
-            }
-            else
-            {
-                gMapMgr->HideNavalUnitType(_UNIT_SUPPORT);
-                filterState[UNITS_NAVY_SUPPORT] = false;
-            }
+    case MID_UNITS_NAVY_SUPPLY:
+        if (((C_PopupList *)control)->GetItemState(ID))
+        {
+            gMapMgr->ShowNavalUnitType(_UNIT_SUPPORT);
+            filterState[UNITS_NAVY_SUPPORT] = true;
+        }
+        else
+        {
+            gMapMgr->HideNavalUnitType(_UNIT_SUPPORT);
+            filterState[UNITS_NAVY_SUPPORT] = false;
+        }
 
-            break;
+        break;
     }
 
     gMapMgr->DrawMap();
@@ -576,31 +578,38 @@ void MenuSetCirclesCB(long, short, C_Base *)
         if (menu->GetItemState(MID_CIRCLE_SAM_LOW))
         {
             filterState[CIRCLE_SAM_LOW] = true;
-            filterState[CIRCLE_SAM_HIGH] = filterState[CIRCLE_RADAR_LOW] = filterState[CIRCLE_RADAR_HIGH] = false;
+            filterState[CIRCLE_SAM_HIGH] = filterState[CIRCLE_RADAR_LOW] =
+                filterState[CIRCLE_RADAR_HIGH] = false;
             gMapMgr->ShowThreatType(_THR_SAM_LOW);
         }
         else if (menu->GetItemState(MID_CIRCLE_SAM_HIGH))
         {
             filterState[CIRCLE_SAM_HIGH] = true;
-            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_RADAR_LOW] = filterState[CIRCLE_RADAR_HIGH] = false;
+            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_RADAR_LOW] =
+                filterState[CIRCLE_RADAR_HIGH] = false;
             gMapMgr->ShowThreatType(_THR_SAM_HIGH);
         }
         else if (menu->GetItemState(MID_CIRCLE_RADAR_LOW))
         {
             filterState[CIRCLE_RADAR_LOW] = true;
-            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] = filterState[CIRCLE_RADAR_HIGH] = false;
+            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] =
+                filterState[CIRCLE_RADAR_HIGH] = false;
             gMapMgr->ShowThreatType(_THR_RADAR_LOW);
         }
         else if (menu->GetItemState(MID_CIRCLE_RADAR_HIGH))
         {
             filterState[CIRCLE_RADAR_HIGH] = true;
-            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] = filterState[CIRCLE_RADAR_LOW] = false;
+            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] =
+                filterState[CIRCLE_RADAR_LOW] = false;
             gMapMgr->ShowThreatType(_THR_RADAR_HIGH);
         }
         else
         {
-            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] = filterState[CIRCLE_RADAR_LOW] = filterState[CIRCLE_RADAR_HIGH] = false;
-            gMapMgr->HideThreatType(_THR_SAM_LOW bitor _THR_SAM_HIGH bitor _THR_RADAR_LOW bitor _THR_RADAR_HIGH);
+            filterState[CIRCLE_SAM_LOW] = filterState[CIRCLE_SAM_HIGH] =
+                filterState[CIRCLE_RADAR_LOW] = filterState[CIRCLE_RADAR_HIGH] =
+                    false;
+            gMapMgr->HideThreatType(_THR_SAM_LOW bitor _THR_SAM_HIGH bitor
+                                    _THR_RADAR_LOW bitor _THR_RADAR_HIGH);
         }
 
         gMapMgr->DrawMap();
@@ -676,7 +685,7 @@ void MenuObjReconCB(long, short, C_Base *)
         if (objective == NULL)
             return;
 
-        if ( not objective->IsObjective())
+        if (not objective->IsObjective())
             return;
 
         if (gUIViewer)
@@ -779,7 +788,7 @@ void MenuAlternateCB(long, short, C_Base *)
     }
 }
 
-WayPointClass* GetSelectedWayPoint(void)
+WayPointClass *GetSelectedWayPoint(void)
 {
     C_Base *caller;
     C_Base *control;
@@ -794,7 +803,8 @@ WayPointClass* GetSelectedWayPoint(void)
     if (caller == NULL)
         return NULL;
 
-    if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL and caller->_GetCType_() == _CNTL_WAYPOINT_)
+    if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL and
+        caller->_GetCType_() == _CNTL_WAYPOINT_)
     {
         // Waypoint
         cwp = (C_Waypoint *)caller;
@@ -803,12 +813,12 @@ WayPointClass* GetSelectedWayPoint(void)
         {
             control = cwp->GetLast()->Icon;
 
-            if ( not control)
+            if (not control)
                 return NULL;
 
             tmpID = (VU_ID *)control->GetUserPtr(C_STATE_0);
 
-            if ( not tmpID)
+            if (not tmpID)
                 return NULL;
 
             // Check if this is our current waypoint set, and make sure our
@@ -1028,8 +1038,10 @@ void MenuReconCB(long, short, C_Base *)
             // Recon Area...
             range = 18000.0f;
 
-            relx = static_cast<short>(((C_MapMover*)caller)->GetRelX() + caller->GetX() + caller->Parent_->GetX());
-            rely = static_cast<short>(((C_MapMover*)caller)->GetRelY() + caller->GetY() + caller->Parent_->GetY());
+            relx = static_cast<short>(((C_MapMover *)caller)->GetRelX() +
+                                      caller->GetX() + caller->Parent_->GetX());
+            rely = static_cast<short>(((C_MapMover *)caller)->GetRelY() +
+                                      caller->GetY() + caller->Parent_->GetY());
             gMapMgr->GetMapRelativeXY(&relx, &rely);
 
             scale = gMapMgr->GetMapScale();
@@ -1047,12 +1059,11 @@ void MenuReconCB(long, short, C_Base *)
             if (ent)
             {
                 // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't recon...
-                if (
- not (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and 
-                    ent->IsFlight() and 
-                    (gGps->GetTeamNo() not_eq ent->GetTeam()) and 
- not ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
-                )
+                if (not(TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) and
+                    ent->IsFlight() and
+                    (gGps->GetTeamNo() not_eq ent->GetTeam()) and
+                    not ent->GetIdentified(
+                        static_cast<Team>(gGps->GetTeamNo())))
                 {
                     range = 0.0f;
                 }
@@ -1164,7 +1175,9 @@ void MenuUnitStatusCB(long, short, C_Base *)
         if (item)
         {
             iconid = item->ID_;
-            urec = (UI_Refresher *)gGps->Find(item->ID_ bitand 0x00ffffff); // strip off team (incase it is a division)
+            urec = (UI_Refresher *)gGps->Find(
+                item->ID_ bitand
+                0x00ffffff); // strip off team (incase it is a division)
         }
     }
 
@@ -1175,7 +1188,9 @@ void MenuUnitStatusCB(long, short, C_Base *)
         if (win)
         {
             if (urec and urec->GetType() == GPS_DIVISION)
-                SetupDivisionInfoWindow(urec->GetDivID(), urec->GetSide()); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
+                SetupDivisionInfoWindow(
+                    urec->GetDivID(),
+                    urec->GetSide()); // Map bitand Tree save team # in top 8 bits (Needed to find division by team)
             else
             {
                 ent = (CampEntity)vuDatabase->Find(urec->GetID());
@@ -1185,11 +1200,10 @@ void MenuUnitStatusCB(long, short, C_Base *)
                     if (ent->IsFlight() or ent->IsSquadron())
                     {
                         // 2002-02-21 ADDED BY S.G. If not spotted by the player's team or not editing a TE, can't get its status...
-                        if (
-                            (TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or
+                        if ((TheCampaign.Flags bitand CAMP_TACTICAL_EDIT) or
                             (gGps->GetTeamNo() == ent->GetTeam()) or
-                            ent->GetIdentified(static_cast<Team>(gGps->GetTeamNo()))
-                        )
+                            ent->GetIdentified(
+                                static_cast<Team>(gGps->GetTeamNo())))
                         {
                             // END OF ADDED SECTION 2002-02-21
                             SetupSquadronInfoWindow(urec->GetID());
@@ -1307,26 +1321,22 @@ void MenuActionCB(long ID, short, C_Base *)
 
 void MenuAddWPCB(long, short, C_Base *)
 {
-    C_Waypoint
-    *cwp;
+    C_Waypoint *cwp;
 
-    WayPoint
-    wp;
+    WayPoint wp;
 
     WAYPOINTLIST
     *wps;
 
-    Unit
-    un;
+    Unit un;
 
-    int
-    num;
+    int num;
 
-    cwp = (C_Waypoint *) gPopupMgr->GetCallingControl();
+    cwp = (C_Waypoint *)gPopupMgr->GetCallingControl();
 
     un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-    if ( not un)
+    if (not un)
         return;
 
     wp = un->GetFirstUnitWP();
@@ -1340,7 +1350,7 @@ void MenuAddWPCB(long, short, C_Base *)
     while ((num > 1) and (wp))
     {
         wp = wp->GetNextWP();
-        num --;
+        num--;
     }
 
     wp->SplitWP();
@@ -1356,7 +1366,7 @@ void MenuDeleteWPCB(long, short hittype, C_Base *)
 
     un = (Unit)vuDatabase->Find(gMapMgr->GetCurWPID());
 
-    if ( not un)
+    if (not un)
         return;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1420,7 +1430,9 @@ void MenuEditPackageCB(long, short, C_Base *control)
         if (item)
         {
             iconid = item->ID_;
-            urec = (UI_Refresher *)gGps->Find(item->ID_ bitand 0x00ffffff); // strip off team (incase it is a division)
+            urec = (UI_Refresher *)gGps->Find(
+                item->ID_ bitand
+                0x00ffffff); // strip off team (incase it is a division)
         }
     }
 
@@ -1453,24 +1465,24 @@ void MenuSetOwnerCB(long ID, short, C_Base *)
 
     if (caller->_GetCType_() == _CNTL_MAPICON_)
     {
-        icon = (C_MapIcon *) caller;
+        icon = (C_MapIcon *)caller;
         iconid = icon->GetIconID();
-        urec = (UI_Refresher *) gGps->Find(iconid);
+        urec = (UI_Refresher *)gGps->Find(iconid);
     }
     else if (caller->_GetCType_() == _CNTL_DRAWLIST_)
     {
-        piggy = (C_DrawList *) caller;
+        piggy = (C_DrawList *)caller;
         iconid = piggy->GetIconID();
-        urec = (UI_Refresher *) gGps->Find(iconid);
+        urec = (UI_Refresher *)gGps->Find(iconid);
     }
     else if (caller->_GetCType_() == _CNTL_TREELIST_)
     {
-        tree = (C_TreeList *) caller;
+        tree = (C_TreeList *)caller;
         item = tree->GetLastItem();
 
         if (item)
         {
-            urec = (UI_Refresher *) gGps->Find(item->ID_);
+            urec = (UI_Refresher *)gGps->Find(item->ID_);
         }
     }
 
@@ -1481,37 +1493,37 @@ void MenuSetOwnerCB(long ID, short, C_Base *)
 
         switch (ID)
         {
-            case MID_TEAM_1:
-                teamid = 1;
-                break;
+        case MID_TEAM_1:
+            teamid = 1;
+            break;
 
-            case MID_TEAM_2:
-                teamid = 2;
-                break;
+        case MID_TEAM_2:
+            teamid = 2;
+            break;
 
-            case MID_TEAM_3:
-                teamid = 3;
-                break;
+        case MID_TEAM_3:
+            teamid = 3;
+            break;
 
-            case MID_TEAM_4:
-                teamid = 4;
-                break;
+        case MID_TEAM_4:
+            teamid = 4;
+            break;
 
-            case MID_TEAM_5:
-                teamid = 5;
-                break;
+        case MID_TEAM_5:
+            teamid = 5;
+            break;
 
-            case MID_TEAM_6:
-                teamid = 6;
-                break;
+        case MID_TEAM_6:
+            teamid = 6;
+            break;
 
-            case MID_TEAM_7:
-                teamid = 7;
-                break;
+        case MID_TEAM_7:
+            teamid = 7;
+            break;
 
-            default:
-                teamid = 0;
-                break;
+        default:
+            teamid = 0;
+            break;
         }
 
         ent = (CampEntity)vuDatabase->Find(urec->GetID());
@@ -1537,35 +1549,35 @@ void MenuAddUnitCB(long ID, short, C_Base *control)
     urec = NULL;
     caller = gPopupMgr->GetCallingControl();
 
-    if ( not caller)
+    if (not caller)
         return;
 
     if (caller->_GetCType_() == _CNTL_MAPICON_)
     {
-        icon = (C_MapIcon *) caller;
+        icon = (C_MapIcon *)caller;
         iconid = icon->GetIconID();
-        urec = (UI_Refresher *) gGps->Find(iconid);
+        urec = (UI_Refresher *)gGps->Find(iconid);
 
         if (urec)
             vid = urec->GetID();
     }
     else if (caller->_GetCType_() == _CNTL_DRAWLIST_)
     {
-        piggy = (C_DrawList *) caller;
+        piggy = (C_DrawList *)caller;
         iconid = piggy->GetIconID();
-        urec = (UI_Refresher *) gGps->Find(iconid);
+        urec = (UI_Refresher *)gGps->Find(iconid);
 
         if (urec)
             vid = urec->GetID();
     }
     else if (caller->_GetCType_() == _CNTL_TREELIST_)
     {
-        tree = (C_TreeList *) caller;
+        tree = (C_TreeList *)caller;
         item = tree->GetLastItem();
 
         if (item)
         {
-            urec = (UI_Refresher *) gGps->Find(item->ID_);
+            urec = (UI_Refresher *)gGps->Find(item->ID_);
 
             if (urec)
                 vid = urec->GetID();
@@ -1574,21 +1586,21 @@ void MenuAddUnitCB(long ID, short, C_Base *control)
 
     switch (ID)
     {
-        case MID_ADD_FLIGHT:
-            tactical_add_flight(vid, control);
-            break;
+    case MID_ADD_FLIGHT:
+        tactical_add_flight(vid, control);
+        break;
 
-        case MID_ADD_PACKAGE:
-            tactical_add_package(vid, control);
-            break;
+    case MID_ADD_PACKAGE:
+        tactical_add_package(vid, control);
+        break;
 
-        case MID_ADD_BATTALION:
-            tactical_add_battalion(vid, control);
-            break;
+    case MID_ADD_BATTALION:
+        tactical_add_battalion(vid, control);
+        break;
 
-        case MID_ADD_SQUADRON:
-            tactical_add_squadron(vid);
-            break;
+    case MID_ADD_SQUADRON:
+        tactical_add_squadron(vid);
+        break;
     }
 
     gPopupMgr->CloseMenu();
@@ -1615,29 +1627,29 @@ void MenuAddVCCB(long, short, C_Base *)
 
     if (caller->_GetCType_() == _CNTL_MAPICON_)
     {
-        icon = (C_MapIcon *) caller;
+        icon = (C_MapIcon *)caller;
 
         iconid = icon->GetIconID();
 
-        urec = (UI_Refresher *) gGps->Find(iconid);
+        urec = (UI_Refresher *)gGps->Find(iconid);
     }
     else if (caller->_GetCType_() == _CNTL_DRAWLIST_)
     {
-        piggy = (C_DrawList *) caller;
+        piggy = (C_DrawList *)caller;
 
         iconid = piggy->GetIconID();
 
-        urec = (UI_Refresher *) gGps->Find(iconid);
+        urec = (UI_Refresher *)gGps->Find(iconid);
     }
     else if (caller->_GetCType_() == _CNTL_TREELIST_)
     {
-        tree = (C_TreeList *) caller;
+        tree = (C_TreeList *)caller;
 
         item = tree->GetLastItem();
 
         if (item)
         {
-            urec = (UI_Refresher *) gGps->Find(item->ID_);
+            urec = (UI_Refresher *)gGps->Find(item->ID_);
         }
     }
 
@@ -1811,7 +1823,10 @@ void SetMapSettings()
         MenuToggleUnitCB(MID_UNITS_SQUAD_SUPPORT, C_TYPE_LMOUSEUP, menu);
         MenuToggleUnitCB(MID_UNITS_SQUAD_HELI, C_TYPE_LMOUSEUP, menu);
 
-        if (g_nUnidentifiedInUI) MenuToggleUnitCB(MID_UNITS_SQUAD_UNKNOWN, C_TYPE_LMOUSEUP, menu); // 2002-02-21 ADDED BY S.G. For 'Unknown' type of flight
+        if (g_nUnidentifiedInUI)
+            MenuToggleUnitCB(
+                MID_UNITS_SQUAD_UNKNOWN, C_TYPE_LMOUSEUP,
+                menu); // 2002-02-21 ADDED BY S.G. For 'Unknown' type of flight
 
         MenuToggleUnitCB(MID_UNITS_NAVY_COMBAT, C_TYPE_LMOUSEUP, menu);
         MenuToggleUnitCB(MID_UNITS_NAVY_SUPPLY, C_TYPE_LMOUSEUP, menu);
@@ -1897,7 +1912,6 @@ void SetupCampaignMenus()
     {
         menu->SetItemFlagBitOn(MID_DELETE_UNIT, C_BIT_INVISIBLE);
     }
-
 }
 
 // Mode 0=Play,1=Edit)
@@ -2068,10 +2082,10 @@ void MapMenuOpenCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if ( not themenu or not caller or not caller->Parent_)
+    if (not themenu or not caller or not caller->Parent_)
         return;
 
-    menu = (C_PopupList*)themenu;
+    menu = (C_PopupList *)themenu;
 
     // Enable certain stuff for TE VC window
     if (caller->Parent_->GetID() == TAC_VC_WIN)
@@ -2104,10 +2118,10 @@ void OpenUnitMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if ( not themenu or not caller or not caller->Parent_)
+    if (not themenu or not caller or not caller->Parent_)
         return;
 
-    menu = (C_PopupList*)themenu;
+    menu = (C_PopupList *)themenu;
 
     if (menu)
     {
@@ -2173,10 +2187,10 @@ void OpenNavalMenuCB(C_Base *themenu, C_Base *caller)
 {
     C_PopupList *menu;
 
-    if ( not themenu or not caller or not caller->Parent_)
+    if (not themenu or not caller or not caller->Parent_)
         return;
 
-    menu = (C_PopupList*)themenu;
+    menu = (C_PopupList *)themenu;
 
     if (menu)
     {
@@ -2243,14 +2257,14 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
     C_PopupList *menu;
     bool isAirbase = false;
 
-    if ( not themenu or not caller or not caller->Parent_)
+    if (not themenu or not caller or not caller->Parent_)
         return;
 
     if (caller->_GetCType_() == _CNTL_DRAWLIST_)
     {
         MAPICONLIST *icon;
 
-        icon = ((C_DrawList*)caller)->GetLastItem();
+        icon = ((C_DrawList *)caller)->GetLastItem();
 
         if (icon and icon->Owner)
         {
@@ -2271,7 +2285,7 @@ void ObjMenuOpenCB(C_Base *themenu, C_Base *caller)
     {
     }
 
-    menu = (C_PopupList*)themenu;
+    menu = (C_PopupList *)themenu;
 
     if (isAirbase) // Airbase
     {
@@ -2397,7 +2411,10 @@ void HookupCampaignMenus()
         menu->SetCallback(MID_UNITS_SQUAD_SUPPORT, MenuToggleUnitCB);
         menu->SetCallback(MID_UNITS_SQUAD_HELI, MenuToggleUnitCB);
 
-        if (g_nUnidentifiedInUI) menu->SetCallback(MID_UNITS_SQUAD_UNKNOWN, MenuToggleUnitCB); // 2002-02-21 ADDED BY S.G. For 'Unknown' type of flight
+        if (g_nUnidentifiedInUI)
+            menu->SetCallback(
+                MID_UNITS_SQUAD_UNKNOWN,
+                MenuToggleUnitCB); // 2002-02-21 ADDED BY S.G. For 'Unknown' type of flight
 
         menu->SetCallback(MID_UNITS_NAVY_COMBAT, MenuToggleUnitCB);
         menu->SetCallback(MID_UNITS_NAVY_SUPPLY, MenuToggleUnitCB);
@@ -2548,44 +2565,56 @@ void HookupCampaignMenus()
             menu->SetCallback(i, MenuFormationCB);
 
         // Enroute menu (hand add the valid ones)
-        menu->AddItem(WP_NOTHING bitor 0x100, C_TYPE_RADIO, WPActStr[39], MID_ENR_ACTION);
+        menu->AddItem(WP_NOTHING bitor 0x100, C_TYPE_RADIO, WPActStr[39],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_NOTHING bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_NOTHING bitor 0x100, 3);
-        menu->AddItem(WP_CA bitor 0x100, C_TYPE_RADIO, WPActStr[WP_CA], MID_ENR_ACTION);
+        menu->AddItem(WP_CA bitor 0x100, C_TYPE_RADIO, WPActStr[WP_CA],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_CA bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_CA bitor 0x100, 3);
-        menu->AddItem(WP_ESCORT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ESCORT], MID_ENR_ACTION);
+        menu->AddItem(WP_ESCORT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ESCORT],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_ESCORT bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_ESCORT bitor 0x100, 3);
-        menu->AddItem(WP_SEAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SEAD], MID_ENR_ACTION);
+        menu->AddItem(WP_SEAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SEAD],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_SEAD bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_SEAD bitor 0x100, 3);
-        menu->AddItem(WP_SAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SAD], MID_ENR_ACTION);
+        menu->AddItem(WP_SAD bitor 0x100, C_TYPE_RADIO, WPActStr[WP_SAD],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_SAD bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_SAD bitor 0x100, 3);
-        menu->AddItem(WP_ELINT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ELINT], MID_ENR_ACTION);
+        menu->AddItem(WP_ELINT bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ELINT],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_ELINT bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_ELINT bitor 0x100, 3);
-        menu->AddItem(WP_TANKER bitor 0x100, C_TYPE_RADIO, WPActStr[WP_TANKER], MID_ENR_ACTION);
+        menu->AddItem(WP_TANKER bitor 0x100, C_TYPE_RADIO, WPActStr[WP_TANKER],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_TANKER bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_TANKER bitor 0x100, 3);
-        menu->AddItem(WP_JAM bitor 0x100, C_TYPE_RADIO, WPActStr[WP_JAM], MID_ENR_ACTION);
+        menu->AddItem(WP_JAM bitor 0x100, C_TYPE_RADIO, WPActStr[WP_JAM],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_JAM bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_JAM bitor 0x100, 3);
-        menu->AddItem(WP_ASW bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ASW], MID_ENR_ACTION);
+        menu->AddItem(WP_ASW bitor 0x100, C_TYPE_RADIO, WPActStr[WP_ASW],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_ASW bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_ASW bitor 0x100, 3);
-        menu->AddItem(WP_RECON bitor 0x100, C_TYPE_RADIO, WPActStr[WP_RECON], MID_ENR_ACTION);
+        menu->AddItem(WP_RECON bitor 0x100, C_TYPE_RADIO, WPActStr[WP_RECON],
+                      MID_ENR_ACTION);
         menu->SetCallback(WP_RECON bitor 0x100, MenuEnrouteCB);
         menu->SetItemGroup(WP_RECON bitor 0x100, 3);
 
         // Action Menu
         for (i = 0; i <= WP_FAC; i++)
         {
-            if ( not i)
-                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[39], MID_ACTION);
+            if (not i)
+                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[39],
+                              MID_ACTION);
             else
-                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[i], MID_ACTION);
+                menu->AddItem(i bitor 0x200, C_TYPE_RADIO, WPActStr[i],
+                              MID_ACTION);
 
             menu->SetCallback(i bitor 0x200, MenuActionCB);
             menu->SetItemGroup(i bitor 0x200, 4);

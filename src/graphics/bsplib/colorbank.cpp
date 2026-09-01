@@ -5,26 +5,30 @@
 
     Provides the bank of colors used by all the BSP objects.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
 #include <io.h>
-#include "StateStack.h"
-#include "ColorBank.h"
+#include "statestack.h"
+#include "colorbank.h"
 
 extern bool g_bGreyMFD;
 extern bool bNVGmode;
 // Color counts
 int ColorBankClass::nColors = 0; // Total number of colors in each set
-int ColorBankClass::nDarkendColors = 0; // Number of colors which are staticly lit
+int ColorBankClass::nDarkendColors =
+    0; // Number of colors which are staticly lit
 
 // This is the publicly used pointer to a color array
 Pcolor *ColorBankClass::ColorPool = NULL;
 
 // These are the color pools for each mode
 Pcolor *ColorBankClass::ColorBuffer = NULL; // Normal (original) colors
-Pcolor *ColorBankClass::DarkenedBuffer = NULL; // Processed for static lighting on some colors
-Pcolor *ColorBankClass::GreenIRBuffer = NULL; // Processed for green without lighting
-Pcolor *ColorBankClass::GreenTVBuffer = NULL; // Processed for green with static lighting on some colors
+Pcolor *ColorBankClass::DarkenedBuffer =
+    NULL; // Processed for static lighting on some colors
+Pcolor *ColorBankClass::GreenIRBuffer =
+    NULL; // Processed for green without lighting
+Pcolor *ColorBankClass::GreenTVBuffer =
+    NULL; // Processed for green with static lighting on some colors
 DWORD ColorBankClass::TODcolor = NULL; // JAM 12Oct03
 int ColorBankClass::PitLightLevel = 0;
 
@@ -45,13 +49,20 @@ void ColorBankClass::Setup(int nclrs, int ndarkclrs)
 
     // Allocate space for the colors
 #ifdef USE_SH_POOLS
-    ColorBuffer = (Pcolor *)MemAllocPtr(gBSPLibMemPool, sizeof(Pcolor) * 4 * (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS), 0);
+    ColorBuffer = (Pcolor *)MemAllocPtr(
+        gBSPLibMemPool,
+        sizeof(Pcolor) * 4 * (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS),
+        0);
 #else
-    ColorBuffer = new Pcolor[4 * (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS)];
+    ColorBuffer =
+        new Pcolor[4 * (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS)];
 #endif
-    DarkenedBuffer = ColorBuffer    + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
-    GreenIRBuffer = DarkenedBuffer + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
-    GreenTVBuffer = GreenIRBuffer  + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
+    DarkenedBuffer =
+        ColorBuffer + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
+    GreenIRBuffer =
+        DarkenedBuffer + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
+    GreenTVBuffer =
+        GreenIRBuffer + (nclrs + MAX_VERTS_PER_POLYGON + MAX_CLIP_VERTS);
 }
 
 
@@ -77,8 +88,8 @@ void ColorBankClass::ReadPool(int file)
     Pcolor *src;
     Pcolor *end;
     Pcolor *dst1;
-    Pcolor  *dst2;
-    Pcolor  *dst3;
+    Pcolor *dst2;
+    Pcolor *dst3;
 
     // Read our total color and darkened color count
     result = read(file, &nColors, sizeof(nColors));
@@ -101,8 +112,8 @@ void ColorBankClass::ReadPool(int file)
     dst1 = DarkenedBuffer;
     dst2 = GreenTVBuffer;
     dst3 = GreenIRBuffer;
-    src  = ColorBuffer;
-    end  = ColorBuffer + nColors;
+    src = ColorBuffer;
+    end = ColorBuffer + nColors;
 
     while (src < end)
     {
@@ -113,7 +124,7 @@ void ColorBankClass::ReadPool(int file)
         dst2->b = 0.0f;
 
         // FRB - B&W display?
-        if ((g_bGreyMFD) and ( not bNVGmode))
+        if ((g_bGreyMFD) and (not bNVGmode))
             dst2->r = dst2->b = dst2->g;
 
         *dst3 = *dst2;
@@ -132,9 +143,9 @@ void ColorBankClass::SetLight(float red, float green, float blue)
     Pcolor *dst;
     Pcolor *greenTv;
 
-    ShiAssert(red   <= 1.0f);
+    ShiAssert(red <= 1.0f);
     ShiAssert(green <= 1.0f);
-    ShiAssert(blue  <= 1.0f);
+    ShiAssert(blue <= 1.0f);
 
     // Now darken the staticly lit colors
     src = ColorBuffer;
@@ -144,13 +155,13 @@ void ColorBankClass::SetLight(float red, float green, float blue)
 
     while (src < end)
     {
-        dst->r = red   * src->r;
+        dst->r = red * src->r;
         dst->g = green * src->g;
-        dst->b = blue  * src->b;
+        dst->b = blue * src->b;
         greenTv->g = dst->g;
 
         // FRB - B&W display?
-        if ((g_bGreyMFD) and ( not bNVGmode))
+        if ((g_bGreyMFD) and (not bNVGmode))
             greenTv->r = greenTv->b = greenTv->g;
 
         src++;
@@ -159,7 +170,8 @@ void ColorBankClass::SetLight(float red, float green, float blue)
     }
 
     //JAM 12Oct03
-    TODcolor = (0xFF << 24) + (FloatToInt32(red * 255.f) << 16) + (FloatToInt32(green * 255.f) << 8) + FloatToInt32(blue * 255.f);
+    TODcolor = (0xFF << 24) + (FloatToInt32(red * 255.f) << 16) +
+               (FloatToInt32(green * 255.f) << 8) + FloatToInt32(blue * 255.f);
 }
 
 
@@ -167,24 +179,24 @@ void ColorBankClass::SetColorMode(ColorMode mode)
 {
     switch (mode)
     {
-        case NormalMode:
-            ColorPool = DarkenedBuffer;
-            break;
+    case NormalMode:
+        ColorPool = DarkenedBuffer;
+        break;
 
-        case UnlitMode:
-            ColorPool = ColorBuffer;
-            break;
+    case UnlitMode:
+        ColorPool = ColorBuffer;
+        break;
 
-        case GreenMode:
-            ColorPool = GreenTVBuffer;
-            break;
+    case GreenMode:
+        ColorPool = GreenTVBuffer;
+        break;
 
-        case UnlitGreenMode:
-            ColorPool = GreenIRBuffer;
-            break;
+    case UnlitGreenMode:
+        ColorPool = GreenIRBuffer;
+        break;
 
-        default:
-            ShiWarning("Bad color mode");
+    default:
+        ShiWarning("Bad color mode");
     }
 }
 

@@ -1,7 +1,7 @@
 #if 0
 // sfr: I inlined this stuff.
 #include <string>
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 using namespace std;
 

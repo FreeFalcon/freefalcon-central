@@ -11,7 +11,7 @@
 MEM_POOL DebrisClass::pool;
 #endif
 
-DebrisClass::DebrisClass(VU_BYTE** stream, long *rem) : BombClass(stream, rem)
+DebrisClass::DebrisClass(VU_BYTE** stream, long* rem) : BombClass(stream, rem)
 {
     InitLocalData();
 }
@@ -58,13 +58,13 @@ int DebrisClass::SaveSize()
     return BombClass::SaveSize();
 }
 
-int DebrisClass::Save(VU_BYTE **stream)
+int DebrisClass::Save(VU_BYTE** stream)
 {
     int saveSize = BombClass::Save(stream);
     return saveSize;
 }
 
-int DebrisClass::Save(FILE *file)
+int DebrisClass::Save(FILE* file)
 {
     int saveSize = SimWeaponClass::Save(file);
     return saveSize;

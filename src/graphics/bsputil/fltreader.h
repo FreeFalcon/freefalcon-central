@@ -9,12 +9,12 @@
 #ifndef _FLTREADER_H_
 #define _FLTREADER_H_
 
-#include "ParentBuildList.h"
-#include "LODBuildList.h"
+#include "parentbuildlist.h"
+#include "lodbuildlist.h"
 
 
 BOOL ReadControlFlt(BuildTimeParentEntry *buildParent);
-BRoot* ReadGeometryFlt(BuildTimeLODEntry *buildLODentry);
+BRoot *ReadGeometryFlt(BuildTimeLODEntry *buildLODentry);
 
 
 #endif //_FLTREADER_H_

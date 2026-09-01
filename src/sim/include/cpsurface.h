@@ -1,8 +1,8 @@
 #ifndef _CPSURFACE_H
 #define _CPSURFACE_H
 
-#include "Graphics/Include/imagebuf.h"
-#include "Graphics/Include/define.h"
+#include "graphics/include/imagebuf.h"
+#include "graphics/include/define.h"
 
 #include <vector>
 
@@ -36,11 +36,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     int mIdNum;
 
     RECT mSrcRect;
@@ -57,19 +57,19 @@ public:
     PaletteHandle *m_pPalette;
     std::vector<TextureHandle *> m_arrTex;
 
-    CPSurface(SurfaceInitStr*);
+    CPSurface(SurfaceInitStr *);
     virtual ~CPSurface();
 
-    void DisplayBlit(BYTE, BOOL, RECT*, int, int);
+    void DisplayBlit(BYTE, BOOL, RECT *, int, int);
 
     void CreateLit(void);
     void DiscardLit(void);
-    void Translate(WORD*);
-    void Translate(DWORD*);
+    void Translate(WORD *);
+    void Translate(DWORD *);
 
     // OW
-    void DisplayBlit3D(BYTE, BOOL, RECT*, int, int);
-    void Translate3D(DWORD*);
+    void DisplayBlit3D(BYTE, BOOL, RECT *, int, int);
+    void Translate3D(DWORD *);
 };
 
 #endif

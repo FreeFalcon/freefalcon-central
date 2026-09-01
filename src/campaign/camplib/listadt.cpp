@@ -47,19 +47,19 @@ ListClass::~ListClass(void)
 
 void ListClass::Insert(ListElementClass *newElement)
 {
-    if ( not newElement)
+    if (not newElement)
         return;
 
-    if ( not front)
+    if (not front)
     {
-        ShiAssert( not end);
+        ShiAssert(not end);
         front = newElement;
         end = newElement;
         ShiAssert(SanityCheck());
         return;
     }
 
-    if ( not flags bitand LADT_SORTED_LIST)
+    if (not flags bitand LADT_SORTED_LIST)
     {
         newElement->next = front;
         front->prev = newElement;
@@ -112,7 +112,7 @@ void ListClass::Insert(ListElementClass *newElement)
 
 void ListClass::InsertAtEnd(ListElementClass *newElement)
 {
-    if ( not newElement)
+    if (not newElement)
         return;
 
     if (flags bitand LADT_SORTED_LIST)
@@ -128,7 +128,7 @@ void ListClass::InsertAtEnd(ListElementClass *newElement)
 
     end = newElement;
 
-    if ( not front)
+    if (not front)
         front = newElement;
 
     ShiAssert(SanityCheck());
@@ -136,7 +136,7 @@ void ListClass::InsertAtEnd(ListElementClass *newElement)
 
 void ListClass::Remove(ListElementClass *oldElement)
 {
-    if ( not oldElement)
+    if (not oldElement)
         return;
 
     Detach(oldElement);
@@ -146,7 +146,7 @@ void ListClass::Remove(ListElementClass *oldElement)
 
 void ListClass::Detach(ListElementClass *oldElement)
 {
-    if ( not oldElement)
+    if (not oldElement)
         return;
 
     if (front == oldElement)
@@ -173,7 +173,8 @@ void ListClass::InsertNewElement(short newKey, void *newData, uchar newFlags)
     Insert(newNode);
 }
 
-void ListClass::InsertNewElementAtEnd(short newKey, void *newData, uchar newFlags)
+void ListClass::InsertNewElementAtEnd(short newKey, void *newData,
+                                      uchar newFlags)
 {
     ListNode newNode = new ListElementClass(newKey, newData, newFlags);
 
@@ -200,19 +201,19 @@ int ListClass::SanityCheck(void)
 {
     ListElementClass *cur, *next;
 
-    if ( not front and not end)
+    if (not front and not end)
         return 1;
 
     if (front == end and (front->prev or front->next))
         return 0;
 
-    if ((front and not end) or ( not front and end))
+    if ((front and not end) or (not front and end))
         return 0;
 
-    if (front == (void*)0xdddddddd or front == (void*)0xfcfcfcfc)
+    if (front == (void *)0xdddddddd or front == (void *)0xfcfcfcfc)
         return 0;
 
-    if (end == (void*)0xdddddddd or end == (void*)0xfcfcfcfc)
+    if (end == (void *)0xdddddddd or end == (void *)0xfcfcfcfc)
         return 0;
 
     cur = front;
@@ -241,4 +242,3 @@ int ListClass::SanityCheck(void)
 
     return 1;
 }
-

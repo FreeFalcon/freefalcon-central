@@ -1,7 +1,6 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props" Condition="Exists('..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props')" />
-  <Import Project="..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props" Condition="Exists('..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props')" />
+  <Import Project="..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props" Condition="Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props')" />
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
       <Configuration>Debug</Configuration>
@@ -150,7 +149,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;STRICT;WIN32_LEAN_AND_MEAN;TARGET=m_i486;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -172,7 +171,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_LIB;STRICT;WIN32_LEAN_AND_MEAN;TARGET=m_i486;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
@@ -197,7 +196,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -224,7 +223,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -251,7 +250,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -278,7 +277,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -305,7 +304,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;DATE_PROTECTION;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <MinimalRebuild>true</MinimalRebuild>
@@ -332,7 +331,7 @@
       <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
-      <AdditionalIncludeDirectories>C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include;C:\Program Files\NVIDIA Corporation\NVIDIA Texture Tools\include;..\..\vu2\include;..\..\Codelib\Include;..\..\;..\Include;..\..\sim\include;..\..\falclib\include;..\..\campaign\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;_LIB;TARGET=m_i486;WIN32;STRICT;WIN32_LEAN_AND_MEAN;DATE_PROTECTION;WINDOWS_IGNORE_PACKING_MISMATCH;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <StringPooling>true</StringPooling>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -355,9 +354,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="D3D12Backend.cpp" />
+    <ClCompile Include="..\shaders\ffshaderblobs.cpp" />
     <ClCompile Include="d3d12\D3D12Renderer.cpp" />
     <ClCompile Include="d3d12\D3D12TextureManager.cpp" />
     <ClCompile Include="OpenXRBackend.cpp" />
+    <ClCompile Include="..\vulkan\VulkanBackend.cpp" />
+    <ClCompile Include="..\vulkan\VulkanRenderer.cpp" />
+    <ClCompile Include="..\vulkan\VulkanTextureManager.cpp" />
+    <ClCompile Include="..\vulkan\VulkanVbManager.cpp" />
+    <ClCompile Include="..\vulkan\vulkanvma.cpp" />
     <ClCompile Include="common\FFStateMap.cpp" />
     <ClCompile Include="DX2DEngine.cpp" />
     <ClCompile Include="DXEngine.cpp" />
@@ -385,16 +390,19 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets" Condition="Exists('..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets')" />
-    <Import Project="..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets" Condition="Exists('..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets')" />
+    <Import Project="..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets" Condition="Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets')" />
   </ImportGroup>
+  <!-- Artscout - 2026 (#78): DXC the shared HLSL to DXIL+SPIR-V headers before
+       anything compiles. Unconditional: an edited shader that silently keeps a
+       stale blob is the trap this avoids. -->
+  <Target Name="FFBuildShaders" BeforeTargets="ClCompile">
+    <Exec Command="&quot;$(ProjectDir)..\..\..\tools\build_shaders.bat&quot; &quot;$(ProjectDir)..\shaders&quot; &quot;$(ProjectDir)..\shaders\generated&quot;" />
+  </Target>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>Данный проект ссылается на пакеты NuGet, отсутствующие на этом компьютере. Используйте восстановление пакетов NuGet, чтобы скачать их.  Дополнительную информацию см. по адресу: http://go.microsoft.com/fwlink/?LinkID=322105. Отсутствует следующий файл: {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Headers.1.0.10.2\build\native\OpenXR.Headers.targets'))" />
-    <Error Condition="!Exists('..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.props'))" />
-    <Error Condition="!Exists('..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Loader.1.0.10.2\build\native\OpenXR.Loader.targets'))" />
+    <Error Condition="!Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.props'))" />
+    <Error Condition="!Exists('..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\..\packages\OpenXR.Loader.1.1.61\build\native\OpenXR.Loader.targets'))" />
   </Target>
 </Project>

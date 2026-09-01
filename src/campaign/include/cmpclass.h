@@ -4,9 +4,9 @@
 // ===============================================
 // Das Campaign Uber-Class
 // ===============================================
-#include "Campaign.h"
-#include "SquadUI.h"
-#include "CUIEvent.h"
+#include "campaign.h"
+#include "squadui.h"
+#include "cuievent.h"
 
 // Campaign flags
 enum
@@ -24,10 +24,13 @@ enum
     CAMP_TACTICAL = 0x0000400, // This is a tactical Engagement "Campaign"
 
     CAMP_GAME_FULL = 0x0010000, // This game is full
-    DF_MATCH_IN_PROGRESS = 0x0020000, // This is a dogfight match game and it is in progress
+    DF_MATCH_IN_PROGRESS =
+        0x0020000, // This is a dogfight match game and it is in progress
 
-    CAMP_TACTICAL_PAUSE = 0x0040000, // This means a tacitcal engagement is being run - don't do any movement.
-    CAMP_TACTICAL_EDIT = 0x0080000, // This means a tacitcal engagement is being edited - don't do any movement.
+    CAMP_TACTICAL_PAUSE =
+        0x0040000, // This means a tacitcal engagement is being run - don't do any movement.
+    CAMP_TACTICAL_EDIT =
+        0x0080000, // This means a tacitcal engagement is being edited - don't do any movement.
 
     CAMP_NEED_ENTITIES = 0x00100000,
     CAMP_NEED_WEATHER = 0x00200000,
@@ -37,11 +40,12 @@ enum
     CAMP_NEED_TEAM_DATA = 0x02000000,
     CAMP_NEED_UNIT_DATA = 0x04000000,
     CAMP_NEED_VC = 0x08000000,
-    CAMP_NEED_PRIORITIES     = 0x10000000,
+    CAMP_NEED_PRIORITIES = 0x10000000,
 
     CAMP_NEED_MASK = 0x1FF00000,
 
-    CAMP_NAME_SIZE = 40, // Size of name string arrays for scenario name and such
+    CAMP_NAME_SIZE =
+        40, // Size of name string arrays for scenario name and such
 
     // wParam values for FM_JOIN_CAMPAIGN messages:
     JOIN_NOT_JOINING = 0,
@@ -51,9 +55,9 @@ enum
 };
 
 class SquadronClass;
-typedef SquadronClass* Squadron;
+typedef SquadronClass *Squadron;
 class FlightClass;
-typedef FlightClass* Flight;
+typedef FlightClass *Flight;
 //sfr: we need this because Cmpclass includes misseval, which includes cmpclass
 class MissionEvaluationClass;
 class FalconGameEntity;
@@ -68,9 +72,9 @@ class CampaignClass
 {
 private:
 public:
-    CampaignTime      CurrentTime;
-    CampaignTime      TE_StartTime;
-    CampaignTime      TE_TimeLimit;
+    CampaignTime CurrentTime;
+    CampaignTime TE_StartTime;
+    CampaignTime TE_TimeLimit;
     CampaignTime TimeOfDay; // Time since last midnight
     CampaignTime lastGroundTask;
     CampaignTime lastAirTask;
@@ -96,9 +100,9 @@ public:
     short Processor;
     short TheaterSizeX;
     short TheaterSizeY;
-    uchar             CurrentDay;
+    uchar CurrentDay;
     uchar ActiveTeams; // Number of participating teams
-    uchar             DayZero;          // Marks start of war
+    uchar DayZero; // Marks start of war
     uchar EndgameResult; // Is campaign over and who won?
     uchar Situation; // How're things going?
     uchar EnemyAirExp; // KCK: These two can probably be removed
@@ -107,34 +111,39 @@ public:
     GridIndex BullseyeX;
     GridIndex BullseyeY;
     char TheaterName[CAMP_NAME_SIZE]; // Theater by name
-    char Scenario[CAMP_NAME_SIZE]; // Name of scenario (one of x origional scenarios)
+    char Scenario
+        [CAMP_NAME_SIZE]; // Name of scenario (one of x origional scenarios)
     char SaveFile[CAMP_NAME_SIZE]; // Name of save file (saved scenario)
     char UIName[CAMP_NAME_SIZE]; // UI's description of the game
-    VuThread* vuThread; // Pointer to vu's thread structure
+    VuThread *vuThread; // Pointer to vu's thread structure
     VU_ID PlayerSquadronID; // VU_ID of player squadron (from last load)
 
-    CampUIEventElement* StandardEventQueue; // Queue of last few standard events
-    CampUIEventElement* PriorityEventQueue; // Queue of last few priority events
+    CampUIEventElement *StandardEventQueue; // Queue of last few standard events
+    CampUIEventElement *PriorityEventQueue; // Queue of last few priority events
     // JPO - upgraded the next 3 to long, to allow bigger campaigns.
     long CampMapSize; // Size of currently allocated map data
-    long SamMapSize;  // Size of currently allocated map data
+    long SamMapSize; // Size of currently allocated map data
     long RadarMapSize; // Size of currently allocated map data
-    uchar* CampMapData; // Data for tiny occupation map.
-    uchar* SamMapData; // Data for other maps
-    uchar* RadarMapData;
+    uchar *CampMapData; // Data for tiny occupation map.
+    uchar *SamMapData; // Data for other maps
+    uchar *RadarMapData;
     short LastIndexNum; // Last index assigned to point into the name/patch data
     short NumAvailSquadrons; // Number of active selectable squadrons
     SquadUIInfoClass *CampaignSquadronData; // The data array
-    short NumberOfValidTypes; // Number of different types of aircraft we can fly
-    short *ValidAircraftTypes; // An array of dIndexs for squadron's we're allowed to join
-    MissionEvaluationClass* MissionEvaluator; // Mission evaluation class (for player)
+    short
+        NumberOfValidTypes; // Number of different types of aircraft we can fly
+    short *
+        ValidAircraftTypes; // An array of dIndexs for squadron's we're allowed to join
+    MissionEvaluationClass
+        *MissionEvaluator; // Mission evaluation class (for player)
     VuBin<FalconGameEntity> CurrentGame;
 
     VU_ID HotSpot; // The most important primary currently
     uchar Tempo; // How fast/dense we want things to happen
     long CreatorIP; // IP Address when started
     long CreationTime; // Time when started
-    long CreationRand; // Random Number to pretty much guarantee we are unique to the universe
+    long
+        CreationRand; // Random Number to pretty much guarantee we are unique to the universe
     long TE_VictoryPoints; // TE Points required to win
     long TE_type; // Type of tacitcal engagement
     long TE_number_teams; // Number of teams
@@ -155,7 +164,9 @@ public:
     CampaignClass(void);
     ~CampaignClass(void);
     void Reset(void);
-    F4THREADHANDLE InitCampaign(FalconGameType gametype, FalconGameEntity *joingame); // Don't call directly.
+    F4THREADHANDLE
+    InitCampaign(FalconGameType gametype,
+                 FalconGameEntity *joingame); // Don't call directly.
     void SetCurrentTime(CampaignTime newTime)
     {
         CurrentTime = newTime;
@@ -187,17 +198,17 @@ public:
     int GetCampaignDay(void);
     int GetCurrentDay(void);
     int GetMinutesSinceMidnight(void);
-    char* GetTheaterName(void)
+    char *GetTheaterName(void)
     {
         return TheaterName;
     }
-    int SetTheater(char* name);
-    int SetScenario(char* scenario);
-    char* GetScenario(void)
+    int SetTheater(char *name);
+    int SetScenario(char *scenario);
+    char *GetScenario(void)
     {
         return Scenario;
     }
-    char* GetSavedName(void)
+    char *GetSavedName(void)
     {
         return SaveFile;
     }
@@ -239,11 +250,15 @@ public:
     int LoadScenarioStats(FalconGameType type, char *savefile);
     int RequestScenarioStats(FalconGameEntity *game);
     void ClearCurrentPreload(void);
-    int NewCampaign(FalconGameType gametype, char *scenario); // Calls InitCampaign Internally
-    int LoadCampaign(FalconGameType gametype, char *savefile); // Calls InitCampaign Internally
-    int JoinCampaign(FalconGameType gametype, FalconGameEntity *game); // Calls InitCampaign Internally
+    int NewCampaign(FalconGameType gametype,
+                    char *scenario); // Calls InitCampaign Internally
+    int LoadCampaign(FalconGameType gametype,
+                     char *savefile); // Calls InitCampaign Internally
+    int JoinCampaign(FalconGameType gametype,
+                     FalconGameEntity *game); // Calls InitCampaign Internally
     int StartRemoteCampaign(FalconGameEntity *game);
-    int SaveCampaign(FalconGameType type, char *savefile, int save_scenario_data);
+    int SaveCampaign(FalconGameType type, char *savefile,
+                     int save_scenario_data);
     // sfr: this ends the campaign on a thread safe place...
 #define NEW_END_CAMPAIGN 1
 #if NEW_END_CAMPAIGN
@@ -274,15 +289,15 @@ public:
     }
     long GetCreatorIP()
     {
-        return(CreatorIP);
+        return (CreatorIP);
     }
     long GetCreationTime()
     {
-        return(CreationTime);
+        return (CreationTime);
     }
     long GetCreationIter()
     {
-        return(CreationRand);
+        return (CreationRand);
     }
 
     void SetTEVictoryPoints(long points)
@@ -291,7 +306,7 @@ public:
     }
     long GetTEVictoryPoints()
     {
-        return(TE_VictoryPoints);
+        return (TE_VictoryPoints);
     }
 
     // Bullseye data
@@ -310,25 +325,25 @@ public:
     long SaveSize(void);
 
     // The Campaign Event manipulation functions
-    CampUIEventElement* GetRecentEventlist(void);
-    CampUIEventElement* GetRecentPriorityEventList(void);
+    CampUIEventElement *GetRecentEventlist(void);
+    CampUIEventElement *GetRecentPriorityEventList(void);
     void AddCampaignEvent(CampUIEventElement *newEvent);
 
     void DisposeEventLists(void);
     void TrimCampUILists(void);
 
     // Map Stuff (small map)
-    uchar* MakeCampMap(int type);
+    uchar *MakeCampMap(int type);
     void FreeCampMaps(void);
 
     // Squadron UI data stuff
     void VerifySquadrons(int team); // Rebuilds any changable squadron data
     void FreeSquadronData(void);
-    void ReadValidAircraftTypes(char *typefile); // Reads text file with valid squadron types
+    void ReadValidAircraftTypes(
+        char *typefile); // Reads text file with valid squadron types
     int IsValidAircraftType(Unit u); // Checks if passed Squadron is valid
     int IsValidSquadron(int id);
     void ChillTypes(void);
-
 };
 
 // The one and only Campaign instance:

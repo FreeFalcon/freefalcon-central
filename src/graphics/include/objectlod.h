@@ -8,10 +8,11 @@
 #ifndef _OBJECTLOD_H_
 #define _OBJECTLOD_H_
 
-#include "BSPnodes.h"
-#include "../../Falclib/Include/FileMemMap.h"
+#include "bspnodes.h"
+#include "../../falclib/include/filememmap.h"
 
-#define MAX_LOD_LOAD_SIZE (100 * 1024) // The Max amount of data Loaded in single call Frame
+#define MAX_LOD_LOAD_SIZE                                                      \
+    (100 * 1024) // The Max amount of data Loaded in single call Frame
 
 extern class ObjectLOD *TheObjectLODs;
 extern int TheObjectLODsCount;
@@ -48,8 +49,6 @@ public:
     }
 
 
-
-
     static CRITICAL_SECTION cs_ObjectLOD;
 
 protected:
@@ -61,10 +60,11 @@ protected:
     int refCount; // How many instances of this LOD are in use
     short WhoAmI(void)
     {
-        return static_cast<short>(this - TheObjectLODs);    // Return the Self LOD Id
+        return static_cast<short>(this -
+                                  TheObjectLODs);    // Return the Self LOD Id
     }
 
-    static FileMemMap   ObjectLodMap; // JPO - MMFILE
+    static FileMemMap ObjectLodMap; // JPO - MMFILE
     static BNodeType *tagListBuffer;
     static BYTE *LodBuffer;
     static DWORD LodBufferSize;
@@ -87,7 +87,6 @@ public:
 #ifdef _DEBUG
     static int lodsLoaded; // JPO - some stats
 #endif
-
 };
 
 
@@ -96,6 +95,6 @@ public:
 #define OBJLOD_ON_TEXTURE 0x0002
 #define OBJLOD_ON_RELEASE 0x0004
 #define CACHE_MARGIN 32
-#define DEFAULT_BUFFER_SIZE ( 4 * 1024 * 1024 ) //The default buffer size
+#define DEFAULT_BUFFER_SIZE (4 * 1024 * 1024) //The default buffer size
 
 #endif // _OBJECTLOD_H_

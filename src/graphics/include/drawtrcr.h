@@ -5,8 +5,8 @@
 #ifndef _DRAWTRCR_H_
 #define _DRAWTRCR_H_
 
-#include "DrawObj.h"
-#define  TRACER_VISIBLE_DISTANCE 20000.0f
+#include "drawobj.h"
+#define TRACER_VISIBLE_DISTANCE 20000.0f
 
 
 class DrawableTracer : public DrawableObject
@@ -21,7 +21,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -73,9 +74,7 @@ public:
     };
 
 protected:
-    BOOL ConstructWidth(RenderOTW *renderer,
-                        Tpoint *start,
-                        Tpoint *end,
+    BOOL ConstructWidth(RenderOTW *renderer, Tpoint *start, Tpoint *end,
                         struct ThreeDVertex *xformLeft,
                         struct ThreeDVertex *xformRight,
                         struct ThreeDVertex *xformLefte,
@@ -95,9 +94,7 @@ protected:
     DWORD lastMoveMs;
 #define TRACER_TYPE_TRACER 0
 #define TRACER_TYPE_BALL 1
-
 };
-
 
 
 //////////////////////////////// THE DX VERSION OF THE DRAWABLE TRACER \\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -114,7 +111,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -166,9 +164,7 @@ public:
     };
 
 protected:
-    BOOL ConstructWidth(RenderOTW *renderer,
-                        Tpoint *start,
-                        Tpoint *end,
+    BOOL ConstructWidth(RenderOTW *renderer, Tpoint *start, Tpoint *end,
                         struct ThreeDVertex *xformLeft,
                         struct ThreeDVertex *xformRight,
                         struct ThreeDVertex *xformLefte,
@@ -181,7 +177,6 @@ protected:
     int type;
 #define TRACER_TYPE_TRACER 0
 #define TRACER_TYPE_BALL 1
-
 };
 
 ////////////////////////////////////////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\

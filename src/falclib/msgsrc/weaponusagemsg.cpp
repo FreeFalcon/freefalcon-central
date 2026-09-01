@@ -6,13 +6,13 @@
  * Generated from file EVENTS.XLS by MicroProse
  */
 
-#include "MsgInc/WeaponUsageMsg.h"
+#include "msginc/weaponusagemsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 /* Unused... REMOVE
 

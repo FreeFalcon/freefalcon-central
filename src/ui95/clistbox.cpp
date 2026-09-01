@@ -24,26 +24,13 @@ enum
     CLBP_SETLABELCOLOR,
 };
 
-char *C_Lbp_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[ADDITEM]",
-    "[ADDSCROLLBAR]",
-    "[ITEMFLAGS]",
-    "[BGIMAGE]",
-    "[BGFILL]",
-    "[BGCOLOR]",
-    "[NORMCOLOR]",
-    "[SELCOLOR]",
-    "[BARCOLOR]",
-    "[VALUE]",
-    "[ITEMGROUP]",
-    "[ITEMCLUSTER]",
-    "[ITEMUSERDATA]",
-    "[DROPDOWN]",
-    "[LABELCOLOR]",
-    0,
+char *C_Lbp_Tokens[] = {
+    "[NOTHING]",      "[SETUP]",       "[ADDITEM]",
+    "[ADDSCROLLBAR]", "[ITEMFLAGS]",   "[BGIMAGE]",
+    "[BGFILL]",       "[BGCOLOR]",     "[NORMCOLOR]",
+    "[SELCOLOR]",     "[BARCOLOR]",    "[VALUE]",
+    "[ITEMGROUP]",    "[ITEMCLUSTER]", "[ITEMUSERDATA]",
+    "[DROPDOWN]",     "[LABELCOLOR]",  0,
 };
 
 #endif
@@ -95,12 +82,13 @@ C_ListBox::~C_ListBox()
 
 long C_ListBox::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_ListBox::Setup(long ID, short WinType, C_Handler *Handler)
 {
-    SetID(ID); // used for adding/removing control from window (Not to be associated with item ID)
+    SetID(
+        ID); // used for adding/removing control from window (Not to be associated with item ID)
     Handler_ = Handler;
     WinType_ = WinType;
     Label_ = new O_Output;
@@ -111,7 +99,7 @@ void C_ListBox::Setup(long ID, short WinType, C_Handler *Handler)
 
 void C_ListBox::Cleanup()
 {
-    if ( not (GetFlags() bitand C_BIT_NOCLEANUP))
+    if (not(GetFlags() bitand C_BIT_NOCLEANUP))
         RemoveAllItems();
 
     if (BgImage_)
@@ -207,7 +195,8 @@ void C_ListBox::SetDropDown(long ImageID)
         }
 
         DropDown_->SetImage(ImageID);
-        DropDown_->SetXY(GetW() - DropDown_->GetW() - 2, GetH() / 2 - DropDown_->GetH() / 2);
+        DropDown_->SetXY(GetW() - DropDown_->GetW() - 2,
+                         GetH() / 2 - DropDown_->GetH() / 2);
         DropDown_->SetFlags(GetFlags());
     }
 }
@@ -218,7 +207,7 @@ void C_ListBox::SetFlags(long flags)
 
     if (Label_)
     {
-        Label_->SetFlags(flags bitand compl (C_BIT_USEBGFILL));
+        Label_->SetFlags(flags bitand compl(C_BIT_USEBGFILL));
     }
 }
 
@@ -241,9 +230,11 @@ void C_ListBox::SetFont(long font)
 }
 
 // sfr: added number of items of scrollbar
-void C_ListBox::AddScrollBar(long MinusUp, long MinusDown, long PlusUp, long PlusDown, long Slider, long nItems)
+void C_ListBox::AddScrollBar(long MinusUp, long MinusDown, long PlusUp,
+                             long PlusDown, long Slider, long nItems)
 {
-    ScrollCount_ = (nItems <= 0) or (nItems > 1000) ? 7 : static_cast<short>(nItems);
+    ScrollCount_ =
+        (nItems <= 0) or (nItems > 1000) ? 7 : static_cast<short>(nItems);
 
     if (ScrollBar_)
     {
@@ -267,15 +258,18 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
 {
     LISTBOX *newitem, *cur;
 
-    if ( not ID) return(NULL);
+    if (not ID)
+        return (NULL);
 
-    if (Str == NULL) return(NULL);
+    if (Str == NULL)
+        return (NULL);
 
-    if ( not (GetFlags() bitand C_BIT_REMOVE)) // Using premade list ... don't add to it
-        return(NULL);
+    if (not(GetFlags() bitand
+            C_BIT_REMOVE)) // Using premade list ... don't add to it
+        return (NULL);
 
     if (FindID(ID))
-        return(NULL);
+        return (NULL);
 
     newitem = new LISTBOX;
     newitem->Label_ = new C_Button;
@@ -286,7 +280,9 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
     newitem->Label_->SetColor(C_STATE_1, SelColor_);
     newitem->Label_->SetGroup(5551212);
     newitem->Label_->SetFont(Font_);
-    newitem->Label_->SetFlags((GetFlags() bitand compl (C_BIT_INVISIBLE bitor C_BIT_ABSOLUTE bitor C_BIT_USEBGFILL bitor C_BIT_REMOVE)));
+    newitem->Label_->SetFlags(
+        (GetFlags() bitand compl(C_BIT_INVISIBLE bitor C_BIT_ABSOLUTE bitor
+                                 C_BIT_USEBGFILL bitor C_BIT_REMOVE)));
     newitem->Label_->SetOwner(this);
     newitem->Label_->SetParent(Parent_);
     newitem->Next = NULL;
@@ -312,19 +308,19 @@ C_ListBox *C_ListBox::AddItem(long ID, short, _TCHAR *Str)
         Count_++;
     }
 
-    newitem->Label_->SetXY(5, (Count_ - 1)*gFontList->GetHeight(Font_));
+    newitem->Label_->SetXY(5, (Count_ - 1) * gFontList->GetHeight(Font_));
 
     if (Root_ and Root_->Label_ and Root_->Label_->Ready())
     {
         SetReady(1);
     }
 
-    return(this);
+    return (this);
 }
 
 C_ListBox *C_ListBox::AddItem(long ID, short Type, long txtID)
 {
-    return(AddItem(ID, Type, gStringMgr->GetString(txtID)));
+    return (AddItem(ID, Type, gStringMgr->GetString(txtID)));
 }
 
 void C_ListBox::SetRoot(LISTBOX *NewRoot)
@@ -359,7 +355,7 @@ void C_ListBox::SetRoot(LISTBOX *NewRoot)
         cur = cur->Next;
     }
 
-    if ( not i and Root_)
+    if (not i and Root_)
     {
         LabelVal_ = Root_->Label_->GetID();
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
@@ -373,7 +369,7 @@ void C_ListBox::RemoveAllItems()
 {
     LISTBOX *cur, *last;
 
-    if ( not (GetFlags() bitand C_BIT_REMOVE))
+    if (not(GetFlags() bitand C_BIT_REMOVE))
     {
         return;
     }
@@ -407,13 +403,13 @@ LISTBOX *C_ListBox::FindID(long pID)
     {
         if (Pop->Label_->GetID() == pID)
         {
-            return(Pop);
+            return (Pop);
         }
 
         Pop = Pop->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_Button *C_ListBox::GetItem(long ID)
@@ -424,10 +420,10 @@ C_Button *C_ListBox::GetItem(long ID)
 
     if (item)
     {
-        return(item->Label_);
+        return (item->Label_);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_ListBox::SetValue(long ID)
@@ -454,7 +450,7 @@ void C_ListBox::SetValue(long ID)
         cur = cur->Next;
     }
 
-    if ( not found and Root_)
+    if (not found and Root_)
     {
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
         LabelVal_ = Root_->Label_->GetID();
@@ -491,7 +487,7 @@ void C_ListBox::SetValueText(long inText)
         cur = cur->Next;
     }
 
-    if ( not found and Root_)
+    if (not found and Root_)
     {
         Label_->SetText(Root_->Label_->GetText(C_STATE_0));
         LabelVal_ = Root_->Label_->GetID();
@@ -507,7 +503,7 @@ void C_ListBox::SetItemFlags(long ID, long flags)
 
     if (cur)
     {
-        cur->Label_->SetFlags(flags bitand compl (C_BIT_USEBGFILL));
+        cur->Label_->SetFlags(flags bitand compl(C_BIT_USEBGFILL));
     }
 }
 
@@ -549,21 +545,23 @@ void C_ListBox::SetItemUserData(long ID, short idx, long value)
 
 short C_ListBox::GetListHeight()
 {
-    short sResult = (short)(gFontList->GetHeight(Font_) * Count_ + 8);    
+    short sResult = (short)(gFontList->GetHeight(Font_) * Count_ + 8);
 
     return sResult;
 }
 
 long C_ListBox::CheckHotSpots(long relX, long relY)
 {
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED))
-        return(0);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED))
+        return (0);
 
-    if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or relY > (GetY() + GetH()))
-        return(0);
+    if (relX < GetX() or relX > (GetX() + GetW()) or relY < GetY() or
+        relY > (GetY() + GetH()))
+        return (0);
 
     SetRelXY(relX - GetX(), relY - GetY());
-    return(GetID());
+    return (GetID());
 }
 
 BOOL C_ListBox::Process(long ID, short HitType)
@@ -572,37 +570,40 @@ BOOL C_ListBox::Process(long ID, short HitType)
 
     switch (HitType)
     {
-        case C_TYPE_LMOUSEUP:
-            if (Callback_)
-                (*Callback_)(ID, HitType, this);
+    case C_TYPE_LMOUSEUP:
+        if (Callback_)
+            (*Callback_)(ID, HitType, this);
 
-            if (GetFlags() bitand C_BIT_ABSOLUTE)
-                OpenWindow((short)(Parent_->GetX() + GetX()),
-                           (short)(Parent_->GetY() + GetY() + GetH() + 1),
-                           (short)GetW(), (short)GetListHeight());
-            else
-                OpenWindow((short)(Parent_->GetX() + Parent_->VX_[GetClient()] + GetX()),
-                           (short)(Parent_->GetY() + Parent_->VY_[GetClient()] + GetY() + GetH() + 1),
-                           (short)GetW(), (short)GetListHeight()); 
+        if (GetFlags() bitand C_BIT_ABSOLUTE)
+            OpenWindow((short)(Parent_->GetX() + GetX()),
+                       (short)(Parent_->GetY() + GetY() + GetH() + 1),
+                       (short)GetW(), (short)GetListHeight());
+        else
+            OpenWindow(
+                (short)(Parent_->GetX() + Parent_->VX_[GetClient()] + GetX()),
+                (short)(Parent_->GetY() + Parent_->VY_[GetClient()] + GetY() +
+                        GetH() + 1),
+                (short)GetW(), (short)GetListHeight());
 
-            return(TRUE);
-            break;
+        return (TRUE);
+        break;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_ListBox::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1, GetY() + GetH() + 1, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW() + 1,
+                           GetY() + GetH() + 1, GetFlags(), GetClient());
 }
 
 void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (GetFlags() bitand C_BIT_INVISIBLE)
@@ -613,7 +614,10 @@ void C_ListBox::Draw(SCREEN *surface, UI95_RECT *cliprect)
 
     if (GetFlags() bitand C_BIT_USEBGFILL)
     {
-        Parent_->BlitFill(surface, BgColor_, GetX() + BgRect_.left, GetY() + BgRect_.top, BgRect_.right + 1, BgRect_.bottom + 1, GetFlags(), GetClient(), cliprect);
+        Parent_->BlitFill(surface, BgColor_, GetX() + BgRect_.left,
+                          GetY() + BgRect_.top, BgRect_.right + 1,
+                          BgRect_.bottom + 1, GetFlags(), GetClient(),
+                          cliprect);
     }
 
     if (Label_)
@@ -635,17 +639,17 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     C_Line *line = NULL;
     short UseScrollBar = 0;
     short sb_w = 0, virtualh = 0;
-    int draw_y = 0; 
-    int fh = 0, i = 0; 
+    int draw_y = 0;
+    int fh = 0, i = 0;
 
     if (Handler_ == NULL)
     {
-        return(FALSE);
+        return (FALSE);
     }
 
-    if ( not Ready())
+    if (not Ready())
     {
-        return(FALSE);
+        return (FALSE);
     }
 
     if (OpenCallback_)
@@ -660,7 +664,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     while (cur)
     {
-        if ( not (cur->Label_->GetFlags() bitand C_BIT_INVISIBLE))
+        if (not(cur->Label_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             i++;
         }
@@ -668,16 +672,16 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
         cur = cur->Next;
     }
 
-    Count_ = (short)i; 
+    Count_ = (short)i;
 
-    h = (short)(i * fh + 8); 
+    h = (short)(i * fh + 8);
 
     // if bigger than 7 elements and scrollable
     if ((h > (fh * 7 + 8)) and (ScrollBar_))
     {
         virtualh = h;
         UseScrollBar = 1;
-        h = (short)(fh * ScrollCount_ /*7*/ + 8); 
+        h = (short)(fh * ScrollCount_ /*7*/ + 8);
     }
 
     Window_ = new C_Window;
@@ -685,15 +689,20 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     Window_->SetFlagBitOn(C_BIT_NOCLEANUP);
     Window_->SetClientArea(2, 2, w - 4, h - 4, 0);
 
-    if ((x + w) > Handler_->GetW()) x = (short)(Handler_->GetW() - w - 1); 
+    if ((x + w) > Handler_->GetW())
+        x = (short)(Handler_->GetW() - w - 1);
 
-    if ((y + h) > Handler_->GetH()) y = (short)(Handler_->GetH() - h - 1); 
+    if ((y + h) > Handler_->GetH())
+        y = (short)(Handler_->GetH() - h - 1);
 
-    if (x < 0) x = 0;
+    if (x < 0)
+        x = 0;
 
-    if (y < 0) y = 0;
+    if (y < 0)
+        y = 0;
 
-    Window_->SetRanges(0, 0, (short)Handler_->GetW(), (short)Handler_->GetH(), w, h); 
+    Window_->SetRanges(0, 0, (short)Handler_->GetW(), (short)Handler_->GetH(),
+                       w, h);
     Window_->SetXY(x, y);
     line = new C_Line;
     line->Setup(C_DONT_CARE, C_TYPE_VERTICAL);
@@ -714,10 +723,11 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     if (ScrollBar_ and UseScrollBar)
     {
-        sb_w = (short)ScrollBar_->GetW(); 
+        sb_w = (short)ScrollBar_->GetW();
         Window_->ClientArea_[0].right -= sb_w;
         ScrollBar_->SetClient(0);
-        ScrollBar_->SetXY(Window_->ClientArea_[0].right, Window_->ClientArea_[0].top);
+        ScrollBar_->SetXY(Window_->ClientArea_[0].right,
+                          Window_->ClientArea_[0].top);
         ScrollBar_->SetWH(sb_w, Window_->ClientArea_[0].bottom);
         ScrollBar_->ClearVH();
         ScrollBar_->SetFlagBitOn(C_BIT_ABSOLUTE);
@@ -744,7 +754,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
 
     while (cur)
     {
-        if ( not (cur->Label_->GetFlags() bitand C_BIT_INVISIBLE))
+        if (not(cur->Label_->GetFlags() bitand C_BIT_INVISIBLE))
         {
             if (cur->Label_->GetID() == LabelVal_)
             {
@@ -793,7 +803,7 @@ BOOL C_ListBox::OpenWindow(short x, short y, short w, short h)
     Window_->update_ or_eq C_DRAW_REFRESHALL;
     Window_->RefreshWindow();
     Handler_->WindowToFront(Window_);
-    return(TRUE);
+    return (TRUE);
 }
 
 BOOL C_ListBox::CloseWindow()
@@ -802,7 +812,7 @@ BOOL C_ListBox::CloseWindow()
     F4CSECTIONHANDLE *Leave;
 
     if (Window_ == NULL)
-        return(FALSE);
+        return (FALSE);
 
     Leave = UI_Enter(Window_);
     cur = Root_;
@@ -841,14 +851,14 @@ BOOL C_ListBox::CloseWindow()
     UI_Leave(Leave);
 
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_ListBox::SetSubParents(C_Window *Parent)
 {
     LISTBOX *cur;
 
-    if ( not LabelColor_)
+    if (not LabelColor_)
         LabelColor_ = NormalColor_;
 
     if (BgImage_)
@@ -856,7 +866,8 @@ void C_ListBox::SetSubParents(C_Window *Parent)
 
     if (DropDown_)
     {
-        DropDown_->SetXY(GetW() - DropDown_->GetW() - 2, GetH() / 2 - DropDown_->GetH() / 2);
+        DropDown_->SetXY(GetW() - DropDown_->GetW() - 2,
+                         GetH() / 2 - DropDown_->GetH() / 2);
         DropDown_->SetInfo();
         DropDown_->SetFlags(GetFlags());
     }
@@ -880,81 +891,81 @@ short C_ListBox::LocalFind(char *token)
     while (C_Lbp_Tokens[i])
     {
         if (strnicmp(token, C_Lbp_Tokens[i], strlen(C_Lbp_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_ListBox::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *Hndlr)
 {
     switch (ID)
     {
-        case CLBP_SETUP:
-            Setup(P[0], (short)P[1], Hndlr);
-            break;
+    case CLBP_SETUP:
+        Setup(P[0], (short)P[1], Hndlr);
+        break;
 
-        case CLBP_ADDITEM:
-            AddItem(P[0], (short)P[1], P[2]);
-            break;
+    case CLBP_ADDITEM:
+        AddItem(P[0], (short)P[1], P[2]);
+        break;
 
-        case CLBP_ADDSCROLLBAR:
-            AddScrollBar(P[0], P[1], P[2], P[3], P[4], P[5]);
-            break;
+    case CLBP_ADDSCROLLBAR:
+        AddScrollBar(P[0], P[1], P[2], P[3], P[4], P[5]);
+        break;
 
-        case CLBP_SETITEMFLAGS:
-            SetItemFlags(P[0], P[1]);
-            break;
+    case CLBP_SETITEMFLAGS:
+        SetItemFlags(P[0], P[1]);
+        break;
 
-        case CLBP_SETBGIMAGE:
-            SetBgImage(P[0]);
-            break;
+    case CLBP_SETBGIMAGE:
+        SetBgImage(P[0]);
+        break;
 
-        case CLBP_SETBGFILL:
-            SetBgFill((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CLBP_SETBGFILL:
+        SetBgFill((short)P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
 
-        case CLBP_SETBGCOLOR:
-            SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLBP_SETBGCOLOR:
+        SetBgColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLBP_SETNORMALCOLOR:
-            SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLBP_SETNORMALCOLOR:
+        SetNormColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLBP_SETSELCOLOR:
-            SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLBP_SETSELCOLOR:
+        SetSelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLBP_SETBARCOLOR:
-            SetBarColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLBP_SETBARCOLOR:
+        SetBarColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLBP_SETLABELCOLOR:
-            SetLabelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CLBP_SETLABELCOLOR:
+        SetLabelColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CLBP_SETVALUE:
-            SetValue(P[0]);
-            break;
+    case CLBP_SETVALUE:
+        SetValue(P[0]);
+        break;
 
-        case CLBP_ITEMGROUP:
-            SetItemGroup(P[0], P[1]);
-            break;
+    case CLBP_ITEMGROUP:
+        SetItemGroup(P[0], P[1]);
+        break;
 
-        case CLBP_ITEMCLUSTER:
-            SetItemCluster(P[0], P[1]);
-            break;
+    case CLBP_ITEMCLUSTER:
+        SetItemCluster(P[0], P[1]);
+        break;
 
-        case CLBP_ITEMUSERDATA:
-            SetItemUserData(P[0], (short)P[1], P[2]);
-            break;
+    case CLBP_ITEMUSERDATA:
+        SetItemUserData(P[0], (short)P[1], P[2]);
+        break;
 
-        case CLBP_SETDROPDOWN:
-            SetDropDown(P[0]);
-            break;
+    case CLBP_SETDROPDOWN:
+        SetDropDown(P[0]);
+        break;
     }
 }
 

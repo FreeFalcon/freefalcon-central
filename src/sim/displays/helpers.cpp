@@ -1,7 +1,7 @@
 #include "stdhdr.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "cmpclass.h"
-#include "flightData.h"
+#include "flightdata.h"
 #include "radardoppler.h" //MI
 #include "simdrive.h" //MI
 #include "aircrft.h" //MI
@@ -33,21 +33,27 @@ void DrawBullseyeData(VirtualDisplay* display, float cursorX, float cursorY)
     cursY = cockpitFlightData.y + cursorX * trig.sin + cursorY * trig.cos;
 
     azFrom = RTD * (float)atan2(cursY - bullseyeY, cursX - bullseyeX);
-    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) + (cursY - bullseyeY) * (cursY - bullseyeY));
+    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) +
+                        (cursY - bullseyeY) * (cursY - bullseyeY));
 
     if (azFrom < 0.0F)
         azFrom += 360.0F;
 
     // Offset for Bullseye symbology
-    display->AdjustOriginInViewport(-0.75F, -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
+    display->AdjustOriginInViewport(
+        -0.75F, -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
 
     sprintf(str, "%03.0f %02.0f", azFrom, range * FT_TO_NM);
     ShiAssert(strlen(str) < sizeof(str));
-    display->TextLeft(-0.95F - -0.75f, 0.2F, str); // draw from left - to keep it on the screen
+    display->TextLeft(-0.95F - -0.75f, 0.2F,
+                      str); // draw from left - to keep it on the screen
 
     // Range, bearing from bullseye to ownship
-    azFrom = RTD * (float)atan2(cockpitFlightData.y - bullseyeY, cockpitFlightData.x - bullseyeX);
-    range = (float)sqrt((cockpitFlightData.x - bullseyeX) * (cockpitFlightData.x - bullseyeX) + (cockpitFlightData.y - bullseyeY) * (cockpitFlightData.y - bullseyeY));
+    azFrom = RTD * (float)atan2(cockpitFlightData.y - bullseyeY,
+                                cockpitFlightData.x - bullseyeX);
+    range = (float)sqrt(
+        (cockpitFlightData.x - bullseyeX) * (cockpitFlightData.x - bullseyeX) +
+        (cockpitFlightData.y - bullseyeY) * (cockpitFlightData.y - bullseyeY));
 
     if (azFrom < 0.0F)
         azFrom += 360.0F;
@@ -81,9 +87,10 @@ void DrawBullseyeData(VirtualDisplay* display, float cursorX, float cursorY)
     display->CenterOriginInViewport();
 }
 //MI draws the bullseye info for the cursor on the side of the MFD
-void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursorY)
+void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX,
+                            float cursorY)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     float bullseyeX, bullseyeY;
     float azFrom, range;
     float cursX, cursY;
@@ -102,16 +109,20 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
     cursY = cockpitFlightData.y + cursorX * trig.sin + cursorY * trig.cos;
 
     //with a locked target in STT, we always get bearing to target
-    RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
+    RadarDopplerClass* theRadar =
+        (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
     if (theRadar)
     {
-        if (theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() and theRadar->IsSet(RadarDopplerClass::STTingTarget))
+        if (theRadar->CurrentTarget() and
+            theRadar->CurrentTarget()->BaseData() and
+            theRadar->IsSet(RadarDopplerClass::STTingTarget))
         {
             float yPos = theRadar->CurrentTarget()->BaseData()->YPos();
             float xPos = theRadar->CurrentTarget()->BaseData()->XPos();
             azFrom = RTD * (float)atan2(yPos - bullseyeY, xPos - bullseyeX);
-            range = (float)sqrt((xPos - bullseyeX) * (xPos - bullseyeX) + (yPos - bullseyeY) * (yPos - bullseyeY));
+            range = (float)sqrt((xPos - bullseyeX) * (xPos - bullseyeX) +
+                                (yPos - bullseyeY) * (yPos - bullseyeY));
 
             if (azFrom < 0.0F)
                 azFrom += 360.0F;
@@ -119,7 +130,8 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
         else
         {
             azFrom = RTD * (float)atan2(cursY - bullseyeY, cursX - bullseyeX);
-            range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) + (cursY - bullseyeY) * (cursY - bullseyeY));
+            range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) +
+                                (cursY - bullseyeY) * (cursY - bullseyeY));
 
             if (azFrom < 0.0F)
                 azFrom += 360.0F;
@@ -127,7 +139,8 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
     }
 
     // Offset for Bullseye symbology
-    display->AdjustOriginInViewport(-0.75F, -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
+    display->AdjustOriginInViewport(
+        -0.75F, -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
 
     /*if(range * FT_TO_NM > 99)
      range = 99 * NM_TO_FT;*/
@@ -143,16 +156,18 @@ void DrawCursorBullseyeData(VirtualDisplay* display, float cursorX, float cursor
         }
     }
 
-    display->TextLeft(-0.95F - -0.75f, 0.17F, str); // draw from left - to keep it on the screen
+    display->TextLeft(-0.95F - -0.75f, 0.17F,
+                      str); // draw from left - to keep it on the screen
 
     display->CenterOriginInViewport();
 }
 
 //Wombat778 1/15/03 Added so that when bullseye mode is off, range/bearing to current STPT is displayed instead.
 
-void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, float cursorX, float cursorY)
+void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform,
+                              float cursorX, float cursorY)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     float steerpointX, steerpointY, steerpointZ;
     float azFrom, range;
     float cursX, cursY;
@@ -163,7 +178,9 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
     // Find current steerpoint
     if (platform and ((SimVehicleClass*)platform)->curWaypoint)
     {
-        ((SimVehicleClass*)platform)->curWaypoint->GetLocation(&steerpointX, &steerpointY, &steerpointZ);
+        ((SimVehicleClass*)platform)
+            ->curWaypoint->GetLocation(&steerpointX, &steerpointY,
+                                       &steerpointZ);
 
         // Range and bearing from steerpoint to cursor
         mlSinCos(&trig, ownYaw);
@@ -173,24 +190,33 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
         cursY = cockpitFlightData.y + cursorX * trig.sin + cursorY * trig.cos;
 
         //with a locked target in STT, we always get bearing to target
-        RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
+        RadarDopplerClass* theRadar =
+            (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
 
         if (theRadar)
         {
-            if (theRadar->CurrentTarget() and theRadar->CurrentTarget()->BaseData() and theRadar->IsSet(RadarDopplerClass::STTingTarget))
+            if (theRadar->CurrentTarget() and
+                theRadar->CurrentTarget()->BaseData() and
+                theRadar->IsSet(RadarDopplerClass::STTingTarget))
             {
                 float yPos = theRadar->CurrentTarget()->BaseData()->YPos();
                 float xPos = theRadar->CurrentTarget()->BaseData()->XPos();
-                azFrom = RTD * (float)atan2(yPos - steerpointY, xPos - steerpointX);
-                range = (float)sqrt((xPos - steerpointX) * (xPos - steerpointX) + (yPos - steerpointY) * (yPos - steerpointY));
+                azFrom =
+                    RTD * (float)atan2(yPos - steerpointY, xPos - steerpointX);
+                range =
+                    (float)sqrt((xPos - steerpointX) * (xPos - steerpointX) +
+                                (yPos - steerpointY) * (yPos - steerpointY));
 
                 if (azFrom < 0.0F)
                     azFrom += 360.0F;
             }
             else
             {
-                azFrom = RTD * (float)atan2(cursY - steerpointY, cursX - steerpointX);
-                range = (float)sqrt((cursX - steerpointX) * (cursX - steerpointX) + (cursY - steerpointY) * (cursY - steerpointY));
+                azFrom = RTD *
+                         (float)atan2(cursY - steerpointY, cursX - steerpointX);
+                range =
+                    (float)sqrt((cursX - steerpointX) * (cursX - steerpointX) +
+                                (cursY - steerpointY) * (cursY - steerpointY));
 
                 if (azFrom < 0.0F)
                     azFrom += 360.0F;
@@ -198,7 +224,9 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
         }
 
         // Offset for steerpoint symbology
-        display->AdjustOriginInViewport(-0.75F, -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
+        display->AdjustOriginInViewport(
+            -0.75F,
+            -0.62F); //me123 from .80 to .75 and .65 to .62 to move the data
 
         /*if(range * FT_TO_NM > 99)
          range = 99 * NM_TO_FT;*/
@@ -207,14 +235,16 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
 
         if (g_bINS)
         {
-            if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and
+                not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             {
                 display->CenterOriginInViewport();
                 return;
             }
         }
 
-        display->TextLeft(-0.95F - -0.75f, 0.17F, str); // draw from left - to keep it on the screen
+        display->TextLeft(-0.95F - -0.75f, 0.17F,
+                          str); // draw from left - to keep it on the screen
 
         display->CenterOriginInViewport();
     }
@@ -224,7 +254,7 @@ void DrawSteerPointCursorData(VirtualDisplay* display, FalconEntity* platform, f
 //MI draws the circle
 void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     float bullseyeX, bullseyeY;
     float azFrom, azTo, range;
@@ -244,22 +274,31 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
     cursY = cockpitFlightData.y + cursorX * trig.sin + cursorY * trig.cos;
 
     azFrom = RTD * (float)atan2(cursY - bullseyeY, cursX - bullseyeX);
-    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) + (cursY - bullseyeY) * (cursY - bullseyeY));
+    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) +
+                        (cursY - bullseyeY) * (cursY - bullseyeY));
 
     if (azFrom < 0.0F)
         azFrom += 360.0F;
 
     //Cobra removed the g_bIFF
     // Offset for Bullseye symbology
-    if (/*g_bIFFor*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
-        display->AdjustOriginInViewport(-0.90F, -0.80F); //me123 from .80 to .75 and .65 to .62 to move the data
+    if (/*g_bIFFor*/
+        g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003
+        display->AdjustOriginInViewport(
+            -0.90F,
+            -0.80F); //me123 from .80 to .75 and .65 to .62 to move the data
     else
-        display->AdjustOriginInViewport(-0.85F, -0.70F); //me123 from .80 to .75 and .65 to .62 to move the data
+        display->AdjustOriginInViewport(
+            -0.85F,
+            -0.70F); //me123 from .80 to .75 and .65 to .62 to move the data
 
 
     //Range, bearing from bullseye to ownship
-    azFrom = RTD * (float)atan2(cockpitFlightData.y - bullseyeY, cockpitFlightData.x - bullseyeX);
-    range = (float)sqrt((cockpitFlightData.x - bullseyeX) * (cockpitFlightData.x - bullseyeX) + (cockpitFlightData.y - bullseyeY) * (cockpitFlightData.y - bullseyeY));
+    azFrom = RTD * (float)atan2(cockpitFlightData.y - bullseyeY,
+                                cockpitFlightData.x - bullseyeX);
+    range = (float)sqrt(
+        (cockpitFlightData.x - bullseyeX) * (cockpitFlightData.x - bullseyeX) +
+        (cockpitFlightData.y - bullseyeY) * (cockpitFlightData.y - bullseyeY));
 
     if (azFrom < 0.0F)
         azFrom += 360.0F;
@@ -275,7 +314,8 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 
     //Cobra removed the g_bIff
     // Draw the circle symbol
-    if (/*g_bIFFor*/g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003 Smaller bullseye is more realistic
+    if (/*g_bIFFor*/
+        g_bSmallerBullseye) //Wombat778 11-12-2003 made optional on g_bSmallerBullseye 11-07-2003 Smaller bullseye is more realistic
     {
         //set a smaller font (needed)
         int ofont = display->CurFont();
@@ -308,7 +348,8 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
     {
         if (g_bINS)
         {
-            if (playerAC and not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
+            if (playerAC and
+                not playerAC->INSState(AircraftClass::INS_HSD_STUFF))
             {
                 // Draw the circle symbol
                 display->Circle(0.0F, 0.0F, 0.1F);
@@ -342,15 +383,17 @@ void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY)
 }
 
 
-
-void GetBullseyeToOwnship(char *string)
+void GetBullseyeToOwnship(char* string)
 {
     float bullseyeX, bullseyeY;
     float azFrom, range;
 
     TheCampaign.GetBullseyeSimLocation(&bullseyeX, &bullseyeY);
-    azFrom = RTD * (float)atan2(cockpitFlightData.y - bullseyeY, cockpitFlightData.x - bullseyeX);
-    range = (float)sqrt((cockpitFlightData.x - bullseyeX) * (cockpitFlightData.x - bullseyeX) + (cockpitFlightData.y - bullseyeY) * (cockpitFlightData.y - bullseyeY));
+    azFrom = RTD * (float)atan2(cockpitFlightData.y - bullseyeY,
+                                cockpitFlightData.x - bullseyeX);
+    range = (float)sqrt(
+        (cockpitFlightData.x - bullseyeX) * (cockpitFlightData.x - bullseyeX) +
+        (cockpitFlightData.y - bullseyeY) * (cockpitFlightData.y - bullseyeY));
 
     if (azFrom < 0.0F)
         azFrom += 360.0F;

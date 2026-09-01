@@ -28,28 +28,12 @@ enum
     CWIN_SETCLIENTFLAGS,
 };
 
-char *C_Win_Tokens[] =
-{
-    "[NOTHING]",
-    "[Setup]",
-    "[X]",
-    "[Y]",
-    "[XY]",
-    "[W]",
-    "[H]",
-    "[Ranges]",
-    "[ClientArea]",
-    "[Font]",
-    "[Group]",
-    "[FLAGBITON]",
-    "[FLAGBITOFF]",
-    "[DEPTH]",
-    "[OPENMENU]",
-    "[OPENCLIENTMENU]",
-    "[CURSOR]",
-    "[DRAGH]",
-    "[CLIENTFLAG]",
-    0,
+char *C_Win_Tokens[] = {
+    "[NOTHING]",    "[Setup]", "[X]",          "[Y]",
+    "[XY]",         "[W]",     "[H]",          "[Ranges]",
+    "[ClientArea]", "[Font]",  "[Group]",      "[FLAGBITON]",
+    "[FLAGBITOFF]", "[DEPTH]", "[OPENMENU]",   "[OPENCLIENTMENU]",
+    "[CURSOR]",     "[DRAGH]", "[CLIENTFLAG]", 0,
 };
 
 #endif
@@ -62,15 +46,15 @@ enum
 // Pattern for drawing Hi-lited translucent rectangles
 // over controls
 
-short SubTable[16] =
-{
+short SubTable[16] = {
 
     8, 8, 7, 7, 6, 6, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1,
 };
 
-short TableVal[] =
-{
-    0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+short TableVal[] = {
+    0,  2,  4,  6,  8,  10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30,
+    32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
+    32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32, 32,
 };
 
 extern C_Handler *gMainHandler;
@@ -85,18 +69,18 @@ extern WORD RGB8toRGB565(DWORD);
 
 
 // NEVER CALL THESE FUNCTIONS YOURSELF
-F4CSECTIONHANDLE* UI_Enter(C_Window *Parent)
+F4CSECTIONHANDLE *UI_Enter(C_Window *Parent)
 {
     if (Parent and Parent->GetCritical())
     {
         F4EnterCriticalSection(Parent->GetCritical());
-        return(Parent->GetCritical());
+        return (Parent->GetCritical());
     }
 
-    return(NULL);
+    return (NULL);
 }
 
-void UI_Leave(F4CSECTIONHANDLE* Section)
+void UI_Leave(F4CSECTIONHANDLE *Section)
 {
     if (Section)
         F4LeaveCriticalSection(Section);
@@ -111,13 +95,10 @@ void UI_Leave(F4CSECTIONHANDLE* Section)
 //
 // Referenced in cthread.cpp... so if modified, must modify #define there also
 #define CIRCLE_POINTS 5
-float Circle8[CIRCLE_POINTS][2] =
-{
-    { 0.000000000f, 1.000000000f },
-    { 0.195090322f, 0.980785280f },
-    { 0.382683432f, 0.923879532f },
-    { 0.555570233f, 0.831469612f },
-    { 0.707106781f, 0.707106781f },
+float Circle8[CIRCLE_POINTS][2] = {
+    {0.000000000f, 1.000000000f}, {0.195090322f, 0.980785280f},
+    {0.382683432f, 0.923879532f}, {0.555570233f, 0.831469612f},
+    {0.707106781f, 0.707106781f},
 };
 
 C_Window::C_Window()
@@ -137,8 +118,8 @@ C_Window::C_Window()
     Flags_ = C_BIT_NOTHING;
     Group_ = 0; // Nothing
     DefaultFlags_ = C_BIT_REMOVE;
-    memset(ClientMenuID_, 0, sizeof(long)*WIN_MAX_CLIENTS);
-    memset(ClientFlags_, C_BIT_ENABLED, sizeof(long)*WIN_MAX_CLIENTS);
+    memset(ClientMenuID_, 0, sizeof(long) * WIN_MAX_CLIENTS);
+    memset(ClientFlags_, C_BIT_ENABLED, sizeof(long) * WIN_MAX_CLIENTS);
     Depth_ = 10;
     Font_ = 1;
     CursorID_ = 0;
@@ -214,7 +195,9 @@ void C_Window::Setup(long wID, short Type, short w, short h)
         HScroll_[i] = NULL;
         FullClientArea_[i] = Area_;
         ClientArea_[i] = Area_;
-        SetVirtual(ClientArea_[i].left, ClientArea_[i].top, ClientArea_[i].right - ClientArea_[i].left, ClientArea_[i].bottom - ClientArea_[i].top, i);
+        SetVirtual(ClientArea_[i].left, ClientArea_[i].top,
+                   ClientArea_[i].right - ClientArea_[i].left,
+                   ClientArea_[i].bottom - ClientArea_[i].top, i);
     }
 
     CurControl_ = NULL;
@@ -254,7 +237,7 @@ void C_Window::Cleanup()
 {
     CONTROLLIST *cur, *last;
 
-    if (Controls_ and not (Flags_ bitand C_BIT_NOCLEANUP))
+    if (Controls_ and not(Flags_ bitand C_BIT_NOCLEANUP))
     {
         cur = Controls_;
 
@@ -293,7 +276,7 @@ void C_Window::SetXY(short NewX, short NewY)
 
 void C_Window::SetX(short NewX)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (NewX < MinX_)
         NewX = MinX_;
@@ -308,7 +291,7 @@ void C_Window::SetX(short NewX)
 
 void C_Window::SetW(short NewW)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (NewW < MinW_)
         NewW = MinW_;
@@ -323,7 +306,7 @@ void C_Window::SetW(short NewW)
 
 void C_Window::SetH(short NewH)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (NewH < MinH_)
         NewH = MinH_;
@@ -338,7 +321,7 @@ void C_Window::SetH(short NewH)
 
 void C_Window::SetY(short NewY)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (NewY < MinY_)
         NewY = MinY_;
@@ -353,14 +336,16 @@ void C_Window::SetY(short NewY)
 
 short C_Window::GetPrimaryW()
 {
-    long lResult = (Handler_ ? (Handler_->GetW()) : 800); // why 800? default screen width?
+    long lResult =
+        (Handler_ ? (Handler_->GetW()) : 800); // why 800? default screen width?
     // if(Handler_)
     // return(Handler_->GetW());
     // return(800);
     return static_cast<short>(lResult);
 }
 
-void C_Window::SetRanges(short x1, short y1, short x2, short y2, short w, short h)
+void C_Window::SetRanges(short x1, short y1, short x2, short y2, short w,
+                         short h)
 {
     MinX_ = x1;
     MinY_ = y1;
@@ -377,7 +362,7 @@ void C_Window::ScanClientArea(long client)
     if (client >= WIN_MAX_CLIENTS)
         return;
 
-    if ( not VScroll_[client] and not HScroll_[client])
+    if (not VScroll_[client] and not HScroll_[client])
         return;
 
     VW_[client] = 0;
@@ -387,7 +372,10 @@ void C_Window::ScanClientArea(long client)
 
     while (cur)
     {
-        if (cur->Control_ and not (cur->Control_->GetFlags() bitand C_BIT_ABSOLUTE) and not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE) and cur->Control_->GetClient() == client)
+        if (cur->Control_ and
+            not(cur->Control_->GetFlags() bitand C_BIT_ABSOLUTE) and
+            not(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE) and
+            cur->Control_->GetClient() == client)
         {
             if ((cur->Control_->GetX() + cur->Control_->GetW()) > VW_[client])
                 VW_[client] = cur->Control_->GetX() + cur->Control_->GetW();
@@ -404,7 +392,8 @@ void C_Window::ScanClientArea(long client)
         HScroll_[client]->ClearVW();
         HScroll_[client]->SetVirtualW(VW_[client]);
 
-        if (VW_[client] > (ClientArea_[client].right - ClientArea_[client].left))
+        if (VW_[client] >
+            (ClientArea_[client].right - ClientArea_[client].left))
         {
             if (VX_[client] < -(VW_[client] - ClientArea_[client].right))
                 VX_[client] = -(VW_[client] - ClientArea_[client].right);
@@ -414,7 +403,8 @@ void C_Window::ScanClientArea(long client)
 
         HScroll_[client]->UpdatePosition();
 
-        if (VW_[client] > (ClientArea_[client].right - ClientArea_[client].left))
+        if (VW_[client] >
+            (ClientArea_[client].right - ClientArea_[client].left))
         {
             HScroll_[client]->SetFlagBitOff(C_BIT_INVISIBLE);
             HScroll_[client]->Refresh();
@@ -431,7 +421,8 @@ void C_Window::ScanClientArea(long client)
         VScroll_[client]->ClearVH();
         VScroll_[client]->SetVirtualH(VH_[client]);
 
-        if (VH_[client] > (ClientArea_[client].bottom - ClientArea_[client].top))
+        if (VH_[client] >
+            (ClientArea_[client].bottom - ClientArea_[client].top))
         {
             if (VY_[client] < -(VH_[client] - ClientArea_[client].bottom))
                 VY_[client] = -(VH_[client] - ClientArea_[client].bottom);
@@ -441,7 +432,8 @@ void C_Window::ScanClientArea(long client)
 
         VScroll_[client]->UpdatePosition();
 
-        if (VH_[client] > (ClientArea_[client].bottom - ClientArea_[client].top))
+        if (VH_[client] >
+            (ClientArea_[client].bottom - ClientArea_[client].top))
         {
             VScroll_[client]->SetFlagBitOff(C_BIT_INVISIBLE);
             VScroll_[client]->Refresh();
@@ -496,7 +488,7 @@ void C_Window::AddUpdateRect(long x1, long y1, long x2, long y2)
     use = -1;
 
     for (i = 0; i < rectcount_; i++)
-        if ( not rectflag_[i])
+        if (not rectflag_[i])
         {
             use = i;
             i = rectcount_ + 1;
@@ -539,7 +531,8 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
         {
             if (rectflag_[i])
             {
-                if (x1 >= rectlist_[i].right or x2 <= rectlist_[i].left or y1 >= rectlist_[i].bottom or y2 <= rectlist_[i].top)
+                if (x1 >= rectlist_[i].right or x2 <= rectlist_[i].left or
+                    y1 >= rectlist_[i].bottom or y2 <= rectlist_[i].top)
                 {
                     // rects don't intersect
                     continue;
@@ -560,10 +553,11 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
                     if (y2 <= rectlist_[i].bottom)
                         clipflag or_eq _CHR_CLIP_BOTTOM;
 
-                    if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
-                        return(0); // new rect is inside another rect
+                    if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor
+                                     _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
+                        return (0); // new rect is inside another rect
 
-                    if ( not clipflag)
+                    if (not clipflag)
                         continue;
 
                     if (clipflag == (_CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
@@ -573,7 +567,8 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
                         x1 = rectlist_[i].left;
                         y2 = rectlist_[i].top;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag ==
+                             (_CHR_CLIP_LEFT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 2
                         SetCheckedUpdateRect(x1, y1, x2, rectlist_[i].top);
@@ -614,22 +609,28 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
                         // case 8
                         rectlist_[i].right = x1;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag ==
+                             (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT bitor
+                              _CHR_CLIP_BOTTOM))
                     {
                         // case 9
                         y2 = rectlist_[i].top;
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag ==
+                             (_CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor
+                              _CHR_CLIP_BOTTOM))
                     {
                         // case 10
                         x2 = rectlist_[i].left;
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor
+                                          _CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
                     {
                         // case 11
                         y1 = rectlist_[i].bottom;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor
+                                          _CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 12
                         x1 = rectlist_[i].right;
@@ -653,53 +654,64 @@ long C_Window::SetCheckedUpdateRect(long x1, long y1, long x2, long y2)
         if (x1 < x2 and y1 < y2)
         {
             AddUpdateRect(x1, y1, x2, y2);
-            return(1);
+            return (1);
         }
     }
     else
-        return(-1);
+        return (-1);
 
-    return(0);
+    return (0);
 }
 
-void C_Window::SetUpdateRect(long x1, long y1, long x2, long y2, long flags, long client)
+void C_Window::SetUpdateRect(long x1, long y1, long x2, long y2, long flags,
+                             long client)
 {
     short i;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if (Handler_ == NULL) return;
+    if (Handler_ == NULL)
+        return;
 
-    if ( not (flags bitand C_BIT_ABSOLUTE))
+    if (not(flags bitand C_BIT_ABSOLUTE))
     {
         x1 += VX_[client];
         y1 += VY_[client];
         x2 += VX_[client];
         y2 += VY_[client];
 
-        if (x1 > ClientArea_[client].right or y1 > ClientArea_[client].bottom or x2 < ClientArea_[client].left or y2 < ClientArea_[client].top)
+        if (x1 > ClientArea_[client].right or y1 > ClientArea_[client].bottom or
+            x2 < ClientArea_[client].left or y2 < ClientArea_[client].top)
             return;
 
         // original code
-        if (x1 < ClientArea_[client].left) x1 = ClientArea_[client].left;
+        if (x1 < ClientArea_[client].left)
+            x1 = ClientArea_[client].left;
 
-        if (y1 < ClientArea_[client].top) y1 = ClientArea_[client].top;
+        if (y1 < ClientArea_[client].top)
+            y1 = ClientArea_[client].top;
 
-        if (x2 > ClientArea_[client].right) x2 = ClientArea_[client].right;
+        if (x2 > ClientArea_[client].right)
+            x2 = ClientArea_[client].right;
 
-        if (y2 > ClientArea_[client].bottom) y2 = ClientArea_[client].bottom;
+        if (y2 > ClientArea_[client].bottom)
+            y2 = ClientArea_[client].bottom;
     }
     else
     {
         if (x1 > GetW() or y1 > GetH() or x2 < 0 or y2 < 0)
             return;
 
-        if (x1 < 0) x1 = 0;
+        if (x1 < 0)
+            x1 = 0;
 
-        if (y1 < 0) y1 = 0;
+        if (y1 < 0)
+            y1 = 0;
 
-        if (x2 > GetW()) x2 = GetW();
+        if (x2 > GetW())
+            x2 = GetW();
 
-        if (y2 > GetH()) y2 = GetH();
+        if (y2 > GetH())
+            y2 = GetH();
     }
 
     Leave = UI_Enter(this);
@@ -735,7 +747,8 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
         {
             if (rectflag_[i])
             {
-                if (x1 >= rectlist_[i].right or x2 <= rectlist_[i].left or y1 >= rectlist_[i].bottom or y2 <= rectlist_[i].top)
+                if (x1 >= rectlist_[i].right or x2 <= rectlist_[i].left or
+                    y1 >= rectlist_[i].bottom or y2 <= rectlist_[i].top)
                 {
                     // rects don't intersect
                     continue;
@@ -758,28 +771,34 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
 
                     oldrect = rectlist_[i];
 
-                    if ( not clipflag)
+                    if (not clipflag)
                     {
                         // clear rect contains rect... remove cur
                         rectflag_[i] = 0;
                     }
 
-                    if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
+                    if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor
+                                     _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // clear rect is totally inside current rect... break into 4
                         rectflag_[i] = 0;
-                        SetCheckedUpdateRect(oldrect.left, oldrect.top, oldrect.right, y1);
+                        SetCheckedUpdateRect(oldrect.left, oldrect.top,
+                                             oldrect.right, y1);
                         SetCheckedUpdateRect(oldrect.left, y1, x1, y2);
                         SetCheckedUpdateRect(x2, y1, oldrect.right, y2);
-                        SetCheckedUpdateRect(oldrect.left, y2, oldrect.right, oldrect.bottom);
+                        SetCheckedUpdateRect(oldrect.left, y2, oldrect.right,
+                                             oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag ==
+                             (_CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 1
                         rectlist_[i].top = y2;
-                        SetCheckedUpdateRect(x2, oldrect.top, oldrect.right, y2);
+                        SetCheckedUpdateRect(x2, oldrect.top, oldrect.right,
+                                             y2);
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag ==
+                             (_CHR_CLIP_LEFT bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 2
                         rectlist_[i].top = y2;
@@ -789,13 +808,15 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
                     {
                         // case 3
                         rectlist_[i].bottom = y1;
-                        SetCheckedUpdateRect(x2, y1, oldrect.right, oldrect.bottom);
+                        SetCheckedUpdateRect(x2, y1, oldrect.right,
+                                             oldrect.bottom);
                     }
                     else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP))
                     {
                         // case 4
                         rectlist_[i].bottom = y1;
-                        SetCheckedUpdateRect(oldrect.left, y1, x1, oldrect.bottom);
+                        SetCheckedUpdateRect(oldrect.left, y1, x1,
+                                             oldrect.bottom);
                     }
                     else if (clipflag == _CHR_CLIP_BOTTOM)
                     {
@@ -817,47 +838,63 @@ void C_Window::ClearCheckedUpdateRect(long x1, long y1, long x2, long y2)
                         // case 8
                         rectlist_[i].right = x1;
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag ==
+                             (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT bitor
+                              _CHR_CLIP_BOTTOM))
                     {
                         // case 9
                         rectlist_[i].top = y2;
                         SetCheckedUpdateRect(oldrect.left, oldrect.top, x1, y2);
-                        SetCheckedUpdateRect(x2, oldrect.top, oldrect.right, y2);
+                        SetCheckedUpdateRect(x2, oldrect.top, oldrect.right,
+                                             y2);
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag ==
+                             (_CHR_CLIP_TOP bitor _CHR_CLIP_RIGHT bitor
+                              _CHR_CLIP_BOTTOM))
                     {
                         // case 10
                         rectlist_[i].left = x2;
                         SetCheckedUpdateRect(oldrect.left, oldrect.top, x2, y1);
-                        SetCheckedUpdateRect(oldrect.left, y2, x2, oldrect.bottom);
+                        SetCheckedUpdateRect(oldrect.left, y2, x2,
+                                             oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
+                    else if (clipflag == (_CHR_CLIP_TOP bitor
+                                          _CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
                     {
                         // case 11
                         rectlist_[i].bottom = y1;
-                        SetCheckedUpdateRect(oldrect.left, y1, x1, oldrect.bottom);
-                        SetCheckedUpdateRect(x2, y1, oldrect.right, oldrect.bottom);
+                        SetCheckedUpdateRect(oldrect.left, y1, x1,
+                                             oldrect.bottom);
+                        SetCheckedUpdateRect(x2, y1, oldrect.right,
+                                             oldrect.bottom);
                     }
-                    else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
+                    else if (clipflag == (_CHR_CLIP_LEFT bitor
+                                          _CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 12
                         rectlist_[i].right = x1;
-                        SetCheckedUpdateRect(x1, oldrect.top, oldrect.right, y1);
-                        SetCheckedUpdateRect(x1, y2, oldrect.right, oldrect.bottom);
+                        SetCheckedUpdateRect(x1, oldrect.top, oldrect.right,
+                                             y1);
+                        SetCheckedUpdateRect(x1, y2, oldrect.right,
+                                             oldrect.bottom);
                     }
                     else if (clipflag == (_CHR_CLIP_TOP bitor _CHR_CLIP_BOTTOM))
                     {
                         // case 15
                         rectflag_[i] = 0;
-                        SetCheckedUpdateRect(oldrect.left, oldrect.top, oldrect.right, y1);
-                        SetCheckedUpdateRect(oldrect.left, y2, oldrect.right, oldrect.bottom);
+                        SetCheckedUpdateRect(oldrect.left, oldrect.top,
+                                             oldrect.right, y1);
+                        SetCheckedUpdateRect(oldrect.left, y2, oldrect.right,
+                                             oldrect.bottom);
                     }
                     else if (clipflag == (_CHR_CLIP_LEFT bitor _CHR_CLIP_RIGHT))
                     {
                         // case 16
                         rectflag_[i] = 0;
-                        SetCheckedUpdateRect(oldrect.left, oldrect.top, x1, oldrect.bottom);
-                        SetCheckedUpdateRect(x2, oldrect.top, oldrect.right, oldrect.bottom);
+                        SetCheckedUpdateRect(oldrect.left, oldrect.top, x1,
+                                             oldrect.bottom);
+                        SetCheckedUpdateRect(x2, oldrect.top, oldrect.right,
+                                             oldrect.bottom);
                     }
                 }
             }
@@ -887,13 +924,17 @@ void C_Window::ClearUpdateRect(long x1, long y1, long x2, long y2)
         return;
     }
 
-    if (x1 < 0) x1 = 0;
+    if (x1 < 0)
+        x1 = 0;
 
-    if (y1 < 0) y1 = 0;
+    if (y1 < 0)
+        y1 = 0;
 
-    if (x2 > GetW()) x2 = GetW();
+    if (x2 > GetW())
+        x2 = GetW();
 
-    if (y2 > GetH()) y2 = GetH();
+    if (y2 > GetH())
+        y2 = GetH();
 
     ClearCheckedUpdateRect(x1, y1, x2, y2);
 
@@ -925,13 +966,13 @@ void C_Window::AddScrollBar(C_ScrollBar *scroll)
 {
     switch (scroll->GetType())
     {
-        case C_TYPE_VERTICAL:
-            VScroll_[scroll->GetClient()] = scroll;
-            break;
+    case C_TYPE_VERTICAL:
+        VScroll_[scroll->GetClient()] = scroll;
+        break;
 
-        case C_TYPE_HORIZONTAL:
-            HScroll_[scroll->GetClient()] = scroll;
-            break;
+    case C_TYPE_HORIZONTAL:
+        HScroll_[scroll->GetClient()] = scroll;
+        break;
     }
 
     AddControl(scroll);
@@ -979,9 +1020,9 @@ void C_Window::ClearActiveControl()
 void C_Window::AddControlTop(C_Base *NewControl)
 {
     CONTROLLIST *cnt;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if ( not NewControl)
+    if (not NewControl)
         return;
 
     if (NewControl->GetID() > 0)
@@ -989,7 +1030,8 @@ void C_Window::AddControlTop(C_Base *NewControl)
             return;
 
 #ifdef USE_SH_POOLS
-    cnt = (CONTROLLIST *)MemAllocPtr(UI_Pools[UI_CONTROL_POOL], sizeof(CONTROLLIST), FALSE);
+    cnt = (CONTROLLIST *)MemAllocPtr(UI_Pools[UI_CONTROL_POOL],
+                                     sizeof(CONTROLLIST), FALSE);
 #else
     cnt = new CONTROLLIST;
 #endif
@@ -999,7 +1041,7 @@ void C_Window::AddControlTop(C_Base *NewControl)
 
     Leave = UI_Enter(this);
 
-    if ( not Controls_)
+    if (not Controls_)
         Controls_ = cnt;
     else
     {
@@ -1010,16 +1052,22 @@ void C_Window::AddControlTop(C_Base *NewControl)
     NewControl->SetParent(this);
     NewControl->SetSubParents(this);
 
-    if ( not (NewControl->GetFlags() bitand C_BIT_ABSOLUTE))
+    if (not(NewControl->GetFlags() bitand C_BIT_ABSOLUTE))
     {
         if (VScroll_[NewControl->GetClient()])
         {
-            VScroll_[NewControl->GetClient()]->SetVirtualH(NewControl->GetY() + NewControl->GetH()); //+ClientArea_[NewControl->GetClient()].top);
+            VScroll_[NewControl->GetClient()]->SetVirtualH(
+                NewControl->GetY() +
+                NewControl
+                    ->GetH()); //+ClientArea_[NewControl->GetClient()].top);
         }
 
         if (HScroll_[NewControl->GetClient()])
         {
-            HScroll_[NewControl->GetClient()]->SetVirtualW(NewControl->GetX() + NewControl->GetW()); //+ClientArea_[NewControl->GetClient()].left);
+            HScroll_[NewControl->GetClient()]->SetVirtualW(
+                NewControl->GetX() +
+                NewControl
+                    ->GetW()); //+ClientArea_[NewControl->GetClient()].left);
         }
     }
 
@@ -1032,9 +1080,9 @@ void C_Window::AddControlTop(C_Base *NewControl)
 void C_Window::AddControl(C_Base *NewControl)
 {
     CONTROLLIST *cnt;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if ( not NewControl)
+    if (not NewControl)
         return;
 
     //F4Assert(NewControl->GetID() >0 or NewControl->GetID() == C_DONT_CARE);
@@ -1050,7 +1098,8 @@ void C_Window::AddControl(C_Base *NewControl)
     }
 
 #ifdef USE_SH_POOLS
-    cnt = (CONTROLLIST *)MemAllocPtr(UI_Pools[UI_CONTROL_POOL], sizeof(CONTROLLIST), FALSE);
+    cnt = (CONTROLLIST *)MemAllocPtr(UI_Pools[UI_CONTROL_POOL],
+                                     sizeof(CONTROLLIST), FALSE);
 #else
     cnt = new CONTROLLIST;
 #endif
@@ -1059,7 +1108,7 @@ void C_Window::AddControl(C_Base *NewControl)
 
     Leave = UI_Enter(this);
 
-    if ( not Controls_)
+    if (not Controls_)
     {
         Controls_ = cnt;
         Controls_->Prev = NULL;
@@ -1076,16 +1125,22 @@ void C_Window::AddControl(C_Base *NewControl)
     NewControl->SetSubParents(this);
     ControlCount_++;
 
-    if ( not (NewControl->GetFlags() bitand C_BIT_ABSOLUTE))
+    if (not(NewControl->GetFlags() bitand C_BIT_ABSOLUTE))
     {
         if (VScroll_[NewControl->GetClient()])
         {
-            VScroll_[NewControl->GetClient()]->SetVirtualH(NewControl->GetY() + NewControl->GetH()); //+ClientArea_[NewControl->GetClient()].top);
+            VScroll_[NewControl->GetClient()]->SetVirtualH(
+                NewControl->GetY() +
+                NewControl
+                    ->GetH()); //+ClientArea_[NewControl->GetClient()].top);
         }
 
         if (HScroll_[NewControl->GetClient()])
         {
-            HScroll_[NewControl->GetClient()]->SetVirtualW(NewControl->GetX() + NewControl->GetW()); //+ClientArea_[NewControl->GetClient()].left);
+            HScroll_[NewControl->GetClient()]->SetVirtualW(
+                NewControl->GetX() +
+                NewControl
+                    ->GetW()); //+ClientArea_[NewControl->GetClient()].left);
         }
     }
 
@@ -1100,7 +1155,7 @@ void C_Window::AddControl(C_Base *NewControl)
 void C_Window::RemoveControl(long ID)
 {
     CONTROLLIST *cur;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     if (Controls_ == NULL or ID == C_DONT_CARE)
         return;
@@ -1126,10 +1181,10 @@ void C_Window::RemoveControl(long ID)
 CONTROLLIST *C_Window::RemoveControl(CONTROLLIST *ctrl)
 {
     CONTROLLIST *retval;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if ( not Controls_ or not ctrl)
-        return(NULL);
+    if (not Controls_ or not ctrl)
+        return (NULL);
 
     Leave = UI_Enter(this);
 
@@ -1172,13 +1227,13 @@ CONTROLLIST *C_Window::RemoveControl(CONTROLLIST *ctrl)
     delete ctrl;
 
     UI_Leave(Leave);
-    return(retval);
+    return (retval);
 }
 
 void C_Window::RemoveAllControls()
 {
     CONTROLLIST *cur, *last;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     Leave = UI_Enter(this);
     cur = Controls_;
@@ -1206,26 +1261,28 @@ void C_Window::RemoveAllControls()
 
 BOOL C_Window::InsideClientWidth(long left, long right, long Client)
 {
-    if ((left + VX_[Client] + VW_[Client]) < ClientArea_[Client].right and (right + VX_[Client]) >= ClientArea_[Client].left)
-        return(TRUE);
+    if ((left + VX_[Client] + VW_[Client]) < ClientArea_[Client].right and
+        (right + VX_[Client]) >= ClientArea_[Client].left)
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Window::InsideClientHeight(long top, long bottom, long Client)
 {
-    if ((top + VY_[Client]) < ClientArea_[Client].bottom and (bottom + VY_[Client]) >= ClientArea_[Client].top)
-        return(TRUE);
+    if ((top + VY_[Client]) < ClientArea_[Client].bottom and
+        (bottom + VY_[Client]) >= ClientArea_[Client].top)
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Window::BelowClient(long y, long Client)
 {
     if (y + VY_[Client] >= ClientArea_[Client].bottom)
-        return(TRUE);
+        return (TRUE);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Window::RefreshWindow()
@@ -1236,8 +1293,11 @@ void C_Window::RefreshWindow()
 
 void C_Window::RefreshClient(long Client)
 {
-    ClearUpdateRect(ClientArea_[Client].left, ClientArea_[Client].top, ClientArea_[Client].right, ClientArea_[Client].bottom);
-    SetUpdateRect(ClientArea_[Client].left, ClientArea_[Client].top, ClientArea_[Client].right, ClientArea_[Client].bottom, C_BIT_ABSOLUTE, 0);
+    ClearUpdateRect(ClientArea_[Client].left, ClientArea_[Client].top,
+                    ClientArea_[Client].right, ClientArea_[Client].bottom);
+    SetUpdateRect(ClientArea_[Client].left, ClientArea_[Client].top,
+                  ClientArea_[Client].right, ClientArea_[Client].bottom,
+                  C_BIT_ABSOLUTE, 0);
 }
 
 void C_Window::DrawWindow(SCREEN *surface)
@@ -1317,7 +1377,7 @@ void C_Window::HideGroup(long ID)
     {
         if (cur->Control_->GetGroup() == ID)
         {
-            if ( not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (not(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
                 cur->Control_->Refresh();
 
             cur->Control_->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -1389,7 +1449,7 @@ void C_Window::HideCluster(long ID)
     {
         if (cur->Control_->GetCluster() == ID)
         {
-            if ( not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (not(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
                 cur->Control_->Refresh();
 
             cur->Control_->SetFlagBitOn(C_BIT_INVISIBLE);
@@ -1419,10 +1479,13 @@ void C_Window::DrawTimerControls()
 void C_Window::ClearWindow(SCREEN *surface, long Client)
 {
     BlitFill(surface, BgColor_, &ClientArea_[Client], C_BIT_ABSOLUTE, Client);
-    SetUpdateRect(ClientArea_[Client].left, ClientArea_[Client].top, ClientArea_[Client].right, ClientArea_[Client].bottom, C_BIT_ABSOLUTE, 0);
+    SetUpdateRect(ClientArea_[Client].left, ClientArea_[Client].top,
+                  ClientArea_[Client].right, ClientArea_[Client].bottom,
+                  C_BIT_ABSOLUTE, 0);
 }
 
-void C_Window::ClearArea(SCREEN *surface, long x, long y, long w, long h, long flags, long Client)
+void C_Window::ClearArea(SCREEN *surface, long x, long y, long w, long h,
+                         long flags, long Client)
 {
     UI95_RECT rect;
 
@@ -1456,9 +1519,14 @@ C_Base *C_Window::GetControl(long *ID, long relX, long relY)
             }
             else
             {
-                if (relX >= ClientArea_[cur->Control_->GetClient()].left and relX <= ClientArea_[cur->Control_->GetClient()].right and relY >= ClientArea_[cur->Control_->GetClient()].top and relY <= ClientArea_[cur->Control_->GetClient()].bottom)
+                if (relX >= ClientArea_[cur->Control_->GetClient()].left and
+                    relX <= ClientArea_[cur->Control_->GetClient()].right and
+                    relY >= ClientArea_[cur->Control_->GetClient()].top and
+                    relY <= ClientArea_[cur->Control_->GetClient()].bottom)
                 {
-                    thisID = cur->Control_->CheckHotSpots(relX - VX_[cur->Control_->GetClient()], relY - VY_[cur->Control_->GetClient()]);
+                    thisID = cur->Control_->CheckHotSpots(
+                        relX - VX_[cur->Control_->GetClient()],
+                        relY - VY_[cur->Control_->GetClient()]);
 
                     if (thisID)
                     {
@@ -1473,11 +1541,11 @@ C_Base *C_Window::GetControl(long *ID, long relX, long relY)
     if (lastID)
     {
         *ID = lastID;
-        return(last);
+        return (last);
     }
 
     *ID = 0;
-    return(NULL);
+    return (NULL);
 }
 
 C_Base *C_Window::FindControl(long ID)
@@ -1488,34 +1556,35 @@ C_Base *C_Window::FindControl(long ID)
         return NULL;
 
     if (ID > 0)
-        cur = (CONTROLLIST*)Hash_->Find(ID);
+        cur = (CONTROLLIST *)Hash_->Find(ID);
 
     if (cur)
-        return(cur->Control_);
+        return (cur->Control_);
 
-    return(NULL);
+    return (NULL);
 }
 
 CONTROLLIST *C_Window::FindControlInList(C_Base *cntrl)
 {
     CONTROLLIST *cur;
 
-    if ( not cntrl) return(NULL);
+    if (not cntrl)
+        return (NULL);
 
     if (cntrl->GetID() > 0)
-        return((CONTROLLIST*)Hash_->Find(cntrl->GetID()));
+        return ((CONTROLLIST *)Hash_->Find(cntrl->GetID()));
 
     cur = Controls_;
 
     while (cur)
     {
         if (cur->Control_ == cntrl)
-            return(cur);
+            return (cur);
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 C_Base *C_Window::MouseOver(long relx, long rely, C_Base *lastover)
@@ -1536,18 +1605,14 @@ C_Base *C_Window::MouseOver(long relx, long rely, C_Base *lastover)
                 Found_ = cur->Control_->GetMe();
             }
         }
-        else if (
-            relx >= ClientArea_[cur->Control_->GetClient()].left and 
-            relx <= ClientArea_[cur->Control_->GetClient()].right and 
-            rely >= ClientArea_[cur->Control_->GetClient()].top and 
-            rely <= ClientArea_[cur->Control_->GetClient()].bottom
-        )
+        else if (relx >= ClientArea_[cur->Control_->GetClient()].left and
+                 relx <= ClientArea_[cur->Control_->GetClient()].right and
+                 rely >= ClientArea_[cur->Control_->GetClient()].top and
+                 rely <= ClientArea_[cur->Control_->GetClient()].bottom)
         {
-            if (
-                cur->Control_->MouseOver(
-                    relx - VX_[cur->Control_->GetClient()], rely - VY_[cur->Control_->GetClient()], lastover
-                )
-            )
+            if (cur->Control_->MouseOver(relx - VX_[cur->Control_->GetClient()],
+                                         rely - VY_[cur->Control_->GetClient()],
+                                         lastover))
             {
                 Found_ = cur->Control_->GetMe();
             }
@@ -1561,7 +1626,8 @@ C_Base *C_Window::MouseOver(long relx, long rely, C_Base *lastover)
 
 void C_Window::GetScreenFormat()
 {
-    UI95_GetScreenColorInfo(r_mask_, r_shift_, g_mask_, g_shift_, b_mask_, b_shift_);
+    UI95_GetScreenColorInfo(r_mask_, r_shift_, g_mask_, g_shift_, b_mask_,
+                            b_shift_);
     //UI95_GetScreenColorInfo(&r_mask_,&r_shift_,&g_mask_,&g_shift_,&b_mask_,&b_shift_);
     r_max_ = static_cast<WORD>(r_mask_ >> r_shift_);
     g_max_ = static_cast<WORD>(g_mask_ >> g_shift_);
@@ -1601,19 +1667,22 @@ BOOL C_Window::ClipToArea(UI95_RECT *src, UI95_RECT *dst, UI95_RECT *ClipArea)
     }
 
     if (dst->left < dst->right and dst->top < dst->bottom)
-        return(TRUE); // Draw it
+        return (TRUE); // Draw it
 
-    return(FALSE);
+    return (FALSE);
 }
 
-void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI95_RECT *brect, short bwidth, WORD *dest, UI95_RECT *drect, short dwidth, short fperc, short bperc)
+void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back,
+                     UI95_RECT *brect, short bwidth, WORD *dest,
+                     UI95_RECT *drect, short dwidth, short fperc, short bperc)
 {
     long i, j;
     long rf, rb, gf, gb, bf, bb;
     long fidx, bidx, didx;
     long fidxstart, bidxstart, didxstart;
 
-    if ( not front or not frect or not fwidth or not back or not brect or not bwidth or not dest or not drect or not dwidth)
+    if (not front or not frect or not fwidth or not back or not brect or
+        not bwidth or not dest or not drect or not dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -1636,7 +1705,10 @@ void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI
             gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
             bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
 
-            dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] bitor gShift[UIColorTable[100][gf + gb]] bitor bShift[UIColorTable[100][bf + bb]]); 
+            dest[didx] =
+                static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] bitor
+                                  gShift[UIColorTable[100][gf + gb]] bitor
+                                  bShift[UIColorTable[100][bf + bb]]);
             fidx++;
             bidx++;
             didx++;
@@ -1648,14 +1720,18 @@ void C_Window::Blend(WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI
     }
 }
 
-void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short fwidth, WORD *back, UI95_RECT *brect, short bwidth, WORD *dest, UI95_RECT *drect, short dwidth, short fperc, short bperc)
+void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect,
+                                short fwidth, WORD *back, UI95_RECT *brect,
+                                short bwidth, WORD *dest, UI95_RECT *drect,
+                                short dwidth, short fperc, short bperc)
 {
     long i, j;
     long rf, rb, gf, gb, bf, bb;
     long fidx, bidx, didx;
     long fidxstart, bidxstart, didxstart;
 
-    if ( not front or not frect or not fwidth or not back or not brect or not bwidth or not dest or not drect or not dwidth)
+    if (not front or not frect or not fwidth or not back or not brect or
+        not bwidth or not dest or not drect or not dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -1672,15 +1748,24 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
         {
             if (front[fidx] not_eq Mask)
             {
-                rf = UIColorTable[fperc][(front[fidx] bitand r_mask_) >> r_shift_];
-                gf = UIColorTable[fperc][(front[fidx] bitand g_mask_) >> g_shift_];
-                bf = UIColorTable[fperc][(front[fidx] bitand b_mask_) >> b_shift_];
+                rf = UIColorTable[fperc]
+                                 [(front[fidx] bitand r_mask_) >> r_shift_];
+                gf = UIColorTable[fperc]
+                                 [(front[fidx] bitand g_mask_) >> g_shift_];
+                bf = UIColorTable[fperc]
+                                 [(front[fidx] bitand b_mask_) >> b_shift_];
 
-                rb = UIColorTable[bperc][(back[bidx] bitand r_mask_) >> r_shift_];
-                gb = UIColorTable[bperc][(back[bidx] bitand g_mask_) >> g_shift_];
-                bb = UIColorTable[bperc][(back[bidx] bitand b_mask_) >> b_shift_];
+                rb = UIColorTable[bperc]
+                                 [(back[bidx] bitand r_mask_) >> r_shift_];
+                gb = UIColorTable[bperc]
+                                 [(back[bidx] bitand g_mask_) >> g_shift_];
+                bb = UIColorTable[bperc]
+                                 [(back[bidx] bitand b_mask_) >> b_shift_];
 
-                dest[didx] = static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] bitor gShift[UIColorTable[100][gf + gb]] bitor bShift[UIColorTable[100][bf + bb]]); 
+                dest[didx] =
+                    static_cast<WORD>(rShift[UIColorTable[100][rf + rb]] bitor
+                                      gShift[UIColorTable[100][gf + gb]] bitor
+                                      bShift[UIColorTable[100][bf + bb]]);
             }
             else
                 dest[didx] = back[bidx];
@@ -1696,14 +1781,16 @@ void C_Window::BlendTransparent(WORD Mask, WORD *front, UI95_RECT *frect, short 
     }
 }
 
-void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *dest, UI95_RECT *drect, short dwidth)
+void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth,
+                            WORD *dest, UI95_RECT *drect, short dwidth)
 {
     long i, j;
     long rf, gf, bf;
     long fidx, fidxstart;
     long didx, didxstart;
 
-    if ( not front or not frect or not fwidth  or not dest or not drect or not dwidth)
+    if (not front or not frect or not fwidth or not dest or not drect or
+        not dwidth)
         return;
 
     fidxstart = frect->top * fwidth;
@@ -1720,7 +1807,8 @@ void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *d
             gf = UIColorTable[0][(front[fidx] bitand g_mask_) >> g_shift_];
             bf = UIColorTable[0][(front[fidx] bitand b_mask_) >> b_shift_];
 
-            dest[j + i * dwidth] = static_cast<WORD>(rShift[rf] bitor gShift[gf] bitor bShift[bf]); 
+            dest[j + i * dwidth] =
+                static_cast<WORD>(rShift[rf] bitor gShift[gf] bitor bShift[bf]);
             fidx++;
             didx++;
         }
@@ -1730,7 +1818,8 @@ void C_Window::Translucency(WORD *front, UI95_RECT *frect, short fwidth, WORD *d
     }
 }
 
-void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_RECT *rect, long Flags, long Client)
+void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
+                               UI95_RECT *rect, long Flags, long Client)
 {
 
     int i, j;
@@ -1744,7 +1833,7 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
 
     if (Flags bitand C_BIT_ABSOLUTE)
     {
-        if ( not ClipToArea(&s, &d, &Area_))
+        if (not ClipToArea(&s, &d, &Area_))
             return;
     }
     else
@@ -1754,7 +1843,7 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
         d.right += VX_[Client];
         d.bottom += VY_[Client];
 
-        if ( not ClipToArea(&s, &d, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &d, &ClientArea_[Client]))
             return;
     }
 
@@ -1763,15 +1852,17 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
     d.right += GetX();
     d.bottom += GetY();
 
-    rc = UIColorTable[Perc][(color >>  3) bitand 0x1f];
+    rc = UIColorTable[Perc][(color >> 3) bitand 0x1f];
     gc = UIColorTable[Perc][(color >> 11) bitand 0x1f];
     bc = UIColorTable[Perc][(color >> 19) bitand 0x1f];
 
     bgperc = 100 - Perc;
 
-    if (bgperc < 0) bgperc = 0;
+    if (bgperc < 0)
+        bgperc = 0;
 
-    if (bgperc > 100) bgperc = 100;
+    if (bgperc > 100)
+        bgperc = 100;
 
     operc = Perc + bgperc;
 
@@ -1783,21 +1874,29 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
 
         for (j = d.left; j < d.right; j++)
         {
-            DWORD dc;//XX
+            DWORD dc; //XX
 
             if (surface->bpp == 32)
-                dc = RGB8toRGB565(((DWORD*)surface->mem)[ didx ]);
+                dc = RGB8toRGB565(((DWORD *)surface->mem)[didx]);
             else
                 dc = surface->mem[didx];
 
-            r = UIColorTable[operc][rc + UIColorTable[bgperc][(dc >> r_shift_) bitand 0x1f]];
-            g = UIColorTable[operc][gc + UIColorTable[bgperc][(dc >> g_shift_) bitand 0x1f]];
-            b = UIColorTable[operc][bc + UIColorTable[bgperc][(dc >> b_shift_) bitand 0x1f]];
+            r = UIColorTable[operc][rc +
+                                    UIColorTable[bgperc]
+                                                [(dc >> r_shift_) bitand 0x1f]];
+            g = UIColorTable[operc][gc +
+                                    UIColorTable[bgperc]
+                                                [(dc >> g_shift_) bitand 0x1f]];
+            b = UIColorTable[operc][bc +
+                                    UIColorTable[bgperc]
+                                                [(dc >> b_shift_) bitand 0x1f]];
 
             if (surface->bpp == 32) //XX
-                ((DWORD*)surface->mem)[ didx ] = RGB565toRGB8(static_cast<WORD>((rShift[r] bitor gShift[g] bitor bShift[b])));
+                ((DWORD *)surface->mem)[didx] = RGB565toRGB8(static_cast<WORD>(
+                    (rShift[r] bitor gShift[g] bitor bShift[b])));
             else
-                surface->mem[didx] = static_cast<WORD>((rShift[r] bitor gShift[g] bitor bShift[b]));
+                surface->mem[didx] = static_cast<WORD>(
+                    (rShift[r] bitor gShift[g] bitor bShift[b]));
 
 
             didx++;
@@ -1807,7 +1906,8 @@ void C_Window::BlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_
     }
 }
 
-void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc, UI95_RECT *rect, long Flags, long Client)
+void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
+                                     UI95_RECT *rect, long Flags, long Client)
 {
     int i, j;
     long r, g, b, rc, gc, bc;
@@ -1822,7 +1922,7 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
     {
         orig = d;
 
-        if ( not ClipToArea(&s, &d, &Area_))
+        if (not ClipToArea(&s, &d, &Area_))
             return;
     }
     else
@@ -1833,7 +1933,7 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
         d.bottom += VY_[Client];
         orig = d;
 
-        if ( not ClipToArea(&s, &d, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &d, &ClientArea_[Client]))
             return;
     }
 
@@ -1846,14 +1946,16 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
     orig.right += GetX();
     orig.bottom += GetY();
 
-    rc = (color >>  3) bitand 0x1f;
+    rc = (color >> 3) bitand 0x1f;
     gc = (color >> 11) bitand 0x1f;
     bc = (color >> 19) bitand 0x1f;
     bgperc = 100 - Perc;
 
-    if (bgperc < 0) bgperc = 0;
+    if (bgperc < 0)
+        bgperc = 0;
 
-    if (bgperc > 100) bgperc = 100;
+    if (bgperc > 100)
+        bgperc = 100;
 
     operc = Perc + bgperc;
 
@@ -1895,26 +1997,37 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
 
             if (sub < 17)
             {
-                DWORD dc;//XX
+                DWORD dc; //XX
 
                 if (surface->bpp == 32)
                 {
-                    dc = RGB8toRGB565(((DWORD*)surface->mem)[didx]);
+                    dc = RGB8toRGB565(((DWORD *)surface->mem)[didx]);
                 }
                 else
                 {
                     dc = surface->mem[didx];
                 }
 
-                r = UIColorTable[operc][UIColorTable[Perc - sub][rc] + UIColorTable[bgperc + sub][(dc >> r_shift_) bitand 0x1f]];
-                g = UIColorTable[operc][UIColorTable[Perc - sub][gc] + UIColorTable[bgperc + sub][(dc >> g_shift_) bitand 0x1f]];
-                b = UIColorTable[operc][UIColorTable[Perc - sub][bc] + UIColorTable[bgperc + sub][(dc >> b_shift_) bitand 0x1f]];
+                r = UIColorTable[operc]
+                                [UIColorTable[Perc - sub][rc] +
+                                 UIColorTable[bgperc + sub]
+                                             [(dc >> r_shift_) bitand 0x1f]];
+                g = UIColorTable[operc]
+                                [UIColorTable[Perc - sub][gc] +
+                                 UIColorTable[bgperc + sub]
+                                             [(dc >> g_shift_) bitand 0x1f]];
+                b = UIColorTable[operc]
+                                [UIColorTable[Perc - sub][bc] +
+                                 UIColorTable[bgperc + sub]
+                                             [(dc >> b_shift_) bitand 0x1f]];
 
-                if (surface->bpp == 32)//XX
-                    ((DWORD*)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(rShift[r] bitor gShift[g] bitor bShift[b]));
+                if (surface->bpp == 32) //XX
+                    ((DWORD *)surface->mem)[didx] =
+                        RGB565toRGB8(static_cast<short>(
+                            rShift[r] bitor gShift[g] bitor bShift[b]));
                 else
-                    surface->mem[didx] = static_cast<short>(rShift[r] bitor gShift[g] bitor bShift[b]);
-
+                    surface->mem[didx] = static_cast<short>(
+                        rShift[r] bitor gShift[g] bitor bShift[b]);
             }
 
             didx++;
@@ -1924,7 +2037,9 @@ void C_Window::CustomBlitTranslucent(SCREEN *surface, COLORREF color, long Perc,
     }
 }
 
-void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size, char *pattern, UI95_RECT *rect, long Flags, long Client)
+void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc,
+                          short size, char *pattern, UI95_RECT *rect,
+                          long Flags, long Client)
 {
     long mask;
     long i, j, k, l, ls;
@@ -1940,7 +2055,7 @@ void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size
 
     if (Flags bitand C_BIT_ABSOLUTE)
     {
-        if ( not ClipToArea(&s, &d, &Area_))
+        if (not ClipToArea(&s, &d, &Area_))
             return;
     }
     else
@@ -1950,7 +2065,7 @@ void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size
         d.right += VX_[Client];
         d.bottom += VY_[Client];
 
-        if ( not ClipToArea(&s, &d, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &d, &ClientArea_[Client]))
             return;
     }
 
@@ -1979,22 +2094,30 @@ void C_Window::DitherFill(SCREEN *surface, COLORREF color, long Perc, short size
             gf = (WORD)gc + pattern[(k bitand mask) * size + (l bitand mask)];
             bf = (WORD)bc + pattern[(k bitand mask) * size + (l bitand mask)];
 
-            if (rf < 0) rf = 0;
+            if (rf < 0)
+                rf = 0;
 
-            if (gf < 0) gf = 0;
+            if (gf < 0)
+                gf = 0;
 
-            if (bf < 0) bf = 0;
+            if (bf < 0)
+                bf = 0;
 
-            if (rf > 0x1f) rf = 0x1f;
+            if (rf > 0x1f)
+                rf = 0x1f;
 
-            if (gf > 0x1f) gf = 0x1f;
+            if (gf > 0x1f)
+                gf = 0x1f;
 
-            if (bf > 0x1f) bf = 0x1f;
+            if (bf > 0x1f)
+                bf = 0x1f;
 
             if (surface->bpp == 32) //XX
-                ((DWORD*)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(rShift[rf] bitor gShift[gf] bitor bShift[bf]));
+                ((DWORD *)surface->mem)[didx] = RGB565toRGB8(static_cast<short>(
+                    rShift[rf] bitor gShift[gf] bitor bShift[bf]));
             else
-                surface->mem[didx] = static_cast<short>(rShift[rf] bitor gShift[gf] bitor bShift[bf]);
+                surface->mem[didx] = static_cast<short>(
+                    rShift[rf] bitor gShift[gf] bitor bShift[bf]);
 
             l++;
             didx++;
@@ -2018,10 +2141,10 @@ void C_Window::Fill(SCREEN *surface, WORD Color, UI95_RECT *rect)
     h = rect->bottom - rect->top;
     addpos = (surface->width - w); // << 1;
 
-    if (surface->bpp == 32)//XX
+    if (surface->bpp == 32) //XX
     {
         DWORD c = RGB565toRGB8(Color);
-        DWORD* dptr = ((DWORD*)surface->mem) + startpos;
+        DWORD *dptr = ((DWORD *)surface->mem) + startpos;
 
         while (h--)
         {
@@ -2053,7 +2176,8 @@ void C_Window::Fill(SCREEN *surface, WORD Color, UI95_RECT *rect)
 }
 
 
-void C_Window::BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst, long Flags, long Client)
+void C_Window::BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst,
+                        long Flags, long Client)
 {
     UI95_RECT s, d;
 
@@ -2061,7 +2185,7 @@ void C_Window::BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst, long Fl
 
     if (Flags bitand C_BIT_ABSOLUTE)
     {
-        if ( not ClipToArea(&s, &d, &Area_))
+        if (not ClipToArea(&s, &d, &Area_))
             return;
     }
     else
@@ -2071,7 +2195,7 @@ void C_Window::BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst, long Fl
         d.right += VX_[Client];
         d.bottom += VY_[Client];
 
-        if ( not ClipToArea(&s, &d, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &d, &ClientArea_[Client]))
             return;
     }
 
@@ -2083,7 +2207,8 @@ void C_Window::BlitFill(SCREEN *surface, COLORREF Color, UI95_RECT *dst, long Fl
     Fill(surface, UI95_RGB24Bit(Color), &d);
 }
 
-void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_RECT *dst, long Flags, long Client)
+void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc,
+                            UI95_RECT *dst, long Flags, long Client)
 {
     UI95_RECT s, d;
     long col, r, g, b;
@@ -2092,7 +2217,7 @@ void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_REC
 
     if (Flags bitand C_BIT_ABSOLUTE)
     {
-        if ( not ClipToArea(&s, &d, &Area_))
+        if (not ClipToArea(&s, &d, &Area_))
             return;
     }
     else
@@ -2102,7 +2227,7 @@ void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_REC
         d.right += VX_[Client];
         d.bottom += VY_[Client];
 
-        if ( not ClipToArea(&s, &d, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &d, &ClientArea_[Client]))
             return;
     }
 
@@ -2121,7 +2246,8 @@ void C_Window::GradientFill(SCREEN *surface, COLORREF Color, long Perc, UI95_REC
     Fill(surface, (WORD)col, &d);
 }
 
-void C_Window::BlitFill(SCREEN *surface, COLORREF Color, long x, long y, long w, long h, long Flags, long Client, UI95_RECT *clip)
+void C_Window::BlitFill(SCREEN *surface, COLORREF Color, long x, long y, long w,
+                        long h, long Flags, long Client, UI95_RECT *clip)
 {
     UI95_RECT d, s;
 
@@ -2133,7 +2259,7 @@ void C_Window::BlitFill(SCREEN *surface, COLORREF Color, long x, long y, long w,
 
     if (Flags bitand C_BIT_ABSOLUTE)
     {
-        if ( not ClipToArea(&s, &d, &Area_))
+        if (not ClipToArea(&s, &d, &Area_))
             return;
     }
     else
@@ -2143,17 +2269,18 @@ void C_Window::BlitFill(SCREEN *surface, COLORREF Color, long x, long y, long w,
         d.right += VX_[Client];
         d.bottom += VY_[Client];
 
-        if ( not ClipToArea(&s, &d, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &d, &ClientArea_[Client]))
             return;
     }
 
-    if ( not ClipToArea(&s, &d, clip))
+    if (not ClipToArea(&s, &d, clip))
         return;
 
     BlitFill(surface, Color, &d, C_BIT_ABSOLUTE, 0);
 }
 
-void C_Window::DrawHLine(SCREEN *surface, COLORREF color, long x, long y, long w, long Flags, long Client, UI95_RECT *clip)
+void C_Window::DrawHLine(SCREEN *surface, COLORREF color, long x, long y,
+                         long w, long Flags, long Client, UI95_RECT *clip)
 {
     UI95_RECT rect, s;
 
@@ -2165,7 +2292,7 @@ void C_Window::DrawHLine(SCREEN *surface, COLORREF color, long x, long y, long w
 
     if (Flags bitand C_BIT_ABSOLUTE)
     {
-        if ( not ClipToArea(&s, &rect, &Area_))
+        if (not ClipToArea(&s, &rect, &Area_))
             return;
     }
     else
@@ -2175,20 +2302,21 @@ void C_Window::DrawHLine(SCREEN *surface, COLORREF color, long x, long y, long w
         rect.right += VX_[Client];
         rect.bottom += VY_[Client];
 
-        if ( not ClipToArea(&s, &rect, clip))
+        if (not ClipToArea(&s, &rect, clip))
             return;
 
-        if ( not ClipToArea(&s, &rect, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &rect, &ClientArea_[Client]))
             return;
     }
 
-    if ( not ClipToArea(&s, &rect, clip))
+    if (not ClipToArea(&s, &rect, clip))
         return;
 
     BlitFill(surface, color, &rect, C_BIT_ABSOLUTE, 0);
 }
 
-void C_Window::DrawVLine(SCREEN *surface, COLORREF color, long x, long y, long h, long Flags, long Client, UI95_RECT *clip)
+void C_Window::DrawVLine(SCREEN *surface, COLORREF color, long x, long y,
+                         long h, long Flags, long Client, UI95_RECT *clip)
 {
     UI95_RECT rect, s;
 
@@ -2200,7 +2328,7 @@ void C_Window::DrawVLine(SCREEN *surface, COLORREF color, long x, long y, long h
 
     if (Flags bitand C_BIT_ABSOLUTE)
     {
-        if ( not ClipToArea(&s, &rect, &Area_))
+        if (not ClipToArea(&s, &rect, &Area_))
             return;
     }
     else
@@ -2210,27 +2338,32 @@ void C_Window::DrawVLine(SCREEN *surface, COLORREF color, long x, long y, long h
         rect.right += VX_[Client];
         rect.bottom += VY_[Client];
 
-        if ( not ClipToArea(&s, &rect, &ClientArea_[Client]))
+        if (not ClipToArea(&s, &rect, &ClientArea_[Client]))
             return;
     }
 
-    if ( not ClipToArea(&s, &rect, clip))
+    if (not ClipToArea(&s, &rect, clip))
         return;
 
     BlitFill(surface, color, &rect, C_BIT_ABSOLUTE, 0);
 }
 
-BOOL C_Window::CheckLine(long x1, long y1, long x2, long y2, long minx, long miny, long maxx, long maxy)
+BOOL C_Window::CheckLine(long x1, long y1, long x2, long y2, long minx,
+                         long miny, long maxx, long maxy)
 {
-    if (x1 < minx and x2 < minx) return(FALSE);
+    if (x1 < minx and x2 < minx)
+        return (FALSE);
 
-    if (y1 < miny and y2 < miny) return(FALSE);
+    if (y1 < miny and y2 < miny)
+        return (FALSE);
 
-    if (x1 > maxx and x2 > maxx) return(FALSE);
+    if (x1 > maxx and x2 > maxx)
+        return (FALSE);
 
-    if (y1 > maxy and y2 > maxy) return(FALSE);
+    if (y1 > maxy and y2 > maxy)
+        return (FALSE);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 enum
@@ -2244,7 +2377,7 @@ enum
 BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
 {
     char flag1, flag2;
-    float slope1 = 0.0, slope2 = 0.0; 
+    float slope1 = 0.0, slope2 = 0.0;
 
     flag1 = 0;
     flag2 = 0;
@@ -2273,14 +2406,16 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
     if (*y2 > clip->bottom)
         flag2 or_eq LINE_CLIP_BOTTOM;
 
-    if ( not flag1 and not flag2) // return, because both points are inside clip rect
-        return(TRUE);
+    if (not flag1 and
+        not flag2) // return, because both points are inside clip rect
+        return (TRUE);
 
-    if (((flag1 bitand flag2) bitand LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
+    if (((flag1 bitand flag2) bitand
+         LINE_CLIP_LEFT) or // If both points are on the same side of the clip rect... don't draw
         ((flag1 bitand flag2) bitand LINE_CLIP_TOP) or
         ((flag1 bitand flag2) bitand LINE_CLIP_RIGHT) or
         ((flag1 bitand flag2) bitand LINE_CLIP_BOTTOM))
-        return(FALSE);
+        return (FALSE);
 
     if (*x1 == *x2) // if x's are the same... no math required
     {
@@ -2356,37 +2491,45 @@ BOOL C_Window::ClipLine(long *x1, long *y1, long *x2, long *y2, UI95_RECT *clip)
             *y2 = clip->bottom;
         }
 
-        if ((*x1 < clip->left or *x2 < clip->left) or (*x1 > clip->right or *x2 > clip->right))
-            return(FALSE);
+        if ((*x1 < clip->left or *x2 < clip->left) or
+            (*x1 > clip->right or *x2 > clip->right))
+            return (FALSE);
 
-        if ((*y1 < clip->top or *y2 < clip->top) or (*y1 > clip->bottom or *y2 > clip->bottom))
-            return(FALSE);
+        if ((*y1 < clip->top or *y2 < clip->top) or
+            (*y1 > clip->bottom or *y2 > clip->bottom))
+            return (FALSE);
     }
 
-    return(TRUE);
+    return (TRUE);
 }
 
-void C_Window::DrawLine(SCREEN *surface, COLORREF color, long x1, long y1, long x2, long y2, long Flags, long Client, UI95_RECT *clip)
+void C_Window::DrawLine(SCREEN *surface, COLORREF color, long x1, long y1,
+                        long x2, long y2, long Flags, long Client,
+                        UI95_RECT *clip)
 {
     WORD drawcolor;
     UI95_RECT clipper;
 
     clipper = *clip;
 
-    if ( not (Flags bitand C_BIT_ABSOLUTE))
+    if (not(Flags bitand C_BIT_ABSOLUTE))
     {
         x1 += VX_[Client];
         y1 += VY_[Client];
         x2 += VX_[Client];
         y2 += VY_[Client];
 
-        if (clipper.left < ClientArea_[Client].left) clipper.left = ClientArea_[Client].left;
+        if (clipper.left < ClientArea_[Client].left)
+            clipper.left = ClientArea_[Client].left;
 
-        if (clipper.top < ClientArea_[Client].top) clipper.top = ClientArea_[Client].top;
+        if (clipper.top < ClientArea_[Client].top)
+            clipper.top = ClientArea_[Client].top;
 
-        if (clipper.right > ClientArea_[Client].right) clipper.right = ClientArea_[Client].right;
+        if (clipper.right > ClientArea_[Client].right)
+            clipper.right = ClientArea_[Client].right;
 
-        if (clipper.bottom > ClientArea_[Client].bottom) clipper.bottom = ClientArea_[Client].bottom;
+        if (clipper.bottom > ClientArea_[Client].bottom)
+            clipper.bottom = ClientArea_[Client].bottom;
     }
 
     x1 += GetX();
@@ -2402,7 +2545,8 @@ void C_Window::DrawLine(SCREEN *surface, COLORREF color, long x1, long y1, long 
     DrawClipLine(surface, x1, y1, x2, y2, &clipper, drawcolor);
 }
 
-void C_Window::DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2, UI95_RECT *clip, WORD color)
+void C_Window::DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2,
+                            UI95_RECT *clip, WORD color)
 {
     long x_unit, y_unit;
     long offset, y_dir;
@@ -2410,8 +2554,8 @@ void C_Window::DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2,
     long error_term;
     long length, i;
 
-    if ( not ClipLine(&x1, &y1, &x2, &y2, clip))
-        if ( not ClipLine(&x1, &y1, &x2, &y2, clip))
+    if (not ClipLine(&x1, &y1, &x2, &y2, clip))
+        if (not ClipLine(&x1, &y1, &x2, &y2, clip))
             return;
 
     ydiff = y2 - y1;
@@ -2448,7 +2592,7 @@ void C_Window::DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2,
         for (i = 0; i < length; i++)
         {
             if (surface->bpp == 32) //XX
-                ((DWORD*)surface->mem)[offset] = RGB565toRGB8(color);
+                ((DWORD *)surface->mem)[offset] = RGB565toRGB8(color);
             else
                 surface->mem[offset] = color;
 
@@ -2472,7 +2616,7 @@ void C_Window::DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2,
         for (i = 0; i < length; i++)
         {
             if (surface->bpp == 32) //XX
-                ((DWORD*)surface->mem)[offset] = RGB565toRGB8(color);
+                ((DWORD *)surface->mem)[offset] = RGB565toRGB8(color);
             else
                 surface->mem[offset] = color;
 
@@ -2490,7 +2634,9 @@ void C_Window::DrawClipLine(SCREEN *surface, long x1, long y1, long x2, long y2,
     }
 }
 
-void C_Window::DrawCircle(SCREEN *surface, COLORREF color, long x, long y, float radius, long Flags, long Client, UI95_RECT *clip)
+void C_Window::DrawCircle(SCREEN *surface, COLORREF color, long x, long y,
+                          float radius, long Flags, long Client,
+                          UI95_RECT *clip)
 {
     short i, j;
     long x1, y1, x2, y2;
@@ -2499,18 +2645,22 @@ void C_Window::DrawCircle(SCREEN *surface, COLORREF color, long x, long y, float
 
     clipper = *clip;
 
-    if ( not (Flags bitand C_BIT_ABSOLUTE))
+    if (not(Flags bitand C_BIT_ABSOLUTE))
     {
         x += VX_[Client];
         y += VY_[Client];
 
-        if (clipper.left < ClientArea_[Client].left) clipper.left = ClientArea_[Client].left;
+        if (clipper.left < ClientArea_[Client].left)
+            clipper.left = ClientArea_[Client].left;
 
-        if (clipper.top < ClientArea_[Client].top) clipper.top = ClientArea_[Client].top;
+        if (clipper.top < ClientArea_[Client].top)
+            clipper.top = ClientArea_[Client].top;
 
-        if (clipper.right > ClientArea_[Client].right) clipper.right = ClientArea_[Client].right;
+        if (clipper.right > ClientArea_[Client].right)
+            clipper.right = ClientArea_[Client].right;
 
-        if (clipper.bottom > ClientArea_[Client].bottom) clipper.bottom = ClientArea_[Client].bottom;
+        if (clipper.bottom > ClientArea_[Client].bottom)
+            clipper.bottom = ClientArea_[Client].bottom;
     }
 
     x1 = x - (long)radius;
@@ -2518,7 +2668,8 @@ void C_Window::DrawCircle(SCREEN *surface, COLORREF color, long x, long y, float
     x2 = x + (long)radius;
     y2 = y + (long)radius;
 
-    if ( not CheckLine(x1, y1, x2, y2, clipper.left, clipper.top, clipper.right, clipper.bottom))
+    if (not CheckLine(x1, y1, x2, y2, clipper.left, clipper.top, clipper.right,
+                      clipper.bottom))
         return;
 
     x += GetX();
@@ -2540,15 +2691,23 @@ void C_Window::DrawCircle(SCREEN *surface, COLORREF color, long x, long y, float
             x2 = (long)(Circle8[j][0] * radius);
             y2 = (long)(Circle8[j][1] * radius);
 
-            DrawClipLine(surface, x + x1, y + y1, x + x2, y + y2, &clipper, linecolor);
-            DrawClipLine(surface, x - x1, y + y1, x - x2, y + y2, &clipper, linecolor);
-            DrawClipLine(surface, x + x1, y - y1, x + x2, y - y2, &clipper, linecolor);
-            DrawClipLine(surface, x - x1, y - y1, x - x2, y - y2, &clipper, linecolor);
+            DrawClipLine(surface, x + x1, y + y1, x + x2, y + y2, &clipper,
+                         linecolor);
+            DrawClipLine(surface, x - x1, y + y1, x - x2, y + y2, &clipper,
+                         linecolor);
+            DrawClipLine(surface, x + x1, y - y1, x + x2, y - y2, &clipper,
+                         linecolor);
+            DrawClipLine(surface, x - x1, y - y1, x - x2, y - y2, &clipper,
+                         linecolor);
 
-            DrawClipLine(surface, x + y1, y + x1, x + y2, y + x2, &clipper, linecolor);
-            DrawClipLine(surface, x - y1, y + x1, x - y2, y + x2, &clipper, linecolor);
-            DrawClipLine(surface, x + y1, y - x1, x + y2, y - x2, &clipper, linecolor);
-            DrawClipLine(surface, x - y1, y - x1, x - y2, y - x2, &clipper, linecolor);
+            DrawClipLine(surface, x + y1, y + x1, x + y2, y + x2, &clipper,
+                         linecolor);
+            DrawClipLine(surface, x - y1, y + x1, x - y2, y + x2, &clipper,
+                         linecolor);
+            DrawClipLine(surface, x + y1, y - x1, x + y2, y - x2, &clipper,
+                         linecolor);
+            DrawClipLine(surface, x - y1, y - x1, x - y2, y - x2, &clipper,
+                         linecolor);
 
             x1 = x2;
             y1 = y2;
@@ -2556,7 +2715,9 @@ void C_Window::DrawCircle(SCREEN *surface, COLORREF color, long x, long y, float
     }
 }
 
-void C_Window::DrawArc(SCREEN *surface, COLORREF color, long x, long y, float radius, short section, long Flags, long Client, UI95_RECT *clip)
+void C_Window::DrawArc(SCREEN *surface, COLORREF color, long x, long y,
+                       float radius, short section, long Flags, long Client,
+                       UI95_RECT *clip)
 {
     short i, j;
     float x1, y1, x2, y2;
@@ -2573,37 +2734,45 @@ void C_Window::DrawArc(SCREEN *surface, COLORREF color, long x, long y, float ra
 
             switch (section)
             {
-                case 0:
-                        DrawLine(surface, color, x + (long)x1, y - (long)y1, x + (long)x2, y - (long)y2, Flags, Client, clip);
-                    break;
+            case 0:
+                DrawLine(surface, color, x + (long)x1, y - (long)y1,
+                         x + (long)x2, y - (long)y2, Flags, Client, clip);
+                break;
 
-                case 1:
-                        DrawLine(surface, color, x + (long)y1, y - (long)x1, x + (long)y2, y - (long)x2, Flags, Client, clip);
-                    break;
+            case 1:
+                DrawLine(surface, color, x + (long)y1, y - (long)x1,
+                         x + (long)y2, y - (long)x2, Flags, Client, clip);
+                break;
 
-                case 2:
-                        DrawLine(surface, color, x + (long)y1, y + (long)x1, x + (long)y2, y + (long)x2, Flags, Client, clip);
-                    break;
+            case 2:
+                DrawLine(surface, color, x + (long)y1, y + (long)x1,
+                         x + (long)y2, y + (long)x2, Flags, Client, clip);
+                break;
 
-                case 3:
-                        DrawLine(surface, color, x + (long)x1, y + (long)y1, x + (long)x2, y + (long)y2, Flags, Client, clip);
-                    break;
+            case 3:
+                DrawLine(surface, color, x + (long)x1, y + (long)y1,
+                         x + (long)x2, y + (long)y2, Flags, Client, clip);
+                break;
 
-                case 4:
-                        DrawLine(surface, color, x - (long)x1, y + (long)y1, x - (long)x2, y + (long)y2, Flags, Client, clip);
-                    break;
+            case 4:
+                DrawLine(surface, color, x - (long)x1, y + (long)y1,
+                         x - (long)x2, y + (long)y2, Flags, Client, clip);
+                break;
 
-                case 5:
-                        DrawLine(surface, color, x - (long)y1, y + (long)x1, x - (long)y2, y + (long)x2, Flags, Client, clip);
-                    break;
+            case 5:
+                DrawLine(surface, color, x - (long)y1, y + (long)x1,
+                         x - (long)y2, y + (long)x2, Flags, Client, clip);
+                break;
 
-                case 6:
-                        DrawLine(surface, color, x - (long)y1, y - (long)x1, x - (long)y2, y - (long)x2, Flags, Client, clip);
-                    break;
+            case 6:
+                DrawLine(surface, color, x - (long)y1, y - (long)x1,
+                         x - (long)y2, y - (long)x2, Flags, Client, clip);
+                break;
 
-                case 7:
-                        DrawLine(surface, color, x - (long)x1, y - (long)y1, x - (long)x2, y - (long)y2, Flags, Client, clip);
-                    break;
+            case 7:
+                DrawLine(surface, color, x - (long)x1, y - (long)y1,
+                         x - (long)x2, y - (long)y2, Flags, Client, clip);
+                break;
             }
 
             x1 = x2;
@@ -2632,7 +2801,7 @@ BOOL C_Window::UpdateTimerControls()
     }
 
     UI_Leave(Leave);
-    return(retval);
+    return (retval);
 }
 
 void C_Window::SetGroupState(long GroupID, short state)
@@ -2660,9 +2829,9 @@ void C_Window::SetGroupState(long GroupID, short state)
 BOOL C_Window::KeyboardMode()
 {
     if (Handler_)
-        return(Handler_->KeyboardMode());
+        return (Handler_->KeyboardMode());
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Window::DeactivateControl()
@@ -2682,7 +2851,8 @@ void C_Window::RemovingControl(C_Base *control)
     Handler_->RemovingControl(control);
 }
 
-void C_Window::SetControl(long ID) // Called when mouse is used over this control
+void C_Window::SetControl(
+    long ID) // Called when mouse is used over this control
 {
     C_Base *cur;
 
@@ -2739,7 +2909,9 @@ void C_Window::SetPrevControl() // Called when SHIFT bitand TAB are pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and
+                cur->Control_->GetFlags() bitand C_BIT_ENABLED and
+                not(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2763,7 +2935,9 @@ void C_Window::SetPrevControl() // Called when SHIFT bitand TAB are pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and
+                cur->Control_->GetFlags() bitand C_BIT_ENABLED and
+                not(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2791,7 +2965,9 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and
+                cur->Control_->GetFlags() bitand C_BIT_ENABLED and
+                not(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2815,7 +2991,9 @@ void C_Window::SetNextControl() // Called when TAB is pressed
 
         while (cur->Control_ not_eq CurControl_)
         {
-            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and cur->Control_->GetFlags() bitand C_BIT_ENABLED and not (cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
+            if (cur->Control_->GetFlags() bitand C_BIT_SELECTABLE and
+                cur->Control_->GetFlags() bitand C_BIT_ENABLED and
+                not(cur->Control_->GetFlags() bitand C_BIT_INVISIBLE))
             {
                 CurControl_ = cur->Control_;
                 CurControl_->Activate();
@@ -2862,56 +3040,60 @@ void C_Window::Deactivate()
         CurControl_->Deactivate();
 }
 
-BOOL C_Window::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii, unsigned char ShiftStates, long RepeatCount)
+BOOL C_Window::CheckKeyboard(unsigned char DKScanCode, unsigned char Ascii,
+                             unsigned char ShiftStates, long RepeatCount)
 {
     if (KBCallback_)
         if ((*KBCallback_)(DKScanCode, Ascii, ShiftStates, RepeatCount))
-            return(TRUE);
+            return (TRUE);
 
     if (Ascii)
     {
-        if (CurControl_ and CurControl_->CheckKeyboard(DKScanCode, Ascii, ShiftStates, RepeatCount))
-            return(TRUE);
+        if (CurControl_ and CurControl_->CheckKeyboard(
+                                DKScanCode, Ascii, ShiftStates, RepeatCount))
+            return (TRUE);
     }
     else
     {
         switch (DKScanCode)
         {
-            case DIK_TAB:
-                    if (ShiftStates == _SHIFT_DOWN_)
-                        SetPrevControl();
-                    else if ( not ShiftStates)
-                        SetNextControl();
+        case DIK_TAB:
+            if (ShiftStates == _SHIFT_DOWN_)
+                SetPrevControl();
+            else if (not ShiftStates)
+                SetNextControl();
 
-                return(TRUE);
+            return (TRUE);
+            break;
+
+        case DIK_NUMPAD0:
+        case DIK_INSERT:
+            if (Handler_->KeyboardMode())
+                Handler_->SetKeyboardMode(FALSE);
+            else
+                Handler_->SetKeyboardMode(TRUE);
+
+            return (TRUE);
+            break;
+
+        default:
+            if (CurControl_ == NULL)
                 break;
 
-            case DIK_NUMPAD0:
-                case DIK_INSERT:
-                        if (Handler_->KeyboardMode())
-                            Handler_->SetKeyboardMode(FALSE);
-                        else
-                            Handler_->SetKeyboardMode(TRUE);
+            if (CurControl_->CheckKeyboard(DKScanCode, Ascii, ShiftStates,
+                                           RepeatCount))
+                return (TRUE);
 
-                return(TRUE);
-                break;
-
-            default:
-                    if (CurControl_ == NULL)
-                        break;
-
-                if (CurControl_->CheckKeyboard(DKScanCode, Ascii, ShiftStates, RepeatCount))
-                    return(TRUE);
-
-                break;
+            break;
         }
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 //BOOL C_Window::CheckHotKeys(unsigned char DKScanCode,unsigned char Ascii,unsigned char ShiftStates,long RepeatCount)
-BOOL C_Window::CheckHotKeys(unsigned char DKScanCode, unsigned char, unsigned char ShiftStates, long)
+BOOL C_Window::CheckHotKeys(unsigned char DKScanCode, unsigned char,
+                            unsigned char ShiftStates, long)
 {
     CONTROLLIST *cur;
 
@@ -2923,31 +3105,35 @@ BOOL C_Window::CheckHotKeys(unsigned char DKScanCode, unsigned char, unsigned ch
         {
             cur->Control_->Process(cur->Control_->GetID(), C_TYPE_LMOUSEDOWN);
             cur->Control_->Process(cur->Control_->GetID(), C_TYPE_LMOUSEUP);
-            return(TRUE);
+            return (TRUE);
         }
 
         cur = cur->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 //BOOL C_Window::Drag(GRABBER *Drag,WORD MouseX,WORD MouseY,C_Window *over)
-BOOL C_Window::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window*)
+BOOL C_Window::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *)
 {
     long x, y;
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
     x = Drag->ItemX_ + (MouseX - Drag->StartX_);
     y = Drag->ItemY_ + (MouseY - Drag->StartY_);
 
-    if (x < MinX_) x = MinX_;
+    if (x < MinX_)
+        x = MinX_;
 
-    if ((x + GetW()) > MaxX_) x = MaxX_ - GetW();
+    if ((x + GetW()) > MaxX_)
+        x = MaxX_ - GetW();
 
-    if (y < MinY_) y = MinY_;
+    if (y < MinY_)
+        y = MinY_;
 
-    if ((y + GetH()) > MaxY_) y = MaxY_ - GetH();
+    if ((y + GetH()) > MaxY_)
+        y = MaxY_ - GetH();
 
     Leave = UI_Enter(this);
     Handler_->SetBehindWindow(this);
@@ -2958,13 +3144,13 @@ BOOL C_Window::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window*)
 
     RefreshWindow();
     UI_Leave(Leave);
-    return(TRUE);
+    return (TRUE);
 }
 
 //BOOL C_Window::Drop(GRABBER *Drag,WORD MouseX,WORD MouseY,C_Window *over)
-BOOL C_Window::Drop(GRABBER*, WORD, WORD, C_Window*)
+BOOL C_Window::Drop(GRABBER *, WORD, WORD, C_Window *)
 {
-    return(FALSE);
+    return (FALSE);
 }
 
 // sfr: added for constraints
@@ -2990,89 +3176,91 @@ short C_Window::LocalFind(char *token)
     while (C_Win_Tokens[i])
     {
         if (strnicmp(token, C_Win_Tokens[i], strlen(C_Win_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Window::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CWIN_SETUP:
-                Setup(P[0], (short)P[1], (short)P[2], (short)P[3]);
-            break;
+    case CWIN_SETUP:
+        Setup(P[0], (short)P[1], (short)P[2], (short)P[3]);
+        break;
 
-        case CWIN_SETX:
-                SetX((short)P[0]);
-            break;
+    case CWIN_SETX:
+        SetX((short)P[0]);
+        break;
 
-        case CWIN_SETY:
-                SetY((short)P[0]);
-            break;
+    case CWIN_SETY:
+        SetY((short)P[0]);
+        break;
 
-        case CWIN_SETXY:
-                SetXY((short)P[0], (short)P[1]);
-            break;
+    case CWIN_SETXY:
+        SetXY((short)P[0], (short)P[1]);
+        break;
 
-        case CWIN_SETW:
-                SetW((short)P[0]);
-            break;
+    case CWIN_SETW:
+        SetW((short)P[0]);
+        break;
 
-        case CWIN_SETH:
-                SetH((short)P[0]);
-            break;
+    case CWIN_SETH:
+        SetH((short)P[0]);
+        break;
 
-        case CWIN_SETRANGES:
-                SetRanges((short)P[0], (short)P[1], (short)P[2], (short)P[3], (short)P[4], (short)P[5]);
-            break;
+    case CWIN_SETRANGES:
+        SetRanges((short)P[0], (short)P[1], (short)P[2], (short)P[3],
+                  (short)P[4], (short)P[5]);
+        break;
 
-        case CWIN_SETFONT:
-                SetFont(P[0]);
-            break;
+    case CWIN_SETFONT:
+        SetFont(P[0]);
+        break;
 
-        case CWIN_SETGROUP:
-                SetGroup(P[0]);
-            break;
+    case CWIN_SETGROUP:
+        SetGroup(P[0]);
+        break;
 
-        case CWIN_SETCLIENTAREA:
-                SetClientArea((short)P[0], (short)P[1], (short)P[2], (short)P[3], (short)P[4]);
-            break;
+    case CWIN_SETCLIENTAREA:
+        SetClientArea((short)P[0], (short)P[1], (short)P[2], (short)P[3],
+                      (short)P[4]);
+        break;
 
-        case CWIN_SETFLAGBITON:
-                SetFlagBitOn(P[0]);
-            break;
+    case CWIN_SETFLAGBITON:
+        SetFlagBitOn(P[0]);
+        break;
 
-        case CWIN_SETFLAGBITOFF:
-                SetFlagBitOff(P[0]);
-            break;
+    case CWIN_SETFLAGBITOFF:
+        SetFlagBitOff(P[0]);
+        break;
 
-        case CWIN_SETDEPTH:
-                SetDepth((short)P[0]);
-            break;
+    case CWIN_SETDEPTH:
+        SetDepth((short)P[0]);
+        break;
 
-        case CWIN_SETMENUID:
-                SetMenu(P[0]);
-            break;
+    case CWIN_SETMENUID:
+        SetMenu(P[0]);
+        break;
 
-        case CWIN_SETCLIENTMENUID:
-                SetClientMenu(P[0], P[1]);
-            break;
+    case CWIN_SETCLIENTMENUID:
+        SetClientMenu(P[0], P[1]);
+        break;
 
-        case CWIN_SETCURSOR:
-                SetCursorID(P[0]);
-            break;
+    case CWIN_SETCURSOR:
+        SetCursorID(P[0]);
+        break;
 
-        case CWIN_SETDRAGH:
-                SetDragH((short)P[0]);
-            break;
+    case CWIN_SETDRAGH:
+        SetDragH((short)P[0]);
+        break;
 
-        case CWIN_SETCLIENTFLAGS:
-                SetClientFlags(P[0], P[1]);
-            break;
+    case CWIN_SETCLIENTFLAGS:
+        SetClientFlags(P[0], P[1]);
+        break;
     }
 }
 

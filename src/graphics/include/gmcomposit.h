@@ -9,9 +9,9 @@
 #ifndef _GMCOMPOSITE_H_
 #define _GMCOMPOSITE_H_
 
-#include "Tex.h"
-#include "Render2D.h"
-#include "gmRadar.h"
+#include "tex.h"
+#include "render2d.h"
+#include "gmradar.h"
 
 
 static const int GM_TEXTURE_SIZE = 128;
@@ -28,14 +28,18 @@ public:
     virtual ~RenderGMComposite() {};
 
     // Setup and Cleanup need to have additions here, but still call the parent versions
-    virtual void Setup(ImageBuffer *output, void(*tgtDrawCallback)(void*, RenderGMRadar*, bool), void *tgtDrawParam);
+    virtual void Setup(ImageBuffer *output,
+                       void (*tgtDrawCallback)(void *, RenderGMRadar *, bool),
+                       void *tgtDrawParam);
     virtual void Cleanup(void);
 
     void SetGimbalLimit(float angleLimit)
     {
         gimbalLimit = angleLimit;
     };
-    void SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float platformHdg, float beamAngle, int beamPercent, float cursorAngle, BOOL movingRight, bool Shaped);
+    void SetBeam(Tpoint *from, Tpoint *at, Tpoint *center, float platformHdg,
+                 float beamAngle, int beamPercent, float cursorAngle,
+                 BOOL movingRight, bool Shaped);
     void DrawComposite(Tpoint *centerPoint, float platformHdg);
 
     // These are passed through to the RenderGMRadar object we're using
@@ -74,7 +78,7 @@ protected:
     PaletteHandle *paletteHandle;
     bool m_bRenderTargetOwned;
 
-    void(*tgtDrawCB)(void*, RenderGMRadar*, bool);
+    void (*tgtDrawCB)(void *, RenderGMRadar *, bool);
     void *tgtDrawCBparam;
 
     float range;
@@ -101,8 +105,10 @@ protected:
     const struct OpRecord *nextOperation;
 
 protected:
-    bool BackgroundGeneration(Tpoint *from, Tpoint *at, float platformHdg, int beamPercent, BOOL movingRight, bool Shaped);
-    void NewImage(Tpoint *at, float platformHdg, BOOL replaceRight, bool Shaped);
+    bool BackgroundGeneration(Tpoint *from, Tpoint *at, float platformHdg,
+                              int beamPercent, BOOL movingRight, bool Shaped);
+    void NewImage(Tpoint *at, float platformHdg, BOOL replaceRight,
+                  bool Shaped);
 };
 
 #endif // _GMCOMPOSITE_H_

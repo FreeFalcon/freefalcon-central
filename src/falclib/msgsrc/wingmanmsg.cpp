@@ -1,4 +1,4 @@
-#include "MsgInc/WingmanMsg.h"
+#include "msginc/wingmanmsg.h"
 #include "mesg.h"
 #include "aircrft.h"
 #include "wingorder.h"
@@ -8,15 +8,20 @@
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-FalconWingmanMsg::FalconWingmanMsg(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(WingmanMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconWingmanMsg::FalconWingmanMsg(VU_ID entityId, VuTargetEntity* target,
+                                   VU_BOOL loopback)
+    : FalconEvent(WingmanMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-FalconWingmanMsg::FalconWingmanMsg(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(WingmanMsg, FalconEvent::SimThread, senderid, target)
+FalconWingmanMsg::FalconWingmanMsg(VU_MSG_TYPE type, VU_ID senderid,
+                                   VU_ID target)
+    : FalconEvent(WingmanMsg, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -27,7 +32,8 @@ FalconWingmanMsg::~FalconWingmanMsg(void)
     // Your Code Goes Here
 }
 
-void SendOrder(FalconWingmanMsg* p_msg, AircraftClass* p_sender, FlightClass* p_flight, int first, int total)
+void SendOrder(FalconWingmanMsg* p_msg, AircraftClass* p_sender,
+               FlightClass* p_flight, int first, int total)
 {
     AircraftClass* p_aircraft;
     int i;
@@ -36,9 +42,10 @@ void SendOrder(FalconWingmanMsg* p_msg, AircraftClass* p_sender, FlightClass* p_
 
     for (i = first; i < first + total; i++)
     {
-        p_aircraft = (AircraftClass*) p_flight->GetComponentEntity(i);
+        p_aircraft = (AircraftClass*)p_flight->GetComponentEntity(i);
 
-        if (p_aircraft and p_aircraft->IsLocal() and p_sender and p_aircraft not_eq p_sender)
+        if (p_aircraft and p_aircraft->IsLocal() and p_sender and
+            p_aircraft not_eq p_sender)
         {
             p_aircraft->ReceiveOrders(p_msg);
         }
@@ -47,8 +54,8 @@ void SendOrder(FalconWingmanMsg* p_msg, AircraftClass* p_sender, FlightClass* p_
 
 int FalconWingmanMsg::Process(uchar autodisp)
 {
-    FlightClass *p_flight;
-    AircraftClass *p_from;
+    FlightClass* p_flight;
+    AircraftClass* p_from;
     int fromIndex;
 
     if (autodisp)
@@ -57,10 +64,10 @@ int FalconWingmanMsg::Process(uchar autodisp)
     if (Entity())
     {
 
-        p_flight = (FlightClass*) vuDatabase->Find(EntityId());
-        p_from = (AircraftClass*) vuDatabase->Find(dataBlock.from);
+        p_flight = (FlightClass*)vuDatabase->Find(EntityId());
+        p_from = (AircraftClass*)vuDatabase->Find(dataBlock.from);
 
-        if ( not p_flight or not p_from)
+        if (not p_flight or not p_from)
         {
             return FALSE;
         }
@@ -69,7 +76,8 @@ int FalconWingmanMsg::Process(uchar autodisp)
 
         if (dataBlock.to == AiAllButSender)
         {
-            SendOrder(this, p_from, p_flight, 1, 4); // Dispatch to everyone except the guy who sent me
+            SendOrder(this, p_from, p_flight, 1,
+                      4); // Dispatch to everyone except the guy who sent me
         }
         else if (fromIndex == AiFlightLead)
         {
@@ -84,7 +92,8 @@ int FalconWingmanMsg::Process(uchar autodisp)
             }
             else if (dataBlock.to == AiFlight)
             {
-                SendOrder(this, p_from, p_flight, 2, 3); // Dispatch to 2, 3 and 4
+                SendOrder(this, p_from, p_flight, 2,
+                          3); // Dispatch to 2, 3 and 4
             }
         }
         else if (fromIndex == AiElementLead)

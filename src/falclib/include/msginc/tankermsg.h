@@ -11,12 +11,12 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type TankerMsg
@@ -40,7 +40,8 @@ public:
         PositionUpdate
     };
 
-    FalconTankerMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconTankerMessage(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     FalconTankerMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconTankerMessage(void);
     virtual int Size() const
@@ -68,7 +69,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID caller;
         unsigned int type;
         float data1;
@@ -78,6 +78,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

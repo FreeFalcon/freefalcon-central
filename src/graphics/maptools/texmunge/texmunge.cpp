@@ -10,10 +10,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <windows.h>
-#include "shi/ShiError.h"
+#include "shi/shierror.h"
 #include "texmunge.h"
-
-
 
 
 // Used to accumulate the list of terrain textures in use by this map
@@ -82,7 +80,8 @@ void PrintTextureList(void)
 
     while (entry)
     {
-        printf("%X\t %s\t | Used %0d times\n", entry->id, entry->name, entry->usageCount);
+        printf("%X\t %s\t | Used %0d times\n", entry->id, entry->name,
+               entry->usageCount);
         entry = entry->next;
     }
 }
@@ -197,13 +196,19 @@ int main(int argc, char **argv)
     // Check for expected number of parameters
     if (argc != 5)
     {
-        printf("Usage:  TexMunge <input file> <output file> <width> <height>\n");
+        printf(
+            "Usage:  TexMunge <input file> <output file> <width> <height>\n");
         printf("   Reads in an 8 bit RAW texture template file and\n");
-        printf("   writes out a 16 bit RAW texture ID map.  The input file uses a\n");
-        printf("   two by two pixel sqaure to encode the required texture at each\n");
-        printf("   post.  As a result, the input file is 2x in width and height as\n");
-        printf("   compared to the output file.  The width and height provided on\n");
-        printf("   the command line are the width and height of the output file.\n");
+        printf("   writes out a 16 bit RAW texture ID map.  The input file "
+               "uses a\n");
+        printf("   two by two pixel sqaure to encode the required texture at "
+               "each\n");
+        printf("   post.  As a result, the input file is 2x in width and "
+               "height as\n");
+        printf("   compared to the output file.  The width and height provided "
+               "on\n");
+        printf("   the command line are the width and height of the output "
+               "file.\n");
 
         return -1;
     }
@@ -217,27 +222,31 @@ int main(int argc, char **argv)
 
 
     // Allocate a buffer large enough to hold our input file
-    buffer = (BYTE*)malloc(width * 2 * height * 2 * sizeof(*buffer));
+    buffer = (BYTE *)malloc(width * 2 * height * 2 * sizeof(*buffer));
     ShiAssert(buffer);
 
     // Allocate a buffer large enough to hold a row of our output file
-    IDbuffer = (WORD*)malloc(width * sizeof(*IDbuffer));
+    IDbuffer = (WORD *)malloc(width * sizeof(*IDbuffer));
     ShiAssert(IDbuffer);
 
 
     // Open the input file
     // printf( "Opening input file.\n");
-    inFile = CreateFile(inName, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+    inFile = CreateFile(inName, GENERIC_READ, 0, NULL, OPEN_EXISTING,
+                        FILE_ATTRIBUTE_NORMAL, NULL);
     ShiAssert(inFile != INVALID_HANDLE_VALUE);
 
     // Open the output file
     // printf( "Opening output file.\n");
-    outFile = CreateFile(outName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    outFile = CreateFile(outName, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS,
+                         FILE_ATTRIBUTE_NORMAL, NULL);
     ShiAssert(outFile != INVALID_HANDLE_VALUE);
 
 
     // Read in the input data
-    if (!ReadFile(inFile, buffer, width * 2 * height * 2 * sizeof(*buffer), &bytes, NULL))  bytes = 1;
+    if (!ReadFile(inFile, buffer, width * 2 * height * 2 * sizeof(*buffer),
+                  &bytes, NULL))
+        bytes = 1;
 
     ShiAssert(bytes == width * 2 * height * 2 * sizeof(*buffer));
 
@@ -245,7 +254,7 @@ int main(int argc, char **argv)
     // Write out a row of zeros at the top (skip the first row since we don't have neighbors)
     for (col = 0; col < width; col++)
     {
-        IDbuffer[ col ] = 0;
+        IDbuffer[col] = 0;
     }
 
     WriteFile(outFile, IDbuffer, width * sizeof(*IDbuffer), &bytes, NULL);
@@ -259,8 +268,8 @@ int main(int argc, char **argv)
 
 
         // We are skipping the edge columns to simplicity's sake
-        IDbuffer[ 0 ] = 0;
-        IDbuffer[ width - 1 ] = 0;
+        IDbuffer[0] = 0;
+        IDbuffer[width - 1] = 0;
 
 
         // Fill in the row of output data with appropriatly chosen texture IDs
@@ -274,46 +283,61 @@ int main(int argc, char **argv)
             }
 
 
-            sourceSamples.p1 = buffer[((row << 1)) * (width << 1)   + ((col << 1))   ];
-            sourceSamples.p2 = buffer[((row << 1)) * (width << 1)   + ((col << 1) + 1) ];
-            sourceSamples.p3 = buffer[((row << 1) + 1) * (width << 1) + ((col << 1))   ];
-            sourceSamples.p4 = buffer[((row << 1) + 1) * (width << 1) + ((col << 1) + 1) ];
+            sourceSamples.p1 =
+                buffer[((row << 1)) * (width << 1) + ((col << 1))];
+            sourceSamples.p2 =
+                buffer[((row << 1)) * (width << 1) + ((col << 1) + 1)];
+            sourceSamples.p3 =
+                buffer[((row << 1) + 1) * (width << 1) + ((col << 1))];
+            sourceSamples.p4 =
+                buffer[((row << 1) + 1) * (width << 1) + ((col << 1) + 1)];
 
-            sourceSamples.p1A = buffer[((row << 1)) * (width << 1)   + ((col << 1) - 1) ];
-            sourceSamples.p1B = buffer[((row << 1) - 1) * (width << 1) + ((col << 1) - 1) ];
-            sourceSamples.p1C = buffer[((row << 1) - 1) * (width << 1) + ((col << 1))   ];
+            sourceSamples.p1A =
+                buffer[((row << 1)) * (width << 1) + ((col << 1) - 1)];
+            sourceSamples.p1B =
+                buffer[((row << 1) - 1) * (width << 1) + ((col << 1) - 1)];
+            sourceSamples.p1C =
+                buffer[((row << 1) - 1) * (width << 1) + ((col << 1))];
 
-            sourceSamples.p2A = buffer[((row << 1) - 1) * (width << 1) + ((col << 1) + 1) ];
-            sourceSamples.p2B = buffer[((row << 1) - 1) * (width << 1) + ((col << 1) + 2) ];
-            sourceSamples.p2C = buffer[((row << 1)) * (width << 1)   + ((col << 1) + 2) ];
+            sourceSamples.p2A =
+                buffer[((row << 1) - 1) * (width << 1) + ((col << 1) + 1)];
+            sourceSamples.p2B =
+                buffer[((row << 1) - 1) * (width << 1) + ((col << 1) + 2)];
+            sourceSamples.p2C =
+                buffer[((row << 1)) * (width << 1) + ((col << 1) + 2)];
 
-            sourceSamples.p3A = buffer[((row << 1) + 1) * (width << 1) + ((col << 1) - 1) ];
-            sourceSamples.p3B = buffer[((row << 1) + 2) * (width << 1) + ((col << 1) - 1) ];
-            sourceSamples.p3C = buffer[((row << 1) + 2) * (width << 1) + ((col << 1))   ];
+            sourceSamples.p3A =
+                buffer[((row << 1) + 1) * (width << 1) + ((col << 1) - 1)];
+            sourceSamples.p3B =
+                buffer[((row << 1) + 2) * (width << 1) + ((col << 1) - 1)];
+            sourceSamples.p3C =
+                buffer[((row << 1) + 2) * (width << 1) + ((col << 1))];
 
-            sourceSamples.p4A = buffer[((row << 1) + 2) * (width << 1) + ((col << 1) + 1) ];
-            sourceSamples.p4B = buffer[((row << 1) + 2) * (width << 1) + ((col << 1) + 2) ];
-            sourceSamples.p4C = buffer[((row << 1) + 1) * (width << 1) + ((col << 1) + 2) ];
+            sourceSamples.p4A =
+                buffer[((row << 1) + 2) * (width << 1) + ((col << 1) + 1)];
+            sourceSamples.p4B =
+                buffer[((row << 1) + 2) * (width << 1) + ((col << 1) + 2)];
+            sourceSamples.p4C =
+                buffer[((row << 1) + 1) * (width << 1) + ((col << 1) + 2)];
 
             code = DecodeCluster(sourceSamples, row, col);
             // assert( code != 0xFFFF );
 
-            IDbuffer[ col ] = CompressedCode(code);
-            AddToCodeList(IDbuffer[ col ], code);
+            IDbuffer[col] = CompressedCode(code);
+            AddToCodeList(IDbuffer[col], code);
         }
 
 
         // Write out the row of texture IDs
         WriteFile(outFile, IDbuffer, width * sizeof(*IDbuffer), &bytes, NULL);
         ShiAssert(bytes == width * sizeof(*IDbuffer));
-
     }
 
 
     // Write out a row of zeros at the bottom (skip the last row since we don't have neighbors)
     for (col = 0; col < width; col++)
     {
-        IDbuffer[ col ] = 0;
+        IDbuffer[col] = 0;
     }
 
     WriteFile(outFile, IDbuffer, width * sizeof(*IDbuffer), &bytes, NULL);

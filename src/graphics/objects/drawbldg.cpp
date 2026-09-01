@@ -6,10 +6,10 @@
  ground.  (More precisly, any object which is to be placed on the
  ground but not reoriented.)
 \***************************************************************************/
-#include "Matrix.h"
-#include "RViewPnt.h"
-#include "RenderOW.h"
-#include "DrawBldg.h"
+#include "matrix.h"
+#include "rviewpnt.h"
+#include "renderow.h"
+#include "drawbldg.h"
 
 // edg just testing smoke stacks
 /*
@@ -59,7 +59,8 @@ void DrawableBuilding::Draw(class RenderOTW *renderer, int LOD)
     {
         // Update our position to reflect the terrain beneath us
         //position.z = renderer->viewpoint->GetGroundLevel(position.x,position.y);
-        position.z = renderer->viewpoint->GetGroundLevelApproximation(position.x, position.y);
+        position.z = renderer->viewpoint->GetGroundLevelApproximation(
+            position.x, position.y);
 
         previousLOD = LOD;
     }

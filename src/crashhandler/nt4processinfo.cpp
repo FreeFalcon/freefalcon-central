@@ -5,23 +5,19 @@ Windows NT 4.0 access functions for getting to process information.
 Windows95 and NT5 can use TOOLHELP32.DLL.
 ----------------------------------------------------------------------*/
 
-#include <cISO646>
-#include "PCH.h"
-#include "BugslayerUtil.h"
+#include <ciso646>
+#include "pch.h"
+#include "bugslayerutil.h"
 
 /*//////////////////////////////////////////////////////////////////////
                                 Typedefs
 //////////////////////////////////////////////////////////////////////*/
 // The typedefs for the PSAPI.DLL functions used by this module.
-typedef BOOL (WINAPI *ENUMPROCESSMODULES)(HANDLE    hProcess   ,
-        HMODULE * lphModule  ,
-        DWORD     cb         ,
-        LPDWORD   lpcbNeeded) ;
+typedef BOOL(WINAPI *ENUMPROCESSMODULES)(HANDLE hProcess, HMODULE *lphModule,
+                                         DWORD cb, LPDWORD lpcbNeeded);
 
-typedef DWORD (WINAPI *GETMODULEBASENAME)(HANDLE  hProcess   ,
-        HMODULE hModule    ,
-        LPTSTR  lpBaseName ,
-        DWORD   nSize) ;
+typedef DWORD(WINAPI *GETMODULEBASENAME)(HANDLE hProcess, HMODULE hModule,
+                                         LPTSTR lpBaseName, DWORD nSize);
 
 
 /*//////////////////////////////////////////////////////////////////////
@@ -29,11 +25,11 @@ typedef DWORD (WINAPI *GETMODULEBASENAME)(HANDLE  hProcess   ,
 //////////////////////////////////////////////////////////////////////*/
 // Has the function stuff here been initialized?  This is only to be
 //  used by the InitPSAPI function and nothing else.
-static BOOL g_bInitialized = FALSE ;
+static BOOL g_bInitialized = FALSE;
 // The pointer to EnumProcessModules.
-static ENUMPROCESSMODULES g_pEnumProcessModules = NULL ;
+static ENUMPROCESSMODULES g_pEnumProcessModules = NULL;
 // The pointer to GetModuleBaseName.
-static GETMODULEBASENAME g_pGetModuleBaseName = NULL ;
+static GETMODULEBASENAME g_pGetModuleBaseName = NULL;
 
 /*----------------------------------------------------------------------
 FUNCTION        :   InitPSAPI
@@ -53,45 +49,43 @@ static BOOL InitPSAPI(void)
 {
     if (TRUE == g_bInitialized)
     {
-        return (TRUE) ;
+        return (TRUE);
     }
 
     // Load up PSAPI.DLL.
-    HINSTANCE hInst = LoadLibraryA("PSAPI.DLL") ;
-    ASSERT(NULL not_eq hInst) ;
+    HINSTANCE hInst = LoadLibraryA("PSAPI.DLL");
+    ASSERT(NULL not_eq hInst);
 
     if (NULL == hInst)
     {
-        TRACE0("Unable to load PSAPI.DLL\n") ;
-        return (FALSE) ;
+        TRACE0("Unable to load PSAPI.DLL\n");
+        return (FALSE);
     }
 
     // Now do the GetProcAddress stuff.
     g_pEnumProcessModules =
-        (ENUMPROCESSMODULES)GetProcAddress(hInst ,
-                                           "EnumProcessModules") ;
-    ASSERT(NULL not_eq g_pEnumProcessModules) ;
+        (ENUMPROCESSMODULES)GetProcAddress(hInst, "EnumProcessModules");
+    ASSERT(NULL not_eq g_pEnumProcessModules);
 
     if (NULL == g_pEnumProcessModules)
     {
-        TRACE0("GetProcAddress failed on EnumProcessModules\n") ;
-        return (FALSE) ;
+        TRACE0("GetProcAddress failed on EnumProcessModules\n");
+        return (FALSE);
     }
 
     g_pGetModuleBaseName =
-        (GETMODULEBASENAME)GetProcAddress(hInst ,
-                                          "GetModuleBaseNameA") ;
-    ASSERT(NULL not_eq g_pGetModuleBaseName) ;
+        (GETMODULEBASENAME)GetProcAddress(hInst, "GetModuleBaseNameA");
+    ASSERT(NULL not_eq g_pGetModuleBaseName);
 
     if (NULL == g_pGetModuleBaseName)
     {
-        TRACE0("GetProcAddress failed on GetModuleBaseNameA\n") ;
-        return (FALSE) ;
+        TRACE0("GetProcAddress failed on GetModuleBaseNameA\n");
+        return (FALSE);
     }
 
     // All OK, Jumpmaster
-    g_bInitialized = TRUE ;
-    return (TRUE) ;
+    g_bInitialized = TRUE;
+    return (TRUE);
 }
 
 /*----------------------------------------------------------------------
@@ -116,35 +110,31 @@ RETURNS         :
     TRUE  - The function succeeded.  See the parameter discussion for
             the output parameters.
 ----------------------------------------------------------------------*/
-BOOL NT4GetLoadedModules(DWORD     dwPID        ,
-                         UINT      uiCount      ,
-                         HMODULE * paModArray   ,
-                         LPUINT    puiRealCount)
+BOOL NT4GetLoadedModules(DWORD dwPID, UINT uiCount, HMODULE *paModArray,
+                         LPUINT puiRealCount)
 {
 
     // Initialize PSAPI.DLL, if needed.
     if (FALSE == InitPSAPI())
     {
-        ASSERT(FALSE) ;
-        SetLastErrorEx(ERROR_DLL_INIT_FAILED , SLE_ERROR) ;
-        return (FALSE) ;
+        ASSERT(FALSE);
+        SetLastErrorEx(ERROR_DLL_INIT_FAILED, SLE_ERROR);
+        return (FALSE);
     }
 
     // Convert the process ID into a process handle.
-    HANDLE hProc = OpenProcess(PROCESS_QUERY_INFORMATION |
-                               PROCESS_VM_READ         ,
-                               FALSE                      ,
-                               dwPID) ;
-    ASSERT(NULL not_eq hProc) ;
+    HANDLE hProc =
+        OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, FALSE, dwPID);
+    ASSERT(NULL not_eq hProc);
 
     if (NULL == hProc)
     {
-        TRACE1("Unable to OpenProcess on %08X\n" , dwPID) ;
-        return (FALSE) ;
+        TRACE1("Unable to OpenProcess on %08X\n", dwPID);
+        return (FALSE);
     }
 
     // Now get the modules for the specified process.
-    ASSERT(NULL not_eq g_pEnumProcessModules) ;
+    ASSERT(NULL not_eq g_pEnumProcessModules);
     // Because of possible DLL unload order differences, make sure that
     //  PSAPI.DLL is still loaded in case this function is called during
     //  shutdown.
@@ -152,35 +142,33 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
 
     if (TRUE == IsBadCodePtr((FARPROC)g_pEnumProcessModules))
     {
-        TRACE0("PSAPI.DLL has been unloaded on us\n") ;
+        TRACE0("PSAPI.DLL has been unloaded on us\n");
 
         // Close the process handle used.
-        VERIFY(CloseHandle(hProc)) ;
+        VERIFY(CloseHandle(hProc));
 
-        SetLastErrorEx(ERROR_INVALID_DLL , SLE_ERROR) ;
+        SetLastErrorEx(ERROR_INVALID_DLL, SLE_ERROR);
 
-        return (FALSE) ;
+        return (FALSE);
     }
 
-    DWORD dwTotal = 0 ;
-    BOOL bRet = g_pEnumProcessModules(hProc                        ,
-                                      paModArray                   ,
-                                      uiCount * sizeof(HMODULE) ,
-                                      &dwTotal);
+    DWORD dwTotal = 0;
+    BOOL bRet = g_pEnumProcessModules(hProc, paModArray,
+                                      uiCount * sizeof(HMODULE), &dwTotal);
 
     // Close the process handle used.
-    VERIFY(CloseHandle(hProc)) ;
+    VERIFY(CloseHandle(hProc));
 
     // Convert the count from bytes to HMODULE values.
-    *puiRealCount = dwTotal / sizeof(HMODULE) ;
+    *puiRealCount = dwTotal / sizeof(HMODULE);
 
     // If bRet was FALSE, and the user was not just asking for the
     //  total, there was a problem.
     if (((FALSE == bRet) and (uiCount > 0)) or (0 == dwTotal))
     {
-        ASSERT(FALSE) ;
-        TRACE0("EnumProcessModules failed\n") ;
-        return (FALSE) ;
+        ASSERT(FALSE);
+        TRACE0("EnumProcessModules failed\n");
+        return (FALSE);
     }
 
     // If the total returned in puiRealCount is larger than the value in
@@ -188,33 +176,27 @@ BOOL NT4GetLoadedModules(DWORD     dwPID        ,
     // not an error.
     if ((*puiRealCount > uiCount) and (uiCount > 0))
     {
-        ASSERT(FALSE) ;
-        TRACE0("Buffer is too small in NT4GetLoadedModules\n") ;
-        SetLastErrorEx(ERROR_INSUFFICIENT_BUFFER , SLE_ERROR) ;
-        return (FALSE) ;
+        ASSERT(FALSE);
+        TRACE0("Buffer is too small in NT4GetLoadedModules\n");
+        SetLastErrorEx(ERROR_INSUFFICIENT_BUFFER, SLE_ERROR);
+        return (FALSE);
     }
 
     // All OK, Jumpmaster
-    SetLastError(ERROR_SUCCESS) ;
-    return (TRUE) ;
+    SetLastError(ERROR_SUCCESS);
+    return (TRUE);
 }
 
-DWORD __stdcall NTGetModuleBaseName(HANDLE  hProcess   ,
-                                    HMODULE hModule    ,
-                                    LPTSTR  lpBaseName ,
-                                    DWORD   nSize)
+DWORD __stdcall NTGetModuleBaseName(HANDLE hProcess, HMODULE hModule,
+                                    LPTSTR lpBaseName, DWORD nSize)
 {
     // Initialize PSAPI.DLL, if needed.
     if (FALSE == InitPSAPI())
     {
-        ASSERT(FALSE) ;
-        SetLastErrorEx(ERROR_DLL_INIT_FAILED , SLE_ERROR) ;
-        return (FALSE) ;
+        ASSERT(FALSE);
+        SetLastErrorEx(ERROR_DLL_INIT_FAILED, SLE_ERROR);
+        return (FALSE);
     }
 
-    return (g_pGetModuleBaseName(hProcess    ,
-                                 hModule     ,
-                                 lpBaseName  ,
-                                 nSize)) ;
+    return (g_pGetModuleBaseName(hProcess, hModule, lpBaseName, nSize));
 }
-

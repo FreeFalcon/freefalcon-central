@@ -1,7 +1,7 @@
 #ifndef _SIM_DOGFIGHT_H
 #define _SIM_DOGFIGHT_H
 
-#include "CampLib.h"
+#include "camplib.h"
 
 class FlightClass;
 class FalconGameEntity;
@@ -15,17 +15,30 @@ class TailInsertList;
 #define DF_GAME_OVER 0x04
 
 // Local Dogfight flags
-#define DF_VIEWED_SCORES 0x01 // User has viewed the scores, and is ready to reset
-#define DF_PLAYER_REQ_REGEN 0x02 // The player has requested regeneration (by keystroke)
+#define DF_VIEWED_SCORES                                                       \
+    0x01 // User has viewed the scores, and is ready to reset
+#define DF_PLAYER_REQ_REGEN                                                    \
+    0x02 // The player has requested regeneration (by keystroke)
 
 // Other defines
 #define MAX_DOGFIGHT_TEAMS 5
 
 // Dogfight game types
-enum DogfightType  { dog_Furball, dog_TeamFurball, dog_TeamMatchplay };
+enum DogfightType
+{
+    dog_Furball,
+    dog_TeamFurball,
+    dog_TeamMatchplay
+};
 
 // GameStatus (Note: This is the local game status)
-enum DogfightStatus { dog_Waiting, dog_Starting, dog_Flying, dog_EndRound };
+enum DogfightStatus
+{
+    dog_Waiting,
+    dog_Starting,
+    dog_Flying,
+    dog_EndRound
+};
 
 // =====================================================================================
 // KCK: This class will take care of all functionality associated with the various types
@@ -54,6 +67,7 @@ private:
     uchar numRadarMissiles;
     uchar numRearAspectMissiles;
     uchar numAllAspectMissiles;
+
 public:
     static char settings_filename[MAX_PATH];
 
@@ -125,7 +139,7 @@ public:
     {
         flags and_eq compl flag;
     };
-    int  IsSetFlag(int flag)
+    int IsSetFlag(int flag)
     {
         return (flags bitand flag) ? 1 : 0;
     };
@@ -137,7 +151,7 @@ public:
     {
         localFlags and_eq compl flag;
     };
-    int  IsSetLocalFlag(int flag)
+    int IsSetLocalFlag(int flag)
     {
         return (localFlags bitand flag) ? 1 : 0;
     };
@@ -156,7 +170,8 @@ public:
     };
     int GameStarted(void)
     {
-        if (gameStatus not_eq dog_Waiting) return TRUE;
+        if (gameStatus not_eq dog_Waiting)
+            return TRUE;
 
         return FALSE;
     };

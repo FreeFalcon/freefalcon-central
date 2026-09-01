@@ -27,11 +27,12 @@ BOOL DigitalBrain::HandleThreat(void)
     {
         // base it on range and threat's ata
         // NOTE: the current targetPtr should be the threat at this point
-        if ( not targetPtr or
-            (targetPtr not_eq threatPtr) or
-            (targetPtr->BaseData()->IsSim() and not ((SimBaseClass*)targetPtr->BaseData())->IsAwake()) or
+        if (not targetPtr or (targetPtr not_eq threatPtr) or
+            (targetPtr->BaseData()->IsSim() and
+             not((SimBaseClass*)targetPtr->BaseData())->IsAwake()) or
             targetData->range > 8.0F * NM_TO_FT or //me123 changes here
-            (targetData->range > 5.0F * NM_TO_FT and targetData->ataFrom > 90.0f * DTR))
+            (targetData->range > 5.0F * NM_TO_FT and
+             targetData->ataFrom > 90.0f * DTR))
         {
             // we drop concern of this threat
             SetThreat(NULL);
@@ -44,7 +45,6 @@ BOOL DigitalBrain::HandleThreat(void)
             wvrCurrTactic = WVR_NONE;
             threatTimer = 10.0F;
         }
-
     }
 
     // just go into WvrEngage at this point -- needs more smarts

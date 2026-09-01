@@ -25,7 +25,6 @@ private:
 
 
 public:
-
     // creates an empty list
     PhoneBook();
     // destroys list
@@ -50,7 +49,7 @@ public:
     PHONEBOOK *GetFirst()
     {
         Current_ = Root_;
-        return(GetCurrent());
+        return (GetCurrent());
     }
     // get next entry
     PHONEBOOK *GetNext()
@@ -58,17 +57,18 @@ public:
         if (Current_)
         {
             Current_ = Current_->Next;
-            return(GetCurrent());
+            return (GetCurrent());
         }
 
-        return(NULL);
+        return (NULL);
     }
     // get current entry
     PHONEBOOK *GetCurrent()
     {
-        if (Current_) return(Current_);
+        if (Current_)
+            return (Current_);
 
-        return(NULL);
+        return (NULL);
     }
 };
 

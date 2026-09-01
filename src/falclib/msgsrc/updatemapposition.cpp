@@ -7,7 +7,7 @@
  * Generated from file EVENTS.XLS by Peter
  */
 /*
-#include "MsgInc/UpdateMapPosition.h"
+#include "msginc/updatemapposition.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -16,7 +16,7 @@
 #include "uicomms.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 //extern data
 extern UIComms *gCommsMgr;

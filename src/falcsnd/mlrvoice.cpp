@@ -1,18 +1,18 @@
 #include <windows.h>
 #include <mmreg.h>
 #include <process.h>
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "fsound.h"
 #include "f4thread.h"
 #include "falclib.h"
-#include "dsound.h"
+#include "platform/win32shim/dsound.h" // Artscout - 2026: OpenAL-backed DirectSound on BOTH platforms (see dsound_openal.cpp)
 #include "psound.h"
-#include "grTypes.h"
+#include "grtypes.h"
 #include "matrix.h"
-#include "SoundFX.h"
+#include "soundfx.h"
 #include "sim/include/simdrive.h"
 #include "sim/include/otwdrive.h"
-#include "mlrVoice.h"
+#include "mlrvoice.h"
 
 extern bool g_bUse3dSound;
 
@@ -79,8 +79,8 @@ void mlrVoiceManager::StopAll()
 
 void mlrVoiceManager::Exec(Tpoint *campos, Trotation *camrot, Tpoint *camvel)
 {
-    static const Tpoint upv = { 0, 0, 1 };
-    static const Tpoint fwd = { 1, 0, 0 };
+    static const Tpoint upv = {0, 0, 1};
+    static const Tpoint fwd = {1, 0, 0};
 
     MatrixMult(camrot, &upv, &listenerUp);
     MatrixMult(camrot, &fwd, &listenerFront);
@@ -104,7 +104,9 @@ void mlrVoiceManager::Exec(Tpoint *campos, Trotation *camrot, Tpoint *camvel)
     // filter out what will be played
     while (n = (mlrVoice *)temp.RemHead())
     {
-        if ((n->status == mlrVoice::VSSTART or n->status == mlrVoice::VSPLAYING) and channels > 0)
+        if ((n->status == mlrVoice::VSSTART or
+             n->status == mlrVoice::VSPLAYING) and
+            channels > 0)
         {
             PlayList.AddTail(n); // maintain sortedness
             channels--;
@@ -141,7 +143,6 @@ void mlrVoiceManager::Exec(Tpoint *campos, Trotation *camrot, Tpoint *camvel)
             n->Pause();
             n = (mlrVoice *)n->GetSucc();
         }
-
     }
 
     Unlock();
@@ -155,7 +156,7 @@ mlrVoice::mlrVoice(mlrVoiceHandle *creator)
     sfx = &SFX_DEF[owner->sfxid];
 
     DSound3dBuffer = 0;
-    DSoundBuffer   = 0;
+    DSoundBuffer = 0;
     autodelete = 0;
 
     gVoiceManager.Lock();
@@ -208,12 +209,13 @@ bool mlrVoice::IsPlaying()
     return false;
 }
 
-void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX, float VY, float VZ)
+void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z,
+                    float VX, float VY, float VZ)
 {
     // Cobra - Treat thunder differently
     bool IsThunder = false;
 
-    if ( not stricmp(sfx->fileName, "thunder.wav"))
+    if (not stricmp(sfx->fileName, "thunder.wav"))
     {
         IsThunder = true;
     }
@@ -232,7 +234,7 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
     // if(distsq > 510000000000.f)
     // return;
     // else if(distsq > sfx->distSq)
-    if ( not IsThunder and (distsq > sfx->distSq))
+    if (not IsThunder and (distsq > sfx->distSq))
     {
         return;
     }
@@ -262,7 +264,7 @@ void mlrVoice::Play(float PScale, float Vol, float X, float Y, float Z, float VX
 
 int mlrVoice::CompareWith(ANode *n)
 {
-    return(-((int)(priority - ((mlrVoice *)n)->priority)));
+    return (-((int)(priority - ((mlrVoice *)n)->priority)));
 }
 
 int gVoiceCount = 0;
@@ -364,7 +366,7 @@ bool mlrVoice::AllocateBuffers(void)
     // incase we already have what we need
     if (DSoundBuffer)
     {
-        return(true);
+        return (true);
     }
 
     // going to get info from Sample already loaded.
@@ -376,7 +378,8 @@ bool mlrVoice::AllocateBuffers(void)
         {
             // MLR 3/7/2004 - prevent CTDs
             /////////////
-            gSoundDriver->DSound->DuplicateSoundBuffer(Sample->Buf[0].DSoundBuffer, &DSoundBuffer);
+            gSoundDriver->DSound->DuplicateSoundBuffer(
+                Sample->Buf[0].DSoundBuffer, &DSoundBuffer);
 
             if (DSoundBuffer)
             {
@@ -385,15 +388,16 @@ bool mlrVoice::AllocateBuffers(void)
 
                 if (sfx->flags bitand SFX_FLAGS_3D and g_bUse3dSound)
                 {
-                    DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer, (LPVOID *)&DSound3dBuffer);
+                    DSoundBuffer->QueryInterface(IID_IDirectSound3DBuffer,
+                                                 (LPVOID *)&DSound3dBuffer);
 
-                    if (DSound3dBuffer)  // and 
-                        //  sfx and 
-                        // (sfx->flags bitand SFX_POS_EXTERN) and 
-                        // (sfx->flags bitand SFX_FLAGS_3D)) // only make external 3d sounds 3d
+                    if (DSound3dBuffer)  // and
+                        //  sfx and
+                    // (sfx->flags bitand SFX_POS_EXTERN) and
+                    // (sfx->flags bitand SFX_FLAGS_3D)) // only make external 3d sounds 3d
                     {
                         g3dVoiceCount++;
-                        float maxdist = (float)  sqrt(sfx->maxDistSq);
+                        float maxdist = (float)sqrt(sfx->maxDistSq);
                         float mindist = sfx->min3ddist;
 
                         if (mindist == 0)
@@ -411,12 +415,12 @@ bool mlrVoice::AllocateBuffers(void)
                     }
                 }
 
-                return(true);
+                return (true);
             }
         }
     }
 
-    return(false);
+    return (false);
 }
 #endif
 
@@ -450,7 +454,7 @@ void mlrVoice::PreExec()
     // Cobra - Treat thunder differently
     bool IsThunder = false;
 
-    if ( not stricmp(sfx->fileName, "thunder.wav"))
+    if (not stricmp(sfx->fileName, "thunder.wav"))
     {
         IsThunder = true;
     }
@@ -467,15 +471,16 @@ void mlrVoice::PreExec()
         is3d = 0;
     }
 
-    int inpit = OTWDriver.DisplayInCockpit() ;
+    int inpit = OTWDriver.DisplayInCockpit();
 
     if (inpit)
     {
         // if this is an external only sound and we're in cockpit adjust
         bool isplayer = 0;
 
-        if (owner->SPos->platform and 
-            owner->SPos->platform == (SimBaseClass *)SimDriver.GetPlayerEntity())
+        if (owner->SPos->platform and
+            owner->SPos->platform ==
+                (SimBaseClass *)SimDriver.GetPlayerEntity())
             isplayer = 1; // the object that called this sound is the player
 
 
@@ -491,21 +496,18 @@ void mlrVoice::PreExec()
             }
             else
             {
-                if ( not IsThunder)
+                if (not IsThunder)
                     vol += ExtAttenuation;
             }
         }
 
-        if (sfx->flags bitand (SFX_POS_INSIDE bitor SFX_FLAGS_VMS) and 
- not isplayer and 
-            owner->SPos->platform)
+        if (sfx->flags bitand (SFX_POS_INSIDE bitor SFX_FLAGS_VMS) and
+            not isplayer and owner->SPos->platform)
         {
             // if we're inside the pit, but this "internal" sound is from another
             // object, get out.
             status = VSSTOP;
         }
-
-
     }
     else
     {
@@ -513,7 +515,7 @@ void mlrVoice::PreExec()
         if (sfx->flags bitand SFX_POS_EXTINT)
             status = VSSTOP;
 
-        if (sfx->flags bitand SFX_POS_INSIDE)     // don't play internal sound
+        if (sfx->flags bitand SFX_POS_INSIDE) // don't play internal sound
             status = VSSTOP;
 
         if (sfx->flags bitand SFX_FLAGS_VMS and not g_bSoundHearVMSExternal)
@@ -525,7 +527,7 @@ void mlrVoice::PreExec()
     // RV - Biker - Check if we are in array index limits
     if (sfx->soundGroup >= 0 and sfx->soundGroup < NUM_SOUND_GROUPS)
     {
-        vol += PlayerOptions.GroupVol[ sfx->soundGroup ];
+        vol += PlayerOptions.GroupVol[sfx->soundGroup];
     }
 
     // if(vol>0) vol=0;
@@ -544,13 +546,13 @@ void mlrVoice::PreExec()
 
         if (is3d and not IsThunder and (sfx->flags bitand SFX_FLAGS_CONE))
         {
-            Tpoint delta = { x - gVoiceManager.listenerPosition.x,
-                             y - gVoiceManager.listenerPosition.y,
-                             z - gVoiceManager.listenerPosition.z
-                           };
+            Tpoint delta = {x - gVoiceManager.listenerPosition.x,
+                            y - gVoiceManager.listenerPosition.y,
+                            z - gVoiceManager.listenerPosition.z};
 
             // delta.Normalize();
-            float l = sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
+            float l =
+                sqrt(delta.x * delta.x + delta.y * delta.y + delta.z * delta.z);
 
             if (l > 0.0000001)
             {
@@ -562,16 +564,23 @@ void mlrVoice::PreExec()
             float dot = delta.x * owner->SPos->orientation.M11 +
                         delta.y * owner->SPos->orientation.M21 +
                         delta.z * owner->SPos->orientation.M31;
-            MonoPrint("dot %f  or(%f, %f, %f)  camvec(%f, %f, %f)", dot, owner->SPos->orientation.M11, owner->SPos->orientation.M21, owner->SPos->orientation.M31,
-                      delta.x, delta.y, delta.z);
+            MonoPrint("dot %f  or(%f, %f, %f)  camvec(%f, %f, %f)", dot,
+                      owner->SPos->orientation.M11,
+                      owner->SPos->orientation.M21,
+                      owner->SPos->orientation.M31, delta.x, delta.y, delta.z);
 
-#define RESCALE(in,inmin,inmax,outmin,outmax) ( ((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) + (outmin))
+#define RESCALE(in, inmin, inmax, outmin, outmax)                              \
+    (((float)(in) - (inmin)) * ((outmax) - (outmin)) / ((inmax) - (inmin)) +   \
+     (outmin))
 
-            dot = RESCALE(dot, sfx->coneInsideAngle, sfx->coneOutsideAngle, 1.0f, 0.0f);
+            dot = RESCALE(dot, sfx->coneInsideAngle, sfx->coneOutsideAngle,
+                          1.0f, 0.0f);
 
-            if (dot < 0.0f) dot = 0.0f;
+            if (dot < 0.0f)
+                dot = 0.0f;
 
-            if (dot > 1.0f) dot = 1.0f;
+            if (dot > 1.0f)
+                dot = 1.0f;
 
             vol += sfx->coneOutsideVol * dot;
 
@@ -599,7 +608,6 @@ void mlrVoice::PreExec()
                 priority = 0.0f;
             }
         }
-
     }
 }
 
@@ -619,7 +627,7 @@ void mlrVoice::Exec()
     // Cobra - Treat thunder differently
     bool IsThunder = false;
 
-    if ( not stricmp(sfx->fileName, "thunder.wav"))
+    if (not stricmp(sfx->fileName, "thunder.wav"))
     {
         float fsign = 1.0f;
         IsThunder = true;
@@ -680,7 +688,7 @@ void mlrVoice::Exec()
     if (is3d)
     {
         // object velocity (f/s)
-        vel  = (float)sqrt(vx * vx + vy * vy + vz * vz);
+        vel = (float)sqrt(vx * vx + vy * vy + vz * vz);
 
         // velocity vector
         float vvx, vvy, vvz;
@@ -710,13 +718,16 @@ void mlrVoice::Exec()
             float d2, xx, yy, zz, m;
 
             // compute camera distance in 1 second (since velocity components are already in Feet/Sec)
-            xx = (x + vx) - (gVoiceManager.listenerPosition.x + gVoiceManager.listenerVelocity.x);
-            yy = (y + vy) - (gVoiceManager.listenerPosition.y + gVoiceManager.listenerVelocity.y);
-            zz = (z + vz) - (gVoiceManager.listenerPosition.z + gVoiceManager.listenerVelocity.z);
+            xx = (x + vx) - (gVoiceManager.listenerPosition.x +
+                             gVoiceManager.listenerVelocity.x);
+            yy = (y + vy) - (gVoiceManager.listenerPosition.y +
+                             gVoiceManager.listenerVelocity.y);
+            zz = (z + vz) - (gVoiceManager.listenerPosition.z +
+                             gVoiceManager.listenerVelocity.z);
 
             d2 = (float)sqrt(xx * xx + yy * yy + zz * zz);
 
-            m = ((dist - d2) / (1100));  // * g_fSoundDopplerFactor;
+            m = ((dist - d2) / (1100)); // * g_fSoundDopplerFactor;
 
             if (sfx->flags bitand SFX_FLAGS_REVDOP)
                 m = -m;
@@ -764,7 +775,7 @@ void mlrVoice::Exec()
 
                 // compute the seconds it takes for the sound to
                 // get from the object, to the camera.
-                s = (float)((dist/* - DISTEFF_THRESHOLD*/) / 1100);
+                s = (float)((dist /* - DISTEFF_THRESHOLD*/) / 1100);
                 // this had to be fudged a little so that objects real close wouldn't have the effect applied.
 
                 v = vel; // copy velocity for our own use.
@@ -805,11 +816,14 @@ void mlrVoice::Exec()
                 else
                 {
                     // scale v from 0 to 1 between min bitand max dist
-                    v = (distsq - sfx->min3ddist) / (sfx->maxDistSq - sfx->min3ddist);
+                    v = (distsq - sfx->min3ddist) /
+                        (sfx->maxDistSq - sfx->min3ddist);
 
                     // clamp result
-                    if (v < 0) v = 0;
-                    else if (v > 1) v = 1;
+                    if (v < 0)
+                        v = 0;
+                    else if (v > 1)
+                        v = 1;
 
                     // this prolly ain't quite scientifically correct. :)
                     // log(1)  = 0
@@ -857,16 +871,18 @@ void mlrVoice::Exec()
         if (sfx->flags bitand SFX_POS_LOOPED)
         {
             // loopy sounds
-            static LARGE_INTEGER biggest = { 0 };
+            static LARGE_INTEGER biggest = {0};
             LARGE_INTEGER freq, res;
             LARGE_INTEGER beg, end;
             QueryPerformanceCounter(&beg);
-            DSoundBuffer->SetFrequency(Frequency); // MLR 12/7/2003 - The freq bitand vol code was moved here
+            DSoundBuffer->SetFrequency(
+                Frequency); // MLR 12/7/2003 - The freq bitand vol code was moved here
             DSoundBuffer->SetVolume((long)vol);
             DSoundBuffer->Play(0, 0, DSBPLAY_LOOPING);
             QueryPerformanceCounter(&end);
             QueryPerformanceFrequency(&freq);
-            res.QuadPart = ((end.QuadPart - beg.QuadPart) * 1000000) / freq.QuadPart;
+            res.QuadPart =
+                ((end.QuadPart - beg.QuadPart) * 1000000) / freq.QuadPart;
 
             if (res.QuadPart > biggest.QuadPart)
             {
@@ -883,8 +899,8 @@ void mlrVoice::Exec()
             {
                 //(sfx->flags bitand SFX_POS_EXTERN))
                 // delay external sounds
-                float time,     // Elapsed time since sound was created.
-                      radiussq; // MLR 12/2/2003 - The radius from the sounds origin that the soundwave is currently at.
+                float time, // Elapsed time since sound was created.
+                    radiussq; // MLR 12/2/2003 - The radius from the sounds origin that the soundwave is currently at.
 
                 // since sound radiates out in a sphere from the origin, we'll calculate the radius
                 // that the sound has traveled, and see if the camera is inside the sphere.
@@ -947,7 +963,7 @@ void mlrVoice::Exec()
         else
         {
             // TODO: adjust the volume of these sounds while they are still playing is we're not using D3d
-            if ( not IsPlaying())
+            if (not IsPlaying())
             {
                 // don't remove until the node has finished playing
                 if (status == VSPAUSED)

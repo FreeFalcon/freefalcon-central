@@ -12,12 +12,13 @@
 
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
     // C part of the API
     // so we can keep C code happy
-    void comListAdd(ComIP*);
-    void comListRemove(ComIP*);
+    void comListAdd(ComIP *);
+    void comListRemove(ComIP *);
 
     // iteration functions P (at end of function name) here means protocol
     // prepare to iterate
@@ -34,7 +35,7 @@ extern "C" {
     // find a given Com by the receive port, using hos order
     ComIP *comListFindProtocolRport(int protocol, unsigned short port);
     /** finds a com handle of the given protocol and id (host order) */
-    ComIP* comListFindProtocolId(int protocol, unsigned long id);
+    ComIP *comListFindProtocolId(int protocol, unsigned long id);
     /** Finds a com handle to deal with a message which does not fit into any other comm in list */
     ComIP *comListFindDangling(int protocol);
 
@@ -50,8 +51,8 @@ extern "C" {
 class ComList
 {
 private:
-    std::list<ComIP*> comList;
-    std::list<ComIP*>::iterator iterator; // used to iterate on this list
+    std::list<ComIP *> comList;
+    std::list<ComIP *>::iterator iterator; // used to iterate on this list
 
 public:
     ComList();

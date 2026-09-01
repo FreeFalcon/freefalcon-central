@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -32,7 +33,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 protected:
@@ -66,15 +68,18 @@ protected:
     ANIM_RES *Anim_;
     C_Base *Owner_; // pointer to creator control
 
-    void O_Output::ExtractAnim(SCREEN *surface, long FrameNo, long x, long y, UI95_RECT *src, UI95_RECT *dest);
-    void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long x, long y, UI95_RECT *src, UI95_RECT *dest);
-    void O_Output::Extract16Bit(SCREEN *, long , long , long , UI95_RECT *, UI95_RECT *);
+    void O_Output::ExtractAnim(SCREEN *surface, long FrameNo, long x, long y,
+                               UI95_RECT *src, UI95_RECT *dest);
+    void O_Output::Extract16BitRLE(SCREEN *surface, long FrameNo, long x,
+                                   long y, UI95_RECT *src, UI95_RECT *dest);
+    void O_Output::Extract16Bit(SCREEN *, long, long, long, UI95_RECT *,
+                                UI95_RECT *);
 
-    int O_Output::FitString(int idx); // returns # characters to keep on this line
+    int
+    O_Output::FitString(int idx); // returns # characters to keep on this line
     void O_Output::WordWrap(); // handles the word wrapping stuff
 
 public:
-
     enum
     {
         _OUT_TEXT_ = 100,
@@ -125,7 +130,9 @@ public:
 
     O_Output(char **stream);
     O_Output(FILE *fp);
-    ~O_Output() {}
+    ~O_Output()
+    {
+    }
     long Size();
     void Save(char **stream);
     void Save(FILE *fp);
@@ -189,15 +196,15 @@ public:
     }
     void SetFrame(long frame)
     {
-        frame_ = (short)frame;    
+        frame_ = (short)frame;
     }
     void SetDirection(long dir)
     {
-        direction_ = (short)dir;    
+        direction_ = (short)dir;
     }
     void SetAnimType(long type)
     {
-        animtype_ = (short)type;    
+        animtype_ = (short)type;
     }
     void SetSrcRect(UI95_RECT *rect)
     {
@@ -210,11 +217,11 @@ public:
     void SetScaleInfo(long scale);
     void SetFrontPerc(long perc)
     {
-        fperc_ = (short)perc;    
+        fperc_ = (short)perc;
     }
     void SetBackPerc(long perc)
     {
-        bperc_ = (short)perc;    
+        bperc_ = (short)perc;
     }
     void SetOpaqueRange(short os, short oe)
     {
@@ -224,86 +231,86 @@ public:
 
     void SetWordWrapWidth(long w)
     {
-        WWWidth_ = (short)w;    
+        WWWidth_ = (short)w;
     }
 
     // Query Functions
     short _GetOType_()
     {
-        return(_OType_);
+        return (_OType_);
     }
 
     long GetX()
     {
-        return(x_);
+        return (x_);
     }
     long GetY()
     {
-        return(y_);
+        return (y_);
     }
     long GetW()
     {
-        return(w_);
+        return (w_);
     }
     long GetH()
     {
-        return(h_);
+        return (h_);
     }
     short Ready()
     {
-        return(ready_);
+        return (ready_);
     }
     long GetFlags()
     {
-        return(flags_);
+        return (flags_);
     }
     _TCHAR *GetText()
     {
-        return(Label_);
+        return (Label_);
     }
     short GetTextBufferLen()
     {
-        return(LabelLen_);
+        return (LabelLen_);
     }
     IMAGE_RSC *GetImage()
     {
-        return(Image_);
+        return (Image_);
     }
     ANIM_RES *GetAnim()
     {
-        return(Anim_);
+        return (Anim_);
     }
     COLORREF GetFgColor()
     {
-        return(FgColor_);
+        return (FgColor_);
     }
     COLORREF GetBgColor()
     {
-        return(BgColor_);
+        return (BgColor_);
     }
     short GetFrame()
     {
-        return(frame_);
+        return (frame_);
     }
     short GetDirection()
     {
-        return(direction_);
+        return (direction_);
     }
     short GetAnimType()
     {
-        return(animtype_);
+        return (animtype_);
     }
     C_Base *Owner()
     {
-        return(Owner_);
+        return (Owner_);
     }
     UI95_RECT *GetSrcRect()
     {
-        return(&Src_);
+        return (&Src_);
     }
     UI95_RECT *GetDestRect()
     {
-        return(&Dest_);
+        return (&Dest_);
     }
 
     // Non Inline functions
@@ -311,7 +318,8 @@ public:
     void GetCharXY(short idx, long *x, long *y); // Based on cursor location
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
-    void Blend4Bit(SCREEN *surface, BYTE *overlay, WORD *Palette[], UI95_RECT *cliprect);
+    void Blend4Bit(SCREEN *surface, BYTE *overlay, WORD *Palette[],
+                   UI95_RECT *cliprect);
     void Cleanup();
     void SetInfo();
     void SetText(_TCHAR *str);

@@ -29,18 +29,13 @@ public:
     /// get plane/plane intersection
     bool intersect(const plane& p, line3& l) const;
 
-    float a , b, c, d;
+    float a, b, c, d;
 };
 
 //------------------------------------------------------------------------------
 /**
 */
-inline
-plane::plane() :
-    a(0.0f),
-    b(0.0f),
-    c(0.0f),
-    d(1.0f)
+inline plane::plane() : a(0.0f), b(0.0f), c(0.0f), d(1.0f)
 {
     // empty
 }
@@ -48,12 +43,7 @@ plane::plane() :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-plane::plane(float A, float B, float C, float D) :
-    a(A),
-    b(B),
-    c(C),
-    d(D)
+inline plane::plane(float A, float B, float C, float D) : a(A), b(B), c(C), d(D)
 {
     // empty
 }
@@ -61,12 +51,7 @@ plane::plane(float A, float B, float C, float D) :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-plane::plane(const plane& rhs) :
-    a(rhs.a),
-    b(rhs.b),
-    c(rhs.c),
-    d(rhs.d)
+inline plane::plane(const plane& rhs) : a(rhs.a), b(rhs.b), c(rhs.c), d(rhs.d)
 {
     // empty
 }
@@ -74,9 +59,7 @@ plane::plane(const plane& rhs) :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-plane::set(float A, float B, float C, float D)
+inline void plane::set(float A, float B, float C, float D)
 {
     this->a = A;
     this->b = B;
@@ -88,9 +71,7 @@ plane::set(float A, float B, float C, float D)
 /**
     Constructs a plane from 3 position vectors.
 */
-inline
-void
-plane::set(const vector3& v0, const vector3& v1, const vector3& v2)
+inline void plane::set(const vector3& v0, const vector3& v1, const vector3& v2)
 {
     vector3 cross((v2 - v0) * (v1 - v0));
     cross.norm();
@@ -103,8 +84,7 @@ plane::set(const vector3& v0, const vector3& v1, const vector3& v2)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-plane::plane(const vector3& v0, const vector3& v1, const vector3& v2)
+inline plane::plane(const vector3& v0, const vector3& v1, const vector3& v2)
 {
     this->set(v0, v1, v2);
 }
@@ -114,9 +94,7 @@ plane::plane(const vector3& v0, const vector3& v1, const vector3& v2)
     Computes the distance of a point to the plane. Return 0.0 if the
     point is on the plane.
 */
-inline
-float
-plane::distance(const vector3& v) const
+inline float plane::distance(const vector3& v) const
 {
     return this->a * v.x + this->b * v.y + this->c * v.z + this->d;
 }
@@ -125,9 +103,7 @@ plane::distance(const vector3& v) const
 /**
     Returns the plane normal.
 */
-inline
-vector3
-plane::normal() const
+inline vector3 plane::normal() const
 {
     return vector3(this->a, this->b, this->c);
 }
@@ -137,9 +113,7 @@ plane::normal() const
     Get intersecting t of line with one-sided plane. Returns false
     if the line is parallel to the plane.
 */
-inline
-bool
-plane::intersect(const line3& l, float& t) const
+inline bool plane::intersect(const line3& l, float& t) const
 {
     float f0 = this->a * l.b.x + this->b * l.b.y + this->c * l.b.z + this->d;
     float f1 = this->a * -l.m.x + this->b * -l.m.y + this->c * -l.m.z;
@@ -159,9 +133,7 @@ plane::intersect(const line3& l, float& t) const
 /**
     Get plane/plane intersection. Return false if planes are parallel.
 */
-inline
-bool
-plane::intersect(const plane& p, line3& l) const
+inline bool plane::intersect(const plane& p, line3& l) const
 {
     vector3 n0 = this->normal();
     vector3 n1 = p.normal();
@@ -178,7 +150,7 @@ plane::intersect(const plane& p, line3& l) const
     else
     {
         float inv_det = 1.0f / det;
-        float c0 = (n11 * this->d - n01 * p.d)    * inv_det;
+        float c0 = (n11 * this->d - n01 * p.d) * inv_det;
         float c1 = (n00 * p.d - n01 * this->d) * inv_det;
         l.m = n0 * n1;
         l.b = n0 * c0 + n1 * c1;

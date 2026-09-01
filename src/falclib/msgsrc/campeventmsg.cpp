@@ -6,28 +6,28 @@
  */
 
 #include "mesg.h"
-#include "CUIEvent.h"
-#include "CampStr.h"
-#include "Camplib.h"
-#include "Sfx.h"
-#include "Find.h"
-#include "OtwDrive.h"
-#include "CmpClass.h"
-#include "Brief.h"
-#include "F4Version.h"
+#include "cuievent.h"
+#include "campstr.h"
+#include "camplib.h"
+#include "sfx.h"
+#include "find.h"
+#include "otwdrive.h"
+#include "cmpclass.h"
+#include "brief.h"
+#include "f4version.h"
 #include "campaign.h"
 #include "classtbl.h"
-#include "Cmpclass.h"
-#include "Campaign.h"
+#include "cmpclass.h"
+#include "campaign.h"
 #include "falclib.h"
-#include "Falcmesg.h"
+#include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "MissEval.h"
-#include "Graphics/Include/drawparticlesys.h"
+#include "misseval.h"
+#include "graphics/include/drawparticlesys.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gTextMemPool;
@@ -35,7 +35,8 @@ extern MEM_POOL gTextMemPool;
 
 extern int InterestingSFX(float x, float y);
 extern void ConstructOrderedSentence(_TCHAR *string, _TCHAR *format, ...);
-extern void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string, EventDataClass *data, ...);
+extern void ConstructOrderedGenderedSentence(short maxsize, _TCHAR *string,
+                                             EventDataClass *data, ...);
 extern void UI_UpdateEventList(void);
 
 
@@ -48,21 +49,27 @@ EventDataClass::EventDataClass(void)
 {
     formatId = 0;
     xLoc = yLoc = 0;
-    memset(vuIds, 0, sizeof(VU_ID)*CUI_ME);
-    memset(owners, 0, sizeof(short)*CUI_MD);
-    memset(textIds, 0, sizeof(short)*CUI_MS);
+    memset(vuIds, 0, sizeof(VU_ID) * CUI_ME);
+    memset(owners, 0, sizeof(short) * CUI_MD);
+    memset(textIds, 0, sizeof(short) * CUI_MS);
 }
 
 // =================================
 // FalconCampEventMessage
 // =================================
 
-FalconCampEventMessage::FalconCampEventMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(CampEventMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconCampEventMessage::FalconCampEventMessage(VU_ID entityId,
+                                               VuTargetEntity *target,
+                                               VU_BOOL loopback)
+    : FalconEvent(CampEventMsg, FalconEvent::CampaignThread, entityId, target,
+                  loopback)
 {
     memset(&dataBlock, 0, sizeof(dataBlock));
 }
 
-FalconCampEventMessage::FalconCampEventMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(CampEventMsg, FalconEvent::CampaignThread, senderid, target)
+FalconCampEventMessage::FalconCampEventMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                               VU_ID target)
+    : FalconEvent(CampEventMsg, FalconEvent::CampaignThread, senderid, target)
 {
     memset(&dataBlock, 0, sizeof(dataBlock));
     type;
@@ -87,20 +94,25 @@ int FalconCampEventMessage::Process(uchar autodisp)
     }
 
 #ifdef USE_SH_POOLS
-    CampUIEventElement *event = (CampUIEventElement *)MemAllocPtr(gTextMemPool, sizeof(CampUIEventElement), FALSE);
+    CampUIEventElement *event = (CampUIEventElement *)MemAllocPtr(
+        gTextMemPool, sizeof(CampUIEventElement), FALSE);
 #else
     CampUIEventElement *event = new CampUIEventElement();
 #endif
 
     // Do Visual effects here (only air explosion on losses, right now)
-    if (dataBlock.eventType == campLosses and InterestingSFX(GridToSim(dataBlock.data.yLoc), GridToSim(dataBlock.data.xLoc)))
+    if (dataBlock.eventType == campLosses and
+        InterestingSFX(GridToSim(dataBlock.data.yLoc),
+                       GridToSim(dataBlock.data.xLoc)))
     {
         VehicleClassDataType *vc;
         vc = GetVehicleClassData(-1 * dataBlock.data.textIds[2]);
 
-        if (vc and Falcon4ClassTable[vc->Index].vuClassData.classInfo_[VU_DOMAIN] == DOMAIN_AIR)
+        if (vc and
+            Falcon4ClassTable[vc->Index].vuClassData.classInfo_[VU_DOMAIN] ==
+                DOMAIN_AIR)
         {
-            Tpoint    pos;
+            Tpoint pos;
             pos.x = GridToSim(dataBlock.data.xLoc);
             pos.y = GridToSim(dataBlock.data.yLoc);
             pos.z = -15000;
@@ -109,8 +121,7 @@ int FalconCampEventMessage::Process(uchar autodisp)
             PSvec.x = 0;
             PSvec.y = 0;
             PSvec.z = 0;
-            DrawableParticleSys::PS_AddParticleEx((SFX_AIR_EXPLOSION + 1),
-                                                  &pos,
+            DrawableParticleSys::PS_AddParticleEx((SFX_AIR_EXPLOSION + 1), &pos,
                                                   &PSvec);
         }
     }
@@ -125,7 +136,8 @@ int FalconCampEventMessage::Process(uchar autodisp)
     ConstructOrderedGenderedSentence(512, text, &dataBlock.data);
 
 #ifdef USE_SH_POOLS
-    event->eventText = (_TCHAR *)MemAllocPtr(gTextMemPool, sizeof(_TCHAR) * (_tcslen(text) + 1), FALSE);
+    event->eventText = (_TCHAR *)MemAllocPtr(
+        gTextMemPool, sizeof(_TCHAR) * (_tcslen(text) + 1), FALSE);
 #else
     event->eventText = new _TCHAR[_tcslen(text) + 1];
 #endif
@@ -134,11 +146,11 @@ int FalconCampEventMessage::Process(uchar autodisp)
     ShiAssert(_tcslen(text) + 1 < 512);
 
     // Register the event with the mission evaluator and record in the event list
-    TheCampaign.MissionEvaluator->RegisterEvent(event->x, event->y, event->team, dataBlock.eventType, event->eventText);
+    TheCampaign.MissionEvaluator->RegisterEvent(
+        event->x, event->y, event->team, dataBlock.eventType, event->eventText);
     TheCampaign.AddCampaignEvent(event);
 
     CampLeaveCriticalSection();
     UI_UpdateEventList();
     return 0;
 }
-

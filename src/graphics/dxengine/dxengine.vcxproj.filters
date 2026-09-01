@@ -45,6 +45,18 @@
     <ClCompile Include="DXVbManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\vulkan\VulkanBackend.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vulkan\VulkanRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vulkan\VulkanTextureManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\vulkan\VulkanVbManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="D3D12Backend.h">
@@ -80,8 +92,15 @@
     <ClInclude Include="DXVbManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IRenderBackend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="common\IRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <None Include="$(OpenXRLoaderBinaryRoot)\bin\openxr_loader.dll" />
     <None Include="packages.config" />
   </ItemGroup>
 </Project>

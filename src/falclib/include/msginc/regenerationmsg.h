@@ -1,12 +1,12 @@
 #ifndef _REGENERATIONMSG_H
 #define _REGENERATIONMSG_H
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (push, pack1, 1)
+#pragma pack(push, pack1, 1)
 
 /*
  * Message Type Regeneration Msg
@@ -14,7 +14,8 @@
 class FalconRegenerationMessage : public FalconEvent
 {
 public:
-    FalconRegenerationMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconRegenerationMessage(VU_ID entityId, VuTargetEntity *target,
+                              VU_BOOL loopback = TRUE);
     FalconRegenerationMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconRegenerationMessage(void);
     virtual int Size() const
@@ -42,7 +43,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         float newx;
         float newy;
         float newz;
@@ -52,6 +52,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack (pop, pack1)
+#pragma pack(pop, pack1)
 
 #endif

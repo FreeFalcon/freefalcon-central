@@ -6,11 +6,11 @@
 #include "object.h"
 #include "otwdrive.h"
 
-#include "SimDrive.h"
+#include "simdrive.h"
 
 float HeliBrain::VectorTrack(float, int)
 {
-    return(0.0f);
+    return (0.0f);
 }
 
 float HeliBrain::AutoTrack(float)
@@ -25,10 +25,12 @@ float HeliBrain::AutoTrack(float)
     rollLoad = 0.0f;
 
     // Range to current waypoint
-    rng = (trackX - self->XPos()) * (trackX - self->XPos()) + (trackY - self->YPos()) * (trackY - self->YPos());
+    rng = (trackX - self->XPos()) * (trackX - self->XPos()) +
+          (trackY - self->YPos()) * (trackY - self->YPos());
 
     // Heading error for current waypoint
-    desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) - self->Yaw();
+    desHeading = (float)atan2(trackY - self->YPos(), trackX - self->XPos()) -
+                 self->Yaw();
 
     if (desHeading > 180.0F * DTR)
         desHeading -= 360.0F * DTR;
@@ -60,7 +62,7 @@ float HeliBrain::AutoTrack(float)
     MachHold(desSpeed, self->GetWPalt(), TRUE);
     //MachHold(desSpeed, 300.0f, TRUE);
 
-    return(0.0f);
+    return (0.0f);
 }
 
 // RV - Biker - New MachHold which now controlls speed and alltitude
@@ -116,7 +118,9 @@ void HeliBrain::MachHold(float speedSet, float altSet, int groundAvoid)
         powerO = max(powerT, -0.5f);
 
     // integral
-    powerI = powerI + COEFF_I * (altOffset * COEFF_P - (powerT - powerO) * COEFF_FB) * SimLibMajorFrameTime;
+    powerI = powerI + COEFF_I *
+                          (altOffset * COEFF_P - (powerT - powerO) * COEFF_FB) *
+                          SimLibMajorFrameTime;
 
     // limit integral on control error
     if (abs(altOffset) < 100)

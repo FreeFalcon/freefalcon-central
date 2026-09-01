@@ -5,28 +5,28 @@
 
  - Begin Major Rewrite
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
-#include "Utils/lzss.h"
-#include "Loader.h"
+#include "utils/lzss.h"
+#include "loader.h"
 #include "grinline.h"
-#include "StateStack.h"
-#include "ObjectLOD.h"
-#include "PalBank.h"
-#include "TexBank.h"
-#include "Image.h"
-#include "TerrTex.h"
+#include "statestack.h"
+#include "objectlod.h"
+#include "palbank.h"
+#include "texbank.h"
+#include "image.h"
+#include "terrtex.h"
 #include "ddsdiskhdr.h" // Artscout - 2026 (x64): correct on-disk DDS header read
-#include "FalcLib/include/playerop.h"
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/playerop.h"
+#include "falclib/include/dispopts.h"
 
 // Static data members (used to avoid requiring "this" to be passed to every access function)
 int TextureBankClass::nTextures = 0;
-TexBankEntry* TextureBankClass::TexturePool = NULL;
-TempTexBankEntry* TextureBankClass::TempTexturePool = NULL;
-BYTE* TextureBankClass::CompressedBuffer = NULL;
+TexBankEntry *TextureBankClass::TexturePool = NULL;
+TempTexBankEntry *TextureBankClass::TempTexturePool = NULL;
+BYTE *TextureBankClass::CompressedBuffer = NULL;
 int TextureBankClass::deferredLoadState = 0;
 char TextureBankClass::baseName[256];
 FileMemMap TextureBankClass::TexFileMap;
@@ -34,11 +34,12 @@ FileMemMap TextureBankClass::TexFileMap;
 int TextureBankClass::textureCount = 0;
 #endif
 TexFlagsType *TextureBankClass::TexFlags;
-BYTE* TextureBankClass::TexBuffer;
+BYTE *TextureBankClass::TexBuffer;
 DWORD TextureBankClass::TexBufferSize;
 bool TextureBankClass::RatedLoad;
 short *TextureBankClass::CacheLoad, *TextureBankClass::CacheRelease;
-volatile short TextureBankClass::LoadIn, TextureBankClass::LoadOut, TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
+volatile short TextureBankClass::LoadIn, TextureBankClass::LoadOut,
+    TextureBankClass::ReleaseIn, TextureBankClass::ReleaseOut;
 
 DWORD gDebugTextureID;
 
@@ -58,18 +59,21 @@ void TextureBankClass::Setup(int nEntries)
     if (nEntries)
     {
 #ifdef USE_SH_POOLS
-        TexturePool = (TexBankEntry *)MemAllocPtr(gBSPLibMemPool, sizeof(TexBankEntry) * nEntries, 0);
-        TempTexturePool = (TempTexBankEntry *)MemAllocPtr(gBSPLibMemPool, sizeof(TempTexBankEntry) * nEntries, 0);
+        TexturePool = (TexBankEntry *)MemAllocPtr(
+            gBSPLibMemPool, sizeof(TexBankEntry) * nEntries, 0);
+        TempTexturePool = (TempTexBankEntry *)MemAllocPtr(
+            gBSPLibMemPool, sizeof(TempTexBankEntry) * nEntries, 0);
 #else
         TexturePool = new TexBankEntry[nEntries];
         TempTexturePool = new TempTexBankEntry[nEntries];
 #endif
 
-        TexFlags = (TexFlagsType*) malloc(nTextures * sizeof(TexFlagsType));
-        memset(TexFlags, 0, nTextures *  sizeof(TexFlagsType));
+        TexFlags = (TexFlagsType *)malloc(nTextures * sizeof(TexFlagsType));
+        memset(TexFlags, 0, nTextures * sizeof(TexFlagsType));
         // Allocte acche with a little safety margin
-        CacheLoad = (short*) malloc(sizeof(short) * (nTextures + CACHE_MARGIN));
-        CacheRelease = (short*) malloc(sizeof(short) * (nTextures + CACHE_MARGIN));
+        CacheLoad = (short *)malloc(sizeof(short) * (nTextures + CACHE_MARGIN));
+        CacheRelease =
+            (short *)malloc(sizeof(short) * (nTextures + CACHE_MARGIN));
     }
     else
     {
@@ -101,7 +105,8 @@ void TextureBankClass::Cleanup(void)
     TempTexturePool = NULL;
     nTextures = 0;
 
-    if (TexFlags) free(TexFlags), TexFlags = NULL;
+    if (TexFlags)
+        free(TexFlags), TexFlags = NULL;
 
     // Clean up the decompression buffer
 #ifdef USE_SH_POOLS
@@ -113,9 +118,11 @@ void TextureBankClass::Cleanup(void)
 
     RatedLoad = false;
 
-    if (CacheLoad)  free(CacheLoad), CacheLoad = NULL;
+    if (CacheLoad)
+        free(CacheLoad), CacheLoad = NULL;
 
-    if (CacheRelease)  free(CacheRelease), CacheRelease = NULL;
+    if (CacheRelease)
+        free(CacheRelease), CacheRelease = NULL;
 
     LoadIn = LoadOut = ReleaseIn = ReleaseOut = 0;
 
@@ -137,7 +144,8 @@ void TextureBankClass::ReadPool(int file, char *basename)
     // Read the number of textures in the pool
     result = read(file, &nTextures, sizeof(nTextures));
 
-    if (nTextures == 0) return;
+    if (nTextures == 0)
+        return;
 
     // Read the size of the biggest compressed texture in the pool
     result = read(file, &maxCompressedSize, sizeof(maxCompressedSize));
@@ -147,7 +155,8 @@ void TextureBankClass::ReadPool(int file, char *basename)
     nVer = maxCompressedSize;
 
 #ifdef USE_SH_POOLS
-    CompressedBuffer = (BYTE *)MemAllocPtr(gBSPLibMemPool, sizeof(BYTE) * maxCompressedSize, 0);
+    CompressedBuffer = (BYTE *)MemAllocPtr(gBSPLibMemPool,
+                                           sizeof(BYTE) * maxCompressedSize, 0);
 #else
     CompressedBuffer = new BYTE[maxCompressedSize];
 #endif
@@ -177,20 +186,21 @@ void TextureBankClass::ReadPool(int file, char *basename)
 #pragma pack(push, 4)
         struct DiskTexture
         {
-            int    dimensions;
+            int dimensions;
             UInt32 imageData; // void*  on x86 disk
-            DWORD  flags;
-            DWORD  chromaKey;
-            UInt32 palette;   // Palette*        on x86 disk
+            DWORD flags;
+            DWORD chromaKey;
+            UInt32 palette; // Palette*        on x86 disk
             UInt32 texHandle; // TextureHandle*  on x86 disk
         };
         struct DiskTempTexBankEntry
         {
-            long        fileOffset;
-            long        fileSize;
-            DiskTexture tex;
-            int         palID;
-            int         refCount;
+            int fileOffset; // #104 (Linux LP64): 32-bit on x86/Win64 disk. 'long' is 8 bytes on
+            int fileSize; // LP64, which bloated sizeof() and desynced the DXH stream (ObjectLOD
+            DiskTexture
+                tex; // count -> 0 -> empty object DB -> bad_alloc in ObjectInstance). Pin to int.
+            int palID;
+            int refCount;
         };
 #pragma pack(pop)
 
@@ -200,14 +210,14 @@ void TextureBankClass::ReadPool(int file, char *basename)
         for (int i = 0; i < nTextures; i++)
         {
             TempTexturePool[i].fileOffset = disk[i].fileOffset;
-            TempTexturePool[i].fileSize   = disk[i].fileSize;
+            TempTexturePool[i].fileSize = disk[i].fileSize;
             // Zero the Texture (clears palette/texHandle/imageData pointers), then
             // restore the meaningful serialized fields.
             memset(&TempTexturePool[i].tex, 0, sizeof(Texture));
             TempTexturePool[i].tex.dimensions = disk[i].tex.dimensions;
-            TempTexturePool[i].tex.flags      = disk[i].tex.flags;
-            TempTexturePool[i].tex.chromaKey  = disk[i].tex.chromaKey;
-            TempTexturePool[i].palID    = disk[i].palID;
+            TempTexturePool[i].tex.flags = disk[i].tex.flags;
+            TempTexturePool[i].tex.chromaKey = disk[i].tex.chromaKey;
+            TempTexturePool[i].palID = disk[i].palID;
             TempTexturePool[i].refCount = disk[i].refCount;
         }
 
@@ -238,10 +248,9 @@ void TextureBankClass::ReadPool(int file, char *basename)
             TexturePool[i].texN.flags or_eq MPR_TI_MIPMAP;
         }
 
-        TexturePool[i].palID = 0;//TempTexturePool[i].palID;
-        TexturePool[i].refCount = 0;//TempTexturePool[i].refCount;
+        TexturePool[i].palID = 0; //TempTexturePool[i].palID;
+        TexturePool[i].refCount = 0; //TempTexturePool[i].refCount;
     }
-
 
 
     OpenTextureFile();
@@ -261,7 +270,8 @@ void TextureBankClass::FreeCompressedBuffer()
 void TextureBankClass::AllocCompressedBuffer(int maxCompressedSize)
 {
 #ifdef USE_SH_POOLS
-    CompressedBuffer = (BYTE *)MemAllocPtr(gBSPLibMemPool, sizeof(BYTE) * maxCompressedSize, 0);
+    CompressedBuffer = (BYTE *)MemAllocPtr(gBSPLibMemPool,
+                                           sizeof(BYTE) * maxCompressedSize, 0);
 #else
     CompressedBuffer = new BYTE[maxCompressedSize];
 #endif
@@ -278,12 +288,12 @@ void TextureBankClass::OpenTextureFile()
 {
     char filename[_MAX_PATH];
 
-    ShiAssert( not TexFileMap.IsReady());
+    ShiAssert(not TexFileMap.IsReady());
 
     strcpy(filename, baseName);
     strcat(filename, ".TEX");
 
-    if ( not TexFileMap.Open(filename, FALSE, not g_bUseMappedFiles))
+    if (not TexFileMap.Open(filename, FALSE, not g_bUseMappedFiles))
     {
         char message[256];
         sprintf(message, "Failed to open object texture file %s\n", filename);
@@ -298,7 +308,7 @@ void TextureBankClass::CloseTextureFile(void)
 
 void TextureBankClass::Reference(int id)
 {
-    int  isLoaded;
+    int isLoaded;
 
     gDebugTextureID = id;
 
@@ -306,7 +316,7 @@ void TextureBankClass::Reference(int id)
     // Artscout - 2026: real bounds guard (ShiAssert is a no-op in this build). An out-of-range
     // texture id (e.g. a bad TextureSet on an object instance) otherwise indexes past TexturePool
     // and dereferences a garbage palette -> AV in Palette::Reference. Skip rather than crash.
-    if ( not IsValidIndex(id))
+    if (not IsValidIndex(id))
         return;
 
     // Get our reference to this texture recorded to ensure it doesn't disappear out from under us
@@ -325,7 +335,7 @@ void TextureBankClass::Reference(int id)
     {
         ShiAssert(TexFileMap.IsReady());
         ShiAssert(CompressedBuffer);
-        if(TexturePool[id].tex.imageData not_eq NULL)
+        if (TexturePool[id].tex.imageData not_eq NULL)
             return;
         ShiAssert(TexturePool[id].tex.TexHandle() == NULL);
 
@@ -335,31 +345,30 @@ void TextureBankClass::Reference(int id)
         // directly from file instead of from a method) I make the check when releasing
         // the palette.
         // Artscout - 2026: guard palID too (defensive; palID is normally forced to 0).
-        if ( not ThePaletteBank.IsValidIndex(TexturePool[id].palID))
+        if (not ThePaletteBank.IsValidIndex(TexturePool[id].palID))
             return;
-        TexturePool[id].tex.SetPalette(&ThePaletteBank.PalettePool[TexturePool[id].palID]);
+        TexturePool[id].tex.SetPalette(
+            &ThePaletteBank.PalettePool[TexturePool[id].palID]);
         ShiAssert(TexturePool[id].tex.GetPalette());
         TexturePool[id].tex.GetPalette()->Reference();
 
         // Mark for the request if not already marked
-        if ( not TexFlags[id].OnOrder)
+        if (not TexFlags[id].OnOrder)
         {
             TexFlags[id].OnOrder = true;
             // put into load cache
             CacheLoad[LoadIn++] = id;
 
             // Ring the pointer
-            if (LoadIn >= (nTextures + CACHE_MARGIN)) LoadIn = 0;
+            if (LoadIn >= (nTextures + CACHE_MARGIN))
+                LoadIn = 0;
 
             // Kick the Loader
             TheLoader.WakeUp();
-
         }
-
     }
 
     gDebugTextureID = -1;
-
 }
 
 // Calls to this func are enclosed in the critical section cs_ObjectLOD by ObjectLOD::Unload()
@@ -367,26 +376,27 @@ void TextureBankClass::Release(int id)
 {
     ShiAssert(IsValidIndex(id));
     // Artscout - 2026: real bounds guard (ShiAssert is a no-op in this build).
-    if ( not IsValidIndex(id))
+    if (not IsValidIndex(id))
         return;
     ShiAssert(TexturePool[id].refCount > 0);
 
-    // RED - no reference, no party... 
-    if ( not TexturePool[id].refCount) 
+    // RED - no reference, no party...
+    if (not TexturePool[id].refCount)
         return;
 
     TexturePool[id].refCount--;
 
     if (TexturePool[id].refCount == 0)
     {
-        if ( not TexFlags[id].OnRelease)
+        if (not TexFlags[id].OnRelease)
         {
             TexFlags[id].OnRelease = true;
             // put into load cache
             CacheRelease[ReleaseIn++] = id;
 
             // Ring the pointer
-            if (ReleaseIn >= (nTextures + CACHE_MARGIN)) ReleaseIn = 0;
+            if (ReleaseIn >= (nTextures + CACHE_MARGIN))
+                ReleaseIn = 0;
 
             // Kick the Loader
             TheLoader.WakeUp();
@@ -405,7 +415,8 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 
     ShiAssert(TexturePool[id].refCount);
 
-    if ( not forceNoDDS and DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
+    if (not forceNoDDS and
+        DisplayOptions.m_texMode == DisplayOptionsClass::TEX_MODE_DDS)
     {
         ReadImageDDS(id);
         ReadImageDDSN(id);
@@ -414,16 +425,20 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 
     if (g_bUseMappedFiles)
     {
-        cdata = TexFileMap.GetData(TexturePool[id].fileOffset, TexturePool[id].fileSize);
+        cdata = TexFileMap.GetData(TexturePool[id].fileOffset,
+                                   TexturePool[id].fileSize);
         cdataSize = TexturePool[id].fileSize - TexturePool[id].fileOffset;
         ShiAssert(cdata);
     }
     else
     {
-        if ( not TexFileMap.ReadDataAt(TexturePool[id].fileOffset, CompressedBuffer, TexturePool[id].fileSize))
+        if (not TexFileMap.ReadDataAt(TexturePool[id].fileOffset,
+                                      CompressedBuffer,
+                                      TexturePool[id].fileSize))
         {
             char message[120];
-            sprintf(message, "%s: Bad object texture seek (%0d)", strerror(errno), TexturePool[id].fileOffset);
+            sprintf(message, "%s: Bad object texture seek (%0d)",
+                    strerror(errno), TexturePool[id].fileOffset);
             ShiError(message);
         }
 
@@ -443,7 +458,8 @@ void TextureBankClass::ReadImageData(int id, bool forceNoDDS)
 
     // Uncompress the data into the texture structure
     //sfr: using new cdataSize for control
-    retval = LZSS_Expand(cdata, cdataSize, (BYTE*)TexturePool[id].tex.imageData, size);
+    retval = LZSS_Expand(cdata, cdataSize,
+                         (BYTE *)TexturePool[id].tex.imageData, size);
     ShiAssert(retval == TexturePool[id].fileSize);
 
 #ifdef _DEBUG
@@ -458,20 +474,21 @@ void TextureBankClass::SetDeferredLoad(BOOL state)
     // Allocate space for the async request
     request = new LoaderQ;
 
-    if ( not request)
-        ShiError("Failed to allocate memory for a object texture load state change request");
+    if (not request)
+        ShiError("Failed to allocate memory for a object texture load state "
+                 "change request");
 
     // Build the data transfer request to get the required object data
     request->filename = NULL;
     request->fileoffset = 0;
     request->callback = LoaderCallBack;
-    request->parameter = (void*)state;
+    request->parameter = (void *)state;
 
     // Submit the request to the asynchronous loader
     TheLoader.EnqueueRequest(request);
 }
 
-void TextureBankClass::LoaderCallBack(LoaderQ* request)
+void TextureBankClass::LoaderCallBack(LoaderQ *request)
 {
     BOOL state = (int)request->parameter;
 
@@ -489,18 +506,22 @@ void TextureBankClass::LoaderCallBack(LoaderQ* request)
             if (TexturePool[id].refCount)
 
                 // This one is in use. Is it already loaded?
-                if (/* not TexturePool[id].tex.imageData and */ not TexturePool[id].tex.TexHandle())
+                if (/* not TexturePool[id].tex.imageData and */ not TexturePool
+                        [id]
+                            .tex.TexHandle())
                 {
 
                     // Nope, go get it.
-                    if ( not TexturePool[id].tex.imageData) ReadImageData(id);
+                    if (not TexturePool[id].tex.imageData)
+                        ReadImageData(id);
 
                     TexturePool[id].tex.CreateTexture();
                     Count--;
                     //TexturePool[id].tex.FreeImage();
                 }
 
-            if ( not Count) break;
+            if (not Count)
+                break;
         }
     }
 
@@ -535,7 +556,8 @@ void TextureBankClass::Select(int id)
 }
 
 
-void TextureBankClass::SelectHandle(DWORD_PTR TexHandle) // Artscout - 2026 (x64): pointer-sized handle
+void TextureBankClass::SelectHandle(
+    DWORD_PTR TexHandle) // Artscout - 2026 (x64): pointer-sized handle
 {
     TheStateStack.context->SelectTexture1(TexHandle);
 }
@@ -543,7 +565,7 @@ void TextureBankClass::SelectHandle(DWORD_PTR TexHandle) // Artscout - 2026 (x64
 
 BOOL TextureBankClass::IsValidIndex(int id)
 {
-    return((id >= 0) and (id < nTextures));
+    return ((id >= 0) and (id < nTextures));
 }
 
 void TextureBankClass::RestoreAll()
@@ -561,10 +583,10 @@ void TextureBankClass::SyncDDSTextures(bool bForce)
 
     for (DWORD id = 0; id < (DWORD)nTextures; id++)
     {
-        sprintf(szFile, "%s\\%d.dds", baseName, id);
+        sprintf(szFile, "%s/%d.dds", baseName, id);
         fp = fopen(szFile, "rb");
 
-        if ( not fp or bForce)
+        if (not fp or bForce)
         {
             if (fp)
                 fclose(fp);
@@ -591,25 +613,25 @@ void TextureBankClass::UnpackPalettizedTexture(DWORD id)
     {
         //sfr: (see my comment regarding palette origin above)
         // Artscout - 2026: guard palID too (defensive; palID is normally forced to 0).
-        if ( not ThePaletteBank.IsValidIndex(TexturePool[id].palID))
+        if (not ThePaletteBank.IsValidIndex(TexturePool[id].palID))
             return;
-        TexturePool[id].tex.SetPalette(&ThePaletteBank.PalettePool[TexturePool[id].palID]);
+        TexturePool[id].tex.SetPalette(
+            &ThePaletteBank.PalettePool[TexturePool[id].palID]);
         ShiAssert(TexturePool[id].tex.GetPalette());
         TexturePool[id].tex.GetPalette()->Reference();
 
         ReadImageData(id, true);
-        sprintf(szFile, "%s\\%d", baseName, id);
+        sprintf(szFile, "%s/%d", baseName, id);
         TexturePool[id].tex.DumpImageToFile(szFile, TexturePool[id].palID);
         Release(id);
     }
     else
     {
-        sprintf(szFile, "%s\\%d.dds", baseName, id);
-        FILE* fp = fopen(szFile, "wb");
+        sprintf(szFile, "%s/%d.dds", baseName, id);
+        FILE *fp = fopen(szFile, "wb");
         fclose(fp);
     }
 }
-
 
 
 void TextureBankClass::ReadImageDDS(DWORD id)
@@ -622,11 +644,11 @@ void TextureBankClass::ReadImageDDS(DWORD id)
     TexturePool[id].tex.flags = MPR_TI_DDS;
     TexturePool[id].tex.flags and_eq compl MPR_TI_PALETTE;
 
-    sprintf(szFile, "%s\\%d.dds", baseName, id);
+    sprintf(szFile, "%s/%d.dds", baseName, id);
     fp = fopen(szFile, "rb");
 
     // RV - RED - Avoid CTD if a missing texture
-    if ( not fp)
+    if (not fp)
     {
         return;
     }
@@ -638,7 +660,11 @@ void TextureBankClass::ReadImageDDS(DWORD id)
 #if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
 #else
-    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+    {
+        DDSDiskHeader _h;
+        fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp);
+        DDSDiskToDesc(_h, ddsd);
+    } // Artscout - 2026 (x64): on-disk DDS header
 #endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
@@ -661,60 +687,60 @@ void TextureBankClass::ReadImageDDS(DWORD id)
 
     ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
-    switch (ddsd.ddpfPixelFormat.dwFourCC)
+        switch (ddsd.ddpfPixelFormat.dwFourCC)
     {
-        case MAKEFOURCC('D', 'X', 'T', '1'):
-            TexturePool[id].tex.flags or_eq MPR_TI_DXT1;
-            break;
+    case MAKEFOURCC('D', 'X', 'T', '1'):
+        TexturePool[id].tex.flags or_eq MPR_TI_DXT1;
+        break;
 
-        case MAKEFOURCC('D', 'X', 'T', '3'):
-            TexturePool[id].tex.flags or_eq MPR_TI_DXT3;
-            break;
+    case MAKEFOURCC('D', 'X', 'T', '3'):
+        TexturePool[id].tex.flags or_eq MPR_TI_DXT3;
+        break;
 
-        case MAKEFOURCC('D', 'X', 'T', '5'):
-            TexturePool[id].tex.flags or_eq MPR_TI_DXT5;
-            break;
+    case MAKEFOURCC('D', 'X', 'T', '5'):
+        TexturePool[id].tex.flags or_eq MPR_TI_DXT5;
+        break;
 
-        default:
-            ShiAssert(false);
+    default:
+        ShiAssert(false);
     }
 
     switch (ddsd.dwWidth)
     {
-        case 16:
-            TexturePool[id].tex.flags or_eq MPR_TI_16;
-            break;
+    case 16:
+        TexturePool[id].tex.flags or_eq MPR_TI_16;
+        break;
 
-        case 32:
-            TexturePool[id].tex.flags or_eq MPR_TI_32;
-            break;
+    case 32:
+        TexturePool[id].tex.flags or_eq MPR_TI_32;
+        break;
 
-        case 64:
-            TexturePool[id].tex.flags or_eq MPR_TI_64;
-            break;
+    case 64:
+        TexturePool[id].tex.flags or_eq MPR_TI_64;
+        break;
 
-        case 128:
-            TexturePool[id].tex.flags or_eq MPR_TI_128;
-            break;
+    case 128:
+        TexturePool[id].tex.flags or_eq MPR_TI_128;
+        break;
 
-        case 256:
-            TexturePool[id].tex.flags or_eq MPR_TI_256;
-            break;
+    case 256:
+        TexturePool[id].tex.flags or_eq MPR_TI_256;
+        break;
 
-        case 512:
-            TexturePool[id].tex.flags or_eq MPR_TI_512;
-            break;
+    case 512:
+        TexturePool[id].tex.flags or_eq MPR_TI_512;
+        break;
 
-        case 1024:
-            TexturePool[id].tex.flags or_eq MPR_TI_1024;
-            break;
+    case 1024:
+        TexturePool[id].tex.flags or_eq MPR_TI_1024;
+        break;
 
-        case 2048:
-            TexturePool[id].tex.flags or_eq MPR_TI_2048;
-            break;
+    case 2048:
+        TexturePool[id].tex.flags or_eq MPR_TI_2048;
+        break;
 
-        default:
-            ShiAssert(false);
+    default:
+        ShiAssert(false);
     }
 
     dwSize = ddsd.dwLinearSize;
@@ -737,10 +763,10 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
     char szFile[256];
     FILE *fp;
 
-    sprintf(szFile, "%s\\%dN.dds", baseName, id);
+    sprintf(szFile, "%s/%dN.dds", baseName, id);
     fp = fopen(szFile, "rb");
 
-    if ( not fp)
+    if (not fp)
     {
         return;
     }
@@ -756,7 +782,11 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
 #if defined(_M_IX86)
     fread(&ddsd, 1, sizeof(DDSURFACEDESC2), fp);
 #else
-    { DDSDiskHeader _h; fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp); DDSDiskToDesc(_h, ddsd); } // Artscout - 2026 (x64): on-disk DDS header
+    {
+        DDSDiskHeader _h;
+        fread(&_h, 1, DDS_DISK_HEADER_SIZE, fp);
+        DDSDiskToDesc(_h, ddsd);
+    } // Artscout - 2026 (x64): on-disk DDS header
 #endif
 
     // MLR 1/25/2004 - Little kludge so FF can read DDS files made by dxtex
@@ -778,60 +808,60 @@ void TextureBankClass::ReadImageDDSN(DWORD id)
 
     ShiAssert(ddsd.dwFlags bitand DDSD_LINEARSIZE)
 
-    switch (ddsd.ddpfPixelFormat.dwFourCC)
+        switch (ddsd.ddpfPixelFormat.dwFourCC)
     {
-        case MAKEFOURCC('D', 'X', 'T', '1'):
-            TexturePool[id].texN.flags or_eq MPR_TI_DXT1;
-            break;
+    case MAKEFOURCC('D', 'X', 'T', '1'):
+        TexturePool[id].texN.flags or_eq MPR_TI_DXT1;
+        break;
 
-        case MAKEFOURCC('D', 'X', 'T', '3'):
-            TexturePool[id].tex.flags or_eq MPR_TI_DXT3;
-            break;
+    case MAKEFOURCC('D', 'X', 'T', '3'):
+        TexturePool[id].tex.flags or_eq MPR_TI_DXT3;
+        break;
 
-        case MAKEFOURCC('D', 'X', 'T', '5'):
-            TexturePool[id].texN.flags or_eq MPR_TI_DXT5;
-            break;
+    case MAKEFOURCC('D', 'X', 'T', '5'):
+        TexturePool[id].texN.flags or_eq MPR_TI_DXT5;
+        break;
 
-        default:
-            ShiAssert(false);
+    default:
+        ShiAssert(false);
     }
 
     switch (ddsd.dwWidth)
     {
-        case 16:
-            TexturePool[id].texN.flags or_eq MPR_TI_16;
-            break;
+    case 16:
+        TexturePool[id].texN.flags or_eq MPR_TI_16;
+        break;
 
-        case 32:
-            TexturePool[id].texN.flags or_eq MPR_TI_32;
-            break;
+    case 32:
+        TexturePool[id].texN.flags or_eq MPR_TI_32;
+        break;
 
-        case 64:
-            TexturePool[id].texN.flags or_eq MPR_TI_64;
-            break;
+    case 64:
+        TexturePool[id].texN.flags or_eq MPR_TI_64;
+        break;
 
-        case 128:
-            TexturePool[id].texN.flags or_eq MPR_TI_128;
-            break;
+    case 128:
+        TexturePool[id].texN.flags or_eq MPR_TI_128;
+        break;
 
-        case 256:
-            TexturePool[id].texN.flags or_eq MPR_TI_256;
-            break;
+    case 256:
+        TexturePool[id].texN.flags or_eq MPR_TI_256;
+        break;
 
-        case 512:
-            TexturePool[id].texN.flags or_eq MPR_TI_512;
-            break;
+    case 512:
+        TexturePool[id].texN.flags or_eq MPR_TI_512;
+        break;
 
-        case 1024:
-            TexturePool[id].texN.flags or_eq MPR_TI_1024;
-            break;
+    case 1024:
+        TexturePool[id].texN.flags or_eq MPR_TI_1024;
+        break;
 
-        case 2048:
-            TexturePool[id].texN.flags or_eq MPR_TI_2048;
-            break;
+    case 2048:
+        TexturePool[id].texN.flags or_eq MPR_TI_2048;
+        break;
 
-        default:
-            ShiAssert(false);
+    default:
+        ShiAssert(false);
     }
 
     dwSize = ddsd.dwLinearSize;
@@ -861,19 +891,20 @@ void TextureBankClass::RestoreTexturePool()
 }
 
 
-
-DWORD_PTR TextureBankClass::GetHandle(DWORD id) // Artscout - 2026 (x64): pointer-sized handle
+DWORD_PTR TextureBankClass::GetHandle(
+    DWORD id) // Artscout - 2026 (x64): pointer-sized handle
 {
     // if already on release, avoid using or requesting it
-    if (TexFlags[id].OnRelease) return NULL;
+    if (TexFlags[id].OnRelease)
+        return NULL;
 
     // if the Handle is prsent, return it
-    if (IsValidIndex(id) and TexturePool[id].tex.TexHandle()) return TexturePool[id].tex.TexHandle();
+    if (IsValidIndex(id) and TexturePool[id].tex.TexHandle())
+        return TexturePool[id].tex.TexHandle();
 
     // return  a null pointer that means BLANK SURFACE
     return NULL;
 }
-
 
 
 // RED - This function manages to load and create requested textures
@@ -892,16 +923,20 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheRelease[ReleaseOut++];
 
             // if not an order again, and no Referenced, release it
-            if ( not TexFlags[id].OnOrder and not TexturePool[id].refCount and TexFlags[id].OnRelease) TexturePool[id].tex.FreeAll();
+            if (not TexFlags[id].OnOrder and not TexturePool[id].refCount and
+                TexFlags[id].OnRelease)
+                TexturePool[id].tex.FreeAll();
 
             // clear flag, in any case
             TexFlags[id].OnRelease = false;
 
             // ring the pointer
-            if (ReleaseOut >= (nTextures + CACHE_MARGIN)) ReleaseOut = 0;
+            if (ReleaseOut >= (nTextures + CACHE_MARGIN))
+                ReleaseOut = 0;
 
             // if any action, terminate here
-            if (RatedLoad) return true;
+            if (RatedLoad)
+                return true;
         }
 
         // check for textures to be released
@@ -911,21 +946,24 @@ bool TextureBankClass::UpdateBank(void)
             id = CacheLoad[LoadOut++];
 
             // if Texture not yet loaded, load it
-            if ( not TexturePool[id].tex.imageData) ReadImageData(id);
+            if (not TexturePool[id].tex.imageData)
+                ReadImageData(id);
 
             // if Texture not yet crated, crate it
-            if ( not TexturePool[id].tex.TexHandle()) TexturePool[id].tex.CreateTexture();
+            if (not TexturePool[id].tex.TexHandle())
+                TexturePool[id].tex.CreateTexture();
 
             // clear flag, in any case
             TexFlags[id].OnOrder = false;
 
             // ring the pointer
-            if (LoadOut >= (nTextures + CACHE_MARGIN)) LoadOut = 0;
+            if (LoadOut >= (nTextures + CACHE_MARGIN))
+                LoadOut = 0;
 
             // if any action, terminate here
-            if (RatedLoad) return true;
+            if (RatedLoad)
+                return true;
         }
-
     }
 
     // if here, nothing done, back is up to date
@@ -936,7 +974,8 @@ bool TextureBankClass::UpdateBank(void)
 void TextureBankClass::WaitUpdates(void)
 {
     // if no data to wait, exit here
-    if (LoadIn == LoadOut and ReleaseIn == ReleaseOut) return;
+    if (LoadIn == LoadOut and ReleaseIn == ReleaseOut)
+        return;
 
     // Pause the Loader...
     TheLoader.SetPause(true);
@@ -947,7 +986,7 @@ void TextureBankClass::WaitUpdates(void)
     // and the main thread would hang forever (black screen on 3D exit). Timeout ~2s.
     {
         DWORD t0 = GetTickCount();
-        while ( not TheLoader.Paused())
+        while (not TheLoader.Paused())
         {
             if (GetTickCount() - t0 > 2000)
             {
@@ -955,7 +994,7 @@ void TextureBankClass::WaitUpdates(void)
                 TheLoader.SetPause(false);
                 return;
             }
-            Sleep(0);   // yield a quantum, don't burn a core
+            Sleep(0); // yield a quantum, don't burn a core
         }
     }
 
@@ -985,14 +1024,14 @@ void TextureBankClass::WaitUpdates(void)
 }
 
 
-void TextureBankClass::CreateCallBack(LoaderQ* request)
+void TextureBankClass::CreateCallBack(LoaderQ *request)
 {
 }
 
 
 void TextureBankClass::ReferenceTexSet(DWORD *TexList, DWORD Nr)
 {
-    while (Nr--) 
+    while (Nr--)
     {
         Reference(*TexList);
         TexList++;
@@ -1001,7 +1040,7 @@ void TextureBankClass::ReferenceTexSet(DWORD *TexList, DWORD Nr)
 
 void TextureBankClass::ReleaseTexSet(DWORD *TexList, DWORD Nr)
 {
-    while (Nr--) 
+    while (Nr--)
     {
         Release(*TexList);
         TexList++;

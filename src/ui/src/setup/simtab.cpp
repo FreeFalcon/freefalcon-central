@@ -1,19 +1,26 @@
 #include "falclib.h"
 #include "chandler.h"
 #include "userids.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "sim/include/stdhdr.h"
 #include "ui_setup.h"
 #include "f4find.h"
 
 //define presets for skill level list box (first set is ace, then veteran, etc...)
-Preset Presets[] =
-{
-    {FMAccurate, ATRealisticAV, WEAccurate, APNormal, ARRealistic, PDRealistic, 0},
-    {FMAccurate, ATRealistic, WEAccurate, APNormal, ARModerated, PDRealistic, SIM_UNLIMITED_CHAFF},
-    {FMAccurate, ATSimplified, WEEnhanced, APEnhanced, ARModerated, PDEnhanced, SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS},
-    {FMSimplified, ATEasy, WEExaggerated, APEnhanced, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS bitor SIM_UNLIMITED_FUEL}, //need to put SIM_UNLIMITED_FUEL
-    {FMSimplified, ATEasy, WEExaggerated, APIntelligent, ARSimplistic, PDEnhanced, SIM_NO_BLACKOUT bitor SIM_UNLIMITED_AMMO bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS bitor SIM_UNLIMITED_FUEL bitor SIM_NO_COLLISIONS},
+Preset Presets[] = {
+    {FMAccurate, ATRealisticAV, WEAccurate, APNormal, ARRealistic, PDRealistic,
+     0},
+    {FMAccurate, ATRealistic, WEAccurate, APNormal, ARModerated, PDRealistic,
+     SIM_UNLIMITED_CHAFF},
+    {FMAccurate, ATSimplified, WEEnhanced, APEnhanced, ARModerated, PDEnhanced,
+     SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS},
+    {FMSimplified, ATEasy, WEExaggerated, APEnhanced, ARSimplistic, PDEnhanced,
+     SIM_NO_BLACKOUT bitor SIM_UNLIMITED_CHAFF bitor SIM_NAMETAGS bitor
+         SIM_UNLIMITED_FUEL}, //need to put SIM_UNLIMITED_FUEL
+    {FMSimplified, ATEasy, WEExaggerated, APIntelligent, ARSimplistic,
+     PDEnhanced,
+     SIM_NO_BLACKOUT bitor SIM_UNLIMITED_AMMO bitor SIM_UNLIMITED_CHAFF bitor
+         SIM_NAMETAGS bitor SIM_UNLIMITED_FUEL bitor SIM_NO_COLLISIONS},
     //{FMSimplified,ATEasy,WEExaggerated,APIntelligent,ARSimplistic, PDSuper,SIM_NO_BLACKOUT|SIM_UNLIMITED_AMMO|SIM_UNLIMITED_CHAFF|SIM_NAMETAGS|SIM_UNLIMITED_FUEL|SIM_NO_COLLISIONS}, //back into these two after DEMO
 };
 
@@ -41,10 +48,10 @@ int GetRealism(C_Window *win)
 
         if (button)
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -57,10 +64,10 @@ int GetRealism(C_Window *win)
 
         if (button)
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -72,10 +79,10 @@ int GetRealism(C_Window *win)
 
         if (button)
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -88,10 +95,10 @@ int GetRealism(C_Window *win)
 
         if (button)
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -104,10 +111,10 @@ int GetRealism(C_Window *win)
 
         if (button)
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -120,10 +127,10 @@ int GetRealism(C_Window *win)
 
         if (button)
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -134,10 +141,10 @@ int GetRealism(C_Window *win)
     {
         if (button->GetState())
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -147,12 +154,11 @@ int GetRealism(C_Window *win)
     {
         if (button->GetState())
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
-
     }
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
@@ -174,10 +180,10 @@ int GetRealism(C_Window *win)
     {
         if (button->GetState())
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -188,10 +194,10 @@ int GetRealism(C_Window *win)
     {
         if (button->GetState())
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -201,10 +207,10 @@ int GetRealism(C_Window *win)
     {
         if (button->GetState())
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -214,10 +220,10 @@ int GetRealism(C_Window *win)
     {
         if (button->GetState())
         {
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
         }
     }
 
@@ -229,24 +235,23 @@ int GetRealism(C_Window *win)
         {
             //realism = 0;
 
-            realism   -= button->GetUserNumber(0);
+            realism -= button->GetUserNumber(0);
 
-            if (maxrealism   > button->GetUserNumber(1))
-                maxrealism   = button->GetUserNumber(1);
+            if (maxrealism > button->GetUserNumber(1))
+                maxrealism = button->GetUserNumber(1);
 
             //realism *= 0.5f;
-
         }
     }
 
-    if (realism  > maxrealism)
-        realism  = maxrealism ;
+    if (realism > maxrealism)
+        realism = maxrealism;
 
     if (realism < 0)
         realism = 0;
 
     return realism;
-}//GetRealism
+} //GetRealism
 
 int SetRealism(C_Window *win)
 {
@@ -264,8 +269,8 @@ int SetRealism(C_Window *win)
 
     if (ebox not_eq NULL)
     {
-        if (realism  > maxrealism)
-            realism  = maxrealism ;
+        if (realism > maxrealism)
+            realism = maxrealism;
 
         if (realism < 0)
             realism = 0;
@@ -297,8 +302,7 @@ int SetRealism(C_Window *win)
     win->RefreshWindow();
 
     return realism;
-}//SetRealism
-
+} //SetRealism
 
 
 void SimControlCB(long, short hittype, C_Base *control)
@@ -339,22 +343,22 @@ void SetSkillCB(long, short hittype, C_Base *control)
     {
         switch (Presets[Index].RadarMode)
         {
-                // M.N. full realism mode added
-            case ATRealisticAV:
-                lbox->SetValue(SET_RADAR_0);
-                break;
+            // M.N. full realism mode added
+        case ATRealisticAV:
+            lbox->SetValue(SET_RADAR_0);
+            break;
 
-            case ATRealistic:
-                lbox->SetValue(SET_RADAR_1);
-                break;
+        case ATRealistic:
+            lbox->SetValue(SET_RADAR_1);
+            break;
 
-            case ATSimplified:
-                lbox->SetValue(SET_RADAR_2);
-                break;
+        case ATSimplified:
+            lbox->SetValue(SET_RADAR_2);
+            break;
 
-            case ATEasy:
-                lbox->SetValue(SET_RADAR_3);
-                break;
+        case ATEasy:
+            lbox->SetValue(SET_RADAR_3);
+            break;
         }
     }
 
@@ -364,17 +368,17 @@ void SetSkillCB(long, short hittype, C_Base *control)
     {
         switch (Presets[Index].WeapEffects)
         {
-            case WEAccurate:
-                lbox->SetValue(SET_WEAPEFF_1);
-                break;
+        case WEAccurate:
+            lbox->SetValue(SET_WEAPEFF_1);
+            break;
 
-            case WEEnhanced:
-                lbox->SetValue(SET_WEAPEFF_2);
-                break;
+        case WEEnhanced:
+            lbox->SetValue(SET_WEAPEFF_2);
+            break;
 
-            case WEExaggerated:
-                lbox->SetValue(SET_WEAPEFF_3);
-                break;
+        case WEExaggerated:
+            lbox->SetValue(SET_WEAPEFF_3);
+            break;
         }
     }
 
@@ -384,17 +388,17 @@ void SetSkillCB(long, short hittype, C_Base *control)
     {
         switch (Presets[Index].Autopilot)
         {
-            case APNormal:
-                lbox->SetValue(SET_AUTO_1);
-                break;
+        case APNormal:
+            lbox->SetValue(SET_AUTO_1);
+            break;
 
-            case APEnhanced:
-                lbox->SetValue(SET_AUTO_2);
-                break;
+        case APEnhanced:
+            lbox->SetValue(SET_AUTO_2);
+            break;
 
-            case APIntelligent:
-                lbox->SetValue(SET_AUTO_3);
-                break;
+        case APIntelligent:
+            lbox->SetValue(SET_AUTO_3);
+            break;
         }
     }
 
@@ -404,17 +408,17 @@ void SetSkillCB(long, short hittype, C_Base *control)
     {
         switch (Presets[Index].RefuelingMode)
         {
-            case ARRealistic:
-                lbox->SetValue(SET_REFUEL_1);
-                break;
+        case ARRealistic:
+            lbox->SetValue(SET_REFUEL_1);
+            break;
 
-            case ARModerated:
-                lbox->SetValue(SET_REFUEL_2);
-                break;
+        case ARModerated:
+            lbox->SetValue(SET_REFUEL_2);
+            break;
 
-            case ARSimplistic:
-                lbox->SetValue(SET_REFUEL_3);
-                break;
+        case ARSimplistic:
+            lbox->SetValue(SET_REFUEL_3);
+            break;
         }
     }
 
@@ -424,20 +428,20 @@ void SetSkillCB(long, short hittype, C_Base *control)
     {
         switch (Presets[Index].PadlockMode)
         {
-            case PDDisabled:
-                lbox->SetValue(SET_PADLOCK_4);
-                break;
+        case PDDisabled:
+            lbox->SetValue(SET_PADLOCK_4);
+            break;
 
-            case PDRealistic:
-                lbox->SetValue(SET_PADLOCK_1);
-                break;
+        case PDRealistic:
+            lbox->SetValue(SET_PADLOCK_1);
+            break;
 
-            case PDEnhanced:
-                lbox->SetValue(SET_PADLOCK_2);
-                break;
-                //case PDSuper:
-                // lbox->SetValue(SET_PADLOCK_3);
-                // break;
+        case PDEnhanced:
+            lbox->SetValue(SET_PADLOCK_2);
+            break;
+            //case PDSuper:
+            // lbox->SetValue(SET_PADLOCK_3);
+            // break;
         }
     }
 
@@ -475,7 +479,6 @@ void SetSkillCB(long, short hittype, C_Base *control)
             button->SetState(C_STATE_0);
 
         button->Refresh();
-
     }
 
     button = (C_Button *)win->FindControl(SET_COLLISIONS);
@@ -515,7 +518,8 @@ void SetSkillCB(long, short hittype, C_Base *control)
     }
 
 
-    button = (C_Button *)win->FindControl(SET_INVULNERABILITY); //should be SET_INVULNERABLITY
+    button = (C_Button *)win->FindControl(
+        SET_INVULNERABILITY); //should be SET_INVULNERABLITY
 
     if (button not_eq NULL)
     {
@@ -525,7 +529,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
     }
 
     SetRealism(win);
-}//SetSkillCB
+} //SetSkillCB
 
 
 /*****************************************************************************/
@@ -535,7 +539,7 @@ void SetSkillCB(long, short hittype, C_Base *control)
 // object. This object is already constructed at startup when the corresponding
 // playeroptions variable (subTitles) is set to true.
 /*****************************************************************************/
-#include "RadioSubTitle.h"
+#include "radiosubtitle.h"
 extern int g_nSubTitleTTL;
 extern int g_nNumberOfSubTitles;
 extern char g_strRadioflightCol[0x40]; // Retro 27Dec2003
@@ -552,22 +556,26 @@ void SubTitleCB(long ID, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ((PlayerOptions.getSubtitles() == false) and ( not radioLabel)) // need to create a new object..
+    if ((PlayerOptions.getSubtitles() == false) and
+        (not radioLabel)) // need to create a new object..
     {
         try
         {
-            radioLabel = new RadioSubTitle(g_nNumberOfSubTitles, g_nSubTitleTTL);
+            radioLabel =
+                new RadioSubTitle(g_nNumberOfSubTitles, g_nSubTitleTTL);
 
-            radioLabel->SetChannelColours(g_strRadioflightCol, g_strRadiotoPackageCol, g_strRadioToFromPackageCol,
-                                          g_strRadioTeamCol, g_strRadioProximityCol, g_strRadioWorldCol,
-                                          g_strRadioTowerCol, g_strRadioStandardCol);
+            radioLabel->SetChannelColours(
+                g_strRadioflightCol, g_strRadiotoPackageCol,
+                g_strRadioToFromPackageCol, g_strRadioTeamCol,
+                g_strRadioProximityCol, g_strRadioWorldCol, g_strRadioTowerCol,
+                g_strRadioStandardCol);
 
             PlayerOptions.SetSubtitles(true);
             control->SetState(C_STATE_1);
         }
         catch (RadioSubTitle::Init_Error)
         {
-            delete(radioLabel);
+            delete (radioLabel);
             radioLabel = 0;
             PlayerOptions.SetSubtitles(false);
             control->SetState(C_STATE_0);
@@ -575,7 +583,7 @@ void SubTitleCB(long ID, short hittype, C_Base *control)
     }
     else // need to delete the object..
     {
-        delete(radioLabel);
+        delete (radioLabel);
         radioLabel = 0;
         PlayerOptions.SetSubtitles(false);
         control->SetState(C_STATE_0);

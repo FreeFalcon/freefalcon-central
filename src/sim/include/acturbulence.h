@@ -4,7 +4,7 @@
 //sfr: changed filename to ACTurbulence (avoids name collision)
 // also changed place
 
-#include "AList.h"
+#include "alist.h"
 //#include "mathlib/vector3.h"
 
 class TurbulanceList : public ProtectedAList
@@ -17,14 +17,22 @@ public:
 class AircraftTurbulence : public ANode
 {
 public:
-    enum TurbType { WAKE, LVORTEX, RVORTEX };
+    enum TurbType
+    {
+        WAKE,
+        LVORTEX,
+        RVORTEX
+    };
     TurbType type;
 
     AircraftTurbulence();
     ~AircraftTurbulence();
     void Release(void); // mark for self deletion
     void RecordPosition(float Strength, float X, float Y, float Z);
-    static float GetTurbulence(float X, float Y, float Z, float Yaw, float Pitch, float Roll, float &WakeEffect, float &YawEffect, float &PitchEffect, float &RollEffect);
+    static float GetTurbulence(float X, float Y, float Z, float Yaw,
+                               float Pitch, float Roll, float &WakeEffect,
+                               float &YawEffect, float &PitchEffect,
+                               float &RollEffect);
     void BreakRecord(void)
     {
         breakRecord = 1;

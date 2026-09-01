@@ -23,7 +23,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -57,7 +58,7 @@ public:
     }
     short GetCampID()
     {
-        return(CampID_);
+        return (CampID_);
     }
 
     void SetID(VU_ID Id)
@@ -66,7 +67,7 @@ public:
     }
     VU_ID GetID()
     {
-        return(ID_);
+        return (ID_);
     }
 
     void SetDivID(short id)
@@ -75,7 +76,7 @@ public:
     }
     short GetDivID()
     {
-        return(DivID_);
+        return (DivID_);
     }
 
     void SetType(uchar type)
@@ -84,7 +85,7 @@ public:
     }
     uchar GetType()
     {
-        return(Type_);
+        return (Type_);
     }
 
     void SetSide(uchar Side)
@@ -93,7 +94,7 @@ public:
     }
     uchar GetSide()
     {
-        return(Side_);
+        return (Side_);
     }
 
     void Update(CampEntity entity, long allow);

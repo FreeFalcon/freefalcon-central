@@ -10,21 +10,21 @@
 #define RLE_KEYMASK 0xf000
 #define RLE_COUNTMASK 0x0fff
 
-#define COMP_NONE  0
-#define COMP_RLE   1
+#define COMP_NONE 0
+#define COMP_RLE 1
 #define COMP_DELTA 2
 
 typedef struct
 {
-    char  Header[4];
-    long  Version;
-    long  Width;
-    long  Height;
-    long  Frames;
+    char Header[4];
+    long Version;
+    long Width;
+    long Height;
+    long Frames;
     short Compression;
     short BytesPerPixel;
-    long  Background;
-    char  Start[];
+    long Background;
+    char Start[];
 } ANIMATION;
 
 typedef struct

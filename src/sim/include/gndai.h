@@ -52,7 +52,8 @@ typedef struct
 #define GNDAI_BATTALION_LEADER 0x01 // Battalion command vehicle
 #define GNDAI_COMPANY_LEADER 0x02 // Company command vehicle
 #define GNDAI_PLATOON_LEADER 0x04 // Platoon command vehicle
-#define GNDAI_SQUAD_LEADER 0x08 // Squad command vehicle (actually, squads are only one vehicle
+#define GNDAI_SQUAD_LEADER                                                     \
+    0x08 // Squad command vehicle (actually, squads are only one vehicle
 
 #define GNDAI_BATTALION_COMMANDER 0x0F // All of the above roles
 #define GNDAI_COMPANY_COMMANDER 0x0E // All but Battalion Leader
@@ -67,7 +68,8 @@ typedef struct
 #define GNDAI_MOVE_ROAD 0x0001 // We're moving along a road
 #define GNDAI_MOVE_BRIDGE 0x0002 // We're moving over a bridge
 #define GNDAI_MOVE_BATTALION 0x0004 // We're a battalion lead
-#define GNDAI_MOVE_FIXED_POSITIONS 0x0008 // We've been assigned a position and heading, stick to it.
+#define GNDAI_MOVE_FIXED_POSITIONS                                             \
+    0x0008 // We've been assigned a position and heading, stick to it.
 #define GNDAI_WENT_THROUGH 0x0010 // We've hit our mid waypoint already
 
 class GroundClass;
@@ -76,11 +78,12 @@ class WayPointClass;
 
 // When running in the testbed, GNDAIClass should be defined as GNDAIClass : public SimVehicleClass
 //
-class GNDAIClass   //: public SimVehicleClass {
+class GNDAIClass //: public SimVehicleClass {
 {
 public:
     long lastMoveTime;
-    UnitClass *parent_unit; // Generic unit class pointer to allow for naval units
+    UnitClass
+        *parent_unit; // Generic unit class pointer to allow for naval units
 
     GNDAIFormType formation;
     int squad_id; // Used for formation coordination
@@ -93,14 +96,14 @@ public:
     //
     BOOL Follow_Road(void);
     WayPointClass *Next_WayPoint(void);
-    void  Fire(void);
+    void Fire(void);
 
 
     GNDAIClass(GroundClass *s, GNDAIClass *l, short r, int unit_id, int skill);
     ~GNDAIClass(void);
     void Process(void);
     void ProcessTargeting(void);
-    void SetLeader(GNDAIClass*);
+    void SetLeader(GNDAIClass *);
 
     // Managment routines
     //
@@ -133,7 +136,7 @@ public:
     float through_y; // (For column movement)
 
     float icosh; // sin and cos for ideal heading (leaders only)
-    float  isinh;
+    float isinh;
 
     float leftToGoSq; // Distance squared remaining to travel
 
@@ -144,7 +147,8 @@ public:
 
     GroundClass *self; // Every AI Object has a Sim object
     GNDAIClass *leader; // Our immediate superior (NULL for Battalion commander)
-    GNDAIClass *battalionCommand; // highest in formation ("this" for Battalion commander)
+    GNDAIClass *
+        battalionCommand; // highest in formation ("this" for Battalion commander)
 
     ulong nextAirFire; // firing delay
     ulong nextGroundFire; // firing delay
@@ -175,6 +179,7 @@ public:
     {
         return airTargetPtr;
     }
+
 protected:
     // END OF ADDED SECTION
 
@@ -189,7 +194,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

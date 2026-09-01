@@ -1,7 +1,7 @@
 #ifndef FALCLIST_H
 #define FALCLIST_H
 
-extern int SimCompare(VuEntity* ent1, VuEntity*ent2);
+extern int SimCompare(VuEntity *ent1, VuEntity *ent2);
 
 /** sfr: I think priate here means they are not changed by VU insertions, since the Insert functions
 * are all stubs which does nothing. So even if an entity pass the filter test, it wont be inserted
@@ -43,8 +43,12 @@ public:
 class FalconNothingFilterType : public VuFilter
 {
 public:
-    FalconNothingFilterType(void) {}
-    virtual ~FalconNothingFilterType(void) {}
+    FalconNothingFilterType(void)
+    {
+    }
+    virtual ~FalconNothingFilterType(void)
+    {
+    }
 
     virtual VU_BOOL Test(VuEntity *)
     {

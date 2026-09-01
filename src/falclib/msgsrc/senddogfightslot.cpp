@@ -15,7 +15,7 @@
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 /*
 UI_SendDogfightSlot::UI_SendDogfightSlot(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (SendDogfightSlot, FalconEvent::UIThread, entityId, target, loopback)

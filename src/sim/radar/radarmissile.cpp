@@ -1,17 +1,18 @@
 #include "stdhdr.h"
 #include "entity.h"
-#include "Object.h"
+#include "object.h"
 #include "simbase.h"
 #include "camp2sim.h"
 #include "team.h"
 #include "simmath.h"
 #include "simmover.h"
-#include "MsgInc/TrackMsg.h"
-#include "Missile.h"
-#include "RadarMissile.h"
+#include "msginc/trackmsg.h"
+#include "missile.h"
+#include "radarmissile.h"
 
 
-RadarMissileClass::RadarMissileClass(int type, SimMoverClass* parentPlatform) : RadarClass(type, parentPlatform)
+RadarMissileClass::RadarMissileClass(int type, SimMoverClass* parentPlatform)
+    : RadarClass(type, parentPlatform)
 {
     lastChaffID = FalconNullId;
     couldGuide = TRUE;
@@ -20,12 +21,12 @@ RadarMissileClass::RadarMissileClass(int type, SimMoverClass* parentPlatform) : 
 
 SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
 {
-    SimObjectType *newLock = NULL;
+    SimObjectType* newLock = NULL;
     BOOL canGuide = FALSE;
 
 
     // Quit now if we're turned off
-    if ( not isEmitting)
+    if (not isEmitting)
     {
         return NULL;
     }
@@ -38,7 +39,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
     {
 
         // Only track air objects
-        if ( not lockedTarget->BaseData()->OnGround())
+        if (not lockedTarget->BaseData()->OnGround())
         {
             // Don't track when the signal strength is too low
             if (ReturnStrength(lockedTarget) > 0.5f)
@@ -46,7 +47,8 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                 if (couldGuide)
                 {
                     // Hold lock inside our gimbal limit cone
-                    if (fabs(lockedTarget->localData->ata) <= radarData->ScanHalfAngle)
+                    if (fabs(lockedTarget->localData->ata) <=
+                        radarData->ScanHalfAngle)
                     {
                         canGuide = TRUE;
                     }
@@ -57,7 +59,10 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                     // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY
                     // WARNING: In the 1.08i2 patch, I forgot to add '* 2.0F' after 'radarData->BeamHalfAngle'. I'll do it in the source since it SHOULD be this way anyhow (see the other line similar below)
                     // if (fabs(lockedTarget->localData->ata) <= radarData->BeamHalfAngle)
-                    if (fabs(lockedTarget->localData->ata - (float)acos(cos(platform->RdrAzCenter()) * cos(platform->RdrElCenter()))) <= radarData->BeamHalfAngle * 2.0F)
+                    if (fabs(lockedTarget->localData->ata -
+                             (float)acos(cos(platform->RdrAzCenter()) *
+                                         cos(platform->RdrElCenter()))) <=
+                        radarData->BeamHalfAngle * 2.0F)
                     {
                         canGuide = TRUE;
                     }
@@ -77,7 +82,7 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
         while (newLock)
         {
             // Only track air objects
-            if ( not newLock->BaseData()->OnGround())
+            if (not newLock->BaseData()->OnGround())
             {
                 // Don't track when the signal strength is too low
                 if (ReturnStrength(newLock) > 1.0f)
@@ -85,7 +90,8 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                     if (couldGuide)
                     {
                         // Hold lock inside our gimbal limit cone
-                        if (fabs(newLock->localData->ata) <= radarData->ScanHalfAngle)
+                        if (fabs(newLock->localData->ata) <=
+                            radarData->ScanHalfAngle)
                         {
                             canGuide = TRUE;
                             break;
@@ -96,7 +102,10 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
                         // Reacquire lock only inside our seek FOV cone
                         // 2000-08-31 MODIFIED BY S.G. SINCE THE RADAR IS STILL POINTING WHERE WHEN WE STILL HAD A LOCK, WE NEED TO OFFSET OUR BeamHalfAngle ACCORDINGLY
                         //    if (fabs(newLock->localData->ata) <= radarData->BeamHalfAngle * 2.0F)
-                        if (fabs(newLock->localData->ata - (float)acos(cos(platform->RdrAzCenter()) * cos(platform->RdrElCenter()))) <= radarData->BeamHalfAngle * 2.0F)
+                        if (fabs(newLock->localData->ata -
+                                 (float)acos(cos(platform->RdrAzCenter()) *
+                                             cos(platform->RdrElCenter()))) <=
+                            radarData->BeamHalfAngle * 2.0F)
                         {
                             canGuide = TRUE;
                             break;
@@ -115,10 +124,11 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
     {
         SetDesiredTarget(newLock);
     }
-    else if (lockedTarget and canGuide and (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime))
+    else if (lockedTarget and canGuide and
+             (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime))
     {
         // Tell our current target he's locked (if he's not a countermeasure)
-        if ( not lockedTarget->BaseData()->IsWeapon())
+        if (not lockedTarget->BaseData()->IsWeapon())
         {
             SendTrackMsg(lockedTarget, Track_Launch);
 
@@ -133,7 +143,8 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
         couldGuide = TRUE;
 
         // Tell the base class where we're looking
-        SetSeekerPos(TargetAz(platform, lockedTarget), TargetEl(platform, lockedTarget));
+        SetSeekerPos(TargetAz(platform, lockedTarget),
+                     TargetEl(platform, lockedTarget));
         platform->SetRdrAz(radarData->BeamHalfAngle);
         platform->SetRdrEl(radarData->BeamHalfAngle);
         platform->SetRdrCycleTime(0.0F);
@@ -173,16 +184,14 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
             ShiAssert(platform->IsMissile());
 
             // Tell our parent missile where the target was when last seen
-            ((MissileClass*)platform)->SetTargetPosition(
-                lockedTarget->BaseData()->XPos(),
-                lockedTarget->BaseData()->YPos(),
-                lockedTarget->BaseData()->ZPos()
-            );
-            ((MissileClass*)platform)->SetTargetVelocity(
-                lockedTarget->BaseData()->XDelta(),
-                lockedTarget->BaseData()->YDelta(),
-                lockedTarget->BaseData()->ZDelta()
-            );
+            ((MissileClass*)platform)
+                ->SetTargetPosition(lockedTarget->BaseData()->XPos(),
+                                    lockedTarget->BaseData()->YPos(),
+                                    lockedTarget->BaseData()->ZPos());
+            ((MissileClass*)platform)
+                ->SetTargetVelocity(lockedTarget->BaseData()->XDelta(),
+                                    lockedTarget->BaseData()->YDelta(),
+                                    lockedTarget->BaseData()->ZDelta());
         }
     }
 
@@ -191,20 +200,22 @@ SimObjectType* RadarMissileClass::Exec(SimObjectType* targetList)
 
 
 // This controls how effective countermeasures are as a function of seeker range from target
-static const float cmRangeArray[] = {0.0F,  12000.0f,  24000.0f,  48000.0f,  120000.0f};
-static const float cmBiteChanceArray[] = {0.0F,      0.0F,     0.75F,     0.75F,       0.0F};
+static const float cmRangeArray[] = {0.0F, 12000.0f, 24000.0f, 48000.0f,
+                                     120000.0f};
+static const float cmBiteChanceArray[] = {0.0F, 0.0F, 0.75F, 0.75F, 0.0F};
 static const int cmArrayLength = sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
 
 
-SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canGuide)
+SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType* target,
+                                                BOOL canGuide)
 {
     VU_ID id;
-    FalconEntity *cm;
+    FalconEntity* cm;
     float chance;
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if ( not target or not target->BaseData()->IsSim())
+    if (not target or not target->BaseData()->IsSim())
     {
         return target;
     }
@@ -227,7 +238,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
 
         // MonoPrint ("ConsiderDecoy %08x %f: ", cm, target->localData->range);
 
-        if ( not cm)
+        if (not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)
@@ -238,9 +249,11 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
         chance = radarData->ChaffChance;
 
         // Adjust with a range to target based chance of an individual countermeasure working
-        chance *= Math.OnedInterp(target->localData->range, cmRangeArray, cmBiteChanceArray, cmArrayLength, &dummy);
+        chance *= Math.OnedInterp(target->localData->range, cmRangeArray,
+                                  cmBiteChanceArray, cmArrayLength, &dummy);
 
-        float Vr = (float)cos(target->localData->ataFrom) * target->BaseData()->GetVt();
+        float Vr = (float)cos(target->localData->ataFrom) *
+                   target->BaseData()->GetVt();
 
         if (fabs(Vr) > radarData->NotchSpeed)
             chance = min(0.95f, chance * radarData->NotchPenalty);
@@ -252,7 +265,7 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
         // }
 
         // If we've beaten the missile guidance, countermeasures work two times better
-        if ( not canGuide)
+        if (not canGuide)
         {
             chance *= 2.0f;
         }
@@ -268,7 +281,8 @@ SimObjectType* RadarMissileClass::ConsiderDecoy(SimObjectType *target, BOOL canG
             const float dy = cm->YPos() - platform->YPos();
             const float dz = cm->ZPos() - platform->ZPos();
             const float range = (float)sqrt(dx * dx + dy * dy);
-            const float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+            const float cosATA = (atx * dx + aty * dy + atz * dz) /
+                                 (float)sqrt(range * range + dz * dz);
 
             // Only take the bait if we can see the thing
             // TODO:  Should probably use beam width instead of scan angle...

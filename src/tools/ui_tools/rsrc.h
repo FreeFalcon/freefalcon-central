@@ -14,7 +14,7 @@ enum
 
 struct ImageFmt
 {
-    long  Type;
+    long Type;
     char ID[32];
     long flags;
     short centerx;
@@ -28,22 +28,21 @@ struct ImageFmt
 
 struct SoundFmt
 {
-    long  Type;
-    char  ID[32];
-    long  flags;
+    long Type;
+    char ID[32];
+    long flags;
     short Channels;
     short SoundType;
-    long  offset;
-    long  headersize;
+    long offset;
+    long headersize;
 };
 
 struct FlatFmt
 {
-    long  Type;
-    char  ID[32];
-    long  offset;
-    long  size;
+    long Type;
+    char ID[32];
+    long offset;
+    long size;
 };
 
 #endif
-

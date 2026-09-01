@@ -1,7 +1,7 @@
 #include "stdhdr.h"
-#include "F4Vu.h"
+#include "f4vu.h"
 #include "missile.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "simveh.h"
 #include "airunit.h"
 #include "simdrive.h"
@@ -13,7 +13,7 @@
 #include "soundfx.h"
 #include "classtbl.h"
 #include "rwr.h"
-#include "EasyHTS.h"
+#include "easyhts.h"
 
 void HarmTargetingPod::Display(VirtualDisplay* activeDisplay)
 {
@@ -27,7 +27,8 @@ void HarmTargetingPod::Display(VirtualDisplay* activeDisplay)
 }
 
 
-EasyHarmTargetingPod::EasyHarmTargetingPod(int idx, SimMoverClass* self) : HarmTargetingPod(idx, self)
+EasyHarmTargetingPod::EasyHarmTargetingPod(int idx, SimMoverClass* self)
+    : HarmTargetingPod(idx, self)
 {
 }
 
@@ -58,13 +59,17 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
     sinAng = trig.sin;
 
     // Draw all known emmitters
-    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement; tmpElement = tmpElement->GetNext())
+    for (tmpElement = FCC->GetFirstGroundElement(); tmpElement;
+         tmpElement = tmpElement->GetNext())
     {
-        if (tmpElement->BaseObject() == NULL) continue;
+        if (tmpElement->BaseObject() == NULL)
+            continue;
 
         // Compute the world space oriented, display space scaled, ownship relative postion of the emitter
-        y2 = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
-        x2 = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM / displayRange * HTS_DISPLAY_RADIUS;
+        y2 = (tmpElement->BaseObject()->XPos() - platform->XPos()) * FT_TO_NM /
+             displayRange * HTS_DISPLAY_RADIUS;
+        x2 = (tmpElement->BaseObject()->YPos() - platform->YPos()) * FT_TO_NM /
+             displayRange * HTS_DISPLAY_RADIUS;
 
         // Rotate it into heading up space and translate it down to deal with our vertical offset
         displayX = cosAng * x2 - sinAng * y2;
@@ -99,11 +104,13 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         }
 
         // Set the symbols draw color based on its team
-        if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == War)
+        if (TeamInfo[platform->GetTeam()]->TStance(
+                tmpElement->BaseObject()->GetTeam()) == War)
         {
             color and_eq 0x000000FF; // Red means at war
         }
-        else if (TeamInfo[platform->GetTeam()]->TStance(tmpElement->BaseObject()->GetTeam()) == Allied)
+        else if (TeamInfo[platform->GetTeam()]->TStance(
+                     tmpElement->BaseObject()->GetTeam()) == Allied)
         {
             color and_eq 0x00FF0000; // Blue means our team
         }
@@ -119,7 +126,8 @@ void EasyHarmTargetingPod::Display(VirtualDisplay* activeDisplay)
         DrawEmitterSymbol(tmpElement->symbol, boxed);
 
         // Mark the locked target
-        if (lockedTarget and tmpElement->BaseObject() == lockedTarget->BaseData())
+        if (lockedTarget and
+            tmpElement->BaseObject() == lockedTarget->BaseData())
         {
             display->SetColor(0xFF00FF00);
             display->Circle(0.0F, 0.0F, 0.08F);

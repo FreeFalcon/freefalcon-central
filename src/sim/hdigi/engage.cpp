@@ -3,7 +3,7 @@
 #include "hdigi.h"
 #include "object.h"
 #include "simbase.h"
-#include "Entity.h"
+#include "entity.h"
 
 void HeliBrain::WvrEngageCheck(void)
 {
@@ -25,7 +25,8 @@ void HeliBrain::WvrEngageCheck(void)
         /*--------------------------------*/
         /* check against threshold values */
         /*--------------------------------*/
-        classPtr = (Falcon4EntityClassType*)(maxTargetPtr->BaseData()->EntityType());
+        classPtr =
+            (Falcon4EntityClassType *)(maxTargetPtr->BaseData()->EntityType());
 
         if (classPtr->vuClassData.classInfo_[VU_TYPE] == TYPE_AIRPLANE) // &&
             /*

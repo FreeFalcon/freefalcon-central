@@ -21,7 +21,7 @@
 
 --------------------------------------------------------------------*/
 
-#include <cISO646>
+#include <ciso646>
 #include <stddef.h>
 #include <memory.h>
 #ifdef INCLUDE_FILE_COMPRESSION
@@ -46,16 +46,16 @@ typedef unsigned char uchar;
 // encoded, and there is no more data.  UNUSED is the null index for
 // the tree. MOD_WINDOW() is a macro used to perform arithmetic on tree
 // indices.
-#define INDEX_BIT_COUNT      12
-#define LENGTH_BIT_COUNT     4
-#define WINDOW_SIZE          ( 1 << INDEX_BIT_COUNT )
-#define RAW_LOOK_AHEAD_SIZE  ( 1 << LENGTH_BIT_COUNT )
-#define BREAK_EVEN           ( ( 1 + INDEX_BIT_COUNT + LENGTH_BIT_COUNT ) / 9 )
-#define LOOK_AHEAD_SIZE      ( RAW_LOOK_AHEAD_SIZE + BREAK_EVEN )
-#define TREE_ROOT            WINDOW_SIZE
-#define END_OF_STREAM        0
-#define UNUSED               0
-#define MOD_WINDOW( a )      ( ( a ) bitand ( WINDOW_SIZE - 1 ) )
+#define INDEX_BIT_COUNT 12
+#define LENGTH_BIT_COUNT 4
+#define WINDOW_SIZE (1 << INDEX_BIT_COUNT)
+#define RAW_LOOK_AHEAD_SIZE (1 << LENGTH_BIT_COUNT)
+#define BREAK_EVEN ((1 + INDEX_BIT_COUNT + LENGTH_BIT_COUNT) / 9)
+#define LOOK_AHEAD_SIZE (RAW_LOOK_AHEAD_SIZE + BREAK_EVEN)
+#define TREE_ROOT WINDOW_SIZE
+#define END_OF_STREAM 0
+#define UNUSED 0
+#define MOD_WINDOW(a) ((a) bitand (WINDOW_SIZE - 1))
 
 // Compression Context (For multi-threaded usaged)
 // Basically, these were globals before, now they're allocated by the stack per call
@@ -66,14 +66,14 @@ typedef struct
     // text, as well as the current look ahead text.  The tree[] structure
     // contains the binary tree of all of the strings in the window sorted
     // in order.
-    unsigned char window[ WINDOW_SIZE ];
+    unsigned char window[WINDOW_SIZE];
     struct
     {
         int parent;
         int smaller_child;
         int larger_child;
-    } tree[ WINDOW_SIZE + 1 ];
-    unsigned char DataBuffer[ 17 ];
+    } tree[WINDOW_SIZE + 1];
+    unsigned char DataBuffer[17];
     int FlagBitMask;
     unsigned int BufferOffset;
     unsigned int OldBufferOffset;
@@ -99,18 +99,19 @@ typedef struct
  * Function prototypes
  */
 
-void InitTree(int r, LZSS_COMP_CTXT* ctxt);
-void ContractNode(int old_node, int new_node, LZSS_COMP_CTXT* ctxt);
-void ReplaceNode(int old_node, int new_node, LZSS_COMP_CTXT* ctxt);
-int FindNextNode(int node, LZSS_COMP_CTXT* ctxt);
-void DeleteString(int p, LZSS_COMP_CTXT* ctxt);
-int AddString(int new_node, int *match_position, LZSS_COMP_CTXT* ctxt);
-void InitOutputBuffer(LZSS_COMP_CTXT* ctxt);
-int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT* ctxt);
-int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt);
-int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* ctxt);
-void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT* ctxt);
-int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt);
+void InitTree(int r, LZSS_COMP_CTXT *ctxt);
+void ContractNode(int old_node, int new_node, LZSS_COMP_CTXT *ctxt);
+void ReplaceNode(int old_node, int new_node, LZSS_COMP_CTXT *ctxt);
+int FindNextNode(int node, LZSS_COMP_CTXT *ctxt);
+void DeleteString(int p, LZSS_COMP_CTXT *ctxt);
+int AddString(int new_node, int *match_position, LZSS_COMP_CTXT *ctxt);
+void InitOutputBuffer(LZSS_COMP_CTXT *ctxt);
+int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT *ctxt);
+int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT *ctxt);
+int OutputPair(int position, int length, uchar *output_string,
+               LZSS_COMP_CTXT *ctxt);
+void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT *ctxt);
+int InputBit(uchar *input_string, LZSS_COMP_CTXT *ctxt);
 
 /*
  * Since the tree is static data, it comes up with every node
@@ -118,21 +119,21 @@ int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt);
  * However, to make the tree really usable, a single phrase has to be
  * added to the tree so it has a root node.  That is done right here.
  */
-void InitTree(int r, LZSS_COMP_CTXT* ctxt)
+void InitTree(int r, LZSS_COMP_CTXT *ctxt)
 {
     int i;
 
-    for (i = 0 ; i < (WINDOW_SIZE + 1) ; i++)
+    for (i = 0; i < (WINDOW_SIZE + 1); i++)
     {
-        ctxt->tree[ i ].parent = UNUSED;
-        ctxt->tree[ i ].larger_child = UNUSED;
-        ctxt->tree[ i ].smaller_child = UNUSED;
+        ctxt->tree[i].parent = UNUSED;
+        ctxt->tree[i].larger_child = UNUSED;
+        ctxt->tree[i].smaller_child = UNUSED;
     }
 
-    ctxt->tree[ TREE_ROOT ].larger_child = r;
-    ctxt->tree[ r ].parent = TREE_ROOT;
-    ctxt->tree[ r ].larger_child = UNUSED;
-    ctxt->tree[ r ].smaller_child = UNUSED;
+    ctxt->tree[TREE_ROOT].larger_child = r;
+    ctxt->tree[r].parent = TREE_ROOT;
+    ctxt->tree[r].larger_child = UNUSED;
+    ctxt->tree[r].smaller_child = UNUSED;
 }
 
 /*
@@ -140,16 +141,16 @@ void InitTree(int r, LZSS_COMP_CTXT* ctxt)
  * its descendant is broken by pulling the descendant in to overlay
  * the existing link.
  */
-void ContractNode(int old_node, int new_node, LZSS_COMP_CTXT* ctxt)
+void ContractNode(int old_node, int new_node, LZSS_COMP_CTXT *ctxt)
 {
-    ctxt->tree[ new_node ].parent = ctxt->tree[ old_node ].parent;
+    ctxt->tree[new_node].parent = ctxt->tree[old_node].parent;
 
-    if (ctxt->tree[ ctxt->tree[ old_node ].parent ].larger_child == old_node)
-        ctxt->tree[ ctxt->tree[ old_node ].parent ].larger_child = new_node;
+    if (ctxt->tree[ctxt->tree[old_node].parent].larger_child == old_node)
+        ctxt->tree[ctxt->tree[old_node].parent].larger_child = new_node;
     else
-        ctxt->tree[ ctxt->tree[ old_node ].parent ].smaller_child = new_node;
+        ctxt->tree[ctxt->tree[old_node].parent].smaller_child = new_node;
 
-    ctxt->tree[ old_node ].parent = UNUSED;
+    ctxt->tree[old_node].parent = UNUSED;
 }
 
 /*
@@ -157,21 +158,21 @@ void ContractNode(int old_node, int new_node, LZSS_COMP_CTXT* ctxt)
  * in this case, it is being replaced by a node that was not previously
  * in the tree.
  */
-void ReplaceNode(int old_node, int new_node, LZSS_COMP_CTXT* ctxt)
+void ReplaceNode(int old_node, int new_node, LZSS_COMP_CTXT *ctxt)
 {
     int parent;
 
-    parent = ctxt->tree[ old_node ].parent;
+    parent = ctxt->tree[old_node].parent;
 
-    if (ctxt->tree[ parent ].smaller_child == old_node)
-        ctxt->tree[ parent ].smaller_child = new_node;
+    if (ctxt->tree[parent].smaller_child == old_node)
+        ctxt->tree[parent].smaller_child = new_node;
     else
-        ctxt->tree[ parent ].larger_child = new_node;
+        ctxt->tree[parent].larger_child = new_node;
 
-    ctxt->tree[ new_node ] = ctxt->tree[ old_node ];
-    ctxt->tree[ ctxt->tree[ new_node ].smaller_child ].parent = new_node;
-    ctxt->tree[ ctxt->tree[ new_node ].larger_child ].parent = new_node;
-    ctxt->tree[ old_node ].parent = UNUSED;
+    ctxt->tree[new_node] = ctxt->tree[old_node];
+    ctxt->tree[ctxt->tree[new_node].smaller_child].parent = new_node;
+    ctxt->tree[ctxt->tree[new_node].larger_child].parent = new_node;
+    ctxt->tree[old_node].parent = UNUSED;
 }
 
 /*
@@ -180,16 +181,16 @@ void ReplaceNode(int old_node, int new_node, LZSS_COMP_CTXT* ctxt)
  * the next smallest child by going to the smaller_child node, then
  * going to the end of the larger_child descendant chain.
 */
-int FindNextNode(int node, LZSS_COMP_CTXT* ctxt)
+int FindNextNode(int node, LZSS_COMP_CTXT *ctxt)
 {
     int next;
 
-    next = ctxt->tree[ node ].smaller_child;
+    next = ctxt->tree[node].smaller_child;
 
-    while (ctxt->tree[ next ].larger_child not_eq UNUSED)
-        next = ctxt->tree[ next ].larger_child;
+    while (ctxt->tree[next].larger_child not_eq UNUSED)
+        next = ctxt->tree[next].larger_child;
 
-    return(next);
+    return (next);
 }
 
 /*
@@ -200,17 +201,17 @@ int FindNextNode(int node, LZSS_COMP_CTXT* ctxt)
  * is guaranteed to have a null link, then replace the node to be deleted
  * with the next link.
  */
-void DeleteString(int p, LZSS_COMP_CTXT* ctxt)
+void DeleteString(int p, LZSS_COMP_CTXT *ctxt)
 {
-    int  replacement;
+    int replacement;
 
-    if (ctxt->tree[ p ].parent == UNUSED)
+    if (ctxt->tree[p].parent == UNUSED)
         return;
 
-    if (ctxt->tree[ p ].larger_child == UNUSED)
-        ContractNode(p, ctxt->tree[ p ].smaller_child, ctxt);
-    else if (ctxt->tree[ p ].smaller_child == UNUSED)
-        ContractNode(p, ctxt->tree[ p ].larger_child, ctxt);
+    if (ctxt->tree[p].larger_child == UNUSED)
+        ContractNode(p, ctxt->tree[p].smaller_child, ctxt);
+    else if (ctxt->tree[p].smaller_child == UNUSED)
+        ContractNode(p, ctxt->tree[p].larger_child, ctxt);
     else
     {
         replacement = FindNextNode(p, ctxt);
@@ -228,7 +229,7 @@ void DeleteString(int p, LZSS_COMP_CTXT* ctxt)
  * the old_node is deleted, for reasons of efficiency.
  */
 
-int AddString(int new_node, int* match_position, LZSS_COMP_CTXT* ctxt)
+int AddString(int new_node, int *match_position, LZSS_COMP_CTXT *ctxt)
 {
     int i = 0;
     int test_node = 0;
@@ -237,17 +238,17 @@ int AddString(int new_node, int* match_position, LZSS_COMP_CTXT* ctxt)
     int *child = NULL;
 
     if (new_node == END_OF_STREAM)
-        return(0);
+        return (0);
 
-    test_node = ctxt->tree[ TREE_ROOT ].larger_child;
+    test_node = ctxt->tree[TREE_ROOT].larger_child;
     match_length = 0;
 
-    for (; ;)
+    for (;;)
     {
-        for (i = 0 ; i < LOOK_AHEAD_SIZE ; i++)
+        for (i = 0; i < LOOK_AHEAD_SIZE; i++)
         {
-            delta = ctxt->window[ MOD_WINDOW(new_node + i) ] -
-                    ctxt->window[ MOD_WINDOW(test_node + i) ];
+            delta = ctxt->window[MOD_WINDOW(new_node + i)] -
+                    ctxt->window[MOD_WINDOW(test_node + i)];
 
             if (delta not_eq 0)
                 break;
@@ -261,22 +262,22 @@ int AddString(int new_node, int* match_position, LZSS_COMP_CTXT* ctxt)
             if (match_length >= LOOK_AHEAD_SIZE)
             {
                 ReplaceNode(test_node, new_node, ctxt);
-                return(match_length);
+                return (match_length);
             }
         }
 
         if (delta >= 0)
-            child = &ctxt->tree[ test_node ].larger_child;
+            child = &ctxt->tree[test_node].larger_child;
         else
-            child = &ctxt->tree[ test_node ].smaller_child;
+            child = &ctxt->tree[test_node].smaller_child;
 
         if (*child == UNUSED)
         {
             *child = new_node;
-            ctxt->tree[ new_node ].parent = test_node;
-            ctxt->tree[ new_node ].larger_child = UNUSED;
-            ctxt->tree[ new_node ].smaller_child = UNUSED;
-            return(match_length);
+            ctxt->tree[new_node].parent = test_node;
+            ctxt->tree[new_node].larger_child = UNUSED;
+            ctxt->tree[new_node].smaller_child = UNUSED;
+            return (match_length);
         }
 
         test_node = *child;
@@ -311,11 +312,11 @@ int AddString(int new_node, int* match_position, LZSS_COMP_CTXT* ctxt)
  * first character or index/length pair will go.
  */
 
-void InitOutputBuffer(LZSS_COMP_CTXT* ctxt)
+void InitOutputBuffer(LZSS_COMP_CTXT *ctxt)
 {
-    ctxt->DataBuffer[ 0 ] = 0;
+    ctxt->DataBuffer[0] = 0;
     ctxt->FlagBitMask = 1;
-    ctxt->OldBufferOffset = ctxt->BufferOffset ;
+    ctxt->OldBufferOffset = ctxt->BufferOffset;
     ctxt->BufferOffset = 1;
 }
 
@@ -336,15 +337,15 @@ void InitOutputBuffer(LZSS_COMP_CTXT* ctxt)
  *
  */
 
-int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT* ctxt)
+int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT *ctxt)
 {
     if (ctxt->BufferOffset == 1)
-        return(1);
+        return (1);
 
-    memcpy(output_string, ctxt->DataBuffer, ctxt->BufferOffset) ;           /**/
-    ctxt->compressed_size += ctxt->BufferOffset;                            /**/
+    memcpy(output_string, ctxt->DataBuffer, ctxt->BufferOffset); /**/
+    ctxt->compressed_size += ctxt->BufferOffset; /**/
     InitOutputBuffer(ctxt);
-    return(1);
+    return (1);
 }
 
 /*
@@ -358,20 +359,20 @@ int FlushOutputBuffer(uchar *output_string, LZSS_COMP_CTXT* ctxt)
  * than the input, it returns a 0 back to the calling routine.
  */
 
-int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
+int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT *ctxt)
 {
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar) data;
-    ctxt->DataBuffer[ 0 ] or_eq ctxt->FlagBitMask;
+    ctxt->DataBuffer[ctxt->BufferOffset++] = (uchar)data;
+    ctxt->DataBuffer[0] or_eq ctxt->FlagBitMask;
     ctxt->FlagBitMask <<= 1;
-    ctxt->inc_output_string = 0;                              /**/
+    ctxt->inc_output_string = 0; /**/
 
     if (ctxt->FlagBitMask == 0x100)
     {
-        ctxt->inc_output_string = 1;                          /**/
-        return(FlushOutputBuffer(output_string, ctxt));
+        ctxt->inc_output_string = 1; /**/
+        return (FlushOutputBuffer(output_string, ctxt));
     }
     else
-        return(1);
+        return (1);
 }
 
 /*
@@ -388,21 +389,22 @@ int OutputChar(int data, uchar *output_string, LZSS_COMP_CTXT* ctxt)
  * so that it can abort.
  */
 
-int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* ctxt)
+int OutputPair(int position, int length, uchar *output_string,
+               LZSS_COMP_CTXT *ctxt)
 {
-    ctxt->DataBuffer[ ctxt->BufferOffset ] = (uchar)(length << 4);
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] or_eq (position >> 8);
-    ctxt->DataBuffer[ ctxt->BufferOffset++ ] = (uchar)(position bitand 0xff);
+    ctxt->DataBuffer[ctxt->BufferOffset] = (uchar)(length << 4);
+    ctxt->DataBuffer[ctxt->BufferOffset++] or_eq (position >> 8);
+    ctxt->DataBuffer[ctxt->BufferOffset++] = (uchar)(position bitand 0xff);
     ctxt->FlagBitMask <<= 1;
-    ctxt->inc_output_string = 0;                              /**/
+    ctxt->inc_output_string = 0; /**/
 
     if (ctxt->FlagBitMask == 0x100)
     {
-        ctxt->inc_output_string = 1;                          /**/
-        return(FlushOutputBuffer(output_string, ctxt));
+        ctxt->inc_output_string = 1; /**/
+        return (FlushOutputBuffer(output_string, ctxt));
     }
     else
-        return(1);
+        return (1);
 }
 
 /*
@@ -416,10 +418,10 @@ int OutputPair(int position, int length, uchar *output_string, LZSS_COMP_CTXT* c
  * using normal file I/O.
  */
 
-void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
+void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT *ctxt) /**/
 {
     ctxt->FlagBitMask = 1;
-    ctxt->DataBuffer[ 0 ] = *input_string; /**/
+    ctxt->DataBuffer[0] = *input_string; /**/
 }
 
 /*
@@ -429,7 +431,7 @@ void InitInputBuffer(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
  * have a fresh set.
  */
 
-int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
+int InputBit(uchar *input_string, LZSS_COMP_CTXT *ctxt) /**/
 {
     ctxt->inc_input_string = 0;
 
@@ -440,7 +442,7 @@ int InputBit(uchar *input_string, LZSS_COMP_CTXT* ctxt) /**/
     }
 
     ctxt->FlagBitMask <<= 1;
-    return(ctxt->DataBuffer[ 0 ] bitand (ctxt->FlagBitMask >> 1));
+    return (ctxt->DataBuffer[0] bitand (ctxt->FlagBitMask >> 1));
 }
 
 /*
@@ -492,22 +494,22 @@ extern "C"
         // OW
         memset(&ctxt, 0, sizeof(ctxt));
 
-        ctxt.compressed_size = 0;                                /**/
-        ctxt.original_size = size;                               /**/
+        ctxt.compressed_size = 0; /**/
+        ctxt.original_size = size; /**/
         InitOutputBuffer(&ctxt);
 
         current_position = 1;
 
-        for (i = 0 ; i < LOOK_AHEAD_SIZE ; i++)
+        for (i = 0; i < LOOK_AHEAD_SIZE; i++)
         {
-            c = *input_string;                              /**/
-            input_string++;                                 /**/
-            size--;                                         /**/
+            c = *input_string; /**/
+            input_string++; /**/
+            size--; /**/
 
-            if (size < 0)                                   /**/
+            if (size < 0) /**/
                 break;
 
-            ctxt.window[ current_position + i ] = c;
+            ctxt.window[current_position + i] = c;
         }
 
         look_ahead_bytes = i;
@@ -526,9 +528,10 @@ extern "C"
             {
                 replace_count = 1;
 
-                if ( not OutputChar(ctxt.window[ current_position ], output_string, &ctxt))
+                if (not OutputChar(ctxt.window[current_position], output_string,
+                                   &ctxt))
                 {
-                    return(0);
+                    return (0);
                 }
 
                 if (ctxt.inc_output_string)
@@ -538,10 +541,11 @@ extern "C"
             }
             else
             {
-                if ( not OutputPair(match_position,
-                                match_length - (BREAK_EVEN + 1), output_string, &ctxt))
+                if (not OutputPair(match_position,
+                                   match_length - (BREAK_EVEN + 1),
+                                   output_string, &ctxt))
                 {
-                    return(0);
+                    return (0);
                 }
 
                 if (ctxt.inc_output_string)
@@ -552,13 +556,14 @@ extern "C"
                 replace_count = match_length;
             }
 
-            for (i = 0 ; i < replace_count ; i++)
+            for (i = 0; i < replace_count; i++)
             {
-                DeleteString(MOD_WINDOW(current_position + LOOK_AHEAD_SIZE), &ctxt);
-                c = *input_string;                     /**/
-                size--;                                     /**/
+                DeleteString(MOD_WINDOW(current_position + LOOK_AHEAD_SIZE),
+                             &ctxt);
+                c = *input_string; /**/
+                size--; /**/
 
-                if (size < 0)                               /**/
+                if (size < 0) /**/
                 {
                     look_ahead_bytes--;
                 }
@@ -566,25 +571,27 @@ extern "C"
                 {
                     //Only increment while the end of the input string
                     //hasn't been reached
-                    input_string++;                             /**/
+                    input_string++; /**/
 
-                    ctxt.window[ MOD_WINDOW(current_position + LOOK_AHEAD_SIZE) ] = c;
+                    ctxt.window[MOD_WINDOW(current_position +
+                                           LOOK_AHEAD_SIZE)] = c;
                 }
 
                 current_position = MOD_WINDOW(current_position + 1);
 
                 if (look_ahead_bytes)
-                    match_length = AddString(current_position, &match_position, &ctxt);
+                    match_length =
+                        AddString(current_position, &match_position, &ctxt);
             }
         }
 
 
         /* If the previous OutputChar or OutputPair call
            didn't write to the output, do so now */
-        if ( not ctxt.inc_output_string)
+        if (not ctxt.inc_output_string)
             FlushOutputBuffer(output_string, &ctxt);
 
-        return(ctxt.compressed_size);
+        return (ctxt.compressed_size);
     }
 
     /*
@@ -596,7 +603,8 @@ extern "C"
      */
 
     //sfr: added the src size here, we cant read past it
-    int LZSS_Expand(uchar *input_string, int srcSize, uchar *output_string, int size)
+    int LZSS_Expand(uchar *input_string, int srcSize, uchar *output_string,
+                    int size)
     {
         int i;
         int current_position;
@@ -615,14 +623,14 @@ extern "C"
         inputHead = input_string;
 
 
-        InitInputBuffer(input_string, &ctxt);               /**/
+        InitInputBuffer(input_string, &ctxt); /**/
         CHSZ(srcSize, 1);
-        input_string++;                                     /**/
+        input_string++; /**/
         current_position = 1;
 
         // While we still have room in the output buffer
         //sfr: added check for source also
-        while (size  /* and srcSize*/)
+        while (size /* and srcSize*/)
         {
             CHSZ(srcSize, 1);
 
@@ -632,42 +640,42 @@ extern "C"
 
                 /* InputBit if calls InitInputBuffer,
                    then increment input_string */
-                if (ctxt.inc_input_string == 1)              /**/
+                if (ctxt.inc_input_string == 1) /**/
                 {
                     CHSZ(srcSize, 1);
-                    input_string++;                         /**/
+                    input_string++; /**/
                 }
 
-                c = *input_string;                          /**/
+                c = *input_string; /**/
 
                 /* Exit Condition */
                 //    if(c==0)                                  /**/
                 //      break;                                  /**/
 
                 CHSZ(srcSize, 1);
-                input_string++;                             /**/
-                *output_string = c;                         /**/
-                output_string++;                            /**/
+                input_string++; /**/
+                *output_string = c; /**/
+                output_string++; /**/
                 size--;
-                ctxt.window[ current_position ] = c;
+                ctxt.window[current_position] = c;
                 current_position = MOD_WINDOW(current_position + 1);
             }
             else
             {
                 // We're going to write a match from the code book
 
-                if (ctxt.inc_input_string == 1)              /**/
+                if (ctxt.inc_input_string == 1) /**/
                 {
                     CHSZ(srcSize, 1);
-                    input_string++;                         /**/
+                    input_string++; /**/
                 }
 
-                match_length = *input_string;               /**/
+                match_length = *input_string; /**/
                 CHSZ(srcSize, 1);
-                input_string++;                             /**/
-                match_position = *input_string;             /**/
+                input_string++; /**/
+                match_position = *input_string; /**/
                 CHSZ(srcSize, 1);
-                input_string++;                             /**/
+                input_string++; /**/
                 match_position or_eq (match_length bitand 0xf) << 8;
                 match_length >>= 4;
                 match_length += BREAK_EVEN;
@@ -689,19 +697,19 @@ extern "C"
                 }
 
                 // Write the code word into the output buffer
-                for (i = 0 ; i <= match_length ; i++)
+                for (i = 0; i <= match_length; i++)
                 {
-                    c = ctxt.window[ MOD_WINDOW(match_position + i) ];
+                    c = ctxt.window[MOD_WINDOW(match_position + i)];
                     *output_string = c;
                     output_string++;
-                    ctxt.window[ current_position ] = c;
+                    ctxt.window[current_position] = c;
                     current_position = MOD_WINDOW(current_position + 1);
                 }
             }
         }
 
         input_count = input_string - inputHead;
-        return(input_count);
+        return (input_count);
     }
 
 #ifdef INCLUDE_FILE_COMPRESSION
@@ -735,12 +743,12 @@ extern "C"
 
         current_position = 1;
 
-        for (i = 0 ; i < LOOK_AHEAD_SIZE ; i++)
+        for (i = 0; i < LOOK_AHEAD_SIZE; i++)
         {
             if ((c = getc(input)) == EOF)
                 break;
 
-            ctxt.window[ current_position + i ] = (unsigned char) c;
+            ctxt.window[current_position + i] = (unsigned char)c;
         }
 
         look_ahead_bytes = i;
@@ -757,42 +765,49 @@ extern "C"
             {
                 replace_count = 1;
                 OutputBit(output, 1);
-                OutputBits(output, (unsigned long) ctxt.window[ current_position ], 8);
+                OutputBits(output, (unsigned long)ctxt.window[current_position],
+                           8);
             }
             else
             {
                 OutputBit(output, 0);
-                OutputBits(output, (unsigned long) match_position, INDEX_BIT_COUNT);
-                OutputBits(output, (unsigned long)(match_length - (BREAK_EVEN + 1)), LENGTH_BIT_COUNT);
+                OutputBits(output, (unsigned long)match_position,
+                           INDEX_BIT_COUNT);
+                OutputBits(output,
+                           (unsigned long)(match_length - (BREAK_EVEN + 1)),
+                           LENGTH_BIT_COUNT);
                 replace_count = match_length;
             }
 
-            for (i = 0 ; i < replace_count ; i++)
+            for (i = 0; i < replace_count; i++)
             {
-                DeleteString(MOD_WINDOW(current_position + LOOK_AHEAD_SIZE), &ctxt);
+                DeleteString(MOD_WINDOW(current_position + LOOK_AHEAD_SIZE),
+                             &ctxt);
 
                 if ((c = getc(input)) == EOF)
                     look_ahead_bytes--;
                 else
-                    ctxt.window[ MOD_WINDOW(current_position + LOOK_AHEAD_SIZE) ] = (unsigned char) c;
+                    ctxt.window[MOD_WINDOW(current_position +
+                                           LOOK_AHEAD_SIZE)] = (unsigned char)c;
 
                 current_position = MOD_WINDOW(current_position + 1);
 
                 if (look_ahead_bytes)
-                    match_length = AddString(current_position, &match_position, &ctxt);
+                    match_length =
+                        AddString(current_position, &match_position, &ctxt);
             }
         };
 
         OutputBit(output, 0);
 
-        OutputBits(output, (unsigned long) END_OF_STREAM, INDEX_BIT_COUNT);
+        OutputBits(output, (unsigned long)END_OF_STREAM, INDEX_BIT_COUNT);
 
 
         finalPos = ftell(output->file);
 
         curPos = finalPos - curPos;
 
-        return(curPos);
+        return (curPos);
     }
 
     /*
@@ -812,30 +827,30 @@ extern "C"
 
         current_position = 1;
 
-        for (; ;)
+        for (;;)
         {
             if (InputBit(input))
             {
-                c = (int) InputBits(input, 8);
+                c = (int)InputBits(input, 8);
                 putc(c, output);
-                ctxt.window[ current_position ] = (unsigned char) c;
+                ctxt.window[current_position] = (unsigned char)c;
                 current_position = MOD_WINDOW(current_position + 1);
             }
             else
             {
-                match_position = (int) InputBits(input, INDEX_BIT_COUNT);
+                match_position = (int)InputBits(input, INDEX_BIT_COUNT);
 
                 if (match_position == END_OF_STREAM)
                     break;
 
-                match_length = (int) InputBits(input, LENGTH_BIT_COUNT);
+                match_length = (int)InputBits(input, LENGTH_BIT_COUNT);
                 match_length += BREAK_EVEN;
 
-                for (i = 0 ; i <= match_length ; i++)
+                for (i = 0; i <= match_length; i++)
                 {
-                    c = ctxt.window[ MOD_WINDOW(match_position + i) ];
+                    c = ctxt.window[MOD_WINDOW(match_position + i)];
                     putc(c, output);
-                    ctxt.window[ current_position ] = (unsigned char) c;
+                    ctxt.window[current_position] = (unsigned char)c;
                     current_position = MOD_WINDOW(current_position + 1);
                 }
             }
@@ -848,7 +863,9 @@ extern "C"
      * or a index/length pair from a buffer, and take the appropriate action.
      */
 
-    unsigned long LZSS_ReadFile(unsigned long bytesToRead, BIT_FILE *input, unsigned char **buffer, unsigned char **fill_level)
+    unsigned long LZSS_ReadFile(unsigned long bytesToRead, BIT_FILE *input,
+                                unsigned char **buffer,
+                                unsigned char **fill_level)
     {
         int i;
         int c;
@@ -862,7 +879,7 @@ extern "C"
             return 0;
         }
 
-        ptr = *fill_level;//*buffer;
+        ptr = *fill_level; //*buffer;
         byteCount = 0;
 
         while (byteCount < bytesToRead)
@@ -879,16 +896,17 @@ extern "C"
 
             if (inputRet)
             {
-                c = (int) InputBits(input, 8);
+                c = (int)InputBits(input, 8);
                 *ptr = c;
                 ptr++;
                 byteCount++;
-                ctxt.window[ input->current_position ] = (unsigned char) c;
-                input->current_position = MOD_WINDOW(input->current_position + 1);
+                ctxt.window[input->current_position] = (unsigned char)c;
+                input->current_position =
+                    MOD_WINDOW(input->current_position + 1);
             }
             else
             {
-                input->match_position = (int) InputBits(input, INDEX_BIT_COUNT);
+                input->match_position = (int)InputBits(input, INDEX_BIT_COUNT);
 
                 if (input->match_position == END_OF_STREAM)
                 {
@@ -904,8 +922,9 @@ extern "C"
                     *ptr = c;
                     ptr++;
                     byteCount++;
-                    ctxt.window[ input->current_position ] = (unsigned char) c;
-                    input->current_position = MOD_WINDOW(input->current_position + 1);
+                    ctxt.window[input->current_position] = (unsigned char)c;
+                    input->current_position =
+                        MOD_WINDOW(input->current_position + 1);
                 }
             }
         }

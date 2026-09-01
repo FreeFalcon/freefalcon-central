@@ -3,8 +3,8 @@
 #include "falclib.h"
 #include "classtbl.h"
 #include "vu2/src/vu_priv.h"
-#include "F4Vu.h"
-#include "FalcList.h"
+#include "f4vu.h"
+#include "falclist.h"
 
 using namespace std;
 
@@ -24,7 +24,6 @@ using namespace std;
 // Private List
 FalconPrivateList::FalconPrivateList(VuFilter *filter) : VuLinkedList(filter)
 {
-
 }
 
 FalconPrivateList::~FalconPrivateList()
@@ -42,7 +41,8 @@ int FalconPrivateList::ForcedInsert(VuEntity *entity)
 }
 
 // Ordered List
-FalconPrivateOrderedList::FalconPrivateOrderedList(VuFilter *filter) : VuLinkedList(filter)
+FalconPrivateOrderedList::FalconPrivateOrderedList(VuFilter *filter)
+    : VuLinkedList(filter)
 {
 }
 
@@ -103,7 +103,7 @@ VuEntity *TailInsertList::PopHead()
 {
     VuScopeLock l(GetMutex());
 
-    while ( not l_.empty())
+    while (not l_.empty())
     {
         VuEntityBin eb = l_.front();
         l_.pop_front();
@@ -145,7 +145,6 @@ int HeadInsertList::ForcedInsert(VuEntity *entity)
 
 FalconPrivateList::FalconPrivateList(VuFilter *filter) : VuFilteredList(filter)
 {
-
 }
 
 FalconPrivateList::~FalconPrivateList()
@@ -163,7 +162,8 @@ int FalconPrivateList::ForcedInsert(VuEntity *entity)
 }
 
 // Ordered List
-FalconPrivateOrderedList::FalconPrivateOrderedList(VuFilter *filter) : VuFilteredList(filter)
+FalconPrivateOrderedList::FalconPrivateOrderedList(VuFilter *filter)
+    : VuFilteredList(filter)
 {
 }
 
@@ -226,7 +226,7 @@ VuEntity *TailInsertList::PopHead()
 {
     VuScopeLock l(GetMutex());
 
-    while ( not l_.empty())
+    while (not l_.empty())
     {
         VuEntityBin eb = l_.front();
         l_.pop_front();

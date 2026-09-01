@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "cpchev.h"
 #include "cpmanager.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
 #include "otwdrive.h"
 
 #if CPCHEVRON_USE_STRING
@@ -10,7 +10,8 @@
 using namespace std;
 #endif
 
-CPChevron::CPChevron(ObjectInitStr* pobjectInitStr, ChevronInitStr* liftInitStr) : CPObject(pobjectInitStr)
+CPChevron::CPChevron(ObjectInitStr* pobjectInitStr, ChevronInitStr* liftInitStr)
+    : CPObject(pobjectInitStr)
 {
     float startx;
     float starty;
@@ -83,8 +84,10 @@ CPChevron::CPChevron(ObjectInitStr* pobjectInitStr, ChevronInitStr* liftInitStr)
 
             for (j = 0; j < 3; j++)
             {
-                x = mChevron[i].x[j] * cos - mChevron[i].y[j] * sin + startx + zerox;
-                y = mChevron[i].x[j] * sin + mChevron[i].y[j] * cos + starty + zeroy;
+                x = mChevron[i].x[j] * cos - mChevron[i].y[j] * sin + startx +
+                    zerox;
+                y = mChevron[i].x[j] * sin + mChevron[i].y[j] * cos + starty +
+                    zeroy;
 
                 mChevron[i].x[j] = x;
                 mChevron[i].y[j] = y;
@@ -113,8 +116,10 @@ CPChevron::CPChevron(ObjectInitStr* pobjectInitStr, ChevronInitStr* liftInitStr)
 
             for (j = 0; j < 3; j++)
             {
-                x = mChevron[i].x[j] * cos - mChevron[i].y[j] * sin + startx + zerox;
-                y = mChevron[i].x[j] * sin + mChevron[i].y[j] * cos + starty + zeroy;
+                x = mChevron[i].x[j] * cos - mChevron[i].y[j] * sin + startx +
+                    zerox;
+                y = mChevron[i].x[j] * sin + mChevron[i].y[j] * cos + starty +
+                    zeroy;
 
                 mChevron[i].x[j] = x;
                 mChevron[i].y[j] = y;
@@ -138,13 +143,15 @@ void CPChevron::DisplayDraw(void)
     OTWDriver.renderer->ClearDraw();
 
     OTWDriver.renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
-    OTWDriver.renderer->SetColor(mColor[OTWDriver.renderer->GetGreenMode() not_eq 0]);
+    OTWDriver.renderer->SetColor(
+        mColor[OTWDriver.renderer->GetGreenMode() not_eq 0]);
 
     for (i = 0; i < mNumCheverons; i++)
     {
         for (j = 1; j <= 2; j++)
         {
-            OTWDriver.renderer->Line(mChevron[i].x[0], mChevron[i].y[0], mChevron[i].x[j], mChevron[i].y[j]);
+            OTWDriver.renderer->Line(mChevron[i].x[0], mChevron[i].y[0],
+                                     mChevron[i].x[j], mChevron[i].y[j]);
         }
     }
 

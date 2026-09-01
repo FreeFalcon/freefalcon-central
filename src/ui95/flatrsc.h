@@ -19,14 +19,16 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-    long  Type;
-    char  ID[32];
-    long  offset;
-    long  size;
+    // #104: 32-bit -- cast over the on-disk .idx flat record (x86 4-byte long); see ImageHeader note.
+    int Type;
+    char ID[32];
+    int offset;
+    int size;
 };
 
 class FLAT_RSC
@@ -40,7 +42,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -54,7 +57,9 @@ public:
         Owner = NULL;
         Header = NULL;
     }
-    ~FLAT_RSC() {}
+    ~FLAT_RSC()
+    {
+    }
     void *GetData();
 };
 

@@ -1,6 +1,6 @@
 #include <windows.h>
 #include "chandler.h"
-#include "shi/ConvFtoI.h"
+#include "shi/convftoi.h"
 
 #ifdef _UI95_PARSER_ // List of Keywords bitand functions to handle them
 
@@ -14,15 +14,8 @@ enum
     CFIL_SETDITHER,
 };
 
-char *C_Fill_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[COLOR]",
-    "[GRADIENT]",
-    "[PERCENT]",
-    "[DITHER]",
-    0,
+char *C_Fill_Tokens[] = {
+    "[NOTHING]", "[SETUP]", "[COLOR]", "[GRADIENT]", "[PERCENT]", "[DITHER]", 0,
 };
 
 #endif
@@ -56,7 +49,7 @@ C_Fill::~C_Fill()
 
 long C_Fill::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Fill::Setup(long ID, short Type)
@@ -70,7 +63,7 @@ void C_Fill::Setup(long ID, short Type)
 void C_Fill::SetGradient(long s, long e)
 {
     long delta;
-    F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
+    F4CSECTIONHANDLE *Leave = UI_Enter(Parent_);
 
     Start_ = static_cast<short>(s);
     End_ = static_cast<short>(e);
@@ -92,7 +85,8 @@ void C_Fill::SetGradient(long s, long e)
     {
         Area_ = (short)(((float)GetW() / (float)delta) + 0.5);
 
-        if (Area_ < 1) Area_ = 1;
+        if (Area_ < 1)
+            Area_ = 1;
 
         if (GetW())
             Step_ = (float)(e - s) / (float)GetW();
@@ -101,7 +95,8 @@ void C_Fill::SetGradient(long s, long e)
     {
         Area_ = (short)(((float)GetH() / (float)delta) + 0.5);
 
-        if (Area_ < 1) Area_ = 1;
+        if (Area_ < 1)
+            Area_ = 1;
 
         if (GetH())
             Step_ = (float)(e - s) / (float)GetH();
@@ -114,7 +109,7 @@ void C_Fill::SetDither(short size, short range)
 {
     short i, j;
 
-    if ((size < 3) or not (range))
+    if ((size < 3) or not(range))
         size = 0;
 
     if (size not_eq DitherSize_)
@@ -135,7 +130,9 @@ void C_Fill::SetDither(short size, short range)
     if (DitherSize_)
     {
 #ifdef USE_SH_POOLS
-        DitherPattern_ = (char*)MemAllocPtr(UI_Pools[UI_ART_POOL], sizeof(char) * (DitherSize_ * DitherSize_), FALSE);
+        DitherPattern_ = (char *)MemAllocPtr(
+            UI_Pools[UI_ART_POOL], sizeof(char) * (DitherSize_ * DitherSize_),
+            FALSE);
 #else
         DitherPattern_ = new char[DitherSize_ * DitherSize_];
 #endif
@@ -144,7 +141,8 @@ void C_Fill::SetDither(short size, short range)
         {
             for (i = 0; i < size; i++)
                 for (j = 0; j < size; j++)
-                    DitherPattern_[i * size + j] = (char)((rand() % range) - range / 2);
+                    DitherPattern_[i * size + j] =
+                        (char)((rand() % range) - range / 2);
         }
         else
             DitherSize_ = 0;
@@ -170,8 +168,9 @@ void C_Fill::Refresh()
     if (GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), GetFlags(), GetClient());
+    F4CSECTIONHANDLE *Leave = UI_Enter(Parent_);
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           GetFlags(), GetClient());
     UI_Leave(Leave);
 }
 
@@ -188,7 +187,7 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     d.right = d.left + GetW();
     d.bottom = d.top + GetH();
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
     {
         d.left += Parent_->VX_[GetClient()];
         d.top += Parent_->VY_[GetClient()];
@@ -196,11 +195,11 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
         d.bottom += Parent_->VY_[GetClient()];
     }
 
-    if ( not Parent_->ClipToArea(&s, &d, cliprect))
+    if (not Parent_->ClipToArea(&s, &d, cliprect))
         return;
 
-    if ( not (Flags_ bitand C_BIT_ABSOLUTE))
-        if ( not Parent_->ClipToArea(&s, &d, &Parent_->ClientArea_[GetClient()]))
+    if (not(Flags_ bitand C_BIT_ABSOLUTE))
+        if (not Parent_->ClipToArea(&s, &d, &Parent_->ClientArea_[GetClient()]))
             return;
 
     if (Flags_ bitand C_BIT_USEGRADIENT)
@@ -220,7 +219,8 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
                         d.right = s.right;
 
                     if (startg >= 1.0)
-                        Parent_->BlitTranslucent(surface, Color_, (long)startg, &d, C_BIT_ABSOLUTE, 0);
+                        Parent_->BlitTranslucent(surface, Color_, (long)startg,
+                                                 &d, C_BIT_ABSOLUTE, 0);
 
                     startg += (float)Area_ * Step_;
                     d.left = d.right;
@@ -240,7 +240,8 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
                         d.bottom = s.bottom;
 
                     if (startg >= 1.0)
-                        Parent_->BlitTranslucent(surface, Color_, (long)startg, &d, C_BIT_ABSOLUTE, 0);
+                        Parent_->BlitTranslucent(surface, Color_, (long)startg,
+                                                 &d, C_BIT_ABSOLUTE, 0);
 
                     startg += (float)Area_ * Step_;
                     d.top = d.bottom;
@@ -260,10 +261,13 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (d.right > s.right)
                         d.right = s.right;
 
-                    startg = Start_ + ((d.left - GetX()) / Area_) * Area_ * Step_;
+                    startg =
+                        Start_ + ((d.left - GetX()) / Area_) * Area_ * Step_;
 
                     if (startg >= 1.0)
-                        Parent_->DitherFill(surface, Color_, FloatToInt32(startg), DitherSize_, DitherPattern_, &d, C_BIT_ABSOLUTE, 0);
+                        Parent_->DitherFill(
+                            surface, Color_, FloatToInt32(startg), DitherSize_,
+                            DitherPattern_, &d, C_BIT_ABSOLUTE, 0);
 
                     d.left = d.right;
                     d.right += Area_;
@@ -279,10 +283,13 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (d.bottom > s.bottom)
                         d.bottom = s.bottom;
 
-                    startg = Start_ + ((d.top - GetY()) / Area_) * Area_ * Step_;
+                    startg =
+                        Start_ + ((d.top - GetY()) / Area_) * Area_ * Step_;
 
                     if (startg >= 1.0)
-                        Parent_->DitherFill(surface, Color_, FloatToInt32(startg), DitherSize_, DitherPattern_, &d, C_BIT_ABSOLUTE, 0);
+                        Parent_->DitherFill(
+                            surface, Color_, FloatToInt32(startg), DitherSize_,
+                            DitherPattern_, &d, C_BIT_ABSOLUTE, 0);
 
                     d.top = d.bottom;
                     d.bottom += Area_;
@@ -302,7 +309,8 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (d.right > s.right)
                         d.right = s.right;
 
-                    Parent_->GradientFill(surface, Color_, FloatToInt32(startg), &d, C_BIT_ABSOLUTE, 0);
+                    Parent_->GradientFill(surface, Color_, FloatToInt32(startg),
+                                          &d, C_BIT_ABSOLUTE, 0);
 
                     d.left += Area_;
                     d.right = d.left + Area_;
@@ -320,7 +328,8 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
                     if (d.bottom > s.bottom)
                         d.bottom = s.bottom;
 
-                    Parent_->GradientFill(surface, Color_, (long)startg, &d, C_BIT_ABSOLUTE, 0);
+                    Parent_->GradientFill(surface, Color_, (long)startg, &d,
+                                          C_BIT_ABSOLUTE, 0);
 
                     d.top += Area_;
                     d.bottom = d.top + Area_;
@@ -337,11 +346,13 @@ void C_Fill::Draw(SCREEN *surface, UI95_RECT *cliprect)
     {
         if ((Flags_ bitand C_BIT_TRANSLUCENT) and (Start_ < 100) and Start_)
         {
-            Parent_->BlitTranslucent(surface, Color_, Start_, &d, C_BIT_ABSOLUTE, 0);
+            Parent_->BlitTranslucent(surface, Color_, Start_, &d,
+                                     C_BIT_ABSOLUTE, 0);
         }
         else if (DitherSize_)
         {
-            Parent_->DitherFill(surface, Color_, Start_, DitherSize_, DitherPattern_, &d, C_BIT_ABSOLUTE, 0);
+            Parent_->DitherFill(surface, Color_, Start_, DitherSize_,
+                                DitherPattern_, &d, C_BIT_ABSOLUTE, 0);
         }
         else
         {
@@ -358,37 +369,37 @@ short C_Fill::LocalFind(char *token)
     while (C_Fill_Tokens[i])
     {
         if (strnicmp(token, C_Fill_Tokens[i], strlen(C_Fill_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Fill::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CFIL_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CFIL_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CFIL_SETCOLOR:
-            SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CFIL_SETCOLOR:
+        SetColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CFIL_SETGRADIENT:
-            SetGradient((short)P[0], (short)P[1]);
-            break;
+    case CFIL_SETGRADIENT:
+        SetGradient((short)P[0], (short)P[1]);
+        break;
 
-        case CFIL_SETPERCENT:
-            SetGradient((short)P[0], (short)P[0]);
-            break;
+    case CFIL_SETPERCENT:
+        SetGradient((short)P[0], (short)P[0]);
+        break;
 
-        case CFIL_SETDITHER:
-            SetDither((short)P[0], (short)P[1]);
-            break;
+    case CFIL_SETDITHER:
+        SetDither((short)P[0], (short)P[1]);
+        break;
     }
 }
 

@@ -5,10 +5,10 @@
 
     Provides the bank of palettes used by all the BSP objects.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include "stdafx.h"
 #include <io.h>
-#include "PalBank.h"
+#include "palbank.h"
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gBSPLibMemPool;
@@ -16,7 +16,7 @@ extern MEM_POOL gBSPLibMemPool;
 
 // Static data members (used to avoid requiring "this" to be passed to every access function)
 int PaletteBankClass::nPalettes = 0;
-Palette* PaletteBankClass::PalettePool = NULL;
+Palette *PaletteBankClass::PalettePool = NULL;
 
 // Management functions
 void PaletteBankClass::Setup(int nEntries)
@@ -27,7 +27,8 @@ void PaletteBankClass::Setup(int nEntries)
     if (nEntries)
     {
 #ifdef USE_SH_POOLS
-        PalettePool = (Palette *)MemAllocPtr(gBSPLibMemPool, sizeof(Palette) * (nEntries), 0);
+        PalettePool = (Palette *)MemAllocPtr(gBSPLibMemPool,
+                                             sizeof(Palette) * (nEntries), 0);
 #else
         PalettePool = new Palette[nEntries];
 #endif
@@ -67,7 +68,8 @@ void PaletteBankClass::ReadPool(int file)
 
     // Allocate memory for our palette list
 #ifdef USE_SH_POOLS
-    PalettePool = (Palette *)MemAllocPtr(gBSPLibMemPool, sizeof(Palette) * (nPalettes), 0);
+    PalettePool = (Palette *)MemAllocPtr(gBSPLibMemPool,
+                                         sizeof(Palette) * (nPalettes), 0);
 #else
     PalettePool = new Palette[nPalettes];
 #endif
@@ -88,9 +90,9 @@ void PaletteBankClass::ReadPool(int file)
 #pragma pack(push, 4)
         struct DiskPalette
         {
-            DWORD  paletteData[256];
+            DWORD paletteData[256];
             UInt32 palHandle; // x86 pointer slot on disk (ignored at runtime)
-            int    refCount;  // ignored (ctor sets 0)
+            int refCount; // ignored (ctor sets 0)
         };
 #pragma pack(pop)
 
@@ -99,7 +101,8 @@ void PaletteBankClass::ReadPool(int file)
 
         for (int i = 0; i < nPalettes; i++)
         {
-            memcpy(PalettePool[i].paletteData, disk[i].paletteData, sizeof(disk[i].paletteData));
+            memcpy(PalettePool[i].paletteData, disk[i].paletteData,
+                   sizeof(disk[i].paletteData));
         }
 
         delete[] disk;
@@ -125,7 +128,7 @@ void PaletteBankClass::FlushHandles(void)
     {
         cnt = PalettePool[id].Release();
         ShiAssert(cnt == 0);
-#if 0  // If a quick hack is required to clean up, this would be it...
+#if 0 // If a quick hack is required to clean up, this would be it...
 
         while (PalettePool[id].Release());
 
@@ -143,7 +146,7 @@ void PaletteBankClass::FlushHandles(void)
 // Set the light level on the specified palette
 void PaletteBankClass::LightPalette(int id, Tcolor *light)
 {
-    if ( not IsValidIndex(id))
+    if (not IsValidIndex(id))
     {
         return;
     }
@@ -155,7 +158,7 @@ void PaletteBankClass::LightPalette(int id, Tcolor *light)
 // Set the light level on the specified palette (with special building lights)
 void PaletteBankClass::LightBuildingPalette(int id, Tcolor *light)
 {
-    if ( not IsValidIndex(id))
+    if (not IsValidIndex(id))
     {
         return;
     }
@@ -167,7 +170,7 @@ void PaletteBankClass::LightBuildingPalette(int id, Tcolor *light)
 // Set the light level on the specified palette (with special cockpit reflection alpha)
 void PaletteBankClass::LightReflectionPalette(int id, Tcolor *light)
 {
-    if ( not IsValidIndex(id))
+    if (not IsValidIndex(id))
     {
         return;
     }

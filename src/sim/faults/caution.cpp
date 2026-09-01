@@ -1,4 +1,4 @@
-#include <cISO646>
+#include <ciso646>
 #include "caution.h"
 #include "debuggr.h"
 
@@ -52,7 +52,7 @@ void CautionClass::ClearFlag()
 void CautionClass::SetCaution(type_CSubSystem subsystem)
 {
 
-    SetCaution((int) subsystem);
+    SetCaution((int)subsystem);
 }
 
 //-------------------------------------------------
@@ -62,7 +62,7 @@ void CautionClass::SetCaution(type_CSubSystem subsystem)
 void CautionClass::SetCaution(type_TWSubSystem subsystem)
 {
 
-    SetCaution((int) subsystem);
+    SetCaution((int)subsystem);
 }
 
 //-------------------------------------------------
@@ -72,7 +72,7 @@ void CautionClass::SetCaution(type_TWSubSystem subsystem)
 void CautionClass::ClearCaution(type_CSubSystem subsystem)
 {
 
-    ClearCaution((int) subsystem);
+    ClearCaution((int)subsystem);
 }
 
 //-------------------------------------------------
@@ -82,7 +82,7 @@ void CautionClass::ClearCaution(type_CSubSystem subsystem)
 void CautionClass::ClearCaution(type_TWSubSystem subsystem)
 {
 
-    ClearCaution((int) subsystem);
+    ClearCaution((int)subsystem);
 }
 
 //-------------------------------------------------
@@ -91,7 +91,7 @@ void CautionClass::ClearCaution(type_TWSubSystem subsystem)
 
 BOOL CautionClass::GetCaution(type_CSubSystem subsystem)
 {
-    return GetCaution((int) subsystem);
+    return GetCaution((int)subsystem);
 }
 
 //-------------------------------------------------
@@ -100,7 +100,7 @@ BOOL CautionClass::GetCaution(type_CSubSystem subsystem)
 
 BOOL CautionClass::GetCaution(type_TWSubSystem subsystem)
 {
-    return GetCaution((int) subsystem);
+    return GetCaution((int)subsystem);
 }
 
 //-------------------------------------------------
@@ -117,7 +117,6 @@ void CautionClass::SetCaution(int subsystem)
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
     mpBitVector[vectorNum] or_eq 0x01 << bitNum;
-
 }
 
 //-------------------------------------------------
@@ -133,8 +132,7 @@ void CautionClass::ClearCaution(int subsystem)
     vectorNum = subsystem / BITS_PER_VECTOR;
     bitNum = subsystem - vectorNum * BITS_PER_VECTOR;
 
-    mpBitVector[vectorNum] and_eq compl (0x01 << bitNum);
-
+    mpBitVector[vectorNum] and_eq compl(0x01 << bitNum);
 }
 
 //-------------------------------------------------
@@ -152,4 +150,3 @@ BOOL CautionClass::GetCaution(int subsystem)
 
     return ((mpBitVector[vectorNum] bitand (0x01 << bitNum)) not_eq 0);
 }
-

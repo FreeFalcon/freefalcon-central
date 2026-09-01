@@ -2,12 +2,10 @@
        John Robbins - Microsoft Systems Journal Bugslayer Column
 ----------------------------------------------------------------------*/
 
-#include "WarningsOff.h"
+#include "warningsoff.h"
 #include <windows.h>
 #include <stdlib.h>
 #include <tchar.h>
-#include "PSAPI.h"
+#include "psapi.h"
 
-#include "WarningsOn.h"
-
-
+#include "warningson.h"

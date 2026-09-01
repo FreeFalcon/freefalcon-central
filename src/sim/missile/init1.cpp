@@ -21,12 +21,13 @@ void MissileClass::Init1(void)
     /*-------------------------------------*/
     /* initial missile and propellant mass */
     /*-------------------------------------*/
-    mass  = weight / GRAVITY;
+    mass = weight / GRAVITY;
 
-    if ( not F4IsBadReadPtr(inputData, sizeof(MissileInputData)))  // JB 010304 CTD
+    if (not F4IsBadReadPtr(inputData,
+                           sizeof(MissileInputData)))  // JB 010304 CTD
     {
-        m0    = inputData->wm0 / GRAVITY;
-        mp0   = inputData->wp0 / GRAVITY;
+        m0 = inputData->wm0 / GRAVITY;
+        mp0 = inputData->wp0 / GRAVITY;
     }
     else
     {
@@ -43,18 +44,19 @@ void MissileClass::Init1(void)
     alpha = 0.0F;
     Trigenometry();
 
-    if (aeroData and not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData)))  // JB 010318 CTD
+    if (aeroData and
+        not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData))) // JB 010318 CTD
     {
-        cx = Math.TwodInterp(mach, alphat, aeroData->mach,
-                             aeroData->alpha, aeroData->cx,
-                             aeroData->numMach, aeroData->numAlpha, &i, &j);
+        cx = Math.TwodInterp(mach, alphat, aeroData->mach, aeroData->alpha,
+                             aeroData->cx, aeroData->numMach,
+                             aeroData->numAlpha, &i, &j);
 
-        cz = Math.TwodInterp(mach, alphat, aeroData->mach,
-                             aeroData->alpha, aeroData->cz,
-                             aeroData->numMach, aeroData->numAlpha, &i, &j);
+        cz = Math.TwodInterp(mach, alphat, aeroData->mach, aeroData->alpha,
+                             aeroData->cz, aeroData->numMach,
+                             aeroData->numAlpha, &i, &j);
     }
 
-    if ( not ifd)
+    if (not ifd)
     {
         return; // JB 010803
     }
@@ -64,15 +66,16 @@ void MissileClass::Init1(void)
     alpha = 1.0F;
     Trigenometry();
 
-    if (aeroData and not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData))) // JB 010318 CTD
+    if (aeroData and
+        not F4IsBadReadPtr(aeroData, sizeof(MissileAeroData))) // JB 010318 CTD
     {
-        cx = Math.TwodInterp(mach, alphat, aeroData->mach,
-                             aeroData->alpha, aeroData->cx,
-                             aeroData->numMach, aeroData->numAlpha, &i, &j);
+        cx = Math.TwodInterp(mach, alphat, aeroData->mach, aeroData->alpha,
+                             aeroData->cx, aeroData->numMach,
+                             aeroData->numAlpha, &i, &j);
 
-        cz = Math.TwodInterp(mach, alphat, aeroData->mach,
-                             aeroData->alpha, aeroData->cz,
-                             aeroData->numMach, aeroData->numAlpha, &i, &j);
+        cz = Math.TwodInterp(mach, alphat, aeroData->mach, aeroData->alpha,
+                             aeroData->cz, aeroData->numMach,
+                             aeroData->numAlpha, &i, &j);
     }
 
     cl2 = -cz * ifd->geomData.cosalp + cx * ifd->geomData.sinalp;
@@ -88,42 +91,48 @@ void MissileClass::Init1(void)
     /*----------------------------*/
     alpha = tmpAlpha;
     mlSinCos(&trigAlpha, alpha * DTR);
-    mlSinCos(&trigBeta,  beta * DTR);
-    ubody = vt * trigAlpha.cos * trigBeta.cos + q * initZLoc -
-            r * initYLoc;
+    mlSinCos(&trigBeta, beta * DTR);
+    ubody = vt * trigAlpha.cos * trigBeta.cos + q * initZLoc - r * initYLoc;
 
     vbody = vt * trigBeta.sin + r * initXLoc - p * initZLoc;
 
-    wbody = vt * trigAlpha.sin * trigBeta.cos + p * initYLoc -
-            q * initXLoc;
+    wbody = vt * trigAlpha.sin * trigBeta.cos + p * initYLoc - q * initXLoc;
 
-    vt    = (ubody * ubody  + wbody * wbody);
-    alpha = (float)atan2(wbody, ubody)   * RTD;
-    beta  = (float)atan2(vbody, sqrt(vt)) * RTD;
-    vt    = (float)sqrt(vbody * vbody + vt);
+    vt = (ubody * ubody + wbody * wbody);
+    alpha = (float)atan2(wbody, ubody) * RTD;
+    beta = (float)atan2(vbody, sqrt(vt)) * RTD;
+    vt = (float)sqrt(vbody * vbody + vt);
 
     Trigenometry();
 
     /*-----------------*/
     /* rotation matrix */
     /*-----------------*/
-    dmx[0][0] =  ifd->geomData.cospsi * ifd->geomData.costhe;
-    dmx[0][1] =  ifd->geomData.sinpsi * ifd->geomData.costhe;
+    dmx[0][0] = ifd->geomData.cospsi * ifd->geomData.costhe;
+    dmx[0][1] = ifd->geomData.sinpsi * ifd->geomData.costhe;
     dmx[0][2] = -ifd->geomData.sinthe;
 
-    dmx[1][0] = -ifd->geomData.sinpsi * ifd->geomData.cosphi + ifd->geomData.cospsi * ifd->geomData.sinthe * ifd->geomData.sinphi;
-    dmx[1][1] =  ifd->geomData.cospsi * ifd->geomData.cosphi + ifd->geomData.sinpsi * ifd->geomData.sinthe * ifd->geomData.sinphi;
-    dmx[1][2] =  ifd->geomData.costhe * ifd->geomData.sinphi;
+    dmx[1][0] =
+        -ifd->geomData.sinpsi * ifd->geomData.cosphi +
+        ifd->geomData.cospsi * ifd->geomData.sinthe * ifd->geomData.sinphi;
+    dmx[1][1] =
+        ifd->geomData.cospsi * ifd->geomData.cosphi +
+        ifd->geomData.sinpsi * ifd->geomData.sinthe * ifd->geomData.sinphi;
+    dmx[1][2] = ifd->geomData.costhe * ifd->geomData.sinphi;
 
-    dmx[2][0] =  ifd->geomData.sinpsi * ifd->geomData.sinphi + ifd->geomData.cospsi * ifd->geomData.sinthe * ifd->geomData.cosphi;
-    dmx[2][1] = -ifd->geomData.cospsi * ifd->geomData.sinphi + ifd->geomData.sinpsi * ifd->geomData.sinthe * ifd->geomData.cosphi;
-    dmx[2][2] =  ifd->geomData.costhe * ifd->geomData.cosphi;
+    dmx[2][0] =
+        ifd->geomData.sinpsi * ifd->geomData.sinphi +
+        ifd->geomData.cospsi * ifd->geomData.sinthe * ifd->geomData.cosphi;
+    dmx[2][1] =
+        -ifd->geomData.cospsi * ifd->geomData.sinphi +
+        ifd->geomData.sinpsi * ifd->geomData.sinthe * ifd->geomData.cosphi;
+    dmx[2][2] = ifd->geomData.costhe * ifd->geomData.cosphi;
 
     /*-------------------------*/
     /* missile velocity vector */
     /*-------------------------*/
-    xdot =  vt * ifd->geomData.cosgam * ifd->geomData.cossig;
-    ydot =  vt * ifd->geomData.cosgam * ifd->geomData.sinsig;
+    xdot = vt * ifd->geomData.cosgam * ifd->geomData.cossig;
+    ydot = vt * ifd->geomData.cosgam * ifd->geomData.sinsig;
     zdot = -vt * ifd->geomData.singam;
 
     ifd->oldx[0] = x;

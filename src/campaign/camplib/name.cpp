@@ -11,15 +11,15 @@
 #include <io.h>
 #include <stdlib.h>
 #include "cmpglobl.h"
-#include "ASearch.h"
+#include "asearch.h"
 #include "objectiv.h"
 #include "name.h"
 #include "f4find.h"
-#include "Campaign.h"
-#include "F4Thread.h"
+#include "campaign.h"
+#include "f4thread.h"
 
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 // ===============================
 // Name Index
@@ -37,7 +37,7 @@ _TCHAR *NameStream = NULL;
 // Global functions
 // ===============================
 
-void LoadNames(char* filename)
+void LoadNames(char *filename)
 {
     //char *data, *data_ptr;
 
@@ -48,7 +48,7 @@ void LoadNames(char* filename)
         return;
     }
 
-    VU_BYTE *data_ptr = (VU_BYTE *) cd.data;
+    VU_BYTE *data_ptr = (VU_BYTE *)cd.data;
     long rem = cd.dataSize;
 
     sprintf(NameFile, filename);
@@ -72,11 +72,11 @@ void LoadNameStream(void)
 
     if (NameStream)
     {
-        delete [] NameStream;
+        delete[] NameStream;
     }
 
     CampEnterCriticalSection();
-    NameStream = new _TCHAR [NameIndex[NameEntries - 1]];
+    NameStream = new _TCHAR[NameIndex[NameEntries - 1]];
     fp = OpenCampFile(NameFile, "wch", "rb");
 
     if (fp)
@@ -89,9 +89,9 @@ void LoadNameStream(void)
 }
 
 // Kinda tricky here. We need to save the .idx file, the .wch and the .txt to make this work
-int SaveNames(char* filename)
+int SaveNames(char *filename)
 {
-    FILE* fp;
+    FILE *fp;
     int i;
     _TCHAR buffer[128];
 
@@ -130,26 +130,27 @@ void FreeNames(void)
 {
     if (NameIndex)
     {
-        delete [] NameIndex;
+        delete[] NameIndex;
         NameIndex = NULL;
     }
 
     if (NameStream)
     {
-        delete [] NameStream;
+        delete[] NameStream;
         NameStream = NULL;
     }
 }
 
-_TCHAR* ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
+_TCHAR *ReadNameString(int sid, _TCHAR *wstr, unsigned int len)
 {
     FILE *fp;
     unsigned int size, rlen;
 
-    if ( not NameIndex) // JB 010731 CTD
+    if (not NameIndex) // JB 010731 CTD
         return wstr;
 
-    ShiAssert(FALSE == F4IsBadReadPtr(NameIndex, sizeof * NameIndex * NameEntries)); // JPO CTD
+    ShiAssert(FALSE == F4IsBadReadPtr(NameIndex, sizeof *NameIndex *
+                                                     NameEntries)); // JPO CTD
     size = NameIndex[sid + 1] - NameIndex[sid];
     rlen = size / sizeof(_TCHAR);
 
@@ -185,7 +186,7 @@ int AddName(_TCHAR *name)
     len = _tcslen(name);
 
     // Load our wch file if we don't already have it in memory
-    if ( not NameStream)
+    if (not NameStream)
         LoadNameStream();
 
     // Find a free spot
@@ -205,7 +206,7 @@ int AddName(_TCHAR *name)
     if (nid)
     {
         // Found a free spot, insert this string
-        if ( not NameIndex[nid])
+        if (not NameIndex[nid])
             NameIndex[nid] = (short)offset;
 
         for (i = nid + 1; i < NameEntries; i++)
@@ -220,23 +221,24 @@ int AddName(_TCHAR *name)
         nid = NameEntries;
         // Reallocate our memory
         TmpIdx = new short[NameEntries + 1];
-        memcpy(TmpIdx, NameIndex, sizeof(short)*NameEntries);
+        memcpy(TmpIdx, NameIndex, sizeof(short) * NameEntries);
         TmpIdx[nid + 1] = (short)(TmpIdx[nid] + len);
-        delete [] NameIndex;
+        delete[] NameIndex;
         NameIndex = TmpIdx;
         NameEntries++;
         movesize = 0;
     }
 
     // Update our name stream
-    newstream = new _TCHAR [NameIndex[NameEntries - 1]];
-    memcpy(newstream, NameStream, sizeof(_TCHAR)*NameIndex[nid]);
+    newstream = new _TCHAR[NameIndex[NameEntries - 1]];
+    memcpy(newstream, NameStream, sizeof(_TCHAR) * NameIndex[nid]);
 
     if (movesize)
-        memcpy(&newstream[NameIndex[nid + 1]], &NameStream[NameIndex[nid]], movesize);
+        memcpy(&newstream[NameIndex[nid + 1]], &NameStream[NameIndex[nid]],
+               movesize);
 
     memcpy(&newstream[NameIndex[nid]], name, len);
-    delete [] NameStream;
+    delete[] NameStream;
     NameStream = newstream;
     return nid;
 }
@@ -250,7 +252,7 @@ int SetName(int nameid, _TCHAR *name)
     return AddName(name);
 }
 
-int FindName(_TCHAR* name)
+int FindName(_TCHAR *name)
 {
     int i;
     _TCHAR entry[128];
@@ -275,14 +277,14 @@ void RemoveName(int nid)
         return;
 
     // Load our wch file if we don't already have it in memory
-    if ( not NameStream)
+    if (not NameStream)
         LoadNameStream();
 
     movesize = NameIndex[NameEntries - 1] - NameIndex[nid + 1];
     tmp = new _TCHAR[movesize];
     memcpy(tmp, &NameStream[NameIndex[nid + 1]], movesize);
     memcpy(&NameStream[NameIndex[nid]], tmp, movesize);
-    delete [] tmp;
+    delete[] tmp;
 
     len = NameIndex[nid + 1] - NameIndex[nid];
 
@@ -290,7 +292,7 @@ void RemoveName(int nid)
         NameIndex[i] -= len;
 }
 
-void RemoveName(_TCHAR* name)
+void RemoveName(_TCHAR *name)
 {
     int nid;
 

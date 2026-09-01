@@ -19,12 +19,11 @@ public:
     triangle() {};
     triangle(const vector3& v0, const vector3& v1, const vector3& v2)
         : b(v0), e0(v1 - v0), e1(v2 - v0) {};
-    triangle(const triangle& t)
-        : b(t.b), e0(t.e0), e1(t.e1) {};
+    triangle(const triangle& t) : b(t.b), e0(t.e0), e1(t.e1) {};
 
     void set(const vector3& v0, const vector3& v1, const vector3& v2)
     {
-        b  = v0;
+        b = v0;
         e0 = v1 - v0;
         e1 = v2 - v0;
     };
@@ -55,17 +54,17 @@ public:
     {
         switch (i)
         {
-            case 0:
-                return b;
+        case 0:
+            return b;
 
-            case 1:
-                return b + e0;
+        case 1:
+            return b + e0;
 
-            case 2:
-                return b + e1;
+        case 2:
+            return b + e1;
 
-            default:
-                return vector3(0.0f, 0.0f, 0.0f);
+        default:
+            return vector3(0.0f, 0.0f, 0.0f);
         }
     };
 
@@ -86,7 +85,8 @@ public:
         //float fNLenSqr     = norm % norm;
 
         // check if intersecting backface or parallel...
-        if (fDenominator >= -fTolerance) return false;
+        if (fDenominator >= -fTolerance)
+            return false;
 
         //if ((fDenominator*fDenominator) <= (fTolerance*fLLenSqr*fNLenSqr)) {
         //    // line and triangle are parallel
@@ -99,7 +99,8 @@ public:
         vector3 kDiff0(line.b - b);
         float fTime = -(norm % kDiff0) / fDenominator;
 
-        if ((fTime < -fTolerance) || (fTime > (1.0f + fTolerance))) return false;
+        if ((fTime < -fTolerance) || (fTime > (1.0f + fTolerance)))
+            return false;
 
         // Find difference of intersection point of line with plane and vertex
         // of triangle.
@@ -110,14 +111,15 @@ public:
         float fE00 = e0 % e0;
         float fE01 = e0 % e1;
         float fE11 = e1 % e1;
-        float fDet = (float) fabs(fE00 * fE11 - fE01 * fE01); // = |normal|^2 > 0
-        float fR0  = e0 % kDiff1;
-        float fR1  = e1 % kDiff1;
+        float fDet = (float)fabs(fE00 * fE11 - fE01 * fE01); // = |normal|^2 > 0
+        float fR0 = e0 % kDiff1;
+        float fR1 = e1 % kDiff1;
 
         float fS0 = fE11 * fR0 - fE01 * fR1;
         float fS1 = fE00 * fR1 - fE01 * fR0;
 
-        if ((fS0 >= -fTolerance) && (fS1 >= -fTolerance) && (fS0 + fS1 <= fDet + fTolerance))
+        if ((fS0 >= -fTolerance) && (fS1 >= -fTolerance) &&
+            (fS0 + fS1 <= fDet + fTolerance))
         {
             // intersection is inside triangle
             ipos = fTime;
@@ -143,11 +145,12 @@ public:
         const float fTolerance = 1e-04f;
         vector3 norm(e0 * e1);
         float fDenominator = norm % line.m;
-        float fLLenSqr     = line.m % line.m;
-        float fNLenSqr     = norm % norm;
+        float fLLenSqr = line.m % line.m;
+        float fNLenSqr = norm % norm;
 
         // check if intersecting backface or parallel...
-        if (fDenominator * fDenominator <= fTolerance * fLLenSqr * fNLenSqr) return false;
+        if (fDenominator * fDenominator <= fTolerance * fLLenSqr * fNLenSqr)
+            return false;
 
         //if ((fDenominator*fDenominator) <= (fTolerance*fLLenSqr*fNLenSqr)) {
         //    // line and triangle are parallel
@@ -160,7 +163,8 @@ public:
         vector3 kDiff0(line.b - b);
         float fTime = -(norm % kDiff0) / fDenominator;
 
-        if ((fTime < -fTolerance) || (fTime > (1.0f + fTolerance))) return false;
+        if ((fTime < -fTolerance) || (fTime > (1.0f + fTolerance)))
+            return false;
 
         // Find difference of intersection point of line with plane and vertex
         // of triangle.
@@ -171,14 +175,15 @@ public:
         float fE00 = e0 % e0;
         float fE01 = e0 % e1;
         float fE11 = e1 % e1;
-        float fDet = (float) fabs(fE00 * fE11 - fE01 * fE01); // = |normal|^2 > 0
-        float fR0  = e0 % kDiff1;
-        float fR1  = e1 % kDiff1;
+        float fDet = (float)fabs(fE00 * fE11 - fE01 * fE01); // = |normal|^2 > 0
+        float fR0 = e0 % kDiff1;
+        float fR1 = e1 % kDiff1;
 
         float fS0 = fE11 * fR0 - fE01 * fR1;
         float fS1 = fE00 * fR1 - fE01 * fR0;
 
-        if ((fS0 >= -fTolerance) && (fS1 >= -fTolerance) && (fS0 + fS1 <= fDet + fTolerance))
+        if ((fS0 >= -fTolerance) && (fS1 >= -fTolerance) &&
+            (fS0 + fS1 <= fDet + fTolerance))
         {
             // intersection is inside triangle
             ipos = fTime;
@@ -194,4 +199,3 @@ public:
 
 //-------------------------------------------------------------------
 #endif
-

@@ -25,7 +25,7 @@
 /* Make defining of DEBUG and _DEBUG automagic */
 /* If one is defined, the both are defined     */
 
-#if defined(DEBUG)||defined(_DEBUG)
+#if defined(DEBUG) || defined(_DEBUG)
 #ifndef DEBUG
 #define DEBUG
 #endif
@@ -36,7 +36,6 @@
 
 
 #include "../../codelib/include/shi/chipsets/m_i486/massert.h"
-
 
 
 /****************************************************/
@@ -61,13 +60,13 @@
 #else
 
 #if defined(SHI_NO_EXTRA_SEMICOLONS)
-#define SHI_DEBUG_LINE(LINE) ((void)0)  /* some compilers don't like extra semi-colons */
+#define SHI_DEBUG_LINE(LINE)                                                   \
+    ((void)0)  /* some compilers don't like extra semi-colons */
 #else
 #define SHI_DEBUG_LINE(LINE)
 #endif
 
 #endif
-
 
 
 /****************************************************/
@@ -86,16 +85,20 @@
 #ifndef SHI_ASSERT
 
 #ifndef DEBUG
-#define SHI_ASSERT(X,Y)
+#define SHI_ASSERT(X, Y)
 #else
-#define SHI_ASSERT(X,Y) if (!(X)) { *((unsigned int *) 0x00) = 0; }
+#define SHI_ASSERT(X, Y)                                                       \
+    if (!(X))                                                                  \
+    {                                                                          \
+        *((unsigned int *)0x00) = 0;                                           \
+    }
 #endif
 
 #else
 
 #ifndef DEBUG
-#undef  SHI_ASSERT
-#define SHI_ASSERT(X,Y)
+#undef SHI_ASSERT
+#define SHI_ASSERT(X, Y)
 #endif
 
 #endif
@@ -112,28 +115,9 @@
 
 #if 0
 #if (!defined(SHI_PRINTF) || !defined(DEBUG))
-#undef  SHI_PRINTF
+#undef SHI_PRINTF
 #define SHI_PRINTF(X)
 #endif
 #endif
 
 #endif  /* _SHI__ASSERT_H_ */
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

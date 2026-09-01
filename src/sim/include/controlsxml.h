@@ -10,12 +10,12 @@
 //   config\profiles\<prof>\axismapping.xml   - axes
 // Goal: fully drop keystrokes.key/axismapping.dat at runtime.
 
-struct AxisMapping;   // simio.h
+struct AxisMapping; // simio.h
 
 // --- Catalog (name -> label/category) --------------------------------------
-int  ControlsXml_LoadCatalog(void);                       // from controls.xml; function count
-const char *ControlsXml_GetLabel(const char *funcName);   // BMS label or NULL
-const char *ControlsXml_GetCategory(const char *funcName);// category or ""
+int ControlsXml_LoadCatalog(void); // from controls.xml; function count
+const char *ControlsXml_GetLabel(const char *funcName); // BMS label or NULL
+const char *ControlsXml_GetCategory(const char *funcName); // category or ""
 
 // --- Active profile --------------------------------------------------------
 // Active profile token ("default" or a numeric dir). All profile paths derive from it.
@@ -37,7 +37,7 @@ void ControlsXml_CreateProfile(const char *callsign);
 // Restore the active profile from profiles.xml at startup (last logbook selection persists).
 void ControlsXml_RestoreActiveProfile(void);
 // List pilot callsigns from profiles.xml (for the logbook pilot list). Returns the count.
-int  ControlsXml_ListProfiles(char out[][24], int maxN);
+int ControlsXml_ListProfiles(char out[][24], int maxN);
 // Active (last-selected) pilot callsign from profiles.xml. true if non-empty.
 bool ControlsXml_GetActiveProfileName(char *out, int outSize);
 // Ensure the default pilot occupies the single dir-0 entry (folder "default") and make it active;
@@ -51,46 +51,59 @@ void ControlsXml_RenameProfile(const char *oldName, const char *newName);
 // UI logbook headers) can serialise it as human-readable XML; logbook.cpp maps to/from LB_PILOT.
 struct CxLogbook
 {
-    char  name[24];
-    char  callsign[16];
-    char  password[16];
-    char  commissioned[16];
-    char  optionsFile[16];
-    char  picture[40];
-    char  patch[40];
-    char  personal[128];
-    char  squadron[24];
+    char name[24];
+    char callsign[16];
+    char password[16];
+    char commissioned[16];
+    char optionsFile[16];
+    char picture[40];
+    char patch[40];
+    char personal[128];
+    char squadron[24];
     float flightHours;
     float aceFactor;
-    int   rank;
-    int   voice;
-    int   pictureResource;
-    int   patchResource;
-    int   medals[8];          // NUM_MEDALS = 6 (padded)
+    int rank;
+    int voice;
+    int pictureResource;
+    int patchResource;
+    int medals[8]; // NUM_MEDALS = 6 (padded)
     // dogfight
-    int   df_matchesWon, df_matchesLost, df_matchesWonVHum, df_matchesLostVHum;
-    int   df_kills, df_killed, df_humanKills, df_killedByHuman;
+    int df_matchesWon, df_matchesLost, df_matchesWonVHum, df_matchesLostVHum;
+    int df_kills, df_killed, df_humanKills, df_killedByHuman;
     // campaign
-    int   cmp_gamesWon, cmp_gamesLost, cmp_gamesTied, cmp_missions;
-    int   cmp_totalScore, cmp_totalMissionScore;
-    int   cmp_consecMissions, cmp_kills, cmp_killed, cmp_humanKills, cmp_killedByHuman;
-    int   cmp_killedBySelf, cmp_airToGround, cmp_static, cmp_naval;
-    int   cmp_friendliesKilled, cmp_missSinceLastFriendlyKill;
+    int cmp_gamesWon, cmp_gamesLost, cmp_gamesTied, cmp_missions;
+    int cmp_totalScore, cmp_totalMissionScore;
+    int cmp_consecMissions, cmp_kills, cmp_killed, cmp_humanKills,
+        cmp_killedByHuman;
+    int cmp_killedBySelf, cmp_airToGround, cmp_static, cmp_naval;
+    int cmp_friendliesKilled, cmp_missSinceLastFriendlyKill;
 };
-bool ControlsXml_WriteLogbook(const CxLogbook *in);   // profiles\<dir>\logbook.xml (readable)
-bool ControlsXml_ReadLogbook(CxLogbook *out);         // false if no file
+bool ControlsXml_WriteLogbook(
+    const CxLogbook *in); // profiles\<dir>\logbook.xml (readable)
+bool ControlsXml_ReadLogbook(CxLogbook *out); // false if no file
 
 // --- Keyboard combinations (keyboard.xml) ----------------------------------
-struct CxKbBind { char func[64]; int k2, m2, k1, m1, cpbtn, mouse, editable; };
-int  ControlsXml_ReadKeyboard(CxKbBind *out, int maxN);   // count read
+struct CxKbBind
+{
+    char func[64];
+    int k2, m2, k1, m1, cpbtn, mouse, editable;
+};
+int ControlsXml_ReadKeyboard(CxKbBind *out, int maxN); // count read
 bool ControlsXml_WriteKeyboard(const CxKbBind *in, int n);
 // Convenience lookup of a function's combo for the list view (true if an entry with k2>=0 exists).
 bool ControlsXml_KeyBindForFunc(const char *func, CxKbBind *out);
 
 // --- Device buttons/POV (<GUID>.xml) ---------------------------------------
-struct CxBtnBind { char func[64]; int id, cpbtn, dir; int isPov; };
-int  ControlsXml_ReadDevice(const char *guidStr, CxBtnBind *out, int maxN); // 0 if no file
-bool ControlsXml_WriteDevice(const char *guidStr, const CxBtnBind *in, int n); // creates the file
+struct CxBtnBind
+{
+    char func[64];
+    int id, cpbtn, dir;
+    int isPov;
+};
+int ControlsXml_ReadDevice(const char *guidStr, CxBtnBind *out,
+                           int maxN); // 0 if no file
+bool ControlsXml_WriteDevice(const char *guidStr, const CxBtnBind *in,
+                             int n); // creates the file
 
 // --- Axes (axismapping.xml) ------------------------------------------------
 bool ControlsXml_ReadAxes(AxisMapping *out);

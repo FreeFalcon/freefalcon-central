@@ -3,64 +3,65 @@
 #include "wingorder.h"
 #include "simdrive.h"
 
-MenuCallback MenuCallbackArray[TOTAL_POPCALLBACK_SLOTS] =
-{
-    CBPopTestFalse,
-    CBPopTestTrue,
-    CBTestForTarget,
-    CBCheckExtent,
-    CBTestTwoShip,
-    CBTestOnGround,
-    CBTestAWACS,
-    CBTestNotOnGround,
-    NULL,
-    NULL
-};
+MenuCallback MenuCallbackArray[TOTAL_POPCALLBACK_SLOTS] = {CBPopTestFalse,
+                                                           CBPopTestTrue,
+                                                           CBTestForTarget,
+                                                           CBCheckExtent,
+                                                           CBTestTwoShip,
+                                                           CBTestOnGround,
+                                                           CBTestAWACS,
+                                                           CBTestNotOnGround,
+                                                           NULL,
+                                                           NULL};
 
 
-BOOL CBCheckExtent(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
+BOOL CBCheckExtent(int callerIdx, int numInFlight, int extent, BOOL isPolling,
+                   VU_ID tgtId)
 {
     BOOL retVal = FALSE;
 
     switch (callerIdx)
     {
-        case AiFlightLead:
+    case AiFlightLead:
 
-            if (numInFlight > 2 or (numInFlight == 2 and extent == AiWingman))
-            {
-                retVal = TRUE;
-            }
+        if (numInFlight > 2 or (numInFlight == 2 and extent == AiWingman))
+        {
+            retVal = TRUE;
+        }
 
-            break;
+        break;
 
-        case AiElementLead:
+    case AiElementLead:
 
-            if (numInFlight == 4 and extent == AiWingman)
-            {
-                retVal = TRUE;
-            }
+        if (numInFlight == 4 and extent == AiWingman)
+        {
+            retVal = TRUE;
+        }
 
-            break;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return retVal;
 }
 
-BOOL CBPopTestTrue(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
+BOOL CBPopTestTrue(int callerIdx, int numInFlight, int extent, BOOL isPolling,
+                   VU_ID tgtId)
 {
     return TRUE;
 }
 
-BOOL CBPopTestFalse(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
+BOOL CBPopTestFalse(int callerIdx, int numInFlight, int extent, BOOL isPolling,
+                    VU_ID tgtId)
 {
     return FALSE;
 }
 
 
-BOOL CBTestForTarget(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
+BOOL CBTestForTarget(int callerIdx, int numInFlight, int extent, BOOL isPolling,
+                     VU_ID tgtId)
 {
     BOOL retVal = FALSE;
 
@@ -76,7 +77,8 @@ BOOL CBTestForTarget(int callerIdx, int numInFlight, int extent, BOOL isPolling,
 }
 
 
-BOOL CBTestTwoShip(int callerIdx, int numInFlight, int extent, BOOL isPolling, VU_ID tgtId)
+BOOL CBTestTwoShip(int callerIdx, int numInFlight, int extent, BOOL isPolling,
+                   VU_ID tgtId)
 {
     BOOL retVal = FALSE;
 

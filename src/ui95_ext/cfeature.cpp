@@ -27,7 +27,7 @@ C_Feature::~C_Feature()
 
 long C_Feature::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Feature::Setup(long ID, short Type)
@@ -123,10 +123,11 @@ void C_Feature::SetFont(long ID)
 
 long C_Feature::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
-        return(GetID());
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and
+        relY <= (GetY() + GetH()))
+        return (GetID());
 
-    return(0);
+    return (0);
 }
 
 void C_Feature::SetDefaultFlags()
@@ -136,7 +137,7 @@ void C_Feature::SetDefaultFlags()
 
 long C_Feature::GetDefaultFlags()
 {
-    return(Defaultflags_);
+    return (Defaultflags_);
 }
 
 void C_Feature::SetSubParents(C_Window *)
@@ -180,20 +181,21 @@ BOOL C_Feature::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Feature::Refresh()
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           Flags_, GetClient());
 }
 
 void C_Feature::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Name_)

@@ -1,12 +1,12 @@
 #ifndef _ADDSFXMESSAGE_H
 #define _ADDSFXMESSAGE_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Add SFX Message
@@ -14,7 +14,8 @@
 class FalconAddSFXMessage : public FalconEvent
 {
 public:
-    FalconAddSFXMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconAddSFXMessage(VU_ID entityId, VuTargetEntity *target,
+                        VU_BOOL loopback = TRUE);
     FalconAddSFXMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconAddSFXMessage(void);
     virtual int Size() const
@@ -43,7 +44,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         short type;
         short visType;
         short flags;
@@ -60,6 +60,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

@@ -14,7 +14,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -55,7 +56,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     // if using bitmaps for all
@@ -63,7 +64,7 @@ public:
     void SetImage(short state, long ImageID);
     BOOL TimerUpdate()
     {
-        return(FALSE);
+        return (FALSE);
     }
     long CheckHotSpots(long relX, long relY); // returns ID of button hit
     BOOL Process(long, short ButtonHitType);
@@ -82,30 +83,30 @@ public:
     }
     short GetDeadZone()
     {
-        return(0);
+        return (0);
     }
     short GetState()
     {
-        return static_cast<short>(state_);    
+        return static_cast<short>(state_);
     }
     long GetHRange()
     {
-        return(SX_);    
+        return (SX_);
     }
     long GetVRange()
     {
-        return(SY_);    
+        return (SY_);
     }
     void GetItemXY(long, long *x, long *y);
     BOOL Drag(GRABBER *, WORD MouseX, WORD MouseY, C_Window *);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *);
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *);
     void SetSubParents(C_Window *);
 
 #ifdef _UI95_PARSER_
 
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

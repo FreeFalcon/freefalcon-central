@@ -1,10 +1,10 @@
 #include <windows.h>
 #include <stdio.h>
-#include "ClassTbl.h"
-#include "F4Find.h"
-#include "NoFly.h"
+#include "classtbl.h"
+#include "f4find.h"
+#include "nofly.h"
 #include "find.h"
-#include "Campaign.h"
+#include "campaign.h"
 
 
 // Global No fly zone list
@@ -40,7 +40,7 @@ int NoFlyZoneClass::InZone(GridIndex x, GridIndex y, Team who, int flags)
     {
         if (type == NFZ_OVERFLY_ONLY)
         {
-            if ( not GetRoE(who, owner, ROE_AIR_OVERFLY))
+            if (not GetRoE(who, owner, ROE_AIR_OVERFLY))
                 return 1;
         }
         else if (type == NFZ_OWNER_NOFLY)
@@ -125,7 +125,7 @@ void DeleteZones(void)
 
 int LoadNFZs(char *name)
 {
-    FILE* fp;
+    FILE *fp;
     short entries;
     NFZ zone, last = NULL;
 
@@ -139,7 +139,7 @@ int LoadNFZs(char *name)
         zone = new NoFlyZoneClass();
         fread(zone, sizeof(NoFlyZoneClass), 1, fp);
 
-        if ( not NFZList)
+        if (not NFZList)
             NFZList = zone;
 
         if (last)
@@ -154,7 +154,7 @@ int LoadNFZs(char *name)
 
 int SaveNFZs(char *name)
 {
-    FILE* fp;
+    FILE *fp;
     short zones = 0;
     NFZ zone;
 
@@ -224,6 +224,6 @@ int CheckZones(vector *location, Team who)
 {
     GridIndex x, y;
 
-    ConvertSimToGrid((vector*)(&location), &x, &y);
+    ConvertSimToGrid((vector *)(&location), &x, &y);
     return CheckZones(x, y, who);
 }

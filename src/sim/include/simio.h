@@ -70,7 +70,8 @@ typedef enum
 } GameAxis_t;
 
 #define SIMLIB_MAX_ANALOG AXIS_MAX // max number of axis
-#define SIMLIB_MAX_DIGITAL      128 // DIJOYSTATE2: up to 128 buttons/device (was 32 for DIJOYSTATE)
+#define SIMLIB_MAX_DIGITAL                                                     \
+    128 // DIJOYSTATE2: up to 128 buttons/device (was 32 for DIJOYSTATE)
 #define SIMLIB_MAX_POV 4 // max number of POVs per device
 
 struct DeviceAxis
@@ -213,13 +214,16 @@ typedef struct
 // these structs define the in-game-axis properties
 typedef struct
 {
-    SIM_LONG center; // used to recenter pitch/bank axis and as ABDetent for throttles
+    SIM_LONG
+    center; // used to recenter pitch/bank axis and as ABDetent for throttles
     SIM_LONG cutoff; // idle cutoff val for throttles
     SIM_LONG ioVal; // 'raw' read value ??
     bool isUsed; // well... waddaya think ?
-    SIM_FLOAT engrValue; // dunno what the abbreviation means but this is the processed input (with input linearity applied etc..)
+    SIM_FLOAT
+    engrValue; // dunno what the abbreviation means but this is the processed input (with input linearity applied etc..)
     bool isReversed; // well..
-    SIM_LONG smoothingFactor; // Retro 19Feb2004 - has to be power of 2, 0 if deactivated
+    SIM_LONG
+    smoothingFactor; // Retro 19Feb2004 - has to be power of 2, 0 if deactivated
 } SIMLIB_ANALOG_TYPE;
 
 /***************************************************************************/
@@ -237,18 +241,23 @@ class SIMLIB_IO_CLASS
 {
 public:
     SIMLIB_ANALOG_TYPE analog[SIMLIB_MAX_ANALOG]; // array of all axis
-    SIM_SHORT digital[SIMLIB_MAX_DIGITAL*SIM_NUMDEVICES]; // array of all buttons of all devices
+    SIM_SHORT digital[SIMLIB_MAX_DIGITAL *
+                      SIM_NUMDEVICES]; // array of all buttons of all devices
     DWORD povHatAngle[SIMLIB_MAX_POV]; // array of all POVs
 
 public:
     /* constructor, basically sets all to '0' or 'false' */
     SIMLIB_IO_CLASS();
     /* called on entering the 3d, use to init axisvalues etc */
-    SIM_INT Init(char *fname);
+    SIM_INT Init(char* fname);
 
     /* data retrieval stuff */
-    SIM_FLOAT ReadAnalog(GameAxis_t id); // Retro 28Dec2003 - this return the (processed, normalised ?) engrValue, of MPS vintage. used for primary flight stuff (pitch/yaw/bank/throttle)
-    SIM_INT GetAxisValue(GameAxis_t id); // Retro 28Dec2003 - this returns the ioVal, -10000 to 10000 (bipolar), 0-15000 (unipolar)
+    SIM_FLOAT ReadAnalog(
+        GameAxis_t
+            id); // Retro 28Dec2003 - this return the (processed, normalised ?) engrValue, of MPS vintage. used for primary flight stuff (pitch/yaw/bank/throttle)
+    SIM_INT GetAxisValue(
+        GameAxis_t
+            id); // Retro 28Dec2003 - this returns the ioVal, -10000 to 10000 (bipolar), 0-15000 (unipolar)
     SIM_INT ReadDigital(SIM_INT id);
 
     /* axis status stuff */
@@ -276,7 +285,8 @@ public:
     }
     bool IsAxisCutOff(GameAxis_t id)
     {
-        return (analog[id].ioVal > (analog[id].cutoff + idleCutoffPad));    // MD -- 20040210
+        return (analog[id].ioVal >
+                (analog[id].cutoff + idleCutoffPad)); // MD -- 20040210
     }
 
     long GetAxisSmoothing(GameAxis_t id)
@@ -285,7 +295,7 @@ public:
     }
     void SetAxisSmoothing(GameAxis_t id, long factor)
     {
-        analog[id].smoothingFactor = factor;    // factor has to be power of 2 
+        analog[id].smoothingFactor = factor; // factor has to be power of 2
     }
 
     // reads/writes offset-values for bipolar axis
@@ -314,12 +324,13 @@ public:
     {
         mouseWheelPresent = yesno;
     }
+
 private:
     void SaveGUIDAndCount();
     bool mouseWheelPresent;
-    int  idleCutoffPad;  // MD -- 20040210: add variable pad to make sure we return cutoff only when we mean it, not on jitter/repeatability boundaries for flaky joystick pots
+    int idleCutoffPad; // MD -- 20040210: add variable pad to make sure we return cutoff only when we mean it, not on jitter/repeatability boundaries for flaky joystick pots
 };
 
-extern SIMLIB_IO_CLASS   IO;
+extern SIMLIB_IO_CLASS IO;
 
 #endif // #define _SIMIO_H

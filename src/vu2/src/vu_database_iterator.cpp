@@ -18,4 +18,3 @@ VuDatabaseIterator::VuDatabaseIterator() : VuHashIterator(vuDatabase)
 VuDatabaseIterator::~VuDatabaseIterator()
 {
 }
-

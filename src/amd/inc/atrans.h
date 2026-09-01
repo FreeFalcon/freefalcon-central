@@ -27,7 +27,8 @@
 #define _AMD_ATRAN_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     void _trans_v1x4(float *res, float *mtx, float *pt);

@@ -1,4 +1,4 @@
-#include "Graphics/Include/drawbldg.h"
+#include "graphics/include/drawbldg.h"
 #include "stdhdr.h"
 #include "simfeat.h"
 #include "initdata.h"
@@ -7,31 +7,32 @@
 #include "entity.h"
 #include "atcbrain.h"
 #include "simdrive.h"
-#include "Objectiv.h"
+#include "objectiv.h"
 #include "ptdata.h"
 #include "entity.h"
-#include "PlayerOp.h"
-#include "Feature.h"
+#include "playerop.h"
+#include "feature.h"
 #include "sfx.h"
-#include "Graphics/Include/RViewPnt.h"
+#include "graphics/include/rviewpnt.h"
 #include "atcbrain.h"
 
 /* 2001-03-06 S.G. FOR RADAR RANGE TO RADAR FEATURE */
-#include "radarData.h"
+#include "radardata.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL SimFeatureClass::pool;
 #endif
 
-void CalcTransformMatrix(SimBaseClass* theObject);
+void CalcTransformMatrix(SimBaseClass *theObject);
 int GetTextureIdxFromHeading(int hdg);
 
-SimFeatureClass::SimFeatureClass(VU_BYTE** stream, long *rem) : SimStaticClass(stream, rem)
+SimFeatureClass::SimFeatureClass(VU_BYTE **stream, long *rem)
+    : SimStaticClass(stream, rem)
 {
     InitLocalData();
 }
 
-SimFeatureClass::SimFeatureClass(FILE* filePtr) : SimStaticClass(filePtr)
+SimFeatureClass::SimFeatureClass(FILE *filePtr) : SimStaticClass(filePtr)
 {
     InitLocalData();
 }
@@ -54,10 +55,10 @@ void SimFeatureClass::InitData()
 
 void SimFeatureClass::InitLocalData()
 {
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     FeatureClassDataType *fc;
 
-    classPtr = &Falcon4ClassTable[ Type() - VU_LAST_ENTITY_TYPE];
+    classPtr = &Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE];
     fc = (FeatureClassDataType *)classPtr->dataPtr;
 
     strength = maxStrength = (float)fc->HitPoints;
@@ -92,9 +93,9 @@ void SimFeatureClass::CleanupData()
     SimStaticClass::CleanupData();
 }
 
-void SimFeatureClass::Init(SimInitDataClass* initData)
+void SimFeatureClass::Init(SimInitDataClass *initData)
 {
-    Falcon4EntityClassType* classPtr;
+    Falcon4EntityClassType *classPtr;
     FeatureClassDataType *fc;
 
     classPtr = (Falcon4EntityClassType *)EntityType();
@@ -107,7 +108,7 @@ void SimFeatureClass::Init(SimInitDataClass* initData)
 
     SetFlag(ON_GROUND);
 
-    if ( not initData)
+    if (not initData)
         return;
 
     featureFlags = initData->specialFlags;
@@ -161,12 +162,11 @@ int SimFeatureClass::Wake()
             for (i = 0; i < num; i++)
             {
                 // TODO:  Shouldn't this stay tied to the feature so it lives until reaggregation???
-                SfxClass *sfx = new SfxClass(
-                    SFX_SMOKING_FEATURE, // type
-                    i, // slot #
-                    this, // world pos
-                    2.0f, // time to live
-                    40.0f  // scale
+                SfxClass *sfx = new SfxClass(SFX_SMOKING_FEATURE, // type
+                                             i, // slot #
+                                             this, // world pos
+                                             2.0f, // time to live
+                                             40.0f // scale
                 );
                 OTWDriver.AddSfxRequest(sfx);
             }
@@ -179,7 +179,8 @@ int SimFeatureClass::Wake()
         }
 
         // Is This a runway number?
-        if (EntityType()->classInfo_[VU_TYPE] == TYPE_RUNWAY and EntityType()->classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
+        if (EntityType()->classInfo_[VU_TYPE] == TYPE_RUNWAY and
+            EntityType()->classInfo_[VU_STYPE] == STYPE_RUNWAY_NUM)
         {
             ShiAssert(GetCampaignObject());
 
@@ -189,16 +190,19 @@ int SimFeatureClass::Wake()
 
                 if (((Objective)GetCampaignObject())->brain)
                 {
-                    index = ((Objective)GetCampaignObject())->GetComponentIndex(this);
-                    texIdx = ((Objective)GetCampaignObject())->brain->GetRunwayTexture(index);
-                    ((DrawableBSP*)drawPointer)->SetTextureSet(texIdx);
+                    index = ((Objective)GetCampaignObject())
+                                ->GetComponentIndex(this);
+                    texIdx = ((Objective)GetCampaignObject())
+                                 ->brain->GetRunwayTexture(index);
+                    ((DrawableBSP *)drawPointer)->SetTextureSet(texIdx);
                 }
             }
         }
 
         // Is This a taxiway sign?
-        if (EntityType()->classInfo_[VU_TYPE] == TYPE_TAXIWAY and 
-            (EntityType()->classInfo_[VU_STYPE] == STYPE_THP or EntityType()->classInfo_[VU_STYPE] == STYPE_THPX))
+        if (EntityType()->classInfo_[VU_TYPE] == TYPE_TAXIWAY and
+            (EntityType()->classInfo_[VU_STYPE] == STYPE_THP or
+             EntityType()->classInfo_[VU_STYPE] == STYPE_THPX))
         {
             // NOTE: Runway pieces are defined upside down. a heading of 0 means runway 18
             yaw = Yaw() * RTD + 180.0F;
@@ -212,7 +216,7 @@ int SimFeatureClass::Wake()
 
             texIdx = GetTextureIdxFromHeading(rwyHeading);
 
-            ((DrawableBSP*)drawPointer)->SetTextureSet(texIdx);
+            ((DrawableBSP *)drawPointer)->SetTextureSet(texIdx);
         }
     }
 
@@ -221,7 +225,7 @@ int SimFeatureClass::Wake()
 
 int SimFeatureClass::Sleep(void)
 {
-    if ( not IsAwake())
+    if (not IsAwake())
     {
         return 0;
     }
@@ -249,7 +253,8 @@ int SimFeatureClass::Sleep(void)
 int SimFeatureClass::GetRadarType()
 {
     FeatureClassDataType *fc;
-    fc = (FeatureClassDataType *)Falcon4ClassTable[ Type() - VU_LAST_ENTITY_TYPE ].dataPtr;
+    fc = (FeatureClassDataType *)Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE]
+             .dataPtr;
 
     return fc->RadarType;
 }
@@ -319,116 +324,116 @@ int GetTextureIdxFromHeading(int hdg)
 
     switch (hdg)
     {
-        case 0:
-            texIdx = 37;
-            break;
+    case 0:
+        texIdx = 37;
+        break;
 
-        case 1:
-            texIdx = 0;
-            break;
+    case 1:
+        texIdx = 0;
+        break;
 
-        case 2:
-            texIdx = 1;
-            break;
+    case 2:
+        texIdx = 1;
+        break;
 
-        case 3:
-        case 4:
-            texIdx = 4;
-            break;
+    case 3:
+    case 4:
+        texIdx = 4;
+        break;
 
-        case 5:
-        case 6:
-            texIdx = 5;
-            break;
+    case 5:
+    case 6:
+        texIdx = 5;
+        break;
 
-        case 7:
-        case 8:
-            texIdx = 6;
-            break;
+    case 7:
+    case 8:
+        texIdx = 6;
+        break;
 
-        case 9:
-            texIdx = 7;
-            break;
+    case 9:
+        texIdx = 7;
+        break;
 
-        case 10:
-        case 11:
-            texIdx = 8;
-            break;
+    case 10:
+    case 11:
+        texIdx = 8;
+        break;
 
-        case 12:
-            texIdx = 9;
-            break;
+    case 12:
+        texIdx = 9;
+        break;
 
-        case 13:
-        case 14:
-            texIdx = 10;
-            break;
+    case 13:
+    case 14:
+        texIdx = 10;
+        break;
 
-        case 16:
-            texIdx = 13;
-            break;
+    case 16:
+        texIdx = 13;
+        break;
 
-        case 15:
-        case 17:
-            texIdx = 16;
-            break;
+    case 15:
+    case 17:
+        texIdx = 16;
+        break;
 
-        case 18:
-            texIdx = 17;
-            break;
+    case 18:
+        texIdx = 17;
+        break;
 
-        case 19:
-            texIdx = 20;
-            break;
+    case 19:
+        texIdx = 20;
+        break;
 
-        case 20:
-            texIdx = 21;
-            break;
+    case 20:
+        texIdx = 21;
+        break;
 
-        case 22:
-        case 21:
-            texIdx = 24;
-            break;
+    case 22:
+    case 21:
+        texIdx = 24;
+        break;
 
-        case 23:
-        case 24:
-            texIdx = 25;
-            break;
+    case 23:
+    case 24:
+        texIdx = 25;
+        break;
 
-        case 25:
-        case 26:
-            texIdx = 26;
-            break;
+    case 25:
+    case 26:
+        texIdx = 26;
+        break;
 
-        case 27:
-            texIdx = 27;
-            break;
+    case 27:
+        texIdx = 27;
+        break;
 
-        case 28:
-        case 29:
-            texIdx = 28;
-            break;
+    case 28:
+    case 29:
+        texIdx = 28;
+        break;
 
-        case 30:
-            texIdx = 29;
-            break;
+    case 30:
+        texIdx = 29;
+        break;
 
-        case 32:
-            texIdx = 30;
-            break;
+    case 32:
+        texIdx = 30;
+        break;
 
-        case 34:
-            texIdx = 33;
-            break;
+    case 34:
+        texIdx = 33;
+        break;
 
-        case 33:
-        case 35:
-            texIdx = 36;
-            break;
+    case 33:
+    case 35:
+        texIdx = 36;
+        break;
 
-        case 36:
-            texIdx = 37;
-            break;
+    case 36:
+        texIdx = 37;
+        break;
     }
 
     return texIdx;

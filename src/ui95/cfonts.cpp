@@ -27,8 +27,7 @@ enum
     CFNT_LOAD
 };
 
-char *C_Fnt_Tokens[] =
-{
+char *C_Fnt_Tokens[] = {
     "[NOTHING]",
     "[ID]",
     "[lfHeight]",
@@ -56,8 +55,7 @@ char *C_Fnt_Tokens[] =
 
 C_Font *gFontList = NULL;
 
-static LOGFONT DefaultFont =
-{
+static LOGFONT DefaultFont = {
     16,
     0,
     0,
@@ -78,7 +76,7 @@ static void HashDelCB(void *me)
 {
     C_Fontmgr *fnt;
 
-    fnt = (C_Fontmgr*)me;
+    fnt = (C_Fontmgr *)me;
 
     if (fnt)
     {
@@ -134,7 +132,7 @@ void C_Font::Cleanup()
     }
 }
 
-BOOL C_Font::AddFont(long , LOGFONT *)
+BOOL C_Font::AddFont(long, LOGFONT *)
 {
 
 #if 0
@@ -193,7 +191,7 @@ BOOL C_Font::AddFont(long , LOGFONT *)
 
     return(TRUE);
 #endif
-    return(FALSE);
+    return (FALSE);
 }
 
 FONTLIST *C_Font::FindID(long ID)
@@ -205,12 +203,12 @@ FONTLIST *C_Font::FindID(long ID)
     while (cur)
     {
         if (cur->ID_ == ID)
-            return(cur);
+            return (cur);
 
         cur = cur->Next;
     }
 
-    return(Root_);
+    return (Root_);
 }
 
 HFONT C_Font::GetFont(long ID)
@@ -220,9 +218,9 @@ HFONT C_Font::GetFont(long ID)
     cur = FindID(ID);
 
     if (cur)
-        return(cur->Font_);
+        return (cur->Font_);
 
-    return(NULL);
+    return (NULL);
 }
 
 int C_Font::GetHeight(long ID)
@@ -241,15 +239,15 @@ int C_Font::GetHeight(long ID)
     found = Find(ID);
 
     if (found)
-        return(found->Height());
+        return (found->Height());
 
     found = Find(1);
 
     if (found)
-        return(found->Height());
+        return (found->Height());
 
 #endif
-    return(0);
+    return (0);
 }
 
 C_Fontmgr *C_Font::Find(long ID)
@@ -258,15 +256,15 @@ C_Fontmgr *C_Font::Find(long ID)
 
     if (Fonts_)
     {
-        cur = (C_Fontmgr*)Fonts_->Find(ID);
+        cur = (C_Fontmgr *)Fonts_->Find(ID);
 
-        if ( not cur)
-            cur = (C_Fontmgr*)Fonts_->Find(1);
+        if (not cur)
+            cur = (C_Fontmgr *)Fonts_->Find(1);
 
-        return(cur);
+        return (cur);
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_Font::LoadFont(long ID, char *filename)
@@ -279,7 +277,7 @@ void C_Font::LoadFont(long ID, char *filename)
     newfont = new C_Fontmgr;
     newfont->Setup(ID, filename);
 
-    if ( not newfont->Height())
+    if (not newfont->Height())
     {
         delete newfont;
         return;
@@ -322,9 +320,9 @@ int C_Font::StrWidth(long fontID, _TCHAR *Str)
     found = Find(fontID);
 
     if (found)
-        return(found->Width(Str));
+        return (found->Width(Str));
 
-    return(0);
+    return (0);
 #endif
 }
 
@@ -361,9 +359,9 @@ int C_Font::StrWidth(long fontID, _TCHAR *Str, int len)
     found = Find(fontID);
 
     if (found)
-        return(found->Width(Str, len));
+        return (found->Width(Str, len));
 
-    return(0);
+    return (0);
 #endif
 }
 
@@ -376,119 +374,120 @@ short C_Font::FontFind(char *token)
     while (C_Fnt_Tokens[i])
     {
         if (strnicmp(token, C_Fnt_Tokens[i], strlen(C_Fnt_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
-void C_Font::FontFunction(short ID, long P[], _TCHAR *str, LOGFONT *lgfnt, long *NewID)
+void C_Font::FontFunction(short ID, long P[], _TCHAR *str, LOGFONT *lgfnt,
+                          long *NewID)
 {
     switch (ID)
     {
-        case CFNT_ID:
-            *NewID = P[0];
-            break;
+    case CFNT_ID:
+        *NewID = P[0];
+        break;
 
-        case CFNT_lfHeight:
-            if (lgfnt)
-                lgfnt->lfHeight or_eq P[0];
+    case CFNT_lfHeight:
+        if (lgfnt)
+            lgfnt->lfHeight or_eq P[0];
 
-            break;
+        break;
 
-        case CFNT_lfWidth:
-            if (lgfnt)
-                lgfnt->lfWidth or_eq P[0];
+    case CFNT_lfWidth:
+        if (lgfnt)
+            lgfnt->lfWidth or_eq P[0];
 
-            break;
+        break;
 
-        case CFNT_lfEscapement:
-            if (lgfnt)
-                lgfnt->lfEscapement or_eq P[0];
+    case CFNT_lfEscapement:
+        if (lgfnt)
+            lgfnt->lfEscapement or_eq P[0];
 
-            break;
+        break;
 
-        case CFNT_lfOrientation:
-            if (lgfnt)
-                lgfnt->lfOrientation or_eq P[0];
+    case CFNT_lfOrientation:
+        if (lgfnt)
+            lgfnt->lfOrientation or_eq P[0];
 
-            break;
+        break;
 
-        case CFNT_lfWeight:
-            if (lgfnt)
-                lgfnt->lfWeight or_eq P[0];
+    case CFNT_lfWeight:
+        if (lgfnt)
+            lgfnt->lfWeight or_eq P[0];
 
-            break;
+        break;
 
-        case CFNT_lfItalic:
-            if (lgfnt)
-                lgfnt->lfItalic or_eq (BYTE)P[0];
+    case CFNT_lfItalic:
+        if (lgfnt)
+            lgfnt->lfItalic or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfUnderline:
-            if (lgfnt)
-                lgfnt->lfUnderline or_eq (BYTE)P[0];
+    case CFNT_lfUnderline:
+        if (lgfnt)
+            lgfnt->lfUnderline or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfStrikeOut:
-            if (lgfnt)
-                lgfnt->lfStrikeOut or_eq (BYTE)P[0];
+    case CFNT_lfStrikeOut:
+        if (lgfnt)
+            lgfnt->lfStrikeOut or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfCharSet:
-            if (lgfnt)
-                lgfnt->lfCharSet or_eq (BYTE)P[0];
+    case CFNT_lfCharSet:
+        if (lgfnt)
+            lgfnt->lfCharSet or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfOutPrecision:
-            if (lgfnt)
-                lgfnt->lfOutPrecision or_eq (BYTE)P[0];
+    case CFNT_lfOutPrecision:
+        if (lgfnt)
+            lgfnt->lfOutPrecision or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfClipPrecision:
-            if (lgfnt)
-                lgfnt->lfClipPrecision or_eq (BYTE)P[0];
+    case CFNT_lfClipPrecision:
+        if (lgfnt)
+            lgfnt->lfClipPrecision or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfQuality:
-            if (lgfnt)
-                lgfnt->lfQuality or_eq (BYTE)P[0];
+    case CFNT_lfQuality:
+        if (lgfnt)
+            lgfnt->lfQuality or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfPitchAndFamily:
-            if (lgfnt)
-                lgfnt->lfPitchAndFamily or_eq (BYTE)P[0];
+    case CFNT_lfPitchAndFamily:
+        if (lgfnt)
+            lgfnt->lfPitchAndFamily or_eq (BYTE) P[0];
 
-            break;
+        break;
 
-        case CFNT_lfFaceName:
-            if (lgfnt)
-                _tcsncpy(lgfnt->lfFaceName, str, LF_FACESIZE);
+    case CFNT_lfFaceName:
+        if (lgfnt)
+            _tcsncpy(lgfnt->lfFaceName, str, LF_FACESIZE);
 
-            break;
+        break;
 
-        case CFNT_SPACING:
-            Spacing_ = P[0];
-            break;
+    case CFNT_SPACING:
+        Spacing_ = P[0];
+        break;
 
-        case CFNT_ADDFONT:
-            AddFont(*NewID, lgfnt);
-            Spacing_ = 0;
-            memset(lgfnt, 0, sizeof(LOGFONT));
-            break;
+    case CFNT_ADDFONT:
+        AddFont(*NewID, lgfnt);
+        Spacing_ = 0;
+        memset(lgfnt, 0, sizeof(LOGFONT));
+        break;
 
-        case CFNT_LOAD:
-            LoadFont(P[0], str);
-            break;
+    case CFNT_LOAD:
+        LoadFont(P[0], str);
+        break;
     }
 }
 

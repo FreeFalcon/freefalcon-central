@@ -38,7 +38,7 @@ long ImaAdpcmDecodeMono(FILE *sptr, char *dBuff, long sBuffSize, long *sRead)
         return 0;
 
     bytesRead = fread(smBuff, sizeof(char), sBuffSize, sptr);
-    decodedSize = ImaDecodeM16((char*)smBuff, (char *)dBuff, bytesRead);
+    decodedSize = ImaDecodeM16((char *)smBuff, (char *)dBuff, bytesRead);
 
     *sRead = bytesRead;
 

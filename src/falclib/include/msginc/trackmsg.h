@@ -11,10 +11,10 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "falcmesg.h"
 #include "mission.h"
-#pragma pack (1)
+#pragma pack(1)
 
 enum TrackType
 {
@@ -37,7 +37,8 @@ enum TrackType
 class FalconTrackMessage : public FalconEvent
 {
 public:
-    FalconTrackMessage(int reliable , VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconTrackMessage(int reliable, VU_ID entityId, VuTargetEntity *target,
+                       VU_BOOL loopback = TRUE);
     FalconTrackMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconTrackMessage(void);
 
@@ -53,7 +54,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         unsigned int trackType : 16;
         unsigned int hardpoint : 16;
         VU_ID id;
@@ -62,6 +62,6 @@ public:
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

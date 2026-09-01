@@ -38,12 +38,14 @@ public:
 protected:
     // constructors, all protected since this is a base virtual class
     /** default */
-    VuFilter() {}
+    VuFilter()
+    {
+    }
     /** copy constructor */
-    VuFilter(VuFilter *) {}
-
+    VuFilter(VuFilter *)
+    {
+    }
 };
-
 
 
 class VuStandardFilter : public VuFilter
@@ -94,9 +96,12 @@ public:
     virtual VU_KEY Key(const VuEntity *ent) const = 0;
 
 protected:
-    VuKeyFilter() {}
-    VuKeyFilter(VuKeyFilter *) {}
-
+    VuKeyFilter()
+    {
+    }
+    VuKeyFilter(VuKeyFilter *)
+    {
+    }
 };
 
 /** a filter that converts coordinates to grid keys. Which coordinate to use (X/Y) depends on how
@@ -106,13 +111,18 @@ protected:
 class VuBiKeyFilter : public VuKeyFilter
 {
 protected:
-    VuBiKeyFilter(unsigned int res, BIG_SCALAR max) : res_(res), factor_(static_cast<BIG_SCALAR>(res) / max) {}
+    VuBiKeyFilter(unsigned int res, BIG_SCALAR max)
+        : res_(res), factor_(static_cast<BIG_SCALAR>(res) / max)
+    {
+    }
     VuBiKeyFilter(const VuBiKeyFilter &rhs)
     {
         res_ = rhs.res_;
         factor_ = rhs.factor_;
     }
-    virtual VuBiKeyFilter::~VuBiKeyFilter() {}
+    virtual VuBiKeyFilter::~VuBiKeyFilter()
+    {
+    }
 
 public:
     // virtual interface
@@ -123,7 +133,7 @@ public:
     * default implementation calls Key2(ent). This is useful for grids, since the RB trees
     * share the same filter and then just call it to get their coordinates correctly.
     */
-    virtual VU_KEY Key(const VuEntity *ent) const ;
+    virtual VU_KEY Key(const VuEntity *ent) const;
 
     /** returns key1 for given entity. */
     VU_KEY Key1(const VuEntity *ent) const;
@@ -233,7 +243,6 @@ protected:
 protected:
     VU_ID groupId_;
 };
-
 
 
 #endif

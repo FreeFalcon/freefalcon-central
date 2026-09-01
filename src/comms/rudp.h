@@ -9,7 +9,8 @@
 #include "capi.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     /** set up RUDP port, send will  be random
@@ -18,15 +19,16 @@ extern "C" {
     void ComRUDPSetup(unsigned short rport);
 
     com_API_handle ComRUDPOpen(
-        char *name,                 // name of this comm, usually "callsign RUDP"
+        char *name, // name of this comm, usually "callsign RUDP"
         int buffersize,
-        char *gamename,             // game name
-        unsigned short localPort,   // local port (host order)
-        unsigned short remotePort,  // where peer receives reliable data (host order)
-        unsigned long IPaddress,    // peer ip address. If == CAPI_DANGLING_IP, this is a receive only comm
-        unsigned long id,           // id of the owner of this comm
-        int idealpacketsize
-    );
+        char *gamename, // game name
+        unsigned short localPort, // local port (host order)
+        unsigned short
+            remotePort, // where peer receives reliable data (host order)
+        unsigned long
+            IPaddress, // peer ip address. If == CAPI_DANGLING_IP, this is a receive only comm
+        unsigned long id, // id of the owner of this comm
+        int idealpacketsize);
 
 #ifdef __cplusplus
 }

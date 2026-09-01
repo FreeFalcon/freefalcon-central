@@ -75,7 +75,7 @@ void ICPClass::CNISwitch(int mode)
         //ALOW
         if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON)
         {
-            if ( not EDITMSLFLOOR and not TFADV)
+            if (not EDITMSLFLOOR and not TFADV)
                 TFADV = TRUE;
             else if (TFADV)
             {
@@ -86,9 +86,12 @@ void ICPClass::CNISwitch(int mode)
                 EDITMSLFLOOR = FALSE;
         }
         //DEST
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == ONE_BUTTON)
         {
-            if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) and Manual_Input)
+            if ((IsICPSet(ICPClass::EDIT_LAT) or
+                 IsICPSet(ICPClass::EDIT_LONG)) and
+                Manual_Input)
                 return;
 
             if (OA1 or OA2)
@@ -127,7 +130,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //VIP
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == THREE_BUTTON)
         {
             if (Manual_Input)
                 return;
@@ -152,7 +156,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //VRP
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == NINE_BUTTON)
         {
             if (Manual_Input)
                 return;
@@ -177,7 +182,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //EWS
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == EWS_MODE)
         {
             if (EWSMain)
             {
@@ -195,7 +201,6 @@ void ICPClass::CNISwitch(int mode)
                     ClearStrings();
                     ClearICPFlag(ICPClass::FLARE_BINGO);
                     SetICPFlag(ICPClass::CHAFF_BINGO);
-
                 }
                 else if (IsICPSet(ICPClass::EDIT_JAMMER))
                 {
@@ -241,7 +246,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //INS
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == SIX_BUTTON)
         {
             INSLine--;
 
@@ -249,7 +255,8 @@ void ICPClass::CNISwitch(int mode)
                 INSLine = 3;
         }
         //Laser
-        else if (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == FIFE_BUTTON)
+        else if (IsICPSet(ICPClass::MISC_MODE) and
+                 mICPSecondaryMode == FIFE_BUTTON)
         {
             if (LaserLine == 1)
                 LaserLine = 2;
@@ -326,7 +333,7 @@ void ICPClass::CNISwitch(int mode)
         //ALOW
         if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == TWO_BUTTON)
         {
-            if ( not EDITMSLFLOOR and not TFADV)
+            if (not EDITMSLFLOOR and not TFADV)
                 EDITMSLFLOOR = TRUE;
             else if (EDITMSLFLOOR)
             {
@@ -337,9 +344,12 @@ void ICPClass::CNISwitch(int mode)
                 TFADV = FALSE;
         }
         //DEST
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == ONE_BUTTON)
         {
-            if ((IsICPSet(ICPClass::EDIT_LAT) or IsICPSet(ICPClass::EDIT_LONG)) and Manual_Input)
+            if ((IsICPSet(ICPClass::EDIT_LAT) or
+                 IsICPSet(ICPClass::EDIT_LONG)) and
+                Manual_Input)
                 return;
 
             if (OA1 or OA2)
@@ -378,7 +388,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //VIP
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == THREE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == THREE_BUTTON)
         {
             if (Manual_Input)
                 return;
@@ -403,7 +414,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //VRP
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == NINE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == NINE_BUTTON)
         {
             if (Manual_Input)
                 return;
@@ -428,7 +440,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //EWS
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == EWS_MODE)
         {
             if (EWSMain)
             {
@@ -490,7 +503,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //INS
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == SIX_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == SIX_BUTTON)
         {
             INSLine++;
 
@@ -498,7 +512,8 @@ void ICPClass::CNISwitch(int mode)
                 INSLine = 0;
         }
         //Laser
-        else if (IsICPSet(ICPClass::MISC_MODE) and mICPSecondaryMode == FIFE_BUTTON)
+        else if (IsICPSet(ICPClass::MISC_MODE) and
+                 mICPSecondaryMode == FIFE_BUTTON)
         {
             if (LaserLine == 1)
                 LaserLine = 2;
@@ -510,7 +525,7 @@ void ICPClass::CNISwitch(int mode)
     {
         ClearDigits();
 
-        if ( not IsICPSet(ICPClass::MODE_FACK))
+        if (not IsICPSet(ICPClass::MODE_FACK))
             ClearStrings();
 
         if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == NONE_MODE)
@@ -540,16 +555,19 @@ void ICPClass::CNISwitch(int mode)
                     gNavigationSys->ToggleDomain(NavigationSystem::ICP);
             }
         }
-        else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FOUR_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_CNI) and
+                 mICPSecondaryMode == FOUR_BUTTON)
         {
             if (MAN)
                 MAN = FALSE;
             else
                 MAN = TRUE;
         }
-        else if (IsICPSet(ICPClass::MODE_CNI) and mICPSecondaryMode == FIFE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_CNI) and
+                 mICPSecondaryMode == FIFE_BUTTON)
             StepCruise();
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == ONE_BUTTON)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == ONE_BUTTON)
         {
             ClearStrings();
             ClearCount = 0;
@@ -582,7 +600,8 @@ void ICPClass::CNISwitch(int mode)
             }
         }
         //EWS
-        else if (IsICPSet(ICPClass::MODE_LIST) and mICPSecondaryMode == EWS_MODE)
+        else if (IsICPSet(ICPClass::MODE_LIST) and
+                 mICPSecondaryMode == EWS_MODE)
         {
             Manual_Input = FALSE;
             ClearCount = 0;

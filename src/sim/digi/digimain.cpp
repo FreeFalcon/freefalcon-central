@@ -4,8 +4,8 @@
 #include "simveh.h"
 #include "mesg.h"
 #include "object.h"
-#include "MsgInc/WingmanMsg.h"
-#include "MsgInc/ATCMsg.h"
+#include "msginc/wingmanmsg.h"
+#include "msginc/atcmsg.h"
 #include "mission.h"
 #include "unit.h"
 #include "airframe.h"
@@ -15,11 +15,11 @@
 #include "aircrft.h"
 #include "falcsess.h"
 #include "camp2sim.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "simfile.h"
 #include "entity.h"
 #include "atcbrain.h"
-#include "Find.h"
+#include "find.h"
 #include "tankbrn.h"
 #include "navsystem.h"
 #include "package.h"
@@ -33,28 +33,36 @@ extern MEM_POOL gReadInMemPool;
 extern float g_fAGSlowMoverSpeed; // Cobra
 extern bool g_bwoeir; // FRB
 
-#define MANEUVER_DATA_FILE   "sim\\acdata\\brain\\mnvrdata.dat"
-DigitalBrain::ManeuverChoiceTable DigitalBrain::maneuverData[DigitalBrain::NumMnvrClasses][DigitalBrain::NumMnvrClasses] = {0, 0, 0, -1, -1, -1};
-DigitalBrain::ManeuverClassData DigitalBrain::maneuverClassData[DigitalBrain::NumMnvrClasses] = {0};
-FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *data = NULL); // 2002-02-10 S.G.
+#define MANEUVER_DATA_FILE "sim/acdata/brain/mnvrdata.dat"
+DigitalBrain::ManeuverChoiceTable
+    DigitalBrain::maneuverData[DigitalBrain::NumMnvrClasses]
+                              [DigitalBrain::NumMnvrClasses] = {0,  0,  0,
+                                                                -1, -1, -1};
+DigitalBrain::ManeuverClassData
+    DigitalBrain::maneuverClassData[DigitalBrain::NumMnvrClasses] = {0};
+FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity* byHim = NULL,
+                         int* data = NULL); // 2002-02-10 S.G.
 
 int WingmanTable[] = {1, 0, 3, 2};
 
 
 int DigitalBrain::IsMyWingman(SimBaseClass* testEntity)
 {
-    return self->GetCampaignObject()->GetComponentNumber(WingmanTable[self->vehicleInUnit]) == testEntity;
+    return self->GetCampaignObject()->GetComponentNumber(
+               WingmanTable[self->vehicleInUnit]) == testEntity;
 }
 
 SimBaseClass* DigitalBrain::MyWingman(void)
 {
-    return self->GetCampaignObject()->GetComponentNumber(WingmanTable[self->vehicleInUnit]);
+    return self->GetCampaignObject()->GetComponentNumber(
+        WingmanTable[self->vehicleInUnit]);
 }
 
 int DigitalBrain::IsMyWingman(VU_ID testId)
 {
-    SimBaseClass *testEntity;
-    testEntity = self->GetCampaignObject()->GetComponentNumber(WingmanTable[self->vehicleInUnit]);
+    SimBaseClass* testEntity;
+    testEntity = self->GetCampaignObject()->GetComponentNumber(
+        WingmanTable[self->vehicleInUnit]);
 
     if (testEntity and testEntity->Id() == testId)
         return TRUE;
@@ -62,7 +70,8 @@ int DigitalBrain::IsMyWingman(VU_ID testId)
     return FALSE;
 }
 
-DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : BaseBrain()
+DigitalBrain::DigitalBrain(AircraftClass* myPlatform, AirframeClass* myAf)
+    : BaseBrain()
 {
     rocketMnvr = RocketFlyToTgt;
     rocketTimer = 2 * 60; // two minutes for something to happen
@@ -182,11 +191,12 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
             // 2002-02-27 ADDED BY S.G.
             // Lets save our escort flight pointer if we have one.
             // It's going to come handy in BvrEngageCheck...
-            for (UnitClass *un = package->GetFirstUnitElement(); un; un = package->GetNextUnitElement())
+            for (UnitClass* un = package->GetFirstUnitElement(); un;
+                 un = package->GetNextUnitElement())
             {
                 if (un->IsFlight())
                 {
-                    if (((FlightClass *)un)->GetUnitMission() == AMIS_ESCORT)
+                    if (((FlightClass*)un)->GetUnitMission() == AMIS_ESCORT)
                         escortFlightID = un->Id(); // We got one
                 }
             }
@@ -208,15 +218,16 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
 
     missileShotTimer = SimLibElapsedTime; // Cobra
 
-    curMissile       = NULL;
+    curMissile = NULL;
     sentWingAGAttack = AG_ORDER_NONE;
-    nextAttackCommandToSend = 0; // 2002-01-20 ADED BY S.G. Make sure it's initialized to something we can handle
-    jinkTime         = 0;
-    jammertime  = FALSE;//ME123
+    nextAttackCommandToSend =
+        0; // 2002-01-20 ADED BY S.G. Make sure it's initialized to something we can handle
+    jinkTime = 0;
+    jammertime = FALSE; //ME123
     holdlongrangeshot = 0; //0.0f;
-    cornerSpeed      = af->CornerVcas();
-    rangeToIP        = FLT_MAX;
-    madeAGPass       = FALSE;
+    cornerSpeed = af->CornerVcas();
+    rangeToIP = FLT_MAX;
+    madeAGPass = FALSE;
     AGattackAlt = self->GetA2GDumbLDAlt();
     // 2001-05-21 ADDED BY S.G. INIT waitingForShot SO IT'S NOT GARBAGE TO START WITH
     waitingForShot = 0;
@@ -252,9 +263,9 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
     mLeaderTookOff = FALSE;
     mpActionFlags[AI_ENGAGE_TARGET] = AI_NONE;
     mpActionFlags[AI_EXECUTE_MANEUVER] = FALSE;
-    mpActionFlags[AI_USE_COMPLEX]          = FALSE;
-    mpActionFlags[AI_RTB]    = FALSE;
-    mpActionFlags[AI_LANDING]          = FALSE;
+    mpActionFlags[AI_USE_COMPLEX] = FALSE;
+    mpActionFlags[AI_RTB] = FALSE;
+    mpActionFlags[AI_LANDING] = FALSE;
 
     mpSearchFlags[AI_SEARCH_FOR_TARGET] = FALSE;
     mpSearchFlags[AI_MONITOR_TARGET] = FALSE;
@@ -322,9 +333,9 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
     spikesecondselement = 0;
     spikeseconds = 0;
     missilelasttime = NULL;
-    spiketframetime  = NULL;
+    spiketframetime = NULL;
     lastspikeent = NULL;
-    spiketframetimewingie  = NULL;
+    spiketframetimewingie = NULL;
     lastspikeentwingie = NULL;
     gammaHoldIError = 0;
     reactiont = 0;
@@ -340,71 +351,76 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
 
     switch (missionType)
     {
-        case AMIS_BARCAP:
-        case AMIS_BARCAP2:
-            // 2002-03-05 ADDED BY S.G.
-            //These need to attack bombers as well and if OnSweep isn't set, SensorFusion will ignore them
-            maxEngageRange = 45.0F * NM_TO_FT;//me123 from 20
-            missionClass = AAMission;
-            SetATCFlag(OnSweep);
-            break;
+    case AMIS_BARCAP:
+    case AMIS_BARCAP2:
+        // 2002-03-05 ADDED BY S.G.
+        //These need to attack bombers as well and if OnSweep isn't set, SensorFusion will ignore them
+        maxEngageRange = 45.0F * NM_TO_FT; //me123 from 20
+        missionClass = AAMission;
+        SetATCFlag(OnSweep);
+        break;
 
-            // END OF ADDED SECTION 2002-03-05
-        case AMIS_HAVCAP:
-        case AMIS_TARCAP:
-        case AMIS_RESCAP:
-        case AMIS_AMBUSHCAP:
-        case AMIS_NONE:
-            maxEngageRange = 45.0F * NM_TO_FT;//me123 from 20
-            missionClass = AAMission;
-            ClearATCFlag(OnSweep);
-            break;
+        // END OF ADDED SECTION 2002-03-05
+    case AMIS_HAVCAP:
+    case AMIS_TARCAP:
+    case AMIS_RESCAP:
+    case AMIS_AMBUSHCAP:
+    case AMIS_NONE:
+        maxEngageRange = 45.0F * NM_TO_FT; //me123 from 20
+        missionClass = AAMission;
+        ClearATCFlag(OnSweep);
+        break;
 
-        case AMIS_SWEEP:
-            maxEngageRange = 60.0F * NM_TO_FT;//me123 from 80
-            missionClass = AAMission;
-            SetATCFlag(OnSweep);
-            break;
+    case AMIS_SWEEP:
+        maxEngageRange = 60.0F * NM_TO_FT; //me123 from 80
+        missionClass = AAMission;
+        SetATCFlag(OnSweep);
+        break;
 
-        case AMIS_ALERT:
-        case AMIS_INTERCEPT:
-        case AMIS_ESCORT:
-            maxEngageRange = 45.0F * NM_TO_FT;//me123 from 30
-            missionClass = AAMission;
-            ClearATCFlag(OnSweep);
-            break;
+    case AMIS_ALERT:
+    case AMIS_INTERCEPT:
+    case AMIS_ESCORT:
+        maxEngageRange = 45.0F * NM_TO_FT; //me123 from 30
+        missionClass = AAMission;
+        ClearATCFlag(OnSweep);
+        break;
 
-        case AMIS_AIRLIFT:
-            maxEngageRange = 40.0F * NM_TO_FT;//me123 from 10 bvrengage will now crank beam and drag defensive
-            missionClass = AirliftMission;
-            ClearATCFlag(OnSweep);
-            break;
+    case AMIS_AIRLIFT:
+        maxEngageRange =
+            40.0F *
+            NM_TO_FT; //me123 from 10 bvrengage will now crank beam and drag defensive
+        missionClass = AirliftMission;
+        ClearATCFlag(OnSweep);
+        break;
 
-        case AMIS_TANKER:
-        case AMIS_AWACS:
-        case AMIS_JSTAR:
-        case AMIS_ECM:
-        case AMIS_SAR:
-            maxEngageRange = 40.0F * NM_TO_FT;//me123 from 10bvrengage will now crank beam and drag defensive
-            missionClass = SupportMission;
-            ClearATCFlag(OnSweep);
-            break;
+    case AMIS_TANKER:
+    case AMIS_AWACS:
+    case AMIS_JSTAR:
+    case AMIS_ECM:
+    case AMIS_SAR:
+        maxEngageRange =
+            40.0F *
+            NM_TO_FT; //me123 from 10bvrengage will now crank beam and drag defensive
+        missionClass = SupportMission;
+        ClearATCFlag(OnSweep);
+        break;
 
-        default:
-            maxEngageRange = 40.0F * NM_TO_FT;//me123 from 10
-            missionClass = AGMission;
-            ClearATCFlag(OnSweep);
-            // Engage sooner after mission complete
-            // JB 010719 missionComplete has not been initialized yet.
-            //if (missionComplete)
-            //   maxEngageRange *= 1.2F;//me123 from 2.0
-            break;
+    default:
+        maxEngageRange = 40.0F * NM_TO_FT; //me123 from 10
+        missionClass = AGMission;
+        ClearATCFlag(OnSweep);
+        // Engage sooner after mission complete
+        // JB 010719 missionComplete has not been initialized yet.
+        //if (missionComplete)
+        //   maxEngageRange *= 1.2F;//me123 from 2.0
+        break;
     }
 
     // 2002-02-27 ADDED BY S.G.
     // What about flights on egress that deaggregates?
     // Look up their Eval flags and set missionComplete accordingly...
-    if (((FlightClass *)self->GetCampaignObject())->GetEvalFlags() bitand FEVAL_GOT_TO_TARGET)
+    if (((FlightClass*)self->GetCampaignObject())->GetEvalFlags() bitand
+        FEVAL_GOT_TO_TARGET)
     {
         missionComplete = TRUE;
     }
@@ -420,7 +436,8 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
         SetATCFlag(HasTrainable);
     }
 
-    moreFlags = 0; // 2002-03-08 ADDED BY S.G. (Before SelectGroundWeapon which will query it
+    moreFlags =
+        0; // 2002-03-08 ADDED BY S.G. (Before SelectGroundWeapon which will query it
 
     // Check for AG weapons
     if (missionClass == AGMission)
@@ -452,20 +469,21 @@ DigitalBrain::DigitalBrain(AircraftClass *myPlatform, AirframeClass* myAf) : Bas
     // END OF ADDED SECTION
     radarModeTest = 0; // 2002-02-10 ADDED BY S.G.
     // 2002-02-24 MN
-    pullupTimer = 0;//0.0f;
+    pullupTimer = 0; //0.0f;
     tiebreaker = 0;
-    nextFuelCheck = SimLibElapsedTime; // 2002-03-02 MN fix airbase check NOT 0 - set the time here.. aargh...
+    nextFuelCheck =
+        SimLibElapsedTime; // 2002-03-02 MN fix airbase check NOT 0 - set the time here.. aargh...
     airbasediverted = 0;
     //agmergeTimer = SimLibElapsedTime * 60 * SEC_TO_MSEC;
     // RV - Biker - uint should not be -1
     //agmergeTimer = -1; // Cobra - -1 = needs initializing
     agmergeTimer = 0;
     mergeTimer = 0;
-    visDetectTimer = SimLibElapsedTime;//Cobra
+    visDetectTimer = SimLibElapsedTime; //Cobra
     detRWR = 0;
     detRAD = 0;
     detVIS = 0;
-    targetTimer = 0;//Cobra
+    targetTimer = 0; //Cobra
     radModeSelect = 3;
 }
 
@@ -493,7 +511,8 @@ DigitalBrain::~DigitalBrain(void)
         // break;
         // }
         //}
-        vuDatabase->Remove(targetSpotFlight); // Takes care of deleting the allocated memory and the driver allocation as well.
+        vuDatabase->Remove(
+            targetSpotFlight); // Takes care of deleting the allocated memory and the driver allocation as well.
 
         if (targetSpotFlightTarget)
         {
@@ -517,9 +536,10 @@ DigitalBrain::~DigitalBrain(void)
         // break;
         // }
         //}
-        vuDatabase->Remove(targetSpotElement);  // Takes care of deleting the allocated memory and the driver allocation as well.
+        vuDatabase->Remove(
+            targetSpotElement); // Takes care of deleting the allocated memory and the driver allocation as well.
 
-        if (targetSpotElementTarget)  // 2002-03-07 ADDED BY S.G. In case it's NULL. Shouldn't happen but happened
+        if (targetSpotElementTarget) // 2002-03-07 ADDED BY S.G. In case it's NULL. Shouldn't happen but happened
         {
             VuDeReferenceEntity(targetSpotElementTarget);
         }
@@ -540,9 +560,10 @@ DigitalBrain::~DigitalBrain(void)
         // break;
         // }
         //}
-        vuDatabase->Remove(targetSpotWing);  // Takes care of deleting the allocated memory and the driver allocation as well.
+        vuDatabase->Remove(
+            targetSpotWing); // Takes care of deleting the allocated memory and the driver allocation as well.
 
-        if (targetSpotWingTarget)  // 2002-03-07 ADDED BY S.G. In case it's NULL. Shouldn't happen but happened
+        if (targetSpotWingTarget) // 2002-03-07 ADDED BY S.G. In case it's NULL. Shouldn't happen but happened
         {
             VuDeReferenceEntity(targetSpotWingTarget);
         }
@@ -563,7 +584,8 @@ DigitalBrain::~DigitalBrain(void)
     missileFiredEntity = NULL;
 }
 
-void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTarget)
+void DigitalBrain::FrameExec(SimObjectType* curTargetList,
+                             SimObjectType* curTarget)
 {
     maxGs = af->MaxGs();
     maxGs = max(maxGs, 2.5F);
@@ -579,16 +601,17 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
         //af->gearHandle = 1.0F;
 
         self->Eject();
-        rStick = -0.3f;//Roll while the plane dies
+        rStick = -0.3f; //Roll while the plane dies
     }
     else
     {
         // make sure the wheels are up after takeoff
-        if (self->curWaypoint and self->curWaypoint->GetWPAction() not_eq WP_TAKEOFF)
+        if (self->curWaypoint and
+            self->curWaypoint->GetWPAction() not_eq WP_TAKEOFF)
         {
             af->gearHandle = -1.0F;
         }
-        else if ( not self->OnGround())
+        else if (not self->OnGround())
         {
             //Cobra stop Naval aircraft flying around with gear down
             af->gearHandle = -1.0F;
@@ -618,7 +641,8 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
     Actions();
 
     // RV - Biker - Enable shooting missiles if flight lead is AI
-    if (flightLead and not flightLead->IsPlayer() and missileShotTimer >= SimLibElapsedTime + 4.9 * 60 * 60 * SEC_TO_MSEC)
+    if (flightLead and not flightLead->IsPlayer() and
+        missileShotTimer >= SimLibElapsedTime + 4.9 * 60 * 60 * SEC_TO_MSEC)
     {
         missileShotTimer = SimLibElapsedTime;
     }
@@ -652,7 +676,8 @@ void DigitalBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTar
         throtl = 1.5f;
 
     // RV - Biker - Don't allow AB when low on fuel or on ground
-    if (IsSetATC(SaidFumes) or IsSetATC(SaidFlameout) or (self->OnGround() and GetCurrentMode() not_eq TakeoffMode))
+    if (IsSetATC(SaidFumes) or IsSetATC(SaidFlameout) or
+        (self->OnGround() and GetCurrentMode() not_eq TakeoffMode))
     {
         throtl = min(1.0f, throtl);
     }
@@ -700,16 +725,14 @@ void DigitalBrain::SetLead(int flag)
 // Make sure our leader hasn't gone away without telling us.
 void DigitalBrain::CheckLead(void)
 {
-    SimBaseClass *pobj;
+    SimBaseClass* pobj;
     SimBaseClass* newLead = NULL;
 
     BOOL done = FALSE;
     int i = 0;
 
-    if (flightLead and 
-        flightLead->VuState() == VU_MEM_ACTIVE and 
- not flightLead->IsDead()
-       )
+    if (flightLead and flightLead->VuState() == VU_MEM_ACTIVE and
+        not flightLead->IsDead())
     {
         return;
     }
@@ -718,9 +741,10 @@ void DigitalBrain::CheckLead(void)
         VuListIterator cit(self->GetCampaignObject()->GetComponents());
         pobj = (SimBaseClass*)cit.GetFirst();
 
-        while ( not done)
+        while (not done)
         {
-            if (pobj and pobj->VuState() == VU_MEM_ACTIVE and not pobj->IsDead())
+            if (pobj and pobj->VuState() == VU_MEM_ACTIVE and
+                not pobj->IsDead())
             {
                 done = TRUE;
                 newLead = pobj;
@@ -786,7 +810,7 @@ void DigitalBrain::JoinFlight(void)
 
 void DigitalBrain::ReadManeuverData(void)
 {
-    SimlibFileClass *mnvrFile;
+    SimlibFileClass* mnvrFile;
     char fileType;
 
     // Open formation file
@@ -810,7 +834,8 @@ void DigitalBrain::ReadManeuverData(void)
 
             for (int j = 0; j < NumMnvrClasses; ++j)
             {
-                maneuverData[i][j].numIntercepts = (char)atoi(mnvrFile->GetNext());
+                maneuverData[i][j].numIntercepts =
+                    (char)atoi(mnvrFile->GetNext());
 
                 if (maneuverData[i][j].numIntercepts)
                 {
@@ -818,14 +843,15 @@ void DigitalBrain::ReadManeuverData(void)
 #ifdef USE_SH_POOLS
                         (BVRInterceptType*)MemAllocPtr(
                             gReadInMemPool,
-                            sizeof(BVRInterceptType) *maneuverData[i][j].numIntercepts,
-                            0
-                        );
+                            sizeof(BVRInterceptType) *
+                                maneuverData[i][j].numIntercepts,
+                            0);
 #else
                         new BVRInterceptType[maneuverData[i][j].numIntercepts];
 #endif
                 }
-                else maneuverData[i][j].intercept = NULL;
+                else
+                    maneuverData[i][j].intercept = NULL;
 
                 maneuverData[i][j].numMerges = (char)atoi(mnvrFile->GetNext());
 
@@ -835,14 +861,15 @@ void DigitalBrain::ReadManeuverData(void)
 #ifdef USE_SH_POOLS
                         (WVRMergeManeuverType*)MemAllocPtr(
                             gReadInMemPool,
-                            sizeof(WVRMergeManeuverType) *maneuverData[i][j].numMerges,
-                            0
-                        );
+                            sizeof(WVRMergeManeuverType) *
+                                maneuverData[i][j].numMerges,
+                            0);
 #else
                         new WVRMergeManeuverType[maneuverData[i][j].numMerges];
 #endif
                 }
-                else maneuverData[i][j].merge = NULL;
+                else
+                    maneuverData[i][j].merge = NULL;
 
                 maneuverData[i][j].numReacts = (char)atoi(mnvrFile->GetNext());
 
@@ -852,14 +879,15 @@ void DigitalBrain::ReadManeuverData(void)
 #ifdef USE_SH_POOLS
                         (SpikeReactionType*)MemAllocPtr(
                             gReadInMemPool,
-                            sizeof(SpikeReactionType) *maneuverData[i][j].numReacts,
-                            0
-                        );
+                            sizeof(SpikeReactionType) *
+                                maneuverData[i][j].numReacts,
+                            0);
 #else
                         new SpikeReactionType[maneuverData[i][j].numReacts];
 #endif
                 }
-                else maneuverData[i][j].spikeReact = NULL;
+                else
+                    maneuverData[i][j].spikeReact = NULL;
 
                 for (int k = 0; k < maneuverData[i][j].numIntercepts; ++k)
                     maneuverData[i][j].intercept[k] =
@@ -895,15 +923,14 @@ void DigitalBrain::FreeManeuverData(void)
             delete maneuverData[i][j].intercept;
             delete maneuverData[i][j].merge;
             delete maneuverData[i][j].spikeReact;
-            maneuverData[i][j].intercept  = NULL;
-            maneuverData[i][j].merge      = NULL;
+            maneuverData[i][j].intercept = NULL;
+            maneuverData[i][j].merge = NULL;
             maneuverData[i][j].spikeReact = NULL;
         }
     }
-
 }
 
-void DigitalBrain::GetTrackPoint(float &x, float &y, float &z)
+void DigitalBrain::GetTrackPoint(float& x, float& y, float& z)
 {
     x = trackX;
     y = trackY;
@@ -924,9 +951,10 @@ void DigitalBrain::SetTrackPoint(float x, float y, float z)
 }
 */
 
-void DigitalBrain::SetTrackPoint(SimObjectType *object)
+void DigitalBrain::SetTrackPoint(SimObjectType* object)
 {
-    SetTrackPoint(object->BaseData()->XPos(), object->BaseData()->YPos(), object->BaseData()->ZPos());
+    SetTrackPoint(object->BaseData()->XPos(), object->BaseData()->YPos(),
+                  object->BaseData()->ZPos());
 }
 
 
@@ -946,32 +974,39 @@ void DigitalBrain::SetRunwayInfo(VU_ID Airbase, int rwindex, unsigned long time)
 
 void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
 {
-    Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)theObject->EntityType();
+    Falcon4EntityClassType* classPtr =
+        (Falcon4EntityClassType*)theObject->EntityType();
     CampEntity campObj;
     char label[40] = {0};
     long labelColor = 0xff0000ff;
 
-    if ( not theObject->IsExploding() and not theObject->IsDead())
+    if (not theObject->IsExploding() and not theObject->IsDead())
     {
         if (classPtr->dataType == DTYPE_VEHICLE)
         {
-            FlightClass *flight;
+            FlightClass* flight;
             flight = FalconLocalSession->GetPlayerFlight();
             campObj = theObject->GetCampaignObject();
 
-            if (campObj and campObj->IsFlight() /* and not campObj->IsAggregate() and campObj->InPackage()*/
+            if (campObj and
+                campObj
+                    ->IsFlight() /* and not campObj->IsAggregate() and campObj->InPackage()*/
                 // 2001-10-31 M.N. show flight names of our team
-               and flight and flight->GetTeam() == campObj->GetTeam())
+                and flight and flight->GetTeam() == campObj->GetTeam())
             {
                 char temp[40];
-                GetCallsign(((Flight)campObj)->callsign_id, ((Flight)campObj)->callsign_num, temp);
-                sprintf(label, "%s%d", temp, ((SimVehicleClass*)theObject)->vehicleInUnit + 1);
+                GetCallsign(((Flight)campObj)->callsign_id,
+                            ((Flight)campObj)->callsign_num, temp);
+                sprintf(label, "%s%d", temp,
+                        ((SimVehicleClass*)theObject)->vehicleInUnit + 1);
             }
             else
-                sprintf(label, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
+                sprintf(label, "%s",
+                        ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
         }
         else if (classPtr->dataType == DTYPE_WEAPON)
-            sprintf(label, "%s", ((WeaponClassDataType*)(classPtr->dataPtr))->Name);
+            sprintf(label, "%s",
+                    ((WeaponClassDataType*)(classPtr->dataPtr))->Name);
     }
 
     // Change the label to a player, if there is one
@@ -979,7 +1014,7 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
     {
         // Find the player's callsign
         VuSessionsIterator sessionWalker(FalconLocalGame);
-        FalconSessionEntity *session;
+        FalconSessionEntity* session;
 
         session = (FalconSessionEntity*)sessionWalker.GetFirst();
 
@@ -1001,6 +1036,6 @@ void DigitalBrain::ReSetLabel(SimBaseClass* theObject)
     // labelColor = TeamColorList[TeamInfo[theObject->GetTeam()]->GetColor()];
 
     if (theObject->drawPointer)
-        theObject->drawPointer->SetLabel(label, ((DrawableBSP*)theObject->drawPointer)->LabelColor());
-
+        theObject->drawPointer->SetLabel(
+            label, ((DrawableBSP*)theObject->drawPointer)->LabelColor());
 }

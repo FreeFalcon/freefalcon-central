@@ -9,7 +9,7 @@
 #include "unit.h"
 #include "objectiv.h"
 #include "team.h"
-#include "CampList.h"
+#include "camplist.h"
 
 class NavalTaskingManagerClass : public CampManagerClass
 {
@@ -40,7 +40,8 @@ public:
     // core functions
     void Setup(void);
     void Cleanup(void);
-    void SendNTMMessage(VU_ID from, short message, short data1, short data2, VU_ID data3);
+    void SendNTMMessage(VU_ID from, short message, short data1, short data2,
+                        VU_ID data3);
 };
 
 typedef NavalTaskingManagerClass *NavalTaskingManager;

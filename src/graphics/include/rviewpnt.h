@@ -10,9 +10,9 @@
 #define _RVIEWPNT_H_
 
 
-#include "TViewPnt.h"
-#include "ObjList.h"
-#include "Tex.h"
+#include "tviewpnt.h"
+#include "objlist.h"
+#include "tex.h"
 
 typedef struct ObjectListRecord
 {
@@ -32,7 +32,7 @@ public:
     }; //JAM 10Nov03
     ~RViewPoint()
     {
-        ShiAssert( not IsReady());
+        ShiAssert(not IsReady());
     };
 
     void Setup(float gndRange, int maxDetail, int minDetail, bool isZBuffer);
@@ -92,27 +92,27 @@ public:
     void ResetObjectTraversal(void);
     int GetContainingList(float zValue);
 
-    ObjectDisplayList* ObjectsInTerrain(void)
+    ObjectDisplayList *ObjectsInTerrain(void)
     {
         return &objectLists[0].displayList;
     };
-    ObjectDisplayList* ObjectsBelowClouds(void)
+    ObjectDisplayList *ObjectsBelowClouds(void)
     {
         return &objectLists[1].displayList;
     };
-    ObjectDisplayList* Clouds(void)
+    ObjectDisplayList *Clouds(void)
     {
         return &cloudList;
     };
-    ObjectDisplayList* ObjectsInClouds(void)
+    ObjectDisplayList *ObjectsInClouds(void)
     {
         return &objectLists[2].displayList;
     };
-    ObjectDisplayList* ObjectsAboveClouds(void)
+    ObjectDisplayList *ObjectsAboveClouds(void)
     {
         return &objectLists[3].displayList;
     };
-    ObjectDisplayList* ObjectsAboveRoof(void)
+    ObjectDisplayList *ObjectsAboveRoof(void)
     {
         return &objectLists[4].displayList;
     };
@@ -128,7 +128,7 @@ protected:
     int nObjectLists;
     ObjectListRecord *objectLists;
     ObjectDisplayList cloudList;
-    float cloudOpacity;  // 0.0 for no effect, 1.0 when inCloud is TRUE
+    float cloudOpacity; // 0.0 for no effect, 1.0 when inCloud is TRUE
     Tcolor cloudColor;
 
     bool bZBuffering; //JAM 13Dec03

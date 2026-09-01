@@ -4,13 +4,11 @@
 //#include <windows.h>
 
 #include "cpobject.h"
-#include "Graphics/Include/image.h"
+#include "graphics/include/image.h"
 
 #ifdef USE_SH_POOLS
 extern MEM_POOL gCockMemPool;
 #endif
-
-
 
 
 //====================================================//
@@ -28,31 +26,32 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     // kneeboards are shared among all kneeviews
-    KneeBoard* mpKneeBoard;
+    KneeBoard *mpKneeBoard;
 
     //====================================================//
     // Runtime Member Functions
     //====================================================//
 
-    virtual void Exec(SimBaseClass*);
+    virtual void Exec(SimBaseClass *);
     virtual void DisplayBlit(void);
     virtual void DisplayDraw(void);
     virtual void Refresh(SimVehicleClass *platform);
 
-    virtual void Setup(DisplayDevice *device, int top, int left, int bottom, int right);
+    virtual void Setup(DisplayDevice *device, int top, int left, int bottom,
+                       int right);
     virtual void Cleanup(void);
 
     //====================================================//
     // Constructors and Destructors
     //====================================================//
 
-    CPKneeView(ObjectInitStr*, KneeBoard*);
+    CPKneeView(ObjectInitStr *, KneeBoard *);
     virtual ~CPKneeView();
 
     // sfr: moved some information from kneeboard to kneeview to allow
@@ -79,10 +78,10 @@ private:
     void UpdateMapDimensions(SimVehicleClass *platform);
     void DrawMap();
     void DrawWaypoints(SimVehicleClass *platform);
-    void DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *renderer, SimVehicleClass *platform);
+    void DrawCurrentPosition(ImageBuffer *targetBuffer, Render2D *renderer,
+                             SimVehicleClass *platform);
     void MapWaypointToDisplay(WayPointClass *curWaypoint, float *x, float *y);
     // void ApplyLighting(DWORD *inColor, DWORD *outColor);
 };
 
 #endif
-

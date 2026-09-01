@@ -1,4 +1,4 @@
-#include "F4error.h"
+#include "f4error.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -167,15 +167,8 @@ inline ACMIEntityData *ACMITape::EntityData(int index)
     // F4Assert(_tape != NULL);
     // F4Assert(index >= 0 && index < NumEntities());
 
-    return
-        (
-            (ACMIEntityData *)
-            (
-                ((char *)_tape) +
-                sizeof(ACMITapeHeader) +
-                index * sizeof(ACMIEntityData)
-            )
-        );
+    return ((ACMIEntityData *)(((char *)_tape) + sizeof(ACMITapeHeader) +
+                               index * sizeof(ACMIEntityData)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -187,15 +180,8 @@ inline ACMIEntityData *ACMITape::FeatureData(int index)
     // F4Assert(_tape != NULL);
     // F4Assert(index >= 0 && index < _tapeHdr.numFeat);
 
-    return
-        (
-            (ACMIEntityData *)
-            (
-                ((char *)_tape) +
-                _tapeHdr.featBlockOffset +
-                index * sizeof(ACMIEntityData)
-            )
-        );
+    return ((ACMIEntityData *)(((char *)_tape) + _tapeHdr.featBlockOffset +
+                               index * sizeof(ACMIEntityData)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -204,8 +190,7 @@ inline ACMIEntityData *ACMITape::FeatureData(int index)
 
 inline ACMIEntityPositionData *ACMITape::CurrentFeaturePositionHead(int index)
 {
-    long
-    positionOffset;
+    long positionOffset;
     ACMIEntityPositionData *pd;
     ACMIEntityData *e;
 
@@ -215,13 +200,10 @@ inline ACMIEntityPositionData *ACMITape::CurrentFeaturePositionHead(int index)
     e = FeatureData(index);
 
     positionOffset = e->firstPositionDataOffset;
-    pd = positionOffset == 0 ? NULL : (ACMIEntityPositionData *)
-         (
-             ((char *)_tape) +
-             positionOffset
-         );
+    pd = positionOffset == 0 ?
+             NULL :
+             (ACMIEntityPositionData *)(((char *)_tape) + positionOffset);
     return pd;
-
 }
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
@@ -229,8 +211,7 @@ inline ACMIEntityPositionData *ACMITape::CurrentFeaturePositionHead(int index)
 
 inline ACMIEntityPositionData *ACMITape::CurrentEntityPositionHead(int index)
 {
-    long
-    positionOffset;
+    long positionOffset;
     ACMIEntityPositionData *pd;
 
     // F4Assert(_tape != NULL);
@@ -238,13 +219,10 @@ inline ACMIEntityPositionData *ACMITape::CurrentEntityPositionHead(int index)
     // F4Assert(index >= 0 && index < NumEntities());
 
     positionOffset = _entityReadHeads[index].positionDataOffset;
-    pd = positionOffset == 0 ? NULL : (ACMIEntityPositionData *)
-         (
-             ((char *)_tape) +
-             positionOffset
-         );
+    pd = positionOffset == 0 ?
+             NULL :
+             (ACMIEntityPositionData *)(((char *)_tape) + positionOffset);
     return pd;
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -253,8 +231,7 @@ inline ACMIEntityPositionData *ACMITape::CurrentEntityPositionHead(int index)
 
 inline ACMIEntityPositionData *ACMITape::CurrentEntityEventHead(int index)
 {
-    long
-    positionOffset;
+    long positionOffset;
     ACMIEntityPositionData *pd;
 
     // F4Assert(_tape != NULL);
@@ -262,61 +239,55 @@ inline ACMIEntityPositionData *ACMITape::CurrentEntityEventHead(int index)
     // F4Assert(index >= 0 && index < NumEntities());
 
     positionOffset = _entityReadHeads[index].eventDataOffset;
-    pd = positionOffset == 0 ? NULL : (ACMIEntityPositionData *)
-         (
-             ((char *)_tape) +
-             positionOffset
-         );
+    pd = positionOffset == 0 ?
+             NULL :
+             (ACMIEntityPositionData *)(((char *)_tape) + positionOffset);
     return pd;
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline ACMIEntityPositionData *ACMITape::HeadNext(ACMIEntityPositionData *current)
+inline ACMIEntityPositionData *
+ACMITape::HeadNext(ACMIEntityPositionData *current)
 {
-    long
-    positionOffset;
+    long positionOffset;
     ACMIEntityPositionData *pd;
 
     // F4Assert(_tape != NULL);
     // F4Assert(_entityReadHeads != NULL);
 
-    if (current == NULL) return NULL;
+    if (current == NULL)
+        return NULL;
 
     positionOffset = current->nextPositionUpdateOffset;
-    pd = positionOffset == 0 ? NULL : (ACMIEntityPositionData *)
-         (
-             ((char *)_tape) +
-             positionOffset
-         );
+    pd = positionOffset == 0 ?
+             NULL :
+             (ACMIEntityPositionData *)(((char *)_tape) + positionOffset);
     return pd;
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-inline ACMIEntityPositionData *ACMITape::HeadPrev(ACMIEntityPositionData *current)
+inline ACMIEntityPositionData *
+ACMITape::HeadPrev(ACMIEntityPositionData *current)
 {
-    long
-    positionOffset;
+    long positionOffset;
     ACMIEntityPositionData *pd;
 
     // F4Assert(_tape != NULL);
     // F4Assert(_entityReadHeads != NULL);
 
-    if (current == NULL) return NULL;
+    if (current == NULL)
+        return NULL;
 
     positionOffset = current->prevPositionUpdateOffset;
-    pd = positionOffset == 0 ? NULL : (ACMIEntityPositionData *)
-         (
-             ((char *)_tape) +
-             positionOffset
-         );
+    pd = positionOffset == 0 ?
+             NULL :
+             (ACMIEntityPositionData *)(((char *)_tape) + positionOffset);
     return pd;
 }
 
@@ -326,8 +297,7 @@ inline ACMIEntityPositionData *ACMITape::HeadPrev(ACMIEntityPositionData *curren
 
 inline ACMIEventHeader *ACMITape::GetGeneralEventData(int i)
 {
-    ACMIEventHeader
-    *result;
+    ACMIEventHeader *result;
 
     // F4Assert(_tape != NULL);
 
@@ -337,12 +307,9 @@ inline ACMIEventHeader *ACMITape::GetGeneralEventData(int i)
     }
     else
     {
-        result = (ACMIEventHeader *)
-                 (
-                     ((char *)_tape) +
-                     _tapeHdr.firstGeneralEventOffset +
-                     sizeof(ACMIEventHeader) * i
-                 );
+        result = (ACMIEventHeader *)(((char *)_tape) +
+                                     _tapeHdr.firstGeneralEventOffset +
+                                     sizeof(ACMIEventHeader) * i);
 
         return result;
     }
@@ -357,7 +324,6 @@ inline ACMIEventHeader *ACMITape::GeneralEventData(void)
     // F4Assert(_tape != NULL);
 
     return GetGeneralEventData(_generalEventReadHeadHeader);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +340,6 @@ inline ACMIEventHeader *ACMITape::Next(ACMIEventHeader *current)
     }
 
     return GetGeneralEventData(current->index + 1);
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -401,8 +366,7 @@ inline ACMIEventTrailer *ACMITape::GeneralEventTrailer(void)
 {
     // F4Assert(_tape != NULL);
 
-    return  _generalEventReadHeadTrailer;
-
+    return _generalEventReadHeadTrailer;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -419,8 +383,7 @@ inline ACMIEventTrailer *ACMITape::Next(ACMIEventTrailer *current)
     }
 
 
-    return  current + 1;
-
+    return current + 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -452,8 +415,7 @@ inline ACMIFeatEvent *ACMITape::CurrFeatEvent(void)
 {
     // F4Assert(_tape != NULL);
 
-    return  _featEventReadHead;
-
+    return _featEventReadHead;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -470,8 +432,7 @@ inline ACMIFeatEvent *ACMITape::Next(ACMIFeatEvent *current)
     }
 
 
-    return  current + 1;
-
+    return current + 1;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -493,4 +454,3 @@ inline ACMIFeatEvent *ACMITape::Prev(ACMIFeatEvent *current)
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-

@@ -1,7 +1,7 @@
 #include "f4vu.h"
 #include "fsound.h"
 #include "falcsnd\voicemanager.h"
-#include "CmpClass.h"
+#include "cmpclass.h"
 #include "flight.h"
 #include "sim\include\simdrive.h"
 #define _WIN32_DCOM
@@ -11,7 +11,7 @@
 // #include <dplobby8.h>
 // #include <dvoice.h>
 #ifndef DPNID
-typedef DWORD DPNID;	// DirectPlay8 player id (was in dplay8.h)
+typedef DWORD DPNID; // DirectPlay8 player id (was in dplay8.h)
 #endif
 #include "debuggr.h"
 
@@ -21,13 +21,19 @@ typedef DWORD DPNID;	// DirectPlay8 player id (was in dplay8.h)
 //-----------------------------------------------------------------------------
 // Function-prototypes
 //-----------------------------------------------------------------------------
-HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PVOID pMsgBuffer);
-HRESULT WINAPI LobbyAppMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PVOID pMsgBuffer);
-HRESULT WINAPI DirectVoiceServerMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PVOID pMsgBuffer);
-HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext, DWORD dwMessageId, PVOID pMsgBuffer);
+HRESULT WINAPI DirectPlayMessageHandler(PVOID pvUserContext, DWORD dwMessageId,
+                                        PVOID pMsgBuffer);
+HRESULT WINAPI LobbyAppMessageHandler(PVOID pvUserContext, DWORD dwMessageId,
+                                      PVOID pMsgBuffer);
+HRESULT WINAPI DirectVoiceServerMessageHandler(PVOID pvUserContext,
+                                               DWORD dwMessageId,
+                                               PVOID pMsgBuffer);
+HRESULT WINAPI DirectVoiceClientMessageHandler(PVOID pvUserContext,
+                                               DWORD dwMessageId,
+                                               PVOID pMsgBuffer);
 
-BOOL    IsServiceProviderValid(const GUID* pGuidSP);
-void StopVoice ();
+BOOL IsServiceProviderValid(const GUID* pGuidSP);
+void StopVoice();
 HRESULT InitDirectPlay();
 HRESULT InitDirectPlayVoice();
 HRESULT CreateDeviceAddress();
@@ -40,18 +46,22 @@ HRESULT Register();
 HRESULT UnRegister();
 HRESULT LobbyLaunch();
 HRESULT TestDirectVoice();
-HWND    GetConsoleHwnd();
-void    CleanupDirectPlay();
-int main(char* ip);
+HWND GetConsoleHwnd();
+void CleanupDirectPlay();
+// NB: this was literally named `main` -- clang forbids a namespace-scope `main` with a non-standard signature
+// (it is reserved for the program entry point). Renamed to VoiceMain; it is a never-called DirectPlay-voice stub.
+int VoiceMain(char* ip);
 void CreateGroup(unsigned long freq);
-void SetListenFreqsHost (DPNID playerid,unsigned long com1,unsigned long com2,unsigned long guard);
-void SetListenFreqsClient (unsigned long com1,unsigned long com2,unsigned long guard);
-void TransmistoFreq (unsigned long freq);
+void SetListenFreqsHost(DPNID playerid, unsigned long com1, unsigned long com2,
+                        unsigned long guard);
+void SetListenFreqsClient(unsigned long com1, unsigned long com2,
+                          unsigned long guard);
+void TransmistoFreq(unsigned long freq);
 void Transmit(int com);
 void RefreshVoiceFreqs(void);
-void startupvoice (char*);
+void startupvoice(char*);
 
-void DirectVoiceSetVolume(int Channel=0); // only 1 channel // MLR 1/29/2004 - 
+void DirectVoiceSetVolume(int Channel = 0); // only 1 channel // MLR 1/29/2004 -
 
 
 /*VOID DXUtil_ConvertWideStringToGeneric( TCHAR* tstrDestination, const WCHAR* wstrSource, int cchDestChar = -1 );
@@ -64,10 +74,10 @@ VOID DXUtil_ConvertWideStringToAnsi( CHAR* strDestination, const WCHAR* wstrSour
 #define SAFE_DELETE_ARRAY(p)    {if(p) {delete[] (p);   (p)=NULL;}}
 #define SAFE_RELEASE(p)         {if(p) {(p)->Release(); (p)=NULL;}}
 */
-#define USER_HOST       1
-#define USER_CONNECT    2
-#define USER_EXIT       1
-#define USER_SEND       2
+#define USER_HOST 1
+#define USER_CONNECT 2
+#define USER_EXIT 1
+#define USER_SEND 2
 
-#define CMDLINE_REGISTER    "register"
-#define CMDLINE_UNREGISTER  "unregister"
+#define CMDLINE_REGISTER "register"
+#define CMDLINE_UNREGISTER "unregister"

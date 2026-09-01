@@ -6,11 +6,11 @@
     This class provides 2D drawing functions for a Hercules monochrome
  display.
 \***************************************************************************/
-#include <cISO646>
-#include "portio_compat.h"	// _outp/_outpw (removed from the CRT)
+#include <ciso646>
+#include "portio_compat.h" // _outp/_outpw (removed from the CRT)
 #include <conio.h>
 #include <math.h>
-#include "Mono2D.h"
+#include "mono2d.h"
 
 
 /***************************************************************************\
@@ -24,16 +24,18 @@
 #define FRAME_BUFFER_ADDR 0xB0000
 
 // Hardware intialization settings
-static int graph_settings[] = { 53, 45, 46,  7, 91, 2, 87, 87, 2,  3,  0,  0, 0, 0, 0, 0 };
-static int text_settings[]  = { 97, 80, 82, 15, 25, 6, 25, 25, 2, 13, 11, 12, 0, 0, 0, 0 };
+static int graph_settings[] = {53, 45, 46, 7, 91, 2, 87, 87,
+                               2,  3,  0,  0, 0,  0, 0,  0};
+static int text_settings[] = {97, 80, 82, 15, 25, 6, 25, 25,
+                              2,  13, 11, 12, 0,  0, 0,  0};
 
 // Macros for writing data to hardware I/O ports
 #ifdef _MSC_VER
 #define OUT_BYTE(a, b) _outp((a), (b))
-#define OUT_WORD(a, b) _outpw ((a), (b))
+#define OUT_WORD(a, b) _outpw((a), (b))
 #else
 #define OUT_BYTE(a, b) outp((a), (b))
-#define OUT_WORD(a, b) outpw ((a), (b))
+#define OUT_WORD(a, b) outpw((a), (b))
 #endif
 
 // Offscreen drawing buffer management stuff
@@ -67,8 +69,8 @@ void MonochromeDisplay::Setup(void)
     {
 
         // Allocate memory for our offscreen buffers
-        screen_buffer[0] = new char[ 0x8000 ];
-        screen_buffer[1] = new char[ 0x8000 ];
+        screen_buffer[0] = new char[0x8000];
+        screen_buffer[1] = new char[0x8000];
 
         // Clear both of the drawing buffers
         page = 0;
@@ -79,7 +81,6 @@ void MonochromeDisplay::Setup(void)
 }
 
 
-
 /***************************************************************************\
     Shutdown the display.
 \***************************************************************************/
@@ -123,7 +124,6 @@ void MonochromeDisplay::Cleanup(void)
 }
 
 
-
 /***************************************************************************\
     Clear the display to black.
 \***************************************************************************/
@@ -137,7 +137,6 @@ void MonochromeDisplay::ClearDraw(void)
 }
 
 
-
 /***************************************************************************\
    Copy the drawing buffer to the display.
 \***************************************************************************/
@@ -150,9 +149,11 @@ void MonochromeDisplay::EndDraw(void)
         {
 
             // Copy only those bytes which have changed (since display is accross the slow ISA bus)
-            if (*((char *)(screen_buffer[page] + i)) not_eq *((char *)(screen_buffer[1 - page] + i)))
+            if (*((char *)(screen_buffer[page] + i)) not_eq
+                *((char *)(screen_buffer[1 - page] + i)))
             {
-                *((char *)(FRAME_BUFFER_ADDR + i)) = *((char *)(screen_buffer[page] + i));
+                *((char *)(FRAME_BUFFER_ADDR + i)) =
+                    *((char *)(screen_buffer[page] + i));
             }
         }
     }
@@ -162,7 +163,6 @@ void MonochromeDisplay::EndDraw(void)
 }
 
 
-
 /***************************************************************************\
  Put a pixel on the display.
 \***************************************************************************/
@@ -177,14 +177,13 @@ void MonochromeDisplay::Render2DPoint(float x, float y)
     y1 = FloatToInt32(y);
 
     the_byte = 0x2000 * (y1 bitand 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
-    the_bit  = 7 - (x1 bitand 0x7);
+    the_bit = 7 - (x1 bitand 0x7);
 
-    currentValue   = (char *)(screen_buffer[page] + the_byte);
+    currentValue = (char *)(screen_buffer[page] + the_byte);
     *currentValue or_eq (char)(1 << the_bit);
 }
 
 
-
 /***************************************************************************\
  Put a pixel on the display.
 \***************************************************************************/
@@ -195,18 +194,18 @@ void MonochromeDisplay::Render2DPoint(int x1, int y1)
     char *currentValue;
 
     the_byte = 0x2000 * (y1 bitand 0x3) + 90 * (y1 >> 2) + (x1 >> 3);
-    the_bit  = 7 - (x1 bitand 0x7);
+    the_bit = 7 - (x1 bitand 0x7);
 
-    currentValue   = (char *)(screen_buffer[page] + the_byte);
+    currentValue = (char *)(screen_buffer[page] + the_byte);
     *currentValue or_eq (char)(1 << the_bit);
 }
 
 
-
 /***************************************************************************\
  Put a straight line on the display.
 \***************************************************************************/
-void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y1in)
+void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in,
+                                     float y1in)
 {
     int x0, y0, x1, y1;
     int dx, dy, ince, incne, d, x, y, pixcount;
@@ -248,17 +247,17 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             if (d <= 0)
             {
                 d += ince;
-                x ++;
+                x++;
             }
             else
             {
                 d += incne;
-                x ++;
-                y ++;
+                x++;
+                y++;
             }
 
             MonochromeDisplay::Render2DPoint(x, y);
-            pixcount ++;
+            pixcount++;
         }
     }
     else if (dy < 0 and -dy < dx)
@@ -272,17 +271,17 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             if (d <= 0)
             {
                 d += ince;
-                x ++;
+                x++;
             }
             else
             {
                 d += incne;
-                x ++;
-                y --;
+                x++;
+                y--;
             }
 
             MonochromeDisplay::Render2DPoint(x, y);
-            pixcount ++;
+            pixcount++;
         }
     }
     else if (dx >= 0 and dy >= 0)
@@ -297,17 +296,17 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             if (d <= 0)
             {
                 d += ince;
-                y ++;
+                y++;
             }
             else
             {
-                x ++;
+                x++;
                 d += incne;
-                y ++;
+                y++;
             }
 
             MonochromeDisplay::Render2DPoint(x, y);
-            pixcount ++;
+            pixcount++;
         }
     }
     else
@@ -322,27 +321,26 @@ void MonochromeDisplay::Render2DLine(float x0in, float y0in, float x1in, float y
             if (d <= 0)
             {
                 d += ince;
-                y --;
+                y--;
             }
             else
             {
                 d += incne;
-                y --;
-                x ++;
+                y--;
+                x++;
             }
 
             MonochromeDisplay::Render2DPoint(x, y);
-            pixcount ++;
+            pixcount++;
         }
     }
 }
 
 
-
 //
 // Use these with caution -- they will disrupt normal use of the graphics function above
 //
-
+
 /***************************************************************************\
  Put the hardware into text only mode ( 8 x 25 characters )
 \***************************************************************************/
@@ -366,7 +364,6 @@ void MonochromeDisplay::EnterTextOnlyMode(void)
 }
 
 
-
 /***************************************************************************\
  Put the display back into the expected graphics mode
 \***************************************************************************/
@@ -381,7 +378,7 @@ void MonochromeDisplay::LeaveTextOnlyMode(void)
     if (enabled)
     {
         // Select graphics mode
-        OUT_BYTE(CONFIG_REG,  0x3);
+        OUT_BYTE(CONFIG_REG, 0x3);
 
         for (int i = 0; i < 16; i++)
         {
@@ -399,7 +396,6 @@ void MonochromeDisplay::LeaveTextOnlyMode(void)
 }
 
 
-
 /***************************************************************************\
  Clear the display while in text only mode
 \***************************************************************************/
@@ -415,13 +411,12 @@ void MonochromeDisplay::ClearTextOnly(void)
 }
 
 
-
 /***************************************************************************\
  Put a string on the display in a fashion similar to "printf()"
 \***************************************************************************/
 void MonochromeDisplay::PrintTextOnly(char *string, ...)
 {
-    va_list params;   /* watcom manual 'Library' p.470 */
+    va_list params; /* watcom manual 'Library' p.470 */
     unsigned char *addr;
     int i = 0;
     int check;
@@ -462,11 +457,10 @@ void MonochromeDisplay::PrintTextOnly(char *string, ...)
 }
 
 
-
 /***************************************************************************\
  Do the processing for a line wrap in text only mode (includes scrolling)
 \***************************************************************************/
-unsigned char * MonochromeDisplay::NewLineTextOnly(void)
+unsigned char *MonochromeDisplay::NewLineTextOnly(void)
 {
     // Update the current text output location
     textX = 0;
@@ -479,7 +473,8 @@ unsigned char * MonochromeDisplay::NewLineTextOnly(void)
         if (enabled)
         {
             // Copy the lower 24 lines of the display up one line
-            memmove((void *)FRAME_BUFFER_ADDR, (void *)(FRAME_BUFFER_ADDR + 160), (160 * 24));
+            memmove((void *)FRAME_BUFFER_ADDR,
+                    (void *)(FRAME_BUFFER_ADDR + 160), (160 * 24));
 
             // Clear the bottom (25th) line of the display
             memset((void *)(FRAME_BUFFER_ADDR + (160 * 24)), 0, 160);
@@ -490,6 +485,5 @@ unsigned char * MonochromeDisplay::NewLineTextOnly(void)
     }
 
     // Return the address of the new "current point" for text to be written upon
-    return((unsigned char *)(textY * 160 + textX * 2 + FRAME_BUFFER_ADDR));
+    return ((unsigned char *)(textY * 160 + textX * 2 + FRAME_BUFFER_ADDR));
 }
-

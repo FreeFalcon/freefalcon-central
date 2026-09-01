@@ -4,8 +4,8 @@
 
 class C_Window;
 
-#pragma warning (push)
-#pragma warning (disable : 4100)
+#pragma warning(push)
+#pragma warning(disable : 4100)
 
 typedef struct
 {
@@ -28,6 +28,7 @@ public:
         CSB_IS_PTR,
         CSB_IS_CLEANUP_PTR,
     };
+
 protected:
     enum
     {
@@ -164,9 +165,15 @@ public:
         w_ = w;
         h_ = h;
     }
-    virtual void SetRelX(long x) {}
-    virtual void SetRelY(long y) {}
-    virtual void SetRelXY(long x, long y) {}
+    virtual void SetRelX(long x)
+    {
+    }
+    virtual void SetRelY(long y)
+    {
+    }
+    virtual void SetRelXY(long x, long y)
+    {
+    }
     void EnableGroup(long ID)
     {
         SetFlags(Flags_ bitand compl C_BIT_INVISIBLE);
@@ -186,179 +193,220 @@ public:
     void SetUserNumber(long idx, long value);
     void SetUserPtr(long idx, void *value);
     void SetUserCleanupPtr(long idx, void *value);
-    virtual void SetState(short state) {}
-    virtual void SetHotKey(short key) {}
-    virtual void SetMenu(long ID) {}
-    virtual void SetFont(long ID) {}
-    virtual void SetSound(long ID, short type) {}
-    virtual void SetCursorID(long id) {}
-    virtual void SetDragCursorID(long id) {}
-    virtual void SetHelpText(long id) {}
-    virtual void SetMouseOver(short state) {}
-    virtual void SetMouseOverColor(COLORREF color) {}
-    virtual void SetMouseOverPerc(short perc) {}
-    virtual void SetCallback(void (*cb)(long, short, C_Base*)) {}
+    virtual void SetState(short state)
+    {
+    }
+    virtual void SetHotKey(short key)
+    {
+    }
+    virtual void SetMenu(long ID)
+    {
+    }
+    virtual void SetFont(long ID)
+    {
+    }
+    virtual void SetSound(long ID, short type)
+    {
+    }
+    virtual void SetCursorID(long id)
+    {
+    }
+    virtual void SetDragCursorID(long id)
+    {
+    }
+    virtual void SetHelpText(long id)
+    {
+    }
+    virtual void SetMouseOver(short state)
+    {
+    }
+    virtual void SetMouseOverColor(COLORREF color)
+    {
+    }
+    virtual void SetMouseOverPerc(short perc)
+    {
+    }
+    virtual void SetCallback(void (*cb)(long, short, C_Base *))
+    {
+    }
 
     // Querry Functions
-    long  GetID()
+    long GetID()
     {
-        return(ID_);
+        return (ID_);
     }
     short GetType()
     {
-        return(Type_);
+        return (Type_);
     }
     short _GetCType_()
     {
-        return(_CType_);
+        return (_CType_);
     }
-    long  GetGroup()
+    long GetGroup()
     {
-        return(Section_[_GROUP_]);
+        return (Section_[_GROUP_]);
     }
-    long  GetCluster()
+    long GetCluster()
     {
-        return(Section_[_CLUSTER_]);
+        return (Section_[_CLUSTER_]);
     }
-    long  GetFlags()
+    long GetFlags()
     {
-        return(Flags_);
+        return (Flags_);
     }
     short GetClient()
     {
-        return(Client_);
+        return (Client_);
     }
     long GetX()
     {
-        return(x_);
+        return (x_);
     }
     long GetY()
     {
-        return(y_);
+        return (y_);
     }
     long GetW()
     {
-        return(w_);
+        return (w_);
     }
     long GetH()
     {
-        return(h_);
+        return (h_);
     }
-    long  GetUserNumber(long idx);
+    long GetUserNumber(long idx);
     void *GetUserPtr(long idx);
     virtual long GetRelX()
     {
-        return(0);
+        return (0);
     }
     virtual long GetRelY()
     {
-        return(0);
+        return (0);
     }
     C_Window *GetParent()
     {
-        return(Parent_);
+        return (Parent_);
     }
-    short  Ready()
+    short Ready()
     {
-        return(Ready_);
+        return (Ready_);
     }
     virtual short GetState()
     {
-        return(0);
+        return (0);
     }
     virtual short GetHotKey()
     {
-        return(0);
+        return (0);
     }
-    virtual long  GetMenu()
+    virtual long GetMenu()
     {
-        return(0);
+        return (0);
     }
-    virtual long  GetFont()
+    virtual long GetFont()
     {
-        return(0);
+        return (0);
     }
-    virtual long  GetHelpText()
+    virtual long GetHelpText()
     {
-        return(0);
+        return (0);
     }
     virtual SOUND_RES *GetSound(short Type)
     {
-        return(NULL);
+        return (NULL);
     }
     virtual short GetMouseOver()
     {
-        return(0);
+        return (0);
     }
-    virtual long  GetCursorID()
+    virtual long GetCursorID()
     {
-        return(0);
+        return (0);
     }
-    virtual long  GetDragCursorID()
+    virtual long GetDragCursorID()
     {
-        return(0);
+        return (0);
     }
-    virtual void (*GetCallback())(long, short, C_Base*)
+    virtual void (*GetCallback())(long, short, C_Base *)
     {
-        return(NULL);
+        return (NULL);
     }
 
     // Other Functions
     virtual BOOL IsBase()
     {
-        return(TRUE);
+        return (TRUE);
     }
     virtual BOOL IsControl()
     {
-        return(FALSE);
+        return (FALSE);
     }
-    virtual void Refresh() {}
-    virtual void Draw(SCREEN *surface, UI95_RECT *cliprect) {}
-    virtual void HighLite(SCREEN *surface, UI95_RECT *cliprect) {}
-    virtual void SetSubParents(C_Window *Parent) {}
-    virtual void Cleanup() {}
+    virtual void Refresh()
+    {
+    }
+    virtual void Draw(SCREEN *surface, UI95_RECT *cliprect)
+    {
+    }
+    virtual void HighLite(SCREEN *surface, UI95_RECT *cliprect)
+    {
+    }
+    virtual void SetSubParents(C_Window *Parent)
+    {
+    }
+    virtual void Cleanup()
+    {
+    }
     virtual BOOL TimerUpdate()
     {
-        return(FALSE);
+        return (FALSE);
     }
-    virtual void Activate() {}
-    virtual void Deactivate() {}
+    virtual void Activate()
+    {
+    }
+    virtual void Deactivate()
+    {
+    }
     virtual long CheckHotSpots(long relx, long rely)
     {
-        return(0);
+        return (0);
     }
-    virtual BOOL CheckKeyboard(uchar DKScanCode, uchar Ascii, uchar ShiftStates, long RepeatCount)
+    virtual BOOL CheckKeyboard(uchar DKScanCode, uchar Ascii, uchar ShiftStates,
+                               long RepeatCount)
     {
-        return(FALSE);
+        return (FALSE);
     }
     virtual BOOL Process(long ID, short HitType)
     {
-        return(FALSE);
+        return (FALSE);
     }
     virtual BOOL CloseWindow()
     {
-        return(FALSE);
+        return (FALSE);
     }
     virtual BOOL MouseOver(long relX, long relY, C_Base *me)
     {
-        return(FALSE);
+        return (FALSE);
     }
     virtual C_Base *GetMe()
     {
-        return(this);
+        return (this);
     }
     virtual BOOL Dragable(long ID)
     {
-        return(FALSE);
+        return (FALSE);
     }
-    virtual void GetItemXY(long ID, long *x, long *y) {}
+    virtual void GetItemXY(long ID, long *x, long *y)
+    {
+    }
     virtual BOOL Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     {
-        return(FALSE);
+        return (FALSE);
     }
     virtual BOOL Drop(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     {
-        return(FALSE);
+        return (FALSE);
     }
     /** sfr: wheel handler
     * @param increments +1 of positive movement, -1 for negative
@@ -373,9 +421,10 @@ public:
 #ifdef _UI95_PARSER_
     virtual short LocalFind(char *str)
     {
-        return(-1);    // Search local token list
+        return (-1);    // Search local token list
     }
-    virtual void LocalFunction(short ID, long P[], _TCHAR *str, C_Handler *Hndlr) {};
+    virtual void LocalFunction(short ID, long P[], _TCHAR *str,
+                               C_Handler *Hndlr) {};
     virtual void SaveText(HANDLE ofp, C_Parser *Parser) {};
 
     short BaseFind(char *token);
@@ -384,6 +433,6 @@ public:
 #endif // parser
 };
 
-#pragma warning (pop)
+#pragma warning(pop)
 
 #endif

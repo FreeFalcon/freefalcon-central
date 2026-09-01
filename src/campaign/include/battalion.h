@@ -2,7 +2,7 @@
 #ifndef BATTALION_H
 #define BATTALION_H
 
-#include "Gndunit.h"
+#include "gndunit.h"
 
 //#define BAT_PLAN_AHEAD 16
 
@@ -22,7 +22,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -37,8 +38,8 @@ public:
 
 private:
     Percentage supply; // Unit statistics
-    Percentage      fatigue;
-    Percentage      morale;
+    Percentage fatigue;
+    Percentage morale;
     uchar final_heading; // Unit facing, at destination
     uchar heading; // Formation heading
     uchar fullstrength; // Number of vehicles at fullstrength
@@ -48,7 +49,8 @@ private:
     uchar missiles_flying; // Number of missiles being guided
     VU_TIME SEARCHtimer;
     VU_TIME AQUIREtimer;
-    uchar step_search_mode; // 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
+    uchar
+        step_search_mode; // 2002-03-04 ADDED BY S.G. The search mode used by radar stepping
 
     int dirty_battalion;
     CampaignTime last_resupply_time; // Last time this unit received supplies
@@ -58,7 +60,8 @@ public:
     CampaignTime last_combat; // Last time this entity fired its weapons
     VU_ID parent_id; // Brigade parent, if present
     VU_ID last_obj; // The last objective this unit visited
-    VU_ID air_target; // The ID of any air target (in addition to regular target)
+    VU_ID
+    air_target; // The ID of any air target (in addition to regular target)
 #ifdef USE_FLANKS
     GridIndex lfx, lfy; // Left flank
     GridIndex rfx, rfy; // Right flank
@@ -66,7 +69,8 @@ public:
     // sfr: changed to pointer, because of stream functions
     SmallPathClass *path; // The unit's path
     // uchar           element;      // Unit's position
-    UnitDeaggregationData *deag_data; // Position data of previously deaggregated elements
+    UnitDeaggregationData
+        *deag_data; // Position data of previously deaggregated elements
 
 public:
     // constructors and serial functions
@@ -74,8 +78,10 @@ public:
     BattalionClass(VU_BYTE **stream, long *rem);
     virtual ~BattalionClass();
     virtual void InitData();
+
 private:
     void InitLocalData(Unit parent);
+
 public:
     virtual int SaveSize(void);
     virtual int Save(VU_BYTE **stream);
@@ -103,7 +109,7 @@ public:
     // Required pure virtuals handled by BattalionClass
     virtual int MoveUnit(CampaignTime time);
     virtual int DoCombat(void);
-    virtual UnitDeaggregationData* GetUnitDeaggregationData(void);
+    virtual UnitDeaggregationData *GetUnitDeaggregationData(void);
     virtual void ClearDeaggregationData(void);
     virtual int GetDeaggregationPoint(int slot, CampEntity *ent);
     virtual int Reaction(CampEntity what, int zone, float range);
@@ -133,7 +139,8 @@ public:
     virtual int GetUnitFuelNeed(int total);
     virtual void SupplyUnit(int supply, int fuel);
     virtual int GetDetectionRange(int mt); // Takes into account emitter status
-    virtual int GetElectronicDetectionRange(int mt); // Max Electronic detection range, even if turned off
+    virtual int GetElectronicDetectionRange(
+        int mt); // Max Electronic detection range, even if turned off
     virtual int GetRadarMode(void)
     {
         return radar_mode;
@@ -158,11 +165,14 @@ public:
     }
     // virtual void SetSearchMode (int mode) { step_search_mode = search_mode = mode; } // 2002-03-22 MODIFIED BY S.G. Init our step_search_mode as well
     virtual int CanShootWeapon(int wid);
-    virtual int StepRadar(int t, int d, float range);  //me123 modifyed to take tracking/detection range parameter
+    virtual int StepRadar(
+        int t, int d,
+        float
+            range); //me123 modifyed to take tracking/detection range parameter
     virtual int GetVehicleDeagData(SimInitDataClass *simdata, int remote);
     virtual int GetMissilesFlying(void)
     {
-        return missiles_flying;    //me123
+        return missiles_flying; //me123
     }
 
     // core functions
@@ -210,7 +220,9 @@ public:
     virtual CampaignTime GetMoveTime(void);
     virtual CampaignTime GetCombatTime(void)
     {
-        return (TheCampaign.CurrentTime > last_combat) ? TheCampaign.CurrentTime - last_combat : 0;
+        return (TheCampaign.CurrentTime > last_combat) ?
+                   TheCampaign.CurrentTime - last_combat :
+                   0;
     }
     virtual Unit GetUnitParent() const
     {
@@ -224,14 +236,16 @@ public:
     {
         return air_target;
     }
-    virtual FalconEntity* GetAirTarget(void)
+    virtual FalconEntity *GetAirTarget(void)
     {
-        return (FalconEntity*)vuDatabase->Find(air_target);
+        return (FalconEntity *)vuDatabase->Find(air_target);
     }
     virtual void SetAirTarget(FalconEntity *t)
     {
-        if (t) air_target = t->Id();
-        else air_target = FalconNullId;
+        if (t)
+            air_target = t->Id();
+        else
+            air_target = FalconNullId;
     }
     void IncrementMissileCount(void)
     {
@@ -242,7 +256,8 @@ public:
     {
         missiles_flying--;
 
-        if (missiles_flying == 0) ReturnToSearch();
+        if (missiles_flying == 0)
+            ReturnToSearch();
 
         ShiAssert(missiles_flying >= 0);
     }
@@ -326,8 +341,8 @@ public:
     // END OF ADDED SECTION 2002-03-22
 };
 
-typedef BattalionClass* Battalion;
+typedef BattalionClass *Battalion;
 
-BattalionClass* NewBattalion(int type, Unit parent);
+BattalionClass *NewBattalion(int type, Unit parent);
 
 #endif

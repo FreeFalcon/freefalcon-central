@@ -37,7 +37,8 @@
 #define RTR_RELIABLE 1
 #define RTR_NORMAL 0
 
-#define CAPI_UDP_PORT 2934 // Note: This unfortunately needs to match the value in comms\mcast.h
+#define CAPI_UDP_PORT                                                          \
+    2934 // Note: This unfortunately needs to match the value in comms\mcast.h
 #define CAPI_TCP_PORT 2935
 
 // =========================================================
@@ -45,11 +46,11 @@
 // =========================================================
 
 #define RTR_OK 1
-#define RTR_ERROR        0
+#define RTR_ERROR 0
 
 #define RTR_INVALID_HANDLE -1
 #define RTR_PROTOCOL_NOT_AVAILABLE -2
-#define RTR_OVERFLOW_ERROR         -3 // Send buffer is full
+#define RTR_OVERFLOW_ERROR -3 // Send buffer is full
 #define RTR_CONNECTION_CLOSED -5 // Connection is no longer available
 #define RTR_MESSAGE_TOO_BIG -6
 #define RTR_CONNECTION_PENDING -7
@@ -57,15 +58,16 @@
 #define RTR_EMPTYGROUP -9
 #define RTR_NOTHING_TO_SEND -10
 #define RTR_WRONG_ADDRESS -11
-#define RTR_NOTHING_READ                -12
+#define RTR_NOTHING_READ -12
 
 // =========================================================
 // Router types and classes
 // =========================================================
 
-typedef struct comapihandle *ComAPIHandle;      // defined in CAPI.h
+typedef struct comapihandle* ComAPIHandle; // defined in CAPI.h
 
-typedef unsigned long RtrAddress; // IP Address or similar way to get to a physical machine
+typedef unsigned long
+    RtrAddress; // IP Address or similar way to get to a physical machine
 typedef unsigned char uchar;
 
 class RouterAddressNode
@@ -74,7 +76,7 @@ public:
     RtrAddress machine_address; // Physical address of the machine
     ComAPIHandle normalHandle; // UDP or unreliable transport handle (if any)
     ComAPIHandle reliableHandle; // TCP or reliable transport handle (if any)
-    RouterAddressNode *next; // Next node in the delivery list
+    RouterAddressNode* next; // Next node in the delivery list
 public:
     RouterAddressNode(RtrAddress pa, ComAPIHandle remote_socket);
     ~RouterAddressNode(void);
@@ -91,8 +93,8 @@ class RouterHandle
 {
 public:
     RtrAddressNode delivery_list; // List of physical addresses to deliver to
-    uchar name[RTR_NAME_SIZE];// The handle's name
-    RouterHandle *next; // Next handle in list
+    uchar name[RTR_NAME_SIZE]; // The handle's name
+    RouterHandle* next; // Next handle in list
 public:
     RouterHandle(void);
     ~RouterHandle(void);
@@ -126,10 +128,8 @@ public:
 // =========================================================
 
 extern RtrHandle RtrInitRouter(int virtual_connection_type,
-                               int protocols_available,
-                               RtrAddress our_address,
-                               RtrAddress initial_address,
-                               int max_message_size,
+                               int protocols_available, RtrAddress our_address,
+                               RtrAddress initial_address, int max_message_size,
                                char* game_name);
 
 extern void RtrShutdownRouter(void);
@@ -149,7 +149,8 @@ extern void RtrShutdownConnection(RtrHandle connection);
 // RtrGetSendBuffer requires to buffer to be filled by the caller.
 // It is guarenteed not to send until another call to RtrGetSendBuffer or RtrSendNow.
 // Multiple calls to RtrGetSendBuffer can be made without calling RtrSendNow.
-extern int RtrGetSendBuffer(RtrHandle to, uchar* bufptr, short size, int reliable);
+extern int RtrGetSendBuffer(RtrHandle to, uchar* bufptr, short size,
+                            int reliable);
 
 // RtrSendNow sends the currently pending Rtr buffer.
 extern int RtrSendNow(void);

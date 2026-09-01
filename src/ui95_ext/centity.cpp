@@ -23,7 +23,8 @@ C_Entity::C_Entity() : C_Control()
     Status_ = NULL;
     Operational_ = 0;
     vuID = FalconNullId;
-    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor C_BIT_USEBGFILL;
+    Defaultflags_ = C_BIT_ENABLED bitor C_BIT_REMOVE bitor C_BIT_MOUSEOVER bitor
+                    C_BIT_USEBGFILL;
 }
 
 C_Entity::C_Entity(char **stream) : C_Control(stream)
@@ -40,7 +41,7 @@ C_Entity::~C_Entity()
 
 long C_Entity::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Entity::Setup(long ID, short Type)
@@ -106,10 +107,11 @@ void C_Entity::SetFont(long ID)
 
 long C_Entity::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
-        return(GetID());
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and
+        relY <= (GetY() + GetH()))
+        return (GetID());
 
-    return(0);
+    return (0);
 }
 
 void C_Entity::SetDefaultFlags()
@@ -119,7 +121,7 @@ void C_Entity::SetDefaultFlags()
 
 long C_Entity::GetDefaultFlags()
 {
-    return(Defaultflags_);
+    return (Defaultflags_);
 }
 
 BOOL C_Entity::Process(long ID, short HitType)
@@ -129,28 +131,35 @@ BOOL C_Entity::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Entity::Refresh()
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           Flags_, GetClient());
 }
 
 void C_Entity::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (GetFlags() bitand C_BIT_USEBGFILL)
     {
-        Parent_->BlitFill(surface, IconBgColor_[State_ bitand 1], GetX() + IconBg_.left, GetY() + IconBg_.top, IconBg_.right, IconBg_.bottom, Flags_, Client_, cliprect);
+        Parent_->BlitFill(surface, IconBgColor_[State_ bitand 1],
+                          GetX() + IconBg_.left, GetY() + IconBg_.top,
+                          IconBg_.right, IconBg_.bottom, Flags_, Client_,
+                          cliprect);
 
         if (State_)
-            Parent_->BlitFill(surface, InfoBgColor_[State_ bitand 1], GetX() + InfoBg_.left, GetY() + InfoBg_.top, InfoBg_.right, InfoBg_.bottom, Flags_, Client_, cliprect);
+            Parent_->BlitFill(surface, InfoBgColor_[State_ bitand 1],
+                              GetX() + InfoBg_.left, GetY() + InfoBg_.top,
+                              InfoBg_.right, InfoBg_.bottom, Flags_, Client_,
+                              cliprect);
     }
 
     if (Icon_)

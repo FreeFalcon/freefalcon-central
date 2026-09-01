@@ -2,7 +2,7 @@
 #ifdef bigasscow
 #include "stdhdr.h"
 #include "simfile.h"
-#include "Bomb.h"
+#include "bomb.h"
 #include "bombdata.h"
 #include "initdata.h"
 #include "datafile.h"
@@ -14,7 +14,7 @@ extern MEM_POOL gReadInMemPool;
 BombDataSetClass* BombDataset = NULL;
 int numBombDatasets = 0;
 
-#define Bomb_DIR     "sim\\bombdata"
+#define Bomb_DIR "sim/bombdata"
 #define Bomb_DATASET "bombtypes.lst"
 
 BombAuxData DefaultBombAuxData;
@@ -24,38 +24,40 @@ BombInputData* BombInputRead(SimlibFileClass* inputFile);
 
 // JPO structure to read in auxilary variables
 #define OFFSET(x) offsetof(BombAuxData, x)
-static const InputDataDesc AuxBombDataDesc[] =
-{
+static const InputDataDesc AuxBombDataDesc[] = {
 
-    { "cbuStrengthModel", InputDataDesc::ID_INT, OFFSET(cbuStrengthModel), "0"},
-    { "cbuLethalHeight", InputDataDesc::ID_FLOAT, OFFSET(cbuLethalHeight), "300"},
-    { "cbuIneffectiveHeight", InputDataDesc::ID_FLOAT, OFFSET(cbuIneffectiveHeight), "6000"},
-    { "cbuDamageDiameterBurstAltMultiplier", InputDataDesc::ID_FLOAT, OFFSET(cbuDamageDiameterBAMult), ".2083"},
-    { "cbuMaxDamageDiameter",   InputDataDesc::ID_FLOAT, OFFSET(cbuMaxDamageDiameter), "300"},
-    { "cbuBlastMultiplier", InputDataDesc::ID_FLOAT, OFFSET(cbuBlastMultiplier), "1.0"},
-    { "sndFlightSFX", InputDataDesc::ID_FLOAT, OFFSET(sndFlightSFX), "0"},
-    { "lauSalvoSize", InputDataDesc::ID_INT, OFFSET(lauSalvoSize), "-1"},
-    { "lauWeaponId", InputDataDesc::ID_INT, OFFSET(lauWeaponId), "0"},
-    { "lauRounds", InputDataDesc::ID_INT,      OFFSET(lauRounds), "0"},
-    { "lauAzimuth", InputDataDesc::ID_FLOAT, OFFSET(lauAzimuth), "0"},
-    { "lauElevation", InputDataDesc::ID_FLOAT, OFFSET(lauElevation), "0"},
-    { "lauRippleTimeMS",        InputDataDesc::ID_INT,     OFFSET(lauRippleTime), "10"},
-    { "psFeatureImpact", InputDataDesc::ID_STRING, OFFSET(psFeatureImpact), ""},
-    { "psBombImpact", InputDataDesc::ID_STRING, OFFSET(psBombImpact), ""},
-    { "JDAMLift", InputDataDesc::ID_FLOAT, OFFSET(JDAMLift), "5"},
-    { "JSOWmaxRange", InputDataDesc::ID_FLOAT, OFFSET(JSOWmaxRange), "40"},
+    {"cbuStrengthModel", InputDataDesc::ID_INT, OFFSET(cbuStrengthModel), "0"},
+    {"cbuLethalHeight", InputDataDesc::ID_FLOAT, OFFSET(cbuLethalHeight),
+     "300"},
+    {"cbuIneffectiveHeight", InputDataDesc::ID_FLOAT,
+     OFFSET(cbuIneffectiveHeight), "6000"},
+    {"cbuDamageDiameterBurstAltMultiplier", InputDataDesc::ID_FLOAT,
+     OFFSET(cbuDamageDiameterBAMult), ".2083"},
+    {"cbuMaxDamageDiameter", InputDataDesc::ID_FLOAT,
+     OFFSET(cbuMaxDamageDiameter), "300"},
+    {"cbuBlastMultiplier", InputDataDesc::ID_FLOAT, OFFSET(cbuBlastMultiplier),
+     "1.0"},
+    {"sndFlightSFX", InputDataDesc::ID_FLOAT, OFFSET(sndFlightSFX), "0"},
+    {"lauSalvoSize", InputDataDesc::ID_INT, OFFSET(lauSalvoSize), "-1"},
+    {"lauWeaponId", InputDataDesc::ID_INT, OFFSET(lauWeaponId), "0"},
+    {"lauRounds", InputDataDesc::ID_INT, OFFSET(lauRounds), "0"},
+    {"lauAzimuth", InputDataDesc::ID_FLOAT, OFFSET(lauAzimuth), "0"},
+    {"lauElevation", InputDataDesc::ID_FLOAT, OFFSET(lauElevation), "0"},
+    {"lauRippleTimeMS", InputDataDesc::ID_INT, OFFSET(lauRippleTime), "10"},
+    {"psFeatureImpact", InputDataDesc::ID_STRING, OFFSET(psFeatureImpact), ""},
+    {"psBombImpact", InputDataDesc::ID_STRING, OFFSET(psBombImpact), ""},
+    {"JDAMLift", InputDataDesc::ID_FLOAT, OFFSET(JDAMLift), "5"},
+    {"JSOWmaxRange", InputDataDesc::ID_FLOAT, OFFSET(JSOWmaxRange), "40"},
 
-    { NULL},
+    {NULL},
 };
-
 
 
 void BombClass::ReadInput(int idx)
 {
     if (BombDataset and idx < numBombDatasets)
     {
-        auxData =
-            BombDataset[min(idx, numBombDatasets - 1)].auxData;
+        auxData = BombDataset[min(idx, numBombDatasets - 1)].auxData;
     }
     else
     {
@@ -93,16 +95,17 @@ void ReadAllBombData(void)
     /*-----------------*/
     /* open input file */
     /*-----------------*/
-    sprintf(fileName, "%s\\%s\0", Bomb_DIR, Bomb_DATASET);
+    sprintf(fileName, "%s/%s\0", Bomb_DIR, Bomb_DATASET);
     mslList = SimlibFileClass::Open(fileName, SIMLIB_READ);
 
     //   F4Assert(mslList);
-    if ( not mslList) // MLR 2003-11-11 Prevent CTD if files are missing.
+    if (not mslList) // MLR 2003-11-11 Prevent CTD if files are missing.
         return;
 
     numBombDatasets = atoi(mslList->GetNext());
 #ifdef USE_SH_POOLS
-    BombDataset = (BombDataSetClass *)MemAllocPtr(gReadInMemPool, sizeof(BombDataSetClass) * numBombDatasets, 0);
+    BombDataset = (BombDataSetClass*)MemAllocPtr(
+        gReadInMemPool, sizeof(BombDataSetClass) * numBombDatasets, 0);
 #else
     BombDataset = new BombDataSetClass[numBombDatasets];
 #endif
@@ -114,7 +117,7 @@ void ReadAllBombData(void)
         /*-------------------------------------------*/
         /* Open the basic input file for the Bomb */
         /*-------------------------------------------*/
-        sprintf(fName, "%s\\%s.dat", Bomb_DIR, buffer);
+        sprintf(fName, "%s/%s.dat", Bomb_DIR, buffer);
         inputFile = SimlibFileClass::Open(fName, SIMLIB_READ);
 
         //F4Assert(inputFile);
@@ -144,7 +147,7 @@ void FreeAllBombData(void)
             delete BombDataset[i].auxData; // JPO
         }
 
-        delete [] BombDataset;
+        delete[] BombDataset;
     }
 
     BombDataset = 0;
@@ -155,7 +158,8 @@ BombInputData* BombInputRead(SimlibFileClass* inputFile)
     BombInputData* inputData;
 
 #ifdef USE_SH_POOLS
-    inputData = (BombInputData *)MemAllocPtr(gReadInMemPool, sizeof(BombInputData), 0);
+    inputData =
+        (BombInputData*)MemAllocPtr(gReadInMemPool, sizeof(BombInputData), 0);
 #else
     inputData = new BombInputData;
 #endif
@@ -178,9 +182,9 @@ BombInputData* BombInputRead(SimlibFileClass* inputFile)
 }
 
 
-BombAuxData *BombAuxAeroRead(SimlibFileClass* inputFile)
+BombAuxData* BombAuxAeroRead(SimlibFileClass* inputFile)
 {
-    BombAuxData *auxBombData;
+    BombAuxData* auxBombData;
 
     auxBombData = new BombAuxData;
 
@@ -427,4 +431,3 @@ BombRangeData* BombRangeRead(SimlibFileClass* inputFile)
     return (rangeData);
 }
 #endif
-

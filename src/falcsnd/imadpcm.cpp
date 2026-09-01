@@ -17,35 +17,27 @@
 //  This array is used by imaadpcmNextStepIndex to determine the next step
 //  index to use.  The step index is an index to the step[] array, below.
 //
-const short next_step[16] =
-{
-    -1, -1, -1, -1, 2, 4, 6, 8,
-    -1, -1, -1, -1, 2, 4, 6, 8
-};
+const short next_step[16] = {-1, -1, -1, -1, 2, 4, 6, 8,
+                             -1, -1, -1, -1, 2, 4, 6, 8};
 
 //  This array contains the array of step sizes used to encode the ADPCM
 //  samples.  The step index in each ADPCM block is an index to this array.
 //
-const short step[89] =
-{
-    7,     8,     9,    10,    11,    12,    13,
-    14,    16,    17,    19,    21,    23,    25,
-    28,    31,    34,    37,    41,    45,    50,
-    55,    60,    66,    73,    80,    88,    97,
-    107,   118,   130,   143,   157,   173,   190,
-    209,   230,   253,   279,   307,   337,   371,
-    408,   449,   494,   544,   598,   658,   724,
-    796,   876,   963,  1060,  1166,  1282,  1411,
-    1552,  1707,  1878,  2066,  2272,  2499,  2749,
-    3024,  3327,  3660,  4026,  4428,  4871,  5358,
-    5894,  6484,  7132,  7845,  8630,  9493, 10442,
-    11487, 12635, 13899, 15289, 16818, 18500, 20350,
-    22385, 24623, 27086, 29794, 32767
-};
+const short step[89] = {
+    7,     8,     9,     10,    11,    12,    13,    14,    16,    17,
+    19,    21,    23,    25,    28,    31,    34,    37,    41,    45,
+    50,    55,    60,    66,    73,    80,    88,    97,    107,   118,
+    130,   143,   157,   173,   190,   209,   230,   253,   279,   307,
+    337,   371,   408,   449,   494,   544,   598,   658,   724,   796,
+    876,   963,   1060,  1166,  1282,  1411,  1552,  1707,  1878,  2066,
+    2272,  2499,  2749,  3024,  3327,  3660,  4026,  4428,  4871,  5358,
+    5894,  6484,  7132,  7845,  8630,  9493,  10442, 11487, 12635, 13899,
+    15289, 16818, 18500, 20350, 22385, 24623, 27086, 29794, 32767};
 
-short   imaadpcmSampleDecode(short nEncodedSample, short nPredictedSample, short nStepSize);
-short  imaadpcmNextStepIndex(short nEncodedSample, short nStepIndex);
-BOOL  imaadpcmValidStepIndex(short nStepIndex);
+short imaadpcmSampleDecode(short nEncodedSample, short nPredictedSample,
+                           short nStepSize);
+short imaadpcmNextStepIndex(short nEncodedSample, short nStepIndex);
+BOOL imaadpcmValidStepIndex(short nStepIndex);
 //-----------------------------------------------------------------------
 //function ImaDecodeS16
 //decodes ima adpcm into stereo 16-bit pcm
@@ -72,7 +64,7 @@ long ImaDecodeS16(S8 *sBuff, S8 *dBuff, S32 bufferLength)
     //put some commonly used info in more accessible variables and
     //init some variables
     blockHeaderSize = sizeof(ImaBlockHeader_t) * SND_WAV_SCHAN;
-    blockAlignment  = SND_ADPCM_SBLOCK_ALIGN;
+    blockAlignment = SND_ADPCM_SBLOCK_ALIGN;
     dBuffStart = dBuff;
 
     //step through each byte of IMA ADPCM and decode it to PCM
@@ -81,13 +73,14 @@ long ImaDecodeS16(S8 *sBuff, S8 *dBuff, S32 bufferLength)
         //data should always be block aligned
         if (bufferLength < blockAlignment)
         {
-            BOF_PRINT(("S16:  buffer length is less than the block alignment\n"));
+            BOF_PRINT(
+                ("S16:  buffer length is less than the block alignment\n"));
             return 0;
         }
 
-        blockLength  = blockAlignment;
-        bufferLength   -= blockLength;
-        blockLength    -= blockHeaderSize;
+        blockLength = blockAlignment;
+        bufferLength -= blockLength;
+        blockLength -= blockHeaderSize;
 
         //get the left header
         header = *(ImaBlockHeader_t *)sBuff;
@@ -128,11 +121,11 @@ long ImaDecodeS16(S8 *sBuff, S8 *dBuff, S32 bufferLength)
 
         while (0 != blockLength)
         {
-            blockLength    -= 8;
+            blockLength -= 8;
 
-            leftSamples  = *(long *)sBuff;
-            sBuff    = sBuff + sizeof(long);
-            rightSamples  = *(long *)sBuff;
+            leftSamples = *(long *)sBuff;
+            sBuff = sBuff + sizeof(long);
+            rightSamples = *(long *)sBuff;
             sBuff = sBuff + sizeof(long);
 
             for (i = 8; i > 0; i--)
@@ -140,21 +133,23 @@ long ImaDecodeS16(S8 *sBuff, S8 *dBuff, S32 bufferLength)
                 //left channel
                 encSampleL = (leftSamples & 0x0F);
                 stepSize = step[stepIndexL];
-                predSampleL = imaadpcmSampleDecode(encSampleL, predSampleL, stepSize);
+                predSampleL =
+                    imaadpcmSampleDecode(encSampleL, predSampleL, stepSize);
                 stepIndexL = imaadpcmNextStepIndex(encSampleL, stepIndexL);
 
                 //right channel
-                encSampleR  = (rightSamples & 0x0F);
+                encSampleR = (rightSamples & 0x0F);
                 stepSize = step[stepIndexR];
-                predSampleR = imaadpcmSampleDecode(encSampleR, predSampleR, stepSize);
-                stepIndexR  = imaadpcmNextStepIndex(encSampleR, stepIndexR);
+                predSampleR =
+                    imaadpcmSampleDecode(encSampleR, predSampleR, stepSize);
+                stepIndexR = imaadpcmNextStepIndex(encSampleR, stepIndexR);
 
                 //write out the sample
                 *(long *)dBuff = MAKELONG(predSampleL, predSampleR);
                 dBuff = dBuff + sizeof(long);
 
                 //shift the next input ssample into the low-order 4 bits
-                leftSamples  >>= 4;
+                leftSamples >>= 4;
                 rightSamples >>= 4;
             } //loop of i=8 decrement to 0
         } //0 != blockLength
@@ -162,7 +157,6 @@ long ImaDecodeS16(S8 *sBuff, S8 *dBuff, S32 bufferLength)
 
     //return the number of bytes written
     return (long)(dBuff - dBuffStart);
-
 }
 //end of function ImaDecodeS16
 //------------------------------------------------------------------------
@@ -185,21 +179,21 @@ long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
     //put some commonly used info in more accessible variables and
     //init some variables
     blockHeaderSize = sizeof(ImaBlockHeader_t) * SND_WAV_MCHAN;
-    blockAlignment  = SND_ADPCM_MBLOCK_ALIGN;
+    blockAlignment = SND_ADPCM_MBLOCK_ALIGN;
     dBuffStart = dBuff;
 
     //step through each byte of IMA ADPCM and decode it to PCM
     while (bufferLength >= blockHeaderSize)
     {
-        blockLength  = (UINT)min(bufferLength, blockAlignment);
-        bufferLength   -= blockLength;
-        blockLength    -= blockHeaderSize;
+        blockLength = (UINT)min(bufferLength, blockAlignment);
+        bufferLength -= blockLength;
+        blockLength -= blockHeaderSize;
 
         //get the block header
         header = *(ImaBlockHeader_t *)sBuff;
         sBuff = sBuff + sizeof(ImaBlockHeader_t);
-        predSample  = header.iSamp0;
-        stepIndex  = (short)header.bStepTableIndex;
+        predSample = header.iSamp0;
+        stepIndex = (short)header.bStepTableIndex;
 
         if (!imaadpcmValidStepIndex(stepIndex))
         {
@@ -213,12 +207,12 @@ long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
 
         while (blockLength--)
         {
-            sample   = *sBuff++;
+            sample = *sBuff++;
 
             //sample 1
             encSample = (sample & (char)0x0F);
             stepSize = step[stepIndex];
-            predSample  = imaadpcmSampleDecode(encSample, predSample, stepSize);
+            predSample = imaadpcmSampleDecode(encSample, predSample, stepSize);
             stepIndex = imaadpcmNextStepIndex(encSample, stepIndex);
 
             *(short *)dBuff = (short)predSample;
@@ -228,7 +222,7 @@ long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
             encSample = (sample >> 4);
             stepSize = step[stepIndex];
             predSample = imaadpcmSampleDecode(encSample, predSample, stepSize);
-            stepIndex  = imaadpcmNextStepIndex(encSample, stepIndex);
+            stepIndex = imaadpcmNextStepIndex(encSample, stepIndex);
 
             *(short *)dBuff = (short)predSample;
             dBuff = dBuff + sizeof(short);
@@ -237,7 +231,6 @@ long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
 
     //return the number of bytes written
     return (long)(dBuff - dBuffStart);
-
 }
 //end of function ImaDecodeM16
 //------------------------------------------------------------------------
@@ -256,10 +249,11 @@ long ImaDecodeM16(char *sBuff, char *dBuff, long bufferLength)
 //
 //------------------------------------------------------------------------
 
-short imaadpcmSampleDecode(short nEncodedSample, short nPredictedSample, short nStepSize)
+short imaadpcmSampleDecode(short nEncodedSample, short nPredictedSample,
+                           short nStepSize)
 {
-    LONG            lDifference;
-    LONG            lNewSample;
+    LONG lDifference;
+    LONG lNewSample;
 
     //
     //  calculate difference:
@@ -303,7 +297,7 @@ short imaadpcmSampleDecode(short nEncodedSample, short nPredictedSample, short n
     //  Clamp.
     //
     if (lNewSample < -32768)
-        return (short) - 32768;
+        return (short)-32768;
     else
         return (short)32767;
 }

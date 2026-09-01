@@ -10,24 +10,25 @@
 /** thread API return type */
 typedef enum
 {
-    F4T_RET_OK     = 0,
-    F4T_RET_ERROR  = -1
+    F4T_RET_OK = 0,
+    F4T_RET_ERROR = -1
 } tret_e;
 
 /** thread priority */
 typedef enum
 {
-    F4T_PRI_IDLE      = 0x02,
-    F4T_PRI_NORMAL    = 0x04,
-    F4T_PRI_HIGH      = 0x08,
-    F4T_PRI_REALTIME  = 0x10
+    F4T_PRI_IDLE = 0x02,
+    F4T_PRI_NORMAL = 0x04,
+    F4T_PRI_HIGH = 0x08,
+    F4T_PRI_REALTIME = 0x10
 } tpri_e;
 
 // Thread Crontrol
 typedef int F4THREADHANDLE;
 typedef int (*threadf_t)(void *);
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
     /** creates a thread with the given thread function and arguments. Thread can be created
     * suspended and will be given the passed priority.
@@ -37,7 +38,8 @@ extern "C" {
     * @parma in p thread priority.
     * @return opaque handle to the created thread, -1 on error.
     */
-    F4THREADHANDLE F4CreateThread(threadf_t tf, void* arg1, int createSuspended, tpri_e p);
+    F4THREADHANDLE F4CreateThread(threadf_t tf, void *arg1, int createSuspended,
+                                  tpri_e p);
 
     /** Makes the current thread wait for the thread to end its execution.
     * @param in t thread to wait for
@@ -51,22 +53,23 @@ extern "C" {
 // Critical Sections
 struct F4CSECTIONHANDLE;
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
     /** creates a critical section object (mutex) */
-    F4CSECTIONHANDLE* F4CreateCriticalSection(const char *name);
+    F4CSECTIONHANDLE *F4CreateCriticalSection(const char *name);
 
     /** destroys a critical section object */
-    void F4DestroyCriticalSection(F4CSECTIONHANDLE* theSection);
+    void F4DestroyCriticalSection(F4CSECTIONHANDLE *theSection);
 
     /** locks the critical section or sleeps until the lock is released */
-    void F4EnterCriticalSection(F4CSECTIONHANDLE* theSection);
+    void F4EnterCriticalSection(F4CSECTIONHANDLE *theSection);
 
     /** leaves the critical section */
-    void F4LeaveCriticalSection(F4CSECTIONHANDLE* theSection);
+    void F4LeaveCriticalSection(F4CSECTIONHANDLE *theSection);
 
     /** returns if the thread has the critical section locked. */
-    int F4CheckHasCriticalSection(F4CSECTIONHANDLE* theSection);
+    int F4CheckHasCriticalSection(F4CSECTIONHANDLE *theSection);
 #ifdef __cplusplus
 }
 #endif
@@ -74,14 +77,15 @@ extern "C" {
 // Barriers
 struct F4BARRIERHANDLE;
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
     /** creates a barrier object.
     * @param in name barrier name
     * @param in count number of calls to wait to resume waiting threads; Must be bigger than 1.
     * @return barrier handle
     */
-    F4BARRIERHANDLE* F4CreateBarrier(const char *name, unsigned int count);
+    F4BARRIERHANDLE *F4CreateBarrier(const char *name, unsigned int count);
 
     /** destroys a barrier. */
     void F4DestroyBarrier(F4BARRIERHANDLE *b);
@@ -93,17 +97,15 @@ extern "C" {
 #endif
 
 
-
 // Processor
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
     int F4SetThreadProcessor(F4THREADHANDLE theThread, int theProcessor);
 #ifdef __cplusplus
 }
 #endif
-
-
 
 
 // C++ useful classes
@@ -140,4 +142,3 @@ private:
 
 
 #endif
-

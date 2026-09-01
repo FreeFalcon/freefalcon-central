@@ -2,54 +2,54 @@
 #include <stdio.h>
 #include <fcntl.h>
 #include <process.h>
-#include "Cmpclass.h"
-#include "CmpGlobl.h"
-#include "F4VU.h"
-#include "F4Find.h"
+#include "cmpclass.h"
+#include "cmpglobl.h"
+#include "f4vu.h"
+#include "f4find.h"
 #include "falcmesg.h"
-#include "F4Thread.h"
-#include "CampTerr.h"
-#include "Entity.h"
-#include "Campaign.h"
-#include "Team.h"
-#include "Find.h"
-#include "CmpEvent.h"
-#include "CUIEvent.h"
-#include "Dialog.h"
-#include "Weather.h"
-#include "Name.h"
-#include "MsgInc/RequestCampaignData.h"
-#include "CampStr.h"
-#include "MissEval.h"
-#include "Pilot.h"
-#include "CampMap.h"
-#include "AIInput.h"
-#include "Division.h"
-#include "ThreadMgr.h"
+#include "f4thread.h"
+#include "campterr.h"
+#include "entity.h"
+#include "campaign.h"
+#include "team.h"
+#include "find.h"
+#include "cmpevent.h"
+#include "cuievent.h"
+#include "dialog.h"
+#include "weather.h"
+#include "name.h"
+#include "msginc/requestcampaigndata.h"
+#include "campstr.h"
+#include "misseval.h"
+#include "pilot.h"
+#include "campmap.h"
+#include "aiinput.h"
+#include "division.h"
+#include "threadmgr.h"
 #include "falcsess.h"
-#include "Persist.h"
-#include "RLE.h"
-#include "PlayerOp.h"
+#include "persist.h"
+#include "rle.h"
+#include "playerop.h"
 #include "uicomms.h"
-#include "Utils/Lzss.h"
+#include "utils/lzss.h"
 #include "classtbl.h"
-#include "ui95/Chandler.h"
-#include "Tacan.h"
+#include "ui95/chandler.h"
+#include "tacan.h"
 #include "navsystem.h"
 #include "rules.h"
 #include "logbook.h"
-#include "UserIDs.h"
-#include "NavUnit.h"
-#include "Dispcfg.h"
+#include "userids.h"
+#include "navunit.h"
+#include "dispcfg.h"
 #include "ui/include/tac_class.h"
 #include "ui/include/te_defs.h"
 #include "atcbrain.h"
 #include "simdrive.h"
-#include "Gtm.h"
-#include "TimerThread.h"
+#include "gtm.h"
+#include "timerthread.h"
 
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 // Begin - Uplink stuff
 #include "include/comsup.h"
@@ -71,15 +71,17 @@ CampaignClass TheCampaign;
 #pragma pack(push, 4)
 struct DiskUIEventNode
 {
-    short        x, y;
+    short x, y;
     CampaignTime time;
-    uchar        flags;
-    Team         team;
+    uchar flags;
+    Team team;
     unsigned int eventText; // x86 pointer slot on disk (ignored at runtime)
-    unsigned int next;      // x86 pointer slot on disk (ignored at runtime)
+    unsigned int next; // x86 pointer slot on disk (ignored at runtime)
 };
 #pragma pack(pop)
 
+// #104 (Linux LP64) campaign-stream long helpers memcpychk_l32 / memcpy_l32 live in
+// invalidbufferexception.h so every campaign (de)serializer shares them.
 
 enum
 {
@@ -136,7 +138,8 @@ extern void InitTheaterLists(void);
 extern void DisposeBaseLists(void);
 extern void DisposeCampaignLists(void);
 extern void DisposeTheaterLists(void);
-void TrashInstantActionObjectives(void);   // #55 below in this file (purge IA objectives in EndCampaign)
+void TrashInstantActionObjectives(
+    void); // #55 below in this file (purge IA objectives in EndCampaign)
 
 #define TIMEOUT_CYCLES 30 // Seconds to wait for requested info
 
@@ -292,7 +295,8 @@ void CampaignClass::Reset(void)
 //
 // EndCampaign must be called afterwards to clean up.
 //
-F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEntity *joingame)
+F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype,
+                                           FalconGameEntity *joingame)
 {
     FalconGameEntity *newgame;
     _TCHAR *gamename;
@@ -307,7 +311,8 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     SetCampaignStartupMode();
 
     // Init the mission evaluator
-    if (MissionEvaluator) delete MissionEvaluator; // JPO clear out old stuff.
+    if (MissionEvaluator)
+        delete MissionEvaluator; // JPO clear out old stuff.
 
     MissionEvaluator = new MissionEvaluationClass();
     MissionEvaluator->PreDogfightEval();
@@ -328,7 +333,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
 
             if (win)
             {
-                C_EditBox *ebox = (C_EditBox*)win->FindControl(INFO_GAMENAME);
+                C_EditBox *ebox = (C_EditBox *)win->FindControl(INFO_GAMENAME);
 
                 if (ebox)
                 {
@@ -362,9 +367,10 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     gMainThread->JoinGame(newgame);
 
     // Now init the other needed modules
-    ((WeatherClass*)realWeather)->Init((gametype == game_InstantAction or gametype == game_Dogfight));
+    ((WeatherClass *)realWeather)
+        ->Init((gametype == game_InstantAction or gametype == game_Dogfight));
 
-    if ( not LoadTheater(TheaterName))
+    if (not LoadTheater(TheaterName))
     {
         // JB 010731 return on fail
         return 0;
@@ -399,7 +405,7 @@ F4THREADHANDLE CampaignClass::InitCampaign(FalconGameType gametype, FalconGameEn
     // why I have to do this..  sigh.
     CampLeaveCriticalSection();
 
-    if ( not (Flags bitand CAMP_LIGHT))
+    if (not(Flags bitand CAMP_LIGHT))
     {
         CampaignWindow(hInst, SW_SHOW);
     }
@@ -463,7 +469,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         EndCampaign();
     }
 
-    if ( not IsPreLoaded() and not LoadScenarioStats(gametype, savefile))
+    if (not IsPreLoaded() and not LoadScenarioStats(gametype, savefile))
     {
         EndCampaign();
         return 0;
@@ -485,26 +491,26 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     switch (gametype)
     {
-        case game_InstantAction:
-        case game_Dogfight:
-        {
-            Flags or_eq CAMP_LIGHT;
-            DisposeEventLists();
-            break;
-        }
+    case game_InstantAction:
+    case game_Dogfight:
+    {
+        Flags or_eq CAMP_LIGHT;
+        DisposeEventLists();
+        break;
+    }
 
-        case game_TacticalEngagement:
-        {
-            Flags or_eq CAMP_TACTICAL;
-            DisposeEventLists();
-            break;
-        }
+    case game_TacticalEngagement:
+    {
+        Flags or_eq CAMP_TACTICAL;
+        DisposeEventLists();
+        break;
+    }
     }
 
     InitCampaign(gametype, NULL);
 
     // Load Savefile Data
-    if ( not LoadTeams(savefile))
+    if (not LoadTeams(savefile))
     {
         AddNewTeams(Neutral);
     }
@@ -519,7 +525,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     LoadUnits(savefile);
 
-    if ( not LoadCampaignEvents(savefile, Scenario))
+    if (not LoadCampaignEvents(savefile, Scenario))
     {
         NewCampaignEvents(Scenario);
     }
@@ -543,8 +549,8 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     if (CampIDRenameTable[0])
     {
-        CampEntity  ent;
-        int         i = 0, id;
+        CampEntity ent;
+        int i = 0, id;
 
         while (CampIDRenameTable[i])
         {
@@ -554,7 +560,8 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
             {
                 id = FindUniqueID();
                 //            ent->SetCampID(id);
-                MonoPrint("ID %d renamed to %d.\n", CampIDRenameTable[i], ent->GetCampID());
+                MonoPrint("ID %d renamed to %d.\n", CampIDRenameTable[i],
+                          ent->GetCampID());
             }
 
             i++;
@@ -578,18 +585,19 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
         BuildDivisionData();
     }
 
-    if ( not (Flags bitand CAMP_LIGHT) and not (Flags bitand CAMP_TACTICAL))
+    if (not(Flags bitand CAMP_LIGHT) and not(Flags bitand CAMP_TACTICAL))
     {
         // KCK: By telling weathermap that we're instant action, it won't
         // cause a reloading of weather for multiple instant action runs.
-        ((WeatherClass*)realWeather)->CampLoad(savefile, 0);
+        ((WeatherClass *)realWeather)->CampLoad(savefile, 0);
         StandardRebuild();
-        lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
+        lastAirPlan =
+            0; // Force an air replan - To get squadron data into the ATM
         ChooseBullseye();
     }
     else
     {
-        ((WeatherClass*)realWeather)->CampLoad(savefile, gametype);
+        ((WeatherClass *)realWeather)->CampLoad(savefile, gametype);
     }
 
     // ChillTypes();
@@ -597,15 +605,15 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
 
     // Insert our game into the database - which will broadcast it if we're online
     VuGameEntity *game = gCommsMgr->GetTargetGame();
-    vuDatabase->/*Quick*/Insert(game);
+    vuDatabase->/*Quick*/ Insert(game);
     EndReadCampFile();
 
     // Copy force ratio and history files into working file
-    sprintf(from, "%s\\%s.his", FalconCampUserSaveDirectory, savefile);
-    sprintf(to, "%s\\tmp.his", FalconCampUserSaveDirectory);
+    sprintf(from, "%s/%s.his", FalconCampUserSaveDirectory, savefile);
+    sprintf(to, "%s/tmp.his", FalconCampUserSaveDirectory);
     CopyFile(from, to, FALSE);
-    sprintf(from, "%s\\%s.frc", FalconCampUserSaveDirectory, savefile);
-    sprintf(to, "%s\\tmp.frc", FalconCampUserSaveDirectory);
+    sprintf(from, "%s/%s.frc", FalconCampUserSaveDirectory, savefile);
+    sprintf(to, "%s/tmp.frc", FalconCampUserSaveDirectory);
     CopyFile(from, to, FALSE);
 
     // KCK: Added code for tactical engagement missions which were saved with no gun..
@@ -614,7 +622,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
     {
         VuListIterator myit(AllAirList);
         Unit u;
-        u = (Unit) myit.GetFirst();
+        u = (Unit)myit.GetFirst();
 
         while (u)
         {
@@ -622,9 +630,10 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
             {
                 LoadoutStruct *load = ((Flight)u)->GetLoadout();
 
-                if ( not load)
+                if (not load)
                 {
-                    ((Flight)u)->LoadWeapons(NULL, DefaultDamageMods, Air, 2, WEAP_GUN, 0);
+                    ((Flight)u)->LoadWeapons(NULL, DefaultDamageMods, Air, 2,
+                                             WEAP_GUN, 0);
                 }
                 else
                 {
@@ -633,7 +642,7 @@ int CampaignClass::LoadCampaign(FalconGameType gametype, char *savefile)
                 }
             }
 
-            u = (Unit) myit.GetNext();
+            u = (Unit)myit.GetNext();
         }
     }
 
@@ -674,7 +683,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
         return 1; // Already loaded, return success
     }
 
-    if ( not IsPreLoaded())
+    if (not IsPreLoaded())
     {
         EndCampaign();
         return 0;
@@ -682,9 +691,9 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
     F4Assert(gametype not_eq game_InstantAction);
 
-    masterSession = (FalconSessionEntity*) vuDatabase->Find(game->OwnerId());
+    masterSession = (FalconSessionEntity *)vuDatabase->Find(game->OwnerId());
 
-    if ( not masterSession or masterSession == vuLocalSessionEntity)
+    if (not masterSession or masterSession == vuLocalSessionEntity)
         return LoadCampaign(gametype, Scenario);
 
     if (stricmp(Scenario, "Instant") == 0)
@@ -700,15 +709,18 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
     {
         return 0;
         // We're resuming a previous request.
-        ShiAssert(0); // KCK: I don't want to do this anymore. These are sent reliably
-        need_from_master = Flags bitand (CAMP_NEED_MASK bitand compl CAMP_NEED_ENTITIES);
+        ShiAssert(
+            0); // KCK: I don't want to do this anymore. These are sent reliably
+        need_from_master =
+            Flags bitand (CAMP_NEED_MASK bitand compl CAMP_NEED_ENTITIES);
         need_from_all = Flags bitand (CAMP_NEED_MASK bitand CAMP_NEED_ENTITIES);
 
         // resend our master session information requests here.
         if (need_from_master)
         {
             FalconRequestCampaignData *camprequest;
-            camprequest = new FalconRequestCampaignData(masterSession->Id(), masterSession);
+            camprequest = new FalconRequestCampaignData(masterSession->Id(),
+                                                        masterSession);
             camprequest->dataBlock.who = FalconLocalSessionId;
             camprequest->dataBlock.dataNeeded = need_from_master;
 
@@ -721,16 +733,19 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
             if (camprequest->dataBlock.size > 0)
             {
                 uchar *tmpptr;
-                camprequest->dataBlock.data = tmpptr = new uchar[camprequest->dataBlock.size];
+                camprequest->dataBlock.data = tmpptr =
+                    new uchar[camprequest->dataBlock.size];
 
                 if (need_from_master bitand CAMP_NEED_OBJ_DELTAS)
                 {
-                    memcpy(tmpptr, masterSession->objDataReceived, FS_MAXBLK / 8);
+                    memcpy(tmpptr, masterSession->objDataReceived,
+                           FS_MAXBLK / 8);
                     tmpptr += FS_MAXBLK / 8;
                 }
 
                 if (need_from_master bitand CAMP_NEED_UNIT_DATA)
-                    memcpy(tmpptr, masterSession->unitDataReceived, FS_MAXBLK / 8);
+                    memcpy(tmpptr, masterSession->unitDataReceived,
+                           FS_MAXBLK / 8);
             }
 
             FalconSendMessage(camprequest, TRUE);
@@ -740,7 +755,7 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
     {
         // This is a new request
         // Start up the campaign loop
-        if ( not InitCampaign(gametype, game)) // JB 010731 return on fail
+        if (not InitCampaign(gametype, game)) // JB 010731 return on fail
         {
             CampLeaveCriticalSection();
             return 0;
@@ -753,17 +768,18 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
         LoadBaseObjectives(TheCampaign.Scenario);
 
-        if ( not LoadTeams(TheCampaign.Scenario))
+        if (not LoadTeams(TheCampaign.Scenario))
             AddNewTeams(Neutral);
 
-        if ( not LoadPilotInfo(TheCampaign.Scenario))
+        if (not LoadPilotInfo(TheCampaign.Scenario))
             NewPilotInfo();
 
-        if ( not LoadCampaignEvents(Scenario, Scenario))
+        if (not LoadCampaignEvents(Scenario, Scenario))
             NewCampaignEvents(Scenario);
 
-        if ( not (Flags bitand CAMP_LIGHT))
-            ((WeatherClass*)realWeather)->CampLoad(TheCampaign.Scenario, game_Campaign);
+        if (not(Flags bitand CAMP_LIGHT))
+            ((WeatherClass *)realWeather)
+                ->CampLoad(TheCampaign.Scenario, game_Campaign);
 
         // Rebuild objective lists once, so our received data has somewhere to go
         // (especially the priority data)
@@ -777,19 +793,24 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
         if (Flags bitand CAMP_LIGHT)
         {
-            need_from_master = CAMP_NEED_PERSIST bitor CAMP_NEED_OBJ_DELTAS bitor CAMP_NEED_UNIT_DATA;
+            need_from_master = CAMP_NEED_PERSIST bitor
+                               CAMP_NEED_OBJ_DELTAS bitor CAMP_NEED_UNIT_DATA;
             need_from_all = 0;
             // need_from_all = CAMP_NEED_ENTITIES;
             Flags or_eq need_from_master bitor need_from_all;
         }
         else
         {
-            need_from_master = CAMP_NEED_WEATHER bitor CAMP_NEED_PERSIST bitor CAMP_NEED_PRIORITIES bitor CAMP_NEED_OBJ_DELTAS bitor CAMP_NEED_TEAM_DATA bitor CAMP_NEED_UNIT_DATA bitor CAMP_NEED_VC;
+            need_from_master = CAMP_NEED_WEATHER bitor CAMP_NEED_PERSIST bitor
+                               CAMP_NEED_PRIORITIES bitor
+                               CAMP_NEED_OBJ_DELTAS bitor
+                               CAMP_NEED_TEAM_DATA bitor
+                               CAMP_NEED_UNIT_DATA bitor CAMP_NEED_VC;
             need_from_all = 0;
             // need_from_all = CAMP_NEED_ENTITIES;
             Flags or_eq need_from_master bitor need_from_all;
 
-            if ( not LoadPilotInfo(TheCampaign.Scenario))
+            if (not LoadPilotInfo(TheCampaign.Scenario))
                 NewPilotInfo();
         }
 
@@ -798,7 +819,8 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
         // Send our master session information requests here.
         FalconRequestCampaignData *camprequest;
-        camprequest = new FalconRequestCampaignData(masterSession->Id(), masterSession);
+        camprequest =
+            new FalconRequestCampaignData(masterSession->Id(), masterSession);
         camprequest->dataBlock.who = FalconLocalSessionId;
         camprequest->dataBlock.dataNeeded = need_from_master;
         FalconSendMessage(camprequest, TRUE);
@@ -827,12 +849,13 @@ int CampaignClass::JoinCampaign(FalconGameType gametype, FalconGameEntity *game)
 
 int CampaignClass::StartRemoteCampaign(FalconGameEntity *game)
 {
-    if ( not IsLoaded() or (Flags bitand CAMP_NEED_MASK))
+    if (not IsLoaded() or (Flags bitand CAMP_NEED_MASK))
         return 0;
 
-    if ( not (Flags bitand CAMP_LIGHT))
+    if (not(Flags bitand CAMP_LIGHT))
     {
-        lastAirPlan = 0; // Force an air replan - To get squadron data into the ATM
+        lastAirPlan =
+            0; // Force an air replan - To get squadron data into the ATM
         RebuildObjectiveLists();
         BuildDivisionData();
         StandardRebuild();
@@ -863,19 +886,22 @@ void CampaignClass::GotJoinData(void)
 
     // Notify UI of our success
     if (gMainHandler)
-        PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED, not FalconLocalGame->IsLocal(), 0);
+        PostMessage(FalconDisplay.appWin, FM_JOIN_SUCCEEDED,
+                    not FalconLocalGame->IsLocal(), 0);
 }
 
 #define CAMP_SAVE_NORMAL 0
 #define CAMP_SAVE_FULL 1
 #define CAMP_SAVE_LIGHT 2
 
-int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int save_mode)
+int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile,
+                                int save_mode)
 {
-    FILE* fp;
+    FILE *fp;
     char to[MAX_PATH], from[MAX_PATH];
 
-    if ( not IsLoaded() or (Flags bitand CAMP_LIGHT and save_mode not_eq CAMP_SAVE_LIGHT))
+    if (not IsLoaded() or
+        (Flags bitand CAMP_LIGHT and save_mode not_eq CAMP_SAVE_LIGHT))
         return 0;
 
     StartWriteCampFile(gametype, savefile);
@@ -897,7 +923,8 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     }
     else
     {
-        if ( not CampMapSize or not TheaterSizeX or not CampMapData or save_mode == CAMP_SAVE_FULL)
+        if (not CampMapSize or not TheaterSizeX or not CampMapData or
+            save_mode == CAMP_SAVE_FULL)
             MakeCampMap(MAP_OWNERSHIP);
 
         VerifySquadrons(FALCON_PLAYER_TEAM);
@@ -918,30 +945,30 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
 
         switch (save_mode)
         {
-            case CAMP_SAVE_LIGHT:
-                // KCK: These won't save right - no lists
-                // SaveBaseObjectives(savefile);
-                // SaveObjectiveDeltas(savefile);
-                break;
+        case CAMP_SAVE_LIGHT:
+            // KCK: These won't save right - no lists
+            // SaveBaseObjectives(savefile);
+            // SaveObjectiveDeltas(savefile);
+            break;
 
-            case CAMP_SAVE_FULL:
-                SaveBaseObjectives(savefile);
+        case CAMP_SAVE_FULL:
+            SaveBaseObjectives(savefile);
 
-                // SaveObjectiveDeltas(savefile);
-                // SaveBaseUnits(SaveFile);
-                // KCK: Fall through to below
-            case CAMP_SAVE_NORMAL:
-            default:
-                SaveObjectiveDeltas(savefile);
-                SaveUnits(savefile);
-                // SaveUnitDeltas(savefile);
-                SaveTeams(savefile);
-                SaveCampaignEvents(savefile);
-                SavePilotInfo(savefile);
-                SavePersistantList(savefile);
-                ((WeatherClass*)realWeather)->Save(savefile);
-                SavePrimaryObjectiveList(savefile);
-                break;
+            // SaveObjectiveDeltas(savefile);
+            // SaveBaseUnits(SaveFile);
+            // KCK: Fall through to below
+        case CAMP_SAVE_NORMAL:
+        default:
+            SaveObjectiveDeltas(savefile);
+            SaveUnits(savefile);
+            // SaveUnitDeltas(savefile);
+            SaveTeams(savefile);
+            SaveCampaignEvents(savefile);
+            SavePilotInfo(savefile);
+            SavePersistantList(savefile);
+            ((WeatherClass *)realWeather)->Save(savefile);
+            SavePrimaryObjectiveList(savefile);
+            break;
         }
     }
 
@@ -950,11 +977,11 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
     EndWriteCampFile();
 
     // Copy force ratio and history files into save file
-    sprintf(to, "%s\\%s.his", FalconCampUserSaveDirectory, savefile);
-    sprintf(from, "%s\\tmp.his", FalconCampUserSaveDirectory);
+    sprintf(to, "%s/%s.his", FalconCampUserSaveDirectory, savefile);
+    sprintf(from, "%s/tmp.his", FalconCampUserSaveDirectory);
     CopyFile(from, to, FALSE);
-    sprintf(to, "%s\\%s.frc", FalconCampUserSaveDirectory, savefile);
-    sprintf(from, "%s\\tmp.frc", FalconCampUserSaveDirectory);
+    sprintf(to, "%s/%s.frc", FalconCampUserSaveDirectory, savefile);
+    sprintf(from, "%s/tmp.frc", FalconCampUserSaveDirectory);
     CopyFile(from, to, FALSE);
 
     CampLeaveCriticalSection();
@@ -966,7 +993,7 @@ int CampaignClass::SaveCampaign(FalconGameType gametype, char *savefile, int sav
 void CampaignClass::EndCampaign(void)
 {
     // returns only when campaign is not loaded anymore
-    if ( not TheCampaign.IsLoaded())
+    if (not TheCampaign.IsLoaded())
     {
         return;
     }
@@ -1045,7 +1072,7 @@ void CampaignClass::EndCampaign()
 
     if (Flags bitand CAMP_LOADED)
     {
-        if ( not (Flags bitand CAMP_LIGHT))
+        if (not(Flags bitand CAMP_LIGHT))
         {
             FreeTheaterTerrain();
             // Only remove teams if we're playing a local game
@@ -1067,7 +1094,7 @@ void CampaignClass::EndCampaign()
             TrashInstantActionObjectives();
         }
 
-        if ( not (Flags bitand CAMP_ONLINE))
+        if (not(Flags bitand CAMP_ONLINE))
         {
             RemoveTeams(); // KCK NOTE: These could be 'silent removes' instead
         }
@@ -1125,13 +1152,13 @@ void CampaignClass::EndCampaign()
 }
 
 
-int CampaignClass::SetTheater(char* name)
+int CampaignClass::SetTheater(char *name)
 {
     strcpy(TheaterName, name);
     return 1;
 }
 
-int CampaignClass::SetScenario(char* scenario)
+int CampaignClass::SetScenario(char *scenario)
 {
     strcpy(Scenario, scenario);
     return 1;
@@ -1159,7 +1186,11 @@ int CampaignClass::LoadData(FILE *fp)
     uchar *buffer, *bufhead;
     long size;
 
-    fread(&size, sizeof(long), 1, fp);
+    {
+        int _t32 = 0;
+        fread(&_t32, sizeof(int), 1, fp);
+        size = _t32;
+    } // #104: on-disk 32-bit long
     bufhead = buffer = new uchar[size];
     fread(buffer, size, 1, fp);
     Decode(&buffer, &size);
@@ -1175,7 +1206,10 @@ int CampaignClass::SaveData(FILE *fp)
 
     size = Encode(&buffer);
 
-    fwrite(&size, sizeof(long), 1, fp);
+    {
+        int _t32 = (int)size;
+        fwrite(&_t32, sizeof(int), 1, fp);
+    } // #104: on-disk 32-bit long
     fwrite(buffer, size, 1, fp);
     delete buffer;
     return size;
@@ -1189,14 +1223,14 @@ long CampaignClass::SaveSize(void)
     size += sizeof(CampaignTime);
     size += sizeof(CampaignTime);
     size += sizeof(CampaignTime);
-    size += sizeof(long);
-    size += sizeof(long);
-    size += sizeof(long);
-    size += sizeof(long) * 8;
-    size += sizeof(long) * 8;
-    size += sizeof(long);
-    size += sizeof(long) * 8;
-    size += sizeof(long);
+    size += DISK_LONG; // #104: on-disk 32-bit long
+    size += DISK_LONG;
+    size += DISK_LONG;
+    size += DISK_LONG * 8;
+    size += DISK_LONG * 8;
+    size += DISK_LONG;
+    size += DISK_LONG * 8;
+    size += DISK_LONG;
 
     size += sizeof(uchar) * 8;
     size += sizeof(uchar) * 8;
@@ -1240,7 +1274,8 @@ long CampaignClass::SaveSize(void)
 
     while (event)
     {
-        size += sizeof(DiskUIEventNode); // Artscout - 2026 (x64): fixed on-disk size
+        size += sizeof(
+            DiskUIEventNode); // Artscout - 2026 (x64): fixed on-disk size
         size += sizeof(short);
         size += sizeof(_TCHAR) * _tcslen(event->eventText);
         event = event->next;
@@ -1251,7 +1286,8 @@ long CampaignClass::SaveSize(void)
 
     while (event)
     {
-        size += sizeof(DiskUIEventNode); // Artscout - 2026 (x64): fixed on-disk size
+        size += sizeof(
+            DiskUIEventNode); // Artscout - 2026 (x64): fixed on-disk size
         size += sizeof(short);
         size += sizeof(_TCHAR) * _tcslen(event->eventText);
         event = event->next;
@@ -1265,9 +1301,9 @@ long CampaignClass::SaveSize(void)
 
     size += sizeof(uchar);
 
-    size += sizeof(long);
-    size += sizeof(long);
-    size += sizeof(long);
+    size += DISK_LONG; // #104: on-disk 32-bit long
+    size += DISK_LONG;
+    size += DISK_LONG;
 
     return size;
 }
@@ -1283,9 +1319,10 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 
     CampEnterCriticalSection();
 
-    memcpychk(&datasize, stream, sizeof(long), rem);
+    memcpychk_l32(&datasize, stream, 1,
+                  rem); // #104: on-disk 32-bit length prefix
 
-    long newRem = datasize + 4096;//1024;
+    long newRem = datasize + 4096; //1024;
     buffer = new VU_BYTE[newRem];
     bufhead = buffer;
     //sfr: we should check the return value here...
@@ -1307,7 +1344,7 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 
         if (gCampDataVersion > 49)
         {
-            memcpychk(&TE_VictoryPoints, &buffer, sizeof(long), &newRem);
+            memcpychk_l32(&TE_VictoryPoints, &buffer, 1, &newRem);
         }
         else
         {
@@ -1323,15 +1360,15 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 
     if (gCampDataVersion >= 52)
     {
-        memcpychk(&TE_type, &buffer, sizeof(long), &newRem);
-        memcpychk(&TE_number_teams, &buffer, sizeof(long), &newRem);
-        memcpychk(TE_number_aircraft, &buffer, sizeof(long) * 8, &newRem);
-        memcpychk(TE_number_f16s, &buffer, sizeof(long) * 8, &newRem);
-        memcpychk(&TE_team, &buffer, sizeof(long), &newRem);
-        memcpychk(TE_team_pts, &buffer, sizeof(long) * 8, &newRem);
-        memcpychk(&TE_flags, &buffer, sizeof(long), &newRem);
+        memcpychk_l32(&TE_type, &buffer, 1, &newRem);
+        memcpychk_l32(&TE_number_teams, &buffer, 1, &newRem);
+        memcpychk_l32(TE_number_aircraft, &buffer, 8, &newRem);
+        memcpychk_l32(TE_number_f16s, &buffer, 8, &newRem);
+        memcpychk_l32(&TE_team, &buffer, 1, &newRem);
+        memcpychk_l32(TE_team_pts, &buffer, 8, &newRem);
+        memcpychk_l32(&TE_flags, &buffer, 1, &newRem);
 
-        for (loop = 0; loop < 8; loop ++)
+        for (loop = 0; loop < 8; loop++)
         {
             memcpychk(&team_flags[loop], &buffer, 1, &newRem);
             memcpychk(&team_colour[loop], &buffer, 1, &newRem);
@@ -1395,10 +1432,10 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
     memcpychk(&BullseyeName, &buffer, sizeof(uchar), &newRem);
     memcpychk(&BullseyeX, &buffer, sizeof(GridIndex), &newRem);
     memcpychk(&BullseyeY, &buffer, sizeof(GridIndex), &newRem);
-    memcpychk(TheaterName, &buffer, sizeof(char)*CAMP_NAME_SIZE, &newRem);
-    memcpychk(Scenario, &buffer, sizeof(char)*CAMP_NAME_SIZE, &newRem);
-    memcpychk(SaveFile, &buffer, sizeof(char)*CAMP_NAME_SIZE, &newRem);
-    memcpychk(UIName, &buffer, sizeof(char)*CAMP_NAME_SIZE, &newRem);
+    memcpychk(TheaterName, &buffer, sizeof(char) * CAMP_NAME_SIZE, &newRem);
+    memcpychk(Scenario, &buffer, sizeof(char) * CAMP_NAME_SIZE, &newRem);
+    memcpychk(SaveFile, &buffer, sizeof(char) * CAMP_NAME_SIZE, &newRem);
+    memcpychk(UIName, &buffer, sizeof(char) * CAMP_NAME_SIZE, &newRem);
     // Might as well get the other guy's squadron
     memcpychk(&PlayerSquadronID, &buffer, sizeof(VU_ID), &newRem);
     FalconLocalSession->SetPlayerSquadronID(PlayerSquadronID);
@@ -1417,17 +1454,20 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
         {
             DiskUIEventNode _dn;
             memcpychk(&_dn, &buffer, sizeof(DiskUIEventNode), &newRem);
-            event->x = _dn.x; event->y = _dn.y; event->time = _dn.time;
-            event->flags = _dn.flags; event->team = _dn.team;
+            event->x = _dn.x;
+            event->y = _dn.y;
+            event->time = _dn.time;
+            event->flags = _dn.flags;
+            event->team = _dn.team;
         }
 #endif
         memcpychk(&size, &buffer, sizeof(short), &newRem);
         event->eventText = new _TCHAR[size + 1];
-        memcpychk(event->eventText, &buffer, sizeof(_TCHAR)*size, &newRem);
+        memcpychk(event->eventText, &buffer, sizeof(_TCHAR) * size, &newRem);
         event->eventText[size] = 0;
         event->next = NULL;
 
-        if ( not StandardEventQueue)
+        if (not StandardEventQueue)
         {
             StandardEventQueue = event;
             last = event;
@@ -1452,17 +1492,20 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
         {
             DiskUIEventNode _dn;
             memcpychk(&_dn, &buffer, sizeof(DiskUIEventNode), &newRem);
-            event->x = _dn.x; event->y = _dn.y; event->time = _dn.time;
-            event->flags = _dn.flags; event->team = _dn.team;
+            event->x = _dn.x;
+            event->y = _dn.y;
+            event->time = _dn.time;
+            event->flags = _dn.flags;
+            event->team = _dn.team;
         }
 #endif
         memcpychk(&size, &buffer, sizeof(short), &newRem);
         event->eventText = new _TCHAR[size + 1];
-        memcpychk(event->eventText, &buffer, sizeof(_TCHAR)*size, &newRem);
+        memcpychk(event->eventText, &buffer, sizeof(_TCHAR) * size, &newRem);
         event->eventText[size] = 0;
         event->next = NULL;
 
-        if ( not PriorityEventQueue)
+        if (not PriorityEventQueue)
         {
             PriorityEventQueue = event;
             last = event;
@@ -1495,8 +1538,10 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
     {
         if (gCampDataVersion < 42)
         {
-            OldSquadUIInfoClass *osic = new OldSquadUIInfoClass[NumAvailSquadrons];
-            memcpychk(osic, &buffer, sizeof(OldSquadUIInfoClass)*NumAvailSquadrons, &newRem);
+            OldSquadUIInfoClass *osic =
+                new OldSquadUIInfoClass[NumAvailSquadrons];
+            memcpychk(osic, &buffer,
+                      sizeof(OldSquadUIInfoClass) * NumAvailSquadrons, &newRem);
             CampaignSquadronData = new SquadUIInfoClass[NumAvailSquadrons];
 
             for (i = 0; i < NumAvailSquadrons; i++)
@@ -1507,9 +1552,11 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
                 CampaignSquadronData[i].dIndex = osic[i].dIndex;
                 CampaignSquadronData[i].nameId = osic[i].nameId;
                 CampaignSquadronData[i].specialty = osic[i].specialty;
-                CampaignSquadronData[i].currentStrength = osic[i].currentStrength;
+                CampaignSquadronData[i].currentStrength =
+                    osic[i].currentStrength;
                 CampaignSquadronData[i].country = osic[i].country;
-                _tcsnccpy(CampaignSquadronData[i].airbaseName, osic[i].airbaseName, 39);
+                _tcsnccpy(CampaignSquadronData[i].airbaseName,
+                          osic[i].airbaseName, 39);
                 CampaignSquadronData[i].airbaseName[39] = 0;
             }
 
@@ -1518,7 +1565,8 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
         else
         {
             CampaignSquadronData = new SquadUIInfoClass[NumAvailSquadrons];
-            memcpychk(CampaignSquadronData, &buffer, sizeof(SquadUIInfoClass)*NumAvailSquadrons, &newRem);
+            memcpychk(CampaignSquadronData, &buffer,
+                      sizeof(SquadUIInfoClass) * NumAvailSquadrons, &newRem);
         }
     }
 
@@ -1529,9 +1577,9 @@ int CampaignClass::Decode(VU_BYTE **stream, long *rem)
 
     if (gCampDataVersion >= 43)
     {
-        memcpychk(&CreatorIP, &buffer, sizeof(long), &newRem);
-        memcpychk(&CreationTime, &buffer, sizeof(long), &newRem);
-        memcpychk(&CreationRand, &buffer, sizeof(long), &newRem);
+        memcpychk_l32(&CreatorIP, &buffer, 1, &newRem);
+        memcpychk_l32(&CreationTime, &buffer, 1, &newRem);
+        memcpychk_l32(&CreationRand, &buffer, 1, &newRem);
     }
 
     // Now we're preloaded
@@ -1558,7 +1606,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
     int loop;
     long newsize, datasize;
 
-    if ( not (Flags bitand CAMP_LIGHT))
+    if (not(Flags bitand CAMP_LIGHT))
     {
         // Get up to data squadron information
         VerifySquadrons(FALCON_PLAYER_TEAM);
@@ -1576,25 +1624,17 @@ int CampaignClass::Encode(VU_BYTE **stream)
     buffer += sizeof(CampaignTime);
     memcpy(buffer, &TE_TimeLimit, sizeof(CampaignTime));
     buffer += sizeof(CampaignTime);
-    memcpy(buffer, &TE_VictoryPoints, sizeof(long));
-    buffer += sizeof(long);
+    memcpy_l32(&buffer, &TE_VictoryPoints, 1); // #104: on-disk 32-bit long
 
-    memcpy(buffer, &TE_type, sizeof(long));
-    buffer += sizeof(long);
-    memcpy(buffer, &TE_number_teams, sizeof(long));
-    buffer += sizeof(long);
-    memcpy(buffer, TE_number_aircraft, sizeof(long) * 8);
-    buffer += sizeof(long) * 8;
-    memcpy(buffer, TE_number_f16s, sizeof(long) * 8);
-    buffer += sizeof(long) * 8;
-    memcpy(buffer, &TE_team, sizeof(long));
-    buffer += sizeof(long);
-    memcpy(buffer, TE_team_pts, sizeof(long) * 8);
-    buffer += sizeof(long) * 8;
-    memcpy(buffer, &TE_flags, sizeof(long));
-    buffer += sizeof(long);
+    memcpy_l32(&buffer, &TE_type, 1);
+    memcpy_l32(&buffer, &TE_number_teams, 1);
+    memcpy_l32(&buffer, TE_number_aircraft, 8);
+    memcpy_l32(&buffer, TE_number_f16s, 8);
+    memcpy_l32(&buffer, &TE_team, 1);
+    memcpy_l32(&buffer, TE_team_pts, 8);
+    memcpy_l32(&buffer, &TE_flags, 1);
 
-    for (loop = 0; loop < 8; loop ++)
+    for (loop = 0; loop < 8; loop++)
     {
         if (TeamInfo[loop])
         {
@@ -1652,7 +1692,8 @@ int CampaignClass::Encode(VU_BYTE **stream)
     memcpy(buffer, &EndgameResult, sizeof(uchar));
     buffer += sizeof(uchar);
 
-    if (FalconLocalSession->GetTeam() < NUM_TEAMS and TeamInfo[FalconLocalSession->GetTeam()])
+    if (FalconLocalSession->GetTeam() < NUM_TEAMS and
+        TeamInfo[FalconLocalSession->GetTeam()])
     {
         Situation = TeamInfo[FalconLocalSession->GetTeam()]->Initiative() / 20;
     }
@@ -1677,13 +1718,13 @@ int CampaignClass::Encode(VU_BYTE **stream)
     buffer += sizeof(GridIndex);
     memcpy(buffer, &BullseyeY, sizeof(GridIndex));
     buffer += sizeof(GridIndex);
-    memcpy(buffer, TheaterName, sizeof(char)*CAMP_NAME_SIZE);
+    memcpy(buffer, TheaterName, sizeof(char) * CAMP_NAME_SIZE);
     buffer += sizeof(char) * CAMP_NAME_SIZE;
-    memcpy(buffer, Scenario, sizeof(char)*CAMP_NAME_SIZE);
+    memcpy(buffer, Scenario, sizeof(char) * CAMP_NAME_SIZE);
     buffer += sizeof(char) * CAMP_NAME_SIZE;
-    memcpy(buffer, SaveFile, sizeof(char)*CAMP_NAME_SIZE);
+    memcpy(buffer, SaveFile, sizeof(char) * CAMP_NAME_SIZE);
     buffer += sizeof(char) * CAMP_NAME_SIZE;
-    memcpy(buffer, UIName, sizeof(char)*CAMP_NAME_SIZE);
+    memcpy(buffer, UIName, sizeof(char) * CAMP_NAME_SIZE);
     buffer += sizeof(char) * CAMP_NAME_SIZE;
     // Might as well send this guy's squadron
     PlayerSquadronID = FalconLocalSession->GetPlayerSquadronID();
@@ -1723,8 +1764,11 @@ int CampaignClass::Encode(VU_BYTE **stream)
         {
             DiskUIEventNode _dn;
             memset(&_dn, 0, sizeof(_dn));
-            _dn.x = event->x; _dn.y = event->y; _dn.time = event->time;
-            _dn.flags = event->flags; _dn.team = event->team;
+            _dn.x = event->x;
+            _dn.y = event->y;
+            _dn.time = event->time;
+            _dn.flags = event->flags;
+            _dn.team = event->team;
             memcpy(buffer, &_dn, sizeof(DiskUIEventNode));
             buffer += sizeof(DiskUIEventNode);
         }
@@ -1732,7 +1776,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
         size = _tcslen(event->eventText);
         memcpy(buffer, &size, sizeof(short));
         buffer += sizeof(short);
-        memcpy(buffer, event->eventText, sizeof(_TCHAR)*size);
+        memcpy(buffer, event->eventText, sizeof(_TCHAR) * size);
         buffer += sizeof(_TCHAR) * size;
         event = event->next;
     }
@@ -1762,8 +1806,11 @@ int CampaignClass::Encode(VU_BYTE **stream)
         {
             DiskUIEventNode _dn;
             memset(&_dn, 0, sizeof(_dn));
-            _dn.x = event->x; _dn.y = event->y; _dn.time = event->time;
-            _dn.flags = event->flags; _dn.team = event->team;
+            _dn.x = event->x;
+            _dn.y = event->y;
+            _dn.time = event->time;
+            _dn.flags = event->flags;
+            _dn.team = event->team;
             memcpy(buffer, &_dn, sizeof(DiskUIEventNode));
             buffer += sizeof(DiskUIEventNode);
         }
@@ -1771,7 +1818,7 @@ int CampaignClass::Encode(VU_BYTE **stream)
         size = _tcslen(event->eventText);
         memcpy(buffer, &size, sizeof(short));
         buffer += sizeof(short);
-        memcpy(buffer, event->eventText, sizeof(_TCHAR)*size);
+        memcpy(buffer, event->eventText, sizeof(_TCHAR) * size);
         buffer += sizeof(_TCHAR) * size;
         event = event->next;
     }
@@ -1793,30 +1840,27 @@ int CampaignClass::Encode(VU_BYTE **stream)
     if (NumAvailSquadrons > 0)
     {
         ShiAssert(CampaignSquadronData);
-        memcpy(buffer, CampaignSquadronData, sizeof(SquadUIInfoClass)*NumAvailSquadrons);
+        memcpy(buffer, CampaignSquadronData,
+               sizeof(SquadUIInfoClass) * NumAvailSquadrons);
         buffer += sizeof(SquadUIInfoClass) * NumAvailSquadrons;
     }
 
     memcpy(buffer, &Tempo, sizeof(uchar));
     buffer += sizeof(uchar);
-    memcpy(buffer, &CreatorIP, sizeof(long));
-    buffer += sizeof(long);
-    memcpy(buffer, &CreationTime, sizeof(long));
-    buffer += sizeof(long);
-    memcpy(buffer, &CreationRand, sizeof(long));
-    buffer += sizeof(long);
+    memcpy_l32(&buffer, &CreatorIP, 1); // #104: on-disk 32-bit long
+    memcpy_l32(&buffer, &CreationTime, 1);
+    memcpy_l32(&buffer, &CreationRand, 1);
     ShiAssert((int)(buffer - bufhead) == datasize);
 
     // Compress it and return
-    *stream = new VU_BYTE[datasize + sizeof(long) + MAX_POSSIBLE_OVERWRITE];
+    *stream = new VU_BYTE[datasize + DISK_LONG + MAX_POSSIBLE_OVERWRITE];
     sptr = *stream;
-    memcpy(sptr, &datasize, sizeof(long));
-    sptr += sizeof(long);
+    memcpy_l32(&sptr, &datasize, 1); // #104: on-disk 32-bit length prefix
     newsize = LZSS_Compress(bufhead, sptr, datasize);
 
     delete bufhead;
 
-    return newsize + sizeof(long);
+    return newsize + DISK_LONG;
 }
 
 int CampaignClass::LoadScenarioStats(FalconGameType type, char *savefile)
@@ -1875,14 +1919,15 @@ int CampaignClass::LoadScenarioStats(FalconGameType type, char *savefile)
     gCampDataVersion = gCurrentDataVersion;
 
     // Notify UI of our successfull preload
-    PostMessage(FalconDisplay.appWin, FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
+    PostMessage(FalconDisplay.appWin, FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD,
+                0);
     return 1;
 }
 
 int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
 {
-    FalconSessionEntity* masterSession;
-    FalconRequestCampaignData* camprequest;
+    FalconSessionEntity *masterSession;
+    FalconRequestCampaignData *camprequest;
 
     if (IsLoaded())
     {
@@ -1893,12 +1938,13 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
         else
         {
             // Notify UI of our successfull preload
-            PostMessage(FalconDisplay.appWin, FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRELOAD, 0);
+            PostMessage(FalconDisplay.appWin, FM_GOT_CAMPAIGN_DATA,
+                        CAMP_NEED_PRELOAD, 0);
             return 1; // Already preloaded, return success
         }
     }
 
-    if ( not game)
+    if (not game)
     {
         return 0;
     }
@@ -1917,29 +1963,30 @@ int CampaignClass::RequestScenarioStats(FalconGameEntity *game)
     SetTimeCompression(0);
 
     // Figure out who to send the request to.
-    masterSession = (FalconSessionEntity*) vuDatabase->Find(game->OwnerId());
+    masterSession = (FalconSessionEntity *)vuDatabase->Find(game->OwnerId());
 
-    if ( not masterSession or masterSession == vuLocalSessionEntity)
+    if (not masterSession or masterSession == vuLocalSessionEntity)
         return 0;
 
     switch (game->GetGameType())
     {
-        case game_InstantAction:
-        case game_Dogfight:
-        {
-            Flags or_eq CAMP_LIGHT;
-            break;
-        }
+    case game_InstantAction:
+    case game_Dogfight:
+    {
+        Flags or_eq CAMP_LIGHT;
+        break;
+    }
 
-        case game_TacticalEngagement:
-        {
-            Flags or_eq CAMP_TACTICAL;
-            break;
-        }
+    case game_TacticalEngagement:
+    {
+        Flags or_eq CAMP_TACTICAL;
+        break;
+    }
     }
 
     Flags or_eq CAMP_NEED_PRELOAD;
-    camprequest = new FalconRequestCampaignData(masterSession->Id(), masterSession);
+    camprequest =
+        new FalconRequestCampaignData(masterSession->Id(), masterSession);
     camprequest->dataBlock.who = vuLocalSessionEntity->Id();
     camprequest->dataBlock.dataNeeded = CAMP_NEED_PRELOAD;
     FalconSendMessage(camprequest, TRUE);
@@ -1978,7 +2025,7 @@ void CampaignClass::Suspend(void)
     ThreadManager::fast_campaign();
     Flags or_eq CAMP_SUSPEND_REQUEST;
 
-    while ( not IsSuspended() and (Flags bitand CAMP_SUSPEND_REQUEST))
+    while (not IsSuspended() and (Flags bitand CAMP_SUSPEND_REQUEST))
     {
         Sleep(100); // Wait until the campaign is actually suspended
     }
@@ -1988,7 +2035,7 @@ void CampaignClass::Suspend(void)
 
 void CampaignClass::Resume(void)
 {
-    if ( not IsSuspended())
+    if (not IsSuspended())
     {
         return;
     }
@@ -2040,8 +2087,8 @@ int CampaignClass::BearingToBullseyeDeg(float x, float y)
     // KCK: Remember - swap axises.
     by = GridToSim(BullseyeX);
     bx = GridToSim(BullseyeY);
-    theta = (float)atan2((bx - x) , (by - y));
-    theta = (float)atan2((by - y) , (bx - x));
+    theta = (float)atan2((bx - x), (by - y));
+    theta = (float)atan2((by - y), (bx - x));
     return FloatToInt32(theta * RTD);
 }
 
@@ -2062,7 +2109,7 @@ void CampaignClass::GetPlayerLocation(GridIndex *x, GridIndex *y)
 
     player = FalconLocalSession->GetPlayerEntity();
 
-    if ( not player)        // not in the cockpit
+    if (not player) // not in the cockpit
     {
         *x = *y = 0;
         return;
@@ -2083,13 +2130,13 @@ int CampaignClass::IsMaster(void)
 // ==============================================
 
 // This will return a list of the most recent standard campaign events.
-CampUIEventElement* CampaignClass::GetRecentEventlist(void)
+CampUIEventElement *CampaignClass::GetRecentEventlist(void)
 {
     return StandardEventQueue;
 }
 
 // This will return a list of the most recent priority events (objective captured and triggered events).
-CampUIEventElement* CampaignClass::GetRecentPriorityEventList(void)
+CampUIEventElement *CampaignClass::GetRecentPriorityEventList(void)
 {
     return PriorityEventQueue;
 }
@@ -2103,7 +2150,8 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
 
     if (newEvent->flags bitand 0x01)
     {
-        if ( not PriorityEventQueue or strcmp(PriorityEventQueue->eventText, newEvent->eventText) not_eq 0)
+        if (not PriorityEventQueue or
+            strcmp(PriorityEventQueue->eventText, newEvent->eventText) not_eq 0)
         {
             newEvent->next = PriorityEventQueue;
             PriorityEventQueue = newEvent;
@@ -2118,7 +2166,8 @@ void CampaignClass::AddCampaignEvent(CampUIEventElement *newEvent)
     }
     else
     {
-        if ( not StandardEventQueue or strcmp(StandardEventQueue->eventText, newEvent->eventText) not_eq 0)
+        if (not StandardEventQueue or
+            strcmp(StandardEventQueue->eventText, newEvent->eventText) not_eq 0)
         {
             newEvent->next = StandardEventQueue;
             StandardEventQueue = newEvent;
@@ -2187,24 +2236,27 @@ void CampaignClass::TrimCampUILists(void)
 // Map Stuff (small map)
 // ==========================
 
-uchar* CampaignClass::MakeCampMap(int type)
+uchar *CampaignClass::MakeCampMap(int type)
 {
     switch (type)
     {
-        case MAP_SAMCOVERAGE:
-            SamMapData = ::MakeCampMap(type, SamMapData, SamMapSize);
-            SamMapSize = sizeof(uchar) * (Map_Max_X / MAP_RATIO) * (Map_Max_Y / MAP_RATIO);
-            return SamMapData;
+    case MAP_SAMCOVERAGE:
+        SamMapData = ::MakeCampMap(type, SamMapData, SamMapSize);
+        SamMapSize =
+            sizeof(uchar) * (Map_Max_X / MAP_RATIO) * (Map_Max_Y / MAP_RATIO);
+        return SamMapData;
 
-        case MAP_RADARCOVERAGE:
-            RadarMapData = ::MakeCampMap(type, RadarMapData, RadarMapSize);
-            RadarMapSize = sizeof(uchar) * (Map_Max_X / MAP_RATIO) * (Map_Max_Y / MAP_RATIO);
-            return RadarMapData;
+    case MAP_RADARCOVERAGE:
+        RadarMapData = ::MakeCampMap(type, RadarMapData, RadarMapSize);
+        RadarMapSize =
+            sizeof(uchar) * (Map_Max_X / MAP_RATIO) * (Map_Max_Y / MAP_RATIO);
+        return RadarMapData;
 
-        default:
-            CampMapData = ::MakeCampMap(type, CampMapData, CampMapSize);
-            CampMapSize = sizeof(uchar) * (Map_Max_X / MAP_RATIO) * (Map_Max_Y / MAP_RATIO) / 2;
-            return CampMapData;
+    default:
+        CampMapData = ::MakeCampMap(type, CampMapData, CampMapSize);
+        CampMapSize = sizeof(uchar) * (Map_Max_X / MAP_RATIO) *
+                      (Map_Max_Y / MAP_RATIO) / 2;
+        return CampMapData;
     }
 
     return NULL;
@@ -2233,14 +2285,14 @@ void CampaignClass::VerifySquadrons(int team)
     int s, squadrons = 0;
     SquadUIInfoClass *newData;
 
-    if ( not AllAirList)
+    if (not AllAirList)
         return;
 
     FreeSquadronData();
 
     // First, let's see how many squadrons we have
     VuListIterator myit(AllAirList);
-    u = (Unit) myit.GetFirst();
+    u = (Unit)myit.GetFirst();
 
     while (u)
     {
@@ -2249,16 +2301,16 @@ void CampaignClass::VerifySquadrons(int team)
             squadrons++;
         }
 
-        u = (Unit) myit.GetNext();
+        u = (Unit)myit.GetNext();
     }
 
-    if ( not squadrons)
+    if (not squadrons)
         return;
 
     // Next, allocate a new array of data and fill it
     newData = new SquadUIInfoClass[squadrons];
     s = 0;
-    u = (Unit) myit.GetFirst();
+    u = (Unit)myit.GetFirst();
 
     while (u)
     {
@@ -2271,7 +2323,7 @@ void CampaignClass::VerifySquadrons(int team)
             newData[s].y = u->YPos();
             newData[s].id = u->Id();
             newData[s].dIndex = u->Type() - VU_LAST_ENTITY_TYPE;
-            newData[s].specialty = (uchar) u->GetUnitSpecialty();
+            newData[s].specialty = (uchar)u->GetUnitSpecialty();
             newData[s].nameId = u->GetUnitNameID();
             newData[s].country = u->GetOwner();
             newData[s].currentStrength = u->GetTotalVehicles();
@@ -2289,7 +2341,7 @@ void CampaignClass::VerifySquadrons(int team)
             s++;
         }
 
-        u = (Unit) myit.GetNext();
+        u = (Unit)myit.GetNext();
     }
 
     NumAvailSquadrons = squadrons;
@@ -2307,7 +2359,7 @@ void CampaignClass::FreeSquadronData(void)
 
 void CampaignClass::ReadValidAircraftTypes(char *typefile)
 {
-    char /* *data, */*data_ptr;
+    char /* *data, */ *data_ptr;
     int eClass[8], i, size;
 
     CampaignData cd;
@@ -2330,9 +2382,13 @@ void CampaignClass::ReadValidAircraftTypes(char *typefile)
 
     for (i = 0; i < NumberOfValidTypes; i++)
     {
-        sscanf(data_ptr, "%d %d %d %d %d %d %d %d%n", &eClass[0], &eClass[1], &eClass[2], &eClass[3], &eClass[4], &eClass[5], &eClass[6], &eClass[7], &size);
+        sscanf(data_ptr, "%d %d %d %d %d %d %d %d%n", &eClass[0], &eClass[1],
+               &eClass[2], &eClass[3], &eClass[4], &eClass[5], &eClass[6],
+               &eClass[7], &size);
         data_ptr += size;
-        ValidAircraftTypes[i] = GetClassID(eClass[0], eClass[1], eClass[2], eClass[3], eClass[4], eClass[5], eClass[6], eClass[7]);
+        ValidAircraftTypes[i] =
+            GetClassID(eClass[0], eClass[1], eClass[2], eClass[3], eClass[4],
+                       eClass[5], eClass[6], eClass[7]);
     }
 
     //delete data;
@@ -2350,7 +2406,7 @@ int CampaignClass::IsValidAircraftType(Unit u)
     {
         type = u->Type() - VU_LAST_ENTITY_TYPE;
 
-        if ( not type)
+        if (not type)
             return 0;
 
         for (i = 0; i < NumberOfValidTypes; i++)
@@ -2382,10 +2438,11 @@ int CampaignClass::IsValidSquadron(int id)
 
 void CampaignClass::ChillTypes(void)
 {
-    if (NumberOfValidTypes > 0 and NumberOfValidTypes not_eq CAMP_FLY_ANY_AIRCRAFT)
+    if (NumberOfValidTypes > 0 and
+        NumberOfValidTypes not_eq CAMP_FLY_ANY_AIRCRAFT)
     {
         NumberOfValidTypes = 0;
-        delete [] ValidAircraftTypes;
+        delete[] ValidAircraftTypes;
         ValidAircraftTypes = NULL;
     }
 }
@@ -2404,7 +2461,8 @@ void Camp_Init(int processor)
 #if MF_DONT_PROCESS_DELETE or VU_USE_ENUM_FOR_TYPES
     FalconMessageFilter campFilter(FalconEvent::CampaignThread, 0);
 #else
-    FalconMessageFilter campFilter(FalconEvent::CampaignThread, VU_DELETE_EVENT_BITS);
+    FalconMessageFilter campFilter(FalconEvent::CampaignThread,
+                                   VU_DELETE_EVENT_BITS);
 #endif
     TheCampaign.vuThread = new VuThread(&campFilter, F4_EVENT_QUEUE_SIZE * 4);
     SetTimeCompression(0);
@@ -2484,13 +2542,13 @@ void TrashCampaignUnits(void)
     FalconLocalSession->SetPlayerFlight(NULL);
     FalconLocalSession->SetPlayerSquadron(NULL);
     VuListIterator myit(AllUnitList);
-    u = (Unit) myit.GetFirst();
+    u = (Unit)myit.GetFirst();
 
     while (u)
     {
         u->KillUnit();
         vuDatabase->Remove(u);
-        u = (Unit) myit.GetNext();
+        u = (Unit)myit.GetNext();
     }
 }
 
@@ -2501,7 +2559,7 @@ void TrashCampaignUnits(void)
 // objectives load once and live until the campaign ends).
 void TrashInstantActionObjectives(void)
 {
-    if ( not AllObjList)
+    if (not AllObjList)
         return;
 
     VuListIterator myit(AllObjList);
@@ -2561,19 +2619,21 @@ void NukeHistoryFiles(void)
 {
     char filename[MAX_PATH];
 
-    sprintf(filename, "%s\\tmp.his", FalconCampUserSaveDirectory, TheCampaign.SaveFile);
+    sprintf(filename, "%s/tmp.his", FalconCampUserSaveDirectory,
+            TheCampaign.SaveFile);
     unlink(filename);
-    sprintf(filename, "%s\\tmp.frc", FalconCampUserSaveDirectory, TheCampaign.SaveFile);
+    sprintf(filename, "%s/tmp.frc", FalconCampUserSaveDirectory,
+            TheCampaign.SaveFile);
     unlink(filename);
 #ifdef DEBUG
-    sprintf(filename, "campaign\\save\\dump\\errors.log");
+    sprintf(filename, "campaign/save/dump/errors.log");
     unlink(filename);
 #endif
 }
 
 int SaveAfterRename(char *savefile, FalconGameType gametype)
 {
-    FILE* fp;
+    FILE *fp;
     char filename[MAX_PATH];
 
     strcpy(filename, savefile);
@@ -2593,7 +2653,7 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
 
     fp = OpenCampFile(filename, "cmp", "wb");
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint("Error opening file %s\n", filename);
         return 0;
@@ -2608,7 +2668,7 @@ int SaveAfterRename(char *savefile, FalconGameType gametype)
     SaveCampaignEvents(filename);
     SavePilotInfo(filename);
     SavePersistantList(filename);
-    ((WeatherClass*)realWeather)->Save(filename);
+    ((WeatherClass *)realWeather)->Save(filename);
 
     WriteVersionNumber(filename);
     EndWriteCampFile();

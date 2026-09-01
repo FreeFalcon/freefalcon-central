@@ -27,7 +27,8 @@
 #define __QUAT_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     typedef float Quat[4];
@@ -43,7 +44,8 @@ extern "C" {
     void euler2quat2(const float *rot, Quat quat);
     void quat2axis_angle(const Quat quat, float *axisAngle);
     void axis_angle2quat(const float *axisAngle, Quat quat);
-    void slerp_quat(const Quat quat1, const Quat quat2, float slerp, Quat result);
+    void slerp_quat(const Quat quat1, const Quat quat2, float slerp,
+                    Quat result);
     void trans_quat(float *result, const Quat q, const float *v);
 
     // 3DNow! accelerated quat functions
@@ -56,7 +58,8 @@ extern "C" {
     void _euler2quat(const float *rot, Quat quat);
     void _quat2axis_angle(const Quat quat, float *axisAngle);
     void _axis_angle2quat(const float *axisAngle, Quat quat);
-    void _slerp_quat(const Quat quat1, const Quat quat2, float slerp, Quat result);
+    void _slerp_quat(const Quat quat1, const Quat quat2, float slerp,
+                     Quat result);
     void _trans_quat(float *result, const Quat q, const float *v);
 
 #ifdef __cplusplus

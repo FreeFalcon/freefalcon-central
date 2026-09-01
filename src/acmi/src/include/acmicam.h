@@ -73,7 +73,7 @@ public:
 
     // Access.
     void SetType(int type);
-    int  Type() const;
+    int Type() const;
 
     void SetAction(int action);
     void SetAction(int action, float az, float el);
@@ -120,29 +120,11 @@ public:
     void UpdateChasePosition(float dT);
     void UpdatePannerPosition();
 
-    void Tilt
-    (
-        float pitch,
-        float roll,
-        float yaw,
-        Trotation *tilt
-    );
-    void Rotate
-    (
-        float pitch,
-        float roll,
-        float yaw,
-        Trotation *viewRotation
-    );
-    void Translate
-    (
-        float x,
-        float y,
-        float z,
-        Tpoint* camView
-    );
+    void Tilt(float pitch, float roll, float yaw, Trotation *tilt);
+    void Rotate(float pitch, float roll, float yaw, Trotation *viewRotation);
+    void Translate(float x, float y, float z, Tpoint *camView);
 
-    CRITICAL_SECTION    criticalSection;
+    CRITICAL_SECTION criticalSection;
 
     void SetChasePosition(Tpoint *pos)
     {
@@ -203,6 +185,4 @@ private:
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-#endif // _ACMICAM_H_ 
-
-
+#endif // _ACMICAM_H_

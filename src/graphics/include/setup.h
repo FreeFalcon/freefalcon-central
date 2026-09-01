@@ -10,7 +10,8 @@
 #ifndef _SETUP_H_
 #define _SETUP_H_
 
-void DeviceIndependentGraphicsSetup(char *theater, char *objects, char* misctex);
+void DeviceIndependentGraphicsSetup(char *theater, char *objects,
+                                    char *misctex);
 void DeviceDependentGraphicsSetup(class DisplayDevice *);
 void DeviceDependentGraphicsCleanup(class DisplayDevice *);
 void DeviceIndependentGraphicsCleanup(void);

@@ -10,26 +10,27 @@ class DrawableObject;
 class SimFeatureClass : public SimStaticClass
 {
 protected:
-    FeatureBrain* theBrain;
+    FeatureBrain *theBrain;
 
 public:
-    SimFeatureClass(VU_BYTE** stream, long *rem);
-    SimFeatureClass(FILE* filePtr);
+    SimFeatureClass(VU_BYTE **stream, long *rem);
+    SimFeatureClass(FILE *filePtr);
     SimFeatureClass(int type);
     virtual ~SimFeatureClass(void);
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
 
 public:
-    void Init(SimInitDataClass* initData);
-    int  Wake(void);
-    int  Sleep(void);
+    void Init(SimInitDataClass *initData);
+    int Wake(void);
+    int Sleep(void);
     void ApplyDamage(FalconDamageMessage *damageMessage);
     void JoinFlight(void);
-    FeatureBrain* Brain(void)
+    FeatureBrain *Brain(void)
     {
         return theBrain;
     };
@@ -56,7 +57,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {

@@ -5,9 +5,9 @@
  * Generated from file EVENTS.XLS by Leon Rosenshein
  */
 
-#include "MsgInc/DeathMessage.h"
+#include "msginc/deathmessage.h"
 #include "mesg.h"
-#include "Squadron.h"
+#include "squadron.h"
 #include "uicomms.h"
 #include "msginc/radiochattermsg.h"
 #include "falclib.h"
@@ -15,23 +15,30 @@
 #include "falcgame.h"
 #include "falcsess.h"
 #include "team.h"
-#include "MissEval.h"
+#include "misseval.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 extern bool g_bLogEvents;
-extern uchar GetOwner(uchar* map_data, GridIndex x, GridIndex y);
+extern uchar GetOwner(uchar *map_data, GridIndex x, GridIndex y);
 
-void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseClass *campShooter, SimBaseClass *simTarget, CampBaseClass *campTarget);
+void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter,
+                  CampBaseClass *campShooter, SimBaseClass *simTarget,
+                  CampBaseClass *campTarget);
 
-FalconDeathMessage::FalconDeathMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(DeathMessage, FalconEvent::SimThread, entityId, target, loopback)
+FalconDeathMessage::FalconDeathMessage(VU_ID entityId, VuTargetEntity *target,
+                                       VU_BOOL loopback)
+    : FalconEvent(DeathMessage, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     dataBlock.dEntityID = FalconNullId;
     dataBlock.fEntityID = FalconNullId;
 }
 
-FalconDeathMessage::FalconDeathMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(DeathMessage, FalconEvent::SimThread, senderid, target)
+FalconDeathMessage::FalconDeathMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                       VU_ID target)
+    : FalconEvent(DeathMessage, FalconEvent::SimThread, senderid, target)
 {
     type;
 }
@@ -43,10 +50,12 @@ FalconDeathMessage::~FalconDeathMessage(void)
 
 int FalconDeathMessage::Process(uchar autodisp)
 {
-    SimBaseClass* target = (SimBaseClass*) vuDatabase->Find(dataBlock.dEntityID);
-    SimBaseClass* shooter = (SimBaseClass*) vuDatabase->Find(dataBlock.fEntityID);
-    CampEntity campTarget = (CampEntity) GetEntityByCampID(dataBlock.dCampID);
-    CampEntity campShooter = (CampEntity) GetEntityByCampID(dataBlock.fCampID);
+    SimBaseClass *target =
+        (SimBaseClass *)vuDatabase->Find(dataBlock.dEntityID);
+    SimBaseClass *shooter =
+        (SimBaseClass *)vuDatabase->Find(dataBlock.fEntityID);
+    CampEntity campTarget = (CampEntity)GetEntityByCampID(dataBlock.dCampID);
+    CampEntity campShooter = (CampEntity)GetEntityByCampID(dataBlock.fCampID);
 
     if (autodisp)
         return 0;
@@ -58,7 +67,8 @@ int FalconDeathMessage::Process(uchar autodisp)
     // KCK: Chalk off a vehicle in the unit if the target is a Campaign Unit
     if (campTarget and campTarget->IsUnit())
     {
-        if ( not campTarget->IsAggregate() and target and not target->IsSetFalcFlag(FEC_REGENERATING))
+        if (not campTarget->IsAggregate() and target and
+            not target->IsSetFalcFlag(FEC_REGENERATING))
             campTarget->GetComponents()->Remove(target);
 
         if (campTarget->IsLocal())
@@ -66,33 +76,47 @@ int FalconDeathMessage::Process(uchar autodisp)
 
         // Check for radar being killed
         // KCK NOTE: This will shut down radar for unit if ANY of our possibly multiple radar vehicles are killed
-        if (target and campTarget->IsBattalion() and target->GetSlot() == ((Unit)campTarget)->GetUnitClassData()->RadarVehicle and campTarget->IsEmitting())
+        if (target and campTarget->IsBattalion() and
+            target->GetSlot() ==
+                ((Unit)campTarget)->GetUnitClassData()->RadarVehicle and
+            campTarget->IsEmitting())
             campTarget->SetEmitting(0);
     }
 
     // KCK: update kill records for mission evaluator.
     EvaluateKill(this, shooter, campShooter, target, campTarget);
 
-    if (target and (target->IsAirplane() or not (rand() % 3)))
+    if (target and (target->IsAirplane() or not(rand() % 3)))
     {
-        if (shooter and shooter->IsAirplane() and 
-            (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >= Hostile) and rand() % 2
-           and not shooter->IsPlayer())
+        if (shooter and shooter->IsAirplane() and
+            (GetTTRelations(shooter->GetTeam(), target->GetTeam()) >=
+             Hostile) and
+            rand() % 2 and not shooter->IsPlayer())
         {
-            FalconRadioChatterMessage *radioMessage = new FalconRadioChatterMessage(shooter->Id(), FalconLocalSession);
+            FalconRadioChatterMessage *radioMessage =
+                new FalconRadioChatterMessage(shooter->Id(),
+                                              FalconLocalSession);
             radioMessage->dataBlock.from = shooter->Id();
             radioMessage->dataBlock.to = MESSAGE_FOR_TEAM;
 
 
-            if (((CampBaseClass*)shooter->GetCampaignObject())->IsFlight())
+            if (((CampBaseClass *)shooter->GetCampaignObject())->IsFlight())
             {
-                radioMessage->dataBlock.voice_id = (uchar)((Flight)shooter->GetCampaignObject())->GetPilotVoiceID(((AircraftClass*)shooter)->vehicleInUnit);
-                radioMessage->dataBlock.edata[0] = (short)shooter->GetCallsignIdx();
-                radioMessage->dataBlock.edata[1] = (short)((Flight)shooter->GetCampaignObject())->GetPilotCallNumber(((AircraftClass*)shooter)->vehicleInUnit);
+                radioMessage->dataBlock.voice_id =
+                    (uchar)((Flight)shooter->GetCampaignObject())
+                        ->GetPilotVoiceID(
+                            ((AircraftClass *)shooter)->vehicleInUnit);
+                radioMessage->dataBlock.edata[0] =
+                    (short)shooter->GetCallsignIdx();
+                radioMessage->dataBlock.edata[1] =
+                    (short)((Flight)shooter->GetCampaignObject())
+                        ->GetPilotCallNumber(
+                            ((AircraftClass *)shooter)->vehicleInUnit);
             }
             else
             {
-                radioMessage->dataBlock.voice_id = (uchar)(((int)shooter) % 12); // JPO VOICEFIX
+                radioMessage->dataBlock.voice_id =
+                    (uchar)(((int)shooter) % 12); // JPO VOICEFIX
                 radioMessage->dataBlock.edata[0] = -1;
                 radioMessage->dataBlock.edata[1] = -1;
             }
@@ -119,7 +143,6 @@ int FalconDeathMessage::Process(uchar autodisp)
             }
 
 
-
             FalconSendMessage(radioMessage, FALSE);
         }
     }
@@ -132,12 +155,14 @@ int FalconDeathMessage::Process(uchar autodisp)
 // =============================================
 
 // Anytime something is killed, we need to credit the kill to the appropriate sources.
-void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseClass *campShooter, SimBaseClass *simTarget, CampBaseClass *campTarget)
+void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter,
+                  CampBaseClass *campShooter, SimBaseClass *simTarget,
+                  CampBaseClass *campTarget)
 {
     int kill_type = -1, tid, ps = PILOT_KIA;
     Squadron sq;
 
-    if ( not campShooter or not campTarget)
+    if (not campShooter or not campTarget)
         return;
 
     // Determine type of kill
@@ -154,7 +179,8 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
         kill_type = ASTAT_ANKILL;
 
     // Credit kill if shooter was a flight and target was not on our team (not nessisarily ok for RoE)
-    if (campShooter->IsFlight() and campShooter->GetTeam() not_eq campTarget->GetTeam())
+    if (campShooter->IsFlight() and
+        campShooter->GetTeam() not_eq campTarget->GetTeam())
     {
         int pilot, squadron_pilot;
 
@@ -163,11 +189,14 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
 
         // JB 010107
         //if (simShooter)
-        if (simShooter and (void*) simShooter not_eq (void*) campShooter) // JB 010107 CTD Sanity check
+        if (simShooter and (void *) simShooter not_eq
+                               (void *)
+                                   campShooter) // JB 010107 CTD Sanity check
             // JB 010107
-            pilot = ((SimMoverClass*)simShooter)->pilotSlot;
+            pilot = ((SimMoverClass *)simShooter)->pilotSlot;
         else
-            pilot = ((Flight)campShooter)->PickRandomPilot(campTarget->Id().num_);
+            pilot =
+                ((Flight)campShooter)->PickRandomPilot(campTarget->Id().num_);
 
         if (pilot < PILOTS_PER_FLIGHT)
             squadron_pilot = ((Flight)campShooter)->pilots[pilot];
@@ -175,7 +204,8 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
             squadron_pilot = 255; // Player kill, probably
 
         // Update squadron records
-        if (sq and squadron_pilot >= 0 and squadron_pilot < PILOTS_PER_SQUADRON and kill_type > -1)
+        if (sq and squadron_pilot >= 0 and
+            squadron_pilot < PILOTS_PER_SQUADRON and kill_type > -1)
             sq->ScoreKill(squadron_pilot, kill_type);
     }
 
@@ -190,11 +220,12 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
 
         // Find the target pilot
         if (simTarget)
-            pilot = ((SimMoverClass*)simTarget)->pilotSlot;
+            pilot = ((SimMoverClass *)simTarget)->pilotSlot;
         else if (dtm)
             pilot = dtm->dataBlock.dPilotID;
         else
-            pilot = ((Flight)campTarget)->PickRandomPilot(campTarget->GetCampID());
+            pilot =
+                ((Flight)campTarget)->PickRandomPilot(campTarget->GetCampID());
 
         if (pilot < PILOTS_PER_FLIGHT)
             squadron_pilot = ((Flight)campTarget)->pilots[pilot];
@@ -213,13 +244,16 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
                 // territory.
                 // For sim spawned deaths, we assume KIA. Choose between MIA and rescued if and when we get an
                 // eject message
-                if ( not dtm or dtm->dataBlock.dEntityID not_eq FalconNullId)
+                if (not dtm or dtm->dataBlock.dEntityID not_eq FalconNullId)
                 {
-                    if (((Flight)campTarget)->plane_stats[pilot] == AIRCRAFT_MISSING)
+                    if (((Flight)campTarget)->plane_stats[pilot] ==
+                        AIRCRAFT_MISSING)
                     {
                         campTarget->GetLocation(&x, &y);
 
-                        if (GetRoE(GetOwner(TheCampaign.CampMapData, x, y), campTarget->GetTeam(), ROE_AIR_USE_BASES) == ROE_ALLOWED)
+                        if (GetRoE(GetOwner(TheCampaign.CampMapData, x, y),
+                                   campTarget->GetTeam(),
+                                   ROE_AIR_USE_BASES) == ROE_ALLOWED)
                             ps = pc->pilot_status = PILOT_RESCUED;
                         else
                             ps = pc->pilot_status = PILOT_MIA;
@@ -233,7 +267,8 @@ void EvaluateKill(FalconDeathMessage *dtm, SimBaseClass *simShooter, CampBaseCla
     }
 
     // Update mission evaluation records if either target or shooter is in our package
-    if (dtm and ((campTarget and (campTarget->InPackage() or g_bLogEvents)) or (campShooter and (campShooter->InPackage() or g_bLogEvents))))
+    if (dtm and ((campTarget and (campTarget->InPackage() or g_bLogEvents)) or
+                 (campShooter and (campShooter->InPackage() or g_bLogEvents))))
         TheCampaign.MissionEvaluator->RegisterKill(dtm, kill_type, ps);
 
     // Update some status flags as well for all hits

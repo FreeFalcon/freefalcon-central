@@ -27,12 +27,12 @@ class AirframeClass; // RV - I-Hawk
 
 enum JettisonMode // MLR 3/2/2004 - Jettison Mode
 {
-    JettisonNone    = 0,
-    Emergency       = 1 << 1,
+    JettisonNone = 0,
+    Emergency = 1 << 1,
     SelectiveWeapon = 1 << 2,
-    SelectiveRack   = 1 << 3 bitor SelectiveWeapon,
-    SelectivePylon  = 1 << 4 bitor SelectiveRack,
-    RippedOff       = 1 << 5
+    SelectiveRack = 1 << 3 bitor SelectiveWeapon,
+    SelectivePylon = 1 << 4 bitor SelectiveRack,
+    RippedOff = 1 << 5
 };
 
 class SMSBaseClass
@@ -47,7 +47,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -60,40 +61,52 @@ public:
     static MEM_POOL pool;
 #endif
 
-    enum JDAMtargetingMode {PB, TOO};
-    enum MasterArmState {Safe, Sim, Arm};
+    enum JDAMtargetingMode
+    {
+        PB,
+        TOO
+    };
+    enum MasterArmState
+    {
+        Safe,
+        Sim,
+        Arm
+    };
     enum CommandFlags
     {
-        Loftable                = 0x0001,
-        HasDisplay              = 0x0002,
-        HasBurstHeight          = 0x0004,
-        UnlimitedAmmoFlag       = 0x0008,
-        EmergencyJettisonFlag   = 0x0010,
-        Firing                  = 0x0020,
-        LGBOnBoard              = 0x0040,
-        HTSOnBoard              = 0x0080,
-        SPJamOnBoard            = 0x0100,
-        GunOnBoard              = 0x0200,
-        Trainable               = 0x0400,
-        TankJettisonFlag  = 0x0800 // 2002-02-20 ADDED BY S.G. Flag it if we have jettisoned our tanks (mainly for digis)
+        Loftable = 0x0001,
+        HasDisplay = 0x0002,
+        HasBurstHeight = 0x0004,
+        UnlimitedAmmoFlag = 0x0008,
+        EmergencyJettisonFlag = 0x0010,
+        Firing = 0x0020,
+        LGBOnBoard = 0x0040,
+        HTSOnBoard = 0x0080,
+        SPJamOnBoard = 0x0100,
+        GunOnBoard = 0x0200,
+        Trainable = 0x0400,
+        TankJettisonFlag =
+            0x0800 // 2002-02-20 ADDED BY S.G. Flag it if we have jettisoned our tanks (mainly for digis)
     };
     BasicWeaponStation **hardPoint;
 
-    SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt, int advanced = FALSE);
+    SMSBaseClass(SimVehicleClass *newOwnship, short *weapId, uchar *weapCnt,
+                 int advanced = FALSE);
     virtual ~SMSBaseClass();
     virtual void AddWeaponGraphics(void);
     virtual void FreeWeaponGraphics(void);
-    virtual SimWeaponClass* GetCurrentWeapon(void);
+    virtual SimWeaponClass *GetCurrentWeapon(void);
 
-    GunClass* GetGun(int hardpoint);
-    MissileClass* GetMissile(int hardpoint);
-    BombClass* GetBomb(int hardpoint);
+    GunClass *GetGun(int hardpoint);
+    MissileClass *GetMissile(int hardpoint);
+    BombClass *GetBomb(int hardpoint);
 
     int GetCurrentWeaponHardpoint(void)
     {
         return curHardpoint;
     };
-    WeaponType GetCurrentWeaponType(void);  // MLR who writes this shit? ----> weaponId???? { return (short)hardPoint[curHardpoint]->weaponId; };
+    WeaponType GetCurrentWeaponType(
+        void); // MLR who writes this shit? ----> weaponId???? { return (short)hardPoint[curHardpoint]->weaponId; };
     short GetCurrentWeaponIndex(void);
     float GetCurrentWeaponRangeFeet(void);
     void LaunchWeapon(void);
@@ -111,7 +124,7 @@ public:
     {
         return curHardpoint;
     };
-    int  NumCurrentWpn(void)
+    int NumCurrentWpn(void)
     {
         return numCurrentWpn;
     };
@@ -119,7 +132,7 @@ public:
     {
         curHardpoint = newPoint;
     }; // This should go one day
-    SimVehicleClass* Ownship(void)
+    SimVehicleClass *Ownship(void)
     {
         return ownship;
     };
@@ -133,9 +146,9 @@ public:
     };
     void StepMasterArm(void);
     void StepCatIII(void);
-    void ReplaceMissile(int, MissileClass*);
+    void ReplaceMissile(int, MissileClass *);
     void ReplaceRocket(int);
-    void ReplaceBomb(int, BombClass*);
+    void ReplaceBomb(int, BombClass *);
 
     void SetFlag(int newFlag)
     {
@@ -145,14 +158,17 @@ public:
     {
         flags and_eq compl newFlag;
     };
-    int  IsSet(int newFlag)
+    int IsSet(int newFlag)
     {
         return flags bitand newFlag;
     };
 
     float GetWeaponRangeFeet(int hardpoint);
 
-    void SelectBestWeapon(uchar *dam, int mt, int range_km, int guns_only = FALSE, int alt_feet = -1);  // 2002-03-09 MODIFIED BY S.G. Added the alt_feet variable so it knows the altitude of the target as well as it range
+    void SelectBestWeapon(
+        uchar *dam, int mt, int range_km, int guns_only = FALSE,
+        int alt_feet =
+            -1); // 2002-03-09 MODIFIED BY S.G. Added the alt_feet variable so it knows the altitude of the target as well as it range
 
     MasterArmState masterArm; //MI moved from protected
     //MI
@@ -162,16 +178,21 @@ public:
     bool DrawFEDS;
     bool Powered; //for mav's
     float MavCoolTimer;
-    enum MavSubModes { PRE, VIS, BORE};
+    enum MavSubModes
+    {
+        PRE,
+        VIS,
+        BORE
+    };
     MavSubModes MavSubMode;
     void ToggleMavPower(void)
     {
         Powered = not Powered;
     };
     void StepMavSubMode(bool init = FALSE);
-    bool JDAMPowered;//Cobra
-    float JDAMInitTimer;//Cobra
-    JDAMtargetingMode JDAMtargeting;//Cobra PB or TOO
+    bool JDAMPowered; //Cobra
+    float JDAMInitTimer; //Cobra
+    JDAMtargetingMode JDAMtargeting; //Cobra PB or TOO
 
     // RV - I-Hawk - HARM power functions
     bool GetHARMPowerState(void)
@@ -197,7 +218,7 @@ protected:
     int curHardpoint;
     int numCurrentWpn;
     int flags;
-    SimVehicleClass* ownship;
+    SimVehicleClass *ownship;
 
     // RV - I-Hawk - HARM power
     bool HARMPowered;
@@ -223,7 +244,6 @@ struct SMSAirGroundBombProfile
 };
 
 
-
 class SMSClass : public SMSBaseClass
 {
 
@@ -238,7 +258,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -252,7 +273,6 @@ public:
 #endif
 
 protected:
-
     char flash;
     int /* rippleInterval, pair, rippleCount,*/ curRippleCount;
     float burstHeight;
@@ -278,7 +298,7 @@ public:
     WeaponType curWeaponType;
     WeaponDomain curWeaponDomain;
     WeaponClass curWeaponClass;
-    SmsDrawable* drawable;
+    SmsDrawable *drawable;
     //SimWeaponClass* curWeapon; // sfr: using smartpointer
     VuBin<SimWeaponClass> curWeapon;
     short curWeaponId;
@@ -288,7 +308,7 @@ public:
 
     virtual void AddWeaponGraphics(void);
     virtual void FreeWeaponGraphics(void);
-    virtual SimWeaponClass* GetCurrentWeapon(void)
+    virtual SimWeaponClass *GetCurrentWeapon(void)
     {
         return curWeapon.get();
     };
@@ -302,58 +322,60 @@ public:
     void JettisonWeapon(int hardpoint);
     void RemoveWeapon(int hardpoint);
     void AGJettison(void);
-    int  DidEmergencyJettison(void)
+    int DidEmergencyJettison(void)
     {
         return flags bitand EmergencyJettisonFlag;
     }
-    int  DidJettisonedTank(void)
+    int DidJettisonedTank(void)
     {
-        return flags bitand TankJettisonFlag;    // 2002-02-20 ADDED BY S.G. Helper to know if our tanks where jettisoned
+        return flags bitand
+               TankJettisonFlag; // 2002-02-20 ADDED BY S.G. Helper to know if our tanks where jettisoned
     }
-    void TankJettison(void);  // 2002-02-20 ADDED BY S.G. Will jettison the tanks (if empty) and set TankJettisonFlag
-    int  WeaponStep(int symFlag = FALSE);
-    int  FindWeapon(int indexDesired);
-    int  FindWeaponClass(WeaponClass weaponDesired, int needWeapon = TRUE);
-    int  FindWeaponType(WeaponType weaponDesired);
-    int  DropBomb(int allowRipple = TRUE);
-    int  LaunchMissile(void);
-    int  LaunchRocket(void);
+    void TankJettison(
+        void); // 2002-02-20 ADDED BY S.G. Will jettison the tanks (if empty) and set TankJettisonFlag
+    int WeaponStep(int symFlag = FALSE);
+    int FindWeapon(int indexDesired);
+    int FindWeaponClass(WeaponClass weaponDesired, int needWeapon = TRUE);
+    int FindWeaponType(WeaponType weaponDesired);
+    int DropBomb(int allowRipple = TRUE);
+    int LaunchMissile(void);
+    int LaunchRocket(void);
     void SetUnlimitedGuns(int flag);
     int UnlimitedAmmo(void)
     {
         return flags bitand UnlimitedAmmoFlag;
     };
     void SetUnlimitedAmmo(int newFlag);
-    int  HasHarm(void)
+    int HasHarm(void)
     {
         return (flags bitand HTSOnBoard ? TRUE : FALSE);
     };
-    int  HasLGB(void)
+    int HasLGB(void)
     {
         return (flags bitand LGBOnBoard ? TRUE : FALSE);
     };
-    int  HasTrainable(void);
-    int  HasSPJammer(void)
+    int HasTrainable(void);
+    int HasSPJammer(void)
     {
         return (flags bitand SPJamOnBoard ? TRUE : FALSE);
     };
-    int  HasWeaponClass(WeaponClass classDesired);
+    int HasWeaponClass(WeaponClass classDesired);
     void FreeWeapons(void);
     void Exec(void);
     void SetPlayerSMS(int flag);
     //void SetPair (int flag);
     void IncrementRippleCount(void);
     void DecrementRippleCount(void);
-    void SetRippleInterval(int rippledistance);  // Marco Edit - for AI A2G
+    void SetRippleInterval(int rippledistance); // Marco Edit - for AI A2G
     void IncrementRippleInterval(void);
     void DecrementRippleInterval(void);
     void IncrementBurstHeight(void);
     void DecrementBurstHeight(void);
-    void Incrementarmingdelay(void);//me123 status test. addet
+    void Incrementarmingdelay(void); //me123 status test. addet
     void ResetCurrentWeapon(void);
     //void SetRippleCount (int newVal); {rippleCount = newVal;}; // MLR 4/3/2004 -
     //int  RippleCount(void) {return rippleCount;};
-    int  CurRippleCount(void)
+    int CurRippleCount(void)
     {
         return curRippleCount;
     }; // JB 010708
@@ -366,7 +388,7 @@ public:
     void AddStore(int station, int storeId, int visible);
     void ChooseLimiterMode(int hardpoint);
     void RipOffWeapons(float noseAngle);
-    float armingdelay;//me123 status ok. armingdelay addet
+    float armingdelay; //me123 status ok. armingdelay addet
     int aim120id; // JPO Aim120 Id no.
     int AimId()
     {
@@ -376,7 +398,13 @@ public:
     {
         aim120id = (aim120id + 1) % 4;
     };
-    enum Aim9Mode { WARM, COOLING, COOL, WARMING } aim9mode;
+    enum Aim9Mode
+    {
+        WARM,
+        COOLING,
+        COOL,
+        WARMING
+    } aim9mode;
     Aim9Mode GetCoolState()
     {
         return aim9mode;
@@ -395,7 +423,7 @@ public:
     float aim9coolingtimeleft;
     float aim9warmtime;
 
-    int    curProfile;
+    int curProfile;
     struct SMSAirGroundBombProfile agbProfile[2];
     //MI
     //int Prof1RP, Prof2RP;
@@ -407,13 +435,20 @@ public:
     //bool Prof1Pair, Prof2Pair, Prof1;
     //FireControlComputer::FCCSubMode Prof1SubMode, Prof2SubMode;
 
-    int  GetCurrentWeaponId(void);
-    int  SetCurrentHpByWeaponId(int WeaponId); // used to find the next non-empty hardpoint carrying the the specified weaponID
-    void StepAAWeapon(void); // MLR 2/8/2004 - revised function names, was StepWeaponClass
-    void StepAGWeapon(void);  // MLR 2/8/2004 - new, to step AG weapons like AA weapons
-    void StepWeaponByID(void); // MLR 1/31/2004 - was StepAAWeaponByID - now can step AG weapons aswell
+    int GetCurrentWeaponId(void);
+    int SetCurrentHpByWeaponId(
+        int WeaponId); // used to find the next non-empty hardpoint carrying the the specified weaponID
+    void StepAAWeapon(
+        void); // MLR 2/8/2004 - revised function names, was StepWeaponClass
+    void StepAGWeapon(
+        void); // MLR 2/8/2004 - new, to step AG weapons like AA weapons
+    void StepWeaponByID(
+        void); // MLR 1/31/2004 - was StepAAWeaponByID - now can step AG weapons aswell
 
-    int  SetCurrentHardPoint(int hpId, int findSimilar = 1); // MLR 3/13/2004 - Sets the current HP, if the HP is empty, a similar HP may be found
+    int SetCurrentHardPoint(
+        int hpId,
+        int findSimilar =
+            1); // MLR 3/13/2004 - Sets the current HP, if the HP is empty, a similar HP may be found
 
     // AirGroundBomb Profile access
     void NextAGBProfile(void)
@@ -461,14 +496,14 @@ public:
     {
         return agbProfile[curProfile].releasePair;
     }
-    FireControlComputer::FCCSubMode  GetAGBSubMode(void)
+    FireControlComputer::FCCSubMode GetAGBSubMode(void)
     {
         return agbProfile[curProfile].subMode;
     }
 
     void SetAGBRippleCount(int x)
     {
-        agbProfile[curProfile].rippleCount    = x;
+        agbProfile[curProfile].rippleCount = x;
     }
     void SetAGBRippleInterval(int x)
     {
@@ -476,31 +511,31 @@ public:
     }
     void SetAGBFuze(int x)
     {
-        agbProfile[curProfile].fuzeNoseTail   = x;
+        agbProfile[curProfile].fuzeNoseTail = x;
     }
     void SetAGBBurstAlt(int x)
     {
-        agbProfile[curProfile].burstAltitude  = x;
+        agbProfile[curProfile].burstAltitude = x;
     }
     void SetAGBReleaseAngle(int x)
     {
-        agbProfile[curProfile].releaseAngle   = x;
+        agbProfile[curProfile].releaseAngle = x;
     }
     void SetAGBC1ArmDelay1(float x)
     {
-        agbProfile[curProfile].C1ArmDelay1    = x;
+        agbProfile[curProfile].C1ArmDelay1 = x;
     }
     void SetAGBC1ArmDelay2(float x)
     {
-        agbProfile[curProfile].C1ArmDelay2    = x;
+        agbProfile[curProfile].C1ArmDelay2 = x;
     }
     void SetAGBC2ArmDelay(float x)
     {
-        agbProfile[curProfile].C2ArmDelay     = x;
+        agbProfile[curProfile].C2ArmDelay = x;
     }
     void SetAGBPair(bool x)
     {
-        agbProfile[curProfile].releasePair    = x;
+        agbProfile[curProfile].releasePair = x;
     }
     void SetAGBSubMode(FireControlComputer::FCCSubMode SubMode)
     {
@@ -511,9 +546,8 @@ public:
 };
 
 VuBin<SimWeaponClass> InitWeaponList(
-    FalconEntity* parent, ushort weapid, int weapClass, int num,
-    SimWeaponClass* initFunc(FalconEntity* parent, ushort type, int slot),
-    int *loadOrder = 0
-);
+    FalconEntity *parent, ushort weapid, int weapClass, int num,
+    SimWeaponClass *initFunc(FalconEntity *parent, ushort type, int slot),
+    int *loadOrder = 0);
 
 #endif

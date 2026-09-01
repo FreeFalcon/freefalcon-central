@@ -92,6 +92,13 @@
       <Component Directory="INSTALLFOLDER">
         <File Source="$(GameDir)\openxr_loader.dll" />
       </Component>
+      <!-- Artscout - 2026: #DX12 п.5 -- DirectX Shader Compiler (DXC). The view-instanced single-pass stereo
+           shaders are SM6.1 (SV_ViewID), which FXC cannot emit; they are compiled at runtime via dxcompiler.dll.
+           Loaded on demand (LoadLibrary); if absent, view instancing just stays off. dxil.dll (the DXIL signer)
+           is optional -- modern drivers accept unsigned DXIL, so it is not shipped. -->
+      <Component Directory="INSTALLFOLDER">
+        <File Source="$(GameDir)\dxcompiler.dll" />
+      </Component>
 
       <!-- FFEmu.hlsl is NOT shipped: it is baked into the exe as the FFEMU_HLSL RCDATA resource
            (falcon4.rc) and compiled from memory at runtime. An external shaders\FFEmu.hlsl would only

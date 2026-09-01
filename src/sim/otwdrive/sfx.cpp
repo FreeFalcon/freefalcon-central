@@ -7,31 +7,31 @@
 **      MLR - this file is a cluster fuck.
 **            Hello, Init() anybody???
 */
-#include "Graphics/Include/Rviewpnt.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/drawparticlesys.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/draw2d.h"
-#include "Graphics/Include/drawtrcr.h"
-#include "Graphics/Include/drawgrnd.h"
-#include "Graphics/Include/terrtex.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/drawparticlesys.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/draw2d.h"
+#include "graphics/include/drawtrcr.h"
+#include "graphics/include/drawgrnd.h"
+#include "graphics/include/terrtex.h"
 #include "weather.h"
 #include "stdhdr.h"
 #include "otwdrive.h"
 #include "simbase.h"
-#include "ClassTbl.h"
+#include "classtbl.h"
 #include "fsound.h"
 #include "soundfx.h"
 #include "sfx.h"
 #include "fakerand.h"
 #include "simfeat.h"
 #include "tod.h"
-#include "RealWeather.h"
+#include "realweather.h"
 #include "acmi/src/include/acmirec.h"
 #include "falcmesg.h"
 #include "mesg.h"
-#include "MsgInc/MissileEndMsg.h"
-#include "MsgInc/DamageMsg.h"
+#include "msginc/missileendmsg.h"
+#include "msginc/damagemsg.h"
 #include "entity.h"
 
 extern bool g_bUse_DX_Engine;
@@ -43,9 +43,9 @@ MEM_POOL SfxClass::pool;
 
 
 #define TRACER_VELOCITY 4000.0f
-#define MAX_TIME_TO_LIVE ( 0.8f * TRACER_VELOCITY/( GRAVITY * 0.5f ) )
+#define MAX_TIME_TO_LIVE (0.8f * TRACER_VELOCITY / (GRAVITY * 0.5f))
 
-void CalcTransformMatrix(SimBaseClass* theObject);
+void CalcTransformMatrix(SimBaseClass *theObject);
 
 // detail level of sfx ( 0.0 - 1.0 )
 float gSfxLOD = 1.0f;
@@ -78,7 +78,7 @@ int gSfxLODCutoff = g_nSfxLODCutoff;
 int gSfxLODDistCutoff = g_nSfxLODDistCutoff;
 int gSfxLODTotCutoff = g_nSfxLODTotCutoff;
 // a distance to use (ft) for further improving LOD on some effects
-#define SFX_LOD_DIST ( 100000.0f )
+#define SFX_LOD_DIST (100000.0f)
 //=================================
 // Cobra - Original values
 //int gSfxLODCutoff = 40;
@@ -88,11 +88,11 @@ int gSfxLODTotCutoff = g_nSfxLODTotCutoff;
 //=================================
 
 int gTotHighWaterSfx = 0;
-int gSfxCount[ SFX_NUM_TYPES ] = {0};
-int gSfxHighWater[ SFX_NUM_TYPES ] = {0};
+int gSfxCount[SFX_NUM_TYPES] = {0};
+int gSfxHighWater[SFX_NUM_TYPES] = {0};
 
 // define for how often to check view distance (secs)
-#define VIEW_DIST_INTERVAL ( 0.5f )
+#define VIEW_DIST_INTERVAL (0.5f)
 
 // just testing some stuff for oriented billboards
 // (i.e. clouds)
@@ -113,40 +113,35 @@ Tpoint cuvs[4] =
 };
 */
 
-Tpoint gFireVerts[4] =
-{
-    { -0.5f, -0.5f, -0.75f },
-    { -0.5f,  0.5f, -0.75f },
-    { 0.5f,  0.5f,  0.75f },
-    { 0.5f, -0.5f,  0.75f },
+Tpoint gFireVerts[4] = {
+    {-0.5f, -0.5f, -0.75f},
+    {-0.5f, 0.5f, -0.75f},
+    {0.5f, 0.5f, 0.75f},
+    {0.5f, -0.5f, 0.75f},
 };
-Tpoint gGroundVerts[4] =
-{
-    { -0.5f, -0.5f, -1.0f },
-    { -0.5f,  0.5f, -1.0f },
-    { 0.5f,  0.5f,  1.0f },
-    { 0.5f, -0.5f,  1.0f },
+Tpoint gGroundVerts[4] = {
+    {-0.5f, -0.5f, -1.0f},
+    {-0.5f, 0.5f, -1.0f},
+    {0.5f, 0.5f, 1.0f},
+    {0.5f, -0.5f, 1.0f},
 };
-Tpoint gWaterVerts[4] =
-{
-    { -0.3f, -0.3f, -1.5f },
-    { -0.3f,  0.3f, -1.5f },
-    { 0.3f,  0.3f,  1.5f },
-    { 0.3f, -0.3f,  1.5f },
+Tpoint gWaterVerts[4] = {
+    {-0.3f, -0.3f, -1.5f},
+    {-0.3f, 0.3f, -1.5f},
+    {0.3f, 0.3f, 1.5f},
+    {0.3f, -0.3f, 1.5f},
 };
-Tpoint gFireUvs[4] =
-{
-    {  0.0f,  0.0f,  0.0f },
-    {  1.0f,  0.0f,  0.0f },
-    {  1.0f,  1.0f,  0.0f },
-    {  0.0f,  1.0f,  0.0f },
+Tpoint gFireUvs[4] = {
+    {0.0f, 0.0f, 0.0f},
+    {1.0f, 0.0f, 0.0f},
+    {1.0f, 1.0f, 0.0f},
+    {0.0f, 1.0f, 0.0f},
 };
-Tpoint gShockVerts[4] =
-{
-    { 1.0f, -1.0f,  0.0f },
-    { 1.0f,  1.0f,  0.0f },
-    { -1.0f,  1.0f,  0.0f },
-    { -1.0f, -1.0f,  0.0f },
+Tpoint gShockVerts[4] = {
+    {1.0f, -1.0f, 0.0f},
+    {1.0f, 1.0f, 0.0f},
+    {-1.0f, 1.0f, 0.0f},
+    {-1.0f, -1.0f, 0.0f},
 };
 
 int AddParticleEffect(int SfxId, Tpoint *pos, Tpoint *vec)
@@ -155,7 +150,7 @@ int AddParticleEffect(int SfxId, Tpoint *pos, Tpoint *vec)
     {
         Tpoint z = {0, 0, 0};
 
-        if ( not vec)
+        if (not vec)
         {
             vec = &z;
         }
@@ -175,7 +170,7 @@ int AddParticleEffect(char *name, Tpoint *pos, Tpoint *vec)
     {
         Tpoint zero = {0, 0, 0};
 
-        if ( not vec)
+        if (not vec)
         {
             vec = &zero;
         }
@@ -214,7 +209,7 @@ int SfxClass::TryParticleEffect(void)
          return 0;
         */
 
-        type ++; // Cobra - the SFX.cpp type is used in AddParticle(), so add 1 to use PS ID
+        type++; // Cobra - the SFX.cpp type is used in AddParticle(), so add 1 to use PS ID
         //objParticleSys = new DrawableParticleSys(type,1);
         //objParticleSys->AddParticle(type, &pos, &vec);
         DrawableParticleSys::PS_AddParticleEx(type, &pos, &vec);
@@ -312,22 +307,20 @@ SfxClass::SfxClass(DrawableParticleSys *drawPartSys)
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
         // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
-
 }
 
 
 /*
 ** Message Timer
 */
-SfxClass::SfxClass(FalconMissileEndMessage *endM,
-                   FalconDamageMessage *damM)
+SfxClass::SfxClass(FalconMissileEndMessage *endM, FalconDamageMessage *damM)
 {
 
     inACMI = FALSE;
@@ -367,23 +360,19 @@ SfxClass::SfxClass(FalconMissileEndMessage *endM,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
         // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
-
-
 }
 
 /*
 ** NonMoving.
 */
-SfxClass::SfxClass(int  typeSfx,
-                   Tpoint *posSfx,
-                   float timeToLiveSfx,
+SfxClass::SfxClass(int typeSfx, Tpoint *posSfx, float timeToLiveSfx,
                    float scaleSfx)
 {
 
@@ -411,9 +400,8 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
-        pos.y > -10000.0f and pos.y < 10000000.0f and 
-        pos.z < 8000.0f and pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and pos.y > -10000.0f and
+        pos.y < 10000000.0f and pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -428,450 +416,478 @@ SfxClass::SfxClass(int  typeSfx,
 
     switch (type)
     {
-        case SFX_AC_AIR_EXPLOSION:
-            switch (PRANDInt5())
-            {
-                case 0:
-                    obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
-                    break;
-
-                case 1:
-                    obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION2, scale, &pos);
-                    break;
-
-                case 2:
-                    obj2d = new Drawable2D(DRAW2D_CHEM_EXPLOSION, scale, &pos);
-                    break;
-
-                case 3:
-                    obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
-                    break;
-
-                case 4:
-                default:
-                    obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
-                    break;
-            }
-
-            timeToLive += 1.0f;
-            secondaryCount = 1;
+    case SFX_AC_AIR_EXPLOSION:
+        switch (PRANDInt5())
+        {
+        case 0:
+            obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
             break;
 
-        case SFX_TRAILSMOKE:
-            obj2d = new Drawable2D(DRAW2D_TRAILSMOKE, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_AIR_EXPLOSION:
-            secondaryCount = 1;
-            timeToLive += 1.0f;
+        case 1:
             obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION2, scale, &pos);
             break;
 
-        case SFX_INCENDIARY_EXPLOSION:
-            secondaryCount = 1;
-            obj2d = new Drawable2D(DRAW2D_INCENDIARY_EXPLOSION, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
+        case 2:
+            obj2d = new Drawable2D(DRAW2D_CHEM_EXPLOSION, scale, &pos);
             break;
 
-        case SFX_AIR_EXPLOSION_NOGLOW:
-            timeToLive += 1.0f;
-            obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION2, scale, &pos);
+        case 3:
+            obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
             break;
 
-        case SFX_LONG_HANGING_SMOKE:
-            // obj2d = new Drawable2D( DRAW2D_LONG_HANGING_SMOKE, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_LONG_HANGING_SMOKE2, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_LONG_HANGING_SMOKE2:
-            //objTrail = new DrawableTrail(30);
-            timeToLive = 3000;
-            //obj2d = new Drawable2D( DRAW2D_LONG_HANGING_SMOKE2, scale, &pos );
-            //timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_FAST_FADING_SMOKE:
-            obj2d = new Drawable2D(DRAW2D_FAST_FADING_SMOKE, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_AIR_DUSTCLOUD:
-            obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_GROUND_DUSTCLOUD:
-            obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
-            break;
-
-        case SFX_WATER_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_STEAM_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_STEAM_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_BLUE_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_BLUE_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_LANDING_SMOKE:
-            obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_AIR_SMOKECLOUD:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_AIR_SMOKECLOUD2:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD2, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_GUNFIRE:
-            obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
-            break;
-
-        case SFX_GUNSMOKE:
-            obj2d = new Drawable2D(DRAW2D_GUNSMOKE, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_GROUND_PENETRATION:
-            secondaryCount = 1;
-            break;
-
-        case SFX_AIR_PENETRATION:
-            secondaryCount = 1;
-            break;
-
-        case SFX_GROUND_EXPLOSION:
-            if (gTotSfx >= gSfxLODTotCutoff or
-                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff or
-                gSfxCount[ SFX_FIRE5 ] > gSfxLODCutoff)
-            {
-                scale *= 0.20f;
-                pos.z -= scale;
-                obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4, gGroundVerts, gFireUvs);
-                secondaryCount = 1;
-            }
-            else
-            {
-                pos.z -= scale;
-                secondaryCount = 10;
-                secondaryInterval = 0.1f;
-            }
-
-            break;
-
-        case SFX_GROUND_EXPLOSION_NO_CRATER:
-            pos.z -= scale;
-            obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4, gGroundVerts, gFireUvs);
-            break;
-
-        case SFX_WATER_EXPLOSION:
-            if (gTotSfx >= gSfxLODTotCutoff)
-            {
-                scale *= 0.20f;
-                pos.z -= scale;
-                obj2d = new Drawable2D(DRAW2D_WATER_STRIKE, scale, &pos, 4, gWaterVerts, gFireUvs);
-            }
-            else
-            {
-                pos.z -= scale;
-            }
-
-            secondaryCount = 1;
-            break;
-
-        case SFX_DUSTCLOUD:
-            // obj2d = new Drawable2D( DRAW2D_SHOCK_RING, scale, &pos, 4, gShockVerts, gFireUvs );
-            obj2d = new Drawable2D(DRAW2D_SHOCK_RING, scale, &pos, (struct Trotation *)&IMatrix);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_SHOCK_RING_SMALL:
-            // obj2d = new Drawable2D( DRAW2D_SHOCK_RING, scale, &pos, 4, gShockVerts, gFireUvs );
-            obj2d = new Drawable2D(DRAW2D_SHOCK_RING_SMALL, scale, &pos, (struct Trotation *)&IMatrix);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_GROUND_FLASH:
-            obj2d = new Drawable2D(DRAW2D_GROUND_FLASH, scale, &pos);
-
-            // SCR 11/17/98  Lets not draw ground flashes when its light out
-            if (TheTimeOfDay.GetLightLevel() < 0.5f)
-            {
-                timeToLive = obj2d->GetAlphaTimeToLive();
-            }
-            else
-            {
-                timeToLive = 0.0f;
-            }
-
-            break;
-
-        case SFX_FEATURE_EXPLOSION:
-            obj2d = new Drawable2D(DRAW2D_GROUND_GLOW, scale, &pos);
-            break;
-
-        case SFX_MISSILE_BURST:
-            obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION1, scale, &pos);
-            secondaryCount = 1;
-            // just testing this....
-            // obj2d = new Drawable2D( DRAW2D_CLOUD1, 1.0f, &pos, 4, cverts, cuvs );
-            // timeToLive = 30.0f;
-            break;
-
-        case SFX_SMALL_HIT_EXPLOSION:
-            switch (PRANDInt5())
-            {
-                case 0:
-                    obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
-                    break;
-
-                case 1:
-                    obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION1, scale, &pos);
-                    break;
-
-                case 2:
-                    obj2d = new Drawable2D(DRAW2D_SMALL_CHEM_EXPLOSION, scale, &pos);
-                    break;
-
-                case 3:
-                    obj2d = new Drawable2D(DRAW2D_SMALL_DEBRIS_EXPLOSION, scale, &pos);
-                    break;
-
-                case 4:
-                default:
-                    obj2d = new Drawable2D(DRAW2D_SMALL_DEBRIS_EXPLOSION, scale, &pos);
-                    break;
-            }
-
-            break;
-
-        case SFX_AAA_EXPLOSION:
-            obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION1, scale, &pos);
-            break;
-
-        case SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL:
-            secondaryCount = 1;
-            break;
-
-        case SFX_HIT_EXPLOSION:
-        case SFX_HIT_EXPLOSION_NOGLOW:
-        case SFX_VEHICLE_EXPLOSION:
-        case SFX_HIT_EXPLOSION_NOSMOKE:
-            switch (PRANDInt5())
-            {
-                case 0:
-                    obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
-                    break;
-
-                case 1:
-                    obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION2, scale, &pos);
-                    break;
-
-                case 2:
-                    obj2d = new Drawable2D(DRAW2D_CHEM_EXPLOSION, scale, &pos);
-                    break;
-
-                case 3:
-                    obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
-                    break;
-
-                case 4:
-                default:
-                    obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
-                    break;
-            }
-
-            timeToLive += 1.0f;
-            secondaryCount = 1;
-            // just testing this....
-            // obj2d = new Drawable2D( DRAW2D_CLOUD1, 1.0f, &pos, 4, cverts, cuvs );
-            // timeToLive = 30.0f;
-            break;
-
-        case SFX_VEHICLE_BURNING:
-            secondaryCount = 1;
-            break;
-
-        case SFX_FIRE:
-            obj2d = new Drawable2D(DRAW2D_FIRE, scale, &pos, 4, gFireVerts, gFireUvs);
-            secondaryCount = (int)(timeToLive * 1.0f);
-            secondaryInterval = 1.0f;
-            break;
-
-        case SFX_FIRE_EXPAND:
-            obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            secondaryCount = (int)(timeToLive * 1.0f);
-            secondaryInterval = 1.0f;
-            break;
-
-        case SFX_FIRE_NOSMOKE:
-            obj2d = new Drawable2D(DRAW2D_FIRE, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_FIRE1:
-            obj2d = new Drawable2D(DRAW2D_FIRE1, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_SHIP_BURNING_FIRE:
-            obj2d = new Drawable2D(DRAW2D_FIRE2, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_CAT_RANDOM_STEAM:
-            obj2d = new Drawable2D(DRAW2D_FIRE3, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_CAT_STEAM:
-            obj2d = new Drawable2D(DRAW2D_FIRE4, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_FIRE5:
-            obj2d = new Drawable2D(DRAW2D_FIRE5, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_FIRE6:
-            obj2d = new Drawable2D(DRAW2D_FIRE6, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_FIRE7:
-            obj2d = new Drawable2D(DRAW2D_FIRE7, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_FIRE_HOT:
-            obj2d = new Drawable2D(DRAW2D_FIRE_HOT, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_FIRE_MED:
-            obj2d = new Drawable2D(DRAW2D_FIRE_MED, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_FIRE_COOL:
-            obj2d = new Drawable2D(DRAW2D_FIRE_COOL, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_FIRE_EXPAND_NOSMOKE:
-            obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts, gFireUvs);
-            break;
-
-        case SFX_SPARKS:
-        case SFX_SPARKS_NO_DEBRIS:
-            obj2d = new Drawable2D(DRAW2D_SPARKS, scale * 0.2f, &pos, 4, gGroundVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            secondaryCount = (int)(timeToLive * 10.0f);
-            secondaryInterval = 0.1f;
-            break;
-
-        case SFX_ARTILLERY_EXPLOSION:
-            pos.z -= scale * 0.5f;
-            obj2d = new Drawable2D(DRAW2D_ARTILLERY_EXPLOSION, scale, &pos, 4, gFireVerts, gFireUvs);
-            pos.z += scale * 0.5f;
-            secondaryCount = 1;
-            break;
-
-        case SFX_GROUND_STRIKE_NOFIRE:
-            secondaryCount = 1;
-            pos.z -= scale * 0.5f;
-
-            if ((rand() bitand 3) == 3)
-                obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4, gGroundVerts, gFireUvs);
-            else
-                obj2d = new Drawable2D(DRAW2D_ARTILLERY_EXPLOSION, scale, &pos, 4, gFireVerts, gFireUvs);
-
-            pos.z += scale * 0.5f;
-            break;
-
-        case SFX_GROUND_STRIKE:
-            secondaryCount = 1;
-
-            if (gTotSfx >= gSfxLODTotCutoff or
-                gSfxCount[ SFX_CAT_STEAM ] > gSfxLODCutoff or
-                gSfxCount[ SFX_FIRE5 ] > gSfxLODCutoff)
-            {
-                obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4, gGroundVerts, gFireUvs);
-            }
-
-            break;
-
-        case SFX_WATER_STRIKE:
-            secondaryCount = 1;
-            obj2d = new Drawable2D(DRAW2D_WATER_STRIKE, scale, &pos, 4, gWaterVerts, gFireUvs);
-            break;
-
-        case SFX_CLUSTER_BURST:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_CHAFF:
-            obj2d = new Drawable2D(DRAW2D_EXPLCROSS_GLOW, scale, &pos);
-            break;
-
-        case SFX_WATER_WAKE_LARGE:
-            obj2d = new Drawable2D(DRAW2D_EXPLSTAR_GLOW, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
-        case SFX_WATER_WAKE_MEDIUM:
-            obj2d = new Drawable2D(DRAW2D_EXPLCIRC_GLOW_FADE, scale, &pos);
-            break;
-
-        case SFX_WATERCLOUD:
-            obj2d = new Drawable2D(DRAW2D_SMOKERING, scale, &pos);
-            break;
-
-        case SFX_CRATER2:
-            objBSP = new DrawableGroundVehicle(MapVisId(VIS_CRATER2),  &pos, 0.0f, 1.0f);
-            break;
-
-        case SFX_CRATER3:
-            objBSP = new DrawableGroundVehicle(MapVisId(VIS_CRATER3),  &pos, 0.0f, 1.0f);
-            break;
-
-        case SFX_CRATER4:
-            objBSP = new DrawableGroundVehicle(MapVisId(VIS_CRATER4),  &pos, 0.0f, 1.0f);
-            break;
-
-        case SFX_BURNING_PART:
-        case SFX_CLUSTER_BOMB:
-            // edg NOTE: should never do this one here.  However, I think there's
-            // a problem with the creation of the burning part object and I've seen
-            // ACMI try to use this constructor to create the effect.  This shouldn't
-            // be a big problem since the fire will be created anyway.  This will just
-            // be a kind of NULL effect in ACMI
-            break;
-
-            // case SFX_PILOT_SPLAT:
-            //     obj2d = new Drawable2D( DRAW2D_GROUND_STRIKE, scale, &pos, 4, gFireVerts, gFireUvs );
-        case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
-            break;
-
-            //Cobra TJL 11/06/04 Added per Steve and new PS file
-        case SFX_NUKE:
-            obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
-
+        case 4:
         default:
-            // VP_changes This should be checked and modified, frequently stops here, yeah. Oct 7, 2002
-            ShiWarning("Bad SFX Type");
+            obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
             break;
+        }
+
+        timeToLive += 1.0f;
+        secondaryCount = 1;
+        break;
+
+    case SFX_TRAILSMOKE:
+        obj2d = new Drawable2D(DRAW2D_TRAILSMOKE, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_AIR_EXPLOSION:
+        secondaryCount = 1;
+        timeToLive += 1.0f;
+        obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION2, scale, &pos);
+        break;
+
+    case SFX_INCENDIARY_EXPLOSION:
+        secondaryCount = 1;
+        obj2d = new Drawable2D(DRAW2D_INCENDIARY_EXPLOSION, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_AIR_EXPLOSION_NOGLOW:
+        timeToLive += 1.0f;
+        obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION2, scale, &pos);
+        break;
+
+    case SFX_LONG_HANGING_SMOKE:
+        // obj2d = new Drawable2D( DRAW2D_LONG_HANGING_SMOKE, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_LONG_HANGING_SMOKE2, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_LONG_HANGING_SMOKE2:
+        //objTrail = new DrawableTrail(30);
+        timeToLive = 3000;
+        //obj2d = new Drawable2D( DRAW2D_LONG_HANGING_SMOKE2, scale, &pos );
+        //timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_FAST_FADING_SMOKE:
+        obj2d = new Drawable2D(DRAW2D_FAST_FADING_SMOKE, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_AIR_DUSTCLOUD:
+        obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_GROUND_DUSTCLOUD:
+        obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
+        break;
+
+    case SFX_WATER_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_STEAM_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_STEAM_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_BLUE_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_BLUE_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_LANDING_SMOKE:
+        obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_AIR_SMOKECLOUD:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_AIR_SMOKECLOUD2:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD2, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_GUNFIRE:
+        obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
+        break;
+
+    case SFX_GUNSMOKE:
+        obj2d = new Drawable2D(DRAW2D_GUNSMOKE, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_GROUND_PENETRATION:
+        secondaryCount = 1;
+        break;
+
+    case SFX_AIR_PENETRATION:
+        secondaryCount = 1;
+        break;
+
+    case SFX_GROUND_EXPLOSION:
+        if (gTotSfx >= gSfxLODTotCutoff or
+            gSfxCount[SFX_CAT_STEAM] > gSfxLODCutoff or
+            gSfxCount[SFX_FIRE5] > gSfxLODCutoff)
+        {
+            scale *= 0.20f;
+            pos.z -= scale;
+            obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4,
+                                   gGroundVerts, gFireUvs);
+            secondaryCount = 1;
+        }
+        else
+        {
+            pos.z -= scale;
+            secondaryCount = 10;
+            secondaryInterval = 0.1f;
+        }
+
+        break;
+
+    case SFX_GROUND_EXPLOSION_NO_CRATER:
+        pos.z -= scale;
+        obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4,
+                               gGroundVerts, gFireUvs);
+        break;
+
+    case SFX_WATER_EXPLOSION:
+        if (gTotSfx >= gSfxLODTotCutoff)
+        {
+            scale *= 0.20f;
+            pos.z -= scale;
+            obj2d = new Drawable2D(DRAW2D_WATER_STRIKE, scale, &pos, 4,
+                                   gWaterVerts, gFireUvs);
+        }
+        else
+        {
+            pos.z -= scale;
+        }
+
+        secondaryCount = 1;
+        break;
+
+    case SFX_DUSTCLOUD:
+        // obj2d = new Drawable2D( DRAW2D_SHOCK_RING, scale, &pos, 4, gShockVerts, gFireUvs );
+        obj2d = new Drawable2D(DRAW2D_SHOCK_RING, scale, &pos,
+                               (struct Trotation *)&IMatrix);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_SHOCK_RING_SMALL:
+        // obj2d = new Drawable2D( DRAW2D_SHOCK_RING, scale, &pos, 4, gShockVerts, gFireUvs );
+        obj2d = new Drawable2D(DRAW2D_SHOCK_RING_SMALL, scale, &pos,
+                               (struct Trotation *)&IMatrix);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_GROUND_FLASH:
+        obj2d = new Drawable2D(DRAW2D_GROUND_FLASH, scale, &pos);
+
+        // SCR 11/17/98  Lets not draw ground flashes when its light out
+        if (TheTimeOfDay.GetLightLevel() < 0.5f)
+        {
+            timeToLive = obj2d->GetAlphaTimeToLive();
+        }
+        else
+        {
+            timeToLive = 0.0f;
+        }
+
+        break;
+
+    case SFX_FEATURE_EXPLOSION:
+        obj2d = new Drawable2D(DRAW2D_GROUND_GLOW, scale, &pos);
+        break;
+
+    case SFX_MISSILE_BURST:
+        obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION1, scale, &pos);
+        secondaryCount = 1;
+        // just testing this....
+        // obj2d = new Drawable2D( DRAW2D_CLOUD1, 1.0f, &pos, 4, cverts, cuvs );
+        // timeToLive = 30.0f;
+        break;
+
+    case SFX_SMALL_HIT_EXPLOSION:
+        switch (PRANDInt5())
+        {
+        case 0:
+            obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
+            break;
+
+        case 1:
+            obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION1, scale, &pos);
+            break;
+
+        case 2:
+            obj2d = new Drawable2D(DRAW2D_SMALL_CHEM_EXPLOSION, scale, &pos);
+            break;
+
+        case 3:
+            obj2d = new Drawable2D(DRAW2D_SMALL_DEBRIS_EXPLOSION, scale, &pos);
+            break;
+
+        case 4:
+        default:
+            obj2d = new Drawable2D(DRAW2D_SMALL_DEBRIS_EXPLOSION, scale, &pos);
+            break;
+        }
+
+        break;
+
+    case SFX_AAA_EXPLOSION:
+        obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION1, scale, &pos);
+        break;
+
+    case SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL:
+        secondaryCount = 1;
+        break;
+
+    case SFX_HIT_EXPLOSION:
+    case SFX_HIT_EXPLOSION_NOGLOW:
+    case SFX_VEHICLE_EXPLOSION:
+    case SFX_HIT_EXPLOSION_NOSMOKE:
+        switch (PRANDInt5())
+        {
+        case 0:
+            obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
+            break;
+
+        case 1:
+            obj2d = new Drawable2D(DRAW2D_AIR_EXPLOSION2, scale, &pos);
+            break;
+
+        case 2:
+            obj2d = new Drawable2D(DRAW2D_CHEM_EXPLOSION, scale, &pos);
+            break;
+
+        case 3:
+            obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
+            break;
+
+        case 4:
+        default:
+            obj2d = new Drawable2D(DRAW2D_DEBRIS_EXPLOSION, scale, &pos);
+            break;
+        }
+
+        timeToLive += 1.0f;
+        secondaryCount = 1;
+        // just testing this....
+        // obj2d = new Drawable2D( DRAW2D_CLOUD1, 1.0f, &pos, 4, cverts, cuvs );
+        // timeToLive = 30.0f;
+        break;
+
+    case SFX_VEHICLE_BURNING:
+        secondaryCount = 1;
+        break;
+
+    case SFX_FIRE:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE, scale, &pos, 4, gFireVerts, gFireUvs);
+        secondaryCount = (int)(timeToLive * 1.0f);
+        secondaryInterval = 1.0f;
+        break;
+
+    case SFX_FIRE_EXPAND:
+        obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts,
+                               gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        secondaryCount = (int)(timeToLive * 1.0f);
+        secondaryInterval = 1.0f;
+        break;
+
+    case SFX_FIRE_NOSMOKE:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE, scale, &pos, 4, gFireVerts, gFireUvs);
+        break;
+
+    case SFX_FIRE1:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE1, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_SHIP_BURNING_FIRE:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE2, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_CAT_RANDOM_STEAM:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE3, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_CAT_STEAM:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE4, scale, &pos, 4, gFireVerts, gFireUvs);
+        break;
+
+    case SFX_FIRE5:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE5, scale, &pos, 4, gFireVerts, gFireUvs);
+        break;
+
+    case SFX_FIRE6:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE6, scale, &pos, 4, gFireVerts, gFireUvs);
+        break;
+
+    case SFX_FIRE7:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE7, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_FIRE_HOT:
+        obj2d = new Drawable2D(DRAW2D_FIRE_HOT, scale, &pos, 4, gFireVerts,
+                               gFireUvs);
+        break;
+
+    case SFX_FIRE_MED:
+        obj2d = new Drawable2D(DRAW2D_FIRE_MED, scale, &pos, 4, gFireVerts,
+                               gFireUvs);
+        break;
+
+    case SFX_FIRE_COOL:
+        obj2d = new Drawable2D(DRAW2D_FIRE_COOL, scale, &pos, 4, gFireVerts,
+                               gFireUvs);
+        break;
+
+    case SFX_FIRE_EXPAND_NOSMOKE:
+        obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts,
+                               gFireUvs);
+        break;
+
+    case SFX_SPARKS:
+    case SFX_SPARKS_NO_DEBRIS:
+        obj2d = new Drawable2D(DRAW2D_SPARKS, scale * 0.2f, &pos, 4,
+                               gGroundVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        secondaryCount = (int)(timeToLive * 10.0f);
+        secondaryInterval = 0.1f;
+        break;
+
+    case SFX_ARTILLERY_EXPLOSION:
+        pos.z -= scale * 0.5f;
+        obj2d = new Drawable2D(DRAW2D_ARTILLERY_EXPLOSION, scale, &pos, 4,
+                               gFireVerts, gFireUvs);
+        pos.z += scale * 0.5f;
+        secondaryCount = 1;
+        break;
+
+    case SFX_GROUND_STRIKE_NOFIRE:
+        secondaryCount = 1;
+        pos.z -= scale * 0.5f;
+
+        if ((rand() bitand 3) == 3)
+            obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4,
+                                   gGroundVerts, gFireUvs);
+        else
+            obj2d = new Drawable2D(DRAW2D_ARTILLERY_EXPLOSION, scale, &pos, 4,
+                                   gFireVerts, gFireUvs);
+
+        pos.z += scale * 0.5f;
+        break;
+
+    case SFX_GROUND_STRIKE:
+        secondaryCount = 1;
+
+        if (gTotSfx >= gSfxLODTotCutoff or
+            gSfxCount[SFX_CAT_STEAM] > gSfxLODCutoff or
+            gSfxCount[SFX_FIRE5] > gSfxLODCutoff)
+        {
+            obj2d = new Drawable2D(DRAW2D_GROUND_STRIKE, scale, &pos, 4,
+                                   gGroundVerts, gFireUvs);
+        }
+
+        break;
+
+    case SFX_WATER_STRIKE:
+        secondaryCount = 1;
+        obj2d = new Drawable2D(DRAW2D_WATER_STRIKE, scale, &pos, 4, gWaterVerts,
+                               gFireUvs);
+        break;
+
+    case SFX_CLUSTER_BURST:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_CHAFF:
+        obj2d = new Drawable2D(DRAW2D_EXPLCROSS_GLOW, scale, &pos);
+        break;
+
+    case SFX_WATER_WAKE_LARGE:
+        obj2d = new Drawable2D(DRAW2D_EXPLSTAR_GLOW, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    case SFX_WATER_WAKE_MEDIUM:
+        obj2d = new Drawable2D(DRAW2D_EXPLCIRC_GLOW_FADE, scale, &pos);
+        break;
+
+    case SFX_WATERCLOUD:
+        obj2d = new Drawable2D(DRAW2D_SMOKERING, scale, &pos);
+        break;
+
+    case SFX_CRATER2:
+        objBSP =
+            new DrawableGroundVehicle(MapVisId(VIS_CRATER2), &pos, 0.0f, 1.0f);
+        break;
+
+    case SFX_CRATER3:
+        objBSP =
+            new DrawableGroundVehicle(MapVisId(VIS_CRATER3), &pos, 0.0f, 1.0f);
+        break;
+
+    case SFX_CRATER4:
+        objBSP =
+            new DrawableGroundVehicle(MapVisId(VIS_CRATER4), &pos, 0.0f, 1.0f);
+        break;
+
+    case SFX_BURNING_PART:
+    case SFX_CLUSTER_BOMB:
+        // edg NOTE: should never do this one here.  However, I think there's
+        // a problem with the creation of the burning part object and I've seen
+        // ACMI try to use this constructor to create the effect.  This shouldn't
+        // be a big problem since the fire will be created anyway.  This will just
+        // be a kind of NULL effect in ACMI
+        break;
+
+        // case SFX_PILOT_SPLAT:
+        //     obj2d = new Drawable2D( DRAW2D_GROUND_STRIKE, scale, &pos, 4, gFireVerts, gFireUvs );
+    case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
+        break;
+
+        //Cobra TJL 11/06/04 Added per Steve and new PS file
+    case SFX_NUKE:
+        obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
+
+    default:
+        // VP_changes This should be checked and modified, frequently stops here, yeah. Oct 7, 2002
+        ShiWarning("Bad SFX Type");
+        break;
     }
 
     viewPoint = OTWDriver.GetViewpoint();
@@ -885,25 +901,20 @@ SfxClass::SfxClass(int  typeSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
         // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
-
-
 }
 
 /*
 ** This is an effect that just drives other secondary effects
 ** over time
 */
-SfxClass::SfxClass(int typeSfx,
-                   Tpoint *posSfx,
-                   int count,
-                   float interval)
+SfxClass::SfxClass(int typeSfx, Tpoint *posSfx, int count, float interval)
 {
 
     inACMI = FALSE;
@@ -929,9 +940,8 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
-        pos.y > -10000.0f and pos.y < 10000000.0f and 
-        pos.z < 8000.0f and pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and pos.y > -10000.0f and
+        pos.y < 10000000.0f and pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -946,20 +956,20 @@ SfxClass::SfxClass(int typeSfx,
 
     switch (type)
     {
-        case SFX_DIST_AIRBURSTS:
-        case SFX_DIST_GROUNDBURSTS:
-        case SFX_DIST_ARMOR:
-        case SFX_DIST_INFANTRY:
-        case SFX_DIST_SAMLAUNCHES:
-        case SFX_DIST_AALAUNCHES:
-            // secondaryCount = (int)( ((float)count) * gSfxLOD );
-            // secondaryInterval /= gSfxLOD;
-            secondaryInterval = max(interval, 2.5f);
-            secondaryTimer += PRANDFloatPos() * 15.0f;
-            break;
+    case SFX_DIST_AIRBURSTS:
+    case SFX_DIST_GROUNDBURSTS:
+    case SFX_DIST_ARMOR:
+    case SFX_DIST_INFANTRY:
+    case SFX_DIST_SAMLAUNCHES:
+    case SFX_DIST_AALAUNCHES:
+        // secondaryCount = (int)( ((float)count) * gSfxLOD );
+        // secondaryInterval /= gSfxLOD;
+        secondaryInterval = max(interval, 2.5f);
+        secondaryTimer += PRANDFloatPos() * 15.0f;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
 
@@ -974,7 +984,7 @@ SfxClass::SfxClass(int typeSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
@@ -989,10 +999,7 @@ SfxClass::SfxClass(int typeSfx,
 ** over time also has a movement vector
 ** NOTE: movement vector is assumed to be normalized (depending on usage)
 */
-SfxClass::SfxClass(int typeSfx,
-                   Tpoint *posSfx,
-                   Tpoint *vecSfx,
-                   int count,
+SfxClass::SfxClass(int typeSfx, Tpoint *posSfx, Tpoint *vecSfx, int count,
                    float interval)
 {
 
@@ -1017,9 +1024,8 @@ SfxClass::SfxClass(int typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
-        pos.y > -10000.0f and pos.y < 10000000.0f and 
-        pos.z < 8000.0f and pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and pos.y > -10000.0f and
+        pos.y < 10000000.0f and pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1037,7 +1043,7 @@ SfxClass::SfxClass(int typeSfx,
     // for this type, vec.x and y are the dimensions of the explosion
     // volume ( z is movement up ).  Base the scale on the smaller of the
     // x and y
-    if (type ==  SFX_RISING_GROUNDHIT_EXPLOSION_DEBR)
+    if (type == SFX_RISING_GROUNDHIT_EXPLOSION_DEBR)
     {
         scale = min(400.0f, max(vec.x * 1.5f, vec.y * 1.5f));
     }
@@ -1052,21 +1058,22 @@ SfxClass::SfxClass(int typeSfx,
 
     switch (type)
     {
-        case SFX_DIST_AIRBURSTS:
-        case SFX_DIST_GROUNDBURSTS:
-        case SFX_DIST_ARMOR:
-        case SFX_DIST_INFANTRY:
-        case SFX_DIST_SAMLAUNCHES:
-        case SFX_DIST_AALAUNCHES:
-            // secondaryCount = (int)( ((float)count) * gSfxLOD );
-            // secondaryInterval /= gSfxLOD;
-            secondaryInterval = max(interval, 2.5f);
-            secondaryTimer += PRANDFloatPos() * 15.0f;
-            travelDist = (float)sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z + 0.1f);
-            break;
+    case SFX_DIST_AIRBURSTS:
+    case SFX_DIST_GROUNDBURSTS:
+    case SFX_DIST_ARMOR:
+    case SFX_DIST_INFANTRY:
+    case SFX_DIST_SAMLAUNCHES:
+    case SFX_DIST_AALAUNCHES:
+        // secondaryCount = (int)( ((float)count) * gSfxLOD );
+        // secondaryInterval /= gSfxLOD;
+        secondaryInterval = max(interval, 2.5f);
+        secondaryTimer += PRANDFloatPos() * 15.0f;
+        travelDist =
+            (float)sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z + 0.1f);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     // update counters
@@ -1078,7 +1085,7 @@ SfxClass::SfxClass(int typeSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
@@ -1091,14 +1098,8 @@ SfxClass::SfxClass(int typeSfx,
 /*
 ** Move an existing BSP object
 */
-SfxClass::SfxClass(
-    int typeSfx,
-    Tpoint *posSfx,
-    Tpoint *vecSfx,
-    DrawableBSP* theObject,
-    float timeToLiveSfx,
-    float scaleSfx
-)
+SfxClass::SfxClass(int typeSfx, Tpoint *posSfx, Tpoint *vecSfx,
+                   DrawableBSP *theObject, float timeToLiveSfx, float scaleSfx)
 {
     inACMI = FALSE;
     type = typeSfx;
@@ -1123,9 +1124,8 @@ SfxClass::SfxClass(
     viewPoint = OTWDriver.GetViewpoint();
     flags = SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
-        pos.y > -10000.0f and pos.y < 10000000.0f and 
-        pos.z < 8000.0f and pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and pos.y > -10000.0f and
+        pos.y < 10000000.0f and pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1140,13 +1140,13 @@ SfxClass::SfxClass(
 
     switch (type)
     {
-        case SFX_BURNING_PART:
-            flags = 0;
-            secondaryCount = 1;
-            break;
+    case SFX_BURNING_PART:
+        flags = 0;
+        secondaryCount = 1;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     // update counters
@@ -1158,7 +1158,7 @@ SfxClass::SfxClass(
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
@@ -1170,8 +1170,7 @@ SfxClass::SfxClass(
 /*
 ** Just a timer for when to delete the object
 */
-SfxClass::SfxClass(float timeToLiveSfx,
-                   DrawableTrail *trail)
+SfxClass::SfxClass(float timeToLiveSfx, DrawableTrail *trail)
 {
     inACMI = FALSE;
     type = SFX_TIMER;
@@ -1205,26 +1204,20 @@ SfxClass::SfxClass(float timeToLiveSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
         // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
-
 }
 
 /*
 ** Moving(or not) object with rotation
 */
-SfxClass::SfxClass(int  typeSfx,
-                   int  flagsSfx,
-                   Tpoint *posSfx,
-                   Trotation *rotSfx,
-                   Tpoint *vecSfx,
-                   float timeToLiveSfx,
-                   float scaleSfx)
+SfxClass::SfxClass(int typeSfx, int flagsSfx, Tpoint *posSfx, Trotation *rotSfx,
+                   Tpoint *vecSfx, float timeToLiveSfx, float scaleSfx)
 {
 
     inACMI = FALSE;
@@ -1250,9 +1243,8 @@ SfxClass::SfxClass(int  typeSfx,
     damMessage = NULL;
     travelDist = 0.0f;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
-        pos.y > -10000.0f and pos.y < 10000000.0f and 
-        pos.z < 8000.0f and pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and pos.y > -10000.0f and
+        pos.y < 10000000.0f and pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1267,106 +1259,110 @@ SfxClass::SfxClass(int  typeSfx,
 
     switch (type)
     {
-        case SFX_AC_AIR_EXPLOSION:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
-            secondaryCount = (int)(timeToLive * 2.0f);
-            secondaryInterval = 0.5f;
-            break;
+    case SFX_AC_AIR_EXPLOSION:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
+        secondaryCount = (int)(timeToLive * 2.0f);
+        secondaryInterval = 0.5f;
+        break;
 
-        case SFX_AIR_SMOKECLOUD:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
-            break;
+    case SFX_AIR_SMOKECLOUD:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+        break;
 
-        case SFX_AIR_DUSTCLOUD:
-            obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos);
-            break;
+    case SFX_AIR_DUSTCLOUD:
+        obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos);
+        break;
 
-        case SFX_GROUND_DUSTCLOUD:
-            obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
-            break;
+    case SFX_GROUND_DUSTCLOUD:
+        obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
+        break;
 
-        case SFX_WATER_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
-            break;
+    case SFX_WATER_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
+        break;
 
-        case SFX_STEAM_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_STEAM_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_STEAM_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_STEAM_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_LANDING_SMOKE:
-            obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
-            break;
+    case SFX_LANDING_SMOKE:
+        obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
+        break;
 
-        case SFX_VERTICAL_SMOKE:
-            obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos, 4, gWaterVerts, gFireUvs);
-            break;
+    case SFX_VERTICAL_SMOKE:
+        obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos, 4,
+                               gWaterVerts, gFireUvs);
+        break;
 
-        case SFX_AIR_SMOKECLOUD2:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD2, scale, &pos);
-            break;
+    case SFX_AIR_SMOKECLOUD2:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD2, scale, &pos);
+        break;
 
-        case SFX_GUNSMOKE:
-            obj2d = new Drawable2D(DRAW2D_GUNSMOKE, scale, &pos);
-            break;
+    case SFX_GUNSMOKE:
+        obj2d = new Drawable2D(DRAW2D_GUNSMOKE, scale, &pos);
+        break;
 
-        case SFX_RAND_CRATER:
-            obj2d = new Drawable2D(DRAW2D_CRATER1 + PRANDInt3(), scale, &pos, &rot);
-            break;
+    case SFX_RAND_CRATER:
+        obj2d = new Drawable2D(DRAW2D_CRATER1 + PRANDInt3(), scale, &pos, &rot);
+        break;
 
-        case SFX_CRATER2:
-            objBSP = new DrawableGroundVehicle(MapVisId(VIS_CRATER2),  &pos, 0.0f, 1.0f);
-            break;
+    case SFX_CRATER2:
+        objBSP =
+            new DrawableGroundVehicle(MapVisId(VIS_CRATER2), &pos, 0.0f, 1.0f);
+        break;
 
-        case SFX_CRATER3:
-            objBSP = new DrawableGroundVehicle(MapVisId(VIS_CRATER3),  &pos, 0.0f, 1.0f);
-            break;
+    case SFX_CRATER3:
+        objBSP =
+            new DrawableGroundVehicle(MapVisId(VIS_CRATER3), &pos, 0.0f, 1.0f);
+        break;
 
-        case SFX_CRATER4:
-            objBSP = new DrawableGroundVehicle(MapVisId(VIS_CRATER4),  &pos, 0.0f, 1.0f);
-            break;
+    case SFX_CRATER4:
+        objBSP =
+            new DrawableGroundVehicle(MapVisId(VIS_CRATER4), &pos, 0.0f, 1.0f);
+        break;
 
-        case SFX_TRAIL_SMOKECLOUD:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_THINFIRE);
-            break;
+    case SFX_TRAIL_SMOKECLOUD:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_THINFIRE);
+        break;
 
-        case SFX_TRAIL_FIREBALL:
-            obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_THINFIRE);
-            break;
+    case SFX_TRAIL_FIREBALL:
+        obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_THINFIRE);
+        break;
 
-        case SFX_GUNFIRE:
-            obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
-            break;
+    case SFX_GUNFIRE:
+        obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
+        break;
 
-        case SFX_EJECT1:
-            objBSP = new DrawableBSP(MapVisId(VIS_EJECT1), &pos, &rot, scale);
-            break;
+    case SFX_EJECT1:
+        objBSP = new DrawableBSP(MapVisId(VIS_EJECT1), &pos, &rot, scale);
+        break;
 
-        case SFX_EJECT2:
-            objBSP = new DrawableBSP(MapVisId(VIS_EJECT2), &pos, &rot, scale);
-            break;
+    case SFX_EJECT2:
+        objBSP = new DrawableBSP(MapVisId(VIS_EJECT2), &pos, &rot, scale);
+        break;
 
-            /*
+        /*
             case SFX_MISSILE_LAUNCH:
              objBSP = new DrawableBSP( VIS_MISS_LAUN, &pos, &rot, scale );
              break;
             */
-        case SFX_DUST1:
-            objBSP = new DrawableBSP(MapVisId(VIS_DUST1), &pos, &rot, scale);
-            break;
+    case SFX_DUST1:
+        objBSP = new DrawableBSP(MapVisId(VIS_DUST1), &pos, &rot, scale);
+        break;
 
-        case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
-            break;
+    case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
+        break;
 
-        default:
-            // bzzzzt
-            ShiWarning("Bad SFX Type");
-            break;
+    default:
+        // bzzzzt
+        ShiWarning("Bad SFX Type");
+        break;
     }
 
     viewPoint = OTWDriver.GetViewpoint();
@@ -1381,7 +1377,7 @@ SfxClass::SfxClass(int  typeSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
@@ -1393,12 +1389,8 @@ SfxClass::SfxClass(int  typeSfx,
 /*
 ** Moving object
 */
-SfxClass::SfxClass(int  typeSfx,
-                   int  flagsSfx,
-                   Tpoint *posSfx,
-                   Tpoint *vecSfx,
-                   float timeToLiveSfx,
-                   float scaleSfx)
+SfxClass::SfxClass(int typeSfx, int flagsSfx, Tpoint *posSfx, Tpoint *vecSfx,
+                   float timeToLiveSfx, float scaleSfx)
 {
     float len;
 
@@ -1424,9 +1416,8 @@ SfxClass::SfxClass(int  typeSfx,
     endMessage = NULL;
     damMessage = NULL;
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
-        pos.y > -10000.0f and pos.y < 10000000.0f and 
-        pos.z < 8000.0f and pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and pos.y > -10000.0f and
+        pos.y < 10000000.0f and pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1441,171 +1432,182 @@ SfxClass::SfxClass(int  typeSfx,
 
     switch (type)
     {
-        case SFX_SPARK_TRACER:
-            objTracer = /*(g_bUse_DX_Engine) ? new DXDrawableTracer( 0.1f * scale):*/ new DrawableTracer(0.1f * scale);
-            objTracer->SetRGB(1.0f, 1.0f, 0.8f);
-            objTracer->SetAlpha(1.0f);
-            objTracer->SetWidth(0.1f * scale);
-            break;
+    case SFX_SPARK_TRACER:
+        objTracer =
+            /*(g_bUse_DX_Engine) ? new DXDrawableTracer( 0.1f * scale):*/
+            new DrawableTracer(0.1f * scale);
+        objTracer->SetRGB(1.0f, 1.0f, 0.8f);
+        objTracer->SetAlpha(1.0f);
+        objTracer->SetWidth(0.1f * scale);
+        break;
 
-        case SFX_SPARKS:
-            obj2d = new Drawable2D(DRAW2D_SPARKS, scale * 0.2f, &pos, 4, gGroundVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            secondaryCount = (int)(timeToLive * 10.0f);
-            secondaryInterval = 0.1f;
-            break;
+    case SFX_SPARKS:
+        obj2d = new Drawable2D(DRAW2D_SPARKS, scale * 0.2f, &pos, 4,
+                               gGroundVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        secondaryCount = (int)(timeToLive * 10.0f);
+        secondaryInterval = 0.1f;
+        break;
 
-        case SFX_WATER_WAKE_LARGE:
-            obj2d = new Drawable2D(DRAW2D_EXPLSTAR_GLOW, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_WATER_WAKE_LARGE:
+        obj2d = new Drawable2D(DRAW2D_EXPLSTAR_GLOW, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_FIRE_EXPAND:
-            obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            secondaryCount = (int)(timeToLive * 1.0f);
-            secondaryInterval = 1.0f;
+    case SFX_FIRE_EXPAND:
+        obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts,
+                               gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        secondaryCount = (int)(timeToLive * 1.0f);
+        secondaryInterval = 1.0f;
 
-        case SFX_FIRE_EXPAND_NOSMOKE:
-            obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_FIRE_EXPAND_NOSMOKE:
+        obj2d = new Drawable2D(DRAW2D_FIRE_EXPAND, scale, &pos, 4, gFireVerts,
+                               gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_CLUSTER_BOMB:
-            // obj2d = new Drawable2D( DRAW2D_WATER_CLOUD, scale, &pos );
-            secondaryCount = 1;
-            break;
+    case SFX_CLUSTER_BOMB:
+        // obj2d = new Drawable2D( DRAW2D_WATER_CLOUD, scale, &pos );
+        secondaryCount = 1;
+        break;
 
-        case SFX_WATER_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            timeToLive = min(timeToLiveSfx, timeToLive); // JPO allow shorter
-            break;
+    case SFX_WATER_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        timeToLive = min(timeToLiveSfx, timeToLive); // JPO allow shorter
+        break;
 
-        case SFX_WATER_WAKE_SMALL:
-            //objTrail = new DrawableTrail(TRAIL_SAM);
-            rot = IMatrix;
-            obj2d = new Drawable2D(DRAW2D_WATERWAKE, scale, &pos, &rot);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            timeToLive = min(timeToLiveSfx, timeToLive); // JPO allow shorter
-            break;
+    case SFX_WATER_WAKE_SMALL:
+        //objTrail = new DrawableTrail(TRAIL_SAM);
+        rot = IMatrix;
+        obj2d = new Drawable2D(DRAW2D_WATERWAKE, scale, &pos, &rot);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        timeToLive = min(timeToLiveSfx, timeToLive); // JPO allow shorter
+        break;
 
-        case SFX_BLUE_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_BLUE_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_BLUE_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_BLUE_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_SHAPED_FIRE_DEBRIS:
-            // we need to set the x basis vector in the matrix based on
-            // the velocity of this object
-            len = (float)sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
-            rot.M11 = vec.x / len;
-            rot.M12 = vec.y / len;
-            rot.M13 = vec.z / len;
-            obj2d = new Drawable2D(DRAW2D_SHAPED_FIRE_DEBRIS, scale, &pos, &rot);
-            break;
+    case SFX_SHAPED_FIRE_DEBRIS:
+        // we need to set the x basis vector in the matrix based on
+        // the velocity of this object
+        len = (float)sqrt(vec.x * vec.x + vec.y * vec.y + vec.z * vec.z);
+        rot.M11 = vec.x / len;
+        rot.M12 = vec.y / len;
+        rot.M13 = vec.z / len;
+        obj2d = new Drawable2D(DRAW2D_SHAPED_FIRE_DEBRIS, scale, &pos, &rot);
+        break;
 
-        case SFX_SMALL_HIT_EXPLOSION:
-            obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
-            break;
+    case SFX_SMALL_HIT_EXPLOSION:
+        obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
+        break;
 
-        case SFX_AC_AIR_EXPLOSION:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
-            secondaryCount = (int)(timeToLive * 2.0f);
-            secondaryInterval = 0.5f;
-            break;
+    case SFX_AC_AIR_EXPLOSION:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_HIT_EXPLOSION, scale, &pos);
+        secondaryCount = (int)(timeToLive * 2.0f);
+        secondaryInterval = 0.5f;
+        break;
 
-        case SFX_MISSILE_BURST:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
-            secondaryCount = 1;
-            break;
+    case SFX_MISSILE_BURST:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
+        secondaryCount = 1;
+        break;
 
-        case SFX_ROCKET_BURST:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
-            secondaryCount = 1;
-            break;
+    case SFX_ROCKET_BURST:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
+        secondaryCount = 1;
+        break;
 
-        case SFX_WATER_WAKE_MEDIUM:
-            obj2d = new Drawable2D(DRAW2D_EXPLCIRC_GLOW_FADE, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_WATER_WAKE_MEDIUM:
+        obj2d = new Drawable2D(DRAW2D_EXPLCIRC_GLOW_FADE, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_AC_DEBRIS:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, scale, &pos);
-            break;
+    case SFX_AC_DEBRIS:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, scale, &pos);
+        break;
 
-        case SFX_CAT_LAUNCH:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_FIRE_DEBRIS, scale, &pos);
-            break;
+    case SFX_CAT_LAUNCH:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_FIRE_DEBRIS, scale, &pos);
+        break;
 
-        case SFX_FLAME:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            obj2d = new Drawable2D(DRAW2D_FLAME, scale, &pos);
-            break;
+    case SFX_FLAME:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_FLAME, scale, &pos);
+        break;
 
-        case SFX_FLARE_GFX:
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+    case SFX_FLARE_GFX:
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        obj2d = new Drawable2D(DRAW2D_LIGHT_DEBRIS, scale, &pos);
+        break;
+
+    case SFX_GROUNDBURST:
+
+        // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
+        if (rand() bitand 1)
             obj2d = new Drawable2D(DRAW2D_LIGHT_DEBRIS, scale, &pos);
-            break;
+        else
+            obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, scale, &pos);
 
-        case SFX_GROUNDBURST:
+        break;
 
-            // obj2d = new Drawable2D( DRAW2D_AIR_EXPLOSION1, scale, &pos );
-            if (rand() bitand 1)
-                obj2d = new Drawable2D(DRAW2D_LIGHT_DEBRIS, scale, &pos);
-            else
-                obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, scale, &pos);
+    case SFX_SMOKETRAIL:
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_MISLSMOKE);
+        break;
 
-            break;
+    case SFX_FIRE1:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE1, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_SMOKETRAIL:
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_MISLSMOKE);
-            break;
+    case SFX_SHIP_BURNING_FIRE:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE2, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_FIRE1:
-            obj2d = new Drawable2D(DRAW2D_FIRE1, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_CAT_RANDOM_STEAM:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE3, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_SHIP_BURNING_FIRE:
-            obj2d = new Drawable2D(DRAW2D_FIRE2, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_CAT_STEAM:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE4, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_CAT_RANDOM_STEAM:
-            obj2d = new Drawable2D(DRAW2D_FIRE3, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_FIRE5:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE5, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_CAT_STEAM:
-            obj2d = new Drawable2D(DRAW2D_FIRE4, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_FIRE6:
+        obj2d =
+            new Drawable2D(DRAW2D_FIRE6, scale, &pos, 4, gFireVerts, gFireUvs);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        break;
 
-        case SFX_FIRE5:
-            obj2d = new Drawable2D(DRAW2D_FIRE5, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+    case SFX_DEBRISTRAIL:
 
-        case SFX_FIRE6:
-            obj2d = new Drawable2D(DRAW2D_FIRE6, scale, &pos, 4, gFireVerts, gFireUvs);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            break;
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_DARKSMOKE);
+        if ((rand() bitand 3) == 3)
+            obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, 12.0f, &pos);
 
-        case SFX_DEBRISTRAIL:
-
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_DARKSMOKE);
-            if ((rand() bitand 3) == 3)
-                obj2d = new Drawable2D(DRAW2D_DARK_DEBRIS, 12.0f, &pos);
-
-            /*
+        /*
             if ( gTotSfx >= gSfxLODTotCutoff or
               gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff )
             {
@@ -1618,37 +1620,37 @@ SfxClass::SfxClass(int  typeSfx,
              secondaryCount = (int)(timeToLive * (1.0f/secondaryInterval) );
             }
             */
-            break;
+        break;
 
-        case SFX_SAM_LAUNCH:
-            // obj2d = new Drawable2D( DRAW2D_STEAM_CLOUD, scale, &pos );
-            secondaryCount = 1;
-            break;
+    case SFX_SAM_LAUNCH:
+        // obj2d = new Drawable2D( DRAW2D_STEAM_CLOUD, scale, &pos );
+        secondaryCount = 1;
+        break;
 
-        case SFX_DEBRISTRAIL_DUST:
-            if (gTotSfx >= gSfxLODTotCutoff or
-                gSfxCount[ SFX_VEHICLE_DUST ] > gSfxLODCutoff)
-            {
-                //RV - I-Hawk - Removing old trails calls, not needed anymore
-                //objTrail = new DrawableTrail(TRAIL_SMOKE);
-                //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
-            }
-            else
-            {
-                secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.1f;
-                secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
-            }
-
-            break;
-
-        case SFX_FIRETRAIL:
+    case SFX_DEBRISTRAIL_DUST:
+        if (gTotSfx >= gSfxLODTotCutoff or
+            gSfxCount[SFX_VEHICLE_DUST] > gSfxLODCutoff)
+        {
             //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_FIRE2);
+            //objTrail = new DrawableTrail(TRAIL_SMOKE);
+            //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
+        }
+        else
+        {
+            secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.1f;
+            secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
+        }
 
-            // edg: weird crash on this -- leave it out for now....
-            // obj2d = new Drawable2D( DRAW2D_DARK_DEBRIS, 10.0f, &pos );
+        break;
 
-            /*
+    case SFX_FIRETRAIL:
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_FIRE2);
+
+        // edg: weird crash on this -- leave it out for now....
+        // obj2d = new Drawable2D( DRAW2D_DARK_DEBRIS, 10.0f, &pos );
+
+        /*
             if ( gTotSfx >= gSfxLODTotCutoff or
               gSfxCount[ SFX_FIRE_EXPAND ] > gSfxLODCutoff or
               gSfxCount[ SFX_FIRE_EXPAND_NOSMOKE ] > gSfxLODCutoff )
@@ -1662,245 +1664,248 @@ SfxClass::SfxClass(int  typeSfx,
              secondaryCount = (int)(timeToLive * (1.0f/secondaryInterval) );
             }
             */
-            break;
+        break;
 
-        case SFX_FIREBALL:
-            if (gTotSfx >= gSfxLODTotCutoff)
-            {
-                //RV - I-Hawk - Removing old trails calls, not needed anymore
-                //objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
-                //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
-            }
-            else
-            {
-                secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.3f;
-                secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
-                initSecondaryCount = secondaryCount;
-            }
+    case SFX_FIREBALL:
+        if (gTotSfx >= gSfxLODTotCutoff)
+        {
+            //RV - I-Hawk - Removing old trails calls, not needed anymore
+            //objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
+            //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
+        }
+        else
+        {
+            secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.3f;
+            secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
+            initSecondaryCount = secondaryCount;
+        }
 
-            break;
+        break;
 
-        case SFX_WATER_FIREBALL:
-            if (gTotSfx >= gSfxLODTotCutoff)
-            {
-                //RV - I-Hawk - Removing old trails calls, not needed anymore
-                //objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
-                //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
-            }
-            else
-            {
-                secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.3f;
-                secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
-                initSecondaryCount = secondaryCount;
-            }
+    case SFX_WATER_FIREBALL:
+        if (gTotSfx >= gSfxLODTotCutoff)
+        {
+            //RV - I-Hawk - Removing old trails calls, not needed anymore
+            //objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
+            //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
+        }
+        else
+        {
+            secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.3f;
+            secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
+            initSecondaryCount = secondaryCount;
+        }
 
-            break;
+        break;
 
-        case SFX_WATERTRAIL:
-            if (gTotSfx >= gSfxLODTotCutoff or
-                gSfxCount[ SFX_WATER_CLOUD ] > gSfxLODCutoff or
-                gSfxCount[ SFX_BLUE_CLOUD ] > gSfxLODCutoff)
-            {
-                //RV - I-Hawk - Removing old trails calls, not needed anymore
-                //objTrail = new DrawableTrail(TRAIL_SAM);
-                //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
-            }
-            else
-            {
-                secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.2f;
-                secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
-                initSecondaryCount = secondaryCount;
-            }
-
-            break;
-
-        case SFX_DURANDAL:
+    case SFX_WATERTRAIL:
+        if (gTotSfx >= gSfxLODTotCutoff or
+            gSfxCount[SFX_WATER_CLOUD] > gSfxLODCutoff or
+            gSfxCount[SFX_BLUE_CLOUD] > gSfxLODCutoff)
+        {
             //RV - I-Hawk - Removing old trails calls, not needed anymore
             //objTrail = new DrawableTrail(TRAIL_SAM);
-            secondaryCount = 1;
-            break;
+            //objTrail->SetScale( max( 1.0f, scale * 0.06f ) );
+        }
+        else
+        {
+            secondaryInterval = 1.0f * (1.0f - gSfxLOD) + 0.2f;
+            secondaryCount = (int)(timeToLive * (1.0f / secondaryInterval));
+            initSecondaryCount = secondaryCount;
+        }
 
-        case SFX_AIR_SMOKECLOUD:
+        break;
+
+    case SFX_DURANDAL:
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_SAM);
+        secondaryCount = 1;
+        break;
+
+    case SFX_AIR_SMOKECLOUD:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 2.0f;
+        vec.y += gWindVect.y * 2.0f;
+        break;
+
+    case SFX_FIRESMOKE:
+        if (rand() bitand 1)
+            obj2d = new Drawable2D(DRAW2D_FIRESMOKE, scale, &pos);
+        else
             obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 2.0f;
+        vec.y += gWindVect.y * 2.0f;
+        break;
+
+    case SFX_TRAILSMOKE:
+        obj2d = new Drawable2D(DRAW2D_TRAILSMOKE, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 1.0f;
+        vec.y += gWindVect.y * 1.0f;
+        break;
+
+    case SFX_BIG_SMOKE:
+        if (rand() bitand 1)
+            obj2d = new Drawable2D(DRAW2D_BIG_SMOKE1, scale, &pos);
+        else
+            obj2d = new Drawable2D(DRAW2D_BIG_SMOKE2, scale, &pos);
+
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 1.0f;
+        vec.y += gWindVect.y * 1.0f;
+        break;
+
+    case SFX_BIG_DUST:
+        obj2d = new Drawable2D(DRAW2D_BIG_DUST, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 1.0f;
+        vec.y += gWindVect.y * 1.0f;
+        break;
+
+    case SFX_VEHICLE_DUST:
+        obj2d = new Drawable2D(DRAW2D_TRAILDUST, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 1.0f;
+        vec.y += gWindVect.y * 1.0f;
+        break;
+
+    case SFX_AIR_DUSTCLOUD:
+        obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 2.0f;
+        vec.y += gWindVect.y * 2.0f;
+        break;
+
+    case SFX_GROUND_DUSTCLOUD:
+        if (gSfxCount[SFX_GROUND_DUSTCLOUD] < gSfxLODCutoff and
+            gTotSfx < gSfxLODTotCutoff)
+        {
+            obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
             timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 2.0f;
-            vec.y += gWindVect.y * 2.0f;
-            break;
+        }
+        else
+        {
+            timeToLive = 0.0f;
+        }
 
-        case SFX_FIRESMOKE:
-            if (rand() bitand 1)
-                obj2d = new Drawable2D(DRAW2D_FIRESMOKE, scale, &pos);
-            else
-                obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+        vec.x += gWindVect.x * 1.0f;
+        vec.y += gWindVect.y * 1.0f;
+        break;
 
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 2.0f;
-            vec.y += gWindVect.y * 2.0f;
-            break;
+    case SFX_LANDING_SMOKE:
+        obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 2.0f;
+        vec.y += gWindVect.y * 2.0f;
+        break;
 
-        case SFX_TRAILSMOKE:
-            obj2d = new Drawable2D(DRAW2D_TRAILSMOKE, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 1.0f;
-            vec.y += gWindVect.y * 1.0f;
-            break;
+    case SFX_STEAM_CLOUD:
+        obj2d = new Drawable2D(DRAW2D_STEAM_CLOUD, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 2.0f;
+        vec.y += gWindVect.y * 2.0f;
+        break;
 
-        case SFX_BIG_SMOKE:
-            if (rand() bitand 1)
-                obj2d = new Drawable2D(DRAW2D_BIG_SMOKE1, scale, &pos);
-            else
-                obj2d = new Drawable2D(DRAW2D_BIG_SMOKE2, scale, &pos);
+    case SFX_AIR_SMOKECLOUD2:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD2, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 2.0f;
+        vec.y += gWindVect.y * 2.0f;
+        break;
 
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 1.0f;
-            vec.y += gWindVect.y * 1.0f;
-            break;
+    case SFX_GUNSMOKE:
+        obj2d = new Drawable2D(DRAW2D_GUNSMOKE, scale, &pos);
+        timeToLive = obj2d->GetAlphaTimeToLive();
+        vec.x += gWindVect.x * 2.0f;
+        vec.y += gWindVect.y * 2.0f;
+        break;
 
-        case SFX_BIG_DUST:
-            obj2d = new Drawable2D(DRAW2D_BIG_DUST, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 1.0f;
-            vec.y += gWindVect.y * 1.0f;
-            break;
+    case SFX_TRAIL_SMOKECLOUD:
+        obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_THINFIRE);
+        vec.x += gWindVect.x * 1.0f;
+        vec.y += gWindVect.y * 1.0f;
+        break;
 
-        case SFX_VEHICLE_DUST:
-            obj2d = new Drawable2D(DRAW2D_TRAILDUST, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 1.0f;
-            vec.y += gWindVect.y * 1.0f;
-            break;
+    case SFX_MISSILE_LAUNCH:
+        obj2d = new Drawable2D(DRAW2D_MISSILE_GLOW, scale, &pos);
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_SARH_MISSILE);
+        break;
 
-        case SFX_AIR_DUSTCLOUD:
-            obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 2.0f;
-            vec.y += gWindVect.y * 2.0f;
-            break;
+    case SFX_TRAIL_FIREBALL:
+        obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_THINFIRE);
+        break;
 
-        case SFX_GROUND_DUSTCLOUD:
-            if (gSfxCount[ SFX_GROUND_DUSTCLOUD ] < gSfxLODCutoff and 
-                gTotSfx < gSfxLODTotCutoff)
-            {
-                obj2d = new Drawable2D(DRAW2D_GROUND_DUSTCLOUD, scale, &pos);
-                timeToLive = obj2d->GetAlphaTimeToLive();
-            }
-            else
-            {
-                timeToLive = 0.0f;
-            }
+    case SFX_TRAIL_FIRE:
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_THINFIRE);
+        break;
 
-            vec.x += gWindVect.x * 1.0f;
-            vec.y += gWindVect.y * 1.0f;
-            break;
+    case SFX_GUNFIRE:
+        obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
+        break;
 
-        case SFX_LANDING_SMOKE:
-            obj2d = new Drawable2D(DRAW2D_WATER_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 2.0f;
-            vec.y += gWindVect.y * 2.0f;
-            break;
+    case SFX_EJECT1:
+        // rot = IMatrix;
+        // at the moment ejection comes out sideways, swap vectors
+        rot.M11 = 1.0f;
+        rot.M12 = 0.0f;
+        rot.M13 = 0.0f;
+        rot.M21 = 0.0f;
+        rot.M22 = 0.0f;
+        rot.M23 = -1.0f;
+        rot.M31 = 0.0f;
+        rot.M32 = 1.0f;
+        rot.M33 = 0.0f;
+        secondaryCount = 1;
+        objBSP = new DrawableBSP(MapVisId(VIS_EJECT1), &pos, &rot, scale);
+        break;
 
-        case SFX_STEAM_CLOUD:
-            obj2d = new Drawable2D(DRAW2D_STEAM_CLOUD, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 2.0f;
-            vec.y += gWindVect.y * 2.0f;
-            break;
+    case SFX_EJECT2:
+        rot = IMatrix;
+        objBSP = new DrawableBSP(MapVisId(VIS_EJECT2), &pos, &rot, scale);
+        break;
 
-        case SFX_AIR_SMOKECLOUD2:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD2, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 2.0f;
-            vec.y += gWindVect.y * 2.0f;
-            break;
+    case SFX_TRACER_FIRE:
+        objTracer = /*(g_bUse_DX_Engine) ? new DXDrawableTracer(scale) :*/
+            new DrawableTracer(scale);
+        objTracer->SetRGB(1.0f, 1.0f, 0.5f);
+        objTracer->SetAlpha(1.0f);
+        objTracer->SetWidth(2.0f * scale);
+        break;
 
-        case SFX_GUNSMOKE:
-            obj2d = new Drawable2D(DRAW2D_GUNSMOKE, scale, &pos);
-            timeToLive = obj2d->GetAlphaTimeToLive();
-            vec.x += gWindVect.x * 2.0f;
-            vec.y += gWindVect.y * 2.0f;
-            break;
+    case SFX_GUN_TRACER:
+        objTracer = /*(g_bUse_DX_Engine) ? new DXDrawableTracer(scale) :*/
+            new DrawableTracer(scale);
+        objTracer->SetRGB(1.0f, 1.0f, 0.5f);
+        objTracer->SetAlpha(1.0f);
+        objTracer->SetWidth(2.0f * scale);
+        break;
 
-        case SFX_TRAIL_SMOKECLOUD:
-            obj2d = new Drawable2D(DRAW2D_SMOKECLOUD1, scale, &pos);
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_THINFIRE);
-            vec.x += gWindVect.x * 1.0f;
-            vec.y += gWindVect.y * 1.0f;
-            break;
+    case SFX_VERTICAL_SMOKE:
+        obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos, 4,
+                               gWaterVerts, gFireUvs);
+        break;
 
-        case SFX_MISSILE_LAUNCH:
-            obj2d = new Drawable2D(DRAW2D_MISSILE_GLOW, scale, &pos);
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_SARH_MISSILE);
-            break;
+    case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
+        break;
 
-        case SFX_TRAIL_FIREBALL:
-            obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_THINFIRE);
-            break;
+        //Cobra TJL 11/06/04 Added GUN_SMOKE for Steve and new PS
+    case SFX_GUN_SMOKE:
+        obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
+        break;
 
-        case SFX_TRAIL_FIRE:
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_THINFIRE);
-            break;
-
-        case SFX_GUNFIRE:
-            obj2d = new Drawable2D(DRAW2D_FLARE, scale, &pos);
-            break;
-
-        case SFX_EJECT1:
-            // rot = IMatrix;
-            // at the moment ejection comes out sideways, swap vectors
-            rot.M11 = 1.0f;
-            rot.M12 = 0.0f;
-            rot.M13 = 0.0f;
-            rot.M21 = 0.0f;
-            rot.M22 = 0.0f;
-            rot.M23 = -1.0f;
-            rot.M31 = 0.0f;
-            rot.M32 = 1.0f;
-            rot.M33 = 0.0f;
-            secondaryCount = 1;
-            objBSP = new DrawableBSP(MapVisId(VIS_EJECT1), &pos, &rot, scale);
-            break;
-
-        case SFX_EJECT2:
-            rot = IMatrix;
-            objBSP = new DrawableBSP(MapVisId(VIS_EJECT2), &pos, &rot, scale);
-            break;
-
-        case SFX_TRACER_FIRE:
-            objTracer = /*(g_bUse_DX_Engine) ? new DXDrawableTracer(scale) :*/ new DrawableTracer(scale);
-            objTracer->SetRGB(1.0f, 1.0f, 0.5f);
-            objTracer->SetAlpha(1.0f);
-            objTracer->SetWidth(2.0f * scale);
-            break;
-
-        case SFX_GUN_TRACER:
-            objTracer = /*(g_bUse_DX_Engine) ? new DXDrawableTracer(scale) :*/ new DrawableTracer(scale);
-            objTracer->SetRGB(1.0f, 1.0f, 0.5f);
-            objTracer->SetAlpha(1.0f);
-            objTracer->SetWidth(2.0f * scale);
-            break;
-
-        case SFX_VERTICAL_SMOKE:
-            obj2d = new Drawable2D(DRAW2D_AIR_DUSTCLOUD, scale, &pos, 4, gWaterVerts, gFireUvs);
-            break;
-
-        case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
-            break;
-
-            //Cobra TJL 11/06/04 Added GUN_SMOKE for Steve and new PS
-        case SFX_GUN_SMOKE:
-            obj2d = new Drawable2D(DRAW2D_SMALL_HIT_EXPLOSION, scale, &pos);
-            break;
-
-        default:
-            // VP_changes. This should be checked or modified - yeah. Oct 7, 2002.
-            ShiWarning("Bad SFX Type");
-            break;
+    default:
+        // VP_changes. This should be checked or modified - yeah. Oct 7, 2002.
+        ShiWarning("Bad SFX Type");
+        break;
     }
 
 
@@ -1915,25 +1920,21 @@ SfxClass::SfxClass(int  typeSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
         // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
-
 }
 
 
 /*
 ** Moving object
 */
-SfxClass::SfxClass(int  typeSfx,
-                   int  flagsSfx,
-                   SimBaseClass *baseobjSfx,
-                   float timeToLiveSfx,
-                   float scaleSfx)
+SfxClass::SfxClass(int typeSfx, int flagsSfx, SimBaseClass *baseobjSfx,
+                   float timeToLiveSfx, float scaleSfx)
 {
 
     // ShiAssert(baseobjSfx and not vuDatabase->Find(baseobjSfx->Id()) and baseobjSfx->VuState() == VU_MEM_CREATED);
@@ -1961,11 +1962,10 @@ SfxClass::SfxClass(int  typeSfx,
     travelDist = 0.0f;
 
     F4Assert(vec.x > -10000.0F and vec.y > -10000.0F and vec.z > -10000.0F);
-    F4Assert(vec.x <  10000.0F and vec.y <  10000.0F and vec.z <  10000.0F);
+    F4Assert(vec.x < 10000.0F and vec.y < 10000.0F and vec.z < 10000.0F);
 
-    if (pos.x > -10000.0f and pos.x < 10000000.0f and 
-        pos.y > -10000.0f and pos.y < 10000000.0f and 
-        pos.z < 8000.0f and pos.z > -150000.0f)
+    if (pos.x > -10000.0f and pos.x < 10000000.0f and pos.y > -10000.0f and
+        pos.y < 10000000.0f and pos.z < 8000.0f and pos.z > -150000.0f)
     {
     }
     else
@@ -1980,84 +1980,85 @@ SfxClass::SfxClass(int  typeSfx,
 
     switch (type)
     {
-        case SFX_SMOKING_PART:
+    case SFX_SMOKING_PART:
 
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_SMOKE);
+        if (gTotSfx <= gSfxLODTotCutoff and
+            gSfxCount[SFX_AIR_SMOKECLOUD] < gSfxLODCutoff)
+        {
+            // for smoking part, randomly allow piece to smoke for a
+            // while and hit ground and stay there
+            if (PRANDInt3() == 0)
+            {
+                timeToLive += 90.0f;
+                flags and_eq compl SFX_EXPLODE_WHEN_DONE;
+            }
+
+            secondaryInterval = 1.0f;
+            secondaryCount = (int)(timeToLive * 1.0f);
+        }
+
+        break;
+
+    case SFX_FLAMING_PART:
+        if (gTotSfx >= gSfxLODTotCutoff or gSfxCount[SFX_FIRE1] > gSfxLODCutoff)
+        {
             //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_SMOKE);
-            if (gTotSfx <= gSfxLODTotCutoff and 
-                gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
-            {
-                // for smoking part, randomly allow piece to smoke for a
-                // while and hit ground and stay there
-                if (PRANDInt3() == 0)
-                {
-                    timeToLive += 90.0f;
-                    flags and_eq compl SFX_EXPLODE_WHEN_DONE;
-                }
+            //objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
+        }
+        else
+        {
+            secondaryInterval = 0.1f;
+            secondaryCount = (int)(timeToLive * 10.0f);
+        }
 
-                secondaryInterval = 1.0f;
-                secondaryCount = (int)(timeToLive * 1.0f);
-            }
+        break;
 
-            break;
+    case SFX_BURNING_PART:
+        secondaryCount = 1;
+        break;
 
-        case SFX_FLAMING_PART:
-            if (gTotSfx >= gSfxLODTotCutoff or
-                gSfxCount[ SFX_FIRE1 ] > gSfxLODCutoff)
-            {
-                //RV - I-Hawk - Removing old trails calls, not needed anymore
-                //objTrail = new DrawableTrail(TRAIL_MEDIUM_SAM);
-            }
-            else
-            {
-                secondaryInterval = 0.1f;
-                secondaryCount = (int)(timeToLive * 10.0f);
-            }
+    case SFX_SMOKING_FEATURE:
+    case SFX_STEAMING_FEATURE:
+        // smoking features is a special case of effect.  It's used
+        // for having smoke rising off of smoke stacks.  The flags passed
+        // in will tell us which slot to use for the hardpoint
 
-            break;
+        // we MUST do a VuRef so that the feature isn't deleted out
+        // from under us
+        //VuReferenceEntity( baseObj );
 
-        case SFX_BURNING_PART:
-            secondaryCount = 1;
-            break;
+        // temporarily use the objBSP ptr
+        objBSP = (DrawableBSP *)baseObj->drawPointer;
+        objBSP->GetChildOffset(flags, &pos);
 
-        case SFX_SMOKING_FEATURE:
-        case SFX_STEAMING_FEATURE:
-            // smoking features is a special case of effect.  It's used
-            // for having smoke rising off of smoke stacks.  The flags passed
-            // in will tell us which slot to use for the hardpoint
+        // get rotated offset
+        vec.x =
+            pos.x * objBSP->orientation.M11 + pos.y * objBSP->orientation.M12;
+        vec.y =
+            pos.x * objBSP->orientation.M21 + pos.y * objBSP->orientation.M22;
+        vec.z = pos.z;
 
-            // we MUST do a VuRef so that the feature isn't deleted out
-            // from under us
-            //VuReferenceEntity( baseObj );
+        vec.x += gWindVect.x * 1.0f;
+        vec.y += gWindVect.y * 1.0f;
 
-            // temporarily use the objBSP ptr
-            objBSP = (DrawableBSP *)baseObj->drawPointer;
-            objBSP->GetChildOffset(flags, &pos);
+        objBSP->GetPosition(&pos);
 
-            // get rotated offset
-            vec.x = pos.x * objBSP->orientation.M11 + pos.y * objBSP->orientation.M12;
-            vec.y = pos.x * objBSP->orientation.M21 + pos.y * objBSP->orientation.M22;
-            vec.z = pos.z;
+        // we're done borrowing this
+        objBSP = NULL;
 
-            vec.x += gWindVect.x * 1.0f;
-            vec.y += gWindVect.y * 1.0f;
+        // flags = SFX_TIMER_FLAG; // MLR 12/20/2003 - Can't have this set anymore
 
-            objBSP->GetPosition(&pos);
+        break;
 
-            // we're done borrowing this
-            objBSP = NULL;
+    case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
+        break;
 
-            // flags = SFX_TIMER_FLAG; // MLR 12/20/2003 - Can't have this set anymore
-
-            break;
-
-        case SFX_PARTICLE_KLUDGE: // so it won't do that annoying "Bad SFX Type"
-            break;
-
-        default:
-            // bzzzzt
-            ShiWarning("Bad SFX Type");
-            break;
+    default:
+        // bzzzzt
+        ShiWarning("Bad SFX Type");
+        break;
     }
 
     viewPoint = OTWDriver.GetViewpoint();
@@ -2071,26 +2072,20 @@ SfxClass::SfxClass(int  typeSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
         // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
-
 }
-
 
 
 ////////////////////////////
 // F16 crash landing
-SfxClass::SfxClass(int typeSfx,
-                   int flagsSfx,
-                   SimBaseClass *baseobjSfx,
-                   float timeToLiveSfx,
-                   float scaleSfx,
-                   Tpoint *slot,
+SfxClass::SfxClass(int typeSfx, int flagsSfx, SimBaseClass *baseobjSfx,
+                   float timeToLiveSfx, float scaleSfx, Tpoint *slot,
                    float restpitch, float restroll)
 {
     inACMI = FALSE;
@@ -2127,22 +2122,23 @@ SfxClass::SfxClass(int typeSfx,
 
     switch (type)
     {
-        case SFX_SMOKING_PART:
+    case SFX_SMOKING_PART:
 
-            //RV - I-Hawk - Removing old trails calls, not needed anymore
-            //objTrail = new DrawableTrail(TRAIL_SMOKE);
-            if (gTotSfx <= gSfxLODTotCutoff and gSfxCount[ SFX_AIR_SMOKECLOUD ] < gSfxLODCutoff)
-            {
-                timeToLive += 90.0f;
-                flags and_eq compl SFX_EXPLODE_WHEN_DONE;
-                secondaryInterval = 1.0f;
-                secondaryCount = FloatToInt32(timeToLive);
-            }
+        //RV - I-Hawk - Removing old trails calls, not needed anymore
+        //objTrail = new DrawableTrail(TRAIL_SMOKE);
+        if (gTotSfx <= gSfxLODTotCutoff and
+            gSfxCount[SFX_AIR_SMOKECLOUD] < gSfxLODCutoff)
+        {
+            timeToLive += 90.0f;
+            flags and_eq compl SFX_EXPLODE_WHEN_DONE;
+            secondaryInterval = 1.0f;
+            secondaryCount = FloatToInt32(timeToLive);
+        }
 
-            break;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     viewPoint = OTWDriver.GetViewpoint();
@@ -2156,14 +2152,13 @@ SfxClass::SfxClass(int typeSfx,
         // MonoPrint( "SFX Total High Water Mark Reached = %d\n", gTotHighWaterSfx );
     }
 
-    gSfxCount[ type ]++;
+    gSfxCount[type]++;
 
     if (gSfxCount[type] > gSfxHighWater[type])
     {
         gSfxHighWater[type] = gSfxCount[type];
         // MonoPrint( "SFX Type %d High Water Reached = %d\n", type, gSfxHighWater[type] );
     }
-
 }
 ////////////////////////////
 
@@ -2208,7 +2203,8 @@ SfxClass::~SfxClass(void)
 
         if (baseObj)
         {
-            if (type not_eq SFX_SMOKING_FEATURE and type not_eq SFX_STEAMING_FEATURE)
+            if (type not_eq SFX_SMOKING_FEATURE and
+                type not_eq SFX_STEAMING_FEATURE)
             {
                 if (baseObj->drawPointer)
                 {
@@ -2284,8 +2280,10 @@ SfxClass::~SfxClass(void)
         if (baseObj)
         {
             // PHASE 5: FF6-data guard (drawPointer could be NULL/broken); delete NULL is safe
-            if (baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject))
-                and baseObj->drawPointer->InDisplayList())
+            if (baseObj->drawPointer and
+                not F4IsBadReadPtr(baseObj->drawPointer,
+                                   sizeof(DrawableObject)) and
+                baseObj->drawPointer->InDisplayList())
             {
                 viewPoint->RemoveObject(baseObj->drawPointer);
             }
@@ -2302,8 +2300,9 @@ SfxClass::~SfxClass(void)
     // update counters
     gTotSfx--;
 
-    if (type >= 0 and not F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
-        gSfxCount[ type ]--;
+    if (type >= 0 and
+        not F4IsBadReadPtr(gSfxCount, sizeof(int))) // JB 010318 CTD
+        gSfxCount[type]--;
 }
 
 
@@ -2313,8 +2312,7 @@ SfxClass::~SfxClass(void)
 ** Starts the effect by adding it to the draw list.
 ** And sets the timetolive
 */
-void
-SfxClass::Start(void)
+void SfxClass::Start(void)
 {
     float sinAng, cosAng;
 
@@ -2327,7 +2325,7 @@ SfxClass::Start(void)
         cosAng = (float)sqrt(1.0f - sinAng * sinAng);
         vec.x *= cosAng;
         vec.y *= cosAng;
-        vec.z =  vec.z * cosAng - TRACER_VELOCITY * sinAng;
+        vec.z = vec.z * cosAng - TRACER_VELOCITY * sinAng;
     }
 
     // check acmi recording
@@ -2336,7 +2334,8 @@ SfxClass::Start(void)
         // stationary sfx have no flags
         if (flags == 0)
         {
-            acmiStatSfx.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            acmiStatSfx.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             acmiStatSfx.data.type = type;
             acmiStatSfx.data.x = pos.x;
             acmiStatSfx.data.y = pos.y;
@@ -2347,7 +2346,8 @@ SfxClass::Start(void)
         }
         else if (flags bitand SFX_MOVES or type == SFX_BURNING_PART)
         {
-            acmiMoveSfx.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            acmiMoveSfx.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             acmiMoveSfx.data.type = type;
             acmiMoveSfx.data.flags = flags;
             acmiMoveSfx.data.user = -1;
@@ -2364,7 +2364,8 @@ SfxClass::Start(void)
             // later reconstruction
             if (baseObj)
             {
-                acmiMoveSfx.data.user = ((DrawableBSP *)baseObj->drawPointer)->GetID();
+                acmiMoveSfx.data.user =
+                    ((DrawableBSP *)baseObj->drawPointer)->GetID();
             }
 
             gACMIRec.MovingSfxRecord(&acmiMoveSfx);
@@ -2382,7 +2383,7 @@ SfxClass::Start(void)
         return;
 
     // insert the effect's object into the display list
-    if (objParticleSys)   // MLR 2/3/2004 -
+    if (objParticleSys) // MLR 2/3/2004 -
     {
         OTWDriver.InsertObject(objParticleSys);
     }
@@ -2419,16 +2420,17 @@ SfxClass::Start(void)
 
     if (baseObj)
     {
-        if (type not_eq SFX_SMOKING_FEATURE and type not_eq SFX_STEAMING_FEATURE)   // MLR 12/20/2003 - added
+        if (type not_eq SFX_SMOKING_FEATURE and
+            type not_eq SFX_STEAMING_FEATURE) // MLR 12/20/2003 - added
         {
             OTWDriver.InsertObject(baseObj->drawPointer);
         }
     }
-
 }
 
 ///////////////////////////////////
-void SfxClass::CalculateRestingObjectMatrix(float pitch, float roll, float mat[3][3])
+void SfxClass::CalculateRestingObjectMatrix(float pitch, float roll,
+                                            float mat[3][3])
 {
     mlTrig trig;
 
@@ -2439,15 +2441,15 @@ void SfxClass::CalculateRestingObjectMatrix(float pitch, float roll, float mat[3
     mlSinCos(&trig, pitch);
     float ps = trig.sin;
     float pc = trig.cos;
-    mat[0][0] =  pc;
-    mat[0][1] =  0.0f;
+    mat[0][0] = pc;
+    mat[0][1] = 0.0f;
     mat[0][2] = -ps;
-    mat[1][0] =  ps * rs;
-    mat[1][1] =  rc;
-    mat[1][2] =  pc * rs;
-    mat[2][0] =  ps * rc;
+    mat[1][0] = ps * rs;
+    mat[1][1] = rc;
+    mat[1][2] = pc * rs;
+    mat[2][0] = ps * rc;
     mat[2][1] = -rs;
-    mat[2][2] =  pc * rc;
+    mat[2][2] = pc * rc;
 }
 
 void SfxClass::CalculateGroundMatrix(Tpoint *normal, float yaw, float mat[3][3])
@@ -2458,47 +2460,60 @@ void SfxClass::CalculateGroundMatrix(Tpoint *normal, float yaw, float mat[3][3])
     float yc = trig.cos;
     float ys = trig.sin;
     float Nx, Ny, Nz, x, y, z, s;
-    Nx = -normal -> x;
-    Ny = -normal -> y;
-    Nz = -normal -> z;
-    s =  1.0f / (float) sqrt(Nx * Nx + Ny * Ny + Nz * Nz);
+    Nx = -normal->x;
+    Ny = -normal->y;
+    Nz = -normal->z;
+    s = 1.0f / (float)sqrt(Nx * Nx + Ny * Ny + Nz * Nz);
     mat[2][0] = Nx * s;
     mat[2][1] = Ny * s;
     mat[2][2] = Nz * s;
-    x =  Nz * yc;
-    y =  Nz * ys;
+    x = Nz * yc;
+    y = Nz * ys;
     z = -Nx * yc - Ny * ys;
-    s =  1.0f / (float) sqrt(x * x + y * y + z * z);
+    s = 1.0f / (float)sqrt(x * x + y * y + z * z);
     mat[0][0] = x * s;
     mat[0][1] = y * s;
     mat[0][2] = z * s;
     x = -Nz * ys;
-    y =  Nz * yc;
-    z =  Nx * ys - Ny * yc;
-    s =  1.0f / (float) sqrt(x * x + y * y + z * z);
+    y = Nz * yc;
+    z = Nx * ys - Ny * yc;
+    s = 1.0f / (float)sqrt(x * x + y * y + z * z);
     mat[1][0] = x * s;
     mat[1][1] = y * s;
     mat[1][2] = z * s;
 }
 
-void SfxClass::MultiplyMatrix(float result[3][3], float mat[3][3], float mat1[3][3])
+void SfxClass::MultiplyMatrix(float result[3][3], float mat[3][3],
+                              float mat1[3][3])
 {
-    result[0][0] = mat[0][0] * mat1[0][0] + mat[1][0] * mat1[0][1] + mat[2][0] * mat1[0][2];
-    result[1][0] = mat[0][0] * mat1[1][0] + mat[1][0] * mat1[1][1] + mat[2][0] * mat1[1][2];
-    result[2][0] = mat[0][0] * mat1[2][0] + mat[1][0] * mat1[2][1] + mat[2][0] * mat1[2][2];
-    result[0][1] = mat[0][1] * mat1[0][0] + mat[1][1] * mat1[0][1] + mat[2][1] * mat1[0][2];
-    result[1][1] = mat[0][1] * mat1[1][0] + mat[1][1] * mat1[1][1] + mat[2][1] * mat1[1][2];
-    result[2][1] = mat[0][1] * mat1[2][0] + mat[1][1] * mat1[2][1] + mat[2][1] * mat1[2][2];
-    result[0][2] = mat[0][2] * mat1[0][0] + mat[1][2] * mat1[0][1] + mat[2][2] * mat1[0][2];
-    result[1][2] = mat[0][2] * mat1[1][0] + mat[1][2] * mat1[1][1] + mat[2][2] * mat1[1][2];
-    result[2][2] = mat[0][2] * mat1[2][0] + mat[1][2] * mat1[2][1] + mat[2][2] * mat1[2][2];
+    result[0][0] = mat[0][0] * mat1[0][0] + mat[1][0] * mat1[0][1] +
+                   mat[2][0] * mat1[0][2];
+    result[1][0] = mat[0][0] * mat1[1][0] + mat[1][0] * mat1[1][1] +
+                   mat[2][0] * mat1[1][2];
+    result[2][0] = mat[0][0] * mat1[2][0] + mat[1][0] * mat1[2][1] +
+                   mat[2][0] * mat1[2][2];
+    result[0][1] = mat[0][1] * mat1[0][0] + mat[1][1] * mat1[0][1] +
+                   mat[2][1] * mat1[0][2];
+    result[1][1] = mat[0][1] * mat1[1][0] + mat[1][1] * mat1[1][1] +
+                   mat[2][1] * mat1[1][2];
+    result[2][1] = mat[0][1] * mat1[2][0] + mat[1][1] * mat1[2][1] +
+                   mat[2][1] * mat1[2][2];
+    result[0][2] = mat[0][2] * mat1[0][0] + mat[1][2] * mat1[0][1] +
+                   mat[2][2] * mat1[0][2];
+    result[1][2] = mat[0][2] * mat1[1][0] + mat[1][2] * mat1[1][1] +
+                   mat[2][2] * mat1[1][2];
+    result[2][2] = mat[0][2] * mat1[2][0] + mat[1][2] * mat1[2][1] +
+                   mat[2][2] * mat1[2][2];
 }
 
 void SfxClass::TransformPoint(Tpoint *result, Tpoint *point, float mat[3][3])
 {
-    result -> x = point -> x * mat[0][0] + point -> y * mat[1][0] + point -> z * mat[2][0];
-    result -> y = point -> x * mat[0][1] + point -> y * mat[1][1] + point -> z * mat[2][1];
-    result -> z = point -> x * mat[0][2] + point -> y * mat[1][2] + point -> z * mat[2][2];
+    result->x =
+        point->x * mat[0][0] + point->y * mat[1][0] + point->z * mat[2][0];
+    result->y =
+        point->x * mat[0][1] + point->y * mat[1][1] + point->z * mat[2][1];
+    result->z =
+        point->x * mat[0][2] + point->y * mat[1][2] + point->z * mat[2][2];
 }
 
 void SfxClass::CopyMatrix(float result[3][3], float mat[3][3])
@@ -2514,20 +2529,24 @@ void SfxClass::CopyMatrix(float result[3][3], float mat[3][3])
     result[2][2] = mat[2][2];
 }
 
-void SfxClass::GetOrientation(float mat[3][3], float *yaw, float *pitch, float *roll)
+void SfxClass::GetOrientation(float mat[3][3], float *yaw, float *pitch,
+                              float *roll)
 {
     *pitch = -(float)asin(mat[0][2]);
-    *yaw   = (float)atan2(mat[0][1], mat[0][0]);
-    *roll  = (float)atan2(mat[1][2], mat[2][2]);
+    *yaw = (float)atan2(mat[0][1], mat[0][0]);
+    *roll = (float)atan2(mat[1][2], mat[2][2]);
 }
 
 float SfxClass::AdjustAngle180(float angle)
 {
-    while (angle >  PI * 2) angle -= PI * 2;
+    while (angle > PI * 2)
+        angle -= PI * 2;
 
-    while (angle < -PI * 2) angle += PI * 2;
+    while (angle < -PI * 2)
+        angle += PI * 2;
 
-    if (angle > PI) angle -= PI * 2;
+    if (angle > PI)
+        angle -= PI * 2;
 
     return angle;
 }
@@ -2538,7 +2557,8 @@ int SfxClass::RestPiece(float *angle, float rest, float multiplier, float min)
     *angle = AdjustAngle180(*angle);
     float angle1 = (rest - *angle);
 
-    if (fabs(angle1) < min) stopit = 1;
+    if (fabs(angle1) < min)
+        stopit = 1;
     else
     {
         angle1 *= multiplier;
@@ -2556,11 +2576,12 @@ int SfxClass::RestPiece(float *angle, float rest, float multiplier, float min)
 #define F16CRASH_DRAGMASK 0x08
 #define F16CRASH_FELLMASK 0x10
 
-void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint *pos = (Tpoint *)0)
+void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0,
+                    Tpoint *pos = (Tpoint *)0)
 {
     static int timePlaying[F16CRASH_MAXSOUND];
     static int SoundIndex[F16CRASH_MAXSOUND];
-    static int DelayTime[F16CRASH_MAXSOUND] = { 100, 1000, 500, 50, 50 };
+    static int DelayTime[F16CRASH_MAXSOUND] = {100, 1000, 500, 50, 50};
     int i, index;
 
     if (flag)
@@ -2579,7 +2600,7 @@ void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint
             index++;
         }
     }
-    else   // play sound
+    else // play sound
     {
         index = 0;
 
@@ -2587,12 +2608,14 @@ void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint
         {
             if (mask bitand 1)
             {
-                if (timePlaying[index] > time + DelayTime[index]) timePlaying[index] = 0;
+                if (timePlaying[index] > time + DelayTime[index])
+                    timePlaying[index] = 0;
 
                 if (timePlaying[index] < time)
                 {
                     timePlaying[index] = time + DelayTime[index];
-                    F4SoundFXSetPos(SoundIndex[index], TRUE, pos -> x, pos -> y, pos -> z, 1.0f);
+                    F4SoundFXSetPos(SoundIndex[index], TRUE, pos->x, pos->y,
+                                    pos->z, 1.0f);
                 }
             }
 
@@ -2603,7 +2626,6 @@ void PlayCrashSound(int mask, int soundindex, int flag = 1, int time = 0, Tpoint
 }
 
 ///////////////////////////////////
-
 
 
 /*
@@ -2654,7 +2676,7 @@ BOOL SfxClass::Exec()
 
         // check to see if the object is awake or if its state
         // is no longer OK
-        if ( not baseObj->IsAwake() or
+        if (not baseObj->IsAwake() or
             (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DESTROYED or
             (baseObj->Status() bitand VIS_TYPE_MASK) == VIS_DAMAGED or
             baseObj->IsDead())
@@ -2701,8 +2723,8 @@ BOOL SfxClass::Exec()
 
         gWindTimer = SimLibElapsedTime + 120000;
 
-        hdg = ((WeatherClass*)realWeather)->WindHeadingAt(&pos);
-        vel = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
+        hdg = ((WeatherClass *)realWeather)->WindHeadingAt(&pos);
+        vel = ((WeatherClass *)realWeather)->WindSpeedInFeetPerSecond(&pos);
         mlSinCos(&trig, hdg);
         gWindVect.x = trig.cos * vel;
         gWindVect.y = trig.sin * vel;
@@ -2713,9 +2735,8 @@ BOOL SfxClass::Exec()
     if (secondaryCount > 0 and SIM_ELAPSED_SEC >= secondaryTimer)
     {
         secondaryCount--;
-        secondaryTimer =
-            SIM_ELAPSED_SEC + secondaryInterval + secondaryInterval * (PRANDFloat() + 1.0f - gSfxLOD)
-            ;
+        secondaryTimer = SIM_ELAPSED_SEC + secondaryInterval +
+                         secondaryInterval * (PRANDFloat() + 1.0f - gSfxLOD);
         RunSecondarySfx();
     }
 
@@ -2747,7 +2768,8 @@ BOOL SfxClass::Exec()
             groundType = OTWDriver.GetGroundType(pos.x, pos.y);
         }
 
-        int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
+        int coverage =
+            (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
         int curtime = static_cast<int>(SIM_ELAPSED_SEC);
         int lastHit = hitGround;
@@ -2764,7 +2786,8 @@ BOOL SfxClass::Exec()
             float scale = 15.0f;
             float vecz = (float)fabs(vec.z) * 0.01f;
 
-            if (vecz < 10.0f) scale -= (10.0f - vecz);
+            if (vecz < 10.0f)
+                scale -= (10.0f - vecz);
 
             /*
              baseObj->SetYPRDelta(baseObj->YawDelta(),
@@ -2775,14 +2798,17 @@ BOOL SfxClass::Exec()
             vec.y *= 0.75f;
             vec.z *= 0.25f;
 
-            if (vec.z > GRAVITY) vec.z = -vec.z;
+            if (vec.z > GRAVITY)
+                vec.z = -vec.z;
 
-            if ( not (flags bitand SFX_F16CRASH_HITGROUND))
+            if (not(flags bitand SFX_F16CRASH_HITGROUND))
             {
                 int i = FloatToInt32(9.99f * PRANDFloatPos());
 
-                if (i < 5) i = SFX_BOOMA1 + i;
-                else i = SFX_BOOMG1 + i - 5;
+                if (i < 5)
+                    i = SFX_BOOMA1 + i;
+                else
+                    i = SFX_BOOMG1 + i - 5;
 
                 CrashSoundMask or_eq F16CRASH_BOOMMASK;
                 PlayCrashSound(F16CRASH_BOOMMASK, i);
@@ -2796,13 +2822,11 @@ BOOL SfxClass::Exec()
                  scale) ); // scale
                  */
                 DrawableParticleSys::PS_AddParticleEx((SFX_GROUND_STRIKE + 1),
-                                                      &pos,
-                                                      &PSvec);
+                                                      &pos, &PSvec);
             }
             else
             {
-                if (fabs(vec.x) > 1.0f and 
-                    fabs(vec.y) > 1.0f and 
+                if (fabs(vec.x) > 1.0f and fabs(vec.y) > 1.0f and
                     fabs(vec.z) > 5.0f)
                 {
 
@@ -2822,14 +2846,14 @@ BOOL SfxClass::Exec()
                     //RV - I-Hawk - Chnaged type for more appropriate F-16 crash effect
                     if (PRANDInt6() == 0)
                     {
-                        DrawableParticleSys::PS_AddParticleEx((SFX_FLAMING_PART + 1),
-                                                              &pos,
-                                                              &PSvec);
+                        DrawableParticleSys::PS_AddParticleEx(
+                            (SFX_FLAMING_PART + 1), &pos, &PSvec);
                     }
                 }
             }
 
-            if ((flags bitand SFX_MOVES) and not (flags bitand SFX_F16CRASH_STOP))
+            if ((flags bitand SFX_MOVES) and
+                not(flags bitand SFX_F16CRASH_STOP))
             {
                 flags or_eq SFX_F16CRASH_ADJUSTANGLE;
             }
@@ -2874,9 +2898,11 @@ BOOL SfxClass::Exec()
                     flags and_eq compl SFX_F16CRASH_ADJUSTANGLE;
                     baseObj->SetYPR(yaw, pitch, roll);
                 }
-                else baseObj->SetYPR(yaw, pitch1, roll1);
+                else
+                    baseObj->SetYPR(yaw, pitch1, roll1);
             }
-            else flags and_eq compl SFX_F16CRASH_ADJUSTANGLE;
+            else
+                flags and_eq compl SFX_F16CRASH_ADJUSTANGLE;
         }
 
         // update position based on vector
@@ -2884,22 +2910,21 @@ BOOL SfxClass::Exec()
         {
             if (fabs(vec.x) < 2.0f and fabs(vec.y) < 2.0f)
             {
-                baseObj->SetYPRDelta(
-                    baseObj->YawDelta() * 0.95f,
-                    baseObj->PitchDelta() * 0.9f,
-                    baseObj->RollDelta() * 0.9f);//75f);
+                baseObj->SetYPRDelta(baseObj->YawDelta() * 0.95f,
+                                     baseObj->PitchDelta() * 0.9f,
+                                     baseObj->RollDelta() * 0.9f); //75f);
             }
 
-            if ( not (flags bitand SFX_F16CRASH_STOP))
+            if (not(flags bitand SFX_F16CRASH_STOP))
             {
                 if (lastHit)
                 {
-                    baseObj->SetYPR(
-                        baseObj->Yaw() + baseObj->YawDelta() * sfxFrameTime,
-                        baseObj->Pitch(),
-                        baseObj->Roll());
+                    baseObj->SetYPR(baseObj->Yaw() +
+                                        baseObj->YawDelta() * sfxFrameTime,
+                                    baseObj->Pitch(), baseObj->Roll());
 
-                    if ((flags bitand SFX_F16CRASH_OBJECT) and (fabs(baseObj->YawDelta()) > 20.0f * DTR))
+                    if ((flags bitand SFX_F16CRASH_OBJECT) and
+                        (fabs(baseObj->YawDelta()) > 20.0f * DTR))
                     {
                         CrashSoundMask or_eq F16CRASH_DRAGMASK;
                         PlayCrashSound(F16CRASH_DRAGMASK, SFX_TAILSCRAPE);
@@ -2909,17 +2934,18 @@ BOOL SfxClass::Exec()
                 {
                     if (flags bitand SFX_F16CRASH_ADJUSTANGLE)
                     {
-                        baseObj->SetYPR(
-                            baseObj->Yaw() + baseObj->YawDelta() * sfxFrameTime,
-                            baseObj->Pitch(),
-                            baseObj->Roll());
+                        baseObj->SetYPR(baseObj->Yaw() +
+                                            baseObj->YawDelta() * sfxFrameTime,
+                                        baseObj->Pitch(), baseObj->Roll());
                     }
                     else
                     {
-                        baseObj->SetYPR(
-                            baseObj->Yaw(),
-                            baseObj->Pitch() + baseObj->PitchDelta() * sfxFrameTime,
-                            baseObj->Roll() + baseObj->RollDelta() * sfxFrameTime);
+                        baseObj->SetYPR(baseObj->Yaw(),
+                                        baseObj->Pitch() +
+                                            baseObj->PitchDelta() *
+                                                sfxFrameTime,
+                                        baseObj->Roll() + baseObj->RollDelta() *
+                                                              sfxFrameTime);
                     }
                 }
             }
@@ -2928,14 +2954,11 @@ BOOL SfxClass::Exec()
             vec.y *= 0.99f;
             vec.z *= 0.99f;
 
-            if (fabs(vec.x) < 1.0f and 
-                fabs(vec.y) < 1.0f and 
-                lastHit and 
- not (flags bitand SFX_F16CRASH_ADJUSTANGLE) and 
-                fabs(baseObj->YawDelta()) < 15.0f * DTR and 
-                fabs(baseObj->PitchDelta()) < 15.0f * DTR and 
-                fabs(baseObj->RollDelta()) < 15.0f * DTR and 
-                fabs(vec.z) < 5.0f)
+            if (fabs(vec.x) < 1.0f and fabs(vec.y) < 1.0f and lastHit and
+                not(flags bitand SFX_F16CRASH_ADJUSTANGLE) and
+                fabs(baseObj->YawDelta()) < 15.0f * DTR and
+                fabs(baseObj->PitchDelta()) < 15.0f * DTR and
+                fabs(baseObj->RollDelta()) < 15.0f * DTR and fabs(vec.z) < 5.0f)
             {
 
                 flags or_eq SFX_F16CRASH_STOP;
@@ -2959,11 +2982,12 @@ BOOL SfxClass::Exec()
                     PlayCrashSound(F16CRASH_FELLMASK, SFX_FLAPLOOP);
                 }
             }
-            else if ( not lastHit and not (flags bitand SFX_F16CRASH_SKIPGRAVITY)) vec.z += GRAVITY * sfxFrameTime;
+            else if (not lastHit and not(flags bitand SFX_F16CRASH_SKIPGRAVITY))
+                vec.z += GRAVITY * sfxFrameTime;
 
             CalcTransformMatrix(baseObj.get());
             Tpoint point;
-            TransformPoint(&point, &CrashSlot, baseObj -> dmx);
+            TransformPoint(&point, &CrashSlot, baseObj->dmx);
             point.x *= OTWDriver.Scale();
             point.y *= OTWDriver.Scale();
             point.z *= OTWDriver.Scale();
@@ -2980,12 +3004,14 @@ BOOL SfxClass::Exec()
             {
                 pos.z = gZ;
 
-                if (fabs(vec.x) < 1.0f and fabs(vec.y) < 1.0f and vec.z < GRAVITY)
+                if (fabs(vec.x) < 1.0f and fabs(vec.y) < 1.0f and
+                    vec.z < GRAVITY)
                 {
                     flags or_eq SFX_F16CRASH_SKIPGRAVITY;
                     vec.z = 0.0f;
                 }
-                else if (vec.z > GRAVITY) vec.z = -vec.z;
+                else if (vec.z > GRAVITY)
+                    vec.z = -vec.z;
             }
 
             gZ = OTWDriver.GetGroundLevel(CrashPos.x, CrashPos.y);
@@ -3016,7 +3042,7 @@ BOOL SfxClass::Exec()
         }
         else
         {
-            if ( not (flags bitand SFX_F16CRASH_STOP))
+            if (not(flags bitand SFX_F16CRASH_STOP))
             {
                 flags or_eq SFX_F16CRASH_STOP;
                 float mat[3][3], mat1[3][3];
@@ -3039,10 +3065,8 @@ BOOL SfxClass::Exec()
                 CrashPos.x - baseObj->dmx[0][0] * 100.0f,
                 CrashPos.y - baseObj->dmx[0][1] * 100.0f,
                 CrashPos.z - baseObj->dmx[0][2] * 100.0f);
-            OTWDriver.SetEndFlightVec(
-                -baseObj->dmx[0][0],
-                -baseObj->dmx[0][1],
-                -baseObj->dmx[0][2]);
+            OTWDriver.SetEndFlightVec(-baseObj->dmx[0][0], -baseObj->dmx[0][1],
+                                      -baseObj->dmx[0][2]);
         }
 
         Trotation objrot;
@@ -3059,9 +3083,12 @@ BOOL SfxClass::Exec()
         objpos.x = baseObj->XPos();
         objpos.y = baseObj->YPos();
         objpos.z = baseObj->ZPos();
-        if (baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject)))	// PHASE 5: FF6-data guard
+        if (baseObj->drawPointer and
+            not F4IsBadReadPtr(
+                baseObj->drawPointer,
+                sizeof(DrawableObject))) // PHASE 5: FF6-data guard
         {
-            ((DrawableBSP*)(baseObj->drawPointer))->Update(&objpos, &objrot);
+            ((DrawableBSP *)(baseObj->drawPointer))->Update(&objpos, &objrot);
             baseObj->drawPointer->SetScale(OTWDriver.Scale());
         }
         return TRUE;
@@ -3071,12 +3098,12 @@ BOOL SfxClass::Exec()
 
 
     // check for hit with ground
-    if ((flags bitand SFX_MOVES) and not (flags bitand SFX_NO_GROUND_CHECK))
+    if ((flags bitand SFX_MOVES) and not(flags bitand SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
 
-        if (pos.z - groundZ  > -100.0f)
+        if (pos.z - groundZ > -100.0f)
         {
             groundZ = OTWDriver.GetGroundLevel(pos.x, pos.y);
 
@@ -3088,10 +3115,12 @@ BOOL SfxClass::Exec()
         }
     }
 
-    int coverage = (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
+    int coverage =
+        (groundType == COVERAGE_WATER) or (groundType == COVERAGE_RIVER);
 
     // does this object bounce?
-    if (hitGround and (flags bitand (SFX_BOUNCES bitor SFX_BOUNCES_HARD)) and not coverage)
+    if (hitGround and (flags bitand (SFX_BOUNCES bitor SFX_BOUNCES_HARD)) and
+        not coverage)
     {
         // calcuate the new movement vector
         GroundReflection();
@@ -3130,7 +3159,6 @@ BOOL SfxClass::Exec()
 
         // done with this effect
         return FALSE;
-
     }
 
     // if it's fire, play sound
@@ -3140,7 +3168,7 @@ BOOL SfxClass::Exec()
     }
 
     // do we need to move it?
-    if ( not (flags bitand SFX_MOVES) or (flags bitand SFX_TIMER_FLAG))
+    if (not(flags bitand SFX_MOVES) or (flags bitand SFX_TIMER_FLAG))
     {
         Draw();
         return TRUE;
@@ -3156,7 +3184,6 @@ BOOL SfxClass::Exec()
             vec.z *= 0.999F;
         else
             vec.z += GRAVITY * sfxFrameTime;
-
     }
     else if (flags bitand SFX_TRAJECTORY)
     {
@@ -3178,10 +3205,9 @@ BOOL SfxClass::Exec()
     {
         baseObj->SetPosition(pos.x, pos.y, pos.z);
         baseObj->SetDelta(vec.x, vec.y, vec.z);
-        baseObj->SetYPR(
-            baseObj->Yaw() + baseObj->YawDelta() * sfxFrameTime,
-            baseObj->Pitch() + baseObj->PitchDelta() * sfxFrameTime,
-            baseObj->Roll() + baseObj->RollDelta() * sfxFrameTime);
+        baseObj->SetYPR(baseObj->Yaw() + baseObj->YawDelta() * sfxFrameTime,
+                        baseObj->Pitch() + baseObj->PitchDelta() * sfxFrameTime,
+                        baseObj->Roll() + baseObj->RollDelta() * sfxFrameTime);
         CalcTransformMatrix(baseObj.get());
     }
 
@@ -3195,8 +3221,7 @@ BOOL SfxClass::Exec()
 ** Update the position
 ** Returns FALSE when completed
 */
-BOOL
-SfxClass::Draw(void)
+BOOL SfxClass::Draw(void)
 {
     Tpoint mpos;
     Trotation rot = IMatrix;
@@ -3208,7 +3233,9 @@ SfxClass::Draw(void)
         return TRUE;
 
     // this type has no drawing
-    if (( not (flags bitand SFX_F16CRASHLANDING) and not (flags bitand SFX_MOVES)) or (flags bitand SFX_TIMER_FLAG))
+    if ((not(flags bitand SFX_F16CRASHLANDING) and
+         not(flags bitand SFX_MOVES)) or
+        (flags bitand SFX_TIMER_FLAG))
     {
         if (obj2d)
         {
@@ -3222,7 +3249,8 @@ SfxClass::Draw(void)
 
         // PHASE 5: drawPointer guard (FF6 data yields broken/NULL baseObj->drawPointer ->
         // SetScale read this+0x14 with this~NULL -> AV on 3D entry).
-        if (baseObj and baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject)))
+        if (baseObj and baseObj->drawPointer and
+            not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject)))
         {
             baseObj->drawPointer->SetScale(scaleOTW);
         }
@@ -3282,9 +3310,12 @@ SfxClass::Draw(void)
     if (baseObj)
     {
         OTWDriver.ObjectSetData(baseObj.get(), &pos, &rot);
-        if (baseObj->drawPointer and not F4IsBadReadPtr(baseObj->drawPointer, sizeof(DrawableObject)))	// PHASE 5: FF6-data guard
+        if (baseObj->drawPointer and
+            not F4IsBadReadPtr(
+                baseObj->drawPointer,
+                sizeof(DrawableObject))) // PHASE 5: FF6-data guard
         {
-            ((DrawableBSP*)(baseObj->drawPointer))->Update(&pos, &rot);
+            ((DrawableBSP *)(baseObj->drawPointer))->Update(&pos, &rot);
             baseObj->drawPointer->SetScale(scaleOTW);
         }
     }
@@ -3326,7 +3357,7 @@ SfxClass::Draw(void)
         else if (type == SFX_GUN_TRACER)
         {
             mpos.x = pos.x - (vec.x * sfxFrameTime * 0.2f);
-            mpos.y = pos.y - (vec.y * sfxFrameTime * 0.2f) ;
+            mpos.y = pos.y - (vec.y * sfxFrameTime * 0.2f);
             mpos.z = pos.z - (vec.z * sfxFrameTime * 0.2f);
         }
         else
@@ -3349,19 +3380,19 @@ SfxClass::Draw(void)
 ** This function is periodically called by effects to get the
 ** distance to the viewer position.  Basically does a manhatten dist.
 */
-void
-SfxClass::GetApproxViewDist(float currTime)
+void SfxClass::GetApproxViewDist(float currTime)
 {
     float absmax, absmid, absmin, tmp;
     Tpoint viewLoc;
 
-    if ( not viewPoint) // JB 010528
+    if (not viewPoint) // JB 010528
         return;
 
-    if (F4IsBadReadPtr(viewPoint, sizeof * viewPoint)) return; // JPO CTD fix?
+    if (F4IsBadReadPtr(viewPoint, sizeof *viewPoint))
+        return; // JPO CTD fix?
 
     // get view pos
-    viewPoint->GetPos(&viewLoc);   // CTD Pos
+    viewPoint->GetPos(&viewLoc); // CTD Pos
 
 
     absmax = (float)fabs(viewLoc.x - pos.x);
@@ -3382,11 +3413,11 @@ SfxClass::GetApproxViewDist(float currTime)
     if (absmax < absmin)
     {
         // absmin is actually the max
-        approxDist =  absmin + (absmax + absmid) * 0.5f ;
+        approxDist = absmin + (absmax + absmid) * 0.5f;
     }
     else
     {
-        approxDist =  absmax + (absmin + absmid) * 0.5f ;
+        approxDist = absmax + (absmin + absmid) * 0.5f;
     }
 
     // this is the next time to check
@@ -3399,8 +3430,7 @@ SfxClass::GetApproxViewDist(float currTime)
 ** Basically a big switch statement by sfx type for running
 ** secondary effects.
 */
-void
-SfxClass::RunSecondarySfx(void)
+void SfxClass::RunSecondarySfx(void)
 {
     Tpoint mpos, mvec, vec2;
     float distScale = 0.0F;
@@ -3410,13 +3440,13 @@ SfxClass::RunSecondarySfx(void)
 
     switch (type)
     {
-        case SFX_DURANDAL:
-            mvec.x = vec.x * 0.5f;
-            mvec.y = vec.y * 0.5f;
-            mvec.z = -20.0f;
+    case SFX_DURANDAL:
+        mvec.x = vec.x * 0.5f;
+        mvec.y = vec.y * 0.5f;
+        mvec.z = -20.0f;
 
-            //RV - I-Hawk - Remming all unused PS calls...
-            /*
+        //RV - I-Hawk - Remming all unused PS calls...
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_WATER_CLOUD, // type
              SFX_MOVES, // flags
@@ -3425,49 +3455,49 @@ SfxClass::RunSecondarySfx(void)
              2.0f, // time to live
              10.5f )); // scale
              */
-            break;
+        break;
 
-        case SFX_MESSAGE_TIMER:
-            if (endMessage)
-            {
-                FalconSendMessage(endMessage, FALSE);
-                endMessage = NULL;
-            }
+    case SFX_MESSAGE_TIMER:
+        if (endMessage)
+        {
+            FalconSendMessage(endMessage, FALSE);
+            endMessage = NULL;
+        }
 
-            if (damMessage)
-            {
-                FalconSendMessage(damMessage, FALSE);
-                damMessage = NULL;
-            }
+        if (damMessage)
+        {
+            FalconSendMessage(damMessage, FALSE);
+            damMessage = NULL;
+        }
 
-            break;
+        break;
 
-#if 1  // MLR 12/19/2003 - Out with the crap, in with the new
+#if 1 // MLR 12/19/2003 - Out with the crap, in with the new
 
-        case SFX_SMOKING_FEATURE:
-        case SFX_STEAMING_FEATURE:
-            // sfr: until Alex fix this
+    case SFX_SMOKING_FEATURE:
+    case SFX_STEAMING_FEATURE:
+        // sfr: until Alex fix this
 #define MEMCORRUPTION_FIX_HACK 0
 #if MEMCORRUPTION_FIX_HACK
 #else
             //RV - I-Hawk - Not using a objtrail for this anymore
             //if(objTrail){
-            mlTrig trigWind;
-            Tpoint windvec;
-            float wind;
+        mlTrig trigWind;
+        Tpoint windvec;
+        float wind;
 
             // current wind
-            mlSinCos(&trigWind, ((WeatherClass*)realWeather)->WindHeadingAt(&pos));
-            wind = ((WeatherClass*)realWeather)->WindSpeedInFeetPerSecond(&pos);
-            windvec.x = trigWind.cos * wind;
-            windvec.y = trigWind.sin * wind;
-            windvec.z = -10;
+        mlSinCos(&trigWind, ((WeatherClass *)realWeather)->WindHeadingAt(&pos));
+        wind = ((WeatherClass *)realWeather)->WindSpeedInFeetPerSecond(&pos);
+        windvec.x = trigWind.cos * wind;
+        windvec.y = trigWind.sin * wind;
+        windvec.z = -10;
 
             //objTrail->SetHeadVelocity(&windvec);
 
-            //RV- I-Hawk- Replaced older trail for features smoke with a new PS effect
-            //OTWDriver.AddTrailHead(objTrail, pos.x, pos.y, pos.z);
-            /*
+        //RV- I-Hawk- Replaced older trail for features smoke with a new PS effect
+        //OTWDriver.AddTrailHead(objTrail, pos.x, pos.y, pos.z);
+        /*
             SfxClass *sfx = new SfxClass(
              SFX_SMOKETRAIL, // type
              SFX_MOVES,
@@ -3478,22 +3508,21 @@ SfxClass::RunSecondarySfx(void)
             );
             OTWDriver.AddSfxRequest(sfx);
             */
-            DrawableParticleSys::PS_AddParticleEx((SFX_SMOKETRAIL + 1),
-                                                  &pos,
-                                                  &windvec);
-            //}
+        DrawableParticleSys::PS_AddParticleEx((SFX_SMOKETRAIL + 1), &pos,
+                                              &windvec);
+        //}
 
 #endif // MEMCORRUPTION_FIX_HACK
-            break;
+        break;
 #else
 
-        case SFX_SMOKING_FEATURE:
+    case SFX_SMOKING_FEATURE:
 
-            mvec.x = 20.0f * PRANDFloat();
-            mvec.y = 20.0f * PRANDFloat();
-            mvec.z = -80.0f;
+        mvec.x = 20.0f * PRANDFloat();
+        mvec.y = 20.0f * PRANDFloat();
+        mvec.z = -80.0f;
 
-            if (rand() bitand 1)
+        if (rand() bitand 1)
                 //RV - I-Hawk - Remming all unused PS calls...
                 /*
                 OTWDriver.AddSfxRequest(
@@ -3504,7 +3533,7 @@ SfxClass::RunSecondarySfx(void)
                  2.5f, // time to live
                  scale ) ); // scale
                  */
-                else
+            else
                     /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_STEAM_CLOUD, // type
@@ -3514,13 +3543,13 @@ SfxClass::RunSecondarySfx(void)
                      2.5f, // time to live
                      scale ) ); // scale
                      */
-                    break;
+                break;
 
-        case SFX_STEAMING_FEATURE:
+    case SFX_STEAMING_FEATURE:
 
-            mvec.x = 20.0f * PRANDFloat();
-            mvec.y = 20.0f * PRANDFloat();
-            mvec.z = -80.0f;
+        mvec.x = 20.0f * PRANDFloat();
+        mvec.y = 20.0f * PRANDFloat();
+        mvec.z = -80.0f;
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_STEAM_CLOUD, // type
@@ -3530,26 +3559,26 @@ SfxClass::RunSecondarySfx(void)
              2.5f, // time to live
              scale ) ); // scale
              */
-            break;
+        break;
 #endif
 
-        case SFX_FEATURE_CHAIN_REACTION:
+    case SFX_FEATURE_CHAIN_REACTION:
 
-            // continue applying chain reaction until returns false.
-            if (SimFeatureClass::ApplyChainReaction(&pos, scale) == TRUE)
-            {
-                secondaryTimer = SIM_ELAPSED_SEC + 1.0f;
-                secondaryCount = 1;
-            }
+        // continue applying chain reaction until returns false.
+        if (SimFeatureClass::ApplyChainReaction(&pos, scale) == TRUE)
+        {
+            secondaryTimer = SIM_ELAPSED_SEC + 1.0f;
+            secondaryCount = 1;
+        }
 
-            break;
+        break;
 
-        case SFX_CLUSTER_BOMB:
-            mvec.x = vec.x * 0.5f;
-            mvec.y = vec.y * 0.5f;
-            mvec.z = -20.0f;
+    case SFX_CLUSTER_BOMB:
+        mvec.x = vec.x * 0.5f;
+        mvec.y = vec.y * 0.5f;
+        mvec.z = -20.0f;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_WATER_CLOUD, // type
              SFX_MOVES, // flags
@@ -3558,30 +3587,29 @@ SfxClass::RunSecondarySfx(void)
              2.0f, // time to live
              10.5f )); // scale
              */
-            DrawableParticleSys::PS_AddParticleEx((SFX_WATER_CLOUD + 1),
-                                                  &pos,
-                                                  &mvec);
+        DrawableParticleSys::PS_AddParticleEx((SFX_WATER_CLOUD + 1), &pos,
+                                              &mvec);
 
-            if (gSfxCount[ SFX_GROUNDBURST ] > gSfxLODCutoff or
-                gTotSfx >= gSfxLODTotCutoff)
-            {
-                numBursts = 10 + FloatToInt32(PRANDFloatPos() * 20.0f);
-            }
-            else
-            {
-                numBursts = 40 + FloatToInt32(PRANDFloatPos() * 40.0f);
-            }
+        if (gSfxCount[SFX_GROUNDBURST] > gSfxLODCutoff or
+            gTotSfx >= gSfxLODTotCutoff)
+        {
+            numBursts = 10 + FloatToInt32(PRANDFloatPos() * 20.0f);
+        }
+        else
+        {
+            numBursts = 40 + FloatToInt32(PRANDFloatPos() * 40.0f);
+        }
 
-            for (i = 0; i < numBursts; i++)
-            {
-                // mvec.x = 1.2f * (mpos.x - pos.x) + 40.0f * PRANDFloat();
-                // mvec.y = 1.2f * (mpos.y - pos.y) + 40.0f * PRANDFloat();
-                // mvec.z = 1.2f * (mpos.z - pos.z) - 30.0f * PRANDFloatPos();
-                mvec.x = vec.x + 80.0f * PRANDFloat();
-                mvec.y = vec.y + 80.0f * PRANDFloat();
-                mvec.z = vec.z + 40.0f * PRANDFloat();
+        for (i = 0; i < numBursts; i++)
+        {
+            // mvec.x = 1.2f * (mpos.x - pos.x) + 40.0f * PRANDFloat();
+            // mvec.y = 1.2f * (mpos.y - pos.y) + 40.0f * PRANDFloat();
+            // mvec.z = 1.2f * (mpos.z - pos.z) - 30.0f * PRANDFloatPos();
+            mvec.x = vec.x + 80.0f * PRANDFloat();
+            mvec.y = vec.y + 80.0f * PRANDFloat();
+            mvec.z = vec.z + 40.0f * PRANDFloat();
 
-                /*
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_GROUNDBURST, // type
                  SFX_MOVES bitor SFX_USES_GRAVITY,
@@ -3590,12 +3618,11 @@ SfxClass::RunSecondarySfx(void)
                  20.0f, // time to live
                  1.5f ) ); // scale
                  */
-                DrawableParticleSys::PS_AddParticleEx((SFX_GROUNDBURST + 1),
-                                                      &pos,
-                                                      &mvec);
-            }
+            DrawableParticleSys::PS_AddParticleEx((SFX_GROUNDBURST + 1), &pos,
+                                                  &mvec);
+        }
 
-            /*
+        /*
             // 1st time thru we do detonation
             if ( secondaryCount == 1 )
             {
@@ -3641,19 +3668,19 @@ SfxClass::RunSecondarySfx(void)
              0.3f ) ); // scale
             }
             */
+        break;
+
+    case SFX_SPARKS:
+    case SFX_SPARKS_NO_DEBRIS:
+        if (gSfxCount[SFX_WATER_WAKE_LARGE] > gSfxLODCutoff or
+            gSfxCount[SFX_SPARK_TRACER] > gSfxLODCutoff or
+            gTotSfx >= gSfxLODTotCutoff or
+            (approxDist > 30000.0f and scale < 50.0f))
+        {
             break;
+        }
 
-        case SFX_SPARKS:
-        case SFX_SPARKS_NO_DEBRIS:
-            if (gSfxCount[ SFX_WATER_WAKE_LARGE ] > gSfxLODCutoff or
-                gSfxCount[ SFX_SPARK_TRACER ] > gSfxLODCutoff or
-                gTotSfx >= gSfxLODTotCutoff or
-                (approxDist > 30000.0f and scale < 50.0f))
-            {
-                break;
-            }
-
-            /*
+        /*
             mvec.x = PRANDFloat() * 25.0f;
             mvec.y = PRANDFloat() * 25.0f;
             mvec.z = PRANDFloat() * 25.0f;
@@ -3670,15 +3697,15 @@ SfxClass::RunSecondarySfx(void)
              scale * 0.08f ) ); // scale
             */
 
-            mpos.x = pos.x + PRANDFloat() * scale * 0.3f;
-            mpos.y = pos.y + PRANDFloat() * scale * 0.3f;
-            mpos.z = pos.z + PRANDFloat() * scale * 0.3f;
+        mpos.x = pos.x + PRANDFloat() * scale * 0.3f;
+        mpos.y = pos.y + PRANDFloat() * scale * 0.3f;
+        mpos.z = pos.z + PRANDFloat() * scale * 0.3f;
 
-            mvec.x = (mpos.x - pos.x) * 3.0f;
-            mvec.y = (mpos.y - pos.y) * 3.0f;
-            mvec.z = (mpos.z - pos.z) * 3.0f;
+        mvec.x = (mpos.x - pos.x) * 3.0f;
+        mvec.y = (mpos.y - pos.y) * 3.0f;
+        mvec.z = (mpos.z - pos.z) * 3.0f;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SPARK_TRACER, // type
              SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
@@ -3687,19 +3714,18 @@ SfxClass::RunSecondarySfx(void)
              1.3f, // time to live
              scale ) ); // scale
              */
-            DrawableParticleSys::PS_AddParticleEx((SFX_SPARK_TRACER + 1),
-                                                  &mpos,
-                                                  &mvec);
+        DrawableParticleSys::PS_AddParticleEx((SFX_SPARK_TRACER + 1), &mpos,
+                                              &mvec);
 
-            mpos.x = pos.x + PRANDFloat() * scale * 0.3f;
-            mpos.y = pos.y + PRANDFloat() * scale * 0.3f;
-            mpos.z = pos.z + PRANDFloat() * scale * 0.3f;
+        mpos.x = pos.x + PRANDFloat() * scale * 0.3f;
+        mpos.y = pos.y + PRANDFloat() * scale * 0.3f;
+        mpos.z = pos.z + PRANDFloat() * scale * 0.3f;
 
-            mvec.x = (mpos.x - pos.x) * 3.0f;
-            mvec.y = (mpos.y - pos.y) * 3.0f;
-            mvec.z = (mpos.z - pos.z) * 3.0f;
+        mvec.x = (mpos.x - pos.x) * 3.0f;
+        mvec.y = (mpos.y - pos.y) * 3.0f;
+        mvec.z = (mpos.z - pos.z) * 3.0f;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SPARK_TRACER, // type
              SFX_MOVES bitor SFX_BOUNCES bitor SFX_USES_GRAVITY, // flags
@@ -3708,29 +3734,28 @@ SfxClass::RunSecondarySfx(void)
              1.3f, // time to live
              scale ) ); // scale
              */
-            DrawableParticleSys::PS_AddParticleEx((SFX_SPARK_TRACER + 1),
-                                                  &mpos,
-                                                  &mvec);
+        DrawableParticleSys::PS_AddParticleEx((SFX_SPARK_TRACER + 1), &mpos,
+                                              &mvec);
+        break;
+
+    case SFX_BILLOWING_SMOKE:
+        mvec.x = 10.0f + PRANDFloat() * 10.0f;
+        mvec.y = 10.0f + PRANDFloat() * 10.0f;
+        mvec.z = -50.0f - PRANDFloat() * 30.0f;
+        mpos.x = pos.x + PRANDFloat() * 30.0f;
+        mpos.y = pos.y + PRANDFloat() * 30.0f;
+        mpos.z = pos.z;
+
+        if (gSfxCount[SFX_FIRESMOKE] > gSfxLODCutoff or
+            gSfxCount[SFX_TRAILSMOKE] > gSfxLODCutoff or
+            gTotSfx >= gSfxLODTotCutoff)
+        {
             break;
+        }
 
-        case SFX_BILLOWING_SMOKE:
-            mvec.x = 10.0f + PRANDFloat() * 10.0f;
-            mvec.y = 10.0f + PRANDFloat() * 10.0f;
-            mvec.z = -50.0f - PRANDFloat() * 30.0f;
-            mpos.x = pos.x + PRANDFloat() * 30.0f;
-            mpos.y = pos.y + PRANDFloat() * 30.0f;
-            mpos.z = pos.z;
-
-            if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff or
-                gSfxCount[ SFX_TRAILSMOKE ] > gSfxLODCutoff or
-                gTotSfx >= gSfxLODTotCutoff)
-            {
-                break;
-            }
-
-            if (rand() bitand 1)
-            {
-                /*
+        if (rand() bitand 1)
+        {
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIRESMOKE, // type
                  SFX_MOVES, // flags
@@ -3739,13 +3764,12 @@ SfxClass::RunSecondarySfx(void)
                  3.5f, // time to live
                  34.5f ) ); // scale
                  */
-                DrawableParticleSys::PS_AddParticleEx((SFX_FIRESMOKE + 1),
-                                                      &mpos,
-                                                      &mvec);
-            }
-            else
-            {
-                /*
+            DrawableParticleSys::PS_AddParticleEx((SFX_FIRESMOKE + 1), &mpos,
+                                                  &mvec);
+        }
+        else
+        {
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_TRAILSMOKE, // type
                  SFX_MOVES, // flags
@@ -3754,33 +3778,32 @@ SfxClass::RunSecondarySfx(void)
                  3.5f, // time to live
                  34.5f ) ); // scale
                  */
-                DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1),
-                                                      &mpos,
-                                                      &mvec);
-            }
+            DrawableParticleSys::PS_AddParticleEx((SFX_TRAILSMOKE + 1), &mpos,
+                                                  &mvec);
+        }
 
-            break;
+        break;
 
-        case SFX_FIRE:
-        case SFX_FIRE_EXPAND:
+    case SFX_FIRE:
+    case SFX_FIRE_EXPAND:
 
-            rads = approxDist / 30000.0f;
-            secondaryTimer = SIM_ELAPSED_SEC + 0.90f + 2.5F * rads;
-            secondaryCount = 1;
+        rads = approxDist / 30000.0f;
+        secondaryTimer = SIM_ELAPSED_SEC + 0.90f + 2.5F * rads;
+        secondaryCount = 1;
 
-            mvec.x = 10.0f + PRANDFloat() * 10.0f;
-            mvec.y = 10.0f + PRANDFloat() * 10.0f;
-            mvec.z = -50.0f - PRANDFloat() * 30.0f;
-            mpos.x = pos.x + PRANDFloat() * 30.0f;
-            mpos.y = pos.y + PRANDFloat() * 30.0f;
-            mpos.z = pos.z - scale * 0.65f;
+        mvec.x = 10.0f + PRANDFloat() * 10.0f;
+        mvec.y = 10.0f + PRANDFloat() * 10.0f;
+        mvec.z = -50.0f - PRANDFloat() * 30.0f;
+        mpos.x = pos.x + PRANDFloat() * 30.0f;
+        mpos.y = pos.y + PRANDFloat() * 30.0f;
+        mpos.z = pos.z - scale * 0.65f;
 
-            if ((rand() bitand 3) == 3)
-            {
-                mvec.x *= 0.5f;
-                mvec.y *= 0.5f;
-                //RV - I-Hawk - Remming all unused PS calls...
-                /*
+        if ((rand() bitand 3) == 3)
+        {
+            mvec.x *= 0.5f;
+            mvec.y *= 0.5f;
+            //RV - I-Hawk - Remming all unused PS calls...
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIRE2, // type
                  SFX_NO_GROUND_CHECK bitor SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
@@ -3789,17 +3812,16 @@ SfxClass::RunSecondarySfx(void)
                  3.5f, // time to live
                  scale * 0.4f ) ); // scale
                  */
+        }
+        else
+        {
+            // try a reduction in the number of effects running
+            // if ( approxDist > 10000.0f and gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff )
+            if (gSfxCount[SFX_FIRESMOKE] > gSfxLODCutoff or
+                gTotSfx >= gSfxLODTotCutoff)
+                break;
 
-            }
-            else
-            {
-                // try a reduction in the number of effects running
-                // if ( approxDist > 10000.0f and gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff )
-                if (gSfxCount[ SFX_FIRESMOKE ] > gSfxLODCutoff or
-                    gTotSfx >= gSfxLODTotCutoff)
-                    break;
-
-                /*
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIRESMOKE, // type
                  SFX_MOVES,  // flags
@@ -3809,14 +3831,14 @@ SfxClass::RunSecondarySfx(void)
                  scale ) ); // scale
                  */
 
-                if (gSfxCount[ SFX_SHIP_BURNING_FIRE ] > gSfxLODCutoff / 2 or
-                    gTotSfx >= gSfxLODTotCutoff / 2)
-                    break;
+            if (gSfxCount[SFX_SHIP_BURNING_FIRE] > gSfxLODCutoff / 2 or
+                gTotSfx >= gSfxLODTotCutoff / 2)
+                break;
 
-                mvec.x *= 0.5f;
-                mvec.y *= 0.5f;
-                mpos.z = pos.z - scale * 0.15f;
-                /*
+            mvec.x *= 0.5f;
+            mvec.y *= 0.5f;
+            mpos.z = pos.z - scale * 0.15f;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( FIRE2, // type
                  SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
@@ -3825,64 +3847,64 @@ SfxClass::RunSecondarySfx(void)
                  3.5f, // time to live
                  scale * 0.4f ) ); // scale
                  */
-            }
+        }
 
 
-            break;
+        break;
 
-        case SFX_FLAMING_PART:
-            mpos = pos;
-            // NOTE: if using scatter plot fire, add a bit to the position
-            mpos.z += 15.0f;
-            // mpos.z -= 15.0f;
+    case SFX_FLAMING_PART:
+        mpos = pos;
+        // NOTE: if using scatter plot fire, add a bit to the position
+        mpos.z += 15.0f;
+        // mpos.z -= 15.0f;
 
-            //RV - I-Hawk - Remming all unused PS calls...
-            /*
+        //RV - I-Hawk - Remming all unused PS calls...
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass(SFX_FIRE1, // type
              &mpos, // world pos
              0.2f, // time to live
              30.0f) ); // scale
              */
-            break;
+        break;
 
-        case SFX_BURNING_PART:
-            mpos = pos;
-            // NOTE: if using scatter plot fire, add a bit to the position
-            // mpos.z += 15.0f;
-            // mpos.z -= 15.0f;
-            // NOTE: we have to subtract out SimLibElapsedTime because it's
-            // already been added to timeToLive
-            /*
+    case SFX_BURNING_PART:
+        mpos = pos;
+        // NOTE: if using scatter plot fire, add a bit to the position
+        // mpos.z += 15.0f;
+        // mpos.z -= 15.0f;
+        // NOTE: we have to subtract out SimLibElapsedTime because it's
+        // already been added to timeToLive
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass(SFX_FIRE, // type
              &mpos, // world pos
              timeToLive - SIM_ELAPSED_SEC, // time to live
              40.0f) ); // scale
              */
-            break;
+        break;
 
-        case SFX_FIREBALL:
-            mpos.x = (float)((float)secondaryCount / (float)initSecondaryCount);
+    case SFX_FIREBALL:
+        mpos.x = (float)((float)secondaryCount / (float)initSecondaryCount);
 
-            if (mpos.x > 0.90f)
-            {
-                /*
+        if (mpos.x > 0.90f)
+        {
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass(SFX_FIRE_HOT, // type
                  &pos, // world pos
                  0.4f, // time to live
                  scale * 0.4f ) ); // scale
                  */
-            }
-            else if (mpos.x > 0.85f)
+        }
+        else if (mpos.x > 0.85f)
+        {
+            if ((rand() bitand 1))
             {
-                if ((rand() bitand 1))
-                {
-                    mvec.x = PRANDFloat() * 25.0f;
-                    mvec.y = PRANDFloat() * 25.0f;
-                    mvec.z = -5.0f;
-                    /*
+                mvec.x = PRANDFloat() * 25.0f;
+                mvec.y = PRANDFloat() * 25.0f;
+                mvec.z = -5.0f;
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_FIRE2, // type
                      SFX_MOVES, // flags
@@ -3891,26 +3913,26 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      scale * 0.2f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_FIRE_MED, // type
                      &pos, // world pos
                      0.4f, // time to live
                      scale * 0.4f ) ); // scale
                      */
-                }
             }
-            else if (mpos.x > 0.70f)
+        }
+        else if (mpos.x > 0.70f)
+        {
+            if ((rand() bitand 1))
             {
-                if ((rand() bitand 1))
-                {
-                    mvec.x = PRANDFloat() * 25.0f;
-                    mvec.y = PRANDFloat() * 25.0f;
-                    mvec.z = -5.0f;
-                    /*
+                mvec.x = PRANDFloat() * 25.0f;
+                mvec.y = PRANDFloat() * 25.0f;
+                mvec.z = -5.0f;
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_FIRE2, // type
                      SFX_MOVES, // flags
@@ -3919,19 +3941,19 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      scale * 0.2f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_FIRE_COOL, // type
                      &pos, // world pos
                      0.3f, // time to live
                      scale * 0.5f ) ); // scale
                      */
-                }
             }
-            /*
+        }
+        /*
             else if ( mpos.x > 0.70f )
             {
              mvec.x = PRANDFloat() * 25.0f;
@@ -3946,15 +3968,15 @@ SfxClass::RunSecondarySfx(void)
              scale * 0.2f )); // scale
             }
             */
-            else if (mpos.x > 0.90f)
-            {
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z = -5.0f;
+        else if (mpos.x > 0.90f)
+        {
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = -5.0f;
 
-                if ((rand() bitand 1))
-                {
-                    /*
+            if ((rand() bitand 1))
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_TRAILSMOKE, // type
                      SFX_MOVES, // flags
@@ -3963,10 +3985,10 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      5.2f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_VEHICLE_DUST, // type
                      SFX_MOVES, // flags
@@ -3975,17 +3997,17 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      5.2f )); // scale
                      */
-                }
             }
-            else
-            {
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z = -10.0f;
+        }
+        else
+        {
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = -10.0f;
 
-                if ((rand() bitand 3) == 3)
-                {
-                    /*
+            if ((rand() bitand 3) == 3)
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_TRAILSMOKE, // type
                      SFX_MOVES, // flags
@@ -3994,10 +4016,10 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      5.5f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_VEHICLE_DUST, // type
                      SFX_MOVES, // flags
@@ -4006,50 +4028,50 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      5.2f )); // scale
                      */
-                }
             }
+        }
 
-            break;
+        break;
 
-        case SFX_WATER_FIREBALL:
-            mpos.x = (float)((float)secondaryCount / (float)initSecondaryCount);
+    case SFX_WATER_FIREBALL:
+        mpos.x = (float)((float)secondaryCount / (float)initSecondaryCount);
 
-            if (mpos.x > 0.85f)
-            {
-                /*
+        if (mpos.x > 0.85f)
+        {
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass(SFX_FIRE_HOT, // type
                  &pos, // world pos
                  0.8f, // time to live
                  scale * 0.4f ) ); // scale
                  */
-            }
-            else if (mpos.x > 0.50f)
-            {
-                /*
+        }
+        else if (mpos.x > 0.50f)
+        {
+            /*
                  OTWDriver.AddSfxRequest(
                  new SfxClass(SFX_FIRE_MED, // type
                  &pos, // world pos
                  0.5f, // time to live
                  scale * 0.4f ) ); // scale
                  */
-            }
-            else if (mpos.x > 0.25f)
-            {
-                /*
+        }
+        else if (mpos.x > 0.25f)
+        {
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass(SFX_FIRE_COOL, // type
                  &pos, // world pos
                  0.3f, // time to live
                  scale * 0.5f ) ); // scale
                  */
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z = -25.0f;
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = -25.0f;
 
-                if ((rand() bitand 3) == 3)
-                {
-                    /*
+            if ((rand() bitand 3) == 3)
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_FIRE3, // type
                      SFX_MOVES, // flags
@@ -4058,10 +4080,10 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      10.5f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_BLUE_CLOUD, // type
                      SFX_MOVES, // flags
@@ -4070,14 +4092,14 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      10.5f )); // scale
                      */
-                }
             }
-            else
-            {
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z =  -20.0f;
-                /*
+        }
+        else
+        {
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = -20.0f;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass (SFX_WATER_CLOUD, // type
                  SFX_MOVES, // flags
@@ -4086,32 +4108,32 @@ SfxClass::RunSecondarySfx(void)
                  2.0f, // time to live
                  10.5f )); // scale
                  */
-            }
+        }
 
-            break;
+        break;
 
-        case SFX_FIRETRAIL:
-            /*
+    case SFX_FIRETRAIL:
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass(SFX_FIRE_EXPAND, // type
              &pos, // world pos
              2.0f, // time to live
              scale * 0.2f ) ); // scale
              */
-            break;
+        break;
 
-        case SFX_WATERTRAIL:
-            mpos.x = (float)((float)secondaryCount / (float)initSecondaryCount);
+    case SFX_WATERTRAIL:
+        mpos.x = (float)((float)secondaryCount / (float)initSecondaryCount);
 
-            if (mpos.x > 0.70f)
+        if (mpos.x > 0.70f)
+        {
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = -25.0f;
+
+            if ((rand() bitand 3) == 3)
             {
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z = -25.0f;
-
-                if ((rand() bitand 3) == 3)
-                {
-                    /*
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_FIRE3, // type
                      SFX_MOVES, // flags
@@ -4120,50 +4142,50 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      10.5f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_BLUE_CLOUD, // type
                      &pos, // world pos
                      0.8f, // time to live
                      scale * 0.4f ) ); // scale
                      */
-                }
             }
-            else if (mpos.x > 0.50f)
+        }
+        else if (mpos.x > 0.50f)
+        {
+            if ((rand() bitand 3) == 3)
             {
-                if ((rand() bitand 3) == 3)
-                {
-                    /*
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_WATER_CLOUD, // type
                      &pos, // world pos
                      0.5f, // time to live
                      scale * 0.4f ) ); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_BLUE_CLOUD, // type
                      &pos, // world pos
                      0.5f, // time to live
                      scale * 0.4f ) ); // scale
                      */
-                }
             }
-            else if (mpos.x > 0.25f)
-            {
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z = -25.0f;
+        }
+        else if (mpos.x > 0.25f)
+        {
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = -25.0f;
 
-                if ((rand() bitand 3) == 3)
-                {
-                    /*
+            if ((rand() bitand 3) == 3)
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_BLUE_CLOUD, // type
                      SFX_MOVES, // flags
@@ -4172,10 +4194,10 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      10.5f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_WATER_CLOUD, // type
                      SFX_MOVES, // flags
@@ -4184,14 +4206,14 @@ SfxClass::RunSecondarySfx(void)
                      2.0f, // time to live
                      10.5f )); // scale
                      */
-                }
             }
-            else
-            {
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z =  -20.0f;
-                /*
+        }
+        else
+        {
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = -20.0f;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass (SFX_WATER_CLOUD, // type
                  SFX_MOVES, // flags
@@ -4200,35 +4222,33 @@ SfxClass::RunSecondarySfx(void)
                  2.0f, // time to live
                  10.5f )); // scale
                  */
-            }
+        }
 
-            break;
+        break;
 
-        case SFX_SMOKING_PART:
-            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff and 
-                gTotSfx < gSfxLODTotCutoff)
+    case SFX_SMOKING_PART:
+        if (gSfxCount[SFX_TRAILSMOKE] < gSfxLODCutoff and
+            gTotSfx < gSfxLODTotCutoff)
+        {
+            mvec.x = PRANDFloat() * 25.0f;
+            mvec.y = PRANDFloat() * 25.0f;
+            mvec.z = PRANDFloat() * 25.0f;
+
+            // 1st get approximation
+            rads = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
+
+            if (pos.z - rads > -80.0f)
             {
-                mvec.x = PRANDFloat() * 25.0f;
-                mvec.y = PRANDFloat() * 25.0f;
-                mvec.z = PRANDFloat() * 25.0f;
-
-                // 1st get approximation
-                rads = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
-
-                if (pos.z - rads  > -80.0f)
+                // remove the trail when we near the fround
+                if (objTrail)
                 {
-                    // remove the trail when we near the fround
-                    if (objTrail)
-                    {
-                        OTWDriver.AddSfxRequest(
-                            new SfxClass(
-                                21.5f, // time to live
-                                objTrail)); // trail
-                        objTrail = NULL;
-                    }
+                    OTWDriver.AddSfxRequest(new SfxClass(21.5f, // time to live
+                                                         objTrail)); // trail
+                    objTrail = NULL;
+                }
 
-                    mvec.z = -40.0f;
-                    /*
+                mvec.z = -40.0f;
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_TRAILSMOKE, // type
                      SFX_MOVES, // flags
@@ -4237,10 +4257,10 @@ SfxClass::RunSecondarySfx(void)
                      1.5f, // time to live
                      3.5f )); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass (SFX_TRAILSMOKE, // type
                      SFX_MOVES, // flags
@@ -4249,16 +4269,16 @@ SfxClass::RunSecondarySfx(void)
                      1.0f, // time to live
                      3.5f )); // scale
                      */
-                }
             }
+        }
 
-            break;
+        break;
 
-        case SFX_DEBRISTRAIL:
-            mvec.x = PRANDFloat() * 25.0f;
-            mvec.y = PRANDFloat() * 25.0f;
-            mvec.z = PRANDFloat() * 25.0f;
-            /*
+    case SFX_DEBRISTRAIL:
+        mvec.x = PRANDFloat() * 25.0f;
+        mvec.y = PRANDFloat() * 25.0f;
+        mvec.z = PRANDFloat() * 25.0f;
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_TRAILSMOKE, // type
              SFX_MOVES, // flags
@@ -4267,15 +4287,15 @@ SfxClass::RunSecondarySfx(void)
              2.0f, // time to live
              3.5f )); // scale
              */
-            break;
+        break;
 
-        case SFX_SAM_LAUNCH:
+    case SFX_SAM_LAUNCH:
 
-            // get a distance scale where 1.0 is about 60 miles away
-            distScale = max(0.1f, approxDist / 200000.0f);
-            pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 5.0f;
+        // get a distance scale where 1.0 is about 60 miles away
+        distScale = max(0.1f, approxDist / 200000.0f);
+        pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 5.0f;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_GROUND_FLASH, // type
              &pos, // world pos
@@ -4283,17 +4303,17 @@ SfxClass::RunSecondarySfx(void)
              distScale * 6300.0f ) ); // scale
              */
 
-            for (i = 0; i < 8; i++)
-            {
-                mpos = pos;
+        for (i = 0; i < 8; i++)
+        {
+            mpos = pos;
 
-                mpos.x += PRANDFloat() * 55.0f;
-                mpos.y += PRANDFloat() * 55.0f;
+            mpos.x += PRANDFloat() * 55.0f;
+            mpos.y += PRANDFloat() * 55.0f;
 
-                mvec.x = PRANDFloat() * 125.0f;
-                mvec.y = PRANDFloat() * 125.0f;
-                mvec.z = PRANDFloat() * 125.0f;
-                /*
+            mvec.x = PRANDFloat() * 125.0f;
+            mvec.y = PRANDFloat() * 125.0f;
+            mvec.z = PRANDFloat() * 125.0f;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass (SFX_STEAM_CLOUD, // type
                  SFX_USES_GRAVITY bitor SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
@@ -4302,15 +4322,15 @@ SfxClass::RunSecondarySfx(void)
                  2.0f, // time to live
                  40.5f )); // scale
                  */
-            }
+        }
 
-            break;
+        break;
 
-        case SFX_DEBRISTRAIL_DUST:
-            mvec.x = PRANDFloat() * 25.0f;
-            mvec.y = PRANDFloat() * 25.0f;
-            mvec.z = PRANDFloat() * 25.0f;
-            /*
+    case SFX_DEBRISTRAIL_DUST:
+        mvec.x = PRANDFloat() * 25.0f;
+        mvec.y = PRANDFloat() * 25.0f;
+        mvec.z = PRANDFloat() * 25.0f;
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass (SFX_VEHICLE_DUST, // type
              SFX_MOVES, // flags
@@ -4319,38 +4339,38 @@ SfxClass::RunSecondarySfx(void)
              2.0f, // time to live
              3.5f )); // scale
              */
-            break;
+        break;
 
-        case SFX_AC_AIR_EXPLOSION:
-            mvec.x = 0.0f;
-            mvec.y = 0.0f;
-            mvec.z = -20.0f;
-            StartRandomDebris();
-            /*
+    case SFX_AC_AIR_EXPLOSION:
+        mvec.x = 0.0f;
+        mvec.y = 0.0f;
+        mvec.z = -20.0f;
+        StartRandomDebris();
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_LONG_HANGING_SMOKE2, // type
              &pos, // world pos
              60.5f, // time to live
              scale * 0.2f ) ); // scale
              */
-            break;
+        break;
 
-        case SFX_GROUND_STRIKE_NOFIRE:
+    case SFX_GROUND_STRIKE_NOFIRE:
 
-            mpos = pos;
+        mpos = pos;
 
-            mvec.x = 0.0f;
-            mvec.y = 0.0f;
-            mvec.z = -40.0f;
+        mvec.x = 0.0f;
+        mvec.y = 0.0f;
+        mvec.z = -40.0f;
 
-            if (gSfxCount[ SFX_TRAILSMOKE ] < gSfxLODCutoff and 
-                gSfxCount[ SFX_FIRESMOKE ] < gSfxLODCutoff and 
-                gTotSfx < gSfxLODTotCutoff)
+        if (gSfxCount[SFX_TRAILSMOKE] < gSfxLODCutoff and
+            gSfxCount[SFX_FIRESMOKE] < gSfxLODCutoff and
+            gTotSfx < gSfxLODTotCutoff)
+        {
+            switch (PRANDInt5())
             {
-                switch (PRANDInt5())
-                {
-                    case 0:
-                        /*
+            case 0:
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRESMOKE, // type
                          SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
@@ -4359,10 +4379,10 @@ SfxClass::RunSecondarySfx(void)
                          3.5f, // time to live
                          scale * 0.2f ) ); // scale
                          */
-                        break;
+                break;
 
-                    case 1:
-                        /*
+            case 1:
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRAILSMOKE, // type
                          SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
@@ -4371,14 +4391,14 @@ SfxClass::RunSecondarySfx(void)
                          3.5f, // time to live
                          scale * 0.2f ) ); // scale
                          */
-                        break;
+                break;
 
-                    default:
-                        break;
-                }
+            default:
+                break;
             }
+        }
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_GROUND_FLASH, // type
              &mpos, // world pos
@@ -4386,7 +4406,7 @@ SfxClass::RunSecondarySfx(void)
              scale * 2.0f ) ); // scale
              */
 
-            /*
+        /*
             if ( rand() bitand 1 )
             {
              OTWDriver.AddSfxRequest(
@@ -4397,19 +4417,19 @@ SfxClass::RunSecondarySfx(void)
             }
             */
 
-            // NOTE: if using scatter plot fire, add a bit to the position
-            // mpos.z -= 15.0f;
-            StartRandomDebris();
+        // NOTE: if using scatter plot fire, add a bit to the position
+        // mpos.z -= 15.0f;
+        StartRandomDebris();
 
-            break;
+        break;
 
-        case SFX_ARTILLERY_EXPLOSION:
-            mpos = pos;
+    case SFX_ARTILLERY_EXPLOSION:
+        mpos = pos;
 
-            mvec.x = 0.0f;
-            mvec.y = 0.0f;
-            mvec.z = -40.0f;
-            /*
+        mvec.x = 0.0f;
+        mvec.y = 0.0f;
+        mvec.z = -40.0f;
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_FIRESMOKE, // type
              SFX_MOVES bitor SFX_NO_DOWN_VECTOR bitor SFX_NO_GROUND_CHECK,  // flags
@@ -4419,7 +4439,7 @@ SfxClass::RunSecondarySfx(void)
              scale * 0.2f ) ); // scale
              */
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_GROUND_FLASH, // type
              &mpos, // world pos
@@ -4427,15 +4447,15 @@ SfxClass::RunSecondarySfx(void)
              scale * 2.0f ) ); // scale
              */
 
-            StartRandomDebris();
-            break;
+        StartRandomDebris();
+        break;
 
-        case SFX_GROUND_STRIKE:
-            mpos = pos;
-            // NOTE: if using scatter plot fire, add a bit to the position
+    case SFX_GROUND_STRIKE:
+        mpos = pos;
+        // NOTE: if using scatter plot fire, add a bit to the position
 
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_BILLOWING_SMOKE, // type
              &mpos, // world pos
@@ -4443,16 +4463,16 @@ SfxClass::RunSecondarySfx(void)
              0.3f ) ); // scale
              */
 
-            mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 5.0f;
+        mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 5.0f;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_GROUND_FLASH, // type
              &mpos, // world pos
              2.2f, // time to live
              scale * 2.0f ) ); // scale
              */
-            /*
+        /*
             mpos.z += 15.0f;
             // mpos.z -= 15.0f;
             /*
@@ -4462,25 +4482,25 @@ SfxClass::RunSecondarySfx(void)
              35.2f, // time to live
              70.0f) ); // scale
              */
-            // StartRandomDebris();
-            // if there'2 no 2d animation, we do a firetrail
-            if ( not obj2d)
+        // StartRandomDebris();
+        // if there'2 no 2d animation, we do a firetrail
+        if (not obj2d)
+        {
+            mpos.x = pos.x;
+            mpos.y = pos.y;
+            numBursts = 3 + (int)(3.0f * gSfxLOD);
+
+            for (i = 0; i < numBursts; i++)
             {
-                mpos.x = pos.x;
-                mpos.y = pos.y;
-                numBursts = 3 + (int)(3.0f * gSfxLOD);
+                // mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
+                // mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
+                mvec.z = -40.0f + PRANDFloatPos() * -80.0f;
+                mvec.x = 90.0f * PRANDFloat();
+                mvec.y = 90.0f * PRANDFloat();
 
-                for (i = 0; i < numBursts; i++)
+                if ((i bitand 3) == 3)
                 {
-                    // mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
-                    // mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.z = -40.0f + PRANDFloatPos() * -80.0f;
-                    mvec.x = 90.0f * PRANDFloat();
-                    mvec.y = 90.0f * PRANDFloat();
-
-                    if ((i bitand 3) == 3)
-                    {
-                        /*
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
@@ -4489,13 +4509,13 @@ SfxClass::RunSecondarySfx(void)
                          1.5, // time to live
                          5.0f ) ); // scale
                          */
-                    }
-                    else
+                }
+                else
+                {
+                    if (gSfxCount[SFX_DEBRISTRAIL] < gSfxLODCutoff and
+                        gTotSfx < gSfxLODTotCutoff)
                     {
-                        if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
-                            gTotSfx < gSfxLODTotCutoff)
-                        {
-                            /*
+                        /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass( SFX_DEBRISTRAIL, // type
                              SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4504,11 +4524,11 @@ SfxClass::RunSecondarySfx(void)
                              5.0, // time to live
                              scale * 0.25f ) ); // scale
                              */
-                        }
                     }
                 }
+            }
 
-                /*
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_FIREBALL, // type
                  SFX_MOVES bitor SFX_NO_GROUND_CHECK,
@@ -4517,28 +4537,28 @@ SfxClass::RunSecondarySfx(void)
                  3.0, // time to live
                  scale * 0.50f ) ); // scale
                 */
-            }
+        }
 
-            break;
+        break;
 
-        case SFX_WATER_STRIKE:
-            StartRandomDebris();
-            mpos = pos;
-            mpos.z += scale;
-            /*
+    case SFX_WATER_STRIKE:
+        StartRandomDebris();
+        mpos = pos;
+        mpos.z += scale;
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SHOCK_RING_SMALL, // type
              &mpos, // world pos
              1.5f, // time to live
              scale * 0.3f ) ); // scale
              */
-            break;
+        break;
 
-        case SFX_WATER_EXPLOSION:
-            StartRandomDebris();
-            mpos = pos;
-            mpos.z += scale;
-            /*
+    case SFX_WATER_EXPLOSION:
+        StartRandomDebris();
+        mpos = pos;
+        mpos.z += scale;
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SHOCK_RING, // type
              &mpos, // world pos
@@ -4546,25 +4566,25 @@ SfxClass::RunSecondarySfx(void)
              1.0f ) ); // scale
              */
 
-            // send up some water trails
-            if (obj2d == NULL)
+        // send up some water trails
+        if (obj2d == NULL)
+        {
+            numBursts = 2 + (int)(6.0f * gSfxLOD);
+
+            if (numBursts)
             {
-                numBursts =  2 + (int)(6.0f * gSfxLOD);
+                mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
+                mpos.x = pos.x;
+                mpos.y = pos.y;
+                mvec.z = -10.0f * scale * 0.02f;
+            }
 
-                if (numBursts)
-                {
-                    mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
-                    mpos.x = pos.x;
-                    mpos.y = pos.y;
-                    mvec.z = -10.0f * scale * 0.02f;
-                }
+            for (i = 0; i < numBursts; i++)
+            {
+                mvec.x = 30.0f * PRANDFloat() * scale * 0.01f;
+                mvec.y = 30.0f * PRANDFloat() * scale * 0.01f;
 
-                for (i = 0; i < numBursts; i++)
-                {
-                    mvec.x = 30.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.y = 30.0f * PRANDFloat() * scale * 0.01f;
-
-                    /*
+                /*
                     if ( i bitand 1)
                     {
                      OTWDriver.AddSfxRequest(
@@ -4578,8 +4598,8 @@ SfxClass::RunSecondarySfx(void)
                     }
                     else
                     */
-                    {
-                        /*
+                {
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_WATERTRAIL, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4588,16 +4608,16 @@ SfxClass::RunSecondarySfx(void)
                          3.0, // time to live
                          scale * 0.25f ) ); // scale
                          */
-                    }
                 }
             }
+        }
 
-            break;
+        break;
 
-        case SFX_GROUND_PENETRATION:
-            mpos = pos;
-            StartRandomDebris();
-            /*
+    case SFX_GROUND_PENETRATION:
+        mpos = pos;
+        StartRandomDebris();
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_SHOCK_RING, // type
              &mpos, // world pos
@@ -4606,13 +4626,13 @@ SfxClass::RunSecondarySfx(void)
              */
 
 
-            // send up some fire trails
-            numBursts = 4 + (int)(6.0f * gSfxLOD);
-            mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
-            mpos.x = pos.x;
-            mpos.y = pos.y;
+        // send up some fire trails
+        numBursts = 4 + (int)(6.0f * gSfxLOD);
+        mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
+        mpos.x = pos.x;
+        mpos.y = pos.y;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_BILLOWING_SMOKE, // type
              &mpos, // world pos
@@ -4620,15 +4640,15 @@ SfxClass::RunSecondarySfx(void)
              0.3f ) ); // scale
              */
 
-            for (i = 0; i < numBursts; i++)
-            {
-                mvec.z = -80.0f * PRANDFloatPos() * scale * 0.01f;
-                mvec.x = 20.0f * PRANDFloat() * scale * 0.01f;
-                mvec.y = 20.0f * PRANDFloat() * scale * 0.01f;
+        for (i = 0; i < numBursts; i++)
+        {
+            mvec.z = -80.0f * PRANDFloatPos() * scale * 0.01f;
+            mvec.x = 20.0f * PRANDFloat() * scale * 0.01f;
+            mvec.y = 20.0f * PRANDFloat() * scale * 0.01f;
 
-                if ((i bitand 7) == 7)
-                {
-                    /*
+            if ((i bitand 7) == 7)
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_FIRE5, // type
                      SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
@@ -4637,10 +4657,10 @@ SfxClass::RunSecondarySfx(void)
                      3.0, // time to live
                      scale * 0.05f ) ); // scale
                      */
-                }
-                else if ((rand() bitand 3) == 3)
-                {
-                    /*
+            }
+            else if ((rand() bitand 3) == 3)
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_DEBRISTRAIL_DUST, // type
                      SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4649,10 +4669,10 @@ SfxClass::RunSecondarySfx(void)
                      3.0, // time to live
                      scale * 0.25f ) ); // scale
                      */
-                }
-                else
-                {
-                    /*
+            }
+            else
+            {
+                /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_DEBRISTRAIL, // type
                      SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4661,25 +4681,25 @@ SfxClass::RunSecondarySfx(void)
                      8.0, // time to live
                      scale * 0.25f ) ); // scale
                      */
-                }
             }
+        }
 
-            break;
+        break;
 
-        case SFX_AIR_PENETRATION:
-            mpos = pos;
-            StartRandomDebris();
+    case SFX_AIR_PENETRATION:
+        mpos = pos;
+        StartRandomDebris();
 
-            // send up some fire trails
-            numBursts = 2 + (int)(2.0f * gSfxLOD);
+        // send up some fire trails
+        numBursts = 2 + (int)(2.0f * gSfxLOD);
 
-            for (i = 0; i < numBursts; i++)
-            {
-                mvec.x = 70.0f * PRANDFloat();
-                mvec.y = 70.0f * PRANDFloat();
-                mvec.z = 70.0f * PRANDFloat();
+        for (i = 0; i < numBursts; i++)
+        {
+            mvec.x = 70.0f * PRANDFloat();
+            mvec.y = 70.0f * PRANDFloat();
+            mvec.z = 70.0f * PRANDFloat();
 
-                /*
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_DEBRISTRAIL, // type
                  SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4688,18 +4708,18 @@ SfxClass::RunSecondarySfx(void)
                  3.0, // time to live
                  scale * 0.15f ) ); // scale
                  */
-            }
+        }
 
-            break;
+        break;
 
-        case SFX_GROUND_EXPLOSION:
+    case SFX_GROUND_EXPLOSION:
 
-            if (secondaryCount == 9 or obj2d)
-            {
-                StartRandomDebris();
-                pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
-                mpos = pos;
-                /*
+        if (secondaryCount == 9 or obj2d)
+        {
+            StartRandomDebris();
+            pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
+            mpos = pos;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_SHOCK_RING, // type
                  &mpos, // world pos
@@ -4711,45 +4731,45 @@ SfxClass::RunSecondarySfx(void)
                  2.2f, // time to live
                  scale  ) ); // scale
                  */
-                mpos.z = pos.z - 25.0f;
-                /*
+            mpos.z = pos.z - 25.0f;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_BILLOWING_SMOKE, // type
                  &mpos, // world pos
                  3, // time to live
                  0.3f ) ); // scale
                  */
+        }
+
+        if (obj2d)
+            break;
+
+        if (secondaryCount == 9)
+        {
+            // mvec.z = -20.0f * scale * 0.02f;
+
+            if (gSfxCount[SFX_DEBRISTRAIL] < gSfxLODCutoff and
+                gSfxCount[SFX_FIRETRAIL] < gSfxLODCutoff and
+                gTotSfx < gSfxLODTotCutoff)
+            {
+                numBursts = 8 + FloatToInt32(PRANDFloatPos() * 6.0f);
+            }
+            else
+            {
+                numBursts = 3 + FloatToInt32(PRANDFloatPos() * 4.0f);
             }
 
-            if (obj2d)
-                break;
-
-            if (secondaryCount == 9)
+            for (i = 0; i < numBursts; i++)
             {
-                // mvec.z = -20.0f * scale * 0.02f;
+                mpos.x = pos.x + PRANDFloat() * scale * 0.11f;
+                mpos.y = pos.y + PRANDFloat() * scale * 0.11f;
+                mpos.z = pos.z - PRANDFloatPos() * scale * 0.11f;
 
-                if (gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
-                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
-                    gTotSfx < gSfxLODTotCutoff)
-                {
-                    numBursts = 8 + FloatToInt32(PRANDFloatPos() * 6.0f);
-                }
-                else
-                {
-                    numBursts = 3 + FloatToInt32(PRANDFloatPos() * 4.0f);
-                }
+                mvec.x = 30.0f * PRANDFloat() * scale * 0.01f;
+                mvec.y = 30.0f * PRANDFloat() * scale * 0.01f;
+                mvec.z = -8.0f * PRANDFloatPos() * scale * 0.02f;
 
-                for (i = 0; i < numBursts; i++)
-                {
-                    mpos.x = pos.x + PRANDFloat() * scale * 0.11f;
-                    mpos.y = pos.y + PRANDFloat() * scale * 0.11f;
-                    mpos.z = pos.z - PRANDFloatPos() * scale * 0.11f;
-
-                    mvec.x = 30.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.y = 30.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.z = -8.0f * PRANDFloatPos() * scale * 0.02f;
-
-                    /*
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_FIRE_EXPAND_NOSMOKE, // type
                      SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
@@ -4758,33 +4778,34 @@ SfxClass::RunSecondarySfx(void)
                      1.5, // time to live
                      scale * PRANDFloatPos() * 0.2f ) ); // scale
                     */
-                    if ((rand() bitand 3) == 3)
-                    {
-                        /*
+                if ((rand() bitand 3) == 3)
+                {
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE, // type
                          &mpos, // world pos
                          1.8f, // time to live
                          scale * 0.2f + scale * PRANDFloatPos() * 0.3f ) ); // scale
                          */
-                    }
+                }
 
-                    mpos.x = pos.x + PRANDFloat() * scale * 0.05f;
-                    mpos.y = pos.y + PRANDFloat() * scale * 0.05f;
-                    mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 5.0f;
+                mpos.x = pos.x + PRANDFloat() * scale * 0.05f;
+                mpos.y = pos.y + PRANDFloat() * scale * 0.05f;
+                mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 5.0f;
 
-                    mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.z = -18.0f * PRANDFloatPos() * scale * 0.01f;
+                mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
+                mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
+                mvec.z = -18.0f * PRANDFloatPos() * scale * 0.01f;
 
-                    if (approxDist < SFX_LOD_DIST and 
-                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
-                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
-                        gTotSfx < gSfxLODTotCutoff)
+                if (approxDist < SFX_LOD_DIST and
+                    gSfxCount[SFX_DEBRISTRAIL] < gSfxLODCutoff and
+                    gSfxCount[SFX_FIRETRAIL] < gSfxLODCutoff and
+                    gTotSfx < gSfxLODTotCutoff)
+                {
+                    if (rand() bitand 1)
                     {
-                        if (rand() bitand 1)
-                        {}
-                        /*
+                    }
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRETRAIL, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4793,10 +4814,11 @@ SfxClass::RunSecondarySfx(void)
                          4.0, // time to live
                          scale * 0.25f ) ); // scale
                          */
-                        else
-                        {}
+                    else
+                    {
+                    }
 
-                        /*
+                    /*
                          OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_DEBRISTRAIL, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4805,40 +4827,41 @@ SfxClass::RunSecondarySfx(void)
                          6.0, // time to live
                          scale * 0.25f ) ); // scale
                          */
-                    }
                 }
-
-                vec.z -= scale * 0.60f;
             }
-            else
+
+            vec.z -= scale * 0.60f;
+        }
+        else
+        {
+            // vec.z -= scale * 0.15f;
+            // if ( (rand() bitand 3) == 3 )
+            if (secondaryCount bitand 1)
             {
-                // vec.z -= scale * 0.15f;
-                // if ( (rand() bitand 3) == 3 )
-                if (secondaryCount bitand 1)
+                vec.z -= scale * 0.20f;
+                mpos.x = pos.x + PRANDFloat() * scale * 0.21f;
+                mpos.y = pos.y + PRANDFloat() * scale * 0.21f;
+                mpos.z = pos.z + vec.z;
+
+                mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
+                mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
+                mvec.z = -10.0f * PRANDFloatPos() * scale * 0.01f;
+
+                if ((rand() bitand 1) == 1)
                 {
-                    vec.z -= scale * 0.20f;
-                    mpos.x = pos.x + PRANDFloat() * scale * 0.21f;
-                    mpos.y = pos.y + PRANDFloat() * scale * 0.21f;
-                    mpos.z = pos.z + vec.z;
-
-                    mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
-                    mvec.z = -10.0f * PRANDFloatPos() * scale * 0.01f;
-
-                    if ((rand() bitand 1) == 1)
-                    {
-                        mpos.z = pos.z + vec.z * 0.3F;
-                        /*
+                    mpos.z = pos.z + vec.z * 0.3F;
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE, // type
                          &mpos, // world pos
                          1.5f, // time to live
                          scale * 0.2f + scale * PRANDFloatPos() * 0.3f ) ); // scale
                          */
-                    }
-                    else if ((rand() bitand 1) == 1)
-                    {}
-                    /*
+                }
+                else if ((rand() bitand 1) == 1)
+                {
+                }
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_BIG_DUST, // type
                      SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
@@ -4847,10 +4870,11 @@ SfxClass::RunSecondarySfx(void)
                      1.5, // time to live
                      scale * 0.55f ) ); // scale
                      */
-                    else
-                    {}
+                else
+                {
+                }
 
-                    /*
+                /*
                      OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_BIG_SMOKE, // type
                      SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
@@ -4859,40 +4883,41 @@ SfxClass::RunSecondarySfx(void)
                      1.5, // time to live
                      scale * 0.55f ) ); // scale
                      */
-                }
-                else
+            }
+            else
+            {
+                if ((rand() bitand 1) == 1)
                 {
-                    if ((rand() bitand 1) == 1)
-                    {
-                        mpos.x = pos.x + PRANDFloat() * scale * 0.21f;
-                        mpos.y = pos.y + PRANDFloat() * scale * 0.21f;
-                        mpos.z = pos.z + vec.z * 0.3F;
-                        /*
+                    mpos.x = pos.x + PRANDFloat() * scale * 0.21f;
+                    mpos.y = pos.y + PRANDFloat() * scale * 0.21f;
+                    mpos.z = pos.z + vec.z * 0.3F;
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass(SFX_HIT_EXPLOSION_NOSMOKE, // type
                          &mpos, // world pos
                          1.5f, // time to live
                          scale * 0.2f + scale * PRANDFloatPos() * 0.3f ) ); // scale
                          */
-                    }
+                }
 
-                    if (approxDist < SFX_LOD_DIST and 
-                        gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
-                        gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
-                        gTotSfx < gSfxLODTotCutoff)
+                if (approxDist < SFX_LOD_DIST and
+                    gSfxCount[SFX_DEBRISTRAIL] < gSfxLODCutoff and
+                    gSfxCount[SFX_FIRETRAIL] < gSfxLODCutoff and
+                    gTotSfx < gSfxLODTotCutoff)
+                {
+
+                    for (i = 0; i < 2; i++)
                     {
+                        mpos.x = pos.x + PRANDFloat() * scale * 0.05f;
+                        mpos.y = pos.y + PRANDFloat() * scale * 0.05f;
+                        mpos.z =
+                            OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 5.0f;
 
-                        for (i = 0; i < 2; i++)
-                        {
-                            mpos.x = pos.x + PRANDFloat() * scale * 0.05f;
-                            mpos.y = pos.y + PRANDFloat() * scale * 0.05f;
-                            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 5.0f;
+                        mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
+                        mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
+                        mvec.z = -38.0f * PRANDFloatPos() * scale * 0.01f;
 
-                            mvec.x = 10.0f * PRANDFloat() * scale * 0.01f;
-                            mvec.y = 10.0f * PRANDFloat() * scale * 0.01f;
-                            mvec.z = -38.0f * PRANDFloatPos() * scale * 0.01f;
-
-                            /*
+                        /*
                             OTWDriver.AddSfxRequest(
                              new SfxClass( SFX_DEBRISTRAIL, // type
                              SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -4901,48 +4926,48 @@ SfxClass::RunSecondarySfx(void)
                              6.0, // time to live
                              scale * 0.25f ) ); // scale
                              */
-                        }
                     }
                 }
             }
+        }
 
-            break;
+        break;
 
-        case SFX_AIR_EXPLOSION:
-            /*
+    case SFX_AIR_EXPLOSION:
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLCROSS_GLOW, // type
              &pos, // world pos
              1.2f, // time to live
              0.1f ) ); // scale
             */
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLCIRC_GLOW, // type
              &pos, // world pos
              1.8f, // time to live
              scale ) ); // scale
              */
-            break;
+        break;
 
-        case SFX_ROCKET_BURST:
-            if (gSfxCount[ SFX_SPARKS ] < gSfxLODCutoff and 
-                gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
-                gTotSfx < gSfxLODTotCutoff)
-            {
-                numBursts = 24 + FloatToInt32(PRANDFloatPos() * 10.0f);
-            }
-            else
-            {
-                numBursts = 5 + FloatToInt32(PRANDFloatPos() * 10.0f);
-            }
+    case SFX_ROCKET_BURST:
+        if (gSfxCount[SFX_SPARKS] < gSfxLODCutoff and
+            gSfxCount[SFX_FIRETRAIL] < gSfxLODCutoff and
+            gTotSfx < gSfxLODTotCutoff)
+        {
+            numBursts = 24 + FloatToInt32(PRANDFloatPos() * 10.0f);
+        }
+        else
+        {
+            numBursts = 5 + FloatToInt32(PRANDFloatPos() * 10.0f);
+        }
 
-            for (i = 0; i < numBursts; i++)
-            {
-                mvec.x = vec.x + 200.0f * PRANDFloat();
-                mvec.y = vec.y + 200.0f * PRANDFloat();
-                mvec.z = vec.z + 200.0f * PRANDFloat();
-                /*
+        for (i = 0; i < numBursts; i++)
+        {
+            mvec.x = vec.x + 200.0f * PRANDFloat();
+            mvec.y = vec.y + 200.0f * PRANDFloat();
+            mvec.z = vec.z + 200.0f * PRANDFloat();
+            /*
                 if ( (rand() bitand 3) == 3 )
                 {
                  OTWDriver.AddSfxRequest(
@@ -4955,8 +4980,8 @@ SfxClass::RunSecondarySfx(void)
                 }
                 else
                 */
-                {
-                    /*
+            {
+                /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_SPARKS, // type
                      SFX_MOVES bitor SFX_USES_GRAVITY,
@@ -4965,16 +4990,16 @@ SfxClass::RunSecondarySfx(void)
                      3.5f, // time to live
                      12.0f ) ); // scale
                      */
-                }
             }
+        }
 
-            break;
+        break;
 
-        case SFX_MISSILE_BURST:
-            mvec.x = 0.0f;
-            mvec.y = 0.0f;
-            mvec.z = -20.0f;
-            /*
+    case SFX_MISSILE_BURST:
+        mvec.x = 0.0f;
+        mvec.y = 0.0f;
+        mvec.z = -20.0f;
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_LONG_HANGING_SMOKE2, // type
              &pos, // world pos
@@ -4982,15 +5007,15 @@ SfxClass::RunSecondarySfx(void)
              scale * 0.5f ) ); // scale
              */
 
-            // do som extra busts possibly...
-            /*
+        // do som extra busts possibly...
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLCROSS_GLOW, // type
              &pos, // world pos
              1.2f, // time to live
              0.1f ) );   // scale
             */
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLCIRC_GLOW, // type
              &pos, // world pos
@@ -4998,14 +5023,14 @@ SfxClass::RunSecondarySfx(void)
              scale ) );   // scale
              */
 
-            numBursts = (int)(5.0f * gSfxLOD) + PRANDInt3();
+        numBursts = (int)(5.0f * gSfxLOD) + PRANDInt3();
 
-            for (i = 0; i < numBursts; i++)
-            {
-                mvec.x = vec.x + 100.0f * PRANDFloat(); // MLR 1/2/2004 -
-                mvec.y = vec.y + 100.0f * PRANDFloat();
-                mvec.z = vec.z + 100.0f * PRANDFloat();
-                /*
+        for (i = 0; i < numBursts; i++)
+        {
+            mvec.x = vec.x + 100.0f * PRANDFloat(); // MLR 1/2/2004 -
+            mvec.y = vec.y + 100.0f * PRANDFloat();
+            mvec.z = vec.z + 100.0f * PRANDFloat();
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_SMOKETRAIL, // type
                  SFX_MOVES bitor SFX_USES_GRAVITY,
@@ -5014,15 +5039,15 @@ SfxClass::RunSecondarySfx(void)
                  1.0, // time to live
                  10.0f ) ); // scale
                  */
-            }
+        }
 
-            // just some falling pieces of junk
-            for (i = 0; i < numBursts; i++)
-            {
-                mvec.x = 100.0f * PRANDFloat(); // MLR 1/2/2004 -
-                mvec.y = 100.0f * PRANDFloat();
-                mvec.z = 100.0f * PRANDFloat();
-                /*
+        // just some falling pieces of junk
+        for (i = 0; i < numBursts; i++)
+        {
+            mvec.x = 100.0f * PRANDFloat(); // MLR 1/2/2004 -
+            mvec.y = 100.0f * PRANDFloat();
+            mvec.z = 100.0f * PRANDFloat();
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_SMOKETRAIL, // type
                  SFX_MOVES bitor SFX_USES_GRAVITY,
@@ -5031,18 +5056,18 @@ SfxClass::RunSecondarySfx(void)
                  1.0, // time to live
                  10.0f ) ); // scale
                  */
-            }
+        }
 
-            break;
+        break;
 
-        case SFX_HIT_EXPLOSION_NOGLOW:
-            mvec.x = 0.0f;
-            mvec.y = 0.0f;
-            mvec.z = -20.0f;
-            StartRandomDebris();
+    case SFX_HIT_EXPLOSION_NOGLOW:
+        mvec.x = 0.0f;
+        mvec.y = 0.0f;
+        mvec.z = -20.0f;
+        StartRandomDebris();
 
-            if (rand() bitand 1)
-                /*
+        if (rand() bitand 1)
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_LONG_HANGING_SMOKE2, // type
                  &pos, // world pos
@@ -5050,33 +5075,33 @@ SfxClass::RunSecondarySfx(void)
                  scale * 0.5f ) ); // scale
                  */
 
-                break;
-
-        case SFX_HIT_EXPLOSION_NOSMOKE:
-            /*
-            OTWDriver.AddSfxRequest(
-             new SfxClass( SFX_EXPLCIRC_GLOW, // type
-             &pos, // world pos
-             1.8f, // time to live
-             scale ) ); // scale
-             */
             break;
 
-        case SFX_HIT_EXPLOSION:
-            mvec.x = 0.0f;
-            mvec.y = 0.0f;
-            mvec.z = -20.0f;
-            StartRandomDebris();
-
-            /*
+    case SFX_HIT_EXPLOSION_NOSMOKE:
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_EXPLCIRC_GLOW, // type
              &pos, // world pos
              1.8f, // time to live
              scale ) ); // scale
              */
-            if (rand() bitand 1)
-                /*
+        break;
+
+    case SFX_HIT_EXPLOSION:
+        mvec.x = 0.0f;
+        mvec.y = 0.0f;
+        mvec.z = -20.0f;
+        StartRandomDebris();
+
+        /*
+            OTWDriver.AddSfxRequest(
+             new SfxClass( SFX_EXPLCIRC_GLOW, // type
+             &pos, // world pos
+             1.8f, // time to live
+             scale ) ); // scale
+             */
+        if (rand() bitand 1)
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_LONG_HANGING_SMOKE2, // type
                  &pos, // world pos
@@ -5084,48 +5109,48 @@ SfxClass::RunSecondarySfx(void)
                  scale * 0.5f ) ); // scale
                  */
 
-                break;
+            break;
 
-            // these next 2 are for campaign calls only (from campweaponfire)
-        case SFX_VEHICLE_BURNING:
-            pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 40.0f;
-            /*
+        // these next 2 are for campaign calls only (from campweaponfire)
+    case SFX_VEHICLE_BURNING:
+        pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 40.0f;
+        /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_FIRE,
               &pos,
               60.0f,
               90.0f ) );
               */
-            break;
+        break;
 
-        case SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL:
-            if (pos.z > 0.0f)
-                pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 40.0f;
+    case SFX_CAMP_HIT_EXPLOSION_DEBRISTRAIL:
+        if (pos.z > 0.0f)
+            pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 40.0f;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest( new SfxClass( SFX_VEHICLE_EXPLOSION,
               &pos,
               2.0f,
               200.0f ) );
               */
-            break;
+        break;
 
-        case SFX_VEHICLE_EXPLOSION:
-            numBursts = (int)(6.0f * gSfxLOD) + PRANDInt3();
+    case SFX_VEHICLE_EXPLOSION:
+        numBursts = (int)(6.0f * gSfxLOD) + PRANDInt3();
 
-            for (i = 0; i < numBursts; i++)
+        for (i = 0; i < numBursts; i++)
+        {
+            mvec.x = 60.0f * PRANDFloat();
+            mvec.y = 60.0f * PRANDFloat();
+            mvec.z = -80.0f * PRANDFloatPos();
+
+            if (approxDist < SFX_LOD_DIST and
+                gSfxCount[SFX_DEBRISTRAIL] < gSfxLODCutoff and
+                gSfxCount[SFX_FIRETRAIL] < gSfxLODCutoff and
+                gTotSfx < gSfxLODTotCutoff)
             {
-                mvec.x = 60.0f * PRANDFloat();
-                mvec.y = 60.0f * PRANDFloat();
-                mvec.z = -80.0f * PRANDFloatPos();
-
-                if (approxDist < SFX_LOD_DIST and 
-                    gSfxCount[ SFX_DEBRISTRAIL ] < gSfxLODCutoff and 
-                    gSfxCount[ SFX_FIRETRAIL ] < gSfxLODCutoff and 
-                    gTotSfx < gSfxLODTotCutoff)
+                if (PRANDInt3() == 1)
                 {
-                    if (PRANDInt3() == 1)
-                    {
-                        /*
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_DEBRISTRAIL, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -5134,10 +5159,10 @@ SfxClass::RunSecondarySfx(void)
                          6.0, // time to live
                          10.0f ) ); // scale
                          */
-                    }
-                    else
-                    {
-                        /*
+                }
+                else
+                {
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRETRAIL, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_BOUNCES,
@@ -5146,179 +5171,180 @@ SfxClass::RunSecondarySfx(void)
                          6.0, // time to live
                          10.0f ) ); // scale
                          */
-                    }
                 }
             }
+        }
 
+        break;
+
+    case SFX_DIST_AIRBURSTS:
+
+        // do LOD for distant sfx
+        if (gTotSfx > gSfxLODDistCutoff)
+        {
+            break;
+        }
+
+        // check distance to view, if too close don't run....
+        // about 6 miles?
+        if (approxDist < 10000.0f)
             break;
 
-        case SFX_DIST_AIRBURSTS:
+        // get a distance scale where 1.0 is about 60 miles away
+        distScale = max(0.1f, approxDist / 200000.0f);
 
-            // do LOD for distant sfx
-            if (gTotSfx > gSfxLODDistCutoff)
-            {
-                break;
-            }
+        mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale;
+        mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale;
+        mpos.z = pos.z - 6000.0f * PRANDFloatPos() * distScale;
 
-            // check distance to view, if too close don't run....
-            // about 6 miles?
-            if (approxDist < 10000.0f)
-                break;
-
-            // get a distance scale where 1.0 is about 60 miles away
-            distScale = max(0.1f, approxDist / 200000.0f);
-
-            mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale;
-            mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale;
-            mpos.z = pos.z - 6000.0f * PRANDFloatPos() * distScale;
-
-            switch (PRANDInt5())
-            {
-                case 0:
-                case 4:
-                    /*
+        switch (PRANDInt5())
+        {
+        case 0:
+        case 4:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_AIR_EXPLOSION_NOGLOW, // type
                      &mpos, // world pos
                      1.2f, // time to live
                      600.0f * distScale ) ); // scale
                      */
-                    break;
+            break;
 
-                case 1:
-                case 2:
-                    /*
+        case 1:
+        case 2:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_SPARKS, // type
                      &mpos, // world pos
                      1.2f, // time to live
                      4.0f * 800.0f * distScale ) ); // scale
                      */
-                    break;
+            break;
 
-                case 3:
-                    /*
+        case 3:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_AC_AIR_EXPLOSION, // type
                      &mpos, // world pos
                      2.2f, // time to live
                      500.0f * distScale ) ); // scale
                      */
-                    break;
-            }
+            break;
+        }
 
 
+        break;
+
+    case SFX_AIRBURST:
+
+        mpos.x = pos.x + 800.0f * PRANDFloat();
+        mpos.y = pos.y + 800.0f * PRANDFloat();
+        mpos.z = pos.z + 100.0f * PRANDFloat();
+
+        switch (PRANDInt5())
+        {
+        case 0:
+            /*
+                    OTWDriver.AddSfxRequest(
+                     new SfxClass( SFX_AAA_EXPLOSION, // type
+                     &mpos, // world pos
+                     1.3f, // time to live
+                     14.0f ) ); // scale
+                     */
             break;
 
-        case SFX_AIRBURST:
-
-            mpos.x = pos.x + 800.0f * PRANDFloat();
-            mpos.y = pos.y + 800.0f * PRANDFloat();
-            mpos.z = pos.z + 100.0f * PRANDFloat();
-
-            switch (PRANDInt5())
-            {
-                case 0:
-                    /*
+        case 1:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_AAA_EXPLOSION, // type
                      &mpos, // world pos
                      1.3f, // time to live
                      14.0f ) ); // scale
                      */
-                    break;
+            break;
 
-                case 1:
-                    /*
+        case 4:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_AAA_EXPLOSION, // type
                      &mpos, // world pos
                      1.3f, // time to live
                      14.0f ) ); // scale
                      */
-                    break;
+            break;
 
-                case 4:
-                    /*
-                    OTWDriver.AddSfxRequest(
-                     new SfxClass( SFX_AAA_EXPLOSION, // type
-                     &mpos, // world pos
-                     1.3f, // time to live
-                     14.0f ) ); // scale
-                     */
-                    break;
-
-                case 2:
-                    /*
+        case 2:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_SMALL_HIT_EXPLOSION, // type
                      &mpos, // world pos
                      1.4f, // time to live
                      13.0f ) ); // scale
                      */
-                    break;
+            break;
 
-                case 3:
-                    /*
+        case 3:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_SMALL_HIT_EXPLOSION, // type
                      &mpos, // world pos
                      1.4f, // time to live
                      15.0f ) ); // scale
                      */
-                    break;
-            }
+            break;
+        }
 
-            if (gSfxCount[ SFX_LONG_HANGING_SMOKE2 ] < gSfxLODCutoff and 
-                gTotSfx < gSfxLODTotCutoff)
-            {
-                /*
+        if (gSfxCount[SFX_LONG_HANGING_SMOKE2] < gSfxLODCutoff and
+            gTotSfx < gSfxLODTotCutoff)
+        {
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_LONG_HANGING_SMOKE2, // type
                  &mpos, // world pos
                  30.5f, // time to live
                  10.0f ) ); // scale
                  */
-            }
+        }
 
-            // sound
-            F4SoundFXSetPos(SFX_IMPACTA1 + PRANDInt5(), TRUE, mpos.x, mpos.y, mpos.z, 1.0f);
+        // sound
+        F4SoundFXSetPos(SFX_IMPACTA1 + PRANDInt5(), TRUE, mpos.x, mpos.y,
+                        mpos.z, 1.0f);
 
+        break;
+
+    case SFX_DIST_GROUNDBURSTS:
+
+        // do LOD for distant sfx
+        if (gTotSfx > gSfxLODDistCutoff)
+        {
+            break;
+        }
+
+        // check distance to view, if too close don't run....
+        // about 6 miles?
+        if (approxDist < 10000.0f)
             break;
 
-        case SFX_DIST_GROUNDBURSTS:
+        // get a distance scale where 1.0 is about 60 miles away
+        distScale = max(0.1f, approxDist / 200000.0f);
 
-            // do LOD for distant sfx
-            if (gTotSfx > gSfxLODDistCutoff)
-            {
-                break;
-            }
+        mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale;
+        mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale;
+        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 10.0f;
 
-            // check distance to view, if too close don't run....
-            // about 6 miles?
-            if (approxDist < 10000.0f)
-                break;
+        switch (PRANDInt5())
+        {
+        case 0:
 
-            // get a distance scale where 1.0 is about 60 miles away
-            distScale = max(0.1f, approxDist / 200000.0f);
-
-            mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale ;
-            mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale ;
-            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 10.0f;
-
-            switch (PRANDInt5())
-            {
-                case 0:
-
-                    /*
+            /*
                     OTWDriver.AddSfxRequest(
                     new SfxClass( SFX_GROUND_FLASH, // type
                     &mpos, // world pos
                     2.2f, // time to live
                     distScale * 6300.0f ) ); // scale
                     */
-                case 4:
-                    /*
+        case 4:
+            /*
                     OTWDriver.AddSfxRequest(
                      // new SfxClass( SFX_GROUND_EXPLOSION_NO_CRATER, // type
                      new SfxClass( SFX_SPARKS, // type
@@ -5326,89 +5352,90 @@ SfxClass::RunSecondarySfx(void)
                      2.2f, // time to live
                      4.0f * 800.0f * distScale ) ); // scale
                      */
-                    break;
+            break;
 
-                case 1:
-                    /*
+        case 1:
+            /*
                     OTWDriver.AddSfxRequest(
                     new SfxClass( SFX_FEATURE_EXPLOSION, // type
                     &mpos, // world pos
                     4.2f, // time to live
                     distScale * 3300.0f ) ); // scale
                     */
-                    break;
+            break;
 
-                case 2:
-                    /*
+        case 2:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_ARTILLERY_EXPLOSION, // type
                      &mpos, // world pos
                      1.2f, // time to live
                      800.0f * distScale ) ); // scale
                      */
-                    break;
+            break;
 
-                case 3:
-                    /*
+        case 3:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_AC_AIR_EXPLOSION, // type
                      &mpos, // world pos
                      2.2f, // time to live
                      500.0f * distScale ) ); // scale
                      */
-                    break;
-            }
-
-
             break;
+        }
 
-        case SFX_GROUNDBURST:
 
-            // evry time thru, we increase the radius
-            vec.z += 40.0f;
-            pos.x += vec.x * sfxFrameTime;
-            pos.y += vec.y * sfxFrameTime;
-            numBursts = 3 + (int)(vec.z * 0.08f * gSfxLOD);
-            radstep = 2.0f * PI / (float)numBursts;
-            rads = 0;
+        break;
 
-            // perpendiclular vec
-            distScale = (float)sqrt(vec.x * vec.x + vec.y * vec.y);
+    case SFX_GROUNDBURST:
 
-            if (distScale < 0.0001f) distScale = 1.0f;
+        // evry time thru, we increase the radius
+        vec.z += 40.0f;
+        pos.x += vec.x * sfxFrameTime;
+        pos.y += vec.y * sfxFrameTime;
+        numBursts = 3 + (int)(vec.z * 0.08f * gSfxLOD);
+        radstep = 2.0f * PI / (float)numBursts;
+        rads = 0;
 
-            mvec.x = -vec.y / distScale;
-            mvec.y = vec.x / distScale;
+        // perpendiclular vec
+        distScale = (float)sqrt(vec.x * vec.x + vec.y * vec.y);
 
-            distScale = min(vec.z, 200.0f);
+        if (distScale < 0.0001f)
+            distScale = 1.0f;
 
-            for (i = 0; i < numBursts; i++)
+        mvec.x = -vec.y / distScale;
+        mvec.y = vec.x / distScale;
+
+        distScale = min(vec.z, 200.0f);
+
+        for (i = 0; i < numBursts; i++)
+        {
+            // mpos.x = pos.x + distScale * cos( rads ) + PRANDFloat() * distScale * 0.4f;
+            // mpos.y = pos.y + distScale * sin( rads ) + PRANDFloat() * distScale * 0.4f;
+            mpos.x = pos.x + mvec.x * PRANDFloat() * distScale;
+            mpos.y = pos.y + mvec.y * PRANDFloat() * distScale;
+            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 10.0f;
+
+            rads += radstep;
+
+            switch (PRANDInt5())
             {
-                // mpos.x = pos.x + distScale * cos( rads ) + PRANDFloat() * distScale * 0.4f;
-                // mpos.y = pos.y + distScale * sin( rads ) + PRANDFloat() * distScale * 0.4f;
-                mpos.x = pos.x + mvec.x * PRANDFloat() * distScale;
-                mpos.y = pos.y + mvec.y * PRANDFloat() * distScale;
-                mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 10.0f;
-
-                rads += radstep;
-
-                switch (PRANDInt5())
-                {
-                    case 0:
-                        /*
+            case 0:
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_GROUND_STRIKE_NOFIRE, // type
                          &mpos, // world pos
                          1.5f, // time to live
                          15.0f ) ); // scale
                          */
-                        break;
+                break;
 
-                    case 1:
-                        vec2.x = 0.0f;
-                        vec2.y = 0.0f;
-                        vec2.z = -50.0f;
-                        /*
+            case 1:
+                vec2.x = 0.0f;
+                vec2.y = 0.0f;
+                vec2.z = -50.0f;
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
@@ -5417,89 +5444,90 @@ SfxClass::RunSecondarySfx(void)
                          1.5, // time to live
                          20.25f ) ); // scale
                          */
-                        break;
+                break;
 
-                    case 2:
-                        /*
+            case 2:
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass(SFX_SMALL_HIT_EXPLOSION, // type
                          &mpos, // world pos
                          1.5f, // time to live
                          15.0f) ); // scale
                          */
-                        break;
+                break;
 
-                    case 3:
-                        /*
+            case 3:
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_GROUND_STRIKE_NOFIRE, // type
                          &mpos, // world pos
                          1.5f, // time to live
                          15.0f ) ); // scale
                          */
-                        break;
+                break;
 
-                    case 4:
-                        /*
+            case 4:
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_AAA_EXPLOSION, // type
                          &mpos, // world pos
                          1.5f, // time to live
                          15.0f ) ); // scale
                          */
-                        break;
-                }
+                break;
             }
+        }
 
-            F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, mpos.x, mpos.y, mpos.z, 1.0f);
+        F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, mpos.x, mpos.y, mpos.z,
+                        1.0f);
 
+        break;
+
+    case SFX_DIST_ARMOR:
+
+        // do LOD for distant sfx
+        if (gTotSfx > gSfxLODDistCutoff)
+        {
+            break;
+        }
+
+        // check distance to view, if too close don't run....
+        // about 6 miles?
+        if (approxDist < 10000.0f)
             break;
 
-        case SFX_DIST_ARMOR:
+        // get a distance scale where 1.0 is about 60 miles away
+        distScale = max(0.1f, approxDist / 200000.0f);
 
-            // do LOD for distant sfx
-            if (gTotSfx > gSfxLODDistCutoff)
-            {
-                break;
-            }
+        mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale;
+        mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale;
+        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
 
-            // check distance to view, if too close don't run....
-            // about 6 miles?
-            if (approxDist < 10000.0f)
-                break;
-
-            // get a distance scale where 1.0 is about 60 miles away
-            distScale = max(0.1f, approxDist / 200000.0f);
-
-            mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale ;
-            mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale ;
-            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
-
-            switch (PRANDInt5())
-            {
-                case 0:
-                    /*
+        switch (PRANDInt5())
+        {
+        case 0:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_GROUND_FLASH, // type
                      &mpos, // world pos
                      2.2f, // time to live
                      distScale * 6800.0f ) ); // scale
                      */
-                    break;
+            break;
 
-                case 1:
-                case 4:
+        case 1:
+        case 4:
 
-                    // vec is normalized, further away = faster
-                    // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
-                    // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
-                    // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
-                    if (travelDist < 12000.0f)
-                    {
-                        mvec.x = vec.x / travelDist * TRACER_VELOCITY;
-                        mvec.y = vec.y / travelDist * TRACER_VELOCITY;
-                        mvec.z = vec.z / travelDist * TRACER_VELOCITY;
-                        /*
+            // vec is normalized, further away = faster
+            // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
+            // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
+            // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
+            if (travelDist < 12000.0f)
+            {
+                mvec.x = vec.x / travelDist * TRACER_VELOCITY;
+                mvec.y = vec.y / travelDist * TRACER_VELOCITY;
+                mvec.z = vec.z / travelDist * TRACER_VELOCITY;
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRACER_FIRE, // type
                          SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK , // flags
@@ -5508,91 +5536,91 @@ SfxClass::RunSecondarySfx(void)
                          travelDist/TRACER_VELOCITY, // time to live
                          180.0f * distScale) ); // scale
                          */
-                    }
-                    else
-                    {
-                        mpos.x += vec.x;
-                        mpos.y += vec.y;
-                        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
-                        /*
+            }
+            else
+            {
+                mpos.x += vec.x;
+                mpos.y += vec.y;
+                mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_ARTILLERY_EXPLOSION, // type
                          &mpos, // world pos
                          1.2f, // time to live
                          800.0f * distScale ) ); // scale
                          */
-                    }
+            }
 
-                    break;
+            break;
 
-                case 2:
-                    /*
+        case 2:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_FEATURE_EXPLOSION, // type
                      &mpos, // world pos
                      4.2f, // time to live
                      3300.0f * distScale ) ); // scale
                      */
-                    break;
+            break;
 
-                case 3:
-                    /*
+        case 3:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_AIR_SMOKECLOUD, // type
                      &mpos, // world pos
                      12.2f, // time to live
                      420.0f  * distScale ) ); // scale
                      */
-                    break;
-            }
+            break;
+        }
 
 
+        break;
+
+    case SFX_DIST_INFANTRY:
+
+        // do LOD for distant sfx
+        if (gTotSfx > gSfxLODDistCutoff)
+        {
+            break;
+        }
+
+        // check distance to view, if too close don't run....
+        // about 6 miles?
+        if (approxDist < 10000.0f)
             break;
 
-        case SFX_DIST_INFANTRY:
+        // get a distance scale where 1.0 is about 60 miles away
+        distScale = max(0.1f, approxDist / 200000.0f);
 
-            // do LOD for distant sfx
-            if (gTotSfx > gSfxLODDistCutoff)
-            {
-                break;
-            }
+        mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale;
+        mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale;
+        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
 
-            // check distance to view, if too close don't run....
-            // about 6 miles?
-            if (approxDist < 10000.0f)
-                break;
-
-            // get a distance scale where 1.0 is about 60 miles away
-            distScale = max(0.1f, approxDist / 200000.0f);
-
-            mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale ;
-            mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale ;
-            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
-
-            switch (PRANDInt5())
-            {
-                case 0:
-                    /*
+        switch (PRANDInt5())
+        {
+        case 0:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_GROUND_FLASH, // type
                      &mpos, // world pos
                      2.2f, // time to live
                      distScale * 6800.0f ) ); // scale
                      */
-                    break;
+            break;
 
-                case 1:
-                    // vec is normalized, further away = faster
-                    // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
-                    // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
-                    // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
-                    mvec.x = vec.x / travelDist * TRACER_VELOCITY;
-                    mvec.y = vec.y / travelDist * TRACER_VELOCITY;
-                    mvec.z = vec.z / travelDist * TRACER_VELOCITY;
+        case 1:
+            // vec is normalized, further away = faster
+            // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
+            // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
+            // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
+            mvec.x = vec.x / travelDist * TRACER_VELOCITY;
+            mvec.y = vec.y / travelDist * TRACER_VELOCITY;
+            mvec.z = vec.z / travelDist * TRACER_VELOCITY;
 
-                    if (travelDist < 12000.0f)
-                    {
-                        /*
+            if (travelDist < 12000.0f)
+            {
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_TRACER_FIRE, // type
                          SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
@@ -5601,70 +5629,70 @@ SfxClass::RunSecondarySfx(void)
                          travelDist/TRACER_VELOCITY, // time to live
                          180.0f * distScale ) ); // scale
                          */
-                    }
-                    else
-                    {
-                        mpos.x += vec.x;
-                        mpos.y += vec.y;
-                        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
-                        /*
+            }
+            else
+            {
+                mpos.x += vec.x;
+                mpos.y += vec.y;
+                mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 20.0f;
+                /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_ARTILLERY_EXPLOSION, // type
                          &mpos, // world pos
                          1.2f, // time to live
                          800.0f * distScale ) ); // scale
                          */
-                    }
+            }
 
-                    break;
+            break;
 
-                case 2:
-                case 3:
-                    /*
+        case 2:
+        case 3:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass( SFX_FEATURE_EXPLOSION, // type
                      &mpos, // world pos
                      4.2f, // time to live
                      3300.0f * distScale ) ); // scale
                      */
-                    break;
+            break;
 
-                case 4:
-                    /*
+        case 4:
+            /*
                     OTWDriver.AddSfxRequest(
                      new SfxClass(SFX_AIR_SMOKECLOUD, // type
                      &mpos, // world pos
                      12.2f, // time to live
                      420.0f  * distScale ) ); // scale
                      */
-                    break;
-            }
+            break;
+        }
 
 
+        break;
+
+    case SFX_DIST_SAMLAUNCHES:
+
+        // do LOD for distant sfx
+        if (gTotSfx > gSfxLODDistCutoff)
+        {
+            break;
+        }
+
+        // check distance to view, if too close don't run....
+        // about 6 miles?
+        if (approxDist < 10000.0f)
             break;
 
-        case SFX_DIST_SAMLAUNCHES:
+        // get a distance scale where 1.0 is about 60 miles away
+        distScale = max(0.1f, approxDist / 200000.0f);
 
-            // do LOD for distant sfx
-            if (gTotSfx > gSfxLODDistCutoff)
-            {
-                break;
-            }
+        mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale;
+        mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale;
+        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 50.0f;
 
-            // check distance to view, if too close don't run....
-            // about 6 miles?
-            if (approxDist < 10000.0f)
-                break;
-
-            // get a distance scale where 1.0 is about 60 miles away
-            distScale = max(0.1f, approxDist / 200000.0f);
-
-            mpos.x = pos.x + 6000.0f * PRANDFloat() * distScale;
-            mpos.y = pos.y + 6000.0f * PRANDFloat() * distScale;
-            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 50.0f;
-
-            // start sam launch effect
-            /*
+        // start sam launch effect
+        /*
             OTWDriver.AddSfxRequest(
              SFX_SAM_LAUNCH, // type
              0, // flags
@@ -5675,8 +5703,8 @@ SfxClass::RunSecondarySfx(void)
              52.0f ); // scale
              */
 
-            // start missile launch from sam loc
-            /*
+        // start missile launch from sam loc
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass(SFX_AIR_SMOKECLOUD, // type
              &mpos, // world pos
@@ -5685,16 +5713,16 @@ SfxClass::RunSecondarySfx(void)
              */
 
 
-            if ( not PRANDInt3())
-            {
-                // vec is normalized, further away = faster
-                // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
-                // mvec.y = vec.y * ( 150.0f + 1000.0f * distScale );
-                // mvec.z = vec.z * ( 150.0f + 1000.0f * distScale );
-                mvec.x = vec.x / travelDist * 1500.0f;
-                mvec.y = vec.y / travelDist * 1500.0f;
-                mvec.z = vec.z / travelDist * 1500.0f;
-                /*
+        if (not PRANDInt3())
+        {
+            // vec is normalized, further away = faster
+            // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
+            // mvec.y = vec.y * ( 150.0f + 1000.0f * distScale );
+            // mvec.z = vec.z * ( 150.0f + 1000.0f * distScale );
+            mvec.x = vec.x / travelDist * 1500.0f;
+            mvec.y = vec.y / travelDist * 1500.0f;
+            mvec.z = vec.z / travelDist * 1500.0f;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_MISSILE_LAUNCH, // type
                  mflags, // flags
@@ -5703,17 +5731,17 @@ SfxClass::RunSecondarySfx(void)
                  travelDist/1500.0f, // time to live
                  420.0f * distScale ) ); // scale
                  */
-            }
-            else
-            {
-                // vec is normalized, further away = faster
-                // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
-                // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
-                // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
-                mvec.x = vec.x / travelDist * TRACER_VELOCITY;
-                mvec.y = vec.y / travelDist * TRACER_VELOCITY;
-                mvec.z = vec.z / travelDist * TRACER_VELOCITY;
-                /*
+        }
+        else
+        {
+            // vec is normalized, further away = faster
+            // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
+            // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
+            // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
+            mvec.x = vec.x / travelDist * TRACER_VELOCITY;
+            mvec.y = vec.y / travelDist * TRACER_VELOCITY;
+            mvec.z = vec.z / travelDist * TRACER_VELOCITY;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_TRACER_FIRE, // type
                  SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
@@ -5722,40 +5750,40 @@ SfxClass::RunSecondarySfx(void)
                  travelDist/TRACER_VELOCITY, // time to live
                  180.0f * distScale ) ); // scale
                  */
-            }
+        }
 
+        break;
+
+    case SFX_DIST_AALAUNCHES:
+
+        // do LOD for distant sfx
+        if (gTotSfx > gSfxLODDistCutoff)
+        {
+            break;
+        }
+
+        // check distance to view, if too close don't run....
+        // about 6 miles?
+        if (approxDist < 10000.0f)
             break;
 
-        case SFX_DIST_AALAUNCHES:
+        // get a distance scale where 1.0 is about 60 miles away
+        distScale = max(0.1f, approxDist / 200000.0f);
 
-            // do LOD for distant sfx
-            if (gTotSfx > gSfxLODDistCutoff)
-            {
-                break;
-            }
+        mpos.x = pos.x + 2000.0f * PRANDFloat() * distScale;
+        mpos.y = pos.y + 2000.0f * PRANDFloat() * distScale;
+        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 50.0f;
 
-            // check distance to view, if too close don't run....
-            // about 6 miles?
-            if (approxDist < 10000.0f)
-                break;
-
-            // get a distance scale where 1.0 is about 60 miles away
-            distScale = max(0.1f, approxDist / 200000.0f);
-
-            mpos.x = pos.x + 2000.0f * PRANDFloat() * distScale;
-            mpos.y = pos.y + 2000.0f * PRANDFloat() * distScale;
-            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y) - 50.0f;
-
-            if ( not PRANDInt3())
-            {
-                // vec is normalized, further away = faster
-                // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
-                // mvec.y = vec.y * ( 150.0f + 1000.0f * distScale );
-                // mvec.z = vec.z * ( 150.0f + 1000.0f * distScale );
-                mvec.x = vec.x / travelDist * 1500.0f;
-                mvec.y = vec.y / travelDist * 1500.0f;
-                mvec.z = vec.z / travelDist * 1500.0f;
-                /*
+        if (not PRANDInt3())
+        {
+            // vec is normalized, further away = faster
+            // mvec.x = vec.x * ( 150.0f + 1000.0f * distScale );
+            // mvec.y = vec.y * ( 150.0f + 1000.0f * distScale );
+            // mvec.z = vec.z * ( 150.0f + 1000.0f * distScale );
+            mvec.x = vec.x / travelDist * 1500.0f;
+            mvec.y = vec.y / travelDist * 1500.0f;
+            mvec.z = vec.z / travelDist * 1500.0f;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_MISSILE_LAUNCH, // type
                  mflags, // flags
@@ -5764,17 +5792,17 @@ SfxClass::RunSecondarySfx(void)
                  travelDist/1500.0f, // time to live
                  420.0f * distScale ) ); // scale
                  */
-            }
-            else
-            {
-                // vec is normalized, further away = faster
-                // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
-                // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
-                // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
-                mvec.x = vec.x / travelDist * TRACER_VELOCITY;
-                mvec.y = vec.y / travelDist * TRACER_VELOCITY;
-                mvec.z = vec.z / travelDist * TRACER_VELOCITY;
-                /*
+        }
+        else
+        {
+            // vec is normalized, further away = faster
+            // mvec.x = vec.x * ( 150.0f + 3800.0f * distScale );
+            // mvec.y = vec.y * ( 150.0f + 3800.0f * distScale );
+            // mvec.z = vec.z * ( 150.0f + 3800.0f * distScale );
+            mvec.x = vec.x / travelDist * TRACER_VELOCITY;
+            mvec.y = vec.y / travelDist * TRACER_VELOCITY;
+            mvec.z = vec.z / travelDist * TRACER_VELOCITY;
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_TRACER_FIRE, // type
                  SFX_EXPLODE_WHEN_DONE bitor SFX_MOVES bitor SFX_NO_GROUND_CHECK bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR, // flags
@@ -5783,76 +5811,76 @@ SfxClass::RunSecondarySfx(void)
                  travelDist/TRACER_VELOCITY, // time to live
                  180.0f * distScale) ); // scale
                  */
-            }
+        }
 
-            break;
+        break;
 
-        case SFX_INCENDIARY_EXPLOSION:
-            mpos.x = pos.x;
-            mpos.y = pos.y;
-            mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
-            OTWDriver.AddSfxRequest(
-                new SfxClass(SFX_FEATURE_EXPLOSION, // type
-                             &mpos, // world pos
-                             obj2d->GetAlphaTimeToLive(), // time to live
-                             scale)); // scale
-            break;
+    case SFX_INCENDIARY_EXPLOSION:
+        mpos.x = pos.x;
+        mpos.y = pos.y;
+        mpos.z = OTWDriver.GetGroundLevel(pos.x, pos.y);
+        OTWDriver.AddSfxRequest(
+            new SfxClass(SFX_FEATURE_EXPLOSION, // type
+                         &mpos, // world pos
+                         obj2d->GetAlphaTimeToLive(), // time to live
+                         scale)); // scale
+        break;
 
-        case SFX_NAPALM:
-            // send up some fire trails
-            /*
+    case SFX_NAPALM:
+        // send up some fire trails
+        /*
             ** EDG: Broken right now
             */
-            numBursts =  2 + (int)(2.0f * gSfxLOD);
-            rads = OTWDriver.GetGroundLevel(pos.x, pos.y);
-            mvec.z = 0.0f;
+        numBursts = 2 + (int)(2.0f * gSfxLOD);
+        rads = OTWDriver.GetGroundLevel(pos.x, pos.y);
+        mvec.z = 0.0f;
 
-            for (i = 0; i < numBursts; i++)
-            {
-                mpos.x = pos.x + 600.0f * PRANDFloat();
-                mpos.y = pos.y + 600.0f * PRANDFloat();
-                mpos.z = rads  - 30.0f - PRANDFloatPos() * 100.0f;
+        for (i = 0; i < numBursts; i++)
+        {
+            mpos.x = pos.x + 600.0f * PRANDFloat();
+            mpos.y = pos.y + 600.0f * PRANDFloat();
+            mpos.z = rads - 30.0f - PRANDFloatPos() * 100.0f;
 
-                /*
+            /*
                 OTWDriver.AddSfxRequest(
                  new SfxClass( SFX_INCENDIARY_EXPLOSION, // type
                  &mpos, // world pos
                  2.5f, // time to live
                  200.0f + 500.0f * PRANDFloatPos() ) ); // scale
                  */
-            }
+        }
 
-            pos.x += vec.x * 0.2f;
-            pos.y += vec.y * 0.2f;
-            F4SoundFXSetPos(SFX_BOOMG1, TRUE, mpos.x, mpos.y, mpos.z, 1.0f);
-            break;
+        pos.x += vec.x * 0.2f;
+        pos.y += vec.y * 0.2f;
+        F4SoundFXSetPos(SFX_BOOMG1, TRUE, mpos.x, mpos.y, mpos.z, 1.0f);
+        break;
 
-        case SFX_RISING_GROUNDHIT_EXPLOSION_DEBR:
-            // mpos.x = pos.x + vec.x * PRANDFloat();
-            // mpos.y = pos.y + vec.y * PRANDFloat();
-            int randint;
+    case SFX_RISING_GROUNDHIT_EXPLOSION_DEBR:
+        // mpos.x = pos.x + vec.x * PRANDFloat();
+        // mpos.y = pos.y + vec.y * PRANDFloat();
+        int randint;
 
-            randint = rand() bitand 0x03;
+        randint = rand() bitand 0x03;
 
-            if (randint == 1)
-                mpos.x = pos.x - vec.x;
-            else if (randint == 0)
-                mpos.x = pos.x + vec.x;
-            else
-                mpos.x = pos.x + vec.x * PRANDFloat();
+        if (randint == 1)
+            mpos.x = pos.x - vec.x;
+        else if (randint == 0)
+            mpos.x = pos.x + vec.x;
+        else
+            mpos.x = pos.x + vec.x * PRANDFloat();
 
-            randint = rand() bitand 0x03;
+        randint = rand() bitand 0x03;
 
-            if (randint == 1)
-                mpos.y = pos.y - vec.y;
-            else if (randint == 0)
-                mpos.y = pos.y + vec.y;
-            else
-                mpos.y = pos.y + vec.y * PRANDFloat();
+        if (randint == 1)
+            mpos.y = pos.y - vec.y;
+        else if (randint == 0)
+            mpos.y = pos.y + vec.y;
+        else
+            mpos.y = pos.y + vec.y * PRANDFloat();
 
-            mpos.z = pos.z;
+        mpos.z = pos.z;
 
-            /*
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass(SFX_VEHICLE_EXPLOSION, // type
              &mpos, // world pos
@@ -5861,8 +5889,8 @@ SfxClass::RunSecondarySfx(void)
              */
 
 
-            mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y);
-            /*
+        mpos.z = OTWDriver.GetGroundLevel(mpos.x, mpos.y);
+        /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_GROUND_FLASH, // type
              &mpos, // world pos
@@ -5870,14 +5898,15 @@ SfxClass::RunSecondarySfx(void)
              scale * 1.4f ) ); // scale
              */
 
-            // sound
-            F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, mpos.x, mpos.y, mpos.z, 1.0f);
-            // raise it
-            pos.z += vec.z;
-            break;
+        // sound
+        F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, mpos.x, mpos.y, mpos.z,
+                        1.0f);
+        // raise it
+        pos.z += vec.z;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     } // end switch
 }
 
@@ -5947,10 +5976,8 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                 */
             }
         }
-        else if (type == SFX_GUNFIRE or
-                 type == SFX_SMOKING_PART or
-                 type == SFX_FLAMING_PART or
-                 type == SFX_MISSILE_LAUNCH)
+        else if (type == SFX_GUNFIRE or type == SFX_SMOKING_PART or
+                 type == SFX_FLAMING_PART or type == SFX_MISSILE_LAUNCH)
         {
             /*
             OTWDriver.AddSfxRequest(
@@ -5983,16 +6010,17 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
         }
 
         if (hitGround)
-            F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f);
+            F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z,
+                            1.0f);
         else
-            F4SoundFXSetPos(SFX_BOOMA1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f);
+            F4SoundFXSetPos(SFX_BOOMA1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z,
+                            1.0f);
     }
     else if (hitGround)
     {
         pos.z = OTWDriver.GetGroundLevel(pos.x, pos.y) - 10.0f;
 
-        if ((groundType == COVERAGE_WATER or
-             groundType == COVERAGE_RIVER) and 
+        if ((groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER) and
             type not_eq SFX_FLARE_GFX)
         {
             F4SoundFXSetPos(SFX_SPLASH, TRUE, pos.x, pos.y, pos.z, 1.0f);
@@ -6010,21 +6038,21 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
             {
                 switch (PRANDInt5())
                 {
-                    case 0:
-                        /*
+                case 0:
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_GROUND_STRIKE_NOFIRE, // type
                          &pos, // world pos
                          1.5f, // time to live
                          15.0f ) ); // scale
                          */
-                        break;
+                    break;
 
-                    case 1:
-                        vec.x = 0.0f;
-                        vec.y = 0.0f;
-                        vec.z = -50.0f;
-                        /*
+                case 1:
+                    vec.x = 0.0f;
+                    vec.y = 0.0f;
+                    vec.z = -50.0f;
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_FIRE4, // type
                          SFX_MOVES bitor SFX_USES_GRAVITY bitor SFX_NO_DOWN_VECTOR,
@@ -6033,39 +6061,41 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
                          1.5, // time to live
                          20.25f ) ); // scale
                          */
-                        break;
+                    break;
 
-                    case 2:
-                        /*
+                case 2:
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass(SFX_SMALL_HIT_EXPLOSION, // type
                          &pos, // world pos
                          1.5f, // time to live
                          15.0f) ); // scale
                          */
-                        F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f);
-                        break;
+                    F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x,
+                                    pos.y, pos.z, 1.0f);
+                    break;
 
-                    case 3:
-                        /*
+                case 3:
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_GROUND_FLASH, // type
                          &pos, // world pos
                          2.2f, // time to live
                          75.4f ) ); // scale
                          */
-                        break;
+                    break;
 
-                    case 4:
-                        /*
+                case 4:
+                    /*
                         OTWDriver.AddSfxRequest(
                          new SfxClass( SFX_AAA_EXPLOSION, // type
                          &pos, // world pos
                          1.5f, // time to live
                          15.0f ) ); // scale
                          */
-                        F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x, pos.y, pos.z, 1.0f);
-                        break;
+                    F4SoundFXSetPos(SFX_BOOMG1 + PRANDInt5(), TRUE, pos.x,
+                                    pos.y, pos.z, 1.0f);
+                    break;
                 }
             }
             else if (type == SFX_GUN_TRACER)
@@ -6136,10 +6166,8 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
     // all trails get timed out
     if (objTrail and type not_eq SFX_TIMER)
     {
-        OTWDriver.AddSfxRequest(
-            new SfxClass(
-                30.0f, // time to live
-                objTrail)); // scale
+        OTWDriver.AddSfxRequest(new SfxClass(30.0f, // time to live
+                                             objTrail)); // scale
         objTrail = NULL;
     }
 }
@@ -6150,8 +6178,7 @@ SfxClass::RunSfxCompletion(BOOL hitGround, float, int groundType)
 ** Description:
 ** Reflects movement vector based on hit with the ground
 */
-void
-SfxClass::GroundReflection(void)
+void SfxClass::GroundReflection(void)
 {
     // NOTE: a big simplification is that we will assume the ground
     // normal is always pointing up ( 0, 0, -1 ).  The reflection vector
@@ -6172,8 +6199,7 @@ SfxClass::GroundReflection(void)
 ** And sets the timetolive
 ** ACMI Version
 */
-void
-SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
+void SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
 {
     inACMI = TRUE;
     viewPoint = acmiView;
@@ -6195,7 +6221,8 @@ SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
     // insert the effect's object into the display list
     if (obj2d)
     {
-        obj2d->SetStartTime((DWORD)(startTime * 1000), (DWORD)(currTime * 1000));
+        obj2d->SetStartTime((DWORD)(startTime * 1000),
+                            (DWORD)(currTime * 1000));
         viewPoint->InsertObject(obj2d);
     }
 
@@ -6226,7 +6253,6 @@ SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
     {
         viewPoint->InsertObject(baseObj->drawPointer);
     }
-
 }
 
 /*
@@ -6236,8 +6262,7 @@ SfxClass::ACMIStart(RViewPoint *acmiView, float startTime, float currTime)
 ** Returns FALSE when completed
 ** ACMI Version
 */
-BOOL
-SfxClass::ACMIExec(float currTime)
+BOOL SfxClass::ACMIExec(float currTime)
 {
     if (objParticleSys)
     {
@@ -6279,12 +6304,12 @@ SfxClass::ACMIExec(float currTime)
     }
 
     // check for hit with ground
-    if ((flags bitand SFX_MOVES) and not (flags bitand SFX_NO_GROUND_CHECK))
+    if ((flags bitand SFX_MOVES) and not(flags bitand SFX_NO_GROUND_CHECK))
     {
         // 1st get approximation
         groundZ = OTWDriver.GetApproxGroundLevel(pos.x, pos.y);
 
-        if (pos.z - groundZ  > -100.0f)
+        if (pos.z - groundZ > -100.0f)
         {
             groundZ = OTWDriver.GetGroundLevel(pos.x, pos.y);
 
@@ -6317,11 +6342,10 @@ SfxClass::ACMIExec(float currTime)
         // probably will need to remove from draw list here ...
         // done with this effect
         return FALSE;
-
     }
 
     // do we need to move it?
-    if ( not (flags bitand SFX_MOVES) or (flags bitand SFX_TIMER_FLAG))
+    if (not(flags bitand SFX_MOVES) or (flags bitand SFX_TIMER_FLAG))
         return TRUE;
 
     newvec = vec;
@@ -6400,16 +6424,14 @@ SfxClass::ACMIExec(float currTime)
         }
         else
         {
-            baseObj->SetYPR(
-                baseObj->Yaw() + baseObj->YawDelta() * dT,
-                baseObj->Pitch() + baseObj->PitchDelta() * dT,
-                baseObj->Roll() + baseObj->RollDelta() * dT
-            );
+            baseObj->SetYPR(baseObj->Yaw() + baseObj->YawDelta() * dT,
+                            baseObj->Pitch() + baseObj->PitchDelta() * dT,
+                            baseObj->Roll() + baseObj->RollDelta() * dT);
         }
 
         CalcTransformMatrix(baseObj.get());
         OTWDriver.ObjectSetData(baseObj.get(), &newpos, &rot);
-        ((DrawableBSP*)(baseObj->drawPointer))->Update(&newpos, &rot);
+        ((DrawableBSP *)(baseObj->drawPointer))->Update(&newpos, &rot);
     }
 
     // for drawable trails
@@ -6429,7 +6451,7 @@ SfxClass::ACMIExec(float currTime)
         if (type == SFX_GUN_TRACER)
         {
             mpos.x = newpos.x - (newvec.x * sfxFrameTime * 0.2f);
-            mpos.y = newpos.y - (newvec.y * sfxFrameTime * 0.2f) ;
+            mpos.y = newpos.y - (newvec.y * sfxFrameTime * 0.2f);
             mpos.z = newpos.z - (newvec.z * sfxFrameTime * 0.2f);
         }
         else
@@ -6452,8 +6474,7 @@ SfxClass::ACMIExec(float currTime)
 ** Sets detail level for special effects.
 ** static class function
 */
-void
-SfxClass::SetLOD(float objDetail)
+void SfxClass::SetLOD(float objDetail)
 {
     // objDetail is based on PlayerOptions.SfxLevel
     // and has a value of 0.0 to 5.0.  We want to normalize this to
@@ -6481,8 +6502,7 @@ SfxClass::SetLOD(float objDetail)
 ** Name: StartRandomDebris
 ** Description:
 */
-void
-SfxClass::StartRandomDebris(void)
+void SfxClass::StartRandomDebris(void)
 {
     Tpoint mvec, mpos;
     int i, numBursts;
@@ -6491,24 +6511,19 @@ SfxClass::StartRandomDebris(void)
     int numRunning;
     BOOL groundHit = FALSE;
 
-    numRunning = gSfxCount[ SFX_AC_DEBRIS ] +
-                 gSfxCount[ SFX_FLARE_GFX ] +
-                 gSfxCount[ SFX_DEBRISTRAIL ] +
-                 gSfxCount[ SFX_FIRETRAIL ] +
-                 gSfxCount[ SFX_CAT_LAUNCH ];
+    numRunning = gSfxCount[SFX_AC_DEBRIS] + gSfxCount[SFX_FLARE_GFX] +
+                 gSfxCount[SFX_DEBRISTRAIL] + gSfxCount[SFX_FIRETRAIL] +
+                 gSfxCount[SFX_CAT_LAUNCH];
 
-    if (numRunning > gSfxLODCutoff * 3 or
-        gTotSfx >= gSfxLODTotCutoff)
+    if (numRunning > gSfxLODCutoff * 3 or gTotSfx >= gSfxLODTotCutoff)
         return;
 
     debrisScale = 3.0f;
     timetl = 0.5f + 2.0f * debrisScale / 10.0f;
     mpos = pos;
 
-    if (type == SFX_WATER_EXPLOSION or
-        type == SFX_GROUND_STRIKE or
-        type == SFX_WATER_STRIKE or
-        type == SFX_ARTILLERY_EXPLOSION or
+    if (type == SFX_WATER_EXPLOSION or type == SFX_GROUND_STRIKE or
+        type == SFX_WATER_STRIKE or type == SFX_ARTILLERY_EXPLOSION or
         type == SFX_GROUND_EXPLOSION)
     {
         debrisScale = min(7.0f, scale * 0.1f);
@@ -6555,8 +6570,7 @@ SfxClass::StartRandomDebris(void)
             mvec.z = 90.0f * PRANDFloat();
         }
 
-        if (type == SFX_WATER_EXPLOSION or
-            type == SFX_WATER_STRIKE)
+        if (type == SFX_WATER_EXPLOSION or type == SFX_WATER_STRIKE)
         {
             /*
             OTWDriver.AddSfxRequest(
@@ -6571,7 +6585,8 @@ SfxClass::StartRandomDebris(void)
         else if (type == SFX_SPARKS)
         {
             if ((rand() bitand 1) or groundHit)
-            {}
+            {
+            }
             /*
             OTWDriver.AddSfxRequest(
              new SfxClass( SFX_AC_DEBRIS, // type
@@ -6582,7 +6597,8 @@ SfxClass::StartRandomDebris(void)
              debrisScale ) ); // scale
              */
             else
-            {}
+            {
+            }
 
             /*
              OTWDriver.AddSfxRequest(

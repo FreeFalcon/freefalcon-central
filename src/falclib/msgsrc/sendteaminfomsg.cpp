@@ -6,7 +6,7 @@
  */
 //sfr: took it out, not used!!
 /*
-#include "MsgInc/SendTeamInfoMsg.h"
+#include "msginc/sendteaminfomsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -14,7 +14,7 @@
 #include "falcsess.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
 

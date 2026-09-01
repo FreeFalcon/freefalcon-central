@@ -69,15 +69,19 @@ void main(int argc, char *argv[])
     if (argc < 2)
     {
         puts("\nMapTool v1.0 by Erick Jap\n");
-        puts("Usage: MapTool mapfile -d width height -w width height [-t tileno] [-s setno]");
+        puts("Usage: MapTool mapfile -d width height -w width height [-t "
+             "tileno] [-s setno]");
         puts("where: mapfile is map file data to be used");
         puts("       -d width height indicate map dimension");
         puts("       -w width height indicate sliding window dimension");
         puts("       -t tileno --> return area with >= than tileno tiles");
         puts("       -s setno  --> return area with >= than setno sets\n");
-        puts("Note: - Sliding window dimension must be less than the data dimension");
-        puts("      - if tileno is 0, calculate coordinate of area with max number of tiles");
-        puts("      - if setno is 0, calculate coordinate of area with max number of sets\n");
+        puts("Note: - Sliding window dimension must be less than the data "
+             "dimension");
+        puts("      - if tileno is 0, calculate coordinate of area with max "
+             "number of tiles");
+        puts("      - if setno is 0, calculate coordinate of area with max "
+             "number of sets\n");
         exit(1);
     }
 
@@ -106,15 +110,19 @@ void main(int argc, char *argv[])
             {
                 maxtileno = atoi(argv[++i]);
 
-                if (maxtileno) flag |= HAS_MAX_TILE;
-                else flag |= CALCULATE_COORD_TILE;
+                if (maxtileno)
+                    flag |= HAS_MAX_TILE;
+                else
+                    flag |= CALCULATE_COORD_TILE;
             }
             else if (argv[i][1] == 's' || argv[i][1] == 'S')
             {
                 maxsetno = atoi(argv[++i]);
 
-                if (maxsetno) flag |= HAS_MAX_SET;
-                else flag |= CALCULATE_COORD_SET;
+                if (maxsetno)
+                    flag |= HAS_MAX_SET;
+                else
+                    flag |= CALCULATE_COORD_SET;
             }
         }
     }
@@ -150,7 +158,7 @@ void main(int argc, char *argv[])
     }
 
     i = datawidth * dataheight * 2;
-    databuffer = (unsigned short *) malloc(i);
+    databuffer = (unsigned short *)malloc(i);
 
     if (!databuffer)
     {
@@ -167,7 +175,7 @@ void main(int argc, char *argv[])
         exit(1);
     }
 
-    read(infile, (char *) databuffer, i);
+    read(infile, (char *)databuffer, i);
     close(infile);
 
     unsigned short *buff;
@@ -210,14 +218,17 @@ void main(int argc, char *argv[])
 
                 if (j < (numwidth - 1))
                 {
-                    curtile = InsertTileColElement(HashCol, curtile, &(buff[j + windowwidth]));
-                    curtile = DeleteTileColElement(HashCol, curtile, &(buff[j]));
+                    curtile = InsertTileColElement(HashCol, curtile,
+                                                   &(buff[j + windowwidth]));
+                    curtile =
+                        DeleteTileColElement(HashCol, curtile, &(buff[j]));
                 }
             }
 
             if (i < (numheight - 1))
             {
-                totaltile = InsertTileRowElement(HashRow, totaltile, buff + datawidth * windowheight);
+                totaltile = InsertTileRowElement(
+                    HashRow, totaltile, buff + datawidth * windowheight);
                 totaltile = DeleteTileRowElement(HashRow, totaltile, buff);
                 buff += datawidth;
             }
@@ -226,7 +237,8 @@ void main(int argc, char *argv[])
         }
 
         if (flag & CALCULATE_COORD_TILE)
-            printf("MaxTile (%d) Coordinate %d %d\n", maxtile, savetrow, savetcol);
+            printf("MaxTile (%d) Coordinate %d %d\n", maxtile, savetrow,
+                   savetcol);
 
         DeleteHashTable(HashRow);
     }
@@ -267,14 +279,16 @@ void main(int argc, char *argv[])
 
                 if (j < (numwidth - 1))
                 {
-                    curset = InsertSetColElement(HashCol, curset, &(buff[j + windowwidth]));
+                    curset = InsertSetColElement(HashCol, curset,
+                                                 &(buff[j + windowwidth]));
                     curset = DeleteSetColElement(HashCol, curset, &(buff[j]));
                 }
             }
 
             if (i < (numheight - 1))
             {
-                totalset = InsertSetRowElement(HashRow, totalset, buff + datawidth * windowheight);
+                totalset = InsertSetRowElement(HashRow, totalset,
+                                               buff + datawidth * windowheight);
                 totalset = DeleteSetRowElement(HashRow, totalset, buff);
                 buff += datawidth;
             }
@@ -283,7 +297,8 @@ void main(int argc, char *argv[])
         }
 
         if (flag & CALCULATE_COORD_SET)
-            printf("MaxSet (%d) Coordinate %d %d\n", maxset, savesrow, savescol);
+            printf("MaxSet (%d) Coordinate %d %d\n", maxset, savesrow,
+                   savescol);
 
         DeleteHashTable(HashRow);
     }
@@ -301,7 +316,7 @@ int CreateTileListElement(ElementList **list)
     {
         for (j = 0; j < windowwidth; j++)
         {
-            counter += InsertElement(list, (unsigned int) buff[j]);
+            counter += InsertElement(list, (unsigned int)buff[j]);
         }
 
         buff += datawidth;
@@ -316,7 +331,7 @@ int InsertTileRowElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowwidth; i++)
     {
-        counter += InsertElement(list, (unsigned int) buff[i]);
+        counter += InsertElement(list, (unsigned int)buff[i]);
     }
 
     return counter;
@@ -328,7 +343,7 @@ int DeleteTileRowElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowwidth; i++)
     {
-        counter -= DeleteElement(list, (unsigned int) buff[i]);
+        counter -= DeleteElement(list, (unsigned int)buff[i]);
     }
 
     return counter;
@@ -340,7 +355,7 @@ int InsertTileColElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowheight; i++)
     {
-        counter += InsertElement(list, (unsigned int) * buff);
+        counter += InsertElement(list, (unsigned int)*buff);
         buff += datawidth;
     }
 
@@ -353,7 +368,7 @@ int DeleteTileColElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowheight; i++)
     {
-        counter -= DeleteElement(list, (unsigned int) * buff);
+        counter -= DeleteElement(list, (unsigned int)*buff);
         buff += datawidth;
     }
 
@@ -370,7 +385,7 @@ int CreateSetListElement(ElementList **list)
     {
         for (j = 0; j < windowwidth; j++)
         {
-            counter += InsertElement(list, ((unsigned int) buff[j]) >> 4);
+            counter += InsertElement(list, ((unsigned int)buff[j]) >> 4);
         }
 
         buff += datawidth;
@@ -385,7 +400,7 @@ int InsertSetRowElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowwidth; i++)
     {
-        counter += InsertElement(list, ((unsigned int) buff[i]) >> 4);
+        counter += InsertElement(list, ((unsigned int)buff[i]) >> 4);
     }
 
     return counter;
@@ -397,7 +412,7 @@ int DeleteSetRowElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowwidth; i++)
     {
-        counter -= DeleteElement(list, ((unsigned int) buff[i]) >> 4);
+        counter -= DeleteElement(list, ((unsigned int)buff[i]) >> 4);
     }
 
     return counter;
@@ -409,7 +424,7 @@ int InsertSetColElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowheight; i++)
     {
-        counter += InsertElement(list, ((unsigned int) * buff) >> 4);
+        counter += InsertElement(list, ((unsigned int)*buff) >> 4);
         buff += datawidth;
     }
 
@@ -422,7 +437,7 @@ int DeleteSetColElement(ElementList **list, int counter, unsigned short *buff)
 
     for (i = 0; i < windowheight; i++)
     {
-        counter -= DeleteElement(list, ((unsigned int) * buff) >> 4);
+        counter -= DeleteElement(list, ((unsigned int)*buff) >> 4);
         buff += datawidth;
     }
 
@@ -440,7 +455,7 @@ void DeleteHashTable(ElementList **hash)
         while (listElement)
         {
             ElementList *curList = listElement;
-            listElement = listElement -> next;
+            listElement = listElement->next;
             free(curList);
         }
     }
@@ -454,7 +469,8 @@ void DuplicateHashTable(ElementList **hash, ElementList **duphash)
     {
         duphash[i] = 0;
 
-        if (hash[i]) DuplicateListElement(&(hash[i]), &(duphash[i]));
+        if (hash[i])
+            DuplicateListElement(&(hash[i]), &(duphash[i]));
     }
 }
 
@@ -465,7 +481,7 @@ void DuplicateListElement(ElementList **list, ElementList **duplist)
 
     while (listElement)
     {
-        ElementList *newList = (ElementList *) malloc(sizeof(ElementList));
+        ElementList *newList = (ElementList *)malloc(sizeof(ElementList));
 
         if (!newList)
         {
@@ -473,16 +489,18 @@ void DuplicateListElement(ElementList **list, ElementList **duplist)
             exit(1);
         }
 
-        newList -> element = listElement -> element;
-        newList -> counter = listElement -> counter;
-        newList -> next = 0;
-        newList -> previous = curElement;
+        newList->element = listElement->element;
+        newList->counter = listElement->counter;
+        newList->next = 0;
+        newList->previous = curElement;
 
-        if (curElement) curElement -> next = newList;
-        else *duplist = newList;
+        if (curElement)
+            curElement->next = newList;
+        else
+            *duplist = newList;
 
         curElement = newList;
-        listElement = listElement -> next;
+        listElement = listElement->next;
     }
 }
 
@@ -490,7 +508,8 @@ inline int GetHashIndex(int element)
 {
     int hashindex = element >> HASH_ELEMENT_SIZE;
 
-    if (hashindex >= HASH_MAX_SIZE) hashindex = HASH_MAX_SIZE - 1;
+    if (hashindex >= HASH_MAX_SIZE)
+        hashindex = HASH_MAX_SIZE - 1;
 
     return hashindex;
 }
@@ -504,18 +523,19 @@ int InsertElement(ElementList **list, int element)
 
     while (listElement)
     {
-        if (listElement -> element == element)
+        if (listElement->element == element)
         {
-            listElement -> counter++;
+            listElement->counter++;
             return 0;
         }
-        else if (listElement -> element > element) break;
+        else if (listElement->element > element)
+            break;
 
         prevElement = listElement;
-        listElement = listElement -> next;
+        listElement = listElement->next;
     }
 
-    ElementList *newElement = (ElementList *) malloc(sizeof(ElementList));
+    ElementList *newElement = (ElementList *)malloc(sizeof(ElementList));
 
     if (!newElement)
     {
@@ -523,31 +543,33 @@ int InsertElement(ElementList **list, int element)
         exit(1);
     }
 
-    newElement -> element = element;
-    newElement -> counter = 1;
-    newElement -> previous = 0;
-    newElement -> next = 0;
+    newElement->element = element;
+    newElement->counter = 1;
+    newElement->previous = 0;
+    newElement->next = 0;
 
     if (listElement)
     {
         if (prevElement)
         {
-            newElement -> previous = prevElement;
-            prevElement -> next = newElement;
+            newElement->previous = prevElement;
+            prevElement->next = newElement;
         }
-        else list[hashindex] = newElement;
+        else
+            list[hashindex] = newElement;
 
-        listElement -> previous = newElement;
-        newElement -> next = listElement;
+        listElement->previous = newElement;
+        newElement->next = listElement;
     }
     else
     {
         if (prevElement)
         {
-            prevElement -> next = newElement;
-            newElement -> previous = prevElement;
+            prevElement->next = newElement;
+            newElement->previous = prevElement;
         }
-        else list[hashindex] = newElement;
+        else
+            list[hashindex] = newElement;
     }
 
     return 1;
@@ -561,25 +583,27 @@ int DeleteElement(ElementList **list, int element)
 
     while (listElement)
     {
-        if (listElement -> element == element)
+        if (listElement->element == element)
         {
-            listElement -> counter--;
+            listElement->counter--;
 
-            if (listElement -> counter) return 0;
+            if (listElement->counter)
+                return 0;
             else
             {
-                if (listElement -> previous)
+                if (listElement->previous)
                 {
-                    listElement -> previous -> next = listElement -> next;
+                    listElement->previous->next = listElement->next;
 
-                    if (listElement -> next)
-                        listElement -> next -> previous = listElement -> previous;
+                    if (listElement->next)
+                        listElement->next->previous = listElement->previous;
                 }
                 else
                 {
-                    list[hashindex] = listElement -> next;
+                    list[hashindex] = listElement->next;
 
-                    if (listElement -> next) listElement -> next -> previous = 0;
+                    if (listElement->next)
+                        listElement->next->previous = 0;
                 }
 
                 free(listElement);
@@ -587,11 +611,10 @@ int DeleteElement(ElementList **list, int element)
             }
         }
 
-        listElement = listElement -> next;
+        listElement = listElement->next;
     }
 
     puts("Unable to remove the element from the list");
     exit(1);
     return 0;
 }
-

@@ -7,11 +7,11 @@
 #include "radar.h"
 #include "campwp.h"
 #include "laserpod.h"
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "camp2sim.h"
 #include "simdrive.h"
 #include "playerop.h"
-#include "flightData.h"
+#include "flightdata.h"
 /* S.G. FOR HAVING GROUND TARGET FROM DIGITALS */ #include "digi.h"
 //MI
 #include "aircrft.h"
@@ -24,7 +24,7 @@
 #include "airframe.h"
 
 static const float rangeFOV = (float)tan(1.0F * DTR);
-static const float LASER_SLEW_RATE  = 0.05F;
+static const float LASER_SLEW_RATE = 0.05F;
 extern float g_fCursorSpeed;
 
 extern SensorClass* FindLaserPod(SimMoverClass* theObject);
@@ -40,19 +40,22 @@ void FireControlComputer::TargetingPodMode(void)
     float tmpX, tmpY, tmpZ;
     int isLimited = FALSE;
     WayPointClass* curWaypoint = platform->curWaypoint;
-    LaserPodClass* targetingPod = (LaserPodClass*) FindLaserPod(platform);
-    SimObjectType *curTarget = targetPtr;
+    LaserPodClass* targetingPod = (LaserPodClass*)FindLaserPod(platform);
+    SimObjectType* curTarget = targetPtr;
     mlTrig trig;
     int onGround = TRUE;
-    SimObjectType *systemTarget;
+    SimObjectType* systemTarget;
     float minDist;
 
-    if ( not targetingPod) return; // MLR 4/10/2004 - we're going to enable the TGP for non GBU types
+    if (not targetingPod)
+        return; // MLR 4/10/2004 - we're going to enable the TGP for non GBU types
 
-    if ( not targetingPod->IsOn()) return; // can't do anything if off
+    if (not targetingPod->IsOn())
+        return; // can't do anything if off
 
     // Get our platforms radar (if any)
-    RadarClass* theRadar = (RadarClass*) FindSensor(platform, SensorClass::Radar);
+    RadarClass* theRadar =
+        (RadarClass*)FindSensor(platform, SensorClass::Radar);
 
     if (theRadar)
         systemTarget = theRadar->CurrentTarget();
@@ -61,17 +64,18 @@ void FireControlComputer::TargetingPodMode(void)
 
     // 2001-11-01 ADDED BY M.N. IT MAY BE THAT theRadar HAS LOST THE TARGET, BUT OUR TARGETING POD
     // STILL HAS IT. SO SEE IF WE HAVE ONE LOCKED WITH THE POD
-    if ( not systemTarget and not F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
+    if (not systemTarget and
+        not F4IsBadReadPtr(targetingPod, sizeof(targetingPod))) // M.N. CTD fix
     {
         systemTarget = targetingPod->CurrentTarget();
-
     }
 
 
-
     // Is the currently aimed target dead or exploding ? If so, delete the pod targetpointer
-    if (systemTarget and (systemTarget->BaseData()->IsDead() or systemTarget->BaseData()->IsExploding())
-       and not F4IsBadWritePtr(targetingPod, sizeof(targetingPod)))  // CTD fix
+    if (systemTarget and
+        (systemTarget->BaseData()->IsDead() or
+         systemTarget->BaseData()->IsExploding()) and
+        not F4IsBadWritePtr(targetingPod, sizeof(targetingPod))) // CTD fix
     {
         systemTarget = NULL;
         targetingPod->SetDesiredTarget(NULL);
@@ -108,8 +112,12 @@ void FireControlComputer::TargetingPodMode(void)
         // 2001-04-16 MODIFIED BY S.G. CombatAP GETS TO USE THIS STUFF AS WELL.
         //    if  (playerFCC and (PlayerOptions.GetAvionicsType() not_eq ATRealistic) and (subMode == SLAVE))
         // M.N. added full realism mode
-        if ((playerFCC and (PlayerOptions.GetAvionicsType() not_eq ATRealistic and PlayerOptions.GetAvionicsType() not_eq ATRealisticAV)
-            and (subMode == SLAVE)) or ((AircraftClass *)platform)->AutopilotType() == AircraftClass::CombatAP)
+        if ((playerFCC and
+             (PlayerOptions.GetAvionicsType() not_eq ATRealistic and
+              PlayerOptions.GetAvionicsType() not_eq ATRealisticAV) and
+             (subMode == SLAVE)) or
+            ((AircraftClass*)platform)->AutopilotType() ==
+                AircraftClass::CombatAP)
         {
             if (systemTarget and systemTarget->BaseData()->OnGround())
             {
@@ -130,27 +138,33 @@ void FireControlComputer::TargetingPodMode(void)
                 // Find the ground Point
                 ShiAssert(theRadar);
                 theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
-                groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
+                groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX,
+                                                            groundDesignateY);
             }
 
-            targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+            targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY,
+                                            groundDesignateZ);
 
             dx = groundDesignateX - platform->XPos();
             dy = groundDesignateY - platform->YPos();
             dz = groundDesignateZ - platform->ZPos();
 
-            rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-            ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-            rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+            rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy +
+                 platform->dmx[0][2] * dz;
+            ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy +
+                 platform->dmx[1][2] * dz;
+            rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy +
+                 platform->dmx[2][2] * dz;
 
-            yaw   = groundDesignateAz    = (float)atan2(ry, rx);
-            pitch = groundDesignateEl    = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+            yaw = groundDesignateAz = (float)atan2(ry, rx);
+            pitch = groundDesignateEl =
+                (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
             groundDesignateDroll = (float)atan2(ry, -rz);
             isLimited = targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
 
-            yaw   = (float)atan2(dy, dx);
+            yaw = (float)atan2(dy, dx);
             pitch = (float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1f));
-            roll  = platform->Roll();
+            roll = platform->Roll();
             targetingPod->SetYPR(yaw, pitch, roll);
             inRange = TRUE;
 
@@ -158,9 +172,11 @@ void FireControlComputer::TargetingPodMode(void)
             //  targetingPod->SetDesiredTarget(systemTarget);
             if (systemTarget)
             {
-                CalcRelGeom(platform, systemTarget, NULL, 1.0F / SimLibMajorFrameTime);
+                CalcRelGeom(platform, systemTarget, NULL,
+                            1.0F / SimLibMajorFrameTime);
 
-                if (targetingPod->CanSeeObject(systemTarget) and targetingPod->CanDetectObject(systemTarget))
+                if (targetingPod->CanSeeObject(systemTarget) and
+                    targetingPod->CanDetectObject(systemTarget))
                     targetingPod->SetDesiredTarget(systemTarget);
                 else
                     targetingPod->SetDesiredTarget(NULL);
@@ -185,12 +201,17 @@ void FireControlComputer::TargetingPodMode(void)
         {
             switch (masterMode)
             {
-                case Missile:
-                case Dogfight:
-                case MissileOverride:
-                    /* MLR - very early stages of implementing AA TGP mode */
+            case Missile:
+            case Dogfight:
+            case MissileOverride:
+                /* MLR - very early stages of implementing AA TGP mode */
                 {
-                    enum AATGPMode { OWNTGT, FCRLOS, BORESIGHT };
+                    enum AATGPMode
+                    {
+                        OWNTGT,
+                        FCRLOS,
+                        BORESIGHT
+                    };
 
                     AATGPMode tgpmode = BORESIGHT;
 
@@ -215,36 +236,45 @@ void FireControlComputer::TargetingPodMode(void)
 
                     switch (tgpmode)
                     {
-                        case FCRLOS:
-                        {
-                            float x, y, z;
-                            x = systemTarget->BaseData()->XPos();
-                            y = systemTarget->BaseData()->YPos();
-                            z = systemTarget->BaseData()->ZPos();
+                    case FCRLOS:
+                    {
+                        float x, y, z;
+                        x = systemTarget->BaseData()->XPos();
+                        y = systemTarget->BaseData()->YPos();
+                        z = systemTarget->BaseData()->ZPos();
 
-                            float dx, dy, dz, rx, ry, rz, yaw, pitch, roll;
+                        float dx, dy, dz, rx, ry, rz, yaw, pitch, roll;
 
-                            dx = x - platform->XPos();
-                            dy = y - platform->YPos();
-                            dz = z - platform->ZPos();
+                        dx = x - platform->XPos();
+                        dy = y - platform->YPos();
+                        dz = z - platform->ZPos();
 
-                            rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-                            ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-                            rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+                        rx = platform->dmx[0][0] * dx +
+                             platform->dmx[0][1] * dy +
+                             platform->dmx[0][2] * dz;
+                        ry = platform->dmx[1][0] * dx +
+                             platform->dmx[1][1] * dy +
+                             platform->dmx[1][2] * dz;
+                        rz = platform->dmx[2][0] * dx +
+                             platform->dmx[2][1] * dy +
+                             platform->dmx[2][2] * dz;
 
-                            yaw    = (float)atan2(ry, rx);
-                            pitch  = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
-                            roll   = (float)atan2(ry, -rz);
+                        yaw = (float)atan2(ry, rx);
+                        pitch = (float)atan(
+                            -rz / (float)sqrt(rx * rx + ry * ry + .1f));
+                        roll = (float)atan2(ry, -rz);
 
-                            isLimited = targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
+                        isLimited =
+                            targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
 
-                            yaw   = (float)atan2(dy, dx);
-                            pitch = (float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1f));
-                            roll  = platform->Roll();
+                        yaw = (float)atan2(dy, dx);
+                        pitch = (float)atan(
+                            -dz / (float)sqrt(dx * dx + dy * dy + .1f));
+                        roll = platform->Roll();
 
-                            targetingPod->SetYPR(yaw, pitch, roll);
+                        targetingPod->SetYPR(yaw, pitch, roll);
 
-                            /*
+                        /*
                             if(designateCmd)
                             {
                              if (targetingPod->CanSeeObject(systemTarget) and targetingPod->CanDetectObject(systemTarget))
@@ -253,45 +283,54 @@ void FireControlComputer::TargetingPodMode(void)
                              }
                             }
                             */
-                        }
-                        break;
+                    }
+                    break;
 
-                        case BORESIGHT:
-                        {
-                            /* When the TGP is not the SOI and the FCR is not tracking a target,
+                    case BORESIGHT:
+                    {
+                        /* When the TGP is not the SOI and the FCR is not tracking a target,
                             the TGP LOS is positioned to 0 degrees azimuth and 3 degrees elevation.
                              */
-                            float dx, dy, dz, rx, ry, rz, yaw, pitch, roll;
+                        float dx, dy, dz, rx, ry, rz, yaw, pitch, roll;
 
-                            // -3 degrees down
-                            dx = 0.998629f;
-                            dy = 0;
-                            dz = 0.052335f;
+                        // -3 degrees down
+                        dx = 0.998629f;
+                        dy = 0;
+                        dz = 0.052335f;
 
-                            rx = platform->dmx[0][0] * dx + platform->dmx[1][0] * dy + platform->dmx[2][0] * dz;
-                            ry = platform->dmx[0][1] * dx + platform->dmx[1][1] * dy + platform->dmx[2][1] * dz;
-                            rz = platform->dmx[0][2] * dx + platform->dmx[1][2] * dy + platform->dmx[2][2] * dz;
+                        rx = platform->dmx[0][0] * dx +
+                             platform->dmx[1][0] * dy +
+                             platform->dmx[2][0] * dz;
+                        ry = platform->dmx[0][1] * dx +
+                             platform->dmx[1][1] * dy +
+                             platform->dmx[2][1] * dz;
+                        rz = platform->dmx[0][2] * dx +
+                             platform->dmx[1][2] * dy +
+                             platform->dmx[2][2] * dz;
 
-                            yaw    = (float)atan2(ry, rx);
-                            pitch  = (float)atan2(-rz, (float)sqrt(rx * rx + ry * ry + .1f));
-                            //roll   = (float)atan2 (ry,-rz);
-                            roll = platform->Roll();
+                        yaw = (float)atan2(ry, rx);
+                        pitch = (float)atan2(
+                            -rz, (float)sqrt(rx * rx + ry * ry + .1f));
+                        //roll   = (float)atan2 (ry,-rz);
+                        roll = platform->Roll();
 
-                            MonoPrint("TGP r%.4f %.4f %.4f   ypr%.4f %.4f %.4f", rx, ry, rz, yaw * 180 / 3.14159, pitch * 180 / 3.14159, roll * 180 / 3.14159);
-                            targetingPod->SetYPR(yaw, pitch, roll);
-                        }
-                        break;
+                        MonoPrint("TGP r%.4f %.4f %.4f   ypr%.4f %.4f %.4f", rx,
+                                  ry, rz, yaw * 180 / 3.14159,
+                                  pitch * 180 / 3.14159, roll * 180 / 3.14159);
+                        targetingPod->SetYPR(yaw, pitch, roll);
+                    }
+                    break;
                     }
                 }
 
                 return;
 
-                case AirGroundLaser:
-                    break;
+            case AirGroundLaser:
+                break;
 
-                default:
-                    break;
-                    return;
+            default:
+                break;
+                return;
             }
 
             if (preDesignate) //not ground stabilized
@@ -306,39 +345,50 @@ void FireControlComputer::TargetingPodMode(void)
                     }
                     else if (theRadar and theRadar->IsAG())
                     {
-                        theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
-                        groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
+                        theRadar->GetAGCenter(&groundDesignateX,
+                                              &groundDesignateY);
+                        groundDesignateZ = OTWDriver.GetGroundLevel(
+                            groundDesignateX, groundDesignateY);
                     }
                     else if (curWaypoint)
                     {
-                        curWaypoint->GetLocation(&groundDesignateX, &groundDesignateY, &groundDesignateZ);
-                        groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
+                        curWaypoint->GetLocation(&groundDesignateX,
+                                                 &groundDesignateY,
+                                                 &groundDesignateZ);
+                        groundDesignateZ = OTWDriver.GetGroundLevel(
+                            groundDesignateX, groundDesignateY);
                     }
                     else
                     {
                         ShiWarning("Warning:  Junk data for slave mode");
                     }
 
-                    targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                    targetingPod->SetTargetPosition(
+                        groundDesignateX, groundDesignateY, groundDesignateZ);
 
                     dx = groundDesignateX - platform->XPos();
                     dy = groundDesignateY - platform->YPos();
                     dz = groundDesignateZ - platform->ZPos();
 
-                    rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-                    ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-                    rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+                    rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy +
+                         platform->dmx[0][2] * dz;
+                    ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy +
+                         platform->dmx[1][2] * dz;
+                    rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy +
+                         platform->dmx[2][2] * dz;
 
-                    groundDesignateAz    = (float)atan2(ry, rx);
-                    groundDesignateEl    = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+                    groundDesignateAz = (float)atan2(ry, rx);
+                    groundDesignateEl =
+                        (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
                     groundDesignateDroll = (float)atan2(ry, -rz);
                     yaw = groundDesignateAz;
                     pitch = groundDesignateEl;
                     isLimited = targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
 
-                    yaw   = (float)atan2(dy, dx);
-                    pitch = (float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1f));
-                    roll  = platform->Roll();
+                    yaw = (float)atan2(dy, dx);
+                    pitch =
+                        (float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1f));
+                    roll = platform->Roll();
 
                     targetingPod->SetYPR(yaw, pitch, roll);
                     inRange = FALSE;
@@ -348,24 +398,32 @@ void FireControlComputer::TargetingPodMode(void)
                         preDesignate = FALSE;
                         inRange = TRUE;
                         platform->SOIManager(SimVehicleClass::SOI_WEAPON);
-                        targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                        targetingPod->SetTargetPosition(groundDesignateX,
+                                                        groundDesignateY,
+                                                        groundDesignateZ);
                         //MI fix
                         targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
                     }
                 }
                 else
                 {
-                    yaw   = 0.0F;
+                    yaw = 0.0F;
                     pitch = 0.0F;
                     isLimited = targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
-                    yaw   = platform->Yaw();
+                    yaw = platform->Yaw();
                     pitch = platform->Pitch();
-                    roll  = platform->Roll();
+                    roll = platform->Roll();
                     mlSinCos(&trig, roll);
-                    groundDesignateAz = -cockpitFlightData.beta * DTR + cockpitFlightData.windOffset * platform->platformAngles.cosphi;
-                    groundDesignateEl = -cockpitFlightData.alpha * DTR + cockpitFlightData.windOffset * platform->platformAngles.sinphi;
-                    pitch += groundDesignateEl * trig.cos - groundDesignateAz * trig.sin;
-                    yaw += groundDesignateEl * trig.sin + groundDesignateAz * trig.cos;
+                    groundDesignateAz = -cockpitFlightData.beta * DTR +
+                                        cockpitFlightData.windOffset *
+                                            platform->platformAngles.cosphi;
+                    groundDesignateEl = -cockpitFlightData.alpha * DTR +
+                                        cockpitFlightData.windOffset *
+                                            platform->platformAngles.sinphi;
+                    pitch += groundDesignateEl * trig.cos -
+                             groundDesignateAz * trig.sin;
+                    yaw += groundDesignateEl * trig.sin +
+                           groundDesignateAz * trig.cos;
 
                     targetingPod->SetYPR(yaw, pitch, roll);
                     inRange = FALSE;
@@ -382,7 +440,9 @@ void FireControlComputer::TargetingPodMode(void)
                             preDesignate = FALSE;
                             inRange = TRUE;
                             platform->SOIManager(SimVehicleClass::SOI_WEAPON);
-                            targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                            targetingPod->SetTargetPosition(groundDesignateX,
+                                                            groundDesignateY,
+                                                            groundDesignateZ);
                         }
                     }
                     else
@@ -397,7 +457,8 @@ void FireControlComputer::TargetingPodMode(void)
 
                 if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
                 {
-                    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+                    if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and
+                        (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
                     {
                         yMove = (float)cursorYCmd / 10000.0F;
                         xMove = (float)cursorXCmd / 10000.0F;
@@ -409,10 +470,11 @@ void FireControlComputer::TargetingPodMode(void)
                     }
                 }
 
-                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) and not targetingPod->IsLocked())
+                if (((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0)) and
+                    not targetingPod->IsLocked())
                 {
                     if (g_bLgbFixes) // a.s. 26.Febr.2002. begin: New Code for slewing LGBs. With this code, not the angles are altered, but
-                        // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
+                    // directly the designated point. A non-orthogonal rotation of the co-ordinate system is necessary
                     {
 
                         float deltaX = 0.0F, deltaY = 0.0F;
@@ -427,21 +489,28 @@ void FireControlComputer::TargetingPodMode(void)
                         dy = groundDesignateY - platform->YPos();
                         dz = groundDesignateZ - platform->ZPos();
 
-                        groundrange = (float) sqrt(dx * dx + dy * dy + 0.01F);
-                        range = (float) sqrt(dx * dx + dy * dy + dz * dz + 0.01F);
+                        groundrange = (float)sqrt(dx * dx + dy * dy + 0.01F);
+                        range =
+                            (float)sqrt(dx * dx + dy * dy + dz * dz + 0.01F);
 
-                        theta = -(platform->Yaw());  // platform yaw  - rotation angle of y-axis
+                        theta = -(
+                            platform
+                                ->Yaw()); // platform yaw  - rotation angle of y-axis
 
-                        sensoryaw = -(float)atan2(dy, dx);  // sensor yaw
+                        sensoryaw = -(float)atan2(dy, dx); // sensor yaw
 
-                        phi =   pi / 2.0F + sensoryaw; // rotation angle of x-axis
-                        alpha = pi / 2.0F + ((float)atan(-dz / groundrange)); // (90� - sensor pitch)
+                        phi = pi / 2.0F + sensoryaw; // rotation angle of x-axis
+                        alpha = pi / 2.0F +
+                                ((float)atan(
+                                    -dz / groundrange)); // (90� - sensor pitch)
 
-                        costheta = (float) cos(theta);
-                        sintheta = (float) sin(theta);
-                        cosphi = (float) cos(phi);
-                        sinphi = (float) sin(phi);
-                        cosalpha = max((float) cos(alpha),  0.0001F);  // we need this for adjusting slew-rate
+                        costheta = (float)cos(theta);
+                        sintheta = (float)sin(theta);
+                        cosphi = (float)cos(phi);
+                        sinphi = (float)sin(phi);
+                        cosalpha = max(
+                            (float)cos(alpha),
+                            0.0001F); // we need this for adjusting slew-rate
 
                         if (targetingPod->CurFOV() < 3.5F * DTR)
                         {
@@ -450,14 +519,30 @@ void FireControlComputer::TargetingPodMode(void)
                             {
                                 if (targetingPod->IsSOI())
                                 {
-                                    deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
-                                    deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 21000 ft range
+                                    deltaX =
+                                        yMove * 50000.0F * dz /
+                                        (cosalpha * cosalpha) * (0.03F / 4000) *
+                                        g_fCursorSpeed *
+                                        (LASER_SLEW_RATE / 8.0F) *
+                                        SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
+                                    deltaY =
+                                        xMove * 12000.0F * range / 21000.0F *
+                                        g_fCursorSpeed *
+                                        (LASER_SLEW_RATE / 8.0F) *
+                                        SimLibMajorFrameTime; // calibrated for 21000 ft range
                                 }
                             }
                             else
                             {
-                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
-                                deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) * SimLibMajorFrameTime; // calibrated for 21000 ft range
+                                deltaX =
+                                    yMove * 50000.0F * dz /
+                                    (cosalpha * cosalpha) * (0.03F / 4000) *
+                                    g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) *
+                                    SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
+                                deltaY =
+                                    xMove * 12000.0F * range / 21000.0F *
+                                    g_fCursorSpeed * (LASER_SLEW_RATE / 8.0F) *
+                                    SimLibMajorFrameTime; // calibrated for 21000 ft range
                             }
                         }
                         else
@@ -467,20 +552,37 @@ void FireControlComputer::TargetingPodMode(void)
                             {
                                 if (targetingPod->IsSOI())
                                 {
-                                    deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * LASER_SLEW_RATE  * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03
-                                    deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * LASER_SLEW_RATE  * SimLibMajorFrameTime; // calibrated for 21000 ft range
+                                    deltaX =
+                                        yMove * 50000.0F * dz /
+                                        (cosalpha * cosalpha) * (0.03F / 4000) *
+                                        g_fCursorSpeed * LASER_SLEW_RATE *
+                                        SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03
+                                    deltaY =
+                                        xMove * 12000.0F * range / 21000.0F *
+                                        g_fCursorSpeed * LASER_SLEW_RATE *
+                                        SimLibMajorFrameTime; // calibrated for 21000 ft range
                                 }
                             }
                             else
                             {
 
-                                deltaX = yMove * 50000.0F * dz / (cosalpha * cosalpha) * (0.03F / 4000) * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
-                                deltaY = xMove * 12000.0F * range / 21000.0F * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime; // calibrated for 21000 ft range
+                                deltaX =
+                                    yMove * 50000.0F * dz /
+                                    (cosalpha * cosalpha) * (0.03F / 4000) *
+                                    g_fCursorSpeed * LASER_SLEW_RATE *
+                                    SimLibMajorFrameTime; // calibrated for 4000 ft high and 10� pitch, (cos^2 10) = 0.03; "dx = z/(cos^2 alpha)*dalpha"
+                                deltaY =
+                                    xMove * 12000.0F * range / 21000.0F *
+                                    g_fCursorSpeed * LASER_SLEW_RATE *
+                                    SimLibMajorFrameTime; // calibrated for 21000 ft range
                             }
                         }
 
 
-                        ry = (costheta * deltaY + cosphi * deltaX);    // non-orthogonal rotation of euklidian base
+                        ry =
+                            (costheta * deltaY +
+                             cosphi *
+                                 deltaX); // non-orthogonal rotation of euklidian base
                         rx = (sintheta * deltaY + sinphi * deltaX);
                         rz = 0.0F;
 
@@ -490,12 +592,13 @@ void FireControlComputer::TargetingPodMode(void)
                         //rz = 0.0F;
 
 
-                        groundDesignateX += rx;   // adjusting the designated point
+                        groundDesignateX +=
+                            rx; // adjusting the designated point
                         groundDesignateY += ry;
                         groundDesignateZ += 0.0F;
 
 
-                        if (range > 210000.0F)  // no more than 40 Miles
+                        if (range > 210000.0F) // no more than 40 Miles
                         {
                             preDesignate = TRUE;
                             groundPipperAz = 0.0F;
@@ -506,14 +609,15 @@ void FireControlComputer::TargetingPodMode(void)
                         }
                         else
                         {
-                            targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                            targetingPod->SetTargetPosition(groundDesignateX,
+                                                            groundDesignateY,
+                                                            groundDesignateZ);
                         }
 
                         targetingPod->SetDesiredTarget(NULL);
 
 
-
-                    }  // a.s. end new code
+                    } // a.s. end new code
                     else // old code
                     {
                         targetingPod->GetYPR(&yaw, &pitch, &roll);
@@ -525,14 +629,20 @@ void FireControlComputer::TargetingPodMode(void)
                             {
                                 if (targetingPod->IsSOI())
                                 {
-                                    pitch += yMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime;
-                                    yaw += xMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime;
+                                    pitch += yMove * g_fCursorSpeed *
+                                             LASER_SLEW_RATE *
+                                             SimLibMajorFrameTime;
+                                    yaw += xMove * g_fCursorSpeed *
+                                           LASER_SLEW_RATE *
+                                           SimLibMajorFrameTime;
                                 }
                             }
                             else
                             {
-                                pitch += yMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime;
-                                yaw += xMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime;
+                                pitch += yMove * g_fCursorSpeed *
+                                         LASER_SLEW_RATE * SimLibMajorFrameTime;
+                                yaw += xMove * g_fCursorSpeed *
+                                       LASER_SLEW_RATE * SimLibMajorFrameTime;
                             }
                         }
                         else
@@ -542,18 +652,27 @@ void FireControlComputer::TargetingPodMode(void)
                             {
                                 if (targetingPod->IsSOI())
                                 {
-                                    pitch += yMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime * 0.25F;
-                                    yaw += xMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime * 0.25F;
+                                    pitch += yMove * g_fCursorSpeed *
+                                             LASER_SLEW_RATE *
+                                             SimLibMajorFrameTime * 0.25F;
+                                    yaw += xMove * g_fCursorSpeed *
+                                           LASER_SLEW_RATE *
+                                           SimLibMajorFrameTime * 0.25F;
                                 }
                             }
                             else
                             {
-                                pitch += yMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime * 0.25F;
-                                yaw += xMove * g_fCursorSpeed * LASER_SLEW_RATE * SimLibMajorFrameTime * 0.25F;
+                                pitch += yMove * g_fCursorSpeed *
+                                         LASER_SLEW_RATE *
+                                         SimLibMajorFrameTime * 0.25F;
+                                yaw += xMove * g_fCursorSpeed *
+                                       LASER_SLEW_RATE * SimLibMajorFrameTime *
+                                       0.25F;
                             }
                         }
 
-                        if ( not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY, &tmpZ))
+                        if (not FindGroundIntersection(pitch, yaw, &tmpX, &tmpY,
+                                                       &tmpZ))
                         {
                             preDesignate = TRUE;
                             groundPipperAz = 0.0F;
@@ -569,16 +688,18 @@ void FireControlComputer::TargetingPodMode(void)
                             groundDesignateX = tmpX;
                             groundDesignateY = tmpY;
                             groundDesignateZ = tmpZ;
-                            targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                            targetingPod->SetTargetPosition(groundDesignateX,
+                                                            groundDesignateY,
+                                                            groundDesignateZ);
                         }
 
                         targetingPod->SetDesiredTarget(NULL);
                     } // end old code
-
                 }
 
 
-                targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                targetingPod->SetTargetPosition(
+                    groundDesignateX, groundDesignateY, groundDesignateZ);
                 inRange = TRUE;
 
                 dx = groundDesignateX - platform->XPos();
@@ -591,50 +712,64 @@ void FireControlComputer::TargetingPodMode(void)
 
                 targetingPod->SetYPR(yaw, pitch, roll);
 
-                rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-                ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-                rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+                rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy +
+                     platform->dmx[0][2] * dz;
+                ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy +
+                     platform->dmx[1][2] * dz;
+                rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy +
+                     platform->dmx[2][2] * dz;
 
-                groundDesignateAz    = (float)atan2(ry, rx);
-                groundDesignateEl    = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+                groundDesignateAz = (float)atan2(ry, rx);
+                groundDesignateEl =
+                    (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
                 groundDesignateDroll = (float)atan2(ry, -rz);
 
                 pitch = groundDesignateEl;
-                yaw   = groundDesignateAz;
+                yaw = groundDesignateAz;
                 isLimited = targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
             }
 
-            if ( not targetingPod->IsLocked())
+            if (not targetingPod->IsLocked())
             {
-                if ( not isLimited and onGround)
+                if (not isLimited and onGround)
                 {
                     // 2000-09-30 ADDED BY S.G. SO WE LOOK AT OUR CURRENTLY LOCKED GROUND RADAR TARGET IF WE DON'T ALREADY HAVE A curTarget
-                    if ( not curTarget and ((DigitalBrain *)platform->Brain())->GetGroundTarget())
+                    if (not curTarget and
+                        ((DigitalBrain*)platform->Brain())->GetGroundTarget())
                     {
-                        if (targetingPod->CanSeeObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()) and targetingPod->CanDetectObject(((DigitalBrain *)platform->Brain())->GetGroundTarget()))
-                            curTarget = ((DigitalBrain *)platform->Brain())->GetGroundTarget();
+                        if (targetingPod->CanSeeObject(
+                                ((DigitalBrain*)platform->Brain())
+                                    ->GetGroundTarget()) and
+                            targetingPod->CanDetectObject(
+                                ((DigitalBrain*)platform->Brain())
+                                    ->GetGroundTarget()))
+                            curTarget = ((DigitalBrain*)platform->Brain())
+                                            ->GetGroundTarget();
                     }
 
                     // Here we will redo our test for CanSeeObject and CanDetectObject. That's because I don't want
                     // to change the source code too much because of exe editing. In source, this will be another story
                     // END OF ADDED SECTION
-                    if ( not curTarget)
+                    if (not curTarget)
                         curTarget = targetList;
 
                     // 2000-10-04 ADDED BY S.G. DON'T DO THE TARGET LIST IF ARE IN GM MODE
                     //MI CTD Fix
-                    if ( not theRadar)
+                    if (not theRadar)
                         curTarget = NULL;
                     // 2002-04-12 MN Changed as we now also have ground units on GM radar when they are standing still
                     //    else if(theRadar->IsAG() == RadarClass::GM)
-                    else if ( not g_bAGRadarFixes and theRadar->IsAG() == RadarClass::GM)
+                    else if (not g_bAGRadarFixes and
+                             theRadar->IsAG() == RadarClass::GM)
                         curTarget = NULL;
 
                     // 2000-09-30 MODIFIED BY S.G. WHY ONLY LOOK ONE DEGREE?? WE CALL CanSeeObject ANYHOW
                     // 2000-10-05 WE'LL LIMIT THE PLAYER'S TARGETING POD TO ONE DEGREE SO IT DOESN'T WANDER TOO FAR OFF
                     //             minDist = 1.0F * DTR;
-                    if (playerFCC and SimDriver.GetPlayerAircraft() and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
-                        minDist = 0.2F * DTR;   // a.s. statt 1.0F 0.2F
+                    if (playerFCC and SimDriver.GetPlayerAircraft() and
+                        ((AircraftClass*)platform)->AutopilotType() not_eq
+                            AircraftClass::CombatAP)
+                        minDist = 0.2F * DTR; // a.s. statt 1.0F 0.2F
                     else
                         minDist = 10.0f; // Above 2*pi
 
@@ -642,16 +777,20 @@ void FireControlComputer::TargetingPodMode(void)
                     while (curTarget)
                     {
                         // 2000-10-04 MODIFIED BY S.G. DON'T TARGET AIR VEHICLE
-                        //                if (fabs(curTarget->localData->az - yaw) < minDist and 
-                        if (curTarget->BaseData()->OnGround() and fabs(curTarget->localData->az - yaw) < minDist and 
-                            fabs(curTarget->localData->el - pitch) < minDist and 
-                            curTarget->BaseData()->IsSim() and 
- not curTarget->BaseData()->IsWeapon())
+                        //                if (fabs(curTarget->localData->az - yaw) < minDist and
+                        if (curTarget->BaseData()->OnGround() and
+                            fabs(curTarget->localData->az - yaw) < minDist and
+                            fabs(curTarget->localData->el - pitch) < minDist and
+                            curTarget->BaseData()->IsSim() and
+                            not curTarget->BaseData()->IsWeapon())
                         {
-                            if (targetingPod->CanSeeObject(curTarget) and targetingPod->CanDetectObject(curTarget))
+                            if (targetingPod->CanSeeObject(curTarget) and
+                                targetingPod->CanDetectObject(curTarget))
                             {
                                 targetingPod->SetDesiredTarget(curTarget);
-                                minDist = (float)min(fabs(curTarget->localData->az - yaw), fabs(curTarget->localData->el - pitch));
+                                minDist = (float)min(
+                                    fabs(curTarget->localData->az - yaw),
+                                    fabs(curTarget->localData->el - pitch));
                             }
                         }
 
@@ -659,7 +798,7 @@ void FireControlComputer::TargetingPodMode(void)
                     }
 
                     // Check Features?
-                    if ( not targetingPod->CurrentTarget() and not isLimited)
+                    if (not targetingPod->CurrentTarget() and not isLimited)
                     {
                         CheckFeatures(targetingPod);
                         curTarget = targetingPod->CurrentTarget();
@@ -677,7 +816,8 @@ void FireControlComputer::TargetingPodMode(void)
                 SetTarget(targetingPod->CurrentTarget());
             }
 
-            if (targetingPod->CurrentTarget() and not preDesignate and designateCmd and not lastDesignate)
+            if (targetingPod->CurrentTarget() and not preDesignate and
+                designateCmd and not lastDesignate)
             {
                 targetingPod->LockTarget();
             }
@@ -698,7 +838,8 @@ void FireControlComputer::TargetingPodMode(void)
                     groundDesignateX = targetPtr->BaseData()->XPos();
                     groundDesignateY = targetPtr->BaseData()->YPos();
                     groundDesignateZ = targetPtr->BaseData()->ZPos();
-                    targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+                    targetingPod->SetTargetPosition(
+                        groundDesignateX, groundDesignateY, groundDesignateZ);
                 }
             }
             else
@@ -741,17 +882,20 @@ void FireControlComputer::TargetingPodMode(void)
         inRange = FALSE;
     }
 
-    if ( not releaseConsent)
+    if (not releaseConsent)
     {
         postDrop = FALSE;
     }
 
     //MI no Laser Above 25k ft
-    if (g_bRealisticAvionics and playerFCC and ((AircraftClass *)platform)->AutopilotType() not_eq AircraftClass::CombatAP)
+    if (g_bRealisticAvionics and playerFCC and
+        ((AircraftClass*)platform)->AutopilotType() not_eq
+            AircraftClass::CombatAP)
     {
         // RV - Biker - New systems (e.g. LANTIRN on F-14D) can do laser above 25k ft
         //if(platform->ZPos() > -25000.0F)
-        if (platform->ZPos() > -1.0f * ((AircraftClass *)Sms->Ownship())->af->GetMaxLasingAlt())
+        if (platform->ZPos() >
+            -1.0f * ((AircraftClass*)Sms->Ownship())->af->GetMaxLasingAlt())
         {
             //Firing the laser manually with the trigger
             if (ManualFire)
@@ -760,10 +904,12 @@ void FireControlComputer::TargetingPodMode(void)
                 LaserWasFired = TRUE;
             }
             //auto lasing, if check needed, not inhibited, and hasn't been fired manually between the drop
-            else if (CheckForLaserFire and not InhibitFire and not LaserWasFired)
+            else if (CheckForLaserFire and not InhibitFire and
+                     not LaserWasFired)
             {
                 //Get the time before impact at which we want to lase
-                if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp)
+                if (OTWDriver.pCockpitManager and
+                    OTWDriver.pCockpitManager->mpIcp)
                     time = OTWDriver.pCockpitManager->mpIcp->LaserTime;
                 else
                     time = 8;
@@ -787,7 +933,8 @@ void FireControlComputer::TargetingPodMode(void)
             {
                 Timer += SimLibMajorFrameTime;
 
-                if (Timer >= 4.5F) //lases 4 seconds after impact + 0.5 seconds from above
+                if (Timer >=
+                    4.5F) //lases 4 seconds after impact + 0.5 seconds from above
                 {
                     CheckForLaserFire = FALSE;
                     LaserFire = FALSE;
@@ -817,17 +964,20 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
     FalconEntity* testObject = NULL;
     FalconEntity* closestObj = NULL;
     SimObjectType* tmpTarget = NULL;
-    FeatureClassDataType *fc = NULL;
-    SimBaseClass *simTarg = NULL;
+    FeatureClassDataType* fc = NULL;
+    SimBaseClass* simTarg = NULL;
     float groundRange;
     float curMin, dx, dy;
 
-    if ( not targetPtr)
+    if (not targetPtr)
     {
         // Actually slant range
-        groundRange = (float)sqrt((groundDesignateX - platform->XPos()) * (groundDesignateX - platform->XPos()) +
-                                  (groundDesignateY - platform->YPos()) * (groundDesignateY - platform->YPos()) +
-                                  (groundDesignateZ - platform->ZPos()) * (groundDesignateZ - platform->ZPos()));
+        groundRange = (float)sqrt((groundDesignateX - platform->XPos()) *
+                                      (groundDesignateX - platform->XPos()) +
+                                  (groundDesignateY - platform->YPos()) *
+                                      (groundDesignateY - platform->YPos()) +
+                                  (groundDesignateZ - platform->ZPos()) *
+                                      (groundDesignateZ - platform->ZPos()));
         curMin = rangeFOV * groundRange;
 
         if (g_bRealisticAvionics)
@@ -848,7 +998,8 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 
                 // 2001-11-01 Added IsDead or
                 //IsExploding check by M.N. - we don't want to bomb something that is already destroyed
-                if ((CurRange < curMin) and not (testObject->IsDead() or testObject->IsExploding()))
+                if ((CurRange < curMin) and
+                    not(testObject->IsDead() or testObject->IsExploding()))
                 {
                     //simTarg = (SimBaseClass*)testObject;
                     //if (simTarg->IsStatic())
@@ -889,21 +1040,20 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
             tmpTarget->localData->az = groundDesignateAz;
             tmpTarget->localData->el = groundDesignateEl;
             tmpTarget->localData->droll = groundDesignateDroll =
-                                              (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
-            tmpTarget->localData->ata = (float)acos(cos(groundDesignateAz) * cos(groundDesignateEl));
+                (float)atan2(sin(groundDesignateAz), sin(groundDesignateEl));
+            tmpTarget->localData->ata =
+                (float)acos(cos(groundDesignateAz) * cos(groundDesignateEl));
 
-            tmpTarget->localData->range =
-                (float)sqrt(
-                    ((tmpTarget->BaseData()->XPos() - platform->XPos()) *
-                     (tmpTarget->BaseData()->XPos() - platform->XPos())) +
-                    ((tmpTarget->BaseData()->YPos() - platform->YPos()) *
-                     (tmpTarget->BaseData()->YPos() - platform->YPos())) +
-                    ((tmpTarget->BaseData()->ZPos() - platform->ZPos()) *
-                     (tmpTarget->BaseData()->ZPos() - platform->ZPos()))
-                )
-                ;
+            tmpTarget->localData->range = (float)sqrt(
+                ((tmpTarget->BaseData()->XPos() - platform->XPos()) *
+                 (tmpTarget->BaseData()->XPos() - platform->XPos())) +
+                ((tmpTarget->BaseData()->YPos() - platform->YPos()) *
+                 (tmpTarget->BaseData()->YPos() - platform->YPos())) +
+                ((tmpTarget->BaseData()->ZPos() - platform->ZPos()) *
+                 (tmpTarget->BaseData()->ZPos() - platform->ZPos())));
 
-            targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+            targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY,
+                                            groundDesignateZ);
             targetingPod->SetDesiredTarget(tmpTarget);
             tmpTarget->Release();
         }
@@ -917,7 +1067,7 @@ void FireControlComputer::CheckFeatures(LaserPodClass* targetingPod)
 //MI
 void FireControlComputer::ToggleLaserArm(void)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     if (playerAC and playerAC->Sms->MasterArm() not_eq SMSBaseClass::Arm)
         return;
@@ -930,8 +1080,9 @@ void FireControlComputer::RecalcPos(void)
     float dx, dy, dz;
     float rx, ry, rz;
 
-    LaserPodClass* targetingPod = (LaserPodClass*) FindLaserPod(platform);
-    RadarClass* theRadar = (RadarClass*) FindSensor(platform, SensorClass::Radar);
+    LaserPodClass* targetingPod = (LaserPodClass*)FindLaserPod(platform);
+    RadarClass* theRadar =
+        (RadarClass*)FindSensor(platform, SensorClass::Radar);
     WayPointClass* curWaypoint = platform->curWaypoint;
 
     if (targetingPod)
@@ -939,38 +1090,46 @@ void FireControlComputer::RecalcPos(void)
         if (theRadar and theRadar->IsAG())
         {
             theRadar->GetAGCenter(&groundDesignateX, &groundDesignateY);
-            groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
+            groundDesignateZ =
+                OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
         }
         else if (curWaypoint)
         {
-            curWaypoint->GetLocation(&groundDesignateX, &groundDesignateY, &groundDesignateZ);
-            groundDesignateZ = OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
+            curWaypoint->GetLocation(&groundDesignateX, &groundDesignateY,
+                                     &groundDesignateZ);
+            groundDesignateZ =
+                OTWDriver.GetGroundLevel(groundDesignateX, groundDesignateY);
         }
         else
         {
             ShiWarning("Warning:  Junk data for slave mode");
         }
 
-        targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY, groundDesignateZ);
+        targetingPod->SetTargetPosition(groundDesignateX, groundDesignateY,
+                                        groundDesignateZ);
 
         dx = groundDesignateX - platform->XPos();
         dy = groundDesignateY - platform->YPos();
         dz = groundDesignateZ - platform->ZPos();
 
-        rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy + platform->dmx[0][2] * dz;
-        ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy + platform->dmx[1][2] * dz;
-        rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy + platform->dmx[2][2] * dz;
+        rx = platform->dmx[0][0] * dx + platform->dmx[0][1] * dy +
+             platform->dmx[0][2] * dz;
+        ry = platform->dmx[1][0] * dx + platform->dmx[1][1] * dy +
+             platform->dmx[1][2] * dz;
+        rz = platform->dmx[2][0] * dx + platform->dmx[2][1] * dy +
+             platform->dmx[2][2] * dz;
 
-        groundDesignateAz    = (float)atan2(ry, rx);
-        groundDesignateEl    = (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
+        groundDesignateAz = (float)atan2(ry, rx);
+        groundDesignateEl =
+            (float)atan(-rz / (float)sqrt(rx * rx + ry * ry + .1f));
         groundDesignateDroll = (float)atan2(ry, -rz);
         yaw = groundDesignateAz;
         pitch = groundDesignateEl;
         targetingPod->SetDesiredSeekerPos(&yaw, &pitch);
 
-        yaw   = (float)atan2(dy, dx);
+        yaw = (float)atan2(dy, dx);
         pitch = (float)atan(-dz / (float)sqrt(dx * dx + dy * dy + .1f));
-        roll  = platform->Roll();
+        roll = platform->Roll();
         targetingPod->SetYPR(yaw, pitch, roll);
     }
 }

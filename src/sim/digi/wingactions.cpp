@@ -2,11 +2,11 @@
 #include "digi.h"
 #include "mesg.h"
 #include "simveh.h"
-#include "MsgInc/WingmanMsg.h"
+#include "msginc/wingmanmsg.h"
 #include "find.h"
 #include "flight.h"
 #include "camp2sim.h"
-#include "Aircrft.h"
+#include "aircrft.h"
 #include "object.h"
 #include "airframe.h"
 #include "classtbl.h"
@@ -14,17 +14,18 @@
 #include "msginc/wingmanmsg.h"
 #include "wingorder.h"
 #include "otwdrive.h"
-/* S.G. 2001-07-30 FOR SimDriver */ #include "Simdrive.h"
-/* S.G. 2001-07-30 FOR SimDriver */ #include "FCC.h"
+/* S.G. 2001-07-30 FOR SimDriver */ #include "simdrive.h"
+/* S.G. 2001-07-30 FOR SimDriver */ #include "fcc.h"
 #include "radar.h" // 2002-02-10 S.G.
 #include "campbase.h" // 2002-02-10 S.G.
 #define MANEUVER_DEBUG // MNLOOK
 #ifdef MANEUVER_DEBUG
-#include "Graphics/include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 extern int g_nShowDebugLabels;
 extern float g_fAIMinAlt;
 #endif
-FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity *byHim = NULL, int *data = NULL); // 2002-02-10 S.G.
+FalconEntity* SpikeCheck(AircraftClass* self, FalconEntity* byHim = NULL,
+                         int* data = NULL); // 2002-02-10 S.G.
 
 // ----------------------------------------------------
 // DigitalBrain::AiPerformManeuver
@@ -40,57 +41,59 @@ void DigitalBrain::AiPerformManeuver(void)
     switch (mCurrentManeuver)
     {
 
-        case FalconWingmanMsg::WMBreakRight:
-        case FalconWingmanMsg::WMBreakLeft:
-            AiExecBreakRL();
+    case FalconWingmanMsg::WMBreakRight:
+    case FalconWingmanMsg::WMBreakLeft:
+        AiExecBreakRL();
 #ifdef MANEUVER_DEBUG
-            sprintf(tmpchr, "%s", "AiExecBreakRL");
+        sprintf(tmpchr, "%s", "AiExecBreakRL");
 #endif
-            break;
+        break;
 
-        case FalconWingmanMsg::WMPince:
-            AiExecPince();
+    case FalconWingmanMsg::WMPince:
+        AiExecPince();
 #ifdef MANEUVER_DEBUG
-            sprintf(tmpchr, "%s", "AiExecPince");
+        sprintf(tmpchr, "%s", "AiExecPince");
 #endif
-            break;
+        break;
 
-        case FalconWingmanMsg::WMPosthole:
-            AiExecPosthole();
+    case FalconWingmanMsg::WMPosthole:
+        AiExecPosthole();
 #ifdef MANEUVER_DEBUG
-            sprintf(tmpchr, "%s", "AiExecPosthole");
+        sprintf(tmpchr, "%s", "AiExecPosthole");
 #endif
-            break;
+        break;
 
-        case FalconWingmanMsg::WMChainsaw:
-            AiExecChainsaw();
+    case FalconWingmanMsg::WMChainsaw:
+        AiExecChainsaw();
 #ifdef MANEUVER_DEBUG
-            sprintf(tmpchr, "%s", "AiExecChainsaw");
+        sprintf(tmpchr, "%s", "AiExecChainsaw");
 #endif
-            break;
+        break;
 
-        case FalconWingmanMsg::WMFlex:
-            AiExecFlex();
+    case FalconWingmanMsg::WMFlex:
+        AiExecFlex();
 #ifdef MANEUVER_DEBUG
-            sprintf(tmpchr, "%s", "AiExecFlex");
+        sprintf(tmpchr, "%s", "AiExecFlex");
 #endif
-            break;
+        break;
 
-        case FalconWingmanMsg::WMClearSix:
-            AiExecClearSix();
+    case FalconWingmanMsg::WMClearSix:
+        AiExecClearSix();
 #ifdef MANEUVER_DEBUG
-            sprintf(tmpchr, "%s", "AiExecClearSix");
+        sprintf(tmpchr, "%s", "AiExecClearSix");
 #endif
-            break;
+        break;
     }
 
 #ifdef MANEUVER_DEBUG
 
-    if ((g_nShowDebugLabels bitand 0x08) or (g_nShowDebugLabels bitand 0x400000))
+    if ((g_nShowDebugLabels bitand 0x08) or
+        (g_nShowDebugLabels bitand 0x400000))
     {
         if (g_nShowDebugLabels bitand 0x40)
         {
-            RadarClass* theRadar = (RadarClass*)FindSensor(self, SensorClass::Radar);
+            RadarClass* theRadar =
+                (RadarClass*)FindSensor(self, SensorClass::Radar);
 
             if (theRadar)
             {
@@ -104,25 +107,27 @@ void DigitalBrain::AiPerformManeuver(void)
                     strcat(tmpchr, " RWS");
                 else if (theRadar->digiRadarMode = RadarClass::DigiOFF)
                     strcat(tmpchr, "%s OFF");
-                else strcat(tmpchr, " UNKNOWN");
+                else
+                    strcat(tmpchr, " UNKNOWN");
             }
         }
 
         if (g_nShowDebugLabels bitand 0x8000)
         {
-            if (((AircraftClass*) self)->af->GetSimpleMode())
+            if (((AircraftClass*)self)->af->GetSimpleMode())
                 strcat(tmpchr, " SIMP");
             else
                 strcat(tmpchr, " COMP");
         }
 
         if (self->drawPointer)
-            ((DrawableBSP*)self->drawPointer)->SetLabel(tmpchr, ((DrawableBSP*)self->drawPointer)->LabelColor());
+            ((DrawableBSP*)self->drawPointer)
+                ->SetLabel(tmpchr,
+                           ((DrawableBSP*)self->drawPointer)->LabelColor());
     }
 
 #endif
 }
-
 
 
 //--------------------------------------------------
@@ -188,7 +193,8 @@ void DigitalBrain::AiMonitorTargets()
     //else if(mpSearchFlags[AI_TOTAL_SEARCH_TYPES] == AI_SEARCH_FOR_TARGET) {
     else if (mpSearchFlags[AI_SEARCH_FOR_TARGET])
     {
-        if (targetPtr and targetPtr not_eq mpLastTargetPtr and vuxGameTime > (mLastReportTime + 120000))
+        if (targetPtr and targetPtr not_eq mpLastTargetPtr and
+            vuxGameTime > (mLastReportTime + 120000))
         {
 
             mLastReportTime = vuxGameTime;
@@ -203,7 +209,6 @@ void DigitalBrain::AiMonitorTargets()
 }
 
 
-
 void DigitalBrain::AiSetInPosition(void)
 {
     int vehInFlight;
@@ -211,7 +216,8 @@ void DigitalBrain::AiSetInPosition(void)
 
     // Get wingman slot position relative to the leader
     vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-    flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+    flightIdx =
+        ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
     if (flightIdx == AiElementLead and vehInFlight == 4)
     {
@@ -239,12 +245,14 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
 
     // Get wingman slot position relative to the leader
     vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-    flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+    flightIdx =
+        ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
     if (flightIdx == AiElementLead and vehInFlight == 4)
     {
-        curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
-        paircraft = (AircraftClass*) flightLead;
+        curPosition =
+            &(acFormationData->positionData[mFormation][flightIdx - 1]);
+        paircraft = (AircraftClass*)flightLead;
 
         ShiAssert(paircraft);
 
@@ -258,8 +266,10 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
             rangeFactor = curPosition->range * (2.0F * mFormLateralSpaceFactor);
 
             // Calculate position relative to the leader
-            trkX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
-            trkY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
+            trkX += rangeFactor * (float)cos(curPosition->relAz * mFormSide +
+                                             paircraft->af->sigma);
+            trkY += rangeFactor * (float)sin(curPosition->relAz * mFormSide +
+                                             paircraft->af->sigma);
         }
 
         if (curPosition->relEl)
@@ -275,15 +285,20 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
         ydiff = trkY - self->YPos();
         zdiff = trkZ - self->ZPos();
 
-        if ((xdiff * xdiff + ydiff + ydiff <  2000.0F * 2000.0F) and fabs(zdiff) < 500.0F and mInPositionFlag == FALSE)
+        if ((xdiff * xdiff + ydiff + ydiff < 2000.0F * 2000.0F) and
+            fabs(zdiff) < 500.0F and mInPositionFlag == FALSE)
         {
             mInPositionFlag = TRUE;
-            AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMGlue, AiWingman, FalconNullId);
+            AiMakeCommandMsg((SimBaseClass*)self, FalconWingmanMsg::WMGlue,
+                             AiWingman, FalconNullId);
         }
-        else if (((xdiff * xdiff + ydiff + ydiff >  2500.0F * 2500.0F) or fabs(zdiff) > 3000.0F) and mInPositionFlag == TRUE)
+        else if (((xdiff * xdiff + ydiff + ydiff > 2500.0F * 2500.0F) or
+                  fabs(zdiff) > 3000.0F) and
+                 mInPositionFlag == TRUE)
         {
             mInPositionFlag = FALSE;
-            AiMakeCommandMsg((SimBaseClass*) self, FalconWingmanMsg::WMSplit, AiWingman, FalconNullId);
+            AiMakeCommandMsg((SimBaseClass*)self, FalconWingmanMsg::WMSplit,
+                             AiWingman, FalconNullId);
         }
     }
 }
@@ -294,7 +309,7 @@ void DigitalBrain::AiCheckPlayerInPosition(void)
 
 void DigitalBrain::AiFollowLead(void)
 {
-    ACFormationData::PositionData *curPosition;
+    ACFormationData::PositionData* curPosition;
     float rangeFactor;
     float groundZ;
     int vehInFlight;
@@ -310,23 +325,30 @@ void DigitalBrain::AiFollowLead(void)
     {
 
         // Get wingman slot position relative to the leader
-        vehInFlight = ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
-        flightIdx = ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
+        vehInFlight =
+            ((FlightClass*)self->GetCampaignObject())->GetTotalVehicles();
+        flightIdx =
+            ((FlightClass*)self->GetCampaignObject())->GetComponentIndex(self);
 
         if (flightIdx == AiFirstWing and vehInFlight == 2)
         {
-            curPosition = &(acFormationData->twoposData[mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
-            paircraft = (AircraftClass*) flightLead;
+            curPosition = &(
+                acFormationData->twoposData
+                    [mFormation]); // The four ship #2 slot position is copied in to the 2 ship formation array.
+            paircraft = (AircraftClass*)flightLead;
         }
         else if (flightIdx == AiSecondWing and mSplitFlight)
         {
             curPosition = &(acFormationData->twoposData[mFormation]);
-            paircraft = (AircraftClass*)((FlightClass*)self->GetCampaignObject())->GetComponentEntity(AiElementLead);
+            paircraft =
+                (AircraftClass*)((FlightClass*)self->GetCampaignObject())
+                    ->GetComponentEntity(AiElementLead);
         }
         else
         {
-            curPosition = &(acFormationData->positionData[mFormation][flightIdx - 1]);
-            paircraft = (AircraftClass*) flightLead;
+            curPosition =
+                &(acFormationData->positionData[mFormation][flightIdx - 1]);
+            paircraft = (AircraftClass*)flightLead;
         }
 
         rangeFactor = curPosition->range * (2.0F * mFormLateralSpaceFactor);
@@ -341,8 +363,10 @@ void DigitalBrain::AiFollowLead(void)
             trackZ = paircraft->ZPos();
 
             // Calculate position relative to the leader
-            trackX += rangeFactor * (float)cos(curPosition->relAz * mFormSide + paircraft->af->sigma);
-            trackY += rangeFactor * (float)sin(curPosition->relAz * mFormSide + paircraft->af->sigma);
+            trackX += rangeFactor * (float)cos(curPosition->relAz * mFormSide +
+                                               paircraft->af->sigma);
+            trackY += rangeFactor * (float)sin(curPosition->relAz * mFormSide +
+                                               paircraft->af->sigma);
 
             if (curPosition->relEl)
             {
@@ -355,7 +379,7 @@ void DigitalBrain::AiFollowLead(void)
 
             AiCheckInPositionCall(trackX, trackY, trackZ);
 
-            // add relative formation altitude - after check in position call 
+            // add relative formation altitude - after check in position call
             if (isWing) // only wingmen
                 trackZ = trackZ + mFormRelativeAltitude;
 
@@ -374,7 +398,8 @@ void DigitalBrain::AiFollowLead(void)
             if (trackZ - groundZ > -g_fAIMinAlt)
             {
                 if (self->ZPos() - groundZ > -g_fAIMinAlt)
-                    trackZ = groundZ - g_fAIMinAlt - (self->ZPos() - groundZ + g_fAIMinAlt) * 2.0f;
+                    trackZ = groundZ - g_fAIMinAlt -
+                             (self->ZPos() - groundZ + g_fAIMinAlt) * 2.0f;
                 else
                     trackZ = groundZ - g_fAIMinAlt;
             }
@@ -384,21 +409,22 @@ void DigitalBrain::AiFollowLead(void)
 
         // 2001-06-06 ADDED BY S.G. WINGY DON'T UPDATE THEIR CURRENT WAYPOINT. BECAUSE OF THIS, THE PLAYER'S WINGY NEVER LOOK AT THEIR TARGET WAYPOINT FOR TARGETS...
         // I'm going to have the AI use the leads waypoint. I'm assuming the lead and the wingmen have the same number of waypoints here...
-        WayPointClass* wlistUs   = self->waypoint;
+        WayPointClass* wlistUs = self->waypoint;
         WayPointClass* wlistLead = NULL;
 
         if (flightLead)
-            wlistLead = ((AircraftClass *)flightLead)->waypoint;
+            wlistLead = ((AircraftClass*)flightLead)->waypoint;
 
-        UnitClass *campUnit = NULL;
-        WayPointClass *campCurWP = NULL;
+        UnitClass* campUnit = NULL;
+        WayPointClass* campCurWP = NULL;
         int waypointIndex = 0;
 
         // This will set our current waypoint to the leads waypoint
         // 2001-10-20 M.N. Added ->GetNextWP() to while (...) to assure a valid WP is chosen
-        while (wlistUs->GetNextWP() and wlistLead and wlistLead->GetNextWP() and wlistLead not_eq ((AircraftClass *)flightLead)->curWaypoint)
+        while (wlistUs->GetNextWP() and wlistLead and wlistLead->GetNextWP() and
+               wlistLead not_eq ((AircraftClass*)flightLead)->curWaypoint)
         {
-            wlistUs   = wlistUs->GetNextWP();
+            wlistUs = wlistUs->GetNextWP();
             wlistLead = wlistLead->GetNextWP();
             waypointIndex++;
         }
@@ -416,9 +442,9 @@ void DigitalBrain::AiFollowLead(void)
         if (isWing == 1)
         {
             waypointIndex++; // Unit's waypoint number starts at 1, not 0.
-            campUnit = (UnitClass *)self->GetCampaignObject();
+            campUnit = (UnitClass*)self->GetCampaignObject();
 
-            if (campUnit)   // sanity check
+            if (campUnit) // sanity check
 
                 // Only do this if our waypoint has changed
                 if (campUnit->GetCurrentWaypoint() not_eq waypointIndex)
@@ -428,9 +454,6 @@ void DigitalBrain::AiFollowLead(void)
         // END OF ADDED SECTION
     }
 }
-
-
-
 
 
 // ----------------------------------------------------
@@ -444,7 +467,8 @@ void DigitalBrain::AiExecBreakRL(void)
     VU_ID pthreat;
 
     mlSinCos(&trig, mHeadingOrdered);
-    SetTrackPoint(self->XPos() + 1000.0F * trig.cos, self->YPos() + 1000.0F * trig.sin, mAltitudeOrdered);
+    SetTrackPoint(self->XPos() + 1000.0F * trig.cos,
+                  self->YPos() + 1000.0F * trig.sin, mAltitudeOrdered);
 
     mSpeedOrdered *= 1.001F;
     TrackPoint(9.0F, mSpeedOrdered);
@@ -601,9 +625,6 @@ void DigitalBrain::AiExecFlex(void)
 }
 
 
-
-
-
 // ----------------------------------------------------
 // DigitalBrain::AiExecClearSix
 // ----------------------------------------------------
@@ -614,7 +635,8 @@ void DigitalBrain::AiExecClearSix(void)
     short edata[10];
 
     mlSinCos(&trig, mHeadingOrdered);
-    SetTrackPoint(self->XPos() + 1000.0F * trig.cos, self->YPos() + 1000.0F * trig.sin, mAltitudeOrdered);
+    SetTrackPoint(self->XPos() + 1000.0F * trig.cos,
+                  self->YPos() + 1000.0F * trig.sin, mAltitudeOrdered);
 
     mSpeedOrdered *= 1.001F;
     TrackPoint(9.0F, mSpeedOrdered);
@@ -631,4 +653,3 @@ void DigitalBrain::AiExecClearSix(void)
         AiMakeRadioResponse(self, rcGENERALRESPONSEC, edata);
     }
 }
-

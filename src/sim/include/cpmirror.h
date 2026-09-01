@@ -16,8 +16,9 @@ public:
     explicit CPMirror(const ObjectInitStr &ois);
 
     // CPObject virtual interface
-    virtual void Exec(SimBaseClass*);
+    virtual void Exec(SimBaseClass *);
     virtual void DisplayBlit3D();
+
 private:
     /** renders the 3d mirror image */
     void RenderMirror(float left, float top, float right, float bottom);

@@ -11,10 +11,10 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Send Eval Message
@@ -31,7 +31,8 @@ public:
         campaignFlightData
     };
 
-    SendEvalMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    SendEvalMessage(VU_ID entityId, VuTargetEntity *target,
+                    VU_BOOL loopback = TRUE);
     SendEvalMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~SendEvalMessage();
     virtual int Size() const;
@@ -42,22 +43,22 @@ public:
     class DATA_BLOCK
     {
     public:
-
         unsigned int message;
         ushort size;
-        uchar* data;
+        uchar *data;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 class PilotDataClass;
 class FlightDataClass;
 
 extern void RequestEvalData(void);
-extern void SendEvalData(FlightDataClass *flight_data, PilotDataClass *pilot_data);
+extern void SendEvalData(FlightDataClass *flight_data,
+                         PilotDataClass *pilot_data);
 extern void SendEvalData(FlightDataClass *flight_data);
 extern void SendAllEvalData(void);
 

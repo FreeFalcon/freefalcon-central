@@ -4,12 +4,12 @@
 
 #include "stdhdr.h"
 #include "dispcfg.h"
-#include "Graphics/Include/Setup.h"
-#include "Graphics/Include/RenderOW.h"
+#include "graphics/include/setup.h"
+#include "graphics/include/renderow.h"
 #include "otwdrive.h"
-#include "Graphics/Include/image.h"
-#include "Graphics/Include/device.h"
-#include "RedMacros.h"
+#include "graphics/include/image.h"
+#include "graphics/include/device.h"
+#include "redmacros.h"
 
 // RV - Biker - Theater switching stuff
 extern char FalconSplashThrDirectory[];
@@ -29,7 +29,9 @@ static const int COVER_LEFT = 159;
 
 // Pointers to the global resources used while the loading screen is up
 BYTE *originalImage = NULL;
-unsigned long *originalPalette = NULL;
+// Artscout - 2026 (Linux port): palette entries are 32-bit colors. `unsigned long` is 64-bit under
+// LP64, which mismatches the GLulong (32-bit) palette storage and the DWORD WorkBuffer; use DWORD.
+DWORD *originalPalette = NULL;
 int origImageType = IMAGE_TYPE_UNKNOWN;
 
 // Some data about the source image
@@ -51,9 +53,9 @@ static int coverHeight = 0;
 void OTWDriverClass::SetupSplashScreen(void)
 {
     int result;
-    CImageFileMemory  texFile;
+    CImageFileMemory texFile;
     char filename[MAX_PATH];
-    FILE* tmpFile;
+    FILE *tmpFile;
 
 
     lastframe = -1;
@@ -63,8 +65,8 @@ void OTWDriverClass::SetupSplashScreen(void)
     if (OTWImage->targetXres() >= 1600)
     {
         // RV - Biker - Theater switching for splash files
-        //filename = "art\\splash\\load16.gif";
-        sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load16.gif");
+        //filename = "art/splash/load16.gif";
+        sprintf(filename, "%s/%s", FalconSplashThrDirectory, "load16.gif");
         tmpFile = fopen(filename, "r");
 
         //Check if file does exist
@@ -76,15 +78,15 @@ void OTWDriverClass::SetupSplashScreen(void)
         else
         {
             // RV - Biker
-            //filename = "art\\splash\\load10.gif";
-            sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load10.gif");
+            //filename = "art/splash/load10.gif";
+            sprintf(filename, "%s/%s", FalconSplashThrDirectory, "load10.gif");
         }
     }
     else if (OTWImage->targetXres() >= 1280)
     {
         // RV - Biker
-        //filename = "art\\splash\\load12.gif";
-        sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load12.gif");
+        //filename = "art/splash/load12.gif";
+        sprintf(filename, "%s/%s", FalconSplashThrDirectory, "load12.gif");
         tmpFile = fopen(filename, "r");
 
         if (tmpFile)
@@ -94,26 +96,26 @@ void OTWDriverClass::SetupSplashScreen(void)
         else
         {
             // RV - Biker
-            //filename = "art\\splash\\load10.gif";
-            sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load10.gif");
+            //filename = "art/splash/load10.gif";
+            sprintf(filename, "%s/%s", FalconSplashThrDirectory, "load10.gif");
         }
     }
     else if (OTWImage->targetXres() >= 1024)
     {
         // RV - Biker
-        //filename = "art\\splash\\load10.gif";
-        sprintf(filename, "%s\\%s", FalconSplashThrDirectory, "load10.gif");
+        //filename = "art/splash/load10.gif";
+        sprintf(filename, "%s/%s", FalconSplashThrDirectory, "load10.gif");
     }
     // RV - Biker for such low res we don't do theater specific splash files
     else if (OTWImage->targetXres() >= 800)
     {
-        //filename = "art\\splash\\load8.gif";
-        sprintf(filename, "art\\splash\\load8.gif");
+        //filename = "art/splash/load8.gif";
+        sprintf(filename, "art/splash/load8.gif");
     }
     else
     {
-        //filename = "art\\splash\\load6.gif";
-        sprintf(filename, "art\\splash\\load6.gif");
+        //filename = "art/splash/load6.gif";
+        sprintf(filename, "art/splash/load6.gif");
     }
 
     // RV - Biker - Try to open file
@@ -125,7 +127,7 @@ void OTWDriverClass::SetupSplashScreen(void)
     }
     else
     {
-        sprintf(filename, "art\\splash\\load10.gif");
+        sprintf(filename, "art/splash/load10.gif");
     }
 
     texFile.imageType = CheckImageType(filename);
@@ -160,13 +162,12 @@ void OTWDriverClass::SetupSplashScreen(void)
     originalHeight = texFile.image.height;
     originalImage = texFile.image.image;
     originalPalette = texFile.image.palette;
-    origImageType = texFile.imageType;//XX
+    origImageType = texFile.imageType; //XX
     ShiAssert(originalImage);
     ShiAssert(originalPalette);
 
     // Give a little delay, before next step, that will be Splash 0
     Sleep(1000);
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -181,11 +182,10 @@ void OTWDriverClass::SetupSplashScreen(void)
 void OTWDriverClass::CleanupSplashScreen(void)
 {
     // Release the original image data
-    glReleaseMemory((char*)originalImage);
-    glReleaseMemory((char*)originalPalette);
+    glReleaseMemory((char *)originalImage);
+    glReleaseMemory((char *)originalPalette);
     originalImage = NULL;
     originalPalette = NULL;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -202,13 +202,15 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     BYTE *imagePtr = NULL;
     void *buffer = NULL;
     int x, y;
-    unsigned long tweakedPalette[256];
-    unsigned long *srcPal = NULL, *dstPal = NULL;
-    unsigned long *startLit = NULL, *stopLit = NULL, *startInvar = NULL, *stop = NULL;
+    // Artscout - 2026 (Linux port): 32-bit palette colors -> DWORD (unsigned long is 64-bit on LP64).
+    DWORD tweakedPalette[256];
+    DWORD *srcPal = NULL, *dstPal = NULL;
+    DWORD *startLit = NULL, *stopLit = NULL, *startInvar = NULL, *stop = NULL;
 
 
     // RED - Consistency check
-    if ( not OTWImage) return;
+    if (not OTWImage)
+        return;
 
     // Validate our parameter
     if (frame == lastframe) // kill "go back a frame" bug
@@ -224,14 +226,15 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
         return;
     }
 
-    if ( not originalImage)
+    if (not originalImage)
     {
         return;
     }
 
     // RED - Allocating a buffer to work into, instead of Image Buffer
     // The buffer will be same size of the Original Image with 32bit Pixel Size
-    DWORD *WorkBuffer = (DWORD*)malloc(originalHeight * originalWidth * sizeof(DWORD));
+    DWORD *WorkBuffer =
+        (DWORD *)malloc(originalHeight * originalWidth * sizeof(DWORD));
 
     // Clear the back buffer to black to erase anything that might already be there
     renderer->context.StartFrame();
@@ -256,16 +259,20 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     ShiAssert(startInvar <= stop);
 
     // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-    while (srcPal < startLit) *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
+    while (srcPal < startLit)
+        *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
 
     // Copy the "lit" color intensities
-    while (srcPal < stopLit) *dstPal++ = *srcPal++;
+    while (srcPal < stopLit)
+        *dstPal++ = *srcPal++;
 
     // Divide the dimmed color intensities by 4 (knock them down 2 bits in each channel)
-    while (srcPal < startInvar) *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
+    while (srcPal < startInvar)
+        *dstPal++ = (*srcPal++ bitand 0x00FCFCFC) >> 1;
 
     // Copy the invariant high portion of the palette
-    while (srcPal < stop) *dstPal++ = *srcPal++;
+    while (srcPal < stop)
+        *dstPal++ = *srcPal++;
 
     // Point to the originalImage
     imagePtr = originalImage;
@@ -273,15 +280,15 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     DWORD *pixel;
 
     // Now, build image based on tweaked palette
-    for (y = 0; y < originalHeight; y ++)
+    for (y = 0; y < originalHeight; y++)
     {
-        pixel = &WorkBuffer[ y * originalWidth ];
+        pixel = &WorkBuffer[y * originalWidth];
 
-        for (x = 0; x < originalWidth and imagePtr ; x ++)
+        for (x = 0; x < originalWidth and imagePtr; x++)
         {
             *pixel = tweakedPalette[*imagePtr];
-            pixel ++;
-            imagePtr ++;
+            pixel++;
+            imagePtr++;
         }
     }
 
@@ -293,18 +300,21 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     // no XR driving from this thread -> no CALL_ORDER). The panel holds the last frame between splash updates.
     {
         extern bool g_bUseOpenXR;
-        extern void OpenXR_CacheMenuSurface(const void* src565, int w, int h);
+        extern void OpenXR_CacheMenuSurface(const void *src565, int w, int h);
         if (g_bUseOpenXR)
         {
-            unsigned short* px565 = (unsigned short*)malloc((size_t)originalWidth * originalHeight * 2);
+            unsigned short *px565 = (unsigned short *)malloc(
+                (size_t)originalWidth * originalHeight * 2);
             if (px565)
             {
                 const int n = originalWidth * originalHeight;
                 for (int p = 0; p < n; ++p)
                 {
                     unsigned long c = WorkBuffer[p];
-                    unsigned r = (c >> 16) & 0xFF, g = (c >> 8) & 0xFF, b = c & 0xFF;
-                    px565[p] = (unsigned short)(((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3));
+                    unsigned r = (c >> 16) & 0xFF, g = (c >> 8) & 0xFF,
+                             b = c & 0xFF;
+                    px565[p] = (unsigned short)(((r >> 3) << 11) |
+                                                ((g >> 2) << 5) | (b >> 3));
                 }
                 OpenXR_CacheMenuSurface(px565, originalWidth, originalHeight);
                 free(px565);
@@ -313,7 +323,8 @@ void OTWDriverClass::SplashScreenUpdate(int frame)
     }
 
     // Go, render it requesting a Fit To Screen
-    renderer->Render2DBitmap(0, 0, 0, 0, originalWidth, originalHeight, originalWidth, WorkBuffer, true);
+    renderer->Render2DBitmap(0, 0, 0, 0, originalWidth, originalHeight,
+                             originalWidth, WorkBuffer, true);
     renderer->EndDraw();
     renderer->context.FinishFrame(NULL);
 
@@ -333,13 +344,14 @@ void OTWDriverClass::ShowSimpleWaitScreen(char *name)
     //int top, left;
     int width, height;
     char filename[MAX_PATH];
-    CImageFileMemory  texFile; //THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
-    FILE* tmpFile;
+    CImageFileMemory
+        texFile; //THW 2003-11-15 Allow 1600x1200 and 1280x1024 exit screens
+    FILE *tmpFile;
 
     // RV - RED - Rewritten with Image Scaling
     // Always look for 1600 x 1200 Image
-    //sprintf (filename, "art\\splash\\%s16.gif", name);
-    sprintf(filename, "%s\\%s16.gif", FalconSplashThrDirectory, name);
+    //sprintf (filename, "art/splash/%s16.gif", name);
+    sprintf(filename, "%s/%s16.gif", FalconSplashThrDirectory, name);
 
     // RV - Biker - Try to open file
     tmpFile = fopen(filename, "r");
@@ -350,7 +362,7 @@ void OTWDriverClass::ShowSimpleWaitScreen(char *name)
     }
     else
     {
-        sprintf(filename, "art\\splash\\%s16.gif", name);
+        sprintf(filename, "art/splash/%s16.gif", name);
     }
 
     width = 1600;

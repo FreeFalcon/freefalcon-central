@@ -11,7 +11,7 @@
 //
 // This file also holds 2 global objects (1 of each class)
 /************************************************************************/
-#include "SimIO.h"
+#include "simio.h"
 #include "mouselook.h"
 
 /************************************************************************/
@@ -105,8 +105,9 @@ void MouseView::Compute(float amount, bool mouseMoved)
 {
     if ((azDir) or mouseMoved)
     {
-        if ( not mouseMoved)
-            XTotal += (int)(1500.f * amount * azDir); // 1500.f is an empiric value..
+        if (not mouseMoved)
+            XTotal +=
+                (int)(1500.f * amount * azDir); // 1500.f is an empiric value..
 
         if (XTotal > MAX_AXIS_THROW)
             XTotal -= 2 * MAX_AXIS_THROW;
@@ -118,8 +119,9 @@ void MouseView::Compute(float amount, bool mouseMoved)
 
     if ((elDir) or mouseMoved)
     {
-        if ( not mouseMoved)
-            YTotal += (int)(1500.f * amount * elDir); // 1500.f is an empiric value..
+        if (not mouseMoved)
+            YTotal +=
+                (int)(1500.f * amount * elDir); // 1500.f is an empiric value..
 
         if (YTotal > MAX_AXIS_THROW)
             YTotal -= 2 * MAX_AXIS_THROW;
@@ -196,26 +198,29 @@ void MouseWheelStuff::ResetAxisValue()
 {
     switch (theMappedAxis)
     {
-        case AXIS_FOV:
-        {
-            // should be default FOV scaled to 0-15000 
-            theAxisValue = (long)(((float)(g_fDefaultFOV) / (float)g_fMaximumFOV) * 15000.f);
-            break;
-        }
+    case AXIS_FOV:
+    {
+        // should be default FOV scaled to 0-15000
+        theAxisValue =
+            (long)(((float)(g_fDefaultFOV) / (float)g_fMaximumFOV) * 15000.f);
+        break;
+    }
 
-        case AXIS_ZOOM:
-        {
-            theAxisValue = (long)(15000.f / 900.f * 75.f); // 75 feet(?) default zoom range
-            break;
-        }
+    case AXIS_ZOOM:
+    {
+        theAxisValue =
+            (long)(15000.f / 900.f * 75.f); // 75 feet(?) default zoom range
+        break;
+    }
 
-        default:
-            if (isUnipolar)
-                theAxisValue = 7500; // just go to the middle of the range..
-            else
-                theAxisValue = 0; // just pick one extreme (user can reverse axis anyway)
+    default:
+        if (isUnipolar)
+            theAxisValue = 7500; // just go to the middle of the range..
+        else
+            theAxisValue =
+                0; // just pick one extreme (user can reverse axis anyway)
 
-            break;
+        break;
     }
 }
 MouseWheelStuff theMouseWheelAxis;

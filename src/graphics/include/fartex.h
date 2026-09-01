@@ -8,8 +8,8 @@
 #ifndef _FARRTEX_H_
 #define _FARRTEX_H_
 
-#include "TerrTex.h"
-#include "Falclib/Include/FileMemMap.h"
+#include "terrtex.h"
+#include "falclib/include/filememmap.h"
 
 struct IDirectDrawPalette;
 
@@ -20,7 +20,8 @@ extern class FarTexDB TheFarTextures;
 typedef struct FarTexEntry
 {
     BYTE *bits; // 8 bit pixel data (NULL if not loaded)
-    DWORD_PTR handle; // Rasterization engine texture handle (NULL if not available) // Artscout - 2026 (x64): pointer-sized
+    DWORD_PTR
+    handle; // Rasterization engine texture handle (NULL if not available) // Artscout - 2026 (x64): pointer-sized
     int refCount; // Reference count
 } FarTexEntry;
 
@@ -29,7 +30,8 @@ class FarTexFile : public FileMemMap
 public:
     BYTE *GetFarTex(DWORD offset)
     {
-        return (BYTE *)GetData(offset * IMAGE_SIZE * IMAGE_SIZE, sizeof(BYTE) * IMAGE_SIZE * IMAGE_SIZE);
+        return (BYTE *)GetData(offset * IMAGE_SIZE * IMAGE_SIZE,
+                               sizeof(BYTE) * IMAGE_SIZE * IMAGE_SIZE);
     };
 };
 
@@ -42,10 +44,10 @@ public:
     };
     ~FarTexDB()
     {
-        ShiAssert( not IsReady());
+        ShiAssert(not IsReady());
     };
 
-    BOOL Setup(DXContext *hrc, const char* texturePath);
+    BOOL Setup(DXContext *hrc, const char *texturePath);
     BOOL IsReady(void)
     {
         return (texArray not_eq NULL);
@@ -71,7 +73,8 @@ protected:
     FarTexEntry *texArray; // Array of texture records
 
     DWORD palette[256]; // Original, unlit palette data
-    PaletteHandle *palHandle; // Rasterization engine palette handle (NULL if not available)
+    PaletteHandle *
+        palHandle; // Rasterization engine palette handle (NULL if not available)
 
     int linearSize; // Linear DDS size for fartiles.dds
 
@@ -93,7 +96,7 @@ protected:
     void SetLightLevel(void);
 
     bool DumpImageToFile(DWORD offset);
-    bool SaveDDS_DXTn(const char *szFileName, BYTE* pDst, int dimensions);
+    bool SaveDDS_DXTn(const char *szFileName, BYTE *pDst, int dimensions);
     //THW Some helpers for season adjustement
 
     void HSVtoRGB(float *r, float *g, float *b, float h, float s, float v);

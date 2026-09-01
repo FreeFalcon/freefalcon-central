@@ -4,16 +4,16 @@
 #include "simveh.h"
 #include "mesg.h"
 #include "object.h"
-#include "MsgInc/WingmanMsg.h"
-#include "campBase.h"
+#include "msginc/wingmanmsg.h"
+#include "campbase.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL HeliBrain::pool;
 #endif
 
-HeliBrain::HeliBrain(SimVehicleClass *myPlatform)
+HeliBrain::HeliBrain(SimVehicleClass* myPlatform)
 {
-    self = (HelicopterClass *)myPlatform;
+    self = (HelicopterClass*)myPlatform;
     side = myPlatform->GetTeam();
     self->flightLead = self;
     underOrders = FALSE;
@@ -76,7 +76,8 @@ HeliBrain::~HeliBrain(void)
     CleanupLanding();
 }
 
-void HeliBrain::FrameExec(SimObjectType* curTargetList, SimObjectType* curTarget)
+void HeliBrain::FrameExec(SimObjectType* curTargetList,
+                          SimObjectType* curTarget)
 {
     // targetList = curTargetList;
     // SetTarget(curTarget);
@@ -137,7 +138,8 @@ void HeliBrain::JoinFlight(void)
     if (self->flightIndex != 0)
     {
         SetLead(FALSE);
-        self->flightLead = (HelicopterClass *)self->GetCampaignObject()->GetComponentLead();
+        self->flightLead =
+            (HelicopterClass*)self->GetCampaignObject()->GetComponentLead();
     }
     else
         SetLead(TRUE);

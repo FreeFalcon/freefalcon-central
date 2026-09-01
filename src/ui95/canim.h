@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -41,9 +42,10 @@ public:
     void SetAnim(ANIM_RES *Anim);
     ANIM_RES *GetAnim(void)
     {
-        if (Anim_) return(Anim_->GetAnim());
+        if (Anim_)
+            return (Anim_->GetAnim());
 
-        return(NULL);
+        return (NULL);
     }
     // Free Function
     void Cleanup(void);
@@ -53,7 +55,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void SetFlags(long flags);
     void SetDirection(short dir);

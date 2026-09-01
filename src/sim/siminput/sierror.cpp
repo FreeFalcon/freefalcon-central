@@ -1,4 +1,4 @@
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "falclib.h"
 #include "dispcfg.h"
 #include "sinput.h"
@@ -7,9 +7,8 @@ static const struct dilookup
 {
     HRESULT hr;
     char *value;
-} DiErrTable[] =
-{
-#define Err(x) { x, #x }
+} DiErrTable[] = {
+#define Err(x) {x, #x}
     Err(DI_BUFFEROVERFLOW),
     Err(DI_DOWNLOADSKIPPED),
     Err(DI_EFFECTRESTARTED),
@@ -61,8 +60,7 @@ static const struct dilookup
     Err(DIERR_UNSUPPORTED),
     Err(E_HANDLE),
     Err(E_PENDING),
-    Err(E_POINTER)
-};
+    Err(E_POINTER)};
 #undef Err
 static const int MAX_ERR = sizeof(DiErrTable) / sizeof(DiErrTable[0]);
 
@@ -85,17 +83,17 @@ BOOL VerifyResult(HRESULT hResult)
     MonoPrint ("Sim Input//DInput Error: %x, Unknown err\n", hResult);
     #endif
     */
-    return(FALSE);
+    return (FALSE);
 }
 
-BOOL DIMessageBox(int ErrNum, int Type, char* pErrStr)
+BOOL DIMessageBox(int ErrNum, int Type, char *pErrStr)
 {
     int Response;
     char pOutStr[100];
 
     sprintf(pOutStr, "Sim Input//DInput Error: %d, %s\n", ErrNum, pErrStr);
-    Response = MessageBox(FalconDisplay.appWin, pErrStr, "FreeFalcon Sim Input Error", Type);
+    Response = MessageBox(FalconDisplay.appWin, pErrStr,
+                          "FreeFalcon Sim Input Error", Type);
 
     return (Response == IDYES);
 }
-

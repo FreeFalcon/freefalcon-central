@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <tchar.h>
 #include "cmpglobl.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "f4find.h"
 //temporary until logbook is working
 #include "ui/include/logbook.h"
@@ -13,11 +13,11 @@
 #include "ui95/chandler.h"
 #include "ui/include/cmusic.h"
 #include "soundgroups.h"
-#include "falcsnd/VoiceManager.h"
+#include "falcsnd/voicemanager.h"
 #include "sim/include/sinput.h"
-#include "Graphics/Include/matrix.h"
-#include "Weather.h"
-#include "Campaign/include/Cmpclass.h"
+#include "graphics/include/matrix.h"
+#include "weather.h"
+#include "campaign/include/cmpclass.h"
 
 // OW
 extern bool g_bRealisticAvionics; // M.N.
@@ -66,7 +66,8 @@ void PlayerOptionsClass::Initialize(void)
      GeneralFlags = GEN_RULES_FLAGS; // General stuff
     */
     //JAM 07Dec03
-    DispFlags = DISP_HAZING bitor DISP_GOURAUD bitor DISP_SHADOWS bitor DISP_BILINEAR; // Display Options
+    DispFlags = DISP_HAZING bitor DISP_GOURAUD bitor DISP_SHADOWS bitor
+                DISP_BILINEAR; // Display Options
     // DispTextureLevel = 4; //0-4
     DispTerrainDist = 80.0f; // sets ranges at which texture sets are switched
     DispMaxTerrainLevel = 0; //should be 0-2 can be up to 4
@@ -78,7 +79,8 @@ void PlayerOptionsClass::Initialize(void)
     // 2001-11-09 M.N. Changed from 60 to 100 % = Slider setting 6 (Realism patch)
     ObjDeaggLevel = 100; // 0-100 (Percentage of vehicles deaggregated per unit)
     BldDeaggLevel = 5; // 0-5 (determines which buildings get deaggregated)
-    PlayerBubble = 1.f; // .5 - 2 (ratio by which to multiply player bubble size)
+    PlayerBubble =
+        1.f; // .5 - 2 (ratio by which to multiply player bubble size)
 
     //JAM 19Nov03
     weatherCondition = 1;
@@ -87,7 +89,7 @@ void PlayerOptionsClass::Initialize(void)
 
     ACMIFileSize = 5;
 
-    SimFlags =  0; // Sim flags
+    SimFlags = 0; // Sim flags
     SimFlightModel = FMAccurate; // Flight model type
     SimWeaponEffect = WEAccurate;
     SimAvionicsType = ATRealisticAV;
@@ -136,10 +138,10 @@ void PlayerOptionsClass::Initialize(void)
     //enableTouchBuddy = false;       // sfr: touch budy support
     MouseLookSensitivity = 0.5f; // Retro 15Jan2004
     MouseWheelSensitivity = 5; // Retro 17Jan2004
-    KeyboardPOVPanningSensitivity = 40; // Retro 18Jan2004 - 40 degrees per second
+    KeyboardPOVPanningSensitivity =
+        40; // Retro 18Jan2004 - 40 degrees per second
     clickablePitMode = false; // Wombat778 1-22-04
     enableAxisShaping = false; // Retro 27Jan2004
-
 
 
     _tcscpy(keyfile, _T("keystrokes"));
@@ -154,33 +156,34 @@ void PlayerOptionsClass::Initialize(void)
 extern bool ControlsXml_ActiveProfilePath(char *out, int outSize);
 
 //filename should be callsign of player
-int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
+int PlayerOptionsClass::LoadOptions(_TCHAR *filename)
 {
     size_t success = 0;
     _TCHAR path[_MAX_PATH];
-    char  prof[_MAX_PATH];
+    char prof[_MAX_PATH];
     long size;
     FILE *fp;
 
     ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    _stprintf(path, _T("%s\\options.pop"), prof);
+    _stprintf(path, _T("%s/options.pop"), prof);
 
     fp = _tfopen(path, _T("rb"));
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint(_T("Couldn't open %s's player options\n"), filename);
         // fallback: shipped default profile, then the legacy config\default.pop
-        _stprintf(path, _T("%s\\config\\profiles\\default\\options.pop"), FalconDataDirectory);
+        _stprintf(path, _T("%s/config/profiles/default/options.pop"),
+                  FalconDataDirectory);
         fp = _tfopen(path, _T("rb"));
 
-        if ( not fp)
+        if (not fp)
         {
-            _stprintf(path, _T("%s\\config\\default.pop"), FalconDataDirectory);
+            _stprintf(path, _T("%s/config/default.pop"), FalconDataDirectory);
             fp = _tfopen(path, "rb");
         }
 
-        if ( not fp)
+        if (not fp)
         {
             MonoPrint(_T("Couldn't open default player options\n"), filename);
             Initialize();
@@ -235,7 +238,8 @@ int PlayerOptionsClass::LoadOptions(_TCHAR* filename)
     // M.N.
     if (SimAvionicsType == ATRealisticAV)
         g_bRealisticAvionics = true;
-    else g_bRealisticAvionics = false;
+    else
+        g_bRealisticAvionics = false;
 
     //JAM 18Nov03
     if (TheCampaign.InMainUI)
@@ -268,15 +272,16 @@ void PlayerOptionsClass::ApplyOptions(void)
 }
 
 //filename should be callsign of player
-int PlayerOptionsClass::SaveOptions(_TCHAR* filename)
+int PlayerOptionsClass::SaveOptions(_TCHAR *filename)
 {
     FILE *fp;
     _TCHAR path[_MAX_PATH];
-    char  prof[_MAX_PATH];
+    char prof[_MAX_PATH];
     size_t success = 0;
 
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));   // options in the profile folder
-    _stprintf(path, _T("%s\\options.pop"), prof);
+    ControlsXml_ActiveProfilePath(
+        prof, sizeof(prof)); // options in the profile folder
+    _stprintf(path, _T("%s/options.pop"), prof);
 
     if ((fp = _tfopen(path, "wb")) == NULL)
     {
@@ -298,7 +303,8 @@ int PlayerOptionsClass::SaveOptions(_TCHAR* filename)
     // M.N.
     if (SimAvionicsType == ATRealisticAV)
         g_bRealisticAvionics = true;
-    else g_bRealisticAvionics = false;
+    else
+        g_bRealisticAvionics = false;
 
     return TRUE;
 }
@@ -342,9 +348,9 @@ int PlayerOptionsClass::InCompliance(RulesStruct *rules)
 }
 void PlayerOptionsClass::ComplyWRules(RulesStruct *rules)
 {
-    SimFlags and_eq compl (SIM_RULES_FLAGS bitand compl rules->SimFlags);
+    SimFlags and_eq compl(SIM_RULES_FLAGS bitand compl rules->SimFlags);
 
-    GeneralFlags and_eq compl (GEN_RULES_FLAGS bitand compl rules->GeneralFlags);
+    GeneralFlags and_eq compl(GEN_RULES_FLAGS bitand compl rules->GeneralFlags);
 
     if (ObjectMagnification() > rules->ObjMagnification)
         ObjMagnification = rules->ObjMagnification;
@@ -366,29 +372,24 @@ void PlayerOptionsClass::ComplyWRules(RulesStruct *rules)
 
     if (GetPadlockMode() < rules->SimPadlockMode)
         SimPadlockMode = rules->SimPadlockMode;
-
 }
 
 int CheckNumberPlayers(void)
 {
-    VuSessionsIterator
-    sit(FalconLocalGame);
+    VuSessionsIterator sit(FalconLocalGame);
 
-    FalconSessionEntity
-    *session;
+    FalconSessionEntity *session;
 
-    int
-    count;
+    int count;
 
-    session = (FalconSessionEntity*) sit.GetFirst();
+    session = (FalconSessionEntity *)sit.GetFirst();
     count = 0;
 
     while (session)
     {
-        session = (FalconSessionEntity *) sit.GetNext();
-        count ++;
+        session = (FalconSessionEntity *)sit.GetNext();
+        count++;
     }
 
     return FalconLocalGame->GetRules()->MaxPlayers - count;
 }
-

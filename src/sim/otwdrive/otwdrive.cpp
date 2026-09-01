@@ -1,27 +1,27 @@
 #include <time.h>
 #include "otwdrive.h"
-#include "Graphics/Include/Setup.h"
-#include "Graphics/Include/TimeMgr.h"
-#include "Graphics/Include/TOD.h"
-#include "Graphics/Include/tviewpnt.h"
-#include "Graphics/Include/RenderOW.h"
-#include "Graphics/Include/canvas3d.h"
-#include "Graphics/Include/drawsgmt.h"
-#include "Graphics/Include/objlist.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/drawpnt.h"
-#include "Graphics/Include/drawGuys.h"
-#include "Graphics/Include/drawGrnd.h"
-#include "Graphics/Include/RViewPnt.h"
-#include "Graphics/Include/TerrTex.h" // JB 010616
+#include "graphics/include/setup.h"
+#include "graphics/include/timemgr.h"
+#include "graphics/include/tod.h"
+#include "graphics/include/tviewpnt.h"
+#include "graphics/include/renderow.h"
+#include "graphics/include/canvas3d.h"
+#include "graphics/include/drawsgmt.h"
+#include "graphics/include/objlist.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawpnt.h"
+#include "graphics/include/drawguys.h"
+#include "graphics/include/drawgrnd.h"
+#include "graphics/include/rviewpnt.h"
+#include "graphics/include/terrtex.h" // JB 010616
 #include "resource.h"
 #include "stdhdr.h"
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "graphics/dxengine/dxvbmanager.h"
 
 extern bool g_bUse_DX_Engine;
 
 
-#include "ClassTbl.h"
+#include "classtbl.h"
 #include "hud.h"
 #include "simdrive.h"
 #include "mfd.h"
@@ -34,15 +34,15 @@ extern bool g_bUse_DX_Engine;
 #include "simfiltr.h"
 #include "falclib/include/f4find.h"
 #include "falcmesg.h"
-#include "MsgInc/SimDataToggle.h"
+#include "msginc/simdatatoggle.h"
 #include "cpmanager.h"
 #include "ui/include/falcuser.h"
 #include "sinput.h"
 #include "dispcfg.h"
-#include "Graphics/Include/Loader.h"
-#include "ThreadMgr.h"
+#include "graphics/include/loader.h"
+#include "threadmgr.h"
 #include "playerop.h"
-#include "SoundFX.h"
+#include "soundfx.h"
 #include "sms.h"
 #include "rwr.h"
 #include "aircrft.h"
@@ -51,16 +51,16 @@ extern bool g_bUse_DX_Engine;
 #include "object.h"
 #include "fakerand.h"
 #include "dispopts.h"
-#include "Ground.h"
-#include "flightData.h"
+#include "ground.h"
+#include "flightdata.h"
 #include "popmenu.h"
 #include "flight.h"
 #include "lantirn.h"
-#include "IVibeData.h"
-#include "Weather.h"
-#include "DrawParticleSys.h"
+#include "ivibedata.h"
+#include "weather.h"
+#include "drawparticlesys.h"
 
-#include "SimIO.h" // Retro 9Jan2004
+#include "simio.h" // Retro 9Jan2004
 
 #include "radiosubtitle.h" // Retro 16Dec2003
 #include "falcsnd/winampfrontend.h" // Retro 3Jan2004
@@ -69,7 +69,8 @@ extern bool g_bPilotEntertainment; // Retro 3Jan2004
 extern bool g_bEnableTrackIR; // Cobra - Animated Pilot's head
 
 
-extern "C" {
+extern "C"
+{
 #include "codelib/resources/reslib/src/resmgr.h"
 }
 
@@ -85,13 +86,13 @@ extern int g_nForceCockpitResolution; //Wombat778 4-02-04
 int FindBestResolution(void); //Wombat778 4-03-04
 extern float g_fHybridPitThreshold1; //Wombat778 11-18-04
 extern float g_fHybridPitThreshold2; //Wombat778 11-18-04
-extern int   g_nHybridPitModeDelay; //Wombat778 11-18-04
+extern int g_nHybridPitModeDelay; //Wombat778 11-18-04
 
 extern bool g_bEnableDisplacementCam; // Retro 25Dec2003
 
 // when in an external camera position we need to tell the player bubble
 // where we are.  So we create one of these thingy's
-FalconEntity *gOtwCameraLocation = NULL;
+FalconEntity* gOtwCameraLocation = NULL;
 
 int endAbort = 0;
 unsigned long nextCampObjectHeightRefresh = 0;
@@ -103,7 +104,7 @@ unsigned long nextCampObjectHeightRefresh = 0;
 
 #ifdef CHECK_LEAKAGE
 unsigned int leakChkPt = 24;
-extern MEM_BOOL MEM_CALLBACK errPrint(MEM_ERROR_INFO *errorInfo);
+extern MEM_BOOL MEM_CALLBACK errPrint(MEM_ERROR_INFO* errorInfo);
 extern MEM_ERROR_FN lastErrorFn;
 #endif
 
@@ -112,18 +113,18 @@ extern float g_fMfd_p_Size;   // a.s.
 
 
 // Padlock On Left
-#define F3PADLOCK_TOP          1.0F
-#define F3PADLOCK_LEFT        -0.6F
-#define F3PADLOCK_BOTTOM      -1.0F
-#define F3PADLOCK_RIGHT        1.0F
-#define F3INSTRUMENT_TOP      -0.37F
-#define F3INSTRUMENT_LEFT     -1.0F
-#define F3INSTRUMENT_BOTTOM   -1.0F
-#define F3INSTRUMENT_RIGHT     F3PADLOCK_LEFT + 0.01F
-#define F3LOCATOR_TOP          1.0F
-#define F3LOCATOR_LEFT         F3INSTRUMENT_LEFT
-#define F3LOCATOR_BOTTOM       F3INSTRUMENT_TOP - 0.01F
-#define F3LOCATOR_RIGHT        F3INSTRUMENT_RIGHT
+#define F3PADLOCK_TOP 1.0F
+#define F3PADLOCK_LEFT -0.6F
+#define F3PADLOCK_BOTTOM -1.0F
+#define F3PADLOCK_RIGHT 1.0F
+#define F3INSTRUMENT_TOP -0.37F
+#define F3INSTRUMENT_LEFT -1.0F
+#define F3INSTRUMENT_BOTTOM -1.0F
+#define F3INSTRUMENT_RIGHT F3PADLOCK_LEFT + 0.01F
+#define F3LOCATOR_TOP 1.0F
+#define F3LOCATOR_LEFT F3INSTRUMENT_LEFT
+#define F3LOCATOR_BOTTOM F3INSTRUMENT_TOP - 0.01F
+#define F3LOCATOR_RIGHT F3INSTRUMENT_RIGHT
 
 
 DWORD p3DpitHilite; // Cobra - 3D pit high night lighting color
@@ -155,25 +156,23 @@ DWORD p3DpitLolite; // Cobra - 3D pit low night lighting color
 
 // MFD Placement
 int MfdSize = 154;
-RECT VirtualMFD[OTWDriverClass::NumPopups + 1] =
-{
-    { 0,             480 - MfdSize, MfdSize - 1, 479},
-    { 640 - MfdSize, 480 - MfdSize, 639,         479},
-    { 640 - MfdSize, 0,             639,         MfdSize - 1},
-    { 0,             0,             MfdSize - 1, MfdSize - 1},
-    { 0,             0,             MfdSize - 1, MfdSize - 1}
-};
+RECT VirtualMFD[OTWDriverClass::NumPopups + 1] = {
+    {0, 480 - MfdSize, MfdSize - 1, 479},
+    {640 - MfdSize, 480 - MfdSize, 639, 479},
+    {640 - MfdSize, 0, 639, MfdSize - 1},
+    {0, 0, MfdSize - 1, MfdSize - 1},
+    {0, 0, MfdSize - 1, MfdSize - 1}};
 
 
 OTWDriverClass OTWDriver;
 
-DrawableBSP *endDialogObject;
+DrawableBSP* endDialogObject;
 
 HANDLE gSharedMemHandle;
 void* gSharedMemPtr = NULL;
 // JPO - for the new hardware
 HANDLE gIntellivibeShared;
-void *gSharedIntellivibe;
+void* gSharedIntellivibe;
 IntellivibeData g_intellivibeData;
 
 OTWDriverClass::OTWDriverClass(void)
@@ -251,7 +250,7 @@ OTWDriverClass::OTWDriverClass(void)
     stopState = STOP_STATE0;
 
     mpPadlockCandidate = NULL;
-    mPadlockCandidateID  = FalconNullId;
+    mPadlockCandidateID = FalconNullId;
 
     mObjectOccluded = TRUE;
 
@@ -286,8 +285,8 @@ OTWDriverClass::OTWDriverClass(void)
     otwResolution = FalconDisplayConfiguration::Sim;
     takeScreenShot = FALSE;
 
-    pilotEyePos.x = 15;  // MLR 12/1/2003 - Pilots Eye position
-    pilotEyePos.y =  0;
+    pilotEyePos.x = 15; // MLR 12/1/2003 - Pilots Eye position
+    pilotEyePos.y = 0;
     pilotEyePos.z = -3;
 
     headMotion = YAW_PITCH;
@@ -358,12 +357,15 @@ OTWDriverClass::OTWDriverClass(void)
     bVCockZBuffering = FALSE;
 
     // Create Shared Memory object for data output
-    gSharedMemHandle = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, // Artscout - 2026 (x64): INVALID_HANDLE_VALUE is (HANDLE)-1, not 0xFFFFFFFF (which on x64 = 0x00000000FFFFFFFF, a bogus file handle -> mapping fails -> NULL ptr -> crash)
-                                         0, sizeof(FlightData), "FalconSharedMemoryArea");
+    gSharedMemHandle = CreateFileMapping(
+        INVALID_HANDLE_VALUE, NULL,
+        PAGE_READWRITE, // Artscout - 2026 (x64): INVALID_HANDLE_VALUE is (HANDLE)-1, not 0xFFFFFFFF (which on x64 = 0x00000000FFFFFFFF, a bogus file handle -> mapping fails -> NULL ptr -> crash)
+        0, sizeof(FlightData), "FalconSharedMemoryArea");
 
     if (gSharedMemHandle)
     {
-        gSharedMemPtr = MapViewOfFile(gSharedMemHandle, FILE_MAP_WRITE, 0, 0, 0);
+        gSharedMemPtr =
+            MapViewOfFile(gSharedMemHandle, FILE_MAP_WRITE, 0, 0, 0);
     }
     else
     {
@@ -372,12 +374,15 @@ OTWDriverClass::OTWDriverClass(void)
     }
 
     // Create Shared Memory object for other output
-    gIntellivibeShared = CreateFileMapping(INVALID_HANDLE_VALUE, NULL, PAGE_READWRITE, // Artscout - 2026 (x64): INVALID_HANDLE_VALUE is (HANDLE)-1, not 0xFFFFFFFF (which on x64 = 0x00000000FFFFFFFF, a bogus file handle -> mapping fails -> NULL ptr -> crash)
-                                           0, sizeof(IntellivibeData), "FalconIntellivibeSharedMemoryArea");
+    gIntellivibeShared = CreateFileMapping(
+        INVALID_HANDLE_VALUE, NULL,
+        PAGE_READWRITE, // Artscout - 2026 (x64): INVALID_HANDLE_VALUE is (HANDLE)-1, not 0xFFFFFFFF (which on x64 = 0x00000000FFFFFFFF, a bogus file handle -> mapping fails -> NULL ptr -> crash)
+        0, sizeof(IntellivibeData), "FalconIntellivibeSharedMemoryArea");
 
     if (gIntellivibeShared)
     {
-        gSharedIntellivibe = MapViewOfFile(gIntellivibeShared, FILE_MAP_WRITE, 0, 0, 0);
+        gSharedIntellivibe =
+            MapViewOfFile(gIntellivibeShared, FILE_MAP_WRITE, 0, 0, 0);
     }
     else
     {
@@ -401,7 +406,7 @@ OTWDriverClass::OTWDriverClass(void)
 
     // 1 meter per second ? not sure bout the distance units (again)
     cameraDisplacementRate = 1.0F; // Retro 24Dec2003 - this should be constant
-    currentFPS = 0.0f;//Cobra
+    currentFPS = 0.0f; //Cobra
 
 #if NEW_SERVER_VIEWPOINT
     vmMutex = F4CreateCriticalSection("viewpoint mutex");
@@ -448,19 +453,19 @@ OTWDriverClass::~OTWDriverClass(void)
     // Retro 23Dec2003 start
     if (xDir)
     {
-        delete(xDir);
+        delete (xDir);
         xDir = 0;
     }
 
     if (yDir)
     {
-        delete(yDir);
+        delete (yDir);
         yDir = 0;
     }
 
     if (zDir)
     {
-        delete(zDir);
+        delete (zDir);
         zDir = 0;
     }
 
@@ -522,7 +527,7 @@ void OTWDriverClass::RunActionCamera(void)
     SimBaseClass* weaponObject = NULL;
     SimBaseClass* talkObject = NULL;
     BOOL foundCurrent = FALSE;
-    SimObjectType *targetPtr;
+    SimObjectType* targetPtr;
 
     azDir = 0.5f;
     elDir = 0.5f;
@@ -578,11 +583,9 @@ void OTWDriverClass::RunActionCamera(void)
         while (theObject)
         {
             // we don't want to deal with campaign objects....
-            if (
- not theObject->IsSim() or
- not theObject->IsAwake()
+            if (not theObject->IsSim() or not theObject->IsAwake()
                 /* or theObject->IsEject()*/
-            ) // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
+                ) // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
             {
                 // get next object in list
                 theObject = (SimBaseClass*)updateWalker.GetNext();
@@ -590,18 +593,17 @@ void OTWDriverClass::RunActionCamera(void)
             }
 
             // is this an object( missile or bomb)
-            if (
-                (theObject->IsMissile() or
-                 (
-                     theObject->IsBomb() and 
- not (((BombClass*)theObject)->IsSetBombFlag(BombClass::IsFlare bitor BombClass::IsChaff)))
-                ) and 
- not theObject->IsEject() and 
-                (otwPlatform.get() not_eq weaponObject)
-            )
+            if ((theObject->IsMissile() or
+                 (theObject->IsBomb() and
+                  not(((BombClass*)theObject)
+                          ->IsSetBombFlag(BombClass::IsFlare bitor
+                                          BombClass::IsChaff)))) and
+                not theObject->IsEject() and
+                (otwPlatform.get() not_eq weaponObject))
             {
                 // don't track missiles with no targets
-                if ( not (theObject->IsMissile() and ((SimMoverClass *)theObject)->targetPtr == NULL))
+                if (not(theObject->IsMissile() and
+                        ((SimMoverClass*)theObject)->targetPtr == NULL))
                     weaponObject = theObject;
             }
             // is object firing?
@@ -614,7 +616,8 @@ void OTWDriverClass::RunActionCamera(void)
             {
                 talkObject = theObject;
             }
-            else if ( not (theObject->IsGroundVehicle() and ((SimMoverClass *)theObject)->targetPtr == NULL))
+            else if (not(theObject->IsGroundVehicle() and
+                         ((SimMoverClass*)theObject)->targetPtr == NULL))
             {
                 // is this the same as current?
                 if (otwPlatform.get() == theObject)
@@ -646,7 +649,7 @@ void OTWDriverClass::RunActionCamera(void)
         gVmPlayVU_ID = vuNullId;
 
         // get target pointer
-        targetPtr = ((SimMoverClass *)talkObject)->targetPtr;
+        targetPtr = ((SimMoverClass*)talkObject)->targetPtr;
 
         // no campaign objects
         if (targetPtr and not targetPtr->BaseData()->IsSim())
@@ -680,24 +683,24 @@ void OTWDriverClass::RunActionCamera(void)
 
             switch ((int)(NRANDPOS * 10.0f))
             {
-                case 0:
-                    mOTWDisplayMode = ModeSatellite;
-                    break;
+            case 0:
+                mOTWDisplayMode = ModeSatellite;
+                break;
 
-                case 1:
-                case 5:
-                    mOTWDisplayMode = ModeOrbit;
-                    break;
+            case 1:
+            case 5:
+                mOTWDisplayMode = ModeOrbit;
+                break;
 
-                case 2:
-                case 3:
-                case 4:
-                    mOTWDisplayMode = ModeFlyby;
-                    break;
+            case 2:
+            case 3:
+            case 4:
+                mOTWDisplayMode = ModeFlyby;
+                break;
 
-                default:
-                    mOTWDisplayMode = ModeChase;
-                    break;
+            default:
+                mOTWDisplayMode = ModeChase;
+                break;
             }
         }
 
@@ -712,11 +715,11 @@ void OTWDriverClass::RunActionCamera(void)
     } // end if talk
     else if (weaponObject)
     {
-        SimBaseClass *parent;
+        SimBaseClass* parent;
 
         // get target pointer
-        targetPtr = ((SimMoverClass *)weaponObject)->targetPtr;
-        parent = (SimBaseClass *)((SimWeaponClass *)weaponObject)->Parent();
+        targetPtr = ((SimMoverClass*)weaponObject)->targetPtr;
+        parent = (SimBaseClass*)((SimWeaponClass*)weaponObject)->Parent();
 
         // no campaign objects
         if (targetPtr and not targetPtr->BaseData()->IsSim())
@@ -765,24 +768,24 @@ void OTWDriverClass::RunActionCamera(void)
 
             switch ((int)(NRANDPOS * 10.0f))
             {
-                case 0:
-                    mOTWDisplayMode = ModeSatellite;
-                    break;
+            case 0:
+                mOTWDisplayMode = ModeSatellite;
+                break;
 
-                case 1:
-                case 5:
-                    mOTWDisplayMode = ModeOrbit;
-                    break;
+            case 1:
+            case 5:
+                mOTWDisplayMode = ModeOrbit;
+                break;
 
-                case 2:
-                case 3:
-                case 4:
-                    mOTWDisplayMode = ModeFlyby;
-                    break;
+            case 2:
+            case 3:
+            case 4:
+                mOTWDisplayMode = ModeFlyby;
+                break;
 
-                default:
-                    mOTWDisplayMode = ModeChase;
-                    break;
+            default:
+                mOTWDisplayMode = ModeChase;
+                break;
             }
         }
 
@@ -798,7 +801,7 @@ void OTWDriverClass::RunActionCamera(void)
     else if (firingObject)
     {
         // get target pointer
-        targetPtr = ((SimMoverClass *)firingObject)->targetPtr;
+        targetPtr = ((SimMoverClass*)firingObject)->targetPtr;
 
         // no campaign objects
         if (targetPtr and not targetPtr->BaseData()->IsSim())
@@ -832,24 +835,24 @@ void OTWDriverClass::RunActionCamera(void)
 
             switch ((int)(NRANDPOS * 10.0f))
             {
-                case 0:
-                    mOTWDisplayMode = ModeSatellite;
-                    break;
+            case 0:
+                mOTWDisplayMode = ModeSatellite;
+                break;
 
-                case 1:
-                    mOTWDisplayMode = ModeOrbit;
-                    break;
+            case 1:
+                mOTWDisplayMode = ModeOrbit;
+                break;
 
-                case 5:
-                case 2:
-                case 3:
-                case 4:
-                    mOTWDisplayMode = ModeFlyby;
-                    break;
+            case 5:
+            case 2:
+            case 3:
+            case 4:
+                mOTWDisplayMode = ModeFlyby;
+                break;
 
-                default:
-                    mOTWDisplayMode = ModeChase;
-                    break;
+            default:
+                mOTWDisplayMode = ModeChase;
+                break;
             }
         }
 
@@ -863,28 +866,28 @@ void OTWDriverClass::RunActionCamera(void)
 
     } // end if firing object
     // just hang on current object
-    else if ( not otwPlatform->IsDead() and (int)(NRANDPOS * 2.0f))
+    else if (not otwPlatform->IsDead() and (int)(NRANDPOS * 2.0f))
     {
         switch ((int)(NRANDPOS * 10.0f))
         {
-            case 0:
-                mOTWDisplayMode = ModeSatellite;
-                break;
+        case 0:
+            mOTWDisplayMode = ModeSatellite;
+            break;
 
-            case 1:
-                mOTWDisplayMode = ModeOrbit;
-                break;
+        case 1:
+            mOTWDisplayMode = ModeOrbit;
+            break;
 
-            case 3:
-            case 2:
-            case 4:
-            case 5:
-                mOTWDisplayMode = ModeFlyby;
-                break;
+        case 3:
+        case 2:
+        case 4:
+        case 5:
+            mOTWDisplayMode = ModeFlyby;
+            break;
 
-            default:
-                mOTWDisplayMode = ModeChase;
-                break;
+        default:
+            mOTWDisplayMode = ModeChase;
+            break;
         }
 
         SelectExternal();
@@ -893,7 +896,7 @@ void OTWDriverClass::RunActionCamera(void)
     else if (newObject)
     {
         // get target pointer
-        targetPtr = ((SimMoverClass *)newObject)->targetPtr;
+        targetPtr = ((SimMoverClass*)newObject)->targetPtr;
 
         // no campaign objects
         if (targetPtr and not targetPtr->BaseData()->IsSim())
@@ -927,24 +930,24 @@ void OTWDriverClass::RunActionCamera(void)
 
             switch ((int)(NRANDPOS * 10.0f))
             {
-                case 0:
-                    mOTWDisplayMode = ModeSatellite;
-                    break;
+            case 0:
+                mOTWDisplayMode = ModeSatellite;
+                break;
 
-                case 3:
-                    mOTWDisplayMode = ModeOrbit;
-                    break;
+            case 3:
+                mOTWDisplayMode = ModeOrbit;
+                break;
 
-                case 1:
-                case 2:
-                case 4:
-                case 5:
-                    mOTWDisplayMode = ModeFlyby;
-                    break;
+            case 1:
+            case 2:
+            case 4:
+            case 5:
+                mOTWDisplayMode = ModeFlyby;
+                break;
 
-                default:
-                    mOTWDisplayMode = ModeChase;
-                    break;
+            default:
+                mOTWDisplayMode = ModeChase;
+                break;
             }
         }
 
@@ -960,7 +963,7 @@ void OTWDriverClass::RunActionCamera(void)
     else if (prevObject)
     {
         // get target pointer
-        targetPtr = ((SimMoverClass *)prevObject)->targetPtr;
+        targetPtr = ((SimMoverClass*)prevObject)->targetPtr;
 
         // no campaign objects
         if (targetPtr and not targetPtr->BaseData()->IsSim())
@@ -994,24 +997,24 @@ void OTWDriverClass::RunActionCamera(void)
 
             switch ((int)(NRANDPOS * 10.0f))
             {
-                case 0:
-                    mOTWDisplayMode = ModeSatellite;
-                    break;
+            case 0:
+                mOTWDisplayMode = ModeSatellite;
+                break;
 
-                case 3:
-                    mOTWDisplayMode = ModeOrbit;
-                    break;
+            case 3:
+                mOTWDisplayMode = ModeOrbit;
+                break;
 
-                case 1:
-                case 2:
-                case 4:
-                case 5:
-                    mOTWDisplayMode = ModeFlyby;
-                    break;
+            case 1:
+            case 2:
+            case 4:
+            case 5:
+                mOTWDisplayMode = ModeFlyby;
+                break;
 
-                default:
-                    mOTWDisplayMode = ModeChase;
-                    break;
+            default:
+                mOTWDisplayMode = ModeChase;
+                break;
             }
         }
 
@@ -1026,7 +1029,8 @@ void OTWDriverClass::RunActionCamera(void)
     } // end if new object
 
     // don't use orbit cam on ground
-    if ((otwPlatform.get() not_eq NULL) and otwPlatform->OnGround() and mOTWDisplayMode == ModeOrbit)
+    if ((otwPlatform.get() not_eq NULL) and otwPlatform->OnGround() and
+        mOTWDisplayMode == ModeOrbit)
     {
         mOTWDisplayMode = ModeChase;
         SelectExternal();
@@ -1040,8 +1044,7 @@ void OTWDriverClass::RunActionCamera(void)
 
 
     // randomly adjust the FOV
-    if (mOTWDisplayMode == ModeChase or
-        mOTWDisplayMode == ModeFlyby or
+    if (mOTWDisplayMode == ModeChase or mOTWDisplayMode == ModeFlyby or
         mOTWDisplayMode == ModeSatellite)
     {
         // no telefoto when object on ground
@@ -1075,7 +1078,6 @@ void OTWDriverClass::RunActionCamera(void)
             SetFOV(60.0F * DTR);
         }
     }
-
 }
 
 //Wombat778 11-18-04 Run the hybrid 2D/3D pit
@@ -1084,16 +1086,17 @@ void OTWDriverClass::RunHybridPitMode(float pan, float tilt)
 {
     static float lastpan = pan;
     static float lasttilt = tilt;
-    static long  lasttime = vuxRealTime;
+    static long lasttime = vuxRealTime;
 
     if (mOTWDisplayMode == Mode2DCockpit)
     {
-        if (fabs(pan - lastpan) > g_fHybridPitThreshold1 * DTR or fabs(tilt - lasttilt) > g_fHybridPitThreshold1 * DTR)
+        if (fabs(pan - lastpan) > g_fHybridPitThreshold1 * DTR or
+            fabs(tilt - lasttilt) > g_fHybridPitThreshold1 * DTR)
         {
             SetOTWDisplayMode(Mode3DCockpit);
 
             //Wombat778 12-03-04 Reset Hybrid Pit mode
-            if ( not GetHybridPitMode())
+            if (not GetHybridPitMode())
                 ToggleHybridPitMode();
 
             lastpan = pan;
@@ -1104,7 +1107,8 @@ void OTWDriverClass::RunHybridPitMode(float pan, float tilt)
 
     if (mOTWDisplayMode == Mode3DCockpit)
     {
-        if (fabs(pan - lastpan) > g_fHybridPitThreshold2 * DTR or fabs(tilt - lasttilt) > g_fHybridPitThreshold2 * DTR)
+        if (fabs(pan - lastpan) > g_fHybridPitThreshold2 * DTR or
+            fabs(tilt - lasttilt) > g_fHybridPitThreshold2 * DTR)
         {
             lastpan = pan;
             lasttilt = tilt;
@@ -1115,14 +1119,11 @@ void OTWDriverClass::RunHybridPitMode(float pan, float tilt)
             SetOTWDisplayMode(Mode2DCockpit);
 
             //Wombat778 12-03-04 Reset Hybrid Pit mode
-            if ( not GetHybridPitMode())
+            if (not GetHybridPitMode())
                 ToggleHybridPitMode();
         }
-
-
     }
 }
-
 
 
 /*
@@ -1139,14 +1140,14 @@ void OTWDriverClass::RunHybridPitMode(float pan, float tilt)
  ** and HUD interface to ensure that nothing other than the player airplane is used as
  ** "ownship".  Of course this should be done anyway.
  */
-SimBaseClass *OTWDriverClass::FindNextViewObject(
-    FalconEntity *focusObj, SimBaseClass *currObj, ViewFindMode vMode
-)
+SimBaseClass* OTWDriverClass::FindNextViewObject(FalconEntity* focusObj,
+                                                 SimBaseClass* currObj,
+                                                 ViewFindMode vMode)
 {
     SimBaseClass* newObject = NULL;
     SimBaseClass* theObject;
     BOOL foundCurrent = FALSE;
-    SimObjectType *targetPtr;
+    SimObjectType* targetPtr;
 
     // not sure yet, but I think focusObj should be non-NULL
     if (focusObj == NULL)
@@ -1165,73 +1166,25 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
         // for an object that meets the criteria for that mode.
         switch (vMode)
         {
-                // look for flying weapons belonging to focusObj
-            case NEXT_WEAPON:
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
+            // look for flying weapons belonging to focusObj
+        case NEXT_WEAPON:
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
 
-                while (theObject)
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsSim() and theObject->IsWeapon() and
+                    ((SimWeaponClass*)theObject)->Parent() == focusObj)
                 {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() and theObject->IsWeapon() and 
-                        ((SimWeaponClass*)theObject)->Parent() == focusObj)
+                    // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
+                    if (not(theObject->IsBomb() and
+                            (((BombClass*)theObject)
+                                 ->IsSetBombFlag(BombClass::IsChaff) or
+                             ((BombClass*)theObject)
+                                 ->IsSetBombFlag(BombClass::IsFlare))))
                     {
-                        // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) or ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
-                        {
-                            // END OF ADDED SECTION 2002-02-15
-                            // is this the same as current?
-                            if (theObject == currObj)
-                            {
-                                foundCurrent = TRUE;
-                            }
-                            // else, is this the first found prior to current?
-                            else if (newObject == NULL and foundCurrent == FALSE)
-                            {
-                                newObject = theObject;
-                            }
-                            // else, if we've already found the current one, this
-                            // object must be the next one after current, we're done
-                            else if (foundCurrent == TRUE)
-                            {
-                                newObject = theObject;
-                                break;
-                            }
-                        }
-                    }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-                // did we find a match?
-                if (newObject)
-                {
-                    // get target pointer
-                    targetPtr = ((SimMoverClass *)newObject)->targetPtr;
-
-                    // if the object's got a target, set it as the tracked
-                    // object, otherwise set track platform to NULL
-                    if (targetPtr)
-                        SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
-                    else
-                        SetTrackPlatform(NULL);
-                }
-
-                break;
-
-                // look for friendly aircraft
-            case NEXT_AIR_FRIEND:
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
-                        theObject not_eq focusObj and 
-                        theObject->GetTeam() == focusObj->GetTeam())
-                    {
+                        // END OF ADDED SECTION 2002-02-15
                         // is this the same as current?
                         if (theObject == currObj)
                         {
@@ -1250,33 +1203,230 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                             break;
                         }
                     }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
                 }
 
-                break;
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
 
-                // look for enemy aircraft
-            case NEXT_AIR_ENEMY:
+            // did we find a match?
+            if (newObject)
+            {
+                // get target pointer
+                targetPtr = ((SimMoverClass*)newObject)->targetPtr;
 
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
+                // if the object's got a target, set it as the tracked
+                // object, otherwise set track platform to NULL
+                if (targetPtr)
+                    SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
+                else
+                    SetTrackPlatform(NULL);
+            }
 
-                while (theObject)
+            break;
+
+            // look for friendly aircraft
+        case NEXT_AIR_FRIEND:
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if ((theObject->IsAirplane() or theObject->IsHelicopter()) and
+                    theObject not_eq focusObj and
+                    theObject->GetTeam() == focusObj->GetTeam())
                 {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
-                        theObject->GetTeam() not_eq focusObj->GetTeam())
+                    // is this the same as current?
+                    if (theObject == currObj)
                     {
+                        foundCurrent = TRUE;
+                    }
+                    // else, is this the first found prior to current?
+                    else if (newObject == NULL and foundCurrent == FALSE)
+                    {
+                        newObject = theObject;
+                    }
+                    // else, if we've already found the current one, this
+                    // object must be the next one after current, we're done
+                    else if (foundCurrent == TRUE)
+                    {
+                        newObject = theObject;
+                        break;
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // look for enemy aircraft
+        case NEXT_AIR_ENEMY:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if ((theObject->IsAirplane() or theObject->IsHelicopter()) and
+                    theObject->GetTeam() not_eq focusObj->GetTeam())
+                {
+                    // is this the same as current?
+                    if (theObject == currObj)
+                    {
+                        foundCurrent = TRUE;
+                    }
+                    // else, is this the first found prior to current?
+                    else if (newObject == NULL and foundCurrent == FALSE)
+                    {
+                        newObject = theObject;
+                    }
+                    // else, if we've already found the current one, this
+                    // object must be the next one after current, we're done
+                    else if (foundCurrent == TRUE)
+                    {
+                        newObject = theObject;
+                        break;
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // look for friendly ground vehicle
+        case NEXT_GROUND_FRIEND:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsGroundVehicle() and
+                    theObject->GetTeam() == focusObj->GetTeam())
+                {
+                    // is this the same as current?
+                    if (theObject == currObj)
+                    {
+                        foundCurrent = TRUE;
+                    }
+                    // else, is this the first found prior to current?
+                    else if (newObject == NULL and foundCurrent == FALSE)
+                    {
+                        newObject = theObject;
+                    }
+                    // else, if we've already found the current one, this
+                    // object must be the next one after current, we're done
+                    else if (foundCurrent == TRUE)
+                    {
+                        newObject = theObject;
+                        break;
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // look for enemy ground
+            // edg note: this now looks for ANY enemy
+            // s.g. note: not anymore since I added the NEXT_ENEMY mode.
+        case NEXT_GROUND_ENEMY:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsGroundVehicle() and
+                    theObject->GetTeam() not_eq focusObj->GetTeam())
+                // if ( theObject->GetTeam() not_eq focusObj->GetTeam() ) // 2002-02-16 MODIFIED BY S.G. NEXT_ENEMY handles now both air and ground so fixate this one on ground only...
+                {
+                    // is this the same as current?
+                    if (theObject == currObj)
+                    {
+                        foundCurrent = TRUE;
+                    }
+                    // else, is this the first found prior to current?
+                    else if (newObject == NULL and foundCurrent == FALSE)
+                    {
+                        newObject = theObject;
+                    }
+                    // else, if we've already found the current one, this
+                    // object must be the next one after current, we're done
+                    else if (foundCurrent == TRUE)
+                    {
+                        newObject = theObject;
+                        break;
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // 2002-02-16 ADDED BY S.G. look for any enemy
+        case NEXT_ENEMY:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->GetTeam() not_eq focusObj->GetTeam())
+                {
+                    // 2002-02-25 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
+                    if (not(theObject->IsBomb() and
+                            (((BombClass*)theObject)
+                                 ->IsSetBombFlag(BombClass::IsChaff) or
+                             ((BombClass*)theObject)
+                                 ->IsSetBombFlag(BombClass::IsFlare))))
+                    {
+                        // END OF ADDED SECTION 2002-02-25
                         // is this the same as current?
                         if (theObject == currObj)
                         {
@@ -1295,220 +1445,80 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
                             break;
                         }
                     }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
                 }
 
-                break;
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
 
-                // look for friendly ground vehicle
-            case NEXT_GROUND_FRIEND:
 
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
 
-                while (theObject)
+            break;
+
+            // look for flying weapons that have us pinned
+        case NEXT_INCOMING:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsSim() and theObject->IsMissile() and
+                    ((SimMoverClass*)theObject)->targetPtr and
+                    ((SimMoverClass*)theObject)->targetPtr->BaseData() ==
+                        focusObj)
                 {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() and 
-                        theObject->GetTeam() == focusObj->GetTeam())
+                    // is this the same as current?
+                    if (theObject == currObj)
                     {
-                        // is this the same as current?
-                        if (theObject == currObj)
-                        {
-                            foundCurrent = TRUE;
-                        }
-                        // else, is this the first found prior to current?
-                        else if (newObject == NULL and foundCurrent == FALSE)
-                        {
-                            newObject = theObject;
-                        }
-                        // else, if we've already found the current one, this
-                        // object must be the next one after current, we're done
-                        else if (foundCurrent == TRUE)
-                        {
-                            newObject = theObject;
-                            break;
-                        }
+                        foundCurrent = TRUE;
                     }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
-                }
-
-                break;
-
-                // look for enemy ground
-                // edg note: this now looks for ANY enemy
-                // s.g. note: not anymore since I added the NEXT_ENEMY mode.
-            case NEXT_GROUND_ENEMY:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() and 
-                        theObject->GetTeam() not_eq focusObj->GetTeam())
-                        // if ( theObject->GetTeam() not_eq focusObj->GetTeam() ) // 2002-02-16 MODIFIED BY S.G. NEXT_ENEMY handles now both air and ground so fixate this one on ground only...
+                    // else, is this the first found prior to current?
+                    else if (newObject == NULL and foundCurrent == FALSE)
                     {
-                        // is this the same as current?
-                        if (theObject == currObj)
-                        {
-                            foundCurrent = TRUE;
-                        }
-                        // else, is this the first found prior to current?
-                        else if (newObject == NULL and foundCurrent == FALSE)
-                        {
-                            newObject = theObject;
-                        }
-                        // else, if we've already found the current one, this
-                        // object must be the next one after current, we're done
-                        else if (foundCurrent == TRUE)
-                        {
-                            newObject = theObject;
-                            break;
-                        }
+                        newObject = theObject;
                     }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
-                }
-
-                break;
-
-                // 2002-02-16 ADDED BY S.G. look for any enemy
-            case NEXT_ENEMY:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->GetTeam() not_eq focusObj->GetTeam())
+                    // else, if we've already found the current one, this
+                    // object must be the next one after current, we're done
+                    else if (foundCurrent == TRUE)
                     {
-                        // 2002-02-25 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) or ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
-                        {
-                            // END OF ADDED SECTION 2002-02-25
-                            // is this the same as current?
-                            if (theObject == currObj)
-                            {
-                                foundCurrent = TRUE;
-                            }
-                            // else, is this the first found prior to current?
-                            else if (newObject == NULL and foundCurrent == FALSE)
-                            {
-                                newObject = theObject;
-                            }
-                            // else, if we've already found the current one, this
-                            // object must be the next one after current, we're done
-                            else if (foundCurrent == TRUE)
-                            {
-                                newObject = theObject;
-                                break;
-                            }
-                        }
+                        newObject = theObject;
+                        break;
                     }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
                 }
 
-                break;
-
-                // look for flying weapons that have us pinned
-            case NEXT_INCOMING:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() and theObject->IsMissile() and 
-                        ((SimMoverClass *)theObject)->targetPtr and 
-                        ((SimMoverClass *)theObject)->targetPtr->BaseData() == focusObj)
-                    {
-                        // is this the same as current?
-                        if (theObject == currObj)
-                        {
-                            foundCurrent = TRUE;
-                        }
-                        // else, is this the first found prior to current?
-                        else if (newObject == NULL and foundCurrent == FALSE)
-                        {
-                            newObject = theObject;
-                        }
-                        // else, if we've already found the current one, this
-                        // object must be the next one after current, we're done
-                        else if (foundCurrent == TRUE)
-                        {
-                            newObject = theObject;
-                            break;
-                        }
-                    }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
 
 
-                // did we find a match?
-                if (newObject)
-                {
-                    // get target pointer
-                    targetPtr = ((SimMoverClass *)newObject)->targetPtr;
+            // did we find a match?
+            if (newObject)
+            {
+                // get target pointer
+                targetPtr = ((SimMoverClass*)newObject)->targetPtr;
 
-                    // if the object's got a target, set it as the tracked
-                    // object, otherwise set track platform to NULL
-                    if (targetPtr)
-                        SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
-                    else
-                        SetTrackPlatform(NULL);
-                }
+                // if the object's got a target, set it as the tracked
+                // object, otherwise set track platform to NULL
+                if (targetPtr)
+                    SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
+                else
+                    SetTrackPlatform(NULL);
+            }
 
-                break;
+            break;
 
 
-                // probably should assert here.
-            default:
-                break;
+            // probably should assert here.
+        default:
+            break;
         }
     }
     else // step in backwards direction
@@ -1518,325 +1528,333 @@ SimBaseClass *OTWDriverClass::FindNextViewObject(
         // for an object that meets the criteria for that mode.
         switch (vMode)
         {
-                // look for flying weapons belonging to focusObj
-            case NEXT_WEAPON:
+            // look for flying weapons belonging to focusObj
+        case NEXT_WEAPON:
 
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
 
-                while (theObject)
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsSim() and theObject->IsWeapon() and
+                    ((SimWeaponClass*)theObject)->Parent() == focusObj)
                 {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() and theObject->IsWeapon() and 
-                        ((SimWeaponClass*)theObject)->Parent() == focusObj)
+                    // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
+                    if (not(theObject->IsBomb() and
+                            (((BombClass*)theObject)
+                                 ->IsSetBombFlag(BombClass::IsFlare bitor
+                                                 BombClass::IsChaff))))
                     {
-                        // 2002-02-15 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare bitor BombClass::IsChaff))))
+                        // END OF ADDED SECTION 2002-02-15
+                        // is this the same as current?
+                        // if we've got a newObject we're done
+                        if (theObject == currObj and newObject)
                         {
-                            // END OF ADDED SECTION 2002-02-15
-                            // is this the same as current?
-                            // if we've got a newObject we're done
-                            if (theObject == currObj and newObject)
-                            {
-                                break;
-                            }
-                            // else assign new object -- we always want the last
-                            // one found either prior to current object or after
-                            // current object
-                            else
-                            {
-                                newObject = theObject;
-                            }
+                            break;
+                        }
+                        // else assign new object -- we always want the last
+                        // one found either prior to current object or after
+                        // current object
+                        else
+                        {
+                            newObject = theObject;
                         }
                     }
+                }
 
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
 
 
-                // did we find a match?
-                if (newObject)
+            // did we find a match?
+            if (newObject)
+            {
+                // get target pointer
+                targetPtr = ((SimMoverClass*)newObject)->targetPtr;
+
+                // if the object's got a target, set it as the tracked
+                // object, otherwise set track platform to NULL
+                if (targetPtr)
+                    SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
+                else
+                    SetTrackPlatform(NULL);
+            }
+
+            break;
+
+            // look for friendly aircraft
+        case NEXT_AIR_FRIEND:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if ((theObject->IsAirplane() or theObject->IsHelicopter()) and
+                    theObject not_eq focusObj and
+                    // not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
+                    theObject->GetTeam() == focusObj->GetTeam())
                 {
-                    // get target pointer
-                    targetPtr = ((SimMoverClass *)newObject)->targetPtr;
-
-                    // if the object's got a target, set it as the tracked
-                    // object, otherwise set track platform to NULL
-                    if (targetPtr)
-                        SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
+                    // is this the same as current?
+                    // if we've got a newObject we're done
+                    if (theObject == currObj and newObject)
+                    {
+                        break;
+                    }
+                    // else assign new object -- we always want the last
+                    // one found either prior to current object or after
+                    // current object
                     else
-                        SetTrackPlatform(NULL);
+                    {
+                        newObject = theObject;
+                    }
                 }
 
-                break;
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
 
-                // look for friendly aircraft
-            case NEXT_AIR_FRIEND:
 
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
 
-                while (theObject)
+            break;
+
+            // look for enemy aircraft
+        case NEXT_AIR_ENEMY:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if ((theObject->IsAirplane() or theObject->IsHelicopter()) and
+                    not theObject
+                            ->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
+                    theObject->GetTeam() not_eq focusObj->GetTeam())
                 {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
-                        theObject not_eq focusObj and 
-                        // not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots REMOVED FOR NOW
-                        theObject->GetTeam() == focusObj->GetTeam())
+                    // is this the same as current?
+                    // if we've got a newObject we're done
+                    if (theObject == currObj and newObject)
                     {
-                        // is this the same as current?
-                        // if we've got a newObject we're done
-                        if (theObject == currObj and newObject)
-                        {
-                            break;
-                        }
-                        // else assign new object -- we always want the last
-                        // one found either prior to current object or after
-                        // current object
-                        else
-                        {
-                            newObject = theObject;
-                        }
+                        break;
                     }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
-                }
-
-                break;
-
-                // look for enemy aircraft
-            case NEXT_AIR_ENEMY:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if ((theObject->IsAirplane() or theObject->IsHelicopter()) and 
- not theObject->IsEject() and // 2002-02-12 ADDED BY S.G. Make sure we are skipping ejected pilots
-                        theObject->GetTeam() not_eq focusObj->GetTeam())
-                    {
-                        // is this the same as current?
-                        // if we've got a newObject we're done
-                        if (theObject == currObj and newObject)
-                        {
-                            break;
-                        }
-                        // else assign new object -- we always want the last
-                        // one found either prior to current object or after
-                        // current object
-                        else
-                        {
-                            newObject = theObject;
-                        }
-                    }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
-                }
-
-                break;
-
-                // look for friendly ground vehicle
-            case NEXT_GROUND_FRIEND:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() and 
-                        theObject->GetTeam() == focusObj->GetTeam())
-                    {
-                        // is this the same as current?
-                        // if we've got a newObject we're done
-                        if (theObject == currObj and newObject)
-                        {
-                            break;
-                        }
-                        // else assign new object -- we always want the last
-                        // one found either prior to current object or after
-                        // current object
-                        else
-                        {
-                            newObject = theObject;
-                        }
-                    }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
-                }
-
-                break;
-
-                // look for enemy ground
-            case NEXT_GROUND_ENEMY:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsGroundVehicle() and 
-                        theObject->GetTeam() not_eq focusObj->GetTeam())
-                    {
-                        // is this the same as current?
-                        // if we've got a newObject we're done
-                        if (theObject == currObj and newObject)
-                        {
-                            break;
-                        }
-                        // else assign new object -- we always want the last
-                        // one found either prior to current object or after
-                        // current object
-                        else
-                        {
-                            newObject = theObject;
-                        }
-                    }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
-                }
-
-                break;
-
-                // 2002-02-16 ADDED BY S.G. look for any enemy
-            case NEXT_ENEMY:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->GetTeam() not_eq focusObj->GetTeam())
-                    {
-                        // is this the same as current?
-                        // if we've got a newObject we're done
-                        // 2002-02-25 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
-                        if ( not (theObject->IsBomb() and (((BombClass *)theObject)->IsSetBombFlag(BombClass::IsChaff) or ((BombClass *)theObject)->IsSetBombFlag(BombClass::IsFlare))))
-                        {
-                            // END OF ADDED SECTION 2002-02-25
-                            if (theObject == currObj and newObject)
-                            {
-                                break;
-                            }
-                            // else assign new object -- we always want the last
-                            // one found either prior to current object or after
-                            // current object
-                            else
-                            {
-                                newObject = theObject;
-                            }
-                        }
-                    }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    ShiAssert(focusObj->IsSim());
-                    SetTrackPlatform((SimBaseClass*)focusObj);
-                }
-
-                break;
-
-                // look for flying weapons that have us pinned
-            case NEXT_INCOMING:
-
-                // walk the update list
-                theObject = (SimBaseClass*)updateWalker.GetFirst();
-
-                while (theObject)
-                {
-                    // is this an object( missile or bomb) owned by focus obj?
-                    if (theObject->IsSim() and 
-                        theObject->IsMissile() and 
-                        ((SimMoverClass *)theObject)->targetPtr and 
-                        ((SimMoverClass *)theObject)->targetPtr->BaseData() == focusObj)
-                    {
-                        // is this the same as current?
-                        // if we've got a newObject we're done
-                        if (theObject == currObj and newObject)
-                        {
-                            break;
-                        }
-                        // else assign new object -- we always want the last
-                        // one found either prior to current object or after
-                        // current object
-                        else
-                        {
-                            newObject = theObject;
-                        }
-                    }
-
-                    // get next object in list
-                    theObject = (SimBaseClass*)updateWalker.GetNext();
-                } // end while the object
-
-
-                // did we find a match?
-                if (newObject)
-                {
-                    // get target pointer
-                    targetPtr = ((SimMoverClass *)newObject)->targetPtr;
-
-                    // if the object's got a target, set it as the tracked
-                    // object, otherwise set track platform to NULL
-                    if (targetPtr)
-                        SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
+                    // else assign new object -- we always want the last
+                    // one found either prior to current object or after
+                    // current object
                     else
-                        SetTrackPlatform(NULL);
+                    {
+                        newObject = theObject;
+                    }
                 }
 
-                break;
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
 
 
-                // probably should assert here.
-            default:
-                break;
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // look for friendly ground vehicle
+        case NEXT_GROUND_FRIEND:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsGroundVehicle() and
+                    theObject->GetTeam() == focusObj->GetTeam())
+                {
+                    // is this the same as current?
+                    // if we've got a newObject we're done
+                    if (theObject == currObj and newObject)
+                    {
+                        break;
+                    }
+                    // else assign new object -- we always want the last
+                    // one found either prior to current object or after
+                    // current object
+                    else
+                    {
+                        newObject = theObject;
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // look for enemy ground
+        case NEXT_GROUND_ENEMY:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsGroundVehicle() and
+                    theObject->GetTeam() not_eq focusObj->GetTeam())
+                {
+                    // is this the same as current?
+                    // if we've got a newObject we're done
+                    if (theObject == currObj and newObject)
+                    {
+                        break;
+                    }
+                    // else assign new object -- we always want the last
+                    // one found either prior to current object or after
+                    // current object
+                    else
+                    {
+                        newObject = theObject;
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // 2002-02-16 ADDED BY S.G. look for any enemy
+        case NEXT_ENEMY:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->GetTeam() not_eq focusObj->GetTeam())
+                {
+                    // is this the same as current?
+                    // if we've got a newObject we're done
+                    // 2002-02-25 ADDED BY S.G. Don't toggle to chaff and flares (NOTE THE '!' AT THE FRONT TO REVERSE THE CONDITION)
+                    if (not(theObject->IsBomb() and
+                            (((BombClass*)theObject)
+                                 ->IsSetBombFlag(BombClass::IsChaff) or
+                             ((BombClass*)theObject)
+                                 ->IsSetBombFlag(BombClass::IsFlare))))
+                    {
+                        // END OF ADDED SECTION 2002-02-25
+                        if (theObject == currObj and newObject)
+                        {
+                            break;
+                        }
+                        // else assign new object -- we always want the last
+                        // one found either prior to current object or after
+                        // current object
+                        else
+                        {
+                            newObject = theObject;
+                        }
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                ShiAssert(focusObj->IsSim());
+                SetTrackPlatform((SimBaseClass*)focusObj);
+            }
+
+            break;
+
+            // look for flying weapons that have us pinned
+        case NEXT_INCOMING:
+
+            // walk the update list
+            theObject = (SimBaseClass*)updateWalker.GetFirst();
+
+            while (theObject)
+            {
+                // is this an object( missile or bomb) owned by focus obj?
+                if (theObject->IsSim() and theObject->IsMissile() and
+                    ((SimMoverClass*)theObject)->targetPtr and
+                    ((SimMoverClass*)theObject)->targetPtr->BaseData() ==
+                        focusObj)
+                {
+                    // is this the same as current?
+                    // if we've got a newObject we're done
+                    if (theObject == currObj and newObject)
+                    {
+                        break;
+                    }
+                    // else assign new object -- we always want the last
+                    // one found either prior to current object or after
+                    // current object
+                    else
+                    {
+                        newObject = theObject;
+                    }
+                }
+
+                // get next object in list
+                theObject = (SimBaseClass*)updateWalker.GetNext();
+            } // end while the object
+
+
+            // did we find a match?
+            if (newObject)
+            {
+                // get target pointer
+                targetPtr = ((SimMoverClass*)newObject)->targetPtr;
+
+                // if the object's got a target, set it as the tracked
+                // object, otherwise set track platform to NULL
+                if (targetPtr)
+                    SetTrackPlatform((SimBaseClass*)targetPtr->BaseData());
+                else
+                    SetTrackPlatform(NULL);
+            }
+
+            break;
+
+
+            // probably should assert here.
+        default:
+            break;
         }
     }
 
@@ -1868,16 +1886,14 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
         return;
     }
 
-    ShiAssert( not IsShutdown());
+    ShiAssert(not IsShutdown());
 
     // check for bad position of object and reject -- a bandaid
     if (obj)
     {
-        if (
-            _isnan(obj->XPos()) or not _finite(obj->XPos()) or
+        if (_isnan(obj->XPos()) or not _finite(obj->XPos()) or
             _isnan(obj->YPos()) or not _finite(obj->YPos()) or
-            _isnan(obj->ZPos()) or not _finite(obj->ZPos())
-        )
+            _isnan(obj->ZPos()) or not _finite(obj->ZPos()))
         {
             return;
         }
@@ -1908,7 +1924,7 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
     if (otwPlatform.get() not_eq NULL)
     {
         // Make sure there is a cockpit up
-        if ( not curPlatform)
+        if (not curPlatform)
         {
             SetOTWDisplayMode(Mode2DCockpit);
         }
@@ -1926,7 +1942,8 @@ void OTWDriverClass::SetGraphicsOwnship(SimBaseClass* obj)
         //VuReferenceEntity (otwPlatform);
 
         //if (otwPlatform->IsLocal() and otwPlatform->IsSetFlag(MOTION_OWNSHIP) and otwPlatform->IsAirplane())
-        if ((otwPlatform.get() == SimDriver.GetPlayerAircraft()) and otwPlatform->IsAirplane())
+        if ((otwPlatform.get() == SimDriver.GetPlayerAircraft()) and
+            otwPlatform->IsAirplane())
         {
             avionicsObj = static_cast<AircraftClass*>(otwPlatform.get());
             // MLR 12/1/2003 - Exports the old EyeFromCG stuff
@@ -1985,7 +2002,7 @@ void OTWDriverClass::Enter(void)
     F4SoundEntering3d(); // MLR 12/13/2003 - Just inits some data for the sound code
 
     gOtwCameraLocation = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
-    vuDatabase->/*Quick*/Insert(gOtwCameraLocation);
+    vuDatabase->/*Quick*/ Insert(gOtwCameraLocation);
 
     // try shrinking the default pool for better memory compactness
 #ifdef USE_SH_POOLS
@@ -1994,7 +2011,7 @@ void OTWDriverClass::Enter(void)
     if (MemDefaultPool)
     {
         // MonoPrint( "Shrinking Default Memory Pool by %d Bytes\n",
-        MemPoolShrink(MemDefaultPool)/* )*/;
+        MemPoolShrink(MemDefaultPool) /* )*/;
     }
 
 #else
@@ -2015,11 +2032,9 @@ void OTWDriverClass::Enter(void)
     OTWWin = FalconDisplay.appWin;
     SetResolution(FalconDisplayConfiguration::Sim);
 
-    FalconDisplay.EnterMode(
-        FalconDisplayConfiguration::Sim,
-        DisplayOptions.DispVideoCard,
-        DisplayOptions.DispVideoDriver
-    );
+    FalconDisplay.EnterMode(FalconDisplayConfiguration::Sim,
+                            DisplayOptions.DispVideoCard,
+                            DisplayOptions.DispVideoDriver);
 
     OTWImage = FalconDisplay.GetImageBuffer();
 
@@ -2040,11 +2055,11 @@ void OTWDriverClass::Enter(void)
     memset(textMessage, 0, sizeof(textMessage));
     showFrontText = 0;
 
-    if ( not flyingEye)
+    if (not flyingEye)
     {
         // create a special "Flying Eye" type..
         flyingEye = new SpotEntity(F4FlyingEyeType + VU_LAST_ENTITY_TYPE);
-        vuDatabase->/*Quick*/Insert(flyingEye);
+        vuDatabase->/*Quick*/ Insert(flyingEye);
     }
 
     //   MonoPrint("Doing DeviceDependentGraphicsSetup... %d\n",vuxRealTime);
@@ -2068,9 +2083,9 @@ void OTWDriverClass::Enter(void)
     viewPoint = new RViewPoint;
 
     //JAM 13Dec03
-    viewPoint->Setup(
-        PlayerOptions.TerrainDistance()*FEET_PER_KM, PlayerOptions.MaxTerrainLevel(), 4, DisplayOptions.bZBuffering
-    );
+    viewPoint->Setup(PlayerOptions.TerrainDistance() * FEET_PER_KM,
+                     PlayerOptions.MaxTerrainLevel(), 4,
+                     DisplayOptions.bZBuffering);
 
     bKeepClean = FALSE; // JB 010616
 
@@ -2096,7 +2111,7 @@ void OTWDriverClass::Enter(void)
     // COBRA - DX - Switching btw Old and New Engine - Initialize DX Engine and VB Manager
     if (g_bUse_DX_Engine)
     {
-        TheVbManager.Setup();   // #34 C1: D3D7 device arg removed
+        TheVbManager.Setup(); // #34 C1: D3D7 device arg removed
     }
 
     SetupSplashScreen();
@@ -2111,16 +2126,16 @@ void OTWDriverClass::Enter(void)
     TCHAR* eCPName = NULL;
     TCHAR* eCPNameNCTR = NULL;
 
-    FlightClass *pFlight = FalconLocalSession->GetPlayerFlight();
+    FlightClass* pFlight = FalconLocalSession->GetPlayerFlight();
 
     if (pFlight)
     {
-        int vid = pFlight->GetVehicleID(0);  // CT number
-        Falcon4EntityClassType *pClass = &Falcon4ClassTable[vid];
+        int vid = pFlight->GetVehicleID(0); // CT number
+        Falcon4EntityClassType* pClass = &Falcon4ClassTable[vid];
 
         if (pClass)
         {
-            eCPVisType = (Vis_Types) pClass->visType[0]; // Parent Normal number
+            eCPVisType = (Vis_Types)pClass->visType[0]; // Parent Normal number
 
             if (pClass->dataPtr)
             {
@@ -2150,9 +2165,9 @@ void OTWDriverClass::Enter(void)
     cameraRot = IMatrix;
 
     // Update object position
-    viewPos.x     = 110000.0F;
-    viewPos.y     = 137000.0F;
-    viewPos.z     = -15000.0F;
+    viewPos.x = 110000.0F;
+    viewPos.y = 137000.0F;
+    viewPos.z = -15000.0F;
 
     // Initialize the cockpit manager for the 2D cockpit
     ////////////////////////////////////////////////////////////////////////////////
@@ -2182,34 +2197,35 @@ void OTWDriverClass::Enter(void)
     char strCPFile[MAX_PATH];
 
     // RV - Biker - Don't use fallback for widescreen stuff because this will cause problems
-    FindCockpit("ckpit_res.dat", (Vis_Types)eCPVisType, eCPName, eCPNameNCTR, strCPFile, FALSE);
+    FindCockpit("ckpit_res.dat", (Vis_Types)eCPVisType, eCPName, eCPNameNCTR,
+                strCPFile, FALSE);
 
-    FILE *pcockpitResFile = fopen(strCPFile, "r");
+    FILE* pcockpitResFile = fopen(strCPFile, "r");
 
     if (pcockpitResFile not_eq NULL)
     {
         const int lineLen = MAX_LINE_BUFFER - 1;
         char plineBuffer[MAX_LINE_BUFFER] = "";
         char* plinePtr;
-		char* ptoken = NULL;
+        char* ptoken = NULL;
         char pseparators[] = {0x20, 0x2c, 0x3d, 0x3b, 0x0d, 0x0a, 0x09, 0x00};
 
-        if ( not feof(pcockpitResFile))
+        if (not feof(pcockpitResFile))
         {
             fgets(plineBuffer, lineLen, pcockpitResFile);
             plinePtr = plineBuffer;
             ptoken = FindToken(&plinePtr, pseparators);
         }
 
-        while ( not feof(pcockpitResFile) and strcmpi(ptoken, END_MARKER))
+        while (not feof(pcockpitResFile) and strcmpi(ptoken, END_MARKER))
         {
-            if ( not strcmpi(ptoken, "resX"))
+            if (not strcmpi(ptoken, "resX"))
             {
                 ptoken = FindToken(&plinePtr, pseparators);
                 sscanf(ptoken, "%d", &resX);
             }
 
-            if ( not strcmpi(ptoken, "resY"))
+            if (not strcmpi(ptoken, "resY"))
             {
                 ptoken = FindToken(&plinePtr, pseparators);
                 sscanf(ptoken, "%d", &resY);
@@ -2225,173 +2241,399 @@ void OTWDriverClass::Enter(void)
 
     if (resX > 0 and resY > 0)
     {
-        pCockpitManager = new CockpitManager(OTWImage, "ws_ckpit.dat", TRUE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
-        pPadlockCPManager = new CockpitManager(OTWImage, "ws_plock.dat", FALSE, (float)DisplayOptions.DispWidth / float(resX), DisplayOptions.DispHeight / float(resY), FALSE, eCPVisType, eCPName, eCPNameNCTR);
+        pCockpitManager =
+            new CockpitManager(OTWImage, "ws_ckpit.dat", TRUE,
+                               (float)DisplayOptions.DispWidth / float(resX),
+                               DisplayOptions.DispHeight / float(resY), FALSE,
+                               eCPVisType, eCPName, eCPNameNCTR);
+        pPadlockCPManager =
+            new CockpitManager(OTWImage, "ws_plock.dat", FALSE,
+                               (float)DisplayOptions.DispWidth / float(resX),
+                               DisplayOptions.DispHeight / float(resY), FALSE,
+                               eCPVisType, eCPName, eCPNameNCTR);
     }
     else
     {
         if (FindBestResolution() == 640)
         {
-            switch (FindCockpitResolution(COCKPIT_FILE_6x4, COCKPIT_FILE_8x6, COCKPIT_FILE_10x7, COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, eCPVisType, eCPName, eCPNameNCTR))
+            switch (FindCockpitResolution(COCKPIT_FILE_6x4, COCKPIT_FILE_8x6,
+                                          COCKPIT_FILE_10x7, COCKPIT_FILE_12x9,
+                                          COCKPIT_FILE_16x12, eCPVisType,
+                                          eCPName, eCPNameNCTR))
             {
-                case 2:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 2:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
 
-                case 3:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 3:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_10x7, TRUE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_10x7, FALSE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 4:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 4:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_12x9, TRUE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_12x9, FALSE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 5:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 5:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_16x12, TRUE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_16x12, FALSE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                default:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            default:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
             }
         }
         else if (FindBestResolution() == 800)
         {
-            switch (FindCockpitResolution(COCKPIT_FILE_8x6, COCKPIT_FILE_10x7, COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR))
+            switch (FindCockpitResolution(COCKPIT_FILE_8x6, COCKPIT_FILE_10x7,
+                                          COCKPIT_FILE_12x9, COCKPIT_FILE_16x12,
+                                          COCKPIT_FILE_6x4, eCPVisType, eCPName,
+                                          eCPNameNCTR))
             {
-                default:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            default:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
 
-                case 2:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 2:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_10x7, TRUE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_10x7, FALSE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 3:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f,  FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 3:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_12x9, TRUE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_12x9, FALSE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 4:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f,  FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 4:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_16x12, TRUE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_16x12, FALSE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 5:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 5:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
             }
         }
         else if (FindBestResolution() == 1024)
         {
-            switch (FindCockpitResolution(COCKPIT_FILE_10x7, COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR))
+            switch (FindCockpitResolution(COCKPIT_FILE_10x7, COCKPIT_FILE_12x9,
+                                          COCKPIT_FILE_16x12, COCKPIT_FILE_8x6,
+                                          COCKPIT_FILE_6x4, eCPVisType, eCPName,
+                                          eCPNameNCTR))
             {
-                default:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            default:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_10x7, TRUE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_10x7, FALSE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 2:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 2:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_12x9, TRUE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_12x9, FALSE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 3:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 3:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_16x12, TRUE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_16x12, FALSE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 4:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 4:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
 
-                case 5:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 5:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
             }
         }
         else if (FindBestResolution() == 1280)
         {
-            switch (FindCockpitResolution(COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_10x7, COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR)) //Wombat778 10-12-2003 Changed to use the findcockpitresolution function to make sure that order of loading is right
+            switch (FindCockpitResolution(
+                COCKPIT_FILE_12x9, COCKPIT_FILE_16x12, COCKPIT_FILE_10x7,
+                COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName,
+                eCPNameNCTR)) //Wombat778 10-12-2003 Changed to use the findcockpitresolution function to make sure that order of loading is right
             {
-                case 1:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 1:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_12x9, TRUE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_12x9, FALSE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 2:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1600 pit and scale down to 1280
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 2:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_16x12, TRUE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName,
+                    eCPNameNCTR); //Load 1600 pit and scale down to 1280
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_16x12, FALSE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                default:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1024 pit and scale up to 1280
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            default:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_10x7, TRUE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR); //Load 1024 pit and scale up to 1280
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_10x7, FALSE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 4:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 4:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
 
-                case 5:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
-
+            case 5:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
             }
         }
         else if (FindBestResolution() == 1600)
         {
-            switch (FindCockpitResolution(COCKPIT_FILE_16x12, COCKPIT_FILE_12x9, COCKPIT_FILE_10x7, COCKPIT_FILE_8x6, COCKPIT_FILE_6x4, eCPVisType, eCPName, eCPNameNCTR))
+            switch (FindCockpitResolution(COCKPIT_FILE_16x12, COCKPIT_FILE_12x9,
+                                          COCKPIT_FILE_10x7, COCKPIT_FILE_8x6,
+                                          COCKPIT_FILE_6x4, eCPVisType, eCPName,
+                                          eCPNameNCTR))
             {
-                case 1:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_16x12, TRUE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load the 1600 pit
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_16x12, FALSE, (float)DisplayOptions.DispWidth / 1600.0f, DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 1:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_16x12, TRUE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR); //Load the 1600 pit
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_16x12, FALSE,
+                    (float)DisplayOptions.DispWidth / 1600.0f,
+                    DisplayOptions.DispHeight / 1200.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 2:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_12x9, TRUE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1280 pit and scale up to 1600
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_12x9, FALSE, (float)DisplayOptions.DispWidth / 1280.0f, DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 2:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_12x9, TRUE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR); //Load 1280 pit and scale up to 1600
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_12x9, FALSE,
+                    (float)DisplayOptions.DispWidth / 1280.0f,
+                    DisplayOptions.DispHeight / 960.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                default:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_10x7, TRUE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR); //Load 1024 pit and scale up to 1600
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_10x7, FALSE, (float)DisplayOptions.DispWidth / 1024.0f, DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            default:
+                pCockpitManager = new CockpitManager(
+                    OTWImage, COCKPIT_FILE_10x7, TRUE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR); //Load 1024 pit and scale up to 1600
+                pPadlockCPManager = new CockpitManager(
+                    OTWImage, PADLOCK_FILE_10x7, FALSE,
+                    (float)DisplayOptions.DispWidth / 1024.0f,
+                    DisplayOptions.DispHeight / 768.0f, FALSE, eCPVisType,
+                    eCPName, eCPNameNCTR);
+                break;
 
-                case 4:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, (float)DisplayOptions.DispWidth / 800.0f, DisplayOptions.DispHeight / 600.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 4:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE,
+                                       (float)DisplayOptions.DispWidth / 800.0f,
+                                       DisplayOptions.DispHeight / 600.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
 
-                case 5:
-                    pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE, (float)DisplayOptions.DispWidth / 640.0f, DisplayOptions.DispHeight / 480.0f, FALSE, eCPVisType, eCPName, eCPNameNCTR);
-                    break;
+            case 5:
+                pCockpitManager =
+                    new CockpitManager(OTWImage, COCKPIT_FILE_6x4, TRUE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                pPadlockCPManager =
+                    new CockpitManager(OTWImage, PADLOCK_FILE_6x4, FALSE,
+                                       (float)DisplayOptions.DispWidth / 640.0f,
+                                       DisplayOptions.DispHeight / 480.0f,
+                                       FALSE, eCPVisType, eCPName, eCPNameNCTR);
+                break;
             }
         }
 
         else
         {
             // Unsupported resolution, but fill in w/ 8x6
-            pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6, TRUE, 1.0f, 1.0f, TRUE);
-            pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6, FALSE, 1.0f, 1.0f, TRUE);
+            pCockpitManager = new CockpitManager(OTWImage, COCKPIT_FILE_8x6,
+                                                 TRUE, 1.0f, 1.0f, TRUE);
+            pPadlockCPManager = new CockpitManager(OTWImage, PADLOCK_FILE_8x6,
+                                                   FALSE, 1.0f, 1.0f, TRUE);
             startMode = ModeHud;
         }
     }
 
-    pMenuManager = new MenuManager(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
+    pMenuManager =
+        new MenuManager(DisplayOptions.DispWidth, DisplayOptions.DispHeight);
 
     TheHud = new HudClass;
     theLantirn = new LantirnClass;
@@ -2401,21 +2643,22 @@ void OTWDriverClass::Enter(void)
     MfdSize = 154 * DisplayOptions.DispHeight / 480;
 
     if (g_bEnableMfdSize)
-        MfdSize = (int)((g_fMfd_p_Size / 100.0F) * 154.0F) * DisplayOptions.DispHeight / 480; //a.s.
+        MfdSize = (int)((g_fMfd_p_Size / 100.0F) * 154.0F) *
+                  DisplayOptions.DispHeight / 480; //a.s.
 
-    VirtualMFD[0].top    = DisplayOptions.DispHeight - MfdSize;
-    VirtualMFD[0].right  = MfdSize - 1;
+    VirtualMFD[0].top = DisplayOptions.DispHeight - MfdSize;
+    VirtualMFD[0].right = MfdSize - 1;
     VirtualMFD[0].bottom = DisplayOptions.DispHeight - 1;
-    VirtualMFD[1].left   = DisplayOptions.DispWidth - MfdSize;
-    VirtualMFD[1].top    = DisplayOptions.DispHeight - MfdSize;
-    VirtualMFD[1].right  = DisplayOptions.DispWidth - 1;
+    VirtualMFD[1].left = DisplayOptions.DispWidth - MfdSize;
+    VirtualMFD[1].top = DisplayOptions.DispHeight - MfdSize;
+    VirtualMFD[1].right = DisplayOptions.DispWidth - 1;
     VirtualMFD[1].bottom = DisplayOptions.DispHeight - 1;
-    VirtualMFD[2].left   = DisplayOptions.DispWidth - MfdSize;
-    VirtualMFD[2].right  = DisplayOptions.DispWidth - 1;
+    VirtualMFD[2].left = DisplayOptions.DispWidth - MfdSize;
+    VirtualMFD[2].right = DisplayOptions.DispWidth - 1;
     VirtualMFD[2].bottom = MfdSize - 1;
-    VirtualMFD[3].right  = MfdSize - 1;
+    VirtualMFD[3].right = MfdSize - 1;
     VirtualMFD[3].bottom = MfdSize - 1;
-    VirtualMFD[4].right  = MfdSize - 1;
+    VirtualMFD[4].right = MfdSize - 1;
     VirtualMFD[4].bottom = MfdSize - 1;
 
     // RED - Create the drawables shared by the MFDs
@@ -2440,18 +2683,20 @@ void OTWDriverClass::Enter(void)
     vrCockpit->SetSwitchMask(0, 1);
     // else vrCockpit->SetSwitchMask( 0, 0);
 
-    if (PlayerOptions.SimVisualCueMode == VCLiftLine or PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCLiftLine or
+        PlayerOptions.SimVisualCueMode == VCBoth)
         vrCockpit->SetSwitchMask(1, 1);
-    else 
+    else
         vrCockpit->SetSwitchMask(1, 0);
 
-    if (PlayerOptions.SimVisualCueMode == VCReflection or PlayerOptions.SimVisualCueMode == VCBoth)
+    if (PlayerOptions.SimVisualCueMode == VCReflection or
+        PlayerOptions.SimVisualCueMode == VCBoth)
         vrCockpit->SetSwitchMask(3, 1);
-    else 
+    else
         vrCockpit->SetSwitchMask(3, 0);
 
     // Load the f16
-    DrawableBSP::LockAndLoad(vrCockpitModel[2]);  // f16
+    DrawableBSP::LockAndLoad(vrCockpitModel[2]); // f16
 
     // Load the damage f16
     DrawableBSP::LockAndLoad(vrCockpitModel[3]);
@@ -2473,12 +2718,12 @@ void OTWDriverClass::Enter(void)
     renderer->SetFilteringMode(PlayerOptions.FilteringOn());
     renderer->SetObjectDetail(PlayerOptions.ObjectDetailLevel());
     // renderer->SetAlphaMode(PlayerOptions.AlphaOn());
-    renderer->SetObjectTextureState(TRUE);//PlayerOptions.ObjectTexturesOn());
+    renderer->SetObjectTextureState(TRUE); //PlayerOptions.ObjectTexturesOn());
 
     //Get player options
-    doGLOC   = PlayerOptions.BlackoutOn() ? TRUE : FALSE;
+    doGLOC = PlayerOptions.BlackoutOn() ? TRUE : FALSE;
 
-    if ( not PlayerOptions.NameTagsOn())
+    if (not PlayerOptions.NameTagsOn())
     {
         // Make sure name tags are off if they're not allowed
         DrawableBSP::drawLabels = FALSE;
@@ -2518,7 +2763,8 @@ void OTWDriverClass::Enter(void)
         drawSubTitles = false; // Retro 21Dec2003
     }
 
-    if ((g_bPilotEntertainment) and (winamp)) // Retro 3Jan2004 (all) - looking for that winamp window..
+    if ((g_bPilotEntertainment) and
+        (winamp)) // Retro 3Jan2004 (all) - looking for that winamp window..
     {
         winamp->InitWinAmp();
     }
@@ -2744,7 +2990,8 @@ int OTWDriverClass::Exit(void)
     return endAbort;
 }
 
-void OTWDriverClass::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation *viewRotation)
+void OTWDriverClass::ObjectSetData(SimBaseClass* obj, Tpoint* simView,
+                                   Trotation* viewRotation)
 {
     viewRotation->M11 = obj->dmx[0][0];
     viewRotation->M21 = obj->dmx[0][1];
@@ -2761,9 +3008,9 @@ void OTWDriverClass::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation
     //*viewRotation = IMatrix;
 
     // Update object position
-    simView->x     = obj->XPos();
-    simView->y     = obj->YPos();
-    simView->z     = obj->ZPos();
+    simView->x = obj->XPos();
+    simView->y = obj->YPos();
+    simView->z = obj->ZPos();
 
     /*
     // Do we want Control surface data?
@@ -2780,7 +3027,7 @@ void OTWDriverClass::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation
     dataRequest = new FalconSimDataToggle (obj->Id(), FalconLocalGame);
     dataRequest->dataBlock.flag = 1;
     dataRequest->dataBlock.entityID = obj->Id();
-    MonoPrint ("%8ld Requesing Data\n", SimLibElapsedTime);
+    MonoPrint ("%8u Requesing Data\n", SimLibElapsedTime);
     FalconSendMessage (dataRequest,FALSE);
     }
     }
@@ -2790,7 +3037,7 @@ void OTWDriverClass::ObjectSetData(SimBaseClass *obj, Tpoint *simView, Trotation
     dataRequest = new FalconSimDataToggle (obj->Id(), FalconLocalGame);
     dataRequest->dataBlock.flag = -1;
     dataRequest->dataBlock.entityID = obj->Id();
-    MonoPrint ("%8ld Canceling Request\n", SimLibElapsedTime);
+    MonoPrint ("%8u Canceling Request\n", SimLibElapsedTime);
     FalconSendMessage (dataRequest,FALSE);
     }
     }
@@ -2809,10 +3056,12 @@ void OTWDriverClass::InitViewpoint()
 {
     F4EnterCriticalSection(cs_update);
 
-    if ( not viewPoint and not bKeepClean and Texture::IsSetup())
+    if (not viewPoint and not bKeepClean and Texture::IsSetup())
     {
         viewPoint = new RViewPoint;
-        viewPoint->Setup(PlayerOptions.TerrainDistance()*FEET_PER_KM, PlayerOptions.MaxTerrainLevel(), 4, DisplayOptions.bZBuffering);
+        viewPoint->Setup(PlayerOptions.TerrainDistance() * FEET_PER_KM,
+                         PlayerOptions.MaxTerrainLevel(), 4,
+                         DisplayOptions.bZBuffering);
         viewPoint->Update(&ownshipPos);
     }
 
@@ -2821,6 +3070,15 @@ void OTWDriverClass::InitViewpoint()
 
 void OTWDriverClass::CleanViewpoint()
 {
+    // #104 (Linux): EndUI()->UI_Cleanup() calls this during the menu->sim handoff. On Windows the sim
+    // thread's viewpoint Setup is serialized after EndUI (SendMessage marshals to the main thread); on
+    // Linux FF_SendWindowMessage runs inline, so the sim thread already created+is-using the viewpoint
+    // when this ran, deleting it out from under RenderFirstFrame (RViewPoint objectLists -> NULL ->
+    // crash). Skip the teardown during the handoff -- the sim owns/re-inits the viewpoint.
+    extern bool g_bSkipDisplayHandoffCleanup;
+    if (g_bSkipDisplayHandoffCleanup)
+        return;
+
     F4EnterCriticalSection(cs_update);
     bKeepClean = TRUE;
 
@@ -2855,15 +3113,14 @@ int OTWDriverClass::GetGroundType(float x, float y)
 void OTWDriverClass::UpdateCameraFocus()
 {
     BIG_SCALAR
-    focusX,
-    focusY,
-    focusZ;
+    focusX, focusY, focusZ;
     float groundHeight;
 
     otwPlatform->GetFocusPoint(focusX, focusY, focusZ);
 
     flyingEye->SetPosition(focusX, focusY, focusZ);
-    flyingEye->SetYPR(otwPlatform->Yaw(), otwPlatform->Pitch(), otwPlatform->Roll());
+    flyingEye->SetYPR(otwPlatform->Yaw(), otwPlatform->Pitch(),
+                      otwPlatform->Roll());
 
     focusPoint.x = focusX;
     focusPoint.y = focusY;
@@ -2909,7 +3166,7 @@ void OTWDriverClass::FindNewOwnship(void)
             newObject = (SimBaseClass*)updateWalker.GetNext();
         }
 
-        if ( not newObject)
+        if (not newObject)
         {
             // Get the first one
             newObject = (SimBaseClass*)updateWalker.GetFirst();
@@ -2932,7 +3189,7 @@ void OTWDriverClass::FindNewOwnship(void)
             theObject = (SimBaseClass*)updateWalker.GetNext();
         }
 
-        if ( not newObject)
+        if (not newObject)
         {
             // Get the last one
             theObject = (SimBaseClass*)updateWalker.GetFirst();
@@ -2951,7 +3208,8 @@ void OTWDriverClass::FindNewOwnship(void)
 
         // make sure we're no longer in any cockpit-type mode if the
         // newobject isn't playerEntity
-        if (newObject not_eq SimDriver.GetPlayerAircraft() and DisplayInCockpit())
+        if (newObject not_eq SimDriver.GetPlayerAircraft() and
+            DisplayInCockpit())
         {
             SelectDisplayMode(ModeOrbit);
         }
@@ -2967,11 +3225,17 @@ float OTWDriverClass::GetGroundLevel(float x, float y, Tpoint* normal)
     float bestRet = 0.0f;
     int bestLod = 10; // @TODO use MAXLOD
     // best normal and current one
-    Tpoint
-    *bestNormal = (normal == NULL) ? NULL : new Tpoint,
-     *cNormal = (normal == NULL) ? NULL : new Tpoint;
+    Tpoint *bestNormal = (normal == NULL) ? NULL : new Tpoint,
+           *cNormal = (normal == NULL) ? NULL : new Tpoint;
     // x1 = x2;
-#define COPYNORMAL(x1, x2) do { if (x1){ *x1 = *x2; } } while (0)
+#define COPYNORMAL(x1, x2)                                                     \
+    do                                                                         \
+    {                                                                          \
+        if (x1)                                                                \
+        {                                                                      \
+            *x1 = *x2;                                                         \
+        }                                                                      \
+    } while (0)
 
     InitViewpoint();
     F4EnterCriticalSection(cs_update);
@@ -2989,13 +3253,11 @@ float OTWDriverClass::GetGroundLevel(float x, float y, Tpoint* normal)
         // now try remote viewpoints to see if we can get a better one
         F4ScopeLock sl(vmMutex);
 
-        for (
-            std::map < VuBin<FalconSessionEntity>, TViewPoint*>::iterator it = viewpointMap.begin();
-            bestLod > 0 and it not_eq viewpointMap.end();
-            ++it
-        )
+        for (std::map<VuBin<FalconSessionEntity>, TViewPoint*>::iterator it =
+                 viewpointMap.begin();
+             bestLod > 0 and it not_eq viewpointMap.end(); ++it)
         {
-            TViewPoint *v = it->second;
+            TViewPoint* v = it->second;
             int lod;
             float ret = v->GetGroundLevel(x, y, cNormal, &lod);
 
@@ -3038,7 +3300,8 @@ float OTWDriverClass::GetApproxGroundLevel(float x, float y)
 
     if (viewPoint and viewPoint->IsReady())
     {
-        ShiAssert(FALSE == F4IsBadReadPtr(viewPoint, sizeof * viewPoint)); // JPO CTD check
+        ShiAssert(FALSE == F4IsBadReadPtr(viewPoint,
+                                          sizeof *viewPoint)); // JPO CTD check
         float level = viewPoint->GetGroundLevelApproximation(x, y);
         F4LeaveCriticalSection(cs_update);
         return level;
@@ -3049,7 +3312,7 @@ float OTWDriverClass::GetApproxGroundLevel(float x, float y)
     return (0.0F);
 }
 
-void OTWDriverClass::GetAreaFloorAndCeiling(float *floor, float *ceiling)
+void OTWDriverClass::GetAreaFloorAndCeiling(float* floor, float* ceiling)
 {
     InitViewpoint();
 
@@ -3082,10 +3345,8 @@ void OTWDriverClass::RemoveObjectFromDrawList(SimBaseClass* theObject)
 
     F4EnterCriticalSection(cs_update);
 
-    if (
-        viewPoint and viewPoint->IsReady() and // JB 010604
-        theObject->drawPointer->InDisplayList()
-    )
+    if (viewPoint and viewPoint->IsReady() and // JB 010604
+        theObject->drawPointer->InDisplayList())
     {
         viewPoint->RemoveObject(theObject->drawPointer);
 
@@ -3097,11 +3358,9 @@ void OTWDriverClass::RemoveObjectFromDrawList(SimBaseClass* theObject)
          viewPoint->RemoveObject(((MissileClass*)theObject)->trail);
         }*/
 
-        if (
-            theObject->IsGroundVehicle() and 
-            ((GroundClass*)theObject)->truckDrawable and 
-            ((GroundClass*)theObject)->truckDrawable->InDisplayList()
-        )
+        if (theObject->IsGroundVehicle() and
+            ((GroundClass*)theObject)->truckDrawable and
+            ((GroundClass*)theObject)->truckDrawable->InDisplayList())
         {
             viewPoint->RemoveObject(((GroundClass*)theObject)->truckDrawable);
         }
@@ -3123,11 +3382,11 @@ int OTWDriverClass::GetGroundIntersection(euler* dir, vector* pos)
     if (viewPoint)
     {
         // JB 010616
-        mlSinCos(&trigYaw,   dir->yaw);
+        mlSinCos(&trigYaw, dir->yaw);
         mlSinCos(&trigPitch, dir->pitch);
 
-        viewDir.x =  trigYaw.cos * trigPitch.cos;
-        viewDir.y =  trigYaw.sin * trigPitch.cos;
+        viewDir.x = trigYaw.cos * trigPitch.cos;
+        viewDir.y = trigYaw.sin * trigPitch.cos;
         viewDir.z = -trigPitch.sin;
 
         retval = viewPoint->GroundIntersection(&viewDir, &groundPos);
@@ -3146,7 +3405,7 @@ int OTWDriverClass::GetGroundIntersection(euler* dir, vector* pos)
 }
 
 
-int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
+int OTWDriverClass::CheckLOS(FalconEntity* pt1, FalconEntity* pt2)
 {
     Tpoint start, finish;
     // sfr: default value is 1 if terrain is not loadedd
@@ -3156,7 +3415,7 @@ int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
 
     F4EnterCriticalSection(cs_update);
 
-    if (viewPoint)  // JB 010616
+    if (viewPoint) // JB 010616
     {
         start.x = pt1->XPos();
         start.y = pt1->YPos();
@@ -3169,7 +3428,7 @@ int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
         LOS = viewPoint->LineOfSight(&start, &finish);
 
         // 2002-02-26 ADDED BY S.G. No LOS, try the other way around...
-        if ( not LOS)
+        if (not LOS)
         {
             LOS = viewPoint->LineOfSight(&finish, &start);
         }
@@ -3182,7 +3441,7 @@ int OTWDriverClass::CheckLOS(FalconEntity *pt1, FalconEntity *pt2)
     return LOS;
 }
 
-int OTWDriverClass::CheckCloudLOS(FalconEntity *pt1, FalconEntity *pt2)
+int OTWDriverClass::CheckCloudLOS(FalconEntity* pt1, FalconEntity* pt2)
 {
     Tpoint start, finish;
     // sfr: default value 1 if not loaded
@@ -3192,7 +3451,7 @@ int OTWDriverClass::CheckCloudLOS(FalconEntity *pt1, FalconEntity *pt2)
 
     F4EnterCriticalSection(cs_update);
 
-    if (viewPoint)  // JB 010616
+    if (viewPoint) // JB 010616
     {
         start.x = pt1->XPos();
         start.y = pt1->YPos();
@@ -3210,7 +3469,7 @@ int OTWDriverClass::CheckCloudLOS(FalconEntity *pt1, FalconEntity *pt2)
     return LOS;
 }
 
-int OTWDriverClass::CheckCompositLOS(FalconEntity *pt1, FalconEntity *pt2)
+int OTWDriverClass::CheckCompositLOS(FalconEntity* pt1, FalconEntity* pt2)
 {
     Tpoint start, finish;
     // sfr: defalt value 1 if not loaded
@@ -3220,7 +3479,7 @@ int OTWDriverClass::CheckCompositLOS(FalconEntity *pt1, FalconEntity *pt2)
 
     F4EnterCriticalSection(cs_update);
 
-    if (viewPoint)  // JB 010616
+    if (viewPoint) // JB 010616
     {
         start.x = pt1->XPos();
         start.y = pt1->YPos();
@@ -3247,12 +3506,13 @@ void OTWDriverClass::ScrollMessages()
 
     while (i < (MAX_CHAT_LINES) and textMessage[i - 1][0])
     {
-        strncpy(textMessage[i - 1], textMessage[i], sizeof(char)*MAX_CHAT_LENGTH);
+        strncpy(textMessage[i - 1], textMessage[i],
+                sizeof(char) * MAX_CHAT_LENGTH);
         textTimeLeft[i - 1] = textTimeLeft[i];
         i++;
     }
 
-    memset(textMessage[i - 1], 0, sizeof(char)*MAX_CHAT_LENGTH);
+    memset(textMessage[i - 1], 0, sizeof(char) * MAX_CHAT_LENGTH);
     textTimeLeft[i - 1] = 0;
 
     if (textMessage[0][0])
@@ -3293,8 +3553,8 @@ void OTWDriverClass::ShowMessage(char* msg)
     }
 }
 
-void PositandOrientSetData(float x, float y, float z, float pitch, float roll, float yaw,
-                           Tpoint* simView, Trotation* viewRotation)
+void PositandOrientSetData(float x, float y, float z, float pitch, float roll,
+                           float yaw, Tpoint* simView, Trotation* viewRotation)
 {
     float costha, sintha, cosphi, sinphi, cospsi, sinpsi;
 
@@ -3327,13 +3587,12 @@ void DecomposeMatrix(Trotation* matrix, float* pitch, float* roll, float* yaw)
     float tmp1, tmp2;
 
     *pitch = -(float)asin(matrix->M31);
-    tmp1 = max(min(matrix->M21 / (float)cos(*pitch), 1.0F), -1.0F);    // sin
-    tmp2 = max(min(matrix->M11 / (float)cos(*pitch), 1.0F), -1.0F);    // cos
+    tmp1 = max(min(matrix->M21 / (float)cos(*pitch), 1.0F), -1.0F); // sin
+    tmp2 = max(min(matrix->M11 / (float)cos(*pitch), 1.0F), -1.0F); // cos
     *yaw = (float)atan2(tmp1, tmp2);
     tmp1 = max(min(matrix->M32 / (float)cos(*pitch), 1.0F), -1.0F);
 
     *roll = (float)atan2(tmp1, (float)sqrt(1.0F - tmp1 * tmp1));
-
 }
 //Wombat778 4-03-04 Helper to allow scaling to nonstandard resolutions
 
@@ -3356,17 +3615,18 @@ int FindBestResolution(void)
 
 #if NEW_SERVER_VIEWPOINT
 // sfr: viewpoint stuff
-void OTWDriverClass::AddViewpoint(FalconSessionEntity *session)
+void OTWDriverClass::AddViewpoint(FalconSessionEntity* session)
 {
-    FalconGameEntity *g = FalconLocalGame;
-    FalconEntity *e;
+    FalconGameEntity* g = FalconLocalGame;
+    FalconEntity* e;
 
-    if (g == NULL or not g->IsLocal() or session == NULL or ((e = session->GetPlayerEntity()) == NULL))
+    if (g == NULL or not g->IsLocal() or session == NULL or
+        ((e = session->GetPlayerEntity()) == NULL))
     {
         return;
     }
 
-    TViewPoint *vp = new TViewPoint;
+    TViewPoint* vp = new TViewPoint;
     float td = PlayerOptions.TerrainDistance() * FEET_PER_KM;
     float ranges[5];
 
@@ -3380,7 +3640,9 @@ void OTWDriverClass::AddViewpoint(FalconSessionEntity *session)
 
     F4ScopeLock sl(vmMutex);
 
-    if (viewpointMap.insert(std::make_pair(VuBin<FalconSessionEntity>(session), vp)).second == false)
+    if (viewpointMap
+            .insert(std::make_pair(VuBin<FalconSessionEntity>(session), vp))
+            .second == false)
     {
         // insertion failed (duplicate)
         vp->Cleanup();
@@ -3388,7 +3650,7 @@ void OTWDriverClass::AddViewpoint(FalconSessionEntity *session)
     }
 }
 
-void OTWDriverClass::RemoveViewpoint(FalconSessionEntity *session)
+void OTWDriverClass::RemoveViewpoint(FalconSessionEntity* session)
 {
     if (session == NULL)
     {
@@ -3397,11 +3659,12 @@ void OTWDriverClass::RemoveViewpoint(FalconSessionEntity *session)
 
     VuBin<FalconSessionEntity> sb(session);
     F4ScopeLock sl(vmMutex);
-    std::map<VuBin<FalconSessionEntity>, TViewPoint*>::iterator it = viewpointMap.find(sb);
+    std::map<VuBin<FalconSessionEntity>, TViewPoint*>::iterator it =
+        viewpointMap.find(sb);
 
     if (it not_eq viewpointMap.end())
     {
-        TViewPoint *vp = it->second;
+        TViewPoint* vp = it->second;
         vp->Cleanup();
         delete vp;
         viewpointMap.erase(it);
@@ -3412,14 +3675,12 @@ void OTWDriverClass::UpdateViewpoints()
 {
     F4ScopeLock sl(vmMutex);
 
-    for (
-        std::map<VuBin<FalconSessionEntity>, TViewPoint*>::iterator it = viewpointMap.begin();
-        it not_eq viewpointMap.end();
-        ++it
-    )
+    for (std::map<VuBin<FalconSessionEntity>, TViewPoint*>::iterator it =
+             viewpointMap.begin();
+         it not_eq viewpointMap.end(); ++it)
     {
-        TViewPoint *tv = it->second;
-        FalconEntity *fe = it->first->GetPlayerEntity();
+        TViewPoint* tv = it->second;
+        FalconEntity* fe = it->first->GetPlayerEntity();
         Tpoint p;
         p.x = fe->XPos();
         p.y = fe->YPos();

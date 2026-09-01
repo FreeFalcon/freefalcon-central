@@ -6,26 +6,26 @@ void MissileClass::Init2(void)
     float e10, e20, e30, e40;      /* temp. quaternions for init */
     mlTrig trigPsi, trigPhi, trigTheta;
 
-    mlSinCos(&trigPsi,   psi * 0.5F);
-    mlSinCos(&trigPhi,   phi * 0.5F);
+    mlSinCos(&trigPsi, psi * 0.5F);
+    mlSinCos(&trigPhi, phi * 0.5F);
     mlSinCos(&trigTheta, theta * 0.5F);
 
     /*------------------------*/
     /* initialize quaternions */
     /*------------------------*/
-    e10 = trigPsi.cos * trigTheta.cos * trigPhi.cos
-          + trigPsi.sin * trigTheta.sin * trigPhi.sin;
+    e10 = trigPsi.cos * trigTheta.cos * trigPhi.cos +
+          trigPsi.sin * trigTheta.sin * trigPhi.sin;
 
-    e20 = trigPsi.sin * trigTheta.cos * trigPhi.cos
-          - trigPsi.cos * trigTheta.sin * trigPhi.sin;
+    e20 = trigPsi.sin * trigTheta.cos * trigPhi.cos -
+          trigPsi.cos * trigTheta.sin * trigPhi.sin;
 
-    e30 = trigPsi.cos * trigTheta.sin * trigPhi.cos
-          + trigPsi.sin * trigTheta.cos * trigPhi.sin;
+    e30 = trigPsi.cos * trigTheta.sin * trigPhi.cos +
+          trigPsi.sin * trigTheta.cos * trigPhi.sin;
 
-    e40 = trigPsi.cos * trigTheta.cos * trigPhi.sin
-          - trigPsi.sin * trigTheta.sin * trigPhi.cos;
+    e40 = trigPsi.cos * trigTheta.cos * trigPhi.sin -
+          trigPsi.sin * trigTheta.sin * trigPhi.cos;
 
-    if ( not ifd)
+    if (not ifd)
         return; // JB 010803
 
     ifd->e1 = e10;
@@ -69,15 +69,15 @@ void MissileClass::Init2(void)
     /*--------------------------------*/
     /* velocity vector initialization */
     /*--------------------------------*/
-    vtdot =  ifd->xwaero + ifd->xwprop - GRAVITY * ifd->geomData.singam;
-    xdot  =  vt * ifd->geomData.cosgam * ifd->geomData.cossig;
-    ydot  =  vt * ifd->geomData.cosgam * ifd->geomData.sinsig;
-    zdot  = -vt * ifd->geomData.singam ;
+    vtdot = ifd->xwaero + ifd->xwprop - GRAVITY * ifd->geomData.singam;
+    xdot = vt * ifd->geomData.cosgam * ifd->geomData.cossig;
+    ydot = vt * ifd->geomData.cosgam * ifd->geomData.sinsig;
+    zdot = -vt * ifd->geomData.singam;
 
-    ifd->oldvt[0] =  vt;
-    ifd->oldvt[1] =  vt;
-    ifd->oldvt[2] =  0.0;
-    ifd->oldvt[3] =  0.0;
+    ifd->oldvt[0] = vt;
+    ifd->oldvt[1] = vt;
+    ifd->oldvt[2] = 0.0;
+    ifd->oldvt[3] = 0.0;
 
     /*-----------------------------*/
     /* initialize pitch axis model */
@@ -121,7 +121,7 @@ void MissileClass::Init2(void)
 
 
     ifd->oldy02[0] = beta;
-    ifd->oldy02[1] = beta ;
+    ifd->oldy02[1] = beta;
     ifd->oldy02[2] = 0.0;
     ifd->oldy02[3] = 0.0;
 

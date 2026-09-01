@@ -5,7 +5,7 @@
  * Generated from file EVENTS.XLS by Robin Heydon
  */
 
-#include "MsgInc/CampDirtyDataMsg.h"
+#include "msginc/campdirtydatamsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -13,13 +13,16 @@
 #include "falcsess.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CampDirtyData::CampDirtyData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(CampDirtyDataMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+CampDirtyData::CampDirtyData(VU_ID entityId, VuTargetEntity *target,
+                             VU_BOOL loopback)
+    : FalconEvent(CampDirtyDataMsg, FalconEvent::CampaignThread, entityId,
+                  target, loopback)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -29,7 +32,9 @@ CampDirtyData::CampDirtyData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loo
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-CampDirtyData::CampDirtyData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(CampDirtyDataMsg, FalconEvent::CampaignThread, senderid, target)
+CampDirtyData::CampDirtyData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
+    : FalconEvent(CampDirtyDataMsg, FalconEvent::CampaignThread, senderid,
+                  target)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -58,7 +63,7 @@ CampDirtyData::~CampDirtyData(void)
 int CampDirtyData::Size() const
 {
     ShiAssert(dataBlock.size >= 0);
-    return(FalconEvent::Size() + sizeof(ushort) + dataBlock.size);
+    return (FalconEvent::Size() + sizeof(ushort) + dataBlock.size);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -111,16 +116,16 @@ int CampDirtyData::Process(uchar autodisp)
 {
     FalconEntity *ent;
 
-    ent = (FalconEntity*) vuDatabase->Find(EntityId());
+    ent = (FalconEntity *)vuDatabase->Find(EntityId());
 
-    if ( not ent or autodisp)
+    if (not ent or autodisp)
     {
         return 0;
     }
 
     // Only accept data if this is a remote entity
     //sfr: added size check, as we are receiving empy messages
-    if (( not ent->IsLocal())/* and (dataBlock.size not_eq 0)*/)
+    if ((not ent->IsLocal()) /* and (dataBlock.size not_eq 0)*/)
     {
         //sfr: was size = ent->DecodeDirty (&data);
         //we do this because we consume the buffer, and will need to free
@@ -137,7 +142,8 @@ int CampDirtyData::Process(uchar autodisp)
         }
         catch (InvalidBufferException)
         {
-            fprintf(stderr, "%s %d: invalid buffer, check here\n", __FILE__,  __LINE__);
+            fprintf(stderr, "%s %d: invalid buffer, check here\n", __FILE__,
+                    __LINE__);
         }
 
 #endif
@@ -151,4 +157,3 @@ int CampDirtyData::Process(uchar autodisp)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-

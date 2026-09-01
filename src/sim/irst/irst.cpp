@@ -2,18 +2,20 @@
 #include "simfile.h"
 #include "object.h"
 #include "object.h"
-#include "simMover.h"
-#include "SimMath.h"
+#include "simmover.h"
+#include "simmath.h"
 #include "entity.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "irst.h"
-#include "Simbase.h"
+#include "simbase.h"
 #include "missile.h"
 
 IRSTDataType* IRSTDataTable = NULL;
 short NumIRSTEntries = 0;
 
-static const float CM_EFFECTIVE_ANGLE = 30.0f * DTR; // If used, should be in class table data... me123 status test changed from 30
+static const float CM_EFFECTIVE_ANGLE =
+    30.0f *
+    DTR; // If used, should be in class table data... me123 status test changed from 30
 
 IrstClass::IrstClass(int idx, SimMoverClass* self) : SensorClass(self)
 {
@@ -42,12 +44,11 @@ void IrstClass::SetDesiredTarget(SimObjectType* newTarget)
         ShiAssert(newTarget->localData);
         newTarget->localData->irSignature = 0.0f;
     }
-
 }
 
 SimObjectType* IrstClass::Exec(SimObjectType*)
 {
-    SimObjectType *newLock;
+    SimObjectType* newLock;
 
     // Validate our locked target
     CheckLockedTarget();
@@ -56,23 +57,25 @@ SimObjectType* IrstClass::Exec(SimObjectType*)
     // Decide if we can still see our locked target (based on last Exec)
     if (lockedTarget)
     {
-        ShiAssert(lockedTarget->IsReferenced() > 0);// JPO - trying to catch the problem child
+        ShiAssert(lockedTarget->IsReferenced() >
+                  0); // JPO - trying to catch the problem child
         // Consider taking a decoy
         lockedTarget = ConsiderDecoy(lockedTarget);
 
         // Can't hold a lock if its outside our sensor cone
-        if ( not CanSeeObject(lockedTarget))
+        if (not CanSeeObject(lockedTarget))
         {
             newLock = NULL;
         }
 
         // Can't hold lock if the signal is too weak or blocked
-        if ( not CanDetectObject(lockedTarget))
+        if (not CanDetectObject(lockedTarget))
         {
             newLock = NULL;
         }
     }
-    else CanSeeObject(NULL);//me123 to reset the tracking bit
+    else
+        CanSeeObject(NULL); //me123 to reset the tracking bit
 
     // Update our lock
     SetSensorTarget(newLock);
@@ -94,22 +97,22 @@ SimObjectType* IrstClass::Exec(SimObjectType*)
 // This controls how effective countermeasures are as a function of seeker range from target
 // 2000-11-17 MODIFIED BY S.G. SO FLARES ARE EFFECTIVE MORE REALISTICALLY
 // static const float cmRangeArray[] = {0.0F,  5500.0f,  11000.0f,  16500.0f,  27500.0f};
-static const float cmRangeArray[] = {0.0F,   451.0f,   4500.0f,  16500.0f,  38000.0f};
+static const float cmRangeArray[] = {0.0F, 451.0f, 4500.0f, 16500.0f, 38000.0f};
 // END OF MODIFIED DATA
-static const float cmBiteChanceArray[] = {0.0F,     0.0F,      1.0F,      1.0F,      0.0F};
+static const float cmBiteChanceArray[] = {0.0F, 0.0F, 1.0F, 1.0F, 0.0F};
 // static const float cmBiteChanceArray[] = {1.0F,     1.0F,      1.0F,      1.0F,      1.0F};//me123 status ok. S.G. TO BRING IT TO RP4 STATUS
 static const int cmArrayLength = sizeof(cmRangeArray) / sizeof(cmRangeArray[0]);
 
 
-SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
+SimObjectType* IrstClass::ConsiderDecoy(SimObjectType* target)
 {
     VU_ID id;
-    FalconEntity *cm;
+    FalconEntity* cm;
     float chance;
     int dummy = 0;
 
     // No counter measures deployed by campaign things
-    if ( not target or not target->BaseData()->IsSim())
+    if (not target or not target->BaseData()->IsSim())
     {
         return target;
     }
@@ -130,7 +133,7 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
         // Try to find the counter measure entity in the database
         cm = (FalconEntity*)vuDatabase->Find(id);
 
-        if ( not cm)
+        if (not cm)
         {
             // We'll have to wait until next time
             // (probably because the create event hasn't been processed locally yet)
@@ -141,8 +144,12 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
         chance = typeData->FlareChance;
 
         // Adjust with a range to target based chance of an individual countermeasure working
-        chance *= Math.OnedInterp(target->localData->range, cmRangeArray, cmBiteChanceArray, cmArrayLength, &dummy);
-        chance /= max(0.3f , target->localData->irSignature); //me123 flares works better if the irsignature on the target is low
+        chance *= Math.OnedInterp(target->localData->range, cmRangeArray,
+                                  cmBiteChanceArray, cmArrayLength, &dummy);
+        chance /= max(
+            0.3f,
+            target->localData
+                ->irSignature); //me123 flares works better if the irsignature on the target is low
 
         // Player countermeasures work better
         // if (target->BaseData()->IsPlayer()) { //me123 status ok. don't differentiate between ai/human here
@@ -166,7 +173,8 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
             const float dy = cm->YPos() - platform->YPos();
             const float dz = cm->ZPos() - platform->ZPos();
             const float range = (float)sqrt(dx * dx + dy * dy);
-            const float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+            const float cosATA = (atx * dx + aty * dy + atz * dz) /
+                                 (float)sqrt(range * range + dz * dz);
 
             // Only take the bait if we can see the thing
             if (cosATA >= cos(CM_EFFECTIVE_ANGLE))
@@ -174,7 +182,7 @@ SimObjectType* IrstClass::ConsiderDecoy(SimObjectType *target)
                 // #47 UAF ROOT: create UNCONDITIONALLY (in Debug the DEBUG branch was empty -> target
                 // dangling/NULL -> localData->/SetSensorTarget on garbage).
                 target = new SimObjectType(cm);
-                target->localData->irSignature = 20.0;//me123
+                target->localData->irSignature = 20.0; //me123
                 SetSensorTarget(target); // JPO - do it now
             }
         }

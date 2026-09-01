@@ -8,7 +8,7 @@
 #ifndef _COLORBANK_H_
 #define _COLORBANK_H_
 
-#include "PolyLib.h"
+#include "polylib.h"
 
 
 // The one and only color bank.  This would need to be replaced
@@ -27,7 +27,13 @@ public:
     };
     ~ColorBankClass() {};
 
-    enum ColorMode { NormalMode, UnlitMode, GreenMode, UnlitGreenMode };
+    enum ColorMode
+    {
+        NormalMode,
+        UnlitMode,
+        GreenMode,
+        UnlitGreenMode
+    };
 
     // Management functions
     static void Setup(int nclrs, int ndarkclrs);
@@ -50,9 +56,11 @@ public:
 
     // These are the color pools for each mode
     static Pcolor *ColorBuffer; // Normal (original) colors
-    static Pcolor *DarkenedBuffer; // Processed for static lighting on some colors
+    static Pcolor
+        *DarkenedBuffer; // Processed for static lighting on some colors
     static Pcolor *GreenIRBuffer; // Processed for green without lighting
-    static Pcolor *GreenTVBuffer; // Processed for green with static lighting on some colors
+    static Pcolor *
+        GreenTVBuffer; // Processed for green with static lighting on some colors
 
     static DWORD TODcolor; //JAM 12Oct03
 

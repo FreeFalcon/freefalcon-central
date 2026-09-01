@@ -5,15 +5,15 @@
 
     This sub class draws an out the window view in simulated IR (green on black)
 \***************************************************************************/
-#include "Tmap.h"
-#include "Tpost.h"
-#include "Draw2D.h"
-#include "DrawOVC.h"
-#include "RenderIR.h"
-#include "TOD.h"
-#include "RealWeather.h"
-#include "FalcLib/include/playerop.h"
-#include "Graphics/DXEngine/DXEngine.h"
+#include "tmap.h"
+#include "tpost.h"
+#include "draw2d.h"
+#include "drawovc.h"
+#include "renderir.h"
+#include "tod.h"
+#include "realweather.h"
+#include "falclib/include/playerop.h"
+#include "graphics/dxengine/dxengine.h"
 
 extern bool g_bUse_DX_Engine;
 extern bool g_bGreyMFD;
@@ -58,18 +58,20 @@ void RenderIR::EndDraw(void)
     realWeather->SetGreenMode(FALSE);
     // Disable DX engine TV Mode
     TheDXEngine.RestoreState();
-
 }
 
-void RenderIR::ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance, float x, float y)
+void RenderIR::ComputeVertexColor(TerrainVertex *vert, Tpost *post,
+                                  float distance, float x, float y)
 {
     vert->r = 0.0f;
     vert->b = 0.0f;
-    vert->g = TheMap.ColorTable[post->colorIndex].g * NVG_LIGHT_LEVEL; //TheMap.GreenTable[post->colorIndex].g*NVG_LIGHT_LEVEL;
+    vert->g =
+        TheMap.ColorTable[post->colorIndex].g *
+        NVG_LIGHT_LEVEL; //TheMap.GreenTable[post->colorIndex].g*NVG_LIGHT_LEVEL;
     vert->a = 1.f;
 
     // FRB - B&W
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         vert->r = vert->b = vert->g;
 
     vert->RenderingStateHandle = state_far;

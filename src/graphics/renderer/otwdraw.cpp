@@ -10,14 +10,14 @@
  drawing functions.
 \***************************************************************************/
 #include <math.h>
-#include "Tmap.h"
-#include "Tpost.h"
-#include "TerrTex.h"
-#include "FarTex.h"
-#include "RViewPnt.h"
-#include "RenderOW.h"
+#include "tmap.h"
+#include "tpost.h"
+#include "terrtex.h"
+#include "fartex.h"
+#include "rviewpnt.h"
+#include "renderow.h"
 // sfr: @TODO remove this hack
-#include "Falclib/Include/IsBad.h"
+#include "falclib/include/isbad.h"
 
 // #12: animated water for water-coverage terrain tiles (any GPU backend now -- FF_WATER lives in the
 // shared FFEmu.hlsl). Toggle via FFViper.cfg "WaterShader". Near tiles only (far water shimmer is not visible).
@@ -57,10 +57,12 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
         SetColor(0x80400000);
         Render2DTri((UInt16)(v0->x), (UInt16)(v0->y),
                     (UInt16)(v0->x + (TWODSCALE << LOD)), (UInt16)(v0->y),
-                    (UInt16)(v0->x + (TWODSCALE << LOD)), (UInt16)(v0->y - (TWODSCALE << LOD)));
+                    (UInt16)(v0->x + (TWODSCALE << LOD)),
+                    (UInt16)(v0->y - (TWODSCALE << LOD)));
         Render2DTri((UInt16)(v0->x), (UInt16)(v0->y),
-                    (UInt16)(v0->x + (TWODSCALE << LOD)), (UInt16)(v0->y - (TWODSCALE << LOD)),
-                    (UInt16)(v0->x), (UInt16)(v0->y - (TWODSCALE << LOD)));
+                    (UInt16)(v0->x + (TWODSCALE << LOD)),
+                    (UInt16)(v0->y - (TWODSCALE << LOD)), (UInt16)(v0->x),
+                    (UInt16)(v0->y - (TWODSCALE << LOD)));
 
         return;
     }
@@ -69,7 +71,8 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
 
 
     // If all verticies are clipped by the same edge, skip this square
-    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand
+        v3->clipFlag)
     {
         return;
     }
@@ -80,7 +83,7 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
     // and setup the texture coordinates at the corners of this square
     if (v0->RenderingStateHandle > STATE_GOURAUD
         // and not F4IsBadReadPtr(v0->post, sizeof(Tpost)) // JB 010318 CTD (too much CPU)
-       )
+    )
     {
 
         post = v0->post;
@@ -91,7 +94,8 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
             // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
             // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
             // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
-            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and
+                post->z < 2.0f)
                 context.RestoreState(STATE_WATER);
         }
         else
@@ -113,7 +117,7 @@ void RenderOTW::DrawTerrainSquare(int r, int c, int LOD)
         // ShiAssert(v0->u >= 0.0 and v1->u >= 0.0 and v2->u >= 0.0);
         // ShiAssert(v0->v >= 0.0 and v1->v >= 0.0 and v2->v >= 0.0);
 
-#if defined( SET_FG_COLOR_ON_FLAT )
+#if defined(SET_FG_COLOR_ON_FLAT)
     }
     else if (v0->RenderingStateHandle == STATE_SOLID)
     {
@@ -148,11 +152,11 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
     // Compute the corresponding post locations in the lower detail level
     // (Include adjustment for misalignment between levels)
     lowRow = (r + 1 + LODdata[LOD].glueOnBottom) >> 1;
-    lowCol = (c   + LODdata[LOD].glueOnLeft)   >> 1;
+    lowCol = (c + LODdata[LOD].glueOnLeft) >> 1;
 
     // Compute the offsets of the key vetecies
-    highKeyOffset = maxSpanExtent * r      + c;
-    lowKeyOffset  = maxSpanExtent * lowRow + lowCol;
+    highKeyOffset = maxSpanExtent * r + c;
+    lowKeyOffset = maxSpanExtent * lowRow + lowCol;
 
     // Fetch the required vertecies
     v2 = vertexBuffer[LOD + 1] + lowKeyOffset;
@@ -164,7 +168,8 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand
+        v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -172,11 +177,11 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
     context.RestoreState(v0->RenderingStateHandle);
 
     // If required, get the post which will provide the texture for this segment
-    if (v0->RenderingStateHandle > STATE_GOURAUD
-       and not F4IsBadReadPtr(viewpoint, sizeof(RViewPoint)))   // JB 010408 CTD
+    if (v0->RenderingStateHandle > STATE_GOURAUD and
+        not F4IsBadReadPtr(viewpoint, sizeof(RViewPoint))) // JB 010408 CTD
     {
         post = viewpoint->GetPost(lowRow - 1 + LODdata[LOD + 1].centerRow,
-                                  lowCol   + LODdata[LOD + 1].centerCol, LOD + 1);
+                                  lowCol + LODdata[LOD + 1].centerCol, LOD + 1);
         ShiAssert(post);
 
         // Select the texture
@@ -186,7 +191,8 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
             // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
             // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
             // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
-            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and
+                post->z < 2.0f)
                 context.RestoreState(STATE_WATER);
         }
         else
@@ -205,7 +211,7 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
         v3->u = post->u + post->d;
         v4->v = v0->v;
         v4->u = v3->u;
-#if defined( SET_FG_COLOR_ON_FLAT )
+#if defined(SET_FG_COLOR_ON_FLAT)
     }
     else if (v0->RenderingStateHandle == STATE_SOLID)
     {
@@ -250,19 +256,19 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v1->x), (UInt16)(v1->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v3->x), (UInt16)(v3->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v1->x),
+                    (UInt16)(v1->y), (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v3->x),
+                    (UInt16)(v3->y), (UInt16)(v4->x), (UInt16)(v4->y));
 #else
         Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
                     (UInt16)(v2->x + (TWODSCALE << 1 << LOD)), (UInt16)(v2->y),
-                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)), (UInt16)(v2->y + (TWODSCALE << LOD)));
+                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)),
+                    (UInt16)(v2->y + (TWODSCALE << LOD)));
         Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)), (UInt16)(v2->y + (TWODSCALE << LOD)),
-                    (UInt16)(v2->x), (UInt16)(v2->y + (TWODSCALE << LOD)));
+                    (UInt16)(v2->x + (TWODSCALE << 1 << LOD)),
+                    (UInt16)(v2->y + (TWODSCALE << LOD)), (UInt16)(v2->x),
+                    (UInt16)(v2->y + (TWODSCALE << LOD)));
 #endif
         return;
     }
@@ -288,7 +294,6 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 }
 
 
-
 /***************************************************************************\
     Draw an element of a connector ring.  Expect the high detail LOD number
  and the r/c address of the upper left corner in highres units.  We'll
@@ -296,7 +301,7 @@ void RenderOTW::DrawUpConnector(int r, int c, int LOD)
 \***************************************************************************/
 void RenderOTW::DrawDownConnector(int r, int c, int LOD)
 {
-    \
+
 
     TerrainVertex *v0, *v1, *v2, *v3, *v4;
     int lowRow;
@@ -309,11 +314,11 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
     // Compute the corresponding post locations in the lower detail level
     // (Include adjust for misalignment between levels)
     lowRow = (r - 1 + LODdata[LOD].glueOnBottom) >> 1;
-    lowCol = (c   + LODdata[LOD].glueOnLeft)   >> 1;
+    lowCol = (c + LODdata[LOD].glueOnLeft) >> 1;
 
     // Compute the offsets of the key vetecies
-    highKeyOffset = maxSpanExtent * r      + c;
-    lowKeyOffset  = maxSpanExtent * lowRow + lowCol;
+    highKeyOffset = maxSpanExtent * r + c;
+    lowKeyOffset = maxSpanExtent * lowRow + lowCol;
 
 
     // Fetch the required vertecies
@@ -326,7 +331,8 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand
+        v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -346,7 +352,8 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
             // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
             // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
             // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
-            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and
+                post->z < 2.0f)
                 context.RestoreState(STATE_WATER);
         }
         else
@@ -365,7 +372,7 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
         v3->u = post->u;
         v4->v = v1->v;
         v4->u = post->u;
-#if defined( SET_FG_COLOR_ON_FLAT )
+#if defined(SET_FG_COLOR_ON_FLAT)
     }
     else if (v3->RenderingStateHandle == STATE_SOLID)
     {
@@ -410,19 +417,19 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v1->x), (UInt16)(v1->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v3->x), (UInt16)(v3->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v1->x),
+                    (UInt16)(v1->y), (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v3->x),
+                    (UInt16)(v3->y), (UInt16)(v4->x), (UInt16)(v4->y));
 #else
         Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
                     (UInt16)(v2->x - (TWODSCALE << 1 << LOD)), (UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)), (UInt16)(v2->y - (TWODSCALE << LOD)));
+                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)),
+                    (UInt16)(v2->y - (TWODSCALE << LOD)));
         Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)), (UInt16)(v2->y - (TWODSCALE << LOD)),
-                    (UInt16)(v2->x), (UInt16)(v2->y - (TWODSCALE << LOD)));
+                    (UInt16)(v2->x - (TWODSCALE << 1 << LOD)),
+                    (UInt16)(v2->y - (TWODSCALE << LOD)), (UInt16)(v2->x),
+                    (UInt16)(v2->y - (TWODSCALE << LOD)));
 #endif
         return;
     }
@@ -448,7 +455,6 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
 }
 
 
-
 /***************************************************************************\
     Draw an element of a connector ring.  Expect the high detail LOD number
  and the r/c address of the lower left corner in highres units.  We'll
@@ -456,7 +462,7 @@ void RenderOTW::DrawDownConnector(int r, int c, int LOD)
 \***************************************************************************/
 void RenderOTW::DrawRightConnector(int r, int c, int LOD)
 {
-    \
+
 
     TerrainVertex *v0, *v1, *v2, *v3, *v4;
     int lowRow;
@@ -468,12 +474,12 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
 
     // Compute the corresponding post locations in the lower detail level
     // (Include adjust for misalignment between levels)
-    lowRow = (r   + LODdata[LOD].glueOnBottom) >> 1;
-    lowCol = (c + 1 + LODdata[LOD].glueOnLeft)   >> 1;
+    lowRow = (r + LODdata[LOD].glueOnBottom) >> 1;
+    lowCol = (c + 1 + LODdata[LOD].glueOnLeft) >> 1;
 
     // Compute the offsets of the key vetecies
-    highKeyOffset = maxSpanExtent * r      + c;
-    lowKeyOffset  = maxSpanExtent * lowRow + lowCol;
+    highKeyOffset = maxSpanExtent * r + c;
+    lowKeyOffset = maxSpanExtent * lowRow + lowCol;
 
 
     // Fetch the required vertecies
@@ -486,7 +492,8 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand
+        v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -494,8 +501,9 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
     // If required, get the post which will provide the texture for this segment
     if (v0->RenderingStateHandle > STATE_GOURAUD)
     {
-        post = viewpoint->GetPost(lowRow   + LODdata[LOD + 1].centerRow,
-                                  lowCol - 1 + LODdata[LOD + 1].centerCol, LOD + 1);
+        post = viewpoint->GetPost(lowRow + LODdata[LOD + 1].centerRow,
+                                  lowCol - 1 + LODdata[LOD + 1].centerCol,
+                                  LOD + 1);
         ShiAssert(post);
 
         context.RestoreState(v0->RenderingStateHandle);
@@ -507,7 +515,8 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
             // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
             // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
             // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
-            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and
+                post->z < 2.0f)
                 context.RestoreState(STATE_WATER);
         }
         else
@@ -526,7 +535,7 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
         v3->u = v2->u;
         v4->v = post->v;
         v4->u = v0->u;
-#if defined( SET_FG_COLOR_ON_FLAT )
+#if defined(SET_FG_COLOR_ON_FLAT)
     }
     else if (v0->RenderingStateHandle == STATE_SOLID)
     {
@@ -571,19 +580,19 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v1->x), (UInt16)(v1->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v3->x), (UInt16)(v3->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v1->x),
+                    (UInt16)(v1->y), (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v3->x),
+                    (UInt16)(v3->y), (UInt16)(v4->x), (UInt16)(v4->y));
 #else
         Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
                     (UInt16)(v2->x - (TWODSCALE << LOD)), (UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << LOD)), (UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
+                    (UInt16)(v2->x - (TWODSCALE << LOD)),
+                    (UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
         Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v2->x - (TWODSCALE << LOD)), (UInt16)(v2->y + (TWODSCALE << 1 << LOD)),
-                    (UInt16)(v2->x), (UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
+                    (UInt16)(v2->x - (TWODSCALE << LOD)),
+                    (UInt16)(v2->y + (TWODSCALE << 1 << LOD)), (UInt16)(v2->x),
+                    (UInt16)(v2->y + (TWODSCALE << 1 << LOD)));
 #endif
         return;
     }
@@ -609,7 +618,6 @@ void RenderOTW::DrawRightConnector(int r, int c, int LOD)
 }
 
 
-
 /***************************************************************************\
     Draw an element of a connector ring.  Expect the high detail LOD number
  and the r/c address of the lower right corner in highres units.  We'll
@@ -628,12 +636,12 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
 
     // Compute the corresponding post locations in the lower detail level
     // (Include adjust for misalignment between levels)
-    lowRow = (r   + LODdata[LOD].glueOnBottom) >> 1;
-    lowCol = (c - 1 + LODdata[LOD].glueOnLeft)   >> 1;
+    lowRow = (r + LODdata[LOD].glueOnBottom) >> 1;
+    lowCol = (c - 1 + LODdata[LOD].glueOnLeft) >> 1;
 
     // Compute the offsets of the key vetecies
-    highKeyOffset = maxSpanExtent * r      + c;
-    lowKeyOffset  = maxSpanExtent * lowRow + lowCol;
+    highKeyOffset = maxSpanExtent * r + c;
+    lowKeyOffset = maxSpanExtent * lowRow + lowCol;
 
 
     // Fetch the required vertecies
@@ -646,7 +654,8 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
 
 
     // Skip this segment if it is entirely clipped
-    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand v3->clipFlag bitand v4->clipFlag)
+    if (v0->clipFlag bitand v1->clipFlag bitand v2->clipFlag bitand
+        v3->clipFlag bitand v4->clipFlag)
     {
         return;
     }
@@ -666,7 +675,8 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
             // #12: water = terrain at sea level (z ~ 0, ocean surface is exactly 0). The
             // texture-set terrainType is mis-tagged over the ocean in this theater, so detect
             // water by elevation instead. Rivers/mountain lakes (not at z=0) are not covered.
-            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and post->z < 2.0f)
+            if (g_bUseGpu and g_bWaterShader and post->z > -2.0f and
+                post->z < 2.0f)
                 context.RestoreState(STATE_WATER);
         }
         else
@@ -685,7 +695,7 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
         v3->u = post->u;
         v4->v = v3->v;
         v4->u = v0->u;
-#if defined( SET_FG_COLOR_ON_FLAT )
+#if defined(SET_FG_COLOR_ON_FLAT)
     }
     else if (v2->RenderingStateHandle == STATE_SOLID)
     {
@@ -730,19 +740,19 @@ void RenderOTW::DrawLeftConnector(int r, int c, int LOD)
         }
 
 #if 1
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v1->x), (UInt16)(v1->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
-        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y),
-                    (UInt16)(v3->x), (UInt16)(v3->y),
-                    (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v1->x),
+                    (UInt16)(v1->y), (UInt16)(v4->x), (UInt16)(v4->y));
+        Render2DTri((UInt16)(v2->x), (UInt16)(v2->y), (UInt16)(v3->x),
+                    (UInt16)(v3->y), (UInt16)(v4->x), (UInt16)(v4->y));
 #else
         Render2DTri((UInt16)(v3->x), (UInt16)(v3->y),
                     (UInt16)(v3->x + (TWODSCALE << LOD)), (UInt16)(v3->y),
-                    (UInt16)(v3->x + (TWODSCALE << LOD)), (UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
+                    (UInt16)(v3->x + (TWODSCALE << LOD)),
+                    (UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
         Render2DTri((UInt16)(v3->x), (UInt16)(v3->y),
-                    (UInt16)(v3->x + (TWODSCALE << LOD)), (UInt16)(v3->y + (TWODSCALE << 1 << LOD)),
-                    (UInt16)(v3->x), (UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
+                    (UInt16)(v3->x + (TWODSCALE << LOD)),
+                    (UInt16)(v3->y + (TWODSCALE << 1 << LOD)), (UInt16)(v3->x),
+                    (UInt16)(v3->y + (TWODSCALE << 1 << LOD)));
 #endif
         return;
     }

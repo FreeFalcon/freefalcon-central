@@ -1,9 +1,9 @@
 #include "stdhdr.h"
-#include "Falclib/Include/IsBad.h"	// F4IsBadReadPtr -- guard against cross-thread UAF
-#include "Graphics/Include/renderow.h"
-#include "Graphics/Include/Drawbsp.h"
-#include "Graphics/Include/Drawgrnd.h"
-#include "Graphics/Include/Drawpnt.h"
+#include "falclib/include/isbad.h" // F4IsBadReadPtr -- guard against cross-thread UAF
+#include "graphics/include/renderow.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawgrnd.h"
+#include "graphics/include/drawpnt.h"
 #include "object.h"
 #include "simdrive.h"
 #include "simfiltr.h"
@@ -12,20 +12,20 @@
 #include "falclist.h"
 #include "ground.h"
 #include "camp2sim.h"
-#include "Unit.h"
-#include "playerOp.h"
-#include "Graphics/Include/tod.h"
+#include "unit.h"
+#include "playerop.h"
+#include "graphics/include/tod.h"
 #include "otwdrive.h"
 
 
 // Object scaling stuff
-#define NUM_SCALE_PTS      7
+#define NUM_SCALE_PTS 7
 /* actual range of target (nm) */
-static  float rangeArray[NUM_SCALE_PTS] =
-{0.0F, 0.5F, 1.0F, 2.0F, 3.0F, 4.0F, 9999.0F};
+static float rangeArray[NUM_SCALE_PTS] = {0.0F, 0.5F, 1.0F,   2.0F,
+                                          3.0F, 4.0F, 9999.0F};
 /* percieved range of target (nm) */
-static  float scaleArray[NUM_SCALE_PTS] =
-{1.0F, 1.5F, 2.0F, 3.0F, 4.0F, 5.0F, 5.0F};
+static float scaleArray[NUM_SCALE_PTS] = {1.0F, 1.5F, 2.0F, 3.0F,
+                                          4.0F, 5.0F, 5.0F};
 
 // for debugging -- appears with frame rate display
 int numObjsProcessed = 0;
@@ -34,11 +34,11 @@ int numObjsInDrawList = 0;
 
 void OTWDriverClass::UpdateVehicleDrawables(void)
 {
-    SimBaseClass *theObject;
+    SimBaseClass* theObject;
     Tpoint objLocation;
     Trotation objRotation;
 
-    if ( not SimDriver.objectList)
+    if (not SimDriver.objectList)
         // The Sim isn't running yet..
         return;
 
@@ -62,8 +62,6 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
     }
 
 
-
-
     numObjsProcessed = 0;
     numObjsInDrawList = 0;
 
@@ -71,16 +69,13 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
     {
         VuListIterator otwDrawWalker(SimDriver.objectList);
 
-        for (
-            theObject = (SimBaseClass*)otwDrawWalker.GetFirst();
-            theObject;
-            theObject = (SimBaseClass*)otwDrawWalker.GetNext()
-        )
+        for (theObject = (SimBaseClass*)otwDrawWalker.GetFirst(); theObject;
+             theObject = (SimBaseClass*)otwDrawWalker.GetNext())
         {
             numObjsProcessed++;
 
             // Skip things without draw pointers
-            if ( not theObject->drawPointer)
+            if (not theObject->drawPointer)
             {
                 continue;
             }
@@ -94,29 +89,31 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
                 }
             }
             // Its visible, so just update it.
-            else if ( not theObject->IsExploding())
+            else if (not theObject->IsExploding())
             {
                 // Update its position
                 ObjectSetData(theObject, &objLocation, &objRotation);
 
                 switch (theObject->drawPointer->GetClass())
                 {
-                    case DrawableObject::BSP:
-                        ((DrawableBSP*)(theObject->drawPointer))->Update(&objLocation, &objRotation);
-                        break;
+                case DrawableObject::BSP:
+                    ((DrawableBSP*)(theObject->drawPointer))
+                        ->Update(&objLocation, &objRotation);
+                    break;
 
-                    case DrawableObject::GroundVehicle:
-                    case DrawableObject::Guys:
-                        ((DrawableGroundVehicle*)(theObject->drawPointer))->Update(&objLocation, theObject->Yaw());
-                        break;
+                case DrawableObject::GroundVehicle:
+                case DrawableObject::Guys:
+                    ((DrawableGroundVehicle*)(theObject->drawPointer))
+                        ->Update(&objLocation, theObject->Yaw());
+                    break;
 
-                        // TODO: should we be handling Drawable2D for the chaff/flare pseudo-bombs???
+                    // TODO: should we be handling Drawable2D for the chaff/flare pseudo-bombs???
                 }
 
                 numObjsInDrawList++;
 
                 // Put this object into the visual display list if it isn't already there.
-                if ( not theObject->drawPointer->InDisplayList())
+                if (not theObject->drawPointer->InDisplayList())
                 {
                     InsertObjectIntoDrawList(theObject);
                 }
@@ -143,7 +140,7 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
                     campObject->GetRealPosition(&pos.x, &pos.y, &pos.z);
                     ((DrawablePoint*)(campObject->draw_pointer))->Update(&pos);
 
-                    if ( not campObject->draw_pointer->InDisplayList())
+                    if (not campObject->draw_pointer->InDisplayList())
                         InsertObject(campObject->draw_pointer);
                 }
                 else
@@ -160,14 +157,14 @@ void OTWDriverClass::UpdateVehicleDrawables(void)
 
 
 // Set the light level applied to the terrain textures.
-void OTWDriverClass::TimeUpdateCallback(void *self)
+void OTWDriverClass::TimeUpdateCallback(void* self)
 {
     ((OTWDriverClass*)self)->UpdateAllLitObjects();
 }
 void OTWDriverClass::UpdateAllLitObjects(void)
 {
     float lightLevel;
-    drawPtrList *entry;
+    drawPtrList* entry;
 
 
     // Get the light level from the time of day manager
@@ -182,14 +179,16 @@ void OTWDriverClass::UpdateAllLitObjects(void)
         // Cross-thread UAF guard [[known-issues]]: drawPointer (DrawableBSP) may be
         // freed by another thread (0xDDDDDDDD) -> SetSwitchMask crashed. F4IsBad catches the already-
         // freed one; we check the list node too.
-        if (F4IsBadReadPtr(entry, sizeof(drawPtrList))) break;
-        if (F4IsBadReadPtr(entry->drawPointer, 4)) continue;
+        if (F4IsBadReadPtr(entry, sizeof(drawPtrList)))
+            break;
+        if (F4IsBadReadPtr(entry->drawPointer, 4))
+            continue;
         UpdateOneLitObject(entry, lightLevel);
     }
 }
 
 
-void OTWDriverClass::UpdateOneLitObject(drawPtrList *entry, float lightLevel)
+void OTWDriverClass::UpdateOneLitObject(drawPtrList* entry, float lightLevel)
 {
     ShiAssert(entry->drawPointer);
 

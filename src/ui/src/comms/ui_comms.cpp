@@ -8,7 +8,7 @@
 #include <windows.h>
 #include "falclib.h"
 #include "f4vu.h"
-#include "Mesg.h"
+#include "mesg.h"
 #include "msginc/sendchatmessage.h"
 #include "msginc/requestlogbook.h"
 #include "falcmesg.h"
@@ -19,42 +19,44 @@
 #include "userids.h"
 #include "textids.h"
 #include "sim/include/commands.h"
-#include "CmpClass.h"
+#include "cmpclass.h"
 #include "flight.h"
 #include "queue.h"
-#include "Dispcfg.h"
-#include "FalcSnd/voicemanager.h"
-#include "FalcSnd/voicefilter.h"
+#include "dispcfg.h"
+#include "falcsnd/voicemanager.h"
+#include "falcsnd/voicefilter.h"
 #include "remotelb.h"
-#include "F4Find.h"
+#include "f4find.h"
 #include "fsound.h" // MLR for F4ReloadSFX
 //me123
 #include "campwp.h"
 #include "ui/include/tac_class.h"
 #include "ui/include/te_defs.h"
-#include "TimerThread.h"
+#include "timerthread.h"
 #include "acmi/src/include/acmirec.h"
 #include "sim/include/simdrive.h"
 // Begin - Uplink stuff
 #include "include/comsup.h"
 #include "fsound.h"
-#include "SoundFX.h"
+#include "soundfx.h"
 #include "graphics/include/drawparticlesys.h"
-#include "SIM/include/sfx.h"
+#include "sim/include/sfx.h"
 
-#pragma warning(disable:4192)
+#ifdef _WIN32
+#pragma warning(disable : 4192)
 #import "gnet/bin/core.tlb"
 #import "gnet/bin/shared.tlb" named_guids
-#pragma warning(default:4192)
+#pragma warning(default : 4192)
 
 extern GNETCORELib::IUplinkPtr m_pUplink;
+#endif // _WIN32: GameSpy-style online UpLink is COM/#import-based (unported on Linux)
 // End - Uplink stuff
 
 enum
 {
-    MUTE_IMAGE        = 2000,
-    ICON_IMAGE        = 2001,
-    SND_HOMER   = 500034,
+    MUTE_IMAGE = 2000,
+    ICON_IMAGE = 2001,
+    SND_HOMER = 500034,
 };
 
 
@@ -102,11 +104,14 @@ void SetSingle_Comms_Ctrls();
 void UI_Help_Guide_CB(long ID, short hittype, C_Base *ctrl);
 void CheckFlyButton();
 void CheckPlayersFlight(FalconSessionEntity *session);
-BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol, short endcol, COLORREF color, _TCHAR *str, long Client = 0);
+BOOL AddWordWrapTextToWindow(C_Window *win, short *x, short *y, short startcol,
+                             short endcol, COLORREF color, _TCHAR *str,
+                             long Client = 0);
 void MutePlayerCB(long ID, short hittype, C_Base *control);
 void IgnorePlayerCB(long ID, short hittype, C_Base *control);
 void UI_Refresh(void);
-void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch, BOOL EditFlag);
+void DisplayLogbook(LB_PILOT *Pilot, IMAGE_RSC *Photo, IMAGE_RSC *Patch,
+                    BOOL EditFlag);
 
 extern void CheckForNewPlayer(FalconSessionEntity *session);
 
@@ -139,8 +144,8 @@ void Phone_ConnectType_CB(long, short, C_Base *);
 
 void ViewRemoteLBCB(long, short hittype, C_Base *)
 {
-    C_TreeList  *tree;
-    TREELIST    *item;
+    C_TreeList *tree;
+    TREELIST *item;
     C_Player *plyr;
     UI_RequestLogbook *rlb;
     FalconSessionEntity *session;
@@ -150,7 +155,7 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
     {
-        tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+        tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
         if (tree)
         {
@@ -168,7 +173,8 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
                         // Log book should be EMPTY, until data appears...
                         // if(Player closes logbook before it's all received)
                         // cancel
-                        session = (FalconSessionEntity*)vuDatabase->Find(plyr->GetVUID());
+                        session = (FalconSessionEntity *)vuDatabase->Find(
+                            plyr->GetVUID());
 
                         if (session)
                         {
@@ -187,20 +193,22 @@ void ViewRemoteLBCB(long, short hittype, C_Base *)
     gPopupMgr->CloseMenu();
 }
 
-void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_Base*), void (*CancelCB)(long, short, C_Base*))
+void CommsErrorDialog(long TitleID, long MessageID,
+                      void (*OKCB)(long, short, C_Base *),
+                      void (*CancelCB)(long, short, C_Base *))
 {
     C_Window *win;
     C_Button *btn;
     C_Text *txt;
 
-    if ( not MessageID or not gMainHandler)
+    if (not MessageID or not gMainHandler)
         return;
 
     win = gMainHandler->FindWindow(COMMLINK_WIN);
 
     if (win)
     {
-        txt = (C_Text*)win->FindControl(TITLE_LABEL);
+        txt = (C_Text *)win->FindControl(TITLE_LABEL);
 
         if (txt)
             txt->SetText(TitleID);
@@ -223,7 +231,7 @@ void CommsErrorDialog(long TitleID, long MessageID, void (*OKCB)(long, short, C_
             }
         }
 
-        txt = (C_Text*)win->FindControl(COMMLINK_MESSAGE);
+        txt = (C_Text *)win->FindControl(COMMLINK_MESSAGE);
 
         if (txt)
             txt->SetText(MessageID);
@@ -239,37 +247,38 @@ void UI_CommsErrorMessage(WORD error)
 
     switch (error)
     {
-        case F4COMMS_CONNECTED:
-            messageid = TXT_COMMS_CONNECTED;
-            break;
+    case F4COMMS_CONNECTED:
+        messageid = TXT_COMMS_CONNECTED;
+        break;
 
-        case F4COMMS_ERROR_TCP_NOT_AVAILABLE:
-            messageid = TXT_COMMS_NO_TCP;
-            break;
+    case F4COMMS_ERROR_TCP_NOT_AVAILABLE:
+        messageid = TXT_COMMS_NO_TCP;
+        break;
 
-        case F4COMMS_ERROR_UDP_NOT_AVAILABLE:
-            messageid = TXT_COMMS_NO_UDP;
-            break;
+    case F4COMMS_ERROR_UDP_NOT_AVAILABLE:
+        messageid = TXT_COMMS_NO_UDP;
+        break;
 
-        case F4COMMS_ERROR_MULTICAST_NOT_AVAILABLE:
-            messageid = TXT_COMMS_NO_MULTICAST;
-            break;
+    case F4COMMS_ERROR_MULTICAST_NOT_AVAILABLE:
+        messageid = TXT_COMMS_NO_MULTICAST;
+        break;
 
-        case F4COMMS_ERROR_FAILED_TO_CREATE_GAME:
-            messageid = TXT_COMMS_NO_GAME_CREATE;
-            break;
+    case F4COMMS_ERROR_FAILED_TO_CREATE_GAME:
+        messageid = TXT_COMMS_NO_GAME_CREATE;
+        break;
 
-        case F4COMMS_ERROR_COULDNT_CONNECT_TO_SERVER:
-            messageid = TXT_COMMS_NO_SERVER;
-            break;
+    case F4COMMS_ERROR_COULDNT_CONNECT_TO_SERVER:
+        messageid = TXT_COMMS_NO_SERVER;
+        break;
 
-        case F4COMMS_PENDING:
-            messageid = TXT_COMMS_PENDING;
-            break;
+    case F4COMMS_PENDING:
+        messageid = TXT_COMMS_PENDING;
+        break;
     }
 
     if (messageid)
-        CommsErrorDialog(TXT_COMMS_TITLE, messageid, GenericCloseWindowCB, NULL);
+        CommsErrorDialog(TXT_COMMS_TITLE, messageid, GenericCloseWindowCB,
+                         NULL);
 }
 
 void LoadCommsWindows()
@@ -277,7 +286,8 @@ void LoadCommsWindows()
     long ID;
     C_PopupList *menu;
 
-    if (COLoaded) return;
+    if (COLoaded)
+        return;
 
     if (_LOAD_ART_RESOURCES_)
         gMainParser->LoadImageList("comm_res.lst");
@@ -285,7 +295,8 @@ void LoadCommsWindows()
         gMainParser->LoadImageList("comm_art.lst");
 
     gMainParser->LoadSoundList("comm_snd.lst");
-    gMainParser->LoadWindowList("comm_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
+    gMainParser->LoadWindowList(
+        "comm_scf.lst"); // Modified by M.N. - add art/art1024 by LoadWindowList
 
     ID = gMainParser->GetFirstWindowLoaded();
 
@@ -337,7 +348,7 @@ void CommsSetup()
 
 static void DisconnectCommsCB(long, short hittype, C_Base *)
 {
-    if ((hittype not_eq C_TYPE_LMOUSEUP) or ( not gCommsMgr->Online()))
+    if ((hittype not_eq C_TYPE_LMOUSEUP) or (not gCommsMgr->Online()))
     {
         return;
     }
@@ -373,27 +384,29 @@ void LoadCampaignSelectWindows();
 extern void ACMI_ImportFile(void);
 extern int g_nmissiletrial;
 extern bool g_bDrawBoundingBox;
-extern float g_fSoundDopplerFactor, g_fSoundRolloffFactor;// MLR 2003-10-17
+extern float g_fSoundDopplerFactor, g_fSoundRolloffFactor; // MLR 2003-10-17
 extern int g_nSoundUpdateMS; // MLR 2003/11/03
 
 // RV - Biker - Who does need - we do
 float g_nboostguidesec = 0; //me123 how many sec we are in boostguide mode
-float g_nterminalguiderange = 0; //me123 what range we transfere to terminal guidence
+float g_nterminalguiderange =
+    0; //me123 what range we transfere to terminal guidence
 float g_nboostguideSensorPrecision = 0; //me123
-float g_nsustainguideSensorPrecision = 0 ; //me123
-float g_nterminalguideSensorPrecision = 0 ; //me123
-float g_nboostguideLead = 0 ; //me123
-float g_nsustainguideLead = 0 ; //me123
-float g_nterminalguideLead = 0 ; //me123
-float g_nboostguideGnav = 0 ; //me123
-float g_nsustainguideGnav = 0 ; //me123
-float g_nterminalguideGnav = 0 ; //me123
+float g_nsustainguideSensorPrecision = 0; //me123
+float g_nterminalguideSensorPrecision = 0; //me123
+float g_nboostguideLead = 0; //me123
+float g_nsustainguideLead = 0; //me123
+float g_nterminalguideLead = 0; //me123
+float g_nboostguideGnav = 0; //me123
+float g_nsustainguideGnav = 0; //me123
+float g_nterminalguideGnav = 0; //me123
 float g_nboostguideBwap = 0; //me123
 float g_nsustainguideBwap = 0; //me123
-float g_nterminalguideBwap = 0 ; //me123
+float g_nterminalguideBwap = 0; //me123
 float g_nMpdelaytweakfactor = 0;
 
-bool g_bDrawBoundingBox = false; //VP_changes if it is false BoundBoxes will not be drawn
+bool g_bDrawBoundingBox =
+    false; //VP_changes if it is false BoundBoxes will not be drawn
 int g_nmissiletrial = 0;
 //extern float clientbwforupdatesmodifyer;
 //extern float hostbwforupdatesmodifyer;
@@ -413,10 +426,11 @@ void ServerChatCommand(_TCHAR *msg)
     //me123 the server understands a few commands
 
     // find the command
-    char* arga;
-    char* argb;
+    char *arga;
+    char *argb;
     _TCHAR message[100] = "";
-    strncpy(message, msg, sizeof(message) - 1); // JPO - lets me careful out there ;-)
+    strncpy(message, msg,
+            sizeof(message) - 1); // JPO - lets me careful out there ;-)
     message[99] = '\0';
     arga = strtok(message, " ");
     argb = strtok(NULL, " ");
@@ -487,20 +501,25 @@ void ServerChatCommand(_TCHAR *msg)
         }
 
         // COBRA - RED - SFX Activating cheat '.sfx {SfxNr}'
-        if ((arga and argb and not stricmp(arga, ".sfx")) or (arga and not stricmp(arga, ".")))
+        if ((arga and argb and not stricmp(arga, ".sfx")) or
+            (arga and not stricmp(arga, ".")))
         {
             static int sfx = 0;
             static float Dist = 300;
-            static Tpoint vc = OTWDriver.GetEyePosition();;
-            char* argc;
+            static Tpoint vc = OTWDriver.GetEyePosition();
+            ;
+            char *argc;
             argc = strtok(NULL, " ");
 
             float Pan, Tilt, d = 300;
 
-            if ( not stricmp(arga, ".")) goto doit;
+            if (not stricmp(arga, "."))
+                goto doit;
 
-            if (argc) Dist = (float)atof(argc);
-            else Dist = 300.0f;
+            if (argc)
+                Dist = (float)atof(argc);
+            else
+                Dist = 300.0f;
 
             //vc.x=currentPos_.x;
             sfx = atoi(argb);
@@ -512,23 +531,26 @@ void ServerChatCommand(_TCHAR *msg)
 
         doit:
 
-            OTWDriver.AddSfxRequest(
-                new SfxClass(sfx, // type
-                             &vc, // world pos
-                             60.0f, // time to live
-                             1.0f));
+            OTWDriver.AddSfxRequest(new SfxClass(sfx, // type
+                                                 &vc, // world pos
+                                                 60.0f, // time to live
+                                                 1.0f));
         }
 
 
         // 2002-02-21 MN Allow to change the set of debug labels via the chat line
-        if (arga and argb and not stricmp(arga, ".label") and g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".label") and
+            g_bActivateDebugStuff)
         {
-            int newlabels = strtol(argb, NULL, 0); // atoi(argb); 2002-04-01 MODIFIED BY S.G. strtol will parse the inpuy string looking for standard base like 0x
+            int newlabels = strtol(
+                argb, NULL,
+                0); // atoi(argb); 2002-04-01 MODIFIED BY S.G. strtol will parse the inpuy string looking for standard base like 0x
             g_nShowDebugLabels = newlabels;
         }
 
         // Changes fuel level of players aircraft - for refuel testings
-        if (arga and argb and not stricmp(arga, ".fuel") and g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".fuel") and
+            g_bActivateDebugStuff)
         {
             unsigned long newfuel = atol(argb);
             gFuelState = newfuel;
@@ -543,12 +565,12 @@ void ServerChatCommand(_TCHAR *msg)
                 RuleMode = rTACTICAL_ENGAGEMENT;
                 TheCampaign.Flags or_eq CAMP_TACTICAL;
 
-                if ( not TACSelLoaded)
+                if (not TACSelLoaded)
                     LoadTacEngSelectWindows();
 
                 _TCHAR buffer[MAX_PATH];
                 strcpy(buffer, FalconCampaignSaveDirectory);
-                strcat(buffer, "\\");
+                strcat(buffer, "/");
                 strcat(buffer, argb);
                 strcat(buffer, ".tac");
                 current_tactical_mission = new tactical_mission(buffer);
@@ -563,16 +585,16 @@ void ServerChatCommand(_TCHAR *msg)
 
             if (arga and argb and not stricmp(arga, ".acmi"))
             {
-                if ( not stricmp(argb, "on"))
+                if (not stricmp(argb, "on"))
                 {
-                    if ( not gACMIRec.IsRecording())
+                    if (not gACMIRec.IsRecording())
                     {
                         //F4EnterCriticalSection( _csect );
                         gACMIRec.StartRecording();
                         //F4LeaveCriticalSection( _csect );
                     }
                 }
-                else if ( not stricmp(argb, "off"))
+                else if (not stricmp(argb, "off"))
                 {
                     if (gACMIRec.IsRecording())
                     {
@@ -582,7 +604,7 @@ void ServerChatCommand(_TCHAR *msg)
                     }
                 }
 
-                else if ( not stricmp(argb, "dofile"))
+                else if (not stricmp(argb, "dofile"))
                 {
                     if (gACMIRec.IsRecording())
                         gACMIRec.StopRecording();
@@ -597,7 +619,7 @@ void ServerChatCommand(_TCHAR *msg)
                 LeaveCurrentGame();
                 RuleMode = rCAMPAIGN;
 
-                if ( not CPSelectLoaded)
+                if (not CPSelectLoaded)
                     LoadCampaignSelectWindows();
 
                 _TCHAR buffer[MAX_PATH];
@@ -630,11 +652,13 @@ void ServerChatCommand(_TCHAR *msg)
             }
         }
 
-        if (arga and argb and not stricmp(arga, ".mistrail") and g_bActivateDebugStuff)
+        if (arga and argb and not stricmp(arga, ".mistrail") and
+            g_bActivateDebugStuff)
         {
             g_nmissiletrial = atoi(argb);
         }
-        else if (arga and not stricmp(arga, ".boundb") and g_bActivateDebugStuff)
+        else if (arga and not stricmp(arga, ".boundb") and
+                 g_bActivateDebugStuff)
         {
             if (g_bDrawBoundingBox)
                 g_bDrawBoundingBox = false;
@@ -642,75 +666,93 @@ void ServerChatCommand(_TCHAR *msg)
                 g_bDrawBoundingBox = true;
         }
         // RV - Biker - Who does need - we do
-        else if (arga and argb and not stricmp(arga, ".bgs") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgs") and
+                 g_bActivateDebugStuff)
         {
             g_nboostguidesec = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".tgr") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgr") and
+                 g_bActivateDebugStuff)
         {
             g_nterminalguiderange = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".bgsp") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgsp") and
+                 g_bActivateDebugStuff)
         {
             g_nboostguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".sgsp") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgsp") and
+                 g_bActivateDebugStuff)
         {
             g_nsustainguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".tgsp") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgsp") and
+                 g_bActivateDebugStuff)
         {
             g_nterminalguideSensorPrecision = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".bgl") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgl") and
+                 g_bActivateDebugStuff)
         {
             g_nboostguideLead = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".sgl") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgl") and
+                 g_bActivateDebugStuff)
         {
             g_nsustainguideLead = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".tgl") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgl") and
+                 g_bActivateDebugStuff)
         {
             g_nterminalguideLead = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".bggn") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bggn") and
+                 g_bActivateDebugStuff)
         {
             g_nboostguideGnav = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".sggn") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sggn") and
+                 g_bActivateDebugStuff)
         {
             g_nsustainguideGnav = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".tggn") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tggn") and
+                 g_bActivateDebugStuff)
         {
             g_nterminalguideGnav = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".bgbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".bgbw") and
+                 g_bActivateDebugStuff)
         {
             g_nboostguideBwap = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".sgbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".sgbw") and
+                 g_bActivateDebugStuff)
         {
             g_nsustainguideBwap = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".tgbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tgbw") and
+                 g_bActivateDebugStuff)
         {
             g_nterminalguideBwap = (float)atof(argb);
         }
-        else if (arga and argb and not stricmp(arga, ".cbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".cbw") and
+                 g_bActivateDebugStuff)
         {
             //clientbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga and argb and not stricmp(arga, ".hbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".hbw") and
+                 g_bActivateDebugStuff)
         {
             //hostbwforupdatesmodifyer = float(atoi(argb)/1000.0f);
         }
-        else if (arga and argb and not stricmp(arga, ".tf") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".tf") and
+                 g_bActivateDebugStuff)
         {
             g_nMpdelaytweakfactor = float(atoi(argb));
         }
-        else if (arga and argb and not stricmp(arga, ".mbw") and g_bActivateDebugStuff)
+        else if (arga and argb and not stricmp(arga, ".mbw") and
+                 g_bActivateDebugStuff)
         {
             //MinBwForOtherData = float(atoi(argb));
         }
@@ -725,10 +767,10 @@ static _TCHAR chatbuf[512];
 
 void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
 {
-    C_Window            *win;
-    C_Text              *txt;
+    C_Window *win;
+    C_Text *txt;
     FalconSessionEntity *session;
-    COLORREF             color;
+    COLORREF color;
     win = gMainHandler->FindWindow(CHAT_WIN);
     ServerChatCommand(message); //me123
 
@@ -743,7 +785,7 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
         else if (from not_eq FalconNullId)
         {
             color = 0x00ff00;
-            session = (FalconSessionEntity*)vuDatabase->Find(from);
+            session = (FalconSessionEntity *)vuDatabase->Find(from);
         }
         else
         {
@@ -782,7 +824,8 @@ void AddMessageToChatWindow(VU_ID from, _TCHAR *message)
 
         CurChatY += txt->GetH(); // - gFontList->GetHeight(win->Font_);
 
-        win->SetVirtualY(txt->GetY() - win->ClientArea_[txt->GetClient()].top, txt->GetClient());
+        win->SetVirtualY(txt->GetY() - win->ClientArea_[txt->GetClient()].top,
+                         txt->GetClient());
         win->AdjustScrollbar(txt->GetClient());
         win->RefreshClient(txt->GetClient());
 
@@ -795,15 +838,17 @@ void BlinkCommsButtonTimerCB(long, short, C_Base *control)
 {
     C_Button *btn;
 
-    if ( not gCommsMgr) return;
+    if (not gCommsMgr)
+        return;
 
-    if ( not gNewMessage or not gCommsMgr->Online()) return;
+    if (not gNewMessage or not gCommsMgr->Online())
+        return;
 
     btn = (C_Button *)control->Parent_->FindControl(CO_MAIN_CTRL);
 
     if (btn)
     {
-        if ( not (btn->GetFlags() bitand C_BIT_FORCEMOUSEOVER))
+        if (not(btn->GetFlags() bitand C_BIT_FORCEMOUSEOVER))
         {
             // gSoundMgr->PlaySound(SND_HOMER);
             btn->SetFlagBitOn(C_BIT_FORCEMOUSEOVER);
@@ -828,173 +873,176 @@ BOOL FilterIncommingMessage(FalconSessionEntity *session)
     {
         switch (VM->GetRadioFreq(0))
         {
-            case rcfFlight5:
-            case rcfFlight1:
-            case rcfFlight2:
-            case rcfFlight3:
-            case rcfFlight4:
+        case rcfFlight5:
+        case rcfFlight1:
+        case rcfFlight2:
+        case rcfFlight3:
+        case rcfFlight4:
 
-                if (session->GetPlayerFlightID() == FalconLocalSession->GetPlayerFlightID())
-                    retval = TRUE;
+            if (session->GetPlayerFlightID() ==
+                FalconLocalSession->GetPlayerFlightID())
+                retval = TRUE;
 
+            break;
+
+        case rcfPackage5:
+        case rcfPackage1:
+        case rcfPackage2:
+        case rcfPackage3:
+        case rcfPackage4:
+
+        case rcfFromPackage:
+            flt = (Flight)vuDatabase->Find(
+                FalconLocalSession->GetPlayerFlightID());
+
+            if (not flt)
                 break;
 
-            case rcfPackage5:
-            case rcfPackage1:
-            case rcfPackage2:
-            case rcfPackage3:
-            case rcfPackage4:
+            pkg = (Package)flt->GetUnitParent();
 
-            case rcfFromPackage:
-                flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
+            if (not pkg)
+                break;
 
-                if ( not flt)
-                    break;
+            MyPackageID = pkg->Id();
 
+            flt = (Flight)vuDatabase->Find(session->GetPlayerFlightID());
+
+            if (flt)
+            {
                 pkg = (Package)flt->GetUnitParent();
 
-                if ( not pkg)
-                    break;
-
-                MyPackageID = pkg->Id();
-
-                flt = (Flight)vuDatabase->Find(session->GetPlayerFlightID());
-
-                if (flt)
-                {
-                    pkg = (Package)flt->GetUnitParent();
-
-                    if (pkg and pkg->Id() == MyPackageID)
-                        retval = TRUE;
-                }
-
-                break;
-
-            case rcfProx: // 40nm range
-                ent = FalconLocalSession->GetPlayerEntity();
-
-                if ( not ent)
-                    break;
-
-                myx = ent->XPos();
-                myy = ent->YPos();
-
-                ent = session->GetPlayerEntity();
-
-                if (ent)
-                {
-                    sx = ent->XPos();
-                    sy = ent->YPos();
-
-                    dx = myx - sx;
-                    dy = myy - sy;
-
-                    dist = static_cast<float>(sqrt(dx * dx + dy * dy) * FT_TO_NM);
-
-                    if (dist <= 40.0f)
-                        retval = TRUE;
-                }
-
-                break;
-
-            case rcfTeam:
-                if (session->GetTeam() == FalconLocalSession->GetTeam())
+                if (pkg and pkg->Id() == MyPackageID)
                     retval = TRUE;
+            }
 
+            break;
+
+        case rcfProx: // 40nm range
+            ent = FalconLocalSession->GetPlayerEntity();
+
+            if (not ent)
                 break;
 
-            case rcfAll:
+            myx = ent->XPos();
+            myy = ent->YPos();
+
+            ent = session->GetPlayerEntity();
+
+            if (ent)
+            {
+                sx = ent->XPos();
+                sy = ent->YPos();
+
+                dx = myx - sx;
+                dy = myy - sy;
+
+                dist = static_cast<float>(sqrt(dx * dx + dy * dy) * FT_TO_NM);
+
+                if (dist <= 40.0f)
+                    retval = TRUE;
+            }
+
+            break;
+
+        case rcfTeam:
+            if (session->GetTeam() == FalconLocalSession->GetTeam())
                 retval = TRUE;
-                break;
+
+            break;
+
+        case rcfAll:
+            retval = TRUE;
+            break;
         }
 
         switch (VM->GetRadioFreq(1))
         {
-            case rcfFlight5:
-            case rcfFlight1:
-            case rcfFlight2:
-            case rcfFlight3:
-            case rcfFlight4:
+        case rcfFlight5:
+        case rcfFlight1:
+        case rcfFlight2:
+        case rcfFlight3:
+        case rcfFlight4:
 
-                if (session->GetPlayerFlightID() == FalconLocalSession->GetPlayerFlightID())
-                    retval = TRUE;
+            if (session->GetPlayerFlightID() ==
+                FalconLocalSession->GetPlayerFlightID())
+                retval = TRUE;
 
+            break;
+
+        case rcfPackage5:
+        case rcfPackage1:
+        case rcfPackage2:
+        case rcfPackage3:
+        case rcfPackage4:
+
+        case rcfFromPackage:
+            flt = (Flight)vuDatabase->Find(
+                FalconLocalSession->GetPlayerFlightID());
+
+            if (not flt)
                 break;
 
-            case rcfPackage5:
-            case rcfPackage1:
-            case rcfPackage2:
-            case rcfPackage3:
-            case rcfPackage4:
+            pkg = (Package)flt->GetUnitParent();
 
-            case rcfFromPackage:
-                flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
+            if (not pkg)
+                break;
 
-                if ( not flt)
-                    break;
+            MyPackageID = pkg->Id();
 
+            flt = (Flight)vuDatabase->Find(session->GetPlayerFlightID());
+
+            if (flt)
+            {
                 pkg = (Package)flt->GetUnitParent();
 
-                if ( not pkg)
-                    break;
-
-                MyPackageID = pkg->Id();
-
-                flt = (Flight)vuDatabase->Find(session->GetPlayerFlightID());
-
-                if (flt)
-                {
-                    pkg = (Package)flt->GetUnitParent();
-
-                    if (pkg and pkg->Id() == MyPackageID)
-                        retval = TRUE;
-                }
-
-                break;
-
-            case rcfProx: // 40nm range
-                ent = FalconLocalSession->GetPlayerEntity();
-
-                if ( not ent)
-                    break;
-
-                myx = ent->XPos();
-                myy = ent->YPos();
-
-                ent = session->GetPlayerEntity();
-
-                if (ent)
-                {
-                    sx = ent->XPos();
-                    sy = ent->YPos();
-
-                    dx = myx - sx;
-                    dy = myy - sy;
-
-                    dist = static_cast<float>(sqrt(dx * dx + dy * dy) * FT_TO_NM);
-
-                    if (dist <= 40.0f)
-                        retval = TRUE;
-                }
-
-                break;
-
-            case rcfTeam:
-                if (session->GetTeam() == FalconLocalSession->GetTeam())
+                if (pkg and pkg->Id() == MyPackageID)
                     retval = TRUE;
+            }
 
+            break;
+
+        case rcfProx: // 40nm range
+            ent = FalconLocalSession->GetPlayerEntity();
+
+            if (not ent)
                 break;
 
-            case rcfAll:
+            myx = ent->XPos();
+            myy = ent->YPos();
+
+            ent = session->GetPlayerEntity();
+
+            if (ent)
+            {
+                sx = ent->XPos();
+                sy = ent->YPos();
+
+                dx = myx - sx;
+                dy = myy - sy;
+
+                dist = static_cast<float>(sqrt(dx * dx + dy * dy) * FT_TO_NM);
+
+                if (dist <= 40.0f)
+                    retval = TRUE;
+            }
+
+            break;
+
+        case rcfTeam:
+            if (session->GetTeam() == FalconLocalSession->GetTeam())
                 retval = TRUE;
-                break;
+
+            break;
+
+        case rcfAll:
+            retval = TRUE;
+            break;
         }
     }
 
-    return(retval);
+    return (retval);
 }
 // This function creates a CHATSTR class... which gets destroyed in ProcessChatStr()
-
 
 
 void ReceiveChatString(VU_ID from, _TCHAR *message)
@@ -1011,16 +1059,17 @@ void ReceiveChatString(VU_ID from, _TCHAR *message)
 #endif
 
     _tcscpy(msg->Text_, message);
-    PostMessage(gCommsMgr->AppWnd_, FM_RECEIVE_CHAT, 0, (LPARAM)msg); // Artscout - 2026 (x64): (long) truncated the CHATSTR* pointer -> sign-extended garbage on receive
-
-
+    PostMessage(
+        gCommsMgr->AppWnd_, FM_RECEIVE_CHAT, 0,
+        (LPARAM)
+            msg); // Artscout - 2026 (x64): (long) truncated the CHATSTR* pointer -> sign-extended garbage on receive
 }
 
 
 // This function is responsible for deleting msg
 void ProcessChatStr(CHATSTR *msg)
 {
-    if ( not msg)
+    if (not msg)
         return;
 
     ServerChatCommand(msg->Text_); //me123
@@ -1030,33 +1079,34 @@ void ProcessChatStr(CHATSTR *msg)
         TREELIST *item;
         C_Player *plyr;
 
-        if ( not People)
+        if (not People)
             return;
 
         item = People->Find(msg->ID_.creator_);
 
         if (item)
         {
-            plyr = (C_Player*)item->Item_;
+            plyr = (C_Player *)item->Item_;
 
-            if (plyr and (plyr->GetMute())) // Filter out Chat messages we don't want to hear
+            if (plyr and
+                (plyr->GetMute())) // Filter out Chat messages we don't want to hear
                 return;
         }
 
         AddMessageToChatWindow(msg->ID_, msg->Text_);
 
-        if ( not (gMainHandler->GetWindowFlags(CHAT_WIN) bitand C_BIT_ENABLED))
+        if (not(gMainHandler->GetWindowFlags(CHAT_WIN) bitand C_BIT_ENABLED))
             gNewMessage = TRUE;
     }
     else if (VM) // Assume Sim is running (AND VM is initialized)
     {
         FalconSessionEntity *session;
 
-        session = (FalconSessionEntity*)vuDatabase->Find(msg->ID_);
+        session = (FalconSessionEntity *)vuDatabase->Find(msg->ID_);
 
         if (session)
         {
-            if ( not FilterIncommingMessage(session))
+            if (not FilterIncommingMessage(session))
                 return;
 
             _tcscpy(chatbuf, session->GetPlayerCallsign());
@@ -1075,7 +1125,9 @@ void ProcessChatStr(CHATSTR *msg)
         OTWDriver.ShowMessage(chatbuf);
     }
 
-    if (msg->Text_) delete[] msg->Text_; // OW - the message string was not deleted resulting in a memory leak
+    if (msg->Text_)
+        delete[] msg
+            ->Text_; // OW - the message string was not deleted resulting in a memory leak
 
     delete msg;
 }
@@ -1089,7 +1141,8 @@ void SendChatStringCB(long, short hittype, C_Base *control)
     if (hittype not_eq DIK_RETURN or control == NULL or not gCommsMgr->Online())
         return;
 
-    AddMessageToChatWindow(FalconLocalSessionId, ((C_EditBox *)control)->GetText());
+    AddMessageToChatWindow(FalconLocalSessionId,
+                           ((C_EditBox *)control)->GetText());
 
     cur = People->GetRoot();
 
@@ -1097,20 +1150,25 @@ void SendChatStringCB(long, short hittype, C_Base *control)
     {
         if (cur->Type_ == C_TYPE_ITEM)
         {
-            plyr = (C_Player*)cur->Item_;
+            plyr = (C_Player *)cur->Item_;
 
             if (plyr and plyr->GetState() and not plyr->GetIgnore())
             {
-                FalconSessionEntity *session = (FalconSessionEntity*) vuDatabase->Find(plyr->GetVUID());
+                FalconSessionEntity *session =
+                    (FalconSessionEntity *)vuDatabase->Find(plyr->GetVUID());
 
                 if (session and session not_eq FalconLocalSession)
                 {
                     chat = new UI_SendChatMessage(FalconNullId, session);
 
                     chat->dataBlock.from = FalconLocalSessionId;
-                    chat->dataBlock.size = static_cast<short>((_tcsclen(((C_EditBox *)control)->GetText()) + 1) * sizeof(_TCHAR));
+                    chat->dataBlock.size = static_cast<short>(
+                        (_tcsclen(((C_EditBox *)control)->GetText()) + 1) *
+                        sizeof(_TCHAR));
                     chat->dataBlock.message = new _TCHAR[chat->dataBlock.size];
-                    memcpy(chat->dataBlock.message, ((C_EditBox *)control)->GetText(), chat->dataBlock.size);
+                    memcpy(chat->dataBlock.message,
+                           ((C_EditBox *)control)->GetText(),
+                           chat->dataBlock.size);
                     FalconSendMessage(chat, TRUE);
                 }
             }
@@ -1119,7 +1177,7 @@ void SendChatStringCB(long, short hittype, C_Base *control)
         cur = cur->Next;
     }
 
-    ((C_EditBox*)control)->SetText(TXT_SPACE);
+    ((C_EditBox *)control)->SetText(TXT_SPACE);
     control->Refresh();
 }
 
@@ -1250,34 +1308,36 @@ static VU_ID *tmpID;
 
 BOOL TreeSearchCB(TREELIST *item)
 {
-    if (item == NULL) return(FALSE);
+    if (item == NULL)
+        return (FALSE);
 
-    if (item->Item_ == NULL) return(FALSE);
+    if (item->Item_ == NULL)
+        return (FALSE);
 
     if (item->Type_ == C_TYPE_ITEM)
     {
-        if (((C_Player*)item->Item_)->GetVUID() == SearchID)
-            return(TRUE);
+        if (((C_Player *)item->Item_)->GetVUID() == SearchID)
+            return (TRUE);
     }
     else if (item->Type_ == C_TYPE_MENU)
     {
-        tmpID = (VU_ID*)item->Item_->GetUserPtr(_UI95_VU_ID_SLOT_);
+        tmpID = (VU_ID *)item->Item_->GetUserPtr(_UI95_VU_ID_SLOT_);
 
         if (tmpID == NULL)
-            return(FALSE);
+            return (FALSE);
 
         if (*tmpID == SearchID)
-            return(TRUE);
+            return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 TREELIST *StartTreeSearch(VU_ID findme, TREELIST *top, C_TreeList *tree)
 {
     SearchID = findme;
     tree->SetSearchCB(TreeSearchCB);
-    return(tree->SearchWithCB(top));
+    return (tree->SearchWithCB(top));
 }
 
 static void UpdatePlayerListCB(short, VU_ID, VU_ID)
@@ -1289,17 +1349,17 @@ static BOOL TrimmerFindSession(VU_ID playerid, VuGameEntity *game)
     VuSessionsIterator sessionWalker(game);
     FalconSessionEntity *session;
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
         if (session->Id() == playerid)
-            return(TRUE);
+            return (TRUE);
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 static void TrimPlayerTree(C_TreeList *tree, TREELIST *branch)
@@ -1315,11 +1375,11 @@ static void TrimPlayerTree(C_TreeList *tree, TREELIST *branch)
     {
         if (branch->Type_ == C_TYPE_MENU)
         {
-            tmpID = (VU_ID*)branch->Item_->GetUserPtr(_UI95_VU_ID_SLOT_);
+            tmpID = (VU_ID *)branch->Item_->GetUserPtr(_UI95_VU_ID_SLOT_);
 
             if (tmpID) // this is a game vu_id
             {
-                game = (VuGameEntity*)vuDatabase->Find(*tmpID);
+                game = (VuGameEntity *)vuDatabase->Find(*tmpID);
 
                 if (game == NULL)
                     limb = branch;
@@ -1331,16 +1391,17 @@ static void TrimPlayerTree(C_TreeList *tree, TREELIST *branch)
         }
         else if (branch->Type_ == C_TYPE_ITEM)
         {
-            tmpID = (VU_ID*)branch->Parent->Item_->GetUserPtr(_UI95_VU_ID_SLOT_);
+            tmpID =
+                (VU_ID *)branch->Parent->Item_->GetUserPtr(_UI95_VU_ID_SLOT_);
 
             if (tmpID == NULL)
                 game = vuPlayerPoolGroup;
             else
-                game = (VuGameEntity*)vuDatabase->Find(*tmpID);
+                game = (VuGameEntity *)vuDatabase->Find(*tmpID);
 
-            plyr = (C_Player*)branch->Item_;
+            plyr = (C_Player *)branch->Item_;
 
-            if ( not TrimmerFindSession(plyr->GetVUID(), game))
+            if (not TrimmerFindSession(plyr->GetVUID(), game))
                 limb = branch;
         }
 
@@ -1354,7 +1415,8 @@ static void TrimPlayerTree(C_TreeList *tree, TREELIST *branch)
     }
 }
 
-static TREELIST *AddGameToList(VuGameEntity *game, TREELIST *parent, C_TreeList *tree)
+static TREELIST *AddGameToList(VuGameEntity *game, TREELIST *parent,
+                               C_TreeList *tree)
 {
     C_Button *btn;
     TREELIST *group;
@@ -1391,10 +1453,11 @@ static TREELIST *AddGameToList(VuGameEntity *game, TREELIST *parent, C_TreeList 
     if (game == gCommsMgr->GetTargetGame())
         btn->Process(0, C_TYPE_LMOUSEUP);
 
-    return(group);
+    return (group);
 }
 
-static TREELIST *CreatePlayerButton(C_TreeList *tree, FalconSessionEntity *session)
+static TREELIST *CreatePlayerButton(C_TreeList *tree,
+                                    FalconSessionEntity *session)
 {
     TREELIST *item;
     C_Player *player;
@@ -1418,11 +1481,14 @@ static TREELIST *CreatePlayerButton(C_TreeList *tree, FalconSessionEntity *sessi
     player->SetVUID(session->Id());
 
     item = tree->CreateItem(session->Id().creator_, C_TYPE_ITEM, player);
-    return(item);
+    return (item);
 }
 
 
-void UpdateGameTreeBranch(long branchid, VuGameEntity *game, C_TreeList *tree, TREELIST *parent, BOOL IsChild) // branchid is the game_<GameType> therefore add 1 for valid ID
+void UpdateGameTreeBranch(
+    long branchid, VuGameEntity *game, C_TreeList *tree, TREELIST *parent,
+    BOOL
+        IsChild) // branchid is the game_<GameType> therefore add 1 for valid ID
 {
     TREELIST *group, *player;
     C_Button *btn;
@@ -1443,14 +1509,18 @@ void UpdateGameTreeBranch(long branchid, VuGameEntity *game, C_TreeList *tree, T
         }
         else
         {
-            btn = (C_Button*)group->Item_;
+            btn = (C_Button *)group->Item_;
 
             if (btn)
             {
                 if (strcmp(game->GameName(), btn->GetText(C_STATE_0)))
                 {
-                    btn->SetText(C_STATE_0, gStringMgr->GetText(gStringMgr->AddText(game->GameName())));
-                    btn->SetText(C_STATE_1, gStringMgr->GetText(gStringMgr->AddText(game->GameName())));
+                    btn->SetText(C_STATE_0,
+                                 gStringMgr->GetText(
+                                     gStringMgr->AddText(game->GameName())));
+                    btn->SetText(C_STATE_1,
+                                 gStringMgr->GetText(
+                                     gStringMgr->AddText(game->GameName())));
                 }
             }
         }
@@ -1461,7 +1531,7 @@ void UpdateGameTreeBranch(long branchid, VuGameEntity *game, C_TreeList *tree, T
     VuSessionsIterator sessionWalker(game);
     FalconSessionEntity *session;
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
@@ -1473,7 +1543,7 @@ void UpdateGameTreeBranch(long branchid, VuGameEntity *game, C_TreeList *tree, T
             tree->AddChildItem(parent, player);
         }
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
 }
 
@@ -1482,24 +1552,29 @@ static void RemoveOldPeopleTreeCB(TREELIST *old)
 {
     _TCHAR buffer[60];
 
-    _stprintf(buffer, "%s %s", ((C_Player*)old->Item_)->GetName(), gStringMgr->GetString(TXT_LEFT_GAME));
+    _stprintf(buffer, "%s %s", ((C_Player *)old->Item_)->GetName(),
+              gStringMgr->GetString(TXT_LEFT_GAME));
 
     ReceiveChatString(FalconNullId, buffer);
 
     // Begin Uplink stuff
-    if (m_pUplink not_eq NULL and FalconLocalGame and FalconLocalGame->IsLocal())
+#ifdef _WIN32
+    if (m_pUplink not_eq NULL and FalconLocalGame and
+        FalconLocalGame->IsLocal())
     {
         try
         {
-            m_pUplink->RemovePlayer(((C_Player*)old->Item_)->GetName());
+            m_pUplink->RemovePlayer(((C_Player *)old->Item_)->GetName());
         }
 
         catch (const _com_error &e)
         {
-            MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
+            MonoPrint(
+                "StartCampaignGame: Error 0x%X occured during UpLink startup",
+                e.Error());
         }
     }
-
+#endif
     // End Uplink stuff
 }
 
@@ -1512,7 +1587,7 @@ void MakeLocalGameTree(VuGameEntity *game)
     C_Text *txt;
     VU_ID *tmpID;
 
-    if ( not People)
+    if (not People)
         return;
 
     if (People->GetRoot())
@@ -1520,7 +1595,7 @@ void MakeLocalGameTree(VuGameEntity *game)
 
     win = gMainHandler->FindWindow(CHAT_WIN);
 
-    if ( not win)
+    if (not win)
         return;
 
     if (game)
@@ -1531,7 +1606,7 @@ void MakeLocalGameTree(VuGameEntity *game)
         txt->SetFixedWidth(30);
         txt->SetFont(People->GetFont());
 
-        if (game == (VuGameEntity*)vuPlayerPoolGroup)
+        if (game == (VuGameEntity *)vuPlayerPoolGroup)
         {
             txt->SetText(TXT_PLAYERPOOL);
             win->DisableCluster(1);
@@ -1547,24 +1622,24 @@ void MakeLocalGameTree(VuGameEntity *game)
             *tmpID = game->Id();
             txt->SetUserCleanupPtr(_UI95_VU_ID_SLOT_, tmpID);
 
-            switch (((FalconGameEntity*)game)->GetGameType())
+            switch (((FalconGameEntity *)game)->GetGameType())
             {
-                case game_Dogfight:
-                    win->DisableCluster(3);
-                    win->EnableCluster(1);
-                    win->EnableCluster(2);
-                    win->EnableCluster(4);
-                    win->RefreshWindow();
-                    break;
+            case game_Dogfight:
+                win->DisableCluster(3);
+                win->EnableCluster(1);
+                win->EnableCluster(2);
+                win->EnableCluster(4);
+                win->RefreshWindow();
+                break;
 
-                case game_TacticalEngagement:
-                case game_Campaign:
-                    win->EnableCluster(1);
-                    win->EnableCluster(2);
-                    win->EnableCluster(3);
-                    win->EnableCluster(4);
-                    win->RefreshWindow();
-                    break;
+            case game_TacticalEngagement:
+            case game_Campaign:
+                win->EnableCluster(1);
+                win->EnableCluster(2);
+                win->EnableCluster(3);
+                win->EnableCluster(4);
+                win->RefreshWindow();
+                break;
             }
         }
 
@@ -1573,27 +1648,27 @@ void MakeLocalGameTree(VuGameEntity *game)
         if (item)
             People->AddItem(People->GetRoot(), item);
 
-        btn = (C_Button*)win->FindControl(CHAT_ALL);
+        btn = (C_Button *)win->FindControl(CHAT_ALL);
 
         if (btn)
             btn->SetState(1);
 
-        btn = (C_Button*)win->FindControl(CHAT_TEAM);
+        btn = (C_Button *)win->FindControl(CHAT_TEAM);
 
         if (btn)
             btn->SetState(0);
 
-        btn = (C_Button*)win->FindControl(CHAT_PACKAGE);
+        btn = (C_Button *)win->FindControl(CHAT_PACKAGE);
 
         if (btn)
             btn->SetState(0);
 
-        btn = (C_Button*)win->FindControl(CHAT_FLIGHT);
+        btn = (C_Button *)win->FindControl(CHAT_FLIGHT);
 
         if (btn)
             btn->SetState(0);
 
-        btn = (C_Button*)win->FindControl(CHAT_DISCONNECT);
+        btn = (C_Button *)win->FindControl(CHAT_DISCONNECT);
 
         if (btn)
         {
@@ -1662,7 +1737,9 @@ static void CheckPlayerGroup(FalconSessionEntity *session, C_Player *plyr)
     }
     else if (PeopleChatType == 4) // CHAT_FLIGHT
     {
-        if (FalconLocalSession->GetPlayerFlightID() == session->GetPlayerFlightID() and FalconLocalSession->GetPlayerFlightID() not_eq FalconNullId)
+        if (FalconLocalSession->GetPlayerFlightID() ==
+                session->GetPlayerFlightID() and
+            FalconLocalSession->GetPlayerFlightID() not_eq FalconNullId)
         {
             plyr->SetState(1);
             plyr->SetMute(0);
@@ -1685,14 +1762,14 @@ void CheckChatFilters(FalconSessionEntity *session)
     TREELIST *item;
     C_Player *player;
 
-    if ( not People)
+    if (not People)
         return;
 
     item = People->Find(session->Id().creator_);
 
     if (item)
     {
-        player = (C_Player*)item->Item_;
+        player = (C_Player *)item->Item_;
 
         if (player)
         {
@@ -1705,8 +1782,8 @@ void CheckChatFilters(FalconSessionEntity *session)
 
 void MutePlayerCB(long, short hittype, C_Base *)
 {
-    C_TreeList  *tree;
-    TREELIST    *item;
+    C_TreeList *tree;
+    TREELIST *item;
     C_Player *plyr;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1714,7 +1791,7 @@ void MutePlayerCB(long, short hittype, C_Base *)
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
     {
-        tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+        tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
         if (tree)
         {
@@ -1743,8 +1820,8 @@ void MutePlayerCB(long, short hittype, C_Base *)
 
 void IgnorePlayerCB(long, short hittype, C_Base *)
 {
-    C_TreeList  *tree;
-    TREELIST    *item;
+    C_TreeList *tree;
+    TREELIST *item;
     C_Player *plyr;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
@@ -1752,7 +1829,7 @@ void IgnorePlayerCB(long, short hittype, C_Base *)
 
     if (gPopupMgr->GetCallingType() == C_TYPE_CONTROL)
     {
-        tree = (C_TreeList*)gPopupMgr->GetCallingControl();
+        tree = (C_TreeList *)gPopupMgr->GetCallingControl();
 
         if (tree)
         {
@@ -1787,28 +1864,28 @@ void UpdateLocalGameTree()
     long Age;
     _TCHAR buffer[60];
 
-    if ( not People)
+    if (not People)
         return;
 
-    if ( not FalconLocalGame)
+    if (not FalconLocalGame)
         return;
 
     Age = GetCurrentTime();
 
     if (People->GetRoot())
     {
-        txt = (C_Text*)People->GetRoot()->Item_;
+        txt = (C_Text *)People->GetRoot()->Item_;
 
         if (txt)
         {
-            tmpID = (VU_ID*)txt->GetUserPtr(_UI95_VU_ID_SLOT_);
+            tmpID = (VU_ID *)txt->GetUserPtr(_UI95_VU_ID_SLOT_);
 
             if (tmpID)
             {
                 if (FalconLocalGame->Id() not_eq *tmpID)
                     MakeLocalGameTree(FalconLocalGame);
             }
-            else if ((VuGameEntity*)FalconLocalGame not_eq vuPlayerPoolGroup)
+            else if ((VuGameEntity *)FalconLocalGame not_eq vuPlayerPoolGroup)
                 MakeLocalGameTree(FalconLocalGame);
         }
     }
@@ -1821,7 +1898,7 @@ void UpdateLocalGameTree()
     VuSessionsIterator sessionWalker(FalconLocalGame);
     FalconSessionEntity *session;
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
@@ -1838,27 +1915,34 @@ void UpdateLocalGameTree()
                 if (PeopleChatType == 1)
                     player->Item_->SetState(1);
                 else
-                    CheckPlayerGroup(session, (C_Player*)player->Item_);
+                    CheckPlayerGroup(session, (C_Player *)player->Item_);
 
                 player->Item_->SetUserNumber(100, Age);
                 player->Item_->SetMenu(CHAT_POP);
-                _stprintf(buffer, "%s %s", ((C_Player*)player->Item_)->GetName(), gStringMgr->GetString(TXT_JOINED_GAME));
+                _stprintf(buffer, "%s %s",
+                          ((C_Player *)player->Item_)->GetName(),
+                          gStringMgr->GetString(TXT_JOINED_GAME));
                 ReceiveChatString(FalconNullId, buffer);
 
                 // Begin Uplink stuff
-                if (m_pUplink not_eq NULL and FalconLocalGame and FalconLocalGame->IsLocal())
+#ifdef _WIN32
+                if (m_pUplink not_eq NULL and FalconLocalGame and
+                    FalconLocalGame->IsLocal())
                 {
                     try
                     {
-                        m_pUplink->AddPlayer(((C_Player*)player->Item_)->GetName());
+                        m_pUplink->AddPlayer(
+                            ((C_Player *)player->Item_)->GetName());
                     }
 
                     catch (const _com_error &e)
                     {
-                        MonoPrint("StartCampaignGame: Error 0x%X occured during UpLink startup", e.Error());
+                        MonoPrint("StartCampaignGame: Error 0x%X occured "
+                                  "during UpLink startup",
+                                  e.Error());
                     }
                 }
-
+#endif
                 // End Uplink stuff
             }
         }
@@ -1867,7 +1951,7 @@ void UpdateLocalGameTree()
             player->Item_->SetUserNumber(100, Age);
         }
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
 
     People->SetDelCallback(RemoveOldPeopleTreeCB);
@@ -1910,10 +1994,11 @@ void RebuildGameTree()
             TrimPlayerTree(CampaignGames, CampaignGames->GetRoot());
 
         VuDatabaseIterator dbiter;
-        VuTypeFilter filter(static_cast<unsigned short>(F4GameType + VU_LAST_ENTITY_TYPE));
+        VuTypeFilter filter(
+            static_cast<unsigned short>(F4GameType + VU_LAST_ENTITY_TYPE));
         FalconGameEntity *game;
 
-        game = (FalconGameEntity*)dbiter.GetFirst(&filter);
+        game = (FalconGameEntity *)dbiter.GetFirst(&filter);
 
         while (game)
         {
@@ -1922,26 +2007,29 @@ void RebuildGameTree()
 
             switch (gametype)
             {
-                case game_Dogfight:
-                    if (DogfightGames)
-                        UpdateGameTreeBranch(gametype, game, DogfightGames, DogfightGames->GetRoot(), FALSE);
+            case game_Dogfight:
+                if (DogfightGames)
+                    UpdateGameTreeBranch(gametype, game, DogfightGames,
+                                         DogfightGames->GetRoot(), FALSE);
 
-                    break;
+                break;
 
-                case game_TacticalEngagement:
-                    if (TacticalGames)
-                        UpdateGameTreeBranch(gametype, game, TacticalGames, TacticalGames->GetRoot(), FALSE);
+            case game_TacticalEngagement:
+                if (TacticalGames)
+                    UpdateGameTreeBranch(gametype, game, TacticalGames,
+                                         TacticalGames->GetRoot(), FALSE);
 
-                    break;
+                break;
 
-                case game_Campaign:
-                    if (CampaignGames)
-                        UpdateGameTreeBranch(gametype, game, CampaignGames, CampaignGames->GetRoot(), FALSE);
+            case game_Campaign:
+                if (CampaignGames)
+                    UpdateGameTreeBranch(gametype, game, CampaignGames,
+                                         CampaignGames->GetRoot(), FALSE);
 
-                    break;
+                break;
             }
 
-            game = (FalconGameEntity*)dbiter.GetNext(&filter);
+            game = (FalconGameEntity *)dbiter.GetNext(&filter);
         }
     }
     else
@@ -1996,7 +2084,7 @@ void RemoveFromTree(C_TreeList *list, VU_ID ID)
 {
     TREELIST *item;
 
-    if ( not list or ID == FalconNullId)
+    if (not list or ID == FalconNullId)
         return;
 
     item = StartTreeSearch(ID, list->GetRoot(), list);
@@ -2029,7 +2117,7 @@ void UI_UpdateGameList()
     C_TreeList *theTree;
     FalconGameType gametype;
 
-    if ( not gUICommsQ)
+    if (not gUICommsQ)
         return;
 
     q = gUICommsQ->Root_;
@@ -2038,211 +2126,219 @@ void UI_UpdateGameList()
     {
         switch (q->Type)
         {
-            case _Q_GAME_ADD_:
-                game = (FalconGameEntity*)vuDatabase->Find(q->GameID);
+        case _Q_GAME_ADD_:
+            game = (FalconGameEntity *)vuDatabase->Find(q->GameID);
 
-                if (game)
+            if (game)
+            {
+                gametype = game->GetGameType();
+
+                switch (gametype)
                 {
-                    gametype = game->GetGameType();
+                case game_Dogfight:
+                    theTree = DogfightGames;
+                    break;
 
-                    switch (gametype)
-                    {
-                        case game_Dogfight:
-                            theTree = DogfightGames;
-                            break;
+                case game_TacticalEngagement:
+                    theTree = TacticalGames;
+                    break;
 
-                        case game_TacticalEngagement:
-                            theTree = TacticalGames;
-                            break;
+                case game_Campaign:
+                    theTree = CampaignGames;
+                    break;
 
-                        case game_Campaign:
-                            theTree = CampaignGames;
-                            break;
-
-                        default:
-                            theTree = NULL;
-                            break;
-                    }
-
-                    if (theTree)
-                    {
-                        // Add to Game's TreeList
-                        UpdateGameTreeBranch(gametype, game, theTree, theTree->GetRoot(), FALSE);
-                        theTree->RecalcSize();
-
-                        if (theTree->GetParent())
-                            theTree->GetParent()->RefreshClient(theTree->GetClient());
-                    }
+                default:
+                    theTree = NULL;
+                    break;
                 }
 
-                break;
-
-            case _Q_GAME_REMOVE_:
-                RemoveFromTree(DogfightGames, q->GameID);
-                RemoveFromTree(TacticalGames, q->GameID);
-                RemoveFromTree(CampaignGames, q->GameID);
-
-                // Remove game from gCommsMgr... if current
-                if (q->GameID == gCommsMgr->GetTargetGameID())
+                if (theTree)
                 {
-                    gCommsMgr->LookAtGame(NULL);
-                    ClearDFTeamLists();
+                    // Add to Game's TreeList
+                    UpdateGameTreeBranch(gametype, game, theTree,
+                                         theTree->GetRoot(), FALSE);
+                    theTree->RecalcSize();
+
+                    if (theTree->GetParent())
+                        theTree->GetParent()->RefreshClient(
+                            theTree->GetClient());
+                }
+            }
+
+            break;
+
+        case _Q_GAME_REMOVE_:
+            RemoveFromTree(DogfightGames, q->GameID);
+            RemoveFromTree(TacticalGames, q->GameID);
+            RemoveFromTree(CampaignGames, q->GameID);
+
+            // Remove game from gCommsMgr... if current
+            if (q->GameID == gCommsMgr->GetTargetGameID())
+            {
+                gCommsMgr->LookAtGame(NULL);
+                ClearDFTeamLists();
+            }
+
+            break;
+
+        case _Q_GAME_UPDATE_:
+            game = (FalconGameEntity *)vuDatabase->Find(q->GameID);
+
+            if (game)
+            {
+                if (game == FalconLocalGame)
+                    UpdateLocalGameTree();
+
+                gametype = game->GetGameType();
+
+                switch (gametype)
+                {
+                case game_Dogfight:
+                    theTree = DogfightGames;
+                    break;
+
+                case game_TacticalEngagement:
+                    theTree = TacticalGames;
+                    break;
+
+                case game_Campaign:
+                    theTree = CampaignGames;
+                    break;
+
+                default:
+                    theTree = NULL;
+                    break;
                 }
 
-                break;
-
-            case _Q_GAME_UPDATE_:
-                game = (FalconGameEntity*)vuDatabase->Find(q->GameID);
-
-                if (game)
+                if (theTree)
                 {
-                    if (game == FalconLocalGame)
-                        UpdateLocalGameTree();
+                    // Add to Game's TreeList
+                    UpdateGameTreeBranch(gametype, game, theTree,
+                                         theTree->GetRoot(), FALSE);
+                    theTree->RecalcSize();
 
-                    gametype = game->GetGameType();
+                    if (theTree->GetParent())
+                        theTree->GetParent()->RefreshClient(
+                            theTree->GetClient());
+                }
+            }
 
-                    switch (gametype)
-                    {
-                        case game_Dogfight:
-                            theTree = DogfightGames;
-                            break;
+            break;
 
-                        case game_TacticalEngagement:
-                            theTree = TacticalGames;
-                            break;
+        case _Q_SESSION_ADD_:
+            game = (FalconGameEntity *)vuDatabase->Find(q->GameID);
+            session = (FalconSessionEntity *)vuDatabase->Find(q->SessionID);
 
-                        case game_Campaign:
-                            theTree = CampaignGames;
-                            break;
+            if (game and session)
+            {
+                if (game == FalconLocalGame)
+                    UpdateLocalGameTree();
 
-                        default:
-                            theTree = NULL;
-                            break;
-                    }
+                gametype = game->GetGameType();
 
-                    if (theTree)
-                    {
-                        // Add to Game's TreeList
-                        UpdateGameTreeBranch(gametype, game, theTree, theTree->GetRoot(), FALSE);
-                        theTree->RecalcSize();
+                switch (gametype)
+                {
+                case game_Dogfight:
+                    CheckFlyButton();
+                    theTree = DogfightGames;
+                    break;
 
-                        if (theTree->GetParent())
-                            theTree->GetParent()->RefreshClient(theTree->GetClient());
-                    }
+                case game_TacticalEngagement:
+                    GetPlayerInfo(q->SessionID);
+                    TallyPlayerSquadrons();
+                    theTree = TacticalGames;
+                    break;
+
+                case game_Campaign:
+                    GetPlayerInfo(q->SessionID);
+                    TallyPlayerSquadrons();
+                    theTree = CampaignGames;
+                    break;
+
+                default:
+                    theTree = NULL;
                 }
 
-                break;
-
-            case _Q_SESSION_ADD_:
-                game = (FalconGameEntity*)vuDatabase->Find(q->GameID);
-                session = (FalconSessionEntity*)vuDatabase->Find(q->SessionID);
-
-                if (game and session)
+                if (theTree)
                 {
-                    if (game == FalconLocalGame)
-                        UpdateLocalGameTree();
+                    // Add to Game's Window List
+                    gamelist = StartTreeSearch(game->Id(), theTree->GetRoot(),
+                                               theTree);
 
-                    gametype = game->GetGameType();
-
-                    switch (gametype)
+                    if (gamelist)
                     {
-                        case game_Dogfight:
-                            CheckFlyButton();
-                            theTree = DogfightGames;
-                            break;
+                        player =
+                            StartTreeSearch(session->Id(), gamelist, theTree);
 
-                        case game_TacticalEngagement:
-                            GetPlayerInfo(q->SessionID);
-                            TallyPlayerSquadrons();
-                            theTree = TacticalGames;
-                            break;
-
-                        case game_Campaign:
-                            GetPlayerInfo(q->SessionID);
-                            TallyPlayerSquadrons();
-                            theTree = CampaignGames;
-                            break;
-
-                        default:
-                            theTree = NULL;
-                    }
-
-                    if (theTree)
-                    {
-                        // Add to Game's Window List
-                        gamelist = StartTreeSearch(game->Id(), theTree->GetRoot(), theTree);
-
-                        if (gamelist)
+                        if (player == NULL)
                         {
-                            player = StartTreeSearch(session->Id(), gamelist, theTree);
+                            player = CreatePlayerButton(theTree, session);
+                            theTree->AddChildItem(gamelist, player);
+                            theTree->RecalcSize();
 
-                            if (player == NULL)
-                            {
-                                player = CreatePlayerButton(theTree, session);
-                                theTree->AddChildItem(gamelist, player);
-                                theTree->RecalcSize();
-
-                                if (theTree->GetParent())
-                                    theTree->GetParent()->RefreshClient(theTree->GetClient());
-                            }
+                            if (theTree->GetParent())
+                                theTree->GetParent()->RefreshClient(
+                                    theTree->GetClient());
                         }
+                    }
 
-                        /*
+                    /*
                          if(game == gCommsMgr->GetGame())
                          {
                          // Add to gCommsMgr game lists (if selected)
                          AddPlayerToGame(session);
                          }
                         */
-                    }
                 }
+            }
 
-                break;
+            break;
 
-            case _Q_SESSION_REMOVE_:
-                UpdateLocalGameTree();
-                RemoveFromTree(DogfightGames, q->SessionID);
-                RemoveFromTree(TacticalGames, q->SessionID);
-                RemoveFromTree(CampaignGames, q->SessionID);
-                // Remove player from gCommsMgr game lists (if selected)
-                game = (FalconGameEntity*)gCommsMgr->GetGame();
+        case _Q_SESSION_REMOVE_:
+            UpdateLocalGameTree();
+            RemoveFromTree(DogfightGames, q->SessionID);
+            RemoveFromTree(TacticalGames, q->SessionID);
+            RemoveFromTree(CampaignGames, q->SessionID);
+            // Remove player from gCommsMgr game lists (if selected)
+            game = (FalconGameEntity *)gCommsMgr->GetGame();
 
-                if (game)
+            if (game)
+            {
+                // if(game->Id() == q->GameID)
+                // RemovePlayerFromGame(q->SessionID);
+                if (game->GetGameType() == game_Campaign or
+                    game->GetGameType() == game_TacticalEngagement)
+                    TallyPlayerSquadrons();
+
+                // else if(game->GetGameType() == game_Dogfight)
+                // {
+                // CheckFlyButton();
+                // }
+            }
+
+            break;
+
+        case _Q_SESSION_UPDATE_:
+            session = (FalconSessionEntity *)vuDatabase->Find(q->SessionID);
+
+            if (session)
+            {
+                CheckChatFilters(session);
+
+                if (gCommsMgr->GetGame() not_eq vuPlayerPoolGroup)
                 {
-                    // if(game->Id() == q->GameID)
-                    // RemovePlayerFromGame(q->SessionID);
-                    if (game->GetGameType() == game_Campaign or game->GetGameType() == game_TacticalEngagement)
-                        TallyPlayerSquadrons();
-
-                    // else if(game->GetGameType() == game_Dogfight)
-                    // {
-                    // CheckFlyButton();
-                    // }
-                }
-
-                break;
-
-            case _Q_SESSION_UPDATE_:
-                session = (FalconSessionEntity*)vuDatabase->Find(q->SessionID);
-
-                if (session)
-                {
-                    CheckChatFilters(session);
-
-                    if (gCommsMgr->GetGame() not_eq vuPlayerPoolGroup)
+                    if (gCommsMgr->GetGame())
                     {
-                        if (gCommsMgr->GetGame())
+                        if (gCommsMgr->GetGame()->Id() == q->GameID)
                         {
-                            if (gCommsMgr->GetGame()->Id() == q->GameID)
-                            {
-                                CheckForNewPlayer(session);
-                                CheckPlayersFlight(session);
-                            }
+                            CheckForNewPlayer(session);
+                            CheckPlayersFlight(session);
                         }
                     }
                 }
+            }
 
-                break;
+            break;
         }
 
         q = gUICommsQ->Remove();
@@ -2262,9 +2358,9 @@ static void PeopleSelectCB(long, short hittype, C_Base *)
     if (item->Type_ not_eq C_TYPE_ITEM)
         return;
 
-    player = (C_Player*)item->Item_;
+    player = (C_Player *)item->Item_;
 
-    if ( not player)
+    if (not player)
         return;
 
     player->SetState(static_cast<short>(player->GetState() xor 1));
@@ -2279,21 +2375,21 @@ static void SelectChatFilterCB(long, short hittype, C_Base *control)
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    PeopleChatType = static_cast<short>(control->GetCluster()); // 1=All,2=team,3=package,4=flight
+    PeopleChatType = static_cast<short>(
+        control->GetCluster()); // 1=All,2=team,3=package,4=flight
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
         CheckChatFilters(session);
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
-
 }
 
 void UI_Refresh(void)
 {
-    if ( not FalconLocalGame or not gCommsMgr or not gMainHandler)
+    if (not FalconLocalGame or not gCommsMgr or not gMainHandler)
     {
         return;
     }
@@ -2301,20 +2397,20 @@ void UI_Refresh(void)
     // Do UI Notification stuff
     switch (FalconLocalGame->GetGameType())
     {
-        case game_Dogfight:
-            PostMessage(FalconDisplay.appWin, FM_REFRESH_DOGFIGHT, 0, 0);
-            break;
+    case game_Dogfight:
+        PostMessage(FalconDisplay.appWin, FM_REFRESH_DOGFIGHT, 0, 0);
+        break;
 
-        case game_TacticalEngagement:
-            PostMessage(FalconDisplay.appWin, FM_REFRESH_TACTICAL, 0, 0);
-            break;
+    case game_TacticalEngagement:
+        PostMessage(FalconDisplay.appWin, FM_REFRESH_TACTICAL, 0, 0);
+        break;
 
-        case game_Campaign:
-            PostMessage(FalconDisplay.appWin, FM_REFRESH_CAMPAIGN, 0, 0);
-            break;
+    case game_Campaign:
+        PostMessage(FalconDisplay.appWin, FM_REFRESH_CAMPAIGN, 0, 0);
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 }
 
@@ -2332,7 +2428,7 @@ void ViewRemoteLogbook(long playerID)
     {
         Leave = UI_Enter(win);
 
-        remlb = (RemoteLB*)gCommsMgr->GetRemoteLB(playerID);
+        remlb = (RemoteLB *)gCommsMgr->GetRemoteLB(playerID);
 
         if (remlb)
         {
@@ -2369,22 +2465,24 @@ void SendTextToFlight()
     FalconSessionEntity *session;
     UI_SendChatMessage *chat;
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
-        if (session->GetPlayerFlightID() == FalconLocalSession->GetPlayerFlightID())
+        if (session->GetPlayerFlightID() ==
+            FalconLocalSession->GetPlayerFlightID())
         {
             chat = new UI_SendChatMessage(FalconNullId, session);
 
             chat->dataBlock.from = FalconLocalSessionId;
-            chat->dataBlock.size = static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
+            chat->dataBlock.size =
+                static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
             chat->dataBlock.message = new char[chat->dataBlock.size];
             memcpy(chat->dataBlock.message, chatterStr, chat->dataBlock.size);
             FalconSendMessage(chat, TRUE);
         }
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
 }
 
@@ -2399,17 +2497,17 @@ void SendTextToPackage()
 
     flt = (Flight)vuDatabase->Find(FalconLocalSession->GetPlayerFlightID());
 
-    if ( not flt)
+    if (not flt)
         return;
 
     pkg = (Package)flt->GetUnitParent();
 
-    if ( not pkg)
+    if (not pkg)
         return;
 
     MyPackageID = pkg->Id();
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
@@ -2424,16 +2522,17 @@ void SendTextToPackage()
                 chat = new UI_SendChatMessage(FalconNullId, session);
 
                 chat->dataBlock.from = FalconLocalSessionId;
-                chat->dataBlock.size = static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
+                chat->dataBlock.size =
+                    static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
                 chat->dataBlock.message = new char[chat->dataBlock.size];
-                memcpy(chat->dataBlock.message, chatterStr, chat->dataBlock.size);
+                memcpy(chat->dataBlock.message, chatterStr,
+                       chat->dataBlock.size);
                 FalconSendMessage(chat, TRUE);
             }
         }
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
-
 }
 
 void SendTextToRange()
@@ -2446,13 +2545,13 @@ void SendTextToRange()
 
     ent = FalconLocalSession->GetPlayerEntity();
 
-    if ( not ent)
+    if (not ent)
         return;
 
     myx = ent->XPos();
     myy = ent->YPos();
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
@@ -2473,14 +2572,16 @@ void SendTextToRange()
                 chat = new UI_SendChatMessage(FalconNullId, session);
 
                 chat->dataBlock.from = FalconLocalSessionId;
-                chat->dataBlock.size = static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
+                chat->dataBlock.size =
+                    static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
                 chat->dataBlock.message = new char[chat->dataBlock.size];
-                memcpy(chat->dataBlock.message, chatterStr, chat->dataBlock.size);
+                memcpy(chat->dataBlock.message, chatterStr,
+                       chat->dataBlock.size);
                 FalconSendMessage(chat, TRUE);
             }
         }
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
 }
 
@@ -2490,7 +2591,7 @@ void SendTextToTeam()
     FalconSessionEntity *session;
     UI_SendChatMessage *chat;
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
@@ -2499,15 +2600,15 @@ void SendTextToTeam()
             chat = new UI_SendChatMessage(FalconNullId, session);
 
             chat->dataBlock.from = FalconLocalSessionId;
-            chat->dataBlock.size = static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
+            chat->dataBlock.size =
+                static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
             chat->dataBlock.message = new char[chat->dataBlock.size];
             memcpy(chat->dataBlock.message, chatterStr, chat->dataBlock.size);
             FalconSendMessage(chat, TRUE);
         }
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
-
 }
 
 void SendTextToEveryOne()
@@ -2516,19 +2617,20 @@ void SendTextToEveryOne()
     FalconSessionEntity *session;
     UI_SendChatMessage *chat;
 
-    session = (FalconSessionEntity*)sessionWalker.GetFirst();
+    session = (FalconSessionEntity *)sessionWalker.GetFirst();
 
     while (session)
     {
         chat = new UI_SendChatMessage(FalconNullId, session);
 
         chat->dataBlock.from = FalconLocalSessionId;
-        chat->dataBlock.size = static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
+        chat->dataBlock.size =
+            static_cast<short>((strlen(chatterStr) + 1) * sizeof(char));
         chat->dataBlock.message = new char[chat->dataBlock.size];
         memcpy(chat->dataBlock.message, chatterStr, chat->dataBlock.size);
         FalconSendMessage(chat, TRUE);
 
-        session = (FalconSessionEntity*)sessionWalker.GetNext();
+        session = (FalconSessionEntity *)sessionWalker.GetNext();
     }
 }
 
@@ -2544,41 +2646,41 @@ void SendTextMessageToChannel()
 
         switch (curChannel)
         {
-            case rcfOff:
-                break;
+        case rcfOff:
+            break;
 
-            case rcfFlight1:
-            case rcfFlight2:
-            case rcfFlight3:
-            case rcfFlight4:
-            case rcfFlight5:
-                SendTextToFlight();
-                break;
+        case rcfFlight1:
+        case rcfFlight2:
+        case rcfFlight3:
+        case rcfFlight4:
+        case rcfFlight5:
+            SendTextToFlight();
+            break;
 
-            case rcfPackage1:
-            case rcfPackage2:
-            case rcfPackage3:
-            case rcfPackage4:
-            case rcfPackage5:
+        case rcfPackage1:
+        case rcfPackage2:
+        case rcfPackage3:
+        case rcfPackage4:
+        case rcfPackage5:
 
-                SendTextToPackage();
-                break;
+            SendTextToPackage();
+            break;
 
-            case rcfFromPackage:
-                SendTextToPackage();
-                break;
+        case rcfFromPackage:
+            SendTextToPackage();
+            break;
 
-            case rcfProx: // 40nm range
-                SendTextToRange();
-                break;
+        case rcfProx: // 40nm range
+            SendTextToRange();
+            break;
 
-            case rcfTeam:
-                SendTextToTeam();
-                break;
+        case rcfTeam:
+            SendTextToTeam();
+            break;
 
-            case rcfAll:
-                SendTextToEveryOne();
-                break;
+        case rcfAll:
+            SendTextToEveryOne();
+            break;
         }
     }
 }
@@ -2598,7 +2700,8 @@ void SimOpenChatBox(unsigned long, int state, void *)
         MaxInputLength = 60;
         AsciiAllowed = 0; // All
 
-        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor SHOW_CHATBOX);
+        OTWDriver.SetFrontTextFlags(OTWDriver.GetFrontTextFlags() bitor
+                                    SHOW_CHATBOX);
     }
 }
 
@@ -2708,7 +2811,7 @@ static void HookupCommsControls(long ID)
     // if(ctrl)
     // ctrl->SetCallback(Phone_ConnectType_CB);
 
-    tree = (C_TreeList*)winme->FindControl(PEOPLE_TREE);
+    tree = (C_TreeList *)winme->FindControl(PEOPLE_TREE);
 
     if (tree)
     {
@@ -2717,10 +2820,13 @@ static void HookupCommsControls(long ID)
     }
 
     // Help GUIDE thing
-    ctrl = (C_Button*)winme->FindControl(UI_HELP_GUIDE);
+    ctrl = (C_Button *)winme->FindControl(UI_HELP_GUIDE);
 
     if (ctrl)
         ctrl->SetCallback(UI_Help_Guide_CB);
 
-    HookupServerBrowserControls(JETNET_WIN);
+#ifdef _WIN32
+    HookupServerBrowserControls(
+        JETNET_WIN); // multiplayer server browser (COM/gnet, unported on Linux)
+#endif
 }

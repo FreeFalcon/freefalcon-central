@@ -1,14 +1,14 @@
-#include "MsgInc/TimingMsg.h"
+#include "msginc/timingmsg.h"
 #include "mesg.h"
-#include "ThreadMgr.h"
-#include "CmpClass.h"
-#include "FalcSess.h"
-#include "TimerThread.h"
+#include "threadmgr.h"
+#include "cmpclass.h"
+#include "falcsess.h"
+#include "timerthread.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 // ===================================
 // Prototypes
@@ -18,9 +18,12 @@
 // Class functions
 // ===================================
 
-FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(TimingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target,
+                                         VU_BOOL loopback)
+    : FalconEvent(TimingMsg, FalconEvent::CampaignThread, entityId, target,
+                  loopback)
 {
-    if ( not target)
+    if (not target)
         return;
 
     ShiAssert(target->IsGame() and target->IsLocal());
@@ -35,7 +38,8 @@ FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target,
     {
         if (vuxGameTime < gCompressTillTime)
         {
-            dataBlock.targetTime = gCompressTillTime; // We don't want to advance time past here
+            dataBlock.targetTime =
+                gCompressTillTime; // We don't want to advance time past here
         }
         else
         {
@@ -47,7 +51,9 @@ FalconTimingMessage::FalconTimingMessage(VU_ID entityId, VuTargetEntity *target,
     RequestOutOfBandTransmit();
 }
 
-FalconTimingMessage::FalconTimingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(TimingMsg, FalconEvent::CampaignThread, senderid, target)
+FalconTimingMessage::FalconTimingMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                         VU_ID target)
+    : FalconEvent(TimingMsg, FalconEvent::CampaignThread, senderid, target)
 {
     type;
 }
@@ -61,7 +67,7 @@ extern int F4CommsLatency;
 int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
 {
     long initialRem = *rem;
-#define numberofstats  30
+#define numberofstats 30
     static long delta[numberofstats];
     static long totaltimediff = 0;
     static int init = true;
@@ -82,7 +88,7 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
     FalconEvent::Decode(buf, rem);
     memcpychk(&dataBlock, buf, sizeof(dataBlock), rem);
 
-    if ( not FalconLocalGame->IsLocal())
+    if (not FalconLocalGame->IsLocal())
     {
         // MonoPrint
         // (
@@ -96,14 +102,14 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
 
         if (dataBlock.targetTime >= vuxLastTargetGameTime)
         {
-            int
-            diff;
+            int diff;
 
             diff = vuxTargetGameTime - dataBlock.targetTime;
 
             if ((diff < -5000) or (diff > 5000))
             {
-                MonoPrint("Update vuxTargetGameTime %08x %d\n", dataBlock.targetTime, diff);
+                MonoPrint("Update vuxTargetGameTime %08x %d\n",
+                          dataBlock.targetTime, diff);
                 vuxTargetGameTime = dataBlock.targetTime;
                 init = true;
             }
@@ -111,8 +117,10 @@ int FalconTimingMessage::Decode(VU_BYTE **buf, long *rem)
             {
                 for (int i = numberofstats; i >= 0; i--)
                 {
-                    if (i == 0) delta[i] = vuxTargetGameTime - dataBlock.targetTime;
-                    else if (i > 0) delta[i] = delta[i - 1];
+                    if (i == 0)
+                        delta[i] = vuxTargetGameTime - dataBlock.targetTime;
+                    else if (i > 0)
+                        delta[i] = delta[i - 1];
 
                     totaltimediff += delta[i];
                 }
@@ -160,35 +168,3 @@ int FalconTimingMessage::Process(uchar autodisp)
 // ================================
 // Global functions
 // ================================
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

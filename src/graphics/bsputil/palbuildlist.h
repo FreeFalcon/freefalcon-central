@@ -8,7 +8,7 @@
 #ifndef _PALBUILDLIST_H_
 #define _PALBUILDLIST_H_
 
-#include "Palette.h"
+#include "palette.h"
 
 extern class BuildTimePaletteList ThePaletteBuildList;
 
@@ -39,6 +39,7 @@ public:
     void WritePool(int file);
     void Report(void);
     void MergePalette();
+
 protected:
     BuildTimePaletteEntry *head;
     BuildTimePaletteEntry *tail;

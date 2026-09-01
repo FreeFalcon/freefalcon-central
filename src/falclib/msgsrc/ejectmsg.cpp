@@ -5,7 +5,7 @@
  * Generated from file EVENTS.XLS by MicroProse
  */
 
-#include "MsgInc/EjectMsg.h"
+#include "msginc/ejectmsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
@@ -13,17 +13,21 @@
 #include "falcsess.h"
 #include "squadron.h"
 #include "campmap.h"
-#include "MissEval.h"
+#include "misseval.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-FalconEjectMessage::FalconEjectMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(EjectMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconEjectMessage::FalconEjectMessage(VU_ID entityId, VuTargetEntity *target,
+                                       VU_BOOL loopback)
+    : FalconEvent(EjectMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
     RequestOutOfBandTransmit();
 }
 
-FalconEjectMessage::FalconEjectMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(EjectMsg, FalconEvent::SimThread, senderid, target)
+FalconEjectMessage::FalconEjectMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                       VU_ID target)
+    : FalconEvent(EjectMsg, FalconEvent::SimThread, senderid, target)
 {
     RequestOutOfBandTransmit();
     type;
@@ -35,7 +39,7 @@ FalconEjectMessage::~FalconEjectMessage(void)
 
 int FalconEjectMessage::Process(uchar autodisp)
 {
-    FalconEntity*   falcEnt;
+    FalconEntity *falcEnt;
     Flight flight;
     Squadron sq;
     GridIndex x, y;
@@ -48,7 +52,7 @@ int FalconEjectMessage::Process(uchar autodisp)
     }
 
     // Determine success of this ejection and adjust squadron/pilot statistics appropriately
-    falcEnt = (FalconEntity*)vuDatabase->Find(dataBlock.eFlightID);
+    falcEnt = (FalconEntity *)vuDatabase->Find(dataBlock.eFlightID);
 
     if (falcEnt and falcEnt->IsFlight())
     {
@@ -57,15 +61,14 @@ int FalconEjectMessage::Process(uchar autodisp)
 
         // KCK: Determanistic rescue right now.. might want to check for chopper actually
         // arriving at some point in the far, far future.
-        if (
-            GetOwner(TheCampaign.CampMapData, x, y) == flight->GetTeam() or
- not ((flight->GetCampID() + dataBlock.ePilotID) % 3))
+        if (GetOwner(TheCampaign.CampMapData, x, y) == flight->GetTeam() or
+            not((flight->GetCampID() + dataBlock.ePilotID) % 3))
         {
             ps = PILOT_RESCUED;
         }
 
         // Record the pilot in the squadron records
-        sq = (Squadron) flight->GetUnitSquadron();
+        sq = (Squadron)flight->GetUnitSquadron();
 
         if (sq and dataBlock.ePilotID < PILOTS_PER_FLIGHT)
         {

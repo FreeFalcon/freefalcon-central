@@ -1,12 +1,12 @@
 #ifndef _REQUESTLOGBOOK_H
 #define _REQUESTLOGBOOK_H
 
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Request Logbook
@@ -14,7 +14,8 @@
 class UI_RequestLogbook : public FalconEvent
 {
 public:
-    UI_RequestLogbook(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    UI_RequestLogbook(VU_ID entityId, VuTargetEntity *target,
+                      VU_BOOL loopback = TRUE);
     UI_RequestLogbook(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~UI_RequestLogbook(void);
     virtual int Size() const
@@ -48,6 +49,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

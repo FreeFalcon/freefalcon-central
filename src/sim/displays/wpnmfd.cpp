@@ -7,10 +7,10 @@
 #include "sms.h"
 #include "simdrive.h"
 #include "camp2sim.h"
-#include "Graphics/Include/render2d.h"
-#include "Graphics/Include/canvas3d.h"
-#include "Graphics/Include/tviewpnt.h"
-#include "Graphics/Include/renderir.h"
+#include "graphics/include/render2d.h"
+#include "graphics/include/canvas3d.h"
+#include "graphics/include/tviewpnt.h"
+#include "graphics/include/renderir.h"
 #include "otwdrive.h"
 #include "cpmanager.h"
 #include "icp.h"
@@ -44,13 +44,13 @@ void WpnMfdDrawable::DisplayInit(ImageBuffer* image)
 {
     DisplayExit();
 
-    if ( not g_bGreyScaleMFD)
+    if (not g_bGreyScaleMFD)
         g_bGreyMFD = false;
 
     privateDisplay = new RenderIR;
     ((RenderIR*)privateDisplay)->Setup(image, OTWDriver.GetViewpoint());
 
-    if ((g_bGreyMFD) and ( not bNVGmode))
+    if ((g_bGreyMFD) and (not bNVGmode))
         privateDisplay->SetColor(GetMfdColor(MFD_WHITE));
     else
         privateDisplay->SetColor(0xffffffff);
@@ -60,10 +60,9 @@ void WpnMfdDrawable::DisplayInit(ImageBuffer* image)
 
 VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC or not playerAC->Sms or
- not playerAC->Sms->curWeapon)
+    if (not playerAC or not playerAC->Sms or not playerAC->Sms->curWeapon)
         return privateDisplay;
 
     Sms = playerAC->Sms;
@@ -78,7 +77,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
         return retval;
     }
 
-    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponClass() == wcAgmWpn and 
+    if (Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponClass() == wcAgmWpn and
         Sms->curWeaponType == wtAgm65)
     {
         if (theMissile and theMissile->IsMissile())
@@ -87,23 +86,31 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 
             if (mavDisplay)
             {
-                if ( not mavDisplay->GetDisplay())
+                if (not mavDisplay->GetDisplay())
                 {
                     if (privateDisplay)
                     {
-                        mavDisplay->DisplayInit(((Render2D*)(privateDisplay))->GetImageBuffer());
+                        mavDisplay->DisplayInit(
+                            ((Render2D*)(privateDisplay))->GetImageBuffer());
                     }
 
                     mavDisplay->viewPoint = viewPoint;
 
                     // Set missile initial position
-                    Sms->hardPoint[Sms->CurHardpoint()]->GetSubPosition(Sms->curWpnNum, &rx, &ry, &rz);
+                    Sms->hardPoint[Sms->CurHardpoint()]->GetSubPosition(
+                        Sms->curWpnNum, &rx, &ry, &rz);
                     rx += 5.0F;
-                    pos.x = Sms->Ownship()->XPos() + Sms->Ownship()->dmx[0][0] * rx + Sms->Ownship()->dmx[1][0] * ry +
+                    pos.x = Sms->Ownship()->XPos() +
+                            Sms->Ownship()->dmx[0][0] * rx +
+                            Sms->Ownship()->dmx[1][0] * ry +
                             Sms->Ownship()->dmx[2][0] * rz;
-                    pos.y = Sms->Ownship()->YPos() + Sms->Ownship()->dmx[0][1] * rx + Sms->Ownship()->dmx[1][1] * ry +
+                    pos.y = Sms->Ownship()->YPos() +
+                            Sms->Ownship()->dmx[0][1] * rx +
+                            Sms->Ownship()->dmx[1][1] * ry +
                             Sms->Ownship()->dmx[2][1] * rz;
-                    pos.z = Sms->Ownship()->ZPos() + Sms->Ownship()->dmx[0][2] * rx + Sms->Ownship()->dmx[1][2] * ry +
+                    pos.z = Sms->Ownship()->ZPos() +
+                            Sms->Ownship()->dmx[0][2] * rx +
+                            Sms->Ownship()->dmx[1][2] * ry +
                             Sms->Ownship()->dmx[2][2] * rz;
                     mavDisplay->SetXYZ(pos.x, pos.y, pos.z);
                 }
@@ -117,7 +124,7 @@ VirtualDisplay* WpnMfdDrawable::GetDisplay(void)
 }
 void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     float cX, cY;
 
     display = newDisplay;
@@ -127,15 +134,19 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     Sms = playerAC->Sms;
     mavDisplay = NULL;
     display = newDisplay;
-    HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
+    HarmTargetingPod* harmPod =
+        (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if ( not theRadar or not pFCC or not self or not Sms)
+    if (not theRadar or not pFCC or not self or not Sms)
     {
-        ShiWarning("Oh Oh shouldn't be here without a radar or FCC or player or SMS");
+        ShiWarning(
+            "Oh Oh shouldn't be here without a radar or FCC or player or SMS");
         return;
     }
 
-    if ( not g_bRealisticAvionics or not Sms->curWeapon or (Sms->curWeaponType not_eq wtAgm65 and Sms->curWeaponType not_eq wtAgm88))
+    if (not g_bRealisticAvionics or not Sms->curWeapon or
+        (Sms->curWeaponType not_eq wtAgm65 and
+         Sms->curWeaponType not_eq wtAgm88))
     {
         OffMode(display);
         return;
@@ -153,18 +164,24 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
         HARMWpnMode();
     }
 
-    if (Sms->curWeapon and Sms->curWeaponType == wtAgm65) // RV-I-Hawk - No do for HARM WPN
+    if (Sms->curWeapon and
+        Sms->curWeaponType == wtAgm65) // RV-I-Hawk - No do for HARM WPN
     {
         ShiAssert(Sms->curWeapon->IsMissile());
-        mavDisplay = (MaverickDisplayClass*)((MissileClass*)Sms->GetCurrentWeapon())->display;
+        mavDisplay =
+            (MaverickDisplayClass*)((MissileClass*)Sms->GetCurrentWeapon())
+                ->display;
 
         // FRB - B&W display
-        if ((g_bGreyMFD) and ( not bNVGmode))
+        if ((g_bGreyMFD) and (not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xffffffff);
 
-        if (mavDisplay and ( not ((MissileClass*)Sms->GetCurrentWeapon())->Covered or playerAC->AutopilotType() == AircraftClass::CombatAP) and Sms->MavCoolTimer <= 0.0F)
+        if (mavDisplay and
+            (not((MissileClass*)Sms->GetCurrentWeapon())->Covered or
+             playerAC->AutopilotType() == AircraftClass::CombatAP) and
+            Sms->MavCoolTimer <= 0.0F)
         {
             mavDisplay->SetIntensity(GetIntensity());
             mavDisplay->viewPoint = viewPoint;
@@ -181,10 +198,12 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     }
 
     // RV-I-Hawk - No do for HARM WPN in HTSSubmode
-    if (Sms->curWeaponType == wtAgm65 or (Sms->curWeaponType == wtAgm88 and harmPod->GetSubMode() not_eq HarmTargetingPod::HarmModeChooser))
+    if (Sms->curWeaponType == wtAgm65 or
+        (Sms->curWeaponType == wtAgm88 and
+         harmPod->GetSubMode() not_eq HarmTargetingPod::HarmModeChooser))
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) and ( not bNVGmode))
+        if ((g_bGreyMFD) and (not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xffffffff);
@@ -197,7 +216,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     if (Sms->curWeaponType == wtAgm65)
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) and ( not bNVGmode))
+        if ((g_bGreyMFD) and (not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xffffffff);
@@ -209,11 +228,11 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     //Reference symbol
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
+    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         // FRB - B&W display
-        if ((g_bGreyMFD) and ( not bNVGmode))
+        if ((g_bGreyMFD) and (not bNVGmode))
             display->SetColor(GetMfdColor(MFD_WHITE));
         else
             display->SetColor(0xffffffff);
@@ -237,7 +256,8 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
     // (works on all MFDs and not only here)
     for (int i = 0; i < 4; i++)
     {
-        if ((MfdDisplay[i])->GetTGPWarning() and (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
+        if ((MfdDisplay[i])->GetTGPWarning() and
+            (MfdDisplay[i])->CurMode() == MFDClass::TGPMode)
         {
             TGPAttitudeWarning(display);
             break;
@@ -247,7 +267,7 @@ void WpnMfdDrawable::Display(VirtualDisplay* newDisplay)
 
 void WpnMfdDrawable::DrawDLZ(VirtualDisplay* display)
 {
-    if ( not pFCC)
+    if (not pFCC)
     {
         return;
     }
@@ -261,8 +281,8 @@ void WpnMfdDrawable::DrawDLZ(VirtualDisplay* display)
     if (pFCC->missileTarget)
     {
         // Range Carat / Closure
-        rMax   = pFCC->missileRMax;
-        rMin   = pFCC->missileRMin;
+        rMax = pFCC->missileRMax;
+        rMin = pFCC->missileRMin;
 
         // get range to ground designaate point
         dx = Sms->Ownship()->XPos() - pFCC->groundDesignateX;
@@ -283,7 +303,7 @@ void WpnMfdDrawable::DrawDLZ(VirtualDisplay* display)
 
         // Rmin/Rmax
         display->Line(0.9F, -0.8F + rMin * 1.6F, 0.95F, -0.8F + rMin * 1.6F);
-        display->Line(0.9F, -0.8F + rMin * 1.6F, 0.9F,  -0.8F + rMax * 1.6F);
+        display->Line(0.9F, -0.8F + rMin * 1.6F, 0.9F, -0.8F + rMax * 1.6F);
         display->Line(0.9F, -0.8F + rMax * 1.6F, 0.95F, -0.8F + rMax * 1.6F);
 
         // Range Caret
@@ -296,45 +316,132 @@ void WpnMfdDrawable::DrawDLZ(VirtualDisplay* display)
 
 void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
     FireControlComputer* pFCC = playerAC->Sms->Ownship()->GetFCC();
-    HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
+    HarmTargetingPod* harmPod =
+        (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
     // RV - I-Hawk - First check if FCC isn't in HARM mode
     if (pFCC->GetMasterMode() not_eq FireControlComputer::AirGroundHARM)
     {
         switch (whichButton)
         {
-            case 0:
-                if ( not Sms->Powered)
-                {
-                    Sms->Powered = TRUE;
-                }
+        case 0:
+            if (not Sms->Powered)
+            {
+                Sms->Powered = TRUE;
+            }
 
-                break;
+            break;
 
-            case 1:
-                Sms->StepMavSubMode();
-                break;
+        case 1:
+            Sms->StepMavSubMode();
+            break;
 
-            case 2:
-                if (mavDisplay)
-                {
-                    mavDisplay->ToggleFOV();
-                }
+        case 2:
+            if (mavDisplay)
+            {
+                mavDisplay->ToggleFOV();
+            }
 
-                break;
+            break;
 
-            case 4:
-                ((MissileClass*)Sms->GetCurrentWeapon())->HOC = not ((MissileClass*)Sms->GetCurrentWeapon())->HOC;
+        case 4:
+            ((MissileClass*)Sms->GetCurrentWeapon())->HOC =
+                not((MissileClass*)Sms->GetCurrentWeapon())->HOC;
+            break;
+
+        case 19:
+            if ((g_bGreyMFD) or (not g_bGreyScaleMFD))
+                g_bGreyMFD = false;
+            else
+                g_bGreyMFD = true;
+
+            break;
+
+        case 10:
+        case 11:
+        case 12:
+        case 13:
+        case 14:
+            MfdDrawable::PushButton(whichButton, whichMFD);
+            break;
+
+        default:
+            break;
+        }
+    }
+
+    else // Now handle the HARM mode
+    {
+        switch (harmPod->GetSubMode())
+        {
+        case HarmTargetingPod::HarmModeChooser:
+        default:
+            switch (whichButton)
+            {
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+                MfdDrawable::PushButton(whichButton, whichMFD);
                 break;
 
             case 19:
-                if ((g_bGreyMFD) or ( not g_bGreyScaleMFD))
-                    g_bGreyMFD = false;
-                else
-                    g_bGreyMFD = true;
+                harmPod->SetSubMode(HarmTargetingPod::POS);
+                harmPod->SetRange(60);
+                break;
 
+            case 18:
+                harmPod->SetSubMode(HarmTargetingPod::HAS);
+                harmPod->SetRange(60);
+                harmPod->ResetHASTimer();
+                harmPod->SetFilterMode(HarmTargetingPod::ALL);
+                break;
+            }
+
+            break;
+
+        case HarmTargetingPod::HAS:
+            switch (whichButton)
+            {
+            case 0:
+                harmPod->SetSubMode(HarmTargetingPod::HarmModeChooser);
+                pFCC->dropTrackCmd = TRUE; // drop target if switching HTS mode
+                break;
+
+            case 2:
+                harmPod->ToggleZoomMode();
+                break;
+
+            case 3:
+                // Go to the threats filtering screen
+                harmPod->SetSubMode(HarmTargetingPod::FilterMode);
+                harmPod->SetLastSubMode(HarmTargetingPod::HAS);
+                break;
+
+            case 6:
+                // Reset HAS timer
+                harmPod->ResetHASTimer();
+                break;
+
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+                MfdDrawable::PushButton(whichButton, whichMFD);
+            }
+
+            break;
+
+        case HarmTargetingPod::POS:
+            switch (whichButton)
+            {
+            case 0:
+                harmPod->SetSubMode(HarmTargetingPod::HarmModeChooser);
+                pFCC->dropTrackCmd = TRUE; // drop target if switching HTS mode
                 break;
 
             case 10:
@@ -345,181 +452,96 @@ void WpnMfdDrawable::PushButton(int whichButton, int whichMFD)
                 MfdDrawable::PushButton(whichButton, whichMFD);
                 break;
 
-            default:
-                break;
-        }
-    }
-
-    else // Now handle the HARM mode
-    {
-        switch (harmPod->GetSubMode())
-        {
-            case HarmTargetingPod::HarmModeChooser:
-            default:
-                switch (whichButton)
-                {
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                        MfdDrawable::PushButton(whichButton, whichMFD);
-                        break;
-
-                    case 19:
-                        harmPod->SetSubMode(HarmTargetingPod::POS);
-                        harmPod->SetRange(60);
-                        break;
-
-                    case 18:
-                        harmPod->SetSubMode(HarmTargetingPod::HAS);
-                        harmPod->SetRange(60);
-                        harmPod->ResetHASTimer();
-                        harmPod->SetFilterMode(HarmTargetingPod::ALL);
-                        break;
-
-                }
-
+            case 16:
+                harmPod->SetPOSTargetIndex(0);
+                harmPod->LockPOSTarget();
                 break;
 
-            case HarmTargetingPod::HAS:
-                switch (whichButton)
-                {
-                    case 0:
-                        harmPod->SetSubMode(HarmTargetingPod::HarmModeChooser);
-                        pFCC->dropTrackCmd = TRUE; // drop target if switching HTS mode
-                        break;
-
-                    case 2:
-                        harmPod->ToggleZoomMode();
-                        break;
-
-                    case 3:
-                        // Go to the threats filtering screen
-                        harmPod->SetSubMode(HarmTargetingPod::FilterMode);
-                        harmPod->SetLastSubMode(HarmTargetingPod::HAS);
-                        break;
-
-                    case 6:
-                        // Reset HAS timer
-                        harmPod->ResetHASTimer();
-                        break;
-
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                        MfdDrawable::PushButton(whichButton, whichMFD);
-                }
-
+            case 17:
+                harmPod->SetPOSTargetIndex(1);
+                harmPod->LockPOSTarget();
                 break;
 
-            case HarmTargetingPod::POS:
-                switch (whichButton)
-                {
-                    case 0:
-                        harmPod->SetSubMode(HarmTargetingPod::HarmModeChooser);
-                        pFCC->dropTrackCmd = TRUE; // drop target if switching HTS mode
-                        break;
-
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                        MfdDrawable::PushButton(whichButton, whichMFD);
-                        break;
-
-                    case 16:
-                        harmPod->SetPOSTargetIndex(0);
-                        harmPod->LockPOSTarget();
-                        break;
-
-                    case 17:
-                        harmPod->SetPOSTargetIndex(1);
-                        harmPod->LockPOSTarget();
-                        break;
-
-                    case 18:
-                        harmPod->SetPOSTargetIndex(2);
-                        harmPod->LockPOSTarget();
-                        break;
-
-                    case 19:
-                        harmPod->SetPOSTargetIndex(3);
-                        harmPod->LockPOSTarget();
-                        break;
-                }
-
+            case 18:
+                harmPod->SetPOSTargetIndex(2);
+                harmPod->LockPOSTarget();
                 break;
 
-            case HarmTargetingPod::Handoff:
-                switch (whichButton)
-                {
-                    case 0:
-                        harmPod->SetSubMode(HarmTargetingPod::HarmModeChooser);
-                        pFCC->dropTrackCmd = TRUE; // drop target if switching HARM mode
-                        break;
+            case 19:
+                harmPod->SetPOSTargetIndex(3);
+                harmPod->LockPOSTarget();
+                break;
+            }
 
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                        MfdDrawable::PushButton(whichButton, whichMFD);
-                        break;
-                }
+            break;
 
+        case HarmTargetingPod::Handoff:
+            switch (whichButton)
+            {
+            case 0:
+                harmPod->SetSubMode(HarmTargetingPod::HarmModeChooser);
+                pFCC->dropTrackCmd = TRUE; // drop target if switching HARM mode
                 break;
 
-            case HarmTargetingPod::FilterMode:
-                switch (whichButton)
-                {
-                    case 0:
-                        harmPod->SetSubMode(HarmTargetingPod::HAS);   // Return right back to HAS
-                        playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                        break;
-
-                    case 10:
-                    case 11:
-                    case 12:
-                    case 13:
-                    case 14:
-                        MfdDrawable::PushButton(whichButton, whichMFD);
-                        break;
-
-                        // Eache of this buttons sets a different filtering mode and getting back to HAS
-                    case 19:
-                        harmPod->SetFilterMode(HarmTargetingPod::ALL);
-                        harmPod->ResetHASTimer();
-                        harmPod->SetSubMode(HarmTargetingPod::HAS);
-                        playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                        break;
-
-                    case 18:
-                        harmPod->SetFilterMode(HarmTargetingPod::HP);
-                        harmPod->ResetHASTimer();
-                        harmPod->SetSubMode(HarmTargetingPod::HAS);
-                        playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                        break;
-
-                    case 17:
-                        harmPod->SetFilterMode(HarmTargetingPod::HA);
-                        harmPod->ResetHASTimer();
-                        harmPod->SetSubMode(HarmTargetingPod::HAS);
-                        playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                        break;
-
-                    case 16:
-                        harmPod->SetFilterMode(HarmTargetingPod::LA);
-                        harmPod->ResetHASTimer();
-                        harmPod->SetSubMode(HarmTargetingPod::HAS);
-                        playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
-                        break;
-                }
-
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+                MfdDrawable::PushButton(whichButton, whichMFD);
                 break;
+            }
+
+            break;
+
+        case HarmTargetingPod::FilterMode:
+            switch (whichButton)
+            {
+            case 0:
+                harmPod->SetSubMode(
+                    HarmTargetingPod::HAS); // Return right back to HAS
+                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+                break;
+
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+                MfdDrawable::PushButton(whichButton, whichMFD);
+                break;
+
+                // Eache of this buttons sets a different filtering mode and getting back to HAS
+            case 19:
+                harmPod->SetFilterMode(HarmTargetingPod::ALL);
+                harmPod->ResetHASTimer();
+                harmPod->SetSubMode(HarmTargetingPod::HAS);
+                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+                break;
+
+            case 18:
+                harmPod->SetFilterMode(HarmTargetingPod::HP);
+                harmPod->ResetHASTimer();
+                harmPod->SetSubMode(HarmTargetingPod::HAS);
+                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+                break;
+
+            case 17:
+                harmPod->SetFilterMode(HarmTargetingPod::HA);
+                harmPod->ResetHASTimer();
+                harmPod->SetSubMode(HarmTargetingPod::HAS);
+                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+                break;
+
+            case 16:
+                harmPod->SetFilterMode(HarmTargetingPod::LA);
+                harmPod->ResetHASTimer();
+                harmPod->SetSubMode(HarmTargetingPod::HAS);
+                playerAC->SOIManager(SimVehicleClass::SOI_WEAPON);
+                break;
+            }
+
+            break;
         }
     }
 }
@@ -528,7 +550,7 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 {
     char tempstr[10] = "";
 
-    if ( not Sms->Powered)
+    if (not Sms->Powered)
         LabelButton(0, "STBY");
 
     else
@@ -555,7 +577,9 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
     float ZoomMin;
     float ZoomMax;
 
-    if ((MissileClass*)Sms->GetCurrentWeapon() and ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel() > 0 and ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel() > 0)
+    if ((MissileClass*)Sms->GetCurrentWeapon() and
+        ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel() > 0 and
+        ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel() > 0)
     {
         ZoomMin = ((MissileClass*)Sms->GetCurrentWeapon())->GetFOVLevel();
         ZoomMax = ((MissileClass*)Sms->GetCurrentWeapon())->GetEXPLevel();
@@ -567,7 +591,8 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
         ZoomMax = 6.0f;
     }
 
-    if (mavDisplay and mavDisplay->CurFOV() > 12.0f / (ZoomMax - (ZoomMax - ZoomMin) / 2.0f) * DTR)
+    if (mavDisplay and mavDisplay->CurFOV() >
+                           12.0f / (ZoomMax - (ZoomMax - ZoomMin) / 2.0f) * DTR)
         LabelButton(2, "FOV");
     else
         LabelButton(2, "EXP", NULL, 1);
@@ -588,27 +613,28 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
     if (Sms->CurHardpoint() < 0)
         return;
 
-    sprintf(tmpStr, "%d%s", Sms->NumCurrentWpn(), Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->mnemonic);
+    sprintf(tmpStr, "%d%s", Sms->NumCurrentWpn(),
+            Sms->hardPoint[Sms->CurHardpoint()]->GetWeaponData()->mnemonic);
     ShiAssert(strlen(tmpStr) < sizeof(tmpStr));
     LabelButton(5, tmpStr);
 
-    char *mode = "";
+    char* mode = "";
 
     if (Sms->Powered and Sms->MavCoolTimer <= 0.0F)
     {
         switch (Sms->MasterArm())
         {
-            case SMSBaseClass::Safe:
-                mode = "";
-                break;
+        case SMSBaseClass::Safe:
+            mode = "";
+            break;
 
-            case SMSBaseClass::Sim:
-                mode = "SIM";
-                break;
+        case SMSBaseClass::Sim:
+            mode = "SIM";
+            break;
 
-            case SMSBaseClass::Arm:
-                mode = "RDY";
-                break;
+        case SMSBaseClass::Arm:
+            mode = "RDY";
+            break;
         }
     }
 
@@ -619,15 +645,18 @@ void WpnMfdDrawable::OSBLabels(VirtualDisplay* display)
 }
 void WpnMfdDrawable::DrawRALT(VirtualDisplay* display)
 {
-    if (TheHud and not (self->mFaults and self->mFaults->GetFault(FaultClass::ralt_fault))
-       and self->af->platform->RaltReady() and 
-        TheHud->FindRollAngle(-TheHud->hat) and TheHud->FindPitchAngle(-TheHud->hat))
+    if (TheHud and
+        not(self->mFaults and
+            self->mFaults->GetFault(FaultClass::ralt_fault)) and
+        self->af->platform->RaltReady() and
+        TheHud->FindRollAngle(-TheHud->hat) and
+        TheHud->FindPitchAngle(-TheHud->hat))
     {
         float x, y = 0;
         GetButtonPos(5, &x, &y);
         y += display->TextHeight();
         x -= 0.05F;
-        int RALT = (int) - TheHud->hat;
+        int RALT = (int)-TheHud->hat;
         char tempstr[10] = "";
 
         if (RALT > 9990)
@@ -649,7 +678,8 @@ void WpnMfdDrawable::DrawHDPT(VirtualDisplay* display, SMSClass* Sms)
     {
         char c = HdptStationSym(i, Sms);
 
-        if (c == ' ') continue; // Don't bother drawing blanks.
+        if (c == ' ')
+            continue; // Don't bother drawing blanks.
 
         Str[0] = c;
         Str[1] = '\0';
@@ -657,23 +687,28 @@ void WpnMfdDrawable::DrawHDPT(VirtualDisplay* display, SMSClass* Sms)
         if (i < 6)
         {
             leftEdge = -x + width * (i - 1);
-            display->TextLeft(leftEdge, y, Str, (Sms->CurHardpoint() == i ? 2 : 0));
+            display->TextLeft(leftEdge, y, Str,
+                              (Sms->CurHardpoint() == i ? 2 : 0));
         }
         else
         {
             leftEdge = x - width * (Sms->NumHardpoints() - i - 1);
             // Box the current station
-            display->TextRight(leftEdge, y, Str, (Sms->CurHardpoint() == i ? 2 : 0));
+            display->TextRight(leftEdge, y, Str,
+                               (Sms->CurHardpoint() == i ? 2 : 0));
         }
     }
 }
 char WpnMfdDrawable::HdptStationSym(int n, SMSClass* Sms) // JPO new routine
 {
-    if (Sms->hardPoint[n] == NULL) return ' '; // empty hp
+    if (Sms->hardPoint[n] == NULL)
+        return ' '; // empty hp
 
-    if (Sms->hardPoint[n]->weaponCount <= 0) return ' '; //MI don't bother drawing empty hardpoints
+    if (Sms->hardPoint[n]->weaponCount <= 0)
+        return ' '; //MI don't bother drawing empty hardpoints
 
-    if (Sms->StationOK(n) == FALSE) return 'F'; // malfunction on  HP
+    if (Sms->StationOK(n) == FALSE)
+        return 'F'; // malfunction on  HP
 
     if (Sms->hardPoint[n]->GetWeaponType() == Sms->curWeaponType)
         return '0' + n; // exact match for weapon
@@ -687,170 +722,177 @@ char WpnMfdDrawable::HdptStationSym(int n, SMSClass* Sms) // JPO new routine
 // RV - I-Hawk - Manage HARM modes display
 void WpnMfdDrawable::HARMWpnMode()
 {
-    AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
+    AircraftClass* playerAC = SimDriver.GetPlayerAircraft();
 
     pFCC = playerAC->Sms->Ownship()->GetFCC();
     Sms = playerAC->Sms;
-    HarmTargetingPod* harmPod = (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
+    HarmTargetingPod* harmPod =
+        (HarmTargetingPod*)FindSensor(Sms->Ownship(), SensorClass::HTS);
 
-    if (pFCC->GetMasterMode() == FireControlComputer::AirGroundHARM)   // Varify we are in HARM FCC Master mode
+    if (pFCC->GetMasterMode() ==
+        FireControlComputer::
+            AirGroundHARM) // Varify we are in HARM FCC Master mode
     {
-        switch (harmPod->GetSubMode())   // Check which Submode
+        switch (harmPod->GetSubMode()) // Check which Submode
         {
-            case HarmTargetingPod::HarmModeChooser:
+        case HarmTargetingPod::HarmModeChooser:
+        default:
+            LabelButton(17, "DL");
+            LabelButton(18, "HAS");
+            LabelButton(19, "POS");
+            BottomRow();
+
+            if (not(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+            {
+                DWORD tempColor = display->Color();
+                display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
+                display->TextCenter(0.0F, 0.6F, "NOT SOI");
+                display->SetColor(tempColor);
+            }
+
+            break;
+
+        case HarmTargetingPod::POS:
+            LabelButton(0, "POS");
+            LabelButton(1, "TBL1");
+            LabelButton(2, "PB");
+            LabelButton(4, "UFC");
+            LabelButton(8, "GS", "OF");
+            LabelButton(9, "T", "I");
+            harmPod->SetIntensity(GetIntensity());
+            harmPod->POSDisplay(display);
+            BottomRow();
+
+            if (not(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+            {
+                DWORD tempColor = display->Color();
+                display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
+                display->TextCenter(0.0F, 0.6F, "NOT SOI");
+                display->SetColor(tempColor);
+            }
+
+            break;
+
+        case HarmTargetingPod::HAS:
+
+            LabelButton(0, "HAS");
+            LabelButton(1, "TBL1");
+
+            switch (harmPod->GetZoomMode())
+            {
+            case HarmTargetingPod::Center:
+                LabelButton(2, "CTR");
+                break;
+
+            case HarmTargetingPod::Right:
+                LabelButton(2, "RT");
+                break;
+
+            case HarmTargetingPod::Left:
+                LabelButton(2, "LT");
+                break;
+
+            case HarmTargetingPod::Wide:
             default:
-                LabelButton(17, "DL");
-                LabelButton(18, "HAS");
-                LabelButton(19, "POS");
-                BottomRow();
+                LabelButton(2, "WIDE");
+                break;
+            }
 
-                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+            LabelButton(3, "SRCH");
+            LabelButton(4, "UFC");
+            LabelButton(6, "R", "S");
+            LabelButton(9, "T", "I");
+            harmPod->SetIntensity(GetIntensity());
+            harmPod->HASDisplay(display);
+            BottomRow();
+
+            if (not(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+            {
+                DWORD tempColor = display->Color();
+                display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
+                display->TextCenter(0.0F, 0.52F, "NOT SOI");
+                display->SetColor(tempColor);
+            }
+
+            break;
+
+        case HarmTargetingPod::Handoff:
+
+            LabelButton(0, "HAS");
+            LabelButton(1, "TBL1");
+
+            switch (harmPod->GetZoomMode())
+            {
+            case HarmTargetingPod::Center:
+                LabelButton(2, "CTR");
+                break;
+
+            case HarmTargetingPod::Right:
+                LabelButton(2, "RT");
+                break;
+
+            case HarmTargetingPod::Left:
+                LabelButton(2, "LT");
+                break;
+
+            case HarmTargetingPod::Wide:
+                if (harmPod->GetPreHandoffMode() == HarmTargetingPod::HAS)
                 {
-                    DWORD tempColor = display->Color();
-                    display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
-                    display->TextCenter(0.0F, 0.6F, "NOT SOI");
-                    display->SetColor(tempColor);
+                    LabelButton(2, "WIDE");
                 }
 
                 break;
+            }
 
-            case HarmTargetingPod::POS:
-                LabelButton(0, "POS");
-                LabelButton(1, "TBL1");
-                LabelButton(2, "PB");
-                LabelButton(4, "UFC");
-                LabelButton(8, "GS", "OF");
-                LabelButton(9, "T", "I");
-                harmPod->SetIntensity(GetIntensity());
-                harmPod->POSDisplay(display);
-                BottomRow();
+            LabelButton(4, "UFC");
+            LabelButton(9, "T", "I");
+            harmPod->SetIntensity(GetIntensity());
+            harmPod->HandoffDisplay(display);
+            BottomRow();
 
-                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
-                {
-                    DWORD tempColor = display->Color();
-                    display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
-                    display->TextCenter(0.0F, 0.6F, "NOT SOI");
-                    display->SetColor(tempColor);
-                }
+            if (not(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+            {
+                DWORD tempColor = display->Color();
+                display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
+                display->TextCenter(0.0F, 0.6F, "NOT SOI");
+                display->SetColor(tempColor);
+            }
 
-                break;
+            break;
 
-            case HarmTargetingPod::HAS:
+        case HarmTargetingPod::FilterMode:
+            LabelButton(0, "HAS");
 
-                LabelButton(0, "HAS");
-                LabelButton(1, "TBL1");
+            float x, y;
+            int boxed = harmPod->GetFilterMode();
 
-                switch (harmPod->GetZoomMode())
-                {
-                    case HarmTargetingPod::Center:
-                        LabelButton(2, "CTR");
-                        break;
+            GetButtonPos(19, &x, &y);
+            display->TextLeft(x, y, "ALL",
+                              boxed == HarmTargetingPod::ALL ? 2 : 0);
 
-                    case HarmTargetingPod::Right:
-                        LabelButton(2, "RT");
-                        break;
+            GetButtonPos(18, &x, &y);
+            display->TextLeft(x, y, "HP",
+                              boxed == HarmTargetingPod::HP ? 2 : 0);
 
-                    case HarmTargetingPod::Left:
-                        LabelButton(2, "LT");
-                        break;
+            GetButtonPos(17, &x, &y);
+            display->TextLeft(x, y, "HA",
+                              boxed == HarmTargetingPod::HA ? 2 : 0);
 
-                    case HarmTargetingPod::Wide:
-                    default:
-                        LabelButton(2, "WIDE");
-                        break;
-                }
+            GetButtonPos(16, &x, &y);
+            display->TextLeft(x, y, "LA",
+                              boxed == HarmTargetingPod::LA ? 2 : 0);
 
-                LabelButton(3, "SRCH");
-                LabelButton(4, "UFC");
-                LabelButton(6, "R", "S");
-                LabelButton(9, "T", "I");
-                harmPod->SetIntensity(GetIntensity());
-                harmPod->HASDisplay(display);
-                BottomRow();
+            BottomRow();
 
-                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
-                {
-                    DWORD tempColor = display->Color();
-                    display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
-                    display->TextCenter(0.0F, 0.52F, "NOT SOI");
-                    display->SetColor(tempColor);
-                }
+            if (not(playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
+            {
+                DWORD tempColor = display->Color();
+                display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
+                display->TextCenter(0.0F, 0.6F, "NOT SOI");
+                display->SetColor(tempColor);
+            }
 
-                break;
-
-            case HarmTargetingPod::Handoff:
-
-                LabelButton(0, "HAS");
-                LabelButton(1, "TBL1");
-
-                switch (harmPod->GetZoomMode())
-                {
-                    case HarmTargetingPod::Center:
-                        LabelButton(2, "CTR");
-                        break;
-
-                    case HarmTargetingPod::Right:
-                        LabelButton(2, "RT");
-                        break;
-
-                    case HarmTargetingPod::Left:
-                        LabelButton(2, "LT");
-                        break;
-
-                    case HarmTargetingPod::Wide:
-                        if (harmPod->GetPreHandoffMode() == HarmTargetingPod::HAS)
-                        {
-                            LabelButton(2, "WIDE");
-                        }
-
-                        break;
-                }
-
-                LabelButton(4, "UFC");
-                LabelButton(9, "T", "I");
-                harmPod->SetIntensity(GetIntensity());
-                harmPod->HandoffDisplay(display);
-                BottomRow();
-
-                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
-                {
-                    DWORD tempColor = display->Color();
-                    display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
-                    display->TextCenter(0.0F, 0.6F, "NOT SOI");
-                    display->SetColor(tempColor);
-                }
-
-                break;
-
-            case HarmTargetingPod::FilterMode:
-                LabelButton(0, "HAS");
-
-                float x, y;
-                int boxed = harmPod->GetFilterMode();
-
-                GetButtonPos(19, &x, &y);
-                display->TextLeft(x, y, "ALL", boxed == HarmTargetingPod::ALL ? 2 : 0);
-
-                GetButtonPos(18, &x, &y);
-                display->TextLeft(x, y, "HP", boxed == HarmTargetingPod::HP ? 2 : 0);
-
-                GetButtonPos(17, &x, &y);
-                display->TextLeft(x, y, "HA", boxed == HarmTargetingPod::HA ? 2 : 0);
-
-                GetButtonPos(16, &x, &y);
-                display->TextLeft(x, y, "LA", boxed == HarmTargetingPod::LA ? 2 : 0);
-
-                BottomRow();
-
-                if ( not (playerAC->GetSOI() == SimVehicleClass::SOI_WEAPON))
-                {
-                    DWORD tempColor = display->Color();
-                    display->SetColor(GetMfdColor(MFD_WHITY_GRAY));
-                    display->TextCenter(0.0F, 0.6F, "NOT SOI");
-                    display->SetColor(tempColor);
-                }
-
-                break;
+            break;
         }
     }
 }
@@ -865,7 +907,9 @@ void WpnMfdDrawable::OffMode(VirtualDisplay* display)
     display->SetFont(ofont);
     theRadar->GetCursorPosition(&cX, &cY);
 
-    if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
+    if (OTWDriver.pCockpitManager and
+        OTWDriver.pCockpitManager
+            ->mpIcp and // JPG 14 Dec 03 - Added BE/ownship info
         OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
     {
         DrawBullseyeCircle(display, cX, cY);

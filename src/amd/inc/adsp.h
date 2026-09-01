@@ -27,7 +27,8 @@
 #define _AMD_ADSP_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     typedef struct X

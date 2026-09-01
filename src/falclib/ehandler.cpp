@@ -2,13 +2,13 @@
 #pragma warning(disable : 4514)
 #pragma warning(disable : 4201)
 #include <windows.h>
-#include "BugslayerUtil.h"
+#include "bugslayerutil.h"
 #include "f4version.h"
 #include "f4vu.h"
-#include "FalcSess.h"
+#include "falcsess.h"
 #include "uicomms.h"
 #include "minidump.h" //Wombat778 5-01-04
-#include "DBGHELP_MINDUMP.h" //Wombat778 5-01-04
+#include "dbghelp_mindump.h" //Wombat778 5-01-04
 
 // Artscout - 2026 (x64): CONTEXT instruction/stack pointer differ by arch (Eip/Esp vs Rip/Rsp).
 #if defined(_M_X64)
@@ -20,7 +20,8 @@
 #endif
 
 
-extern DWORD gDebugLodID; // The Model ID under draw by the DX Engine... 0xffffffff if no model
+extern DWORD
+    gDebugLodID; // The Model ID under draw by the DX Engine... 0xffffffff if no model
 extern DWORD gDebugTextureID; // The Texture ID currently referenced
 extern char g_sVersion[];
 
@@ -40,9 +41,9 @@ const int MaxStackDump = 2048; // Maximum number of DWORDS in stack dumps.
 const int StackColumns = 8; // Number of columns in stack dump.
 
 #define ONEK 1024
-#define SIXTYFOURK (64*ONEK)
-#define ONEM (ONEK*ONEK)
-#define ONEG (ONEK*ONEK*ONEK)
+#define SIXTYFOURK (64 * ONEK)
+#define ONEM (ONEK * ONEK)
+#define ONEG (ONEK * ONEK * ONEK)
 
 extern bool g_bModuleList; // JB 010101
 
@@ -59,7 +60,7 @@ char g_CardDetails[1024]; // for the graphics card info.
 
 extern bool g_bOldStackDump; // 2002-04-01 S.G.
 
-static void hprintf(HANDLE LogFile, char* Format, ...)
+static void hprintf(HANDLE LogFile, char *Format, ...)
 {
     char buffer[4000]; // wvsprintf never prints more than one K.
     // JPO increased - we may do more now.
@@ -80,14 +81,14 @@ static void PrintTime(char *output, FILETIME TimeToPrint)
 {
     WORD Date, Time;
 
-    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) and 
+    if (FileTimeToLocalFileTime(&TimeToPrint, &TimeToPrint) and
         FileTimeToDosDateTime(&TimeToPrint, &Date, &Time))
     {
         // What a silly way to print out the file date/time. Oh well,
         // it works, and I'm not aware of a cleaner way to do it.
-        wsprintf(output, "%d/%d/%d %02d:%02d:%02d",
-                 (Date / 32) bitand 15, Date bitand 31, (Date / 512) + 1980,
-                 (Time / 2048), (Time / 32) bitand 63, (Time bitand 31) * 2);
+        wsprintf(output, "%d/%d/%d %02d:%02d:%02d", (Date / 32) bitand 15,
+                 Date bitand 31, (Date / 512) + 1980, (Time / 2048),
+                 (Time / 32) bitand 63, (Time bitand 31) * 2);
     }
     else
         output[0] = 0;
@@ -107,22 +108,22 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
             // If GetModuleFileName returns greater than zero then this must
             // be a valid code module address. Therefore we can try to walk
             // our way through its structures to find the link time stamp.
-            IMAGE_DOS_HEADER *DosHeader = (IMAGE_DOS_HEADER*)ModuleHandle;
+            IMAGE_DOS_HEADER *DosHeader = (IMAGE_DOS_HEADER *)ModuleHandle;
 
             if (IMAGE_DOS_SIGNATURE not_eq DosHeader->e_magic)
                 return;
 
-            IMAGE_NT_HEADERS *NTHeader = (IMAGE_NT_HEADERS*)((char *)DosHeader
-                                         + DosHeader->e_lfanew);
+            IMAGE_NT_HEADERS *NTHeader =
+                (IMAGE_NT_HEADERS *)((char *)DosHeader + DosHeader->e_lfanew);
 
             if (IMAGE_NT_SIGNATURE not_eq NTHeader->Signature)
                 return;
 
             // Open the code module file so that we can get its file date
             // and size.
-            HANDLE ModuleFile = CreateFile(ModName, GENERIC_READ,
-                                           FILE_SHARE_READ, 0, OPEN_EXISTING,
-                                           FILE_ATTRIBUTE_NORMAL, 0);
+            HANDLE ModuleFile =
+                CreateFile(ModName, GENERIC_READ, FILE_SHARE_READ, 0,
+                           OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
             char TimeBuffer[100] = "";
             DWORD FileSize = 0;
 
@@ -159,12 +160,12 @@ static void ShowModuleInfo(HANDLE LogFile, HINSTANCE ModuleHandle)
 
 static void RecordModuleList(HANDLE LogFile)
 {
-    if ( not g_bModuleList)
+    if (not g_bModuleList)
         return;
 
     hprintf(LogFile, "\r\n"
-            "\tModule list: names, addresses, sizes, time stamps "
-            "and file times:\r\n");
+                     "\tModule list: names, addresses, sizes, time stamps "
+                     "and file times:\r\n");
     SYSTEM_INFO SystemInfo;
     GetSystemInfo(&SystemInfo);
     const size_t PageSize = SystemInfo.dwPageSize;
@@ -186,8 +187,8 @@ static void RecordModuleList(HANDLE LogFile)
                 // Adjust the page number to skip over this block of memory.
                 pageNum += MemInfo.RegionSize / PageSize;
 
-                if (MemInfo.State == MEM_COMMIT and MemInfo.AllocationBase >
-                    LastAllocationBase)
+                if (MemInfo.State == MEM_COMMIT and
+                    MemInfo.AllocationBase > LastAllocationBase)
                 {
                     // Look for new blocks of committed memory, and try
                     // recording their module names - this will fail
@@ -225,7 +226,7 @@ static void RecordSystemInformation(HANDLE LogFile)
     char UserName[200];
     DWORD UserNameSize = sizeof(UserName);
 
-    if ( not GetUserName(UserName, &UserNameSize))
+    if (not GetUserName(UserName, &UserNameSize))
         lstrcpy(UserName, "Unknown");
 
     hprintf(LogFile, "%s, run by %s.\r\n", ModuleName, UserName);
@@ -239,14 +240,13 @@ static void RecordSystemInformation(HANDLE LogFile)
     MemInfo.dwLength = sizeof(MemInfo);
     GlobalMemoryStatus(&MemInfo);
     // Print out the amount of physical memory, rounded up.
-    hprintf(LogFile, "%d MBytes physical memory.\r\n", (MemInfo.dwTotalPhys +
-            ONEM - 1) / ONEM);
+    hprintf(LogFile, "%d MBytes physical memory.\r\n",
+            (MemInfo.dwTotalPhys + ONEM - 1) / ONEM);
 
-	extern const char* FREE_FALCON_BRAND;
-	extern const char* FREE_FALCON_VERSION;
-	hprintf(LogFile, "%s Version %s\r\n",
-			FREE_FALCON_BRAND,
-			FREE_FALCON_VERSION);
+    extern const char *FREE_FALCON_BRAND;
+    extern const char *FREE_FALCON_VERSION;
+    hprintf(LogFile, "%s Version %s\r\n", FREE_FALCON_BRAND,
+            FREE_FALCON_VERSION);
 
     hprintf(LogFile, "%s\r\n", g_sVersion);
 
@@ -255,31 +255,31 @@ static void RecordSystemInformation(HANDLE LogFile)
 
     if (vuLocalSessionEntity and FalconLocalGame)
     {
-        __try   // just in case this is screwd up
+        __try // just in case this is screwd up
         {
             char *gtype;
 
             switch (FalconLocalGame->GetGameType())
             {
-                case  game_InstantAction:
-                    gtype = "Instant Action";
-                    break;
+            case game_InstantAction:
+                gtype = "Instant Action";
+                break;
 
-                case  game_Dogfight:
-                    gtype = "DogFight";
-                    break;
+            case game_Dogfight:
+                gtype = "DogFight";
+                break;
 
-                case game_TacticalEngagement:
-                    gtype = "Tactical Engagement";
-                    break;
+            case game_TacticalEngagement:
+                gtype = "Tactical Engagement";
+                break;
 
-                case game_Campaign:
-                    gtype = "Campaign";
-                    break;
+            case game_Campaign:
+                gtype = "Campaign";
+                break;
 
-                default:
-                    gtype = "<unknown>";
-                    break;
+            default:
+                gtype = "<unknown>";
+                break;
             }
 
             hprintf(LogFile, "Game is %s type %s\r\n", gtype,
@@ -290,13 +290,13 @@ static void RecordSystemInformation(HANDLE LogFile)
             // nothing here.
         }
     }
-    else hprintf(LogFile, "Not in game\r\n");
+    else
+        hprintf(LogFile, "Not in game\r\n");
 
     // COBRA - RED - The DX of the Model ID under draw
     hprintf(LogFile, "DX Model ID : %x\r\n", gDebugLodID);
     // COBRA - RED - The ID of the Texture referenced
     hprintf(LogFile, "Texture ID  : %x\r\n", gDebugTextureID);
-
 }
 
 // Translate the exception code into something human readable.
@@ -306,11 +306,10 @@ static const char *GetExceptionDescription(DWORD ExceptionCode)
     struct ExceptionNames
     {
         DWORD ExceptionCode;
-        char* ExceptionName;
+        char *ExceptionName;
     };
 
-    ExceptionNames ExceptionMap[] =
-    {
+    ExceptionNames ExceptionMap[] = {
         {0x40010005, "a Control-C"},
         {0x40010008, "a Control-Break"},
         {0x80000002, "a Datatype Misalignment"},
@@ -344,9 +343,14 @@ static const char *GetExceptionDescription(DWORD ExceptionCode)
     return "Unknown exception type";
 }
 
-static char* GetFilePart(char *source)
+static char *GetFilePart(char *source)
 {
-    char *result = strrchr(source, '\\');
+    char *b1 = strrchr(source, '\\');
+    char *b2 = strrchr(source, '/');
+    char *result =
+        (b1 > b2) ?
+            b1 :
+            b2; // #104: last separator of either kind (NULL sorts lowest)
 
     if (result)
         result++;
@@ -417,8 +421,9 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
 
     // Replace the executable filename with our error log file name.
     lstrcpy(FilePart, "crashlog.txt");
-    HANDLE LogFile = CreateFile(ModuleName, GENERIC_WRITE, 0, 0,
-                                OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH, 0);
+    HANDLE LogFile =
+        CreateFile(ModuleName, GENERIC_WRITE, 0, 0, OPEN_ALWAYS,
+                   FILE_ATTRIBUTE_NORMAL bitor FILE_FLAG_WRITE_THROUGH, 0);
 
     if (LogFile == INVALID_HANDLE_VALUE)
     {
@@ -433,7 +438,7 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     PEXCEPTION_RECORD Exception = data->ExceptionRecord;
     PCONTEXT Context = data->ContextRecord;
 
-    if ( not hinstDbgHelp)
+    if (not hinstDbgHelp)
     {
         char CrashModulePathName[MAX_PATH];
         char *CrashModuleFileName = "Unknown";
@@ -442,31 +447,32 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
         // VirtualQuery can be used to get the allocation base associated with a
         // code address, which is the same as the ModuleHandle. This can be used
         // to get the filename of the module that the crash happened in.
-        if (VirtualQuery((void*)CTX_IP(Context), &MemInfo, sizeof(MemInfo)) and 
+        if (VirtualQuery((void *)CTX_IP(Context), &MemInfo, sizeof(MemInfo)) and
             GetModuleFileName((HINSTANCE)MemInfo.AllocationBase,
                               CrashModulePathName,
                               sizeof(CrashModulePathName)) > 0)
             CrashModuleFileName = GetFilePart(CrashModulePathName);
 
-        hprintf(LogFile, "%s caused %s in module %s at %04x:%08x.",
-                FileName, GetExceptionDescription(Exception->ExceptionCode),
+        hprintf(LogFile, "%s caused %s in module %s at %04x:%08x.", FileName,
+                GetExceptionDescription(Exception->ExceptionCode),
                 CrashModuleFileName, Context->SegCs, CTX_IP(Context));
     }
 
     hprintf(LogFile, "%s\r\n", GetFaultReason(data));
     hprintf(LogFile, "Exception handler called in %s.\r\n", Message);
 
-    if (Exception->ExceptionCode == STATUS_ACCESS_VIOLATION and 
+    if (Exception->ExceptionCode == STATUS_ACCESS_VIOLATION and
         Exception->NumberParameters >= 2)
     {
         char DebugMessage[1000];
-        const char* readwrite = "Read from";
+        const char *readwrite = "Read from";
 
         if (Exception->ExceptionInformation[0])
             readwrite = "Write to";
 
-        wsprintf(DebugMessage, "%s location %08x caused an access violation.\r\n",
-                 readwrite, Exception->ExceptionInformation[1]);
+        wsprintf(DebugMessage,
+                 "%s location %08x caused an access violation.\r\n", readwrite,
+                 Exception->ExceptionInformation[1]);
 #ifdef _DEBUG
         // The VisualC++ debugger doesn't actually tell you whether a read
         // or a write caused the access violation, nor does it tell what
@@ -483,14 +489,13 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
     // is no memory to read. If the dereferencing of code[] fails, the
     // exception handler will print '??'.
     hprintf(LogFile, "Code: ");
-    unsigned char *code = (unsigned char*)CTX_IP(Context);
+    unsigned char *code = (unsigned char *)CTX_IP(Context);
 
     for (int codebyte = 0; codebyte < NumCodeBytes; codebyte++)
     {
         __try
         {
             hprintf(LogFile, "%02x ", code[codebyte]);
-
         }
         __except (EXCEPTION_EXECUTE_HANDLER)
         {
@@ -506,13 +511,14 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
         // us to figure out the call stack, parameters, local variables, etc.
         hprintf(LogFile, "Stack dump:\r\n");
         // lets try for everything
-        DWORD options = GSTSO_PARAMS bitor GSTSO_MODULE bitor GSTSO_SYMBOL bitor GSTSO_SRCLINE;
+        DWORD options = GSTSO_PARAMS bitor GSTSO_MODULE bitor GSTSO_SYMBOL bitor
+                        GSTSO_SRCLINE;
 
         const char *stackmsg = GetFirstStackTraceString(options, data);
 
         while (stackmsg)
         {
-            hprintf(LogFile, "Stack: %s\r\n",  stackmsg);
+            hprintf(LogFile, "Stack: %s\r\n", stackmsg);
             stackmsg = GetNextStackTraceString(options, data);
         }
 
@@ -527,24 +533,23 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
             {
                 // Esp contains the bottom of the stack, or at least the bottom of
                 // the currently used area.
-                DWORD* pStack = (DWORD *)CTX_SP(Context);
-                DWORD* pStackTop;
+                DWORD *pStack = (DWORD *)CTX_SP(Context);
+                DWORD *pStackTop;
 #if defined(_M_IX86)
                 __asm
-                {
-                    // Load the top (highest address) of the stack from the
-                    // thread information block. It will be found there in
-                    // Win9x and Windows NT.
+                    {// Load the top (highest address) of the stack from the
+                     // thread information block. It will be found there in
+                     // Win9x and Windows NT.
                     mov eax, fs:[4]
                     mov pStackTop, eax
-                }
+                    }
 #else
                 // Artscout - 2026 (x64): NT_TIB.StackBase is at gs:[8] on x64.
                 pStackTop = (DWORD *)__readgsqword(8);
 #endif
 
-                if (pStackTop > pStack + MaxStackDump)
-                    pStackTop = pStack + MaxStackDump;
+                if (pStackTop > pStack + MaxStackDump) pStackTop =
+                    pStack + MaxStackDump;
 
                 int Count = 0;
                 // Too many calls to WriteFile can take a long time, causing
@@ -553,8 +558,8 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
                 // hprintf directly.
                 char buffer[1000] = "";
                 const int safetyzone = 50;
-                char* nearend = buffer + sizeof(buffer) - safetyzone;
-                char* output = buffer;
+                char *nearend = buffer + sizeof(buffer) - safetyzone;
+                char *output = buffer;
 
                 while (pStack + 1 <= pStackTop)
                 {
@@ -583,7 +588,8 @@ int __cdecl RecordExceptionInfo(PEXCEPTION_POINTERS data, const char *Message)
             }
             __except (EXCEPTION_EXECUTE_HANDLER)
             {
-                hprintf(LogFile, "Exception encountered during stack dump (old format).\r\n");
+                hprintf(LogFile, "Exception encountered during stack dump (old "
+                                 "format).\r\n");
             }
         }
 

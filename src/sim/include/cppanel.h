@@ -17,8 +17,6 @@ extern MEM_POOL gCockMemPool;
 #endif
 
 
-
-
 //====================================================//
 // Initialization Structs
 //====================================================//
@@ -67,13 +65,15 @@ typedef struct
     ImageBuffer *pOtwImage;
     PanelSurfaceStr *psurfaceData;
     BOOL doGeometry;
-    float osbLocation[4][20][2]; //Wombat778 4-12-04  Changed from [2][20][2] to [4][20][2] for extra MFDs
+    float osbLocation
+        [4][20]
+        [2]; //Wombat778 4-12-04  Changed from [2][20][2] to [4][20][2] for extra MFDs
     // sfr: 2 scale factors
     float hScale; //Wombat778 10-06-2003 Changes scale from int to float
     float vScale;
-    int                  hudFont;
-    int                  mfdFont;
-    int                  dedFont;
+    int hudFont;
+    int mfdFont;
+    int dedFont;
 } PanelInitStr;
 
 //====================================================//
@@ -90,7 +90,6 @@ class CPButtonView;
 class CPPanel
 {
 private:
-
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap pool
@@ -100,11 +99,11 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-
     //====================================================//
     // My ID tag
     //====================================================//
@@ -157,8 +156,8 @@ public:
     std::vector<int> mpObjectIDs;
     int mNumButtonViews;
     std::vector<int> mpButtonViewIDs;
-    std::vector<CPObject*> mpObjects;
-    std::vector<CPButtonView*> mpButtonViews;
+    std::vector<CPObject *> mpObjects;
+    std::vector<CPButtonView *> mpButtonViews;
 #else
     int *mpObjectIDs;
     int mNumButtonViews;
@@ -168,7 +167,7 @@ public:
 #endif
 
     //Wombat778 4-12-04  Changed from [2][20][2] to [4][20][2] for extra MFDs
-    float             osbLocation[4][20][2];
+    float osbLocation[4][20][2];
 
     //====================================================//
     // Pointers to the Outside World
@@ -180,14 +179,14 @@ public:
     // Constructors and Destructors
     //====================================================//
 
-    CPPanel(PanelInitStr*);
+    CPPanel(PanelInitStr *);
     virtual ~CPPanel();
 
     //====================================================//
     // Public Runtime Functions
     //====================================================//
 
-    void Exec(SimBaseClass*, int);
+    void Exec(SimBaseClass *, int);
     void CreateLitSurfaces(float); // Added for TOD Effects 2/9/98
     void DiscardLitSurfaces(void); // Added for TOD Effects 2/9/98
     void SetTOD(float); // Added for TOD Effects 2/9/98
@@ -196,19 +195,19 @@ public:
     void DisplayBlit();
     void DisplayDraw();
     BOOL DoGeometry(void); // Should we draw the wings and the reflections?
-    BOOL Dispatch(int*, int, int, int);
+    BOOL Dispatch(int *, int, int, int);
     BOOL POVDispatch(int);
     void SetDirtyFlags(void);
-    BOOL GetViewportBounds(ViewportBounds*, int);
-    int   HudFont(void)
+    BOOL GetViewportBounds(ViewportBounds *, int);
+    int HudFont(void)
     {
         return mHudFont;
     };
-    int   MFDFont(void)
+    int MFDFont(void)
     {
         return mMFDFont;
     };
-    int   DEDFont(void)
+    int DEDFont(void)
     {
         return mDEDFont;
     };

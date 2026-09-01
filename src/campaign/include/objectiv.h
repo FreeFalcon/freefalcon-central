@@ -1,13 +1,13 @@
 #ifndef OBJECTIVE_H
 #define OBJECTIVE_H
 
-#include "CmpGlobl.h"
-#include "FalcLib.h"
-#include "CampList.h"
-#include "CampBase.h"
-#include "SIM/include/atcBrain.h"
-#include "CmpRadar.h"
-#include "MsgInc/ObjectiveMsg.h"
+#include "cmpglobl.h"
+#include "falclib.h"
+#include "camplist.h"
+#include "campbase.h"
+#include "sim/include/atcbrain.h"
+#include "cmpradar.h"
+#include "msginc/objectivemsg.h"
 
 // =======================
 // Forward declarations
@@ -67,7 +67,8 @@ struct CampObjectiveTransmitDataType
     uchar losses; // Amount of supply/fuel losses (in percentage)
     uchar status; // % operational
     uchar priority; // Target's general priority
-    uchar* fstatus; // Array of feature statuses (was [((FEATURES_PER_OBJ*2)+7)/8])
+    uchar*
+        fstatus; // Array of feature statuses (was [((FEATURES_PER_OBJ*2)+7)/8])
 };
 
 struct CampObjectiveStaticDataType
@@ -92,14 +93,15 @@ class ObjectiveClass : public CampBaseClass
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(ObjectiveClass));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -117,14 +119,16 @@ private:
 
 public:
     CampObjectiveStaticDataType static_data;
-    CampObjectiveLinkDataType* link_data; // The actual link data (was [OBJ_MAX_NEIGHBORS])
+    CampObjectiveLinkDataType*
+        link_data; // The actual link data (was [OBJ_MAX_NEIGHBORS])
     ATCBrain* brain;
+
 public:
     // access functions
     ulong GetObjFlags(void);
     void ClearObjFlags(ulong flags)
     {
-        obj_data.obj_flags and_eq compl (flags);
+        obj_data.obj_flags and_eq compl(flags);
     }
     void SetObjFlags(ulong flags)
     {
@@ -133,13 +137,13 @@ public:
 
     // constructors
     ObjectiveClass(int type);
-    ObjectiveClass(VU_BYTE **stream, long *rem);
+    ObjectiveClass(VU_BYTE** stream, long* rem);
     virtual ~ObjectiveClass();
     virtual int SaveSize(void);
     virtual int SaveSize(int toDisk);
-    virtual int Save(VU_BYTE **stream);
-    virtual int Save(VU_BYTE **stream, int toDisk);
-    void UpdateFromData(VU_BYTE **stream, long *rem);
+    virtual int Save(VU_BYTE** stream);
+    virtual int Save(VU_BYTE** stream, int toDisk);
+    void UpdateFromData(VU_BYTE** stream, long* rem);
 
     // pure virtual implementation
     virtual float GetVt() const
@@ -153,10 +157,10 @@ public:
 
 
     // event Handlers
-    virtual VU_ERRCODE Handle(VuFullUpdateEvent *event);
+    virtual VU_ERRCODE Handle(VuFullUpdateEvent* event);
 
     // Required pure virtuals handled by objective.h
-    virtual void SendDeaggregateData(VuTargetEntity *);
+    virtual void SendDeaggregateData(VuTargetEntity*);
     virtual int RecordCurrentState(FalconSessionEntity*, int);
     virtual int Deaggregate(FalconSessionEntity* session);
     virtual int Reaggregate(FalconSessionEntity* session);
@@ -171,14 +175,15 @@ public:
     //virtual void ReaggregateFromData (int size, uchar* data);
     virtual void ReaggregateFromData(VU_BYTE* data, long rem);
     //virtual void TransferOwnershipFromData (int size, uchar* data);
-    virtual void TransferOwnershipFromData(VU_BYTE *data, long rem);
+    virtual void TransferOwnershipFromData(VU_BYTE* data, long rem);
     virtual MoveType GetMovementType(void)
     {
         return NoMove;
     }
-    virtual int ApplyDamage(FalconCampWeaponsFire *cwfm, uchar);
-    virtual int ApplyDamage(DamType d, int *str, int where, short flags);
-    virtual int DecodeDamageData(uchar *data, Unit shooter, FalconDeathMessage *dtm);
+    virtual int ApplyDamage(FalconCampWeaponsFire* cwfm, uchar);
+    virtual int ApplyDamage(DamType d, int* str, int where, short flags);
+    virtual int DecodeDamageData(uchar* data, Unit shooter,
+                                 FalconDeathMessage* dtm);
     virtual uchar* GetDamageModifiers(void);
     virtual _TCHAR* GetName(_TCHAR* buffer, int size, int object);
     virtual _TCHAR* GetFullName(_TCHAR* buffer, int size, int object);
@@ -186,11 +191,15 @@ public:
     virtual int GetAproxHitChance(int mt, int range);
     virtual int GetCombatStrength(int mt, int range);
     virtual int GetAproxCombatStrength(int mt, int range);
-    virtual int GetWeaponRange(int mt, FalconEntity *target = NULL);  // 2008-03-08 ADDED SECOND DEFAULT PARM
+    virtual int GetWeaponRange(
+        int mt,
+        FalconEntity* target = NULL); // 2008-03-08 ADDED SECOND DEFAULT PARM
     virtual int GetAproxWeaponRange(int mt);
     virtual int GetDetectionRange(int mt); // Takes into account emitter status
-    virtual int GetElectronicDetectionRange(int mt); // Max Electronic detection range, even if turned off
-    virtual int CanDetect(FalconEntity* ent); // Nonzero if this entity can see ent
+    virtual int GetElectronicDetectionRange(
+        int mt); // Max Electronic detection range, even if turned off
+    virtual int
+    CanDetect(FalconEntity* ent); // Nonzero if this entity can see ent
     virtual int OnGround(void)
     {
         return TRUE;
@@ -202,7 +211,7 @@ public:
     virtual int GetNumberOfArcs(void);
     virtual float GetArcRatio(int anum);
     virtual float GetArcRange(int anum);
-    virtual void GetArcAngle(int anum, float* a1, float *a2);
+    virtual void GetArcAngle(int anum, float* a1, float* a2);
     int SiteCanDetect(FalconEntity* ent);
     float GetSiteRange(FalconEntity* ent);
 
@@ -231,7 +240,8 @@ public:
     }
     int IsNearfront(void)
     {
-        return (int)((O_THIRDLINE bitor O_SECONDLINE bitor O_FRONTLINE) bitand obj_data.obj_flags);
+        return (int)((O_THIRDLINE bitor O_SECONDLINE bitor O_FRONTLINE) bitand
+                     obj_data.obj_flags);
     }
     int IsBeach(void)
     {
@@ -242,11 +252,13 @@ public:
     int IsSupplySource(void);
     int IsGCI(void)
     {
-        return (int)(O_IS_GCI bitand obj_data.obj_flags);    // 2002-02-13 ADDED BY S.G.
+        return (int)(O_IS_GCI bitand
+                     obj_data.obj_flags); // 2002-02-13 ADDED BY S.G.
     }
     int HasNCTR(void)
     {
-        return (int)(O_HAS_NCTR bitand obj_data.obj_flags);    // 2002-02-13 ADDED BY S.G.
+        return (int)(O_HAS_NCTR bitand
+                     obj_data.obj_flags); // 2002-02-13 ADDED BY S.G.
     }
     int HasRadarRanges(void);
     void UpdateObjectiveLists(void);
@@ -318,10 +330,10 @@ public:
 
     // Dirty Functions
     void MakeObjectiveDirty(Dirty_Objective bits, Dirtyness score);
-    void WriteDirty(unsigned char **stream);
+    void WriteDirty(unsigned char** stream);
     //sfr: changed prototype
     //void ReadDirty (unsigned char **stream);
-    void ReadDirty(unsigned char **stream, long *rem);
+    void ReadDirty(unsigned char** stream, long* rem);
 
     // Objective data stuff
     virtual void SetOwner(Control c)
@@ -359,7 +371,8 @@ public:
     //void SetObjectiveStatus (uchar s) { obj_data.status = s; MakeObjectiveDirty (DIRTY_STATUS, SEND_NOW); }
     void SetObjectiveStatus(uchar s)
     {
-        if (obj_data.status > s) obj_data.last_repair = Camp_GetCurrentTime();
+        if (obj_data.status > s)
+            obj_data.last_repair = Camp_GetCurrentTime();
 
         obj_data.status = s;
         MakeObjectiveDirty(DIRTY_STATUS, DDP[180].priority);
@@ -481,9 +494,10 @@ public:
 extern Objective NewObjective(void);
 
 //sfr: added red to both
-extern Objective NewObjective(short tid, VU_BYTE **stream, long *rem);
+extern Objective NewObjective(short tid, VU_BYTE** stream, long* rem);
 
-extern Objective NewObjective(short tid, VU_BYTE **stream, long *rem, int fromDisk);
+extern Objective NewObjective(short tid, VU_BYTE** stream, long* rem,
+                              int fromDisk);
 
 extern int LoadBaseObjectives(char* scenario);
 
@@ -495,7 +509,7 @@ extern void SaveObjectiveDeltas(char* savefile);
 
 extern Objective GetObjectiveByID(int ID);
 
-extern int BestRepairFeature(Objective o, int *hours);
+extern int BestRepairFeature(Objective o, int* hours);
 
 extern int BestTargetFeature(Objective o, uchar targeted[]);
 
@@ -515,9 +529,10 @@ extern Objective GetNextObjective(VuGridIterator* l);
 
 extern void CaptureObjective(Objective co, Control who, Unit u = NULL);
 
-extern int EncodeObjectiveDeltas(VU_BYTE **stream, FalconSessionEntity *owner);
+extern int EncodeObjectiveDeltas(VU_BYTE** stream, FalconSessionEntity* owner);
 
 //sfr: added rem
-extern int DecodeObjectiveDeltas(VU_BYTE **stream, long *rem, FalconSessionEntity *owner);
+extern int DecodeObjectiveDeltas(VU_BYTE** stream, long* rem,
+                                 FalconSessionEntity* owner);
 
 #endif

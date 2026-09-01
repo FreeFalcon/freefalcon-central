@@ -1,12 +1,12 @@
 #ifndef _GNDTASKINGMSG_H
 #define _GNDTASKINGMSG_H
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
-#include "InvalidBufferException.h"
+#include "falcmesg.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Gnd Tasking Message
@@ -21,7 +21,8 @@ public:
         gtmAirDefenseRequest
     };
 
-    FalconGndTaskingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconGndTaskingMessage(VU_ID entityId, VuTargetEntity *target,
+                            VU_BOOL loopback = TRUE);
     FalconGndTaskingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconGndTaskingMessage(void);
     virtual int Size() const
@@ -63,6 +64,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

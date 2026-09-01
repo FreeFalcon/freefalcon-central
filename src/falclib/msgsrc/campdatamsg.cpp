@@ -5,7 +5,7 @@
  * Generated from file EVENTS.XLS by MicroProse
  */
 
-#include "MsgInc/CampDataMsg.h"
+#include "msginc/campdatamsg.h"
 #include "battalion.h"
 #include "mesg.h"
 #include "falclib.h"
@@ -16,7 +16,7 @@
 #include "ui95/chandler.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 extern C_Handler *gMainHandler;
 
@@ -27,14 +27,20 @@ int cdecode_count = 0, cencode_count = 0;
 void DecodePrimaryObjectiveList(uchar *data, FalconEntity *fe);
 void tactical_set_orders(Battalion bat, VU_ID obj, GridIndex tx, GridIndex ty);
 
-FalconCampDataMessage::FalconCampDataMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(CampDataMsg, FalconEvent::CampaignThread, entityId, target, FALSE)
+FalconCampDataMessage::FalconCampDataMessage(VU_ID entityId,
+                                             VuTargetEntity *target,
+                                             VU_BOOL loopback)
+    : FalconEvent(CampDataMsg, FalconEvent::CampaignThread, entityId, target,
+                  FALSE)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
     loopback;
 }
 
-FalconCampDataMessage::FalconCampDataMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(CampDataMsg, FalconEvent::CampaignThread, senderid, target)
+FalconCampDataMessage::FalconCampDataMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                             VU_ID target)
+    : FalconEvent(CampDataMsg, FalconEvent::CampaignThread, senderid, target)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -44,7 +50,7 @@ FalconCampDataMessage::FalconCampDataMessage(VU_MSG_TYPE type, VU_ID senderid, V
 FalconCampDataMessage::~FalconCampDataMessage(void)
 {
     if (dataBlock.data)
-        delete [] dataBlock.data;
+        delete[] dataBlock.data;
 
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -53,9 +59,7 @@ FalconCampDataMessage::~FalconCampDataMessage(void)
 int FalconCampDataMessage::Size() const
 {
     ShiAssert(dataBlock.size >= 0);
-    return FalconEvent::Size() +
-           sizeof(unsigned int) +
-           sizeof(ushort) +
+    return FalconEvent::Size() + sizeof(unsigned int) + sizeof(ushort) +
            dataBlock.size;
 }
 
@@ -65,7 +69,7 @@ int FalconCampDataMessage::Decode(VU_BYTE **buf, long *rem)
     long int init = *rem;
 
 #ifdef DEBUG
-    cdecode_count ++;
+    cdecode_count++;
     //MonoPrint ("CampDataMessageDecode %d\n", cdecode_count);
 #endif
 
@@ -86,7 +90,7 @@ int FalconCampDataMessage::Encode(VU_BYTE **buf)
     int size = 0;
 
 #ifdef DEBUG
-    cencode_count ++;
+    cencode_count++;
     //MonoPrint ("CampDataMessageEncode %d\n",cencode_count);
 #endif
 
@@ -118,18 +122,19 @@ int FalconCampDataMessage::Process(uchar autodisp)
 
     switch (dataBlock.type)
     {
-        case campPriorityData:
+    case campPriorityData:
             // Set the new priority of this objective/these objectives
-            DecodePrimaryObjectiveList(data, ent);
-            TheCampaign.Flags and_eq compl CAMP_NEED_PERSIST;
+        DecodePrimaryObjectiveList(data, ent);
+        TheCampaign.Flags and_eq compl CAMP_NEED_PERSIST;
 
-            if (gMainHandler)
-                PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA, CAMP_NEED_PRIORITIES, 0);
+        if (gMainHandler)
+            PostMessage(gMainHandler->GetAppWnd(), FM_GOT_CAMPAIGN_DATA,
+                        CAMP_NEED_PRIORITIES, 0);
 
-            TheCampaign.GotJoinData();
-            break;
+        TheCampaign.GotJoinData();
+        break;
 
-        case campOrdersData:
+    case campOrdersData:
             // Set the new orders
         {
             VU_ID tmpId;
@@ -148,10 +153,9 @@ int FalconCampDataMessage::Process(uchar autodisp)
         }
         break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     return 0;
 }
-

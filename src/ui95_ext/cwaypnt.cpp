@@ -35,7 +35,7 @@ C_Waypoint::~C_Waypoint()
 
 long C_Waypoint::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Waypoint::Setup(long ID, short Type)
@@ -74,7 +74,7 @@ BOOL C_Waypoint::ShowByType(long typemask)
         cur = cur->Next;
     }
 
-    return(retval);
+    return (retval);
 }
 
 BOOL C_Waypoint::HideByType(long typemask)
@@ -95,7 +95,7 @@ BOOL C_Waypoint::HideByType(long typemask)
         cur = cur->Next;
     }
 
-    return(retval);
+    return (retval);
 }
 
 BOOL C_Waypoint::Process(long ID, short HitType)
@@ -106,19 +106,22 @@ BOOL C_Waypoint::Process(long ID, short HitType)
         (*Callback_)(ID, HitType, this);
 
     if (LastWP_)
-        return(LastWP_->Icon->Process(ID, HitType));
+        return (LastWP_->Icon->Process(ID, HitType));
 
-    return(FALSE);
+    return (FALSE);
 }
 
-WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID, long SelID, long OthrID, float x, float y, short Dragable)
+WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type,
+                                            long NormID, long SelID,
+                                            long OthrID, float x, float y,
+                                            short Dragable)
 {
     WAYPOINTLIST *newitem, *cur;
 
     newitem = new WAYPOINTLIST;
 
     if (newitem == NULL)
-        return(NULL);
+        return (NULL);
 
     newitem->Icon = new C_Button;
 
@@ -131,9 +134,10 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
     newitem->Icon->SetImage(C_STATE_2, OthrID);
 
     if (Dragable)
-        newitem->Icon->SetFlags((GetFlags() bitand compl (C_BIT_DRAGABLE)) bitor C_BIT_DRAGABLE);
+        newitem->Icon->SetFlags((GetFlags() bitand compl(C_BIT_DRAGABLE)) bitor
+                                C_BIT_DRAGABLE);
     else
-        newitem->Icon->SetFlags((GetFlags() bitand compl (C_BIT_DRAGABLE)));
+        newitem->Icon->SetFlags((GetFlags() bitand compl(C_BIT_DRAGABLE)));
 
     newitem->Icon->SetClient(GetClient());
     newitem->Icon->SetParent(Parent_);
@@ -151,14 +155,16 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
     newitem->worldy = y;
     newitem->x = (short)(scale_ * x);
 
-    if ( not WPScaleType_)
+    if (not WPScaleType_)
         newitem->y = (short)(scale_ * y);
     else if (WPScaleType_ == 1)
-        newitem->y = (short)(MaxWorldY_ - (28.853f * (log(-y * 0.0001f + 1.0f))));
+        newitem->y =
+            (short)(MaxWorldY_ - (28.853f * (log(-y * 0.0001f + 1.0f))));
     else if (WPScaleType_ == 2)
         newitem->y = (short)(MaxWorldY_ + y * 0.001f);
 
-    newitem->Icon->SetXY(newitem->x - newitem->Icon->GetW() / 2, newitem->y - newitem->Icon->GetH() / 2);
+    newitem->Icon->SetXY(newitem->x - newitem->Icon->GetW() / 2,
+                         newitem->y - newitem->Icon->GetH() / 2);
     newitem->Next = NULL;
 
     if (Root_ == NULL)
@@ -173,7 +179,7 @@ WAYPOINTLIST *C_Waypoint::AddWaypointToList(long CampID, short type, long NormID
         cur->Next = newitem;
     }
 
-    return(newitem);
+    return (newitem);
 }
 
 void C_Waypoint::EraseWaypointList()
@@ -261,7 +267,8 @@ void C_Waypoint::SetLabel(long ID, _TCHAR *txt)
         cur->Icon->SetAllLabel(gStringMgr->GetText(gStringMgr->AddText(txt)));
 }
 
-void C_Waypoint::SetLabelColor(long ID, COLORREF norm, COLORREF sel, COLORREF othr)
+void C_Waypoint::SetLabelColor(long ID, COLORREF norm, COLORREF sel,
+                               COLORREF othr)
 {
     WAYPOINTLIST *cur;
 
@@ -275,7 +282,8 @@ void C_Waypoint::SetLabelColor(long ID, COLORREF norm, COLORREF sel, COLORREF ot
     }
 }
 
-void C_Waypoint::SetLineColor(long ID, COLORREF norm, COLORREF sel, COLORREF othr)
+void C_Waypoint::SetLineColor(long ID, COLORREF norm, COLORREF sel,
+                              COLORREF othr)
 {
     WAYPOINTLIST *cur;
 
@@ -296,9 +304,9 @@ _TCHAR *C_Waypoint::GetLabel(long ID)
     cur = FindID(ID);
 
     if (cur)
-        return(cur->Icon->GetLabel(C_STATE_0));
+        return (cur->Icon->GetLabel(C_STATE_0));
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_Waypoint::SetTextOffset(long ID, short x, short y)
@@ -372,7 +380,8 @@ void C_Waypoint::SetScaleFactor(float scale)
     {
         cur->x = (short)(cur->worldx * scale_);
         cur->y = (short)(cur->worldy * scale_);
-        cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2, cur->y - cur->Icon->GetH() / 2);
+        cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2,
+                         cur->y - cur->Icon->GetH() / 2);
         cur = cur->Next;
     }
 }
@@ -390,8 +399,11 @@ void C_Waypoint::SetScaleType(short scaletype)
 
         while (cur)
         {
-            cur->y = (short)(MaxWorldY_ - (28.853f * (log(-cur->worldy * 0.0001f + 1.0f)))); // Only care about the Z
-            cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2, cur->y - cur->Icon->GetH() / 2);
+            cur->y = (short)(MaxWorldY_ -
+                             (28.853f * (log(-cur->worldy * 0.0001f +
+                                             1.0f)))); // Only care about the Z
+            cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2,
+                             cur->y - cur->Icon->GetH() / 2);
             cur = cur->Next;
         }
     }
@@ -402,7 +414,8 @@ void C_Waypoint::SetScaleType(short scaletype)
         while (cur)
         {
             cur->y = (short)(MaxWorldY_ + cur->worldy * 0.01f);
-            cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2, cur->y - cur->Icon->GetH() / 2);
+            cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2,
+                             cur->y - cur->Icon->GetH() / 2);
             cur = cur->Next;
         }
     }
@@ -413,7 +426,7 @@ void C_Waypoint::Refresh()
     WAYPOINTLIST *cur;
     UI95_RECT rect;
 
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     rect.left = 5000;
@@ -425,7 +438,7 @@ void C_Waypoint::Refresh()
 
     while (cur)
     {
-        if ( not (cur->Flags bitand C_BIT_INVISIBLE))
+        if (not(cur->Flags bitand C_BIT_INVISIBLE))
         {
             if (cur->Icon->GetX() < rect.left)
                 rect.left = cur->Icon->GetX();
@@ -443,8 +456,10 @@ void C_Waypoint::Refresh()
         cur = cur->Next;
     }
 
-    Parent_->SetUpdateRect(last_.left, last_.top, last_.right, last_.bottom, GetFlags(), GetClient());
-    Parent_->SetUpdateRect(rect.left, rect.top, rect.right, rect.bottom, GetFlags(), GetClient());
+    Parent_->SetUpdateRect(last_.left, last_.top, last_.right, last_.bottom,
+                           GetFlags(), GetClient());
+    Parent_->SetUpdateRect(rect.left, rect.top, rect.right, rect.bottom,
+                           GetFlags(), GetClient());
     last_ = rect;
 }
 
@@ -452,7 +467,8 @@ void C_Waypoint::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
     WAYPOINTLIST *cur, *prev;
 
-    if ( not Ready()) return;
+    if (not Ready())
+        return;
 
     cur = Root_;
     prev = cur;
@@ -461,12 +477,15 @@ void C_Waypoint::Draw(SCREEN *surface, UI95_RECT *cliprect)
     {
         if (cur->ID)
         {
-            if ( not (cur->Flags bitand C_BIT_INVISIBLE))
+            if (not(cur->Flags bitand C_BIT_INVISIBLE))
             {
                 if (cur->Flags bitand C_BIT_USELINE)
                     if (prev not_eq cur)
                         if (prev->Group == cur->Group)
-                            Parent_->DrawLine(surface, cur->LineColor_[cur->state], prev->x, prev->y, cur->x, cur->y, GetFlags(), GetClient(), cliprect);
+                            Parent_->DrawLine(
+                                surface, cur->LineColor_[cur->state], prev->x,
+                                prev->y, cur->x, cur->y, GetFlags(),
+                                GetClient(), cliprect);
 
                 if (cur->Icon)
                     cur->Icon->Draw(surface, cliprect);
@@ -488,12 +507,12 @@ WAYPOINTLIST *C_Waypoint::FindID(long iID)
     while (cur)
     {
         if (cur->ID == iID)
-            return(cur);
+            return (cur);
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
@@ -506,7 +525,7 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
     cur = FindID(ID);
 
     if (cur == NULL)
-        return(FALSE);
+        return (FALSE);
 
     if (cur->worldx not_eq x or cur->worldy not_eq y)
     {
@@ -516,9 +535,10 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
         oy = cur->y;
         cur->x = (short)(cur->worldx * scale_);
         cur->y = (short)(cur->worldy * scale_);
-        cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2, cur->y - cur->Icon->GetH() / 2);
+        cur->Icon->SetXY(cur->x - cur->Icon->GetW() / 2,
+                         cur->y - cur->Icon->GetH() / 2);
 
-        if ( not (ID bitand 0x60000000))
+        if (not(ID bitand 0x60000000))
         {
             wk1 = FindID(ID - 1);
             wk2 = FindID(0x40000000 + ID);
@@ -532,9 +552,11 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
                 wk2->worldy = wk1->worldy + dy * .5F;
                 wk2->x = (short)(wk2->worldx * scale_);
                 wk2->y = (short)(wk2->worldy * scale_);
-                _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy)*FT_TO_NM);
-                wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2, wk2->y - wk2->Icon->GetH() / 2);
-                wk2->Icon->SetAllLabel(gStringMgr->GetText(gStringMgr->AddText(buf)));
+                _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy) * FT_TO_NM);
+                wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2,
+                                 wk2->y - wk2->Icon->GetH() / 2);
+                wk2->Icon->SetAllLabel(
+                    gStringMgr->GetText(gStringMgr->AddText(buf)));
             }
 
             wk1 = FindID(ID + 1);
@@ -549,17 +571,20 @@ BOOL C_Waypoint::UpdateInfo(long ID, float x, float y)
                 wk2->worldy = cur->worldy + dy * .5F;
                 wk2->x = (short)(wk2->worldx * scale_);
                 wk2->y = (short)(wk2->worldy * scale_);
-                _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy)*FT_TO_NM);
-                wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2, wk2->y - wk2->Icon->GetH() / 2);
-                wk2->Icon->SetAllLabel(gStringMgr->GetText(gStringMgr->AddText(buf)));
+                _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy) * FT_TO_NM);
+                wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2,
+                                 wk2->y - wk2->Icon->GetH() / 2);
+                wk2->Icon->SetAllLabel(
+                    gStringMgr->GetText(gStringMgr->AddText(buf)));
             }
         }
 
-        if ((ox not_eq cur->x or oy not_eq cur->y) and not (cur->Flags bitand C_BIT_INVISIBLE))
-            return(TRUE);
+        if ((ox not_eq cur->x or oy not_eq cur->y) and
+            not(cur->Flags bitand C_BIT_INVISIBLE))
+            return (TRUE);
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 long C_Waypoint::CheckHotSpots(long relX, long relY)
@@ -571,7 +596,8 @@ long C_Waypoint::CheckHotSpots(long relX, long relY)
 
     while (cur)
     {
-        if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
+        if (not(cur->Flags bitand C_BIT_INVISIBLE) and
+            cur->Flags bitand C_BIT_ENABLED)
         {
             if (cur->Icon->CheckHotSpots(relX, relY))
                 LastWP_ = cur;
@@ -583,10 +609,10 @@ long C_Waypoint::CheckHotSpots(long relX, long relY)
     if (LastWP_)
     {
         SetRelXY(relX - GetX(), relY - GetY());
-        return(LastWP_->ID);
+        return (LastWP_->ID);
     }
 
-    return(0);
+    return (0);
 }
 
 BOOL C_Waypoint::MouseOver(long relX, long relY, C_Base *)
@@ -597,18 +623,20 @@ BOOL C_Waypoint::MouseOver(long relX, long relY, C_Base *)
 
     while (cur)
     {
-        if ( not (cur->Flags bitand C_BIT_INVISIBLE) and cur->Flags bitand C_BIT_ENABLED)
+        if (not(cur->Flags bitand C_BIT_INVISIBLE) and
+            cur->Flags bitand C_BIT_ENABLED)
         {
-            if (cur->Icon and cur->Icon->MouseOver(relX, relY, cur->Icon)) // possible CTD fix
+            if (cur->Icon and
+                cur->Icon->MouseOver(relX, relY, cur->Icon)) // possible CTD fix
             {
-                return(TRUE);
+                return (TRUE);
             }
         }
 
         cur = cur->Next;
     }
 
-    return(FALSE);
+    return (FALSE);
 }
 
 BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
@@ -618,31 +646,34 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     long x, y;
     float dx, dy;
     _TCHAR buf[15];
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
 
-    if (GetFlags() bitand C_BIT_INVISIBLE or not (GetFlags() bitand C_BIT_ENABLED) or not Dragable(0))
-        return(FALSE);
+    if (GetFlags() bitand C_BIT_INVISIBLE or
+        not(GetFlags() bitand C_BIT_ENABLED) or not Dragable(0))
+        return (FALSE);
 
     if (over not_eq Parent_)
-        return(FALSE);
+        return (FALSE);
 
-    if ( not (GetFlags() bitand C_BIT_ABSOLUTE))
+    if (not(GetFlags() bitand C_BIT_ABSOLUTE))
     {
         relx = MouseX - over->GetX();
         rely = MouseY - over->GetY();
 
-        if (relx < over->ClientArea_[GetClient()].left or relx > over->ClientArea_[GetClient()].right)
-            return(FALSE);
+        if (relx < over->ClientArea_[GetClient()].left or
+            relx > over->ClientArea_[GetClient()].right)
+            return (FALSE);
 
-        if (rely < over->ClientArea_[GetClient()].top or rely > over->ClientArea_[GetClient()].bottom)
-            return(FALSE);
+        if (rely < over->ClientArea_[GetClient()].top or
+            rely > over->ClientArea_[GetClient()].bottom)
+            return (FALSE);
     }
 
     if (LastWP_ == NULL)
-        return(FALSE);
+        return (FALSE);
 
-    if ( not (LastWP_->Flags bitand C_BIT_DRAGABLE))
-        return(FALSE);
+    if (not(LastWP_->Flags bitand C_BIT_DRAGABLE))
+        return (FALSE);
 
     Leave = UI_Enter(Parent_);
     Waypoint = LastWP_;
@@ -733,14 +764,16 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
     Waypoint->x = static_cast<short>(x);
     Waypoint->y = static_cast<short>(y);
 
-    if ( not WPScaleType_)
+    if (not WPScaleType_)
     {
         Waypoint->worldx = x / scale_;
         Waypoint->worldy = y / scale_;
     }
     else if (WPScaleType_ == 1)
     {
-        Waypoint->worldy = -((float)exp((MaxWorldY_ - y) * 0.034658441f) - 1.0f) * 10000.0f; //(0.03nnn = 1/28.853)
+        Waypoint->worldy =
+            -((float)exp((MaxWorldY_ - y) * 0.034658441f) - 1.0f) *
+            10000.0f; //(0.03nnn = 1/28.853)
 
         if (Waypoint->worldy > 0)
             Waypoint->worldy = 0;
@@ -753,9 +786,10 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
             Waypoint->worldy = 0;
     }
 
-    Waypoint->Icon->SetXY(x - Waypoint->Icon->GetW() / 2, y - Waypoint->Icon->GetH() / 2);
+    Waypoint->Icon->SetXY(x - Waypoint->Icon->GetW() / 2,
+                          y - Waypoint->Icon->GetH() / 2);
 
-    if ( not (Waypoint->ID bitand 0x60000000))
+    if (not(Waypoint->ID bitand 0x60000000))
     {
         wk1 = FindID(Waypoint->ID - 1);
         wk2 = FindID(0x40000000 + Waypoint->ID);
@@ -769,9 +803,11 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
             wk2->worldy = wk1->worldy + dy * .5F;
             wk2->x = (short)(wk2->worldx * scale_);
             wk2->y = (short)(wk2->worldy * scale_);
-            wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2, wk2->y - wk2->Icon->GetH() / 2);
-            _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy)*FT_TO_NM);
-            wk2->Icon->SetAllLabel(gStringMgr->GetText(gStringMgr->AddText(buf)));
+            wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2,
+                             wk2->y - wk2->Icon->GetH() / 2);
+            _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy) * FT_TO_NM);
+            wk2->Icon->SetAllLabel(
+                gStringMgr->GetText(gStringMgr->AddText(buf)));
         }
 
         wk1 = FindID(Waypoint->ID + 1);
@@ -786,9 +822,11 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
             wk2->worldy = Waypoint->worldy + dy * .5F;
             wk2->x = (short)(wk2->worldx * scale_);
             wk2->y = (short)(wk2->worldy * scale_);
-            wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2, wk2->y - wk2->Icon->GetH() / 2);
-            _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy)*FT_TO_NM);
-            wk2->Icon->SetAllLabel(gStringMgr->GetText(gStringMgr->AddText(buf)));
+            wk2->Icon->SetXY(wk2->x - wk2->Icon->GetW() / 2,
+                             wk2->y - wk2->Icon->GetH() / 2);
+            _stprintf(buf, "%6.1f", sqrt(dx * dx + dy * dy) * FT_TO_NM);
+            wk2->Icon->SetAllLabel(
+                gStringMgr->GetText(gStringMgr->AddText(buf)));
         }
     }
 
@@ -799,7 +837,7 @@ BOOL C_Waypoint::Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *over)
 
     UI_Leave(Leave);
 
-    return(TRUE);
+    return (TRUE);
 }
 
 void C_Waypoint::GetItemXY(long ID, long *x, long *y)
@@ -815,10 +853,10 @@ void C_Waypoint::GetItemXY(long ID, long *x, long *y)
     *y = Waypoint->y;
 }
 
-BOOL C_Waypoint::Drop(GRABBER *, WORD , WORD , C_Window *)
+BOOL C_Waypoint::Drop(GRABBER *, WORD, WORD, C_Window *)
 {
     Dragging_ = 0;
-    return(0);
+    return (0);
 }
 
 void C_Waypoint::SetSubParents(C_Window *par)

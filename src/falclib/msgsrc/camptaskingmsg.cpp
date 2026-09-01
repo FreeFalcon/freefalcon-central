@@ -5,21 +5,27 @@
  * Generated from file EVENTS.XLS by KEVINK
  */
 
-#include "MsgInc/CampTaskingMsg.h"
+#include "msginc/camptaskingmsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-FalconCampTaskingMessage::FalconCampTaskingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(CampTaskingMsg, FalconEvent::CampaignThread, entityId, target, loopback)
+FalconCampTaskingMessage::FalconCampTaskingMessage(VU_ID entityId,
+                                                   VuTargetEntity *target,
+                                                   VU_BOOL loopback)
+    : FalconEvent(CampTaskingMsg, FalconEvent::CampaignThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-FalconCampTaskingMessage::FalconCampTaskingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(CampTaskingMsg, FalconEvent::CampaignThread, senderid, target)
+FalconCampTaskingMessage::FalconCampTaskingMessage(VU_MSG_TYPE type,
+                                                   VU_ID senderid, VU_ID target)
+    : FalconEvent(CampTaskingMsg, FalconEvent::CampaignThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -36,4 +42,3 @@ int FalconCampTaskingMessage::Process(uchar autodisp)
     return 0;
     autodisp;
 }
-

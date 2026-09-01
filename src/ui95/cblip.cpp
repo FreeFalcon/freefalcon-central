@@ -16,8 +16,7 @@ enum
     CBOX_SETCOLOR,
 };
 
-char *C_Blip_Tokens[] =
-{
+char *C_Blip_Tokens[] = {
     "[NOTHING]",
     "[SETUP]",
     "[COLOR]",
@@ -31,7 +30,7 @@ C_Blip::C_Blip() : C_Base()
     Root_ = NULL;
     Drawer_ = NULL;
     Last_ = NULL;
-    memset(BlipImg_, NULL, sizeof(IMAGE_RSC*) * 8 * 8);
+    memset(BlipImg_, NULL, sizeof(IMAGE_RSC *) * 8 * 8);
     _SetCType_(_CNTL_BLIP_);
     DefaultFlags_ = C_BIT_ENABLED bitor C_BIT_REMOVE;
 }
@@ -52,7 +51,7 @@ C_Blip::~C_Blip()
 
 long C_Blip::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Blip::Setup(long ID, short Type)
@@ -96,7 +95,8 @@ void C_Blip::InitDrawer()
     Drawer_->SetImage(BlipImg_[0][0]);
 }
 
-void C_Blip::AddBlip(short x, short y, uchar side, long starttime) // time is in minutes
+void C_Blip::AddBlip(short x, short y, uchar side,
+                     long starttime) // time is in minutes
 {
     BLIP *newblip, *cur;
 
@@ -108,7 +108,7 @@ void C_Blip::AddBlip(short x, short y, uchar side, long starttime) // time is in
     newblip->time = starttime;
     newblip->Next = NULL;
 
-    if ( not Root_)
+    if (not Root_)
         Root_ = newblip;
     else
     {
@@ -248,12 +248,12 @@ short C_Blip::LocalFind(char *token)
     while (C_Blip_Tokens[i])
     {
         if (strnicmp(token, C_Blip_Tokens[i], strlen(C_Blip_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 

@@ -1,16 +1,16 @@
 #include <stdio.h>
-#include "CmpGlobl.h"
-#include "Unit.h"
-#include "Division.h"
-#include "CampList.h"
-#include "Find.h"
-#include "Team.h"
-#include "Campaign.h"
-#include "CampStr.h"
+#include "cmpglobl.h"
+#include "unit.h"
+#include "division.h"
+#include "camplist.h"
+#include "find.h"
+#include "team.h"
+#include "campaign.h"
+#include "campstr.h"
 #include "classtbl.h"
-#include "F4Version.h"
+#include "f4version.h"
 
-Division DivisionData[NUM_TEAMS] = { NULL };
+Division DivisionData[NUM_TEAMS] = {NULL};
 
 #ifdef USE_SH_POOLS
 MEM_POOL DivisionClass::pool;
@@ -23,7 +23,8 @@ MEM_POOL gDivVUIDs = NULL;
 int DivisionSanityCheck(void);
 #endif
 
-extern _TCHAR* GetDivisionName(int div, int type, _TCHAR *buffer, int size, int object);
+extern _TCHAR *GetDivisionName(int div, int type, _TCHAR *buffer, int size,
+                               int object);
 
 // ============================
 // Division class stuff
@@ -54,7 +55,7 @@ DivisionClass::~DivisionClass(void)
     ShiAssert(this not_eq DivisionData[owner]);
 }
 
-_TCHAR* DivisionClass::GetName(_TCHAR* buffer, int size, int object)
+_TCHAR *DivisionClass::GetName(_TCHAR *buffer, int size, int object)
 {
     return GetDivisionName(nid, type, buffer, size, object);
 }
@@ -90,7 +91,7 @@ Unit DivisionClass::GetUnitElement(int en)
     {
         ret = (Unit)vuDatabase->Find(element[en]);
 
-        if ( not ret or ret->GetDomain() not_eq DOMAIN_LAND)
+        if (not ret or ret->GetDomain() not_eq DOMAIN_LAND)
             RemoveChild(element[en]);
     }
 
@@ -109,7 +110,7 @@ void DivisionClass::UpdateDivisionStats(void)
 {
     Unit u;
     GridIndex ex, ey;
-    uchar count[50] = { 0 };
+    uchar count[50] = {0};
     int bcount = 0, btype = 0, i;
 
     x = y = 0;
@@ -211,10 +212,10 @@ void DumpDivisionData(void)
 void BuildDivisionData(void)
 {
     Division dc;
-    Division dd[NUM_TEAMS] = { NULL };
+    Division dd[NUM_TEAMS] = {NULL};
     Unit u;
     int d, t;
-    uchar divels[NUM_TEAMS][MAX_DIVISION] = { 0 };
+    uchar divels[NUM_TEAMS][MAX_DIVISION] = {0};
     uchar tempteam; // JB 010220 CTD
     uchar tempdivision; // JB 010220 CTD
 
@@ -231,7 +232,7 @@ void BuildDivisionData(void)
     // Count # of elements in each division
     {
         VuListIterator myit(AllParentList);
-        u = (Unit) myit.GetFirst();
+        u = (Unit)myit.GetFirst();
 
         while (u)
         {
@@ -242,18 +243,20 @@ void BuildDivisionData(void)
                 tempteam = u->GetTeam(); // JB 010220 CTD
                 tempdivision = u->GetUnitDivision(); // JB 010220 CTD
 
-                if (tempteam >= 0 and tempteam < NUM_TEAMS and tempdivision >= 0 and tempdivision < MAX_DIVISION) // JB 010220 CTD
+                if (tempteam >= 0 and tempteam < NUM_TEAMS and
+                    tempdivision >= 0 and
+                    tempdivision < MAX_DIVISION) // JB 010220 CTD
                     divels[tempteam][tempdivision]++; // JB 010220 CTD
 
                 //divels[u->GetTeam()][u->GetUnitDivision()]++; // JB 010220 CTD
             }
 
             //}
-            u = (Unit) myit.GetNext();
+            u = (Unit)myit.GetNext();
         }
 
         // Create/add to the divisions
-        u = (Unit) myit.GetFirst();
+        u = (Unit)myit.GetFirst();
 
         while (u)
         {
@@ -275,7 +278,7 @@ void BuildDivisionData(void)
                         dc = dc->next;
                     }
 
-                    if ( not dc)
+                    if (not dc)
                     {
                         // Create a new one
                         dc = new DivisionClass();
@@ -283,10 +286,12 @@ void BuildDivisionData(void)
                         dc->owner = u->GetOwner();
                         ShiAssert(divels[t][d]);
 #ifdef USE_SH_POOLS
-                        dc->element = (VU_ID *)MemAllocPtr(gDivVUIDs, sizeof(VU_ID) * divels[t][d], FALSE);
+                        dc->element = (VU_ID *)MemAllocPtr(
+                            gDivVUIDs, sizeof(VU_ID) * divels[t][d], FALSE);
 #else
 
-                        if (t >= 0 and t < NUM_TEAMS and d >= 0 and d < MAX_DIVISION) // JB 010223 CTD
+                        if (t >= 0 and t < NUM_TEAMS and d >= 0 and
+                            d < MAX_DIVISION) // JB 010223 CTD
                             dc->element = new VU_ID[divels[t][d]];
 
 #endif
@@ -294,7 +299,10 @@ void BuildDivisionData(void)
                         dd[t] = dc;
                     }
 
-                    if ( not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and dc->elements >= 0 and not F4IsBadWritePtr(&(dc->element[dc->elements]), sizeof(VU_ID))) // JB 010223 CTD
+                    if (not F4IsBadWritePtr(dc, sizeof(DivisionClass)) and
+                        dc->elements >= 0 and
+                        not F4IsBadWritePtr(&(dc->element[dc->elements]),
+                                            sizeof(VU_ID))) // JB 010223 CTD
                     {
                         dc->element[dc->elements] = u->Id();
                         dc->elements++;
@@ -302,7 +310,7 @@ void BuildDivisionData(void)
                 }
             }
 
-            u = (Unit) myit.GetNext();
+            u = (Unit)myit.GetNext();
         }
     }
 

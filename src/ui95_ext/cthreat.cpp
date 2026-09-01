@@ -3,14 +3,14 @@
 #include "chandler.h"
 #include "ui95_ext.h"
 
-/* 2001-05-10 S.G. */#include "../CAMPAIGN/INCLUDE/CampTerr.h"
-/* 2001-05-10 S.G. */#include "../CAMPAIGN/INCLUDE/Division.h"
-/* 2001-05-10 S.G. */#include "../CAMPAIGN/INCLUDE/Package.h"
-/* 2001-05-10 S.G. */#include "../CAMPAIGN/INCLUDE/Team.h"
-/* 2001-05-10 S.G. */#include "../UI/Include/cmap.h"
-/* 2001-05-10 S.G. */#include "../UI/Include/gps.h"
-/* 2001-05-10 S.G. */#include "../UI/Include/urefresh.h"
-/* 2001-05-10 S.G. */extern GlobalPositioningSystem *gGps;
+/* 2001-05-10 S.G. */ #include "../campaign/include/campterr.h"
+/* 2001-05-10 S.G. */ #include "../campaign/include/division.h"
+/* 2001-05-10 S.G. */ #include "../campaign/include/package.h"
+/* 2001-05-10 S.G. */ #include "../campaign/include/team.h"
+/* 2001-05-10 S.G. */ #include "../ui/include/cmap.h"
+/* 2001-05-10 S.G. */ #include "../ui/include/gps.h"
+/* 2001-05-10 S.G. */ #include "../ui/include/urefresh.h"
+/* 2001-05-10 S.G. */ extern GlobalPositioningSystem *gGps;
 
 Circle C_Threat::myCircle;
 
@@ -46,12 +46,13 @@ void C_Threat::Cleanup()
     }
 }
 
-void C_Threat::AddCircle(long ID, long type, long worldx, long worldy, long radius)
+void C_Threat::AddCircle(long ID, long type, long worldx, long worldy,
+                         long radius)
 {
     THREAT_CIRCLE *circle;
     long i;
 
-    if ( not Root_ or ID < 1 or not radius)
+    if (not Root_ or ID < 1 or not radius)
         return;
 
     if (Root_->Find(ID))
@@ -76,10 +77,10 @@ void C_Threat::UpdateCircle(long ID, long worldx, long worldy)
 {
     THREAT_CIRCLE *circle;
 
-    if ( not Root_ or ID < 1)
+    if (not Root_ or ID < 1)
         return;
 
-    circle = (THREAT_CIRCLE*)Root_->Find(ID);
+    circle = (THREAT_CIRCLE *)Root_->Find(ID);
 
     if (circle)
     {
@@ -90,7 +91,7 @@ void C_Threat::UpdateCircle(long ID, long worldx, long worldy)
 
 void C_Threat::Remove(long ID)
 {
-    if ( not Root_ or ID < 1)
+    if (not Root_ or ID < 1)
         return;
 
     Root_->Remove(ID);
@@ -103,7 +104,7 @@ void C_Threat::SetRadius(long ID, long slice, long radius)
     if (slice < 0 or slice >= 8)
         return;
 
-    circle = (THREAT_CIRCLE*)Root_->Find(ID);
+    circle = (THREAT_CIRCLE *)Root_->Find(ID);
 
     if (circle)
         circle->Radius[slice] = radius;
@@ -119,10 +120,10 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
     if (Flags_ bitand C_BIT_INVISIBLE or not Root_ or not overlay)
         return;
 
-    myCircle.SetBuffer((char*)overlay);
+    myCircle.SetBuffer((char *)overlay);
     myCircle.SetDimension(w, h);
 
-    circle = (THREAT_CIRCLE*)Root_->GetFirst(&cur, &curidx);
+    circle = (THREAT_CIRCLE *)Root_->GetFirst(&cur, &curidx);
 
     while (circle)
     {
@@ -130,16 +131,21 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
         // if( not (circle->Flags bitand C_BIT_INVISIBLE)) {
         UI_Refresher *gpsItem = NULL;
 
-        if ( not (circle->Flags bitand C_BIT_INVISIBLE) and ((gpsItem = (UI_Refresher*)gGps->Find(circle->ID)) and gpsItem->MapItem_ and not (gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE)))
+        if (not(circle->Flags bitand C_BIT_INVISIBLE) and
+            ((gpsItem = (UI_Refresher *)gGps->Find(circle->ID)) and
+             gpsItem->MapItem_ and
+             not(gpsItem->MapItem_->Flags bitand C_BIT_INVISIBLE)))
         {
-            myCircle.SetCenter(static_cast<long>(static_cast<float>(circle->x) * pixelsperkm),
-                               static_cast<long>(static_cast<float>(circle->y) * pixelsperkm));
+            myCircle.SetCenter(
+                static_cast<long>(static_cast<float>(circle->x) * pixelsperkm),
+                static_cast<long>(static_cast<float>(circle->y) * pixelsperkm));
 
             if (circle->Type == THR_CIRCLE)
             {
                 if (circle->Radius[0] > 3)
                 {
-                    myCircle.SetRadius(static_cast<long>(static_cast<float>(circle->Radius[0]) * pixelsperkm));
+                    myCircle.SetRadius(static_cast<long>(
+                        static_cast<float>(circle->Radius[0]) * pixelsperkm));
                     myCircle.CreateFilledCircle();
                 }
             }
@@ -149,14 +155,16 @@ void C_Threat::BuildOverlay(BYTE *overlay, long w, long h, float pixelsperkm)
                 {
                     if (circle->Radius[i] > 3)
                     {
-                        myCircle.SetRadius(static_cast<long>(static_cast<float>(circle->Radius[i]) * pixelsperkm));
+                        myCircle.SetRadius(static_cast<long>(
+                            static_cast<float>(circle->Radius[i]) *
+                            pixelsperkm));
                         myCircle.CreateFilledArc(i);
                     }
                 }
             }
         }
 
-        circle = (THREAT_CIRCLE*)Root_->GetNext(&cur, &curidx);
+        circle = (THREAT_CIRCLE *)Root_->GetNext(&cur, &curidx);
     }
 }
 
@@ -178,13 +186,17 @@ void Circle::InitBuffer()
 {
     CircleTop = CenterY - Radius;
 
-    if (CircleTop < 0) CircleTop = 0;
-    else if (CircleTop > MaxHeight1) CircleTop = MaxHeight1;
+    if (CircleTop < 0)
+        CircleTop = 0;
+    else if (CircleTop > MaxHeight1)
+        CircleTop = MaxHeight1;
 
     CircleSize = CenterY + Radius;
 
-    if (CircleSize < 0) CircleSize = 0;
-    else if (CircleSize > MaxHeight1) CircleSize = MaxHeight1;
+    if (CircleSize < 0)
+        CircleSize = 0;
+    else if (CircleSize > MaxHeight1)
+        CircleSize = MaxHeight1;
 
     CircleSize = CircleSize - CircleTop + 1;
     CircleTopAddress = CircleTop * MaxWidth;
@@ -200,11 +212,11 @@ void Circle::FillBuffer()
 
     for (i = 0; i < CircleSize; i++)
     {
-        k = edge -> Left;
+        k = edge->Left;
 
         if (k >= 0)
         {
-            j = edge -> Right - k;
+            j = edge->Right - k;
 
             if (j >= 0)
             {
@@ -222,8 +234,7 @@ void Circle::FillBuffer()
 #endif
                     buf1++;
                     j--;
-                }
-                while (j >= 0);
+                } while (j >= 0);
             }
         }
 
@@ -557,37 +568,37 @@ void Circle::CreateFilledArc(long octant)
 
     switch (octant)
     {
-        case 0:
-            CreateFilledArc0();
-            break;
+    case 0:
+        CreateFilledArc0();
+        break;
 
-        case 1:
-            CreateFilledArc1();
-            break;
+    case 1:
+        CreateFilledArc1();
+        break;
 
-        case 2:
-            CreateFilledArc2();
-            break;
+    case 2:
+        CreateFilledArc2();
+        break;
 
-        case 3:
-            CreateFilledArc3();
-            break;
+    case 3:
+        CreateFilledArc3();
+        break;
 
-        case 4:
-            CreateFilledArc4();
-            break;
+    case 4:
+        CreateFilledArc4();
+        break;
 
-        case 5:
-            CreateFilledArc5();
-            break;
+    case 5:
+        CreateFilledArc5();
+        break;
 
-        case 6:
-            CreateFilledArc6();
-            break;
+    case 6:
+        CreateFilledArc6();
+        break;
 
-        case 7:
-            CreateFilledArc7();
-            break;
+    case 7:
+        CreateFilledArc7();
+        break;
     }
 
     FillBuffer();

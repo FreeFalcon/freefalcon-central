@@ -207,7 +207,12 @@ class ICPClass
     int mCruiseDLinkIndex;
     int mCruiseWPIndex;
     WayPointClass *mpCruiseWP;
-    enum {STPT_LIST, MARK_LIST, DLINK_LIST} mList;
+    enum
+    {
+        STPT_LIST,
+        MARK_LIST,
+        DLINK_LIST
+    } mList;
 
 public:
     //Main Stuff
@@ -258,7 +263,7 @@ public:
     void ExecCRUSMode(void);
     void PNUpdateCRUSMode(int, int);
     void StepCruise(void);
-    void FindEDR(long, char*);
+    void FindEDR(long, char *);
     void ExecTimeMode(void);
     void ExecMARKMode(void);
     void PNUpdateMARKMode(int, int);
@@ -322,9 +327,9 @@ public:
     void CNIBackup(void);
     void ScratchPad(int Line, int Start, int End);
     void MakeInverted(int Line, int Start, int End);
-    void FormatTime(long, char*);
+    void FormatTime(long, char *);
     void FormatRadioString(void);
-    void FillDEDMatrix(int Line, int Start, char*, int Inverted = 0);
+    void FillDEDMatrix(int Line, int Start, char *, int Inverted = 0);
     void LeaveCNI(void);
     void ClearDigits(void);
     void ClearInverted(int Line, int Start, int End);
@@ -394,8 +399,10 @@ public:
     unsigned int FlareBingo, ChaffBingo;
     bool BQ, BI, SQ, SI;
     //unsigned int iCHAFF_BQ, iCHAFF_SQ, iFLARE_BQ, iFLARE_SQ;
-    unsigned int iCHAFF_BQ[MAX_PGMS], iCHAFF_SQ[MAX_PGMS], iFLARE_BQ[MAX_PGMS], iFLARE_SQ[MAX_PGMS];
-    float fCHAFF_BI[MAX_PGMS], fCHAFF_SI[MAX_PGMS], fFLARE_BI[MAX_PGMS], fFLARE_SI[MAX_PGMS];
+    unsigned int iCHAFF_BQ[MAX_PGMS], iCHAFF_SQ[MAX_PGMS], iFLARE_BQ[MAX_PGMS],
+        iFLARE_SQ[MAX_PGMS];
+    float fCHAFF_BI[MAX_PGMS], fCHAFF_SI[MAX_PGMS], fFLARE_BI[MAX_PGMS],
+        fFLARE_SI[MAX_PGMS];
     int CPI, FPI; //chaff and Flare program index
     void StepEWSProg(int mode);
     void ShowFlareIndex(int Line, int Pos);
@@ -421,7 +428,6 @@ public:
     void SetVRP(void);
 
 
-
     //MODE page
     bool IN_AG, IN_AA, AA_SELECT, IsSelected;
 
@@ -441,8 +447,8 @@ public:
 
     //for flashing things
     unsigned int flash;
-public:
 
+public:
     int mIdNum;
     int mCycleBits;
 
@@ -454,7 +460,7 @@ public:
     //PFL
     char PFLLines[5][MAX_PFL_LEN];
     char PFLInvert[5][MAX_PFL_LEN];
-    void FillPFLMatrix(int Line, int Start, char*, int Inverted = 0);
+    void FillPFLMatrix(int Line, int Start, char *, int Inverted = 0);
     void ClearPFLLines(void);
 
     float PREUHF, PREVHF;
@@ -464,8 +470,10 @@ public:
     unsigned int ICPModeFlags, LastMode, ILSOn;
     //Manual Input stuff
     unsigned int CommChannel, TacanChannel, CurrChannel, Digit1, Digit2, Digit3;
-    unsigned int Input_Digit1, Input_Digit2, Input_Digit3, Input_Digit4, Input_Digit5, Input_Digit6, Input_Digit7;
-    float LATDegrees, LATMinutes, LATSeconds, LONGDegrees, LONGMinutes, LONGSeconds;
+    unsigned int Input_Digit1, Input_Digit2, Input_Digit3, Input_Digit4,
+        Input_Digit5, Input_Digit6, Input_Digit7;
+    float LATDegrees, LATMinutes, LATSeconds, LONGDegrees, LONGMinutes,
+        LONGSeconds;
     float Lat, Long, SetLat, SetLong, cosLat, WPAlt;
     int ClearCount, HSICourse, WhichRadio;
     bool MadeInput, CMDSTRG;
@@ -499,7 +507,7 @@ public:
         EDIT_LAT = 0x4000,
         EDIT_LONG = 0x8000,
         EDIT_JAMMER = 0x10000,
-        EWS_EDIT_BINGO  = 0x20000,
+        EWS_EDIT_BINGO = 0x20000,
         EDIT_VHF = 0x40000,
         EDIT_UHF = 0x80000,
         EDIT_STPT = 0x100000,
@@ -594,18 +602,18 @@ public:
     void DisplayBlit(void);
     void DisplayDraw(void);
     void SetOwnship(void);
-    CPButtonObject* GetTertiaryExclusiveButton(void);
+    CPButtonObject *GetTertiaryExclusiveButton(void);
     // void SetSecondaryExclusiveButton(CPButtonObject *);
-    CPButtonObject* GetSecondaryExclusiveButton(void);
+    CPButtonObject *GetSecondaryExclusiveButton(void);
     // void SetPrimaryExclusiveButton(CPButtonObject *);
     void InitPrimaryExclusiveButton(CPButtonObject *);
     void InitTertiaryExclusiveButton(CPButtonObject *);
-    CPButtonObject* GetPrimaryExclusiveButton(void);
+    CPButtonObject *GetPrimaryExclusiveButton(void);
     void SetDirtyFlag(void)
     {
         mDirtyFlag = TRUE;
     };
-    void GetDEDStrings(char*, char*, char*);
+    void GetDEDStrings(char *, char *, char *);
     long GetICPPrimaryMode(void)
     {
         return mICPPrimaryMode;
@@ -622,7 +630,7 @@ public:
     {
         mICPTertiaryMode = mode;
     };
-    int  GetICPWPIndex(void)
+    int GetICPWPIndex(void)
     {
         return mWPIndex;
     };

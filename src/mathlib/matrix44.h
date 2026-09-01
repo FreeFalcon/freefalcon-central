@@ -15,12 +15,9 @@ matrix44.h
 #include "euler.h"
 #include "matrixdefs.h"
 
-static float matrix44_ident[16] =
-{
-    1.0f, 0.0f, 0.0f, 0.0f,
-    0.0f, 1.0f, 0.0f, 0.0f,
-    0.0f, 0.0f, 1.0f, 0.0f,
-    0.0f, 0.0f, 0.0f, 1.0f,
+static float matrix44_ident[16] = {
+    1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+    0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f,
 };
 
 struct matrix44
@@ -30,7 +27,8 @@ struct matrix44
         memcpy(&(m[0][0]), matrix44_ident, sizeof(matrix44_ident));
     }
 
-    matrix44(const vector4& v0, const vector4& v1, const vector4& v2, const vector4& v3)
+    matrix44(const vector4& v0, const vector4& v1, const vector4& v2,
+             const vector4& v3)
     {
         m11 = v0.x;
         m12 = v0.y;
@@ -55,10 +53,10 @@ struct matrix44
         memcpy(m, &(m1.m[0][0]), 16 * sizeof(float));
     }
 
-    matrix44(float _m11, float _m12, float _m13, float _m14,
-             float _m21, float _m22, float _m23, float _m24,
-             float _m31, float _m32, float _m33, float _m34,
-             float _m41, float _m42, float _m43, float _m44)
+    matrix44(float _m11, float _m12, float _m13, float _m14, float _m21,
+             float _m22, float _m23, float _m24, float _m31, float _m32,
+             float _m33, float _m34, float _m41, float _m42, float _m43,
+             float _m44)
     {
         m11 = _m11;
         m12 = _m12;
@@ -131,9 +129,11 @@ struct matrix44
             int i, j, k, nxt[3] = {1, 2, 0};
             i = 0;
 
-            if (m[1][1] > m[0][0]) i = 1;
+            if (m[1][1] > m[0][0])
+                i = 1;
 
-            if (m[2][2] > m[i][i]) i = 2;
+            if (m[2][2] > m[i][i])
+                i = 2;
 
             j = nxt[i];
             k = nxt[j];
@@ -149,7 +149,8 @@ struct matrix44
         return q;
     }
 
-    void Set(const vector4& v0, const vector4& v1, const vector4& v2, const vector4& v3)
+    void Set(const vector4& v0, const vector4& v1, const vector4& v2,
+             const vector4& v3)
     {
         m11 = v0.x;
         m12 = v0.y;
@@ -173,10 +174,10 @@ struct matrix44
         memcpy(m, &(m1.m[0][0]), 16 * sizeof(float));
     }
 
-    void Set(float _m11, float _m12, float _m13, float _m14,
-             float _m21, float _m22, float _m23, float _m24,
-             float _m31, float _m32, float _m33, float _m34,
-             float _m41, float _m42, float _m43, float _m44)
+    void Set(float _m11, float _m12, float _m13, float _m14, float _m21,
+             float _m22, float _m23, float _m24, float _m31, float _m32,
+             float _m33, float _m34, float _m41, float _m42, float _m43,
+             float _m44)
     {
         m11 = _m11;
         m12 = _m12;
@@ -237,7 +238,12 @@ struct matrix44
     void Transpose()
     {
 #undef _swap
-#define _swap(x,y) { float t=x; x=y; y=t; }
+#define _swap(x, y)                                                            \
+    {                                                                          \
+        float t = x;                                                           \
+        x = y;                                                                 \
+        y = t;                                                                 \
+    }
         _swap(m12, m21);
         _swap(m13, m31);
         _swap(m14, m41);
@@ -248,39 +254,55 @@ struct matrix44
 
     float Det()
     {
-        return
-            (m11 * m22 - m12 * m21) * (m33 * m44 - m34 * m43)
-            - (m11 * m23 - m13 * m21) * (m32 * m44 - m34 * m42)
-            + (m11 * m24 - m14 * m21) * (m32 * m43 - m33 * m42)
-            + (m12 * m23 - m13 * m22) * (m31 * m44 - m34 * m41)
-            - (m12 * m24 - m14 * m22) * (m31 * m43 - m33 * m41)
-            + (m13 * m24 - m14 * m23) * (m31 * m42 - m32 * m41);
+        return (m11 * m22 - m12 * m21) * (m33 * m44 - m34 * m43) -
+               (m11 * m23 - m13 * m21) * (m32 * m44 - m34 * m42) +
+               (m11 * m24 - m14 * m21) * (m32 * m43 - m33 * m42) +
+               (m12 * m23 - m13 * m22) * (m31 * m44 - m34 * m41) -
+               (m12 * m24 - m14 * m22) * (m31 * m43 - m33 * m41) +
+               (m13 * m24 - m14 * m23) * (m31 * m42 - m32 * m41);
     }
 
     void Invert()
     {
         float s = Det();
 
-        if (s == 0.0) return;
+        if (s == 0.0)
+            return;
 
         s = 1 / s;
         this->Set(
-            s * (m22 * (m33 * m44 - m34 * m43) + m23 * (m34 * m42 - m32 * m44) + m24 * (m32 * m43 - m33 * m42)),
-            s * (m32 * (m13 * m44 - m14 * m43) + m33 * (m14 * m42 - m12 * m44) + m34 * (m12 * m43 - m13 * m42)),
-            s * (m42 * (m13 * m24 - m14 * m23) + m43 * (m14 * m22 - m12 * m24) + m44 * (m12 * m23 - m13 * m22)),
-            s * (m12 * (m24 * m33 - m23 * m34) + m13 * (m22 * m34 - m24 * m32) + m14 * (m23 * m32 - m22 * m33)),
-            s * (m23 * (m31 * m44 - m34 * m41) + m24 * (m33 * m41 - m31 * m43) + m21 * (m34 * m43 - m33 * m44)),
-            s * (m33 * (m11 * m44 - m14 * m41) + m34 * (m13 * m41 - m11 * m43) + m31 * (m14 * m43 - m13 * m44)),
-            s * (m43 * (m11 * m24 - m14 * m21) + m44 * (m13 * m21 - m11 * m23) + m41 * (m14 * m23 - m13 * m24)),
-            s * (m13 * (m24 * m31 - m21 * m34) + m14 * (m21 * m33 - m23 * m31) + m11 * (m23 * m34 - m24 * m33)),
-            s * (m24 * (m31 * m42 - m32 * m41) + m21 * (m32 * m44 - m34 * m42) + m22 * (m34 * m41 - m31 * m44)),
-            s * (m34 * (m11 * m42 - m12 * m41) + m31 * (m12 * m44 - m14 * m42) + m32 * (m14 * m41 - m11 * m44)),
-            s * (m44 * (m11 * m22 - m12 * m21) + m41 * (m12 * m24 - m14 * m22) + m42 * (m14 * m21 - m11 * m24)),
-            s * (m14 * (m22 * m31 - m21 * m32) + m11 * (m24 * m32 - m22 * m34) + m12 * (m21 * m34 - m24 * m31)),
-            s * (m21 * (m33 * m42 - m32 * m43) + m22 * (m31 * m43 - m33 * m41) + m23 * (m32 * m41 - m31 * m42)),
-            s * (m31 * (m13 * m42 - m12 * m43) + m32 * (m11 * m43 - m13 * m41) + m33 * (m12 * m41 - m11 * m42)),
-            s * (m41 * (m13 * m22 - m12 * m23) + m42 * (m11 * m23 - m13 * m21) + m43 * (m12 * m21 - m11 * m22)),
-            s * (m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) + m13 * (m21 * m32 - m22 * m31)));
+            s * (m22 * (m33 * m44 - m34 * m43) + m23 * (m34 * m42 - m32 * m44) +
+                 m24 * (m32 * m43 - m33 * m42)),
+            s * (m32 * (m13 * m44 - m14 * m43) + m33 * (m14 * m42 - m12 * m44) +
+                 m34 * (m12 * m43 - m13 * m42)),
+            s * (m42 * (m13 * m24 - m14 * m23) + m43 * (m14 * m22 - m12 * m24) +
+                 m44 * (m12 * m23 - m13 * m22)),
+            s * (m12 * (m24 * m33 - m23 * m34) + m13 * (m22 * m34 - m24 * m32) +
+                 m14 * (m23 * m32 - m22 * m33)),
+            s * (m23 * (m31 * m44 - m34 * m41) + m24 * (m33 * m41 - m31 * m43) +
+                 m21 * (m34 * m43 - m33 * m44)),
+            s * (m33 * (m11 * m44 - m14 * m41) + m34 * (m13 * m41 - m11 * m43) +
+                 m31 * (m14 * m43 - m13 * m44)),
+            s * (m43 * (m11 * m24 - m14 * m21) + m44 * (m13 * m21 - m11 * m23) +
+                 m41 * (m14 * m23 - m13 * m24)),
+            s * (m13 * (m24 * m31 - m21 * m34) + m14 * (m21 * m33 - m23 * m31) +
+                 m11 * (m23 * m34 - m24 * m33)),
+            s * (m24 * (m31 * m42 - m32 * m41) + m21 * (m32 * m44 - m34 * m42) +
+                 m22 * (m34 * m41 - m31 * m44)),
+            s * (m34 * (m11 * m42 - m12 * m41) + m31 * (m12 * m44 - m14 * m42) +
+                 m32 * (m14 * m41 - m11 * m44)),
+            s * (m44 * (m11 * m22 - m12 * m21) + m41 * (m12 * m24 - m14 * m22) +
+                 m42 * (m14 * m21 - m11 * m24)),
+            s * (m14 * (m22 * m31 - m21 * m32) + m11 * (m24 * m32 - m22 * m34) +
+                 m12 * (m21 * m34 - m24 * m31)),
+            s * (m21 * (m33 * m42 - m32 * m43) + m22 * (m31 * m43 - m33 * m41) +
+                 m23 * (m32 * m41 - m31 * m42)),
+            s * (m31 * (m13 * m42 - m12 * m43) + m32 * (m11 * m43 - m13 * m41) +
+                 m33 * (m12 * m41 - m11 * m42)),
+            s * (m41 * (m13 * m22 - m12 * m23) + m42 * (m11 * m23 - m13 * m21) +
+                 m43 * (m12 * m21 - m11 * m22)),
+            s * (m11 * (m22 * m33 - m23 * m32) + m12 * (m23 * m31 - m21 * m33) +
+                 m13 * (m21 * m32 - m22 * m31)));
     }
 
     /* Inverts a 4x4 matrix consisting of a 3x3 rotation matrix and a translation (eg. everything
@@ -289,25 +311,23 @@ struct matrix44
     {
         float s = Det();
 
-        if (s == 0.0f) return;
+        if (s == 0.0f)
+            return;
 
         s = 1.0f / s;
         this->Set(
-            s * ((m22 * m33) - (m23 * m32)),
-            s * ((m32 * m13) - (m33 * m12)),
-            s * ((m12 * m23) - (m13 * m22)),
-            0.0f,
-            s * ((m23 * m31) - (m21 * m33)),
-            s * ((m33 * m11) - (m31 * m13)),
-            s * ((m13 * m21) - (m11 * m23)),
-            0.0f,
-            s * ((m21 * m32) - (m22 * m31)),
-            s * ((m31 * m12) - (m32 * m11)),
-            s * ((m11 * m22) - (m12 * m21)),
-            0.0f,
-            s * (m21 * (m33 * m42 - m32 * m43) + m22 * (m31 * m43 - m33 * m41) + m23 * (m32 * m41 - m31 * m42)),
-            s * (m31 * (m13 * m42 - m12 * m43) + m32 * (m11 * m43 - m13 * m41) + m33 * (m12 * m41 - m11 * m42)),
-            s * (m41 * (m13 * m22 - m12 * m23) + m42 * (m11 * m23 - m13 * m21) + m43 * (m12 * m21 - m11 * m22)),
+            s * ((m22 * m33) - (m23 * m32)), s * ((m32 * m13) - (m33 * m12)),
+            s * ((m12 * m23) - (m13 * m22)), 0.0f,
+            s * ((m23 * m31) - (m21 * m33)), s * ((m33 * m11) - (m31 * m13)),
+            s * ((m13 * m21) - (m11 * m23)), 0.0f,
+            s * ((m21 * m32) - (m22 * m31)), s * ((m31 * m12) - (m32 * m11)),
+            s * ((m11 * m22) - (m12 * m21)), 0.0f,
+            s * (m21 * (m33 * m42 - m32 * m43) + m22 * (m31 * m43 - m33 * m41) +
+                 m23 * (m32 * m41 - m31 * m42)),
+            s * (m31 * (m13 * m42 - m12 * m43) + m32 * (m11 * m43 - m13 * m41) +
+                 m33 * (m12 * m41 - m11 * m42)),
+            s * (m41 * (m13 * m22 - m12 * m23) + m42 * (m11 * m23 - m13 * m21) +
+                 m43 * (m12 * m21 - m11 * m22)),
             1.0f);
     }
 
@@ -339,10 +359,9 @@ struct matrix44
     vector3 TransformCoord(const vector3& v) const
     {
         float d = 1.0f / (m14 * v.x + m24 * v.y + m34 * v.z + m44);
-        return vector3(
-                   (m11 * v.x + m21 * v.y + m31 * v.z + m41) * d,
-                   (m12 * v.x + m22 * v.y + m32 * v.z + m42) * d,
-                   (m13 * v.x + m23 * v.y + m33 * v.z + m43) * d);
+        return vector3((m11 * v.x + m21 * v.y + m31 * v.z + m41) * d,
+                       (m12 * v.x + m22 * v.y + m32 * v.z + m42) * d,
+                       (m13 * v.x + m23 * v.y + m33 * v.z + m43) * d);
     }
 
     vector3 XComponent() const
@@ -585,7 +604,7 @@ struct matrix44
         m34 = 0.0f;
     }
 
-    void operator *=(const matrix44& m1)
+    void operator*=(const matrix44& m1)
     {
         int i;
 
@@ -595,10 +614,14 @@ struct matrix44
             float mi1 = m[i][1];
             float mi2 = m[i][2];
             float mi3 = m[i][3];
-            m[i][0] = mi0 * m1.m[0][0] + mi1 * m1.m[1][0] + mi2 * m1.m[2][0] + mi3 * m1.m[3][0];
-            m[i][1] = mi0 * m1.m[0][1] + mi1 * m1.m[1][1] + mi2 * m1.m[2][1] + mi3 * m1.m[3][1];
-            m[i][2] = mi0 * m1.m[0][2] + mi1 * m1.m[1][2] + mi2 * m1.m[2][2] + mi3 * m1.m[3][2];
-            m[i][3] = mi0 * m1.m[0][3] + mi1 * m1.m[1][3] + mi2 * m1.m[2][3] + mi3 * m1.m[3][3];
+            m[i][0] = mi0 * m1.m[0][0] + mi1 * m1.m[1][0] + mi2 * m1.m[2][0] +
+                      mi3 * m1.m[3][0];
+            m[i][1] = mi0 * m1.m[0][1] + mi1 * m1.m[1][1] + mi2 * m1.m[2][1] +
+                      mi3 * m1.m[3][1];
+            m[i][2] = mi0 * m1.m[0][2] + mi1 * m1.m[1][2] + mi2 * m1.m[2][2] +
+                      mi3 * m1.m[3][2];
+            m[i][3] = mi0 * m1.m[0][3] + mi1 * m1.m[1][3] + mi2 * m1.m[2][3] +
+                      mi3 * m1.m[3][3];
         }
     }
 
@@ -606,8 +629,8 @@ struct matrix44
     {
         vector3 v(vec);
         v.Normalize();
-        float sa = (float) sinf(a);
-        float ca = (float) cosf(a);
+        float sa = (float)sinf(a);
+        float ca = (float)cosf(a);
 
         matrix44 rotM;
         rotM.m11 = ca + (1.0f - ca) * v.x * v.x;
@@ -638,9 +661,11 @@ struct matrix44
         dst.z = m13 * src.x + m23 * src.y + m33 * src.z + m43;
     }
 
-    void SetProjection(float hFOV, float vFOV, float fNearPlane, float fFarPlane)
+    void SetProjection(float hFOV, float vFOV, float fNearPlane,
+                       float fFarPlane)
     {
-        if (Abs(fFarPlane - fNearPlane) < .01f) return;
+        if (Abs(fFarPlane - fNearPlane) < .01f)
+            return;
 
         float w = Cot(hFOV * .5f);
         float h = Cot(vFOV * .5f);
@@ -660,7 +685,8 @@ struct matrix44
         vector3 vView = vAt - vFrom;
         float fLength = vView.Length();
 
-        if (fLength < 1e-6f) return;
+        if (fLength < 1e-6f)
+            return;
 
         vView /= fLength; // Normalize the z basis vector
 
@@ -673,11 +699,14 @@ struct matrix44
         {
             vUp = vector3(0.f, 1.f, 0.f) - vView.y * vView;
 
-            if (1e-6f > (fLength = vUp.Length())) // If we still have near-zero length, resort to a different axis.
+            if (1e-6f >
+                (fLength =
+                     vUp.Length())) // If we still have near-zero length, resort to a different axis.
             {
                 vUp = vector3(0.f, 0.f, 1.f) - vView.z * vView;
 
-                if (1e-6f > (fLength = vUp.Length())) return;
+                if (1e-6f > (fLength = vUp.Length()))
+                    return;
             }
         }
 
@@ -704,46 +733,59 @@ struct matrix44
         m[3][2] = -(vFrom % vView);
     }
 
-    friend matrix44 operator *(const matrix44& m0, const matrix44& m1)
+    friend matrix44 operator*(const matrix44& m0, const matrix44& m1)
     {
-        matrix44 m2(
-            m0.m[0][0]*m1.m[0][0] + m0.m[0][1]*m1.m[1][0] + m0.m[0][2]*m1.m[2][0] + m0.m[0][3]*m1.m[3][0],
-            m0.m[0][0]*m1.m[0][1] + m0.m[0][1]*m1.m[1][1] + m0.m[0][2]*m1.m[2][1] + m0.m[0][3]*m1.m[3][1],
-            m0.m[0][0]*m1.m[0][2] + m0.m[0][1]*m1.m[1][2] + m0.m[0][2]*m1.m[2][2] + m0.m[0][3]*m1.m[3][2],
-            m0.m[0][0]*m1.m[0][3] + m0.m[0][1]*m1.m[1][3] + m0.m[0][2]*m1.m[2][3] + m0.m[0][3]*m1.m[3][3],
+        matrix44 m2(m0.m[0][0] * m1.m[0][0] + m0.m[0][1] * m1.m[1][0] +
+                        m0.m[0][2] * m1.m[2][0] + m0.m[0][3] * m1.m[3][0],
+                    m0.m[0][0] * m1.m[0][1] + m0.m[0][1] * m1.m[1][1] +
+                        m0.m[0][2] * m1.m[2][1] + m0.m[0][3] * m1.m[3][1],
+                    m0.m[0][0] * m1.m[0][2] + m0.m[0][1] * m1.m[1][2] +
+                        m0.m[0][2] * m1.m[2][2] + m0.m[0][3] * m1.m[3][2],
+                    m0.m[0][0] * m1.m[0][3] + m0.m[0][1] * m1.m[1][3] +
+                        m0.m[0][2] * m1.m[2][3] + m0.m[0][3] * m1.m[3][3],
 
-            m0.m[1][0]*m1.m[0][0] + m0.m[1][1]*m1.m[1][0] + m0.m[1][2]*m1.m[2][0] + m0.m[1][3]*m1.m[3][0],
-            m0.m[1][0]*m1.m[0][1] + m0.m[1][1]*m1.m[1][1] + m0.m[1][2]*m1.m[2][1] + m0.m[1][3]*m1.m[3][1],
-            m0.m[1][0]*m1.m[0][2] + m0.m[1][1]*m1.m[1][2] + m0.m[1][2]*m1.m[2][2] + m0.m[1][3]*m1.m[3][2],
-            m0.m[1][0]*m1.m[0][3] + m0.m[1][1]*m1.m[1][3] + m0.m[1][2]*m1.m[2][3] + m0.m[1][3]*m1.m[3][3],
+                    m0.m[1][0] * m1.m[0][0] + m0.m[1][1] * m1.m[1][0] +
+                        m0.m[1][2] * m1.m[2][0] + m0.m[1][3] * m1.m[3][0],
+                    m0.m[1][0] * m1.m[0][1] + m0.m[1][1] * m1.m[1][1] +
+                        m0.m[1][2] * m1.m[2][1] + m0.m[1][3] * m1.m[3][1],
+                    m0.m[1][0] * m1.m[0][2] + m0.m[1][1] * m1.m[1][2] +
+                        m0.m[1][2] * m1.m[2][2] + m0.m[1][3] * m1.m[3][2],
+                    m0.m[1][0] * m1.m[0][3] + m0.m[1][1] * m1.m[1][3] +
+                        m0.m[1][2] * m1.m[2][3] + m0.m[1][3] * m1.m[3][3],
 
-            m0.m[2][0]*m1.m[0][0] + m0.m[2][1]*m1.m[1][0] + m0.m[2][2]*m1.m[2][0] + m0.m[2][3]*m1.m[3][0],
-            m0.m[2][0]*m1.m[0][1] + m0.m[2][1]*m1.m[1][1] + m0.m[2][2]*m1.m[2][1] + m0.m[2][3]*m1.m[3][1],
-            m0.m[2][0]*m1.m[0][2] + m0.m[2][1]*m1.m[1][2] + m0.m[2][2]*m1.m[2][2] + m0.m[2][3]*m1.m[3][2],
-            m0.m[2][0]*m1.m[0][3] + m0.m[2][1]*m1.m[1][3] + m0.m[2][2]*m1.m[2][3] + m0.m[2][3]*m1.m[3][3],
+                    m0.m[2][0] * m1.m[0][0] + m0.m[2][1] * m1.m[1][0] +
+                        m0.m[2][2] * m1.m[2][0] + m0.m[2][3] * m1.m[3][0],
+                    m0.m[2][0] * m1.m[0][1] + m0.m[2][1] * m1.m[1][1] +
+                        m0.m[2][2] * m1.m[2][1] + m0.m[2][3] * m1.m[3][1],
+                    m0.m[2][0] * m1.m[0][2] + m0.m[2][1] * m1.m[1][2] +
+                        m0.m[2][2] * m1.m[2][2] + m0.m[2][3] * m1.m[3][2],
+                    m0.m[2][0] * m1.m[0][3] + m0.m[2][1] * m1.m[1][3] +
+                        m0.m[2][2] * m1.m[2][3] + m0.m[2][3] * m1.m[3][3],
 
-            m0.m[3][0]*m1.m[0][0] + m0.m[3][1]*m1.m[1][0] + m0.m[3][2]*m1.m[2][0] + m0.m[3][3]*m1.m[3][0],
-            m0.m[3][0]*m1.m[0][1] + m0.m[3][1]*m1.m[1][1] + m0.m[3][2]*m1.m[2][1] + m0.m[3][3]*m1.m[3][1],
-            m0.m[3][0]*m1.m[0][2] + m0.m[3][1]*m1.m[1][2] + m0.m[3][2]*m1.m[2][2] + m0.m[3][3]*m1.m[3][2],
-            m0.m[3][0]*m1.m[0][3] + m0.m[3][1]*m1.m[1][3] + m0.m[3][2]*m1.m[2][3] + m0.m[3][3]*m1.m[3][3]);
+                    m0.m[3][0] * m1.m[0][0] + m0.m[3][1] * m1.m[1][0] +
+                        m0.m[3][2] * m1.m[2][0] + m0.m[3][3] * m1.m[3][0],
+                    m0.m[3][0] * m1.m[0][1] + m0.m[3][1] * m1.m[1][1] +
+                        m0.m[3][2] * m1.m[2][1] + m0.m[3][3] * m1.m[3][1],
+                    m0.m[3][0] * m1.m[0][2] + m0.m[3][1] * m1.m[1][2] +
+                        m0.m[3][2] * m1.m[2][2] + m0.m[3][3] * m1.m[3][2],
+                    m0.m[3][0] * m1.m[0][3] + m0.m[3][1] * m1.m[1][3] +
+                        m0.m[3][2] * m1.m[2][3] + m0.m[3][3] * m1.m[3][3]);
         return m2;
     }
 
-    friend vector3 operator *(const matrix44& m, const vector3& v)
+    friend vector3 operator*(const matrix44& m, const vector3& v)
     {
-        return vector3(
-                   m.m11 * v.x + m.m21 * v.y + m.m31 * v.z + m.m41,
-                   m.m12 * v.x + m.m22 * v.y + m.m32 * v.z + m.m42,
-                   m.m13 * v.x + m.m23 * v.y + m.m33 * v.z + m.m43);
+        return vector3(m.m11 * v.x + m.m21 * v.y + m.m31 * v.z + m.m41,
+                       m.m12 * v.x + m.m22 * v.y + m.m32 * v.z + m.m42,
+                       m.m13 * v.x + m.m23 * v.y + m.m33 * v.z + m.m43);
     }
 
-    friend vector4 operator *(const matrix44& m, const vector4& v)
+    friend vector4 operator*(const matrix44& m, const vector4& v)
     {
-        return vector4(
-                   m.m11 * v.x + m.m21 * v.y + m.m31 * v.z + m.m41 * v.w,
-                   m.m12 * v.x + m.m22 * v.y + m.m32 * v.z + m.m42 * v.w,
-                   m.m13 * v.x + m.m23 * v.y + m.m33 * v.z + m.m43 * v.w,
-                   m.m14 * v.x + m.m24 * v.y + m.m34 * v.z + m.m44 * v.w);
+        return vector4(m.m11 * v.x + m.m21 * v.y + m.m31 * v.z + m.m41 * v.w,
+                       m.m12 * v.x + m.m22 * v.y + m.m32 * v.z + m.m42 * v.w,
+                       m.m13 * v.x + m.m23 * v.y + m.m33 * v.z + m.m43 * v.w,
+                       m.m14 * v.x + m.m24 * v.y + m.m34 * v.z + m.m44 * v.w);
     };
 
     float m[4][4];

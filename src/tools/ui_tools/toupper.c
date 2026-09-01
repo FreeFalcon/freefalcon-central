@@ -25,7 +25,7 @@ void main(int argc, char **argv)
     size = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    mem = (char*)malloc(size);
+    mem = (char *)malloc(size);
 
     if (!mem)
     {

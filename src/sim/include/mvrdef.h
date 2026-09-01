@@ -16,20 +16,28 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
-    enum MoverType {Aircraft, Ground, Helicopter, Weapon, Sea};
+    enum MoverType
+    {
+        Aircraft,
+        Ground,
+        Helicopter,
+        Weapon,
+        Sea
+    };
     SimMoverDefinition(void);
     virtual ~SimMoverDefinition(void);
     static void ReadSimMoverDefinitionData(void);
     static void FreeSimMoverDefinitionData(void);
-    int  numSensors;
-    int* sensorData;
+    int numSensors;
+    int *sensorData;
 };
 
-extern SimMoverDefinition** moverDefinitionData;
+extern SimMoverDefinition **moverDefinitionData;
 extern int NumSimMoverDefinitions;
 
 #endif

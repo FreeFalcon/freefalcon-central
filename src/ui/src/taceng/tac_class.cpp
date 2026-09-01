@@ -18,8 +18,8 @@
 #include "uicomms.h"
 #include "userids.h"
 #include "textids.h"
-#include "F4Error.h"
-#include "F4Find.h"
+#include "f4error.h"
+#include "f4find.h"
 //#include "sim/include/simbase.h"
 #include "cmpclass.h"
 #include "tac_class.h"
@@ -27,22 +27,22 @@
 #include "team.h"
 #include "unit.h"
 #include "team.h"
-#include "CmpGlobl.h"
-#include "CampCell.h"
-#include "CampTerr.h"
+#include "cmpglobl.h"
+#include "campcell.h"
+#include "campterr.h"
 #include "find.h"
 #include "division.h"
 #include "cmap.h"
 #include "flight.h"
 #include "campwp.h"
-#include "Listadt.h"
+#include "listadt.h"
 #include "objectiv.h"
-#include "Campaign.h"
+#include "campaign.h"
 #include "classtbl.h"
 #include "falcsess.h"
 #include "gps.h"
 #include "teamdata.h"
-#include "Dispcfg.h"
+#include "dispcfg.h"
 #include "msginc/senduimsg.h"
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -59,15 +59,13 @@ extern long ShowGameOverWindow;
 extern char gUI_CampaignFile[];
 extern _TCHAR gUI_ScenarioName[];
 extern uchar gSelectedTeam;
-extern C_Map
-*gMapMgr;
-extern C_TreeList
-*gVCTree;
+extern C_Map *gMapMgr;
+extern C_TreeList *gVCTree;
 
 extern long gRefreshScoresList;
 extern short InCleanup;
-int string_compare_extensions(char*, char*);
-extern FILE* OpenCampFile(char *filename, char *ext, char *mode);
+int string_compare_extensions(char *, char *);
+extern FILE *OpenCampFile(char *filename, char *ext, char *mode);
 extern void StartCampaignGame(int local, int game_type);
 extern void CloseCampFile(FILE *fp);
 C_Victory *MakeVCControl(victory_condition *vc);
@@ -200,7 +198,7 @@ void tactical_mission::set_type(tactical_type new_type)
 
 tactical_type tactical_mission::get_type(void)
 {
-    return (tactical_type) TheCampaign.TE_type;
+    return (tactical_type)TheCampaign.TE_type;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -209,13 +207,9 @@ tactical_type tactical_mission::get_type(void)
 
 char *tactical_mission::get_title(void)
 {
-    static char
-    buffer[100];
+    static char buffer[100];
 
-    char
-    *end,
-    *dst,
-    *ptr;
+    char *end, *dst, *ptr;
 
     if (filename)
     {
@@ -227,21 +221,21 @@ char *tactical_mission::get_title(void)
         {
             *dst = *ptr;
 
-            if (*ptr == '\\')
+            if (*ptr == '\\' or *ptr == '/')
             {
                 dst = buffer;
                 end = NULL;
             }
             else if (*ptr == '.')
             {
-                end = dst ++;
+                end = dst++;
             }
             else
             {
-                dst ++;
+                dst++;
             }
 
-            ptr ++;
+            ptr++;
         }
 
         *dst = '\0';
@@ -265,17 +259,14 @@ char *tactical_mission::get_title(void)
 
 void tactical_mission::save_data(char *savefile)
 {
-    FILE
-    *fp;
+    FILE *fp;
 
     VU_ID
     id;
 
-    victory_condition
-    *vc;
+    victory_condition *vc;
 
-    int
-    loop;
+    int loop;
 
     if ((fp = OpenCampFile(savefile, "te", "wb")) == NULL)
         return;
@@ -293,18 +284,10 @@ void tactical_mission::save_data(char *savefile)
             id = vc->get_vu_id();
 
             // team, type, vu_id, value, tolerance, points
-            fprintf
-            (
-                fp,
-                "%d %d %d %d %d %d %d\n",
-                vc->get_team(),
-                vc->get_type(),
-                id.num_,
-                id.creator_,
-                vc->get_sub_objective(),
-                vc->get_tolerance(),
-                vc->get_points()
-            );
+            fprintf(fp, "%d %d %d %d %d %d %d\n", vc->get_team(),
+                    vc->get_type(), id.num_, id.creator_,
+                    vc->get_sub_objective(), vc->get_tolerance(),
+                    vc->get_points());
 
             vc = vc->succ;
         }
@@ -319,23 +302,17 @@ void tactical_mission::save_data(char *savefile)
 
     fprintf(fp, ":Teams\n%d\n", get_tactical_number_of_teams());
 
-    for (loop = 1; loop < 8; loop ++)
+    for (loop = 1; loop < 8; loop++)
     {
         if (TeamInfo[loop])
         {
-            fprintf
-            (
-                fp,
-                ":Team\n%d %d %d\n",
-                loop,
-                get_tactical_number_of_aircraft(loop),
-                get_tactical_number_of_f16s(loop)
-            );
+            fprintf(fp, ":Team\n%d %d %d\n", loop,
+                    get_tactical_number_of_aircraft(loop),
+                    get_tactical_number_of_f16s(loop));
 
             fprintf(fp, ":TeamName\n%s\n", TeamInfo[loop]->GetName());
             fprintf(fp, ":TeamFlag\n%d\n", TeamInfo[loop]->GetFlag());
         }
-
     }
 
     if (filename)
@@ -359,7 +336,8 @@ void tactical_mission::save(char *filename)
         TheCampaign.SetCreatorIP(0);
         TheCampaign.SetCreationTime(0);
         TheCampaign.SetCreationIter(0);
-        TheCampaign.SaveCampaign(game_TacticalEngagement, filename, 0);  // Save Normal
+        TheCampaign.SaveCampaign(game_TacticalEngagement, filename,
+                                 0);  // Save Normal
     }
     else
     {
@@ -367,7 +345,8 @@ void tactical_mission::save(char *filename)
         {
             gCommsMgr->SaveStats();
             TheCampaign.SetCreationIter(TheCampaign.GetCreationIter() + 1);
-            TheCampaign.SaveCampaign(game_TacticalEngagement, filename, 0);  // Save Normal
+            TheCampaign.SaveCampaign(game_TacticalEngagement, filename,
+                                     0);  // Save Normal
 
             if (gCommsMgr->Online())
             {
@@ -387,7 +366,8 @@ void tactical_mission::save(char *filename)
             TheCampaign.SetCreationIter(1);
 
             gCommsMgr->SaveStats();
-            TheCampaign.SaveCampaign(game_TacticalEngagement, filename, 0);  // Save Normal
+            TheCampaign.SaveCampaign(game_TacticalEngagement, filename,
+                                     0); // Save Normal
             TheCampaign.SetCreatorIP(saveIP);
             TheCampaign.SetCreationIter(saveIter);
         }
@@ -400,16 +380,9 @@ void tactical_mission::save(char *filename)
 
 void tactical_mission::process_load(char *data, int size, int)
 {
-    char
-    *ptr = NULL,
-     buffer[1000];
+    char *ptr = NULL, buffer[1000];
 
-    int
-    len = 0,
-    team = 0,
-    x = 0,
-    y = 0,
-    loop = 0;
+    int len = 0, team = 0, x = 0, y = 0, loop = 0;
 
     enum tokens
     {
@@ -423,26 +396,18 @@ void tactical_mission::process_load(char *data, int size, int)
         t_team_info,
         t_team_name,
         t_team_flag
-    }
-    current_state = t_null;
+    } current_state = t_null;
 
     struct
     {
         char *str;
         tokens token;
-    }
-    token_str[] =
-    {
-        "type", t_type,
-        "victory", t_victory_condition,
-        "flags", t_flags,
-        "required", t_points_required,
-        "teams", t_number_teams,
-        "team", t_team_info,
-        "teamname", t_team_name,
-        "teamflag", t_team_flag,
-        NULL, t_null
-    };
+    } token_str[] = {
+        "type",     t_type,         "victory",  t_victory_condition,
+        "flags",    t_flags,        "required", t_points_required,
+        "teams",    t_number_teams, "team",     t_team_info,
+        "teamname", t_team_name,    "teamflag", t_team_flag,
+        NULL,       t_null};
 
     while (size)
     {
@@ -454,18 +419,19 @@ void tactical_mission::process_load(char *data, int size, int)
 
             if ((*ptr == '\r') or (*ptr == '\n'))
             {
-                while ((size) and ((*data == '\n') or (*data == '\r') or (*data == '\t') or (*data == ' ')))
+                while ((size) and ((*data == '\n') or (*data == '\r') or
+                                   (*data == '\t') or (*data == ' ')))
                 {
-                    data ++;
-                    size --;
+                    data++;
+                    size--;
                 }
 
                 break;
             }
 
-            ptr ++;
-            data ++;
-            size --;
+            ptr++;
+            data++;
+            size--;
         }
 
         *ptr = '\0';
@@ -476,19 +442,12 @@ void tactical_mission::process_load(char *data, int size, int)
 
         // while we have some characters and they are not "good" characters, just chop the string shorter.
 
-        while
-        (
-            (len > 0) and 
-            (
-                (buffer[len - 1] == '\n') or
-                (buffer[len - 1] == '\r') or
-                (buffer[len - 1] == '\t') or
-                (buffer[len - 1] == ' ')
-            )
-        )
+        while ((len > 0) and
+               ((buffer[len - 1] == '\n') or (buffer[len - 1] == '\r') or
+                (buffer[len - 1] == '\t') or (buffer[len - 1] == ' ')))
         {
             buffer[len - 1] = '\0';
-            len --;
+            len--;
         }
 
         // Ok, we are now stripped.
@@ -499,7 +458,7 @@ void tactical_mission::process_load(char *data, int size, int)
         {
             current_state = t_null;
 
-            for (loop = 0; token_str[loop].str; loop ++)
+            for (loop = 0; token_str[loop].str; loop++)
             {
                 if (_stricmp(token_str[loop].str, &buffer[1]) == 0)
                 {
@@ -508,91 +467,94 @@ void tactical_mission::process_load(char *data, int size, int)
                 }
             }
         }
-        else if (buffer[0] not_eq '\0') // Otherwise, do we have something to set this state's value to.
+        else if (
+            buffer[0] not_eq
+            '\0') // Otherwise, do we have something to set this state's value to.
         {
             switch (current_state)
             {
-                case t_type:
+            case t_type:
+            {
+                if (strnicmp(buffer, "Training", 8) == 0)
                 {
-                    if (strnicmp(buffer, "Training", 8) == 0)
-                    {
-                        TheCampaign.TE_type = tt_training;
-                    }
-                    else if (strnicmp(buffer, "Engagement", 10) == 0)
-                    {
-                        TheCampaign.TE_type = tt_engagement;
-                    }
-                    else if (strnicmp(buffer, "Single", 6) == 0)
-                    {
-                        TheCampaign.TE_type = tt_single;
-                    }
-                    else if (strnicmp(buffer, "Load", 4) == 0)
-                    {
-                        //support old files
-                        TheCampaign.TE_type = tt_engagement;
-                    }
-                    else
-                    {
-                        MonoPrint("Unknown Type: ");
-                        MonoPrint(filename);
-                        MonoPrint(" ");
-                        MonoPrint(buffer);
-                        MonoPrint("\n");
-                    }
-
-                    break;
+                    TheCampaign.TE_type = tt_training;
+                }
+                else if (strnicmp(buffer, "Engagement", 10) == 0)
+                {
+                    TheCampaign.TE_type = tt_engagement;
+                }
+                else if (strnicmp(buffer, "Single", 6) == 0)
+                {
+                    TheCampaign.TE_type = tt_single;
+                }
+                else if (strnicmp(buffer, "Load", 4) == 0)
+                {
+                    //support old files
+                    TheCampaign.TE_type = tt_engagement;
+                }
+                else
+                {
+                    MonoPrint("Unknown Type: ");
+                    MonoPrint(filename);
+                    MonoPrint(" ");
+                    MonoPrint(buffer);
+                    MonoPrint("\n");
                 }
 
-                case t_flags:
-                {
-                    TheCampaign.TE_flags = atoi(buffer);
-                    TheCampaign.TE_flags and_eq compl tf_start_paused; // Don't set the paused flag
-                    break;
-                }
+                break;
+            }
 
-                case t_victory_condition:
-                {
-                    setup_victory_condition(buffer);
-                    break;
-                }
+            case t_flags:
+            {
+                TheCampaign.TE_flags = atoi(buffer);
+                TheCampaign.TE_flags and_eq
+                    compl tf_start_paused; // Don't set the paused flag
+                break;
+            }
 
-                case t_points_required:
-                {
-                    set_points_required(atoi(buffer));
-                    break;
-                }
+            case t_victory_condition:
+            {
+                setup_victory_condition(buffer);
+                break;
+            }
 
-                case t_number_teams:
-                {
-                    number_teams = atoi(buffer);
-                    break;
-                }
+            case t_points_required:
+            {
+                set_points_required(atoi(buffer));
+                break;
+            }
 
-                case t_team_info:
-                {
-                    sscanf(buffer, "%d %d %d", &team, &x, &y);
+            case t_number_teams:
+            {
+                number_teams = atoi(buffer);
+                break;
+            }
 
-                    number_aircraft[team] = x;
-                    number_f16s[team] = y;
-                    break;
-                }
+            case t_team_info:
+            {
+                sscanf(buffer, "%d %d %d", &team, &x, &y);
 
-                case t_team_name:
-                {
-                    set_team_name(team, buffer);
-                    break;
-                }
+                number_aircraft[team] = x;
+                number_f16s[team] = y;
+                break;
+            }
 
-                case t_team_flag:
-                {
-                    set_team_flag(team, atoi(buffer));
-                    break;
-                }
+            case t_team_name:
+            {
+                set_team_name(team, buffer);
+                break;
+            }
 
-                default:
-                {
-                    break;
-                }
+            case t_team_flag:
+            {
+                set_team_flag(team, atoi(buffer));
+                break;
+            }
+
+            default:
+            {
+                break;
+            }
             }
         }
     }
@@ -604,21 +566,11 @@ void tactical_mission::process_load(char *data, int size, int)
 
 char *tactical_mission::read_te_file(char *filename, int *size)
 {
-    FILE
-    *fp;
+    FILE *fp;
 
-    int
-    str_len,
-    num_files,
-    offset;
+    int str_len, num_files, offset;
 
-    char
-    name[100],
-         te_filename[100],
-         *ext,
-         *src,
-         *dst,
-         *ptr;
+    char name[100], te_filename[100], *ext, *src, *dst, *ptr;
 
     ptr = filename;
     ext = ptr;
@@ -627,7 +579,7 @@ char *tactical_mission::read_te_file(char *filename, int *size)
 
     while (*ptr)
     {
-        *dst ++ = *ptr;
+        *dst++ = *ptr;
 
         if (*ptr == '.')
         {
@@ -635,22 +587,22 @@ char *tactical_mission::read_te_file(char *filename, int *size)
             ext = ptr + 1;
         }
 
-        if (*ptr == '\\')
+        if (*ptr == '\\' or *ptr == '/')
         {
             dst = te_filename;
             src = NULL;
         }
 
-        ptr ++;
+        ptr++;
     }
 
     *dst = '\0';
 
     if (src)
     {
-        *src ++ = 't';
-        *src ++ = 'e';
-        *src ++ = '\0';
+        *src++ = 't';
+        *src++ = 'e';
+        *src++ = '\0';
     }
 
     if ((stricmp(ext, "tac") == 0) or (stricmp(ext, "trn") == 0))
@@ -673,7 +625,7 @@ char *tactical_mission::read_te_file(char *filename, int *size)
                 str_len and_eq 0xff;
 
                 fread(name, str_len, 1, fp);
-                \
+
                 name[str_len] = '\0';
 
                 if (string_compare_extensions(name, te_filename) == 0)
@@ -693,10 +645,10 @@ char *tactical_mission::read_te_file(char *filename, int *size)
                 }
                 else
                 {
-                    fseek(fp, 8, 1);  // seek relative
+                    fseek(fp, 8, 1); // seek relative
                 }
 
-                num_files --;
+                num_files--;
             }
         }
 
@@ -708,11 +660,11 @@ char *tactical_mission::read_te_file(char *filename, int *size)
 
         if (fp)
         {
-            fseek(fp, 0, 2);  // seek end
+            fseek(fp, 0, 2); // seek end
 
             *size = ftell(fp);
 
-            fseek(fp, 0, 0);  // seek start
+            fseek(fp, 0, 0); // seek start
 
             ptr = new char[*size];
 
@@ -733,15 +685,13 @@ char *tactical_mission::read_te_file(char *filename, int *size)
 
 void tactical_mission::info_load(char *the_filename)
 {
-    int
-    size;
+    int size;
 
-    char
-    *data;
+    char *data;
 
     if (strcmp(filename, the_filename) not_eq 0)
     {
-        delete(filename);
+        delete (filename);
 
         filename = new char[strlen(the_filename)];
 
@@ -750,7 +700,7 @@ void tactical_mission::info_load(char *the_filename)
 
     data = read_te_file(filename, &size);
 
-    if ( not data)
+    if (not data)
     {
         MonoPrint("Cannot open a file we just decided existed\n");
 
@@ -768,22 +718,17 @@ void tactical_mission::info_load(char *the_filename)
 
 void tactical_mission::load(void)
 {
-    int
-    size;
+    int size;
 
-    char
-    *ptr,
-    *ext,
-    *data,
-    *name;
+    char *ptr, *ext, *data, *name;
 
-    if ( not is_online)
+    if (not is_online)
     {
         data = read_te_file(filename, &size);
 
         //MonoPrint ("Tactical_Mission::Load %s\n", filename);
 
-        if ( not data)
+        if (not data)
         {
             MonoPrint("Cannot open a file we just decided existed\n");
 
@@ -796,12 +741,12 @@ void tactical_mission::load(void)
 
         while (*ptr)
         {
-            if (*ptr == '\\')
+            if (*ptr == '\\' or *ptr == '/')
             {
                 name = &ptr[1];
             }
 
-            ptr ++;
+            ptr++;
         }
 
         ptr = gUI_CampaignFile;
@@ -817,8 +762,8 @@ void tactical_mission::load(void)
 
             *ptr = *name;
 
-            name ++;
-            ptr ++;
+            name++;
+            ptr++;
         }
 
         *ptr = '\0';
@@ -832,7 +777,8 @@ void tactical_mission::load(void)
 
         FalconLocalSession->SetCountry(static_cast<uchar>(gSelectedTeam));
 
-        SendMessage(FalconDisplay.appWin, FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+        SendMessage(FalconDisplay.appWin, FM_LOAD_CAMPAIGN, 0,
+                    game_TacticalEngagement);
 
         /* victory_condition::enter_critical_section ();
 
@@ -862,10 +808,7 @@ void tactical_mission::load(void)
 
 void tactical_mission::preload(void)
 {
-    char
-    *ext,
-    *ptr,
-    *name;
+    char *ext, *ptr, *name;
 
     if (this)
     {
@@ -875,12 +818,12 @@ void tactical_mission::preload(void)
 
         while (*ptr)
         {
-            if (*ptr == '\\')
+            if (*ptr == '\\' or *ptr == '/')
             {
                 name = &ptr[1];
             }
 
-            ptr ++;
+            ptr++;
         }
 
         ptr = gUI_CampaignFile;
@@ -896,8 +839,8 @@ void tactical_mission::preload(void)
 
             *ptr = *name;
 
-            name ++;
-            ptr ++;
+            name++;
+            ptr++;
         }
 
         *ext = '\0';
@@ -941,7 +884,8 @@ void tactical_mission::new_setup(void)
 
     // FalconLocalSession->SetCountry (team);
 
-    SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+    SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0,
+                game_TacticalEngagement);
 
     //MonoPrint ("Tactical_Mission::New Setup\n");
 }
@@ -956,7 +900,8 @@ void tactical_mission::revert(void)
 
     // HACK - Robin (unnessary hack)
     //FalconLocalSession->SetCountry(gSelectedTeam);
-    SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0, game_TacticalEngagement);
+    SendMessage(gMainHandler->GetAppWnd(), FM_LOAD_CAMPAIGN, 0,
+                game_TacticalEngagement);
 }
 
 //////////////////////////////////////////////////////////////////////////////
@@ -1021,7 +966,7 @@ void tactical_mission::set_team_name(int team, char *name)
         team_name[team] = NULL;
     }
 
-    team_name[team] = new char [strlen(name) + 1];
+    team_name[team] = new char[strlen(name) + 1];
 
     strcpy(team_name[team], name);
 }
@@ -1050,39 +995,21 @@ void tactical_mission::set_team_flag(int team, int flag)
 
 void tactical_mission::setup_victory_condition(char *buffer)
 {
-    victory_type
-    type;
+    victory_type type;
 
     TREELIST
     *item;
 
-    int
-    team,
-    vu_id_1,
-    vu_id_2,
-    value,
-    tolerance,
-    points;
+    int team, vu_id_1, vu_id_2, value, tolerance, points;
 
     VU_ID
     id;
 
-    victory_condition
-    *vc;
+    victory_condition *vc;
 
     // team, type, vu_id, value, tolerance, points
-    sscanf
-    (
-        buffer,
-        "%d %d %d %d %d %d %d",
-        &team,
-        &type,
-        &vu_id_1,
-        &vu_id_2,
-        &value,
-        &tolerance,
-        &points
-    );
+    sscanf(buffer, "%d %d %d %d %d %d %d", &team, &type, &vu_id_1, &vu_id_2,
+           &value, &tolerance, &points);
 
     id.num_ = vu_id_1;
     id.creator_ = vu_id_2;
@@ -1107,7 +1034,7 @@ void tactical_mission::setup_victory_condition(char *buffer)
         if (item)
         {
             gVCTree->AddItem(gVCTree->GetRoot(), item);
-            ((C_Victory*) vc->control)->SetOwner(item);
+            ((C_Victory *)vc->control)->SetOwner(item);
             vc->control->SetReady(1);
             vc->control->SetClient(gVCTree->GetClient());
             vc->control->SetParent(gVCTree->Parent_);
@@ -1133,86 +1060,79 @@ void tactical_mission::setup_victory_condition(char *buffer)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static int test_filter(victory_condition *vc, victory_condition_filter filter, int team)
+static int test_filter(victory_condition *vc, victory_condition_filter filter,
+                       int team)
 {
     victory_condition::enter_critical_section();
 
     switch (filter)
     {
-        case vcf_all:
+    case vcf_all:
+    {
+        victory_condition::leave_critical_section();
+
+        return TRUE;
+    }
+
+    case vcf_team:
+    {
+        if (team == vc->get_team())
         {
             victory_condition::leave_critical_section();
 
             return TRUE;
         }
 
-        case vcf_team:
+        break;
+    }
+
+    case vcf_all_achieved:
+    {
+        if (vc->get_active())
         {
-            if (team == vc->get_team())
-            {
-                victory_condition::leave_critical_section();
+            victory_condition::leave_critical_section();
 
-                return TRUE;
-            }
-
-            break;
+            return TRUE;
         }
 
-        case vcf_all_achieved:
+        break;
+    }
+
+    case vcf_all_remaining:
+    {
+        if (not vc->get_active())
         {
-            if (vc->get_active())
-            {
-                victory_condition::leave_critical_section();
+            victory_condition::leave_critical_section();
 
-                return TRUE;
-            }
-
-            break;
+            return TRUE;
         }
 
-        case vcf_all_remaining:
+        break;
+    }
+
+    case vcf_team_achieved:
+    {
+        if ((team == vc->get_team()) and (vc->get_active()))
         {
-            if ( not vc->get_active())
-            {
-                victory_condition::leave_critical_section();
+            victory_condition::leave_critical_section();
 
-                return TRUE;
-            }
-
-            break;
+            return TRUE;
         }
 
-        case vcf_team_achieved:
+        break;
+    }
+
+    case vcf_team_remaining:
+    {
+        if ((team == vc->get_team()) and (not vc->get_active()))
         {
-            if
-            (
-                (team == vc->get_team()) and 
-                (vc->get_active())
-            )
-            {
-                victory_condition::leave_critical_section();
+            victory_condition::leave_critical_section();
 
-                return TRUE;
-            }
-
-            break;
+            return TRUE;
         }
 
-        case vcf_team_remaining:
-        {
-            if
-            (
-                (team == vc->get_team()) and 
-                ( not vc->get_active())
-            )
-            {
-                victory_condition::leave_critical_section();
-
-                return TRUE;
-            }
-
-            break;
-        }
+        break;
+    }
     }
 
     victory_condition::leave_critical_section();
@@ -1224,7 +1144,8 @@ static int test_filter(victory_condition *vc, victory_condition_filter filter, i
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-void tactical_mission::set_victory_condition_filter(victory_condition_filter new_filter)
+void tactical_mission::set_victory_condition_filter(
+    victory_condition_filter new_filter)
 {
     filter = new_filter;
 }
@@ -1292,7 +1213,8 @@ victory_condition *tactical_mission::get_next_victory_condition(void)
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-victory_condition *tactical_mission::get_first_unfiltered_victory_condition(void)
+victory_condition *
+tactical_mission::get_first_unfiltered_victory_condition(void)
 {
     victory_condition::enter_critical_section();
 
@@ -1343,20 +1265,13 @@ int tactical_mission::get_points_required(void)
 void tactical_mission::evaluate_victory_conditions(void)
 {
     UISendMsg *vcdone;
-    victory_condition
-    *vc;
+    victory_condition *vc;
 
-    int
-    count,
-    per,
-    old_active,
-    changed = 0;
+    int count, per, old_active, changed = 0;
 
-    Objective
-    objective;
+    Objective objective;
 
-    Unit
-    unit;
+    Unit unit;
 
     victory_condition::enter_critical_section();
 
@@ -1366,158 +1281,164 @@ void tactical_mission::evaluate_victory_conditions(void)
 
     while (vc)
     {
-        if ( not vc->active)
+        if (not vc->active)
         {
             old_active = vc->active;
 
             switch (vc->type)
             {
-                case vt_occupy:
+            case vt_occupy:
+            {
+                objective = (Objective)FindEntity(vc->id);
+
+                if (objective and objective->IsObjective())
                 {
-                    objective = (Objective) FindEntity(vc->id);
+                    if (vc->team == objective->GetOwner())
+                        vc->active = TRUE;
 
-                    if (objective and objective->IsObjective())
-                    {
-                        if (vc->team == objective->GetOwner())
-                            vc->active = TRUE;
-
-                        //else
-                        // vc->active = FALSE;
-                    }
-
-                    break;
+                    //else
+                    // vc->active = FALSE;
                 }
 
-                case vt_destroy:
+                break;
+            }
+
+            case vt_destroy:
+            {
+                objective = (Objective)FindEntity(vc->id);
+
+                if (objective and objective->IsObjective())
                 {
-                    objective = (Objective) FindEntity(vc->id);
+                    int i;
+                    int classID;
+                    uchar origtype;
+                    ObjClassDataType *oc;
 
-                    if (objective and objective->IsObjective())
+                    oc = objective->GetObjectiveClassData();
+
+                    if (oc)
                     {
-                        int i;
-                        int classID;
-                        uchar origtype;
-                        ObjClassDataType* oc;
+                        classID = objective->GetFeatureID(vc->feature_id);
+                        origtype = Falcon4ClassTable[classID]
+                                       .vuClassData.classInfo_[VU_TYPE];
 
-                        oc = objective->GetObjectiveClassData();
-
-                        if (oc)
+                        for (i = 0; i < oc->Features; i++)
                         {
-                            classID = objective->GetFeatureID(vc->feature_id);
-                            origtype = Falcon4ClassTable[classID].vuClassData.classInfo_[VU_TYPE];
+                            classID = objective->GetFeatureID(i);
 
-                            for (i = 0; i < oc->Features; i++)
-                            {
-                                classID = objective->GetFeatureID(i);
-
-                                if (Falcon4ClassTable[classID].vuClassData.classInfo_[VU_TYPE] == origtype)
-                                    if (objective->GetFeatureStatus(i) == 3)
-                                    {
-                                        vc->active = TRUE;
-                                        break;
-                                    }
-                            }
+                            if (Falcon4ClassTable[classID]
+                                    .vuClassData.classInfo_[VU_TYPE] ==
+                                origtype)
+                                if (objective->GetFeatureStatus(i) == 3)
+                                {
+                                    vc->active = TRUE;
+                                    break;
+                                }
                         }
                     }
-
-                    break;
                 }
 
-                case vt_degrade:
+                break;
+            }
+
+            case vt_degrade:
+            {
+                objective = (Objective)FindEntity(vc->id);
+
+                if (objective and objective->IsObjective())
                 {
-                    objective = (Objective) FindEntity(vc->id);
+                    //MonoPrint ("%08x = %d ", objective, objective->GetObjectiveStatus ());
 
-                    if (objective and objective->IsObjective())
+                    if (objective->GetObjectiveStatus() <=
+                        100 - vc->tolerance * 10)
                     {
-                        //MonoPrint ("%08x = %d ", objective, objective->GetObjectiveStatus ());
-
-                        if (objective->GetObjectiveStatus() <= 100 - vc->tolerance * 10)
-                        {
-                            //MonoPrint ("TRUE\n");
-                            vc->active = TRUE;
-                        }
-
-                        //else
-                        //{
-                        // //MonoPrint ("FALSE\n");
-                        // vc->active = FALSE;
-                        //}
-                    }
-
-                    break;
-                }
-
-                case vt_attrit:
-                {
-                    unit = (Unit) FindEntity(vc->id);
-
-                    if (unit)
-                    {
-                        if ( not unit->IsUnit())
-                            break;
-
-                        per = 10 * unit->GetTotalVehicles() / unit->GetFullstrengthVehicles();
-
-                        // MonoPrint ("%08x = %d:%d %d%% ", unit, unit->GetFullstrengthVehicles (), unit->GetTotalVehicles (), per);
-
-                        if (per <= (10 - vc->tolerance))
-                        {
-                            //MonoPrint ("TRUE\n");
-                            vc->active = TRUE;
-                        }
-                        else
-                        {
-                            //MonoPrint ("FALSE\n");
-                            vc->active = FALSE;
-                        }
-                    }
-                    else
-                    {
-                        // MonoPrint ("Unit Destroyed %08x = %d\n", unit);
+                        //MonoPrint ("TRUE\n");
                         vc->active = TRUE;
                     }
 
-                    break;
+                    //else
+                    //{
+                    // //MonoPrint ("FALSE\n");
+                    // vc->active = FALSE;
+                    //}
                 }
 
-                case vt_intercept:
+                break;
+            }
+
+            case vt_attrit:
+            {
+                unit = (Unit)FindEntity(vc->id);
+
+                if (unit)
                 {
-                    unit = (Unit) FindEntity(vc->id);
+                    if (not unit->IsUnit())
+                        break;
 
-                    if (unit)
+                    per = 10 * unit->GetTotalVehicles() /
+                          unit->GetFullstrengthVehicles();
+
+                    // MonoPrint ("%08x = %d:%d %d%% ", unit, unit->GetFullstrengthVehicles (), unit->GetTotalVehicles (), per);
+
+                    if (per <= (10 - vc->tolerance))
                     {
-                        if ( not unit->IsUnit())
-                            break;
-
-                        if ( not vc->max_vehicles)
-                        {
-                            vc->max_vehicles = unit->GetTotalVehicles();
-                        }
-                    }
-
-                    if ((unit) and (vc->max_vehicles))
-                    {
-                        // MonoPrint ("%08x = %d:%d ", unit, vc->number, unit->GetTotalVehicles ());
-
-                        if (vc->max_vehicles - unit->GetTotalVehicles() >= vc->tolerance)
-                        {
-                            //MonoPrint ("TRUE\n");
-                            vc->active = TRUE;
-                        }
-                        else
-                        {
-                            // MonoPrint ("FALSE\n");
-                            vc->active = FALSE;
-                        }
+                        //MonoPrint ("TRUE\n");
+                        vc->active = TRUE;
                     }
                     else
                     {
-                        // MonoPrint ("Unit Destroyed %08x = %d\n", unit);
+                        //MonoPrint ("FALSE\n");
+                        vc->active = FALSE;
+                    }
+                }
+                else
+                {
+                    // MonoPrint ("Unit Destroyed %08x = %d\n", unit);
+                    vc->active = TRUE;
+                }
+
+                break;
+            }
+
+            case vt_intercept:
+            {
+                unit = (Unit)FindEntity(vc->id);
+
+                if (unit)
+                {
+                    if (not unit->IsUnit())
+                        break;
+
+                    if (not vc->max_vehicles)
+                    {
+                        vc->max_vehicles = unit->GetTotalVehicles();
+                    }
+                }
+
+                if ((unit) and (vc->max_vehicles))
+                {
+                    // MonoPrint ("%08x = %d:%d ", unit, vc->number, unit->GetTotalVehicles ());
+
+                    if (vc->max_vehicles - unit->GetTotalVehicles() >=
+                        vc->tolerance)
+                    {
+                        //MonoPrint ("TRUE\n");
                         vc->active = TRUE;
                     }
-
-                    break;
+                    else
+                    {
+                        // MonoPrint ("FALSE\n");
+                        vc->active = FALSE;
+                    }
                 }
+                else
+                {
+                    // MonoPrint ("Unit Destroyed %08x = %d\n", unit);
+                    vc->active = TRUE;
+                }
+
+                break;
+            }
 
                 //default:
                 //{
@@ -1545,7 +1466,7 @@ void tactical_mission::evaluate_victory_conditions(void)
             }
         }
 
-        count ++;
+        count++;
         vc = vc->succ;
     }
 
@@ -1768,14 +1689,9 @@ void tactical_mission::calculate_victory_points(void)
 {
     victory_condition::enter_critical_section();
 
-    victory_condition
-    *vc;
+    victory_condition *vc;
 
-    int
-    pts[8] =
-    {
-        0
-    };
+    int pts[8] = {0};
 
     vc = conditions;
 
@@ -1800,14 +1716,12 @@ void tactical_mission::calculate_victory_points(void)
 
 int tactical_mission::determine_victor(void)
 {
-    int
-    i;
+    int i;
 
-    UISendMsg
-    *vcdone;
+    UISendMsg *vcdone;
 
     if (get_game_over())
-        return(TRUE);
+        return (TRUE);
 
     if (TheCampaign.GetCampaignTime() >= TheCampaign.GetTETimeLimitTime())
     {
@@ -1822,11 +1736,11 @@ int tactical_mission::determine_victor(void)
             FalconSendMessage(vcdone, TRUE);
         }
 
-        return(TRUE);
+        return (TRUE);
     }
 
     if (points_required <= 0)
-        return(FALSE);
+        return (FALSE);
 
     for (i = 0; i < 8; i++)
     {

@@ -21,22 +21,45 @@
 #define SKY_ROOF_RANGE 200000.f
 #define SKY_MAX_HEIGHT 70000.f
 
-#define NOP ((void)0)         // Artscout - 2026 (x64): was _asm{nop}; no-op, builds on x86+x64
-#define INT3 __debugbreak()   // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
+#define NOP                                                                    \
+    ((void)0) // Artscout - 2026 (x64): was _asm{nop}; no-op, builds on x86+x64
+#define INT3                                                                   \
+    __debugbreak() // Artscout - 2026 (x64): int 3 intrinsic, builds on x86+x64
 
-#define SAFE_DELETE(p) { if(p) { delete (p); (p) = NULL; } }
-#define SAFE_DELETE_ARRAY(p) { if(p) { delete[] (p); (p) = NULL; } }
-#define SAFE_RELEASE(p) { if(p) { (p)->Release(); (p) = NULL; } }
+#define SAFE_DELETE(p)                                                         \
+    {                                                                          \
+        if (p)                                                                 \
+        {                                                                      \
+            delete (p);                                                        \
+            (p) = NULL;                                                        \
+        }                                                                      \
+    }
+#define SAFE_DELETE_ARRAY(p)                                                   \
+    {                                                                          \
+        if (p)                                                                 \
+        {                                                                      \
+            delete[] (p);                                                      \
+            (p) = NULL;                                                        \
+        }                                                                      \
+    }
+#define SAFE_RELEASE(p)                                                        \
+    {                                                                          \
+        if (p)                                                                 \
+        {                                                                      \
+            (p)->Release();                                                    \
+            (p) = NULL;                                                        \
+        }                                                                      \
+    }
 
 #define ARGB_TEXEL_SIZE 4
 #define ARGB_TEXEL_BITS 32
 
-#define TEX_UV_LSB 1.f/1024.f
+#define TEX_UV_LSB 1.f / 1024.f
 #define TEX_UV_MIN TEX_UV_LSB
-#define TEX_UV_MAX 1.f-TEX_UV_LSB
+#define TEX_UV_MAX 1.f - TEX_UV_LSB
 
-#define ONEOVER4PI 1.f/(4.f*PI)
-#define THREEOVER16PI 3.f/(16.f*PI)
+#define ONEOVER4PI 1.f / (4.f * PI)
+#define THREEOVER16PI 3.f / (16.f * PI)
 #define R360 .0027777777777778f
 #define HTMS 3600000
 #define MSTH 2.7777777777777778e-7
@@ -58,9 +81,9 @@
 #define DRAWABLECELL 1
 #define NUMCELLS 9
 #define CELLSIZE 57344
-#define HALFCELLSIZE CELLSIZE/2
-#define HALFCELLS (NUMCELLS-1)/2
-#define VPSHIFT HALFCELLS*CELLSIZE
+#define HALFCELLSIZE CELLSIZE / 2
+#define HALFCELLS (NUMCELLS - 1) / 2
+#define VPSHIFT HALFCELLS *CELLSIZE
 #define PUFFRADIUS 1500.f
 #define CUMULUSRADIUS 10000.f
 #define STRATUSRADIUS 80000.f
@@ -76,14 +99,27 @@
 
 
 #include "fmath.h"
-#include "RenderOW.h"
-#include "real3DCloud.h"
-#include "real2DCloud.h"
+#include "renderow.h"
+#include "real3dcloud.h"
+#include "real2dcloud.h"
 
 typedef signed long SLONG;
 
-enum { SUNNY = 1, FAIR, POOR, INCLEMENT, NUMCONDITIONS };
-enum { OBSERVER_LOW = 0, OBSERVER_MIDDLE, OBSERVER_HI, MAX_OBSERVER_POSITIONS };
+enum
+{
+    SUNNY = 1,
+    FAIR,
+    POOR,
+    INCLEMENT,
+    NUMCONDITIONS
+};
+enum
+{
+    OBSERVER_LOW = 0,
+    OBSERVER_MIDDLE,
+    OBSERVER_HI,
+    MAX_OBSERVER_POSITIONS
+};
 
 struct WeatherCell
 {
@@ -101,7 +137,8 @@ public:
     virtual ~RealWeather();
 
 public:
-    void Setup(ObjectDisplayList* cumulusList = NULL, ObjectDisplayList* stratusList = NULL);
+    void Setup(ObjectDisplayList *cumulusList = NULL,
+               ObjectDisplayList *stratusList = NULL);
     void SetRenderer(class RenderOTW *Renderer);
     void RefreshWeather(class RenderOTW *Renderer);
     void UpdateLighting();
@@ -132,10 +169,13 @@ public:
     Texture CirrusCumTextures;
     Texture CumulusTextures;
     WeatherCell weatherCellArray[MAX_NUM_CELLS][MAX_NUM_CELLS];
-    int numCells, halfCells, cellSize, shadowCell, drawableCell, halfSize, vpShift, weatherCondition, weatherShiftX, weatherShiftY;
-    float viewerX, viewerY, viewerZ, cumulusZ, stratusZ, stratus2Z, windSpeed, windHeading, puffRadius, cloudRadius, stratusRadius, stratusDepth, ShadingFactor;
+    int numCells, halfCells, cellSize, shadowCell, drawableCell, halfSize,
+        vpShift, weatherCondition, weatherShiftX, weatherShiftY;
+    float viewerX, viewerY, viewerZ, cumulusZ, stratusZ, stratus2Z, windSpeed,
+        windHeading, puffRadius, cloudRadius, stratusRadius, stratusDepth,
+        ShadingFactor;
     float HiOvercast, LoOvercast, MidOvercast;
-    int numMETARS;//Cobra
+    int numMETARS; //Cobra
     bool drRain;
     Tpoint WindVector;
     Tpoint GetWindVector(void)
@@ -184,7 +224,8 @@ protected:
     Tpoint lightningPos, lightVector;
     DWORD oldTimeMS, startMS, intervalMS;
     Texture rainTexture, lightningTexture;
-    BOOL bSetup, greenMode, belowLayer, insideLayer, updateLighting, drawLightning, didOnce;
+    BOOL bSetup, greenMode, belowLayer, insideLayer, updateLighting,
+        drawLightning, didOnce;
     float lZM, lRad, lDist, rainX, rainY, rainZ, sunMag, sunAngle, sunYaw;
     DWORD CloudLoColor, CloudHiColor;
     DWORD Stratus1Color, Stratus2Color;
@@ -213,17 +254,17 @@ protected:
     bool ReadWeather(void);
     typedef struct METAR
     {
-        char station [4];
+        char station[4];
         int time;
         int windDirection;
         int windSpeed;
         int visibility;
-        int cldType;//CB TCU
+        int cldType; //CB TCU
         int skyCoverage[5];
         int skyCoverageAlt[5];
         int weatherType;
         int altimeter;
-    } METAR;//End Cobra
+    } METAR; //End Cobra
 public:
     METAR *metar;
 };
@@ -700,48 +741,21 @@ inline void RotatePoint(Tpoint *t, float p, float r, float y)
     t->z = s_z;
 }
 
-static float cloudPntList[NUM_3DCLOUD_POINTS][3] =
-{
-    -6040, -540, -19030,
-    -28430, -1790, 28260,
-    36930, 3890, 50410,
-    2870, -1700, 46810,
-    -58350, -1700, -13060,
-    31070, 3200, -43320,
-    -97160, -1700, 3950,
-    -75200, -1500, 76520,
-    55790, -5180, -83100,
-    -51000, -320, -66850,
-    62260, -320, 61570,
-    -61710, -3340, 32190,
-    -61850, -51250, 54330,
-    -6040, -51540, -19030,
-    -21460, -51970, 18240,
-    43400, -52210, 24120,
-    -51700, -52160, 19010,
-    -8570, -51330, -52390,
-    45500, -53400, -15510,
-    -61850, -51250, 54330,
-    54580, -52700, 79020,
-    85960, -52310, 64840,
-    -100490, -52500, 88140,
-    -82780, -51690, -96710,
-    -9370, -51540, 410,
-    -21460, -51850, 49070,
-    4040, -52810, 69180,
-    -26080, -52160, 19490,
-    2810, -51330, -34840,
-    -61850, -51670, 90860,
-    54580, -52700, 79020,
-    85960, -52310, 64840,
-    -100490, -52500, 88140,
-    98460, -52500, -45730,
-    16100, -51320, -51620,
-    58220, -52740, -57520,
-    -9370, -540, 410,
-    -1840, -20870, 35430,
-    -41740, 18720, 77740,
-    9060, -9650, -74790,
+static float cloudPntList[NUM_3DCLOUD_POINTS][3] = {
+    -6040,  -540,   -19030, -28430,  -1790,  28260,  36930,   3890,   50410,
+    2870,   -1700,  46810,  -58350,  -1700,  -13060, 31070,   3200,   -43320,
+    -97160, -1700,  3950,   -75200,  -1500,  76520,  55790,   -5180,  -83100,
+    -51000, -320,   -66850, 62260,   -320,   61570,  -61710,  -3340,  32190,
+    -61850, -51250, 54330,  -6040,   -51540, -19030, -21460,  -51970, 18240,
+    43400,  -52210, 24120,  -51700,  -52160, 19010,  -8570,   -51330, -52390,
+    45500,  -53400, -15510, -61850,  -51250, 54330,  54580,   -52700, 79020,
+    85960,  -52310, 64840,  -100490, -52500, 88140,  -82780,  -51690, -96710,
+    -9370,  -51540, 410,    -21460,  -51850, 49070,  4040,    -52810, 69180,
+    -26080, -52160, 19490,  2810,    -51330, -34840, -61850,  -51670, 90860,
+    54580,  -52700, 79020,  85960,   -52310, 64840,  -100490, -52500, 88140,
+    98460,  -52500, -45730, 16100,   -51320, -51620, 58220,   -52740, -57520,
+    -9370,  -540,   410,    -1840,   -20870, 35430,  -41740,  18720,  77740,
+    9060,   -9650,  -74790,
 };
 
 // RV - I-Hawk - the older values before the clouds fix...
@@ -790,41 +804,10 @@ static float cloudPntList[NUM_3DCLOUD_POINTS][3] =
 //  100490, -52500, 88140,
 //};
 
-static float lightningPosList[NUM_LIGHTNING_POINTS][2] =
-{
-    11, 0,
-    7, 5,
-    9, 8,
-    8, 14,
-    16, 20,
-    10, 24,
-    11, 27,
-    6, 30,
-    7, 33,
-    1, 38,
-    5, 42,
-    5, 45,
-    12, 48,
-    20, 52,
-    20, 58,
-    23, 61,
-    22, 63,
-    22, 66,
-    25, 68,
-    20, 70,
-    24, 75,
-    24, 77,
-    31, 80,
-    31, 83,
-    33, 88,
-    31, 92,
-    47, 103,
-    46, 105,
-    47, 107,
-    45, 112,
-    48, 114,
-    46, 117,
-    43, 128
-};
+static float lightningPosList[NUM_LIGHTNING_POINTS][2] = {
+    11, 0,  7,   5,  9,   8,  8,   14, 16,  20, 10,  24, 11,  27, 6,  30, 7,
+    33, 1,  38,  5,  42,  5,  45,  12, 48,  20, 52,  20, 58,  23, 61, 22, 63,
+    22, 66, 25,  68, 20,  70, 24,  75, 24,  77, 31,  80, 31,  83, 33, 88, 31,
+    92, 47, 103, 46, 105, 47, 107, 45, 112, 48, 114, 46, 117, 43, 128};
 
 #endif // _REALWEATHER_H_

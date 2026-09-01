@@ -8,8 +8,7 @@
 #ifndef _RENDERWIRE_H_
 #define _RENDERWIRE_H_
 
-#include "RenderOW.h"
-
+#include "renderow.h"
 
 
 class RenderWire : public RenderOTW
@@ -36,7 +35,8 @@ protected:
     virtual void SetTimeOfDayColor(void) {};
     virtual void AdjustSkyColor(void) {};
 
-    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post, float distance);
+    virtual void ComputeVertexColor(TerrainVertex *vert, Tpost *post,
+                                    float distance);
 };
 
 

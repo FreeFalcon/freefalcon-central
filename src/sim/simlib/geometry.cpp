@@ -30,7 +30,8 @@ void CalcTransformMatrix(SimBaseClass* theObject);
 //
 // -----------------------------------------------------
 
-void CalcRelAzEl(SimBaseClass* ownObject, float x, float y, float z, float* az, float* el)
+void CalcRelAzEl(SimBaseClass* ownObject, float x, float y, float z, float* az,
+                 float* el)
 {
     float xft;
     float yft;
@@ -43,14 +44,16 @@ void CalcRelAzEl(SimBaseClass* ownObject, float x, float y, float z, float* az, 
     yft = y - ownObject->YPos();
     zft = z - ownObject->ZPos();
 
-    rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft + ownObject->dmx[0][2] * zft;
-    ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft + ownObject->dmx[1][2] * zft;
-    rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft + ownObject->dmx[2][2] * zft;
+    rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft +
+         ownObject->dmx[0][2] * zft;
+    ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft +
+         ownObject->dmx[1][2] * zft;
+    rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft +
+         ownObject->dmx[2][2] * zft;
 
     *az = (float)atan2(ry, rx);
     *el = (float)atan2(-rz, sqrt(rx * rx + ry * ry));
 }
-
 
 
 // -----------------------------------------------------
@@ -67,7 +70,8 @@ void CalcRelAzEl(SimBaseClass* ownObject, float x, float y, float z, float* az, 
 //
 // -----------------------------------------------------
 
-void CalcRelValues(SimBaseClass* ownObject, FalconEntity* target, float* az, float* el, float* ata, float* ataFrom, float* droll)
+void CalcRelValues(SimBaseClass* ownObject, FalconEntity* target, float* az,
+                   float* el, float* ata, float* ataFrom, float* droll)
 {
     float xft;
     float yft;
@@ -87,9 +91,12 @@ void CalcRelValues(SimBaseClass* ownObject, FalconEntity* target, float* az, flo
     yft = target->YPos() - ownObject->YPos();
     zft = target->ZPos() - ownObject->ZPos();
 
-    rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft + ownObject->dmx[0][2] * zft;
-    ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft + ownObject->dmx[1][2] * zft;
-    rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft + ownObject->dmx[2][2] * zft;
+    rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft +
+         ownObject->dmx[0][2] * zft;
+    ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft +
+         ownObject->dmx[1][2] * zft;
+    rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft +
+         ownObject->dmx[2][2] * zft;
 
     range = (float)(xft * xft + yft * yft + zft * zft);
 
@@ -134,7 +141,7 @@ void CalcRelAzElRangeAta(SimBaseClass* ownObject, SimObjectType* targetPtr)
 
     theObject = targetPtr->BaseData();
 
-    if ( not theObject)
+    if (not theObject)
         return;
 
     xft = theObject->XPos() - ownObject->XPos();
@@ -152,12 +159,14 @@ void CalcRelAzElRangeAta(SimBaseClass* ownObject, SimObjectType* targetPtr)
     range = (float)(xft * xft + yft * yft + zft * zft);
 
     targetPtr->localData->range = (float)sqrt(range);
-    targetPtr->localData->ataFrom = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
+    targetPtr->localData->ataFrom =
+        (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
     targetPtr->localData->az = (float)atan2(yft, xft);
     targetPtr->localData->el = (float)atan2(-zft, sqrt(range - zft * zft));
 }
 
-void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMatrix vmat, float elapsedTimeInverse)
+void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList,
+                 TransformMatrix vmat, float elapsedTimeInverse)
 {
     float ata, ataFrom;
     float azFrom, elFrom;
@@ -175,37 +184,37 @@ void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMa
     /*---------------------------------------*/
     if (vmat)
     {
-        vmat[0][0] = ownObject->platformAngles.cossig *
-                     ownObject->platformAngles.cosgam;
-        vmat[0][1] = ownObject->platformAngles.sinsig *
-                     ownObject->platformAngles.cosgam;
+        vmat[0][0] =
+            ownObject->platformAngles.cossig * ownObject->platformAngles.cosgam;
+        vmat[0][1] =
+            ownObject->platformAngles.sinsig * ownObject->platformAngles.cosgam;
         vmat[0][2] = -ownObject->platformAngles.singam;
 
         vmat[1][0] = -ownObject->platformAngles.sinsig *
-                     ownObject->platformAngles.cosmu +
+                         ownObject->platformAngles.cosmu +
                      ownObject->platformAngles.cossig *
-                     ownObject->platformAngles.singam *
-                     ownObject->platformAngles.sinmu;
-        vmat[1][1] = ownObject->platformAngles.cossig *
-                     ownObject->platformAngles.cosmu +
-                     ownObject->platformAngles.sinsig *
-                     ownObject->platformAngles.singam *
-                     ownObject->platformAngles.sinmu;
-        vmat[1][2] = ownObject->platformAngles.cosgam *
-                     ownObject->platformAngles.sinmu;
+                         ownObject->platformAngles.singam *
+                         ownObject->platformAngles.sinmu;
+        vmat[1][1] =
+            ownObject->platformAngles.cossig * ownObject->platformAngles.cosmu +
+            ownObject->platformAngles.sinsig *
+                ownObject->platformAngles.singam *
+                ownObject->platformAngles.sinmu;
+        vmat[1][2] =
+            ownObject->platformAngles.cosgam * ownObject->platformAngles.sinmu;
 
-        vmat[2][0] = ownObject->platformAngles.sinsig *
-                     ownObject->platformAngles.sinmu +
-                     ownObject->platformAngles.cossig *
-                     ownObject->platformAngles.singam *
-                     ownObject->platformAngles.cosmu;
+        vmat[2][0] =
+            ownObject->platformAngles.sinsig * ownObject->platformAngles.sinmu +
+            ownObject->platformAngles.cossig *
+                ownObject->platformAngles.singam *
+                ownObject->platformAngles.cosmu;
         vmat[2][1] = -ownObject->platformAngles.cossig *
-                     ownObject->platformAngles.sinmu +
+                         ownObject->platformAngles.sinmu +
                      ownObject->platformAngles.sinsig *
-                     ownObject->platformAngles.singam *
-                     ownObject->platformAngles.cosmu;
-        vmat[2][2] = ownObject->platformAngles.cosgam *
-                     ownObject->platformAngles.cosmu;
+                         ownObject->platformAngles.singam *
+                         ownObject->platformAngles.cosmu;
+        vmat[2][2] =
+            ownObject->platformAngles.cosgam * ownObject->platformAngles.cosmu;
     }
 
     /*------------------------------*/
@@ -239,17 +248,23 @@ void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMa
         yft = theObject->YPos() - ownObject->YPos();
         zft = theObject->ZPos() - ownObject->ZPos();
 
-        rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft + ownObject->dmx[0][2] * zft;
-        ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft + ownObject->dmx[1][2] * zft;
-        rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft + ownObject->dmx[2][2] * zft;
+        rx = ownObject->dmx[0][0] * xft + ownObject->dmx[0][1] * yft +
+             ownObject->dmx[0][2] * zft;
+        ry = ownObject->dmx[1][0] * xft + ownObject->dmx[1][1] * yft +
+             ownObject->dmx[1][2] * zft;
+        rz = ownObject->dmx[2][0] * xft + ownObject->dmx[2][1] * yft +
+             ownObject->dmx[2][2] * zft;
 
         if (theObject->IsSim())
         {
-            rx_t = -(((SimBaseClass*)theObject)->dmx[0][0] * xft + ((SimBaseClass*)theObject)->dmx[0][1] * yft +
+            rx_t = -(((SimBaseClass*)theObject)->dmx[0][0] * xft +
+                     ((SimBaseClass*)theObject)->dmx[0][1] * yft +
                      ((SimBaseClass*)theObject)->dmx[0][2] * zft);
-            ry_t = -(((SimBaseClass*)theObject)->dmx[1][0] * xft + ((SimBaseClass*)theObject)->dmx[1][1] * yft +
+            ry_t = -(((SimBaseClass*)theObject)->dmx[1][0] * xft +
+                     ((SimBaseClass*)theObject)->dmx[1][1] * yft +
                      ((SimBaseClass*)theObject)->dmx[1][2] * zft);
-            rz_t = -(((SimBaseClass*)theObject)->dmx[2][0] * xft + ((SimBaseClass*)theObject)->dmx[2][1] * yft +
+            rz_t = -(((SimBaseClass*)theObject)->dmx[2][0] * xft +
+                     ((SimBaseClass*)theObject)->dmx[2][1] * yft +
                      ((SimBaseClass*)theObject)->dmx[2][2] * zft);
         }
         else
@@ -265,23 +280,24 @@ void CalcRelGeom(SimBaseClass* ownObject, SimObjectType* targetList, TransformMa
 
         range = (float)(xft * xft + yft * yft + zft * zft);
         range = max(range, 1.0F);
-        rz    = -rz;
+        rz = -rz;
         rz_t = -rz_t;
 
-        ata            = (float)atan2(sqrt(range - rx * rx), rx);
-        ataFrom        = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
+        ata = (float)atan2(sqrt(range - rx * rx), rx);
+        ataFrom = (float)atan2(sqrt(range - rx_t * rx_t), rx_t);
 
-        objData->az    = (float)atan2(ry, rx);
+        objData->az = (float)atan2(ry, rx);
         objData->droll = (float)atan2(ry, rz);
-        objData->el    = (float)atan2(rz, sqrt(range - rz * rz));
-        azFrom         = (float)atan2(ry_t, rx_t);
-        elFrom         = (float)atan2(rz_t, sqrt(range - rz_t * rz_t));
+        objData->el = (float)atan2(rz, sqrt(range - rz * rz));
+        azFrom = (float)atan2(ry_t, rx_t);
+        elFrom = (float)atan2(rz_t, sqrt(range - rz_t * rz_t));
 
         range = (float)sqrt(range);
-        objData->azFromdot  = (azFrom - objData->azFrom) * inverseTimeDelta;
-        objData->elFromdot  = (elFrom - objData->elFrom) * inverseTimeDelta;
-        objData->atadot      = (ata - objData->ata) * inverseTimeDelta;
-        objData->ataFromdot = (ataFrom - objData->ataFromdot) * inverseTimeDelta;
+        objData->azFromdot = (azFrom - objData->azFrom) * inverseTimeDelta;
+        objData->elFromdot = (elFrom - objData->elFrom) * inverseTimeDelta;
+        objData->atadot = (ata - objData->ata) * inverseTimeDelta;
+        objData->ataFromdot =
+            (ataFrom - objData->ataFromdot) * inverseTimeDelta;
         objData->ata = ata;
         objData->range = range;
         objData->azFrom = azFrom;
@@ -309,12 +325,12 @@ float TargetAz(FalconEntity* af1, FalconEntity* af2)
     xft = af2->XPos() - af1->XPos();
     yft = af2->YPos() - af1->YPos();
 
-    rx =  psiTrig.cos * xft + psiTrig.sin * yft;
+    rx = psiTrig.cos * xft + psiTrig.sin * yft;
     ry = -psiTrig.sin * xft + psiTrig.cos * yft;
 
     az = (float)atan2(ry, rx);
 
-    return(az);
+    return (az);
 }
 
 float TargetAz(FalconEntity* af1, SimObjectType* af2)
@@ -327,12 +343,12 @@ float TargetAz(FalconEntity* af1, SimObjectType* af2)
     xft = af2->BaseData()->XPos() - af1->XPos();
     yft = af2->BaseData()->YPos() - af1->YPos();
 
-    rx =  psiTrig.cos * xft + psiTrig.sin * yft;
+    rx = psiTrig.cos * xft + psiTrig.sin * yft;
     ry = -psiTrig.sin * xft + psiTrig.cos * yft;
 
     az = (float)atan2(ry, rx);
 
-    return(az);
+    return (az);
 }
 
 float TargetAz(FalconEntity* af1, float x, float y)
@@ -345,12 +361,12 @@ float TargetAz(FalconEntity* af1, float x, float y)
     xft = x - af1->XPos();
     yft = y - af1->YPos();
 
-    rx =  psiTrig.cos * xft + psiTrig.sin * yft;
+    rx = psiTrig.cos * xft + psiTrig.sin * yft;
     ry = -psiTrig.sin * xft + psiTrig.cos * yft;
 
     az = (float)atan2(ry, rx);
 
-    return(az);
+    return (az);
 }
 
 // Elevation from af1 to af2, assuming no roll
@@ -365,7 +381,7 @@ float TargetEl(FalconEntity* af1, FalconEntity* af2)
     /* sqrt returns positive, so this is cool */
     el = (float)atan2(-rz, sqrt(rx * rx + ry * ry));
 
-    return(el);
+    return (el);
 }
 
 float TargetEl(FalconEntity* af1, SimObjectType* af2)
@@ -379,7 +395,7 @@ float TargetEl(FalconEntity* af1, SimObjectType* af2)
     /* sqrt returns positive, so this is cool */
     el = (float)atan2(-rz, sqrt(rx * rx + ry * ry));
 
-    return(el);
+    return (el);
 }
 
 float TargetEl(FalconEntity* af1, float x, float y, float z)
@@ -393,10 +409,11 @@ float TargetEl(FalconEntity* af1, float x, float y, float z)
     /* sqrt returns positive, so this is cool */
     el = (float)atan2(-rz, sqrt(rx * rx + ry * ry));
 
-    return(el);
+    return (el);
 }
 
-void TargetAzEl(FalconEntity* af1, float x, float y, float z, float &az, float &el)
+void TargetAzEl(FalconEntity* af1, float x, float y, float z, float& az,
+                float& el)
 {
     mlTrig psiTrig;
     float rx, ry, rz;
@@ -412,16 +429,15 @@ void TargetAzEl(FalconEntity* af1, float x, float y, float z, float &az, float &
     el = (float)atan2(-rz, sqrt(rx * rx + ry * ry));
     az = (float)atan2(ry, rx);
 
-    rx2 =  psiTrig.cos * rx + psiTrig.sin * ry;
+    rx2 = psiTrig.cos * rx + psiTrig.sin * ry;
     ry2 = -psiTrig.sin * rx + psiTrig.cos * ry;
 
     az = (float)atan2(ry2, rx2);
 }
 
 
-
-void GetXYZ(SimBaseClass *platform,
-            float az, float el, float range, float *x, float *y, float *z)
+void GetXYZ(SimBaseClass* platform, float az, float el, float range, float* x,
+            float* y, float* z)
 {
     float rx, ry, rz;
     float xft, yft, zft;
@@ -447,19 +463,23 @@ void GetXYZ(SimBaseClass *platform,
     /* The transformation matrix is the transpose */
     /* of the AC/ Inertial matrix                 */
     /*--------------------------------------------*/
-    xft = platform->dmx[0][0] * rx + platform->dmx[1][0] * ry + platform->dmx[2][0] * rz;
-    yft = platform->dmx[0][1] * rx + platform->dmx[1][1] * ry + platform->dmx[2][1] * rz;
-    zft = platform->dmx[0][2] * rx + platform->dmx[1][2] * ry + platform->dmx[2][2] * rz;
+    xft = platform->dmx[0][0] * rx + platform->dmx[1][0] * ry +
+          platform->dmx[2][0] * rz;
+    yft = platform->dmx[0][1] * rx + platform->dmx[1][1] * ry +
+          platform->dmx[2][1] * rz;
+    zft = platform->dmx[0][2] * rx + platform->dmx[1][2] * ry +
+          platform->dmx[2][2] * rz;
 
     *x = xft + platform->XPos();
     *y = yft + platform->YPos();
     *z = zft + platform->ZPos();
 }
 
-int FindCollisionPoint(SimBaseClass* obj, SimBaseClass* ownShip, vector* collPoint, float speedBoost)
+int FindCollisionPoint(SimBaseClass* obj, SimBaseClass* ownShip,
+                       vector* collPoint, float speedBoost)
 {
     int retval;
-    vector q;  /* really a point */
+    vector q; /* really a point */
     float a;
     float b;
     float c;
@@ -499,7 +519,8 @@ int FindCollisionPoint(SimBaseClass* obj, SimBaseClass* ownShip, vector* collPoi
 
     a = obj->XDelta() * obj->XDelta() + obj->YDelta() * obj->YDelta() +
         obj->ZDelta() * obj->ZDelta() - ownSpeed;
-    b = (obj->XDelta() * q.x + obj->YDelta() * q.y + obj->ZDelta() * q.z) * 2.0F;
+    b = (obj->XDelta() * q.x + obj->YDelta() * q.y + obj->ZDelta() * q.z) *
+        2.0F;
     c = q.x * q.x + q.y * q.y + q.z * q.z;
 
     underRad = b * b - 4.0F * a * c;
@@ -551,8 +572,8 @@ float FindMinDistance(vector* a, vector* aDot, vector* b, vector* bDot)
 {
     float rangeSquared, tmp, distance;
     int i;
-#define FRAMES_PER_TEST   16
-#define FRACTION_PER_TEST  (float)(1.0 / FRAMES_PER_TEST)
+#define FRAMES_PER_TEST 16
+#define FRACTION_PER_TEST (float)(1.0 / FRAMES_PER_TEST)
 
     rangeSquared = (a->x - b->x) * (a->x - b->x) +
                    (a->y - b->y) * (a->y - b->y) +
@@ -575,8 +596,7 @@ float FindMinDistance(vector* a, vector* aDot, vector* b, vector* bDot)
         b->y -= bDot->y;
         b->z -= bDot->z;
 
-        tmp = (a->x - b->x) * (a->x - b->x) +
-              (a->y - b->y) * (a->y - b->y) +
+        tmp = (a->x - b->x) * (a->x - b->x) + (a->y - b->y) * (a->y - b->y) +
               (a->z - b->z) * (a->z - b->z);
 
         if (tmp > rangeSquared)
@@ -590,7 +610,7 @@ float FindMinDistance(vector* a, vector* aDot, vector* b, vector* bDot)
     return (distance);
 }
 
-void Trigenometry(SimMoverClass *platform)
+void Trigenometry(SimMoverClass* platform)
 {
     float t1, t2;
     float alpharad, betarad;
@@ -598,7 +618,7 @@ void Trigenometry(SimMoverClass *platform)
     mlTrig trig;
 
     alpharad = platform->GetAlpha() * DTR;
-    betarad  = platform->GetBeta() * DTR;
+    betarad = platform->GetBeta() * DTR;
 
     mlSinCos(&trig, platform->Yaw());
     platform->platformAngles.cospsi = trig.cos;
@@ -629,30 +649,35 @@ void Trigenometry(SimMoverClass *platform)
     /*-------*/
     /* gamma */
     /*-------*/
-    platform->platformAngles.singam = (platform->platformAngles.sinthe *
-                                       platform->platformAngles.cosalp - platform->platformAngles.costhe *
-                                       platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-                                      platform->platformAngles.cosbet - platform->platformAngles.costhe *
-                                      platform->platformAngles.sinphi * platform->platformAngles.sinbet;
+    platform->platformAngles.singam =
+        (platform->platformAngles.sinthe * platform->platformAngles.cosalp -
+         platform->platformAngles.costhe * platform->platformAngles.cosphi *
+             platform->platformAngles.sinalp) *
+            platform->platformAngles.cosbet -
+        platform->platformAngles.costhe * platform->platformAngles.sinphi *
+            platform->platformAngles.sinbet;
 
-    platform->platformAngles.cosgam = (float)sqrt(1.0f -
-                                      platform->platformAngles.singam * platform->platformAngles.singam);
+    platform->platformAngles.cosgam =
+        (float)sqrt(1.0f - platform->platformAngles.singam *
+                               platform->platformAngles.singam);
 
 
-    gmma = (float)atan2(platform->platformAngles.singam, platform->platformAngles.cosgam);
+    gmma = (float)atan2(platform->platformAngles.singam,
+                        platform->platformAngles.cosgam);
 
     /*----*/
     /* mu */
     /*----*/
     t1 = platform->platformAngles.costhe * platform->platformAngles.sinphi *
-         platform->platformAngles.cosbet + (platform->platformAngles.sinthe *
-                                            platform->platformAngles.cosalp - platform->platformAngles.costhe *
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-         platform->platformAngles.sinbet;
+             platform->platformAngles.cosbet +
+         (platform->platformAngles.sinthe * platform->platformAngles.cosalp -
+          platform->platformAngles.costhe * platform->platformAngles.cosphi *
+              platform->platformAngles.sinalp) *
+             platform->platformAngles.sinbet;
 
     t2 = platform->platformAngles.costhe * platform->platformAngles.cosphi *
-         platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-         platform->platformAngles.sinalp;
+             platform->platformAngles.cosalp +
+         platform->platformAngles.sinthe * platform->platformAngles.sinalp;
 
 
     mu = (float)(1.0 / sqrt(t1 * t1 + t2 * t2));
@@ -664,32 +689,36 @@ void Trigenometry(SimMoverClass *platform)
     /*-------*/
     /* sigma */
     /*-------*/
-    t1 = (-platform->platformAngles.sinphi *
-          platform->platformAngles.sinalp * platform->platformAngles.cosbet +
+    t1 = (-platform->platformAngles.sinphi * platform->platformAngles.sinalp *
+              platform->platformAngles.cosbet +
           platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.cospsi + ((platform->platformAngles.costhe *
-                                            platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-                                            platform->platformAngles.cosbet + platform->platformAngles.sinthe *
-                                            platform->platformAngles.sinphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.sinpsi;
+             platform->platformAngles.cospsi +
+         ((platform->platformAngles.costhe * platform->platformAngles.cosalp +
+           platform->platformAngles.sinthe * platform->platformAngles.cosphi *
+               platform->platformAngles.sinalp) *
+              platform->platformAngles.cosbet +
+          platform->platformAngles.sinthe * platform->platformAngles.sinphi *
+              platform->platformAngles.sinbet) *
+             platform->platformAngles.sinpsi;
 
-    t2 = ((platform->platformAngles.costhe *
-           platform->platformAngles.cosalp + platform->platformAngles.sinthe *
-           platform->platformAngles.cosphi * platform->platformAngles.sinalp) *
-          platform->platformAngles.cosbet + platform->platformAngles.sinthe *
-          platform->platformAngles.sinphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.cospsi + (platform->platformAngles.sinphi *
-                                            platform->platformAngles.sinalp * platform->platformAngles.cosbet -
-                                            platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
-         platform->platformAngles.sinpsi;
+    t2 = ((platform->platformAngles.costhe * platform->platformAngles.cosalp +
+           platform->platformAngles.sinthe * platform->platformAngles.cosphi *
+               platform->platformAngles.sinalp) *
+              platform->platformAngles.cosbet +
+          platform->platformAngles.sinthe * platform->platformAngles.sinphi *
+              platform->platformAngles.sinbet) *
+             platform->platformAngles.cospsi +
+         (platform->platformAngles.sinphi * platform->platformAngles.sinalp *
+              platform->platformAngles.cosbet -
+          platform->platformAngles.cosphi * platform->platformAngles.sinbet) *
+             platform->platformAngles.sinpsi;
 
 
-    sigma  = (float)(1.0 / sqrt(t1 * t1 + t2 * t2));
+    sigma = (float)(1.0 / sqrt(t1 * t1 + t2 * t2));
 
     platform->platformAngles.sinsig = t1;
-    platform->platformAngles.cossig = t2;;
-
+    platform->platformAngles.cossig = t2;
+    ;
 }
 
 void CalcTransformMatrix(SimBaseClass* theObject)
@@ -703,17 +732,17 @@ void CalcTransformMatrix(SimBaseClass* theObject)
     mlSinCos(&phi, theObject->Roll());
     mlSinCos(&psi, theObject->Yaw());
 
-    theObject->dmx[0][0] =  psi.cos * tha.cos;
-    theObject->dmx[0][1] =  psi.sin * tha.cos;
+    theObject->dmx[0][0] = psi.cos * tha.cos;
+    theObject->dmx[0][1] = psi.sin * tha.cos;
     theObject->dmx[0][2] = -tha.sin;
 
     theObject->dmx[1][0] = -psi.sin * phi.cos + psi.cos * tha.sin * phi.sin;
-    theObject->dmx[1][1] =  psi.cos * phi.cos + psi.sin * tha.sin * phi.sin;
-    theObject->dmx[1][2] =  tha.cos * phi.sin;
+    theObject->dmx[1][1] = psi.cos * phi.cos + psi.sin * tha.sin * phi.sin;
+    theObject->dmx[1][2] = tha.cos * phi.sin;
 
-    theObject->dmx[2][0] =  psi.sin * phi.sin + psi.cos * tha.sin * phi.cos;
+    theObject->dmx[2][0] = psi.sin * phi.sin + psi.cos * tha.sin * phi.cos;
     theObject->dmx[2][1] = -psi.cos * phi.sin + psi.sin * tha.sin * phi.cos;
-    theObject->dmx[2][2] =  tha.cos * phi.cos;
+    theObject->dmx[2][2] = tha.cos * phi.cos;
 
     theObject->platformAngles.cospsi = psi.cos;
     theObject->platformAngles.sinpsi = psi.sin;

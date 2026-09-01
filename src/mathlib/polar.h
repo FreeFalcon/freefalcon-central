@@ -48,10 +48,7 @@ private:
 //------------------------------------------------------------------------------
 /**
 */
-inline
-polar2::polar2() :
-    theta(0.0f),
-    rho(0.0f)
+inline polar2::polar2() : theta(0.0f), rho(0.0f)
 {
     // empty
 }
@@ -59,10 +56,7 @@ polar2::polar2() :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-polar2::polar2(float t, float r) :
-    theta(t),
-    rho(r)
+inline polar2::polar2(float t, float r) : theta(t), rho(r)
 {
     // empty
 }
@@ -70,8 +64,7 @@ polar2::polar2(float t, float r) :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-polar2::polar2(const vector3& v)
+inline polar2::polar2(const vector3& v)
 {
     this->set(v);
 }
@@ -79,10 +72,7 @@ polar2::polar2(const vector3& v)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-polar2::polar2(const polar2& src) :
-    theta(src.theta),
-    rho(src.rho)
+inline polar2::polar2(const polar2& src) : theta(src.theta), rho(src.rho)
 {
     // empty
 }
@@ -90,9 +80,7 @@ polar2::polar2(const polar2& src) :
 //------------------------------------------------------------------------------
 /**
 */
-inline
-polar2&
-polar2::operator=(const polar2& rhs)
+inline polar2& polar2::operator=(const polar2& rhs)
 {
     this->theta = rhs.theta;
     this->rho = rhs.rho;
@@ -102,9 +90,7 @@ polar2::operator=(const polar2& rhs)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-polar2::set(const polar2& p)
+inline void polar2::set(const polar2& p)
 {
     this->theta = p.theta;
     this->rho = p.rho;
@@ -113,9 +99,7 @@ polar2::set(const polar2& p)
 //------------------------------------------------------------------------------
 /**
 */
-inline
-void
-polar2::set(const float t, const float r)
+inline void polar2::set(const float t, const float r)
 {
     this->theta = t;
     this->rho = r;
@@ -125,9 +109,7 @@ polar2::set(const float t, const float r)
 /**
     Convert cartesian to polar.
 */
-inline
-void
-polar2::set(const vector3& vec)
+inline void polar2::set(const vector3& vec)
 {
     double dTheta = acos(vec.y);
 
@@ -159,25 +141,23 @@ polar2::set(const vector3& vec)
         dRho = acos(-v2.y) + _deg2rad(270.0f);
     }
 
-    this->theta = (float) dTheta;
-    this->rho   = (float) dRho;
+    this->theta = (float)dTheta;
+    this->rho = (float)dRho;
 }
 
 //------------------------------------------------------------------------------
 /**
     Convert polar to cartesian.
 */
-inline
-vector3
-polar2::get_cartesian() const
+inline vector3 polar2::get_cartesian() const
 {
     vector3 v;
     double sin_theta = sin(this->theta);
     double cos_theta = cos(this->theta);
-    double sin_rho   = sin(this->rho);
-    double cos_rho   = cos(this->rho);
+    double sin_rho = sin(this->rho);
+    double cos_rho = cos(this->rho);
     float x = (float)(sin_theta * sin_rho);
-    float y = (float) cos_theta;
+    float y = (float)cos_theta;
     float z = (float)(sin_theta * cos_rho);
     v.set(x, y, z);
     return v;
@@ -186,15 +166,15 @@ polar2::get_cartesian() const
 //------------------------------------------------------------------------------
 /**
 */
-inline
-bool
-polar2::isequal(const polar2& rhs, float tol)
+inline bool polar2::isequal(const polar2& rhs, float tol)
 {
     float dt = _abs(rhs.theta - this->theta);
     float dr = _abs(rhs.rho - this->rho);
 
-    if (dt > tol)      return false;
-    else if (dr > tol) return false;
+    if (dt > tol)
+        return false;
+    else if (dr > tol)
+        return false;
 
     return true;
 }

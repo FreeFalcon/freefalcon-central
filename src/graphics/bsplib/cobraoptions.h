@@ -4,22 +4,10 @@
 // *************************************************************************
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 #define _USE_COBRA_SSE_
 
 // ************************** MACROS **************************************
-#define FLOAT_FAST_MORE_THAN_ZERO(x) (*((signed long*)&x)>0)
+#define FLOAT_FAST_MORE_THAN_ZERO(x) (*((signed long*)&x) > 0)
 #include "xmmintrin.h"
 /*
 #define FAST_FACE_FRONT_CHECK(poly) __asm{
@@ -33,6 +21,3 @@
  comiss xmm0,SSEZero\
  jl _Exit_}
 */
-
-
-

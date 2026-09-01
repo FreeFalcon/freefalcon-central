@@ -11,7 +11,9 @@ void HeliBrain::Actions(void)
     if (lastMode != curMode)
         onStation = NotThereYet;
 
-    if (self->flightLead != self && (targetPtr == NULL || !anyWeapons || targetPtr->localData->range > 5.0f * NM_TO_FT))
+    if (self->flightLead != self &&
+        (targetPtr == NULL || !anyWeapons ||
+         targetPtr->localData->range > 5.0f * NM_TO_FT))
     {
         /*
         if ( modeStack.curMode == GunsEngageMode )
@@ -20,142 +22,143 @@ void HeliBrain::Actions(void)
         */
         FollowLead();
     }
-    else switch (curMode)
+    else
+        switch (curMode)
         {
                 /*----------------*/
                 /* return to base */
                 /*----------------*/
-            case RTBMode:
+        case RTBMode:
                 //         GoHome();
-                break;
+            break;
 
                 /*-------------------*/
                 /* Do what your told */
                 /*-------------------*/
-            case FollowOrdersMode:
-                FollowOrders();
-                break;
+        case FollowOrdersMode:
+            FollowOrders();
+            break;
 
                 /*---------------------*/
                 /* follow wingman lead */
                 /*---------------------*/
-            case WingyMode:
-                FollowLead();
-                break;
+        case WingyMode:
+            FollowLead();
+            break;
 
                 /*------------------*/
                 /* follow waypoints */
                 /*------------------*/
-            case WaypointMode:
-                FollowWaypoints();
-                break;
+        case WaypointMode:
+            FollowWaypoints();
+            break;
 
                 /*------------*/
                 /* BVR engage */
                 /*------------*/
-            case BVREngageMode:
-                if (targetPtr == maxTargetPtr)
-                    RollAndPull();
+        case BVREngageMode:
+            if (targetPtr == maxTargetPtr)
+                RollAndPull();
 
-                break;
+            break;
 
                 /*------------*/
                 /* WVR engage */
                 /*------------*/
-            case WVREngageMode:
-                if (targetPtr == maxTargetPtr)
-                    RollAndPull();
+        case WVREngageMode:
+            if (targetPtr == maxTargetPtr)
+                RollAndPull();
 
-                break;
+            break;
 
-            case GunsEngageMode:
-                if (targetPtr)
-                    GunsEngage();
+        case GunsEngageMode:
+            if (targetPtr)
+                GunsEngage();
 
-                break;
+            break;
 
                 /*-----------------------------------------*/
                 /* Inside missile range, try to line it up */
                 /*-----------------------------------------*/
-            case MissileEngageMode:
-                MissileEngage();
-                break;
+        case MissileEngageMode:
+            MissileEngage();
+            break;
 
                 /*----------------*/
                 /* missile defeat */
                 /*----------------*/
-            case MissileDefeatMode:
-                MissileDefeat();
-                break;
+        case MissileDefeatMode:
+            MissileDefeat();
+            break;
 
                 /*-----------*/
                 /* guns jink */
                 /*-----------*/
-            case GunsJinkMode:
-                GunsJink();
-                break;
+        case GunsJinkMode:
+            GunsJink();
+            break;
 
                 /*--------*/
                 /* loiter */
                 /*--------*/
-            case LoiterMode:
-                Loiter();
-                break;
+        case LoiterMode:
+            Loiter();
+            break;
 
                 /*----------*/
                 /* run away */
                 /*----------*/
-            case RunAwayMode:
+        case RunAwayMode:
                 //         GoHome();
-                break;
+            break;
 
                 /*-----------------*/
                 /* collision avoid */
                 /*-----------------*/
-            case CollisionAvoidMode:
-                CollisionAvoid();
-                break;
+        case CollisionAvoidMode:
+            CollisionAvoid();
+            break;
 
                 /*------------*/
                 /* accelerate */
                 /*------------*/
-            case AccelerateMode:
+        case AccelerateMode:
                 //         Accelerate();
-                break;
+            break;
 
                 /*-----------*/
                 /* overshoot */
                 /*-----------*/
-            case OvershootMode:
+        case OvershootMode:
                 //         OverShoot();
-                break;
+            break;
 
                 /*----------*/
                 /* Separate */
                 /*----------*/
-            case SeparateMode:
+        case SeparateMode:
                 //         Separate();
-                break;
+            break;
 
                 /*-------------------*/
                 /* Roll Out of Plane */
                 /*-------------------*/
-            case RoopMode:
-                RollOutOfPlane();
-                break;
+        case RoopMode:
+            RollOutOfPlane();
+            break;
 
                 /*-----------*/
                 /* Over Bank */
                 /*-----------*/
-            case OverBMode:
-                OverBank(30.0F * DTR);
-                break;
+        case OverBMode:
+            OverBank(30.0F * DTR);
+            break;
 
-            default:
-                SimLibPrintError("%s digi.w: Invalid digi mode %d\n",
-                                 self->Id().num_, curMode);
-                FollowWaypoints();
-                break;
+        default:
+            SimLibPrintError("%s digi.w: Invalid digi mode %d\n",
+                             self->Id().num_, curMode);
+            FollowWaypoints();
+            break;
 
         } /*switch*/
 

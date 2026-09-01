@@ -6,11 +6,11 @@
 
 #include <tchar.h>
 #include "listadt.h"
-#include "FalcMesg.h"
-#include "Mission.h"
-#include "FalcEnt.h"
-#include "F4Vu.h"
-#include "MsgInc/TeamMsg.h"
+#include "falcmesg.h"
+#include "mission.h"
+#include "falcent.h"
+#include "f4vu.h"
+#include "msginc/teammsg.h"
 
 #ifndef TEAM_H
 #define TEAM_H
@@ -51,32 +51,32 @@ enum TeamDataEnum
 // Team flags
 enum TeamFlagEnum
 {
-    TEAM_ACTIVE         = 0x01, // Set if team is being used
-    TEAM_HASSATS        = 0x02, // Has satelites
-    TEAM_UPDATED        = 0x04, // We've gotten remote data for this team
+    TEAM_ACTIVE = 0x01, // Set if team is being used
+    TEAM_HASSATS = 0x02, // Has satelites
+    TEAM_UPDATED = 0x04, // We've gotten remote data for this team
 };
 
 // Rules of engagement query types, add as needed.
 enum ROEEngagementQueryTypeEnum
 {
-    ROE_GROUND_FIRE     = 1, // Fire on their ground troops?
-    ROE_GROUND_MOVE     = 2, // Move through their territory?
-    ROE_GROUND_CAPTURE  = 3, // Capture their territory?
-    ROE_AIR_ENGAGE      = 4, // Maneuver against their aircraft?
-    ROE_AIR_FIRE        = 5, // Fire at their aircraft? (any range)
-    ROE_AIR_FIRE_BVR    = 6, // Fire at their aircraft BVR
-    ROE_AIR_OVERFLY     = 7, // Fly over their territory?
-    ROE_AIR_ATTACK      = 8, // Bomb/attack their territory?
-    ROE_AIR_USE_BASES   = 9, // Can we based aircraft at their airbases?
-    ROE_NAVAL_FIRE      = 10, // Attack their shipping?
-    ROE_NAVAL_MOVE      = 11, // Move into/through their harbors/straights?
-    ROE_NAVAL_BOMBARD   = 12, // Bombard them messily?
+    ROE_GROUND_FIRE = 1, // Fire on their ground troops?
+    ROE_GROUND_MOVE = 2, // Move through their territory?
+    ROE_GROUND_CAPTURE = 3, // Capture their territory?
+    ROE_AIR_ENGAGE = 4, // Maneuver against their aircraft?
+    ROE_AIR_FIRE = 5, // Fire at their aircraft? (any range)
+    ROE_AIR_FIRE_BVR = 6, // Fire at their aircraft BVR
+    ROE_AIR_OVERFLY = 7, // Fly over their territory?
+    ROE_AIR_ATTACK = 8, // Bomb/attack their territory?
+    ROE_AIR_USE_BASES = 9, // Can we based aircraft at their airbases?
+    ROE_NAVAL_FIRE = 10, // Attack their shipping?
+    ROE_NAVAL_MOVE = 11, // Move into/through their harbors/straights?
+    ROE_NAVAL_BOMBARD = 12, // Bombard them messily?
 };
 
 enum ROEAllowedEnum
 {
-    ROE_ALLOWED         = 1,
-    ROE_NOT_ALLOWED     = 0,
+    ROE_ALLOWED = 1,
+    ROE_NOT_ALLOWED = 0,
 };
 
 #define MAX_BONUSES 20 // Number of SOs which can receive bonuses at one time
@@ -86,31 +86,31 @@ enum ROEAllowedEnum
 // Ground Action types
 enum GroundActionTypeEnum
 {
-    GACTION_DEFENSIVE      = 1,
-    GACTION_CONSOLIDATE    = 2,
+    GACTION_DEFENSIVE = 1,
+    GACTION_CONSOLIDATE = 2,
     GACTION_MINOROFFENSIVE = 3,
-    GACTION_OFFENSIVE      = 4,
+    GACTION_OFFENSIVE = 4,
 };
 
 // Air Action types
 enum AirActionTypeEnum
 {
-    AACTION_NOTHING        = 0,
-    AACTION_DCA            = 1,
-    AACTION_OCA            = 2,
-    AACTION_INTERDICT      = 3,
-    AACTION_ATTRITION      = 4,
-    AACTION_CAS            = 5,
+    AACTION_NOTHING = 0,
+    AACTION_DCA = 1,
+    AACTION_OCA = 2,
+    AACTION_INTERDICT = 3,
+    AACTION_ATTRITION = 4,
+    AACTION_CAS = 5,
 };
 
 // Air tactic types
 enum AirTacticTypeEnum
 {
-    TAT_DEFENSIVE          = 1,
-    TAT_OFFENSIVE          = 2,
-    TAT_INTERDICT          = 3,
-    TAT_ATTRITION          = 4,
-    TAT_CAS                = 5, // CAS must always be last tactic
+    TAT_DEFENSIVE = 1,
+    TAT_OFFENSIVE = 2,
+    TAT_INTERDICT = 3,
+    TAT_ATTRITION = 4,
+    TAT_CAS = 5, // CAS must always be last tactic
 };
 
 enum table_of_equipment_manufacturers
@@ -127,7 +127,8 @@ enum table_of_equipment_manufacturers
 // Priority tables
 // =======================================
 
-extern uchar DefaultObjtypePriority[TAT_CAS][MAX_TGTTYPE]; // AI's suggested settings
+extern uchar DefaultObjtypePriority[TAT_CAS]
+                                   [MAX_TGTTYPE]; // AI's suggested settings
 extern uchar DefaultUnittypePriority[TAT_CAS][MAX_UNITTYPE]; //
 extern uchar DefaultMissionPriority[TAT_CAS][AMIS_OTHER]; //
 
@@ -139,10 +140,10 @@ class AirTaskingManagerClass;
 class GroundTaskingManagerClass;
 class NavalTaskingManagerClass;
 class CampBaseClass;
-typedef AirTaskingManagerClass* ATM;
-typedef GroundTaskingManagerClass* GTM;
-typedef NavalTaskingManagerClass* NTM;
-typedef CampBaseClass* CampEntity;
+typedef AirTaskingManagerClass *ATM;
+typedef GroundTaskingManagerClass *GTM;
+typedef NavalTaskingManagerClass *NTM;
+typedef CampBaseClass *CampEntity;
 Team GetTeam(Control country);
 
 #pragma pack(1) // place on byte boundary
@@ -164,7 +165,8 @@ struct TeamStatusType
 struct TeamGndActionType
 {
     CampaignTime actionTime; // When we start.
-    CampaignTime actionTimeout; // Our action will fail if not completed by this time
+    CampaignTime
+        actionTimeout; // Our action will fail if not completed by this time
     VU_ID actionObjective; // Primary objective this is all about
     uchar actionType;
     uchar actionTempo; // How "active" we want the action to be
@@ -195,7 +197,7 @@ public:
     enum
     {
         SimRadarShootShoot = 0x1,
-        SimHeatShootShoot  = 0x2
+        SimHeatShootShoot = 0x2
     };
     int IsSet(int val)
     {
@@ -232,8 +234,10 @@ private:
     ushort replacementsAvail;
     TeamStatusType currentStats;
     short reinforcement;
-    uchar objtype_priority[MAX_TGTTYPE]; // base priority, based on target type (obj)
-    uchar unittype_priority[MAX_UNITTYPE]; // base priority for unit types (cmbt/AD)
+    uchar objtype_priority
+        [MAX_TGTTYPE]; // base priority, based on target type (obj)
+    uchar unittype_priority
+        [MAX_UNITTYPE]; // base priority for unit types (cmbt/AD)
     uchar mission_priority[AMIS_OTHER]; // bonus by mission type
     TeamGndActionType groundAction; // Team's current ground action
     TeamAirActionType defensiveAirAction; // Current defensive air action
@@ -241,7 +245,7 @@ private:
     int dirty_team;
 
 public:
-    Team  who;
+    Team who;
     Team cteam; // The team this relative is on (for quick reference)
     short flags;
     _TCHAR name[MAX_TEAM_NAME_SIZE];
@@ -277,8 +281,10 @@ public:
     TeamClass(FILE *file);
     ~TeamClass(void);
     virtual void InitData();
+
 private:
     void InitLocalData(Control owner);
+
 public:
     // pure virtual interface
     virtual float GetVt() const
@@ -431,7 +437,7 @@ public:
         return ntm;
     }
     void SetName(_TCHAR *newname);
-    _TCHAR* GetName(void);
+    _TCHAR *GetName(void);
     void SetFlag(uchar flag)
     {
         teamFlag = flag;
@@ -442,7 +448,7 @@ public:
     }
     int GetFlag(void)
     {
-        return (int) teamFlag;
+        return (int)teamFlag;
     }
     void SetColor(uchar color)
     {
@@ -450,15 +456,15 @@ public:
     }
     int GetColor(void)
     {
-        return (int) teamColor;
+        return (int)teamColor;
     }
     int GetEquipment(void)
     {
-        return (int) equipment;
+        return (int)equipment;
     }
     void SetMotto(_TCHAR *motto);
     _TCHAR *GetMotto(void);
-    TeamDoctrine* GetDoctrine(void)
+    TeamDoctrine *GetDoctrine(void)
     {
         return &doctrine;
     }
@@ -483,7 +489,7 @@ public:
     void ReadDirty(unsigned char **stream, long *rem);
 };
 
-extern TeamClass* TeamInfo[NUM_TEAMS];
+extern TeamClass *TeamInfo[NUM_TEAMS];
 
 // =============================================
 // Global functions
@@ -496,9 +502,9 @@ void AddNewTeams(RelType defaultStance);
 
 void RemoveTeams(void);
 
-int LoadTeams(char* scenario);
+int LoadTeams(char *scenario);
 
-int SaveTeams(char* scenario);
+int SaveTeams(char *scenario);
 
 void LoadPriorityTables(void);
 

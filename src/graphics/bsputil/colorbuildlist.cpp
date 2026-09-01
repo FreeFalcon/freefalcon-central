@@ -6,8 +6,8 @@
     Provides build time services for sharing colors among all objects.
 \***************************************************************************/
 #include <io.h>
-#include "StateStack.h"
-#include "ColorBuildList.h"
+#include "statestack.h"
+#include "colorbuildlist.h"
 
 
 BuildTimeColorList TheColorBuildList;
@@ -21,15 +21,14 @@ void BuildTimeColorList::AddReference(int *target, Pcolor color, BOOL preLit)
     // See if we've already got a matching color to share
     for (entry = head; entry; entry = entry->next)
     {
-        if ((entry->color.r == color.r) &&
-            (entry->color.g == color.g) &&
-            (entry->color.b == color.b) &&
-            (entry->color.a == color.a) &&
+        if ((entry->color.r == color.r) && (entry->color.g == color.g) &&
+            (entry->color.b == color.b) && (entry->color.a == color.a) &&
             (entry->preLit == preLit))
         {
 
             // Found a match, so add our reference to it and quit
-            for (ref = entry->refs; ref->next; ref = ref->next);
+            for (ref = entry->refs; ref->next; ref = ref->next)
+                ;
 
             ref->next = new BuildTimeColorReference;
             ref = ref->next;
@@ -98,7 +97,8 @@ void BuildTimeColorList::AddReference(int *target, int *source)
     if (entry)
     {
         // Found a match, so add our reference to it and quit
-        for (ref = entry->refs; ref->next; ref = ref->next);
+        for (ref = entry->refs; ref->next; ref = ref->next)
+            ;
 
         ref->next = new BuildTimeColorReference;
         ref = ref->next;
@@ -132,7 +132,7 @@ void BuildTimeColorList::BuildPool()
 
     // Construct the color arrays and get pointers into it
     TheColorBank.Setup(numColors, numPrelitColors);
-    preLitPtr  = TheColorBank.ColorBuffer;
+    preLitPtr = TheColorBank.ColorBuffer;
     nonPreLitPtr = TheColorBank.ColorBuffer + numPrelitColors;
     ShiAssert(preLitPtr);
     ShiAssert(nonPreLitPtr);
@@ -192,10 +192,12 @@ void BuildTimeColorList::WritePool(int file)
 
     // Now we store our total color and darkened color count
     result = write(file, &TheColorBank.nColors, sizeof(TheColorBank.nColors));
-    result = write(file, &TheColorBank.nDarkendColors, sizeof(TheColorBank.nDarkendColors));
+    result = write(file, &TheColorBank.nDarkendColors,
+                   sizeof(TheColorBank.nDarkendColors));
 
     // Finally, store our color array
-    result = write(file, TheColorBank.ColorBuffer, TheColorBank.nColors * sizeof(*TheColorBank.ColorBuffer));
+    result = write(file, TheColorBank.ColorBuffer,
+                   TheColorBank.nColors * sizeof(*TheColorBank.ColorBuffer));
 
     if (result < 0)
     {

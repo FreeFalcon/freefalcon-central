@@ -27,7 +27,8 @@
 #define _AMD_AVECTOR_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     void _add_vect(float *res, float *a, float *b);

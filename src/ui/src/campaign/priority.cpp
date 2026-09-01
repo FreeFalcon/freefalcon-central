@@ -10,20 +10,20 @@
 #include "ui95_ext.h"
 #include "userids.h"
 #include "textids.h"
-#include "ClassTbl.h"
-#include "Cmpclass.h"
+#include "classtbl.h"
+#include "cmpclass.h"
 
 #pragma warning(disable : 4127)
 
-extern C_Handler *gMainHandler;
+extern C_Handler* gMainHandler;
 
 enum
 {
     MAX_PAKS = 256,
 };
 
-void CloseWindowCB(long, short, C_Base *);
-IMAGE_RSC *CreateOccupationMap(long ID, long w, long h, long palsize);
+void CloseWindowCB(long, short, C_Base*);
+IMAGE_RSC* CreateOccupationMap(long ID, long w, long h, long palsize);
 void SendPrimaryObjectiveList(uchar teammask);
 
 // Temporary storage for PAK priorities (so we can undo) [0]=value,[1]=TRUE if we changed the value
@@ -32,15 +32,15 @@ static short PAKPriorities[MAX_PAKS][NUM_TEAMS][2];
 // Calculated Palette for PAKMap settings
 static WORD PAKPalette[101];
 
-IMAGE_RSC *PAKMap = NULL;
+IMAGE_RSC* PAKMap = NULL;
 
 static long CurrentPAK = 0;
 static char BlinkPAK = 0;
 
 void InitPAKNames()
 {
-    C_Window *win;
-    C_ListBox *lbox;
+    C_Window* win;
+    C_ListBox* lbox;
     long idx;
     _TCHAR buffer[70];
     VuListIterator poit(POList);
@@ -58,14 +58,15 @@ void InitPAKNames()
 
             // search list...
             idx = 1;
-            o = (Objective) poit.GetFirst();
+            o = (Objective)poit.GetFirst();
 
             while (o)
             {
-                _stprintf(buffer, "%s %1ld:", gStringMgr->GetString(TXT_PAK), idx);
+                _stprintf(buffer, "%s %1ld:", gStringMgr->GetString(TXT_PAK),
+                          idx);
                 o->GetName(&buffer[_tcsclen(buffer)], 50, TRUE);
                 lbox->AddItem(idx, C_TYPE_ITEM, buffer);
-                o = (Objective) poit.GetNext();
+                o = (Objective)poit.GetNext();
                 idx++;
             }
         }
@@ -77,24 +78,30 @@ void MakePAKPalette()
     short i;
 
     for (i = 0; i < 101; i++)
-        PAKPalette[100 - i] = UI95_RGB24Bit(0x000000ff bitor (((i * 255) / 100) << 8) bitor (((i * 255) / 100) << 16));
+        PAKPalette[100 - i] =
+            UI95_RGB24Bit(0x000000ff bitor (((i * 255) / 100) << 8) bitor
+                          (((i * 255) / 100) << 16));
 }
 
 void InitPAKMap()
 {
-    C_Window *win;
-    C_Bitmap *bmp;
+    C_Window* win;
+    C_Bitmap* bmp;
 
-    if ( not PAKMap)
+    if (not PAKMap)
     {
         SetCursor(gCursors[CRSR_WAIT]);
         MakePAKPalette();
-        PAKMap = CreateOccupationMap(1, TheCampaign.TheaterSizeX / PAK_MAP_RATIO, TheCampaign.TheaterSizeY / PAK_MAP_RATIO, MAX_PAKS);
+        PAKMap = CreateOccupationMap(
+            1, TheCampaign.TheaterSizeX / PAK_MAP_RATIO,
+            TheCampaign.TheaterSizeY / PAK_MAP_RATIO, MAX_PAKS);
 
         if (PAKMap)
         {
             PAKMap->Header->flags or_eq _RSC_USECOLORKEY_;
-            MakeCampMap(MAP_PAK, (uchar*)PAKMap->Owner->GetData(), TheCampaign.TheaterSizeX / PAK_MAP_RATIO * TheCampaign.TheaterSizeY / PAK_MAP_RATIO);
+            MakeCampMap(MAP_PAK, (uchar*)PAKMap->Owner->GetData(),
+                        TheCampaign.TheaterSizeX / PAK_MAP_RATIO *
+                            TheCampaign.TheaterSizeY / PAK_MAP_RATIO);
 
             win = gMainHandler->FindWindow(STRAT_WIN);
 
@@ -111,7 +118,7 @@ void InitPAKMap()
     }
 }
 
-void PositionSlider(long value, C_Slider *slider)
+void PositionSlider(long value, C_Slider* slider)
 {
     long range, pos, maxval;
 
@@ -120,7 +127,7 @@ void PositionSlider(long value, C_Slider *slider)
         range = slider->GetSliderMax() - slider->GetSliderMin();
         maxval = max(1, slider->GetSteps());
 
-        pos  = range * value / maxval;
+        pos = range * value / maxval;
         pos += slider->GetSliderMin();
 
         slider->Refresh();
@@ -129,7 +136,7 @@ void PositionSlider(long value, C_Slider *slider)
     }
 }
 
-long SliderValue(C_Slider *slider)
+long SliderValue(C_Slider* slider)
 {
     long range, pos, maxval, value;
 
@@ -141,10 +148,10 @@ long SliderValue(C_Slider *slider)
         pos = slider->GetSliderPos() - slider->GetSliderMin();
         value = pos * maxval / range;
 
-        return(value);
+        return (value);
     }
 
-    return(0);
+    return (0);
 }
 
 void ResetToDefaults()
@@ -154,7 +161,7 @@ void ResetToDefaults()
     VuListIterator poit(POList);
     Objective o;
 
-    o = (Objective) poit.GetFirst();
+    o = (Objective)poit.GetFirst();
 
     while (o)
     {
@@ -169,21 +176,27 @@ void ResetToDefaults()
             POD->flags and_eq compl GTMOBJ_PLAYER_SET_PRIORITY;
         }
 
-        o = (Objective) poit.GetNext();
+        o = (Objective)poit.GetNext();
     }
 
     for (i = 0; i < NUM_TEAMS; i++)
     {
-        memcpy(TeamInfo[i]->SetAllObjTypePriority(), DefaultObjtypePriority[TAT_INTERDICT - 1], sizeof(uchar)*MAX_TGTTYPE);
-        memcpy(TeamInfo[i]->SetAllUnitTypePriority(), DefaultUnittypePriority[TAT_INTERDICT - 1], sizeof(uchar)*MAX_UNITTYPE);
-        memcpy(TeamInfo[i]->SetAllMissionPriority(), DefaultMissionPriority[TAT_INTERDICT - 1], sizeof(uchar)*AMIS_OTHER);
+        memcpy(TeamInfo[i]->SetAllObjTypePriority(),
+               DefaultObjtypePriority[TAT_INTERDICT - 1],
+               sizeof(uchar) * MAX_TGTTYPE);
+        memcpy(TeamInfo[i]->SetAllUnitTypePriority(),
+               DefaultUnittypePriority[TAT_INTERDICT - 1],
+               sizeof(uchar) * MAX_UNITTYPE);
+        memcpy(TeamInfo[i]->SetAllMissionPriority(),
+               DefaultMissionPriority[TAT_INTERDICT - 1],
+               sizeof(uchar) * AMIS_OTHER);
     }
 }
 
 void TurnOffHQButton()
 {
-    C_Window *win;
-    C_Button *btn;
+    C_Window* win;
+    C_Button* btn;
 
     win = gMainHandler->FindWindow(STRAT_WIN);
 
@@ -201,8 +214,8 @@ void TurnOffHQButton()
 
 void TurnOnHQButton()
 {
-    C_Window *win;
-    C_Button *btn;
+    C_Window* win;
+    C_Button* btn;
 
     win = gMainHandler->FindWindow(STRAT_WIN);
 
@@ -219,7 +232,7 @@ void TurnOnHQButton()
 }
 
 // Just turn off HQ Flag if slider moved
-void PriSliderCB(long, short hittype, C_Base *)
+void PriSliderCB(long, short hittype, C_Base*)
 {
     if (hittype not_eq C_TYPE_LMOUSEDOWN)
         return;
@@ -230,8 +243,8 @@ void PriSliderCB(long, short hittype, C_Base *)
 // Copies Kevin's priority stuff into the Window's controls
 void LoadTargetPriorities()
 {
-    C_Window *win;
-    C_Slider *sldr;
+    C_Window* win;
+    C_Slider* sldr;
     long value;
     int team = FalconLocalSession->GetTeam();
 
@@ -280,7 +293,9 @@ void LoadTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetObjTypePriority(TYPE_RADAR) + TeamInfo[team]->GetObjTypePriority(TYPE_COM_CONTROL)) / 2;
+            value = (TeamInfo[team]->GetObjTypePriority(TYPE_RADAR) +
+                     TeamInfo[team]->GetObjTypePriority(TYPE_COM_CONTROL)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -290,7 +305,9 @@ void LoadTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetObjTypePriority(TYPE_ARMYBASE) + TeamInfo[team]->GetObjTypePriority(TYPE_FORTIFICATION)) / 2;
+            value = (TeamInfo[team]->GetObjTypePriority(TYPE_ARMYBASE) +
+                     TeamInfo[team]->GetObjTypePriority(TYPE_FORTIFICATION)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -301,7 +318,9 @@ void LoadTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetObjTypePriority(TYPE_POWERPLANT) + TeamInfo[team]->GetObjTypePriority(TYPE_REFINERY)) / 2;
+            value = (TeamInfo[team]->GetObjTypePriority(TYPE_POWERPLANT) +
+                     TeamInfo[team]->GetObjTypePriority(TYPE_REFINERY)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -313,7 +332,8 @@ void LoadTargetPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetObjTypePriority(TYPE_ROAD) +
                      TeamInfo[team]->GetObjTypePriority(TYPE_BRIDGE) +
-                     TeamInfo[team]->GetObjTypePriority(TYPE_RAIL_TERMINAL)) / 3;
+                     TeamInfo[team]->GetObjTypePriority(TYPE_RAIL_TERMINAL)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -335,7 +355,8 @@ void LoadTargetPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetObjTypePriority(TYPE_CHEMICAL) +
                      TeamInfo[team]->GetObjTypePriority(TYPE_FACTORY) +
-                     TeamInfo[team]->GetObjTypePriority(TYPE_NUCLEAR)) / 3;
+                     TeamInfo[team]->GetObjTypePriority(TYPE_NUCLEAR)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -356,8 +377,10 @@ void LoadTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMOR) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMORED_CAV)) / 2;
+            value =
+                (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMOR) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMORED_CAV)) /
+                2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -367,11 +390,13 @@ void LoadTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_INFANTRY) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MARINE) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MECHANIZED) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_AIRMOBILE) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_RESERVE)) / 5;
+            value =
+                (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_INFANTRY) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MARINE) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MECHANIZED) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_AIRMOBILE) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_RESERVE)) /
+                5;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -381,10 +406,13 @@ void LoadTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ROCKET) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SP_ARTILLERY) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SS_MISSILE) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_TOWED_ARTILLERY)) / 4;
+            value =
+                (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ROCKET) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SP_ARTILLERY) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SS_MISSILE) +
+                 TeamInfo[team]->GetUnitTypePriority(
+                     STYPE_UNIT_TOWED_ARTILLERY)) /
+                4;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -395,7 +423,8 @@ void LoadTargetPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ENGINEER) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_HQ)) / 2;
+                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_HQ)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -414,8 +443,8 @@ void LoadTargetPriorities()
 // Copies Kevin's priority stuff into the Window's controls
 void LoadMissionPriorities()
 {
-    C_Window *win;
-    C_Slider *sldr;
+    C_Window* win;
+    C_Slider* sldr;
     long value;
     int team = FalconLocalSession->GetTeam();
 
@@ -428,11 +457,11 @@ void LoadMissionPriorities()
         sldr = (C_Slider*)win->FindControl(MISSION_1);
 
         if (sldr)
-            // TJL 10/26/03 Changed AMIS_SWEEP to AMIS_ESCORT.
-            // Cobra - 2/06 JG - Moved AMIS_ESCORT to Recon and changed to Escort.
+        // TJL 10/26/03 Changed AMIS_SWEEP to AMIS_ESCORT.
+        // Cobra - 2/06 JG - Moved AMIS_ESCORT to Recon and changed to Escort.
         {
             sldr->SetCallback(PriSliderCB);
-            value = TeamInfo[team]->GetMissionPriority(AMIS_OCASTRIKE) ;
+            value = TeamInfo[team]->GetMissionPriority(AMIS_OCASTRIKE);
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -454,7 +483,8 @@ void LoadMissionPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_SAD) +
                      TeamInfo[team]->GetMissionPriority(AMIS_INT) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_BAI)) / 3;
+                     TeamInfo[team]->GetMissionPriority(AMIS_BAI)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -466,7 +496,8 @@ void LoadMissionPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_ONCALLCAS) +
                      TeamInfo[team]->GetMissionPriority(AMIS_PRPLANCAS) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_CAS)) / 3;
+                     TeamInfo[team]->GetMissionPriority(AMIS_CAS)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -478,7 +509,8 @@ void LoadMissionPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_INTSTRIKE) +
                      TeamInfo[team]->GetMissionPriority(AMIS_STRIKE) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_DEEPSTRIKE)) / 3;
+                     TeamInfo[team]->GetMissionPriority(AMIS_DEEPSTRIKE)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -489,7 +521,8 @@ void LoadMissionPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_ASW) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_ASHIP)) / 2;
+                     TeamInfo[team]->GetMissionPriority(AMIS_ASHIP)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -505,7 +538,8 @@ void LoadMissionPriorities()
                      TeamInfo[team]->GetMissionPriority(AMIS_TARCAP) +
                      TeamInfo[team]->GetMissionPriority(AMIS_RESCAP) +
                      TeamInfo[team]->GetMissionPriority(AMIS_AMBUSHCAP) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_INTERCEPT)) / 7;
+                     TeamInfo[team]->GetMissionPriority(AMIS_INTERCEPT)) /
+                    7;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -517,7 +551,8 @@ void LoadMissionPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_ESCORT) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_SEADESCORT)) / 2;
+                     TeamInfo[team]->GetMissionPriority(AMIS_SEADESCORT)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
     }
@@ -528,14 +563,15 @@ void LoadPAKPriorities()
     long i, idx;
     POData POD;
     short teamid;
-    WORD *Pal;
+    WORD* Pal;
     short CampControl = 1;
 
-    if ( not PAKMap)
+    if (not PAKMap)
         return;
 
     teamid = FalconLocalSession->GetTeam();
-    Pal = (WORD*)((char *)(PAKMap->Owner->GetData() + PAKMap->Header->paletteoffset));
+    Pal = (WORD*)((char*)(PAKMap->Owner->GetData() +
+                          PAKMap->Header->paletteoffset));
 
     memset(PAKPriorities, 0, sizeof(PAKPriorities));
 
@@ -543,7 +579,7 @@ void LoadPAKPriorities()
     Objective o;
 
     idx = 1;
-    o = (Objective) poit.GetFirst();
+    o = (Objective)poit.GetFirst();
 
     while (o)
     {
@@ -568,7 +604,7 @@ void LoadPAKPriorities()
                 CampControl = 0;
         }
 
-        o = (Objective) poit.GetNext();
+        o = (Objective)poit.GetNext();
         idx++;
     }
 
@@ -582,8 +618,8 @@ void LoadPAKPriorities()
 // Copies Kevin's priority stuff into the Window's controls
 void LoadDefaultTargetPriorities()
 {
-    C_Window *win;
-    C_Slider *sldr;
+    C_Window* win;
+    C_Slider* sldr;
     long value;
     int team = FalconLocalSession->GetTeam();
 
@@ -598,7 +634,8 @@ void LoadDefaultTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = TeamInfo[team]->GetMissionPriority(AMIS_SWEEP); // TJL 10/26/03 Changed from Escort to Sweep
+            value = TeamInfo[team]->GetMissionPriority(
+                AMIS_SWEEP); // TJL 10/26/03 Changed from Escort to Sweep
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -631,7 +668,8 @@ void LoadDefaultTargetPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetObjTypePriority(TYPE_RADAR) +
-                     TeamInfo[team]->GetObjTypePriority(TYPE_COM_CONTROL)) / 2;
+                     TeamInfo[team]->GetObjTypePriority(TYPE_COM_CONTROL)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -642,7 +680,8 @@ void LoadDefaultTargetPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetObjTypePriority(TYPE_ARMYBASE) +
-                     TeamInfo[team]->GetObjTypePriority(TYPE_FORTIFICATION)) / 2;
+                     TeamInfo[team]->GetObjTypePriority(TYPE_FORTIFICATION)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -654,7 +693,8 @@ void LoadDefaultTargetPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetObjTypePriority(TYPE_POWERPLANT) +
-                     TeamInfo[team]->GetObjTypePriority(TYPE_REFINERY)) / 2;
+                     TeamInfo[team]->GetObjTypePriority(TYPE_REFINERY)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -666,7 +706,8 @@ void LoadDefaultTargetPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetObjTypePriority(TYPE_ROAD) +
                      TeamInfo[team]->GetObjTypePriority(TYPE_BRIDGE) +
-                     TeamInfo[team]->GetObjTypePriority(TYPE_RAIL_TERMINAL)) / 3;
+                     TeamInfo[team]->GetObjTypePriority(TYPE_RAIL_TERMINAL)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -688,7 +729,8 @@ void LoadDefaultTargetPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetObjTypePriority(TYPE_CHEMICAL) +
                      TeamInfo[team]->GetObjTypePriority(TYPE_FACTORY) +
-                     TeamInfo[team]->GetObjTypePriority(TYPE_NUCLEAR)) / 3;
+                     TeamInfo[team]->GetObjTypePriority(TYPE_NUCLEAR)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -709,8 +751,10 @@ void LoadDefaultTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMOR) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMORED_CAV)) / 2;
+            value =
+                (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMOR) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ARMORED_CAV)) /
+                2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -720,11 +764,13 @@ void LoadDefaultTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_INFANTRY) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MARINE) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MECHANIZED) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_AIRMOBILE) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_RESERVE)) / 5;
+            value =
+                (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_INFANTRY) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MARINE) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_MECHANIZED) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_AIRMOBILE) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_RESERVE)) /
+                5;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -734,10 +780,13 @@ void LoadDefaultTargetPriorities()
         if (sldr)
         {
             sldr->SetCallback(PriSliderCB);
-            value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ROCKET) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SP_ARTILLERY) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SS_MISSILE) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_TOWED_ARTILLERY)) / 4;
+            value =
+                (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ROCKET) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SP_ARTILLERY) +
+                 TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_SS_MISSILE) +
+                 TeamInfo[team]->GetUnitTypePriority(
+                     STYPE_UNIT_TOWED_ARTILLERY)) /
+                4;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -748,7 +797,8 @@ void LoadDefaultTargetPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_ENGINEER) +
-                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_HQ)) / 2;
+                     TeamInfo[team]->GetUnitTypePriority(STYPE_UNIT_HQ)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -767,8 +817,8 @@ void LoadDefaultTargetPriorities()
 // Copies Kevin's priority stuff into the Window's controls
 void LoadDefaultMissionPriorities()
 {
-    C_Window *win;
-    C_Slider *sldr;
+    C_Window* win;
+    C_Slider* sldr;
     long value;
     int team = FalconLocalSession->GetTeam();
 
@@ -781,8 +831,8 @@ void LoadDefaultMissionPriorities()
         sldr = (C_Slider*)win->FindControl(MISSION_1);
 
         if (sldr)
-            // TJL 10/26/03 Changed AMIS_SWEEP to AMIS_ESCORT.
-            // Cobra - 2/06 JG - Moved AMIS_ESCORT to Recon and changed to Escort.
+        // TJL 10/26/03 Changed AMIS_SWEEP to AMIS_ESCORT.
+        // Cobra - 2/06 JG - Moved AMIS_ESCORT to Recon and changed to Escort.
         {
             sldr->SetCallback(PriSliderCB);
             value = TeamInfo[team]->GetMissionPriority(AMIS_OCASTRIKE);
@@ -796,7 +846,8 @@ void LoadDefaultMissionPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_SEADSTRIKE) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_SEADESCORT)) / 2;
+                     TeamInfo[team]->GetMissionPriority(AMIS_SEADESCORT)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -808,7 +859,8 @@ void LoadDefaultMissionPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_SAD) +
                      TeamInfo[team]->GetMissionPriority(AMIS_INT) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_BAI)) / 3;
+                     TeamInfo[team]->GetMissionPriority(AMIS_BAI)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -820,7 +872,8 @@ void LoadDefaultMissionPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_ONCALLCAS) +
                      TeamInfo[team]->GetMissionPriority(AMIS_PRPLANCAS) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_CAS)) / 3;
+                     TeamInfo[team]->GetMissionPriority(AMIS_CAS)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -832,7 +885,8 @@ void LoadDefaultMissionPriorities()
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_INTSTRIKE) +
                      TeamInfo[team]->GetMissionPriority(AMIS_STRIKE) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_DEEPSTRIKE)) / 3;
+                     TeamInfo[team]->GetMissionPriority(AMIS_DEEPSTRIKE)) /
+                    3;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -843,7 +897,8 @@ void LoadDefaultMissionPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_ASW) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_ASHIP)) / 2;
+                     TeamInfo[team]->GetMissionPriority(AMIS_ASHIP)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -859,7 +914,8 @@ void LoadDefaultMissionPriorities()
                      TeamInfo[team]->GetMissionPriority(AMIS_TARCAP) +
                      TeamInfo[team]->GetMissionPriority(AMIS_RESCAP) +
                      TeamInfo[team]->GetMissionPriority(AMIS_AMBUSHCAP) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_INTERCEPT)) / 7;
+                     TeamInfo[team]->GetMissionPriority(AMIS_INTERCEPT)) /
+                    7;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
 
@@ -871,7 +927,8 @@ void LoadDefaultMissionPriorities()
         {
             sldr->SetCallback(PriSliderCB);
             value = (TeamInfo[team]->GetMissionPriority(AMIS_ESCORT) +
-                     TeamInfo[team]->GetMissionPriority(AMIS_SEADESCORT)) / 2;
+                     TeamInfo[team]->GetMissionPriority(AMIS_SEADESCORT)) /
+                    2;
             PositionSlider(value, sldr); // Value is in range of 0 -> 100
         }
     }
@@ -882,13 +939,14 @@ void LoadDefaultPAKPriorities()
     long i, idx;
     POData POD;
     short teamid;
-    WORD *Pal;
+    WORD* Pal;
 
-    if ( not PAKMap)
+    if (not PAKMap)
         return;
 
     teamid = FalconLocalSession->GetTeam();
-    Pal = (WORD*)((char *)(PAKMap->Owner->GetData() + PAKMap->Header->paletteoffset));
+    Pal = (WORD*)((char*)(PAKMap->Owner->GetData() +
+                          PAKMap->Header->paletteoffset));
 
     memset(PAKPriorities, 0, sizeof(PAKPriorities));
 
@@ -896,7 +954,7 @@ void LoadDefaultPAKPriorities()
     Objective o;
 
     idx = 1;
-    o = (Objective) poit.GetFirst();
+    o = (Objective)poit.GetFirst();
 
     while (o)
     {
@@ -910,7 +968,7 @@ void LoadDefaultPAKPriorities()
             Pal[idx] = PAKPalette[PAKPriorities[idx][teamid][0]];
         }
 
-        o = (Objective) poit.GetNext();
+        o = (Objective)poit.GetNext();
         idx++;
     }
 }
@@ -918,8 +976,8 @@ void LoadDefaultPAKPriorities()
 // Retrieves the Window's control values, and put's them in Kevin's structures
 void SaveTargetPriorities()
 {
-    C_Window *win;
-    C_Slider *sldr;
+    C_Window* win;
+    C_Slider* sldr;
     uchar value;
     int team = FalconLocalSession->GetTeam();
 
@@ -934,7 +992,8 @@ void SaveTargetPriorities()
         if (sldr)
         {
             value = static_cast<uchar>(SliderValue(sldr));
-            TeamInfo[team]->SetMissionPriority(AMIS_SWEEP, value); //TJL 10/26/03 Changed form Escort to Sweep
+            TeamInfo[team]->SetMissionPriority(
+                AMIS_SWEEP, value); //TJL 10/26/03 Changed form Escort to Sweep
         }
 
         // Air fields
@@ -1061,7 +1120,8 @@ void SaveTargetPriorities()
             TeamInfo[team]->SetUnitTypePriority(STYPE_UNIT_ROCKET, value);
             TeamInfo[team]->SetUnitTypePriority(STYPE_UNIT_SP_ARTILLERY, value);
             TeamInfo[team]->SetUnitTypePriority(STYPE_UNIT_SS_MISSILE, value);
-            TeamInfo[team]->SetUnitTypePriority(STYPE_UNIT_TOWED_ARTILLERY, value);
+            TeamInfo[team]->SetUnitTypePriority(STYPE_UNIT_TOWED_ARTILLERY,
+                                                value);
         }
 
         // Support units
@@ -1088,8 +1148,8 @@ void SaveTargetPriorities()
 
 void SaveMissionPriorities()
 {
-    C_Window *win;
-    C_Slider *sldr;
+    C_Window* win;
+    C_Slider* sldr;
     uchar value;
     int team = FalconLocalSession->GetTeam();
 
@@ -1102,8 +1162,8 @@ void SaveMissionPriorities()
         sldr = (C_Slider*)win->FindControl(MISSION_1);
 
         if (sldr)
-            // TJL 10/26/03 Changed AMIS_SWEEP to AMIS_ESCORT.
-            // Cobra - 2/06 JG - Moved AMIS_ESCORT to Recon and changed to Escort.
+        // TJL 10/26/03 Changed AMIS_SWEEP to AMIS_ESCORT.
+        // Cobra - 2/06 JG - Moved AMIS_ESCORT to Recon and changed to Escort.
         {
             value = static_cast<uchar>(SliderValue(sldr));
             TeamInfo[team]->SetMissionPriority(AMIS_OCASTRIKE, value);
@@ -1199,7 +1259,7 @@ void SavePAKPriorities()
     Objective o;
 
     idx = 1;
-    o = (Objective) poit.GetFirst();
+    o = (Objective)poit.GetFirst();
 
     while (o)
     {
@@ -1211,7 +1271,7 @@ void SavePAKPriorities()
             i = FalconLocalSession->GetTeam();
 
             if (i > 0 and i < NUM_TEAMS and TeamInfo[i])
-                // for(i=0;i<NUM_TEAMS;i++)
+            // for(i=0;i<NUM_TEAMS;i++)
             {
                 POD->player_priority[i] = PAKPriorities[idx][i][0];
                 POD->flags or_eq GTMOBJ_PLAYER_SET_PRIORITY;
@@ -1219,7 +1279,7 @@ void SavePAKPriorities()
             }
         }
 
-        o = (Objective) poit.GetNext();
+        o = (Objective)poit.GetNext();
         idx++;
     }
 
@@ -1235,10 +1295,10 @@ void SavePAKPriorities()
 // Init the PAK Slider to the campaign's current value
 void SelectPAK(long PAKID, long TeamID)
 {
-    C_Window *win;
-    C_Slider *sldr;
-    WORD *Pal;
-    F4CSECTIONHANDLE *Leave;
+    C_Window* win;
+    C_Slider* sldr;
+    WORD* Pal;
+    F4CSECTIONHANDLE* Leave;
 
     if (PAKID >= MAX_PAKS or TeamID >= NUM_TEAMS)
         return;
@@ -1252,8 +1312,11 @@ void SelectPAK(long PAKID, long TeamID)
 
         if (BlinkPAK < 0) // restore before changing
         {
-            Pal = (WORD*)(PAKMap->Owner->GetData() + PAKMap->Header->paletteoffset);
-            Pal[CurrentPAK] = PAKPalette[PAKPriorities[CurrentPAK][FalconLocalSession->GetTeam()][0]];
+            Pal = (WORD*)(PAKMap->Owner->GetData() +
+                          PAKMap->Header->paletteoffset);
+            Pal[CurrentPAK] =
+                PAKPalette[PAKPriorities[CurrentPAK]
+                                        [FalconLocalSession->GetTeam()][0]];
         }
 
         CurrentPAK = PAKID;
@@ -1261,7 +1324,8 @@ void SelectPAK(long PAKID, long TeamID)
         sldr = (C_Slider*)win->FindControl(PAK_SLIDER);
 
         if (sldr)
-            PositionSlider(100 - PAKPriorities[PAKID][TeamID][0], sldr); // Value is in range of 0 -> 100
+            PositionSlider(100 - PAKPriorities[PAKID][TeamID][0],
+                           sldr); // Value is in range of 0 -> 100
 
         UI_Leave(Leave);
     }
@@ -1269,7 +1333,7 @@ void SelectPAK(long PAKID, long TeamID)
 
 // UI Callbacks
 
-void PriorityTabsCB(long, short hittype, C_Base *control)
+void PriorityTabsCB(long, short hittype, C_Base* control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1281,9 +1345,9 @@ void PriorityTabsCB(long, short hittype, C_Base *control)
     control->Parent_->RefreshWindow();
 }
 
-void UsePriotityCB(long ID, short hittype, C_Base *control)
+void UsePriotityCB(long ID, short hittype, C_Base* control)
 {
-    C_Button *btn;
+    C_Button* btn;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1302,10 +1366,10 @@ void UsePriotityCB(long ID, short hittype, C_Base *control)
     CloseWindowCB(ID, hittype, control);
 }
 
-void ResetPriorityCB(long, short hittype, C_Base *control)
+void ResetPriorityCB(long, short hittype, C_Base* control)
 {
     long PAKID;
-    C_ListBox *lbox;
+    C_ListBox* lbox;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1322,7 +1386,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
     {
         PAKID = ((C_ListBox*)lbox)->GetTextID();
 
-        if ( not PAKID)
+        if (not PAKID)
             PAKID = 1;
 
         if (PAKID)
@@ -1330,7 +1394,7 @@ void ResetPriorityCB(long, short hittype, C_Base *control)
     }
 }
 
-void CancelPriorityCB(long ID, short hittype, C_Base *control)
+void CancelPriorityCB(long ID, short hittype, C_Base* control)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1338,11 +1402,11 @@ void CancelPriorityCB(long ID, short hittype, C_Base *control)
     CloseWindowCB(ID, hittype, control);
 }
 
-void OpenPriorityCB(long, short hittype, C_Base *control)
+void OpenPriorityCB(long, short hittype, C_Base* control)
 {
-    C_Window *win;
-    C_Button *btn;
-    C_ListBox *lbox;
+    C_Window* win;
+    C_Button* btn;
+    C_ListBox* lbox;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1400,24 +1464,25 @@ void OpenPriorityCB(long, short hittype, C_Base *control)
 }
 
 // Callback from MAP x,y checker
-void MapSelectPAKCB(long, short hittype, C_Base *control)
+void MapSelectPAKCB(long, short hittype, C_Base* control)
 {
-    C_Button *btn;
-    C_ListBox *lbox;
+    C_Button* btn;
+    C_ListBox* lbox;
     long x, y, PAKID;
-    char *overlay;
+    char* overlay;
 
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
 
-    if ( not control or not PAKMap)
+    if (not control or not PAKMap)
         return;
 
     btn = (C_Button*)control;
     x = btn->GetRelX();
     y = btn->GetRelY();
 
-    if (x < 0 or x >= TheCampaign.TheaterSizeX / PAK_MAP_RATIO or y < 0 or y >= TheCampaign.TheaterSizeY / PAK_MAP_RATIO)
+    if (x < 0 or x >= TheCampaign.TheaterSizeX / PAK_MAP_RATIO or y < 0 or
+        y >= TheCampaign.TheaterSizeY / PAK_MAP_RATIO)
         return;
 
     overlay = PAKMap->Owner->GetData();
@@ -1438,7 +1503,7 @@ void MapSelectPAKCB(long, short hittype, C_Base *control)
     }
 }
 
-void SelectPAKCB(long, short hittype, C_Base *control)
+void SelectPAKCB(long, short hittype, C_Base* control)
 {
     long PAKID;
 
@@ -1451,7 +1516,7 @@ void SelectPAKCB(long, short hittype, C_Base *control)
         SelectPAK(PAKID, FalconLocalSession->GetTeam());
 }
 
-void SetPAKPriorityCB(long, short hittype, C_Base *control)
+void SetPAKPriorityCB(long, short hittype, C_Base* control)
 {
     long value;
 
@@ -1460,13 +1525,15 @@ void SetPAKPriorityCB(long, short hittype, C_Base *control)
 
     value = 100 - SliderValue((C_Slider*)control);
 
-    PAKPriorities[CurrentPAK][FalconLocalSession->GetTeam()][0] = static_cast<short>(value);
-    PAKPriorities[CurrentPAK][FalconLocalSession->GetTeam()][1] = 1; // Mark as changed
+    PAKPriorities[CurrentPAK][FalconLocalSession->GetTeam()][0] =
+        static_cast<short>(value);
+    PAKPriorities[CurrentPAK][FalconLocalSession->GetTeam()][1] =
+        1; // Mark as changed
 
     TurnOffHQButton();
 }
 
-void SetCampaignPrioritiesCB(long, short hittype, C_Base *base)
+void SetCampaignPrioritiesCB(long, short hittype, C_Base* base)
 {
     if (hittype not_eq C_TYPE_LMOUSEUP)
         return;
@@ -1481,23 +1548,23 @@ void SetCampaignPrioritiesCB(long, short hittype, C_Base *base)
     }
     else
     {
-
     }
 
     base->Refresh();
 }
 
-BOOL PAKMapTimerCB(C_Base *me)
+BOOL PAKMapTimerCB(C_Base* me)
 {
-    WORD *Pal;
+    WORD* Pal;
 
     if (CurrentPAK)
     {
         me->SetUserNumber(0, (me->GetUserNumber(0) + 1) bitand 0x03);
 
-        if ( not me->GetUserNumber(0))
+        if (not me->GetUserNumber(0))
         {
-            Pal = (WORD*)(PAKMap->Owner->GetData() + PAKMap->Header->paletteoffset);
+            Pal = (WORD*)(PAKMap->Owner->GetData() +
+                          PAKMap->Header->paletteoffset);
             BlinkPAK = static_cast<char>(-BlinkPAK);
 
             if (BlinkPAK < 0) // Flash BLACK
@@ -1506,12 +1573,14 @@ BOOL PAKMapTimerCB(C_Base *me)
             }
             else // Show Actual color
             {
-                Pal[CurrentPAK] = PAKPalette[PAKPriorities[CurrentPAK][FalconLocalSession->GetTeam()][0]];
+                Pal[CurrentPAK] =
+                    PAKPalette[PAKPriorities[CurrentPAK]
+                                            [FalconLocalSession->GetTeam()][0]];
             }
 
-            return(TRUE);
+            return (TRUE);
         }
     }
 
-    return(FALSE);
+    return (FALSE);
 }

@@ -1,4 +1,4 @@
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
 #include "otwdrive.h"
 #include "initdata.h"
@@ -7,14 +7,14 @@
 #include "classtbl.h"
 #include "entity.h"
 #include "chaff.h"
-#include "sfx.h" //I-Hawk 
-#include "Graphics/Include/drawparticlesys.h" //I-Hawk
+#include "sfx.h" //I-Hawk
+#include "graphics/include/drawparticlesys.h" //I-Hawk
 
 #ifdef USE_SH_POOLS
 MEM_POOL ChaffClass::pool;
 #endif
 
-ChaffClass::ChaffClass(VU_BYTE** stream, long *rem) : BombClass(stream, rem)
+ChaffClass::ChaffClass(VU_BYTE** stream, long* rem) : BombClass(stream, rem)
 {
     InitLocalData();
 }
@@ -66,13 +66,13 @@ int ChaffClass::SaveSize()
     return BombClass::SaveSize();
 }
 
-int ChaffClass::Save(VU_BYTE **stream)
+int ChaffClass::Save(VU_BYTE** stream)
 {
     int saveSize = BombClass::Save(stream);
     return saveSize;
 }
 
-int ChaffClass::Save(FILE *file)
+int ChaffClass::Save(FILE* file)
 {
     int saveSize = SimWeaponClass::Save(file);
 
@@ -150,14 +150,12 @@ void ChaffClass::ExtraGraphics()
 
     BombClass::ExtraGraphics();
 
-    Tpoint newPoint = { XPos(), YPos(), ZPos() };
-    Tpoint vec = { XDelta(), YDelta(), ZDelta() };
+    Tpoint newPoint = {XPos(), YPos(), ZPos()};
+    Tpoint vec = {XDelta(), YDelta(), ZDelta()};
 
     //RV - I-Hawk - PS chaff effect call, to replace the old chaff effect
 
-    DrawableParticleSys::PS_AddParticleEx(
-        (SFX_CHAFF + 1), &newPoint, &vec
-    );
+    DrawableParticleSys::PS_AddParticleEx((SFX_CHAFF + 1), &newPoint, &vec);
 
     timeOfDeath = SimLibElapsedTime;
 }
@@ -235,8 +233,8 @@ void ChaffClass::InitTrail()
     Falcon4EntityClassType* classPtr;
 
     flags or_eq IsChaff;
-    displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_CHAFF,
-                              STYPE_CHAFF, SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY);
+    displayIndex = GetClassID(DOMAIN_AIR, CLASS_SFX, TYPE_CHAFF, STYPE_CHAFF,
+                              SPTYPE_CHAFF1, VU_ANY, VU_ANY, VU_ANY);
 
     if (drawPointer)
     {
@@ -250,7 +248,8 @@ void ChaffClass::InitTrail()
 
     //if (IsAwake()) // FRB - Hack to use chaff lod and not the GBU-31
     {
-        OTWDriver.CreateVisualObject(this, classPtr->visType[0], OTWDriver.Scale());
+        OTWDriver.CreateVisualObject(this, classPtr->visType[0],
+                                     OTWDriver.Scale());
         displayIndex = -1;
     }
 }

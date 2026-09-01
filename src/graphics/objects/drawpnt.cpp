@@ -5,24 +5,25 @@
  given location and will draw a label for it (if turned on).  In general,
  this can be used to draw an object that's very far away.
 \***************************************************************************/
-#include "Matrix.h"
-#include "TimeMgr.h"
-#include "TOD.h"
-#include "RenderOW.h"
-#include "RViewPnt.h"
-#include "DrawBSP.h"
-#include "DrawPNT.h"
+#include "matrix.h"
+#include "timemgr.h"
+#include "tod.h"
+#include "renderow.h"
+#include "rviewpnt.h"
+#include "drawbsp.h"
+#include "drawpnt.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawablePoint::pool;
 #endif
 
-BOOL DrawablePoint::drawLabels = FALSE; // Shared by ALL drawable points (campaing labels)
+BOOL DrawablePoint::drawLabels =
+    FALSE; // Shared by ALL drawable points (campaing labels)
 extern int g_nNearLabelLimit; // JB 000807
 extern bool g_bLabelRadialFix;
 extern bool g_bLabelShowDistance;
 extern BOOL renderACMI;
-
+
 /***************************************************************************\
     Initialize a container for a Point object to be drawn
 \***************************************************************************/
@@ -44,7 +45,6 @@ DrawablePoint::DrawablePoint(DWORD color, BOOL grnd, const Tpoint *pos, float s)
 }
 
 
-
 /***************************************************************************\
     Remove an instance of a Point object.
 \***************************************************************************/
@@ -53,7 +53,6 @@ DrawablePoint::~DrawablePoint(void)
 }
 
 
-
 /***************************************************************************\
     Update the position and orientation of this object.
 \***************************************************************************/
@@ -72,7 +71,6 @@ void DrawablePoint::Update(const Tpoint *pos)
 }
 
 
-
 /***************************************************************************\
     Store the labeling information for this object instance.
 \***************************************************************************/
@@ -86,7 +84,7 @@ void DrawablePoint::SetLabel(char *labelString, DWORD color)
     labelLen = VirtualDisplay::ScreenTextWidth(labelString) >> 1;
 }
 
-
+
 /***************************************************************************\
 \***************************************************************************/
 void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
@@ -100,7 +98,8 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
         if (onGround == TRUE and LOD not_eq previousLOD)
         {
             // Update our height to reflect the terrain beneath us
-            position.z = renderer->viewpoint->GetGroundLevel(position.x, position.y, NULL);
+            position.z = renderer->viewpoint->GetGroundLevel(position.x,
+                                                             position.y, NULL);
             previousLOD = LOD;
         }
 
@@ -108,11 +107,13 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
         renderer->TransformPoint(&position, &labelPoint);   // JB 010112
         float x, y;
         // RV - RED - If ACMI force Label Limit to 150 nMiles
-        long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8, limitcheck;
+        long limit = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8,
+             limitcheck;
 
-        if ( not DrawablePoint::drawLabels)
+        if (not DrawablePoint::drawLabels)
             limitcheck = (renderACMI ? 150 : g_nNearLabelLimit) * 6076 + 8;
-        else limitcheck = 300 * 6076 + 8; //
+        else
+            limitcheck = 300 * 6076 + 8; //
 
         //dpc LabelRadialDistanceFix
         //First check if Z distance is below "limitcheck" and only if it is then do additional
@@ -120,7 +121,7 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
         // since labelPoint is local and .csZ is not used afterwards)
         // Besides no need to calculate radial distance is Z distance is already greater
         if (g_bLabelRadialFix)
-            if (labelPoint.clipFlag == ON_SCREEN and 
+            if (labelPoint.clipFlag == ON_SCREEN and
                 labelPoint.csZ < limitcheck) //Same condition as below
             {
                 float dx = position.x - renderer->X();
@@ -131,24 +132,26 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
 
         //end LabelRadialDistanceFix
 
-        if (labelPoint.clipFlag == ON_SCREEN and 
-            labelPoint.csZ < limitcheck)
+        if (labelPoint.clipFlag == ON_SCREEN and labelPoint.csZ < limitcheck)
         {
             int colorsub = int((labelPoint.csZ / (limit >> 3))) << 5;
 
-            if (colorsub > 180) // let's not reduce brightness too much, keep a glimpse of the original color
+            if (colorsub >
+                180) // let's not reduce brightness too much, keep a glimpse of the original color
                 colorsub = 180;
 
             int red = (labelColor bitand 0x000000ff);
             red -= min(red, colorsub); // minimum red = 100
             int green = (labelColor bitand 0x0000ff00) >> 8;
-            green -= min(green, colorsub + 30); // minimum green = 70, 100 is too light
+            green -= min(green,
+                         colorsub + 30); // minimum green = 70, 100 is too light
             int blue = (labelColor bitand 0x00ff0000) >> 16;
             blue -= min(blue, colorsub); // minimum blue = 100
 
             long newlabelColor = blue << 16 bitor green << 8 bitor red;
 
-            x = labelPoint.x - renderer->ScreenTextWidth(label) / 2; // Centers text
+            x = labelPoint.x -
+                renderer->ScreenTextWidth(label) / 2; // Centers text
             y = labelPoint.y - 12; // Place text above center of object
             renderer->SetColor(newlabelColor);
             renderer->ScreenText(x, y, label);
@@ -157,8 +160,10 @@ void DrawablePoint::Draw(RenderOTW *renderer, int LOD)
             if (g_bLabelShowDistance)
             {
                 char label2[32];
-                sprintf(label2, "%4.1f nm", labelPoint.csZ / 6076); // convert from ft to nm
-                float x2 = labelPoint.x - renderer->ScreenTextWidth(label2) / 2; // Centers text
+                sprintf(label2, "%4.1f nm",
+                        labelPoint.csZ / 6076); // convert from ft to nm
+                float x2 = labelPoint.x - renderer->ScreenTextWidth(label2) /
+                                              2; // Centers text
                 float y2 = labelPoint.y + 12; // Distance below center object
                 renderer->ScreenText(x2, y2, label2);
             }

@@ -8,14 +8,14 @@
 #include "stdafx.h"
 #include <io.h>
 #include <fcntl.h>
-#include "Loader.h"
-#include "ObjectLOD.h"
+#include "loader.h"
+#include "objectlod.h"
 
 
-#include "RedProfiler.h"
-#include "Graphics/DXEngine/DXDefines.h"
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "redprofiler.h"
+#include "graphics/dxengine/dxdefines.h"
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
 
 extern bool g_bUse_DX_Engine;
 
@@ -25,20 +25,21 @@ extern DWORD gDebugLodID;
 extern MEM_POOL gBSPLibMemPool;
 #endif
 
-ObjectLOD *TheObjectLODs = NULL;
+ObjectLOD* TheObjectLODs = NULL;
 int TheObjectLODsCount = 0;
 #ifdef _DEBUG
-int     ObjectLOD::lodsLoaded = 0;
+int ObjectLOD::lodsLoaded = 0;
 #endif
-FileMemMap  ObjectLOD::ObjectLodMap;
-BYTE *ObjectLOD::LodBuffer;
+FileMemMap ObjectLOD::ObjectLodMap;
+BYTE* ObjectLOD::LodBuffer;
 DWORD ObjectLOD::LodBufferSize;
 bool ObjectLOD::RatedLoad;
-short *ObjectLOD::CacheLoad, *ObjectLOD::CacheRelease, ObjectLOD::LoadIn, ObjectLOD::LoadOut, ObjectLOD::ReleaseIn, ObjectLOD::ReleaseOut;
+short *ObjectLOD::CacheLoad, *ObjectLOD::CacheRelease, ObjectLOD::LoadIn,
+    ObjectLOD::LoadOut, ObjectLOD::ReleaseIn, ObjectLOD::ReleaseOut;
 
 
 CRITICAL_SECTION ObjectLOD::cs_ObjectLOD;
-static  int maxTagList;
+static int maxTagList;
 extern bool g_bUseMappedFiles;
 
 
@@ -48,8 +49,7 @@ ObjectLOD::ObjectLOD()
     refCount = 0;
     OnRelease = OnOrder = false;
     RatedLoad = true;
-    TexBank   = NULL;
-
+    TexBank = NULL;
 }
 
 
@@ -68,24 +68,25 @@ void ObjectLOD::SetupEmptyTable(int numEntries)
     // Create the contiguous array of (unitialized) LOD records
     ShiAssert(TheObjectLODs == NULL);
 #ifdef USE_SH_POOLS
-    TheObjectLODs = (ObjectLOD *)MemAllocPtr(gBSPLibMemPool, sizeof(ObjectLOD) * (numEntries), 0);
+    TheObjectLODs = (ObjectLOD*)MemAllocPtr(
+        gBSPLibMemPool, sizeof(ObjectLOD) * (numEntries), 0);
 #else
     TheObjectLODs = new ObjectLOD[numEntries];
 #endif
     TheObjectLODsCount = numEntries;
 
     // Allocate space for load buffer
-    LodBuffer = (BYTE*) malloc(DEFAULT_BUFFER_SIZE);
+    LodBuffer = (BYTE*)malloc(DEFAULT_BUFFER_SIZE);
     LodBufferSize = DEFAULT_BUFFER_SIZE;
     RatedLoad = true;
 
     // Allocte acche with a little safety margin
-    CacheLoad = (short*) malloc(sizeof(short) * (numEntries + CACHE_MARGIN));
-    CacheRelease = (short*) malloc(sizeof(short) * (numEntries + CACHE_MARGIN));
+    CacheLoad = (short*)malloc(sizeof(short) * (numEntries + CACHE_MARGIN));
+    CacheRelease = (short*)malloc(sizeof(short) * (numEntries + CACHE_MARGIN));
     LoadIn = LoadOut = ReleaseIn = ReleaseOut = 0;
 
-    DWORD   Count = TheObjectLODsCount;
-    ObjectLOD *Lod = &TheObjectLODs[0];
+    DWORD Count = TheObjectLODsCount;
+    ObjectLOD* Lod = &TheObjectLODs[0];
 
     while (Count--)
     {
@@ -100,8 +101,7 @@ void ObjectLOD::SetupEmptyTable(int numEntries)
 DWORD LODsLoaded;
 
 
-
-void ObjectLOD::SetupTable(int file, char *basename)
+void ObjectLOD::SetupTable(int file, char* basename)
 {
     char filename[_MAX_PATH];
     int result;
@@ -143,17 +143,17 @@ void ObjectLOD::SetupTable(int file, char *basename)
     }
 
     // RED - Read serialization... finally... Stupid JAM...
-    ObjectLOD *Lod = &TheObjectLODs[0];
-    DWORD   Count = TheObjectLODsCount;
-    char   Spare[12];
+    ObjectLOD* Lod = &TheObjectLODs[0];
+    DWORD Count = TheObjectLODsCount;
+    char Spare[12];
 
     while (Count--)
     {
         // Spare unused data - 12 bytes
         read(file, &Spare, 12);
         // Read data serially
-        read(file, &Lod->fileoffset, sizeof(Lod ->fileoffset));
-        read(file, &Lod->filesize, sizeof(Lod ->filesize));
+        read(file, &Lod->fileoffset, sizeof(Lod->fileoffset));
+        read(file, &Lod->filesize, sizeof(Lod->filesize));
 
         // Make a copy of the Texture numbers used by the Model
         DxDbHeader rt;
@@ -170,9 +170,13 @@ void ObjectLOD::SetupTable(int file, char *basename)
                 if (Lod->NrTextures)
                 {
                     // allocate space and load the textures table from the model
-                    Lod->TexBank = (DWORD*)malloc(Lod->NrTextures * sizeof(DWORD));
+                    Lod->TexBank =
+                        (DWORD*)malloc(Lod->NrTextures * sizeof(DWORD));
 
-                    if (Lod->TexBank) ObjectLodMap.ReadDataAt(Lod->fileoffset + sizeof(DxDbHeader), Lod->TexBank, Lod->NrTextures * sizeof(DWORD));
+                    if (Lod->TexBank)
+                        ObjectLodMap.ReadDataAt(
+                            Lod->fileoffset + sizeof(DxDbHeader), Lod->TexBank,
+                            Lod->NrTextures * sizeof(DWORD));
                 }
             }
         }
@@ -185,8 +189,10 @@ void ObjectLOD::SetupTable(int file, char *basename)
     InitializeCriticalSection(&cs_ObjectLOD);
     RatedLoad = true;
     // Allocte acche with a little safety margin
-    CacheLoad = (short*) malloc(sizeof(short) * (TheObjectLODsCount + CACHE_MARGIN));
-    CacheRelease = (short*) malloc(sizeof(short) * (TheObjectLODsCount + CACHE_MARGIN));
+    CacheLoad =
+        (short*)malloc(sizeof(short) * (TheObjectLODsCount + CACHE_MARGIN));
+    CacheRelease =
+        (short*)malloc(sizeof(short) * (TheObjectLODsCount + CACHE_MARGIN));
     LoadIn = LoadOut = ReleaseIn = ReleaseOut = 0;
     LODsLoaded = 0;
 }
@@ -207,7 +213,8 @@ void ObjectLOD::CleanupTable(void)
             CacheRelease[ReleaseIn++] = i;
 
             // ring the in pointer
-            if (ReleaseIn >= (TheObjectLODsCount + CACHE_MARGIN)) ReleaseIn = 0;
+            if (ReleaseIn >= (TheObjectLODsCount + CACHE_MARGIN))
+                ReleaseIn = 0;
         }
     }
 
@@ -231,13 +238,16 @@ void ObjectLOD::CleanupTable(void)
     // Free our critical section
     DeleteCriticalSection(&cs_ObjectLOD);
 
-    if (LodBuffer) free(LodBuffer);
+    if (LodBuffer)
+        free(LodBuffer);
 
     LodBufferSize = 0;
 
-    if (CacheLoad) free(CacheLoad), CacheLoad = NULL;
+    if (CacheLoad)
+        free(CacheLoad), CacheLoad = NULL;
 
-    if (CacheRelease) free(CacheRelease), CacheRelease = NULL;
+    if (CacheRelease)
+        free(CacheRelease), CacheRelease = NULL;
 
     LoadIn = LoadOut = ReleaseIn = ReleaseOut = 0;
 
@@ -249,7 +259,6 @@ void ObjectLOD::CleanupTable(void)
 }
 
 
-
 // RED - Rewritten Object Loader
 // no more Mutex as they are causing stutters at load time
 BOOL ObjectLOD::Fetch(void)
@@ -259,10 +268,12 @@ BOOL ObjectLOD::Fetch(void)
 
     // if object is on release do nothing
     // DO NOT RETURN A ROOT THAT MAY BE VANISHING, deleted by loader task
-    if (OnRelease || OnOrder) return false;
+    if (OnRelease || OnOrder)
+        return false;
 
     // If we already have our data
-    if (root) return true;
+    if (root)
+        return true;
 
     // Mark as ordered
     OnOrder = true;
@@ -271,7 +282,8 @@ BOOL ObjectLOD::Fetch(void)
     // ring the in pointer, work on TEMP to avoid problems with ReleaseOut comparison in other thread
     short Temp = LoadIn + 1;
 
-    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN)) Temp = 0;
+    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN))
+        Temp = 0;
 
     LoadIn = Temp;
     // Kick the Loader
@@ -282,7 +294,6 @@ BOOL ObjectLOD::Fetch(void)
 }
 
 
-
 // RED - Rewritten Object Loader
 // no more Mutex as they are causing stutters at load time
 
@@ -290,7 +301,8 @@ void ObjectLOD::Unload(void)
 {
 
     // if nothing loaded or already on release, return
-    if (!root || OnRelease) return;
+    if (!root || OnRelease)
+        return;
 
     // Setup the Flag about Release
     OnRelease = true;
@@ -299,16 +311,13 @@ void ObjectLOD::Unload(void)
     // ring the in pointer, work on TEMP to avoid problems with ReleaseOut comparison in other thread
     short Temp = ReleaseIn + 1;
 
-    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN)) Temp = 0;
+    if (Temp >= (TheObjectLODsCount + CACHE_MARGIN))
+        Temp = 0;
 
     ReleaseIn = Temp;
     // Kick the Loader
     TheLoader.WakeUp();
-
 }
-
-
-
 
 
 // Privatly used static members
@@ -323,17 +332,17 @@ MEM_POOL ObjectLOD::pool;
 void ObjectLOD::ReleaseLodList(void)
 {
 
-    for (int a = 0; a < TheObjectLODsCount; a++) TheObjectLODs[a].Unload();
+    for (int a = 0; a < TheObjectLODsCount; a++)
+        TheObjectLODs[a].Unload();
 
     // wait for all done
     WaitUpdates();
-
 }
 
 
 DWORD ObjectLOD::Load(void)
 {
-    DxDbHeader *Header;
+    DxDbHeader* Header;
     DWORD DxID;
 
     ////////////// COBRA - DX - The DX Load Procedure //////////////////////////////////////////
@@ -341,7 +350,9 @@ DWORD ObjectLOD::Load(void)
     gDebugLodID = WhoAmI();
 
     // check for buffer size... if smaller make a new Buffer
-    if (filesize > LodBufferSize) free(LodBuffer), LodBufferSize = filesize, LodBuffer = (BYTE*)malloc(LodBufferSize);
+    if (filesize > LodBufferSize)
+        free(LodBuffer), LodBufferSize = filesize,
+                         LodBuffer = (BYTE*)malloc(LodBufferSize);
 
     //Default the Root to null
     root = NULL;
@@ -353,7 +364,7 @@ DWORD ObjectLOD::Load(void)
         if (ObjectLodMap.ReadDataAt(fileoffset, LodBuffer, filesize))
         {
             // Assign with casting to a pointer the header of data
-            Header = (DxDbHeader*) LodBuffer;
+            Header = (DxDbHeader*)LodBuffer;
             // Get the LOD ID
             DxID = Header->Id;
 
@@ -409,58 +420,66 @@ bool ObjectLOD::UpdateLods(void)
             // the amount of data loaded
             DWORD LoadSize = 0;
             // while( LoadSize < MAX_LOD_LOAD_SIZE && LoadOut != LoadIn){
-            ObjectLOD &Lod = TheObjectLODs[CacheLoad[LoadOut++]];
+            ObjectLOD& Lod = TheObjectLODs[CacheLoad[LoadOut++]];
 
-            if (!Lod.root && Lod.OnOrder) LoadSize += Lod.Load(), Sleep(20);
+            if (!Lod.root && Lod.OnOrder)
+                LoadSize += Lod.Load(), Sleep(20);
 
             // Load is done IN ANY CASE
             Lod.OnOrder = false;
 
             // ring the done pointer
-            if (LoadOut >= (TheObjectLODsCount + CACHE_MARGIN)) LoadOut = 0;
+            if (LoadOut >= (TheObjectLODsCount + CACHE_MARGIN))
+                LoadOut = 0;
 
             // }
             // * MANAGE ONLY 1 LOD PER CALL FRAME *
-            if (RatedLoad) return true;
+            if (RatedLoad)
+                return true;
         }
 
         if (ReleaseIn != ReleaseOut)
         {
-            ObjectLOD &Lod = TheObjectLODs[CacheRelease[ReleaseOut++]];
+            ObjectLOD& Lod = TheObjectLODs[CacheRelease[ReleaseOut++]];
 
-            if (Lod.root && Lod.OnRelease) Lod.Free();
+            if (Lod.root && Lod.OnRelease)
+                Lod.Free();
 
             // Release is done IN ANY CASE
             Lod.OnRelease = false;
 
             // ring the done pointer
-            if (ReleaseOut >= (TheObjectLODsCount + CACHE_MARGIN)) ReleaseOut = 0;
+            if (ReleaseOut >= (TheObjectLODsCount + CACHE_MARGIN))
+                ReleaseOut = 0;
 
             // * MANAGE ONLY 1 LOD PER CALL FRAME *
-            if (RatedLoad) return true;
+            if (RatedLoad)
+                return true;
         }
     }
 
     // if here, nothing done, back is up to date
     return false;
-
 }
 
 void ObjectLOD::WaitUpdates(void)
 {
     // if no data to wait, exit here
-    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut) return;
+    if (LoadIn == LoadOut && ReleaseIn == ReleaseOut)
+        return;
 
     // Pause the Loader...
     TheLoader.SetPause(true);
 
-    while (!TheLoader.Paused());
+    while (!TheLoader.Paused())
+        ;
 
     // Not slow loading
     RatedLoad = false;
 
     // Parse all objects till any opration to do
-    while (UpdateLods());
+    while (UpdateLods())
+        ;
 
     // Restore rated loading
     RatedLoad = true;
@@ -514,5 +533,6 @@ void ObjectLOD::Release(void)
     // Dereference the object, and eventually uload
     refCount--;
 
-    if (refCount == 0) Unload();
+    if (refCount == 0)
+        Unload();
 }

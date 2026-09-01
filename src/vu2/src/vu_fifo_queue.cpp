@@ -163,4 +163,3 @@ VU_COLL_TYPE VuFifoQueue::Type() const
     return VU_FIFO_QUEUE_COLLECTION;
 }
 #endif
-

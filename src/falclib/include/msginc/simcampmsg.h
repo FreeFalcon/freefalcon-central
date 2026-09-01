@@ -11,10 +11,10 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Sim Camp Message
@@ -34,7 +34,8 @@ public:
         simcampRequestAllDeagData
     };
 
-    FalconSimCampMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconSimCampMessage(VU_ID entityId, VuTargetEntity *target,
+                         VU_BOOL loopback = TRUE);
     FalconSimCampMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconSimCampMessage(void);
     virtual int Size() const;
@@ -45,16 +46,15 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID from;
         unsigned int message;
         ushort size;
-        uchar* data;
+        uchar *data;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

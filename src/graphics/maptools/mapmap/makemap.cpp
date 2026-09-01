@@ -37,16 +37,16 @@ struct ElementList
 
 ElementList *HashRow[HASH_MAX_SIZE], *HashCol[HASH_MAX_SIZE];
 
-#pragma pack (push, 1)
+#pragma pack(push, 1)
 struct PCXHEADER
 {
     char manufacturer, version, encoding, bits_per_pixel;
     short xmin, ymin, xmax, ymax, hres, vres;
-    char   palette[48], reserved, colour_planes;
-    short  bytes_per_line, palette_type;
-    char   filler[58];
+    char palette[48], reserved, colour_planes;
+    short bytes_per_line, palette_type;
+    char filler[58];
 };
-#pragma pack (pop)
+#pragma pack(pop)
 
 //--------------------------------------
 
@@ -60,15 +60,19 @@ int InsertElement(ElementList **list, int element);
 int DeleteElement(ElementList **list, int element);
 void DuplicateListElement(ElementList **list, ElementList **duplist);
 int CreateTileListElement(ElementList **list);
-int InsertTileRowElement(ElementList **list, int counter, unsigned short *buff, int width);
-int DeleteTileRowElement(ElementList **list, int counter, unsigned short *buff, int width);
-int InsertTileColElement(ElementList **list, int counter, unsigned short *buff, int height);
-int DeleteTileColElement(ElementList **list, int counter, unsigned short *buff, int height);
+int InsertTileRowElement(ElementList **list, int counter, unsigned short *buff,
+                         int width);
+int DeleteTileRowElement(ElementList **list, int counter, unsigned short *buff,
+                         int width);
+int InsertTileColElement(ElementList **list, int counter, unsigned short *buff,
+                         int height);
+int DeleteTileColElement(ElementList **list, int counter, unsigned short *buff,
+                         int height);
 
 int datawidth, dataheight;
 int windowwidth, windowheight;
 unsigned short *databuffer;
-unsigned char  *mapbuffer;
+unsigned char *mapbuffer;
 int totalimagebytes;
 
 void main(int argc, char *argv[])
@@ -76,12 +80,14 @@ void main(int argc, char *argv[])
     if (argc < 2)
     {
         puts("\nMakeMap v1.0 by Erick Jap\n");
-        puts("Usage: MakeMap mapfile -d width height -w width height [-oOutput]");
+        puts("Usage: MakeMap mapfile -d width height -w width height "
+             "[-oOutput]");
         puts("where: mapfile is map file data to be used");
         puts("       -oOutput use 'Output' as the output file");
         puts("       -d width height indicate map dimension");
         puts("       -w width height indicate sliding window dimension");
-        puts("Note: - Sliding window dimension must be less than the data dimension");
+        puts("Note: - Sliding window dimension must be less than the data "
+             "dimension");
         exit(1);
     }
 
@@ -147,7 +153,7 @@ void main(int argc, char *argv[])
 
     j = datawidth * dataheight;
     i = j << 1;
-    mapbuffer = (unsigned char *) malloc(i + j);
+    mapbuffer = (unsigned char *)malloc(i + j);
 
     if (!mapbuffer)
     {
@@ -165,7 +171,7 @@ void main(int argc, char *argv[])
         exit(1);
     }
 
-    read(infile, (char *) databuffer, i);
+    read(infile, (char *)databuffer, i);
     close(infile);
 
     int numwidth = datawidth - windowwidth + 1;
@@ -174,13 +180,15 @@ void main(int argc, char *argv[])
     memset(HashRow, 0, HASH_MAX_SIZE * sizeof(ElementList *));
     int totaltile = CreateTileListElement(HashRow);
     unsigned short *buff = databuffer;
-    unsigned char  *curmap = mapbuffer;
+    unsigned char *curmap = mapbuffer;
     int winheight;
 
     for (i = 0; i < dataheight; i++)
     {
-        if (i < (numheight - 1)) winheight = windowheight;
-        else winheight = dataheight - i;
+        if (i < (numheight - 1))
+            winheight = windowheight;
+        else
+            winheight = dataheight - i;
 
         DuplicateHashTable(HashRow, HashCol);
         int curtile = totaltile;
@@ -189,29 +197,37 @@ void main(int argc, char *argv[])
         {
             unsigned int k = 255;
 
-            if (curtile <= 256) k = curtile - 1;
+            if (curtile <= 256)
+                k = curtile - 1;
 
             *curmap++ = k;
 
             if (j < (numwidth - 1))
             {
-                curtile = InsertTileColElement(HashCol, curtile, &(buff[j + windowwidth]), winheight);
-                curtile = DeleteTileColElement(HashCol, curtile, &(buff[j]), winheight);
+                curtile = InsertTileColElement(
+                    HashCol, curtile, &(buff[j + windowwidth]), winheight);
+                curtile = DeleteTileColElement(HashCol, curtile, &(buff[j]),
+                                               winheight);
             }
             else
             {
-                curtile = DeleteTileColElement(HashCol, curtile, &(buff[j]), winheight);
+                curtile = DeleteTileColElement(HashCol, curtile, &(buff[j]),
+                                               winheight);
             }
         }
 
         if (i < (numheight - 1))
         {
-            totaltile = InsertTileRowElement(HashRow, totaltile, buff + datawidth * windowheight, windowwidth);
-            totaltile = DeleteTileRowElement(HashRow, totaltile, buff, windowwidth);
+            totaltile = InsertTileRowElement(HashRow, totaltile,
+                                             buff + datawidth * windowheight,
+                                             windowwidth);
+            totaltile =
+                DeleteTileRowElement(HashRow, totaltile, buff, windowwidth);
         }
         else
         {
-            totaltile = DeleteTileRowElement(HashRow, totaltile, buff, windowwidth);
+            totaltile =
+                DeleteTileRowElement(HashRow, totaltile, buff, windowwidth);
         }
 
         buff += datawidth;
@@ -225,11 +241,10 @@ void main(int argc, char *argv[])
 
     for (i = 0; i < dataheight; i++)
     {
-        unsigned char *databuf = (unsigned char *) databuffer;
+        unsigned char *databuf = (unsigned char *)databuffer;
         databuf += totalimagebytes;
-        totalimagebytes = packImageRow(curmap,
-                                       (unsigned char *) databuf,
-                                       totalimagebytes);
+        totalimagebytes =
+            packImageRow(curmap, (unsigned char *)databuf, totalimagebytes);
         curmap += datawidth;
     }
 
@@ -249,9 +264,9 @@ void ConcatFileExtension(char *newfile, char *oldfile, char *ext)
         currchar = *oldfile++;
         nextchar = *oldfile;
 
-        if (currchar == '.' &&
-            ((prevchar != '.' && prevchar != '\\') ||
-             (nextchar != '.' && nextchar != '\\'))) break;
+        if (currchar == '.' && ((prevchar != '.' && prevchar != '\\') ||
+                                (nextchar != '.' && nextchar != '\\')))
+            break;
 
         prevchar = currchar;
         *newfile++ = currchar;
@@ -259,7 +274,8 @@ void ConcatFileExtension(char *newfile, char *oldfile, char *ext)
 
     *newfile++ = '.';
 
-    while (*ext) *newfile++ = *ext++;
+    while (*ext)
+        *newfile++ = *ext++;
 
     *newfile = 0;
 }
@@ -267,7 +283,7 @@ void ConcatFileExtension(char *newfile, char *oldfile, char *ext)
 void SavePCX(char *file)
 {
     PCXHEADER pcx;
-    memset((char *) &pcx, 0, sizeof(PCXHEADER));
+    memset((char *)&pcx, 0, sizeof(PCXHEADER));
     pcx.manufacturer = 10;
     pcx.version = 5;
     pcx.encoding = 1;
@@ -280,57 +296,57 @@ void SavePCX(char *file)
     pcx.vres = 480;
     pcx.colour_planes = 1;
     pcx.bytes_per_line = datawidth;
-    pcx.palette[0] = (char) 0;
-    pcx.palette[1] = (char) 0;
-    pcx.palette[2] = (char) 0;
-    pcx.palette[3] = (char) 0;
-    pcx.palette[4] = (char) 0;
-    pcx.palette[5] = (char) 0xaa;
-    pcx.palette[6] = (char) 0;
-    pcx.palette[7] = (char) 0xaa;
-    pcx.palette[8] = (char) 0;
-    pcx.palette[9] = (char) 0;
-    pcx.palette[10] = (char) 0xaa;
-    pcx.palette[11] = (char) 0xaa;
-    pcx.palette[12] = (char) 0xaa;
-    pcx.palette[13] = (char) 0;
-    pcx.palette[14] = (char) 0;
-    pcx.palette[15] = (char) 0xaa;
-    pcx.palette[16] = (char) 0;
-    pcx.palette[17] = (char) 0xaa;
-    pcx.palette[18] = (char) 0xaa;
-    pcx.palette[19] = (char) 0xaa;
-    pcx.palette[20] = (char) 0;
-    pcx.palette[21] = (char) 0xaa;
-    pcx.palette[22] = (char) 0xaa;
-    pcx.palette[23] = (char) 0xaa;
-    pcx.palette[24] = (char) 0x55;
-    pcx.palette[25] = (char) 0x55;
-    pcx.palette[26] = (char) 0x55;
-    pcx.palette[27] = (char) 0x55;
-    pcx.palette[28] = (char) 0x55;
-    pcx.palette[29] = (char) 0xff;
-    pcx.palette[30] = (char) 0x55;
-    pcx.palette[31] = (char) 0xff;
-    pcx.palette[32] = (char) 0x55;
-    pcx.palette[33] = (char) 0x55;
-    pcx.palette[34] = (char) 0xff;
-    pcx.palette[35] = (char) 0xff;
-    pcx.palette[36] = (char) 0xff;
-    pcx.palette[37] = (char) 0x55;
-    pcx.palette[38] = (char) 0x55;
-    pcx.palette[39] = (char) 0xff;
-    pcx.palette[40] = (char) 0x55;
-    pcx.palette[41] = (char) 0xff;
-    pcx.palette[42] = (char) 0xff;
-    pcx.palette[43] = (char) 0xff;
-    pcx.palette[44] = (char) 0x55;
-    pcx.palette[45] = (char) 0xff;
-    pcx.palette[46] = (char) 0xff;
-    pcx.palette[47] = (char) 0xff;
+    pcx.palette[0] = (char)0;
+    pcx.palette[1] = (char)0;
+    pcx.palette[2] = (char)0;
+    pcx.palette[3] = (char)0;
+    pcx.palette[4] = (char)0;
+    pcx.palette[5] = (char)0xaa;
+    pcx.palette[6] = (char)0;
+    pcx.palette[7] = (char)0xaa;
+    pcx.palette[8] = (char)0;
+    pcx.palette[9] = (char)0;
+    pcx.palette[10] = (char)0xaa;
+    pcx.palette[11] = (char)0xaa;
+    pcx.palette[12] = (char)0xaa;
+    pcx.palette[13] = (char)0;
+    pcx.palette[14] = (char)0;
+    pcx.palette[15] = (char)0xaa;
+    pcx.palette[16] = (char)0;
+    pcx.palette[17] = (char)0xaa;
+    pcx.palette[18] = (char)0xaa;
+    pcx.palette[19] = (char)0xaa;
+    pcx.palette[20] = (char)0;
+    pcx.palette[21] = (char)0xaa;
+    pcx.palette[22] = (char)0xaa;
+    pcx.palette[23] = (char)0xaa;
+    pcx.palette[24] = (char)0x55;
+    pcx.palette[25] = (char)0x55;
+    pcx.palette[26] = (char)0x55;
+    pcx.palette[27] = (char)0x55;
+    pcx.palette[28] = (char)0x55;
+    pcx.palette[29] = (char)0xff;
+    pcx.palette[30] = (char)0x55;
+    pcx.palette[31] = (char)0xff;
+    pcx.palette[32] = (char)0x55;
+    pcx.palette[33] = (char)0x55;
+    pcx.palette[34] = (char)0xff;
+    pcx.palette[35] = (char)0xff;
+    pcx.palette[36] = (char)0xff;
+    pcx.palette[37] = (char)0x55;
+    pcx.palette[38] = (char)0x55;
+    pcx.palette[39] = (char)0xff;
+    pcx.palette[40] = (char)0x55;
+    pcx.palette[41] = (char)0xff;
+    pcx.palette[42] = (char)0xff;
+    pcx.palette[43] = (char)0xff;
+    pcx.palette[44] = (char)0x55;
+    pcx.palette[45] = (char)0xff;
+    pcx.palette[46] = (char)0xff;
+    pcx.palette[47] = (char)0xff;
 
     char palette[769];
-    int  i, j;
+    int i, j;
     palette[0] = 0xc;
     j = 1;
 
@@ -342,9 +358,9 @@ void SavePCX(char *file)
     }
 
     int outfile = open(file, O_BINARY | O_CREAT | O_RDWR, S_IWRITE);
-    write(outfile, (char *) &pcx, sizeof(PCXHEADER));
-    write(outfile, (char *) databuffer, totalimagebytes);
-    write(outfile, (char *) &palette, 769);
+    write(outfile, (char *)&pcx, sizeof(PCXHEADER));
+    write(outfile, (char *)databuffer, totalimagebytes);
+    write(outfile, (char *)&palette, 769);
 }
 
 int countbyte(unsigned char *image, int width)
@@ -355,7 +371,8 @@ int countbyte(unsigned char *image, int width)
 
     for (i = 0; i < width; i++)
     {
-        if (c != *image) break;
+        if (c != *image)
+            break;
 
         j++;
         image++;
@@ -417,7 +434,7 @@ int CreateTileListElement(ElementList **list)
     {
         for (j = 0; j < windowwidth; j++)
         {
-            counter += InsertElement(list, (unsigned int) buff[j]);
+            counter += InsertElement(list, (unsigned int)buff[j]);
         }
 
         buff += datawidth;
@@ -426,50 +443,54 @@ int CreateTileListElement(ElementList **list)
     return counter;
 }
 
-int InsertTileRowElement(ElementList **list, int counter, unsigned short *buff, int winwidth)
+int InsertTileRowElement(ElementList **list, int counter, unsigned short *buff,
+                         int winwidth)
 {
     int i;
 
     for (i = 0; i < winwidth; i++)
     {
-        counter += InsertElement(list, (unsigned int) buff[i]);
+        counter += InsertElement(list, (unsigned int)buff[i]);
     }
 
     return counter;
 }
 
-int DeleteTileRowElement(ElementList **list, int counter, unsigned short *buff, int winwidth)
+int DeleteTileRowElement(ElementList **list, int counter, unsigned short *buff,
+                         int winwidth)
 {
     int i;
 
     for (i = 0; i < winwidth; i++)
     {
-        counter -= DeleteElement(list, (unsigned int) buff[i]);
+        counter -= DeleteElement(list, (unsigned int)buff[i]);
     }
 
     return counter;
 }
 
-int InsertTileColElement(ElementList **list, int counter, unsigned short *buff, int winheight)
+int InsertTileColElement(ElementList **list, int counter, unsigned short *buff,
+                         int winheight)
 {
     int i;
 
     for (i = 0; i < winheight; i++)
     {
-        counter += InsertElement(list, (unsigned int) * buff);
+        counter += InsertElement(list, (unsigned int)*buff);
         buff += datawidth;
     }
 
     return counter;
 }
 
-int DeleteTileColElement(ElementList **list, int counter, unsigned short *buff, int winheight)
+int DeleteTileColElement(ElementList **list, int counter, unsigned short *buff,
+                         int winheight)
 {
     int i;
 
     for (i = 0; i < winheight; i++)
     {
-        counter -= DeleteElement(list, (unsigned int) * buff);
+        counter -= DeleteElement(list, (unsigned int)*buff);
         buff += datawidth;
     }
 
@@ -487,7 +508,7 @@ void DeleteHashTable(ElementList **hash)
         while (listElement)
         {
             ElementList *curList = listElement;
-            listElement = listElement -> next;
+            listElement = listElement->next;
             free(curList);
         }
     }
@@ -501,7 +522,8 @@ void DuplicateHashTable(ElementList **hash, ElementList **duphash)
     {
         duphash[i] = 0;
 
-        if (hash[i]) DuplicateListElement(&(hash[i]), &(duphash[i]));
+        if (hash[i])
+            DuplicateListElement(&(hash[i]), &(duphash[i]));
     }
 }
 
@@ -512,7 +534,7 @@ void DuplicateListElement(ElementList **list, ElementList **duplist)
 
     while (listElement)
     {
-        ElementList *newList = (ElementList *) malloc(sizeof(ElementList));
+        ElementList *newList = (ElementList *)malloc(sizeof(ElementList));
 
         if (!newList)
         {
@@ -520,16 +542,18 @@ void DuplicateListElement(ElementList **list, ElementList **duplist)
             exit(1);
         }
 
-        newList -> element = listElement -> element;
-        newList -> counter = listElement -> counter;
-        newList -> next = 0;
-        newList -> previous = curElement;
+        newList->element = listElement->element;
+        newList->counter = listElement->counter;
+        newList->next = 0;
+        newList->previous = curElement;
 
-        if (curElement) curElement -> next = newList;
-        else *duplist = newList;
+        if (curElement)
+            curElement->next = newList;
+        else
+            *duplist = newList;
 
         curElement = newList;
-        listElement = listElement -> next;
+        listElement = listElement->next;
     }
 }
 
@@ -537,7 +561,8 @@ inline int GetHashIndex(int element)
 {
     int hashindex = element >> HASH_ELEMENT_SIZE;
 
-    if (hashindex >= HASH_MAX_SIZE) hashindex = HASH_MAX_SIZE - 1;
+    if (hashindex >= HASH_MAX_SIZE)
+        hashindex = HASH_MAX_SIZE - 1;
 
     return hashindex;
 }
@@ -551,18 +576,19 @@ int InsertElement(ElementList **list, int element)
 
     while (listElement)
     {
-        if (listElement -> element == element)
+        if (listElement->element == element)
         {
-            listElement -> counter++;
+            listElement->counter++;
             return 0;
         }
-        else if (listElement -> element > element) break;
+        else if (listElement->element > element)
+            break;
 
         prevElement = listElement;
-        listElement = listElement -> next;
+        listElement = listElement->next;
     }
 
-    ElementList *newElement = (ElementList *) malloc(sizeof(ElementList));
+    ElementList *newElement = (ElementList *)malloc(sizeof(ElementList));
 
     if (!newElement)
     {
@@ -570,31 +596,33 @@ int InsertElement(ElementList **list, int element)
         exit(1);
     }
 
-    newElement -> element = element;
-    newElement -> counter = 1;
-    newElement -> previous = 0;
-    newElement -> next = 0;
+    newElement->element = element;
+    newElement->counter = 1;
+    newElement->previous = 0;
+    newElement->next = 0;
 
     if (listElement)
     {
         if (prevElement)
         {
-            newElement -> previous = prevElement;
-            prevElement -> next = newElement;
+            newElement->previous = prevElement;
+            prevElement->next = newElement;
         }
-        else list[hashindex] = newElement;
+        else
+            list[hashindex] = newElement;
 
-        listElement -> previous = newElement;
-        newElement -> next = listElement;
+        listElement->previous = newElement;
+        newElement->next = listElement;
     }
     else
     {
         if (prevElement)
         {
-            prevElement -> next = newElement;
-            newElement -> previous = prevElement;
+            prevElement->next = newElement;
+            newElement->previous = prevElement;
         }
-        else list[hashindex] = newElement;
+        else
+            list[hashindex] = newElement;
     }
 
     return 1;
@@ -608,25 +636,27 @@ int DeleteElement(ElementList **list, int element)
 
     while (listElement)
     {
-        if (listElement -> element == element)
+        if (listElement->element == element)
         {
-            listElement -> counter--;
+            listElement->counter--;
 
-            if (listElement -> counter) return 0;
+            if (listElement->counter)
+                return 0;
             else
             {
-                if (listElement -> previous)
+                if (listElement->previous)
                 {
-                    listElement -> previous -> next = listElement -> next;
+                    listElement->previous->next = listElement->next;
 
-                    if (listElement -> next)
-                        listElement -> next -> previous = listElement -> previous;
+                    if (listElement->next)
+                        listElement->next->previous = listElement->previous;
                 }
                 else
                 {
-                    list[hashindex] = listElement -> next;
+                    list[hashindex] = listElement->next;
 
-                    if (listElement -> next) listElement -> next -> previous = 0;
+                    if (listElement->next)
+                        listElement->next->previous = 0;
                 }
 
                 free(listElement);
@@ -634,11 +664,10 @@ int DeleteElement(ElementList **list, int element)
             }
         }
 
-        listElement = listElement -> next;
+        listElement = listElement->next;
     }
 
     puts("Unable to remove the element from the list");
     exit(1);
     return 0;
 }
-

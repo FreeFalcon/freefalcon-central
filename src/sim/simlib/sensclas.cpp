@@ -3,7 +3,7 @@
 #include "object.h"
 #include "geometry.h"
 #include "handoff.h"
-#include "Graphics/Include/display.h"
+#include "graphics/include/display.h"
 #include "simmover.h"
 
 SensorClass::SensorClass(SimMoverClass* self)
@@ -56,7 +56,7 @@ void SensorClass::SetSensorTarget(SimObjectType* newTarget)
 
 void SensorClass::SetSensorTargetHack(FalconEntity* newTarget)
 {
-    SimObjectType *tgt;
+    SimObjectType* tgt;
 
     // Aquire the new one (up to others to keep relative geometry up to date)
     if (newTarget)
@@ -93,7 +93,7 @@ void SensorClass::ClearSensorTarget()
 */
 void SensorClass::CheckLockedTarget()
 {
-    SimObjectType *newTarget;
+    SimObjectType* newTarget;
 
     // if no target, nothing to validate
     if (lockedTarget == NULL)
@@ -104,11 +104,13 @@ void SensorClass::CheckLockedTarget()
     // Run the handoff routine
     if (sensorType == HTS or sensorType == RWR)
     {
-        newTarget = SimCampHandoff(lockedTarget, platform->targetList, HANDOFF_RADAR);
+        newTarget =
+            SimCampHandoff(lockedTarget, platform->targetList, HANDOFF_RADAR);
     }
     else
     {
-        newTarget = SimCampHandoff(lockedTarget, platform->targetList, HANDOFF_RANDOM);
+        newTarget =
+            SimCampHandoff(lockedTarget, platform->targetList, HANDOFF_RANDOM);
     }
 
     // Stop now if our current target is still fine
@@ -132,16 +134,19 @@ SensorClass* FindSensor(SimMoverClass* theObject, int sensorType)
 
     //JAM 25Nov03 - CTD Fix (Why am I getting spiked by an object with no sensor array, and an insane number of sensors???)
     // MLR 1/26/2004 - something is bent somewhere, the sensorArray may be NULL with numSensors>0
-    if (theObject and theObject->sensorArray and theObject->numSensors and theObject->numSensors < 12)
+    if (theObject and theObject->sensorArray and theObject->numSensors and
+        theObject->numSensors < 12)
     {
         for (i = 0; theObject and i < theObject->numSensors; i++)
         {
             ShiAssert(theObject->sensorArray[i]);
 
-            if (((theObject->sensorArray[i]) == (SensorClass*)0xbaadf00d) or ((theObject->sensorArray[i]) == (SensorClass*)0xfeeefeee))
+            if (((theObject->sensorArray[i]) == (SensorClass*)0xbaadf00d) or
+                ((theObject->sensorArray[i]) == (SensorClass*)0xfeeefeee))
                 continue;
 
-            if (theObject and (theObject->sensorArray[i]) and (theObject->sensorArray[i]->Type() == sensorType))
+            if (theObject and (theObject->sensorArray[i]) and
+                (theObject->sensorArray[i]->Type() == sensorType))
             {
                 retval = theObject->sensorArray[i];
                 break;
@@ -151,5 +156,3 @@ SensorClass* FindSensor(SimMoverClass* theObject, int sensorType)
 
     return retval;
 }
-
-

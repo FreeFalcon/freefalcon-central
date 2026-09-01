@@ -15,16 +15,9 @@ enum
     CTXT_SETFIXEDWIDTH,
 };
 
-char *C_Txt_Tokens[] =
-{
-    "[NOTHING]",
-    "[SETUP]",
-    "[FGCOLOR]",
-    "[BGCOLOR]",
-    "[BGIMAGE]",
-    "[SETTEXT]",
-    "[FIXEDWIDTH]",
-    0,
+char *C_Txt_Tokens[] = {
+    "[NOTHING]", "[SETUP]",   "[FGCOLOR]",    "[BGCOLOR]",
+    "[BGIMAGE]", "[SETTEXT]", "[FIXEDWIDTH]", 0,
 };
 
 #endif
@@ -55,7 +48,7 @@ C_Text::~C_Text()
 
 long C_Text::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_Text::Setup(long ID, short Type)
@@ -77,9 +70,9 @@ void C_Text::SetFixedWidth(long w)
     // AFTER assigning a string to the control
     // THIS is a BIG NO NO... unless it started out as fixed width PRIOR to SetText, bitand the string size
     // is just being changed
-    if ( not (Flags_ bitand C_BIT_FIXEDSIZE))
+    if (not(Flags_ bitand C_BIT_FIXEDSIZE))
     {
-        F4Assert( not Text_->GetText());
+        F4Assert(not Text_->GetText());
     }
 
     FixedSize_ = w + 1;
@@ -89,7 +82,7 @@ void C_Text::SetFixedWidth(long w)
 
 void C_Text::SetText(_TCHAR *text)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     Leave = UI_Enter(Parent_);
 
     if (Text_)
@@ -113,7 +106,7 @@ void C_Text::SetText(_TCHAR *text)
 
 void C_Text::SetTextID(_TCHAR *text)
 {
-    F4CSECTIONHANDLE* Leave;
+    F4CSECTIONHANDLE *Leave;
     Leave = UI_Enter(Parent_);
 
     if (Text_)
@@ -139,9 +132,9 @@ void C_Text::SetText(long txtID)
 BOOL C_Text::TimerUpdate()
 {
     if (TimerCallback_)
-        return(TimerCallback_(this));
+        return (TimerCallback_(this));
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_Text::Cleanup(void)
@@ -208,7 +201,7 @@ void C_Text::SetFlags(long flags)
 
 void C_Text::Refresh()
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (BgImage_ and GetFlags() bitand C_BIT_USEBGIMAGE)
@@ -223,8 +216,9 @@ void C_Text::Draw(SCREEN *surface, UI95_RECT *cliprect)
     if (GetFlags() bitand C_BIT_INVISIBLE)
         return;
 
-    if ( not (GetFlags() bitand C_BIT_ABSOLUTE))
-        if ((GetY() + GetH() + Parent_->VY_[GetClient()]) < Parent_->ClientArea_[GetClient()].top)
+    if (not(GetFlags() bitand C_BIT_ABSOLUTE))
+        if ((GetY() + GetH() + Parent_->VY_[GetClient()]) <
+            Parent_->ClientArea_[GetClient()].top)
             return;
 
     if (BgImage_ and GetFlags() bitand C_BIT_USEBGIMAGE)
@@ -251,10 +245,23 @@ void C_Text::SetSubParents(C_Window *)
     }
 }
 
+#ifndef FF_GIT_HASH
+#define FF_GIT_HASH                                                            \
+    "dev" // fallback when the build system did not stamp the commit
+#endif
+
 void C_VersionText::Setup(long id, short type)
 {
     C_Text::Setup(id, type);
 
+#ifndef _WIN32
+    // Linux (#104): there is no PE version resource to query -- GetFileVersionInfoSize("FFViper.exe") returns 0 and
+    // the Win32 path below would dereference an uninitialised translation table. Stamp a fixed brand plus the
+    // build's git commit (FF_GIT_HASH, injected by CMake at configure time) instead.
+    sprintf(g_sVersion, "FreeFalcon: 7.0.1 Linux build %s", FF_GIT_HASH);
+    C_Text::SetText(g_sVersion);
+    return;
+#else
     // query file version
     // get size of version info
     BYTE *lpVersionData;
@@ -265,27 +272,34 @@ void C_VersionText::Setup(long id, short type)
         DWORD dwDataSize = GetFileVersionInfoSize("FFViper.exe", 0);
         //get the version info
         lpVersionData = new BYTE[dwDataSize];
-        GetFileVersionInfo("FFViper.exe", 0, dwDataSize, (void**)lpVersionData);
+        GetFileVersionInfo("FFViper.exe", 0, dwDataSize,
+                           (void **)lpVersionData);
     }
     else
     {
         //get the version info
         lpVersionData = new BYTE[dwDataSize];
-        GetFileVersionInfo("FFViper.exe", 0, dwDataSize, (void**)lpVersionData);
+        GetFileVersionInfo("FFViper.exe", 0, dwDataSize,
+                           (void **)lpVersionData);
     }
 
     //find translation table
     UINT nQuerySize;
-    DWORD* pTransTable;
-    VerQueryValue(lpVersionData, _T("\\VarFileInfo\\Translation"), (void **)&pTransTable, &nQuerySize);
+    DWORD *pTransTable;
+    VerQueryValue(
+        lpVersionData, _T("\\VarFileInfo\\Translation"), (void **)&pTransTable,
+        &nQuerySize); // Win32 VerQueryValue block path -- '\' is API-required, NOT a filesystem separator
 
     // Swap the words to have lang-charset in the correct format
-    DWORD dwLangCharset = MAKELONG(HIWORD(pTransTable[0]), LOWORD(pTransTable[0]));
+    DWORD dwLangCharset =
+        MAKELONG(HIWORD(pTransTable[0]), LOWORD(pTransTable[0]));
 
     //perform the query
     LPVOID lpData;
     char strBlockName[100];
-    sprintf(strBlockName, "\\StringFileInfo\\%08lx\\FileVersion", dwLangCharset);
+    sprintf(
+        strBlockName, "\\StringFileInfo\\%08x\\FileVersion",
+        dwLangCharset); // Win32 VerQueryValue block path -- '\' is API-required
     VerQueryValue((void **)lpVersionData, strBlockName, &lpData, &nQuerySize);
 
     //format the version string
@@ -295,6 +309,7 @@ void C_VersionText::Setup(long id, short type)
     //sprintf(sVersion,"FFViper MP version");
 
     C_Text::SetText(g_sVersion);
+#endif // _WIN32
 }
 
 #ifdef _UI95_PARSER_
@@ -305,41 +320,41 @@ short C_Text::LocalFind(char *token)
     while (C_Txt_Tokens[i])
     {
         if (strnicmp(token, C_Txt_Tokens[i], strlen(C_Txt_Tokens[i])) == 0)
-            return(i);
+            return (i);
 
         i++;
     }
 
-    return(0);
+    return (0);
 }
 
 void C_Text::LocalFunction(short ID, long P[], _TCHAR *, C_Handler *)
 {
     switch (ID)
     {
-        case CTXT_SETUP:
-            Setup(P[0], (short)P[1]);
-            break;
+    case CTXT_SETUP:
+        Setup(P[0], (short)P[1]);
+        break;
 
-        case CTXT_SETFGCOLOR:
-            SetFGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CTXT_SETFGCOLOR:
+        SetFGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CTXT_SETBGCOLOR:
-            SetBGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
-            break;
+    case CTXT_SETBGCOLOR:
+        SetBGColor(P[0] bitor (P[1] << 8) bitor (P[2] << 16));
+        break;
 
-        case CTXT_SETBGIMAGE:
-            SetBgImage(P[0], (short)P[1], (short)P[2]);
-            break;
+    case CTXT_SETBGIMAGE:
+        SetBgImage(P[0], (short)P[1], (short)P[2]);
+        break;
 
-        case CTXT_SETTEXT:
-            SetText(P[0]);
-            break;
+    case CTXT_SETTEXT:
+        SetText(P[0]);
+        break;
 
-        case CTXT_SETFIXEDWIDTH:
-            SetFixedWidth(P[0]);
-            break;
+    case CTXT_SETFIXEDWIDTH:
+        SetFixedWidth(P[0]);
+        break;
     }
 }
 

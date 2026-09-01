@@ -3,8 +3,8 @@
 #define CUIEVENT_H
 
 #include <tchar.h>
-#include "FalcMesg.h"
-#include "Camplib.h"
+#include "falcmesg.h"
+#include "camplib.h"
 
 // ===============================
 // Defines and the message include
@@ -14,7 +14,7 @@
 #define CUI_ME 2 // Maximum entity data
 #define CUI_MS 8 // Maximum string ids
 
-#include "MsgInc/CampEventMsg.h"
+#include "msginc/campeventmsg.h"
 
 // ============================
 // CampUI Event Structure
@@ -35,7 +35,7 @@ typedef struct uieventnode
 // Functions
 // ============================
 
-extern void DisposeEventList(CampUIEventElement* root);
+extern void DisposeEventList(CampUIEventElement *root);
 
 extern void SendCampUIMessage(FalconCampEventMessage *message);
 

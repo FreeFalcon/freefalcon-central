@@ -6,7 +6,7 @@
 
 class RadarSuperClass : public RadarClass
 {
-public :
+public:
     RadarSuperClass(int index, SimMoverClass* parentPlatform);
     virtual ~RadarSuperClass() {};
 
@@ -46,15 +46,18 @@ public :
     };
     virtual void SelectACMVertical(void)
     {
-        if (mode == AA)  wantLock = AUTO;
+        if (mode == AA)
+            wantLock = AUTO;
     };
     virtual void SelectACMSlew(void)
     {
-        if (mode == AA)  wantLock = AUTO;
+        if (mode == AA)
+            wantLock = AUTO;
     };
     virtual void SelectACM30x20(void)
     {
-        if (mode == AA)  wantLock = AUTO;
+        if (mode == AA)
+            wantLock = AUTO;
     };
 
     virtual void DefaultAGMode(void)
@@ -63,8 +66,10 @@ public :
     };
     virtual void StepAGmode(void)
     {
-        if (mode == GM) wantMode = GMT;
-        else wantMode = GM;
+        if (mode == GM)
+            wantMode = GMT;
+        else
+            wantMode = GM;
     };
     virtual float GetRange(void)
     {
@@ -76,7 +81,7 @@ public :
         *yPos = cursorX * rangeNM;
     };
     virtual void GetAGCenter(float* x, float* y);
-    virtual int  IsAG(void)
+    virtual int IsAG(void)
     {
         return mode not_eq AA ? TRUE : FALSE;
     };
@@ -89,12 +94,23 @@ protected:
 
     float prevRange; // Indicate where we were before AA override
 
-    typedef enum { NOCHANGE = 0, AUTO, CURSOR, BORE, NEXT, PREV } LockCommand;
+    typedef enum
+    {
+        NOCHANGE = 0,
+        AUTO,
+        CURSOR,
+        BORE,
+        NEXT,
+        PREV
+    } LockCommand;
     LockCommand lockCmd; // Current desired target lock operation
 
     float cursorX; // radar cursor location in normalized display space
     float cursorY; // (ie:  -1.0 to 1.0)
-    enum {CursorMoving = 0x1};
+    enum
+    {
+        CursorMoving = 0x1
+    };
     int flags;
 
 protected:

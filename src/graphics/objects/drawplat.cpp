@@ -6,8 +6,8 @@
     Derived class from DrawableBSP which handles large flat objects which
  can lie beneath other objects (ie: runways, carries, bridges).
 ***************************************************************************/
-#include "DrawBldg.h"
-#include "DrawPlat.h"
+#include "drawbldg.h"
+#include "drawplat.h"
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawablePlatform::pool;
@@ -17,8 +17,7 @@ MEM_POOL DrawablePlatform::pool;
 /**************************************************************************
  Initialize a platform object (One which underlies other objects).
 ***************************************************************************/
-DrawablePlatform::DrawablePlatform(float s)
-    : DrawableObject(s)
+DrawablePlatform::DrawablePlatform(float s) : DrawableObject(s)
 {
     drawClassID = Platform;
 
@@ -29,7 +28,7 @@ DrawablePlatform::DrawablePlatform(float s)
     radius = 0.0f;
     InclusionRadiusSquared = 0.0f;
     maxX = maxY = -1e24f;
-    minX = minY =  1e24f;
+    minX = minY = 1e24f;
 
     // Fill in our callback request structures for when we get added to a parent list
     updateCBstruct.fn = UpdateMetrics;
@@ -46,7 +45,6 @@ DrawablePlatform::DrawablePlatform(float s)
     tallStaticObjects.Setup();
     dynamicObjects.Setup();
 }
-
 
 
 /**************************************************************************
@@ -76,7 +74,6 @@ DrawablePlatform::~DrawablePlatform()
 }
 
 
-
 /**************************************************************************
     Permanently add a flat (drivable surface) object to this container.
  ( Removal is handled by the normal object removal process though
@@ -102,7 +99,7 @@ void DrawablePlatform::InsertStaticSurface(DrawableBuilding *object)
     position.y = (maxY + minY) * 0.5f;
 
     InclusionRadiusSquared = (maxX - position.x) * (maxX - position.x) +
-                                (maxY - position.y) * (maxY - position.y);
+                             (maxY - position.y) * (maxY - position.y);
     radius = (float)sqrt(InclusionRadiusSquared);
 
 
@@ -111,17 +108,15 @@ void DrawablePlatform::InsertStaticSurface(DrawableBuilding *object)
 }
 
 
-
 /**************************************************************************
     Permanently add a (non-flat) object to this container.
  ( Removal is handled by the normal object removal process though
  the ObjectDisplayList class )
 ***************************************************************************/
-void DrawablePlatform::InsertStaticObject(DrawableObject* object)
+void DrawablePlatform::InsertStaticObject(DrawableObject *object)
 {
     tallStaticObjects.InsertObject(object);
 }
-
 
 
 /**************************************************************************
@@ -155,10 +150,8 @@ void DrawablePlatform::Draw(class RenderOTW *renderer, int LOD)
         tallStaticObjects.DrawBeyond(distance, LOD, renderer);
         dynamicObjects.DrawBeyond(distance, LOD, renderer);
 
-    }
-    while (distance > -1.0f);
+    } while (distance > -1.0f);
 }
-
 
 
 /**************************************************************************
@@ -192,20 +185,20 @@ void DrawablePlatform::Draw(class Render3D *renderer)
         tallStaticObjects.DrawBeyond(distance, renderer);
         dynamicObjects.DrawBeyond(distance, renderer);
 
-    }
-    while (distance > -1.0f);
+    } while (distance > -1.0f);
 }
-
 
 
 /**************************************************************************
     Handle the UpdateMetrics callback from the parent ObjectDisplayList
 ***************************************************************************/
-void DrawablePlatform::UpdateMetrics(void *self, long listNo, const Tpoint *pos, TransportStr *transList)
+void DrawablePlatform::UpdateMetrics(void *self, long listNo, const Tpoint *pos,
+                                     TransportStr *transList)
 {
-    ((DrawablePlatform*)self)->UpdateMetrics(listNo, pos, transList);
+    ((DrawablePlatform *)self)->UpdateMetrics(listNo, pos, transList);
 }
-void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos, TransportStr *transList)
+void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos,
+                                     TransportStr *transList)
 {
     DrawableObject *obj;
 
@@ -227,7 +220,7 @@ void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos, TransportSt
     {
 
         // Push the object back up to our parent list if it has moved beyond our area
-        if ( not ObjectInside(obj))
+        if (not ObjectInside(obj))
         {
             dynamicObjects.RemoveObject(obj);
             parentList->InsertObject(obj);
@@ -238,13 +231,12 @@ void DrawablePlatform::UpdateMetrics(long listNo, const Tpoint *pos, TransportSt
 }
 
 
-
 /***************************************************************************
     Handle the SortForViewpoint callback from the parent ObjectDisplayList
 ***************************************************************************/
 void DrawablePlatform::SortForViewpoint(void *self)
 {
-    ((DrawablePlatform*)self)->SortForViewpoint();
+    ((DrawablePlatform *)self)->SortForViewpoint();
 }
 void DrawablePlatform::SortForViewpoint(void)
 {
@@ -301,7 +293,6 @@ void DrawablePlatform::SortForViewpoint(void)
 }
 
 
-
 /***************************************************************************
     See if an object is within our area, and if so, grab it from it's
  parent.
@@ -324,7 +315,6 @@ BOOL DrawablePlatform::ObjectInside(DrawableObject *obj)
     // return our conclusion
     return (rangeSquared < InclusionRadiusSquared);
 }
-
 
 
 /***************************************************************************

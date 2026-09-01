@@ -1,18 +1,18 @@
 #include "stdhdr.h"
-#include "Object.h"
+#include "object.h"
 #include "simmover.h"
 #include "simdrive.h"
 #include "otwdrive.h"
 #include "camp2sim.h"
 #include "team.h"
-#include "Entity.h"
+#include "entity.h"
 #include "classtbl.h"
-#include "Graphics/Include/Display.h"
-#include "MsgInc/TrackMsg.h"
+#include "graphics/include/display.h"
+#include "msginc/trackmsg.h"
 #include "mfd.h"
 #include "campbase.h"
 #include "cmpclass.h"
-#include "RadarSuper.h"
+#include "radarsuper.h"
 
 #include "simio.h"  // MD -- 20040111: added for analog cursor support
 
@@ -22,7 +22,8 @@ static const float TRACK_SIZE = 0.05f;
 static const float VELOCITY_FLAG_SCALE = 0.0000625f; // .1/1600  len/kts
 
 
-RadarSuperClass::RadarSuperClass(int type, SimMoverClass* parentPlatform) : RadarClass(type, parentPlatform)
+RadarSuperClass::RadarSuperClass(int type, SimMoverClass* parentPlatform)
+    : RadarClass(type, parentPlatform)
 {
     wantMode = mode = AA;
     wantRange = 20.0f;
@@ -83,7 +84,8 @@ void RadarSuperClass::ExecModes(int newDesignate, int newDrop)
     if (newDrop)
     {
         // Drop our current lock
-        if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
+        if (lockedTarget)
+            SendTrackMsg(lockedTarget, Track_Unlock);
 
         ClearSensorTarget();
         lockCmd = NOCHANGE;
@@ -111,8 +113,10 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     // Handle any requests for cursor movement
     if (cursorXCmd)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
-            cursorX += (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and
+            (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+            cursorX +=
+                (cursorXCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorX += cursorXCmd * CursorRate * SimLibMajorFrameTime;
 
@@ -121,8 +125,10 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
 
     if (cursorYCmd)
     {
-        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
-            cursorY += (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
+        if ((IO.AnalogIsUsed(AXIS_CURSOR_X) == true) and
+            (IO.AnalogIsUsed(AXIS_CURSOR_Y) == true))
+            cursorY +=
+                (cursorYCmd / 10000.0F) * CursorRate * SimLibMajorFrameTime;
         else
             cursorY += cursorYCmd * CursorRate * SimLibMajorFrameTime;
 
@@ -130,9 +136,11 @@ void RadarSuperClass::UpdateState(int cursorXCmd, int cursorYCmd)
     }
 
     // Update our display range if the cursors get too close or too far
-    if (cursorY >=  0.8f) RangeStep(1);
+    if (cursorY >= 0.8f)
+        RangeStep(1);
 
-    if (cursorY <= -0.8f) RangeStep(-1);
+    if (cursorY <= -0.8f)
+        RangeStep(-1);
 
     // Note if the cursors are in motion or not
     if ((cursorXCmd not_eq 0) or (cursorYCmd not_eq 0))
@@ -150,9 +158,10 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
 
 
     // Quit now if we're turned off
-    if ( not isEmitting)
+    if (not isEmitting)
     {
-        if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
+        if (lockedTarget)
+            SendTrackMsg(lockedTarget, Track_Unlock);
 
         ClearSensorTarget();
         return NULL;
@@ -171,7 +180,8 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
     if (lockedTarget)
     {
         // Update our seeker center of attention
-        SetSeekerPos(TargetAz(platform, lockedTarget), TargetEl(platform, lockedTarget));
+        SetSeekerPos(TargetAz(platform, lockedTarget),
+                     TargetEl(platform, lockedTarget));
         platform->SetRdrAz(radarData->BeamHalfAngle);
         platform->SetRdrEl(radarData->BeamHalfAngle);
         platform->SetRdrCycleTime(0.0F);
@@ -195,14 +205,16 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
 
             mlSinCos(&yawTrig, platform->Yaw());
 
-            float cx =  cursorX;
+            float cx = cursorX;
             float cy = (cursorY + 1.0f);
 
             float x = (cy * yawTrig.cos - cx * yawTrig.sin) * rangeFT / 2.0f;
             float y = (cy * yawTrig.sin + cx * yawTrig.cos) * rangeFT / 2.0f;
 
             // Get our height above the ground height at the cursor location
-            float z = platform->ZPos() - OTWDriver.GetGroundLevel(x + platform->XPos(), y + platform->YPos());
+            float z = platform->ZPos() -
+                      OTWDriver.GetGroundLevel(x + platform->XPos(),
+                                               y + platform->YPos());
 #if 0
             // Transform from world space into body space
             float rx = platform->dmx[0][0] * x + platform->dmx[0][1] * y + platform->dmx[0][2] * z;
@@ -233,13 +245,14 @@ SimObjectType* RadarSuperClass::Exec(SimObjectType*)
 
 void RadarSuperClass::ExecAG(void)
 {
-    FalconPrivateOrderedList *list = NULL;
+    FalconPrivateOrderedList* list = NULL;
     FalconEntity* object = NULL;
     FalconEntity* newLock = NULL;
     float x = 0.0F, y = 0.0F; // Screen space coordinates (x left/right)
     float dx = 0.0F, dy = 0.0F, dz = 0.0F;
     float range = 0.0F;
-    float bestSoFar = 1e20f;;
+    float bestSoFar = 1e20f;
+    ;
     mlTrig yaw = {0.0F};
     float scaledCosYaw = 1.0F, scaledSinYaw = 0.0F;
     float cursorDelta = BLIP_SIZE * 2.0f;
@@ -279,7 +292,7 @@ void RadarSuperClass::ExecAG(void)
         bestSoFar = (float)cos(radarData->BeamHalfAngle);
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)   // Want one further out
+    else if (lockCmd == NEXT) // Want one further out
     {
         if (lockedTarget)
         {
@@ -290,7 +303,7 @@ void RadarSuperClass::ExecAG(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)   // Want one closer in
+    else if (lockCmd == PREV) // Want one closer in
     {
         if (lockedTarget)
         {
@@ -314,13 +327,12 @@ void RadarSuperClass::ExecAG(void)
 
 
     // Consider each potential target for locking and cursor identification
-    for (object = (FalconEntity*)objectWalker.GetFirst();
-         object;
+    for (object = (FalconEntity*)objectWalker.GetFirst(); object;
          object = (FalconEntity*)objectWalker.GetNext())
     {
 
         // Skip things not on the ground
-        if ( not object->OnGround())
+        if (not object->OnGround())
         {
             continue;
         }
@@ -358,7 +370,7 @@ void RadarSuperClass::ExecAG(void)
 
 
         // We're done unless we need to lock something up
-        if ( not lockCmd)
+        if (not lockCmd)
         {
             continue;
         }
@@ -368,10 +380,11 @@ void RadarSuperClass::ExecAG(void)
         switch (lockCmd)
         {
 
-            case BORE:
-                // We've been asked to lock the target nearest our nose
+        case BORE:
+            // We've been asked to lock the target nearest our nose
             {
-                float cosATA = (atx * dx + aty * dy + atz * dz) / (float)sqrt(range * range + dz * dz);
+                float cosATA = (atx * dx + aty * dy + atz * dz) /
+                               (float)sqrt(range * range + dz * dz);
 
                 if (cosATA > bestSoFar)
                 {
@@ -382,45 +395,47 @@ void RadarSuperClass::ExecAG(void)
             }
             break;
 
-            case CURSOR:
+        case CURSOR:
 
-                // We've been asked to lock a specific target, so find which one...
-                if (object->Id() == targetUnderCursor)
+            // We've been asked to lock a specific target, so find which one...
+            if (object->Id() == targetUnderCursor)
+            {
+                newLock = object;
+                wantLock = NOCHANGE;
+            }
+
+            break;
+
+        case NEXT:
+            if (range < bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (range > lockedTarget->localData->range))
                 {
+                    bestSoFar = range;
                     newLock = object;
                     wantLock = NOCHANGE;
                 }
+            }
 
-                break;
+            break;
 
-            case NEXT:
-                if (range < bestSoFar)
+        case PREV:
+            if (range > bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (range < lockedTarget->localData->range))
                 {
-                    if (( not lockedTarget) or (range > lockedTarget->localData->range))
-                    {
-                        bestSoFar = range;
-                        newLock = object;
-                        wantLock = NOCHANGE;
-                    }
+                    bestSoFar = range;
+                    newLock = object;
+                    wantLock = NOCHANGE;
                 }
+            }
 
-                break;
+            break;
 
-            case PREV:
-                if (range > bestSoFar)
-                {
-                    if (( not lockedTarget) or (range < lockedTarget->localData->range))
-                    {
-                        bestSoFar = range;
-                        newLock = object;
-                        wantLock = NOCHANGE;
-                    }
-                }
-
-                break;
-
-            default:
-                ShiWarning("Bad lock command");
+        default:
+            ShiWarning("Bad lock command");
         }
     } // End of our target list traversal loop
 
@@ -434,12 +449,10 @@ void RadarSuperClass::ExecAG(void)
         dy = lockedTarget->BaseData()->YPos() - platform->YPos();
 
         lockedTarget->localData->range = (float)sqrt(dx * dx + dy * dy);
-        CalcRelValues(platform, lockedTarget->BaseData(),
-                      &lockedTarget->localData->az,
-                      &lockedTarget->localData->el,
-                      &lockedTarget->localData->ata,
-                      &lockedTarget->localData->ataFrom,
-                      &lockedTarget->localData->droll);
+        CalcRelValues(
+            platform, lockedTarget->BaseData(), &lockedTarget->localData->az,
+            &lockedTarget->localData->el, &lockedTarget->localData->ata,
+            &lockedTarget->localData->ataFrom, &lockedTarget->localData->droll);
     }
 
 
@@ -467,7 +480,8 @@ void RadarSuperClass::ExecAA(void)
         if ((fabs(lockedTarget->localData->az) > radarData->ScanHalfAngle) or
             (fabs(lockedTarget->localData->el) > radarData->ScanHalfAngle))
         {
-            if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
+            if (lockedTarget)
+                SendTrackMsg(lockedTarget, Track_Unlock);
 
             ClearSensorTarget();
             lockCmd = NOCHANGE;
@@ -479,10 +493,12 @@ void RadarSuperClass::ExecAA(void)
             if (ReturnStrength(lockedTarget) < 1.0f)
             {
                 // He's faded.  How long has he been hiding?
-                if (SimLibElapsedTime - lockedTarget->localData->rdrLastHit > radarData->CoastTime)
+                if (SimLibElapsedTime - lockedTarget->localData->rdrLastHit >
+                    radarData->CoastTime)
                 {
                     // Give up and drop lock
-                    if (lockedTarget) SendTrackMsg(lockedTarget, Track_Unlock);
+                    if (lockedTarget)
+                        SendTrackMsg(lockedTarget, Track_Unlock);
 
                     ClearSensorTarget();
                     lockCmd = NOCHANGE;
@@ -504,7 +520,7 @@ void RadarSuperClass::ExecAA(void)
         bestSoFar = radarData->BeamHalfAngle; // Model a somewhat narrow beam
         newLock = NULL;
     }
-    else if (lockCmd == NEXT)   // Want one further out
+    else if (lockCmd == NEXT) // Want one further out
     {
         if (lockedTarget)
         {
@@ -515,7 +531,7 @@ void RadarSuperClass::ExecAA(void)
 
         bestSoFar = 1e20f;
     }
-    else if (lockCmd == PREV)   // Want one closer in
+    else if (lockCmd == PREV) // Want one closer in
     {
         if (lockedTarget)
         {
@@ -561,7 +577,8 @@ void RadarSuperClass::ExecAA(void)
         }
 
         // Skip anything not in our radar pyramid
-        if (max(fabs(object->localData->az), fabs(object->localData->el)) > radarData->ScanHalfAngle)
+        if (max(fabs(object->localData->az), fabs(object->localData->el)) >
+            radarData->ScanHalfAngle)
         {
             continue;
         }
@@ -578,7 +595,7 @@ void RadarSuperClass::ExecAA(void)
         }
 
         // We're done unless we need to acquire a lock
-        if ( not lockCmd)
+        if (not lockCmd)
         {
             continue;
         }
@@ -593,75 +610,78 @@ void RadarSuperClass::ExecAA(void)
         switch (lockCmd)
         {
 
-            case AUTO:
+        case AUTO:
 
-                // While holding a lock, ignore this command
-                if (lockedTarget)
-                    break;
-
-                // If this is the nearest "threat" object in front of us, pick it
-                if (object->localData->range <= bestSoFar)
-                {
-                    if (TeamInfo[platform->GetTeam()]->TStance(object->BaseData()->GetTeam()) == War)
-                    {
-                        bestSoFar = object->localData->range;
-                        newLock = object;
-                    }
-                }
-
+            // While holding a lock, ignore this command
+            if (lockedTarget)
                 break;
 
-            case BORE:
-
-                // We've been asked to lock the target nearest our nose
-                if (object->localData->ata < bestSoFar)
+            // If this is the nearest "threat" object in front of us, pick it
+            if (object->localData->range <= bestSoFar)
+            {
+                if (TeamInfo[platform->GetTeam()]->TStance(
+                        object->BaseData()->GetTeam()) == War)
                 {
-                    bestSoFar = object->localData->ata;
+                    bestSoFar = object->localData->range;
+                    newLock = object;
+                }
+            }
+
+            break;
+
+        case BORE:
+
+            // We've been asked to lock the target nearest our nose
+            if (object->localData->ata < bestSoFar)
+            {
+                bestSoFar = object->localData->ata;
+                newLock = object;
+                wantLock = NOCHANGE;
+            }
+
+            break;
+
+        case CURSOR:
+
+            // We've been asked to lock a specific target, so find which one...
+            if (object->BaseData()->Id() == targetUnderCursor)
+            {
+                newLock = object;
+                wantLock = NOCHANGE;
+            }
+
+            break;
+
+        case NEXT:
+            if (object->localData->range < bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (object->localData->range > lockedTarget->localData->range))
+                {
+                    bestSoFar = object->localData->range;
                     newLock = object;
                     wantLock = NOCHANGE;
                 }
+            }
 
-                break;
+            break;
 
-            case CURSOR:
-
-                // We've been asked to lock a specific target, so find which one...
-                if (object->BaseData()->Id() == targetUnderCursor)
+        case PREV:
+            if (object->localData->range > bestSoFar)
+            {
+                if ((not lockedTarget) or
+                    (object->localData->range < lockedTarget->localData->range))
                 {
+                    bestSoFar = object->localData->range;
                     newLock = object;
                     wantLock = NOCHANGE;
                 }
+            }
 
-                break;
+            break;
 
-            case NEXT:
-                if (object->localData->range < bestSoFar)
-                {
-                    if (( not lockedTarget) or (object->localData->range > lockedTarget->localData->range))
-                    {
-                        bestSoFar = object->localData->range;
-                        newLock = object;
-                        wantLock = NOCHANGE;
-                    }
-                }
-
-                break;
-
-            case PREV:
-                if (object->localData->range > bestSoFar)
-                {
-                    if (( not lockedTarget) or (object->localData->range < lockedTarget->localData->range))
-                    {
-                        bestSoFar = object->localData->range;
-                        newLock = object;
-                        wantLock = NOCHANGE;
-                    }
-                }
-
-                break;
-
-            default:
-                ShiWarning("Bad lock command");
+        default:
+            ShiWarning("Bad lock command");
         }
     } // End of our target list traversal loop
 
@@ -675,7 +695,9 @@ void RadarSuperClass::ExecAA(void)
     else
     {
         // See if it is time to send a "lock" update
-        sendThisFrame = lockedTarget and (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
+        sendThisFrame =
+            lockedTarget and
+            (SimLibElapsedTime - lastTargetLockSend > TrackUpdateTime);
     }
 
     // Send our periodic lock message
@@ -691,14 +713,14 @@ void RadarSuperClass::ExecAA(void)
 }
 
 
-void RadarSuperClass::Display(VirtualDisplay *activeDisplay)
+void RadarSuperClass::Display(VirtualDisplay* activeDisplay)
 {
     // For now we have to do this silly thing to placate the SMS display routine --
     // we really should get ride of the display/privateDisplay dicotemy.
     display = activeDisplay;
 
     // Quit now if we're turned off
-    if ( not isEmitting)
+    if (not isEmitting)
     {
         return;
         display->TextCenter(0.0f, 0.0f, "RADAR OFF");
@@ -725,8 +747,8 @@ void RadarSuperClass::Display(VirtualDisplay *activeDisplay)
 
 void RadarSuperClass::DisplayAGReturns(void)
 {
-    FalconPrivateOrderedList *list;
-    FalconEntity *object;
+    FalconPrivateOrderedList* list;
+    FalconEntity* object;
     float scaledCosYaw, scaledSinYaw;
     float x, y; // Screen space coordinates (x left/right)
     float dx, dy, dz;
@@ -756,13 +778,12 @@ void RadarSuperClass::DisplayAGReturns(void)
     display->AdjustOriginInViewport(0.0f, -1.0f);
 
     // Consider each potential target for display
-    for (object = (FalconEntity*)objectWalker.GetFirst();
-         object;
+    for (object = (FalconEntity*)objectWalker.GetFirst(); object;
          object = (FalconEntity*)objectWalker.GetNext())
     {
 
         // Skip things not on the ground
-        if ( not object->OnGround())
+        if (not object->OnGround())
         {
             continue;
         }
@@ -772,8 +793,10 @@ void RadarSuperClass::DisplayAGReturns(void)
         dy = object->YPos() - platform->YPos();
         dz = object->ZPos() - platform->ZPos();
         range = (float)sqrt(dx * dx + dy * dy + dz * dz);
-        x = dy * scaledCosYaw - dx * scaledSinYaw; // Rotate into heading up plan view space
-        y = dy * scaledSinYaw + dx * scaledCosYaw; // and scale from feet into viewport space
+        x = dy * scaledCosYaw -
+            dx * scaledSinYaw; // Rotate into heading up plan view space
+        y = dy * scaledSinYaw +
+            dx * scaledCosYaw; // and scale from feet into viewport space
 
 
         // Skip the object if it is out of range or _really_ close
@@ -787,14 +810,14 @@ void RadarSuperClass::DisplayAGReturns(void)
         {
 
             DrawLockedGndInfo(x, y);
-
         }
         else
         {
 
-            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x - BLIP_SIZE, y + BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
-            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x + BLIP_SIZE, y - BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
-
+            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x - BLIP_SIZE,
+                         y + BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
+            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x + BLIP_SIZE,
+                         y - BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
         }
     }
 
@@ -841,7 +864,8 @@ void RadarSuperClass::DisplayAAReturns(void)
         }
 
         // Skip anything not in our radar pyramid
-        if (max(fabs(object->localData->az), fabs(object->localData->el)) > radarData->ScanHalfAngle)
+        if (max(fabs(object->localData->az), fabs(object->localData->el)) >
+            radarData->ScanHalfAngle)
         {
             continue;
         }
@@ -854,7 +878,6 @@ void RadarSuperClass::DisplayAAReturns(void)
         {
 
             DrawLockedAirInfo(x, y);
-
         }
         else
         {
@@ -871,8 +894,10 @@ void RadarSuperClass::DisplayAAReturns(void)
                 display->SetColor((tmpColor > 4) and 0xFF00);
             }
 
-            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x - BLIP_SIZE, y + BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
-            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x + BLIP_SIZE, y - BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
+            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x - BLIP_SIZE,
+                         y + BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
+            display->Tri(x - BLIP_SIZE, y - BLIP_SIZE, x + BLIP_SIZE,
+                         y - BLIP_SIZE, x + BLIP_SIZE, y + BLIP_SIZE);
 
             if (object->BaseData()->Id() == targetUnderCursor)
             {
@@ -905,7 +930,7 @@ void RadarSuperClass::DrawCursor(void)
 
     // Draw the vertical cursor bars
     display->Line(-CURSOR_SIZE, -CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE);
-    display->Line(CURSOR_SIZE, -CURSOR_SIZE,  CURSOR_SIZE, CURSOR_SIZE);
+    display->Line(CURSOR_SIZE, -CURSOR_SIZE, CURSOR_SIZE, CURSOR_SIZE);
 
     // Compute the evelation limits of the scan volume
     ang = platform->Pitch() + radarData->ScanHalfAngle;
@@ -932,11 +957,11 @@ void RadarSuperClass::DrawCursor(void)
 
     // Convert to feet and factor in the height of our platform
     high = 0.001f * (high * rangeFT - platform->ZPos());
-    low  = 0.001f * (low  * rangeFT - platform->ZPos());
+    low = 0.001f * (low * rangeFT - platform->ZPos());
 
     // Clamp to legal display range
     high = min(max(high, 0.0F), 99.0F);
-    low = min(max(low,  0.0F), 99.0F);
+    low = min(max(low, 0.0F), 99.0F);
 
 
     // Print the evelation limits of the scan volume
@@ -966,7 +991,7 @@ void RadarSuperClass::DrawBullseyeData(void)
     if (mode == AA)
     {
         // BScope presentation
-        az    = cursorX * radarData->ScanHalfAngle;
+        az = cursorX * radarData->ScanHalfAngle;
         range = (cursorY + 1.0f) * 0.5f * rangeFT;
         mlSinCos(&trig, az);
         cursX = trig.sin * range;
@@ -982,7 +1007,8 @@ void RadarSuperClass::DrawBullseyeData(void)
 
     // Compute azmuth and range from bullseye point
     az = RTD * (float)atan2(cursY - bullseyeY, cursX - bullseyeX);
-    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) + (cursY - bullseyeY) * (cursY - bullseyeY));
+    range = (float)sqrt((cursX - bullseyeX) * (cursX - bullseyeX) +
+                        (cursY - bullseyeY) * (cursY - bullseyeY));
 
     if (az < -0.6f)
         az += 360.0f;
@@ -1012,14 +1038,16 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     // Display the locked target's track data
     // Aspect
     value = lockedTarget->localData->aspect * RTD;
-    sprintf(str, "%02.0f%c", value, (lockedTarget->localData->azFrom > 0.0F ? 'R' : 'L'));
+    sprintf(str, "%02.0f%c", value,
+            (lockedTarget->localData->azFrom > 0.0F ? 'R' : 'L'));
     ShiAssert(strlen(str) < sizeof(str));
     display->TextLeft(-0.875F, 0.825F, str);
 
     // Heading
     value = lockedTarget->BaseData()->Yaw() * RTD;
 
-    if (value < 1.0f)  value += 360.0f;
+    if (value < 1.0f)
+        value += 360.0f;
 
     sprintf(str, "%03.0f", floor(value));
     ShiAssert(strlen(str) < sizeof(str));
@@ -1040,7 +1068,8 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     // Target ID (NCTR)
     classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
-    if (lockedTarget->BaseData()->IsSim() and ( not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) and 
+    if (lockedTarget->BaseData()->IsSim() and
+        (not((SimBaseClass*)lockedTarget->BaseData())->IsExploding()) and
         (classPtr->dataType == DTYPE_VEHICLE))
     {
         sprintf(str, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
@@ -1053,9 +1082,9 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     y = lockedTarget->localData->el / radarData->ScanHalfAngle;
     x = lockedTarget->localData->az / radarData->ScanHalfAngle;
 
-    display->Line(-0.85f, y,           -0.80f, y);
+    display->Line(-0.85f, y, -0.80f, y);
     display->Line(-0.85f, y + BLIP_SIZE, -0.85f, y - BLIP_SIZE);
-    display->Line(x,           -0.80f, x,           -0.85f);
+    display->Line(x, -0.80f, x, -0.85f);
     display->Line(x + BLIP_SIZE, -0.85f, x - BLIP_SIZE, -0.85f);
 
 
@@ -1076,10 +1105,14 @@ void RadarSuperClass::DrawLockedAirInfo(float h, float v)
     }
 
     // Draw the locked target's symbol (triangle with velocity line)
-    value = lockedTarget->BaseData()->Yaw() - platform->Yaw() - h * radarData->ScanHalfAngle;
+    value = lockedTarget->BaseData()->Yaw() - platform->Yaw() -
+            h * radarData->ScanHalfAngle;
     display->AdjustRotationAboutOrigin(value);
-    display->Tri(0.0f, TRACK_SIZE, trackTriH, -trackTriV, -trackTriH, -trackTriV);
-    display->Line(0.0f, TRACK_SIZE, 0.0f, TRACK_SIZE + lockedTarget->BaseData()->GetVt()*VELOCITY_FLAG_SCALE);
+    display->Tri(0.0f, TRACK_SIZE, trackTriH, -trackTriV, -trackTriH,
+                 -trackTriV);
+    display->Line(0.0f, TRACK_SIZE, 0.0f,
+                  TRACK_SIZE +
+                      lockedTarget->BaseData()->GetVt() * VELOCITY_FLAG_SCALE);
     display->ZeroRotationAboutOrigin();
 
     display->SetColor(tmpColor);
@@ -1114,8 +1147,10 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
     display->Line(-TRACK_SIZE, 0.0f, 0.0f, TRACK_SIZE);
 
     // Draw the locked target's symbol (just a blip inside the lock marker)
-    display->Tri(-BLIP_SIZE, -BLIP_SIZE, -BLIP_SIZE, +BLIP_SIZE, +BLIP_SIZE, +BLIP_SIZE);
-    display->Tri(-BLIP_SIZE, -BLIP_SIZE, +BLIP_SIZE, -BLIP_SIZE, +BLIP_SIZE, +BLIP_SIZE);
+    display->Tri(-BLIP_SIZE, -BLIP_SIZE, -BLIP_SIZE, +BLIP_SIZE, +BLIP_SIZE,
+                 +BLIP_SIZE);
+    display->Tri(-BLIP_SIZE, -BLIP_SIZE, +BLIP_SIZE, -BLIP_SIZE, +BLIP_SIZE,
+                 +BLIP_SIZE);
 
 
     // Clear the viewport shift and spin
@@ -1124,13 +1159,16 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
 
 
     // Target ID (NCTR)
-    if (lockedTarget->BaseData()->IsSim() and not ((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
+    if (lockedTarget->BaseData()->IsSim() and
+        not((SimBaseClass*)lockedTarget->BaseData())->IsExploding())
     {
-        Falcon4EntityClassType *classPtr = (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
+        Falcon4EntityClassType* classPtr =
+            (Falcon4EntityClassType*)lockedTarget->BaseData()->EntityType();
 
         if (classPtr->dataType == DTYPE_VEHICLE)
         {
-            sprintf(string, "%s", ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
+            sprintf(string, "%s",
+                    ((VehicleClassDataType*)(classPtr->dataPtr))->Name);
             ShiAssert(strlen(string) < sizeof(string));
             display->TextCenter(0.0F, 0.75F, string);
         }
@@ -1146,9 +1184,9 @@ void RadarSuperClass::DrawLockedGndInfo(float h, float v)
     y = lockedTarget->localData->el / radarData->ScanHalfAngle;
     x = lockedTarget->localData->az / radarData->ScanHalfAngle;
 
-    display->Line(-0.85f, y,           -0.80f, y);
+    display->Line(-0.85f, y, -0.80f, y);
     display->Line(-0.85f, y + BLIP_SIZE, -0.85f, y - BLIP_SIZE);
-    display->Line(x,           -0.80f, x,           -0.85f);
+    display->Line(x, -0.80f, x, -0.85f);
     display->Line(x + BLIP_SIZE, -0.85f, x - BLIP_SIZE, -0.85f);
 
 
@@ -1166,7 +1204,7 @@ void RadarSuperClass::DrawWaterline(void)
     static const float OutsideEdge = 0.40f;
     static const float Height = 0.04f;
 
-    theta  = -platform->Pitch();
+    theta = -platform->Pitch();
 
     if (theta > 45.0F * DTR)
         theta = 45.0F * DTR;
@@ -1180,10 +1218,10 @@ void RadarSuperClass::DrawWaterline(void)
     display->AdjustOriginInViewport(rot.sin * yPos, rot.cos * yPos);
     display->AdjustRotationAboutOrigin(-platform->Roll());
 
-    display->Line(OutsideEdge, -Height,  OutsideEdge, 0.0f);
-    display->Line(OutsideEdge,  0.0f,  InsideEdge, 0.0f);
+    display->Line(OutsideEdge, -Height, OutsideEdge, 0.0f);
+    display->Line(OutsideEdge, 0.0f, InsideEdge, 0.0f);
     display->Line(-OutsideEdge, -Height, -OutsideEdge, 0.0f);
-    display->Line(-OutsideEdge,  0.0f, -InsideEdge, 0.0f);
+    display->Line(-OutsideEdge, 0.0f, -InsideEdge, 0.0f);
 
     display->ZeroRotationAboutOrigin();
     display->CenterOriginInViewport();
@@ -1213,15 +1251,15 @@ void RadarSuperClass::DrawButtons(void)
         LabelButton(1, "ACM", "", lockCmd == AUTO);
     }
 
-    LabelButton(2, "AA",  "", mode == AA);
+    LabelButton(2, "AA", "", mode == AA);
 
     if (mode == GMT)
     {
-        LabelButton(3, "GMT",  "", TRUE);
+        LabelButton(3, "GMT", "", TRUE);
     }
     else
     {
-        LabelButton(3, "GM",  "", mode == GM);
+        LabelButton(3, "GM", "", mode == GM);
     }
 
     LabelButton(13, "FCR", NULL, 1);
@@ -1233,37 +1271,37 @@ void RadarSuperClass::PushButton(int whichButton, int whichMFD)
 {
     switch (whichButton)
     {
-        case 1:
-            if (mode == AA)
-            {
-                wantLock = AUTO;
-            }
+    case 1:
+        if (mode == AA)
+        {
+            wantLock = AUTO;
+        }
 
-            break;
+        break;
 
-        case 2:
-            StepAAmode();
-            break;
+    case 2:
+        StepAAmode();
+        break;
 
-        case 3:
-            StepAGmode();
-            break;
+    case 3:
+        StepAGmode();
+        break;
 
-        case 13:
-            MfdDisplay[whichMFD]->SetNewMode(MFDClass::MfdMenu);
-            break;
+    case 13:
+        MfdDisplay[whichMFD]->SetNewMode(MFDClass::MfdMenu);
+        break;
 
-        case 14:
-            MFDSwapDisplays();
-            break;
+    case 14:
+        MFDSwapDisplays();
+        break;
 
-        case 18:
-            RangeStep(-1);
-            break;
+    case 18:
+        RangeStep(-1);
+        break;
 
-        case 19:
-            RangeStep(1);
-            break;
+    case 19:
+        RangeStep(1);
+        break;
     }
 }
 
@@ -1340,16 +1378,18 @@ void RadarSuperClass::ClearOverride(void)
     }
 }
 
-void RadarSuperClass::GetAGCenter(float *x, float *y)
+void RadarSuperClass::GetAGCenter(float* x, float* y)
 {
     mlTrig yawTrig;
     mlSinCos(&yawTrig, platform->Yaw());
 
-    float cx =  cursorX;
+    float cx = cursorX;
     float cy = (cursorY + 1.0f);
 
-    *x = (cy * yawTrig.cos - cx * yawTrig.sin) * rangeFT / 2.0f + platform->XPos();
-    *y = (cy * yawTrig.sin + cx * yawTrig.cos) * rangeFT / 2.0f + platform->YPos();
+    *x = (cy * yawTrig.cos - cx * yawTrig.sin) * rangeFT / 2.0f +
+         platform->XPos();
+    *y = (cy * yawTrig.sin + cx * yawTrig.cos) * rangeFT / 2.0f +
+         platform->YPos();
 }
 
 void RadarSuperClass::SetMode(RadarMode cmd)

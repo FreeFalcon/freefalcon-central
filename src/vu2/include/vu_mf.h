@@ -12,8 +12,12 @@ class VuMessage;
 class VuMessageFilter
 {
 public:
-    VuMessageFilter() { }
-    virtual ~VuMessageFilter() { }
+    VuMessageFilter()
+    {
+    }
+    virtual ~VuMessageFilter()
+    {
+    }
     virtual VU_BOOL Test(VuMessage *event) const = 0;
     virtual VuMessageFilter *Copy() const = 0;
 };
@@ -34,7 +38,9 @@ class VuStandardMsgFilter : public VuMessageFilter
 public:
     VuStandardMsgFilter();
     VuStandardMsgFilter(ulong bitfield);
-    virtual ~VuStandardMsgFilter() {}
+    virtual ~VuStandardMsgFilter()
+    {
+    }
     virtual VU_BOOL Test(VuMessage *event) const;
     virtual VuMessageFilter *Copy() const
     {
@@ -49,8 +55,12 @@ protected:
 class VuResendMsgFilter : public VuMessageFilter
 {
 public:
-    VuResendMsgFilter() {}
-    virtual ~VuResendMsgFilter() {}
+    VuResendMsgFilter()
+    {
+    }
+    virtual ~VuResendMsgFilter()
+    {
+    }
     virtual VU_BOOL Test(VuMessage *message) const;
     virtual VuMessageFilter *Copy() const
     {
@@ -75,8 +85,12 @@ protected:
 class VuNullMessageFilter : public VuMessageFilter
 {
 public:
-    VuNullMessageFilter() : VuMessageFilter() { }
-    virtual ~VuNullMessageFilter() { }
+    VuNullMessageFilter() : VuMessageFilter()
+    {
+    }
+    virtual ~VuNullMessageFilter()
+    {
+    }
     virtual VU_BOOL Test(VuMessage *) const
     {
         return TRUE;
@@ -89,4 +103,3 @@ public:
 
 
 #endif
-

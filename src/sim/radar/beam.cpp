@@ -2,7 +2,7 @@
 #include "f4vu.h"
 #include "object.h"
 #include "sensors.h"
-#include "radarDoppler.h"
+#include "radardoppler.h"
 #include "geometry.h"
 #include "simmover.h"
 #include "simdrive.h"
@@ -20,8 +20,9 @@ void RadarDopplerClass::MoveBeam(void)
     float az, el, theta;
 
     //MI no radar if RF Switch in SILENT or QUIET
-    if (SimDriver.GetPlayerAircraft() and (SimDriver.GetPlayerAircraft()->RFState == 1 or
-                                          SimDriver.GetPlayerAircraft()->RFState == 2))
+    if (SimDriver.GetPlayerAircraft() and
+        (SimDriver.GetPlayerAircraft()->RFState == 1 or
+         SimDriver.GetPlayerAircraft()->RFState == 2))
     {
         SetEmitting(FALSE);
     }
@@ -29,45 +30,51 @@ void RadarDopplerClass::MoveBeam(void)
     // Seems like most of this could be done once at mode change or in per mode processing???
     switch (mode)
     {
-        case GM:
-            if (flags bitand DBS1)
-            {
-                curScanRate = scanRate * g_fDBS1ScanRateFactor;//0.25F; // We're fudging -- Up the scan rate to reduce the latency
-            }
-            else if (flags bitand DBS2)
-            {
-                curScanRate = scanRate * g_fDBS2ScanRateFactor;//0.05F; // We're fudging -- Up the scan rate to reduce the latency
-            }
-            else
-            {
-                curScanRate = scanRate * 2.0f; // We're fudging -- Up the scan rate to reduce the latency
-            }
+    case GM:
+        if (flags bitand DBS1)
+        {
+            curScanRate =
+                scanRate *
+                g_fDBS1ScanRateFactor; //0.25F; // We're fudging -- Up the scan rate to reduce the latency
+        }
+        else if (flags bitand DBS2)
+        {
+            curScanRate =
+                scanRate *
+                g_fDBS2ScanRateFactor; //0.05F; // We're fudging -- Up the scan rate to reduce the latency
+        }
+        else
+        {
+            curScanRate =
+                scanRate *
+                2.0f; // We're fudging -- Up the scan rate to reduce the latency
+        }
 
-            break;
+        break;
 
-        case LRS:
+    case LRS:
+        curScanRate = scanRate * 0.5f; // JPO a bit slower
+        break;
+
+    case SAM:
+        if (prevMode == LRS)
             curScanRate = scanRate * 0.5f; // JPO a bit slower
-            break;
-
-        case SAM:
-            if (prevMode == LRS)
-                curScanRate = scanRate * 0.5f; // JPO a bit slower
-            else
-                curScanRate = scanRate;
-
-            break;
-
-        default:
+        else
             curScanRate = scanRate;
-            break;
+
+        break;
+
+    default:
+        curScanRate = scanRate;
+        break;
     }
 
 
     if (scanDir == ScanNone)
     {
-        curScanLeft   = beamAz - beamWidth;
-        curScanRight  = beamAz + beamWidth;
-        curScanTop    = beamEl + beamWidth;
+        curScanLeft = beamAz - beamWidth;
+        curScanRight = beamAz + beamWidth;
+        curScanTop = beamEl + beamWidth;
         curScanBottom = beamEl - beamWidth;
     }
     else if (IsSet(HomingBeam))
@@ -115,7 +122,7 @@ void RadarDopplerClass::MoveBeam(void)
         /*----------------*/
         if (IsSet(ChangingBars))
         {
-            curScanTop    = beamEl + beamWidth;
+            curScanTop = beamEl + beamWidth;
             curScanBottom = beamEl - beamWidth;
 
             /*-------------*/
@@ -160,11 +167,11 @@ void RadarDopplerClass::MoveBeam(void)
             {
                 curScanBottom = beamEl - beamWidth;
                 beamEl += curScanRate * SimLibMajorFrameTime;
-                curScanTop    = beamEl + beamWidth;
+                curScanTop = beamEl + beamWidth;
             }
             else
             {
-                curScanTop    = beamEl + beamWidth;
+                curScanTop = beamEl + beamWidth;
                 beamEl -= curScanRate * SimLibMajorFrameTime;
                 curScanBottom = beamEl - beamWidth;
             }
@@ -178,7 +185,7 @@ void RadarDopplerClass::MoveBeam(void)
                 targetAz = beamAz + barWidth;
                 beamEl = elScan;
                 scanDir = ScanRev;
-                curScanTop    = beamEl + beamWidth;
+                curScanTop = beamEl + beamWidth;
             }
             /*---------------------*/
             /* Off the bottom edge */
@@ -211,9 +218,11 @@ void RadarDopplerClass::MoveBeam(void)
             {
                 // Firstly, is the beam over the target? if yes, return to search
                 // else, go to the target
-                theta  = lockedTarget->BaseData()->Pitch();
-                az = TargetAz(platform, lockedTarget->BaseData()->XPos(), lockedTarget->BaseData()->YPos());
-                el = TargetEl(platform, lockedTarget->BaseData()->XPos(), lockedTarget->BaseData()->YPos(),
+                theta = lockedTarget->BaseData()->Pitch();
+                az = TargetAz(platform, lockedTarget->BaseData()->XPos(),
+                              lockedTarget->BaseData()->YPos());
+                el = TargetEl(platform, lockedTarget->BaseData()->XPos(),
+                              lockedTarget->BaseData()->YPos(),
                               lockedTarget->BaseData()->ZPos());
 
                 if (theta > MAX_ANT_EL)
@@ -222,8 +231,9 @@ void RadarDopplerClass::MoveBeam(void)
                     el += (-MAX_ANT_EL - theta);
 
                 // target in beam ?
-                if ((az >= curScanLeft and az <= curScanRight and 
-                     el <= curScanTop and el >= curScanBottom) or scanDir == ScanRev)
+                if ((az >= curScanLeft and az <= curScanRight and
+                     el <= curScanTop and el >= curScanBottom) or
+                    scanDir == ScanRev)
                 {
                     // Can See, or, have seen so head home
                     scanDir = ScanRev;
@@ -329,9 +339,9 @@ void RadarDopplerClass::MoveBeam(void)
                 }
 
                 // Where are we really looking
-                curScanLeft   = beamAz - beamWidth;
-                curScanRight  = beamAz + beamWidth;
-                curScanTop    = beamEl + beamWidth;
+                curScanLeft = beamAz - beamWidth;
+                curScanRight = beamAz + beamWidth;
+                curScanTop = beamEl + beamWidth;
                 curScanBottom = beamEl - beamWidth;
 
                 // These get added back in later for all modes
@@ -409,7 +419,7 @@ void RadarDopplerClass::MoveBeam(void)
             /*------------*/
             /* Right Edge */
             /*------------*/
-            if (scanDir == ScanFwd and 
+            if (scanDir == ScanFwd and
                 (beamAz > azScan or beamAz + seekerAzCenter > MAX_ANT_EL))
             {
 #if 0 // This will be nice but is a bit broken inside GMComposit.cpp  SCR 8/14/98
@@ -432,8 +442,9 @@ void RadarDopplerClass::MoveBeam(void)
             /*-----------*/
             /* Left Edge */
             /*-----------*/
-            else if (scanDir == ScanRev and 
-                     (beamAz < -azScan or beamAz + seekerAzCenter < -MAX_ANT_EL))
+            else if (scanDir == ScanRev and
+                     (beamAz < -azScan or
+                      beamAz + seekerAzCenter < -MAX_ANT_EL))
             {
                 SetFlagBit(ChangingBars);
                 targetEl = beamEl - barWidth;
@@ -470,9 +481,9 @@ int RadarDopplerClass::LookingAtObject(SimObjectType* target)
     float az, el, theta;
     SimObjectLocalData* targetData = target->localData;
 
-    if ( not IsSet(SpaceStabalized))
+    if (not IsSet(SpaceStabalized))
     {
-        if (targetData->az >= curScanLeft and targetData->az <= curScanRight and 
+        if (targetData->az >= curScanLeft and targetData->az <= curScanRight and
             targetData->el <= curScanTop and targetData->el >= curScanBottom)
             retval = TRUE;
         else
@@ -480,18 +491,19 @@ int RadarDopplerClass::LookingAtObject(SimObjectType* target)
     }
     else
     {
-        theta  = target->BaseData()->Pitch();
-        az = TargetAz(platform, target->BaseData()->XPos(), target->BaseData()->YPos());
-        el = TargetEl(platform, target->BaseData()->XPos(), target->BaseData()->YPos(),
-                      target->BaseData()->ZPos());
+        theta = target->BaseData()->Pitch();
+        az = TargetAz(platform, target->BaseData()->XPos(),
+                      target->BaseData()->YPos());
+        el = TargetEl(platform, target->BaseData()->XPos(),
+                      target->BaseData()->YPos(), target->BaseData()->ZPos());
 
         if (theta > MAX_ANT_EL)
             el -= (theta - MAX_ANT_EL);
         else if (theta < -MAX_ANT_EL)
             el += (-MAX_ANT_EL - theta);
 
-        if (az >= curScanLeft and az <= curScanRight and 
-            el <= curScanTop and el >= curScanBottom)
+        if (az >= curScanLeft and az <= curScanRight and el <= curScanTop and
+            el >= curScanBottom)
             retval = TRUE;
         else
             retval = FALSE;

@@ -1,4 +1,6 @@
-#if _MSC_VER < 1200
+#if defined(_MSC_VER) &&                                                       \
+    _MSC_VER <                                                                 \
+        1200 // Artscout - 2026 (Linux Ф1): clang on Linux does not define _MSC_VER; guard the ancient VC6 gate
 #error You need VC6 or higher
 #endif // _MSC_VER < 1200
 
@@ -35,5 +37,5 @@
 #include "falclib/include/falclib.h"
 #include "dispopts.h"
 #include "playerop.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/renderow.h"
 #include "otwdrive.h"

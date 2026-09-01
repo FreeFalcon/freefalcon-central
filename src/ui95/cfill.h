@@ -12,7 +12,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -26,6 +27,7 @@ private:
 
     // Don't save from here
     char *DitherPattern_;
+
 public:
     C_Fill();
     C_Fill(char **stream);
@@ -43,7 +45,7 @@ public:
     void Setup(long ID, short Type);
     void SetColor(COLORREF color)
     {
-        F4CSECTIONHANDLE* Leave = UI_Enter(Parent_);
+        F4CSECTIONHANDLE *Leave = UI_Enter(Parent_);
         Color_ = color;
         UI_Leave(Leave);
     }
@@ -56,14 +58,14 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
     void Refresh();
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
 #ifdef _UI95_PARSER_
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

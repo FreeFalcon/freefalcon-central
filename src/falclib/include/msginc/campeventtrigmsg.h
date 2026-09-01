@@ -11,15 +11,15 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 using std::memcpychk;
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type CampEvent Triggered
@@ -63,6 +63,6 @@ protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

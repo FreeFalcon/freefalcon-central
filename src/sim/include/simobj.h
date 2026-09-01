@@ -12,4 +12,3 @@ SimObjectType* UpdateTargetList(SimObjectType* inUseList, SimMoverClass* self,
 void ReleaseTargetList(SimObjectType* InUseList);
 
 #endif
-

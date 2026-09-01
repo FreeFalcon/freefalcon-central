@@ -31,13 +31,13 @@
 #include "simbase.h"
 #include "f4thread.h"
 #include "otwdrive.h"
-#include "Graphics/Include/render2d.h"
-#include "CampStr.h"
-#include "MissEval.h"
+#include "graphics/include/render2d.h"
+#include "campstr.h"
+#include "misseval.h"
 #include "dispcfg.h"
-#include "CmpClass.h"
-#include "ThreadMgr.h"
-#include "FalcSess.h"
+#include "cmpclass.h"
+#include "threadmgr.h"
+#include "falcsess.h"
 #include "classtbl.h"
 #include "brief.h"
 
@@ -50,12 +50,16 @@ extern float bubbleRatio;
 
 int asAgg = 1;
 
-int eldlgs[5][6] = {  { IDC_STATIC_U0, IDC_STATIC_U00, IDC_STATIC_U01, IDC_STATIC_U02, IDC_STATIC_U03, IDC_STATIC_U04 },
-    { IDC_STATIC_U1, IDC_STATIC_U10, IDC_STATIC_U11, IDC_STATIC_U12, IDC_STATIC_U13, IDC_STATIC_U14 },
-    { IDC_STATIC_U2, IDC_STATIC_U20, IDC_STATIC_U21, IDC_STATIC_U22, IDC_STATIC_U23, IDC_STATIC_U24 },
-    { IDC_STATIC_U3, IDC_STATIC_U30, IDC_STATIC_U31, IDC_STATIC_U32, IDC_STATIC_U33, IDC_STATIC_U34 },
-    { IDC_STATIC_U4, IDC_STATIC_U40, IDC_STATIC_U41, IDC_STATIC_U42, IDC_STATIC_U43, IDC_STATIC_U44 }
-};
+int eldlgs[5][6] = {{IDC_STATIC_U0, IDC_STATIC_U00, IDC_STATIC_U01,
+                     IDC_STATIC_U02, IDC_STATIC_U03, IDC_STATIC_U04},
+                    {IDC_STATIC_U1, IDC_STATIC_U10, IDC_STATIC_U11,
+                     IDC_STATIC_U12, IDC_STATIC_U13, IDC_STATIC_U14},
+                    {IDC_STATIC_U2, IDC_STATIC_U20, IDC_STATIC_U21,
+                     IDC_STATIC_U22, IDC_STATIC_U23, IDC_STATIC_U24},
+                    {IDC_STATIC_U3, IDC_STATIC_U30, IDC_STATIC_U31,
+                     IDC_STATIC_U32, IDC_STATIC_U33, IDC_STATIC_U34},
+                    {IDC_STATIC_U4, IDC_STATIC_U40, IDC_STATIC_U41,
+                     IDC_STATIC_U42, IDC_STATIC_U43, IDC_STATIC_U44}};
 int SPTable[50];
 
 extern int inButton(RECT *but, WORD xPos, WORD yPos);
@@ -70,12 +74,13 @@ char *BTP;
 // ========================================================
 
 extern char TargetTypeStr[7][15];
-extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+extern BOOL WINAPI FistOfGod(HWND hDlg, UINT message, WPARAM wParam,
+                             LPARAM lParam);
 
 extern int ShowReal;
 extern HWND mainMenuWnd;
 void ChooseMission(void);
-void GetString(char* buffer);
+void GetString(char *buffer);
 
 // ========================================================
 // Prototypes
@@ -111,35 +116,44 @@ int GetAdjustedSP(HWND hDlg, int SPType)
 void SetSizeCombo(HWND hDlg, Unit u)
 {
     SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_RESETCONTENT, 0, 0);
-    SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0, (LPARAM)"(none)");
+    SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0,
+                (LPARAM) "(none)");
 
     if (u->GetDomain() == DOMAIN_AIR)
     {
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0, (LPARAM)"Flight");
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0, (LPARAM)"Mission Group");
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0, (LPARAM)"Squadron");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Flight");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Mission Group");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Squadron");
     }
     else if (u->GetDomain() == DOMAIN_LAND)
     {
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0, (LPARAM)"Battalion");
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0, (LPARAM)"Brigade");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Battalion");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Brigade");
     }
     else if (u->GetDomain() == DOMAIN_SEA)
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0, (LPARAM)"Task Force");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Task Force");
 
-    SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_SETCURSEL, u->GetType(), 0);
+    SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_SETCURSEL,
+                u->GetType(), 0);
 }
 
 void SetTypeCombo(HWND hDlg, Unit u)
 {
     int i, j, k;
     char buffer[30];
-    UnitClassDataType* uc;
-    VehicleClassDataType* vc;
+    UnitClassDataType *uc;
+    VehicleClassDataType *vc;
 
     // Set the possible types
     SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_RESETCONTENT, 0, 0);
-    SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_ADDSTRING, 0, (LPARAM)"(none)");
+    SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_ADDSTRING, 0,
+                (LPARAM) "(none)");
 
     for (i = 1; i < 30; i++)
     {
@@ -150,13 +164,17 @@ void SetTypeCombo(HWND hDlg, Unit u)
             // uc = (UnitClassDataType*) Falcon4ClassTable[j].dataPtr;
             // if (uc)
             // SendMessage(GetDlgItem(hDlg,IDC_UNIT_TYPECOMBO),CB_ADDSTRING,0,(LPARAM)uc->Name);
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_ADDSTRING, 0, (LPARAM)GetSTypeName(u->GetDomain(), u->GetType(), i, buffer));
+            SendMessage(
+                GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_ADDSTRING, 0,
+                (LPARAM)GetSTypeName(u->GetDomain(), u->GetType(), i, buffer));
         }
         else
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_ADDSTRING, 0, (LPARAM)"<Davism>");
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_ADDSTRING, 0,
+                        (LPARAM) "<Davism>");
     }
 
-    SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_SETCURSEL, u->GetSType(), 0);
+    SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_SETCURSEL,
+                u->GetSType(), 0);
 
     // Set the possible vehicles
     SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_RESETCONTENT, 0, 0);
@@ -164,29 +182,37 @@ void SetTypeCombo(HWND hDlg, Unit u)
 
     if (u->GetDomain() == DOMAIN_LAND and u->GetType() == TYPE_BRIGADE)
     {
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_ADDSTRING, 0, (LPARAM)"(none)");
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_ADDSTRING, 0, (LPARAM)"Generic");
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_SETCURSEL, u->GetSPType(), 0);
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "(none)");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Generic");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_SETCURSEL,
+                    u->GetSPType(), 0);
     }
     else
     {
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_ADDSTRING, 0, (LPARAM)"(none)");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "(none)");
 
         for (i = 1; i < 255; i++)
         {
-            j = GetClassID(u->GetDomain(), CLASS_UNIT, u->GetType(), u->GetSType(), i, 0, 0, 0);
+            j = GetClassID(u->GetDomain(), CLASS_UNIT, u->GetType(),
+                           u->GetSType(), i, 0, 0, 0);
 
             if (j)
             {
-                uc = (UnitClassDataType*) Falcon4ClassTable[j].dataPtr;
+                uc = (UnitClassDataType *)Falcon4ClassTable[j].dataPtr;
 
                 if (uc)
                 {
-                    vc = (VehicleClassDataType*) Falcon4ClassTable[uc->VehicleType[0]].dataPtr;
+                    vc = (VehicleClassDataType *)
+                             Falcon4ClassTable[uc->VehicleType[0]]
+                                 .dataPtr;
 
                     if (vc and uc->VehicleType[0])
                     {
-                        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_ADDSTRING, 0, (LPARAM)vc->Name);
+                        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO),
+                                    CB_ADDSTRING, 0, (LPARAM)vc->Name);
                         SPTable[k] = i;
                         k++;
                     }
@@ -195,7 +221,8 @@ void SetTypeCombo(HWND hDlg, Unit u)
         }
 
         k = GetAdjustedSP(hDlg, u->GetSPType());
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_SETCURSEL, k, 0);
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_SETCURSEL, k,
+                    0);
     }
 }
 
@@ -310,12 +337,15 @@ void SetOptionalValues(HWND hDlg, Unit u)
     {
         Objective o;
         // Set up orders combo box
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0,
+                    0);
 
         for (i = 0; i < GORD_LAST; i++)
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)OrderStr[i]);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0,
+                        (LPARAM)OrderStr[i]);
 
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL, u->GetUnitOrders(), 0);
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL,
+                    u->GetUnitOrders(), 0);
         // Set the other values
         sprintf(buffer, "%d", u->GetUnitDivision());
         SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT2EDIT), buffer);
@@ -342,11 +372,16 @@ void SetOptionalValues(HWND hDlg, Unit u)
             int min, max, cur;
 
             // Set up the mission role combo box
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)"General");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)"Air to Air");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)"Air to Ground");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL, u->GetUnitSpecialty(), 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT,
+                        0, 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0,
+                        (LPARAM) "General");
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0,
+                        (LPARAM) "Air to Air");
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0,
+                        (LPARAM) "Air to Ground");
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL,
+                        u->GetUnitSpecialty(), 0);
             u->GetLocation(&x, &y);
             cur = FloatToInt32(DistanceToFront(x, y));
             min = u->GetUnitRange() / 30;
@@ -372,17 +407,23 @@ void SetOptionalValues(HWND hDlg, Unit u)
         else if (u->GetType() == TYPE_FLIGHT)
         {
             // Set up the mission combo box
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT,
+                        0, 0);
 
             for (i = 0; i < AMIS_OTHER; i++)
-                SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)MissStr[i]);
+                SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING,
+                            0, (LPARAM)MissStr[i]);
 
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL, u->GetUnitMission(), 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL,
+                        u->GetUnitMission(), 0);
             // Set up the loadout combo box
             // HACK: Faked for now
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_RESETCONTENT, 0, 0);
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_ADDSTRING, 0, (LPARAM)"Standard");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_SETCURSEL, 0, 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_RESETCONTENT,
+                        0, 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_ADDSTRING, 0,
+                        (LPARAM) "Standard");
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_SETCURSEL, 0,
+                        0);
             // SetWindowText(GetDlgItem(hDlg,IDC_UNIT_OPT3VAL),GetLoadoutName(u->GetUnitLoadout()));
             // Now the rest
             sprintf(buffer, "%d", u->GetUnitMissionTarget());
@@ -401,9 +442,12 @@ void SetOptionalValues(HWND hDlg, Unit u)
         {
             // Set up the package type combo box
             // Faked for now
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)"General");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL, 0, 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT,
+                        0, 0);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0,
+                        (LPARAM) "General");
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL, 0,
+                        0);
             // sprintf(buffer,"%d",u->GetUnitPackage());
             sprintf(buffer, "%d", u->GetUnitPriority());
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT2EDIT), buffer);
@@ -416,12 +460,15 @@ void SetOptionalValues(HWND hDlg, Unit u)
     else if (u->GetDomain() == DOMAIN_SEA)
     {
         // Set up orders combo box
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0, 0);
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_RESETCONTENT, 0,
+                    0);
 
         for (i = 0; i < NORD_OTHER; i++)
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0, (LPARAM)OrderStr[i]);
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_ADDSTRING, 0,
+                        (LPARAM)OrderStr[i]);
 
-        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL, u->GetUnitOrders(), 0);
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_SETCURSEL,
+                    u->GetUnitOrders(), 0);
         SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT2EDIT), "");
         SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT3EDIT), "");
         SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OPT4EDIT), "");
@@ -438,183 +485,202 @@ void ParseOptionalButtons(HWND hDlg, int button, int message, Unit u)
 
     switch (button)
     {
-        case IDC_UNIT_OPT1COMBO:
-            if (message == CBN_SELENDOK)
+    case IDC_UNIT_OPT1COMBO:
+        if (message == CBN_SELENDOK)
+        {
+            i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_GETCURSEL,
+                            0, 0);
+
+            if (i < 0)
+                return;
+
+            if (u->IsFlight())
+                u->SetUnitMission(i);
+            else if (u->IsSquadron())
+                u->SetUnitSpecialty(i);
+            else if (u->IsPackage())
+                ((Package)u)->SetPackageType(i);
+            else
             {
-                i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT1COMBO), CB_GETCURSEL, 0, 0);
+                GridIndex x, y;
+                Objective o;
 
-                if (i < 0)
-                    return;
+                u->GetLocation(&x, &y);
+                o = FindNearestObjective(x, y, NULL);
 
-                if (u->IsFlight())
-                    u->SetUnitMission(i);
-                else if (u->IsSquadron())
-                    u->SetUnitSpecialty(i);
-                else if (u->IsPackage())
-                    ((Package)u)->SetPackageType(i);
+                if (o)
+                    u->SetUnitOrders(i, o->Id());
                 else
+                    u->SetUnitOrders(i);
+            }
+        }
+
+        break;
+
+    case IDC_UNIT_OPT2COMBO:
+        if (message == CBN_SELENDOK)
+        {
+            i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_GETCURSEL,
+                            0, 0);
+
+            if (i < 0)
+                return;
+
+            // if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
+            // ; // u->SetUnitLoadout(i);
+        }
+
+        break;
+
+    case IDC_UNIT_OPT2EDIT:
+        if (message == EN_KILLFOCUS)
+        {
+            GetDlgItemText(hDlg, IDC_UNIT_OPT2EDIT, buffer, 79);
+            i = atoi(buffer);
+
+            if (i < 0)
+                return;
+
+            if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
+                return;
+            else if (u->GetType() == TYPE_SQUADRON and
+                     u->GetDomain() == DOMAIN_AIR)
+                return; // u->SetUnitWeapons(i);
+            else if (u->GetType() == TYPE_PACKAGE and
+                     u->GetDomain() == DOMAIN_AIR)
+                u->SetUnitPriority(i);
+            else if (u->GetType() == TYPE_TASKFORCE and
+                     u->GetDomain() == DOMAIN_SEA)
+                return;
+            else
+            {
+                if (u->GetUnitDivision() not_eq i)
                 {
-                    GridIndex x, y;
-                    Objective o;
-
-                    u->GetLocation(&x, &y);
-                    o = FindNearestObjective(x, y, NULL);
-
-                    if (o)
-                        u->SetUnitOrders(i, o->Id());
-                    else
-                        u->SetUnitOrders(i);
+                    u->SetUnitDivision(i);
+                    u->SetUnitNameID(0);
                 }
+
+                u->SetUnitNameID(FindUnitNameID(u));
+                RefreshNames(hDlg);
             }
+        }
 
-            break;
+        break;
 
-        case IDC_UNIT_OPT2COMBO:
-            if (message == CBN_SELENDOK)
-            {
-                i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_OPT2COMBO), CB_GETCURSEL, 0, 0);
+    case IDC_UNIT_OPT3EDIT:
+        if (message == EN_KILLFOCUS)
+        {
+            GetDlgItemText(hDlg, IDC_UNIT_OPT3EDIT, buffer, 79);
+            i = atoi(buffer);
 
-                if (i < 0)
-                    return;
+            if (i < 0)
+                return;
 
-                // if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
-                // ; // u->SetUnitLoadout(i);
-            }
+            if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
+                u->SetUnitMissionTarget(i);
+            else if (u->GetType() == TYPE_SQUADRON and
+                     u->GetDomain() == DOMAIN_AIR)
+                u->SetSquadronFuel(i);
+            else if (u->GetType() == TYPE_PACKAGE and
+                     u->GetDomain() == DOMAIN_AIR)
+                return;
+            else
+                u->SetUnitFatigue(i);
+        }
 
-            break;
+        break;
 
-        case IDC_UNIT_OPT2EDIT:
-            if (message == EN_KILLFOCUS)
-            {
-                GetDlgItemText(hDlg, IDC_UNIT_OPT2EDIT, buffer, 79);
-                i = atoi(buffer);
+    case IDC_UNIT_OPT4EDIT:
+        if (message == EN_KILLFOCUS)
+        {
+            GetDlgItemText(hDlg, IDC_UNIT_OPT4EDIT, buffer, 79);
+            i = atoi(buffer);
 
-                if (i < 0)
-                    return;
+            if (i < 0)
+                return;
 
-                if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
-                    return;
-                else if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
-                    return; // u->SetUnitWeapons(i);
-                else if (u->GetType() == TYPE_PACKAGE and u->GetDomain() == DOMAIN_AIR)
-                    u->SetUnitPriority(i);
-                else if (u->GetType() == TYPE_TASKFORCE and u->GetDomain() == DOMAIN_SEA)
-                    return;
-                else
-                {
-                    if (u->GetUnitDivision() not_eq i)
-                    {
-                        u->SetUnitDivision(i);
-                        u->SetUnitNameID(0);
-                    }
+            if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
+                u->SetSquadronFuel(i);
+            else if (u->GetType() == TYPE_PACKAGE and
+                     u->GetDomain() == DOMAIN_AIR)
+                return;
+            else
+                u->SetUnitMorale(i);
+        }
 
-                    u->SetUnitNameID(FindUnitNameID(u));
-                    RefreshNames(hDlg);
-                }
-            }
+        break;
 
-            break;
+    case IDC_UNIT_OPT5EDIT:
+        if (message == EN_KILLFOCUS)
+        {
+            GetDlgItemText(hDlg, IDC_UNIT_OPT5EDIT, buffer, 79);
+            i = atoi(buffer);
 
-        case IDC_UNIT_OPT3EDIT:
-            if (message == EN_KILLFOCUS)
-            {
-                GetDlgItemText(hDlg, IDC_UNIT_OPT3EDIT, buffer, 79);
-                i = atoi(buffer);
+            if (i < 0)
+                return;
 
-                if (i < 0)
-                    return;
+            if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
+                ; // Disable until loadout stuff is done
+            else if (u->GetType() == TYPE_PACKAGE and
+                     u->GetDomain() == DOMAIN_AIR)
+                return;
+            else
+                u->SetUnitSupply(i);
+        }
 
-                if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
-                    u->SetUnitMissionTarget(i);
-                else if (u->GetType() == TYPE_SQUADRON and u->GetDomain() == DOMAIN_AIR)
-                    u->SetSquadronFuel(i);
-                else if (u->GetType() == TYPE_PACKAGE and u->GetDomain() == DOMAIN_AIR)
-                    return;
-                else
-                    u->SetUnitFatigue(i);
-            }
+        break;
 
-            break;
+    case IDC_UNIT_OPT6EDIT:
+        if (message == EN_KILLFOCUS)
+        {
+            GetDlgItemText(hDlg, IDC_UNIT_OPT6EDIT, buffer, 79);
+            // What to do here?
+        }
 
-        case IDC_UNIT_OPT4EDIT:
-            if (message == EN_KILLFOCUS)
-            {
-                GetDlgItemText(hDlg, IDC_UNIT_OPT4EDIT, buffer, 79);
-                i = atoi(buffer);
+        break;
 
-                if (i < 0)
-                    return;
-
-                if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
-                    u->SetSquadronFuel(i);
-                else if (u->GetType() == TYPE_PACKAGE and u->GetDomain() == DOMAIN_AIR)
-                    return;
-                else
-                    u->SetUnitMorale(i);
-            }
-
-            break;
-
-        case IDC_UNIT_OPT5EDIT:
-            if (message == EN_KILLFOCUS)
-            {
-                GetDlgItemText(hDlg, IDC_UNIT_OPT5EDIT, buffer, 79);
-                i = atoi(buffer);
-
-                if (i < 0)
-                    return;
-
-                if (u->GetType() == TYPE_FLIGHT and u->GetDomain() == DOMAIN_AIR)
-                    ; // Disable until loadout stuff is done
-                else if (u->GetType() == TYPE_PACKAGE and u->GetDomain() == DOMAIN_AIR)
-                    return;
-                else
-                    u->SetUnitSupply(i);
-            }
-
-            break;
-
-        case IDC_UNIT_OPT6EDIT:
-            if (message == EN_KILLFOCUS)
-            {
-                GetDlgItemText(hDlg, IDC_UNIT_OPT6EDIT, buffer, 79);
-                // What to do here?
-            }
-
-            break;
-
-        default:
-            break;
+    default:
+        break;
     }
 }
 
-void SetButtons(HWND hDlg, RECT buttons[10], RECT ebuttons[5][6], int ulx, int uly)
+void SetButtons(HWND hDlg, RECT buttons[10], RECT ebuttons[5][6], int ulx,
+                int uly)
 {
     int i, j;
     RECT r;
 
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_MAIN), &r);
-    SetRect(&buttons[0], r.left - ulx, r.top - uly + 8, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[0], r.left - ulx, r.top - uly + 8, r.right - ulx,
+            r.bottom - uly);
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_OWNVAL), &r);
-    SetRect(&buttons[1], r.left - ulx, r.top - uly, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[1], r.left - ulx, r.top - uly, r.right - ulx,
+            r.bottom - uly);
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_TYPEVAL), &r);
-    SetRect(&buttons[2], r.left - ulx, r.top - uly, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[2], r.left - ulx, r.top - uly, r.right - ulx,
+            r.bottom - uly);
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_VEHVAL), &r);
-    SetRect(&buttons[3], r.left - ulx, r.top - uly, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[3], r.left - ulx, r.top - uly, r.right - ulx,
+            r.bottom - uly);
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_OPT1VAL), &r);
-    SetRect(&buttons[4], r.left - ulx, r.top - uly, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[4], r.left - ulx, r.top - uly, r.right - ulx,
+            r.bottom - uly);
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_OPT2VAL), &r);
-    SetRect(&buttons[5], r.left - ulx, r.top - uly, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[5], r.left - ulx, r.top - uly, r.right - ulx,
+            r.bottom - uly);
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_OPT3VAL), &r);
-    SetRect(&buttons[6], r.left - ulx, r.top - uly, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[6], r.left - ulx, r.top - uly, r.right - ulx,
+            r.bottom - uly);
     GetWindowRect(GetDlgItem(hDlg, IDC_UNIT_0), &r);
-    SetRect(&buttons[8], r.left - ulx, r.top - uly, r.right - ulx, r.bottom - uly);
+    SetRect(&buttons[8], r.left - ulx, r.top - uly, r.right - ulx,
+            r.bottom - uly);
 
     for (i = 0; i < 5; i++)
         for (j = 0; j < 6; j++)
         {
             GetWindowRect(GetDlgItem(hDlg, eldlgs[i][j]), &r);
-            SetRect(&ebuttons[i][j], r.left - ulx - 1, r.top - uly + 5, r.right - ulx, r.bottom - uly + 8);
+            SetRect(&ebuttons[i][j], r.left - ulx - 1, r.top - uly + 5,
+                    r.right - ulx, r.bottom - uly + 8);
         }
 }
 
@@ -649,7 +715,7 @@ void DisplayNextInStack(HWND hDlg, Unit u)
     }
 
     // e should be u or be null here
-    if ( not e)
+    if (not e)
     {
         delete myit;
         return;
@@ -674,7 +740,8 @@ void DisplayNextInStack(HWND hDlg, Unit u)
     if (e)
     {
         GlobUnit = e;
-        DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
+        DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg,
+                  (DLGPROC)EditUnit);
         GlobUnit = u;
     }
 
@@ -683,7 +750,7 @@ void DisplayNextInStack(HWND hDlg, Unit u)
 
 void ShowSubunitInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
 {
-    Unit  E;
+    Unit E;
     short j = 0;
     HWND hEWnd;
     HDC EDC;
@@ -701,20 +768,20 @@ void ShowSubunitInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
 
         switch (Set)
         {
-            case 1:
-                ShowSubunitInfo(DC, hDlg, E, Set + 1, j, asagg);
-                hEWnd = GetDlgItem(hDlg, eldlgs[j][i]);
-                EDC = BeginPaint(hEWnd, &ps);
-                DisplayUnit(EDC, E, 0, 10, 36);
-                EndPaint(hEWnd, &ps);
-                break;
+        case 1:
+            ShowSubunitInfo(DC, hDlg, E, Set + 1, j, asagg);
+            hEWnd = GetDlgItem(hDlg, eldlgs[j][i]);
+            EDC = BeginPaint(hEWnd, &ps);
+            DisplayUnit(EDC, E, 0, 10, 36);
+            EndPaint(hEWnd, &ps);
+            break;
 
-            case 2:
-                hEWnd = GetDlgItem(hDlg, eldlgs[i][j + 1]);
-                EDC = BeginPaint(hEWnd, &ps);
-                DisplayUnit(EDC, E, 1, 6, 18);
-                EndPaint(hEWnd, &ps);
-                break;
+        case 2:
+            hEWnd = GetDlgItem(hDlg, eldlgs[i][j + 1]);
+            EDC = BeginPaint(hEWnd, &ps);
+            DisplayUnit(EDC, E, 1, 6, 18);
+            EndPaint(hEWnd, &ps);
+            break;
         }
 
         E = U->GetNextUnitElement();
@@ -728,7 +795,7 @@ void ShowElementInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
     short Rost;
     char buffer[20];
 
-    if (( not asagg or not U->Father()) and Set == 1)
+    if ((not asagg or not U->Father()) and Set == 1)
     {
         if (U->GetDomain() == DOMAIN_AIR)
         {
@@ -737,14 +804,16 @@ void ShowElementInfo(HDC DC, HWND hDlg, Unit U, short Set, short i, int asagg)
             for (j = 0; j < VEHICLE_GROUPS_PER_UNIT; j++)
                 Rost += U->GetNumVehicles(j);
 
-            sprintf(buffer, "%d  %s\0", Rost, GetVehicleName(U->GetVehicleID(0)));
+            sprintf(buffer, "%d  %s\0", Rost,
+                    GetVehicleName(U->GetVehicleID(0)));
             SetWindowText(GetDlgItem(hDlg, IDC_UNIT_0), buffer);
         }
         else
         {
             for (j = 0; j < VEHICLE_GROUPS_PER_UNIT; j++)
             {
-                sprintf(buffer, "%d  %s\0", U->GetNumVehicles(j), GetVehicleName(U->GetVehicleID(j)));
+                sprintf(buffer, "%d  %s\0", U->GetNumVehicles(j),
+                        GetVehicleName(U->GetVehicleID(j)));
                 SetWindowText(GetDlgItem(hDlg, IDC_UNIT_0 + j), buffer);
             }
         }
@@ -807,15 +876,15 @@ int GetNextType(Unit u)
 
 BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
-    WORD  button;
+    WORD button;
     RECT rect;
     int aggmode, shifted = 0;
     // not int Shift=0,
     int None = 0; //not,Size=0; // Size determines which button to display
     //not int Change=-1;
-    int     i, j, ulx, uly;
+    int i, j, ulx, uly;
     Unit E, U = GlobUnit;
-    static  Unit  C1;
+    static Unit C1;
     char buffer[128];
 
     // Private buttons:
@@ -835,7 +904,7 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     RECT buttons[10];
     RECT ebuttons[5][6];
 
-    if ( not U or U->CountUnitElements() == 0)
+    if (not U or U->CountUnitElements() == 0)
         None = 1;
 
     GetWindowRect(hDlg, &rect);
@@ -847,424 +916,442 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_INITDIALOG:              /* message: initialize dialog box */
-            GridIndex x, y;
+    case WM_INITDIALOG: /* message: initialize dialog box */
+        GridIndex x, y;
 
-            U->GetLocation(&x, &y);
+        U->GetLocation(&x, &y);
 
-            // Fill the Domain Combo Box
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0, (LPARAM)"(none)");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0, (LPARAM)"Abstract");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0, (LPARAM)"Air");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0, (LPARAM)"Ground");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0, (LPARAM)"Naval");
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_SETCURSEL, U->GetDomain(), 0);
+        // Fill the Domain Combo Box
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "(none)");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Abstract");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Air");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Ground");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "Naval");
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_SETCURSEL,
+                    U->GetDomain(), 0);
 
-            // Set up the owner combo box
-            for (i = 0; i < NUM_COUNS; i++)
-                SendMessage(GetDlgItem(hDlg, IDC_UNIT_OWNERCOMBO), CB_ADDSTRING, 0, (LPARAM)Side[i]);
+        // Set up the owner combo box
+        for (i = 0; i < NUM_COUNS; i++)
+            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OWNERCOMBO), CB_ADDSTRING, 0,
+                        (LPARAM)Side[i]);
 
-            SendMessage(GetDlgItem(hDlg, IDC_UNIT_OWNERCOMBO), CB_SETCURSEL, U->GetOwner(), 0);
-            ResetBox(hDlg, U);
+        SendMessage(GetDlgItem(hDlg, IDC_UNIT_OWNERCOMBO), CB_SETCURSEL,
+                    U->GetOwner(), 0);
+        ResetBox(hDlg, U);
 
-            // Do Spotdata
-            for (i = 0; i < NUM_TEAMS; i++)
-                buffer[i] = '0' + (char)U->GetSpotted(i);
+        // Do Spotdata
+        for (i = 0; i < NUM_TEAMS; i++)
+            buffer[i] = '0' + (char)U->GetSpotted(i);
 
-            buffer[NUM_TEAMS] = 0;
-            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_SPOTVAL), buffer);
+        buffer[NUM_TEAMS] = 0;
+        SetWindowText(GetDlgItem(hDlg, IDC_UNIT_SPOTVAL), buffer);
 
-            // Initialize our buttons
-            // if (GlobUnit->PlayerOk())
-            // PostMessage(GetDlgItem(hDlg,IDC_CHECKPLAYEROK),BM_SETCHECK,1,0);
-            if (GlobUnit->Scripted())
-                PostMessage(GetDlgItem(hDlg, IDC_CHECKSCRIPTED), BM_SETCHECK, 1, 0);
+        // Initialize our buttons
+        // if (GlobUnit->PlayerOk())
+        // PostMessage(GetDlgItem(hDlg,IDC_CHECKPLAYEROK),BM_SETCHECK,1,0);
+        if (GlobUnit->Scripted())
+            PostMessage(GetDlgItem(hDlg, IDC_CHECKSCRIPTED), BM_SETCHECK, 1, 0);
 
-            if (GlobUnit->Commando())
-                PostMessage(GetDlgItem(hDlg, IDC_CHECKCOMMANDO), BM_SETCHECK, 1, 0);
+        if (GlobUnit->Commando())
+            PostMessage(GetDlgItem(hDlg, IDC_CHECKCOMMANDO), BM_SETCHECK, 1, 0);
 
-            if (GlobUnit->DontPlan())
-                PostMessage(GetDlgItem(hDlg, IDC_CHECKFIXED), BM_SETCHECK, 1, 0);
+        if (GlobUnit->DontPlan())
+            PostMessage(GetDlgItem(hDlg, IDC_CHECKFIXED), BM_SETCHECK, 1, 0);
 
-            if (GlobUnit->IsAggregate())
-                PostMessage(GetDlgItem(hDlg, IDC_CHECKAGGREGATE), BM_SETCHECK, 1, 0);
+        if (GlobUnit->IsAggregate())
+            PostMessage(GetDlgItem(hDlg, IDC_CHECKAGGREGATE), BM_SETCHECK, 1,
+                        0);
 
-            if (GlobUnit->Broken())
-                PostMessage(GetDlgItem(hDlg, IDC_CHECKBROKEN), BM_SETCHECK, 1, 0);
+        if (GlobUnit->Broken())
+            PostMessage(GetDlgItem(hDlg, IDC_CHECKBROKEN), BM_SETCHECK, 1, 0);
 
-            if (GlobUnit->Assigned())
-                PostMessage(GetDlgItem(hDlg, IDC_CHECKASSIGNED), BM_SETCHECK, 1, 0);
+        if (GlobUnit->Assigned())
+            PostMessage(GetDlgItem(hDlg, IDC_CHECKASSIGNED), BM_SETCHECK, 1, 0);
 
-            sprintf(buffer, "%d,%d", x, y);
-            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_LOCVAL), buffer);
+        sprintf(buffer, "%d,%d", x, y);
+        SetWindowText(GetDlgItem(hDlg, IDC_UNIT_LOCVAL), buffer);
 
-            SetFocus(GetDlgItem(hDlg, IDOK));
-            return (FALSE);
-            break;
+        SetFocus(GetDlgItem(hDlg, IDOK));
+        return (FALSE);
+        break;
 
-        case WM_PAINT:
+    case WM_PAINT:
+    {
+        HDC hDC, DC;
+        PAINTSTRUCT ps, nps;
+        HWND hCWnd;
+        //not int c=0;
+
+        if (not U or U->IsDead())
         {
-            HDC hDC, DC;
-            PAINTSTRUCT ps, nps;
-            HWND hCWnd;
-            //not int c=0;
+            if (U)
+                vuDatabase->Remove(U);
 
-            if ( not U or U->IsDead())
-            {
-                if (U)
-                    vuDatabase->Remove(U);
-
-                EndDialog(hDlg, FALSE);     /* Exits the dialog box        */
-            }
-
-            if (GetUpdateRect(hDlg, &rect, FALSE))
-            {
-                GridIndex x, y;
-
-                hDC = BeginPaint(hDlg, &ps);
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OWN2VAL), Side[U->GetOwner()]);
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_STRVAL), buffer);
-
-                if (U->GetDomain() == DOMAIN_AIR)
-                    sprintf(buffer, "%d", U->GetCombatStrength(Air, 0));
-                else if (U->GetDomain() == DOMAIN_SEA)
-                    sprintf(buffer, "%d", U->GetCombatStrength(Naval, 0));
-                else
-                    sprintf(buffer, "%d", U->GetCombatStrength(Foot, 0));
-
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_STRVAL), buffer);
-                U->GetFullName(buffer, 128, FALSE);
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_NAMEVAL), buffer);
-                sprintf(buffer, "%d", U->GetCampID());
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_IDVAL), buffer);
-                sprintf(buffer, "%d", U->GetUnitNameID());
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_NAMEIDVAL), buffer);
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_NAMEIDEDIT), buffer);
-                x = U->GetUnitReinforcementLevel();
-                sprintf(buffer, "%d", x);
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_REINFORCE_EDIT), buffer);
-                CampEntity target = GlobUnit->GetCampTarget();
-
-                if (target)
-                {
-                    target->GetLocation(&x, &y);
-                    sprintf(buffer, "%d bitand %d,%d", target->GetCampID(), x, y);
-                }
-                else
-                    sprintf(buffer, "None");
-
-                SetWindowText(GetDlgItem(hDlg, IDC_UNIT_STRTARGET), buffer);
-
-                SetOptionalValues(hDlg, U);
-                ShowElementInfo(hDC, hDlg, U, 1, 0, asAgg);
-
-                hCWnd = GetDlgItem(hDlg, IDC_UNIT_MAIN);
-                DC = BeginPaint(hCWnd, &nps);
-                DisplayUnit(DC, U, 0, 0, 48);
-                EndPaint(hCWnd, &nps);
-
-                EndPaint(hDlg, &ps);
-            }
+            EndDialog(hDlg, FALSE); /* Exits the dialog box        */
         }
 
+        if (GetUpdateRect(hDlg, &rect, FALSE))
+        {
+            GridIndex x, y;
 
-        case WM_COMMAND:                 /* message: received a command */
-            switch (button)
+            hDC = BeginPaint(hDlg, &ps);
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_OWN2VAL),
+                          Side[U->GetOwner()]);
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_STRVAL), buffer);
+
+            if (U->GetDomain() == DOMAIN_AIR)
+                sprintf(buffer, "%d", U->GetCombatStrength(Air, 0));
+            else if (U->GetDomain() == DOMAIN_SEA)
+                sprintf(buffer, "%d", U->GetCombatStrength(Naval, 0));
+            else
+                sprintf(buffer, "%d", U->GetCombatStrength(Foot, 0));
+
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_STRVAL), buffer);
+            U->GetFullName(buffer, 128, FALSE);
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_NAMEVAL), buffer);
+            sprintf(buffer, "%d", U->GetCampID());
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_IDVAL), buffer);
+            sprintf(buffer, "%d", U->GetUnitNameID());
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_NAMEIDVAL), buffer);
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_NAMEIDEDIT), buffer);
+            x = U->GetUnitReinforcementLevel();
+            sprintf(buffer, "%d", x);
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_REINFORCE_EDIT), buffer);
+            CampEntity target = GlobUnit->GetCampTarget();
+
+            if (target)
             {
-                case IDOK:     /* "OK" box selected?        */
-                case IDCANCEL:
-                    TeamInfo[GlobUnit->GetTeam()]->SetActive(1);
-                    EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
-                    return (TRUE);
-                    break;
+                target->GetLocation(&x, &y);
+                sprintf(buffer, "%d bitand %d,%d", target->GetCampID(), x, y);
+            }
+            else
+                sprintf(buffer, "None");
 
-                case IDC_BUTTONDELETE:
-                    // Remove Children
-                    E = U->GetFirstUnitElement();
+            SetWindowText(GetDlgItem(hDlg, IDC_UNIT_STRTARGET), buffer);
 
-                    while (E)
-                    {
-                        U->RemoveChild(E->Id());
-                        vuDatabase->Remove(E);
-                        E = U->GetFirstUnitElement();
-                    }
+            SetOptionalValues(hDlg, U);
+            ShowElementInfo(hDC, hDlg, U, 1, 0, asAgg);
 
-                    // Kill the unit
-                    U->KillUnit();
-                    vuDatabase->Remove(U);
-                    // Remove parent, if we're the last element
-                    E = U->GetUnitParent();
+            hCWnd = GetDlgItem(hDlg, IDC_UNIT_MAIN);
+            DC = BeginPaint(hCWnd, &nps);
+            DisplayUnit(DC, U, 0, 0, 48);
+            EndPaint(hCWnd, &nps);
 
-                    if (E and not E->GetFirstUnitElement())
-                        vuDatabase->Remove(E);
+            EndPaint(hDlg, &ps);
+        }
+    }
 
-                    GlobUnit = NULL;
-                    asAgg = 1;
-                    EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
-                    return TRUE;
-                    break;
 
-                case IDC_BUTTONPLAN:
-                    break;
+    case WM_COMMAND: /* message: received a command */
+        switch (button)
+        {
+        case IDOK: /* "OK" box selected?        */
+        case IDCANCEL:
+            TeamInfo[GlobUnit->GetTeam()]->SetActive(1);
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return (TRUE);
+            break;
 
-                case IDC_BUTTONSAVE:
-                    SaveAsScriptedUnitFile(hMainWnd);
-                    break;
+        case IDC_BUTTONDELETE:
+            // Remove Children
+            E = U->GetFirstUnitElement();
 
-                case IDC_BUTTONWAYPOINTS:
-                    MainMapData->ShowWPs = TRUE;
-                    WPUnit = U;
-                    EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
-                    return (TRUE);
-                    break;
-
-                case IDC_UNIT_NAMEIDEDIT:
-                    if (HIWORD(wParam) == EN_KILLFOCUS)
-                    {
-                        GetDlgItemText(hDlg, IDC_UNIT_NAMEIDEDIT, buffer, 79);
-                        i = atoi(buffer);
-
-                        if (i)
-                            GlobUnit->SetUnitNameID(i);
-
-                        RefreshNames(hDlg);
-                    }
-
-                    break;
-
-                case IDC_BUTTONNEXTUNIT:
-                    DisplayNextInStack(hDlg, U);
-                    break;
-
-                case IDC_UNIT_DOMAINCOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i >= 0)
-                        {
-                            if (i == DOMAIN_SEA)
-                                GlobUnit = U = ConvertUnit(U, i, TYPE_TASKFORCE, 1, 1);
-                            else if (i == DOMAIN_AIR)
-                                GlobUnit = U = ConvertUnit(U, i, TYPE_SQUADRON, 1, 1);
-                            else if (i == DOMAIN_LAND)
-                                GlobUnit = U = ConvertUnit(U, i, TYPE_BRIGADE, 1, 1);
-                        }
-
-                        ResetBox(hDlg, U);
-                        RefreshControls(hDlg);
-                    }
-
-                    break;
-
-                case IDC_UNIT_SIZECOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i > 0)
-                        {
-                            if (U->GetDomain() == DOMAIN_LAND and i == TYPE_BATTALION)
-                                GlobUnit = U = ConvertUnit(U, U->GetDomain(), i, 1, 2);
-                            else
-                                GlobUnit = U = ConvertUnit(U, U->GetDomain(), i, 1, 1);
-                        }
-
-                        ResetBox(hDlg, U);
-                        RefreshControls(hDlg);
-                    }
-
-                    break;
-
-                case IDC_UNIT_TYPECOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i >= 0)
-                            U->SetUnitSType(i);
-
-                        ResetBox(hDlg, U);
-                    }
-
-                    break;
-
-                case IDC_UNIT_VEHICLECOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i >= 0)
-                            U->SetUnitSPType(SPTable[i]);
-
-                        InvalidateRect(hDlg, NULL, FALSE);
-                    }
-
-                    break;
-
-                case IDC_UNIT_OWNERCOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_OWNERCOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i >= 0)
-                            U->SetOwner(i);
-
-                        ResetBox(hDlg, U);
-                        RefreshControls(hDlg);
-                    }
-
-                    break;
-
-                case IDC_UNIT_REINFORCE_EDIT:
-                    if (HIWORD(wParam) == EN_KILLFOCUS)
-                    {
-                        GetDlgItemText(hDlg, IDC_UNIT_REINFORCE_EDIT, buffer, 79);
-                        i = atoi(buffer);
-                        U->SetUnitReinforcementLevel(i);
-                        U->SetInactive(i);
-
-                        if (U->Father())
-                        {
-                            for (j = 0; j < MAX_UNIT_CHILDREN; j++)
-                            {
-                                E = U->GetUnitElement(j);
-
-                                if (E)
-                                {
-                                    E->SetUnitReinforcementLevel(i);
-                                    E->SetInactive(i);
-                                }
-                            }
-                        }
-                    }
-
-                    break;
-
-                case IDC_UNIT_OPT1COMBO:
-                case IDC_UNIT_OPT2COMBO:
-                case IDC_UNIT_OPT2EDIT:
-                case IDC_UNIT_OPT3EDIT:
-                case IDC_UNIT_OPT4EDIT:
-                case IDC_UNIT_OPT5EDIT:
-                case IDC_UNIT_OPT6EDIT:
-                    ParseOptionalButtons(hDlg, button, HIWORD(wParam), U);
-                    break;
-
-                case IDC_CHECKPLAYEROK:
-                    // if (GlobUnit->PlayerOk())
-                    // GlobUnit->SetPlayerOk(0);
-                    // else
-                    // GlobUnit->SetPlayerOk(1);
-                    break;
-
-                case IDC_CHECKSCRIPTED:
-                    if (GlobUnit->Scripted())
-                        GlobUnit->SetScripted(0);
-                    else
-                        GlobUnit->SetScripted(1);
-
-                    break;
-
-                case IDC_CHECKCOMMANDO:
-                    if (GlobUnit->Commando())
-                        GlobUnit->SetCommando(0);
-                    else
-                        GlobUnit->SetCommando(1);
-
-                    break;
-
-                case IDC_CHECKFIXED:
-                    if (GlobUnit->DontPlan())
-                        GlobUnit->SetDontPlan(0);
-                    else
-                        GlobUnit->SetDontPlan(1);
-
-                    break;
-
-                default:
-                    break;
+            while (E)
+            {
+                U->RemoveChild(E->Id());
+                vuDatabase->Remove(E);
+                E = U->GetFirstUnitElement();
             }
 
-            if (button)
-                PostMessage(hDlg, WM_PAINT, 0, 0);
+            // Kill the unit
+            U->KillUnit();
+            vuDatabase->Remove(U);
+            // Remove parent, if we're the last element
+            E = U->GetUnitParent();
+
+            if (E and not E->GetFirstUnitElement())
+                vuDatabase->Remove(E);
+
+            GlobUnit = NULL;
+            asAgg = 1;
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return TRUE;
+            break;
+
+        case IDC_BUTTONPLAN:
+            break;
+
+        case IDC_BUTTONSAVE:
+            SaveAsScriptedUnitFile(hMainWnd);
+            break;
+
+        case IDC_BUTTONWAYPOINTS:
+            MainMapData->ShowWPs = TRUE;
+            WPUnit = U;
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return (TRUE);
+            break;
+
+        case IDC_UNIT_NAMEIDEDIT:
+            if (HIWORD(wParam) == EN_KILLFOCUS)
+            {
+                GetDlgItemText(hDlg, IDC_UNIT_NAMEIDEDIT, buffer, 79);
+                i = atoi(buffer);
+
+                if (i)
+                    GlobUnit->SetUnitNameID(i);
+
+                RefreshNames(hDlg);
+            }
 
             break;
 
-        case WM_LBUTTONDOWN:
-        case WM_RBUTTONDOWN:
-        case WM_LBUTTONDBLCLK:
-        {
-            WORD xPos, yPos;
+        case IDC_BUTTONNEXTUNIT:
+            DisplayNextInStack(hDlg, U);
+            break;
 
-            xPos = LOWORD(lParam);  // horizontal position of cursor
-            yPos = HIWORD(lParam);  // vertical position of cursor
+        case IDC_UNIT_DOMAINCOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_DOMAINCOMBO),
+                                CB_GETCURSEL, 0, 0);
 
-            // Check for clicks in element boxes
-            for (i = 0; i < 5; i++)
-                for (j = 0; j < 6; j++)
+                if (i >= 0)
                 {
-                    if (inButton(&ebuttons[i][j], xPos, yPos))
+                    if (i == DOMAIN_SEA)
+                        GlobUnit = U = ConvertUnit(U, i, TYPE_TASKFORCE, 1, 1);
+                    else if (i == DOMAIN_AIR)
+                        GlobUnit = U = ConvertUnit(U, i, TYPE_SQUADRON, 1, 1);
+                    else if (i == DOMAIN_LAND)
+                        GlobUnit = U = ConvertUnit(U, i, TYPE_BRIGADE, 1, 1);
+                }
+
+                ResetBox(hDlg, U);
+                RefreshControls(hDlg);
+            }
+
+            break;
+
+        case IDC_UNIT_SIZECOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_SIZECOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i > 0)
+                {
+                    if (U->GetDomain() == DOMAIN_LAND and i == TYPE_BATTALION)
+                        GlobUnit = U = ConvertUnit(U, U->GetDomain(), i, 1, 2);
+                    else
+                        GlobUnit = U = ConvertUnit(U, U->GetDomain(), i, 1, 1);
+                }
+
+                ResetBox(hDlg, U);
+                RefreshControls(hDlg);
+            }
+
+            break;
+
+        case IDC_UNIT_TYPECOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_TYPECOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i >= 0)
+                    U->SetUnitSType(i);
+
+                ResetBox(hDlg, U);
+            }
+
+            break;
+
+        case IDC_UNIT_VEHICLECOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_VEHICLECOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i >= 0)
+                    U->SetUnitSPType(SPTable[i]);
+
+                InvalidateRect(hDlg, NULL, FALSE);
+            }
+
+            break;
+
+        case IDC_UNIT_OWNERCOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_UNIT_OWNERCOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i >= 0)
+                    U->SetOwner(i);
+
+                ResetBox(hDlg, U);
+                RefreshControls(hDlg);
+            }
+
+            break;
+
+        case IDC_UNIT_REINFORCE_EDIT:
+            if (HIWORD(wParam) == EN_KILLFOCUS)
+            {
+                GetDlgItemText(hDlg, IDC_UNIT_REINFORCE_EDIT, buffer, 79);
+                i = atoi(buffer);
+                U->SetUnitReinforcementLevel(i);
+                U->SetInactive(i);
+
+                if (U->Father())
+                {
+                    for (j = 0; j < MAX_UNIT_CHILDREN; j++)
                     {
-                        int k, l;
+                        E = U->GetUnitElement(j);
 
-                        SetFocus(GetDlgItem(hDlg, IDOK));
-                        E = NULL;
-
-                        if ( not U->Real())
+                        if (E)
                         {
-                            E = GlobUnit->GetFirstUnitElement();
-                            k = i;
-                            l = j;
+                            E->SetUnitReinforcementLevel(i);
+                            E->SetInactive(i);
+                        }
+                    }
+                }
+            }
 
-                            while (E and k)
+            break;
+
+        case IDC_UNIT_OPT1COMBO:
+        case IDC_UNIT_OPT2COMBO:
+        case IDC_UNIT_OPT2EDIT:
+        case IDC_UNIT_OPT3EDIT:
+        case IDC_UNIT_OPT4EDIT:
+        case IDC_UNIT_OPT5EDIT:
+        case IDC_UNIT_OPT6EDIT:
+            ParseOptionalButtons(hDlg, button, HIWORD(wParam), U);
+            break;
+
+        case IDC_CHECKPLAYEROK:
+            // if (GlobUnit->PlayerOk())
+            // GlobUnit->SetPlayerOk(0);
+            // else
+            // GlobUnit->SetPlayerOk(1);
+            break;
+
+        case IDC_CHECKSCRIPTED:
+            if (GlobUnit->Scripted())
+                GlobUnit->SetScripted(0);
+            else
+                GlobUnit->SetScripted(1);
+
+            break;
+
+        case IDC_CHECKCOMMANDO:
+            if (GlobUnit->Commando())
+                GlobUnit->SetCommando(0);
+            else
+                GlobUnit->SetCommando(1);
+
+            break;
+
+        case IDC_CHECKFIXED:
+            if (GlobUnit->DontPlan())
+                GlobUnit->SetDontPlan(0);
+            else
+                GlobUnit->SetDontPlan(1);
+
+            break;
+
+        default:
+            break;
+        }
+
+        if (button)
+            PostMessage(hDlg, WM_PAINT, 0, 0);
+
+        break;
+
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+    case WM_LBUTTONDBLCLK:
+    {
+        WORD xPos, yPos;
+
+        xPos = LOWORD(lParam); // horizontal position of cursor
+        yPos = HIWORD(lParam); // vertical position of cursor
+
+        // Check for clicks in element boxes
+        for (i = 0; i < 5; i++)
+            for (j = 0; j < 6; j++)
+            {
+                if (inButton(&ebuttons[i][j], xPos, yPos))
+                {
+                    int k, l;
+
+                    SetFocus(GetDlgItem(hDlg, IDOK));
+                    E = NULL;
+
+                    if (not U->Real())
+                    {
+                        E = GlobUnit->GetFirstUnitElement();
+                        k = i;
+                        l = j;
+
+                        while (E and k)
+                        {
+                            E = GlobUnit->GetNextUnitElement();
+                            k--;
+                        }
+
+                        if (j and E)
+                        {
+                            E = E->GetFirstUnitElement();
+                            l--;
+
+                            while (E and l)
                             {
                                 E = GlobUnit->GetNextUnitElement();
-                                k--;
-                            }
-
-                            if (j and E)
-                            {
-                                E = E->GetFirstUnitElement();
                                 l--;
-
-                                while (E and l)
-                                {
-                                    E = GlobUnit->GetNextUnitElement();
-                                    l--;
-                                }
                             }
                         }
+                    }
 
-                        // Do stuff with the unit:
-                        if (message == WM_LBUTTONDBLCLK and E)
+                    // Do stuff with the unit:
+                    if (message == WM_LBUTTONDBLCLK and E)
+                    {
+                        GlobUnit = E;
+                        aggmode = asAgg;
+                        asAgg = 1;
+                        DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg,
+                                  (DLGPROC)EditUnit);
+                        GlobUnit = U;
+                        asAgg = aggmode;
+                        GetClientRect(hDlg, &rect);
+                        InvalidateRect(hDlg, &rect, TRUE);
+                    }
+
+                    if (message == WM_LBUTTONDBLCLK and not E and not U->Real())
+                    {
+                        GridIndex x, y;
+
+                        if (not j) // Primary child
                         {
-                            GlobUnit = E;
-                            aggmode = asAgg;
-                            asAgg = 1;
-                            DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
-                            GlobUnit = U;
-                            asAgg = aggmode;
-                            GetClientRect(hDlg, &rect);
-                            InvalidateRect(hDlg, &rect, TRUE);
+                            if (U->GetType() == TYPE_BRIGADE)
+                                E = NewUnit(U->GetDomain(), GetNextType(U),
+                                            U->GetSType(), 2, U);
+                            else
+                                E = NewUnit(U->GetDomain(), GetNextType(U),
+                                            U->GetSType(), U->GetSPType(), U);
+
+                            E->SetOwner(U->GetOwner());
+                            E->SetUnitNameID(i + 1);
                         }
 
-                        if (message == WM_LBUTTONDBLCLK and not E and not U->Real())
-                        {
-                            GridIndex x, y;
-
-                            if ( not j) // Primary child
-                            {
-                                if (U->GetType() == TYPE_BRIGADE)
-                                    E = NewUnit(U->GetDomain(), GetNextType(U), U->GetSType(), 2, U);
-                                else
-                                    E = NewUnit(U->GetDomain(), GetNextType(U), U->GetSType(), U->GetSPType(), U);
-
-                                E->SetOwner(U->GetOwner());
-                                E->SetUnitNameID(i + 1);
-                            }
-
-                            /* else if (U->GetType() == TYPE_DIVISION)
+                        /* else if (U->GetType() == TYPE_DIVISION)
                              {
                              E = GlobUnit->GetFirstUnitElement();
                              k=i;
@@ -1277,15 +1364,15 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                              E = CreateUnit(E->GetOwner(), E->GetDomain(), GetNextType(E), E->GetSType(), E->GetSPType(), E);
                              }
                             */
-                            U->GetLocation(&x, &y);
-                            E->SetLocation(x, y);
-                            E->SetUnitDestination(x, y);
-                        }
+                        U->GetLocation(&x, &y);
+                        E->SetLocation(x, y);
+                        E->SetUnitDestination(x, y);
+                    }
 
-                        if (message == WM_LBUTTONDOWN)
-                        {
+                    if (message == WM_LBUTTONDOWN)
+                    {
 
-                            /*
+                        /*
                              if ( not E)
                              ;  // Add the unit
                              else if (E==C1)
@@ -1293,75 +1380,76 @@ BOOL WINAPI EditUnit(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
                              else
                              C1 = E;
                             */
-                        }
-
-                        if (message == WM_RBUTTONDOWN and E and E == C1)
-                        {
-                            C1->SetUnitSType((char)(C1->GetSType() + 1));
-                        }
-
-                        InvalidateRect(hDlg, &ebuttons[i][j], TRUE);
-                        PostMessage(hDlg, WM_PAINT, 0, 0);
                     }
-                }
 
-            for (i = 0; i < 10; i++)
-            {
-                if (inButton(&buttons[i], xPos, yPos))
-                {
-                    SetFocus(GetDlgItem(hDlg, IDOK));
-
-                    switch (i)
+                    if (message == WM_RBUTTONDOWN and E and E == C1)
                     {
-                        case 0:
-                            if (asAgg and message == WM_LBUTTONDBLCLK)
-                            {
-                                U = GlobUnit;
-                                GlobUnit = U->GetUnitParent();
-
-                                if (GlobUnit and GlobUnit not_eq U)
-                                    DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1), hDlg, (DLGPROC)EditUnit);
-
-                                GlobUnit = U;
-                                GetClientRect(hDlg, &rect);
-                                InvalidateRect(hDlg, &rect, TRUE);
-                            }
-
-                            break;
-
-                        case 8:
-                            if (message == WM_RBUTTONDOWN)
-                                U->ChangeVehicles(1);
-                            else
-                                U->ChangeVehicles(-1);
-
-                            break;
-
-                        default:
-                            break;
+                        C1->SetUnitSType((char)(C1->GetSType() + 1));
                     }
 
-                    InvalidateRect(hDlg, &buttons[i], TRUE);
+                    InvalidateRect(hDlg, &ebuttons[i][j], TRUE);
                     PostMessage(hDlg, WM_PAINT, 0, 0);
                 }
             }
 
-            break;
-        }
-
-        case WM_KEYDOWN:
+        for (i = 0; i < 10; i++)
         {
-            int      C;
+            if (inButton(&buttons[i], xPos, yPos))
+            {
+                SetFocus(GetDlgItem(hDlg, IDOK));
 
-            if ((int)wParam == 16)
-                shifted = TRUE;
+                switch (i)
+                {
+                case 0:
+                    if (asAgg and message == WM_LBUTTONDBLCLK)
+                    {
+                        U = GlobUnit;
+                        GlobUnit = U->GetUnitParent();
 
-            C = (shifted ? (int)wParam : (int)wParam + 0x20);
-            break;
+                        if (GlobUnit and GlobUnit not_eq U)
+                            DialogBox(hInst, MAKEINTRESOURCE(IDD_UNITDIALOG1),
+                                      hDlg, (DLGPROC)EditUnit);
+
+                        GlobUnit = U;
+                        GetClientRect(hDlg, &rect);
+                        InvalidateRect(hDlg, &rect, TRUE);
+                    }
+
+                    break;
+
+                case 8:
+                    if (message == WM_RBUTTONDOWN)
+                        U->ChangeVehicles(1);
+                    else
+                        U->ChangeVehicles(-1);
+
+                    break;
+
+                default:
+                    break;
+                }
+
+                InvalidateRect(hDlg, &buttons[i], TRUE);
+                PostMessage(hDlg, WM_PAINT, 0, 0);
+            }
         }
+
+        break;
     }
 
-    return (FALSE);                    /* Didn't process a message    */
+    case WM_KEYDOWN:
+    {
+        int C;
+
+        if ((int)wParam == 16)
+            shifted = TRUE;
+
+        C = (shifted ? (int)wParam : (int)wParam + 0x20);
+        break;
+    }
+    }
+
+    return (FALSE); /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -1376,242 +1464,262 @@ BOOL WINAPI EditWayPoint(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
     char buffer[40];
     CampEntity e;
 
-    if ( not w)
+    if (not w)
     {
-        EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
+        EndDialog(hDlg, TRUE); /* Exits the dialog box        */
         return (FALSE);
     }
 
     switch (message)
     {
-        case WM_INITDIALOG:              /* message: initialize dialog box */
-            e = GlobWP->GetWPTarget();
+    case WM_INITDIALOG: /* message: initialize dialog box */
+        e = GlobWP->GetWPTarget();
 
-            if (e)
-            {
-                targettype = e->GetClass();
-                targetid = e->GetCampID();
-            }
-            else
-            {
-                targettype = 0;
-                targetid = 0;
-            }
+        if (e)
+        {
+            targettype = e->GetClass();
+            targetid = e->GetCampID();
+        }
+        else
+        {
+            targettype = 0;
+            targetid = 0;
+        }
 
+        w->GetWPLocation(&x, &y);
+        sprintf(buffer, "%d,%d", x, y);
+        SetWindowText(GetDlgItem(hDlg, IDC_WP_LOCVAL), buffer);
+        sprintf(buffer, "%s", GetTimeString(w->GetWPArrivalTime(), buffer));
+        SetWindowText(GetDlgItem(hDlg, IDC_WP_ARRIVEVAL), buffer);
+        sprintf(buffer, "%s", GetTimeString(w->GetWPDepartureTime(), buffer));
+        SetWindowText(GetDlgItem(hDlg, IDC_WP_DEPARTVAL), buffer);
+        sprintf(buffer, "%d", w->GetWPAltitude());
+        SetWindowText(GetDlgItem(hDlg, IDC_WP_ALTEDIT), buffer);
+        sprintf(buffer, "%d", w->GetWPStationTime());
+        SetWindowText(GetDlgItem(hDlg, IDC_WP_STATIONEDIT), buffer);
+        sprintf(buffer, "%d", targetid);
+        SetWindowText(GetDlgItem(hDlg, IDC_WP_TARGETIDEDIT), buffer);
+        sprintf(buffer, "%d", w->GetWPTargetBuilding());
+        SetWindowText(GetDlgItem(hDlg, IDC_WP_SPECIFICEDIT), buffer);
+
+        if (GlobUnit and GlobUnit->GetDomain() == DOMAIN_LAND)
+        {
+            firstwpa = WP_MOVEOPPOSED - 1;
+            lastwpa = WP_SECURE;
+        }
+        else if (GlobUnit and GlobUnit->GetDomain() == DOMAIN_AIR)
+        {
+            firstwpa = 0;
+            lastwpa = WP_FAC;
+        }
+        else
+        {
+            firstwpa = 0;
+            lastwpa = WP_SECURE;
+        }
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), WM_SETREDRAW, 0, 0);
+
+        for (i = firstwpa; i <= lastwpa; i++)
+            SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), CB_ADDSTRING, 0,
+                        (LPARAM)WPActStr[i]);
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), CB_SETCURSEL,
+                    GlobWP->GetWPAction() - firstwpa, 0);
+        SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), WM_SETREDRAW, 1, 0);
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), WM_SETREDRAW, 0, 0);
+
+        for (i = firstwpa; i <= lastwpa; i++)
+            SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), CB_ADDSTRING, 0,
+                        (LPARAM)WPActStr[i]);
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), CB_SETCURSEL,
+                    GlobWP->GetWPRouteAction() - firstwpa, 0);
+        SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), WM_SETREDRAW, 1, 0);
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), WM_SETREDRAW, 0, 0);
+
+        for (i = 0; i < 3; i++)
+            SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_ADDSTRING, 0,
+                        (LPARAM)TargetTypeStr[i]);
+
+        if (targettype == CLASS_UNIT)
+            SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_SETCURSEL, 2,
+                        0);
+        else if (targettype == CLASS_OBJECTIVE)
+            SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_SETCURSEL, 1,
+                        0);
+        else
+            SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_SETCURSEL, 0,
+                        0);
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), WM_SETREDRAW, 1, 0);
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), WM_SETREDRAW, 0,
+                    0);
+
+        for (i = 0; i < 3; i++)
+            SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), CB_ADDSTRING,
+                        0, (LPARAM)FormStr[i]);
+
+        SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), CB_SETCURSEL,
+                    GlobWP->GetWPFormation(), 0);
+        SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), WM_SETREDRAW, 1,
+                    0);
+        break;
+
+    case WM_PAINT:
+    {
+        HDC hDC;
+        PAINTSTRUCT ps;
+
+        if (GetUpdateRect(hDlg, &rect, FALSE))
+        {
+            hDC = BeginPaint(hDlg, &ps);
             w->GetWPLocation(&x, &y);
             sprintf(buffer, "%d,%d", x, y);
             SetWindowText(GetDlgItem(hDlg, IDC_WP_LOCVAL), buffer);
             sprintf(buffer, "%s", GetTimeString(w->GetWPArrivalTime(), buffer));
             SetWindowText(GetDlgItem(hDlg, IDC_WP_ARRIVEVAL), buffer);
-            sprintf(buffer, "%s", GetTimeString(w->GetWPDepartureTime(), buffer));
+            sprintf(buffer, "%s",
+                    GetTimeString(w->GetWPDepartureTime(), buffer));
             SetWindowText(GetDlgItem(hDlg, IDC_WP_DEPARTVAL), buffer);
-            sprintf(buffer, "%d", w->GetWPAltitude());
-            SetWindowText(GetDlgItem(hDlg, IDC_WP_ALTEDIT), buffer);
-            sprintf(buffer, "%d", w->GetWPStationTime());
-            SetWindowText(GetDlgItem(hDlg, IDC_WP_STATIONEDIT), buffer);
-            sprintf(buffer, "%d", targetid);
-            SetWindowText(GetDlgItem(hDlg, IDC_WP_TARGETIDEDIT), buffer);
-            sprintf(buffer, "%d", w->GetWPTargetBuilding());
-            SetWindowText(GetDlgItem(hDlg, IDC_WP_SPECIFICEDIT), buffer);
+            EndPaint(hDlg, &ps);
+        }
+    }
+    break;
 
-            if (GlobUnit and GlobUnit->GetDomain() == DOMAIN_LAND)
-            {
-                firstwpa = WP_MOVEOPPOSED - 1;
-                lastwpa = WP_SECURE;
-            }
-            else if (GlobUnit and GlobUnit->GetDomain() == DOMAIN_AIR)
-            {
-                firstwpa = 0;
-                lastwpa = WP_FAC;
-            }
-            else
-            {
-                firstwpa = 0;
-                lastwpa = WP_SECURE;
-            }
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), WM_SETREDRAW, 0, 0);
-
-            for (i = firstwpa; i <= lastwpa; i++)
-                SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), CB_ADDSTRING, 0, (LPARAM)WPActStr[i]);
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), CB_SETCURSEL, GlobWP->GetWPAction() - firstwpa, 0);
-            SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), WM_SETREDRAW, 1, 0);
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), WM_SETREDRAW, 0, 0);
-
-            for (i = firstwpa; i <= lastwpa; i++)
-                SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), CB_ADDSTRING, 0, (LPARAM)WPActStr[i]);
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), CB_SETCURSEL, GlobWP->GetWPRouteAction() - firstwpa, 0);
-            SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), WM_SETREDRAW, 1, 0);
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), WM_SETREDRAW, 0, 0);
-
-            for (i = 0; i < 3; i++)
-                SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_ADDSTRING, 0, (LPARAM)TargetTypeStr[i]);
-
-            if (targettype == CLASS_UNIT)
-                SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_SETCURSEL, 2, 0);
-            else if (targettype == CLASS_OBJECTIVE)
-                SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_SETCURSEL, 1, 0);
-            else
-                SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_SETCURSEL, 0, 0);
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), WM_SETREDRAW, 1, 0);
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), WM_SETREDRAW, 0, 0);
-
-            for (i = 0; i < 3; i++)
-                SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), CB_ADDSTRING, 0, (LPARAM)FormStr[i]);
-
-            SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), CB_SETCURSEL, GlobWP->GetWPFormation(), 0);
-            SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), WM_SETREDRAW, 1, 0);
+    case WM_COMMAND: /* message: received a command */
+        switch (LOWORD(wParam))
+        {
+        case IDOK: /* "OK" box selected?        */
+        case IDCANCEL:
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return (TRUE);
             break;
 
-        case WM_PAINT:
-        {
-            HDC hDC;
-            PAINTSTRUCT ps;
+        case IDC_ADD:
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            nw = new WayPointClass();
+            nw->CloneWP(w);
+            nw->InsertWP(w->GetNextWP());
+            w->InsertWP(nw);
 
-            if (GetUpdateRect(hDlg, &rect, FALSE))
+            if (nw)
             {
-                hDC = BeginPaint(hDlg, &ps);
-                w->GetWPLocation(&x, &y);
-                sprintf(buffer, "%d,%d", x, y);
-                SetWindowText(GetDlgItem(hDlg, IDC_WP_LOCVAL), buffer);
-                sprintf(buffer, "%s", GetTimeString(w->GetWPArrivalTime(), buffer));
-                SetWindowText(GetDlgItem(hDlg, IDC_WP_ARRIVEVAL), buffer);
-                sprintf(buffer, "%s", GetTimeString(w->GetWPDepartureTime(), buffer));
-                SetWindowText(GetDlgItem(hDlg, IDC_WP_DEPARTVAL), buffer);
-                EndPaint(hDlg, &ps);
+                GlobWP = nw;
+                DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hDlg,
+                          (DLGPROC)EditWayPoint);
+                GlobWP = w;
             }
-        }
-        break;
 
-        case WM_COMMAND:                 /* message: received a command */
-            switch (LOWORD(wParam))
+            return TRUE;
+            break;
+
+        case IDC_BUTTONDELETE:
+            WPUnit->DeleteUnitWP(w);
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return TRUE;
+            break;
+
+        case IDC_WP_ACTIONCOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
             {
-                case IDOK:    /* "OK" box selected?        */
-                case IDCANCEL:
-                    EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
-                    return (TRUE);
-                    break;
+                i = SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO),
+                                CB_GETCURSEL, 0, 0);
 
-                case IDC_ADD:
-                    EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
-                    nw = new WayPointClass();
-                    nw->CloneWP(w);
-                    nw->InsertWP(w->GetNextWP());
-                    w->InsertWP(nw);
-
-                    if (nw)
-                    {
-                        GlobWP = nw;
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_WPDIALOG), hDlg, (DLGPROC)EditWayPoint);
-                        GlobWP = w;
-                    }
-
-                    return TRUE;
-                    break;
-
-                case IDC_BUTTONDELETE:
-                    WPUnit->DeleteUnitWP(w);
-                    EndDialog(hDlg, TRUE);     /* Exits the dialog box        */
-                    return TRUE;
-                    break;
-
-                case IDC_WP_ACTIONCOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_WP_ACTIONCOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i >= 0)
-                            GlobWP->SetWPAction(i + firstwpa);
-                    }
-
-                    break;
-
-                case IDC_WP_ENROUTECOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i >= 0)
-                            GlobWP->SetWPRouteAction(i + firstwpa);
-                    }
-
-                    break;
-
-                case IDC_WP_FORMATIONCOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i >= 0)
-                            GlobWP->SetWPFormation(i);
-                    }
-
-                    break;
-
-                case IDC_WP_TARGETCOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        targettype = SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (targettype == 1)
-                        {
-                            Objective o;
-                            targettype = CLASS_OBJECTIVE;
-                            o = GetObjectiveByXY(CurX, CurY);
-
-                            if (o)
-                            {
-                                targetid = o->GetCampID();
-                            }
-
-                            sprintf(buffer, "%d", targetid);
-                            SetWindowText(GetDlgItem(hDlg, IDC_WP_TARGETIDEDIT), buffer);
-                            GlobWP->SetWPTarget(o->Id());
-                        }
-                        else if (targettype == 2)
-                        {
-                            Unit u;
-                            targettype = CLASS_UNIT;
-
-                            u = FindUnitByXY(AllRealList, CurX, CurY, 0);
-
-                            if (u)
-                                targetid = u->GetCampID();
-
-                            sprintf(buffer, "%d", targetid);
-                            SetWindowText(GetDlgItem(hDlg, IDC_WP_TARGETIDEDIT), buffer);
-                            GlobWP->SetWPTarget(u->Id());
-                        }
-                    }
-
-                    break;
-
-                case IDC_WP_ALTEDIT:
-                    GetDlgItemText(hDlg, IDC_WP_ALTEDIT, buffer, 79);
-                    i = atoi(buffer);
-
-                    if (HIWORD(wParam) == EN_KILLFOCUS)
-                        GlobWP->SetWPAltitude(i);
-
-                    break;
-
-                default:
-                    break;
+                if (i >= 0)
+                    GlobWP->SetWPAction(i + firstwpa);
             }
+
+            break;
+
+        case IDC_WP_ENROUTECOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_WP_ENROUTECOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i >= 0)
+                    GlobWP->SetWPRouteAction(i + firstwpa);
+            }
+
+            break;
+
+        case IDC_WP_FORMATIONCOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_WP_FORMATIONCOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i >= 0)
+                    GlobWP->SetWPFormation(i);
+            }
+
+            break;
+
+        case IDC_WP_TARGETCOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                targettype = SendMessage(GetDlgItem(hDlg, IDC_WP_TARGETCOMBO),
+                                         CB_GETCURSEL, 0, 0);
+
+                if (targettype == 1)
+                {
+                    Objective o;
+                    targettype = CLASS_OBJECTIVE;
+                    o = GetObjectiveByXY(CurX, CurY);
+
+                    if (o)
+                    {
+                        targetid = o->GetCampID();
+                    }
+
+                    sprintf(buffer, "%d", targetid);
+                    SetWindowText(GetDlgItem(hDlg, IDC_WP_TARGETIDEDIT),
+                                  buffer);
+                    GlobWP->SetWPTarget(o->Id());
+                }
+                else if (targettype == 2)
+                {
+                    Unit u;
+                    targettype = CLASS_UNIT;
+
+                    u = FindUnitByXY(AllRealList, CurX, CurY, 0);
+
+                    if (u)
+                        targetid = u->GetCampID();
+
+                    sprintf(buffer, "%d", targetid);
+                    SetWindowText(GetDlgItem(hDlg, IDC_WP_TARGETIDEDIT),
+                                  buffer);
+                    GlobWP->SetWPTarget(u->Id());
+                }
+            }
+
+            break;
+
+        case IDC_WP_ALTEDIT:
+            GetDlgItemText(hDlg, IDC_WP_ALTEDIT, buffer, 79);
+            i = atoi(buffer);
+
+            if (HIWORD(wParam) == EN_KILLFOCUS)
+                GlobWP->SetWPAltitude(i);
 
             break;
 
         default:
             break;
+        }
+
+        break;
+
+    default:
+        break;
     }
 
-    return (FALSE);                    /* Didn't process a message    */
+    return (FALSE); /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -1627,13 +1735,14 @@ F4PFList ResetNewSquadron(HWND hDlg, Unit squadron, F4PFList flights)
     GridIndex x, y;
     RECT rect;
 
-    if ( not squadron)
+    if (not squadron)
         return NULL;
 
     squadron->GetLocation(&x, &y);
     sprintf(buffer, "%d,%d", x, y);
     SetWindowText(GetDlgItem(hDlg, IDC_BASESTATIC), buffer);
-    SetWindowText(GetDlgItem(hDlg, IDC_SPECIALSTATIC), SpecialStr[squadron->GetUnitSpecialty()]);
+    SetWindowText(GetDlgItem(hDlg, IDC_SPECIALSTATIC),
+                  SpecialStr[squadron->GetUnitSpecialty()]);
     flights->Purge();
 
     {
@@ -1642,11 +1751,8 @@ F4PFList ResetNewSquadron(HWND hDlg, Unit squadron, F4PFList flights)
 
         while (u)
         {
-            if (
-                u->GetDomain() == DOMAIN_AIR and 
-                u->GetType() == TYPE_FLIGHT and 
-                u->GetUnitSquadronID() == squadron->Id()
-            )
+            if (u->GetDomain() == DOMAIN_AIR and u->GetType() == TYPE_FLIGHT and
+                u->GetUnitSquadronID() == squadron->Id())
             {
                 flights->ForcedInsert(u);
             }
@@ -1673,290 +1779,305 @@ BOOL WINAPI SelectMission(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
     switch (message)
     {
-        case WM_INITDIALOG:              /* message: initialize dialog box */
+    case WM_INITDIALOG: /* message: initialize dialog box */
+    {
+        squadrons = new FalconPrivateList(&AllAirFilter);
+        squadrons->Register();
+        flights = new FalconPrivateList(&AllAirFilter);
+        flights->Register();
+
+        if (not squadrons or not flights)
+            return FALSE;
+
+        squadron = flight = NULL;
         {
-            squadrons = new FalconPrivateList(&AllAirFilter);
-            squadrons->Register();
-            flights = new FalconPrivateList(&AllAirFilter);
-            flights->Register();
+            VuListIterator myit(AllAirList);
+            u = GetFirstUnit(&myit);
 
-            if ( not squadrons or not flights)
-                return FALSE;
-
-            squadron = flight = NULL;
+            while (u)
             {
-                VuListIterator myit(AllAirList);
-                u = GetFirstUnit(&myit);
+                if (u->GetDomain() == DOMAIN_AIR and
+                    u->GetType() == TYPE_SQUADRON)
+                    squadrons->ForcedInsert(u);
 
-                while (u)
-                {
-                    if (u->GetDomain() == DOMAIN_AIR and u->GetType() == TYPE_SQUADRON)
-                        squadrons->ForcedInsert(u);
-
-                    u = GetNextUnit(&myit);
-                }
+                u = GetNextUnit(&myit);
             }
-
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 0, 0);
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0, (LPARAM)"None");
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 0, 0);
-            squadron = (Unit)FalconLocalSession->GetPlayerSquadron();
-
-            {
-                VuListIterator sit(squadrons);
-                u = GetFirstUnit(&sit);
-                i = 0;
-
-                while (u)
-                {
-                    i++;
-                    sprintf(buffer, "Squadron %d - %s", u->GetUnitNameID(), GetVehicleName(u->GetVehicleID(0)));
-                    SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0, (LPARAM)buffer);
-
-                    if ( not squadron)
-                    {
-                        squadron = u;
-                        FalconLocalSession->SetPlayerSquadron((Squadron)squadron);
-                    }
-
-                    if (u == squadron)
-                        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, i, 0);
-
-                    u = GetNextUnit(&sit);
-                }
-            }
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 1, 0);
-            ResetNewSquadron(hDlg, squadron, flights);
-            SetWindowPos(hDlg, NULL, 0, 0, 0, 0, SWP_NOSIZE bitor SWP_NOZORDER);
-            return (TRUE);
         }
-        break;
 
-        case WM_PAINT:
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 0, 0);
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "None");
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 0, 0);
+        squadron = (Unit)FalconLocalSession->GetPlayerSquadron();
+
         {
-            PAINTSTRUCT ps;
-            HDC DC;
-            WayPoint w;
-            int radio, text, target, tot, cs;
-            CampaignTime dt;
-            VehicleClassDataType *vc;
+            VuListIterator sit(squadrons);
+            u = GetFirstUnit(&sit);
+            i = 0;
 
-            if (GetUpdateRect(hDlg, &rect, FALSE) and flights)
+            while (u)
             {
-                VuListIterator fit(flights);
-                DC = BeginPaint(hDlg, &ps);
-                u = GetFirstUnit(&fit);
-                i = 0;
+                i++;
+                sprintf(buffer, "Squadron %d - %s", u->GetUnitNameID(),
+                        GetVehicleName(u->GetVehicleID(0)));
+                SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING,
+                            0, (LPARAM)buffer);
 
-                while (u and i < 16)
+                if (not squadron)
                 {
-                    radio = IDC_MISS_MISSION1 + i;
-                    text = IDC_STATIC1 + i;
-                    tot = IDC_TOT1 + i;
-                    target = IDC_TARGET1 + i;
-                    cs = IDC_CS_1 + i;
-                    ShowWindow(GetDlgItem(hDlg, radio), 1);
-                    ShowWindow(GetDlgItem(hDlg, text), 1);
-                    ShowWindow(GetDlgItem(hDlg, tot), 1);
-                    ShowWindow(GetDlgItem(hDlg, target), 1);
-                    ShowWindow(GetDlgItem(hDlg, cs), 1);
-                    i++;
+                    squadron = u;
+                    FalconLocalSession->SetPlayerSquadron((Squadron)squadron);
+                }
 
-                    w = u->GetCurrentUnitWP();
+                if (u == squadron)
+                    SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO),
+                                CB_SETCURSEL, i, 0);
 
-                    if (w)
-                    {
-                        dt = w->GetWPArrivalTime();
+                u = GetNextUnit(&sit);
+            }
+        }
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 1, 0);
+        ResetNewSquadron(hDlg, squadron, flights);
+        SetWindowPos(hDlg, NULL, 0, 0, 0, 0, SWP_NOSIZE bitor SWP_NOZORDER);
+        return (TRUE);
+    }
+    break;
 
-                        if (w->GetWPAction() not_eq WP_TAKEOFF)
-                            sprintf(buffer, "In Progress");
-                        else
-                            sprintf(buffer, "%s", GetTimeString(dt, buffer));
-                    }
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC DC;
+        WayPoint w;
+        int radio, text, target, tot, cs;
+        CampaignTime dt;
+        VehicleClassDataType *vc;
+
+        if (GetUpdateRect(hDlg, &rect, FALSE) and flights)
+        {
+            VuListIterator fit(flights);
+            DC = BeginPaint(hDlg, &ps);
+            u = GetFirstUnit(&fit);
+            i = 0;
+
+            while (u and i < 16)
+            {
+                radio = IDC_MISS_MISSION1 + i;
+                text = IDC_STATIC1 + i;
+                tot = IDC_TOT1 + i;
+                target = IDC_TARGET1 + i;
+                cs = IDC_CS_1 + i;
+                ShowWindow(GetDlgItem(hDlg, radio), 1);
+                ShowWindow(GetDlgItem(hDlg, text), 1);
+                ShowWindow(GetDlgItem(hDlg, tot), 1);
+                ShowWindow(GetDlgItem(hDlg, target), 1);
+                ShowWindow(GetDlgItem(hDlg, cs), 1);
+                i++;
+
+                w = u->GetCurrentUnitWP();
+
+                if (w)
+                {
+                    dt = w->GetWPArrivalTime();
+
+                    if (w->GetWPAction() not_eq WP_TAKEOFF)
+                        sprintf(buffer, "In Progress");
                     else
-                        sprintf(buffer, "%s", GetTimeString(0, buffer));
-
-                    SetWindowText(GetDlgItem(hDlg, tot), buffer);
-                    // Hacked target for now
-                    w = u->GetFirstUnitWP();
-
-                    while (w)
-                    {
-                        if (w->GetWPFlags() bitand WPF_TARGET)
-                        {
-                            CampEntity e;
-                            w->GetWPLocation(&x, &y);
-                            e = w->GetWPTarget();
-
-                            if (e and e->IsUnit())
-                                sprintf(buffer, "Unit at %d,%d", x, y);
-                            else if (e and e->IsObjective())
-                                sprintf(buffer, "Objective at %d,%d", x, y);
-                            else
-                                sprintf(buffer, "Location at %d,%d", x, y);
-                        }
-
-                        w = w->GetNextWP();
-                    }
-
-                    SetWindowText(GetDlgItem(hDlg, target), buffer);
-                    sprintf(buffer, "%s", MissStr[u->GetUnitMission()]);
-                    SetWindowText(GetDlgItem(hDlg, text), buffer);
-                    sprintf(buffer, "%d", u->GetCampID());
-                    SetWindowText(GetDlgItem(hDlg, radio), buffer);
-                    vc = GetVehicleClassData(u->GetVehicleID(0));
-                    _stprintf(buffer, vc->Name);
-                    GetCallsign(((Flight)u)->callsign_id, ((Flight)u)->callsign_num, buffer);
-                    SetWindowText(GetDlgItem(hDlg, cs), buffer);
-                    u = GetNextUnit(&fit);
+                        sprintf(buffer, "%s", GetTimeString(dt, buffer));
                 }
+                else
+                    sprintf(buffer, "%s", GetTimeString(0, buffer));
 
-                for (; i < 16; i++)
+                SetWindowText(GetDlgItem(hDlg, tot), buffer);
+                // Hacked target for now
+                w = u->GetFirstUnitWP();
+
+                while (w)
                 {
-                    ShowWindow(GetDlgItem(hDlg, IDC_MISS_MISSION1 + i), 0);
-                    ShowWindow(GetDlgItem(hDlg, IDC_STATIC1 + i), 0);
-                    ShowWindow(GetDlgItem(hDlg, IDC_TOT1 + i), 0);
-                    ShowWindow(GetDlgItem(hDlg, IDC_TARGET1 + i), 0);
-                    ShowWindow(GetDlgItem(hDlg, IDC_CS_1 + i), 0);
-                }
-
-                EndPaint(hDlg, &ps);
-            }
-        }
-        break;
-
-        case WM_COMMAND:                 /* message: received a command */
-            switch (LOWORD(wParam))
-            {
-                case IDOK:
-                case IDCANCEL:
-                    squadrons->Unregister();
-                    delete squadrons;
-                    flights->Unregister();
-                    delete flights;
-                    squadrons = NULL;
-                    flights = NULL;
-                    EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
-                    return (TRUE);
-                    break;
-
-                case IDC_SQUADRONCOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
+                    if (w->GetWPFlags() bitand WPF_TARGET)
                     {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_GETCURSEL, 0, 0);
+                        CampEntity e;
+                        w->GetWPLocation(&x, &y);
+                        e = w->GetWPTarget();
 
-                        if (i)
-                        {
-                            VuListIterator sit(squadrons);
-                            squadron = GetFirstUnit(&sit);
-                            i--;
-
-                            while (i)
-                            {
-                                squadron = GetNextUnit(&sit);
-                                i--;
-                            }
-                        }
+                        if (e and e->IsUnit())
+                            sprintf(buffer, "Unit at %d,%d", x, y);
+                        else if (e and e->IsObjective())
+                            sprintf(buffer, "Objective at %d,%d", x, y);
                         else
-                        {
-                            squadron = NULL;
-                        }
-
-                        ResetNewSquadron(hDlg, squadron, flights);
+                            sprintf(buffer, "Location at %d,%d", x, y);
                     }
 
-                    break;
+                    w = w->GetNextWP();
+                }
 
-                case IDC_MISS_MISSION1:
-                case IDC_MISS_MISSION2:
-                case IDC_MISS_MISSION3:
-                case IDC_MISS_MISSION4:
-                case IDC_MISS_MISSION5:
-                case IDC_MISS_MISSION6:
-                case IDC_MISS_MISSION7:
-                case IDC_MISS_MISSION8:
-                case IDC_MISS_MISSION9:
-                case IDC_MISS_MISSION10:
-                case IDC_MISS_MISSION11:
-                case IDC_MISS_MISSION12:
-                case IDC_MISS_MISSION13:
-                case IDC_MISS_MISSION14:
-                case IDC_MISS_MISSION15:
-                case IDC_MISS_MISSION16:
+                SetWindowText(GetDlgItem(hDlg, target), buffer);
+                sprintf(buffer, "%s", MissStr[u->GetUnitMission()]);
+                SetWindowText(GetDlgItem(hDlg, text), buffer);
+                sprintf(buffer, "%d", u->GetCampID());
+                SetWindowText(GetDlgItem(hDlg, radio), buffer);
+                vc = GetVehicleClassData(u->GetVehicleID(0));
+                _stprintf(buffer, vc->Name);
+                GetCallsign(((Flight)u)->callsign_id, ((Flight)u)->callsign_num,
+                            buffer);
+                SetWindowText(GetDlgItem(hDlg, cs), buffer);
+                u = GetNextUnit(&fit);
+            }
+
+            for (; i < 16; i++)
+            {
+                ShowWindow(GetDlgItem(hDlg, IDC_MISS_MISSION1 + i), 0);
+                ShowWindow(GetDlgItem(hDlg, IDC_STATIC1 + i), 0);
+                ShowWindow(GetDlgItem(hDlg, IDC_TOT1 + i), 0);
+                ShowWindow(GetDlgItem(hDlg, IDC_TARGET1 + i), 0);
+                ShowWindow(GetDlgItem(hDlg, IDC_CS_1 + i), 0);
+            }
+
+            EndPaint(hDlg, &ps);
+        }
+    }
+    break;
+
+    case WM_COMMAND: /* message: received a command */
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+        case IDCANCEL:
+            squadrons->Unregister();
+            delete squadrons;
+            flights->Unregister();
+            delete flights;
+            squadrons = NULL;
+            flights = NULL;
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return (TRUE);
+            break;
+
+        case IDC_SQUADRONCOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i)
                 {
-                    VuListIterator fit(flights);
-                    i = LOWORD(wParam) - IDC_MISS_MISSION1;
-                    flight = GetFirstUnit(&fit);
+                    VuListIterator sit(squadrons);
+                    squadron = GetFirstUnit(&sit);
+                    i--;
 
-                    while (i > 0)
+                    while (i)
                     {
-                        flight = GetNextUnit(&fit);
+                        squadron = GetNextUnit(&sit);
                         i--;
                     }
-
-                    FalconLocalSession->SetPlayerFlight((Flight)flight);
                 }
-                break;
+                else
+                {
+                    squadron = NULL;
+                }
 
-                case IDC_MISS_FLY:
-                    // Deaggregate flight
-                    EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
-                    return (TRUE);
-                    break;
+                ResetNewSquadron(hDlg, squadron, flights);
+            }
 
-                case IDC_MISS_FOG:
-                    if (flight)
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_FISTOFGOD), FalconDisplay.appWin, (DLGPROC)FistOfGod);
+            break;
 
-                    // Continue on to debrief for Fist of God...
-                case IDC_DEBRIEF:
-                    if (flight)
-                    {
-                        _TCHAR brief_string[16384];
-                        char btitle[40] = "Mission Debrief";
+        case IDC_MISS_MISSION1:
+        case IDC_MISS_MISSION2:
+        case IDC_MISS_MISSION3:
+        case IDC_MISS_MISSION4:
+        case IDC_MISS_MISSION5:
+        case IDC_MISS_MISSION6:
+        case IDC_MISS_MISSION7:
+        case IDC_MISS_MISSION8:
+        case IDC_MISS_MISSION9:
+        case IDC_MISS_MISSION10:
+        case IDC_MISS_MISSION11:
+        case IDC_MISS_MISSION12:
+        case IDC_MISS_MISSION13:
+        case IDC_MISS_MISSION14:
+        case IDC_MISS_MISSION15:
+        case IDC_MISS_MISSION16:
+        {
+            VuListIterator fit(flights);
+            i = LOWORD(wParam) - IDC_MISS_MISSION1;
+            flight = GetFirstUnit(&fit);
 
-                        BuildCampDebrief(brief_string);
-                        BSP = brief_string;
-                        BTP = btitle;
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
-                        MessageBox(hDlg, brief_string, "Mission Debrief", MB_OK bitor MB_ICONINFORMATION bitor MB_SETFOREGROUND);
-                    }
+            while (i > 0)
+            {
+                flight = GetNextUnit(&fit);
+                i--;
+            }
 
-                    break;
+            FalconLocalSession->SetPlayerFlight((Flight)flight);
+        }
+        break;
 
-                case IDC_BRIEF:
-                    if (flight)
-                    {
-                        _TCHAR brief_string[8192];
-                        char btitle[40] = "Mission Brief";
+        case IDC_MISS_FLY:
+            // Deaggregate flight
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return (TRUE);
+            break;
 
-                        BuildCampBrief(brief_string);
-                        BSP = brief_string;
-                        BTP = btitle;
-                        DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG), FalconDisplay.appWin, (DLGPROC)BriefDialog);
-                        MessageBox(hDlg, brief_string, "Mission Brief", MB_OK bitor MB_ICONINFORMATION bitor MB_SETFOREGROUND);
-                    }
+        case IDC_MISS_FOG:
+            if (flight)
+                DialogBox(hInst, MAKEINTRESOURCE(IDD_FISTOFGOD),
+                          FalconDisplay.appWin, (DLGPROC)FistOfGod);
 
-                    break;
+            // Continue on to debrief for Fist of God...
+        case IDC_DEBRIEF:
+            if (flight)
+            {
+                _TCHAR brief_string[16384];
+                char btitle[40] = "Mission Debrief";
 
-                default:
-                    break;
+                BuildCampDebrief(brief_string);
+                BSP = brief_string;
+                BTP = btitle;
+                DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG),
+                          FalconDisplay.appWin, (DLGPROC)BriefDialog);
+                MessageBox(hDlg, brief_string, "Mission Debrief",
+                           MB_OK bitor MB_ICONINFORMATION bitor
+                               MB_SETFOREGROUND);
+            }
+
+            break;
+
+        case IDC_BRIEF:
+            if (flight)
+            {
+                _TCHAR brief_string[8192];
+                char btitle[40] = "Mission Brief";
+
+                BuildCampBrief(brief_string);
+                BSP = brief_string;
+                BTP = btitle;
+                DialogBox(hInst, MAKEINTRESOURCE(IDD_BRIEFDIALOG),
+                          FalconDisplay.appWin, (DLGPROC)BriefDialog);
+                MessageBox(hDlg, brief_string, "Mission Brief",
+                           MB_OK bitor MB_ICONINFORMATION bitor
+                               MB_SETFOREGROUND);
             }
 
             break;
 
         default:
             break;
+        }
+
+        break;
+
+    default:
+        break;
     }
 
-    return (FALSE);                    /* Didn't process a message    */
+    return (FALSE); /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 
 // This is for Ally - Temporary for Oct 4 Demo - KCK
-BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
+BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam,
+                           LPARAM lParam)
 {
 
     RECT rect;
@@ -1969,137 +2090,144 @@ BOOL WINAPI SelectSquadron(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
     switch (message)
     {
-        case WM_INITDIALOG:              /* message: initialize dialog box */
+    case WM_INITDIALOG: /* message: initialize dialog box */
+    {
+        squadrons = new FalconPrivateList(&AllAirFilter);
+        squadrons->Register();
+        squadron = NULL;
         {
-            squadrons = new FalconPrivateList(&AllAirFilter);
-            squadrons->Register();
-            squadron = NULL;
+            VuListIterator airit(AllAirList);
+            u = GetFirstUnit(&airit);
+
+            while (u)
             {
-                VuListIterator airit(AllAirList);
-                u = GetFirstUnit(&airit);
+                if (u->GetDomain() == DOMAIN_AIR and
+                    u->GetType() == TYPE_SQUADRON)
+                    squadrons->ForcedInsert(u);
 
-                while (u)
-                {
-                    if (u->GetDomain() == DOMAIN_AIR and u->GetType() == TYPE_SQUADRON)
-                        squadrons->ForcedInsert(u);
-
-                    u = GetNextUnit(&airit);
-                }
+                u = GetNextUnit(&airit);
             }
-
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 0, 0);
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0, (LPARAM)"None");
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 0, 0);
-            {
-                VuListIterator sit(squadrons);
-                u = GetFirstUnit(&sit);
-
-                while (u)
-                {
-                    u->GetName(buffer, 120, FALSE);
-                    SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0, (LPARAM)buffer);
-                    u = GetNextUnit(&sit);
-                }
-            }
-            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 1, 0);
-
-            if ( not squadron)
-            {
-                /* squadron = GetFirstUnit(&sit);*/
-                SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 1, 0);
-            }
-
-            return (TRUE);
         }
 
-        case WM_PAINT:
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 0, 0);
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING, 0,
+                    (LPARAM) "None");
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 0, 0);
         {
-            PAINTSTRUCT ps;
-            HDC DC;
+            VuListIterator sit(squadrons);
+            u = GetFirstUnit(&sit);
 
-            if (GetUpdateRect(hDlg, &rect, FALSE))
+            while (u)
             {
-                DC = BeginPaint(hDlg, &ps);
+                u->GetName(buffer, 120, FALSE);
+                SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_ADDSTRING,
+                            0, (LPARAM)buffer);
+                u = GetNextUnit(&sit);
+            }
+        }
+        SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), WM_SETREDRAW, 1, 0);
 
-                if (squadron)
+        if (not squadron)
+        {
+            /* squadron = GetFirstUnit(&sit);*/
+            SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_SETCURSEL, 1,
+                        0);
+        }
+
+        return (TRUE);
+    }
+
+    case WM_PAINT:
+    {
+        PAINTSTRUCT ps;
+        HDC DC;
+
+        if (GetUpdateRect(hDlg, &rect, FALSE))
+        {
+            DC = BeginPaint(hDlg, &ps);
+
+            if (squadron)
+            {
+                squadron->GetLocation(&x, &y);
+                sprintf(buffer, "%d,%d", x, y);
+                SetWindowText(GetDlgItem(hDlg, IDC_BASESTATIC), buffer);
+                SetWindowText(GetDlgItem(hDlg, IDC_SPECIALSTATIC),
+                              SpecialStr[squadron->GetUnitSpecialty()]);
+                sprintf(buffer, "%d %s", squadron->GetTotalVehicles(),
+                        GetVehicleName(squadron->GetVehicleID(0)));
+                SetWindowText(GetDlgItem(hDlg, IDC_SQUAD_ACVAL), buffer);
+            }
+            else
+            {
+                SetWindowText(GetDlgItem(hDlg, IDC_BASESTATIC), "0,0");
+                SetWindowText(GetDlgItem(hDlg, IDC_SPECIALSTATIC), "General");
+                SetWindowText(GetDlgItem(hDlg, IDC_SQUAD_ACVAL), "0");
+            }
+
+            EndPaint(hDlg, &ps);
+        }
+    }
+
+    case WM_COMMAND: /* message: received a command */
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+            squadrons->Unregister();
+            delete squadrons;
+            squadrons = NULL;
+            FalconLocalSession->SetPlayerSquadron((Squadron)squadron);
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
+            return (TRUE);
+
+        case IDCANCEL:
+            squadrons->Unregister();
+            delete squadrons;
+            squadrons = NULL;
+            FalconLocalSession->SetPlayerSquadron(NULL);
+            EndDialog(hDlg, FALSE); /* Exits the dialog box        */
+            return (TRUE);
+            break;
+
+        case IDC_SQUADRONCOMBO:
+            if (HIWORD(wParam) == CBN_SELENDOK)
+            {
+                i = SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO),
+                                CB_GETCURSEL, 0, 0);
+
+                if (i)
                 {
-                    squadron->GetLocation(&x, &y);
-                    sprintf(buffer, "%d,%d", x, y);
-                    SetWindowText(GetDlgItem(hDlg, IDC_BASESTATIC), buffer);
-                    SetWindowText(GetDlgItem(hDlg, IDC_SPECIALSTATIC), SpecialStr[squadron->GetUnitSpecialty()]);
-                    sprintf(buffer, "%d %s", squadron->GetTotalVehicles(), GetVehicleName(squadron->GetVehicleID(0)));
-                    SetWindowText(GetDlgItem(hDlg, IDC_SQUAD_ACVAL), buffer);
+                    VuListIterator sit(squadrons);
+                    squadron = GetFirstUnit(&sit);
+                    i--;
+
+                    while (i)
+                    {
+                        squadron = GetNextUnit(&sit);
+                        i--;
+                    }
                 }
                 else
                 {
-                    SetWindowText(GetDlgItem(hDlg, IDC_BASESTATIC), "0,0");
-                    SetWindowText(GetDlgItem(hDlg, IDC_SPECIALSTATIC), "General");
-                    SetWindowText(GetDlgItem(hDlg, IDC_SQUAD_ACVAL), "0");
+                    squadron = NULL;
                 }
 
-                EndPaint(hDlg, &ps);
-            }
-        }
-
-        case WM_COMMAND:                 /* message: received a command */
-            switch (LOWORD(wParam))
-            {
-                case IDOK:
-                    squadrons->Unregister();
-                    delete squadrons;
-                    squadrons = NULL;
-                    FalconLocalSession->SetPlayerSquadron((Squadron)squadron);
-                    EndDialog(hDlg, TRUE);        /* Exits the dialog box        */
-                    return (TRUE);
-
-                case IDCANCEL:
-                    squadrons->Unregister();
-                    delete squadrons;
-                    squadrons = NULL;
-                    FalconLocalSession->SetPlayerSquadron(NULL);
-                    EndDialog(hDlg, FALSE);        /* Exits the dialog box        */
-                    return (TRUE);
-                    break;
-
-                case IDC_SQUADRONCOMBO:
-                    if (HIWORD(wParam) == CBN_SELENDOK)
-                    {
-                        i = SendMessage(GetDlgItem(hDlg, IDC_SQUADRONCOMBO), CB_GETCURSEL, 0, 0);
-
-                        if (i)
-                        {
-                            VuListIterator sit(squadrons);
-                            squadron = GetFirstUnit(&sit);
-                            i--;
-
-                            while (i)
-                            {
-                                squadron = GetNextUnit(&sit);
-                                i--;
-                            }
-                        }
-                        else
-                        {
-                            squadron = NULL;
-                        }
-
-                        GetClientRect(hDlg, &rect);
-                        InvalidateRect(hDlg, &rect, TRUE);
-                    }
-
-                    break;
-
-                default:
-                    break;
+                GetClientRect(hDlg, &rect);
+                InvalidateRect(hDlg, &rect, TRUE);
             }
 
             break;
 
         default:
             break;
+        }
+
+        break;
+
+    default:
+        break;
     }
 
-    return (FALSE);                    /* Didn't process a message    */
+    return (FALSE); /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
@@ -2108,36 +2236,35 @@ BOOL WINAPI BriefDialog(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
     switch (message)
     {
-        case WM_INITDIALOG:              /* message: initialize dialog box */
-            // SetTitle(BTP);
-            SetWindowText(GetDlgItem(hDlg, IDC_BRIEF_TEXT), BSP);
+    case WM_INITDIALOG: /* message: initialize dialog box */
+        // SetTitle(BTP);
+        SetWindowText(GetDlgItem(hDlg, IDC_BRIEF_TEXT), BSP);
+        return (TRUE);
+        break;
+
+    case WM_PAINT:
+        break;
+
+    case WM_COMMAND: /* message: received a command */
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
+            EndDialog(hDlg, TRUE); /* Exits the dialog box        */
             return (TRUE);
-            break;
-
-        case WM_PAINT:
-            break;
-
-        case WM_COMMAND:                 /* message: received a command */
-            switch (LOWORD(wParam))
-            {
-                case IDOK:
-                    EndDialog(hDlg, TRUE);      /* Exits the dialog box        */
-                    return (TRUE);
-
-                default:
-                    break;
-            }
-
-            break;
 
         default:
             break;
+        }
+
+        break;
+
+    default:
+        break;
     }
 
-    return (FALSE);                    /* Didn't process a message    */
+    return (FALSE); /* Didn't process a message    */
     // avoid compiler warnings at W3
     lParam;
 }
 
 #endif CAMPTOOL
-

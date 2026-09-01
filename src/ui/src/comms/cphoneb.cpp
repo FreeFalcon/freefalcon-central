@@ -39,29 +39,31 @@ PHONEBOOK *PhoneBook::FindID(long ID)
     {
         if (cur->ID == ID)
         {
-            return(cur);
+            return (cur);
         }
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void PhoneBook::Load(char *filename)
 {
-    long count, i;
+    int count,
+        i; // #104: 32-bit on both platforms -- the file stores the count as 4 bytes; a LP64 `long` read
+    // 8 bytes (count + first entry), making count huge -> the read loop hung reading past EOF.
     FILE *ifp;
 
     ifp = fopen(filename, "rb");
 
-    if ( not ifp)
+    if (not ifp)
     {
         return;
     }
 
     // read number of entries
-    fread(&count, sizeof(long), 1, ifp);
+    fread(&count, sizeof(int), 1, ifp);
 
     // read each entry
     for (i = 0; i < count; i++)
@@ -85,7 +87,7 @@ void PhoneBook::Load(char *filename)
 void PhoneBook::Save(char *filename)
 {
     PHONEBOOK *cur;
-    long count;
+    int count; // #104: 4-byte on-disk count (match Load / the Windows long=4 format)
     FILE *ofp;
 
     // count number of entries
@@ -101,13 +103,13 @@ void PhoneBook::Save(char *filename)
     // open file for writing
     ofp = fopen(filename, "wb");
 
-    if ( not ofp)
+    if (not ofp)
     {
         return;
     }
 
     // write count
-    fwrite(&count, sizeof(long), 1, ofp);
+    fwrite(&count, sizeof(int), 1, ofp);
 
     // go through list saving each
     cur = Root_;
@@ -166,7 +168,8 @@ void PhoneBook::Remove(long ID)
 {
     PHONEBOOK *cur, *prev;
 
-    if ( not Root_) return;
+    if (not Root_)
+        return;
 
     if (Root_->ID == ID)
     {

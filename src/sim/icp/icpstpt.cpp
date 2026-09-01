@@ -18,24 +18,10 @@ extern bool g_bRealisticAvionics;
 #define S_IN_H 3600
 #define S_IN_D 86400
 
-char *ICPWayPtNames[NUM_WAY_TYPES] =
-{
-    "STPT",
-    "IP",
-    "TGT"
-};
-char *ICPWayPtActionTable[NUM_ACTION_TYPES] =
-{
-    "NAV",
-    "TAKEOFF",
-    "ASSEMBLE",
-    "NAV",
-    "REFUEL",
-    "REARM",
-    "NAV",
-    "LAND",
-    "NAV",
-    "NAV",
+char *ICPWayPtNames[NUM_WAY_TYPES] = {"STPT", "IP", "TGT"};
+char *ICPWayPtActionTable[NUM_ACTION_TYPES] = {
+    "NAV",       "TAKEOFF", "ASSEMBLE", "NAV", "REFUEL", "REARM",
+    "NAV",       "LAND",    "NAV",      "NAV",
     "ESCORT", // Engage engaging fighters
     "SWEEP", // Engage all enemy aircraft
     "CAP", // Patrol area for enemy aircraft
@@ -51,19 +37,13 @@ char *ICPWayPtActionTable[NUM_ACTION_TYPES] =
     "RESCUE", // Rescue a pilot at location
     "ASW",
     "FUEL", // Respond to tanker requests
-    "AIRDROP",
-    "ECM",
-    "NAV",
-    "NAV",
-    "NAV",
-    "FAC"
-};
+    "AIRDROP",   "ECM",     "NAV",      "NAV", "NAV",    "FAC"};
 
 //---------------------------------------------------------
 // ICPClass::FormatTime
 //---------------------------------------------------------
 
-void ICPClass::FormatTime(long hours, char* timeStr)
+void ICPClass::FormatTime(long hours, char *timeStr)
 {
     long minutes, secs;
     char hoursStr[3] = "";
@@ -74,7 +54,7 @@ void ICPClass::FormatTime(long hours, char* timeStr)
     hours %= S_IN_D; // Lop off any time in execess of a day
 
     minutes = hours % S_IN_H; // generate hours column
-    hours = hours  / S_IN_H;
+    hours = hours / S_IN_H;
 
     secs = minutes % S_IN_M; // generate secs column
     minutes = minutes / S_IN_M; // generate minutes column
@@ -101,7 +81,6 @@ void ICPClass::FormatTime(long hours, char* timeStr)
     }
 
     sprintf(timeStr, "%2s:%2s:%2s", hoursStr, minutesStr, secsStr);
-
 }
 //---------------------------------------------------------
 // ICPClass::ExecSTPTMode
@@ -118,7 +97,7 @@ void ICPClass::ExecSTPTMode()
 
     static float xCurr, yCurr, zCurr;
     float xPrev, yPrev, zPrev;
-    float xOwn,  yOwn;
+    float xOwn, yOwn;
     float vtOwn;
 
     VU_TIME ETA;
@@ -136,10 +115,11 @@ void ICPClass::ExecSTPTMode()
     static int frame = 0;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not g_bRealisticAvionics)
+    if (not g_bRealisticAvionics)
     {
         //MI Original code
-        if (playerAC and playerAC->curWaypoint)  // and not playerAC->FCC->InTransistion()
+        if (playerAC and
+            playerAC->curWaypoint)  // and not playerAC->FCC->InTransistion()
         {
             // and mUpdateFlags bitand STPT_UPDATE and not ((AircraftClass*)(mpOwnship))->FCC->waypointStepCmd) {
 
@@ -161,13 +141,16 @@ void ICPClass::ExecSTPTMode()
 
             // Calculate Some Stuff
 
-            ETA = SimLibElapsedTime / SEC_TO_MSEC + FloatToInt32(Distance(xOwn, yOwn, xCurr, yCurr) / vtOwn);
+            ETA = SimLibElapsedTime / SEC_TO_MSEC +
+                  FloatToInt32(Distance(xOwn, yOwn, xCurr, yCurr) / vtOwn);
 
             if (previous)
             {
                 previous->GetLocation(&xPrev, &yPrev, &zPrev);
                 depart = previous->GetWPDepartureTime() / SEC_TO_MSEC;
-                plannedSpeed = abs(FloatToInt32((Distance(xCurr, yCurr, xPrev, yPrev) / (arrive - depart) * FTPSEC_TO_KNOTS)));
+                plannedSpeed =
+                    abs(FloatToInt32((Distance(xCurr, yCurr, xPrev, yPrev) /
+                                      (arrive - depart) * FTPSEC_TO_KNOTS)));
             }
 
             if (wpflags bitand WPF_TARGET)
@@ -186,7 +169,8 @@ void ICPClass::ExecSTPTMode()
             // Format Line 1: Waypoint Num, Waypoint Type
 
             sprintf(scratchStr, "%s %d", ICPWayPtNames[type], mWPIndex + 1);
-            sprintf(mpLine1, "%-9s %s", scratchStr, ICPWayPtActionTable[action]);
+            sprintf(mpLine1, "%-9s %s", scratchStr,
+                    ICPWayPtActionTable[action]);
 
             // Format Line 2: TOS, Altitude
 
@@ -214,18 +198,20 @@ void ICPClass::ExecSTPTMode()
             }
             else
             {
-                sprintf(mpLine2, "TOS %8s %3s,%3sFT", timeStr, altFirstStr, altSecondStr);
+                sprintf(mpLine2, "TOS %8s %3s,%3sFT", timeStr, altFirstStr,
+                        altSecondStr);
             }
 
             // Format Line 3: ETA, Planned Speed
 
             FormatTime(ETA, timeStr);
 
-            if ( not previous or  wpflags bitand WPF_ALTERNATE)
+            if (not previous or wpflags bitand WPF_ALTERNATE)
             {
                 sprintf(mpLine3, "", timeStr);
             }
-            else if (action == WP_LAND or action == WP_TAKEOFF or plannedSpeed == 0)
+            else if (action == WP_LAND or action == WP_TAKEOFF or
+                     plannedSpeed == 0)
             {
                 sprintf(mpLine3, "ETA %8s", timeStr);
             }
@@ -280,7 +266,7 @@ void ICPClass::ExecSTPTMode()
         FillDEDMatrix(0, 9, "STPT");
         AddSTPT(0, 15);
 
-        if ( not MAN)
+        if (not MAN)
             FillDEDMatrix(0, 21, "AUTO");
         else
             FillDEDMatrix(0, 21, "MAN");
@@ -290,9 +276,13 @@ void ICPClass::ExecSTPTMode()
         if (playerAC and playerAC->curWaypoint)
             playerAC->curWaypoint->GetLocation(&xCurr, &yCurr, &zCurr);
 
-        latitude = (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
+        latitude =
+            (FALCON_ORIGIN_LAT * FT_PER_DEGREE + xCurr) / EARTH_RADIUS_FT;
         cosLatitude = (float)cos(latitude);
-        longitude = ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) + yCurr) / (EARTH_RADIUS_FT * cosLatitude);
+        longitude =
+            ((FALCON_ORIGIN_LONG * DTR * EARTH_RADIUS_FT * cosLatitude) +
+             yCurr) /
+            (EARTH_RADIUS_FT * cosLatitude);
 
         latitude *= RTD;
         longitude *= RTD;
@@ -327,9 +317,10 @@ void ICPClass::ExecSTPTMode()
         FillDEDMatrix(4, 6, "TOS");
 
         if (playerAC)
-            ETA = SimLibElapsedTime / SEC_TO_MSEC + FloatToInt32(Distance(
-                        playerAC->XPos(), playerAC->YPos(), xCurr, yCurr)
-                    / playerAC->af->vt);
+            ETA = SimLibElapsedTime / SEC_TO_MSEC +
+                  FloatToInt32(Distance(playerAC->XPos(), playerAC->YPos(),
+                                        xCurr, yCurr) /
+                               playerAC->af->vt);
 
         FormatTime(ETA, timeStr);
         FillDEDMatrix(4, 11, timeStr);
@@ -344,7 +335,7 @@ void ICPClass::PNUpdateSTPTMode(int button, int)
 {
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
 
-    if ( not playerAC)
+    if (not playerAC)
     {
         return;
     }
@@ -356,11 +347,11 @@ void ICPClass::PNUpdateSTPTMode(int button, int)
 
     if (button == PREV_BUTTON)
     {
-        ((AircraftClass*)(playerAC))->FCC->waypointStepCmd = -1;
+        ((AircraftClass *)(playerAC))->FCC->waypointStepCmd = -1;
     }
     else
     {
-        ((AircraftClass*)(playerAC))->FCC->waypointStepCmd = 1;
+        ((AircraftClass *)(playerAC))->FCC->waypointStepCmd = 1;
     }
 
     mUpdateFlags or_eq STPT_UPDATE;

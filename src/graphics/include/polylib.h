@@ -46,8 +46,7 @@ typedef enum PpolyType
     BAptTex,
 
     PpolyTypeNum
-}
-PpolyType;
+} PpolyType;
 
 typedef Trotation Pmatrix;
 
@@ -57,26 +56,22 @@ typedef Tpoint Ppoint;
 typedef struct Spoint : public Ppoint
 {
     float s;
-}
-Spoint;
+} Spoint;
 
 typedef struct Pcolor
 {
     float r, g, b, a;
-}
-Pcolor;
+} Pcolor;
 
 typedef struct Pnormal
 {
     float i, j, k;
-}
-Pnormal;
+} Pnormal;
 
 typedef struct Ptexcoord
 {
     float u, v;
-}
-Ptexcoord;
+} Ptexcoord;
 
 typedef float Pintensity;
 
@@ -84,8 +79,7 @@ typedef struct PclipInfo
 {
     UInt32 clipFlag; // Which edges this point is outside
     float csX, csY, csZ; // Camera space coordinates of this point
-}
-PclipInfo;
+} PclipInfo;
 
 // Polygon structures
 typedef struct Prim
@@ -93,86 +87,74 @@ typedef struct Prim
     PpolyType type;
     int nVerts;
     int *xyz; // Indexes XformedPosPool
-}
-Prim;
+} Prim;
 
-typedef struct PrimPointFC: public Prim
+typedef struct PrimPointFC : public Prim
 {
     int rgba; // Indexes ColorPool
-}
-PrimPointFC;
+} PrimPointFC;
 
-typedef struct PrimLineFC: public Prim
+typedef struct PrimLineFC : public Prim
 {
     int rgba; // Indexes ColorPool
-}
-PrimLineFC;
+} PrimLineFC;
 
-typedef struct PrimLtStr: public Prim
+typedef struct PrimLtStr : public Prim
 {
     int rgba; // Indexes ColorPool
     int rgbaBack; // Indexes ColorPool (-1 means omnidirectional -- could subclass instead)
-    float i, j, k; // Direction vector (negative dot with eyepos means use back color)
-}
-PrimLtStr;
+    float i, j,
+        k; // Direction vector (negative dot with eyepos means use back color)
+} PrimLtStr;
 
-typedef struct Poly: public Prim
+typedef struct Poly : public Prim
 {
     float A, B, C, D; // Polygon plane equation for back face culling
-}
-Poly;
+} Poly;
 
-typedef struct PolyFC: public Poly
+typedef struct PolyFC : public Poly
 {
     int rgba; // Indexes ColorPool
-}
-PolyFC;
+} PolyFC;
 
-typedef struct PolyVC: public Poly
+typedef struct PolyVC : public Poly
 {
     int *rgba; // Indexes ColorPool
-}
-PolyVC;
+} PolyVC;
 
-typedef struct PolyFCN: public PolyFC
+typedef struct PolyFCN : public PolyFC
 {
     int I; // Indexes IntensityPool
-}
-PolyFCN;
+} PolyFCN;
 
-typedef struct PolyVCN: public PolyVC
+typedef struct PolyVCN : public PolyVC
 {
     int *I; // Indexes IntensityPool
-}
-PolyVCN;
+} PolyVCN;
 
-typedef struct PolyTexFC: public PolyFC
+typedef struct PolyTexFC : public PolyFC
 {
     int texIndex; // Indexes the local texture id table
     Ptexcoord *uv;
-}
-PolyTexFC;
+} PolyTexFC;
 
-typedef struct PolyTexVC: public PolyVC
+typedef struct PolyTexVC : public PolyVC
 {
     int texIndex; // Indexes the local texture id table
     Ptexcoord *uv;
-}
-PolyTexVC;
+} PolyTexVC;
 
-typedef struct PolyTexFCN: public PolyFCN
+typedef struct PolyTexFCN : public PolyFCN
 {
     int texIndex; // Indexes the local texture id table
     Ptexcoord *uv;
-}
-PolyTexFCN;
+} PolyTexFCN;
 
-typedef struct PolyTexVCN: public PolyVCN
+typedef struct PolyTexVCN : public PolyVCN
 {
     int texIndex; // Indexes the local texture id table
     Ptexcoord *uv;
-}
-PolyTexVCN;
+} PolyTexVCN;
 
 // Polygon render state tables
 extern const int *RenderStateTable;

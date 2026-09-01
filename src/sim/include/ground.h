@@ -22,17 +22,18 @@ class DrawableGroundVehicle;
 class GroundClass : public SimVehicleClass
 {
 public:
-    GroundClass(VU_BYTE** stream, long *rem);
-    GroundClass(FILE* filePtr);
+    GroundClass(VU_BYTE **stream, long *rem);
+    GroundClass(FILE *filePtr);
     GroundClass(int type);
     virtual ~GroundClass(void);
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
-public:
 
+public:
     void InitFromCampaignUnit(void);
     int MissileTrack(void);
     int GunTrack(void);
@@ -46,19 +47,20 @@ public:
     ulong nextSamFireTime;
 
 
-    unsigned isFootSquad: 1; // Since these are booleans, they can each be one bit
-    unsigned isTowed: 1;
-    unsigned isEmitter: 1;
-    unsigned hasCrew: 1;
-    unsigned needKeepAlive: 1;
-    unsigned isAirCapable: 1;
-    unsigned isGroundCapable: 1;
-    unsigned isAirDefense: 1;
-    unsigned allowSamFire: 1;
-    unsigned isShip: 1;
+    unsigned isFootSquad
+        : 1; // Since these are booleans, they can each be one bit
+    unsigned isTowed : 1;
+    unsigned isEmitter : 1;
+    unsigned hasCrew : 1;
+    unsigned needKeepAlive : 1;
+    unsigned isAirCapable : 1;
+    unsigned isGroundCapable : 1;
+    unsigned isAirDefense : 1;
+    unsigned allowSamFire : 1;
+    unsigned isShip : 1;
 
     // RV - Biker
-    unsigned radarDown: 1;
+    unsigned radarDown : 1;
 
     // Other drawables associated with ground stuff
     //   DrawableGuys *crewDrawable; // Crew, if any -> KCK: Done with a switch now
@@ -66,7 +68,8 @@ public:
 
     // Weapon stuff
     SMSBaseClass *Sms;
-    GroundClass *battalionFireControl; // The active fire control radar vehicle in this battalion
+    GroundClass *
+        battalionFireControl; // The active fire control radar vehicle in this battalion
     void FindBattalionFireControl(void);
 
 
@@ -81,7 +84,7 @@ public:
     };
     void UnSetGunFiring(int i)
     {
-        gunFireFlags and_eq compl (1 << i);
+        gunFireFlags and_eq compl(1 << i);
     };
 
     void RunSensors(void);
@@ -92,7 +95,7 @@ public:
     void JoinFlight(void) {};
     virtual int Wake(void);
     virtual int Sleep(void);
-    virtual void Init(SimInitDataClass* initData);
+    virtual void Init(SimInitDataClass *initData);
     virtual int Exec(void);
     virtual void ApplyDamage(FalconDamageMessage *damageMessage);
     virtual void SetDead(int flag);
@@ -100,7 +103,7 @@ public:
     {
         return (1.0F);
     };
-    virtual SMSBaseClass* GetSMS(void)
+    virtual SMSBaseClass *GetSMS(void)
     {
         return Sms;
     };
@@ -131,7 +134,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -145,8 +149,8 @@ public:
 #endif
 };
 
-#define TURRET_ROTATE_RATE 30.0F*DTR
-#define TURRET_ELEVATE_RATE 15.0F*DTR
+#define TURRET_ROTATE_RATE 30.0F * DTR
+#define TURRET_ELEVATE_RATE 15.0F * DTR
 
 enum
 {
@@ -157,4 +161,3 @@ enum
 };
 
 #endif
-

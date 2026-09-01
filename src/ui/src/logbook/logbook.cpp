@@ -1,21 +1,21 @@
-#include <cISO646>
-#include "SIM/INCLUDE/stdhdr.h"
+#include <ciso646>
+#include "sim/include/stdhdr.h"
 #include <tchar.h>
 #include <time.h>
 #include "logbook.h"
-#include "F4find.h"
+#include "f4find.h"
 #include "classtbl.h"
-#include "PlayerOp.h"
+#include "playerop.h"
 #include "chandler.h"
 #include "uicomms.h"
 #include "campmiss.h"
-#include "F4Thread.h"
+#include "f4thread.h"
 #include "cmpclass.h"
 #include "textids.h"
-#include "F4Version.h"
-#include "sim/include/controlsxml.h"   // Artscout - 2026: per-pilot profile (logbook.xml + controls)
+#include "f4version.h"
+#include "sim/include/controlsxml.h" // Artscout - 2026: per-pilot profile (logbook.xml + controls)
 
-#pragma warning(disable : 4244)  // for all the short += short's
+#pragma warning(disable : 4244) // for all the short += short's
 
 class LogBookData LogBook;
 
@@ -30,16 +30,17 @@ static void SyncPilotProfile(const _TCHAR *callsign, bool createIfNew)
     const _TCHAR *cs = (callsign and callsign[0]) ? callsign : _T("Viper");
 
     if (_tcsicmp(cs, _T("Viper")) == 0)
-        ControlsXml_EnsureDefaultPilot("Viper");     // dir 0 / folder default, dedup
+        ControlsXml_EnsureDefaultPilot(
+            "Viper"); // dir 0 / folder default, dedup
     else if (createIfNew)
-        ControlsXml_CreateProfile(cs);               // creates dir if new, else selects it
+        ControlsXml_CreateProfile(cs); // creates dir if new, else selects it
     else
         ControlsXml_SelectProfileForCallsign(cs);
 }
 
 // Password XOR masks (also used by EncryptPwd below). The pilot password is stored XOR-encrypted
 // in LB_PILOT; the XOR is symmetric, so the same pass both encrypts and decrypts.
-static char PwdMask[]  = "Who needs a password";
+static char PwdMask[] = "Who needs a password";
 static char PwdMask2[] = "Repent, FreeFalcon is coming";
 
 // Artscout - 2026: convert the password buffer between stored (encrypted) and plain text. We keep
@@ -59,99 +60,112 @@ static void XorPassword(char *buf)
 static void PilotToCx(const LB_PILOT &p, CxLogbook &c)
 {
     memset(&c, 0, sizeof(c));
-    strncpy(c.name,         p.Name,         sizeof(c.name) - 1);
-    strncpy(c.callsign,     p.Callsign,     sizeof(c.callsign) - 1);
-    { char pw[PASSWORD_LEN + 1]; memcpy(pw, p.Password, PASSWORD_LEN); XorPassword(pw); pw[PASSWORD_LEN] = 0;
-      strncpy(c.password, pw, sizeof(c.password) - 1); }   // decrypt -> plain text for the XML
+    strncpy(c.name, p.Name, sizeof(c.name) - 1);
+    strncpy(c.callsign, p.Callsign, sizeof(c.callsign) - 1);
+    {
+        char pw[PASSWORD_LEN + 1];
+        memcpy(pw, p.Password, PASSWORD_LEN);
+        XorPassword(pw);
+        pw[PASSWORD_LEN] = 0;
+        strncpy(c.password, pw, sizeof(c.password) - 1);
+    } // decrypt -> plain text for the XML
     strncpy(c.commissioned, p.Commissioned, sizeof(c.commissioned) - 1);
-    strncpy(c.optionsFile,  p.OptionsFile,  sizeof(c.optionsFile) - 1);
-    strncpy(c.picture,      p.Picture,      sizeof(c.picture) - 1);
-    strncpy(c.patch,        p.Patch,        sizeof(c.patch) - 1);
-    strncpy(c.personal,     p.Personal,     sizeof(c.personal) - 1);
-    strncpy(c.squadron,     p.Squadron,     sizeof(c.squadron) - 1);
-    c.flightHours     = p.FlightHours;
-    c.aceFactor       = p.AceFactor;
-    c.rank            = (int)p.Rank;
-    c.voice           = p.voice;
+    strncpy(c.optionsFile, p.OptionsFile, sizeof(c.optionsFile) - 1);
+    strncpy(c.picture, p.Picture, sizeof(c.picture) - 1);
+    strncpy(c.patch, p.Patch, sizeof(c.patch) - 1);
+    strncpy(c.personal, p.Personal, sizeof(c.personal) - 1);
+    strncpy(c.squadron, p.Squadron, sizeof(c.squadron) - 1);
+    c.flightHours = p.FlightHours;
+    c.aceFactor = p.AceFactor;
+    c.rank = (int)p.Rank;
+    c.voice = p.voice;
     c.pictureResource = p.PictureResource;
-    c.patchResource   = p.PatchResource;
-    for (int i = 0; i < NUM_MEDALS and i < 8; i++) c.medals[i] = p.Medals[i];
-    c.df_matchesWon      = p.Dogfight.MatchesWon;
-    c.df_matchesLost     = p.Dogfight.MatchesLost;
-    c.df_matchesWonVHum  = p.Dogfight.MatchesWonVHum;
+    c.patchResource = p.PatchResource;
+    for (int i = 0; i < NUM_MEDALS and i < 8; i++)
+        c.medals[i] = p.Medals[i];
+    c.df_matchesWon = p.Dogfight.MatchesWon;
+    c.df_matchesLost = p.Dogfight.MatchesLost;
+    c.df_matchesWonVHum = p.Dogfight.MatchesWonVHum;
     c.df_matchesLostVHum = p.Dogfight.MatchesLostVHum;
-    c.df_kills           = p.Dogfight.Kills;
-    c.df_killed          = p.Dogfight.Killed;
-    c.df_humanKills      = p.Dogfight.HumanKills;
-    c.df_killedByHuman   = p.Dogfight.KilledByHuman;
-    c.cmp_gamesWon                  = p.Campaign.GamesWon;
-    c.cmp_gamesLost                 = p.Campaign.GamesLost;
-    c.cmp_gamesTied                 = p.Campaign.GamesTied;
-    c.cmp_missions                  = p.Campaign.Missions;
-    c.cmp_totalScore                = p.Campaign.TotalScore;
-    c.cmp_totalMissionScore         = p.Campaign.TotalMissionScore;
-    c.cmp_consecMissions            = p.Campaign.ConsecMissions;
-    c.cmp_kills                     = p.Campaign.Kills;
-    c.cmp_killed                    = p.Campaign.Killed;
-    c.cmp_humanKills                = p.Campaign.HumanKills;
-    c.cmp_killedByHuman             = p.Campaign.KilledByHuman;
-    c.cmp_killedBySelf              = p.Campaign.KilledBySelf;
-    c.cmp_airToGround               = p.Campaign.AirToGround;
-    c.cmp_static                    = p.Campaign.Static;
-    c.cmp_naval                     = p.Campaign.Naval;
-    c.cmp_friendliesKilled          = p.Campaign.FriendliesKilled;
+    c.df_kills = p.Dogfight.Kills;
+    c.df_killed = p.Dogfight.Killed;
+    c.df_humanKills = p.Dogfight.HumanKills;
+    c.df_killedByHuman = p.Dogfight.KilledByHuman;
+    c.cmp_gamesWon = p.Campaign.GamesWon;
+    c.cmp_gamesLost = p.Campaign.GamesLost;
+    c.cmp_gamesTied = p.Campaign.GamesTied;
+    c.cmp_missions = p.Campaign.Missions;
+    c.cmp_totalScore = p.Campaign.TotalScore;
+    c.cmp_totalMissionScore = p.Campaign.TotalMissionScore;
+    c.cmp_consecMissions = p.Campaign.ConsecMissions;
+    c.cmp_kills = p.Campaign.Kills;
+    c.cmp_killed = p.Campaign.Killed;
+    c.cmp_humanKills = p.Campaign.HumanKills;
+    c.cmp_killedByHuman = p.Campaign.KilledByHuman;
+    c.cmp_killedBySelf = p.Campaign.KilledBySelf;
+    c.cmp_airToGround = p.Campaign.AirToGround;
+    c.cmp_static = p.Campaign.Static;
+    c.cmp_naval = p.Campaign.Naval;
+    c.cmp_friendliesKilled = p.Campaign.FriendliesKilled;
     c.cmp_missSinceLastFriendlyKill = p.Campaign.MissSinceLastFriendlyKill;
 }
 
 static void CxToPilot(const CxLogbook &c, LB_PILOT &p)
 {
     memset(&p, 0, sizeof(p));
-    strncpy(p.Name,         c.name,         sizeof(p.Name) - 1);
-    strncpy(p.Callsign,     c.callsign,     sizeof(p.Callsign) - 1);
+    strncpy(p.Name, c.name, sizeof(p.Name) - 1);
+    strncpy(p.Callsign, c.callsign, sizeof(p.Callsign) - 1);
     // Artscout - 2026: the password feature is unused; do NOT load it from XML. A stale/garbage
     // value (e.g. an encrypted blob from an older save) would make CheckPassword("") fail and pop
     // the "password required" prompt on entry. Force the encrypted-empty form so it always passes;
     // the next save rewrites logbook.xml with password="". (void)c.password keeps the field around.
     (void)c.password;
-    { char pw[PASSWORD_LEN + 1]; memset(pw, 0, sizeof(pw)); XorPassword(pw); memcpy(p.Password, pw, PASSWORD_LEN); }
+    {
+        char pw[PASSWORD_LEN + 1];
+        memset(pw, 0, sizeof(pw));
+        XorPassword(pw);
+        memcpy(p.Password, pw, PASSWORD_LEN);
+    }
     strncpy(p.Commissioned, c.commissioned, sizeof(p.Commissioned) - 1);
-    strncpy(p.OptionsFile,  c.optionsFile,  sizeof(p.OptionsFile) - 1);
-    strncpy(p.Picture,      c.picture,      sizeof(p.Picture) - 1);
-    strncpy(p.Patch,        c.patch,        sizeof(p.Patch) - 1);
-    strncpy(p.Personal,     c.personal,     sizeof(p.Personal) - 1);
-    strncpy(p.Squadron,     c.squadron,     sizeof(p.Squadron) - 1);
-    p.FlightHours     = c.flightHours;
-    p.AceFactor       = c.aceFactor;
-    p.Rank            = (LB_RANK)c.rank;
-    p.voice           = (short)c.voice;
+    strncpy(p.OptionsFile, c.optionsFile, sizeof(p.OptionsFile) - 1);
+    strncpy(p.Picture, c.picture, sizeof(p.Picture) - 1);
+    strncpy(p.Patch, c.patch, sizeof(p.Patch) - 1);
+    strncpy(p.Personal, c.personal, sizeof(p.Personal) - 1);
+    strncpy(p.Squadron, c.squadron, sizeof(p.Squadron) - 1);
+    p.FlightHours = c.flightHours;
+    p.AceFactor = c.aceFactor;
+    p.Rank = (LB_RANK)c.rank;
+    p.voice = (short)c.voice;
     p.PictureResource = c.pictureResource;
-    p.PatchResource   = c.patchResource;
-    for (int i = 0; i < NUM_MEDALS and i < 8; i++) p.Medals[i] = (uchar)c.medals[i];
-    p.Dogfight.MatchesWon      = (short)c.df_matchesWon;
-    p.Dogfight.MatchesLost     = (short)c.df_matchesLost;
-    p.Dogfight.MatchesWonVHum  = (short)c.df_matchesWonVHum;
+    p.PatchResource = c.patchResource;
+    for (int i = 0; i < NUM_MEDALS and i < 8; i++)
+        p.Medals[i] = (uchar)c.medals[i];
+    p.Dogfight.MatchesWon = (short)c.df_matchesWon;
+    p.Dogfight.MatchesLost = (short)c.df_matchesLost;
+    p.Dogfight.MatchesWonVHum = (short)c.df_matchesWonVHum;
     p.Dogfight.MatchesLostVHum = (short)c.df_matchesLostVHum;
-    p.Dogfight.Kills           = (short)c.df_kills;
-    p.Dogfight.Killed          = (short)c.df_killed;
-    p.Dogfight.HumanKills      = (short)c.df_humanKills;
-    p.Dogfight.KilledByHuman   = (short)c.df_killedByHuman;
-    p.Campaign.GamesWon                 = (short)c.cmp_gamesWon;
-    p.Campaign.GamesLost                = (short)c.cmp_gamesLost;
-    p.Campaign.GamesTied                = (short)c.cmp_gamesTied;
-    p.Campaign.Missions                 = (short)c.cmp_missions;
-    p.Campaign.TotalScore               = c.cmp_totalScore;
-    p.Campaign.TotalMissionScore        = c.cmp_totalMissionScore;
-    p.Campaign.ConsecMissions           = (short)c.cmp_consecMissions;
-    p.Campaign.Kills                    = (short)c.cmp_kills;
-    p.Campaign.Killed                   = (short)c.cmp_killed;
-    p.Campaign.HumanKills               = (short)c.cmp_humanKills;
-    p.Campaign.KilledByHuman            = (short)c.cmp_killedByHuman;
-    p.Campaign.KilledBySelf             = (short)c.cmp_killedBySelf;
-    p.Campaign.AirToGround              = (short)c.cmp_airToGround;
-    p.Campaign.Static                   = (short)c.cmp_static;
-    p.Campaign.Naval                    = (short)c.cmp_naval;
-    p.Campaign.FriendliesKilled         = (short)c.cmp_friendliesKilled;
-    p.Campaign.MissSinceLastFriendlyKill = (short)c.cmp_missSinceLastFriendlyKill;
+    p.Dogfight.Kills = (short)c.df_kills;
+    p.Dogfight.Killed = (short)c.df_killed;
+    p.Dogfight.HumanKills = (short)c.df_humanKills;
+    p.Dogfight.KilledByHuman = (short)c.df_killedByHuman;
+    p.Campaign.GamesWon = (short)c.cmp_gamesWon;
+    p.Campaign.GamesLost = (short)c.cmp_gamesLost;
+    p.Campaign.GamesTied = (short)c.cmp_gamesTied;
+    p.Campaign.Missions = (short)c.cmp_missions;
+    p.Campaign.TotalScore = c.cmp_totalScore;
+    p.Campaign.TotalMissionScore = c.cmp_totalMissionScore;
+    p.Campaign.ConsecMissions = (short)c.cmp_consecMissions;
+    p.Campaign.Kills = (short)c.cmp_kills;
+    p.Campaign.Killed = (short)c.cmp_killed;
+    p.Campaign.HumanKills = (short)c.cmp_humanKills;
+    p.Campaign.KilledByHuman = (short)c.cmp_killedByHuman;
+    p.Campaign.KilledBySelf = (short)c.cmp_killedBySelf;
+    p.Campaign.AirToGround = (short)c.cmp_airToGround;
+    p.Campaign.Static = (short)c.cmp_static;
+    p.Campaign.Naval = (short)c.cmp_naval;
+    p.Campaign.FriendliesKilled = (short)c.cmp_friendliesKilled;
+    p.Campaign.MissSinceLastFriendlyKill =
+        (short)c.cmp_missSinceLastFriendlyKill;
     p.CheckSum = 0;
 }
 
@@ -196,12 +210,14 @@ int LogBookData::Load(void)
     }
     else
     {
-        retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                              0, KEY_READ | KEY_WOW64_32KEY, &theKey);
+        retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0,
+                              KEY_READ | KEY_WOW64_32KEY, &theKey);
         size = _NAME_LEN_;
-        retval = RegQueryValueEx(theKey, "PilotName", 0, &type, (LPBYTE)Pilot.Name, &size);
+        retval = RegQueryValueEx(theKey, "PilotName", 0, &type,
+                                 (LPBYTE)Pilot.Name, &size);
         size = _CALLSIGN_LEN_;
-        retval = RegQueryValueEx(theKey, "PilotCallsign", 0, &type, (LPBYTE)Pilot.Callsign, &size);
+        retval = RegQueryValueEx(theKey, "PilotCallsign", 0, &type,
+                                 (LPBYTE)Pilot.Callsign, &size);
         RegCloseKey(theKey);
 
         if (retval not_eq ERROR_SUCCESS)
@@ -212,7 +228,7 @@ int LogBookData::Load(void)
         }
     }
 
-    if ( not LoadData(Callsign()))
+    if (not LoadData(Callsign()))
     {
         return FALSE;
     }
@@ -253,7 +269,7 @@ void LogBookData::Initialize(void)
     Pilot.FlightHours = 0.0F;
     memset(&Pilot.Campaign, 0, sizeof(CAMP_STATS));
     memset(&Pilot.Dogfight, 0, sizeof(DF_STATS));
-    memset(Pilot.Medals, 0, sizeof(uchar)*NUM_MEDALS);
+    memset(Pilot.Medals, 0, sizeof(uchar) * NUM_MEDALS);
     Pilot.Picture[0] = 0;
     Pilot.PictureResource = NOFACE;
     Pilot.Patch[0] = 0;
@@ -275,11 +291,13 @@ void LogBookData::Initialize(void)
 
     if (gLangIDNum not_eq F4LANG_ENGLISH)
     {
-        _stprintf(Pilot.Commissioned, "%02d.%02d.%02d", systime.wDay, systime.wMonth, systime.wYear % 100);
+        _stprintf(Pilot.Commissioned, "%02d.%02d.%02d", systime.wDay,
+                  systime.wMonth, systime.wYear % 100);
     }
     else
     {
-        _stprintf(Pilot.Commissioned, "%02d/%02d/%02d", systime.wMonth, systime.wDay, systime.wYear % 100);
+        _stprintf(Pilot.Commissioned, "%02d/%02d/%02d", systime.wMonth,
+                  systime.wDay, systime.wYear % 100);
     }
 
     Pilot.CheckSum = 0;
@@ -288,7 +306,8 @@ void LogBookData::Initialize(void)
     {
         char prof[_MAX_PATH];
         ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-        sprintf(path, "%s\\stats.plc", prof);   // comms stats in the profile folder
+        sprintf(path, "%s/stats.plc",
+                prof); // comms stats in the profile folder
         gCommsMgr->SetStatsFile(path);
     }
 }
@@ -296,14 +315,17 @@ void LogBookData::Initialize(void)
 void LogBookData::Clear(void)
 {
     char path[MAX_PATH];
-    _stprintf(path, _T("%s\\config\\%s.rul"), FalconDataDirectory, Pilot.Callsign);
+    _stprintf(path, _T("%s/config/%s.rul"), FalconDataDirectory,
+              Pilot.Callsign);
     remove(path);
     //JAM 29Dec03 - Duh.
-    // _stprintf(path,_T("%s\\config\\%s.pop"),FalconDataDirectory,Pilot.Callsign);
+    // _stprintf(path,_T("%s/config/%s.pop"),FalconDataDirectory,Pilot.Callsign);
     // remove(path);
-    _stprintf(path, _T("%s\\config\\%s.lbk"), FalconDataDirectory, Pilot.Callsign);
+    _stprintf(path, _T("%s/config/%s.lbk"), FalconDataDirectory,
+              Pilot.Callsign);
     remove(path);
-    _stprintf(path, _T("%s\\config\\%s.plc"), FalconDataDirectory, Pilot.Callsign);
+    _stprintf(path, _T("%s/config/%s.plc"), FalconDataDirectory,
+              Pilot.Callsign);
     remove(path);
     Initialize();
     /*
@@ -321,7 +343,6 @@ void LogBookData::Clear(void)
     _tstrdate(buf);
     _tcscpy(Pilot.Commissioned,buf);
     */
-
 }
 
 void LogBookData::Cleanup(void)
@@ -353,13 +374,13 @@ int LogBookData::LoadData(_TCHAR *callsign)
         }
     }
 
-    if ( not loadedFromXml)
+    if (not loadedFromXml)
     {
-        _stprintf(path, _T("%s\\config\\%s.lbk"), FalconDataDirectory, callsign);
+        _stprintf(path, _T("%s/config/%s.lbk"), FalconDataDirectory, callsign);
 
         fp = _tfopen(path, _T("rb"));
 
-        if ( not fp)
+        if (not fp)
         {
             MonoPrint(_T("Couldn't open %s's logbook.\n"), callsign);
             Initialize();
@@ -388,24 +409,29 @@ int LogBookData::LoadData(_TCHAR *callsign)
             return BAD_READ;
         }
 
-        DecryptBuffer(0x58, (uchar*)&Pilot, sizeof(LB_PILOT));
+        DecryptBuffer(0x58, (uchar *)&Pilot, sizeof(LB_PILOT));
 
         if (Pilot.CheckSum) // Somebody changed the data... init
         {
             MonoPrint("Failed checksum");
             Initialize();
-            return(FALSE);
+            return (FALSE);
         }
 
         // Artscout - 2026: one-time migration of the legacy .lbk into the profile's logbook.xml.
-        { CxLogbook cx; PilotToCx(Pilot, cx); ControlsXml_WriteLogbook(&cx); }
+        {
+            CxLogbook cx;
+            PilotToCx(Pilot, cx);
+            ControlsXml_WriteLogbook(&cx);
+        }
     }
 
     if (gCommsMgr)
     {
         char prof[_MAX_PATH];
         ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-        sprintf(path, "%s\\stats.plc", prof);   // comms stats in the profile folder
+        sprintf(path, "%s/stats.plc",
+                prof); // comms stats in the profile folder
         gCommsMgr->SetStatsFile(path);
     }
 
@@ -432,7 +458,9 @@ int LogBookData::LoadData(LB_PILOT *NewPilot)
 
         if (this == &LogBook)
         {
-            SyncPilotProfile(Pilot.Callsign, false);   // Artscout - 2026: point at this pilot's profile
+            SyncPilotProfile(
+                Pilot.Callsign,
+                false); // Artscout - 2026: point at this pilot's profile
             FalconLocalSession->SetPlayerName(NameWRank());
             FalconLocalSession->SetPlayerCallsign(Callsign());
             FalconLocalSession->SetAceFactor(AceFactor());
@@ -457,14 +485,18 @@ int LogBookData::SaveData(void)
     // A real pilot's first save registers its profile (numbered dir) and seeds the folder. The
     // legacy encrypted config\<callsign>.lbk is no longer written.
     SyncPilotProfile(Pilot.Callsign, true);
-    { CxLogbook cx; PilotToCx(Pilot, cx); ControlsXml_WriteLogbook(&cx); }
+    {
+        CxLogbook cx;
+        PilotToCx(Pilot, cx);
+        ControlsXml_WriteLogbook(&cx);
+    }
 
     if (gCommsMgr)
     {
         // comms stats live in the pilot's profile folder, not config\<callsign>.plc
         char prof[_MAX_PATH];
         ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-        sprintf(path, "%s\\stats.plc", prof);
+        sprintf(path, "%s/stats.plc", prof);
         gCommsMgr->SetStatsFile(path);
     }
 
@@ -473,17 +505,19 @@ int LogBookData::SaveData(void)
     HKEY theKey;
     long retval;
 
-    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY,
-                          0, KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
+    retval = RegOpenKeyEx(HKEY_LOCAL_MACHINE, FALCON_REGISTRY_KEY, 0,
+                          KEY_ALL_ACCESS | KEY_WOW64_32KEY, &theKey);
     size = _NAME_LEN_;
 
     if (retval == ERROR_SUCCESS)
-        retval = RegSetValueEx(theKey, "PilotName", 0, REG_BINARY, (LPBYTE)Name(), size);
+        retval = RegSetValueEx(theKey, "PilotName", 0, REG_BINARY,
+                               (LPBYTE)Name(), size);
 
     size = _CALLSIGN_LEN_;
 
     if (retval == ERROR_SUCCESS)
-        retval = RegSetValueEx(theKey, "PilotCallsign", 0, REG_BINARY, (LPBYTE)Callsign(), size);
+        retval = RegSetValueEx(theKey, "PilotCallsign", 0, REG_BINARY,
+                               (LPBYTE)Callsign(), size);
 
     RegCloseKey(theKey);
 #endif
@@ -499,9 +533,6 @@ int LogBookData::SaveData(void)
 
     return TRUE;
 }
-
-
-
 
 
 short LogBookData::TotalKills(void)
@@ -606,7 +637,9 @@ _TCHAR *LogBookData::NameWRank(void)
     return Name();
 }
 
-void LogBookData::UpdateDogfight(short MatchWon, float Hours, short VsHuman , short Kills, short Killed, short HumanKills, short KilledByHuman)
+void LogBookData::UpdateDogfight(short MatchWon, float Hours, short VsHuman,
+                                 short Kills, short Killed, short HumanKills,
+                                 short KilledByHuman)
 {
     MissionResult = 0;
 
@@ -621,7 +654,7 @@ void LogBookData::UpdateDogfight(short MatchWon, float Hours, short VsHuman , sh
     }
 
     if (MatchWon >= 1)
-        Pilot.Dogfight.MatchesWon ++;
+        Pilot.Dogfight.MatchesWon++;
     else if (MatchWon <= -1)
         Pilot.Dogfight.MatchesLost++;
 
@@ -646,13 +679,15 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
 
     UpdateFlightHours(MissStats->FlightHours);
 
-    if (MissStats->Flags bitand CRASH_UNDAMAGED and not g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags bitand CRASH_UNDAMAGED and
+        not g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 25;
         MissionResult or_eq CM_CRASH bitor COURT_MARTIAL;
     }
 
-    if (MissStats->Flags bitand EJECT_UNDAMAGED and not g_bDisableCrashEjectCourtMartials) // JB 010118
+    if (MissStats->Flags bitand EJECT_UNDAMAGED and
+        not g_bDisableCrashEjectCourtMartials) // JB 010118
     {
         Pilot.Campaign.TotalScore -= 50;
         MissionResult or_eq CM_EJECT bitor COURT_MARTIAL;
@@ -691,14 +726,16 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
     }
 
     //calculate new score using complexity, no mission pts if you get court martialed
-    if ( not (MissionResult bitand COURT_MARTIAL))
-        Pilot.Campaign.TotalScore += FloatToInt32(MissStats->Score * MissionComplexity(MissStats) * CampaignDifficulty() *
-                                     PlayerOptions.Realism / 30.0F + MissStats->FlightHours);
+    if (not(MissionResult bitand COURT_MARTIAL))
+        Pilot.Campaign.TotalScore += FloatToInt32(
+            MissStats->Score * MissionComplexity(MissStats) *
+                CampaignDifficulty() * PlayerOptions.Realism / 30.0F +
+            MissStats->FlightHours);
 
     if (Pilot.Campaign.TotalScore < 0)
         Pilot.Campaign.TotalScore = 0;
 
-    if ( not (MissStats->Flags bitand DONT_SCORE_MISSION))
+    if (not(MissStats->Flags bitand DONT_SCORE_MISSION))
     {
         Pilot.Campaign.Missions++;
 
@@ -771,7 +808,7 @@ void LogBookData::UpdateCampaign(CAMP_MISS_STRUCT *MissStats)
         if (Pilot.Campaign.Naval < 0)
             Pilot.Campaign.Naval = 0;
 
-        if ( not (MissionResult bitand COURT_MARTIAL))
+        if (not(MissionResult bitand COURT_MARTIAL))
             AwardMedals(MissStats);
     }
 
@@ -788,13 +825,14 @@ void LogBookData::CalcRank(void)
     {
         NewRank = COLONEL;
     }
-    else if ((Pilot.Campaign.TotalScore > 1600) and \
+    else if ((Pilot.Campaign.TotalScore > 1600) and
              (Pilot.Campaign.GamesWon or Pilot.Campaign.GamesTied))
     {
         NewRank = LT_COL;
     }
-    else if ((Pilot.Campaign.TotalScore > 800) and \
-             (Pilot.Campaign.GamesWon or Pilot.Campaign.GamesTied or Pilot.Campaign.GamesLost))
+    else if ((Pilot.Campaign.TotalScore > 800) and
+             (Pilot.Campaign.GamesWon or Pilot.Campaign.GamesTied or
+              Pilot.Campaign.GamesLost))
     {
         NewRank = MAJOR;
     }
@@ -846,15 +884,19 @@ float LogBookData::MissionComplexity(CAMP_MISS_STRUCT *MissStats)
         AircrftInPkg = static_cast<float>(MissStats->AircraftInPackage);
 
 
-    return (Duration / 3.0F + WeapExpended / 6.0F + ShotsAt / 10.0F + AircrftInPkg / 16.0F + 3.0F);
+    return (Duration / 3.0F + WeapExpended / 6.0F + ShotsAt / 10.0F +
+            AircrftInPkg / 16.0F + 3.0F);
 }
 
 //returns value from 16 to 20
 float LogBookData::CampaignDifficulty(void)
 {
     return ((13.0F - TheCampaign.GroundRatio - TheCampaign.AirRatio -
-             TheCampaign.AirDefenseRatio - TheCampaign.NavalRatio / 4.0F) / 39.0F  +
-            (TheCampaign.EnemyAirExp + TheCampaign.EnemyADExp) / 12.0F) * 5.0F + 15.0F;
+             TheCampaign.AirDefenseRatio - TheCampaign.NavalRatio / 4.0F) /
+                39.0F +
+            (TheCampaign.EnemyAirExp + TheCampaign.EnemyADExp) / 12.0F) *
+               5.0F +
+           15.0F;
 }
 
 void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
@@ -869,15 +911,19 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
         if (MissStats->Flags bitand LANDED_AIRCRAFT)
             MedalPts++;
 
-        if ( not MissStats->WingmenLost)
+        if (not MissStats->WingmenLost)
             MedalPts++;
 
         MedalPts += MissStats->NavalUnitsKilled + MissStats->Kills +
-                    min(10, MissStats->FeaturesDestroyed / 2) + min(10, MissStats->GroundUnitsKilled / 2);
+                    min(10, MissStats->FeaturesDestroyed / 2) +
+                    min(10, MissStats->GroundUnitsKilled / 2);
 
-        MedalPts = FloatToInt32(PlayerOptions.Realism * MedalPts * CampaignDifficulty() * MissStats->Score * MissionComplexity(MissStats));
+        MedalPts = FloatToInt32(PlayerOptions.Realism * MedalPts *
+                                CampaignDifficulty() * MissStats->Score *
+                                MissionComplexity(MissStats));
 
-        if ((MedalPts > 9600) and (PlayerOptions.Realism > 0.9f) and MissStats->Score >= 4)
+        if ((MedalPts > 9600) and (PlayerOptions.Realism > 0.9f) and
+            MissStats->Score >= 4)
         {
             MissionResult or_eq AWARD_MEDAL bitor MDL_AFCROSS;
             Pilot.Medals[AIR_FORCE_CROSS]++;
@@ -904,13 +950,14 @@ void LogBookData::AwardMedals(CAMP_MISS_STRUCT *MissStats)
     }
 
 
-    if (MissStats->Killed or MissStats->KilledByHuman or MissStats->KilledBySelf)
+    if (MissStats->Killed or MissStats->KilledByHuman or
+        MissStats->KilledBySelf)
     {
         Pilot.Campaign.ConsecMissions = 0;
     }
     else
     {
-        if ( not PlayerOptions.InvulnerableOn())
+        if (not PlayerOptions.InvulnerableOn())
             Pilot.Campaign.ConsecMissions++;
     }
 

@@ -40,7 +40,7 @@ C_ATO_Package::~C_ATO_Package()
 
 long C_ATO_Package::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_ATO_Package::Setup(long ID, short Type)
@@ -113,18 +113,21 @@ void C_ATO_Package::SetFont(long ID)
 
 long C_ATO_Package::CheckHotSpots(long relX, long relY)
 {
-    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and relY <= (GetY() + GetH()))
+    if (relX >= GetX() and relX <= (GetX() + GetW()) and relY >= GetY() and
+        relY <= (GetY() + GetH()))
     {
-        if (relX >= (GetX() + ShowWP_->GetX()) and relX <= (GetX() + ShowWP_->GetX() + ShowWP_->GetW())
-           and relY >= (GetY() + ShowWP_->GetY()) and relY <= (GetY() + ShowWP_->GetY() + ShowWP_->GetH()))
+        if (relX >= (GetX() + ShowWP_->GetX()) and
+            relX <= (GetX() + ShowWP_->GetX() + ShowWP_->GetW()) and
+            relY >= (GetY() + ShowWP_->GetY()) and
+            relY <= (GetY() + ShowWP_->GetY() + ShowWP_->GetH()))
             Section_ = 1;
         else
             Section_ = 0;
 
-        return(GetID());
+        return (GetID());
     }
 
-    return(0);
+    return (0);
 }
 
 void C_ATO_Package::SetDefaultFlags()
@@ -134,7 +137,7 @@ void C_ATO_Package::SetDefaultFlags()
 
 long C_ATO_Package::GetDefaultFlags()
 {
-    return(Defaultflags_);
+    return (Defaultflags_);
 }
 
 BOOL C_ATO_Package::Process(long ID, short HitType)
@@ -150,20 +153,21 @@ BOOL C_ATO_Package::Process(long ID, short HitType)
     if (Callback_)
         (*Callback_)(ID, HitType, this);
 
-    return(FALSE);
+    return (FALSE);
 }
 
 void C_ATO_Package::Refresh()
 {
-    if ( not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or Flags_ bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
-    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(), Flags_, GetClient());
+    Parent_->SetUpdateRect(GetX(), GetY(), GetX() + GetW(), GetY() + GetH(),
+                           Flags_, GetClient());
 }
 
 void C_ATO_Package::Draw(SCREEN *surface, UI95_RECT *cliprect)
 {
-    if ( not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
+    if (not Ready() or GetFlags() bitand C_BIT_INVISIBLE or Parent_ == NULL)
         return;
 
     if (Title_)

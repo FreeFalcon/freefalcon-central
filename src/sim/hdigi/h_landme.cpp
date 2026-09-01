@@ -1,11 +1,11 @@
 #include <float.h>
-#include "Graphics/Include/drawBSP.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
 #include "hdigi.h"
 #include "simdrive.h"
 #include "simveh.h"
-#include "CampRwy.h"
-#include "Find.h"
+#include "camprwy.h"
+#include "find.h"
 #include "campbase.h"
 #include "camplist.h"
 #include "campstr.h"
@@ -38,113 +38,119 @@ void HeliBrain::LandMe(void)
     Unit cargo, unit;
     GridIndex x, y;
 
-    float groundAlt = OTWDriver.GetGroundLevel(self->XPos() + self->XDelta(), self->YPos() + self->YDelta());
+    float groundAlt = OTWDriver.GetGroundLevel(self->XPos() + self->XDelta(),
+                                               self->YPos() + self->YDelta());
     float selfAlt = self->ZPos() + self->offsetZ;
 
     switch (onStation)
     {
 
-        case NotThereYet:
+    case NotThereYet:
+        break;
+
+    case Arrived:
+        jinkTime = SimLibElapsedTime + 30000;
+        onStation = Landing;
+        break;
+
+    case Landing:
+        if ((selfAlt >= (groundAlt - 0.25f)) and (selfAlt < groundAlt) or
+            SimLibElapsedTime > jinkTime)
+        {
+            onStation = Landed;
+            jinkTime = SimLibElapsedTime + (90 + rand() % 90) * 1000;
+            self->SetFlag(ON_GROUND);
             break;
+        }
+        else if ((selfAlt >= (groundAlt - 3.5f) or
+                  SimLibElapsedTime > (jinkTime - 10000)) and
+                 (selfAlt < groundAlt))
+        {
+            LevelTurn(0.0f, 0.0f, TRUE);
+            MachHold(0.0f, -10.0f, FALSE);
+        }
+        else if ((selfAlt >= (groundAlt - 10.0f) or
+                  SimLibElapsedTime > (jinkTime - 15000)) and
+                 (selfAlt < groundAlt))
+        {
+            LevelTurn(0.0f, 0.0f, TRUE);
+            MachHold(0.0f, -3.5f, FALSE);
+        }
+        else
+        {
+            LevelTurn(0.0f, 0.0f, TRUE);
+            MachHold(0.0f, 0.0f, FALSE);
+        }
 
-        case Arrived:
-            jinkTime = SimLibElapsedTime + 30000;
-            onStation = Landing;
-            break;
+        if (self->OnGround())
+        {
+            self->UnSetFlag(ON_GROUND);
+        }
 
-        case Landing:
-            if ((selfAlt >= (groundAlt - 0.25f)) and (selfAlt < groundAlt) or SimLibElapsedTime > jinkTime)
-            {
-                onStation = Landed;
-                jinkTime = SimLibElapsedTime + (90 + rand() % 90) * 1000;
-                self->SetFlag(ON_GROUND);
-                break;
-            }
-            else if ((selfAlt >= (groundAlt - 3.5f) or SimLibElapsedTime > (jinkTime - 10000)) and (selfAlt < groundAlt))
-            {
-                LevelTurn(0.0f, 0.0f, TRUE);
-                MachHold(0.0f, -10.0f, FALSE);
-            }
-            else if ((selfAlt >= (groundAlt - 10.0f) or SimLibElapsedTime > (jinkTime - 15000)) and (selfAlt < groundAlt))
-            {
-                LevelTurn(0.0f, 0.0f, TRUE);
-                MachHold(0.0f, -3.5f, FALSE);
-            }
-            else
-            {
-                LevelTurn(0.0f, 0.0f, TRUE);
-                MachHold(0.0f, 0.0f, FALSE);
-            }
+        // RV - Biker - Extend landing gear
+        ((DrawableBSP*)self->drawPointer)->SetSwitchMask(2, 1);
+        break;
 
-            if (self->OnGround())
+    case Landed:
+        self->SetFlag(ON_GROUND);
+
+        if (SimLibElapsedTime > jinkTime)
+        {
+            if (self->curWaypoint->GetWPAction() == WP_PICKUP)
             {
+                onStation = PickUp;
                 self->UnSetFlag(ON_GROUND);
             }
-
-            // RV - Biker - Extend landing gear
-            ((DrawableBSP*)self->drawPointer)->SetSwitchMask(2, 1);
-            break;
-
-        case Landed:
-            self->SetFlag(ON_GROUND);
-
-            if (SimLibElapsedTime > jinkTime)
+            else if (self->curWaypoint->GetWPAction() == WP_AIRDROP)
             {
-                if (self->curWaypoint->GetWPAction() == WP_PICKUP)
-                {
-                    onStation = PickUp;
-                    self->UnSetFlag(ON_GROUND);
-                }
-                else if (self->curWaypoint->GetWPAction() == WP_AIRDROP)
-                {
-                    onStation = DropOff;
-                    self->UnSetFlag(ON_GROUND);
-                }
-                else
-                    onStation = Landed;
+                onStation = DropOff;
+                self->UnSetFlag(ON_GROUND);
             }
+            else
+                onStation = Landed;
+        }
 
-            // RV - Biker - Extend landing gear
-            ((DrawableBSP*)self->drawPointer)->SetSwitchMask(2, 1);
-            break;
+        // RV - Biker - Extend landing gear
+        ((DrawableBSP*)self->drawPointer)->SetSwitchMask(2, 1);
+        break;
 
-            // Load the airborne battalion.
-        case PickUp:
-            cargo = (Unit) self->curWaypoint->GetWPTarget();
-            unit = (Unit)self->GetCampaignObject();
+        // Load the airborne battalion.
+    case PickUp:
+        cargo = (Unit)self->curWaypoint->GetWPTarget();
+        unit = (Unit)self->GetCampaignObject();
 
-            if (cargo and unit)
-            {
-                unit->SetCargoId(cargo->Id());
-                cargo->SetCargoId(unit->Id());
-                cargo->SetInactive(1);
-                unit->LoadUnit(cargo);
-            }
+        if (cargo and unit)
+        {
+            unit->SetCargoId(cargo->Id());
+            cargo->SetCargoId(unit->Id());
+            cargo->SetInactive(1);
+            unit->LoadUnit(cargo);
+        }
 
-            onStation = OnStation;
-            break;
+        onStation = OnStation;
+        break;
 
-            // Unload the airborne battalion.
-        case DropOff:
-            cargo = (Unit) self->curWaypoint->GetWPTarget();
-            unit = (Unit)self->GetCampaignObject();
+        // Unload the airborne battalion.
+    case DropOff:
+        cargo = (Unit)self->curWaypoint->GetWPTarget();
+        unit = (Unit)self->GetCampaignObject();
 
-            if (cargo and unit and unit->Cargo())
-            {
-                unit->UnloadUnit();
-                cargo->SetCargoId(FalconNullId);
-                cargo->SetInactive(0);
-                self->curWaypoint->GetWPLocation(&x, &y);
-                cargo->SetLocation(x, y);
-            }
+        if (cargo and unit and unit->Cargo())
+        {
+            unit->UnloadUnit();
+            cargo->SetCargoId(FalconNullId);
+            cargo->SetInactive(0);
+            self->curWaypoint->GetWPLocation(&x, &y);
+            cargo->SetLocation(x, y);
+        }
 
-            onStation = OnStation;
-            break;
+        onStation = OnStation;
+        break;
 
-        case OnStation:
-            break;
+    case OnStation:
+        break;
 
-        case Departing:
-            break;
+    case Departing:
+        break;
     }
 }

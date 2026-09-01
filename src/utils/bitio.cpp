@@ -11,14 +11,14 @@
    ------------------------------------------------------------------------ */
 
 
-#include <cISO646>
+#include <ciso646>
 #include <stdio.h>
 #include <stdlib.h>
 #include "bitio.h"
 
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.hpp"
+#include "smartheap/include/smrtheap.hpp"
 #endif
 
 /* Add for the buffer io */
@@ -32,13 +32,13 @@ BIT_FILE *OpenOutputBitFile(char *name)
     bit_file = new BIT_FILE;
 
     if (bit_file == NULL)
-        return(bit_file);
+        return (bit_file);
 
     bit_file->file = fopen(name, "wb");
     bit_file->rack = 0;
     bit_file->mask = 0x80;
     bit_file->pacifier_counter = 0;
-    return(bit_file);
+    return (bit_file);
 }
 
 BIT_FILE *OpenInputBitFile(char *name)
@@ -49,13 +49,13 @@ BIT_FILE *OpenInputBitFile(char *name)
     bit_file = new BIT_FILE;
 
     if (bit_file == NULL)
-        return(bit_file);
+        return (bit_file);
 
     bit_file->file = fopen(name, "rb");
     bit_file->rack = 0;
     bit_file->mask = 0x80;
     bit_file->pacifier_counter = 0;
-    return(bit_file);
+    return (bit_file);
 }
 
 void CloseOutputBitFile(BIT_FILE *bit_file)
@@ -65,13 +65,13 @@ void CloseOutputBitFile(BIT_FILE *bit_file)
             printf("Fatal error in CloseBitFile");
 
     fclose(bit_file->file);
-    delete [] bit_file;
+    delete[] bit_file;
 }
 
 void CloseInputBitFile(BIT_FILE *bit_file)
 {
     fclose(bit_file->file);
-    delete [] bit_file;
+    delete[] bit_file;
 }
 
 void OutputBit(BIT_FILE *bit_file, int bit)
@@ -145,7 +145,7 @@ int InputBit(BIT_FILE *bit_file)
     if (bit_file->mask == 0)
         bit_file->mask = 0x80;
 
-    return(value ? 1 : 0);
+    return (value ? 1 : 0);
 }
 
 unsigned long InputBits(BIT_FILE *bit_file, int bit_count)
@@ -188,7 +188,7 @@ unsigned long InputBits(BIT_FILE *bit_file, int bit_count)
             bit_file->mask = 0x80;
     }
 
-    return(return_value);
+    return (return_value);
 }
 
 void FilePrintBinary(FILE *file, unsigned int code, int bits)

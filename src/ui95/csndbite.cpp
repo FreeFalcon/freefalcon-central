@@ -17,7 +17,7 @@ C_SoundBite::~C_SoundBite()
 
 long C_SoundBite::Size()
 {
-    return(0);
+    return (0);
 }
 
 void C_SoundBite::Setup()
@@ -61,12 +61,12 @@ CATLIST *C_SoundBite::Find(long CatID)
     while (cur)
     {
         if (cur->CatID == CatID)
-            return(cur);
+            return (cur);
 
         cur = cur->Next;
     }
 
-    return(NULL);
+    return (NULL);
 }
 
 void C_SoundBite::Add(long CatID, long SoundID)
@@ -94,7 +94,7 @@ void C_SoundBite::Add(long CatID, long SoundID)
     }
     else
     {
-        if ( not Root)
+        if (not Root)
         {
             Root = new CATLIST;
             Root->CatID = CatID;
@@ -144,14 +144,14 @@ long C_SoundBite::Pick(long CatID)
         if (snds)
         {
             if (snds->Used)
-                return(0);
+                return (0);
 
             snds->Used++;
-            return(snds->SoundID);
+            return (snds->SoundID);
         }
     }
 
-    return(0);
+    return (0);
 }
 
 long C_SoundBite::PickAlways(long CatID)
@@ -178,9 +178,9 @@ long C_SoundBite::PickAlways(long CatID)
         if (snds)
         {
             snds->Used++;
-            return(snds->SoundID);
+            return (snds->SoundID);
         }
     }
 
-    return(0);
+    return (0);
 }

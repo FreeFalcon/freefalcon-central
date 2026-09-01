@@ -1,9 +1,9 @@
 #include "stdhdr.h"
 #include "mfd.h"
-#include "Aircrft.h"
+#include "aircrft.h"
 #include "simdrive.h"
 #include "camp2sim.h"
-#include "Graphics/Include/render2d.h"
+#include "graphics/include/render2d.h"
 #include "otwdrive.h" //MI
 #include "cpmanager.h" //MI
 #include "icp.h" //MI
@@ -12,7 +12,7 @@
 #include "radardoppler.h" //MI
 
 //MI
-void DrawBullseyeCircle(VirtualDisplay* display, float cursorX, float cursorY);
+void DrawBullseyeCircle(VirtualDisplay *display, float cursorX, float cursorY);
 
 
 struct MfdMenuButtons
@@ -26,11 +26,10 @@ struct MfdMenuButtons
     };
     int nextMode;
 };
-#define PARENT { NULL, NULL, MfdMenuButtons::ModeParent }
-#define NOENTRY { NULL, NULL, MfdMenuButtons::ModeNoop }
+#define PARENT {NULL, NULL, MfdMenuButtons::ModeParent}
+#define NOENTRY {NULL, NULL, MfdMenuButtons::ModeNoop}
 
-static const MfdMenuButtons mainpage[20] =
-{
+static const MfdMenuButtons mainpage[20] = {
     {"BLANK", NULL, MFDClass::MfdOff}, //1
     //{NULL, NULL, MFDClass::HUDMode},
     {NULL, NULL, MFDClass::HADMode}, // RV - I-Hawk
@@ -55,8 +54,7 @@ static const MfdMenuButtons mainpage[20] =
 };
 
 
-static const MfdMenuButtons resetpage[20] =
-{
+static const MfdMenuButtons resetpage[20] = {
     // reset page menu
     {"BLANK", NULL, MFDClass::MfdOff},    // 1
     NOENTRY,
@@ -84,21 +82,21 @@ struct MfdPage
 {
     const MfdMenuButtons *buttons;
 };
-static const MfdPage mfdpages[] =
-{
+static const MfdPage mfdpages[] = {
     {mainpage},
     {resetpage},
 };
 static const int NMFDPAGES = sizeof(mfdpages) / sizeof(mfdpages[0]);
 
-void MfdMenuDrawable::Display(VirtualDisplay* newDisplay)
+void MfdMenuDrawable::Display(VirtualDisplay *newDisplay)
 {
     //MI
     float cX, cY = 0;
     AircraftClass *playerAC = SimDriver.GetPlayerAircraft();
-    RadarDopplerClass* theRadar = (RadarDopplerClass*)FindSensor(playerAC, SensorClass::Radar);
+    RadarDopplerClass *theRadar =
+        (RadarDopplerClass *)FindSensor(playerAC, SensorClass::Radar);
 
-    if ( not theRadar)
+    if (not theRadar)
     {
         ShiWarning("Oh Oh shouldn't be here without a radar");
         return;
@@ -118,9 +116,11 @@ void MfdMenuDrawable::Display(VirtualDisplay* newDisplay)
         for (int i = 0; i < 20; i++)
         {
             if (mb[i].label1)
-                LabelButton(i, mb[i].label1, mb[i].label2, mb[i].nextMode == curmode);
+                LabelButton(i, mb[i].label1, mb[i].label2,
+                            mb[i].nextMode == curmode);
             else if (mb[i].nextMode >= 0)
-                LabelButton(i, MFDClass::ModeName(mb[i].nextMode), NULL, mb[i].nextMode == curmode);
+                LabelButton(i, MFDClass::ModeName(mb[i].nextMode), NULL,
+                            mb[i].nextMode == curmode);
             else if (mb[i].nextMode == MfdMenuButtons::ModeParent)
                 MfdDrawable::DefaultLabel(i);
         }
@@ -128,7 +128,8 @@ void MfdMenuDrawable::Display(VirtualDisplay* newDisplay)
         //MI changed
         if (g_bRealisticAvionics)
         {
-            if (OTWDriver.pCockpitManager and OTWDriver.pCockpitManager->mpIcp and 
+            if (OTWDriver.pCockpitManager and
+                OTWDriver.pCockpitManager->mpIcp and
                 OTWDriver.pCockpitManager->mpIcp->ShowBullseyeInfo)
             {
                 DrawBullseyeCircle(display, cX, cY);
@@ -146,7 +147,7 @@ void MfdMenuDrawable::Display(VirtualDisplay* newDisplay)
         LabelButton(2, "FCR");
         LabelButton(3, "SMS");
         sprintf(tmpStr, "BINGO %.0f", playerAC->bingoFuel); //me123 status ok
-        LabelButton(15,  tmpStr); //me123 status ok
+        LabelButton(15, tmpStr); //me123 status ok
         LabelButton(11, "RWR");
         LabelButton(12, "HUD");
         LabelButton(13, "MENU", NULL, 1);
@@ -163,20 +164,20 @@ void MfdMenuDrawable::PushButton(int whichButton, int whichMFD)
 
         switch (mode = mfdpages[mfdpage].buttons[whichButton].nextMode)
         {
-            case MfdMenuButtons::ModeNoop:
-                break;
+        case MfdMenuButtons::ModeNoop:
+            break;
 
-            case MfdMenuButtons::ModeReset:
-                mfdpage = 1 - mfdpage;
-                break;
+        case MfdMenuButtons::ModeReset:
+            mfdpage = 1 - mfdpage;
+            break;
 
-            case MfdMenuButtons::ModeParent:
-                MfdDrawable::PushButton(whichButton, whichMFD);
-                break;
+        case MfdMenuButtons::ModeParent:
+            MfdDrawable::PushButton(whichButton, whichMFD);
+            break;
 
-            default:
-                MfdDisplay[whichMFD]->SetNewMode((MFDClass::MfdMode)mode);
-                break;
+        default:
+            MfdDisplay[whichMFD]->SetNewMode((MFDClass::MfdMode)mode);
+            break;
         }
     }
 
@@ -195,48 +196,49 @@ void MfdMenuDrawable::PushButton(int whichButton, int whichMFD)
 
         switch (whichButton)
         {
-            case 1:
-                nextMode = MFDClass::FCCMode;
-                break;
-
-            case 2:
-                nextMode = MFDClass::FCRMode;
-                break;
-
-            case 3:
-                nextMode = MFDClass::SMSMode;
-                break;
-
-            case 11:
-                nextMode = MFDClass::RWRMode;
-                break;
-
-            case 12:
-                //nextMode = MFDClass::HUDMode;
-                nextMode = MFDClass::HADMode; // RV - I-Hawk
-                break;
-
-            case 15:
-            {
-                float bingo = playerAC->bingoFuel;
-
-                if (bingo >= 0)
-                {
-                    if (bingo <= 1000.0f)
-                        playerAC->bingoFuel +=  100.0f;
-                    else if (bingo < 3000.0f)
-                        playerAC->bingoFuel += 200.0f;
-                    else if (bingo < 10000.0f)
-                        playerAC->bingoFuel += 500.0f;
-                    else
-                        playerAC->bingoFuel = 0.0f;
-                }
-            }
+        case 1:
+            nextMode = MFDClass::FCCMode;
             break;
+
+        case 2:
+            nextMode = MFDClass::FCRMode;
+            break;
+
+        case 3:
+            nextMode = MFDClass::SMSMode;
+            break;
+
+        case 11:
+            nextMode = MFDClass::RWRMode;
+            break;
+
+        case 12:
+                //nextMode = MFDClass::HUDMode;
+            nextMode = MFDClass::HADMode; // RV - I-Hawk
+            break;
+
+        case 15:
+        {
+            float bingo = playerAC->bingoFuel;
+
+            if (bingo >= 0)
+            {
+                if (bingo <= 1000.0f)
+                    playerAC->bingoFuel += 100.0f;
+                else if (bingo < 3000.0f)
+                    playerAC->bingoFuel += 200.0f;
+                else if (bingo < 10000.0f)
+                    playerAC->bingoFuel += 500.0f;
+                else
+                    playerAC->bingoFuel = 0.0f;
+            }
+        }
+        break;
         }
 
         // Check other MFD if needed;
-        if (nextMode not_eq MFDClass::MfdOff and (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
+        if (nextMode not_eq MFDClass::MfdOff and
+            (otherMfd < 0 or MfdDisplay[otherMfd]->mode not_eq nextMode))
             MfdDisplay[whichMFD]->SetNewMode(nextMode);
     }
 }

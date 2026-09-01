@@ -7,14 +7,14 @@
 #include "graphics/include/matrix.h"
 #include "falclib/include/f4thread.h"
 #include "falclib/include/f4vu.h"
-#include "Graphics/Include/TerrTex.h"
-#include "inpFunc.h" //Wombat778 10-10-2003 added for 3d clickable cockpit
+#include "graphics/include/terrtex.h"
+#include "inpfunc.h" //Wombat778 10-10-2003 added for 3d clickable cockpit
 //#include "cpmanager.h" //sfr: dependencies: other files may include this
 #include "simbase.h"
 
 
 #ifdef USE_SH_POOLS
-#include "SmartHeap/Include/smrtheap.h"
+#include "smartheap/include/smrtheap.h"
 #endif
 
 class SfxClass;
@@ -97,14 +97,15 @@ public:
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(displayList));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -124,23 +125,24 @@ public:
     drawPtrList(void) {};
     ~drawPtrList(void) {};
 
-    DrawableObject *drawPointer;
+    DrawableObject* drawPointer;
     float value;
 
-    drawPtrList *prev;
-    drawPtrList *next;
+    drawPtrList* prev;
+    drawPtrList* next;
 
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(drawPtrList));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -159,14 +161,15 @@ class sfxRequest
 #ifdef USE_SH_POOLS
 public:
     // Overload new/delete to use a SmartHeap fixed size pool
-    void *operator new(size_t size)
+    void* operator new(size_t size)
     {
         ShiAssert(size == sizeof(sfxRequest));
         return MemAllocFS(pool);
     };
-    void operator delete(void *mem)
+    void operator delete(void* mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -182,18 +185,18 @@ public:
     sfxRequest(void);
     ~sfxRequest(void);
 
-    sfxRequest *next; // next in Q
-    SfxClass *sfx; // pointer to sfx object
+    sfxRequest* next; // next in Q
+    SfxClass* sfx; // pointer to sfx object
 };
 
 // this structire is used for the virtual cockpit instrumentation
 typedef struct
 {
-    Canvas3D *vHUDrenderer;
-    Canvas3D *vRWRrenderer;
-    Canvas3D *vMACHrenderer;
-    Canvas3D *vDEDrenderer;
-    Canvas3D *vPFLrenderer;
+    Canvas3D* vHUDrenderer;
+    Canvas3D* vRWRrenderer;
+    Canvas3D* vMACHrenderer;
+    Canvas3D* vDEDrenderer;
+    Canvas3D* vPFLrenderer;
 } VirtualCockpitInfo;
 
 //Wombat778 10-10-2003 Structure representing a 3d button for the 3d clickable cockpit
@@ -205,8 +208,8 @@ typedef struct
     int sound;
     int mousebutton; //Wombat778 11-7-2003
     int buttonId; //Wombat778 03-06-04
-    int groupId;   // Artscout - 2026: multi-position rotary group (-1 = none); members collapse to one hotspot
-    int groupPos;  // Artscout - 2026: position index within the rotary group (rotary order)
+    int groupId; // Artscout - 2026: multi-position rotary group (-1 = none); members collapse to one hotspot
+    int groupPos; // Artscout - 2026: position index within the rotary group (rotary order)
 } Button3D;
 
 #define MAX_3D_BUTTONS 1000
@@ -217,12 +220,12 @@ typedef struct
     Button3D buttons[MAX_3D_BUTTONS];
     int numbuttons;
     int debugbutton;
-    int clicked;  //Wombat778 10-15-2003 removed clickx and clicky because gxPos and gyPos should do just as well
+    int clicked; //Wombat778 10-15-2003 removed clickx and clicky because gxPos and gyPos should do just as well
 } Button3DListType;
 
 
-void PositandOrientSetData(float x, float y, float z, float pitch, float roll, float yaw,
-                           Tpoint* simView, Trotation* viewRotation);
+void PositandOrientSetData(float x, float y, float z, float pitch, float roll,
+                           float yaw, Tpoint* simView, Trotation* viewRotation);
 
 
 class OTWDriverClass
@@ -236,17 +239,19 @@ public:
     /** updates all server viewpoints. Duplicates are discarded. */
     void UpdateViewpoints();
     /** adds a viewpoint for this session so server can load terrain correctly for it. */
-    void AddViewpoint(FalconSessionEntity *session);
+    void AddViewpoint(FalconSessionEntity* session);
     /** removes the viewpoint for this session. */
-    void RemoveViewpoint(FalconSessionEntity *session);
+    void RemoveViewpoint(FalconSessionEntity* session);
 #else
-    void ServerSetviewPoint(void);//me123 alow the server to set the viewpoint even in ui
+    void ServerSetviewPoint(
+        void);//me123 alow the server to set the viewpoint even in ui
 #endif
 
     void Enter(void); // Called when going from UI to SIM
-    int  Exit(void); // Called when going from SIM to UI
+    int Exit(void); // Called when going from SIM to UI
 
-    void Exec(void); // Main graphics loop (will go away with thread unification)
+    void
+    Exec(void); // Main graphics loop (will go away with thread unification)
     void Cycle(void); // Set up and draw one frame of graphics
 
     void Reset3DParameters(void);
@@ -255,11 +260,20 @@ public:
     // Artscout - 2026: #DX12 п.5 -- the world view-instanced pass for ONE view group/pair (member so it can call
     // VCock_HeadCalc etc.). group = 0 (stereo, or quad periphery) / 1 (quad focus). outSlices = the group's 2
     // single-slice RTVs [4]; outCount = 2 (a group is always a 2-view pass); outW/H = the group's foveated size.
-    void RenderWorldViewInstanced(class RenderOTW* renderer, void* pHeadOrigin, void* pCameraRot,
-                                  int group, void** outSlices, int* outCount, int* outW, int* outH);
+    void RenderWorldViewInstanced(class RenderOTW* renderer, void* pHeadOrigin,
+                                  void* pCameraRot, int group, void** outSlices,
+                                  int* outCount, int* outW, int* outH);
+    // Artscout - 2026 (#107 VR-Vulkan): the whole VR frame in ONE multiview pass -- world + 3D cockpit via
+    // gl_ViewIndex (per-view VI offset/proj), 2D HUD collimated (same both eyes). Renders into VulkanBackend's
+    // N-layer scene array, then blits each layer to its XR image + xrEndFrame (OpenXRBackend::PresentMultiviewVulkan).
+    void RenderVulkanVR(class RenderOTW* renderer, void* pHeadOrigin,
+                        void* pCameraRot, int nViews);
 
 public:
-    enum {NumPopups = 4};
+    enum
+    {
+        NumPopups = 4
+    };
     enum OTWDisplayMode
     {
         ModeNone,
@@ -284,7 +298,8 @@ public:
         ModeCount
     };
 
-    Button3DListType Button3DList; //Wombat778 10-10-2003 list of 3d buttons for clickable cockpit;
+    Button3DListType
+        Button3DList; //Wombat778 10-10-2003 list of 3d buttons for clickable cockpit;
 
     // this function can be used to determine if we're a 1st person or
     // other camera view
@@ -307,15 +322,21 @@ public:
     // the state of the SM by one one (to CLEANUP).
     // In the next frame, the 2d stuff is active again, the drawFrontText()
     // routines reactivates the labels and put the SM into the OFF state. Now (and only now) the user may take
-    // another prettyScreenShot. Yay 
-    enum PrettyScreenShotState { OFF = 0, EXECUTE, CLEANUP } takePrettyScreenShot;
+    // another prettyScreenShot. Yay
+    enum PrettyScreenShotState
+    {
+        OFF = 0,
+        EXECUTE,
+        CLEANUP
+    } takePrettyScreenShot;
     int LabelState;
     // Retro 7-8May2004 end
 
     void SetOTWDisplayMode(OTWDisplayMode);
     OTWDisplayMode GetOTWDisplayMode(void);
     void CleanupDisplayMode(OTWDisplayMode);
-    void SelectDisplayMode(OTWDisplayMode, OTWDisplayMode = ModeNone); //Wombat778 11-17-04
+    void SelectDisplayMode(OTWDisplayMode,
+                           OTWDisplayMode = ModeNone); //Wombat778 11-17-04
     void Select2DCockpitMode(bool = true); //Wombat778 added argument
     void Select3DCockpitMode(void);
     void SelectF3PadlockMode(void);
@@ -326,8 +347,8 @@ public:
 
     float GetGroundLevel(float x, float y, Tpoint* normal = NULL);
     float GetApproxGroundLevel(float x, float y);
-    void GetAreaFloorAndCeiling(float *floor, float *ceiling);
-    int   GetGroundIntersection(euler* dir, vector* point);
+    void GetAreaFloorAndCeiling(float* floor, float* ceiling);
+    int GetGroundIntersection(euler* dir, vector* point);
 
     void SetGraphicsOwnship(SimBaseClass*);
     SimBaseClass* GraphicsOwnship() const
@@ -338,14 +359,14 @@ public:
     {
         return otwTrackPlatform.get();
     }
-    void SetTrackPlatform(SimBaseClass *sb)
+    void SetTrackPlatform(SimBaseClass* sb)
     {
         otwTrackPlatform.reset(sb);
     }
 
     enum ViewFindMode
     {
-        NEXT_AIR_FRIEND  = 0,
+        NEXT_AIR_FRIEND = 0,
         NEXT_GROUND_FRIEND,
         NEXT_AIR_ENEMY,
         NEXT_GROUND_ENEMY,
@@ -355,7 +376,8 @@ public:
         NEXT_WINGMAN,
         NEXT_ENEMY // 2002-02-16 ADDED BY S.G. So we can differentiate from ModeTarget and ModeTargetToSelf to ModeGroundEnemy and ModeAirEnemy. That way, we can restrict ModeGroundEnemy to ground enemy and activate ModeAirEnemy
     };
-    SimBaseClass *FindNextViewObject(FalconEntity *focusObj, SimBaseClass *currObj, ViewFindMode mode);
+    SimBaseClass* FindNextViewObject(FalconEntity* focusObj,
+                                     SimBaseClass* currObj, ViewFindMode mode);
 
     // These functions are the fastest way to manipulate objects on the main graphics thread ONLY
     void InsertObject(DrawableObject*);
@@ -363,8 +385,8 @@ public:
     void AttachObject(DrawableBSP*, DrawableBSP*, int s);
     void DetachObject(DrawableBSP*, DrawableBSP*, int s);
     void TrimTrail(DrawableTrail*, int);
-    void AddTrailHead(DrawableTrail *dTrail, float, float, float);
-    void AddTrailTail(DrawableTrail *dTrail, float, float, float);
+    void AddTrailHead(DrawableTrail* dTrail, float, float, float);
+    void AddTrailTail(DrawableTrail* dTrail, float, float, float);
 
     void AddToLitList(DrawableBSP*);
     void RemoveFromLitList(DrawableBSP*);
@@ -372,11 +394,12 @@ public:
     void FlushNearList(void);
 
     void CreateVisualObject(SimBaseClass*, float newScale = 1.0F);
-    void CreateVisualObject(SimBaseClass*, int, Tpoint *simView, Trotation *viewRotation, float objectScale = 1.0F);
+    void CreateVisualObject(SimBaseClass*, int, Tpoint* simView,
+                            Trotation* viewRotation, float objectScale = 1.0F);
     void CreateVisualObject(SimBaseClass*, int, float newScale = 1.0F);
 
     // add an sfx request
-    void AddSfxRequest(SfxClass *sfxptr);
+    void AddSfxRequest(SfxClass* sfxptr);
 
     void ObjectSetData(SimBaseClass*, Tpoint*, Trotation*);
 
@@ -388,7 +411,7 @@ public:
     ImageBuffer* OTWImage;
     HWND OTWWin;
     RViewPoint* GetViewpoint(void);
-    void InitViewpoint(void);  // JB 010616
+    void InitViewpoint(void); // JB 010616
     void CleanViewpoint(void); // JB 010616
     int headMotion;
     // F4CSECTIONHANDLE* objectCriticalSection;
@@ -405,11 +428,11 @@ public:
         return objectScale;
     };
     float todOffset;
-    void  SetFOV(float horizontalFOV);
+    void SetFOV(float horizontalFOV);
     float GetFOV(void);
-    int CheckLOS(FalconEntity *pt1, FalconEntity *pt2);
-    int CheckCloudLOS(FalconEntity *pt1, FalconEntity *pt2);
-    int CheckCompositLOS(FalconEntity *pt1, FalconEntity *pt2);
+    int CheckLOS(FalconEntity* pt1, FalconEntity* pt2);
+    int CheckCloudLOS(FalconEntity* pt1, FalconEntity* pt2);
+    int CheckCompositLOS(FalconEntity* pt1, FalconEntity* pt2);
     int IsActive(void)
     {
         return isActive;
@@ -431,6 +454,7 @@ public:
     void ScrollMessages();
     void ShowMessage(char* msg);
     void DisplayChatBox(void);
+
 private:
     void DisplayInfoBar(void); // Retro 16Dec2003
     void DrawSubTitles(void); // Retro 16Dec2003
@@ -443,7 +467,7 @@ public:
     void ToggleProfilerActive(void); // Retro 21Dec2003
     bool IsProfilerDisplaying()
     {
-        return DisplayProfiler;    // Retro 21Dec2003
+        return DisplayProfiler; // Retro 21Dec2003
     }
     void DisplayFrontText(void);
     void SetFrontTextFlags(long flags)
@@ -452,7 +476,7 @@ public:
     }
     long GetFrontTextFlags()
     {
-        return(showFrontText);
+        return (showFrontText);
     }
 
 
@@ -465,7 +489,7 @@ public:
     void ViewReset(void);
     void ViewZoomIn(void);
     void ViewZoomOut(void);
-    int  ViewRelativePanTilt(float, float); //Wombat778 10-08-2003
+    int ViewRelativePanTilt(float, float); //Wombat778 10-08-2003
     void NVGToggle(void);
     void IDTagToggle(void);
     void CampTagToggle(void);
@@ -482,7 +506,7 @@ public:
     void ToggleHaze(void);
     void ToggleLocationDisplay(void);
     void ToggleAeroDisplay(void);
-    void ToggleFlapDisplay(void);//TJL 11/09/03 On/Off Flap display
+    void ToggleFlapDisplay(void); //TJL 11/09/03 On/Off Flap display
     void ToggleEngineDisplay(void); // Retro 1Feb2004
     void StartLocationEntry(void);
     void ToggleRoof(void);
@@ -518,7 +542,7 @@ public:
     {
         eyePan = pan, eyeTilt = tilt, eyeHeadRoll = roll;
     };
-    void GetCameraPanTilt(float *pan, float *tilt)
+    void GetCameraPanTilt(float* pan, float* tilt)
     {
         *pan = eyePan, *tilt = eyeTilt;
     }; //Wombat778 3-19-04
@@ -537,10 +561,10 @@ public:
     };
     void ToggleActionCamera(void);
     void RunActionCamera(void);
-    void ToggleThrustReverseDisplay(void);//Cobra
+    void ToggleThrustReverseDisplay(void); //Cobra
 
-    void StartEjectCam(EjectedPilotClass *ejectedPilot, int startChaseMode = 0);
-    void SetEjectCamChaseMode(EjectedPilotClass *ejectedPilot, int chaseMode);
+    void StartEjectCam(EjectedPilotClass* ejectedPilot, int startChaseMode = 0);
+    void SetEjectCamChaseMode(EjectedPilotClass* ejectedPilot, int chaseMode);
     float DistanceFromCloudEdge(void);
     void ExitMenu(unsigned long i);
     void Timeout(void);
@@ -566,7 +590,6 @@ public:
 
         if (z + 50.0f > Z)
             endFlightPoint.z = Z - 50.0f;
-
     }
 
     void SetEndFlightVec(float x, float y, float z)
@@ -584,14 +607,14 @@ public:
 
 private:
     // Require to keep track of things that need time of day updates
-    drawPtrList *litObjectRoot;
+    drawPtrList* litObjectRoot;
 
     // Required to keep track of the special case drawables which are closer than our object of interest
-    drawPtrList *nearObjectRoot;
+    drawPtrList* nearObjectRoot;
 
     // special effects stuff
-    sfxRequest *sfxRequestRoot;
-    sfxRequest *sfxActiveRoot;
+    sfxRequest* sfxRequestRoot;
+    sfxRequest* sfxActiveRoot;
 
     float initialTilt;
     float snapDir;
@@ -600,7 +623,7 @@ private:
     int popupHas[NumPopups];
     int otwResolution;
     Tpoint ownshipPos;
-    float viewTiltForMask;//, hudHalfAngle[2];
+    float viewTiltForMask; //, hudHalfAngle[2];
     float objectScale;
     void RemoveObjectFromDrawList(SimBaseClass*);
     void FindNewOwnship(void);
@@ -629,11 +652,13 @@ private:
     };
 
     CamDisplacement *xDir, *yDir, *zDir;
-    float cameraDisplacementRate; // this should be a const actually, but I dunno how to change it..
+    float
+        cameraDisplacementRate; // this should be a const actually, but I dunno how to change it..
 
     void DisplaceTheCamera(float dT); // Retro 23Dec2003
     void ReInitDisplacement(CamDisplacement* theDisp); // Retro 23Dec2003
     bool displaceCamera;
+
 public:
     void toggleDisplaceCamera(void); // Retro 23Dec2003
     Tpoint OTWDriverClass::GetEyePosition(void); // COBRA - RED -
@@ -641,9 +666,9 @@ public:
 private:
     // Retro 23Dec2003 End
     void UpdateVehicleDrawables(void);
-    static void TimeUpdateCallback(void *self);
+    static void TimeUpdateCallback(void* self);
     void UpdateAllLitObjects(void);
-    void UpdateOneLitObject(drawPtrList *entry, float lightLevel);
+    void UpdateOneLitObject(drawPtrList* entry, float lightLevel);
     void BuildExternalNearList(void);
 
     void DrawIDTags(void);
@@ -663,9 +688,7 @@ private:
     void CreateWeaponObjects(void);
     void DrawExitMenu(void);
     RViewPoint* viewPoint;
-    void ShowThrustReverse(void);//Cobra
-
-
+    void ShowThrustReverse(void); //Cobra
 
 
     int isActive;
@@ -699,10 +722,10 @@ private:
     float elDir;
     float slewRate;
     Tpoint chaseCamPos; // desired position for chase Camera
-    float  chaseCamRoll; // current roll for chase camera
+    float chaseCamRoll; // current roll for chase camera
 
     void DrawTracers(void);
-    float currentFPS;//Cobra
+    float currentFPS; //Cobra
 
 private:
     OTWDisplayMode mOTWDisplayMode;
@@ -720,7 +743,8 @@ private:
     FalconEntity* flyingEye;
     long showFrontText; // flags for drawing text in front of EVERYTHING else
     VU_TIME textTimeLeft[MAX_CHAT_LINES];
-    char textMessage[MAX_CHAT_LINES][MAX_CHAT_LENGTH]; // 5 lines MAX... before scrolling up
+    char textMessage[MAX_CHAT_LINES]
+                    [MAX_CHAT_LENGTH]; // 5 lines MAX... before scrolling up
     float e1;
     float e2;
     float e3;
@@ -731,14 +755,15 @@ private:
 public:
     Tpoint cameraPos;
     Trotation cameraRot;
-    Tpoint cameraVel;  // MLR 12/1/2003 - Needed in sound code for listener velocity
+    Tpoint
+        cameraVel; // MLR 12/1/2003 - Needed in sound code for listener velocity
     float GetFPS()
     {
         return (currentFPS);
-    };//Cobra
+    }; //Cobra
 
 private:
-    Tpoint pilotEyePos;  // MLR 12/1/2003 - Support placement of pilots skull
+    Tpoint pilotEyePos; // MLR 12/1/2003 - Support placement of pilots skull
 
     bool SkipSwap; // RED - Skip swapping, this is 1st frame...
     // these vars are used when the sim is ending
@@ -763,7 +788,6 @@ public:
     int GetHybridPitMode();
 
 private:
-
     //Wombat778 end
     BOOL drawInfoBar; // Retro 16Dec2003
     BOOL drawSubTitles; // Retro 16Dec2003
@@ -801,7 +825,6 @@ public:
     //
 
 private:
-
     //JAM 10May04
     BOOL bVCockZBuffering;
 
@@ -826,15 +849,32 @@ private:
     void CalculateHeadRoll(float, Tpoint*, Tpoint*, Tpoint*);
     void BuildHeadMatrix(int, int, float, float, float);
 
-public :
-
+public:
     // ---------------------------------
     // Padlocking Enums
     // ---------------------------------
-    enum PadlockPriority {PriorityNone, PriorityAA, PriorityAG, PriorityMissile};
+    enum PadlockPriority
+    {
+        PriorityNone,
+        PriorityAA,
+        PriorityAG,
+        PriorityMissile
+    };
+
 private:
-    enum GlanceDirection {GlanceNone, GlanceNose, GlanceTail};
-    enum SnapStatus {PRESNAP, TRACKING, SNAPPING, POSTSNAP};
+    enum GlanceDirection
+    {
+        GlanceNone,
+        GlanceNose,
+        GlanceTail
+    };
+    enum SnapStatus
+    {
+        PRESNAP,
+        TRACKING,
+        SNAPPING,
+        POSTSNAP
+    };
     //
 
     // ---------------------------------
@@ -847,10 +887,11 @@ private:
 
 public:
     SimBaseClass* mpPadlockPriorityObject;
-    SimObjectType* simObjectPtr; // moved from function into the class - used to check if pilot can "see" the padlocked object
+    SimObjectType*
+        simObjectPtr; // moved from function into the class - used to check if pilot can "see" the padlocked object
 
 private:
-    VU_ID             mPadlockCandidateID;
+    VU_ID mPadlockCandidateID;
     float mPadlockTimeout;
     float mTDTimeout;
     float PadlockOccludedTime;
@@ -861,7 +902,6 @@ private:
     BOOL mObjectOccluded;
 
 public:
-
     // ---------------------------------
     // General Padlocking Routines
     // ---------------------------------
@@ -880,7 +920,8 @@ private:
     void Padlock_FindEnhancedPriority(BOOL);
 
     BOOL Padlock_ConsiderThisObject(SimBaseClass*, BOOL, float, float, float);
-    BOOL Padlock_DetermineRelativePriority(SimBaseClass*, float, BOOL, SimBaseClass*, float, BOOL);
+    BOOL Padlock_DetermineRelativePriority(SimBaseClass*, float, BOOL,
+                                           SimBaseClass*, float, BOOL);
     void Padlock_CheckPadlock(float);
     BOOL Padlock_CheckOcclusion(float, float);
     int Padlock_RankAGPriority(SimBaseClass*, BOOL);
@@ -936,15 +977,17 @@ private:
     // ---------------------------------
 
 
-    int  PadlockF3_SlewCamera(float, float, float, float, float, float, float);
-    int  PadlockF3_SlamCamera(float*, float, float*, float*, float, float*, float, float, float);
+    int PadlockF3_SlewCamera(float, float, float, float, float, float, float);
+    int PadlockF3_SlamCamera(float*, float, float*, float*, float, float*,
+                             float, float, float);
 
     // 2000-11-13 MODIFIED BY S.G. NOW RETURNS AN INT
     //void PadlockF3_SetCamera (float);
     int PadlockF3_SetCamera(float);
     void PadlockF3_InitSidebar(void);
     void PadlockF3_DrawSidebar(float, float, float, RenderOTW*);
-    void PadlockF3_MapAnglesToSidebar(float, float, float, float, float*, float*);
+    void PadlockF3_MapAnglesToSidebar(float, float, float, float, float*,
+                                      float*);
     void PadlockF3_CalcCamera(float);
     void PadlockF3_Draw(void);
 
@@ -952,7 +995,8 @@ private:
     // EFOV Padlock Functions
     // ---------------------------------
     void PadlockEFOV_Draw(void);
-    void PadlockEFOV_DrawBox(SimBaseClass*, float, float, float, float, float, float);
+    void PadlockEFOV_DrawBox(SimBaseClass*, float, float, float, float, float,
+                             float);
 
     // ---------------------------------
     // Virtual Cockpit variables
@@ -966,8 +1010,9 @@ private:
     Render2D* vPFLrenderer; // ASSO:
 
     DrawableBSP* vrCockpit;
-    int vrCockpitModel[4]; // the models to use. cockpit, df cockpit, f15, damaged f16
-    int                  mUseHeadTracking;
+    int vrCockpitModel
+        [4]; // the models to use. cockpit, df cockpit, f15, damaged f16
+    int mUseHeadTracking;
     std::vector<VDial*> mpVDials;
     long liftlinecolor;
 
@@ -979,15 +1024,21 @@ private:
     void VCock_RunNormalMotion(float);
     void VCock_CheckStopStates(float);
     void VCock_DrawThePit(void);
-    void VCock_DrawControllerModel(void);   // Artscout - 2026 (VR): controller mesh into the pit poly-list
+    void VCock_DrawControllerModel(
+        void); // Artscout - 2026 (VR): controller mesh into the pit poly-list
     void VCock_HeadCalc(void);
     void VCock_Exec(void);
     void VCock_Cleanup(void);
-    void VCock_ParseVDial(FILE *fp);
+    void VCock_ParseVDial(FILE* fp);
     bool VCock_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR);
-    bool VCock_SetCanvas(char **plinePtr, Canvas3D **canvaspp); // ASSO: old cancas
-    bool VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp, int dev); // ASSO: new RTT canvas
-    float MoveByRate(float oldval, float newval, float rate); //ATARIBABY move to target value by defined rate (Borrowed MOVEDOF from surface.cpp);
+    bool VCock_SetCanvas(char** plinePtr,
+                         Canvas3D** canvaspp); // ASSO: old cancas
+    bool VCock_SetRttCanvas(char** plinePtr, Render2D** canvaspp,
+                            int dev); // ASSO: new RTT canvas
+    float MoveByRate(
+        float oldval, float newval,
+        float
+            rate); //ATARIBABY move to target value by defined rate (Borrowed MOVEDOF from surface.cpp);
 
     Tpoint PitTurbulence;
     DWORD BigLoadTimeOut;
@@ -996,7 +1047,7 @@ private:
     // ---------------------------------
 
 public:
-    DrawableBSP *GetVirtualCockpit()
+    DrawableBSP* GetVirtualCockpit()
     {
         return vrCockpit;
     }
@@ -1021,14 +1072,13 @@ public:
     bool Button3D_Init(int eCPVisType, TCHAR* eCPName, TCHAR* eCPNameNCTR);
 
 
-
     // ---------------------------------
     // Splash Screen Stuff
     // ---------------------------------
     void SetupSplashScreen(void);
     void CleanupSplashScreen(void);
     void SplashScreenUpdate(int frame);
-    void ShowSimpleWaitScreen(char *name);
+    void ShowSimpleWaitScreen(char* name);
 
 private:
     F4CSECTIONHANDLE* cs_update; // JB 010616
@@ -1036,20 +1086,18 @@ private:
 
 #if NEW_SERVER_VIEWPOINT
     // mutex for viewpoint map
-    F4CSECTIONHANDLE *vmMutex;
+    F4CSECTIONHANDLE* vmMutex;
     /** sfr: these are the viewpoints a server must keep for all players which are ingame so it
     * can load terrain stuff and make ground computations correctly
     */
-    std::map < VuBin<FalconSessionEntity>, TViewPoint*> viewpointMap;
+    std::map<VuBin<FalconSessionEntity>, TViewPoint*> viewpointMap;
 #endif
 
 
 public:
-    int GetGroundType(float x, float y);   // JB 010616
+    int GetGroundType(float x, float y); // JB 010616
     void CockAttachWeapons(void);
     void CockDetachWeapons(void);
-
-
 };
 
 extern OTWDriverClass OTWDriver;

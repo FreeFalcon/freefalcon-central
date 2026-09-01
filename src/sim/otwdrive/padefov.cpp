@@ -14,10 +14,10 @@
 //
 // ------------------------------------------------------------------------------
 
-#include "Graphics/Include/grtypes.h"
-#include "Graphics/Include/drawbsp.h"
-#include "Graphics/Include/drawpnt.h"
-#include "Graphics/Include/renderow.h"
+#include "graphics/include/grtypes.h"
+#include "graphics/include/drawbsp.h"
+#include "graphics/include/drawpnt.h"
+#include "graphics/include/renderow.h"
 #include "vehicle.h"
 #include "simmover.h"
 #include "stdhdr.h"
@@ -26,7 +26,7 @@
 #include "playerop.h"
 #include "simdrive.h"
 #include "aircrft.h"
-#include "FalcLib/include/dispopts.h"
+#include "falclib/include/dispopts.h"
 
 // ------------------------------------------------------------------------------
 //
@@ -50,7 +50,7 @@
 
 void OTWDriverClass::PadlockEFOV_Draw(void)
 {
-    SimObjectType* visObj = NULL;
+    SimObjectType *visObj = NULL;
     // int tmpTexLevel=0;
     int tmpObjTex = 0;
     // int tmpShade=0;
@@ -73,7 +73,7 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     }
 
     // Get the head of the target list.
-    visObj = ((SimMoverClass*)otwPlatform.get())->targetList;
+    visObj = ((SimMoverClass *)otwPlatform.get())->targetList;
 
     // Walk the target list and search for the padlock priority object
     while (visObj not_eq NULL and found == FALSE)
@@ -97,9 +97,9 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     // we'll have to calculate the angles ourselves.
     if (visObj == NULL and mpPadlockPriorityObject)
     {
-        CalcRelValues((SimBaseClass*) SimDriver.GetPlayerAircraft(),
-                      mpPadlockPriorityObject,
-                      &az, &el, &ata, &ataFrom, &droll);
+        CalcRelValues((SimBaseClass *)SimDriver.GetPlayerAircraft(),
+                      mpPadlockPriorityObject, &az, &el, &ata, &ataFrom,
+                      &droll);
         found = TRUE;
     }
 
@@ -110,7 +110,8 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
     viewDelta = (tmpFov * 0.5F) - viewLimit;
 
     // If I have something to draw and it's off screen
-    if (found == TRUE and (ata > viewLimit + viewDelta * (float)sin(fabs(droll))))
+    if (found == TRUE and
+        (ata > viewLimit + viewDelta * (float)sin(fabs(droll))))
     {
         if (PlayerOptions.GetPadlockMode() == PDRealistic)
         {
@@ -132,7 +133,8 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
         // Draw the contents of the Padlock window
         if (mpPadlockPriorityObject and mpPadlockPriorityObject->IsSim())
         {
-            PadlockEFOV_DrawBox(mpPadlockPriorityObject, efovBoxSize, az, el, ata, ataFrom, droll);
+            PadlockEFOV_DrawBox(mpPadlockPriorityObject, efovBoxSize, az, el,
+                                ata, ataFrom, droll);
         }
 
         // Restore the renderer's original settings
@@ -146,7 +148,6 @@ void OTWDriverClass::PadlockEFOV_Draw(void)
         renderer->SetViewport(-1.0F, 1.0F, 1.0F, -1.0F);
         Padlock_DrawSquares(TRUE);
     }
-
 }
 
 #if 0
@@ -241,7 +242,6 @@ void OTWDriverClass::PadlockEFOV_EasyDraw(void)
 //**//
 
 
-
 // ------------------------------------------------------------------------------
 //
 // OTWDriverClass::PadlockEFOV_DrawBox()
@@ -256,10 +256,9 @@ void OTWDriverClass::PadlockEFOV_EasyDraw(void)
 // display it into a viewport, and draw visual cues (arrow) for the play.
 // ------------------------------------------------------------------------------
 
-void OTWDriverClass::PadlockEFOV_DrawBox(
-    SimBaseClass* base,
-    float efovBoxSize, float az, float el, float ata, float ataFrom, float droll
-)
+void OTWDriverClass::PadlockEFOV_DrawBox(SimBaseClass *base, float efovBoxSize,
+                                         float az, float el, float ata,
+                                         float ataFrom, float droll)
 {
     char tmpStr[32];
     float xPos, yPos;
@@ -323,7 +322,8 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
     MatrixMult(&viewRotation, &tilt, &view);
     memcpy(&viewRotation, &view, sizeof(view));
 
-    renderer->SetViewport(xPos - efovBoxSize, yPos + efovBoxSize, xPos + efovBoxSize, yPos - efovBoxSize);
+    renderer->SetViewport(xPos - efovBoxSize, yPos + efovBoxSize,
+                          xPos + efovBoxSize, yPos - efovBoxSize);
 
     simLabelState = DrawableBSP::drawLabels;
     campLabelState = DrawablePoint::drawLabels;
@@ -345,14 +345,15 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
 
     renderer->SetColor(0xff00ff00);
 
-    renderer->Line(-0.97F, -0.97F, -0.97F,  1.00F);
-    renderer->Line(-0.97F, -0.97F,  1.00F, -0.97F);
-    renderer->Line(1.00F,  1.00F, -0.97F,  1.00F);
-    renderer->Line(1.00F,  1.00F,  1.00F, -0.97F);
+    renderer->Line(-0.97F, -0.97F, -0.97F, 1.00F);
+    renderer->Line(-0.97F, -0.97F, 1.00F, -0.97F);
+    renderer->Line(1.00F, 1.00F, -0.97F, 1.00F);
+    renderer->Line(1.00F, 1.00F, 1.00F, -0.97F);
 
     renderer->Line(0.9F, -1.0F + 2.0F * ata / PI, 0.9F, -1.0F);
-    renderer->Line(0.85F, -1.0F + 2.0F * viewLimit / PI, 0.95F, -1.0F + 2.0F * viewLimit / PI);
-    renderer->Line(-0.9F,  1.0F - 2.0F * ataFrom / PI, -0.9F, 1.0F);
+    renderer->Line(0.85F, -1.0F + 2.0F * viewLimit / PI, 0.95F,
+                   -1.0F + 2.0F * viewLimit / PI);
+    renderer->Line(-0.9F, 1.0F - 2.0F * ataFrom / PI, -0.9F, 1.0F);
 
     // Add the tag if needed
     if (PlayerOptions.NameTagsOn())
@@ -381,7 +382,7 @@ void OTWDriverClass::PadlockEFOV_DrawBox(
 
         renderer->SetFOV(prevFOV);
         renderer->SetViewport(prevLeft, prevTop, prevRight, prevBottom);
-        renderer->SetCamera((struct Tpoint *) &pos, (struct Trotation *) &cameraRot);
+        renderer->SetCamera((struct Tpoint *)&pos,
+                            (struct Trotation *)&cameraRot);
     }
 }
-

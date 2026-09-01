@@ -11,7 +11,17 @@
 #ifndef _F4FIND_H
 #define _F4FIND_H
 
-#define FALCON_REGISTRY_KEY       "Software\\MicroProse\\Falcon\\4.0"
+// This header sizes every array below with _MAX_PATH yet included nothing that defines it, relying on each includer
+// to have pulled <stdlib.h> (its MSVC home) beforehand. dispopts.cpp does not, so it broke here. <stdlib.h> is the
+// honest include on Windows and is now stated rather than assumed; _MAX_PATH is an MSVC CRT extension, so glibc's
+// <stdlib.h> does not carry it and the shim keeps it with the other Win32 basics -- hence the guarded fallback,
+// which leaves the Windows include graph exactly as it was.
+#include <stdlib.h>
+#ifndef _MAX_PATH
+#include <windows.h>
+#endif
+
+#define FALCON_REGISTRY_KEY "Software\\MicroProse\\Falcon\\4.0"
 
 extern char FalconDataDirectory[_MAX_PATH];
 extern char FalconTerrainDataDir[_MAX_PATH];
@@ -21,19 +31,20 @@ extern char FalconMiscTexDataDir[_MAX_PATH];
 extern char FalconCampaignSaveDirectory[_MAX_PATH];
 extern char FalconCampUserSaveDirectory[_MAX_PATH];
 
-extern char* F4FindFile(char filename[], char *buffer, int bufLen, int *offset, int *len);
+extern char* F4FindFile(char filename[], char* buffer, int bufLen, int* offset,
+                        int* len);
 
 extern FILE* F4CreateFile(char* filename, char* path, char* mode);
 
-extern FILE* F4OpenFile(char *filename, char *mode);
+extern FILE* F4OpenFile(char* filename, char* mode);
 
-extern int F4ReadFile(FILE *fp, void *buffer, int size);
+extern int F4ReadFile(FILE* fp, void* buffer, int size);
 
-extern int F4WriteFile(FILE *fp, void *buffer, int size);
+extern int F4WriteFile(FILE* fp, void* buffer, int size);
 
-extern int F4CloseFile(FILE *fp);
+extern int F4CloseFile(FILE* fp);
 
-extern char* F4ExtractPath(char *path);
+extern char* F4ExtractPath(char* path);
 
 extern int F4LoadData(char filename[], void* buffer, int length);
 
@@ -48,5 +59,3 @@ extern char* F4LoadDataID(char filename[], int dataID, char* buffer);
 extern int F4GetRegistryString(char* keyName, char* dataPtr, int dataSize);
 
 #endif
-
-

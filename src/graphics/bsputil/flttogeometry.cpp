@@ -8,18 +8,18 @@
 \***************************************************************************/
 #include <stdlib.h>
 #include <math.h>
-#include <MgAPIall.h>
-#include "shi/ShiError.h"
-#include "StateStack.h"
-#include "ObjectParent.h"
-#include "PosBuildList.h"
-#include "ColorBuildList.h"
-#include "TexBuildList.h"
-#include "AlphaPatch.h"
-#include "DynamicPatch.h"
-#include "ScriptNames.h"
-#include "FLTreader.h"
-#include "FLTerror.h"
+#include <mgapiall.h>
+#include "shi/shierror.h"
+#include "statestack.h"
+#include "objectparent.h"
+#include "posbuildlist.h"
+#include "colorbuildlist.h"
+#include "texbuildlist.h"
+#include "alphapatch.h"
+#include "dynamicpatch.h"
+#include "scriptnames.h"
+#include "fltreader.h"
+#include "flterror.h"
 
 
 // Build time stamp for versioning info
@@ -68,8 +68,8 @@ static int ScriptNumber;
 
 
 // Default record processing function (switches out to appropriate type specific calls as required)
-BNode* ProcessRecord(mgrec *rec);
-BNode* ProcessAllChildren(mgrec *rec);
+BNode *ProcessRecord(mgrec *rec);
+BNode *ProcessAllChildren(mgrec *rec);
 
 
 void StartSubObject(Pmatrix *R, Ppoint *T)
@@ -89,7 +89,7 @@ void StartSubObject(Pmatrix *R, Ppoint *T)
 
     PosPool = new BuildTimePosList;
 
-    NormalArray    += NormalCnt;
+    NormalArray += NormalCnt;
     NormalCnt = 0;
 
     // Now put the new coordinate system into effect (if one was provided)
@@ -130,8 +130,7 @@ int AddNormalToTable(float i, float j, float k)
     // See if we've already got a matching normal to share
     for (index = 0; index < NormalCnt; index++)
     {
-        if ((i == NormalArray[index].i) &&
-            (j == NormalArray[index].j) &&
+        if ((i == NormalArray[index].i) && (j == NormalArray[index].j) &&
             (k == NormalArray[index].k))
         {
             return index;
@@ -199,53 +198,56 @@ void ProcessHeaderCommentFlags(void)
         }
 
         // Convert the tag to an uppercase DWORD for decision making
-        tagVal = (toupper(tag[0]) << 24) | (toupper(tag[1]) << 16) | (toupper(tag[2]) << 8) | (toupper(tag[3]));
+        tagVal = (toupper(tag[0]) << 24) | (toupper(tag[1]) << 16) |
+                 (toupper(tag[2]) << 8) | (toupper(tag[3]));
 
         // Now handle the various special tags
         switch (tagVal)
         {
-            case 'DARK':
-                // printf( "  Flag: Prelit colors\n" );
-                PrelightColors = TRUE;
-                break;
+        case 'DARK':
+            // printf( "  Flag: Prelit colors\n" );
+            PrelightColors = TRUE;
+            break;
 
-            case 'PERS':
-                // printf( "  Flag: Force perspective correction\n" );
-                ObjectFlags = ObjectLOD::PERSP_CORR;
-                break;
+        case 'PERS':
+            // printf( "  Flag: Force perspective correction\n" );
+            ObjectFlags = ObjectLOD::PERSP_CORR;
+            break;
 
-            case 'VERT':
-                // printf( "  Flag: Vertex alpha patch %s\n", arg );
-                TheAlphaPatchList.Load(arg);
-                break;
+        case 'VERT':
+            // printf( "  Flag: Vertex alpha patch %s\n", arg );
+            TheAlphaPatchList.Load(arg);
+            break;
 
-            case 'DYNA':
-                // printf( "  Flag: Dynamic vertex list %s\n", arg );
-                TheDynamicPatchList.Load(arg);
-                break;
+        case 'DYNA':
+            // printf( "  Flag: Dynamic vertex list %s\n", arg );
+            TheDynamicPatchList.Load(arg);
+            break;
 
-            case 'TEXT':
-                argVal = atoi(arg);
-                // printf( "  Flag: Texture set count %d\n", argVal );
-                nTextureSets = argVal;
-                break;
+        case 'TEXT':
+            argVal = atoi(arg);
+            // printf( "  Flag: Texture set count %d\n", argVal );
+            nTextureSets = argVal;
+            break;
 
-            case 'ANIM':
-                if (ScriptNumber < 0)
-                {
-                    argVal = GetScriptNumberFromName(arg);
-                    // printf( "  Flag: Animation script %s = index %0d\n", arg, argVal );
-                    ScriptNumber = argVal;
-                }
-                else
-                {
-                    printf("TOO MANY SCRIPTS!  Only one script allowed per object. %s skipped.\n", arg);
-                }
+        case 'ANIM':
+            if (ScriptNumber < 0)
+            {
+                argVal = GetScriptNumberFromName(arg);
+                // printf( "  Flag: Animation script %s = index %0d\n", arg, argVal );
+                ScriptNumber = argVal;
+            }
+            else
+            {
+                printf("TOO MANY SCRIPTS!  Only one script allowed per object. "
+                       "%s skipped.\n",
+                       arg);
+            }
 
-                break;
+            break;
 
-            default:
-                printf("I don't understand header flag %s -- IGNORED\n", tag);
+        default:
+            printf("I don't understand header flag %s -- IGNORED\n", tag);
         }
 
         // Advance to the next line
@@ -265,7 +267,8 @@ void ProcessTexturePalette(void)
     char ext[_MAX_EXT];
 
     // Clear out the tex ID array construction buffer
-    for (textureIndex = 0; textureIndex < MAX_TEXTURES_PER_OBJECT; textureIndex++)
+    for (textureIndex = 0; textureIndex < MAX_TEXTURES_PER_OBJECT;
+         textureIndex++)
     {
         TexIDArray[textureIndex] = -1;
     }
@@ -291,19 +294,20 @@ void ProcessTexturePalette(void)
             // Put this texture into our global pool and point our mapping table to it
             if (textureIndex < MAX_TEXTURES_PER_OBJECT)
             {
-                TexIDArray[textureIndex] = TheTextureBuildList.AddReference(textureName);
+                TexIDArray[textureIndex] =
+                    TheTextureBuildList.AddReference(textureName);
                 TexIDCnt = max(TexIDCnt, textureIndex + 1);
             }
             else
             {
                 char string[80];
-                sprintf(string, "Texture index %d exceeds (arbitrary) max %d", textureIndex, MAX_TEXTURES_PER_OBJECT - 1);
+                sprintf(string, "Texture index %d exceeds (arbitrary) max %d",
+                        textureIndex, MAX_TEXTURES_PER_OBJECT - 1);
                 ShiAssert(strlen(string) < sizeof(string));
                 FLTwarning(db, string);
             }
 
-        }
-        while (mgGetNextTexture(db, &textureIndex, texturePath));
+        } while (mgGetNextTexture(db, &textureIndex, texturePath));
     }
 
     // Make a pass through the texture id array to ensure the texture sets will work out
@@ -316,10 +320,11 @@ void ProcessTexturePalette(void)
 
             // Can't even start since the math doesn't work out
             char string[80];
-            sprintf(string, "Bad texture sets.  Requested %0d sets out of %0d ids.", nTextureSets, TexIDCnt);
+            sprintf(string,
+                    "Bad texture sets.  Requested %0d sets out of %0d ids.",
+                    nTextureSets, TexIDCnt);
             FLTwarning(db, string);
             nTextureSets = 1;
-
         }
         else
         {
@@ -334,9 +339,13 @@ void ProcessTexturePalette(void)
                         if (TexIDArray[set * texturesPerSet + i] < 0)
                         {
                             char string[80];
-                            sprintf(string, "Bad texture set.  Set %0d, texture %0d is missing (MG id %0d).", set, i, set * texturesPerSet + i);
+                            sprintf(string,
+                                    "Bad texture set.  Set %0d, texture %0d is "
+                                    "missing (MG id %0d).",
+                                    set, i, set * texturesPerSet + i);
                             FLTwarning(db, string);
-                            TexIDArray[set * texturesPerSet + i] = TexIDArray[i];
+                            TexIDArray[set * texturesPerSet + i] =
+                                TexIDArray[i];
                         }
                     }
                 }
@@ -346,7 +355,8 @@ void ProcessTexturePalette(void)
 }
 
 
-void ProcessVertex(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv, Pcolor polyColor, BOOL *Aflag)
+void ProcessVertex(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv,
+                   Pcolor polyColor, BOOL *Aflag)
 {
     int retval;
 
@@ -393,7 +403,8 @@ void ProcessVertex(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv, Pcolo
     // If we'ge got local coordinates in effect, transform the point into them
     if (LocalCoords)
     {
-        Ppoint p = { local.x + Translation.x, local.y + Translation.y, local.z + Translation.z };
+        Ppoint p = {local.x + Translation.x, local.y + Translation.y,
+                    local.z + Translation.z};
         Ppoint l;
 
         MatrixMult(&Rotation, &p, &l);
@@ -466,22 +477,22 @@ void ProcessVertex(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv, Pcolo
         if (retval == MG_TRUE)
         {
             // Make ajustments to get from (Y front, X right, Z up) into (X front, Y right, Z down)
-            local.i =  j;
-            local.j =  i;
+            local.i = j;
+            local.j = i;
             local.k = -k;
         }
         else
         {
             FLTwarning(rec, "Failed to get vertex normal");
-            local.i =  0.0f;
-            local.j =  0.0f;
+            local.i = 0.0f;
+            local.j = 0.0f;
             local.k = -1.0f;
         }
 
         // If we'ge got local coordinates in effect, transform the vector into them
         if (LocalCoords)
         {
-            Ppoint p = { local.i, local.j, local.k };
+            Ppoint p = {local.i, local.j, local.k};
             Ppoint l;
 
             MatrixMult(&Rotation, &p, &l);
@@ -519,7 +530,8 @@ void ProcessVertex(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv, Pcolo
 }
 
 
-int ProcessAllVerts(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv, Pcolor polyColor, BOOL *Aflag)
+int ProcessAllVerts(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv,
+                    Pcolor polyColor, BOOL *Aflag)
 {
     mgrec *child;
     int vertCount = 0;
@@ -534,11 +546,14 @@ int ProcessAllVerts(mgrec *rec, int *xyz, int *rgba, int *I, Ptexcoord *uv, Pcol
             ProcessVertex(child, xyz, rgba, I, uv, polyColor, Aflag);
             xyz++;
 
-            if (rgba) rgba++;
+            if (rgba)
+                rgba++;
 
-            if (I) I++;
+            if (I)
+                I++;
 
-            if (uv) uv++;
+            if (uv)
+                uv++;
 
             vertCount++;
         }
@@ -577,7 +592,8 @@ void GetPrimitiveColor(mgrec *rec, Pcolor *color, BOOL *Aflag)
         }
         else
         {
-            retval = mgGetNormColor(matRec, fltDiffuse, &color->r, &color->g, &color->b);
+            retval = mgGetNormColor(matRec, fltDiffuse, &color->r, &color->g,
+                                    &color->b);
 
             if (retval != MG_TRUE)
             {
@@ -643,7 +659,8 @@ void GetPrimitiveColor(mgrec *rec, Pcolor *color, BOOL *Aflag)
 }
 
 
-void GetPrimitiveLightingAndTexture(mgrec *rec, unsigned char *lightMode, short *texIndex)
+void GetPrimitiveLightingAndTexture(mgrec *rec, unsigned char *lightMode,
+                                    short *texIndex)
 {
     DWORD retval;
 
@@ -737,49 +754,51 @@ Poly *ReversePoly(Poly *poly)
     // Construct the proper type of copy
     switch (poly->type)
     {
-        case FL:
-        case AFL:
-            p = new PolyFCN;
-            TheColorBuildList.AddReference(&((PolyFCN*)p)->rgba, &((PolyFCN*)poly)->rgba);
-            N = &NormalArray[((PolyFCN*)poly)->I];
-            ((PolyFCN*)p)->I = AddNormalToTable(-N->i, -N->j, -N->k);
-            break;
+    case FL:
+    case AFL:
+        p = new PolyFCN;
+        TheColorBuildList.AddReference(&((PolyFCN *)p)->rgba,
+                                       &((PolyFCN *)poly)->rgba);
+        N = &NormalArray[((PolyFCN *)poly)->I];
+        ((PolyFCN *)p)->I = AddNormalToTable(-N->i, -N->j, -N->k);
+        break;
 
-        case GL:
-        case AGL:
-            p = new PolyVCN;
-            ((PolyVCN*)p)->rgba = ((PolyVCN*)poly)->rgba;
-            ((PolyVCN*)p)->I = I = new int[nVerts];
-            ISrc = ((PolyVCN*)poly)->I;
-            break;
+    case GL:
+    case AGL:
+        p = new PolyVCN;
+        ((PolyVCN *)p)->rgba = ((PolyVCN *)poly)->rgba;
+        ((PolyVCN *)p)->I = I = new int[nVerts];
+        ISrc = ((PolyVCN *)poly)->I;
+        break;
 
-        case TexL:
-        case ATexL:
-        case CTexL:
-        case CATexL:
-            p = new PolyTexFCN;
-            TheColorBuildList.AddReference(&((PolyTexFCN*)p)->rgba, &((PolyTexFCN*)poly)->rgba);
-            ((PolyTexFCN*)p)->texIndex = ((PolyTexFCN*)poly)->texIndex;
-            ((PolyTexFCN*)p)->uv = ((PolyTexVCN*)poly)->uv;
-            N = &NormalArray[((PolyTexFCN*)poly)->I];
-            ((PolyTexFCN*)p)->I = AddNormalToTable(-N->i, -N->j, -N->k);
-            break;
+    case TexL:
+    case ATexL:
+    case CTexL:
+    case CATexL:
+        p = new PolyTexFCN;
+        TheColorBuildList.AddReference(&((PolyTexFCN *)p)->rgba,
+                                       &((PolyTexFCN *)poly)->rgba);
+        ((PolyTexFCN *)p)->texIndex = ((PolyTexFCN *)poly)->texIndex;
+        ((PolyTexFCN *)p)->uv = ((PolyTexVCN *)poly)->uv;
+        N = &NormalArray[((PolyTexFCN *)poly)->I];
+        ((PolyTexFCN *)p)->I = AddNormalToTable(-N->i, -N->j, -N->k);
+        break;
 
-        case TexGL:
-        case ATexGL:
-        case CTexGL:
-        case CATexGL:
-            p = new PolyTexVCN;
-            ((PolyTexVCN*)p)->texIndex = ((PolyTexVCN*)poly)->texIndex;
-            ((PolyTexVCN*)p)->rgba = ((PolyTexVCN*)poly)->rgba;
-            ((PolyTexVCN*)p)->uv = ((PolyTexVCN*)poly)->uv;
-            ((PolyTexVCN*)p)->I = I = new int[nVerts];
-            ISrc = ((PolyTexVCN*)poly)->I;
-            break;
+    case TexGL:
+    case ATexGL:
+    case CTexGL:
+    case CATexGL:
+        p = new PolyTexVCN;
+        ((PolyTexVCN *)p)->texIndex = ((PolyTexVCN *)poly)->texIndex;
+        ((PolyTexVCN *)p)->rgba = ((PolyTexVCN *)poly)->rgba;
+        ((PolyTexVCN *)p)->uv = ((PolyTexVCN *)poly)->uv;
+        ((PolyTexVCN *)p)->I = I = new int[nVerts];
+        ISrc = ((PolyTexVCN *)poly)->I;
+        break;
 
-        default:
-            FLTwarning(db, "Code error.  Tried to reverse an unhandled polygon");
-            return NULL;
+    default:
+        FLTwarning(db, "Code error.  Tried to reverse an unhandled polygon");
+        return NULL;
     }
 
     // Copy the standard polygon info
@@ -807,7 +826,7 @@ Poly *ReversePoly(Poly *poly)
 }
 
 
-BNode* ProcessSlot(mgrec *rec)
+BNode *ProcessSlot(mgrec *rec)
 {
     BSlotNode *node;
     char *name;
@@ -837,12 +856,12 @@ BNode* ProcessSlot(mgrec *rec)
         {
             return NULL;
         }
-
     }
 
     if (slotNum < 1)
     {
-        FLTwarning(rec, "No slot number.  Should be named SLOT## where ## is the slot number");
+        FLTwarning(rec, "No slot number.  Should be named SLOT## where ## is "
+                        "the slot number");
         return NULL;
     }
 
@@ -911,7 +930,9 @@ BNode* ProcessSlot(mgrec *rec)
     // Adjust the origin and orientation of the slot if local coordinates are in effect
     if (LocalCoords)
     {
-        Ppoint  p = { node->origin.x + Translation.x, node->origin.y + Translation.y, node->origin.z + Translation.z };
+        Ppoint p = {node->origin.x + Translation.x,
+                    node->origin.y + Translation.y,
+                    node->origin.z + Translation.z};
         Pmatrix m = node->rotation;
 
         MatrixMult(&Rotation, &p, &node->origin);
@@ -919,11 +940,12 @@ BNode* ProcessSlot(mgrec *rec)
     }
 
 
-
     // Store the slot position in our global accumulation array
     if (node->slotNumber >= MAX_SLOT_AND_DYNAMIC_PER_OBJECT)
     {
-        FLTwarning(rec, "Slot number exceeds arbitrary maximum.  Change object or code.");
+        FLTwarning(
+            rec,
+            "Slot number exceeds arbitrary maximum.  Change object or code.");
         delete node;
         return NULL;
     }
@@ -934,7 +956,7 @@ BNode* ProcessSlot(mgrec *rec)
 }
 
 
-BNode* ProcessPointLine(mgrec *rec, int nVerts)
+BNode *ProcessPointLine(mgrec *rec, int nVerts)
 {
     Pcolor color;
     BPrimitiveNode *node;
@@ -969,13 +991,15 @@ BNode* ProcessPointLine(mgrec *rec, int nVerts)
     if (nVerts == 1)
     {
         prim->type = PointF;
-        TheColorBuildList.AddReference(&((PrimPointFC*)prim)->rgba, color, PrelightColors);
+        TheColorBuildList.AddReference(&((PrimPointFC *)prim)->rgba, color,
+                                       PrelightColors);
     }
     else
     {
         prim->type = LineF;
         // TheColorBuildList.AddReference( &((PrimLineFC*)prim)->rgba, color, PrelightColors );
-        TheColorBuildList.AddReference(&((PrimLineFC*)prim)->rgba, color, TRUE);
+        TheColorBuildList.AddReference(&((PrimLineFC *)prim)->rgba, color,
+                                       TRUE);
     }
 
     // Set up the vertex position index array
@@ -998,7 +1022,7 @@ BNode* ProcessPointLine(mgrec *rec, int nVerts)
 }
 
 
-BNode* ProcessLightString(mgrec *rec)
+BNode *ProcessLightString(mgrec *rec)
 {
     mgrec *child;
     int vertCount = 0;
@@ -1034,7 +1058,8 @@ BNode* ProcessLightString(mgrec *rec)
 
     if (NormalCnt + vertCount > MAX_VERTS_PER_OBJECT_TREE)
     {
-        FLTwarning(rec, "Too many verts in object!  Simplify or update the code.");
+        FLTwarning(rec,
+                   "Too many verts in object!  Simplify or update the code.");
         return NULL;
     }
 
@@ -1049,7 +1074,8 @@ BNode* ProcessLightString(mgrec *rec)
     if (vertCount > MAX_VERTS_PER_POLYGON)
     {
         char message[80];
-        sprintf(message, "Skipping light string with %0d verts (max is %0d)", vertCount, MAX_VERTS_PER_POLYGON);
+        sprintf(message, "Skipping light string with %0d verts (max is %0d)",
+                vertCount, MAX_VERTS_PER_POLYGON);
         FLTwarning(rec, message);
         return NULL;
     }
@@ -1084,7 +1110,8 @@ BNode* ProcessLightString(mgrec *rec)
 
     if (directional == 1)
     {
-        FLTwarning(rec, "Unidirectional lights not supported.  Converted to omni.");
+        FLTwarning(rec,
+                   "Unidirectional lights not supported.  Converted to omni.");
         directional = 0;
     }
 
@@ -1097,7 +1124,8 @@ BNode* ProcessLightString(mgrec *rec)
     // Set up the vertex position index array
     prim->xyz = new int[vertCount];
     prim->nVerts = vertCount;
-    vertCount = ProcessAllVerts(rec, prim->xyz, NULL, NULL, NULL, color, &Aflag);
+    vertCount =
+        ProcessAllVerts(rec, prim->xyz, NULL, NULL, NULL, color, &Aflag);
     ShiAssert(vertCount == prim->nVerts);
 
     // We don't handle alpha blending on light strings
@@ -1123,13 +1151,14 @@ BNode* ProcessLightString(mgrec *rec)
         if (retval == MG_TRUE)
         {
             // Make ajustments to get from (Y front, X right, Z up) into (X front, Y right, Z down)
-            local.i =  j;
-            local.j =  i;
+            local.i = j;
+            local.j = i;
             local.k = -k;
         }
         else
         {
-            FLTwarning(child, "Failed to get vertex normal from first light point");
+            FLTwarning(child,
+                       "Failed to get vertex normal from first light point");
             local.i = 1.0f;
             local.j = 0.0f;
             local.k = 0.0f;
@@ -1138,7 +1167,7 @@ BNode* ProcessLightString(mgrec *rec)
         // If we'ge got local coordinates in effect, transform the vector into them
         if (LocalCoords)
         {
-            Ppoint p = { local.i, local.j, local.k };
+            Ppoint p = {local.i, local.j, local.k};
             Ppoint l;
 
             MatrixMult(&Rotation, &p, &l);
@@ -1148,16 +1177,17 @@ BNode* ProcessLightString(mgrec *rec)
         }
 
         // Set up the plane that divides the front and back hemispheres
-        ((BLightStringNode*)node)->A = local.i;
-        ((BLightStringNode*)node)->B = local.j;
-        ((BLightStringNode*)node)->C = local.k;
-        ((BLightStringNode*)node)->D =
-            -PosPool->GetPosFromTarget(prim->xyz)->x * local.i
-            - PosPool->GetPosFromTarget(prim->xyz)->y * local.j
-            - PosPool->GetPosFromTarget(prim->xyz)->z * local.k;
+        ((BLightStringNode *)node)->A = local.i;
+        ((BLightStringNode *)node)->B = local.j;
+        ((BLightStringNode *)node)->C = local.k;
+        ((BLightStringNode *)node)->D =
+            -PosPool->GetPosFromTarget(prim->xyz)->x * local.i -
+            PosPool->GetPosFromTarget(prim->xyz)->y * local.j -
+            PosPool->GetPosFromTarget(prim->xyz)->z * local.k;
 
         // Add the light's front color to the color bank
-        TheColorBuildList.AddReference(&((BLightStringNode*)node)->rgbaFront, color, FALSE);
+        TheColorBuildList.AddReference(&((BLightStringNode *)node)->rgbaFront,
+                                       color, FALSE);
 
         // Get the back color
         retval = mgGetAttList(rec, fltLpBackColor, &colorIndex, MG_NULL);
@@ -1175,7 +1205,8 @@ BNode* ProcessLightString(mgrec *rec)
         color.a = 1.0f;
 
         // Add the light's back color to the color bank
-        TheColorBuildList.AddReference(&((BLightStringNode*)node)->rgbaBack,  color, FALSE);
+        TheColorBuildList.AddReference(&((BLightStringNode *)node)->rgbaBack,
+                                       color, FALSE);
     }
     else
     {
@@ -1192,7 +1223,7 @@ BNode* ProcessLightString(mgrec *rec)
 }
 
 
-BNode* ProcessPolygon(mgrec *rec, int nVerts)
+BNode *ProcessPolygon(mgrec *rec, int nVerts)
 {
     int retval;
     Pcolor color;
@@ -1228,115 +1259,121 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
 
     if (retval != 1)
     {
-        FLTwarning(rec, "Failed to get poly billboard type.  Defaulting to NONE.");
+        FLTwarning(rec,
+                   "Failed to get poly billboard type.  Defaulting to NONE.");
         billboardType = 0;
     }
 
     switch (billboardType)
     {
-        case 0: // None
-            break;
+    case 0: // None
+        break;
 
-        case 1: // Fixed (Chromakey only)
-            if (textureIndex >= 0)  ChromaFlag = TRUE;
+    case 1: // Fixed (Chromakey only)
+        if (textureIndex >= 0)
+            ChromaFlag = TRUE;
 
-            break;
+        break;
 
-        case 2: // Axis (Tree)
-            RotationType = Tree;
-            savePosPool = PosPool;
-            PosPool = new BuildTimePosList;
+    case 2: // Axis (Tree)
+        RotationType = Tree;
+        savePosPool = PosPool;
+        PosPool = new BuildTimePosList;
 
-            if (textureIndex >= 0)  ChromaFlag = TRUE;
+        if (textureIndex >= 0)
+            ChromaFlag = TRUE;
 
-            break;
+        break;
 
-        case 4: // Point (Billboard)
-            RotationType = Billboard;
-            savePosPool = PosPool;
-            PosPool = new BuildTimePosList;
+    case 4: // Point (Billboard)
+        RotationType = Billboard;
+        savePosPool = PosPool;
+        PosPool = new BuildTimePosList;
 
-            if (textureIndex >= 0)  ChromaFlag = TRUE;
+        if (textureIndex >= 0)
+            ChromaFlag = TRUE;
 
-            break;
+        break;
 
-        default:
-            FLTwarning(rec, "Unrecognized billboard type.  Defaulting to NONE.");
+    default:
+        FLTwarning(rec, "Unrecognized billboard type.  Defaulting to NONE.");
     }
 
 
     // Construct a polygon of the appropriate type
     switch (lightMode)
     {
-        case 0: // flat
-            if (textureIndex >= 0)
-            {
-                poly = new PolyTexFC;
-                poly->type = Tex;
-                ((PolyTexFC*)poly)->texIndex = textureIndex;
-                ((PolyTexFC*)poly)->uv = uv = new Ptexcoord[nVerts];
-            }
-            else
-            {
-                poly = new PolyFC;
-                poly->type = F;
-            }
+    case 0: // flat
+        if (textureIndex >= 0)
+        {
+            poly = new PolyTexFC;
+            poly->type = Tex;
+            ((PolyTexFC *)poly)->texIndex = textureIndex;
+            ((PolyTexFC *)poly)->uv = uv = new Ptexcoord[nVerts];
+        }
+        else
+        {
+            poly = new PolyFC;
+            poly->type = F;
+        }
 
-            TheColorBuildList.AddReference(&((PolyFC*)poly)->rgba, color, PrelightColors);
-            break;
+        TheColorBuildList.AddReference(&((PolyFC *)poly)->rgba, color,
+                                       PrelightColors);
+        break;
 
-        case 1: // Gouraud
-            if (textureIndex >= 0)
-            {
-                poly = new PolyTexVC;
-                poly->type = TexG;
-                ((PolyTexFC*)poly)->texIndex = textureIndex;
-                ((PolyTexFC*)poly)->uv = uv = new Ptexcoord[nVerts];
-            }
-            else
-            {
-                poly = new PolyVC;
-                poly->type = G;
-            }
+    case 1: // Gouraud
+        if (textureIndex >= 0)
+        {
+            poly = new PolyTexVC;
+            poly->type = TexG;
+            ((PolyTexFC *)poly)->texIndex = textureIndex;
+            ((PolyTexFC *)poly)->uv = uv = new Ptexcoord[nVerts];
+        }
+        else
+        {
+            poly = new PolyVC;
+            poly->type = G;
+        }
 
-            ((PolyVC*)poly)->rgba = rgba = new int[nVerts];
-            break;
+        ((PolyVC *)poly)->rgba = rgba = new int[nVerts];
+        break;
 
-        case 2: // lit flat
-            if (textureIndex >= 0)
-            {
-                poly = new PolyTexFCN;
-                poly->type = TexL;
-                ((PolyTexFCN*)poly)->texIndex = textureIndex;
-                ((PolyTexFCN*)poly)->uv = uv = new Ptexcoord[nVerts];
-            }
-            else
-            {
-                poly = new PolyFCN;
-                poly->type = FL;
-            }
+    case 2: // lit flat
+        if (textureIndex >= 0)
+        {
+            poly = new PolyTexFCN;
+            poly->type = TexL;
+            ((PolyTexFCN *)poly)->texIndex = textureIndex;
+            ((PolyTexFCN *)poly)->uv = uv = new Ptexcoord[nVerts];
+        }
+        else
+        {
+            poly = new PolyFCN;
+            poly->type = FL;
+        }
 
-            TheColorBuildList.AddReference(&((PolyFCN*)poly)->rgba, color, PrelightColors);
-            ((PolyFCN*)poly)->I = AddNormalToTable(A, B, C);
-            break;
+        TheColorBuildList.AddReference(&((PolyFCN *)poly)->rgba, color,
+                                       PrelightColors);
+        ((PolyFCN *)poly)->I = AddNormalToTable(A, B, C);
+        break;
 
-        case 3: // lit Gouraud
-            if (textureIndex >= 0)
-            {
-                poly = new PolyTexVCN;
-                poly->type = TexGL;
-                ((PolyTexVCN*)poly)->texIndex = textureIndex;
-                ((PolyTexVCN*)poly)->uv = uv = new Ptexcoord[nVerts];
-            }
-            else
-            {
-                poly = new PolyVCN;
-                poly->type = GL;
-            }
+    case 3: // lit Gouraud
+        if (textureIndex >= 0)
+        {
+            poly = new PolyTexVCN;
+            poly->type = TexGL;
+            ((PolyTexVCN *)poly)->texIndex = textureIndex;
+            ((PolyTexVCN *)poly)->uv = uv = new Ptexcoord[nVerts];
+        }
+        else
+        {
+            poly = new PolyVCN;
+            poly->type = GL;
+        }
 
-            ((PolyVCN*)poly)->rgba = rgba = new int[nVerts];
-            ((PolyVCN*)poly)->I = I = new int[nVerts];
-            break;
+        ((PolyVCN *)poly)->rgba = rgba = new int[nVerts];
+        ((PolyVCN *)poly)->I = I = new int[nVerts];
+        break;
     }
 
 
@@ -1355,10 +1392,10 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
 #ifdef _DEBUG
     char *name = mgGetName(rec);
     char buf[1024];
-    sprintf(buf, "Poly %s x %9.3f y %9.3f z %9.3f, plane A %9.3f B %9.3f C %9.3f D %9.3f\n",
-            name,
-            pp->x, pp->y, pp->z,
-            poly->A, poly->B, poly->C, poly->D);
+    sprintf(buf,
+            "Poly %s x %9.3f y %9.3f z %9.3f, plane A %9.3f B %9.3f C %9.3f D "
+            "%9.3f\n",
+            name, pp->x, pp->y, pp->z, poly->A, poly->B, poly->C, poly->D);
     OutputDebugString(buf);
     mgFree(name);
 #endif
@@ -1380,11 +1417,13 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
     // Special case for the virtual cockpit (want bilinear and alpha per texel...)
     // NOTE:  We're missusing the "line style" property of the face since it is
     // available in the UI and otherwise ignored.
-    retval = mgGetAttList(rec, fltPolyLineStyle, &BilinearAlphaPerTexelFlag, MG_NULL);
+    retval = mgGetAttList(rec, fltPolyLineStyle, &BilinearAlphaPerTexelFlag,
+                          MG_NULL);
 
     if (retval != 1)
     {
-        FLTwarning(rec, "Failed to get poly line style (used for BilinearAPT).  Defaulting to 0.");
+        FLTwarning(rec, "Failed to get poly line style (used for BilinearAPT). "
+                        " Defaulting to 0.");
         BilinearAlphaPerTexelFlag = 0;
     }
 
@@ -1392,7 +1431,8 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
     {
         if (poly->type != ATex)
         {
-            FLTwarning(rec, "Line Style controls Bilinear/APT and only works with Flat Transparent faces.");
+            FLTwarning(rec, "Line Style controls Bilinear/APT and only works "
+                            "with Flat Transparent faces.");
         }
         else
         {
@@ -1410,7 +1450,8 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
 
     if (retval != 1)
     {
-        FLTwarning(rec, "Failed to get poly draw type.  Default to solid back face culled.");
+        FLTwarning(rec, "Failed to get poly draw type.  Default to solid back "
+                        "face culled.");
         drawType = 0;
     }
 
@@ -1419,24 +1460,25 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
         if (lightMode > 1)
         {
             node = new BLitPrimitiveNode;
-            ((BLitPrimitiveNode*)node)->poly = poly;
-            ((BLitPrimitiveNode*)node)->backpoly = ReversePoly(poly);
+            ((BLitPrimitiveNode *)node)->poly = poly;
+            ((BLitPrimitiveNode *)node)->backpoly = ReversePoly(poly);
         }
         else
         {
             node = new BPrimitiveNode;
-            ((BPrimitiveNode*)node)->prim = poly;
+            ((BPrimitiveNode *)node)->prim = poly;
         }
     }
     else
     {
         if (drawType != 0)
         {
-            FLTwarning(rec, "Unrecognized polygon type.  Converting to solid back face culled.");
+            FLTwarning(rec, "Unrecognized polygon type.  Converting to solid "
+                            "back face culled.");
         }
 
         node = new BCulledPrimitiveNode;
-        ((BCulledPrimitiveNode*)node)->poly = poly;
+        ((BCulledPrimitiveNode *)node)->poly = poly;
     }
 
 
@@ -1446,29 +1488,33 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
         BNode *child = node;
 
         node = new BSpecialXform;
-        ((BSpecialXform*)node)->pCoords = PosPool->GetPool();
-        ((BSpecialXform*)node)->nCoords = poly->nVerts;
-        ((BSpecialXform*)node)->subTree = child;
+        ((BSpecialXform *)node)->pCoords = PosPool->GetPool();
+        ((BSpecialXform *)node)->nCoords = poly->nVerts;
+        ((BSpecialXform *)node)->subTree = child;
 
         if (RotationType == Billboard)
         {
-            ((BSpecialXform*)node)->type = Billboard;
+            ((BSpecialXform *)node)->type = Billboard;
         }
         else
         {
-            ((BSpecialXform*)node)->type = Tree;
+            ((BSpecialXform *)node)->type = Tree;
         }
 
         // Add in the bounding radius of our private pool to the original pool
-        float x = max(fabs(PosPool->SizeInfo.maxX), fabs(PosPool->SizeInfo.minX));
-        float y = max(fabs(PosPool->SizeInfo.maxY), fabs(PosPool->SizeInfo.minY));
-        float z = max(fabs(PosPool->SizeInfo.maxZ), fabs(PosPool->SizeInfo.minZ));
+        float x =
+            max(fabs(PosPool->SizeInfo.maxX), fabs(PosPool->SizeInfo.minX));
+        float y =
+            max(fabs(PosPool->SizeInfo.maxY), fabs(PosPool->SizeInfo.minY));
+        float z =
+            max(fabs(PosPool->SizeInfo.maxZ), fabs(PosPool->SizeInfo.minZ));
         float r = x * x + y * y + z * z;
 
-        savePosPool->SizeInfo.radiusSquared = max(savePosPool->SizeInfo.radiusSquared, r);
-        savePosPool->SizeInfo.maxX = max(savePosPool->SizeInfo.maxX,  x);
-        savePosPool->SizeInfo.maxY = max(savePosPool->SizeInfo.maxY,  y);
-        savePosPool->SizeInfo.maxZ = max(savePosPool->SizeInfo.maxZ,  z);
+        savePosPool->SizeInfo.radiusSquared =
+            max(savePosPool->SizeInfo.radiusSquared, r);
+        savePosPool->SizeInfo.maxX = max(savePosPool->SizeInfo.maxX, x);
+        savePosPool->SizeInfo.maxY = max(savePosPool->SizeInfo.maxY, y);
+        savePosPool->SizeInfo.maxZ = max(savePosPool->SizeInfo.maxZ, z);
         savePosPool->SizeInfo.minX = min(savePosPool->SizeInfo.minX, -x);
         savePosPool->SizeInfo.minY = min(savePosPool->SizeInfo.minY, -y);
         savePosPool->SizeInfo.minZ = min(savePosPool->SizeInfo.minZ, -z);
@@ -1482,7 +1528,7 @@ BNode* ProcessPolygon(mgrec *rec, int nVerts)
 }
 
 
-BNode* ProcessPrimitive(mgrec *rec)
+BNode *ProcessPrimitive(mgrec *rec)
 {
     mgrec *child;
     int vertCount = 0;
@@ -1503,13 +1549,15 @@ BNode* ProcessPrimitive(mgrec *rec)
 
     if (vertCount > MAX_VERTS_PER_POLYGON)
     {
-        FLTwarning(rec, "Too many verts in this poly!  Subdivid or update the code.");
+        FLTwarning(
+            rec, "Too many verts in this poly!  Subdivid or update the code.");
         return NULL;
     }
 
     if (NormalCnt + vertCount > MAX_VERTS_PER_OBJECT_TREE)
     {
-        FLTwarning(rec, "Too many verts in object!  Simplify or update the code.");
+        FLTwarning(rec,
+                   "Too many verts in object!  Simplify or update the code.");
         return NULL;
     }
 
@@ -1526,11 +1574,13 @@ BNode* ProcessPrimitive(mgrec *rec)
 }
 
 
-BOOL ProcessSubTree(BSubTree *node, mgrec *rec, SzInfo_t *szInfo, BOOL IncludeParent, Pmatrix *R = NULL, Ppoint *T = NULL)
+BOOL ProcessSubTree(BSubTree *node, mgrec *rec, SzInfo_t *szInfo,
+                    BOOL IncludeParent, Pmatrix *R = NULL, Ppoint *T = NULL)
 {
     ShiAssert(node);
 
-    if (!rec)  return FALSE;
+    if (!rec)
+        return FALSE;
 
     StartSubObject(R, T);
 
@@ -1562,9 +1612,11 @@ BOOL ProcessSubTree(BSubTree *node, mgrec *rec, SzInfo_t *szInfo, BOOL IncludePa
 
         if (PosPool->numDynamic)
         {
-            if (nDynamicCoords + PosPool->numDynamic >= MAX_SLOT_AND_DYNAMIC_PER_OBJECT)
+            if (nDynamicCoords + PosPool->numDynamic >=
+                MAX_SLOT_AND_DYNAMIC_PER_OBJECT)
             {
-                FLTwarning(rec, "Dynamic vertex count exceeds arbitrary maximum.  Change object or code.");
+                FLTwarning(rec, "Dynamic vertex count exceeds arbitrary "
+                                "maximum.  Change object or code.");
                 node->DynamicCoordOffset = -1;
             }
             else
@@ -1599,14 +1651,15 @@ BOOL ProcessSubTree(BSubTree *node, mgrec *rec, SzInfo_t *szInfo, BOOL IncludePa
     if (NormalCnt)
     {
         node->pNormals = new Pnormal[NormalCnt];
-        memcpy(node->pNormals, NormalArray,   sizeof(*NormalArray)*NormalCnt);
+        memcpy(node->pNormals, NormalArray, sizeof(*NormalArray) * NormalCnt);
     }
     else
     {
         node->pNormals = NULL;
     }
 
-    szInfo->radiusSquared = max(szInfo->radiusSquared, PosPool->SizeInfo.radiusSquared);
+    szInfo->radiusSquared =
+        max(szInfo->radiusSquared, PosPool->SizeInfo.radiusSquared);
     szInfo->maxX = max(szInfo->maxX, PosPool->SizeInfo.maxX);
     szInfo->maxY = max(szInfo->maxY, PosPool->SizeInfo.maxY);
     szInfo->maxZ = max(szInfo->maxZ, PosPool->SizeInfo.maxZ);
@@ -1620,7 +1673,7 @@ BOOL ProcessSubTree(BSubTree *node, mgrec *rec, SzInfo_t *szInfo, BOOL IncludePa
 }
 
 
-BNode* ProcessBsp(mgrec *rec)
+BNode *ProcessBsp(mgrec *rec)
 {
     BSplitterNode *node;
     double A, B, C, D;
@@ -1631,12 +1684,8 @@ BNode* ProcessBsp(mgrec *rec)
     // Do plane stuff here
     node = new BSplitterNode;
 
-    attCnt = mgGetAttList(rec,
-                          fltDPlaneA, &A,
-                          fltDPlaneB, &B,
-                          fltDPlaneC, &C,
-                          fltDPlaneD, &D,
-                          MG_NULL);
+    attCnt = mgGetAttList(rec, fltDPlaneA, &A, fltDPlaneB, &B, fltDPlaneC, &C,
+                          fltDPlaneD, &D, MG_NULL);
 
     if (attCnt != 4)
     {
@@ -1655,8 +1704,10 @@ BNode* ProcessBsp(mgrec *rec)
     // If we'ge got local coordinates in effect, transform the plane equation into them
     if (LocalCoords)
     {
-        Ppoint n = { node->A, node->B, node->C };
-        Ppoint p = { node->A*node->D + Translation.x, node->B*node->D + Translation.y, node->C*node->D + Translation.z };
+        Ppoint n = {node->A, node->B, node->C};
+        Ppoint p = {node->A * node->D + Translation.x,
+                    node->B * node->D + Translation.y,
+                    node->C * node->D + Translation.z};
         Ppoint l;
 
         // Rotate the normal
@@ -1692,7 +1743,8 @@ BNode* ProcessBsp(mgrec *rec)
 
     if (back)
         node->back = ProcessRecord(back);
-    else node -> back = NULL;
+    else
+        node->back = NULL;
 
     // Handle case where one or both sub-trees are empty
     if (node->back && node->front)
@@ -1722,7 +1774,7 @@ BNode* ProcessBsp(mgrec *rec)
 }
 
 
-BNode* ProcessSwitch(mgrec *rec)
+BNode *ProcessSwitch(mgrec *rec)
 {
     static const int MAX_SWITCH_CHILDREN = 32;
 
@@ -1751,7 +1803,8 @@ BNode* ProcessSwitch(mgrec *rec)
 
     if ((swNum < 1) || (swNum > 99))
     {
-        FLTwarning(rec, "Bad SW number.  Should be named SW## or SW1##xx where ## is the switch number");
+        FLTwarning(rec, "Bad SW number.  Should be named SW## or SW1##xx where "
+                        "## is the switch number");
         return NULL;
     }
 
@@ -1795,7 +1848,7 @@ BNode* ProcessSwitch(mgrec *rec)
 
 
     // Now move the child pointers into private storage for the node
-    node->subTrees = new BSubTree*[node->numChildren];
+    node->subTrees = new BSubTree *[node->numChildren];
     ShiAssert(node->subTrees);
 
     for (i = 0; i < node->numChildren; i++)
@@ -1808,15 +1861,15 @@ BNode* ProcessSwitch(mgrec *rec)
 }
 
 
-BNode* ProcessDOF(mgrec *rec)
+BNode *ProcessDOF(mgrec *rec)
 {
     BDofNode *node;
     char *name;
     int dofNum = -1;
     int retval;
     double originX, originY, originZ;
-    double alignX,  alignY,  alignZ;
-    double trackX,  trackY,  trackZ;
+    double alignX, alignY, alignZ;
+    double trackX, trackY, trackZ;
     double maxXtrans;
     double minXtrans;
 
@@ -1834,7 +1887,8 @@ BNode* ProcessDOF(mgrec *rec)
 
     if (dofNum < 1)
     {
-        FLTwarning(rec, "Invalid DOF name.  Requires a number in its record name.");
+        FLTwarning(rec,
+                   "Invalid DOF name.  Requires a number in its record name.");
         return ProcessAllChildren(rec);
     }
 
@@ -1842,18 +1896,15 @@ BNode* ProcessDOF(mgrec *rec)
 
 
     // Get our origin and axes and translation limits
-    retval = mgGetAttList(rec, fltDofPutAnchorX, &originX, // Origin in parent space
-                          fltDofPutAnchorY, &originY,
-                          fltDofPutAnchorZ, &originZ,
-                          fltDofPutAlignX, &alignX, // Point on new GG X axis in parent space
-                          fltDofPutAlignY, &alignY,
-                          fltDofPutAlignZ, &alignZ,
-                          fltDofPutTrackX, &trackX, // Point on new GG XY plane in parent space
-                          fltDofPutTrackY, &trackY,
-                          fltDofPutTrackZ, &trackZ,
-                          fltDofMaxX, &maxXtrans, // Xlation limits in parent space
-                          fltDofMinX, &minXtrans,
-                          MG_NULL);
+    retval = mgGetAttList(
+        rec, fltDofPutAnchorX, &originX, // Origin in parent space
+        fltDofPutAnchorY, &originY, fltDofPutAnchorZ, &originZ, fltDofPutAlignX,
+        &alignX, // Point on new GG X axis in parent space
+        fltDofPutAlignY, &alignY, fltDofPutAlignZ, &alignZ, fltDofPutTrackX,
+        &trackX, // Point on new GG XY plane in parent space
+        fltDofPutTrackY, &trackY, fltDofPutTrackZ, &trackZ, fltDofMaxX,
+        &maxXtrans, // Xlation limits in parent space
+        fltDofMinX, &minXtrans, MG_NULL);
 
     if (retval != 11)
     {
@@ -1919,20 +1970,16 @@ BNode* ProcessDOF(mgrec *rec)
     up.z /= mag;
 
     // Now construct the transform from world to local coordinates
-    Pmatrix WfromL = { front.x, right.x, up.x,
-                        front.y, right.y, up.y,
-                        front.z, right.z, up.z
-                     };
+    Pmatrix WfromL = {front.x, right.x, up.x,    front.y, right.y,
+                      up.y,    front.z, right.z, up.z};
 
 
     // Compute the rotation from our local coordinates to our parent's coordinates
     MatrixMult(&Rotation, &WfromL, &node->rotation);
 
     // Compute the translation from our parent's origin to our new local one
-    Ppoint T = { origin.x + Translation.x,
-                 origin.y + Translation.y,
-                 origin.z + Translation.z
-               };
+    Ppoint T = {origin.x + Translation.x, origin.y + Translation.y,
+                origin.z + Translation.z};
     MatrixMult(&Rotation, &T, &node->translation);
 
 
@@ -1976,7 +2023,8 @@ BNode* ProcessDOF(mgrec *rec)
 
     sz.radiusSquared = x * x + y * y + z * z;
 
-    PosPool->SizeInfo.radiusSquared = max(PosPool->SizeInfo.radiusSquared, sz.radiusSquared);
+    PosPool->SizeInfo.radiusSquared =
+        max(PosPool->SizeInfo.radiusSquared, sz.radiusSquared);
     PosPool->SizeInfo.maxX = max(PosPool->SizeInfo.maxX, sz.maxX);
     PosPool->SizeInfo.maxY = max(PosPool->SizeInfo.maxY, sz.maxY);
     PosPool->SizeInfo.maxZ = max(PosPool->SizeInfo.maxZ, sz.maxZ);
@@ -1991,7 +2039,7 @@ BNode* ProcessDOF(mgrec *rec)
 }
 
 
-BNode* ProcessAllChildren(mgrec *rec)
+BNode *ProcessAllChildren(mgrec *rec)
 {
     mgrec *child;
     BNode *masterNode = NULL;
@@ -2032,25 +2080,30 @@ BNode* ProcessAllChildren(mgrec *rec)
 }
 
 
-BNode* ProcessRecord(mgrec *rec)
+BNode *ProcessRecord(mgrec *rec)
 {
     // Handle our special nodes
-    if (mgIsCode(rec, fltPolygon)) return ProcessPrimitive(rec);
+    if (mgIsCode(rec, fltPolygon))
+        return ProcessPrimitive(rec);
 
-    if (mgIsCode(rec, fltBsp)) return ProcessBsp(rec);
+    if (mgIsCode(rec, fltBsp))
+        return ProcessBsp(rec);
 
-    if (mgIsCode(rec, fltSwitch)) return ProcessSwitch(rec);
+    if (mgIsCode(rec, fltSwitch))
+        return ProcessSwitch(rec);
 
-    if (mgIsCode(rec, fltDof)) return ProcessDOF(rec);
+    if (mgIsCode(rec, fltDof))
+        return ProcessDOF(rec);
 
-    if (mgIsCode(rec, fltLightPoint)) return ProcessLightString(rec);
+    if (mgIsCode(rec, fltLightPoint))
+        return ProcessLightString(rec);
 
     // Not "special", so just look at its children
     return ProcessAllChildren(rec);
 }
 
 
-BRoot* ReadGeometryFlt(BuildTimeLODEntry *buildLODentry)
+BRoot *ReadGeometryFlt(BuildTimeLODEntry *buildLODentry)
 {
     int i;
     BOOL result;
@@ -2060,7 +2113,7 @@ BRoot* ReadGeometryFlt(BuildTimeLODEntry *buildLODentry)
     // open the named database file
     if (!(db = mgOpenDb(buildLODentry->filename)))
     {
-        char msgbuf [1024];
+        char msgbuf[1024];
         mgGetLastError(msgbuf, 1024);
         printf("%s\n", msgbuf);
         mgExit();
@@ -2117,7 +2170,7 @@ BRoot* ReadGeometryFlt(BuildTimeLODEntry *buildLODentry)
     if (TexIDCnt)
     {
         root->pTexIDs = new int[TexIDCnt];
-        memcpy(root->pTexIDs,  TexIDArray,    sizeof(*TexIDArray)*TexIDCnt);
+        memcpy(root->pTexIDs, TexIDArray, sizeof(*TexIDArray) * TexIDCnt);
     }
     else
     {
@@ -2143,7 +2196,8 @@ BRoot* ReadGeometryFlt(BuildTimeLODEntry *buildLODentry)
     buildLODentry->minZ = PosPool->SizeInfo.minZ;
 
     // Here we store the position of each slot and dynamic vertex for later storage in the parent data
-    buildLODentry->pSlotAndDynamicPositions = new Ppoint[nSlots + nDynamicCoords];
+    buildLODentry->pSlotAndDynamicPositions =
+        new Ppoint[nSlots + nDynamicCoords];
 
     for (i = 0; i < nSlots; i++)
     {
@@ -2152,7 +2206,8 @@ BRoot* ReadGeometryFlt(BuildTimeLODEntry *buildLODentry)
 
     for (i = 0; i < nDynamicCoords; i++)
     {
-        buildLODentry->pSlotAndDynamicPositions[nSlots + i] = DynamicPositionArray[i];
+        buildLODentry->pSlotAndDynamicPositions[nSlots + i] =
+            DynamicPositionArray[i];
     }
 
     // Arbitrary limit for sanity checking...

@@ -9,7 +9,7 @@
 \*******************************************************************************/
 #include <stdio.h>
 #include <math.h>
-#include "TileDB.h"
+#include "tiledb.h"
 
 
 int main(int argc, char **argv)
@@ -46,20 +46,22 @@ int main(int argc, char **argv)
     } codeList[codeListLen];
 
     const int setListLen = 256;
-#pragma pack (push, 1)
+#pragma pack(push, 1)
     struct
     {
         int numTiles;
         BYTE terrainType;
     } setList[setListLen];
-#pragma pack (pop)
+#pragma pack(pop)
 
     // Make sure we got the right number of parameters
     if ((argc != 2) || (*(argv[1] + strlen(argv[1]) - 1) != '\\'))
     {
         printf("Usage:  TexGen <texture directory>\n");
-        printf("        (the directory should be terminated with a \\ character.)\n");
-        printf("        The files TILES.BDB and TEXCODES.TXT are read as input.\n");
+        printf("        (the directory should be terminated with a / "
+               "character.)\n");
+        printf("        The files TILES.BDB and TEXCODES.TXT are read as "
+               "input.\n");
         printf("        The file TEXTURE.BIN is written as output.\n");
         return -1;
     }
@@ -113,7 +115,8 @@ int main(int argc, char **argv)
         strcpy(basename, codeList[i].name);
         strcpy(filename, argv[1]);
         strcat(filename, basename);
-        checkFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        checkFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
         if (checkFile == INVALID_HANDLE_VALUE)
         {
@@ -129,7 +132,8 @@ int main(int argc, char **argv)
         basename[0] = 'M';
         strcpy(filename, argv[1]);
         strcat(filename, basename);
-        checkFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        checkFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
         if (checkFile == INVALID_HANDLE_VALUE)
         {
@@ -145,7 +149,8 @@ int main(int argc, char **argv)
         basename[0] = 'L';
         strcpy(filename, argv[1]);
         strcat(filename, basename);
-        checkFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+        checkFile = CreateFile(filename, GENERIC_READ, FILE_SHARE_READ, NULL,
+                               OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 
         if (checkFile == INVALID_HANDLE_VALUE)
         {
@@ -181,7 +186,7 @@ int main(int argc, char **argv)
             // Decide what tile type we are
             pTile = tileDB.GetTileRecord(codeList[i].originalCode);
             setList[set].numTiles = 1;
-            setList[set].terrainType  = tileDB.GetTerrainType(pTile);
+            setList[set].terrainType = tileDB.GetTerrainType(pTile);
         }
         else
         {
@@ -195,7 +200,8 @@ int main(int argc, char **argv)
     // Open the texture database file for writing
     strcpy(source, argv[1]);
     strcat(source, "Texture.bin");
-    outputFile = CreateFile(source, GENERIC_WRITE, FILE_SHARE_WRITE, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+    outputFile = CreateFile(source, GENERIC_WRITE, FILE_SHARE_WRITE, NULL,
+                            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
 
     if (outputFile == INVALID_HANDLE_VALUE)
     {
@@ -218,7 +224,8 @@ int main(int argc, char **argv)
     {
 
         // Write the number of tiles in this set and the terrain type
-        WriteFile(outputFile, &setList[set], sizeof(setList[set]), &bytes, NULL);
+        WriteFile(outputFile, &setList[set], sizeof(setList[set]), &bytes,
+                  NULL);
 
         // Write out the list of tile names and their areas and paths
         for (i = 0; i < setList[set].numTiles; i++, tile++)
@@ -227,7 +234,8 @@ int main(int argc, char **argv)
             ShiAssert(tile < totalTiles);
 
             // Write this tile name
-            WriteFile(outputFile, &codeList[tile].name, sizeof(codeList[tile].name), &bytes, NULL);
+            WriteFile(outputFile, &codeList[tile].name,
+                      sizeof(codeList[tile].name), &bytes, NULL);
 
             // Get the tile record
             pTile = tileDB.GetTileRecord(codeList[tile].originalCode);

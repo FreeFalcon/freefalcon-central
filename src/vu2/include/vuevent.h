@@ -59,22 +59,22 @@ enum VuMessageTypes
 #define VU_RELEASE_EVENT 6 // 0x00000040
 #endif
 // event messages
-#define VU_DELETE_EVENT             7 // 0x00000080
+#define VU_DELETE_EVENT 7 // 0x00000080
 //#define VU_UNMANAGE_EVENT             8 // 0x00000100
-#define VU_MANAGE_EVENT             9 // 0x00000200
-#define VU_CREATE_EVENT             10 // 0x00000400
-#define VU_SESSION_EVENT                    11 // 0x00000800
-#define VU_TRANSFER_EVENT             12 // 0x00001000
-#define VU_BROADCAST_GLOBAL_EVENT           13 // 0x00002000
-#define VU_POSITION_UPDATE_EVENT         14 // 0x00004000
-#define VU_FULL_UPDATE_EVENT         15 // 0x00008000
-#define VU_RESERVED_UPDATE_EVENT         16 // 0x00010000 ***
-#define VU_ENTITY_COLLISION_EVENT         17 // 0x00020000 ***
-#define VU_GROUND_COLLISION_EVENT         18 // 0x00040000 ***
-#define VU_SHUTDOWN_EVENT                 19 // 0x00080000
-#define VU_TIMING_MESSAGE         20 // 0x00100000
-#define VU_REQUEST_DUMMY_BLOCK_MESSAGE      21      // sfr: added for NAT stuff
-#define VU_LAST_EVENT         21 // 0x00100000
+#define VU_MANAGE_EVENT 9 // 0x00000200
+#define VU_CREATE_EVENT 10 // 0x00000400
+#define VU_SESSION_EVENT 11 // 0x00000800
+#define VU_TRANSFER_EVENT 12 // 0x00001000
+#define VU_BROADCAST_GLOBAL_EVENT 13 // 0x00002000
+#define VU_POSITION_UPDATE_EVENT 14 // 0x00004000
+#define VU_FULL_UPDATE_EVENT 15 // 0x00008000
+#define VU_RESERVED_UPDATE_EVENT 16 // 0x00010000 ***
+#define VU_ENTITY_COLLISION_EVENT 17 // 0x00020000 ***
+#define VU_GROUND_COLLISION_EVENT 18 // 0x00040000 ***
+#define VU_SHUTDOWN_EVENT 19 // 0x00080000
+#define VU_TIMING_MESSAGE 20 // 0x00100000
+#define VU_REQUEST_DUMMY_BLOCK_MESSAGE 21      // sfr: added for NAT stuff
+#define VU_LAST_EVENT 21 // 0x00100000
 // handy-dandy bit combinations
 #define VU_VU_MESSAGE_BITS 0x001ffffe
 #define VU_REQUEST_MSG_BITS 0x0000001c
@@ -108,13 +108,13 @@ enum VuMessageTypes
 
 // message flags
 #define VU_NORMAL_PRIORITY_MSG_FLAG 0x01 // send normal priority
-#define VU_OUT_OF_BAND_MSG_FLAG     0x02 // send unbuffered
-#define VU_KEEPALIVE_MSG_FLAG       0x04 // this is a keepalive msg
-#define VU_RELIABLE_MSG_FLAG        0x08 // attempt to send reliably
-#define VU_LOOPBACK_MSG_FLAG        0x10 // post msg to self as well
-#define VU_REMOTE_MSG_FLAG          0x20 // msg came from outside
-#define VU_SEND_FAILED_MSG_FLAG     0x40 // msg has been sent
-#define VU_PROCESSED_MSG_FLAG       0x80 // msg has been processed
+#define VU_OUT_OF_BAND_MSG_FLAG 0x02 // send unbuffered
+#define VU_KEEPALIVE_MSG_FLAG 0x04 // this is a keepalive msg
+#define VU_RELIABLE_MSG_FLAG 0x08 // attempt to send reliably
+#define VU_LOOPBACK_MSG_FLAG 0x10 // post msg to self as well
+#define VU_REMOTE_MSG_FLAG 0x20 // msg came from outside
+#define VU_SEND_FAILED_MSG_FLAG 0x40 // msg has been sent
+#define VU_PROCESSED_MSG_FLAG 0x80 // msg has been processed
 
 // session event subtypes
 enum vuEventTypes
@@ -139,7 +139,8 @@ class VuTimerEvent;
 class VuMessage
 {
     // these classes need full access to message function
-    friend int MessageReceive(VU_ID, VU_ADDRESS, VU_ID, VU_MSG_TYPE, VU_BYTE **, int, VU_TIME);
+    friend int MessageReceive(VU_ID, VU_ADDRESS, VU_ID, VU_MSG_TYPE, VU_BYTE **,
+                              int, VU_TIME);
     friend class VuTargetEntity;
     friend class VuMessageQueue;
     friend class VuMainMessageQueue;
@@ -154,7 +155,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 public:
@@ -199,6 +201,7 @@ public:
         postTime_ = posttime;
     }
     virtual int Size() const;
+
 protected:
     // sfr: im protecting these since they are used only internally
     //sfr: changed to long*
@@ -211,8 +214,8 @@ protected:
     VU_ERRCODE Dispatch(VU_BOOL autod);
     /** sends message */
     int Send();
-public:
 
+public:
     void RequestLoopback()
     {
         flags_ or_eq VU_LOOPBACK_MSG_FLAG;
@@ -273,6 +276,7 @@ protected:
     //VuTargetEntity *target_;
     VuBin<VuTargetEntity> target_;
     VU_TIME postTime_;
+
 private:
     //VuEntity *ent_;
     VuBin<VuEntity> ent_;
@@ -306,7 +310,8 @@ private:
 class VuErrorMessage : public VuMessage
 {
 public:
-    VuErrorMessage(int errorType, VU_ID senderid, VU_ID entityid, VuTargetEntity *target);
+    VuErrorMessage(int errorType, VU_ID senderid, VU_ID entityid,
+                   VuTargetEntity *target);
     VuErrorMessage(VU_ID senderid, VU_ID targetid);
     virtual ~VuErrorMessage();
 
@@ -403,7 +408,8 @@ public:
     virtual int Encode(VU_BYTE **buf);
 
 protected:
-    VuEvent(VU_MSG_TYPE type, VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuEvent(VU_MSG_TYPE type, VU_ID entityId, VuTargetEntity *target,
+            VU_BOOL loopback = FALSE);
     VuEvent(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     virtual VU_ERRCODE Activate(VuEntity *ent);
     virtual VU_ERRCODE Process(VU_BOOL autod) = 0;
@@ -421,7 +427,8 @@ public:
 class VuCreateEvent : public VuEvent
 {
 public:
-    VuCreateEvent(VuEntity *entity, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuCreateEvent(VuEntity *entity, VuTargetEntity *target,
+                  VU_BOOL loopback = FALSE);
     VuCreateEvent(VU_ADDRESS senderAddress, VU_ID senderid, VU_ID target);
     virtual ~VuCreateEvent();
 
@@ -430,7 +437,7 @@ public:
     //virtual int Decode(VU_BYTE **buf, int length);
     virtual int Decode(VU_BYTE **buf, long *length);
     virtual int Encode(VU_BYTE **buf);
-    virtual VU_BOOL DoSend();     // returns TRUE if ent is in database
+    virtual VU_BOOL DoSend(); // returns TRUE if ent is in database
 
     VuEntity *EventData()
     {
@@ -442,7 +449,8 @@ protected:
                   VU_BOOL loopback = FALSE);
     //sfr: converts
     // added senderaddress
-    VuCreateEvent(VU_MSG_TYPE type, VU_ADDRESS senderAddress, VU_ID senderid, VU_ID target);
+    VuCreateEvent(VU_MSG_TYPE type, VU_ADDRESS senderAddress, VU_ID senderid,
+                  VU_ID target);
 
     virtual VU_ERRCODE Activate(VuEntity *ent);
     virtual VU_ERRCODE Process(VU_BOOL autod);
@@ -470,7 +478,8 @@ public:
 class VuManageEvent : public VuCreateEvent
 {
 public:
-    VuManageEvent(VuEntity *entity, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuManageEvent(VuEntity *entity, VuTargetEntity *target,
+                  VU_BOOL loopback = FALSE);
     VuManageEvent(VU_ID senderid, VU_ID target);
     virtual ~VuManageEvent();
 
@@ -538,7 +547,7 @@ public:
     // all these are stubbed out here, as this is not a net message
     virtual int Decode(VU_BYTE **buf, long *rem);
     virtual int Encode(VU_BYTE **buf);
-    virtual VU_BOOL DoSend();     // returns FALSE
+    virtual VU_BOOL DoSend(); // returns FALSE
 
 protected:
     virtual VU_ERRCODE Activate(VuEntity *ent);
@@ -554,7 +563,8 @@ protected:
 class VuTransferEvent : public VuEvent
 {
 public:
-    VuTransferEvent(VuEntity *entity, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuTransferEvent(VuEntity *entity, VuTargetEntity *target,
+                    VU_BOOL loopback = FALSE);
     VuTransferEvent(VU_ID senderid, VU_ID target);
     virtual ~VuTransferEvent();
 
@@ -582,8 +592,8 @@ public:
 class VuPositionUpdateEvent : public VuEvent
 {
 public:
-
-    VuPositionUpdateEvent(VuEntity *entity, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuPositionUpdateEvent(VuEntity *entity, VuTargetEntity *target,
+                          VU_BOOL loopback = FALSE);
     VuPositionUpdateEvent(VU_ID senderid, VU_ID target);
     virtual ~VuPositionUpdateEvent();
 
@@ -599,8 +609,8 @@ public:
 #define CHAR2RAD static_cast<SM_SCALAR>(VU_PI / 128.0f)
     // sfr: biggest speed I could see was 5000.0f
 #define MAX_SPEED (5000.0f)
-#define D2SHORT  static_cast<SM_SCALAR>(0xFFFF / MAX_SPEED)
-#define SHORT2D  static_cast<SM_SCALAR>(MAX_SPEED / 0xFFFF)
+#define D2SHORT static_cast<SM_SCALAR>(0xFFFF / MAX_SPEED)
+#define SHORT2D static_cast<SM_SCALAR>(MAX_SPEED / 0xFFFF)
 
 protected:
     virtual VU_ERRCODE Process(VU_BOOL autod);
@@ -611,10 +621,11 @@ private:
     // data
 public:
     //SM_SCALAR dyaw_, dpitch_, droll_;
-    SM_SCALAR yaw_, pitch_, roll_; // sfr: does not go to network, using char instead
+    SM_SCALAR yaw_, pitch_,
+        roll_; // sfr: does not go to network, using char instead
     char yc_, pc_, rc_;
     BIG_SCALAR x_, y_, z_;
-    SM_SCALAR dx_, dy_, dz_;       // sfr: does not go to networt, using short instead
+    SM_SCALAR dx_, dy_, dz_; // sfr: does not go to networt, using short instead
     short sdx_, sdy_, sdz_;
 };
 #pragma pack()
@@ -623,10 +634,12 @@ public:
 class VuBroadcastGlobalEvent : public VuEvent
 {
 public:
-    VuBroadcastGlobalEvent(VuEntity *entity, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuBroadcastGlobalEvent(VuEntity *entity, VuTargetEntity *target,
+                           VU_BOOL loopback = FALSE);
     // sfr: converts
     // added address
-    VuBroadcastGlobalEvent(VU_ADDRESS senderAddress, VU_ID senderId, VU_ID target);
+    VuBroadcastGlobalEvent(VU_ADDRESS senderAddress, VU_ID senderId,
+                           VU_ID target);
     virtual ~VuBroadcastGlobalEvent();
 
     void MarkAsKeepalive()
@@ -646,7 +659,6 @@ protected:
 
     // data
 protected:
-
 #ifdef VU_USE_CLASS_INFO
     VU_BYTE classInfo_[CLASS_NUM_BYTES]; // entity class type
 #endif
@@ -667,7 +679,8 @@ protected:
 class VuFullUpdateEvent : public VuCreateEvent
 {
 public:
-    VuFullUpdateEvent(VuEntity *entity, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuFullUpdateEvent(VuEntity *entity, VuTargetEntity *target,
+                      VU_BOOL loopback = FALSE);
     VuFullUpdateEvent(VU_ADDRESS add, VU_ID senderid, VU_ID target);
     virtual ~VuFullUpdateEvent();
 
@@ -722,7 +735,8 @@ public:
 class VuGroundCollisionEvent : public VuEvent
 {
 public:
-    VuGroundCollisionEvent(VuEntity *entity, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuGroundCollisionEvent(VuEntity *entity, VuTargetEntity *target,
+                           VU_BOOL loopback = FALSE);
     VuGroundCollisionEvent(VU_ID senderid, VU_ID target);
     virtual ~VuGroundCollisionEvent();
 
@@ -769,8 +783,10 @@ public:
 class VuTimerEvent : public VuEvent
 {
     friend class VuMainMessageQueue;
+
 public:
-    VuTimerEvent(VuEntity *entity, VU_TIME mark, ushort type, VuMessage *event = 0);
+    VuTimerEvent(VuEntity *entity, VU_TIME mark, ushort type,
+                 VuMessage *event = 0);
     virtual ~VuTimerEvent();
 
     virtual int Size() const;
@@ -779,7 +795,7 @@ public:
     //virtual int Decode(VU_BYTE **buf, int length);
     virtual int Decode(VU_BYTE **buf, long *l);
     virtual int Encode(VU_BYTE **buf);
-    virtual VU_BOOL DoSend();     // returns FALSE
+    virtual VU_BOOL DoSend(); // returns FALSE
 
 protected:
     virtual VU_ERRCODE Process(VU_BOOL autod);
@@ -809,7 +825,7 @@ public:
     //virtual int Decode(VU_BYTE **buf, int length);
     virtual int Decode(VU_BYTE **buf, long *l);
     virtual int Encode(VU_BYTE **buf);
-    virtual VU_BOOL DoSend();     // returns FALSE
+    virtual VU_BOOL DoSend(); // returns FALSE
 
 protected:
     virtual VU_ERRCODE Process(VU_BOOL autod);
@@ -825,7 +841,8 @@ public:
 class VuTimingMessage : public VuMessage
 {
 public:
-    VuTimingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = FALSE);
+    VuTimingMessage(VU_ID entityId, VuTargetEntity *target,
+                    VU_BOOL loopback = FALSE);
     VuTimingMessage(VU_ID senderid, VU_ID target);
     virtual ~VuTimingMessage();
 
@@ -847,7 +864,6 @@ public:
 #endif //VU_SIMPLE_LATENCY
 
 
-
 //--------------------------------------------------
 class VuUnknownMessage : public VuMessage
 {
@@ -861,7 +877,7 @@ public:
     //virtual int Decode(VU_BYTE **buf, int length);
     virtual int Decode(VU_BYTE **buf, long *l);
     virtual int Encode(VU_BYTE **buf);
-    virtual VU_BOOL DoSend();     // returns FALSE
+    virtual VU_BOOL DoSend(); // returns FALSE
 
 protected:
     virtual VU_ERRCODE Process(VU_BOOL autod);

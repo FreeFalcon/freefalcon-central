@@ -18,8 +18,8 @@
 
 #include "tchar.h"
 #include "stdhdr.h"
-#include "Graphics/Include/grtypes.h"
-#include "Graphics/Include/imagebuf.h"
+#include "graphics/include/grtypes.h"
+#include "graphics/include/imagebuf.h"
 #include "vu2.h"
 
 #define SI_MOUSE_TIME_DELTA 1500 //in ms
@@ -36,7 +36,7 @@
 #define NW_CURSOR 8
 
 #define SIM_CURSOR_FILE "6_cursor.dat"
-#define SIM_CURSOR_DIR "\\art\\ckptart\\"
+#define SIM_CURSOR_DIR "/art/ckptart/"
 
 typedef struct
 {
@@ -46,8 +46,8 @@ typedef struct
     UInt16 yHotspot;
     ImageBuffer* CursorBuffer;
     BYTE* CursorRenderBuffer; //Wombat778 3-24-04
-    std::vector<TextureHandle *> CursorRenderTexture;
-    PaletteHandle *CursorRenderPalette;
+    std::vector<TextureHandle*> CursorRenderTexture;
+    PaletteHandle* CursorRenderPalette;
 } SimCursor;
 
 #define SDIERR_INVALIDPARAM "SDIERR_INVALIDPARAM"
@@ -65,14 +65,17 @@ typedef struct
 
 #define SSI_GENERAL "General SIM Input Error"
 #define SSI_NO_DI_INIT "Unable to Create Direct Input Object, Cannot Continue"
-#define SSI_NO_MOUSE_INIT "Unable to Initialize Mouse, Click OK to Continue without Mouse"
-#define SSI_NO_JOYSTICK_INIT "Unable to Initialize Joystick, Click OK to Continue without Joystick"
-#define SSI_NO_CURSOR_INIT "Unable to Load Cursors, Click OK to Continue without Cursors"
+#define SSI_NO_MOUSE_INIT                                                      \
+    "Unable to Initialize Mouse, Click OK to Continue without Mouse"
+#define SSI_NO_JOYSTICK_INIT                                                   \
+    "Unable to Initialize Joystick, Click OK to Continue without Joystick"
+#define SSI_NO_CURSOR_INIT                                                     \
+    "Unable to Load Cursors, Click OK to Continue without Cursors"
 #define SSI_NO_KEYBOARD_INIT "Unable to Initialize Keyboard, Cannot Continue"
 
 #define DINPUT_BUFFERSIZE 16
 // #define DMOUSE_BUFFERSIZE 16 // Retro 15Feb2004 -aaaargh
-#define DMOUSE_BUFFERSIZE 128 // Retro 15Feb2004 - minimum 
+#define DMOUSE_BUFFERSIZE 128 // Retro 15Feb2004 - minimum
 #define DKEYBOARD_BUFFERSIZE 256
 #define DJOYSTICK_BUFFERSIZE 16
 
@@ -130,8 +133,10 @@ extern VU_TIME gTimeLastMouseMove;
 extern VU_TIME gTimeLastCursorUpdate; //Wombat778 1-24-04
 extern int gTotalJoy;
 extern _TCHAR* gDIDevNames[SIM_NUMDEVICES - SIM_JOYSTICK1];
-extern int gDIDevButtons[SIM_NUMDEVICES]; // button count per device (for the assignment UI #18)
-extern GUID gDIDevGUIDs[SIM_NUMDEVICES]; // device instance GUID (stable axis/button binding #19)
+extern int gDIDevButtons
+    [SIM_NUMDEVICES]; // button count per device (for the assignment UI #18)
+extern GUID gDIDevGUIDs
+    [SIM_NUMDEVICES]; // device instance GUID (stable axis/button binding #19)
 extern DIDEVCAPS gCurJoyCaps;
 
 // Functions called by other modules
@@ -166,7 +171,8 @@ void AcquireDeviceInput(int, BOOL);
 // focus loss and must be explicitly re-acquired, else input stays dead until a lazy per-read
 // re-acquire happens to succeed (intermittent "controls/keyboard lost after Alt-Tab").
 void ReacquireAllInputDevices(void);
-void UnacquireAllInputDevices(void);           // Artscout - 2026 (#93): release all DI devices on focus loss
+void UnacquireAllInputDevices(
+    void); // Artscout - 2026 (#93): release all DI devices on focus loss
 BOOL CheckDeviceAcquisition(int DeviceIndex);
 BOOL CreateSimCursors(void);
 void CleanupSimCursors(void);

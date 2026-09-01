@@ -50,11 +50,11 @@ alloc_handle_t *AllocInit(void)
     return(alloc_handle_t *)root;
 }
 
-alloc_handle_t *AllocSetPool(alloc_handle_t *new)
+alloc_handle_t *AllocSetPool(alloc_handle_t *newPool)
 {
     alloc_handle_t *old;
     old = (alloc_handle_t *)root;
-    root = (alloc_hdr_t *)new;
+    root = (alloc_hdr_t *)newPool;
     return old;
 }
 

@@ -3,11 +3,11 @@
 #define FLIGHT_H
 
 #include "package.h"
-#include "Find.h"
+#include "find.h"
 #include "airunit.h"
-#include "Pilot.h"
+#include "pilot.h"
 #include "loadout.h"
-#include "SIM/INCLUDE/initdata.h"
+#include "sim/include/initdata.h"
 
 
 class PackageClass;
@@ -20,10 +20,11 @@ enum MissionTypeEnum;
 #define FEVAL_MISSION_STARTED 0x01 // Mission is in it's 'critical section'
 #define FEVAL_GOT_TO_TARGET 0x02 // We've arrived at the target
 #define FEVAL_ON_STATION 0x04 // We're in our VOL timewise (not spacewise)
-#define FEVAL_START_COLD 0x10 // not really evaluation flag, start mission from cold, sneaked in so its transfered.... JPO
+#define FEVAL_START_COLD                                                       \
+    0x10 // not really evaluation flag, start mission from cold, sneaked in so its transfered.... JPO
 
 // 2002-02-12 added by MN
-#define FLIGHT_ON_STATION 0x20 // this is used for player flights. Only get 
+#define FLIGHT_ON_STATION 0x20 // this is used for player flights. Only get
 // AWACS BVR threat warnings when checked in
 
 #define AIRCRAFT_NOT_ASSIGNED 0 // planeStats values
@@ -48,7 +49,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreeFS(mem);
+        if (mem)
+            MemFreeFS(mem);
     };
     static void InitializeStorage()
     {
@@ -76,7 +78,7 @@ private:
     WayPointClass override_wp; // Divert waypoint or other overriding waypoint
     LoadoutStruct *loadout; // A custom loadout from the Payload window
     uchar loadouts; // Number of loadouts we have recorded (1 or # of ac)
-    uchar mission;      // Unit's mission
+    uchar mission; // Unit's mission
     uchar old_mission; // Previous mission, if we've been diverted
     uchar last_direction; // Direction of last move
     uchar priority; // Mission priority
@@ -91,7 +93,7 @@ public:
     uchar slots[PILOTS_PER_FLIGHT]; // Which vehicle slots this flight is using
     uchar pilots[PILOTS_PER_FLIGHT]; // Which squadron pilots we're using
     uchar plane_stats[PILOTS_PER_FLIGHT]; // The status of this aircraft
-    uchar player_slots[PILOTS_PER_FLIGHT];// Which player pilot is in this slot
+    uchar player_slots[PILOTS_PER_FLIGHT]; // Which player pilot is in this slot
     uchar last_player_slot; // Slot # of last pilot in this slot
     uchar callsign_id; // Index into callsign table
     uchar callsign_num;
@@ -162,10 +164,14 @@ public:
     }
 
     // virtual int CombatClass (void) { return SimACDefTable[((Falcon4EntityClassType*)EntityType())->vehicleDataIndex].combatClass; } // 2002-02-25 ADDED BY S.G. FlightClass needs to have a combat class like aircrafts.
-    virtual int CombatClass(void);  // 2002-03-04 MODIFIED BY S.G. Moved inside Flight.cpp
+    virtual int
+    CombatClass(void); // 2002-03-04 MODIFIED BY S.G. Moved inside Flight.cpp
     void SetLastDirection(uchar);
     void SetPackage(VU_ID);
-    void SetEvalFlag(uchar, int reset = 0);  // 2002-02-19 MODIFIED BY S.G. Added the ability to reset the flag to whatever is passed without ORing the bits toghether
+    void SetEvalFlag(
+        uchar,
+        int reset =
+            0); // 2002-02-19 MODIFIED BY S.G. Added the ability to reset the flag to whatever is passed without ORing the bits toghether
     void ClearEvalFlag(uchar);
     void SetAssignedTarget(VU_ID targetId);
     void ClearAssignedTarget(void);
@@ -205,7 +211,8 @@ public:
     {
         return 1;
     }
-    virtual int CollectWeapons(uchar* dam, MoveType m, short w[], uchar wc[], int dist);
+    virtual int CollectWeapons(uchar *dam, MoveType m, short w[], uchar wc[],
+                               int dist);
 #if HOTSPOT_FIX
     virtual CampaignTime MaxUpdateTime() const
     {
@@ -284,7 +291,9 @@ public:
     virtual CampaignTime GetMoveTime(void);
     virtual CampaignTime GetCombatTime(void)
     {
-        return (TheCampaign.CurrentTime > last_combat) ? TheCampaign.CurrentTime - last_combat : 0;
+        return (TheCampaign.CurrentTime > last_combat) ?
+                   TheCampaign.CurrentTime - last_combat :
+                   0;
     }
     virtual int GetBurntFuel(void)
     {
@@ -328,7 +337,8 @@ public:
     virtual CampEntity GetUnitAirbase(void);
     virtual VU_ID GetUnitAirbaseID(void);
     // virtual int GetUnitTakeoffSlot (void) { return (int)takeoff_slot; }
-    virtual int LoadWeapons(void *squadron, uchar *dam, MoveType mt, int num, int type_flags, int guide_flags);
+    virtual int LoadWeapons(void *squadron, uchar *dam, MoveType mt, int num,
+                            int type_flags, int guide_flags);
     virtual int DumpWeapons(void);
     virtual CampaignTime ETA(void);
     virtual F4PFList GetKnownEmitters(void);
@@ -350,15 +360,16 @@ public:
     {
         last_move += dt;
     }
-    virtual int GetBestVehicleWeapon(int, uchar*, MoveType, int, int*);
+    virtual int GetBestVehicleWeapon(int, uchar *, MoveType, int, int *);
     virtual void UseFuel(long);
 
     // Core functions
-    int DetectVs(AircraftClass *ac, float *d, int *combat, int *spotted, int *estr);
+    int DetectVs(AircraftClass *ac, float *d, int *combat, int *spotted,
+                 int *estr);
     int DetectVs(CampEntity e, float *d, int *combat, int *spotted, int *estr);
-    PackageClass* GetUnitPackage(void)
+    PackageClass *GetUnitPackage(void)
     {
-        return (PackageClass*)vuDatabase->Find(package);
+        return (PackageClass *)vuDatabase->Find(package);
     }
     int PickRandomPilot(int seed);
     int GetAdjustedPlayerSlot(int pslot);
@@ -366,19 +377,23 @@ public:
     {
         return pilots[pilotSlot];
     }
-    PilotClass* GetPilotData(int pilotSlot);
+    PilotClass *GetPilotData(int pilotSlot);
     int GetPilotID(int pilotSlot);
     int GetPilotCallNumber(int pilot_slot);
     uchar GetPilotVoiceID(int pilotSlot);
-    int GetPilotCount(void); // Returns # of pilots in flight (including players)
+    int
+    GetPilotCount(void); // Returns # of pilots in flight (including players)
     int GetACCount(void); // Returns # of aircraft in flight
     int GetFlightLeadSlot(void); // Returns slot of flightleader
-    int GetFlightLeadCallNumber(void); // Returns the callnumber (1-36) of the flightleader
+    int GetFlightLeadCallNumber(
+        void); // Returns the callnumber (1-36) of the flightleader
     uchar GetFlightLeadVoiceID(void); // Returns the voiceId of the flightleader
     int GetAdjustedAircraftSlot(int aircraftNum);
     long CalculateFuelAvailable(int aircraftNum);
     int HasWeapons(void);
-    int HasFuel(int limit = 9);  // 2002-02-20 MODIFIED BY S.G. Added 'limit' which defaults to 9 so 9/12 is the same as 3/4 used in the original code
+    int HasFuel(
+        int limit =
+            9); // 2002-02-20 MODIFIED BY S.G. Added 'limit' which defaults to 9 so 9/12 is the same as 3/4 used in the original code
     int CanAbort(void); // returns 1 if don't have enough fuel or weapons
     // 2001-04-03 ADDED BY S.G. THE Standoff jammer GETTER WASN'T DEFINED
     Flight GetECMFlight(void);
@@ -388,12 +403,15 @@ public:
     Flight GetFACFlight(void);
     Flight GetTankerFlight(void);
     Flight GetFlightController(void);
-    int FindCollisionPoint(FalconEntity *target, vector *collPoint, int noAWACS);
+    int FindCollisionPoint(FalconEntity *target, vector *collPoint,
+                           int noAWACS);
     void RegisterLock(FalconEntity *locker);
 
     // Component accessers (Sim Flight emulators)
     void SendComponentMessage(int command, VuEntity *sender);
-    int AirbaseOperational(Objective airbase);  // JPO - is the airbase still suitable for takeoff/landings
+    int AirbaseOperational(
+        Objective
+            airbase); // JPO - is the airbase still suitable for takeoff/landings
 
     // 2001-04-03 ADDED BY S.G. NEED SOMETHING TO HOLD THE ecmFlightClassPtr VARIABLE
     FlightClass *ecmFlightPtr;
@@ -403,13 +421,13 @@ public:
     // 2001-10-11 ADDED by M.N.
     unsigned int refuel; // How much fuel has to be taken from a tanker
 };
-typedef FlightClass* Flight;
+typedef FlightClass *Flight;
 
 // =================================
 // Support functions
 // =================================
 
-FlightClass* NewFlight(int type, Unit parent, Unit squad);
+FlightClass *NewFlight(int type, Unit parent, Unit squad);
 
 int RegroupFlight(Flight flight);
 
@@ -424,7 +442,6 @@ WayPoint ResetCurrentWP(Unit u);
 void AbortFlight(Flight flight);
 
 Objective FindAlternateStrip(Flight flight);
-
 
 
 #endif

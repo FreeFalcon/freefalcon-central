@@ -1,5 +1,5 @@
 #include "stdhdr.h"
-#include "Graphics/Include/drawparticlesys.h"
+#include "graphics/include/drawparticlesys.h"
 #include "f4error.h"
 #include "aircrft.h"
 #include "airframe.h"
@@ -7,28 +7,28 @@
 #include "simdrive.h"
 #include "entity.h"
 #include "cmpclass.h"
-#include "initData.h"
+#include "initdata.h"
 #include "find.h"
 #include "flight.h"
 #include "ptdata.h"
 #include "feature.h"
 #include "fsound.h"
 #include "soundfx.h"
-#include "MsgInc/LandingMessage.h"
-#include "MsgInc/DamageMsg.h"
+#include "msginc/landingmessage.h"
+#include "msginc/damagemsg.h"
 #include "fakerand.h"
 #include "falcsess.h"
 #include "persist.h"
-#include "Graphics/Include/terrtex.h"
+#include "graphics/include/terrtex.h"
 #include "fack.h"
 #include "playerop.h"
 #include "sms.h"
 #include "digi.h"
 #include "sfx.h"
 #include "dofsnswitches.h"
-#include "Sim/Include/SimVuDrv.h"
+#include "sim/include/simvudrv.h"
 #include "ui/include/uicomms.h" // JB 010107
-extern UIComms *gCommsMgr; // JB 010107
+extern UIComms* gCommsMgr; // JB 010107
 
 void CalcTransformMatrix(SimBaseClass* theObject);
 
@@ -37,12 +37,11 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
     float nextX, nextY;
     float psi;
     CampEntity ent;
-    SimBaseClass *carrier;
+    SimBaseClass* carrier;
 
     // set lights and gear
-    SetAcStatusBits(
-        ACSTATUS_EXT_LIGHTS bitor ACSTATUS_GEAR_DOWN bitor ACSTATUS_EXT_NAVLIGHTS bitor ACSTATUS_EXT_NAVLIGHTSFLASH
-    );
+    SetAcStatusBits(ACSTATUS_EXT_LIGHTS bitor ACSTATUS_GEAR_DOWN bitor
+                    ACSTATUS_EXT_NAVLIGHTS bitor ACSTATUS_EXT_NAVLIGHTSFLASH);
 
     //curGroundPt = initData->ptIndex - 1;
     af->ClearFlag(AirframeClass::InAir);
@@ -62,19 +61,22 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
     {
         // try and get the carrier's position, otherwise just use the
         // task force position
-        if ( not ent->IsAggregate() and ent->GetComponents() and (carrier = ent->GetComponentLead()) not_eq NULL)
+        if (not ent->IsAggregate() and ent->GetComponents() and
+            (carrier = ent->GetComponentLead()) not_eq NULL)
         {
             psi = carrier->Yaw();
             af->initialX = nextX = af->x = initData->x = carrier->XPos();
             af->initialY = nextY = af->y = initData->y = carrier->YPos();
-            initData->z = OTWDriver.GetGroundLevel(initData->x, initData->y) - 20.0f;
+            initData->z =
+                OTWDriver.GetGroundLevel(initData->x, initData->y) - 20.0f;
         }
         else
         {
             psi = ent->Yaw();
             af->initialX = nextX = af->x = initData->x = ent->XPos();
             af->initialY = nextY = af->y = initData->y = ent->YPos();
-            initData->z = OTWDriver.GetGroundLevel(initData->x, initData->y) - 20.0f;
+            initData->z =
+                OTWDriver.GetGroundLevel(initData->x, initData->y) - 20.0f;
         }
     }
     else
@@ -90,7 +92,7 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
     af->initialPsi = psi;
     af->initialMach = 0.0F;
     // sfr: try to fix sink
-    af->initialZ    = initData->z - af->CheckHeight();
+    af->initialZ = initData->z - af->CheckHeight();
     SetPosition(initData->x, initData->y, af->initialZ);
     SetYPR(psi, 0.0F, 0.0F);
     SetDelta(0.0f, 0.0F, 0.0F);
@@ -101,13 +103,15 @@ void AircraftClass::OnGroundInit(SimInitDataClass* initData)
 
     if (isDigital)
     {
-        af->initialMach = (float)sqrt(XDelta() * XDelta() + YDelta() * YDelta());
+        af->initialMach =
+            (float)sqrt(XDelta() * XDelta() + YDelta() * YDelta());
     }
 
     SetYPRDelta(0.0F, 0.0F, 0.0F);
 }
 
-BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundType)
+BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle,
+                                 int groundType)
 {
     VehicleClassDataType* vc;
     FalconDamageMessage* message;
@@ -119,7 +123,8 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
     FeatureCollision(af->groundZ); // JPO force a check for onFlatFeature now
     // Check for landing
-    MonoPrint("LandingCheck onFlatFeature %s\n", onFlatFeature == TRUE ? "TRUE" : "FALSE");
+    MonoPrint("LandingCheck onFlatFeature %s\n",
+              onFlatFeature == TRUE ? "TRUE" : "FALSE");
 
     if (af->IsSet(AirframeClass::Simplified))
     {
@@ -134,46 +139,50 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     if (IsSetFalcFlag(FEC_INVULNERABLE))
         sinkRate *= 2.0F;
 
-    if (groundType == COVERAGE_WATER or
-        groundType == COVERAGE_RIVER or
-        ( not onFlatFeature and 
- not af->IsSet(AirframeClass::OverRunway) and 
+    if (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER or
+        (not onFlatFeature and not af->IsSet(AirframeClass::OverRunway) and
          (groundType == COVERAGE_THINFOREST or
-          groundType == COVERAGE_THICKFOREST or
-          groundType == COVERAGE_ROCKY or
+          groundType == COVERAGE_THICKFOREST or groundType == COVERAGE_ROCKY or
           groundType == COVERAGE_URBAN)))
     {
         message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
 
         //we are not allowed to come to a stop on the water
-        if (af->vt < 0.5F and (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
+        if (af->vt < 0.5F and
+            (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER))
             message->dataBlock.damageStrength = maxStrength;
         else if ((float)rand() / (float)RAND_MAX < 0.01F)
         {
             vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
 
-            if ((float)rand() / (float)RAND_MAX < af->vt * impactAngle * 0.02F * af->Fuel() / vc->FuelWt)
+            if ((float)rand() / (float)RAND_MAX <
+                af->vt * impactAngle * 0.02F * af->Fuel() / vc->FuelWt)
                 message->dataBlock.damageStrength = maxStrength;
         }
         else
         {
             if (groundType == COVERAGE_WATER or groundType == COVERAGE_RIVER)
-                message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
-                                                        af->vt * af->vt * impactAngle * impactAngle * 0.02F);
+                message->dataBlock.damageStrength =
+                    min(1000.0F, af->vt * impactAngle * 0.1F +
+                                     af->vt * af->vt * impactAngle *
+                                         impactAngle * 0.02F);
             else
-                message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
-                                                        af->vt * af->vt * impactAngle * impactAngle * 0.05F);
+                message->dataBlock.damageStrength =
+                    min(1000.0F, af->vt * impactAngle * 0.1F +
+                                     af->vt * af->vt * impactAngle *
+                                         impactAngle * 0.05F);
 
-            if (message->dataBlock.damageStrength < 1.0F and (float)rand() / (float)RAND_MAX < 0.2F)
+            if (message->dataBlock.damageStrength < 1.0F and
+                (float) rand() / (float)RAND_MAX < 0.2F)
                 message->dataBlock.damageStrength = 1.0F;
         }
 
-        if ( not IsSetFalcFlag(FEC_INVULNERABLE))
+        if (not IsSetFalcFlag(FEC_INVULNERABLE))
         {
             af->SetFlag(AirframeClass::EngineOff);
-            af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-            mFaults->SetFault(FaultClass::eng_fault,
-                              FaultClass::fl_out, FaultClass::fail, FALSE);
+            af->SetFlag(AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+            mFaults->SetFault(FaultClass::eng_fault, FaultClass::fl_out,
+                              FaultClass::fail, FALSE);
             Sms->RipOffWeapons(noseAngle);
         }
 
@@ -184,37 +193,41 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     }
 
 
-
     if (fabs(noseAngle) >= impactTest or
-        ( not af->IsSet(AirframeClass::OnObject) and platformAngles.sinthe < 0.0F or platformAngles.sinthe < -0.01F) or // JB carrier
+        (not af->IsSet(AirframeClass::OnObject) and
+             platformAngles.sinthe < 0.0F or
+         platformAngles.sinthe < -0.01F) or // JB carrier
         platformAngles.cosphi < 0.94F)
     {
         // planted right into ground
         // edg note: don't set exploding any more.
         // all collision problems must now go thru ApplyDamage
         message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
-        message->dataBlock.damageStrength =  min(1000.0F, af->vt * impactAngle * 0.1F +
-                                             af->vt * af->vt * impactAngle * impactAngle * 0.02F);
+        message->dataBlock.damageStrength = min(
+            1000.0F, af->vt * impactAngle * 0.1F +
+                         af->vt * af->vt * impactAngle * impactAngle * 0.02F);
 
-        if (message->dataBlock.damageStrength < 1.0F and (float)rand() / (float)RAND_MAX < 0.2F)
+        if (message->dataBlock.damageStrength < 1.0F and
+            (float) rand() / (float)RAND_MAX < 0.2F)
             message->dataBlock.damageStrength = 1.0F;
 
         vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
 
         if ((float)rand() / (float)RAND_MAX < 0.02F)
         {
-            if ((float)rand() / (float)RAND_MAX < af->vt * impactAngle * 0.02F * af->Fuel() / vc->FuelWt)
+            if ((float)rand() / (float)RAND_MAX <
+                af->vt * impactAngle * 0.02F * af->Fuel() / vc->FuelWt)
                 message->dataBlock.damageStrength = 1000.0F;
         }
 
         FalconSendMessage(message, TRUE);
 
-        if ( not IsSetFalcFlag(FEC_INVULNERABLE))
+        if (not IsSetFalcFlag(FEC_INVULNERABLE))
         {
             af->SetFlag(AirframeClass::EngineOff);
-            af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-            mFaults->SetFault(FaultClass::eng_fault,
-                              FaultClass::fl_out, FaultClass::fail, FALSE);
+            af->SetFlag(AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+            mFaults->SetFault(FaultClass::eng_fault, FaultClass::fl_out,
+                              FaultClass::fail, FALSE);
             Sms->RipOffWeapons(noseAngle);
         }
 
@@ -243,17 +256,19 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
          5.3f, // time to live
          5.0f ) ); // scale
          */
-        DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1),
-                                              &pos,
+        DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1), &pos,
                                               &vec);
         return TRUE;
     }
 
-    if (af->vt * impactAngle < sinkRate * (1.25F - ( not 
-                                           (af->IsSet(AirframeClass::OverRunway)
-                                            or af->IsSet(AirframeClass::OnObject)) // JB carrier
-                                           and 
- not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+    if (af->vt * impactAngle <
+            sinkRate *
+                (1.25F - (not(af->IsSet(AirframeClass::OverRunway) or
+                              af->IsSet(AirframeClass::OnObject)) // JB carrier
+                          and not onFlatFeature and
+                          groundType not_eq COVERAGE_ROAD) *
+                             0.5F) and
+        af->gearPos > 0.8F)
     {
         // ok touchdown
 
@@ -277,18 +292,22 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
          5.3f, // time to live
          5.0f ) ); // scale
          */
-        DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1),
-                                              &pos,
+        DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1), &pos,
                                               &vec);
 
         SetPulseTurbulence(0.2f, 0.2f, 1.0f * af->vt * impactAngle, 1.0f);
 
         return TRUE;
     }
-    else if (af->vt * impactAngle < sinkRate * 1.75F * (1.0F - ( not 
-             (af->IsSet(AirframeClass::OverRunway)
-              or af->IsSet(AirframeClass::OnObject)) // JB carrier
-            and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+    else if (af->vt * impactAngle <
+                 sinkRate * 1.75F *
+                     (1.0F -
+                      (not(af->IsSet(AirframeClass::OverRunway) or
+                           af->IsSet(AirframeClass::OnObject)) // JB carrier
+                       and not onFlatFeature and
+                       groundType not_eq COVERAGE_ROAD) *
+                          0.5F) and
+             af->gearPos > 0.8F)
     {
         //bounce
 
@@ -298,7 +317,8 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         pos.x = XPos();
         pos.y = YPos();
-        pos.z = ZPos() + 4.0f;;
+        pos.z = ZPos() + 4.0f;
+        ;
         vec.x = 0.0f;
         vec.y = 0.0f;
         vec.z = -12.0f;
@@ -312,8 +332,7 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
          5.3f, // time to live
          5.0f ) ); // scale
          */
-        DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1),
-                                              &pos,
+        DrawableParticleSys::PS_AddParticleEx((SFX_LANDING_SMOKE + 1), &pos,
                                               &vec);
 
         if (groundType == COVERAGE_OBJECT) // JB carrier
@@ -323,7 +342,13 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         return FALSE;
     }
-    else if (af->vt * impactAngle < sinkRate * 3.0F * (1.0F - ( not af->IsSet(AirframeClass::OverRunway) and not onFlatFeature and groundType not_eq COVERAGE_ROAD) * 0.5F) and af->gearPos > 0.8F)
+    else if (af->vt * impactAngle <
+                 sinkRate * 3.0F *
+                     (1.0F - (not af->IsSet(AirframeClass::OverRunway) and
+                              not onFlatFeature and
+                              groundType not_eq COVERAGE_ROAD) *
+                                 0.5F) and
+             af->gearPos > 0.8F)
     {
         //we hit too hard for the landing gear, crunch
 
@@ -334,24 +359,26 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
         // edg note: I would have liked to put this stuff in faults, but
         // as far as I can tell we don't know xyz position there.
-        if ( not IsSetFalcFlag(FEC_INVULNERABLE) and not af->IsSet(AirframeClass::GearBroken))
+        if (not IsSetFalcFlag(FEC_INVULNERABLE) and
+            not af->IsSet(AirframeClass::GearBroken))
         {
             af->SetFlag(AirframeClass::EngineOff);
-            af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-            mFaults->SetFault(FaultClass::eng_fault, FaultClass::fl_out, FaultClass::fail, FALSE);
+            af->SetFlag(AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+            mFaults->SetFault(FaultClass::eng_fault, FaultClass::fl_out,
+                              FaultClass::fail, FALSE);
 
-            if ( not af->IsSet(AirframeClass::GearBroken))
+            if (not af->IsSet(AirframeClass::GearBroken))
             {
                 af->gearPos = 0.2F;
 
                 for (int i = 0; i < af->NumGear(); i++)
                 {
                     af->gear[i].flags or_eq GearData::GearProblem;
-                    SetDOF(ComplexGearDOF[i]/*COMP_NOS_GEAR + i*/, 0.0F);
+                    SetDOF(ComplexGearDOF[i] /*COMP_NOS_GEAR + i*/, 0.0F);
                 }
 
-                mFaults->SetFault(FaultClass::gear_fault,
-                                  FaultClass::ldgr, FaultClass::fail, TRUE);
+                mFaults->SetFault(FaultClass::gear_fault, FaultClass::ldgr,
+                                  FaultClass::fail, TRUE);
 
                 // gear breaks sound
                 SoundPos.Sfx(SFX_BIND);
@@ -367,18 +394,24 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
     {
         SoundPos.Sfx(SFX_IMPACTG3 + rand() % 4);
 
-        if ( not IsSetFalcFlag(FEC_INVULNERABLE))
+        if (not IsSetFalcFlag(FEC_INVULNERABLE))
         {
             // we're taking damage.....
-            message = CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
+            message =
+                CreateGroundCollisionMessage(this, FloatToInt32(maxStrength));
 
-            gearAbsorption = sinkRate * 3.0F * not af->IsSet(AirframeClass::GearBroken) * af->gearPos;
+            gearAbsorption = sinkRate * 3.0F *
+                             not af->IsSet(AirframeClass::GearBroken) *
+                             af->gearPos;
 
-            message->dataBlock.damageStrength = min(1000.0F, af->vt * impactAngle * 0.1F +
-                                                    (af->vt * impactAngle - gearAbsorption) *
-                                                    (af->vt * impactAngle - gearAbsorption) * 0.006F);
+            message->dataBlock.damageStrength =
+                min(1000.0F, af->vt * impactAngle * 0.1F +
+                                 (af->vt * impactAngle - gearAbsorption) *
+                                     (af->vt * impactAngle - gearAbsorption) *
+                                     0.006F);
 
-            if (message->dataBlock.damageStrength < 1.0F and (float)rand() / (float)RAND_MAX < 0.2F)
+            if (message->dataBlock.damageStrength < 1.0F and
+                (float) rand() / (float)RAND_MAX < 0.2F)
             {
                 message->dataBlock.damageStrength = 1.0F;
             }
@@ -387,25 +420,29 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 
             if ((float)rand() / (float)RAND_MAX < 0.03F)
             {
-                if ((float)rand() / (float)RAND_MAX < af->vt * impactAngle * 0.02F * af->Fuel() / vc->FuelWt)
+                if ((float)rand() / (float)RAND_MAX <
+                    af->vt * impactAngle * 0.02F * af->Fuel() / vc->FuelWt)
                     message->dataBlock.damageStrength = 1000.0F;
             }
 
             // RV - Biker - Damage for AI when crashed into gound
             if (af->IsSet(AirframeClass::IsDigital))
-                message->dataBlock.damageStrength = max(message->dataBlock.damageStrength, maxStrength * (1.0f + (rand() % 50) / 100.0f));
+                message->dataBlock.damageStrength =
+                    max(message->dataBlock.damageStrength,
+                        maxStrength * (1.0f + (rand() % 50) / 100.0f));
 
             FalconSendMessage(message, TRUE);
 
             if (message->dataBlock.damageStrength > 20.0F)
             {
                 af->SetFlag(AirframeClass::EngineOff);
-                af->SetFlag(AirframeClass::EngineOff2);//TJL 01/22/04 multi-engine
-                mFaults->SetFault(FaultClass::eng_fault,
-                                  FaultClass::fl_out, FaultClass::fail, FALSE);
+                af->SetFlag(
+                    AirframeClass::EngineOff2); //TJL 01/22/04 multi-engine
+                mFaults->SetFault(FaultClass::eng_fault, FaultClass::fl_out,
+                                  FaultClass::fail, FALSE);
             }
 
-            if ( not af->IsSet(AirframeClass::GearBroken) and af->gearPos > 0.0F)
+            if (not af->IsSet(AirframeClass::GearBroken) and af->gearPos > 0.0F)
             {
                 af->gearPos = 0.2F;
 
@@ -415,8 +452,9 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
                 }
 
                 // JPO - change to only play for us.
-                mFaults->SetFault(FaultClass::gear_fault,
-                                  FaultClass::ldgr, FaultClass::fail, this == SimDriver.GetPlayerEntity());
+                mFaults->SetFault(FaultClass::gear_fault, FaultClass::ldgr,
+                                  FaultClass::fail,
+                                  this == SimDriver.GetPlayerEntity());
 
                 // gear breaks sound
                 SoundPos.Sfx(af->auxaeroData->sndWheelBrakes);
@@ -447,19 +485,19 @@ BOOL AircraftClass::LandingCheck(float noseAngle, float impactAngle, int groundT
 ** TODO: we probably also need to send the feature a damage
 ** message saying its been hit.
 */
-void
-AircraftClass::GroundFeatureCheck(float groundZ)
+void AircraftClass::GroundFeatureCheck(float groundZ)
 {
     FalconDamageMessage* message;
-    SimBaseClass *hitFeature;
+    SimBaseClass* hitFeature;
 
-    if (OnGround() and af->vcas <= 50.0f and gCommsMgr and gCommsMgr->Online()) // JB 010107
+    if (OnGround() and af->vcas <= 50.0f and gCommsMgr and
+        gCommsMgr->Online()) // JB 010107
         return; // JB 010107
 
     // Decide if we hit anything
     hitFeature = FeatureCollision(groundZ);
 
-    if ( not hitFeature)
+    if (not hitFeature)
     {
         if (onFlatFeature == TRUE)
             CheckPersistantCollision();
@@ -470,23 +508,28 @@ AircraftClass::GroundFeatureCheck(float groundZ)
     // send message to self
     // VuTargetEntity *owner_session = (VuTargetEntity*)vuDatabase->Find(OwnerId());
     message = new FalconDamageMessage(Id(), FalconLocalGame);
-    message->dataBlock.fEntityID  = hitFeature->Id();
+    message->dataBlock.fEntityID = hitFeature->Id();
     ShiAssert(hitFeature->GetCampaignObject());
-    message->dataBlock.fCampID = ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetCampID();
-    message->dataBlock.fSide   = ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetOwner();
-    message->dataBlock.fPilotID   = 255;
-    message->dataBlock.fIndex     = hitFeature->Type();
-    message->dataBlock.fWeaponID  = hitFeature->Type();
+    message->dataBlock.fCampID =
+        ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetCampID();
+    message->dataBlock.fSide =
+        ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetOwner();
+    message->dataBlock.fPilotID = 255;
+    message->dataBlock.fIndex = hitFeature->Type();
+    message->dataBlock.fWeaponID = hitFeature->Type();
     message->dataBlock.fWeaponUID = hitFeature->Id();
 
-    message->dataBlock.dEntityID  = Id();
+    message->dataBlock.dEntityID = Id();
     ShiAssert(GetCampaignObject());
-    message->dataBlock.dCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
-    message->dataBlock.dSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
-    message->dataBlock.dPilotID   = pilotSlot;
-    message->dataBlock.dIndex     = Type();
+    message->dataBlock.dCampID =
+        ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
+    message->dataBlock.dSide =
+        ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
+    message->dataBlock.dPilotID = pilotSlot;
+    message->dataBlock.dIndex = Type();
     message->dataBlock.damageType = FalconDamageType::FeatureCollisionDamage;
-    message->dataBlock.damageStrength = min(1000.0F, af->vt * 0.5F + af->vt * af->vt * 0.02F);
+    message->dataBlock.damageStrength =
+        min(1000.0F, af->vt * 0.5F + af->vt * af->vt * 0.02F);
     message->dataBlock.damageRandomFact = 1.0f;
     message->RequestOutOfBandTransmit();
     FalconSendMessage(message, TRUE);
@@ -494,21 +537,26 @@ AircraftClass::GroundFeatureCheck(float groundZ)
     // send message to feature
     // owner_session = (VuTargetEntity*)vuDatabase->Find(hitFeature->OwnerId());
     message = new FalconDamageMessage(hitFeature->Id(), FalconLocalGame);
-    message->dataBlock.fEntityID  = Id();
-    message->dataBlock.fCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
-    message->dataBlock.fSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
-    message->dataBlock.fPilotID   = pilotSlot;
-    message->dataBlock.fIndex     = Type();
-    message->dataBlock.fWeaponID  = Type();
+    message->dataBlock.fEntityID = Id();
+    message->dataBlock.fCampID =
+        ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
+    message->dataBlock.fSide =
+        ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
+    message->dataBlock.fPilotID = pilotSlot;
+    message->dataBlock.fIndex = Type();
+    message->dataBlock.fWeaponID = Type();
     message->dataBlock.fWeaponUID = hitFeature->Id();
 
-    message->dataBlock.dEntityID  = hitFeature->Id();
-    message->dataBlock.dCampID = ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetCampID();
-    message->dataBlock.dSide   = ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetOwner();
-    message->dataBlock.dPilotID   = 255;
-    message->dataBlock.dIndex     = hitFeature->Type();
+    message->dataBlock.dEntityID = hitFeature->Id();
+    message->dataBlock.dCampID =
+        ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetCampID();
+    message->dataBlock.dSide =
+        ((CampBaseClass*)(hitFeature->GetCampaignObject()))->GetOwner();
+    message->dataBlock.dPilotID = 255;
+    message->dataBlock.dIndex = hitFeature->Type();
     message->dataBlock.damageType = FalconDamageType::ObjectCollisionDamage;
-    message->dataBlock.damageStrength = min(1000.0F, af->vt * 0.5F + af->vt * af->vt * 0.02F);
+    message->dataBlock.damageStrength =
+        min(1000.0F, af->vt * 0.5F + af->vt * af->vt * 0.02F);
     message->dataBlock.damageRandomFact = 1.0f;
     message->RequestOutOfBandTransmit();
     FalconSendMessage(message, TRUE);
@@ -539,7 +587,7 @@ extern int persistantListTail;
 void AircraftClass::CheckPersistantCollision()
 {
     int i;
-    SimPersistantClass *testP;
+    SimPersistantClass* testP;
     float radius;
     Tpoint fpos;
     FalconDamageMessage* message;
@@ -548,7 +596,8 @@ void AircraftClass::CheckPersistantCollision()
     for (i = 0; i < MAX_PERSISTANT_OBJECTS; i++)
     {
         // get the object
-        if ( not PersistantObjects[i].InUse() or not PersistantObjects[i].drawPointer)
+        if (not PersistantObjects[i].InUse() or
+            not PersistantObjects[i].drawPointer)
         {
             continue;
         }
@@ -560,26 +609,30 @@ void AircraftClass::CheckPersistantCollision()
         testP->drawPointer->GetPosition(&fpos);
 
         // test with gross level bounds of object
-        if (fabs(XPos() - fpos.x) < radius  and 
-            fabs(YPos() - fpos.y) < radius  and 
-            fabs(ZPos() - fpos.z) < radius)
+        if (fabs(XPos() - fpos.x) < radius and
+            fabs(YPos() - fpos.y) < radius and fabs(ZPos() - fpos.z) < radius)
         {
             message = new FalconDamageMessage(Id(), FalconLocalGame);
-            message->dataBlock.fEntityID  = Id();
+            message->dataBlock.fEntityID = Id();
             ShiAssert(GetCampaignObject());
-            message->dataBlock.fCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
-            message->dataBlock.fSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
-            message->dataBlock.fPilotID   = pilotSlot;
-            message->dataBlock.fIndex     = Type();
-            message->dataBlock.fWeaponID  = Type();
+            message->dataBlock.fCampID =
+                ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
+            message->dataBlock.fSide =
+                ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
+            message->dataBlock.fPilotID = pilotSlot;
+            message->dataBlock.fIndex = Type();
+            message->dataBlock.fWeaponID = Type();
             message->dataBlock.fWeaponUID = Id();
 
-            message->dataBlock.dEntityID  = Id();
-            message->dataBlock.dCampID = ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
-            message->dataBlock.dSide   = ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
-            message->dataBlock.dPilotID   = pilotSlot;
-            message->dataBlock.dIndex     = Type();
-            message->dataBlock.damageType = FalconDamageType::GroundCollisionDamage;
+            message->dataBlock.dEntityID = Id();
+            message->dataBlock.dCampID =
+                ((CampBaseClass*)(GetCampaignObject()))->GetCampID();
+            message->dataBlock.dSide =
+                ((CampBaseClass*)(GetCampaignObject()))->GetOwner();
+            message->dataBlock.dPilotID = pilotSlot;
+            message->dataBlock.dIndex = Type();
+            message->dataBlock.damageType =
+                FalconDamageType::GroundCollisionDamage;
 
             // for now use maxStrength as amount of damage.
             // later we'll want to add other factors into the equation --
@@ -595,5 +648,4 @@ void AircraftClass::CheckPersistantCollision()
             return;
         }
     }
-
 }

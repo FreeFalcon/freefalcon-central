@@ -41,7 +41,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 
@@ -59,10 +60,9 @@ public:
     DedType mDedType;
 
 public:
-
     CPDed(ObjectInitStr *genericInit, DedInitStr *dedInit);
     virtual ~CPDed();
-    void Exec(SimBaseClass*);
+    void Exec(SimBaseClass *);
     void DisplayDraw(void);
 };
 

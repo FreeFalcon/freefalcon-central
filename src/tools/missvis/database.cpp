@@ -7,7 +7,7 @@
 \***************************************************************************/
 #include <io.h>
 #include <fcntl.h>
-#include "DataBase.h"
+#include "database.h"
 
 
 DataBaseClass TheDataBase;
@@ -41,14 +41,13 @@ void DataBaseClass::ReadData(char *filename)
         ShiError(message);
     }
 
-    TheData = new DataPoint[ TheDataLength ];
+    TheData = new DataPoint[TheDataLength];
     ShiAssert(TheData);
 
     lseek(file, 0, SEEK_SET);
 
-    read(file, TheData, sizeof(tempData)*TheDataLength);
+    read(file, TheData, sizeof(tempData) * TheDataLength);
 }
-
 
 
 void DataBaseClass::FreeData(void)
@@ -59,7 +58,8 @@ void DataBaseClass::FreeData(void)
 }
 
 
-void DataBaseClass::Process(void(*fn)(DataPoint *arg), unsigned startAt, unsigned stopBefore)
+void DataBaseClass::Process(void (*fn)(DataPoint *arg), unsigned startAt,
+                            unsigned stopBefore)
 {
     int i;
 

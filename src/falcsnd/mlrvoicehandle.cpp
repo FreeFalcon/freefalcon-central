@@ -3,9 +3,9 @@
 #include "fsound.h"
 #include "falclib.h"
 #include "alist.h"
-#include "mlrVoice.h"
+#include "mlrvoice.h"
 
-extern unsigned long    vuxRealTime;
+extern unsigned int vuxRealTime;
 
 
 /*
@@ -38,9 +38,9 @@ mlrVoiceHandle::mlrVoiceHandle(F4SoundPos *Owner, int SfxID, int UserID)
 {
     memset(this, 0, sizeof(mlrVoiceHandle));
     SPos = Owner;
-    sfxid  = SfxID;
+    sfxid = SfxID;
     userid = UserID;
-    sfx = &SFX_DEF[ sfxid ];
+    sfx = &SFX_DEF[sfxid];
 
     voice = new mlrVoice(this);
 }
@@ -68,13 +68,14 @@ bool mlrVoiceHandle::IsPlaying()
         return (voice->IsPlaying());
     }
 
-    return(0);
+    return (0);
 }
 
 extern bool g_bNoSound, gSoundManagerRunning;
 extern Tpoint CamPos;
 
-void mlrVoiceHandle::Play(float pscale, float volume, float x, float y, float z, float vx, float vy, float vz)
+void mlrVoiceHandle::Play(float pscale, float volume, float x, float y, float z,
+                          float vx, float vy, float vz)
 {
     if (voice)
     {
@@ -91,8 +92,7 @@ void mlrVoiceHandle::Play(float pscale, float volume, float x, float y, float z,
 
 bool mlrVoiceHandle::AreYou(int SfxId, int UserID)
 {
-    return(SfxId == sfxid and UserID == userid);
+    return (SfxId == sfxid and UserID == userid);
 }
 
 #endif
-

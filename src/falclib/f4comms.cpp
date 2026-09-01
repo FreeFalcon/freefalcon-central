@@ -1,44 +1,54 @@
 #include <objbase.h>
-#include <cguid.h>
+#ifdef _WIN32
+#include <cguid.h> // predefined COM GUIDs -- unused here (only our own DEFINE_GUID below); Windows-only
+#endif
 // #include <dplay8.h> (removed from the SDK; DP8 networking -- a separate track)
 struct IDirectPlay8Server;
 struct IDirectPlay8Client;
-#include <initguid.h>
+#ifdef _WIN32
+#include <initguid.h> // switches DEFINE_GUID to allocate storage -- Windows-only
+#endif
 
-#include "F4Comms.h"
+#include "f4comms.h"
 #include "falclib.h"
 #include "capiopt.h"
-#include "Comms/udp.h"
-#include "Comms/rudp.h"
+#include "comms/udp.h"
+#include "comms/rudp.h"
 #include "router.h" //KCK This needs to go away
-#include "UI/INCLUDE/uicomms.h" // UI comms manager
+#include "ui/include/uicomms.h" // UI comms manager
 #include "falclib/include/msginc/sendchatmessage.h"
-#include "FALCLIB/INCLUDE/f4find.h"
-#include "FalcMesg.h"
-#include "MsgInc/TimingMsg.h"
-#include "Falcmesg.h"
-#include "DispCfg.h"
-#include "CmpClass.h"
-#include "ComData.h"
-#include "UI/INCLUDE/queue.h"
-#include "UI/INCLUDE/falcuser.h"
-#include "TimerThread.h"
+#include "falclib/include/f4find.h"
+#include "falcmesg.h"
+#include "msginc/timingmsg.h"
+#include "falcmesg.h"
+#include "dispcfg.h"
+#include "cmpclass.h"
+#include "comdata.h"
+#include "ui/include/queue.h"
+#include "ui/include/falcuser.h"
+#include "timerthread.h"
 #include "acselect.h"
 #include "pilot.h"
 #include "flight.h"
 #include "voicecomunication/voicecom.h"
-#include "FALCLIB/INCLUDE/MsgInc/PlayerStatusMsg.h"
-#include "FALCLIB/INCLUDE/MsgInc/SimCampMsg.h"
+#include "falclib/include/msginc/playerstatusmsg.h"
+#include "falclib/include/msginc/simcampmsg.h"
 #include "aircrft.h"
-#include "SimBase.h"
+#include "simbase.h"
 
 
 // ==============================================
 // Insert DPLAY crap here
 // ==============================================
 
-DEFINE_GUID(OVERRIDE_GUID, 0x126e6180, 0xd307, 0x11d0, 0x9c, 0x4f, 0x0, 0xa0, 0xc9, 0x5, 0x42, 0x5e);
+#ifdef _WIN32
+DEFINE_GUID(OVERRIDE_GUID, 0x126e6180, 0xd307, 0x11d0, 0x9c, 0x4f, 0x0, 0xa0,
+            0xc9, 0x5, 0x42, 0x5e);
 GUID gOurGUID = OVERRIDE_GUID;
+#else
+GUID gOurGUID =
+    {}; // DirectPlay session GUID -- networking is a separate track (phase 6)
+#endif
 
 // ========================================================================
 // Some defines
@@ -75,7 +85,7 @@ extern bool g_bServer;
 
 
 //DCNode *DanglingConnections = NULL;
-FalconPrivateList *DanglingSessionsList = NULL;
+FalconPrivateList* DanglingSessionsList = NULL;
 
 // debug bandwidth limiters
 int F4CommsBandwidth = 0;
@@ -135,9 +145,9 @@ extern char g_strVoiceHostIP[0x40];
 extern bool stoppingvoice;
 extern bool g_bACPlayerCTDFix;
 
-int InitCommsStuff(ComDataClass *comData)
+int InitCommsStuff(ComDataClass* comData)
 {
-    g_ipadress = ComAPIinet_htoa(comData->ip_address);//me123
+    g_ipadress = ComAPIinet_htoa(comData->ip_address); //me123
 
     // we need to create both handles on startup, so as to haev the ports available
     com_API_handle tmpHandle = NULL, tmpHandle2 = NULL;
@@ -164,21 +174,25 @@ int InitCommsStuff(ComDataClass *comData)
     // start BW FSM and set our ports
     ComAPIBWStart();
     com_API_set_local_ports(comData->localPort, comData->localPort + 1);
-    vuLocalSessionEntity->SetAddress(VU_ADDRESS(0, com_API_get_my_receive_port(), com_API_get_my_reliable_receive_port()));
+    vuLocalSessionEntity->SetAddress(
+        VU_ADDRESS(0, com_API_get_my_receive_port(),
+                   com_API_get_my_reliable_receive_port()));
 
     // group handles
     // UDP
-    FalconGlobalUDPHandle = ComAPICreateGroup("CreateGroup WAN FalconGlobalUDPHandle\n", F4CommsMaxUDPMessageSize, 0);
+    FalconGlobalUDPHandle = ComAPICreateGroup(
+        "CreateGroup WAN FalconGlobalUDPHandle\n", F4CommsMaxUDPMessageSize, 0);
 
-    if ( not FalconGlobalUDPHandle)
+    if (not FalconGlobalUDPHandle)
     {
         return F4CommsConnectionCallback(F4COMMS_ERROR_UDP_NOT_AVAILABLE);
     }
 
     // TCP
-    FalconGlobalTCPHandle = ComAPICreateGroup("WAN RUDP GROUP", F4CommsMaxTCPMessageSize, 0);
+    FalconGlobalTCPHandle =
+        ComAPICreateGroup("WAN RUDP GROUP", F4CommsMaxTCPMessageSize, 0);
 
-    if ( not FalconGlobalTCPHandle)
+    if (not FalconGlobalTCPHandle)
     {
         return F4CommsConnectionCallback(F4COMMS_ERROR_MULTICAST_NOT_AVAILABLE);
     }
@@ -189,11 +203,11 @@ int InitCommsStuff(ComDataClass *comData)
         // this dangling represents the first client to connect to server
         // well receive initial data through it
         bool ret = AddDanglingSession(
-                       VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
-                       VU_ADDRESS(CAPI_DANGLING_IP, com_API_get_my_receive_port(), com_API_get_my_reliable_receive_port())
-                   );
+            VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
+            VU_ADDRESS(CAPI_DANGLING_IP, com_API_get_my_receive_port(),
+                       com_API_get_my_reliable_receive_port()));
 
-        if ( not (ret))
+        if (not(ret))
         {
             return F4CommsConnectionCallback(F4COMMS_ERROR_UDP_NOT_AVAILABLE);
         }
@@ -203,11 +217,11 @@ int InitCommsStuff(ComDataClass *comData)
     {
         // this is a dangling session representing server, so we can send first message
         bool ret = AddDanglingSession(
-                       VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
-                       VU_ADDRESS(comData->ip_address, comData->remotePort, comData->remotePort + 1)
-                   );
+            VU_ID(CAPI_DANGLING_ID, VU_SESSION_ENTITY_ID),
+            VU_ADDRESS(comData->ip_address, comData->remotePort,
+                       comData->remotePort + 1));
 
-        if ( not (ret))
+        if (not(ret))
         {
             return F4CommsConnectionCallback(F4COMMS_ERROR_UDP_NOT_AVAILABLE);
         }
@@ -224,7 +238,6 @@ int InitCommsStuff(ComDataClass *comData)
 }
 
 
-
 // This gets called after we've made a connection (or failed for sure)
 int F4CommsConnectionCallback(int result)
 {
@@ -233,21 +246,21 @@ int F4CommsConnectionCallback(int result)
         int vures;
 
         // Init vu's comms
-        if ( not FalconGlobalTCPHandle)
+        if (not FalconGlobalTCPHandle)
         {
             vures = gMainThread->InitComms(
-                        FalconGlobalUDPHandle, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize,
-                        FalconGlobalUDPHandle, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize,
-                        F4_EVENT_QUEUE_SIZE
-                    );
+                FalconGlobalUDPHandle, F4CommsMaxTCPMessageSize,
+                F4CommsIdealTCPPacketSize, FalconGlobalUDPHandle,
+                F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize,
+                F4_EVENT_QUEUE_SIZE);
         }
         else
         {
             vures = gMainThread->InitComms(
-                        FalconGlobalUDPHandle, F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize,
-                        FalconGlobalTCPHandle, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize,
-                        F4_EVENT_QUEUE_SIZE
-                    );
+                FalconGlobalUDPHandle, F4CommsMaxUDPMessageSize,
+                F4CommsIdealUDPPacketSize, FalconGlobalTCPHandle,
+                F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize,
+                F4_EVENT_QUEUE_SIZE);
         }
 
         if (vures == VU_ERROR)
@@ -305,12 +318,12 @@ int EndCommsStuff(void)
 
     // KCK HACK: To avoid vu's problem with shutting down comms when remote sessions are active
     VuSessionsIterator siter(vuGlobalGroup);
-    FalconSessionEntity *cs;
+    FalconSessionEntity* cs;
 
-    for (cs = (FalconSessionEntity*) siter.GetFirst(); cs not_eq NULL;)
+    for (cs = (FalconSessionEntity*)siter.GetFirst(); cs not_eq NULL;)
     {
-        FalconSessionEntity *oldCs = cs;
-        cs = (FalconSessionEntity*) siter.GetNext();
+        FalconSessionEntity* oldCs = cs;
+        cs = (FalconSessionEntity*)siter.GetNext();
         oldCs->JoinGame(NULL);
     }
 
@@ -331,7 +344,7 @@ void SetupMessageSizes(int protocol)
     // Ideal packet size comms will send over the wire
     if (g_bF4CommsMTU)
     {
-        F4CommsIdealPacketSize = F4CommsMTU;  // Unz and Booster MTU tweek
+        F4CommsIdealPacketSize = F4CommsMTU; // Unz and Booster MTU tweek
     }
     else
     {
@@ -345,11 +358,15 @@ void SetupMessageSizes(int protocol)
     F4CommsMaxTCPMessageSize = F4CommsIdealTCPPacketSize * F4COMMS_MAX_PACKETS;
     F4CommsMaxUDPMessageSize = F4CommsIdealUDPPacketSize;
     // Maximum sized message vu can accept
-    F4VuMaxTCPMessageSize = F4CommsMaxTCPMessageSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
-    F4VuMaxUDPMessageSize = F4CommsMaxUDPMessageSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
+    F4VuMaxTCPMessageSize =
+        F4CommsMaxTCPMessageSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
+    F4VuMaxUDPMessageSize =
+        F4CommsMaxUDPMessageSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
     // Maximum sized packet vu with pack messages into
-    F4VuMaxTCPPackSize = F4CommsIdealTCPPacketSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
-    F4VuMaxUDPPackSize = F4CommsIdealUDPPacketSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
+    F4VuMaxTCPPackSize =
+        F4CommsIdealTCPPacketSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
+    F4VuMaxUDPPackSize =
+        F4CommsIdealUDPPacketSize - PACKET_HDR_SIZE - MAX_MSG_HDR_SIZE;
     protocol;
 }
 
@@ -383,10 +400,10 @@ void CleanupDanglingList(void)
 bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
 {
     VuEnterCriticalSection();
-    FalconSessionEntity *tempSess = NULL;
+    FalconSessionEntity* tempSess = NULL;
 
     // first time in dangling session, why not use a default constructor
-    if ( not DanglingSessionsList)
+    if (not DanglingSessionsList)
     {
         InitDanglingList();
     }
@@ -395,19 +412,17 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
     {
         VuListIterator dsit(DanglingSessionsList);
 
-        for (
-            FalconSessionEntity *session = (FalconSessionEntity*)dsit.GetFirst();
-            session not_eq NULL;
-            session = (FalconSessionEntity*)dsit.GetNext()
-        )
+        for (FalconSessionEntity* session =
+                 (FalconSessionEntity*)dsit.GetFirst();
+             session not_eq NULL;
+             session = (FalconSessionEntity*)dsit.GetNext())
         {
             VU_ADDRESS sAdd = session->GetAddress();
 
             if (
                 //(session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) or
-                (session->OwnerId().creator_.value_ == owner.creator_) and 
-                (sAdd == address)
-            )
+                (session->OwnerId().creator_.value_ == owner.creator_) and
+                (sAdd == address))
             {
                 // found one
                 VuExitCriticalSection();
@@ -427,15 +442,10 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
     tempSess->SetVuStateAccess(VU_MEM_ACTIVE);
 
     // temp session handle
-    com_API_handle udpHandle = ComUDPOpen(
-                                 "Dangling UDP",
-                                 F4CommsMaxUDPMessageSize,
-                                 vuxWorldName,
-                                 vuLocalSessionEntity->GetAddress().recvPort,
-                                 address.recvPort,
-                                 address.ip,
-                                 owner.creator_.value_
-                             );
+    com_API_handle udpHandle =
+        ComUDPOpen("Dangling UDP", F4CommsMaxUDPMessageSize, vuxWorldName,
+                   vuLocalSessionEntity->GetAddress().recvPort,
+                   address.recvPort, address.ip, owner.creator_.value_);
 
     if (udpHandle == NULL)
     {
@@ -445,7 +455,8 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
     }
 
     // handlers for this session
-    tempSess->SetCommsHandle(udpHandle, F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize);
+    tempSess->SetCommsHandle(udpHandle, F4CommsMaxUDPMessageSize,
+                             F4CommsIdealUDPPacketSize);
     tempSess->SetCommsStatus(VU_CONN_ACTIVE);
 
     // add handlers to UDP group handler (so we can send and receive data from it)
@@ -459,13 +470,13 @@ bool AddDanglingSession(VU_ID owner, VU_ADDRESS address)
 //removes a dangling to open a permanent one (newSess)
 //returns 1 if data was exchanged ok
 // 0 if we had no dangling sessions or the session was not there
-int RemoveDanglingSession(VuSessionEntity *newSess)
+int RemoveDanglingSession(VuSessionEntity* newSess)
 {
     int retval = 0;
     char buffer[100];
 
     // no dangling sessions
-    if ( not DanglingSessionsList)
+    if (not DanglingSessionsList)
     {
         return retval;
     }
@@ -474,42 +485,42 @@ int RemoveDanglingSession(VuSessionEntity *newSess)
     // iterate over dangling sessions
     VuListIterator dsit(DanglingSessionsList);
 
-    for (
-        VuSessionEntity *session = (VuSessionEntity*)dsit.GetFirst();
-        session not_eq NULL;
-        session = (VuSessionEntity*)dsit.GetNext()
-    )
+    for (VuSessionEntity* session = (VuSessionEntity*)dsit.GetFirst();
+         session not_eq NULL; session = (VuSessionEntity*)dsit.GetNext())
     {
         VU_ADDRESS newAdd = newSess->GetAddress();
         VU_ADDRESS oldAdd = session->GetAddress();
 
-        if (
-            (session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) or
-            (newSess->OwnerId().creator_.value_ == session->OwnerId().creator_)
-        )
+        if ((session->OwnerId().creator_.value_ == CAPI_DANGLING_ID) or
+            (newSess->OwnerId().creator_.value_ == session->OwnerId().creator_))
         {
             // new sessions have no handle and old one does. exchange them
-            if ((newSess->GetCommsHandle() == NULL) and (session->GetCommsHandle() not_eq NULL))
+            if ((newSess->GetCommsHandle() == NULL) and
+                (session->GetCommsHandle() not_eq NULL))
             {
-                newSess->SetCommsHandle(
-                    session->GetCommsHandle(), F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize
-                );
-                sprintf(buffer, "%s UDP", ((FalconSessionEntity*)newSess)->GetPlayerCallsign());
+                newSess->SetCommsHandle(session->GetCommsHandle(),
+                                        F4CommsMaxUDPMessageSize,
+                                        F4CommsIdealUDPPacketSize);
+                sprintf(buffer, "%s UDP",
+                        ((FalconSessionEntity*)newSess)->GetPlayerCallsign());
                 com_API_set_name(newSess->GetCommsHandle(), buffer);
                 // inherit status from session
                 newSess->SetCommsStatus(session->GetCommsStatus());
                 session->SetCommsHandle(NULL);
             }
 
-            if ((newSess->GetReliableCommsHandle() == NULL) and (session->GetReliableCommsHandle() not_eq NULL))
+            if ((newSess->GetReliableCommsHandle() == NULL) and
+                (session->GetReliableCommsHandle() not_eq NULL))
             {
                 newSess->SetReliableCommsHandle(
-                    session->GetReliableCommsHandle(), F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize
-                );
-                sprintf(buffer, "%s RUDP", ((FalconSessionEntity*)newSess)->GetPlayerCallsign());
+                    session->GetReliableCommsHandle(), F4CommsMaxTCPMessageSize,
+                    F4CommsIdealTCPPacketSize);
+                sprintf(buffer, "%s RUDP",
+                        ((FalconSessionEntity*)newSess)->GetPlayerCallsign());
                 com_API_set_name(newSess->GetReliableCommsHandle(), buffer);
                 // inherity status from session
-                newSess->SetReliableCommsStatus(session->GetReliableCommsStatus());
+                newSess->SetReliableCommsStatus(
+                    session->GetReliableCommsStatus());
                 session->SetReliableCommsHandle(NULL);
             }
 
@@ -532,10 +543,11 @@ int UpdateDanglingSessions(void)
     {
         VuEnterCriticalSection();
         VuListIterator dsit(DanglingSessionsList);
-        VuSessionEntity *session;
+        VuSessionEntity* session;
         int count = 0;
 
-        for (session = (VuSessionEntity*)dsit.GetFirst(); session; session = (VuSessionEntity*)dsit.GetNext())
+        for (session = (VuSessionEntity*)dsit.GetFirst(); session;
+             session = (VuSessionEntity*)dsit.GetNext())
         {
             count += session->GetMessages();
             // attempt to send one packet of each type
@@ -726,11 +738,11 @@ void ModemConnectCallback(ComAPIHandle ch, int ret)
 //why are we taking force as a parameter when we aren't using it?
 void ResyncTimes()
 {
-    int count,  best_comp;
-    VuGroupEntity *g = FalconLocalGame;
+    int count, best_comp;
+    VuGroupEntity* g = FalconLocalGame;
     VuEnterCriticalSection();
     VuSessionsIterator sit(g);
-    FalconSessionEntity *session;
+    FalconSessionEntity* session;
 
     best_comp = 1;
 
@@ -741,9 +753,9 @@ void ResyncTimes()
 
         while (session)
         {
-            if ( not session->IsLocal())
+            if (not session->IsLocal())
             {
-                count ++;
+                count++;
                 best_comp = session->GetReqCompression();
                 break;
             }
@@ -774,18 +786,20 @@ void ResyncTimes()
         {
             if (session->IsLocal())
             {
-                session = (FalconSessionEntity *) sit.GetNext();
+                session = (FalconSessionEntity*)sit.GetNext();
                 continue;
             }
         }
 
-        if (session->GetReqCompression() > 1 and session->GetReqCompression() < best_comp)
+        if (session->GetReqCompression() > 1 and
+            session->GetReqCompression() < best_comp)
         {
             best_comp = session->GetReqCompression();
             remoteCompressionRequests or_eq 1 << (best_comp - 1);
         }
 
-        if (session->GetReqCompression() < 1 and session->GetReqCompression() > best_comp)
+        if (session->GetReqCompression() < 1 and
+            session->GetReqCompression() > best_comp)
         {
             best_comp = session->GetReqCompression();
             remoteCompressionRequests or_eq REMOTE_REQUEST_PAUSE;
@@ -814,7 +828,8 @@ void ResyncTimes()
         targetCompressionRatio = best_comp;
 
         //MonoPrint ("Sending Timing Message %08x %d\n", vuxGameTime, targetCompressionRatio);
-        FalconTimingMessage *msg = new FalconTimingMessage(FalconNullId, FalconLocalGame);
+        FalconTimingMessage* msg =
+            new FalconTimingMessage(FalconNullId, FalconLocalGame);
         msg->RequestOutOfBandTransmit();
         FalconSendMessage(msg, TRUE);
     }
@@ -840,16 +855,15 @@ bool VuxAddDanglingSession(VU_ID owner, VU_ADDRESS address)
 // COMMS handle creation
 // ==========================
 // Set up a handle to communicate via UDP with everyone in this group.
-int VuxGroupConnect(VuGroupEntity *group)
+int VuxGroupConnect(VuGroupEntity* group)
 {
-    char
-    buffer[100],
-           *name;
+    char buffer[100], *name;
 
     if (group->IsGame())
     {
         name = ((VuGameEntity*)group)->GameName();
-        MonoPrint("Connecting to game: %s\n", ((VuGameEntity*)group)->GameName());
+        MonoPrint("Connecting to game: %s\n",
+                  ((VuGameEntity*)group)->GameName());
     }
     else
     {
@@ -858,9 +872,10 @@ int VuxGroupConnect(VuGroupEntity *group)
     }
 
     // Check for existing connections
-    if ( not group->GetCommsHandle())
+    if (not group->GetCommsHandle())
     {
-        if ( not (FalconConnectionProtocol bitand FCP_UDP_AVAILABLE) and not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE))
+        if (not(FalconConnectionProtocol bitand FCP_UDP_AVAILABLE) and
+            not(FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE))
         {
             // No udp connections available
             group->SetCommsHandle(NULL);
@@ -871,13 +886,15 @@ int VuxGroupConnect(VuGroupEntity *group)
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType bitand FCT_SERVER_AVAILABLE and FalconGlobalUDPHandle)
+        else if (FalconConnectionType bitand FCT_SERVER_AVAILABLE and
+                 FalconGlobalUDPHandle)
         {
             // Point us to our server's UDP connection
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType bitand FCT_BCAST_AVAILABLE and FalconGlobalUDPHandle)
+        else if (FalconConnectionType bitand FCT_BCAST_AVAILABLE and
+                 FalconGlobalUDPHandle)
         {
             // Since we have broadcast available, pass our broadcast handle
             group->SetCommsHandle(NULL); // We'll inherit from our global group
@@ -888,8 +905,10 @@ int VuxGroupConnect(VuGroupEntity *group)
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s UDP", name);
             MonoPrint("CreateGroup %s\n", buffer);
-            com_API_handle gh = ComAPICreateGroup(buffer, F4CommsMaxUDPMessageSize, 0);
-            group->SetCommsHandle(gh, F4CommsMaxUDPMessageSize, F4CommsIdealUDPPacketSize);
+            com_API_handle gh =
+                ComAPICreateGroup(buffer, F4CommsMaxUDPMessageSize, 0);
+            group->SetCommsHandle(gh, F4CommsMaxUDPMessageSize,
+                                  F4CommsIdealUDPPacketSize);
 
             if (gh)
                 group->SetCommsStatus(VU_CONN_ACTIVE);
@@ -904,9 +923,11 @@ int VuxGroupConnect(VuGroupEntity *group)
         }
     }
 
-    if ( not group->GetReliableCommsHandle())
+    if (not group->GetReliableCommsHandle())
     {
-        if ( not (FalconConnectionProtocol bitand FCP_TCP_AVAILABLE) and not (FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE) and not (FalconConnectionProtocol bitand FCP_RUDP_AVAILABLE))
+        if (not(FalconConnectionProtocol bitand FCP_TCP_AVAILABLE) and
+            not(FalconConnectionProtocol bitand FCP_SERIAL_AVAILABLE) and
+            not(FalconConnectionProtocol bitand FCP_RUDP_AVAILABLE))
         {
             // No reliable connections available
             group->SetReliableCommsHandle(NULL);
@@ -917,7 +938,8 @@ int VuxGroupConnect(VuGroupEntity *group)
             group->SetCommsHandle(NULL); // We'll inherit from our global group
             group->SetCommsStatus(VU_CONN_ACTIVE);
         }
-        else if (FalconConnectionType bitand FCT_SERVER_AVAILABLE and FalconGlobalTCPHandle)
+        else if (FalconConnectionType bitand FCT_SERVER_AVAILABLE and
+                 FalconGlobalTCPHandle)
         {
             // Point us to our server's tcp connection
             group->SetCommsHandle(NULL); // We'll inherit from our global group
@@ -928,8 +950,10 @@ int VuxGroupConnect(VuGroupEntity *group)
             // Point to Point only - Create a new comms group which we will add shit to.
             sprintf(buffer, "%s RUDP", name);
             MonoPrint("CreateGroup %s\n", buffer);
-            com_API_handle gh = ComAPICreateGroup(buffer, F4CommsMaxTCPMessageSize, 0);
-            group->SetReliableCommsHandle(gh, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize);
+            com_API_handle gh =
+                ComAPICreateGroup(buffer, F4CommsMaxTCPMessageSize, 0);
+            group->SetReliableCommsHandle(gh, F4CommsMaxTCPMessageSize,
+                                          F4CommsIdealTCPPacketSize);
 
             if (gh)
                 group->SetReliableCommsStatus(VU_CONN_ACTIVE);
@@ -950,13 +974,14 @@ int VuxGroupConnect(VuGroupEntity *group)
     return 0;
 }
 
-void VuxGroupDisconnect(VuGroupEntity *group)
+void VuxGroupDisconnect(VuGroupEntity* group)
 {
     com_API_handle ch;
 
     if (group->IsGame())
     {
-        MonoPrint("Disconnecting to game: %s\n", ((VuGameEntity*)group)->GameName());
+        MonoPrint("Disconnecting to game: %s\n",
+                  ((VuGameEntity*)group)->GameName());
     }
     else
     {
@@ -984,7 +1009,7 @@ void VuxGroupDisconnect(VuGroupEntity *group)
 }
 
 
-int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
+int VuxGroupAddSession(VuGroupEntity* group, VuSessionEntity* session)
 {
     com_API_handle gh, sh;
 
@@ -995,13 +1020,12 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
             g_ipadress = g_strVoiceHostIP;
         }
 
-        if (
-            (gConnectionStatus == F4COMMS_CONNECTED or
-             (g_ipadress and not strcmpi(g_ipadress, "0.0.0.0"))) and 
- not stoppingvoice and not g_pDPServer and not g_pDPClient and (g_ipadress)
-        )
+        if ((gConnectionStatus == F4COMMS_CONNECTED or
+             (g_ipadress and not strcmpi(g_ipadress, "0.0.0.0"))) and
+            not stoppingvoice and not g_pDPServer and not g_pDPClient and
+            (g_ipadress))
         {
-            startupvoice(g_ipadress);//me123
+            startupvoice(g_ipadress); //me123
         }
     }
 
@@ -1009,7 +1033,7 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     // adjusted only for games
     if (group->IsGame())
     {
-        FalconGameEntity *game = static_cast<FalconGameEntity*>(group);
+        FalconGameEntity* game = static_cast<FalconGameEntity*>(group);
 
         if (session == vuLocalSessionEntity)
         {
@@ -1022,28 +1046,30 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
             {
                 switch (game->gameType)
                 {
-                        //case game_PlayerPool:
-                        // ComAPIBWEnterState(CAPI_LOBBY_ST);
-                        //break;
-                    case game_Dogfight:
-                        ComAPIBWEnterState(CAPI_DF_ST);
-                        break;
+                    //case game_PlayerPool:
+                    // ComAPIBWEnterState(CAPI_LOBBY_ST);
+                    //break;
+                case game_Dogfight:
+                    ComAPIBWEnterState(CAPI_DF_ST);
+                    break;
 
-                    case game_TacticalEngagement:
-                    case game_Campaign:
-                        // here is different if we are host, for others its the same
-                        ComAPIBWEnterState((game->OwnerId() == vuLocalSession) ? CAPI_CAS_ST : CAPI_CAC_ST);
-                        break;
+                case game_TacticalEngagement:
+                case game_Campaign:
+                    // here is different if we are host, for others its the same
+                    ComAPIBWEnterState((game->OwnerId() == vuLocalSession) ?
+                                           CAPI_CAS_ST :
+                                           CAPI_CAC_ST);
+                    break;
 
-                    default:
-                        ; // do nothing
+                default:; // do nothing
                 }
             }
 
             // if game is not ours, we need to update bw to reflect other players already in
             if (game->OwnerId() not_eq vuLocalSessionEntity->Id())
             {
-                for (unsigned int players = game->SessionCount(); players > 0; --players)
+                for (unsigned int players = game->SessionCount(); players > 0;
+                     --players)
                 {
                     ComAPIBWPlayerJoined();
                 }
@@ -1079,13 +1105,12 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     }
 
     // Send FullUpdate for session if this is our game
-    if (
-        (group->IsGame()) and 
-        (group->Id() == vuLocalSessionEntity->GameId()) and 
-        (vuLocalSessionEntity.get() not_eq session)
-    )
+    if ((group->IsGame()) and
+        (group->Id() == vuLocalSessionEntity->GameId()) and
+        (vuLocalSessionEntity.get() not_eq session))
     {
-        VuFullUpdateEvent *msg = new VuFullUpdateEvent(vuLocalSessionEntity.get(), session);
+        VuFullUpdateEvent* msg =
+            new VuFullUpdateEvent(vuLocalSessionEntity.get(), session);
         msg->RequestReliableTransmit();
         VuMessageQueue::PostVuMessage(msg);
     }
@@ -1093,10 +1118,10 @@ int VuxGroupAddSession(VuGroupEntity *group, VuSessionEntity *session)
     return 1;
 }
 
-int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
+int VuxGroupRemoveSession(VuGroupEntity* group, VuSessionEntity* session)
 {
     // check if session is in group
-    if ( not group->SessionInGroup(session))
+    if (not group->SessionInGroup(session))
     {
         return VU_NO_OP;
     }
@@ -1105,7 +1130,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
 
     if (group->IsGame())
     {
-        FalconGameEntity *game = static_cast<FalconGameEntity*>(group);
+        FalconGameEntity* game = static_cast<FalconGameEntity*>(group);
 
         if (session == vuLocalSessionEntity)
         {
@@ -1145,14 +1170,14 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
     // VWF 12/1/98: Added this to clean up player's flight when he leaves game
     if ((FalconLocalGame == group) and (FalconLocalGame->IsLocal()))
     {
-        Flight flight = ((FalconSessionEntity*)session)->GetAssignedPlayerFlight();
+        Flight flight =
+            ((FalconSessionEntity*)session)->GetAssignedPlayerFlight();
 
         if (flight)
         {
             LeaveACSlot(
                 ((FalconSessionEntity*)session)->GetAssignedPlayerFlight(),
-                ((FalconSessionEntity*)session)->GetAssignedAircraftNum()
-            );
+                ((FalconSessionEntity*)session)->GetAssignedAircraftNum());
             // Make sure this session doesn't have any old information
         }
     }
@@ -1172,7 +1197,7 @@ int VuxGroupRemoveSession(VuGroupEntity *group, VuSessionEntity *session)
 }
 
 // Set up a handle to communicate this session.
-int VuxSessionConnect(VuSessionEntity *session)
+int VuxSessionConnect(VuSessionEntity* session)
 {
     // char buffer[100];
     int wait_for_connection = 0;
@@ -1201,20 +1226,17 @@ int VuxSessionConnect(VuSessionEntity *session)
     if (session->GetReliableCommsHandle() == NULL)
     {
         char buffer[20];
-        sprintf(buffer, "%s RUDP", ((FalconSessionEntity*)session)->GetPlayerCallsign());
+        sprintf(buffer, "%s RUDP",
+                ((FalconSessionEntity*)session)->GetPlayerCallsign());
         //sfr: vu change converts
         VU_ADDRESS add = session->GetAddress();
-        com_API_handle rudpHandle = ComRUDPOpen(
-                                      buffer,
-                                      F4CommsMaxTCPMessageSize,
-                                      vuxWorldName,
-                                      vuLocalSessionEntity->GetAddress().reliableRecvPort,
-                                      add.reliableRecvPort,
-                                      add.ip,
-                                      session->Id().creator_.value_,
-                                      F4CommsIdealPacketSize
-                                  );
-        session->SetReliableCommsHandle(rudpHandle, F4CommsMaxTCPMessageSize, F4CommsIdealTCPPacketSize);
+        com_API_handle rudpHandle =
+            ComRUDPOpen(buffer, F4CommsMaxTCPMessageSize, vuxWorldName,
+                        vuLocalSessionEntity->GetAddress().reliableRecvPort,
+                        add.reliableRecvPort, add.ip,
+                        session->Id().creator_.value_, F4CommsIdealPacketSize);
+        session->SetReliableCommsHandle(rudpHandle, F4CommsMaxTCPMessageSize,
+                                        F4CommsIdealTCPPacketSize);
 
         if (rudpHandle)
         {
@@ -1232,14 +1254,15 @@ int VuxSessionConnect(VuSessionEntity *session)
     //sfr: this can be a duplicated message (see function VuxGroupAddSession)
     {
         //send ourselves to session we are opening connection
-        VuMessage *req = new VuFullUpdateEvent(vuLocalSessionEntity.get(), session);
+        VuMessage* req =
+            new VuFullUpdateEvent(vuLocalSessionEntity.get(), session);
         req->RequestOutOfBandTransmit();
         //req->Send();
         VuMessageQueue::PostVuMessage(req);
     }
     {
         // and request all global ents
-        VuMessage *req = new VuGetRequest(VU_GET_GLOBAL_ENTS, session);
+        VuMessage* req = new VuGetRequest(VU_GET_GLOBAL_ENTS, session);
         //req->RequestReliableTransmit();
         req->RequestOutOfBandTransmit();
         //req->Send();
@@ -1250,7 +1273,7 @@ int VuxSessionConnect(VuSessionEntity *session)
     return 0;
 }
 
-void VuxSessionDisconnect(VuSessionEntity *session)
+void VuxSessionDisconnect(VuSessionEntity* session)
 {
 
     if (session == FalconLocalSession)
@@ -1261,13 +1284,17 @@ void VuxSessionDisconnect(VuSessionEntity *session)
         return;
 
 
-    Flight playerFlight = (Flight)((FalconSessionEntity*)session)->GetAssignedPlayerFlight();
+    Flight playerFlight =
+        (Flight)((FalconSessionEntity*)session)->GetAssignedPlayerFlight();
     int acnumber = ((FalconSessionEntity*)session)->GetAssignedAircraftNum();
 
-    if (g_bACPlayerCTDFix and playerFlight and FalconLocalGame->IsLocal()) // only the host...
+    if (g_bACPlayerCTDFix and playerFlight and
+        FalconLocalGame->IsLocal()) // only the host...
     {
-        FalconPlayerStatusMessage *msg = new FalconPlayerStatusMessage(((FalconSessionEntity*)session)->Id(), FalconLocalGame);
-        SimBaseClass *playerEntity = (SimBaseClass*)((FalconSessionEntity*)session)->GetPlayerEntity();
+        FalconPlayerStatusMessage* msg = new FalconPlayerStatusMessage(
+            ((FalconSessionEntity*)session)->Id(), FalconLocalGame);
+        SimBaseClass* playerEntity =
+            (SimBaseClass*)((FalconSessionEntity*)session)->GetPlayerEntity();
 
         // first change the deag owner of our disconnected player back to the host
         /* if (playerEntity)
@@ -1280,7 +1307,8 @@ void VuxSessionDisconnect(VuSessionEntity *session)
          */
         if (((FalconSessionEntity*)session)->GetPlayerFlight())
         {
-            msg->dataBlock.campID = ((FalconSessionEntity*)session)->GetPlayerFlight()->GetCampID();
+            msg->dataBlock.campID =
+                ((FalconSessionEntity*)session)->GetPlayerFlight()->GetCampID();
         }
         else
         {
@@ -1289,15 +1317,18 @@ void VuxSessionDisconnect(VuSessionEntity *session)
 
         if (playerEntity)
         {
-            msg->dataBlock.playerID         = playerEntity->Id();
+            msg->dataBlock.playerID = playerEntity->Id();
         }
 
-        _tcscpy(msg->dataBlock.callsign, ((FalconSessionEntity*)session)->GetPlayerCallsign());
+        _tcscpy(msg->dataBlock.callsign,
+                ((FalconSessionEntity*)session)->GetPlayerCallsign());
 
-        msg->dataBlock.side             = ((FalconSessionEntity*)session)->GetCountry();
-        msg->dataBlock.pilotID          = ((FalconSessionEntity*)session)->GetPilotSlot();
-        msg->dataBlock.vehicleID = ((FalconSessionEntity*)session)->GetAircraftNum();
-        msg->dataBlock.state            = PSM_STATE_LEFT_SIM;
+        msg->dataBlock.side = ((FalconSessionEntity*)session)->GetCountry();
+        msg->dataBlock.pilotID =
+            ((FalconSessionEntity*)session)->GetPilotSlot();
+        msg->dataBlock.vehicleID =
+            ((FalconSessionEntity*)session)->GetAircraftNum();
+        msg->dataBlock.state = PSM_STATE_LEFT_SIM;
 
         FalconSendMessage(msg, TRUE);
         ((FalconSessionEntity*)session)->SetFlyState(FLYSTATE_IN_UI);
@@ -1307,10 +1338,11 @@ void VuxSessionDisconnect(VuSessionEntity *session)
 
 
         // Get the Aircraftclass entity
-        AircraftClass *playerAircraft = NULL;
+        AircraftClass* playerAircraft = NULL;
 
         if (playerFlight)
-            playerAircraft = (AircraftClass *)playerFlight->GetComponentEntity(acnumber);
+            playerAircraft =
+                (AircraftClass*)playerFlight->GetComponentEntity(acnumber);
 
         // when we still have one, just make local to the host
         if (playerAircraft)
@@ -1320,14 +1352,17 @@ void VuxSessionDisconnect(VuSessionEntity *session)
     }
 
     // 2002-04-14 MN remove the disconnected (CTD'ed, Internet connection lost) player from its slot so it can be occupied again
-    LeaveACSlot(((FalconSessionEntity*)session)->GetAssignedPlayerFlight(), ((FalconSessionEntity*)session)->GetAssignedAircraftNum());
+    LeaveACSlot(((FalconSessionEntity*)session)->GetAssignedPlayerFlight(),
+                ((FalconSessionEntity*)session)->GetAssignedAircraftNum());
 
     // Remove from the global group
     VuxGroupRemoveSession(vuGlobalGroup, session);
 
-    if (session->GetCommsStatus() not_eq VU_CONN_INACTIVE or session->GetReliableCommsStatus() not_eq VU_CONN_INACTIVE)
+    if (session->GetCommsStatus() not_eq VU_CONN_INACTIVE or
+        session->GetReliableCommsStatus() not_eq VU_CONN_INACTIVE)
     {
-        MonoPrint("Disconnecting to session: %s\n", ((FalconSessionEntity*)session)->GetPlayerCallsign());
+        MonoPrint("Disconnecting to session: %s\n",
+                  ((FalconSessionEntity*)session)->GetPlayerCallsign());
     }
 
     /* me123 commented this out

@@ -9,8 +9,8 @@
 #include "uicomms.h"
 #include "userids.h"
 #include "textids.h"
-#include "F4Error.h"
-#include "F4Find.h"
+#include "f4error.h"
+#include "f4find.h"
 #include "cmpclass.h"
 #include "tac_class.h"
 #include "te_defs.h"
@@ -19,11 +19,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-static int
-critical_section_initialised;
+static int critical_section_initialised;
 
-static F4CSECTIONHANDLE
-*vc_critical = NULL;
+static F4CSECTIONHANDLE *vc_critical = NULL;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -31,8 +29,7 @@ static F4CSECTIONHANDLE
 
 victory_condition::victory_condition(tactical_mission *mis)
 {
-    victory_condition
-    *vc;
+    victory_condition *vc;
 
     mission = mis;
 
@@ -258,7 +255,7 @@ int check_victory_conditions(void)
     if (current_tactical_mission)
     {
         if (current_tactical_mission->get_game_over())
-            return(current_tactical_mission->get_game_over());
+            return (current_tactical_mission->get_game_over());
 
         current_tactical_mission->evaluate_victory_conditions();
         current_tactical_mission->calculate_victory_points();
@@ -292,7 +289,7 @@ void evaluate_flight_vc(WayPointClass *wp, double x, double y, double z, double 
 
 void victory_condition::enter_critical_section(void)
 {
-    if ( not vc_critical)
+    if (not vc_critical)
     {
         vc_critical = F4CreateCriticalSection("vc_critical");
     }

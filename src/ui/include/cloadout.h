@@ -26,7 +26,9 @@ public:
     {
         Root_ = NULL;
     }
-    ~C_Loadout() {}
+    ~C_Loadout()
+    {
+    }
 
     void Setup()
     {
@@ -34,7 +36,8 @@ public:
     }
     void Cleanup()
     {
-        if (Root_) RemoveAll();
+        if (Root_)
+            RemoveAll();
     }
     LOADOUT *Create(long ID, HPLIST *storeslist);
     void Add(LOADOUT *load);

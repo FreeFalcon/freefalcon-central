@@ -11,15 +11,15 @@
 /*
  * Required Include Files
  */
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 //sfr: for chks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Request Persistant List
@@ -56,13 +56,12 @@ public:
     class DATA_BLOCK
     {
     public:
-
         VU_ID who;
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
-#pragma pack ()
+#pragma pack()
 
 #endif

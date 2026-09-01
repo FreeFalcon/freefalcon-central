@@ -5,15 +5,14 @@
 
 class EyeballClass : public VisualClass
 {
-public :
+public:
     EyeballClass(int type, SimMoverClass* self);
     virtual ~EyeballClass(void);
 
     virtual SimObjectType* Exec(SimObjectType* targetList);
 
-protected :
+protected:
     virtual float GetSignature(SimObjectType*);
 };
 
 #endif
-

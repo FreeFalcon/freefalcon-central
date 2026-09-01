@@ -9,10 +9,10 @@
 extern MEM_POOL gReadInMemPool;
 #endif
 
-MissileDataSetClass* missileDataset = NULL;
+MissileDataSetClass *missileDataset = NULL;
 int numMissileDatasets = 0;
 
-#define MISSILE_DIR     "sim\\misdata"
+#define MISSILE_DIR "sim/misdata"
 #define MISSILE_DATASET "mistypes.lst"
 
 void MissileClass::ReadInput(int idx)
@@ -29,20 +29,21 @@ void MissileClass::ReadInput(int idx)
 void ReadAllMissileData(void)
 {
     int i;
-    SimlibFileClass* mslList;
-    SimlibFileClass* inputFile;
+    SimlibFileClass *mslList;
+    SimlibFileClass *inputFile;
     char buffer[80];
     char fileName[_MAX_PATH];
     char fName[_MAX_PATH];
 
     // open input file
-    sprintf(fileName, "%s\\%s\0", MISSILE_DIR, MISSILE_DATASET);
+    sprintf(fileName, "%s/%s\0", MISSILE_DIR, MISSILE_DATASET);
     mslList = SimlibFileClass::Open(fileName, SIMLIB_READ);
     F4Assert(mslList);
 
     numMissileDatasets = atoi(mslList->GetNext());
 #ifdef USE_SH_POOLS
-    missileDataset = (MissileDataSetClass *)MemAllocPtr(gReadInMemPool, sizeof(MissileDataSetClass) * numMissileDatasets, 0);
+    missileDataset = (MissileDataSetClass *)MemAllocPtr(
+        gReadInMemPool, sizeof(MissileDataSetClass) * numMissileDatasets, 0);
 #else
     missileDataset = new MissileDataSetClass[numMissileDatasets];
 #endif
@@ -51,7 +52,7 @@ void ReadAllMissileData(void)
     {
         mslList->ReadLine(buffer, 80);
         // Open the basic input file for the missile
-        sprintf(fName, "%s\\%s.dat", MISSILE_DIR, buffer);
+        sprintf(fName, "%s/%s.dat", MISSILE_DIR, buffer);
         inputFile = SimlibFileClass::Open(fName, SIMLIB_READ);
         F4Assert(inputFile);
         // 2002-03-08 ADDED BY S.G. Why not read the name while we're at it...
@@ -84,15 +85,16 @@ void FreeAllMissileData(void)
         delete missileDataset[i].auxData; // JPO
     }
 
-    delete [] missileDataset;
+    delete[] missileDataset;
 }
 
-MissileInputData* MissileInputRead(SimlibFileClass* inputFile)
+MissileInputData *MissileInputRead(SimlibFileClass *inputFile)
 {
-    MissileInputData* inputData;
+    MissileInputData *inputData;
 
 #ifdef USE_SH_POOLS
-    inputData = (MissileInputData *)MemAllocPtr(gReadInMemPool, sizeof(MissileInputData), 0);
+    inputData = (MissileInputData *)MemAllocPtr(gReadInMemPool,
+                                                sizeof(MissileInputData), 0);
 #else
     inputData = new MissileInputData;
 #endif
@@ -130,8 +132,11 @@ MissileInputData* MissileInputRead(SimlibFileClass* inputFile)
     inputData->mslLoftTime = (float)atof(inputFile->GetNext());
 
     //me123
-    inputData->boostguidesec = (float)atof(inputFile->GetNext()); //me123 how many sec we are in boostguide mode
-    inputData->terminalguiderange = (float)atof(inputFile->GetNext()); //me123 what range we transfere to terminal guidence
+    inputData->boostguidesec = (float)atof(
+        inputFile->GetNext()); //me123 how many sec we are in boostguide mode
+    inputData->terminalguiderange = (float)atof(
+        inputFile
+            ->GetNext()); //me123 what range we transfere to terminal guidence
     inputData->boostguideSensorPrecision = (float)atof(inputFile->GetNext());
     inputData->sustainguideSensorPrecision = (float)atof(inputFile->GetNext());
     inputData->terminalguideSensorPrecision = (float)atof(inputFile->GetNext());
@@ -148,15 +153,16 @@ MissileInputData* MissileInputRead(SimlibFileClass* inputFile)
     return (inputData);
 }
 
-MissileAeroData* MissileAeroRead(SimlibFileClass* inputFile)
+MissileAeroData *MissileAeroRead(SimlibFileClass *inputFile)
 {
-    MissileAeroData* aeroData;
+    MissileAeroData *aeroData;
     float multiplier;
     int i, j;
 
     // Allocate memory for the aero data
 #ifdef USE_SH_POOLS
-    aeroData = (MissileAeroData *)MemAllocPtr(gReadInMemPool, sizeof(MissileAeroData), 0);
+    aeroData = (MissileAeroData *)MemAllocPtr(gReadInMemPool,
+                                              sizeof(MissileAeroData), 0);
 #else
     aeroData = new MissileAeroData;
 #endif
@@ -168,7 +174,8 @@ MissileAeroData* MissileAeroRead(SimlibFileClass* inputFile)
 
     // Allocate memory for the mach array
 #ifdef USE_SH_POOLS
-    aeroData->mach = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * aeroData->numMach, 0);
+    aeroData->mach = (float *)MemAllocPtr(gReadInMemPool,
+                                          sizeof(float) * aeroData->numMach, 0);
 #else
     aeroData->mach = new float[aeroData->numMach];
 #endif
@@ -183,7 +190,8 @@ MissileAeroData* MissileAeroRead(SimlibFileClass* inputFile)
 
     // Allocate memory for the alpha array
 #ifdef USE_SH_POOLS
-    aeroData->alpha = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * aeroData->numAlpha, 0);
+    aeroData->alpha = (float *)MemAllocPtr(
+        gReadInMemPool, sizeof(float) * aeroData->numAlpha, 0);
 #else
     aeroData->alpha = new float[aeroData->numAlpha];
 #endif
@@ -195,7 +203,9 @@ MissileAeroData* MissileAeroRead(SimlibFileClass* inputFile)
 
     // Allocate memory for the normal force array
 #ifdef USE_SH_POOLS
-    aeroData->cz = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * aeroData->numMach * aeroData->numAlpha, 0);
+    aeroData->cz = (float *)MemAllocPtr(
+        gReadInMemPool, sizeof(float) * aeroData->numMach * aeroData->numAlpha,
+        0);
 #else
     aeroData->cz = new float[aeroData->numAlpha * aeroData->numMach];
 #endif
@@ -207,13 +217,16 @@ MissileAeroData* MissileAeroRead(SimlibFileClass* inputFile)
     {
         for (j = 0; j < aeroData->numAlpha; j++)
         {
-            aeroData->cz[i * aeroData->numAlpha + j] = (float)atof(inputFile->GetNext()) * multiplier;
+            aeroData->cz[i * aeroData->numAlpha + j] =
+                (float)atof(inputFile->GetNext()) * multiplier;
         }
     }
 
     // Allocate memory for the normal force array
 #ifdef USE_SH_POOLS
-    aeroData->cx = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * aeroData->numMach * aeroData->numAlpha, 0);
+    aeroData->cx = (float *)MemAllocPtr(
+        gReadInMemPool, sizeof(float) * aeroData->numMach * aeroData->numAlpha,
+        0);
 #else
     aeroData->cx = new float[aeroData->numAlpha * aeroData->numMach];
 #endif
@@ -225,21 +238,23 @@ MissileAeroData* MissileAeroRead(SimlibFileClass* inputFile)
     {
         for (j = 0; j < aeroData->numAlpha; j++)
         {
-            aeroData->cx[i * aeroData->numAlpha + j] = (float)atof(inputFile->GetNext()) * multiplier;
+            aeroData->cx[i * aeroData->numAlpha + j] =
+                (float)atof(inputFile->GetNext()) * multiplier;
         }
     }
 
     return (aeroData);
 }
 
-MissileEngineData* MissileEngineRead(SimlibFileClass* inputFile)
+MissileEngineData *MissileEngineRead(SimlibFileClass *inputFile)
 {
-    MissileEngineData* engineData;
+    MissileEngineData *engineData;
     int i;
 
     // Allocate the engine data pointer
 #ifdef USE_SH_POOLS
-    engineData = (MissileEngineData *)MemAllocPtr(gReadInMemPool, sizeof(MissileEngineData), 0);
+    engineData = (MissileEngineData *)MemAllocPtr(gReadInMemPool,
+                                                  sizeof(MissileEngineData), 0);
 #else
     engineData = new MissileEngineData;
 #endif
@@ -249,8 +264,10 @@ MissileEngineData* MissileEngineRead(SimlibFileClass* inputFile)
 
     // Allocate breakpoint and thrust arrays
 #ifdef USE_SH_POOLS
-    engineData->times = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * engineData->numBreaks, 0);
-    engineData->thrust = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * engineData->numBreaks, 0);
+    engineData->times = (float *)MemAllocPtr(
+        gReadInMemPool, sizeof(float) * engineData->numBreaks, 0);
+    engineData->thrust = (float *)MemAllocPtr(
+        gReadInMemPool, sizeof(float) * engineData->numBreaks, 0);
 #else
     engineData->times = new float[engineData->numBreaks];
     engineData->thrust = new float[engineData->numBreaks];
@@ -271,16 +288,17 @@ MissileEngineData* MissileEngineRead(SimlibFileClass* inputFile)
     return (engineData);
 }
 
-MissileRangeData* MissileRangeRead(SimlibFileClass* inputFile)
+MissileRangeData *MissileRangeRead(SimlibFileClass *inputFile)
 {
-    MissileRangeData* rangeData;
+    MissileRangeData *rangeData;
     int numAlt, numVel, numAspect;
     int i, j, k;
     float scaleFactor;
 
     // Allocate memory for the range data
 #ifdef USE_SH_POOLS
-    rangeData = (MissileRangeData *)MemAllocPtr(gReadInMemPool, sizeof(MissileRangeData), 0);
+    rangeData = (MissileRangeData *)MemAllocPtr(gReadInMemPool,
+                                                sizeof(MissileRangeData), 0);
 #else
     rangeData = new MissileRangeData;
 #endif
@@ -290,10 +308,12 @@ MissileRangeData* MissileRangeRead(SimlibFileClass* inputFile)
 
     // Altitude breakpoints
     rangeData->numAltBreakpoints = atoi(inputFile->GetNext());
-    ShiAssert(rangeData->numAltBreakpoints > 0 and rangeData->numAltBreakpoints < 100); // JPO some checks.
+    ShiAssert(rangeData->numAltBreakpoints > 0 and
+              rangeData->numAltBreakpoints < 100); // JPO some checks.
     numAlt = rangeData->numAltBreakpoints;
 #ifdef USE_SH_POOLS
-    rangeData->altBreakpoints = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numAlt, 0);
+    rangeData->altBreakpoints =
+        (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numAlt, 0);
 #else
     rangeData->altBreakpoints = new float[numAlt];
 #endif
@@ -305,10 +325,12 @@ MissileRangeData* MissileRangeRead(SimlibFileClass* inputFile)
 
     // Velocity breakpoints
     rangeData->numVelBreakpoints = atoi(inputFile->GetNext());
-    ShiAssert(rangeData->numVelBreakpoints > 0 and rangeData->numVelBreakpoints < 100); // JPO some checks.
+    ShiAssert(rangeData->numVelBreakpoints > 0 and
+              rangeData->numVelBreakpoints < 100); // JPO some checks.
     numVel = rangeData->numVelBreakpoints;
 #ifdef USE_SH_POOLS
-    rangeData->velBreakpoints = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numVel, 0);
+    rangeData->velBreakpoints =
+        (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numVel, 0);
 #else
     rangeData->velBreakpoints = new float[numVel];
 #endif
@@ -321,9 +343,11 @@ MissileRangeData* MissileRangeRead(SimlibFileClass* inputFile)
     // Aspect breakpoints
     rangeData->numAspectBreakpoints = atoi(inputFile->GetNext());
     numAspect = rangeData->numAspectBreakpoints;
-    ShiAssert(rangeData->numAspectBreakpoints > 0 and rangeData->numAspectBreakpoints < 100); // JPO some checks.
+    ShiAssert(rangeData->numAspectBreakpoints > 0 and
+              rangeData->numAspectBreakpoints < 100); // JPO some checks.
 #ifdef USE_SH_POOLS
-    rangeData->aspectBreakpoints = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numAspect, 0);
+    rangeData->aspectBreakpoints =
+        (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numAspect, 0);
 #else
     rangeData->aspectBreakpoints = new float[numAspect];
 #endif
@@ -335,7 +359,8 @@ MissileRangeData* MissileRangeRead(SimlibFileClass* inputFile)
 
     // The range data
 #ifdef USE_SH_POOLS
-    rangeData->data = (float *)MemAllocPtr(gReadInMemPool, sizeof(float) * numAspect * numAlt * numVel, 0);
+    rangeData->data = (float *)MemAllocPtr(
+        gReadInMemPool, sizeof(float) * numAspect * numAlt * numVel, 0);
 #else
     rangeData->data = new float[numAlt * numVel * numAspect];
 #endif
@@ -346,7 +371,8 @@ MissileRangeData* MissileRangeRead(SimlibFileClass* inputFile)
         {
             for (k = 0; k < numAspect; k++)
             {
-                rangeData->data[i * numVel * numAspect + j * numAspect + k] = (float)atof(inputFile->GetNext()) * scaleFactor;
+                rangeData->data[i * numVel * numAspect + j * numAspect + k] =
+                    (float)atof(inputFile->GetNext()) * scaleFactor;
             }
         }
     }
@@ -356,57 +382,74 @@ MissileRangeData* MissileRangeRead(SimlibFileClass* inputFile)
 
 // JPO structure to read in auxilary variables
 #define OFFSET(x) offsetof(MissileAuxData, x)
-static const InputDataDesc AuxMissileDataDesc[] =
-{
+static const InputDataDesc AuxMissileDataDesc[] = {
 
     // RV - Biker - Read FOV data from missile FMs
-    { "FOVLevel", InputDataDesc::ID_FLOAT, OFFSET(FOVLevel), "2"},
-    { "EXPLevel", InputDataDesc::ID_FLOAT, OFFSET(EXPLevel), "4"},
+    {"FOVLevel", InputDataDesc::ID_FLOAT, OFFSET(FOVLevel), "2"},
+    {"EXPLevel", InputDataDesc::ID_FLOAT, OFFSET(EXPLevel), "4"},
 
     // RV - Biker - Read WEZ max/min from missile FMs in nm
-    { "WEZmax", InputDataDesc::ID_FLOAT, OFFSET(WEZmax), "20"},
-    { "WEZmin", InputDataDesc::ID_FLOAT, OFFSET(WEZmin), "20"},
+    {"WEZmax", InputDataDesc::ID_FLOAT, OFFSET(WEZmax), "20"},
+    {"WEZmin", InputDataDesc::ID_FLOAT, OFFSET(WEZmin), "20"},
 
-    { "maxGTerminal", InputDataDesc::ID_FLOAT, OFFSET(maxGTerminal), "100"},
-    { "maxGNormal", InputDataDesc::ID_FLOAT, OFFSET(maxGNormal), "40"},
-    { "MinEngagementRange", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementRange), "0"}, //  moved to radar data 2002-03-08 S.G. Reinstated here so it's more granular
-    { "MinEngagementAlt", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementAlt), "-1.0"}, //  2002-03-08 ADDED BY S.G. Instead of in radarData so it's more granular. Default to -1 so if it's not set in the dat file, it will use the Falcon4.WCD value instead.
-    { "ProximityfuseChange", InputDataDesc::ID_FLOAT, OFFSET(ProximityfuseChange), "75"},
-    { "SecondStageTimer", InputDataDesc::ID_FLOAT, OFFSET(SecondStageTimer), "0" },
-    { "SecondStageWeight", InputDataDesc::ID_FLOAT, OFFSET(SecondStageWeight), "0"},
-    { "deployableWingsTime", InputDataDesc::ID_FLOAT, OFFSET(deployableWingsTime), "0"}, // A.S.
-    { "mistrail", InputDataDesc::ID_INT, OFFSET(mistrail), "0"},
-    { "misengGlow", InputDataDesc::ID_INT, OFFSET(misengGlow), "0"},
-    { "misengGlowBSP", InputDataDesc::ID_INT, OFFSET(misengGlowBSP), "0"},
-    { "misgroundGlow", InputDataDesc::ID_INT, OFFSET(misgroundGlow), "0"},
-    { "proximityfuserange", InputDataDesc::ID_INT, OFFSET(proximityfuserange), "1000"},
-    { "errorfromparrent", InputDataDesc::ID_INT, OFFSET(errorfromparrent), "0"},
-    { "engLocation", InputDataDesc::ID_VECTOR, OFFSET(misengLocation), "0,0,0"}, // MLR 2003-10-11
-    { "EngineSound", InputDataDesc::ID_INT, OFFSET(EngineSound), "267"}, // MLR 2003-11-06 missles now have a sound when lit.
-    { "rocketDispersionConeAngle", InputDataDesc::ID_FLOAT, OFFSET(rocketDispersionConeAngle), "0"}, // MLR 1/17/2004 -
-    { "rocketSalvoSize", InputDataDesc::ID_INT,   OFFSET(rocketSalvoSize), "-1"}, // MLR 1/17/2004 -
-    { "sndAim9Growl", InputDataDesc::ID_INT,   OFFSET(sndAim9Growl), "6"}, // SFX_GROWL // MLR 2/29/2004 -
-    { "sndAim9GrowlLock",           InputDataDesc::ID_INT,   OFFSET(sndAim9GrowlLock), "7"}, // SFX_GROWLLOCK
-    { "sndAim9Uncaged", InputDataDesc::ID_INT,   OFFSET(sndAim9Uncaged), "182"}, // SFX_NO_CAGE
-    { "sndAim9EnviroSky",           InputDataDesc::ID_INT,   OFFSET(sndAim9EnviroSky), "186"}, // SFX_AIM9_ENVIRO_SKY
-    { "sndAim9EnviroGround",        InputDataDesc::ID_INT,   OFFSET(sndAim9EnviroGround), "187"}, // SFX_AIM9_ENVIRO_GND
+    {"maxGTerminal", InputDataDesc::ID_FLOAT, OFFSET(maxGTerminal), "100"},
+    {"maxGNormal", InputDataDesc::ID_FLOAT, OFFSET(maxGNormal), "40"},
+    {"MinEngagementRange", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementRange),
+     "0"}, //  moved to radar data 2002-03-08 S.G. Reinstated here so it's more granular
+    {"MinEngagementAlt", InputDataDesc::ID_FLOAT, OFFSET(MinEngagementAlt),
+     "-1.0"}, //  2002-03-08 ADDED BY S.G. Instead of in radarData so it's more granular. Default to -1 so if it's not set in the dat file, it will use the Falcon4.WCD value instead.
+    {"ProximityfuseChange", InputDataDesc::ID_FLOAT,
+     OFFSET(ProximityfuseChange), "75"},
+    {"SecondStageTimer", InputDataDesc::ID_FLOAT, OFFSET(SecondStageTimer),
+     "0"},
+    {"SecondStageWeight", InputDataDesc::ID_FLOAT, OFFSET(SecondStageWeight),
+     "0"},
+    {"deployableWingsTime", InputDataDesc::ID_FLOAT,
+     OFFSET(deployableWingsTime), "0"}, // A.S.
+    {"mistrail", InputDataDesc::ID_INT, OFFSET(mistrail), "0"},
+    {"misengGlow", InputDataDesc::ID_INT, OFFSET(misengGlow), "0"},
+    {"misengGlowBSP", InputDataDesc::ID_INT, OFFSET(misengGlowBSP), "0"},
+    {"misgroundGlow", InputDataDesc::ID_INT, OFFSET(misgroundGlow), "0"},
+    {"proximityfuserange", InputDataDesc::ID_INT, OFFSET(proximityfuserange),
+     "1000"},
+    {"errorfromparrent", InputDataDesc::ID_INT, OFFSET(errorfromparrent), "0"},
+    {"engLocation", InputDataDesc::ID_VECTOR, OFFSET(misengLocation),
+     "0,0,0"}, // MLR 2003-10-11
+    {"EngineSound", InputDataDesc::ID_INT, OFFSET(EngineSound),
+     "267"}, // MLR 2003-11-06 missles now have a sound when lit.
+    {"rocketDispersionConeAngle", InputDataDesc::ID_FLOAT,
+     OFFSET(rocketDispersionConeAngle), "0"}, // MLR 1/17/2004 -
+    {"rocketSalvoSize", InputDataDesc::ID_INT, OFFSET(rocketSalvoSize),
+     "-1"}, // MLR 1/17/2004 -
+    {"sndAim9Growl", InputDataDesc::ID_INT, OFFSET(sndAim9Growl),
+     "6"}, // SFX_GROWL // MLR 2/29/2004 -
+    {"sndAim9GrowlLock", InputDataDesc::ID_INT, OFFSET(sndAim9GrowlLock),
+     "7"}, // SFX_GROWLLOCK
+    {"sndAim9Uncaged", InputDataDesc::ID_INT, OFFSET(sndAim9Uncaged),
+     "182"}, // SFX_NO_CAGE
+    {"sndAim9EnviroSky", InputDataDesc::ID_INT, OFFSET(sndAim9EnviroSky),
+     "186"}, // SFX_AIM9_ENVIRO_SKY
+    {"sndAim9EnviroGround", InputDataDesc::ID_INT, OFFSET(sndAim9EnviroGround),
+     "187"}, // SFX_AIM9_ENVIRO_GND
 
-    { "pickleTimeDelay", InputDataDesc::ID_INT,   OFFSET(pickleTimeDelay), "0"}, // msec time pickle must be held for missile to launch
-    { "psGroundImpact", InputDataDesc::ID_STRING,   OFFSET(psGroundImpact), ""},
-    { "psMissileKill", InputDataDesc::ID_STRING,   OFFSET(psMissileKill), ""},
-    { "psFeatureImpact", InputDataDesc::ID_STRING,   OFFSET(psFeatureImpact), ""},
-    { "psBombImpact", InputDataDesc::ID_STRING,   OFFSET(psBombImpact), ""},
-    { "psArmingDelay", InputDataDesc::ID_STRING,   OFFSET(psArmingDelay), ""},
-    { "psExceedFOV", InputDataDesc::ID_STRING,   OFFSET(psExceedFOV), ""},
+    {"pickleTimeDelay", InputDataDesc::ID_INT, OFFSET(pickleTimeDelay),
+     "0"}, // msec time pickle must be held for missile to launch
+    {"psGroundImpact", InputDataDesc::ID_STRING, OFFSET(psGroundImpact), ""},
+    {"psMissileKill", InputDataDesc::ID_STRING, OFFSET(psMissileKill), ""},
+    {"psFeatureImpact", InputDataDesc::ID_STRING, OFFSET(psFeatureImpact), ""},
+    {"psBombImpact", InputDataDesc::ID_STRING, OFFSET(psBombImpact), ""},
+    {"psArmingDelay", InputDataDesc::ID_STRING, OFFSET(psArmingDelay), ""},
+    {"psExceedFOV", InputDataDesc::ID_STRING, OFFSET(psExceedFOV), ""},
 
     //RV - I-Hawk - Get heat seeker gimbal tracking factor and launch sound ID from missile FMs
-    { "gimbalTrackFactor", InputDataDesc::ID_FLOAT, OFFSET(gimbalTrackFactor), "1.0f"},
-    { "launchSound", InputDataDesc::ID_INT, OFFSET(launchSound), "11"},
+    {"gimbalTrackFactor", InputDataDesc::ID_FLOAT, OFFSET(gimbalTrackFactor),
+     "1.0f"},
+    {"launchSound", InputDataDesc::ID_INT, OFFSET(launchSound), "11"},
 
-    { NULL},
+    {NULL},
 };
 
-MissileAuxData *MissileAuxAeroRead(SimlibFileClass* inputFile)
+MissileAuxData *MissileAuxAeroRead(SimlibFileClass *inputFile)
 {
     MissileAuxData *auxmissileData;
 

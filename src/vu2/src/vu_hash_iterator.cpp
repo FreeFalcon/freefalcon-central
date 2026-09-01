@@ -5,10 +5,8 @@
 // VuHashIterator
 //-----------------------------------------------------------------------------
 
-VuHashIterator::VuHashIterator(VuHashTable* coll) :
-    VuIterator(coll),
-    idx_(coll->capacity_),
-    curr_(NULL)
+VuHashIterator::VuHashIterator(VuHashTable *coll)
+    : VuIterator(coll), idx_(coll->capacity_), curr_(NULL)
 {
 #if 0
     curr_ = vuTailNode;
@@ -26,9 +24,9 @@ VuHashIterator::~VuHashIterator()
 
 VuEntity *VuHashIterator::GetFirst()
 {
-    VuHashTable *h = static_cast<VuHashTable*>(collection_);
+    VuHashTable *h = static_cast<VuHashTable *>(collection_);
 
-    if ( not h or h->capacity_ <= 0)
+    if (not h or h->capacity_ <= 0)
     {
         return NULL;
     }
@@ -40,8 +38,7 @@ VuEntity *VuHashIterator::GetFirst()
     {
         curr_ = VuListIterator(&h->table_[idx_]);
         ret = curr_.GetFirst();
-    }
-    while (ret == NULL and ++idx_ < h->capacity_);
+    } while (ret == NULL and ++idx_ < h->capacity_);
 
     return ret;
 
@@ -75,7 +72,7 @@ VuEntity *VuHashIterator::GetFirst()
 
 VuEntity *VuHashIterator::GetNext()
 {
-    VuHashTable *h = static_cast<VuHashTable*>(collection_);
+    VuHashTable *h = static_cast<VuHashTable *>(collection_);
     VuEntity *ret;
 
     do
@@ -89,8 +86,7 @@ VuEntity *VuHashIterator::GetNext()
             curr_ = VuListIterator(&h->table_[idx_]);
             ret = curr_.GetFirst();
         }
-    }
-    while (ret == NULL and idx_ < h->capacity_);
+    } while (ret == NULL and idx_ < h->capacity_);
 
     return ret;
 
@@ -124,9 +120,9 @@ VuEntity *VuHashIterator::GetNext()
 #endif
 }
 
-VuEntity *VuHashIterator::GetFirst(VuFilter* filter)
+VuEntity *VuHashIterator::GetFirst(VuFilter *filter)
 {
-    if ( not filter)
+    if (not filter)
     {
         return GetFirst();
     }
@@ -170,9 +166,9 @@ VuEntity *VuHashIterator::GetFirst(VuFilter* filter)
 #endif
 }
 
-VuEntity *VuHashIterator::GetNext(VuFilter* filter)
+VuEntity *VuHashIterator::GetNext(VuFilter *filter)
 {
-    if ( not filter)
+    if (not filter)
     {
         return GetNext();
     }
@@ -187,8 +183,7 @@ VuEntity *VuHashIterator::GetNext(VuFilter* filter)
         {
             return ret;
         }
-    }
-    while (1);
+    } while (1);
 
 #if 0
     // sfr: smartpointer
@@ -246,4 +241,3 @@ VU_ERRCODE VuHashIterator::Cleanup()
 #endif
     return VU_SUCCESS;
 }
-

@@ -12,12 +12,12 @@
    Programmed by Kuswara Pranawahadi               September 5, 1996
 */
 
-#include <cISO646>
+#include <ciso646>
 #include "surface.h"
 
 // OW
 #include "d3d7compat.h"
-#include "IsBad.h"
+#include "isbad.h"
 
 /****************************************************************************
 
@@ -33,8 +33,7 @@
 
 ****************************************************************************/
 
-void surfaceGetPointer(LPVOID surface,
-                       SURFACEACCESS *sa)
+void surfaceGetPointer(LPVOID surface, SURFACEACCESS *sa)
 {
     // OW
 #if 0
@@ -50,13 +49,14 @@ void surfaceGetPointer(LPVOID surface,
 
     sa->lPitch = sd.pitch;
 #else
-    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *) surface;
+    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *)surface;
 
     DDSURFACEDESC2 ddsd;
     ZeroMemory(&ddsd, sizeof(ddsd));
     ddsd.dwSize = sizeof(ddsd);
 
-    HRESULT hr = E_FAIL;   // Artscout - 2026: [DX7-PURGE] no DDraw movie surface to Lock
+    HRESULT hr =
+        E_FAIL; // Artscout - 2026: [DX7-PURGE] no DDraw movie surface to Lock
 
     if (SUCCEEDED(hr))
     {
@@ -88,17 +88,17 @@ void surfaceGetPointer(LPVOID surface,
 
 ****************************************************************************/
 
-void surfaceReleasePointer(LPVOID surface,
-                           SURFACEACCESS *sa)
+void surfaceReleasePointer(LPVOID surface, SURFACEACCESS *sa)
 {
     // OW
 #if 0
     MPRUnlockSurface((UInt) surface);
     sa->lockStatus = SURFACE_IS_UNLOCKED;
 #else
-    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *) surface;
+    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *)surface;
 
-    HRESULT hr = S_OK;   // Artscout - 2026: [DX7-PURGE] no DDraw movie surface to Unlock
+    HRESULT hr =
+        S_OK; // Artscout - 2026: [DX7-PURGE] no DDraw movie surface to Unlock
 
     if (SUCCEEDED(hr))
         sa->lockStatus = SURFACE_IS_UNLOCKED;
@@ -134,7 +134,7 @@ void surfaceGetDescription(LPVOID surface, SURFACEDESCRIPTION *sd)
     sd->greenMask   = mprsd.GBitMask;
     sd->blueMask    = mprsd.BBitMask;
 #else
-    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *) surface;
+    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *)surface;
 
     DDSURFACEDESC2 ddsd;
     ZeroMemory(&ddsd, sizeof(ddsd));
@@ -145,13 +145,13 @@ void surfaceGetDescription(LPVOID surface, SURFACEDESCRIPTION *sd)
 
     if (SUCCEEDED(hr))
     {
-        sd->dwWidth     = ddsd.dwWidth;
-        sd->dwHeight    = ddsd.dwHeight;
-        sd->lPitch      = ddsd.lPitch;
-        sd->bitCount    = ddsd.ddpfPixelFormat.dwRGBBitCount;
-        sd->redMask     = ddsd.ddpfPixelFormat.dwRBitMask;
-        sd->greenMask   = ddsd.ddpfPixelFormat.dwGBitMask;
-        sd->blueMask    = ddsd.ddpfPixelFormat.dwBBitMask;
+        sd->dwWidth = ddsd.dwWidth;
+        sd->dwHeight = ddsd.dwHeight;
+        sd->lPitch = ddsd.lPitch;
+        sd->bitCount = ddsd.ddpfPixelFormat.dwRGBBitCount;
+        sd->redMask = ddsd.ddpfPixelFormat.dwRBitMask;
+        sd->greenMask = ddsd.ddpfPixelFormat.dwGBitMask;
+        sd->blueMask = ddsd.ddpfPixelFormat.dwBBitMask;
     }
 
 #endif
@@ -179,14 +179,14 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
     return (LPVOID) MPRCreateSurface((UInt) ddPointer, dibWidth, dibHeight,
                                      SystemMem, None, NULL, 0, 0);
 #else
-    IDirectDraw7 *pDD = (IDirectDraw7 *) ddPointer;
+    IDirectDraw7 *pDD = (IDirectDraw7 *)ddPointer;
     IDirectDrawSurface7 *pDS = NULL;
 
     // Get mode caps
     DDSURFACEDESC2 ddsdMode;
     ZeroMemory(&ddsdMode, sizeof(ddsdMode));
     ddsdMode.dwSize = sizeof(ddsdMode);
-    HRESULT hr = E_FAIL;   // Artscout - 2026: [DX7-PURGE] no DDraw GetDisplayMode
+    HRESULT hr = E_FAIL; // Artscout - 2026: [DX7-PURGE] no DDraw GetDisplayMode
 
     if (SUCCEEDED(hr))
     {
@@ -197,10 +197,10 @@ LPVOID surfaceCreate(LPVOID ddPointer, int dibWidth, int dibHeight)
         ddsd.ddpfPixelFormat = ddsdMode.ddpfPixelFormat;
 
         ddsd.dwFlags or_eq DDSD_WIDTH bitor DDSD_HEIGHT;
-        ddsd.dwWidth  = dibWidth;
+        ddsd.dwWidth = dibWidth;
         ddsd.dwHeight = dibHeight;
         ddsd.ddsCaps.dwCaps = DDSCAPS_SYSTEMMEMORY bitor DDSCAPS_OFFSCREENPLAIN;
-        hr = E_FAIL;   // Artscout - 2026: [DX7-PURGE] no DDraw CreateSurface
+        hr = E_FAIL; // Artscout - 2026: [DX7-PURGE] no DDraw CreateSurface
     }
 
     return pDS;
@@ -225,7 +225,7 @@ void surfaceRelease(LPVOID surface)
 #if 0
     MPRReleaseSurface((UInt) surface);
 #else
-    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *) surface;
+    IDirectDrawSurface7 *pDS = (IDirectDrawSurface7 *)surface;
 
     // Artscout - 2026: [DX7-PURGE] no DDraw movie surface to Release
 
@@ -253,8 +253,8 @@ void surfaceRelease(LPVOID surface)
 int surfaceBlit(LPVOID dstSurface, int x, int y, LPVOID srcSurface,
                 int srcWidth, int srcHeight, int mode)
 {
-    int     dstHeight;
-    RECT    srcRectangle, dstRectangle;
+    int dstHeight;
+    RECT srcRectangle, dstRectangle;
 
     if (mode == BLIT_MODE_NORMAL)
         dstHeight = srcHeight;
@@ -280,10 +280,10 @@ int surfaceBlit(LPVOID dstSurface, int x, int y, LPVOID srcSurface,
         return -1;
 
 #else
-    IDirectDrawSurface7 *pDSSrc = (IDirectDrawSurface7 *) srcSurface;
-    IDirectDrawSurface7 *pDSDst = (IDirectDrawSurface7 *) dstSurface;
-    HRESULT hr = E_FAIL;   // Artscout - 2026: [DX7-PURGE] no DDraw movie surface Blt
+    IDirectDrawSurface7 *pDSSrc = (IDirectDrawSurface7 *)srcSurface;
+    IDirectDrawSurface7 *pDSDst = (IDirectDrawSurface7 *)dstSurface;
+    HRESULT hr =
+        E_FAIL; // Artscout - 2026: [DX7-PURGE] no DDraw movie surface Blt
     return SUCCEEDED(hr) ? 0 : -1;
 #endif
-
 }

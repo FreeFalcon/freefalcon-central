@@ -1,19 +1,23 @@
-#include "MsgInc/SimDirtyDataMsg.h"
+#include "msginc/simdirtydatamsg.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-SimDirtyData::SimDirtyData(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(SimDirtyDataMsg, FalconEvent::SimThread, entityId, target, loopback)
+SimDirtyData::SimDirtyData(VU_ID entityId, VuTargetEntity *target,
+                           VU_BOOL loopback)
+    : FalconEvent(SimDirtyDataMsg, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
 }
 
-SimDirtyData::SimDirtyData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(SimDirtyDataMsg, FalconEvent::SimThread, senderid, target)
+SimDirtyData::SimDirtyData(VU_MSG_TYPE type, VU_ID senderid, VU_ID target)
+    : FalconEvent(SimDirtyDataMsg, FalconEvent::SimThread, senderid, target)
 {
     dataBlock.data = NULL;
     dataBlock.size = 0;
@@ -80,9 +84,9 @@ int SimDirtyData::Process(uchar autodisp)
     FalconEntity *ent;
 
 
-    ent = static_cast<FalconEntity*>(vuDatabase->Find(EntityId()));
+    ent = static_cast<FalconEntity *>(vuDatabase->Find(EntityId()));
 
-    if ( not ent or autodisp)
+    if (not ent or autodisp)
     {
         return 0;
     }

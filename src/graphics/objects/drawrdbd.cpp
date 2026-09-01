@@ -5,19 +5,21 @@
     Derived class to do special position and containment processing for
  sections of bridges.
 \***************************************************************************/
-#include <cISO646>
-#include "DrawRdbd.h"
+#include <ciso646>
+#include "drawrdbd.h"
 
 
 #ifdef USE_SH_POOLS
 MEM_POOL DrawableRoadbed::pool;
 #endif
 
-
+
 /***************************************************************************\
     Initialize an object to represent a piece of bridge roadbed.
 \***************************************************************************/
-DrawableRoadbed::DrawableRoadbed(int IDbase, int IDtop, Tpoint *pos, float heading, float height, float angle, float s)
+DrawableRoadbed::DrawableRoadbed(int IDbase, int IDtop, Tpoint *pos,
+                                 float heading, float height, float angle,
+                                 float s)
     : DrawableBuilding(IDbase, pos, heading, s)
 {
     drawClassID = Roadbed;
@@ -43,7 +45,6 @@ DrawableRoadbed::DrawableRoadbed(int IDbase, int IDtop, Tpoint *pos, float headi
 }
 
 
-
 /**************************************************************************
     Initialize an object to represent a piece of bridge roadbed.
 ***************************************************************************/
@@ -57,7 +58,6 @@ DrawableRoadbed::~DrawableRoadbed()
 };
 
 
-
 /**************************************************************************
     See if the given point is within our perview.  If so, provide the
  height and normal of the surface at that point.
@@ -68,7 +68,8 @@ BOOL DrawableRoadbed::OnRoadbed(Tpoint *pos, Tpoint *normal)
 
 
     // First see if the point is too far away
-    if ((fabs(pos->x - position.x) > radius) or (fabs(pos->y - position.y) > radius))
+    if ((fabs(pos->x - position.x) > radius) or
+        (fabs(pos->y - position.y) > radius))
     {
         return FALSE;
     }
@@ -78,12 +79,13 @@ BOOL DrawableRoadbed::OnRoadbed(Tpoint *pos, Tpoint *normal)
     {
         if (normal)
         {
-            normal->x =  0.0f;
-            normal->y =  0.0f;
+            normal->x = 0.0f;
+            normal->y = 0.0f;
             normal->z = -1.0f;
         }
 
-        pos->z = position.z - ramp.Y(0.0f); // -Z is up, but height is positive up
+        pos->z =
+            position.z - ramp.Y(0.0f); // -Z is up, but height is positive up
     }
     else
     {
@@ -98,7 +100,7 @@ BOOL DrawableRoadbed::OnRoadbed(Tpoint *pos, Tpoint *normal)
         if (normal)
         {
             normal->x = -tanRampAngle * cosInvYaw;
-            normal->y =  tanRampAngle * sinInvYaw;
+            normal->y = tanRampAngle * sinInvYaw;
             normal->z = -1.0f;
         }
 
@@ -110,7 +112,6 @@ BOOL DrawableRoadbed::OnRoadbed(Tpoint *pos, Tpoint *normal)
 }
 
 
-
 /***************************************************************************\
     Just do a simple draw on the base piece.
 \***************************************************************************/
@@ -121,7 +122,6 @@ void DrawableRoadbed::Draw(class RenderOTW *renderer, int LOD)
 }
 
 
-
 /***************************************************************************\
     Just do a simple draw on the superstructure piece.
 \***************************************************************************/
@@ -135,7 +135,6 @@ void DrawableRoadbed::DrawSuperstructure(class RenderOTW *renderer, int LOD)
 }
 
 
-
 /***************************************************************************\
     Just do a simple draw on the superstructure piece.
 \***************************************************************************/

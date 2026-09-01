@@ -1,5 +1,5 @@
-#include <cISO646>
-#include "PlayerOp.h"
+#include <ciso646>
+#include "playerop.h"
 //#include "stdhdr.h"
 #include "f4find.h"
 RulesClass gRules[rNUM_MODES];
@@ -14,29 +14,30 @@ int LoadAllRules(char *filename)
 {
     size_t success = 0;
     _TCHAR path[_MAX_PATH];
-    char  prof[_MAX_PATH];
+    char prof[_MAX_PATH];
     long size;
     FILE *fp;
 
     ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    _stprintf(path, _T("%s\\rules.rul"), prof);
+    _stprintf(path, _T("%s/rules.rul"), prof);
 
     fp = _tfopen(path, _T("rb"));
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
         // fallback: shipped default profile, then the legacy config\default.rul
-        _stprintf(path, _T("%s\\config\\profiles\\default\\rules.rul"), FalconDataDirectory);
+        _stprintf(path, _T("%s/config/profiles/default/rules.rul"),
+                  FalconDataDirectory);
         fp = _tfopen(path, _T("rb"));
 
-        if ( not fp)
+        if (not fp)
         {
-            _stprintf(path, _T("%s\\config\\default.rul"), FalconDataDirectory);
+            _stprintf(path, _T("%s/config/default.rul"), FalconDataDirectory);
             fp = _tfopen(path, "rb");
         }
 
-        if ( not fp)
+        if (not fp)
         {
             MonoPrint(_T("Couldn't open default rules\n"), filename);
             return FALSE;
@@ -69,18 +70,22 @@ int LoadAllRules(char *filename)
     for (int i = 0; i < rNUM_MODES; i++)
     {
         char dataFileName[_MAX_PATH];
-        sprintf(dataFileName, "%s\\atc.ini", FalconCampaignSaveDirectory);
-        tempRules[i].BumpTimer = max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
+        sprintf(dataFileName, "%s/atc.ini", FalconCampaignSaveDirectory);
+        tempRules[i].BumpTimer = max(
+            0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
         tempRules[i].BumpTimer *= 60000;
-        tempRules[i].AiPullTime = max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
+        tempRules[i].AiPullTime =
+            max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
         tempRules[i].AiPullTime *= 60000;
-        tempRules[i].AiPatience = max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
+        tempRules[i].AiPatience = max(
+            0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
         tempRules[i].AiPatience *= 1000;
-        tempRules[i].AtcPatience = max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
+        tempRules[i].AtcPatience = max(
+            0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
         tempRules[i].AtcPatience *= 1000;
     }
 
-    memcpy(&gRules, &tempRules, sizeof(RulesStruct)*rNUM_MODES);
+    memcpy(&gRules, &tempRules, sizeof(RulesStruct) * rNUM_MODES);
     return TRUE;
 }
 
@@ -91,7 +96,7 @@ RulesClass::RulesClass(void)
 
 void RulesClass::Initialize(void)
 {
-    memset(Password, 0, sizeof(_TCHAR)*RUL_PW_LEN);
+    memset(Password, 0, sizeof(_TCHAR) * RUL_PW_LEN);
     MaxPlayers = 16;
     ObjMagnification = 5;
     SimFlags = SIM_RULES_FLAGS; // Sim flags
@@ -104,14 +109,18 @@ void RulesClass::Initialize(void)
     GeneralFlags = GEN_RULES_FLAGS;
 
     char dataFileName[_MAX_PATH];
-    sprintf(dataFileName, "%s\\atc.ini", FalconCampaignSaveDirectory);
-    BumpTimer = max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
+    sprintf(dataFileName, "%s/atc.ini", FalconCampaignSaveDirectory);
+    BumpTimer =
+        max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
     BumpTimer *= 60000;
-    AiPullTime = max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
+    AiPullTime =
+        max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
     AiPullTime *= 60000;
-    AiPatience = max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
+    AiPatience =
+        max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
     AiPatience *= 1000;
-    AtcPatience = max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
+    AtcPatience =
+        max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
     AtcPatience *= 1000;
 }
 
@@ -119,29 +128,30 @@ int RulesClass::LoadRules(char *filename)
 {
     size_t success = 0;
     _TCHAR path[_MAX_PATH];
-    char  prof[_MAX_PATH];
+    char prof[_MAX_PATH];
     long size;
     FILE *fp;
 
     ControlsXml_ActiveProfilePath(prof, sizeof(prof));
-    _stprintf(path, _T("%s\\rules.rul"), prof);
+    _stprintf(path, _T("%s/rules.rul"), prof);
 
     fp = _tfopen(path, _T("rb"));
 
-    if ( not fp)
+    if (not fp)
     {
         MonoPrint(_T("Couldn't open %s rules file\n"), filename);
         // fallback: shipped default profile, then the legacy config\default.rul
-        _stprintf(path, _T("%s\\config\\profiles\\default\\rules.rul"), FalconDataDirectory);
+        _stprintf(path, _T("%s/config/profiles/default/rules.rul"),
+                  FalconDataDirectory);
         fp = _tfopen(path, _T("rb"));
 
-        if ( not fp)
+        if (not fp)
         {
-            _stprintf(path, _T("%s\\config\\default.rul"), FalconDataDirectory);
+            _stprintf(path, _T("%s/config/default.rul"), FalconDataDirectory);
             fp = _tfopen(path, "rb");
         }
 
-        if ( not fp)
+        if (not fp)
         {
             MonoPrint(_T("Couldn't open default rules\n"), filename);
             Initialize();
@@ -173,14 +183,18 @@ int RulesClass::LoadRules(char *filename)
     }
 
     char dataFileName[_MAX_PATH];
-    sprintf(dataFileName, "%s\\atc.ini", FalconCampaignSaveDirectory);
-    tempRules[RuleMode].BumpTimer = max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
+    sprintf(dataFileName, "%s/atc.ini", FalconCampaignSaveDirectory);
+    tempRules[RuleMode].BumpTimer =
+        max(0, GetPrivateProfileInt("ATC", "PlayerBumpTime", 10, dataFileName));
     tempRules[RuleMode].BumpTimer *= 60000;
-    tempRules[RuleMode].AiPullTime = max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
+    tempRules[RuleMode].AiPullTime =
+        max(0, GetPrivateProfileInt("ATC", "AIPullTime", 20, dataFileName));
     tempRules[RuleMode].AiPullTime *= 60000;
-    tempRules[RuleMode].AiPatience = max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
+    tempRules[RuleMode].AiPatience =
+        max(0, GetPrivateProfileInt("ATC", "AIPatience", 120, dataFileName));
     tempRules[RuleMode].AiPatience *= 1000;
-    tempRules[RuleMode].AtcPatience = max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
+    tempRules[RuleMode].AtcPatience =
+        max(0, GetPrivateProfileInt("ATC", "ATCPatience", 180, dataFileName));
     tempRules[RuleMode].AtcPatience *= 1000;
 
     memcpy(this, &(tempRules[RuleMode]), sizeof(RulesStruct));
@@ -210,11 +224,12 @@ int RulesClass::SaveRules(_TCHAR *filename)
 {
     FILE *fp;
     _TCHAR path[_MAX_PATH];
-    char  prof[_MAX_PATH];
+    char prof[_MAX_PATH];
     size_t success = 0;
 
-    ControlsXml_ActiveProfilePath(prof, sizeof(prof));   // rules in the profile folder
-    _stprintf(path, _T("%s\\rules.rul"), prof);
+    ControlsXml_ActiveProfilePath(prof,
+                                  sizeof(prof)); // rules in the profile folder
+    _stprintf(path, _T("%s/rules.rul"), prof);
     (void)filename;
 
     if ((fp = _tfopen(path, "wb")) == NULL)

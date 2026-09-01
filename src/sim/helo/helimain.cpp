@@ -1,7 +1,7 @@
-#include "Graphics/Include/drawbsp.h"
+#include "graphics/include/drawbsp.h"
 #include "stdhdr.h"
-#include "ClassTbl.h"
-#include "Entity.h"
+#include "classtbl.h"
+#include "entity.h"
 #include "helo.h"
 #include "helimm.h"
 #include "hdigi.h"
@@ -12,25 +12,25 @@
 #include "simdrive.h"
 #include "otwdrive.h"
 #include "hardpnt.h"
-#include "PilotInputs.h"
+#include "pilotinputs.h"
 #include "object.h"
 #include "simobj.h"
-#include "MsgInc/WingmanMsg.h"
+#include "msginc/wingmanmsg.h"
 #include "fsound.h"
 #include "soundfx.h"
-#include "Unit.h"
-#include "MsgInc/LandingMessage.h"
-#include "MsgInc/DamageMsg.h"
-#include "radarDoppler.h"
+#include "unit.h"
+#include "msginc/landingmessage.h"
+#include "msginc/damagemsg.h"
+#include "radardoppler.h"
 #include "acmi/src/include/acmirec.h"
 #include "fakerand.h"
 #include "falcsess.h"
 #include "guns.h"
-#include "Graphics/Include/rviewpnt.h"
+#include "graphics/include/rviewpnt.h"
 #include "team.h"
 #include "dofsnswitches.h"
-#include "DrawParticleSys.h" // I-Hawk
-#include "sfx.h" // I-Hawk 
+#include "drawparticlesys.h" // I-Hawk
+#include "sfx.h" // I-Hawk
 
 #ifdef USE_SH_POOLS
 MEM_POOL HelicopterClass::pool;
@@ -43,15 +43,14 @@ void SetLabel(SimBaseClass* theObject);
 //#define DSPREAD(n) (500.0f * n)
 // FRB - a little closer
 #define DSPREAD(n) (250.0f * n)
-Tpoint gFormationOffsets[] =
-{
+Tpoint gFormationOffsets[] = {
     //TJL 11/30/03 Helos only fly 4-ship max formations.  To help make formation changes easier,
     // I have limited the DSPREAD stuff to the first 4.
     //    X   Y   Z
-    { 0.0f, 0.0f, 0.0f }, /*  0 */
-    { DSPREAD(-0.25f), DSPREAD(0.5f), 0.0f }, /*  1 */
-    { DSPREAD(-0.25f), DSPREAD(-0.5f), 0.0f }, /*  2 */
-    { DSPREAD(-0.5f),   DSPREAD(-1.0f), 0.0f }, /*  3 */
+    {0.0f, 0.0f, 0.0f}, /*  0 */
+    {DSPREAD(-0.25f), DSPREAD(0.5f), 0.0f}, /*  1 */
+    {DSPREAD(-0.25f), DSPREAD(-0.5f), 0.0f}, /*  2 */
+    {DSPREAD(-0.5f), DSPREAD(-1.0f), 0.0f}, /*  3 */
 
     //{ 0.0f, 0.0f, 0.0f }, /*  0 */
     //{ DSPREAD(-1.0f), DSPREAD(-1.0f), 0.0f }, /*  1 */
@@ -110,7 +109,8 @@ void CalcTransformMatrix(SimBaseClass* theObject);
 
 //VuMemPool<HelicopterClass> HelicopterClass::heloPool(500);
 
-HelicopterClass::HelicopterClass(VU_BYTE** stream, long *rem) : SimVehicleClass(stream, rem)
+HelicopterClass::HelicopterClass(VU_BYTE** stream, long* rem)
+    : SimVehicleClass(stream, rem)
 {
     InitLocalData();
 }
@@ -138,7 +138,7 @@ void HelicopterClass::CleanupData()
 
 void HelicopterClass::CleanupLocalData()
 {
-    delete(hf);
+    delete (hf);
 
     if (Sms)
     {
@@ -194,7 +194,8 @@ void HelicopterClass::InitLocalData()
 
     if (gACMIRec.IsRecording())
     {
-        acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+        acmiSwitch.hdr.time =
+            SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
         acmiSwitch.data.type = Type();
         acmiSwitch.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
         acmiSwitch.data.switchNum = HELI_ROTORS;
@@ -215,11 +216,11 @@ void HelicopterClass::Init(SimInitDataClass* initData)
 
     hf = new HeliMMClass(this, SIMPLE);
 
-    hf->isDigital   = TRUE;
-    waypoint        = initData->waypointList;
-    numWaypoints    = initData->numWaypoints;
-    curWaypoint     = waypoint;
-    atWaypoint      = waypoint;
+    hf->isDigital = TRUE;
+    waypoint = initData->waypointList;
+    numWaypoints = initData->numWaypoints;
+    curWaypoint = waypoint;
+    atWaypoint = waypoint;
 
     //for (i=0; i<numWaypoints; i++) {
     // curWaypoint->GetLocation (&wp1X, &wp1Y, &wp1Z);
@@ -243,7 +244,7 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     //
     // curWaypoint = curWaypoint->GetNextWP();
     //}
-    curWaypoint     = waypoint;
+    curWaypoint = waypoint;
 
     for (i = 0; i < initData->currentWaypoint; i++)
     {
@@ -275,8 +276,9 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     //REMOVED OLD CODE; BEGIN REWRITE
     if (curWaypoint)
     {
-        if (curWaypoint == atWaypoint and curWaypoint->GetWPFlags() bitand WPF_TAKEOFF
-           and curWaypoint->GetWPDepartureTime() > SimLibElapsedTime)
+        if (curWaypoint == atWaypoint and
+            curWaypoint->GetWPFlags() bitand WPF_TAKEOFF and
+            curWaypoint->GetWPDepartureTime() > SimLibElapsedTime)
         {
             curWaypoint = atWaypoint;
         }
@@ -297,8 +299,10 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     }
 
     // edg: note helicopters havve a capped AGL
-    if (initData->z < (OTWDriver.GetGroundLevel(initData->x, initData->y) - 8000.0f))
-        initData->z = OTWDriver.GetGroundLevel(initData->x, initData->y) - 8000.0f;
+    if (initData->z <
+        (OTWDriver.GetGroundLevel(initData->x, initData->y) - 8000.0f))
+        initData->z =
+            OTWDriver.GetGroundLevel(initData->x, initData->y) - 8000.0f;
 
     // RV - Biker - Set initData->z 500 feet above ground level
     initData->z = OTWDriver.GetGroundLevel(initData->x, initData->y) - 500.0f;
@@ -336,10 +340,10 @@ void HelicopterClass::Init(SimInitDataClass* initData)
     //SetVt(hf->vta);
     //SetKias(hf->GetKias);
 
-    theInputs   = new PilotInputs;
+    theInputs = new PilotInputs;
 
     // If I only had a brain
-    hBrain    = new HeliBrain(this);
+    hBrain = new HeliBrain(this);
 
     // FCC->SetMasterMode(FireControlComputer::Missile);
     // FCC->SetSubMode(FireControlComputer::Aim9);
@@ -386,7 +390,7 @@ int HelicopterClass::Sleep(void)
 {
     int retval = 0;
 
-    if ( not IsAwake())
+    if (not IsAwake())
         return retval;
 
     if (hBrain)
@@ -410,22 +414,23 @@ int HelicopterClass::Sleep(void)
 
 namespace
 {
-    /** randomizes a burn location. Used below. */
-    void randomizeBurn(const HelicopterClass &helo, unsigned int sfxType, Tpoint &pos, Tpoint &vec)
-    {
+/** randomizes a burn location. Used below. */
+void randomizeBurn(const HelicopterClass& helo, unsigned int sfxType,
+                   Tpoint& pos, Tpoint& vec)
+{
 
-        pos.x = helo.XPos();
-        pos.y = helo.YPos();
-        pos.z = helo.ZPos();
+    pos.x = helo.XPos();
+    pos.y = helo.YPos();
+    pos.z = helo.ZPos();
 
-        vec.x = helo.XDelta();
-        vec.y = helo.YDelta();
-        vec.z = helo.ZDelta();
+    vec.x = helo.XDelta();
+    vec.y = helo.YDelta();
+    vec.z = helo.ZDelta();
 
-        DrawableParticleSys::PS_AddParticleEx((sfxType + 1), &pos, &vec);
-    }
+    DrawableParticleSys::PS_AddParticleEx((sfxType + 1), &pos, &vec);
+}
 
-    int CleanupDamageStation();
+int CleanupDamageStation();
 }
 
 int HelicopterClass::Exec(void)
@@ -455,9 +460,9 @@ int HelicopterClass::Exec(void)
             if (pctStrength > -0.07f)
             {
             }
-            else if (pctStrength > -0.3f)   // I-Hawk - was -0.5f before
+            else if (pctStrength > -0.3f) // I-Hawk - was -0.5f before
             {
-                if (dyingTimer > 0.3f)   //
+                if (dyingTimer > 0.3f) //
                 {
                     //RV - I-Hawk - Randomized burning position...
                     randomizeBurn(*this, PSFX_AC_EARLY_BURNING, pos, vec);
@@ -468,73 +473,73 @@ int HelicopterClass::Exec(void)
                         vec.y = YDelta() * 0.5f + PRANDFloat() * 20.0f;
                         vec.z = ZDelta() * 0.5f + PRANDFloat() * 20.0f;
                         DrawableParticleSys::PS_AddParticleEx(
-                            (SFX_AC_DEBRIS + 1), &pos, &vec
-                        );
+                            (SFX_AC_DEBRIS + 1), &pos, &vec);
                     }
 
                     // zero out
                     dyingTimer = 0.0f;
                 }
             }
-            else switch (dyingType)
+            else
+                switch (dyingType)
                 {
-                    case 5:
-                    case SimVehicleClass::DIE_SMOKE:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_1, pos, vec);
-                            dyingTimer = 0;
-                        }
+                case 5:
+                case SimVehicleClass::DIE_SMOKE:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_1, pos, vec);
+                        dyingTimer = 0;
+                    }
 
-                        break;
+                    break;
 
-                    case 6:
-                    case SimVehicleClass::DIE_SHORT_FIREBALL:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_3, pos, vec);
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                case 6:
+                case SimVehicleClass::DIE_SHORT_FIREBALL:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_3, pos, vec);
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
 
-                    case SimVehicleClass::DIE_INTERMITTENT_SMOKE:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_2, pos, vec);
+                case SimVehicleClass::DIE_INTERMITTENT_SMOKE:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_2, pos, vec);
 
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
 
-                    case SimVehicleClass::DIE_FIREBALL:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            // run stuff here....
-                            //RV - I-Hawk - Randomized burning position...
-                            randomizeBurn(*this, PSFX_AC_BURNING_4, pos, vec);
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                case SimVehicleClass::DIE_FIREBALL:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        // run stuff here....
+                        //RV - I-Hawk - Randomized burning position...
+                        randomizeBurn(*this, PSFX_AC_BURNING_4, pos, vec);
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
 
-                    case SimVehicleClass::DIE_INTERMITTENT_FIRE:
-                    default:
-                        if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
-                        {
-                            randomizeBurn(*this, PSFX_AC_BURNING_6, pos, vec);
-                            // reset the timer
-                            dyingTimer = 0.0f;
-                        }
+                case SimVehicleClass::DIE_INTERMITTENT_FIRE:
+                default:
+                    if (dyingTimer > 0.10f + (1.0f - gSfxLOD) * 0.3f)
+                    {
+                        randomizeBurn(*this, PSFX_AC_BURNING_6, pos, vec);
+                        // reset the timer
+                        dyingTimer = 0.0f;
+                    }
 
-                        break;
+                    break;
                 } // end switch
         } // end if LOD
     }
@@ -551,9 +556,9 @@ int HelicopterClass::Exec(void)
     Tpoint minB, maxB;
 
     // RV - Biker - Calculate offset in z-axis to prevent choppers to sink in ground
-    if ((DrawableBSP*) hf->platform->drawPointer)
+    if ((DrawableBSP*)hf->platform->drawPointer)
     {
-        ((DrawableBSP*) hf->platform->drawPointer)->GetBoundingBox(&minB, &maxB);
+        ((DrawableBSP*)hf->platform->drawPointer)->GetBoundingBox(&minB, &maxB);
         offsetZ = maxB.z + 2.0f;
     }
     else
@@ -561,7 +566,7 @@ int HelicopterClass::Exec(void)
 
     if (IsExploding())
     {
-        if ( not IsSetFlag(SHOW_EXPLOSION))
+        if (not IsSetFlag(SHOW_EXPLOSION))
         {
             RunExplosion();
             SetFlag(SHOW_EXPLOSION);
@@ -576,7 +581,7 @@ int HelicopterClass::Exec(void)
 
         return TRUE;
     }
-    else if ( not IsDead())
+    else if (not IsDead())
     {
         ShowDamage();
 
@@ -589,9 +594,11 @@ int HelicopterClass::Exec(void)
 
             if (gACMIRec.IsRecording())
             {
-                acmiSwitch.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+                acmiSwitch.hdr.time =
+                    SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
                 acmiSwitch.data.type = Type();
-                acmiSwitch.data.uniqueID = ACMIIDTable->Add(Id(), NULL, 0); //.num_;
+                acmiSwitch.data.uniqueID =
+                    ACMIIDTable->Add(Id(), NULL, 0); //.num_;
                 acmiSwitch.data.switchNum = HELI_ROTORS;
                 acmiSwitch.data.switchVal = 1;
                 acmiSwitch.data.prevSwitchVal = 1;
@@ -612,9 +619,11 @@ int HelicopterClass::Exec(void)
 
 
         // JPO - for engine noise
-        VehicleClassDataType *vc = GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
-        ShiAssert(FALSE == F4IsBadReadPtr(vc, sizeof * vc));
-        float dop = OTWDriver.GetDoppler(XPos(), YPos(), ZPos(), XDelta(), YDelta(), ZDelta());
+        VehicleClassDataType* vc =
+            GetVehicleClassData(Type() - VU_LAST_ENTITY_TYPE);
+        ShiAssert(FALSE == F4IsBadReadPtr(vc, sizeof *vc));
+        float dop = OTWDriver.GetDoppler(XPos(), YPos(), ZPos(), XDelta(),
+                                         YDelta(), ZDelta());
 
         if (vc)
             SoundPos.Sfx(vc->EngineSound);
@@ -624,9 +633,11 @@ int HelicopterClass::Exec(void)
         // ACMI Output
         if (gACMIRec.IsRecording() and (SimLibFrameCount bitand 0x0f) == 0)
         {
-            genPos.hdr.time = SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
+            genPos.hdr.time =
+                SimLibElapsedTime * MSEC_TO_SEC + OTWDriver.todOffset;
             genPos.data.type = Type();
-            genPos.data.uniqueID = ACMIIDTable->Add(Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
+            genPos.data.uniqueID = ACMIIDTable->Add(
+                Id(), NULL, TeamInfo[GetTeam()]->GetColor()); //.num_;
             genPos.data.x = XPos();
             genPos.data.y = YPos();
             genPos.data.z = ZPos();
@@ -637,7 +648,7 @@ int HelicopterClass::Exec(void)
             gACMIRec.GenPositionRecord(&genPos);
         }
 
-        if ( not IsLocal())
+        if (not IsLocal())
         {
             return FALSE;
         }
@@ -657,7 +668,7 @@ int HelicopterClass::Exec(void)
         // does this helicopter LOD out?
         if (useDistLOD == TRUE and flightLead)
         {
-            if ( not OnGround() and distLOD < 0.5f and not IsFiring())
+            if (not OnGround() and distLOD < 0.5f and not IsFiring())
             {
                 // should be hidden
                 SetLocalFlag(IS_HIDDEN);
@@ -668,24 +679,14 @@ int HelicopterClass::Exec(void)
                 vec.x *= 0.1f;
                 vec.y *= 0.1f;
                 vec.z *= 0.1f;
-                SetDelta(
-                    vec.x,
-                    vec.y,
-                    vec.z);
-                SetPosition(
-                    XPos() + XDelta(),
-                    YPos() + YDelta(),
-                    ZPos() + ZDelta());
-                SetYPR(
-                    flightLead->Yaw(),
-                    flightLead->Pitch(),
-                    flightLead->Roll());
-                SetYPRDelta(
-                    flightLead->YawDelta(),
-                    flightLead->PitchDelta(),
-                    flightLead->RollDelta());
+                SetDelta(vec.x, vec.y, vec.z);
+                SetPosition(XPos() + XDelta(), YPos() + YDelta(),
+                            ZPos() + ZDelta());
+                SetYPR(flightLead->Yaw(), flightLead->Pitch(),
+                       flightLead->Roll());
+                SetYPRDelta(flightLead->YawDelta(), flightLead->PitchDelta(),
+                            flightLead->RollDelta());
                 return TRUE;
-
             }
             else
             {
@@ -750,9 +751,10 @@ int HelicopterClass::Exec(void)
         /*------------------------*/
         /* Fly the airframe.      */
         /*------------------------*/
-        hf->SetControls(hBrain->pStick, hBrain->rStick, hBrain->throtl, hBrain->yPedal);
+        hf->SetControls(hBrain->pStick, hBrain->rStick, hBrain->throtl,
+                        hBrain->yPedal);
 
-        if ( not OnGround() and SimDriver.MotionOn())
+        if (not OnGround() and SimDriver.MotionOn())
         {
             hf->Exec();
         }
@@ -761,12 +763,13 @@ int HelicopterClass::Exec(void)
         float groundZ;
         groundZ = OTWDriver.GetGroundLevel(hf->XE.x, hf->XE.y, &normal);
 
-        if ( not OnGround() and (hf->XE.z + offsetZ) >= groundZ)
+        if (not OnGround() and (hf->XE.z + offsetZ) >= groundZ)
         {
             float tmp;
 
             // Normalize terrain normal
-            tmp = (float)sqrt(normal.x * normal.x + normal.y * normal.y + normal.z * normal.z);
+            tmp = (float)sqrt(normal.x * normal.x + normal.y * normal.y +
+                              normal.z * normal.z);
             normal.z /= tmp;
 
             // insure we're above ground
@@ -845,12 +848,13 @@ int HelicopterClass::Exec(void)
         //SetVt(hf->vta);
         //SetKias(hf->GetKias);
         SetPowerOutput(hBrain->throtl);
-
     }
 
-    if ((GetCampaignObject() > (VuEntity*)MAX_IA_CAMP_UNIT) and not hBrain->isWing)
+    if ((GetCampaignObject() > (VuEntity*)MAX_IA_CAMP_UNIT) and
+        not hBrain->isWing)
     {
-        ((Unit)GetCampaignObject())->SimSetLocation(hf->XE.x, hf->XE.y, hf->XE.z);
+        ((Unit)GetCampaignObject())
+            ->SimSetLocation(hf->XE.x, hf->XE.y, hf->XE.z);
         // KCK note: no reason to do these..
         //      GetCampaignObject()->SetDelta (hf->VE.x, hf->VE.y, hf->VE.z);
         //      GetCampaignObject()->SetYPR (hf->XE.az, hf->XE.ay, hf->XE.ax);
@@ -886,7 +890,8 @@ void HelicopterClass::JoinFlight(void)
         hBrain->JoinFlight();
 
     // every 5th heli in flight will LOD out on heli battalions
-    if (GetCampaignObject()->NumberOfComponents() > 4 and (flightIndex % 5) not_eq 0)
+    if (GetCampaignObject()->NumberOfComponents() > 4 and
+        (flightIndex % 5) not_eq 0)
     {
         useDistLOD = TRUE;
     }
@@ -910,32 +915,32 @@ void HelicopterClass::GetTransform(TransformMatrix tMat)
     memcpy(tMat, dmx, sizeof(TransformMatrix));
 }
 
-float HelicopterClass:: GetP(void)
+float HelicopterClass::GetP(void)
 {
     return (RollDelta());
 }
 
-float HelicopterClass:: GetQ(void)
+float HelicopterClass::GetQ(void)
 {
     return (PitchDelta());
 }
 
-float HelicopterClass:: GetR(void)
+float HelicopterClass::GetR(void)
 {
     return (YawDelta());
 }
 
-float HelicopterClass:: GetGamma(void)
+float HelicopterClass::GetGamma(void)
 {
     return (hf->gmma);
 }
 
-float HelicopterClass:: GetSigma(void)
+float HelicopterClass::GetSigma(void)
 {
     return (hf->sigma);
 }
 
-float HelicopterClass:: GetMu(void)
+float HelicopterClass::GetMu(void)
 {
     return (hf->mu);
 }
@@ -967,8 +972,9 @@ void HelicopterClass::LandingCheck(void)
             FalconLandingMessage* landingMessage;
             landingMessage = new FalconLandingMessage(Id(), FalconLocalGame);
             ShiAssert(GetCampaignObject());
-            landingMessage->dataBlock.campID = ((CampBaseClass*)GetCampaignObject())->GetCampID();
-            landingMessage->dataBlock.pilotID   = pilotSlot;
+            landingMessage->dataBlock.campID =
+                ((CampBaseClass*)GetCampaignObject())->GetCampID();
+            landingMessage->dataBlock.pilotID = pilotSlot;
             FalconSendMessage(landingMessage, FALSE);
         }
 
@@ -1038,8 +1044,7 @@ void HelicopterClass::LandingCheck(void)
 ** Description:
 ** Sets the distLOD var based on distance from camera
 */
-void
-HelicopterClass::SetDistLOD(void)
+void HelicopterClass::SetDistLOD(void)
 {
     float absmax, absmid, absmin, tmp;
     Tpoint viewLoc;
@@ -1073,10 +1078,10 @@ HelicopterClass::SetDistLOD(void)
     if (absmax < absmin)
     {
         // absmin is actually the max
-        approxDist =  absmin + (absmax + absmid) * 0.5f ;
+        approxDist = absmin + (absmax + absmid) * 0.5f;
     }
 
-    approxDist =  absmax + (absmin + absmid) * 0.5f ;
+    approxDist = absmax + (absmin + absmid) * 0.5f;
 
     distLOD = max(0.0f, (LOD_MAX_DIST - approxDist) / LOD_MAX_DIST);
 
@@ -1089,10 +1094,9 @@ HelicopterClass::SetDistLOD(void)
 ** Description:
 ** Gets the position this vehicle should be in in the formation
 */
-void
-HelicopterClass::GetFormationPos(float *x, float *y, float *z)
+void HelicopterClass::GetFormationPos(float* x, float* y, float* z)
 {
-    Tpoint *p;
+    Tpoint* p;
 
 
     // if we're the leader just return our own position
@@ -1107,7 +1111,7 @@ HelicopterClass::GetFormationPos(float *x, float *y, float *z)
     }
 
     // get offset based on our flight index
-    p = &gFormationOffsets[ flightIndex ];
+    p = &gFormationOffsets[flightIndex];
 
     //*x = p->x * flightLead->dmx[0][0] - p->y * flightLead->dmx[0][1];
     //*y = p->x * flightLead->dmx[0][1] + p->y * flightLead->dmx[0][0];
@@ -1119,7 +1123,6 @@ HelicopterClass::GetFormationPos(float *x, float *y, float *z)
     *x += flightLead->XPos();
     *y += flightLead->YPos();
     *z += flightLead->ZPos();
-
 }
 
 
@@ -1131,13 +1134,13 @@ HelicopterClass::GetFormationPos(float *x, float *y, float *z)
 void HelicopterClass::PromoteSubordinates(void)
 {
     int i;
-    HelicopterClass *theObj;
-    HelicopterClass *newLead = NULL;
+    HelicopterClass* theObj;
+    HelicopterClass* newLead = NULL;
 
     MonoPrint("*** Helicopter *** \n");
     MonoPrint("Need to Promote Subordinates\n");
 
-    if ( not GetCampaignObject()->GetComponents())
+    if (not GetCampaignObject()->GetComponents())
     {
         MonoPrint("No Flight Pointer to determine promotion\n");
         MonoPrint("************** \n");
@@ -1147,7 +1150,7 @@ void HelicopterClass::PromoteSubordinates(void)
     // loop thru elements in flight
     for (i = 0; i < GetCampaignObject()->NumberOfComponents(); i++)
     {
-        theObj = (HelicopterClass *)GetCampaignObject()->GetComponentEntity(i);
+        theObj = (HelicopterClass*)GetCampaignObject()->GetComponentEntity(i);
 
         // num in flight may not match what's actually there
         if (theObj == NULL)
@@ -1189,5 +1192,7 @@ float HelicopterClass::Mass(void)
 // 2002-02-25 ADDED BY S.G. FlightClass needs to have a combat class like aircrafts.
 int HelicopterClass::CombatClass(void)
 {
-    return SimACDefTable[Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE].vehicleDataIndex].combatClass;
+    return SimACDefTable[Falcon4ClassTable[Type() - VU_LAST_ENTITY_TYPE]
+                             .vehicleDataIndex]
+        .combatClass;
 }

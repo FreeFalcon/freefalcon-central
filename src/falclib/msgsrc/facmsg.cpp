@@ -5,7 +5,7 @@
  * Generated from file EVENTS.XLS by Leon Rosenshein
  */
 
-#include "MsgInc/FACMsg.h"
+#include "msginc/facmsg.h"
 #include "mesg.h"
 #include "facbrain.h"
 #include "object.h"
@@ -17,14 +17,18 @@
 #include "simdrive.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-FalconFACMessage::FalconFACMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(FACMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconFACMessage::FalconFACMessage(VU_ID entityId, VuTargetEntity* target,
+                                   VU_BOOL loopback)
+    : FalconEvent(FACMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
     // Your Code Goes Here
 }
 
-FalconFACMessage::FalconFACMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(FACMsg, FalconEvent::SimThread, senderid, target)
+FalconFACMessage::FalconFACMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                   VU_ID target)
+    : FalconEvent(FACMsg, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -45,145 +49,144 @@ int FalconFACMessage::Process(uchar autodisp)
 
     theEntity = (SimVehicleClass*)Entity();
 
-    if ( not theEntity)
+    if (not theEntity)
         theEntity = (SimVehicleClass*)(vuDatabase->Find(EntityId()));
 
     theFighter = (SimVehicleClass*)(vuDatabase->Find(dataBlock.caller));
 
-    if ( not theFighter) // PJW: E3 Hack... make sure (theFighter) is valid
+    if (not theFighter) // PJW: E3 Hack... make sure (theFighter) is valid
         return 0;
 
     switch (dataBlock.type)
     {
-        case CheckIn:
-            if (theEntity and theEntity->IsLocal())
-                ((FACBrain*)theEntity->Brain())->AddToQ(theFighter);
+    case CheckIn:
+        if (theEntity and theEntity->IsLocal())
+            ((FACBrain*)theEntity->Brain())->AddToQ(theFighter);
 
             // Play message here
-            if (theFighter not_eq SimDriver.GetPlayerEntity())
-            {
-            }
+        if (theFighter not_eq SimDriver.GetPlayerEntity())
+        {
+        }
 
-            break;
+        break;
 
-        case Wilco:
-
-            // Play message here
-            if (theFighter not_eq SimDriver.GetPlayerEntity())
-            {
-            }
-
-            break;
-
-        case Unable:
+    case Wilco:
 
             // Play message here
-            if (theFighter not_eq SimDriver.GetPlayerEntity())
-            {
-            }
+        if (theFighter not_eq SimDriver.GetPlayerEntity())
+        {
+        }
 
-            break;
+        break;
 
-        case In:
-
-            // Play message here
-            if (theFighter not_eq SimDriver.GetPlayerEntity())
-            {
-            }
-
-            break;
-
-        case Out:
+    case Unable:
 
             // Play message here
-            if (theFighter not_eq SimDriver.GetPlayerEntity())
-            {
-            }
+        if (theFighter not_eq SimDriver.GetPlayerEntity())
+        {
+        }
 
-            break;
+        break;
 
-        case RequestMark:
-            break;
+    case In:
 
-        case RequestTarget:
-            if (theEntity and theFighter and theEntity->IsLocal())
-                ((FACBrain*)theEntity->Brain())->RequestTarget(theFighter);
+            // Play message here
+        if (theFighter not_eq SimDriver.GetPlayerEntity())
+        {
+        }
 
-            break;
+        break;
 
-        case RequestBDA:
-            if (theEntity and theFighter and theEntity->IsLocal())
-                ((FACBrain*)theEntity->Brain())->RequestBDA(theFighter);
+    case Out:
 
-            break;
+            // Play message here
+        if (theFighter not_eq SimDriver.GetPlayerEntity())
+        {
+        }
 
-        case RequestLocation:
-            if (theEntity and theEntity->IsLocal())
-                ((FACBrain*)theEntity->Brain())->RequestLocation();
+        break;
 
-            break;
+    case RequestMark:
+        break;
 
-        case RequestTACAN:
-            if (theEntity and theEntity->IsLocal())
-                ((FACBrain*)theEntity->Brain())->RequestTACAN();
+    case RequestTarget:
+        if (theEntity and theFighter and theEntity->IsLocal())
+            ((FACBrain*)theEntity->Brain())->RequestTarget(theFighter);
 
-            break;
+        break;
 
-        case HoldAtCP:
-            break;
+    case RequestBDA:
+        if (theEntity and theFighter and theEntity->IsLocal())
+            ((FACBrain*)theEntity->Brain())->RequestBDA(theFighter);
 
-        case FacSit:
-            break;
+        break;
 
-        case Mark:
-            break;
+    case RequestLocation:
+        if (theEntity and theEntity->IsLocal())
+            ((FACBrain*)theEntity->Brain())->RequestLocation();
 
-        case NoTargets:
-            break;
+        break;
 
-        case GroundTargetBr:
-            break;
+    case RequestTACAN:
+        if (theEntity and theEntity->IsLocal())
+            ((FACBrain*)theEntity->Brain())->RequestTACAN();
 
-        case BDA:
-            break;
+        break;
 
-        case NoBDA:
-            break;
+    case HoldAtCP:
+        break;
 
-        case ReattackQuery:
-            if (theFighter and theFighter->IsLocal())
-            {
-            }
+    case FacSit:
+        break;
 
-            break;
+    case Mark:
+        break;
 
-        case HartsTarget:
-            break;
+    case NoTargets:
+        break;
 
-        case HartsOpen:
-            if (theFighter and theFighter->IsLocal())
-            {
-            }
+    case GroundTargetBr:
+        break;
 
-            break;
+    case BDA:
+        break;
 
-        case ScudLaunch:
-            break;
+    case NoBDA:
+        break;
 
-        case SanitizeLZ:
-            break;
+    case ReattackQuery:
+        if (theFighter and theFighter->IsLocal())
+        {
+        }
 
-        case AttackMyTarget:
-            if (theFighter and theFighter->IsLocal())
-            {
-            }
+        break;
 
-            break;
+    case HartsTarget:
+        break;
 
-        case SendChoppers:
-            break;
+    case HartsOpen:
+        if (theFighter and theFighter->IsLocal())
+        {
+        }
+
+        break;
+
+    case ScudLaunch:
+        break;
+
+    case SanitizeLZ:
+        break;
+
+    case AttackMyTarget:
+        if (theFighter and theFighter->IsLocal())
+        {
+        }
+
+        break;
+
+    case SendChoppers:
+        break;
     };
 
     return 0;
 }
-

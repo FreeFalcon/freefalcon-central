@@ -6,12 +6,12 @@
 #include <math.h>
 #include <string.h>
 #ifndef STAND_ALONE
-#include "grTypes.h"
+#include "grtypes.h"
 #endif
 
-#define NEW(type) ((type *) malloc(sizeof (type)))
-#define NEWARRAY(type,num) ((type *) malloc(sizeof (type) * num))
-#define FREE(mem) (free ((void *) mem))
+#define NEW(type) ((type *)malloc(sizeof(type)))
+#define NEWARRAY(type, num) ((type *)malloc(sizeof(type) * num))
+#define FREE(mem) (free((void *)mem))
 
 #ifndef MAXSTRING
 #define MAXSTRING 300
@@ -21,17 +21,17 @@
 #define PI 3.14159265358979323846f
 #endif
 
-#define degtorad(d) ((d)*PI/180.0f)
-#define degtohour(d) ((d)*24.0f/360.0f)
+#define degtorad(d) ((d) * PI / 180.0f)
+#define degtohour(d) ((d) * 24.0f / 360.0f)
 
-#define hourtorad(h) ((h)*PI/12.0f)
-#define hourtodeg(h) ((h)*360.0f/24.0f)
+#define hourtorad(h) ((h) * PI / 12.0f)
+#define hourtodeg(h) ((h) * 360.0f / 24.0f)
 
-#define radtodeg(r) ((r)*180.0f/PI)
-#define radtohour(r) ((r)*12.0f/PI)
+#define radtodeg(r) ((r) * 180.0f / PI)
+#define radtohour(r) ((r) * 12.0f / PI)
 
-#define radtoangle(r) ((r)*8192.0f/PI)
-#define angletorad(r) ((r)*PI/8192.0f)
+#define radtoangle(r) ((r) * 8192.0f / PI)
+#define angletorad(r) ((r) * PI / 8192.0f)
 
 #define STAR_BEHIND_SUN 1
 #define STAR_BEHIND_MOON 2
@@ -60,7 +60,6 @@ struct StarData
 class CStar
 {
 protected:
-
     static float Latitude, Longitude, sinLatitude, cosLatitude;
     static float UniversalTime, UniversalTimeDegree;
     static float deltaJulian, CurrentJulian, Julian1980, Julian2000;
@@ -88,7 +87,8 @@ protected:
     static void ConvertLocation(char *string, float loc, char c);
 
 public:
-    static int GetTime(int *hour, int *minute, float *second, float timezone = 0.0f);
+    static int GetTime(int *hour, int *minute, float *second,
+                       float timezone = 0.0f);
     static void GetDateTime(char *string, float timezone = 0.0f);
     static void GetLatitude(char *string);
     static void GetLongitude(char *string);
@@ -118,7 +118,8 @@ public:
     static int LeapYear(int year);
     static int GetTotalDay(int month, int year);
     static float ConvertHour(int hour, int min = 0, float sec = 0.0f);
-    static void CalculateDate(int *day, int *month, int *year, int extraday = 0);
+    static void CalculateDate(int *day, int *month, int *year,
+                              int extraday = 0);
 
     static void SetDate(int day, int month = 1, int year = 2000);
     static void SetUniversalTime(unsigned int mseconds);
@@ -159,7 +160,6 @@ public:
         *az = MoonAz;
         *alt = MoonAlt;
     };
-
 };
 
 #endif

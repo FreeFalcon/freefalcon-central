@@ -7,7 +7,7 @@
 \***************************************************************************/
 #ifndef _POLYWRITER_H_
 #define _POLYWRITER_H_
-#include "PolyLib.h"
+#include "polylib.h"
 
 
 // Publicly called

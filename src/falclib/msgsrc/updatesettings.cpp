@@ -1,13 +1,13 @@
 #if 0
 
-#include "MsgInc/UpdateSettings.h"
+#include "msginc/updatesettings.h"
 #include "mesg.h"
 #include "uicomms.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 /*
 UI_UpdateSettings::UI_UpdateSettings(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent (UpdateSettings, FalconEvent::UIThread, entityId, target, loopback)

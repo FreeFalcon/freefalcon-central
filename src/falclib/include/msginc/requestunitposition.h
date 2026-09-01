@@ -3,8 +3,8 @@
 
 /** sfr: message to request a position update from unit owner */
 
-#include "Falcmesg.h"
-#include "Sim/Include/simmover.h"
+#include "falcmesg.h"
+#include "sim/include/simmover.h"
 
 class RequestUnitPosition : public FalconEvent
 {
@@ -23,7 +23,6 @@ public:
 
 protected:
     int Process(uchar autodisp);
-
 };
 
 

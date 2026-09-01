@@ -6,7 +6,7 @@
 #define AIRUNIT_H
 
 
-#include "AIInput.h"
+#include "aiinput.h"
 #include "unit.h"
 
 // =========================
@@ -72,9 +72,9 @@ public:
     virtual int OnGround(void);
 };
 
-#include "Flight.h"
-#include "Squadron.h"
-#include "Package.h"
+#include "flight.h"
+#include "squadron.h"
+#include "package.h"
 
 
 // =========================================

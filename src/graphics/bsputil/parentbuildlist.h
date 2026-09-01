@@ -9,8 +9,8 @@
 #ifndef _PARENTBUILDLIST_H_
 #define _PARENTBUILDLIST_H_
 
-#include "ObjectParent.h"
-#include "LODBuildList.h"
+#include "objectparent.h"
+#include "lodbuildlist.h"
 
 extern class BuildTimeParentList TheParentBuildList;
 
@@ -48,6 +48,7 @@ public:
     {
         startpoint = n;
     };
+
 protected:
     BuildTimeParentEntry *head;
     BuildTimeParentEntry *tail;

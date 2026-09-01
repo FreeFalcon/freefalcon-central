@@ -31,5 +31,3 @@ void main(short argc, char **args)
     fclose(fp);
     exit(0);
 }
-
-

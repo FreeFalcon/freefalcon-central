@@ -23,7 +23,8 @@ called inside the process space.  Any version of DBGHELP.DLL from WinDBG
 #define _BSU_MINIDUMP_H
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
     /*//////////////////////////////////////////////////////////////////////
@@ -33,24 +34,23 @@ extern "C" {
     typedef enum tag_BSUMDRET
     {
         // Everything worked.
-        eDUMP_SUCCEEDED           ,
+        eDUMP_SUCCEEDED,
         // DBGHELP.DLL could not be found at all in the path.
-        eDBGHELP_NOT_FOUND        ,
+        eDBGHELP_NOT_FOUND,
         // The mini dump exports are not in the version of DBGHELP.DLL
         // in memory.
-        eDBGHELP_MISSING_EXPORTS  ,
+        eDBGHELP_MISSING_EXPORTS,
         // A parameter was bad.
-        eBAD_PARAM                ,
+        eBAD_PARAM,
         // Unable to open the dump file requested.
-        eOPEN_DUMP_FAILED         ,
+        eOPEN_DUMP_FAILED,
         // MiniDumpWriteDump failed.  Call GetLastError to see why.
-        eMINIDUMPWRITEDUMP_FAILED ,
+        eMINIDUMPWRITEDUMP_FAILED,
         // Death error.  Thread failed to crank up.
-        eDEATH_ERROR              ,
+        eDEATH_ERROR,
         // The invalid error value.
-        eINVALID_ERROR            ,
-    }
-    BSUMDRET ;
+        eINVALID_ERROR,
+    } BSUMDRET;
 
     // This is the MINIDUMP_TYPE from the Windows XP.  If MINIDUMP_SIGNATURE
     // is not defined, I'll use this one.  Otherwise, I'll get the one
@@ -58,12 +58,12 @@ extern "C" {
 #ifndef MINIDUMP_SIGNATURE
     typedef enum _MINIDUMP_TYPE
     {
-        MiniDumpNormal         = 0x0000,
-        MiniDumpWithDataSegs   = 0x0001,
+        MiniDumpNormal = 0x0000,
+        MiniDumpWithDataSegs = 0x0001,
         MiniDumpWithFullMemory = 0x0002,
         MiniDumpWithHandleData = 0x0004,
     } MINIDUMP_TYPE;
-#endif  // MINIDUMP_SIGNATURE
+#endif // MINIDUMP_SIGNATURE
 
     /*----------------------------------------------------------------------
     FUNCTION        :   IsMiniDumpFunctionAvailable
@@ -76,7 +76,7 @@ extern "C" {
         FALSE - Mini dump functions are not available.
         TRUE  - Mini dump functions are there.
     ----------------------------------------------------------------------*/
-    BOOL BUGSUTIL_DLLINTERFACE __stdcall IsMiniDumpFunctionAvailable(void) ;
+    BOOL BUGSUTIL_DLLINTERFACE __stdcall IsMiniDumpFunctionAvailable(void);
 
     /*----------------------------------------------------------------------
     FUNCTION        :   CreateCurrentProcessMiniDump
@@ -96,23 +96,20 @@ extern "C" {
         TRUE  - Mini dump functions are there.
     ----------------------------------------------------------------------*/
     BSUMDRET BUGSUTIL_DLLINTERFACE __stdcall
-    CreateCurrentProcessMiniDumpA(MINIDUMP_TYPE        eType      ,
-                                  char *               szFileName ,
-                                  DWORD                dwThread   ,
-                                  EXCEPTION_POINTERS * pExceptInfo) ;
+    CreateCurrentProcessMiniDumpA(MINIDUMP_TYPE eType, char *szFileName,
+                                  DWORD dwThread,
+                                  EXCEPTION_POINTERS *pExceptInfo);
 
     BSUMDRET BUGSUTIL_DLLINTERFACE __stdcall
-    CreateCurrentProcessMiniDumpW(MINIDUMP_TYPE        eType      ,
-                                  wchar_t *            szFileName ,
-                                  DWORD                dwThread   ,
-                                  EXCEPTION_POINTERS * pExceptInfo) ;
+    CreateCurrentProcessMiniDumpW(MINIDUMP_TYPE eType, wchar_t *szFileName,
+                                  DWORD dwThread,
+                                  EXCEPTION_POINTERS *pExceptInfo);
 
 #ifdef UNICODE
 #define CreateCurrentProcessMiniDump CreateCurrentProcessMiniDumpW
 #else
 #define CreateCurrentProcessMiniDump CreateCurrentProcessMiniDumpA
 #endif
-
 
 
 #ifdef __cplusplus

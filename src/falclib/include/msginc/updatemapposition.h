@@ -9,12 +9,12 @@
 #define _UPDATEMAPPOSITION_H
 /*
 
-#include "F4vu.h"
+#include "f4vu.h"
 #include "mission.h"
-#include "FalcMesg.h"
+#include "falcmesg.h"
 
 //sfr: checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 using std::memcpychk;
 
 #pragma pack (1)
@@ -48,8 +48,8 @@ class UI_UpdateMapPosition : public FalconEvent
       {
          public:
  VU_ID from;
-            long x;
- long y;
+            int32_t x;
+ int32_t y;
       } dataBlock;
 
    protected:

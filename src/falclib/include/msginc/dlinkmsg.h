@@ -1,15 +1,16 @@
 #ifndef _DLINKMSG_H
 #define _DLINKMSG_H
+#include <cstdint>
 
 /*
  * Required Include Files
  */
-#include "F4vu.h"
-#include "FalcMesg.h"
+#include "f4vu.h"
+#include "falcmesg.h"
 #include "mission.h"
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#pragma pack (1)
+#pragma pack(1)
 
 /*
  * Message Type Data Link Message
@@ -26,7 +27,8 @@ public:
         CP
     };
 
-    FalconDLinkMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback = TRUE);
+    FalconDLinkMessage(VU_ID entityId, VuTargetEntity *target,
+                       VU_BOOL loopback = TRUE);
     FalconDLinkMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target);
     ~FalconDLinkMessage(void);
     virtual int Size() const
@@ -55,7 +57,6 @@ public:
     class DATA_BLOCK
     {
     public:
-
         uchar numPoints;
         ushort targetType;
         ushort threatType;
@@ -63,13 +64,13 @@ public:
         short px[5];
         short py[5];
         short pz[5];
-        long arrivalTime[5];
+        int32_t arrivalTime[5];
     } dataBlock;
 
 protected:
     int Process(uchar autodisp);
 };
 
-#pragma pack ()
+#pragma pack()
 
 #endif

@@ -42,7 +42,7 @@
 // For Debug
 #if 0
 #include "debuggr.h"
-#define VU_PRINT   MonoPrint
+#define VU_PRINT MonoPrint
 #else
 #define VU_PRINT(a)
 #endif

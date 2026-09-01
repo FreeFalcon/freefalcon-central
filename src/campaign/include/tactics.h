@@ -63,10 +63,12 @@ struct TacticData
     uchar team; // Teams which are allowed to use this tactic
     uchar domainType; // Domain of units which can use this tactic
     uchar unitSize; // Size of units which can use this tactic
-    short minRangeToDest; // How far from our target we gotta be (no target, mission dest)
+    short
+        minRangeToDest; // How far from our target we gotta be (no target, mission dest)
     short maxRangeToDest; // How far from out target we can be
     short distToFront; // Minimum distance to the front
-    uchar actionList[10]; // Actions/orders this tactic's ok with (0 in slot 0 = any)
+    uchar actionList
+        [10]; // Actions/orders this tactic's ok with (0 in slot 0 = any)
     uchar broken; // Can we do this while broken?
     uchar engaged; // Can we do this while engaged?
     uchar combat; // Can we do this while in combat?
@@ -78,7 +80,8 @@ struct TacticData
     uchar minOdds; // Minimum odds we're willing to do this with (minOdds:10)
     uchar role; // Any special role we need to do this.
     uchar fuel; // How much extra fuel we gotta have
-    uchar weapons; // 0 = none req, 1 = req for target, 2 = req for target and mission obj
+    uchar
+        weapons; // 0 = none req, 1 = req for target, 2 = req for target and mission obj
     uchar priority; // Relative ranking of this tactic
     uchar formation; // Formation to do this in
     uchar special; // Any private stuff we want to check
@@ -102,7 +105,7 @@ extern TacticData *TacticsTable;
 // Functions
 // =========================
 
-int LoadTactics(char* filename);
+int LoadTactics(char *filename);
 
 void FreeTactics(void);
 

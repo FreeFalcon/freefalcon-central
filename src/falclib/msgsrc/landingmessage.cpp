@@ -5,24 +5,30 @@
  * Generated from file EVENTS.XLS by Leon Rosenshein
  */
 
-#include "MsgInc/LandingMessage.h"
+#include "msginc/landingmessage.h"
 #include "mesg.h"
 #include "falclib.h"
 #include "falcmesg.h"
 #include "falcgame.h"
 #include "falcsess.h"
 #include "pilot.h"
-#include "Cmpclass.h"
-#include "MissEval.h"
+#include "cmpclass.h"
+#include "misseval.h"
 
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-FalconLandingMessage::FalconLandingMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(LandingMessage, FalconEvent::SimThread, entityId, target, loopback)
+FalconLandingMessage::FalconLandingMessage(VU_ID entityId,
+                                           VuTargetEntity *target,
+                                           VU_BOOL loopback)
+    : FalconEvent(LandingMessage, FalconEvent::SimThread, entityId, target,
+                  loopback)
 {
     // Your Code Goes Here
 }
 
-FalconLandingMessage::FalconLandingMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(LandingMessage, FalconEvent::SimThread, senderid, target)
+FalconLandingMessage::FalconLandingMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                           VU_ID target)
+    : FalconEvent(LandingMessage, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -38,7 +44,7 @@ int FalconLandingMessage::Process(uchar autodisp)
     GridIndex x, y;
     int status;
 
-    if ( not Entity() or autodisp)
+    if (not Entity() or autodisp)
         return -1;
 
     // Check for friendly territory

@@ -20,6 +20,8 @@ typedef struct
 } ViewportBounds;
 
 // sfr: 2 scale factors
-void ConvertRecttoVBounds(RECT*, ViewportBounds*, int, int, float hScale, float vScale);  //Wombat778 10-06-2003 Changed scale from int to float
+void ConvertRecttoVBounds(
+    RECT*, ViewportBounds*, int, int, float hScale,
+    float vScale);  //Wombat778 10-06-2003 Changed scale from int to float
 
 #endif

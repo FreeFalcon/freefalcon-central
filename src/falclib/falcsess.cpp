@@ -6,31 +6,32 @@
 #include "f4vu.h"
 #include "vusessn.h"
 #include "tchar.h"
-#include "FalcSess.h"
-#include "Squadron.h"
-#include "Flight.h"
+#include "falcsess.h"
+#include "squadron.h"
+#include "flight.h"
 #include "ui/include/uicomms.h"
 #include "classtbl.h"
-#include "ThreadMgr.h"
-#include "sim/include/SimBase.h"
-#include "Campaign.h"
+#include "threadmgr.h"
+#include "sim/include/simbase.h"
+#include "campaign.h"
 #include "ui/include/queue.h"
 #include "ui/include/logbook.h"
-#include "GameMgr.h"
-#include "MsgInc/SendAircraftSlot.h"
-#include "Sim/Include/Simdrive.h"
-#include "Sim/Include/OTWdrive.h"
+#include "gamemgr.h"
+#include "msginc/sendaircraftslot.h"
+#include "sim/include/simdrive.h"
+#include "sim/include/otwdrive.h"
 
 //sfr: added for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
-#define ACE_KILL(x,y) (log(exp(x) + y))
-#define ACE_DEATH(x,y) (log(exp(x) - (((x * (x - y))>x*0.5F)?(x * (x - y)):x*0.5F)))
+#define ACE_KILL(x, y) (log(exp(x) + y))
+#define ACE_DEATH(x, y)                                                        \
+    (log(exp(x) - (((x * (x - y)) > x * 0.5F) ? (x * (x - y)) : x * 0.5F)))
 
 extern void SetTimeCompression(int newComp);
 extern void SetLabel(SimBaseClass* theObject);
-extern void CheckForNewPlayer(FalconSessionEntity *session);
-extern ulong gCompressTillTime;
+extern void CheckForNewPlayer(FalconSessionEntity* session);
+extern CampaignTime gCompressTillTime;
 extern int F4SessionType;
 extern void UI_Refresh(void);
 extern int gGameType;
@@ -38,7 +39,8 @@ extern int gGameType;
 using namespace std;
 
 // constructors bitand destructor
-FalconSessionEntity::FalconSessionEntity(ulong domainMask, char *callsign) : VuSessionEntity(domainMask, callsign)
+FalconSessionEntity::FalconSessionEntity(ulong domainMask, char* callsign)
+    : VuSessionEntity(domainMask, callsign)
 {
     //name = new _TCHAR[_NAME_LEN_];
     //_stprintf(name,"Kevin");
@@ -87,17 +89,18 @@ FalconSessionEntity::FalconSessionEntity(ulong domainMask, char *callsign) : VuS
     flyState = FLYSTATE_IN_UI;
 }
 
-FalconSessionEntity::FalconSessionEntity(VU_BYTE** stream, long *rem) : VuSessionEntity(stream, rem)
+FalconSessionEntity::FalconSessionEntity(VU_BYTE** stream, long* rem)
+    : VuSessionEntity(stream, rem)
 {
     uchar size;
 
     memcpychk(&size, stream, sizeof(uchar), rem);
     //name = new _TCHAR[size+1];
-    memcpychk(name, stream, sizeof(_TCHAR)*size, rem);
+    memcpychk(name, stream, sizeof(_TCHAR) * size, rem);
     name[size] = name[_NAME_LEN_] = 0;
     memcpychk(&size, stream, sizeof(uchar), rem);
     //callSign = new _TCHAR[size+1];
-    memcpychk(callSign, stream, sizeof(_TCHAR)*size, rem);
+    memcpychk(callSign, stream, sizeof(_TCHAR) * size, rem);
     callSign[size] = 0;
     memcpychk(&playerSquadron, stream, sizeof(VU_ID), rem);
     memcpychk(&playerFlight, stream, sizeof(VU_ID), rem);
@@ -150,22 +153,23 @@ FalconSessionEntity::FalconSessionEntity(VU_BYTE** stream, long *rem) : VuSessio
 
     if (fc > 0)
     {
-        VU_ID *ids = new VU_ID[fc];
-        memcpychk(ids, stream, sizeof(VU_ID)*fc, rem);
+        VU_ID* ids = new VU_ID[fc];
+        memcpychk(ids, stream, sizeof(VU_ID) * fc, rem);
 
         for (unsigned char i = 0; i < fc; ++i)
         {
-            AddToFineInterest(static_cast<FalconEntity*>(vuDatabase->Find(ids[i])));
+            AddToFineInterest(
+                static_cast<FalconEntity*>(vuDatabase->Find(ids[i])));
         }
 
-        delete [] ids;
+        delete[] ids;
     }
 
 #endif
-
 }
 
-FalconSessionEntity::FalconSessionEntity(FILE* filePtr) : VuSessionEntity(filePtr)
+FalconSessionEntity::FalconSessionEntity(FILE* filePtr)
+    : VuSessionEntity(filePtr)
 {
     MonoPrint("FalconSessionEntity: This function is not supported\n");
 }
@@ -173,12 +177,12 @@ FalconSessionEntity::FalconSessionEntity(FILE* filePtr) : VuSessionEntity(filePt
 VU_ERRCODE FalconSessionEntity::InsertionCallback(void)
 {
     // This entity was inserted, so we'd better make these calls for real:
-    Squadron ps = (Squadron) vuDatabase->Find(playerSquadron);
-    Flight pf = (Flight) vuDatabase->Find(playerFlight);
-    FalconEntity*pe = (FalconEntity*)vuDatabase->Find(playerEntity);
-    playerSquadronPtr.reset();// = NULL; // Clear current pointers
-    playerFlightPtr.reset();// = NULL;
-    playerEntityPtr.reset();// = NULL;
+    Squadron ps = (Squadron)vuDatabase->Find(playerSquadron);
+    Flight pf = (Flight)vuDatabase->Find(playerFlight);
+    FalconEntity* pe = (FalconEntity*)vuDatabase->Find(playerEntity);
+    playerSquadronPtr.reset(); // = NULL; // Clear current pointers
+    playerFlightPtr.reset(); // = NULL;
+    playerEntityPtr.reset(); // = NULL;
     SetPlayerSquadron(ps); // Force them to be reassigned and referenced
     SetPlayerFlight(pf);
     SetPlayerEntity(pe);
@@ -220,15 +224,15 @@ int FalconSessionEntity::Save(VU_BYTE** stream)
     uchar size;
 
     VuSessionEntity::Save(stream);
-    size = (uchar) _tcslen(name);
+    size = (uchar)_tcslen(name);
     memcpy(*stream, &size, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(*stream, name, sizeof(_TCHAR)*size);
+    memcpy(*stream, name, sizeof(_TCHAR) * size);
     *stream += sizeof(_TCHAR) * size;
     size = (uchar)_tcslen(callSign);
     memcpy(*stream, &size, sizeof(uchar));
     *stream += sizeof(uchar);
-    memcpy(*stream, callSign, sizeof(_TCHAR)*size);
+    memcpy(*stream, callSign, sizeof(_TCHAR) * size);
     *stream += sizeof(_TCHAR) * size;
     memcpy(*stream, &playerSquadron, sizeof(VU_ID));
     *stream += sizeof(VU_ID);
@@ -269,11 +273,12 @@ int FalconSessionEntity::Save(VU_BYTE** stream)
     if (fc > 0)
     {
         // get ids from list
-        VU_ID *ids = new VU_ID[fc];
+        VU_ID* ids = new VU_ID[fc];
         FalconEntityList::iterator it;
         unsigned int i = 0;
 
-        for (it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
+        for (it = fineInterestList.begin(); it not_eq fineInterestList.end();
+             ++it)
         {
             ids[i++] = it->get()->Id();
         }
@@ -281,7 +286,7 @@ int FalconSessionEntity::Save(VU_BYTE** stream)
         unsigned int idsize = sizeof(VU_ID) * fc;
         memcpy(*stream, ids, idsize);
         *stream += idsize;
-        delete [] ids;
+        delete[] ids;
     }
 
 #endif
@@ -408,7 +413,7 @@ void FalconSessionEntity::SetPlayerSquadron(SquadronClass* ent)
     CampEnterCriticalSection();
     SetDirty();
 
-    SquadronClass *oldPlayerPtr = playerSquadronPtr.get();
+    SquadronClass* oldPlayerPtr = playerSquadronPtr.get();
 
     if (oldPlayerPtr)
     {
@@ -457,7 +462,7 @@ void FalconSessionEntity::SetPlayerFlight(FlightClass* ent)
         SetTimeCompression(1);
     }
 
-    FlightClass *oldPlayerPtr = playerFlightPtr.get();
+    FlightClass* oldPlayerPtr = playerFlightPtr.get();
 
     if (oldPlayerPtr)
     {
@@ -490,7 +495,7 @@ void FalconSessionEntity::SetPlayerFlight(FlightClass* ent)
 
 void FalconSessionEntity::SetAssignedPlayerFlight(FlightClass* ent)
 {
-    FlightClass *oldPlayerPtr;
+    FlightClass* oldPlayerPtr;
 
     if (assignedPlayerFlightPtr == ent)
     {
@@ -535,7 +540,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
         AttachCamera(ent);
     }
 
-    VuEntity *oldPlayerPtr = playerEntityPtr.get();
+    VuEntity* oldPlayerPtr = playerEntityPtr.get();
     // sfr: we must reset player entity here, otherwise the CheckPlayerStatus below will fail
     // since it checks the playerEntityPtr
     playerEntityPtr.reset(ent);
@@ -544,7 +549,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
     {
         GameManager.CheckPlayerStatus((FalconEntity*)oldPlayerPtr);
         //VuDeReferenceEntity(oldPlayerPtr);
-#if 0//NEW_SERVER_VIEWPOINT
+#if 0 //NEW_SERVER_VIEWPOINT
 
         if ( not IsLocal() and Game()->IsLocal())
         {
@@ -568,7 +573,7 @@ void FalconSessionEntity::SetPlayerEntity(FalconEntity* ent)
             country = (uchar)newcountry;
         }
 
-#if 0//NEW_SERVER_VIEWPOINT
+#if 0 //NEW_SERVER_VIEWPOINT
 
         if ( not IsLocal() and Game()->IsLocal())
         {
@@ -652,7 +657,9 @@ void FalconSessionEntity::SetAceFactorDeath(float opponent)
      */
 
     //AceFactor = ACE_DEATH(((double)AceFactor),((double)opponent));
-    AceFactor = (float)ACE_DEATH(((double)AceFactor), ACE_KILL(((double)opponent), ((double)initAceFactor)));
+    AceFactor =
+        (float)ACE_DEATH(((double)AceFactor),
+                         ACE_KILL(((double)opponent), ((double)initAceFactor)));
 
     if (AceFactor < 1.0f)
         AceFactor = 1.0f;
@@ -670,7 +677,6 @@ void FalconSessionEntity::SetPilotSlot(uchar ps)
     // MonoPrint ("SetPilotSlot\n");
     SetDirty();
     pilotSlot = ps;
-
 }
 
 void FalconSessionEntity::SetAssignedAircraftNum(uchar an)
@@ -707,7 +713,8 @@ void FalconSessionEntity::SetReqCompression(short rc)
 
 // Returns: 0 if not in bubble
 // 1 if in bubble
-int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multiplier)
+int FalconSessionEntity::InSessionBubble(FalconEntity* ent,
+                                         float bubble_multiplier)
 {
     float ent_bubble_range;
     int i;
@@ -721,7 +728,9 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
     // Get the entity's bubble range
     if (ent->IsObjective())
     {
-        ent_bubble_range = ent->EntityType()->bubbleRange_; // We don't adjust objective's bubble
+        ent_bubble_range =
+            ent->EntityType()
+                ->bubbleRange_; // We don't adjust objective's bubble
     }
     else if (ent->IsFlight() and gGameType == game_Dogfight)
     {
@@ -736,16 +745,20 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
 
     for (i = 0; i < CameraCount(); i++)
     {
-        VuEntity *camera = GetCameraEntity(i);
+        VuEntity* camera = GetCameraEntity(i);
 
         if (camera)
         {
             float xdist, ydist, dsqu;
-            float rsqu, range = ent_bubble_range * camera->EntityType()->fineUpdateMultiplier_ * bubble_multiplier;
+            float rsqu, range = ent_bubble_range *
+                                camera->EntityType()->fineUpdateMultiplier_ *
+                                bubble_multiplier;
             rsqu = range * range;
             // KCK NOTE: Estimate distances in one second's time - Opposite vectors assume convergence
-            xdist = (float)fabs(ent->XPos() - camera->XPos()) - (float)fabs(ent->XDelta() - camera->XDelta());
-            ydist = (float)fabs(ent->YPos() - camera->YPos()) - (float)fabs(ent->YDelta() - camera->YDelta());
+            xdist = (float)fabs(ent->XPos() - camera->XPos()) -
+                    (float)fabs(ent->XDelta() - camera->XDelta());
+            ydist = (float)fabs(ent->YPos() - camera->YPos()) -
+                    (float)fabs(ent->YDelta() - camera->YDelta());
             dsqu = (xdist * xdist) + (ydist * ydist);
 
             if (dsqu < rsqu)
@@ -761,15 +774,16 @@ int FalconSessionEntity::InSessionBubble(FalconEntity* ent, float bubble_multipl
 void FalconSessionEntity::DoFullUpdate(void)
 {
     // MonoPrint ("FalconSessionEntity::DoFullUpdate\n");
-    VuEvent *event = new VuFullUpdateEvent(this, vuGlobalGroup);
+    VuEvent* event = new VuFullUpdateEvent(this, vuGlobalGroup);
     event->RequestReliableTransmit();
     VuMessageQueue::PostVuMessage(event);
     ClearDirty();
 }
 
-VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
+VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent* event)
 {
-    FalconSessionEntity* tmpSess = (FalconSessionEntity*)(event->expandedData_.get());
+    FalconSessionEntity* tmpSess =
+        (FalconSessionEntity*)(event->expandedData_.get());
     short dirty = 0;
     unsigned int size;
 
@@ -779,7 +793,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     }
 
     // Copy in new data
-    if ( not name or strcmp(name, tmpSess->name) not_eq 0)
+    if (not name or strcmp(name, tmpSess->name) not_eq 0)
     {
         dirty or_eq 0x0001;
         size = _tcslen(tmpSess->name);
@@ -790,7 +804,7 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
         name[size] = name[_NAME_LEN_] = 0;
     }
 
-    if ( not callSign or strcmp(callSign, tmpSess->callSign) not_eq 0)
+    if (not callSign or strcmp(callSign, tmpSess->callSign) not_eq 0)
     {
         dirty or_eq 0x0002;
         size = _tcslen(tmpSess->callSign);
@@ -827,9 +841,12 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
         dirty or_eq 0x0020;
     }
 
-    tmpSess->playerSquadronPtr.reset((Squadron) vuDatabase->Find(tmpSess->playerSquadron));
-    tmpSess->playerFlightPtr.reset((Flight) vuDatabase->Find(tmpSess->playerFlight));
-    tmpSess->playerEntityPtr.reset(static_cast<FalconEntity*>(vuDatabase->Find(tmpSess->playerEntity)));
+    tmpSess->playerSquadronPtr.reset(
+        (Squadron)vuDatabase->Find(tmpSess->playerSquadron));
+    tmpSess->playerFlightPtr.reset(
+        (Flight)vuDatabase->Find(tmpSess->playerFlight));
+    tmpSess->playerEntityPtr.reset(
+        static_cast<FalconEntity*>(vuDatabase->Find(tmpSess->playerEntity)));
 
     if (playerSquadronPtr not_eq tmpSess->playerSquadronPtr)
     {
@@ -853,9 +870,9 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     SetPlayerFlightID(tmpSess->playerFlight);
     SetPlayerEntityID(tmpSess->playerEntity);
 
-    tmpSess->playerSquadronPtr.reset();// = NULL; // Clear temporary pointers
-    tmpSess->playerFlightPtr.reset();// = NULL;
-    tmpSess->playerEntityPtr.reset();// = NULL;
+    tmpSess->playerSquadronPtr.reset(); // = NULL; // Clear temporary pointers
+    tmpSess->playerFlightPtr.reset(); // = NULL;
+    tmpSess->playerEntityPtr.reset(); // = NULL;
 
     memcpy(&country, &tmpSess->country, sizeof(uchar));
     memcpy(&aircraftNum, &tmpSess->aircraftNum, sizeof(uchar));
@@ -889,19 +906,20 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
     // KCK: if we're the host, check to see if Assigned aircraft is different than the one
     // the session thinks it has and correct any errors by sending an SendAircraftSlot message
-    if (FalconLocalGame and Game() == FalconLocalGame and FalconLocalGame->IsLocal())
+    if (FalconLocalGame and Game() == FalconLocalGame and
+        FalconLocalGame->IsLocal())
     {
-        if (
-            assignedAircraftNum not_eq aircraftNum or
+        if (assignedAircraftNum not_eq aircraftNum or
             assignedPilotSlot not_eq pilotSlot or
-            assignedPlayerFlightPtr not_eq playerFlightPtr
-        )
+            assignedPlayerFlightPtr not_eq playerFlightPtr)
         {
             //Flight flight = GetAssignedPlayerFlight();
-            MonoPrint("Invalid Session Info %d:%d %d:%d %08x:%08x\n",
-                      assignedAircraftNum, aircraftNum,
-                      assignedPilotSlot, pilotSlot,
-                      assignedPlayerFlightPtr, playerFlightPtr);
+            // Artscout - 2026 (Linux port): VuBin<FlightClass> is non-POD and cannot be passed
+            // through a variadic (aborts at runtime under the Itanium ABI); print the raw pointer.
+            MonoPrint("Invalid Session Info %d:%d %d:%d %p:%p\n",
+                      assignedAircraftNum, aircraftNum, assignedPilotSlot,
+                      pilotSlot, (void*)assignedPlayerFlightPtr,
+                      (void*)playerFlightPtr.get());
             /*
              if (flight)
              {
@@ -934,7 +952,8 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
     fineInterestList.clear();
     FalconEntityList::iterator it;
 
-    for (it = tmpSess->fineInterestList.begin(); it not_eq tmpSess->fineInterestList.end(); ++it)
+    for (it = tmpSess->fineInterestList.begin();
+         it not_eq tmpSess->fineInterestList.end(); ++it)
     {
         AddToFineInterest(it->get());
     }
@@ -947,13 +966,13 @@ VU_ERRCODE FalconSessionEntity::Handle(VuFullUpdateEvent *event)
 
 void FalconSessionEntity::UpdatePlayer(void)
 {
-    SquadronClass *squadron_ptr;
-    FlightClass *flight_ptr;
-    FalconEntity *entity_ptr;
-    squadron_ptr = (Squadron) vuDatabase->Find(playerSquadron);
-    flight_ptr = (Flight) vuDatabase->Find(playerFlight);
+    SquadronClass* squadron_ptr;
+    FlightClass* flight_ptr;
+    FalconEntity* entity_ptr;
+    squadron_ptr = (Squadron)vuDatabase->Find(playerSquadron);
+    flight_ptr = (Flight)vuDatabase->Find(playerFlight);
 
-    if (( not flight_ptr) and (playerFlight not_eq vuNullId))
+    if ((not flight_ptr) and (playerFlight not_eq vuNullId))
     {
         static int now, last_time;
         now = GetTickCount();
@@ -962,12 +981,23 @@ void FalconSessionEntity::UpdatePlayer(void)
         {
             last_time = now;
             MonoPrint("Flight is not found : %08x%08x\n", playerFlight);
-            VuGetRequest *msg = new VuGetRequest(playerFlight, this);
+            VuGetRequest* msg = new VuGetRequest(playerFlight, this);
             FalconSendMessage(msg);
         }
     }
 
     entity_ptr = static_cast<FalconEntity*>(vuDatabase->Find(playerEntity));
+
+    // The player entity is always a sim aircraft (SimBaseClass): SetPlayerEntity and the SetLabel()
+    // call below cast to SimBaseClass and dereference SimBaseClass-only members (drawPointer). If a
+    // recycled VU_ID resolves playerEntity to a non-sim entity (e.g. a tasking manager that was
+    // re-issued a still-referenced volatile id after a ResetNamespaces() counter rewind), the cast is
+    // invalid and dereferencing drawPointer crashes. Reject the stale/collided binding rather than
+    // trust the type -- this both prevents the crash and clears the wrong-entity binding.
+    if (entity_ptr and not entity_ptr->IsSimBase())
+    {
+        entity_ptr = NULL;
+    }
 
     if (squadron_ptr not_eq playerSquadronPtr)
     {
@@ -993,16 +1023,17 @@ void FalconSessionEntity::UpdatePlayer(void)
 #if FINE_INT
 
 // sfr fine interest stuff
-bool FalconSessionEntity::AddToFineInterest(FalconEntity *entity, bool silent)
+bool FalconSessionEntity::AddToFineInterest(FalconEntity* entity, bool silent)
 {
-    if ((entity == NULL) or (fineInterestList.size() == FALCSESS_MAX_FINE_INTEREST))
+    if ((entity == NULL) or
+        (fineInterestList.size() == FALCSESS_MAX_FINE_INTEREST))
     {
         return false;
     }
 
     fineInterestList.push_back(FalconEntityBin(entity));
 
-    if ( not silent)
+    if (not silent)
     {
         SetDirty();
     }
@@ -1011,17 +1042,19 @@ bool FalconSessionEntity::AddToFineInterest(FalconEntity *entity, bool silent)
 }
 
 /** removes unit from fine interest list. Will be updated normally */
-bool FalconSessionEntity::RemoveFromFineInterest(const FalconEntity *entity, bool silent)
+bool FalconSessionEntity::RemoveFromFineInterest(const FalconEntity* entity,
+                                                 bool silent)
 {
-    for (FalconEntityList::iterator it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
+    for (FalconEntityList::iterator it = fineInterestList.begin();
+         it not_eq fineInterestList.end(); ++it)
     {
-        FalconEntity *e = it->get();
+        FalconEntity* e = it->get();
 
         if (entity->Id() == e->Id())
         {
             fineInterestList.erase(it);
 
-            if ( not silent)
+            if (not silent)
             {
                 SetDirty();
             }
@@ -1038,7 +1071,7 @@ void FalconSessionEntity::ClearFineInterest(bool silent)
 {
     fineInterestList.clear();
 
-    if ( not silent)
+    if (not silent)
     {
         SetDirty();
     }
@@ -1046,11 +1079,12 @@ void FalconSessionEntity::ClearFineInterest(bool silent)
 
 
 /** checks if a unit is in fine interest list */
-bool FalconSessionEntity::HasFineInterest(const FalconEntity *entity) const
+bool FalconSessionEntity::HasFineInterest(const FalconEntity* entity) const
 {
-    for (FalconEntityList::const_iterator it = fineInterestList.begin(); it not_eq fineInterestList.end(); ++it)
+    for (FalconEntityList::const_iterator it = fineInterestList.begin();
+         it not_eq fineInterestList.end(); ++it)
     {
-        FalconEntity *e = it->get();
+        FalconEntity* e = it->get();
 
         if (entity->Id() == e->Id())
         {
@@ -1063,4 +1097,3 @@ bool FalconSessionEntity::HasFineInterest(const FalconEntity *entity) const
 
 
 #endif
-

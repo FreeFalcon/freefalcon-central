@@ -13,16 +13,10 @@ using namespace std;
 // CAS_ST   = 1,      // inside CA or TE as server
 // CAC_ST   = 2,      // inside CA or TE as client
 // DF_ST    = 3,      // in dogfight
-int BwFSM::minBw[NOSTATE_ST] =
-{
-    6000, 8000, 6000, 6000
-};
+int BwFSM::minBw[NOSTATE_ST] = {6000, 8000, 6000, 6000};
 
 // bw increment for each state, in bytes per second
-int BwFSM::stBw[NOSTATE_ST] =
-{
-    300, 8000, 300, 300
-};
+int BwFSM::stBw[NOSTATE_ST] = {300, 8000, 300, 300};
 
 void BwFSM::ComputeBW()
 {

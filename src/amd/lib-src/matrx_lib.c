@@ -29,12 +29,8 @@
 
 float det_3x3(const float *m)
 {
-    return (m[0] * m[4] * m[8] +
-            m[1] * m[5] * m[6] +
-            m[2] * m[3] * m[7] -
-            m[0] * m[5] * m[7] -
-            m[1] * m[3] * m[8] -
-            m[2] * m[4] * m[6]);
+    return (m[0] * m[4] * m[8] + m[1] * m[5] * m[6] + m[2] * m[3] * m[7] -
+            m[0] * m[5] * m[7] - m[1] * m[3] * m[8] - m[2] * m[4] * m[6]);
 }
 
 void inverse_3x3(float *dst, const float *m)

@@ -10,21 +10,20 @@
  is computed and the posts required to draw the terrain within the volume
  are identified.
 \***************************************************************************/
-#include <cISO646>
+#include <ciso646>
 #include <math.h>
-#include "TMap.h"
-#include "Tpost.h"
-#include "RViewPnt.h"
-#include "RenderOW.h"
+#include "tmap.h"
+#include "tpost.h"
+#include "rviewpnt.h"
+#include "renderow.h"
 
 
-static const int MAX_POSITIVE_I =  25000;
+static const int MAX_POSITIVE_I = 25000;
 static const int MAX_NEGATIVE_I = -25000;
 static const float MAX_POSTIVE_F = MAX_POSITIVE_I * 819.995f; // FeetPerPost
 static const float MAX_NEGATIVE_F = MAX_NEGATIVE_I * 819.995f; // FeetPerPost
 
 
-
 /***************************************************************************\
     Draw one ring of terrain data clipped by the viewing frustum edges.
 \***************************************************************************/
@@ -60,7 +59,7 @@ void RenderOTW::BuildRingList(void)
 
         // Determine the location of the glue row and column at the outside of this LOD region
         // NOTE:  These two must evaluate to zero or one, as they are used arithmetically
-        LODdata[LOD].glueOnBottom   = LODdata[LOD].centerRow bitand 1;
+        LODdata[LOD].glueOnBottom = LODdata[LOD].centerRow bitand 1;
         LODdata[LOD].glueOnLeft = LODdata[LOD].centerCol bitand 1;
 
 
@@ -72,7 +71,7 @@ void RenderOTW::BuildRingList(void)
             SetColor(0xFFFFFFFF);
             sprintf(message, "LOD%0d Glue: %s %s", LOD,
                     LODdata[LOD].glueOnBottom ? "Bottom" : "Top",
-                    LODdata[LOD].glueOnLeft   ? "Left"   : "Right");
+                    LODdata[LOD].glueOnLeft ? "Left" : "Right");
             ScreenText(0.0f, 8.0f * LOD, message);
         }
 
@@ -102,7 +101,7 @@ void RenderOTW::BuildRingList(void)
     //
 
     // Start the rings at the most distant available post
-    startRing = LODdata[ viewpoint->GetLowLOD() ].availablePostRange;
+    startRing = LODdata[viewpoint->GetLowLOD()].availablePostRange;
 
     // We will consider rings at each level of detail from lowest detail to highest
     for (LOD = viewpoint->GetLowLOD(); LOD >= viewpoint->GetHighLOD(); LOD--)
@@ -145,10 +144,14 @@ void RenderOTW::BuildRingList(void)
             firstEmptySpan->LOD = LOD;
 
             // Figure out the actual location of each side of this ring
-            firstEmptySpan->Tsector.insideEdge = LEVEL_POST_TO_WORLD(LODdata[LOD].centerRow + ring,     LOD);
-            firstEmptySpan->Bsector.insideEdge = LEVEL_POST_TO_WORLD(LODdata[LOD].centerRow - ring + 1, LOD);
-            firstEmptySpan->Rsector.insideEdge = LEVEL_POST_TO_WORLD(LODdata[LOD].centerCol + ring,     LOD);
-            firstEmptySpan->Lsector.insideEdge = LEVEL_POST_TO_WORLD(LODdata[LOD].centerCol - ring + 1, LOD);
+            firstEmptySpan->Tsector.insideEdge =
+                LEVEL_POST_TO_WORLD(LODdata[LOD].centerRow + ring, LOD);
+            firstEmptySpan->Bsector.insideEdge =
+                LEVEL_POST_TO_WORLD(LODdata[LOD].centerRow - ring + 1, LOD);
+            firstEmptySpan->Rsector.insideEdge =
+                LEVEL_POST_TO_WORLD(LODdata[LOD].centerCol + ring, LOD);
+            firstEmptySpan->Lsector.insideEdge =
+                LEVEL_POST_TO_WORLD(LODdata[LOD].centerCol - ring + 1, LOD);
 
             firstEmptySpan++;
         }
@@ -178,7 +181,6 @@ void RenderOTW::BuildRingList(void)
 }
 
 
-
 /***************************************************************************\
     Compute the regions of posts to be drawn in each sector which has
  a horizontal traversal order.
@@ -348,8 +350,10 @@ void RenderOTW::ClipHorizontalSectors(void)
 
 
         // Compute the intersection of this span with the bounding region
-        span->Tsector.minEndPoint = westBoundry[w].edge.Y((float)span->Tsector.insideEdge);
-        span->Tsector.maxEndPoint = eastBoundry[e].edge.Y((float)span->Tsector.insideEdge);
+        span->Tsector.minEndPoint =
+            westBoundry[w].edge.Y((float)span->Tsector.insideEdge);
+        span->Tsector.maxEndPoint =
+            eastBoundry[e].edge.Y((float)span->Tsector.insideEdge);
     }
 
     // Force a fresh start by noting an illegal "current" LOD
@@ -423,14 +427,14 @@ void RenderOTW::ClipHorizontalSectors(void)
 
 
         // Compute the intersection of this span with the bounding region
-        span->Bsector.minEndPoint = westBoundry[w].edge.Y((float)span->Bsector.insideEdge);
-        span->Bsector.maxEndPoint = eastBoundry[e].edge.Y((float)span->Bsector.insideEdge);
+        span->Bsector.minEndPoint =
+            westBoundry[w].edge.Y((float)span->Bsector.insideEdge);
+        span->Bsector.maxEndPoint =
+            eastBoundry[e].edge.Y((float)span->Bsector.insideEdge);
     }
 }
 
 
-
-
 /***************************************************************************\
     Compute the regions of posts to be drawn in each sector which has
  a vertical traversal order.
@@ -599,8 +603,10 @@ void RenderOTW::ClipVerticalSectors(void)
 
 
         // Compute the intersection of this span with the bounding region
-        span->Rsector.minEndPoint = southBoundry[s].edge.X((float)span->Rsector.insideEdge);
-        span->Rsector.maxEndPoint = northBoundry[n].edge.X((float)span->Rsector.insideEdge);
+        span->Rsector.minEndPoint =
+            southBoundry[s].edge.X((float)span->Rsector.insideEdge);
+        span->Rsector.maxEndPoint =
+            northBoundry[n].edge.X((float)span->Rsector.insideEdge);
     }
 
 
@@ -675,13 +681,14 @@ void RenderOTW::ClipVerticalSectors(void)
 
 
         // Compute the intersection of this span with the bounding region
-        span->Lsector.minEndPoint = southBoundry[s].edge.X((float)span->Lsector.insideEdge);
-        span->Lsector.maxEndPoint = northBoundry[n].edge.X((float)span->Lsector.insideEdge);
+        span->Lsector.minEndPoint =
+            southBoundry[s].edge.X((float)span->Lsector.insideEdge);
+        span->Lsector.maxEndPoint =
+            northBoundry[n].edge.X((float)span->Lsector.insideEdge);
     }
 }
 
 
-
 /***************************************************************************\
     Given the spanList which contains the world space extents of the
  inner edges of the horizontal and vertical spans of squares, we
@@ -708,39 +715,63 @@ void RenderOTW::BuildCornerSet(void)
             {
                 // Normal case (look out one ring)
                 ShiAssert((span - 1) >= spanList);
-                span->Tsector.minEndPoint = min(span->Tsector.minEndPoint, (span - 1)->Tsector.minEndPoint);
-                span->Tsector.maxEndPoint = max(span->Tsector.maxEndPoint, (span - 1)->Tsector.maxEndPoint);
-                span->Rsector.minEndPoint = min(span->Rsector.minEndPoint, (span - 1)->Rsector.minEndPoint);
-                span->Rsector.maxEndPoint = max(span->Rsector.maxEndPoint, (span - 1)->Rsector.maxEndPoint);
-                span->Bsector.minEndPoint = min(span->Bsector.minEndPoint, (span - 1)->Bsector.minEndPoint);
-                span->Bsector.maxEndPoint = max(span->Bsector.maxEndPoint, (span - 1)->Bsector.maxEndPoint);
-                span->Lsector.minEndPoint = min(span->Lsector.minEndPoint, (span - 1)->Lsector.minEndPoint);
-                span->Lsector.maxEndPoint = max(span->Lsector.maxEndPoint, (span - 1)->Lsector.maxEndPoint);
+                span->Tsector.minEndPoint = min(
+                    span->Tsector.minEndPoint, (span - 1)->Tsector.minEndPoint);
+                span->Tsector.maxEndPoint = max(
+                    span->Tsector.maxEndPoint, (span - 1)->Tsector.maxEndPoint);
+                span->Rsector.minEndPoint = min(
+                    span->Rsector.minEndPoint, (span - 1)->Rsector.minEndPoint);
+                span->Rsector.maxEndPoint = max(
+                    span->Rsector.maxEndPoint, (span - 1)->Rsector.maxEndPoint);
+                span->Bsector.minEndPoint = min(
+                    span->Bsector.minEndPoint, (span - 1)->Bsector.minEndPoint);
+                span->Bsector.maxEndPoint = max(
+                    span->Bsector.maxEndPoint, (span - 1)->Bsector.maxEndPoint);
+                span->Lsector.minEndPoint = min(
+                    span->Lsector.minEndPoint, (span - 1)->Lsector.minEndPoint);
+                span->Lsector.maxEndPoint = max(
+                    span->Lsector.maxEndPoint, (span - 1)->Lsector.maxEndPoint);
             }
             else
             {
                 // Connector case (look out two rings to a lower LOD)
                 ShiAssert((span - 2) >= spanList);
-                span->Tsector.minEndPoint = min(span->Tsector.minEndPoint, (span - 2)->Tsector.minEndPoint);
-                span->Tsector.maxEndPoint = max(span->Tsector.maxEndPoint, (span - 2)->Tsector.maxEndPoint);
-                span->Rsector.minEndPoint = min(span->Rsector.minEndPoint, (span - 2)->Rsector.minEndPoint);
-                span->Rsector.maxEndPoint = max(span->Rsector.maxEndPoint, (span - 2)->Rsector.maxEndPoint);
-                span->Bsector.minEndPoint = min(span->Bsector.minEndPoint, (span - 2)->Bsector.minEndPoint);
-                span->Bsector.maxEndPoint = max(span->Bsector.maxEndPoint, (span - 2)->Bsector.maxEndPoint);
-                span->Lsector.minEndPoint = min(span->Lsector.minEndPoint, (span - 2)->Lsector.minEndPoint);
-                span->Lsector.maxEndPoint = max(span->Lsector.maxEndPoint, (span - 2)->Lsector.maxEndPoint);
+                span->Tsector.minEndPoint = min(
+                    span->Tsector.minEndPoint, (span - 2)->Tsector.minEndPoint);
+                span->Tsector.maxEndPoint = max(
+                    span->Tsector.maxEndPoint, (span - 2)->Tsector.maxEndPoint);
+                span->Rsector.minEndPoint = min(
+                    span->Rsector.minEndPoint, (span - 2)->Rsector.minEndPoint);
+                span->Rsector.maxEndPoint = max(
+                    span->Rsector.maxEndPoint, (span - 2)->Rsector.maxEndPoint);
+                span->Bsector.minEndPoint = min(
+                    span->Bsector.minEndPoint, (span - 2)->Bsector.minEndPoint);
+                span->Bsector.maxEndPoint = max(
+                    span->Bsector.maxEndPoint, (span - 2)->Bsector.maxEndPoint);
+                span->Lsector.minEndPoint = min(
+                    span->Lsector.minEndPoint, (span - 2)->Lsector.minEndPoint);
+                span->Lsector.maxEndPoint = max(
+                    span->Lsector.maxEndPoint, (span - 2)->Lsector.maxEndPoint);
             }
         }
 
         // Convert all the start/stop points into units of level posts
-        span->Tsector.startDraw = WORLD_TO_LEVEL_POST(span->Tsector.minEndPoint, span->LOD);
-        span->Tsector.stopDraw = WORLD_TO_LEVEL_POST(span->Tsector.maxEndPoint, span->LOD);
-        span->Rsector.startDraw = WORLD_TO_LEVEL_POST(span->Rsector.minEndPoint, span->LOD);
-        span->Rsector.stopDraw = WORLD_TO_LEVEL_POST(span->Rsector.maxEndPoint, span->LOD);
-        span->Bsector.startDraw = WORLD_TO_LEVEL_POST(span->Bsector.minEndPoint, span->LOD);
-        span->Bsector.stopDraw = WORLD_TO_LEVEL_POST(span->Bsector.maxEndPoint, span->LOD);
-        span->Lsector.startDraw = WORLD_TO_LEVEL_POST(span->Lsector.minEndPoint, span->LOD);
-        span->Lsector.stopDraw = WORLD_TO_LEVEL_POST(span->Lsector.maxEndPoint, span->LOD);
+        span->Tsector.startDraw =
+            WORLD_TO_LEVEL_POST(span->Tsector.minEndPoint, span->LOD);
+        span->Tsector.stopDraw =
+            WORLD_TO_LEVEL_POST(span->Tsector.maxEndPoint, span->LOD);
+        span->Rsector.startDraw =
+            WORLD_TO_LEVEL_POST(span->Rsector.minEndPoint, span->LOD);
+        span->Rsector.stopDraw =
+            WORLD_TO_LEVEL_POST(span->Rsector.maxEndPoint, span->LOD);
+        span->Bsector.startDraw =
+            WORLD_TO_LEVEL_POST(span->Bsector.minEndPoint, span->LOD);
+        span->Bsector.stopDraw =
+            WORLD_TO_LEVEL_POST(span->Bsector.maxEndPoint, span->LOD);
+        span->Lsector.startDraw =
+            WORLD_TO_LEVEL_POST(span->Lsector.minEndPoint, span->LOD);
+        span->Lsector.stopDraw =
+            WORLD_TO_LEVEL_POST(span->Lsector.maxEndPoint, span->LOD);
 
 #if 0
 
@@ -793,7 +824,6 @@ void RenderOTW::BuildCornerSet(void)
 }
 
 
-
 /***************************************************************************\
     Given the spanList which contains the world space extents of the
  inner edges of the horizontal and vertical spans of squares, we
@@ -856,7 +886,6 @@ void RenderOTW::TrimCornerSet(void)
             {
                 span->Lsector.stopDraw = span->ring - 1;
             }
-
         }
         else
         {
@@ -869,14 +898,18 @@ void RenderOTW::TrimCornerSet(void)
                 if (LODdata[LOD].glueOnBottom)
                 {
                     // For Glue
-                    if (span->Bsector.startDraw < -span->ring + 1 - LODdata[LOD].glueOnLeft)
+                    if (span->Bsector.startDraw <
+                        -span->ring + 1 - LODdata[LOD].glueOnLeft)
                     {
-                        span->Bsector.startDraw = -span->ring + 1 - LODdata[LOD].glueOnLeft;
+                        span->Bsector.startDraw =
+                            -span->ring + 1 - LODdata[LOD].glueOnLeft;
                     }
 
-                    if (span->Bsector.stopDraw > span->ring - LODdata[LOD].glueOnLeft)
+                    if (span->Bsector.stopDraw >
+                        span->ring - LODdata[LOD].glueOnLeft)
                     {
-                        span->Bsector.stopDraw = span->ring - LODdata[LOD].glueOnLeft;
+                        span->Bsector.stopDraw =
+                            span->ring - LODdata[LOD].glueOnLeft;
                     }
 
                     // For connector
@@ -905,10 +938,14 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Tsector.startDraw = (span->Tsector.startDraw - 1) bitor 1;
-                        span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) bitor 1;
-                        span->Rsector.startDraw = (span->Rsector.startDraw - 1) bitor 1;
-                        span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) bitor 1;
+                        span->Tsector.startDraw =
+                            (span->Tsector.startDraw - 1) bitor 1;
+                        span->Tsector.stopDraw =
+                            (span->Tsector.stopDraw - 1) bitor 1;
+                        span->Rsector.startDraw =
+                            (span->Rsector.startDraw - 1) bitor 1;
+                        span->Rsector.stopDraw =
+                            (span->Rsector.stopDraw - 1) bitor 1;
                     }
                     else
                     {
@@ -935,23 +972,31 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Tsector.startDraw = span->Tsector.startDraw bitand compl 1;
-                        span->Tsector.stopDraw  = span->Tsector.stopDraw bitand compl 1;
-                        span->Lsector.startDraw = (span->Lsector.startDraw - 1) bitor 1;
-                        span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) bitor 1;
+                        span->Tsector.startDraw =
+                            span->Tsector.startDraw bitand compl 1;
+                        span->Tsector.stopDraw =
+                            span->Tsector.stopDraw bitand compl 1;
+                        span->Lsector.startDraw =
+                            (span->Lsector.startDraw - 1) bitor 1;
+                        span->Lsector.stopDraw =
+                            (span->Lsector.stopDraw - 1) bitor 1;
                     }
                 }
                 else
                 {
                     // For Glue
-                    if (span->Tsector.startDraw < -span->ring + 1 - LODdata[LOD].glueOnLeft)
+                    if (span->Tsector.startDraw <
+                        -span->ring + 1 - LODdata[LOD].glueOnLeft)
                     {
-                        span->Tsector.startDraw = -span->ring + 1 - LODdata[LOD].glueOnLeft;
+                        span->Tsector.startDraw =
+                            -span->ring + 1 - LODdata[LOD].glueOnLeft;
                     }
 
-                    if (span->Tsector.stopDraw > span->ring - LODdata[LOD].glueOnLeft)
+                    if (span->Tsector.stopDraw >
+                        span->ring - LODdata[LOD].glueOnLeft)
                     {
-                        span->Tsector.stopDraw = span->ring - LODdata[LOD].glueOnLeft;
+                        span->Tsector.stopDraw =
+                            span->ring - LODdata[LOD].glueOnLeft;
                     }
 
                     // For connector
@@ -980,10 +1025,14 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Bsector.startDraw = (span->Bsector.startDraw - 1) bitor 1;
-                        span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) bitor 1;
-                        span->Rsector.startDraw = span->Rsector.startDraw bitand compl 1;
-                        span->Rsector.stopDraw  = span->Rsector.stopDraw bitand compl 1;
+                        span->Bsector.startDraw =
+                            (span->Bsector.startDraw - 1) bitor 1;
+                        span->Bsector.stopDraw =
+                            (span->Bsector.stopDraw - 1) bitor 1;
+                        span->Rsector.startDraw =
+                            span->Rsector.startDraw bitand compl 1;
+                        span->Rsector.stopDraw =
+                            span->Rsector.stopDraw bitand compl 1;
                     }
                     else
                     {
@@ -1010,10 +1059,14 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         // Rounding
-                        span->Bsector.startDraw = span->Bsector.startDraw bitand compl 1;
-                        span->Bsector.stopDraw  = span->Bsector.stopDraw bitand compl 1;
-                        span->Lsector.startDraw = span->Lsector.startDraw bitand compl 1;
-                        span->Lsector.stopDraw  = span->Lsector.stopDraw bitand compl 1;
+                        span->Bsector.startDraw =
+                            span->Bsector.startDraw bitand compl 1;
+                        span->Bsector.stopDraw =
+                            span->Bsector.stopDraw bitand compl 1;
+                        span->Lsector.startDraw =
+                            span->Lsector.startDraw bitand compl 1;
+                        span->Lsector.stopDraw =
+                            span->Lsector.stopDraw bitand compl 1;
                     }
                 }
 
@@ -1043,7 +1096,6 @@ void RenderOTW::TrimCornerSet(void)
                         span->Rsector.stopDraw = span->ring - 1;
                     }
                 }
-
             }
             else
             {
@@ -1076,15 +1128,19 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         span->Tsector.startDraw = MAX_POSITIVE_I;
-                        span->Tsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Tsector.stopDraw = MAX_NEGATIVE_I;
                         span->Rsector.startDraw = MAX_POSITIVE_I;
-                        span->Rsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Rsector.stopDraw = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Bsector.startDraw = (span->Bsector.startDraw - 1) bitor 1;
-                        span->Bsector.stopDraw  = (span->Bsector.stopDraw  - 1) bitor 1;
-                        span->Lsector.startDraw = (span->Lsector.startDraw - 1) bitor 1;
-                        span->Lsector.stopDraw  = (span->Lsector.stopDraw  - 1) bitor 1;
+                        span->Bsector.startDraw =
+                            (span->Bsector.startDraw - 1) bitor 1;
+                        span->Bsector.stopDraw =
+                            (span->Bsector.stopDraw - 1) bitor 1;
+                        span->Lsector.startDraw =
+                            (span->Lsector.startDraw - 1) bitor 1;
+                        span->Lsector.stopDraw =
+                            (span->Lsector.stopDraw - 1) bitor 1;
                     }
                     else
                     {
@@ -1111,15 +1167,19 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         span->Tsector.startDraw = MAX_POSITIVE_I;
-                        span->Tsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Tsector.stopDraw = MAX_NEGATIVE_I;
                         span->Lsector.startDraw = MAX_POSITIVE_I;
-                        span->Lsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Lsector.stopDraw = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Bsector.startDraw = span->Bsector.startDraw bitand compl 1;
-                        span->Bsector.stopDraw  = span->Bsector.stopDraw bitand compl 1;
-                        span->Rsector.startDraw = (span->Rsector.startDraw - 1) bitor 1;
-                        span->Rsector.stopDraw  = (span->Rsector.stopDraw  - 1) bitor 1;
+                        span->Bsector.startDraw =
+                            span->Bsector.startDraw bitand compl 1;
+                        span->Bsector.stopDraw =
+                            span->Bsector.stopDraw bitand compl 1;
+                        span->Rsector.startDraw =
+                            (span->Rsector.startDraw - 1) bitor 1;
+                        span->Rsector.stopDraw =
+                            (span->Rsector.stopDraw - 1) bitor 1;
                     }
                 }
                 else
@@ -1149,15 +1209,19 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         span->Bsector.startDraw = MAX_POSITIVE_I;
-                        span->Bsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Bsector.stopDraw = MAX_NEGATIVE_I;
                         span->Rsector.startDraw = MAX_POSITIVE_I;
-                        span->Rsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Rsector.stopDraw = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Tsector.startDraw = (span->Tsector.startDraw - 1) bitor 1;
-                        span->Tsector.stopDraw  = (span->Tsector.stopDraw  - 1) bitor 1;
-                        span->Lsector.startDraw = span->Lsector.startDraw bitand compl 1;
-                        span->Lsector.stopDraw  = span->Lsector.stopDraw bitand compl 1;
+                        span->Tsector.startDraw =
+                            (span->Tsector.startDraw - 1) bitor 1;
+                        span->Tsector.stopDraw =
+                            (span->Tsector.stopDraw - 1) bitor 1;
+                        span->Lsector.startDraw =
+                            span->Lsector.startDraw bitand compl 1;
+                        span->Lsector.stopDraw =
+                            span->Lsector.stopDraw bitand compl 1;
                     }
                     else
                     {
@@ -1184,15 +1248,19 @@ void RenderOTW::TrimCornerSet(void)
                         }
 
                         span->Bsector.startDraw = MAX_POSITIVE_I;
-                        span->Bsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Bsector.stopDraw = MAX_NEGATIVE_I;
                         span->Lsector.startDraw = MAX_POSITIVE_I;
-                        span->Lsector.stopDraw  = MAX_NEGATIVE_I;
+                        span->Lsector.stopDraw = MAX_NEGATIVE_I;
 
                         // Rounding
-                        span->Tsector.startDraw = span->Tsector.startDraw bitand compl 1;
-                        span->Tsector.stopDraw  = span->Tsector.stopDraw bitand compl 1;
-                        span->Rsector.startDraw = span->Rsector.startDraw bitand compl 1;
-                        span->Rsector.stopDraw  = span->Rsector.stopDraw bitand compl 1;
+                        span->Tsector.startDraw =
+                            span->Tsector.startDraw bitand compl 1;
+                        span->Tsector.stopDraw =
+                            span->Tsector.stopDraw bitand compl 1;
+                        span->Rsector.startDraw =
+                            span->Rsector.startDraw bitand compl 1;
+                        span->Rsector.stopDraw =
+                            span->Rsector.stopDraw bitand compl 1;
                     }
                 }
             }
@@ -1205,7 +1273,6 @@ void RenderOTW::TrimCornerSet(void)
 }
 
 
-
 /***************************************************************************\
     Given the spanList which contains all the lower left corner posts,
  construct the expanded set which also includes every post's N, E, and NE
@@ -1225,13 +1292,13 @@ void RenderOTW::BuildVertexSet(void)
     for (span = spanList; span < firstEmptySpan; span++)
     {
         span->Tsector.startXform = MAX_POSITIVE_I;
-        span->Tsector.stopXform  = MAX_NEGATIVE_I;
+        span->Tsector.stopXform = MAX_NEGATIVE_I;
         span->Rsector.startXform = MAX_POSITIVE_I;
-        span->Rsector.stopXform  = MAX_NEGATIVE_I;
+        span->Rsector.stopXform = MAX_NEGATIVE_I;
         span->Bsector.startXform = MAX_POSITIVE_I;
-        span->Bsector.stopXform  = MAX_NEGATIVE_I;
+        span->Bsector.stopXform = MAX_NEGATIVE_I;
         span->Lsector.startXform = MAX_POSITIVE_I;
-        span->Lsector.stopXform  = MAX_NEGATIVE_I;
+        span->Lsector.stopXform = MAX_NEGATIVE_I;
     }
 
 
@@ -1243,24 +1310,39 @@ void RenderOTW::BuildVertexSet(void)
         {
 
             // We will call DrawTerrainRing on this span
-            span->Tsector.startXform = min(span->Tsector.startDraw,  span->Tsector.startXform);
-            span->Tsector.stopXform  = max(span->Tsector.stopDraw + 1, span->Tsector.stopXform);
-            span->Rsector.startXform = min(span->Rsector.startDraw,  span->Rsector.startXform);
-            span->Rsector.stopXform  = max(span->Rsector.stopDraw + 1, span->Rsector.stopXform);
-            span->Bsector.startXform = min(span->Bsector.startDraw,  span->Bsector.startXform);
-            span->Bsector.stopXform  = max(span->Bsector.stopDraw + 1, span->Bsector.stopXform);
-            span->Lsector.startXform = min(span->Lsector.startDraw,  span->Lsector.startXform);
-            span->Lsector.stopXform  = max(span->Lsector.stopDraw + 1, span->Lsector.stopXform);
+            span->Tsector.startXform =
+                min(span->Tsector.startDraw, span->Tsector.startXform);
+            span->Tsector.stopXform =
+                max(span->Tsector.stopDraw + 1, span->Tsector.stopXform);
+            span->Rsector.startXform =
+                min(span->Rsector.startDraw, span->Rsector.startXform);
+            span->Rsector.stopXform =
+                max(span->Rsector.stopDraw + 1, span->Rsector.stopXform);
+            span->Bsector.startXform =
+                min(span->Bsector.startDraw, span->Bsector.startXform);
+            span->Bsector.stopXform =
+                max(span->Bsector.stopDraw + 1, span->Bsector.stopXform);
+            span->Lsector.startXform =
+                min(span->Lsector.startDraw, span->Lsector.startXform);
+            span->Lsector.stopXform =
+                max(span->Lsector.stopDraw + 1, span->Lsector.stopXform);
 
-            (span - 1)->Tsector.startXform = min(span->Tsector.startDraw, (span - 1)->Tsector.startXform);
-            (span - 1)->Tsector.stopXform  = max(span->Tsector.stopDraw + 1, (span - 1)->Tsector.stopXform);
-            (span - 1)->Rsector.startXform = min(span->Rsector.startDraw, (span - 1)->Rsector.startXform);
-            (span - 1)->Rsector.stopXform  = max(span->Rsector.stopDraw + 1, (span - 1)->Rsector.stopXform);
-            (span + 1)->Bsector.startXform = min(span->Bsector.startDraw, (span + 1)->Bsector.startXform);
-            (span + 1)->Bsector.stopXform  = max(span->Bsector.stopDraw + 1, (span + 1)->Bsector.stopXform);
-            (span + 1)->Lsector.startXform = min(span->Lsector.startDraw, (span + 1)->Lsector.startXform);
-            (span + 1)->Lsector.stopXform  = max(span->Lsector.stopDraw + 1, (span + 1)->Lsector.stopXform);
-
+            (span - 1)->Tsector.startXform =
+                min(span->Tsector.startDraw, (span - 1)->Tsector.startXform);
+            (span - 1)->Tsector.stopXform =
+                max(span->Tsector.stopDraw + 1, (span - 1)->Tsector.stopXform);
+            (span - 1)->Rsector.startXform =
+                min(span->Rsector.startDraw, (span - 1)->Rsector.startXform);
+            (span - 1)->Rsector.stopXform =
+                max(span->Rsector.stopDraw + 1, (span - 1)->Rsector.stopXform);
+            (span + 1)->Bsector.startXform =
+                min(span->Bsector.startDraw, (span + 1)->Bsector.startXform);
+            (span + 1)->Bsector.stopXform =
+                max(span->Bsector.stopDraw + 1, (span + 1)->Bsector.stopXform);
+            (span + 1)->Lsector.startXform =
+                min(span->Lsector.startDraw, (span + 1)->Lsector.startXform);
+            (span + 1)->Lsector.stopXform =
+                max(span->Lsector.stopDraw + 1, (span + 1)->Lsector.stopXform);
         }
         else
         {
@@ -1274,118 +1356,166 @@ void RenderOTW::BuildVertexSet(void)
             // TOP
             if (LODdata[LOD].glueOnBottom)
             {
-                innerSpan  = span + 1; // "glue control"
+                innerSpan = span + 1; // "glue control"
                 controlSpan = span + 1; // "glue control"
                 outterSpan = span - 2; // "last drawn"
             }
             else
             {
-                innerSpan  = span; // "outter xform"
+                innerSpan = span; // "outter xform"
                 controlSpan = span; // "outter xform"
                 outterSpan = span - 2; // "last drawn"
             }
 
-            innerSpan->Tsector.startXform  = min(controlSpan->Tsector.startDraw, innerSpan->Tsector.startXform);
-            innerSpan->Tsector.stopXform   = max(controlSpan->Tsector.stopDraw + 2, innerSpan->Tsector.stopXform);
-            lowPos = (controlSpan->Tsector.startDraw  + LODdata[LOD].glueOnLeft) >> 1;
-            outterSpan->Tsector.startXform = min(lowPos, outterSpan->Tsector.startXform);
-            lowPos = (controlSpan->Tsector.stopDraw + 2 + LODdata[LOD].glueOnLeft) >> 1;
-            outterSpan->Tsector.stopXform  = max(lowPos, outterSpan->Tsector.stopXform);
+            innerSpan->Tsector.startXform = min(controlSpan->Tsector.startDraw,
+                                                innerSpan->Tsector.startXform);
+            innerSpan->Tsector.stopXform =
+                max(controlSpan->Tsector.stopDraw + 2,
+                    innerSpan->Tsector.stopXform);
+            lowPos =
+                (controlSpan->Tsector.startDraw + LODdata[LOD].glueOnLeft) >> 1;
+            outterSpan->Tsector.startXform =
+                min(lowPos, outterSpan->Tsector.startXform);
+            lowPos =
+                (controlSpan->Tsector.stopDraw + 2 + LODdata[LOD].glueOnLeft) >>
+                1;
+            outterSpan->Tsector.stopXform =
+                max(lowPos, outterSpan->Tsector.stopXform);
 
             // RIGHT
             if (LODdata[LOD].glueOnLeft)
             {
-                innerSpan  = span + 1; // "glue control"
+                innerSpan = span + 1; // "glue control"
                 controlSpan = span + 1; // "glue control"
                 outterSpan = span - 2; // "last drawn"
             }
             else
             {
-                innerSpan  = span; // "outter xform"
+                innerSpan = span; // "outter xform"
                 controlSpan = span; // "outter xform"
                 outterSpan = span - 2; // "last drawn"
             }
 
-            innerSpan->Rsector.startXform  = min(innerSpan->Rsector.startDraw, innerSpan->Rsector.startXform);
-            innerSpan->Rsector.stopXform   = max(innerSpan->Rsector.stopDraw + 2, innerSpan->Rsector.stopXform);
-            lowPos = (innerSpan->Rsector.startDraw  + LODdata[LOD].glueOnBottom) >> 1;
-            outterSpan->Rsector.startXform = min(lowPos, outterSpan->Rsector.startXform);
-            lowPos = (innerSpan->Rsector.stopDraw + 2 + LODdata[LOD].glueOnBottom) >> 1;
-            outterSpan->Rsector.stopXform  = max(lowPos, outterSpan->Rsector.stopXform);
+            innerSpan->Rsector.startXform = min(innerSpan->Rsector.startDraw,
+                                                innerSpan->Rsector.startXform);
+            innerSpan->Rsector.stopXform = max(innerSpan->Rsector.stopDraw + 2,
+                                               innerSpan->Rsector.stopXform);
+            lowPos =
+                (innerSpan->Rsector.startDraw + LODdata[LOD].glueOnBottom) >> 1;
+            outterSpan->Rsector.startXform =
+                min(lowPos, outterSpan->Rsector.startXform);
+            lowPos =
+                (innerSpan->Rsector.stopDraw + 2 + LODdata[LOD].glueOnBottom) >>
+                1;
+            outterSpan->Rsector.stopXform =
+                max(lowPos, outterSpan->Rsector.stopXform);
 
             // BOTTOM
             if (LODdata[LOD].glueOnBottom)
             {
-                innerSpan  = span + 1; // "glue control"
+                innerSpan = span + 1; // "glue control"
                 controlSpan = span; // "outter xform"
                 outterSpan = span - 1; // "inner xform"
             }
             else
             {
-                innerSpan  = span + 2; // "first normal draw"
+                innerSpan = span + 2; // "first normal draw"
                 controlSpan = span + 1; // "glue control"
                 outterSpan = span - 1; // "inner xform"
             }
 
-            innerSpan->Bsector.startXform  = min(controlSpan->Bsector.startDraw, innerSpan->Bsector.startXform);
-            innerSpan->Bsector.stopXform   = max(controlSpan->Bsector.stopDraw + 2, innerSpan->Bsector.stopXform);
-            lowPos = (controlSpan->Bsector.startDraw  + LODdata[LOD].glueOnLeft) >> 1;
-            outterSpan->Bsector.startXform = min(lowPos, outterSpan->Bsector.startXform);
-            lowPos = (controlSpan->Bsector.stopDraw + 2 + LODdata[LOD].glueOnLeft) >> 1;
-            outterSpan->Bsector.stopXform  = max(lowPos, outterSpan->Bsector.stopXform);
+            innerSpan->Bsector.startXform = min(controlSpan->Bsector.startDraw,
+                                                innerSpan->Bsector.startXform);
+            innerSpan->Bsector.stopXform =
+                max(controlSpan->Bsector.stopDraw + 2,
+                    innerSpan->Bsector.stopXform);
+            lowPos =
+                (controlSpan->Bsector.startDraw + LODdata[LOD].glueOnLeft) >> 1;
+            outterSpan->Bsector.startXform =
+                min(lowPos, outterSpan->Bsector.startXform);
+            lowPos =
+                (controlSpan->Bsector.stopDraw + 2 + LODdata[LOD].glueOnLeft) >>
+                1;
+            outterSpan->Bsector.stopXform =
+                max(lowPos, outterSpan->Bsector.stopXform);
 
             // LEFT
             if (LODdata[LOD].glueOnLeft)
             {
-                innerSpan  = span + 1; // "glue control"
+                innerSpan = span + 1; // "glue control"
                 controlSpan = span; // "outter xform"
                 outterSpan = span - 1; // "inner xform"
             }
             else
             {
-                innerSpan  = span + 2; // "first normal draw"
+                innerSpan = span + 2; // "first normal draw"
                 controlSpan = span + 1; // "glue control"
                 outterSpan = span - 1; // "inner xform"
             }
 
-            innerSpan->Lsector.startXform  = min(controlSpan->Lsector.startDraw, innerSpan->Lsector.startXform);
-            innerSpan->Lsector.stopXform   = max(controlSpan->Lsector.stopDraw + 2, innerSpan->Lsector.stopXform);
-            lowPos = (controlSpan->Lsector.startDraw  + LODdata[LOD].glueOnBottom) >> 1;
-            outterSpan->Lsector.startXform = min(lowPos, outterSpan->Lsector.startXform);
-            lowPos = (controlSpan->Lsector.stopDraw + 2 + LODdata[LOD].glueOnBottom) >> 1;
-            outterSpan->Lsector.stopXform  = max(lowPos, outterSpan->Lsector.stopXform);
+            innerSpan->Lsector.startXform = min(controlSpan->Lsector.startDraw,
+                                                innerSpan->Lsector.startXform);
+            innerSpan->Lsector.stopXform =
+                max(controlSpan->Lsector.stopDraw + 2,
+                    innerSpan->Lsector.stopXform);
+            lowPos =
+                (controlSpan->Lsector.startDraw + LODdata[LOD].glueOnBottom) >>
+                1;
+            outterSpan->Lsector.startXform =
+                min(lowPos, outterSpan->Lsector.startXform);
+            lowPos = (controlSpan->Lsector.stopDraw + 2 +
+                      LODdata[LOD].glueOnBottom) >>
+                     1;
+            outterSpan->Lsector.stopXform =
+                max(lowPos, outterSpan->Lsector.stopXform);
 
             span++;
 
             // We'll call draw gap filler on this span
             if (LODdata[LOD].glueOnBottom)
             {
-                span->Bsector.startXform = min(span->Bsector.startDraw, span->Bsector.startXform);
-                span->Bsector.stopXform  = max(span->Bsector.stopDraw + 1, span->Bsector.stopXform);
-                (span + 1)->Bsector.startXform = min(span->Bsector.startDraw, (span + 1)->Bsector.startXform);
-                (span + 1)->Bsector.stopXform  = max(span->Bsector.stopDraw + 1, (span + 1)->Bsector.stopXform);
+                span->Bsector.startXform =
+                    min(span->Bsector.startDraw, span->Bsector.startXform);
+                span->Bsector.stopXform =
+                    max(span->Bsector.stopDraw + 1, span->Bsector.stopXform);
+                (span + 1)->Bsector.startXform = min(
+                    span->Bsector.startDraw, (span + 1)->Bsector.startXform);
+                (span + 1)->Bsector.stopXform = max(
+                    span->Bsector.stopDraw + 1, (span + 1)->Bsector.stopXform);
             }
             else
             {
-                span->Tsector.startXform = min(span->Tsector.startDraw, span->Tsector.startXform);
-                span->Tsector.stopXform  = max(span->Tsector.stopDraw + 1, span->Tsector.stopXform);
-                (span - 1)->Tsector.startXform = min(span->Tsector.startDraw, (span - 1)->Tsector.startXform);
-                (span - 1)->Tsector.stopXform  = max(span->Tsector.stopDraw + 1, (span - 1)->Tsector.stopXform);
+                span->Tsector.startXform =
+                    min(span->Tsector.startDraw, span->Tsector.startXform);
+                span->Tsector.stopXform =
+                    max(span->Tsector.stopDraw + 1, span->Tsector.stopXform);
+                (span - 1)->Tsector.startXform = min(
+                    span->Tsector.startDraw, (span - 1)->Tsector.startXform);
+                (span - 1)->Tsector.stopXform = max(
+                    span->Tsector.stopDraw + 1, (span - 1)->Tsector.stopXform);
             }
 
             if (LODdata[span->LOD].glueOnLeft)
             {
-                span->Lsector.startXform = min(span->Lsector.startDraw, span->Lsector.startXform);
-                span->Lsector.stopXform  = max(span->Lsector.stopDraw + 1, span->Lsector.stopXform);
-                (span + 1)->Lsector.startXform = min(span->Lsector.startDraw, (span + 1)->Lsector.startXform);
-                (span + 1)->Lsector.stopXform  = max(span->Lsector.stopDraw + 1, (span + 1)->Lsector.stopXform);
+                span->Lsector.startXform =
+                    min(span->Lsector.startDraw, span->Lsector.startXform);
+                span->Lsector.stopXform =
+                    max(span->Lsector.stopDraw + 1, span->Lsector.stopXform);
+                (span + 1)->Lsector.startXform = min(
+                    span->Lsector.startDraw, (span + 1)->Lsector.startXform);
+                (span + 1)->Lsector.stopXform = max(
+                    span->Lsector.stopDraw + 1, (span + 1)->Lsector.stopXform);
             }
             else
             {
-                span->Rsector.startXform = min(span->Rsector.startDraw, span->Rsector.startXform);
-                span->Rsector.stopXform  = max(span->Rsector.stopDraw + 1, span->Rsector.stopXform);
-                (span - 1)->Rsector.startXform = min(span->Rsector.startDraw, (span - 1)->Rsector.startXform);
-                (span - 1)->Rsector.stopXform  = max(span->Rsector.stopDraw + 1, (span - 1)->Rsector.stopXform);
+                span->Rsector.startXform =
+                    min(span->Rsector.startDraw, span->Rsector.startXform);
+                span->Rsector.stopXform =
+                    max(span->Rsector.stopDraw + 1, span->Rsector.stopXform);
+                (span - 1)->Rsector.startXform = min(
+                    span->Rsector.startDraw, (span - 1)->Rsector.startXform);
+                (span - 1)->Rsector.stopXform = max(
+                    span->Rsector.stopDraw + 1, (span - 1)->Rsector.stopXform);
             }
         }
     }
@@ -1415,7 +1545,6 @@ void RenderOTW::BuildVertexSet(void)
 }
 
 
-
 /***************************************************************************\
     Step through the spans and transform all the identified verticies we'll
  need for drawing.
@@ -1435,24 +1564,27 @@ void RenderOTW::TransformVertexSet(void)
 
         // TOP_SPAN
         sector = &span->Tsector;
-        TransformRun(ring,  sector->startXform, sector->stopXform - sector->startXform, LOD, TRUE);
+        TransformRun(ring, sector->startXform,
+                     sector->stopXform - sector->startXform, LOD, TRUE);
 
         // RIGHT_SPAN
         sector = &span->Rsector;
-        TransformRun(sector->startXform,  ring, sector->stopXform - sector->startXform, LOD, FALSE);
+        TransformRun(sector->startXform, ring,
+                     sector->stopXform - sector->startXform, LOD, FALSE);
 
         // BOTTOM_SPAN
         sector = &span->Bsector;
-        TransformRun(-ring, sector->startXform, sector->stopXform - sector->startXform, LOD, TRUE);
+        TransformRun(-ring, sector->startXform,
+                     sector->stopXform - sector->startXform, LOD, TRUE);
 
         // LEFT_SPAN
         sector = &span->Lsector;
-        TransformRun(sector->startXform, -ring, sector->stopXform - sector->startXform, LOD, FALSE);
+        TransformRun(sector->startXform, -ring,
+                     sector->stopXform - sector->startXform, LOD, FALSE);
     }
 }
 
 
-
 /***************************************************************************\
     Compute the edges of the potentially visible area of terrain.
 \***************************************************************************/
@@ -1490,7 +1622,7 @@ void RenderOTW::ComputeBounds(void)
     float aboveMax = areaCeiling - CullPoint.z; // -Z is up
 
     float front = -1e30f;
-    float back =  -1e30f;
+    float back = -1e30f;
 
     if (bottom < -PI_OVER_2)
     {
@@ -1655,8 +1787,8 @@ void RenderOTW::ComputeBounds(void)
 
     // With the viewer looking down the x axis,
     // the right side of view volume is defined by the origin (eye point) and
-    Tpoint Corner1 = { 1.0f, (float)tan(diagonal_half_angle),  1.0f };
-    Tpoint Corner2 = { 1.0f, (float)tan(diagonal_half_angle), -1.0f };
+    Tpoint Corner1 = {1.0f, (float)tan(diagonal_half_angle), 1.0f};
+    Tpoint Corner2 = {1.0f, (float)tan(diagonal_half_angle), -1.0f};
 
 
     // This plane should then be rotated in pitch about the y axis (look up/down)
@@ -1775,14 +1907,42 @@ void RenderOTW::ComputeBounds(void)
     {
         // Draw the view volume representation (assuming its in world space)
         SetColor(0xFF0000A0);
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX1 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX2 - viewpoint->X()))));
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX1 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX2 - viewpoint->X()))));
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX1 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY1 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX1 - viewpoint->X()))));
-        Render2DLine((UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(leftY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(leftX2 - viewpoint->X()))),
-                     (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(rightY2 - viewpoint->Y()))), (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(rightX2 - viewpoint->X()))));
+        Render2DLine(
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   rightY1 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   rightX1 - viewpoint->X()))),
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   rightY2 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   rightX2 - viewpoint->X()))));
+        Render2DLine(
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   leftY1 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   leftX1 - viewpoint->X()))),
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   leftY2 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   leftX2 - viewpoint->X()))));
+        Render2DLine(
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   leftY1 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   leftX1 - viewpoint->X()))),
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   rightY1 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   rightX1 - viewpoint->X()))));
+        Render2DLine(
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   leftY2 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   leftX2 - viewpoint->X()))),
+            (UInt16)((xRes >> 1) + TWODSCALE * (WORLD_TO_FLOAT_GLOBAL_POST(
+                                                   rightY2 - viewpoint->Y()))),
+            (UInt16)((yRes >> 1) - TWODSCALE * (WORLD_TO_GLOBAL_POST(
+                                                   rightX2 - viewpoint->X()))));
     }
 
 #endif

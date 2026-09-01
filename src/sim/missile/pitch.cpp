@@ -10,7 +10,7 @@ void MissileClass::Pitch(void)
     float alpdt1;
     float nzcmd;
 
-    if ( not ifd)
+    if (not ifd)
         return; // JB 010720
 
     nzcmd = -ifd->augCommand.pitch;
@@ -20,20 +20,22 @@ void MissileClass::Pitch(void)
     // this is still not totaly true since it will be limited to less then max g only in the yaw direction, but better imo
 
     // Limit commands to +/- 40 Gs (except at endgame where anything goes)
-    if ( not (flags bitand EndGame))
-        nzcmd = min(max(nzcmd, -auxData->maxGNormal / 1.41f), auxData->maxGNormal / 1.41f);
+    if (not(flags bitand EndGame))
+        nzcmd = min(max(nzcmd, -auxData->maxGNormal / 1.41f),
+                    auxData->maxGNormal / 1.41f);
     else
-        nzcmd = min(max(nzcmd, -auxData->maxGTerminal / 1.41f), auxData->maxGTerminal / 1.41f);
+        nzcmd = min(max(nzcmd, -auxData->maxGTerminal / 1.41f),
+                    auxData->maxGTerminal / 1.41f);
 
     error1 = nzcmd - ifd->nzcgb;
 
     /*-----------------------------*/
     /* nz load factor loop closure */
     /*-----------------------------*/
-    error  = error1 * ifd->kp05;
-    eprop  = ifd->kp02 * error;
+    error = error1 * ifd->kp05;
+    eprop = ifd->kp02 * error;
     eintg1 = ifd->kp03 * error;
-    eintg  = Math.FITust(eintg1, SimLibMinorFrameTime, ifd->oldp02);
+    eintg = Math.FITust(eintg1, SimLibMinorFrameTime, ifd->oldp02);
 
     /*-------------*/
     /* aoa limiter */
@@ -46,7 +48,7 @@ void MissileClass::Pitch(void)
         ifd->oldp02[1] = inputData->aoamax;
         ifd->oldp02[2] = 0.0;
         ifd->oldp02[3] = 0.0;
-        aoacmd    = inputData->aoamax;
+        aoacmd = inputData->aoamax;
     }
     else if (aoacmd <= inputData->aoamin)
     {
@@ -54,10 +56,12 @@ void MissileClass::Pitch(void)
         ifd->oldp02[1] = inputData->aoamin;
         ifd->oldp02[2] = 0.0;
         ifd->oldp02[3] = 0.0;
-        aoacmd    = inputData->aoamin;
+        aoacmd = inputData->aoamin;
     }
 
-    alpha  = Math.F7Tust(aoacmd, ifd->tp02, ifd->tp03, ifd->tp04, SimLibMinorFrameTime, ifd->oldp03, &ifd->oldalp);
-    alpdt1 = Math.F8Tust(aoacmd, ifd->tp02, ifd->tp03, ifd->tp04, SimLibMinorFrameTime, ifd->oldp04, &ifd->oldalpdt);
+    alpha = Math.F7Tust(aoacmd, ifd->tp02, ifd->tp03, ifd->tp04,
+                        SimLibMinorFrameTime, ifd->oldp03, &ifd->oldalp);
+    alpdt1 = Math.F8Tust(aoacmd, ifd->tp02, ifd->tp03, ifd->tp04,
+                         SimLibMinorFrameTime, ifd->oldp04, &ifd->oldalpdt);
     ifd->alpdot = alpdt1 * DTR;
 }

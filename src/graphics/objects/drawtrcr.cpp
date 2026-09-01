@@ -1,17 +1,17 @@
-#include "TimeMgr.h"
-#include "TOD.h"
-#include "RenderOW.h"
-#include "RViewPnt.h"
-#include "Tex.h"
+#include "timemgr.h"
+#include "tod.h"
+#include "renderow.h"
+#include "rviewpnt.h"
+#include "tex.h"
 #include "falclib/include/fakerand.h"
-#include "Drawtrcr.h"
-#include "Draw2d.h"
+#include "drawtrcr.h"
+#include "draw2d.h"
 
-#include "Graphics/DXEngine/DXTools.h"
-#include "Graphics/DXEngine/DXDefines.h"
-#include <windows.h>	// GetTickCount / DWORD for the tracer staleness cull below
-#include "Graphics/DXEngine/DXEngine.h"
-#include "Graphics/DXEngine/DXVBManager.h"
+#include "graphics/dxengine/dxtools.h"
+#include "graphics/dxengine/dxdefines.h"
+#include <windows.h> // GetTickCount / DWORD for the tracer staleness cull below
+#include "graphics/dxengine/dxengine.h"
+#include "graphics/dxengine/dxvbmanager.h"
 
 
 #ifdef USE_SH_POOLS
@@ -24,8 +24,7 @@ extern int sGreenMode, gameCompressionRatio;
 /***************************************************************************\
     Initialize a tracer
 \***************************************************************************/
-DrawableTracer::DrawableTracer(void)
-    : DrawableObject(1.0)
+DrawableTracer::DrawableTracer(void) : DrawableObject(1.0)
 {
     // Set to position 0.0, 0.0, 0.0;
     position.x = 0.0F;
@@ -35,19 +34,19 @@ DrawableTracer::DrawableTracer(void)
     tailEnd.y = 0.0F;
     tailEnd.z = 0.0F;
     radius = width = 0.5f;
-    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
+    alpha =
+        0.85f; // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
-    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
+    lastMoveMs = 0; // Artscout - 2026: armed on first real movement in Draw()
 }
 
 /***************************************************************************\
     Initialize a tracer
 \***************************************************************************/
-DrawableTracer::DrawableTracer(float w)
-    : DrawableObject(1.0)
+DrawableTracer::DrawableTracer(float w) : DrawableObject(1.0)
 {
     // Set to position 0.0, 0.0, 0.0;
     position.x = 0.0F;
@@ -57,32 +56,33 @@ DrawableTracer::DrawableTracer(float w)
     tailEnd.y = 0.0F;
     tailEnd.z = 0.0F;
     radius = width = w;
-    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
+    alpha =
+        0.85f; // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
-    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
+    lastMoveMs = 0; // Artscout - 2026: armed on first real movement in Draw()
 }
 
 /***************************************************************************\
     Initialize a tracer
 \***************************************************************************/
-DrawableTracer::DrawableTracer(Tpoint *p, float w)
-    : DrawableObject(1.0)
+DrawableTracer::DrawableTracer(Tpoint *p, float w) : DrawableObject(1.0)
 {
     position = *p;
     tailEnd = *p;
     radius = width = w;
-    alpha = 0.85f;   // #31 was 0.2 -> barely visible even additive; brighter + glow
+    alpha =
+        0.85f; // #31 was 0.2 -> barely visible even additive; brighter + glow
     r = 1.00f;
     g = 1.00f;
     b = 0.50f;
     type = TRACER_TYPE_TRACER;
-    lastMoveMs = 0;   // Artscout - 2026: armed on first real movement in Draw()
+    lastMoveMs = 0; // Artscout - 2026: armed on first real movement in Draw()
 }
 
-
+
 /***************************************************************************\
     Remove an instance of a tracer
 \***************************************************************************/
@@ -90,7 +90,7 @@ DrawableTracer::~DrawableTracer(void)
 {
 }
 
-
+
 /***************************************************************************\
     Remove an instance of a tracer
 \***************************************************************************/
@@ -100,7 +100,7 @@ void DrawableTracer::Update(Tpoint *head, Tpoint *tail)
     tailEnd = *tail;
 }
 
-
+
 /***************************************************************************\
     Draw this segmented trail on the given renderer.
 \***************************************************************************/
@@ -120,14 +120,17 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     // STALE_MS of real time; keep drawing the tracer in the meantime.
     static const DWORD TRACER_STALE_MS = 150;
 
-    if (LastPos.x == position.x and LastPos.z == position.z and LastPos.y == position.y and gameCompressionRatio)
+    if (LastPos.x == position.x and LastPos.z == position.z and
+        LastPos.y == position.y and gameCompressionRatio)
     {
         if (lastMoveMs == 0)
-            lastMoveMs = GetTickCount();   // start the staleness clock on first draw
+            lastMoveMs =
+                GetTickCount(); // start the staleness clock on first draw
 
         if ((GetTickCount() - lastMoveMs) > TRACER_STALE_MS)
         {
-            if (parentList) parentList->RemoveMe();
+            if (parentList)
+                parentList->RemoveMe();
 
             return;
         }
@@ -184,45 +187,48 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     cend.z = tailEnd.z - renderer->Z();
 
     // 1st get 2 points for width at 1 end
-    if ( not ConstructWidth(renderer, &cpos, &cend, &v2, &v3, &v5, &v4))
+    if (not ConstructWidth(renderer, &cpos, &cend, &v2, &v3, &v5, &v4))
     {
         if (sGreenMode)
             renderer->SetColor(0xFF00FF00);
         else
         {
-            lineColor = ((unsigned int)255 << 24)       + // alpha
+            lineColor = ((unsigned int)255 << 24) + // alpha
                         ((unsigned int)(b * 255.0f) << 16) + // blue
-                        ((unsigned int)(g * 255.0f) << 8)  + // green
-                        ((unsigned int)(r * 255.0f));   // red
+                        ((unsigned int)(g * 255.0f) << 8) + // green
+                        ((unsigned int)(r * 255.0f)); // red
 
             renderer->SetColor(lineColor);
         }
 
         // should we do a point?
-        renderer->TransformCameraCentricPoint(&cpos,  &v0);
+        renderer->TransformCameraCentricPoint(&cpos, &v0);
         renderer->TransformCameraCentricPoint(&cend, &v1);
 
         if (fabs(v0.x - v1.x) * fabs(v0.y - v1.y) < 0.9f)
         {
             // if ( v0.clipFlag == ON_SCREEN )
             // renderer->Render2DPoint( (UInt16)v0.x, (UInt16)v0.y );
-            int lineColor = ((unsigned int)(alpha * 255.0f) << 24)       + // alpha
+            int lineColor = ((unsigned int)(alpha * 255.0f) << 24) + // alpha
                             ((unsigned int)(r * 255.0f) << 16) + // blue
-                            ((unsigned int)(g * 255.0f) << 8)  + // green
-                            ((unsigned int)(b * 255.0f));   // red
-            TheDXEngine.Draw3DPoint((D3DVECTOR*)&position, lineColor, EMISSIVE);
+                            ((unsigned int)(g * 255.0f) << 8) + // green
+                            ((unsigned int)(b * 255.0f)); // red
+            TheDXEngine.Draw3DPoint((D3DVECTOR *)&position, lineColor,
+                                    EMISSIVE);
         }
         else
         {
-            int lineColor = ((unsigned int)(alpha * 255.0f) << 24)       + // alpha
+            int lineColor = ((unsigned int)(alpha * 255.0f) << 24) + // alpha
                             ((unsigned int)(r * 255.0f) << 16) + // blue
-                            ((unsigned int)(g * 255.0f) << 8)  + // green
-                            ((unsigned int)(b * 255.0f));   // red
-            int LineEndColor = ((unsigned int)(alpha * 64.0f) << 24)       + // alpha
-                                ((unsigned int)(r * 255.0f) << 16) + // blue
-                                ((unsigned int)(g * 255.0f) << 8)  + // green
-                                ((unsigned int)(b * 255.0f));   // red
-            TheDXEngine.Draw3DLine((D3DVECTOR*)&position, (D3DVECTOR*)&tailEnd, lineColor, LineEndColor, EMISSIVE);
+                            ((unsigned int)(g * 255.0f) << 8) + // green
+                            ((unsigned int)(b * 255.0f)); // red
+            int LineEndColor = ((unsigned int)(alpha * 64.0f) << 24) + // alpha
+                               ((unsigned int)(r * 255.0f) << 16) + // blue
+                               ((unsigned int)(g * 255.0f) << 8) + // green
+                               ((unsigned int)(b * 255.0f)); // red
+            TheDXEngine.Draw3DLine((D3DVECTOR *)&position,
+                                   (D3DVECTOR *)&tailEnd, lineColor,
+                                   LineEndColor, EMISSIVE);
             //renderer->Render3DLine( &position, &tailEnd );
         }
 
@@ -239,8 +245,10 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     // -> one consistent MIDDLE brightness between the bright glow-quad and the dim normalized look.
     float aTrc = alpha;
     {
-        extern bool g_bVrFrameActive; extern float g_fVrTracerBright;
-        if (g_bVrFrameActive) aTrc *= g_fVrTracerBright;
+        extern bool g_bVrFrameActive;
+        extern float g_fVrTracerBright;
+        if (g_bVrFrameActive)
+            aTrc *= g_fVrTracerBright;
     }
     v0.a = v1.a = aTrc;
     v3.a = v2.a = 0.0f;
@@ -259,7 +267,7 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
     // ConstructWidth( renderer, &tailEnd, &position, &v4, &v5 );
 
     // Transform the end points
-    renderer->TransformCameraCentricPoint(&cpos,  &v0);
+    renderer->TransformCameraCentricPoint(&cpos, &v0);
     renderer->TransformCameraCentricPoint(&cend, &v1);
 
     // set rgb of width points and end points
@@ -347,30 +355,33 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
         extern bool g_bVrFrameActive;
         if (g_bVrFrameActive)
         {
-            const float kTracerMinScreenW = 6.0f;    // tunable: min on-screen tracer thickness (px) - visibility floor
-            const float kTracerMaxScreenW = 10.0f;   // tunable: max on-screen tracer thickness (px) - giant cap
+            const float kTracerMinScreenW =
+                6.0f; // tunable: min on-screen tracer thickness (px) - visibility floor
+            const float kTracerMaxScreenW =
+                10.0f; // tunable: max on-screen tracer thickness (px) - giant cap
             const float halfMin = kTracerMinScreenW * 0.5f;
             const float halfMax = kTracerMaxScreenW * 0.5f;
-            // clamp |C - M| (screen x/y) into [halfMin, halfMax]; skip the push-out if the corner is degenerate
-            #define TW_CLAMP_CORNER(C, M)                                              \
-                {                                                                      \
-                    float _dx = (C).x - (M).x, _dy = (C).y - (M).y;                    \
-                    float _d2 = _dx * _dx + _dy * _dy;                                 \
-                    float _s = 0.0f;                                                   \
-                    if (_d2 > halfMax * halfMax)        _s = halfMax / (float)sqrt(_d2); \
-                    else if (_d2 < halfMin * halfMin && _d2 > 1.0e-4f)                 \
-                                                        _s = halfMin / (float)sqrt(_d2); \
-                    if (_s != 0.0f)                                                    \
-                    {                                                                  \
-                        (C).x = (M).x + _dx * _s;                                      \
-                        (C).y = (M).y + _dy * _s;                                      \
-                    }                                                                  \
-                }
+// clamp |C - M| (screen x/y) into [halfMin, halfMax]; skip the push-out if the corner is degenerate
+#define TW_CLAMP_CORNER(C, M)                                                  \
+    {                                                                          \
+        float _dx = (C).x - (M).x, _dy = (C).y - (M).y;                        \
+        float _d2 = _dx * _dx + _dy * _dy;                                     \
+        float _s = 0.0f;                                                       \
+        if (_d2 > halfMax * halfMax)                                           \
+            _s = halfMax / (float)sqrt(_d2);                                   \
+        else if (_d2 < halfMin * halfMin && _d2 > 1.0e-4f)                     \
+            _s = halfMin / (float)sqrt(_d2);                                   \
+        if (_s != 0.0f)                                                        \
+        {                                                                      \
+            (C).x = (M).x + _dx * _s;                                          \
+            (C).y = (M).y + _dy * _s;                                          \
+        }                                                                      \
+    }
             TW_CLAMP_CORNER(v2, v0);
             TW_CLAMP_CORNER(v3, v0);
             TW_CLAMP_CORNER(v4, v1);
             TW_CLAMP_CORNER(v5, v1);
-            #undef TW_CLAMP_CORNER
+#undef TW_CLAMP_CORNER
         }
     }
 
@@ -380,16 +391,13 @@ void DrawableTracer::Draw(class RenderOTW *renderer, int)
 }
 
 
-
 /***************************************************************************\
     Help function to compute the "width points" of the tracer
  Returns TRUE when we should do polygon.
  FALSE just do line.
 \***************************************************************************/
-BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
-                                    Tpoint *start,
-                                    Tpoint *end,
-                                    ThreeDVertex *xformLeft,
+BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer, Tpoint *start,
+                                    Tpoint *end, ThreeDVertex *xformLeft,
                                     ThreeDVertex *xformRight,
                                     ThreeDVertex *xformLefte,
                                     ThreeDVertex *xformRighte)
@@ -429,10 +437,13 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
     // #31 DCS/BMS style: a tracer should keep a visible (angular) thickness at distance,
     // not collapse into a subpixel. start = camera-centric coords, |start| = distance to the camera.
     // Minimum world width = distance * an angular coefficient -> ~constant on-screen thickness.
-    float camDist = (float)sqrt(start->x * start->x + start->y * start->y + start->z * start->z);
+    float camDist = (float)sqrt(start->x * start->x + start->y * start->y +
+                                start->z * start->z);
     float effWidth = width;
-    float minWidth = camDist * 0.0040f;   // ~ angular size; tuned: visible but not a 'log'
-    if (effWidth < minWidth) effWidth = minWidth;
+    float minWidth =
+        camDist * 0.0040f; // ~ angular size; tuned: visible but not a 'log'
+    if (effWidth < minWidth)
+        effWidth = minWidth;
 
     // Normalize the width vector, then scale it to 1/2 of the total width of the segment
     normalizer = scale * effWidth / mag;
@@ -447,15 +458,15 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
 
 
     // Compute the world space location of the two corners at the end of this segment
-    left.x  = wloc.x - widthX * 0.5f;
-    left.y  = wloc.y - widthY * 0.5f;
-    left.z  = wloc.z - widthZ * 0.5f;
+    left.x = wloc.x - widthX * 0.5f;
+    left.y = wloc.y - widthY * 0.5f;
+    left.z = wloc.z - widthZ * 0.5f;
     right.x = wloc.x + widthX * 0.5f;
     right.y = wloc.y + widthY * 0.5f;
     right.z = wloc.z + widthZ * 0.5f;
 
     // Transform the two new corners
-    renderer->TransformCameraCentricPoint(&left,  xformLeft);
+    renderer->TransformCameraCentricPoint(&left, xformLeft);
     renderer->TransformCameraCentricPoint(&right, xformRight);
 
     // Artscout - 2026 (#60 VR): bail to the faint point/line path only on the flat path. In VR this subpixel
@@ -466,7 +477,10 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
     {
         extern bool g_bVrFrameActive;
         if (not g_bVrFrameActive and
-            fabs(xformLeft->x - xformRight->x) * fabs(xformLeft->y - xformRight->y) < 0.7f and alpha == 1.0f)
+            fabs(xformLeft->x - xformRight->x) *
+                    fabs(xformLeft->y - xformRight->y) <
+                0.7f and
+            alpha == 1.0f)
             return FALSE;
     }
 
@@ -477,15 +491,15 @@ BOOL DrawableTracer::ConstructWidth(RenderOTW *renderer,
 
 
     // Compute the world space location of the two corners at the end of this segment
-    left.x  = wloc.x - widthX;
-    left.y  = wloc.y - widthY;
-    left.z  = wloc.z - widthZ;
+    left.x = wloc.x - widthX;
+    left.y = wloc.y - widthY;
+    left.z = wloc.z - widthZ;
     right.x = wloc.x + widthX;
     right.y = wloc.y + widthY;
     right.z = wloc.z + widthZ;
 
     // Transform the two new corners
-    renderer->TransformCameraCentricPoint(&left,  xformLefte);
+    renderer->TransformCameraCentricPoint(&left, xformLefte);
     renderer->TransformCameraCentricPoint(&right, xformRighte);
 
     return TRUE;

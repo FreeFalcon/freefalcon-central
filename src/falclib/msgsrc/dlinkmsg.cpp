@@ -1,4 +1,4 @@
-#include "MsgInc/DLinkMsg.h"
+#include "msginc/dlinkmsg.h"
 #include "simdrive.h"
 #include "mesg.h"
 #include "navsystem.h"
@@ -8,28 +8,25 @@
 #include "falcsess.h"
 #include "simbase.h"
 #include "icp.h"
-#include "OTWDrive.h"
+#include "otwdrive.h"
 #include "cpmanager.h"
 
 //sfr: added here for checks
-#include "InvalidBufferException.h"
+#include "invalidbufferexception.h"
 
 
-char* DLink_Type_Str[5] =
-{
-    "NODINK",
-    "IP",
-    "TGT",
-    "EGR",
-    "CP"
-};
+char* DLink_Type_Str[5] = {"NODINK", "IP", "TGT", "EGR", "CP"};
 
-FalconDLinkMessage::FalconDLinkMessage(VU_ID entityId, VuTargetEntity *target, VU_BOOL loopback) : FalconEvent(DLinkMsg, FalconEvent::SimThread, entityId, target, loopback)
+FalconDLinkMessage::FalconDLinkMessage(VU_ID entityId, VuTargetEntity* target,
+                                       VU_BOOL loopback)
+    : FalconEvent(DLinkMsg, FalconEvent::SimThread, entityId, target, loopback)
 {
     // Your Code Goes Here
 }
 
-FalconDLinkMessage::FalconDLinkMessage(VU_MSG_TYPE type, VU_ID senderid, VU_ID target) : FalconEvent(DLinkMsg, FalconEvent::SimThread, senderid, target)
+FalconDLinkMessage::FalconDLinkMessage(VU_MSG_TYPE type, VU_ID senderid,
+                                       VU_ID target)
+    : FalconEvent(DLinkMsg, FalconEvent::SimThread, senderid, target)
 {
     // Your Code Goes Here
     type;
@@ -45,21 +42,13 @@ int FalconDLinkMessage::Process(uchar autodisp)
     SimBaseClass* theEntity;
     theEntity = (SimBaseClass*)(vuDatabase->Find(EntityId()));
 
-    if (
-        theEntity and theEntity->IsLocal() and 
-        theEntity == (void*)SimDriver.GetPlayerEntity()
-    )
+    if (theEntity and theEntity->IsLocal() and
+        theEntity == (void*)SimDriver.GetPlayerEntity())
     {
         gNavigationSys->SetDataLinks(
-            dataBlock.numPoints,
-            dataBlock.targetType,
-            dataBlock.threatType,
-            (FalconDLinkMessage::DLinkPointType *) dataBlock.ptype,
-            dataBlock.px,
-            dataBlock.py,
-            dataBlock.pz,
-            dataBlock.arrivalTime
-        );
+            dataBlock.numPoints, dataBlock.targetType, dataBlock.threatType,
+            (FalconDLinkMessage::DLinkPointType*)dataBlock.ptype, dataBlock.px,
+            dataBlock.py, dataBlock.pz, dataBlock.arrivalTime);
         OTWDriver.pCockpitManager->mpIcp->SetICPUpdateFlag(DLINK_UPDATE);
     }
 

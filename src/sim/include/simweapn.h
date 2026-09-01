@@ -14,11 +14,12 @@ class SimWeaponClass : public SimMoverClass
 {
 public:
     SimWeaponClass(int type);
-    SimWeaponClass(VU_BYTE** stream, long *rem);
-    SimWeaponClass(FILE* filePtr);
+    SimWeaponClass(VU_BYTE **stream, long *rem);
+    SimWeaponClass(FILE *filePtr);
     virtual ~SimWeaponClass(void);
     virtual void InitData();
     virtual void CleanupData();
+
 private:
     void InitLocalData();
     void CleanupLocalData();
@@ -43,7 +44,7 @@ public:
     virtual int Exec(void);
     virtual void SetDead(int);
 
-    SimWeaponClass* GetNextOnRail(void)
+    SimWeaponClass *GetNextOnRail(void)
     {
         return nextOnRail.get();
     }
@@ -55,11 +56,11 @@ public:
     {
         return rackSlot;
     }
-    void SetParent(FalconEntity* newParent)
+    void SetParent(FalconEntity *newParent)
     {
         parent.reset(newParent);
     }
-    FalconEntity* Parent(void)
+    FalconEntity *Parent(void)
     {
         return parent.get();
     }
@@ -76,7 +77,8 @@ public:
     virtual int Handle(VuTransferEvent *event);
 
     // other stuff
-    void SendDamageMessage(FalconEntity *testObject, float rangeSquare, int damageType);
+    void SendDamageMessage(FalconEntity *testObject, float rangeSquare,
+                           int damageType);
 
     virtual int IsWeapon(void)
     {
@@ -84,11 +86,12 @@ public:
     };
     virtual int GetRadarType(void);
 
-    short GetWeaponId(void); // MLR 3/5/2004 - Tired of having to figure out the weapon Id by hand.
+    short GetWeaponId(
+        void); // MLR 3/5/2004 - Tired of having to figure out the weapon Id by hand.
 
-    SimWeaponDataType      *GetSWD(void);
+    SimWeaponDataType *GetSWD(void);
     Falcon4EntityClassType *GetCT(void);
-    WeaponClassDataType    *GetWCD(void);
+    WeaponClassDataType *GetWCD(void);
 
     virtual int IsUseable(void)
     {

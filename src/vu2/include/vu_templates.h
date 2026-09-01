@@ -5,8 +5,7 @@
 /** @file vu_templates.h templates for VU. */
 
 /** smartpointer to vuentity pointers. Upon creation, will ref entity. On destruction, will deref it */
-template<class E>
-class VuBin
+template <class E> class VuBin
 {
 public:
     /** creates smartpointer to entity. Will ref it. Also default constructor */
@@ -38,13 +37,13 @@ public:
         return e == rhs.e;
     }
     /** different */
-    bool operator not_eq (const VuBin &rhs)const
+    bool operator not_eq(const VuBin &rhs) const
     {
         return not operator==(rhs);
     }
 
     // NULL tests
-    bool operator not () const
+    bool operator not() const
     {
         return e == NULL;
     }
@@ -80,8 +79,8 @@ public:
         }
 
         VuReferenceEntity(newe); // ref new pointer
-        VuDeReferenceEntity(e);  // unref old pointer
-        e = newe;                // get new pointer
+        VuDeReferenceEntity(e); // unref old pointer
+        e = newe; // get new pointer
     }
 
 private:
@@ -89,16 +88,15 @@ private:
     E *e;
 };
 /** equality between * and a VuBin */
-template <class E> bool operator==(const void* le, const VuBin<E> &re)
+template <class E> bool operator==(const void *le, const VuBin<E> &re)
 {
-    return ((void*)re.get()) == le;
+    return ((void *)re.get()) == le;
 }
 /** difference between void * and a VuBin */
-template <class E> bool operator not_eq (const void* le, const VuBin<E> &re)
+template <class E> bool operator not_eq(const void *le, const VuBin<E> &re)
 {
-    return ((void*)re.get()) not_eq le;
+    return ((void *)re.get()) not_eq le;
 }
 
 
 #endif
-

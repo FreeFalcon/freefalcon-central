@@ -10,7 +10,7 @@
 // must pre-include windows and mmsystem.h
 
 // Constant IDs returned by class IsA() functions
-#include "IsA.h"
+#include "isa.h"
 
 
 #define STARTINGSOUNDREQUESTS 16
@@ -66,11 +66,11 @@
 #define NUMSEGS 8
 
 
-#define STARTSIDERANGE  7003
+#define STARTSIDERANGE 7003
 #define LEFTSIDE STARTSIDERANGE
-#define RIGHTSIDE STARTSIDERANGE +1
-#define BOTHSIDES STARTSIDERANGE +2
-#define EITHERSIDE STARTSIDERANGE +3
+#define RIGHTSIDE STARTSIDERANGE + 1
+#define BOTHSIDES STARTSIDERANGE + 2
+#define EITHERSIDE STARTSIDERANGE + 3
 
 
 #define REQUESTDENYNOCHANNEL 5004
@@ -97,7 +97,6 @@ union Stereo4
 };
 
 
-
 // forward declares and externs
 class CSoundRequest;
 class CWaveRequest;
@@ -109,14 +108,14 @@ class CWaveTrack;
 // control generated on the fly, homegrown controls, object IDs, and so on.
 IDHANDLE IDGenerator();
 // various ways of printing debugs, with optional formatted int or uns
-void DebugBox(char * title, char * message, unsigned int value);
-void DebugBox(char * title, char * message, int value);
-void DebugBox(char * message);
-void DebugBox(char * title, char * message);
+void DebugBox(char* title, char* message, unsigned int value);
+void DebugBox(char* title, char* message, int value);
+void DebugBox(char* message);
+void DebugBox(char* title, char* message);
 
 // threading support, optional threads
 UINT SoundThread(LPVOID pParam);
-void KillSoundThread(CSoundManager * pSoundManager);
+void KillSoundThread(CSoundManager* pSoundManager);
 
 class CRaw
 {
@@ -124,8 +123,9 @@ class CRaw
     int mSoundType;
     int mRequestedBufferLengthBytes;
     int mBufferLengthBytes;
-    int * mpBuffer;
+    int* mpBuffer;
     BOOL mIsValid;
+
 public:
     BOOL IsValid(void)
     {
@@ -144,9 +144,9 @@ public:
     {
         return mBufferLengthBytes;
     }
-    char * GiveCopyOfBufferPointer(void)
+    char* GiveCopyOfBufferPointer(void)
     {
-        return (char *)mpBuffer;
+        return (char*)mpBuffer;
     }
     CRaw(int soundtype, int lengthbytes)
     {
@@ -186,6 +186,7 @@ class CMSFrameCode
     int mSecond;
     int mFrame;
     double mMSRemainder;
+
 public:
     // given even SMPTE time constructor
     CMSFrameCode(int hour, int minute, int second, int frame)
@@ -219,10 +220,10 @@ public:
     }
     CMSFrameCode& operator=(CMSFrameCode& time)
     {
-        mHour   = time.mHour;
+        mHour = time.mHour;
         mMinute = time.mMinute;
         mSecond = time.mSecond;
-        mFrame  = time.mFrame;
+        mFrame = time.mFrame;
         mMSRemainder = time.mMSRemainder;
         return *this;
     }
@@ -244,12 +245,11 @@ public:
     }
     inline unsigned GiveMilliseconds()
     {
-        double milliseconds = mHour * 3600000 +
-                              mMinute * 60000 +
-                              mSecond * 1000 +
-                              mFrame * (33.0 + 1.0 / 3.0) +
-                              mMSRemainder + 0.00000001; // just in case of stupid float packages
-        return (unsigned) milliseconds;
+        double milliseconds =
+            mHour * 3600000 + mMinute * 60000 + mSecond * 1000 +
+            mFrame * (33.0 + 1.0 / 3.0) + mMSRemainder +
+            0.00000001; // just in case of stupid float packages
+        return (unsigned)milliseconds;
     }
     inline unsigned GiveHours(void)
     {
@@ -267,13 +267,14 @@ public:
     {
         return mFrame;
     }
-    inline double  GiveMillisecondRemainder(void)
+    inline double GiveMillisecondRemainder(void)
     {
         return mMSRemainder;
     }
     inline unsigned TimeToBytes(double bytespersecond)
     {
-        return (unsigned)((((double)GiveMilliseconds()) * bytespersecond) / 1000.0);
+        return (unsigned)((((double)GiveMilliseconds()) * bytespersecond) /
+                          1000.0);
     }
 };
 
@@ -285,10 +286,11 @@ class CSoundBufSegment
 {
     friend class CSoundManager;
     BOOL mCleanFlag; // has been cleared flag
-    int mBufferOffset;      // offset into main buffer
-    int mSegmentLength;     // bytes in segment
-    CSoundManager * pSndMgr;
+    int mBufferOffset; // offset into main buffer
+    int mSegmentLength; // bytes in segment
+    CSoundManager* pSndMgr;
     BOOL mIsValid;
+
 public:
     virtual BOOL IsValid(void)
     {
@@ -296,10 +298,10 @@ public:
     }
     virtual int IsA(void)
     {
-        return  BUFSEGMENT;
+        return BUFSEGMENT;
     }
     void OnSBSInit(void);
-    CSoundBufSegment(int segoffset, int seglength, CSoundManager * SndMgr);
+    CSoundBufSegment(int segoffset, int seglength, CSoundManager* SndMgr);
     CSoundBufSegment(void)
     {
         mIsValid = FALSE;
@@ -315,15 +317,15 @@ public:
 
 
 // CWaveTrack  class for digital wave tracks internal to the sound manager
-class CWaveTrack: public CBaseObject
+class CWaveTrack : public CBaseObject
 {
 private:
     friend class CSoundManager;
     friend class CWaveRequest;
-    char * mFileName;
+    char* mFileName;
     long mFileSize;
     HMMIO mMMIOfhandle;
-    char * mWaveBuffer;
+    char* mWaveBuffer;
     unsigned int mBufferLength;
     unsigned int mDataLength;
     BOOL mIsLoadedNow;
@@ -331,7 +333,8 @@ private:
     BOOL mIsValid;
     int mMonoOrStereo;
     void ClearTrack(void);
-    CRaw * mpRawBufRequest;
+    CRaw* mpRawBufRequest;
+
 protected:
     inline void DecrementLinkCount(void)
     {
@@ -349,6 +352,7 @@ protected:
     {
         return mLinkCount;
     }
+
 public:
     virtual BOOL IsValid(void)
     {
@@ -365,8 +369,8 @@ public:
         return mIsLoadedNow;
     }
     void OnCWTInit();
-    CWaveTrack(char * filename);
-    CWaveTrack(CRaw * crawreq);
+    CWaveTrack(char* filename);
+    CWaveTrack(CRaw* crawreq);
     CWaveTrack(void)
     {
         mIsValid = FALSE;
@@ -376,14 +380,15 @@ public:
 
 
 // base class for requests of wave or MIDI patch play
-class CSoundRequest: public CBaseObject
+class CSoundRequest : public CBaseObject
 {
 private:
     // sound manager controls and manages requests, including deletions
     friend class CSoundManager;
+
 protected:
     BOOL mIsValid;
-    char * mFileName;
+    char* mFileName;
     int mRequestID;
     int mSpeakerRequested;
     unsigned mVolumeRequested;
@@ -394,8 +399,10 @@ protected:
 public:
     void OnCSRInit(void);
     CSoundRequest(void);
-    virtual ~CSoundRequest(void) {}
-    virtual void SetLengthInTime(CSoundManager * sm) = 0;
+    virtual ~CSoundRequest(void)
+    {
+    }
+    virtual void SetLengthInTime(CSoundManager* sm) = 0;
     virtual BOOL IsValid(void)
     {
         return mIsValid;
@@ -425,9 +432,9 @@ public:
     {
         return mRequestID;
     }
-    int IsPlayingNow(CSoundManager * sm);
-    int IsPlayOver(CSoundManager * sm);
-    CMSFrameCode HowLongUntilFinished(CSoundManager * sm);
+    int IsPlayingNow(CSoundManager* sm);
+    int IsPlayOver(CSoundManager* sm);
+    CMSFrameCode HowLongUntilFinished(CSoundManager* sm);
     void SetPlayPending(BOOL value)
     {
         mPlayPending = value;
@@ -436,65 +443,75 @@ public:
     {
         return mPlayPending;
     }
-
 };
 
 
 // class for generating Dopplers, approaching and retreating volume,
 // side to side motion, echo, ...
-class CSoundFXRequest: public CSoundRequest
+class CSoundFXRequest : public CSoundRequest
 {
 public:
     virtual int IsA(void)
     {
         return FXREQUESTTYPE;
     }
-    CSoundFXRequest(void) {}
-    virtual ~CSoundFXRequest(void) {}
+    CSoundFXRequest(void)
+    {
+    }
+    virtual ~CSoundFXRequest(void)
+    {
+    }
 };
 
 
 // class for requesting a MIDI patch play, one of the 8 or so
 // common sounds we will keep in digital wave patches
-class CPatchRequest: public CSoundRequest
+class CPatchRequest : public CSoundRequest
 {
 public:
     virtual int IsA(void)
     {
         return PATCHREQUESTTYPE;
     }
-    CPatchRequest(void) {}
-    virtual ~CPatchRequest(void) {}
+    CPatchRequest(void)
+    {
+    }
+    virtual ~CPatchRequest(void)
+    {
+    }
 };
 
 
-
 // User-accessible class for requesting wave play specifically
-class CWaveRequest: public CSoundRequest
+class CWaveRequest : public CSoundRequest
 {
 private:
     friend class CSoundManager;
     // corresponding track, may be one track for several requests (links)
-    CWaveTrack * mpTrack;
-    unsigned int mTotalBytesMixedSoFar; // last byte offset in track that was mixed in
-    unsigned int mLocationLastMixedAt; // mixing buffer offset where the last byte was mixed in
+    CWaveTrack* mpTrack;
+    unsigned int
+        mTotalBytesMixedSoFar; // last byte offset in track that was mixed in
+    unsigned int
+        mLocationLastMixedAt; // mixing buffer offset where the last byte was mixed in
 public:
-    CWaveRequest(char * SoundName);
-    CWaveRequest(CRaw & craw);
+    CWaveRequest(char* SoundName);
+    CWaveRequest(CRaw& craw);
     CWaveRequest(void)
     {
         mIsValid = FALSE;
     }
-    virtual ~CWaveRequest(void) {}
+    virtual ~CWaveRequest(void)
+    {
+    }
     virtual int IsA(void)
     {
         return WAVEREQUESTTYPE;
     }
 
-    CRaw * mCRawBuf;
+    CRaw* mCRawBuf;
     void OnWRInit();
     void ResetTiming();
-    virtual void SetLengthInTime(CSoundManager * sm);
+    virtual void SetLengthInTime(CSoundManager* sm);
     BOOL IsLoadedNow();
     inline unsigned GiveBytesMixed(void)
     {
@@ -539,39 +556,53 @@ class CSoundManager
     int mMonoTrackBPS;
     int mStereoTracksBPS;
 
-    BOOL mIsValid; // was this object properly instantiated and started up without hitches
-    int SetMillisecond_timeGetTime(void);   // request millisecond timer from system
-    void ReleaseMillisecond_timeGetTime(void);  // release it as documented in API
-    unsigned int mTimerResolution; // timer resolution actually obtained, hopefully
-    unsigned int mTimerType;        // where are we getting the time from this time
-    unsigned int mGameStartTime;    // time the SM was constructed, hopefully near program start, MS
-    unsigned int mMixingStartTime; // time that we started mixing data last, milliseconds
-    unsigned int StartGameClock(void); // sets mGameStartTime base at startup, in system milliseconds
-    unsigned int StartMixingClock(void); // sets mMixingStartTime base, used during mixing, various sources
+    BOOL
+        mIsValid; // was this object properly instantiated and started up without hitches
+    int
+    SetMillisecond_timeGetTime(void); // request millisecond timer from system
+    void
+    ReleaseMillisecond_timeGetTime(void); // release it as documented in API
+    unsigned int
+        mTimerResolution; // timer resolution actually obtained, hopefully
+    unsigned int mTimerType; // where are we getting the time from this time
+    unsigned int
+        mGameStartTime; // time the SM was constructed, hopefully near program start, MS
+    unsigned int
+        mMixingStartTime; // time that we started mixing data last, milliseconds
+    unsigned int StartGameClock(
+        void); // sets mGameStartTime base at startup, in system milliseconds
+    unsigned int StartMixingClock(
+        void); // sets mMixingStartTime base, used during mixing, various sources
     BOOL mSoundOutMechanismRunning; // flag whether we are playing
     unsigned int mOutputSystemType; // waveout, directsound, other?
-    int OffsetToMixAtNow(void);// for immediate mixing in, use this to figure buffer position
+    int OffsetToMixAtNow(
+        void); // for immediate mixing in, use this to figure buffer position
     friend class CWaveTrack;
     friend class CWaveRequest;
     friend class CSoundBufSegment;
 
 
     friend UINT SoundThread(LPVOID pParam);
-    friend void KillSoundThread(CSoundManager * pSoundManager);
-    volatile BOOL mSoundThreadKillFlag; // signal to background mixing thread to die
-    volatile BOOL mBlockSoundThread;    // Temporarily block it while array ops, etc
-    CBOPArray * aRequests;
-    CBOPArray * aTracks;
-    char * mpMixingBuffer; // defined as char * but must be 32 bit aligned
+    friend void KillSoundThread(CSoundManager* pSoundManager);
+    volatile BOOL
+        mSoundThreadKillFlag; // signal to background mixing thread to die
+    volatile BOOL
+        mBlockSoundThread; // Temporarily block it while array ops, etc
+    CBOPArray* aRequests;
+    CBOPArray* aTracks;
+    char* mpMixingBuffer; // defined as char * but must be 32 bit aligned
     HWAVEOUT mhWaveOut;
     PWAVEHDR mpOutHeader;
     PMMTIME mpWaveOutCurrentTime;
-    Stereo4 * mpWaveOutOverallVolumes;
+    Stereo4* mpWaveOutOverallVolumes;
 
-    BOOL MixWaveRequestImmediate(CWaveRequest * associatedWR);
-    int MixWaveRequestAtOffset(CWaveRequest * associatedWR, int trackLoc, int mixlength, int mixbufloc);
-    int Mix16MonoIn16MonoOut(CWaveRequest * associatedWR, int trackloc, int mixlength, int offset);
-    int MixStereoOut(CWaveRequest * associatedWR, int trackloc, int mixlength, int offset);
+    BOOL MixWaveRequestImmediate(CWaveRequest* associatedWR);
+    int MixWaveRequestAtOffset(CWaveRequest* associatedWR, int trackLoc,
+                               int mixlength, int mixbufloc);
+    int Mix16MonoIn16MonoOut(CWaveRequest* associatedWR, int trackloc,
+                             int mixlength, int offset);
+    int MixStereoOut(CWaveRequest* associatedWR, int trackloc, int mixlength,
+                     int offset);
 
     // For use in ongoing play, mixing at end of an already mixed section of track,
     // check whether it will be in the section currently being mixed
@@ -579,20 +610,20 @@ class CSoundManager
     BOOL LocIsInCurrentPlayingSegment(int ProspectiveMixingLoc);
 
     // continue mixing for those imcompletely mixed or looping segments
-    int ContinueMixingWaveRequest(CWaveRequest * WRequest);
+    int ContinueMixingWaveRequest(CWaveRequest* WRequest);
     inline unsigned OutputFormatBytesToMilliseconds(unsigned bytes)
     {
         return (unsigned)(((double)bytes) / ((double)mOutputBPS) * 1000.0);
     }
-    BOOL IsNextMixTimeInCurrentBufferTimeFrame(CWaveRequest * WRequest);
+    BOOL IsNextMixTimeInCurrentBufferTimeFrame(CWaveRequest* WRequest);
 
-    int FindTrackByPointer(CWaveTrack * Track);
+    int FindTrackByPointer(CWaveTrack* Track);
     IncludeWaveRequest(CWaveRequest* candidate);
-    int FindRequestByPointer(CSoundRequest * Request);
+    int FindRequestByPointer(CSoundRequest* Request);
     int FindRequestByIDNum(int IDNum);
     void ClearMixingBuffer(unsigned int from, unsigned int bytestoclear);
     HWND mhWndMsgWindow;
-    CSoundBufSegment * BufSegs[NUMSEGS];
+    CSoundBufSegment* BufSegs[NUMSEGS];
     int GetWaveOutSoundPositionNow(void);
     // current sound buffer play location in bytes
     // based on either wave out bytes loc or millisecond
@@ -602,7 +633,6 @@ class CSoundManager
     void OnCSMInit(int monoorstereo);
 
 public:
-
     // contruct this at the beginning of play, which will start the
     // game clock and set up the buffering. The messages passed to
     // the window handle provided can be ignored.
@@ -620,9 +650,10 @@ public:
 
     // call execute in the main application OnIdle loop to give it the
     // required time shares in between other events, like frames
-    void Execute(void);  // our time share, call in on idle and for preparations
-    BOOL StartNow(void); // start SM ring buffer system running, clock 00:00:00:00
-    void StopNow(void);  // stop ring buffer system running
+    void Execute(void); // our time share, call in on idle and for preparations
+    BOOL
+    StartNow(void); // start SM ring buffer system running, clock 00:00:00:00
+    void StopNow(void); // stop ring buffer system running
 
     // game clock current time in milliseconds
     // gets current milliseconds since StartMyClock()
@@ -637,10 +668,10 @@ public:
 
     // giving a path, request a wave buffer and ID, which is
     // an error return if the wave could not be opened.
-    IDHANDLE WaveRequest(char * filepath);
+    IDHANDLE WaveRequest(char* filepath);
     // create a wave request, supply a buffer to be manipulated
     // by the application programmer
-    IDHANDLE WaveRequest(CRaw &);
+    IDHANDLE WaveRequest(CRaw&);
     // users can remove requests with finiwhen not needed
     // if there is more than one request for a wave, the
     // track is not removed, but a use count is decremented
@@ -673,7 +704,7 @@ public:
     // Set overall volume out the speakers
     MMRESULT SetSpeakerVolumes(unsigned short left, unsigned short right);
     // report speaker volumes through function parameters
-    void GetSpeakerVolumes(unsigned short & left, unsigned short & right);
+    void GetSpeakerVolumes(unsigned short& left, unsigned short& right);
 
     // Set Average mixer volume for a request (like mixer track slider position)
     // from 0 to 63, whole number volume. See const MAXVOLUME, ZEROVOLUME, HALFVOLUME
@@ -695,13 +726,7 @@ public:
     {
         return mStereoOrMonoOutput;
     }
-
 };
 
 
-
-
-
-
 #endif
-

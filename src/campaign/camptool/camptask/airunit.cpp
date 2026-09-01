@@ -5,30 +5,30 @@
 #include <io.h>
 #include <stdlib.h>
 #include <math.h>
-#include "CmpGlobl.h"
-#include "F4Vu.h"
-#include "ListADT.h"
-#include "CampCell.h"
-#include "CampTerr.h"
-#include "ASearch.h"
-#include "Path.h"
-#include "Find.h"
-#include "APITypes.h"
-#include "Campaign.h"
-#include "ATM.h"
-#include "CampList.h"
+#include "cmpglobl.h"
+#include "f4vu.h"
+#include "listadt.h"
+#include "campcell.h"
+#include "campterr.h"
+#include "asearch.h"
+#include "path.h"
+#include "find.h"
+#include "apitypes.h"
+#include "campaign.h"
+#include "atm.h"
+#include "camplist.h"
 #include "campwp.h"
 #include "update.h"
 #include "loadout.h"
 #include "campweap.h"
 #include "airunit.h"
 #include "tactics.h"
-#include "Team.h"
-#include "Feature.h"
-#include "AIInput.h"
-#include "CmpClass.h"
-#include "CampMap.h"
-#include "FalcSess.h"
+#include "team.h"
+#include "feature.h"
+#include "aiinput.h"
+#include "cmpclass.h"
+#include "campmap.h"
+#include "falcsess.h"
 #include "classtbl.h"
 
 #include "debuggr.h"
@@ -42,13 +42,9 @@ extern char MissStr[AMIS_OTHER][16];
 extern int MRX;
 extern int MRY;
 
-extern FILE
-*save_log,
-*load_log;
+extern FILE *save_log, *load_log;
 
-extern int
-start_save_stream,
-start_load_stream;
+extern int start_save_stream, start_load_stream;
 
 // =========================================
 // Air Unit functions
@@ -65,7 +61,6 @@ AirUnitClass::AirUnitClass(VU_BYTE **stream) : UnitClass(stream)
         fprintf(load_log, "%08x AirUnitClass ", *stream - start_load_stream);
         fflush(load_log);
     }
-
 }
 
 AirUnitClass::~AirUnitClass(void)
@@ -125,7 +120,9 @@ int AirUnitClass::IsHelicopter(void)
     if (!(class_data->Flags & VEH_VTOL))
         return 0;
 
-    if (GetSType() == STYPE_UNIT_ATTACK_HELO || GetSType() == STYPE_UNIT_TRANSPORT_HELO || GetSType() == STYPE_UNIT_RECON_HELO)
+    if (GetSType() == STYPE_UNIT_ATTACK_HELO ||
+        GetSType() == STYPE_UNIT_TRANSPORT_HELO ||
+        GetSType() == STYPE_UNIT_RECON_HELO)
         return 1;
 
     return 0;

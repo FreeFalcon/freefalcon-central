@@ -2,9 +2,9 @@
 #define _SCROLL_BAR_H_
 
 #define HORIZONTAL_SCROLLBAR 1
-#define VERTICAL_SCROLLBAR   2
+#define VERTICAL_SCROLLBAR 2
 #define SCROLL_MINUS 5000
-#define SCROLL_PLUS  5001
+#define SCROLL_PLUS 5001
 
 class C_ScrollBar : public C_Control
 {
@@ -17,7 +17,8 @@ public:
     };
     void operator delete(void *mem)
     {
-        if (mem) MemFreePtr(mem);
+        if (mem)
+            MemFreePtr(mem);
     };
 #endif
 private:
@@ -31,7 +32,8 @@ private:
     float Range_;
 
     UI95_RECT SliderRect_;
-    short ControlPressed_; // 1=Bar on Minus side of slider,2=Bar on Plus side of slider,3=Slider,4=Minus,5=Plus
+    short
+        ControlPressed_; // 1=Bar on Minus side of slider,2=Bar on Plus side of slider,3=Slider,4=Minus,5=Plus
     O_Output *BgImage_;
 
     void CalcRanges();
@@ -60,7 +62,7 @@ public:
 
     void SetDistance(int dist)
     {
-        Distance_ = (short)dist;    
+        Distance_ = (short)dist;
     }
     //sfr: i wonder why dist is cast to short...
     long GetDistance()
@@ -73,7 +75,7 @@ public:
     }
     long GetDefaultFlags()
     {
-        return(DefaultFlags_);
+        return (DefaultFlags_);
     }
 
     // if using bitmaps for all
@@ -110,13 +112,15 @@ public:
     }
     void SetVirtualW(long w)
     {
-        if (-w < VirtualW_) VirtualW_ = -w;
+        if (-w < VirtualW_)
+            VirtualW_ = -w;
 
         CalcRanges();
     }
     void SetVirtualH(long h)
     {
-        if (-h < VirtualH_) VirtualH_ = -h;
+        if (-h < VirtualH_)
+            VirtualH_ = -h;
 
         CalcRanges();
     }
@@ -125,7 +129,8 @@ public:
         LineColor_ = color;
     }
     void UpdatePosition();
-    void SetButtonImages(long MinusUp, long MinusDown, long PlusUp, long PlusDown);
+    void SetButtonImages(long MinusUp, long MinusDown, long PlusUp,
+                         long PlusDown);
     long CheckHotSpots(long relX, long relY); // returns ID of button hit
     BOOL Process(long, short ButtonHitType);
     // sfr: added mouse wheel
@@ -135,7 +140,7 @@ public:
     void Draw(SCREEN *surface, UI95_RECT *cliprect);
     void GetItemXY(long, long *x, long *y);
     BOOL Drag(GRABBER *Drag, WORD MouseX, WORD MouseY, C_Window *);
-    BOOL Drop(GRABBER *, WORD , WORD , C_Window *)
+    BOOL Drop(GRABBER *, WORD, WORD, C_Window *)
     {
         return FALSE;
     }
@@ -145,7 +150,7 @@ public:
 
     short LocalFind(char *token);
     void LocalFunction(short ID, long P[], _TCHAR *, C_Handler *);
-    void SaveText(HANDLE , C_Parser *)
+    void SaveText(HANDLE, C_Parser *)
     {
         ;
     }

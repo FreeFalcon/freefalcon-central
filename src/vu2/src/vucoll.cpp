@@ -3,10 +3,9 @@
 
 
 #if VU_ALL_FILTERED
-VuCollection::VuCollection(VuFilter *filter, bool threadSafe) :
-    mutex_(threadSafe ? VuxCreateMutex("collection mutex") : NULL),
-    filter_(filter == NULL ? NULL : filter->Copy()),
-    registered(false)
+VuCollection::VuCollection(VuFilter *filter, bool threadSafe)
+    : mutex_(threadSafe ? VuxCreateMutex("collection mutex") : NULL),
+      filter_(filter == NULL ? NULL : filter->Copy()), registered(false)
 {
 }
 
@@ -31,7 +30,7 @@ VuCollection::~VuCollection()
 
 void VuCollection::Register()
 {
-    if ( not registered)
+    if (not registered)
     {
         vuCollectionManager->Register(this);
         registered = true;
@@ -50,7 +49,7 @@ void VuCollection::Unregister()
 
 VU_ERRCODE VuCollection::Handle(VuMessage *msg)
 {
-    if ( not filter_)
+    if (not filter_)
     {
         return VU_NO_OP;
     }
@@ -64,7 +63,7 @@ VU_ERRCODE VuCollection::Handle(VuMessage *msg)
             {
                 if (Find(ent))
                 {
-                    if ( not filter_->Test(ent))
+                    if (not filter_->Test(ent))
                     {
                         // ent is in table, but shouldnt
                         PrivateRemove(ent);
@@ -156,13 +155,13 @@ bool VuCollection::Find(VuEntity *entity) const
 
 VuFilter *VuCollection::GetFilter() const
 {
-    return const_cast<VuFilter*>(filter_);
+    return const_cast<VuFilter *>(filter_);
 }
 
 #else
-VuCollection::VuCollection(bool threadSafe) :
-    mutex_(threadSafe ? VuxCreateMutex("collection mutex") : NULL),
-    registered(false)
+VuCollection::VuCollection(bool threadSafe)
+    : mutex_(threadSafe ? VuxCreateMutex("collection mutex") : NULL),
+      registered(false)
 {
 }
 
